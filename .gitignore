@@ -1,0 +1,7 @@
+*.sublime-workspace
+*.sublime-project
+*.bck
+*.o
+*.debug
+gamelib.so
+*.dSYM

@@ -1,10 +1,8 @@
-SDL GameLib
-===========
+# SDL Gamelib
 
 SDL Game Engine Library
 
-TODO
-====
+## TODO
 
 * Library versioning (think: sonames)
 * man install(1), pkg-config(1)
@@ -13,9 +11,6 @@ TODO
 * Makefile Dependencies
 * Homebrew Formula
 
-License
-=======
+### Footer
 
-1. See LICENSE.md
-
-Copyright (c) 2013 Jeffrey Carpenter
+Copyright (c) 2013 Jeffrey Carpenter <i8degrees@gmail.com>

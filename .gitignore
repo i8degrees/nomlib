@@ -3,5 +3,6 @@
 *.bck
 *.o
 *.debug
-gamelib.so
+*.so
+*.dylib
 *.dSYM

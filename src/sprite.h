@@ -37,8 +37,8 @@ class Sprite
 
     void SetX ( unsigned int x );
     void SetY ( unsigned int y );
-    void SetXY ( unsigned int x, unsigned int y );
-    void UpdateXY ( unsigned int x, unsigned int y );
+    void SetXY ( unsigned int x = 0, unsigned int y = 0 );
+    void UpdateXY ( unsigned int x = 0, unsigned int y = 0);
     void SetWidth ( unsigned int width );
     void SetHeight ( unsigned int height );
     void SetXOffset ( unsigned int x_offset );

@@ -1,5 +1,5 @@
 WORKING_DIR := $(shell pwd)
-CC := $(shell which clang++)
+CC := /usr/bin/clang++
 CFLAGS = -gfull -O0 -std=c++11 -stdlib=libc++ -Wall -fPIC
 LDFLAGS = -shared
 SDL_CFLAGS := $(shell pkg-config --cflags sdl SDL_image SDL_ttf SDL_mixer)

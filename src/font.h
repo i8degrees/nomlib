@@ -16,6 +16,8 @@
 
 #include "gfx.h"
 
+class Gfx;
+
 class Font {
 public:
   Font ( void );

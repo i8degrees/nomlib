@@ -6,4 +6,5 @@
 *.so
 *.dylib
 *.dSYM
-*.powder # pow config
+*.powder
+libgamelib.bc

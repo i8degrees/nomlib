@@ -6,3 +6,4 @@
 *.so
 *.dylib
 *.dSYM
+*.powder # pow config

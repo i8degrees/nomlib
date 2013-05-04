@@ -108,13 +108,30 @@ bool Font::DrawText ( Gfx *engine, unsigned int x, unsigned int y )
   this->coords.x = x;
   this->coords.y = y;
 
-  video_buffer = TTF_RenderText_Solid ( this->font, this->GetTextBuffer().c_str(), this->text_color );
-
-  // TODO: ERR checking
-
-  if ( engine->DrawSurface ( video_buffer, x, y ) == false )
+  if ( this->GetTextBuffer().c_str() != NULL )
+  {
+    video_buffer = TTF_RenderText_Solid ( this->font, this->GetTextBuffer().c_str(), this->text_color );
+  }
+  else
   {
     std::cout << "ERR in Font::DrawText(): " << SDL_GetError() << std::endl;
+
+    SDL_FreeSurface ( video_buffer );
+    video_buffer = NULL;
+
+    return false;
+  }
+
+  if ( video_buffer != NULL )
+  {
+    if ( engine->DrawSurface ( video_buffer, x, y ) == false )
+    {
+      std::cout << "ERR in Font::DrawText(): " << SDL_GetError() << std::endl;
+    }
+
+    SDL_FreeSurface ( video_buffer );
+    video_buffer = NULL;
+
     return false;
   }
 

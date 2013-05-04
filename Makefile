@@ -23,7 +23,7 @@ TARGET_LIB = libgamelib.dylib
 TARGET_DIR = gamelib
 PREFIX = /usr/local
 
-all: libgamelib
+all: libgamelib web
 
 libgamelib: $(OBJ)
 	$(CC) $(CFLAGS) $(LIB_CFLAGS) $(SDL_CFLAGS) $(LIB_LDFLAGS) $(SDL_LDFLAGS) $(OBJ) -o $(TARGET_LIB)

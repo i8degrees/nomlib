@@ -60,9 +60,14 @@ deinstall: uninstall
 
 install-lib:
 	/bin/ln -sf $(WORKING_DIR)/$(TARGET_LIB) $(PREFIX)/lib; /bin/mkdir -p $(PREFIX)/include/$(TARGET_DIR);
+
 	/bin/ln -sf $(WORKING_DIR)/src/audio.h $(PREFIX)/include/$(TARGET_DIR)/audio.h;
 	/bin/ln -sf $(WORKING_DIR)/src/font.h $(PREFIX)/include/$(TARGET_DIR)/font.h;
 	/bin/ln -sf $(WORKING_DIR)/src/fps.h $(PREFIX)/include/$(TARGET_DIR)/fps.h;
+	/bin/ln -sf $(WORKING_DIR)/src/gamelib.h $(PREFIX)/include/$(TARGET_DIR)/gamelib.h;
+	/bin/ln -sf $(WORKING_DIR)/src/gfx.h $(PREFIX)/include/$(TARGET_DIR)/gfx.h;
+	/bin/ln -sf $(WORKING_DIR)/src/sprite.h $(PREFIX)/include/$(TARGET_DIR)/sprite.h;
+	/bin/ln -sf $(WORKING_DIR)/src/timer.h $(PREFIX)/include/$(TARGET_DIR)/timer.h;
 
 uninstall:
 	/bin/rm $(PREFIX)/lib/$(TARGET_LIB);

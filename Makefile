@@ -26,7 +26,7 @@ PREFIX = /usr/local
 all: libgamelib web
 
 libgamelib: $(OBJ)
-	$(CC) $(CFLAGS) $(LIB_CFLAGS) $(SDL_CFLAGS) $(LIB_LDFLAGS) $(SDL_LDFLAGS) $(OBJ) -o $(TARGET_LIB)
+	$(CC) $(DEBUG_CFLAGS) $(LIB_CFLAGS) $(SDL_CFLAGS) $(LIB_LDFLAGS) $(SDL_LDFLAGS) $(OBJ) -o $(TARGET_LIB)
 
 web:
 	$(EMCC) $(EMCC_CFLAGS) $(DEBUG_CFLAGS) $(SRC) -o $(TARGET_OBJ)

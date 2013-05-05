@@ -1,0 +1,105 @@
+cmake_minimum_required ( VERSION 2.6 )
+
+set ( CMAKE_VERBOSE_MAKEFILE true )
+set ( CMAKE_BUILD_TYPE Debug )
+set ( BUILD_SHARED_LIBS true )
+set ( CMAKE_OSX_ARCHITECTURES i386;x86_64 ) # OSX Universal Library
+
+set ( EMCC_BIN "$ENV{HOME}/local/src/emscripten/emcc" )
+set ( EMCC_CFLAGS --jcache )
+set ( EMCC_TARGET libgamelib.bc )
+set ( LLVM_ANALYZER_BIN "$ENV{HOME}/local/checker/scan-build" )
+set ( LLVM_ANALYZER_ARGS -k --use-c++=/usr/bin/clang++ /usr/bin/clang++ -c )
+
+set ( CMAKE_CXX_COMPILER "/usr/bin/clang++" )
+set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
+set ( CMAKE_CXX_FLAGS_DEBUG "-gfull -O0 -Wall" )
+set ( CMAKE_CXX_FLAGS_RELEASE "-O2" )
+
+project ( gamelib )
+
+set ( SRC_DIR src ) # project_dir/src
+
+set ( GAMELIB_SOURCE
+      ${SRC_DIR}/audio.cpp
+      ${SRC_DIR}/font.cpp
+      ${SRC_DIR}/gfx.cpp
+      ${SRC_DIR}/sprite.cpp
+      ${SRC_DIR}/input.cpp
+      ${SRC_DIR}/timer.cpp
+      ${SRC_DIR}/fps.cpp
+    )
+
+set ( GAMELIB_HEADERS
+      ${SRC_DIR}/audio.h
+      ${SRC_DIR}/font.h
+      ${SRC_DIR}/gamelib.h
+      ${SRC_DIR}/gfx.h
+      ${SRC_DIR}/sprite.h
+      ${SRC_DIR}/input.h
+      ${SRC_DIR}/timer.h
+      ${SRC_DIR}/fps.h
+    )
+
+find_package ( SDL REQUIRED )
+find_package ( SDL_image REQUIRED )
+find_package ( SDL_mixer REQUIRED )
+find_package ( SDL_ttf REQUIRED )
+
+link_libraries (  gamelib # makefile target
+                  ${SDL_LIBRARY}
+                  ${SDL_IMAGE_LIBRARY}
+                  ${SDL_MIXER_LIBRARY}
+                  ${SDL_TTF_LIBRARY}
+                  SDLmain
+                )
+
+add_library ( gamelib SHARED ${GAMELIB_SOURCE} )
+
+set_target_properties ( gamelib # makefile target
+                        PROPERTIES SOVERSION "0.1"
+                      )
+
+# install library
+
+install ( TARGETS gamelib
+          LIBRARY DESTINATION lib
+        )
+
+# install headers
+
+install ( FILES ${GAMELIB_HEADERS}
+          DESTINATION include/gamelib
+        )
+
+# uninstall target
+
+configure_file  (
+                  "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+                  "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+                  IMMEDIATE @ONLY
+                )
+
+add_custom_target ( uninstall
+                    COMMAND ${CMAKE_COMMAND} -P
+                    ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
+                  )
+
+file ( GLOB files ${GAMELIB_SOURCE} )
+foreach ( filename ${files} )
+  set ( PROJECT_FILES ${files} )
+endforeach()
+
+# analyze target
+
+add_custom_target ( analyze
+                    COMMAND ${LLVM_ANALYZER_BIN} ${LLVM_ANALYZER_ARGS}
+                    ${SDL_CFLAGS} ${PROJECT_FILES}
+                  )
+
+# EMCC (web) target
+
+add_custom_target ( web
+                    ${EMCC_BIN} ${EMCC_CFLAGS} ${CFLAGS} ${LDFLAGS}
+                    ${PROJECT_FILES} -o ${EMCC_TARGET}
+                  )

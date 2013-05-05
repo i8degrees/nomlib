@@ -60,9 +60,10 @@ install: install-lib install-headers
 deinstall: uninstall
 
 install-lib:
-	/bin/ln -sf $(WORKING_DIR)/$(TARGET_LIB) $(PREFIX)/lib; /bin/mkdir -p $(PREFIX)/include/$(TARGET_DIR)
+	/bin/ln -sf $(WORKING_DIR)/$(TARGET_LIB) $(PREFIX)/lib
 
 install-headers:
+	/bin/mkdir -p $(PREFIX)/include/$(TARGET_DIR)
 	/bin/ln -sf $(WORKING_DIR)/src/audio.h $(PREFIX)/include/$(TARGET_DIR)/audio.h;
 	/bin/ln -sf $(WORKING_DIR)/src/font.h $(PREFIX)/include/$(TARGET_DIR)/font.h;
 	/bin/ln -sf $(WORKING_DIR)/src/fps.h $(PREFIX)/include/$(TARGET_DIR)/fps.h;

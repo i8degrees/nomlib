@@ -206,7 +206,7 @@ void Sprite::SetSheetDimensions ( unsigned int sheet_width, unsigned int sheet_h
 
 bool Sprite::LoadImage ( std::string filename, /*SDL_Color colorkey,*/ unsigned int flags )
 {
-  this->sprite_buffer = Gfx::LoadImage ( filename, /*colorkey,*/ flags );
+  this->sprite_buffer = Gfx::LoadImage ( filename, flags );
 
   if ( this->sprite_buffer == NULL )
   {
@@ -251,7 +251,7 @@ bool Sprite::Draw ( Gfx *engine )
     offsets.h = this->GetHeight();
   }
 
-  if ( engine->DrawSurface ( this->sprite_buffer, this->GetX(), this->GetY(), &offsets ) == false )
+  if ( engine->DrawSurface ( this->sprite_buffer, this->GetX(), this->GetY(), offsets.x, offsets.y, offsets.w, offsets.h ) == false )
   {
     return false;
   }

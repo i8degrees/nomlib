@@ -72,9 +72,9 @@ bool Gfx::SetVideoMode (  unsigned int screen_width,
   return true;
 }
 
-bool Gfx::SetSurfaceTransparency (  SDL_Surface *video_buffer,
-                                    unsigned int r, unsigned int g, unsigned int b,
-                                    unsigned int flags )
+bool Gfx::setTransparent (  SDL_Surface *video_buffer,
+                            unsigned int r, unsigned int g, unsigned int b,
+                            unsigned int flags )
 {
   unsigned int transparent_color = 0;
 
@@ -99,7 +99,7 @@ bool Gfx::SetSurfaceTransparency (  SDL_Surface *video_buffer,
   return true;
 }
 
-SDL_Surface *Gfx::LoadImage ( std::string filename, /*SDL_Color colorkey,*/ unsigned int flags )
+SDL_Surface *Gfx::LoadImage ( std::string filename, unsigned int flags )
 {
   SDL_Surface *temp_buffer = NULL;
   SDL_Surface *video_buffer = NULL;
@@ -116,22 +116,6 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, /*SDL_Color colorkey,*/ unsi
     return NULL;
   }
 
-/*
-  TODO: Testing
-
-  if ( this->SetSurfaceTransparency ( temp_buffer, colorkey.r, colorkey.g, colorkey.b, flags ) == false )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::LoadImage() at SetSurfaceTransparency(): " << SDL_GetError() << std::endl;
-    #endif
-
-    SDL_FreeSurface ( temp_buffer );
-    temp_buffer = NULL;
-
-    return NULL;
-  }
-*/
-
   if ( temp_buffer != NULL )
   {
     video_buffer = SDL_DisplayFormatAlpha ( temp_buffer );
@@ -145,7 +129,7 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, /*SDL_Color colorkey,*/ unsi
   return NULL; // ERR if we reach this line
 }
 
-bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, SDL_Rect *offsets )
+bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y )
 {
   SDL_Rect coords;
 
@@ -160,7 +144,40 @@ bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int 
     return false;
   }
 
-  if ( SDL_BlitSurface ( video_buffer, offsets, this->screen, &coords ) != 0 )
+  if ( SDL_BlitSurface ( video_buffer, NULL, this->screen, &coords ) != 0 )
+  {
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::DrawSurface() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
+    #endif
+    return false;
+  }
+
+  return true;
+}
+
+bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
+                        unsigned int x_offset, unsigned int y_offset,
+                        unsigned int width_offset, unsigned int height_offset )
+{
+  SDL_Rect coords, offsets;
+
+  coords.x = x;
+  coords.y = y;
+
+  offsets.x = x_offset;
+  offsets.y = y_offset;
+  offsets.w = width_offset;
+  offsets.h = height_offset;
+
+  if ( video_buffer == NULL )
+  {
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::DrawSurface(): " << SDL_GetError() << std::endl;
+    #endif
+    return false;
+  }
+
+  if ( SDL_BlitSurface ( video_buffer, &offsets, this->screen, &coords ) != 0 )
   {
     #ifdef DEBUG_GFX
       std::cout << "ERR in Gfx::DrawSurface() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
@@ -209,17 +226,25 @@ bool Gfx::DrawRectangle ( unsigned int x, unsigned int y,
   return true;
 }
 
-void Gfx::SetWindowTitle ( std::string app_name )
+void Gfx::setTitle ( std::string app_name )
 {
   SDL_WM_SetCaption ( app_name.c_str(), NULL );
 }
 
-// FIXME: We cannot use Gfx::LoadImage() for loading an application icon due to surface
-// conversion -- SDL_DisplayFormatAlpha()
-bool Gfx::SetWindowIcon ( std::string app_icon, /*SDL_Color colorkey,*/ unsigned int flags )
-
+// NOTE: *MUST* be called before the first call to SDL_SetVideoMode is made
+bool Gfx::setIcon ( std::string app_icon,
+                    unsigned int r, unsigned int g, unsigned int b,
+                    unsigned int flags )
 {
   SDL_Surface *icon_buffer = NULL;
+
+  if ( screen != NULL )
+  {
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::SetWindowIcon(): " << "SDL_SetVideoMode() has already been called." << std::endl;
+    #endif
+    return false;
+  }
 
   icon_buffer = SDL_LoadBMP ( app_icon.c_str() );
 
@@ -230,15 +255,15 @@ bool Gfx::SetWindowIcon ( std::string app_icon, /*SDL_Color colorkey,*/ unsigned
     #endif
     return false;
   }
-/*
-  if ( this->SetSurfaceTransparency ( icon_buffer, colorkey.r, colorkey.g, colorkey.b, flags ) == false )
+
+  if ( Gfx::setTransparent ( icon_buffer, r, g, b, flags ) == false )
   {
     #ifdef DEBUG_GFX
       std::cout << "ERR in Gfx::SetWindowIcon(): " << SDL_GetError() << std::endl;
     #endif
     return false;
   }
-*/
+
   SDL_WM_SetIcon ( icon_buffer, NULL );
 
   SDL_FreeSurface ( icon_buffer );

@@ -51,8 +51,7 @@ link_libraries (  gamelib # makefile target
                   ${SDL_IMAGE_LIBRARY}
                   ${SDL_MIXER_LIBRARY}
                   ${SDL_TTF_LIBRARY}
-                  SDLmain
-                )
+               )
 
 add_library ( gamelib SHARED ${GAMELIB_SOURCE} )
 

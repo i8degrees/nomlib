@@ -99,7 +99,7 @@ bool Gfx::SetSurfaceTransparency (  SDL_Surface *video_buffer,
   return true;
 }
 
-SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey, unsigned int flags )
+SDL_Surface *Gfx::LoadImage ( std::string filename, /*SDL_Color colorkey,*/ unsigned int flags )
 {
   SDL_Surface *temp_buffer = NULL;
   SDL_Surface *video_buffer = NULL;
@@ -216,7 +216,7 @@ void Gfx::SetWindowTitle ( std::string app_name )
 
 // FIXME: We cannot use Gfx::LoadImage() for loading an application icon due to surface
 // conversion -- SDL_DisplayFormatAlpha()
-bool Gfx::SetWindowIcon ( std::string app_icon, SDL_Color colorkey, unsigned int flags )
+bool Gfx::SetWindowIcon ( std::string app_icon, /*SDL_Color colorkey,*/ unsigned int flags )
 
 {
   SDL_Surface *icon_buffer = NULL;
@@ -230,7 +230,7 @@ bool Gfx::SetWindowIcon ( std::string app_icon, SDL_Color colorkey, unsigned int
     #endif
     return false;
   }
-
+/*
   if ( this->SetSurfaceTransparency ( icon_buffer, colorkey.r, colorkey.g, colorkey.b, flags ) == false )
   {
     #ifdef DEBUG_GFX
@@ -238,7 +238,7 @@ bool Gfx::SetWindowIcon ( std::string app_icon, SDL_Color colorkey, unsigned int
     #endif
     return false;
   }
-
+*/
   SDL_WM_SetIcon ( icon_buffer, NULL );
 
   SDL_FreeSurface ( icon_buffer );

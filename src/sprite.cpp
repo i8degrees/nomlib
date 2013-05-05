@@ -204,9 +204,9 @@ void Sprite::SetSheetDimensions ( unsigned int sheet_width, unsigned int sheet_h
   this->sheet.padding = padding;
 }
 
-bool Sprite::LoadImage ( std::string filename, SDL_Color colorkey, unsigned int flags )
+bool Sprite::LoadImage ( std::string filename, /*SDL_Color colorkey,*/ unsigned int flags )
 {
-  this->sprite_buffer = Gfx::LoadImage ( filename, colorkey, flags );
+  this->sprite_buffer = Gfx::LoadImage ( filename, /*colorkey,*/ flags );
 
   if ( this->sprite_buffer == NULL )
   {

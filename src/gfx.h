@@ -33,7 +33,7 @@ class Gfx
                                   unsigned int r, unsigned int g, unsigned int b,
                                   unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
-    static SDL_Surface *LoadImage ( std::string filename, SDL_Color colorkey = { 0, 0, 0 },
+    static SDL_Surface *LoadImage ( std::string filename, /*SDL_Color colorkey,*/
                                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
     bool DrawSurface (  SDL_Surface *video_buffer, unsigned int x, unsigned int y,
@@ -48,7 +48,7 @@ class Gfx
     void SetWindowTitle ( std::string app_name );
 
     bool SetWindowIcon (  std::string app_icon,
-                          SDL_Color colorkey = { 0, 0, 0 },
+                          /*SDL_Color colorkey,*/
                           unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
   private:

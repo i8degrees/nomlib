@@ -23,9 +23,6 @@ Font::Font ( void )
     #endif
     exit ( EXIT_FAILURE ); // TODO: Reconsider
   }
-
-  this->text_color = { 0, 0, 0 };
-  this->coords = { 0, 0, 0, 0 };
 }
 
 Font::~Font ( void )

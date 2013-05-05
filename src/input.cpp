@@ -8,9 +8,22 @@
 ******************************************************************************/
 #include "input.h"
 
+SDLInput::SDLInput ( void )
+{
+  #ifdef DEBUG_INPUT_OBJ
+    std::cout << "SDLInput::SDLInput (): " << "Hello, world!" << std::endl << std::endl;
+  #endif
+}
+
+SDLInput::~SDLInput ( void )
+{
+  #ifdef DEBUG_INPUT_OBJ
+    std::cout << "SDLInput::~SDLInput (): " << "Goodbye cruel world!" << std::endl << std::endl;
+  #endif
+}
+
 void SDLInput::HandleInput ( SDL_Event *input )
 {
-
   switch ( input->type )
   {
     case SDL_QUIT:
@@ -18,34 +31,42 @@ void SDLInput::HandleInput ( SDL_Event *input )
     break;
 
     case SDL_VIDEORESIZE:
-      onResize();
+      onResize ( input->resize.w, input->resize.h );
     break;
 
     case SDL_KEYDOWN:
-      keyDown ( input->key.keysym.sym, input->key.keysym.mod );
+      onKeyDown ( input->key.keysym.sym, input->key.keysym.mod );
     break;
 
     case SDL_KEYUP:
-      keyUp ( input->key.keysym.sym, input->key.keysym.mod );
+      onKeyUp ( input->key.keysym.sym, input->key.keysym.mod );
     break;
 
     case SDL_MOUSEMOTION:
-      mouseMotion ( input->motion.x, input->motion.y );
+      onMouseMotion ( input->motion.x, input->motion.y );
     break;
 
     case SDL_MOUSEBUTTONDOWN:
       switch ( input->button.button )
       {
         case SDL_BUTTON_LEFT:
-          mouseLeftButtonDown ( input->button.x, input->button.y );
+          onMouseLeftButtonDown ( input->button.x, input->button.y );
         break;
 
         case SDL_BUTTON_MIDDLE:
-          mouseMiddleButtonDown ( input->button.x, input->button.y );
+          onMouseMiddleButtonDown ( input->button.x, input->button.y );
         break;
 
         case SDL_BUTTON_RIGHT:
-          mouseRightButtonDown ( input->button.x, input->button.y );
+          onMouseRightButtonDown ( input->button.x, input->button.y );
+        break;
+
+        case SDL_BUTTON_WHEELDOWN: // wheel down
+          onMouseWheel ( false, true );
+        break;
+
+        case SDL_BUTTON_WHEELUP: // wheel up
+          onMouseWheel ( true, false );
         break;
       }
     break;
@@ -54,62 +75,97 @@ void SDLInput::HandleInput ( SDL_Event *input )
       switch ( input->button.button )
       {
         case SDL_BUTTON_LEFT:
-          mouseLeftButtonUp ( input->button.x, input->button.y );
+          onMouseLeftButtonUp ( input->button.x, input->button.y );
         break;
 
         case SDL_BUTTON_MIDDLE:
-          mouseMiddleButtonUp ( input->button.x, input->button.y );
+          onMouseMiddleButtonUp ( input->button.x, input->button.y );
         break;
 
         case SDL_BUTTON_RIGHT:
-          mouseRightButtonUp ( input->button.x, input->button.y );
+          onMouseRightButtonUp ( input->button.x, input->button.y );
         break;
       }
     break;
   } // end switch input->type
-
 }
 
 void SDLInput::onExit ( void )
 {
+  // virtual implementation
 }
 
-void SDLInput::onResize ( void )
+void SDLInput::onResize ( unsigned int width, unsigned int height )
 {
+  // virtual implementation
 }
 
-void SDLInput::keyDown ( SDLKey key, SDLMod mod )
+void SDLInput::onRestore ( void )
 {
+  // virtual implementation
 }
 
-void SDLInput::keyUp ( SDLKey key, SDLMod mod )
+void SDLInput::onMinimize ( void )
 {
+  // virtual implementation
 }
 
-void SDLInput::mouseMotion ( unsigned int x, unsigned int y )
+void SDLInput::onInputFocus ( void )
 {
+  // virtual implementation
 }
 
-void SDLInput::mouseLeftButtonDown ( unsigned int x, unsigned int y )
+void SDLInput::onMouseFocus ( void )
 {
+  // virtual implementation
 }
 
-void SDLInput::mouseMiddleButtonDown ( unsigned int x, unsigned int y )
+void SDLInput::onKeyDown ( SDLKey key, SDLMod mod )
 {
+  // virtual implementation
 }
 
-void SDLInput::mouseRightButtonDown ( unsigned int x, unsigned int y )
+void SDLInput::onKeyUp ( SDLKey key, SDLMod mod )
 {
+  // virtual implementation
 }
 
-void SDLInput::mouseLeftButtonUp ( unsigned int x, unsigned int y )
+void SDLInput::onMouseMotion ( unsigned int x, unsigned int y )
 {
+  // virtual implementation
 }
 
-void SDLInput::mouseMiddleButtonUp ( unsigned int x, unsigned int y )
+void SDLInput::onMouseWheel ( bool up, bool down )
 {
+  // virtual implementation
 }
 
-void SDLInput::mouseRightButtonUp ( unsigned int x, unsigned int y )
+void SDLInput::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 {
+  // virtual implementation
+}
+
+void SDLInput::onMouseMiddleButtonDown ( unsigned int x, unsigned int y )
+{
+  // virtual implementation
+}
+
+void SDLInput::onMouseRightButtonDown ( unsigned int x, unsigned int y )
+{
+  // virtual implementation
+}
+
+void SDLInput::onMouseLeftButtonUp ( unsigned int x, unsigned int y )
+{
+  // virtual implementation
+}
+
+void SDLInput::onMouseMiddleButtonUp ( unsigned int x, unsigned int y )
+{
+  // virtual implementation
+}
+
+void SDLInput::onMouseRightButtonUp ( unsigned int x, unsigned int y )
+{
+  // virtual implementation
 }

@@ -17,23 +17,31 @@
 class SDLInput
 {
   public:
-    //SDLInput ( void );
+    SDLInput ( void );
     virtual ~SDLInput ( void );
 
     virtual void HandleInput ( SDL_Event *input );
 
     virtual void onExit ( void );
-    virtual void onResize ( void );
+    virtual void onResize ( unsigned int width, unsigned int height ); // TODO
+    virtual void onRestore ( void ); // TODO
+    virtual void onMinimize ( void ); // TODO
+    virtual void onInputFocus ( void ); // TODO
+    virtual void onMouseFocus ( void ); // TODO
 
-    virtual void keyDown ( SDLKey key, SDLMod mod );
-    virtual void keyUp ( SDLKey key, SDLMod mod );
-    virtual void mouseMotion ( unsigned int x, unsigned int y );
-    virtual void mouseLeftButtonDown ( unsigned int x, unsigned int y );
-    virtual void mouseMiddleButtonDown ( unsigned int x, unsigned int y );
-    virtual void mouseRightButtonDown ( unsigned int x, unsigned int y );
-    virtual void mouseLeftButtonUp ( unsigned int x, unsigned int y );
-    virtual void mouseMiddleButtonUp ( unsigned int x, unsigned int y );
-    virtual void mouseRightButtonUp ( unsigned int x, unsigned int y );
+    virtual void onKeyDown ( SDLKey key, SDLMod mod );
+    virtual void onKeyUp ( SDLKey key, SDLMod mod );
+
+    virtual void onMouseMotion ( unsigned int x, unsigned int y );
+    virtual void onMouseWheel ( bool up, bool down ); // TODO
+    virtual void onMouseLeftButtonDown ( unsigned int x, unsigned int y );
+    virtual void onMouseMiddleButtonDown ( unsigned int x, unsigned int y );
+    virtual void onMouseRightButtonDown ( unsigned int x, unsigned int y );
+    virtual void onMouseLeftButtonUp ( unsigned int x, unsigned int y );
+    virtual void onMouseMiddleButtonUp ( unsigned int x, unsigned int y );
+    virtual void onMouseRightButtonUp ( unsigned int x, unsigned int y );
+
+    // TODO: joystick
 
   private:
     //

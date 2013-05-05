@@ -13,6 +13,7 @@
 #include "gfx.h"
 #include "sprite.h"
 #include "font.h"
+#include "input.h"
 #include "timer.h"
 #include "fps.h" // inherits from Timer
 
@@ -27,6 +28,9 @@
 
 #define DEBUG_SPRITE
 #define DEBUG_SPRITE_OBJ
+
+#define DEBUG_INPUT
+#define DEBUG_INPUT_OBJ
 
 #define DEBUG_TIMER
 #define DEBUG_TIMER_OBJ

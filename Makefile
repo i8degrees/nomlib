@@ -12,11 +12,11 @@ SDL_CFLAGS := $(shell pkg-config --cflags sdl SDL_image SDL_ttf SDL_mixer)
 LIB_LDFLAGS = -shared
 SDL_LDFLAGS := $(shell pkg-config --libs sdl SDL_image SDL_ttf SDL_mixer)
 
-SRC = src/audio.cpp src/font.cpp src/gfx.cpp src/sprite.cpp src/timer.cpp \
-src/fps.cpp
+SRC = src/audio.cpp src/font.cpp src/gfx.cpp src/sprite.cpp src/input.cpp \
+src/timer.cpp src/fps.cpp
 
-OBJ = build/audio.o build/font.o build/gfx.o build/sprite.o build/timer.o \
-build/fps.o
+OBJ = build/audio.o build/font.o build/gfx.o build/sprite.o build/input.o \
+build/timer.o build/fps.o
 
 TARGET_OBJ = libgamelib.bc
 TARGET_LIB = libgamelib.dylib
@@ -43,6 +43,9 @@ build/gfx.o: src/gfx.cpp src/gfx.h src/gamelib.h
 build/sprite.o: src/sprite.cpp src/sprite.h src/gfx.h src/gamelib.h
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/sprite.cpp -o build/sprite.o
 
+build/input.o: src/input.cpp src/input.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/input.cpp -o build/input.o
+
 build/timer.o: src/timer.cpp src/timer.h src/gamelib.h
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/timer.cpp -o build/timer.o
 
@@ -66,6 +69,7 @@ install-lib:
 	/bin/ln -sf $(WORKING_DIR)/src/gfx.h $(PREFIX)/include/$(TARGET_DIR)/gfx.h;
 	/bin/ln -sf $(WORKING_DIR)/src/sprite.h $(PREFIX)/include/$(TARGET_DIR)/sprite.h;
 	/bin/ln -sf $(WORKING_DIR)/src/timer.h $(PREFIX)/include/$(TARGET_DIR)/timer.h;
+	/bin/ln -sf $(WORKING_DIR)/src/input.h $(PREFIX)/include/$(TARGET_DIR)/input.h;
 
 uninstall:
 	/bin/rm $(PREFIX)/lib/$(TARGET_LIB);

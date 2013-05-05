@@ -15,10 +15,9 @@ set ( CMAKE_CXX_COMPILER "/usr/bin/clang++" )
 set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
 set ( CMAKE_CXX_FLAGS_DEBUG "-gfull -O0 -Wall" )
 set ( CMAKE_CXX_FLAGS_RELEASE "-O2" )
+set ( SRC_DIR src ) # project_dir/src
 
 project ( gamelib )
-
-set ( SRC_DIR src ) # project_dir/src
 
 set ( GAMELIB_SOURCE
       ${SRC_DIR}/audio.cpp

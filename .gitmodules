@@ -1,0 +1,3 @@
+[submodule "elle"]
+	path = elle
+	url = https://github.com/i8degrees/elle.git

@@ -90,14 +90,14 @@ endforeach()
 
 # analyze target
 
-add_custom_target ( analyze
+add_custom_target ( gamelib_analyze
                     COMMAND ${LLVM_ANALYZER_BIN} ${LLVM_ANALYZER_ARGS}
                     ${SDL_CFLAGS} ${PROJECT_FILES}
                   )
 
 # EMCC (web) target
 
-add_custom_target ( web
+add_custom_target ( gamelib_web
                     ${EMCC_BIN} ${EMCC_CFLAGS} ${CFLAGS} ${LDFLAGS}
                     ${PROJECT_FILES} -o ${EMCC_TARGET}
                   )

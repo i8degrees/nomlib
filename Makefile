@@ -53,15 +53,16 @@ build/fps.o: src/timer.cpp src/timer.h src/fps.cpp src/fps.h
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/fps.cpp -o build/fps.o
 
 clean:
-	/bin/rm -rf *.o *.dylib build/* $(TARGET_OBJ) $(TARGET_LIB)
+	/bin/rm -r $(OBJ) $(TARGET_LIB) $(TARGET_OBJ)
 
 reinstall: install
-install: install-lib
+install: install-lib install-headers
 deinstall: uninstall
 
 install-lib:
-	/bin/ln -sf $(WORKING_DIR)/$(TARGET_LIB) $(PREFIX)/lib; /bin/mkdir -p $(PREFIX)/include/$(TARGET_DIR);
+	/bin/ln -sf $(WORKING_DIR)/$(TARGET_LIB) $(PREFIX)/lib; /bin/mkdir -p $(PREFIX)/include/$(TARGET_DIR)
 
+install-headers:
 	/bin/ln -sf $(WORKING_DIR)/src/audio.h $(PREFIX)/include/$(TARGET_DIR)/audio.h;
 	/bin/ln -sf $(WORKING_DIR)/src/font.h $(PREFIX)/include/$(TARGET_DIR)/font.h;
 	/bin/ln -sf $(WORKING_DIR)/src/fps.h $(PREFIX)/include/$(TARGET_DIR)/fps.h;
@@ -73,6 +74,7 @@ install-lib:
 
 uninstall:
 	/bin/rm $(PREFIX)/lib/$(TARGET_LIB);
+	/bin/rm -r $(PREFIX)/include/$(TARGET_DIR)
 
 analyze:
 	scan-build -k --use-c++=/usr/bin/clang++ /usr/bin/clang++ -c $(CFLAGS) $(SDL_CFLAGS) $(SRC)

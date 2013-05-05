@@ -31,25 +31,25 @@ libgamelib: $(OBJ)
 web:
 	$(EMCC) $(EMCC_CFLAGS) $(DEBUG_CFLAGS) $(SRC) -o $(TARGET_OBJ)
 
-build/audio.o: src/audio.cpp src/audio.h src/gamelib.h
+build/audio.o: src/audio.cpp src/audio.h
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/audio.cpp -o build/audio.o
 
-build/font.o: src/font.cpp src/font.h src/gfx.h src/gamelib.h
+build/font.o: src/font.cpp src/font.h src/gfx.h
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/font.cpp -o build/font.o
 
-build/gfx.o: src/gfx.cpp src/gfx.h src/gamelib.h
+build/gfx.o: src/gfx.cpp src/gfx.h
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/gfx.cpp -o build/gfx.o
 
-build/sprite.o: src/sprite.cpp src/sprite.h src/gfx.h src/gamelib.h
+build/sprite.o: src/sprite.cpp src/sprite.h src/gfx.h
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/sprite.cpp -o build/sprite.o
 
 build/input.o: src/input.cpp src/input.h
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/input.cpp -o build/input.o
 
-build/timer.o: src/timer.cpp src/timer.h src/gamelib.h
+build/timer.o: src/timer.cpp src/timer.h
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/timer.cpp -o build/timer.o
 
-build/fps.o: src/timer.cpp src/timer.h src/fps.cpp src/fps.h src/gamelib.h
+build/fps.o: src/timer.cpp src/timer.h src/fps.cpp src/fps.h
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/fps.cpp -o build/fps.o
 
 clean:

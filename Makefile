@@ -28,8 +28,6 @@ all: libgamelib web
 libgamelib: $(OBJ)
 	$(CC) $(CFLAGS) $(LIB_CFLAGS) $(SDL_CFLAGS) $(LIB_LDFLAGS) $(SDL_LDFLAGS) $(OBJ) -o $(TARGET_LIB)
 
-bin: $(OBJ)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(SDL_CFLAGS) $(SDL_LDFLAGS) $(OBJ) -o $(TARGET)
 web:
 	$(EMCC) $(EMCC_CFLAGS) $(DEBUG_CFLAGS) $(SRC) -o $(TARGET_OBJ)
 

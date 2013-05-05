@@ -12,7 +12,7 @@
 #include <iostream>
 #include <string>
 
-#include "SDL/SDL_image.h"
+#include "SDL_image.h"
 
 class Gfx
 {

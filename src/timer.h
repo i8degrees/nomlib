@@ -9,7 +9,7 @@
 #ifndef GAMELIB_TIMER_HEADERS
 #define GAMELIB_TIMER_HEADERS
 
-#include "SDL/SDL.h"
+#include "SDL.h"
 
 class Timer
 {

@@ -22,7 +22,7 @@ class SDLInput
     SDLInput ( void );
     virtual ~SDLInput ( void );
 
-    void Input ( void );
+    virtual void Input ( void );
 
     virtual void onExit ( void );
     virtual void onResize ( unsigned int width, unsigned int height ); // TODO

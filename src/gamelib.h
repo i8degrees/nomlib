@@ -16,6 +16,7 @@
 #include "input.h"
 #include "timer.h"
 #include "fps.h" // inherits from Timer
+#include "SDLApp.h"
 
 #define DEBUG_AUDIO
 #define DEBUG_AUDIO_OBJ
@@ -31,6 +32,9 @@
 
 #define DEBUG_INPUT
 #define DEBUG_INPUT_OBJ
+
+#define DEBUG_SDLAPP
+#define DEBUG_SDLAPP_OBJ
 
 #define DEBUG_TIMER
 #define DEBUG_TIMER_OBJ

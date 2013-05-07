@@ -27,6 +27,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/input.cpp
       ${SRC_DIR}/timer.cpp
       ${SRC_DIR}/fps.cpp
+      ${SRC_DIR}/SDLApp.cpp
     )
 
 set ( GAMELIB_HEADERS
@@ -38,6 +39,7 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/input.h
       ${SRC_DIR}/timer.h
       ${SRC_DIR}/fps.h
+      ${SRC_DIR}/SDLApp.h
     )
 
 find_package ( SDL REQUIRED )

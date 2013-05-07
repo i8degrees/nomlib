@@ -11,6 +11,8 @@
 
 #include "SDL.h"
 
+// Requires SDL Video Initialization to be called first
+
 class Timer
 {
   public:

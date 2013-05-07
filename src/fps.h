@@ -11,6 +11,7 @@
 
 #include "timer.h" // base class
 
+// Requires SDL Video Initialization to be called first
 class FPS: public Timer
 {
   public:

@@ -13,7 +13,7 @@
 #include "gfx.h"
 #include "sprite.h"
 #include "font.h"
-#include "input.h"
+#include "SDLInput.h"
 #include "timer.h"
 #include "fps.h" // inherits from Timer
 #include "SDLApp.h"
@@ -30,8 +30,8 @@
 #define DEBUG_SPRITE
 #define DEBUG_SPRITE_OBJ
 
-#define DEBUG_INPUT
-#define DEBUG_INPUT_OBJ
+#define DEBUG_SDLINPUT
+#define DEBUG_SDLINPUT_OBJ
 
 #define DEBUG_SDLAPP
 #define DEBUG_SDLAPP_OBJ

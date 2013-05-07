@@ -1,18 +1,20 @@
 /******************************************************************************
-    input.h
+    SDLInput.h
 
     Input Events Handling
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef GAMELIB_INPUT_HEADERS
-#define GAMELIB_INPUT_HEADERS
+#ifndef GAMELIB_SDLINPUT_HEADERS
+#define GAMELIB_SDLINPUT_HEADERS
 
 #include <iostream>
 #include <string>
 
 #include "SDL.h"
+
+#include "gamelib.h"
 
 class SDLInput
 {
@@ -20,7 +22,7 @@ class SDLInput
     SDLInput ( void );
     virtual ~SDLInput ( void );
 
-    virtual void HandleInput ( SDL_Event *input );
+    void Input ( void );
 
     virtual void onExit ( void );
     virtual void onResize ( unsigned int width, unsigned int height ); // TODO
@@ -45,6 +47,7 @@ class SDLInput
 
   private:
     //
+    SDL_Event input;
 };
 
-#endif // GAMELIB_INPUT_HEADERS defined
+#endif // GAMELIB_SDLINPUT_HEADERS defined

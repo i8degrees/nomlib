@@ -24,7 +24,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/font.cpp
       ${SRC_DIR}/gfx.cpp
       ${SRC_DIR}/sprite.cpp
-      ${SRC_DIR}/input.cpp
+      ${SRC_DIR}/SDLInput.cpp
       ${SRC_DIR}/timer.cpp
       ${SRC_DIR}/fps.cpp
       ${SRC_DIR}/SDLApp.cpp
@@ -36,7 +36,7 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/gamelib.h
       ${SRC_DIR}/gfx.h
       ${SRC_DIR}/sprite.h
-      ${SRC_DIR}/input.h
+      ${SRC_DIR}/SDLInput.h
       ${SRC_DIR}/timer.h
       ${SRC_DIR}/fps.h
       ${SRC_DIR}/SDLApp.h

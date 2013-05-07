@@ -1,93 +1,96 @@
 /******************************************************************************
-    input.cpp
+    SDLInput.cpp
 
     Input Events Handling
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "input.h"
+#include "SDLInput.h"
 
 SDLInput::SDLInput ( void )
 {
-  #ifdef DEBUG_INPUT_OBJ
+  #ifdef DEBUG_SDLINPUT_OBJ
     std::cout << "SDLInput::SDLInput (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 }
 
 SDLInput::~SDLInput ( void )
 {
-  #ifdef DEBUG_INPUT_OBJ
+  #ifdef DEBUG_SDLINPUT_OBJ
     std::cout << "SDLInput::~SDLInput (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
 }
 
-void SDLInput::HandleInput ( SDL_Event *input )
+void SDLInput::Input ( void )
 {
-  switch ( input->type )
+  while ( SDL_PollEvent ( &input ) )
   {
-    case SDL_QUIT:
-      onExit();
-    break;
+    switch ( input.type )
+    {
+      case SDL_QUIT:
+        onExit();
+      break;
 
-    case SDL_VIDEORESIZE:
-      onResize ( input->resize.w, input->resize.h );
-    break;
+      case SDL_VIDEORESIZE:
+        onResize ( input.resize.w, input.resize.h );
+      break;
 
-    case SDL_KEYDOWN:
-      onKeyDown ( input->key.keysym.sym, input->key.keysym.mod );
-    break;
+      case SDL_KEYDOWN:
+        onKeyDown ( input.key.keysym.sym, input.key.keysym.mod );
+      break;
 
-    case SDL_KEYUP:
-      onKeyUp ( input->key.keysym.sym, input->key.keysym.mod );
-    break;
+      case SDL_KEYUP:
+        onKeyUp ( input.key.keysym.sym, input.key.keysym.mod );
+      break;
 
-    case SDL_MOUSEMOTION:
-      onMouseMotion ( input->motion.x, input->motion.y );
-    break;
+      case SDL_MOUSEMOTION:
+        onMouseMotion ( input.motion.x, input.motion.y );
+      break;
 
-    case SDL_MOUSEBUTTONDOWN:
-      switch ( input->button.button )
-      {
-        case SDL_BUTTON_LEFT:
-          onMouseLeftButtonDown ( input->button.x, input->button.y );
-        break;
+      case SDL_MOUSEBUTTONDOWN:
+        switch ( input.button.button )
+        {
+          case SDL_BUTTON_LEFT:
+            onMouseLeftButtonDown ( input.button.x, input.button.y );
+          break;
 
-        case SDL_BUTTON_MIDDLE:
-          onMouseMiddleButtonDown ( input->button.x, input->button.y );
-        break;
+          case SDL_BUTTON_MIDDLE:
+            onMouseMiddleButtonDown ( input.button.x, input.button.y );
+          break;
 
-        case SDL_BUTTON_RIGHT:
-          onMouseRightButtonDown ( input->button.x, input->button.y );
-        break;
+          case SDL_BUTTON_RIGHT:
+            onMouseRightButtonDown ( input.button.x, input.button.y );
+          break;
 
-        case SDL_BUTTON_WHEELDOWN: // wheel down
-          onMouseWheel ( false, true );
-        break;
+          case SDL_BUTTON_WHEELDOWN: // wheel down
+            onMouseWheel ( false, true );
+          break;
 
-        case SDL_BUTTON_WHEELUP: // wheel up
-          onMouseWheel ( true, false );
-        break;
-      }
-    break;
+          case SDL_BUTTON_WHEELUP: // wheel up
+            onMouseWheel ( true, false );
+          break;
+        }
+      break;
 
-    case SDL_MOUSEBUTTONUP:
-      switch ( input->button.button )
-      {
-        case SDL_BUTTON_LEFT:
-          onMouseLeftButtonUp ( input->button.x, input->button.y );
-        break;
+      case SDL_MOUSEBUTTONUP:
+        switch ( input.button.button )
+        {
+          case SDL_BUTTON_LEFT:
+            onMouseLeftButtonUp ( input.button.x, input.button.y );
+          break;
 
-        case SDL_BUTTON_MIDDLE:
-          onMouseMiddleButtonUp ( input->button.x, input->button.y );
-        break;
+          case SDL_BUTTON_MIDDLE:
+            onMouseMiddleButtonUp ( input.button.x, input.button.y );
+          break;
 
-        case SDL_BUTTON_RIGHT:
-          onMouseRightButtonUp ( input->button.x, input->button.y );
-        break;
-      }
-    break;
-  } // end switch input->type
+          case SDL_BUTTON_RIGHT:
+            onMouseRightButtonUp ( input.button.x, input.button.y );
+          break;
+        }
+      break;
+    } // end switch input->type
+  }
 }
 
 void SDLInput::onExit ( void )

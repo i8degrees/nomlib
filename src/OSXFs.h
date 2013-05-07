@@ -12,6 +12,7 @@
 #include <iostream>
 #include <string>
 #include <unistd.h>
+#include <libgen.h>
 
 #include "gamelib.h"
 
@@ -21,7 +22,9 @@ class OSXFs
     OSXFs ( void );
     ~OSXFs ( void );
 
-    static const std::string getWorkingDir ( void );
+    static const std::string dirName ( std::string path ); // TODO: dirname(3) wrapper
+    static const std::string getWorkingDir ( void ); // getcwd(3) wrapper
+    static void setWorkingDir ( std::string path ); // TODO: chdir wrapper
 
   private:
     // ...

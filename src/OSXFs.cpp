@@ -22,6 +22,11 @@ OSXFs::~OSXFs ( void )
   #endif
 }
 
+const std::string OSXFs::dirName ( std::string path )
+{
+  // Stub
+}
+
 const std::string OSXFs::getWorkingDir ( void )
 {
   char path[PATH_MAX];
@@ -31,4 +36,9 @@ const std::string OSXFs::getWorkingDir ( void )
   std::string cwd ( path );
 
   return cwd;
+}
+
+void OSXFs::setWorkingDir ( std::string path )
+{
+  // Stub
 }

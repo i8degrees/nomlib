@@ -56,9 +56,9 @@ include_directories ( ${SDLTTF_INCLUDE_DIR} )
 
 link_libraries (  gamelib # makefile target
                   ${SDL_LIBRARY}
-                  ${SDLIMAGE_LIBRARY}
-                  ${SDLMIXER_LIBRARY}
-                  ${SDLTTF_LIBRARY}
+                  ${SDL_IMAGE_LIBRARY}
+                  ${SDL_MIXER_LIBRARY}
+                  ${SDL_TTF_LIBRARY}
                )
 
 add_library ( gamelib SHARED ${GAMELIB_SOURCE} )

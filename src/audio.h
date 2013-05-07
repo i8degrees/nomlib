@@ -12,7 +12,10 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+
 #include "SDL_mixer.h"
+
+#include "gamelib.h"
 
 class Audio {
 public:

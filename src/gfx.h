@@ -14,6 +14,8 @@
 
 #include "SDL_image.h"
 
+#include "gamelib.h"
+
 class Gfx
 {
   public:

@@ -9,14 +9,15 @@
 #ifndef GAMELIB_HEADERS
 #define GAMELIB_HEADERS
 
-#include "audio.h"
-#include "gfx.h"
-#include "sprite.h"
-#include "font.h"
 #include "SDLInput.h"
+#include "OSXFs.h"
+#include "SDLApp.h"
+#include "gfx.h"
+#include "font.h"
+#include "sprite.h"
 #include "timer.h"
 #include "fps.h" // inherits from Timer
-#include "SDLApp.h"
+#include "audio.h"
 
 #define DEBUG_AUDIO
 #define DEBUG_AUDIO_OBJ
@@ -30,11 +31,14 @@
 #define DEBUG_SPRITE
 #define DEBUG_SPRITE_OBJ
 
+#define DEBUG_SDLAPP
+#define DEBUG_SDLAPP_OBJ
+
 #define DEBUG_SDLINPUT
 #define DEBUG_SDLINPUT_OBJ
 
-#define DEBUG_SDLAPP
-#define DEBUG_SDLAPP_OBJ
+#define DEBUG_OSXFS
+#define DEBUG_OSXFS_OBJ
 
 #define DEBUG_TIMER
 #define DEBUG_TIMER_OBJ

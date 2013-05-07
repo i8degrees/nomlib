@@ -28,6 +28,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/timer.cpp
       ${SRC_DIR}/fps.cpp
       ${SRC_DIR}/SDLApp.cpp
+      ${SRC_DIR}/OSXFs.cpp
     )
 
 set ( GAMELIB_HEADERS
@@ -40,6 +41,7 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/timer.h
       ${SRC_DIR}/fps.h
       ${SRC_DIR}/SDLApp.h
+      ${SRC_DIR}/OSXFs.h
     )
 
 find_package ( SDL REQUIRED )

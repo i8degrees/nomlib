@@ -45,8 +45,8 @@ class Sprite
     void SetYOffset ( unsigned int y_offset );
     void SetWidthOffset ( unsigned int width_offset );
     void SetHeightOffset ( unsigned int height_offset );
-    unsigned int GetState ( void );
-    void SetState ( unsigned int state );
+    unsigned int getState ( void );
+    void setState ( unsigned int state );
 
     signed int GetSheetID ( void );
     void SetSheetID ( signed int id );

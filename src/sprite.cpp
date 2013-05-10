@@ -167,12 +167,12 @@ void Sprite::SetHeightOffset ( unsigned int height_offset )
   this->offsets.height = height_offset;
 }
 
-unsigned int Sprite::GetState ( void )
+unsigned int Sprite::getState ( void )
 {
   return this->state;
 }
 
-void Sprite::SetState ( unsigned int state )
+void Sprite::setState ( unsigned int state )
 {
   this->state = state;
 }

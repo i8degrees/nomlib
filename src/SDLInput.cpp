@@ -13,6 +13,28 @@ SDLInput::SDLInput ( void )
   #ifdef DEBUG_SDLINPUT_OBJ
     std::cout << "SDLInput::SDLInput (): " << "Hello, world!" << std::endl << std::endl;
   #endif
+
+  if ( SDL_InitSubSystem ( SDL_INIT_JOYSTICK ) == -1 )
+  {
+    std::cout << "ERR in SDLInput::SDLInput() at: " << SDL_GetError() << std::endl;
+
+    return;
+  }
+
+  SDL_JoystickEventState ( SDL_ENABLE );
+
+  this->joystick = SDL_JoystickOpen ( 0 );
+
+  std::cout << SDL_NumJoysticks() << " joysticks were found.";
+  std::cout << std::endl << std::endl;
+
+  if ( SDL_NumJoysticks > 0 )
+  {
+    for( int idx = 0; idx < SDL_NumJoysticks(); idx++ )
+    {
+      std::cout << SDL_JoystickName ( idx ) << std::endl << std::endl;
+    }
+  }
 }
 
 SDLInput::~SDLInput ( void )
@@ -20,22 +42,21 @@ SDLInput::~SDLInput ( void )
   #ifdef DEBUG_SDLINPUT_OBJ
     std::cout << "SDLInput::~SDLInput (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
+
+  SDL_JoystickClose ( this->joystick );
+
+  if ( this->joystick != NULL )
+    this->joystick = NULL;
+
+  SDL_QuitSubSystem ( SDL_INIT_JOYSTICK );
 }
 
 void SDLInput::Input ( void )
 {
-  while ( SDL_PollEvent ( &input ) )
+  while ( SDL_PollEvent ( &input ) ) // not so sure how wise this is to do ...
   {
     switch ( input.type )
     {
-      case SDL_QUIT:
-        onExit();
-      break;
-
-      case SDL_VIDEORESIZE:
-        onResize ( input.resize.w, input.resize.h );
-      break;
-
       case SDL_KEYDOWN:
         onKeyDown ( input.key.keysym.sym, input.key.keysym.mod );
       break;
@@ -63,13 +84,9 @@ void SDLInput::Input ( void )
             onMouseRightButtonDown ( input.button.x, input.button.y );
           break;
 
-          case SDL_BUTTON_WHEELDOWN: // wheel down
-            onMouseWheel ( false, true );
-          break;
+          case SDL_BUTTON_WHEELDOWN: onMouseWheel ( false, true ); break;
 
-          case SDL_BUTTON_WHEELUP: // wheel up
-            onMouseWheel ( true, false );
-          break;
+          case SDL_BUTTON_WHEELUP: onMouseWheel ( true, false ); break;
         }
       break;
 
@@ -89,6 +106,23 @@ void SDLInput::Input ( void )
           break;
         }
       break;
+
+      case SDL_JOYBUTTONDOWN:
+        onJoyButtonDown ( input.jbutton.which, input.jbutton.button );
+      break;
+
+      case SDL_JOYBUTTONUP:
+        onJoyButtonUp ( input.jbutton.which, input.jbutton.button );
+      break;
+
+      case SDL_JOYAXISMOTION:
+        onJoyAxis ( input.jaxis.which, input.jaxis.axis, input.jaxis.value );
+      break;
+
+      case SDL_QUIT: onExit(); break;
+
+      case SDL_VIDEORESIZE: onResize ( input.resize.w, input.resize.h ); break;
+
     } // end switch input->type
   }
 }
@@ -169,6 +203,21 @@ void SDLInput::onMouseMiddleButtonUp ( unsigned int x, unsigned int y )
 }
 
 void SDLInput::onMouseRightButtonUp ( unsigned int x, unsigned int y )
+{
+  // virtual implementation
+}
+
+void SDLInput::onJoyButtonDown ( unsigned int which, unsigned int button )
+{
+  // virtual implementation
+}
+
+void SDLInput::onJoyButtonUp ( unsigned int which, unsigned int button )
+{
+  // virtual implementation
+}
+
+void SDLInput::onJoyAxis ( unsigned int which, unsigned int axis, short int value )
 {
   // virtual implementation
 }

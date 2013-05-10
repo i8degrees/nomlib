@@ -25,7 +25,7 @@ class SDLInput
     virtual void Input ( void );
 
     virtual void onExit ( void );
-    virtual void onResize ( unsigned int width, unsigned int height ); // TODO
+    virtual void onResize ( unsigned int width, unsigned int height );
     virtual void onRestore ( void ); // TODO
     virtual void onMinimize ( void ); // TODO
     virtual void onInputFocus ( void ); // TODO
@@ -43,11 +43,13 @@ class SDLInput
     virtual void onMouseMiddleButtonUp ( unsigned int x, unsigned int y );
     virtual void onMouseRightButtonUp ( unsigned int x, unsigned int y );
 
-    // TODO: joystick
+    virtual void onJoyButtonDown ( unsigned int which, unsigned int button );
+    virtual void onJoyButtonUp ( unsigned int which, unsigned int button );
+    virtual void onJoyAxis ( unsigned int which, unsigned int axis, short int value );
 
   private:
-    //
     SDL_Event input;
+    SDL_Joystick *joystick;
 };
 
 #endif // GAMELIB_SDLINPUT_HEADERS defined

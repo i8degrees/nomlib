@@ -27,8 +27,8 @@ public:
   SDLBitmapFont ( void );
   ~SDLBitmapFont ( void );
 
-  unsigned int getTextWidth ( void ); // TODO
-  unsigned int getTextHeight ( void ); // TODO
+  unsigned int getTextWidth ( void );
+  unsigned int getTextHeight ( void );
   std::string getTextBuffer ( void );
   void setTextBuffer ( std::string text );
 

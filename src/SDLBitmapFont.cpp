@@ -40,12 +40,34 @@ SDLBitmapFont::~SDLBitmapFont ( void )
 
 unsigned int SDLBitmapFont::getTextWidth ( void )
 {
-  return 0; // TODO
+  unsigned int text_width = 0;
+
+  for ( int t = 0; t < this->text_buffer.length(); t++ )
+  {
+    if ( this->text_buffer[t] == ' ' )
+      text_width += chars[t].w / 2;
+    else if ( this->text_buffer[t] == '\n' )
+      text_width = 0;
+    else
+      text_width += chars[t].w - this->spacing - 2;
+  }
+
+  return text_width;
 }
 
 unsigned int SDLBitmapFont::getTextHeight ( void )
 {
-  return 0; // TODO
+  unsigned int text_height = 0;
+
+  for ( int t = 0; t < this->text_buffer.length(); t++ )
+  {
+    if ( this->text_buffer[t] == '\n' )
+      text_height += this->newline;
+    else
+      text_height = chars[t].h;
+  }
+
+  return text_height;
 }
 
 std::string SDLBitmapFont::getTextBuffer ( void )

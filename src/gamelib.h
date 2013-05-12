@@ -14,6 +14,7 @@
 #include "SDLApp.h"
 #include "gfx.h"
 #include "font.h"
+#include "SDLBitmapFont.h"
 #include "sprite.h"
 #include "timer.h"
 #include "fps.h" // inherits from Timer
@@ -24,6 +25,9 @@
 
 #define DEBUG_FONT
 #define DEBUG_FONT_OBJ
+
+#define DEBUG_BITMAP_FONT
+#define DEBUG_BITMAP_FONT_OBJ
 
 #define DEBUG_GFX
 #define DEBUG_GFX_OBJ

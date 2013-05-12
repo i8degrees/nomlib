@@ -38,6 +38,7 @@ SDLBitmapFont::~SDLBitmapFont ( void )
   }
 }
 
+// I don't think this is entirely accurate; this->spacing - 2 is fudged
 unsigned int SDLBitmapFont::getTextWidth ( void )
 {
   unsigned int text_width = 0;
@@ -55,6 +56,7 @@ unsigned int SDLBitmapFont::getTextWidth ( void )
   return text_width;
 }
 
+// Experimental support; needs more testing
 unsigned int SDLBitmapFont::getTextHeight ( void )
 {
   unsigned int text_height = 0;

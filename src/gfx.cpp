@@ -74,11 +74,9 @@ bool Gfx::SetVideoMode (  unsigned int screen_width,
 
 bool Gfx::setTransparent (  SDL_Surface *video_buffer,
                             unsigned int r, unsigned int g, unsigned int b,
-                            unsigned int flags )
+                            unsigned int a, unsigned int flags )
 {
   unsigned int transparent_color = 0;
-
-  transparent_color = SDL_MapRGB ( video_buffer->format, r, g, b );
 
   if ( video_buffer == NULL )
   {
@@ -88,6 +86,12 @@ bool Gfx::setTransparent (  SDL_Surface *video_buffer,
 
     return false;
   }
+
+  // TODO: Alpha value needs testing
+  if ( a != -1 )
+    transparent_color = SDL_MapRGBA ( video_buffer->format, r, g, b, a );
+  else
+    transparent_color = SDL_MapRGB ( video_buffer->format, r, g, b );
 
   if ( SDL_SetColorKey ( video_buffer, flags, transparent_color ) != 0 )
   {
@@ -100,7 +104,9 @@ bool Gfx::setTransparent (  SDL_Surface *video_buffer,
   return true;
 }
 
-SDL_Surface *Gfx::LoadImage ( std::string filename, unsigned int flags )
+// TODO: Alpha value needs testing
+SDL_Surface *Gfx::LoadImage ( std::string filename, unsigned int r, unsigned int g,
+                              unsigned int b, unsigned int a, unsigned int flags )
 {
   SDL_Surface *temp_buffer = NULL;
   SDL_Surface *video_buffer = NULL;
@@ -116,9 +122,17 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, unsigned int flags )
     return NULL;
   }
 
+  setTransparent ( temp_buffer, r, g, b, a, flags );
+
+  if ( a != -1 )
   {
     video_buffer = SDL_DisplayFormatAlpha ( temp_buffer );
   }
+  else
+  {
+    video_buffer = SDL_DisplayFormat ( temp_buffer );
+  }
+
   SDL_FreeSurface ( temp_buffer );
   temp_buffer = NULL;
 

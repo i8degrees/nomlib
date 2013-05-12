@@ -34,10 +34,13 @@ class Gfx
 
     // SDLSurface
     static bool setTransparent (  SDL_Surface *video_buffer,
-                                  unsigned int r, unsigned int g, unsigned int b,
+                                  unsigned int r = 0, unsigned int g = 0,
+                                  unsigned int b = 0, unsigned int a = -1,
                                   unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
     static SDL_Surface *LoadImage ( std::string filename,
+                                    unsigned int r = 0, unsigned int g = 0,
+                                    unsigned int b = 0, unsigned int a = -1,
                                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
     /* static */ bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );

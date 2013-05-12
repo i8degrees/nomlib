@@ -43,8 +43,8 @@ class Gfx
     /* static */ bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );
 
     /* static */ bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
-                              unsigned int x_offset, unsigned int y_offset,
-                              unsigned int width_offset, unsigned int height_offset );
+                                    unsigned int x_offset, unsigned int y_offset,
+                                    unsigned int width_offset, unsigned int height_offset );
 
     // SDLVideo
     bool UpdateScreen ( void );

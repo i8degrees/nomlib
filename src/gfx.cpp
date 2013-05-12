@@ -271,3 +271,12 @@ bool Gfx::setIcon ( std::string app_icon,
 
   return true;
 }
+
+unsigned int Gfx::getPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y )
+{
+    //Convert the pixels to 32 bit
+    unsigned int *pixels = (unsigned int *) video_buffer->pixels;
+
+    //Get the pixel requested
+    return pixels[ ( y * video_buffer->w ) + x ];
+}

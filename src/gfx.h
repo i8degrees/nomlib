@@ -61,6 +61,8 @@ class Gfx
                     unsigned int r = 0, unsigned int g = 0, unsigned int b = 0,
                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
+    static unsigned int getPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );
+
   private:
     SDL_Surface *screen; // primary (think: visible) video memory
 };

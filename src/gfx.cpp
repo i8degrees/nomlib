@@ -60,7 +60,7 @@ bool Gfx::SetVideoMode (  unsigned int screen_width,
 {
   this->screen = SDL_SetVideoMode ( screen_width, screen_height, screen_bpp, video_flags );
 
-  if ( this->screen == 0 )
+  if ( this->screen == NULL )
   {
     #ifdef DEBUG_GFX
       std::cout << "ERR in Gfx::SetVideoMode(): " << SDL_GetError() << std::endl;
@@ -85,6 +85,7 @@ bool Gfx::setTransparent (  SDL_Surface *video_buffer,
     #ifdef DEBUG_GFX
       std::cout << "ERR in Gfx::SetSurfaceTransparency(): " << SDL_GetError() << std::endl;
     #endif
+
     return false;
   }
 
@@ -106,7 +107,6 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, unsigned int flags )
 
   temp_buffer = IMG_Load ( filename.c_str() );
 
-
   if ( temp_buffer == NULL )
   {
     #ifdef DEBUG_GFX
@@ -116,17 +116,13 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, unsigned int flags )
     return NULL;
   }
 
-  if ( temp_buffer != NULL )
   {
     video_buffer = SDL_DisplayFormatAlpha ( temp_buffer );
-
-    SDL_FreeSurface ( temp_buffer );
-    temp_buffer = NULL;
-
-    return video_buffer;
   }
+  SDL_FreeSurface ( temp_buffer );
+  temp_buffer = NULL;
 
-  return NULL; // ERR if we reach this line
+  return video_buffer;
 }
 
 bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y )
@@ -141,6 +137,7 @@ bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int 
     #ifdef DEBUG_GFX
       std::cout << "ERR in Gfx::DrawSurface(): " << SDL_GetError() << std::endl;
     #endif
+
     return false;
   }
 
@@ -174,6 +171,7 @@ bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int 
     #ifdef DEBUG_GFX
       std::cout << "ERR in Gfx::DrawSurface(): " << SDL_GetError() << std::endl;
     #endif
+
     return false;
   }
 

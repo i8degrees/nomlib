@@ -33,6 +33,8 @@ const std::string OSXFs::getWorkingDir ( void )
 
   getcwd ( path, PATH_MAX );
 
+  // ERR checking
+
   std::string cwd ( path );
 
   return cwd;

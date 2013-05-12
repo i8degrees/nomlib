@@ -22,9 +22,12 @@ OSXFs::~OSXFs ( void )
   #endif
 }
 
-const std::string OSXFs::dirName ( std::string path )
+// Not sure how else to do this but in straight C
+const char *OSXFs::getDirName ( char *path )
 {
-  // Stub
+  // ERR checking
+
+  return dirname ( path );
 }
 
 const std::string OSXFs::getWorkingDir ( void )
@@ -42,5 +45,7 @@ const std::string OSXFs::getWorkingDir ( void )
 
 void OSXFs::setWorkingDir ( std::string path )
 {
-  // Stub
+  chdir ( path.c_str() );
+
+  // ERR checking
 }

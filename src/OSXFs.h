@@ -22,9 +22,9 @@ class OSXFs
     OSXFs ( void );
     ~OSXFs ( void );
 
-    static const std::string dirName ( std::string path ); // TODO: dirname(3) wrapper
+    static const char *getDirName ( char *path ); // dirname(3) wrapper
     static const std::string getWorkingDir ( void ); // getcwd(3) wrapper
-    static void setWorkingDir ( std::string path ); // TODO: chdir(2) wrapper
+    static void setWorkingDir ( std::string path ); // chdir(2) wrapper
 
   private:
     // ...

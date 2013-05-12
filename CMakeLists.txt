@@ -22,6 +22,7 @@ project ( gamelib )
 set ( GAMELIB_SOURCE
       ${SRC_DIR}/audio.cpp
       ${SRC_DIR}/font.cpp
+      ${SRC_DIR}/SDLBitmapFont.cpp
       ${SRC_DIR}/gfx.cpp
       ${SRC_DIR}/sprite.cpp
       ${SRC_DIR}/SDLInput.cpp
@@ -34,6 +35,7 @@ set ( GAMELIB_SOURCE
 set ( GAMELIB_HEADERS
       ${SRC_DIR}/audio.h
       ${SRC_DIR}/font.h
+      ${SRC_DIR}/SDLBitmapFont.h
       ${SRC_DIR}/gamelib.h
       ${SRC_DIR}/gfx.h
       ${SRC_DIR}/sprite.h

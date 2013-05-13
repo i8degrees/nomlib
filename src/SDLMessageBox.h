@@ -49,6 +49,16 @@ class SDLMessageBox
     GCoords geometry; // x, y, width & height
     SDLGradient *background;
     std::vector<GColor> window_borders;
+    //GColor window_borders[8];
+    // top border, left border, bottom border, right border; each defined border
+    // has two rows of pixels that can be set to a custom color, so ...
+    // window_border[0] && window_border[1] contains the top borders,
+    // window_border[2] && window_border[3] contains the left borders, and so on.
+    //
+    // Each border color has three values: red, green & blue.
+    //
+    // window_border[0].getRed(), window_border[0].getGreen(), window_border[0].getBlue()
+    //
 };
 
 #endif // GAMELIB_MESSAGEBOX_HEADERS defined

@@ -16,7 +16,7 @@
 #include "GCoords.h"
 #include "gfx.h"
 
-//#define DEBUG_GRADIENT
+#define DEBUG_GRADIENT
 //#define DEBUG_GRADIENT_OBJ
 
 class SDLGradient
@@ -43,6 +43,7 @@ class SDLGradient
                 unsigned int width, unsigned int height, unsigned int direction = 0
               );
 
+    //void Draw ( SDL_Surface *video_buffer );
 
   private:
     GColor gradient[2]; // holds R, G, B * 2
@@ -54,13 +55,13 @@ class SDLGradient
 
 /*
 
-  SDLGradient gradient_l;
+  SDLGradient linear;
 
   GColor starting ( 66, 66, 66 );
   GColor ending ( 99, 99, 99 );
 
-  gradient_l.Init ( starting, ending, 104, 194, 176, 24, 3, 4 );
-  gradient_l.LinearFill ( this->engine->screen, 104, 194, 176, 24, 0 );
+  linear.Init ( starting, ending, 104, 194, 176, 24, 0, 3, 4 );
+  linear.Draw ( this->engine->screen, 104, 194, 176, 24, 0 );
 
 */
 

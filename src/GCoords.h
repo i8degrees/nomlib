@@ -10,10 +10,9 @@
 
 #include <iostream>
 #include <string>
+#include <map>
 
 #include "SDL.h"
-
-#include "gamelib.h"
 
 // TODO: GRect superclass AKA std::pair template <class _T1, class _T2>
 

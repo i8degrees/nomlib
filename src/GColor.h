@@ -15,8 +15,6 @@
 
 #include "SDL.h"
 
-#include "gamelib.h"
-
 class GColor
 {
   public:

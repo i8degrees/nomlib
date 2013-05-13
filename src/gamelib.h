@@ -12,17 +12,13 @@
 #include "SDLInput.h"
 #include "OSXFs.h"
 //#include "SDLApp.h"
-#include "GCoords.h"
-#include "GColor.h"
 #include "gfx.h"
 #include "font.h"
-#include "SDLBitmapFont.h"
 #include "sprite.h"
+#include "SDLBitmapFont.h"
 #include "timer.h"
 #include "fps.h" // inherits from Timer
 #include "audio.h"
-
-
 
 #define DEBUG_COLOR
 //#define DEBUG_COLOR_OBJ

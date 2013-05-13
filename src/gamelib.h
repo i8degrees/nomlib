@@ -16,6 +16,9 @@
 #include "font.h"
 #include "sprite.h"
 #include "SDLBitmapFont.h"
+#include "SDLWindowFrame.h"
+#include "SDLGradient.h"
+#include "SDLMessageBox.h"
 #include "timer.h"
 #include "fps.h" // inherits from Timer
 #include "audio.h"
@@ -55,5 +58,11 @@
 
 #define DEBUG_TIMER_FPS
 #define DEBUG_TIMER_FPS_OBJ
+
+#define DEBUG_WINDOWFRAME
+#define DEBUG_WINDOWFRAME_OBJ
+
+#define DEBUG_MESSAGEBOX
+#define DEBUG_MESSAGEBOX_OBJ
 
 #endif // GAMELIB_HEADERS defined

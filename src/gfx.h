@@ -16,6 +16,8 @@
 
 #include "gamelib.h"
 
+class GColor;
+
 class Gfx
 {
   public:
@@ -33,14 +35,12 @@ class Gfx
                       );
 
     // SDLSurface
-    static bool setTransparent (  SDL_Surface *video_buffer,
-                                  unsigned int r = 0, unsigned int g = 0,
-                                  unsigned int b = 0, unsigned int a = -1,
+    static bool setTransparent (  SDL_Surface *video_buffer, GColor color,
                                   unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
-    static SDL_Surface *LoadImage ( std::string filename,
-                                    unsigned int r = 0, unsigned int g = 0,
-                                    unsigned int b = 0, unsigned int a = -1,
+    static SDL_Surface *LoadImage ( std::string filename );
+
+    static SDL_Surface *LoadImage ( std::string filename, GColor color,
                                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
     /* static */ bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );
@@ -54,17 +54,17 @@ class Gfx
 
     // SDLGfx
     bool DrawRectangle (  unsigned int x, unsigned int y,
-                          unsigned int width, unsigned int height,
-                          unsigned int r, unsigned int g, unsigned int b );
+                          unsigned int width, unsigned int height, GColor color );
 
     // SDLApp
     static void setTitle ( std::string app_name );
 
-    bool setIcon (  std::string app_icon,
-                    unsigned int r = 0, unsigned int g = 0, unsigned int b = 0,
+    bool setIcon (  std::string app_icon, GColor color,
                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
     static unsigned int getPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );
+
+
 
   private:
     SDL_Surface *screen; // primary (think: visible) video memory

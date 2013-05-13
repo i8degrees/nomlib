@@ -35,9 +35,8 @@ public:
   unsigned int getSpacing ( void );
   void setSpacing ( unsigned int spaces );
 
-  bool LoadImage (  std::string filename, unsigned int sheet_width = 16,
-                    unsigned int sheet_height = 16, unsigned int r = 0,
-                    unsigned int g = 0, unsigned int b = 0 );
+  bool LoadImage (  std::string filename, GColor colorkey, unsigned int sheet_width = 16,
+                    unsigned int sheet_height = 16 );
 
   bool DrawText ( Gfx *engine, unsigned int x, unsigned int y );
 

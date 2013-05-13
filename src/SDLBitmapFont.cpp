@@ -100,7 +100,7 @@ void SDLBitmapFont::setSpacing ( unsigned int spaces )
 
 // Reference: http://lazyfoo.net/SDL_tutorials/lesson30/index.php
 // TODO: add spacing / padding so that we can export with black guidelines
-bool SDLBitmapFont::LoadImage ( std::string filename, unsigned int sheet_width, unsigned int sheet_height, unsigned int r, unsigned int g, unsigned int b )
+bool SDLBitmapFont::LoadImage ( std::string filename, GColor colorkey, unsigned int sheet_width, unsigned int sheet_height )
 {
   unsigned int tile_width = 0;
   unsigned int tile_height = 0;
@@ -109,7 +109,7 @@ bool SDLBitmapFont::LoadImage ( std::string filename, unsigned int sheet_width, 
   unsigned int currentChar = 0;
   unsigned int background_color = 0;
 
-  this->bitmap_font = Gfx::LoadImage ( filename, r, g, b );
+  this->bitmap_font = Gfx::LoadImage ( filename, colorkey );
 
   if ( this->bitmap_font == NULL )
   {
@@ -119,7 +119,7 @@ bool SDLBitmapFont::LoadImage ( std::string filename, unsigned int sheet_width, 
     return false;
   }
 
-  background_color = SDL_MapRGB ( this->bitmap_font->format, r, g, b );
+  background_color = GColor::mapRGB ( this->bitmap_font->format, colorkey );
 
   tile_width = this->bitmap_font->w / sheet_width;
   tile_height = this->bitmap_font->h / sheet_height;

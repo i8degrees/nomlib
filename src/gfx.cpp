@@ -72,9 +72,8 @@ bool Gfx::SetVideoMode (  unsigned int screen_width,
   return true;
 }
 
-bool Gfx::setTransparent (  SDL_Surface *video_buffer,
-                            unsigned int r, unsigned int g, unsigned int b,
-                            unsigned int a, unsigned int flags )
+bool Gfx::setTransparent (  SDL_Surface *video_buffer, GColor color,
+                            unsigned int flags )
 {
   unsigned int transparent_color = 0;
 
@@ -88,10 +87,10 @@ bool Gfx::setTransparent (  SDL_Surface *video_buffer,
   }
 
   // TODO: Alpha value needs testing
-  if ( a != -1 )
-    transparent_color = SDL_MapRGBA ( video_buffer->format, r, g, b, a );
+  if ( color.getAlpha() != -1 )
+    transparent_color = color.mapRGBA ( video_buffer->format, color );
   else
-    transparent_color = SDL_MapRGB ( video_buffer->format, r, g, b );
+    transparent_color = color.mapRGB ( video_buffer->format, color );
 
   if ( SDL_SetColorKey ( video_buffer, flags, transparent_color ) != 0 )
   {
@@ -104,9 +103,7 @@ bool Gfx::setTransparent (  SDL_Surface *video_buffer,
   return true;
 }
 
-// TODO: Alpha value needs testing
-SDL_Surface *Gfx::LoadImage ( std::string filename, unsigned int r, unsigned int g,
-                              unsigned int b, unsigned int a, unsigned int flags )
+SDL_Surface *Gfx::LoadImage ( std::string filename )
 {
   SDL_Surface *temp_buffer = NULL;
   SDL_Surface *video_buffer = NULL;
@@ -122,9 +119,34 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, unsigned int r, unsigned int
     return NULL;
   }
 
-  setTransparent ( temp_buffer, r, g, b, a, flags );
+  video_buffer = SDL_DisplayFormat ( temp_buffer );
 
-  if ( a != -1 )
+  SDL_FreeSurface ( temp_buffer );
+  temp_buffer = NULL;
+
+  return video_buffer;
+}
+
+// TODO: Alpha value needs testing
+SDL_Surface *Gfx::LoadImage ( std::string filename, GColor color, unsigned int flags )
+{
+  SDL_Surface *temp_buffer = NULL;
+  SDL_Surface *video_buffer = NULL;
+
+  temp_buffer = IMG_Load ( filename.c_str() );
+
+  if ( temp_buffer == NULL )
+  {
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::LoadImage() at IMG_Load(): " << IMG_GetError() << std::endl;
+    #endif
+
+    return NULL;
+  }
+
+  setTransparent ( temp_buffer, color, flags );
+
+  if ( color.getAlpha() != -1 )
   {
     video_buffer = SDL_DisplayFormatAlpha ( temp_buffer );
   }
@@ -214,8 +236,7 @@ bool Gfx::UpdateScreen ( void )
 }
 
 bool Gfx::DrawRectangle ( unsigned int x, unsigned int y,
-                          unsigned int width, unsigned int height,
-                          unsigned int r, unsigned int g, unsigned int b )
+                          unsigned int width, unsigned int height, GColor color )
 {
   SDL_Rect rectangle = { 0, 0, 0, 0 };
   unsigned int rectangle_color = 0;
@@ -225,7 +246,10 @@ bool Gfx::DrawRectangle ( unsigned int x, unsigned int y,
   rectangle.w = width;
   rectangle.h = height;
 
-  rectangle_color = SDL_MapRGB ( this->screen->format, r, g, b );
+  if ( color.getAlpha() != -1 )
+    rectangle_color = color.mapRGBA ( this->screen->format, color );
+  else
+    rectangle_color = color.mapRGB ( this->screen->format, color );
 
   if ( SDL_FillRect ( this->screen, &rectangle, rectangle_color ) != 0 )
   {
@@ -244,9 +268,7 @@ void Gfx::setTitle ( std::string app_name )
 }
 
 // NOTE: *MUST* be called before the first call to SDL_SetVideoMode is made
-bool Gfx::setIcon ( std::string app_icon,
-                    unsigned int r, unsigned int g, unsigned int b,
-                    unsigned int flags )
+bool Gfx::setIcon ( std::string app_icon, GColor color, unsigned int flags )
 {
   SDL_Surface *icon_buffer = NULL;
 
@@ -268,7 +290,7 @@ bool Gfx::setIcon ( std::string app_icon,
     return false;
   }
 
-  if ( Gfx::setTransparent ( icon_buffer, r, g, b, flags ) == false )
+  if ( Gfx::setTransparent ( icon_buffer, color, flags ) == false )
   {
     #ifdef DEBUG_GFX
       std::cout << "ERR in Gfx::SetWindowIcon(): " << SDL_GetError() << std::endl;
@@ -292,3 +314,4 @@ unsigned int Gfx::getPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned
     //Get the pixel requested
     return pixels[ ( y * video_buffer->w ) + x ];
 }
+

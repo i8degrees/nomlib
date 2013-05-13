@@ -20,12 +20,14 @@ SDLGradient::SDLGradient ( void )
 
   this->x_margin = 0;
   this->y_margin = 0;
+  this->direction = 0;
 }
 
 void SDLGradient::Init (  GColor starting_color, GColor ending_color,
                           unsigned int x, unsigned int y,
                           unsigned int width, unsigned int height,
-                          unsigned int x_margin, unsigned int y_margin )
+                          unsigned int direction, unsigned int x_margin,
+                          unsigned int y_margin )
 {
   #ifdef DEBUG_GRADIENT_OBJ
     std::cout << "SDLGradient::SDLGradient (): " << "Hello, world!" << std::endl << std::endl;
@@ -34,10 +36,11 @@ void SDLGradient::Init (  GColor starting_color, GColor ending_color,
   this->gradient[0] = starting_color;
   this->gradient[1] = ending_color;
 
-  this->coords.setCoords ( x, y, width, height ); // zero dem blitting coords
+  this->coords.setCoords ( x, y, width, height ); // initialize dem coords
 
   this->x_margin = x_margin; // offsets += 3 unless initialized in args list or not calling Init
   this->y_margin = y_margin; // offsets += 4 unless initialized in args list or not calling Init
+  this->direction = 0; // direction in which gradient starts from; one (1) reverses direction
 }
 
 SDLGradient::~SDLGradient ( void )
@@ -87,13 +90,13 @@ void SDLGradient::Draw (  SDL_Surface *video_buffer, unsigned int x, unsigned in
                           ( unsigned int ) currentB
                         );
 
-    if ( direction == 0 )
+    if ( this->direction == 0 )
     {
       currentR += destR;
       currentG += destG;
       currentB += destB;
     }
-    else if ( direction == 1 ) // reversed
+    else if ( this->direction == 1 ) // reversed
     {
       currentR -= destR;
       currentG -= destG;

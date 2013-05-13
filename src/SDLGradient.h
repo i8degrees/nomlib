@@ -49,6 +49,7 @@ class SDLGradient
     GCoords coords; // x, y, width, height coords
     unsigned int x_margin; // x coordinate offset
     unsigned int y_margin; // y coordinate offset
+    unsigned int direction;
 };
 
 /*

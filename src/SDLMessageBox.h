@@ -25,7 +25,7 @@ class SDLMessageBox
     SDLMessageBox ( void );
     ~SDLMessageBox ( void );
 
-    SDLMessageBox ( GCoords coords, GColor window_top[], GColor window_bottom[], GColor window_sides[] );
+    void Init ( unsigned int x, unsigned int y, unsigned int width, unsigned int height );
 
     void Update ( void );
     void Draw ( void );

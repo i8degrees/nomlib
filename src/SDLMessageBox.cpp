@@ -14,6 +14,13 @@ SDLMessageBox::SDLMessageBox ( void )
   #endif
 
   this->enabled = true;
+
+  window_borders.clear();
+
+  for ( int i = 0; i < window_borders.size(); i++ )
+    window_borders[i].setColor ( 0, 0, 0 );
+
+  this->geometry.setCoords ( 0, 0, 0, 0 );
 }
 
 
@@ -26,9 +33,12 @@ SDLMessageBox::~SDLMessageBox ( void )
   this->enabled = false;
 }
 
-SDLMessageBox::SDLMessageBox ( GCoords coords, GColor window_top[], GColor window_bottom[], GColor window_sides[] )
+void SDLMessageBox::Init ( unsigned int x, unsigned int y, unsigned int width, unsigned int height )
 {
-  //
+  // init geometry coords w/ arguments list
+  this->geometry.setCoords ( x, y, width, height );
+}
+
 }
 
 void SDLMessageBox::Update ( void )

@@ -63,9 +63,21 @@ unsigned int GCoords::getWidth ( void )
   return std::get<0>(dims);
 }
 
+// Alias for getWidth()
+unsigned int GCoords::getW ( void )
+{
+  return this->getWidth();
+}
+
 unsigned int GCoords::getHeight ( void )
 {
   return std::get<1>(dims);
+}
+
+// Alias for getHeight()
+unsigned int GCoords::getH ( void )
+{
+  return this->getHeight();
 }
 
 std::pair<int, int> GCoords::getDimensions ( void )

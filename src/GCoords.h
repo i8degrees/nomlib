@@ -35,9 +35,9 @@ class GCoords
     void setXY ( unsigned int x, unsigned int y );
 
     unsigned int getWidth ( void );
+    unsigned int getW ( void );
     unsigned int getHeight ( void );
-    void setWidth ( unsigned int width );
-    void setHeight ( unsigned int height );
+    unsigned int getH ( void );
 
     std::pair<int, int> getDimensions ( void );
     void setDimensions ( unsigned int width, unsigned int height );

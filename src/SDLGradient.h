@@ -31,7 +31,8 @@ class SDLGradient
     void Init ( GColor starting_color, GColor ending_color,
                 unsigned int x = 0, unsigned int y = 0,
                 unsigned int width = 0, unsigned int height = 0,
-                unsigned int x_margin = 3, unsigned int y_margin = 4 );
+                unsigned int direction = 0,  unsigned int x_margin = 3,
+                unsigned int y_margin = 4 );
                 // These default margin offsets are used in TTcards Info Boxes
                 // If they are not set here, they default to zero (0)
 

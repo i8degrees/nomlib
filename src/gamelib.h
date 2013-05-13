@@ -41,6 +41,9 @@
 #define DEBUG_GFX
 #define DEBUG_GFX_OBJ
 
+#define DEBUG_GRADIENT
+#define DEBUG_GRADIENT_OBJ
+
 #define DEBUG_SPRITE
 #define DEBUG_SPRITE_OBJ
 

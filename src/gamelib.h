@@ -11,7 +11,6 @@
 
 #include "SDLInput.h"
 #include "OSXFs.h"
-//#include "SDLApp.h"
 #include "gfx.h"
 #include "font.h"
 #include "sprite.h"

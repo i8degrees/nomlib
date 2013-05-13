@@ -75,6 +75,36 @@ void GColor::setColor ( unsigned int r, unsigned int g, unsigned int b, unsigned
   this->alpha = a;
 }
 
+void GColor::setRed ( unsigned int r )
+{
+  this->red = r;
+}
+
+void GColor::setGreen ( unsigned int g )
+{
+  this->green = g;
+}
+
+void GColor::setBlue ( unsigned int b )
+{
+  this->blue = b;
+}
+
+void GColor::setAlpha ( unsigned int a )
+{
+  this->alpha = a;
+}
+
+unsigned int GColor::mapRGB ( SDL_PixelFormat *video_buffer, unsigned int r,
+                              unsigned int g, unsigned int b )
+{
+  unsigned int color = 0;
+
+  color = SDL_MapRGB ( video_buffer, r, g, b );
+
+  return color;
+}
+
 unsigned int GColor::mapRGB ( SDL_PixelFormat *video_buffer, GColor c )
 {
   unsigned int color = 0;
@@ -84,7 +114,17 @@ unsigned int GColor::mapRGB ( SDL_PixelFormat *video_buffer, GColor c )
   return color;
 }
 
-unsigned int GColor::mapRGBA ( SDL_PixelFormat *video_buffer, GColor c )
+unsigned int GColor::mapRGBA (  SDL_PixelFormat *video_buffer, unsigned int r,
+                                unsigned int g, unsigned int b, unsigned int a )
+{
+  unsigned int color = 0;
+
+  color = SDL_MapRGBA ( video_buffer, r, g, b, a );
+
+  return color;
+}
+
+unsigned int GColor::mapRGBA (  SDL_PixelFormat *video_buffer, GColor c )
 {
   unsigned int color = 0;
 

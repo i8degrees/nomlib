@@ -9,6 +9,7 @@
 #ifndef GAMELIB_HEADERS
 #define GAMELIB_HEADERS
 
+#include "GColor.h"
 #include "SDLInput.h"
 #include "OSXFs.h"
 //#include "SDLApp.h"
@@ -19,6 +20,9 @@
 #include "timer.h"
 #include "fps.h" // inherits from Timer
 #include "audio.h"
+
+#define DEBUG_COLOR
+//#define DEBUG_COLOR_OBJ
 
 #define DEBUG_AUDIO
 #define DEBUG_AUDIO_OBJ

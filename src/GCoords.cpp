@@ -48,7 +48,7 @@ unsigned int GCoords::getY ( void )
   return std::get<1>(coords);
 }
 
-std::pair<int, int> GCoords::getXY ( void )
+std::pair<unsigned int, unsigned int> GCoords::getXY ( void )
 {
   return this->coords;
 }
@@ -80,7 +80,7 @@ unsigned int GCoords::getH ( void )
   return this->getHeight();
 }
 
-std::pair<int, int> GCoords::getDimensions ( void )
+std::pair<unsigned int, unsigned int> GCoords::getDimensions ( void )
 {
   return this->dims;
 }

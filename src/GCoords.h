@@ -31,7 +31,7 @@ class GCoords
 
     unsigned int getX ( void );
     unsigned int getY ( void );
-    std::pair<int, int> getXY ( void );
+    std::pair<unsigned int, unsigned int> getXY ( void );
     void setXY ( unsigned int x, unsigned int y );
 
     unsigned int getWidth ( void );
@@ -39,12 +39,12 @@ class GCoords
     unsigned int getHeight ( void );
     unsigned int getH ( void );
 
-    std::pair<int, int> getDimensions ( void );
+    std::pair<unsigned int, unsigned int> getDimensions ( void );
     void setDimensions ( unsigned int width, unsigned int height );
 
   private:
-    std::pair<int, int> coords; // x, y coords
-    std::pair<int, int> dims; // width, height coords
+    std::pair<unsigned int, unsigned int> coords; // x, y coords
+    std::pair<unsigned int, unsigned int> dims; // width, height coords
 };
 
 #endif // GAMELIB_COORDS_HEADERS defined

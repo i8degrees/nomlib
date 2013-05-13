@@ -16,6 +16,9 @@
 #include "GColor.h"
 #include "GCoords.h"
 
+//#define DEBUG_MESSAGEBOX
+#define DEBUG_MESSAGEBOX_OBJ
+
 class SDLMessageBox
 {
   public:

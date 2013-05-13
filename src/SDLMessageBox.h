@@ -10,11 +10,16 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <list>
 
 #include "SDL.h"
 
+#include "gfx.h"
 #include "GColor.h"
 #include "GCoords.h"
+
+class SDLGradient;
 
 //#define DEBUG_MESSAGEBOX
 #define DEBUG_MESSAGEBOX_OBJ

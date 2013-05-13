@@ -39,6 +39,24 @@ void SDLMessageBox::Init ( unsigned int x, unsigned int y, unsigned int width, u
   this->geometry.setCoords ( x, y, width, height );
 }
 
+bool SDLMessageBox::isEnabled ( void )
+{
+  if ( this->enabled == true )
+    return true;
+  else
+    return false;
+}
+
+void SDLMessageBox::disable ( bool state )
+{
+ this->enabled = false;
+}
+
+void SDLMessageBox::enable ( bool state )
+{
+  this->enabled = true;
+}
+
 }
 
 void SDLMessageBox::Update ( void )

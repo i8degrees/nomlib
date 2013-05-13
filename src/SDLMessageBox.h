@@ -32,6 +32,13 @@ class SDLMessageBox
 
     void Init ( unsigned int x, unsigned int y, unsigned int width, unsigned int height );
 
+    bool isEnabled ( void );
+    void disable ( bool state );
+    void enable ( bool state );
+
+    void setBorder ( GColor &border_colors );
+    void setBackground ( SDLGradient *gradient );
+
     void Update ( void );
     void Draw ( void );
 

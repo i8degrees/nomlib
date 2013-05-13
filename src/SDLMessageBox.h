@@ -40,17 +40,15 @@ class SDLMessageBox
     void setBackground ( SDLGradient *gradient );
 
     void Update ( void );
-    void Draw ( void );
+
+    void Draw ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, unsigned int width, unsigned int height );
+    void Draw ( SDL_Surface *video_buffer );
 
   private:
     bool enabled; // shown or not
-    GCoords geomtry; // x, y, width & height
-    std::string window_title;
-    std::string message_text;
-
-    GColor window_top[4];
-    GColor window_bottom[4];
-    GColor window_sides[4];
+    GCoords geometry; // x, y, width & height
+    SDLGradient *background;
+    std::vector<GColor> window_borders;
 };
 
 #endif // GAMELIB_MESSAGEBOX_HEADERS defined

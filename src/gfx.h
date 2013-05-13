@@ -66,8 +66,9 @@ class Gfx
 
 
 
-  private:
     SDL_Surface *screen; // primary (think: visible) video memory
+  private:
+    //
 };
 
 #endif // GAMELIB_GFX_HEADERS defined

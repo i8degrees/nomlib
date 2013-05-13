@@ -16,6 +16,8 @@
 
 #include "gamelib.h"
 
+#include "GColor.h"
+
 class Gfx;
 
 class Sprite

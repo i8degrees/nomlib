@@ -21,6 +21,8 @@
 
 #include "gamelib.h"
 
+#include "GColor.h"
+
 class SDLBitmapFont
 {
 public:

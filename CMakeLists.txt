@@ -45,6 +45,7 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/SDLWindowFrame.h
       ${SRC_DIR}/SDLMessageBox.h
       ${SRC_DIR}/SDLBitmapFont.h
+      ${SRC_DIR}/SDLDrawable.h
       ${SRC_DIR}/gamelib.h
       ${SRC_DIR}/gfx.h
       ${SRC_DIR}/sprite.h

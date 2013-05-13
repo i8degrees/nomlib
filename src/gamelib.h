@@ -22,8 +22,13 @@
 #include "fps.h" // inherits from Timer
 #include "audio.h"
 
+
+
 #define DEBUG_COLOR
 //#define DEBUG_COLOR_OBJ
+
+#define DEBUG_COORDS
+#define DEBUG_COORDS_OBJ
 
 #define DEBUG_AUDIO
 #define DEBUG_AUDIO_OBJ

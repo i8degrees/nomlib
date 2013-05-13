@@ -54,6 +54,8 @@ class Gfx
     // SDLVideo
     bool UpdateScreen ( void );
 
+    static bool UpdateScreen ( SDL_Surface *video_buffer );
+
     static bool DrawRectangle ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
                                 unsigned int width, unsigned int height,
                                 unsigned int r, unsigned int g, unsigned int b );

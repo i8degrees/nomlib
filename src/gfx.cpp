@@ -232,6 +232,19 @@ bool Gfx::UpdateScreen ( void )
   return true;
 }
 
+bool Gfx::UpdateScreen ( SDL_Surface *video_buffer )
+{
+  if ( SDL_Flip ( video_buffer ) != 0 )
+  {
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::UpdateScreen(): " << SDL_GetError() << std::endl;
+    #endif
+    return false;
+  }
+
+  return true;
+}
+
 bool Gfx::DrawRectangle ( unsigned int x, unsigned int y,
                           unsigned int width, unsigned int height,
                           unsigned int r, unsigned int g, unsigned int b )

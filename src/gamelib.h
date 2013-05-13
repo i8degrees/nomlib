@@ -9,10 +9,11 @@
 #ifndef GAMELIB_HEADERS
 #define GAMELIB_HEADERS
 
-#include "GColor.h"
 #include "SDLInput.h"
 #include "OSXFs.h"
 //#include "SDLApp.h"
+#include "GCoords.h"
+#include "GColor.h"
 #include "gfx.h"
 #include "font.h"
 #include "SDLBitmapFont.h"

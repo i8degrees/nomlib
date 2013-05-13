@@ -47,10 +47,9 @@ SDLGradient::~SDLGradient ( void )
   #endif
 }
 
-void SDLGradient::LinearFill (  SDL_Surface *video_buffer, unsigned int x, unsigned int y,
-                                unsigned int width, unsigned int height,
-                                unsigned int direction
-                              )
+void SDLGradient::Draw (  SDL_Surface *video_buffer, unsigned int x, unsigned int y,
+                          unsigned int width, unsigned int height, unsigned int direction
+                        )
 {
   unsigned int x_offset = x + width;
   //unsigned int y_offset = y + height;

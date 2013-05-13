@@ -39,10 +39,10 @@ class SDLGradient
     // direction { 0 } = ending color to starting color
     // direction { 1 } = starting color to ending color
 
-    void LinearFill (   SDL_Surface *video_buffer, unsigned int x, unsigned int y,
-                        unsigned int width, unsigned int height,
-                        unsigned int direction = 0
-                    );
+    void Draw ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
+                unsigned int width, unsigned int height, unsigned int direction = 0
+              );
+
 
   private:
     GColor gradient[2]; // holds R, G, B * 2

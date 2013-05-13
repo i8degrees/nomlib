@@ -314,3 +314,82 @@ unsigned int Gfx::getPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned
   return pixels[ ( y * video_buffer->w ) + x ];
 }
 
+// 32-bit bpp
+void Gfx::setPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, GColor color )
+{
+  unsigned char * pixel = (unsigned char *)video_buffer->pixels;
+
+  pixel += (y * video_buffer->pitch) + (x * sizeof(unsigned int));
+
+  *((unsigned int *)pixel) = GColor::mapRGB ( video_buffer->format, color.getRed(), color.getGreen(), color.getBlue() );
+}
+
+void Gfx::drawLine ( SDL_Surface *video_buffer, float x1, float y1, float x2, float y2, GColor color )
+{
+    // Bresenham's line algorithm
+    bool steep = ( fabs ( y2 - y1 ) > fabs ( x2 - x1 ) );
+
+    if ( steep )
+    {
+        std::swap ( x1, y1 );
+        std::swap ( x2, y2 );
+    }
+
+    if ( x1 > x2 )
+    {
+        std::swap ( x1, x2 );
+        std::swap ( y1, y2 );
+    }
+
+    float dx = x2 - x1;
+    float dy = fabs ( y2 - y1 );
+
+    float error = dx / 2.0f;
+    int ystep = ( y1 < y2 ) ? 1 : -1;
+    int y = (int)y1;
+
+    int maxX = (int)x2;
+
+    for(int x=(int)x1; x<maxX; x++)
+    {
+        if(steep)
+        {
+            Gfx::setPixel ( video_buffer, y, x, color );
+        }
+        else
+        {
+            Gfx::setPixel ( video_buffer, x, y, color);
+        }
+
+        error -= dy;
+        if(error < 0)
+        {
+          y += ystep;
+          error += dx;
+        }
+    }
+}
+
+bool Gfx::lockSurface ( SDL_Surface *video_buffer )
+{
+  if ( SDL_MUSTLOCK ( video_buffer ) )
+  {
+    SDL_LockSurface ( video_buffer );
+  }
+  else
+    return false;
+
+  return true;
+}
+
+bool Gfx::unlockSurface ( SDL_Surface *video_buffer )
+{
+  if ( SDL_MUSTLOCK ( video_buffer ) )
+  {
+    SDL_UnlockSurface ( video_buffer );
+  }
+  else
+    return false;
+
+  return true;
+}

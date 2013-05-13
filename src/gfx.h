@@ -65,6 +65,12 @@ class Gfx
                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
     static unsigned int getPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );
+    static void setPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, GColor color );
+
+    static bool lockSurface ( SDL_Surface *video_buffer );
+    static bool unlockSurface ( SDL_Surface *video_buffer );
+
+    static void drawLine ( SDL_Surface *video_buffer, float x1, float y1, float x2, float y2, GColor color );
 
 
 

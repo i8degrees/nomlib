@@ -260,6 +260,34 @@ bool Gfx::DrawRectangle ( unsigned int x, unsigned int y,
   return true;
 }
 
+bool Gfx::DrawRectangle ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
+                          unsigned int width, unsigned int height,
+                          unsigned int r, unsigned int g, unsigned int b )
+{
+  SDL_Rect rectangle = { 0, 0, 0, 0 };
+  unsigned int rectangle_color = 0;
+
+  rectangle.x = x;
+  rectangle.y = y;
+  rectangle.w = width;
+  rectangle.h = height;
+
+  //if ( color.getAlpha() != -1 )
+    //rectangle_color = color.mapRGBA ( this->screen->format, r.getRed(), g.getGreen(), b.getBlue(), color.getAlpha() );
+  //else
+    rectangle_color = GColor::mapRGB ( video_buffer->format, r, g, b );
+
+  if ( SDL_FillRect ( video_buffer, &rectangle, rectangle_color ) != 0 )
+  {
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::DrawRectangle(): " << SDL_GetError() << std::endl;
+    #endif
+    return false;
+  }
+
+  return true;
+}
+
 void Gfx::setTitle ( std::string app_name )
 {
   SDL_WM_SetCaption ( app_name.c_str(), NULL );

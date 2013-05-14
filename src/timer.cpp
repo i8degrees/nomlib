@@ -14,6 +14,10 @@ Timer::Timer ( void )
     std::cout << "Timer::Timer (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
+  // TODO
+
+  // SDL_Init_Subsystem ( SDL_INIT_TIMER );
+
   this->started = false;
   this->paused = false;
   this->elapsed_ticks = 0;

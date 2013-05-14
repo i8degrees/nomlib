@@ -1,5 +1,5 @@
 /******************************************************************************
-    SDLBitmapFont.cpp
+    SDL_BitmapFont.cpp
 
   SDL-based Bitmap Font Rendering API
 
@@ -10,7 +10,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "SDLBitmapFont.h"
+#include "SDL_BitmapFont.h"
 
 SDLBitmapFont::SDLBitmapFont ( void )
 {
@@ -100,7 +100,7 @@ void SDLBitmapFont::setSpacing ( unsigned int spaces )
 
 // Reference: http://lazyfoo.net/SDL_tutorials/lesson30/index.php
 // TODO: add spacing / padding so that we can export with black guidelines
-bool SDLBitmapFont::LoadImage ( std::string filename, GColor colorkey, unsigned int sheet_width, unsigned int sheet_height )
+bool SDLBitmapFont::Load ( std::string filename, GColor colorkey, unsigned int sheet_width, unsigned int sheet_height )
 {
   unsigned int tile_width = 0;
   unsigned int tile_height = 0;
@@ -264,7 +264,7 @@ bool SDLBitmapFont::LoadImage ( std::string filename, GColor colorkey, unsigned 
 }
 
 // Reference: http://lazyfoo.net/SDL_tutorials/lesson30/index.php
-bool SDLBitmapFont::DrawText ( Gfx *engine, unsigned int x, unsigned int y )
+bool SDLBitmapFont::Draw ( Gfx *engine, unsigned int x, unsigned int y )
 {
   //Temp offsets
   unsigned int x_offset = x, y_offset = y;

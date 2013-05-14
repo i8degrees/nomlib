@@ -24,10 +24,11 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/GColor.cpp
       ${SRC_DIR}/audio.cpp
       ${SRC_DIR}/font.cpp
+      ${SRC_DIR}/SDL_TFont.cpp
       ${SRC_DIR}/SDLGradient.cpp
       ${SRC_DIR}/SDLWindowFrame.cpp
       ${SRC_DIR}/SDLMessageBox.cpp
-      ${SRC_DIR}/SDLBitmapFont.cpp
+      ${SRC_DIR}/SDL_BitmapFont.cpp
       ${SRC_DIR}/gfx.cpp
       ${SRC_DIR}/sprite.cpp
       ${SRC_DIR}/SDLInput.cpp
@@ -41,10 +42,11 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/GColor.h
       ${SRC_DIR}/audio.h
       ${SRC_DIR}/font.h
+      ${SRC_DIR}/SDL_TFont.h
       ${SRC_DIR}/SDLGradient.h
       ${SRC_DIR}/SDLWindowFrame.h
       ${SRC_DIR}/SDLMessageBox.h
-      ${SRC_DIR}/SDLBitmapFont.h
+      ${SRC_DIR}/SDL_BitmapFont.h
       ${SRC_DIR}/SDLDrawable.h
       ${SRC_DIR}/gamelib.h
       ${SRC_DIR}/gfx.h

@@ -14,8 +14,7 @@
 
 #include "SDL.h"
 
-#include "gamelib.h"
-
+#include "gfx.h"
 #include "GColor.h"
 
 class Gfx;

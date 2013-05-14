@@ -13,7 +13,7 @@
 
 #include "SDL.h"
 
-#include "GCoords.h"
+//#include "GCoords.h"
 
 #define DEBUG_SDL_DRAWABLE
 #define DEBUG_SDL_DRAWABLE_OBJ
@@ -49,7 +49,7 @@ class SDLFont: public SDLDrawable
 class SDLDrawable
 {
   public:
-    virtual void Draw ( SDL_Surface *video_buffer ) = 0;
+    virtual bool Draw ( Gfx *engine, unsigned int x, unsigned int y ) const = 0;
 };
 
 #endif // GAMELIB_SDL_DRAWABLE_HEADERS defined

@@ -1,117 +1,27 @@
 /******************************************************************************
-    font.cpp
+    Font.cpp
 
-    SDL-based Font Rendering API
+  SDL-based TrueType Font Rendering API
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "font.h"
+#include "font.h" // #include "Font.h"
 
-Font::Font ( void )
+std::string Font::getTextBuffer ( void ) const
 {
-  #ifdef DEBUG_FONT_OBJ
-    std::cout << "Font::Font (): " << "Hello, world!" << "\n" << std::endl;
-  #endif
-
-  this->font = NULL;
-
-  if ( TTF_Init () == -1 )
-  {
-    #ifdef DEBUG_FONT
-      std::cout << "ERR in Font::Font (): " << TTF_GetError() << std::endl;
-    #endif
-    exit ( EXIT_FAILURE ); // TODO: Reconsider
-  }
+  return text_buffer;
 }
 
-Font::~Font ( void )
-{
-  #ifdef DEBUG_FONT_OBJ
-    std::cout << "Font::~Font (): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
-
-  if ( this->font != NULL )
-  {
-    TTF_CloseFont ( this->font );
-    this->font = NULL;
-  }
-
-  TTF_Quit ();
-}
-
-unsigned int Font::GetTextWidth ( void )
-{
-  return this->coords.w;
-}
-
-unsigned int Font::GetTextHeight ( void )
-{
-  return this->coords.h;
-}
-
-std::string Font::GetTextBuffer ( void )
-{
-  return this->text_buffer;
-}
-
-void Font::SetTextBuffer ( std::string text )
-{
-  signed int width, height = 0;
-
-/*
-TODO: Finish ERR checks:
-
-  if ( text.length() > 0 )
-*/
-    if ( TTF_SizeText ( this->font, text.c_str(), &width, &height ) != -1 )
-    {
-      this->coords.w = width;
-      this->coords.h = height;
-      this->text_buffer = text;
-    }
-}
-
-SDL_Color Font::GetTextColor ( void )
-{
-  return this->text_color;
-}
-
-void Font::SetTextColor ( unsigned r, unsigned g, unsigned b )
-{
-  this->text_color.r = r;
-  this->text_color.g = g;
-  this->text_color.b = b;
-}
-
-bool Font::LoadTTF ( std::string filename, unsigned int font_size )
-{
-  this->font = TTF_OpenFont ( filename.c_str(), font_size );
-
-  if ( this->font == NULL )
-  {
-    #ifdef DEBUG_FONT
-      std::cout << "ERR: " << TTF_GetError() << std::endl;
-    #endif
-    return false;
-  }
-
-  return true;
-}
-
-bool Font::DrawText ( Gfx *engine, unsigned int x, unsigned int y )
+bool Font::Draw ( Gfx *engine, unsigned int x, unsigned int y ) const
 {
   SDL_Surface *video_buffer = NULL;
-  this->coords.x = x;
-  this->coords.y = y;
 
-  if ( this->GetTextBuffer().c_str() != NULL )
-  {
-    video_buffer = TTF_RenderText_Solid ( this->font, this->GetTextBuffer().c_str(), this->text_color );
-  }
+  if ( this->getTextBuffer().c_str() != NULL )
+    video_buffer = TTF_RenderText_Solid ( this->font, this->getTextBuffer().c_str(), this->text_color );
   else
   {
-    std::cout << "ERR in Font::DrawText(): " << SDL_GetError() << std::endl;
+    std::cout << "ERR in SDL_TFont::Draw(): " << SDL_GetError() << std::endl;
 
     SDL_FreeSurface ( video_buffer );
     video_buffer = NULL;
@@ -123,7 +33,7 @@ bool Font::DrawText ( Gfx *engine, unsigned int x, unsigned int y )
   {
     if ( engine->DrawSurface ( video_buffer, x, y ) == false )
     {
-      std::cout << "ERR in Font::DrawText(): " << SDL_GetError() << std::endl;
+      std::cout << "ERR in SDL_TFont::Draw(): " << SDL_GetError() << std::endl;
     }
 
     SDL_FreeSurface ( video_buffer );

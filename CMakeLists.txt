@@ -23,7 +23,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/GCoords.cpp
       ${SRC_DIR}/GColor.cpp
       ${SRC_DIR}/audio.cpp
-      ${SRC_DIR}/font.cpp
+      #${SRC_DIR}/font.cpp
       ${SRC_DIR}/SDL_TFont.cpp
       ${SRC_DIR}/SDLGradient.cpp
       ${SRC_DIR}/SDLWindowFrame.cpp
@@ -41,7 +41,7 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/GCoords.h
       ${SRC_DIR}/GColor.h
       ${SRC_DIR}/audio.h
-      ${SRC_DIR}/font.h
+      #${SRC_DIR}/font.h
       ${SRC_DIR}/SDL_TFont.h
       ${SRC_DIR}/SDLGradient.h
       ${SRC_DIR}/SDLWindowFrame.h

@@ -12,7 +12,7 @@
 #include "SDLInput.h"
 #include "OSXFs.h"
 #include "gfx.h"
-#include "font.h"
+//#include "font.h"
 #include "SDL_TFont.h"
 #include "sprite.h"
 #include "SDL_BitmapFont.h"
@@ -32,8 +32,8 @@
 #define DEBUG_AUDIO
 #define DEBUG_AUDIO_OBJ
 
-#define DEBUG_FONT
-#define DEBUG_FONT_OBJ
+#define DEBUG_SDL_TFONT
+#define DEBUG_SDL_TFONT_OBJ
 
 #define DEBUG_BITMAP_FONT
 #define DEBUG_BITMAP_FONT_OBJ

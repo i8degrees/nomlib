@@ -1,5 +1,5 @@
 /******************************************************************************
-    font.h
+    Font.h
 
     SDL-based Font Rendering API
 
@@ -14,31 +14,21 @@
 
 #include "SDL_ttf.h"
 
-#include "gamelib.h"
+#include "gfx.h"
 
-class Gfx;
+//class Gfx;
 
-class Font {
-public:
-  Font ( void );
-  ~Font ( void );
+#include "SDLDrawable.h"
 
-  unsigned int GetTextWidth ( void );
-  unsigned int GetTextHeight ( void );
-  SDL_Color GetTextColor ( void );
-  std::string GetTextBuffer ( void );
-
-  void SetTextColor ( unsigned r, unsigned g, unsigned b );
-  void SetTextBuffer ( std::string text );
-
-  bool LoadTTF ( std::string filename, unsigned int size );
-  bool DrawText ( Gfx *engine, unsigned int x, unsigned int y );
-
-private:
-  TTF_Font *font;
-  SDL_Color text_color;
-  std::string text_buffer;
-  SDL_Rect coords;
+class Font: public SDLDrawable
+{
+  public:
+    std::string getTextBuffer ( void ) const;
+    bool Draw ( Gfx *engine, unsigned int x, unsigned int y ) const;
+  private:
+    TTF_Font *font;
+    unsigned int text_color;
+    std::string text_buffer;
 };
 
 #endif // GAMELIB_FONT_HEADERS defined

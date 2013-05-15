@@ -97,6 +97,17 @@ void SDLBitmapFont::setSpacing ( unsigned int spaces )
   this->spacing = spaces;
 }
 
+unsigned int SDLBitmapFont::getNewline ( void )
+{
+  return this->newline;
+}
+
+// Needs testing; not sure if this even does anything currently
+void SDLBitmapFont::setNewline ( unsigned int newline )
+{
+  this->newline = newline;
+}
+
 // Reference: http://lazyfoo.net/SDL_tutorials/lesson30/index.php
 // TODO: add spacing / padding so that we can export with black guidelines
 bool SDLBitmapFont::Load ( std::string filename, GColor colorkey, unsigned int sheet_width, unsigned int sheet_height )

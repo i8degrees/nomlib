@@ -39,6 +39,9 @@ class SDLBitmapFont
     unsigned int getSpacing ( void );
     void setSpacing ( unsigned int spaces );
 
+    unsigned int getNewline ( void );
+    void setNewline ( unsigned int newline );
+
     bool Load ( std::string filename, GColor colorkey, unsigned int sheet_width = 16,
                 unsigned int sheet_height = 16 );
 

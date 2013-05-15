@@ -92,7 +92,6 @@ unsigned int SDLBitmapFont::getSpacing ( void )
   return this->spacing;
 }
 
-// FIXME: Should be set after the LoadImage call is made
 void SDLBitmapFont::setSpacing ( unsigned int spaces )
 {
   this->spacing = spaces;

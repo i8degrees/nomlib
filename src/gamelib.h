@@ -9,6 +9,7 @@
 #ifndef GAMELIB_HEADERS
 #define GAMELIB_HEADERS
 
+#include "Logger.h"
 #include "SDLInput.h"
 #include "OSXFs.h"
 #include "gfx.h"

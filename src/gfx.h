@@ -11,13 +11,17 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <cmath>
 
 #include "SDL_image.h"
 
-#include "gamelib.h"
+#include "GameState.h"
+#include "GColor.h"
 
-//#include "GColor.h"
 class GColor;
+
+#include "gamelib.h"
 
 class Gfx
 {

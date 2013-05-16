@@ -27,7 +27,7 @@
     virtual void Pause() = 0;
     virtual void Resume() = 0;
 
-    virtual void Input ( void ) = 0;
+    virtual void HandleInput ( void ) = 0;
     virtual void Update ( void ) = 0;
     virtual void Draw ( void ) = 0;
 

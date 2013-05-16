@@ -49,7 +49,7 @@ class SDLInput
 
   private:
     SDL_Event input;
-    SDL_Joystick *joystick;
+    //SDL_Joystick *joystick;
 };
 
 #endif // GAMELIB_SDLINPUT_HEADERS defined

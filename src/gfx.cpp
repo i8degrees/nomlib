@@ -15,6 +15,7 @@ Gfx::Gfx ( unsigned int sdl_flags, unsigned int img_flags )
   #endif
 
   this->screen = NULL;
+  this->running = false;
 
   if ( SDL_Init ( sdl_flags ) != 0 )
   {
@@ -37,6 +38,10 @@ Gfx::Gfx ( unsigned int sdl_flags, unsigned int img_flags )
 
 Gfx::~Gfx ( void )
 {
+  // cleanup all of the states
+  while ( !states.empty() )
+    states.pop_back();
+
   if ( this->screen != NULL )
   {
     SDL_FreeSurface ( this->screen );
@@ -433,4 +438,84 @@ bool Gfx::unlockSurface ( SDL_Surface *video_buffer )
     return false;
 
   return true;
+}
+
+void Gfx::ChangeState( std::unique_ptr<GameState> state )
+{
+  // cleanup the current state
+  if ( !states.empty() )
+    states.pop_back();
+
+  // store the new state
+  states.push_back( std::move( state ) );
+}
+
+void Gfx::PushState( std::unique_ptr<GameState> state )
+{
+  // pause current state
+  if ( !states.empty() )
+    states.back()->Pause();
+
+  // store the new state
+  states.push_back( std::move( state ) );
+}
+
+void Gfx::PopState ( void )
+{
+  // cleanup the current state
+  if ( !states.empty() )
+    states.pop_back();
+
+  // resume previous state
+  if ( !states.empty () )
+    states.back()->Resume();
+}
+
+void Gfx::PopStateThenChangeState( std::unique_ptr<GameState> state )
+{
+  // cleanup the current state
+  if ( !states.empty() )
+    states.pop_back();
+
+  if ( !states.empty () )
+  {
+    this->ChangeState( std::move( state ) );
+    //states.back()->ChangeState( this, std::move( state ) );
+  }
+}
+
+void Gfx::HandleInput ( void )
+{
+  // let the state handle events
+  states.back()->HandleInput ();
+}
+
+void Gfx::Update ( void )
+{
+  // let the state update the scene
+  states.back()->Update();
+}
+
+void Gfx::Draw( void )
+{
+  // let the state draw the scene
+  states.back()->Draw();
+}
+
+bool Gfx::isRunning ( void )
+{
+  if ( this->running == true )
+    return true;
+  else
+    return false;
+}
+
+void Gfx::Run ( void )
+{
+  this->running = true;
+}
+
+void Gfx::Quit ( void )
+{
+  this->running = false;
 }

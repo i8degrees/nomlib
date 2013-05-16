@@ -27,8 +27,8 @@ class Gfx
 {
   public:
     // SDLVideo
-    Gfx ( unsigned int sdl_flags = SDL_INIT_EVERYTHING,
-          unsigned int img_flags = IMG_INIT_PNG
+    Gfx (   unsigned int sdl_flags = SDL_INIT_EVERYTHING,
+            unsigned int img_flags = IMG_INIT_PNG
         );
 
     ~Gfx ( void );
@@ -83,11 +83,26 @@ class Gfx
 
     static void drawLine ( SDL_Surface *video_buffer, float x1, float y1, float x2, float y2, GColor color );
 
-
-
     SDL_Surface *screen; // primary (think: visible) video memory
+
+    void ChangeState ( std::unique_ptr<GameState> state );
+    void PushState ( std::unique_ptr<GameState> state );
+    void PopState ( void );
+    void PopStateThenChangeState ( std::unique_ptr<GameState> state );
+
+    void HandleInput ( void );
+    void Update ( void );
+    void Draw ( void );
+
+    bool isRunning ( void );
+    void Run ( void );
+    void Quit ( void );
+
+    void onExit ( void );
+
   private:
-    //
+    bool running;
+    std::vector<std::unique_ptr<GameState>> states;
 };
 
 #endif // GAMELIB_GFX_HEADERS defined

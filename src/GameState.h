@@ -14,7 +14,6 @@
 #include <iostream>
 #include <string>
 
-#define DEBUG_GAMESTATE_OBJ
 #include "SDL.h"
 
 #include "SDLInput.h"

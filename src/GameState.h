@@ -15,8 +15,12 @@
 #include <string>
 
 #define DEBUG_GAMESTATE_OBJ
+#include "SDL.h"
 
-class GameState
+#include "SDLInput.h"
+
+#include "gamelib.h"
+
 {
   public:
     virtual ~GameState();

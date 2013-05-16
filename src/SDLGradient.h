@@ -14,6 +14,7 @@
 #include "SDL.h"
 
 #include "GCoords.h"
+#include "GColor.h"
 #include "gfx.h"
 
 //#define DEBUG_GRADIENT

@@ -9,21 +9,6 @@
 #ifndef GAMELIB_HEADERS
 #define GAMELIB_HEADERS
 
-#include "Logger.h"
-#include "SDLInput.h"
-#include "OSXFs.h"
-#include "gfx.h"
-//#include "font.h"
-#include "SDL_TFont.h"
-#include "sprite.h"
-#include "SDL_BitmapFont.h"
-#include "SDLWindowFrame.h"
-#include "SDLGradient.h"
-#include "SDLMessageBox.h"
-#include "timer.h"
-#include "fps.h" // inherits from Timer
-#include "audio.h"
-
 #define DEBUG_COLOR
 //#define DEBUG_COLOR_OBJ
 

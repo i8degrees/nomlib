@@ -16,10 +16,11 @@
 #include "SDL.h"
 
 #include "gfx.h"
-#include "GColor.h"
+//#include "GColor.h"
 #include "GCoords.h"
 
-class SDLGradient;
+#include "SDLGradient.h"
+//class SDLGradient;
 
 //#define DEBUG_MESSAGEBOX
 #define DEBUG_MESSAGEBOX_OBJ

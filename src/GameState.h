@@ -22,8 +22,8 @@
 
 {
   public:
-    virtual void Pause() = 0;
-    virtual void Resume() = 0;
+    virtual void Pause ( void ) = 0;
+    virtual void Resume ( void ) = 0;
 
     virtual void HandleInput ( void ) = 0;
     virtual void Update ( void ) = 0;

@@ -22,7 +22,6 @@ project ( gamelib )
 set ( GAMELIB_SOURCE
       ${SRC_DIR}/GCoords.cpp
       ${SRC_DIR}/GColor.cpp
-      ${SRC_DIR}/GameStateManager.cpp
       ${SRC_DIR}/Logger.cpp
       ${SRC_DIR}/audio.cpp
       #${SRC_DIR}/font.cpp
@@ -43,7 +42,6 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/GCoords.h
       ${SRC_DIR}/GColor.h
       ${SRC_DIR}/GameState.h
-      ${SRC_DIR}/GameStateManager.h
       ${SRC_DIR}/Logger.h
       ${SRC_DIR}/audio.h
       #${SRC_DIR}/font.h

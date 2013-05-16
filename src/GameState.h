@@ -22,8 +22,6 @@
 
 {
   public:
-    virtual ~GameState();
-
     virtual void Pause() = 0;
     virtual void Resume() = 0;
 

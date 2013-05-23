@@ -42,6 +42,8 @@ class Gfx
     // SDLSurface
     static bool setTransparent (  SDL_Surface *video_buffer, GColor color,
                                   unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
+    static bool setAlpha (  SDL_Surface *video_buffer, unsigned char opacity,
+                            unsigned int flags = SDL_SRCALPHA );
 
     static SDL_Surface *LoadImage ( std::string filename, GColor colorkey,
                                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );

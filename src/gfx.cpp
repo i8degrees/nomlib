@@ -77,6 +77,19 @@ bool Gfx::SetVideoMode (  unsigned int screen_width,
   return true;
 }
 
+bool Gfx::setAlpha (  SDL_Surface *video_buffer, unsigned char opacity,
+                      unsigned int flags )
+{
+  #ifdef DEBUG_GFX
+    if ( opacity > 255 || opacity < 1 )
+      std::cout << "ERR in Gfx::setAlpha(): " << "opacity value is out of bounds." << std::endl;
+  #endif
+
+  SDL_SetAlpha ( video_buffer, flags, ( unsigned int ) opacity );
+
+  return true;
+}
+
 bool Gfx::setTransparent (  SDL_Surface *video_buffer, GColor color,
                             unsigned int flags )
 {

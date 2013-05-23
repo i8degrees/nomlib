@@ -40,7 +40,6 @@ void Timer::Start ( void )
 
 void Timer::Stop ( void )
 {
-  this->elapsed_ticks = 0;
   this->started = false;
   this->paused = false;
 }

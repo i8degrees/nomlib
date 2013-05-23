@@ -35,7 +35,7 @@ class SDLInput
     virtual void onKeyUp ( SDLKey key, SDLMod mod );
 
     virtual void onMouseMotion ( unsigned int x, unsigned int y );
-    virtual void onMouseWheel ( bool up, bool down ); // TODO
+    virtual void onMouseWheel ( bool up, bool down );
     virtual void onMouseLeftButtonDown ( unsigned int x, unsigned int y );
     virtual void onMouseMiddleButtonDown ( unsigned int x, unsigned int y );
     virtual void onMouseRightButtonDown ( unsigned int x, unsigned int y );

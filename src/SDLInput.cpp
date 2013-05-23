@@ -13,28 +13,31 @@ SDLInput::SDLInput ( void )
   #ifdef DEBUG_SDLINPUT_OBJ
     std::cout << "SDLInput::SDLInput (): " << "Hello, world!" << std::endl << std::endl;
   #endif
-/*
+
   if ( SDL_InitSubSystem ( SDL_INIT_JOYSTICK ) == -1 )
   {
     std::cout << "ERR in SDLInput::SDLInput() at: " << SDL_GetError() << std::endl;
     return;
   }
 
-  SDL_JoystickEventState ( SDL_ENABLE );
-
-  this->joystick = SDL_JoystickOpen ( 0 );
-
-  std::cout << SDL_NumJoysticks() << " joysticks were found.";
-  std::cout << std::endl << std::endl;
-
-  if ( SDL_NumJoysticks() > 0 )
+  // Only initialize this joystick if we have yet to
+  if ( SDL_JoystickOpened ( 0 ) == 0 )
   {
-    for( int idx = 0; idx < SDL_NumJoysticks(); idx++ )
+    SDL_JoystickEventState ( SDL_ENABLE );
+
+    this->joystick = SDL_JoystickOpen ( 0 );
+
+    std::cout << SDL_NumJoysticks() << " joysticks were found.";
+    std::cout << std::endl << std::endl;
+
+    if ( SDL_NumJoysticks() > 0 )
     {
-      std::cout << SDL_JoystickName ( idx ) << std::endl << std::endl;
+      for( int idx = 0; idx < SDL_NumJoysticks(); idx++ )
+      {
+        std::cout << SDL_JoystickName ( idx ) << std::endl << std::endl;
+      }
     }
   }
-*/
 }
 
 SDLInput::~SDLInput ( void )
@@ -43,14 +46,17 @@ SDLInput::~SDLInput ( void )
     std::cout << "SDLInput::~SDLInput (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
 
-/*
-  SDL_JoystickClose ( this->joystick );
+  // Only close joysticks we have opened
+  //if ( SDL_JoystickOpened ( 0 ) == 1 )
+  //{
+    //SDL_JoystickClose ( this->joystick );
 
-  if ( this->joystick != NULL )
-    this->joystick = NULL;
+    //if ( this->joystick != NULL )
+      //this->joystick = NULL;
+  //}
 
   SDL_QuitSubSystem ( SDL_INIT_JOYSTICK );
-*/
+
 }
 
 void SDLInput::Input ( void )

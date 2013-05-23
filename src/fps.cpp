@@ -51,7 +51,7 @@ unsigned int FPS::GetFrames ( void )
 
 unsigned int FPS::GetFPS ( void )
 {
-  return this->GetFrames() / ( this->fps.GetTicks() / 1000.f );
+  return this->GetFrames() / ( this->fps.getTicks() / 1000.f );
 }
 
 void FPS::Update ( void )

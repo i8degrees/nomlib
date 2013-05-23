@@ -24,12 +24,12 @@ class Timer
     void Start ( void );
     void Stop ( void );
     void Pause ( void );
-    void UnPause ( void );
+    void Unpause ( void );
 
-    unsigned int GetTicks ( void );
+    unsigned int getTicks ( void );
 
-    bool IsStarted ( void );
-    bool IsPaused ( void );
+    bool isStarted ( void );
+    bool isPaused ( void );
 
   private:
     unsigned int elapsed_ticks; // milliseconds since timer start

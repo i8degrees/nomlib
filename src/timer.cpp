@@ -53,7 +53,7 @@ void Timer::Pause ( void )
   }
 }
 
-void Timer::UnPause ( void )
+void Timer::Unpause ( void )
 {
   if ( this->paused == true )
   {
@@ -63,7 +63,7 @@ void Timer::UnPause ( void )
   }
 }
 
-unsigned int Timer::GetTicks ( void )
+unsigned int Timer::getTicks ( void )
 {
   if ( this->started == true )
   {
@@ -79,12 +79,12 @@ unsigned int Timer::GetTicks ( void )
   return 0;
 }
 
-bool Timer::IsStarted ( void )
+bool Timer::isStarted ( void )
 {
   return this->started;
 }
 
-bool Timer::IsPaused ( void )
+bool Timer::isPaused ( void )
 {
   return this->paused;
 }

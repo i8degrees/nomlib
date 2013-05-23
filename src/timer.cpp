@@ -48,9 +48,8 @@ void Timer::Pause ( void )
 {
   if ( ( this->started == true ) && ( this->paused == false ) )
   {
-    this->paused_ticks = this->GetTicks();
     this->paused = true;
-     //this->paused_ticks = SDL_GetTicks() - this->elapsed_ticks;
+    this->paused_ticks = SDL_GetTicks() - this->elapsed_ticks;
   }
 }
 

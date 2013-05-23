@@ -38,6 +38,12 @@ SDLBitmapFont::~SDLBitmapFont ( void )
   }
 }
 
+void SDLBitmapFont::greyedOutText ( unsigned char opacity )
+{
+  if ( this->bitmap_font )
+    Gfx::setAlpha ( this->bitmap_font, ( unsigned int ) opacity );
+}
+
 // I don't think this is entirely accurate; this->spacing - 2 is fudged ...
 // We probably ought to be calculating the width based off the same algorithm as
 // is shown in SDLBitmapFont::LoadImage

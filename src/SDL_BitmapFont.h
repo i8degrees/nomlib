@@ -31,6 +31,8 @@ class SDLBitmapFont
     SDLBitmapFont ( void );
     ~SDLBitmapFont ( void );
 
+    void greyedOutText ( unsigned char opacity );
+
     unsigned int getTextWidth ( void );
     unsigned int getTextHeight ( void );
     std::string getTextBuffer ( void );

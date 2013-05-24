@@ -5,6 +5,8 @@
 
   Copyright (c) 2013 Jeffrey Carpenter
 
+  Portions Copyright (c) 2013 Fielding Johnston
+
 ******************************************************************************/
 #include "gfx.h"
 
@@ -493,7 +495,6 @@ void Gfx::PopStateThenChangeState( std::unique_ptr<GameState> state )
   if ( !states.empty () )
   {
     Gfx::ChangeState( std::move( state ) );
-    //states.back()->ChangeState( this, std::move( state ) );
   }
 }
 

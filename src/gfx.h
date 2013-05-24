@@ -5,6 +5,8 @@
 
   Copyright (c) 2013 Jeffrey Carpenter
 
+  Portions Copyright (c) 2013 Fielding Johnston
+
 ******************************************************************************/
 #ifndef GAMELIB_GFX_HEADERS
 #define GAMELIB_GFX_HEADERS
@@ -66,17 +68,18 @@ class Gfx
                                 unsigned int width, unsigned int height,
                                 unsigned int r, unsigned int g, unsigned int b );
 
-    // SDLGfx
+    // SDLGfxPrimitives
     bool DrawRectangle (  unsigned int x, unsigned int y,
                           unsigned int width, unsigned int height, unsigned int r,
                           unsigned int g, unsigned int b );
 
-    // SDLApp
+    // SDLVideo
     static void setTitle ( std::string app_name );
 
     bool setIcon (  std::string app_icon, GColor color,
                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
+    // SDLGfxPrimitives
     static unsigned int getPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );
     static void setPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, GColor color );
 
@@ -85,8 +88,13 @@ class Gfx
 
     static void drawLine ( SDL_Surface *video_buffer, float x1, float y1, float x2, float y2, GColor color );
 
+    // SDLVideo
     SDL_Surface *screen; // primary (think: visible) video memory
 
+/*
+  class GameApp: public SDLInput
+    public:
+*/
     void ChangeState ( std::unique_ptr<GameState> state );
     void PushState ( std::unique_ptr<GameState> state );
     void PopState ( void );
@@ -103,7 +111,7 @@ class Gfx
     void onExit ( void );
 
   private:
-    bool running;
+    bool running; // global app state
     std::vector<std::unique_ptr<GameState>> states;
 };
 

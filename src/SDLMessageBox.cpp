@@ -47,12 +47,12 @@ bool SDLMessageBox::isEnabled ( void )
     return false;
 }
 
-void SDLMessageBox::disable ( bool state )
+void SDLMessageBox::disable ( void )
 {
  this->enabled = false;
 }
 
-void SDLMessageBox::enable ( bool state )
+void SDLMessageBox::enable ( void )
 {
   this->enabled = true;
 }

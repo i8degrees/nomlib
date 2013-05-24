@@ -101,7 +101,10 @@ void SDLMessageBox::Draw ( SDL_Surface *video_buffer, unsigned int x, unsigned i
   Gfx::drawLine ( video_buffer, x + 1, y + 2, x + 1, y_offset - padding, this->window_borders[3].getColor() ); // left2
 
   Gfx::drawLine ( video_buffer, x, y_offset - padding, x_offset - padding, y_offset - padding, this->window_borders[4].getColor() ); // bottom1
-  Gfx::drawLine ( video_buffer, x_offset - padding, y, x_offset - padding, y_offset - padding, this->window_borders[5].getColor() ); // right1
+  Gfx::drawLine ( video_buffer, x, y_offset, x_offset + padding, y_offset, this->window_borders[5].getColor() ); // bottom2
+
+  Gfx::drawLine ( video_buffer, x_offset - padding, y, x_offset - padding, y_offset + padding, this->window_borders[6].getColor() ); // right1
+  Gfx::drawLine ( video_buffer, x_offset, y, x_offset, y_offset + padding, this->window_borders[7].getColor() ); // right2
 
   Gfx::unlockSurface ( video_buffer );
 }

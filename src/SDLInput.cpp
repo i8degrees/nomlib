@@ -20,6 +20,8 @@ SDLInput::SDLInput ( void )
     return;
   }
 
+  this->joystick = NULL;
+
   // Only initialize this joystick if we have yet to
   if ( SDL_JoystickOpened ( 0 ) == 0 )
   {
@@ -51,12 +53,11 @@ SDLInput::~SDLInput ( void )
   //{
     //SDL_JoystickClose ( this->joystick );
 
-    //if ( this->joystick != NULL )
-      //this->joystick = NULL;
+    if ( this->joystick )
+      this->joystick = NULL;
   //}
 
   SDL_QuitSubSystem ( SDL_INIT_JOYSTICK );
-
 }
 
 void SDLInput::Input ( void )

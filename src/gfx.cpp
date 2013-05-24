@@ -19,6 +19,12 @@ Gfx::Gfx ( unsigned int sdl_flags, unsigned int img_flags )
   this->screen = NULL;
   this->running = false;
 
+  //#ifdef DEBUG_GFX
+  this->showFPS ( true );
+  //#endif
+
+  this->setFullScreen ( false );
+
   if ( SDL_Init ( sdl_flags ) != 0 )
   {
     #ifdef DEBUG_GFX
@@ -518,7 +524,7 @@ void Gfx::Draw( void )
 
 bool Gfx::isRunning ( void )
 {
-  if ( this->running == true )
+  if ( this->running )
     return true;
   else
     return false;
@@ -532,4 +538,36 @@ void Gfx::Run ( void )
 void Gfx::Quit ( void )
 {
   this->running = false;
+}
+
+bool Gfx::getShowFPS ( void )
+{
+  return this->show_fps;
+}
+
+void Gfx::showFPS ( bool toggle )
+{
+  this->show_fps = toggle;
+}
+
+// Helper method; toggles showing FPS counter (or not)
+void Gfx::toggleFPS ( void )
+{
+  if ( this->getShowFPS() )
+    this->showFPS ( false );
+  else
+    this->showFPS ( true );
+}
+
+bool Gfx::isFullScreen ( void )
+{
+  if ( this->fullscreen )
+    return true;
+  else
+    return false;
+}
+
+void Gfx::setFullScreen ( bool toggle )
+{
+  this->fullscreen = toggle;
 }

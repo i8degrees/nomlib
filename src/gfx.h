@@ -108,9 +108,16 @@ class Gfx
     void Run ( void );
     void Quit ( void );
 
+    bool isFullScreen ( void );
+    void setFullScreen ( bool toggle );
+    bool getShowFPS ( void );
+    void showFPS ( bool toggle );
+    void toggleFPS ( void );
 
   private:
     bool running; // global app state
+    bool show_fps; // fps counter
+    bool fullscreen; // toggle window & fullscreen states
     std::vector<std::unique_ptr<GameState>> states;
 };
 

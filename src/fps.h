@@ -21,8 +21,8 @@ class FPS: public Timer
     void Start ( void );
     void Stop ( void );
 
-    unsigned int GetFrames ( void );
-    unsigned int GetFPS ( void );
+    unsigned int getFrames ( void );
+    unsigned int getFPS ( void );
     void Update ( void );
 
   private:

@@ -44,14 +44,14 @@ void FPS::Stop ( void )
   this->fps_update.Stop();
 }
 
-unsigned int FPS::GetFrames ( void )
+unsigned int FPS::getFrames ( void )
 {
   return this->total_frames;
 }
 
-unsigned int FPS::GetFPS ( void )
+unsigned int FPS::getFPS ( void )
 {
-  return this->GetFrames() / ( this->fps.getTicks() / 1000.f );
+  return this->getFrames() / ( this->fps.getTicks() / 1000.f );
 }
 
 void FPS::Update ( void )

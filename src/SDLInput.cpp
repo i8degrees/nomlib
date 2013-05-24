@@ -60,80 +60,79 @@ SDLInput::~SDLInput ( void )
   SDL_QuitSubSystem ( SDL_INIT_JOYSTICK );
 }
 
-void SDLInput::Input ( void )
+
+void SDLInput::Input ( SDL_Event *input )
 {
-  while ( SDL_PollEvent ( &input ) ) // not sure how viable / wise this is
+  switch ( input->type )
   {
-    switch ( input.type )
-    {
-      case SDL_KEYDOWN:
-        onKeyDown ( input.key.keysym.sym, input.key.keysym.mod );
-      break;
+    case SDL_KEYDOWN:
+      onKeyDown ( input->key.keysym.sym, input->key.keysym.mod );
+    break;
 
-      case SDL_KEYUP:
-        onKeyUp ( input.key.keysym.sym, input.key.keysym.mod );
-      break;
+    case SDL_KEYUP:
+      // Temporary state crash workaround by commenting below line out of exec:
+      //onKeyUp ( input->key.keysym.sym, input->key.keysym.mod );
+    break;
 
-      case SDL_MOUSEMOTION:
-        onMouseMotion ( input.motion.x, input.motion.y );
-      break;
+    case SDL_MOUSEMOTION:
+      // Temporary state crash workaround by commenting below line out of exec:
+      //onMouseMotion ( input->motion.x, input->motion.y );
+    break;
 
-      case SDL_MOUSEBUTTONDOWN:
-        switch ( input.button.button )
-        {
-          case SDL_BUTTON_LEFT:
-            onMouseLeftButtonDown ( input.button.x, input.button.y );
-          break;
+    case SDL_MOUSEBUTTONDOWN:
+      switch ( input->button.button )
+      {
+        case SDL_BUTTON_LEFT:
+          onMouseLeftButtonDown ( input->button.x, input->button.y );
+        break;
 
-          case SDL_BUTTON_MIDDLE:
-            onMouseMiddleButtonDown ( input.button.x, input.button.y );
-          break;
+        case SDL_BUTTON_MIDDLE:
+          onMouseMiddleButtonDown ( input->button.x, input->button.y );
+        break;
 
-          case SDL_BUTTON_RIGHT:
-            onMouseRightButtonDown ( input.button.x, input.button.y );
-          break;
+        case SDL_BUTTON_RIGHT:
+          onMouseRightButtonDown ( input->button.x, input->button.y );
+        break;
 
-          case SDL_BUTTON_WHEELDOWN: onMouseWheel ( false, true ); break;
+        case SDL_BUTTON_WHEELDOWN: onMouseWheel ( false, true ); break;
 
-          case SDL_BUTTON_WHEELUP: onMouseWheel ( true, false ); break;
-        }
-      break;
+        case SDL_BUTTON_WHEELUP: onMouseWheel ( true, false ); break;
+      }
+    break;
 
-      case SDL_MOUSEBUTTONUP:
-        switch ( input.button.button )
-        {
-          case SDL_BUTTON_LEFT:
-            onMouseLeftButtonUp ( input.button.x, input.button.y );
-          break;
+    case SDL_MOUSEBUTTONUP:
+      switch ( input->button.button )
+      {
+        case SDL_BUTTON_LEFT:
+          onMouseLeftButtonUp ( input->button.x, input->button.y );
+        break;
 
-          case SDL_BUTTON_MIDDLE:
-            onMouseMiddleButtonUp ( input.button.x, input.button.y );
-          break;
+        case SDL_BUTTON_MIDDLE:
+          onMouseMiddleButtonUp ( input->button.x, input->button.y );
+        break;
 
-          case SDL_BUTTON_RIGHT:
-            onMouseRightButtonUp ( input.button.x, input.button.y );
-          break;
-        }
-      break;
+        case SDL_BUTTON_RIGHT:
+          onMouseRightButtonUp ( input->button.x, input->button.y );
+        break;
+      }
+    break;
 
-      case SDL_JOYBUTTONDOWN:
-        onJoyButtonDown ( input.jbutton.which, input.jbutton.button );
-      break;
+    case SDL_JOYBUTTONDOWN:
+      onJoyButtonDown ( input->jbutton.which, input->jbutton.button );
+    break;
 
-      case SDL_JOYBUTTONUP:
-        onJoyButtonUp ( input.jbutton.which, input.jbutton.button );
-      break;
+    case SDL_JOYBUTTONUP:
+      onJoyButtonUp ( input->jbutton.which, input->jbutton.button );
+    break;
 
-      case SDL_JOYAXISMOTION:
-        onJoyAxis ( input.jaxis.which, input.jaxis.axis, input.jaxis.value );
-      break;
+    case SDL_JOYAXISMOTION:
+      onJoyAxis ( input->jaxis.which, input->jaxis.axis, input->jaxis.value );
+    break;
 
-      case SDL_QUIT: onExit(); break;
+    case SDL_QUIT: onExit(); break;
 
-      case SDL_VIDEORESIZE: onResize ( input.resize.w, input.resize.h ); break;
-
-    } // end switch input->type
-  }
+    case SDL_VIDEORESIZE: onResize ( input->resize.w, input->resize.h ); break;
+  } // end switch input->type
 }
 
 void SDLInput::onExit ( void )

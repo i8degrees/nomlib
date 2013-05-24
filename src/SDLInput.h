@@ -22,7 +22,7 @@ class SDLInput
     SDLInput ( void );
     virtual ~SDLInput ( void );
 
-    virtual void Input ( void );
+    virtual void Input ( SDL_Event *input );
 
     virtual void onExit ( void );
     virtual void onResize ( unsigned int width, unsigned int height );
@@ -48,7 +48,6 @@ class SDLInput
     virtual void onJoyAxis ( unsigned int which, unsigned int axis, short int value );
 
   private:
-    SDL_Event input;
     SDL_Joystick *joystick;
 };
 

@@ -108,7 +108,6 @@ class Gfx
     void Run ( void );
     void Quit ( void );
 
-    void onExit ( void );
 
   private:
     bool running; // global app state

@@ -12,9 +12,12 @@ GCoords::GCoords ( void )
   #ifdef DEBUG_COORDS_OBJ
     std::cout << "GCoords::GCoords (): " << "Hello, world!" << std::endl << std::endl;
   #endif
+
+  this->coords = std::make_pair ( -1, -1 );
+  this->dims = std::make_pair ( -1, -1 );
 }
 
-GCoords::GCoords ( unsigned int x, unsigned int y, unsigned int width, unsigned height )
+GCoords::GCoords ( signed int x, signed int y, signed int width, signed height )
 {
   #ifdef DEBUG_COORDS_OBJ
     std::cout << "GCoords::GCoords (): " << "Hello, world!" << std::endl << std::endl;
@@ -31,61 +34,61 @@ GCoords::~GCoords ( void )
   #endif
 }
 
-void GCoords::setCoords ( unsigned int x, unsigned int y,
-                          unsigned int width, unsigned int height )
+void GCoords::setCoords ( signed int x, signed int y,
+                          signed int width, signed int height )
 {
   this->coords = std::make_pair ( x, y );
   this->dims = std::make_pair ( width, height );
 }
 
-unsigned int GCoords::getX ( void )
+signed int GCoords::getX ( void )
 {
   return std::get<0>(coords);
 }
 
-unsigned int GCoords::getY ( void )
+signed int GCoords::getY ( void )
 {
   return std::get<1>(coords);
 }
 
-std::pair<unsigned int, unsigned int> GCoords::getXY ( void )
+std::pair<signed int, signed int> GCoords::getXY ( void )
 {
   return this->coords;
 }
 
-void GCoords::setXY ( unsigned int x, unsigned int y )
+void GCoords::setXY ( signed int x, signed int y )
 {
   this->coords = std::make_pair ( x, y );
 }
 
-unsigned int GCoords::getWidth ( void )
+signed int GCoords::getWidth ( void )
 {
   return std::get<0>(dims);
 }
 
 // Alias for getWidth()
-unsigned int GCoords::getW ( void )
+signed int GCoords::getW ( void )
 {
   return this->getWidth();
 }
 
-unsigned int GCoords::getHeight ( void )
+signed int GCoords::getHeight ( void )
 {
   return std::get<1>(dims);
 }
 
 // Alias for getHeight()
-unsigned int GCoords::getH ( void )
+signed int GCoords::getH ( void )
 {
   return this->getHeight();
 }
 
-std::pair<unsigned int, unsigned int> GCoords::getDimensions ( void )
+std::pair<signed int, signed int> GCoords::getDimensions ( void )
 {
   return this->dims;
 }
 
-void GCoords::setDimensions ( unsigned int width, unsigned int height )
+void GCoords::setDimensions ( signed int width, signed int height )
 {
   this->dims = std::make_pair ( width, height );
 }

@@ -21,30 +21,30 @@ class GCoords
   public:
     GCoords ( void );
 
-    GCoords ( unsigned int x, unsigned int y,
-              unsigned int width = 0, unsigned height = 0 );
+    GCoords ( signed int x, signed int y,
+              signed int width = -1, signed height = -1 );
 
     ~GCoords ( void );
 
-    void setCoords (  unsigned int x, unsigned int y,
-                      unsigned int width, unsigned int height );
+    void setCoords (  signed int x = -1, signed int y = -1,
+                      signed int width = -1, signed int height = -1 );
 
-    unsigned int getX ( void );
-    unsigned int getY ( void );
-    std::pair<unsigned int, unsigned int> getXY ( void );
-    void setXY ( unsigned int x, unsigned int y );
+    signed int getX ( void );
+    signed int getY ( void );
+    std::pair<signed int, signed int> getXY ( void );
+    void setXY ( signed int x, signed int y );
 
-    unsigned int getWidth ( void );
-    unsigned int getW ( void );
-    unsigned int getHeight ( void );
-    unsigned int getH ( void );
+    signed int getWidth ( void );
+    signed int getW ( void );
+    signed int getHeight ( void );
+    signed int getH ( void );
 
-    std::pair<unsigned int, unsigned int> getDimensions ( void );
-    void setDimensions ( unsigned int width, unsigned int height );
+    std::pair<signed int, signed int> getDimensions ( void );
+    void setDimensions ( signed int width, signed int height );
 
   private:
-    std::pair<unsigned int, unsigned int> coords; // x, y coords
-    std::pair<unsigned int, unsigned int> dims; // width, height coords
+    std::pair<signed int, signed int> coords; // x, y coords
+    std::pair<signed int, signed int> dims; // width, height coords
 };
 
 #endif // GAMELIB_COORDS_HEADERS defined

@@ -245,6 +245,41 @@ bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int 
   return true;
 }
 
+bool DrawSurface (  SDL_Surface *source_buffer, SDL_Surface *dest_buffer,
+                    GCoords coords, GCoords offsets )
+{
+  // temporary vars to store our wrapped GCoords
+  SDL_Rect coords_blit, offsets_blit;
+
+  coords_blit.x = coords.getX();
+  coords_blit.y = coords.getY();
+
+  offsets_blit.x = offsets.getX();
+  offsets_blit.y = offsets.getY();
+  offsets_blit.w = offsets.getWidth();
+  offsets_blit.h = offsets.getHeight();
+
+  if ( source_buffer == NULL )
+  {
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::DrawSurface(): " << SDL_GetError() << std::endl;
+    #endif
+
+    return false;
+  }
+
+  if ( SDL_BlitSurface ( source_buffer, &offsets_blit, dest_buffer, &coords_blit ) != 0 )
+  {
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::DrawSurface() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
+    #endif
+
+    return false;
+  }
+
+  return true;
+}
+
 bool Gfx::UpdateScreen ( void )
 {
   if ( SDL_Flip ( this->screen ) != 0 )

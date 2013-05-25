@@ -20,6 +20,7 @@
 
 #include "GameState.h"
 #include "GColor.h"
+#include "GCoords.h"
 
 class GColor;
 
@@ -53,11 +54,15 @@ class Gfx
     static SDL_Surface *LoadImage ( std::string filename,
                                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
+                // Deprecated
     /* static */ bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );
-
+                // Transitional; phasing out
     /* static */ bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
                                     unsigned int x_offset, unsigned int y_offset,
                                     unsigned int width_offset, unsigned int height_offset );
+                // Future; phasing in
+    static bool DrawSurface (   SDL_Surface *source_buffer, SDL_Surface *dest_buffer,
+                                GCoords coords, GCoords offsets );
 
     // SDLVideo
     bool UpdateScreen ( void );

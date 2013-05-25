@@ -8,7 +8,7 @@
 ******************************************************************************/
 #include "sprite.h"
 
-Sprite::Sprite ( void )
+nom::Sprite::Sprite ( void )
 {
   #ifdef DEBUG_SPRITE_OBJ
     std::cout << "Sprite::Sprite (): " << "Hello, world!" << "\n" << std::endl;
@@ -35,7 +35,7 @@ Sprite::Sprite ( void )
   this->sheet.padding = 0;
 }
 
-Sprite::Sprite ( unsigned int width, unsigned int height )
+nom::Sprite::Sprite ( unsigned int width, unsigned int height )
 {
   #ifdef DEBUG_SPRITE_OBJ
     std::cout << "Sprite::Sprite (): " << "Hello, world!" << "\n" << std::endl;
@@ -62,7 +62,7 @@ Sprite::Sprite ( unsigned int width, unsigned int height )
   this->sheet.padding = 0;
 }
 
-Sprite::~Sprite ( void )
+nom::Sprite::~Sprite ( void )
 {
   #ifdef DEBUG_SPRITE_OBJ
     std::cout << "Sprite::~Sprite (): " << "Goodbye cruel world!" << "\n" << std::endl;
@@ -75,143 +75,143 @@ Sprite::~Sprite ( void )
   }
 }
 
-unsigned int Sprite::GetX ( void )
+unsigned int nom::Sprite::getX ( void )
 {
   return this->coords.x;
 }
 
-unsigned int Sprite::GetY ( void )
+unsigned int nom::Sprite::getY ( void )
 {
   return this->coords.y;
 }
 
-unsigned int Sprite::GetWidth ( void )
+unsigned int nom::Sprite::getWidth ( void )
 {
   return this->coords.width;
 }
 
-unsigned int Sprite::GetHeight ( void )
+unsigned int nom::Sprite::getHeight ( void )
 {
   return this->coords.height;
 }
 
-unsigned int Sprite::GetXOffset ( void )
+unsigned int nom::Sprite::getXOffset ( void )
 {
   return this->offsets.x;
 }
 
-unsigned int Sprite::GetYOffset ( void )
+unsigned int nom::Sprite::getYOffset ( void )
 {
   return this->offsets.y;
 }
 
-unsigned int Sprite::GetWidthOffset ( void )
+unsigned int nom::Sprite::getWidthOffset ( void )
 {
   return this->offsets.width;
 }
 
-unsigned int Sprite::GetHeightOffset ( void )
+unsigned int nom::Sprite::getHeightOffset ( void )
 {
   return this->offsets.height;
 }
 
-void Sprite::SetX ( unsigned int x )
+void nom::Sprite::setX ( unsigned int x )
 {
   this->coords.x = x;
 }
 
-void Sprite::SetY ( unsigned int y )
+void nom::Sprite::setY ( unsigned int y )
 {
   this->coords.y = y;
 }
 
-void Sprite::SetXY ( unsigned int x, unsigned int y )
+void nom::Sprite::setXY ( unsigned int x, unsigned int y )
 {
   this->coords.x = x;
   this->coords.y = y;
 }
 
-void Sprite::UpdateXY ( unsigned int x, unsigned int y )
+void nom::Sprite::updateXY ( unsigned int x, unsigned int y )
 {
   this->coords.x += x;
   this->coords.y += y;
 }
 
-void Sprite::SetWidth ( unsigned int width )
+void nom::Sprite::setWidth ( unsigned int width )
 {
   this->coords.width = width;
 }
 
-void Sprite::SetHeight ( unsigned int height )
+void nom::Sprite::setHeight ( unsigned int height )
 {
   this->coords.height = height;
 }
 
-void Sprite::SetXOffset ( unsigned int x_offset )
+void nom::Sprite::setXOffset ( unsigned int x_offset )
 {
   this->offsets.x = x_offset;
 }
 
-void Sprite::SetYOffset ( unsigned int y_offset )
+void nom::Sprite::setYOffset ( unsigned int y_offset )
 {
   this->offsets.y = y_offset;
 }
 
-void Sprite::SetWidthOffset ( unsigned int width_offset )
+void nom::Sprite::setWidthOffset ( unsigned int width_offset )
 {
   this->offsets.width = width_offset;
 }
 
-void Sprite::SetHeightOffset ( unsigned int height_offset )
+void nom::Sprite::setHeightOffset ( unsigned int height_offset )
 {
   this->offsets.height = height_offset;
 }
 
-unsigned int Sprite::getState ( void )
+unsigned int nom::Sprite::getState ( void )
 {
   return this->state;
 }
 
-void Sprite::setState ( unsigned int state )
+void nom::Sprite::setState ( unsigned int state )
 {
   this->state = state;
 }
 
-signed int Sprite::GetSheetID ( void )
+signed int nom::Sprite::getSheetID ( void )
 {
   return this->sheet.id;
 }
 
-void Sprite::SetSheetID ( signed int id )
+void nom::Sprite::setSheetID ( signed int id )
 {
   this->sheet.id = id;
 }
 
 /*
-struct sheet Sprite::GetSheetDimensions ( void )
+struct sheet nom::Sprite::getSheetDimensions ( void )
 {
   return this->sheet;
 }
 */
 
-void Sprite::SetSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding )
+void nom::Sprite::setSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding )
 {
-  this->sheet.sprite_width = this->GetWidth();
-  this->sheet.sprite_height = this->GetHeight();
+  this->sheet.sprite_width = this->getWidth();
+  this->sheet.sprite_height = this->getHeight();
   this->sheet.width = sheet_width;
   this->sheet.height = sheet_height;
   this->sheet.spacing = spacing;
   this->sheet.padding = padding;
 }
 
-bool Sprite::LoadImage ( std::string filename, GColor colorkey, unsigned int flags )
+bool nom::Sprite::Load ( std::string filename, GColor colorkey, unsigned int flags )
 {
   this->sprite_buffer = Gfx::LoadImage ( filename, colorkey, flags );
 
   if ( this->sprite_buffer == NULL )
   {
     #ifdef DEBUG_SPRITE
-      std::cout << "ERR in Sprite::LoadImage (): " << SDL_GetError() << std::endl;
+      std::cout << "ERR in Sprite::Load (): " << SDL_GetError() << std::endl;
     #endif
     SDL_FreeSurface ( this->sprite_buffer );
     this->sprite_buffer = NULL;
@@ -222,7 +222,7 @@ bool Sprite::LoadImage ( std::string filename, GColor colorkey, unsigned int fla
   return true;
 }
 
-bool Sprite::Draw ( Gfx *engine )
+bool nom::Sprite::Draw ( Gfx *engine )
 {
   SDL_Rect offsets; // temporary struct to hold our clipping coords (x, y, width, height)
 
@@ -245,13 +245,13 @@ bool Sprite::Draw ( Gfx *engine )
   }
   else
   {
-    offsets.x = this->GetXOffset();
-    offsets.y = this->GetYOffset();
-    offsets.w = this->GetWidth();
-    offsets.h = this->GetHeight();
+    offsets.x = this->getXOffset();
+    offsets.y = this->getYOffset();
+    offsets.w = this->getWidth();
+    offsets.h = this->getHeight();
   }
 
-  if ( engine->DrawSurface ( this->sprite_buffer, this->GetX(), this->GetY(), offsets.x, offsets.y, offsets.w, offsets.h ) == false )
+  if ( engine->DrawSurface ( this->sprite_buffer, this->getX(), this->getY(), offsets.x, offsets.y, offsets.w, offsets.h ) == false )
   {
     return false;
   }

@@ -59,7 +59,11 @@ namespace NomNom
       bool Load ( std::string filename );
       bool Load ( std::string filename, GColor colorkey, unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL );
 
+      // Deprecated; phasing out
       bool Draw ( Gfx *engine );
+
+      // Future; phasing in
+      bool Draw ( SDL_Surface *video_buffer );
 
     private:
       SDL_Surface *sprite_buffer; // memory buffer allocation

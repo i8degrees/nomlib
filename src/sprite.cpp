@@ -258,3 +258,40 @@ bool nom::Sprite::Draw ( Gfx *engine )
 
   return true;
 }
+
+/*
+bool nom::Sprite::Draw ( SDL_Surface *video_buffer )
+{
+  GCoords coords, offsets; // temporary object to hold our coords
+
+  if ( this->sprite_buffer == NULL )
+  {
+    #ifdef DEBUG_SPRITE
+      std::cout << "ERR in Sprite::Draw(): " << SDL_GetError() << std::endl;
+    #endif
+
+    return false;
+  }
+
+  coords.setXY ( this->getX(), this->getY() );
+
+  if ( this->getSheetID() != -1 )
+  {
+    // FIXME: Presently, we assume every sprite on our sheet is on the same row
+    offsets.setCoords ( this->sheet.id * this->sheet.sprite_width, 0, this->sheet.sprite_width, this->sheet.sprite_height );
+  }
+  else
+  {
+    offsets.setCoords ( this->getXOffset(), this->getYOffset(),
+                        this->getWidth(),   this->getHeight()
+                      );
+  }
+
+  if ( Gfx::DrawSurface ( this->sprite_buffer, video_buffer, coords, offsets ) == false )
+  {
+    return false;
+  }
+
+  return true;
+}
+*/

@@ -126,7 +126,8 @@ void SDLInput::Input ( SDL_Event *input )
     break;
 
     case SDL_JOYAXISMOTION:
-      onJoyAxis ( input->jaxis.which, input->jaxis.axis, input->jaxis.value );
+      // Temporary state crash workaround by commenting below line out of exec:
+      //onJoyAxis ( input->jaxis.which, input->jaxis.axis, input->jaxis.value );
     break;
 
     case SDL_QUIT: onExit(); break;

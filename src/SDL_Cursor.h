@@ -34,7 +34,8 @@ namespace NomNom
       unsigned int getY ( void );
       void setX ( unsigned int x );
       void setY ( unsigned int y );
-      void updateXY ( unsigned int x = 0, unsigned int y = 0);
+      void setXY ( unsigned int x = 0, unsigned int y = 0 );
+      void updateXY ( unsigned int x = 0, unsigned int y = 0 );
 
       signed int getSheetID ( void );
       void setSheetID ( signed int sheet_id = -1 );
@@ -51,7 +52,8 @@ namespace NomNom
       void moveCursorRight();
 
       void Update ( void );
-      void Draw ( Gfx *engine /*SDL_Surface *video_buffer*/ );
+      void Draw ( Gfx *engine );
+      //bool Draw ( SDL_Surface *video_buffer );
 
     private:
       nom::Sprite cursor; // interface cursor

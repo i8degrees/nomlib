@@ -63,6 +63,11 @@ void nom::SDL_Cursor::setY ( unsigned int y )
   this->cursor.setY ( y );
 }
 
+void nom::SDL_Cursor::setXY ( unsigned int x, unsigned int y )
+{
+  this->cursor.setXY ( x, y );
+}
+
 void nom::SDL_Cursor::updateXY ( unsigned int x, unsigned int y )
 {
   this->cursor.updateXY ( x, y );
@@ -80,12 +85,12 @@ void nom::SDL_Cursor::setSheetID ( signed int sheet_id )
 
 unsigned int nom::SDL_Cursor::getState ( void )
 {
-  // Stub
+  return this->cursor.getState();
 }
 
 void nom::SDL_Cursor::setState ( unsigned int state )
 {
-  // Stub
+  this->cursor.setState ( state );
 }
 
 void nom::SDL_Cursor::Update ( void )
@@ -93,7 +98,7 @@ void nom::SDL_Cursor::Update ( void )
   // Stub
 }
 
-void nom::SDL_Cursor::Draw ( Gfx *engine /*SDL_Surface *video_buffer*/ )
+void nom::SDL_Cursor::Draw ( Gfx *engine )
 {
   this->cursor.Draw ( engine );
 }

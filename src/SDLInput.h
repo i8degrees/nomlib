@@ -16,6 +16,39 @@
 
 #include "gamelib.h"
 
+// SDL mapping to individual PS3 axes
+// TODO: Needs testing / verification
+enum PSXAXES
+{
+    LEFTX = 0,
+    LEFTY = 1,
+    RIGHTX = 2,
+    RIGHTY = 3
+};
+
+// SDL mapping to individual PS3 controller buttons
+// TODO: Needs testing / verification
+enum PSXBUTTON
+{
+    SELECT            = 0,
+    JOYCLICKLEFT      = 1,
+    JOYCLICKRIGHT     = 2,
+    START             = 3,
+    UP                = 4,
+    RIGHT             = 5,
+    DOWN              = 6,
+    LEFT              = 7,
+    L2                = 8,
+    R2                = 9,
+    L1                = 10,
+    R1                = 11,
+    TRIANGLE          = 12,
+    CIRCLE            = 13,
+    CROSS             = 14,
+    SQUARE            = 15,
+    PSBUTTON          = 16
+};
+
 class SDLInput
 {
   public:

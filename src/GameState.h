@@ -20,7 +20,7 @@
 
 #include "gamelib.h"
 
-class GameState: public SDLInput
+class GameState: public nom::SDLInput
 {
   public:
     virtual void Pause ( void ) = 0;

@@ -8,7 +8,7 @@
 ******************************************************************************/
 #include "SDLInput.h"
 
-SDLInput::SDLInput ( void )
+nom::SDLInput::SDLInput ( void )
 {
   #ifdef DEBUG_SDLINPUT_OBJ
     std::cout << "SDLInput::SDLInput (): " << "Hello, world!" << std::endl << std::endl;
@@ -42,7 +42,7 @@ SDLInput::SDLInput ( void )
   }
 }
 
-SDLInput::~SDLInput ( void )
+nom::SDLInput::~SDLInput ( void )
 {
   #ifdef DEBUG_SDLINPUT_OBJ
     std::cout << "SDLInput::~SDLInput (): " << "Goodbye cruel world!" << std::endl << std::endl;
@@ -61,7 +61,7 @@ SDLInput::~SDLInput ( void )
 }
 
 
-void SDLInput::Input ( SDL_Event *input )
+void nom::SDLInput::Input ( SDL_Event *input )
 {
   switch ( input->type )
   {
@@ -136,97 +136,97 @@ void SDLInput::Input ( SDL_Event *input )
   } // end switch input->type
 }
 
-void SDLInput::onExit ( void )
+void nom::SDLInput::onExit ( void )
 {
   // virtual implementation
 }
 
-void SDLInput::onResize ( unsigned int width, unsigned int height )
+void nom::SDLInput::onResize ( unsigned int width, unsigned int height )
 {
   // virtual implementation
 }
 
-void SDLInput::onRestore ( void )
+void nom::SDLInput::onRestore ( void )
 {
   // virtual implementation
 }
 
-void SDLInput::onMinimize ( void )
+void nom::SDLInput::onMinimize ( void )
 {
   // virtual implementation
 }
 
-void SDLInput::onInputFocus ( void )
+void nom::SDLInput::onInputFocus ( void )
 {
   // virtual implementation
 }
 
-void SDLInput::onMouseFocus ( void )
+void nom::SDLInput::onMouseFocus ( void )
 {
   // virtual implementation
 }
 
-void SDLInput::onKeyDown ( SDLKey key, SDLMod mod )
+void nom::SDLInput::onKeyDown ( SDLKey key, SDLMod mod )
 {
   // virtual implementation
 }
 
-void SDLInput::onKeyUp ( SDLKey key, SDLMod mod )
+void nom::SDLInput::onKeyUp ( SDLKey key, SDLMod mod )
 {
   // virtual implementation
 }
 
-void SDLInput::onMouseMotion ( unsigned int x, unsigned int y )
+void nom::SDLInput::onMouseMotion ( unsigned int x, unsigned int y )
 {
   // virtual implementation
 }
 
-void SDLInput::onMouseWheel ( bool up, bool down )
+void nom::SDLInput::onMouseWheel ( bool up, bool down )
 {
   // virtual implementation
 }
 
-void SDLInput::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
+void nom::SDLInput::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 {
   // virtual implementation
 }
 
-void SDLInput::onMouseMiddleButtonDown ( unsigned int x, unsigned int y )
+void nom::SDLInput::onMouseMiddleButtonDown ( unsigned int x, unsigned int y )
 {
   // virtual implementation
 }
 
-void SDLInput::onMouseRightButtonDown ( unsigned int x, unsigned int y )
+void nom::SDLInput::onMouseRightButtonDown ( unsigned int x, unsigned int y )
 {
   // virtual implementation
 }
 
-void SDLInput::onMouseLeftButtonUp ( unsigned int x, unsigned int y )
+void nom::SDLInput::onMouseLeftButtonUp ( unsigned int x, unsigned int y )
 {
   // virtual implementation
 }
 
-void SDLInput::onMouseMiddleButtonUp ( unsigned int x, unsigned int y )
+void nom::SDLInput::onMouseMiddleButtonUp ( unsigned int x, unsigned int y )
 {
   // virtual implementation
 }
 
-void SDLInput::onMouseRightButtonUp ( unsigned int x, unsigned int y )
+void nom::SDLInput::onMouseRightButtonUp ( unsigned int x, unsigned int y )
 {
   // virtual implementation
 }
 
-void SDLInput::onJoyButtonDown ( unsigned int which, unsigned int button )
+void nom::SDLInput::onJoyButtonDown ( unsigned int which, unsigned int button )
 {
   // virtual implementation
 }
 
-void SDLInput::onJoyButtonUp ( unsigned int which, unsigned int button )
+void nom::SDLInput::onJoyButtonUp ( unsigned int which, unsigned int button )
 {
   // virtual implementation
 }
 
-void SDLInput::onJoyAxis ( unsigned int which, unsigned int axis, short int value )
+void nom::SDLInput::onJoyAxis ( unsigned int which, unsigned int axis, short int value )
 {
   // virtual implementation
 }

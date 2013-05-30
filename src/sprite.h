@@ -19,7 +19,7 @@
 
 class Gfx;
 
-namespace NomNom
+namespace nom
 {
   class Sprite
   {
@@ -96,7 +96,5 @@ namespace NomNom
       } sheet;
   };
 }
-
-namespace nom = NomNom; // alias declaration
 
 #endif // GAMELIB_SPRITE_HEADERS defined

@@ -18,7 +18,7 @@
 
 #include "gamelib.h"
 
-namespace NomNom
+namespace nom
 {
   class SDL_Cursor
   {
@@ -67,7 +67,5 @@ namespace NomNom
       //
   };
 }
-
-namespace nom = NomNom; // alias declaration
 
 #endif // NOMNOM_SDL_CURSOR_HEADERS defined

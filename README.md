@@ -13,4 +13,4 @@ SDL Game Engine Library
 
 ### Footer
 
-Copyright (c) 2013 Jeffrey Carpenter <i8degrees@gmail.com>
+Copyright (c) 2013 Jeffrey Carpenter

@@ -21,6 +21,7 @@
 #include "GameState.h"
 #include "GColor.h"
 #include "GCoords.h"
+#include "timer.h"
 
 class GColor;
 
@@ -113,6 +114,8 @@ class Gfx
     void Run ( void );
     void Quit ( void );
 
+    unsigned int getTicks ( void );
+
     bool isFullScreen ( void );
     void setFullScreen ( bool toggle );
     bool getShowFPS ( void );
@@ -124,6 +127,7 @@ class Gfx
     bool show_fps; // fps counter
     bool fullscreen; // toggle window & fullscreen states
     std::vector<std::unique_ptr<GameState>> states;
+    Timer appTime;
 };
 
 #endif // GAMELIB_GFX_HEADERS defined

@@ -42,6 +42,7 @@ Gfx::Gfx ( unsigned int sdl_flags, unsigned int img_flags )
 
     exit ( EXIT_FAILURE );
   }
+  this->appTime.Start();
 }
 
 Gfx::~Gfx ( void )
@@ -49,6 +50,8 @@ Gfx::~Gfx ( void )
   // cleanup all of the states
   while ( !states.empty() )
     states.pop_back();
+
+  this->appTime.Stop();
 
   if ( this->screen != NULL )
   {
@@ -573,6 +576,11 @@ void Gfx::Run ( void )
 void Gfx::Quit ( void )
 {
   this->running = false;
+}
+
+unsigned int Gfx::getTicks ( void )
+{
+  return this->appTime.getTicks();
 }
 
 bool Gfx::getShowFPS ( void )

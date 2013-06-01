@@ -150,7 +150,7 @@ bool SDL_TFont::Draw ( SDL_Surface *video_buffer )
     return false;
   }
 
-  if ( video_buffer != NULL )
+  if ( font_buffer != NULL )
   {
     if ( Gfx::DrawSurface ( font_buffer, video_buffer, this->getX(), this->getY() ) == false )
     {

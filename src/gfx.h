@@ -130,7 +130,7 @@ class Gfx
 
     void HandleInput ( void );
     void Update ( void );
-    void Draw ( void );
+    void Draw ( SDL_Surface *video_buffer );
 
     bool isRunning ( void );
     void Run ( void );

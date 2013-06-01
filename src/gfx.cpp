@@ -626,10 +626,10 @@ void Gfx::Update ( void )
   this->states.back()->Update();
 }
 
-void Gfx::Draw( void )
+void Gfx::Draw( SDL_Surface *video_buffer )
 {
   // let the state draw the scene
-  this->states.back()->Draw();
+  this->states.back()->Draw ( video_buffer );
 }
 
 bool Gfx::isRunning ( void )

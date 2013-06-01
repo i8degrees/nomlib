@@ -34,7 +34,7 @@ class GameState: public nom::SDLInput
 
     virtual void HandleInput ( void ) = 0;
     virtual void Update ( void ) = 0;
-    virtual void Draw ( void ) = 0;
+    virtual void Draw ( SDL_Surface *video_buffer ) = 0;
 
   private:
     // ...

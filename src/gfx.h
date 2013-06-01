@@ -42,6 +42,12 @@ class Gfx
                         unsigned int screen_bpp = 8,
                         unsigned int video_flags = 0
                       );
+    // SDLDisplay
+    static SDL_Surface* getDisplay ( void );
+    static const signed int getDisplayWidth ( void );
+    static const signed int getDisplayHeight ( void );
+    static const signed int getDisplayColorBits ( void );
+    static /*const*/ SDL_PixelFormat* getDisplayPixelFormat ( void );
 
     // SDLSurface
     static bool setTransparent (  SDL_Surface *video_buffer, GColor color,

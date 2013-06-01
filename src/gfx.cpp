@@ -88,6 +88,43 @@ bool Gfx::SetVideoMode (  unsigned int screen_width,
   return true;
 }
 
+SDL_Surface* Gfx::getDisplay ( void )
+{
+  return SDL_GetVideoSurface();
+}
+
+const signed int Gfx::getDisplayWidth ( void )
+{
+  SDL_Surface *screen = NULL;
+  screen = SDL_GetVideoSurface();
+  return screen->w;
+}
+
+const signed int Gfx::getDisplayHeight ( void )
+{
+  SDL_Surface *screen = NULL;
+  screen = SDL_GetVideoSurface();
+  return screen->h;
+}
+
+const signed int Gfx::getDisplayColorBits ( void )
+{
+  SDL_Surface *screen = NULL;
+
+  screen = SDL_GetVideoSurface();
+
+  return screen->format->BitsPerPixel;
+}
+
+/*const*/ SDL_PixelFormat* Gfx::getDisplayPixelFormat ( void )
+{
+  SDL_Surface *screen = NULL;
+
+  screen = SDL_GetVideoSurface();
+
+  return screen->format;
+}
+
 bool Gfx::setAlpha (  SDL_Surface *video_buffer, unsigned char opacity,
                       unsigned int flags )
 {

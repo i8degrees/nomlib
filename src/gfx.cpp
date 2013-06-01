@@ -48,8 +48,8 @@ Gfx::Gfx ( unsigned int sdl_flags, unsigned int img_flags )
 Gfx::~Gfx ( void )
 {
   // cleanup all of the states
-  while ( !states.empty() )
-    states.pop_back();
+  while ( !this->states.empty() )
+    this->states.pop_back();
 
   this->appTime.Stop();
 

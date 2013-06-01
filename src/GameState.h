@@ -23,6 +23,12 @@
 class GameState: public nom::SDLInput
 {
   public:
+    virtual ~GameState()
+    {
+      #ifdef DEBUG_GAMESTATE_OBJ
+        std::cout << "GameState::~GameState (): " << "Goodbye cruel world!" << std::endl << std::endl;
+      #endif
+    }
     virtual void Pause ( void ) = 0;
     virtual void Resume ( void ) = 0;
 

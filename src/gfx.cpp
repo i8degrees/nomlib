@@ -502,41 +502,41 @@ bool Gfx::unlockSurface ( SDL_Surface *video_buffer )
 void Gfx::ChangeState( std::unique_ptr<GameState> state )
 {
   // cleanup the current state
-  if ( !states.empty() )
-    states.pop_back();
+  if ( !this->states.empty() )
+    this->states.pop_back();
 
   // store the new state
-  states.push_back( std::move( state ) );
+  this->states.push_back( std::move( state ) );
 }
 
 void Gfx::PushState( std::unique_ptr<GameState> state )
 {
   // pause current state
-  if ( !states.empty() )
-    states.back()->Pause();
+  if ( !this->states.empty() )
+    this->states.back()->Pause();
 
   // store the new state
-  states.push_back( std::move( state ) );
+  this->states.push_back( std::move( state ) );
 }
 
 void Gfx::PopState ( void )
 {
   // cleanup the current state
-  if ( !states.empty() )
-    states.pop_back();
+  if ( !this->states.empty() )
+    this->states.pop_back();
 
   // resume previous state
-  if ( !states.empty () )
-    states.back()->Resume();
+  if ( !this->states.empty () )
+    this->states.back()->Resume();
 }
 
 void Gfx::PopStateThenChangeState( std::unique_ptr<GameState> state )
 {
   // cleanup the current state
-  if ( !states.empty() )
-    states.pop_back();
+  if ( !this->states.empty() )
+    this->states.pop_back();
 
-  if ( !states.empty () )
+  if ( !this->states.empty () )
   {
     Gfx::ChangeState( std::move( state ) );
   }
@@ -545,19 +545,19 @@ void Gfx::PopStateThenChangeState( std::unique_ptr<GameState> state )
 void Gfx::HandleInput ( void )
 {
   // let the state handle events
-  states.back()->HandleInput ();
+  this->states.back()->HandleInput ();
 }
 
 void Gfx::Update ( void )
 {
   // let the state update the scene
-  states.back()->Update();
+  this->states.back()->Update();
 }
 
 void Gfx::Draw( void )
 {
   // let the state draw the scene
-  states.back()->Draw();
+  this->states.back()->Draw();
 }
 
 bool Gfx::isRunning ( void )

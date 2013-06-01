@@ -16,7 +16,6 @@ Gfx::Gfx ( unsigned int sdl_flags, unsigned int img_flags )
     std::cout << "Gfx::Gfx(): Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->screen = NULL;
   this->running = false;
 
   //#ifdef DEBUG_GFX
@@ -74,9 +73,11 @@ bool Gfx::SetVideoMode (  unsigned int screen_width,
                           unsigned int video_flags
                         )
 {
-  this->screen = SDL_SetVideoMode ( screen_width, screen_height, screen_bpp, video_flags );
+  SDL_Surface *screen = NULL;
 
-  if ( this->screen == NULL )
+  screen = SDL_SetVideoMode ( screen_width, screen_height, screen_bpp, video_flags );
+
+  if ( screen == NULL )
   {
     #ifdef DEBUG_GFX
       std::cout << "ERR in Gfx::SetVideoMode(): " << SDL_GetError() << std::endl;
@@ -240,7 +241,7 @@ bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int 
     return false;
   }
 
-  if ( SDL_BlitSurface ( video_buffer, NULL, this->screen, &coords ) != 0 )
+  if ( SDL_BlitSurface ( video_buffer, NULL, Gfx::getDisplay(), &coords ) != 0 )
   {
     #ifdef DEBUG_GFX
       std::cout << "ERR in Gfx::DrawSurface() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
@@ -274,7 +275,7 @@ bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int 
     return false;
   }
 
-  if ( SDL_BlitSurface ( video_buffer, &offsets, this->screen, &coords ) != 0 )
+  if ( SDL_BlitSurface ( video_buffer, &offsets, Gfx::getDisplay(), &coords ) != 0 )
   {
     #ifdef DEBUG_GFX
       std::cout << "ERR in Gfx::DrawSurface() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
@@ -322,7 +323,7 @@ bool DrawSurface (  SDL_Surface *source_buffer, SDL_Surface *dest_buffer,
 
 bool Gfx::UpdateScreen ( void )
 {
-  if ( SDL_Flip ( this->screen ) != 0 )
+  if ( SDL_Flip ( Gfx::getDisplay() ) != 0 )
   {
     #ifdef DEBUG_GFX
       std::cout << "ERR in Gfx::UpdateScreen(): " << SDL_GetError() << std::endl;
@@ -361,9 +362,9 @@ bool Gfx::DrawRectangle ( unsigned int x, unsigned int y,
   //if ( color.getAlpha() != -1 )
     //rectangle_color = color.mapRGBA ( this->screen->format, r.getRed(), g.getGreen(), b.getBlue(), color.getAlpha() );
   //else
-    rectangle_color = GColor::mapRGB ( this->screen->format, r, g, b );
+    rectangle_color = GColor::mapRGB ( Gfx::getDisplayPixelFormat(), r, g, b );
 
-  if ( SDL_FillRect ( this->screen, &rectangle, rectangle_color ) != 0 )
+  if ( SDL_FillRect ( Gfx::getDisplay(), &rectangle, rectangle_color ) != 0 )
   {
     #ifdef DEBUG_GFX
       std::cout << "ERR in Gfx::DrawRectangle(): " << SDL_GetError() << std::endl;
@@ -412,7 +413,7 @@ bool Gfx::setIcon ( std::string app_icon, GColor color, unsigned int flags )
 {
   SDL_Surface *icon_buffer = NULL;
 
-  if ( screen != NULL )
+  if ( Gfx::getDisplay() != NULL )
   {
     #ifdef DEBUG_GFX
       std::cout << "ERR in Gfx::SetWindowIcon(): " << "SDL_SetVideoMode() has already been called." << std::endl;

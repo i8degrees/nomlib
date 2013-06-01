@@ -30,18 +30,19 @@ class GColor;
 class Gfx
 {
   public:
-    // SDLVideo
+    // SDLDisplay
     Gfx (   unsigned int sdl_flags = SDL_INIT_EVERYTHING,
             unsigned int img_flags = IMG_INIT_PNG
         );
 
     ~Gfx ( void );
 
-    bool SetVideoMode ( unsigned int screen_width = 320,
-                        unsigned int screen_height = 240,
-                        unsigned int screen_bpp = 8,
-                        unsigned int video_flags = 0
-                      );
+    static bool SetVideoMode  ( unsigned int screen_width = 320,
+                                unsigned int screen_height = 240,
+                                unsigned int screen_bpp = 8,
+                                unsigned int video_flags = 0
+                              );
+
     // SDLDisplay
     static SDL_Surface* getDisplay ( void );
     static const signed int getDisplayWidth ( void );
@@ -62,36 +63,40 @@ class Gfx
                                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
                 // Deprecated
-    /* static */ bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );
+    static bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );
                 // Transitional; phasing out
-    /* static */ bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
+    static bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
                                     unsigned int x_offset, unsigned int y_offset,
                                     unsigned int width_offset, unsigned int height_offset );
                 // Future; phasing in
     static bool DrawSurface (   SDL_Surface *source_buffer, SDL_Surface *dest_buffer,
                                 GCoords coords, GCoords offsets );
 
-    // SDLVideo
-    bool UpdateScreen ( void );
+    // SDLDisplay
+    static bool UpdateScreen ( void );
 
+    // SDLSurface
     static bool UpdateScreen ( SDL_Surface *video_buffer );
 
+    // SDLSurface
+    // TODO: Rename to DrawRect
     static bool DrawRectangle ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
                                 unsigned int width, unsigned int height,
                                 unsigned int r, unsigned int g, unsigned int b );
 
-    // SDLGfxPrimitives
-    bool DrawRectangle (  unsigned int x, unsigned int y,
-                          unsigned int width, unsigned int height, unsigned int r,
-                          unsigned int g, unsigned int b );
+    // SDLSurface
+    // TODO: Rename to DrawRect
+    static bool DrawRectangle ( unsigned int x, unsigned int y,
+                                unsigned int width, unsigned int height, unsigned int r,
+                                unsigned int g, unsigned int b );
 
-    // SDLVideo
+    // SDLDisplay
     static void setTitle ( std::string app_name );
 
-    bool setIcon (  std::string app_icon, GColor color,
-                    unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
+    static bool setIcon ( std::string app_icon, GColor color,
+                          unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
-    // SDLGfxPrimitives
+    // SDLSurface
     static unsigned int getPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );
     static void setPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, GColor color );
 
@@ -99,9 +104,6 @@ class Gfx
     static bool unlockSurface ( SDL_Surface *video_buffer );
 
     static void drawLine ( SDL_Surface *video_buffer, float x1, float y1, float x2, float y2, GColor color );
-
-    // SDLVideo
-    SDL_Surface *screen; // primary (think: visible) video memory
 
 /*
   class GameApp: public SDLInput

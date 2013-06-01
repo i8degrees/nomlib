@@ -83,7 +83,7 @@ void SDLGradient::Draw (  SDL_Surface *video_buffer, unsigned int x, unsigned in
 
   for ( rows = x; rows < x_offset - this->x_margin; rows++ )
   {
-    Gfx::DrawRectangle (  video_buffer, rows, this->coords.getY(),
+    Gfx::drawRect (  video_buffer, rows, this->coords.getY(),
                           this->coords.getW(), this->coords.getH(),
                           ( unsigned int ) currentR,
                           ( unsigned int ) currentG,

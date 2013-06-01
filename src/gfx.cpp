@@ -347,7 +347,7 @@ bool Gfx::UpdateScreen ( SDL_Surface *video_buffer )
   return true;
 }
 
-bool Gfx::DrawRectangle ( unsigned int x, unsigned int y,
+bool Gfx::drawRect ( unsigned int x, unsigned int y,
                           unsigned int width, unsigned int height,
                           unsigned int r, unsigned int g, unsigned int b )
 {
@@ -375,7 +375,7 @@ bool Gfx::DrawRectangle ( unsigned int x, unsigned int y,
   return true;
 }
 
-bool Gfx::DrawRectangle ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
+bool Gfx::drawRect ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
                           unsigned int width, unsigned int height,
                           unsigned int r, unsigned int g, unsigned int b )
 {

@@ -73,20 +73,20 @@ class Gfx
                                 GCoords coords, GCoords offsets );
 
     // SDLDisplay
+    // TODO: rename to updateDisplay()
     static bool UpdateScreen ( void );
 
     // SDLSurface
+    // TODO: rename to updateSurface()
     static bool UpdateScreen ( SDL_Surface *video_buffer );
 
     // SDLSurface
-    // TODO: Rename to DrawRect
-    static bool DrawRectangle ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
+    static bool drawRect ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
                                 unsigned int width, unsigned int height,
                                 unsigned int r, unsigned int g, unsigned int b );
 
     // SDLSurface
-    // TODO: Rename to DrawRect
-    static bool DrawRectangle ( unsigned int x, unsigned int y,
+    static bool drawRect ( unsigned int x, unsigned int y,
                                 unsigned int width, unsigned int height, unsigned int r,
                                 unsigned int g, unsigned int b );
 

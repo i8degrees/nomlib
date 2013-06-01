@@ -53,11 +53,11 @@ Gfx::~Gfx ( void )
 
   this->appTime.Stop();
 
-  if ( this->screen != NULL )
-  {
-    SDL_FreeSurface ( this->screen );
-    this->screen = NULL;
-  }
+  // As per docs, we must not free the publicly available surface, AKA
+  // SDL_Surface *screen. This is explicitly stated as a role of the SDL_Quit()
+  // function.
+  //
+  // http://sdl.beuc.net/sdl.wiki/SDL_SetVideoMode
 
   #ifdef DEBUG_GFX_OBJ
     std::cout << "Gfx::~Gfx(): " << "Goodbye cruel world!" << "\n" << std::endl;

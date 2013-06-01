@@ -280,7 +280,7 @@ bool SDLBitmapFont::Load ( std::string filename, GColor colorkey, unsigned int s
 }
 
 // Reference: http://lazyfoo.net/SDL_tutorials/lesson30/index.php
-bool SDLBitmapFont::Draw ( Gfx *engine, unsigned int x, unsigned int y )
+bool SDLBitmapFont::Draw ( unsigned int x, unsigned int y )
 {
   //Temp offsets
   unsigned int x_offset = x, y_offset = y;
@@ -310,7 +310,7 @@ bool SDLBitmapFont::Draw ( Gfx *engine, unsigned int x, unsigned int y )
         //Get the ASCII value of the character
         unsigned int ascii = (unsigned char)this->text_buffer[show];
 
-        if ( engine->DrawSurface ( this->bitmap_font, x_offset, y_offset, chars[ascii].x, chars[ascii].y, chars[ascii].w, chars[ascii].h ) == false )
+        if ( Gfx::DrawSurface ( this->bitmap_font, x_offset, y_offset, chars[ascii].x, chars[ascii].y, chars[ascii].w, chars[ascii].h ) == false )
         {
           std::cout << "ERR in SDLBitmapFont::DrawText(): " << SDL_GetError() << std::endl;
 

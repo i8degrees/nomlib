@@ -12,11 +12,13 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
-#include "GCoords.h"
 #include "sprite.h"
 
 #include "gamelib.h"
+
+#include "GCoords.h"
 
 namespace nom
 {
@@ -52,8 +54,7 @@ namespace nom
       void moveCursorRight();
 
       void Update ( void );
-      void Draw ( Gfx *engine );
-      //bool Draw ( SDL_Surface *video_buffer );
+      void Draw ( void );
 
     private:
       nom::Sprite cursor; // interface cursor

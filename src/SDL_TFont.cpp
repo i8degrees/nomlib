@@ -97,7 +97,7 @@ bool SDL_TFont::Load ( std::string filename, unsigned int font_size )
   return true;
 }
 
-bool SDL_TFont::Draw ( Gfx *engine, unsigned int x, unsigned int y )
+bool SDL_TFont::Draw ( unsigned int x, unsigned int y )
 {
   SDL_Surface *video_buffer = NULL;
 
@@ -117,7 +117,7 @@ bool SDL_TFont::Draw ( Gfx *engine, unsigned int x, unsigned int y )
 
   if ( video_buffer != NULL )
   {
-    if ( engine->DrawSurface ( video_buffer, x, y ) == false )
+    if ( Gfx::DrawSurface ( video_buffer, x, y ) == false )
     {
       std::cout << "ERR in SDL_TFont::Draw(): " << SDL_GetError() << std::endl;
     }

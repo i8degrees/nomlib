@@ -98,7 +98,7 @@ void nom::SDL_Cursor::Update ( void )
   // Stub
 }
 
-void nom::SDL_Cursor::Draw ( Gfx *engine )
+void nom::SDL_Cursor::Draw ( void )
 {
-  this->cursor.Draw ( engine );
+  this->cursor.Draw ();
 }

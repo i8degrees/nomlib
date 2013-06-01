@@ -2,6 +2,9 @@
 
 ## TODO
 
+* GameState::Update ( SDL_Surface *video_buffer ) ?
+* GameState::Draw ( SDL_Surface *video_buffer ) ?
+
 * Rename GColor to nom::Color
 
 * GColor::getSDLColor or such that will return to us a SDL_Color struct for use in

@@ -25,13 +25,12 @@ class SDL_TFont
     SDL_TFont ( void );
     ~SDL_TFont ( void );
 
-      // abstract font class
-    // unsigned int getX ( void );
-    // unsigned int getY ( void );
-    // GCoords getXY ( void );
-    // void setX ( unsigned int x );
-    // void setY ( unsigned int y );
-    // void setXY ( unsigned int x, unsigned int y );
+    signed int getX ( void );
+    signed int getY ( void );
+    GCoords getXY ( void );
+    void setX ( signed int x );
+    void setY ( signed int y );
+    void setXY ( signed int x, signed int y );
 
     std::string getText ( void );
     unsigned int getTextWidth ( void );
@@ -42,7 +41,7 @@ class SDL_TFont
     void setTextColor ( unsigned r, unsigned g, unsigned b );
 
     bool Load ( std::string filename, unsigned int size );
-    bool Draw ( unsigned int x, unsigned int y );
+    bool Draw ( SDL_Surface *video_buffer );
 
   private:
     //SDL_Surface *ttf_font;

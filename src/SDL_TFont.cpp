@@ -41,6 +41,36 @@ SDL_TFont::~SDL_TFont ( void )
   TTF_Quit ();
 }
 
+signed int SDL_TFont::getX ( void )
+{
+  return this->coords.getX();
+}
+
+signed int SDL_TFont::getY ( void )
+{
+  return this->coords.getY();
+}
+
+GCoords SDL_TFont::getXY ( void )
+{
+  return this->coords;
+}
+
+void SDL_TFont::setX ( signed int x )
+{
+  this->coords.setX ( x );
+}
+
+void SDL_TFont::setY ( signed int y )
+{
+  this->coords.setY ( y );
+}
+
+void SDL_TFont::setXY ( signed int x, signed int y )
+{
+  this->coords.setXY ( x, y );
+}
+
 unsigned int SDL_TFont::getTextWidth ( void )
 {
   return this->coords.getW();
@@ -97,46 +127,44 @@ bool SDL_TFont::Load ( std::string filename, unsigned int font_size )
   return true;
 }
 
-bool SDL_TFont::Draw ( unsigned int x, unsigned int y )
+bool SDL_TFont::Draw ( SDL_Surface *video_buffer )
 {
-  SDL_Surface *video_buffer = NULL;
+  SDL_Surface *font_buffer = NULL;
   SDL_Color color;
 
   color.r = this->text_color.getRed();
   color.g = this->text_color.getGreen();
   color.b = this->text_color.getBlue();
 
-  this->coords.setXY ( x, y );
-
   if ( this->getText().c_str() != NULL )
-    video_buffer = TTF_RenderText_Solid ( this->font, this->getText().c_str(),
+    font_buffer = TTF_RenderText_Solid ( this->font, this->getText().c_str(),
                                           color
                                         );
   else
   {
     std::cout << "ERR in SDL_TFont::Draw(): " << SDL_GetError() << std::endl;
 
-    SDL_FreeSurface ( video_buffer );
-    video_buffer = NULL;
+    SDL_FreeSurface ( font_buffer );
+    font_buffer = NULL;
 
     return false;
   }
 
   if ( video_buffer != NULL )
   {
-    if ( Gfx::DrawSurface ( video_buffer, x, y ) == false )
+    if ( Gfx::DrawSurface ( font_buffer, video_buffer, this->getX(), this->getY() ) == false )
     {
       std::cout << "ERR in SDL_TFont::Draw(): " << SDL_GetError() << std::endl;
     }
 
-    SDL_FreeSurface ( video_buffer );
-    video_buffer = NULL;
+    SDL_FreeSurface ( font_buffer );
+    font_buffer = NULL;
 
     return false;
   }
 
-  SDL_FreeSurface ( video_buffer );
-  video_buffer = NULL;
+  SDL_FreeSurface ( font_buffer );
+  font_buffer = NULL;
 
   return true;
 }

@@ -23,6 +23,8 @@ SDLBitmapFont::SDLBitmapFont ( void )
   this->text_buffer = "\0";
   this->newline = 0; // holds the y coords value to increment upon newline break char
   this->spacing = 0; // holds the x coords value to increment upon space char
+
+  this->coords.setCoords ( 0, 0, 0, 0 );
 }
 
 SDLBitmapFont::~SDLBitmapFont ( void )
@@ -36,6 +38,36 @@ SDLBitmapFont::~SDLBitmapFont ( void )
     SDL_FreeSurface ( this->bitmap_font );
     this->bitmap_font = NULL;
   }
+}
+
+signed int SDLBitmapFont::getX ( void )
+{
+  return this->coords.getX();
+}
+
+signed int SDLBitmapFont::getY ( void )
+{
+  return this->coords.getY();
+}
+
+GCoords SDLBitmapFont::getXY ( void )
+{
+  return this->coords;
+}
+
+void SDLBitmapFont::setX ( signed int x )
+{
+  this->coords.setX ( x );
+}
+
+void SDLBitmapFont::setY ( signed int y )
+{
+  this->coords.setY ( y );
+}
+
+void SDLBitmapFont::setXY ( signed int x, signed int y )
+{
+  this->coords.setXY ( x, y );
 }
 
 void SDLBitmapFont::greyedOutText ( unsigned char opacity )
@@ -280,10 +312,11 @@ bool SDLBitmapFont::Load ( std::string filename, GColor colorkey, unsigned int s
 }
 
 // Reference: http://lazyfoo.net/SDL_tutorials/lesson30/index.php
-bool SDLBitmapFont::Draw ( unsigned int x, unsigned int y )
+bool SDLBitmapFont::Draw ( SDL_Surface *video_buffer )
 {
   //Temp offsets
-  unsigned int x_offset = x, y_offset = y;
+  unsigned int x_offset = this->coords.getX();
+  unsigned int y_offset = this->coords.getY();
 
   //If the font has been built
   if ( this->bitmap_font != NULL )
@@ -303,14 +336,14 @@ bool SDLBitmapFont::Draw ( unsigned int x, unsigned int y )
         y_offset += this->newline;
 
         //Move back
-        x_offset = x;
+        x_offset = this->coords.getX();
       }
       else
       {
         //Get the ASCII value of the character
         unsigned int ascii = (unsigned char)this->text_buffer[show];
 
-        if ( Gfx::DrawSurface ( this->bitmap_font, x_offset, y_offset, chars[ascii].x, chars[ascii].y, chars[ascii].w, chars[ascii].h ) == false )
+        if ( Gfx::DrawSurface ( this->bitmap_font, video_buffer, x_offset, y_offset, chars[ascii].x, chars[ascii].y, chars[ascii].w, chars[ascii].h ) == false )
         {
           std::cout << "ERR in SDLBitmapFont::DrawText(): " << SDL_GetError() << std::endl;
 

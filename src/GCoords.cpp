@@ -56,6 +56,16 @@ std::pair<signed int, signed int> GCoords::getXY ( void )
   return this->coords;
 }
 
+void GCoords::setX ( signed int x )
+{
+  this->coords = std::make_pair ( x, std::get<1>(coords) );
+}
+
+void GCoords::setY ( signed int y )
+{
+  this->coords = std::make_pair ( std::get<0>(coords), y );
+}
+
 void GCoords::setXY ( signed int x, signed int y )
 {
   this->coords = std::make_pair ( x, y );

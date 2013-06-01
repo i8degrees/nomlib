@@ -32,6 +32,8 @@ class GCoords
     signed int getX ( void );
     signed int getY ( void );
     std::pair<signed int, signed int> getXY ( void );
+    void setX ( signed int x );
+    void setY ( signed int y );
     void setXY ( signed int x, signed int y );
 
     signed int getWidth ( void );

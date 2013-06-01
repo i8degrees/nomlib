@@ -53,11 +53,11 @@ nom::SDLInput::~SDLInput ( void )
   //{
     //SDL_JoystickClose ( this->joystick );
 
-    if ( this->joystick )
-      this->joystick = NULL;
+    //if ( this->joystick )
+      //this->joystick = NULL;
   //}
 
-  SDL_QuitSubSystem ( SDL_INIT_JOYSTICK );
+  //SDL_QuitSubSystem ( SDL_INIT_JOYSTICK );
 }
 
 

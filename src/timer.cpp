@@ -14,9 +14,11 @@ Timer::Timer ( void )
     std::cout << "Timer::Timer (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
-  // TODO
-
-  // SDL_Init_Subsystem ( SDL_INIT_TIMER );
+  if ( SDL_InitSubSystem ( SDL_INIT_TIMER ) == -1 )
+  {
+    std::cout << "ERR in Timer::Timer() at: " << SDL_GetError() << std::endl;
+    return;
+  }
 
   this->started = false;
   this->paused = false;
@@ -29,6 +31,8 @@ Timer::~Timer ( void )
   #ifdef DEBUG_TIMER_OBJ
     std::cout << "Timer::~Timer (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
+
+  SDL_QuitSubSystem ( SDL_INIT_TIMER );
 }
 
 void Timer::Start ( void )

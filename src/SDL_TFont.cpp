@@ -51,12 +51,12 @@ unsigned int SDL_TFont::getTextHeight ( void )
   return this->coords.getH();
 }
 
-std::string SDL_TFont::getTextBuffer ( void )
+std::string SDL_TFont::getText ( void )
 {
   return this->text_buffer;
 }
 
-void SDL_TFont::setTextBuffer ( std::string text )
+void SDL_TFont::setText ( std::string text )
 {
   signed int width, height = 0;
 

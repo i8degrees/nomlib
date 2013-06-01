@@ -40,8 +40,8 @@ class SDLBitmapFont
 
     unsigned int getTextWidth ( void );
     unsigned int getTextHeight ( void );
-    std::string getTextBuffer ( void );
-    void setTextBuffer ( std::string text ); // TODO: rename to setText
+    std::string getText ( void );
+    void setText ( std::string text ); // TODO: rename to setText
 
     unsigned int getSpacing ( void );
     void setSpacing ( unsigned int spaces );

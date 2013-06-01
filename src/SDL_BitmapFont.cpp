@@ -83,12 +83,12 @@ unsigned int SDLBitmapFont::getTextHeight ( void )
   return text_height;
 }
 
-std::string SDLBitmapFont::getTextBuffer ( void )
+std::string SDLBitmapFont::getText ( void )
 {
   return this->text_buffer;
 }
 
-void SDLBitmapFont::setTextBuffer ( std::string text )
+void SDLBitmapFont::setText ( std::string text )
 {
   this->text_buffer = text;
 }

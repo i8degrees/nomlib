@@ -33,13 +33,13 @@ class SDL_TFont
     // void setY ( unsigned int y );
     // void setXY ( unsigned int x, unsigned int y );
 
+    std::string getText ( void );
     unsigned int getTextWidth ( void );
     unsigned int getTextHeight ( void );
-    std::string getTextBuffer ( void );
     GColor getTextColor ( void );
 
+    void setText ( std::string text );
     void setTextColor ( unsigned r, unsigned g, unsigned b );
-    void setTextBuffer ( std::string text );
 
     bool Load ( std::string filename, unsigned int size );
     bool Draw ( unsigned int x, unsigned int y );

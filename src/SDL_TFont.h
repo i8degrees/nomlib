@@ -35,8 +35,8 @@ class SDL_TFont
 
     unsigned int getTextWidth ( void );
     unsigned int getTextHeight ( void );
-    SDL_Color getTextColor ( void ); // TODO: GColor getTextColor();
     std::string getTextBuffer ( void );
+    GColor getTextColor ( void );
 
     void setTextColor ( unsigned r, unsigned g, unsigned b );
     void setTextBuffer ( std::string text );
@@ -47,7 +47,7 @@ class SDL_TFont
   private:
     //SDL_Surface *ttf_font;
     TTF_Font *font;
-    SDL_Color text_color;
+    GColor text_color;
     std::string text_buffer;
     GCoords coords; // X, Y blitting coordinates
 };

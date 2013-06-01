@@ -70,16 +70,16 @@ void SDL_TFont::setTextBuffer ( std::string text )
   }
 }
 
-SDL_Color SDL_TFont::getTextColor ( void )
+GColor SDL_TFont::getTextColor ( void )
 {
   return this->text_color;
 }
 
 void SDL_TFont::setTextColor ( unsigned r, unsigned g, unsigned b )
 {
-  this->text_color.r = r;
-  this->text_color.g = g;
-  this->text_color.b = b;
+  this->text_color.setRed ( r );
+  this->text_color.setGreen ( g );
+  this->text_color.setBlue ( b );
 }
 
 bool SDL_TFont::Load ( std::string filename, unsigned int font_size )
@@ -100,11 +100,18 @@ bool SDL_TFont::Load ( std::string filename, unsigned int font_size )
 bool SDL_TFont::Draw ( unsigned int x, unsigned int y )
 {
   SDL_Surface *video_buffer = NULL;
+  SDL_Color color;
+
+  color.r = this->text_color.getRed();
+  color.g = this->text_color.getGreen();
+  color.b = this->text_color.getBlue();
 
   this->coords.setXY ( x, y );
 
-  if ( this->getTextBuffer().c_str() != NULL )
-    video_buffer = TTF_RenderText_Solid ( this->font, this->getTextBuffer().c_str(), this->text_color );
+  if ( this->getText().c_str() != NULL )
+    video_buffer = TTF_RenderText_Solid ( this->font, this->getText().c_str(),
+                                          color
+                                        );
   else
   {
     std::cout << "ERR in SDL_TFont::Draw(): " << SDL_GetError() << std::endl;

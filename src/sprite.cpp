@@ -222,7 +222,7 @@ bool nom::Sprite::Load ( std::string filename, GColor colorkey, unsigned int fla
   return true;
 }
 
-bool nom::Sprite::Draw ( void )
+bool nom::Sprite::Draw ( SDL_Surface *video_buffer )
 {
   SDL_Rect offsets; // temporary struct to hold our clipping coords (x, y, width, height)
 
@@ -251,7 +251,7 @@ bool nom::Sprite::Draw ( void )
     offsets.h = this->getHeight();
   }
 
-  if ( Gfx::DrawSurface ( this->sprite_buffer, this->getX(), this->getY(), offsets.x, offsets.y, offsets.w, offsets.h ) == false )
+  if ( Gfx::DrawSurface ( this->sprite_buffer, video_buffer, this->getX(), this->getY(), offsets.x, offsets.y, offsets.w, offsets.h ) == false )
   {
     return false;
   }
@@ -259,8 +259,8 @@ bool nom::Sprite::Draw ( void )
   return true;
 }
 
-/*
-bool nom::Sprite::Draw ( SDL_Surface *video_buffer )
+/* FUTURE VER
+bool nom::Sprite::Draw ( SDL_Surface *video_buffer ) // const
 {
   GCoords coords, offsets; // temporary object to hold our coords
 

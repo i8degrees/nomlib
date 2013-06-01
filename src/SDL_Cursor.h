@@ -54,7 +54,7 @@ namespace nom
       void moveCursorRight();
 
       void Update ( void );
-      void Draw ( void );
+      void Draw ( SDL_Surface *video_buffer );
 
     private:
       nom::Sprite cursor; // interface cursor

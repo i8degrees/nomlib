@@ -286,6 +286,40 @@ bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int 
   return true;
 }
 
+bool Gfx::DrawSurface ( SDL_Surface *source_buffer, SDL_Surface *video_buffer, unsigned int x, unsigned int y,
+                        unsigned int x_offset, unsigned int y_offset,
+                        unsigned int width_offset, unsigned int height_offset )
+{
+  SDL_Rect coords, offsets;
+
+  coords.x = x;
+  coords.y = y;
+
+  offsets.x = x_offset;
+  offsets.y = y_offset;
+  offsets.w = width_offset;
+  offsets.h = height_offset;
+
+  if ( video_buffer == NULL )
+  {
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::DrawSurface(): " << SDL_GetError() << std::endl;
+    #endif
+
+    return false;
+  }
+
+  if ( SDL_BlitSurface ( source_buffer, &offsets, video_buffer, &coords ) != 0 )
+  {
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::DrawSurface() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
+    #endif
+    return false;
+  }
+
+  return true;
+}
+
 bool DrawSurface (  SDL_Surface *source_buffer, SDL_Surface *dest_buffer,
                     GCoords coords, GCoords offsets )
 {

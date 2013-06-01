@@ -98,7 +98,7 @@ void nom::SDL_Cursor::Update ( void )
   // Stub
 }
 
-void nom::SDL_Cursor::Draw ( void )
+void nom::SDL_Cursor::Draw ( SDL_Surface *video_buffer )
 {
-  this->cursor.Draw ();
+  this->cursor.Draw ( video_buffer );
 }

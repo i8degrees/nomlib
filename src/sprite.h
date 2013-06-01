@@ -58,8 +58,7 @@ namespace nom
       bool Load ( std::string filename );
       bool Load ( std::string filename, GColor colorkey, unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL );
 
-      bool Draw ( void );
-      //bool Draw ( SDL_Surface *video_buffer );
+      bool Draw ( SDL_Surface *video_buffer ); /* const; */
 
     private:
       SDL_Surface *sprite_buffer; // memory buffer allocation

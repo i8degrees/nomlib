@@ -2,8 +2,7 @@
 
 ## TODO
 
-* GameState::Update ( SDL_Surface *video_buffer ) ?
-* GameState::Draw ( SDL_Surface *video_buffer ) ?
+* Use Uint32, etc. definitions
 
 * Rename GColor to nom::Color
 
@@ -32,6 +31,8 @@ this may fix the SDLInput crashes within TTcards
 
 ## Completed
 
+* GameState::Update ( SDL_Surface *video_buffer ) ?
+* GameState::Draw ( SDL_Surface *video_buffer ) ?
 * rename SDL_TFont && SDL_BitmapFont::setTextBuffer to setText
 * rename methods in gamelib/Sprite to lowerCaseCamelStyle
 * Clean up Timer class; 1. match Timer & FPS; <strikethrough> 2. goodbye FPS (!) </strikethrough>

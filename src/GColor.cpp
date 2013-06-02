@@ -42,27 +42,40 @@ GColor::~GColor ( void )
   // Stub
 }
 
-GColor GColor::getColor ( void )
+// SDL compatibility wrapper
+
+SDL_Color GColor::getSDL_Color ( void ) const
+{
+  SDL_Color color;
+
+  color.r = this->getRed();
+  color.g = this->getGreen();
+  color.b = this->getBlue();
+
+  return color;
+}
+
+GColor GColor::getColor ( void ) const
 {
   return GColor ( this->red, this->green, this->blue, this->alpha );
 }
 
-unsigned int GColor::getRed ( void )
+unsigned int GColor::getRed ( void ) const
 {
   return this->red;
 }
 
-unsigned int GColor::getGreen ( void )
+unsigned int GColor::getGreen ( void ) const
 {
   return this->green;
 }
 
-unsigned int GColor::getBlue ( void )
+unsigned int GColor::getBlue ( void ) const
 {
   return this->blue;
 }
 
-unsigned int GColor::getAlpha ( void )
+unsigned int GColor::getAlpha ( void ) const
 {
   return this->alpha;
 }

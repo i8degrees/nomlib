@@ -13,18 +13,24 @@ GCoords::GCoords ( void )
     std::cout << "GCoords::GCoords (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
-  this->coords = std::make_pair ( -1, -1 );
-  this->dims = std::make_pair ( -1, -1 );
+  this->x = 0;
+  this->y = 0;
+  this->z = 0;
+  this->width = 0;
+  this->height = 0;
 }
 
-GCoords::GCoords ( signed int x, signed int y, signed int width, signed height )
+GCoords::GCoords ( signed int x_, signed int y_, signed int width_, signed height_ )
 {
   #ifdef DEBUG_COORDS_OBJ
     std::cout << "GCoords::GCoords (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
-  this->coords = std::make_pair ( x, y );
-  this->dims = std::make_pair ( width, height );
+  this->x = x_;
+  this->y = y_;
+  this->z = 0;
+  this->width = width_;
+  this->height = height_;
 }
 
 GCoords::~GCoords ( void )
@@ -32,73 +38,100 @@ GCoords::~GCoords ( void )
   #ifdef DEBUG_COORDS_OBJ
     std::cout << "GCoords::~GCoords (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
+
+  // Cleanup
 }
 
-void GCoords::setCoords ( signed int x, signed int y,
-                          signed int width, signed int height )
+void GCoords::setCoords ( signed int x_, signed int y_,
+                          signed int width_, signed int height_ )
 {
-  this->coords = std::make_pair ( x, y );
-  this->dims = std::make_pair ( width, height );
+  this->x = x_;
+  this->y = y_;
+  this->width = width_;
+  this->height = height_;
+}
+
+// Compatibility with SDL_BlitSurface
+SDL_Rect GCoords::getSDL_Rect ( void ) const
+{
+  SDL_Rect coords;
+
+  coords.x = this->x;
+  coords.y = this->y;
+  coords.w = this->width;
+  coords.h = this->height;
+
+  return coords;
+}
+
+// GCoords return?
+std::pair<signed int, signed int> GCoords::getXY ( void )
+{
+  return std::make_pair ( this->getX(), this->getY() );
 }
 
 signed int GCoords::getX ( void )
 {
-  return std::get<0>(coords);
+  return this->x;
 }
 
 signed int GCoords::getY ( void )
 {
-  return std::get<1>(coords);
+  return this->y;
 }
 
-std::pair<signed int, signed int> GCoords::getXY ( void )
+void GCoords::setX ( signed int x_ )
 {
-  return this->coords;
+  this->x = x_;
 }
 
-void GCoords::setX ( signed int x )
+void GCoords::setY ( signed int y_ )
 {
-  this->coords = std::make_pair ( x, std::get<1>(coords) );
+  this->y = y_;
 }
 
-void GCoords::setY ( signed int y )
+void GCoords::setXY ( signed int x_, signed int y_ )
 {
-  this->coords = std::make_pair ( std::get<0>(coords), y );
-}
-
-void GCoords::setXY ( signed int x, signed int y )
-{
-  this->coords = std::make_pair ( x, y );
+  this->x = x_;
+  this->y = y_;
 }
 
 signed int GCoords::getWidth ( void )
 {
-  return std::get<0>(dims);
-}
-
-// Alias for getWidth()
-signed int GCoords::getW ( void )
-{
-  return this->getWidth();
+  return this->width;
 }
 
 signed int GCoords::getHeight ( void )
 {
-  return std::get<1>(dims);
+  return this->height;
 }
 
-// Alias for getHeight()
-signed int GCoords::getH ( void )
+void GCoords::setWidth ( signed int width_ )
 {
-  return this->getHeight();
+  this->width = width_;
 }
 
-std::pair<signed int, signed int> GCoords::getDimensions ( void )
+void GCoords::setHeight ( signed int height_ )
 {
-  return this->dims;
+  this->height = height_;
 }
 
-void GCoords::setDimensions ( signed int width, signed int height )
+void GCoords::setDimensions ( signed int width_, signed int height_ )
 {
-  this->dims = std::make_pair ( width, height );
+  this->width = width_;
+  this->height = height_;
+}
+
+void GCoords::updateXY ( signed int x_, signed int y_ )
+{
+  this->x += x_;
+  this->y += y_;
+}
+
+void GCoords::updateCoords ( signed int x_, signed int y_, signed int width_, signed int height_ )
+{
+  this->x += x_;
+  this->y += y_;
+  this->width += width_;
+  this->height += height_;
 }

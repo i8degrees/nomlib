@@ -49,6 +49,9 @@ class Gfx
     static const signed int getDisplayHeight ( void );
     static const signed int getDisplayColorBits ( void );
     static /*const*/ SDL_PixelFormat* getDisplayPixelFormat ( void );
+    static const unsigned int getDisplayFlags ( void );
+    // surface->pitch
+    // surface->pixels
 
     // SDLDisplay
     // TODO: rename to updateDisplay()
@@ -59,6 +62,8 @@ class Gfx
 
     static bool setIcon ( std::string app_icon, GColor color,
                           unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
+
+    // SDLDisplay::Surface ( coords ); AKA defaults to blitting to public interface
 
     // SDLSurface
     static bool setTransparent (  SDL_Surface *video_buffer, GColor color,
@@ -75,36 +80,31 @@ class Gfx
 
     // SDLSurface
                 // Deprecated
-    static bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );
+    //static bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );
 
     // SDLSurface
                 // Transitional; phasing out
-    static bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
-                                    unsigned int x_offset, unsigned int y_offset,
-                                    unsigned int width_offset, unsigned int height_offset );
+    //static bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
+                                    //unsigned int x_offset, unsigned int y_offset,
+                                    //unsigned int width_offset, unsigned int height_offset );
 
     // SDLSurface
                 // Transitional temp
-    static bool DrawSurface ( SDL_Surface *source_buffer, SDL_Surface *video_buffer,
-                              unsigned int x, unsigned int y,
-                              unsigned int x_offset = 0, unsigned int y_offset = 0,
-                              unsigned int width_offset = 0, unsigned int height_offset = 0
-                            );
+    //static bool DrawSurface ( SDL_Surface *source_buffer, SDL_Surface *video_buffer,
+                              //unsigned int x, unsigned int y,
+                              //unsigned int x_offset = 0, unsigned int y_offset = 0,
+                              //unsigned int width_offset = 0, unsigned int height_offset = 0
+                            //);
 
     // SDLSurface
                 // Future; phasing in
-    static bool DrawSurface (   SDL_Surface *source_buffer, SDL_Surface *dest_buffer,
-                                GCoords coords, GCoords offsets );
+    static bool DrawSurface (   SDL_Surface *source_buffer, SDL_Surface *video_buffer,
+                                const GCoords &coords, const GCoords &offsets );
 
     // SDLSurface
-    static bool drawRect ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
-                                unsigned int width, unsigned int height,
-                                unsigned int r, unsigned int g, unsigned int b );
-
-    // SDLSurface
-    static bool drawRect ( unsigned int x, unsigned int y,
-                                unsigned int width, unsigned int height, unsigned int r,
-                                unsigned int g, unsigned int b );
+    static bool drawRect (  SDL_Surface *video_buffer, const GCoords &coords,
+                            const GColor &color
+                  );
 
     // SDLSurface
     // TODO: rename to updateSurface()

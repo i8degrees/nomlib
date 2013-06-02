@@ -15,6 +15,7 @@
 
 #include "SDL.h"
 
+// namespace nom
 class GColor
 {
   public:
@@ -22,11 +23,12 @@ class GColor
     GColor ( unsigned int r, unsigned int g, unsigned int b, unsigned int a = -1 ); // Reconsider a = -1
     ~GColor ( void );
 
-    GColor getColor ( void );
-    unsigned int getRed ( void );
-    unsigned int getGreen ( void );
-    unsigned int getBlue ( void );
-    unsigned int getAlpha ( void );
+    SDL_Color getSDL_Color ( void ) const;
+    GColor getColor ( void ) const;
+    unsigned int getRed ( void ) const;
+    unsigned int getGreen ( void ) const;
+    unsigned int getBlue ( void ) const;
+    unsigned int getAlpha ( void ) const;
 
     void setRed ( unsigned int r );
     void setGreen ( unsigned int g );
@@ -35,7 +37,7 @@ class GColor
 
     void setColor ( unsigned int r, unsigned int g, unsigned int b, unsigned int a = -1 ); // Reconsider a = -1
 
-    // SDLColor: public GColor ?
+    // SDL wrappers
     static unsigned int mapRGB (  SDL_PixelFormat *video_buffer, unsigned int r,
                                   unsigned int g, unsigned int b );
 

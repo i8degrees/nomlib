@@ -126,6 +126,15 @@ const signed int Gfx::getDisplayColorBits ( void )
   return screen->format;
 }
 
+const unsigned int Gfx::getDisplayFlags ( void )
+{
+  SDL_Surface *screen = NULL;
+
+  screen = SDL_GetVideoSurface();
+
+  return screen->flags;
+}
+
 bool Gfx::setAlpha (  SDL_Surface *video_buffer, unsigned char opacity,
                       unsigned int flags )
 {
@@ -225,114 +234,14 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, unsigned int flags )
   return video_buffer;
 }
 
-bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y )
-{
-  SDL_Rect coords;
+bool Gfx::DrawSurface ( SDL_Surface *source_buffer, SDL_Surface *video_buffer,
+                        const GCoords &coords, const GCoords &offsets
+                      )
 
-  coords.x = x;
-  coords.y = y;
-
-  if ( video_buffer == NULL )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::DrawSurface(): " << SDL_GetError() << std::endl;
-    #endif
-
-    return false;
-  }
-
-  if ( SDL_BlitSurface ( video_buffer, NULL, Gfx::getDisplay(), &coords ) != 0 )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::DrawSurface() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
-    #endif
-    return false;
-  }
-
-  return true;
-}
-
-bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
-                        unsigned int x_offset, unsigned int y_offset,
-                        unsigned int width_offset, unsigned int height_offset )
-{
-  SDL_Rect coords, offsets;
-
-  coords.x = x;
-  coords.y = y;
-
-  offsets.x = x_offset;
-  offsets.y = y_offset;
-  offsets.w = width_offset;
-  offsets.h = height_offset;
-
-  if ( video_buffer == NULL )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::DrawSurface(): " << SDL_GetError() << std::endl;
-    #endif
-
-    return false;
-  }
-
-  if ( SDL_BlitSurface ( video_buffer, &offsets, Gfx::getDisplay(), &coords ) != 0 )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::DrawSurface() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
-    #endif
-    return false;
-  }
-
-  return true;
-}
-
-bool Gfx::DrawSurface ( SDL_Surface *source_buffer, SDL_Surface *video_buffer, unsigned int x, unsigned int y,
-                        unsigned int x_offset, unsigned int y_offset,
-                        unsigned int width_offset, unsigned int height_offset )
-{
-  SDL_Rect coords, offsets;
-
-  coords.x = x;
-  coords.y = y;
-
-  offsets.x = x_offset;
-  offsets.y = y_offset;
-  offsets.w = width_offset;
-  offsets.h = height_offset;
-
-  if ( video_buffer == NULL )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::DrawSurface(): " << SDL_GetError() << std::endl;
-    #endif
-
-    return false;
-  }
-
-  if ( SDL_BlitSurface ( source_buffer, &offsets, video_buffer, &coords ) != 0 )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::DrawSurface() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
-    #endif
-    return false;
-  }
-
-  return true;
-}
-
-bool DrawSurface (  SDL_Surface *source_buffer, SDL_Surface *dest_buffer,
-                    GCoords coords, GCoords offsets )
 {
   // temporary vars to store our wrapped GCoords
-  SDL_Rect coords_blit, offsets_blit;
-
-  coords_blit.x = coords.getX();
-  coords_blit.y = coords.getY();
-
-  offsets_blit.x = offsets.getX();
-  offsets_blit.y = offsets.getY();
-  offsets_blit.w = offsets.getWidth();
-  offsets_blit.h = offsets.getHeight();
+  SDL_Rect blit_coords = coords.getSDL_Rect();
+  SDL_Rect blit_offsets = offsets.getSDL_Rect();
 
   if ( source_buffer == NULL )
   {
@@ -343,7 +252,7 @@ bool DrawSurface (  SDL_Surface *source_buffer, SDL_Surface *dest_buffer,
     return false;
   }
 
-  if ( SDL_BlitSurface ( source_buffer, &offsets_blit, dest_buffer, &coords_blit ) != 0 )
+  if ( SDL_BlitSurface ( source_buffer, &blit_offsets, video_buffer, &blit_coords ) != 0 )
   {
     #ifdef DEBUG_GFX
       std::cout << "ERR in Gfx::DrawSurface() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
@@ -357,7 +266,11 @@ bool DrawSurface (  SDL_Surface *source_buffer, SDL_Surface *dest_buffer,
 
 bool Gfx::UpdateScreen ( void )
 {
-  if ( SDL_Flip ( Gfx::getDisplay() ) != 0 )
+  SDL_Surface *screen = NULL;
+
+  screen = Gfx::getDisplay();
+
+  if ( SDL_Flip ( screen ) != 0 )
   {
     #ifdef DEBUG_GFX
       std::cout << "ERR in Gfx::UpdateScreen(): " << SDL_GetError() << std::endl;
@@ -381,50 +294,17 @@ bool Gfx::UpdateScreen ( SDL_Surface *video_buffer )
   return true;
 }
 
-bool Gfx::drawRect ( unsigned int x, unsigned int y,
-                          unsigned int width, unsigned int height,
-                          unsigned int r, unsigned int g, unsigned int b )
+bool Gfx::drawRect  ( SDL_Surface *video_buffer, const GCoords &coords,
+                      const GColor &color
+                    )
 {
-  SDL_Rect rectangle = { 0, 0, 0, 0 };
+  SDL_Rect rectangle = coords.getSDL_Rect();
   unsigned int rectangle_color = 0;
 
-  rectangle.x = x;
-  rectangle.y = y;
-  rectangle.w = width;
-  rectangle.h = height;
-
-  //if ( color.getAlpha() != -1 )
-    //rectangle_color = color.mapRGBA ( this->screen->format, r.getRed(), g.getGreen(), b.getBlue(), color.getAlpha() );
-  //else
-    rectangle_color = GColor::mapRGB ( Gfx::getDisplayPixelFormat(), r, g, b );
-
-  if ( SDL_FillRect ( Gfx::getDisplay(), &rectangle, rectangle_color ) != 0 )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::DrawRectangle(): " << SDL_GetError() << std::endl;
-    #endif
-    return false;
-  }
-
-  return true;
-}
-
-bool Gfx::drawRect ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
-                          unsigned int width, unsigned int height,
-                          unsigned int r, unsigned int g, unsigned int b )
-{
-  SDL_Rect rectangle = { 0, 0, 0, 0 };
-  unsigned int rectangle_color = 0;
-
-  rectangle.x = x;
-  rectangle.y = y;
-  rectangle.w = width;
-  rectangle.h = height;
-
-  //if ( color.getAlpha() != -1 )
-    //rectangle_color = color.mapRGBA ( this->screen->format, r.getRed(), g.getGreen(), b.getBlue(), color.getAlpha() );
-  //else
-    rectangle_color = GColor::mapRGB ( video_buffer->format, r, g, b );
+  if ( color.getAlpha() != -1 )
+    rectangle_color = color.mapRGBA ( video_buffer->format, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() );
+  else
+    rectangle_color = color.mapRGB ( video_buffer->format, color.getRed(), color.getGreen(), color.getBlue() );
 
   if ( SDL_FillRect ( video_buffer, &rectangle, rectangle_color ) != 0 )
   {

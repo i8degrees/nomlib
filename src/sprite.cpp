@@ -224,7 +224,8 @@ bool nom::Sprite::Load ( std::string filename, GColor colorkey, unsigned int fla
 
 bool nom::Sprite::Draw ( SDL_Surface *video_buffer )
 {
-  SDL_Rect offsets; // temporary struct to hold our clipping coords (x, y, width, height)
+  GCoords coords; // FIXME
+  GCoords offsets; // FIXME
 
   if ( this->sprite_buffer == NULL )
   {
@@ -233,58 +234,21 @@ bool nom::Sprite::Draw ( SDL_Surface *video_buffer )
     #endif
     return false;
   }
+
+  coords.setCoords ( this->getX(), this->getY(), this->getWidth(), this->getHeight() );
 
   if ( this->sheet.id != -1 )
   {
     // FIXME: Presently, we assume every sprite on our sheet is on the same row
-    offsets.x = ( this->sheet.id * this->sheet.sprite_width );
-    offsets.y = 0;
-
-    offsets.w = this->sheet.sprite_width;
-    offsets.h = this->sheet.sprite_height;
+    offsets.setX ( this->sheet.id * this->sheet.sprite_width );
+    offsets.setY ( 0 );
+    offsets.setDimensions ( this->sheet.sprite_width, this->sheet.sprite_height );
   }
   else
   {
-    offsets.x = this->getXOffset();
-    offsets.y = this->getYOffset();
-    offsets.w = this->getWidth();
-    offsets.h = this->getHeight();
-  }
-
-  if ( Gfx::DrawSurface ( this->sprite_buffer, video_buffer, this->getX(), this->getY(), offsets.x, offsets.y, offsets.w, offsets.h ) == false )
-  {
-    return false;
-  }
-
-  return true;
-}
-
-/* FUTURE VER
-bool nom::Sprite::Draw ( SDL_Surface *video_buffer ) // const
-{
-  GCoords coords, offsets; // temporary object to hold our coords
-
-  if ( this->sprite_buffer == NULL )
-  {
-    #ifdef DEBUG_SPRITE
-      std::cout << "ERR in Sprite::Draw(): " << SDL_GetError() << std::endl;
-    #endif
-
-    return false;
-  }
-
-  coords.setXY ( this->getX(), this->getY() );
-
-  if ( this->getSheetID() != -1 )
-  {
-    // FIXME: Presently, we assume every sprite on our sheet is on the same row
-    offsets.setCoords ( this->sheet.id * this->sheet.sprite_width, 0, this->sheet.sprite_width, this->sheet.sprite_height );
-  }
-  else
-  {
-    offsets.setCoords ( this->getXOffset(), this->getYOffset(),
-                        this->getWidth(),   this->getHeight()
-                      );
+    offsets.setX ( this->getXOffset() );
+    offsets.setY ( this->getYOffset() );
+    offsets.setDimensions ( this->getWidth(), this->getHeight() );
   }
 
   if ( Gfx::DrawSurface ( this->sprite_buffer, video_buffer, coords, offsets ) == false )
@@ -294,4 +258,3 @@ bool nom::Sprite::Draw ( SDL_Surface *video_buffer ) // const
 
   return true;
 }
-*/

@@ -83,12 +83,8 @@ void SDLGradient::Draw (  SDL_Surface *video_buffer, unsigned int x, unsigned in
 
   for ( rows = x; rows < x_offset - this->x_margin; rows++ )
   {
-    Gfx::drawRect (  video_buffer, rows, this->coords.getY(),
-                          this->coords.getW(), this->coords.getH(),
-                          ( unsigned int ) currentR,
-                          ( unsigned int ) currentG,
-                          ( unsigned int ) currentB
-                        );
+    this->coords.setX ( rows );
+    Gfx::drawRect ( video_buffer, this->coords, GColor ( currentR, currentG, currentB ) );
 
     if ( this->direction == 0 )
     {

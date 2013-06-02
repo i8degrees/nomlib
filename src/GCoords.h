@@ -14,39 +14,52 @@
 
 #include "SDL.h"
 
-// TODO: GRect superclass AKA std::pair template <class _T1, class _T2>
-
+// namespace nom
 class GCoords
 {
   public:
     GCoords ( void );
 
-    GCoords ( signed int x, signed int y,
-              signed int width = -1, signed height = -1 );
+    GCoords ( signed int x_, signed int y_,
+              signed int width_ = 0, signed height_ = 0);
 
     ~GCoords ( void );
 
-    void setCoords (  signed int x = -1, signed int y = -1,
-                      signed int width = -1, signed int height = -1 );
+    void setCoords (  signed int x_, signed int y_,
+                      signed int width_ = 0, signed int height_ = 0 );
+
+    SDL_Rect getSDL_Rect ( void ) const;
+    // TODO: return GCoords?
+    std::pair<signed int, signed int> getXY ( void );
 
     signed int getX ( void );
     signed int getY ( void );
-    std::pair<signed int, signed int> getXY ( void );
-    void setX ( signed int x );
-    void setY ( signed int y );
-    void setXY ( signed int x, signed int y );
+    void setX ( signed int x_ );
+    void setY ( signed int y_ );
+    void setXY ( signed int x_, signed int y_ );
 
     signed int getWidth ( void );
-    signed int getW ( void );
     signed int getHeight ( void );
-    signed int getH ( void );
 
-    std::pair<signed int, signed int> getDimensions ( void );
-    void setDimensions ( signed int width, signed int height );
+    void setWidth ( signed int width_ );
+    void setHeight ( signed int height_ );
+    void setDimensions ( signed int width_, signed int height_ );
+
+    void updateX ( signed int x_ );
+    void updateY ( signed int y_ );
+    void updateXY ( signed int x_ = 0, signed int y_ = 0 );
+
+    void updateWidth ( signed int width_ );
+    void updateHeight ( signed int height_ );
+
+    void updateCoords ( signed int x_ = 0, signed int y_ = 0, signed int width_ = 0, signed int height_ = 0 );
 
   private:
-    std::pair<signed int, signed int> coords; // x, y coords
-    std::pair<signed int, signed int> dims; // width, height coords
+    signed int x;
+    signed int y;
+    signed int z; // reserved
+    signed int width;
+    signed int height;
 };
 
 #endif // GAMELIB_COORDS_HEADERS defined

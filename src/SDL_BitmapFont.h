@@ -33,14 +33,14 @@ class SDLBitmapFont
     signed int getX ( void );
     signed int getY ( void );
     GCoords getXY ( void );
-    void setX ( signed int x );
-    void setY ( signed int y );
-    void setXY ( signed int x, signed int y );
+    void setX ( signed int x_ );
+    void setY ( signed int y_ );
+    void setXY ( signed int x_, signed int y_ );
 
-    unsigned int getTextWidth ( void );
-    unsigned int getTextHeight ( void );
+    signed int getTextWidth ( void );
+    signed int getTextHeight ( void );
     std::string getText ( void );
-    void setText ( std::string text ); // TODO: rename to setText
+    void setText ( std::string text );
 
     unsigned int getSpacing ( void );
     void setSpacing ( unsigned int spaces );
@@ -58,10 +58,10 @@ class SDLBitmapFont
   private:
     SDL_Surface *bitmap_font; // pointer reference holding our bitmap font image sheet
 
-    SDL_Rect chars [ 256 ]; // individual chars within *bitmap_font
+    GCoords chars[256]; // individual chars within *bitmap_font;
+    GCoords coords; // x, y blitting coordinates
     std::string text_buffer; // string of text for blitting
     unsigned int newline, spacing; // spacing variables
-    GCoords coords; // x, y blitting coordinates
 };
 
 #endif // GAMELIB_SDL_BITMAP_FONT_HEADERS defined

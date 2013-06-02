@@ -28,17 +28,18 @@ class SDL_TFont
     signed int getX ( void );
     signed int getY ( void );
     GCoords getXY ( void );
-    void setX ( signed int x );
-    void setY ( signed int y );
-    void setXY ( signed int x, signed int y );
+    void setX ( signed int x_ );
+    void setY ( signed int y_ );
+    void setXY ( signed int x_, signed int y_ );
 
     std::string getText ( void );
-    unsigned int getTextWidth ( void );
-    unsigned int getTextHeight ( void );
-    GColor getTextColor ( void );
+    signed int getTextWidth ( void );
+    signed int getTextHeight ( void );
 
     void setText ( std::string text );
+    GColor getTextColor ( void );
     void setTextColor ( unsigned r, unsigned g, unsigned b );
+    void setTextColor ( const GColor &color );
 
     bool Load ( std::string filename, unsigned int size );
     bool Draw ( SDL_Surface *video_buffer );

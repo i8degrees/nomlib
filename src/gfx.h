@@ -50,9 +50,8 @@ class Gfx
     static unsigned int getDisplayFlags ( void );
     static Uint16 getDisplayPitch ( void );
 
-    // SDLDisplay
-    // TODO: rename to updateDisplay()
-    static bool UpdateScreen ( void );
+    // SDL_Display
+    static bool updateDisplay ( void );
 
     // SDLDisplay
     static void setTitle ( std::string app_name );
@@ -85,9 +84,8 @@ class Gfx
                             const nom::Color &color
                   );
 
-    // SDLSurface
-    // TODO: rename to updateSurface()
-    static bool UpdateScreen ( SDL_Surface *video_buffer );
+    // SDL_Surface
+    static bool updateSurface ( SDL_Surface *video_buffer );
 
     // SDLSurface
     static unsigned int getPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );

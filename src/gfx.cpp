@@ -270,7 +270,7 @@ bool Gfx::DrawSurface ( SDL_Surface *source_buffer, SDL_Surface *video_buffer,
   return true;
 }
 
-bool Gfx::UpdateScreen ( void )
+bool Gfx::updateDisplay ( void )
 {
   SDL_Surface *screen = NULL;
 
@@ -287,7 +287,7 @@ bool Gfx::UpdateScreen ( void )
   return true;
 }
 
-bool Gfx::UpdateScreen ( SDL_Surface *video_buffer )
+bool Gfx::updateSurface ( SDL_Surface *video_buffer )
 {
   if ( SDL_Flip ( video_buffer ) != 0 )
   {

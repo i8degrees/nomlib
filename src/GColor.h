@@ -41,16 +41,6 @@ namespace nom
     SDL_Color getSDL_Color ( void ) const;
     unsigned int getColorAsInt ( SDL_PixelFormat *pixel_buffer ) const;
 
-    static unsigned int mapRGB (  SDL_PixelFormat *video_buffer, unsigned int r,
-                                  unsigned int g, unsigned int b );
-
-    static unsigned int mapRGBA ( SDL_PixelFormat *video_buffer, unsigned int r,
-                                  unsigned int g, unsigned int b, unsigned int a );
-
-    static unsigned int mapRGB (  SDL_PixelFormat *video_buffer, nom::Color c );
-
-    static unsigned int mapRGBA ( SDL_PixelFormat *video_buffer, nom::Color c );
-
   private:
     unsigned int red;
     unsigned int green;

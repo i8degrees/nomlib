@@ -109,43 +109,12 @@ void nom::Color::setAlpha ( signed int a )
 
 unsigned int nom::Color::getColorAsInt ( SDL_PixelFormat *pixel_buffer ) const
 {
-  return SDL_MapRGB ( pixel_buffer, this->red, this->green, this->blue );
-}
-
-unsigned int nom::Color::mapRGB ( SDL_PixelFormat *video_buffer, unsigned int r,
-                              unsigned int g, unsigned int b )
-{
-  unsigned int color = 0;
-
-  color = SDL_MapRGB ( video_buffer, r, g, b );
-
-  return color;
-}
-
-unsigned int nom::Color::mapRGB ( SDL_PixelFormat *video_buffer, nom::Color c )
-{
-  unsigned int color = 0;
-
-  color = SDL_MapRGB ( video_buffer, c.getRed(), c.getGreen(), c.getBlue() );
-
-  return color;
-}
-
-unsigned int nom::Color::mapRGBA (  SDL_PixelFormat *video_buffer, unsigned int r,
-                                unsigned int g, unsigned int b, unsigned int a )
-{
-  unsigned int color = 0;
-
-  color = SDL_MapRGBA ( video_buffer, r, g, b, a );
-
-  return color;
-}
-
-unsigned int nom::Color::mapRGBA (  SDL_PixelFormat *video_buffer, nom::Color c )
-{
-  unsigned int color = 0;
-
-  color = SDL_MapRGBA ( video_buffer, c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha() );
-
-  return color;
+  if ( this->alpha != -1 )
+  {
+    return SDL_MapRGBA ( pixel_buffer, this->red, this->green, this->blue, this->alpha );
+  }
+  else
+  {
+    return SDL_MapRGB ( pixel_buffer, this->red, this->green, this->blue );
+  }
 }

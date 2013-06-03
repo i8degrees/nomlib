@@ -172,10 +172,7 @@ bool Gfx::setTransparent (  SDL_Surface *video_buffer, nom::Color color,
   }
 
   // TODO: Alpha value needs testing
-  if ( color.getAlpha() != -1 )
-    transparent_color = color.mapRGBA ( video_buffer->format, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() );
-  else
-    transparent_color = color.mapRGB ( video_buffer->format, color.getRed(), color.getGreen(), color.getBlue() );
+  transparent_color = color.getColorAsInt ( video_buffer->format );
 
   if ( SDL_SetColorKey ( video_buffer, flags, transparent_color ) != 0 )
   {
@@ -310,11 +307,7 @@ bool Gfx::drawRect  ( SDL_Surface *video_buffer, const nom::Coords &coords,
   SDL_Rect rectangle = coords.getSDL_Rect();
   unsigned int rectangle_color = 0;
 
-  // TODO: Needs testing
-  if ( color.getAlpha() != -1 )
-    rectangle_color = color.mapRGBA ( video_buffer->format, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() );
-  else
-    rectangle_color = color.getColorAsInt ( video_buffer->format );
+  rectangle_color = color.getColorAsInt ( video_buffer->format );
 
   if ( SDL_FillRect ( video_buffer, &rectangle, rectangle_color ) != 0 )
   {
@@ -388,7 +381,7 @@ void Gfx::setPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, 
 
   pixel += (y * video_buffer->pitch) + (x * sizeof(unsigned int));
 
-  *((unsigned int *)pixel) = GColor::mapRGB ( video_buffer->format, color.getRed(), color.getGreen(), color.getBlue() );
+  *((unsigned int *)pixel) = color.getColorAsInt ( video_buffer->format );
 }
 
 void Gfx::drawLine ( SDL_Surface *video_buffer, float x1, float y1, float x2, float y2, nom::Color color )

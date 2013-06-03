@@ -171,7 +171,7 @@ bool SDLBitmapFont::Load ( std::string filename, nom::Color colorkey, unsigned i
     return false;
   }
 
-  background_color = GColor::mapRGB ( this->bitmap_font->format, colorkey );
+  background_color = colorkey.getColorAsInt ( this->bitmap_font->format );
 
   tile_width = this->bitmap_font->w / sheet_width;
   tile_height = this->bitmap_font->h / sheet_height;

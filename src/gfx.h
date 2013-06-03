@@ -19,11 +19,9 @@
 #include "SDL_image.h"
 
 #include "GameState.h"
-#include "GColor.h"
-#include "GCoords.h"
+#include "Color.h"
+#include "Coords.h"
 #include "timer.h"
-
-//class GColor;
 
 #include "gamelib.h"
 

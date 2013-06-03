@@ -13,8 +13,8 @@
 
 #include "SDL.h"
 
-#include "GCoords.h"
-#include "GColor.h"
+#include "Coords.h"
+#include "Color.h"
 #include "gfx.h"
 
 //#define DEBUG_GRADIENT

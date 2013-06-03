@@ -19,7 +19,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 
-#include "GColor.h"
+#include "Color.h"
 
 #include "gfx.h"
 

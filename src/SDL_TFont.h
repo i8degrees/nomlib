@@ -14,7 +14,7 @@
 
 #include "SDL_ttf.h"
 
-#include "GCoords.h"
+#include "Coords.h"
 
 #include "gfx.h"
 

@@ -1,5 +1,5 @@
 /******************************************************************************
-    GColor.cpp
+    Color.cpp
 
   Color container class
 
@@ -7,7 +7,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "GColor.h"
+#include "Color.h"
 
 nom::Color::Color ( void )
 {

@@ -18,7 +18,7 @@
 
 #include "gamelib.h"
 
-#include "GCoords.h"
+#include "Coords.h"
 
 namespace nom
 {

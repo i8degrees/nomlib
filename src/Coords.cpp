@@ -1,11 +1,13 @@
 /******************************************************************************
-    GCoords.cpp
+    Coords.cpp
+
+  Coordinate values (x, y, z, width, height ) wrapper
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.
 
 ******************************************************************************/
-#include "GCoords.h"
+#include "Coords.h"
 
 nom::Coords::Coords ( void )
 {

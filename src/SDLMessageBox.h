@@ -16,8 +16,8 @@
 #include "SDL.h"
 
 #include "gfx.h"
-//#include "GColor.h"
-#include "GCoords.h"
+//#include "Color.h"
+#include "Coords.h"
 
 #include "SDLGradient.h"
 //class SDLGradient;

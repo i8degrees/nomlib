@@ -1,5 +1,5 @@
 /******************************************************************************
-    GColor.h
+    Color.h
 
   Color container class
 
@@ -7,8 +7,8 @@
   All rights reserved.
 
 ******************************************************************************/
-#ifndef GAMELIB_COLOR_HEADERS
-#define GAMELIB_COLOR_HEADERS
+#ifndef GAMELIB_COLORS_HEADERS
+#define GAMELIB_COLORS_HEADERS
 
 #include <iostream>
 #include <string>
@@ -49,4 +49,4 @@ namespace nom
   };
 }
 
-#endif // GAMELIB_COLOR_HEADERS defined
+#endif // GAMELIB_COLORS_HEADERS defined

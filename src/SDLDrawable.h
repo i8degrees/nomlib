@@ -13,7 +13,7 @@
 
 #include "SDL.h"
 
-//#include "GCoords.h"
+//#include "Coords.h"
 
 #define DEBUG_SDL_DRAWABLE
 #define DEBUG_SDL_DRAWABLE_OBJ

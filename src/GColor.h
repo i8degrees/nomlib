@@ -21,7 +21,7 @@ namespace nom
   {
   public:
     Color ( void );
-    Color ( unsigned int r, unsigned int g, unsigned int b, unsigned int a = -1 ); // Reconsider a = -1
+    Color ( unsigned int r, unsigned int g, unsigned int b, signed int a = -1 );
     ~Color ( void );
 
     SDL_Color getSDL_Color ( void ) const;
@@ -34,9 +34,9 @@ namespace nom
     void setRed ( unsigned int r );
     void setGreen ( unsigned int g );
     void setBlue ( unsigned int b );
-    void setAlpha ( unsigned int a = -1 ); // Reconsider
+    void setAlpha ( signed int a = -1 ); // Reconsider
 
-    void setColor ( unsigned int r, unsigned int g, unsigned int b, unsigned int a = -1 ); // Reconsider a = -1
+    void setColor ( unsigned int r, unsigned int g, unsigned int b, signed int a = -1 );
 
     // SDL compatibility wrappers
     SDL_Color getSDL_Color ( void ) const;
@@ -56,7 +56,7 @@ namespace nom
     unsigned int red;
     unsigned int green;
     unsigned int blue;
-    unsigned int alpha;
+    signed int alpha;
   };
 }
 

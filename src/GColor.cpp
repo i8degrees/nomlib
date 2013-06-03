@@ -21,7 +21,7 @@ nom::Color::Color ( void )
   this->alpha = -1;
 }
 
-nom::Color::Color ( unsigned int r, unsigned int g, unsigned int b, unsigned int a )
+nom::Color::Color ( unsigned int r, unsigned int g, unsigned int b, signed int a )
 {
   #ifdef DEBUG_COLOR_OBJ
     std::cout << "GColor::GColor (): " << "Hello, world!" << std::endl << std::endl;
@@ -79,7 +79,7 @@ unsigned int nom::Color::getAlpha ( void ) const
   return this->alpha;
 }
 
-void nom::Color::setColor ( unsigned int r, unsigned int g, unsigned int b, unsigned int a )
+void nom::Color::setColor ( unsigned int r, unsigned int g, unsigned int b, signed int a )
 {
   this->red = r;
   this->green = g;
@@ -102,7 +102,7 @@ void nom::Color::setBlue ( unsigned int b )
   this->blue = b;
 }
 
-void nom::Color::setAlpha ( unsigned int a )
+void nom::Color::setAlpha ( signed int a )
 {
   this->alpha = a;
 }

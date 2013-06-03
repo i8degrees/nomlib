@@ -5,11 +5,11 @@ set ( CMAKE_BUILD_TYPE Debug )
 set ( BUILD_SHARED_LIBS true )
 set ( CMAKE_OSX_ARCHITECTURES i386;x86_64 ) # OSX Universal Library
 
-set ( EMCC_BIN "$ENV{HOME}/local/src/emscripten/emcc" )
-set ( EMCC_CFLAGS --jcache )
-set ( EMCC_TARGET libgamelib.bc )
-set ( LLVM_ANALYZER_BIN "$ENV{HOME}/local/checker/scan-build" )
-set ( LLVM_ANALYZER_ARGS -k --use-c++=/usr/bin/clang++ /usr/bin/clang++ -c )
+#set ( EMCC_BIN "$ENV{HOME}/local/src/emscripten/emcc" )
+#set ( EMCC_CFLAGS --jcache )
+#set ( EMCC_TARGET libgamelib.bc )
+#set ( LLVM_ANALYZER_BIN "$ENV{HOME}/local/checker/scan-build" )
+#set ( LLVM_ANALYZER_ARGS -k --use-c++=/usr/bin/clang++ /usr/bin/clang++ -c )
 
 set ( CMAKE_CXX_COMPILER "/usr/bin/clang++" )
 set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )

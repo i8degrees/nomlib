@@ -148,7 +148,7 @@ bool Gfx::setAlpha (  SDL_Surface *video_buffer, unsigned char opacity,
   return true;
 }
 
-bool Gfx::setTransparent (  SDL_Surface *video_buffer, GColor color,
+bool Gfx::setTransparent (  SDL_Surface *video_buffer, nom::Color color,
                             unsigned int flags )
 {
   unsigned int transparent_color = 0;
@@ -180,7 +180,7 @@ bool Gfx::setTransparent (  SDL_Surface *video_buffer, GColor color,
 }
 
 // TODO: Alpha value needs testing
-SDL_Surface *Gfx::LoadImage ( std::string filename, GColor colorkey, unsigned int flags )
+SDL_Surface *Gfx::LoadImage ( std::string filename, nom::Color colorkey, unsigned int flags )
 {
   SDL_Surface *temp_buffer = NULL;
   SDL_Surface *video_buffer = NULL;
@@ -235,7 +235,7 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, unsigned int flags )
 }
 
 bool Gfx::DrawSurface ( SDL_Surface *source_buffer, SDL_Surface *video_buffer,
-                        const GCoords &coords, const GCoords &offsets
+                        const nom::Coords &coords, const nom::Coords &offsets
                       )
 
 {
@@ -294,8 +294,8 @@ bool Gfx::UpdateScreen ( SDL_Surface *video_buffer )
   return true;
 }
 
-bool Gfx::drawRect  ( SDL_Surface *video_buffer, const GCoords &coords,
-                      const GColor &color
+bool Gfx::drawRect  ( SDL_Surface *video_buffer, const nom::Coords &coords,
+                      const nom::Color &color
                     )
 {
   SDL_Rect rectangle = coords.getSDL_Rect();
@@ -324,7 +324,7 @@ void Gfx::setTitle ( std::string app_name )
 }
 
 // NOTE: *MUST* be called before the first call to SDL_SetVideoMode is made
-bool Gfx::setIcon ( std::string app_icon, GColor color, unsigned int flags )
+bool Gfx::setIcon ( std::string app_icon, nom::Color color, unsigned int flags )
 {
   SDL_Surface *icon_buffer = NULL;
 
@@ -373,7 +373,7 @@ unsigned int Gfx::getPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned
 }
 
 // 32-bit bpp
-void Gfx::setPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, GColor color )
+void Gfx::setPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, nom::Color color )
 {
   unsigned char * pixel = (unsigned char *)video_buffer->pixels;
 
@@ -382,7 +382,7 @@ void Gfx::setPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, 
   *((unsigned int *)pixel) = GColor::mapRGB ( video_buffer->format, color.getRed(), color.getGreen(), color.getBlue() );
 }
 
-void Gfx::drawLine ( SDL_Surface *video_buffer, float x1, float y1, float x2, float y2, GColor color )
+void Gfx::drawLine ( SDL_Surface *video_buffer, float x1, float y1, float x2, float y2, nom::Color color )
 {
     // Bresenham's line algorithm
     bool steep = ( fabs ( y2 - y1 ) > fabs ( x2 - x1 ) );

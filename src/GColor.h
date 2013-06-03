@@ -15,16 +15,17 @@
 
 #include "SDL.h"
 
-// namespace nom
-class GColor
+namespace nom
 {
+  class Color
+  {
   public:
-    GColor ( void );
-    GColor ( unsigned int r, unsigned int g, unsigned int b, unsigned int a = -1 ); // Reconsider a = -1
-    ~GColor ( void );
+    Color ( void );
+    Color ( unsigned int r, unsigned int g, unsigned int b, unsigned int a = -1 ); // Reconsider a = -1
+    ~Color ( void );
 
     SDL_Color getSDL_Color ( void ) const;
-    GColor getColor ( void ) const;
+    Color getColor ( void ) const;
     unsigned int getRed ( void ) const;
     unsigned int getGreen ( void ) const;
     unsigned int getBlue ( void ) const;
@@ -46,15 +47,16 @@ class GColor
     static unsigned int mapRGBA ( SDL_PixelFormat *video_buffer, unsigned int r,
                                   unsigned int g, unsigned int b, unsigned int a );
 
-    static unsigned int mapRGB (  SDL_PixelFormat *video_buffer, GColor c );
+    static unsigned int mapRGB (  SDL_PixelFormat *video_buffer, nom::Color c );
 
-    static unsigned int mapRGBA ( SDL_PixelFormat *video_buffer, GColor c );
+    static unsigned int mapRGBA ( SDL_PixelFormat *video_buffer, nom::Color c );
 
   private:
     unsigned int red;
     unsigned int green;
     unsigned int blue;
     unsigned int alpha;
-};
+  };
+}
 
 #endif // GAMELIB_COLOR_HEADERS defined

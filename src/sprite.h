@@ -56,7 +56,7 @@ namespace nom
       void setSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding );
 
       bool Load ( std::string filename );
-      bool Load ( std::string filename, GColor colorkey, unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL );
+      bool Load ( std::string filename, nom::Color colorkey, unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL );
 
       bool Draw ( SDL_Surface *video_buffer ); /* const; */
 

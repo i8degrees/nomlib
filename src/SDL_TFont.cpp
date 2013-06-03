@@ -51,7 +51,7 @@ signed int SDL_TFont::getY ( void )
   return this->coords.getY();
 }
 
-GCoords SDL_TFont::getXY ( void )
+nom::Coords SDL_TFont::getXY ( void )
 {
   return this->coords;
 }
@@ -100,7 +100,7 @@ void SDL_TFont::setText ( std::string text )
   }
 }
 
-GColor SDL_TFont::getTextColor ( void )
+nom::Color SDL_TFont::getTextColor ( void )
 {
   return this->text_color;
 }
@@ -112,7 +112,7 @@ void SDL_TFont::setTextColor ( unsigned r, unsigned g, unsigned b )
   this->text_color.setBlue ( b );
 }
 
-void SDL_TFont::setTextColor ( const GColor &color )
+void SDL_TFont::setTextColor ( const nom::Color &color )
 {
   this->text_color = color;
 }
@@ -149,7 +149,7 @@ bool SDL_TFont::Draw ( SDL_Surface *video_buffer )
   if ( font_buffer != NULL )
   {
     // GCoords ( -1, -1, -1, -1 is equivalent to NULL here I *think*
-    if ( Gfx::DrawSurface ( font_buffer, video_buffer, this->coords, GCoords ( -1, -1, -1, -1 ) ) == false )
+    if ( Gfx::DrawSurface ( font_buffer, video_buffer, this->coords, nom::Coords ( -1, -1, -1, -1 ) ) == false )
     {
       std::cout << "ERR in SDL_TFont::Draw(): " << SDL_GetError() << std::endl;
 

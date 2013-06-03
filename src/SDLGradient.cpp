@@ -23,7 +23,7 @@ SDLGradient::SDLGradient ( void )
   this->direction = 0;
 }
 
-void SDLGradient::Init (  GColor starting_color, GColor ending_color,
+void SDLGradient::Init (  nom::Color starting_color, nom::Color ending_color,
                           unsigned int x, unsigned int y,
                           unsigned int width, unsigned int height,
                           unsigned int direction, unsigned int x_margin,
@@ -84,7 +84,7 @@ void SDLGradient::Draw (  SDL_Surface *video_buffer, unsigned int x, unsigned in
   for ( rows = x; rows < x_offset - this->x_margin; rows++ )
   {
     this->coords.setX ( rows );
-    Gfx::drawRect ( video_buffer, this->coords, GColor ( currentR, currentG, currentB ) );
+    Gfx::drawRect ( video_buffer, this->coords, nom::Color ( currentR, currentG, currentB ) );
 
     if ( this->direction == 0 )
     {

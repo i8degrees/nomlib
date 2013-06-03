@@ -29,7 +29,7 @@ class SDLGradient
     // gradient[0] = starting color
     // gradient[1] = ending color
 
-    void Init ( GColor starting_color, GColor ending_color,
+    void Init ( nom::Color starting_color, nom::Color ending_color,
                 unsigned int x = 0, unsigned int y = 0,
                 unsigned int width = 0, unsigned int height = 0,
                 unsigned int direction = 0,  unsigned int x_margin = 3,
@@ -47,8 +47,8 @@ class SDLGradient
     //void Draw ( SDL_Surface *video_buffer );
 
   private:
-    GColor gradient[2]; // holds R, G, B * 2
-    GCoords coords; // x, y, width, height coords
+    nom::Color gradient[2]; // holds R, G, B * 2
+    nom::Coords coords; // x, y, width, height coords
     unsigned int x_margin; // x coordinate offset
     unsigned int y_margin; // y coordinate offset
     unsigned int direction;

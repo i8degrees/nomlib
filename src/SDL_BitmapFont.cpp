@@ -55,7 +55,7 @@ signed int SDLBitmapFont::getY ( void )
   return this->coords.getY();
 }
 
-GCoords SDLBitmapFont::getXY ( void )
+nom::Coords SDLBitmapFont::getXY ( void )
 {
   return this->coords;
 }
@@ -152,7 +152,7 @@ void SDLBitmapFont::setNewline ( unsigned int newline )
 
 // Reference: http://lazyfoo.net/SDL_tutorials/lesson30/index.php
 // TODO: add spacing / padding so that we can export with black guidelines
-bool SDLBitmapFont::Load ( std::string filename, GColor colorkey, unsigned int sheet_width, unsigned int sheet_height )
+bool SDLBitmapFont::Load ( std::string filename, nom::Color colorkey, unsigned int sheet_width, unsigned int sheet_height )
 {
   unsigned int tile_width = 0;
   unsigned int tile_height = 0;

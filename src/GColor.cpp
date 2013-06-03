@@ -9,7 +9,7 @@
 ******************************************************************************/
 #include "GColor.h"
 
-GColor::GColor ( void )
+nom::Color::Color ( void )
 {
   #ifdef DEBUG_COLOR_OBJ
     std::cout << "GColor::GColor (): " << "Hello, world!" << std::endl << std::endl;
@@ -21,7 +21,7 @@ GColor::GColor ( void )
   this->alpha = -1;
 }
 
-GColor::GColor ( unsigned int r, unsigned int g, unsigned int b, unsigned int a )
+nom::Color::Color ( unsigned int r, unsigned int g, unsigned int b, unsigned int a )
 {
   #ifdef DEBUG_COLOR_OBJ
     std::cout << "GColor::GColor (): " << "Hello, world!" << std::endl << std::endl;
@@ -33,7 +33,7 @@ GColor::GColor ( unsigned int r, unsigned int g, unsigned int b, unsigned int a 
   this->alpha = -1;
 }
 
-GColor::~GColor ( void )
+nom::Color::~Color ( void )
 {
   #ifdef DEBUG_COLOR_OBJ
     std::cout << "GColor::~GColor (): " << "Goodbye cruel world!" << std::endl << std::endl;
@@ -44,7 +44,7 @@ GColor::~GColor ( void )
 
 // SDL compatibility wrapper
 
-SDL_Color GColor::getSDL_Color ( void ) const
+SDL_Color nom::Color::getSDL_Color ( void ) const
 {
   SDL_Color color;
 
@@ -55,32 +55,32 @@ SDL_Color GColor::getSDL_Color ( void ) const
   return color;
 }
 
-GColor GColor::getColor ( void ) const
+nom::Color nom::Color::getColor ( void ) const
 {
-  return GColor ( this->red, this->green, this->blue, this->alpha );
+  return nom::Color ( this->red, this->green, this->blue, this->alpha );
 }
 
-unsigned int GColor::getRed ( void ) const
+unsigned int nom::Color::getRed ( void ) const
 {
   return this->red;
 }
 
-unsigned int GColor::getGreen ( void ) const
+unsigned int nom::Color::getGreen ( void ) const
 {
   return this->green;
 }
 
-unsigned int GColor::getBlue ( void ) const
+unsigned int nom::Color::getBlue ( void ) const
 {
   return this->blue;
 }
 
-unsigned int GColor::getAlpha ( void ) const
+unsigned int nom::Color::getAlpha ( void ) const
 {
   return this->alpha;
 }
 
-void GColor::setColor ( unsigned int r, unsigned int g, unsigned int b, unsigned int a )
+void nom::Color::setColor ( unsigned int r, unsigned int g, unsigned int b, unsigned int a )
 {
   this->red = r;
   this->green = g;
@@ -88,32 +88,32 @@ void GColor::setColor ( unsigned int r, unsigned int g, unsigned int b, unsigned
   this->alpha = a;
 }
 
-void GColor::setRed ( unsigned int r )
+void nom::Color::setRed ( unsigned int r )
 {
   this->red = r;
 }
 
-void GColor::setGreen ( unsigned int g )
+void nom::Color::setGreen ( unsigned int g )
 {
   this->green = g;
 }
 
-void GColor::setBlue ( unsigned int b )
+void nom::Color::setBlue ( unsigned int b )
 {
   this->blue = b;
 }
 
-void GColor::setAlpha ( unsigned int a )
+void nom::Color::setAlpha ( unsigned int a )
 {
   this->alpha = a;
 }
 
-unsigned int GColor::getColorAsInt ( SDL_PixelFormat *pixel_buffer ) const
+unsigned int nom::Color::getColorAsInt ( SDL_PixelFormat *pixel_buffer ) const
 {
   return SDL_MapRGB ( pixel_buffer, this->red, this->green, this->blue );
 }
 
-unsigned int GColor::mapRGB ( SDL_PixelFormat *video_buffer, unsigned int r,
+unsigned int nom::Color::mapRGB ( SDL_PixelFormat *video_buffer, unsigned int r,
                               unsigned int g, unsigned int b )
 {
   unsigned int color = 0;
@@ -123,7 +123,7 @@ unsigned int GColor::mapRGB ( SDL_PixelFormat *video_buffer, unsigned int r,
   return color;
 }
 
-unsigned int GColor::mapRGB ( SDL_PixelFormat *video_buffer, GColor c )
+unsigned int nom::Color::mapRGB ( SDL_PixelFormat *video_buffer, nom::Color c )
 {
   unsigned int color = 0;
 
@@ -132,7 +132,7 @@ unsigned int GColor::mapRGB ( SDL_PixelFormat *video_buffer, GColor c )
   return color;
 }
 
-unsigned int GColor::mapRGBA (  SDL_PixelFormat *video_buffer, unsigned int r,
+unsigned int nom::Color::mapRGBA (  SDL_PixelFormat *video_buffer, unsigned int r,
                                 unsigned int g, unsigned int b, unsigned int a )
 {
   unsigned int color = 0;
@@ -142,7 +142,7 @@ unsigned int GColor::mapRGBA (  SDL_PixelFormat *video_buffer, unsigned int r,
   return color;
 }
 
-unsigned int GColor::mapRGBA (  SDL_PixelFormat *video_buffer, GColor c )
+unsigned int nom::Color::mapRGBA (  SDL_PixelFormat *video_buffer, nom::Color c )
 {
   unsigned int color = 0;
 

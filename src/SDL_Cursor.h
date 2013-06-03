@@ -30,7 +30,7 @@ namespace nom
 
       SDL_Cursor ( unsigned int x, unsigned int y, unsigned int width, unsigned int height );
       //void Init ( void );
-      void Load ( std::string filename, GColor colorkey );
+      void Load ( std::string filename, nom::Color colorkey );
 
       unsigned int getX ( void );
       unsigned int getY ( void );
@@ -47,7 +47,7 @@ namespace nom
       //bool isCursorLocked ( void );
       //void lockCursor ( bool toggle );
 
-      GCoords getCursorPos ( unsigned int x, unsigned int y );
+      nom::Coords getCursorPos ( unsigned int x, unsigned int y );
       void moveCursorUp();
       void moveCursorDown();
       void moveCursorLeft();
@@ -60,7 +60,7 @@ namespace nom
       nom::Sprite cursor; // interface cursor
 
       // cursor XY coords mapping
-      std::vector<GCoords> coords_map;
+      std::vector<nom::Coords> coords_map;
 
       //    coords_map schema:
       //

@@ -57,7 +57,7 @@ void SDLMessageBox::enable ( void )
   this->enabled = true;
 }
 
-void SDLMessageBox::setBorder ( GColor &border_colors )
+void SDLMessageBox::setBorder ( nom::Color &border_colors )
 {
   this->window_borders.push_back ( border_colors );
 
@@ -86,8 +86,8 @@ void SDLMessageBox::Draw ( SDL_Surface *video_buffer, unsigned int x, unsigned i
 
   if ( this->background != NULL )
   {
-    GColor starting ( 66, 66, 66 );
-    GColor ending ( 99, 99, 99 );
+    nom::Color starting ( 66, 66, 66 );
+    nom::Color ending ( 99, 99, 99 );
     background->Init ( starting, ending, x, y, width, height, 0, 0, 0 );
     background->Draw ( video_buffer, x, y, width, height, 0 );
   }

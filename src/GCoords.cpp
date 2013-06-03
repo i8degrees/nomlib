@@ -7,7 +7,7 @@
 ******************************************************************************/
 #include "GCoords.h"
 
-GCoords::GCoords ( void )
+nom::Coords::Coords ( void )
 {
   #ifdef DEBUG_COORDS_OBJ
     std::cout << "GCoords::GCoords (): " << "Hello, world!" << std::endl << std::endl;
@@ -20,7 +20,7 @@ GCoords::GCoords ( void )
   this->height = 0;
 }
 
-GCoords::GCoords ( signed int x_, signed int y_, signed int width_, signed height_ )
+nom::Coords::Coords ( signed int x_, signed int y_, signed int width_, signed height_ )
 {
   #ifdef DEBUG_COORDS_OBJ
     std::cout << "GCoords::GCoords (): " << "Hello, world!" << std::endl << std::endl;
@@ -33,7 +33,7 @@ GCoords::GCoords ( signed int x_, signed int y_, signed int width_, signed heigh
   this->height = height_;
 }
 
-GCoords::~GCoords ( void )
+nom::Coords::~Coords ( void )
 {
   #ifdef DEBUG_COORDS_OBJ
     std::cout << "GCoords::~GCoords (): " << "Goodbye cruel world!" << std::endl << std::endl;
@@ -42,7 +42,7 @@ GCoords::~GCoords ( void )
   // Cleanup
 }
 
-void GCoords::setCoords ( signed int x_, signed int y_,
+void nom::Coords::setCoords ( signed int x_, signed int y_,
                           signed int width_, signed int height_ )
 {
   this->x = x_;
@@ -52,7 +52,7 @@ void GCoords::setCoords ( signed int x_, signed int y_,
 }
 
 // Compatibility with SDL_BlitSurface
-SDL_Rect GCoords::getSDL_Rect ( void ) const
+SDL_Rect nom::Coords::getSDL_Rect ( void ) const
 {
   SDL_Rect coords;
 
@@ -64,70 +64,70 @@ SDL_Rect GCoords::getSDL_Rect ( void ) const
   return coords;
 }
 
-GCoords GCoords::get ( void ) const
+nom::Coords nom::Coords::get ( void ) const
 {
   return *this;
 }
 
-signed int GCoords::getX ( void )
+signed int nom::Coords::getX ( void )
 {
   return this->x;
 }
 
-signed int GCoords::getY ( void )
+signed int nom::Coords::getY ( void )
 {
   return this->y;
 }
 
-void GCoords::setX ( signed int x_ )
+void nom::Coords::setX ( signed int x_ )
 {
   this->x = x_;
 }
 
-void GCoords::setY ( signed int y_ )
+void nom::Coords::setY ( signed int y_ )
 {
   this->y = y_;
 }
 
-void GCoords::setXY ( signed int x_, signed int y_ )
+void nom::Coords::setXY ( signed int x_, signed int y_ )
 {
   this->x = x_;
   this->y = y_;
 }
 
-signed int GCoords::getWidth ( void )
+signed int nom::Coords::getWidth ( void )
 {
   return this->width;
 }
 
-signed int GCoords::getHeight ( void )
+signed int nom::Coords::getHeight ( void )
 {
   return this->height;
 }
 
-void GCoords::setWidth ( signed int width_ )
+void nom::Coords::setWidth ( signed int width_ )
 {
   this->width = width_;
 }
 
-void GCoords::setHeight ( signed int height_ )
+void nom::Coords::setHeight ( signed int height_ )
 {
   this->height = height_;
 }
 
-void GCoords::setDimensions ( signed int width_, signed int height_ )
+void nom::Coords::setDimensions ( signed int width_, signed int height_ )
 {
   this->width = width_;
   this->height = height_;
 }
 
-void GCoords::updateXY ( signed int x_, signed int y_ )
+void nom::Coords::updateXY ( signed int x_, signed int y_ )
 {
   this->x += x_;
   this->y += y_;
 }
 
-void GCoords::updateCoords ( signed int x_, signed int y_, signed int width_, signed int height_ )
+void nom::Coords::updateCoords ( signed int x_, signed int y_, signed int width_, signed int height_ )
 {
   this->x += x_;
   this->y += y_;

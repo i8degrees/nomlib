@@ -37,19 +37,19 @@ class SDLMessageBox
     void disable ( void );
     void enable ( void );
 
-    void setBorder ( GColor &border_colors );
+    void setBorder ( nom::Color &border_colors );
     void setBackground ( SDLGradient *gradient );
 
     void Update ( void );
 
     void Draw ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, unsigned int width, unsigned int height );
-    void Draw ( SDL_Surface *video_buffer );
+    //void Draw ( SDL_Surface *video_buffer );
 
   private:
     bool enabled; // shown or not
-    GCoords geometry; // x, y, width & height
+    nom::Coords geometry; // x, y, width & height
     SDLGradient *background;
-    std::vector<GColor> window_borders;
+    std::vector<nom::Color> window_borders;
     //GColor window_borders[8];
     // top border, left border, bottom border, right border; each defined border
     // has two rows of pixels that can be set to a custom color, so ...

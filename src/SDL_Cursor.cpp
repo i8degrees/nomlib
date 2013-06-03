@@ -38,7 +38,7 @@ nom::SDL_Cursor::~SDL_Cursor ( void )
   // Clean up
 }
 
-void nom::SDL_Cursor::Load ( std::string filename, GColor colorkey ) // sheet_id ?
+void nom::SDL_Cursor::Load ( std::string filename, nom::Color colorkey ) // sheet_id ?
 {
   this->cursor.Load ( filename, colorkey );
 }

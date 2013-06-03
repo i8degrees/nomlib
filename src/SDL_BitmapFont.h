@@ -32,7 +32,7 @@ class SDLBitmapFont
 
     signed int getX ( void );
     signed int getY ( void );
-    GCoords getXY ( void );
+    nom::Coords getXY ( void );
     void setX ( signed int x_ );
     void setY ( signed int y_ );
     void setXY ( signed int x_, signed int y_ );
@@ -50,7 +50,7 @@ class SDLBitmapFont
 
     void greyedOutText ( unsigned char opacity );
 
-    bool Load ( std::string filename, GColor colorkey, unsigned int sheet_width = 16,
+    bool Load ( std::string filename, nom::Color colorkey, unsigned int sheet_width = 16,
                 unsigned int sheet_height = 16 );
 
     bool Draw ( SDL_Surface *video_buffer );
@@ -58,8 +58,8 @@ class SDLBitmapFont
   private:
     SDL_Surface *bitmap_font; // pointer reference holding our bitmap font image sheet
 
-    GCoords chars[256]; // individual chars within *bitmap_font;
-    GCoords coords; // x, y blitting coordinates
+    nom::Coords chars[256]; // individual chars within *bitmap_font;
+    nom::Coords coords; // x, y blitting coordinates
     std::string text_buffer; // string of text for blitting
     unsigned int newline, spacing; // spacing variables
 };

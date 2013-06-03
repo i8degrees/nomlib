@@ -27,7 +27,7 @@ class SDL_TFont
 
     signed int getX ( void );
     signed int getY ( void );
-    GCoords getXY ( void );
+    nom::Coords getXY ( void );
     void setX ( signed int x_ );
     void setY ( signed int y_ );
     void setXY ( signed int x_, signed int y_ );
@@ -37,9 +37,9 @@ class SDL_TFont
     signed int getTextHeight ( void );
 
     void setText ( std::string text );
-    GColor getTextColor ( void );
+    nom::Color getTextColor ( void );
     void setTextColor ( unsigned r, unsigned g, unsigned b );
-    void setTextColor ( const GColor &color );
+    void setTextColor ( const nom::Color &color );
 
     bool Load ( std::string filename, unsigned int size );
     bool Draw ( SDL_Surface *video_buffer );
@@ -47,9 +47,9 @@ class SDL_TFont
   private:
     //SDL_Surface *ttf_font;
     TTF_Font *font;
-    GColor text_color;
+    nom::Color text_color;
     std::string text_buffer;
-    GCoords coords; // X, Y blitting coordinates
+    nom::Coords coords; // X, Y blitting coordinates
 };
 
 #endif // GAMELIB_SDL_TTF_FONT_HEADERS defined

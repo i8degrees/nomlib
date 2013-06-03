@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <memory>
 
 #include "SDL_image.h"
 

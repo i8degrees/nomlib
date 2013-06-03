@@ -48,8 +48,10 @@ class Gfx
     static const signed int getDisplayWidth ( void );
     static const signed int getDisplayHeight ( void );
     static const signed int getDisplayColorBits ( void );
-    static /*const*/ SDL_PixelFormat* getDisplayPixelFormat ( void );
+    static SDL_PixelFormat* getDisplayPixelFormat ( void );
     static const unsigned int getDisplayFlags ( void );
+    static const Uint16 getDisplayPitch ( void );
+
     // surface->pitch
     // surface->pixels
 

@@ -135,6 +135,15 @@ const unsigned int Gfx::getDisplayFlags ( void )
   return screen->flags;
 }
 
+const Uint16 Gfx::getDisplayPitch ( void )
+{
+  SDL_Surface *screen = NULL;
+
+  screen = SDL_GetVideoSurface();
+
+  return screen->pitch;
+}
+
 bool Gfx::setAlpha (  SDL_Surface *video_buffer, unsigned char opacity,
                       unsigned int flags )
 {

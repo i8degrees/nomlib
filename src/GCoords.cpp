@@ -64,10 +64,9 @@ SDL_Rect GCoords::getSDL_Rect ( void ) const
   return coords;
 }
 
-// GCoords return?
-std::pair<signed int, signed int> GCoords::getXY ( void )
+GCoords GCoords::get ( void ) const
 {
-  return std::make_pair ( this->getX(), this->getY() );
+  return *this;
 }
 
 signed int GCoords::getX ( void )

@@ -29,8 +29,7 @@ class GCoords
                       signed int width_ = 0, signed int height_ = 0 );
 
     SDL_Rect getSDL_Rect ( void ) const;
-    // TODO: return GCoords?
-    std::pair<signed int, signed int> getXY ( void );
+    GCoords get ( void ) const;
 
     signed int getX ( void );
     signed int getY ( void );

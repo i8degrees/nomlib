@@ -301,10 +301,11 @@ bool Gfx::drawRect  ( SDL_Surface *video_buffer, const GCoords &coords,
   SDL_Rect rectangle = coords.getSDL_Rect();
   unsigned int rectangle_color = 0;
 
+  // TODO: Needs testing
   if ( color.getAlpha() != -1 )
     rectangle_color = color.mapRGBA ( video_buffer->format, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() );
   else
-    rectangle_color = color.mapRGB ( video_buffer->format, color.getRed(), color.getGreen(), color.getBlue() );
+    rectangle_color = color.getColorAsInt ( video_buffer->format );
 
   if ( SDL_FillRect ( video_buffer, &rectangle, rectangle_color ) != 0 )
   {

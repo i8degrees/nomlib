@@ -108,6 +108,11 @@ void GColor::setAlpha ( unsigned int a )
   this->alpha = a;
 }
 
+unsigned int GColor::getColorAsInt ( SDL_PixelFormat *pixel_buffer ) const
+{
+  return SDL_MapRGB ( pixel_buffer, this->red, this->green, this->blue );
+}
+
 unsigned int GColor::mapRGB ( SDL_PixelFormat *video_buffer, unsigned int r,
                               unsigned int g, unsigned int b )
 {

@@ -38,6 +38,8 @@ class GColor
     void setColor ( unsigned int r, unsigned int g, unsigned int b, unsigned int a = -1 ); // Reconsider a = -1
 
     // SDL wrappers
+    unsigned int getColorAsInt ( SDL_PixelFormat *pixel_buffer ) const;
+
     static unsigned int mapRGB (  SDL_PixelFormat *video_buffer, unsigned int r,
                                   unsigned int g, unsigned int b );
 

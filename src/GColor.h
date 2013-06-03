@@ -24,7 +24,6 @@ namespace nom
     Color ( unsigned int r, unsigned int g, unsigned int b, signed int a = -1 );
     ~Color ( void );
 
-    SDL_Color getSDL_Color ( void ) const;
     Color getColor ( void ) const;
     unsigned int getRed ( void ) const;
     unsigned int getGreen ( void ) const;

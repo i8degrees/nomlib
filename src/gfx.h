@@ -81,24 +81,6 @@ class Gfx
                                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
     // SDLSurface
-                // Deprecated
-    //static bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );
-
-    // SDLSurface
-                // Transitional; phasing out
-    //static bool DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
-                                    //unsigned int x_offset, unsigned int y_offset,
-                                    //unsigned int width_offset, unsigned int height_offset );
-
-    // SDLSurface
-                // Transitional temp
-    //static bool DrawSurface ( SDL_Surface *source_buffer, SDL_Surface *video_buffer,
-                              //unsigned int x, unsigned int y,
-                              //unsigned int x_offset = 0, unsigned int y_offset = 0,
-                              //unsigned int width_offset = 0, unsigned int height_offset = 0
-                            //);
-
-    // SDLSurface
                 // Future; phasing in
     static bool DrawSurface (   SDL_Surface *source_buffer, SDL_Surface *video_buffer,
                                 const nom::Coords &coords, const nom::Coords &offsets );

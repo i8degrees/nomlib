@@ -54,6 +54,7 @@ void SDLGradient::Draw (  SDL_Surface *video_buffer, unsigned int x, unsigned in
                           unsigned int width, unsigned int height, unsigned int direction
                         )
 {
+  unsigned int rows = 0; // iterator
   unsigned int x_offset = x + width;
   //unsigned int y_offset = y + height;
 
@@ -79,9 +80,7 @@ void SDLGradient::Draw (  SDL_Surface *video_buffer, unsigned int x, unsigned in
   float destG = (float) ( gradient[1].getGreen() - gradient[0].getGreen() )  / ( float ) ( width - this->x_margin );
   float destB = (float) ( gradient[1].getBlue() - gradient[0].getBlue() )    / ( float ) ( width - this->x_margin );
 
-  unsigned int rows = this->coords.getX();
-
-  for ( rows = x; rows < x_offset - this->x_margin; rows++ )
+  for ( rows = this->coords.getX(); rows < x_offset - this->x_margin; rows++ )
   {
     this->coords.setX ( rows );
     Gfx::drawRect ( video_buffer, this->coords, nom::Color ( currentR, currentG, currentB ) );

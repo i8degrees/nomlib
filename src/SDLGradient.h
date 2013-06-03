@@ -17,9 +17,6 @@
 #include "Color.h"
 #include "gfx.h"
 
-//#define DEBUG_GRADIENT
-//#define DEBUG_GRADIENT_OBJ
-
 class SDLGradient
 {
   public:

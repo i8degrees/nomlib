@@ -20,10 +20,6 @@
 #include "Coords.h"
 
 #include "SDLGradient.h"
-//class SDLGradient;
-
-//#define DEBUG_MESSAGEBOX
-#define DEBUG_MESSAGEBOX_OBJ
 
 class SDLMessageBox
 {

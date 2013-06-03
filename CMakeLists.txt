@@ -11,10 +11,10 @@ set ( CMAKE_OSX_ARCHITECTURES i386;x86_64 ) # OSX Universal Library
 #set ( LLVM_ANALYZER_BIN "$ENV{HOME}/local/checker/scan-build" )
 #set ( LLVM_ANALYZER_ARGS -k --use-c++=/usr/bin/clang++ /usr/bin/clang++ -c )
 
-set ( CMAKE_CXX_COMPILER "/usr/bin/clang++" )
-set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
-set ( CMAKE_CXX_FLAGS_DEBUG "-gfull -O0 -Wall" )
-set ( CMAKE_CXX_FLAGS_RELEASE "-O2" )
+#set ( CMAKE_CXX_COMPILER "/usr/bin/clang++" )
+#set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
+#set ( CMAKE_CXX_FLAGS_DEBUG "-gfull -O0 -Wall" )
+#set ( CMAKE_CXX_FLAGS_RELEASE "-O2" )
 set ( SRC_DIR src ) # project_dir/src
 
 project ( gamelib )

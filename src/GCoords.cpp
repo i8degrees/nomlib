@@ -51,7 +51,7 @@ void nom::Coords::setCoords ( signed int x_, signed int y_,
   this->height = height_;
 }
 
-// Compatibility with SDL_BlitSurface
+// SDL compatibility wrapper for SDL_BlitSurface (primarily)
 SDL_Rect nom::Coords::getSDL_Rect ( void ) const
 {
   SDL_Rect coords;

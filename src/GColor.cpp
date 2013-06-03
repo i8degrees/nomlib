@@ -42,8 +42,7 @@ nom::Color::~Color ( void )
   // Stub
 }
 
-// SDL compatibility wrapper
-
+// SDL color struct compatibility wrapper
 SDL_Color nom::Color::getSDL_Color ( void ) const
 {
   SDL_Color color;

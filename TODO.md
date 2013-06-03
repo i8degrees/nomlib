@@ -2,15 +2,13 @@
 
 ## TODO
 
+* Use exceptions library in C++
 * Use Uint32, etc. definitions
-* Use GColor::getColorAsInt everywhere as needed
-* Rename GColor to nom::Color
 * const types
 * color constants (think: white, black, etc)
 * Use coords class in sprite
-
-* GColor::getSDLColor or such that will return to us a SDL_Color struct for use in
-SDL_TFont and wherever else
+* Test alpha values within color class with graphics engine; experimental support
+is there
 
 * joystick buttons demo
 
@@ -34,6 +32,10 @@ this may fix the SDLInput crashes within TTcards
 
 ## Completed
 
+* GColor::getSDLColor or such that will return to us a SDL_Color struct for use in
+SDL_TFont and wherever else
+* Use GColor::getColorAsInt everywhere as needed
+* Rename GColor to nom::Color
 * GameState::Update ( SDL_Surface *video_buffer ) ?
 * GameState::Draw ( SDL_Surface *video_buffer ) ?
 * rename SDL_TFont && SDL_BitmapFont::setTextBuffer to setText

@@ -31,6 +31,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/SDLMessageBox.cpp
       ${SRC_DIR}/SDL_BitmapFont.cpp
       ${SRC_DIR}/SDL_Cursor.cpp
+      ${SRC_DIR}/SDL_Display.cpp
       ${SRC_DIR}/gfx.cpp
       ${SRC_DIR}/sprite.cpp
       ${SRC_DIR}/SDLInput.cpp
@@ -54,6 +55,8 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/SDL_Cursor.h
       ${SRC_DIR}/SDLDrawable.h
       ${SRC_DIR}/gamelib.h
+      ${SRC_DIR}/IDisplay.h
+      ${SRC_DIR}/SDL_Display.h
       ${SRC_DIR}/gfx.h
       ${SRC_DIR}/sprite.h
       ${SRC_DIR}/SDLInput.h

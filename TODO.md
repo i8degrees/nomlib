@@ -5,6 +5,9 @@
 * Use Uint32, etc. definitions
 * Use GColor::getColorAsInt everywhere as needed
 * Rename GColor to nom::Color
+* const types
+* color constants (think: white, black, etc)
+* Use coords class in sprite
 
 * GColor::getSDLColor or such that will return to us a SDL_Color struct for use in
 SDL_TFont and wherever else

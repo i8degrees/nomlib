@@ -14,7 +14,7 @@
 
 #include "SDL.h"
 
-#include "GColor.h"
+#include "Color.h"
 
 #include "gfx.h"
 

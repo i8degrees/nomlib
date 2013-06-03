@@ -3,7 +3,7 @@
 ## TODO
 
 * Use Uint32, etc. definitions
-
+* Use GColor::getColorAsInt everywhere as needed
 * Rename GColor to nom::Color
 
 * GColor::getSDLColor or such that will return to us a SDL_Color struct for use in

@@ -45,15 +45,12 @@ class Gfx
 
     // SDLDisplay
     static SDL_Surface* getDisplay ( void );
-    static const signed int getDisplayWidth ( void );
-    static const signed int getDisplayHeight ( void );
-    static const signed int getDisplayColorBits ( void );
+    static signed int getDisplayWidth ( void );
+    static signed int getDisplayHeight ( void );
+    static signed int getDisplayColorBits ( void );
     static SDL_PixelFormat* getDisplayPixelFormat ( void );
-    static const unsigned int getDisplayFlags ( void );
-    static const Uint16 getDisplayPitch ( void );
-
-    // surface->pitch
-    // surface->pixels
+    static unsigned int getDisplayFlags ( void );
+    static Uint16 getDisplayPitch ( void );
 
     // SDLDisplay
     // TODO: rename to updateDisplay()

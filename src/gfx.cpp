@@ -94,21 +94,21 @@ SDL_Surface* Gfx::getDisplay ( void )
   return SDL_GetVideoSurface();
 }
 
-const signed int Gfx::getDisplayWidth ( void )
+signed int Gfx::getDisplayWidth ( void )
 {
   SDL_Surface *screen = NULL;
   screen = SDL_GetVideoSurface();
   return screen->w;
 }
 
-const signed int Gfx::getDisplayHeight ( void )
+signed int Gfx::getDisplayHeight ( void )
 {
   SDL_Surface *screen = NULL;
   screen = SDL_GetVideoSurface();
   return screen->h;
 }
 
-const signed int Gfx::getDisplayColorBits ( void )
+signed int Gfx::getDisplayColorBits ( void )
 {
   SDL_Surface *screen = NULL;
 
@@ -117,7 +117,7 @@ const signed int Gfx::getDisplayColorBits ( void )
   return screen->format->BitsPerPixel;
 }
 
-/*const*/ SDL_PixelFormat* Gfx::getDisplayPixelFormat ( void )
+SDL_PixelFormat* Gfx::getDisplayPixelFormat ( void )
 {
   SDL_Surface *screen = NULL;
 
@@ -126,7 +126,7 @@ const signed int Gfx::getDisplayColorBits ( void )
   return screen->format;
 }
 
-const unsigned int Gfx::getDisplayFlags ( void )
+unsigned int Gfx::getDisplayFlags ( void )
 {
   SDL_Surface *screen = NULL;
 
@@ -135,7 +135,7 @@ const unsigned int Gfx::getDisplayFlags ( void )
   return screen->flags;
 }
 
-const Uint16 Gfx::getDisplayPitch ( void )
+Uint16 Gfx::getDisplayPitch ( void )
 {
   SDL_Surface *screen = NULL;
 

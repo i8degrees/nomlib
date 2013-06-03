@@ -2,6 +2,7 @@
 
 ## TODO
 
+* Rename class SDLBitmapFont to SDL_BitmapFont
 * Use exceptions library in C++
 * Use Uint32, etc. definitions
 * const types

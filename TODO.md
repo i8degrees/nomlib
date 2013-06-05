@@ -2,6 +2,7 @@
 
 ## TODO
 
+* Perhaps break Coords class into just x, y points
 * Rename class SDLBitmapFont to SDL_BitmapFont
 * Use exceptions library in C++
 * Use Uint32, etc. definitions

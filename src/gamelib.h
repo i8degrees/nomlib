@@ -60,4 +60,7 @@
 #define DEBUG_SDL_CURSOR
 #define DEBUG_SDL_CURSOR_OBJ
 
+#define DEBUG_SDL_DRAWABLE
+#define DEBUG_SDL_DRAWABLE_OBJ
+
 #endif // GAMELIB_HEADERS defined

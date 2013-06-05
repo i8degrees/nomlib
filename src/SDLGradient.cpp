@@ -83,7 +83,9 @@ void SDLGradient::Draw (  SDL_Surface *video_buffer, unsigned int x, unsigned in
   for ( rows = this->coords.getX(); rows < x_offset - this->x_margin; rows++ )
   {
     this->coords.setX ( rows );
-    Gfx::drawRect ( video_buffer, this->coords, nom::Color ( currentR, currentG, currentB ) );
+
+    nom::Rectangle rect ( this->coords, nom::Color ( currentR, currentG, currentB ) );
+    rect.Draw ( video_buffer );
 
     if ( this->direction == 0 )
     {

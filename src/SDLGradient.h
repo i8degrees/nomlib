@@ -15,6 +15,7 @@
 
 #include "Coords.h"
 #include "Color.h"
+#include "SDLDrawable.h"
 #include "gfx.h"
 
 class SDLGradient

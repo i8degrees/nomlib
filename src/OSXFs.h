@@ -16,6 +16,10 @@
 
 #include "gamelib.h"
 
+#ifndef PATH_MAX
+  #define PATH_MAX 1024 // TODO: research this further, no idea if 1024 is legit
+#endif
+
 class OSXFs
 {
   public:

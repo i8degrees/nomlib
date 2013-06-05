@@ -31,7 +31,7 @@ std::vector<int> Logger::Read ( std::string filename )
   unsigned int value;
   val.clear();
 
-  fp.open( filename );
+  fp.open( filename.c_str() );
 
   if ( fp.is_open() )
   {

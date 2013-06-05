@@ -1,17 +1,19 @@
 /******************************************************************************
-    SDL_TFont.cpp
+    SDL_Font.cpp
 
   SDL-based TrueType Font Rendering API
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "SDL_TFont.h"
+#include "SDL_Font.h"
 
-SDL_TFont::SDL_TFont ( void )
+using namespace nom;
+
+SDL_Font::SDL_Font ( void )
 {
-  #ifdef DEBUG_SDL_TFONT_OBJ
-    std::cout << "SDL_TFont::SDL_TFont (): " << "Hello, world!" << "\n" << std::endl;
+  #ifdef DEBUG_SDL_FONT_OBJ
+    std::cout << "SDL_Font::SDL_Font (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
   this->font = NULL;
@@ -22,16 +24,16 @@ SDL_TFont::SDL_TFont ( void )
 
   if ( TTF_Init () == -1 )
   {
-    #ifdef DEBUG_SDL_TFONT
-      std::cout << "ERR in SDL_TFont::SDL_TFont (): " << TTF_GetError() << std::endl;
+    #ifdef DEBUG_SDL_FONT
+      std::cout << "ERR in SDL_Font::SDL_Font (): " << TTF_GetError() << std::endl;
     #endif
   }
 }
 
-SDL_TFont::~SDL_TFont ( void )
+SDL_Font::~SDL_Font ( void )
 {
-  #ifdef DEBUG_SDL_TFONT_OBJ
-    std::cout << "SDL_TFont::~SDL_TFont (): " << "Goodbye cruel world!" << "\n" << std::endl;
+  #ifdef DEBUG_SDL_FONT_OBJ
+    std::cout << "SDL_Font::~SDL_Font (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
   if ( this->font != NULL )
@@ -47,17 +49,17 @@ SDL_TFont::~SDL_TFont ( void )
   TTF_Quit ();
 }
 
-signed int SDL_TFont::getTextWidth ( void )
+signed int SDL_Font::getTextWidth ( void )
 {
   return this->coords.getWidth();
 }
 
-signed int SDL_TFont::getTextHeight ( void )
+signed int SDL_Font::getTextHeight ( void )
 {
   return this->coords.getHeight();
 }
 
-void SDL_TFont::setText ( std::string text )
+void SDL_Font::setText ( std::string text )
 {
   signed int width, height = 0;
 
@@ -79,21 +81,19 @@ void SDL_TFont::setText ( std::string text )
   }
   else
   {
-    #ifdef DEBUG_SDL_TFONT
-      std::cout << "ERR in SDL_TFont::setText(): " << SDL_GetError() << std::endl;
+    #ifdef DEBUG_SDL_FONT
+      std::cout << "ERR in SDL_Font::setText(): " << SDL_GetError() << std::endl;
     #endif
   }
 }
 
-
-
-bool SDL_TFont::Load ( std::string filename, unsigned int font_size )
+bool SDL_Font::Load ( std::string filename, unsigned int font_size )
 {
   this->font = TTF_OpenFont ( filename.c_str(), font_size );
 
   if ( this->font == NULL )
   {
-    #ifdef DEBUG_SDL_TFONT
+    #ifdef DEBUG_SDL_FONT
       std::cout << "ERR: " << TTF_GetError() << std::endl;
     #endif
     return false;
@@ -102,14 +102,16 @@ bool SDL_TFont::Load ( std::string filename, unsigned int font_size )
   return true;
 }
 
-bool SDL_TFont::Draw ( SDL_Surface *video_buffer )
+bool SDL_Font::Draw ( SDL_Surface *video_buffer )
 {
   if ( this->font_buffer != NULL )
   {
-    // GCoords ( -1, -1, -1, -1 ) is equivalent to NULL for SDL_BlitSurface it seems
-    if ( Gfx::DrawSurface ( this->font_buffer, video_buffer, this->coords, nom::Coords ( -1, -1, -1, -1 ) ) == false )
+
+    if ( Gfx::DrawSurface ( this->font_buffer, video_buffer, this->coords ) == false )
     {
-      std::cout << "ERR in SDL_TFont::Draw(): " << SDL_GetError() << std::endl;
+      #ifdef DEBUG_SDL_FONT
+        std::cout << "ERR in SDL_Font::Draw(): " << SDL_GetError() << std::endl;
+      #endif
       return false;
     }
   }

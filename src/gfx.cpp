@@ -10,6 +10,8 @@
 ******************************************************************************/
 #include "gfx.h"
 
+using namespace nom;
+
 Gfx::Gfx ( unsigned int img_flags )
 {
   #ifdef DEBUG_GFX_OBJ

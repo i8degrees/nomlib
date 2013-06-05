@@ -8,6 +8,8 @@
 ******************************************************************************/
 #include "sprite.h"
 
+using namespace nom;
+
 nom::Sprite::Sprite ( void )
 {
   #ifdef DEBUG_SPRITE_OBJ

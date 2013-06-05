@@ -12,10 +12,12 @@
 ******************************************************************************/
 #include "SDL_BitmapFont.h"
 
-SDLBitmapFont::SDLBitmapFont ( void )
+using namespace nom;
+
+SDL_BitmapFont::SDL_BitmapFont ( void )
 {
   #ifdef DEBUG_BITMAP_FONT_OBJ
-    std::cout << "SDLBitmapFont::SDLBitmapFont (): " << "Hello, world!" << "\n" << std::endl;
+    std::cout << "SDL_BitmapFont::SDL_BitmapFont (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
   this->bitmap_font = NULL;
@@ -32,10 +34,10 @@ SDLBitmapFont::SDLBitmapFont ( void )
   }
 }
 
-SDLBitmapFont::~SDLBitmapFont ( void )
+SDL_BitmapFont::~SDL_BitmapFont ( void )
 {
   #ifdef DEBUG_BITMAP_FONT_OBJ
-    std::cout << "SDLBitmapFont::~SDLBitmapFont (): " << "Goodbye cruel world!" << "\n" << std::endl;
+    std::cout << "SDL_BitmapFont::~SDL_BitmapFont (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
   if ( this->bitmap_font != NULL )
@@ -45,7 +47,7 @@ SDLBitmapFont::~SDLBitmapFont ( void )
   }
 }
 
-void SDLBitmapFont::greyedOutText ( unsigned char opacity )
+void SDL_BitmapFont::greyedOutText ( unsigned char opacity )
 {
   if ( this->bitmap_font )
     Gfx::setAlpha ( this->bitmap_font, ( unsigned int ) opacity );
@@ -53,8 +55,8 @@ void SDLBitmapFont::greyedOutText ( unsigned char opacity )
 
 // I don't think this is entirely accurate; this->spacing - 2 is fudged ...
 // We probably ought to be calculating the width based off the same algorithm as
-// is shown in SDLBitmapFont::LoadImage
-signed int SDLBitmapFont::getTextWidth ( void )
+// is shown in SDL_BitmapFont::LoadImage
+signed int SDL_BitmapFont::getTextWidth ( void )
 {
   unsigned int text_width = 0;
 
@@ -74,7 +76,7 @@ signed int SDLBitmapFont::getTextWidth ( void )
   return text_width;
 }
 
-signed int SDLBitmapFont::getTextHeight ( void )
+signed int SDL_BitmapFont::getTextHeight ( void )
 {
   unsigned int text_height = 0;
 
@@ -89,35 +91,35 @@ signed int SDLBitmapFont::getTextHeight ( void )
   return text_height;
 }
 
-void SDLBitmapFont::setText ( std::string text )
+void SDL_BitmapFont::setText ( std::string text )
 {
   this->text_buffer = text;
 }
 
-unsigned int SDLBitmapFont::getSpacing ( void )
+unsigned int SDL_BitmapFont::getSpacing ( void )
 {
   return this->spacing;
 }
 
-void SDLBitmapFont::setSpacing ( unsigned int spaces )
+void SDL_BitmapFont::setSpacing ( unsigned int spaces )
 {
   this->spacing = spaces;
 }
 
-unsigned int SDLBitmapFont::getNewline ( void )
+unsigned int SDL_BitmapFont::getNewline ( void )
 {
   return this->newline;
 }
 
 // Needs testing; not sure if this even does anything currently
-void SDLBitmapFont::setNewline ( unsigned int newline )
+void SDL_BitmapFont::setNewline ( unsigned int newline )
 {
   this->newline = newline;
 }
 
 // Reference: http://lazyfoo.net/SDL_tutorials/lesson30/index.php
 // TODO: add spacing / padding so that we can export with black guidelines
-bool SDLBitmapFont::Load ( std::string filename, nom::Color colorkey, unsigned int sheet_width, unsigned int sheet_height )
+bool SDL_BitmapFont::Load ( std::string filename, nom::Color colorkey, unsigned int sheet_width, unsigned int sheet_height )
 {
   unsigned int tile_width = 0;
   unsigned int tile_height = 0;
@@ -131,7 +133,7 @@ bool SDLBitmapFont::Load ( std::string filename, nom::Color colorkey, unsigned i
   if ( this->bitmap_font == NULL )
   {
     #ifdef DEBUG_BITMAP_FONT
-      std::cout << "ERR in SDLBitmapFont::LoadImage() at Gfx::LoadImage(): " << std::endl;
+      std::cout << "ERR in SDL_BitmapFont::LoadImage() at Gfx::LoadImage(): " << std::endl;
     #endif
     return false;
   }
@@ -281,7 +283,7 @@ bool SDLBitmapFont::Load ( std::string filename, nom::Color colorkey, unsigned i
 }
 
 // Reference: http://lazyfoo.net/SDL_tutorials/lesson30/index.php
-bool SDLBitmapFont::Draw ( SDL_Surface *video_buffer )
+bool SDL_BitmapFont::Draw ( SDL_Surface *video_buffer )
 {
   //If the font has been built
   if ( this->bitmap_font != NULL )
@@ -307,7 +309,7 @@ bool SDLBitmapFont::Draw ( SDL_Surface *video_buffer )
 
         if ( Gfx::DrawSurface ( this->bitmap_font, video_buffer, this->coords, this->chars[ascii] ) == false )
         {
-          std::cout << "ERR in SDLBitmapFont::DrawText(): " << SDL_GetError() << std::endl;
+          std::cout << "ERR in SDL_BitmapFont::DrawText(): " << SDL_GetError() << std::endl;
 
           SDL_FreeSurface ( this->bitmap_font );
           this->bitmap_font = NULL;

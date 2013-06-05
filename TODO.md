@@ -3,7 +3,6 @@
 ## TODO
 
 * Perhaps break Coords class into just x, y points
-* Rename class SDLBitmapFont to SDL_BitmapFont
 * Use exceptions library in C++
 * Use Uint32, etc. definitions
 * const types
@@ -34,6 +33,7 @@ this may fix the SDLInput crashes within TTcards
 
 ## Completed
 
+* Rename class SDLBitmapFont to SDL_BitmapFont
 * GColor::getSDLColor or such that will return to us a SDL_Color struct for use in
 SDL_TFont and wherever else
 * Use GColor::getColorAsInt everywhere as needed

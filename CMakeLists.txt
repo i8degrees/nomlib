@@ -1,23 +1,11 @@
-cmake_minimum_required ( VERSION 2.6 )
+project ( gamelib )
 
 set ( CMAKE_VERBOSE_MAKEFILE true )
 set ( CMAKE_BUILD_TYPE Debug )
 set ( BUILD_SHARED_LIBS true )
 set ( CMAKE_OSX_ARCHITECTURES i386;x86_64 ) # OSX Universal Library
 
-#set ( EMCC_BIN "$ENV{HOME}/local/src/emscripten/emcc" )
-#set ( EMCC_CFLAGS --jcache )
-#set ( EMCC_TARGET libgamelib.bc )
-#set ( LLVM_ANALYZER_BIN "$ENV{HOME}/local/checker/scan-build" )
-#set ( LLVM_ANALYZER_ARGS -k --use-c++=/usr/bin/clang++ /usr/bin/clang++ -c )
-
-#set ( CMAKE_CXX_COMPILER "/usr/bin/clang++" )
-#set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
-#set ( CMAKE_CXX_FLAGS_DEBUG "-gfull -O0 -Wall" )
-#set ( CMAKE_CXX_FLAGS_RELEASE "-O2" )
 set ( SRC_DIR src ) # project_dir/src
-
-project ( gamelib )
 
 set ( GAMELIB_SOURCE
       ${SRC_DIR}/Coords.cpp
@@ -31,6 +19,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/SDLMessageBox.cpp
       ${SRC_DIR}/SDL_BitmapFont.cpp
       ${SRC_DIR}/SDL_Cursor.cpp
+      ${SRC_DIR}/IDisplay.cpp
       ${SRC_DIR}/SDL_Display.cpp
       ${SRC_DIR}/gfx.cpp
       ${SRC_DIR}/sprite.cpp
@@ -113,23 +102,4 @@ configure_file  (
 add_custom_target ( uninstall
                     COMMAND ${CMAKE_COMMAND} -P
                     ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
-                  )
-
-file ( GLOB files ${GAMELIB_SOURCE} )
-foreach ( filename ${files} )
-  set ( PROJECT_FILES ${files} )
-endforeach()
-
-# analyze target
-
-add_custom_target ( gamelib_analyze
-                    COMMAND ${LLVM_ANALYZER_BIN} ${LLVM_ANALYZER_ARGS}
-                    ${SDL_CFLAGS} ${PROJECT_FILES}
-                  )
-
-# EMCC (web) target
-
-add_custom_target ( gamelib_web
-                    ${EMCC_BIN} ${EMCC_CFLAGS} ${CFLAGS} ${LDFLAGS}
-                    ${PROJECT_FILES} -o ${EMCC_TARGET}
                   )

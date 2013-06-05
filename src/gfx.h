@@ -30,35 +30,8 @@ class Gfx
 {
   public:
     // SDL_Display
-    Gfx (   unsigned int sdl_flags = SDL_INIT_EVERYTHING,
-            unsigned int img_flags = IMG_INIT_PNG
-        );
-
+    Gfx ( unsigned int img_flags = IMG_INIT_PNG );
     ~Gfx ( void );
-
-    static bool SetVideoMode  ( unsigned int screen_width = 320,
-                                unsigned int screen_height = 240,
-                                unsigned int screen_bpp = 8,
-                                unsigned int video_flags = 0
-                              );
-
-    // SDL_Display
-    static SDL_Surface* getDisplay ( void );
-    static signed int getDisplayWidth ( void );
-    static signed int getDisplayHeight ( void );
-    static signed int getDisplayColorBits ( void );
-    static SDL_PixelFormat* getDisplayPixelFormat ( void );
-    static unsigned int getDisplayFlags ( void );
-    static Uint16 getDisplayPitch ( void );
-
-    // SDL_Display
-    static bool updateDisplay ( void );
-
-    // SDL_Display
-    static void setTitle ( std::string app_name );
-
-    static bool setIcon ( std::string app_icon, nom::Color color,
-                          unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
     // SDL_Display::Surface ( coords ); AKA defaults to blitting to public interface
 
@@ -70,9 +43,6 @@ class Gfx
 
     // SDL_Image: public SDL_Drawable
     static SDL_Surface *LoadImage ( std::string filename, nom::Color colorkey,
-                                    unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
-
-    static SDL_Surface *LoadImage ( std::string filename,
                                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
     // SDL_Surface
@@ -88,9 +58,6 @@ class Gfx
     static bool lockSurface ( SDL_Surface *video_buffer );
     static bool unlockSurface ( SDL_Surface *video_buffer );
     static void drawLine ( SDL_Surface *video_buffer, float x1, float y1, float x2, float y2, nom::Color color );
-    static bool drawRect  ( SDL_Surface *video_buffer, const nom::Coords &coords,
-                            const nom::Color &color
-                          );
 
 /*
   class GameApp: public SDLInput

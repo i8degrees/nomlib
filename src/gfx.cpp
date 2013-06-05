@@ -10,7 +10,7 @@
 ******************************************************************************/
 #include "gfx.h"
 
-Gfx::Gfx ( unsigned int sdl_flags, unsigned int img_flags )
+Gfx::Gfx ( unsigned int img_flags )
 {
   #ifdef DEBUG_GFX_OBJ
     std::cout << "Gfx::Gfx(): Hello, world!" << "\n" << std::endl;
@@ -24,15 +24,6 @@ Gfx::Gfx ( unsigned int sdl_flags, unsigned int img_flags )
 
   this->setFullScreen ( false );
 
-  if ( SDL_Init ( sdl_flags ) != 0 )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::Gfx() at SDL_Init(): " << SDL_GetError() << std::endl;
-    #endif
-
-    exit ( EXIT_FAILURE );
-  }
-
   if ( IMG_Init ( img_flags ) != img_flags )
   {
     #ifdef DEBUG_GFX
@@ -41,6 +32,7 @@ Gfx::Gfx ( unsigned int sdl_flags, unsigned int img_flags )
 
     exit ( EXIT_FAILURE );
   }
+
   this->appTime.Start();
 }
 
@@ -52,96 +44,11 @@ Gfx::~Gfx ( void )
 
   this->appTime.Stop();
 
-  // As per docs, we must not free the publicly available surface, AKA
-  // SDL_Surface *screen. This is explicitly stated as a role of the SDL_Quit()
-  // function.
-  //
-  // http://sdl.beuc.net/sdl.wiki/SDL_SetVideoMode
-
   #ifdef DEBUG_GFX_OBJ
     std::cout << "Gfx::~Gfx(): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
   IMG_Quit ();
-
-  SDL_Quit ();
-}
-
-bool Gfx::SetVideoMode (  unsigned int screen_width,
-                          unsigned int screen_height,
-                          unsigned int screen_bpp,
-                          unsigned int video_flags
-                        )
-{
-  SDL_Surface *screen = NULL;
-
-  screen = SDL_SetVideoMode ( screen_width, screen_height, screen_bpp, video_flags );
-
-  if ( screen == NULL )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::SetVideoMode(): " << SDL_GetError() << std::endl;
-    #endif
-
-    return false;
-  }
-
-  return true;
-}
-
-SDL_Surface* Gfx::getDisplay ( void )
-{
-  return SDL_GetVideoSurface();
-}
-
-signed int Gfx::getDisplayWidth ( void )
-{
-  SDL_Surface *screen = NULL;
-  screen = SDL_GetVideoSurface();
-  return screen->w;
-}
-
-signed int Gfx::getDisplayHeight ( void )
-{
-  SDL_Surface *screen = NULL;
-  screen = SDL_GetVideoSurface();
-  return screen->h;
-}
-
-signed int Gfx::getDisplayColorBits ( void )
-{
-  SDL_Surface *screen = NULL;
-
-  screen = SDL_GetVideoSurface();
-
-  return screen->format->BitsPerPixel;
-}
-
-SDL_PixelFormat* Gfx::getDisplayPixelFormat ( void )
-{
-  SDL_Surface *screen = NULL;
-
-  screen = SDL_GetVideoSurface();
-
-  return screen->format;
-}
-
-unsigned int Gfx::getDisplayFlags ( void )
-{
-  SDL_Surface *screen = NULL;
-
-  screen = SDL_GetVideoSurface();
-
-  return screen->flags;
-}
-
-Uint16 Gfx::getDisplayPitch ( void )
-{
-  SDL_Surface *screen = NULL;
-
-  screen = SDL_GetVideoSurface();
-
-  return screen->pitch;
 }
 
 bool Gfx::setAlpha (  SDL_Surface *video_buffer, unsigned char opacity,
@@ -216,30 +123,6 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, nom::Color colorkey, unsigne
   return video_buffer;
 }
 
-SDL_Surface *Gfx::LoadImage ( std::string filename, unsigned int flags )
-{
-  SDL_Surface *temp_buffer = NULL;
-  SDL_Surface *video_buffer = NULL;
-
-  temp_buffer = IMG_Load ( filename.c_str() );
-
-  if ( temp_buffer == NULL )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::LoadImage() at IMG_Load(): " << IMG_GetError() << std::endl;
-    #endif
-
-    return NULL;
-  }
-
-  video_buffer = SDL_DisplayFormat ( temp_buffer );
-
-  SDL_FreeSurface ( temp_buffer );
-  temp_buffer = NULL;
-
-  return video_buffer;
-}
-
 bool Gfx::DrawSurface ( SDL_Surface *source_buffer, SDL_Surface *video_buffer,
                         const nom::Coords &coords, const nom::Coords &offsets
                       )
@@ -270,23 +153,6 @@ bool Gfx::DrawSurface ( SDL_Surface *source_buffer, SDL_Surface *video_buffer,
   return true;
 }
 
-bool Gfx::updateDisplay ( void )
-{
-  SDL_Surface *screen = NULL;
-
-  screen = Gfx::getDisplay();
-
-  if ( SDL_Flip ( screen ) != 0 )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::UpdateScreen(): " << SDL_GetError() << std::endl;
-    #endif
-    return false;
-  }
-
-  return true;
-}
-
 bool Gfx::updateSurface ( SDL_Surface *video_buffer )
 {
   if ( SDL_Flip ( video_buffer ) != 0 )
@@ -296,70 +162,6 @@ bool Gfx::updateSurface ( SDL_Surface *video_buffer )
     #endif
     return false;
   }
-
-  return true;
-}
-
-bool Gfx::drawRect  ( SDL_Surface *video_buffer, const nom::Coords &coords,
-                      const nom::Color &color
-                    )
-{
-  SDL_Rect rectangle = coords.getSDL_Rect();
-  unsigned int rectangle_color = 0;
-
-  rectangle_color = color.getColorAsInt ( video_buffer->format );
-
-  if ( SDL_FillRect ( video_buffer, &rectangle, rectangle_color ) != 0 )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::DrawRectangle(): " << SDL_GetError() << std::endl;
-    #endif
-    return false;
-  }
-
-  return true;
-}
-
-void Gfx::setTitle ( std::string app_name )
-{
-  SDL_WM_SetCaption ( app_name.c_str(), NULL );
-}
-
-// NOTE: *MUST* be called before the first call to SDL_SetVideoMode is made
-bool Gfx::setIcon ( std::string app_icon, nom::Color color, unsigned int flags )
-{
-  SDL_Surface *icon_buffer = NULL;
-
-  if ( Gfx::getDisplay() != NULL )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::SetWindowIcon(): " << "SDL_SetVideoMode() has already been called." << std::endl;
-    #endif
-    return false;
-  }
-
-  icon_buffer = SDL_LoadBMP ( app_icon.c_str() );
-
-  if ( icon_buffer == NULL )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::SetWindowIcon(): " << SDL_GetError() << std::endl;
-    #endif
-    return false;
-  }
-
-  if ( Gfx::setTransparent ( icon_buffer, color, flags ) == false )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::SetWindowIcon(): " << SDL_GetError() << std::endl;
-    #endif
-    return false;
-  }
-
-  SDL_WM_SetIcon ( icon_buffer, NULL );
-
-  SDL_FreeSurface ( icon_buffer );
-  icon_buffer = NULL;
 
   return true;
 }

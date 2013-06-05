@@ -93,33 +93,7 @@ bool Gfx::setTransparent (  SDL_Surface *video_buffer, nom::Color color,
 }
 
 // TODO: Alpha value needs testing
-SDL_Surface *Gfx::LoadImage ( std::string filename, unsigned int flags )
-{
-  SDL_Surface *temp_buffer = NULL;
-  SDL_Surface *video_buffer = NULL;
-
-  temp_buffer = IMG_Load ( filename.c_str() );
-
-  if ( temp_buffer == NULL )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::LoadImage() at IMG_Load(): " << IMG_GetError() << std::endl;
-    #endif
-
-    return NULL;
-  }
-
-  // Add check in for if SDL_SRCALPHA flag is set
-  video_buffer = SDL_DisplayFormat ( temp_buffer );
-
-  SDL_FreeSurface ( temp_buffer );
-  temp_buffer = NULL;
-
-  return video_buffer;
-}
-
-// TODO: Alpha value needs testing
-SDL_Surface *Gfx::LoadImage ( std::string filename, nom::Color colorkey, unsigned int flags )
+SDL_Surface *Gfx::LoadImage ( std::string filename, const nom::Color& colorkey, unsigned int flags )
 {
   SDL_Surface *temp_buffer = NULL;
   SDL_Surface *video_buffer = NULL;
@@ -168,6 +142,7 @@ bool Gfx::DrawSurface ( SDL_Surface *source_buffer, SDL_Surface *video_buffer,
     return false;
   }
 
+  // Coords ( -1, -1, -1, -1 ) -- our default, is equivalent to NULL for SDL_BlitSurface it seems
   if ( SDL_BlitSurface ( source_buffer, &blit_offsets, video_buffer, &blit_coords ) != 0 )
   {
     #ifdef DEBUG_GFX

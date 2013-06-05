@@ -38,19 +38,17 @@ class Gfx
     // SDLSurface
     static bool setTransparent (  SDL_Surface *video_buffer, nom::Color color,
                                   unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
+
     static bool setAlpha (  SDL_Surface *video_buffer, unsigned char opacity,
                             unsigned int flags = SDL_SRCALPHA );
 
     // SDL_Image: public SDL_Drawable
-    static SDL_Surface *LoadImage ( std::string filename,
-                                    unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
-
-    static SDL_Surface *LoadImage ( std::string filename, nom::Color colorkey,
+    static SDL_Surface *LoadImage ( std::string filename, const nom::Color& colorkey = nom::Color ( -1, -1, -1, -1 ),
                                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
     // SDL_Surface
     static bool DrawSurface (   SDL_Surface *source_buffer, SDL_Surface *video_buffer,
-                                const nom::Coords &coords, const nom::Coords &offsets );
+                                const nom::Coords &coords, const nom::Coords &offsets = nom::Coords ( -1, -1, -1, -1 ) );
 
     // SDL_Surface
     static bool updateSurface ( SDL_Surface *video_buffer );

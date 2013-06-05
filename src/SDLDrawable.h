@@ -93,6 +93,12 @@ namespace nom
         this->color = color;
       }
 
+      void set ( const Coords& coords, const Color& color )
+      {
+        this->coords = coords;
+        this->color = color;
+      }
+
       void Draw ( SDL_Surface *video_buffer ) const
       {
         SDL_Rect rectangle = this->coords.getSDL_Rect();

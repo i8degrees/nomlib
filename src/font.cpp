@@ -12,12 +12,16 @@ using namespace nom;
 
 Font::Font ( void )
 {
-  // ...
+  #ifdef DEBUG_FONT_OBJ
+    std::cout << "Font::Font (): " << "Hello, world!" << "\n" << std::endl;
+  #endif
 }
 
 Font::~Font ( void )
 {
-  // ...
+  #ifdef DEBUG_FONT_OBJ
+    std::cout << "Font::~Font (): " << "Goodbye cruel world!" << "\n" << std::endl;
+  #endif
 }
 
 signed int Font::getX ( void )

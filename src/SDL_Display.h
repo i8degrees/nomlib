@@ -22,34 +22,59 @@
 
 namespace nom
 {
-  namespace SDL
+  class SDL_Display: public nom::IDisplay
   {
-    class Display: public nom::IDisplay
-    {
-      public:
-        Display ( unsigned int flags = 0 );
-        ~Display ( void );
+    public:
+      SDL_Display ( unsigned int sdl_flags = SDL_INIT_VIDEO );
 
-        bool CreateWindow ( unsigned int display_width = 0,
-                            unsigned int display_height = 0,
-                            unsigned int display_colorbit = 0,
-                            unsigned int flags = 0
+      ~SDL_Display ( void );
+
+      bool CreateWindow  (  signed int display_width, signed int display_height,
+                            signed int display_colorbit = 32, unsigned int flags = 0
                           );
 
-          SDL_Surface* getDisplay ( void );
-          const unsigned int getDisplayWidth ( void ) const;
-          const unsigned int getDisplayHeight ( void ) const;
-          const unsigned int getDisplayColorBits ( void ) const;
-          const unsigned int getDisplayFlags ( void ) const;
+      static SDL_Surface* getDisplay ( void )
+      {
+        return SDL_GetVideoSurface();
+      }
 
-          bool updateDisplay ( void );
+      const signed int getDisplayWidth ( void ) const
+      {
+        return SDL_GetVideoSurface()->w;
+      }
 
-          void setTitle ( const std::string& app_name = "\0" );
-          bool setIcon ( const std::string& app_icon = "\0" );
-        private:
-          // ...
-      };
-    }
+      const signed int getDisplayHeight ( void ) const
+      {
+        return SDL_GetVideoSurface()->h;
+      }
+
+      const signed int getDisplayColorBits ( void ) const
+      {
+        return SDL_GetVideoSurface()->format->BitsPerPixel;
+      }
+
+      const unsigned int getDisplayFlags ( void ) const
+      {
+        return SDL_GetVideoSurface()->flags;
+      }
+
+      const unsigned short getDisplayPitch ( void ) const
+      {
+        return SDL_GetVideoSurface()->pitch;
+      }
+
+      static const bool updateDisplay ( void );
+
+      static void setTitle ( const std::string& app_name = "\0" )
+      {
+        SDL_WM_SetCaption ( app_name.c_str(), NULL );
+      }
+
+      static bool setIcon ( const std::string& app_icon = "\0" );
+
+    private:
+      // ...
+  };
 }
 
-#endif // NOMLIB_IDISPLAY_HEADERS defined
+#endif // NOMLIB_SDL_DISPLAY_HEADERS defined

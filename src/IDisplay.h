@@ -11,11 +11,9 @@
 
 #include <iostream>
 #include <string>
+#include <cassert>
 
 #include "SDL.h"
-
-//#include "Color.h"
-//#include "Coords.h"
 
 #include "gamelib.h"
 
@@ -24,26 +22,27 @@ namespace nom
   class IDisplay
   {
     public:
-      IDisplay ( unsigned int flags = 0 )
+      IDisplay ( void )
+      //: display_width ( 0 ), display_height ( 0 ),
+        //display_colorbit ( 0 ), display_flags ( 0 )
       {
-        // ...
+        // NULL
       }
+
       virtual ~IDisplay ( void )
       {
-        // ...
+        // NULL
       }
 
-      virtual bool CreateWindow ( unsigned int display_width = 0,
-                                  unsigned int display_height = 0,
-                                  unsigned int display_colorbit = 0,
-                                  unsigned int flags = 0
-                                ) = 0;
-
-        virtual SDL_Surface* getDisplay ( void ) = 0;
-        virtual bool updateDisplay ( void ) = 0;
-
-        virtual void setTitle ( const std::string& app_name = "\0" ) = 0;
-
+      virtual bool  CreateWindow  (   signed int display_width,
+                                      signed int display_height,
+                                      signed int display_colorbit, unsigned int flags
+                                  ) = 0;
+      private:
+        //signed int display_width;
+        //signed int display_height;
+        //signed int display_colorbit;
+        //unsigned int display_flags;
       protected:
         // ...
     };

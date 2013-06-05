@@ -8,7 +8,9 @@
 ******************************************************************************/
 #include "SDL_Display.h"
 
-nom::SDL::Display::Display ( unsigned int flags )
+using namespace nom;
+
+SDL_Display::SDL_Display ( unsigned int flags )
 {
   std::cout << "nom::SDL::Display::Display(): Hello, world!" << "\n" << std::endl;
 
@@ -20,7 +22,7 @@ nom::SDL::Display::Display ( unsigned int flags )
   }
 }
 
-nom::SDL::Display::~Display ( void )
+SDL_Display::~SDL_Display ( void )
 {
   // As per docs, we must not free the publicly available surface, AKA
   // SDL_Surface *screen. This is explicitly stated as a role of the SDL_Quit()
@@ -33,11 +35,11 @@ nom::SDL::Display::~Display ( void )
   SDL_Quit ();
 }
 
-bool nom::SDL::Display::CreateWindow (  unsigned int display_width,
-                          unsigned int display_height,
-                          unsigned int display_colorbit,
-                          unsigned int flags
-                        )
+bool SDL_Display::CreateWindow  ( signed int display_width,
+                                  signed int display_height,
+                                  signed int display_colorbit,
+                                  unsigned int flags
+                                )
 {
   SDL_Surface *screen = NULL;
 
@@ -52,48 +54,11 @@ bool nom::SDL::Display::CreateWindow (  unsigned int display_width,
   return true;
 }
 
-SDL_Surface* nom::SDL::Display::getDisplay ( void )
-{
-  return SDL_GetVideoSurface();
-}
-
-const unsigned int nom::SDL::Display::getDisplayWidth ( void ) const
-{
-  SDL_Surface *screen = NULL;
-  screen = SDL_GetVideoSurface();
-  return screen->w;
-}
-
-const unsigned int nom::SDL::Display::getDisplayHeight ( void ) const
-{
-  SDL_Surface *screen = NULL;
-  screen = SDL_GetVideoSurface();
-  return screen->h;
-}
-
-const unsigned int nom::SDL::Display::getDisplayColorBits ( void ) const
+const bool SDL_Display::updateDisplay ( void )
 {
   SDL_Surface *screen = NULL;
 
-  screen = SDL_GetVideoSurface();
-
-  return screen->format->BitsPerPixel;
-}
-
-const unsigned int nom::SDL::Display::getDisplayFlags ( void ) const
-{
-  SDL_Surface *screen = NULL;
-
-  screen = SDL_GetVideoSurface();
-
-  return screen->flags;
-}
-
-bool nom::SDL::Display::updateDisplay ( void )
-{
-  SDL_Surface *screen = NULL;
-
-  screen = this->getDisplay();
+  screen = SDL_Display::getDisplay();
 
   if ( SDL_Flip ( screen ) != 0 )
   {
@@ -104,16 +69,11 @@ bool nom::SDL::Display::updateDisplay ( void )
   return true;
 }
 
-void nom::SDL::Display::setTitle ( const std::string& app_name )
-{
-  SDL_WM_SetCaption ( app_name.c_str(), NULL );
-}
-
-bool nom::SDL::Display::setIcon ( const std::string& app_icon )
+bool SDL_Display::setIcon ( const std::string& app_icon )
 {
   SDL_Surface *icon_buffer = NULL;
 
-  if ( this->getDisplay() != NULL )
+  if ( SDL_Display::getDisplay() != NULL )
   {
     std::cout << "ERR in Gfx::SetWindowIcon(): " << "SDL_SetVideoMode() has already been called." << std::endl;
     return false;

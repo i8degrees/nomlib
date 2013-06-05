@@ -45,36 +45,6 @@ SDLBitmapFont::~SDLBitmapFont ( void )
   }
 }
 
-signed int SDLBitmapFont::getX ( void )
-{
-  return this->coords.getX();
-}
-
-signed int SDLBitmapFont::getY ( void )
-{
-  return this->coords.getY();
-}
-
-nom::Coords SDLBitmapFont::getXY ( void )
-{
-  return this->coords;
-}
-
-void SDLBitmapFont::setX ( signed int x_ )
-{
-  this->coords.setX ( x_ );
-}
-
-void SDLBitmapFont::setY ( signed int y_ )
-{
-  this->coords.setY ( y_ );
-}
-
-void SDLBitmapFont::setXY ( signed int x_, signed int y_ )
-{
-  this->coords.setXY ( x_, y_ );
-}
-
 void SDLBitmapFont::greyedOutText ( unsigned char opacity )
 {
   if ( this->bitmap_font )
@@ -117,11 +87,6 @@ signed int SDLBitmapFont::getTextHeight ( void )
   }
 
   return text_height;
-}
-
-std::string SDLBitmapFont::getText ( void )
-{
-  return this->text_buffer;
 }
 
 void SDLBitmapFont::setText ( std::string text )

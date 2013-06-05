@@ -1,49 +1,71 @@
 /******************************************************************************
     Font.cpp
 
-  SDL-based TrueType Font Rendering API
+  Base font class
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "font.h" // #include "Font.h"
+#include "Font.h"
 
-std::string Font::getTextBuffer ( void ) const
+using namespace nom;
+
+Font::Font ( void )
 {
-  return text_buffer;
+  // ...
 }
 
-bool Font::Draw ( Gfx *engine, unsigned int x, unsigned int y ) const
+Font::~Font ( void )
 {
-  SDL_Surface *video_buffer = NULL;
+  // ...
+}
 
-  if ( this->getTextBuffer().c_str() != NULL )
-    video_buffer = TTF_RenderText_Solid ( this->font, this->getTextBuffer().c_str(), this->text_color );
-  else
-  {
-    std::cout << "ERR in SDL_TFont::Draw(): " << SDL_GetError() << std::endl;
+signed int Font::getX ( void )
+{
+  return this->coords.getX();
+}
 
-    SDL_FreeSurface ( video_buffer );
-    video_buffer = NULL;
+signed int Font::getY ( void )
+{
+  return this->coords.getY();
+}
 
-    return false;
-  }
+Coords Font::getXY ( void )
+{
+  return this->coords;
+}
 
-  if ( video_buffer != NULL )
-  {
-    if ( engine->DrawSurface ( video_buffer, x, y ) == false )
-    {
-      std::cout << "ERR in SDL_TFont::Draw(): " << SDL_GetError() << std::endl;
-    }
+void Font::setX ( signed int x_ )
+{
+  this->coords.setX ( x_ );
+}
 
-    SDL_FreeSurface ( video_buffer );
-    video_buffer = NULL;
+void Font::setY ( signed int y_ )
+{
+  this->coords.setY ( y_ );
+}
 
-    return false;
-  }
+void Font::setXY ( signed int x_, signed int y_ )
+{
+  this->coords.setXY ( x_, y_ );
+}
 
-  SDL_FreeSurface ( video_buffer );
-  video_buffer = NULL;
+nom::Color Font::getTextColor ( void )
+{
+  return this->text_color;
+}
 
-  return true;
+void Font::setTextColor ( const Color &color )
+{
+  this->text_color = color;
+}
+
+std::string Font::getText ( void )
+{
+  return this->text_buffer;
+}
+
+void Font::setText ( std::string text )
+{
+  this->text_buffer = text;
 }

@@ -15,14 +15,16 @@ SDL_TFont::SDL_TFont ( void )
   #endif
 
   this->font = NULL;
+  this->font_buffer = NULL;
   this->coords.setCoords ( 0, 0, 0, 0 );
+  this->text_color.setColor ( 0, 0, 0 );
+  this->text_buffer = "\0";
 
   if ( TTF_Init () == -1 )
   {
     #ifdef DEBUG_SDL_TFONT
       std::cout << "ERR in SDL_TFont::SDL_TFont (): " << TTF_GetError() << std::endl;
     #endif
-    exit ( EXIT_FAILURE ); // TODO: Reconsider
   }
 }
 
@@ -33,47 +35,16 @@ SDL_TFont::~SDL_TFont ( void )
   #endif
 
   if ( this->font != NULL )
-  {
     TTF_CloseFont ( this->font );
-    this->font = NULL;
-  }
+
+  this->font = NULL;
+
+  if ( this->font_buffer != NULL )
+    SDL_FreeSurface ( this->font_buffer );
+
+  this->font_buffer = NULL;
 
   TTF_Quit ();
-}
-
-signed int SDL_TFont::getX ( void )
-{
-  return this->coords.getX();
-}
-
-signed int SDL_TFont::getY ( void )
-{
-  return this->coords.getY();
-}
-
-nom::Coords SDL_TFont::getXY ( void )
-{
-  return this->coords;
-}
-
-void SDL_TFont::setX ( signed int x_ )
-{
-  this->coords.setX ( x_ );
-}
-
-void SDL_TFont::setY ( signed int y_ )
-{
-  this->coords.setY ( y_ );
-}
-
-void SDL_TFont::setXY ( signed int x_, signed int y_ )
-{
-  this->coords.setXY ( x_, y_ );
-}
-
-std::string SDL_TFont::getText ( void )
-{
-  return this->text_buffer;
 }
 
 signed int SDL_TFont::getTextWidth ( void )
@@ -98,24 +69,23 @@ void SDL_TFont::setText ( std::string text )
       this->text_buffer = text;
     }
   }
+
+  if ( this->font != NULL )
+  {
+    if ( this->getText().c_str() != NULL )
+      this->font_buffer = TTF_RenderText_Solid  ( this->font, this->getText().c_str(),
+                                                  this->text_color.getSDL_Color()
+                                                );
+  }
+  else
+  {
+    #ifdef DEBUG_SDL_TFONT
+      std::cout << "ERR in SDL_TFont::setText(): " << SDL_GetError() << std::endl;
+    #endif
+  }
 }
 
-nom::Color SDL_TFont::getTextColor ( void )
-{
-  return this->text_color;
-}
 
-void SDL_TFont::setTextColor ( unsigned r, unsigned g, unsigned b )
-{
-  this->text_color.setRed ( r );
-  this->text_color.setGreen ( g );
-  this->text_color.setBlue ( b );
-}
-
-void SDL_TFont::setTextColor ( const nom::Color &color )
-{
-  this->text_color = color;
-}
 
 bool SDL_TFont::Load ( std::string filename, unsigned int font_size )
 {
@@ -134,28 +104,12 @@ bool SDL_TFont::Load ( std::string filename, unsigned int font_size )
 
 bool SDL_TFont::Draw ( SDL_Surface *video_buffer )
 {
-  SDL_Surface *font_buffer = NULL;
-
-  if ( this->getText().c_str() != NULL )
-    font_buffer = TTF_RenderText_Solid ( this->font, this->getText().c_str(),
-                                          this->text_color.getSDL_Color()
-                                        );
-  else
+  if ( this->font_buffer != NULL )
   {
-    std::cout << "ERR in SDL_TFont::Draw(): " << SDL_GetError() << std::endl;
-    return false;
-  }
-
-  if ( font_buffer != NULL )
-  {
-    // GCoords ( -1, -1, -1, -1 is equivalent to NULL here I *think*
-    if ( Gfx::DrawSurface ( font_buffer, video_buffer, this->coords, nom::Coords ( -1, -1, -1, -1 ) ) == false )
+    // GCoords ( -1, -1, -1, -1 ) is equivalent to NULL for SDL_BlitSurface it seems
+    if ( Gfx::DrawSurface ( this->font_buffer, video_buffer, this->coords, nom::Coords ( -1, -1, -1, -1 ) ) == false )
     {
       std::cout << "ERR in SDL_TFont::Draw(): " << SDL_GetError() << std::endl;
-
-      SDL_FreeSurface ( font_buffer );
-      font_buffer = NULL;
-
       return false;
     }
   }

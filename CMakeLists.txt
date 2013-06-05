@@ -19,7 +19,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/SDLMessageBox.cpp
       ${SRC_DIR}/SDL_BitmapFont.cpp
       ${SRC_DIR}/SDL_Cursor.cpp
-      ${SRC_DIR}/IDisplay.cpp
+      #${SRC_DIR}/IDisplay.cpp
       ${SRC_DIR}/SDL_Display.cpp
       ${SRC_DIR}/gfx.cpp
       ${SRC_DIR}/sprite.cpp

@@ -42,6 +42,9 @@ class Gfx
                             unsigned int flags = SDL_SRCALPHA );
 
     // SDL_Image: public SDL_Drawable
+    static SDL_Surface *LoadImage ( std::string filename,
+                                    unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
+
     static SDL_Surface *LoadImage ( std::string filename, nom::Color colorkey,
                                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 

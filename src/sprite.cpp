@@ -77,42 +77,42 @@ nom::Sprite::~Sprite ( void )
   }
 }
 
-unsigned int nom::Sprite::getX ( void )
+unsigned int nom::Sprite::getX ( void ) const
 {
   return this->coords.x;
 }
 
-unsigned int nom::Sprite::getY ( void )
+unsigned int nom::Sprite::getY ( void ) const
 {
   return this->coords.y;
 }
 
-unsigned int nom::Sprite::getWidth ( void )
+unsigned int nom::Sprite::getWidth ( void ) const
 {
   return this->coords.width;
 }
 
-unsigned int nom::Sprite::getHeight ( void )
+unsigned int nom::Sprite::getHeight ( void ) const
 {
   return this->coords.height;
 }
 
-unsigned int nom::Sprite::getXOffset ( void )
+unsigned int nom::Sprite::getXOffset ( void ) const
 {
   return this->offsets.x;
 }
 
-unsigned int nom::Sprite::getYOffset ( void )
+unsigned int nom::Sprite::getYOffset ( void ) const
 {
   return this->offsets.y;
 }
 
-unsigned int nom::Sprite::getWidthOffset ( void )
+unsigned int nom::Sprite::getWidthOffset ( void ) const
 {
   return this->offsets.width;
 }
 
-unsigned int nom::Sprite::getHeightOffset ( void )
+unsigned int nom::Sprite::getHeightOffset ( void ) const
 {
   return this->offsets.height;
 }
@@ -224,7 +224,7 @@ bool nom::Sprite::Load ( std::string filename, nom::Color colorkey, unsigned int
   return true;
 }
 
-bool nom::Sprite::Draw ( SDL_Surface *video_buffer )
+void nom::Sprite::Draw ( SDL_Surface *video_buffer ) const
 {
   nom::Coords coords; // FIXME
   nom::Coords offsets; // FIXME
@@ -234,7 +234,6 @@ bool nom::Sprite::Draw ( SDL_Surface *video_buffer )
     #ifdef DEBUG_SPRITE
       std::cout << "ERR in Sprite::Draw(): " << SDL_GetError() << std::endl;
     #endif
-    return false;
   }
 
   coords.setCoords ( this->getX(), this->getY(), this->getWidth(), this->getHeight() );
@@ -255,8 +254,6 @@ bool nom::Sprite::Draw ( SDL_Surface *video_buffer )
 
   if ( Gfx::DrawSurface ( this->sprite_buffer, video_buffer, coords, offsets ) == false )
   {
-    return false;
+    return;
   }
-
-  return true;
 }

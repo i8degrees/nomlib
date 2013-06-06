@@ -18,24 +18,26 @@
 
 #include "gfx.h"
 
+#include "SDLDrawable.h"
+
 namespace nom
 {
-  class Sprite
+  class Sprite: public SDL_Drawable
   {
     public:
       Sprite ( void );
       Sprite ( unsigned int width, unsigned int height );
       ~Sprite ( void );
 
-      unsigned int getX ( void );
-      unsigned int getY ( void );
-      unsigned int getWidth ( void );
-      unsigned int getHeight ( void );
+      unsigned int getX ( void ) const;
+      unsigned int getY ( void ) const;
+      unsigned int getWidth ( void ) const;
+      unsigned int getHeight ( void ) const;
 
-      unsigned int getXOffset ( void );
-      unsigned int getYOffset ( void );
-      unsigned int getWidthOffset ( void );
-      unsigned int getHeightOffset ( void );
+      unsigned int getXOffset ( void ) const;
+      unsigned int getYOffset ( void ) const;
+      unsigned int getWidthOffset ( void ) const;
+      unsigned int getHeightOffset ( void ) const;
 
       void setX ( unsigned int x );
       void setY ( unsigned int y );
@@ -58,7 +60,7 @@ namespace nom
       bool Load ( std::string filename );
       bool Load ( std::string filename, nom::Color colorkey, unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL );
 
-      bool Draw ( SDL_Surface *video_buffer ); /* const; */
+      void Draw ( SDL_Surface *video_buffer ) const;
 
     private:
       SDL_Surface *sprite_buffer; // memory buffer allocation

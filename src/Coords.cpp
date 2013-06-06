@@ -71,12 +71,12 @@ nom::Coords nom::Coords::get ( void ) const
   return *this;
 }
 
-signed int nom::Coords::getX ( void )
+const signed int nom::Coords::getX ( void ) const
 {
   return this->x;
 }
 
-signed int nom::Coords::getY ( void )
+const signed int nom::Coords::getY ( void ) const
 {
   return this->y;
 }
@@ -97,12 +97,12 @@ void nom::Coords::setXY ( signed int x_, signed int y_ )
   this->y = y_;
 }
 
-signed int nom::Coords::getWidth ( void )
+const signed int nom::Coords::getWidth ( void ) const
 {
   return this->width;
 }
 
-signed int nom::Coords::getHeight ( void )
+const signed int nom::Coords::getHeight ( void ) const
 {
   return this->height;
 }

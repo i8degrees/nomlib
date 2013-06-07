@@ -56,38 +56,6 @@ class Gfx
     static bool lockSurface ( void* video_buffer );
     static bool unlockSurface ( void* video_buffer );
     static void drawLine ( void* video_buffer, float x1, float y1, float x2, float y2, nom::Color color );
-
-/*
-  class GameApp: public SDLInput
-    public:
-*/
-    void ChangeState ( std::unique_ptr<GameState> state );
-    void PushState ( std::unique_ptr<GameState> state );
-    void PopState ( void );
-    void PopStateThenChangeState ( std::unique_ptr<GameState> state );
-
-    void HandleInput ( void );
-    void Update ( void );
-    void Draw ( void* video_buffer );
-
-    bool isRunning ( void );
-    void Run ( void );
-    void Quit ( void );
-
-    unsigned int getTicks ( void );
-
-    bool isFullScreen ( void );
-    void setFullScreen ( bool toggle );
-    bool getShowFPS ( void );
-    void showFPS ( bool toggle );
-    void toggleFPS ( void );
-
-  private:
-    bool running; // global app state
-    bool show_fps; // fps counter
-    bool fullscreen; // toggle window & fullscreen states
-    std::vector<std::unique_ptr<GameState>> states;
-    Timer appTime;
 };
 
 #endif // GAMELIB_GFX_HEADERS defined

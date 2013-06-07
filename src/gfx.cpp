@@ -18,14 +18,6 @@ Gfx::Gfx ( unsigned int img_flags )
     std::cout << "Gfx::Gfx(): Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->running = false;
-
-  //#ifdef DEBUG_GFX
-  this->showFPS ( true );
-  //#endif
-
-  this->setFullScreen ( false );
-
   if ( IMG_Init ( img_flags ) != img_flags )
   {
     #ifdef DEBUG_GFX
@@ -34,18 +26,10 @@ Gfx::Gfx ( unsigned int img_flags )
 
     exit ( EXIT_FAILURE );
   }
-
-  this->appTime.Start();
 }
 
 Gfx::~Gfx ( void )
 {
-  // cleanup all of the states
-  while ( !this->states.empty() )
-    this->states.pop_back();
-
-  this->appTime.Stop();
-
   #ifdef DEBUG_GFX_OBJ
     std::cout << "Gfx::~Gfx(): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
@@ -270,120 +254,4 @@ bool Gfx::unlockSurface ( void* video_buffer )
     return false;
 
   return true;
-}
-
-void Gfx::ChangeState( std::unique_ptr<GameState> state )
-{
-  // cleanup the current state
-  if ( !this->states.empty() )
-    this->states.pop_back();
-
-  // store the new state
-  this->states.push_back( std::move( state ) );
-}
-
-void Gfx::PushState( std::unique_ptr<GameState> state )
-{
-  // pause current state
-  if ( !this->states.empty() )
-    this->states.back()->Pause();
-
-  // store the new state
-  this->states.push_back( std::move( state ) );
-}
-
-void Gfx::PopState ( void )
-{
-  // cleanup the current state
-  if ( !this->states.empty() )
-    this->states.pop_back();
-
-  // resume previous state
-  if ( !this->states.empty () )
-    this->states.back()->Resume();
-}
-
-void Gfx::PopStateThenChangeState( std::unique_ptr<GameState> state )
-{
-  // cleanup the current state
-  if ( !this->states.empty() )
-    this->states.pop_back();
-
-  if ( !this->states.empty () )
-  {
-    Gfx::ChangeState( std::move( state ) );
-  }
-}
-
-void Gfx::HandleInput ( void )
-{
-  // let the state handle events
-  this->states.back()->HandleInput ();
-}
-
-void Gfx::Update ( void )
-{
-  // let the state update the scene
-  this->states.back()->Update();
-}
-
-void Gfx::Draw( void* video_buffer )
-{
-  // let the state draw the scene
-  this->states.back()->Draw ( video_buffer );
-}
-
-bool Gfx::isRunning ( void )
-{
-  if ( this->running )
-    return true;
-  else
-    return false;
-}
-
-void Gfx::Run ( void )
-{
-  this->running = true;
-}
-
-void Gfx::Quit ( void )
-{
-  this->running = false;
-}
-
-unsigned int Gfx::getTicks ( void )
-{
-  return this->appTime.getTicks();
-}
-
-bool Gfx::getShowFPS ( void )
-{
-  return this->show_fps;
-}
-
-void Gfx::showFPS ( bool toggle )
-{
-  this->show_fps = toggle;
-}
-
-// Helper method; toggles showing FPS counter (or not)
-void Gfx::toggleFPS ( void )
-{
-  if ( this->getShowFPS() )
-    this->showFPS ( false );
-  else
-    this->showFPS ( true );
-}
-
-bool Gfx::isFullScreen ( void )
-{
-  if ( this->fullscreen )
-    return true;
-  else
-    return false;
-}
-
-void Gfx::setFullScreen ( bool toggle )
-{
-  this->fullscreen = toggle;
 }

@@ -33,9 +33,6 @@
 #define DEBUG_SPRITE
 #define DEBUG_SPRITE_OBJ
 
-#define DEBUG_SDLAPP
-#define DEBUG_SDLAPP_OBJ
-
 #define DEBUG_SDLINPUT
 #define DEBUG_SDLINPUT_OBJ
 

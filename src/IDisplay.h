@@ -17,14 +17,14 @@
 
 #include "gamelib.h"
 
+#include "Coords.h"
+
 namespace nom
 {
   class IDisplay
   {
     public:
       IDisplay ( void )
-      //: display_width ( 0 ), display_height ( 0 ),
-        //display_colorbit ( 0 ), display_flags ( 0 )
       {
         // NULL
       }
@@ -34,15 +34,31 @@ namespace nom
         // NULL
       }
 
-      virtual bool  CreateWindow  (   signed int display_width,
-                                      signed int display_height,
-                                      signed int display_colorbit, unsigned int flags
-                                  ) = 0;
+      virtual void createWindow ( int32_t display_width, int32_t display_height,
+                                  int32_t display_colorbit, uint32_t flags = 0
+                                ) = 0;
+
+      virtual const void* get ( void ) const = 0;
+      virtual const int32_t getDisplayWidth ( void ) const = 0;
+      virtual const int32_t getDisplayHeight ( void ) const = 0;
+      virtual const int32_t getDisplayColorBits ( void ) const = 0;
+      virtual const uint32_t getDisplayFlags ( void ) const = 0;
+      virtual const uint16_t getDisplayPitch ( void ) const = 0;
+      virtual const void* getDisplayPixels ( void ) const = 0;
+      virtual const void* getDisplayPixelsFormat ( void ) const = 0;
+      virtual const Coords getDisplayClip ( void ) const = 0;
+
+      virtual void Update ( void ) = 0;
+      virtual const void toggleFullScreenWindow ( int32_t width, int32_t height ) const = 0;
+
+      virtual const std::string getWindowTitle ( void ) const = 0;
+      virtual void setWindowTitle ( const std::string& ) = 0;
+
+      virtual void* getWindowIcon ( void ) const = 0;
+      virtual void setWindowIcon ( const std::string& ) = 0;
+
       private:
-        //signed int display_width;
-        //signed int display_height;
-        //signed int display_colorbit;
-        //unsigned int display_flags;
+        // ...
       protected:
         // ...
     };

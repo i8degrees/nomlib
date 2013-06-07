@@ -22,55 +22,34 @@
 
 namespace nom
 {
-  class SDL_Display: public nom::IDisplay
+  class SDL_Display: public IDisplay
   {
     public:
-      SDL_Display ( unsigned int sdl_flags = SDL_INIT_VIDEO );
-
+      SDL_Display ( void );
       ~SDL_Display ( void );
 
-      bool CreateWindow  (  signed int display_width, signed int display_height,
-                            signed int display_colorbit = 32, unsigned int flags = 0
-                          );
+      void createWindow ( int32_t display_width, int32_t display_height,
+                          int32_t display_colorbit, uint32_t flags = 0
+                        );
 
-      static SDL_Surface* getDisplay ( void )
-      {
-        return SDL_GetVideoSurface();
-      }
+      void* get ( void ) const;
+      const int32_t getDisplayWidth ( void ) const;
+      const int32_t getDisplayHeight ( void ) const;
+      const int32_t getDisplayColorBits ( void ) const;
+      const uint32_t getDisplayFlags ( void ) const;
+      const uint16_t getDisplayPitch ( void ) const;
+      const void* getDisplayPixels ( void ) const;
+      void* getDisplayPixelsFormat ( void ) const;
+      const Coords getDisplayClip ( void ) const;
 
-      const signed int getDisplayWidth ( void ) const
-      {
-        return SDL_GetVideoSurface()->w;
-      }
+      void Update ( void );
+      const void toggleFullScreenWindow ( int32_t width, int32_t height ) const;
 
-      const signed int getDisplayHeight ( void ) const
-      {
-        return SDL_GetVideoSurface()->h;
-      }
+      const std::string getWindowTitle ( void ) const;
+      void* getWindowIcon ( void ) const;
 
-      const signed int getDisplayColorBits ( void ) const
-      {
-        return SDL_GetVideoSurface()->format->BitsPerPixel;
-      }
-
-      const unsigned int getDisplayFlags ( void ) const
-      {
-        return SDL_GetVideoSurface()->flags;
-      }
-
-      const unsigned short getDisplayPitch ( void ) const
-      {
-        return SDL_GetVideoSurface()->pitch;
-      }
-
-      static const bool updateDisplay ( void );
-
-      static void setTitle ( const std::string& app_name = "\0" )
-      {
-        SDL_WM_SetCaption ( app_name.c_str(), NULL );
-      }
-
-      static bool setIcon ( const std::string& app_icon = "\0" );
+      void setWindowTitle ( const std::string& app_name = "\0" );
+      void setWindowIcon ( const std::string& app_icon = "\0" );
 
     private:
       // ...

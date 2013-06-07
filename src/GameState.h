@@ -17,11 +17,11 @@
 
 #include "SDL.h"
 
-#include "SDLInput.h"
+#include "SDL_Input.hpp"
 
 #include "gamelib.h"
 
-class GameState: public nom::SDLInput
+class GameState: public nom::SDL_Input
 {
   public:
     virtual ~GameState()

@@ -25,7 +25,7 @@ GameStates::GameStates ( void )
 void GameStates::onEvent ( SDL_Event *event )
 {
   // let the state handle events
-  states.back()->Input ( event );
+  states.back()->HandleInput ( event );
 }
 
 void GameStates::Update ( void )

@@ -1,13 +1,14 @@
 /******************************************************************************
-    SDLInput.h
+    SDL_Input.hpp
 
-    Input Events Handling
+    SDL Input Events Handling
 
   Copyright (c) 2013 Jeffrey Carpenter
+  All rights reserved.
 
 ******************************************************************************/
-#ifndef GAMELIB_SDLINPUT_HEADERS
-#define GAMELIB_SDLINPUT_HEADERS
+#ifndef NOMLIB_SDL_INPUT_HEADERS
+#define NOMLIB_SDL_INPUT_HEADERS
 
 #include <iostream>
 #include <string>
@@ -51,13 +52,13 @@ namespace nom
       PSBUTTON          = 16
   };
 
-  class SDLInput
+  class SDL_Input
   {
     public:
-      SDLInput ( void );
-      virtual ~SDLInput ( void );
+      SDL_Input ( void );
+      virtual ~SDL_Input ( void );
 
-      virtual void Input ( SDL_Event *input );
+      virtual void HandleInput ( SDL_Event *input );
 
       virtual void onExit ( void );
       virtual void onResize ( unsigned int width, unsigned int height );
@@ -87,4 +88,4 @@ namespace nom
   };
 }
 
-#endif // GAMELIB_SDLINPUT_HEADERS defined
+#endif // NOMLIB_SDL_INPUT_HEADERS defined

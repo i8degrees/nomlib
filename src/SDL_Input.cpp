@@ -1,22 +1,23 @@
 /******************************************************************************
-    SDLInput.cpp
+    SDL_Input.cpp
 
-    Input Events Handling
+    SDL Input Events Handling
 
   Copyright (c) 2013 Jeffrey Carpenter
+  All rights reserved.
 
 ******************************************************************************/
-#include "SDLInput.h"
+#include "SDL_Input.hpp"
 
-nom::SDLInput::SDLInput ( void )
+nom::SDL_Input::SDL_Input ( void )
 {
-  #ifdef DEBUG_SDLINPUT_OBJ
-    std::cout << "SDLInput::SDLInput (): " << "Hello, world!" << std::endl << std::endl;
+  #ifdef DEBUG_SDL_INPUT_OBJ
+    std::cout << "SDL_Input::SDL_Input (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
   if ( SDL_InitSubSystem ( SDL_INIT_JOYSTICK ) == -1 )
   {
-    std::cout << "ERR in SDLInput::SDLInput() at: " << SDL_GetError() << std::endl;
+    std::cout << "ERR in SDL_Input::SDL_Input() at: " << SDL_GetError() << std::endl;
     return;
   }
 
@@ -42,10 +43,10 @@ nom::SDLInput::SDLInput ( void )
   }
 }
 
-nom::SDLInput::~SDLInput ( void )
+nom::SDL_Input::~SDL_Input ( void )
 {
-  #ifdef DEBUG_SDLINPUT_OBJ
-    std::cout << "SDLInput::~SDLInput (): " << "Goodbye cruel world!" << std::endl << std::endl;
+  #ifdef DEBUG_SDL_INPUT_OBJ
+    std::cout << "SDL_Input::~SDL_Input (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
 
   // Only close joysticks we have opened
@@ -61,7 +62,7 @@ nom::SDLInput::~SDLInput ( void )
 }
 
 
-void nom::SDLInput::Input ( SDL_Event *input )
+void nom::SDL_Input::HandleInput ( SDL_Event *input )
 {
   switch ( input->type )
   {
@@ -136,97 +137,97 @@ void nom::SDLInput::Input ( SDL_Event *input )
   } // end switch input->type
 }
 
-void nom::SDLInput::onExit ( void )
+void nom::SDL_Input::onExit ( void )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onResize ( unsigned int width, unsigned int height )
+void nom::SDL_Input::onResize ( unsigned int width, unsigned int height )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onRestore ( void )
+void nom::SDL_Input::onRestore ( void )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onMinimize ( void )
+void nom::SDL_Input::onMinimize ( void )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onInputFocus ( void )
+void nom::SDL_Input::onInputFocus ( void )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onMouseFocus ( void )
+void nom::SDL_Input::onMouseFocus ( void )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onKeyDown ( SDLKey key, SDLMod mod )
+void nom::SDL_Input::onKeyDown ( SDLKey key, SDLMod mod )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onKeyUp ( SDLKey key, SDLMod mod )
+void nom::SDL_Input::onKeyUp ( SDLKey key, SDLMod mod )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onMouseMotion ( unsigned int x, unsigned int y )
+void nom::SDL_Input::onMouseMotion ( unsigned int x, unsigned int y )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onMouseWheel ( bool up, bool down )
+void nom::SDL_Input::onMouseWheel ( bool up, bool down )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
+void nom::SDL_Input::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onMouseMiddleButtonDown ( unsigned int x, unsigned int y )
+void nom::SDL_Input::onMouseMiddleButtonDown ( unsigned int x, unsigned int y )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onMouseRightButtonDown ( unsigned int x, unsigned int y )
+void nom::SDL_Input::onMouseRightButtonDown ( unsigned int x, unsigned int y )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onMouseLeftButtonUp ( unsigned int x, unsigned int y )
+void nom::SDL_Input::onMouseLeftButtonUp ( unsigned int x, unsigned int y )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onMouseMiddleButtonUp ( unsigned int x, unsigned int y )
+void nom::SDL_Input::onMouseMiddleButtonUp ( unsigned int x, unsigned int y )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onMouseRightButtonUp ( unsigned int x, unsigned int y )
+void nom::SDL_Input::onMouseRightButtonUp ( unsigned int x, unsigned int y )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onJoyButtonDown ( unsigned int which, unsigned int button )
+void nom::SDL_Input::onJoyButtonDown ( unsigned int which, unsigned int button )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onJoyButtonUp ( unsigned int which, unsigned int button )
+void nom::SDL_Input::onJoyButtonUp ( unsigned int which, unsigned int button )
 {
   // virtual implementation
 }
 
-void nom::SDLInput::onJoyAxis ( unsigned int which, unsigned int axis, short int value )
+void nom::SDL_Input::onJoyAxis ( unsigned int which, unsigned int axis, short int value )
 {
   // virtual implementation
 }

@@ -15,7 +15,7 @@
 #include <vector>
 #include <memory>
 
-#include "SDLInput.h"
+#include "SDL_Input.hpp"
 
 #include "gamelib.h"
 
@@ -23,7 +23,7 @@
 
 namespace nom
 {
-  class SDL_App: public SDLInput
+  class SDL_App: public nom::SDL_Input
   {
     public:
       SDL_App ( void );

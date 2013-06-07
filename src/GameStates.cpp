@@ -22,10 +22,10 @@ GameStates::GameStates ( void )
   #endif
 }
 
-void GameStates::HandleInput ( void )
+void GameStates::onEvent ( SDL_Event *event )
 {
   // let the state handle events
-  states.back()->HandleInput ();
+  states.back()->Input ( event );
 }
 
 void GameStates::Update ( void )

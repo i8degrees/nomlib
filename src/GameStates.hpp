@@ -26,10 +26,10 @@ namespace nom
   class GameStates
   {
     public:
+      static void onEvent ( SDL_Event *event ); /// Game state events handler
+
       /// Pause method is implemented in each GameState derived class
       /// Resume method is implemented in each GameState derived class
-
-      static void HandleInput ( void );
       static void Update ( void );
       static void Draw ( void* video_buffer );
 

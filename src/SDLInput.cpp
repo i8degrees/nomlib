@@ -71,12 +71,12 @@ void nom::SDLInput::Input ( SDL_Event *input )
 
     case SDL_KEYUP:
       // Temporary state crash workaround by commenting below line out of exec:
-      //onKeyUp ( input->key.keysym.sym, input->key.keysym.mod );
+      onKeyUp ( input->key.keysym.sym, input->key.keysym.mod );
     break;
 
     case SDL_MOUSEMOTION:
       // Temporary state crash workaround by commenting below line out of exec:
-      //onMouseMotion ( input->motion.x, input->motion.y );
+      onMouseMotion ( input->motion.x, input->motion.y );
     break;
 
     case SDL_MOUSEBUTTONDOWN:
@@ -127,7 +127,7 @@ void nom::SDLInput::Input ( SDL_Event *input )
 
     case SDL_JOYAXISMOTION:
       // Temporary state crash workaround by commenting below line out of exec:
-      //onJoyAxis ( input->jaxis.which, input->jaxis.axis, input->jaxis.value );
+      onJoyAxis ( input->jaxis.which, input->jaxis.axis, input->jaxis.value );
     break;
 
     case SDL_QUIT: onExit(); break;

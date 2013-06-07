@@ -1,14 +1,14 @@
 /******************************************************************************
-    GameApp.hpp
+    SDL_App.hpp
 
-    Game app interface class
+    SDL app interface class
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.
 
 ******************************************************************************/
-#ifndef NOMLIB_GAMEAPP_HEADERS
-#define NOMLIB_GAMEAPP_HEADERS
+#ifndef NOMLIB_SDL_APP_HEADERS
+#define NOMLIB_SDL_APP_HEADERS
 
 #include <iostream>
 #include <string>
@@ -23,11 +23,11 @@
 
 namespace nom
 {
-  class GameApp: public SDLInput
+  class SDL_App: public SDLInput
   {
     public:
-      GameApp ( void );
-      ~GameApp ( void );
+      SDL_App ( void );
+      ~SDL_App ( void );
 
       virtual bool isRunning ( void );
       virtual void Running ( void );
@@ -42,11 +42,11 @@ namespace nom
       virtual void toggleFPS ( void );
 
     private:
-      bool app_state; // global app state
-      bool show_fps; // fps counter
-      bool fullscreen; // toggle window & fullscreen states
-      Timer appTime;
+      bool app_state; /// global app state
+      bool show_fps; /// fps counter
+      bool fullscreen; /// toggle window & fullscreen states
+      Timer appTime; /// global app timer
   };
 }
 
-#endif // NOMLIB_GAMEAPP_HEADERS defined
+#endif // NOMLIB_SDL_APP_HEADERS defined

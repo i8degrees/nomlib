@@ -75,7 +75,7 @@
 #define DEBUG_GAMESTATES
 #define DEBUG_GAMESTATES_OBJ
 
-#define DEBUG_GAMEAPP
-#define DEBUG_GAMEAPP_OBJ
+#define DEBUG_SDL_APP
+#define DEBUG_SDL_APP_OBJ
 
 #endif // GAMELIB_HEADERS defined

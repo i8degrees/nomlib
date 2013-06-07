@@ -75,4 +75,7 @@
 #define DEBUG_SDL_APP
 #define DEBUG_SDL_APP_OBJ
 
+#define DEBUG_INTERFACE_INPUT
+#define DEBUG_INTERFACE_INPUT_OBJ
+
 #endif // GAMELIB_HEADERS defined

@@ -17,6 +17,8 @@
 
 #include "gamelib.h"
 
+#include "I_Input.hpp"
+
 namespace nom
 {
   // SDL mapping to individual PS3 axes
@@ -52,7 +54,7 @@ namespace nom
       PSBUTTON          = 16
   };
 
-  class SDL_Input
+  class SDL_Input: public nom::I_Input
   {
     public:
       SDL_Input ( void );

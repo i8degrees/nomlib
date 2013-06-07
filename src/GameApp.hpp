@@ -15,7 +15,7 @@
 #include <vector>
 #include <memory>
 
-//#include "SDLInput.h"
+#include "SDLInput.h"
 
 #include "gamelib.h"
 
@@ -23,26 +23,26 @@
 
 namespace nom
 {
-  class GameApp
+  class GameApp: public SDLInput
   {
     public:
       GameApp ( void );
       ~GameApp ( void );
 
-      bool isRunning ( void );
-      void Run ( void );
-      void Quit ( void );
+      virtual bool isRunning ( void );
+      virtual void Running ( void );
+      virtual void Quit ( void );
 
-      uint32_t getTicks ( void );
+      virtual uint32_t getTicks ( void );
 
-      bool isFullScreen ( void );
-      void setFullScreen ( bool toggle );
-      bool getShowFPS ( void );
-      void showFPS ( bool toggle );
-      void toggleFPS ( void );
+      virtual bool isFullScreen ( void );
+      virtual void setFullScreen ( bool toggle );
+      virtual bool getShowFPS ( void );
+      virtual void showFPS ( bool toggle );
+      virtual void toggleFPS ( void );
 
     private:
-      bool running; // global app state
+      bool app_state; // global app state
       bool show_fps; // fps counter
       bool fullscreen; // toggle window & fullscreen states
       Timer appTime;

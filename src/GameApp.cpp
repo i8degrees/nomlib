@@ -17,7 +17,7 @@ GameApp::GameApp ( void )
     std::cout << "GameApp::GameApp(): Hello, world!" << std::endl << std::endl;
   #endif
 
-  this->running = false;
+  this->app_state = false;
 
   //#ifdef DEBUG_GFX
   this->showFPS ( true );
@@ -34,27 +34,31 @@ GameApp::~GameApp ( void )
     std::cout << "GameApp::~GameApp(): Goodbye cruel world!" << std::endl << std::endl;
   #endif
 
+  this->setFullScreen ( false );
+
   this->appTime.Stop();
+
+  this->app_state = false;
 
   SDL_Quit();
 }
 
 bool GameApp::isRunning ( void )
 {
-  if ( this->running )
+  if ( this->app_state )
     return true;
   else
     return false;
 }
 
-void GameApp::Run ( void )
+void GameApp::Running ( void )
 {
-  this->running = true;
+  this->app_state = true;
 }
 
 void GameApp::Quit ( void )
 {
-  this->running = false;
+  this->app_state = false;
 }
 
 uint32_t GameApp::getTicks ( void )

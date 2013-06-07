@@ -29,36 +29,33 @@
 class Gfx
 {
   public:
-    // SDL_Display
     Gfx ( unsigned int img_flags = IMG_INIT_PNG );
     ~Gfx ( void );
 
-    // SDL_Display::Surface ( coords ); AKA defaults to blitting to public interface
-
     // SDLSurface
-    static bool setTransparent (  SDL_Surface *video_buffer, nom::Color color,
+    static bool setTransparent (  void* video_buffer, const nom::Color& color,
                                   unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
-    static bool setAlpha (  SDL_Surface *video_buffer, unsigned char opacity,
+    static bool setAlpha (  void* video_buffer, unsigned char opacity,
                             unsigned int flags = SDL_SRCALPHA );
 
     // SDL_Image: public SDL_Drawable
-    static SDL_Surface *LoadImage ( std::string filename, const nom::Color& colorkey = nom::Color ( -1, -1, -1, -1 ),
+    static void* LoadImage ( std::string filename, const nom::Color& colorkey = nom::Color ( -1, -1, -1, -1 ),
                                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
     // SDL_Surface
-    static bool DrawSurface (   SDL_Surface *source_buffer, SDL_Surface *video_buffer,
+    static bool DrawSurface (   void* source_buffer, void* video_buffer,
                                 const nom::Coords &coords, const nom::Coords &offsets = nom::Coords ( -1, -1, -1, -1 ) );
 
-    // SDL_Surface
-    static bool updateSurface ( SDL_Surface *video_buffer );
+    // SDL_Display
+    static bool updateSurface ( void* video_buffer );
 
     // SDL_Shapes: SDL_Drawable
-    static unsigned int getPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );
-    static void setPixel ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, nom::Color color );
-    static bool lockSurface ( SDL_Surface *video_buffer );
-    static bool unlockSurface ( SDL_Surface *video_buffer );
-    static void drawLine ( SDL_Surface *video_buffer, float x1, float y1, float x2, float y2, nom::Color color );
+    static unsigned int getPixel ( void* video_buffer, unsigned int x, unsigned int y );
+    static void setPixel ( void* video_buffer, unsigned int x, unsigned int y, nom::Color color );
+    static bool lockSurface ( void* video_buffer );
+    static bool unlockSurface ( void* video_buffer );
+    static void drawLine ( void* video_buffer, float x1, float y1, float x2, float y2, nom::Color color );
 
 /*
   class GameApp: public SDLInput
@@ -71,7 +68,7 @@ class Gfx
 
     void HandleInput ( void );
     void Update ( void );
-    void Draw ( SDL_Surface *video_buffer );
+    void Draw ( void* video_buffer );
 
     bool isRunning ( void );
     void Run ( void );

@@ -13,8 +13,8 @@
 
 #include "SDL.h"
 
-#include "Coords.h"
-#include "Color.h"
+//#include "Coords.h"
+//#include "Color.h"
 
 // Example usage:
 // https://gist.github.com/i8degrees/5711070
@@ -23,12 +23,40 @@ namespace nom
 {
   class SDL_Drawable
   {
-    // SDL_Font
     // SDL_Gradient
     public:
-      virtual void Draw ( SDL_Surface *video_buffer ) const = 0;
+      virtual void Draw ( void *video_buffer ) const = 0;
+      virtual ~SDL_Drawable ( void ) {}
   };
 
+  class Primitive: public SDL_Drawable
+  {
+    public:
+      Primitive ( void )  : coords ( 0, 0, 0, 0 ), color ( 0, 0, 0, 0 )
+      {}
+
+      ~Primitive ( void );
+    private:
+      Coords coords;
+      Color color;
+  };
+
+  class Pixel: public Primitive
+  {
+    public:
+      // ...
+    private:
+      // ...
+  };
+
+  class Line: public Primitive
+  {
+    public:
+      // ...
+    private:
+      // ...
+  };
+/*
   class Image: public SDL_Drawable
   {
     public:
@@ -78,7 +106,7 @@ namespace nom
       Coords coords;
       Color color;
   };
-
+*/
   class Rectangle: public SDL_Drawable
   {
     public:
@@ -93,20 +121,21 @@ namespace nom
         this->color = color;
       }
 
-      void set ( const Coords& coords, const Color& color )
+      void setPosition ( const Coords& coords, const Color& color )
       {
         this->coords = coords;
         this->color = color;
       }
 
-      void Draw ( SDL_Surface *video_buffer ) const
+      void Draw ( void *video_buffer ) const
       {
         SDL_Rect rectangle = this->coords.getSDL_Rect();
         unsigned int rectangle_color = 0;
+        SDL_Surface *s = (SDL_Surface*) video_buffer;
 
-        rectangle_color = this->color.getColorAsInt ( video_buffer->format );
+        rectangle_color = this->color.getColorAsInt ( s->format );
 
-        if ( SDL_FillRect ( video_buffer, &rectangle, rectangle_color ) != 0 )
+        if ( SDL_FillRect ( s, &rectangle, rectangle_color ) != 0 )
         {
           std::cout << "ERR in Gfx::DrawRectangle(): " << SDL_GetError() << std::endl;
 

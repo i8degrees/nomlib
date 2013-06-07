@@ -38,7 +38,7 @@ class SDLMessageBox
 
     void Update ( void );
 
-    void Draw ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, unsigned int width, unsigned int height );
+    void Draw ( void* video_buffer, unsigned int x, unsigned int y, unsigned int width, unsigned int height );
     //void Draw ( SDL_Surface *video_buffer );
 
   private:

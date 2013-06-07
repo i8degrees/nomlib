@@ -38,7 +38,7 @@ class SDLGradient
     // direction { 0 } = ending color to starting color
     // direction { 1 } = starting color to ending color
 
-    void Draw ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
+    void Draw ( void* video_buffer, unsigned int x, unsigned int y,
                 unsigned int width, unsigned int height, unsigned int direction = 0
               );
 

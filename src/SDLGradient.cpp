@@ -50,7 +50,7 @@ SDLGradient::~SDLGradient ( void )
   #endif
 }
 
-void SDLGradient::Draw (  SDL_Surface *video_buffer, unsigned int x, unsigned int y,
+void SDLGradient::Draw (  void* video_buffer, unsigned int x, unsigned int y,
                           unsigned int width, unsigned int height, unsigned int direction
                         )
 {

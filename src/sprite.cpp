@@ -208,7 +208,7 @@ void nom::Sprite::setSheetDimensions ( unsigned int sheet_width, unsigned int sh
 
 bool nom::Sprite::Load ( std::string filename, nom::Color colorkey, unsigned int flags )
 {
-  this->sprite_buffer = Gfx::LoadImage ( filename, colorkey, flags );
+  this->sprite_buffer = (SDL_Surface*) Gfx::LoadImage ( filename, colorkey, flags );
 
   if ( this->sprite_buffer == NULL )
   {
@@ -224,7 +224,7 @@ bool nom::Sprite::Load ( std::string filename, nom::Color colorkey, unsigned int
   return true;
 }
 
-void nom::Sprite::Draw ( SDL_Surface *video_buffer ) const
+void nom::Sprite::Draw ( void* video_buffer ) const
 {
   nom::Coords coords; // FIXME
   nom::Coords offsets; // FIXME

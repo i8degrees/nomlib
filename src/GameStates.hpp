@@ -17,7 +17,7 @@
 #include <vector>
 #include <memory>
 
-#include "GameState.h" // abstract class for our interface
+#include "GameState.hpp" // abstract class interface for our implementation
 
 #include "gamelib.h"
 

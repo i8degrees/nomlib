@@ -1,5 +1,5 @@
 /******************************************************************************
-    GameState.h
+    GameState.hpp
 
   Game State Management
 
@@ -8,8 +8,8 @@
   Portions Copyright (c) 2013 Fielding Johnston
 
 ******************************************************************************/
-#ifndef GAMEAPP_GAMESTATE_HEADERS
-#define GAMEAPP_GAMESTATE_HEADERS
+#ifndef NOMLIB_GAMESTATE_HEADERS
+#define NOMLIB_GAMESTATE_HEADERS
 
 #include <iostream>
 #include <string>
@@ -40,4 +40,4 @@ class GameState: public nom::SDL_Input
     // ...
 };
 
-#endif // GAMEAPP_GAMESTATE_HEADERS defined
+#endif // NOMLIB_GAMESTATE_HEADERS defined

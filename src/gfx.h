@@ -19,7 +19,7 @@
 
 #include "SDL_image.h"
 
-#include "GameState.h"
+#include "GameState.hpp"
 #include "Color.h"
 #include "Coords.h"
 #include "timer.h"

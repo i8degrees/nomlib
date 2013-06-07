@@ -35,7 +35,7 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/Coords.h
       ${SRC_DIR}/Color.h
       ${SRC_DIR}/I_Input.hpp
-      ${SRC_DIR}/GameState.h
+      ${SRC_DIR}/GameState.hpp
       ${SRC_DIR}/GameStates.hpp
       ${SRC_DIR}/SDL_App.hpp
       ${SRC_DIR}/Logger.h

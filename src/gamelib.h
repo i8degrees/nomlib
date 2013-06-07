@@ -66,4 +66,6 @@
 #define DEBUG_FONT
 #define DEBUG_FONT_OBJ
 
+#define DEBUG_SDL_DISPLAY
+#define DEBUG_SDL_DISPLAY_OBJ
 #endif // GAMELIB_HEADERS defined

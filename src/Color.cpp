@@ -9,41 +9,38 @@
 ******************************************************************************/
 #include "Color.h"
 
-nom::Color::Color ( void )
+using namespace nom;
+
+Color::Color ( void ) : red ( -1 ), green ( -1 ), blue ( -1 ), alpha ( -1 )
 {
   #ifdef DEBUG_COLOR_OBJ
-    std::cout << "GColor::GColor (): " << "Hello, world!" << std::endl << std::endl;
+    std::cout << "Color::Color (): " << "Hello, world!" << std::endl << std::endl;
   #endif
-
-  this->red = 0;
-  this->green = 0;
-  this->blue = 0;
-  this->alpha = -1;
 }
 
-nom::Color::Color ( unsigned int r, unsigned int g, unsigned int b, signed int a )
+Color::Color ( int32_t r, int32_t g, int32_t b, int32_t a )
 {
   #ifdef DEBUG_COLOR_OBJ
-    std::cout << "GColor::GColor (): " << "Hello, world!" << std::endl << std::endl;
+    std::cout << "Color::Color (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
   this->red = r;
   this->green = g;
   this->blue = b;
-  this->alpha = -1;
+  this->alpha = a;
 }
 
-nom::Color::~Color ( void )
+Color::~Color ( void )
 {
   #ifdef DEBUG_COLOR_OBJ
-    std::cout << "GColor::~GColor (): " << "Goodbye cruel world!" << std::endl << std::endl;
+    std::cout << "Color::~Color (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
 
   // Stub
 }
 
 // SDL color struct compatibility wrapper
-SDL_Color nom::Color::getSDL_Color ( void ) const
+SDL_Color Color::getSDL_Color ( void ) const
 {
   SDL_Color color;
 
@@ -54,32 +51,32 @@ SDL_Color nom::Color::getSDL_Color ( void ) const
   return color;
 }
 
-nom::Color nom::Color::getColor ( void ) const
+Color Color::getColor ( void ) const
 {
-  return nom::Color ( this->red, this->green, this->blue, this->alpha );
+  return Color ( this->red, this->green, this->blue, this->alpha );
 }
 
-unsigned int nom::Color::getRed ( void ) const
+const int32_t Color::getRed ( void ) const
 {
   return this->red;
 }
 
-unsigned int nom::Color::getGreen ( void ) const
+const int32_t Color::getGreen ( void ) const
 {
   return this->green;
 }
 
-unsigned int nom::Color::getBlue ( void ) const
+const int32_t Color::getBlue ( void ) const
 {
   return this->blue;
 }
 
-unsigned int nom::Color::getAlpha ( void ) const
+const int32_t Color::getAlpha ( void ) const
 {
   return this->alpha;
 }
 
-void nom::Color::setColor ( unsigned int r, unsigned int g, unsigned int b, signed int a )
+void Color::setColor ( int32_t r, int32_t g, int32_t b, int32_t a )
 {
   this->red = r;
   this->green = g;
@@ -87,34 +84,30 @@ void nom::Color::setColor ( unsigned int r, unsigned int g, unsigned int b, sign
   this->alpha = a;
 }
 
-void nom::Color::setRed ( unsigned int r )
+void Color::setRed ( int32_t r )
 {
   this->red = r;
 }
 
-void nom::Color::setGreen ( unsigned int g )
+void Color::setGreen ( int32_t g )
 {
   this->green = g;
 }
 
-void nom::Color::setBlue ( unsigned int b )
+void Color::setBlue ( int32_t b )
 {
   this->blue = b;
 }
 
-void nom::Color::setAlpha ( signed int a )
+void Color::setAlpha ( int32_t a )
 {
   this->alpha = a;
 }
 
-unsigned int nom::Color::getColorAsInt ( SDL_PixelFormat *pixel_buffer ) const
+int32_t Color::getColorAsInt ( SDL_PixelFormat *pixel_buffer ) const
 {
   if ( this->alpha != -1 )
-  {
     return SDL_MapRGBA ( pixel_buffer, this->red, this->green, this->blue, this->alpha );
-  }
   else
-  {
     return SDL_MapRGB ( pixel_buffer, this->red, this->green, this->blue );
-  }
 }

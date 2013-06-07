@@ -62,8 +62,10 @@ nom::SDL_Input::~SDL_Input ( void )
 }
 
 
-void nom::SDL_Input::HandleInput ( SDL_Event *input )
+void nom::SDL_Input::HandleInput ( void* event )
 {
+  SDL_Event *input = (SDL_Event*) event;
+
   switch ( input->type )
   {
     case SDL_KEYDOWN:
@@ -71,12 +73,10 @@ void nom::SDL_Input::HandleInput ( SDL_Event *input )
     break;
 
     case SDL_KEYUP:
-      // Temporary state crash workaround by commenting below line out of exec:
       onKeyUp ( input->key.keysym.sym, input->key.keysym.mod );
     break;
 
     case SDL_MOUSEMOTION:
-      // Temporary state crash workaround by commenting below line out of exec:
       onMouseMotion ( input->motion.x, input->motion.y );
     break;
 
@@ -127,7 +127,6 @@ void nom::SDL_Input::HandleInput ( SDL_Event *input )
     break;
 
     case SDL_JOYAXISMOTION:
-      // Temporary state crash workaround by commenting below line out of exec:
       onJoyAxis ( input->jaxis.which, input->jaxis.axis, input->jaxis.value );
     break;
 
@@ -142,7 +141,7 @@ void nom::SDL_Input::onExit ( void )
   // virtual implementation
 }
 
-void nom::SDL_Input::onResize ( unsigned int width, unsigned int height )
+void nom::SDL_Input::onResize ( int32_t width, int32_t height )
 {
   // virtual implementation
 }
@@ -167,17 +166,17 @@ void nom::SDL_Input::onMouseFocus ( void )
   // virtual implementation
 }
 
-void nom::SDL_Input::onKeyDown ( SDLKey key, SDLMod mod )
+void nom::SDL_Input::onKeyDown ( int32_t key, int32_t mod )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onKeyUp ( SDLKey key, SDLMod mod )
+void nom::SDL_Input::onKeyUp ( int32_t key, int32_t mod )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseMotion ( unsigned int x, unsigned int y )
+void nom::SDL_Input::onMouseMotion ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
@@ -187,47 +186,47 @@ void nom::SDL_Input::onMouseWheel ( bool up, bool down )
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
+void nom::SDL_Input::onMouseLeftButtonDown ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseMiddleButtonDown ( unsigned int x, unsigned int y )
+void nom::SDL_Input::onMouseMiddleButtonDown ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseRightButtonDown ( unsigned int x, unsigned int y )
+void nom::SDL_Input::onMouseRightButtonDown ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseLeftButtonUp ( unsigned int x, unsigned int y )
+void nom::SDL_Input::onMouseLeftButtonUp ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseMiddleButtonUp ( unsigned int x, unsigned int y )
+void nom::SDL_Input::onMouseMiddleButtonUp ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseRightButtonUp ( unsigned int x, unsigned int y )
+void nom::SDL_Input::onMouseRightButtonUp ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onJoyButtonDown ( unsigned int which, unsigned int button )
+void nom::SDL_Input::onJoyButtonDown ( int32_t which, int32_t button )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onJoyButtonUp ( unsigned int which, unsigned int button )
+void nom::SDL_Input::onJoyButtonUp ( int32_t which, int32_t button )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onJoyAxis ( unsigned int which, unsigned int axis, short int value )
+void nom::SDL_Input::onJoyAxis ( int32_t which, int32_t axis, short value )
 {
   // virtual implementation
 }

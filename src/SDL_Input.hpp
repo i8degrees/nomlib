@@ -58,30 +58,30 @@ namespace nom
       SDL_Input ( void );
       virtual ~SDL_Input ( void );
 
-      virtual void HandleInput ( SDL_Event *input );
+      virtual void HandleInput ( void* event );
 
       virtual void onExit ( void );
-      virtual void onResize ( unsigned int width, unsigned int height );
+      virtual void onResize ( int32_t width, int32_t height );
       virtual void onRestore ( void ); // TODO
       virtual void onMinimize ( void ); // TODO
       virtual void onInputFocus ( void ); // TODO
       virtual void onMouseFocus ( void ); // TODO
 
-      virtual void onKeyDown ( SDLKey key, SDLMod mod );
-      virtual void onKeyUp ( SDLKey key, SDLMod mod );
+      virtual void onKeyDown ( int32_t key, int32_t mod );
+      virtual void onKeyUp ( int32_t key, int32_t mod );
 
-      virtual void onMouseMotion ( unsigned int x, unsigned int y );
+      virtual void onMouseMotion ( int32_t x, int32_t y );
       virtual void onMouseWheel ( bool up, bool down );
-      virtual void onMouseLeftButtonDown ( unsigned int x, unsigned int y );
-      virtual void onMouseMiddleButtonDown ( unsigned int x, unsigned int y );
-      virtual void onMouseRightButtonDown ( unsigned int x, unsigned int y );
-      virtual void onMouseLeftButtonUp ( unsigned int x, unsigned int y );
-      virtual void onMouseMiddleButtonUp ( unsigned int x, unsigned int y );
-      virtual void onMouseRightButtonUp ( unsigned int x, unsigned int y );
+      virtual void onMouseLeftButtonDown ( int32_t x, int32_t y );
+      virtual void onMouseMiddleButtonDown ( int32_t x, int32_t y );
+      virtual void onMouseRightButtonDown ( int32_t x, int32_t y );
+      virtual void onMouseLeftButtonUp ( int32_t x, int32_t y );
+      virtual void onMouseMiddleButtonUp ( int32_t x, int32_t y );
+      virtual void onMouseRightButtonUp ( int32_t x, int32_t y );
 
-      virtual void onJoyButtonDown ( unsigned int which, unsigned int button );
-      virtual void onJoyButtonUp ( unsigned int which, unsigned int button );
-      virtual void onJoyAxis ( unsigned int which, unsigned int axis, short int value );
+      virtual void onJoyButtonDown ( int32_t which, int32_t button );
+      virtual void onJoyButtonUp ( int32_t which, int32_t button );
+      virtual void onJoyAxis ( int32_t which, int32_t axis, short value );
 
     private:
       SDL_Joystick *joystick;

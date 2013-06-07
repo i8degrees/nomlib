@@ -2,6 +2,8 @@
 
 ## TODO
 
+* Implement a NULL GameState class
+* Perhaps GameState could also implement Load method
 * Perhaps break Coords class into just x, y points
 * Use exceptions library in C++
 * Use Uint32, etc. definitions

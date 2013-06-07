@@ -68,6 +68,53 @@ void nom::SDL_Input::HandleInput ( void* event )
 
   switch ( input->type )
   {
+    case SDL_ACTIVEEVENT:
+    {
+      switch ( input->active.state )
+      {
+        case SDL_APPMOUSEFOCUS:
+        {
+          if ( input->active.gain )
+            onMouseFocus();
+          else
+            onMouseBlur();
+          break;
+        }
+
+        case SDL_APPINPUTFOCUS:
+        {
+          if ( input->active.gain )
+            onInputFocus();
+          else
+            onInputBlur();
+          break;
+        }
+        case SDL_APPACTIVE:
+        {
+          if ( input->active.gain )
+            onRestore();
+          else
+            onMinimize();
+          break;
+        }
+
+      }
+    break;
+    }
+
+    default:
+    {
+      onUserEvent ( input->user.type, input->user.code, input->user.data1,
+                    input->user.data2
+                  );
+      break;
+    }
+
+    case SDL_VIDEORESIZE: onResize ( input->resize.w, input->resize.h ); break;
+    case SDL_VIDEOEXPOSE: onExpose (); break;
+    case SDL_SYSWMEVENT: /* Ignore */ break;
+    case SDL_QUIT: onExit(); break;
+
     case SDL_KEYDOWN:
       onKeyDown ( input->key.keysym.sym, input->key.keysym.mod );
     break;
@@ -129,11 +176,12 @@ void nom::SDL_Input::HandleInput ( void* event )
     case SDL_JOYAXISMOTION:
       onJoyAxis ( input->jaxis.which, input->jaxis.axis, input->jaxis.value );
     break;
-
-    case SDL_QUIT: onExit(); break;
-
-    case SDL_VIDEORESIZE: onResize ( input->resize.w, input->resize.h ); break;
   } // end switch input->type
+}
+
+void nom::SDL_Input::onUserEvent ( uint8_t type, int32_t code, void* data1, void* data2 )
+{
+  // virtual implementation
 }
 
 void nom::SDL_Input::onExit ( void )
@@ -161,7 +209,22 @@ void nom::SDL_Input::onInputFocus ( void )
   // virtual implementation
 }
 
+void nom::SDL_Input::onInputBlur ( void )
+{
+  // virtual implementation
+}
+
 void nom::SDL_Input::onMouseFocus ( void )
+{
+  // virtual implementation
+}
+
+void nom::SDL_Input::onMouseBlur ( void )
+{
+  // virtual implementation
+}
+
+void nom::SDL_Input::onExpose ( void )
 {
   // virtual implementation
 }

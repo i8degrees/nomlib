@@ -27,12 +27,16 @@ namespace nom
 
       virtual void HandleInput ( void* event ) = 0;
 
+      virtual void onUserEvent ( uint8_t type, int32_t code, void* data1, void* data2 ) = 0;
       virtual void onExit ( void ) = 0;
       virtual void onResize ( int32_t width, int32_t height ) = 0;
-      virtual void onRestore ( void ) = 0; // TODO
-      virtual void onMinimize ( void ) = 0; // TODO
-      virtual void onInputFocus ( void ) = 0; // TODO
-      virtual void onMouseFocus ( void ) = 0; // TODO
+      virtual void onRestore ( void ) = 0;
+      virtual void onMinimize ( void ) = 0;
+      virtual void onInputFocus ( void ) = 0;
+      virtual void onInputBlur ( void ) = 0;
+      virtual void onMouseFocus ( void ) = 0;
+      virtual void onMouseBlur ( void ) = 0;
+      virtual void onExpose ( void ) = 0;
 
       virtual void onKeyDown ( int32_t key, int32_t mod ) = 0;
       virtual void onKeyUp ( int32_t key, int32_t mod ) = 0;
@@ -49,6 +53,7 @@ namespace nom
       virtual void onJoyButtonDown ( int32_t which, int32_t button ) = 0;
       virtual void onJoyButtonUp ( int32_t which, int32_t button ) = 0;
       virtual void onJoyAxis ( int32_t which, int32_t axis, short value ) = 0;
+
 
     private:
       // ...

@@ -62,12 +62,16 @@ namespace nom
 
       virtual void HandleInput ( void* event );
 
+      virtual void onUserEvent ( uint8_t type, int32_t code, void* data1, void* data2 );
       virtual void onExit ( void );
       virtual void onResize ( int32_t width, int32_t height );
-      virtual void onRestore ( void ); // TODO
-      virtual void onMinimize ( void ); // TODO
-      virtual void onInputFocus ( void ); // TODO
-      virtual void onMouseFocus ( void ); // TODO
+      virtual void onRestore ( void );
+      virtual void onMinimize ( void );
+      virtual void onInputFocus ( void );
+      virtual void onInputBlur ( void );
+      virtual void onMouseFocus ( void );
+      virtual void onMouseBlur ( void );
+      virtual void onExpose ( void );
 
       virtual void onKeyDown ( int32_t key, int32_t mod );
       virtual void onKeyUp ( int32_t key, int32_t mod );

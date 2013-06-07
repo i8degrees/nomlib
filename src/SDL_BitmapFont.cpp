@@ -9,6 +9,8 @@
   Portions Copyright Lazy Foo' Productions 2004-2013
   All rights reserved.
 
+  1. http://lazyfoo.net/SDL_tutorials/lesson30/index.php
+
 ******************************************************************************/
 #include "SDL_BitmapFont.h"
 
@@ -47,18 +49,48 @@ SDL_BitmapFont::~SDL_BitmapFont ( void )
   }
 }
 
-void SDL_BitmapFont::greyedOutText ( unsigned char opacity )
+const int32_t SDL_BitmapFont::getX ( void ) const
+{
+  return this->coords.getX();
+}
+
+const int32_t SDL_BitmapFont::getY ( void ) const
+{
+  return this->coords.getY();
+}
+
+const Coords& SDL_BitmapFont::getXY ( void ) const
+{
+  return this->coords;
+}
+
+void SDL_BitmapFont::setX ( int32_t x_ )
+{
+  this->coords.setX ( x_ );
+}
+
+void SDL_BitmapFont::setY ( int32_t y_ )
+{
+  this->coords.setY ( y_ );
+}
+
+void SDL_BitmapFont::setXY ( int32_t x_, int32_t y_ )
+{
+  this->coords.setXY ( x_, y_ );
+}
+
+void SDL_BitmapFont::greyedOutText ( u_char opacity )
 {
   if ( this->bitmap_font )
-    Gfx::setAlpha ( this->bitmap_font, ( unsigned int ) opacity );
+    Gfx::setAlpha ( this->bitmap_font, ( uint32_t ) opacity );
 }
 
 // I don't think this is entirely accurate; this->spacing - 2 is fudged ...
 // We probably ought to be calculating the width based off the same algorithm as
 // is shown in SDL_BitmapFont::LoadImage
-signed int SDL_BitmapFont::getTextWidth ( void )
+int32_t SDL_BitmapFont::getTextWidth ( void )
 {
-  unsigned int text_width = 0;
+  int32_t text_width = 0;
 
   if ( this->bitmap_font != NULL )
   {
@@ -76,9 +108,9 @@ signed int SDL_BitmapFont::getTextWidth ( void )
   return text_width;
 }
 
-signed int SDL_BitmapFont::getTextHeight ( void )
+int32_t SDL_BitmapFont::getTextHeight ( void )
 {
-  unsigned int text_height = 0;
+  int32_t text_height = 0;
 
   for ( int t = 0; t < this->text_buffer.length(); t++ )
   {
@@ -91,44 +123,48 @@ signed int SDL_BitmapFont::getTextHeight ( void )
   return text_height;
 }
 
+const std::string& SDL_BitmapFont::getText ( void ) const
+{
+  return this->text_buffer;
+}
+
 void SDL_BitmapFont::setText ( std::string text )
 {
   this->text_buffer = text;
 }
 
-unsigned int SDL_BitmapFont::getSpacing ( void )
+uint32_t SDL_BitmapFont::getSpacing ( void )
 {
   return this->spacing;
 }
 
-void SDL_BitmapFont::setSpacing ( unsigned int spaces )
+void SDL_BitmapFont::setSpacing ( uint32_t spaces )
 {
   this->spacing = spaces;
 }
 
-unsigned int SDL_BitmapFont::getNewline ( void )
+uint32_t SDL_BitmapFont::getNewline ( void )
 {
   return this->newline;
 }
 
 // Needs testing; not sure if this even does anything currently
-void SDL_BitmapFont::setNewline ( unsigned int newline )
+void SDL_BitmapFont::setNewline ( uint32_t newline )
 {
   this->newline = newline;
 }
 
-// Reference: http://lazyfoo.net/SDL_tutorials/lesson30/index.php
 // TODO: add spacing / padding so that we can export with black guidelines
-bool SDL_BitmapFont::Load ( std::string filename, nom::Color colorkey, unsigned int sheet_width, unsigned int sheet_height )
+bool SDL_BitmapFont::Load ( std::string filename, const nom::Color& colorkey, uint32_t sheet_width, uint32_t sheet_height )
 {
-  unsigned int tile_width = 0;
-  unsigned int tile_height = 0;
-  unsigned int top = 0;
-  unsigned int baseA = 0;
-  unsigned int currentChar = 0;
-  unsigned int background_color = 0;
+  uint32_t tile_width = 0;
+  uint32_t tile_height = 0;
+  uint32_t top = 0;
+  uint32_t baseA = 0;
+  uint32_t currentChar = 0;
+  int32_t background_color = 0;
 
-  this->bitmap_font = Gfx::LoadImage ( filename, colorkey );
+  this->bitmap_font = (SDL_Surface*) Gfx::LoadImage ( filename, colorkey );
 
   if ( this->bitmap_font == NULL )
   {
@@ -145,19 +181,19 @@ bool SDL_BitmapFont::Load ( std::string filename, nom::Color colorkey, unsigned 
   top = tile_height;
   baseA = tile_height;
 
-  for ( int rows = 0; rows < sheet_width; rows++ )
+  for ( uint32_t rows = 0; rows < sheet_width; rows++ )
   {
-    for ( int cols = 0; cols < sheet_height; cols++ )
+    for ( uint32_t cols = 0; cols < sheet_height; cols++ )
     {
       // Set character offsets
       this->chars[ currentChar ].setXY ( tile_width * cols, tile_height * rows );
       this->chars[ currentChar ].setDimensions ( tile_width, tile_height );
 
       //Find Left Side; go through pixel columns
-      for ( int pCol = 0; pCol < tile_width; pCol++ )
+      for ( uint32_t pCol = 0; pCol < tile_width; pCol++ )
       {
         //Go through pixel rows
-        for ( int pRow = 0; pRow < tile_height; pRow++ )
+        for ( uint32_t pRow = 0; pRow < tile_height; pRow++ )
         {
           //Get the pixel offsets
           int pX = ( tile_width * cols ) + pCol;
@@ -177,20 +213,20 @@ bool SDL_BitmapFont::Load ( std::string filename, nom::Color colorkey, unsigned 
       }
 
       //Find Right Side; go through pixel columns
-      for ( int pCol_w = tile_width - 1; pCol_w >= 0; pCol_w-- )
+      for ( int32_t pCol_w = tile_width - 1; pCol_w >= 0; pCol_w-- )
       {
         //Go through pixel rows
-        for ( int pRow_w = 0; pRow_w < tile_height; pRow_w++ )
+        for ( int32_t pRow_w = 0; pRow_w < tile_height; pRow_w++ )
         {
           //Get the pixel offsets
-          unsigned int pX = ( tile_width * cols ) + pCol_w;
-          unsigned int pY = ( tile_height * rows ) + pRow_w;
+          uint32_t pX = ( tile_width * cols ) + pCol_w;
+          uint32_t pY = ( tile_height * rows ) + pRow_w;
 
           //If a non colorkey pixel is found
           if ( Gfx::getPixel ( this->bitmap_font, pX, pY ) != background_color )
           {
             //Set the width
-            unsigned int width = ( pX - this->chars[ currentChar ].getX() ) + 1;
+            uint32_t width = ( pX - this->chars[ currentChar ].getX() ) + 1;
             this->chars[ currentChar ].setWidth ( width );
 
             //Break the loops
@@ -201,14 +237,14 @@ bool SDL_BitmapFont::Load ( std::string filename, nom::Color colorkey, unsigned 
       }
 
       //Find Top; go through pixel rows
-      for ( int pRow = 0; pRow < tile_height; pRow++ )
+      for ( int32_t pRow = 0; pRow < tile_height; pRow++ )
       {
         //Go through pixel columns
-        for ( int pCol = 0; pCol < tile_width; pCol++ )
+        for ( int32_t pCol = 0; pCol < tile_width; pCol++ )
         {
           //Get the pixel offsets
-          unsigned int pX = ( tile_width * cols ) + pCol;
-          unsigned int pY = ( tile_height * rows ) + pRow;
+          uint32_t pX = ( tile_width * cols ) + pCol;
+          uint32_t pY = ( tile_height * rows ) + pRow;
 
           // If a non colorkey pixel is found
           if( Gfx::getPixel ( this->bitmap_font, pX, pY ) != background_color )
@@ -230,10 +266,10 @@ bool SDL_BitmapFont::Load ( std::string filename, nom::Color colorkey, unsigned 
       if ( currentChar == 'A' )
       {
         // Go through pixel rows
-        for ( int pRow = tile_height - 1; pRow >= 0; pRow-- )
+        for ( int32_t pRow = tile_height - 1; pRow >= 0; pRow-- )
         {
           // Go through pixel columns
-          for ( int pCol = 0; pCol < tile_width; pCol++ )
+          for ( int32_t pCol = 0; pCol < tile_width; pCol++ )
           {
             // Get the pixel offsets
             unsigned int pX = ( tile_width * cols ) + pCol;
@@ -270,10 +306,10 @@ bool SDL_BitmapFont::Load ( std::string filename, nom::Color colorkey, unsigned 
   this->newline = baseA - top;
 
   // Loop off excess top pixels
-  for ( int t = 0; t < 256; t++ )
+  for ( uint32_t t = 0; t < 256; t++ )
   {
-    signed int y = this->chars[ t ].getY();
-    signed int height = this->chars[ t ].getHeight();
+    int32_t y = this->chars[ t ].getY();
+    int32_t height = this->chars[ t ].getHeight();
 
     this->chars[ t ].setY ( y += top );
     this->chars[ t ].setHeight ( height -= top );
@@ -282,45 +318,46 @@ bool SDL_BitmapFont::Load ( std::string filename, nom::Color colorkey, unsigned 
   return true;
 }
 
-// Reference: http://lazyfoo.net/SDL_tutorials/lesson30/index.php
-bool SDL_BitmapFont::Draw ( SDL_Surface *video_buffer )
+void SDL_BitmapFont::Draw ( void* video_buffer ) const
 {
+  //  Use coordinates provided by interface user as our starting origin
+  //  coordinates to compute from
+  int32_t x_offset = this->coords.getX();
+  int32_t y_offset = this->coords.getY();
+
   //If the font has been built
   if ( this->bitmap_font != NULL )
   {
-    for ( int show = 0; show < this->text_buffer.length(); show++ )
+    for ( uint32_t show = 0; show < this->text_buffer.length(); show++ )
     {
       //If the current character is a space
       if ( this->text_buffer[show] == ' ' )
       {
         //Move over
-        this->coords.updateXY ( this->spacing, 0 );
+        x_offset += this->spacing;
       }
       // If the current character is a newline
       else if( this->text_buffer[show] == '\n' )
       {
         //Move down and back over to the beginning of line
-        this->coords.updateXY ( this->coords.getX(), this->newline );
+        y_offset += this->newline;
+        x_offset = this->coords.getX();
       }
       else
       {
         //Get the ASCII value of the character
-        unsigned int ascii = (unsigned char)this->text_buffer[show];
+        uint32_t ascii = ( u_char ) this->text_buffer[show];
 
-        if ( Gfx::DrawSurface ( this->bitmap_font, video_buffer, this->coords, this->chars[ascii] ) == false )
+        if ( Gfx::DrawSurface ( this->bitmap_font, (SDL_Surface*) video_buffer, Coords ( x_offset, y_offset ), this->chars[ascii] ) == false )
         {
           std::cout << "ERR in SDL_BitmapFont::DrawText(): " << SDL_GetError() << std::endl;
 
           SDL_FreeSurface ( this->bitmap_font );
-          this->bitmap_font = NULL;
-          return false;
         }
 
         // Move over the width of the character with one pixel of padding
-        this->coords.updateXY ( ( this->chars[ascii].getWidth() ) + 1, 0 );
+        x_offset += ( this->chars[ascii].getWidth() ) + 1;
       } // end else
     } // end for loop
   } // end if this->bitmap_font != NULL
-
-  return true;
 }

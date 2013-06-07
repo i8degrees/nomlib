@@ -49,19 +49,54 @@ SDL_Font::~SDL_Font ( void )
   TTF_Quit ();
 }
 
-signed int SDL_Font::getTextWidth ( void )
+const int32_t SDL_Font::getX ( void ) const
+{
+  return this->coords.getX();
+}
+
+const int32_t SDL_Font::getY ( void ) const
+{
+  return this->coords.getY();
+}
+
+const Coords& SDL_Font::getXY ( void ) const
+{
+  return this->coords;
+}
+
+void SDL_Font::setX ( int32_t x_ )
+{
+  this->coords.setX ( x_ );
+}
+
+void SDL_Font::setY ( int32_t y_ )
+{
+  this->coords.setY ( y_ );
+}
+
+void SDL_Font::setXY ( int32_t x_, int32_t y_ )
+{
+  this->coords.setXY ( x_, y_ );
+}
+
+int32_t SDL_Font::getTextWidth ( void )
 {
   return this->coords.getWidth();
 }
 
-signed int SDL_Font::getTextHeight ( void )
+int32_t SDL_Font::getTextHeight ( void )
 {
   return this->coords.getHeight();
 }
 
+const std::string& SDL_Font::getText ( void ) const
+{
+  return this->text_buffer;
+}
+
 void SDL_Font::setText ( std::string text )
 {
-  signed int width, height = 0;
+  int32_t width, height = 0;
 
   if ( text.length() > 0 )
   {
@@ -87,7 +122,17 @@ void SDL_Font::setText ( std::string text )
   }
 }
 
-bool SDL_Font::Load ( std::string filename, unsigned int font_size )
+const nom::Color& SDL_Font::getTextColor ( void ) const
+{
+  return this->text_color;
+}
+
+void SDL_Font::setTextColor ( const Color &color )
+{
+  this->text_color = color;
+}
+
+bool SDL_Font::Load ( std::string filename, uint32_t font_size )
 {
   this->font = TTF_OpenFont ( filename.c_str(), font_size );
 
@@ -102,19 +147,15 @@ bool SDL_Font::Load ( std::string filename, unsigned int font_size )
   return true;
 }
 
-bool SDL_Font::Draw ( SDL_Surface *video_buffer )
+void SDL_Font::Draw ( void* video_buffer ) const
 {
   if ( this->font_buffer != NULL )
   {
-
-    if ( Gfx::DrawSurface ( this->font_buffer, video_buffer, this->coords ) == false )
+    if ( Gfx::DrawSurface ( this->font_buffer, (SDL_Surface*) video_buffer, this->coords ) == false )
     {
       #ifdef DEBUG_SDL_FONT
         std::cout << "ERR in SDL_Font::Draw(): " << SDL_GetError() << std::endl;
       #endif
-      return false;
     }
   }
-
-  return true;
 }

@@ -69,19 +69,19 @@ find_package ( SDL REQUIRED )
 include_directories ( ${SDL_INCLUDE_DIR} )
 
 find_package ( SDL_image REQUIRED )
-include_directories ( ${SDLIMAGE_INCLUDE_DIR} )
+include_directories ( ${SDL_IMAGE_INCLUDE_DIR} )
 
 find_package ( SDL_mixer REQUIRED )
-include_directories ( ${SDLMIXER_INCLUDE_DIR} )
+include_directories ( ${SDL_MIXER_INCLUDE_DIR} )
 
 find_package ( SDL_ttf REQUIRED )
-include_directories ( ${SDLTTF_INCLUDE_DIR} )
+include_directories ( ${SDL_TTF_INCLUDE_DIR} )
 
 link_libraries (  gamelib # makefile target
                   ${SDL_LIBRARY}
-                  ${SDL_IMAGE_LIBRARY}
-                  ${SDL_MIXER_LIBRARY}
-                  ${SDL_TTF_LIBRARY}
+                  ${SDLIMAGE_LIBRARY}
+                  ${SDLMIXER_LIBRARY}
+                  ${SDLTTF_LIBRARY}
                )
 
 add_library ( gamelib SHARED ${GAMELIB_SOURCE} )

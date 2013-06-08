@@ -1,7 +1,7 @@
 /******************************************************************************
     Color.cpp
 
-  Color container class
+    Utility class container for RGBA colors
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

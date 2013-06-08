@@ -1,14 +1,14 @@
 /******************************************************************************
     Color.h
 
-  Color container class
+    Utility class container for RGBA colors
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.
 
 ******************************************************************************/
-#ifndef GAMELIB_COLORS_HEADERS
-#define GAMELIB_COLORS_HEADERS
+#ifndef NOMLIB_COLORS_HEADERS
+#define NOMLIB_COLORS_HEADERS
 
 #include <iostream>
 #include <string>
@@ -49,4 +49,4 @@ namespace nom
   };
 }
 
-#endif // GAMELIB_COLORS_HEADERS defined
+#endif // NOMLIB_COLORS_HEADERS defined

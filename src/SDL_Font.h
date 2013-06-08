@@ -17,7 +17,8 @@
 
 #include "gfx.h"
 
-#include "SDLDrawable.h"
+#include "SDL_Drawable.hpp"
+#include "SDL_Canvas.hpp"
 
 namespace nom
 {
@@ -43,10 +44,10 @@ namespace nom
       void setTextColor ( const nom::Color &color );
 
       bool Load ( std::string filename, uint32_t size );
-      void Draw ( void* video_buffer ) const;
+      void Draw ( void* video_buffer );
 
     private:
-      SDL_Surface *font_buffer; /// surface where font gets rendered to
+      nom::SDL_Canvas font_buffer; /// surface where font gets rendered to
       TTF_Font *font; /// the font file data
       nom::Color text_color; /// the color of the font
       std::string text_buffer; /// holds contents of text as a string

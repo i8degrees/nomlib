@@ -22,7 +22,9 @@
 
 #include "gfx.h"
 
-#include "SDLDrawable.h"
+#include "SDL_Drawable.hpp"
+
+#include "SDL_Canvas.hpp"
 
 namespace nom
 {
@@ -54,13 +56,13 @@ namespace nom
 
       void greyedOutText ( u_char opacity );
 
-      bool Load ( std::string filename, const nom::Color& colorkey, uint32_t sheet_width = 16,
+      bool Load ( const std::string& filename, const nom::Color& colorkey, uint32_t sheet_width = 16,
                   uint32_t sheet_height = 16 );
 
-      void Draw ( void* video_buffer ) const;
+      void Draw ( void* video_buffer );
 
     private:
-      SDL_Surface *bitmap_font; /// pointer reference holding our bitmap font image sheet
+      nom::SDL_Canvas bitmap_font; /// pointer reference holding our bitmap font image sheet
       nom::Coords chars[256]; /// individual chars within *bitmap_font
       uint32_t newline, spacing; /// spacing variables
       std::string text_buffer; /// holds contents of text as a string

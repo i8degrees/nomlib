@@ -11,7 +11,6 @@
 nom::SDL_Canvas::SDL_Canvas ( void )  : canvas_buffer ( NULL ),
                                         coords ( 0, 0, 0, 0 ),
                                         offsets ( 0, 0, 0, 0 ),
-                                        //offsets ( -1, -1, -1, -1 ),
                                         colorkey ( -1, -1, -1, -1 )
 {
   #ifdef DEBUG_SDL_CANVAS_OBJ

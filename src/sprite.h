@@ -18,7 +18,9 @@
 
 #include "gfx.h"
 
-#include "SDLDrawable.h"
+#include "SDL_Drawable.hpp"
+
+#include "SDL_Canvas.hpp"
 
 namespace nom
 {
@@ -60,10 +62,10 @@ namespace nom
       bool Load ( std::string filename );
       bool Load ( std::string filename, nom::Color colorkey, unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL );
 
-      void Draw ( void* video_buffer ) const;
+      void Draw ( void* video_buffer );
 
     private:
-      SDL_Surface *sprite_buffer; // memory buffer allocation
+      nom::SDL_Canvas sprite_buffer;
 
       struct {
         unsigned int x; // sprite x-axis coord for blitting onto video surface

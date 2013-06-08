@@ -16,8 +16,6 @@ nom::Sprite::Sprite ( void )
     std::cout << "Sprite::Sprite (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->sprite_buffer = NULL;
-
   this->coords.x = 0;
   this->coords.y = 0;
   this->coords.width = 0;
@@ -43,8 +41,6 @@ nom::Sprite::Sprite ( unsigned int width, unsigned int height )
     std::cout << "Sprite::Sprite (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->sprite_buffer = NULL;
-
   this->coords.x = 0;
   this->coords.y = 0;
   this->coords.width = width;
@@ -69,12 +65,6 @@ nom::Sprite::~Sprite ( void )
   #ifdef DEBUG_SPRITE_OBJ
     std::cout << "Sprite::~Sprite (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
-
-  if ( this->sprite_buffer != NULL )
-  {
-    SDL_FreeSurface ( this->sprite_buffer );
-    this->sprite_buffer = NULL;
-  }
 }
 
 unsigned int nom::Sprite::getX ( void ) const
@@ -208,52 +198,48 @@ void nom::Sprite::setSheetDimensions ( unsigned int sheet_width, unsigned int sh
 
 bool nom::Sprite::Load ( std::string filename, nom::Color colorkey, unsigned int flags )
 {
-  this->sprite_buffer = (SDL_Surface*) Gfx::LoadImage ( filename, colorkey, flags );
+  this->sprite_buffer.loadImageFromFile ( filename, colorkey, flags );
 
-  if ( this->sprite_buffer == NULL )
+  if ( this->sprite_buffer.get() == NULL )
   {
     #ifdef DEBUG_SPRITE
       std::cout << "ERR in Sprite::Load (): " << SDL_GetError() << std::endl;
     #endif
-    SDL_FreeSurface ( this->sprite_buffer );
-    this->sprite_buffer = NULL;
-
     return false;
   }
 
   return true;
 }
 
-void nom::Sprite::Draw ( void* video_buffer ) const
+void nom::Sprite::Draw ( void* video_buffer )
 {
   nom::Coords coords; // FIXME
   nom::Coords offsets; // FIXME
 
-  if ( this->sprite_buffer == NULL )
+  if ( this->sprite_buffer.get() == NULL )
   {
     #ifdef DEBUG_SPRITE
-      std::cout << "ERR in Sprite::Draw(): " << SDL_GetError() << std::endl;
+      std::cout << "ERR in Sprite::Draw(): " << "NULL sprite_buffer" << std::endl << std::endl;
     #endif
   }
 
   coords.setCoords ( this->getX(), this->getY(), this->getWidth(), this->getHeight() );
-
+  this->sprite_buffer.setPosition ( coords );
   if ( this->sheet.id != -1 )
   {
     // FIXME: Presently, we assume every sprite on our sheet is on the same row
     offsets.setX ( this->sheet.id * this->sheet.sprite_width );
     offsets.setY ( 0 );
     offsets.setDimensions ( this->sheet.sprite_width, this->sheet.sprite_height );
+    this->sprite_buffer.setOffsets ( offsets );
   }
   else
   {
     offsets.setX ( this->getXOffset() );
     offsets.setY ( this->getYOffset() );
     offsets.setDimensions ( this->getWidth(), this->getHeight() );
+    this->sprite_buffer.setOffsets ( offsets );
   }
 
-  if ( Gfx::DrawSurface ( this->sprite_buffer, video_buffer, coords, offsets ) == false )
-  {
-    return;
-  }
+  this->sprite_buffer.Draw ( video_buffer );
 }

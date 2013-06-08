@@ -17,7 +17,6 @@ SDL_Font::SDL_Font ( void )
   #endif
 
   this->font = NULL;
-  this->font_buffer = NULL;
   this->coords.setCoords ( 0, 0, 0, 0 );
   this->text_color.setColor ( 0, 0, 0 );
   this->text_buffer = "\0";
@@ -40,11 +39,6 @@ SDL_Font::~SDL_Font ( void )
     TTF_CloseFont ( this->font );
 
   this->font = NULL;
-
-  if ( this->font_buffer != NULL )
-    SDL_FreeSurface ( this->font_buffer );
-
-  this->font_buffer = NULL;
 
   TTF_Quit ();
 }
@@ -110,9 +104,9 @@ void SDL_Font::setText ( std::string text )
   if ( this->font != NULL )
   {
     if ( this->getText().c_str() != NULL )
-      this->font_buffer = TTF_RenderText_Solid  ( this->font, this->getText().c_str(),
+      this->font_buffer.setCanvas ( TTF_RenderText_Solid  ( this->font, this->getText().c_str(),
                                                   this->text_color.getSDL_Color()
-                                                );
+                                                ) );
   }
   else
   {
@@ -147,11 +141,11 @@ bool SDL_Font::Load ( std::string filename, uint32_t font_size )
   return true;
 }
 
-void SDL_Font::Draw ( void* video_buffer ) const
+void SDL_Font::Draw ( void* video_buffer )
 {
-  if ( this->font_buffer != NULL )
+  if ( this->font_buffer.get() != NULL )
   {
-    if ( Gfx::DrawSurface ( this->font_buffer, (SDL_Surface*) video_buffer, this->coords ) == false )
+    if ( Gfx::DrawSurface ( this->font_buffer.get(), (SDL_Surface*) video_buffer, this->coords ) == false )
     {
       #ifdef DEBUG_SDL_FONT
         std::cout << "ERR in SDL_Font::Draw(): " << SDL_GetError() << std::endl;

@@ -8,3 +8,5 @@
 *.dSYM
 *.powder
 libgamelib.bc
+
+docs/public/

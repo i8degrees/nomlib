@@ -10,58 +10,63 @@
   All rights reserved.
 
 ******************************************************************************/
-#ifndef GAMELIB_SDL_BITMAP_FONT_HEADERS
-#define GAMELIB_SDL_BITMAP_FONT_HEADERS
+#ifndef NOMLIB_SDL_BITMAP_FONT_HEADERS
+#define NOMLIB_SDL_BITMAP_FONT_HEADERS
 
 #include <iostream>
 #include <string>
 
 #include "SDL.h"
-#include "SDL_image.h"
 
 #include "Color.h"
 
 #include "gfx.h"
 
-// TODO: namespace nom
-class SDLBitmapFont
+#include "SDL_Drawable.hpp"
+
+#include "SDL_Canvas.hpp"
+
+namespace nom
 {
-  public:
-    SDLBitmapFont ( void );
-    ~SDLBitmapFont ( void );
+  class SDL_BitmapFont: public SDL_Drawable
+  {
+    public:
+      SDL_BitmapFont ( void );
+      ~SDL_BitmapFont ( void );
 
-    signed int getX ( void );
-    signed int getY ( void );
-    nom::Coords getXY ( void );
-    void setX ( signed int x_ );
-    void setY ( signed int y_ );
-    void setXY ( signed int x_, signed int y_ );
+      const int32_t getX ( void ) const;
+      const int32_t getY ( void ) const;
+      const nom::Coords& getXY ( void ) const;
+      void setX ( int32_t x_ );
+      void setY ( int32_t y_ );
+      void setXY ( int32_t x_, int32_t y_ );
 
-    signed int getTextWidth ( void );
-    signed int getTextHeight ( void );
-    std::string getText ( void );
-    void setText ( std::string text );
+      const std::string& getText ( void ) const;
 
-    unsigned int getSpacing ( void );
-    void setSpacing ( unsigned int spaces );
+      int32_t getTextWidth ( void );
+      int32_t getTextHeight ( void );
 
-    unsigned int getNewline ( void );
-    void setNewline ( unsigned int newline );
+      void setText ( std::string text );
 
-    void greyedOutText ( unsigned char opacity );
+      uint32_t getSpacing ( void );
+      void setSpacing ( uint32_t spaces );
 
-    bool Load ( std::string filename, nom::Color colorkey, unsigned int sheet_width = 16,
-                unsigned int sheet_height = 16 );
+      uint32_t getNewline ( void );
+      void setNewline ( uint32_t newline );
 
-    bool Draw ( SDL_Surface *video_buffer );
+      void greyedOutText ( u_char opacity );
 
-  private:
-    SDL_Surface *bitmap_font; // pointer reference holding our bitmap font image sheet
+      bool Load ( const std::string& filename, const nom::Color& colorkey, uint32_t sheet_width = 16,
+                  uint32_t sheet_height = 16 );
 
-    nom::Coords chars[256]; // individual chars within *bitmap_font;
-    nom::Coords coords; // x, y blitting coordinates
-    std::string text_buffer; // string of text for blitting
-    unsigned int newline, spacing; // spacing variables
-};
+      void Draw ( void* video_buffer );
 
-#endif // GAMELIB_SDL_BITMAP_FONT_HEADERS defined
+    private:
+      nom::SDL_Canvas bitmap_font; /// pointer reference holding our bitmap font image sheet
+      nom::Coords chars[256]; /// individual chars within *bitmap_font
+      uint32_t newline, spacing; /// spacing variables
+      std::string text_buffer; /// holds contents of text as a string
+      nom::Coords coords; /// X, Y, width & height blitting coordinates
+  };
+}
+#endif // NOMLIB_SDL_BITMAP_FONT_HEADERS defined

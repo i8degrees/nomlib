@@ -10,20 +10,24 @@ set ( SRC_DIR src ) # project_dir/src
 set ( GAMELIB_SOURCE
       ${SRC_DIR}/Coords.cpp
       ${SRC_DIR}/Color.cpp
+      ${SRC_DIR}/GameStates.cpp
+      ${SRC_DIR}/SDL_App.cpp
       ${SRC_DIR}/Logger.cpp
       ${SRC_DIR}/audio.cpp
-      #${SRC_DIR}/font.cpp
-      ${SRC_DIR}/SDL_TFont.cpp
+      ${SRC_DIR}/SDL_Font.cpp
       ${SRC_DIR}/SDLGradient.cpp
       ${SRC_DIR}/SDLWindowFrame.cpp
       ${SRC_DIR}/SDLMessageBox.cpp
       ${SRC_DIR}/SDL_BitmapFont.cpp
       ${SRC_DIR}/SDL_Cursor.cpp
-      #${SRC_DIR}/IDisplay.cpp
+      ${SRC_DIR}/IDisplay.cpp
+      ${SRC_DIR}/SDL_Image.cpp
+      ${SRC_DIR}/SDL_Primitive.cpp
       ${SRC_DIR}/SDL_Display.cpp
+      ${SRC_DIR}/SDL_Canvas.cpp
       ${SRC_DIR}/gfx.cpp
       ${SRC_DIR}/sprite.cpp
-      ${SRC_DIR}/SDLInput.cpp
+      ${SRC_DIR}/SDL_Input.cpp
       ${SRC_DIR}/timer.cpp
       ${SRC_DIR}/fps.cpp
       ${SRC_DIR}/OSXFs.cpp
@@ -32,23 +36,30 @@ set ( GAMELIB_SOURCE
 set ( GAMELIB_HEADERS
       ${SRC_DIR}/Coords.h
       ${SRC_DIR}/Color.h
-      ${SRC_DIR}/GameState.h
+      ${SRC_DIR}/I_Input.hpp
+      ${SRC_DIR}/GameState.hpp
+      ${SRC_DIR}/GameStates.hpp
+      ${SRC_DIR}/SDL_App.hpp
       ${SRC_DIR}/Logger.h
       ${SRC_DIR}/audio.h
-      #${SRC_DIR}/font.h
-      ${SRC_DIR}/SDL_TFont.h
+      ${SRC_DIR}/SDL_Font.h
       ${SRC_DIR}/SDLGradient.h
       ${SRC_DIR}/SDLWindowFrame.h
       ${SRC_DIR}/SDLMessageBox.h
       ${SRC_DIR}/SDL_BitmapFont.h
       ${SRC_DIR}/SDL_Cursor.h
-      ${SRC_DIR}/SDLDrawable.h
+      ${SRC_DIR}/Drawable.hpp
+      ${SRC_DIR}/SDL_Drawable.hpp
+      ${SRC_DIR}/SDL_Image.hpp
+      ${SRC_DIR}/SDL_Primitive.hpp
+      ${SRC_DIR}/ICanvas.h
+      ${SRC_DIR}/SDL_Canvas.h
       ${SRC_DIR}/gamelib.h
       ${SRC_DIR}/IDisplay.h
       ${SRC_DIR}/SDL_Display.h
       ${SRC_DIR}/gfx.h
       ${SRC_DIR}/sprite.h
-      ${SRC_DIR}/SDLInput.h
+      ${SRC_DIR}/SDL_Input.hpp
       ${SRC_DIR}/timer.h
       ${SRC_DIR}/fps.h
       ${SRC_DIR}/OSXFs.h

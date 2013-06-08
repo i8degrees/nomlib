@@ -18,24 +18,28 @@
 
 #include "gfx.h"
 
+#include "SDL_Drawable.hpp"
+
+#include "SDL_Canvas.hpp"
+
 namespace nom
 {
-  class Sprite
+  class Sprite: public SDL_Drawable
   {
     public:
       Sprite ( void );
       Sprite ( unsigned int width, unsigned int height );
       ~Sprite ( void );
 
-      unsigned int getX ( void );
-      unsigned int getY ( void );
-      unsigned int getWidth ( void );
-      unsigned int getHeight ( void );
+      unsigned int getX ( void ) const;
+      unsigned int getY ( void ) const;
+      unsigned int getWidth ( void ) const;
+      unsigned int getHeight ( void ) const;
 
-      unsigned int getXOffset ( void );
-      unsigned int getYOffset ( void );
-      unsigned int getWidthOffset ( void );
-      unsigned int getHeightOffset ( void );
+      unsigned int getXOffset ( void ) const;
+      unsigned int getYOffset ( void ) const;
+      unsigned int getWidthOffset ( void ) const;
+      unsigned int getHeightOffset ( void ) const;
 
       void setX ( unsigned int x );
       void setY ( unsigned int y );
@@ -58,36 +62,36 @@ namespace nom
       bool Load ( std::string filename );
       bool Load ( std::string filename, nom::Color colorkey, unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL );
 
-      bool Draw ( SDL_Surface *video_buffer ); /* const; */
+      void Draw ( void* video_buffer );
 
     private:
-      SDL_Surface *sprite_buffer; // memory buffer allocation
+      nom::SDL_Canvas sprite_buffer;
 
       struct {
-        unsigned int x; // sprite x-axis coord for blitting onto video surface
-        unsigned int y; // sprite y-axis coord for blitting onto video surface
-        unsigned int width; // sprite width
-        unsigned int height; // sprite height
+        unsigned int x; /// sprite x-axis coord for blitting onto video surface
+        unsigned int y; /// sprite y-axis coord for blitting onto video surface
+        unsigned int width; /// sprite width
+        unsigned int height; /// sprite height
       } coords;
 
-      /* These are not used at the moment and are reserved for future implementation */
+      /*! These are not used at the moment and are reserved for future implementation */
       struct {
-        unsigned int x; // clipping offset X coord
-        unsigned int y; // clipping offset Y coord
-        unsigned int width; // clipping offset width
-        unsigned int height; // clipping offset height
+        unsigned int x; /// clipping offset X coord
+        unsigned int y; /// clipping offset Y coord
+        unsigned int width; /// clipping offset width
+        unsigned int height; /// clipping offset height
       } offsets;
 
-      unsigned int state; // alive, dying, dead, ...
+      unsigned int state; /// alive, dying, dead, ...
 
       struct {
-        signed int id; // maps a specific sprite within sheet
-        unsigned int sprite_width; // width of sprite in sheet
-        unsigned int sprite_height; // height of sprite in sheet
-        unsigned int width; // width of sprite sheet
-        unsigned int height; // height of sprite sheet
-        unsigned int spacing; // applied between each sheet tile
-        unsigned int padding; // applied on all four sides of sheet tile
+        signed int id; /// maps a specific sprite within sheet
+        unsigned int sprite_width; /// width of sprite in sheet
+        unsigned int sprite_height; /// height of sprite in sheet
+        unsigned int width; /// width of sprite sheet
+        unsigned int height; /// height of sprite sheet
+        unsigned int spacing; /// applied between each sheet tile
+        unsigned int padding; /// applied on all four sides of sheet tile
       } sheet;
   };
 }

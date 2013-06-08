@@ -78,7 +78,7 @@ void SDLMessageBox::Update ( void )
   //
 }
 
-void SDLMessageBox::Draw ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, unsigned int width, unsigned int height )
+void SDLMessageBox::Draw ( void* video_buffer, unsigned int x, unsigned int y, unsigned int width, unsigned int height )
 {
   unsigned int padding = 1;
   unsigned int x_offset = x + width; //unsigned int x_offset = ( x + width ) - padding;

@@ -22,34 +22,38 @@
 
 namespace nom
 {
-  namespace SDL
+  class SDL_Display: public IDisplay
   {
-    class Display: public nom::IDisplay
-    {
-      public:
-        Display ( unsigned int flags = 0 );
-        ~Display ( void );
+    public:
+      SDL_Display ( void );
+      ~SDL_Display ( void );
 
-        bool CreateWindow ( unsigned int display_width = 0,
-                            unsigned int display_height = 0,
-                            unsigned int display_colorbit = 0,
-                            unsigned int flags = 0
-                          );
+      void createWindow ( int32_t display_width, int32_t display_height,
+                          int32_t display_colorbit, uint32_t flags = 0
+                        );
 
-          SDL_Surface* getDisplay ( void );
-          const unsigned int getDisplayWidth ( void ) const;
-          const unsigned int getDisplayHeight ( void ) const;
-          const unsigned int getDisplayColorBits ( void ) const;
-          const unsigned int getDisplayFlags ( void ) const;
+      void* get ( void ) const;
+      const int32_t getDisplayWidth ( void ) const;
+      const int32_t getDisplayHeight ( void ) const;
+      const int32_t getDisplayColorBits ( void ) const;
+      const uint32_t getDisplayFlags ( void ) const;
+      const u_short getDisplayPitch ( void ) const;
+      const void* getDisplayPixels ( void ) const;
+      void* getDisplayPixelsFormat ( void ) const;
+      const Coords getDisplayClip ( void ) const;
 
-          bool updateDisplay ( void );
+      void Update ( void );
+      const void toggleFullScreenWindow ( int32_t width, int32_t height ) const;
 
-          void setTitle ( const std::string& app_name = "\0" );
-          bool setIcon ( const std::string& app_icon = "\0" );
-        private:
-          // ...
-      };
-    }
+      const std::string getWindowTitle ( void ) const;
+      void* getWindowIcon ( void ) const;
+
+      void setWindowTitle ( const std::string& app_name = "\0" );
+      void setWindowIcon ( const std::string& app_icon = "\0" );
+
+    private:
+      // ...
+  };
 }
 
-#endif // NOMLIB_IDISPLAY_HEADERS defined
+#endif // NOMLIB_SDL_DISPLAY_HEADERS defined

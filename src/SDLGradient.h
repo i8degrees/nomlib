@@ -15,6 +15,8 @@
 
 #include "Coords.h"
 #include "Color.h"
+#include "SDL_Drawable.hpp"
+#include "SDL_Primitive.hpp"
 #include "gfx.h"
 
 class SDLGradient
@@ -23,31 +25,30 @@ class SDLGradient
     SDLGradient ( void );
     ~SDLGradient ( void );
 
-    // gradient[0] = starting color
-    // gradient[1] = ending color
+    /// gradient[0] = starting color
+    /// gradient[1] = ending color
+
+    /// These default margin offsets are used in TTcards Info Boxes
+    /// If they are not set here, they default to zero (0)
 
     void Init ( nom::Color starting_color, nom::Color ending_color,
                 unsigned int x = 0, unsigned int y = 0,
                 unsigned int width = 0, unsigned int height = 0,
                 unsigned int direction = 0,  unsigned int x_margin = 3,
                 unsigned int y_margin = 4 );
-                // These default margin offsets are used in TTcards Info Boxes
-                // If they are not set here, they default to zero (0)
 
-    // direction { 0 } = ending color to starting color
-    // direction { 1 } = starting color to ending color
+    /// direction { 0 } = ending color to starting color
+    /// direction { 1 } = starting color to ending color
 
-    void Draw ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
+    void Draw ( void* video_buffer, unsigned int x, unsigned int y,
                 unsigned int width, unsigned int height, unsigned int direction = 0
               );
 
-    //void Draw ( SDL_Surface *video_buffer );
-
   private:
-    nom::Color gradient[2]; // holds R, G, B * 2
-    nom::Coords coords; // x, y, width, height coords
-    unsigned int x_margin; // x coordinate offset
-    unsigned int y_margin; // y coordinate offset
+    nom::Color gradient[2]; /// holds R, G, B * 2
+    nom::Coords coords; /// x, y, width, height coords
+    unsigned int x_margin; /// x coordinate offset
+    unsigned int y_margin; /// y coordinate offset
     unsigned int direction;
 };
 

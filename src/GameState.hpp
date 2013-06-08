@@ -1,5 +1,5 @@
 /******************************************************************************
-    GameState.h
+    GameState.hpp
 
   Game State Management
 
@@ -8,8 +8,8 @@
   Portions Copyright (c) 2013 Fielding Johnston
 
 ******************************************************************************/
-#ifndef GAMEAPP_GAMESTATE_HEADERS
-#define GAMEAPP_GAMESTATE_HEADERS
+#ifndef NOMLIB_GAMESTATE_HEADERS
+#define NOMLIB_GAMESTATE_HEADERS
 
 #include <iostream>
 #include <string>
@@ -17,11 +17,11 @@
 
 #include "SDL.h"
 
-#include "SDLInput.h"
+#include "SDL_Input.hpp"
 
 #include "gamelib.h"
 
-class GameState: public nom::SDLInput
+class GameState: public nom::SDL_Input
 {
   public:
     virtual ~GameState()
@@ -33,12 +33,11 @@ class GameState: public nom::SDLInput
     virtual void Pause ( void ) = 0;
     virtual void Resume ( void ) = 0;
 
-    virtual void HandleInput ( void ) = 0;
     virtual void Update ( void ) = 0;
-    virtual void Draw ( SDL_Surface *video_buffer ) = 0;
+    virtual void Draw ( void* video_buffer ) = 0;
 
   private:
     // ...
 };
 
-#endif // GAMEAPP_GAMESTATE_HEADERS defined
+#endif // NOMLIB_GAMESTATE_HEADERS defined

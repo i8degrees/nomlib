@@ -34,14 +34,14 @@ namespace nom
       SDL_Rect getSDL_Rect ( void ) const;
       Coords get ( void ) const;
 
-      signed int getX ( void );
-      signed int getY ( void );
+      const signed int getX ( void ) const;
+      const signed int getY ( void ) const;
       void setX ( signed int x_ );
       void setY ( signed int y_ );
       void setXY ( signed int x_, signed int y_ );
 
-      signed int getWidth ( void );
-      signed int getHeight ( void );
+      const signed int getWidth ( void ) const;
+      const signed int getHeight ( void ) const;
 
       void setWidth ( signed int width_ );
       void setHeight ( signed int height_ );

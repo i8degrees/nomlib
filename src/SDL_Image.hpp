@@ -36,7 +36,7 @@ namespace nom
       void Draw ( void* video_buffer );
 
     private:
-      //SDL_Surface *image_buffer;
+      // ...
   };
 }
 

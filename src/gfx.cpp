@@ -12,31 +12,6 @@
 
 using namespace nom;
 
-Gfx::Gfx ( unsigned int img_flags )
-{
-  #ifdef DEBUG_GFX_OBJ
-    std::cout << "Gfx::Gfx(): Hello, world!" << "\n" << std::endl;
-  #endif
-
-  if ( IMG_Init ( img_flags ) != img_flags )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::Gfx() at IMG_Init(): " << IMG_GetError() << std::endl;
-    #endif
-
-    exit ( EXIT_FAILURE );
-  }
-}
-
-Gfx::~Gfx ( void )
-{
-  #ifdef DEBUG_GFX_OBJ
-    std::cout << "Gfx::~Gfx(): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
-
-  IMG_Quit ();
-}
-
 bool Gfx::setAlpha (  void* video_buffer, unsigned char opacity,
                       unsigned int flags )
 {

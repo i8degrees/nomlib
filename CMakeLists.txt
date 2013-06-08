@@ -46,8 +46,8 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/SDLMessageBox.h
       ${SRC_DIR}/SDL_BitmapFont.h
       ${SRC_DIR}/SDL_Cursor.h
-      ${SRC_DIR}/SDLDrawable.h
       ${SRC_DIR}/Drawable.hpp
+      ${SRC_DIR}/SDL_Drawable.hpp
       ${SRC_DIR}/ICanvas.h
       ${SRC_DIR}/SDL_Canvas.h
       ${SRC_DIR}/gamelib.h

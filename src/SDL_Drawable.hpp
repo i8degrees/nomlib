@@ -1,45 +1,51 @@
 /******************************************************************************
-    SDLDrawable.h
+    SDL_Drawable.hpp
+
+    Drawables interface implementation
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.
 
 ******************************************************************************/
-#ifndef GAMELIB_SDL_DRAWABLE_HEADERS
-#define GAMELIB_SDL_DRAWABLE_HEADERS
+#ifndef NOMLIB_SDL_DRAWABLE_HEADERS
+#define NOMLIB_SDL_DRAWABLE_HEADERS
 
 #include <iostream>
 #include <string>
 
 #include "SDL.h"
 
-//#include "Coords.h"
-//#include "Color.h"
+#include "Coords.h"
+#include "Color.h"
+
+#include "Drawable.hpp"
 
 // Example usage:
 // https://gist.github.com/i8degrees/5711070
 
 namespace nom
 {
-  class SDL_Drawable
+  class SDL_Drawable: public nom::Drawable
   {
     // SDL_Gradient
     public:
-      virtual void Draw ( void *video_buffer ) const = 0;
-      virtual ~SDL_Drawable ( void ) {}
+      virtual void Draw ( void* video_buffer ) = 0;
+
+      SDL_Drawable ( void )
+      {
+        #ifdef DEBUG_SDL_DRAWABLE_OBJ
+          std::cout << "SDL_Drawable::SDL_Drawable(): Hello, world!" << std::endl << std::endl;
+        #endif
+      }
+      virtual ~SDL_Drawable ( void )
+      {
+        #ifdef DEBUG_SDL_DRAWABLE_OBJ
+          std::cout << "SDL_Drawable::~SDL_Drawable(): Goodbye cruel world!" << std::endl << std::endl;
+        #endif
+      }
   };
 
-  class Primitive: public SDL_Drawable
-  {
-    public:
-      Primitive ( void )  : coords ( 0, 0, 0, 0 ), color ( 0, 0, 0, 0 )
-      {}
-
-      ~Primitive ( void );
-    private:
-      Coords coords;
-      Color color;
-  };
+/*
 
   class Pixel: public Primitive
   {
@@ -56,6 +62,7 @@ namespace nom
     private:
       // ...
   };
+*/
 /*
   class Image: public SDL_Drawable
   {
@@ -107,48 +114,6 @@ namespace nom
       Color color;
   };
 */
-  class Rectangle: public SDL_Drawable
-  {
-    public:
-      Rectangle ( void ) : coords ( 0, 0, 0, 0 ), color ( 0, 0, 0, -1 )
-      {
-        //
-      }
-
-      Rectangle ( const Coords& coords, const Color& color )
-      {
-        this->coords = coords;
-        this->color = color;
-      }
-
-      void setPosition ( const Coords& coords, const Color& color )
-      {
-        this->coords = coords;
-        this->color = color;
-      }
-
-      void Draw ( void *video_buffer ) const
-      {
-        SDL_Rect rectangle = this->coords.getSDL_Rect();
-        unsigned int rectangle_color = 0;
-        SDL_Surface *s = (SDL_Surface*) video_buffer;
-
-        rectangle_color = this->color.getColorAsInt ( s->format );
-
-        if ( SDL_FillRect ( s, &rectangle, rectangle_color ) != 0 )
-        {
-          std::cout << "ERR in Gfx::DrawRectangle(): " << SDL_GetError() << std::endl;
-
-          return;
-        }
-
-        return;
-      }
-
-    private:
-      Coords coords;
-      Color color;
-  };
 }
 
-#endif // GAMELIB_SDL_DRAWABLE_HEADERS defined
+#endif // NOMLIB_SDL_DRAWABLE_HEADERS defined

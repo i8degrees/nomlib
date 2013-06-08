@@ -12,6 +12,8 @@ using namespace nom;
 
 SDL_Display::SDL_Display ( void )
 {
+  uint32_t img_flags = IMG_INIT_PNG;
+
   #ifdef DEBUG_SDL_DISPLAY_OBJ
     std::cout << "nom::SDL_Display::SDL_Display(): " << "Hello world!" << std::endl << std::endl;
   #endif
@@ -19,7 +21,13 @@ SDL_Display::SDL_Display ( void )
   if ( SDL_Init ( SDL_INIT_VIDEO ) != 0 )
   {
     std::cout << "ERR in SDL_Display::SDL_Display() at SDL_Init(): " << SDL_GetError() << std::endl;
-    exit ( EXIT_FAILURE );
+  }
+
+  if ( IMG_Init ( img_flags ) != img_flags )
+  {
+    #ifdef DEBUG_SDL_DISPLAY_OBJ
+      std::cout << "ERR in SDL_Display::SDL_Display() at IMG_Init(): " << IMG_GetError() << std::endl;
+    #endif
   }
 }
 
@@ -35,7 +43,7 @@ SDL_Display::~SDL_Display ( void )
     std::cout << "nom::SDL::Display::~Display(): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  // SDL_Quit ();
+  IMG_Quit ();
 }
 
 void SDL_Display::createWindow  ( int32_t display_width, int32_t display_height,

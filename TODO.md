@@ -2,6 +2,8 @@
 
 ## TODO
 
+* Fix Coords ( -1, -1, -1, -1 ) issue with blitting offsets
+* Fix GameStates leak due to vector not destructing until end of app exec
 * Implement a NULL GameState class
 * Perhaps GameState could also implement Load method
 * Perhaps break Coords class into just x, y points

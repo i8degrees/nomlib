@@ -21,6 +21,8 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/SDL_BitmapFont.cpp
       ${SRC_DIR}/SDL_Cursor.cpp
       ${SRC_DIR}/IDisplay.cpp
+      ${SRC_DIR}/SDL_Image.cpp
+      ${SRC_DIR}/SDL_Primitive.cpp
       ${SRC_DIR}/SDL_Display.cpp
       ${SRC_DIR}/SDL_Canvas.cpp
       ${SRC_DIR}/gfx.cpp
@@ -48,6 +50,8 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/SDL_Cursor.h
       ${SRC_DIR}/Drawable.hpp
       ${SRC_DIR}/SDL_Drawable.hpp
+      ${SRC_DIR}/SDL_Image.hpp
+      ${SRC_DIR}/SDL_Primitive.hpp
       ${SRC_DIR}/ICanvas.h
       ${SRC_DIR}/SDL_Canvas.h
       ${SRC_DIR}/gamelib.h

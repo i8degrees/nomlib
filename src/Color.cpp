@@ -104,10 +104,10 @@ void Color::setAlpha ( int32_t a )
   this->alpha = a;
 }
 
-int32_t Color::getColorAsInt ( SDL_PixelFormat *pixel_buffer ) const
+int32_t Color::getColorAsInt ( void* pixel_format ) const
 {
   if ( this->alpha != -1 )
-    return SDL_MapRGBA ( pixel_buffer, this->red, this->green, this->blue, this->alpha );
+    return SDL_MapRGBA ( ( SDL_PixelFormat* ) pixel_format, this->red, this->green, this->blue, this->alpha );
   else
-    return SDL_MapRGB ( pixel_buffer, this->red, this->green, this->blue );
+    return SDL_MapRGB ( ( SDL_PixelFormat* ) pixel_format, this->red, this->green, this->blue );
 }

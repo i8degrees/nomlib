@@ -33,13 +33,13 @@ namespace nom
     void setRed ( int32_t r );
     void setGreen ( int32_t g );
     void setBlue ( int32_t b );
-    void setAlpha ( int32_t a = -1 ); // Reconsider
+    void setAlpha ( int32_t a );
 
     void setColor ( int32_t r, int32_t g, int32_t b, int32_t a = -1 );
 
-    // SDL compatibility wrappers
+    /// SDL compatibility wrappers
     SDL_Color getSDL_Color ( void ) const;
-    int32_t getColorAsInt ( SDL_PixelFormat *pixel_buffer ) const;
+    int32_t getColorAsInt ( void* pixel_format ) const;
 
   private:
     int32_t red;

@@ -71,15 +71,6 @@ void SDL_BitmapFont::setXY ( int32_t x_, int32_t y_ )
   this->coords.setXY ( x_, y_ );
 }
 
-void SDL_BitmapFont::greyedOutText ( u_char opacity )
-{
-  if ( this->bitmap_font.get() )
-    Gfx::setAlpha ( this->bitmap_font.get(), ( uint32_t ) opacity );
-}
-
-// I don't think this is entirely accurate; this->spacing - 2 is fudged ...
-// We probably ought to be calculating the width based off the same algorithm as
-// is shown in SDL_BitmapFont::LoadImage
 int32_t SDL_BitmapFont::getTextWidth ( void )
 {
   int32_t text_width = 0;
@@ -145,7 +136,12 @@ void SDL_BitmapFont::setNewline ( uint32_t newline )
   this->newline = newline;
 }
 
-// TODO: add spacing / padding so that we can export with black guidelines
+void SDL_BitmapFont::greyedOutText ( u_char opacity )
+{
+  if ( this->bitmap_font.get() )
+    Gfx::setAlpha ( this->bitmap_font.get(), ( uint32_t ) opacity );
+}
+
 bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& colorkey, uint32_t sheet_width, uint32_t sheet_height )
 {
   uint32_t tile_width = 0;
@@ -311,8 +307,8 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
 
 void SDL_BitmapFont::Draw ( void* video_buffer )
 {
-  //  Use coordinates provided by interface user as our starting origin
-  //  coordinates to compute from
+  // Use coordinates provided by interface user as our starting origin
+  // coordinates to compute from
   int32_t x_offset = this->coords.getX();
   int32_t y_offset = this->coords.getY();
 

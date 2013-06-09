@@ -13,12 +13,8 @@
 
 #include <iostream>
 #include <string>
-#include <memory>
-
-#include "SDL.h"
 
 #include "SDL_Input.hpp"
-
 #include "gamelib.h"
 
 class GameState: public nom::SDL_Input // "has a" relationship

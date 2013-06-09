@@ -12,7 +12,7 @@
 nom::Coords::Coords ( void )
 {
   #ifdef DEBUG_COORDS_OBJ
-    std::cout << "GCoords::GCoords (): " << "Hello, world!" << std::endl << std::endl;
+    std::cout << "Coords::Coords (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
   this->x = 0;
@@ -25,7 +25,7 @@ nom::Coords::Coords ( void )
 nom::Coords::Coords ( signed int x_, signed int y_, signed int width_, signed height_ )
 {
   #ifdef DEBUG_COORDS_OBJ
-    std::cout << "GCoords::GCoords (): " << "Hello, world!" << std::endl << std::endl;
+    std::cout << "Coords::Coords (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
   this->x = x_;
@@ -38,7 +38,7 @@ nom::Coords::Coords ( signed int x_, signed int y_, signed int width_, signed he
 nom::Coords::~Coords ( void )
 {
   #ifdef DEBUG_COORDS_OBJ
-    std::cout << "GCoords::~GCoords (): " << "Goodbye cruel world!" << std::endl << std::endl;
+    std::cout << "Coords::~Coords (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
 
   // Cleanup

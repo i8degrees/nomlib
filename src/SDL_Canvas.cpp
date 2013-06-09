@@ -9,8 +9,8 @@
 #include "SDL_Canvas.hpp"
 
 nom::SDL_Canvas::SDL_Canvas ( void )  : canvas_buffer ( NULL ),
-                                        coords ( 0, 0, 0, 0 ),
-                                        offsets ( 0, 0, -1, -1 ),
+                                        coords ( 0, 0, -1, -1 ), // only x, y position is used in blitting
+                                        offsets ( 0, 0, -1, -1 ), // only the width, height is used in source blitting
                                         colorkey ( -1, -1, -1, -1 )
 {
   #ifdef DEBUG_SDL_CANVAS_OBJ

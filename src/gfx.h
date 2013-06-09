@@ -34,7 +34,7 @@ class Gfx
                                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
     static bool DrawSurface (   void* source_buffer, void* video_buffer,
-                                const nom::Coords &coords, const nom::Coords& offsets = nom::Coords ( -1, -1, -1, -1 ) );
+                                const nom::Coords &coords = nom::Coords ( 0, 0, -1, -1 ), const nom::Coords& offsets = nom::Coords ( 0, 0, -1, -1 ) );
 
     static bool updateSurface ( void* video_buffer );
 

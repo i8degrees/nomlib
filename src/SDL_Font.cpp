@@ -119,4 +119,8 @@ void SDL_Font::Draw ( void* video_buffer )
     this->font_buffer.setPosition ( this->coords );
     this->font_buffer.Draw ( video_buffer );
   }
+
+  // We must free the rendered font surface here in order to evade massive
+  // memory leaks!
+  this->font_buffer.freeCanvas();
 }

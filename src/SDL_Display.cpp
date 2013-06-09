@@ -110,14 +110,14 @@ const nom::Coords SDL_Display::getDisplayClip ( void ) const
   return clip_coords;
 }
 
-void SDL_Display::Update ( void )
+void SDL_Display::Update ( void* video_buffer )
 {
-  SDL_Surface *screen = (SDL_Surface*)this->get();
+  SDL_Surface *screen = ( SDL_Surface* ) video_buffer;
 
   if ( SDL_Flip ( screen ) != 0 )
   {
     #ifdef DEBUG_SDL_DISPLAY
-      std::cout << "ERR in Gfx::UpdateScreen(): " << SDL_GetError() << std::endl;
+      std::cout << "ERR in nom::SDL_Display::Update(): " << SDL_GetError() << std::endl;
     #endif
   }
 }

@@ -43,7 +43,7 @@ namespace nom
       void* getDisplayPixelsFormat ( void ) const;
       const nom::Coords getDisplayClip ( void ) const;
 
-      void Update ( void );
+      static void Update ( void* video_buffer );
       const void toggleFullScreenWindow ( int32_t width, int32_t height ) const;
 
       const std::string getWindowTitle ( void ) const;

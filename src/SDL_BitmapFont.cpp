@@ -75,7 +75,7 @@ int32_t SDL_BitmapFont::getTextWidth ( void )
 {
   int32_t text_width = 0;
 
-  if ( this->bitmap_font.get() != NULL )
+  if ( this->bitmap_font.get() != nullptr )
   {
     for ( int t = 0; t < this->text_buffer.length(); t++ )
     {
@@ -153,7 +153,7 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
 
   this->bitmap_font.loadImageFromFile ( filename, colorkey );
 
-  if ( this->bitmap_font.get() == NULL )
+  if ( this->bitmap_font.get() == nullptr )
   {
     #ifdef DEBUG_BITMAP_FONT
       std::cout << "ERR in SDL_BitmapFont::LoadImage() at Gfx::LoadImage(): " << std::endl;
@@ -249,6 +249,7 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
         }
       }
 
+      // FIXME: I don't think this does anything for us
       // Find Bottom of A
       if ( currentChar == 'A' )
       {
@@ -313,7 +314,7 @@ void SDL_BitmapFont::Draw ( void* video_buffer )
   int32_t y_offset = this->coords.getY();
 
   //If the font has been built
-  if ( this->bitmap_font.get() != NULL )
+  if ( this->bitmap_font.get() != nullptr )
   {
     for ( uint32_t show = 0; show < this->text_buffer.length(); show++ )
     {
@@ -335,14 +336,13 @@ void SDL_BitmapFont::Draw ( void* video_buffer )
         //Get the ASCII value of the character
         uint32_t ascii = ( u_char ) this->text_buffer[show];
 
-        if ( Gfx::DrawSurface ( this->bitmap_font.get(), (SDL_Surface*) video_buffer, Coords ( x_offset, y_offset ), this->chars[ascii] ) == false )
-        {
-          std::cout << "ERR in SDL_BitmapFont::DrawText(): " << SDL_GetError() << std::endl;
-        }
+        this->bitmap_font.setPosition ( nom::Coords ( x_offset, y_offset ) );
+        this->bitmap_font.setOffsets ( this->chars[ascii] );
+        this->bitmap_font.Draw ( video_buffer );
 
         // Move over the width of the character with one pixel of padding
         x_offset += ( this->chars[ascii].getWidth() ) + 1;
       } // end else
     } // end for loop
-  } // end if this->bitmap_font != NULL
+  } // end if this->bitmap_font != nullptr
 }

@@ -30,6 +30,7 @@ namespace nom
       SDL_Canvas ( int32_t width, int32_t height, const Color& colorbit, uint32_t flags = 0 );
       SDL_Canvas ( void* video_buffer );
       ~SDL_Canvas ( void );
+      void freeCanvas ( void );
 
       void* get ( void ) const;
 

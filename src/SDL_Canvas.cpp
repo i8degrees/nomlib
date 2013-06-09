@@ -8,7 +8,7 @@
 ******************************************************************************/
 #include "SDL_Canvas.hpp"
 
-nom::SDL_Canvas::SDL_Canvas ( void )  : canvas_buffer ( NULL ),
+nom::SDL_Canvas::SDL_Canvas ( void )  : canvas_buffer ( nullptr ),
                                         coords ( 0, 0, -1, -1 ), // only x, y position is used in blitting
                                         offsets ( 0, 0, -1, -1 ), // only the width, height is used in source blitting
                                         colorkey ( -1, -1, -1, -1 )
@@ -38,10 +38,15 @@ nom::SDL_Canvas::~SDL_Canvas ( void )
     std::cout << "nom::SDL_Canvas::~SDL_Canvas(): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  if ( this->canvas_buffer != NULL )
+  this->freeCanvas();
+}
+
+void nom::SDL_Canvas::freeCanvas ( void )
+{
+  if ( this->canvas_buffer != nullptr )
     SDL_FreeSurface ( canvas_buffer );
 
-  this->canvas_buffer = NULL;
+  this->canvas_buffer = nullptr;
 }
 
 void* nom::SDL_Canvas::get ( void ) const

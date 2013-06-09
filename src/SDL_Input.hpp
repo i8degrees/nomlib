@@ -54,13 +54,14 @@ namespace nom
       PSBUTTON          = 16
   };
 
+  // This is an inheritance-only class
   class SDL_Input: public nom::I_Input
   {
     public:
+      void HandleInput ( void* event );
+    protected:
       SDL_Input ( void );
       virtual ~SDL_Input ( void );
-
-      virtual void HandleInput ( void* event );
 
       virtual void onUserEvent ( uint8_t type, int32_t code, void* data1, void* data2 );
       virtual void onExit ( void );

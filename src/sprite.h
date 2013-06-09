@@ -31,7 +31,7 @@ namespace nom
     public:
       Sprite ( void );
       Sprite ( unsigned int width, unsigned int height );
-      ~Sprite ( void );
+      virtual ~Sprite ( void );
 
       unsigned int getX ( void ) const;
       unsigned int getY ( void ) const;

@@ -23,7 +23,7 @@ class SDLGradient
 {
   public:
     SDLGradient ( void );
-    ~SDLGradient ( void );
+    virtual ~SDLGradient ( void );
 
     /// gradient[0] = starting color
     /// gradient[1] = ending color

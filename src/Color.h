@@ -26,7 +26,7 @@ namespace nom
       Color ( int32_t r, int32_t g, int32_t b, int32_t a = -1 );
       ~Color ( void );
 
-      Color getColor ( void ) const;
+      const nom::Color getColor ( void ) const;
       int32_t getRed ( void ) const;
       int32_t getGreen ( void ) const;
       int32_t getBlue ( void ) const;

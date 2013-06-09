@@ -39,7 +39,7 @@ Color::~Color ( void )
   // Stub
 }
 
-Color Color::getColor ( void ) const
+const nom::Color Color::getColor ( void ) const
 {
   return Color ( this->red, this->green, this->blue, this->alpha );
 }

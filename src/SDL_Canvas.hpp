@@ -34,6 +34,7 @@ namespace nom
       ~SDL_Canvas ( void );
       void freeCanvas ( void );
 
+      /// Obtains raw pointer to the object's video surface buffer
       void* get ( void ) const;
 
       /// SDL compatibility wrapper
@@ -46,25 +47,22 @@ namespace nom
 
       const int32_t getCanvasWidth ( void ) const;
       const int32_t getCanvasHeight ( void ) const;
+      uint32_t getCanvasFlags ( void ) const;
+      u_short getCanvasPitch ( void ) const;
+      void* getCanvasPixels ( void ) const;
       void* getCanvasPixelsFormat ( void ) const;
+      const nom::Coords getCanvasBounds ( void ) const;
+      void setCanvasBounds ( const nom::Coords& clip_bounds );
 
-      // video_buffer->flags
-      // video_buffer->pitch
-      // video_buffer->clip_rect
-      // void* video_buffer->pixels
       // ( bool ) mustLock
       // lockCanvas
       // unlockCanvas
-      // setClip
-      // canvasFormatAlpha
-      // canvasFormatDisplay
-      // bool convertCanvas ( PixelFormat* fmt, uint32_t flags );
       // SDL_CreateRGBSurface
       // SDL_CreateRGBSurfaceFrom
 
-      bool loadImageFromFile  ( const std::string& filename, const nom::Color&
-                                colorkey = nom::Color ( -1, -1, -1, -1 ),
-                                uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
+      bool loadFromImage  ( const std::string& filename, const nom::Color&
+                            colorkey = nom::Color ( 0, 0, 0, -1 ),
+                            uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
       void Draw ( void* video_buffer );
       bool Update ( void* video_buffer ) const;
@@ -72,10 +70,12 @@ namespace nom
       bool setAlpha ( void* video_buffer, uint8_t opacity,
                       uint32_t flags = SDL_SRCALPHA );
 
-      bool setTransparent ( void* video_buffer,
-                            const nom::Color& color = nom::Transparent,
+      bool setTransparent ( const nom::Color& color = nom::Color ( 0, 0, 0, -1 ),
                             uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY
                           );
+
+      bool displayFormat ( void );
+      bool displayFormatAlpha ( void );
 
     private:
       SDL_Surface *canvas_buffer;

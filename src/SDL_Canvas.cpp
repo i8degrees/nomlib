@@ -11,7 +11,7 @@
 nom::SDL_Canvas::SDL_Canvas ( void )  : canvas_buffer ( nullptr ),
                                         coords ( 0, 0, -1, -1 ), // only x, y position is used in blitting
                                         offsets ( 0, 0, -1, -1 ), // only the width, height is used in source blitting
-                                        colorkey ( -1, -1, -1, -1 )
+                                        colorkey ( 0, 0, 0, -1 )
 {
   #ifdef DEBUG_SDL_CANVAS_OBJ
     std::cout << "nom::SDL_Canvas::SDL_Canvas(): Hello, world!" << "\n" << std::endl;
@@ -24,7 +24,7 @@ nom::SDL_Canvas::SDL_Canvas ( int32_t width, int32_t height, const Color& colors
     std::cout << "nom::SDL_Canvas::SDL_Canvas(): Hello, world!" << "\n" << std::endl;
   #endif
 
-  // ...Create a new surface here
+  // ...Create a new surface here?
 }
 
 nom::SDL_Canvas::SDL_Canvas ( void* video_buffer )
@@ -49,6 +49,7 @@ void nom::SDL_Canvas::freeCanvas ( void )
   this->canvas_buffer = nullptr;
 }
 
+// FIXME: methinks ought to be return (SDL_Surface*) this->canvas_buffer or so?
 void* nom::SDL_Canvas::get ( void ) const
 {
   return this->canvas_buffer;
@@ -84,18 +85,76 @@ const int32_t nom::SDL_Canvas::getCanvasHeight ( void ) const
   return this->canvas_buffer->h;
 }
 
+uint32_t nom::SDL_Canvas::getCanvasFlags ( void ) const
+{
+  return this->canvas_buffer->flags;
+}
+
+uint16_t nom::SDL_Canvas::getCanvasPitch ( void ) const
+{
+  return this->canvas_buffer->pitch;
+}
+
+void* nom::SDL_Canvas::getCanvasPixels ( void ) const
+{
+  return this->canvas_buffer->pixels;
+}
+
 void* nom::SDL_Canvas::getCanvasPixelsFormat ( void ) const
 {
   return this->canvas_buffer->format;
 }
 
-bool nom::SDL_Canvas::loadImageFromFile ( const std::string& filename, const nom::Color& colorkey, uint32_t flags )
+const nom::Coords nom::SDL_Canvas::getCanvasBounds ( void ) const
 {
-  nom::SDL_Image image;
-  this->canvas_buffer = (SDL_Surface*) image.loadImageFromFile ( filename, colorkey, flags );
+  SDL_Rect clip_buffer; // temporary storage struct
+  nom::Coords clip_bounds; // transferred values from SDL_Rect clip_buffer
 
-  this->offsets.setWidth ( this->canvas_buffer->w );
-  this->offsets.setHeight ( this->canvas_buffer->h );
+  // Return values are put into the clip_buffer SDL_Rect after executing:
+  SDL_GetClipRect ( this->canvas_buffer, &clip_buffer );
+
+  // Now transfer the values into our preferred data container type
+  clip_bounds.setCoords ( clip_buffer.x, clip_buffer.y, clip_buffer.w, clip_buffer.h );
+
+  return clip_bounds;
+}
+
+void nom::SDL_Canvas::setCanvasBounds ( const nom::Coords& clip_bounds )
+{
+  SDL_Rect clip = clip_bounds.getSDL_Rect(); // temporary storage struct for setting
+
+  // As per libSDL docs, if SDL_Rect is nullptr, the clipping rectangle is set
+  // to the full size of the surface
+  SDL_SetClipRect ( this->canvas_buffer, &clip );
+}
+
+bool nom::SDL_Canvas::loadFromImage ( const std::string& filename, const nom::Color& colorkey, uint32_t flags )
+{
+  nom::SDL_Image image; // holds our image in memory during transfer
+
+  if ( image.loadFromFile ( filename, colorkey, flags ) == false )
+  {
+    #ifdef DEBUG_SDL_CANVAS
+      std::cout << "ERR in nom::SDL_Canvas::loadFromImage(): " << std::endl << std::endl;
+    #endif
+    return false;
+  }
+
+  // Sets our canvas with our acquired image surface
+  setCanvas ( image.get() );
+
+  if ( colorkey.getAlpha() == -1 ) // FIXME
+    setTransparent ( colorkey, flags );
+
+  if ( colorkey.getAlpha() != -1 )
+    displayFormatAlpha(); // Optimized video surface with an alpha channel
+  else
+    displayFormat(); // Optimized video surface without an alpha channel
+
+  // Update our canvas clipping bounds with the new source
+  this->offsets.setWidth ( this->getCanvasWidth() );
+  this->offsets.setHeight ( this->getCanvasHeight() );
+
   return true;
 }
 
@@ -154,15 +213,12 @@ bool nom::SDL_Canvas::setAlpha ( void* video_buffer, uint8_t opacity, uint32_t f
   return true;
 }
 
-bool nom::SDL_Canvas::setTransparent  ( void* video_buffer,
-                                        const nom::Color& color,
-                                        unsigned int flags
-                                      )
+bool nom::SDL_Canvas::setTransparent  ( const nom::Color& color,
+                                        uint32_t flags )
 {
-  SDL_Surface *buffer = static_cast<SDL_Surface*> ( video_buffer ); // FIXME
   uint32_t transparent_color = 0;
 
-  if ( buffer == nullptr )
+  if ( this->get() == nullptr )
   {
     #ifdef DEBUG_SDL_CANVAS
       std::cout << "ERR in nom::SDL_Canvas::setTransparent(): " << SDL_GetError() << std::endl << std::endl;
@@ -171,15 +227,53 @@ bool nom::SDL_Canvas::setTransparent  ( void* video_buffer,
   }
 
   // TODO: Alpha value needs testing
-  transparent_color = color.getColorAsInt ( buffer->format );
+  transparent_color = color.getColorAsInt ( this->getCanvasPixelsFormat() );
 
-  if ( SDL_SetColorKey ( buffer, flags, transparent_color ) != 0 )
+  if ( SDL_SetColorKey ( static_cast<SDL_Surface*> ( this->get() ), flags, transparent_color ) != 0 )
   {
     #ifdef DEBUG_SDL_CANVAS
       std::cout << "ERR in nom::SDL_Canvas::setTransparent(): " << SDL_GetError() << std::endl << std::endl;
     #endif
     return false;
   }
+
+  return true;
+}
+
+bool nom::SDL_Canvas::displayFormat ( void )
+{
+  void* converted_canvas = NULL; // Better safe than sorry!
+
+  converted_canvas = SDL_DisplayFormat ( static_cast<SDL_Surface*> ( this->get() ) );
+
+  if ( converted_canvas == nullptr )
+    return false;
+
+  freeCanvas(); // Clean up our existing surface first to be safe
+
+  // TODO: compare canvas_buffer == converted_buffer first?
+
+  // Set the newly converted surface as our own
+  this->setCanvas ( converted_canvas );
+
+  return true;
+}
+
+bool nom::SDL_Canvas::displayFormatAlpha ( void )
+{
+  void* converted_canvas = NULL; // Better safe than sorry!
+
+  converted_canvas = SDL_DisplayFormatAlpha ( static_cast<SDL_Surface*> ( this->get() ) );
+
+  if ( converted_canvas == nullptr )
+    return false;
+
+  freeCanvas(); // Clean up our existing surface first to be safe
+
+  // TODO: compare canvas_buffer == converted_buffer first?
+
+  // Set the newly converted surface as our own
+  this->setCanvas ( converted_canvas );
 
   return true;
 }

@@ -23,24 +23,24 @@
 
 namespace nom
 {
+  // This is an inheritance-only class
   class SDL_App: public nom::SDL_Input
   {
-    public:
+    protected:
       SDL_App ( void );
       ~SDL_App ( void );
 
-      virtual bool isRunning ( void );
-      virtual void Running ( void );
-      virtual void Quit ( void );
+      bool isRunning ( void );
+      void Running ( void );
+      void Quit ( void );
 
-      virtual uint32_t getTicks ( void );
+      uint32_t getTicks ( void );
 
-      virtual bool isFullScreen ( void );
-      virtual void setFullScreen ( bool toggle );
-      virtual bool getShowFPS ( void );
-      virtual void showFPS ( bool toggle );
-      virtual void toggleFPS ( void );
-
+      bool isFullScreen ( void );
+      void setFullScreen ( bool toggle );
+      bool getShowFPS ( void );
+      void showFPS ( bool toggle );
+      void toggleFPS ( void );
     private:
       bool app_state; /// global app state
       bool show_fps; /// fps counter

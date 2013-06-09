@@ -110,11 +110,9 @@ const nom::Coords SDL_Display::getDisplayClip ( void ) const
   return clip_coords;
 }
 
-void SDL_Display::Update ( void* video_buffer )
+void nom::SDL_Display::Update ( void )
 {
-  SDL_Surface *screen = ( SDL_Surface* ) video_buffer;
-
-  if ( SDL_Flip ( screen ) != 0 )
+  if ( SDL_Flip ( static_cast<SDL_Surface*> ( this->get() ) ) != 0 )
   {
     #ifdef DEBUG_SDL_DISPLAY
       std::cout << "ERR in nom::SDL_Display::Update(): " << SDL_GetError() << std::endl;
@@ -122,7 +120,17 @@ void SDL_Display::Update ( void* video_buffer )
   }
 }
 
-void SDL_Display::toggleFullScreenWindow ( int32_t width, int32_t height ) const
+void nom::SDL_Display::Update ( void* video_buffer )
+{
+  if ( SDL_Flip ( static_cast<SDL_Surface*> ( video_buffer ) ) != 0 )
+  {
+    #ifdef DEBUG_SDL_DISPLAY
+      std::cout << "ERR in nom::SDL_Display::Update ( void* ): " << SDL_GetError() << std::endl;
+    #endif
+  }
+}
+
+void SDL_Display::toggleFullScreenWindow ( int32_t width, int32_t height )
 {
   SDL_Surface *screen = (SDL_Surface*)this->get();
   uint32_t flags; // save our current flags before attempting to switch

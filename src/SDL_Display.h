@@ -43,12 +43,12 @@ namespace nom
       void* getDisplayPixelsFormat ( void ) const;
       const nom::Coords getDisplayClip ( void ) const;
 
-      // void Update ( void );
-      // void Update ( int32_t x, int32_t y, int32_t width, int32_t height );
-      // void Update ( const nom::Coords& );
-
-      static void Update ( void* video_buffer );
-      void toggleFullScreenWindow ( int32_t width, int32_t height ) const;
+      void Update ( void );
+      void Update ( void* video_buffer );
+      //void Update ( const nom::Coords& );
+      //void Update ( int32_t x, int32_t y, int32_t width, int32_t height );
+      //void Update ( const nom::Coords& );
+      void toggleFullScreenWindow ( int32_t width, int32_t height );
 
       const std::string getWindowTitle ( void ) const;
       void* getWindowIcon ( void ) const;

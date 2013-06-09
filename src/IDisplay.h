@@ -47,8 +47,10 @@ namespace nom
       virtual void* getDisplayPixelsFormat ( void ) const = 0;
       virtual const nom::Coords getDisplayClip ( void ) const = 0;
 
-      //virtual void Update ( void* video_buffer ) = 0;
-      virtual void toggleFullScreenWindow ( int32_t width, int32_t height ) const = 0;
+      virtual void Update ( void ) = 0;
+      virtual void Update ( void* video_buffer ) = 0;
+
+      virtual void toggleFullScreenWindow ( int32_t width, int32_t height ) = 0;
 
       virtual const std::string getWindowTitle ( void ) const = 0;
       virtual void setWindowTitle ( const std::string& ) = 0;

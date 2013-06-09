@@ -26,6 +26,16 @@
 
 namespace nom
 {
+  /// Text effect styling
+  enum Style
+  {
+    Regular = 0,
+    Bold = 1,
+    Italic = 2,
+    Underlined = 3,
+    Faded = 4
+  };
+
   class SDL_BitmapFont: public SDL_Drawable, //  "is a" inheritance
                         public nom::Transformable //  "has a" inheritance
   {
@@ -68,8 +78,8 @@ namespace nom
       /// Set new text character spacing height offsets in pixels
       void setNewline ( uint32_t newline );
 
-      /// Text effect utilizing alpha channels for the appearance of gray text
-      void greyedOutText ( u_char opacity );
+      uint8_t getStyle ( void ) const;
+      void setStyle ( uint8_t style, uint8_t options = 150 );
 
       /// \brief Loads a new bitmap font from a file
       /// \internal
@@ -92,6 +102,8 @@ namespace nom
       uint32_t spacing;
       /// holds contents of text as a string
       std::string text_buffer;
+      /// Current text effect set
+      uint8_t text_style;
   };
 }
 #endif // NOMLIB_SDL_BITMAP_FONT_HEADERS defined

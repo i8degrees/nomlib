@@ -25,6 +25,7 @@ SDL_BitmapFont::SDL_BitmapFont ( void )
   this->text_buffer = "\0";
   this->newline = 0; // holds the y coords value to increment upon newline break char
   this->spacing = 0; // holds the x coords value to increment upon space char
+  this->text_style = Style::Regular; // default text styling effect
 
   this->coords.setCoords ( 0, 0, 0, 0 );
 
@@ -106,10 +107,33 @@ void SDL_BitmapFont::setNewline ( uint32_t newline )
   this->newline = newline;
 }
 
-void SDL_BitmapFont::greyedOutText ( u_char opacity )
+uint8_t nom::SDL_BitmapFont::getStyle ( void ) const
 {
-  if ( this->bitmap_font.get() )
-    Gfx::setAlpha ( this->bitmap_font.get(), ( uint32_t ) opacity );
+  return this->text_style;
+}
+
+void SDL_BitmapFont::setStyle ( uint8_t style, uint8_t options )
+{
+  switch ( style )
+  {
+    default:
+    break;
+    case Style::Regular:
+    case Style::Bold:
+    case Style::Italic:
+    case Style::Underlined:
+      // Do nothing stub
+    break;
+
+    /// Text effect utilizing alpha channels for the appearance of gray text
+    case Style::Faded:
+    {
+      if ( this->bitmap_font.get() != nullptr )
+        if ( this->bitmap_font.setAlpha ( static_cast<SDL_Surface*> ( this->bitmap_font.get() ), options ) == true )
+          this->text_style = Style::Faded;
+    break;
+    }
+  }
 }
 
 bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& colorkey, uint32_t sheet_width, uint32_t sheet_height )

@@ -33,8 +33,8 @@ class GameState: public nom::SDL_Input
     virtual void Pause ( void ) = 0;
     virtual void Resume ( void ) = 0;
 
-    virtual void Update ( void ) = 0;
-    virtual void Draw ( void* video_buffer ) = 0;
+    virtual void Update ( void* ) = 0;
+    virtual void Draw ( void* ) = 0;
 
   private:
     // ...

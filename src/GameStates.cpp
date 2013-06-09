@@ -28,10 +28,10 @@ void GameStates::onEvent ( SDL_Event *event )
   states.back()->HandleInput ( event );
 }
 
-void GameStates::Update ( void )
+void GameStates::Update ( void* video_buffer )
 {
   // let the state update the scene
-  states.back()->Update();
+  states.back()->Update ( video_buffer );
 }
 
 void GameStates::Draw( void* video_buffer )

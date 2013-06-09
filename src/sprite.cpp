@@ -16,14 +16,6 @@ nom::Sprite::Sprite ( void )
     std::cout << "Sprite::Sprite (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->coords.x = 0;
-  this->coords.y = 0;
-  this->coords.width = 0;
-  this->coords.height = 0;
-  this->offsets.x = 0;
-  this->offsets.y = 0;
-  this->offsets.width = 0;
-  this->offsets.height = 0;
   this->state = 0;
 
   this->sheet.sprite_width = 0;
@@ -41,21 +33,16 @@ nom::Sprite::Sprite ( unsigned int width, unsigned int height )
     std::cout << "Sprite::Sprite (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->coords.x = 0;
-  this->coords.y = 0;
-  this->coords.width = width;
-  this->coords.height = height;
-  this->offsets.x = 0;
-  this->offsets.y = 0;
-  this->offsets.width = width;
-  this->offsets.height = height;
+  this->coords.setWidth ( width );
+  this->coords.setHeight ( width );
+
   this->state = 0;
 
   this->sheet.id = -1;
-  this->sheet.sprite_width = width;
-  this->sheet.sprite_height = height;
-  this->sheet.width = width;
-  this->sheet.height = height;
+  this->sheet.sprite_width = 0;
+  this->sheet.sprite_height = 0;
+  this->sheet.width = width = 0;
+  this->sheet.height = height = 0;
   this->sheet.spacing = 0;
   this->sheet.padding = 0;
 }
@@ -67,97 +54,7 @@ nom::Sprite::~Sprite ( void )
   #endif
 }
 
-unsigned int nom::Sprite::getX ( void ) const
-{
-  return this->coords.x;
-}
-
-unsigned int nom::Sprite::getY ( void ) const
-{
-  return this->coords.y;
-}
-
-unsigned int nom::Sprite::getWidth ( void ) const
-{
-  return this->coords.width;
-}
-
-unsigned int nom::Sprite::getHeight ( void ) const
-{
-  return this->coords.height;
-}
-
-unsigned int nom::Sprite::getXOffset ( void ) const
-{
-  return this->offsets.x;
-}
-
-unsigned int nom::Sprite::getYOffset ( void ) const
-{
-  return this->offsets.y;
-}
-
-unsigned int nom::Sprite::getWidthOffset ( void ) const
-{
-  return this->offsets.width;
-}
-
-unsigned int nom::Sprite::getHeightOffset ( void ) const
-{
-  return this->offsets.height;
-}
-
-void nom::Sprite::setX ( unsigned int x )
-{
-  this->coords.x = x;
-}
-
-void nom::Sprite::setY ( unsigned int y )
-{
-  this->coords.y = y;
-}
-
-void nom::Sprite::setXY ( unsigned int x, unsigned int y )
-{
-  this->coords.x = x;
-  this->coords.y = y;
-}
-
-void nom::Sprite::updateXY ( unsigned int x, unsigned int y )
-{
-  this->coords.x += x;
-  this->coords.y += y;
-}
-
-void nom::Sprite::setWidth ( unsigned int width )
-{
-  this->coords.width = width;
-}
-
-void nom::Sprite::setHeight ( unsigned int height )
-{
-  this->coords.height = height;
-}
-
-void nom::Sprite::setXOffset ( unsigned int x_offset )
-{
-  this->offsets.x = x_offset;
-}
-
-void nom::Sprite::setYOffset ( unsigned int y_offset )
-{
-  this->offsets.y = y_offset;
-}
-
-void nom::Sprite::setWidthOffset ( unsigned int width_offset )
-{
-  this->offsets.width = width_offset;
-}
-
-void nom::Sprite::setHeightOffset ( unsigned int height_offset )
-{
-  this->offsets.height = height_offset;
-}
+// FIXME
 
 unsigned int nom::Sprite::getState ( void )
 {
@@ -178,13 +75,6 @@ void nom::Sprite::setSheetID ( signed int id )
 {
   this->sheet.id = id;
 }
-
-/*
-struct sheet nom::Sprite::getSheetDimensions ( void )
-{
-  return this->sheet;
-}
-*/
 
 void nom::Sprite::setSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding )
 {
@@ -213,7 +103,6 @@ bool nom::Sprite::Load ( std::string filename, nom::Color colorkey, unsigned int
 
 void nom::Sprite::Draw ( void* video_buffer )
 {
-  nom::Coords coords; // FIXME
   nom::Coords offsets; // FIXME
 
   if ( this->sprite_buffer.get() == nullptr )
@@ -223,8 +112,6 @@ void nom::Sprite::Draw ( void* video_buffer )
     #endif
   }
 
-  coords.setCoords ( this->getX(), this->getY(), this->getWidth(), this->getHeight() );
-  this->sprite_buffer.setPosition ( coords );
   if ( this->sheet.id != -1 )
   {
     // FIXME: Presently, we assume every sprite on our sheet is on the same row
@@ -233,13 +120,7 @@ void nom::Sprite::Draw ( void* video_buffer )
     offsets.setDimensions ( this->sheet.sprite_width, this->sheet.sprite_height );
     this->sprite_buffer.setOffsets ( offsets );
   }
-  else
-  {
-    offsets.setX ( this->getXOffset() );
-    offsets.setY ( this->getYOffset() );
-    offsets.setDimensions ( this->getWidth(), this->getHeight() );
-    this->sprite_buffer.setOffsets ( offsets );
-  }
 
+  this->sprite_buffer.setPosition ( coords );
   this->sprite_buffer.Draw ( video_buffer );
 }

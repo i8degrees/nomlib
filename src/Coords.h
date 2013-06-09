@@ -16,6 +16,8 @@
 
 #include "SDL.h"
 
+#include "gamelib.h"
+
 namespace nom
 {
   class Coords

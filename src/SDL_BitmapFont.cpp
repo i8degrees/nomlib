@@ -145,7 +145,7 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
   uint32_t currentChar = 0;
   int32_t background_color = 0;
 
-  this->bitmap_font.loadImageFromFile ( filename, colorkey );
+  this->bitmap_font.loadFromImage ( filename, colorkey );
 
   if ( this->bitmap_font.get() == nullptr )
   {

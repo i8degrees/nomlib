@@ -86,7 +86,7 @@ void nom::Sprite::setSheetDimensions ( unsigned int sheet_width, unsigned int sh
 
 bool nom::Sprite::Load ( std::string filename, nom::Color colorkey, unsigned int flags )
 {
-  this->sprite_buffer.loadImageFromFile ( filename, colorkey, flags );
+  this->sprite_buffer.loadFromImage ( filename, colorkey, flags );
 
   if ( this->sprite_buffer.get() == nullptr )
   {

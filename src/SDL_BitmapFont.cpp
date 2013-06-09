@@ -325,6 +325,11 @@ void SDL_BitmapFont::Draw ( void* video_buffer )
         y_offset += this->newline;
         x_offset = this->coords.getX();
       }
+      // If the current character is a newline
+      else if( this->text_buffer[show] == '\t' )
+      {
+        x_offset += this->spacing * 4;
+      }
       else
       {
         //Get the ASCII value of the character

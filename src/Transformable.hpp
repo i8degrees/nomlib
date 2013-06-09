@@ -33,6 +33,8 @@ namespace nom
       void setX ( int32_t x );
       void setY ( int32_t y );
       void setXY ( int32_t x, int32_t y );
+      // getPosition
+      // setPosition
 
       int32_t getWidth ( void ) const;
       void setWidth ( int32_t width, int32_t height );
@@ -40,6 +42,7 @@ namespace nom
       int32_t getHeight ( void ) const;
       void setHeight ( int32_t height );
 
+      // Rename to move
       void updateXY ( int32_t x = 0, int32_t y = 0);
 
       const nom::Color& getColor ( void ) const;

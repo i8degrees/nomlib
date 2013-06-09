@@ -27,18 +27,21 @@ class Gfx
   public:
     static bool setTransparent (  void* video_buffer, const nom::Color& color,
                                   unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
-
+/*
     static bool setAlpha (  void* video_buffer, unsigned char opacity,
                             unsigned int flags = SDL_SRCALPHA );
-
+*/
+/*
     static void* LoadImage ( std::string filename, const nom::Color& colorkey = nom::Color ( -1, -1, -1, -1 ),
                                     unsigned int flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
-
+*/
+/*
     static bool DrawSurface (   void* source_buffer, void* video_buffer,
                                 const nom::Coords &coords = nom::Coords ( 0, 0, -1, -1 ), const nom::Coords& offsets = nom::Coords ( 0, 0, -1, -1 ) );
-
+*/
+/*
     static bool updateSurface ( void* video_buffer );
-
+*/
     static unsigned int getPixel ( void* video_buffer, unsigned int x, unsigned int y );
     static void setPixel ( void* video_buffer, unsigned int x, unsigned int y, nom::Color color );
     static bool lockSurface ( void* video_buffer );

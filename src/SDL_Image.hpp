@@ -35,6 +35,9 @@ namespace nom
                                 uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY
                               );
 
+      // SDL_SaveBMP
+      // SDL_LoadBMP
+
       void Draw ( void* video_buffer );
 
     private:

@@ -61,7 +61,8 @@ namespace nom
       ~Rectangle ( void )
       {
       }
-
+      // getSize
+      // setSize
       void setPosition ( const Coords& coords, const Color& color )
       {
         this->coords = coords;

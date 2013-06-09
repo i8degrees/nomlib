@@ -45,6 +45,20 @@ namespace nom
       const int32_t getCanvasHeight ( void ) const;
       void* getCanvasPixelsFormat ( void ) const;
 
+      // video_buffer->flags
+      // video_buffer->pitch
+      // video_buffer->clip_rect
+      // void* video_buffer->pixels
+      // ( bool ) mustLock
+      // lockCanvas
+      // unlockCanvas
+      // setClip
+      // canvasFormatAlpha
+      // canvasFormatDisplay
+      // bool convertCanvas ( PixelFormat* fmt, uint32_t flags );
+      // SDL_CreateRGBSurface
+      // SDL_CreateRGBSurfaceFrom
+
       bool loadImageFromFile  ( const std::string& filename, const nom::Color&
                                 colorkey = nom::Color ( -1, -1, -1, -1 ),
                                 uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );

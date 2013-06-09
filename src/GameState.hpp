@@ -21,7 +21,7 @@
 
 #include "gamelib.h"
 
-class GameState: public nom::SDL_Input
+class GameState: public nom::SDL_Input // "has a" relationship
 {
   public:
     virtual ~GameState()

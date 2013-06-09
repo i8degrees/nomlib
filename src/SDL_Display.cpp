@@ -166,20 +166,20 @@ void SDL_Display::setWindowIcon ( const std::string& app_icon )
 
   if ( this->get() != NULL )
   {
-    std::cout << "ERR in Gfx::SetWindowIcon(): " << "SDL_SetVideoMode() has already been called." << std::endl;
+    std::cout << "ERR in SDL_Display::setWindowIcon(): " << "SDL video subsystem has already been initiated." << std::endl << std::endl;
   }
 
   icon_buffer = SDL_LoadBMP ( app_icon.c_str() );
 
   if ( icon_buffer == NULL )
   {
-    std::cout << "ERR in Gfx::SetWindowIcon(): " << SDL_GetError() << std::endl;
+    std::cout << "ERR in SDL_Display::setWindowIcon(): " << SDL_GetError() << std::endl << std::endl;
   }
 
   // TODO; flags, colorkey?
   if ( Gfx::setTransparent ( icon_buffer, Color ( 0, 0, 0 ) ) == false )
   {
-    std::cout << "ERR in Gfx::SetWindowIcon(): " << SDL_GetError() << std::endl;
+    std::cout << "ERR in SDL_Display::setWindowIcon(): " << SDL_GetError() << std::endl << std::endl;
   }
 
   SDL_WM_SetIcon ( icon_buffer, NULL );

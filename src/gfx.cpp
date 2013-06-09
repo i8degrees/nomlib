@@ -12,6 +12,7 @@
 
 using namespace nom;
 
+/*
 bool Gfx::setAlpha (  void* video_buffer, unsigned char opacity,
                       unsigned int flags )
 {
@@ -24,6 +25,7 @@ bool Gfx::setAlpha (  void* video_buffer, unsigned char opacity,
 
   return true;
 }
+*/
 
 bool Gfx::setTransparent (  void* video_buffer, const nom::Color& color,
                             unsigned int flags )
@@ -60,6 +62,7 @@ bool Gfx::setTransparent (  void* video_buffer, const nom::Color& color,
 ///
 /// Must be called after video init due to SDL_DisplayFormat call being made
 ///
+/*
 void* Gfx::LoadImage ( std::string filename, const nom::Color& colorkey, unsigned int flags )
 {
   SDL_Surface *temp_buffer = NULL;
@@ -89,7 +92,9 @@ void* Gfx::LoadImage ( std::string filename, const nom::Color& colorkey, unsigne
 
   return video_buffer;
 }
+*/
 
+/*
 bool Gfx::DrawSurface ( void* source_buffer, void* video_buffer,
                         const nom::Coords& coords, const nom::Coords& offsets
                       )
@@ -122,7 +127,9 @@ bool Gfx::DrawSurface ( void* source_buffer, void* video_buffer,
 
   return true;
 }
+*/
 
+/*
 bool Gfx::updateSurface ( void* video_buffer )
 {
   if ( SDL_Flip ( (SDL_Surface*) video_buffer ) != 0 )
@@ -135,6 +142,7 @@ bool Gfx::updateSurface ( void* video_buffer )
 
   return true;
 }
+*/
 
 // 32-bit bpp
 unsigned int Gfx::getPixel ( void* video_buffer, unsigned int x, unsigned int y )

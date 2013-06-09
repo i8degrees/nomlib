@@ -31,7 +31,7 @@ namespace nom
       SDL_Canvas ( void* video_buffer );
       ~SDL_Canvas ( void );
 
-      void* get ( void );
+      void* get ( void ) const;
 
       void setCanvas ( SDL_Surface *video_buffer );
       void setCanvas ( void* video_buffer );

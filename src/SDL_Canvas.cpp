@@ -44,7 +44,7 @@ nom::SDL_Canvas::~SDL_Canvas ( void )
   this->canvas_buffer = NULL;
 }
 
-void* nom::SDL_Canvas::get ( void )
+void* nom::SDL_Canvas::get ( void ) const
 {
   return this->canvas_buffer;
 }
@@ -100,25 +100,21 @@ void nom::SDL_Canvas::Draw ( void* video_buffer )
   SDL_Rect blit_coords = this->coords.getSDL_Rect();
   SDL_Rect blit_offsets = this->offsets.getSDL_Rect();
 
-  if ( (SDL_Surface*) video_buffer == NULL )
+  if ( (SDL_Surface*) canvas_buffer != nullptr )
   {
-    #ifdef DEBUG_SDL_CANVAS
-      std::cout << "ERR in SDL_Canvas::Draw(): NULL surface" << std::endl;
-    #endif
-  }
-
-  if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
-  {
-    if ( SDL_BlitSurface ( canvas_buffer, &blit_offsets, (SDL_Surface*) video_buffer, &blit_coords ) != 0 )
+    if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
     {
-      #ifdef DEBUG_SDL_CANVAS
-        std::cout << "ERR in SDL_Canvas::Draw() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
-      #endif
+      if ( SDL_BlitSurface ( canvas_buffer, &blit_offsets, (SDL_Surface*) video_buffer, &blit_coords ) != 0 )
+      {
+        #ifdef DEBUG_SDL_CANVAS
+          std::cout << "ERR in SDL_Canvas::Draw() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
+        #endif
+      }
     }
-  }
-  else
-  {
-    SDL_BlitSurface ( canvas_buffer, NULL, (SDL_Surface*) video_buffer, &blit_coords );
+    else
+    {
+      SDL_BlitSurface ( canvas_buffer, nullptr, (SDL_Surface*) video_buffer, &blit_coords );
+    }
   }
 }
 

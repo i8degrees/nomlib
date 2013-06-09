@@ -333,7 +333,7 @@ void SDL_BitmapFont::Draw ( void* video_buffer )
       else
       {
         //Get the ASCII value of the character
-        uint32_t ascii = ( u_char ) this->text_buffer[show];
+        uint8_t ascii = static_cast<u_char>( this->text_buffer[show] );
 
         this->bitmap_font.setPosition ( nom::Coords ( x_offset, y_offset ) );
         this->bitmap_font.setOffsets ( this->chars[ascii] );

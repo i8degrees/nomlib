@@ -37,18 +37,18 @@ namespace nom
                                   int32_t display_colorbit, uint32_t flags = 0
                                 ) = 0;
 
-      virtual const void* get ( void ) const = 0;
-      virtual const int32_t getDisplayWidth ( void ) const = 0;
-      virtual const int32_t getDisplayHeight ( void ) const = 0;
-      virtual const int32_t getDisplayColorBits ( void ) const = 0;
-      virtual const uint32_t getDisplayFlags ( void ) const = 0;
-      virtual const u_short getDisplayPitch ( void ) const = 0;
-      virtual const void* getDisplayPixels ( void ) const = 0;
-      virtual const void* getDisplayPixelsFormat ( void ) const = 0;
+      virtual void* get ( void ) const = 0;
+      virtual int32_t getDisplayWidth ( void ) const = 0;
+      virtual int32_t getDisplayHeight ( void ) const = 0;
+      virtual int32_t getDisplayColorBits ( void ) const = 0;
+      virtual uint32_t getDisplayFlags ( void ) const = 0;
+      virtual u_short getDisplayPitch ( void ) const = 0;
+      virtual void* getDisplayPixels ( void ) const = 0;
+      virtual void* getDisplayPixelsFormat ( void ) const = 0;
       virtual const nom::Coords getDisplayClip ( void ) const = 0;
 
       //virtual void Update ( void* video_buffer ) = 0;
-      virtual const void toggleFullScreenWindow ( int32_t width, int32_t height ) const = 0;
+      virtual void toggleFullScreenWindow ( int32_t width, int32_t height ) const = 0;
 
       virtual const std::string getWindowTitle ( void ) const = 0;
       virtual void setWindowTitle ( const std::string& ) = 0;

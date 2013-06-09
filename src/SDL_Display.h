@@ -34,17 +34,17 @@ namespace nom
                         );
 
       void* get ( void ) const;
-      const int32_t getDisplayWidth ( void ) const;
-      const int32_t getDisplayHeight ( void ) const;
-      const int32_t getDisplayColorBits ( void ) const;
-      const uint32_t getDisplayFlags ( void ) const;
-      const u_short getDisplayPitch ( void ) const;
-      const void* getDisplayPixels ( void ) const;
+      int32_t getDisplayWidth ( void ) const;
+      int32_t getDisplayHeight ( void ) const;
+      int32_t getDisplayColorBits ( void ) const;
+      uint32_t getDisplayFlags ( void ) const;
+      u_short getDisplayPitch ( void ) const;
+      void* getDisplayPixels ( void ) const;
       void* getDisplayPixelsFormat ( void ) const;
       const nom::Coords getDisplayClip ( void ) const;
 
       static void Update ( void* video_buffer );
-      const void toggleFullScreenWindow ( int32_t width, int32_t height ) const;
+      void toggleFullScreenWindow ( int32_t width, int32_t height ) const;
 
       const std::string getWindowTitle ( void ) const;
       void* getWindowIcon ( void ) const;

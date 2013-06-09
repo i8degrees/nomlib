@@ -68,32 +68,32 @@ void* SDL_Display::get ( void ) const
   return dynamic_cast<SDL_Surface*>( SDL_GetVideoSurface() );
 }
 
-const int32_t SDL_Display::getDisplayWidth ( void ) const
+int32_t SDL_Display::getDisplayWidth ( void ) const
 {
   return SDL_GetVideoSurface()->w;
 }
 
-const int32_t SDL_Display::getDisplayHeight ( void ) const
+int32_t SDL_Display::getDisplayHeight ( void ) const
 {
   return SDL_GetVideoSurface()->h;
 }
 
-const int32_t SDL_Display::getDisplayColorBits ( void ) const
+int32_t SDL_Display::getDisplayColorBits ( void ) const
 {
   return SDL_GetVideoSurface()->format->BitsPerPixel;
 }
 
-const uint32_t SDL_Display::getDisplayFlags ( void ) const
+uint32_t SDL_Display::getDisplayFlags ( void ) const
 {
   return SDL_GetVideoSurface()->flags;
 }
 
-const uint16_t SDL_Display::getDisplayPitch ( void ) const
+uint16_t SDL_Display::getDisplayPitch ( void ) const
 {
   return SDL_GetVideoSurface()->pitch;
 }
 
-const void* SDL_Display::getDisplayPixels ( void ) const
+void* SDL_Display::getDisplayPixels ( void ) const
 {
   return SDL_GetVideoSurface()->pixels;
 }
@@ -122,7 +122,7 @@ void SDL_Display::Update ( void* video_buffer )
   }
 }
 
-const void SDL_Display::toggleFullScreenWindow ( int32_t width, int32_t height ) const
+void SDL_Display::toggleFullScreenWindow ( int32_t width, int32_t height ) const
 {
   SDL_Surface *screen = (SDL_Surface*)this->get();
   uint32_t flags; // save our current flags before attempting to switch

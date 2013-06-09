@@ -9,7 +9,7 @@
 ******************************************************************************/
 #include "SDL_Image.hpp"
 
-nom::SDL_Image::SDL_Image ( void )
+nom::SDL_Image::SDL_Image ( void )  : image_buffer ( nullptr )
 {
   #ifdef DEBUG_SDL_IMAGE_OBJ
     std::cout << "SDL_Image::SDL_Image(): Hello, world!" << std::endl << std::endl;
@@ -21,34 +21,26 @@ nom::SDL_Image::~SDL_Image ( void )
   #ifdef DEBUG_SDL_IMAGE_OBJ
     std::cout << "SDL_Image::~SDL_Image(): Goodbye cruel world!" << std::endl << std::endl;
   #endif
+
+  this->image_buffer = nullptr; // ...better safe than sorry?
 }
 
-void* nom::SDL_Image::loadImageFromFile ( const std::string& filename, const Color& colorkey, uint32_t flags )
+bool nom::SDL_Image::loadFromFile ( const std::string& filename, const Color& colorkey, uint32_t flags )
 {
-  SDL_Surface *temp_buffer = NULL;
-  SDL_Surface *video_buffer = NULL;
+  this->image_buffer = IMG_Load ( filename.c_str() );
 
-  temp_buffer = IMG_Load ( filename.c_str() );
-
-  if ( temp_buffer == NULL )
+  if ( this->image_buffer == nullptr )
   {
     #ifdef DEBUG_SDL_IMAGE
-      std::cout << "ERR in SDL_Image::LoadImage() at IMG_Load(): " << IMG_GetError() << std::endl;
+      std::cout << "ERR in nom::SDL_Image::LoadImage() at IMG_Load(): " << IMG_GetError() << std::endl;
     #endif
-
-    return NULL;
+    return false;
   }
 
-  Gfx::setTransparent ( temp_buffer, colorkey, flags );
+  return true;
+}
 
-  // Add check in for if SDL_SRCALPHA flag is set
-  if ( colorkey.getAlpha() != -1 )
-    video_buffer = SDL_DisplayFormatAlpha ( temp_buffer );
-  else
-    video_buffer = SDL_DisplayFormat ( temp_buffer );
-
-  SDL_FreeSurface ( temp_buffer );
-  temp_buffer = NULL;
-
-  return video_buffer;
+void* nom::SDL_Image::get ( void ) const
+{
+  return static_cast<SDL_Surface*> ( this->image_buffer );
 }

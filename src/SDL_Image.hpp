@@ -18,7 +18,6 @@
 
 #include "Coords.h"
 #include "Color.h"
-#include "SDL_Canvas.hpp"
 #include "gamelib.h"
 
 namespace nom
@@ -29,18 +28,21 @@ namespace nom
       SDL_Image ( void );
       ~SDL_Image ( void );
 
-      void* loadImageFromFile ( const std::string& filename, const nom::Color&
-                                colorkey = nom::Color ( -1, -1, -1, -1 ),
+      bool loadFromFile ( const std::string& filename, const nom::Color&
+                                colorkey = nom::Color ( 0, 0, 0, -1 ),
                                 uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY
                               );
 
+      void* get ( void ) const;
+
       // SDL_SaveBMP
       // SDL_LoadBMP
+      // getSize
 
       void Draw ( void* video_buffer );
 
     private:
-      // ...
+      void* image_buffer; // SDL_Surface*
   };
 }
 

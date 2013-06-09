@@ -32,8 +32,8 @@ void* nom::SDL_Image::loadImageFromFile ( const std::string& filename, const Col
 
   if ( temp_buffer == NULL )
   {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::LoadImage() at IMG_Load(): " << IMG_GetError() << std::endl;
+    #ifdef DEBUG_SDL_IMAGE
+      std::cout << "ERR in SDL_Image::LoadImage() at IMG_Load(): " << IMG_GetError() << std::endl;
     #endif
 
     return NULL;

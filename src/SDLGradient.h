@@ -19,7 +19,7 @@
 #include "SDL_Primitive.hpp"
 #include "gfx.h"
 
-class SDLGradient
+class SDLGradient//: public nom::SDL_Drawable // "is a" relationship
 {
   public:
     SDLGradient ( void );

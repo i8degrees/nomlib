@@ -54,8 +54,6 @@ nom::Sprite::~Sprite ( void )
   #endif
 }
 
-// FIXME
-
 unsigned int nom::Sprite::getState ( void )
 {
   return this->state;

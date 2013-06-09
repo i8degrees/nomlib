@@ -33,7 +33,9 @@ namespace nom
 
       void* get ( void ) const;
 
+      /// SDL compatibility wrapper
       void setCanvas ( SDL_Surface *video_buffer );
+
       void setCanvas ( void* video_buffer );
 
       void setPosition ( const Coords& coords_ );
@@ -49,6 +51,14 @@ namespace nom
 
       void Draw ( void* video_buffer );
       bool Update ( void* video_buffer ) const;
+
+      bool setAlpha ( void* video_buffer, uint8_t opacity,
+                      uint32_t flags = SDL_SRCALPHA );
+
+      bool setTransparent ( void* video_buffer,
+                            const nom::Color& color = nom::Transparent,
+                            uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY
+                          );
 
     private:
       SDL_Surface *canvas_buffer;

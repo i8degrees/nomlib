@@ -130,3 +130,52 @@ bool nom::SDL_Canvas::Update ( void* video_buffer ) const
 
   return true;
 }
+
+bool nom::SDL_Canvas::setAlpha ( void* video_buffer, uint8_t opacity, uint32_t flags )
+{
+  #ifdef DEBUG_SDL_CANVAS
+    if ( opacity > SDL_ALPHA_OPAQUE || opacity < SDL_ALPHA_TRANSPARENT )
+      std::cout << "ERR in nom::SDL_Canvas::setAlpha(): " << "opacity value is set out of bounds." << std::endl << std::endl;
+  #endif
+
+  if ( SDL_SetAlpha ( (SDL_Surface*) video_buffer, flags, static_cast<uint32_t>( opacity ) ) == -1 )
+  {
+    #ifdef DEBUG_SDL_CANVAS
+      std::cout << "ERR in nom::SDL_Canvas::setAlpha(): " << SDL_GetError() << std::endl << std::endl;
+    #endif
+    return false;
+  }
+
+  return true;
+}
+
+bool nom::SDL_Canvas::setTransparent  ( void* video_buffer,
+                                        const nom::Color& color,
+                                        unsigned int flags
+                                      )
+{
+  SDL_Surface *buffer = static_cast<SDL_Surface*> ( video_buffer ); // FIXME
+  uint32_t transparent_color = 0;
+
+  if ( buffer == nullptr )
+  {
+    #ifdef DEBUG_SDL_CANVAS
+      std::cout << "ERR in nom::SDL_Canvas::setTransparent(): " << SDL_GetError() << std::endl << std::endl;
+    #endif
+    return false;
+  }
+
+  // TODO: Alpha value needs testing
+  transparent_color = color.getColorAsInt ( buffer->format );
+
+  if ( SDL_SetColorKey ( buffer, flags, transparent_color ) != 0 )
+  {
+    #ifdef DEBUG_SDL_CANVAS
+      std::cout << "ERR in nom::SDL_Canvas::setTransparent(): " << SDL_GetError() << std::endl << std::endl;
+    #endif
+    return false;
+  }
+
+  return true;
+}
+

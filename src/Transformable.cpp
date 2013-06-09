@@ -26,12 +26,12 @@ nom::Transformable::~Transformable ( void )
   // Cleanup vars
 }
 
-const int32_t nom::Transformable::getX ( void ) const
+int32_t nom::Transformable::getX ( void ) const
 {
   return this->coords.getX();
 }
 
-const int32_t nom::Transformable::getY ( void ) const
+int32_t nom::Transformable::getY ( void ) const
 {
   return this->coords.getY();
 }
@@ -41,19 +41,49 @@ const nom::Coords& nom::Transformable::getXY ( void ) const
   return this->coords;
 }
 
-void nom::Transformable::setX ( int32_t x_ )
+void nom::Transformable::setX ( int32_t x )
 {
-  this->coords.setX ( x_ );
+  this->coords.setX ( x );
 }
 
-void nom::Transformable::setY ( int32_t y_ )
+void nom::Transformable::setY ( int32_t y )
 {
-  this->coords.setY ( y_ );
+  this->coords.setY ( y );
 }
 
-void nom::Transformable::setXY ( int32_t x_, int32_t y_ )
+void nom::Transformable::setXY ( int32_t x, int32_t y )
 {
-  this->coords.setXY ( x_, y_ );
+  this->coords.setXY ( x, y );
+}
+
+int32_t nom::Transformable::getWidth ( void ) const
+{
+  return this->coords.getWidth();
+}
+
+void nom::Transformable::setWidth ( int32_t width, int32_t height )
+{
+  this->coords.setWidth ( width );
+}
+
+int32_t nom::Transformable::getHeight ( void ) const
+{
+  return this->coords.getHeight();
+}
+
+void nom::Transformable::setHeight ( int32_t height )
+{
+  this->coords.setHeight ( height );
+}
+
+void nom::Transformable::updateXY ( int32_t x, int32_t y )
+{
+  int32_t x_offset = this->coords.getX();
+  int32_t y_offset = this->coords.getY();
+
+  x_offset += x;
+  y_offset += y;
+  this->coords.setXY ( x_offset, y_offset );
 }
 
 const nom::Color& nom::Transformable::getColor ( void ) const
@@ -65,3 +95,4 @@ void nom::Transformable::setColor ( const nom::Color& color_ )
 {
   this->color = color_;
 }
+

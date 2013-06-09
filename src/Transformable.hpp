@@ -28,12 +28,21 @@ namespace nom
       Transformable ( void );
       virtual ~Transformable ( void );
 
-      const int32_t getX ( void ) const;
-      const int32_t getY ( void ) const;
+      int32_t getX ( void ) const;
+      int32_t getY ( void ) const;
       const nom::Coords& getXY ( void ) const;
-      void setX ( int32_t x_ );
-      void setY ( int32_t y_ );
-      void setXY ( int32_t x_, int32_t y_ );
+      void setX ( int32_t x );
+      void setY ( int32_t y );
+      void setXY ( int32_t x, int32_t y );
+
+      int32_t getWidth ( void ) const;
+      void setWidth ( int32_t width, int32_t height );
+
+      int32_t getHeight ( void ) const;
+      void setHeight ( int32_t height );
+
+      void updateXY ( int32_t x = 0, int32_t y = 0);
+
       const nom::Color& getColor ( void ) const;
       void setColor ( const nom::Color& color );
 

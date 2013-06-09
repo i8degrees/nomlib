@@ -200,7 +200,7 @@ bool nom::Sprite::Load ( std::string filename, nom::Color colorkey, unsigned int
 {
   this->sprite_buffer.loadImageFromFile ( filename, colorkey, flags );
 
-  if ( this->sprite_buffer.get() == NULL )
+  if ( this->sprite_buffer.get() == nullptr )
   {
     #ifdef DEBUG_SPRITE
       std::cout << "ERR in Sprite::Load (): " << SDL_GetError() << std::endl;
@@ -216,7 +216,7 @@ void nom::Sprite::Draw ( void* video_buffer )
   nom::Coords coords; // FIXME
   nom::Coords offsets; // FIXME
 
-  if ( this->sprite_buffer.get() == NULL )
+  if ( this->sprite_buffer.get() == nullptr )
   {
     #ifdef DEBUG_SPRITE
       std::cout << "ERR in Sprite::Draw(): " << "NULL sprite_buffer" << std::endl << std::endl;

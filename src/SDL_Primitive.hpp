@@ -25,6 +25,7 @@
 
 namespace nom
 {
+  // This is an inheritance-only class
   class Primitive: public nom::SDL_Drawable
   {
     public:
@@ -55,6 +56,10 @@ namespace nom
       {
         this->coords = coords;
         this->color = color;
+      }
+
+      ~Rectangle ( void )
+      {
       }
 
       void setPosition ( const Coords& coords, const Color& color )

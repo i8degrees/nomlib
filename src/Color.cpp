@@ -11,7 +11,7 @@
 
 using namespace nom;
 
-Color::Color ( void ) : red ( -1 ), green ( -1 ), blue ( -1 ), alpha ( -1 )
+Color::Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ), alpha ( -1 )
 {
   #ifdef DEBUG_COLOR_OBJ
     std::cout << "Color::Color (): " << "Hello, world!" << std::endl << std::endl;
@@ -39,39 +39,27 @@ Color::~Color ( void )
   // Stub
 }
 
-// SDL color struct compatibility wrapper
-SDL_Color Color::getSDL_Color ( void ) const
-{
-  SDL_Color color;
-
-  color.r = this->getRed();
-  color.g = this->getGreen();
-  color.b = this->getBlue();
-
-  return color;
-}
-
 Color Color::getColor ( void ) const
 {
   return Color ( this->red, this->green, this->blue, this->alpha );
 }
 
-const int32_t Color::getRed ( void ) const
+int32_t Color::getRed ( void ) const
 {
   return this->red;
 }
 
-const int32_t Color::getGreen ( void ) const
+int32_t Color::getGreen ( void ) const
 {
   return this->green;
 }
 
-const int32_t Color::getBlue ( void ) const
+int32_t Color::getBlue ( void ) const
 {
   return this->blue;
 }
 
-const int32_t Color::getAlpha ( void ) const
+int32_t Color::getAlpha ( void ) const
 {
   return this->alpha;
 }
@@ -104,10 +92,22 @@ void Color::setAlpha ( int32_t a )
   this->alpha = a;
 }
 
-int32_t Color::getColorAsInt ( void* pixel_format ) const
+uint32_t Color::getColorAsInt ( void* pixel_format ) const
 {
   if ( this->alpha != -1 )
     return SDL_MapRGBA ( ( SDL_PixelFormat* ) pixel_format, this->red, this->green, this->blue, this->alpha );
   else
     return SDL_MapRGB ( ( SDL_PixelFormat* ) pixel_format, this->red, this->green, this->blue );
+}
+
+// SDL color struct compatibility wrapper
+SDL_Color Color::getSDL_Color ( void ) const
+{
+  SDL_Color color;
+
+  color.r = this->getRed();
+  color.g = this->getGreen();
+  color.b = this->getBlue();
+
+  return color;
 }

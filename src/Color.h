@@ -25,10 +25,10 @@ namespace nom
     ~Color ( void );
 
     Color getColor ( void ) const;
-    const int32_t getRed ( void ) const;
-    const int32_t getGreen ( void ) const;
-    const int32_t getBlue ( void ) const;
-    const int32_t getAlpha ( void ) const;
+    int32_t getRed ( void ) const;
+    int32_t getGreen ( void ) const;
+    int32_t getBlue ( void ) const;
+    int32_t getAlpha ( void ) const;
 
     void setRed ( int32_t r );
     void setGreen ( int32_t g );
@@ -39,7 +39,7 @@ namespace nom
 
     /// SDL compatibility wrappers
     SDL_Color getSDL_Color ( void ) const;
-    int32_t getColorAsInt ( void* pixel_format ) const;
+    uint32_t getColorAsInt ( void* pixel_format ) const;
 
   private:
     int32_t red;

@@ -91,10 +91,10 @@ void* Gfx::LoadImage ( std::string filename, const nom::Color& colorkey, unsigne
 }
 
 bool Gfx::DrawSurface ( void* source_buffer, void* video_buffer,
-                        const nom::Coords &coords, const nom::Coords &offsets
+                        const nom::Coords& coords, const nom::Coords& offsets
                       )
 {
-  // temporary vars to store our wrapped GCoords
+  // temporary vars to store our wrapped Coords
   SDL_Rect blit_coords = coords.getSDL_Rect();
   SDL_Rect blit_offsets = offsets.getSDL_Rect();
 
@@ -107,15 +107,18 @@ bool Gfx::DrawSurface ( void* source_buffer, void* video_buffer,
     return false;
   }
 
-  // Coords ( -1, -1, -1, -1 ) -- our default, is equivalent to NULL for SDL_BlitSurface it seems
-  if ( SDL_BlitSurface ( (SDL_Surface*) source_buffer, &blit_offsets, (SDL_Surface*)video_buffer, &blit_coords ) != 0 )
+  if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
   {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::DrawSurface() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
-    #endif
-
-    return false;
+    if ( SDL_BlitSurface ( (SDL_Surface*) source_buffer, &blit_offsets, (SDL_Surface*)video_buffer, &blit_coords ) != 0 )
+    {
+      #ifdef DEBUG_GFX
+        std::cout << "ERR in Gfx::DrawSurface() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
+      #endif
+      return false;
+    }
   }
+  else
+    SDL_BlitSurface ( (SDL_Surface*) source_buffer, NULL, (SDL_Surface*)video_buffer, &blit_coords );
 
   return true;
 }

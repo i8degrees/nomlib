@@ -10,7 +10,7 @@
 
 nom::SDL_Canvas::SDL_Canvas ( void )  : canvas_buffer ( NULL ),
                                         coords ( 0, 0, 0, 0 ),
-                                        offsets ( 0, 0, 0, 0 ),
+                                        offsets ( 0, 0, -1, -1 ),
                                         colorkey ( -1, -1, -1, -1 )
 {
   #ifdef DEBUG_SDL_CANVAS_OBJ
@@ -107,11 +107,18 @@ void nom::SDL_Canvas::Draw ( void* video_buffer )
     #endif
   }
 
-  if ( SDL_BlitSurface ( canvas_buffer, &blit_offsets, (SDL_Surface*) video_buffer, &blit_coords ) != 0 )
+  if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
   {
-    #ifdef DEBUG_SDL_CANVAS
-      std::cout << "ERR in SDL_Canvas::Draw() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
-    #endif
+    if ( SDL_BlitSurface ( canvas_buffer, &blit_offsets, (SDL_Surface*) video_buffer, &blit_coords ) != 0 )
+    {
+      #ifdef DEBUG_SDL_CANVAS
+        std::cout << "ERR in SDL_Canvas::Draw() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
+      #endif
+    }
+  }
+  else
+  {
+    SDL_BlitSurface ( canvas_buffer, NULL, (SDL_Surface*) video_buffer, &blit_coords );
   }
 }
 

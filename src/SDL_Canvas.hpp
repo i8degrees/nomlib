@@ -18,10 +18,7 @@
 //#include "ICanvas.hpp"
 #include "Color.h"
 #include "Coords.h"
-#include "gfx.h"
-#include "SDL_Display.h"
 #include "SDL_Image.hpp"
-#include "Transformable.hpp"
 #include "gamelib.h"
 
 namespace nom

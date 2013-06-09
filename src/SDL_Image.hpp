@@ -13,11 +13,13 @@
 #include <iostream>
 #include <string>
 
+#include "SDL.h"
 #include "SDL_image.h"
 
 #include "SDL_Drawable.hpp"
 #include "Coords.h"
 #include "Color.h"
+#include "SDL_Canvas.hpp"
 #include "gfx.h"
 
 namespace nom

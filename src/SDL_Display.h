@@ -12,13 +12,14 @@
 #include <iostream>
 #include <string>
 
-//#include "Color.h"
-//#include "Coords.h"
+#include "SDL.h"
+#include "SDL_image.h"
 
-#include "gamelib.h"
-
-#include "gfx.h"
 #include "IDisplay.h"
+#include "Coords.h"
+//#include "Color.h"
+#include "gfx.h" // setWindowIcon dependency
+#include "gamelib.h"
 
 namespace nom
 {

@@ -15,12 +15,11 @@
 #include "SDL.h"
 #include "SDL_ttf.h"
 
-#include "gfx.h"
 #include "SDL_Drawable.hpp"
 #include "SDL_Canvas.hpp"
-#include "Coords.h"
 #include "Color.h"
 #include "Transformable.hpp"
+#include "gamelib.h"
 
 namespace nom
 {

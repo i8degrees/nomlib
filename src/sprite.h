@@ -6,23 +6,18 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef GAMELIB_SPRITE_HEADERS
-#define GAMELIB_SPRITE_HEADERS
+#ifndef NOMLIB_SPRITE_HEADERS
+#define NOMLIB_SPRITE_HEADERS
 
 #include <iostream>
 #include <string>
 
 #include "SDL.h"
 
-#include "gamelib.h"
-
-#include "Color.h"
-
-#include "gfx.h"
-
 #include "SDL_Drawable.hpp"
-
 #include "SDL_Canvas.hpp"
+#include "Transformable.hpp"
+#include "gamelib.h"
 
 namespace nom
 {
@@ -63,4 +58,4 @@ namespace nom
   };
 }
 
-#endif // GAMELIB_SPRITE_HEADERS defined
+#endif // NOMLIB_SPRITE_HEADERS defined

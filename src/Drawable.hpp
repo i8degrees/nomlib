@@ -13,6 +13,8 @@
 #include <iostream>
 #include <string>
 
+#include "gamelib.h"
+
 namespace nom
 {
   // This is an inheritance-only class

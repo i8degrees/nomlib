@@ -19,10 +19,10 @@
 #include "SDL.h"
 
 #include "Color.h"
-#include "gfx.h"
 #include "SDL_Drawable.hpp"
 #include "SDL_Canvas.hpp"
 #include "Transformable.hpp"
+#include "gamelib.h"
 
 namespace nom
 {

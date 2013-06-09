@@ -15,9 +15,8 @@
 
 #include "SDL.h"
 
-#include "gamelib.h"
-
 #include "Coords.h"
+#include "gamelib.h"
 
 namespace nom
 {
@@ -46,7 +45,7 @@ namespace nom
       virtual const u_short getDisplayPitch ( void ) const = 0;
       virtual const void* getDisplayPixels ( void ) const = 0;
       virtual const void* getDisplayPixelsFormat ( void ) const = 0;
-      virtual const Coords getDisplayClip ( void ) const = 0;
+      virtual const nom::Coords getDisplayClip ( void ) const = 0;
 
       virtual void Update ( void ) = 0;
       virtual const void toggleFullScreenWindow ( int32_t width, int32_t height ) const = 0;

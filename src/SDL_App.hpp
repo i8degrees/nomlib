@@ -16,10 +16,8 @@
 #include <memory>
 
 #include "SDL_Input.hpp"
-
-#include "gamelib.h"
-
 #include "timer.h"
+#include "gamelib.h"
 
 namespace nom
 {

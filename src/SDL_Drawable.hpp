@@ -15,10 +15,8 @@
 
 #include "SDL.h"
 
-#include "Coords.h"
-#include "Color.h"
-
 #include "Drawable.hpp"
+#include "gamelib.h"
 
 // Example usage:
 // https://gist.github.com/i8degrees/5711070

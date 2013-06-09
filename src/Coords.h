@@ -7,8 +7,8 @@
   All rights reserved.
 
 ******************************************************************************/
-#ifndef GAMELIB_COORDS_HEADERS
-#define GAMELIB_COORDS_HEADERS
+#ifndef NOMLIB_COORDS_HEADERS
+#define NOMLIB_COORDS_HEADERS
 
 #include <iostream>
 #include <string>
@@ -69,4 +69,4 @@ namespace nom
   };
 }
 
-#endif // GAMELIB_COORDS_HEADERS defined
+#endif // NOMLIB_COORDS_HEADERS defined

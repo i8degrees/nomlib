@@ -18,7 +18,6 @@
 #include <memory>
 
 #include "GameState.hpp" // abstract class interface for our implementation
-
 #include "gamelib.h"
 
 namespace nom

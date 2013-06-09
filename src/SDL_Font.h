@@ -20,25 +20,19 @@
 #include "SDL_Canvas.hpp"
 #include "Coords.h"
 #include "Color.h"
+#include "Transformable.hpp"
 
 namespace nom
 {
-  class SDL_Font: public SDL_Drawable
+  class SDL_Font: public nom::SDL_Drawable, //  "is a" inheritance
+                  public nom::Transformable //  "has a" inheritance
   {
     public:
-
       /// Default constructor; we initialize the SDL_ttf extension here
       SDL_Font ( void );
 
       /// Default destructor; we shutdown the SDL_ttf extension here
-      ~SDL_Font ( void );
-
-      const int32_t getX ( void ) const;
-      const int32_t getY ( void ) const;
-      const nom::Coords& getXY ( void ) const;
-      void setX ( int32_t x_ );
-      void setY ( int32_t y_ );
-      void setXY ( int32_t x_, int32_t y_ );
+      virtual ~SDL_Font ( void );
 
       /// Obtains set text string buffer; defaults to \0
       const std::string& getText ( void ) const;
@@ -46,7 +40,7 @@ namespace nom
       /// \brief Set a new text string for drawing; defaults to \0
       ///
       /// NOTE: We render the font drawing surface here
-      void setText ( std::string text );
+      void setText ( const std::string& text );
 
       /// Compute the width in pixels of the set text string; defaults to zero (0)
       int32_t getTextWidth ( void );
@@ -74,12 +68,8 @@ namespace nom
       nom::SDL_Canvas font_buffer;
       /// Font file data, used by SDL_ttf extension
       TTF_Font *font;
-      /// Color of the font
-      nom::Color text_color;
       /// holds contents of text as a string buffer
       std::string text_buffer;
-      /// X, Y, width & height drawing coordinates
-      nom::Coords coords;
   };
 }
 #endif // NOMLIB_SDL_TTF_FONT_HEADERS defined

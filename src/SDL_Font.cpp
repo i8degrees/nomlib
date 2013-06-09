@@ -17,8 +17,9 @@ SDL_Font::SDL_Font ( void )
   #endif
 
   this->font = nullptr;
+
   this->coords.setCoords ( 0, 0, 0, 0 );
-  this->text_color.setColor ( 0, 0, 0 );
+  this->color.setColor ( 0, 0, 0 );
   this->text_buffer = "\0";
 
   if ( TTF_Init () == -1 )
@@ -43,36 +44,6 @@ SDL_Font::~SDL_Font ( void )
   TTF_Quit ();
 }
 
-const int32_t SDL_Font::getX ( void ) const
-{
-  return this->coords.getX();
-}
-
-const int32_t SDL_Font::getY ( void ) const
-{
-  return this->coords.getY();
-}
-
-const Coords& SDL_Font::getXY ( void ) const
-{
-  return this->coords;
-}
-
-void SDL_Font::setX ( int32_t x_ )
-{
-  this->coords.setX ( x_ );
-}
-
-void SDL_Font::setY ( int32_t y_ )
-{
-  this->coords.setY ( y_ );
-}
-
-void SDL_Font::setXY ( int32_t x_, int32_t y_ )
-{
-  this->coords.setXY ( x_, y_ );
-}
-
 int32_t SDL_Font::getTextWidth ( void )
 {
   return this->coords.getWidth();
@@ -88,7 +59,7 @@ const std::string& SDL_Font::getText ( void ) const
   return this->text_buffer;
 }
 
-void SDL_Font::setText ( std::string text )
+void SDL_Font::setText ( const std::string& text )
 {
   int32_t width, height = 0;
 
@@ -105,7 +76,7 @@ void SDL_Font::setText ( std::string text )
   {
     if ( this->getText().c_str() != nullptr )
       this->font_buffer.setCanvas ( TTF_RenderText_Solid  ( this->font, this->getText().c_str(),
-                                                  this->text_color.getSDL_Color()
+                                                  this->color.getSDL_Color()
                                                 ) );
   }
   else
@@ -118,12 +89,12 @@ void SDL_Font::setText ( std::string text )
 
 const nom::Color& SDL_Font::getTextColor ( void ) const
 {
-  return this->text_color;
+  return this->color;
 }
 
-void SDL_Font::setTextColor ( const Color &color )
+void SDL_Font::setTextColor ( const nom::Color& color )
 {
-  this->text_color = color;
+  this->color = color;
 }
 
 bool SDL_Font::Load ( std::string filename, uint32_t font_size )

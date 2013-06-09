@@ -41,36 +41,6 @@ SDL_BitmapFont::~SDL_BitmapFont ( void )
   #endif
 }
 
-const int32_t SDL_BitmapFont::getX ( void ) const
-{
-  return this->coords.getX();
-}
-
-const int32_t SDL_BitmapFont::getY ( void ) const
-{
-  return this->coords.getY();
-}
-
-const Coords& SDL_BitmapFont::getXY ( void ) const
-{
-  return this->coords;
-}
-
-void SDL_BitmapFont::setX ( int32_t x_ )
-{
-  this->coords.setX ( x_ );
-}
-
-void SDL_BitmapFont::setY ( int32_t y_ )
-{
-  this->coords.setY ( y_ );
-}
-
-void SDL_BitmapFont::setXY ( int32_t x_, int32_t y_ )
-{
-  this->coords.setXY ( x_, y_ );
-}
-
 int32_t SDL_BitmapFont::getTextWidth ( void )
 {
   int32_t text_width = 0;
@@ -111,7 +81,7 @@ const std::string& SDL_BitmapFont::getText ( void ) const
   return this->text_buffer;
 }
 
-void SDL_BitmapFont::setText ( std::string text )
+void SDL_BitmapFont::setText ( const std::string& text )
 {
   this->text_buffer = text;
 }

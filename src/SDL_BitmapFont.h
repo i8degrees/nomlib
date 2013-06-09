@@ -19,36 +19,28 @@
 #include "SDL.h"
 
 #include "Color.h"
-
 #include "gfx.h"
-
 #include "SDL_Drawable.hpp"
-
 #include "SDL_Canvas.hpp"
+#include "Transformable.hpp"
 
 namespace nom
 {
-  class SDL_BitmapFont: public SDL_Drawable
+  class SDL_BitmapFont: public SDL_Drawable, //  "is a" inheritance
+                        public nom::Transformable //  "has a" inheritance
   {
     public:
       /// Default constructor
       SDL_BitmapFont ( void );
 
       /// Default destructor
-      ~SDL_BitmapFont ( void );
-
-      const int32_t getX ( void ) const;
-      const int32_t getY ( void ) const;
-      const nom::Coords& getXY ( void ) const;
-      void setX ( int32_t x_ );
-      void setY ( int32_t y_ );
-      void setXY ( int32_t x_, int32_t y_ );
+      virtual ~SDL_BitmapFont ( void );
 
       /// Obtains set text string buffer; defaults to \0
       const std::string& getText ( void ) const;
 
       /// Set a new text string for drawing; defaults to \0
-      void setText ( std::string text );
+      void setText ( const std::string& text );
 
       /// Compute the width in pixels of the set text string; defaults to zero (0)
       /// \internal
@@ -92,7 +84,7 @@ namespace nom
     private:
       /// pointer reference holding our bitmap font image sheet
       nom::SDL_Canvas bitmap_font;
-      /// individual chars within *bitmap_font
+      /// individual chars positioning offsets within bitmap_font
       nom::Coords chars[256];
       /// height (in pixels) to offset when newline carriage char is encountered
       uint32_t newline;
@@ -100,8 +92,6 @@ namespace nom
       uint32_t spacing;
       /// holds contents of text as a string
       std::string text_buffer;
-      /// X, Y, width & height drawing coordinates
-      nom::Coords coords;
   };
 }
 #endif // NOMLIB_SDL_BITMAP_FONT_HEADERS defined

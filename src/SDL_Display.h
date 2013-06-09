@@ -41,7 +41,7 @@ namespace nom
       const u_short getDisplayPitch ( void ) const;
       const void* getDisplayPixels ( void ) const;
       void* getDisplayPixelsFormat ( void ) const;
-      const Coords getDisplayClip ( void ) const;
+      const nom::Coords getDisplayClip ( void ) const;
 
       void Update ( void );
       const void toggleFullScreenWindow ( int32_t width, int32_t height ) const;

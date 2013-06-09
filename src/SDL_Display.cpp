@@ -103,10 +103,10 @@ void* SDL_Display::getDisplayPixelsFormat ( void ) const
   return SDL_GetVideoSurface()->format;
 }
 
-const Coords SDL_Display::getDisplayClip ( void ) const
+const nom::Coords SDL_Display::getDisplayClip ( void ) const
 {
   SDL_Rect clip = SDL_GetVideoSurface()->clip_rect;
-  Coords clip_coords ( clip.x, clip.y, clip.w, clip.h );
+  nom::Coords clip_coords ( clip.x, clip.y, clip.w, clip.h );
   return clip_coords;
 }
 

@@ -15,10 +15,8 @@
 #include <vector>
 
 #include "sprite.h"
-
-#include "gamelib.h"
-
 #include "Coords.h"
+#include "gamelib.h"
 
 namespace nom
 {
@@ -41,6 +39,7 @@ namespace nom
 
       signed int getSheetID ( void );
       void setSheetID ( signed int sheet_id = -1 );
+      void setSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding );
 
       unsigned int getState ( void );
       void setState ( unsigned int state );

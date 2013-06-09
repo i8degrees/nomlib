@@ -83,6 +83,11 @@ void nom::SDL_Cursor::setSheetID ( signed int sheet_id )
   this->cursor.setSheetID ( sheet_id );
 }
 
+void nom::SDL_Cursor::setSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding )
+{
+  this->cursor.setSheetDimensions ( sheet_width, sheet_height, spacing, padding );
+}
+
 unsigned int nom::SDL_Cursor::getState ( void )
 {
   return this->cursor.getState();

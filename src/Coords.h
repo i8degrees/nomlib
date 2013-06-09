@@ -28,23 +28,25 @@ namespace nom
 
       ~Coords ( void );
 
+      // phase out
       void setCoords (  signed int x_, signed int y_,
                         signed int width_ = 0, signed int height_ = 0 );
 
       SDL_Rect getSDL_Rect ( void ) const;
-      Coords get ( void ) const;
 
-      const signed int getX ( void ) const;
-      const signed int getY ( void ) const;
+      signed int getX ( void ) const;
+      signed int getY ( void ) const;
       void setX ( signed int x_ );
       void setY ( signed int y_ );
       void setXY ( signed int x_, signed int y_ );
 
-      const signed int getWidth ( void ) const;
-      const signed int getHeight ( void ) const;
+      signed int getWidth ( void ) const;
+      signed int getHeight ( void ) const;
 
       void setWidth ( signed int width_ );
       void setHeight ( signed int height_ );
+
+      // phase out
       void setDimensions ( signed int width_, signed int height_ );
 
       void updateX ( signed int x_ );

@@ -53,30 +53,12 @@ void nom::Coords::setCoords ( signed int x_, signed int y_,
   this->height = height_;
 }
 
-// SDL compatibility wrapper for SDL_BlitSurface (primarily)
-SDL_Rect nom::Coords::getSDL_Rect ( void ) const
-{
-  SDL_Rect coords;
-
-  coords.x = this->x;
-  coords.y = this->y;
-  coords.w = this->width;
-  coords.h = this->height;
-
-  return coords;
-}
-
-nom::Coords nom::Coords::get ( void ) const
-{
-  return *this;
-}
-
-const signed int nom::Coords::getX ( void ) const
+signed int nom::Coords::getX ( void ) const
 {
   return this->x;
 }
 
-const signed int nom::Coords::getY ( void ) const
+signed int nom::Coords::getY ( void ) const
 {
   return this->y;
 }
@@ -97,12 +79,12 @@ void nom::Coords::setXY ( signed int x_, signed int y_ )
   this->y = y_;
 }
 
-const signed int nom::Coords::getWidth ( void ) const
+signed int nom::Coords::getWidth ( void ) const
 {
   return this->width;
 }
 
-const signed int nom::Coords::getHeight ( void ) const
+signed int nom::Coords::getHeight ( void ) const
 {
   return this->height;
 }
@@ -135,4 +117,17 @@ void nom::Coords::updateCoords ( signed int x_, signed int y_, signed int width_
   this->y += y_;
   this->width += width_;
   this->height += height_;
+}
+
+/// SDL compatibility wrapper primarily for SDL_BlitSurface
+SDL_Rect nom::Coords::getSDL_Rect ( void ) const
+{
+  SDL_Rect coords;
+
+  coords.x = this->x;
+  coords.y = this->y;
+  coords.w = this->width;
+  coords.h = this->height;
+
+  return coords;
 }

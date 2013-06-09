@@ -45,7 +45,7 @@ namespace nom
       virtual u_short getDisplayPitch ( void ) const = 0;
       virtual void* getDisplayPixels ( void ) const = 0;
       virtual void* getDisplayPixelsFormat ( void ) const = 0;
-      virtual const nom::Coords getDisplayClip ( void ) const = 0;
+      virtual const nom::Coords getDisplayBounds ( void ) const = 0;
 
       virtual void Update ( void ) = 0;
       virtual void Update ( void* video_buffer ) = 0;

@@ -122,3 +122,15 @@ void nom::SDL_Canvas::Draw ( void* video_buffer )
   }
 }
 
+bool nom::SDL_Canvas::Update ( void* video_buffer ) const
+{
+  if ( SDL_Flip ( (SDL_Surface*) video_buffer ) != 0 )
+  {
+    #ifdef DEBUG_SDL_CANVAS
+      std::cout << "ERR in nom::SDL_Canvas::Update(): " << SDL_GetError() << std::endl;
+    #endif
+    return false;
+  }
+
+  return true;
+}

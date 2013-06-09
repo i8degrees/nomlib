@@ -48,6 +48,7 @@ namespace nom
                                 uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
       void Draw ( void* video_buffer );
+      bool Update ( void* video_buffer ) const;
 
     private:
       SDL_Surface *canvas_buffer;

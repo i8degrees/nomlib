@@ -9,4 +9,9 @@
 *.powder
 libgamelib.bc
 
+# doxygen html gen
 docs/public/
+
+# internal template class & header files
+TemplateClass.cpp
+TemplateHeader.hpp

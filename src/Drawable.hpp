@@ -15,9 +15,10 @@
 
 namespace nom
 {
+  // This is an inheritance-only class
   class Drawable
   {
-    public:
+    protected:
       virtual void Draw ( void* ) = 0;
 
       Drawable ( void )

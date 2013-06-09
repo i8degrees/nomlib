@@ -25,10 +25,11 @@
 
 namespace nom
 {
+  // This is an inheritance-only class
   class SDL_Drawable: public nom::Drawable
   {
     // SDL_Gradient
-    public:
+    protected:
       virtual void Draw ( void* video_buffer ) = 0;
 
       SDL_Drawable ( void )

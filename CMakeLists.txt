@@ -8,6 +8,7 @@ set ( CMAKE_OSX_ARCHITECTURES i386;x86_64 ) # OSX Universal Library
 set ( SRC_DIR src ) # project_dir/src
 
 set ( GAMELIB_SOURCE
+      ${SRC_DIR}/Transformable.cpp
       ${SRC_DIR}/Coords.cpp
       ${SRC_DIR}/Color.cpp
       ${SRC_DIR}/GameStates.cpp
@@ -34,6 +35,7 @@ set ( GAMELIB_SOURCE
     )
 
 set ( GAMELIB_HEADERS
+      ${SRC_DIR}/Transformable.hpp
       ${SRC_DIR}/Coords.h
       ${SRC_DIR}/Color.h
       ${SRC_DIR}/I_Input.hpp

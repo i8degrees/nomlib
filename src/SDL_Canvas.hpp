@@ -1,5 +1,5 @@
 /******************************************************************************
-    SDL_Surface.h
+    SDL_Canvas.hpp
 
     Abstraction of SDL Surfaces
 
@@ -18,6 +18,8 @@
 //#include "ICanvas.hpp"
 #include "Color.h"
 #include "Coords.h"
+
+#include "SDL_Primitive.hpp"
 #include "SDL_Image.hpp"
 #include "gamelib.h"
 

@@ -3,7 +3,7 @@
 ## TODO
 
 * Use nullptr instead of NULL
-* Fix Coords, Color ( -1, -1, -1, -1 ) issue with blitting offsets
+* Fix Color ( -1, -1, -1, -1 ) issue
 * Fix GameStates leak due to vector not destructing until end of app exec
 * Implement a NULL GameState class
 * Perhaps GameState could also implement Load method
@@ -38,6 +38,7 @@ this may fix the SDLInput crashes within TTcards
 
 ## Completed
 
+* Fix Coords offsets ( -1, -1, -1, -1 ) issue with blitting
 * Rename class SDLBitmapFont to SDL_BitmapFont
 * GColor::getSDLColor or such that will return to us a SDL_Color struct for use in
 SDL_TFont and wherever else

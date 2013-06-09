@@ -27,7 +27,7 @@ namespace nom
   class SDL_Drawable: public nom::Drawable
   {
     // SDL_Gradient
-    protected:
+    public:
       virtual void Draw ( void* video_buffer ) = 0;
 
       SDL_Drawable ( void )

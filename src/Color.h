@@ -23,7 +23,7 @@ namespace nom
   {
     public:
       Color ( void );
-      Color ( int32_t r, int32_t g, int32_t b, int32_t a = -1 );
+      Color ( int32_t r, int32_t g, int32_t b, int32_t a = -1 ); // SDL_ALPHA_OPAQUE (255)
       ~Color ( void );
 
       const nom::Color getColor ( void ) const;
@@ -49,6 +49,16 @@ namespace nom
       int32_t blue;
       int32_t alpha;
   };
+
+  static const nom::Color Black;
+  static const nom::Color White;
+  static const nom::Color Red;
+  static const nom::Color Green;
+  static const nom::Color Blue;
+  static const nom::Color Yellow;
+  static const nom::Color Magenta;
+  static const nom::Color Cyan;
+  static const nom::Color Transparent;
 }
 
 #endif // NOMLIB_COLORS_HEADERS defined

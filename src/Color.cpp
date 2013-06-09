@@ -9,7 +9,17 @@
 ******************************************************************************/
 #include "Color.h"
 
-nom::Color::Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ), alpha ( -1 )
+const nom::Color Black ( 0, 0, 0 );
+const nom::Color White ( 255, 255, 255 );
+const nom::Color Red ( 255, 0, 0 );
+const nom::Color Green ( 0, 255, 0 );
+const nom::Color Blue ( 0, 0, 255 );
+const nom::Color Yellow ( 255, 255, 255 );
+const nom::Color Magenta ( 255, 0, 255 );
+const nom::Color Cyan ( 0, 255, 255 );
+const nom::Color Transparent ( 0, 0, 0 );
+
+nom::Color::Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ), alpha ( -1 ) // SDL_ALPHA_OPAQUE (255)
 {
   #ifdef DEBUG_COLOR_OBJ
     std::cout << "Color::Color (): " << "Hello, world!" << std::endl << std::endl;

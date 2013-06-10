@@ -170,29 +170,25 @@ void SDL_Display::setWindowTitle ( const std::string& app_name )
 
 void SDL_Display::setWindowIcon ( const std::string& app_icon )
 {
-  SDL_Surface *icon_buffer = NULL;
+  nom::SDL_Image image; // holds our image in memory during transfer
+  nom::SDL_Canvas icon; // icon canvas to load our icon file into
 
   if ( this->get() != NULL )
   {
     std::cout << "ERR in SDL_Display::setWindowIcon(): " << "SDL video subsystem has already been initiated." << std::endl << std::endl;
   }
 
-  icon_buffer = SDL_LoadBMP ( app_icon.c_str() );
-
-  if ( icon_buffer == NULL )
+  if ( image.loadFromFile ( app_icon ) == false )
   {
-    std::cout << "ERR in SDL_Display::setWindowIcon(): " << SDL_GetError() << std::endl << std::endl;
+    #ifdef DEBUG_SDL_CANVAS
+      std::cout << "ERR in nom::SDL_Display::setWindowIcon(): " << std::endl << std::endl;
+    #endif
   }
 
-  // TODO; flags, colorkey?
-  if ( Gfx::setTransparent ( icon_buffer, Color ( 0, 0, 0 ) ) == false )
-  {
-    std::cout << "ERR in SDL_Display::setWindowIcon(): " << SDL_GetError() << std::endl << std::endl;
-  }
+  // Sets our canvas with our acquired image surface
+  icon.setCanvas ( image.get() );
+  icon.setTransparent ( nom::Color ( 0, 0, 0 ), SDL_SRCCOLORKEY ); // FIXME?
+  SDL_WM_SetIcon ( static_cast<SDL_Surface*> ( icon.get() ), NULL );
 
-  SDL_WM_SetIcon ( icon_buffer, NULL );
-
-  SDL_FreeSurface ( icon_buffer );
-  icon_buffer = NULL;
+  icon.freeCanvas();
 }
-

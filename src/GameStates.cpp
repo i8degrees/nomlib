@@ -11,36 +11,34 @@
 ******************************************************************************/
 #include "GameStates.hpp"
 
-using namespace nom;
-
 static std::vector<std::unique_ptr<GameState>> states;
 
-GameStates::GameStates ( void )
+nom::GameStates::GameStates ( void )
 {
   #ifdef DEBUG_GAMESTATES_OBJ
     std::cout << "GameStates::GameStates(): Hello, world!" << "\n" << std::endl;
   #endif
 }
 
-void GameStates::onEvent ( SDL_Event *event )
+void nom::GameStates::onEvent ( SDL_Event *event )
 {
   // let the state handle events
   states.back()->HandleInput ( event );
 }
 
-void GameStates::Update ( void* video_buffer )
+void nom::GameStates::Update ( void* video_buffer )
 {
   // let the state update the scene
   states.back()->Update ( video_buffer );
 }
 
-void GameStates::Draw( void* video_buffer )
+void nom::GameStates::Draw( void* video_buffer )
 {
   // let the state draw the scene
   states.back()->Draw ( video_buffer );
 }
 
-void GameStates::ChangeState( std::unique_ptr<GameState> state )
+void nom::GameStates::ChangeState( std::unique_ptr<GameState> state )
 {
   // cleanup the current state
   if ( !states.empty() )
@@ -50,7 +48,7 @@ void GameStates::ChangeState( std::unique_ptr<GameState> state )
   states.push_back( std::move( state ) );
 }
 
-void GameStates::PushState( std::unique_ptr<GameState> state )
+void nom::GameStates::PushState( std::unique_ptr<GameState> state )
 {
   // pause current state
   if ( !states.empty() )
@@ -60,7 +58,7 @@ void GameStates::PushState( std::unique_ptr<GameState> state )
   states.push_back( std::move( state ) );
 }
 
-void GameStates::PopState ( void )
+void nom::GameStates::PopState ( void )
 {
   // cleanup the current state
   if ( !states.empty() )
@@ -71,7 +69,7 @@ void GameStates::PopState ( void )
     states.back()->Resume();
 }
 
-void GameStates::PopStateThenChangeState( std::unique_ptr<GameState> state )
+void nom::GameStates::PopStateThenChangeState( std::unique_ptr<GameState> state )
 {
   // cleanup the current state
   if ( !states.empty() )

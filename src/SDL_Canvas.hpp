@@ -35,6 +35,8 @@ namespace nom
       void freeCanvas ( void );
 
       /// Obtains raw pointer to the object's video surface buffer
+      ///
+      /// ( SDL_Surface* )
       void* get ( void ) const;
 
       /// SDL compatibility wrapper

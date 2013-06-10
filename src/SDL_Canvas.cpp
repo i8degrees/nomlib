@@ -240,9 +240,11 @@ bool nom::SDL_Canvas::setTransparent  ( const nom::Color& color,
   return true;
 }
 
+// As per libSDL docs, we must first initialize the video subsystem before using
+// this method call, otherwise an access violation fault is sure to occur.
 bool nom::SDL_Canvas::displayFormat ( void )
 {
-  void* converted_canvas = NULL; // Better safe than sorry!
+  void* converted_canvas = nullptr; // Better safe than sorry!
 
   converted_canvas = SDL_DisplayFormat ( static_cast<SDL_Surface*> ( this->get() ) );
 
@@ -259,9 +261,11 @@ bool nom::SDL_Canvas::displayFormat ( void )
   return true;
 }
 
+// As per libSDL docs, we must first initialize the video subsystem before using
+// this method call, otherwise an access violation fault is sure to occur.
 bool nom::SDL_Canvas::displayFormatAlpha ( void )
 {
-  void* converted_canvas = NULL; // Better safe than sorry!
+  void* converted_canvas = nullptr; // Better safe than sorry!
 
   converted_canvas = SDL_DisplayFormatAlpha ( static_cast<SDL_Surface*> ( this->get() ) );
 

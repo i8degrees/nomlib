@@ -45,7 +45,37 @@ bool nom::SDL_Image::loadFromFile ( const std::string& filename )
   return true;
 }
 
-void* nom::SDL_Image::get ( void ) const
+bool nom::SDL_Image::loadFromFile_BMP ( const std::string& filename )
 {
-  return static_cast<SDL_Surface*> ( this->image_buffer );
+  this->image_buffer = SDL_LoadBMP ( filename.c_str() );
+
+  if ( static_cast<SDL_Surface*> ( this->image_buffer ) == nullptr )
+  {
+    #ifdef DEBUG_SDL_IMAGE
+      std::cout << "ERR in nom::SDL_Image::loadFromFile_BMP(): " << SDL_GetError() << std::endl << std::endl;
+    #endif
+    return false;
+  }
+
+  return true;
+}
+
+bool nom::SDL_Image::saveToFile ( const std::string& filename, void* video_buffer )
+{
+  if ( SDL_SaveBMP ( static_cast<SDL_Surface*> ( video_buffer ), filename.c_str() ) != 0 )
+  {
+    #ifdef DEBUG_SDL_IMAGE
+      std::cout << "ERR in nom::SDL_Image::saveToFile(): " << SDL_GetError() << std::endl << std::endl;
+    #endif
+    return false;
+  }
+
+  return true;
+}
+
+const nom::Coords nom::SDL_Image::getSize ( void ) const
+{
+  SDL_Surface* buffer = ( SDL_Surface* ) image_buffer;
+
+  return nom::Coords ( 0, 0, buffer->w, buffer->h );
 }

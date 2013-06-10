@@ -28,16 +28,24 @@ namespace nom
       SDL_Image ( void );
       ~SDL_Image ( void );
 
+      /// ( SDL_Surface* )
       void* get ( void ) const;
 
-      // SDL_SaveBMP
-      // SDL_LoadBMP
-      // getSize
       /// Supports every file type that your SDL_image extension has been
       /// compiled
       bool loadFromFile ( const std::string& filename );
 
-      void Draw ( void* video_buffer );
+      /// Uses SDL's built-in BMP file loader; no alpha channeling support ...
+      /// perfect for setting window icons!
+      bool loadFromFile_BMP ( const std::string& filename );
+
+      /// Saves as an uncompressed RGB Windows Bitmap (BMP)
+      ///
+      /// NOTE: AFAIK, no existing file handling / overwriting checks are done
+      /// whatsoever
+      bool saveToFile ( const std::string& filename, void* video_buffer );
+
+      const nom::Coords getSize ( void ) const;
 
     private:
       void* image_buffer; // SDL_Surface*

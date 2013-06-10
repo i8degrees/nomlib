@@ -25,14 +25,19 @@ nom::SDL_Image::~SDL_Image ( void )
   this->image_buffer = nullptr; // ...better safe than sorry?
 }
 
-bool nom::SDL_Image::loadFromFile ( const std::string& filename, const Color& colorkey, uint32_t flags )
+void* nom::SDL_Image::get ( void ) const
+{
+  return static_cast<SDL_Surface*> ( this->image_buffer );
+}
+
+bool nom::SDL_Image::loadFromFile ( const std::string& filename )
 {
   this->image_buffer = IMG_Load ( filename.c_str() );
 
-  if ( this->image_buffer == nullptr )
+  if ( static_cast<SDL_Surface*> ( this->image_buffer ) == nullptr )
   {
     #ifdef DEBUG_SDL_IMAGE
-      std::cout << "ERR in nom::SDL_Image::LoadImage() at IMG_Load(): " << IMG_GetError() << std::endl;
+      std::cout << "ERR in nom::SDL_Image::loadFromFile() at IMG_Load(): " << IMG_GetError() << std::endl << std::endl;
     #endif
     return false;
   }

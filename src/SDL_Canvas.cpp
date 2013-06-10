@@ -132,7 +132,7 @@ bool nom::SDL_Canvas::loadFromImage ( const std::string& filename, const nom::Co
 {
   nom::SDL_Image image; // holds our image in memory during transfer
 
-  if ( image.loadFromFile ( filename, colorkey, flags ) == false )
+  if ( image.loadFromFile ( filename ) == false )
   {
     #ifdef DEBUG_SDL_CANVAS
       std::cout << "ERR in nom::SDL_Canvas::loadFromImage(): " << std::endl << std::endl;

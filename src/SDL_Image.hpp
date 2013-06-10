@@ -28,16 +28,14 @@ namespace nom
       SDL_Image ( void );
       ~SDL_Image ( void );
 
-      bool loadFromFile ( const std::string& filename, const nom::Color&
-                                colorkey = nom::Color ( 0, 0, 0, -1 ),
-                                uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY
-                              );
-
       void* get ( void ) const;
 
       // SDL_SaveBMP
       // SDL_LoadBMP
       // getSize
+      /// Supports every file type that your SDL_image extension has been
+      /// compiled
+      bool loadFromFile ( const std::string& filename );
 
       void Draw ( void* video_buffer );
 

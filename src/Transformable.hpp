@@ -34,9 +34,11 @@ namespace nom
       void setY ( int32_t y );
       void setXY ( int32_t x, int32_t y );
       const nom::Coords& getPosition ( void ) const;
+      const nom::Coords getSize ( void ) const;
       void setPosition ( int32_t x, int32_t y );
       void setPosition ( int32_t x, int32_t y, int32_t width, int32_t height );
       void setPosition ( const nom::Coords& coords );
+      void setSize ( int32_t width, int32_t height );
 
       int32_t getWidth ( void ) const;
       void setWidth ( int32_t width, int32_t height );

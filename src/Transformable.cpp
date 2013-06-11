@@ -62,6 +62,11 @@ const nom::Coords& nom::Transformable::getPosition ( void ) const
   return this->coords;
 }
 
+const nom::Coords nom::Transformable::getSize ( void ) const
+{
+  return nom::Coords ( this->coords.getWidth(), this->coords.getHeight() );
+}
+
 void nom::Transformable::setPosition ( int32_t x, int32_t y )
 {
   this->coords.setXY ( x, y );
@@ -75,6 +80,11 @@ void nom::Transformable::setPosition ( int32_t x, int32_t y, int32_t width, int3
 void nom::Transformable::setPosition ( const nom::Coords& coords )
 {
   this->coords = coords;
+}
+
+void nom::Transformable::setSize ( int32_t width, int32_t height )
+{
+  this->coords.setDimensions ( width, height );
 }
 
 int32_t nom::Transformable::getWidth ( void ) const

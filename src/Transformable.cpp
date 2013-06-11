@@ -67,6 +67,11 @@ void nom::Transformable::setPosition ( int32_t x, int32_t y )
   this->coords.setXY ( x, y );
 }
 
+void nom::Transformable::setPosition ( int32_t x, int32_t y, int32_t width, int32_t height )
+{
+  this->coords.setCoords ( x, y, width, height );
+}
+
 void nom::Transformable::setPosition ( const nom::Coords& coords )
 {
   this->coords = coords;

@@ -60,10 +60,10 @@
 #define DEBUG_SDL_CURSOR
 //#define DEBUG_SDL_CURSOR_OBJ
 
-//#define DEBUG_DRAWABLE
+#define DEBUG_DRAWABLE
 //#define DEBUG_DRAWABLE_OBJ
 
-//#define DEBUG_SDL_DRAWABLE
+#define DEBUG_SDL_DRAWABLE
 //#define DEBUG_SDL_DRAWABLE_OBJ
 
 #define DEBUG_SDL_PIXEL
@@ -71,6 +71,10 @@
 
 #define DEBUG_SDL_LINE
 //#define DEBUG_SDL_LINE_OBJ
+
+#define DEBUG_SDL_RECT
+//#define DEBUG_SDL_RECT_OBJ
+
 #define DEBUG_FONT
 #define DEBUG_FONT_OBJ
 

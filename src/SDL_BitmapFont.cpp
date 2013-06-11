@@ -27,7 +27,7 @@ SDL_BitmapFont::SDL_BitmapFont ( void )
   this->spacing = 0; // holds the x coords value to increment upon space char
   this->text_style = Style::Regular; // default text styling effect
 
-  this->coords.setCoords ( 0, 0, 0, 0 );
+  this->setPosition ( 0, 0 );
 
   for ( unsigned int idx = 0; idx < 256; idx++ )
   {
@@ -305,12 +305,13 @@ void nom::SDL_BitmapFont::Update ( void )
   // Stub
 }
 
+// TODO: test \t (horizontal tabbing) feature
 void SDL_BitmapFont::Draw ( void* video_buffer )
 {
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from
-  int32_t x_offset = this->coords.getX();
-  int32_t y_offset = this->coords.getY();
+  int32_t x_offset = this->getX();
+  int32_t y_offset = this->getY();
 
   //If the font has been built
   if ( this->bitmap_font.get() != nullptr )
@@ -328,7 +329,7 @@ void SDL_BitmapFont::Draw ( void* video_buffer )
       {
         //Move down and back over to the beginning of line
         y_offset += this->newline;
-        x_offset = this->coords.getX();
+        x_offset = this->getX();
       }
       // If the current character is a newline
       else if( this->text_buffer[show] == '\t' )

@@ -66,6 +66,11 @@
 //#define DEBUG_SDL_DRAWABLE
 //#define DEBUG_SDL_DRAWABLE_OBJ
 
+#define DEBUG_SDL_PIXEL
+//#define DEBUG_SDL_PIXEL_OBJ
+
+#define DEBUG_SDL_LINE
+//#define DEBUG_SDL_LINE_OBJ
 #define DEBUG_FONT
 #define DEBUG_FONT_OBJ
 

@@ -25,7 +25,7 @@
 
 namespace nom
 {
-  class SDL_MessageBox: //public nom::SDL_Drawable,   // "is a" relationship
+  class SDL_MessageBox: public nom::SDL_Drawable,   // "is a" relationship
                         public nom::Transformable   // "has a" relationship
   {
     public:

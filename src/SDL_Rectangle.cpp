@@ -37,9 +37,5 @@ void nom::Rectangle::Draw ( void* video_buffer )
   if ( SDL_FillRect ( buffer, &rectangle, rectangle_color ) != 0 )
   {
     std::cout << "ERR in nom::Rectangle::Draw(): " << SDL_GetError() << std::endl;
-
-    return;
   }
-
-  return;
 }

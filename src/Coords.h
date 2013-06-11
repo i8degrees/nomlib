@@ -60,6 +60,12 @@ namespace nom
 
       void updateCoords ( signed int x_ = 0, signed int y_ = 0, signed int width_ = 0, signed int height_ = 0 );
 
+      //signed int x;
+      //signed int y;
+      //signed int z;
+      //signed int width;
+      //signed int height;
+
     private:
       signed int x;
       signed int y;

@@ -38,18 +38,20 @@ SDL_Display::~SDL_Display ( void )
 void SDL_Display::createWindow  ( int32_t display_width, int32_t display_height,
                                   int32_t display_colorbit, uint32_t flags )
 {
-  SDL_Surface *screen = SDL_SetVideoMode  ( display_width, display_height,
-                                            display_colorbit, flags
-                                          );
+  void* screen = nullptr; // Better safe than sorry!
 
-  if ( screen == NULL )
+  screen = SDL_SetVideoMode ( display_width, display_height,
+                              display_colorbit, flags
+                            );
+
+  if ( screen == nullptr )
   {
     #ifdef DEBUG_SDL_DISPLAY
       std::cout << "ERR in SDL_Display::SDL_Display(): " << SDL_GetError() << std::endl;
     #endif
   }
 
-  assert ( screen != NULL );
+  assert ( screen != nullptr );
 }
 
 void* SDL_Display::get ( void ) const
@@ -121,40 +123,41 @@ void nom::SDL_Display::Update ( void* video_buffer )
 
 void SDL_Display::toggleFullScreenWindow ( int32_t width, int32_t height )
 {
-  SDL_Surface *screen = (SDL_Surface*)this->get();
-  uint32_t flags; // save our current flags before attempting to switch
+  void* screen = nullptr; // Better safe than sorry!
+  uint32_t flags = 0; // save our current flags before attempting to switch
 
-  flags = screen->flags;
+  flags = this->getDisplayFlags();
 
-  screen = SDL_SetVideoMode ( width, height, 0, screen->flags ^ SDL_FULLSCREEN );
+  screen = SDL_SetVideoMode ( width, height, 0, flags ^ SDL_FULLSCREEN );
 
   //  If for whatever reason, we cannot toggle fullscreen, try reverting
   //  back to our previous configuration
-  if ( screen == NULL )
+  if ( screen == nullptr )
   {
     screen = SDL_SetVideoMode ( width, height, 0, flags );
   }
 
-  assert ( screen != NULL );  // something went terribly wrong here if we
-                              // are still NULL here
+  assert ( screen != nullptr ); // something went terribly wrong here if we
+                                // are still NULL here
 }
 
 // FIXME
 const std::string SDL_Display::getWindowTitle ( void ) const
 {
   char *window_title;
-  SDL_WM_GetCaption ( &window_title, NULL );
+  SDL_WM_GetCaption ( &window_title, nullptr );
   return std::to_string ( *window_title );
 }
 
+// TODO
 void* SDL_Display::getWindowIcon ( void ) const
 {
-  return NULL;
+  return nullptr;
 }
 
 void SDL_Display::setWindowTitle ( const std::string& app_name )
 {
-  SDL_WM_SetCaption ( app_name.c_str(), NULL );
+  SDL_WM_SetCaption ( app_name.c_str(), nullptr );
 }
 
 void SDL_Display::setWindowIcon ( const std::string& app_icon )
@@ -162,7 +165,7 @@ void SDL_Display::setWindowIcon ( const std::string& app_icon )
   nom::SDL_Image image; // holds our image in memory during transfer
   nom::SDL_Canvas icon; // icon canvas to load our icon file into
 
-  if ( this->get() != NULL )
+  if ( this->get() != nullptr )
   {
     std::cout << "ERR in SDL_Display::setWindowIcon(): " << "SDL video subsystem has already been initiated." << std::endl << std::endl;
   }
@@ -177,7 +180,7 @@ void SDL_Display::setWindowIcon ( const std::string& app_icon )
   // Sets our canvas with our acquired image surface
   icon.setCanvas ( image.get() );
   icon.setTransparent ( nom::Color ( 0, 0, 0 ), SDL_SRCCOLORKEY ); // FIXME?
-  SDL_WM_SetIcon ( static_cast<SDL_Surface*> ( icon.get() ), NULL );
+  SDL_WM_SetIcon ( static_cast<SDL_Surface*> ( icon.get() ), nullptr );
 
   icon.freeCanvas();
 }

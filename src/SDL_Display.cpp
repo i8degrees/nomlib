@@ -123,22 +123,16 @@ void nom::SDL_Display::Update ( void* video_buffer )
 
 void SDL_Display::toggleFullScreenWindow ( int32_t width, int32_t height )
 {
-  void* screen = nullptr; // Better safe than sorry!
   uint32_t flags = 0; // save our current flags before attempting to switch
 
   flags = this->getDisplayFlags();
 
-  screen = SDL_SetVideoMode ( width, height, 0, flags ^ SDL_FULLSCREEN );
+  this->createWindow ( width, height, 0, flags ^ SDL_FULLSCREEN );
 
   //  If for whatever reason, we cannot toggle fullscreen, try reverting
   //  back to our previous configuration
-  if ( screen == nullptr )
-  {
-    screen = SDL_SetVideoMode ( width, height, 0, flags );
-  }
-
-  assert ( screen != nullptr ); // something went terribly wrong here if we
-                                // are still NULL here
+  if ( this->get() == nullptr )
+    this->createWindow ( width, height, 0, flags );
 }
 
 // FIXME

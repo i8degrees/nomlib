@@ -39,14 +39,12 @@ class SDLMessageBox:  public nom::Transformable // "has a" relationship
     void Draw ( void* video_buffer );
 
   private:
-    bool enabled; // shown or not
-
-    nom::SDL_Gradient* background;
-    std::vector<nom::Color> window_borders;
     typedef std::vector<std::shared_ptr<nom::SDL_Drawable>> drawable_t;
     drawable_t lines;
+    nom::SDL_Gradient* background;
     nom::SDL_Canvas box;
-    //GColor window_borders[8];
+
+    std::vector<nom::Color> window_borders;
     // top border, left border, bottom border, right border; each defined border
     // has two rows of pixels that can be set to a custom color, so ...
     // window_border[0] && window_border[1] contains the top borders,
@@ -56,6 +54,7 @@ class SDLMessageBox:  public nom::Transformable // "has a" relationship
     //
     // window_border[0].getRed(), window_border[0].getGreen(), window_border[0].getBlue()
     //
+    bool enabled; // shown or not
 };
 
 #endif // GAMELIB_MESSAGEBOX_HEADERS defined

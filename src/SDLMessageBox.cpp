@@ -21,6 +21,8 @@ SDLMessageBox::SDLMessageBox ( void )
     this->window_borders[i].setColor ( nom::Color::Black );
 
   this->coords.setCoords ( 0, 0, 0, 0 );
+
+  this->background = NULL; // SDL_Gradient
 }
 
 
@@ -38,7 +40,7 @@ SDLMessageBox::~SDLMessageBox ( void )
     //delete *it;
   //}
 
-  this->lines.clear();
+  this->lines.clear(); // Better safe than sorry!
 
   this->background = NULL; // SDL_Gradient
 }
@@ -53,6 +55,7 @@ void SDLMessageBox::Init ( int32_t x, int32_t y, int32_t width, int32_t height, 
   // init geometry coords w/ arguments list
   this->coords.setCoords ( x, y, width, height );
   this->window_borders = border_colors;
+  this->background = gradient;
 
   if ( this->background != NULL )
   {

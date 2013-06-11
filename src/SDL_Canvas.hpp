@@ -57,11 +57,8 @@ namespace nom
       const nom::Coords getCanvasBounds ( void ) const;
       void setCanvasBounds ( const nom::Coords& clip_bounds );
 
-      // ( bool ) mustLock
-      // lockCanvas
-      // unlockCanvas
-      // SDL_CreateRGBSurface
-      // SDL_CreateRGBSurfaceFrom
+      // TODO: SDL_CreateRGBSurface
+      // TODO: SDL_CreateRGBSurfaceFrom
 
       bool loadFromImage  ( const std::string& filename, const nom::Color&
                             colorkey = nom::Color ( 0, 0, 0, -1 ),

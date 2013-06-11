@@ -41,10 +41,12 @@ nom::SDL_Canvas::~SDL_Canvas ( void )
   this->freeCanvas();
 }
 
+// We sometimes need to call this method call from outside of this class, such
+// as in SDL_Font::Draw, in order to prevent memory leaks from occurring
 void nom::SDL_Canvas::freeCanvas ( void )
 {
   if ( this->canvas_buffer != nullptr )
-    SDL_FreeSurface ( canvas_buffer );
+    SDL_FreeSurface ( this->canvas_buffer );
 
   this->canvas_buffer = nullptr;
 }
@@ -164,20 +166,22 @@ void nom::SDL_Canvas::Draw ( void* video_buffer )
   SDL_Rect blit_coords = this->coords.getSDL_Rect();
   SDL_Rect blit_offsets = this->offsets.getSDL_Rect();
 
-  if ( (SDL_Surface*) canvas_buffer != nullptr )
+  // Should we also check to see if video_buffer is nullptr?
+  if ( this->canvas_buffer != nullptr )
   {
     if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
     {
-      if ( SDL_BlitSurface ( canvas_buffer, &blit_offsets, (SDL_Surface*) video_buffer, &blit_coords ) != 0 )
-      {
+      if ( SDL_BlitSurface ( this->canvas_buffer, &blit_offsets, static_cast<SDL_Surface*> ( video_buffer ), &blit_coords ) != 0 )
         #ifdef DEBUG_SDL_CANVAS
-          std::cout << "ERR in SDL_Canvas::Draw() at SDL_BlitSurface(): " << SDL_GetError() << std::endl;
+          std::cout << "ERR in SDL_Canvas::Draw() at SDL_BlitSurface() TRY #1: " << SDL_GetError() << std::endl;
         #endif
-      }
     }
     else
     {
-      SDL_BlitSurface ( canvas_buffer, nullptr, (SDL_Surface*) video_buffer, &blit_coords );
+      if ( SDL_BlitSurface ( canvas_buffer, nullptr, (SDL_Surface*) video_buffer, &blit_coords ) != 0 )
+        #ifdef DEBUG_SDL_CANVAS
+          std::cout << "ERR in SDL_Canvas::Draw() at SDL_BlitSurface() TRY #2: " << SDL_GetError() << std::endl;
+        #endif
     }
   }
 }
@@ -286,8 +290,6 @@ void nom::SDL_Canvas::clear ( const nom::Color& color )
   nom::Rectangle rect ( nom::Coords ( 0, 0, this->getCanvasWidth(), this->getCanvasHeight() ), color );
 
   rect.Draw ( this->canvas_buffer );
-
-  // ...
 }
 
 bool nom::SDL_Canvas::mustLock ( void* video_buffer )

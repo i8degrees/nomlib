@@ -2,6 +2,7 @@
 
 ## TODO
 
+* Fix nom::Line memory leak (update variable is merely a temporary partial stopgap)
 * GameStates as a singleton class
 * Use nullptr instead of NULL
 * Fix Color ( -1, -1, -1, -1 ) issue

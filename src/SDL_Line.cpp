@@ -14,12 +14,16 @@ nom::Line::Line ( void )
 {
   this->pixels.clear();
 
+  this->updated = false;
+
   this->coords.setCoords ( 0, 0, 0, 0 );
   this->color.setColor ( 0, 0, 0, SDL_ALPHA_OPAQUE );
 }
 
 nom::Line::~Line ( void )
 {
+  this->updated = false;
+
   // Goodbye cruel pixels!
   for ( std::vector<nom::Pixel*>::const_iterator it = this->pixels.begin(); it != this->pixels.end(); it++ )
   {
@@ -32,6 +36,8 @@ nom::Line::Line ( const nom::Coords& coords, const nom::Color& color )
 {
   this->pixels.clear();
 
+  this->updated = false;
+
   this->coords = coords;
   this->color = color;
 }
@@ -39,6 +45,8 @@ nom::Line::Line ( const nom::Coords& coords, const nom::Color& color )
 nom::Line::Line ( int32_t x, int32_t y, int32_t width, int32_t height, const nom::Color& color )
 {
   this->pixels.clear();
+
+  this->updated = false;
 
   this->coords = nom::Coords ( x, y, width, height );
   this->color = color;
@@ -52,6 +60,9 @@ void nom::Line::Update ( void )
   int32_t y1 = this->coords.getY();
   int32_t x2 = this->coords.getWidth();
   int32_t y2 = this->coords.getHeight();
+
+  if ( this->updated == true )
+    return;
 
   bool steep = ( fabs ( y2 - y1 ) > fabs ( x2 - x1 ) );
 
@@ -92,6 +103,7 @@ void nom::Line::Update ( void )
     }
   }
 
+  this->updated = true;
 }
 
 void nom::Line::Draw ( void* video_buffer )

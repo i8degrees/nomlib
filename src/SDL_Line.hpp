@@ -39,6 +39,7 @@ namespace nom
       void Draw ( void* video_buffer );
     private:
       std::vector<nom::Pixel*> pixels;
+      bool updated;
   };
 }
 

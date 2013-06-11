@@ -25,7 +25,7 @@ namespace nom
   class SDL_Image
   {
     public:
-      SDL_Image ( void );
+      SDL_Image ( uint32_t img_flags = IMG_INIT_PNG );
       ~SDL_Image ( void );
 
       /// ( SDL_Surface* )

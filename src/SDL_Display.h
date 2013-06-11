@@ -13,7 +13,6 @@
 #include <string>
 
 #include "SDL.h"
-#include "SDL_image.h"
 
 #include "IDisplay.h"
 #include "Coords.h"

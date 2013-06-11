@@ -9,11 +9,18 @@
 ******************************************************************************/
 #include "SDL_Image.hpp"
 
-nom::SDL_Image::SDL_Image ( void )  : image_buffer ( nullptr )
+nom::SDL_Image::SDL_Image ( uint32_t flags )  : image_buffer ( nullptr )
 {
   #ifdef DEBUG_SDL_IMAGE_OBJ
     std::cout << "SDL_Image::SDL_Image(): Hello, world!" << std::endl << std::endl;
   #endif
+
+  if ( IMG_Init ( flags ) != flags )
+  {
+    #ifdef DEBUG_SDL_IMAGE_OBJ
+      std::cout << "ERR in SDL_Image::SDL_Image() at IMG_Init(): " << IMG_GetError() << std::endl;
+    #endif
+  }
 }
 
 nom::SDL_Image::~SDL_Image ( void )
@@ -23,6 +30,8 @@ nom::SDL_Image::~SDL_Image ( void )
   #endif
 
   this->image_buffer = nullptr; // ...better safe than sorry?
+
+  IMG_Quit();
 }
 
 void* nom::SDL_Image::get ( void ) const

@@ -127,5 +127,8 @@ void SDL_Font::Draw ( void* video_buffer )
 
   // We must free the rendered font surface here in order to evade massive
   // memory leaks!
+  //
+  // I *think* said leak occurs only when you are dumb ( like me!) and are
+  // blitting the text in the active game loop
   this->font_buffer.freeCanvas();
 }

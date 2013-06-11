@@ -67,16 +67,19 @@ const nom::Coords nom::Transformable::getSize ( void ) const
   return nom::Coords ( this->coords.getWidth(), this->coords.getHeight() );
 }
 
+// Variant #1 setter for position coordinates
 void nom::Transformable::setPosition ( int32_t x, int32_t y )
 {
   this->coords.setXY ( x, y );
 }
 
+// Variant #2 setter for position coordinates
 void nom::Transformable::setPosition ( int32_t x, int32_t y, int32_t width, int32_t height )
 {
   this->coords.setCoords ( x, y, width, height );
 }
 
+// Variant #3 setter for position coordinates; do we have enough options yet???
 void nom::Transformable::setPosition ( const nom::Coords& coords )
 {
   this->coords = coords;

@@ -22,7 +22,7 @@ nom::Line::Line ( void )
 
   this->setPosition ( 0, 0 );
   this->setSize ( 0, 0 );
-  this->setColor ( 0, 0, 0, SDL_ALPHA_OPAQUE );
+  this->setColor ( 0, 0, 0, 255 );
 }
 
 nom::Line::~Line ( void )

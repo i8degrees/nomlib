@@ -10,7 +10,7 @@
 #include "Transformable.hpp"
 
 nom::Transformable::Transformable ( void )  : coords ( 0, 0, 0, 0 ),
-                                              color ( 0, 0, 0, SDL_ALPHA_OPAQUE )
+                                              color ( 0, 0, 0, 255 )
 {
   #ifdef DEBUG_TRANSFORMABLE_OBJ
     std::cout << "Transformable::Transformable (): " << "Hello, world!" << std::endl << std::endl;

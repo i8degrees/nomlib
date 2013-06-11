@@ -67,8 +67,7 @@ namespace nom
       void Draw ( void* video_buffer );
       bool Update ( void* video_buffer );
 
-      bool setAlpha ( void* video_buffer, uint8_t opacity,
-                      uint32_t flags = SDL_SRCALPHA );
+      bool setAlpha ( uint8_t opacity, uint32_t flags = SDL_SRCALPHA );
 
       bool setTransparent ( const nom::Color& color = nom::Color ( 0, 0, 0, -1 ),
                             uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY

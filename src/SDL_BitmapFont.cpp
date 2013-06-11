@@ -129,7 +129,7 @@ void SDL_BitmapFont::setStyle ( uint8_t style, uint8_t options )
     case Style::Faded:
     {
       if ( this->bitmap_font.get() != nullptr )
-        if ( this->bitmap_font.setAlpha ( static_cast<SDL_Surface*> ( this->bitmap_font.get() ), options ) == true )
+        if ( this->bitmap_font.setAlpha ( options ) == true )
           this->text_style = Style::Faded;
     break;
     }

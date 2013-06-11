@@ -181,7 +181,7 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
           int pY = ( tile_height * rows ) + pRow;
 
           //If a non colorkey pixel is found
-          if( Gfx::getPixel ( this->bitmap_font.get(), pX, pY ) != background_color )
+          if( this->bitmap_font.getPixel ( pX, pY ) != background_color )
           {
               //Set the x offset
               this->chars[ currentChar ].setX ( pX );
@@ -204,7 +204,7 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
           uint32_t pY = ( tile_height * rows ) + pRow_w;
 
           //If a non colorkey pixel is found
-          if ( Gfx::getPixel ( this->bitmap_font.get(), pX, pY ) != background_color )
+          if ( this->bitmap_font.getPixel ( pX, pY ) != background_color )
           {
             //Set the width
             uint32_t width = ( pX - this->chars[ currentChar ].getX() ) + 1;
@@ -228,7 +228,7 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
           uint32_t pY = ( tile_height * rows ) + pRow;
 
           // If a non colorkey pixel is found
-          if( Gfx::getPixel ( this->bitmap_font.get(), pX, pY ) != background_color )
+          if( this->bitmap_font.getPixel ( pX, pY ) != background_color )
           {
             // If new top is found
             if ( pRow < top )
@@ -258,7 +258,7 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
             unsigned int pY = ( tile_height * rows ) + pRow;
 
             // If a non colorkey pixel is found
-            if ( Gfx::getPixel ( this->bitmap_font.get(), pX, pY ) != background_color )
+            if ( this->bitmap_font.getPixel ( pX, pY ) != background_color )
             {
               // Bottom of a is found
               baseA = pRow;

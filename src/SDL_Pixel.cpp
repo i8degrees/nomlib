@@ -11,8 +11,8 @@
 
 nom::Pixel::Pixel ( void )
 {
-  this->coords.setCoords ( 0, 0, 0, 0 );
-  this->color.setColor ( 0, 0, 0, SDL_ALPHA_OPAQUE );
+  this->setPosition ( 0, 0 );
+  this->setColor ( nom::Color ( 0, 0, 0, 255 ) );
 }
 
 nom::Pixel::~Pixel ( void )
@@ -22,14 +22,14 @@ nom::Pixel::~Pixel ( void )
 
 nom::Pixel::Pixel ( const nom::Coords& coords, const nom::Color& color )
 {
-  this->coords = coords;
-  this->color = color;
+  this->setPosition ( coords );
+  this->setColor ( color );
 }
 
 nom::Pixel::Pixel ( int32_t x, int32_t y, const nom::Color& color )
 {
-  this->coords = nom::Coords ( x, y );
-  this->color = color;
+  this->setPosition ( x, y );
+  this->setColor ( color );
 }
 
 void nom::Pixel::Update ( void )
@@ -40,8 +40,8 @@ void nom::Pixel::Update ( void )
 // 32-bit bpp
 void nom::Pixel::Draw ( void* video_buffer )
 {
-  int32_t x_offset = this->coords.getX();
-  int32_t y_offset = this->coords.getY();
+  int32_t x_offset = this->getX();
+  int32_t y_offset = this->getY();
 
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( video_buffer );
 

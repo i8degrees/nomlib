@@ -20,8 +20,9 @@ nom::Line::Line ( void )
 
   this->updated = false;
 
-  this->coords.setCoords ( 0, 0, 0, 0 );
-  this->color.setColor ( 0, 0, 0, SDL_ALPHA_OPAQUE );
+  this->setPosition ( 0, 0 );
+  this->setSize ( 0, 0 );
+  this->setColor ( 0, 0, 0, SDL_ALPHA_OPAQUE );
 }
 
 nom::Line::~Line ( void )
@@ -65,23 +66,21 @@ nom::Line::Line ( int32_t x, int32_t y, int32_t width, int32_t height, const nom
 
   this->updated = false;
 
-  this->coords = nom::Coords ( x, y, width, height );
-  this->color = color;
+  this->setPosition ( nom::Coords ( x, y, width, height ) );
+  this->setColor ( color );
 }
 
 // Recompute line offsets
 void nom::Line::Update ( void )
 {
   // temporary calculation offsets based on user's initial given coordinates
-  int32_t x1 = this->coords.getX();
-  int32_t y1 = this->coords.getY();
-  int32_t x2 = this->coords.getWidth();
-  int32_t y2 = this->coords.getHeight();
+  int32_t x1 = this->getX();
+  int32_t y1 = this->getY();
+  int32_t x2 = this->getWidth();
+  int32_t y2 = this->getHeight();
 
   if ( this->updated == true )
-  {
-    this->pixels.clear();
-  }
+    return;
 
   bool steep = ( fabs ( y2 - y1 ) > fabs ( x2 - x1 ) );
 

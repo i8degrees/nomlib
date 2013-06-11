@@ -1,7 +1,8 @@
 /******************************************************************************
     SDL_Line.cpp
 
-  SDL Line Primitive
+  SDL Line Primitive; line computation logic derives from Bresenham's line
+  algorithm
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.
@@ -11,28 +12,40 @@
 
 nom::Line::Line ( void )
 {
+  this->pixels.clear();
+
   this->coords.setCoords ( 0, 0, 0, 0 );
   this->color.setColor ( 0, 0, 0, SDL_ALPHA_OPAQUE );
 }
 
 nom::Line::~Line ( void )
 {
-  // ...
+  // Goodbye cruel pixels!
+  for ( std::vector<nom::Pixel*>::const_iterator it = this->pixels.begin(); it != this->pixels.end(); it++ )
+  {
+    nom::Pixel *obj = *it;
+    delete obj;
+  }
 }
 
 nom::Line::Line ( const nom::Coords& coords, const nom::Color& color )
 {
+  this->pixels.clear();
+
   this->coords = coords;
   this->color = color;
 }
 
-void nom::Line::Update ( void )
+nom::Line::Line ( int32_t x, int32_t y, int32_t width, int32_t height, const nom::Color& color )
 {
-  this->pixel.setColor ( this->color );
+  this->pixels.clear();
+
+  this->coords = nom::Coords ( x, y, width, height );
+  this->color = color;
 }
 
-// Bresenham's line algorithm
-void nom::Line::Draw ( void* video_buffer )
+// Recompute line offsets
+void nom::Line::Update ( void )
 {
   // temporary calculation offsets based on user's initial given coordinates
   int32_t x1 = this->coords.getX();
@@ -66,11 +79,9 @@ void nom::Line::Draw ( void* video_buffer )
   for ( int32_t x = ( int32_t ) x1; x < maxX; x++ )
   {
     if ( steep )
-      pixel.setPosition ( y, x );
+      this->pixels.push_back ( new nom::Pixel ( y, x, this->color ) );
     else
-      pixel.setPosition ( x, y );
-
-    pixel.Draw ( video_buffer );
+      this->pixels.push_back ( new nom::Pixel ( x, y, this->color ) );
 
     error -= dy;
 
@@ -80,4 +91,13 @@ void nom::Line::Draw ( void* video_buffer )
       error += dx;
     }
   }
+
+}
+
+void nom::Line::Draw ( void* video_buffer )
+{
+  int32_t idx = 0;
+
+  for ( idx = 0; idx < this->pixels.size(); idx++ )
+    this->pixels[idx]->Draw ( video_buffer );
 }

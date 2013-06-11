@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <vector>
 
 #include "SDL.h"
 
@@ -32,11 +33,12 @@ namespace nom
       Line ( void );
       virtual ~Line ( void );
       Line ( const nom::Coords& coords, const nom::Color& color );
+      Line ( int32_t x, int32_t y, int32_t width, int32_t height, const nom::Color& color );
 
       void Update ( void );
       void Draw ( void* video_buffer );
     private:
-      nom::Pixel pixel;
+      std::vector<nom::Pixel*> pixels;
   };
 }
 

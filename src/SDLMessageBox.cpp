@@ -92,19 +92,42 @@ void SDLMessageBox::Draw ( void* video_buffer, unsigned int x, unsigned int y, u
     background->Draw ( video_buffer, x, y, width, height, 0 );
   }
 
-  Gfx::lockSurface ( video_buffer );
+  if ( box.mustLock ( video_buffer ) == true )
+  {
+    box.lockCanvas ( video_buffer );
 
-  Gfx::drawLine ( video_buffer, x, y, x_offset - padding, y, this->window_borders[0].getColor() ); // top0
-  Gfx::drawLine ( video_buffer, x, y + 1, x_offset - padding, y + 1, this->window_borders[1].getColor() ); // top1
+    line.setPosition ( x, y, x_offset - padding, y ); // top0
+    line.setColor ( this->window_borders[0].getColor() );
+    line.Draw ( video_buffer );
 
-  Gfx::drawLine ( video_buffer, x, y + 1, x, y_offset - padding, this->window_borders[2].getColor()  ); // left1
-  Gfx::drawLine ( video_buffer, x + 1, y + 2, x + 1, y_offset - padding, this->window_borders[3].getColor() ); // left2
+    line.setPosition ( x, y + 1, x_offset - padding, y + 1 ); // top1
+    line.setColor ( this->window_borders[1].getColor() );
+    line.Draw ( video_buffer );
 
-  Gfx::drawLine ( video_buffer, x, y_offset - padding, x_offset - padding, y_offset - padding, this->window_borders[4].getColor() ); // bottom1
-  Gfx::drawLine ( video_buffer, x, y_offset, x_offset + padding, y_offset, this->window_borders[5].getColor() ); // bottom2
+    line.setPosition ( x, y + 1, x, y_offset - padding ); // left0
+    line.setColor ( this->window_borders[2].getColor() );
+    line.Draw ( video_buffer );
 
-  Gfx::drawLine ( video_buffer, x_offset - padding, y, x_offset - padding, y_offset + padding, this->window_borders[6].getColor() ); // right1
-  Gfx::drawLine ( video_buffer, x_offset, y, x_offset, y_offset + padding, this->window_borders[7].getColor() ); // right2
+    line.setPosition ( x + 1, y + 2, x + 1, y_offset - padding ); // left1
+    line.setColor ( this->window_borders[3].getColor() );
+    line.Draw ( video_buffer );
 
-  Gfx::unlockSurface ( video_buffer );
+    line.setPosition ( x, y_offset - padding, x_offset - padding, y_offset - padding ); //bottom0
+    line.setColor ( this->window_borders[4].getColor() );
+    line.Draw ( video_buffer );
+
+    line.setPosition ( x, y_offset, x_offset + padding, y_offset ); // bottom1
+    line.setColor ( this->window_borders[5].getColor() );
+    line.Draw ( video_buffer );
+
+    line.setPosition ( x_offset - padding, y, x_offset - padding, y_offset + padding ); // right0
+    line.setColor ( this->window_borders[6].getColor() );
+    line.Draw ( video_buffer );
+
+    line.setPosition ( x_offset, y, x_offset, y_offset + padding ); // right1
+    line.setColor ( this->window_borders[7].getColor() );
+    line.Draw ( video_buffer );
+  }
+
+  box.unlockCanvas ( video_buffer );
 }

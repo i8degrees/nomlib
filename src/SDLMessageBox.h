@@ -18,7 +18,9 @@
 #include "gfx.h"
 #include "Color.h"
 #include "Coords.h"
+#include "SDL_Canvas.hpp"
 #include "SDL_Gradient.hpp"
+#include "SDL_Line.hpp"
 #include "gamelib.h"
 
 class SDLMessageBox
@@ -46,6 +48,8 @@ class SDLMessageBox
     nom::Coords geometry; // x, y, width & height
     nom::SDL_Gradient *background;
     std::vector<nom::Color> window_borders;
+    nom::Line line;
+    nom::SDL_Canvas box;
     //GColor window_borders[8];
     // top border, left border, bottom border, right border; each defined border
     // has two rows of pixels that can be set to a custom color, so ...

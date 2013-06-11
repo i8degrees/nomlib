@@ -26,8 +26,6 @@ SDLMessageBox::SDLMessageBox ( void )
 
 SDLMessageBox::~SDLMessageBox ( void )
 {
-  drawable_t::const_iterator it; // iterator for our drawables vector
-
   #ifdef DEBUG_MESSAGEBOX_OBJ
     std::cout << "SDLMessageBox::~SDLMessageBox (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
@@ -35,11 +33,10 @@ SDLMessageBox::~SDLMessageBox ( void )
   this->enabled = false;
 
   // Goodbye cruel drawables!
-  for ( it = this->lines.begin(); it != this->lines.end(); it++ )
-  {
-    nom::SDL_Drawable* obj = *it;
-    delete obj;
-  }
+  //for ( auto it = this->lines.begin(); it != this->lines.end(); it++ )
+  //{
+    //delete *it;
+  //}
 
   this->lines.clear();
 
@@ -64,14 +61,14 @@ void SDLMessageBox::Init ( int32_t x, int32_t y, int32_t width, int32_t height, 
     this->background->Init ( starting, ending, x, y, width, height, 0, 0, 0 );
   }
 
-  this->lines.push_back ( new nom::Line ( x, y, x_offset - padding, y, this->window_borders[0].getColor() ) ); // top0
-  this->lines.push_back ( new nom::Line ( x, y + 1, x_offset - padding, y + 1, this->window_borders[1].getColor() ) ); // top1
-  this->lines.push_back ( new nom::Line ( x, y + 1, x, y_offset - padding, this->window_borders[2].getColor() ) ); // left0
-  this->lines.push_back ( new nom::Line ( x + 1, y + 2, x + 1, y_offset - padding, this->window_borders[3].getColor() ) ); // left1
-  this->lines.push_back ( new nom::Line ( x, y_offset - padding, x_offset - padding, y_offset - padding, this->window_borders[4].getColor() ) ); //bottom0
-  this->lines.push_back ( new nom::Line ( x, y_offset, x_offset + padding, y_offset, this->window_borders[5].getColor() ) ); // bottom1
-  this->lines.push_back ( new nom::Line ( x_offset - padding, y, x_offset - padding, y_offset + padding, this->window_borders[6].getColor() ) ); // right0
-  this->lines.push_back ( new nom::Line ( x_offset, y, x_offset, y_offset + padding, this->window_borders[7].getColor() ) ); // right1
+  this->lines.push_back ( std::shared_ptr<nom::SDL_Drawable> ( new nom::Line ( x, y, x_offset - padding, y, this->window_borders[0].getColor() ) ) ); // top0
+  this->lines.push_back ( std::shared_ptr<nom::SDL_Drawable> ( new nom::Line ( x, y + 1, x_offset - padding, y + 1, this->window_borders[1].getColor() ) ) ); // top1
+  this->lines.push_back ( std::shared_ptr<nom::SDL_Drawable> ( new nom::Line ( x, y + 1, x, y_offset - padding, this->window_borders[2].getColor() ) ) ); // left0
+  this->lines.push_back ( std::shared_ptr<nom::SDL_Drawable> ( new nom::Line ( x + 1, y + 2, x + 1, y_offset - padding, this->window_borders[3].getColor() ) ) ); // left1
+  this->lines.push_back ( std::shared_ptr<nom::SDL_Drawable> ( new nom::Line ( x, y_offset - padding, x_offset - padding, y_offset - padding, this->window_borders[4].getColor() ) ) ); //bottom0
+  this->lines.push_back ( std::shared_ptr<nom::SDL_Drawable> ( new nom::Line ( x, y_offset, x_offset + padding, y_offset, this->window_borders[5].getColor() ) ) ); // bottom1
+  this->lines.push_back ( std::shared_ptr<nom::SDL_Drawable> ( new nom::Line ( x_offset - padding, y, x_offset - padding, y_offset + padding, this->window_borders[6].getColor() ) ) ); // right0
+  this->lines.push_back ( std::shared_ptr<nom::SDL_Drawable> ( new nom::Line ( x_offset, y, x_offset, y_offset + padding, this->window_borders[7].getColor() ) ) ); // right1
 }
 
 bool SDLMessageBox::isEnabled ( void )
@@ -99,19 +96,15 @@ void SDLMessageBox::setBackground ( nom::SDL_Gradient *gradient )
 
 void SDLMessageBox::Update ( void )
 {
-  drawable_t::const_iterator it; // iterator for our drawables vector
-
-  for ( it = this->lines.begin(); it != this->lines.end(); it++ )
+  for ( auto it = this->lines.begin(); it != this->lines.end(); it++ )
   {
-    nom::SDL_Drawable* obj = *it;
+    std::shared_ptr<nom::SDL_Drawable> obj = *it;
     obj->Update();
   }
 }
 
 void SDLMessageBox::Draw ( void* video_buffer )
 {
-  drawable_t::const_iterator it; // iterator for our drawables vector
-
   if ( this->background != NULL )
   {
     background->Draw ( video_buffer, this->coords.getX(), this->coords.getY(), this->coords.getWidth(), this->coords.getHeight(), 0 );
@@ -124,9 +117,9 @@ void SDLMessageBox::Draw ( void* video_buffer )
     while ( this->box.lockCanvas ( video_buffer ) == false )
       SDL_Delay ( 10 );
 
-    for ( it = this->lines.begin(); it != this->lines.end(); it++ )
+    for ( auto it = this->lines.begin(); it != this->lines.end(); it++ )
     {
-      nom::SDL_Drawable* obj = *it;
+      std::shared_ptr<nom::SDL_Drawable> obj = *it;
       obj->Draw ( video_buffer );
     }
 

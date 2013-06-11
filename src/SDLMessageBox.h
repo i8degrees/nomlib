@@ -44,9 +44,9 @@ class SDLMessageBox:  public nom::Transformable // "has a" relationship
   private:
     bool enabled; // shown or not
 
-    nom::SDL_Gradient *background;
+    nom::SDL_Gradient* background;
     std::vector<nom::Color> window_borders;
-    typedef std::vector<nom::SDL_Drawable*> drawable_t;
+    typedef std::vector<std::shared_ptr<nom::SDL_Drawable>> drawable_t;
     drawable_t lines;
     nom::SDL_Canvas box;
     //GColor window_borders[8];

@@ -47,7 +47,7 @@ SDLMessageBox::~SDLMessageBox ( void )
 }
 
 // setBorder must be called first for the border colors to be set properly
-void SDLMessageBox::Init ( int32_t x, int32_t y, int32_t width, int32_t height )
+void SDLMessageBox::Init ( int32_t x, int32_t y, int32_t width, int32_t height, const std::vector<nom::Color> border_colors )
 {
   unsigned int padding = 1;
   unsigned int x_offset = x + width; //unsigned int x_offset = ( x + width ) - padding;
@@ -55,6 +55,7 @@ void SDLMessageBox::Init ( int32_t x, int32_t y, int32_t width, int32_t height )
 
   // init geometry coords w/ arguments list
   this->coords.setCoords ( x, y, width, height );
+  this->window_borders = border_colors;
 
   if ( this->background != NULL )
   {
@@ -89,17 +90,6 @@ void SDLMessageBox::disable ( void )
 void SDLMessageBox::enable ( void )
 {
   this->enabled = true;
-}
-
-void SDLMessageBox::setBorder ( const nom::Color& border_colors )
-{
-  this->window_borders.push_back ( border_colors );
-
-  #ifdef DEBUG_MESSAGEBOX
-    std::cout << "window_borders: " << this->window_borders.getRed() << "\n\n";
-    std::cout << "window_borders: " << this->window_borders.getGreen() << "\n\n";
-    std::cout << "window_borders: " << this->window_borders.getBlue() << "\n\n";
-  #endif
 }
 
 void SDLMessageBox::setBackground ( nom::SDL_Gradient *gradient )

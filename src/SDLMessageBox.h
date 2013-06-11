@@ -29,13 +29,12 @@ class SDLMessageBox:  public nom::Transformable // "has a" relationship
     SDLMessageBox ( void );
     ~SDLMessageBox ( void );
 
-    void Init ( int32_t x, int32_t y, int32_t width, int32_t height );
+    void Init ( int32_t x, int32_t y, int32_t width, int32_t height, const std::vector<nom::Color> border_colors );
 
     bool isEnabled ( void );
     void disable ( void );
     void enable ( void );
 
-    void setBorder ( const nom::Color& border_colors );
     void setBackground ( nom::SDL_Gradient *gradient );
 
     void Update ( void );

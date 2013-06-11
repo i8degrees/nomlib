@@ -17,34 +17,34 @@
 
 #include "Color.h"
 #include "Coords.h"
+#include "Transformable.hpp"
 #include "SDL_Canvas.hpp"
 #include "SDL_Gradient.hpp"
 #include "SDL_Line.hpp"
 #include "gamelib.h"
 
-class SDLMessageBox
+class SDLMessageBox:  public nom::Transformable // "has a" relationship
 {
   public:
     SDLMessageBox ( void );
     ~SDLMessageBox ( void );
 
-    void Init ( unsigned int x, unsigned int y, unsigned int width, unsigned int height );
+    void Init ( int32_t x, int32_t y, int32_t width, int32_t height );
 
     bool isEnabled ( void );
     void disable ( void );
     void enable ( void );
 
-    void setBorder ( nom::Color &border_colors );
+    void setBorder ( const nom::Color& border_colors );
     void setBackground ( nom::SDL_Gradient *gradient );
 
     void Update ( void );
 
-    void Draw ( void* video_buffer, unsigned int x, unsigned int y, unsigned int width, unsigned int height );
-    //void Draw ( SDL_Surface *video_buffer );
+    void Draw ( void* video_buffer );
 
   private:
     bool enabled; // shown or not
-    nom::Coords geometry; // x, y, width & height
+
     nom::SDL_Gradient *background;
     std::vector<nom::Color> window_borders;
     typedef std::vector<nom::SDL_Drawable*> drawable_t;

@@ -17,16 +17,16 @@ SDLMessageBox::SDLMessageBox ( void )
 
   this->window_borders.clear();
 
-  for ( int i = 0; i < this->window_borders.size(); i++ )
-    this->window_borders[i].setColor ( 0, 0, 0 );
+  for ( int32_t i = 0; i < this->window_borders.size(); i++ )
+    this->window_borders[i].setColor ( nom::Color::Black );
 
-  this->geometry.setCoords ( 0, 0, 0, 0 );
+  this->coords.setCoords ( 0, 0, 0, 0 );
 }
 
 
 SDLMessageBox::~SDLMessageBox ( void )
 {
-  drawable_t::const_iterator it;
+  drawable_t::const_iterator it; // iterator for our drawables vector
 
   #ifdef DEBUG_MESSAGEBOX_OBJ
     std::cout << "SDLMessageBox::~SDLMessageBox (): " << "Goodbye cruel world!" << std::endl << std::endl;
@@ -37,21 +37,31 @@ SDLMessageBox::~SDLMessageBox ( void )
   // Goodbye cruel drawables!
   for ( it = this->lines.begin(); it != this->lines.end(); it++ )
   {
-    nom::SDL_Drawable *obj = *it;
+    nom::SDL_Drawable* obj = *it;
     delete obj;
   }
+
+  this->lines.clear();
 
   this->background = NULL; // SDL_Gradient
 }
 
-void SDLMessageBox::Init ( unsigned int x, unsigned int y, unsigned int width, unsigned int height )
+// setBorder must be called first for the border colors to be set properly
+void SDLMessageBox::Init ( int32_t x, int32_t y, int32_t width, int32_t height )
 {
   unsigned int padding = 1;
   unsigned int x_offset = x + width; //unsigned int x_offset = ( x + width ) - padding;
   unsigned int y_offset = y + height; //unsigned int y_offset = ( y + height ) - padding;
 
   // init geometry coords w/ arguments list
-  this->geometry.setCoords ( x, y, width, height );
+  this->coords.setCoords ( x, y, width, height );
+
+  if ( this->background != NULL )
+  {
+    nom::Color starting ( 66, 66, 66 );
+    nom::Color ending ( 99, 99, 99 );
+    this->background->Init ( starting, ending, x, y, width, height, 0, 0, 0 );
+  }
 
   this->lines.push_back ( new nom::Line ( x, y, x_offset - padding, y, this->window_borders[0].getColor() ) ); // top0
   this->lines.push_back ( new nom::Line ( x, y + 1, x_offset - padding, y + 1, this->window_borders[1].getColor() ) ); // top1
@@ -73,7 +83,7 @@ bool SDLMessageBox::isEnabled ( void )
 
 void SDLMessageBox::disable ( void )
 {
- this->enabled = false;
+  this->enabled = false;
 }
 
 void SDLMessageBox::enable ( void )
@@ -81,7 +91,7 @@ void SDLMessageBox::enable ( void )
   this->enabled = true;
 }
 
-void SDLMessageBox::setBorder ( nom::Color &border_colors )
+void SDLMessageBox::setBorder ( const nom::Color& border_colors )
 {
   this->window_borders.push_back ( border_colors );
 
@@ -99,19 +109,22 @@ void SDLMessageBox::setBackground ( nom::SDL_Gradient *gradient )
 
 void SDLMessageBox::Update ( void )
 {
-  //
+  drawable_t::const_iterator it; // iterator for our drawables vector
+
+  for ( it = this->lines.begin(); it != this->lines.end(); it++ )
+  {
+    nom::SDL_Drawable* obj = *it;
+    obj->Update();
+  }
 }
 
-void SDLMessageBox::Draw ( void* video_buffer, unsigned int x, unsigned int y, unsigned int width, unsigned int height )
+void SDLMessageBox::Draw ( void* video_buffer )
 {
-  drawable_t::const_iterator it;
+  drawable_t::const_iterator it; // iterator for our drawables vector
 
   if ( this->background != NULL )
   {
-    nom::Color starting ( 66, 66, 66 );
-    nom::Color ending ( 99, 99, 99 );
-    background->Init ( starting, ending, x, y, width, height, 0, 0, 0 );
-    background->Draw ( video_buffer, x, y, width, height, 0 );
+    background->Draw ( video_buffer, this->coords.getX(), this->coords.getY(), this->coords.getWidth(), this->coords.getHeight(), 0 );
   }
 
   if ( this->box.mustLock ( video_buffer ) == true )
@@ -123,11 +136,10 @@ void SDLMessageBox::Draw ( void* video_buffer, unsigned int x, unsigned int y, u
 
     for ( it = this->lines.begin(); it != this->lines.end(); it++ )
     {
-      nom::SDL_Drawable *obj = *it;
-      obj->Update();
+      nom::SDL_Drawable* obj = *it;
       obj->Draw ( video_buffer );
     }
-  }
 
-  this->box.unlockCanvas ( video_buffer );
+    this->box.unlockCanvas ( video_buffer );
+  }
 }

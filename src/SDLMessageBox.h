@@ -29,16 +29,13 @@ class SDLMessageBox:  public nom::Transformable // "has a" relationship
     SDLMessageBox ( void );
     ~SDLMessageBox ( void );
 
-    void Init ( int32_t x, int32_t y, int32_t width, int32_t height, const std::vector<nom::Color> border_colors );
+    void Init ( int32_t x, int32_t y, int32_t width, int32_t height, const std::vector<nom::Color> border_colors, nom::SDL_Gradient *gradient = NULL );
 
     bool isEnabled ( void );
     void disable ( void );
     void enable ( void );
 
-    void setBackground ( nom::SDL_Gradient *gradient );
-
     void Update ( void );
-
     void Draw ( void* video_buffer );
 
   private:

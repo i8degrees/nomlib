@@ -44,7 +44,7 @@ SDLMessageBox::~SDLMessageBox ( void )
 }
 
 // setBorder must be called first for the border colors to be set properly
-void SDLMessageBox::Init ( int32_t x, int32_t y, int32_t width, int32_t height, const std::vector<nom::Color> border_colors )
+void SDLMessageBox::Init ( int32_t x, int32_t y, int32_t width, int32_t height, const std::vector<nom::Color> border_colors, nom::SDL_Gradient *gradient )
 {
   unsigned int padding = 1;
   unsigned int x_offset = x + width; //unsigned int x_offset = ( x + width ) - padding;
@@ -87,11 +87,6 @@ void SDLMessageBox::disable ( void )
 void SDLMessageBox::enable ( void )
 {
   this->enabled = true;
-}
-
-void SDLMessageBox::setBackground ( nom::SDL_Gradient *gradient )
-{
-  this->background = gradient;
 }
 
 void SDLMessageBox::Update ( void )

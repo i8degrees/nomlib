@@ -33,6 +33,7 @@ namespace nom
       virtual ~Line ( void );
       Line ( const nom::Coords& coords, const nom::Color& color );
 
+      void Update ( void );
       void Draw ( void* video_buffer );
     private:
       nom::Pixel pixel;

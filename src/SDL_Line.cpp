@@ -26,6 +26,11 @@ nom::Line::Line ( const nom::Coords& coords, const nom::Color& color )
   this->color = color;
 }
 
+void nom::Line::Update ( void )
+{
+  this->pixel.setColor ( this->color );
+}
+
 // Bresenham's line algorithm
 void nom::Line::Draw ( void* video_buffer )
 {
@@ -34,8 +39,6 @@ void nom::Line::Draw ( void* video_buffer )
   int32_t y1 = this->coords.getY();
   int32_t x2 = this->coords.getWidth();
   int32_t y2 = this->coords.getHeight();
-
-  pixel.setColor ( this->color );
 
   bool steep = ( fabs ( y2 - y1 ) > fabs ( x2 - x1 ) );
 

@@ -111,14 +111,12 @@ void nom::SDL_Display::Update ( void )
   }
 }
 
-void nom::SDL_Display::Update ( void* video_buffer )
+// TODO: test me
+// As per libSDL docs, this method call should not be used when the display
+// surface is locked
+void nom::SDL_Display::Update ( const nom::Coords& coords )
 {
-  if ( SDL_Flip ( static_cast<SDL_Surface*> ( video_buffer ) ) != 0 )
-  {
-    #ifdef DEBUG_SDL_DISPLAY
-      std::cout << "ERR in nom::SDL_Display::Update ( void* ): " << SDL_GetError() << std::endl;
-    #endif
-  }
+  SDL_UpdateRect ( static_cast<SDL_Surface*> ( this->get() ), coords.getX(), coords.getY(), coords.getWidth(), coords.getHeight() );
 }
 
 void SDL_Display::toggleFullScreenWindow ( int32_t width, int32_t height )

@@ -43,10 +43,7 @@ namespace nom
       const nom::Coords getDisplayBounds ( void ) const;
 
       void Update ( void );
-      void Update ( void* video_buffer );
-      //void Update ( const nom::Coords& );
-      //void Update ( int32_t x, int32_t y, int32_t width, int32_t height );
-      //void Update ( const nom::Coords& );
+      void Update ( const nom::Coords& coords );
       void toggleFullScreenWindow ( int32_t width, int32_t height );
 
       const std::string getWindowTitle ( void ) const;

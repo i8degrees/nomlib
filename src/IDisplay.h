@@ -48,7 +48,7 @@ namespace nom
       virtual const nom::Coords getDisplayBounds ( void ) const = 0;
 
       virtual void Update ( void ) = 0;
-      virtual void Update ( void* video_buffer ) = 0;
+      virtual void Update ( const nom::Coords& ) = 0;
 
       virtual void toggleFullScreenWindow ( int32_t width, int32_t height ) = 0;
 

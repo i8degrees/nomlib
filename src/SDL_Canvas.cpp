@@ -290,26 +290,37 @@ void nom::SDL_Canvas::clear ( const nom::Color& color )
   // ...
 }
 
-bool nom::SDL_Canvas::mustLock ( void )
+bool nom::SDL_Canvas::mustLock ( void* video_buffer )
 {
-  if ( SDL_MUSTLOCK ( this->canvas_buffer ) )
+  if ( SDL_MUSTLOCK ( static_cast<SDL_Surface*> ( video_buffer ) ) )
     return true;
   else
     return false;
 }
 
-bool nom::SDL_Canvas::lockCanvas ( void )
+bool nom::SDL_Canvas::lockCanvas ( void* video_buffer )
 {
-  if ( this->mustLock() )
-    SDL_LockSurface ( this->canvas_buffer );
+  if ( this->mustLock ( video_buffer ) )
+    SDL_LockSurface ( static_cast<SDL_Surface*> ( video_buffer ) );
   else
     return false;
   return true;
 }
 
-bool nom::SDL_Canvas::unlockCanvas ( void )
+bool nom::SDL_Canvas::unlockCanvas ( void* video_buffer )
 {
-  SDL_UnlockSurface ( this->canvas_buffer );
+  SDL_UnlockSurface ( static_cast<SDL_Surface*> ( video_buffer ) );
 
   return true;
+}
+
+int32_t nom::SDL_Canvas::getPixel ( int32_t x, int32_t y )
+{
+  SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer );
+
+  //Convert the pixels to 32 bit
+  uint32_t *pixels = ( uint32_t * ) buffer->pixels;
+
+  //Get the pixel requested
+  return pixels[ ( y * buffer->w ) + x ];
 }

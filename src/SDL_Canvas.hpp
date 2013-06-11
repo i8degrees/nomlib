@@ -82,9 +82,11 @@ namespace nom
 
       void clear ( const nom::Color& color = nom::Blue );
 
-      bool mustLock ( void );
-      bool lockCanvas ( void );
-      bool unlockCanvas ( void );
+      bool mustLock ( void* video_buffer );
+      bool lockCanvas ( void* video_buffer );
+      bool unlockCanvas ( void* video_buffer );
+
+      int32_t getPixel ( int32_t x, int32_t y );
 
     private:
       SDL_Surface *canvas_buffer;

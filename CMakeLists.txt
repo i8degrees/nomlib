@@ -28,7 +28,6 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/SDL_Rectangle.cpp
       ${SRC_DIR}/SDL_Display.cpp
       ${SRC_DIR}/SDL_Canvas.cpp
-      ${SRC_DIR}/gfx.cpp
       ${SRC_DIR}/sprite.cpp
       ${SRC_DIR}/SDL_Input.cpp
       ${SRC_DIR}/timer.cpp
@@ -63,7 +62,6 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/gamelib.h
       ${SRC_DIR}/IDisplay.h
       ${SRC_DIR}/SDL_Display.h
-      ${SRC_DIR}/gfx.h
       ${SRC_DIR}/sprite.h
       ${SRC_DIR}/SDL_Input.hpp
       ${SRC_DIR}/timer.h

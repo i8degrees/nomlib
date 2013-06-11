@@ -22,7 +22,6 @@
 #include "SDL_Drawable.hpp"
 #include "SDL_Canvas.hpp"
 #include "Transformable.hpp"
-#include "gfx.h"
 #include "gamelib.h"
 
 namespace nom

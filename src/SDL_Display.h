@@ -18,7 +18,6 @@
 #include "IDisplay.h"
 #include "Coords.h"
 //#include "Color.h"
-#include "gfx.h" // setWindowIcon dependency
 #include "SDL_Canvas.hpp"
 #include "gamelib.h"
 

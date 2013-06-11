@@ -15,7 +15,6 @@
 
 #include "SDL.h"
 
-#include "gfx.h"
 #include "Color.h"
 #include "Coords.h"
 #include "SDL_Canvas.hpp"

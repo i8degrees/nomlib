@@ -14,6 +14,7 @@
 #include <string>
 #include <cmath>
 #include <vector>
+#include <memory>
 
 #include "SDL.h"
 
@@ -38,7 +39,7 @@ namespace nom
       void Update ( void );
       void Draw ( void* video_buffer );
     private:
-      std::vector<nom::Pixel*> pixels;
+      std::vector<std::unique_ptr<nom::Pixel>> pixels;
       bool updated;
   };
 }

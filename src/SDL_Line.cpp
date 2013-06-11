@@ -12,6 +12,10 @@
 
 nom::Line::Line ( void )
 {
+  #ifdef DEBUG_SDL_LINE_OBJ
+    std::cout << "Line::Line (): " << "Hello, world!" << std::endl << std::endl;
+  #endif
+
   this->pixels.clear();
 
   this->updated = false;
@@ -22,18 +26,27 @@ nom::Line::Line ( void )
 
 nom::Line::~Line ( void )
 {
+  #ifdef DEBUG_SDL_LINE_OBJ
+    std::cout << "Line::~Line (): " << "Goodbye cruel world!" << std::endl << std::endl;
+  #endif
+
   this->updated = false;
 
   // Goodbye cruel pixels!
-  for ( std::vector<nom::Pixel*>::const_iterator it = this->pixels.begin(); it != this->pixels.end(); it++ )
-  {
-    nom::Pixel *obj = *it;
-    delete obj;
-  }
+  //for ( std::vector<nom::Pixel*>::const_iterator it = this->pixels.begin(); it != this->pixels.end(); it++ )
+  //{
+    //delete *it;
+  //}
+
+  this->pixels.clear();
 }
 
 nom::Line::Line ( const nom::Coords& coords, const nom::Color& color )
 {
+  #ifdef DEBUG_SDL_LINE_OBJ
+    std::cout << "Line::Line (): " << "Hello, world!" << std::endl << std::endl;
+  #endif
+
   this->pixels.clear();
 
   this->updated = false;
@@ -44,6 +57,10 @@ nom::Line::Line ( const nom::Coords& coords, const nom::Color& color )
 
 nom::Line::Line ( int32_t x, int32_t y, int32_t width, int32_t height, const nom::Color& color )
 {
+  #ifdef DEBUG_SDL_LINE_OBJ
+    std::cout << "Line::Line (): " << "Hello, world!" << std::endl << std::endl;
+  #endif
+
   this->pixels.clear();
 
   this->updated = false;
@@ -62,7 +79,9 @@ void nom::Line::Update ( void )
   int32_t y2 = this->coords.getHeight();
 
   if ( this->updated == true )
-    return;
+  {
+    this->pixels.clear();
+  }
 
   bool steep = ( fabs ( y2 - y1 ) > fabs ( x2 - x1 ) );
 
@@ -90,9 +109,11 @@ void nom::Line::Update ( void )
   for ( int32_t x = ( int32_t ) x1; x < maxX; x++ )
   {
     if ( steep )
-      this->pixels.push_back ( new nom::Pixel ( y, x, this->color ) );
+      this->pixels.push_back ( std::unique_ptr<nom::Pixel> ( new nom::Pixel ( y, x, this->color ) ) );
+      //this->pixels.push_back ( new nom::Pixel ( y, x, this->color ) );
     else
-      this->pixels.push_back ( new nom::Pixel ( x, y, this->color ) );
+      this->pixels.push_back ( std::unique_ptr<nom::Pixel> ( new nom::Pixel ( x, y, this->color ) ) );
+      //this->pixels.push_back ( new nom::Pixel ( x, y, this->color ) );
 
     error -= dy;
 

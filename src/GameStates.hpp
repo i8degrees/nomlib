@@ -24,6 +24,8 @@
 
 namespace nom
 {
+  static std::vector<std::unique_ptr<nom::GameState>> states;
+
   class GameStates
   {
     public:

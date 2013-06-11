@@ -11,7 +11,7 @@
 ******************************************************************************/
 #include "GameStates.hpp"
 
-static std::vector<std::unique_ptr<nom::GameState>> states;
+std::vector<std::unique_ptr<nom::GameState>> states;
 
 nom::GameStates::GameStates ( void )
 {

@@ -1,16 +1,18 @@
 /******************************************************************************
-    SDLMessageBox.cpp
+    SDL_MessageBox.cpp
+
+  Simple UI interface for drawing a styled message box
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.
 
 ******************************************************************************/
-#include "SDLMessageBox.h"
+#include "SDL_MessageBox.hpp"
 
-SDLMessageBox::SDLMessageBox ( void )
+nom::SDL_MessageBox::SDL_MessageBox ( void )
 {
-  #ifdef DEBUG_MESSAGEBOX_OBJ
-    std::cout << "SDLMessageBox::SDLMessageBox (): " << "Hello, world!" << std::endl << std::endl;
+  #ifdef DEBUG_SDL_MESSAGEBOX_OBJ
+    std::cout << "SDL_MessageBox::SDL_MessageBox (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
   this->enabled = true;
@@ -26,10 +28,10 @@ SDLMessageBox::SDLMessageBox ( void )
 }
 
 
-SDLMessageBox::~SDLMessageBox ( void )
+nom::SDL_MessageBox::~SDL_MessageBox ( void )
 {
-  #ifdef DEBUG_MESSAGEBOX_OBJ
-    std::cout << "SDLMessageBox::~SDLMessageBox (): " << "Goodbye cruel world!" << std::endl << std::endl;
+  #ifdef DEBUG_SDL_MESSAGEBOX_OBJ
+    std::cout << "SDL_MessageBox::~SDL_MessageBox (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
 
   this->enabled = false;
@@ -45,8 +47,7 @@ SDLMessageBox::~SDLMessageBox ( void )
   this->background = NULL; // SDL_Gradient
 }
 
-// setBorder must be called first for the border colors to be set properly
-void SDLMessageBox::Init ( int32_t x, int32_t y, int32_t width, int32_t height, const std::vector<nom::Color> border_colors, nom::SDL_Gradient *gradient )
+void nom::SDL_MessageBox::Init ( int32_t x, int32_t y, int32_t width, int32_t height, const std::vector<nom::Color> border_colors, nom::SDL_Gradient *gradient )
 {
   unsigned int padding = 1;
   unsigned int x_offset = x + width; //unsigned int x_offset = ( x + width ) - padding;
@@ -74,7 +75,7 @@ void SDLMessageBox::Init ( int32_t x, int32_t y, int32_t width, int32_t height, 
   this->lines.push_back ( std::shared_ptr<nom::SDL_Drawable> ( new nom::Line ( x_offset, y, x_offset, y_offset + padding, this->window_borders[7].getColor() ) ) ); // right1
 }
 
-bool SDLMessageBox::isEnabled ( void )
+bool nom::SDL_MessageBox::isEnabled ( void )
 {
   if ( this->enabled == true )
     return true;
@@ -82,17 +83,18 @@ bool SDLMessageBox::isEnabled ( void )
     return false;
 }
 
-void SDLMessageBox::disable ( void )
+void nom::SDL_MessageBox::disable ( void )
 {
   this->enabled = false;
 }
 
-void SDLMessageBox::enable ( void )
+void nom::SDL_MessageBox::enable ( void )
 {
   this->enabled = true;
 }
 
-void SDLMessageBox::Update ( void )
+// FIXME: how do we iterate through this with unique_ptr type ?
+void nom::SDL_MessageBox::Update ( void )
 {
   for ( auto it = this->lines.begin(); it != this->lines.end(); it++ )
   {
@@ -101,7 +103,8 @@ void SDLMessageBox::Update ( void )
   }
 }
 
-void SDLMessageBox::Draw ( void* video_buffer )
+// FIXME: how do we iterate through this with unique_ptr type ?
+void nom::SDL_MessageBox::Draw ( void* video_buffer )
 {
   if ( this->background != NULL )
   {

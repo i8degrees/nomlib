@@ -1,5 +1,5 @@
 /******************************************************************************
-    SDL_Surface.cpp
+    SDL_Canvas.cpp
 
     Abstraction of SDL Surfaces
 
@@ -182,7 +182,7 @@ void nom::SDL_Canvas::Draw ( void* video_buffer )
   }
 }
 
-bool nom::SDL_Canvas::Update ( void* video_buffer ) const
+bool nom::SDL_Canvas::Update ( void* video_buffer )
 {
   if ( SDL_Flip ( (SDL_Surface*) video_buffer ) != 0 )
   {
@@ -191,7 +191,6 @@ bool nom::SDL_Canvas::Update ( void* video_buffer ) const
     #endif
     return false;
   }
-
   return true;
 }
 

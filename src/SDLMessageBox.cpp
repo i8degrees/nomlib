@@ -68,7 +68,7 @@ void SDLMessageBox::setBorder ( nom::Color &border_colors )
   #endif
 }
 
-void SDLMessageBox::setBackground ( SDLGradient *gradient )
+void SDLMessageBox::setBackground ( nom::SDL_Gradient *gradient )
 {
   this->background = gradient;
 }

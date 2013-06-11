@@ -1,16 +1,18 @@
 /******************************************************************************
-    SDLGradient.cpp
+    SDL_Gradient.cpp
+
+  SDL Gradient effects
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.
 
 ******************************************************************************/
-#include "SDLGradient.h"
+#include "SDL_Gradient.hpp"
 
-SDLGradient::SDLGradient ( void )
+nom::SDL_Gradient::SDL_Gradient ( void )
 {
-  #ifdef DEBUG_GRADIENT_OBJ
-    std::cout << "SDLGradient::SDLGradient (): " << "Hello, world!" << std::endl << std::endl;
+  #ifdef DEBUG_SDL_GRADIENT_OBJ
+    std::cout << "nom::SDL_Gradient::SDL_Gradient (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
   this->gradient[0].setColor ( 0, 0, 0 ); // starting color defaults
@@ -23,16 +25,12 @@ SDLGradient::SDLGradient ( void )
   this->direction = 0;
 }
 
-void SDLGradient::Init (  nom::Color starting_color, nom::Color ending_color,
+void nom::SDL_Gradient::Init (  nom::Color starting_color, nom::Color ending_color,
                           unsigned int x, unsigned int y,
                           unsigned int width, unsigned int height,
                           unsigned int direction, unsigned int x_margin,
                           unsigned int y_margin )
 {
-  #ifdef DEBUG_GRADIENT_OBJ
-    std::cout << "SDLGradient::SDLGradient (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
-
   this->gradient[0] = starting_color;
   this->gradient[1] = ending_color;
 
@@ -43,14 +41,14 @@ void SDLGradient::Init (  nom::Color starting_color, nom::Color ending_color,
   this->direction = 0; // direction in which gradient starts from; one (1) reverses direction
 }
 
-SDLGradient::~SDLGradient ( void )
+nom::SDL_Gradient::~SDL_Gradient ( void )
 {
-  #ifdef DEBUG_GRADIENT_OBJ
-    std::cout << "SDLGradient::~SDLGradient (): " << "Goodbye cruel world!" << std::endl << std::endl;
+  #ifdef DEBUG_SDL_GRADIENT_OBJ
+    std::cout << "nom::SDL_Gradient::~SDL_Gradient (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
 }
 
-void SDLGradient::Draw (  void* video_buffer, unsigned int x, unsigned int y,
+void nom::SDL_Gradient::Draw (  void* video_buffer, unsigned int x, unsigned int y,
                           unsigned int width, unsigned int height, unsigned int direction
                         )
 {
@@ -61,8 +59,8 @@ void SDLGradient::Draw (  void* video_buffer, unsigned int x, unsigned int y,
   // width should always be one (1) with this particular blit algorithm
   this->coords.setCoords ( x, y, 1, height - this->y_margin );
 
-  #ifdef DEBUG_GRADIENT
-    std::cout << "SDLGradient::LinearGradientFill (): " << "Variable Dump" << std::endl << std::endl;
+  #ifdef DEBUG_SDL_GRADIENT
+    std::cout << "nom::SDL_Gradient::Draw (): " << "Variable Dump" << std::endl << std::endl;
 
     for ( int i = 0; i < 2; i++ )
     {

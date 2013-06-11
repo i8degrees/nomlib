@@ -16,7 +16,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/Logger.cpp
       ${SRC_DIR}/audio.cpp
       ${SRC_DIR}/SDL_Font.cpp
-      ${SRC_DIR}/SDLGradient.cpp
+      ${SRC_DIR}/SDL_Gradient.cpp
       ${SRC_DIR}/SDLWindowFrame.cpp
       ${SRC_DIR}/SDLMessageBox.cpp
       ${SRC_DIR}/SDL_BitmapFont.cpp
@@ -47,7 +47,7 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/Logger.h
       ${SRC_DIR}/audio.h
       ${SRC_DIR}/SDL_Font.h
-      ${SRC_DIR}/SDLGradient.h
+      ${SRC_DIR}/SDL_Gradient.hpp
       ${SRC_DIR}/SDLWindowFrame.h
       ${SRC_DIR}/SDLMessageBox.h
       ${SRC_DIR}/SDL_BitmapFont.h

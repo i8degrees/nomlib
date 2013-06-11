@@ -16,10 +16,10 @@
 #include "SDL.h"
 
 #include "gfx.h"
-//#include "Color.h"
+#include "Color.h"
 #include "Coords.h"
-
-#include "SDLGradient.h"
+#include "SDL_Gradient.hpp"
+#include "gamelib.h"
 
 class SDLMessageBox
 {
@@ -34,7 +34,7 @@ class SDLMessageBox
     void enable ( void );
 
     void setBorder ( nom::Color &border_colors );
-    void setBackground ( SDLGradient *gradient );
+    void setBackground ( nom::SDL_Gradient *gradient );
 
     void Update ( void );
 
@@ -44,7 +44,7 @@ class SDLMessageBox
   private:
     bool enabled; // shown or not
     nom::Coords geometry; // x, y, width & height
-    SDLGradient *background;
+    nom::SDL_Gradient *background;
     std::vector<nom::Color> window_borders;
     //GColor window_borders[8];
     // top border, left border, bottom border, right border; each defined border

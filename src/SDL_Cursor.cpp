@@ -100,7 +100,7 @@ void nom::SDL_Cursor::setState ( unsigned int state )
 
 void nom::SDL_Cursor::Update ( void )
 {
-  // Stub
+  this->cursor.Update();
 }
 
 void nom::SDL_Cursor::Draw ( void* video_buffer )

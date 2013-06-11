@@ -101,20 +101,6 @@ bool nom::Sprite::Load ( std::string filename, nom::Color colorkey, unsigned int
 
 void nom::Sprite::Update ( void )
 {
-  //
-}
-
-void nom::Sprite::Draw ( void* video_buffer )
-{
-  nom::Coords offsets; // FIXME
-
-  if ( this->sprite_buffer.get() == nullptr )
-  {
-    #ifdef DEBUG_SPRITE
-      std::cout << "ERR in Sprite::Draw(): " << "NULL sprite_buffer" << std::endl << std::endl;
-    #endif
-  }
-
   if ( this->sheet.id != -1 )
   {
     // FIXME: Presently, we assume every sprite on our sheet is on the same row
@@ -125,5 +111,16 @@ void nom::Sprite::Draw ( void* video_buffer )
   }
 
   this->sprite_buffer.setPosition ( coords );
+}
+
+void nom::Sprite::Draw ( void* video_buffer )
+{
+  if ( this->sprite_buffer.get() == nullptr )
+  {
+    #ifdef DEBUG_SPRITE
+      std::cout << "ERR in Sprite::Draw(): " << "NULL sprite_buffer" << std::endl << std::endl;
+    #endif
+  }
+
   this->sprite_buffer.Draw ( video_buffer );
 }

@@ -45,6 +45,7 @@ namespace nom
 
     private:
       nom::SDL_Canvas sprite_buffer;
+      nom::Coords offsets;
 
       unsigned int state; /// alive, dying, dead, ...
 

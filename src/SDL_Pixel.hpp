@@ -30,6 +30,7 @@ namespace nom
       Pixel ( void );
       virtual ~Pixel ( void );
       Pixel ( const nom::Coords& coords, const nom::Color& color );
+      Pixel ( int32_t x, int32_t y, const nom::Color& color );
       void Update ( void );
 
       void Draw ( void* video_buffer );

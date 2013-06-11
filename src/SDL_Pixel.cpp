@@ -26,6 +26,11 @@ nom::Pixel::Pixel ( const nom::Coords& coords, const nom::Color& color )
   this->color = color;
 }
 
+nom::Pixel::Pixel ( int32_t x, int32_t y, const nom::Color& color )
+{
+  this->coords = nom::Coords ( x, y );
+  this->color = color;
+}
 
 void nom::Pixel::Update ( void )
 {

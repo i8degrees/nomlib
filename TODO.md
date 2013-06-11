@@ -3,6 +3,7 @@
 ## TODO
 
 * Fix nom::Line memory leak (update variable is merely a temporary partial stopgap)
+* Fix SDL_SetVideoMode memory leak when toggling fullscreen mode
 * GameStates as a singleton class
 * Use nullptr instead of NULL
 * Fix Color ( -1, -1, -1, -1 ) issue

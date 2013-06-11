@@ -29,6 +29,7 @@ nom::Line::Line ( const nom::Coords& coords, const nom::Color& color )
 // Bresenham's line algorithm
 void nom::Line::Draw ( void* video_buffer )
 {
+  // temporary calculation offsets based on user's initial given coordinates
   int32_t x1 = this->coords.getX();
   int32_t y1 = this->coords.getY();
   int32_t x2 = this->coords.getWidth();

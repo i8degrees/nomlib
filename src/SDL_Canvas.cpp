@@ -282,3 +282,35 @@ bool nom::SDL_Canvas::displayFormatAlpha ( void )
   return true;
 }
 
+void nom::SDL_Canvas::clear ( const nom::Color& color )
+{
+  nom::Rectangle rect ( nom::Coords ( 0, 0, this->getCanvasWidth(), this->getCanvasHeight() ), color );
+
+  rect.Draw ( this->canvas_buffer );
+
+  // ...
+}
+
+bool nom::SDL_Canvas::mustLock ( void )
+{
+  if ( SDL_MUSTLOCK ( this->canvas_buffer ) )
+    return true;
+  else
+    return false;
+}
+
+bool nom::SDL_Canvas::lockCanvas ( void )
+{
+  if ( this->mustLock() )
+    SDL_LockSurface ( this->canvas_buffer );
+  else
+    return false;
+  return true;
+}
+
+bool nom::SDL_Canvas::unlockCanvas ( void )
+{
+  SDL_UnlockSurface ( this->canvas_buffer );
+
+  return true;
+}

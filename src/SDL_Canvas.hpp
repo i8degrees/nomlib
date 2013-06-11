@@ -20,6 +20,7 @@
 #include "Coords.h"
 
 #include "SDL_Primitive.hpp"
+#include "SDL_Rectangle.hpp"
 #include "SDL_Image.hpp"
 #include "gamelib.h"
 
@@ -78,6 +79,12 @@ namespace nom
 
       bool displayFormat ( void );
       bool displayFormatAlpha ( void );
+
+      void clear ( const nom::Color& color = nom::Blue );
+
+      bool mustLock ( void );
+      bool lockCanvas ( void );
+      bool unlockCanvas ( void );
 
     private:
       SDL_Surface *canvas_buffer;

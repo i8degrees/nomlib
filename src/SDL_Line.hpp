@@ -12,12 +12,14 @@
 
 #include <iostream>
 #include <string>
+#include <cmath>
 
 #include "SDL.h"
 
 #include "Coords.h"
 #include "Color.h"
 #include "SDL_Drawable.hpp"
+#include "SDL_Pixel.hpp"
 #include "Transformable.hpp"
 #include "gamelib.h"
 
@@ -33,7 +35,7 @@ namespace nom
 
       void Draw ( void* video_buffer );
     private:
-      // ...
+      nom::Pixel pixel;
   };
 }
 

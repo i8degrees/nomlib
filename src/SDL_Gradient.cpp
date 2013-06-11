@@ -15,8 +15,8 @@ nom::SDL_Gradient::SDL_Gradient ( void )
     std::cout << "nom::SDL_Gradient::SDL_Gradient (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
-  this->gradient[0].setColor ( 0, 0, 0 ); // starting color defaults
-  this->gradient[1].setColor ( 255, 255, 255 ); // ending color defaults
+  this->gradient[0].setColor ( 66, 66, 66, 255 ); // starting color defaults
+  this->gradient[1].setColor ( 99, 99, 99, 255 ); // ending color defaults
 
   this->coords.setCoords ( 0, 0, 0, 0 ); // zero out dem blitting coords
 
@@ -25,7 +25,7 @@ nom::SDL_Gradient::SDL_Gradient ( void )
   this->direction = 0;
 }
 
-void nom::SDL_Gradient::Init (  nom::Color starting_color, nom::Color ending_color,
+void nom::SDL_Gradient::Init (  const nom::Color& starting_color, const nom::Color& ending_color,
                           unsigned int x, unsigned int y,
                           unsigned int width, unsigned int height,
                           unsigned int direction, unsigned int x_margin,
@@ -53,22 +53,13 @@ void nom::SDL_Gradient::Draw (  void* video_buffer, unsigned int x, unsigned int
                         )
 {
   unsigned int rows = 0; // iterator
-  unsigned int x_offset = x + width;
+  uint32_t x_offset = x + width;
+  //unsigned int x_offset = x + width;
   //unsigned int y_offset = y + height;
 
   // width should always be one (1) with this particular blit algorithm
   this->coords.setCoords ( x, y, 1, height - this->y_margin );
-
-  #ifdef DEBUG_SDL_GRADIENT
-    std::cout << "nom::SDL_Gradient::Draw (): " << "Variable Dump" << std::endl << std::endl;
-
-    for ( int i = 0; i < 2; i++ )
-    {
-      std::cout << "\nRed[" << i << "]: " << this->gradient[i].getRed() << "\n";
-      std::cout << "\nGreen[" << i << "]: " << this->gradient[i].getGreen() << "\n";
-      std::cout << "\nBlue[" << i << "]: " << this->gradient[i].getBlue() << "\n";
-    }
-  #endif
+  //this->coords.setCoords ( this->getX(), this->getY(), 1, ( this->getHeight() - this->y_margin ) );
 
   float currentR = (float) gradient[0].getRed();
   float currentG = (float) gradient[0].getGreen();

@@ -15,12 +15,16 @@
 
 #include "gamelib.h"
 
+// Example usage:
+// https://gist.github.com/i8degrees/5711070
+
 namespace nom
 {
   // This is an inheritance-only class
   class Drawable
   {
     protected:
+      virtual void Update ( void ) = 0;
       virtual void Draw ( void* ) = 0;
 
       Drawable ( void )

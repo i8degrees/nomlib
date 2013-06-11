@@ -40,6 +40,7 @@ namespace nom
       bool Load ( std::string filename );
       bool Load ( std::string filename, nom::Color colorkey, unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL );
 
+      void Update ( void );
       void Draw ( void* video_buffer );
 
     private:

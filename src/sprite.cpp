@@ -99,6 +99,11 @@ bool nom::Sprite::Load ( std::string filename, nom::Color colorkey, unsigned int
   return true;
 }
 
+void nom::Sprite::Update ( void )
+{
+  //
+}
+
 void nom::Sprite::Draw ( void* video_buffer )
 {
   nom::Coords offsets; // FIXME

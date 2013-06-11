@@ -88,6 +88,7 @@ namespace nom
       bool Load ( const std::string& filename, const nom::Color& colorkey, uint32_t sheet_width = 16,
                   uint32_t sheet_height = 16 );
 
+      void Update ( void );
       /// Draw the set text string to the video surface
       void Draw ( void* video_buffer );
 

@@ -59,6 +59,7 @@ namespace nom
       /// by the SDL_ttf extension
       bool Load ( std::string filename, uint32_t size );
 
+      void Update ( void );
       /// Draw the set text string to the video surface
       void Draw ( void* video_buffer );
 

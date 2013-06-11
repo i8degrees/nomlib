@@ -26,6 +26,11 @@ nom::Rectangle::Rectangle ( const nom::Coords& coords, const nom::Color& color )
   this->color = color;
 }
 
+void nom::Rectangle::Update ( void )
+{
+  // Stub
+}
+
 void nom::Rectangle::Draw ( void* video_buffer )
 {
   SDL_Rect rectangle = this->coords.getSDL_Rect();

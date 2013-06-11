@@ -27,6 +27,7 @@ namespace nom
   class SDL_Drawable: public nom::Drawable
   {
     public:
+      virtual void Update ( void ) = 0;
       virtual void Draw ( void* ) = 0;
 
       SDL_Drawable ( void )

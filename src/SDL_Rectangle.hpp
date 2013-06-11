@@ -32,6 +32,7 @@ namespace nom
       virtual ~Rectangle ( void );
       Rectangle ( const nom::Coords& coords, const nom::Color& color );
 
+      void Update ( void );
       void Draw ( void* );
     private:
       //

@@ -300,6 +300,11 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
   return true;
 }
 
+void nom::SDL_BitmapFont::Update ( void )
+{
+  // Stub
+}
+
 void SDL_BitmapFont::Draw ( void* video_buffer )
 {
   // Use coordinates provided by interface user as our starting origin

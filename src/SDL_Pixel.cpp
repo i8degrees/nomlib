@@ -26,6 +26,12 @@ nom::Pixel::Pixel ( const nom::Coords& coords, const nom::Color& color )
   this->color = color;
 }
 
+
+void nom::Pixel::Update ( void )
+{
+  // Stub
+}
+
 // 32-bit bpp
 void nom::Pixel::Draw ( void* video_buffer )
 {

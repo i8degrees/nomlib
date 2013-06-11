@@ -112,6 +112,11 @@ bool SDL_Font::Load ( std::string filename, uint32_t font_size )
   return true;
 }
 
+void nom::SDL_Font::Update ( void )
+{
+  // Stub
+}
+
 void SDL_Font::Draw ( void* video_buffer )
 {
   if ( this->font_buffer.get() != nullptr )

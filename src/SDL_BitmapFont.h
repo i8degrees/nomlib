@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
 
 #include "SDL.h"
 
@@ -81,6 +82,7 @@ namespace nom
       uint8_t getStyle ( void ) const;
       void setStyle ( uint8_t style, uint8_t options = 150 );
 
+      const nom::Coords findGlyph ( const std::string& glyph );
       /// \brief Loads a new bitmap font from a file
       /// \internal
       /// TODO: add spacing / padding so that we can export with black guidelines

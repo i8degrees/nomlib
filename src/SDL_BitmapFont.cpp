@@ -300,6 +300,16 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
   return true;
 }
 
+const nom::Coords nom::SDL_BitmapFont::findGlyph ( const std::string& glyph )
+{
+  std::istringstream i ( glyph );
+
+  uint8_t ascii;
+  i >> ascii;
+
+  return this->chars[ascii];
+}
+
 void nom::SDL_BitmapFont::Update ( void )
 {
   // Stub

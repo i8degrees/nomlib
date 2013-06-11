@@ -9,15 +9,15 @@
 ******************************************************************************/
 #include "Color.h"
 
-const nom::Color Black ( 0, 0, 0 );
-const nom::Color White ( 255, 255, 255 );
-const nom::Color Red ( 255, 0, 0 );
-const nom::Color Green ( 0, 255, 0 );
-const nom::Color Blue ( 0, 0, 255 );
-const nom::Color Yellow ( 255, 255, 255 );
-const nom::Color Magenta ( 255, 0, 255 );
-const nom::Color Cyan ( 0, 255, 255 );
-const nom::Color Transparent ( 0, 0, 0 );
+const nom::Color nom::Color::Black ( 0, 0, 0 );
+const nom::Color nom::Color::White ( 255, 255, 255 );
+const nom::Color nom::Color::Red ( 255, 0, 0 );
+const nom::Color nom::Color::Green ( 0, 255, 0 );
+const nom::Color nom::Color::Blue ( 0, 0, 255 );
+const nom::Color nom::Color::Yellow ( 255, 255, 255 );
+const nom::Color nom::Color::Magenta ( 255, 0, 255 );
+const nom::Color nom::Color::Cyan ( 0, 255, 255 );
+const nom::Color nom::Color::Transparent ( 0, 0, 0 );
 
 nom::Color::Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ), alpha ( -1 ) // SDL_ALPHA_OPAQUE (255)
 {
@@ -78,6 +78,14 @@ void nom::Color::setColor ( int32_t r, int32_t g, int32_t b, int32_t a )
   this->green = g;
   this->blue = b;
   this->alpha = a;
+}
+
+void nom::Color::setColor ( const nom::Color& color )
+{
+  this->red = color.getRed();
+  this->green = color.getGreen();
+  this->blue = color.getBlue();
+  this->alpha = color.getAlpha();
 }
 
 void nom::Color::setRed ( int32_t r )

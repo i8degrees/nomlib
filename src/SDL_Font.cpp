@@ -114,16 +114,13 @@ bool SDL_Font::Load ( std::string filename, uint32_t font_size )
 
 void nom::SDL_Font::Update ( void )
 {
-  // Stub
+  this->font_buffer.setPosition ( this->coords );
 }
 
 void SDL_Font::Draw ( void* video_buffer )
 {
   if ( this->font_buffer.get() != nullptr )
-  {
-    this->font_buffer.setPosition ( this->coords );
     this->font_buffer.Draw ( video_buffer );
-  }
 
   // We must free the rendered font surface here in order to evade massive
   // memory leaks!

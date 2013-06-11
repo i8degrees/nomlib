@@ -10,7 +10,7 @@
 #include "Transformable.hpp"
 
 nom::Transformable::Transformable ( void )  : coords ( 0, 0, 0, 0 ),
-                                              color ( 0, 0, 0, -1 )
+                                              color ( 0, 0, 0, SDL_ALPHA_OPAQUE )
 {
   #ifdef DEBUG_TRANSFORMABLE_OBJ
     std::cout << "Transformable::Transformable (): " << "Hello, world!" << std::endl << std::endl;
@@ -51,9 +51,25 @@ void nom::Transformable::setY ( int32_t y )
   this->coords.setY ( y );
 }
 
+// Phase out? new method get/setPosition
 void nom::Transformable::setXY ( int32_t x, int32_t y )
 {
   this->coords.setXY ( x, y );
+}
+
+const nom::Coords& nom::Transformable::getPosition ( void ) const
+{
+  return this->coords;
+}
+
+void nom::Transformable::setPosition ( int32_t x, int32_t y )
+{
+  this->coords.setXY ( x, y );
+}
+
+void nom::Transformable::setPosition ( const nom::Coords& coords )
+{
+  this->coords = coords;
 }
 
 int32_t nom::Transformable::getWidth ( void ) const

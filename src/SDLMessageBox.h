@@ -47,7 +47,8 @@ class SDLMessageBox
     nom::Coords geometry; // x, y, width & height
     nom::SDL_Gradient *background;
     std::vector<nom::Color> window_borders;
-    nom::Line line;
+    typedef std::vector<nom::SDL_Drawable*> drawable_t;
+    drawable_t lines;
     nom::SDL_Canvas box;
     //GColor window_borders[8];
     // top border, left border, bottom border, right border; each defined border

@@ -37,7 +37,7 @@ namespace nom
     Faded = 4
   };
 
-  class SDL_BitmapFont: public SDL_Drawable, //  "is a" inheritance
+  class SDL_BitmapFont:// public SDL_Drawable, //  "is a" inheritance
                         public nom::Transformable //  "has a" inheritance
   {
     public:

@@ -63,6 +63,10 @@ void SDL_Font::setText ( const std::string& text )
 {
   int32_t width, height = 0;
 
+  // We must free the rendered font surface here in order to evade leaks
+  if ( this->font_buffer.get() != nullptr )
+    this->font_buffer.freeCanvas();
+
   if ( text.length() > 0 )
   {
     if ( TTF_SizeText ( this->font, text.c_str(), &width, &height ) != -1 )
@@ -75,9 +79,13 @@ void SDL_Font::setText ( const std::string& text )
   if ( this->font != nullptr )
   {
     if ( this->getText().c_str() != nullptr )
-      this->font_buffer.setCanvas ( TTF_RenderText_Solid  ( this->font, this->getText().c_str(),
-                                                  this->color.getSDL_Color()
-                                                ) );
+      this->font_buffer.setCanvas (
+                                    TTF_RenderText_Solid  ( this->font,
+                                                            this->getText().c_str(),
+                                                            this->color.getSDL_Color()
+                                                          )
+                                  );
+
   }
   else
   {
@@ -117,15 +125,8 @@ void nom::SDL_Font::Update ( void )
   this->font_buffer.setPosition ( this->coords );
 }
 
-void SDL_Font::Draw ( void* video_buffer )
+void SDL_Font::Draw ( void* video_buffer ) const
 {
   if ( this->font_buffer.get() != nullptr )
     this->font_buffer.Draw ( video_buffer );
-
-  // We must free the rendered font surface here in order to evade massive
-  // memory leaks!
-  //
-  // I *think* said leak occurs only when you are dumb ( like me!) and are
-  // blitting the text in the active game loop
-  this->font_buffer.freeCanvas();
 }

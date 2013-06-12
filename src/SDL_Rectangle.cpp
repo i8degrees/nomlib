@@ -31,7 +31,7 @@ void nom::Rectangle::Update ( void )
   // Stub
 }
 
-void nom::Rectangle::Draw ( void* video_buffer )
+void nom::Rectangle::Draw ( void* video_buffer ) const
 {
   SDL_Rect rectangle = this->coords.getSDL_Rect();
   unsigned int rectangle_color = 0;

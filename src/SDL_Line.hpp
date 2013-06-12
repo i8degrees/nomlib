@@ -37,7 +37,7 @@ namespace nom
       Line ( int32_t x, int32_t y, int32_t width, int32_t height, const nom::Color& color );
 
       void Update ( void );
-      void Draw ( void* video_buffer );
+      void Draw ( void* video_buffer ) const;
     private:
       std::vector<std::unique_ptr<nom::Pixel>> pixels;
       bool updated;

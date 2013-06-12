@@ -38,7 +38,7 @@ void nom::Pixel::Update ( void )
 }
 
 // 32-bit bpp
-void nom::Pixel::Draw ( void* video_buffer )
+void nom::Pixel::Draw ( void* video_buffer ) const
 {
   int32_t x_offset = this->getX();
   int32_t y_offset = this->getY();

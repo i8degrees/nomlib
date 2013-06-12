@@ -33,7 +33,7 @@ namespace nom
       Rectangle ( const nom::Coords& coords, const nom::Color& color );
 
       void Update ( void );
-      void Draw ( void* );
+      void Draw ( void* ) const;
     private:
       //
   };

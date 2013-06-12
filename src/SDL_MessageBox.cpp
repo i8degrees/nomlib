@@ -100,7 +100,7 @@ void nom::SDL_MessageBox::Update ( void )
 }
 
 // FIXME: how do we iterate through this with unique_ptr type ?
-void nom::SDL_MessageBox::Draw ( void* video_buffer )
+void nom::SDL_MessageBox::Draw ( void* video_buffer ) const
 {
   if ( this->background != nullptr )
   {

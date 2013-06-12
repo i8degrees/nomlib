@@ -160,7 +160,7 @@ bool nom::SDL_Canvas::loadFromImage ( const std::string& filename, const nom::Co
   return true;
 }
 
-void nom::SDL_Canvas::Draw ( void* video_buffer )
+void nom::SDL_Canvas::Draw ( void* video_buffer ) const
 {
   // temporary vars to store our wrapped Coords
   SDL_Rect blit_coords = this->coords.getSDL_Rect();
@@ -292,7 +292,7 @@ void nom::SDL_Canvas::clear ( const nom::Color& color )
   rect.Draw ( this->canvas_buffer );
 }
 
-bool nom::SDL_Canvas::mustLock ( void* video_buffer )
+bool nom::SDL_Canvas::mustLock ( void* video_buffer ) const
 {
   if ( SDL_MUSTLOCK ( static_cast<SDL_Surface*> ( video_buffer ) ) )
     return true;
@@ -300,7 +300,7 @@ bool nom::SDL_Canvas::mustLock ( void* video_buffer )
     return false;
 }
 
-bool nom::SDL_Canvas::lockCanvas ( void* video_buffer )
+bool nom::SDL_Canvas::lockCanvas ( void* video_buffer ) const
 {
   if ( this->mustLock ( video_buffer ) )
     SDL_LockSurface ( static_cast<SDL_Surface*> ( video_buffer ) );
@@ -309,7 +309,7 @@ bool nom::SDL_Canvas::lockCanvas ( void* video_buffer )
   return true;
 }
 
-bool nom::SDL_Canvas::unlockCanvas ( void* video_buffer )
+bool nom::SDL_Canvas::unlockCanvas ( void* video_buffer ) const
 {
   SDL_UnlockSurface ( static_cast<SDL_Surface*> ( video_buffer ) );
 

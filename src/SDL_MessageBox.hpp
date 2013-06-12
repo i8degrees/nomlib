@@ -39,7 +39,7 @@ namespace nom
       void enable ( void );
 
       void Update ( void );
-      void Draw ( void* video_buffer );
+      void Draw ( void* video_buffer ) const;
 
     private:
       typedef std::vector<std::shared_ptr<nom::SDL_Drawable>> drawable_t;

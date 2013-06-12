@@ -126,7 +126,7 @@ void nom::Line::Update ( void )
   this->updated = true;
 }
 
-void nom::Line::Draw ( void* video_buffer )
+void nom::Line::Draw ( void* video_buffer ) const
 {
   int32_t idx = 0;
 

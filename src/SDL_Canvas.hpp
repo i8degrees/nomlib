@@ -64,8 +64,8 @@ namespace nom
                             colorkey = nom::Color ( 0, 0, 0, -1 ),
                             uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
-      void Draw ( void* video_buffer );
       bool Update ( void* video_buffer );
+      void Draw ( void* video_buffer ) const;
 
       bool setAlpha ( uint8_t opacity, uint32_t flags = SDL_SRCALPHA );
 
@@ -78,9 +78,9 @@ namespace nom
 
       void clear ( const nom::Color& color = nom::Color::Blue );
 
-      bool mustLock ( void* video_buffer );
-      bool lockCanvas ( void* video_buffer );
-      bool unlockCanvas ( void* video_buffer );
+      bool mustLock ( void* video_buffer ) const;
+      bool lockCanvas ( void* video_buffer ) const;
+      bool unlockCanvas ( void* video_buffer ) const;
 
       int32_t getPixel ( int32_t x, int32_t y );
 

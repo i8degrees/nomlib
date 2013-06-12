@@ -61,7 +61,7 @@ namespace nom
 
       void Update ( void );
       /// Draw the set text string to the video surface
-      void Draw ( void* video_buffer );
+      void Draw ( void* video_buffer ) const;
 
     private:
       /// Surface where font for drawing is rendered to

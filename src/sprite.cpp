@@ -113,7 +113,7 @@ void nom::Sprite::Update ( void )
   this->sprite_buffer.setPosition ( coords );
 }
 
-void nom::Sprite::Draw ( void* video_buffer )
+void nom::Sprite::Draw ( void* video_buffer ) const
 {
   if ( this->sprite_buffer.get() == nullptr )
   {

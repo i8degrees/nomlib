@@ -16,10 +16,8 @@
 #include "SDL.h"
 
 //#include "ICanvas.hpp"
-#include "Color.h"
-#include "Coords.h"
-
-#include "SDL_Primitive.hpp"
+#include "Color.hpp"
+#include "Coords.hpp"
 #include "SDL_Rectangle.hpp"
 #include "SDL_Image.hpp"
 #include "gamelib.h"

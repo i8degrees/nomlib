@@ -28,7 +28,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/SDL_Rectangle.cpp
       ${SRC_DIR}/SDL_Display.cpp
       ${SRC_DIR}/SDL_Canvas.cpp
-      ${SRC_DIR}/sprite.cpp
+      ${SRC_DIR}/Sprite.cpp
       ${SRC_DIR}/SDL_Input.cpp
       ${SRC_DIR}/timer.cpp
       ${SRC_DIR}/fps.cpp
@@ -37,19 +37,19 @@ set ( GAMELIB_SOURCE
 
 set ( GAMELIB_HEADERS
       ${SRC_DIR}/Transformable.hpp
-      ${SRC_DIR}/Coords.h
-      ${SRC_DIR}/Color.h
+      ${SRC_DIR}/Coords.hpp
+      ${SRC_DIR}/Color.hpp
       ${SRC_DIR}/I_Input.hpp
       ${SRC_DIR}/GameState.hpp
       ${SRC_DIR}/GameStates.hpp
       ${SRC_DIR}/SDL_App.hpp
       ${SRC_DIR}/Logger.h
       ${SRC_DIR}/audio.h
-      ${SRC_DIR}/SDL_Font.h
+      ${SRC_DIR}/SDL_Font.hpp
       ${SRC_DIR}/SDL_Gradient.hpp
       ${SRC_DIR}/SDLWindowFrame.h
       ${SRC_DIR}/SDL_MessageBox.hpp
-      ${SRC_DIR}/SDL_BitmapFont.h
+      ${SRC_DIR}/SDL_BitmapFont.hpp
       ${SRC_DIR}/SDL_Cursor.h
       ${SRC_DIR}/Drawable.hpp
       ${SRC_DIR}/SDL_Drawable.hpp
@@ -58,11 +58,11 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/SDL_Line.hpp
       ${SRC_DIR}/SDL_Rectangle.hpp
       ${SRC_DIR}/ICanvas.h
-      ${SRC_DIR}/SDL_Canvas.h
+      ${SRC_DIR}/SDL_Canvas.hpp
       ${SRC_DIR}/gamelib.h
-      ${SRC_DIR}/IDisplay.h
-      ${SRC_DIR}/SDL_Display.h
-      ${SRC_DIR}/sprite.h
+      ${SRC_DIR}/IDisplay.hpp
+      ${SRC_DIR}/SDL_Display.hpp
+      ${SRC_DIR}/Sprite.hpp
       ${SRC_DIR}/SDL_Input.hpp
       ${SRC_DIR}/timer.h
       ${SRC_DIR}/fps.h

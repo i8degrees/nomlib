@@ -6,6 +6,6 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "IDisplay.h"
+#include "IDisplay.hpp"
 
 // ...

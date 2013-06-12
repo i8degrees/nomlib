@@ -7,7 +7,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "Coords.h"
+#include "Coords.hpp"
 
 nom::Coords::Coords ( void )
 {

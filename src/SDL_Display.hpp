@@ -14,8 +14,8 @@
 
 #include "SDL.h"
 
-#include "IDisplay.h"
-#include "Coords.h"
+#include "IDisplay.hpp"
+#include "Coords.hpp"
 //#include "Color.h"
 #include "SDL_Canvas.hpp"
 #include "gamelib.h"

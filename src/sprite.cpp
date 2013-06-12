@@ -1,12 +1,12 @@
 /******************************************************************************
-    sprite.cpp
+    Sprite.cpp
 
     SDL-based Sprite Blitting API
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "sprite.h"
+#include "Sprite.hpp"
 
 using namespace nom;
 

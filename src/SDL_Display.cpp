@@ -6,7 +6,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "SDL_Display.h"
+#include "SDL_Display.hpp"
 
 using namespace nom;
 

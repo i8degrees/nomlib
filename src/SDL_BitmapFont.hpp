@@ -19,7 +19,7 @@
 
 #include "SDL.h"
 
-#include "Color.h"
+#include "Color.hpp"
 #include "SDL_Drawable.hpp"
 #include "SDL_Canvas.hpp"
 #include "Transformable.hpp"

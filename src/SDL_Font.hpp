@@ -17,7 +17,7 @@
 
 #include "SDL_Drawable.hpp"
 #include "SDL_Canvas.hpp"
-#include "Color.h"
+#include "Color.hpp"
 #include "Transformable.hpp"
 #include "gamelib.h"
 

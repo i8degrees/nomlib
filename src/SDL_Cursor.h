@@ -14,8 +14,8 @@
 #include <string>
 #include <vector>
 
-#include "sprite.h"
-#include "Coords.h"
+#include "Sprite.hpp"
+#include "Coords.hpp"
 #include "gamelib.h"
 
 namespace nom

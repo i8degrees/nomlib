@@ -14,8 +14,8 @@
 #include <string>
 #include <vector>
 
-#include "Color.h"
-#include "Coords.h"
+#include "Color.hpp"
+#include "Coords.hpp"
 #include "Transformable.hpp"
 #include "SDL_Drawable.hpp"
 #include "SDL_Canvas.hpp"

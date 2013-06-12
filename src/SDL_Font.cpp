@@ -6,7 +6,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "SDL_Font.h"
+#include "SDL_Font.hpp"
 
 using namespace nom;
 

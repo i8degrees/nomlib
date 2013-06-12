@@ -18,8 +18,8 @@
 
 #include "SDL.h"
 
-#include "Coords.h"
-#include "Color.h"
+#include "Coords.hpp"
+#include "Color.hpp"
 #include "SDL_Drawable.hpp"
 #include "SDL_Pixel.hpp"
 #include "Transformable.hpp"

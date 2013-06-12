@@ -7,7 +7,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "Color.h"
+#include "Color.hpp"
 
 const nom::Color nom::Color::Black ( 0, 0, 0 );
 const nom::Color nom::Color::White ( 255, 255, 255 );

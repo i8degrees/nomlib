@@ -16,8 +16,8 @@
 #include "SDL.h"
 #include "SDL_image.h"
 
-#include "Coords.h"
-#include "Color.h"
+#include "Coords.hpp"
+#include "Color.hpp"
 #include "gamelib.h"
 
 namespace nom

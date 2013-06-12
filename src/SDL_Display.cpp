@@ -54,6 +54,8 @@ void SDL_Display::createWindow  ( int32_t display_width, int32_t display_height,
   assert ( screen != nullptr );
 }
 
+// This is important to return precisely as a SDL_Surface for it changes nullptr
+// result potentially
 void* SDL_Display::get ( void ) const
 {
   return dynamic_cast<SDL_Surface*>( SDL_GetVideoSurface() );

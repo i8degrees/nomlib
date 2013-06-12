@@ -37,7 +37,7 @@ namespace nom
 
       /// Obtains raw pointer to the object's video surface buffer
       ///
-      /// ( SDL_Surface* )
+      /// Returns ( SDL_Surface* )
       void* get ( void ) const;
 
       /// SDL compatibility wrapper
@@ -85,7 +85,7 @@ namespace nom
       int32_t getPixel ( int32_t x, int32_t y );
 
     private:
-      SDL_Surface *canvas_buffer;
+      void* canvas_buffer; // SDL_Surface*
       nom::Coords coords;
       nom::Coords offsets;
       nom::Color colorkey;

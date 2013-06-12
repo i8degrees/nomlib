@@ -34,6 +34,8 @@ nom::SDL_Image::~SDL_Image ( void )
   IMG_Quit();
 }
 
+// This is important to return precisely as a SDL_Surface for it changes nullptr
+// result potentially
 void* nom::SDL_Image::get ( void ) const
 {
   return static_cast<SDL_Surface*> ( this->image_buffer );

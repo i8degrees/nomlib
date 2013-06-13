@@ -29,8 +29,6 @@ namespace nom
 
       int32_t getX ( void ) const;
       int32_t getY ( void ) const;
-      //void setX ( int32_t x );
-      //void setY ( int32_t x );
 
       const nom::Coords getPosition ( void ) const;
       const nom::Coords getSize ( void ) const;
@@ -39,7 +37,7 @@ namespace nom
       void setPosition ( const nom::Coords& coords );
       void setSize ( int32_t width, int32_t height );
 
-      void move ( int32_t x = 0, int32_t y = 0);
+      void move ( uint32_t x = 0, uint32_t y = 0);
 
       const nom::Color& getColor ( void ) const;
       void setColor ( const nom::Color& color );

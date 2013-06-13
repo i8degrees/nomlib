@@ -71,28 +71,7 @@ void nom::Transformable::setSize ( int32_t width, int32_t height )
   this->coords.setSize ( width, height );
 }
 
-/*
-int32_t nom::Transformable::getWidth ( void ) const
-{
-  return this->coords.width;
-}
-
-void nom::Transformable::setWidth ( int32_t width )
-{
-  this->coords.width = width;
-}
-
-int32_t nom::Transformable::getHeight ( void ) const
-{
-  return this->coords.height;
-}
-
-void nom::Transformable::setHeight ( int32_t height )
-{
-  this->coords.height = height;
-}
-*/
-void nom::Transformable::move ( int32_t x, int32_t y )
+void nom::Transformable::move ( uint32_t x, uint32_t y )
 {
   this->coords.x += x;
   this->coords.y += y;

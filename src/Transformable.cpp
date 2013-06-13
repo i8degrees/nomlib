@@ -26,18 +26,6 @@ nom::Transformable::~Transformable ( void )
   // Cleanup vars
 }
 
-// SDL_Cursor
-int32_t nom::Transformable::getX ( void ) const
-{
-  return this->coords.x;
-}
-
-// SDL_Cursor
-int32_t nom::Transformable::getY ( void ) const
-{
-  return this->coords.y;
-}
-
 const nom::Coords nom::Transformable::getPosition ( void ) const
 {
   return nom::Coords ( this->coords.x, this->coords.y );

@@ -45,12 +45,14 @@ void nom::SDL_Cursor::Load ( std::string filename, nom::Color colorkey ) // shee
 
 unsigned int nom::SDL_Cursor::getX ( void )
 {
-  return this->cursor.getX();
+  nom::Coords x_value = this->cursor.getPosition();
+  return x_value.x;
 }
 
 unsigned int nom::SDL_Cursor::getY ( void )
 {
-  return this->cursor.getY();
+  nom::Coords y_value = this->cursor.getPosition();
+  return y_value.y;
 }
 
 void nom::SDL_Cursor::setPosition ( unsigned int x, unsigned int y )

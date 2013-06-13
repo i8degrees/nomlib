@@ -27,9 +27,6 @@ namespace nom
       Transformable ( void );
       virtual ~Transformable ( void );
 
-      int32_t getX ( void ) const;
-      int32_t getY ( void ) const;
-
       const nom::Coords getPosition ( void ) const;
       const nom::Coords getSize ( void ) const;
       void setPosition ( int32_t x, int32_t y );

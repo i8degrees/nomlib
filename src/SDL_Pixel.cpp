@@ -42,9 +42,9 @@ void nom::Pixel::Draw ( void* video_buffer ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( video_buffer );
 
-  u_char* pixel = ( u_char* ) buffer->pixels;
+  uint32_t* pixels = ( uint32_t* ) buffer->pixels;
 
-  pixel += ( this->coords.y * buffer->pitch ) + ( this->coords.x * sizeof ( uint32_t ) );
+  uint32_t pixel = this->color.getColorAsInt ( buffer->format );
 
-  *( ( uint32_t* ) pixel ) = this->color.getColorAsInt ( buffer->format );
+  pixels[ ( this->coords.y * buffer->w ) + this->coords.x ] = pixel;
 }

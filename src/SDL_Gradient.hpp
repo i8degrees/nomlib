@@ -24,34 +24,45 @@
 
 namespace nom
 {
-  class SDL_Gradient: //public nom::SDL_Drawable, // "is a" relationship
-                      public nom::Transformable // "has a" relationship
+  class SDL_Gradient//: public nom::SDL_Drawable // "is a" relationship
   {
     public:
       SDL_Gradient ( void );
+      SDL_Gradient  ( const nom::Color& starting_color, const nom::Color& ending_color,
+                      int32_t x = 0, int32_t y = 0,
+                      int32_t width = 0, int32_t height = 0,
+                      uint32_t direction = 0,  uint32_t x_margin = 0,
+                      uint32_t y_margin = 0
+                    );
+
       virtual ~SDL_Gradient ( void );
 
-      /// gradient[0] = starting color
-      /// gradient[1] = ending color
+      nom::Color getStartColor ( void ) const;
+      nom::Color getEndColor ( void ) const;
 
-      void Init ( const nom::Color& starting_color, const nom::Color& ending_color,
-                  unsigned int x = 0, unsigned int y = 0,
-                  unsigned int width = 0, unsigned int height = 0,
-                  unsigned int direction = 0,  unsigned int x_margin = 0,
-                  unsigned int y_margin = 0 );
+      void setStartColor ( const nom::Color& starting_color );
+      void setEndColor ( const nom::Color& ending_color );
 
-      /// direction { 0 } = ending color to starting color
-      /// direction { 1 } = starting color to ending color
+      uint32_t getFillDirection ( void ) const;
+      void setFillDirection ( const uint32_t direction );
 
-      void Draw ( void* video_buffer, unsigned int x, unsigned int y,
-                  unsigned int width, unsigned int height, unsigned int direction = 0
-                );
+      void Update ( void );
+      void Draw ( void* video_buffer ); /* const */
 
     private:
-      nom::Color gradient[2]; /// holds R, G, B * 2
-      //nom::Coords coords; /// x, y, width, height coords
-      uint32_t x_margin; /// x coordinate offset
-      uint32_t y_margin; /// y coordinate offset
+      nom::Rectangle rectangle;
+      /// gradient[0] = starting nom::Color
+      /// gradient[1] = ending nom::Color
+      nom::Color gradient[2];
+      /// geometry coordinates
+      nom::Coords coords;
+      /// x coordinate offset
+      int32_t x_margin;
+      /// y coordinate offset
+      int32_t y_margin;
+      /// color fill direction:
+      /// direction = 0 is ending color to starting color
+      /// direction = 1 is starting color to ending color
       uint32_t direction;
   };
 }

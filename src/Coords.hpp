@@ -34,6 +34,11 @@ namespace nom
       nom::Coords getSize ( void ) const;
       void setSize ( int32_t width, int32_t height );
 
+      bool contains ( int32_t x, int32_t y ) const;
+      bool contains ( const nom::Coords& pos ) const;
+
+      bool intersects ( nom::Coords& rectangle ) const;
+
       // SDL backwards-compatibility wrapper
       SDL_Rect getSDL_Rect ( void ) const;
 

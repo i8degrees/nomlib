@@ -78,6 +78,54 @@ void nom::Coords::setSize ( int32_t width, int32_t height )
   this->height = height;
 }
 
+// TODO: test me
+bool nom::Coords::contains ( int32_t x, int32_t y ) const
+{
+  int32_t X = this->x + this->width;
+  int32_t Y = this->y + this->height;
+
+  return ( x >= X ) && ( y >= Y );
+}
+
+// TODO: test me
+bool nom::Coords::contains ( const nom::Coords& pos ) const
+{
+  return this->contains ( pos.x, pos.y );
+}
+
+// TODO: test me
+// Checks to see if our rectangle overlaps with another
+bool nom::Coords::intersects ( nom::Coords& rectangle ) const
+{
+  unsigned int leftA, leftB = 0;
+  unsigned int rightA, rightB = 0;
+  unsigned int topA, topB = 0;
+  unsigned int bottomA, bottomB = 0;
+
+  // Calculate sides of RectA
+  leftA = this->x;
+  rightA = this->x + this->width;
+  topA = this->y;
+  bottomA = this->y + this->height;
+
+  // Calculate sides of RectB
+  leftB = rectangle.x;
+  rightB = rectangle.x + rectangle.width;
+  topB = rectangle.y;
+  bottomB = rectangle.y + rectangle.height;
+
+  if ( bottomA <= topB )
+    return false;
+  if ( topA >= bottomB )
+    return false;
+  if ( rightA <= leftB )
+    return false;
+  if ( leftA >= rightB )
+    return false;
+
+  return true; // we've got a collision!
+}
+
 /// SDL compatibility wrapper primarily for SDL_BlitSurface
 SDL_Rect nom::Coords::getSDL_Rect ( void ) const
 {

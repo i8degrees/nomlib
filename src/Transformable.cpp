@@ -132,6 +132,6 @@ void nom::Transformable::setColor ( const nom::Color& color_ )
 
 void nom::Transformable::setColor ( uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha )
 {
-  this->color.setColor ( red, green, blue, alpha );
+  this->color = nom::Color ( red, green, blue, alpha );
 }
 

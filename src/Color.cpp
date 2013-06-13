@@ -9,6 +9,7 @@
 ******************************************************************************/
 #include "Color.hpp"
 
+// Predefined color constants
 const nom::Color nom::Color::Black ( 0, 0, 0 );
 const nom::Color nom::Color::White ( 255, 255, 255 );
 const nom::Color nom::Color::Red ( 255, 0, 0 );
@@ -19,6 +20,7 @@ const nom::Color nom::Color::Magenta ( 255, 0, 255 );
 const nom::Color nom::Color::Cyan ( 0, 255, 255 );
 const nom::Color nom::Color::Transparent ( 0, 0, 0 );
 
+// Default constructor for setting a color to their respective defaults
 nom::Color::Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ), alpha ( -1 ) // SDL_ALPHA_OPAQUE (255)
 {
   #ifdef DEBUG_COLOR_OBJ
@@ -26,104 +28,79 @@ nom::Color::Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ), alpha ( -1 ) //
   #endif
 }
 
-nom::Color::Color ( int32_t r, int32_t g, int32_t b, int32_t a )
+// Constructor variant for setting a color using RGBA values
+nom::Color::Color ( uint8_t red, uint8_t green, uint8_t blue, int32_t alpha )
 {
   #ifdef DEBUG_COLOR_OBJ
     std::cout << "Color::Color (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
-  this->red = r;
-  this->green = g;
-  this->blue = b;
-  this->alpha = a;
+  this->red = red;
+  this->green = green;
+  this->blue = blue;
+  this->alpha = alpha;
 }
 
+// Constructor variant for setting a color with an exiting nom::Color object
+nom::Color::Color ( const nom::Color& color )
+{
+  this->red = color.red;
+  this->green = color.green;
+  this->blue = color.blue;
+  this->alpha = color.alpha;
+}
+
+// Constructor variant for setting a color from a SDL_Color structure;
+// backwards-compatibility wrapper
+nom::Color::Color ( const SDL_Color& color )
+{
+  this->red = color.r;
+  this->green = color.g;
+  this->blue = color.b;
+  //this->alpha = color.a;
+}
+
+// Default constructor; exists solely as a stub
 nom::Color::~Color ( void )
 {
   #ifdef DEBUG_COLOR_OBJ
     std::cout << "Color::~Color (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
 
-  // Stub
+  // Nothing to do!
 }
 
+// Convenience getter helper for obtaining a color by object
 const nom::Color nom::Color::getColor ( void ) const
 {
-  return Color ( this->red, this->green, this->blue, this->alpha );
+  return nom::Color ( this->red, this->green, this->blue, this->alpha );
 }
 
-int32_t nom::Color::getRed ( void ) const
-{
-  return this->red;
-}
-
-int32_t nom::Color::getGreen ( void ) const
-{
-  return this->green;
-}
-
-int32_t nom::Color::getBlue ( void ) const
-{
-  return this->blue;
-}
-
-int32_t nom::Color::getAlpha ( void ) const
-{
-  return this->alpha;
-}
-
-void nom::Color::setColor ( int32_t r, int32_t g, int32_t b, int32_t a )
-{
-  this->red = r;
-  this->green = g;
-  this->blue = b;
-  this->alpha = a;
-}
-
-void nom::Color::setColor ( const nom::Color& color )
-{
-  this->red = color.getRed();
-  this->green = color.getGreen();
-  this->blue = color.getBlue();
-  this->alpha = color.getAlpha();
-}
-
-void nom::Color::setRed ( int32_t r )
-{
-  this->red = r;
-}
-
-void nom::Color::setGreen ( int32_t g )
-{
-  this->green = g;
-}
-
-void nom::Color::setBlue ( int32_t b )
-{
-  this->blue = b;
-}
-
-void nom::Color::setAlpha ( int32_t a )
-{
-  this->alpha = a;
-}
-
+// Convenience getter helper for obtaining a color as an integer, respective to
+// the video surface pixel format; color bits vary depending on bit-rate
 uint32_t nom::Color::getColorAsInt ( void* pixel_format ) const
 {
-  if ( this->alpha != -1 )
-    return SDL_MapRGBA ( ( SDL_PixelFormat* ) pixel_format, this->red, this->green, this->blue, this->alpha );
-  else
-    return SDL_MapRGB ( ( SDL_PixelFormat* ) pixel_format, this->red, this->green, this->blue );
+  return SDL_MapRGB ( ( SDL_PixelFormat* ) pixel_format, this->red, this->green, this->blue );
 }
 
-// SDL color struct compatibility wrapper
+// Convenience getter helper for obtaining a color as an integer, respective to
+// the video surface pixel format; color bits vary depending on bit-rate and
+// alpha channel
+uint32_t nom::Color::getAlphaColorAsInt ( void* pixel_format ) const
+{
+  return SDL_MapRGBA ( ( SDL_PixelFormat* ) pixel_format, this->red, this->green, this->blue, this->alpha );
+}
+
+// Returns a SDL color structure of our color object; backwards-compatibility
+// wrapper
 SDL_Color nom::Color::getSDL_Color ( void ) const
 {
   SDL_Color color;
 
-  color.r = this->getRed();
-  color.g = this->getGreen();
-  color.b = this->getBlue();
+  color.r = this->red;
+  color.g = this->green;
+  color.b = this->blue;
+  //color.a = this->alpha;
 
   return color;
 }

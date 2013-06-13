@@ -155,10 +155,10 @@ bool nom::SDL_Canvas::loadFromImage ( const std::string& filename, const nom::Co
   // Sets our canvas with our acquired image surface
   setCanvas ( image.get() );
 
-  if ( colorkey.getAlpha() == -1 ) // FIXME
+  if ( colorkey.alpha == -1 ) // FIXME
     setTransparent ( colorkey, flags );
 
-  if ( colorkey.getAlpha() != -1 )
+  if ( colorkey.alpha != -1 )
     displayFormatAlpha(); // Optimized video surface with an alpha channel
   else
     displayFormat(); // Optimized video surface without an alpha channel

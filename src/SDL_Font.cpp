@@ -19,7 +19,7 @@ SDL_Font::SDL_Font ( void )
   this->font = nullptr;
 
   this->coords.setCoords ( 0, 0, 0, 0 );
-  this->color.setColor ( 0, 0, 0 );
+  this->color = nom::Color ( 0, 0, 0 );
   this->text_buffer = "\0";
 
   if ( TTF_Init () == -1 )

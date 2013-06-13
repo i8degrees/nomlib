@@ -12,7 +12,7 @@
 nom::Rectangle::Rectangle ( void )
 {
   this->coords.setCoords ( 0, 0, 0, 0 );
-  this->color.setColor ( 0, 0, 0, 255 );
+  this->color = nom::Color ( 0, 0, 0 );
 }
 
 nom::Rectangle::~Rectangle ( void )

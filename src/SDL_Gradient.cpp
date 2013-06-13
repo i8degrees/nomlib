@@ -15,8 +15,8 @@ nom::SDL_Gradient::SDL_Gradient ( void )
     std::cout << "nom::SDL_Gradient::SDL_Gradient (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
-  this->gradient[0].setColor ( 66, 66, 66, 255 ); // starting color defaults
-  this->gradient[1].setColor ( 99, 99, 99, 255 ); // ending color defaults
+  this->gradient[0] = nom::Color ( 66, 66, 66 ); // starting color defaults
+  this->gradient[1] = nom::Color ( 99, 99, 99 ); // ending color defaults
 
   this->coords.setCoords ( 0, 0, 0, 0 ); // zero out dem blitting coords
 
@@ -61,13 +61,13 @@ void nom::SDL_Gradient::Draw (  void* video_buffer, unsigned int x, unsigned int
   this->coords.setCoords ( x, y, 1, height - this->y_margin );
   //this->coords.setCoords ( this->getX(), this->getY(), 1, ( this->getHeight() - this->y_margin ) );
 
-  float currentR = (float) gradient[0].getRed();
-  float currentG = (float) gradient[0].getGreen();
-  float currentB = (float) gradient[0].getBlue();
+  float currentR = (float) gradient[0].red;
+  float currentG = (float) gradient[0].green;
+  float currentB = (float) gradient[0].blue;
 
-  float destR = (float) ( gradient[1].getRed() - gradient[0].getRed() )      / ( float ) ( width - this->x_margin );
-  float destG = (float) ( gradient[1].getGreen() - gradient[0].getGreen() )  / ( float ) ( width - this->x_margin );
-  float destB = (float) ( gradient[1].getBlue() - gradient[0].getBlue() )    / ( float ) ( width - this->x_margin );
+  float destR = (float) ( gradient[1].red - gradient[0].red )      / ( float ) ( width - this->x_margin );
+  float destG = (float) ( gradient[1].green - gradient[0].green )  / ( float ) ( width - this->x_margin );
+  float destB = (float) ( gradient[1].blue - gradient[0].blue )    / ( float ) ( width - this->x_margin );
 
   for ( rows = this->coords.getX(); rows < x_offset - this->x_margin; rows++ )
   {

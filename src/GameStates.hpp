@@ -31,9 +31,11 @@ namespace nom
     public:
       static void onEvent ( SDL_Event *event ); /// Game state events handler
 
+      /// (experimental) onLoad method is implemented in each GameState derived class
+      /// (experimental) onClose method is implemented in each GameState derived class
       /// Pause method is implemented in each GameState derived class
       /// Resume method is implemented in each GameState derived class
-      static void Update ( void* video_buffer );
+      static void Update ( void );
       static void Draw ( void* video_buffer );
 
       static void ChangeState ( std::unique_ptr<GameState> state );

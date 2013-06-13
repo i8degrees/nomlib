@@ -11,8 +11,6 @@
 ******************************************************************************/
 #include "GameStates.hpp"
 
-std::vector<std::unique_ptr<nom::GameState>> states;
-
 nom::GameStates::GameStates ( void )
 {
   #ifdef DEBUG_GAMESTATES_OBJ
@@ -26,32 +24,37 @@ void nom::GameStates::onEvent ( SDL_Event *event )
   states.back()->HandleInput ( event );
 }
 
-void nom::GameStates::Update ( void* video_buffer )
+void nom::GameStates::Update ( void )
 {
   // let the state update the scene
-  states.back()->Update ( video_buffer );
+  states.back()->Update();
 }
 
-void nom::GameStates::Draw( void* video_buffer )
+void nom::GameStates::Draw ( void* video_buffer )
 {
   // let the state draw the scene
   states.back()->Draw ( video_buffer );
 }
 
-void nom::GameStates::ChangeState( std::unique_ptr<GameState> state )
+void nom::GameStates::ChangeState ( std::unique_ptr<GameState> state )
 {
   // cleanup the current state
-  if ( !states.empty() )
+  if ( ! states.empty() )
+  {
+    states.back()->onClose();
     states.pop_back();
+  }
 
   // store the new state
   states.push_back( std::move( state ) );
+
+  states.back()->Load();
 }
 
-void nom::GameStates::PushState( std::unique_ptr<GameState> state )
+void nom::GameStates::PushState ( std::unique_ptr<GameState> state )
 {
   // pause current state
-  if ( !states.empty() )
+  if ( ! states.empty() )
     states.back()->Pause();
 
   // store the new state
@@ -61,7 +64,7 @@ void nom::GameStates::PushState( std::unique_ptr<GameState> state )
 void nom::GameStates::PopState ( void )
 {
   // cleanup the current state
-  if ( !states.empty() )
+  if ( ! states.empty() )
     states.pop_back();
 
   // resume previous state
@@ -69,14 +72,12 @@ void nom::GameStates::PopState ( void )
     states.back()->Resume();
 }
 
-void nom::GameStates::PopStateThenChangeState( std::unique_ptr<GameState> state )
+void nom::GameStates::PopStateThenChangeState ( std::unique_ptr<GameState> state )
 {
   // cleanup the current state
-  if ( !states.empty() )
+  if ( ! states.empty() )
     states.pop_back();
 
-  if ( !states.empty () )
-  {
+  if ( ! states.empty () )
     GameStates::ChangeState( std::move( state ) );
-  }
 }

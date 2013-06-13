@@ -29,10 +29,14 @@ namespace nom
           std::cout << "GameState::~GameState (): " << "Goodbye cruel world!" << std::endl << std::endl;
         #endif
       }
+
+      virtual void Load ( void ) = 0;
+      virtual void onClose ( void ) = 0;
+
       virtual void Pause ( void ) = 0;
       virtual void Resume ( void ) = 0;
 
-      virtual void Update ( void* ) = 0;
+      virtual void Update ( void ) = 0;
       virtual void Draw ( void* ) = 0;
 
     private:

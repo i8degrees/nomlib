@@ -32,10 +32,8 @@ namespace nom
 
       unsigned int getX ( void );
       unsigned int getY ( void );
-      //void setX ( unsigned int x );
-      //void setY ( unsigned int y );
-      void setXY ( unsigned int x = 0, unsigned int y = 0 );
-      void updateXY ( unsigned int x = 0, unsigned int y = 0 );
+      void setPosition ( unsigned int x = 0, unsigned int y = 0 );
+      void move ( unsigned int x = 0, unsigned int y = 0 );
 
       signed int getSheetID ( void );
       void setSheetID ( signed int sheet_id = -1 );
@@ -43,6 +41,7 @@ namespace nom
 
       unsigned int getState ( void );
       void setState ( unsigned int state );
+
       //bool isCursorLocked ( void );
       //void lockCursor ( bool toggle );
 

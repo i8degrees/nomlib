@@ -53,24 +53,12 @@ unsigned int nom::SDL_Cursor::getY ( void )
   return this->cursor.getY();
 }
 
-/*
-void nom::SDL_Cursor::setX ( unsigned int x )
-{
-  this->cursor.setX ( x );
-}
-
-void nom::SDL_Cursor::setY ( unsigned int y )
-{
-  this->cursor.setY ( y );
-}
-*/
-
-void nom::SDL_Cursor::setXY ( unsigned int x, unsigned int y )
+void nom::SDL_Cursor::setPosition ( unsigned int x, unsigned int y )
 {
   this->cursor.setPosition ( x, y );
 }
 
-void nom::SDL_Cursor::updateXY ( unsigned int x, unsigned int y )
+void nom::SDL_Cursor::move ( unsigned int x, unsigned int y )
 {
   this->cursor.move ( x, y );
 }

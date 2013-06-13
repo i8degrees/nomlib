@@ -59,10 +59,10 @@ namespace nom
   // linking errs?
   inline bool operator == ( const nom::Color& left, const nom::Color& right )
   {
-    return (left.red == right.red) &&
-           (left.green == right.green) &&
-           (left.blue == right.blue) &&
-           (left.alpha == right.alpha);
+    return (left.red == right.red ) &&
+           (left.green == right.green ) &&
+           (left.blue == right.blue ) &&
+           (left.alpha == right.alpha );
   }
 
   inline bool operator != ( const nom::Color& left, const nom::Color& right )
@@ -83,10 +83,10 @@ namespace nom
   /// Values that exceed 255 are clamped to 255
   inline nom::Color operator ++ ( nom::Color& left )
   {
-    return nom::Color ( static_cast<uint8_t> ( left.red--, 255 ),
-                        static_cast<uint8_t> ( left.green--, 255 ),
-                        static_cast<uint8_t> ( left.blue-- , 255 ),
-                        static_cast<uint8_t> ( left.alpha--, 255 )
+    return nom::Color ( static_cast<uint8_t> ( left.red-- ),
+                        static_cast<uint8_t> ( left.green-- ),
+                        static_cast<uint8_t> ( left.blue-- ),
+                        static_cast<uint8_t> ( left.alpha-- )
                       );
   }
 
@@ -103,10 +103,10 @@ namespace nom
   /// Values that exceed 255 are clamped to 255
   inline nom::Color operator -- ( nom::Color& left )
   {
-    return nom::Color ( static_cast<uint8_t> ( left.red--, 255 ),
-                        static_cast<uint8_t> ( left.green--, 255 ),
-                        static_cast<uint8_t> ( left.blue--, 255 ),
-                        static_cast<uint8_t> ( left.alpha--, 255 )
+    return nom::Color ( static_cast<uint8_t> ( left.red-- ),
+                        static_cast<uint8_t> ( left.green-- ),
+                        static_cast<uint8_t> ( left.blue-- ),
+                        static_cast<uint8_t> ( left.alpha-- )
                       );
   }
 

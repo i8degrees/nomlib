@@ -20,7 +20,7 @@ const nom::Color nom::Color::Magenta ( 255, 0, 255 );
 const nom::Color nom::Color::Cyan ( 0, 255, 255 );
 const nom::Color nom::Color::Transparent ( 0, 0, 0 );
 
-// Default constructor for setting a color to their respective defaults
+// Default constructor; sets the color to their respective defaults
 nom::Color::Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ), alpha ( -1 ) // SDL_ALPHA_OPAQUE (255)
 {
   #ifdef DEBUG_COLOR_OBJ
@@ -44,6 +44,10 @@ nom::Color::Color ( uint8_t red, uint8_t green, uint8_t blue, int32_t alpha )
 // Constructor variant for setting a color with an exiting nom::Color object
 nom::Color::Color ( const nom::Color& color )
 {
+  #ifdef DEBUG_COLOR_OBJ
+    std::cout << "Color::Color (): " << "Hello, world!" << std::endl << std::endl;
+  #endif
+
   this->red = color.red;
   this->green = color.green;
   this->blue = color.blue;
@@ -54,6 +58,10 @@ nom::Color::Color ( const nom::Color& color )
 // backwards-compatibility wrapper
 nom::Color::Color ( const SDL_Color& color )
 {
+  #ifdef DEBUG_COLOR_OBJ
+    std::cout << "Color::Color (): " << "Hello, world!" << std::endl << std::endl;
+  #endif
+
   this->red = color.r;
   this->green = color.g;
   this->blue = color.b;

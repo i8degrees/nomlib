@@ -25,26 +25,26 @@
 
 namespace nom
 {
-  class SDL_MessageBox: public nom::SDL_Drawable,   // "is a" relationship
+  class SDL_MessageBox:// public nom::SDL_Drawable,   // "is a" relationship
                         public nom::Transformable   // "has a" relationship
   {
     public:
       SDL_MessageBox ( void );
       ~SDL_MessageBox ( void );
 
-      void Init ( int32_t x, int32_t y, int32_t width, int32_t height, const std::vector<nom::Color> border_colors, nom::SDL_Gradient *gradient = NULL );
+      void Init ( int32_t x, int32_t y, int32_t width, int32_t height, const std::vector<nom::Color> border_colors, const nom::SDL_Gradient& background = nom::SDL_Gradient() );
 
       bool isEnabled ( void );
       void disable ( void );
       void enable ( void );
 
       void Update ( void );
-      void Draw ( void* video_buffer ) const;
+      void Draw ( void* video_buffer ); /* const */
 
     private:
       typedef std::vector<std::shared_ptr<nom::SDL_Drawable>> drawable_t;
       drawable_t lines;
-      nom::SDL_Gradient* background;
+      nom::SDL_Gradient background;
       nom::SDL_Canvas box;
 
       std::vector<nom::Color> window_borders;

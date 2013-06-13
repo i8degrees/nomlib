@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <string>
+#include <algorithm>
 
 #include "SDL.h"
 
@@ -55,12 +56,93 @@ namespace nom
       static const nom::Color Cyan;
       static const nom::Color Transparent;
 
-    private:
-      int32_t red;
-      int32_t green;
-      int32_t blue;
+      uint8_t red;
+      uint8_t green;
+      uint8_t blue;
       int32_t alpha;
+
+    private:
+      // ...
   };
+  // FIXME: not sure why these cannot be put into the class file without
+  // linking errs?
+  inline bool operator == ( const nom::Color& left, const nom::Color& right )
+  {
+    return (left.red == right.red) &&
+           (left.green == right.green) &&
+           (left.blue == right.blue) &&
+           (left.alpha == right.alpha);
+  }
+
+  inline bool operator != ( const nom::Color& left, const nom::Color& right )
+  {
+    return ! ( left == right );
+  }
+
+  /// Values that exceed 255 are clamped to 255
+  inline nom::Color operator + ( const nom::Color& left, const nom::Color& right )
+  {
+    return nom::Color ( static_cast<uint8_t> ( std::min ( left.red + right.red, 255 ) ),
+                        static_cast<uint8_t> ( std::min ( left.green + right.green, 255 ) ),
+                        static_cast<uint8_t> ( std::min ( left.blue + right.blue, 255 ) ),
+                        static_cast<uint8_t> ( std::min ( left.alpha + right.alpha, 255 ) )
+                      );
+  }
+
+  /// Values that exceed 255 are clamped to 255
+  inline nom::Color operator ++ ( nom::Color& left )
+  {
+    return nom::Color ( static_cast<uint8_t> ( left.red--, 255 ),
+                        static_cast<uint8_t> ( left.green--, 255 ),
+                        static_cast<uint8_t> ( left.blue-- , 255 ),
+                        static_cast<uint8_t> ( left.alpha--, 255 )
+                      );
+  }
+
+  /// Values that exceed 255 are clamped to 255
+  inline nom::Color operator - ( const nom::Color& left, const nom::Color& right )
+  {
+    return nom::Color ( static_cast<uint8_t> ( std::min ( left.red - right.red, 255 ) ),
+                        static_cast<uint8_t> ( std::min ( left.green - right.green, 255 ) ),
+                        static_cast<uint8_t> ( std::min ( left.blue - right.blue, 255 ) ),
+                        static_cast<uint8_t> ( std::min ( left.alpha - right.alpha, 255 ) )
+                      );
+  }
+
+  /// Values that exceed 255 are clamped to 255
+  inline nom::Color operator -- ( nom::Color& left )
+  {
+    return nom::Color ( static_cast<uint8_t> ( left.red--, 255 ),
+                        static_cast<uint8_t> ( left.green--, 255 ),
+                        static_cast<uint8_t> ( left.blue--, 255 ),
+                        static_cast<uint8_t> ( left.alpha--, 255 )
+                      );
+  }
+
+  /// Values that exceed 255 are clamped to 255
+  inline nom::Color operator * ( const nom::Color& left, const nom::Color& right)
+  {
+    return nom::Color ( static_cast<uint8_t> ( left.red * right.red / 255 ),
+                        static_cast<uint8_t> ( left.green * right.green / 255 ),
+                        static_cast<uint8_t> ( left.blue * right.blue / 255 ),
+                        static_cast<uint8_t> ( left.alpha * right.alpha / 255 )
+                      );
+  }
+
+  inline nom::Color& operator += ( nom::Color& left, const nom::Color& right)
+  {
+    return left = left + right;
+  }
+
+  inline nom::Color& operator -= ( nom::Color& left, const nom::Color& right )
+  {
+    return left = left - right;
+  }
+
+  inline nom::Color& operator *= ( nom::Color& left, const nom::Color& right)
+  {
+    return left = left * right;
+  }
 }
 
 #endif // NOMLIB_COLORS_HEADERS defined

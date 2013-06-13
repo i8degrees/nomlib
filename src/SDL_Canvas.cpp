@@ -8,6 +8,7 @@
 ******************************************************************************/
 #include "SDL_Canvas.hpp"
 
+// Default constructor; initializes object to its respective defaults
 nom::SDL_Canvas::SDL_Canvas ( void )  : canvas_buffer ( nullptr ),
                                         coords ( 0, 0, -1, -1 ), // only x, y position is used in blitting
                                         offsets ( 0, 0, -1, -1 ), // only the width, height is used in source blitting
@@ -16,20 +17,45 @@ nom::SDL_Canvas::SDL_Canvas ( void )  : canvas_buffer ( nullptr ),
   #ifdef DEBUG_SDL_CANVAS_OBJ
     std::cout << "nom::SDL_Canvas::SDL_Canvas(): Hello, world!" << "\n" << std::endl;
   #endif
+
+  this->canvas_buffer = nullptr;
 }
 
+// Constructor variant for setting the canvas with existing data
+nom::SDL_Canvas::SDL_Canvas ( void* video_buffer )
+{
+  #ifdef DEBUG_SDL_CANVAS_OBJ
+    std::cout << "nom::SDL_Canvas::SDL_Canvas(): Hello, world!" << "\n" << std::endl;
+  #endif
+
+  this->canvas_buffer = nullptr;
+
+  this->canvas_buffer = static_cast<SDL_Surface*> ( video_buffer );
+}
+
+// Constructor variant for setting the canvas with an empty surface
+//
+// As per libSDL docs, this must be called only after video initialization;
+// (SDL_SetVideoMode)
 nom::SDL_Canvas::SDL_Canvas ( int32_t width, int32_t height, const Color& colors, uint32_t flags )
 {
   #ifdef DEBUG_SDL_CANVAS_OBJ
     std::cout << "nom::SDL_Canvas::SDL_Canvas(): Hello, world!" << "\n" << std::endl;
   #endif
 
+  this->canvas_buffer = nullptr;
+
   // ...Create a new surface here?
+  // http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurface
 }
 
-nom::SDL_Canvas::SDL_Canvas ( void* video_buffer )
+// Constructor variant for setting the canvas with existing pixel data
+// http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurfaceFrom
+nom::SDL_Canvas::SDL_Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
 {
-  this->canvas_buffer = static_cast<SDL_Surface*> ( video_buffer );
+  this->canvas_buffer = nullptr;
+
+  this->canvas_buffer = SDL_CreateRGBSurfaceFrom ( pixels, width, height, depth, pitch, Rmask, Gmask, Bmask, Amask );
 }
 
 nom::SDL_Canvas::~SDL_Canvas ( void )
@@ -59,6 +85,7 @@ void* nom::SDL_Canvas::get ( void ) const
   return static_cast<SDL_Surface*> ( this->canvas_buffer );
 }
 
+// Constructor variant for setting the canvas (SDL backwards-compatibility wrapper)
 void nom::SDL_Canvas::setCanvas ( SDL_Surface *video_buffer )
 {
   this->canvas_buffer = video_buffer;

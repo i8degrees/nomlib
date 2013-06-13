@@ -130,6 +130,15 @@ namespace nom
                         );
   }
 
+  inline nom::Coords operator / ( const nom::Coords& left, const nom::Coords& right)
+  {
+    return nom::Coords  ( static_cast<int32_t> ( left.x / right.x ),
+                          static_cast<int32_t> ( left.y / right.y ),
+                          static_cast<int32_t> ( left.width / right.width ),
+                          static_cast<int32_t> ( left.height / right.height )
+                        );
+  }
+
   inline nom::Coords& operator += ( nom::Coords& left, const nom::Coords& right)
   {
     return left = left + right;

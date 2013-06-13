@@ -17,13 +17,23 @@ nom::Transformable::Transformable ( void )  : coords ( 0, 0, 0, 0 ),
   #endif
 }
 
+nom::Transformable::Transformable ( const nom::Coords& coords, const nom::Color& color )
+{
+  #ifdef DEBUG_TRANSFORMABLE_OBJ
+    std::cout << "Transformable::Transformable (): " << "Hello, world!" << std::endl << std::endl;
+  #endif
+
+  this->coords = coords;
+  this->color = color;
+}
+
 nom::Transformable::~Transformable ( void )
 {
   #ifdef DEBUG_TRANSFORMABLE_OBJ
     std::cout << "Transformable::~Transformable (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
 
-  // Cleanup vars
+  // Nothing to clean up!
 }
 
 const nom::Coords nom::Transformable::getPosition ( void ) const
@@ -59,10 +69,21 @@ void nom::Transformable::setSize ( int32_t width, int32_t height )
   this->coords.setSize ( width, height );
 }
 
+void nom::Transformable::setSize ( const nom::Coords& size )
+{
+  this->coords.setSize ( size.width, size.height );
+}
+
 void nom::Transformable::move ( uint32_t x, uint32_t y )
 {
   this->coords.x += x;
   this->coords.y += y;
+}
+
+void nom::Transformable::move ( const nom::Coords& offsets )
+{
+  this->coords.x += offsets.x;
+  this->coords.y += offsets.y;
 }
 
 const nom::Color& nom::Transformable::getColor ( void ) const

@@ -25,6 +25,7 @@ namespace nom
     public:
       Coords ( void );
       Coords ( int32_t x, int32_t y, int32_t width = 0, int32_t height = 0 );
+      Coords ( const nom::Coords& coords );
       ~Coords ( void );
 
       nom::Coords getPosition ( void ) const;

@@ -25,6 +25,7 @@ namespace nom
   {
     public:
       Transformable ( void );
+      Transformable ( const nom::Coords& coords, const nom::Color& color );
       virtual ~Transformable ( void );
 
       const nom::Coords getPosition ( void ) const;
@@ -32,9 +33,12 @@ namespace nom
       void setPosition ( int32_t x, int32_t y );
       void setPosition ( int32_t x, int32_t y, int32_t width, int32_t height );
       void setPosition ( const nom::Coords& coords );
-      void setSize ( int32_t width, int32_t height );
 
-      void move ( uint32_t x = 0, uint32_t y = 0);
+      void setSize ( int32_t width, int32_t height );
+      void setSize ( const nom::Coords& size );
+
+      void move ( uint32_t x = 0, uint32_t y = 0 );
+      void move ( const nom::Coords& offsets = nom::Coords ( 0, 0 ) );
 
       const nom::Color& getColor ( void ) const;
       void setColor ( const nom::Color& color );

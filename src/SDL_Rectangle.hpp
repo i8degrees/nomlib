@@ -29,8 +29,9 @@ namespace nom
   {
     public:
       Rectangle ( void );
-      virtual ~Rectangle ( void );
+      Rectangle ( const nom::Rectangle& rect );
       Rectangle ( const nom::Coords& coords, const nom::Color& color );
+      virtual ~Rectangle ( void );
 
       void Update ( void );
       void Draw ( void* ) const;

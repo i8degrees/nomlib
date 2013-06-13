@@ -33,6 +33,20 @@ nom::Coords::Coords ( int32_t x, int32_t y, int32_t width, int32_t height )
   this->height = height;
 }
 
+// Constructor variant for setting coords with an exiting Coords object
+// This is a "shallow" copy assignment
+nom::Coords::Coords ( const nom::Coords& coords )
+{
+  #ifdef DEBUG_COORDS_OBJ
+    std::cout << "Coords::Coords (): " << "Hello, world!" << std::endl << std::endl;
+  #endif
+
+  this->x = coords.x;
+  this->y = coords.y;
+  this->width = coords.width;
+  this->height = coords.height;
+}
+
 nom::Coords::~Coords ( void )
 {
   #ifdef DEBUG_COORDS_OBJ

@@ -20,6 +20,14 @@ nom::Rectangle::~Rectangle ( void )
   // ...
 }
 
+// Constructor variant for creating a rectangle from an existing type
+// This is a "shallow" copy assignment
+nom::Rectangle::Rectangle ( const nom::Rectangle& rect )
+{
+  this->coords = rect.coords;
+  this->color = rect.color;
+}
+
 nom::Rectangle::Rectangle ( const nom::Coords& coords, const nom::Color& color )
 {
   this->coords = coords;

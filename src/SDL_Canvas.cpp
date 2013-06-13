@@ -126,7 +126,7 @@ const nom::Coords nom::SDL_Canvas::getCanvasBounds ( void ) const
   SDL_GetClipRect ( static_cast<SDL_Surface*> ( this->get() ) , &clip_buffer );
 
   // Now transfer the values into our preferred data container type
-  clip_bounds.setCoords ( clip_buffer.x, clip_buffer.y, clip_buffer.w, clip_buffer.h );
+  clip_bounds = nom::Coords ( clip_buffer.x, clip_buffer.y, clip_buffer.w, clip_buffer.h );
 
   return clip_bounds;
 }
@@ -164,8 +164,7 @@ bool nom::SDL_Canvas::loadFromImage ( const std::string& filename, const nom::Co
     displayFormat(); // Optimized video surface without an alpha channel
 
   // Update our canvas clipping bounds with the new source
-  this->offsets.setWidth ( this->getCanvasWidth() );
-  this->offsets.setHeight ( this->getCanvasHeight() );
+  this->offsets.setSize ( this->getCanvasWidth(), this->getCanvasHeight() );
 
   return true;
 }

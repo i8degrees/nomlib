@@ -29,25 +29,17 @@ namespace nom
 
       int32_t getX ( void ) const;
       int32_t getY ( void ) const;
-      const nom::Coords& getXY ( void ) const;
-      void setX ( int32_t x );
-      void setY ( int32_t y );
-      void setXY ( int32_t x, int32_t y );
-      const nom::Coords& getPosition ( void ) const;
+      //void setX ( int32_t x );
+      //void setY ( int32_t x );
+
+      const nom::Coords getPosition ( void ) const;
       const nom::Coords getSize ( void ) const;
       void setPosition ( int32_t x, int32_t y );
       void setPosition ( int32_t x, int32_t y, int32_t width, int32_t height );
       void setPosition ( const nom::Coords& coords );
       void setSize ( int32_t width, int32_t height );
 
-      int32_t getWidth ( void ) const;
-      void setWidth ( int32_t width, int32_t height );
-
-      int32_t getHeight ( void ) const;
-      void setHeight ( int32_t height );
-
-      // Rename to move
-      void updateXY ( int32_t x = 0, int32_t y = 0);
+      void move ( int32_t x = 0, int32_t y = 0);
 
       const nom::Color& getColor ( void ) const;
       void setColor ( const nom::Color& color );

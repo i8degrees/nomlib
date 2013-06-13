@@ -22,7 +22,7 @@ nom::SDL_MessageBox::SDL_MessageBox ( void )
   for ( int32_t i = 0; i < this->window_borders.size(); i++ )
     this->window_borders[i] = nom::Color::Black;
 
-  this->coords.setCoords ( 0, 0, 0, 0 );
+  this->coords = nom::Coords ( 0, 0, 0, 0 );
 
   this->background = NULL; // SDL_Gradient
 }
@@ -54,12 +54,12 @@ void nom::SDL_MessageBox::Init ( int32_t x, int32_t y, int32_t width, int32_t he
   unsigned int y_offset = y + height; //unsigned int y_offset = ( y + height ) - padding;
 
   // init geometry coords w/ arguments list
-  this->coords.setCoords ( x, y, width, height );
+  this->coords = nom::Coords ( x, y, width, height );
   this->window_borders = border_colors;
   this->background = gradient;
 
   if ( this->background != nullptr )
-    this->background->Init ( nom::Color ( 66, 66, 66 ), nom::Color ( 99, 99, 99 ), this->getX(), this->getY(), this->getWidth(), this->getHeight(), 0, 0, 0 );
+    this->background->Init ( nom::Color ( 66, 66, 66 ), nom::Color ( 99, 99, 99 ), this->coords.x, this->coords.y, this->coords.width, this->coords.height, 0, 0, 0 );
 
   this->lines.push_back ( std::shared_ptr<nom::SDL_Drawable> ( new nom::Line ( x, y, x_offset - padding, y, this->window_borders[0].getColor() ) ) ); // top0
   this->lines.push_back ( std::shared_ptr<nom::SDL_Drawable> ( new nom::Line ( x, y + 1, x_offset - padding, y + 1, this->window_borders[1].getColor() ) ) ); // top1
@@ -104,7 +104,7 @@ void nom::SDL_MessageBox::Draw ( void* video_buffer ) const
 {
   if ( this->background != nullptr )
   {
-    background->Draw ( video_buffer, this->coords.getX(), this->coords.getY(), this->coords.getWidth(), this->coords.getHeight(), 0 );
+    background->Draw ( video_buffer, this->coords.x, this->coords.y, this->coords.width, this->coords.height, 0 );
   }
 
   if ( this->box.mustLock ( video_buffer ) == true )

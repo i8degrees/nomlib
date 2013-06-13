@@ -33,8 +33,7 @@ nom::Sprite::Sprite ( unsigned int width, unsigned int height )
     std::cout << "Sprite::Sprite (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->coords.setWidth ( width );
-  this->coords.setHeight ( width );
+  this->coords.setSize ( width, height );
 
   this->state = 0;
 
@@ -76,8 +75,8 @@ void nom::Sprite::setSheetID ( signed int id )
 
 void nom::Sprite::setSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding )
 {
-  this->sheet.sprite_width = this->getWidth();
-  this->sheet.sprite_height = this->getHeight();
+  this->sheet.sprite_width = this->coords.width;
+  this->sheet.sprite_height = this->coords.height;
   this->sheet.width = sheet_width;
   this->sheet.height = sheet_height;
   this->sheet.spacing = spacing;
@@ -104,10 +103,9 @@ void nom::Sprite::Update ( void )
   if ( this->sheet.id != -1 )
   {
     // FIXME: Presently, we assume every sprite on our sheet is on the same row
-    offsets.setX ( this->sheet.id * this->sheet.sprite_width );
-    offsets.setY ( 0 );
-    offsets.setDimensions ( this->sheet.sprite_width, this->sheet.sprite_height );
-    this->sprite_buffer.setOffsets ( offsets );
+    this->offsets.setPosition ( this->sheet.id * this->sheet.sprite_width, 0 );
+    this->offsets.setSize ( this->sheet.sprite_width, this->sheet.sprite_height );
+    this->sprite_buffer.setOffsets ( this->offsets );
   }
 
   this->sprite_buffer.setPosition ( coords );

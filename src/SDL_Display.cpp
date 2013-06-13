@@ -118,7 +118,7 @@ void nom::SDL_Display::Update ( void )
 // surface is locked
 void nom::SDL_Display::Update ( const nom::Coords& coords )
 {
-  SDL_UpdateRect ( static_cast<SDL_Surface*> ( this->get() ), coords.getX(), coords.getY(), coords.getWidth(), coords.getHeight() );
+  SDL_UpdateRect ( static_cast<SDL_Surface*> ( this->get() ), coords.x, coords.y, coords.width, coords.height );
 }
 
 void SDL_Display::toggleFullScreenWindow ( int32_t width, int32_t height )

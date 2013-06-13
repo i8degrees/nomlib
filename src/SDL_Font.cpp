@@ -18,7 +18,7 @@ SDL_Font::SDL_Font ( void )
 
   this->font = nullptr;
 
-  this->coords.setCoords ( 0, 0, 0, 0 );
+  this->coords = nom::Coords ( 0, 0, 0, 0 );
   this->color = nom::Color ( 0, 0, 0 );
   this->text_buffer = "\0";
 
@@ -46,12 +46,12 @@ SDL_Font::~SDL_Font ( void )
 
 int32_t SDL_Font::getTextWidth ( void )
 {
-  return this->coords.getWidth();
+  return this->coords.width;
 }
 
 int32_t SDL_Font::getTextHeight ( void )
 {
-  return this->coords.getHeight();
+  return this->coords.height;
 }
 
 const std::string& SDL_Font::getText ( void ) const
@@ -69,7 +69,7 @@ void SDL_Font::setText ( const std::string& text )
   if ( text.length() > 0 )
   {
     if ( TTF_SizeText ( this->font, text.c_str(), &width, &height ) != -1 )
-      this->coords.setDimensions ( width, height );
+      this->coords.setSize ( width, height );
   }
   else
   {

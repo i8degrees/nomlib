@@ -26,57 +26,38 @@ nom::Transformable::~Transformable ( void )
   // Cleanup vars
 }
 
+// SDL_Cursor
 int32_t nom::Transformable::getX ( void ) const
 {
-  return this->coords.getX();
+  return this->coords.x;
 }
 
+// SDL_Cursor
 int32_t nom::Transformable::getY ( void ) const
 {
-  return this->coords.getY();
+  return this->coords.y;
 }
 
-const nom::Coords& nom::Transformable::getXY ( void ) const
+const nom::Coords nom::Transformable::getPosition ( void ) const
 {
-  return this->coords;
-}
-
-void nom::Transformable::setX ( int32_t x )
-{
-  this->coords.setX ( x );
-}
-
-void nom::Transformable::setY ( int32_t y )
-{
-  this->coords.setY ( y );
-}
-
-// Phase out? new method get/setPosition
-void nom::Transformable::setXY ( int32_t x, int32_t y )
-{
-  this->coords.setXY ( x, y );
-}
-
-const nom::Coords& nom::Transformable::getPosition ( void ) const
-{
-  return this->coords;
+  return nom::Coords ( this->coords.x, this->coords.y );
 }
 
 const nom::Coords nom::Transformable::getSize ( void ) const
 {
-  return nom::Coords ( this->coords.getWidth(), this->coords.getHeight() );
+  return nom::Coords ( this->coords.width, this->coords.height );
 }
 
 // Variant #1 setter for position coordinates
 void nom::Transformable::setPosition ( int32_t x, int32_t y )
 {
-  this->coords.setXY ( x, y );
+  this->coords.setPosition ( x, y );
 }
 
 // Variant #2 setter for position coordinates
 void nom::Transformable::setPosition ( int32_t x, int32_t y, int32_t width, int32_t height )
 {
-  this->coords.setCoords ( x, y, width, height );
+  this->coords = nom::Coords ( x, y, width, height );
 }
 
 // Variant #3 setter for position coordinates; do we have enough options yet???
@@ -87,37 +68,34 @@ void nom::Transformable::setPosition ( const nom::Coords& coords )
 
 void nom::Transformable::setSize ( int32_t width, int32_t height )
 {
-  this->coords.setDimensions ( width, height );
+  this->coords.setSize ( width, height );
 }
 
+/*
 int32_t nom::Transformable::getWidth ( void ) const
 {
-  return this->coords.getWidth();
+  return this->coords.width;
 }
 
-void nom::Transformable::setWidth ( int32_t width, int32_t height )
+void nom::Transformable::setWidth ( int32_t width )
 {
-  this->coords.setWidth ( width );
+  this->coords.width = width;
 }
 
 int32_t nom::Transformable::getHeight ( void ) const
 {
-  return this->coords.getHeight();
+  return this->coords.height;
 }
 
 void nom::Transformable::setHeight ( int32_t height )
 {
-  this->coords.setHeight ( height );
+  this->coords.height = height;
 }
-
-void nom::Transformable::updateXY ( int32_t x, int32_t y )
+*/
+void nom::Transformable::move ( int32_t x, int32_t y )
 {
-  int32_t x_offset = this->coords.getX();
-  int32_t y_offset = this->coords.getY();
-
-  x_offset += x;
-  y_offset += y;
-  this->coords.setXY ( x_offset, y_offset );
+  this->coords.x += x;
+  this->coords.y += y;
 }
 
 const nom::Color& nom::Transformable::getColor ( void ) const

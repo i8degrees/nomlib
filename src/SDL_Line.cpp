@@ -74,10 +74,10 @@ nom::Line::Line ( int32_t x, int32_t y, int32_t width, int32_t height, const nom
 void nom::Line::Update ( void )
 {
   // temporary calculation offsets based on user's initial given coordinates
-  int32_t x1 = this->getX();
-  int32_t y1 = this->getY();
-  int32_t x2 = this->getWidth();
-  int32_t y2 = this->getHeight();
+  int32_t x1 = this->coords.x;
+  int32_t y1 = this->coords.y;
+  int32_t x2 = this->coords.width;
+  int32_t y2 = this->coords.height;
 
   if ( this->updated == true )
     return;

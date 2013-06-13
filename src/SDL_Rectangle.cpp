@@ -11,7 +11,7 @@
 
 nom::Rectangle::Rectangle ( void )
 {
-  this->coords.setCoords ( 0, 0, 0, 0 );
+  this->coords = nom::Coords ( 0, 0, 0, 0 );
   this->color = nom::Color ( 0, 0, 0 );
 }
 

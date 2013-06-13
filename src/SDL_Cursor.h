@@ -32,8 +32,8 @@ namespace nom
 
       unsigned int getX ( void );
       unsigned int getY ( void );
-      void setX ( unsigned int x );
-      void setY ( unsigned int y );
+      //void setX ( unsigned int x );
+      //void setY ( unsigned int y );
       void setXY ( unsigned int x = 0, unsigned int y = 0 );
       void updateXY ( unsigned int x = 0, unsigned int y = 0 );
 

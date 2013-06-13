@@ -31,7 +31,7 @@ SDL_BitmapFont::SDL_BitmapFont ( void )
 
   for ( unsigned int idx = 0; idx < 256; idx++ )
   {
-    this->chars[idx].setCoords ( 0, 0, 0, 0 );
+    this->chars[idx] = nom::Coords ( 0, 0, 0, 0 );
   }
 }
 
@@ -51,11 +51,11 @@ int32_t SDL_BitmapFont::getTextWidth ( void )
     for ( int t = 0; t < this->text_buffer.length(); t++ )
     {
       if ( this->text_buffer[t] == ' ' )
-        text_width += this->chars[t].getWidth() / this->spacing;
+        text_width += this->chars[t].width / this->spacing;
       else if ( this->text_buffer[t] == '\n' )
         text_width = 0;
       else
-        text_width += this->chars[t].getWidth() - ( this->spacing + 2 );
+        text_width += this->chars[t].width - ( this->spacing + 2 );
     }
   }
 
@@ -71,7 +71,7 @@ int32_t SDL_BitmapFont::getTextHeight ( void )
     if ( this->text_buffer[t] == '\n' )
       text_height += this->newline;
     else
-      text_height = this->chars[t].getHeight();
+      text_height = this->chars[t].height;
   }
 
   return text_height;
@@ -167,8 +167,8 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
     for ( uint32_t cols = 0; cols < sheet_height; cols++ )
     {
       // Set character offsets
-      this->chars[ currentChar ].setXY ( tile_width * cols, tile_height * rows );
-      this->chars[ currentChar ].setDimensions ( tile_width, tile_height );
+      this->chars[ currentChar ].setPosition ( tile_width * cols, tile_height * rows );
+      this->chars[ currentChar ].setSize ( tile_width, tile_height );
 
       //Find Left Side; go through pixel columns
       for ( uint32_t pCol = 0; pCol < tile_width; pCol++ )
@@ -184,7 +184,7 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
           if( this->bitmap_font.getPixel ( pX, pY ) != background_color )
           {
               //Set the x offset
-              this->chars[ currentChar ].setX ( pX );
+              this->chars[ currentChar ].x = pX;
 
               //Break the loops
               pCol = tile_width;
@@ -207,8 +207,7 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
           if ( this->bitmap_font.getPixel ( pX, pY ) != background_color )
           {
             //Set the width
-            uint32_t width = ( pX - this->chars[ currentChar ].getX() ) + 1;
-            this->chars[ currentChar ].setWidth ( width );
+            this->chars[ currentChar ].width = ( pX - this->chars[ currentChar ].x ) + 1;
 
             //Break the loops
             pCol_w = -1;
@@ -290,11 +289,8 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
   // Loop off excess top pixels
   for ( uint32_t t = 0; t < 256; t++ )
   {
-    int32_t y = this->chars[ t ].getY();
-    int32_t height = this->chars[ t ].getHeight();
-
-    this->chars[ t ].setY ( y += top );
-    this->chars[ t ].setHeight ( height -= top );
+    this->chars[ t ].y += top;
+    this->chars[ t ].height -= top;
   }
 
   return true;
@@ -320,8 +316,8 @@ void SDL_BitmapFont::Draw ( void* video_buffer )
 {
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from
-  int32_t x_offset = this->getX();
-  int32_t y_offset = this->getY();
+  int32_t x_offset = this->coords.x;
+  int32_t y_offset = this->coords.y;
 
   //If the font has been built
   if ( this->bitmap_font.get() != nullptr )
@@ -339,7 +335,7 @@ void SDL_BitmapFont::Draw ( void* video_buffer )
       {
         //Move down and back over to the beginning of line
         y_offset += this->newline;
-        x_offset = this->getX();
+        x_offset = this->coords.x;
       }
       // If the current character is a newline
       else if( this->text_buffer[show] == '\t' )
@@ -356,7 +352,7 @@ void SDL_BitmapFont::Draw ( void* video_buffer )
         this->bitmap_font.Draw ( video_buffer );
 
         // Move over the width of the character with one pixel of padding
-        x_offset += ( this->chars[ascii].getWidth() ) + 1;
+        x_offset += ( this->chars[ascii].width ) + 1;
       } // end else
     } // end for loop
   } // end if this->bitmap_font != nullptr

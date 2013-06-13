@@ -18,7 +18,7 @@ nom::SDL_Gradient::SDL_Gradient ( void )
   this->gradient[0] = nom::Color ( 66, 66, 66 ); // starting color defaults
   this->gradient[1] = nom::Color ( 99, 99, 99 ); // ending color defaults
 
-  this->coords.setCoords ( 0, 0, 0, 0 ); // zero out dem blitting coords
+  this->coords = nom::Coords ( 0, 0, 0, 0 ); // zero out dem blitting coords
 
   this->x_margin = 0;
   this->y_margin = 0;
@@ -34,7 +34,7 @@ void nom::SDL_Gradient::Init (  const nom::Color& starting_color, const nom::Col
   this->gradient[0] = starting_color;
   this->gradient[1] = ending_color;
 
-  this->coords.setCoords ( x, y, width, height ); // initialize dem coords
+  this->coords = nom::Coords ( x, y, width, height ); // initialize dem coords
 
   this->x_margin = x_margin; // offsets += 3 unless initialized in args list or not calling Init
   this->y_margin = y_margin; // offsets += 4 unless initialized in args list or not calling Init
@@ -58,8 +58,8 @@ void nom::SDL_Gradient::Draw (  void* video_buffer, unsigned int x, unsigned int
   //unsigned int y_offset = y + height;
 
   // width should always be one (1) with this particular blit algorithm
-  this->coords.setCoords ( x, y, 1, height - this->y_margin );
-  //this->coords.setCoords ( this->getX(), this->getY(), 1, ( this->getHeight() - this->y_margin ) );
+  this->coords = nom::Coords ( x, y, 1, height - this->y_margin );
+  //this->coords = nom::Coords ( this->getX(), this->getY(), 1, ( this->getHeight() - this->y_margin ) );
 
   float currentR = (float) gradient[0].red;
   float currentG = (float) gradient[0].green;
@@ -69,9 +69,9 @@ void nom::SDL_Gradient::Draw (  void* video_buffer, unsigned int x, unsigned int
   float destG = (float) ( gradient[1].green - gradient[0].green )  / ( float ) ( width - this->x_margin );
   float destB = (float) ( gradient[1].blue - gradient[0].blue )    / ( float ) ( width - this->x_margin );
 
-  for ( rows = this->coords.getX(); rows < x_offset - this->x_margin; rows++ )
+  for ( rows = this->coords.x; rows < x_offset - this->x_margin; rows++ )
   {
-    this->coords.setX ( rows );
+    this->coords.x = rows;
 
     nom::Rectangle rect ( this->coords, nom::Color ( currentR, currentG, currentB ) );
     rect.Draw ( video_buffer );

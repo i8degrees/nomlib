@@ -9,30 +9,28 @@
 ******************************************************************************/
 #include "Coords.hpp"
 
-nom::Coords::Coords ( void )
+// Default constructor; sets all values to their respective defaults
+nom::Coords::Coords ( void )  : x ( 0 ), y ( 0 ), z ( 0 ),
+                                width ( 0 ), height ( 0 )
 {
   #ifdef DEBUG_COORDS_OBJ
     std::cout << "Coords::Coords (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
-  this->x = 0;
-  this->y = 0;
-  this->z = 0;
-  this->width = 0;
-  this->height = 0;
+  // Nothing else to do
 }
 
-nom::Coords::Coords ( signed int x_, signed int y_, signed int width_, signed height_ )
+// Constructor variant for setting coords by x, y, width, height values
+nom::Coords::Coords ( int32_t x, int32_t y, int32_t width, int32_t height )
 {
   #ifdef DEBUG_COORDS_OBJ
     std::cout << "Coords::Coords (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
-  this->x = x_;
-  this->y = y_;
-  this->z = 0;
-  this->width = width_;
-  this->height = height_;
+  this->x = x;
+  this->y = y;
+  this->width = width;
+  this->height = height;
 }
 
 nom::Coords::~Coords ( void )
@@ -41,82 +39,29 @@ nom::Coords::~Coords ( void )
     std::cout << "Coords::~Coords (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
 
-  // Cleanup
+  // Nothing to clean up!
 }
 
-void nom::Coords::setCoords ( signed int x_, signed int y_,
-                          signed int width_, signed int height_ )
+nom::Coords nom::Coords::getPosition ( void ) const
 {
-  this->x = x_;
-  this->y = y_;
-  this->width = width_;
-  this->height = height_;
+  return nom::Coords ( this->x, this->y );
 }
 
-signed int nom::Coords::getX ( void ) const
+nom::Coords nom::Coords::getSize ( void ) const
 {
-  return this->x;
+  return nom::Coords ( this->width, this->height );
 }
 
-signed int nom::Coords::getY ( void ) const
+void nom::Coords::setPosition ( int32_t x, int32_t y )
 {
-  return this->y;
+  this->x = x;
+  this->y = y;
 }
 
-void nom::Coords::setX ( signed int x_ )
+void nom::Coords::setSize ( int32_t width, int32_t height )
 {
-  this->x = x_;
-}
-
-void nom::Coords::setY ( signed int y_ )
-{
-  this->y = y_;
-}
-
-void nom::Coords::setXY ( signed int x_, signed int y_ )
-{
-  this->x = x_;
-  this->y = y_;
-}
-
-signed int nom::Coords::getWidth ( void ) const
-{
-  return this->width;
-}
-
-signed int nom::Coords::getHeight ( void ) const
-{
-  return this->height;
-}
-
-void nom::Coords::setWidth ( signed int width_ )
-{
-  this->width = width_;
-}
-
-void nom::Coords::setHeight ( signed int height_ )
-{
-  this->height = height_;
-}
-
-void nom::Coords::setDimensions ( signed int width_, signed int height_ )
-{
-  this->width = width_;
-  this->height = height_;
-}
-
-void nom::Coords::updateXY ( signed int x_, signed int y_ )
-{
-  this->x += x_;
-  this->y += y_;
-}
-
-void nom::Coords::updateCoords ( signed int x_, signed int y_, signed int width_, signed int height_ )
-{
-  this->x += x_;
-  this->y += y_;
-  this->width += width_;
-  this->height += height_;
+  this->width = width;
+  this->height = height;
 }
 
 /// SDL compatibility wrapper primarily for SDL_BlitSurface

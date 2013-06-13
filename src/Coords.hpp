@@ -24,41 +24,17 @@ namespace nom
   {
     public:
       Coords ( void );
-
-      Coords ( signed int x_, signed int y_,
-                signed int width_ = 0, signed height_ = 0);
-
+      Coords ( int32_t x, int32_t y, int32_t width = 0, int32_t height = 0 );
       ~Coords ( void );
 
-      // phase out
-      void setCoords (  signed int x_, signed int y_,
-                        signed int width_ = 0, signed int height_ = 0 );
+      nom::Coords getPosition ( void ) const;
+      void setPosition ( int32_t x, int32_t y );
 
+      nom::Coords getSize ( void ) const;
+      void setSize ( int32_t width, int32_t height );
+
+      // SDL backwards-compatibility wrapper
       SDL_Rect getSDL_Rect ( void ) const;
-
-      signed int getX ( void ) const;
-      signed int getY ( void ) const;
-      void setX ( signed int x_ );
-      void setY ( signed int y_ );
-      void setXY ( signed int x_, signed int y_ );
-
-      signed int getWidth ( void ) const;
-      signed int getHeight ( void ) const;
-
-      void setWidth ( signed int width_ );
-      void setHeight ( signed int height_ );
-
-      // phase out
-      void setDimensions ( signed int width_, signed int height_ );
-
-      void updateX ( signed int x_ );
-      void updateY ( signed int y_ );
-      void updateXY ( signed int x_ = 0, signed int y_ = 0 );
-
-      void updateWidth ( signed int width_ );
-      void updateHeight ( signed int height_ );
-
-      void updateCoords ( signed int x_ = 0, signed int y_ = 0, signed int width_ = 0, signed int height_ = 0 );
 
       signed int x;
       signed int y;

@@ -20,6 +20,8 @@ const nom::Color nom::Color::Magenta ( 255, 0, 255 );
 const nom::Color nom::Color::Cyan ( 0, 255, 255 );
 const nom::Color nom::Color::Transparent ( 0, 0, 0 );
 
+const nom::Color nom::Color::Gray ( 99, 99, 99, 255 );
+
 // Default constructor; sets the color to their respective defaults
 nom::Color::Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ), alpha ( -1 ) // SDL_ALPHA_OPAQUE (255)
 {
@@ -42,6 +44,7 @@ nom::Color::Color ( uint8_t red, uint8_t green, uint8_t blue, int32_t alpha )
 }
 
 // Constructor variant for setting a color with an exiting nom::Color object
+// This is a "shallow" copy assignment
 nom::Color::Color ( const nom::Color& color )
 {
   #ifdef DEBUG_COLOR_OBJ

@@ -37,20 +37,23 @@ nom::SDL_Canvas::SDL_Canvas ( void* video_buffer )
 //
 // As per libSDL docs, this must be called only after video initialization;
 // (SDL_SetVideoMode)
-nom::SDL_Canvas::SDL_Canvas ( int32_t width, int32_t height, const Color& colors, uint32_t flags )
+//
+// http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurface
+//
+nom::SDL_Canvas::SDL_Canvas ( uint32_t flags, int32_t width, int32_t height, int32_t bitsPerPixel, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
 {
   #ifdef DEBUG_SDL_CANVAS_OBJ
     std::cout << "nom::SDL_Canvas::SDL_Canvas(): Hello, world!" << "\n" << std::endl;
   #endif
 
   this->canvas_buffer = nullptr;
-
-  // ...Create a new surface here?
-  // http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurface
+  this->canvas_buffer = SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask );
 }
 
 // Constructor variant for setting the canvas with existing pixel data
+//
 // http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurfaceFrom
+//
 nom::SDL_Canvas::SDL_Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
 {
   this->canvas_buffer = nullptr;

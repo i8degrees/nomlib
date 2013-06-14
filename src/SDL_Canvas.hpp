@@ -29,7 +29,7 @@ namespace nom
     public:
       SDL_Canvas ( void );
       SDL_Canvas ( void* video_buffer );
-      SDL_Canvas ( int32_t width, int32_t height, const Color& colorbit, uint32_t flags = 0 );
+      SDL_Canvas ( uint32_t flags, int32_t width, int32_t height, int32_t bitsPerPixel, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask );
       SDL_Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask );
       ~SDL_Canvas ( void );
       void freeCanvas ( void );

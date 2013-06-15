@@ -339,7 +339,7 @@ bool nom::SDL_Canvas::mustLock ( void* video_buffer ) const
     return false;
 }
 
-bool nom::SDL_Canvas::lockCanvas ( void* video_buffer ) const
+bool nom::SDL_Canvas::Lock ( void* video_buffer ) const
 {
   if ( this->mustLock ( video_buffer ) )
     SDL_LockSurface ( static_cast<SDL_Surface*> ( video_buffer ) );
@@ -348,7 +348,7 @@ bool nom::SDL_Canvas::lockCanvas ( void* video_buffer ) const
   return true;
 }
 
-bool nom::SDL_Canvas::unlockCanvas ( void* video_buffer ) const
+bool nom::SDL_Canvas::Unlock ( void* video_buffer ) const
 {
   SDL_UnlockSurface ( static_cast<SDL_Surface*> ( video_buffer ) );
 

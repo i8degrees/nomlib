@@ -102,19 +102,16 @@ void nom::SDL_MessageBox::Draw ( void* video_buffer ) /* const */
 {
   this->background.Draw ( video_buffer );
 
-  if ( this->box.mustLock ( video_buffer ) == true )
+  // Not sure if this is the proper placement of the check, but seems to do
+  // alright for now!
+  while ( ! this->box.Lock ( video_buffer ) )
+    SDL_Delay ( 10 );
+
+  for ( auto it = this->lines.begin(); it != this->lines.end(); it++ )
   {
-    // Not sure if this is the proper placement of the check, but seems to do
-    // alright for now!
-    while ( this->box.lockCanvas ( video_buffer ) == false )
-      SDL_Delay ( 10 );
-
-    for ( auto it = this->lines.begin(); it != this->lines.end(); it++ )
-    {
-      std::shared_ptr<nom::SDL_Drawable> obj = *it;
-      obj->Draw ( video_buffer );
-    }
-
-    this->box.unlockCanvas ( video_buffer );
+    std::shared_ptr<nom::SDL_Drawable> obj = *it;
+    obj->Draw ( video_buffer );
   }
+
+  this->box.Unlock ( video_buffer );
 }

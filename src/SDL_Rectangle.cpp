@@ -51,4 +51,10 @@ void nom::Rectangle::Draw ( void* video_buffer ) const
   {
     std::cout << "ERR in nom::Rectangle::Draw(): " << SDL_GetError() << std::endl;
   }
+
+  // Destruct as soon as we are done to free memory
+  // that could otherwise be held too long before
+  // cleaned up, resulting in slow, but steady climb
+  // in memory usage
+  Rectangle::~Rectangle();
 }

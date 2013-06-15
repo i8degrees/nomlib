@@ -78,7 +78,7 @@ namespace nom
       bool displayFormat ( void );
       bool displayFormatAlpha ( void );
 
-      void clear ( const nom::Color& color = nom::Color::Blue );
+      void clear ( const nom::Color& color = nom::Color::Blue ) const;
 
       bool Lock ( void* video_buffer ) const;
       void Unlock ( void* video_buffer ) const;

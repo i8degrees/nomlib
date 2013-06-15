@@ -334,7 +334,11 @@ bool nom::SDL_Canvas::displayFormatAlpha ( void )
   return true;
 }
 
-void nom::SDL_Canvas::clear ( const nom::Color& color )
+/// Note: this method is not meant to be called inside a loop; memory usage may
+/// run a mock (seems to be fixed by Rectangle::~Rectangle() inside
+// 'SDL_Rectangle.cpp', although I do not understand why exactly...
+///
+void nom::SDL_Canvas::clear ( const nom::Color& color ) const
 {
   nom::Rectangle rect ( nom::Coords ( 0, 0, this->getCanvasWidth(), this->getCanvasHeight() ), color );
 

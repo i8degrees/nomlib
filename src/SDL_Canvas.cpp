@@ -354,11 +354,9 @@ bool nom::SDL_Canvas::Lock ( void* video_buffer ) const
   return true;
 }
 
-bool nom::SDL_Canvas::Unlock ( void* video_buffer ) const
+void nom::SDL_Canvas::Unlock ( void* video_buffer ) const
 {
   SDL_UnlockSurface ( static_cast<SDL_Surface*> ( video_buffer ) );
-
-  return true;
 }
 
 int32_t nom::SDL_Canvas::getPixel ( int32_t x, int32_t y )

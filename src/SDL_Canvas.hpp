@@ -81,7 +81,7 @@ namespace nom
       void clear ( const nom::Color& color = nom::Color::Blue );
 
       bool Lock ( void* video_buffer ) const;
-      bool Unlock ( void* video_buffer ) const;
+      void Unlock ( void* video_buffer ) const;
 
       int32_t getPixel ( int32_t x, int32_t y );
 

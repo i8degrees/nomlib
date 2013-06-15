@@ -97,12 +97,16 @@ bool nom::SDL_Canvas::valid ( void ) const
 // Constructor variant for setting the canvas (SDL backwards-compatibility wrapper)
 void nom::SDL_Canvas::setCanvas ( SDL_Surface *video_buffer )
 {
+  if ( this->valid() )
+    this->destroy();
+
   this->canvas_buffer = video_buffer;
 }
 
 void nom::SDL_Canvas::setCanvas ( void* video_buffer )
 {
-  this->destroy();
+  if ( this->valid() )
+    this->destroy();
 
   this->canvas_buffer = (SDL_Surface*) video_buffer;
 }

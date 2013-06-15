@@ -175,6 +175,4 @@ void SDL_Display::setWindowIcon ( const std::string& app_icon )
   icon.setCanvas ( image.get() );
   icon.setTransparent ( nom::Color ( 0, 0, 0 ), SDL_SRCCOLORKEY ); // FIXME?
   SDL_WM_SetIcon ( static_cast<SDL_Surface*> ( icon.get() ) , nullptr );
-
-  icon.freeCanvas();
 }

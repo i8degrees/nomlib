@@ -65,12 +65,12 @@ nom::SDL_Canvas::~SDL_Canvas ( void )
     std::cout << "nom::SDL_Canvas::~SDL_Canvas(): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  this->freeCanvas();
+  this->destroy();
 }
 
 // We sometimes need to call this method call from outside of this class, such
 // as in SDL_Font::Draw, in order to prevent memory leaks from occurring
-void nom::SDL_Canvas::freeCanvas ( void )
+void nom::SDL_Canvas::destroy ( void )
 {
   if ( this->valid() )
   {
@@ -102,7 +102,7 @@ void nom::SDL_Canvas::setCanvas ( SDL_Surface *video_buffer )
 
 void nom::SDL_Canvas::setCanvas ( void* video_buffer )
 {
-  this->freeCanvas();
+  this->destroy();
 
   this->canvas_buffer = (SDL_Surface*) video_buffer;
 }
@@ -299,7 +299,7 @@ bool nom::SDL_Canvas::displayFormat ( void )
   if ( converted_canvas == nullptr )
     return false;
 
-  freeCanvas(); // Clean up our existing surface first to be safe
+  this->destroy(); // Clean up our existing surface first to be safe
 
   // TODO: compare canvas_buffer == converted_buffer first?
 
@@ -320,7 +320,7 @@ bool nom::SDL_Canvas::displayFormatAlpha ( void )
   if ( converted_canvas == nullptr )
     return false;
 
-  freeCanvas(); // Clean up our existing surface first to be safe
+  this->destroy(); // Clean up our existing surface first to be safe
 
   // TODO: compare canvas_buffer == converted_buffer first?
 

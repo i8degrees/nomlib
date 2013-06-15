@@ -32,7 +32,7 @@ namespace nom
       SDL_Canvas ( uint32_t flags, int32_t width, int32_t height, int32_t bitsPerPixel, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask );
       SDL_Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask );
       ~SDL_Canvas ( void );
-      void freeCanvas ( void );
+      void destroy ( void );
 
       /// Obtains raw pointer to the object's video surface buffer
       ///

@@ -111,7 +111,7 @@ void nom::SDL_Font::Update ( void )
 
   // We must free the rendered font surface here in order to evade leaks
   if ( this->font_buffer.valid() )
-    this->font_buffer.freeCanvas();
+    this->font_buffer.destroy();
 
   // Update the rendered text surface here for drawing
   if ( this->font != nullptr )

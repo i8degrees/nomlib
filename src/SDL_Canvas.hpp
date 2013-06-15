@@ -37,6 +37,7 @@ namespace nom
       /// Obtains raw pointer to the object's video surface buffer
       ///
       /// Returns ( SDL_Surface* )
+      ///
       void* get ( void ) const;
 
       /// Is this SDL_Surface* initialized ( != nullptr )?

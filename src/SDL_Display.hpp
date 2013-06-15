@@ -31,7 +31,10 @@ namespace nom
       void createWindow ( int32_t display_width, int32_t display_height,
                           int32_t display_colorbit, uint32_t flags = 0
                         );
-
+      /// Obtains raw pointer to the object's video surface buffer
+      ///
+      /// Returns ( SDL_Surface* )
+      ///
       void* get ( void ) const;
       int32_t getDisplayWidth ( void ) const;
       int32_t getDisplayHeight ( void ) const;

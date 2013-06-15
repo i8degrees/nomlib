@@ -29,7 +29,10 @@ nom::SDL_Image::~SDL_Image ( void )
     std::cout << "SDL_Image::~SDL_Image(): Goodbye cruel world!" << std::endl << std::endl;
   #endif
 
-  this->image_buffer = nullptr; // ...better safe than sorry?
+  // We do not free the surface here because we pass ownership
+  // (and thus, responsibility) to the calling class
+
+  this->image_buffer = nullptr; // ...better safe than sorry!
 
   IMG_Quit();
 }

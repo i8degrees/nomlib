@@ -28,7 +28,10 @@ namespace nom
       SDL_Image ( uint32_t img_flags = IMG_INIT_PNG );
       ~SDL_Image ( void );
 
-      /// ( SDL_Surface* )
+      /// Obtains raw pointer to the object's video surface buffer
+      ///
+      /// Returns ( SDL_Surface* )
+      ///
       void* get ( void ) const;
 
       /// Is this SDL_Surface* initialized ( != nullptr )?

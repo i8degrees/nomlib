@@ -36,6 +36,10 @@ namespace nom
       /// Returns ( SDL_Surface* )
       ///
       void* get ( void ) const;
+
+      /// Is this SDL_Surface* initialized ( != nullptr )?
+      bool valid ( void ) const;
+
       int32_t getDisplayWidth ( void ) const;
       int32_t getDisplayHeight ( void ) const;
       int32_t getDisplayColorBits ( void ) const;

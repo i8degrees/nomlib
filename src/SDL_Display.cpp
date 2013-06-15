@@ -61,6 +61,14 @@ void* SDL_Display::get ( void ) const
   return dynamic_cast<SDL_Surface*>( SDL_GetVideoSurface() );
 }
 
+bool nom::SDL_Display::valid ( void ) const
+{
+  if ( static_cast<SDL_Surface*> ( this->get() ) != nullptr )
+    return true;
+  else
+    return false;
+}
+
 int32_t SDL_Display::getDisplayWidth ( void ) const
 {
   return SDL_GetVideoSurface()->w;
@@ -131,7 +139,7 @@ void SDL_Display::toggleFullScreenWindow ( int32_t width, int32_t height )
 
   //  If for whatever reason, we cannot toggle fullscreen, try reverting
   //  back to our previous configuration
-  if ( this->get() == nullptr )
+  if ( ! this->valid() )
     this->createWindow ( width, height, 0, flags );
 }
 
@@ -159,7 +167,7 @@ void SDL_Display::setWindowIcon ( const std::string& app_icon )
   nom::SDL_Image image; // holds our image in memory during transfer
   nom::SDL_Canvas icon; // icon canvas to load our icon file into
 
-  if ( this->get() != nullptr )
+  if ( this->valid() )
   {
     std::cout << "ERR in SDL_Display::setWindowIcon(): " << "SDL video subsystem has already been initiated." << std::endl << std::endl;
   }

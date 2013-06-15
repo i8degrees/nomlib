@@ -31,6 +31,9 @@ namespace nom
       /// ( SDL_Surface* )
       void* get ( void ) const;
 
+      /// Is this SDL_Surface* initialized ( != nullptr )?
+      bool valid ( void ) const;
+
       /// Supports every file type that your SDL_image extension has been
       /// compiled
       bool loadFromFile ( const std::string& filename );

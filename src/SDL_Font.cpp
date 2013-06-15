@@ -110,7 +110,7 @@ void nom::SDL_Font::Update ( void )
   this->font_buffer.setPosition ( this->coords );
 
   // We must free the rendered font surface here in order to evade leaks
-  if ( this->font_buffer.get() != nullptr )
+  if ( this->font_buffer.valid() )
     this->font_buffer.freeCanvas();
 
   // Update the rendered text surface here for drawing
@@ -136,6 +136,6 @@ void nom::SDL_Font::Update ( void )
 
 void SDL_Font::Draw ( void* video_buffer ) const
 {
-  if ( this->font_buffer.get() != nullptr )
+  if ( this->font_buffer.valid() )
     this->font_buffer.Draw ( video_buffer );
 }

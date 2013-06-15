@@ -41,11 +41,19 @@ void* nom::SDL_Image::get ( void ) const
   return static_cast<SDL_Surface*> ( this->image_buffer );
 }
 
+bool nom::SDL_Image::valid ( void ) const
+{
+  if ( static_cast<SDL_Surface*> ( this->image_buffer ) != nullptr )
+    return true;
+  else
+    return false;
+}
+
 bool nom::SDL_Image::loadFromFile ( const std::string& filename )
 {
   this->image_buffer = IMG_Load ( filename.c_str() );
 
-  if ( static_cast<SDL_Surface*> ( this->image_buffer ) == nullptr )
+  if ( ! this->valid() )
   {
     #ifdef DEBUG_SDL_IMAGE
       std::cout << "ERR in nom::SDL_Image::loadFromFile() at IMG_Load(): " << IMG_GetError() << std::endl << std::endl;
@@ -60,7 +68,7 @@ bool nom::SDL_Image::loadFromFile_BMP ( const std::string& filename )
 {
   this->image_buffer = SDL_LoadBMP ( filename.c_str() );
 
-  if ( static_cast<SDL_Surface*> ( this->image_buffer ) == nullptr )
+  if ( ! this->valid() )
   {
     #ifdef DEBUG_SDL_IMAGE
       std::cout << "ERR in nom::SDL_Image::loadFromFile_BMP(): " << SDL_GetError() << std::endl << std::endl;

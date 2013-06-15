@@ -17,8 +17,6 @@ nom::SDL_Canvas::SDL_Canvas ( void )  : canvas_buffer ( nullptr ),
   #ifdef DEBUG_SDL_CANVAS_OBJ
     std::cout << "nom::SDL_Canvas::SDL_Canvas(): Hello, world!" << "\n" << std::endl;
   #endif
-
-  this->canvas_buffer = nullptr;
 }
 
 // Constructor variant for setting the canvas with existing data
@@ -74,7 +72,7 @@ nom::SDL_Canvas::~SDL_Canvas ( void )
 // as in SDL_Font::Draw, in order to prevent memory leaks from occurring
 void nom::SDL_Canvas::freeCanvas ( void )
 {
-  if ( this->canvas_buffer != nullptr )
+  if ( this->valid() )
   {
     SDL_FreeSurface ( static_cast<SDL_Surface*> ( this->get() ) );
     this->canvas_buffer = nullptr;
@@ -86,6 +84,14 @@ void nom::SDL_Canvas::freeCanvas ( void )
 void* nom::SDL_Canvas::get ( void ) const
 {
   return static_cast<SDL_Surface*> ( this->canvas_buffer );
+}
+
+bool nom::SDL_Canvas::valid ( void ) const
+{
+  if ( static_cast<SDL_Surface*> ( this->canvas_buffer ) != nullptr )
+    return true;
+  else
+    return false;
 }
 
 // Constructor variant for setting the canvas (SDL backwards-compatibility wrapper)
@@ -206,7 +212,7 @@ void nom::SDL_Canvas::Draw ( void* video_buffer ) const
   SDL_Rect blit_offsets = this->offsets.getSDL_Rect();
 
   // Should we also check to see if video_buffer is nullptr?
-  if ( this->canvas_buffer != nullptr )
+  if ( this->valid() )
   {
     if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
     {
@@ -260,7 +266,7 @@ bool nom::SDL_Canvas::setTransparent  ( const nom::Color& color,
 {
   uint32_t transparent_color = 0;
 
-  if ( this->get() == nullptr )
+  if ( ! this->valid() )
   {
     #ifdef DEBUG_SDL_CANVAS
       std::cout << "ERR in nom::SDL_Canvas::setTransparent(): " << SDL_GetError() << std::endl << std::endl;
@@ -328,7 +334,7 @@ void nom::SDL_Canvas::clear ( const nom::Color& color )
 {
   nom::Rectangle rect ( nom::Coords ( 0, 0, this->getCanvasWidth(), this->getCanvasHeight() ), color );
 
-  rect.Draw ( static_cast<SDL_Surface*> ( this->get() ) );
+  rect.Draw ( this->get() );
 }
 
 bool nom::SDL_Canvas::mustLock ( void* video_buffer ) const

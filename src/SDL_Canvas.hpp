@@ -39,6 +39,9 @@ namespace nom
       /// Returns ( SDL_Surface* )
       void* get ( void ) const;
 
+      /// Is this SDL_Surface* initialized ( != nullptr )?
+      bool valid ( void ) const;
+
       /// SDL compatibility wrapper
       void setCanvas ( SDL_Surface *video_buffer );
       void setCanvas ( void* video_buffer );

@@ -46,7 +46,7 @@ int32_t SDL_BitmapFont::getTextWidth ( void )
 {
   int32_t text_width = 0;
 
-  if ( this->bitmap_font.get() != nullptr )
+  if ( this->bitmap_font.valid() )
   {
     for ( int t = 0; t < this->text_buffer.length(); t++ )
     {
@@ -128,7 +128,7 @@ void SDL_BitmapFont::setStyle ( uint8_t style, uint8_t options )
     /// Text effect utilizing alpha channels for the appearance of gray text
     case Style::Faded:
     {
-      if ( this->bitmap_font.get() != nullptr )
+      if ( this->bitmap_font.valid() )
         if ( this->bitmap_font.setAlpha ( options ) == true )
           this->text_style = Style::Faded;
     break;
@@ -147,7 +147,7 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
 
   this->bitmap_font.loadFromImage ( filename, colorkey );
 
-  if ( this->bitmap_font.get() == nullptr )
+  if ( ! this->bitmap_font.valid() )
   {
     #ifdef DEBUG_BITMAP_FONT
       std::cout << "ERR in SDL_BitmapFont::LoadImage() at Gfx::LoadImage(): " << std::endl;
@@ -320,7 +320,7 @@ void SDL_BitmapFont::Draw ( void* video_buffer )
   int32_t y_offset = this->coords.y;
 
   //If the font has been built
-  if ( this->bitmap_font.get() != nullptr )
+  if ( this->bitmap_font.valid() )
   {
     for ( uint32_t show = 0; show < this->text_buffer.length(); show++ )
     {

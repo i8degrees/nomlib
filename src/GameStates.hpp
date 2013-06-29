@@ -18,7 +18,6 @@
 #include <memory>
 
 #include "SDL.h"
-#include "SDL_Input.hpp"
 #include "GameState.hpp" // abstract class interface for our implementation
 #include "gamelib.h"
 

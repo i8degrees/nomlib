@@ -13,7 +13,6 @@
 #define NOMLIB_GAMESTATE_HEADERS
 
 #include <iostream>
-#include <string>
 
 #include "SDL_Input.hpp"
 #include "gamelib.h"

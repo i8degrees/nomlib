@@ -45,6 +45,8 @@ void nom::GameStates::ChangeState ( std::unique_ptr<GameState> state )
     states.pop_back();
   }
 
+  assert ( state );
+
   // store the new state
   states.push_back( std::move( state ) );
 
@@ -53,6 +55,8 @@ void nom::GameStates::ChangeState ( std::unique_ptr<GameState> state )
 
 void nom::GameStates::PushState ( std::unique_ptr<GameState> state )
 {
+  assert ( state );
+
   // pause current state
   if ( ! states.empty() )
     states.back()->Pause();
@@ -68,8 +72,7 @@ void nom::GameStates::PopState ( void )
     states.pop_back();
 
   // resume previous state
-  if ( !states.empty () )
-    states.back()->Resume();
+  states.back()->Resume();
 }
 
 void nom::GameStates::PopStateThenChangeState ( std::unique_ptr<GameState> state )
@@ -78,6 +81,8 @@ void nom::GameStates::PopStateThenChangeState ( std::unique_ptr<GameState> state
   if ( ! states.empty() )
     states.pop_back();
 
-  if ( ! states.empty () )
-    GameStates::ChangeState( std::move( state ) );
+  assert ( state );
+
+  //if ( ! states.empty () )
+  GameStates::ChangeState( std::move( state ) );
 }

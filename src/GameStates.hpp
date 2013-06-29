@@ -16,6 +16,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <cassert>
 
 #include "SDL.h"
 #include "GameState.hpp" // abstract class interface for our implementation

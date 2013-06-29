@@ -35,7 +35,7 @@ namespace nom
       /// (experimental) onClose method is implemented in each GameState derived class
       /// Pause method is implemented in each GameState derived class
       /// Resume method is implemented in each GameState derived class
-      static void Update ( void ); // uint32_t elapsed_time
+      static void Update ( uint32_t elapsed_time );
       static void Draw ( void* video_buffer );
 
       static void ChangeState ( std::unique_ptr<GameState> state );

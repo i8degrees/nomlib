@@ -8,15 +8,15 @@
 ******************************************************************************/
 #include "timer.h"
 
-Timer::Timer ( void )
+nom::Timer::Timer ( void )
 {
   #ifdef DEBUG_TIMER_OBJ
-    std::cout << "Timer::Timer (): " << "Hello, world!" << "\n" << std::endl;
+    std::cout << "nom::Timer::Timer (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
   if ( SDL_InitSubSystem ( SDL_INIT_TIMER ) == -1 )
   {
-    std::cout << "ERR in Timer::Timer() at: " << SDL_GetError() << std::endl;
+    std::cout << "ERR in nom::Timer::Timer() at: " << SDL_GetError() << std::endl;
     return;
   }
 
@@ -26,29 +26,29 @@ Timer::Timer ( void )
   this->paused_ticks = 0;
 }
 
-Timer::~Timer ( void )
+nom::Timer::~Timer ( void )
 {
   #ifdef DEBUG_TIMER_OBJ
-    std::cout << "Timer::~Timer (): " << "Goodbye cruel world!" << "\n" << std::endl;
+    std::cout << "nom::Timer::~Timer (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
   SDL_QuitSubSystem ( SDL_INIT_TIMER );
 }
 
-void Timer::Start ( void )
+void nom::Timer::Start ( void )
 {
   this->elapsed_ticks = SDL_GetTicks ();
   this->started = true;
   this->paused = false;
 }
 
-void Timer::Stop ( void )
+void nom::Timer::Stop ( void )
 {
   this->started = false;
   this->paused = false;
 }
 
-void Timer::Pause ( void )
+void nom::Timer::Pause ( void )
 {
   if ( ( this->started == true ) && ( this->paused == false ) )
   {
@@ -57,7 +57,7 @@ void Timer::Pause ( void )
   }
 }
 
-void Timer::Unpause ( void )
+void nom::Timer::Unpause ( void )
 {
   if ( this->paused == true )
   {
@@ -67,7 +67,7 @@ void Timer::Unpause ( void )
   }
 }
 
-unsigned int Timer::getTicks ( void )
+unsigned int nom::Timer::getTicks ( void )
 {
   if ( this->started == true )
   {
@@ -83,22 +83,22 @@ unsigned int Timer::getTicks ( void )
   return 0;
 }
 
-bool Timer::isStarted ( void )
+bool nom::Timer::isStarted ( void )
 {
   return this->started;
 }
 
-bool Timer::isPaused ( void )
+bool nom::Timer::isPaused ( void )
 {
   return this->paused;
 }
 
-void Timer::sleep ( float milliseconds )
+void nom::Timer::sleep ( float milliseconds )
 {
   SDL_Delay ( milliseconds );
 }
 
-uint32_t Timer::seconds ( float seconds ) const
+uint32_t nom::Timer::seconds ( float seconds ) const
 {
   return static_cast<uint32_t> ( seconds * 1000.f );
 }

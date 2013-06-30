@@ -12,7 +12,7 @@
 #include "timer.h" // base class
 
 // Requires SDL Video Initialization to be called first
-class FPS: public Timer
+class FPS: public nom::Timer
 {
   public:
     FPS ( void );
@@ -27,7 +27,7 @@ class FPS: public Timer
 
   private:
     unsigned int total_frames;
-    Timer fps, fps_update;
+    nom::Timer fps, fps_update;
 };
 
 #endif // GAMELIB_TIMER_FPS_HEADERS defined

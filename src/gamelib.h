@@ -45,8 +45,8 @@
 #define DEBUG_OSXFS
 //#define DEBUG_OSXFS_OBJ
 
-#define DEBUG_TIMER
-//#define DEBUG_TIMER_OBJ
+#define DEBUG_SDL_TIMER
+//#define DEBUG_SDL_TIMER_OBJ
 
 #define DEBUG_TIMER_FPS
 //#define DEBUG_TIMER_FPS_OBJ

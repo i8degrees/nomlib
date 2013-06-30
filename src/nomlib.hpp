@@ -39,8 +39,8 @@
 #define DEBUG_SDL_INPUT
 #define DEBUG_SDL_INPUT_OBJ
 
-#define DEBUG_GAMESTATE
-#define DEBUG_GAMESTATE_OBJ
+//#define DEBUG_ISTATE
+#define DEBUG_ISTATE_OBJ
 
 #define DEBUG_OSXFS
 //#define DEBUG_OSXFS_OBJ

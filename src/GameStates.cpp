@@ -1,7 +1,7 @@
 /******************************************************************************
     GameStates.cpp
 
-    Game states interface class
+  States management
 
   Copyright (c) 2013 Jeffrey Carpenter
 
@@ -24,7 +24,7 @@ void nom::GameStates::onEvent ( SDL_Event *event )
   states.back()->HandleInput ( event );
 }
 
-void nom::GameStates::Update ( uint32_t elapsed_time )
+void nom::GameStates::Update ( uint32_t elapsed_time ) // TODO: change to float
 {
   //  let the state update the scene; also (optionally) passing on timing
   //  delta

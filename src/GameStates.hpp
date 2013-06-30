@@ -1,7 +1,7 @@
 /******************************************************************************
     GameStates.hpp
 
-  Game states interface class
+  States management
 
   Copyright (c) 2013 Jeffrey Carpenter
 
@@ -35,6 +35,7 @@ namespace nom
       /// (experimental) onClose method is implemented in each IState derived class
       /// Pause method is implemented in each IState derived class
       /// Resume method is implemented in each IState derived class
+      static void Update ( uint32_t elapsed_time ); // TODO: change to float
       static void Draw ( void* video_buffer );
 
       static void ChangeState ( std::unique_ptr<IState> state );

@@ -13,7 +13,6 @@
 #define NOMLIB_GAMESTATES_HEADERS
 
 #include <iostream>
-#include <string>
 #include <vector>
 #include <memory>
 #include <cassert>

@@ -11,8 +11,6 @@
 #define NOMLIB_COORDS_HEADERS
 
 #include <iostream>
-#include <string>
-#include <map>
 
 #include "SDL.h"
 #include "nomlib.hpp"

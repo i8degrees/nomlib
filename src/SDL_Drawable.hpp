@@ -1,7 +1,7 @@
 /******************************************************************************
     SDL_Drawable.hpp
 
-  Drawables interface implementation
+  Drawables interface
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.
@@ -27,13 +27,13 @@ namespace nom
       SDL_Drawable ( void )
       {
         #ifdef DEBUG_SDL_DRAWABLE_OBJ
-          std::cout << "SDL_Drawable::SDL_Drawable(): Hello, world!" << std::endl << std::endl;
+          std::cout << "nom::SDL_Drawable::SDL_Drawable(): Hello, world!" << std::endl << std::endl;
         #endif
       }
       virtual ~SDL_Drawable ( void )
       {
         #ifdef DEBUG_SDL_DRAWABLE_OBJ
-          std::cout << "SDL_Drawable::~SDL_Drawable(): Goodbye cruel world!" << std::endl << std::endl;
+          std::cout << "nom::SDL_Drawable::~SDL_Drawable(): Goodbye cruel world!" << std::endl << std::endl;
         #endif
       }
   };

@@ -39,7 +39,6 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/audio.cpp
       ${SRC_DIR}/SDL_Font.cpp
       ${SRC_DIR}/SDL_Gradient.cpp
-      ${SRC_DIR}/SDLWindowFrame.cpp
       ${SRC_DIR}/SDL_MessageBox.cpp
       ${SRC_DIR}/SDL_BitmapFont.cpp
       ${SRC_DIR}/SDL_Cursor.cpp
@@ -68,7 +67,6 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/audio.h
       ${SRC_DIR}/SDL_Font.hpp
       ${SRC_DIR}/SDL_Gradient.hpp
-      ${SRC_DIR}/SDLWindowFrame.h
       ${SRC_DIR}/SDL_MessageBox.hpp
       ${SRC_DIR}/SDL_BitmapFont.hpp
       ${SRC_DIR}/SDL_Cursor.h

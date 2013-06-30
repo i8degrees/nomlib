@@ -70,7 +70,7 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/SDL_MessageBox.hpp
       ${SRC_DIR}/SDL_BitmapFont.hpp
       ${SRC_DIR}/SDL_Cursor.hpp
-      ${SRC_DIR}/Drawable.hpp
+      ${SRC_DIR}/IDrawable.hpp
       ${SRC_DIR}/SDL_Drawable.hpp
       ${SRC_DIR}/SDL_Image.hpp
       ${SRC_DIR}/SDL_Pixel.hpp

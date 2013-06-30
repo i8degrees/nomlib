@@ -15,7 +15,7 @@
 
 #include "SDL.h"
 
-#include "Drawable.hpp"
+#include "IDrawable.hpp"
 #include "nomlib.hpp"
 
 // Example usage:
@@ -24,7 +24,7 @@
 namespace nom
 {
   // This is an inheritance-only class
-  class SDL_Drawable: public nom::Drawable
+  class SDL_Drawable: public nom::IDrawable
   {
     public:
       virtual void Update ( void ) = 0;

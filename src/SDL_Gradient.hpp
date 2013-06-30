@@ -20,7 +20,7 @@
 #include "SDL_Drawable.hpp"
 #include "Transformable.hpp"
 #include "SDL_Rectangle.hpp"
-#include "gamelib.h"
+#include "nomlib.hpp"
 
 namespace nom
 {

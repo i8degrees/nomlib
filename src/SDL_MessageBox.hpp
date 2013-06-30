@@ -21,7 +21,7 @@
 #include "SDL_Canvas.hpp"
 #include "SDL_Gradient.hpp"
 #include "SDL_Line.hpp"
-#include "gamelib.h"
+#include "nomlib.hpp"
 
 namespace nom
 {

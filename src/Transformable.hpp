@@ -17,7 +17,7 @@
 
 #include "Coords.hpp"
 #include "Color.hpp"
-#include "gamelib.h"
+#include "nomlib.hpp"
 
 namespace nom
 {

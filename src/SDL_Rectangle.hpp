@@ -19,7 +19,7 @@
 #include "Color.hpp"
 #include "SDL_Drawable.hpp"
 #include "Transformable.hpp"
-#include "gamelib.h"
+#include "nomlib.hpp"
 
 namespace nom
 {

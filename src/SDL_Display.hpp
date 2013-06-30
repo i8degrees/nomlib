@@ -18,7 +18,7 @@
 #include "Coords.hpp"
 //#include "Color.h"
 #include "SDL_Canvas.hpp"
-#include "gamelib.h"
+#include "nomlib.hpp"
 
 namespace nom
 {

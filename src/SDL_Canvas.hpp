@@ -20,7 +20,7 @@
 #include "Coords.hpp"
 #include "SDL_Rectangle.hpp"
 #include "SDL_Image.hpp"
-#include "gamelib.h"
+#include "nomlib.hpp"
 
 namespace nom
 {

@@ -13,7 +13,7 @@
 #include <iostream>
 #include <string>
 
-#include "gamelib.h"
+#include "nomlib.hpp"
 
 // Example usage:
 // https://gist.github.com/i8degrees/5711070

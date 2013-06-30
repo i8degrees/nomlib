@@ -13,6 +13,6 @@
 #include <string>
 #include <cassert>
 
-#include "gamelib.h"
+#include "nomlib.hpp"
 
 #endif // NOMLIB_ICANVAS_HEADERS defined

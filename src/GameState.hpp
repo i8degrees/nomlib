@@ -15,7 +15,7 @@
 #include <iostream>
 
 #include "SDL_Input.hpp"
-#include "gamelib.h"
+#include "nomlib.hpp"
 
 namespace nom
 {

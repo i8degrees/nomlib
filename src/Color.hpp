@@ -15,8 +15,7 @@
 #include <algorithm>
 
 #include "SDL.h"
-
-#include "gamelib.h"
+#include "nomlib.hpp"
 
 namespace nom
 {

@@ -15,7 +15,7 @@
 
 #include "SDL_mixer.h"
 
-#include "gamelib.h"
+#include "nomlib.hpp"
 
 class Audio {
 public:

@@ -82,7 +82,7 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/SDL_Rectangle.hpp
       #${SRC_DIR}/ICanvas.h
       ${SRC_DIR}/SDL_Canvas.hpp
-      ${SRC_DIR}/gamelib.h
+      ${SRC_DIR}/nomlib.hpp
       ${SRC_DIR}/IDisplay.hpp
       ${SRC_DIR}/SDL_Display.hpp
       ${SRC_DIR}/Sprite.hpp

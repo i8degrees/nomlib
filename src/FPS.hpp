@@ -11,7 +11,7 @@
 
 #include "SDL_Timer.hpp"
 
-#include "gamelib.h"
+#include "nomlib.hpp"
 
 namespace nom
 {

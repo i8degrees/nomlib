@@ -20,7 +20,7 @@
 
 #include "SDL.h"
 #include "GameState.hpp" // abstract class interface for our implementation
-#include "gamelib.h"
+#include "nomlib.hpp"
 
 namespace nom
 {

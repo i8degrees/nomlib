@@ -15,9 +15,8 @@
 
 #include "SDL.h"
 
-#include "gamelib.h"
-
 #include "I_Input.hpp"
+#include "nomlib.hpp"
 
 namespace nom
 {

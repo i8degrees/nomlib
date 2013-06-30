@@ -19,7 +19,7 @@
 #include "SDL_Canvas.hpp"
 #include "Color.hpp"
 #include "Transformable.hpp"
-#include "gamelib.h"
+#include "nomlib.hpp"
 
 namespace nom
 {

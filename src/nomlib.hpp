@@ -1,13 +1,13 @@
 /******************************************************************************
-    gamelib.h
+    nomlib.hpp
 
   SDL-based Game Engine Library
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef GAMELIB_HEADERS
-#define GAMELIB_HEADERS
+#ifndef NOMLIB_HEADERS
+#define NOMLIB_HEADERS
 
 #define DEBUG_TRANSFORMABLE
 //#define DEBUG_TRANSFORMABLE_OBJ
@@ -96,4 +96,4 @@
 #define DEBUG_SDL_IMAGE
 #define DEBUG_SDL_IMAGE_OBJ
 
-#endif // GAMELIB_HEADERS defined
+#endif // NOMLIB_HEADERS defined

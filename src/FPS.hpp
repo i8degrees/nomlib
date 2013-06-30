@@ -15,7 +15,7 @@
 
 namespace nom
 {
-  class FPS: public nom::Timer
+  class FPS: public nom::Timer // "is a" relationship
   {
     public:
       FPS ( void );

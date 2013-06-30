@@ -92,3 +92,13 @@ bool Timer::isPaused ( void )
 {
   return this->paused;
 }
+
+void Timer::sleep ( float milliseconds )
+{
+  SDL_Delay ( milliseconds );
+}
+
+uint32_t Timer::seconds ( float seconds ) const
+{
+  return static_cast<uint32_t> ( seconds * 1000.f );
+}

@@ -31,6 +31,12 @@ class Timer
     bool isStarted ( void );
     bool isPaused ( void );
 
+    /// SDL_Delay wrapper
+    void sleep ( float milliseconds );
+
+    /// Helper method; conversion from milliseconds to seconds
+    uint32_t seconds( float seconds ) const;
+
   private:
     unsigned int elapsed_ticks; // milliseconds since timer start
     unsigned int paused_ticks; // holds ticks while paused

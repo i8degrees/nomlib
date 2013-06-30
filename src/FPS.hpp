@@ -9,7 +9,9 @@
 #ifndef NOMLIB_TIMER_FPS_HEADERS
 #define NOMLIB_TIMER_FPS_HEADERS
 
-#include "SDL_Timer.hpp" // base class
+#include "SDL_Timer.hpp"
+
+#include "gamelib.h"
 
 namespace nom
 {

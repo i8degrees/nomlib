@@ -9,9 +9,11 @@
 #ifndef NOMLIB_TIMER_HEADERS
 #define NOMLIB_TIMER_HEADERS
 
+#include <iostream>
+
 #include "SDL.h"
 
-#include <iostream>
+#include "gamelib.h"
 
 namespace nom
 {

@@ -98,6 +98,12 @@ include_directories ( ${SDL_MIXER_INCLUDE_DIR} )
 find_package ( SDL_ttf REQUIRED )
 include_directories ( ${SDL_TTF_INCLUDE_DIR} )
 
+include_directories ( src )
+include_directories ( src/audio )
+include_directories ( src/gfx )
+include_directories ( src/math )
+include_directories ( src/sys )
+
 link_libraries (  gamelib # makefile target
                   ${SDL_LIBRARY}
                   ${SDLIMAGE_LIBRARY}

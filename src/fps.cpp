@@ -1,12 +1,12 @@
 /******************************************************************************
-    fps.cpp
+    FPS.cpp
 
   SDL-based Frames Per Second Implementation; inherits from the Timer Class
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "fps.h"
+#include "FPS.hpp"
 
 nom::FPS::FPS ( void )
 {

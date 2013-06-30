@@ -1,7 +1,7 @@
 /******************************************************************************
-    fps.h
+    FPS.hpp
 
-    SDL-based Frames Per Second Implementation; inherits from the Timer Class
+  SDL-based Frames Per Second Implementation; inherits from the Timer Class
 
   Copyright (c) 2013 Jeffrey Carpenter
 
@@ -9,7 +9,7 @@
 #ifndef GAMELIB_TIMER_FPS_HEADERS
 #define GAMELIB_TIMER_FPS_HEADERS
 
-#include "timer.h" // base class
+#include "SDL_Timer.hpp" // base class
 
 namespace nom
 {

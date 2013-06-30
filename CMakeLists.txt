@@ -75,7 +75,6 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/SDL_Pixel.hpp
       ${SRC_DIR}/SDL_Line.hpp
       ${SRC_DIR}/SDL_Rectangle.hpp
-      #${SRC_DIR}/ICanvas.h
       ${SRC_DIR}/SDL_Canvas.hpp
       ${SRC_DIR}/nomlib.hpp
       ${SRC_DIR}/IDisplay.hpp

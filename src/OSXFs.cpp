@@ -1,36 +1,36 @@
 /******************************************************************************
-    OSXFs.cpp
+    OSXFS.cpp
 
   (OSX) Filesystem Interface
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "OSXFs.h"
+#include "OSXFS.hpp"
 
-nom::OSXFs::OSXFs ( void )
+nom::OSXFS::OSXFS ( void )
 {
   #ifdef DEBUG_OSXFS_OBJ
-    std::cout << "nom::OSXFs::OSXFs (): " << "Hello, world!" << std::endl << std::endl;
+    std::cout << "nom::OSXFS::OSXFS (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 }
 
-nom::OSXFs::~OSXFs ( void )
+nom::OSXFS::~OSXFS ( void )
 {
   #ifdef DEBUG_OSXFS_OBJ
-    std::cout << "nom::OSXFs::~OSXFs (): " << "Goodbye cruel world!" << std::endl << std::endl;
+    std::cout << "nom::OSXFS::~OSXFS (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
 }
 
 // Not sure how else to do this but in straight C
-const char* nom::OSXFs::getDirName ( char *path )
+const char* nom::OSXFS::getDirName ( char *path )
 {
   // ERR checking
 
   return dirname ( path );
 }
 
-const std::string nom::OSXFs::getWorkingDir ( void )
+const std::string nom::OSXFS::getWorkingDir ( void )
 {
   char path[PATH_MAX];
 
@@ -43,7 +43,7 @@ const std::string nom::OSXFs::getWorkingDir ( void )
   return cwd;
 }
 
-void nom::OSXFs::setWorkingDir ( std::string path )
+void nom::OSXFS::setWorkingDir ( std::string path )
 {
   chdir ( path.c_str() );
 

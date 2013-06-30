@@ -55,7 +55,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/SDL_Input.cpp
       ${SRC_DIR}/SDL_Timer.cpp
       ${SRC_DIR}/FPS.cpp
-      ${SRC_DIR}/OSXFs.cpp
+      ${SRC_DIR}/OSXFS.cpp
     )
 
 set ( GAMELIB_HEADERS
@@ -89,7 +89,7 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/SDL_Input.hpp
       ${SRC_DIR}/SDL_Timer.hpp
       ${SRC_DIR}/FPS.hpp
-      ${SRC_DIR}/OSXFs.h
+      ${SRC_DIR}/OSXFS.hpp
     )
 
 find_package ( SDL REQUIRED )

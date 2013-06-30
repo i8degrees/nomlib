@@ -1,5 +1,5 @@
 /******************************************************************************
-    OSXFs.h
+    OSXFS.hpp
 
   (OSX) Filesystem Interface
 
@@ -22,11 +22,11 @@
 
 namespace nom
 {
-  class OSXFs
+  class OSXFS
   {
     public:
-      OSXFs ( void );
-      ~OSXFs ( void );
+      OSXFS ( void );
+      ~OSXFS ( void );
 
       static const char *getDirName ( char *path ); // dirname(3) wrapper
       static const std::string getWorkingDir ( void ); // getcwd(3) wrapper

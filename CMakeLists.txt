@@ -36,7 +36,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/Color.cpp
       ${SRC_DIR}/GameStates.cpp
       ${SRC_DIR}/SDL_App.cpp
-      ${SRC_DIR}/audio.cpp
+      #${SRC_DIR}/audio.cpp
       ${SRC_DIR}/SDL_Font.cpp
       ${SRC_DIR}/SDL_Gradient.cpp
       ${SRC_DIR}/SDL_MessageBox.cpp
@@ -64,7 +64,7 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/GameState.hpp
       ${SRC_DIR}/GameStates.hpp
       ${SRC_DIR}/SDL_App.hpp
-      ${SRC_DIR}/audio.h
+      #${SRC_DIR}/audio.h
       ${SRC_DIR}/SDL_Font.hpp
       ${SRC_DIR}/SDL_Gradient.hpp
       ${SRC_DIR}/SDL_MessageBox.hpp

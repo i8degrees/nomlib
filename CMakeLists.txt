@@ -140,3 +140,8 @@ add_custom_target ( uninstall
                     COMMAND ${CMAKE_COMMAND} -P
                     ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
                   )
+
+# FIXME
+add_custom_target ( nomlib-docs
+                    COMMAND ${DOXYGEN_COMMAND} ${DOXYGEN_CONFIG_FILE}
+                  )

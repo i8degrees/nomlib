@@ -1,7 +1,7 @@
 /******************************************************************************
     gamelib.h
 
-    SDL-based Game Engine Library
+  SDL-based Game Engine Library
 
   Copyright (c) 2013 Jeffrey Carpenter
 

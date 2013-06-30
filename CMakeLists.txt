@@ -61,7 +61,7 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/Coords.hpp
       ${SRC_DIR}/Color.hpp
       ${SRC_DIR}/I_Input.hpp
-      ${SRC_DIR}/GameState.hpp
+      ${SRC_DIR}/IState.hpp
       ${SRC_DIR}/GameStates.hpp
       ${SRC_DIR}/SDL_App.hpp
       #${SRC_DIR}/audio.h

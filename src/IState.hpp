@@ -1,7 +1,7 @@
 /******************************************************************************
-    GameState.hpp
+    IState.hpp
 
-  Game State Management
+  State abstract class
 
   Copyright (c) 2013 Jeffrey Carpenter
 
@@ -9,8 +9,8 @@
   All rights reserved.
 
 ******************************************************************************/
-#ifndef NOMLIB_GAMESTATE_HEADERS
-#define NOMLIB_GAMESTATE_HEADERS
+#ifndef NOMLIB_ISTATE_HEADERS
+#define NOMLIB_ISTATE_HEADERS
 
 #include <iostream>
 
@@ -19,13 +19,13 @@
 
 namespace nom
 {
-  class GameState: public nom::SDL_Input // "has a" relationship
+  class IState: public nom::SDL_Input // "has a" relationship
   {
     public:
-      virtual ~GameState()
+      virtual ~IState()
       {
-        #ifdef DEBUG_GAMESTATE_OBJ
-          std::cout << "GameState::~GameState (): " << "Goodbye cruel world!" << std::endl << std::endl;
+        #ifdef DEBUG_ISTATE_OBJ
+          std::cout << "nom::IState::~IState (): " << "Goodbye cruel world!" << std::endl << std::endl;
         #endif
       }
 
@@ -35,7 +35,7 @@ namespace nom
       virtual void Pause ( void ) = 0;
       virtual void Resume ( void ) = 0;
 
-      virtual void Update ( uint32_t elapsed_time ) = 0;
+      virtual void Update ( uint32_t elapsed_time ) = 0; // TODO: change to float
       virtual void Draw ( void* ) = 0;
 
     private:
@@ -43,4 +43,4 @@ namespace nom
   };
 }
 
-#endif // NOMLIB_GAMESTATE_HEADERS defined
+#endif // NOMLIB_ISTATE_HEADERS defined

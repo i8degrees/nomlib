@@ -37,7 +37,7 @@ void nom::GameStates::Draw ( void* video_buffer )
   states.back()->Draw ( video_buffer );
 }
 
-void nom::GameStates::ChangeState ( std::unique_ptr<GameState> state )
+void nom::GameStates::ChangeState ( std::unique_ptr<IState> state )
 {
   // cleanup the current state
   if ( ! states.empty() )
@@ -54,7 +54,7 @@ void nom::GameStates::ChangeState ( std::unique_ptr<GameState> state )
   states.back()->Load();
 }
 
-void nom::GameStates::PushState ( std::unique_ptr<GameState> state )
+void nom::GameStates::PushState ( std::unique_ptr<IState> state )
 {
   assert ( state );
 
@@ -76,7 +76,7 @@ void nom::GameStates::PopState ( void )
   states.back()->Resume();
 }
 
-void nom::GameStates::PopStateThenChangeState ( std::unique_ptr<GameState> state )
+void nom::GameStates::PopStateThenChangeState ( std::unique_ptr<IState> state )
 {
   // cleanup the current state
   if ( ! states.empty() )

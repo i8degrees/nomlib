@@ -19,29 +19,28 @@
 #include <cassert>
 
 #include "SDL.h"
-#include "GameState.hpp" // abstract class interface for our implementation
+#include "IState.hpp" // abstract class interface for our implementation
 #include "nomlib.hpp"
 
 namespace nom
 {
-  static std::vector<std::unique_ptr<nom::GameState>> states;
+  static std::vector<std::unique_ptr<nom::IState>> states;
 
   class GameStates
   {
     public:
       static void onEvent ( SDL_Event *event ); /// Game state events handler
 
-      /// (experimental) onLoad method is implemented in each GameState derived class
-      /// (experimental) onClose method is implemented in each GameState derived class
-      /// Pause method is implemented in each GameState derived class
-      /// Resume method is implemented in each GameState derived class
-      static void Update ( uint32_t elapsed_time );
+      /// (experimental) onLoad method is implemented in each IState derived class
+      /// (experimental) onClose method is implemented in each IState derived class
+      /// Pause method is implemented in each IState derived class
+      /// Resume method is implemented in each IState derived class
       static void Draw ( void* video_buffer );
 
-      static void ChangeState ( std::unique_ptr<GameState> state );
-      static void PushState ( std::unique_ptr<GameState> state );
+      static void ChangeState ( std::unique_ptr<IState> state );
+      static void PushState ( std::unique_ptr<IState> state );
       static void PopState ( void );
-      static void PopStateThenChangeState ( std::unique_ptr<GameState> state );
+      static void PopStateThenChangeState ( std::unique_ptr<IState> state );
       //std::vector<std::string>& Peek ( void ) const;
 
     private:

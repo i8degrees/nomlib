@@ -1,7 +1,7 @@
 /******************************************************************************
     SDL_Display.h
 
-    SDL Display Class Interface Definition
+  SDL Display Class Interface Definition
 
   Copyright (c) 2013 Jeffrey Carpenter
 

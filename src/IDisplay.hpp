@@ -1,7 +1,7 @@
 /******************************************************************************
     IDisplay.h
 
-    Abstract Display Class Interface Definition
+  Abstract Display Class Interface Definition
 
   Copyright (c) 2013 Jeffrey Carpenter
 

@@ -1,7 +1,7 @@
 /******************************************************************************
     SDL_Primitive.hpp
 
-    SDL Primitives (pixels, lines, rectangles and other basic geometry shapes)
+  SDL Primitives (pixels, lines, rectangles and other basic geometry shapes)
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

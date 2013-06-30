@@ -1,7 +1,7 @@
 /******************************************************************************
     Drawable.hpp
 
-    Drawables abstract class interface
+  Drawables abstract class interface
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

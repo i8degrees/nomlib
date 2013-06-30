@@ -1,7 +1,7 @@
 /******************************************************************************
     SDL_Image.cpp
 
-    SDL image class interface
+  SDL image class interface
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

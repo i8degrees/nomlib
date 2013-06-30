@@ -1,7 +1,7 @@
 /******************************************************************************
     I_Input.hpp
 
-    Pure abstract class interface for input events
+  Pure abstract class interface for input events
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

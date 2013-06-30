@@ -1,7 +1,7 @@
 /******************************************************************************
     SDL_Canvas.hpp
 
-    Abstraction of SDL Surfaces
+  Abstraction of SDL Surfaces
 
   Copyright (c) 2013 Jeffrey Carpenter
 

@@ -1,7 +1,7 @@
 /******************************************************************************
     Canvas
 
-    Abstract Interface Declaration
+  Abstract Interface Declaration
 
   Copyright (c) 2013 Jeffrey Carpenter
 

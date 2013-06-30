@@ -1,7 +1,7 @@
 /******************************************************************************
     SDL_Input.hpp
 
-    SDL Input Events Handling
+  SDL Input Events Handling
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

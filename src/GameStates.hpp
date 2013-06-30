@@ -1,7 +1,7 @@
 /******************************************************************************
     GameStates.hpp
 
-    Game states interface class
+  Game states interface class
 
   Copyright (c) 2013 Jeffrey Carpenter
 

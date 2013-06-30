@@ -31,59 +31,59 @@ set ( CMAKE_CXX_FLAGS_RELEASE "-O2 -msse2 -mmx" )
 set ( SRC_DIR src ) # project_dir/src
 
 set ( GAMELIB_SOURCE
-      ${SRC_DIR}/Transformable.cpp
-      ${SRC_DIR}/Coords.cpp
-      ${SRC_DIR}/Color.cpp
-      ${SRC_DIR}/GameStates.cpp
-      ${SRC_DIR}/SDL_App.cpp
+      ${SRC_DIR}/math/Transformable.cpp
+      ${SRC_DIR}/math/Coords.cpp
+      ${SRC_DIR}/math/Color.cpp
+      ${SRC_DIR}/sys/GameStates.cpp
+      ${SRC_DIR}/sys/SDL_App.cpp
       #${SRC_DIR}/audio.cpp
-      ${SRC_DIR}/SDL_Font.cpp
-      ${SRC_DIR}/SDL_Gradient.cpp
-      ${SRC_DIR}/SDL_MessageBox.cpp
-      ${SRC_DIR}/SDL_BitmapFont.cpp
-      ${SRC_DIR}/SDL_Cursor.cpp
-      ${SRC_DIR}/IDisplay.cpp
-      ${SRC_DIR}/SDL_Image.cpp
-      ${SRC_DIR}/SDL_Pixel.cpp
-      ${SRC_DIR}/SDL_Line.cpp
-      ${SRC_DIR}/SDL_Rectangle.cpp
-      ${SRC_DIR}/SDL_Display.cpp
-      ${SRC_DIR}/SDL_Canvas.cpp
-      ${SRC_DIR}/Sprite.cpp
-      ${SRC_DIR}/SDL_Input.cpp
-      ${SRC_DIR}/SDL_Timer.cpp
-      ${SRC_DIR}/FPS.cpp
-      ${SRC_DIR}/OSXFS.cpp
+      ${SRC_DIR}/gfx/SDL_Font.cpp
+      ${SRC_DIR}/gfx/SDL_Gradient.cpp
+      ${SRC_DIR}/gfx/SDL_MessageBox.cpp
+      ${SRC_DIR}/gfx/SDL_BitmapFont.cpp
+      ${SRC_DIR}/gfx/SDL_Cursor.cpp
+      ${SRC_DIR}/gfx/IDisplay.cpp
+      ${SRC_DIR}/gfx/SDL_Image.cpp
+      ${SRC_DIR}/gfx/SDL_Pixel.cpp
+      ${SRC_DIR}/gfx/SDL_Line.cpp
+      ${SRC_DIR}/gfx/SDL_Rectangle.cpp
+      ${SRC_DIR}/gfx/SDL_Display.cpp
+      ${SRC_DIR}/gfx/SDL_Canvas.cpp
+      ${SRC_DIR}/gfx/Sprite.cpp
+      ${SRC_DIR}/sys/SDL_Input.cpp
+      ${SRC_DIR}/sys/SDL_Timer.cpp
+      ${SRC_DIR}/sys/FPS.cpp
+      ${SRC_DIR}/sys/OSXFS.cpp
     )
 
 set ( GAMELIB_HEADERS
-      ${SRC_DIR}/Transformable.hpp
-      ${SRC_DIR}/Coords.hpp
-      ${SRC_DIR}/Color.hpp
-      ${SRC_DIR}/IState.hpp
-      ${SRC_DIR}/GameStates.hpp
-      ${SRC_DIR}/SDL_App.hpp
+      ${SRC_DIR}/math/Transformable.hpp
+      ${SRC_DIR}/math/Coords.hpp
+      ${SRC_DIR}/math/Color.hpp
+      ${SRC_DIR}/sys/IState.hpp
+      ${SRC_DIR}/sys/GameStates.hpp
+      ${SRC_DIR}/sys/SDL_App.hpp
       #${SRC_DIR}/audio.h
-      ${SRC_DIR}/SDL_Font.hpp
-      ${SRC_DIR}/SDL_Gradient.hpp
-      ${SRC_DIR}/SDL_MessageBox.hpp
-      ${SRC_DIR}/SDL_BitmapFont.hpp
-      ${SRC_DIR}/SDL_Cursor.hpp
-      ${SRC_DIR}/IDrawable.hpp
-      ${SRC_DIR}/SDL_Drawable.hpp
-      ${SRC_DIR}/SDL_Image.hpp
-      ${SRC_DIR}/SDL_Pixel.hpp
-      ${SRC_DIR}/SDL_Line.hpp
-      ${SRC_DIR}/SDL_Rectangle.hpp
-      ${SRC_DIR}/SDL_Canvas.hpp
+      ${SRC_DIR}/gfx/SDL_Font.hpp
+      ${SRC_DIR}/gfx/SDL_Gradient.hpp
+      ${SRC_DIR}/gfx/SDL_MessageBox.hpp
+      ${SRC_DIR}/gfx/SDL_BitmapFont.hpp
+      ${SRC_DIR}/gfx/SDL_Cursor.hpp
+      ${SRC_DIR}/gfx/IDrawable.hpp
+      ${SRC_DIR}/gfx/SDL_Drawable.hpp
+      ${SRC_DIR}/gfx/SDL_Image.hpp
+      ${SRC_DIR}/gfx/SDL_Pixel.hpp
+      ${SRC_DIR}/gfx/SDL_Line.hpp
+      ${SRC_DIR}/gfx/SDL_Rectangle.hpp
+      ${SRC_DIR}/gfx/SDL_Canvas.hpp
       ${SRC_DIR}/nomlib.hpp
-      ${SRC_DIR}/IDisplay.hpp
-      ${SRC_DIR}/SDL_Display.hpp
-      ${SRC_DIR}/Sprite.hpp
-      ${SRC_DIR}/SDL_Input.hpp
-      ${SRC_DIR}/SDL_Timer.hpp
-      ${SRC_DIR}/FPS.hpp
-      ${SRC_DIR}/OSXFS.hpp
+      ${SRC_DIR}/gfx/IDisplay.hpp
+      ${SRC_DIR}/gfx/SDL_Display.hpp
+      ${SRC_DIR}/gfx/Sprite.hpp
+      ${SRC_DIR}/sys/SDL_Input.hpp
+      ${SRC_DIR}/sys/SDL_Timer.hpp
+      ${SRC_DIR}/sys/FPS.hpp
+      ${SRC_DIR}/sys/OSXFS.hpp
     )
 
 find_package ( SDL REQUIRED )

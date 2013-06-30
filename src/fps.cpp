@@ -8,10 +8,10 @@
 ******************************************************************************/
 #include "fps.h"
 
-FPS::FPS ( void )
+nom::FPS::FPS ( void )
 {
   #ifdef DEBUG_TIMER_FPS_OBJ
-    std::cout << "FPS::FPS (): " << "Hello, world!" << "\n" << std::endl;
+    std::cout << "nom::FPS::FPS (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
   this->total_frames = 0;
@@ -19,10 +19,10 @@ FPS::FPS ( void )
   this->fps_update.Start();
 }
 
-FPS::~FPS ( void )
+nom::FPS::~FPS ( void )
 {
   #ifdef DEBUG_TIMER_FPS_OBJ
-    std::cout << "FPS::~FPS (): " << "Goodbye cruel world!" << "\n" << std::endl;
+    std::cout << "nom::FPS::~FPS (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
   this->total_frames = 0;
@@ -30,31 +30,31 @@ FPS::~FPS ( void )
   this->fps_update.Stop();
 }
 
-void FPS::Start ( void )
+void nom::FPS::Start ( void )
 {
   this->total_frames = 0;
   this->fps.Start();
   this->fps_update.Start();
 }
 
-void FPS::Stop ( void )
+void nom::FPS::Stop ( void )
 {
   this->total_frames = 0;
   this->fps.Stop();
   this->fps_update.Stop();
 }
 
-unsigned int FPS::getFrames ( void )
+unsigned int nom::FPS::getFrames ( void )
 {
   return this->total_frames;
 }
 
-unsigned int FPS::getFPS ( void )
+unsigned int nom::FPS::getFPS ( void )
 {
   return this->getFrames() / ( this->fps.getTicks() / 1000.f );
 }
 
-void FPS::Update ( void )
+void nom::FPS::Update ( void )
 {
   this->total_frames++;
 }

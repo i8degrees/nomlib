@@ -15,7 +15,6 @@
 
 #include "SDL.h"
 
-#include "I_Input.hpp"
 #include "nomlib.hpp"
 
 namespace nom
@@ -54,7 +53,7 @@ namespace nom
   };
 
   // This is an inheritance-only class
-  class SDL_Input: public nom::I_Input
+  class SDL_Input
   {
     public:
       void HandleInput ( void* event );

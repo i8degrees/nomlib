@@ -53,8 +53,8 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/SDL_Canvas.cpp
       ${SRC_DIR}/Sprite.cpp
       ${SRC_DIR}/SDL_Input.cpp
-      ${SRC_DIR}/timer.cpp
       ${SRC_DIR}/fps.cpp
+      ${SRC_DIR}/SDL_Timer.cpp
       ${SRC_DIR}/OSXFs.cpp
     )
 
@@ -87,8 +87,8 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/SDL_Display.hpp
       ${SRC_DIR}/Sprite.hpp
       ${SRC_DIR}/SDL_Input.hpp
-      ${SRC_DIR}/timer.h
       ${SRC_DIR}/fps.h
+      ${SRC_DIR}/SDL_Timer.hpp
       ${SRC_DIR}/OSXFs.h
     )
 

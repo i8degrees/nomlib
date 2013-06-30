@@ -1,12 +1,12 @@
 /******************************************************************************
-    timer.cpp
+    SDL_Timer.cpp
 
-    SDL-based Timer Implementation Class
+  SDL-based Timer Implementation
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "timer.h"
+#include "SDL_Timer.hpp"
 
 nom::Timer::Timer ( void )
 {

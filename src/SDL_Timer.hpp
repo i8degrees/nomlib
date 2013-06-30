@@ -1,7 +1,7 @@
 /******************************************************************************
-    timer.h
+    SDL_Timer.hpp
 
-    SDL-based Timer Implementation Class
+  SDL-based Timer
 
   Copyright (c) 2013 Jeffrey Carpenter
 
@@ -25,6 +25,8 @@ namespace nom
       void Stop ( void );
       void Pause ( void );
       void Unpause ( void );
+
+      // void Update ( void );
 
       unsigned int getTicks ( void );
 

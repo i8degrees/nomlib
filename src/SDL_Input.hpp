@@ -18,8 +18,9 @@
 
 namespace nom
 {
-  // SDL mapping to individual PS3 axes
-  // TODO: Needs testing / verification
+  /// SDL mapping to individual PS3 axes
+  ///
+  /// TODO: Needs testing / verification
   enum PSXAXES
   {
       LEFTX = 0,
@@ -28,8 +29,7 @@ namespace nom
       RIGHTY = 3
   };
 
-  // SDL mapping to individual PS3 controller buttons
-  // TODO: Needs testing / verification
+  /// SDL mapping to individual PS3 controller buttons
   enum PSXBUTTON
   {
       SELECT            = 0,

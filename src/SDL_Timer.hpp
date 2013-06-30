@@ -6,8 +6,8 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef GAMELIB_TIMER_HEADERS
-#define GAMELIB_TIMER_HEADERS
+#ifndef NOMLIB_TIMER_HEADERS
+#define NOMLIB_TIMER_HEADERS
 
 #include "SDL.h"
 
@@ -51,4 +51,4 @@ namespace nom
   };
 }
 
-#endif // GAMELIB_TIMER_HEADERS defined
+#endif // NOMLIB_TIMER_HEADERS defined

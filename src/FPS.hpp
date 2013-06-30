@@ -6,8 +6,8 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef GAMELIB_TIMER_FPS_HEADERS
-#define GAMELIB_TIMER_FPS_HEADERS
+#ifndef NOMLIB_TIMER_FPS_HEADERS
+#define NOMLIB_TIMER_FPS_HEADERS
 
 #include "SDL_Timer.hpp" // base class
 
@@ -32,4 +32,4 @@ namespace nom
   };
 }
 
-#endif // GAMELIB_TIMER_FPS_HEADERS defined
+#endif // NOMLIB_TIMER_FPS_HEADERS defined

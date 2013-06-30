@@ -7,8 +7,8 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef NOMNOM_SDL_CURSOR_HEADERS
-#define NOMNOM_SDL_CURSOR_HEADERS
+#ifndef NOMLIB_SDL_CURSOR_HEADERS
+#define NOMLIB_SDL_CURSOR_HEADERS
 
 #include <iostream>
 #include <string>
@@ -67,4 +67,4 @@ namespace nom
   };
 }
 
-#endif // NOMNOM_SDL_CURSOR_HEADERS defined
+#endif // NOMLIB_SDL_CURSOR_HEADERS defined

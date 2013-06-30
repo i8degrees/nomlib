@@ -7,7 +7,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "SDL_Cursor.h"
+#include "SDL_Cursor.hpp"
 
 nom::SDL_Cursor::SDL_Cursor ( void )
 {

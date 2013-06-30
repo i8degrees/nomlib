@@ -11,15 +11,9 @@
 #define NOMLIB_SDL_DRAWABLE_HEADERS
 
 #include <iostream>
-#include <string>
-
-#include "SDL.h"
 
 #include "IDrawable.hpp"
 #include "nomlib.hpp"
-
-// Example usage:
-// https://gist.github.com/i8degrees/5711070
 
 namespace nom
 {

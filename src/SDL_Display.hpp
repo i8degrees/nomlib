@@ -48,6 +48,7 @@ namespace nom
       void* getDisplayPixels ( void ) const;
       void* getDisplayPixelsFormat ( void ) const;
       const nom::Coords getDisplayBounds ( void ) const;
+      bool getCanvasLock ( void ) const;
 
       void Update ( void );
       void Update ( const nom::Coords& coords );

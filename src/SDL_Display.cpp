@@ -111,6 +111,20 @@ const nom::Coords SDL_Display::getDisplayBounds ( void ) const
   return clip_coords;
 }
 
+// IMPLEMENTATION NOTE: I think that we are accessing the value of an
+// (internal?) property of the SDL_Surface structure that is described as being
+// "private" as per the docs.
+//
+// Return value of this internal property is presumed to be boolean -- no
+// verification has been made of this. Testing of this method *appears*
+// to be in working order.
+//
+bool nom::SDL_Display::getCanvasLock ( void ) const
+{
+  SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->get() );
+  return buffer->locked;
+}
+
 void nom::SDL_Display::Update ( void )
 {
   if ( SDL_Flip ( static_cast<SDL_Surface*> ( this->get() ) ) != 0 )

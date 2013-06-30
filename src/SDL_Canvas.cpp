@@ -180,6 +180,20 @@ void nom::SDL_Canvas::setCanvasBounds ( const nom::Coords& clip_bounds )
   SDL_SetClipRect ( static_cast<SDL_Surface*> ( this->get() ), &clip );
 }
 
+// IMPLEMENTATION NOTE: I think that we are accessing the value of an
+// (internal?) property of the SDL_Surface structure that is described as being
+// "private" as per the docs.
+//
+// Return value of this internal property is presumed to be boolean -- no
+// verification has been made of this. Testing of this method *appears*
+// to be in working order.
+//
+bool nom::SDL_Canvas::getCanvasLock ( void ) const
+{
+  SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->get() );
+  return buffer->locked;
+}
+
 bool nom::SDL_Canvas::loadFromImage ( const std::string& filename, const nom::Color& colorkey, uint32_t flags )
 {
   nom::SDL_Image image; // holds our image in memory during transfer
@@ -215,7 +229,15 @@ void nom::SDL_Canvas::Draw ( void* video_buffer ) const
   SDL_Rect blit_coords = this->coords.getSDL_Rect();
   SDL_Rect blit_offsets = this->offsets.getSDL_Rect();
 
-  // Should we also check to see if video_buffer is nullptr?
+  if ( this->getCanvasLock() )
+  {
+    #ifdef DEBUG_SDL_CANVAS
+      std::cout << "ERR in SDL_Canvas::Draw() at getCanvasLock() " << std::endl;
+    #endif
+    return;
+  }
+
+  // Perhaps also check to see if video_buffer is nullptr?
   if ( this->valid() )
   {
     if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
@@ -224,6 +246,7 @@ void nom::SDL_Canvas::Draw ( void* video_buffer ) const
         #ifdef DEBUG_SDL_CANVAS
           std::cout << "ERR in SDL_Canvas::Draw() at SDL_BlitSurface() TRY #1: " << SDL_GetError() << std::endl;
         #endif
+        return;
     }
     else
     {
@@ -231,6 +254,7 @@ void nom::SDL_Canvas::Draw ( void* video_buffer ) const
         #ifdef DEBUG_SDL_CANVAS
           std::cout << "ERR in SDL_Canvas::Draw() at SDL_BlitSurface() TRY #2: " << SDL_GetError() << std::endl;
         #endif
+        return;
     }
   }
 }

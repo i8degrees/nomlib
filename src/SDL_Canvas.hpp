@@ -58,6 +58,7 @@ namespace nom
       void* getCanvasPixelsFormat ( void ) const;
       const nom::Coords getCanvasBounds ( void ) const;
       void setCanvasBounds ( const nom::Coords& clip_bounds );
+      bool getCanvasLock ( void ) const;
 
       // TODO: SDL_CreateRGBSurface
       // TODO: SDL_CreateRGBSurfaceFrom
@@ -79,6 +80,7 @@ namespace nom
       bool displayFormatAlpha ( void );
 
       void clear ( const nom::Color& color = nom::Color::Blue ) const;
+
 
       bool Lock ( void* video_buffer ) const;
       void Unlock ( void* video_buffer ) const;

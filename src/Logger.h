@@ -30,4 +30,23 @@ class Logger
     std::ifstream fp;
 };
 
+/*  Example Usage:
+
+#include "Logger.h"
+
+// Declare
+Logger logDebug;
+
+// Init
+logger = logDebug.Read( "./data/offsets.val" );
+
+// Helper method for debug logger
+void reloadDebugFile ( void )
+{
+  logger.clear();
+  logger = logDebug.Read ( "./data/offsets.val" );
+}
+
+*/
+
 #endif // GAMEAPP_GAMESTATE_MANAGER_HEADERS defined

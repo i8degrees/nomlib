@@ -35,7 +35,7 @@ namespace nom
       virtual void Pause ( void ) = 0;
       virtual void Resume ( void ) = 0;
 
-      virtual void Update ( uint32_t elapsed_time ) = 0; // TODO: change to float
+      virtual void Update ( float elapsed_time ) = 0;
       virtual void Draw ( void* ) = 0;
 
     private:

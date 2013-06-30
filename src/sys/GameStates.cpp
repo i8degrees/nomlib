@@ -24,7 +24,7 @@ void nom::GameStates::onEvent ( SDL_Event *event )
   states.back()->HandleInput ( event );
 }
 
-void nom::GameStates::Update ( uint32_t elapsed_time ) // TODO: change to float
+void nom::GameStates::Update ( float elapsed_time )
 {
   //  let the state update the scene; also (optionally) passing on timing
   //  delta

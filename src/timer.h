@@ -13,8 +13,6 @@
 
 #include <iostream>
 
-// Requires SDL Video Initialization to be called first
-
 class Timer
 {
   public:
@@ -38,9 +36,13 @@ class Timer
     uint32_t seconds( float seconds ) const;
 
   private:
-    unsigned int elapsed_ticks; // milliseconds since timer start
-    unsigned int paused_ticks; // holds ticks while paused
+    /// Milliseconds since timer start
+    unsigned int elapsed_ticks;
+    /// Holds ticks while paused
+    unsigned int paused_ticks;
+    /// Tracks whether we are paused or not
     bool paused;
+    /// Tracks whether we are started or not
     bool started;
 };
 

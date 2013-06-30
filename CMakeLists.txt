@@ -21,11 +21,12 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL Darwin )
     message ( "Darwin OS (Mac OSX) detected" )  # Developed 100% on OSX v10.8.3
     set ( CMAKE_CXX_COMPILER "/usr/bin/clang++" )
     set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
-    set ( CMAKE_CXX_FLAGS_DEBUG "-gfull -O0 -Wall" )
-    set ( CMAKE_CXX_FLAGS_RELEASE "-O2" )
 else ()
     message ( "Unsupported build system detected... Hopefully CMake gets it right for you; good luck!" )
 endif ()
+
+set ( CMAKE_CXX_FLAGS_DEBUG "-gfull -O0 -Wall" )
+set ( CMAKE_CXX_FLAGS_RELEASE "-O2 -msse2 -mmx" )
 
 set ( SRC_DIR src ) # project_dir/src
 

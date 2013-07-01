@@ -10,7 +10,9 @@
 libgamelib.bc
 
 # doxygen html gen
+docs/install.sh
 docs/public/
+docs/man
 
 # internal template class & header files
 TemplateClass.cpp

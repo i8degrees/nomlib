@@ -50,7 +50,7 @@ void nom::GameStates::ChangeState ( std::unique_ptr<IState> state )
   // store the new state
   states.push_back( std::move( state ) );
 
-  states.back()->Load();
+  states.back()->onInit();
 }
 
 void nom::GameStates::PushState ( std::unique_ptr<IState> state )

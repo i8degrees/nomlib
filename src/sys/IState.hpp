@@ -29,8 +29,8 @@ namespace nom
         #endif
       }
 
-      virtual void Load ( void ) = 0;
       virtual void onClose ( void ) = 0;
+      virtual void onInit ( void ) = 0;
 
       virtual void Pause ( void ) = 0;
       virtual void Resume ( void ) = 0;

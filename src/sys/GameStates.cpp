@@ -24,11 +24,10 @@ void nom::GameStates::onEvent ( SDL_Event *event )
   states.back()->HandleInput ( event );
 }
 
-void nom::GameStates::Update ( float elapsed_time )
+void nom::GameStates::Update ( float delta_time )
 {
-  //  let the state update the scene; also (optionally) passing on timing
-  //  delta
-  states.back()->Update ( elapsed_time );
+  // let the state update the scene with regard to the delta (change) in timing
+  states.back()->Update ( delta_time );
 }
 
 void nom::GameStates::Draw ( void* video_buffer )

@@ -30,8 +30,8 @@ namespace nom
     public:
       static void onEvent ( SDL_Event *event ); /// Game state events handler
 
-      /// (experimental) onClose method is implemented in each IState derived class
       /// (experimental) onInit method is implemented in each IState derived class
+      /// (experimental) onExit method is implemented in each IState derived class
       /// Pause method is implemented in each IState derived class
       /// Resume method is implemented in each IState derived class
       static void Update ( float delta_time );

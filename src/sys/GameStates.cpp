@@ -41,7 +41,7 @@ void nom::GameStates::ChangeState ( std::unique_ptr<IState> state )
   // cleanup the current state
   if ( ! states.empty() )
   {
-    states.back()->onClose();
+    states.back()->onExit();
     states.pop_back();
   }
 

@@ -75,26 +75,26 @@ void nom::SDL_Input::HandleInput ( void* event )
         case SDL_APPMOUSEFOCUS:
         {
           if ( input->active.gain )
-            onMouseFocus();
+            this->onMouseFocus();
           else
-            onMouseBlur();
+            this->onMouseBlur();
           break;
         }
 
         case SDL_APPINPUTFOCUS:
         {
           if ( input->active.gain )
-            onInputFocus();
+            this->onInputFocus();
           else
-            onInputBlur();
+            this->onInputBlur();
           break;
         }
         case SDL_APPACTIVE:
         {
           if ( input->active.gain )
-            onRestore();
+            this->onRestore();
           else
-            onMinimize();
+            this->onMinimize();
           break;
         }
 
@@ -104,47 +104,47 @@ void nom::SDL_Input::HandleInput ( void* event )
 
     default:
     {
-      onUserEvent ( input->user.type, input->user.code, input->user.data1,
+      this->onUserEvent ( input->user.type, input->user.code, input->user.data1,
                     input->user.data2
                   );
       break;
     }
 
-    case SDL_VIDEORESIZE: onResize ( input->resize.w, input->resize.h ); break;
-    case SDL_VIDEOEXPOSE: onExpose (); break;
+    case SDL_VIDEORESIZE: this->onResize ( input->resize.w, input->resize.h ); break;
+    case SDL_VIDEOEXPOSE: this->onExpose (); break;
     case SDL_SYSWMEVENT: /* Ignore */ break;
     case SDL_QUIT: onExit(); break;
 
     case SDL_KEYDOWN:
-      onKeyDown ( input->key.keysym.sym, input->key.keysym.mod );
+      this->onKeyDown ( input->key.keysym.sym, input->key.keysym.mod );
     break;
 
     case SDL_KEYUP:
-      onKeyUp ( input->key.keysym.sym, input->key.keysym.mod );
+      this->onKeyUp ( input->key.keysym.sym, input->key.keysym.mod );
     break;
 
     case SDL_MOUSEMOTION:
-      onMouseMotion ( input->motion.x, input->motion.y );
+      this->onMouseMotion ( input->motion.x, input->motion.y );
     break;
 
     case SDL_MOUSEBUTTONDOWN:
       switch ( input->button.button )
       {
         case SDL_BUTTON_LEFT:
-          onMouseLeftButtonDown ( input->button.x, input->button.y );
+          this->onMouseLeftButtonDown ( input->button.x, input->button.y );
         break;
 
         case SDL_BUTTON_MIDDLE:
-          onMouseMiddleButtonDown ( input->button.x, input->button.y );
+          this->onMouseMiddleButtonDown ( input->button.x, input->button.y );
         break;
 
         case SDL_BUTTON_RIGHT:
-          onMouseRightButtonDown ( input->button.x, input->button.y );
+          this->onMouseRightButtonDown ( input->button.x, input->button.y );
         break;
 
-        case SDL_BUTTON_WHEELDOWN: onMouseWheel ( false, true ); break;
+        case SDL_BUTTON_WHEELDOWN: this->onMouseWheel ( false, true ); break;
 
-        case SDL_BUTTON_WHEELUP: onMouseWheel ( true, false ); break;
+        case SDL_BUTTON_WHEELUP: this->onMouseWheel ( true, false ); break;
       }
     break;
 
@@ -152,29 +152,29 @@ void nom::SDL_Input::HandleInput ( void* event )
       switch ( input->button.button )
       {
         case SDL_BUTTON_LEFT:
-          onMouseLeftButtonUp ( input->button.x, input->button.y );
+          this->onMouseLeftButtonUp ( input->button.x, input->button.y );
         break;
 
         case SDL_BUTTON_MIDDLE:
-          onMouseMiddleButtonUp ( input->button.x, input->button.y );
+          this->onMouseMiddleButtonUp ( input->button.x, input->button.y );
         break;
 
         case SDL_BUTTON_RIGHT:
-          onMouseRightButtonUp ( input->button.x, input->button.y );
+          this->onMouseRightButtonUp ( input->button.x, input->button.y );
         break;
       }
     break;
 
     case SDL_JOYBUTTONDOWN:
-      onJoyButtonDown ( input->jbutton.which, input->jbutton.button );
+      this->onJoyButtonDown ( input->jbutton.which, input->jbutton.button );
     break;
 
     case SDL_JOYBUTTONUP:
-      onJoyButtonUp ( input->jbutton.which, input->jbutton.button );
+      this->onJoyButtonUp ( input->jbutton.which, input->jbutton.button );
     break;
 
     case SDL_JOYAXISMOTION:
-      onJoyAxis ( input->jaxis.which, input->jaxis.axis, input->jaxis.value );
+      this->onJoyAxis ( input->jaxis.which, input->jaxis.axis, input->jaxis.value );
     break;
   } // end switch input->type
 }

@@ -61,7 +61,7 @@ namespace nom
       virtual ~SDL_Input ( void );
 
       virtual void onUserEvent ( uint8_t type, int32_t code, void* data1, void* data2 );
-      virtual void onExit ( void );
+      virtual void onQuit ( void );
       virtual void onResize ( int32_t width, int32_t height );
       virtual void onRestore ( void );
       virtual void onMinimize ( void );

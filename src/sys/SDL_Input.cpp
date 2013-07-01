@@ -113,7 +113,7 @@ void nom::SDL_Input::HandleInput ( void* event )
     case SDL_VIDEORESIZE: this->onResize ( input->resize.w, input->resize.h ); break;
     case SDL_VIDEOEXPOSE: this->onExpose (); break;
     case SDL_SYSWMEVENT: /* Ignore */ break;
-    case SDL_QUIT: onExit(); break;
+    case SDL_QUIT: this->onQuit(); break;
 
     case SDL_KEYDOWN:
       this->onKeyDown ( input->key.keysym.sym, input->key.keysym.mod );
@@ -184,7 +184,7 @@ void nom::SDL_Input::onUserEvent ( uint8_t type, int32_t code, void* data1, void
   // virtual implementation
 }
 
-void nom::SDL_Input::onExit ( void )
+void nom::SDL_Input::onQuit ( void )
 {
   // virtual implementation
 }

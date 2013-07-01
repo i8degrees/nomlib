@@ -21,7 +21,7 @@ nom::SDL_Input::SDL_Input ( void )
     return;
   }
 
-  this->joystick = NULL;
+  this->joystick = nullptr;
 
   // Only initialize this joystick if we have yet to
   if ( SDL_JoystickOpened ( 0 ) == 0 )
@@ -55,7 +55,7 @@ nom::SDL_Input::~SDL_Input ( void )
     //SDL_JoystickClose ( this->joystick );
 
     //if ( this->joystick )
-      //this->joystick = NULL;
+      //this->joystick = nullptr;
   //}
 
   //SDL_QuitSubSystem ( SDL_INIT_JOYSTICK );

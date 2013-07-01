@@ -1,6 +1,4 @@
-# nom (gamelib)
-
-## TODO
+# TODO
 
 * Use floats in Timer, FPS class?
 
@@ -28,6 +26,10 @@ is there
 * gamelib_examples submodule repo and makefile setup
 
 * Add SDL_EnableKeyRepeat() into SDLInput
+
+* Makefile Dependencies
+
+* Homebrew Formula?
 
 ## Completed
 
@@ -64,7 +66,6 @@ SDL_TFont and wherever else
 * rename methods in gamelib/Sprite to lowerCaseCamelStyle
 * Clean up Timer class; 1. match Timer & FPS; <strikethrough> 2. goodbye FPS (!) </strikethrough>
 * msgbox bottom, right border (needs additional depth)
-
-### Footer
-
-Copyright (c) 2013 Jeffrey Carpenter
+* Cross-platform considerations (think: Makefiles, OS bins & args, etc.)
+* Library versioning (think: sonames)
+* man install(1), pkg-config(1)

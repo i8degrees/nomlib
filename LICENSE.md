@@ -1,3 +1,5 @@
+# License
+
 Copyright (c) 2013 Jeffrey Carpenter <jeffrey.carp@gmail.com>
 
 Permission to use, copy, modify, and/or distribute this software for any

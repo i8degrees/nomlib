@@ -25,12 +25,12 @@ namespace nom
     public:
       IDisplay ( void )
       {
-        // NULL
+        // Do nothing
       }
 
       virtual ~IDisplay ( void )
       {
-        // NULL
+        // Do nothing
       }
 
       virtual void createWindow ( int32_t display_width, int32_t display_height,

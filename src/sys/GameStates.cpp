@@ -32,7 +32,7 @@ void nom::GameStates::Update ( float delta_time )
 
 void nom::GameStates::Draw ( void* video_buffer )
 {
-  // let the state draw the scene
+  // let the state draw the scene onto the display buffer
   states.back()->Draw ( video_buffer );
 }
 

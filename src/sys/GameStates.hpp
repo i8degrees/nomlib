@@ -1,7 +1,7 @@
 /******************************************************************************
     GameStates.hpp
 
-  States management
+  (FSM) States management
 
   Copyright (c) 2013 Jeffrey Carpenter
 
@@ -25,23 +25,24 @@ namespace nom
 {
   static std::vector<std::unique_ptr<nom::IState>> states;
 
+  // Rename to FSM, States or similar?
   class GameStates
   {
     public:
-      static void onEvent ( SDL_Event *event ); /// Game state events handler
+      /// State events handling
+      static void onEvent ( SDL_Event *event );
 
-      /// (experimental) onInit method is implemented in each IState derived class
-      /// (experimental) onExit method is implemented in each IState derived class
-      /// Pause method is implemented in each IState derived class
-      /// Resume method is implemented in each IState derived class
+      /// State logic
       static void Update ( float delta_time );
+
+      /// State rendering
       static void Draw ( void* video_buffer );
 
+      /// State management
       static void ChangeState ( std::unique_ptr<IState> state );
       static void PushState ( std::unique_ptr<IState> state );
       static void PopState ( void );
       static void PopStateThenChangeState ( std::unique_ptr<IState> state );
-      //std::vector<std::string>& Peek ( void ) const;
 
     private:
       GameStates ( void );

@@ -1,7 +1,7 @@
 /******************************************************************************
     GameStates.cpp
 
-  States management
+  (FSM) States management
 
   Copyright (c) 2013 Jeffrey Carpenter
 
@@ -11,10 +11,11 @@
 ******************************************************************************/
 #include "GameStates.hpp"
 
+// Default constructor
 nom::GameStates::GameStates ( void )
 {
   #ifdef DEBUG_GAMESTATES_OBJ
-    std::cout << "GameStates::GameStates(): Hello, world!" << "\n" << std::endl;
+    std::cout << "nom::GameStates::GameStates(): Hello, world!" << std::endl << std::endl;
   #endif
 }
 

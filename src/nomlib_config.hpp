@@ -8,6 +8,9 @@
 #ifndef NOMLIB_CONFIG_HEADERS
 #define NOMLIB_CONFIG_HEADERS
 
+#include <iostream>
+#include <cstdint>
+
 // nomlib version
 #define NOMLIB_VERSION_MAJOR 0
 #define NOMLIB_VERSION_MINOR 0
@@ -23,41 +26,36 @@
   #warning This operating system is not officially supported by nomlib
 #endif
 
-// Portable fixed-size types
-// All "common" platforms use the same size for char, short and int
+// Portable fixed-size types; based from stdint.h
 namespace nom
 {
   // 1-bit integer types
-  typedef bool int1;
+  typedef bool bit;
 
   // 8-bit integer types
-  typedef signed char int8;
-  typedef unsigned char uint8;
+  typedef int8_t int8;
+  typedef uint8_t uint8;
 
   // 16-bit integer types
-  typedef signed short int16;
-  typedef unsigned short uint16;
+  typedef int16_t int16;
+  typedef uint16_t uint16;
 
   // 32-bit integer types
-  typedef signed int int32;
-  typedef unsigned int uint32;
+  typedef int32_t int32;
+  typedef uint32_t uint32;
 
   // 64-bit integer types
   #if defined ( _MSC_VER ) // MSVC++
     typedef signed __int64 int64;
     typedef unsigned __int64 uint64;
   #else
-    typedef signed long long int64;
-    typedef unsigned long long uint64;
+    typedef int64_t int64;
+    typedef uint64_t uint64;
   #endif
 
   // Additional integer type definitions
-  typedef unsigned short ushort;
+  typedef uint16_t ushort;
   typedef unsigned long ulong;
-
-  // *Should* produce compiler err if size is wrong
-  typedef unsigned char validate_uint32[sizeof(uint32)==4 ? 1 : -1];
-  typedef unsigned char validate_uint64[sizeof(uint64)==8 ? 1 : -1];
 }
 
 // No debugging logged

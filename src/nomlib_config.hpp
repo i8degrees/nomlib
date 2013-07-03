@@ -1,5 +1,6 @@
 /******************************************************************************
-  Configuration file for nomlib library
+
+    Configuration file for nomlib library
 
   Copyright (c) 2013 Jeffrey Carpenter
 
@@ -54,6 +55,25 @@ namespace nom
   typedef unsigned char validate_uint32[sizeof(uint32)==4 ? 1 : -1];
   typedef unsigned char validate_uint64[sizeof(uint64)==8 ? 1 : -1];
 }
+
+// No debugging logged
+#define NOMLIB_DEBUG_0 0
+
+// Level 1 is partial verbosity; class errors are logged
+#define NOMLIB_DEBUG_1 1
+
+// Level 2 is full verbosity; includes logging of each class entry and exit
+#define NOMLIB_DEBUG_2 2
+
+// Pretty print C macro functions
+//
+// Is there a better way of doing this?
+#define NOMLIB_DEBUG std::cout << __FILE__ << ":" << __LINE__ << " " << __PRETTY_FUNCTION__ << std::endl << std::endl;
+
+#define NOMLIB_DEBUG_WITH_SDL std::cout << __FILE__ << ":" << __LINE__ << " " << __PRETTY_FUNCTION__ << SDL_GetError << std::endl << std::endl;
+
+#define NOMLIB_DEBUG_OBJ std::cout << __PRETTY_FUNCTION__ << std::endl;
+
 #define DEBUG_TRANSFORMABLE
 //#define DEBUG_TRANSFORMABLE_OBJ
 

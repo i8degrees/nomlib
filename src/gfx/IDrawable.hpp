@@ -13,7 +13,7 @@
 #include <iostream>
 #include <string>
 
-#include "nomlib.hpp"
+#include "nomlib_config.hpp"
 
 namespace nom
 {

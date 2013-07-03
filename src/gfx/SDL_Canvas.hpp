@@ -21,7 +21,7 @@
 #include "Coords.hpp"
 #include "SDL_Rectangle.hpp"
 #include "SDL_Image.hpp"
-#include "nomlib.hpp"
+#include "nomlib_config.hpp"
 
 namespace nom
 {

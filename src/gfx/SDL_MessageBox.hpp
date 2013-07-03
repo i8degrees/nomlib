@@ -21,7 +21,7 @@
 #include "SDL_Canvas.hpp"
 #include "SDL_Gradient.hpp"
 #include "SDL_Line.hpp"
-#include "nomlib.hpp"
+#include "nomlib_config.hpp"
 
 namespace nom
 {

@@ -19,7 +19,7 @@
 #include "Color.hpp"
 #include "SDL_Drawable.hpp"
 #include "Transformable.hpp"
-#include "nomlib.hpp"
+#include "nomlib_config.hpp"
 
 namespace nom
 {

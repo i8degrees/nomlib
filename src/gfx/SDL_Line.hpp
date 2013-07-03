@@ -23,7 +23,7 @@
 #include "SDL_Drawable.hpp"
 #include "SDL_Pixel.hpp"
 #include "Transformable.hpp"
-#include "nomlib.hpp"
+#include "nomlib_config.hpp"
 
 namespace nom
 {

@@ -20,7 +20,7 @@
 #include "SDL_Drawable.hpp"
 #include "Transformable.hpp"
 #include "SDL_Rectangle.hpp"
-#include "nomlib.hpp"
+#include "nomlib_config.hpp"
 
 namespace nom
 {

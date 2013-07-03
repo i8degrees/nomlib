@@ -18,7 +18,7 @@
 #include "SDL.h"
 
 #include "IState.hpp" // abstract class for our interface
-#include "nomlib.hpp"
+#include "nomlib_config.hpp"
 
 namespace nom
 {

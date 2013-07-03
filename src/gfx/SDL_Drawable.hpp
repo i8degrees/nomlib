@@ -13,7 +13,7 @@
 #include <iostream>
 
 #include "IDrawable.hpp"
-#include "nomlib.hpp"
+#include "nomlib_config.hpp"
 
 namespace nom
 {

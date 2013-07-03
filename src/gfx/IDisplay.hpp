@@ -16,7 +16,7 @@
 #include "SDL.h"
 
 #include "Coords.hpp"
-#include "nomlib.hpp"
+#include "nomlib_config.hpp"
 
 namespace nom
 {

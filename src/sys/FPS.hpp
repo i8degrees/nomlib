@@ -11,7 +11,7 @@
 
 #include "SDL_Timer.hpp"
 
-#include "nomlib.hpp"
+#include "nomlib_config.hpp"
 
 namespace nom
 {

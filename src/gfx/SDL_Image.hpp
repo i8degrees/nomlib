@@ -18,7 +18,7 @@
 
 #include "Coords.hpp"
 #include "Color.hpp"
-#include "nomlib.hpp"
+#include "nomlib_config.hpp"
 
 namespace nom
 {

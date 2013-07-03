@@ -79,7 +79,7 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/gfx/SDL_Line.hpp
       ${SRC_DIR}/gfx/SDL_Rectangle.hpp
       ${SRC_DIR}/gfx/SDL_Canvas.hpp
-      ${SRC_DIR}/nomlib.hpp
+      ${SRC_DIR}/nomlib_config.hpp
       ${SRC_DIR}/gfx/IDisplay.hpp
       ${SRC_DIR}/gfx/SDL_Display.hpp
       ${SRC_DIR}/gfx/Sprite.hpp

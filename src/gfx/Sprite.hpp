@@ -17,7 +17,7 @@
 #include "SDL_Drawable.hpp"
 #include "SDL_Canvas.hpp"
 #include "Transformable.hpp"
-#include "nomlib.hpp"
+#include "nomlib_config.hpp"
 
 namespace nom
 {

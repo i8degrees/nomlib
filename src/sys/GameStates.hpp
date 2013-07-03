@@ -1,7 +1,5 @@
 /******************************************************************************
-    GameStates.hpp
-
-  (FSM) States management
+    (FSM) States management
 
   Copyright (c) 2013 Jeffrey Carpenter
 

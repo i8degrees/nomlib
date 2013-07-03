@@ -10,12 +10,7 @@
 
 * Fix nom::Line memory leak (update variable is merely a temporary partial stopgap)
 
-* GameStates as a singleton class?
-
-* Fix Color ( -1, -1, -1, -1 ) issue
-* Fix GameStates "leak" due to vector not destructing until end of app exec
 * Implement a NULL GameState class?
-
 * Use exceptions library in C++
 * Use Uint32, etc. definitions
 * const types
@@ -35,6 +30,9 @@ is there
 
 ## Completed
 
+* Fix Color ( -1, -1, -1, -1 ) issue
+* GameStates as a singleton class?
+* Fix GameStates "leak" due to vector not destructing until end of app exec
 * Perhaps GameState could also implement Load method?
 * namespace nom
 * Use nullptr instead of NULL

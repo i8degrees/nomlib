@@ -33,7 +33,7 @@ namespace nom
       virtual void Pause ( void ) = 0;
       virtual void Resume ( void ) = 0;
 
-      virtual void Update ( float delta_time ) = 0;
+      virtual void Update ( float ) = 0;
       virtual void Draw ( void* ) = 0;
 
     private:

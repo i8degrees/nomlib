@@ -1,5 +1,7 @@
 # TODO
 
+* Use C++ templates for Coords class
+
 * Use floats in Timer, FPS class?
 
 * Finish Update logic in SDL_Gradient so that we can make it an official SDL_Drawables type;

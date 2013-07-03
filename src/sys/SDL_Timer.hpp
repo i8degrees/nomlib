@@ -1,7 +1,6 @@
 /******************************************************************************
-    SDL_Timer.hpp
 
-  SDL-based Timer
+    SDL-based Timer
 
   Copyright (c) 2013 Jeffrey Carpenter
 

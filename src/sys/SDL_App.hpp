@@ -1,7 +1,6 @@
 /******************************************************************************
-    SDL_App.hpp
 
-  SDL app interface class
+    SDL app interface class
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

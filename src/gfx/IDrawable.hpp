@@ -1,7 +1,6 @@
 /******************************************************************************
-    IDrawable.hpp
 
-  Drawables abstract class
+    Drawable abstract class
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

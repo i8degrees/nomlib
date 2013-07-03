@@ -1,7 +1,6 @@
 /******************************************************************************
-    SDL_Drawable.hpp
 
-  Drawables interface
+    Drawable interface
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

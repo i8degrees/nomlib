@@ -1,7 +1,6 @@
 /******************************************************************************
-    SDL_Cursor.h
 
-  Helper class for loading, positioning and keeping track of a cursor controlled
+    Helper class for loading, positioning and keeping track of a cursor controlled
   by a mouse and / or keyboard.
 
   Copyright (c) 2013 Jeffrey Carpenter

@@ -1,7 +1,6 @@
 /******************************************************************************
-    SDL_Line.hpp
 
-  SDL Line Primitive
+    SDL Line Primitive
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

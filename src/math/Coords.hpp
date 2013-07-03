@@ -1,7 +1,6 @@
 /******************************************************************************
-    Coords.h
 
-  Coordinate values (x, y, z, width, height ) wrapper
+    Coordinate values (x, y, z, width, height ) wrapper
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

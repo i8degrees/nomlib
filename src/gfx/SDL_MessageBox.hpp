@@ -1,7 +1,6 @@
 /******************************************************************************
-    SDL_MessageBox.hpp
 
-  Simple UI interface for drawing a styled message box
+    Simple UI interface for drawing a styled message box
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

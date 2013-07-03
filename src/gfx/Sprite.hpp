@@ -1,7 +1,6 @@
 /******************************************************************************
-    Sprite.hpp
 
-  SDL-based Sprite Blitting API
+    SDL-based Sprite Blitting API
 
   Copyright (c) 2013 Jeffrey Carpenter
 

@@ -1,5 +1,6 @@
 /******************************************************************************
-  State abstract class
+
+    State abstract class
 
   Copyright (c) 2013 Jeffrey Carpenter
 

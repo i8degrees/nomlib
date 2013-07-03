@@ -1,7 +1,6 @@
 /******************************************************************************
-    SDL_Rectangle.hpp
 
-  SDL Rectangle Primitive
+    SDL Rectangle Primitive
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

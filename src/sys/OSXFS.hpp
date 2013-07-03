@@ -1,7 +1,6 @@
 /******************************************************************************
-    OSXFS.hpp
 
-  (OSX) Filesystem Interface
+    (OSX) Filesystem Interface
 
   Copyright (c) 2013 Jeffrey Carpenter
 

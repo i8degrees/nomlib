@@ -7,6 +7,53 @@
 #ifndef NOMLIB_CONFIG_HEADERS
 #define NOMLIB_CONFIG_HEADERS
 
+// nomlib version
+#define NOMLIB_VERSION_MAJOR 0
+#define NOMLIB_VERSION_MINOR 0
+
+// Identification the operating system
+#if defined ( _WIN32) || defined ( __WIN32__ )
+  #define NOMLIB_SYSTEM_WINDOWS
+#elif defined ( linux ) || defined ( __linux )
+  #define NOMLIB_SYSTEM_LINUX
+#elif defined ( __APPLE__ ) || defined ( MACOSX ) || defined ( macintosh ) || defined ( Macintosh )
+  #define NOMLIB_SYSTEM_OSX
+#else
+  #warning This operating system is not officially supported by nomlib
+#endif
+
+// Portable fixed-size types
+// All "common" platforms use the same size for char, short and int
+namespace nom
+{
+  // 1-bit integer types
+  typedef bool int1;
+
+  // 8-bit integer types
+  typedef signed char int8;
+  typedef unsigned char uint8;
+
+  // 16-bit integer types
+  typedef signed short int16;
+  typedef unsigned short uint16;
+
+  // 32-bit integer types
+  typedef signed int int32;
+  typedef unsigned int uint32;
+
+  // 64-bit integer types
+  #if defined ( _MSC_VER ) // MSVC++
+    typedef signed __int64 int64;
+    typedef unsigned __int64 uint64;
+  #else
+    typedef signed long long int64;
+    typedef unsigned long long uint64;
+  #endif
+
+  // *Should* produce compiler err if size is wrong
+  typedef unsigned char validate_uint32[sizeof(uint32)==4 ? 1 : -1];
+  typedef unsigned char validate_uint64[sizeof(uint64)==8 ? 1 : -1];
+}
 #define DEBUG_TRANSFORMABLE
 //#define DEBUG_TRANSFORMABLE_OBJ
 

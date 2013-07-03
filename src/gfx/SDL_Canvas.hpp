@@ -63,8 +63,16 @@ namespace nom
       // TODO: SDL_CreateRGBSurface
       // TODO: SDL_CreateRGBSurfaceFrom
 
+      /// Sets transparency only if colorkey nom::Color alpha value is -1, also
+      /// important to note is that we only have an alpha channel surface set
+      /// if nom::Color value is not -1 (the default)
+      ///
+      /// \internal Clean up this documentation note and also verify that it is
+      /// sane to assume that you would not use transparency when you have alpha
+      /// surface enabled
+      /// \endinternal
       bool loadFromImage  ( const std::string& filename, const nom::Color&
-                            colorkey = nom::Color ( 0, 0, 0, -1 ),
+                            colorkey = nom::Color ( -1, -1, -1, -1 ),
                             uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
       bool Update ( void* video_buffer );

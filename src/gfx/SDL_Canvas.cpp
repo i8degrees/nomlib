@@ -209,7 +209,7 @@ bool nom::SDL_Canvas::loadFromImage ( const std::string& filename, const nom::Co
   // Sets our canvas with our acquired image surface
   setCanvas ( image.get() );
 
-  if ( colorkey.alpha == -1 ) // FIXME
+  if ( colorkey.alpha == -1 )
     setTransparent ( colorkey, flags );
 
   if ( colorkey.alpha != -1 )

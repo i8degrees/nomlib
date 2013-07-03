@@ -22,8 +22,6 @@
 
 namespace nom
 {
-  static std::vector<std::unique_ptr<nom::IState>> states;
-
   // Rename to FSM, States or similar?
   class GameStates
   {
@@ -43,6 +41,8 @@ namespace nom
       static void PopState ( void );
       static void PopStateThenChangeState ( std::unique_ptr<IState> state );
 
+      /// States stack; we hold pointer references to IState inherited classes
+      static std::vector<std::unique_ptr<nom::IState>> states;
     private:
       GameStates ( void );
   };

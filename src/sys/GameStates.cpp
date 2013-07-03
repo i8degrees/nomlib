@@ -9,6 +9,8 @@
 ******************************************************************************/
 #include "GameStates.hpp"
 
+// Initialize our static vars
+std::vector<std::unique_ptr<nom::IState>> nom::GameStates::states;
 // Default constructor
 nom::GameStates::GameStates ( void )
 {

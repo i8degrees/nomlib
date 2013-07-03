@@ -1,5 +1,4 @@
 /******************************************************************************
-    Color.cpp
 
     Utility class container for RGBA colors
 

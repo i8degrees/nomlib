@@ -1,5 +1,4 @@
 /******************************************************************************
-    SDL_Display.cpp
 
     SDL Display Class Interface Definition
 

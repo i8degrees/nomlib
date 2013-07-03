@@ -1,7 +1,6 @@
 /******************************************************************************
-    FPS.cpp
 
-  SDL-based Frames Per Second Implementation; inherits from the Timer Class
+    SDL-based Frames Per Second Implementation; inherits from the Timer Class
 
   Copyright (c) 2013 Jeffrey Carpenter
 

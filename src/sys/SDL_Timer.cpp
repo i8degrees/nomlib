@@ -1,7 +1,6 @@
 /******************************************************************************
-    SDL_Timer.cpp
 
-  SDL-based Timer Implementation
+    SDL-based Timer Implementation
 
   Copyright (c) 2013 Jeffrey Carpenter
 

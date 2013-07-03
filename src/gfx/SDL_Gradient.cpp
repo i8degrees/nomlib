@@ -1,7 +1,6 @@
 /******************************************************************************
-    SDL_Gradient.cpp
 
-  SDL Gradient effects
+    SDL Gradient effects
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

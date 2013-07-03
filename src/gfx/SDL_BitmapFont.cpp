@@ -1,7 +1,6 @@
 /******************************************************************************
-    SDL_BitmapFont.cpp
 
-  SDL-based Bitmap Font Rendering API
+    SDL-based Bitmap Font Rendering API
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

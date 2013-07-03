@@ -1,7 +1,6 @@
 /******************************************************************************
-    SDL_Pixel.cpp
 
-  SDL Point (Pixel) Primitive
+    SDL Point (Pixel) Primitive
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

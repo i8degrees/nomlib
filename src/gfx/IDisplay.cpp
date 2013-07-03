@@ -1,5 +1,4 @@
 /******************************************************************************
-    IDisplay.cpp
 
     Abstract Display Class Interface Definition
 

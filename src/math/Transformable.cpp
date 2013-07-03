@@ -1,7 +1,6 @@
 /******************************************************************************
-    Transformable.cpp
 
-  Inheritance class for adding Coords & Color methods
+    Inheritance class for adding Coords & Color methods
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

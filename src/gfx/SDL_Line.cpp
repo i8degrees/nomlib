@@ -1,7 +1,6 @@
 /******************************************************************************
-    SDL_Line.cpp
 
-  SDL Line Primitive; line computation logic derives from Bresenham's line
+    SDL Line Primitive; line computation logic derives from Bresenham's line
   algorithm
 
   Copyright (c) 2013 Jeffrey Carpenter

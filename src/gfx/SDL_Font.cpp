@@ -1,7 +1,6 @@
 /******************************************************************************
-    SDL_Font.cpp
 
-  SDL-based TrueType Font Rendering API
+    SDL-based TrueType Font Rendering API
 
   Copyright (c) 2013 Jeffrey Carpenter
 

@@ -51,6 +51,10 @@ namespace nom
     typedef unsigned long long uint64;
   #endif
 
+  // Additional integer type definitions
+  typedef unsigned short ushort;
+  typedef unsigned long ulong;
+
   // *Should* produce compiler err if size is wrong
   typedef unsigned char validate_uint32[sizeof(uint32)==4 ? 1 : -1];
   typedef unsigned char validate_uint64[sizeof(uint64)==8 ? 1 : -1];

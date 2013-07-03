@@ -45,7 +45,7 @@ namespace nom
       SDL_BitmapFont ( void );
 
       /// Default destructor
-      virtual ~SDL_BitmapFont ( void );
+      ~SDL_BitmapFont ( void );
 
       /// Obtains set text string buffer; defaults to \0
       const std::string& getText ( void ) const;

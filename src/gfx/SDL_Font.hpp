@@ -31,7 +31,7 @@ namespace nom
       SDL_Font ( void );
 
       /// Default destructor; we shutdown the SDL_ttf extension here
-      virtual ~SDL_Font ( void );
+      ~SDL_Font ( void );
 
       /// Obtains set text string buffer; defaults to \0
       const std::string& getText ( void ) const;

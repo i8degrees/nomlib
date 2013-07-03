@@ -9,7 +9,7 @@
 ******************************************************************************/
 #include "SDL_Image.hpp"
 
-nom::SDL_Image::SDL_Image ( uint32_t flags )  : image_buffer ( nullptr )
+nom::SDL_Image::SDL_Image ( nom::int32 flags )  : image_buffer ( nullptr )
 {
   #ifdef DEBUG_SDL_IMAGE_OBJ
     std::cout << "SDL_Image::SDL_Image(): Hello, world!" << std::endl << std::endl;

@@ -19,7 +19,7 @@ nom::SDL_MessageBox::SDL_MessageBox ( void )
 
   this->window_borders.clear();
 
-  for ( int32_t i = 0; i < this->window_borders.size(); i++ )
+  for ( nom::ulong i = 0; i < this->window_borders.size(); i++ )
     this->window_borders[i] = nom::Color::Black;
 
   this->coords = nom::Coords ( 0, 0, 0, 0 );

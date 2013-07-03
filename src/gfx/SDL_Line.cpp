@@ -128,8 +128,6 @@ void nom::Line::Update ( void )
 
 void nom::Line::Draw ( void* video_buffer ) const
 {
-  int32_t idx = 0;
-
-  for ( idx = 0; idx < this->pixels.size(); idx++ )
+  for ( nom::ulong idx = 0; idx < this->pixels.size(); idx++ )
     this->pixels[idx]->Draw ( video_buffer );
 }

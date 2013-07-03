@@ -24,7 +24,7 @@ namespace nom
   class SDL_Image
   {
     public:
-      SDL_Image ( uint32_t img_flags = IMG_INIT_PNG );
+      SDL_Image ( nom::int32 img_flags = IMG_INIT_PNG );
       ~SDL_Image ( void );
 
       /// Obtains raw pointer to the object's video surface buffer

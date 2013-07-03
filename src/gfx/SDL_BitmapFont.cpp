@@ -48,7 +48,7 @@ int32_t SDL_BitmapFont::getTextWidth ( void )
 
   if ( this->bitmap_font.valid() )
   {
-    for ( int t = 0; t < this->text_buffer.length(); t++ )
+    for ( nom::ulong t = 0; t < this->text_buffer.length(); t++ )
     {
       if ( this->text_buffer[t] == ' ' )
         text_width += this->chars[t].width / this->spacing;
@@ -66,7 +66,7 @@ int32_t SDL_BitmapFont::getTextHeight ( void )
 {
   int32_t text_height = 0;
 
-  for ( int t = 0; t < this->text_buffer.length(); t++ )
+  for ( nom::ulong t = 0; t < this->text_buffer.length(); t++ )
   {
     if ( this->text_buffer[t] == '\n' )
       text_height += this->newline;
@@ -197,7 +197,7 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
       for ( int32_t pCol_w = tile_width - 1; pCol_w >= 0; pCol_w-- )
       {
         //Go through pixel rows
-        for ( int32_t pRow_w = 0; pRow_w < tile_height; pRow_w++ )
+        for ( nom::uint32 pRow_w = 0; pRow_w < tile_height; pRow_w++ )
         {
           //Get the pixel offsets
           uint32_t pX = ( tile_width * cols ) + pCol_w;
@@ -217,10 +217,10 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
       }
 
       //Find Top; go through pixel rows
-      for ( int32_t pRow = 0; pRow < tile_height; pRow++ )
+      for ( nom::uint32 pRow = 0; pRow < tile_height; pRow++ )
       {
         //Go through pixel columns
-        for ( int32_t pCol = 0; pCol < tile_width; pCol++ )
+        for ( nom::uint32 pCol = 0; pCol < tile_width; pCol++ )
         {
           //Get the pixel offsets
           uint32_t pX = ( tile_width * cols ) + pCol;
@@ -250,7 +250,7 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
         for ( int32_t pRow = tile_height - 1; pRow >= 0; pRow-- )
         {
           // Go through pixel columns
-          for ( int32_t pCol = 0; pCol < tile_width; pCol++ )
+          for ( nom::uint32 pCol = 0; pCol < tile_width; pCol++ )
           {
             // Get the pixel offsets
             unsigned int pX = ( tile_width * cols ) + pCol;

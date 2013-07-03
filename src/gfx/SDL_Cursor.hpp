@@ -30,8 +30,8 @@ namespace nom
       //void Init ( void );
       void Load ( std::string filename, nom::Color colorkey );
 
-      unsigned int getX ( void );
-      unsigned int getY ( void );
+      nom::int32 getX ( void );
+      nom::int32 getY ( void );
       void setPosition ( unsigned int x = 0, unsigned int y = 0 );
       void move ( unsigned int x = 0, unsigned int y = 0 );
 

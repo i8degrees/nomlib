@@ -43,13 +43,13 @@ void nom::SDL_Cursor::Load ( std::string filename, nom::Color colorkey ) // shee
   this->cursor.Load ( filename, colorkey );
 }
 
-unsigned int nom::SDL_Cursor::getX ( void )
+nom::int32 nom::SDL_Cursor::getX ( void )
 {
   nom::Coords x_value = this->cursor.getPosition();
   return x_value.x;
 }
 
-unsigned int nom::SDL_Cursor::getY ( void )
+nom::int32 nom::SDL_Cursor::getY ( void )
 {
   nom::Coords y_value = this->cursor.getPosition();
   return y_value.y;

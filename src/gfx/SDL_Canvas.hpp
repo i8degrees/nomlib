@@ -15,6 +15,7 @@
 
 #include "SDL.h"
 
+#include "SDL_Image.hpp"
 //#include "ICanvas.hpp"
 #include "Color.hpp"
 #include "Coords.hpp"

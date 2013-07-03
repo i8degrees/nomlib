@@ -1,0 +1,25 @@
+{
+  "folders":
+  [
+    {
+      "name": "src",
+      "path": "/Users/jeff/Projects/hax/ttcards.git/gamelib/src",
+      "file_include_patterns": ["*.cpp", "*.c", "*.hpp", "*.h"]
+    },
+
+    {
+      "name": "docs",
+      "path": "/Users/jeff/Projects/hax/ttcards.git/gamelib",
+      "file_include_patterns": ["*.md", "*.css", "*.html", "doxygen.cfg", "CMakeLists.txt"],
+      "folder_exclude_patterns": ["build", "tmp", "docs/public", "docs/man", "src"]
+    },
+
+    {} // placeholder
+  ],
+
+  "settings":
+  {
+    "tab_size": 2,
+    "translate_tabs_to_spaces": true
+  }
+}

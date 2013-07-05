@@ -97,10 +97,8 @@ void nom::SDL_MessageBox::Draw ( void* video_buffer ) /* const */
 {
   this->background.Draw ( video_buffer );
 
-  // Not sure if this is the proper placement of the check, but seems to do
-  // alright for now!
-  while ( ! this->box.Lock ( video_buffer ) )
-    SDL_Delay ( 10 );
+  // SDL_Line needs pixel write access, so we must first lock the surface
+  this->box.Lock ( video_buffer );
 
   for ( auto it = this->lines.begin(); it != this->lines.end(); it++ )
   {

@@ -48,9 +48,21 @@ namespace nom
       void* getDisplayPixels ( void ) const;
       void* getDisplayPixelsFormat ( void ) const;
       const nom::Coords getDisplayBounds ( void ) const;
+      /// I think that we are accessing the value of an
+      /// (internal?) property of the SDL_Surface structure that is described as being
+      /// "private" as per the docs.
+      ///
+      /// Return value of this internal property is presumed to be boolean -- no
+      /// verification has been made of this. Testing of this method *appears*
+      /// to be in working order.
       bool getCanvasLock ( void ) const;
 
       void Update ( void );
+      /// \todo
+      /// TEST ME
+      /// \endtodo
+      /// As per libSDL docs, this method call should not be used when the display
+      /// surface is locked
       void Update ( const nom::Coords& coords );
       void toggleFullScreenWindow ( int32_t width, int32_t height );
 

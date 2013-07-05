@@ -104,14 +104,6 @@ const nom::Coords SDL_Display::getDisplayBounds ( void ) const
   return clip_coords;
 }
 
-// IMPLEMENTATION NOTE: I think that we are accessing the value of an
-// (internal?) property of the SDL_Surface structure that is described as being
-// "private" as per the docs.
-//
-// Return value of this internal property is presumed to be boolean -- no
-// verification has been made of this. Testing of this method *appears*
-// to be in working order.
-//
 bool nom::SDL_Display::getCanvasLock ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->get() );
@@ -124,9 +116,6 @@ void nom::SDL_Display::Update ( void )
 NOMLIB_LOG_ERR ( SDL_GetError() );
 }
 
-// TODO: test me
-// As per libSDL docs, this method call should not be used when the display
-// surface is locked
 void nom::SDL_Display::Update ( const nom::Coords& coords )
 {
   SDL_UpdateRect ( static_cast<SDL_Surface*> ( this->get() ), coords.x, coords.y, coords.width, coords.height );

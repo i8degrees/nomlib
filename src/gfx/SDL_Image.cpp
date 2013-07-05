@@ -26,7 +26,6 @@ NOMLIB_LOG_INFO;
 
   // We do not free the surface here because we pass ownership
   // (and thus, responsibility) to the calling class
-
   this->image_buffer = nullptr; // ...better safe than sorry!
 }
 

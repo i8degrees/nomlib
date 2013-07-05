@@ -7,7 +7,6 @@
 ******************************************************************************/
 #include "SDL_Canvas.hpp"
 
-// Default constructor; initializes object to its respective defaults
 nom::SDL_Canvas::SDL_Canvas ( void )  : canvas_buffer ( nullptr ),
                                         coords ( 0, 0, -1, -1 ), // only x, y position is used in blitting
                                         offsets ( 0, 0, -1, -1 ), // only the width, height is used in source blitting
@@ -16,7 +15,6 @@ nom::SDL_Canvas::SDL_Canvas ( void )  : canvas_buffer ( nullptr ),
 NOMLIB_LOG_INFO;
 }
 
-// Constructor variant for setting the canvas with existing data
 nom::SDL_Canvas::SDL_Canvas ( void* video_buffer )
 {
 NOMLIB_LOG_INFO;
@@ -26,13 +24,6 @@ NOMLIB_LOG_INFO;
   this->canvas_buffer = static_cast<SDL_Surface*> ( video_buffer );
 }
 
-// Constructor variant for setting the canvas with an empty surface
-//
-// As per libSDL docs, this must be called only after video initialization;
-// (SDL_SetVideoMode)
-//
-// http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurface
-//
 nom::SDL_Canvas::SDL_Canvas ( uint32_t flags, int32_t width, int32_t height, int32_t bitsPerPixel, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
 {
 NOMLIB_LOG_INFO;
@@ -41,10 +32,6 @@ NOMLIB_LOG_INFO;
   this->canvas_buffer = SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask );
 }
 
-// Constructor variant for setting the canvas with existing pixel data
-//
-// http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurfaceFrom
-//
 nom::SDL_Canvas::SDL_Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
 {
 NOMLIB_LOG_INFO;
@@ -61,8 +48,6 @@ NOMLIB_LOG_INFO;
   this->destroy();
 }
 
-// We sometimes need to call this method call from outside of this class, such
-// as in SDL_Font::Draw, in order to prevent memory leaks from occurring
 void nom::SDL_Canvas::destroy ( void )
 {
   if ( this->valid() )
@@ -173,14 +158,6 @@ void nom::SDL_Canvas::setCanvasBounds ( const nom::Coords& clip_bounds )
   SDL_SetClipRect ( static_cast<SDL_Surface*> ( this->get() ), &clip );
 }
 
-// IMPLEMENTATION NOTE: I think that we are accessing the value of an
-// (internal?) property of the SDL_Surface structure that is described as being
-// "private" as per the docs.
-//
-// Return value of this internal property is presumed to be boolean -- no
-// verification has been made of this. Testing of this method *appears*
-// to be in working order.
-//
 bool nom::SDL_Canvas::getCanvasLock ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->get() );
@@ -278,8 +255,6 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
   return true;
 }
 
-// As per libSDL docs, we must first initialize the video subsystem before using
-// this method call, otherwise an access violation fault is sure to occur.
 bool nom::SDL_Canvas::displayFormat ( void )
 {
   void* converted_canvas = nullptr; // Better safe than sorry!
@@ -298,8 +273,6 @@ NOMLIB_ASSERT ( converted_canvas != nullptr );
   return true;
 }
 
-// As per libSDL docs, we must first initialize the video subsystem before using
-// this method call, otherwise an access violation fault is sure to occur.
 bool nom::SDL_Canvas::displayFormatAlpha ( void )
 {
   void* converted_canvas = nullptr; // Better safe than sorry!
@@ -318,10 +291,6 @@ NOMLIB_ASSERT ( converted_canvas != nullptr );
   return true;
 }
 
-/// Note: this method is not meant to be called inside a loop; memory usage may
-/// run a mock (seems to be fixed by Rectangle::~Rectangle() inside
-// 'SDL_Rectangle.cpp', although I do not understand why exactly...
-///
 void nom::SDL_Canvas::clear ( const nom::Color& color ) const
 {
   nom::Rectangle rect ( nom::Coords ( 0, 0, this->getCanvasWidth(), this->getCanvasHeight() ), color );

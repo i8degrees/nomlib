@@ -25,11 +25,28 @@ namespace nom
   class SDL_Canvas
   {
     public:
+      /// Default constructor; initializes object to its respective defaults
       SDL_Canvas ( void );
+      /// Constructor variant for setting the canvas with existing data
       SDL_Canvas ( void* video_buffer );
+      /// Constructor variant for setting the canvas with an empty surface
+      ///
+      /// As per libSDL docs, this must be called only after video initialization;
+      /// (SDL_SetVideoMode)
+      ///
+      /// http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurface
       SDL_Canvas ( uint32_t flags, int32_t width, int32_t height, int32_t bitsPerPixel, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask );
+      /// Constructor variant for setting the canvas with existing pixel data
+      ///
+      /// http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurfaceFrom
+      ///
+      /// Note that we are responsible for freeing our own pixels data
       SDL_Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask );
       ~SDL_Canvas ( void );
+      /// \internal
+      /// We sometimes need to call this method call from outside of this class, such
+      /// as in SDL_Font::Draw, in order to prevent memory leaks from occurring
+      /// \endinternal
       void destroy ( void );
 
       /// Obtains raw pointer to the object's video surface buffer
@@ -41,8 +58,8 @@ namespace nom
       /// Is this SDL_Surface* initialized ( != nullptr )?
       bool valid ( void ) const;
 
-      /// SDL compatibility wrapper
       void setCanvas ( SDL_Surface *video_buffer );
+      /// Set the canvas with existing surface data
       void setCanvas ( void* video_buffer );
 
       void setPosition ( const Coords& coords_ );
@@ -56,16 +73,21 @@ namespace nom
       void* getCanvasPixelsFormat ( void ) const;
       const nom::Coords getCanvasBounds ( void ) const;
       void setCanvasBounds ( const nom::Coords& clip_bounds );
+      /// I think that we are accessing the value of an
+      /// (internal?) property of the SDL_Surface structure that is described as being
+      /// "private" as per the docs.
+      ///
+      /// Return value of this internal property is presumed to be boolean -- no
+      /// verification has been made of this. Testing of this method *appears*
+      /// to be in working order.
       bool getCanvasLock ( void ) const;
-
-      // TODO: SDL_CreateRGBSurface
-      // TODO: SDL_CreateRGBSurfaceFrom
 
       /// Sets transparency only if colorkey nom::Color alpha value is -1, also
       /// important to note is that we only have an alpha channel surface set
       /// if nom::Color value is not -1 (the default)
       ///
-      /// \internal Clean up this documentation note and also verify that it is
+      /// \internal
+      /// Clean up this documentation note and also verify that it is
       /// sane to assume that you would not use transparency when you have alpha
       /// surface enabled
       /// \endinternal
@@ -82,9 +104,18 @@ namespace nom
                             uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY
                           );
 
+      /// As per libSDL docs, we must first initialize the video subsystem before using
+      /// this method call, otherwise an access violation fault is sure to occur.
       bool displayFormat ( void );
+      /// As per libSDL docs, we must first initialize the video subsystem before using
+      /// this method call, otherwise an access violation fault is sure to occur.
       bool displayFormatAlpha ( void );
 
+      /// \internal
+      /// Note: this method is not meant to be called inside a loop; memory usage may
+      /// run a mock (seems to be fixed by Rectangle::~Rectangle() inside
+      /// 'SDL_Rectangle.cpp', although I do not understand why exactly...
+      /// \endinternal
       void clear ( const nom::Color& color = nom::Color::Blue ) const;
 
 

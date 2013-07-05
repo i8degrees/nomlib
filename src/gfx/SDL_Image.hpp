@@ -31,14 +31,13 @@ namespace nom
       /// Obtains raw pointer to the object's video surface buffer
       ///
       /// Returns ( SDL_Surface* )
-      ///
       void* get ( void ) const;
 
       /// Is this SDL_Surface* initialized ( != nullptr )?
       bool valid ( void ) const;
 
-      /// Supports every file type that your SDL_image extension has been
-      /// compiled
+      /// Supports every file type that the SDL_image extension has been
+      /// compiled with
       bool loadFromFile ( const std::string& filename );
 
       /// Uses SDL's built-in BMP file loader; no alpha channeling support ...

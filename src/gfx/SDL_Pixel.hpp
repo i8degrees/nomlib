@@ -12,12 +12,12 @@
 #include <iostream>
 #include <string>
 
-#include "SDL.h"
+#include <SDL/SDL.h>
 
-#include "Coords.hpp"
-#include "Color.hpp"
-#include "SDL_Drawable.hpp"
-#include "Transformable.hpp"
+#include "math/Color.hpp"
+#include "math/Coords.hpp"
+#include "math/Transformable.hpp"
+#include "gfx/SDL_Drawable.hpp"
 #include "nomlib_config.hpp"
 
 namespace nom

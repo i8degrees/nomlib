@@ -13,7 +13,7 @@
 
 #include <iostream>
 
-#include "SDL_Input.hpp"
+#include "sys/SDL_Input.hpp"
 #include "nomlib_config.hpp"
 
 namespace nom

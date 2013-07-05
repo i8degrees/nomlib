@@ -13,9 +13,10 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <cstdlib>
 
-#include "SDL_Input.hpp"
-#include "SDL_Timer.hpp"
+#include "sys/SDL_Input.hpp"
+#include "sys/SDL_Timer.hpp"
 #include "nomlib_config.hpp"
 
 namespace nom

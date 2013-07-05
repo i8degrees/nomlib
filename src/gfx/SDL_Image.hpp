@@ -11,12 +11,13 @@
 
 #include <iostream>
 #include <string>
+#include <cstdlib>
 
-#include "SDL.h"
-#include "SDL_image.h"
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 
-#include "Coords.hpp"
-#include "Color.hpp"
+#include "math/Color.hpp"
+#include "math/Coords.hpp"
 #include "nomlib_config.hpp"
 
 namespace nom

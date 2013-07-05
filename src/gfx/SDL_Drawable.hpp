@@ -11,7 +11,7 @@
 
 #include <iostream>
 
-#include "IDrawable.hpp"
+#include "gfx/IDrawable.hpp"
 #include "nomlib_config.hpp"
 
 namespace nom

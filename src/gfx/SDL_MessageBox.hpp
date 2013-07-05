@@ -13,13 +13,13 @@
 #include <string>
 #include <vector>
 
-#include "Color.hpp"
-#include "Coords.hpp"
-#include "Transformable.hpp"
-#include "SDL_Drawable.hpp"
-#include "SDL_Canvas.hpp"
-#include "SDL_Gradient.hpp"
-#include "SDL_Line.hpp"
+#include "math/Color.hpp"
+#include "math/Coords.hpp"
+#include "math/Transformable.hpp"
+#include "gfx/SDL_Drawable.hpp"
+#include "gfx/SDL_Canvas.hpp"
+#include "gfx/SDL_Gradient.hpp"
+#include "gfx/SDL_Line.hpp"
 #include "nomlib_config.hpp"
 
 namespace nom

@@ -13,8 +13,8 @@
 #include <string>
 #include <vector>
 
-#include "Sprite.hpp"
-#include "Coords.hpp"
+#include "math/Coords.hpp"
+#include "gfx/Sprite.hpp"
 #include "nomlib_config.hpp"
 
 namespace nom

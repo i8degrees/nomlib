@@ -10,14 +10,15 @@
 
 #include <iostream>
 #include <string>
+#include <cstdlib>
 
-#include "SDL.h"
-#include "SDL_ttf.h"
+#include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 
-#include "SDL_Drawable.hpp"
-#include "SDL_Canvas.hpp"
-#include "Color.hpp"
-#include "Transformable.hpp"
+#include "math/Color.hpp"
+#include "math/Transformable.hpp"
+#include "gfx/SDL_Canvas.hpp"
+#include "gfx/SDL_Drawable.hpp"
 #include "nomlib_config.hpp"
 
 namespace nom

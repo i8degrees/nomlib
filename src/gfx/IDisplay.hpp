@@ -12,9 +12,9 @@
 #include <string>
 #include <cassert>
 
-#include "SDL.h"
+#include <SDL/SDL.h>
 
-#include "Coords.hpp"
+#include "math/Coords.hpp"
 #include "nomlib_config.hpp"
 
 namespace nom

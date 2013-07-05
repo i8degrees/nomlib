@@ -10,13 +10,14 @@
 
 #include <iostream>
 #include <string>
+#include <cstdlib>
 
-#include "SDL.h"
+#include <SDL/SDL.h>
 
-#include "IDisplay.hpp"
-#include "Coords.hpp"
-//#include "Color.h"
-#include "SDL_Canvas.hpp"
+#include "gfx/IDisplay.hpp"
+#include "math/Coords.hpp"
+#include "math/Color.hpp"
+#include "gfx/SDL_Canvas.hpp"
 #include "nomlib_config.hpp"
 
 namespace nom

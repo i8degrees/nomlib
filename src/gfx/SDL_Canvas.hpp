@@ -12,14 +12,13 @@
 #include <string>
 #include <cassert>
 
-#include "SDL.h"
+#include <SDL/SDL.h>
 
-#include "SDL_Image.hpp"
-//#include "ICanvas.hpp"
-#include "Color.hpp"
-#include "Coords.hpp"
-#include "SDL_Rectangle.hpp"
-#include "SDL_Image.hpp"
+//#include "gfx/ICanvas.hpp"
+#include "math/Color.hpp"
+#include "math/Coords.hpp"
+#include "gfx/SDL_Image.hpp"
+#include "gfx/SDL_Rectangle.hpp"
 #include "nomlib_config.hpp"
 
 namespace nom

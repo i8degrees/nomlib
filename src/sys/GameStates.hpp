@@ -16,9 +16,9 @@
 #include <memory>
 #include <cassert>
 
-#include "SDL.h"
+#include <SDL/SDL.h>
 
-#include "IState.hpp" // abstract class for our interface
+#include "sys/IState.hpp" // abstract class for our interface
 #include "nomlib_config.hpp"
 
 namespace nom

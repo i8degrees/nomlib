@@ -2,6 +2,8 @@ cmake_minimum_required ( VERSION 2.8 )
 
 project ( gamelib )
 
+#     CMake Environment
+
 set ( CMAKE_VERBOSE_MAKEFILE true )
 set ( CMAKE_BUILD_TYPE Debug )
 set ( BUILD_SHARED_LIBS true )
@@ -11,6 +13,8 @@ if ( CMAKE_GENERATOR STREQUAL Xcode )
   set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
   set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
 endif ()
+
+#     Platform specific
 
 if ( CMAKE_SYSTEM_NAME STREQUAL Linux ) # Tested on Ubuntu v12.04-LTS(?) with
                                         # applicable dependencies installed
@@ -57,11 +61,14 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/math/Transformable.cpp
       ${SRC_DIR}/gui/SDL_Cursor.cpp
       ${SRC_DIR}/gui/SDL_MessageBox.cpp
-    )
+)
 
-set ( GAMELIB_HEADERS
+set ( GAMELIB_HEADERS_ROOT
       ${SRC_DIR}/nomlib_config.hpp
       ${SRC_DIR}/nomlib_types.hpp
+)
+
+set ( GAMELIB_HEADERS_GFX
       ${SRC_DIR}/gfx/SDL_Font.hpp
       ${SRC_DIR}/gfx/SDL_Gradient.hpp
       ${SRC_DIR}/gfx/SDL_BitmapFont.hpp
@@ -75,6 +82,9 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/gfx/IDisplay.hpp
       ${SRC_DIR}/gfx/SDL_Display.hpp
       ${SRC_DIR}/gfx/Sprite.hpp
+)
+
+set ( GAMELIB_HEADERS_SYS
       ${SRC_DIR}/sys/FPS.hpp
       ${SRC_DIR}/sys/GameStates.hpp
       ${SRC_DIR}/sys/IState.hpp
@@ -83,12 +93,26 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/sys/SDL_App.hpp
       ${SRC_DIR}/sys/SDL_Input.hpp
       ${SRC_DIR}/sys/SDL_Timer.hpp
+)
+
+set ( GAMELIB_HEADERS_MATH
       ${SRC_DIR}/math/Color.hpp
       ${SRC_DIR}/math/Coords.hpp
       ${SRC_DIR}/math/Transformable.hpp
+)
+
+set ( GAMELIB_HEADERS_GUI
       ${SRC_DIR}/gui/SDL_Cursor.hpp
       ${SRC_DIR}/gui/SDL_MessageBox.hpp
-    )
+)
+
+include_directories ( src )
+include_directories ( src/audio )
+include_directories ( src/gfx )
+include_directories ( src/math )
+include_directories ( src/sys )
+
+#     Required Dependencies
 
 find_package ( SDL REQUIRED )
 include_directories ( ${SDL_INCLUDE_DIR} )
@@ -101,12 +125,6 @@ include_directories ( ${SDL_MIXER_INCLUDE_DIR} )
 
 find_package ( SDL_ttf REQUIRED )
 include_directories ( ${SDL_TTF_INCLUDE_DIR} )
-
-include_directories ( src )
-include_directories ( src/audio )
-include_directories ( src/gfx )
-include_directories ( src/math )
-include_directories ( src/sys )
 
 link_libraries (  gamelib # makefile target
                   ${SDL_LIBRARY}
@@ -121,19 +139,41 @@ set_target_properties ( gamelib # makefile target
                         PROPERTIES SOVERSION "0.1"
                       )
 
-# install library
+#     FIXME: doxygen docs generation
+add_custom_target ( nomlib-docs
+                    COMMAND ${DOXYGEN_COMMAND} ${DOXYGEN_CONFIG_FILE}
+                  )
+
+
+#     Install library
 
 install ( TARGETS gamelib
           LIBRARY DESTINATION lib
         )
 
-# install headers
+#     Install headers
 
-install ( FILES ${GAMELIB_HEADERS}
+install ( FILES ${GAMELIB_HEADERS_ROOT}
           DESTINATION include/gamelib
         )
 
-# uninstall target
+install ( FILES ${GAMELIB_HEADERS_GFX}
+          DESTINATION include/gamelib/gfx
+        )
+
+install ( FILES ${GAMELIB_HEADERS_SYS}
+          DESTINATION include/gamelib/sys
+        )
+
+install ( FILES ${GAMELIB_HEADERS_MATH}
+          DESTINATION include/gamelib/math
+        )
+
+install ( FILES ${GAMELIB_HEADERS_GUI}
+          DESTINATION include/gamelib/gui
+        )
+
+#     Uninstall target
 
 configure_file  (
                   "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
@@ -146,7 +186,3 @@ add_custom_target ( uninstall
                     ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
                   )
 
-# FIXME
-add_custom_target ( nomlib-docs
-                    COMMAND ${DOXYGEN_COMMAND} ${DOXYGEN_CONFIG_FILE}
-                  )

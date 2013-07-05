@@ -60,6 +60,7 @@ set ( GAMELIB_SOURCE
     )
 
 set ( GAMELIB_HEADERS
+      ${SRC_DIR}/nomlib_types.hpp
       ${SRC_DIR}/math/Transformable.hpp
       ${SRC_DIR}/math/Coords.hpp
       ${SRC_DIR}/math/Color.hpp

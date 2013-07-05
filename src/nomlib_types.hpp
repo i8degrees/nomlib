@@ -44,4 +44,17 @@ typedef unsigned long ulong;
 
 } // namespace nom
 
+// Ensure our defined data types have the right sizes
+#define NOMLIB_COMPILE_TIME_ASSERT(name, x) \
+  typedef int NOMLIB_dummy_ ## name[(x) * 2 - 1]
+
+NOMLIB_COMPILE_TIME_ASSERT(uint8, sizeof(nom::uint8) == 1);
+NOMLIB_COMPILE_TIME_ASSERT(int8, sizeof(nom::int8) == 1);
+NOMLIB_COMPILE_TIME_ASSERT(uint16, sizeof(nom::uint16) == 2);
+NOMLIB_COMPILE_TIME_ASSERT(int16, sizeof(nom::int16) == 2);
+NOMLIB_COMPILE_TIME_ASSERT(uint32, sizeof(nom::uint32) == 4);
+NOMLIB_COMPILE_TIME_ASSERT(int32, sizeof(nom::int32) == 4);
+NOMLIB_COMPILE_TIME_ASSERT(uint64, sizeof(nom::uint64) == 8);
+NOMLIB_COMPILE_TIME_ASSERT(int64, sizeof(nom::int64) == 8);
+
 #endif // NOMLIB_TYPES_HEADERS defined

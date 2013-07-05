@@ -20,6 +20,8 @@ nom::SDL_Image::SDL_Image ( nom::int32 flags )  : image_buffer ( nullptr )
       std::cout << "ERR in SDL_Image::SDL_Image() at IMG_Init(): " << IMG_GetError() << std::endl;
     #endif
   }
+
+  atexit ( IMG_Quit );
 }
 
 nom::SDL_Image::~SDL_Image ( void )
@@ -32,8 +34,6 @@ nom::SDL_Image::~SDL_Image ( void )
   // (and thus, responsibility) to the calling class
 
   this->image_buffer = nullptr; // ...better safe than sorry!
-
-  IMG_Quit();
 }
 
 // This is important to return precisely as a SDL_Surface for it changes nullptr

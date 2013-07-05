@@ -40,7 +40,7 @@ SDL_Font::~SDL_Font ( void )
 
   this->font = nullptr;
 
-  TTF_Quit ();
+  TTF_Quit();
 }
 
 int32_t SDL_Font::getTextWidth ( void )

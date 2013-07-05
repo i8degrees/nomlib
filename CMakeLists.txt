@@ -37,6 +37,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/math/Transformable.cpp
       ${SRC_DIR}/math/Coords.cpp
       ${SRC_DIR}/math/Color.cpp
+      ${SRC_DIR}/sys/Logger.cpp
       ${SRC_DIR}/sys/GameStates.cpp
       ${SRC_DIR}/sys/SDL_App.cpp
       #${SRC_DIR}/audio.cpp
@@ -64,6 +65,7 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/math/Transformable.hpp
       ${SRC_DIR}/math/Coords.hpp
       ${SRC_DIR}/math/Color.hpp
+      ${SRC_DIR}/sys/Logger.hpp
       ${SRC_DIR}/sys/IState.hpp
       ${SRC_DIR}/sys/GameStates.hpp
       ${SRC_DIR}/sys/SDL_App.hpp

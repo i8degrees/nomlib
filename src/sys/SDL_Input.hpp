@@ -10,6 +10,7 @@
 #define NOMLIB_SDL_INPUT_HEADERS
 
 #include <iostream>
+#include <string>
 
 #include "SDL.h"
 

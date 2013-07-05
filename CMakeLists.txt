@@ -43,9 +43,9 @@ set ( GAMELIB_SOURCE
       #${SRC_DIR}/audio.cpp
       ${SRC_DIR}/gfx/SDL_Font.cpp
       ${SRC_DIR}/gfx/SDL_Gradient.cpp
-      ${SRC_DIR}/gfx/SDL_MessageBox.cpp
+      ${SRC_DIR}/gui/SDL_MessageBox.cpp
       ${SRC_DIR}/gfx/SDL_BitmapFont.cpp
-      ${SRC_DIR}/gfx/SDL_Cursor.cpp
+      ${SRC_DIR}/gui/SDL_Cursor.cpp
       ${SRC_DIR}/gfx/IDisplay.cpp
       ${SRC_DIR}/gfx/SDL_Image.cpp
       ${SRC_DIR}/gfx/SDL_Pixel.cpp
@@ -72,9 +72,9 @@ set ( GAMELIB_HEADERS
       #${SRC_DIR}/audio.h
       ${SRC_DIR}/gfx/SDL_Font.hpp
       ${SRC_DIR}/gfx/SDL_Gradient.hpp
-      ${SRC_DIR}/gfx/SDL_MessageBox.hpp
+      ${SRC_DIR}/gui/SDL_MessageBox.hpp
       ${SRC_DIR}/gfx/SDL_BitmapFont.hpp
-      ${SRC_DIR}/gfx/SDL_Cursor.hpp
+      ${SRC_DIR}/gui/SDL_Cursor.hpp
       ${SRC_DIR}/gfx/IDrawable.hpp
       ${SRC_DIR}/gfx/SDL_Drawable.hpp
       ${SRC_DIR}/gfx/SDL_Image.hpp

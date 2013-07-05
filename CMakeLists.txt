@@ -34,47 +34,37 @@ set ( CMAKE_CXX_FLAGS_RELEASE "-O2 -msse2 -mmx" )
 set ( SRC_DIR src ) # project_dir/src
 
 set ( GAMELIB_SOURCE
-      ${SRC_DIR}/math/Transformable.cpp
-      ${SRC_DIR}/math/Coords.cpp
-      ${SRC_DIR}/math/Color.cpp
-      ${SRC_DIR}/sys/Logger.cpp
-      ${SRC_DIR}/sys/GameStates.cpp
-      ${SRC_DIR}/sys/SDL_App.cpp
-      #${SRC_DIR}/audio.cpp
+      ${SRC_DIR}/gfx/IDisplay.cpp
+      ${SRC_DIR}/gfx/SDL_BitmapFont.cpp
+      ${SRC_DIR}/gfx/SDL_Canvas.cpp
+      ${SRC_DIR}/gfx/SDL_Display.cpp
       ${SRC_DIR}/gfx/SDL_Font.cpp
       ${SRC_DIR}/gfx/SDL_Gradient.cpp
-      ${SRC_DIR}/gui/SDL_MessageBox.cpp
-      ${SRC_DIR}/gfx/SDL_BitmapFont.cpp
-      ${SRC_DIR}/gui/SDL_Cursor.cpp
-      ${SRC_DIR}/gfx/IDisplay.cpp
       ${SRC_DIR}/gfx/SDL_Image.cpp
-      ${SRC_DIR}/gfx/SDL_Pixel.cpp
       ${SRC_DIR}/gfx/SDL_Line.cpp
+      ${SRC_DIR}/gfx/SDL_Pixel.cpp
       ${SRC_DIR}/gfx/SDL_Rectangle.cpp
-      ${SRC_DIR}/gfx/SDL_Display.cpp
-      ${SRC_DIR}/gfx/SDL_Canvas.cpp
       ${SRC_DIR}/gfx/Sprite.cpp
+      ${SRC_DIR}/sys/FPS.cpp
+      ${SRC_DIR}/sys/GameStates.cpp
+      ${SRC_DIR}/sys/Logger.cpp
+      ${SRC_DIR}/sys/OSXFS.cpp
+      ${SRC_DIR}/sys/SDL_App.cpp
       ${SRC_DIR}/sys/SDL_Input.cpp
       ${SRC_DIR}/sys/SDL_Timer.cpp
-      ${SRC_DIR}/sys/FPS.cpp
-      ${SRC_DIR}/sys/OSXFS.cpp
+      ${SRC_DIR}/math/Color.cpp
+      ${SRC_DIR}/math/Coords.cpp
+      ${SRC_DIR}/math/Transformable.cpp
+      ${SRC_DIR}/gui/SDL_Cursor.cpp
+      ${SRC_DIR}/gui/SDL_MessageBox.cpp
     )
 
 set ( GAMELIB_HEADERS
+      ${SRC_DIR}/nomlib_config.hpp
       ${SRC_DIR}/nomlib_types.hpp
-      ${SRC_DIR}/math/Transformable.hpp
-      ${SRC_DIR}/math/Coords.hpp
-      ${SRC_DIR}/math/Color.hpp
-      ${SRC_DIR}/sys/Logger.hpp
-      ${SRC_DIR}/sys/IState.hpp
-      ${SRC_DIR}/sys/GameStates.hpp
-      ${SRC_DIR}/sys/SDL_App.hpp
-      #${SRC_DIR}/audio.h
       ${SRC_DIR}/gfx/SDL_Font.hpp
       ${SRC_DIR}/gfx/SDL_Gradient.hpp
-      ${SRC_DIR}/gui/SDL_MessageBox.hpp
       ${SRC_DIR}/gfx/SDL_BitmapFont.hpp
-      ${SRC_DIR}/gui/SDL_Cursor.hpp
       ${SRC_DIR}/gfx/IDrawable.hpp
       ${SRC_DIR}/gfx/SDL_Drawable.hpp
       ${SRC_DIR}/gfx/SDL_Image.hpp
@@ -82,14 +72,22 @@ set ( GAMELIB_HEADERS
       ${SRC_DIR}/gfx/SDL_Line.hpp
       ${SRC_DIR}/gfx/SDL_Rectangle.hpp
       ${SRC_DIR}/gfx/SDL_Canvas.hpp
-      ${SRC_DIR}/nomlib_config.hpp
       ${SRC_DIR}/gfx/IDisplay.hpp
       ${SRC_DIR}/gfx/SDL_Display.hpp
       ${SRC_DIR}/gfx/Sprite.hpp
+      ${SRC_DIR}/sys/FPS.hpp
+      ${SRC_DIR}/sys/GameStates.hpp
+      ${SRC_DIR}/sys/IState.hpp
+      ${SRC_DIR}/sys/Logger.hpp
+      ${SRC_DIR}/sys/OSXFS.hpp
+      ${SRC_DIR}/sys/SDL_App.hpp
       ${SRC_DIR}/sys/SDL_Input.hpp
       ${SRC_DIR}/sys/SDL_Timer.hpp
-      ${SRC_DIR}/sys/FPS.hpp
-      ${SRC_DIR}/sys/OSXFS.hpp
+      ${SRC_DIR}/math/Color.hpp
+      ${SRC_DIR}/math/Coords.hpp
+      ${SRC_DIR}/math/Transformable.hpp
+      ${SRC_DIR}/gui/SDL_Cursor.hpp
+      ${SRC_DIR}/gui/SDL_MessageBox.hpp
     )
 
 find_package ( SDL REQUIRED )

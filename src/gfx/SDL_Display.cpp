@@ -19,6 +19,8 @@ SDL_Display::SDL_Display ( void )
   {
     std::cout << "ERR in SDL_Display::SDL_Display() at SDL_Init(): " << SDL_GetError() << std::endl;
   }
+
+  atexit ( SDL_Quit );
 }
 
 SDL_Display::~SDL_Display ( void )

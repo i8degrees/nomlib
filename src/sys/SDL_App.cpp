@@ -36,8 +36,6 @@ SDL_App::~SDL_App ( void )
   this->appTime.Stop();
 
   this->app_state = false;
-
-  SDL_Quit();
 }
 
 bool SDL_App::isRunning ( void )

@@ -13,17 +13,13 @@ nom::SDL_Canvas::SDL_Canvas ( void )  : canvas_buffer ( nullptr ),
                                         offsets ( 0, 0, -1, -1 ), // only the width, height is used in source blitting
                                         colorkey ( 0, 0, 0, -1 )
 {
-  #ifdef DEBUG_SDL_CANVAS_OBJ
-    std::cout << "nom::SDL_Canvas::SDL_Canvas(): Hello, world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 }
 
 // Constructor variant for setting the canvas with existing data
 nom::SDL_Canvas::SDL_Canvas ( void* video_buffer )
 {
-  #ifdef DEBUG_SDL_CANVAS_OBJ
-    std::cout << "nom::SDL_Canvas::SDL_Canvas(): Hello, world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   this->canvas_buffer = nullptr;
 
@@ -39,9 +35,7 @@ nom::SDL_Canvas::SDL_Canvas ( void* video_buffer )
 //
 nom::SDL_Canvas::SDL_Canvas ( uint32_t flags, int32_t width, int32_t height, int32_t bitsPerPixel, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
 {
-  #ifdef DEBUG_SDL_CANVAS_OBJ
-    std::cout << "nom::SDL_Canvas::SDL_Canvas(): Hello, world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   this->canvas_buffer = nullptr;
   this->canvas_buffer = SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask );
@@ -53,6 +47,8 @@ nom::SDL_Canvas::SDL_Canvas ( uint32_t flags, int32_t width, int32_t height, int
 //
 nom::SDL_Canvas::SDL_Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
 {
+NOMLIB_LOG_INFO;
+
   this->canvas_buffer = nullptr;
 
   this->canvas_buffer = SDL_CreateRGBSurfaceFrom ( pixels, width, height, depth, pitch, Rmask, Gmask, Bmask, Amask );
@@ -60,9 +56,7 @@ nom::SDL_Canvas::SDL_Canvas ( void* pixels, int32_t width, int32_t height, int32
 
 nom::SDL_Canvas::~SDL_Canvas ( void )
 {
-  #ifdef DEBUG_SDL_CANVAS_OBJ
-    std::cout << "nom::SDL_Canvas::~SDL_Canvas(): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   this->destroy();
 }
@@ -199,9 +193,7 @@ bool nom::SDL_Canvas::loadFromImage ( const std::string& filename, const nom::Co
 
   if ( image.loadFromFile ( filename ) == false )
   {
-    #ifdef DEBUG_SDL_CANVAS
-      std::cout << "ERR in nom::SDL_Canvas::loadFromImage(): " << std::endl << std::endl;
-    #endif
+NOMLIB_LOG_ERR ( "Could not load canvas image file: " + filename );
     return false;
   }
 
@@ -228,31 +220,19 @@ void nom::SDL_Canvas::Draw ( void* video_buffer ) const
   SDL_Rect blit_coords = this->coords.getSDL_Rect();
   SDL_Rect blit_offsets = this->offsets.getSDL_Rect();
 
-  if ( this->getCanvasLock() )
-  {
-    #ifdef DEBUG_SDL_CANVAS
-      std::cout << "ERR in SDL_Canvas::Draw() at getCanvasLock() " << std::endl;
-    #endif
-    return;
-  }
-
   // Perhaps also check to see if video_buffer is nullptr?
   if ( this->valid() )
   {
     if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
     {
       if ( SDL_BlitSurface ( static_cast<SDL_Surface*> ( this->get() ), &blit_offsets, static_cast<SDL_Surface*> ( video_buffer ), &blit_coords ) != 0 )
-        #ifdef DEBUG_SDL_CANVAS
-          std::cout << "ERR in SDL_Canvas::Draw() at SDL_BlitSurface() TRY #1: " << SDL_GetError() << std::endl;
-        #endif
+NOMLIB_LOG_ERR ( SDL_GetError() );
         return;
     }
     else
     {
       if ( SDL_BlitSurface ( static_cast<SDL_Surface*> ( this->get() ), nullptr, (SDL_Surface*) video_buffer, &blit_coords ) != 0 )
-        #ifdef DEBUG_SDL_CANVAS
-          std::cout << "ERR in SDL_Canvas::Draw() at SDL_BlitSurface() TRY #2: " << SDL_GetError() << std::endl;
-        #endif
+NOMLIB_LOG_ERR ( SDL_GetError() );
         return;
     }
   }
@@ -262,9 +242,7 @@ bool nom::SDL_Canvas::Update ( void* video_buffer )
 {
   if ( SDL_Flip ( (SDL_Surface*) video_buffer ) != 0 )
   {
-    #ifdef DEBUG_SDL_CANVAS
-      std::cout << "ERR in nom::SDL_Canvas::Update(): " << SDL_GetError() << std::endl;
-    #endif
+NOMLIB_LOG_ERR ( SDL_GetError() );
     return false;
   }
   return true;
@@ -272,16 +250,11 @@ bool nom::SDL_Canvas::Update ( void* video_buffer )
 
 bool nom::SDL_Canvas::setAlpha ( uint8_t opacity, uint32_t flags )
 {
-  #ifdef DEBUG_SDL_CANVAS
-    if ( opacity > SDL_ALPHA_OPAQUE || opacity < SDL_ALPHA_TRANSPARENT )
-      std::cout << "ERR in nom::SDL_Canvas::setAlpha(): " << "opacity value is set out of bounds." << std::endl << std::endl;
-  #endif
+NOMLIB_ASSERT ( ! ( opacity > SDL_ALPHA_OPAQUE ) || ( opacity < SDL_ALPHA_TRANSPARENT ) );
 
   if ( SDL_SetAlpha ( static_cast<SDL_Surface*> ( this->get() ), flags, static_cast<uint32_t>( opacity ) ) == -1 )
   {
-    #ifdef DEBUG_SDL_CANVAS
-      std::cout << "ERR in nom::SDL_Canvas::setAlpha(): " << SDL_GetError() << std::endl << std::endl;
-    #endif
+NOMLIB_LOG_ERR ( SDL_GetError() );
     return false;
   }
 
@@ -293,22 +266,12 @@ bool nom::SDL_Canvas::setTransparent  ( const nom::Color& color,
 {
   uint32_t transparent_color = 0;
 
-  if ( ! this->valid() )
-  {
-    #ifdef DEBUG_SDL_CANVAS
-      std::cout << "ERR in nom::SDL_Canvas::setTransparent(): " << SDL_GetError() << std::endl << std::endl;
-    #endif
-    return false;
-  }
-
   // TODO: Alpha value needs testing
   transparent_color = color.getColorAsInt ( this->getCanvasPixelsFormat() );
 
   if ( SDL_SetColorKey ( static_cast<SDL_Surface*> ( this->get() ), flags, transparent_color ) != 0 )
   {
-    #ifdef DEBUG_SDL_CANVAS
-      std::cout << "ERR in nom::SDL_Canvas::setTransparent(): " << SDL_GetError() << std::endl << std::endl;
-    #endif
+NOMLIB_LOG_ERR ( SDL_GetError() );
     return false;
   }
 
@@ -323,8 +286,7 @@ bool nom::SDL_Canvas::displayFormat ( void )
 
   converted_canvas = SDL_DisplayFormat ( static_cast<SDL_Surface*> ( this->get() ) );
 
-  if ( converted_canvas == nullptr )
-    return false;
+NOMLIB_ASSERT ( converted_canvas != nullptr );
 
   this->destroy(); // Clean up our existing surface first to be safe
 
@@ -344,8 +306,7 @@ bool nom::SDL_Canvas::displayFormatAlpha ( void )
 
   converted_canvas = SDL_DisplayFormatAlpha ( static_cast<SDL_Surface*> ( this->get() ) );
 
-  if ( converted_canvas == nullptr )
-    return false;
+NOMLIB_ASSERT ( converted_canvas != nullptr );
 
   this->destroy(); // Clean up our existing surface first to be safe
 

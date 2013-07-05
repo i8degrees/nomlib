@@ -12,9 +12,7 @@ using namespace nom;
 
 SDL_App::SDL_App ( void )
 {
-  #ifdef DEBUG_SDL_APP_OBJ
-    std::cout << "SDL_App::SDL_App(): Hello, world!" << std::endl << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   this->app_state = false;
 
@@ -27,9 +25,7 @@ SDL_App::SDL_App ( void )
 
 SDL_App::~SDL_App ( void )
 {
-  #ifdef DEBUG_SDL_APP_OBJ
-    std::cout << "SDL_App::~SDL_App(): Goodbye cruel world!" << std::endl << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   this->setFullScreen ( false );
 

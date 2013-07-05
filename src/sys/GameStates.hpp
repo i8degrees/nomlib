@@ -14,7 +14,6 @@
 #include <iostream>
 #include <vector>
 #include <memory>
-#include <cassert>
 
 #include <SDL/SDL.h>
 

@@ -24,18 +24,12 @@ const nom::Color nom::Color::Gray ( 99, 99, 99, 255 );
 // Default constructor; sets the color to their respective defaults
 nom::Color::Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ), alpha ( -1 ) // SDL_ALPHA_OPAQUE (255)
 {
-  #ifdef DEBUG_COLOR_OBJ
-    std::cout << "Color::Color (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
+  // Nothing to initialize
 }
 
 // Constructor variant for setting a color using RGBA values
 nom::Color::Color ( uint8_t red, uint8_t green, uint8_t blue, int32_t alpha )
 {
-  #ifdef DEBUG_COLOR_OBJ
-    std::cout << "Color::Color (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
-
   this->red = red;
   this->green = green;
   this->blue = blue;
@@ -46,10 +40,6 @@ nom::Color::Color ( uint8_t red, uint8_t green, uint8_t blue, int32_t alpha )
 // This is a "shallow" copy assignment
 nom::Color::Color ( const nom::Color& color )
 {
-  #ifdef DEBUG_COLOR_OBJ
-    std::cout << "Color::Color (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
-
   this->red = color.red;
   this->green = color.green;
   this->blue = color.blue;
@@ -60,10 +50,6 @@ nom::Color::Color ( const nom::Color& color )
 // backwards-compatibility wrapper
 nom::Color::Color ( const SDL_Color& color )
 {
-  #ifdef DEBUG_COLOR_OBJ
-    std::cout << "Color::Color (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
-
   this->red = color.r;
   this->green = color.g;
   this->blue = color.b;
@@ -73,11 +59,7 @@ nom::Color::Color ( const SDL_Color& color )
 // Default constructor; exists solely as a stub
 nom::Color::~Color ( void )
 {
-  #ifdef DEBUG_COLOR_OBJ
-    std::cout << "Color::~Color (): " << "Goodbye cruel world!" << std::endl << std::endl;
-  #endif
-
-  // Nothing to do!
+  // Nothing to clean up
 }
 
 // Convenience getter helper for obtaining a color by object

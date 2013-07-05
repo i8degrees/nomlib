@@ -23,9 +23,7 @@ namespace nom
     public:
       virtual ~IState()
       {
-        #ifdef DEBUG_ISTATE_OBJ
-          std::cout << "nom::IState::~IState (): " << "Goodbye cruel world!" << std::endl << std::endl;
-        #endif
+NOMLIB_LOG_INFO;
       }
 
       virtual void onInit ( void ) = 0;

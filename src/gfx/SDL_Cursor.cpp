@@ -10,18 +10,14 @@
 
 nom::SDL_Cursor::SDL_Cursor ( void )
 {
-  #ifdef DEBUG_SDL_CURSOR_OBJ
-    std::cout << "SDL_Cursor::SDL_Cursor (): Hello, world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   // Not yet implemented
 }
 
 nom::SDL_Cursor::SDL_Cursor ( unsigned int x, unsigned int y, unsigned int width, unsigned int height )
 {
-  #ifdef DEBUG_SDL_CURSOR_OBJ
-    std::cout << "SDL_Cursor::SDL_Cursor (): Hello, world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   this->cursor = nom::Sprite ( width, height );
   this->cursor.setPosition ( x, y );
@@ -30,9 +26,7 @@ nom::SDL_Cursor::SDL_Cursor ( unsigned int x, unsigned int y, unsigned int width
 
 nom::SDL_Cursor::~SDL_Cursor ( void )
 {
-  #ifdef DEBUG_SDL_CURSOR_OBJ
-    std::cout << "SDL_Cursor::~SDL_Cursor (): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   // Clean up
 }

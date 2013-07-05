@@ -9,14 +9,11 @@
 
 nom::Timer::Timer ( void )
 {
-  #ifdef DEBUG_SDL_TIMER_OBJ
-    std::cout << "nom::SDL_Timer::Timer (): " << "Hello, world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   if ( SDL_InitSubSystem ( SDL_INIT_TIMER ) == -1 )
   {
-    std::cout << "ERR in nom::SDL_Timer::Timer() at: " << SDL_GetError() << std::endl;
-    return;
+NOMLIB_LOG_ERR ( SDL_GetError() );
   }
 
   this->started = false;
@@ -27,9 +24,7 @@ nom::Timer::Timer ( void )
 
 nom::Timer::~Timer ( void )
 {
-  #ifdef DEBUG_SDL_TIMER_OBJ
-    std::cout << "nom::SDL_Timer::~Timer (): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   SDL_QuitSubSystem ( SDL_INIT_TIMER );
 }

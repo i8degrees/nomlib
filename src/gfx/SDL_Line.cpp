@@ -11,10 +11,6 @@
 
 nom::Line::Line ( void )
 {
-  #ifdef DEBUG_SDL_LINE_OBJ
-    std::cout << "Line::Line (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
-
   this->pixels.clear();
 
   this->updated = false;
@@ -26,10 +22,6 @@ nom::Line::Line ( void )
 
 nom::Line::~Line ( void )
 {
-  #ifdef DEBUG_SDL_LINE_OBJ
-    std::cout << "Line::~Line (): " << "Goodbye cruel world!" << std::endl << std::endl;
-  #endif
-
   this->updated = false;
 
   // Goodbye cruel pixels!
@@ -43,10 +35,6 @@ nom::Line::~Line ( void )
 
 nom::Line::Line ( const nom::Coords& coords, const nom::Color& color )
 {
-  #ifdef DEBUG_SDL_LINE_OBJ
-    std::cout << "Line::Line (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
-
   this->pixels.clear();
 
   this->updated = false;
@@ -57,10 +45,6 @@ nom::Line::Line ( const nom::Coords& coords, const nom::Color& color )
 
 nom::Line::Line ( int32_t x, int32_t y, int32_t width, int32_t height, const nom::Color& color )
 {
-  #ifdef DEBUG_SDL_LINE_OBJ
-    std::cout << "Line::Line (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
-
   this->pixels.clear();
 
   this->updated = false;

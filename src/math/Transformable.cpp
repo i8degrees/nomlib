@@ -11,27 +11,17 @@
 nom::Transformable::Transformable ( void )  : coords ( 0, 0, 0, 0 ),
                                               color ( 0, 0, 0, 255 )
 {
-  #ifdef DEBUG_TRANSFORMABLE_OBJ
-    std::cout << "Transformable::Transformable (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
+  // Nothing to initialize
 }
 
 nom::Transformable::Transformable ( const nom::Coords& coords, const nom::Color& color )
 {
-  #ifdef DEBUG_TRANSFORMABLE_OBJ
-    std::cout << "Transformable::Transformable (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
-
   this->coords = coords;
   this->color = color;
 }
 
 nom::Transformable::~Transformable ( void )
 {
-  #ifdef DEBUG_TRANSFORMABLE_OBJ
-    std::cout << "Transformable::~Transformable (): " << "Goodbye cruel world!" << std::endl << std::endl;
-  #endif
-
   // Nothing to clean up!
 }
 

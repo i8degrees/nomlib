@@ -10,13 +10,11 @@
 
 nom::SDL_Input::SDL_Input ( void )
 {
-  #ifdef DEBUG_SDL_INPUT_OBJ
-    std::cout << "SDL_Input::SDL_Input (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   if ( SDL_InitSubSystem ( SDL_INIT_JOYSTICK ) == -1 )
   {
-    std::cout << "ERR in SDL_Input::SDL_Input() at: " << SDL_GetError() << std::endl;
+NOMLIB_LOG_ERR ( SDL_GetError() );
     return;
   }
 
@@ -29,17 +27,13 @@ nom::SDL_Input::SDL_Input ( void )
 
     this->joystick = SDL_JoystickOpen ( 0 );
 
-#if NOMLIB_DEBUG_LEVEL > NOMLIB_NO_DEBUG
-  nomlib_log ( NOMLIB_INFO, std::to_string ( SDL_NumJoysticks() ) + " joysticks were found " );
-#endif
+    std::cout << SDL_NumJoysticks() << " joysticks were found " << std::endl << std::endl;
 
     if ( SDL_NumJoysticks() > 0 )
     {
       for( int idx = 0; idx < SDL_NumJoysticks(); idx++ )
       {
-#if NOMLIB_DEBUG_LEVEL > NOMLIB_NO_DEBUG
-  nomlib_log ( NOMLIB_INFO, SDL_JoystickName ( idx ) );
-#endif
+        std::cout << SDL_JoystickName ( idx ) << std::endl << std::endl;
       }
     }
   //}
@@ -47,9 +41,7 @@ nom::SDL_Input::SDL_Input ( void )
 
 nom::SDL_Input::~SDL_Input ( void )
 {
-  #ifdef DEBUG_SDL_INPUT_OBJ
-    std::cout << "SDL_Input::~SDL_Input (): " << "Goodbye cruel world!" << std::endl << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   // Only close joysticks we have opened
   //if ( SDL_JoystickOpened ( 0 ) == 1 )

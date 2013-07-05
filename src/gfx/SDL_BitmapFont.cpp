@@ -17,9 +17,7 @@ using namespace nom;
 
 SDL_BitmapFont::SDL_BitmapFont ( void )
 {
-  #ifdef DEBUG_BITMAP_FONT_OBJ
-    std::cout << "SDL_BitmapFont::SDL_BitmapFont (): " << "Hello, world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   this->text_buffer = "\0";
   this->newline = 0; // holds the y coords value to increment upon newline break char
@@ -36,9 +34,7 @@ SDL_BitmapFont::SDL_BitmapFont ( void )
 
 SDL_BitmapFont::~SDL_BitmapFont ( void )
 {
-  #ifdef DEBUG_BITMAP_FONT_OBJ
-    std::cout << "SDL_BitmapFont::~SDL_BitmapFont (): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 }
 
 int32_t SDL_BitmapFont::getTextWidth ( void )
@@ -144,15 +140,13 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
   uint32_t currentChar = 0;
   int32_t background_color = 0;
 
-  this->bitmap_font.loadFromImage ( filename, colorkey );
-
-  if ( ! this->bitmap_font.valid() )
+  if ( this->bitmap_font.loadFromImage ( filename, colorkey ) == false )
   {
-    #ifdef DEBUG_BITMAP_FONT
-      std::cout << "ERR in SDL_BitmapFont::LoadImage() at Gfx::LoadImage(): " << std::endl;
-    #endif
+NOMLIB_LOG_ERR ( "Could not load bitmap font image file: " + filename );
     return false;
   }
+
+NOMLIB_ASSERT ( this->bitmap_font.valid() );
 
   background_color = colorkey.getColorAsInt ( this->bitmap_font.getCanvasPixelsFormat() );
 

@@ -9,16 +9,12 @@
 
 nom::OSXFS::OSXFS ( void )
 {
-  #ifdef DEBUG_OSXFS_OBJ
-    std::cout << "nom::OSXFS::OSXFS (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 }
 
 nom::OSXFS::~OSXFS ( void )
 {
-  #ifdef DEBUG_OSXFS_OBJ
-    std::cout << "nom::OSXFS::~OSXFS (): " << "Goodbye cruel world!" << std::endl << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 }
 
 // Not sure how else to do this but in straight C

@@ -10,15 +10,11 @@
 
 nom::SDL_Image::SDL_Image ( nom::int32 flags )  : image_buffer ( nullptr )
 {
-  #ifdef DEBUG_SDL_IMAGE_OBJ
-    std::cout << "SDL_Image::SDL_Image(): Hello, world!" << std::endl << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   if ( IMG_Init ( flags ) != flags )
   {
-    #ifdef DEBUG_SDL_IMAGE_OBJ
-      std::cout << "ERR in SDL_Image::SDL_Image() at IMG_Init(): " << IMG_GetError() << std::endl;
-    #endif
+NOMLIB_LOG_ERR ( IMG_GetError() );
   }
 
   atexit ( IMG_Quit );
@@ -26,9 +22,7 @@ nom::SDL_Image::SDL_Image ( nom::int32 flags )  : image_buffer ( nullptr )
 
 nom::SDL_Image::~SDL_Image ( void )
 {
-  #ifdef DEBUG_SDL_IMAGE_OBJ
-    std::cout << "SDL_Image::~SDL_Image(): Goodbye cruel world!" << std::endl << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   // We do not free the surface here because we pass ownership
   // (and thus, responsibility) to the calling class
@@ -57,9 +51,7 @@ bool nom::SDL_Image::loadFromFile ( const std::string& filename )
 
   if ( ! this->valid() )
   {
-    #ifdef DEBUG_SDL_IMAGE
-      std::cout << "ERR in nom::SDL_Image::loadFromFile() at IMG_Load(): " << IMG_GetError() << std::endl << std::endl;
-    #endif
+NOMLIB_LOG_ERR ( IMG_GetError() );
     return false;
   }
 
@@ -72,9 +64,7 @@ bool nom::SDL_Image::loadFromFile_BMP ( const std::string& filename )
 
   if ( ! this->valid() )
   {
-    #ifdef DEBUG_SDL_IMAGE
-      std::cout << "ERR in nom::SDL_Image::loadFromFile_BMP(): " << SDL_GetError() << std::endl << std::endl;
-    #endif
+NOMLIB_LOG_ERR ( SDL_GetError() );
     return false;
   }
 
@@ -85,9 +75,7 @@ bool nom::SDL_Image::saveToFile ( const std::string& filename, void* video_buffe
 {
   if ( SDL_SaveBMP ( static_cast<SDL_Surface*> ( video_buffer ), filename.c_str() ) != 0 )
   {
-    #ifdef DEBUG_SDL_IMAGE
-      std::cout << "ERR in nom::SDL_Image::saveToFile(): " << SDL_GetError() << std::endl << std::endl;
-    #endif
+NOMLIB_LOG_ERR ( SDL_GetError() );
     return false;
   }
 

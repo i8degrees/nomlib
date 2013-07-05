@@ -9,9 +9,7 @@
 
 nom::FPS::FPS ( void )
 {
-  #ifdef DEBUG_TIMER_FPS_OBJ
-    std::cout << "nom::FPS::FPS (): " << "Hello, world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   this->total_frames = 0;
   this->fps.Start();
@@ -20,9 +18,7 @@ nom::FPS::FPS ( void )
 
 nom::FPS::~FPS ( void )
 {
-  #ifdef DEBUG_TIMER_FPS_OBJ
-    std::cout << "nom::FPS::~FPS (): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   this->total_frames = 0;
   this->fps.Stop();

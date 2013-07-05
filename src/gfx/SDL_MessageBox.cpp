@@ -10,9 +10,7 @@
 
 nom::SDL_MessageBox::SDL_MessageBox ( void )
 {
-  #ifdef DEBUG_SDL_MESSAGEBOX_OBJ
-    std::cout << "SDL_MessageBox::SDL_MessageBox (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   this->enabled = true;
 
@@ -27,9 +25,7 @@ nom::SDL_MessageBox::SDL_MessageBox ( void )
 
 nom::SDL_MessageBox::~SDL_MessageBox ( void )
 {
-  #ifdef DEBUG_SDL_MESSAGEBOX_OBJ
-    std::cout << "SDL_MessageBox::~SDL_MessageBox (): " << "Goodbye cruel world!" << std::endl << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   this->enabled = false;
 

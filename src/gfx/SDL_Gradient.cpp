@@ -15,9 +15,7 @@ nom::SDL_Gradient::SDL_Gradient ( void )  : gradient  { nom::Color::Gray,
                                             x_margin ( 0 ), y_margin ( 0 ),
                                             direction ( 0 )
 {
-  #ifdef DEBUG_SDL_GRADIENT_OBJ
-    std::cout << "nom::SDL_Gradient::SDL_Gradient (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 }
 
 // Constructor variant
@@ -29,10 +27,6 @@ nom::SDL_Gradient::SDL_Gradient ( const nom::Color& starting_color,
                                   uint32_t y_margin
                                 )
 {
-  #ifdef DEBUG_SDL_GRADIENT_OBJ
-    std::cout << "nom::SDL_Gradient::SDL_Gradient (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
-
   this->gradient[0] = starting_color;
   this->gradient[1] = ending_color;
 
@@ -45,9 +39,7 @@ nom::SDL_Gradient::SDL_Gradient ( const nom::Color& starting_color,
 
 nom::SDL_Gradient::~SDL_Gradient ( void )
 {
-  #ifdef DEBUG_SDL_GRADIENT_OBJ
-    std::cout << "nom::SDL_Gradient::~SDL_Gradient (): " << "Goodbye cruel world!" << std::endl << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 }
 
 nom::Color nom::SDL_Gradient::getStartColor ( void ) const

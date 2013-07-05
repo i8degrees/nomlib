@@ -11,9 +11,7 @@ using namespace nom;
 
 SDL_Font::SDL_Font ( void )
 {
-  #ifdef DEBUG_SDL_FONT_OBJ
-    std::cout << "SDL_Font::SDL_Font (): " << "Hello, world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   this->font = nullptr;
 
@@ -22,18 +20,12 @@ SDL_Font::SDL_Font ( void )
   this->text_buffer = "\0";
 
   if ( TTF_Init () == -1 )
-  {
-    #ifdef DEBUG_SDL_FONT
-      std::cout << "ERR in SDL_Font::SDL_Font (): " << TTF_GetError() << std::endl;
-    #endif
-  }
+NOMLIB_LOG_ERR ( TTF_GetError() );
 }
 
 SDL_Font::~SDL_Font ( void )
 {
-  #ifdef DEBUG_SDL_FONT_OBJ
-    std::cout << "SDL_Font::~SDL_Font (): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   if ( this->font != nullptr )
     TTF_CloseFont ( this->font );
@@ -72,9 +64,7 @@ void SDL_Font::setText ( const std::string& text )
   }
   else
   {
-    #ifdef DEBUG_SDL_FONT
-      std::cout << "ERR in SDL_Font::setText(): " << TTF_GetError() << std::endl;
-    #endif
+NOMLIB_LOG_ERR ( "Text length must be greater than zero" );
   }
 }
 
@@ -94,9 +84,7 @@ bool SDL_Font::Load ( std::string filename, uint32_t font_size )
 
   if ( this->font == nullptr )
   {
-    #ifdef DEBUG_SDL_FONT
-      std::cout << "ERR: " << TTF_GetError() << std::endl;
-    #endif
+NOMLIB_LOG_ERR ( "Could not load TTF file: " + filename );
     return false;
   }
 
@@ -113,28 +101,19 @@ void nom::SDL_Font::Update ( void )
     this->font_buffer.destroy();
 
   // Update the rendered text surface here for drawing
-  if ( this->font != nullptr )
-  {
-    if ( this->getText().c_str() != nullptr )
-      this->font_buffer.setCanvas ( TTF_RenderText_Solid
-                                    (
-                                      this->font,
-                                      this->getText().c_str(),
-                                      this->color.getSDL_Color()
-                                    )
-                                  );
-
-  }
-  else
-  {
-    #ifdef DEBUG_SDL_FONT
-      std::cout << "ERR in SDL_Font::setText(): " << SDL_GetError() << std::endl;
-    #endif
-  }
+  if ( this->getText().c_str() != nullptr )
+    this->font_buffer.setCanvas ( TTF_RenderText_Solid
+                                  (
+                                    this->font,
+                                    this->getText().c_str(),
+                                    this->color.getSDL_Color()
+                                  )
+                                );
 }
 
 void SDL_Font::Draw ( void* video_buffer ) const
 {
-  if ( this->font_buffer.valid() )
-    this->font_buffer.Draw ( video_buffer );
+NOMLIB_ASSERT ( this->font_buffer.valid() == false );
+
+  this->font_buffer.Draw ( video_buffer );
 }

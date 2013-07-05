@@ -11,9 +11,7 @@ using namespace nom;
 
 nom::Sprite::Sprite ( void )
 {
-  #ifdef DEBUG_SPRITE_OBJ
-    std::cout << "Sprite::Sprite (): " << "Hello, world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   this->state = 0;
 
@@ -28,9 +26,7 @@ nom::Sprite::Sprite ( void )
 
 nom::Sprite::Sprite ( unsigned int width, unsigned int height )
 {
-  #ifdef DEBUG_SPRITE_OBJ
-    std::cout << "Sprite::Sprite (): " << "Hello, world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   this->coords.setSize ( width, height );
 
@@ -47,9 +43,7 @@ nom::Sprite::Sprite ( unsigned int width, unsigned int height )
 
 nom::Sprite::~Sprite ( void )
 {
-  #ifdef DEBUG_SPRITE_OBJ
-    std::cout << "Sprite::~Sprite (): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 }
 
 unsigned int nom::Sprite::getState ( void )
@@ -86,11 +80,9 @@ bool nom::Sprite::Load ( std::string filename, nom::Color colorkey, unsigned int
 {
   this->sprite_buffer.loadFromImage ( filename, colorkey, flags );
 
-  if ( this->sprite_buffer.get() == nullptr )
+  if ( ! this->sprite_buffer.valid() )
   {
-    #ifdef DEBUG_SPRITE
-      std::cout << "ERR in Sprite::Load (): " << SDL_GetError() << std::endl;
-    #endif
+NOMLIB_LOG_ERR ( "Could not load sprite image file: " + filename );
     return false;
   }
 
@@ -112,12 +104,7 @@ void nom::Sprite::Update ( void )
 
 void nom::Sprite::Draw ( void* video_buffer ) const
 {
-  if ( this->sprite_buffer.get() == nullptr )
-  {
-    #ifdef DEBUG_SPRITE
-      std::cout << "ERR in Sprite::Draw(): " << "NULL sprite_buffer" << std::endl << std::endl;
-    #endif
-  }
+NOMLIB_ASSERT ( this->sprite_buffer.valid() );
 
   this->sprite_buffer.Draw ( video_buffer );
 }

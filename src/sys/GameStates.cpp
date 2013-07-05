@@ -12,12 +12,12 @@
 
 // Initialize our static vars
 std::vector<std::unique_ptr<nom::IState>> nom::GameStates::states;
-// Default constructor
+
+// Default constructor; something is terribly amiss if you ever see this
+// initialized!
 nom::GameStates::GameStates ( void )
 {
-  #ifdef DEBUG_GAMESTATES_OBJ
-    std::cout << "nom::GameStates::GameStates(): Hello, world!" << std::endl << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 }
 
 void nom::GameStates::onEvent ( SDL_Event *event )
@@ -47,7 +47,7 @@ void nom::GameStates::ChangeState ( std::unique_ptr<IState> state )
     states.pop_back();
   }
 
-  assert ( state );
+NOMLIB_ASSERT ( state );
 
   // store the new state
   states.push_back( std::move( state ) );
@@ -57,7 +57,7 @@ void nom::GameStates::ChangeState ( std::unique_ptr<IState> state )
 
 void nom::GameStates::PushState ( std::unique_ptr<IState> state )
 {
-  assert ( state );
+NOMLIB_ASSERT ( state );
 
   // pause current state
   if ( ! states.empty() )
@@ -83,7 +83,7 @@ void nom::GameStates::PopStateThenChangeState ( std::unique_ptr<IState> state )
   if ( ! states.empty() )
     states.pop_back();
 
-  assert ( state );
+NOMLIB_ASSERT ( state );
 
   //if ( ! states.empty () )
   GameStates::ChangeState( std::move( state ) );

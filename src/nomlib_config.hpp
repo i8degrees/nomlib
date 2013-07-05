@@ -9,7 +9,10 @@
 #define NOMLIB_CONFIG_HEADERS
 
 #include <iostream>
+#include <cassert>
+
 #include "nomlib_types.hpp"
+#include "sys/Logger.hpp"
 
 // nomlib version
 #define NOMLIB_VERSION_MAJOR 0
@@ -26,98 +29,42 @@
   #warning This operating system is not officially supported by nomlib
 #endif
 
+// Function names and preferably also its type signature
+#if defined ( _MSC_VER ) // MSVC++
+  // TODO: Presumably the same as GNU's __PRETTY_FUNCTION__ ?
+  //
+  // SOURCE: http://msdn.microsoft.com/en-us/library/b0084kay(v=vs.80).aspx
+  #define __func__ __FUNCSIG__
+#else // We assume GNU v2+
 
-// No debugging logged
-#define NOMLIB_DEBUG_0 0
+  // The type signature is nice because this shows if the function calling type
+  // is a virtual or not and even what arguments the function has
+  #define __func__ __PRETTY_FUNCTION__
+#endif
 
-// Level 1 is partial verbosity; class errors are logged
-#define NOMLIB_DEBUG_1 1
+// nomlib debugging
 
-// Level 2 is full verbosity; includes logging of each class entry and exit
-#define NOMLIB_DEBUG_2 2
+// Standard debug level; logging of warnings & errors
+//#define NOMLIB_DEBUG
 
-// Pretty print C macro functions
-//
-// Is there a better way of doing this?
-#define NOMLIB_DEBUG std::cout << __FILE__ << ":" << __LINE__ << " " << __PRETTY_FUNCTION__ << std::endl << std::endl;
+// Internal development; logging of class object construction and destruction
+#define NOMLIB_DEBUG_ALL
 
-#define NOMLIB_DEBUG_WITH_SDL std::cout << __FILE__ << ":" << __LINE__ << " " << __PRETTY_FUNCTION__ << SDL_GetError << std::endl << std::endl;
+// Pretty print C macros
+#ifdef NOMLIB_DEBUG_ALL
+  // If all debugging is turned on, we show class construction and destruction
+  #define NOMLIB_LOG_INFO ( nom::Logger::info ( __func__ ) )
+#else // We do not add any overhead
+  #define NOMLIB_LOG_INFO
+#endif
 
-#define NOMLIB_DEBUG_OBJ std::cout << __PRETTY_FUNCTION__ << std::endl;
-
-#define DEBUG_TRANSFORMABLE
-//#define DEBUG_TRANSFORMABLE_OBJ
-
-#define DEBUG_COLOR
-//#define DEBUG_COLOR_OBJ
-
-#define DEBUG_COORDS
-//#define DEBUG_COORDS_OBJ
-
-#define DEBUG_AUDIO
-#define DEBUG_AUDIO_OBJ
-
-#define DEBUG_SDL_FONT
-#define DEBUG_SDL_FONT_OBJ
-
-#define DEBUG_BITMAP_FONT
-#define DEBUG_BITMAP_FONT_OBJ
-
-//#define DEBUG_SDL_GRADIENT
-#define DEBUG_SDL_GRADIENT_OBJ
-
-#define DEBUG_SPRITE
-#define DEBUG_SPRITE_OBJ
-
-#define DEBUG_SDL_INPUT
-#define DEBUG_SDL_INPUT_OBJ
-
-//#define DEBUG_ISTATE
-#define DEBUG_ISTATE_OBJ
-
-#define DEBUG_OSXFS
-//#define DEBUG_OSXFS_OBJ
-
-#define DEBUG_SDL_TIMER
-//#define DEBUG_SDL_TIMER_OBJ
-
-#define DEBUG_TIMER_FPS
-//#define DEBUG_TIMER_FPS_OBJ
-
-#define DEBUG_SDL_MESSAGEBOX
-#define DEBUG_SDL_MESSAGEBOX_OBJ
-
-#define DEBUG_SDL_CURSOR
-//#define DEBUG_SDL_CURSOR_OBJ
-
-//#define DEBUG_IDRAWABLE_OBJ
-//#define DEBUG_SDL_DRAWABLE_OBJ
-
-#define DEBUG_SDL_PIXEL
-//#define DEBUG_SDL_PIXEL_OBJ
-
-#define DEBUG_SDL_LINE
-//#define DEBUG_SDL_LINE_OBJ
-
-#define DEBUG_SDL_RECT
-//#define DEBUG_SDL_RECT_OBJ
-
-#define DEBUG_FONT
-#define DEBUG_FONT_OBJ
-
-#define DEBUG_SDL_DISPLAY
-#define DEBUG_SDL_DISPLAY_OBJ
-
-#define DEBUG_SDL_CANVAS
-#define DEBUG_SDL_CANVAS_OBJ
-
-#define DEBUG_GAMESTATES
-#define DEBUG_GAMESTATES_OBJ
-
-#define DEBUG_SDL_APP
-#define DEBUG_SDL_APP_OBJ
-
-#define DEBUG_SDL_IMAGE
-#define DEBUG_SDL_IMAGE_OBJ
+#ifdef NOMLIB_DEBUG
+  // If all debugging is turned on, we show all errors logged
+  #define NOMLIB_LOG_ERR(message) ( nom::Logger::err ( __FILE__, __LINE__, message ) )
+  #define NOMLIB_ASSERT(expression) ( assert (expression) )
+#else // We do not add any overhead
+  #define NOMLIB_LOG_ERR(message)
+  #define NOMLIB_ASSERT(expression)
+#endif
 
 #endif // NOMLIB_CONFIG_HEADERS defined

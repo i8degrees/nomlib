@@ -11,13 +11,11 @@ using namespace nom;
 
 SDL_Display::SDL_Display ( void )
 {
-  #ifdef DEBUG_SDL_DISPLAY_OBJ
-    std::cout << "nom::SDL_Display::SDL_Display(): " << "Hello world!" << std::endl << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 
   if ( SDL_Init ( SDL_INIT_VIDEO ) != 0 )
   {
-    std::cout << "ERR in SDL_Display::SDL_Display() at SDL_Init(): " << SDL_GetError() << std::endl;
+NOMLIB_LOG_ERR ( SDL_GetError() );
   }
 
   atexit ( SDL_Quit );
@@ -31,9 +29,7 @@ SDL_Display::~SDL_Display ( void )
   //
   // http://sdl.beuc.net/sdl.wiki/SDL_SetVideoMode
 
-  #ifdef DEBUG_SDL_DISPLAY_OBJ
-    std::cout << "nom::SDL::Display::~Display(): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
+NOMLIB_LOG_INFO;
 }
 
 void SDL_Display::createWindow  ( int32_t display_width, int32_t display_height,
@@ -46,13 +42,9 @@ void SDL_Display::createWindow  ( int32_t display_width, int32_t display_height,
                             );
 
   if ( screen == nullptr )
-  {
-    #ifdef DEBUG_SDL_DISPLAY
-      std::cout << "ERR in SDL_Display::SDL_Display(): " << SDL_GetError() << std::endl;
-    #endif
-  }
+NOMLIB_LOG_ERR ( SDL_GetError() );
 
-  assert ( screen != nullptr );
+NOMLIB_ASSERT ( screen != nullptr );
 }
 
 // This is important to return precisely as a SDL_Surface for it changes nullptr
@@ -129,11 +121,7 @@ bool nom::SDL_Display::getCanvasLock ( void ) const
 void nom::SDL_Display::Update ( void )
 {
   if ( SDL_Flip ( static_cast<SDL_Surface*> ( this->get() ) ) != 0 )
-  {
-    #ifdef DEBUG_SDL_DISPLAY
-      std::cout << "ERR in nom::SDL_Display::Update(): " << SDL_GetError() << std::endl;
-    #endif
-  }
+NOMLIB_LOG_ERR ( SDL_GetError() );
 }
 
 // TODO: test me
@@ -183,15 +171,12 @@ void SDL_Display::setWindowIcon ( const std::string& app_icon )
   nom::SDL_Canvas icon; // icon canvas to load our icon file into
 
   if ( this->valid() )
-  {
-    std::cout << "ERR in SDL_Display::setWindowIcon(): " << "SDL video subsystem has already been initiated." << std::endl << std::endl;
-  }
+NOMLIB_LOG_ERR ( "SDL video subsystem has already been initiated." );
 
   if ( image.loadFromFile ( app_icon ) == false )
   {
-    #ifdef DEBUG_SDL_CANVAS
-      std::cout << "ERR in nom::SDL_Display::setWindowIcon(): " << std::endl << std::endl;
-    #endif
+NOMLIB_LOG_ERR ( "Could not load window icon file: " + app_icon );
+    return;
   }
 
   // Sets our canvas with our acquired image surface

@@ -9,7 +9,7 @@
 #define NOMLIB_CONFIG_HEADERS
 
 #include <iostream>
-#include <cstdint>
+#include "nomlib_types.hpp"
 
 // nomlib version
 #define NOMLIB_VERSION_MAJOR 0
@@ -26,37 +26,6 @@
   #warning This operating system is not officially supported by nomlib
 #endif
 
-// Portable fixed-size types; based from stdint.h
-namespace nom
-{
-  // 1-bit integer types
-  typedef bool bit;
-
-  // 8-bit integer types
-  typedef int8_t int8;
-  typedef uint8_t uint8;
-
-  // 16-bit integer types
-  typedef int16_t int16;
-  typedef uint16_t uint16;
-
-  // 32-bit integer types
-  typedef int32_t int32;
-  typedef uint32_t uint32;
-
-  // 64-bit integer types
-  #if defined ( _MSC_VER ) // MSVC++
-    typedef signed __int64 int64;
-    typedef unsigned __int64 uint64;
-  #else
-    typedef int64_t int64;
-    typedef uint64_t uint64;
-  #endif
-
-  // Additional integer type definitions
-  typedef uint16_t ushort;
-  typedef unsigned long ulong;
-}
 
 // No debugging logged
 #define NOMLIB_DEBUG_0 0

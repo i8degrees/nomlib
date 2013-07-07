@@ -27,7 +27,7 @@ namespace nom
       OSXFS ( void );
       ~OSXFS ( void );
 
-      static const char *getDirName ( char *path ); // dirname(3) wrapper
+      static const char* getDirName ( char* path ); // dirname(3) wrapper
       static const std::string getWorkingDir ( void ); // getcwd(3) wrapper
       static void setWorkingDir ( std::string path ); // chdir(2) wrapper
 

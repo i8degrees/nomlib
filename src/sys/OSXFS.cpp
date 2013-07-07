@@ -18,7 +18,7 @@ NOMLIB_LOG_INFO;
 }
 
 // Not sure how else to do this but in straight C
-const char* nom::OSXFS::getDirName ( char *path )
+const char* nom::OSXFS::getDirName ( char* path )
 {
   // ERR checking
 

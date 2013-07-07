@@ -25,7 +25,7 @@ namespace nom
   {
     public:
       /// State events handling
-      static void onEvent ( SDL_Event *event );
+      static void onEvent ( void* );
 
       /// State logic
       static void Update ( float delta_time );

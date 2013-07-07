@@ -20,7 +20,7 @@ nom::GameStates::GameStates ( void )
 NOMLIB_LOG_INFO;
 }
 
-void nom::GameStates::onEvent ( SDL_Event *event )
+void nom::GameStates::onEvent ( void* event )
 {
   // let the state handle events
   states.back()->HandleInput ( event );

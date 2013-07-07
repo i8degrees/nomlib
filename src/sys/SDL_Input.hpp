@@ -88,7 +88,7 @@ namespace nom
       virtual void onJoyAxis ( int32_t which, int32_t axis, short value );
 
     private:
-      SDL_Joystick *joystick;
+      SDL_Joystick* joystick;
   };
 }
 

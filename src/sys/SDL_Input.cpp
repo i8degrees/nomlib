@@ -21,8 +21,8 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
   this->joystick = nullptr;
 
   // Only initialize this joystick if we have yet to
-  //if ( SDL_JoystickOpened ( 0 ) == 0 )
-  //{
+  if ( SDL_JoystickOpened ( 0 ) == 0 )
+  {
     SDL_JoystickEventState ( SDL_ENABLE );
 
     this->joystick = SDL_JoystickOpen ( 0 );
@@ -36,7 +36,7 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
         std::cout << SDL_JoystickName ( idx ) << std::endl << std::endl;
       }
     }
-  //}
+  }
 }
 
 nom::SDL_Input::~SDL_Input ( void )
@@ -48,11 +48,11 @@ NOMLIB_LOG_INFO;
   //{
     //SDL_JoystickClose ( this->joystick );
 
-    if ( this->joystick )
-      this->joystick = nullptr;
+    //if ( this->joystick )
+      //this->joystick = nullptr;
   //}
 
-  SDL_QuitSubSystem ( SDL_INIT_JOYSTICK );
+  //SDL_QuitSubSystem ( SDL_INIT_JOYSTICK );
 }
 
 

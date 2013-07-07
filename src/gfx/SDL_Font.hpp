@@ -15,6 +15,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
+#include "sdl/utils.hpp"
 #include "math/Color.hpp"
 #include "math/Transformable.hpp"
 #include "gfx/SDL_Canvas.hpp"

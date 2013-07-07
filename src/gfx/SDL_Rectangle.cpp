@@ -40,11 +40,11 @@ void nom::Rectangle::Update ( void )
 
 void nom::Rectangle::Draw ( void* video_buffer ) const
 {
-  SDL_Rect rectangle = this->coords.getSDL_Rect();
+  SDL_Rect rectangle = getSDL_Rect ( this->coords );
   unsigned int rectangle_color = 0;
   SDL_Surface *buffer = static_cast<SDL_Surface*> ( video_buffer );
 
-  rectangle_color = this->color.getColorAsInt ( buffer->format );
+  rectangle_color = getColorAsInt ( buffer->format, this->color );
 
   if ( SDL_FillRect ( buffer, &rectangle, rectangle_color ) != 0 )
   {

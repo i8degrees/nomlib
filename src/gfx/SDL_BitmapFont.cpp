@@ -148,7 +148,7 @@ NOMLIB_LOG_ERR ( "Could not load bitmap font image file: " + filename );
 
 NOMLIB_ASSERT ( this->bitmap_font.valid() );
 
-  background_color = colorkey.getColorAsInt ( this->bitmap_font.getCanvasPixelsFormat() );
+  background_color = getColorAsInt ( this->bitmap_font.getCanvasPixelsFormat(), colorkey );
 
   tile_width = this->bitmap_font.getCanvasWidth() / sheet_width;
   tile_height = this->bitmap_font.getCanvasHeight() / sheet_height;

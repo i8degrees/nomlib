@@ -36,8 +36,6 @@ namespace nom
 
       bool intersects ( nom::Coords& rectangle ) const;
 
-      // SDL backwards-compatibility wrapper
-      SDL_Rect getSDL_Rect ( void ) const;
 
       signed int x;
       signed int y;

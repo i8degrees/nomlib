@@ -110,7 +110,7 @@ void nom::SDL_Font::Update ( void )
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
-                                    this->color.getSDL_Color()
+                                    getSDL_Color ( this->color )
                                   )
                                 );
   }

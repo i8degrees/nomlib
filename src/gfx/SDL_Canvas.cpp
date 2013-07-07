@@ -124,7 +124,7 @@ const nom::Coords nom::SDL_Canvas::getCanvasBounds ( void ) const
 
 void nom::SDL_Canvas::setCanvasBounds ( const nom::Coords& clip_bounds )
 {
-  SDL_Rect clip = clip_bounds.getSDL_Rect(); // temporary storage struct for setting
+  SDL_Rect clip = getSDL_Rect ( clip_bounds ); // temporary storage struct for setting
 
   // As per libSDL docs, if SDL_Rect is nullptr, the clipping rectangle is set
   // to the full size of the surface
@@ -166,8 +166,8 @@ NOMLIB_LOG_ERR ( "Could not load canvas image file: " + filename );
 void nom::SDL_Canvas::Draw ( void* video_buffer ) const
 {
   // temporary vars to store our wrapped Coords
-  SDL_Rect blit_coords = this->coords.getSDL_Rect();
-  SDL_Rect blit_offsets = this->offsets.getSDL_Rect();
+  SDL_Rect blit_coords = getSDL_Rect ( this->coords );
+  SDL_Rect blit_offsets = getSDL_Rect ( this->offsets );
 
   // Perhaps also check to see if video_buffer is nullptr?
   if ( this->valid() )
@@ -216,7 +216,7 @@ bool nom::SDL_Canvas::setTransparent  ( const nom::Color& color,
   uint32_t transparent_color = 0;
 
   // TODO: Alpha value needs testing
-  transparent_color = color.getColorAsInt ( this->getCanvasPixelsFormat() );
+  transparent_color = getColorAsInt ( this->getCanvasPixelsFormat(), color );
 
   if ( SDL_SetColorKey ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), flags, transparent_color ) != 0 )
   {

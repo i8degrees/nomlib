@@ -109,15 +109,6 @@ bool nom::Coords::intersects ( nom::Coords& rectangle ) const
   return true; // we've got a collision!
 }
 
-/// SDL compatibility wrapper primarily for SDL_BlitSurface
-SDL_Rect nom::Coords::getSDL_Rect ( void ) const
 {
-  SDL_Rect coords;
 
-  coords.x = this->x;
-  coords.y = this->y;
-  coords.w = this->width;
-  coords.h = this->height;
-
-  return coords;
 }

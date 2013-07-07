@@ -14,6 +14,7 @@
 
 #include <SDL/SDL.h>
 
+#include "sdl/utils.hpp"
 #include "math/Color.hpp"
 #include "math/Coords.hpp"
 #include "math/Transformable.hpp"

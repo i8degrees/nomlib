@@ -43,7 +43,7 @@ void nom::Pixel::Draw ( void* video_buffer ) const
 
   uint32_t* pixels = ( uint32_t* ) buffer->pixels;
 
-  uint32_t pixel = this->color.getColorAsInt ( buffer->format );
+  uint32_t pixel = getColorAsInt ( buffer->format, this->color );
 
   pixels[ ( this->coords.y * buffer->w ) + this->coords.x ] = pixel;
 }

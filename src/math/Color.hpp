@@ -29,10 +29,6 @@ namespace nom
 
       const nom::Color getColor ( void ) const;
 
-      /// SDL compatibility wrappers
-      SDL_Color getSDL_Color ( void ) const;
-      uint32_t getColorAsInt ( void* pixel_format ) const;
-      uint32_t getAlphaColorAsInt ( void* pixel_format ) const;
 
       /// Predefined color constants for convenience sake
       static const nom::Color Black;

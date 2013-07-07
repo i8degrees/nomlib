@@ -68,31 +68,6 @@ const nom::Color nom::Color::getColor ( void ) const
   return nom::Color ( this->red, this->green, this->blue, this->alpha );
 }
 
-// Convenience getter helper for obtaining a color as an integer, respective to
-// the video surface pixel format; color bits vary depending on bit-rate
-uint32_t nom::Color::getColorAsInt ( void* pixel_format ) const
 {
-  return SDL_MapRGB ( ( SDL_PixelFormat* ) pixel_format, this->red, this->green, this->blue );
-}
 
-// Convenience getter helper for obtaining a color as an integer, respective to
-// the video surface pixel format; color bits vary depending on bit-rate and
-// alpha channel
-uint32_t nom::Color::getAlphaColorAsInt ( void* pixel_format ) const
-{
-  return SDL_MapRGBA ( ( SDL_PixelFormat* ) pixel_format, this->red, this->green, this->blue, this->alpha );
-}
-
-// Returns a SDL color structure of our color object; backwards-compatibility
-// wrapper
-SDL_Color nom::Color::getSDL_Color ( void ) const
-{
-  SDL_Color color;
-
-  color.r = this->red;
-  color.g = this->green;
-  color.b = this->blue;
-  //color.a = this->alpha;
-
-  return color;
 }

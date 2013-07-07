@@ -65,6 +65,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/math/Transformable.cpp
       ${SRC_DIR}/gui/SDL_Cursor.cpp
       ${SRC_DIR}/gui/SDL_MessageBox.cpp
+      ${SRC_DIR}/sdl/utils.cpp
 )
 
 set ( GAMELIB_HEADERS_ROOT
@@ -110,10 +111,15 @@ set ( GAMELIB_HEADERS_GUI
       ${SRC_DIR}/gui/SDL_MessageBox.hpp
 )
 
+set ( GAMELIB_HEADERS_SDL
+      ${SRC_DIR}/sdl/utils.hpp
+)
+
 include_directories ( src )
 include_directories ( src/audio )
 include_directories ( src/gfx )
 include_directories ( src/math )
+include_directories ( src/sdl )
 include_directories ( src/sys )
 
 #     Required Dependencies
@@ -175,6 +181,10 @@ install ( FILES ${GAMELIB_HEADERS_MATH}
 
 install ( FILES ${GAMELIB_HEADERS_GUI}
           DESTINATION include/gamelib/gui
+        )
+
+install ( FILES ${GAMELIB_HEADERS_SDL}
+          DESTINATION include/gamelib/sdl
         )
 
 #     Uninstall target

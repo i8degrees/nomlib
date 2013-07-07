@@ -42,7 +42,7 @@ bool nom::SDL_Image::valid ( void ) const
 
 std::shared_ptr<void> nom::SDL_Image::loadFromFile ( const std::string& filename )
 {
-  this->image_buffer = std::shared_ptr<void> ( IMG_Load ( filename.data() ), SDL_FreeSurface );
+  this->image_buffer = std::shared_ptr<void> ( IMG_Load ( filename.c_str() ), SDL_FreeSurface );
 
   if ( ! this->valid() )
   {
@@ -55,7 +55,7 @@ NOMLIB_LOG_ERR ( IMG_GetError() );
 
 std::shared_ptr<void> nom::SDL_Image::loadFromFile_BMP ( const std::string& filename )
 {
-  this->image_buffer = std::shared_ptr<void> ( SDL_LoadBMP ( filename.data() ), SDL_FreeSurface );
+  this->image_buffer = std::shared_ptr<void> ( SDL_LoadBMP ( filename.c_str() ), SDL_FreeSurface );
 
   if ( ! this->valid() )
   {
@@ -68,7 +68,7 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
 
 bool nom::SDL_Image::saveToFile ( const std::string& filename, void* video_buffer )
 {
-  if ( SDL_SaveBMP ( static_cast<SDL_Surface*> ( video_buffer ), filename.data() ) != 0 )
+  if ( SDL_SaveBMP ( static_cast<SDL_Surface*> ( video_buffer ), filename.c_str() ) != 0 )
   {
 NOMLIB_LOG_ERR ( SDL_GetError() );
     return false;

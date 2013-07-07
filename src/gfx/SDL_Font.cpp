@@ -20,19 +20,26 @@ NOMLIB_LOG_INFO;
   this->text_buffer = "\0";
 
   if ( TTF_Init () == -1 )
+  {
 NOMLIB_LOG_ERR ( TTF_GetError() );
+  }
 }
 
 SDL_Font::~SDL_Font ( void )
 {
 NOMLIB_LOG_INFO;
 
-  if ( this->font != nullptr )
-    TTF_CloseFont ( this->font );
-
-  this->font = nullptr;
+  this->font.reset(); // nullptr
 
   TTF_Quit();
+}
+
+bool SDL_Font::SDL_Font::valid ( void ) const
+{
+  if ( this->font.get() != nullptr )
+    return true;
+  else
+    return false;
 }
 
 int32_t SDL_Font::getTextWidth ( void )
@@ -59,7 +66,7 @@ void SDL_Font::setText ( const std::string& text )
   // Update the width & height of text string, if we can
   if ( text.length() > 0 )
   {
-    if ( TTF_SizeText ( this->font, text.c_str(), &width, &height ) != -1 )
+    if ( TTF_SizeText ( this->font.get(), text.c_str(), &width, &height ) != -1 )
       this->coords.setSize ( width, height );
   }
   else
@@ -80,9 +87,9 @@ void SDL_Font::setTextColor ( const nom::Color& color )
 
 bool SDL_Font::Load ( std::string filename, uint32_t font_size )
 {
-  this->font = TTF_OpenFont ( filename.c_str(), font_size );
+  this->font = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), font_size ), TTF_CloseFont );
 
-  if ( this->font == nullptr )
+  if ( this->valid() == false )
   {
 NOMLIB_LOG_ERR ( "Could not load TTF file: " + filename );
     return false;
@@ -102,13 +109,15 @@ void nom::SDL_Font::Update ( void )
 
   // Update the rendered text surface here for drawing
   if ( this->getText().c_str() != nullptr )
+  {
     this->font_buffer.setCanvas ( TTF_RenderText_Solid
                                   (
-                                    this->font,
+                                    this->font.get(),
                                     this->getText().c_str(),
                                     this->color.getSDL_Color()
                                   )
                                 );
+  }
 }
 
 void SDL_Font::Draw ( void* video_buffer ) const

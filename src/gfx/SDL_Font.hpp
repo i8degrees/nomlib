@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <string>
-#include <cstdlib>
+#include <memory>
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
@@ -32,6 +32,9 @@ namespace nom
 
       /// Default destructor; we shutdown the SDL_ttf extension here
       ~SDL_Font ( void );
+
+      /// Is this object initialized -- not nullptr?
+      bool valid ( void ) const;
 
       /// Obtains set text string buffer; defaults to \0
       const std::string& getText ( void ) const;
@@ -67,7 +70,7 @@ namespace nom
       /// Surface where font for drawing is rendered to
       nom::SDL_Canvas font_buffer;
       /// Font file data, used by SDL_ttf extension
-      TTF_Font *font;
+      std::shared_ptr<TTF_Font> font;
       /// holds contents of text as a string buffer
       std::string text_buffer;
   };

@@ -42,13 +42,14 @@ void nom::Rectangle::Draw ( void* video_buffer ) const
 {
   SDL_Rect rectangle = this->coords.getSDL_Rect();
   unsigned int rectangle_color = 0;
-  SDL_Surface *buffer = (SDL_Surface*) video_buffer;
+  SDL_Surface *buffer = static_cast<SDL_Surface*> ( video_buffer );
 
   rectangle_color = this->color.getColorAsInt ( buffer->format );
 
   if ( SDL_FillRect ( buffer, &rectangle, rectangle_color ) != 0 )
   {
-    std::cout << "ERR in nom::Rectangle::Draw(): " << SDL_GetError() << std::endl;
+NOMLIB_LOG_ERR ( SDL_GetError() );
+    return;
   }
 
   // Destruct as soon as we are done to free memory

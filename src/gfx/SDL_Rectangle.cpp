@@ -56,5 +56,7 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
   // that could otherwise be held too long before
   // cleaned up, resulting in slow, but steady climb
   // in memory usage
+#ifndef NOMLIB_SYSTEM_LINUX
   Rectangle::~Rectangle();
+#endif
 }

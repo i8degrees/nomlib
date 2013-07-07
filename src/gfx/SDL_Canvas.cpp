@@ -152,10 +152,10 @@ NOMLIB_LOG_ERR ( "Could not load canvas image file: " + filename );
     return false;
   }
 
-  if ( colorkey.alpha == -1 )
+  if ( flags & SDL_SRCCOLORKEY )
     this->setTransparent ( colorkey, flags );
 
-  if ( colorkey.alpha != -1 )
+  if ( flags & SDL_SRCALPHA )
     this->displayFormatAlpha(); // Optimized video surface with an alpha channel
   else
     this->displayFormat(); // Optimized video surface without an alpha channel

@@ -47,11 +47,9 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
 NOMLIB_ASSERT ( screen != nullptr );
 }
 
-// This is important to return precisely as a SDL_Surface for it changes nullptr
-// result potentially
 void* SDL_Display::get ( void ) const
 {
-  return dynamic_cast<SDL_Surface*>( SDL_GetVideoSurface() );
+  return SDL_GetVideoSurface();
 }
 
 bool nom::SDL_Display::valid ( void ) const

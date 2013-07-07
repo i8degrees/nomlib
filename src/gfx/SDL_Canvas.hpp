@@ -46,7 +46,7 @@ namespace nom
       SDL_Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask );
       ~SDL_Canvas ( void );
 
-      /// Is this SDL_Surface* initialized ( != nullptr )?
+      /// Is this object initialized -- not nullptr?
       bool valid ( void ) const;
 
       /// Set the canvas with existing surface data
@@ -103,8 +103,8 @@ namespace nom
 
       /// \internal
       /// Note: this method is not meant to be called inside a loop; memory usage may
-      /// run a mock (seems to be fixed by Rectangle::~Rectangle() inside
-      /// 'SDL_Rectangle.cpp', although I do not understand why exactly...
+      /// run a mock (seems to be fixed by Rectangle::~Rectangle() inside the
+      /// SDL_Rectangle class, although it eludes me as to why precisely
       /// \endinternal
       void clear ( const nom::Color& color = nom::Color::Blue ) const;
 

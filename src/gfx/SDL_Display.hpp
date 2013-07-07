@@ -37,7 +37,7 @@ namespace nom
       ///
       void* get ( void ) const;
 
-      /// Is this SDL_Surface* initialized ( != nullptr )?
+      /// Is this object initialized -- not nullptr?
       bool valid ( void ) const;
 
       int32_t getDisplayWidth ( void ) const;

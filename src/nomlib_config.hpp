@@ -44,7 +44,7 @@
 
 // nomlib debugging
 
-// Standard debug level; logging of warnings & errors
+// Standard debug level; logging of info, warnings & errors
 #define NOMLIB_DEBUG
 
 // Internal development; logging of class object construction and destruction
@@ -59,12 +59,16 @@
 #endif
 
 #ifdef NOMLIB_DEBUG
-  // If all debugging is turned on, we show all errors logged
+  // If debugging is turned on, we log all warnings, errors & info
+  #define NOMLIB_LOG(message) ( nom::Logger::info ( message ) )
   #define NOMLIB_LOG_ERR(message) ( nom::Logger::err ( __FILE__, __LINE__, message ) )
   #define NOMLIB_ASSERT(expression) ( assert (expression) )
 #else // We do not add any overhead
+  #define NOMLIB_LOG(message)
   #define NOMLIB_LOG_ERR(message)
   #define NOMLIB_ASSERT(expression)
 #endif
+
+
 
 #endif // NOMLIB_CONFIG_HEADERS defined

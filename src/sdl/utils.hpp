@@ -10,6 +10,7 @@
 #define NOMLIB_SDL_UTILS_HEADERS
 
 #include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 
 #include "math/Color.hpp"
 #include "math/Coords.hpp"
@@ -30,6 +31,16 @@ namespace nom
   /// Convenience helper for obtaining a color as an integer, respective to
   /// the video surface pixel format (color bit per pixel)
   uint32 getAlphaColorAsInt ( void*, const Color& );
+
+  /// Custom deleter for SDL_Surface* smart pointers
+  void Canvas_FreeSurface ( SDL_Surface* );
+
+  /// Custom deleter for the display context smart pointer -- this is managed by
+  /// SDL and thus we do not own it (let SDL worry about freeing it)
+  void Display_FreeSurface ( SDL_Surface* );
+
+  /// Custom deleter for TTF_Font* smart pointers
+  void TTF_FreeSurface ( TTF_Font* );
 
 } // namespace nom
 

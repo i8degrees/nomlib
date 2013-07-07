@@ -17,6 +17,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
+#include "sdl/utils.hpp"
 #include "math/Color.hpp"
 #include "math/Coords.hpp"
 #include "nomlib_config.hpp"

@@ -44,4 +44,19 @@ uint32 getAlphaColorAsInt ( void* pixel_format, const Color& color )
   return SDL_MapRGBA ( static_cast<SDL_PixelFormat*> ( pixel_format ), color.red, color.green, color.blue, color.alpha );
 }
 
+void Canvas_FreeSurface ( SDL_Surface* video_buffer )
+{
+  SDL_FreeSurface ( video_buffer );
+}
+
+void Display_FreeSurface ( SDL_Surface* video_buffer )
+{
+  SDL_FreeSurface ( video_buffer );
+}
+
+void TTF_FreeSurface ( TTF_Font* font )
+{
+  TTF_CloseFont ( font );
+}
+
 } // namespace nom

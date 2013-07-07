@@ -87,7 +87,7 @@ void SDL_Font::setTextColor ( const nom::Color& color )
 
 bool SDL_Font::Load ( std::string filename, uint32_t font_size )
 {
-  this->font = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), font_size ), TTF_CloseFont );
+  this->font = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), font_size ), TTF_FreeSurface );
 
   if ( this->valid() == false )
   {

@@ -45,7 +45,7 @@
 // nomlib debugging
 
 // Standard debug level; logging of warnings & errors
-//#define NOMLIB_DEBUG
+#define NOMLIB_DEBUG
 
 // Internal development; logging of class object construction and destruction
 #define NOMLIB_DEBUG_ALL

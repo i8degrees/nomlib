@@ -7,7 +7,11 @@ project ( gamelib )
 set ( CMAKE_VERBOSE_MAKEFILE true )
 set ( CMAKE_BUILD_TYPE Debug )
 set ( BUILD_SHARED_LIBS true )
-set ( CMAKE_OSX_ARCHITECTURES i386;x86_64 ) # OSX Universal Library
+set ( BUILD_UNIVERSAL_LIB false ) # OSX Universal Library
+
+if ( BUILD_UNIVERSAL_LIB STREQUAL true )
+  set ( CMAKE_OSX_ARCHITECTURES i386;x86_64 )
+endif ()
 
 if ( CMAKE_GENERATOR STREQUAL Xcode )
   set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )

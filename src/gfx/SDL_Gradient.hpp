@@ -12,8 +12,6 @@
 #include <iostream>
 #include <string>
 
-#include <SDL/SDL.h>
-
 #include "math/Coords.hpp"
 #include "math/Color.hpp"
 #include "math/Transformable.hpp"

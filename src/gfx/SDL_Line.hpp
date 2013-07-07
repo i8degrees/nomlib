@@ -9,13 +9,9 @@
 #ifndef NOMLIB_SDL_LINE_HEADERS
 #define NOMLIB_SDL_LINE_HEADERS
 
-#include <iostream>
-#include <string>
 #include <cmath>
 #include <vector>
 #include <memory>
-
-#include <SDL/SDL.h>
 
 #include "math/Color.hpp"
 #include "math/Coords.hpp"

@@ -9,11 +9,6 @@
 #ifndef NOMLIB_SDL_PIXEL_HEADERS
 #define NOMLIB_SDL_PIXEL_HEADERS
 
-#include <iostream>
-#include <string>
-
-#include <SDL/SDL.h>
-
 #include "sdl/utils.hpp"
 #include "math/Color.hpp"
 #include "math/Coords.hpp"

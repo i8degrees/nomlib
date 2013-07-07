@@ -9,10 +9,6 @@
 #ifndef NOMLIB_COORDS_HEADERS
 #define NOMLIB_COORDS_HEADERS
 
-#include <iostream>
-
-#include <SDL/SDL.h>
-
 #include "nomlib_config.hpp"
 
 namespace nom

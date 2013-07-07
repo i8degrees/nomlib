@@ -11,8 +11,6 @@
 #include <iostream>
 #include <string>
 
-#include <SDL/SDL.h>
-
 #include "gfx/SDL_Drawable.hpp"
 #include "gfx/SDL_Canvas.hpp"
 #include "math/Transformable.hpp"

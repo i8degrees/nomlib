@@ -12,7 +12,6 @@
 #include <string>
 #include <memory>
 
-#include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
 #include "sdl/utils.hpp"

@@ -9,11 +9,8 @@
 #ifndef NOMLIB_COLORS_HEADERS
 #define NOMLIB_COLORS_HEADERS
 
-#include <iostream>
-#include <string>
 #include <algorithm>
 
-#include <SDL/SDL.h>
 #include "nomlib_config.hpp"
 
 namespace nom

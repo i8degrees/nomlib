@@ -15,8 +15,6 @@
 #include <vector>
 #include <memory>
 
-#include <SDL/SDL.h>
-
 #include "sys/IState.hpp" // abstract class for our interface
 #include "nomlib_config.hpp"
 

@@ -16,8 +16,6 @@
 #include <string>
 #include <sstream>
 
-#include <SDL/SDL.h>
-
 #include "sdl/utils.hpp"
 #include "math/Color.hpp"
 #include "math/Transformable.hpp"

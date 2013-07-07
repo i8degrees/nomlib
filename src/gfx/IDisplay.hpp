@@ -8,10 +8,7 @@
 #ifndef NOMLIB_IDISPLAY_HEADERS
 #define NOMLIB_IDISPLAY_HEADERS
 
-#include <iostream>
 #include <string>
-
-#include <SDL/SDL.h>
 
 #include "math/Coords.hpp"
 #include "nomlib_config.hpp"

@@ -9,11 +9,6 @@
 #ifndef NOMLIB_TRANSFORMABLE_HEADERS
 #define NOMLIB_TRANSFORMABLE_HEADERS
 
-#include <iostream>
-#include <string>
-
-#include <SDL/SDL.h>
-
 #include "math/Coords.hpp"
 #include "math/Color.hpp"
 #include "nomlib_config.hpp"

@@ -9,9 +9,6 @@
 #ifndef NOMLIB_SDL_RECTANGLE_HEADERS
 #define NOMLIB_SDL_RECTANGLE_HEADERS
 
-#include <iostream>
-#include <SDL/SDL.h>
-
 #include "sdl/utils.hpp"
 #include "math/Color.hpp"
 #include "math/Coords.hpp"

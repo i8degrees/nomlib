@@ -76,9 +76,11 @@ void nom::Sprite::setSheetDimensions ( unsigned int sheet_width, unsigned int sh
   this->sheet.padding = padding;
 }
 
-bool nom::Sprite::Load ( std::string filename, nom::Color colorkey, unsigned int flags )
+bool nom::Sprite::Load  ( std::string filename, nom::Color colorkey,
+                          bool use_cache, unsigned int flags
+                        )
 {
-  this->sprite_buffer.loadFromImage ( filename, colorkey, flags );
+  this->sprite_buffer.loadFromImage ( filename, colorkey, use_cache, flags );
 
   if ( ! this->sprite_buffer.valid() )
   {

@@ -85,8 +85,9 @@ namespace nom
       /// \internal
       /// TODO: add spacing / padding so that we can export with black guidelines
       /// \endinternal
-      bool Load ( const std::string& filename, const nom::Color& colorkey, uint32_t sheet_width = 16,
-                  uint32_t sheet_height = 16 );
+      bool Load ( const std::string& filename, const nom::Color& colorkey,
+                  bool use_cache = 0
+                );
 
       void Update ( void );
       /// Draw the set text string to the video surface
@@ -105,6 +106,9 @@ namespace nom
       std::string text_buffer;
       /// Current text effect set
       uint8_t text_style;
+
+      uint32 sheet_width;
+      uint32 sheet_height;
   };
 }
 #endif // NOMLIB_SDL_BITMAP_FONT_HEADERS defined

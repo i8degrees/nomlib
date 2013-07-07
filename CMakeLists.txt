@@ -50,6 +50,7 @@ endif ( NOT TTCARDS_NOMLIB_COMPILE )
 set ( SRC_DIR src ) # project_dir/src
 
 set ( GAMELIB_SOURCE
+      ${SRC_DIR}/gfx/ImageCache.cpp
       ${SRC_DIR}/gfx/IDisplay.cpp
       ${SRC_DIR}/gfx/SDL_BitmapFont.cpp
       ${SRC_DIR}/gfx/SDL_Canvas.cpp
@@ -82,6 +83,7 @@ set ( GAMELIB_HEADERS_ROOT
     )
 
 set ( GAMELIB_HEADERS_GFX
+      ${SRC_DIR}/gfx/ImageCache.hpp
       ${SRC_DIR}/gfx/SDL_Font.hpp
       ${SRC_DIR}/gfx/SDL_Gradient.hpp
       ${SRC_DIR}/gfx/SDL_BitmapFont.hpp

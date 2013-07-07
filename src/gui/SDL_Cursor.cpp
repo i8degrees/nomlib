@@ -31,9 +31,9 @@ NOMLIB_LOG_INFO;
   // Clean up
 }
 
-void nom::SDL_Cursor::Load ( std::string filename, nom::Color colorkey ) // sheet_id ?
+void nom::SDL_Cursor::Load ( std::string filename, nom::Color colorkey, bool use_cache ) // sheet_id ?
 {
-  this->cursor.Load ( filename, colorkey );
+  this->cursor.Load ( filename, colorkey, use_cache );
 }
 
 nom::int32 nom::SDL_Cursor::getX ( void )

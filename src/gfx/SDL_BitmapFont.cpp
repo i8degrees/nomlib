@@ -24,6 +24,9 @@ NOMLIB_LOG_INFO;
   this->spacing = 0; // holds the x coords value to increment upon space char
   this->text_style = Style::Regular; // default text styling effect
 
+  this->sheet_width = 16;
+  this->sheet_height = 16;
+
   this->setPosition ( 0, 0 );
 
   for ( unsigned int idx = 0; idx < 256; idx++ )
@@ -131,7 +134,9 @@ void SDL_BitmapFont::setStyle ( uint8_t style, uint8_t options )
   }
 }
 
-bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& colorkey, uint32_t sheet_width, uint32_t sheet_height )
+bool SDL_BitmapFont::Load ( const std::string& filename,
+                            const nom::Color& colorkey, bool use_cache
+                          )
 {
   uint32_t tile_width = 0;
   uint32_t tile_height = 0;
@@ -140,7 +145,7 @@ bool SDL_BitmapFont::Load ( const std::string& filename, const nom::Color& color
   uint32_t currentChar = 0;
   int32_t background_color = 0;
 
-  if ( this->bitmap_font.loadFromImage ( filename, colorkey ) == false )
+  if ( this->bitmap_font.loadFromImage ( filename, colorkey, use_cache ) == false )
   {
 NOMLIB_LOG_ERR ( "Could not load bitmap font image file: " + filename );
     return false;
@@ -150,14 +155,14 @@ NOMLIB_ASSERT ( this->bitmap_font.valid() );
 
   background_color = getColorAsInt ( this->bitmap_font.getCanvasPixelsFormat(), colorkey );
 
-  tile_width = this->bitmap_font.getCanvasWidth() / sheet_width;
-  tile_height = this->bitmap_font.getCanvasHeight() / sheet_height;
+  tile_width = this->bitmap_font.getCanvasWidth() / this->sheet_width;
+  tile_height = this->bitmap_font.getCanvasHeight() / this->sheet_height;
   top = tile_height;
   baseA = tile_height;
 
-  for ( uint32_t rows = 0; rows < sheet_width; rows++ )
+  for ( uint32_t rows = 0; rows < this->sheet_width; rows++ )
   {
-    for ( uint32_t cols = 0; cols < sheet_height; cols++ )
+    for ( uint32_t cols = 0; cols < this->sheet_height; cols++ )
     {
       // Set character offsets
       this->chars[ currentChar ].setPosition ( tile_width * cols, tile_height * rows );

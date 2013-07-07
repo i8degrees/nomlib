@@ -27,7 +27,7 @@ namespace nom
 
       SDL_Cursor ( unsigned int x, unsigned int y, unsigned int width, unsigned int height );
       //void Init ( void );
-      void Load ( std::string filename, nom::Color colorkey );
+      void Load ( std::string filename, nom::Color colorkey, bool use_cache );
 
       nom::int32 getX ( void );
       nom::int32 getY ( void );

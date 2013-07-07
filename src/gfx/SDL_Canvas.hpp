@@ -18,6 +18,7 @@
 #include "sdl/utils.hpp"
 #include "math/Color.hpp"
 #include "math/Coords.hpp"
+#include "gfx/ImageCache.hpp"
 #include "gfx/SDL_Image.hpp"
 #include "gfx/SDL_Rectangle.hpp"
 #include "nomlib_config.hpp"
@@ -85,6 +86,7 @@ namespace nom
       /// \endinternal
       bool loadFromImage  ( const std::string& filename, const nom::Color&
                             colorkey = nom::Color ( -1, -1, -1, -1 ),
+                            bool use_cache = 0,
                             uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
 
       bool Update ( void* video_buffer );
@@ -120,7 +122,8 @@ namespace nom
 
     private:
       bool mustLock ( void* video_buffer ) const;
-      std::shared_ptr<void> canvas_buffer; // SDL_Surface*
+      /// SDL_Surface*
+      std::shared_ptr<void> canvas_buffer;
       /// Holds surface position
       nom::Coords coords;
       /// Holds surface bounds (input clipping)

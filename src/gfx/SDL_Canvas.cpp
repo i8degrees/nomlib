@@ -140,11 +140,15 @@ bool nom::SDL_Canvas::getCanvasLock ( void ) const
   return buffer->locked;
 }
 
-bool nom::SDL_Canvas::loadFromImage ( const std::string& filename, const nom::Color& colorkey, uint32_t flags )
+bool nom::SDL_Canvas::loadFromImage ( const std::string& filename, const nom::Color& colorkey, bool use_cache, uint32 flags )
 {
-  nom::SDL_Image image; // holds our image in memory during transfer
-
-  this->canvas_buffer = std::shared_ptr<void> ( image.loadFromFile ( filename ) );
+  if ( use_cache )
+    this->canvas_buffer = ImageCache::getImage ( filename, colorkey, flags );
+  else
+  {
+    nom::SDL_Image image; // holds our image in memory during transfer
+    this->canvas_buffer = std::shared_ptr<void> ( image.loadFromFile ( filename ) );
+  }
 
   if ( this->valid() == false )
   {

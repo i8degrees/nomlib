@@ -9,8 +9,7 @@
 
 nom::SDL_Canvas::SDL_Canvas ( void )  : canvas_buffer ( nullptr, SDL_FreeSurface ),
                                         coords ( 0, 0, -1, -1 ), // only x, y position is used in blitting
-                                        offsets ( 0, 0, -1, -1 ), // only the width, height is used in source blitting
-                                        colorkey ( 0, 0, 0, -1 )
+                                        offsets ( 0, 0, -1, -1 ) // only the width, height is used in source blitting
 {
 NOMLIB_LOG_INFO;
 }

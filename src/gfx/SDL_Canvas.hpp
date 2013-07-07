@@ -5,11 +5,12 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_SURFACE_HEADERS
-#define NOMLIB_SDL_SURFACE_HEADERS
+#ifndef NOMLIB_SDL_CANVAS_HEADERS
+#define NOMLIB_SDL_CANVAS_HEADERS
 
 #include <iostream>
 #include <string>
+#include <memory>
 
 #include <SDL/SDL.h>
 
@@ -119,10 +120,11 @@ namespace nom
     private:
       bool mustLock ( void* video_buffer ) const;
       std::shared_ptr<void> canvas_buffer; // SDL_Surface*
+      /// Holds surface position
       nom::Coords coords;
+      /// Holds surface bounds (input clipping)
       nom::Coords offsets;
-      nom::Color colorkey;
     };
 }
 
-#endif // NOMLIB_SDL_SURFACE_HEADERS defined
+#endif // NOMLIB_SDL_CANVAS_HEADERS defined

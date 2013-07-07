@@ -21,7 +21,6 @@ namespace nom
       Color ( void );
       Color ( uint8_t red, uint8_t green, uint8_t blue, int32_t alpha = -1 ); // SDL_ALPHA_OPAQUE (255)
       Color ( const nom::Color& color );
-      Color ( const SDL_Color& color );
       ~Color ( void );
 
       const nom::Color getColor ( void ) const;

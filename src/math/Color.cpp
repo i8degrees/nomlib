@@ -46,16 +46,6 @@ nom::Color::Color ( const nom::Color& color )
   this->alpha = color.alpha;
 }
 
-// Constructor variant for setting a color from a SDL_Color structure;
-// backwards-compatibility wrapper
-nom::Color::Color ( const SDL_Color& color )
-{
-  this->red = color.r;
-  this->green = color.g;
-  this->blue = color.b;
-  //this->alpha = color.a;
-}
-
 // Default constructor; exists solely as a stub
 nom::Color::~Color ( void )
 {

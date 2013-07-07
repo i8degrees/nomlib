@@ -25,6 +25,8 @@ namespace nom
 
       const nom::Color getColor ( void ) const;
 
+      /// Copy assignment constructor
+      Color& operator = ( const Color& other );
 
       /// Predefined color constants for convenience sake
       static const nom::Color Black;

@@ -109,6 +109,13 @@ bool nom::Coords::intersects ( nom::Coords& rectangle ) const
   return true; // we've got a collision!
 }
 
+nom::Coords& nom::Coords::operator = ( const nom::Coords& other )
 {
+  this->x = other.x;
+  this->y = other.y;
+  this->z = other.z;
+  this->width = other.width;
+  this->height = other.height;
 
+  return *this;
 }

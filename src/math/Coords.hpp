@@ -32,6 +32,8 @@ namespace nom
 
       bool intersects ( nom::Coords& rectangle ) const;
 
+      /// Copy assignment constructor
+      Coords& operator = ( const Coords& other );
 
       signed int x;
       signed int y;

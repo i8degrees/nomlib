@@ -58,6 +58,12 @@ const nom::Color nom::Color::getColor ( void ) const
   return nom::Color ( this->red, this->green, this->blue, this->alpha );
 }
 
+nom::Color& nom::Color::operator = ( const nom::Color& other )
 {
+  this->red = other.red;
+  this->green = other.green;
+  this->blue = other.blue;
+  this->alpha = other.alpha;
 
+  return *this;
 }

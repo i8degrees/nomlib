@@ -18,11 +18,15 @@ namespace nom
   class Color
   {
     public:
+      /// Default constructor; sets the color to their respective defaults
       Color ( void );
+      /// Constructor variant for setting a color using RGBA values
       Color ( uint8_t red, uint8_t green, uint8_t blue, int32_t alpha = -1 ); // SDL_ALPHA_OPAQUE (255)
+      /// Copy constructor
       Color ( const nom::Color& color );
       ~Color ( void );
 
+      /// Convenience getter helper for obtaining a color by object
       const nom::Color getColor ( void ) const;
 
       /// Copy assignment constructor
@@ -49,6 +53,7 @@ namespace nom
     private:
       // ...
   };
+
   // FIXME: not sure why these cannot be put into the class file without
   // linking errs?
   inline bool operator == ( const nom::Color& left, const nom::Color& right )
@@ -128,6 +133,7 @@ namespace nom
   {
     return left = left * right;
   }
-}
+
+} // namespace nom
 
 #endif // NOMLIB_COLORS_HEADERS defined

@@ -8,14 +8,12 @@
 ******************************************************************************/
 #include "Coords.hpp"
 
-// Default constructor; sets all values to their respective defaults
 nom::Coords::Coords ( void )  : x ( 0 ), y ( 0 ), z ( 0 ),
                                 width ( 0 ), height ( 0 )
 {
   // Nothing to initialize
 }
 
-// Constructor variant for setting coords by x, y, width, height values
 nom::Coords::Coords ( int32_t x, int32_t y, int32_t width, int32_t height )
 {
   this->x = x;
@@ -24,8 +22,6 @@ nom::Coords::Coords ( int32_t x, int32_t y, int32_t width, int32_t height )
   this->height = height;
 }
 
-// Constructor variant for setting coords with an exiting Coords object
-// This is a "shallow" copy assignment
 nom::Coords::Coords ( const nom::Coords& coords )
 {
   this->x = coords.x;
@@ -61,7 +57,6 @@ void nom::Coords::setSize ( int32_t width, int32_t height )
   this->height = height;
 }
 
-// TODO: test me
 bool nom::Coords::contains ( int32_t x, int32_t y ) const
 {
   int32_t X = this->x + this->width;
@@ -70,14 +65,11 @@ bool nom::Coords::contains ( int32_t x, int32_t y ) const
   return ( x >= X ) && ( y >= Y );
 }
 
-// TODO: test me
 bool nom::Coords::contains ( const nom::Coords& pos ) const
 {
   return this->contains ( pos.x, pos.y );
 }
 
-// TODO: test me
-// Checks to see if our rectangle overlaps with another
 bool nom::Coords::intersects ( nom::Coords& rectangle ) const
 {
   unsigned int leftA, leftB = 0;

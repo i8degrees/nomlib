@@ -16,8 +16,11 @@ namespace nom
   class Coords
   {
     public:
+      /// Default constructor; sets all values to their respective defaults
       Coords ( void );
+      /// Constructor variant for setting coords by x, y, width, height values
       Coords ( int32_t x, int32_t y, int32_t width = 0, int32_t height = 0 );
+      /// Copy constructor
       Coords ( const nom::Coords& coords );
       ~Coords ( void );
 
@@ -27,9 +30,18 @@ namespace nom
       nom::Coords getSize ( void ) const;
       void setSize ( int32_t width, int32_t height );
 
+      /// \todo
+      /// TEST ME
+      /// \endtodo
       bool contains ( int32_t x, int32_t y ) const;
+      /// \todo
+      /// TEST ME
+      /// \endtodo
       bool contains ( const nom::Coords& pos ) const;
-
+      /// \todo
+      /// TEST ME
+      /// \endtodo
+      /// Checks to see if our rectangle overlaps with another
       bool intersects ( nom::Coords& rectangle ) const;
 
       /// Copy assignment constructor
@@ -128,6 +140,7 @@ namespace nom
   {
     return left = left * right;
   }
-}
+
+} // namespace nom
 
 #endif // NOMLIB_COORDS_HEADERS defined

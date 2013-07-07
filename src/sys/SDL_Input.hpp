@@ -90,6 +90,7 @@ namespace nom
     private:
       SDL_Joystick* joystick;
   };
-}
+
+} // namespace nom
 
 #endif // NOMLIB_SDL_INPUT_HEADERS defined

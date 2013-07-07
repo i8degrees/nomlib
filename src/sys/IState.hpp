@@ -1,6 +1,6 @@
 /******************************************************************************
 
-    State abstract class
+    State pure abstract class
 
   Copyright (c) 2013 Jeffrey Carpenter
 
@@ -21,7 +21,7 @@ namespace nom
   class IState: public nom::SDL_Input // "has a" relationship
   {
     public:
-      virtual ~IState()
+      virtual ~IState ( void )
       {
 NOMLIB_LOG_INFO;
       }

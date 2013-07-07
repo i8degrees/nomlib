@@ -10,8 +10,6 @@
 #define NOMLIB_SDL_RECTANGLE_HEADERS
 
 #include <iostream>
-#include <string>
-
 #include <SDL/SDL.h>
 
 #include "math/Color.hpp"

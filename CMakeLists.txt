@@ -25,7 +25,7 @@ if ( CMAKE_SYSTEM_NAME STREQUAL Linux ) # Tested on Ubuntu v12.04-LTS(?) with
   message ( "Linux OS detected " )
 
   set ( CMAKE_CXX_COMPILER "/usr/bin/c++" )
-  set ( CMAKE_CXX_FLAGS -std=gnu++0x )
+  set ( CMAKE_CXX_FLAGS -std=c++0x )
   set ( CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wsign-compare" )
 elseif ( CMAKE_SYSTEM_NAME STREQUAL Darwin )
   message ( "Darwin OS (Mac OSX) detected" )  # Developed 100% on OSX v10.8.3

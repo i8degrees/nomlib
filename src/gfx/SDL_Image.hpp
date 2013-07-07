@@ -12,6 +12,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <memory>
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
@@ -25,24 +26,22 @@ namespace nom
   class SDL_Image
   {
     public:
+      /// Default constructor; initializes SDL_image extension
       SDL_Image ( nom::int32 img_flags = IMG_INIT_PNG );
+      /// Copy constructor
+      SDL_Image ( const SDL_Image& other );
       ~SDL_Image ( void );
 
-      /// Obtains raw pointer to the object's video surface buffer
-      ///
-      /// Returns ( SDL_Surface* )
-      void* get ( void ) const;
-
-      /// Is this SDL_Surface* initialized ( != nullptr )?
+      /// Is this object initialized -- not nullptr?
       bool valid ( void ) const;
 
       /// Supports every file type that the SDL_image extension has been
       /// compiled with
-      bool loadFromFile ( const std::string& filename );
+      std::shared_ptr<void> loadFromFile ( const std::string& filename );
 
       /// Uses SDL's built-in BMP file loader; no alpha channeling support ...
       /// perfect for setting window icons!
-      bool loadFromFile_BMP ( const std::string& filename );
+      std::shared_ptr<void> loadFromFile_BMP ( const std::string& filename );
 
       /// Saves as an uncompressed RGB Windows Bitmap (BMP)
       ///
@@ -51,9 +50,11 @@ namespace nom
       bool saveToFile ( const std::string& filename, void* video_buffer );
 
       const nom::Coords getSize ( void ) const;
+      /// Copy assignment constructor
+      SDL_Image& operator = ( const SDL_Image& other );
 
     private:
-      void* image_buffer; // SDL_Surface*
+      std::shared_ptr<void> image_buffer; // SDL_Surface*
   };
 }
 

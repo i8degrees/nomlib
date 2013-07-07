@@ -157,19 +157,17 @@ void SDL_Display::setWindowTitle ( const std::string& app_name )
 void SDL_Display::setWindowIcon ( const std::string& app_icon )
 {
   nom::SDL_Image image; // holds our image in memory during transfer
-  nom::SDL_Canvas icon; // icon canvas to load our icon file into
+  std::shared_ptr<void> icon = nullptr;
 
   if ( this->valid() )
 NOMLIB_LOG_ERR ( "SDL video subsystem has already been initiated." );
 
-  if ( image.loadFromFile ( app_icon ) == false )
+  icon = std::shared_ptr<void> ( image.loadFromFile ( app_icon ) );
+  if ( icon == nullptr )
   {
 NOMLIB_LOG_ERR ( "Could not load window icon file: " + app_icon );
     return;
   }
 
-  // Sets our canvas with our acquired image surface
-  icon.setCanvas ( image.get() );
-  icon.setTransparent ( nom::Color ( 0, 0, 0 ), SDL_SRCCOLORKEY ); // FIXME?
   SDL_WM_SetIcon ( static_cast<SDL_Surface*> ( icon.get() ) , nullptr );
 }

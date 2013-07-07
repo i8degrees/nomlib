@@ -29,6 +29,8 @@ namespace nom
       SDL_Canvas ( void );
       /// Constructor variant for setting the canvas with existing data
       SDL_Canvas ( void* video_buffer );
+      /// Copy constructor
+      SDL_Canvas ( const nom::SDL_Canvas& other );
       /// Constructor variant for setting the canvas with an empty surface
       ///
       /// As per libSDL docs, this must be called only after video initialization;
@@ -43,22 +45,10 @@ namespace nom
       /// Note that we are responsible for freeing our own pixels data
       SDL_Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask );
       ~SDL_Canvas ( void );
-      /// \internal
-      /// We sometimes need to call this method call from outside of this class, such
-      /// as in SDL_Font::Draw, in order to prevent memory leaks from occurring
-      /// \endinternal
-      void destroy ( void );
-
-      /// Obtains raw pointer to the object's video surface buffer
-      ///
-      /// Returns ( SDL_Surface* )
-      ///
-      void* get ( void ) const;
 
       /// Is this SDL_Surface* initialized ( != nullptr )?
       bool valid ( void ) const;
 
-      void setCanvas ( SDL_Surface *video_buffer );
       /// Set the canvas with existing surface data
       void setCanvas ( void* video_buffer );
 
@@ -118,15 +108,17 @@ namespace nom
       /// \endinternal
       void clear ( const nom::Color& color = nom::Color::Blue ) const;
 
-
       bool Lock ( void* video_buffer ) const;
       void Unlock ( void* video_buffer ) const;
 
       int32_t getPixel ( int32_t x, int32_t y );
 
+      /// Copy assignment constructor
+      SDL_Canvas& operator = ( const SDL_Canvas& other );
+
     private:
       bool mustLock ( void* video_buffer ) const;
-      void* canvas_buffer; // SDL_Surface*
+      std::shared_ptr<void> canvas_buffer; // SDL_Surface*
       nom::Coords coords;
       nom::Coords offsets;
       nom::Color colorkey;

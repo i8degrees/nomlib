@@ -17,9 +17,12 @@ NOMLIB_LOG_INFO;
 nom::SDL_Canvas::SDL_Canvas ( void* video_buffer )  : canvas_buffer ( static_cast<SDL_Surface*> ( video_buffer ), Canvas_FreeSurface )
 {
 NOMLIB_LOG_INFO;
+
+  this->offsets.setSize ( this->getCanvasWidth(), this->getCanvasHeight() );
 }
 
-nom::SDL_Canvas::SDL_Canvas ( const SDL_Canvas& other ) : canvas_buffer ( static_cast<SDL_Surface*> ( other.canvas_buffer.get() ), Canvas_FreeSurface )
+nom::SDL_Canvas::SDL_Canvas ( const SDL_Canvas& other ) : canvas_buffer ( static_cast<SDL_Surface*> ( other.canvas_buffer.get() ), Canvas_FreeSurface ),
+                                                          coords ( other.coords.x, other.coords.y ), offsets ( other.offsets.width, other.offsets.height )
 {
 NOMLIB_LOG_INFO;
 }

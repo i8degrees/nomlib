@@ -16,7 +16,7 @@ NOMLIB_LOG_INFO;
 
   this->window_borders.clear();
 
-  for ( nom::ulong i = 0; i < this->window_borders.size(); i++ )
+  for ( nom::ulong i = 0; i < this->window_borders.size(); ++i )
     this->window_borders[i] = nom::Color::Black;
 
   this->coords = nom::Coords ( 0, 0, 0, 0 );
@@ -30,7 +30,7 @@ NOMLIB_LOG_INFO;
   this->enabled = false;
 
   // Goodbye cruel drawables!
-  //for ( auto it = this->lines.begin(); it != this->lines.end(); it++ )
+  //for ( auto it = this->lines.begin(); it != this->lines.end(); ++it )
   //{
     //delete *it;
   //}
@@ -84,7 +84,7 @@ void nom::SDL_MessageBox::Update ( void )
 {
   this->background.Update();
 
-  for ( auto it = this->lines.begin(); it != this->lines.end(); it++ )
+  for ( auto it = this->lines.begin(); it != this->lines.end(); ++it )
   {
     std::shared_ptr<nom::SDL_Drawable> obj = *it;
     //this->background.Update();
@@ -100,7 +100,7 @@ void nom::SDL_MessageBox::Draw ( void* video_buffer ) /* const */
   // SDL_Line needs pixel write access, so we must first lock the surface
   this->box.Lock ( video_buffer );
 
-  for ( auto it = this->lines.begin(); it != this->lines.end(); it++ )
+  for ( auto it = this->lines.begin(); it != this->lines.end(); ++it )
   {
     std::shared_ptr<nom::SDL_Drawable> obj = *it;
     obj->Draw ( video_buffer );

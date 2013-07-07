@@ -25,7 +25,7 @@ nom::Line::~Line ( void )
   this->updated = false;
 
   // Goodbye cruel pixels!
-  //for ( std::vector<nom::Pixel*>::const_iterator it = this->pixels.begin(); it != this->pixels.end(); it++ )
+  //for ( std::vector<nom::Pixel*>::const_iterator it = this->pixels.begin(); it != this->pixels.end(); ++it )
   //{
     //delete *it;
   //}
@@ -88,7 +88,7 @@ void nom::Line::Update ( void )
 
   int32_t maxX = ( int32_t ) x2;
 
-  for ( int32_t x = ( int32_t ) x1; x < maxX; x++ )
+  for ( int32_t x = ( int32_t ) x1; x < maxX; ++x )
   {
     if ( steep )
       this->pixels.push_back ( std::unique_ptr<nom::Pixel> ( new nom::Pixel ( y, x, this->color ) ) );
@@ -111,6 +111,6 @@ void nom::Line::Update ( void )
 
 void nom::Line::Draw ( void* video_buffer ) const
 {
-  for ( nom::ulong idx = 0; idx < this->pixels.size(); idx++ )
+  for ( nom::ulong idx = 0; idx < this->pixels.size(); ++idx )
     this->pixels[idx]->Draw ( video_buffer );
 }

@@ -13,8 +13,6 @@
 #include <string>
 #include <ctime>
 
-#include <SDL/SDL.h>
-
 #include "nomlib_types.hpp"
 
 namespace nom {

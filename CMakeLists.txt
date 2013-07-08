@@ -5,6 +5,7 @@ project ( gamelib )
 #     CMake Environment
 set ( CMAKE_VERBOSE_MAKEFILE true )
 set ( CMAKE_BUILD_TYPE Debug )
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/" )
 
 option ( BUILD_SHARED_LIBS "Build as a shared library -- as opposed to static library" on )
 option ( BUILD_UNIVERSAL_LIB "Build as OSX Universal Library; i386 and x86_64" off )
@@ -50,6 +51,15 @@ endif ( NOT TTCARDS_NOMLIB_COMPILE )
 set ( SRC_DIR src ) # project_dir/src
 
 set ( GAMELIB_SOURCE
+      # audio
+      ${SRC_DIR}/audio/OpenAL_AudioDevice.cpp
+      ${SRC_DIR}/audio/OpenAL_Listener.cpp
+      ${SRC_DIR}/audio/OpenAL_SoundBuffer.cpp
+      ${SRC_DIR}/audio/OpenAL_SoundFile.cpp
+      ${SRC_DIR}/audio/OpenAL_SoundSource.cpp
+      ${SRC_DIR}/audio/Music.cpp
+      ${SRC_DIR}/audio/Sound.cpp
+      # gfx
       ${SRC_DIR}/gfx/ImageCache.cpp
       ${SRC_DIR}/gfx/IDisplay.cpp
       ${SRC_DIR}/gfx/SDL_BitmapFont.cpp
@@ -62,6 +72,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/gfx/SDL_Pixel.cpp
       ${SRC_DIR}/gfx/SDL_Rectangle.cpp
       ${SRC_DIR}/gfx/Sprite.cpp
+      # sys
       ${SRC_DIR}/sys/FPS.cpp
       ${SRC_DIR}/sys/GameStates.cpp
       ${SRC_DIR}/sys/Logger.cpp
@@ -69,17 +80,30 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/sys/SDL_App.cpp
       ${SRC_DIR}/sys/SDL_Input.cpp
       ${SRC_DIR}/sys/SDL_Timer.cpp
+      # math
       ${SRC_DIR}/math/Color.cpp
       ${SRC_DIR}/math/Coords.cpp
       ${SRC_DIR}/math/Transformable.cpp
+      # gui
       ${SRC_DIR}/gui/SDL_Cursor.cpp
       ${SRC_DIR}/gui/SDL_MessageBox.cpp
+      # sdl
       ${SRC_DIR}/sdl/utils.cpp
     )
 
 set ( GAMELIB_HEADERS_ROOT
       ${SRC_DIR}/nomlib_config.hpp
       ${SRC_DIR}/nomlib_types.hpp
+    )
+
+set ( GAMELIB_HEADERS_AUDIO
+      ${SRC_DIR}/audio/OpenAL_AudioDevice.hpp
+      ${SRC_DIR}/audio/OpenAL_Listener.hpp
+      ${SRC_DIR}/audio/OpenAL_SoundBuffer.hpp
+      ${SRC_DIR}/audio/OpenAL_SoundFile.hpp
+      ${SRC_DIR}/audio/OpenAL_SoundSource.hpp
+      ${SRC_DIR}/audio/Music.hpp
+      ${SRC_DIR}/audio/Sound.hpp
     )
 
 set ( GAMELIB_HEADERS_GFX
@@ -135,16 +159,20 @@ include_directories ( ${SDL_INCLUDE_DIR} )
 find_package ( SDL_image REQUIRED )
 include_directories ( ${SDL_IMAGE_INCLUDE_DIR} )
 
-find_package ( SDL_mixer REQUIRED )
-include_directories ( ${SDL_MIXER_INCLUDE_DIR} )
-
 find_package ( SDL_ttf REQUIRED )
 include_directories ( ${SDL_TTF_INCLUDE_DIR} )
+
+find_package ( OpenAL REQUIRED )
+include_directories ( ${OPENAL_INCLUDE_DIR} )
+
+find_package ( libsndfile REQUIRED )
+include_directories ( ${LIBSNDFILE_INCLUDE_DIR} )
 
 link_libraries (  gamelib # makefile target
                   ${SDL_LIBRARY}
                   ${SDLIMAGE_LIBRARY}
-                  ${SDLMIXER_LIBRARY}
+                  ${OPENAL_LIBRARY}
+                  ${LIBSNDFILE_LIBRARY}
                   ${SDLTTF_LIBRARY}
                )
 
@@ -174,6 +202,7 @@ if ( NOT TTCARDS_NOMLIB_COMPILE )
 
   #     Install headers
   install ( FILES ${GAMELIB_HEADERS_ROOT} DESTINATION include/gamelib )
+  install ( FILES ${GAMELIB_HEADERS_AUDIO} DESTINATION include/gamelib/audio )
   install ( FILES ${GAMELIB_HEADERS_GFX} DESTINATION include/gamelib/gfx )
   install ( FILES ${GAMELIB_HEADERS_SYS} DESTINATION include/gamelib/sys )
   install ( FILES ${GAMELIB_HEADERS_MATH} DESTINATION include/gamelib/math )

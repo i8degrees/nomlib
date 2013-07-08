@@ -15,6 +15,8 @@
 #include <memory>
 #include <cstdlib>
 
+#include <SDL/SDL.h>
+
 #include "sys/SDL_Input.hpp"
 #include "sys/SDL_Timer.hpp"
 #include "nomlib_config.hpp"
@@ -39,6 +41,9 @@ namespace nom
       bool getShowFPS ( void );
       void showFPS ( bool toggle );
       void toggleFPS ( void );
+
+      void enableKeyRepeat ( int32 delay, int32 interval );
+
     private:
       bool app_state; /// global app state
       bool show_fps; /// fps counter

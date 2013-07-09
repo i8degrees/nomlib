@@ -8,6 +8,7 @@ set ( PROJECT_VERSION_PATCH 0 )
 project ( ${PROJECT_NAME} )
 
 set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" ) # gamelib/src
+set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" ) # gamelib/examples
 
 configure_file  ( "${PROJECT_SOURCE_DIR}/cmake/version.hpp.in"
                   "${SRC_DIR}/version.hpp"
@@ -20,6 +21,8 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/module
 
 option ( BUILD_SHARED_LIBS "Build as a shared library -- as opposed to static library" on )
 option ( BUILD_UNIVERSAL_LIB "Build as OSX Universal Library; i386 and x86_64" off )
+
+option ( BUILD_NOMLIB_EXAMPLES "Build nomlib usage examples" on )
 
 # Creative OpenAL was a tad bit buggy for me on audio device destruction
 # This is allegedly backwards-compatible with Creative OpenAL
@@ -41,6 +44,7 @@ if ( USE_OPENALSOFT_LIB )
 else ( NOT USE_OPENALSOFT_LIB )
   message ( "Building with OpenAL library" )
 endif ( USE_OPENALSOFT_LIB )
+
 if ( CMAKE_GENERATOR STREQUAL Xcode )
   message ( "Setting Xcode-specific project settings " )
   set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
@@ -215,6 +219,10 @@ endif ( NOT BUILD_SHARED_LIBS )
 set_target_properties ( ${PROJECT_NAME} # makefile target
                         PROPERTIES SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
                       )
+
+if ( BUILD_NOMLIB_EXAMPLES )
+  add_subdirectory ( ${EXAMPLES_SRC_DIR} )
+endif ( BUILD_NOMLIB_EXAMPLES )
 
 #     FIXME: doxygen docs generation
 add_custom_target ( nomlib-docs

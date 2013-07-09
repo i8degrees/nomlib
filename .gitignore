@@ -11,6 +11,9 @@ version.hpp
 *.powder
 libgamelib.bc
 
+# bins
+examples/audio/audio
+
 # doxygen html gen
 docs/install.sh
 docs/public/

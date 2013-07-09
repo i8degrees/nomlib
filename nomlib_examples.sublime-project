@@ -1,0 +1,24 @@
+{
+  "folders":
+  [
+    {
+      "name": "examples",
+      "path": "examples",
+      "file_include_patterns": [ "*.cpp", "*.c", "*.hpp", "*.h", "*.txt" ],
+      "folder_exclude_patterns": [ "data" ]
+    },
+
+    {} // placeholder
+  ],
+
+  "settings":
+  {
+    "tab_size": 2,
+    "translate_tabs_to_spaces": true
+  },
+
+  "build_systems":
+  [
+    {} // placeholder
+  ]
+}

@@ -11,12 +11,11 @@
 #include <iostream>
 #include <cassert>
 
+// nomlib version
+#include "version.hpp"
+
 #include "types.hpp"
 #include "sys/Logger.hpp"
-
-// nomlib version
-#define NOMLIB_VERSION_MAJOR 0
-#define NOMLIB_VERSION_MINOR 0
 
 // Identification the operating system
 #if defined ( _WIN32) || defined ( __WIN32__ )

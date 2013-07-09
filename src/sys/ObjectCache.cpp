@@ -9,7 +9,7 @@
   All rights reserved
 
 ******************************************************************************/
-#include "ImageCache.hpp"
+#include "ObjectCache.hpp"
 
 namespace nom {
   namespace priv {

@@ -60,7 +60,6 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/audio/AL/Music.cpp
       ${SRC_DIR}/audio/AL/Sound.cpp
       # gfx
-      ${SRC_DIR}/gfx/ImageCache.cpp
       ${SRC_DIR}/gfx/IDisplay.cpp
       ${SRC_DIR}/gfx/SDL_BitmapFont.cpp
       ${SRC_DIR}/gfx/SDL_Canvas.cpp
@@ -76,6 +75,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/sys/FPS.cpp
       ${SRC_DIR}/sys/GameStates.cpp
       ${SRC_DIR}/sys/Logger.cpp
+      ${SRC_DIR}/sys/ObjectCache.cpp
       ${SRC_DIR}/sys/OSXFS.cpp
       ${SRC_DIR}/sys/SDL_App.cpp
       ${SRC_DIR}/sys/SDL_Input.cpp
@@ -112,7 +112,6 @@ set ( GAMELIB_HEADERS_AUDIO
     )
 
 set ( GAMELIB_HEADERS_GFX
-      ${SRC_DIR}/gfx/ImageCache.hpp
       ${SRC_DIR}/gfx/SDL_Font.hpp
       ${SRC_DIR}/gfx/SDL_Gradient.hpp
       ${SRC_DIR}/gfx/SDL_BitmapFont.hpp
@@ -133,6 +132,7 @@ set ( GAMELIB_HEADERS_SYS
       ${SRC_DIR}/sys/GameStates.hpp
       ${SRC_DIR}/sys/IState.hpp
       ${SRC_DIR}/sys/Logger.hpp
+      ${SRC_DIR}/sys/ObjectCache.hpp
       ${SRC_DIR}/sys/OSXFS.hpp
       ${SRC_DIR}/sys/SDL_App.hpp
       ${SRC_DIR}/sys/SDL_Input.hpp

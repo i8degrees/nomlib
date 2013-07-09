@@ -18,7 +18,7 @@
 #include "sdl/utils.hpp"
 #include "math/Color.hpp"
 #include "math/Coords.hpp"
-#include "gfx/ImageCache.hpp"
+#include "sys/ObjectCache.hpp"
 #include "gfx/SDL_Image.hpp"
 #include "gfx/SDL_Rectangle.hpp"
 #include "config.hpp"

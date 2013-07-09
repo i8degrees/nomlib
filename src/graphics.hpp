@@ -11,7 +11,6 @@
 
 #include "config.hpp"
 
-#include "gfx/ImageCache.hpp"
 #include "gfx/SDL_BitmapFont.hpp"
 #include "gfx/SDL_Canvas.hpp"
 #include "gfx/SDL_Display.hpp"

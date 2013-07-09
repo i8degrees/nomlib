@@ -13,6 +13,7 @@
 
 #include "sys/FPS.hpp"
 #include "sys/GameStates.hpp"
+#include "sys/ObjectCache.hpp"
 #include "sys/OSXFS.hpp"
 #include "sys/SDL_App.hpp"
 #include "sys/SDL_Input.hpp"

@@ -58,11 +58,10 @@ namespace nom
       bool getCanvasLock ( void ) const;
 
       void Update ( void );
-      /// \todo
-      /// TEST ME
-      /// \endtodo
+
       /// As per libSDL docs, this method call should not be used when the display
       /// surface is locked
+      /// \todo TEST ME
       void Update ( const nom::Coords& coords );
       void toggleFullScreenWindow ( int32_t width, int32_t height );
 

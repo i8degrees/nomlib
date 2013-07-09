@@ -30,18 +30,14 @@ namespace nom
       nom::Coords getSize ( void ) const;
       void setSize ( int32_t width, int32_t height );
 
-      /// \todo
-      /// TEST ME
-      /// \endtodo
+      /// \todo TEST ME
       bool contains ( int32_t x, int32_t y ) const;
-      /// \todo
-      /// TEST ME
-      /// \endtodo
+
+      /// \todo TEST ME
       bool contains ( const nom::Coords& pos ) const;
-      /// \todo
-      /// TEST ME
-      /// \endtodo
+
       /// Checks to see if our rectangle overlaps with another
+      /// \todo TEST ME
       bool intersects ( nom::Coords& rectangle ) const;
 
       /// Copy assignment constructor

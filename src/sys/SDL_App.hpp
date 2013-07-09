@@ -42,13 +42,18 @@ namespace nom
       void showFPS ( bool toggle );
       void toggleFPS ( void );
 
+      /// Set the rate at which we would like to receive keyboard input
       void enableKeyRepeat ( int32 delay, int32 interval );
 
     private:
-      bool app_state; /// global app state
-      bool show_fps; /// fps counter
-      bool fullscreen; /// toggle window & fullscreen states
-      Timer appTime; /// global app timer
+      /// global app state
+      bool app_state;
+      /// fps counter
+      bool show_fps;
+       /// toggle windowed & fullscreen states
+      bool fullscreen;
+      /// global app timer
+      Timer appTime;
   };
 }
 

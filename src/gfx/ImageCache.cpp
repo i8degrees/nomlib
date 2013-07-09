@@ -1,6 +1,6 @@
 /******************************************************************************
 
-    Image Cache
+    Object Cache
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved
@@ -12,43 +12,59 @@
 #include "ImageCache.hpp"
 
 namespace nom {
+  namespace priv {
 
-std::map <std::string, std::shared_ptr<void>> ImageCache::image_cache;
+// Initialize our cache in global space
+std::map <std::string, std::shared_ptr<void>> ObjectCache::cache;
 
-ImageCache::ImageCache ( void )
+ObjectCache::ObjectCache ( void )
 {
 //NOMLIB_LOG_INFO;
-
-  // Initialize instance variables
 }
 
-ImageCache::~ImageCache ( void )
+ObjectCache::~ObjectCache ( void )
 {
 //NOMLIB_LOG_INFO;
-
-  // Clean up instance variables
 }
 
-std::shared_ptr<void> ImageCache::getImage ( const std::string& filename, const Color& colorkey, uint32 flags )
+std::shared_ptr<void> ObjectCache::addObject  ( const std::string& key,
+                                                std::shared_ptr<void> object
+                                              )
 {
-  std::map <std::string, std::shared_ptr<void>>::iterator itr = image_cache.find ( filename );
+  std::map <std::string, std::shared_ptr<void>>::iterator res;
 
-  // If we reach the end, we do not have this in cache, so prepare to cache it
-  if ( itr == image_cache.end() )
+  res = cache.insert( std::pair< std::string, std::shared_ptr<void>> ( key, object ) ).first;
+
+NOMLIB_LOG ( "ObjectCache: " + key + " has been added to the cache." );
+
+  return res->second;
+}
+
+bool ObjectCache::removeObject ( const std::string& key )
+{
+  cache.erase ( key );
+
+  return true;
+}
+
+std::shared_ptr<void> ObjectCache::getObject ( const std::string& key )
+{
+  std::map <std::string, std::shared_ptr<void>>::iterator itr;
+
+  itr = cache.find ( key );
+
+  // We have found no entity matching the key if we reach the end of the cache;
+  // otherwise, we return the existing entity from the cache
+  if ( itr == cache.end() )
   {
-    SDL_Image image;
-    std::shared_ptr<void> image_buffer = nullptr;
-
-    image_buffer = std::shared_ptr<void> ( image.loadFromFile ( filename ) );
-
-NOMLIB_LOG ( "ImageCache: " + filename + " has been added to the cache." );
-
-    std::map <std::string, std::shared_ptr<void>>::iterator res = image_cache.insert( std::pair< std::string, std::shared_ptr<void>> ( filename, image_buffer ) ).first;
-
-    return res->second; // Return the new pointer from cache
+    return nullptr;
   }
   else
-    return itr->second; // Return the existing pointer from cache
+  {
+    return itr->second;
+  }
 }
 
+
+  } // namespace priv
 } // namespace nom

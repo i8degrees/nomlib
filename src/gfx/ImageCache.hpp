@@ -1,43 +1,44 @@
 /******************************************************************************
 
-    Image Cache
+    Object Cache
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved
 
-  Portions Copyright (c) 2013 Fielding Johnston
-  All rights reserved
-
 ******************************************************************************/
-#ifndef NOMLIB_IMAGE_CACHE_HEADERS
-#define NOMLIB_IMAGE_CACHE_HEADERS
+#ifndef NOMLIB_OBJECT_CACHE_HEADERS
+#define NOMLIB_OBJECT_CACHE_HEADERS
 
-#include <iostream>
 #include <string>
 #include <memory>
 #include <map>
 
-#include "sdl/utils.hpp"
-#include "math/Color.hpp"
-#include "gfx/SDL_Image.hpp"
 #include "config.hpp"
 
 namespace nom {
+  namespace priv {
 
-class ImageCache
+class ObjectCache
 {
   public:
-    ~ImageCache ( void );
+    ObjectCache ( void );
+    ~ObjectCache ( void );
 
-    static std::shared_ptr<void> getImage ( const std::string& filename,
-                                            const Color& colorkey, uint32 flags
-                                          );
+    std::shared_ptr<void> addObject ( const std::string& key,
+                                      std::shared_ptr<void> object
+                                    );
+
+    /// \todo TEST ME
+    bool removeObject ( const std::string& key );
+
+    std::shared_ptr<void> getObject ( const std::string& key );
 
   private:
-    ImageCache ( void );
-    static std::map <std::string, std::shared_ptr<void>> image_cache;
+    static std::map <std::string, std::shared_ptr<void>> cache;
 };
 
+
+  } // namespace priv
 } // namespace nom
 
-#endif // NOMLIB_IMAGE_CACHE_HEADERS defined
+#endif // NOMLIB_OBJECT_CACHE_HEADERS defined

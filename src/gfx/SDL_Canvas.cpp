@@ -142,14 +142,27 @@ bool nom::SDL_Canvas::getCanvasLock ( void ) const
 
 bool nom::SDL_Canvas::loadFromImage ( const std::string& filename, const nom::Color& colorkey, bool use_cache, uint32 flags )
 {
+  SDL_Image image;
+
+   // By default -- for peace of mind above all else -- we have caching turned
+  // off
   if ( use_cache )
-    this->canvas_buffer = ImageCache::getImage ( filename, colorkey, flags );
-  else
   {
-    nom::SDL_Image image; // holds our image in memory during transfer
+    priv::ObjectCache cache;
+
+    this->canvas_buffer = cache.getObject ( filename );
+
+    if ( this->canvas_buffer == nullptr )
+    {
+      this->canvas_buffer = cache.addObject ( filename, image.loadFromFile ( filename ) );
+    }
+  }
+  else // Do not use the object cache
+  {
     this->canvas_buffer = std::shared_ptr<void> ( image.loadFromFile ( filename ) );
   }
 
+  // Validate our obtained data is good before further processing
   if ( this->valid() == false )
   {
 NOMLIB_LOG_ERR ( "Could not load canvas image file: " + filename );

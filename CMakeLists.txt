@@ -206,13 +206,13 @@ if ( NOT TTCARDS_NOMLIB_COMPILE )
   endif ( BUILD_SHARED_LIBS )
 
   #     Install headers
-  install ( FILES ${GAMELIB_HEADERS_ROOT} DESTINATION include/gamelib )
-  install ( FILES ${GAMELIB_HEADERS_AUDIO} DESTINATION include/gamelib/audio/AL )
-  install ( FILES ${GAMELIB_HEADERS_GFX} DESTINATION include/gamelib/gfx )
-  install ( FILES ${GAMELIB_HEADERS_SYS} DESTINATION include/gamelib/sys )
-  install ( FILES ${GAMELIB_HEADERS_MATH} DESTINATION include/gamelib/math )
-  install ( FILES ${GAMELIB_HEADERS_GUI} DESTINATION include/gamelib/gui )
-  install ( FILES ${GAMELIB_HEADERS_SDL} DESTINATION include/gamelib/sdl )
+  install ( FILES ${GAMELIB_HEADERS_ROOT} DESTINATION include/nomlib )
+  install ( FILES ${GAMELIB_HEADERS_AUDIO} DESTINATION include/nomlib/audio/AL )
+  install ( FILES ${GAMELIB_HEADERS_GFX} DESTINATION include/nomlib/gfx )
+  install ( FILES ${GAMELIB_HEADERS_SYS} DESTINATION include/nomlib/sys )
+  install ( FILES ${GAMELIB_HEADERS_MATH} DESTINATION include/nomlib/math )
+  install ( FILES ${GAMELIB_HEADERS_GUI} DESTINATION include/nomlib/gui )
+  install ( FILES ${GAMELIB_HEADERS_SDL} DESTINATION include/nomlib/sdl )
 
   #     Uninstall target
   configure_file  (

@@ -42,6 +42,9 @@ namespace nom
       void showFPS ( bool toggle );
       void toggleFPS ( void );
 
+      /// Let the user know if there are pending events
+      bool PollEvents ( SDL_Event* );
+
       /// Set the rate at which we would like to receive keyboard input
       void enableKeyRepeat ( int32 delay, int32 interval );
 

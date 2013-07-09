@@ -89,6 +89,16 @@ void SDL_App::setFullScreen ( bool toggle )
   this->fullscreen = toggle;
 }
 
+bool SDL_App::PollEvents ( SDL_Event* event )
+{
+  if ( SDL_PollEvent ( event ) )
+  {
+    return true;
+  }
+
+  return false;
+}
+
 void SDL_App::enableKeyRepeat ( int32 delay, int32 interval )
 {
   SDL_EnableKeyRepeat ( delay, interval );

@@ -1,3 +1,6 @@
+# CMake auto-generated files
+version.hpp
+
 *.sublime-workspace
 *.bck
 *.o

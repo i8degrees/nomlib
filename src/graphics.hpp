@@ -9,7 +9,7 @@
 #ifndef NOMLIB_GFX_HEADERS
 #define NOMLIB_GFX_HEADERS
 
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 #include "gfx/ImageCache.hpp"
 #include "gfx/SDL_BitmapFont.hpp"

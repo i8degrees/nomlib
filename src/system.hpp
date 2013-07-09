@@ -9,7 +9,7 @@
 #ifndef NOMLIB_SYS_HEADERS
 #define NOMLIB_SYS_HEADERS
 
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 #include "sys/FPS.hpp"
 #include "sys/GameStates.hpp"

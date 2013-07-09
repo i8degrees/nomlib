@@ -9,7 +9,7 @@
 #ifndef NOMLIB_GUI_HEADERS
 #define NOMLIB_GUI_HEADERS
 
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 #include "gui/SDL_Cursor.hpp"
 #include "gui/SDL_MessageBox.hpp"

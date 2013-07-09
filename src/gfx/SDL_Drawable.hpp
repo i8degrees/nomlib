@@ -10,7 +10,7 @@
 #define NOMLIB_SDL_DRAWABLE_HEADERS
 
 #include "gfx/IDrawable.hpp"
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 namespace nom
 {

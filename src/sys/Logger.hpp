@@ -13,7 +13,7 @@
 #include <string>
 #include <ctime>
 
-#include "nomlib_types.hpp"
+#include "types.hpp"
 
 namespace nom {
 

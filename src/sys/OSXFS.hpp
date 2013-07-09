@@ -13,7 +13,7 @@
 #include <unistd.h>
 #include <libgen.h>
 
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 #ifndef PATH_MAX
   #define PATH_MAX 1024 // TODO: research this further, no idea if 1024 is legit

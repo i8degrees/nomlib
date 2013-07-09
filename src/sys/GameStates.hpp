@@ -16,7 +16,7 @@
 #include <memory>
 
 #include "sys/IState.hpp" // abstract class for our interface
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 namespace nom
 {

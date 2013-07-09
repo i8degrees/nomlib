@@ -18,7 +18,7 @@
 #include "math/Coords.hpp"
 #include "math/Color.hpp"
 #include "gfx/SDL_Canvas.hpp"
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 namespace nom
 {

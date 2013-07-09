@@ -11,7 +11,7 @@
 #include <iostream>
 #include <cassert>
 
-#include "nomlib_types.hpp"
+#include "types.hpp"
 #include "sys/Logger.hpp"
 
 // nomlib version

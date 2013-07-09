@@ -15,7 +15,7 @@
 
 #include "math/Coords.hpp"
 #include "gfx/Sprite.hpp"
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 namespace nom
 {

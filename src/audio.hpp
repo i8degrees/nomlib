@@ -9,7 +9,7 @@
 #ifndef NOMLIB_AUDIO_HEADERS
 #define NOMLIB_AUDIO_HEADERS
 
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 #include "audio/AL/AudioDevice.hpp"
 #include "audio/AL/Listener.hpp"

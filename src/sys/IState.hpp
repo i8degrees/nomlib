@@ -12,7 +12,7 @@
 #define NOMLIB_ISTATE_HEADERS
 
 #include "sys/SDL_Input.hpp"
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 namespace nom
 {

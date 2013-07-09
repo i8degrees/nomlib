@@ -15,7 +15,7 @@
 #include <OpenAL/al.h>
 #include <OpenAL/alc.h>
 
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 namespace nom {
   namespace OpenAL {

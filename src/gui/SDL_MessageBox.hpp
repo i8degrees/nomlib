@@ -20,7 +20,7 @@
 #include "gfx/SDL_Canvas.hpp"
 #include "gfx/SDL_Gradient.hpp"
 #include "gfx/SDL_Line.hpp"
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 namespace nom
 {

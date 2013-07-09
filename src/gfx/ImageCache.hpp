@@ -20,7 +20,7 @@
 #include "sdl/utils.hpp"
 #include "math/Color.hpp"
 #include "gfx/SDL_Image.hpp"
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 namespace nom {
 

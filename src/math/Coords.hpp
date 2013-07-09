@@ -9,7 +9,7 @@
 #ifndef NOMLIB_COORDS_HEADERS
 #define NOMLIB_COORDS_HEADERS
 
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 namespace nom
 {

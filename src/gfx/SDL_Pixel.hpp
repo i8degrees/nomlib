@@ -14,7 +14,7 @@
 #include "math/Coords.hpp"
 #include "math/Transformable.hpp"
 #include "gfx/SDL_Drawable.hpp"
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 namespace nom
 {

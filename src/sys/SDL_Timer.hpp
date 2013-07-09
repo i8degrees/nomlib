@@ -13,7 +13,7 @@
 
 #include <SDL/SDL.h>
 
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 namespace nom
 {

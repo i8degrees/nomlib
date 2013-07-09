@@ -21,7 +21,7 @@
 #include "gfx/ImageCache.hpp"
 #include "gfx/SDL_Image.hpp"
 #include "gfx/SDL_Rectangle.hpp"
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 namespace nom
 {

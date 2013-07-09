@@ -9,7 +9,7 @@
 #ifndef NOMLIB_MATH_HEADERS
 #define NOMLIB_MATH_HEADERS
 
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 #include "math/Color.hpp"
 #include "math/Coords.hpp"

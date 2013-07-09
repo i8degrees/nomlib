@@ -9,7 +9,7 @@
 #ifndef NOMLIB_IDRAWABLE_HEADERS
 #define NOMLIB_IDRAWABLE_HEADERS
 
-#include "nomlib_config.hpp"
+#include "config.hpp"
 
 namespace nom
 {

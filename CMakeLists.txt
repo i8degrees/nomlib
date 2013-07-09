@@ -167,8 +167,9 @@ include_directories ( ${SDL_IMAGE_INCLUDE_DIR} )
 find_package ( SDL_ttf REQUIRED )
 include_directories ( ${SDL_TTF_INCLUDE_DIR} )
 
-find_package ( OpenAL REQUIRED )
-include_directories ( ${OPENAL_INCLUDE_DIR} )
+# Creative OpenAL was a tad bit buggy for me on audio device destruction
+find_package ( OpenALSoft REQUIRED )
+include_directories ( ${OPENALSOFT_INCLUDE_DIR} )
 
 find_package ( libsndfile REQUIRED )
 include_directories ( ${LIBSNDFILE_INCLUDE_DIR} )
@@ -176,7 +177,7 @@ include_directories ( ${LIBSNDFILE_INCLUDE_DIR} )
 link_libraries (  gamelib # makefile target
                   ${SDL_LIBRARY}
                   ${SDLIMAGE_LIBRARY}
-                  ${OPENAL_LIBRARY}
+                  ${OPENALSOFT_LIBRARY}
                   ${LIBSNDFILE_LIBRARY}
                   ${SDLTTF_LIBRARY}
                )

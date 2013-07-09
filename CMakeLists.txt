@@ -94,6 +94,11 @@ set ( GAMELIB_SOURCE
 set ( GAMELIB_HEADERS_ROOT
       ${SRC_DIR}/nomlib_config.hpp
       ${SRC_DIR}/nomlib_types.hpp
+      ${SRC_DIR}/audio.hpp
+      ${SRC_DIR}/graphics.hpp
+      ${SRC_DIR}/gui.hpp
+      ${SRC_DIR}/math.hpp
+      ${SRC_DIR}/system.hpp
     )
 
 set ( GAMELIB_HEADERS_AUDIO

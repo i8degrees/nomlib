@@ -11,33 +11,32 @@
 #ifndef NOMLIB_ISTATE_HEADERS
 #define NOMLIB_ISTATE_HEADERS
 
-#include <iostream>
-
 #include "sys/SDL_Input.hpp"
 #include "nomlib_config.hpp"
 
 namespace nom
 {
-  class IState: public nom::SDL_Input // "has a" relationship
-  {
-    public:
-      virtual ~IState ( void )
-      {
+class IState: public SDL_Input // "has a" relationship
+{
+  public:
+    virtual ~IState ( void )
+    {
 NOMLIB_LOG_INFO;
-      }
+    }
 
-      virtual void onInit ( void ) = 0;
-      virtual void onExit ( void ) = 0;
+    virtual void onInit ( void ) = 0;
+    virtual void onExit ( void ) = 0;
 
-      virtual void Pause ( void ) = 0;
-      virtual void Resume ( void ) = 0;
+    /// Optional interface
+    virtual void Pause ( void ) {}
+    /// Optional interface
+    virtual void Resume ( void ) {}
 
-      virtual void Update ( float ) = 0;
-      virtual void Draw ( void* ) = 0;
+    virtual void Update ( float ) = 0;
+    virtual void Draw ( void* ) = 0;
+};
 
-    private:
-      // ...
-  };
-}
+
+} // namespace nom
 
 #endif // NOMLIB_ISTATE_HEADERS defined

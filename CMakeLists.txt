@@ -1,6 +1,12 @@
 cmake_minimum_required ( VERSION 2.8 )
 
-project ( gamelib )
+set ( PROJECT_NAME gamelib )
+set ( PROJECT_VERSION_MAJOR 0 )
+set ( PROJECT_VERSION_MINOR 1 )
+set ( PROJECT_VERSION_PATCH 0 )
+
+project ( ${PROJECT_NAME} )
+
 
 #     CMake Environment
 set ( CMAKE_VERBOSE_MAKEFILE true )
@@ -9,6 +15,10 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/
 
 option ( BUILD_SHARED_LIBS "Build as a shared library -- as opposed to static library" on )
 option ( BUILD_UNIVERSAL_LIB "Build as OSX Universal Library; i386 and x86_64" off )
+
+# Creative OpenAL was a tad bit buggy for me on audio device destruction
+# This is allegedly backwards-compatible with Creative OpenAL
+option ( USE_OPENALSOFT_LIB "Use OpenAL-Soft library" on )
 
 if ( BUILD_SHARED_LIBS )
   message ( "Building as a shared library" )
@@ -21,6 +31,11 @@ if ( BUILD_UNIVERSAL_LIB )
   message ( "Building an OSX Universal Library" )
 endif ( BUILD_UNIVERSAL_LIB )
 
+if ( USE_OPENALSOFT_LIB )
+  message ( "Building with OpenAL-Soft library" )
+else ( NOT USE_OPENALSOFT_LIB )
+  message ( "Building with OpenAL library" )
+endif ( USE_OPENALSOFT_LIB )
 if ( CMAKE_GENERATOR STREQUAL Xcode )
   message ( "Setting Xcode-specific project settings " )
   set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
@@ -160,36 +175,40 @@ include_directories ( src )
 #     Required Dependencies
 find_package ( SDL REQUIRED )
 include_directories ( ${SDL_INCLUDE_DIR} )
+set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${SDL_LIBRARY} )
 
 find_package ( SDL_image REQUIRED )
 include_directories ( ${SDL_IMAGE_INCLUDE_DIR} )
+set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${SDLIMAGE_LIBRARY} )
 
 find_package ( SDL_ttf REQUIRED )
 include_directories ( ${SDL_TTF_INCLUDE_DIR} )
+set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${SDLTTF_LIBRARY} )
 
-# Creative OpenAL was a tad bit buggy for me on audio device destruction
-find_package ( OpenALSoft REQUIRED )
-include_directories ( ${OPENALSOFT_INCLUDE_DIR} )
+if ( USE_OPENALSOFT_LIB )
+  find_package ( OpenALSoft REQUIRED )
+  include_directories ( ${OPENALSOFT_INCLUDE_DIR} )
+  set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${OPENALSOFT_LIBRARY} )
+else ( NOT USE_OPENALSOFT_LIB )
+  find_package ( OpenAL REQUIRED )
+  include_directories ( ${OPENAL_INCLUDE_DIR} )
+  set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${OPENAL_LIBRARY} )
+endif ( USE_OPENALSOFT_LIB )
 
 find_package ( libsndfile REQUIRED )
 include_directories ( ${LIBSNDFILE_INCLUDE_DIR} )
+set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${LIBSNDFILE_LIBRARY} )
 
-link_libraries (  gamelib # makefile target
-                  ${SDL_LIBRARY}
-                  ${SDLIMAGE_LIBRARY}
-                  ${OPENALSOFT_LIBRARY}
-                  ${LIBSNDFILE_LIBRARY}
-                  ${SDLTTF_LIBRARY}
-               )
+link_libraries  ( ${PROJECT_NAME} ${REQUIRED_LIBS} )
 
 if ( NOT BUILD_SHARED_LIBS )
-  add_library ( gamelib STATIC ${GAMELIB_SOURCE} )
+  add_library ( ${PROJECT_NAME} STATIC ${GAMELIB_SOURCE} )
 else ( BUILD_SHARED_LIBS )
-  add_library ( gamelib SHARED ${GAMELIB_SOURCE} )
+  add_library ( ${PROJECT_NAME} SHARED ${GAMELIB_SOURCE} )
 endif ( NOT BUILD_SHARED_LIBS )
 
-set_target_properties ( gamelib # makefile target
-                        PROPERTIES SOVERSION "0.1"
+set_target_properties ( ${PROJECT_NAME} # makefile target
+                        PROPERTIES SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
                       )
 
 #     FIXME: doxygen docs generation
@@ -201,9 +220,9 @@ if ( NOT TTCARDS_NOMLIB_COMPILE )
 
   #     Install library
   if ( BUILD_SHARED_LIBS )
-    install ( TARGETS gamelib LIBRARY DESTINATION lib )
+    install ( TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib )
   else ( NOT BUILD_SHARED_LIBS )
-    install ( TARGETS gamelib ARCHIVE DESTINATION lib )
+    install ( TARGETS ${PROJECT_NAME} ARCHIVE DESTINATION lib )
   endif ( BUILD_SHARED_LIBS )
 
   #     Install headers

@@ -58,7 +58,7 @@ NOMLIB_LOG_INFO;
 
 void nom::SDL_Input::HandleInput ( void* event )
 {
-  SDL_Event *input = (SDL_Event*) event;
+  SDL_Event* input = static_cast<SDL_Event*> ( event );
 
   switch ( input->type )
   {
@@ -96,13 +96,11 @@ void nom::SDL_Input::HandleInput ( void* event )
     break;
     }
 
-    default:
-    {
+    case SDL_USEREVENT:
       this->onUserEvent ( input->user.type, input->user.code, input->user.data1,
-                    input->user.data2
-                  );
-      break;
-    }
+                          input->user.data2
+                        );
+    break;
 
     case SDL_VIDEORESIZE: this->onResize ( input->resize.w, input->resize.h ); break;
     case SDL_VIDEOEXPOSE: this->onExpose (); break;

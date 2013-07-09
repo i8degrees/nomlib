@@ -6,8 +6,8 @@
   All rights reserved.
 
 ******************************************************************************/
-#ifndef NOMLIB_OPENAL_AUDIO_DEVICE_HEADERS
-#define NOMLIB_OPENAL_AUDIO_DEVICE_HEADERS
+#ifndef NOMLIB_AL_AUDIO_DEVICE_HEADERS
+#define NOMLIB_AL_AUDIO_DEVICE_HEADERS
 
 #include <iostream>
 #include <memory>
@@ -18,12 +18,13 @@
 #include "nomlib_config.hpp"
 
 namespace nom {
+  namespace OpenAL {
 
-class OpenAL_AudioDevice
+class AudioDevice
 {
   public:
-    OpenAL_AudioDevice ( void );
-    ~OpenAL_AudioDevice ( void );
+    AudioDevice ( void );
+    ~AudioDevice ( void );
 
     const std::string getDeviceName ( void ) const;
 
@@ -36,6 +37,8 @@ class OpenAL_AudioDevice
     const ALCchar *device_name;
 };
 
+
+  } // namespace OpenAL
 } // namespace nom
 
-#endif // NOMLIB_OPENAL_AUDIO_DEVICE_HEADERS defined
+#endif // NOMLIB_AL_AUDIO_DEVICE_HEADERS defined

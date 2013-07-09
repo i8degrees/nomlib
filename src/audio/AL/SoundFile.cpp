@@ -6,11 +6,12 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "OpenAL_SoundFile.hpp"
+#include "SoundFile.hpp"
 
 namespace nom {
+  namespace OpenAL {
 
-OpenAL_SoundFile::OpenAL_SoundFile ( void )
+SoundFile::SoundFile ( void )
 {
 NOMLIB_LOG_INFO;
 
@@ -19,29 +20,29 @@ NOMLIB_LOG_INFO;
   // Initialize here
 }
 
-OpenAL_SoundFile::~OpenAL_SoundFile ( void )
+SoundFile::~SoundFile ( void )
 {
 NOMLIB_LOG_INFO;
 
   // Clean up instance variables
 }
 
-std::size_t OpenAL_SoundFile::getSampleCount ( void ) const
+size_t SoundFile::getSampleCount ( void ) const
 {
   return this->sample_count;
 }
 
-uint32 OpenAL_SoundFile::getChannelCount ( void ) const
+uint32 SoundFile::getChannelCount ( void ) const
 {
   return this->channel_count;
 }
 
-uint32 OpenAL_SoundFile::getSampleRate ( void ) const
+uint32 SoundFile::getSampleRate ( void ) const
 {
   return this->sample_rate;
 }
 
-bool OpenAL_SoundFile::loadFromFile ( const std::string& filename )
+bool SoundFile::loadFromFile ( const std::string& filename )
 {
   SF_INFO info;
   size_t read_size = 0;
@@ -62,4 +63,6 @@ bool OpenAL_SoundFile::loadFromFile ( const std::string& filename )
   return true;
 }
 
+
+  } // namespace OpenAL
 } // namespace nom

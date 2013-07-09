@@ -1,23 +1,24 @@
 /******************************************************************************
 
-    OpenAL SoundBuffer
+    OpenAL Music Interface
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.
 
 ******************************************************************************/
-#include "OpenAL_SoundBuffer.hpp"
+#include "Music.hpp"
 
 namespace nom {
+  namespace OpenAL {
 
-OpenAL_SoundBuffer::OpenAL_SoundBuffer ( void )
+Music::Music ( void )
 {
 NOMLIB_LOG_INFO;
 
   // Initialize here
 }
 
-OpenAL_SoundBuffer::~OpenAL_SoundBuffer ( void )
+Music::~Music ( void )
 {
 NOMLIB_LOG_INFO;
 
@@ -25,4 +26,5 @@ NOMLIB_LOG_INFO;
 }
 
 
+  } // namespace OpenAL
 } // namespace nom

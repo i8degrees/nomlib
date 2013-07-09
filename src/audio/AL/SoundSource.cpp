@@ -1,23 +1,24 @@
 /******************************************************************************
 
-    Music Interface
+    OpenAL SoundSource
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.
 
 ******************************************************************************/
-#include "Music.hpp"
+#include "SoundSource.hpp"
 
 namespace nom {
+  namespace OpenAL {
 
-Music::Music ( void )
+SoundSource::SoundSource ( void )
 {
 NOMLIB_LOG_INFO;
 
   // Initialize here
 }
 
-Music::~Music ( void )
+SoundSource::~SoundSource ( void )
 {
 NOMLIB_LOG_INFO;
 
@@ -25,4 +26,5 @@ NOMLIB_LOG_INFO;
 }
 
 
+  } // namespace OpenAL
 } // namespace nom

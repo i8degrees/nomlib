@@ -6,11 +6,12 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "OpenAL_AudioDevice.hpp"
+#include "AudioDevice.hpp"
 
 namespace nom {
+  namespace OpenAL {
 
-OpenAL_AudioDevice::OpenAL_AudioDevice ( void )
+AudioDevice::AudioDevice ( void )
 {
 NOMLIB_LOG_INFO;
 
@@ -38,17 +39,18 @@ NOMLIB_LOG_ERR ( "Failed to open the audio device." );
   }
 }
 
-OpenAL_AudioDevice::~OpenAL_AudioDevice ( void )
+AudioDevice::~AudioDevice ( void )
 {
 NOMLIB_LOG_INFO;
 
   // Clean up instance variables
 }
 
-const std::string OpenAL_AudioDevice::getDeviceName ( void ) const
+const std::string AudioDevice::getDeviceName ( void ) const
 {
   return this->device_name;
 }
 
 
+  } // namespace OpenAL
 } // namespace nom

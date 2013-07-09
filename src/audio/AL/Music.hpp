@@ -1,13 +1,13 @@
 /******************************************************************************
 
-    OpenAL Audio Listener
+    OpenAL Music Interface
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.
 
 ******************************************************************************/
-#ifndef NOMLIB_OPENAL_LISTENER_HEADERS
-#define NOMLIB_OPENAL_LISTENER_HEADERS
+#ifndef NOMLIB_AL_MUSIC_HEADERS
+#define NOMLIB_AL_MUSIC_HEADERS
 
 #include <iostream>
 #include <memory>
@@ -18,17 +18,20 @@
 #include "nomlib_config.hpp"
 
 namespace nom {
+  namespace OpenAL {
 
-class OpenAL_Listener
+class Music
 {
   public:
-    OpenAL_Listener ( void );
-    ~OpenAL_Listener ( void );
+    Music ( void );
+    ~Music ( void );
 
   private:
     // ...
 };
 
+
+  } // namespace OpenAL
 } // namespace nom
 
-#endif // NOMLIB_OPENAL_LISTENER_HEADERS defined
+#endif // NOMLIB_AL_MUSIC_HEADERS defined

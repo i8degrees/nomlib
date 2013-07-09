@@ -1,13 +1,13 @@
 /******************************************************************************
 
-    OpenAL SoundSource
+    OpenAL Sound Interface
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.
 
 ******************************************************************************/
-#ifndef NOMLIB_OPENAL_SOUNDSOURCE_HEADERS
-#define NOMLIB_OPENAL_SOUNDSOURCE_HEADERS
+#ifndef NOMLIB_AL_SOUND_HEADERS
+#define NOMLIB_AL_SOUND_HEADERS
 
 #include <iostream>
 #include <memory>
@@ -18,17 +18,20 @@
 #include "nomlib_config.hpp"
 
 namespace nom {
+  namespace OpenAL {
 
-class OpenAL_SoundSource
+class Sound
 {
   public:
-    OpenAL_SoundSource ( void );
-    ~OpenAL_SoundSource ( void );
+    Sound ( void );
+    ~Sound ( void );
 
   private:
     // ...
 };
 
+
+  } // namespace OpenAL
 } // namespace nom
 
-#endif // NOMLIB_OPENAL_SOUNDSOURCE_HEADERS defined
+#endif // NOMLIB_AL_SOUND_HEADERS defined

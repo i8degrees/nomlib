@@ -1,23 +1,24 @@
 /******************************************************************************
 
-    OpenAL Listener
+    OpenAL SoundBuffer
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.
 
 ******************************************************************************/
-#include "OpenAL_Listener.hpp"
+#include "SoundBuffer.hpp"
 
 namespace nom {
+  namespace OpenAL {
 
-OpenAL_Listener::OpenAL_Listener ( void )
+SoundBuffer::SoundBuffer ( void )
 {
 NOMLIB_LOG_INFO;
 
   // Initialize here
 }
 
-OpenAL_Listener::~OpenAL_Listener ( void )
+SoundBuffer::~SoundBuffer ( void )
 {
 NOMLIB_LOG_INFO;
 
@@ -25,4 +26,5 @@ NOMLIB_LOG_INFO;
 }
 
 
+  } // namespace OpenAL
 } // namespace nom

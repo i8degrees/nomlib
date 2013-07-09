@@ -52,13 +52,13 @@ set ( SRC_DIR src ) # project_dir/src
 
 set ( GAMELIB_SOURCE
       # audio
-      ${SRC_DIR}/audio/OpenAL_AudioDevice.cpp
-      ${SRC_DIR}/audio/OpenAL_Listener.cpp
-      ${SRC_DIR}/audio/OpenAL_SoundBuffer.cpp
-      ${SRC_DIR}/audio/OpenAL_SoundFile.cpp
-      ${SRC_DIR}/audio/OpenAL_SoundSource.cpp
-      ${SRC_DIR}/audio/Music.cpp
-      ${SRC_DIR}/audio/Sound.cpp
+      ${SRC_DIR}/audio/AL/AudioDevice.cpp
+      ${SRC_DIR}/audio/AL/Listener.cpp
+      ${SRC_DIR}/audio/AL/SoundBuffer.cpp
+      ${SRC_DIR}/audio/AL/SoundFile.cpp
+      ${SRC_DIR}/audio/AL/SoundSource.cpp
+      ${SRC_DIR}/audio/AL/Music.cpp
+      ${SRC_DIR}/audio/AL/Sound.cpp
       # gfx
       ${SRC_DIR}/gfx/ImageCache.cpp
       ${SRC_DIR}/gfx/IDisplay.cpp
@@ -97,13 +97,13 @@ set ( GAMELIB_HEADERS_ROOT
     )
 
 set ( GAMELIB_HEADERS_AUDIO
-      ${SRC_DIR}/audio/OpenAL_AudioDevice.hpp
-      ${SRC_DIR}/audio/OpenAL_Listener.hpp
-      ${SRC_DIR}/audio/OpenAL_SoundBuffer.hpp
-      ${SRC_DIR}/audio/OpenAL_SoundFile.hpp
-      ${SRC_DIR}/audio/OpenAL_SoundSource.hpp
-      ${SRC_DIR}/audio/Music.hpp
-      ${SRC_DIR}/audio/Sound.hpp
+      ${SRC_DIR}/audio/AL/AudioDevice.hpp
+      ${SRC_DIR}/audio/AL/Listener.hpp
+      ${SRC_DIR}/audio/AL/SoundBuffer.hpp
+      ${SRC_DIR}/audio/AL/SoundFile.hpp
+      ${SRC_DIR}/audio/AL/SoundSource.hpp
+      ${SRC_DIR}/audio/AL/Music.hpp
+      ${SRC_DIR}/audio/AL/Sound.hpp
     )
 
 set ( GAMELIB_HEADERS_GFX
@@ -202,7 +202,7 @@ if ( NOT TTCARDS_NOMLIB_COMPILE )
 
   #     Install headers
   install ( FILES ${GAMELIB_HEADERS_ROOT} DESTINATION include/gamelib )
-  install ( FILES ${GAMELIB_HEADERS_AUDIO} DESTINATION include/gamelib/audio )
+  install ( FILES ${GAMELIB_HEADERS_AUDIO} DESTINATION include/gamelib/audio/AL )
   install ( FILES ${GAMELIB_HEADERS_GFX} DESTINATION include/gamelib/gfx )
   install ( FILES ${GAMELIB_HEADERS_SYS} DESTINATION include/gamelib/sys )
   install ( FILES ${GAMELIB_HEADERS_MATH} DESTINATION include/gamelib/math )

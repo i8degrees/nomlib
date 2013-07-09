@@ -6,8 +6,8 @@
   All rights reserved.
 
 ******************************************************************************/
-#ifndef NOMLIB_OPENAL_SOUNDFILE_HEADERS
-#define NOMLIB_OPENAL_SOUNDFILE_HEADERS
+#ifndef NOMLIB_AL_SOUNDFILE_HEADERS
+#define NOMLIB_AL_SOUNDFILE_HEADERS
 
 #include <iostream>
 #include <string>
@@ -22,14 +22,15 @@
 #include "nomlib_config.hpp"
 
 namespace nom {
+  namespace OpenAL {
 
-class OpenAL_SoundFile
+class SoundFile
 {
   public:
-    OpenAL_SoundFile ( void );
-    ~OpenAL_SoundFile ( void );
+    SoundFile ( void );
+    ~SoundFile ( void );
 
-    std::size_t getSampleCount ( void ) const;
+    size_t getSampleCount ( void ) const;
     uint32 getChannelCount ( void ) const;
     uint32 getSampleRate ( void ) const;
 
@@ -49,6 +50,8 @@ class OpenAL_SoundFile
     std::vector<int16_t> read_buffer;
 };
 
+
+  } // namespace OpenAL
 } // namespace nom
 
-#endif // NOMLIB_OPENAL_SOUNDFILE_HEADERS defined
+#endif // NOMLIB_AL_SOUNDFILE_HEADERS defined

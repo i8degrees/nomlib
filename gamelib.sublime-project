@@ -4,14 +4,14 @@
     {
       "name": "src",
       "path": "src",
-      "file_include_patterns": ["*.cpp", "*.c", "*.hpp", "*.h"]
+      "file_include_patterns": [ "*.cpp", "*.c", "*.hpp", "*.h" ]
     },
 
     {
       "name": "docs",
       "path": ".",
-      "file_include_patterns": ["*.md", "*.css", "*.html", "doxygen.cfg", "*.txt", "*.cmake" ],
-      "folder_exclude_patterns": ["build", "tmp", "docs/public", "docs/man", "src" ]
+      "file_include_patterns": [ "*.md", "*.css", "*.html", "doxygen.cfg", "*.txt", "*.cmake" ],
+      "folder_exclude_patterns": [ "build", "tmp", "docs/public", "docs/man", "src" ]
     },
 
     {} // placeholder

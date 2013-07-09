@@ -51,24 +51,26 @@
 #define NOMLIB_DEBUG_ALL
 
 // Pretty print C macros
-#ifdef NOMLIB_DEBUG_ALL
-  // If all debugging is turned on, we show class construction and destruction
-  #define NOMLIB_LOG_INFO ( nom::Logger::info ( __func__ ) )
-#else // We do not add any overhead
-  #define NOMLIB_LOG_INFO
-#endif
-
 #ifdef NOMLIB_DEBUG
   // If debugging is turned on, we log all warnings, errors & info
-  #define NOMLIB_LOG(message) ( nom::Logger::info ( message ) )
-  #define NOMLIB_LOG_ERR(message) ( nom::Logger::err ( __FILE__, __LINE__, message ) )
-  #define NOMLIB_ASSERT(expression) ( assert (expression) )
+  #define NOMLIB_LOG(message) \
+    ( nom::Logger::info ( message ) )
+  #define NOMLIB_LOG_ERR(message) \
+    ( nom::Logger::err ( __FILE__, __LINE__, message ) )
+  #define NOMLIB_ASSERT(expression) \
+    ( assert (expression) )
 #else // We do not add any overhead
   #define NOMLIB_LOG(message)
   #define NOMLIB_LOG_ERR(message)
   #define NOMLIB_ASSERT(expression)
 #endif
 
-
+#ifdef NOMLIB_DEBUG_ALL
+  // If all debugging is turned on, we show class construction and destruction
+  #define NOMLIB_LOG_INFO \
+    ( nom::Logger::info ( __func__ ) )
+#else // We do not add any overhead
+  #define NOMLIB_LOG_INFO
+#endif
 
 #endif // NOMLIB_CONFIG_HEADERS defined

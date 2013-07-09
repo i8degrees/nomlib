@@ -55,11 +55,11 @@ namespace nom
   class SDL_Input
   {
     public:
-      void HandleInput ( void* event );
-    protected:
       SDL_Input ( void );
       virtual ~SDL_Input ( void );
 
+      virtual void HandleInput ( void* event );
+    protected:
       virtual void onUserEvent ( uint8_t type, int32_t code, void* data1, void* data2 );
       virtual void onQuit ( void );
       virtual void onResize ( int32_t width, int32_t height );

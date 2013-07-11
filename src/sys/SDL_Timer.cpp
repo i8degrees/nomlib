@@ -74,7 +74,7 @@ unsigned int nom::Timer::getTicks ( void )
       return SDL_GetTicks() - this->elapsed_ticks;
     }
   }
-  return 0;
+  return SDL_GetTicks();
 }
 
 bool nom::Timer::isStarted ( void )

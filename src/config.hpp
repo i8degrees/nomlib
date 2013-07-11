@@ -72,4 +72,7 @@
   #define NOMLIB_LOG_INFO
 #endif
 
+#define NOMLIB_DUMP_VAR(var) \
+  ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
+
 #endif // NOMLIB_CONFIG_HEADERS defined

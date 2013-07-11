@@ -9,7 +9,7 @@
 
 nom::Timer::Timer ( void )
 {
-NOMLIB_LOG_INFO;
+//NOMLIB_LOG_INFO;
 
   if ( SDL_InitSubSystem ( SDL_INIT_TIMER ) == -1 )
   {
@@ -24,7 +24,7 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
 
 nom::Timer::~Timer ( void )
 {
-NOMLIB_LOG_INFO;
+//NOMLIB_LOG_INFO;
 
   SDL_QuitSubSystem ( SDL_INIT_TIMER );
 }

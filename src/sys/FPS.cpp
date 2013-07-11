@@ -9,7 +9,7 @@
 
 nom::FPS::FPS ( void )
 {
-NOMLIB_LOG_INFO;
+//NOMLIB_LOG_INFO;
 
   this->total_frames = 0;
   this->fps.Start();
@@ -18,7 +18,7 @@ NOMLIB_LOG_INFO;
 
 nom::FPS::~FPS ( void )
 {
-NOMLIB_LOG_INFO;
+//NOMLIB_LOG_INFO;
 
   this->total_frames = 0;
   this->fps.Stop();

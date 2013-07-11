@@ -1,11 +1,10 @@
 cmake_minimum_required ( VERSION 2.8 )
 
-set ( PROJECT_NAME gamelib )
 set ( PROJECT_VERSION_MAJOR 0 )
 set ( PROJECT_VERSION_MINOR 1 )
 set ( PROJECT_VERSION_PATCH 0 )
 
-project ( ${PROJECT_NAME} )
+project ( gamelib ) # $PROJECT_NAME
 
 set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" ) # gamelib/src
 set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" ) # gamelib/examples

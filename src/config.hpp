@@ -58,10 +58,13 @@
     ( nom::Logger::err ( __FILE__, __LINE__, message ) )
   #define NOMLIB_ASSERT(expression) \
     ( assert (expression) )
+  #define NOMLIB_DUMP_VAR(var) \
+  ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
 #else // We do not add any overhead
   #define NOMLIB_LOG(message)
   #define NOMLIB_LOG_ERR(message)
   #define NOMLIB_ASSERT(expression)
+  #define NOMLIB_DUMP_VAR(var)
 #endif
 
 #ifdef NOMLIB_DEBUG_ALL
@@ -72,7 +75,8 @@
   #define NOMLIB_LOG_INFO
 #endif
 
-#define NOMLIB_DUMP_VAR(var) \
-  ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
+#ifndef __cplusplus
+  #error "nomlib requires a C++11 compiler"
+#endif
 
 #endif // NOMLIB_CONFIG_HEADERS defined

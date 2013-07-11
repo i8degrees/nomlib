@@ -219,10 +219,6 @@ set_target_properties ( ${PROJECT_NAME} # makefile target
                         PROPERTIES SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
                       )
 
-if ( BUILD_NOMLIB_EXAMPLES )
-  add_subdirectory ( ${EXAMPLES_SRC_DIR} )
-endif ( BUILD_NOMLIB_EXAMPLES )
-
 #     FIXME: doxygen docs generation
 add_custom_target ( nomlib-docs
                     COMMAND ${DOXYGEN_COMMAND} ${DOXYGEN_CONFIG_FILE}
@@ -259,3 +255,12 @@ if ( NOT TTCARDS_NOMLIB_COMPILE )
                     )
 
 endif ( NOT TTCARDS_NOMLIB_COMPILE )
+
+if ( BUILD_NOMLIB_EXAMPLES )
+  set ( EXECUTABLE_OUTPUT_PATH "${EXAMPLES_SRC_DIR}" )
+  set ( NOMLIB_EXAMPLES_AUDIO
+      ${EXAMPLES_SRC_DIR}/audio/audio.cpp
+    )
+  link_libraries ( gamelib SDLmain )
+  add_executable ( audio/audio ${NOMLIB_EXAMPLES_AUDIO} )
+endif ( BUILD_NOMLIB_EXAMPLES )

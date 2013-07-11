@@ -11,61 +11,73 @@
 #include <cstdlib>
 #include <cassert>
 
-#include <nomlib/audio.hpp>
-#include <nomlib/system.hpp>
+#include "audio.hpp"
+#include "math.hpp"
+#include "system.hpp"
 
-class App
-{
-  public:
-    App ( void )
-    {
-      //
-    }
-    ~App ( void )
-    {
-      //
-    }
-
-    nom::int32 Run ( void )
-    {
-      std::cout << "Device Name: " << this->dev.getDeviceName() << std::endl;
-
-      return 0;
-    }
-
-  private:
-    nom::OpenAL::AudioDevice dev;
-    std::string dev_name;
-};
+#define dump_var(var) NOMLIB_DUMP_VAR(var)
 
 int main ( int argc, char* argv[] )
 {
-  using namespace nom::OpenAL;
-  App engine;
-  AudioDevice::AudioDevice dev;
-  std::string dev_name;
+  nom::OpenAL::AudioDevice dev; // this must be declared first
+  nom::OpenAL::Listener listener;
+  nom::OpenAL::SoundBuffer buffer;
+  nom::Timer loops;
+
   std::string path = nom::OSXFS::getDirName ( argv[0] ) + "/";
 
-  dev_name = dev.getDeviceName();
+  dump_var ( dev.getDeviceName() );
 
-  std::cout << "Device Name: " << dev.getDeviceName() << std::endl;
-
-  engine.Run();
-
-  SoundFile snd;
+  listener.setMasterVolume ( 1.0 );
+  dump_var ( listener.getMasterVolume() );
 
   if ( argv[1] != nullptr )
   {
-    snd.loadFromFile ( argv[1] );
+    buffer.loadFromFile ( argv[1] );
   }
   else
   {
-    snd.loadFromFile ( path + "data/cursor_wrong.wav" );
+    buffer.loadFromFile ( path + "data/cursor_wrong.wav" );
   }
 
-  std::cout << "Sample Count: " << snd.getSampleCount() << std::endl;
-  std::cout << "Channel Count: " << snd.getChannelCount() << std::endl;
-  std::cout << "Sample Rate: " << snd.getSampleRate() << std::endl;
+  ALuint source;
+  alGenSources ( 1, &source );
+
+  assert ( source != AL_INVALID_VALUE );
+
+  ALfloat sourcePos[] = { 0.0, 0.0, 0.0 };
+  ALfloat sourceVel[] = { 0.0, 0.0, 0.0 };
+
+  alSourcei ( source, AL_BUFFER, buffer.get() );
+  alSourcef ( source, AL_PITCH, 1.0 );
+  alSourcef ( source, AL_GAIN, 1.00 );
+  alSourcefv ( source, AL_POSITION, sourcePos );
+  alSourcefv ( source, AL_VELOCITY, sourceVel );
+  alSourcei ( source, AL_LOOPING, AL_TRUE );
+
+  nom::uint32 duration = buffer.getDuration();
+  float duration_seconds = duration / 1000.0f;
+  dump_var ( duration_seconds );
+
+  loops.Start();
+
+  while ( loops.getTicks() <= duration * 2 )
+  {
+    ALint state;
+    alGetSourcei ( source, AL_SOURCE_STATE, &state );
+
+    if ( state != AL_PLAYING )
+      alSourcePlay ( source );
+  }
+
+  loops.Stop();
+  dump_var ( loops.getTicks() );
+
+  assert ( alGetError() == AL_NO_ERROR );
+
+  //std::cout << "Sample Count: " << sndfile.getSampleCount() << std::endl;
+  //std::cout << "Channel Count: " << sndfile.getChannelCount() << std::endl;
+  //std::cout << "Sample Rate: " << sndfile.getSampleRate() << std::endl;
 
   return EXIT_SUCCESS;
 }

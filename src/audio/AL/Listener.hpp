@@ -15,6 +15,7 @@
 #include <OpenAL/al.h>
 #include <OpenAL/alc.h>
 
+#include "math.hpp"
 #include "config.hpp"
 
 namespace nom {
@@ -25,6 +26,15 @@ class Listener
   public:
     Listener ( void );
     ~Listener ( void );
+
+    float getMasterVolume ( void );
+    Vector3f getPosition ( void );
+    Vector3f getVelocity ( void );
+    Vector3f getDirection ( void );
+    void setMasterVolume ( float gain );
+    void setPosition ( const Vector3f& position );
+    void setVelocity ( const Vector3f& velocity );
+    void setDirection ( const Vector3f& direction );
 
   private:
     // ...

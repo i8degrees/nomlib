@@ -26,6 +26,9 @@ class AudioDevice
     AudioDevice ( void );
     ~AudioDevice ( void );
 
+    /// Obtain the OpenAL audio device
+    std::shared_ptr<ALCdevice> getAudioDevice ( void ) const;
+
     const std::string getDeviceName ( void ) const;
 
   private:

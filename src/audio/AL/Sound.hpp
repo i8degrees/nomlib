@@ -20,6 +20,9 @@
 namespace nom {
   namespace OpenAL {
 
+/// A sample is the amplitude of the sound signal at a given point of time, and
+/// an array -- 16-bit signed integers -- of samples therefore represents a full
+/// sound.
 class Sound
 {
   public:

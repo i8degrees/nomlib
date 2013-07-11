@@ -43,6 +43,7 @@ namespace nom
       static const nom::Color Cyan;
       static const nom::Color Transparent;
 
+      /// Additional predefined color constants
       static const nom::Color Gray;
 
       uint8_t red;
@@ -50,9 +51,7 @@ namespace nom
       uint8_t blue;
       int32_t alpha;
 
-    private:
-      // ...
-  };
+  }; // class Color
 
   // FIXME: not sure why these cannot be put into the class file without
   // linking errs?

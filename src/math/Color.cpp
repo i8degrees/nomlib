@@ -8,7 +8,6 @@
 ******************************************************************************/
 #include "Color.hpp"
 
-// Predefined color constants
 const nom::Color nom::Color::Black ( 0, 0, 0 );
 const nom::Color nom::Color::White ( 255, 255, 255 );
 const nom::Color nom::Color::Red ( 255, 0, 0 );

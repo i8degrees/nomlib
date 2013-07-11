@@ -49,9 +49,7 @@ namespace nom
       signed int width;
       signed int height;
 
-    private:
-      // ...
-  };
+  }; // class Coords
 
   // FIXME: not sure why these cannot be put into the class file without
   // linking errs?

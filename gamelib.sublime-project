@@ -10,7 +10,7 @@
     {
       "name": "docs",
       "path": ".",
-      "file_include_patterns": [ "*.md", "*.css", "*.html", "doxygen.cfg", "*.txt", "*.cmake" ],
+      "file_include_patterns": [ "*.md", "*.css", "*.html", "doxygen.cfg", "*.txt", "*.cmake", ".gitignore" ],
       "folder_exclude_patterns": [ "build", "tmp", "docs/public", "docs/man", "src", "examples" ]
     },
 

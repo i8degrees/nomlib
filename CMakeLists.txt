@@ -265,8 +265,12 @@ endif ( NOT TTCARDS_NOMLIB_COMPILE )
 if ( BUILD_NOMLIB_EXAMPLES )
   set ( EXECUTABLE_OUTPUT_PATH "${EXAMPLES_SRC_DIR}" )
   set ( NOMLIB_EXAMPLES_AUDIO
-      ${EXAMPLES_SRC_DIR}/audio/audio.cpp
-    )
+        ${EXAMPLES_SRC_DIR}/audio/audio.cpp
+      )
+  set ( NOMLIB_EXAMPLES_APP
+        ${EXAMPLES_SRC_DIR}/app/app.cpp
+      )
   link_libraries ( gamelib SDLmain )
   add_executable ( audio/audio ${NOMLIB_EXAMPLES_AUDIO} )
+  add_executable ( app/app ${NOMLIB_EXAMPLES_APP} )
 endif ( BUILD_NOMLIB_EXAMPLES )

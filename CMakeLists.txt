@@ -105,6 +105,9 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/math/Color.cpp
       ${SRC_DIR}/math/Coords.cpp
       ${SRC_DIR}/math/Transformable.cpp
+      ${SRC_DIR}/math/Vector2-inl.hpp
+      ${SRC_DIR}/math/Vector3-inl.hpp
+      ${SRC_DIR}/math/Vector4-inl.hpp
       # gui
       ${SRC_DIR}/gui/SDL_Cursor.cpp
       ${SRC_DIR}/gui/SDL_MessageBox.cpp
@@ -166,6 +169,9 @@ set ( GAMELIB_HEADERS_MATH
       ${SRC_DIR}/math/Color.hpp
       ${SRC_DIR}/math/Coords.hpp
       ${SRC_DIR}/math/Transformable.hpp
+      ${SRC_DIR}/math/Vector2-inl.hpp
+      ${SRC_DIR}/math/Vector3-inl.hpp
+      ${SRC_DIR}/math/Vector4-inl.hpp
     )
 
 set ( GAMELIB_HEADERS_GUI

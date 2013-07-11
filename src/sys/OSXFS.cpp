@@ -17,6 +17,16 @@ nom::OSXFS::~OSXFS ( void )
 NOMLIB_LOG_INFO;
 }
 
+bool nom::OSXFS::fileExists ( const std::string& file_path )
+{
+  struct stat buffer;
+
+  if ( stat ( file_path.c_str(), &buffer ) != 0 || !S_ISREG ( buffer.st_mode ))
+    return false;
+
+  return true;
+}
+
 const std::string nom::OSXFS::getBaseName ( const std::string& dir_path )
 {
   // We must do this string conversion -- from a std::string to a char

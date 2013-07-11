@@ -12,6 +12,7 @@
 #include <string>
 #include <unistd.h>
 #include <libgen.h>
+#include <sys/stat.h>
 #include <CoreFoundation/CoreFoundation.h>
 
 #include "config.hpp"
@@ -27,6 +28,10 @@ class OSXFS
 {
   public:
     ~OSXFS ( void );
+
+    /// stat(2) wrapper
+    ///
+    static bool fileExists ( const std::string& file_path );
 
     /// basename(3) wrapper
     ///

@@ -34,6 +34,9 @@ namespace nom
       void Running ( void );
       void Quit ( void );
 
+      virtual void onQuit ( void );
+      virtual void onEvent ( SDL_Event* event );
+
       uint32_t getTicks ( void );
 
       bool isFullScreen ( void );

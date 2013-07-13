@@ -20,16 +20,14 @@ Logger::~Logger ( void )
   // Nothing to clean up
 }
 
-void Logger::info ( std::string message )
+void Logger::info ( const std::string& message )
 {
-  std::string current_time = getCurrentTime();
-  std::cout << "NOMLIB_LOG_INFO at " << current_time << message << std::endl << std::endl;
+  std::cout << "NOMLIB_LOG_INFO at " << Logger::getCurrentTime() << message << std::endl << std::endl;
 }
 
-void Logger::err ( std::string file, int32 line, std::string reason )
+void Logger::err ( const std::string& file, uint32 line, const std::string& reason )
 {
-  std::string current_time = getCurrentTime();
-  std::cout << "NOMLIB_ERR at " << current_time << "In file " << file << ":" << line << std::endl << "Reason: " << reason << std::endl << std::endl;
+  std::cout << "NOMLIB_LOG_ERR at " << Logger::getCurrentTime() << "In file " << file << ":" << line << std::endl << "Reason: " << reason << std::endl << std::endl;
 }
 
 std::string Logger::getCurrentTime ( void )

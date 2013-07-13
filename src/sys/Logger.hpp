@@ -23,14 +23,17 @@ class Logger
     ~Logger ( void );
 
     /// Logging of info messages
-    static void info ( std::string message );
+    static void info ( const std::string& message );
     /// Logging of error messages
-    static void err ( std::string file, int32 line, std::string reason = "\0" );
+    static void err ( const std::string& file, uint32 line,
+                      const std::string& reason = "\0"
+                    );
 
   private:
     Logger ( void );
     static std::string getCurrentTime ( void );
 };
+
 
 } // namespace nom
 

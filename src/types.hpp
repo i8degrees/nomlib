@@ -12,7 +12,7 @@
 #include <cstdint>
 
 // 64-bit kernel
-#define NOMLIB_64BIT_TYPE
+#define NOMLIB_64BIT
 
 // Derives from stdint.h
 namespace nom {
@@ -33,7 +33,8 @@ typedef int32_t int32;
 typedef uint32_t uint32;
 
 // 64-bit integer types
-#if defined NOMLIB_64BIT_TYPE
+#if defined NOMLIB_64BIT
+
   #if defined ( _MSC_VER ) // MSVC++
     typedef signed __int64 int64;
     typedef unsigned __int64 uint64;
@@ -41,16 +42,19 @@ typedef uint32_t uint32;
     typedef int64_t int64;
     typedef uint64_t uint64;
   #endif
-#endif
+#else // We are compiling on a 32-bit system; this needs verification!
+  typedef signed long long int64;
+  typedef unsigned long long uint64;
+
+#endif // NOMLIB_64BIT defined
 
 // Additional integer type definitions
-typedef uint16_t ushort;
 typedef unsigned long ulong;
 
 } // namespace nom
 
-// Thanks to SDL for the macro! :-)
 // Ensure our defined data types have the right sizes
+// Thanks to SDL for the macro! :-)
 #define NOMLIB_COMPILE_TIME_ASSERT(name, x) \
   typedef int NOMLIB_dummy_ ## name[(x) * 2 - 1]
 
@@ -61,11 +65,10 @@ NOMLIB_COMPILE_TIME_ASSERT(uint16, sizeof(nom::uint16) == 2);
 NOMLIB_COMPILE_TIME_ASSERT(int16, sizeof(nom::int16) == 2);
 NOMLIB_COMPILE_TIME_ASSERT(uint32, sizeof(nom::uint32) == 4);
 NOMLIB_COMPILE_TIME_ASSERT(int32, sizeof(nom::int32) == 4);
-NOMLIB_COMPILE_TIME_ASSERT(ushort, sizeof(nom::ushort) == 2);
+NOMLIB_COMPILE_TIME_ASSERT(uint64, sizeof(nom::uint64) == 8);
+NOMLIB_COMPILE_TIME_ASSERT(int64, sizeof(nom::int64) == 8);
 
-#if defined NOMLIB_64BIT_TYPE
-  NOMLIB_COMPILE_TIME_ASSERT(uint64, sizeof(nom::uint64) == 8);
-  NOMLIB_COMPILE_TIME_ASSERT(int64, sizeof(nom::int64) == 8);
+#ifdef NOMLIB_64BIT // Need to verify this
   NOMLIB_COMPILE_TIME_ASSERT(ulong, sizeof(nom::ulong) == 8);
 #else
   NOMLIB_COMPILE_TIME_ASSERT(ulong, sizeof(nom::ulong) == 4);

@@ -1,0 +1,8 @@
+language: cpp
+compiler:
+  - clang
+before_script:
+  - sudo apt-get install libsndfile1-dev libopenal-dev
+  - mkdir build && cd build && cmake ..
+script:
+  - make -j4

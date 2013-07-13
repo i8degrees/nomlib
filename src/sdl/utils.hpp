@@ -9,14 +9,11 @@
 #ifndef NOMLIB_SDL_UTILS_HEADERS
 #define NOMLIB_SDL_UTILS_HEADERS
 
-
-
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
 #include "config.hpp"
 #include "sys/Logger.hpp"
-#include "audio/AL/OpenAL.hpp"
 #include "math/Color.hpp"
 #include "math/Coords.hpp"
 
@@ -48,12 +45,6 @@ namespace nom
 
   /// Custom deleter for TTF_Font* smart pointers
   void TTF_FreeSurface ( TTF_Font* );
-
-  /// Custom deleter for freeing an OpenAL audio device
-  void AL_FreeAudioDevice ( ALCdevice* );
-
-  /// Custom deleter for freeing an OpenAL audio context
-  void AL_FreeAudioContext ( ALCcontext* );
 
 } // namespace nom
 

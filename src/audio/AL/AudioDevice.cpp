@@ -9,6 +9,37 @@
 #include "AudioDevice.hpp"
 
 namespace nom {
+  namespace priv {
+
+void AL_FreeAudioDevice ( ALCdevice* dev )
+{
+NOMLIB_LOG_INFO;
+
+  if ( dev != nullptr )
+  {
+    alcCloseDevice ( dev );
+  }
+}
+
+void AL_FreeAudioContext ( ALCcontext* ctx )
+{
+NOMLIB_LOG_INFO;
+
+  if ( ctx != nullptr )
+  {
+    // Disable context
+    alcMakeContextCurrent ( nullptr );
+
+    // Release context
+    alcDestroyContext ( ctx );
+  }
+}
+
+
+  } // namespace priv
+} // namespace nom
+
+namespace nom {
   namespace OpenAL {
 
 bool AudioDevice::audio_initialized = false;
@@ -38,7 +69,7 @@ NOMLIB_LOG_INFO;
   audio_context.reset();
 
   // audio device handle
-  this->audio_device = std::shared_ptr<ALCdevice> ( alcOpenDevice ( device_name ), AL_FreeAudioDevice );
+  this->audio_device = std::shared_ptr<ALCdevice> ( alcOpenDevice ( device_name ), nom::priv::AL_FreeAudioDevice );
 
   // attach a context (think: listener) to device
   if ( this->audio_device )
@@ -46,7 +77,7 @@ NOMLIB_LOG_INFO;
     // Store the audio device name now that it is confirmed valid
     this->device_name = alcGetString ( this->audio_device.get(), ALC_DEFAULT_DEVICE_SPECIFIER );
 
-    this->audio_context = std::shared_ptr<ALCcontext> ( alcCreateContext ( this->audio_device.get(), nullptr ), AL_FreeAudioContext );
+    this->audio_context = std::shared_ptr<ALCcontext> ( alcCreateContext ( this->audio_device.get(), nullptr ), nom::priv::AL_FreeAudioContext );
 
     if ( this->audio_context )
     {

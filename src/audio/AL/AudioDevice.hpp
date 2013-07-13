@@ -15,7 +15,19 @@
 #include "config.hpp"
 #include "sys/Logger.hpp"
 #include "OpenAL.hpp"
-#include "sdl/utils.hpp"
+
+namespace nom {
+  namespace priv {
+
+/// Custom deleter for freeing an OpenAL audio device
+void AL_FreeAudioDevice ( ALCdevice* );
+
+/// Custom deleter for freeing an OpenAL audio context
+void AL_FreeAudioContext ( ALCcontext* );
+
+  } // namespace priv
+} // namespace nom
+
 
 namespace nom {
   namespace OpenAL {
@@ -58,6 +70,7 @@ class AudioDevice
     /// device name
     const ALCchar *device_name;
 };
+
 
   } // namespace OpenAL
 } // namespace nom

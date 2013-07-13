@@ -14,7 +14,7 @@
 #include <iostream>
 #include <string>
 
-#if defined NOMLIB_SYSTEM_WINDOWS
+#if defined NOMLIB_SYSTEM_WINDOWS || defined NOMLIB_SYSTEM_LINUX
   #include <AL/al.h>
   #include <AL/alc.h>
 #else // Assumes configuration to be alike OSX

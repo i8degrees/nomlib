@@ -11,11 +11,9 @@
 
 #include <vector>
 
-#include <OpenAL/al.h>
-#include <OpenAL/alc.h>
 
+#include "OpenAL.hpp"
 #include "SoundFile.hpp"
-#include "config.hpp"
 
 namespace nom {
   namespace OpenAL {

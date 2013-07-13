@@ -12,11 +12,8 @@
 #include <iostream>
 #include <memory>
 
-#include <OpenAL/al.h>
-#include <OpenAL/alc.h>
-
 #include "math.hpp"
-#include "config.hpp"
+#include "OpenAL.hpp"
 
 namespace nom {
   namespace OpenAL {

@@ -134,6 +134,7 @@ set ( GAMELIB_HEADERS_ROOT
 set ( GAMELIB_HEADERS_AUDIO
       ${SRC_DIR}/audio/AL/AudioDevice.hpp
       ${SRC_DIR}/audio/AL/Listener.hpp
+      ${SRC_DIR}/audio/AL/OpenAL.hpp
       ${SRC_DIR}/audio/AL/SoundBuffer.hpp
       ${SRC_DIR}/audio/AL/SoundFile.hpp
       ${SRC_DIR}/audio/AL/SoundSource.hpp

@@ -15,6 +15,8 @@
 
 #include "types.hpp"
 
+#include "audio/AL/OpenAL.hpp"
+
 namespace nom {
 
 class Logger
@@ -28,6 +30,9 @@ class Logger
     static void err ( const std::string& file, uint32 line,
                       const std::string& reason = "\0"
                     );
+
+    /// OpenAL general error handling
+    static void al_check_err ( const std::string& file, nom::uint32 line );
 
   private:
     Logger ( void );

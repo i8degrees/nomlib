@@ -16,10 +16,7 @@
 
 #include <sndfile.h>
 
-#include <OpenAL/al.h>
-#include <OpenAL/alc.h>
-
-#include "config.hpp"
+#include "OpenAL.hpp"
 
 namespace nom {
   namespace OpenAL {

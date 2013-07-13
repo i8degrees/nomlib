@@ -18,5 +18,6 @@
 #include "sys/SDL_App.hpp"
 #include "sys/SDL_Input.hpp"
 #include "sys/SDL_Timer.hpp"
+#include "sys/Sleep.hpp"
 
 #endif // NOMLIB_SYS_HEADERS defined

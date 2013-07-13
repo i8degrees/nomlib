@@ -106,6 +106,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/sys/SDL_App.cpp
       ${SRC_DIR}/sys/SDL_Input.cpp
       ${SRC_DIR}/sys/SDL_Timer.cpp
+      ${SRC_DIR}/sys/Sleep.cpp
       # math
       ${SRC_DIR}/math/Color.cpp
       ${SRC_DIR}/math/Coords.cpp
@@ -169,6 +170,7 @@ set ( GAMELIB_HEADERS_SYS
       ${SRC_DIR}/sys/SDL_App.hpp
       ${SRC_DIR}/sys/SDL_Input.hpp
       ${SRC_DIR}/sys/SDL_Timer.hpp
+      ${SRC_DIR}/sys/Sleep.hpp
     )
 
 set ( GAMELIB_HEADERS_MATH

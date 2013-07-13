@@ -10,11 +10,6 @@
 
 namespace nom {
 
-void sleep ( uint32 milliseconds )
-{
-  SDL_Delay ( std::max ( milliseconds, static_cast<uint32> ( 10 ) ) );
-}
-
 SDL_Rect getSDL_Rect ( const Coords& coords_ )
 {
   SDL_Rect coords;

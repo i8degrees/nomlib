@@ -15,7 +15,7 @@
 #include "config.hpp"
 #include "sys/Logger.hpp"
 #include "OpenAL.hpp"
-#include "sdl/utils.hpp"
+#include "sys/Sleep.hpp"
 #include "SoundBuffer.hpp"
 #include "SoundSource.hpp"
 

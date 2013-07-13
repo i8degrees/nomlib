@@ -16,6 +16,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 
 #include "config.hpp"
+#include "sys/Logger.hpp"
 
 #ifndef PATH_MAX
   #define PATH_MAX 1024

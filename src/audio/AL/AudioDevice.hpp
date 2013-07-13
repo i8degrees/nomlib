@@ -12,6 +12,8 @@
 #include <iostream>
 #include <memory>
 
+#include "config.hpp"
+#include "sys/Logger.hpp"
 #include "OpenAL.hpp"
 #include "sdl/utils.hpp"
 

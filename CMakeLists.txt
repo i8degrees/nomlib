@@ -79,6 +79,7 @@ set ( GAMELIB_SOURCE
       # audio
       ${SRC_DIR}/audio/AL/AudioDevice.cpp
       ${SRC_DIR}/audio/AL/Listener.cpp
+      ${SRC_DIR}/audio/AL/OpenAL.cpp
       ${SRC_DIR}/audio/AL/SoundBuffer.cpp
       ${SRC_DIR}/audio/AL/SoundFile.cpp
       ${SRC_DIR}/audio/AL/SoundSource.cpp

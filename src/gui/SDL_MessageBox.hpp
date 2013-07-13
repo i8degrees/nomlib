@@ -13,6 +13,8 @@
 #include <string>
 #include <vector>
 
+#include "config.hpp"
+#include "sys/Logger.hpp"
 #include "math/Color.hpp"
 #include "math/Coords.hpp"
 #include "math/Transformable.hpp"
@@ -20,7 +22,6 @@
 #include "gfx/SDL_Canvas.hpp"
 #include "gfx/SDL_Gradient.hpp"
 #include "gfx/SDL_Line.hpp"
-#include "config.hpp"
 
 namespace nom
 {

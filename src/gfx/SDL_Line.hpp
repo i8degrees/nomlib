@@ -13,12 +13,12 @@
 #include <vector>
 #include <memory>
 
+#include "config.hpp"
 #include "math/Color.hpp"
 #include "math/Coords.hpp"
 #include "math/Transformable.hpp"
 #include "gfx/SDL_Drawable.hpp"
 #include "gfx/SDL_Pixel.hpp"
-#include "config.hpp"
 
 namespace nom
 {

@@ -15,6 +15,7 @@
 #include <SDL/SDL_ttf.h>
 
 #include "config.hpp"
+#include "sys/Logger.hpp"
 #include "audio/AL/OpenAL.hpp"
 #include "math/Color.hpp"
 #include "math/Coords.hpp"

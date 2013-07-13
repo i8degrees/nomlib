@@ -12,10 +12,35 @@
 #include <iostream>
 #include <string>
 #include <ctime>
+#include <cassert>
 
-#include "types.hpp"
+#include "config.hpp"
 
-#include "audio/AL/OpenAL.hpp"
+// Pretty print C macros
+#ifdef NOMLIB_DEBUG
+  // If debugging is turned on, we log all warnings, errors & info
+  #define NOMLIB_LOG(message) \
+    ( nom::Logger::info ( message ) )
+  #define NOMLIB_LOG_ERR(message) \
+    ( nom::Logger::err ( __FILE__, __LINE__, message ) )
+  #define NOMLIB_ASSERT(expression) \
+    ( assert (expression) )
+  #define NOMLIB_DUMP_VAR(var) \
+  ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
+#else // We do not add any overhead
+  #define NOMLIB_LOG(message)
+  #define NOMLIB_LOG_ERR(message)
+  #define NOMLIB_ASSERT(expression)
+  #define NOMLIB_DUMP_VAR(var)
+#endif
+
+#ifdef NOMLIB_DEBUG_ALL
+  // If all debugging is turned on, we show class construction and destruction
+  #define NOMLIB_LOG_INFO \
+    ( nom::Logger::info ( __func__ ) )
+#else // We do not add any overhead
+  #define NOMLIB_LOG_INFO
+#endif
 
 namespace nom {
 
@@ -30,9 +55,6 @@ class Logger
     static void err ( const std::string& file, uint32 line,
                       const std::string& reason = "\0"
                     );
-
-    /// OpenAL general error handling
-    static void al_check_err ( const std::string& file, nom::uint32 line );
 
   private:
     Logger ( void );

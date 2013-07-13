@@ -10,8 +10,8 @@
 
 #include <string>
 
-#include "math/Coords.hpp"
 #include "config.hpp"
+#include "math/Coords.hpp"
 
 namespace nom
 {

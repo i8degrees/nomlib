@@ -17,9 +17,10 @@
 
 #include <SDL/SDL.h>
 
+#include "config.hpp"
+#include "sys/Logger.hpp"
 #include "sys/SDL_Input.hpp"
 #include "sys/SDL_Timer.hpp"
-#include "config.hpp"
 
 namespace nom
 {

@@ -9,17 +9,18 @@
 #ifndef NOMLIB_OPENAL_HEADERS
 #define NOMLIB_OPENAL_HEADERS
 
-#include "config.hpp"
-
 #include <iostream>
 #include <string>
+#include <ctime>
 
-#if defined NOMLIB_SYSTEM_WINDOWS || defined NOMLIB_SYSTEM_LINUX
-  #include <AL/al.h>
-  #include <AL/alc.h>
-#else // Assumes configuration to be alike OSX
+#include "config.hpp"
+
+#if defined NOMLIB_SYSTEM_OSX
   #include <OpenAL/al.h>
   #include <OpenAL/alc.h>
+#else // Assumes configuration to be alike (Ubuntu) Linux & Windows platforms
+  #include <AL/al.h>
+  #include <AL/alc.h>
 #endif
 
 /// Seven (7) buffers appears to be the highest my MacBook Air mid-2011 model
@@ -37,9 +38,18 @@ const float MAX_VOLUME = 100.0;
 
 #ifdef NOMLIB_DEBUG
   #define AL_ERR(Function) \
-    ( (Function ), nom::Logger::al_check_err ( __FILE__, __LINE__ ) )
+    ( (Function ), nom::priv::al_check_err ( __FILE__, __LINE__ ) )
 #else
   #define AL_ERR(Function) ( Function )
 #endif
+
+namespace nom {
+  namespace priv {
+
+void al_check_err ( const std::string& file, nom::uint32 line );
+
+  } // namespace priv
+} // namespace nom
+
 
 #endif // NOMLIB_OPENAL_HEADERS defined

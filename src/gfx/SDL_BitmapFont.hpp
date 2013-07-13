@@ -16,12 +16,13 @@
 #include <string>
 #include <sstream>
 
+#include "config.hpp"
+#include "sys/Logger.hpp"
 #include "sdl/utils.hpp"
 #include "math/Color.hpp"
 #include "math/Transformable.hpp"
 #include "gfx/SDL_Canvas.hpp"
 #include "gfx/SDL_Drawable.hpp"
-#include "config.hpp"
 
 namespace nom
 {

@@ -14,6 +14,8 @@
 
 #include <SDL/SDL.h>
 
+#include "config.hpp"
+#include "sys/Logger.hpp"
 //#include "gfx/ICanvas.hpp"
 #include "sdl/utils.hpp"
 #include "math/Color.hpp"
@@ -21,7 +23,6 @@
 #include "sys/ObjectCache.hpp"
 #include "gfx/SDL_Image.hpp"
 #include "gfx/SDL_Rectangle.hpp"
-#include "config.hpp"
 
 namespace nom
 {

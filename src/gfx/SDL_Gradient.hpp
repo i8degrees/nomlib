@@ -12,12 +12,13 @@
 #include <iostream>
 #include <string>
 
+#include "config.hpp"
+#include "sys/Logger.hpp"
 #include "math/Coords.hpp"
 #include "math/Color.hpp"
 #include "math/Transformable.hpp"
 #include "gfx/SDL_Drawable.hpp"
 #include "gfx/SDL_Rectangle.hpp"
-#include "config.hpp"
 
 namespace nom
 {

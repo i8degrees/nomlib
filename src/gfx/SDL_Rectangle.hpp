@@ -9,12 +9,13 @@
 #ifndef NOMLIB_SDL_RECTANGLE_HEADERS
 #define NOMLIB_SDL_RECTANGLE_HEADERS
 
+#include "config.hpp"
+#include "sys/Logger.hpp"
 #include "sdl/utils.hpp"
 #include "math/Color.hpp"
 #include "math/Coords.hpp"
 #include "math/Transformable.hpp"
 #include "gfx/SDL_Drawable.hpp"
-#include "config.hpp"
 
 namespace nom
 {

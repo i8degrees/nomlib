@@ -12,6 +12,8 @@
 #include <memory>
 #include <algorithm>
 
+#include "config.hpp"
+#include "sys/Logger.hpp"
 #include "OpenAL.hpp"
 #include "math/Vector3-inl.hpp"
 

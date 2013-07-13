@@ -8,8 +8,9 @@
 #ifndef NOMLIB_TIMER_FPS_HEADERS
 #define NOMLIB_TIMER_FPS_HEADERS
 
-#include "sys/SDL_Timer.hpp"
 #include "config.hpp"
+#include "sys/Logger.hpp"
+#include "sys/SDL_Timer.hpp"
 
 namespace nom
 {

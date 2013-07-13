@@ -12,6 +12,8 @@
 #include <memory>
 #include <set>
 
+#include "config.hpp"
+#include "sys/Logger.hpp"
 #include "OpenAL.hpp"
 #include "AudioDevice.hpp"
 #include "SoundFile.hpp"

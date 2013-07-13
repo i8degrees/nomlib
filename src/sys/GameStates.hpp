@@ -15,8 +15,9 @@
 #include <vector>
 #include <memory>
 
-#include "sys/IState.hpp" // abstract class for our interface
 #include "config.hpp"
+#include "sys/Logger.hpp"
+#include "sys/IState.hpp" // abstract class for our interface
 
 namespace nom
 {

@@ -13,9 +13,10 @@
 #include <string>
 #include <vector>
 
+#include "config.hpp"
+#include "sys/Logger.hpp"
 #include "math/Coords.hpp"
 #include "gfx/Sprite.hpp"
-#include "config.hpp"
 
 namespace nom
 {

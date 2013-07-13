@@ -8,14 +8,11 @@
 #ifndef NOMLIB_CONFIG_HEADERS
 #define NOMLIB_CONFIG_HEADERS
 
-#include <iostream>
-#include <cassert>
-
 // nomlib version
 #include "version.hpp"
 
+// nomlib data types
 #include "types.hpp"
-#include "sys/Logger.hpp"
 
 // Identification the operating system
 #if defined ( _WIN32) || defined ( __WIN32__ )
@@ -25,7 +22,7 @@
 #elif defined ( __APPLE__ ) || defined ( MACOSX ) || defined ( macintosh ) || defined ( Macintosh )
   #define NOMLIB_SYSTEM_OSX
 #else
-  #warning This operating system is not officially supported by nomlib
+  #warning "This operating system is not officially supported by nomlib"
 #endif
 
 // Function names and preferably also its type signature
@@ -49,34 +46,9 @@
 // Internal development; logging of class object construction and destruction
 #define NOMLIB_DEBUG_ALL
 
-// Pretty print C macros
-#ifdef NOMLIB_DEBUG
-  // If debugging is turned on, we log all warnings, errors & info
-  #define NOMLIB_LOG(message) \
-    ( nom::Logger::info ( message ) )
-  #define NOMLIB_LOG_ERR(message) \
-    ( nom::Logger::err ( __FILE__, __LINE__, message ) )
-  #define NOMLIB_ASSERT(expression) \
-    ( assert (expression) )
-  #define NOMLIB_DUMP_VAR(var) \
-  ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
-#else // We do not add any overhead
-  #define NOMLIB_LOG(message)
-  #define NOMLIB_LOG_ERR(message)
-  #define NOMLIB_ASSERT(expression)
-  #define NOMLIB_DUMP_VAR(var)
-#endif
-
-#ifdef NOMLIB_DEBUG_ALL
-  // If all debugging is turned on, we show class construction and destruction
-  #define NOMLIB_LOG_INFO \
-    ( nom::Logger::info ( __func__ ) )
-#else // We do not add any overhead
-  #define NOMLIB_LOG_INFO
-#endif
-
 #ifndef __cplusplus
-  #error "nomlib requires a C++11 compiler"
+  #warning "nomlib requires a C++11 compiler"
 #endif
+
 
 #endif // NOMLIB_CONFIG_HEADERS defined

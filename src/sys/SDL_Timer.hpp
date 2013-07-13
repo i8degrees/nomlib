@@ -13,6 +13,7 @@
 #include <SDL/SDL.h>
 
 #include "config.hpp"
+#include "sys/Logger.hpp"
 
 namespace nom
 {

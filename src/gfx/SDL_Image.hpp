@@ -17,10 +17,11 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
+#include "config.hpp"
+#include "sys/Logger.hpp"
 #include "sdl/utils.hpp"
 #include "math/Color.hpp"
 #include "math/Coords.hpp"
-#include "config.hpp"
 
 namespace nom
 {

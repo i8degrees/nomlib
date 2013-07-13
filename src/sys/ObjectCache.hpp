@@ -14,6 +14,7 @@
 #include <map>
 
 #include "config.hpp"
+#include "sys/Logger.hpp"
 
 namespace nom {
   namespace priv {

@@ -11,8 +11,9 @@
 #ifndef NOMLIB_ISTATE_HEADERS
 #define NOMLIB_ISTATE_HEADERS
 
-#include "sys/SDL_Input.hpp"
 #include "config.hpp"
+#include "sys/Logger.hpp"
+#include "sys/SDL_Input.hpp"
 
 namespace nom
 {

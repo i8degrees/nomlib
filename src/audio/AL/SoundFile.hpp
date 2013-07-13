@@ -16,6 +16,8 @@
 
 #include <sndfile.h>
 
+#include "config.hpp"
+#include "sys/Logger.hpp"
 #include "OpenAL.hpp"
 
 namespace nom {

@@ -9,9 +9,9 @@
 #ifndef NOMLIB_TRANSFORMABLE_HEADERS
 #define NOMLIB_TRANSFORMABLE_HEADERS
 
+#include "config.hpp"
 #include "math/Coords.hpp"
 #include "math/Color.hpp"
-#include "config.hpp"
 
 namespace nom
 {

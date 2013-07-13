@@ -59,4 +59,29 @@ void TTF_FreeSurface ( TTF_Font* font )
   TTF_CloseFont ( font );
 }
 
+void AL_FreeAudioDevice ( ALCdevice* dev )
+{
+NOMLIB_LOG_INFO;
+
+  if ( dev != nullptr )
+  {
+    alcCloseDevice ( dev );
+  }
+}
+
+void AL_FreeAudioContext ( ALCcontext* ctx )
+{
+NOMLIB_LOG_INFO;
+
+  if ( ctx != nullptr )
+  {
+    // Disable context
+    alcMakeContextCurrent ( nullptr );
+
+    // Release context
+    alcDestroyContext ( ctx );
+  }
+}
+
+
 } // namespace nom

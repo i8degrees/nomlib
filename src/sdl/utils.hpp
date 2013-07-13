@@ -12,10 +12,14 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
+#include "config.hpp"
+#include "audio/AL/OpenAL.hpp"
 #include "math/Color.hpp"
 #include "math/Coords.hpp"
-#include "config.hpp"
 
+/// The custom deleters exist solely as debugging tools right now, but are also
+/// implemented in case needs arise in the future that require more
+/// sophisticated means of freeing resources.
 namespace nom
 {
   /// Returns a SDL_Rect structure of a nom::Coords object
@@ -41,6 +45,12 @@ namespace nom
 
   /// Custom deleter for TTF_Font* smart pointers
   void TTF_FreeSurface ( TTF_Font* );
+
+  /// Custom deleter for freeing an OpenAL audio device
+  void AL_FreeAudioDevice ( ALCdevice* );
+
+  /// Custom deleter for freeing an OpenAL audio context
+  void AL_FreeAudioContext ( ALCcontext* );
 
 } // namespace nom
 

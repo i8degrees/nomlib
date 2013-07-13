@@ -214,7 +214,7 @@ else ( NOT USE_OPENALSOFT_LIB )
   set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${OPENAL_LIBRARY} )
 endif ( USE_OPENALSOFT_LIB )
 
-find_package ( libsndfile REQUIRED )
+find_package ( LibSndFile REQUIRED )
 include_directories ( ${LIBSNDFILE_INCLUDE_DIR} )
 set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${LIBSNDFILE_LIBRARY} )
 

@@ -13,12 +13,13 @@ namespace nom {
 
 Listener::Listener ( void )
 {
-//NOMLIB_LOG_INFO;
+NOMLIB_LOG_INFO;
 
   // Defaults as per OpenAL/al.h
   ALfloat position[] = { 0.0, 0.0, 0.0 };
   ALfloat velocity[] = { 0.0, 0.0, 0.0 };
-  ALfloat orientation[] = { 0.0, 0.0, -1.0, 0.0, 1.0, 0.0 };
+  // Listener is facing into the screen
+  ALfloat direction[] = { 0.0, 0.0, -1.0, 0.0, 1.0, 0.0 };
   ALfloat gain = 1.0;
 
   // Initialize with sane defaults to be on the safe side; note that you must
@@ -27,76 +28,85 @@ Listener::Listener ( void )
   alListenerf ( AL_GAIN, gain );
   alListenerfv ( AL_POSITION, position );
   alListenerfv ( AL_VELOCITY, velocity );
-  alListenerfv ( AL_ORIENTATION, orientation );
+  alListenerfv ( AL_ORIENTATION, direction );
 }
 
 Listener::~Listener ( void )
 {
-//NOMLIB_LOG_INFO;
+NOMLIB_LOG_INFO;
 
   // Clean up instance variables
 }
 
-float Listener::getMasterVolume ( void )
+float Listener::getVolume ( void ) const
 {
   ALfloat master_volume;
 
-  alGetListenerf ( AL_GAIN, &master_volume );
+AL_ERR ( alGetListenerf ( AL_GAIN, &master_volume ) );
 
-  return master_volume;
+  return master_volume * 100.f;
 }
 
-Vector3f Listener::getPosition ( void )
+const Vector3f Listener::getPosition ( void ) const
 {
-  ALfloat position_left;
-  ALfloat position_center;
-  ALfloat position_right;
+  Vector3f position;
 
-  alGetListener3f ( AL_POSITION, &position_left, &position_center, &position_right );
+AL_ERR ( alGetListener3f ( AL_POSITION, &position.x, &position.y, &position.z ) );
 
-  return Vector3f ( position_left, position_center, position_right );
+  return position;
 }
 
-Vector3f Listener::getVelocity ( void )
+const Vector3f Listener::getVelocity ( void ) const
 {
-  ALfloat velocity_left;
-  ALfloat velocity_center;
-  ALfloat velocity_right;
+  Vector3f velocity;
 
-  alGetListener3f ( AL_VELOCITY, &velocity_left, &velocity_center, &velocity_right );
+AL_ERR ( alGetListener3f ( AL_VELOCITY, &velocity.x, &velocity.y, &velocity.z ) );
 
-  return Vector3f ( velocity_left, velocity_center, velocity_right );
+  return velocity;
 }
 
-Vector3f Listener::getDirection ( void )
+const Vector3f Listener::getDirection ( void ) const
 {
-  ALfloat direction_left;
-  ALfloat direction_center;
-  ALfloat direction_right;
+  Vector3f direction;
 
-  alGetListener3f ( AL_DIRECTION, &direction_left, &direction_center, &direction_right );
+AL_ERR ( alGetListener3f ( AL_ORIENTATION, &direction.x, &direction.y, &direction.z ) );
 
-  return Vector3f ( direction_left, direction_center, direction_right );
+  return direction;
 }
 
-void Listener::setMasterVolume ( float gain )
+void Listener::setPosition ( float x, float y, float z )
 {
-  alListenerf ( AL_GAIN, gain );
+AL_ERR ( alListener3f ( AL_POSITION, x, y, z ) );
 }
 
 void Listener::setPosition ( const Vector3f& position )
 {
-  //
+  this->setPosition ( position.x, position.y, position.z );
+}
+
+void Listener::setVelocity ( float x, float y, float z )
+{
+AL_ERR ( alListener3f ( AL_VELOCITY, x, y, z ) );
 }
 
 void Listener::setVelocity ( const Vector3f& velocity )
 {
-  //
+  this->setVelocity ( velocity.x, velocity.y, velocity.z );
+}
+
+void Listener::setDirection ( float x, float y, float z )
+{
+AL_ERR ( alListener3f ( AL_ORIENTATION, x, y, z ) );
 }
 
 void Listener::setDirection ( const Vector3f& direction )
 {
-  //
+  this->setDirection ( direction.x, direction.y, direction.z );
+}
+
+void Listener::setVolume ( float gain )
+{
+AL_ERR ( alListenerf ( AL_GAIN, gain * 0.01f ) );
 }
 
 

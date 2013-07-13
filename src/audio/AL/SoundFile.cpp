@@ -13,7 +13,7 @@ namespace nom {
 
 SoundFile::SoundFile ( void )
 {
-//NOMLIB_LOG_INFO;
+NOMLIB_LOG_INFO;
 
   this->fp.reset();
 
@@ -22,8 +22,7 @@ SoundFile::SoundFile ( void )
 
 SoundFile::~SoundFile ( void )
 {
-//NOMLIB_LOG_INFO;
-
+NOMLIB_LOG_INFO;
   // Clean up instance variables
 }
 
@@ -47,11 +46,22 @@ uint32 SoundFile::getChannelFormat ( void ) const
   return this->channel_format;
 }
 
+size_t SoundFile::getDataByteSize ( void ) const
+{
+  return this->getSampleCount() * sizeof ( int16 );
+}
+
 bool SoundFile::open ( const std::string& filename )
 {
   SF_INFO info;
 
   this->fp = std::shared_ptr<SNDFILE> ( sf_open ( filename.c_str(), SFM_READ, &info ), sf_close );
+
+  if ( this->fp.get() == nullptr )
+  {
+NOMLIB_LOG_ERR ( "SNDFILE* fp is invalid" );
+    return false;
+  }
 
   this->channel_count = info.channels;
   // sample_count should be the same size as samples
@@ -60,10 +70,13 @@ bool SoundFile::open ( const std::string& filename )
 
   switch ( info.channels )
   {
-    default: break;
-
-    case 1: this->channel_format = Channels::Mono; break;
-    case 2: this->channel_format = Channels::Stereo; break;
+    default: this->channel_format = 0; break;
+    case 1: this->channel_format = alGetEnumValue ( "AL_FORMAT_MONO16" ); break;
+    case 2: this->channel_format = alGetEnumValue ( "AL_FORMAT_STEREO16" ); break;
+    case 4: this->channel_format = alGetEnumValue ( "AL_FORMAT_QUAD16" ); break;
+    case 6: this->channel_format = alGetEnumValue ( "AL_FORMAT_51CHN16" ); break;
+    case 7: this->channel_format = alGetEnumValue ( "AL_FORMAT_61CHN16" ); break;
+    case 8: this->channel_format = alGetEnumValue ( "AL_FORMAT_71CHN16" ); break;
   }
 
   return true;
@@ -73,7 +86,7 @@ bool SoundFile::read ( std::vector<int16>& data )
 {
   size_t read_size = 0;
   std::vector<int16> read_buffer;
-  read_buffer.resize ( 4096 );
+  read_buffer.resize ( BUFFER_SIZE );
 
   while ( ( read_size = sf_read_short ( this->fp.get(), read_buffer.data(), read_buffer.size() ) ) != 0 )
   {

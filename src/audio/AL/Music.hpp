@@ -13,18 +13,31 @@
 #include <memory>
 
 #include "OpenAL.hpp"
+#include "sys/SDL_Timer.hpp"
+#include "SoundBuffer.hpp"
+#include "SoundSource.hpp"
 
 namespace nom {
   namespace OpenAL {
 
-class Music
+class Music: public SoundSource // "is-a relationship"
 {
   public:
     Music ( void );
+    Music ( const SoundBuffer& copy );
     ~Music ( void );
 
+    void setBuffer ( const SoundBuffer& copy );
+
+    void Play ( void );
+    void Stop ( void );
+    void Pause ( void );
+    void togglePause ( void );
+
+    void fadeOut ( float seconds );
+
   private:
-    // ...
+    //SoundFile *fp;
 };
 
 

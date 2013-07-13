@@ -9,17 +9,17 @@
 #ifndef NOMLIB_AL_SOUNDBUFFER_HEADERS
 #define NOMLIB_AL_SOUNDBUFFER_HEADERS
 
-#include <vector>
-
+#include <memory>
+#include <set>
 
 #include "OpenAL.hpp"
+#include "AudioDevice.hpp"
 #include "SoundFile.hpp"
+
+class Sound; // forward declaration
 
 namespace nom {
   namespace OpenAL {
-
-#define NUM_BUFFERS 4
-#define BUFFER_SIZE 4096
 
 class SoundBuffer
 {
@@ -27,14 +27,27 @@ class SoundBuffer
     SoundBuffer ( void );
     ~SoundBuffer ( void );
 
-    ALuint get ( void );
-    uint32 getDuration ( void );
+    /// Obtain buffer data
+    ALuint get ( void ) const;
+
+    /// Obtain buffer duration in milliseconds
+    ///
+    /// Default: zero (0)
+    uint32 getDuration ( void ) const;
+
+    // getSampleRate
+    // getChannelCount
+    // ...
 
     bool loadFromFile ( const std::string& filename );
 
   private:
     ALuint buffers[NUM_BUFFERS];
+    /// We load our audio data into this buffer
+    std::vector<int16> samples;
+    std::set <std::shared_ptr<Sound>> sounds;
     /// Duration of sound buffer
+    ///
     /// Default: zero (0)
     uint32 buffer_duration;
 };

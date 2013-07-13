@@ -14,17 +14,58 @@ namespace nom {
 Sound::Sound ( void )
 {
 NOMLIB_LOG_INFO;
+}
 
-  // Initialize here
+Sound::Sound ( const SoundBuffer& copy )
+{
+  this->setBuffer ( copy );
 }
 
 Sound::~Sound ( void )
 {
 NOMLIB_LOG_INFO;
 
-  // Clean up instance variables
+  //this->Stop();
 }
 
+void Sound::setBuffer ( const SoundBuffer& copy )
+{
+NOMLIB_LOG_INFO;
+
+AL_ERR ( alSourcei ( source_id, AL_BUFFER, copy.get() ) );
+}
+
+void Sound::Play ( void )
+{
+AL_ERR ( alSourcePlay ( source_id ) );
+}
+
+void Sound::Stop ( void )
+{
+AL_ERR ( alSourceStop ( source_id ) );
+}
+
+void Sound::Pause ( void )
+{
+AL_ERR ( alSourcePause ( source_id ) );
+}
+
+// TODO
+/*
+float Sound::getPlayPosition ( void ) const
+{
+  ALfloat playback_position;
+
+  alGetSourcef ( source_id, AL_SEC_OFFSET, &playback_position );
+
+  return playback_position;
+}
+
+void Sound::setPlayPosition ( float seconds )
+{
+  alSourcef ( source_id, AL_SEC_OFFSET, seconds );
+}
+*/
 
   } // namespace OpenAL
 } // namespace nom

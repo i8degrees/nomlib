@@ -21,22 +21,26 @@
 namespace nom {
   namespace OpenAL {
 
-enum Channels
-{
-  Mono = AL_FORMAT_MONO16,
-  Stereo = AL_FORMAT_STEREO16
-};
-
 class SoundFile
 {
   public:
     SoundFile ( void );
     ~SoundFile ( void );
 
+    /// Obtain number of samples in audio file
     size_t getSampleCount ( void ) const;
+
+    /// Obtain number of channels used by audio file
     uint32 getChannelCount ( void ) const;
+
+    /// Obtain audio sampling rate; this is the number of samples per second
     uint32 getSampleRate ( void ) const;
+
+    /// Obtain channel format; used internally by OpenAL
     uint32 getChannelFormat ( void ) const;
+
+    /// Obtain audio data size in bytes
+    size_t getDataByteSize ( void ) const;
 
     bool open ( const std::string& filename );
     bool read ( std::vector<int16>& data );
@@ -48,11 +52,11 @@ class SoundFile
     std::vector<int16> samples;
     /// Total number of samples in the file
     std::size_t sample_count;
-    /// Number of channels used by sound; mono if one, stereo if two
+    /// Number of audio channels used by sound
     uint32 channel_count;
     /// Number of samples per second
     uint32 sample_rate;
-    /// Mono or stereo channels
+    /// OpenAL compatible audio channels used by sound
     int32 channel_format;
 };
 

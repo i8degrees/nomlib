@@ -9,6 +9,8 @@
 #ifndef NOMLIB_SDL_UTILS_HEADERS
 #define NOMLIB_SDL_UTILS_HEADERS
 
+#include <algorithm>
+
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
@@ -22,6 +24,11 @@
 /// sophisticated means of freeing resources.
 namespace nom
 {
+  /// SDL_Delay wrapper
+  ///
+  /// Values below 10 milliseconds are clamped to 10
+  void sleep ( uint32 milliseconds );
+
   /// Returns a SDL_Rect structure of a nom::Coords object
   SDL_Rect getSDL_Rect ( const Coords& );
 

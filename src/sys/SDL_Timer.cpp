@@ -87,11 +87,6 @@ bool nom::Timer::isPaused ( void )
   return this->paused;
 }
 
-void nom::Timer::sleep ( float milliseconds )
-{
-  SDL_Delay ( std::max ( milliseconds, 10.0f ) );
-}
-
 uint32_t nom::Timer::seconds ( float seconds ) const
 {
   return static_cast<uint32_t> ( seconds * 1000.f );

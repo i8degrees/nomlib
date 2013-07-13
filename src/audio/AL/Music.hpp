@@ -13,7 +13,7 @@
 #include <memory>
 
 #include "OpenAL.hpp"
-#include "sys/SDL_Timer.hpp"
+#include "sdl/utils.hpp"
 #include "SoundBuffer.hpp"
 #include "SoundSource.hpp"
 

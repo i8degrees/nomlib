@@ -9,7 +9,6 @@
 #define NOMLIB_TIMER_HEADERS
 
 #include <iostream>
-#include <algorithm>
 
 #include <SDL/SDL.h>
 
@@ -34,11 +33,6 @@ namespace nom
 
       bool isStarted ( void );
       bool isPaused ( void );
-
-      /// SDL_Delay wrapper
-      ///
-      /// Values below 10 milliseconds are clamped to 10
-      void sleep ( float milliseconds );
 
       /// Helper method; conversion from milliseconds to seconds
       uint32_t seconds( float seconds ) const;

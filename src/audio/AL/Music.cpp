@@ -84,7 +84,7 @@ NOMLIB_DUMP_VAR ( current_volume );
     }
 
     current_volume = current_volume - fade_step;
-    SDL_Delay ( 1000 );
+    sleep ( 1000 ); // FIXME
 
   } // while getStatus loop
 }

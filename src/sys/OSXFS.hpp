@@ -29,7 +29,12 @@ class OSXFS
   public:
     ~OSXFS ( void );
 
-    /// stat(2) wrapper
+    /// Uses stat(2) to determine input file size (in bytes)
+    ///
+    /// -1 on err
+    static int32 getFileSize ( const std::string& file_path );
+
+    /// Uses stat(2) to determine if the input file exists
     ///
     static bool fileExists ( const std::string& file_path );
 

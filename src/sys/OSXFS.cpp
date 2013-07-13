@@ -17,11 +17,23 @@ nom::OSXFS::~OSXFS ( void )
 NOMLIB_LOG_INFO;
 }
 
+nom::int32 nom::OSXFS::getFileSize ( const std::string& file_path )
+{
+  struct stat file;
+
+  if ( ! stat ( file_path.c_str(), &file ) )
+  {
+    return file.st_size;
+  }
+
+  return -1;
+}
+
 bool nom::OSXFS::fileExists ( const std::string& file_path )
 {
-  struct stat buffer;
+  struct stat file;
 
-  if ( stat ( file_path.c_str(), &buffer ) != 0 || !S_ISREG ( buffer.st_mode ))
+  if ( stat ( file_path.c_str(), &file ) != 0 || !S_ISREG ( file.st_mode ))
     return false;
 
   return true;

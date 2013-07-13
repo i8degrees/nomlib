@@ -24,8 +24,12 @@ option ( BUILD_UNIVERSAL_LIB "Build as OSX Universal Library; i386 and x86_64" o
 option ( BUILD_NOMLIB_EXAMPLES "Build nomlib usage examples" on )
 
 # Creative OpenAL was a tad bit buggy for me on audio device destruction
-# This is allegedly backwards-compatible with Creative OpenAL
-option ( USE_OPENALSOFT_LIB "Use OpenAL-Soft library" on )
+# OpenAL-Soft is significantly more crash prone for me, so perhaps your mileage
+# will vary! Pick your poison! :-) Creative OpenAL is the default.
+#
+# Either option ought to compile & generally run -- OpenAL-Soft is backwards
+# compatible with Creative's API.
+option ( USE_OPENALSOFT_LIB "Use OpenAL-Soft library" off )
 
 if ( BUILD_SHARED_LIBS )
   message ( "Building as a shared library" )

@@ -11,6 +11,7 @@
 
 #include "config.hpp"
 
+#include "sys/Clock.hpp"
 #include "sys/FPS.hpp"
 #include "sys/GameStates.hpp"
 #include "sys/ObjectCache.hpp"

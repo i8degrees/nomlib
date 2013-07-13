@@ -98,6 +98,7 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/gfx/SDL_Rectangle.cpp
       ${SRC_DIR}/gfx/Sprite.cpp
       # sys
+      ${SRC_DIR}/sys/Clock.cpp
       ${SRC_DIR}/sys/FPS.cpp
       ${SRC_DIR}/sys/GameStates.cpp
       ${SRC_DIR}/sys/Logger.cpp
@@ -161,6 +162,7 @@ set ( GAMELIB_HEADERS_GFX
     )
 
 set ( GAMELIB_HEADERS_SYS
+      ${SRC_DIR}/sys/Clock.hpp
       ${SRC_DIR}/sys/FPS.hpp
       ${SRC_DIR}/sys/GameStates.hpp
       ${SRC_DIR}/sys/IState.hpp

@@ -64,10 +64,7 @@ void al_check_err ( const std::string& file, uint32 line )
       break;
     } // end switch
 
-  time_t timer = time ( nullptr );
-  std::string current_time = ctime ( &timer );
-
-  std::cout << "NOMLIB_LOG_ERR at " << current_time << "In file " << file << ":" << line << std::endl << "Error: " << error << ", " << description << std::endl << std::endl;
+  std::cout << "NOMLIB_LOG_ERR at " << getCurrentTime() << "In file " << file << ":" << line << std::endl << "Error: " << error << ", " << description << std::endl << std::endl;
 
   } // end if AL_NO_ERROR
 }

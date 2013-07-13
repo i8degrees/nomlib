@@ -11,10 +11,10 @@
 
 #include <iostream>
 #include <string>
-#include <ctime>
 #include <cassert>
 
 #include "config.hpp"
+#include "Clock.hpp"
 
 // Pretty print C macros
 #ifdef NOMLIB_DEBUG
@@ -58,7 +58,6 @@ class Logger
 
   private:
     Logger ( void );
-    static std::string getCurrentTime ( void );
 };
 
 

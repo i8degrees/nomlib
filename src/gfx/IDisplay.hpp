@@ -37,7 +37,7 @@ namespace nom
       virtual int32_t getDisplayHeight ( void ) const = 0;
       virtual int32_t getDisplayColorBits ( void ) const = 0;
       virtual uint32_t getDisplayFlags ( void ) const = 0;
-      virtual u_short getDisplayPitch ( void ) const = 0;
+      virtual uint16 getDisplayPitch ( void ) const = 0;
       virtual void* getDisplayPixels ( void ) const = 0;
       virtual void* getDisplayPixelsFormat ( void ) const = 0;
       virtual const nom::Coords getDisplayBounds ( void ) const = 0;

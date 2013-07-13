@@ -83,6 +83,8 @@ void nom::OSXFS::setWorkingDir ( const std::string& path )
   chdir ( path.c_str() );
 }
 
+#if defined NOMLIB_SYSTEM_OSX
+
 const std::string nom::OSXFS::getResourcesPath ( void )
 {
   char resources_path[ PATH_MAX ];
@@ -102,3 +104,5 @@ NOMLIB_LOG_ERR ( "Could not obtain the bundle's Resources path." );
 
   return resources_path;
 }
+
+#endif

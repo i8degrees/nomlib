@@ -13,10 +13,13 @@
 #include <unistd.h>
 #include <libgen.h>
 #include <sys/stat.h>
-#include <CoreFoundation/CoreFoundation.h>
 
 #include "config.hpp"
 #include "sys/Logger.hpp"
+
+#if defined NOMLIB_SYSTEM_OSX
+  #include <CoreFoundation/CoreFoundation.h>
+#endif
 
 #ifndef PATH_MAX
   #define PATH_MAX 1024

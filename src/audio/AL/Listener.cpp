@@ -25,10 +25,10 @@ NOMLIB_LOG_INFO;
   // Initialize with sane defaults to be on the safe side; note that you must
   // have the audio card initialized before-hand or these will be invalid
   // presets
-  alListenerf ( AL_GAIN, gain );
-  alListenerfv ( AL_POSITION, position );
-  alListenerfv ( AL_VELOCITY, velocity );
-  alListenerfv ( AL_ORIENTATION, direction );
+AL_ERR ( alListenerf ( AL_GAIN, gain ) );
+AL_ERR ( alListenerfv ( AL_POSITION, position ) );
+AL_ERR ( alListenerfv ( AL_VELOCITY, velocity ) );
+AL_ERR ( alListenerfv ( AL_ORIENTATION, direction ) );
 }
 
 Listener::~Listener ( void )

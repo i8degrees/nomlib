@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <unistd.h>
 #include <libgen.h>
 #include <sys/stat.h>

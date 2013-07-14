@@ -19,7 +19,7 @@ void TTF_FreeSurface ( TTF_Font* font )
 } // namespace nom
 
 
-using namespace nom; // FIXME
+namespace nom {
 
 SDL_Font::SDL_Font ( void )
 {
@@ -27,8 +27,8 @@ NOMLIB_LOG_INFO;
 
   this->font = nullptr;
 
-  this->coords = nom::Coords ( 0, 0, 0, 0 );
-  this->color = nom::Color ( 0, 0, 0 );
+  this->coords = Coords ( 0, 0, 0, 0 );
+  this->color = Color ( 0, 0, 0 );
   this->text_buffer = "\0";
 
   if ( TTF_Init () == -1 )
@@ -87,12 +87,12 @@ NOMLIB_LOG_ERR ( "Text length must be greater than zero" );
   }
 }
 
-const nom::Color& SDL_Font::getTextColor ( void ) const
+const Color& SDL_Font::getTextColor ( void ) const
 {
   return this->color;
 }
 
-void SDL_Font::setTextColor ( const nom::Color& color )
+void SDL_Font::setTextColor ( const Color& color )
 {
   this->color = color;
 }
@@ -110,7 +110,7 @@ NOMLIB_LOG_ERR ( "Could not load TTF file: " + filename );
   return true;
 }
 
-void nom::SDL_Font::Update ( void )
+void SDL_Font::Update ( void )
 {
   // Update display coordinates
   this->font_buffer.setPosition ( this->coords );
@@ -134,3 +134,6 @@ NOMLIB_ASSERT ( this->font_buffer.valid() );
 
   this->font_buffer.Draw ( video_buffer );
 }
+
+
+} // namespace nom

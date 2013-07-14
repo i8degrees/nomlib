@@ -64,7 +64,7 @@ void* SDL_Display::get ( void ) const
   return SDL_GetVideoSurface();
 }
 
-bool nom::SDL_Display::valid ( void ) const
+bool SDL_Display::valid ( void ) const
 {
   if ( static_cast<SDL_Surface*> ( this->get() ) != nullptr )
     return true;
@@ -107,26 +107,26 @@ void* SDL_Display::getDisplayPixelsFormat ( void ) const
   return SDL_GetVideoSurface()->format;
 }
 
-const nom::Coords SDL_Display::getDisplayBounds ( void ) const
+const Coords SDL_Display::getDisplayBounds ( void ) const
 {
   SDL_Rect clip = SDL_GetVideoSurface()->clip_rect;
-  nom::Coords clip_coords ( clip.x, clip.y, clip.w, clip.h );
+  Coords clip_coords ( clip.x, clip.y, clip.w, clip.h );
   return clip_coords;
 }
 
-bool nom::SDL_Display::getCanvasLock ( void ) const
+bool SDL_Display::getCanvasLock ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->get() );
   return buffer->locked;
 }
 
-void nom::SDL_Display::Update ( void )
+void SDL_Display::Update ( void )
 {
   if ( SDL_Flip ( static_cast<SDL_Surface*> ( this->get() ) ) != 0 )
 NOMLIB_LOG_ERR ( SDL_GetError() );
 }
 
-void nom::SDL_Display::Update ( const nom::Coords& coords )
+void SDL_Display::Update ( const Coords& coords )
 {
   SDL_UpdateRect ( static_cast<SDL_Surface*> ( this->get() ), coords.x, coords.y, coords.width, coords.height );
 }
@@ -166,7 +166,7 @@ void SDL_Display::setWindowTitle ( const std::string& app_name )
 
 void SDL_Display::setWindowIcon ( const std::string& app_icon )
 {
-  nom::SDL_Image image; // holds our image in memory during transfer
+  SDL_Image image; // holds our image in memory during transfer
   std::shared_ptr<void> icon = nullptr;
 
   if ( this->valid() )

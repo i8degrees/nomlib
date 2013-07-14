@@ -11,19 +11,20 @@
 
 #include "config.hpp"
 
-namespace nom
+namespace nom {
+
+// This is an inheritance-only class
+class IDrawable
 {
-  // This is an inheritance-only class
-  class IDrawable
-  {
-    protected:
-      virtual void Update ( void ) = 0;
-      virtual void Draw ( void* ) const = 0;
+  protected:
+    virtual void Update ( void ) = 0;
+    virtual void Draw ( void* ) const = 0;
 
-      IDrawable ( void ) {}
+    IDrawable ( void ) {}
+    virtual ~IDrawable ( void ) {}
+};
 
-      virtual ~IDrawable ( void ) {}
-  };
-}
+
+} // namespace nom
 
 #endif // NOMLIB_IDRAWABLE_HEADERS defined

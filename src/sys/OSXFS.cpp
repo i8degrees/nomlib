@@ -7,17 +7,19 @@
 ******************************************************************************/
 #include "OSXFS.hpp"
 
-nom::OSXFS::OSXFS ( void )
+namespace nom {
+
+OSXFS::OSXFS ( void )
 {
 NOMLIB_LOG_INFO;
 }
 
-nom::OSXFS::~OSXFS ( void )
+OSXFS::~OSXFS ( void )
 {
 NOMLIB_LOG_INFO;
 }
 
-nom::int32 nom::OSXFS::getFileSize ( const std::string& file_path )
+int32 OSXFS::getFileSize ( const std::string& file_path )
 {
   struct stat file;
 
@@ -29,7 +31,7 @@ nom::int32 nom::OSXFS::getFileSize ( const std::string& file_path )
   return -1;
 }
 
-bool nom::OSXFS::fileExists ( const std::string& file_path )
+bool OSXFS::fileExists ( const std::string& file_path )
 {
   struct stat file;
 
@@ -39,7 +41,7 @@ bool nom::OSXFS::fileExists ( const std::string& file_path )
   return true;
 }
 
-const std::string nom::OSXFS::getBaseName ( const std::string& dir_path )
+const std::string OSXFS::getBaseName ( const std::string& dir_path )
 {
   // We must do this string conversion -- from a std::string to a char
   // pointer -- because the c_str method returns a const char pointer, which
@@ -53,7 +55,7 @@ const std::string nom::OSXFS::getBaseName ( const std::string& dir_path )
   return basename ( path );
 }
 
-const std::string nom::OSXFS::getDirName ( const std::string& dir_path )
+const std::string OSXFS::getDirName ( const std::string& dir_path )
 {
   // We must do this string conversion -- from a std::string to a char
   // pointer -- because the c_str method returns a const char pointer, which
@@ -67,7 +69,7 @@ const std::string nom::OSXFS::getDirName ( const std::string& dir_path )
   return dirname ( path );
 }
 
-const std::string nom::OSXFS::getWorkingDir ( void )
+const std::string OSXFS::getWorkingDir ( void )
 {
   char path[PATH_MAX];
 
@@ -78,7 +80,7 @@ const std::string nom::OSXFS::getWorkingDir ( void )
   return cwd;
 }
 
-void nom::OSXFS::setWorkingDir ( const std::string& path )
+void OSXFS::setWorkingDir ( const std::string& path )
 {
   chdir ( path.c_str() );
 }
@@ -86,7 +88,7 @@ void nom::OSXFS::setWorkingDir ( const std::string& path )
 // FIXME
 #if defined NOMLIB_SYSTEM_OSX
 
-const std::string nom::OSXFS::getResourcesPath ( void )
+const std::string OSXFS::getResourcesPath ( void )
 {
   char resources_path[ PATH_MAX ];
   CFBundleRef mainBundle = CFBundleGetMainBundle();
@@ -107,3 +109,6 @@ NOMLIB_LOG_ERR ( "Could not obtain the bundle's Resources path." );
 }
 
 #endif
+
+
+} // namespace nom

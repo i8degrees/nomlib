@@ -8,36 +8,38 @@
 ******************************************************************************/
 #include "SDL_Pixel.hpp"
 
-nom::Pixel::Pixel ( void )
+namespace nom {
+
+Pixel::Pixel ( void )
 {
   this->setPosition ( 0, 0 );
-  this->setColor ( nom::Color ( 0, 0, 0, 255 ) );
+  this->setColor ( Color ( 0, 0, 0, 255 ) );
 }
 
-nom::Pixel::~Pixel ( void )
+Pixel::~Pixel ( void )
 {
   // ...
 }
 
-nom::Pixel::Pixel ( const nom::Coords& coords, const nom::Color& color )
+Pixel::Pixel ( const Coords& coords, const Color& color )
 {
   this->setPosition ( coords );
   this->setColor ( color );
 }
 
-nom::Pixel::Pixel ( int32_t x, int32_t y, const nom::Color& color )
+Pixel::Pixel ( int32_t x, int32_t y, const Color& color )
 {
   this->setPosition ( x, y );
   this->setColor ( color );
 }
 
-void nom::Pixel::Update ( void )
+void Pixel::Update ( void )
 {
   // Stub
 }
 
 // 32-bit bpp
-void nom::Pixel::Draw ( void* video_buffer ) const
+void Pixel::Draw ( void* video_buffer ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( video_buffer );
 
@@ -47,3 +49,6 @@ void nom::Pixel::Draw ( void* video_buffer ) const
 
   pixels[ ( this->coords.y * buffer->w ) + this->coords.x ] = pixel;
 }
+
+
+} // namespace nom

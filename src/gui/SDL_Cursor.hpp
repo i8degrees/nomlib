@@ -18,53 +18,55 @@
 #include "math/Coords.hpp"
 #include "gfx/Sprite.hpp"
 
-namespace nom
+namespace nom {
+
+class SDL_Cursor
 {
-  class SDL_Cursor
-  {
-    public:
-      SDL_Cursor ( void );
-      ~SDL_Cursor ( void );
+  public:
+    SDL_Cursor ( void );
+    ~SDL_Cursor ( void );
 
-      SDL_Cursor ( unsigned int x, unsigned int y, unsigned int width, unsigned int height );
-      //void Init ( void );
-      void Load ( std::string filename, nom::Color colorkey, bool use_cache );
+    SDL_Cursor ( unsigned int x, unsigned int y, unsigned int width, unsigned int height );
+    //void Init ( void );
+    void Load ( std::string filename, Color colorkey, bool use_cache );
 
-      nom::int32 getX ( void );
-      nom::int32 getY ( void );
-      void setPosition ( unsigned int x = 0, unsigned int y = 0 );
-      void move ( unsigned int x = 0, unsigned int y = 0 );
+    int32 getX ( void );
+    int32 getY ( void );
+    void setPosition ( unsigned int x = 0, unsigned int y = 0 );
+    void move ( unsigned int x = 0, unsigned int y = 0 );
 
-      signed int getSheetID ( void );
-      void setSheetID ( signed int sheet_id = -1 );
-      void setSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding );
+    signed int getSheetID ( void );
+    void setSheetID ( signed int sheet_id = -1 );
+    void setSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding );
 
-      unsigned int getState ( void );
-      void setState ( unsigned int state );
+    unsigned int getState ( void );
+    void setState ( unsigned int state );
 
-      //bool isCursorLocked ( void );
-      //void lockCursor ( bool toggle );
+    //bool isCursorLocked ( void );
+    //void lockCursor ( bool toggle );
 
-      nom::Coords getCursorPos ( unsigned int x, unsigned int y );
-      void moveCursorUp();
-      void moveCursorDown();
-      void moveCursorLeft();
-      void moveCursorRight();
+    Coords getCursorPos ( unsigned int x, unsigned int y );
+    void moveCursorUp();
+    void moveCursorDown();
+    void moveCursorLeft();
+    void moveCursorRight();
 
-      void Update ( void );
-      void Draw ( void* video_buffer );
+    void Update ( void );
+    void Draw ( void* video_buffer );
 
-    private:
-      nom::Sprite cursor; // interface cursor
+  private:
+    Sprite cursor; // interface cursor
 
-      // cursor XY coords mapping
-      std::vector<nom::Coords> coords_map;
+    // cursor XY coords mapping
+    std::vector<Coords> coords_map;
 
-      //    coords_map schema:
-      //
-      //  [index-pos].[ x, y, width, height ]
-      //
-  };
-}
+    //    coords_map schema:
+    //
+    //  [index-pos].[ x, y, width, height ]
+    //
+};
+
+
+} // namespace nom
 
 #endif // NOMLIB_SDL_CURSOR_HEADERS defined

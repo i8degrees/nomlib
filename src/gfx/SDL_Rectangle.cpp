@@ -8,37 +8,39 @@
 ******************************************************************************/
 #include "SDL_Rectangle.hpp"
 
-nom::Rectangle::Rectangle ( void )
+namespace nom {
+
+Rectangle::Rectangle ( void )
 {
-  this->coords = nom::Coords ( 0, 0, 0, 0 );
-  this->color = nom::Color ( 0, 0, 0 );
+  this->coords = Coords ( 0, 0, 0, 0 );
+  this->color = Color ( 0, 0, 0 );
 }
 
-nom::Rectangle::~Rectangle ( void )
+Rectangle::~Rectangle ( void )
 {
   // ...
 }
 
 // Constructor variant for creating a rectangle from an existing type
 // This is a "shallow" copy assignment
-nom::Rectangle::Rectangle ( const nom::Rectangle& rect )
+Rectangle::Rectangle ( const Rectangle& rect )
 {
   this->coords = rect.coords;
   this->color = rect.color;
 }
 
-nom::Rectangle::Rectangle ( const nom::Coords& coords, const nom::Color& color )
+Rectangle::Rectangle ( const Coords& coords, const Color& color )
 {
   this->coords = coords;
   this->color = color;
 }
 
-void nom::Rectangle::Update ( void )
+void Rectangle::Update ( void )
 {
   // Stub
 }
 
-void nom::Rectangle::Draw ( void* video_buffer ) const
+void Rectangle::Draw ( void* video_buffer ) const
 {
   SDL_Rect rectangle = getSDL_Rect ( this->coords );
   unsigned int rectangle_color = 0;
@@ -60,3 +62,6 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
   Rectangle::~Rectangle();
 #endif
 }
+
+
+} // namespace nom

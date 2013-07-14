@@ -15,8 +15,8 @@
 #include "sys/Logger.hpp"
 #include "sys/SDL_Input.hpp"
 
-namespace nom
-{
+namespace nom {
+
 class IState: public SDL_Input // "has a" relationship
 {
   public:

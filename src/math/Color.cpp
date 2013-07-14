@@ -8,24 +8,26 @@
 ******************************************************************************/
 #include "Color.hpp"
 
-const nom::Color nom::Color::Black ( 0, 0, 0 );
-const nom::Color nom::Color::White ( 255, 255, 255 );
-const nom::Color nom::Color::Red ( 255, 0, 0 );
-const nom::Color nom::Color::Green ( 0, 255, 0 );
-const nom::Color nom::Color::Blue ( 0, 0, 255 );
-const nom::Color nom::Color::Yellow ( 255, 255, 255 );
-const nom::Color nom::Color::Magenta ( 255, 0, 255 );
-const nom::Color nom::Color::Cyan ( 0, 255, 255 );
-const nom::Color nom::Color::Transparent ( 0, 0, 0 );
+namespace nom {
 
-const nom::Color nom::Color::Gray ( 99, 99, 99, 255 );
+const Color Color::Black ( 0, 0, 0 );
+const Color Color::White ( 255, 255, 255 );
+const Color Color::Red ( 255, 0, 0 );
+const Color Color::Green ( 0, 255, 0 );
+const Color Color::Blue ( 0, 0, 255 );
+const Color Color::Yellow ( 255, 255, 255 );
+const Color Color::Magenta ( 255, 0, 255 );
+const Color Color::Cyan ( 0, 255, 255 );
+const Color Color::Transparent ( 0, 0, 0 );
 
-nom::Color::Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ), alpha ( -1 ) // SDL_ALPHA_OPAQUE (255)
+const Color Color::Gray ( 99, 99, 99, 255 );
+
+Color::Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ), alpha ( -1 ) // SDL_ALPHA_OPAQUE (255)
 {
   // Nothing to initialize
 }
 
-nom::Color::Color ( uint8_t red, uint8_t green, uint8_t blue, int32_t alpha )
+Color::Color ( uint8_t red, uint8_t green, uint8_t blue, int32_t alpha )
 {
   this->red = red;
   this->green = green;
@@ -33,7 +35,7 @@ nom::Color::Color ( uint8_t red, uint8_t green, uint8_t blue, int32_t alpha )
   this->alpha = alpha;
 }
 
-nom::Color::Color ( const nom::Color& color )
+Color::Color ( const Color& color )
 {
   this->red = color.red;
   this->green = color.green;
@@ -41,17 +43,17 @@ nom::Color::Color ( const nom::Color& color )
   this->alpha = color.alpha;
 }
 
-nom::Color::~Color ( void )
+Color::~Color ( void )
 {
   // Nothing to clean up
 }
 
-const nom::Color nom::Color::getColor ( void ) const
+const Color Color::getColor ( void ) const
 {
-  return nom::Color ( this->red, this->green, this->blue, this->alpha );
+  return Color ( this->red, this->green, this->blue, this->alpha );
 }
 
-nom::Color& nom::Color::operator = ( const nom::Color& other )
+Color& Color::operator = ( const Color& other )
 {
   this->red = other.red;
   this->green = other.green;
@@ -60,3 +62,6 @@ nom::Color& nom::Color::operator = ( const nom::Color& other )
 
   return *this;
 }
+
+
+} // namespace nom

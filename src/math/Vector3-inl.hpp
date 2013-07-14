@@ -59,9 +59,10 @@ class Vector3
 };
 
 // Define the most common types
-typedef Vector3<nom::int32> Vector3i;
-typedef Vector3<nom::uint32> Vector3u;
+typedef Vector3<int32> Vector3i;
+typedef Vector3<uint32> Vector3u;
 typedef Vector3<float> Vector3f;
+
 
 } // namespace nom
 

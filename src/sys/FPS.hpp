@@ -12,25 +12,27 @@
 #include "sys/Logger.hpp"
 #include "sys/SDL_Timer.hpp"
 
-namespace nom
+namespace nom {
+
+class FPS: public Timer // "is a" relationship
 {
-  class FPS: public nom::Timer // "is a" relationship
-  {
-    public:
-      FPS ( void );
-      ~FPS ( void );
+  public:
+    FPS ( void );
+    ~FPS ( void );
 
-      void Start ( void );
-      void Stop ( void );
+    void Start ( void );
+    void Stop ( void );
 
-      unsigned int getFrames ( void );
-      unsigned int getFPS ( void );
-      void Update ( void );
+    unsigned int getFrames ( void );
+    unsigned int getFPS ( void );
+    void Update ( void );
 
-    private:
-      unsigned int total_frames;
-      nom::Timer fps, fps_update;
-  };
-}
+  private:
+    unsigned int total_frames;
+    Timer fps, fps_update;
+};
+
+
+} // namespace nom
 
 #endif // NOMLIB_TIMER_FPS_HEADERS defined

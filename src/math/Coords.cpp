@@ -8,13 +8,15 @@
 ******************************************************************************/
 #include "Coords.hpp"
 
-nom::Coords::Coords ( void )  : x ( 0 ), y ( 0 ), z ( 0 ),
+namespace nom {
+
+Coords::Coords ( void )  : x ( 0 ), y ( 0 ), z ( 0 ),
                                 width ( 0 ), height ( 0 )
 {
   // Nothing to initialize
 }
 
-nom::Coords::Coords ( int32_t x, int32_t y, int32_t width, int32_t height )
+Coords::Coords ( int32_t x, int32_t y, int32_t width, int32_t height )
 {
   this->x = x;
   this->y = y;
@@ -22,7 +24,7 @@ nom::Coords::Coords ( int32_t x, int32_t y, int32_t width, int32_t height )
   this->height = height;
 }
 
-nom::Coords::Coords ( const nom::Coords& coords )
+Coords::Coords ( const Coords& coords )
 {
   this->x = coords.x;
   this->y = coords.y;
@@ -30,34 +32,34 @@ nom::Coords::Coords ( const nom::Coords& coords )
   this->height = coords.height;
 }
 
-nom::Coords::~Coords ( void )
+Coords::~Coords ( void )
 {
   // Nothing to clean up
 }
 
-nom::Coords nom::Coords::getPosition ( void ) const
+Coords Coords::getPosition ( void ) const
 {
-  return nom::Coords ( this->x, this->y );
+  return Coords ( this->x, this->y );
 }
 
-nom::Coords nom::Coords::getSize ( void ) const
+Coords Coords::getSize ( void ) const
 {
-  return nom::Coords ( this->width, this->height );
+  return Coords ( this->width, this->height );
 }
 
-void nom::Coords::setPosition ( int32_t x, int32_t y )
+void Coords::setPosition ( int32_t x, int32_t y )
 {
   this->x = x;
   this->y = y;
 }
 
-void nom::Coords::setSize ( int32_t width, int32_t height )
+void Coords::setSize ( int32_t width, int32_t height )
 {
   this->width = width;
   this->height = height;
 }
 
-bool nom::Coords::contains ( int32_t x, int32_t y ) const
+bool Coords::contains ( int32_t x, int32_t y ) const
 {
   int32_t X = this->x + this->width;
   int32_t Y = this->y + this->height;
@@ -65,12 +67,12 @@ bool nom::Coords::contains ( int32_t x, int32_t y ) const
   return ( x >= X ) && ( y >= Y );
 }
 
-bool nom::Coords::contains ( const nom::Coords& pos ) const
+bool Coords::contains ( const Coords& pos ) const
 {
   return this->contains ( pos.x, pos.y );
 }
 
-bool nom::Coords::intersects ( nom::Coords& rectangle ) const
+bool Coords::intersects ( Coords& rectangle ) const
 {
   unsigned int leftA, leftB = 0;
   unsigned int rightA, rightB = 0;
@@ -101,7 +103,7 @@ bool nom::Coords::intersects ( nom::Coords& rectangle ) const
   return true; // we've got a collision!
 }
 
-nom::Coords& nom::Coords::operator = ( const nom::Coords& other )
+Coords& Coords::operator = ( const Coords& other )
 {
   this->x = other.x;
   this->y = other.y;
@@ -111,3 +113,6 @@ nom::Coords& nom::Coords::operator = ( const nom::Coords& other )
 
   return *this;
 }
+
+
+} // namespace nom

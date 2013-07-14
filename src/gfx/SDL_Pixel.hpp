@@ -16,22 +16,22 @@
 #include "math/Transformable.hpp"
 #include "gfx/SDL_Drawable.hpp"
 
-namespace nom
-{
-  class Pixel:  public nom::SDL_Drawable,   // "is a" relationship
-                public nom::Transformable   // "has a" relationship
-  {
-    public:
-      Pixel ( void );
-      virtual ~Pixel ( void );
-      Pixel ( const nom::Coords& coords, const nom::Color& color );
-      Pixel ( int32_t x, int32_t y, const nom::Color& color );
-      void Update ( void );
+namespace nom {
 
-      void Draw ( void* video_buffer ) const;
-    private:
-      // ...
-  };
-}
+class Pixel:  public SDL_Drawable,   // "is a" relationship
+              public Transformable   // "has a" relationship
+{
+  public:
+    Pixel ( void );
+    virtual ~Pixel ( void );
+    Pixel ( const Coords& coords, const Color& color );
+    Pixel ( int32_t x, int32_t y, const Color& color );
+    void Update ( void );
+
+    void Draw ( void* video_buffer ) const;
+};
+
+
+} // namespace nom
 
 #endif // NOMLIB_SDL_PIXEL_HEADERS defined

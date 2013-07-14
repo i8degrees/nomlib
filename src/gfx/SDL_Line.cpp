@@ -9,7 +9,9 @@
 ******************************************************************************/
 #include "SDL_Line.hpp"
 
-nom::Line::Line ( void )
+namespace nom {
+
+Line::Line ( void )
 {
   this->pixels.clear();
 
@@ -20,12 +22,12 @@ nom::Line::Line ( void )
   this->setColor ( 0, 0, 0, 255 );
 }
 
-nom::Line::~Line ( void )
+Line::~Line ( void )
 {
   this->updated = false;
 
   // Goodbye cruel pixels!
-  //for ( std::vector<nom::Pixel*>::const_iterator it = this->pixels.begin(); it != this->pixels.end(); ++it )
+  //for ( std::vector<Pixel*>::const_iterator it = this->pixels.begin(); it != this->pixels.end(); ++it )
   //{
     //delete *it;
   //}
@@ -33,7 +35,7 @@ nom::Line::~Line ( void )
   this->pixels.clear();
 }
 
-nom::Line::Line ( const nom::Coords& coords, const nom::Color& color )
+Line::Line ( const Coords& coords, const Color& color )
 {
   this->pixels.clear();
 
@@ -43,18 +45,18 @@ nom::Line::Line ( const nom::Coords& coords, const nom::Color& color )
   this->color = color;
 }
 
-nom::Line::Line ( int32_t x, int32_t y, int32_t width, int32_t height, const nom::Color& color )
+Line::Line ( int32_t x, int32_t y, int32_t width, int32_t height, const Color& color )
 {
   this->pixels.clear();
 
   this->updated = false;
 
-  this->setPosition ( nom::Coords ( x, y, width, height ) );
+  this->setPosition ( Coords ( x, y, width, height ) );
   this->setColor ( color );
 }
 
 // Recompute line offsets
-void nom::Line::Update ( void )
+void Line::Update ( void )
 {
   // temporary calculation offsets based on user's initial given coordinates
   int32_t x1 = this->coords.x;
@@ -91,11 +93,11 @@ void nom::Line::Update ( void )
   for ( int32_t x = ( int32_t ) x1; x < maxX; ++x )
   {
     if ( steep )
-      this->pixels.push_back ( std::unique_ptr<nom::Pixel> ( new nom::Pixel ( y, x, this->color ) ) );
-      //this->pixels.push_back ( new nom::Pixel ( y, x, this->color ) );
+      this->pixels.push_back ( std::unique_ptr<Pixel> ( new Pixel ( y, x, this->color ) ) );
+      //this->pixels.push_back ( new Pixel ( y, x, this->color ) );
     else
-      this->pixels.push_back ( std::unique_ptr<nom::Pixel> ( new nom::Pixel ( x, y, this->color ) ) );
-      //this->pixels.push_back ( new nom::Pixel ( x, y, this->color ) );
+      this->pixels.push_back ( std::unique_ptr<Pixel> ( new Pixel ( x, y, this->color ) ) );
+      //this->pixels.push_back ( new Pixel ( x, y, this->color ) );
 
     error -= dy;
 
@@ -109,8 +111,11 @@ void nom::Line::Update ( void )
   this->updated = true;
 }
 
-void nom::Line::Draw ( void* video_buffer ) const
+void Line::Draw ( void* video_buffer ) const
 {
-  for ( nom::ulong idx = 0; idx < this->pixels.size(); ++idx )
+  for ( ulong idx = 0; idx < this->pixels.size(); ++idx )
     this->pixels[idx]->Draw ( video_buffer );
 }
+
+
+} // namespace nom

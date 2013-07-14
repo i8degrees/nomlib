@@ -63,9 +63,10 @@ class Vector4
 };
 
 // Define the most common types
-typedef Vector4<nom::int32> Vector4i;
-typedef Vector4<nom::uint32> Vector4u;
+typedef Vector4<int32> Vector4i;
+typedef Vector4<uint32> Vector4u;
 typedef Vector4<float> Vector4f;
+
 
 } // namespace nom
 

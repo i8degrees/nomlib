@@ -22,46 +22,46 @@
 #include "sys/SDL_Input.hpp"
 #include "sys/SDL_Timer.hpp"
 
-namespace nom
+namespace nom {
+
+// This is an inheritance-only class
+class SDL_App: public SDL_Input
 {
-  // This is an inheritance-only class
-  class SDL_App: public nom::SDL_Input
-  {
-    protected:
-      SDL_App ( void );
-      ~SDL_App ( void );
+  protected:
+    SDL_App ( void );
+    ~SDL_App ( void );
 
-      bool isRunning ( void );
-      void Running ( void );
-      void Quit ( void );
+    bool isRunning ( void );
+    void Running ( void );
+    void Quit ( void );
 
-      virtual void onQuit ( void );
-      virtual void onEvent ( SDL_Event* event );
+    virtual void onQuit ( void );
+    virtual void onEvent ( SDL_Event* event );
 
-      uint32_t getTicks ( void );
+    uint32_t getTicks ( void );
 
-      bool isFullScreen ( void );
-      void setFullScreen ( bool toggle );
-      bool getShowFPS ( void );
-      void showFPS ( bool toggle );
-      void toggleFPS ( void );
+    bool isFullScreen ( void );
+    void setFullScreen ( bool toggle );
+    bool getShowFPS ( void );
+    void showFPS ( bool toggle );
+    void toggleFPS ( void );
 
-      /// Let the user know if there are pending events
-      bool PollEvents ( SDL_Event* );
+    /// Let the user know if there are pending events
+    bool PollEvents ( SDL_Event* );
 
-      /// Set the rate at which we would like to receive keyboard input
-      void enableKeyRepeat ( int32 delay, int32 interval );
+    /// Set the rate at which we would like to receive keyboard input
+    void enableKeyRepeat ( int32 delay, int32 interval );
 
-    private:
-      /// global app state
-      bool app_state;
-      /// fps counter
-      bool show_fps;
-       /// toggle windowed & fullscreen states
-      bool fullscreen;
-      /// global app timer
-      Timer appTime;
-  };
+  private:
+    /// global app state
+    bool app_state;
+    /// fps counter
+    bool show_fps;
+     /// toggle windowed & fullscreen states
+    bool fullscreen;
+    /// global app timer
+    Timer appTime;
+};
 }
 
 #endif // NOMLIB_SDL_APP_HEADERS defined

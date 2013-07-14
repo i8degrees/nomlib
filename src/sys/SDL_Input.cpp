@@ -8,7 +8,9 @@
 ******************************************************************************/
 #include "SDL_Input.hpp"
 
-nom::SDL_Input::SDL_Input ( void )
+namespace nom {
+
+SDL_Input::SDL_Input ( void )
 {
 NOMLIB_LOG_INFO;
 
@@ -39,7 +41,7 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
   }
 }
 
-nom::SDL_Input::~SDL_Input ( void )
+SDL_Input::~SDL_Input ( void )
 {
 NOMLIB_LOG_INFO;
 
@@ -56,7 +58,7 @@ NOMLIB_LOG_INFO;
 }
 
 
-void nom::SDL_Input::HandleInput ( void* event )
+void SDL_Input::HandleInput ( void* event )
 {
   SDL_Event* input = static_cast<SDL_Event*> ( event );
 
@@ -171,117 +173,120 @@ void nom::SDL_Input::HandleInput ( void* event )
   } // end switch input->type
 }
 
-void nom::SDL_Input::onUserEvent ( uint8_t type, int32_t code, void* data1, void* data2 )
+void SDL_Input::onUserEvent ( uint8_t type, int32_t code, void* data1, void* data2 )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onQuit ( void )
+void SDL_Input::onQuit ( void )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onResize ( int32_t width, int32_t height )
+void SDL_Input::onResize ( int32_t width, int32_t height )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onRestore ( void )
+void SDL_Input::onRestore ( void )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMinimize ( void )
+void SDL_Input::onMinimize ( void )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onInputFocus ( void )
+void SDL_Input::onInputFocus ( void )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onInputBlur ( void )
+void SDL_Input::onInputBlur ( void )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseFocus ( void )
+void SDL_Input::onMouseFocus ( void )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseBlur ( void )
+void SDL_Input::onMouseBlur ( void )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onExpose ( void )
+void SDL_Input::onExpose ( void )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onKeyDown ( int32_t key, int32_t mod )
+void SDL_Input::onKeyDown ( int32_t key, int32_t mod )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onKeyUp ( int32_t key, int32_t mod )
+void SDL_Input::onKeyUp ( int32_t key, int32_t mod )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseMotion ( int32_t x, int32_t y )
+void SDL_Input::onMouseMotion ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseWheel ( bool up, bool down )
+void SDL_Input::onMouseWheel ( bool up, bool down )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseLeftButtonDown ( int32_t x, int32_t y )
+void SDL_Input::onMouseLeftButtonDown ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseMiddleButtonDown ( int32_t x, int32_t y )
+void SDL_Input::onMouseMiddleButtonDown ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseRightButtonDown ( int32_t x, int32_t y )
+void SDL_Input::onMouseRightButtonDown ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseLeftButtonUp ( int32_t x, int32_t y )
+void SDL_Input::onMouseLeftButtonUp ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseMiddleButtonUp ( int32_t x, int32_t y )
+void SDL_Input::onMouseMiddleButtonUp ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onMouseRightButtonUp ( int32_t x, int32_t y )
+void SDL_Input::onMouseRightButtonUp ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onJoyButtonDown ( int32_t which, int32_t button )
+void SDL_Input::onJoyButtonDown ( int32_t which, int32_t button )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onJoyButtonUp ( int32_t which, int32_t button )
+void SDL_Input::onJoyButtonUp ( int32_t which, int32_t button )
 {
   // virtual implementation
 }
 
-void nom::SDL_Input::onJoyAxis ( int32_t which, int32_t axis, short value )
+void SDL_Input::onJoyAxis ( int32_t which, int32_t axis, short value )
 {
   // virtual implementation
 }
+
+
+} // namespace nom

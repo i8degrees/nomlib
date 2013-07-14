@@ -50,9 +50,10 @@ class Vector2
 };
 
 // Define the most common types
-typedef Vector2<nom::int32> Vector2i;
-typedef Vector2<nom::uint32> Vector2u;
+typedef Vector2<int32> Vector2i;
+typedef Vector2<uint32> Vector2u;
 typedef Vector2<float> Vector2f;
+
 
 } // namespace nom
 

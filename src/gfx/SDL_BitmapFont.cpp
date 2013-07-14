@@ -13,7 +13,7 @@
 ******************************************************************************/
 #include "SDL_BitmapFont.hpp"
 
-using namespace nom;
+namespace nom {
 
 SDL_BitmapFont::SDL_BitmapFont ( void )
 {
@@ -31,7 +31,7 @@ NOMLIB_LOG_INFO;
 
   for ( unsigned int idx = 0; idx < 256; idx++ )
   {
-    this->chars[idx] = nom::Coords ( 0, 0, 0, 0 );
+    this->chars[idx] = Coords ( 0, 0, 0, 0 );
   }
 }
 
@@ -46,7 +46,7 @@ int32_t SDL_BitmapFont::getTextWidth ( void )
 
   if ( this->bitmap_font.valid() )
   {
-    for ( nom::ulong t = 0; t < this->text_buffer.length(); t++ )
+    for ( ulong t = 0; t < this->text_buffer.length(); t++ )
     {
       if ( this->text_buffer[t] == ' ' )
         text_width += this->chars[t].width / this->spacing;
@@ -64,7 +64,7 @@ int32_t SDL_BitmapFont::getTextHeight ( void )
 {
   int32_t text_height = 0;
 
-  for ( nom::ulong t = 0; t < this->text_buffer.length(); t++ )
+  for ( ulong t = 0; t < this->text_buffer.length(); t++ )
   {
     if ( this->text_buffer[t] == '\n' )
       text_height += this->newline;
@@ -105,7 +105,7 @@ void SDL_BitmapFont::setNewline ( uint32_t newline )
   this->newline = newline;
 }
 
-uint8_t nom::SDL_BitmapFont::getStyle ( void ) const
+uint8_t SDL_BitmapFont::getStyle ( void ) const
 {
   return this->text_style;
 }
@@ -135,7 +135,7 @@ void SDL_BitmapFont::setStyle ( uint8_t style, uint8_t options )
 }
 
 bool SDL_BitmapFont::Load ( const std::string& filename,
-                            const nom::Color& colorkey, bool use_cache
+                            const Color& colorkey, bool use_cache
                           )
 {
   uint32_t tile_width = 0;
@@ -195,7 +195,7 @@ NOMLIB_ASSERT ( this->bitmap_font.valid() );
       for ( int32_t pCol_w = tile_width - 1; pCol_w >= 0; pCol_w-- )
       {
         //Go through pixel rows
-        for ( nom::uint32 pRow_w = 0; pRow_w < tile_height; pRow_w++ )
+        for ( uint32 pRow_w = 0; pRow_w < tile_height; pRow_w++ )
         {
           //Get the pixel offsets
           uint32_t pX = ( tile_width * cols ) + pCol_w;
@@ -215,10 +215,10 @@ NOMLIB_ASSERT ( this->bitmap_font.valid() );
       }
 
       //Find Top; go through pixel rows
-      for ( nom::uint32 pRow = 0; pRow < tile_height; pRow++ )
+      for ( uint32 pRow = 0; pRow < tile_height; pRow++ )
       {
         //Go through pixel columns
-        for ( nom::uint32 pCol = 0; pCol < tile_width; pCol++ )
+        for ( uint32 pCol = 0; pCol < tile_width; pCol++ )
         {
           //Get the pixel offsets
           uint32_t pX = ( tile_width * cols ) + pCol;
@@ -248,7 +248,7 @@ NOMLIB_ASSERT ( this->bitmap_font.valid() );
         for ( int32_t pRow = tile_height - 1; pRow >= 0; pRow-- )
         {
           // Go through pixel columns
-          for ( nom::uint32 pCol = 0; pCol < tile_width; pCol++ )
+          for ( uint32 pCol = 0; pCol < tile_width; pCol++ )
           {
             // Get the pixel offsets
             unsigned int pX = ( tile_width * cols ) + pCol;
@@ -294,7 +294,7 @@ NOMLIB_ASSERT ( this->bitmap_font.valid() );
   return true;
 }
 
-const nom::Coords nom::SDL_BitmapFont::findGlyph ( const std::string& glyph )
+const Coords SDL_BitmapFont::findGlyph ( const std::string& glyph )
 {
   std::istringstream i ( glyph );
 
@@ -304,7 +304,7 @@ const nom::Coords nom::SDL_BitmapFont::findGlyph ( const std::string& glyph )
   return this->chars[ascii];
 }
 
-void nom::SDL_BitmapFont::Update ( void )
+void SDL_BitmapFont::Update ( void )
 {
   // Stub
 }
@@ -345,7 +345,7 @@ void SDL_BitmapFont::Draw ( void* video_buffer )
         //Get the ASCII value of the character
         uint8_t ascii = static_cast<u_char>( this->text_buffer[show] );
 
-        this->bitmap_font.setPosition ( nom::Coords ( x_offset, y_offset ) );
+        this->bitmap_font.setPosition ( Coords ( x_offset, y_offset ) );
         this->bitmap_font.setOffsets ( this->chars[ascii] );
         this->bitmap_font.Draw ( video_buffer );
 
@@ -355,3 +355,6 @@ void SDL_BitmapFont::Draw ( void* video_buffer )
     } // end for loop
   } // end if this->bitmap_font != nullptr
 }
+
+
+} // namespace nom

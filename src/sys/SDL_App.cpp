@@ -8,7 +8,7 @@
 ******************************************************************************/
 #include "SDL_App.hpp"
 
-using namespace nom;
+namespace nom {
 
 SDL_App::SDL_App ( void )
 {
@@ -113,3 +113,6 @@ void SDL_App::enableKeyRepeat ( int32 delay, int32 interval )
 {
   SDL_EnableKeyRepeat ( delay, interval );
 }
+
+
+} // namespace nom

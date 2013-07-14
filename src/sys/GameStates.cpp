@@ -10,35 +10,37 @@
 ******************************************************************************/
 #include "GameStates.hpp"
 
+namespace nom {
+
 // Initialize our static vars
-std::vector<std::unique_ptr<nom::IState>> nom::GameStates::states;
+std::vector<std::unique_ptr<IState>> GameStates::states;
 
 // Default constructor; something is terribly amiss if you ever see this
 // initialized!
-nom::GameStates::GameStates ( void )
+GameStates::GameStates ( void )
 {
 NOMLIB_LOG_INFO;
 }
 
-void nom::GameStates::onEvent ( void* event )
+void GameStates::onEvent ( void* event )
 {
   // let the state handle events
   states.back()->HandleInput ( event );
 }
 
-void nom::GameStates::Update ( float delta_time )
+void GameStates::Update ( float delta_time )
 {
   // let the state update the scene with regard to the delta (change) in timing
   states.back()->Update ( delta_time );
 }
 
-void nom::GameStates::Draw ( void* video_buffer )
+void GameStates::Draw ( void* video_buffer )
 {
   // let the state draw the scene onto the display buffer
   states.back()->Draw ( video_buffer );
 }
 
-void nom::GameStates::ChangeState ( std::unique_ptr<IState> state )
+void GameStates::ChangeState ( std::unique_ptr<IState> state )
 {
   // cleanup the current state
   if ( ! states.empty() )
@@ -55,7 +57,7 @@ NOMLIB_ASSERT ( state );
   states.back()->onInit();
 }
 
-void nom::GameStates::PushState ( std::unique_ptr<IState> state )
+void GameStates::PushState ( std::unique_ptr<IState> state )
 {
 NOMLIB_ASSERT ( state );
 
@@ -67,7 +69,7 @@ NOMLIB_ASSERT ( state );
   states.push_back( std::move( state ) );
 }
 
-void nom::GameStates::PopState ( void )
+void GameStates::PopState ( void )
 {
   // cleanup the current state
   if ( ! states.empty() )
@@ -77,7 +79,7 @@ void nom::GameStates::PopState ( void )
   states.back()->Resume();
 }
 
-void nom::GameStates::PopStateThenChangeState ( std::unique_ptr<IState> state )
+void GameStates::PopStateThenChangeState ( std::unique_ptr<IState> state )
 {
   // cleanup the current state
   if ( ! states.empty() )
@@ -88,3 +90,6 @@ NOMLIB_ASSERT ( state );
   //if ( ! states.empty () )
   GameStates::ChangeState( std::move( state ) );
 }
+
+
+} // namespace nom

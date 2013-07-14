@@ -20,50 +20,52 @@
 #include "gfx/SDL_Drawable.hpp"
 #include "gfx/SDL_Rectangle.hpp"
 
-namespace nom
+namespace nom {
+
+class SDL_Gradient//: public SDL_Drawable // "is a" relationship
 {
-  class SDL_Gradient//: public nom::SDL_Drawable // "is a" relationship
-  {
-    public:
-      SDL_Gradient ( void );
-      SDL_Gradient  ( const nom::Color& starting_color, const nom::Color& ending_color,
-                      int32_t x = 0, int32_t y = 0,
-                      int32_t width = 0, int32_t height = 0,
-                      uint32_t direction = 0,  uint32_t x_margin = 0,
-                      uint32_t y_margin = 0
-                    );
+  public:
+    SDL_Gradient ( void );
+    SDL_Gradient  ( const Color& starting_color, const Color& ending_color,
+                    int32_t x = 0, int32_t y = 0,
+                    int32_t width = 0, int32_t height = 0,
+                    uint32_t direction = 0,  uint32_t x_margin = 0,
+                    uint32_t y_margin = 0
+                  );
 
-      virtual ~SDL_Gradient ( void );
+    virtual ~SDL_Gradient ( void );
 
-      nom::Color getStartColor ( void ) const;
-      nom::Color getEndColor ( void ) const;
+    Color getStartColor ( void ) const;
+    Color getEndColor ( void ) const;
 
-      void setStartColor ( const nom::Color& starting_color );
-      void setEndColor ( const nom::Color& ending_color );
+    void setStartColor ( const Color& starting_color );
+    void setEndColor ( const Color& ending_color );
 
-      uint32_t getFillDirection ( void ) const;
-      void setFillDirection ( const uint32_t direction );
+    uint32_t getFillDirection ( void ) const;
+    void setFillDirection ( const uint32_t direction );
 
-      void Update ( void );
-      void Draw ( void* video_buffer ); /* const */
+    void Update ( void );
+    void Draw ( void* video_buffer ); /* const */
 
-    private:
-      nom::Rectangle rectangle;
-      /// gradient[0] = starting nom::Color
-      /// gradient[1] = ending nom::Color
-      nom::Color gradient[2];
-      /// geometry coordinates
-      nom::Coords coords;
-      /// x coordinate offset
-      int32_t x_margin;
-      /// y coordinate offset
-      int32_t y_margin;
-      /// color fill direction:
-      /// direction = 0 is ending color to starting color
-      /// direction = 1 is starting color to ending color
-      uint32_t direction;
-  };
-}
+  private:
+    Rectangle rectangle;
+    /// gradient[0] = starting Color
+    /// gradient[1] = ending Color
+    Color gradient[2];
+    /// geometry coordinates
+    Coords coords;
+    /// x coordinate offset
+    int32_t x_margin;
+    /// y coordinate offset
+    int32_t y_margin;
+    /// color fill direction:
+    /// direction = 0 is ending color to starting color
+    /// direction = 1 is starting color to ending color
+    uint32_t direction;
+};
+
+
+} // namespace nom
 /*
 
   nom::SDL_Gradient linear;

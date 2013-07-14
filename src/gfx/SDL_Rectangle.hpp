@@ -17,23 +17,23 @@
 #include "math/Transformable.hpp"
 #include "gfx/SDL_Drawable.hpp"
 
-namespace nom
+namespace nom {
+
+class Rectangle:  public SDL_Drawable,   // "is a" relationship
+                  public Transformable   // "has a" relationship
+
 {
-  class Rectangle:  public nom::SDL_Drawable,   // "is a" relationship
-                    public nom::Transformable   // "has a" relationship
+  public:
+    Rectangle ( void );
+    Rectangle ( const Rectangle& rect );
+    Rectangle ( const Coords& coords, const Color& color );
+    virtual ~Rectangle ( void );
 
-  {
-    public:
-      Rectangle ( void );
-      Rectangle ( const nom::Rectangle& rect );
-      Rectangle ( const nom::Coords& coords, const nom::Color& color );
-      virtual ~Rectangle ( void );
+    void Update ( void );
+    void Draw ( void* ) const;
+};
 
-      void Update ( void );
-      void Draw ( void* ) const;
-    private:
-      //
-  };
-}
+
+} // namespace nom
 
 #endif // NOMLIB_SDL_RECTANGLE_HEADERS defined

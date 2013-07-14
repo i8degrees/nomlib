@@ -8,9 +8,11 @@
 ******************************************************************************/
 #include "SDL_Gradient.hpp"
 
+namespace nom {
+
 // Default constructor; initializes with respective defaults
-nom::SDL_Gradient::SDL_Gradient ( void )  : gradient  { nom::Color::Gray,
-                                                        nom::Color::Gray
+SDL_Gradient::SDL_Gradient ( void )  : gradient  { Color::Gray,
+                                                        Color::Gray
                                                       },
                                             x_margin ( 0 ), y_margin ( 0 ),
                                             direction ( 0 )
@@ -19,8 +21,8 @@ NOMLIB_LOG_INFO;
 }
 
 // Constructor variant
-nom::SDL_Gradient::SDL_Gradient ( const nom::Color& starting_color,
-                                  const nom::Color& ending_color,
+SDL_Gradient::SDL_Gradient ( const Color& starting_color,
+                                  const Color& ending_color,
                                   int32_t x, int32_t y,
                                   int32_t width, int32_t height,
                                   uint32_t direction, uint32_t x_margin,
@@ -30,54 +32,54 @@ nom::SDL_Gradient::SDL_Gradient ( const nom::Color& starting_color,
   this->gradient[0] = starting_color;
   this->gradient[1] = ending_color;
 
-  this->coords = nom::Coords ( x, y, width, height );
+  this->coords = Coords ( x, y, width, height );
 
   this->x_margin = x_margin;
   this->y_margin = y_margin;
   this->direction = 0;
 }
 
-nom::SDL_Gradient::~SDL_Gradient ( void )
+SDL_Gradient::~SDL_Gradient ( void )
 {
 NOMLIB_LOG_INFO;
 }
 
-nom::Color nom::SDL_Gradient::getStartColor ( void ) const
+Color SDL_Gradient::getStartColor ( void ) const
 {
   return this->gradient[0];
 }
 
-nom::Color nom::SDL_Gradient::getEndColor ( void ) const
+Color SDL_Gradient::getEndColor ( void ) const
 {
   return this->gradient[1];
 }
 
-void nom::SDL_Gradient::setStartColor ( const nom::Color& starting_color )
+void SDL_Gradient::setStartColor ( const Color& starting_color )
 {
   this->gradient[0] = starting_color;
 }
 
-void nom::SDL_Gradient::setEndColor ( const nom::Color& ending_color )
+void SDL_Gradient::setEndColor ( const Color& ending_color )
 {
   this->gradient[1] = ending_color;
 }
 
-uint32_t nom::SDL_Gradient::getFillDirection ( void ) const
+uint32_t SDL_Gradient::getFillDirection ( void ) const
 {
   return this->direction;
 }
 
-void nom::SDL_Gradient::setFillDirection ( const uint32_t direction )
+void SDL_Gradient::setFillDirection ( const uint32_t direction )
 {
   this->direction = direction;
 }
 
-void nom::SDL_Gradient::Update ( void )
+void SDL_Gradient::Update ( void )
 {
   // TODO
 }
 
-void nom::SDL_Gradient::Draw ( void* video_buffer ) /* const */
+void SDL_Gradient::Draw ( void* video_buffer ) /* const */
 {
   uint32_t x_offset = this->coords.x + this->coords.width;
 
@@ -91,7 +93,7 @@ void nom::SDL_Gradient::Draw ( void* video_buffer ) /* const */
 
   for ( uint32_t rows = this->coords.x; rows < x_offset - this->x_margin; rows++ )
   {
-    this->rectangle = nom::Rectangle ( nom::Coords ( rows, this->coords.y, 1, this->coords.height - this->y_margin ), nom::Color ( currentR, currentG, currentB ) );
+    this->rectangle = Rectangle ( Coords ( rows, this->coords.y, 1, this->coords.height - this->y_margin ), Color ( currentR, currentG, currentB ) );
     this->rectangle.Draw ( video_buffer );
 
     if ( this->direction == 0 )
@@ -108,3 +110,6 @@ void nom::SDL_Gradient::Draw ( void* video_buffer ) /* const */
     }
   } // end for coords blit loop
 }
+
+
+} // namespace nom

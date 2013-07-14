@@ -17,8 +17,8 @@
 #include "math/Color.hpp"
 #include "math/Coords.hpp"
 
-namespace nom
-{
+namespace nom {
+
   /// Returns a SDL_Rect structure of a nom::Coords object
   SDL_Rect getSDL_Rect ( const Coords& );
 
@@ -32,6 +32,7 @@ namespace nom
   /// Convenience helper for obtaining a color as an integer, respective to
   /// the video surface pixel format (color bit per pixel)
   uint32 getAlphaColorAsInt ( void*, const Color& );
+
 } // namespace nom
 
 #endif // NOMLIB_SDL_UTILS_HEADERS defined

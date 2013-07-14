@@ -7,9 +7,9 @@
 ******************************************************************************/
 #include "Sprite.hpp"
 
-using namespace nom;
+namespace nom {
 
-nom::Sprite::Sprite ( void )
+Sprite::Sprite ( void )
 {
 NOMLIB_LOG_INFO;
 
@@ -24,7 +24,7 @@ NOMLIB_LOG_INFO;
   this->sheet.padding = 0;
 }
 
-nom::Sprite::Sprite ( unsigned int width, unsigned int height )
+Sprite::Sprite ( unsigned int width, unsigned int height )
 {
 NOMLIB_LOG_INFO;
 
@@ -41,32 +41,32 @@ NOMLIB_LOG_INFO;
   this->sheet.padding = 0;
 }
 
-nom::Sprite::~Sprite ( void )
+Sprite::~Sprite ( void )
 {
 NOMLIB_LOG_INFO;
 }
 
-unsigned int nom::Sprite::getState ( void )
+unsigned int Sprite::getState ( void )
 {
   return this->state;
 }
 
-void nom::Sprite::setState ( unsigned int state )
+void Sprite::setState ( unsigned int state )
 {
   this->state = state;
 }
 
-signed int nom::Sprite::getSheetID ( void )
+signed int Sprite::getSheetID ( void )
 {
   return this->sheet.id;
 }
 
-void nom::Sprite::setSheetID ( signed int id )
+void Sprite::setSheetID ( signed int id )
 {
   this->sheet.id = id;
 }
 
-void nom::Sprite::setSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding )
+void Sprite::setSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding )
 {
   this->sheet.sprite_width = this->coords.width;
   this->sheet.sprite_height = this->coords.height;
@@ -76,7 +76,7 @@ void nom::Sprite::setSheetDimensions ( unsigned int sheet_width, unsigned int sh
   this->sheet.padding = padding;
 }
 
-bool nom::Sprite::Load  ( std::string filename, nom::Color colorkey,
+bool Sprite::Load  ( std::string filename, Color colorkey,
                           bool use_cache, unsigned int flags
                         )
 {
@@ -91,7 +91,7 @@ NOMLIB_LOG_ERR ( "Could not load sprite image file: " + filename );
   return true;
 }
 
-void nom::Sprite::Update ( void )
+void Sprite::Update ( void )
 {
   if ( this->sheet.id != -1 )
   {
@@ -104,9 +104,12 @@ void nom::Sprite::Update ( void )
   this->sprite_buffer.setPosition ( coords );
 }
 
-void nom::Sprite::Draw ( void* video_buffer ) const
+void Sprite::Draw ( void* video_buffer ) const
 {
 NOMLIB_ASSERT ( this->sprite_buffer.valid() );
 
   this->sprite_buffer.Draw ( video_buffer );
 }
+
+
+} // namespace nom

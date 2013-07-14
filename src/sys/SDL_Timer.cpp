@@ -7,7 +7,9 @@
 ******************************************************************************/
 #include "SDL_Timer.hpp"
 
-nom::Timer::Timer ( void )
+namespace nom {
+
+Timer::Timer ( void )
 {
 //NOMLIB_LOG_INFO;
 
@@ -22,27 +24,27 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
   this->paused_ticks = 0;
 }
 
-nom::Timer::~Timer ( void )
+Timer::~Timer ( void )
 {
 //NOMLIB_LOG_INFO;
 
   SDL_QuitSubSystem ( SDL_INIT_TIMER );
 }
 
-void nom::Timer::Start ( void )
+void Timer::Start ( void )
 {
   this->elapsed_ticks = SDL_GetTicks ();
   this->started = true;
   this->paused = false;
 }
 
-void nom::Timer::Stop ( void )
+void Timer::Stop ( void )
 {
   this->started = false;
   this->paused = false;
 }
 
-void nom::Timer::Pause ( void )
+void Timer::Pause ( void )
 {
   if ( ( this->started == true ) && ( this->paused == false ) )
   {
@@ -51,7 +53,7 @@ void nom::Timer::Pause ( void )
   }
 }
 
-void nom::Timer::Unpause ( void )
+void Timer::Unpause ( void )
 {
   if ( this->paused == true )
   {
@@ -61,7 +63,7 @@ void nom::Timer::Unpause ( void )
   }
 }
 
-unsigned int nom::Timer::getTicks ( void )
+unsigned int Timer::getTicks ( void )
 {
   if ( this->started == true )
   {
@@ -77,17 +79,20 @@ unsigned int nom::Timer::getTicks ( void )
   return SDL_GetTicks();
 }
 
-bool nom::Timer::isStarted ( void )
+bool Timer::isStarted ( void )
 {
   return this->started;
 }
 
-bool nom::Timer::isPaused ( void )
+bool Timer::isPaused ( void )
 {
   return this->paused;
 }
 
-uint32_t nom::Timer::seconds ( float seconds ) const
+uint32_t Timer::seconds ( float seconds ) const
 {
   return static_cast<uint32_t> ( seconds * 1000.f );
 }
+
+
+} // namespace nom

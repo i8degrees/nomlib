@@ -8,7 +8,7 @@
 ******************************************************************************/
 #include "SDL_Image.hpp"
 
-nom::SDL_Image::SDL_Image ( nom::int32 flags )  : image_buffer ( nullptr, Canvas_FreeSurface )
+nom::SDL_Image::SDL_Image ( nom::int32 flags )  : image_buffer ( nullptr, nom::priv::Canvas_FreeSurface )
 {
 NOMLIB_LOG_INFO;
 
@@ -20,7 +20,7 @@ NOMLIB_LOG_ERR ( IMG_GetError() );
   atexit ( IMG_Quit );
 }
 
-nom::SDL_Image::SDL_Image ( const SDL_Image& other )  : image_buffer ( static_cast<SDL_Surface*> ( other.image_buffer.get() ), Canvas_FreeSurface )
+nom::SDL_Image::SDL_Image ( const SDL_Image& other )  : image_buffer ( static_cast<SDL_Surface*> ( other.image_buffer.get() ), nom::priv::Canvas_FreeSurface )
 {
 NOMLIB_LOG_INFO;
 }
@@ -42,7 +42,7 @@ bool nom::SDL_Image::valid ( void ) const
 
 std::shared_ptr<void> nom::SDL_Image::loadFromFile ( const std::string& filename )
 {
-  this->image_buffer = std::shared_ptr<void> ( IMG_Load ( filename.c_str() ), Canvas_FreeSurface );
+  this->image_buffer = std::shared_ptr<void> ( IMG_Load ( filename.c_str() ), nom::priv::Canvas_FreeSurface );
 
   if ( ! this->valid() )
   {
@@ -55,7 +55,7 @@ NOMLIB_LOG_ERR ( IMG_GetError() );
 
 std::shared_ptr<void> nom::SDL_Image::loadFromFile_BMP ( const std::string& filename )
 {
-  this->image_buffer = std::shared_ptr<void> ( SDL_LoadBMP ( filename.c_str() ), Canvas_FreeSurface );
+  this->image_buffer = std::shared_ptr<void> ( SDL_LoadBMP ( filename.c_str() ), nom::priv::Canvas_FreeSurface );
 
   if ( ! this->valid() )
   {

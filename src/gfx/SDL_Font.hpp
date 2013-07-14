@@ -21,6 +21,16 @@
 #include "gfx/SDL_Canvas.hpp"
 #include "gfx/SDL_Drawable.hpp"
 
+namespace nom {
+  namespace priv {
+
+/// Custom deleter for TTF_Font* smart pointers; can be used as a debugging aid.
+void TTF_FreeSurface ( TTF_Font* );
+
+  } // namespace priv
+} // namespace nom
+
+
 namespace nom
 {
   class SDL_Font: public nom::SDL_Drawable, //  "is a" inheritance

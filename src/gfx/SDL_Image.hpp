@@ -22,6 +22,7 @@
 #include "sdl/utils.hpp"
 #include "math/Color.hpp"
 #include "math/Coords.hpp"
+#include "gfx/SDL_Canvas.hpp"
 
 namespace nom
 {

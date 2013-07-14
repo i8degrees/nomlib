@@ -7,7 +7,19 @@
 ******************************************************************************/
 #include "SDL_Font.hpp"
 
-using namespace nom;
+namespace nom {
+  namespace priv {
+
+void TTF_FreeSurface ( TTF_Font* font )
+{
+  TTF_CloseFont ( font );
+}
+
+  } // namespace priv
+} // namespace nom
+
+
+using namespace nom; // FIXME
 
 SDL_Font::SDL_Font ( void )
 {
@@ -87,7 +99,7 @@ void SDL_Font::setTextColor ( const nom::Color& color )
 
 bool SDL_Font::Load ( std::string filename, uint32_t font_size )
 {
-  this->font = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), font_size ), TTF_FreeSurface );
+  this->font = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), font_size ), nom::priv::TTF_FreeSurface );
 
   if ( this->valid() == false )
   {

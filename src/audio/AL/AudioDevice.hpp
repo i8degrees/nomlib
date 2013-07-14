@@ -19,10 +19,10 @@
 namespace nom {
   namespace priv {
 
-/// Custom deleter for freeing an OpenAL audio device
+/// Custom deleter for freeing an OpenAL audio device; debugging aid.
 void AL_FreeAudioDevice ( ALCdevice* );
 
-/// Custom deleter for freeing an OpenAL audio context
+/// Custom deleter for freeing an OpenAL audio context; debugging aid.
 void AL_FreeAudioContext ( ALCcontext* );
 
   } // namespace priv

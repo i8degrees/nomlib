@@ -24,6 +24,17 @@
 #include "gfx/SDL_Image.hpp"
 #include "gfx/SDL_Rectangle.hpp"
 
+namespace nom {
+  namespace priv {
+
+/// Custom deleter for SDL_Surface* smart pointers; can be used as a debugging
+/// aid.
+void Canvas_FreeSurface ( SDL_Surface* );
+
+  } // namespace priv
+} // namespace nom
+
+
 namespace nom
 {
   class SDL_Canvas

@@ -83,6 +83,7 @@ void nom::OSXFS::setWorkingDir ( const std::string& path )
   chdir ( path.c_str() );
 }
 
+// FIXME
 #if defined NOMLIB_SYSTEM_OSX
 
 const std::string nom::OSXFS::getResourcesPath ( void )

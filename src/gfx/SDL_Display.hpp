@@ -20,6 +20,18 @@
 #include "math/Color.hpp"
 #include "gfx/SDL_Canvas.hpp"
 
+namespace nom {
+  namespace priv {
+
+/// Custom deleter for the display context smart pointer -- this is managed by
+/// SDL and thus we do not own it -- we must let SDL manage it, so we
+/// intentionally will do nothing in this call.
+void Display_FreeSurface ( SDL_Surface* );
+
+  } // namespace priv
+} // namespace nom
+
+
 namespace nom
 {
   class SDL_Display: public IDisplay

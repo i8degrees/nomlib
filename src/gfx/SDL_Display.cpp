@@ -7,7 +7,19 @@
 ******************************************************************************/
 #include "SDL_Display.hpp"
 
-using namespace nom;
+namespace nom {
+  namespace priv {
+
+void Display_FreeSurface ( SDL_Surface* video_buffer )
+{
+  // Do nothing
+}
+
+  } // namespace priv
+} // namespace nom
+
+
+using namespace nom; // FIXME
 
 SDL_Display::SDL_Display ( void )
 {

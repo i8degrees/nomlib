@@ -25,16 +25,23 @@ class IState: public SDL_Input // "has a" relationship
 NOMLIB_LOG_INFO;
     }
 
-    virtual void onInit ( void ) = 0;
-    virtual void onExit ( void ) = 0;
+    /// Required interface
+    virtual void Update ( float ) = 0;
+
+    /// Required interface
+    virtual void Draw ( void* ) = 0;
+
+    /// Optional interface
+    virtual void onInit ( void ) {}
+
+    /// Optional interface
+    virtual void onExit ( void ) {}
 
     /// Optional interface
     virtual void Pause ( void ) {}
+
     /// Optional interface
     virtual void Resume ( void ) {}
-
-    virtual void Update ( float ) = 0;
-    virtual void Draw ( void* ) = 0;
 };
 
 

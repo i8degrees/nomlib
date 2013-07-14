@@ -20,16 +20,13 @@ is there
 
 * joystick buttons demo
 
-* gamelib_examples submodule repo and makefile setup
-
-* Add SDL_EnableKeyRepeat() into SDLInput
-
-* Makefile Dependencies
-
 * Homebrew Formula?
 
 ## Completed
 
+* gamelib_examples submodule repo and makefile setup
+* Makefile Dependencies
+* Add SDL_EnableKeyRepeat() into SDLInput
 * Fix Color ( -1, -1, -1, -1 ) issue
 * GameStates as a singleton class?
 * Fix GameStates "leak" due to vector not destructing until end of app exec

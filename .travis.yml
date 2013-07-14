@@ -2,8 +2,10 @@ language: cpp
 compiler:
   - clang
 before_script:
+# nomlib dependencies (SDL)
   - sudo apt-get install libsdl1.2-dev libsdl1.2debian libsdl-image1.2-dev libsdl-image1.2 libsdl-ttf2.0-dev libsdl-ttf2.0-0
-  - sudo apt-get install libsndfile1-dev libopenal-dev
+# nomlib dependencies (Audio)
+- sudo apt-get install libsndfile1-dev libopenal-dev
   - mkdir build && cd build && cmake ..
 script:
   - make -j4
@@ -11,4 +13,5 @@ script:
 # whitelist
 branches:
   only:
-    - travis
+    - dev
+

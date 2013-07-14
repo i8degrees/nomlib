@@ -33,7 +33,7 @@ class SDL_Image
     SDL_Image ( int32 img_flags = IMG_INIT_PNG );
     /// Copy constructor
     SDL_Image ( const SDL_Image& other );
-    ~SDL_Image ( void );
+    virtual ~SDL_Image ( void );
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;

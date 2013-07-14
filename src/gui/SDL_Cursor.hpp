@@ -24,7 +24,7 @@ class SDL_Cursor
 {
   public:
     SDL_Cursor ( void );
-    ~SDL_Cursor ( void );
+    virtual ~SDL_Cursor ( void );
 
     SDL_Cursor ( unsigned int x, unsigned int y, unsigned int width, unsigned int height );
     //void Init ( void );

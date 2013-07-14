@@ -30,7 +30,7 @@ class SDL_MessageBox:// public SDL_Drawable,   // "is a" relationship
 {
   public:
     SDL_MessageBox ( void );
-    ~SDL_MessageBox ( void );
+    virtual ~SDL_MessageBox ( void );
 
     void Init ( int32_t x, int32_t y, int32_t width, int32_t height, const std::vector<Color> border_colors, const SDL_Gradient& background = SDL_Gradient() );
 

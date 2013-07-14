@@ -21,7 +21,7 @@ class Timer
 {
   public:
     Timer ( void );
-    ~Timer ( void );
+    virtual ~Timer ( void );
 
     void Start ( void );
     void Stop ( void );

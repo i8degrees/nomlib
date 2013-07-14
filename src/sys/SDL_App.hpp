@@ -29,7 +29,7 @@ class SDL_App: public SDL_Input
 {
   protected:
     SDL_App ( void );
-    ~SDL_App ( void );
+    virtual ~SDL_App ( void );
 
     bool isRunning ( void );
     void Running ( void );

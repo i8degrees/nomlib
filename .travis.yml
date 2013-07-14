@@ -11,8 +11,8 @@ before_script:
   - mkdir -p build && cd build && cmake ..
 script:
   - make -j4
-  - make install
-  - make uninstall
+  - sudo make install
+  - sudo make uninstall
 # whitelist
 branches:
   only:

@@ -127,7 +127,14 @@ class SDL_Canvas
     bool Lock ( void* video_buffer ) const;
     void Unlock ( void* video_buffer ) const;
 
-    int32_t getPixel ( int32_t x, int32_t y );
+    /// Pixel reading -- supports 8-bit, 15/16-bit, 24-bit & 32-bit color modes
+    ///
+    /// Returns -1 on error
+    ///
+    /// You are responsible for locking & unlocking of the canvas before-hand
+    ///
+    /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
+    int32 getPixel ( int32 x, int32 y );
 
     /// Copy assignment constructor
     SDL_Canvas& operator = ( const SDL_Canvas& other );

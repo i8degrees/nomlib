@@ -18,7 +18,7 @@ Pixel::Pixel ( void )
 
 Pixel::~Pixel ( void )
 {
-  // ...
+  // Do nothing
 }
 
 Pixel::Pixel ( const Coords& coords, const Color& color )
@@ -27,7 +27,7 @@ Pixel::Pixel ( const Coords& coords, const Color& color )
   this->setColor ( color );
 }
 
-Pixel::Pixel ( int32_t x, int32_t y, const Color& color )
+Pixel::Pixel ( int32 x, int32 y, const Color& color )
 {
   this->setPosition ( x, y );
   this->setColor ( color );
@@ -35,19 +35,58 @@ Pixel::Pixel ( int32_t x, int32_t y, const Color& color )
 
 void Pixel::Update ( void )
 {
-  // Stub
+  // Do nothing
 }
 
-// 32-bit bpp
 void Pixel::Draw ( void* video_buffer ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( video_buffer );
 
-  uint32_t* pixels = ( uint32_t* ) buffer->pixels;
+  switch ( buffer->format->BytesPerPixel )
+  {
+    // Unsupported
+    default: return; break;
 
-  uint32_t pixel = getColorAsInt ( buffer->format, this->color );
+    case 1: // 8-bit BPP
+    {
+      uint8* pixels = static_cast<uint8*> ( buffer->pixels );
+      uint32 pixel_color = getColorAsInt ( buffer->format, this->color );
 
-  pixels[ ( this->coords.y * buffer->w ) + this->coords.x ] = pixel;
+      pixels[ ( this->coords.y * buffer->pitch ) + this->coords.x ] = pixel_color;
+    }
+    break;
+
+    case 2: // 15/16-bit BPP
+    {
+      uint16* pixels = static_cast<uint16*> ( buffer->pixels );
+      uint32 pixel_color = getColorAsInt ( buffer->format, this->color );
+
+      pixels[ ( this->coords.y * buffer->pitch/2 ) + this->coords.x ] = pixel_color;
+    }
+    break;
+
+    case 3: // 24-bit BPP
+    {
+      uint8* pixels = static_cast<uint8*> ( buffer->pixels );
+      uint32 pixel_color = getColorAsInt ( buffer->format, this->color );
+
+      pixels[ ( this->coords.y * buffer->pitch ) + this->coords.x ] = pixel_color;
+      *(pixels + buffer->format->Rshift/8 ) = this->color.red;
+      *(pixels + buffer->format->Gshift/8 ) = this->color.green;
+      *(pixels + buffer->format->Bshift/8 ) = this->color.blue;
+      //*(pixels + buffer->format->Ashift/8 ) = this->color.alpha;
+    }
+    break;
+
+    case 4: // 32-bit BPP
+    {
+      uint32* pixels = static_cast<uint32*> ( buffer->pixels );
+      uint32 pixel_color = getColorAsInt ( buffer->format, this->color );
+
+      pixels[ ( this->coords.y * buffer->pitch/4 ) + this->coords.x ] = pixel_color;
+    }
+    break;
+  } // end switch
 }
 
 

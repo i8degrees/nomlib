@@ -306,15 +306,46 @@ void SDL_Canvas::Unlock ( void* video_buffer ) const
   SDL_UnlockSurface ( static_cast<SDL_Surface*> ( video_buffer ) );
 }
 
-int32_t SDL_Canvas::getPixel ( int32_t x, int32_t y )
+int32 SDL_Canvas::getPixel ( int32 x, int32 y )
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
 
-  //Convert the pixels to 32 bit
-  uint32_t *pixels = ( uint32_t * ) buffer->pixels;
+  switch ( buffer->format->BytesPerPixel )
+  {
+    default: return -1; break; // Unsupported
 
-  //Get the pixel requested
-  return pixels[ ( y * buffer->w ) + x ];
+    case 1: // 8-bit BPP
+    {
+      uint8* pixels = static_cast<uint8*> ( buffer->pixels );
+
+      return pixels[ ( y * buffer->pitch ) + x ];
+    }
+    break;
+
+    case 2: // 15/16-bit BPP
+    {
+      uint16* pixels = static_cast<uint16*> ( buffer->pixels );
+
+      return pixels[ ( y * buffer->pitch/2 ) + x ];
+    }
+    break;
+
+    case 3: // 24-bit BPP
+    {
+      uint8* pixels = static_cast<uint8*> ( buffer->pixels );
+
+      return pixels[ ( y * buffer->pitch ) + x ];
+    }
+    break;
+
+    case 4: // 32-bit BPP
+    {
+      uint32* pixels = static_cast<uint32*> ( buffer->pixels );
+
+      return pixels[ ( y * buffer->pitch/4 ) + x ];
+    }
+    break;
+  } // end switch
 }
 
 SDL_Canvas& SDL_Canvas::operator = ( const SDL_Canvas& other )

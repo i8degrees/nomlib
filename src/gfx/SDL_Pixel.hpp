@@ -23,11 +23,20 @@ class Pixel:  public SDL_Drawable,   // "is a" relationship
 {
   public:
     Pixel ( void );
-    virtual ~Pixel ( void );
     Pixel ( const Coords& coords, const Color& color );
-    Pixel ( int32_t x, int32_t y, const Color& color );
+    Pixel ( int32 x, int32 y, const Color& color );
+    virtual ~Pixel ( void );
+
     void Update ( void );
 
+    /// Pixel blitting -- supports 8-bit, 15/16-bit, 24-bit & 32-bit color modes
+    ///
+    /// If an unsupported canvas is detected, returns without attempting to
+    /// write
+    ///
+    /// You are responsible for locking & unlocking of the canvas before-hand
+    ///
+    /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
     void Draw ( void* video_buffer ) const;
 };
 

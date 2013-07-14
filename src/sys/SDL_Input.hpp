@@ -80,9 +80,14 @@ class SDL_Input
     virtual void onMouseLeftButtonDown ( int32_t x, int32_t y );
     virtual void onMouseMiddleButtonDown ( int32_t x, int32_t y );
     virtual void onMouseRightButtonDown ( int32_t x, int32_t y );
+    virtual void onMouseButtonSixDown ( nom::int32 x, nom::int32 y );
+    virtual void onMouseButtonSevenDown ( nom::int32 x, nom::int32 y );
+
     virtual void onMouseLeftButtonUp ( int32_t x, int32_t y );
     virtual void onMouseMiddleButtonUp ( int32_t x, int32_t y );
     virtual void onMouseRightButtonUp ( int32_t x, int32_t y );
+    virtual void onMouseButtonSixUp ( nom::int32 x, nom::int32 y );
+    virtual void onMouseButtonSevenUp ( nom::int32 x, nom::int32 y );
 
     virtual void onJoyButtonDown ( int32_t which, int32_t button );
     virtual void onJoyButtonUp ( int32_t which, int32_t button );

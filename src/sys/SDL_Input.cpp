@@ -136,6 +136,14 @@ void SDL_Input::HandleInput ( void* event )
           this->onMouseRightButtonDown ( input->button.x, input->button.y );
         break;
 
+        case SDL_BUTTON_X1:
+          this->onMouseButtonSixDown ( input->button.x, input->button.y );
+        break;
+
+        case SDL_BUTTON_X2:
+          this->onMouseButtonSevenDown ( input->button.x, input->button.y );
+        break;
+
         case SDL_BUTTON_WHEELDOWN: this->onMouseWheel ( false, true ); break;
 
         case SDL_BUTTON_WHEELUP: this->onMouseWheel ( true, false ); break;
@@ -155,6 +163,14 @@ void SDL_Input::HandleInput ( void* event )
 
         case SDL_BUTTON_RIGHT:
           this->onMouseRightButtonUp ( input->button.x, input->button.y );
+        break;
+
+        case SDL_BUTTON_X1:
+          this->onMouseButtonSixUp ( input->button.x, input->button.y );
+        break;
+
+        case SDL_BUTTON_X2:
+          this->onMouseButtonSevenUp ( input->button.x, input->button.y );
         break;
       }
     break;
@@ -258,6 +274,16 @@ void SDL_Input::onMouseRightButtonDown ( int32_t x, int32_t y )
   // virtual implementation
 }
 
+void SDL_Input::onMouseButtonSixDown ( nom::int32 x, nom::int32 y )
+{
+  // virtual implementation
+}
+
+void SDL_Input::onMouseButtonSevenDown ( nom::int32 x, nom::int32 y )
+{
+  // virtual implementation
+}
+
 void SDL_Input::onMouseLeftButtonUp ( int32_t x, int32_t y )
 {
   // virtual implementation
@@ -269,6 +295,16 @@ void SDL_Input::onMouseMiddleButtonUp ( int32_t x, int32_t y )
 }
 
 void SDL_Input::onMouseRightButtonUp ( int32_t x, int32_t y )
+{
+  // virtual implementation
+}
+
+void SDL_Input::onMouseButtonSixUp ( nom::int32 x, nom::int32 y )
+{
+  // virtual implementation
+}
+
+void SDL_Input::onMouseButtonSevenUp ( nom::int32 x, nom::int32 y )
 {
   // virtual implementation
 }

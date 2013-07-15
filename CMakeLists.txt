@@ -69,6 +69,7 @@ if ( NOT TTCARDS_NOMLIB_COMPILE ) # Ignore all this if TTcards is compiling us
 
     #set ( CMAKE_CXX_COMPILER "/usr/bin/clang++" )
     set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
+
   else () # Not Linux nor OSX
     message ( "Unsupported build system detected... Hopefully CMake gets it right for you; good luck!" )
 
@@ -165,10 +166,15 @@ set_target_properties ( ${PROJECT_NAME} # makefile target
                         PROPERTIES SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
                       )
 
-#     FIXME: doxygen docs generation
-add_custom_target ( nomlib-docs
-                    COMMAND ${DOXYGEN_COMMAND} ${DOXYGEN_CONFIG_FILE}
-                  )
+if ( BUILD_SHARED_LIBS AND CMAKE_SYSTEM_NAME STREQUAL Darwin )
+
+  # For distribution in user's frameworks / OSX App Bundle
+  set_target_properties ( ${PROJECT_NAME} PROPERTIES
+                          BUILD_WITH_INSTALL_RPATH 1
+                          INSTALL_NAME_DIR "@executable_path/../Frameworks"
+                        )
+
+endif ( BUILD_SHARED_LIBS AND CMAKE_SYSTEM_NAME STREQUAL Darwin )
 
 if ( NOT TTCARDS_NOMLIB_COMPILE )
 
@@ -214,3 +220,8 @@ if ( BUILD_NOMLIB_EXAMPLES )
   add_executable ( audio/audio ${NOMLIB_EXAMPLES_AUDIO} )
   add_executable ( app/app ${NOMLIB_EXAMPLES_APP} )
 endif ( BUILD_NOMLIB_EXAMPLES )
+
+#     FIXME: doxygen docs generation
+add_custom_target ( nomlib-docs
+                    COMMAND ${DOXYGEN_COMMAND} ${DOXYGEN_CONFIG_FILE}
+                  )

@@ -12,6 +12,7 @@ version.hpp
 libgamelib.bc
 # ctags
 *.tags
+*.tags_sorted_by_file
 
 # bins
 examples/audio/audio

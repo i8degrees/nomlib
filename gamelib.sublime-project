@@ -20,7 +20,8 @@
   "settings":
   {
     "tab_size": 2,
-    "translate_tabs_to_spaces": true
+    "translate_tabs_to_spaces": true,
+    "ctags_command":  "/usr/local/bin/ctags -R -f .tags src/"
   },
 
   "build_systems":

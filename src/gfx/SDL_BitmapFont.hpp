@@ -71,8 +71,8 @@ class SDL_BitmapFont:// public SDL_Drawable, //  "is a" inheritance
     /// Set new text character spacing width in pixels
     void setSpacing ( uint32_t spaces );
 
-    /// Obtain text character spacing height offsets in pixels ;defaults to variable
-    /// calculations made within Load method
+    /// Obtain text character spacing height offsets in pixels; defaults to
+    /// variable calculations made within Load method
     uint32_t getNewline ( void );
 
     /// Set new text character spacing height offsets in pixels

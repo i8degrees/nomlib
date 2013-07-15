@@ -240,8 +240,8 @@ NOMLIB_ASSERT ( this->bitmap_font.valid() );
         }
       }
 
-      // FIXME: I don't think this does anything for us
-      // Find Bottom of A
+      // Calculate the baseline of 'A' so that we can use this in our
+      // newline offset calculation
       if ( currentChar == 'A' )
       {
         // Go through pixel rows
@@ -264,9 +264,9 @@ NOMLIB_ASSERT ( this->bitmap_font.valid() );
               pCol = tile_width;
               pRow = -1;
             }
-          }
-        }
-      }
+          } // end for pixel columns loop
+        } // end for pixel rows loop
+      } // end if currentChar
 
       // Go to the next character
       currentChar++;

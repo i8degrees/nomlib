@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "Listener.hpp"
+#include "nomlib/audio/AL/Listener.hpp"
 
 namespace nom {
   namespace OpenAL {

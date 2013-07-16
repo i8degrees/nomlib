@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "Coords.hpp"
+#include "nomlib/math/Coords.hpp"
 
 namespace nom {
 

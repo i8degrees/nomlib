@@ -5,7 +5,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "SDL_Timer.hpp"
+#include "nomlib/sys/SDL_Timer.hpp"
 
 namespace nom {
 

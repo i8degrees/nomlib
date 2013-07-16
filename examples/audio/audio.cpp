@@ -11,9 +11,9 @@
 #include <cstdlib>
 #include <cassert>
 
-#include "audio.hpp"
-#include "math.hpp"
-#include "system.hpp"
+#include "nomlib/audio.hpp"
+#include "nomlib/math.hpp"
+#include "nomlib/system.hpp"
 
 #define dump_var(var) NOMLIB_DUMP_VAR(var)
 

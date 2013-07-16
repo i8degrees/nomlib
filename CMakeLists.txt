@@ -6,12 +6,12 @@ set ( PROJECT_VERSION_PATCH 0 )
 
 project ( gamelib ) # $PROJECT_NAME
 
-set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" ) # gamelib/src
-set ( NOMLIB_HEADERS_DIR "src/" ) # nomlib/src
+set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" ) # nomlib/src
+set ( NOMLIB_HEADERS_DIR "include" ) # include/nomlib/
 set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" ) # gamelib/examples
 
 configure_file  ( "${PROJECT_SOURCE_DIR}/cmake/version.hpp.in"
-                  "${SRC_DIR}/version.hpp"
+                  "${PROJECT_SOURCE_DIR}/${NOMLIB_HEADERS_DIR}/nomlib/version.hpp"
                 )
 
 #     CMake Environment
@@ -21,7 +21,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/module
 
 option ( BUILD_SHARED_LIBS "Build as a shared library -- as opposed to static library" on )
 option ( BUILD_UNIVERSAL_LIB "Build as OSX Universal Library; i386 and x86_64" off )
-
+option ( BUILD_FRAMEWORKS "Build OSX Frameworks instead of dylib" off )
 option ( BUILD_NOMLIB_EXAMPLES "Build nomlib usage examples" on )
 
 # Creative OpenAL was a tad bit buggy for me on audio device destruction
@@ -34,6 +34,11 @@ option ( USE_OPENALSOFT_LIB "Use OpenAL-Soft library" off )
 
 if ( BUILD_SHARED_LIBS )
   message ( "Building as a shared library" )
+
+  if ( BUILD_FRAMEWORKS )
+    message ( "Building as a OSX Frameworks library" )
+  endif ( BUILD_FRAMEWORKS )
+
 else ( NOT BUILD_SHARED_LIBS )
   message ( "Building as a static library" )
 endif ( BUILD_SHARED_LIBS )
@@ -114,9 +119,6 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/math/Color.cpp
       ${SRC_DIR}/math/Coords.cpp
       ${SRC_DIR}/math/Transformable.cpp
-      ${SRC_DIR}/math/Vector2-inl.hpp
-      ${SRC_DIR}/math/Vector3-inl.hpp
-      ${SRC_DIR}/math/Vector4-inl.hpp
       # gui
       ${SRC_DIR}/gui/SDL_Cursor.cpp
       ${SRC_DIR}/gui/SDL_MessageBox.cpp
@@ -163,36 +165,76 @@ else ( BUILD_SHARED_LIBS )
 endif ( NOT BUILD_SHARED_LIBS )
 
 set_target_properties ( ${PROJECT_NAME} # makefile target
-                        PROPERTIES SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+                        PROPERTIES SOVERSION
+                        "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
                       )
 
 if ( BUILD_SHARED_LIBS AND CMAKE_SYSTEM_NAME STREQUAL Darwin )
 
+  if ( BUILD_FRAMEWORKS )
+
+    # Frameworks distribution
+    set_target_properties ( ${PROJECT_NAME} PROPERTIES
+                            FRAMEWORK
+                            TRUE
+                            FRAMEWORK_VERSION
+                            "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+                            MACOSX_FRAMEWORK_IDENTIFIER
+                            "org.dev.${PROJECT_NAME}"
+                            MACOSX_FRAMEWORK_SHORT_VERSION_STRING
+                            "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+                            MACOSX_FRAMEWORK_BUNDLE_VERSION
+                            "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
+                          )
+
+  endif ( BUILD_FRAMEWORKS )
+
   # For distribution in user's frameworks / OSX App Bundle
+  # TODO: @rpath
+  # TODO: when a dylib, use @executable_path/../Libraries
   set_target_properties ( ${PROJECT_NAME} PROPERTIES
                           BUILD_WITH_INSTALL_RPATH 1
-                          INSTALL_NAME_DIR "@executable_path/../Frameworks"
+                          INSTALL_NAME_DIR
+                          "@executable_path/../Frameworks"
                         )
 
 endif ( BUILD_SHARED_LIBS AND CMAKE_SYSTEM_NAME STREQUAL Darwin )
 
 if ( NOT TTCARDS_NOMLIB_COMPILE )
 
-  #     Install library
-  if ( BUILD_SHARED_LIBS )
-    install ( TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib )
-  else ( NOT BUILD_SHARED_LIBS )
-    install ( TARGETS ${PROJECT_NAME} ARCHIVE DESTINATION lib )
-  endif ( BUILD_SHARED_LIBS )
+  if ( BUILD_FRAMEWORKS AND BUILD_SHARED_LIBS )
+    install ( TARGETS ${PROJECT_NAME} LIBRARY FRAMEWORK DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
+  else ( NOT BUILD_FRAMEWORKS AND BUILD_SHARED_LIBS )
 
-  #     Install headers; do not include dotfiles -- *cough* .DS_Store *cough*
-  install ( DIRECTORY ${NOMLIB_HEADERS_DIR} DESTINATION include/nomlib
-            PATTERN ".*" EXCLUDE
-          )
+#     Install library
+    if ( BUILD_SHARED_LIBS )
+      install ( TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib )
+    else ( NOT BUILD_SHARED_LIBS )
+      install ( TARGETS ${PROJECT_NAME} ARCHIVE DESTINATION lib )
+    endif ( BUILD_SHARED_LIBS )
 
-if ( CMAKE_SYSTEM_NAME STREQUAL Linux )
-  install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")")
-endif ( CMAKE_SYSTEM_NAME STREQUAL Linux )
+  endif ( BUILD_FRAMEWORKS AND BUILD_SHARED_LIBS )
+
+  if ( BUILD_FRAMEWORKS )
+    # FIXME; should be ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Versions/Current/Headers with a symlink at root of framework
+    #                   ${NOMLIB_HEADERS_DIR}/$PROJECT_NAME
+    install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/nomlib DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Headers
+              PATTERN ".*" EXCLUDE # do not copy dotfiles
+            )
+
+  else ( NOT BUILD_FRAMEWORKS )
+
+#     Install headers; do not include dotfiles -- *cough* .DS_Store *cough*
+#                       ${NOMLIB_HEADERS_DIR}/$PROJECT_NAME
+    install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/nomlib DESTINATION include
+              PATTERN ".*" EXCLUDE
+            )
+
+  endif ( BUILD_FRAMEWORKS )
+
+  if ( CMAKE_SYSTEM_NAME STREQUAL Linux )
+    install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")")
+  endif ( CMAKE_SYSTEM_NAME STREQUAL Linux )
 
   #     Uninstall target
   configure_file  (

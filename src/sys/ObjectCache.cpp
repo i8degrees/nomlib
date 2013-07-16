@@ -9,7 +9,7 @@
   All rights reserved
 
 ******************************************************************************/
-#include "ObjectCache.hpp"
+#include "nomlib/sys/ObjectCache.hpp"
 
 namespace nom {
   namespace priv {

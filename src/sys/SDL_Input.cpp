@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "SDL_Input.hpp"
+#include "nomlib/sys/SDL_Input.hpp"
 
 namespace nom {
 

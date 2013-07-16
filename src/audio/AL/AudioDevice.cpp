@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "AudioDevice.hpp"
+#include "nomlib/audio/AL/AudioDevice.hpp"
 
 namespace nom {
   namespace priv {

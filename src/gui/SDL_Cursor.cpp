@@ -6,7 +6,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "SDL_Cursor.hpp"
+#include "nomlib/gui/SDL_Cursor.hpp"
 
 namespace nom {
 

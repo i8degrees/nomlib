@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "Sound.hpp"
+#include "nomlib/audio/AL/Sound.hpp"
 
 namespace nom {
   namespace OpenAL {

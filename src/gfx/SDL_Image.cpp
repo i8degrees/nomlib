@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "SDL_Image.hpp"
+#include "nomlib/gfx/SDL_Image.hpp"
 
 namespace nom {
 

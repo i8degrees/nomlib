@@ -5,6 +5,6 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "IDisplay.hpp"
+#include "nomlib/gfx/IDisplay.hpp"
 
 // ...

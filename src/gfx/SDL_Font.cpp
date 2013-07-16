@@ -5,7 +5,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "SDL_Font.hpp"
+#include "nomlib/gfx/SDL_Font.hpp"
 
 namespace nom {
   namespace priv {

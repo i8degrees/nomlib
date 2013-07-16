@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "OpenAL.hpp"
+#include "nomlib/audio/AL/OpenAL.hpp"
 
 namespace nom {
   namespace priv {

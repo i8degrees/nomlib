@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "Color.hpp"
+#include "nomlib/math/Color.hpp"
 
 namespace nom {
 

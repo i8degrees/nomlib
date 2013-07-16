@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "utils.hpp"
+#include "nomlib/sdl/utils.hpp"
 
 namespace nom {
 

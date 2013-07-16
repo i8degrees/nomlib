@@ -5,7 +5,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "FPS.hpp"
+#include "nomlib/sys/FPS.hpp"
 
 namespace nom {
 

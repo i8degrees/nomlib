@@ -7,7 +7,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "SDL_Line.hpp"
+#include "nomlib/gfx/SDL_Line.hpp"
 
 namespace nom {
 

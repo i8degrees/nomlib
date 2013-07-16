@@ -11,8 +11,8 @@
 #include <cstdlib>
 #include <cassert>
 
-#include "graphics.hpp"
-#include "system.hpp"
+#include "nomlib/graphics.hpp"
+#include "nomlib/system.hpp"
 
 #define dump_var(var) NOMLIB_DUMP_VAR(var)
 const std::string APP_NAME = "nomlib App Demo";

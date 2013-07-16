@@ -5,7 +5,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "SDL_Display.hpp"
+#include "nomlib/gfx/SDL_Display.hpp"
 
 namespace nom {
   namespace priv {

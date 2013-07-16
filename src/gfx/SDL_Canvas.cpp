@@ -5,7 +5,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "SDL_Canvas.hpp"
+#include "nomlib/gfx/SDL_Canvas.hpp"
 
 namespace nom {
   namespace priv {

@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "SDL_MessageBox.hpp"
+#include "nomlib/gui/SDL_MessageBox.hpp"
 
 namespace nom {
 

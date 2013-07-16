@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "Transformable.hpp"
+#include "nomlib/math/Transformable.hpp"
 
 namespace nom {
 

@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "SDL_Gradient.hpp"
+#include "nomlib/gfx/SDL_Gradient.hpp"
 
 namespace nom {
 

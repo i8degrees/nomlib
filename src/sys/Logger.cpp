@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "Logger.hpp"
+#include "nomlib/sys/Logger.hpp"
 
 namespace nom {
 

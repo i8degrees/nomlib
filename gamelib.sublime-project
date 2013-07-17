@@ -2,16 +2,22 @@
   "folders":
   [
     {
-      "name": "src",
+      "name": "source",
       "path": "src",
-      "file_include_patterns": [ "*.cpp", "*.c", "*.hpp", "*.h" ]
+      "file_include_patterns": [ "*.cpp", "*.c" ]
+    },
+
+    {
+      "name": "include",
+      "path": "include",
+      "file_include_patterns": [ "*.hpp", "*.h" ]
     },
 
     {
       "name": "docs",
       "path": ".",
-      "file_include_patterns": [ "*.md", "*.css", "*.html", "doxygen.cfg", "*.txt", "*.cmake", ".gitignore" ],
-      "folder_exclude_patterns": [ "build", "tmp", "docs/public", "docs/man", "src", "examples" ]
+      "file_include_patterns": [ "*.md", "*.css", "*.html", "doxygen.cfg", "*.txt", "*.cmake", ".gitignore", "cmake/*" ],
+      "folder_exclude_patterns": [ "build", "tmp", "docs/public", "docs/man", "src", "examples", "include" ]
     },
 
     {} // placeholder

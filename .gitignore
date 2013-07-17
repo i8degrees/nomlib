@@ -22,7 +22,3 @@ examples/app/app
 docs/install.sh
 docs/public/
 docs/man
-
-# internal template class & header files
-TemplateClass.cpp
-TemplateHeader.hpp

@@ -26,7 +26,7 @@ NOMLIB_LOG_INFO;
     }
 
     /// Required interface
-    virtual void Update ( float ) = 0;
+    virtual void Update ( uint32 ) = 0;
 
     /// Required interface
     virtual void Draw ( void* ) = 0;

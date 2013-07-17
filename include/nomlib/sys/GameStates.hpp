@@ -29,7 +29,7 @@ class GameStates
     static void onEvent ( void* );
 
     /// State logic
-    static void Update ( float delta_time );
+    static void Update ( uint32 delta_time );
 
     /// State rendering
     static void Draw ( void* video_buffer );

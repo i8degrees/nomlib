@@ -14,12 +14,12 @@ script:
   - sudo make install
   - sudo make uninstall
   - make clean
-  - cd ../build-osx
-  - cmake -DBUILD_FRAMEWORKS=on ..
-  - make -j4
-  - sudo make install
-  - sudo make uninstall
-  - make clean
+  #- cd ../build-osx
+  #- cmake -DBUILD_FRAMEWORKS=on ..
+  #- make -j4
+  #- sudo make install
+  #- sudo make uninstall
+  #- make clean
 # whitelist
 branches:
   only:

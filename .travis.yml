@@ -13,6 +13,11 @@ script:
   - make -j4
   - sudo make install
   - sudo make uninstall
+  - mkdir -p ../build-osx && cd ../build-osx
+  - cmake -DBUILD_FRAMEWORK=on ..
+  - make -j4
+  - sudo make install
+  - sudo make uninstall
 # whitelist
 branches:
   only:

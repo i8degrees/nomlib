@@ -8,16 +8,18 @@ before_install:
 # nomlib dependencies (Audio)
   - sudo apt-get install libsndfile1-dev libopenal-dev
 before_script:
-  - mkdir -p build && cd build && cmake ..
+  - mkdir -p build build-osx && cd build && cmake ..
 script:
   - make -j4
   - sudo make install
   - sudo make uninstall
-  - mkdir -p ../build-osx && cd ../build-osx
-  - cmake -DBUILD_FRAMEWORK=on ..
+  - make clean
+  - cd ../build-osx
+  - cmake -DBUILD_FRAMEWORKS=on ..
   - make -j4
   - sudo make install
   - sudo make uninstall
+  - make clean
 # whitelist
 branches:
   only:

@@ -157,7 +157,7 @@ bool SDL_Canvas::loadFromImage ( const std::string& filename, const Color& color
 {
   SDL_Image image;
 
-   // By default -- for peace of mind above all else -- we have caching turned
+  // By default -- for peace of mind above all else -- we have caching turned
   // off
   if ( use_cache )
   {

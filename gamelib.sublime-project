@@ -16,7 +16,7 @@
     {
       "name": "docs",
       "path": ".",
-      "file_include_patterns": [ "*.md", "*.css", "*.html", "doxygen.cfg", "*.txt", "*.cmake", ".gitignore", "cmake/*" ],
+      "file_include_patterns": [ "*.md", "*.css", "*.html", "doxygen.cfg", "*.txt", "*.cmake", ".gitignore", "cmake/*", ".travis.yml" ],
       "folder_exclude_patterns": [ "build", "tmp", "docs/public", "docs/man", "src", "examples", "include" ]
     },
 

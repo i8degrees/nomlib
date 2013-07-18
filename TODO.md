@@ -6,7 +6,6 @@
   we can then also make SDL_MessageBox an official SDL_Drawables as well -- const
   issues prevent us from doing so at the moment
 
-* Fix nom::Line memory leak (update variable is merely a temporary partial stopgap)
 
 * Implement a NULL GameState class?
 * Use exceptions library in C++
@@ -22,6 +21,7 @@ is there
 
 ## Completed
 
+* Fix nom::Line memory leak (update variable is merely a temporary partial stopgap)
 * gamelib_examples submodule repo and makefile setup
 * Makefile Dependencies
 * Add SDL_EnableKeyRepeat() into SDLInput

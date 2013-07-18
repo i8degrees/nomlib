@@ -15,8 +15,6 @@ Line::Line ( void )
 {
   this->pixels.clear();
 
-  this->updated = false;
-
   this->setPosition ( 0, 0 );
   this->setSize ( 0, 0 );
   this->setColor ( 0, 0, 0, 255 );
@@ -24,8 +22,6 @@ Line::Line ( void )
 
 Line::~Line ( void )
 {
-  this->updated = false;
-
   // Goodbye cruel pixels!
   //for ( std::vector<Pixel*>::const_iterator it = this->pixels.begin(); it != this->pixels.end(); ++it )
   //{
@@ -39,8 +35,6 @@ Line::Line ( const Coords& coords, const Color& color )
 {
   this->pixels.clear();
 
-  this->updated = false;
-
   this->coords = coords;
   this->color = color;
 }
@@ -48,8 +42,6 @@ Line::Line ( const Coords& coords, const Color& color )
 Line::Line ( int32_t x, int32_t y, int32_t width, int32_t height, const Color& color )
 {
   this->pixels.clear();
-
-  this->updated = false;
 
   this->setPosition ( Coords ( x, y, width, height ) );
   this->setColor ( color );
@@ -64,8 +56,9 @@ void Line::Update ( void )
   int32_t x2 = this->coords.width;
   int32_t y2 = this->coords.height;
 
-  if ( this->updated == true )
-    return;
+  // A surprisingly fast growing memory leak occurs here if we do not clear our
+  // pixels array every update cycle
+  this->pixels.clear();
 
   bool steep = ( fabs ( y2 - y1 ) > fabs ( x2 - x1 ) );
 
@@ -107,8 +100,6 @@ void Line::Update ( void )
       error += dx;
     }
   }
-
-  this->updated = true;
 }
 
 void Line::Draw ( void* video_buffer ) const

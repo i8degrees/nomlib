@@ -28,14 +28,15 @@ class Line: public SDL_Drawable,   // "is a" relationship
   public:
     Line ( void );
     virtual ~Line ( void );
+
     Line ( const Coords& coords, const Color& color );
     Line ( int32_t x, int32_t y, int32_t width, int32_t height, const Color& color );
 
     void Update ( void );
     void Draw ( void* video_buffer ) const;
+
   private:
     std::vector<std::unique_ptr<Pixel>> pixels;
-    bool updated;
 };
 
 

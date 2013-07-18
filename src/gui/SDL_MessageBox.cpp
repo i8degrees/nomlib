@@ -31,12 +31,6 @@ NOMLIB_LOG_INFO;
 
   this->enabled = false;
 
-  // Goodbye cruel drawables!
-  //for ( auto it = this->lines.begin(); it != this->lines.end(); ++it )
-  //{
-    //delete *it;
-  //}
-
   this->lines.clear(); // Better safe than sorry!
 }
 

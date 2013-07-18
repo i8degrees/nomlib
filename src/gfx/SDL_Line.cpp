@@ -22,11 +22,6 @@ Line::Line ( void )
 
 Line::~Line ( void )
 {
-  // Goodbye cruel pixels!
-  //for ( std::vector<Pixel*>::const_iterator it = this->pixels.begin(); it != this->pixels.end(); ++it )
-  //{
-    //delete *it;
-  //}
 
   this->pixels.clear();
 }
@@ -87,10 +82,8 @@ void Line::Update ( void )
   {
     if ( steep )
       this->pixels.push_back ( std::unique_ptr<Pixel> ( new Pixel ( y, x, this->color ) ) );
-      //this->pixels.push_back ( new Pixel ( y, x, this->color ) );
     else
       this->pixels.push_back ( std::unique_ptr<Pixel> ( new Pixel ( x, y, this->color ) ) );
-      //this->pixels.push_back ( new Pixel ( x, y, this->color ) );
 
     error -= dy;
 

@@ -11,12 +11,10 @@ namespace nom {
 
 OSXFS::OSXFS ( void )
 {
-NOMLIB_LOG_INFO;
 }
 
 OSXFS::~OSXFS ( void )
 {
-NOMLIB_LOG_INFO;
 }
 
 int32 OSXFS::getFileSize ( const std::string& file_path )

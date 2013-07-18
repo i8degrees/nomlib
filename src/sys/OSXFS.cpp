@@ -17,6 +17,40 @@ OSXFS::~OSXFS ( void )
 {
 }
 
+const std::string OSXFS::getFileType ( const std::string& file )
+{
+  magic_t cookie;
+  std::string extension = "\0";
+
+  cookie = magic_open ( MAGIC_MIME_TYPE );
+
+  if ( cookie == nullptr )
+  {
+NOMLIB_LOG_ERR ( "Could not initialize magic library." );
+
+    magic_close ( cookie );
+
+    return extension;
+  }
+
+  // TODO: use magic_error ( magic_t cookie ) to obtain err?
+  if ( magic_load ( cookie, nullptr ) != 0 )
+  {
+NOMLIB_LOG_ERR ( "Could not read magic database." );
+
+    magic_close ( cookie );
+
+    return extension;
+  }
+
+  extension = magic_file ( cookie, file.c_str() );
+
+  magic_close ( cookie );
+
+  return extension;
+}
+}
+
 int32 OSXFS::getFileSize ( const std::string& file_path )
 {
   struct stat file;

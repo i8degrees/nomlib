@@ -156,6 +156,14 @@ find_package ( LibSndFile REQUIRED )
 include_directories ( ${LIBSNDFILE_INCLUDE_DIR} )
 set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${LIBSNDFILE_LIBRARY} )
 
+find_package ( LibMagic REQUIRED )
+
+  if ( ${LIBMAGIC_FOUND} )
+    include_directories ( ${LIBMAGIC_INCLUD_DIR} )
+    set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${LIBMAGIC_LIBRARY} )
+
+  endif ( ${LIBMAGIC_FOUND} )
+
 link_libraries  ( ${PROJECT_NAME} ${REQUIRED_LIBS} )
 
 if ( NOT BUILD_SHARED_LIBS )

@@ -15,6 +15,8 @@
 #include <libgen.h>
 #include <sys/stat.h>
 
+#include <magic.h>
+
 #include "nomlib/config.hpp"
 #include "nomlib/sys/Logger.hpp"
 
@@ -35,6 +37,14 @@ class OSXFS
     OSXFS ( void );
     ~OSXFS ( void );
 
+    /// Obtain the input file's mime type; uses libmagic to determine said type
+    ///
+    /// Returns a string in the same format as the following terminal command:
+    ///
+    /// $ file -b --mime-type <file>
+    ///
+    /// Returns a null terminated string on err
+    const std::string getFileType ( const std::string& file );
     /// Uses stat(2) to determine input file size (in bytes)
     ///
     /// -1 on err

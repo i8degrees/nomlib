@@ -6,6 +6,7 @@
   we can then also make SDL_MessageBox an official SDL_Drawables as well -- const
   issues prevent us from doing so at the moment
 
+* Finish Update logic in BitmapFont class for the same reasons as above!
 
 * Implement a NULL GameState class?
 * Use exceptions library in C++
@@ -16,7 +17,6 @@
 is there
 
 * joystick buttons demo
-
 * Homebrew Formula?
 
 ## Completed

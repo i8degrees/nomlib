@@ -45,6 +45,13 @@ class OSXFS
     ///
     /// Returns a null terminated string on err
     const std::string getFileType ( const std::string& file );
+
+    /// Returns the file extension of the input file path
+    ///
+    /// Returns a null terminated string on err
+    ///
+    const std::string getFileExtension ( const std::string& file );
+
     /// Uses stat(2) to determine input file size (in bytes)
     ///
     /// -1 on err

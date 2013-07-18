@@ -49,6 +49,16 @@ NOMLIB_LOG_ERR ( "Could not read magic database." );
 
   return extension;
 }
+
+const std::string OSXFS::getFileExtension ( const std::string& file )
+{
+  std::string extension = "\0";
+
+  if ( file.find_last_of ( "." ) != std::string::npos )
+    extension = file.substr ( file.find_last_of (".") + 1 ); // match found
+
+   // if we reach this point, return false (a null terminated string)
+  return extension;
 }
 
 int32 OSXFS::getFileSize ( const std::string& file_path )

@@ -22,7 +22,8 @@ NOMLIB_LOG_INFO;
   this->text_buffer = "\0";
   this->newline = 0; // holds the y coords value to increment upon newline break char
   this->spacing = 0; // holds the x coords value to increment upon space char
-  this->text_style = Style::Regular; // default text styling effect
+  this->text_style = FontStyle::Regular; // default text styling effect
+  this->color = Color ( 0, 0, 0 ); // not implemented
 
   this->sheet_width = 16;
   this->sheet_height = 16;
@@ -40,7 +41,12 @@ SDL_BitmapFont::~SDL_BitmapFont ( void )
 NOMLIB_LOG_INFO;
 }
 
-int32_t SDL_BitmapFont::getTextWidth ( void )
+const std::string& SDL_BitmapFont::getText ( void ) const
+{
+  return this->text_buffer;
+}
+
+int32 SDL_BitmapFont::getFontWidth ( void ) const
 {
   int32_t text_width = 0;
 
@@ -60,7 +66,7 @@ int32_t SDL_BitmapFont::getTextWidth ( void )
   return text_width;
 }
 
-int32_t SDL_BitmapFont::getTextHeight ( void )
+int32 SDL_BitmapFont::getFontHeight ( void ) const
 {
   int32_t text_height = 0;
 
@@ -75,9 +81,9 @@ int32_t SDL_BitmapFont::getTextHeight ( void )
   return text_height;
 }
 
-const std::string& SDL_BitmapFont::getText ( void ) const
+void SDL_BitmapFont::setFontSize ( int32 point_size )
 {
-  return this->text_buffer;
+  this->font_size = point_size;
 }
 
 void SDL_BitmapFont::setText ( const std::string& text )
@@ -85,57 +91,57 @@ void SDL_BitmapFont::setText ( const std::string& text )
   this->text_buffer = text;
 }
 
-uint32_t SDL_BitmapFont::getSpacing ( void )
+uint32 SDL_BitmapFont::getSpacing ( void )
 {
   return this->spacing;
 }
 
-void SDL_BitmapFont::setSpacing ( uint32_t spaces )
+void SDL_BitmapFont::setSpacing ( uint32 spaces )
 {
   this->spacing = spaces;
 }
 
-uint32_t SDL_BitmapFont::getNewline ( void )
+uint32 SDL_BitmapFont::getNewline ( void )
 {
   return this->newline;
 }
 
-void SDL_BitmapFont::setNewline ( uint32_t newline )
+void SDL_BitmapFont::setNewline ( uint32 newline )
 {
   this->newline = newline;
 }
 
-uint8_t SDL_BitmapFont::getStyle ( void ) const
+FontStyle SDL_BitmapFont::getFontStyle ( void ) const
 {
   return this->text_style;
 }
 
-void SDL_BitmapFont::setStyle ( uint8_t style, uint8_t options )
+void SDL_BitmapFont::setFontStyle ( uint8 style, uint8 options )
 {
   switch ( style )
   {
     default:
     break;
-    case Style::Regular:
-    case Style::Bold:
-    case Style::Italic:
-    case Style::Underlined:
+    case FontStyle::Regular:
+    case FontStyle::Bold:
+    case FontStyle::Italic:
+    case FontStyle::Underlined:
       // Do nothing stub
     break;
 
     /// Text effect utilizing alpha channels for the appearance of gray text
-    case Style::Faded:
+    case FontStyle::Faded:
     {
       if ( this->bitmap_font.valid() )
         if ( this->bitmap_font.setAlpha ( options ) == true )
-          this->text_style = Style::Faded;
+          this->text_style = FontStyle::Faded;
     break;
     }
   }
 }
 
-bool SDL_BitmapFont::Load ( const std::string& filename,
-                            const Color& colorkey, bool use_cache
+bool SDL_BitmapFont::Load ( const std::string& filename, const Color& colorkey,
+                            int32 font_size, bool use_cache
                           )
 {
   uint32_t tile_width = 0;

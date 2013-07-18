@@ -15,6 +15,8 @@
 #include <SDL/SDL_ttf.h>
 
 #include "nomlib/config.hpp"
+#include "nomlib/sys/Logger.hpp"
+#include "nomlib/gfx/IFont.hpp"
 #include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Transformable.hpp"
@@ -33,8 +35,8 @@ void TTF_FreeSurface ( TTF_Font* );
 
 namespace nom {
 
-class SDL_Font: public SDL_Drawable, //  "is a" inheritance
-                public Transformable //  "has a" inheritance
+class SDL_Font: //  public SDL_Drawable, //  "is a" inheritance
+                    public IFont // "is-a" relationship
 {
   public:
     /// Default constructor; we initialize the SDL_ttf extension here
@@ -49,32 +51,36 @@ class SDL_Font: public SDL_Drawable, //  "is a" inheritance
     /// Obtains set text string buffer; defaults to \0
     const std::string& getText ( void ) const;
 
+    /// Compute the width in pixels of the set text string; defaults to zero (0)
+    int32 getFontWidth ( void ) const;
+
+    /// Compute the height in pixels of the set text string; defaults to zero (0)
+    int32 getFontHeight ( void ) const;
+
+    FontStyle getFontStyle ( void ) const;
+
+    void setFontStyle ( uint8 style, uint8 options );
+
+    /// Set a new text point size
+    void setFontSize ( int32 point_size );
+
     /// \brief Set a new text string for drawing; defaults to \0
     ///
     /// NOTE: We render the font drawing surface here
     void setText ( const std::string& text );
 
-    /// Compute the width in pixels of the set text string; defaults to zero (0)
-    int32_t getTextWidth ( void );
-
-    /// Compute the height in pixels of the set text string; defaults to zero (0)
-    int32_t getTextHeight ( void );
-
-    /// Obtain the text color previously set; defaults to zero ( 0, 0, 0, -1 )
-    const Color& getTextColor ( void ) const;
-
-    /// Set a new text color
-    void setTextColor ( const Color &color );
-
     /// \brief Load a new TTF or FON from a file
     ///
     /// Support for the file format is determined
     /// by the SDL_ttf extension
-    bool Load ( std::string filename, uint32_t size );
+    bool Load ( const std::string& filename, const Color& colorkey,
+                int32 font_size = 12, bool use_cache = 0
+              );
 
     void Update ( void );
+
     /// Draw the set text string to the video surface
-    void Draw ( void* video_buffer ) const;
+    void Draw ( void* video_buffer ) /*const*/;
 
   private:
     /// Surface where font for drawing is rendered to
@@ -83,6 +89,13 @@ class SDL_Font: public SDL_Drawable, //  "is a" inheritance
     std::shared_ptr<TTF_Font> font;
     /// holds contents of text as a string buffer
     std::string text_buffer;
+
+    /// Current text effect set
+    enum FontStyle text_style;
+    uint8 style_options;
+
+    /// Store the file path so we can change font sizes on the fly
+    std::string filename;
 };
 
 

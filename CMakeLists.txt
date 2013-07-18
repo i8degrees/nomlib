@@ -93,11 +93,12 @@ set ( GAMELIB_SOURCE
       ${SRC_DIR}/audio/AL/Music.cpp
       ${SRC_DIR}/audio/AL/Sound.cpp
       # gfx
-      ${SRC_DIR}/gfx/IDisplay.cpp
+      ${SRC_DIR}/gfx/Text.cpp
       ${SRC_DIR}/gfx/SDL_BitmapFont.cpp
+      ${SRC_DIR}/gfx/SDL_Font.cpp
+      ${SRC_DIR}/gfx/IDisplay.cpp
       ${SRC_DIR}/gfx/SDL_Canvas.cpp
       ${SRC_DIR}/gfx/SDL_Display.cpp
-      ${SRC_DIR}/gfx/SDL_Font.cpp
       ${SRC_DIR}/gfx/SDL_Gradient.cpp
       ${SRC_DIR}/gfx/SDL_Image.cpp
       ${SRC_DIR}/gfx/SDL_Line.cpp
@@ -266,9 +267,14 @@ if ( BUILD_NOMLIB_EXAMPLES )
   set ( NOMLIB_EXAMPLES_APP
         ${EXAMPLES_SRC_DIR}/app/app.cpp
       )
-  link_libraries ( gamelib SDLmain )
+  set ( NOMLIB_EXAMPLES_FONTS
+      ${EXAMPLES_SRC_DIR}/fonts/font.cpp
+    )
+
+  link_libraries ( ${PROJECT_NAME} SDLmain )
   add_executable ( audio/audio ${NOMLIB_EXAMPLES_AUDIO} )
   add_executable ( app/app ${NOMLIB_EXAMPLES_APP} )
+  add_executable ( fonts/font ${NOMLIB_EXAMPLES_FONTS} )
 endif ( BUILD_NOMLIB_EXAMPLES )
 
 #     FIXME: doxygen docs generation

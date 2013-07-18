@@ -11,6 +11,7 @@
 
 #include "nomlib/config.hpp"
 
+#include "nomlib/gfx/Text.hpp"
 #include "nomlib/gfx/SDL_BitmapFont.hpp"
 #include "nomlib/gfx/SDL_Canvas.hpp"
 #include "nomlib/gfx/SDL_Display.hpp"

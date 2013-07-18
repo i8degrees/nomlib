@@ -18,6 +18,7 @@
 
 #include "nomlib/config.hpp"
 #include "nomlib/sys/Logger.hpp"
+#include "nomlib/gfx/IFont.hpp"
 #include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Transformable.hpp"
@@ -26,18 +27,8 @@
 
 namespace nom {
 
-/// Text effect styling
-enum Style
-{
-  Regular = 0,
-  Bold = 1,
-  Italic = 2,
-  Underlined = 3,
-  Faded = 4
-};
-
-class SDL_BitmapFont:// public SDL_Drawable, //  "is a" inheritance
-                      public Transformable //  "has a" inheritance
+class SDL_BitmapFont: //  public SDL_Drawable, //  "is a" inheritance
+                          public IFont // "is-a" relationship
 {
   public:
     /// Default constructor
@@ -60,26 +51,29 @@ class SDL_BitmapFont:// public SDL_Drawable, //  "is a" inheritance
     /// We probably ought to be calculating the width based off the same algorithm as
     /// is shown in SDL_BitmapFont::Load
     /// \endinternal
-    int32_t getTextWidth ( void );
+    int32 getFontWidth ( void ) const;
+
     /// Compute the height in pixels of the set text string; defaults to zero (0)
-    int32_t getTextHeight ( void );
+    int32 getFontHeight ( void ) const;
 
     /// Obtain text character spacing width in pixels; defaults to given
     /// sheet_width argument divided by two (2)
-    uint32_t getSpacing ( void );
+    uint32 getSpacing ( void );
 
     /// Set new text character spacing width in pixels
     void setSpacing ( uint32_t spaces );
 
     /// Obtain text character spacing height offsets in pixels; defaults to
     /// variable calculations made within Load method
-    uint32_t getNewline ( void );
+    uint32 getNewline ( void );
 
     /// Set new text character spacing height offsets in pixels
     void setNewline ( uint32_t newline );
 
-    uint8_t getStyle ( void ) const;
-    void setStyle ( uint8_t style, uint8_t options = 150 );
+    FontStyle getFontStyle ( void ) const;
+    void setFontStyle ( uint8 style, uint8 options = 150 );
+
+    void setFontSize ( int32 point_size );
 
     const Coords findGlyph ( const std::string& glyph );
     /// \brief Loads a new bitmap font from a file
@@ -87,7 +81,7 @@ class SDL_BitmapFont:// public SDL_Drawable, //  "is a" inheritance
     /// TODO: add spacing / padding so that we can export with black guidelines
     /// \endinternal
     bool Load ( const std::string& filename, const Color& colorkey,
-                bool use_cache = 0
+                int32 font_size = 12, bool use_cache = 0
               );
 
     void Update ( void );
@@ -100,13 +94,16 @@ class SDL_BitmapFont:// public SDL_Drawable, //  "is a" inheritance
     /// individual chars positioning offsets within bitmap_font
     Coords chars[256];
     /// height (in pixels) to offset when newline carriage char is encountered
-    uint32_t newline;
+    uint32 newline;
     /// width (in pixels) to offset when a space carriage char is encountered
-    uint32_t spacing;
+    uint32 spacing;
     /// holds contents of text as a string
     std::string text_buffer;
     /// Current text effect set
-    uint8_t text_style;
+    enum FontStyle text_style;
+
+    /// Not implemented (yet)
+    int32 font_size;
 
     uint32 sheet_width;
     uint32 sheet_height;

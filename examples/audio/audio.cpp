@@ -1,6 +1,6 @@
 /******************************************************************************
 
-    nomlib Audio Playback Demo
+    Audio Playback Demo with nomlib
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.

@@ -28,18 +28,18 @@ Line::~Line ( void )
 
 Line::Line ( const Coords& coords, const Color& color )
 {
-  this->pixels.clear();
-
   this->coords = coords;
   this->color = color;
+
+  this->Update();
 }
 
 Line::Line ( int32_t x, int32_t y, int32_t width, int32_t height, const Color& color )
 {
-  this->pixels.clear();
-
   this->setPosition ( Coords ( x, y, width, height ) );
   this->setColor ( color );
+
+  this->Update();
 }
 
 // Recompute line offsets

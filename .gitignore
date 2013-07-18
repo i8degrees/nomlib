@@ -17,6 +17,7 @@ libgamelib.bc
 # bins
 examples/audio/audio
 examples/app/app
+examples/fonts/font
 
 # doxygen html gen
 docs/install.sh

@@ -5,7 +5,7 @@
       "name": "examples",
       "path": "examples",
       "file_include_patterns": [ "*.cpp", "*.c", "*.hpp", "*.h", "*.txt" ],
-      "folder_exclude_patterns": [ "data" ]
+      "folder_exclude_patterns": [ "Resources" ]
     },
 
     {} // placeholder

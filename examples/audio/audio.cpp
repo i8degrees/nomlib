@@ -45,8 +45,8 @@ int main ( int argc, char* argv[] )
   }
   else
   {
-    ret = buffer.loadFromFile ( path + "data/cursor_wrong.wav" );
-    //ret = buffer.loadFromFile ( "/Users/jeff/Projects/hax/ttcards.git/ttcards/data/audio/15_ShuffleOrBoogie.ogg" );
+    ret = buffer.loadFromFile ( path + "Resources/cursor_wrong.wav" );
+    //ret = buffer.loadFromFile ( "/Users/jeff/Projects/hax/ttcards.git/ttcards/Resources/audio/15_ShuffleOrBoogie.ogg" );
   }
 
   if ( ! ret )

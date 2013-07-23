@@ -29,13 +29,13 @@ int main ( int argc, char* argv[] )
 
   context.createWindow ( 640, 480, 32, 0 ); // segmentation fault otherwise
 
-  if ( ! bitmap_font.Load ( path + "resources/VIII.png" ) )
+  if ( ! bitmap_font.Load ( path + "Resources/VIII.png" ) )
     return EXIT_FAILURE;
 
-  if ( ! truetype_font.Load ( path + "resources/EnvyCodeRb.ttf", 36 ) )
+  if ( ! truetype_font.Load ( path + "Resources/EnvyCodeRb.ttf", 36 ) )
     return EXIT_FAILURE;
 
-  not_font.Load ( path + "resources/cards.json", 0 );
+  not_font.Load ( path + "Resources/cards.json", 0 );
 NOMLIB_ASSERT ( not_font.getFontType() != 0 ); // should always err
 
 NOMLIB_ASSERT ( bitmap_font.getFontType() == 1 );

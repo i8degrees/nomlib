@@ -33,6 +33,8 @@ enum FontStyle
 class IFont: public Transformable // "is-a" relationship
 {
   public:
+    IFont ( void ) {}
+
     virtual ~IFont ( void ) {}
 
     virtual bool Load ( const std::string& filename, const Color& colorkey,

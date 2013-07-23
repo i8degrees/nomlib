@@ -10,35 +10,34 @@
 
 namespace nom {
 
-SDL_MessageBox::SDL_MessageBox ( void )
+void SDL_MessageBox::initialize ( void )
 {
 NOMLIB_LOG_INFO;
 
   this->enabled = true;
-
+  this->lines.clear();
   this->window_borders.clear();
+  this->coords = Coords ( 0, 0, 0, 0 );
 
   for ( ulong i = 0; i < this->window_borders.size(); ++i )
     this->window_borders[i] = Color::Black;
-
-  this->coords = Coords ( 0, 0, 0, 0 );
 }
 
-
-SDL_MessageBox::~SDL_MessageBox ( void )
+SDL_MessageBox::SDL_MessageBox ( void )
 {
-NOMLIB_LOG_INFO;
-
-  this->enabled = false;
-
-  this->lines.clear(); // Better safe than sorry!
+  initialize();
 }
 
-void SDL_MessageBox::Init ( int32_t x, int32_t y, int32_t width, int32_t height, const std::vector<Color> border_colors, const SDL_Gradient& background )
+SDL_MessageBox::SDL_MessageBox  ( int32 width, int32 height, int32 x, int32 y,
+                                  const std::vector<Color> border_colors,
+                                  const SDL_Gradient& background
+                                )
 {
   unsigned int padding = 1;
   unsigned int x_offset = x + width; //unsigned int x_offset = ( x + width ) - padding;
   unsigned int y_offset = y + height; //unsigned int y_offset = ( y + height ) - padding;
+
+  initialize();
 
   // init geometry coords w/ arguments list
   this->coords = Coords ( x, y, width, height );
@@ -57,6 +56,14 @@ void SDL_MessageBox::Init ( int32_t x, int32_t y, int32_t width, int32_t height,
   this->lines.push_back ( std::shared_ptr<SDL_Drawable> ( new Line ( x_offset, y, x_offset, y_offset + padding, this->window_borders[7].getColor() ) ) ); // right1
 }
 
+SDL_MessageBox::~SDL_MessageBox ( void )
+{
+NOMLIB_LOG_INFO;
+
+  this->enabled = false;
+
+  this->lines.clear(); // Better safe than sorry!
+}
 bool SDL_MessageBox::isEnabled ( void )
 {
   if ( this->enabled == true )

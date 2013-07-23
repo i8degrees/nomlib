@@ -15,10 +15,9 @@ configure_file  ( "${PROJECT_SOURCE_DIR}/cmake/version.hpp.in"
                 )
 
 #     CMake Environment
-set ( CMAKE_VERBOSE_MAKEFILE true )
-set ( CMAKE_BUILD_TYPE Debug )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules" )
 
+option ( BUILD_RELEASE "Build release variant; defaults to Debug" off )
 option ( BUILD_SHARED_LIBS "Build as a shared library -- as opposed to static library" on )
 option ( BUILD_UNIVERSAL_LIB "Build as OSX Universal Library; i386 and x86_64" off )
 option ( BUILD_FRAMEWORKS "Build OSX Frameworks instead of dylib" off )
@@ -31,6 +30,16 @@ option ( BUILD_NOMLIB_EXAMPLES "Build nomlib usage examples" on )
 # Either option ought to compile & generally run -- OpenAL-Soft is backwards
 # compatible with Creative's API.
 option ( USE_OPENALSOFT_LIB "Use OpenAL-Soft library" off )
+
+if ( BUILD_RELEASE)
+  set ( CMAKE_BUILD_TYPE Release )
+  #set ( CMAKE_VERBOSE_MAKEFILE false )
+  message ( "Building Release target" )
+else ( NOT BUILD_RELEASE )
+  set ( CMAKE_BUILD_TYPE Debug )
+  #set ( CMAKE_VERBOSE_MAKEFILE true )
+  message ( "Building Debug target" )
+endif ( BUILD_RELEASE )
 
 if ( BUILD_SHARED_LIBS )
   message ( "Building as a shared library" )

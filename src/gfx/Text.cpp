@@ -135,12 +135,14 @@ void Text::setFontStyle ( uint8 style, uint8 options )
 
 void Text::Update ( void )
 {
-  this->font->Update();
+  if ( this->font )
+    this->font->Update();
 }
 
 void Text::Draw ( void* video_buffer )
 {
-  this->font->Draw ( video_buffer );
+  if ( this->font )
+    this->font->Draw ( video_buffer );
 }
 
 

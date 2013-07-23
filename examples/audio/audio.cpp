@@ -78,8 +78,8 @@ NOMLIB_LOG_ERR ( "Buffer loading err" );
   //float step = 1.0;
   // volume / seconds = step
 
-  float step = snd.getVolume();
-  float step_by = step / 4; // 4s or 4000ms
+  //float step = snd.getVolume();
+  //float step_by = step / 4; // 4s or 4000ms
 
   float pos = snd.getPlayPosition();
 

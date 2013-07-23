@@ -302,9 +302,9 @@ NOMLIB_ASSERT ( this->bitmap_font.valid() );
 
 const Coords SDL_BitmapFont::findGlyph ( const std::string& glyph )
 {
+  uint8 ascii = 0;
   std::istringstream i ( glyph );
 
-  uint8_t ascii;
   i >> ascii;
 
   return this->chars[ascii];

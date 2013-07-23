@@ -4,14 +4,14 @@ set ( PROJECT_VERSION_MAJOR 0 )
 set ( PROJECT_VERSION_MINOR 1 )
 set ( PROJECT_VERSION_PATCH 0 )
 
-project ( gamelib ) # $PROJECT_NAME
+project ( nomlib ) # $PROJECT_NAME
 
 set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" ) # nomlib/src
 set ( NOMLIB_HEADERS_DIR "include" ) # include/nomlib/
-set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" ) # gamelib/examples
+set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" ) # nomlib/examples
 
 configure_file  ( "${PROJECT_SOURCE_DIR}/cmake/version.hpp.in"
-                  "${PROJECT_SOURCE_DIR}/${NOMLIB_HEADERS_DIR}/nomlib/version.hpp"
+                  "${PROJECT_SOURCE_DIR}/${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}/version.hpp"
                 )
 
 #     CMake Environment
@@ -91,7 +91,7 @@ if ( NOT TTCARDS_NOMLIB_COMPILE ) # Ignore all this if TTcards is compiling us
 
 endif ( NOT TTCARDS_NOMLIB_COMPILE )
 
-set ( GAMELIB_SOURCE
+set ( NOMLIB_SOURCE
       # audio
       ${SRC_DIR}/audio/AL/AudioDevice.cpp
       ${SRC_DIR}/audio/AL/Listener.cpp
@@ -177,9 +177,9 @@ find_package ( LibMagic REQUIRED )
 link_libraries  ( ${PROJECT_NAME} ${REQUIRED_LIBS} )
 
 if ( NOT BUILD_SHARED_LIBS )
-  add_library ( ${PROJECT_NAME} STATIC ${GAMELIB_SOURCE} )
+  add_library ( ${PROJECT_NAME} STATIC ${NOMLIB_SOURCE} )
 else ( BUILD_SHARED_LIBS )
-  add_library ( ${PROJECT_NAME} SHARED ${GAMELIB_SOURCE} )
+  add_library ( ${PROJECT_NAME} SHARED ${NOMLIB_SOURCE} )
 endif ( NOT BUILD_SHARED_LIBS )
 
 set_target_properties ( ${PROJECT_NAME} # makefile target
@@ -236,7 +236,7 @@ if ( NOT TTCARDS_NOMLIB_COMPILE )
   if ( BUILD_FRAMEWORKS )
     # FIXME; should be ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Versions/Current/Headers with a symlink at root of framework
     #                   ${NOMLIB_HEADERS_DIR}/$PROJECT_NAME
-    install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/nomlib DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Headers
+    install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Headers
               PATTERN ".*" EXCLUDE # do not copy dotfiles
             )
 
@@ -244,7 +244,7 @@ if ( NOT TTCARDS_NOMLIB_COMPILE )
 
 #     Install headers; do not include dotfiles -- *cough* .DS_Store *cough*
 #                       ${NOMLIB_HEADERS_DIR}/$PROJECT_NAME
-    install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/nomlib DESTINATION include
+    install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME} DESTINATION include
               PATTERN ".*" EXCLUDE
             )
 

@@ -7,6 +7,6 @@ set ( NOMLIB_EXAMPLES_AUDIO
     )
 
 #     Required Dependencies
-link_libraries ( gamelib SDLmain )
+link_libraries ( nomlib SDLmain )
 
 add_executable ( audio/audio ${NOMLIB_EXAMPLES_AUDIO} )

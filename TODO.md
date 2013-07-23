@@ -22,7 +22,7 @@ is there
 ## Completed
 
 * Fix nom::Line memory leak (update variable is merely a temporary partial stopgap)
-* gamelib_examples submodule repo and makefile setup
+* nomlib_examples submodule repo and makefile setup
 * Makefile Dependencies
 * Add SDL_EnableKeyRepeat() into SDLInput
 * Fix Color ( -1, -1, -1, -1 ) issue
@@ -58,7 +58,7 @@ SDL_TFont and wherever else
 * GameState::Update ( SDL_Surface *video_buffer ) ?
 * GameState::Draw ( SDL_Surface *video_buffer ) ?
 * rename SDL_TFont && SDL_BitmapFont::setTextBuffer to setText
-* rename methods in gamelib/Sprite to lowerCaseCamelStyle
+* rename methods in nomlib/Sprite to lowerCaseCamelStyle
 * Clean up Timer class; 1. match Timer & FPS; <strikethrough> 2. goodbye FPS (!) </strikethrough>
 * msgbox bottom, right border (needs additional depth)
 * Cross-platform considerations (think: Makefiles, OS bins & args, etc.)

@@ -35,7 +35,7 @@ find_path ( NOMLIB_INCLUDE_DIR
 
 find_library  ( NOMLIB_LIBRARY
                 NAMES
-                gamelib nomlib # FIXME
+                nomlib
                 PATH_SUFFIXES
                 lib64 lib libs64 libs libs/Win32 libs/Win64
                 PATHS

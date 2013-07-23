@@ -9,7 +9,7 @@ version.hpp
 *.dylib
 *.dSYM
 *.powder
-libgamelib.bc
+libnomlib.bc
 # ctags
 *.tags
 *.tags_sorted_by_file

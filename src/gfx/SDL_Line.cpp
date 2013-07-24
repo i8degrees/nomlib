@@ -22,7 +22,6 @@ Line::Line ( void )
 
 Line::~Line ( void )
 {
-
   this->pixels.clear();
 }
 

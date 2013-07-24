@@ -64,6 +64,7 @@ NOMLIB_LOG_INFO;
 
   this->lines.clear(); // Better safe than sorry!
 }
+
 bool SDL_MessageBox::isEnabled ( void )
 {
   if ( this->enabled == true )

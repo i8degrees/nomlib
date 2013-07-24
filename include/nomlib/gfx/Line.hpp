@@ -22,8 +22,8 @@
 
 namespace nom {
 
-class Line: public IDrawable,   // "is a" relationship
-            public Transformable   // "has a" relationship
+class Line: public IDrawable,     // "is a" relationship
+            public Transformable  // "has a" relationship
 {
   public:
     Line ( void );

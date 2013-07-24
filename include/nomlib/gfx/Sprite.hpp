@@ -19,7 +19,7 @@
 
 namespace nom {
 
-class Sprite: public IDrawable,  //  "is a" inheritance
+class Sprite: public IDrawable,     //  "is a" inheritance
               public Transformable  //  "has a" inheritance
 {
   public:

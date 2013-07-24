@@ -23,7 +23,7 @@
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/gfx/Canvas.hpp"
-#include "nomlib/gfx/IDrawable.hpp"
+//#include "nomlib/gfx/IDrawable.hpp"
 
 namespace nom {
 

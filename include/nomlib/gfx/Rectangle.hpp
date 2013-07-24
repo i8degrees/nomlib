@@ -19,8 +19,8 @@
 
 namespace nom {
 
-class Rectangle:  public IDrawable,   // "is a" relationship
-                  public Transformable   // "has a" relationship
+class Rectangle:  public IDrawable,     // "is a" relationship
+                  public Transformable  // "has a" relationship
 
 {
   public:

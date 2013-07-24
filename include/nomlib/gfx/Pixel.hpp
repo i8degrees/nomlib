@@ -18,8 +18,8 @@
 
 namespace nom {
 
-class Pixel:  public IDrawable,   // "is a" relationship
-              public Transformable   // "has a" relationship
+class Pixel:  public IDrawable,     // "is a" relationship
+              public Transformable  // "has a" relationship
 {
   public:
     Pixel ( void );

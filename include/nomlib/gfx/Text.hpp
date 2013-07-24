@@ -21,7 +21,7 @@
 #include "nomlib/gfx/IFont.hpp"
 #include "nomlib/gfx/BitmapFont.hpp"
 #include "nomlib/gfx/TrueTypeFont.hpp"
-#include "nomlib/gfx/IDrawable.hpp"
+//#include "nomlib/gfx/IDrawable.hpp"
 
 namespace nom {
 

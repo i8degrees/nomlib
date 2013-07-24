@@ -24,8 +24,8 @@
 
 namespace nom {
 
-class Gradient: public IDrawable, // "is a" relationship
-                public Transformable // "has a" relationship
+class Gradient: public IDrawable,     // "is a" relationship
+                public Transformable  // "has a" relationship
 {
   public:
     Gradient ( void );

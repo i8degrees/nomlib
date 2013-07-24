@@ -25,8 +25,8 @@
 
 namespace nom {
 
-class MessageBox: public IDrawable,   // "is a" relationship
-                      public Transformable   // "has a" relationship
+class MessageBox: public IDrawable,     // "is a" relationship
+                  public Transformable  // "has a" relationship
 {
   public:
     MessageBox ( void );

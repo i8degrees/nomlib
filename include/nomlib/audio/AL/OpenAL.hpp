@@ -38,16 +38,16 @@ const float MIN_VOLUME = 0.0;
 const float MAX_VOLUME = 100.0;
 
 #ifdef NOMLIB_DEBUG
-  #define AL_ERR(Function) \
-    ( (Function ), nom::priv::al_check_err ( __FILE__, __LINE__ ) )
+  #define AL_CHECK_ERR(Function) \
+    ( (Function ), nom::priv::al_err ( __FILE__, __LINE__ ) )
 #else
-  #define AL_ERR(Function) ( Function )
+  #define AL_CHECK_ERR(Function) ( Function )
 #endif
 
 namespace nom {
   namespace priv {
 
-void al_check_err ( const std::string& file, nom::uint32 line );
+void al_err ( const std::string& file, nom::uint32 line );
 
   } // namespace priv
 } // namespace nom

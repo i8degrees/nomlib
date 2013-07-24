@@ -11,7 +11,7 @@
 namespace nom {
   namespace priv {
 
-void al_check_err ( const std::string& file, uint32 line )
+void al_err ( const std::string& file, uint32 line )
 {
   ALenum error_code = alGetError();
 

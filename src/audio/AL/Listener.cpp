@@ -25,10 +25,10 @@ NOMLIB_LOG_INFO;
   // Initialize with sane defaults to be on the safe side; note that you must
   // have the audio card initialized before-hand or these will be invalid
   // presets
-AL_ERR ( alListenerf ( AL_GAIN, gain ) );
-AL_ERR ( alListenerfv ( AL_POSITION, position ) );
-AL_ERR ( alListenerfv ( AL_VELOCITY, velocity ) );
-AL_ERR ( alListenerfv ( AL_ORIENTATION, direction ) );
+AL_CHECK_ERR ( alListenerf ( AL_GAIN, gain ) );
+AL_CHECK_ERR ( alListenerfv ( AL_POSITION, position ) );
+AL_CHECK_ERR ( alListenerfv ( AL_VELOCITY, velocity ) );
+AL_CHECK_ERR ( alListenerfv ( AL_ORIENTATION, direction ) );
 }
 
 Listener::~Listener ( void )
@@ -42,7 +42,7 @@ float Listener::getVolume ( void ) const
 {
   ALfloat master_volume;
 
-AL_ERR ( alGetListenerf ( AL_GAIN, &master_volume ) );
+AL_CHECK_ERR ( alGetListenerf ( AL_GAIN, &master_volume ) );
 
   return master_volume * 100.f;
 }
@@ -51,7 +51,7 @@ const Vector3f Listener::getPosition ( void ) const
 {
   Vector3f position;
 
-AL_ERR ( alGetListener3f ( AL_POSITION, &position.x, &position.y, &position.z ) );
+AL_CHECK_ERR ( alGetListener3f ( AL_POSITION, &position.x, &position.y, &position.z ) );
 
   return position;
 }
@@ -60,7 +60,7 @@ const Vector3f Listener::getVelocity ( void ) const
 {
   Vector3f velocity;
 
-AL_ERR ( alGetListener3f ( AL_VELOCITY, &velocity.x, &velocity.y, &velocity.z ) );
+AL_CHECK_ERR ( alGetListener3f ( AL_VELOCITY, &velocity.x, &velocity.y, &velocity.z ) );
 
   return velocity;
 }
@@ -69,14 +69,14 @@ const Vector3f Listener::getDirection ( void ) const
 {
   Vector3f direction;
 
-AL_ERR ( alGetListener3f ( AL_ORIENTATION, &direction.x, &direction.y, &direction.z ) );
+AL_CHECK_ERR ( alGetListener3f ( AL_ORIENTATION, &direction.x, &direction.y, &direction.z ) );
 
   return direction;
 }
 
 void Listener::setPosition ( float x, float y, float z )
 {
-AL_ERR ( alListener3f ( AL_POSITION, x, y, z ) );
+AL_CHECK_ERR ( alListener3f ( AL_POSITION, x, y, z ) );
 }
 
 void Listener::setPosition ( const Vector3f& position )
@@ -86,7 +86,7 @@ void Listener::setPosition ( const Vector3f& position )
 
 void Listener::setVelocity ( float x, float y, float z )
 {
-AL_ERR ( alListener3f ( AL_VELOCITY, x, y, z ) );
+AL_CHECK_ERR ( alListener3f ( AL_VELOCITY, x, y, z ) );
 }
 
 void Listener::setVelocity ( const Vector3f& velocity )
@@ -96,7 +96,7 @@ void Listener::setVelocity ( const Vector3f& velocity )
 
 void Listener::setDirection ( float x, float y, float z )
 {
-AL_ERR ( alListener3f ( AL_ORIENTATION, x, y, z ) );
+AL_CHECK_ERR ( alListener3f ( AL_ORIENTATION, x, y, z ) );
 }
 
 void Listener::setDirection ( const Vector3f& direction )
@@ -106,7 +106,7 @@ void Listener::setDirection ( const Vector3f& direction )
 
 void Listener::setVolume ( float gain )
 {
-AL_ERR ( alListenerf ( AL_GAIN, gain * 0.01f ) );
+AL_CHECK_ERR ( alListenerf ( AL_GAIN, gain * 0.01f ) );
 }
 
 

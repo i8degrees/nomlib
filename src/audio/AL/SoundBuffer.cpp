@@ -22,8 +22,8 @@ SoundBuffer::~SoundBuffer ( void )
 {
 NOMLIB_LOG_INFO;
 
-//AL_ERR ( alDeleteBuffers ( 1, &this->buffers[0] ) );
-AL_ERR ( alDeleteBuffers ( NUM_BUFFERS, this->buffers ) );
+//AL_CHECK_ERR ( alDeleteBuffers ( 1, &this->buffers[0] ) );
+AL_CHECK_ERR ( alDeleteBuffers ( NUM_BUFFERS, this->buffers ) );
 }
 
 ALuint SoundBuffer::get ( void ) const
@@ -54,11 +54,11 @@ NOMLIB_LOG_ERR ( "Could not read audio samples: " + filename );
 
   this->buffer_duration = ( 1000 * fp.getSampleCount() / fp.getSampleRate() / fp.getChannelCount() );
 
-//AL_ERR ( alGenBuffers ( 1, &this->buffers[0] ) );
-//AL_ERR ( alGenBuffers ( NUM_BUFFERS, &this->buffers[0] ) );
-AL_ERR ( alGenBuffers ( NUM_BUFFERS, this->buffers ) );
+//AL_CHECK_ERR ( alGenBuffers ( 1, &this->buffers[0] ) );
+//AL_CHECK_ERR ( alGenBuffers ( NUM_BUFFERS, &this->buffers[0] ) );
+AL_CHECK_ERR ( alGenBuffers ( NUM_BUFFERS, this->buffers ) );
 
-AL_ERR  ( alBufferData (  this->buffers[0], fp.getChannelFormat(),
+AL_CHECK_ERR  ( alBufferData (  this->buffers[0], fp.getChannelFormat(),
                           &this->samples.front(), fp.getDataByteSize(),
                           fp.getSampleRate() )
         );

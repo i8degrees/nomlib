@@ -32,22 +32,22 @@ void Sound::setBuffer ( const SoundBuffer& copy )
 {
 NOMLIB_LOG_INFO;
 
-AL_ERR ( alSourcei ( source_id, AL_BUFFER, copy.get() ) );
+AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, copy.get() ) );
 }
 
 void Sound::Play ( void )
 {
-AL_ERR ( alSourcePlay ( source_id ) );
+AL_CHECK_ERR ( alSourcePlay ( source_id ) );
 }
 
 void Sound::Stop ( void )
 {
-AL_ERR ( alSourceStop ( source_id ) );
+AL_CHECK_ERR ( alSourceStop ( source_id ) );
 }
 
 void Sound::Pause ( void )
 {
-AL_ERR ( alSourcePause ( source_id ) );
+AL_CHECK_ERR ( alSourcePause ( source_id ) );
 }
 
 // TODO

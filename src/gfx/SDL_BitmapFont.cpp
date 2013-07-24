@@ -316,7 +316,7 @@ void SDL_BitmapFont::Update ( void )
 }
 
 // TODO: test \t (horizontal tabbing) feature
-void SDL_BitmapFont::Draw ( void* video_buffer )
+void SDL_BitmapFont::Draw ( void* video_buffer ) /*const*/
 {
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from

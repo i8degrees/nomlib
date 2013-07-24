@@ -86,7 +86,7 @@ class SDL_BitmapFont: //  public SDL_Drawable, //  "is a" inheritance
 
     void Update ( void );
     /// Draw the set text string to the video surface
-    void Draw ( void* video_buffer );
+    void Draw ( void* video_buffer ) /*const*/;
 
   private:
     /// pointer reference holding our bitmap font image sheet

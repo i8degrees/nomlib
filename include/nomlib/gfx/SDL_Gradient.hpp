@@ -27,10 +27,10 @@ class SDL_Gradient//: public SDL_Drawable // "is a" relationship
   public:
     SDL_Gradient ( void );
     SDL_Gradient  ( const Color& starting_color, const Color& ending_color,
-                    int32_t x = 0, int32_t y = 0,
-                    int32_t width = 0, int32_t height = 0,
-                    uint32_t direction = 0,  uint32_t x_margin = 0,
-                    uint32_t y_margin = 0
+                    int32 x = 0, int32 y = 0,
+                    int32 width = 0, int32 height = 0,
+                    uint32 direction = 0,  uint32 x_margin = 0,
+                    uint32 y_margin = 0
                   );
 
     virtual ~SDL_Gradient ( void );
@@ -42,7 +42,7 @@ class SDL_Gradient//: public SDL_Drawable // "is a" relationship
     void setEndColor ( const Color& ending_color );
 
     uint32_t getFillDirection ( void ) const;
-    void setFillDirection ( const uint32_t direction );
+    void setFillDirection ( const uint32 direction );
 
     void Update ( void );
     void Draw ( void* video_buffer ); /* const */
@@ -55,13 +55,13 @@ class SDL_Gradient//: public SDL_Drawable // "is a" relationship
     /// geometry coordinates
     Coords coords;
     /// x coordinate offset
-    int32_t x_margin;
+    int32 x_margin;
     /// y coordinate offset
-    int32_t y_margin;
+    int32 y_margin;
     /// color fill direction:
     /// direction = 0 is ending color to starting color
     /// direction = 1 is starting color to ending color
-    uint32_t direction;
+    uint32 direction;
 };
 
 

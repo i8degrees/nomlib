@@ -21,13 +21,13 @@ NOMLIB_LOG_INFO;
 }
 
 // Constructor variant
-SDL_Gradient::SDL_Gradient ( const Color& starting_color,
-                                  const Color& ending_color,
-                                  int32_t x, int32_t y,
-                                  int32_t width, int32_t height,
-                                  uint32_t direction, uint32_t x_margin,
-                                  uint32_t y_margin
-                                )
+SDL_Gradient::SDL_Gradient  ( const Color& starting_color,
+                              const Color& ending_color,
+                              int32 x, int32 y,
+                              int32 width, int32 height,
+                              uint32 direction, uint32 x_margin,
+                              uint32 y_margin
+                            )
 {
   this->gradient[0] = starting_color;
   this->gradient[1] = ending_color;
@@ -69,7 +69,7 @@ uint32_t SDL_Gradient::getFillDirection ( void ) const
   return this->direction;
 }
 
-void SDL_Gradient::setFillDirection ( const uint32_t direction )
+void SDL_Gradient::setFillDirection ( const uint32 direction )
 {
   this->direction = direction;
 }

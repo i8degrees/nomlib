@@ -20,15 +20,12 @@
 
 namespace nom {
 
-class SDL_Cursor
+class Cursor
 {
   public:
-    SDL_Cursor ( void );
-    virtual ~SDL_Cursor ( void );
-
-    SDL_Cursor ( unsigned int x, unsigned int y, unsigned int width, unsigned int height );
-    //void Init ( void );
-    void Load ( std::string filename, Color colorkey, bool use_cache );
+    Cursor ( void );
+    Cursor ( unsigned int x, unsigned int y, unsigned int width, unsigned int height );
+    virtual ~Cursor ( void );
 
     int32 getX ( void );
     int32 getY ( void );
@@ -51,6 +48,7 @@ class SDL_Cursor
     void moveCursorLeft();
     void moveCursorRight();
 
+    void Load ( std::string filename, Color colorkey, bool use_cache );
     void Update ( void );
     void Draw ( void* video_buffer );
 

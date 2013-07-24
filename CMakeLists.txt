@@ -130,7 +130,7 @@ set ( NOMLIB_SOURCE
       ${SRC_DIR}/math/Coords.cpp
       ${SRC_DIR}/math/Transformable.cpp
       # gui
-      ${SRC_DIR}/gui/SDL_Cursor.cpp
+      ${SRC_DIR}/gui/Cursor.cpp
       ${SRC_DIR}/gui/SDL_MessageBox.cpp
       # sdl
       ${SRC_DIR}/sdl/utils.cpp

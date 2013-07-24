@@ -11,7 +11,7 @@
 
 #include "nomlib/config.hpp"
 
-#include "nomlib/gui/SDL_Cursor.hpp"
+#include "nomlib/gui/Cursor.hpp"
 #include "nomlib/gui/SDL_MessageBox.hpp"
 
 #endif // NOMLIB_GUI_HEADERS defined

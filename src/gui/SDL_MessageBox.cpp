@@ -28,7 +28,7 @@ SDL_MessageBox::SDL_MessageBox ( void )
   initialize();
 }
 
-SDL_MessageBox::SDL_MessageBox  ( int32 width, int32 height, int32 x, int32 y,
+SDL_MessageBox::SDL_MessageBox  ( int32 x, int32 y, int32 width, int32 height,
                                   const std::vector<Color> border_colors,
                                   const SDL_Gradient& background
                                 )

@@ -38,13 +38,13 @@ const Coords Transformable::getSize ( void ) const
 }
 
 // Variant #1 setter for position coordinates
-void Transformable::setPosition ( int32_t x, int32_t y )
+void Transformable::setPosition ( int32 x, int32 y )
 {
   this->coords.setPosition ( x, y );
 }
 
 // Variant #2 setter for position coordinates
-void Transformable::setPosition ( int32_t x, int32_t y, int32_t width, int32_t height )
+void Transformable::setPosition ( int32 x, int32 y, int32 width, int32 height )
 {
   this->coords = Coords ( x, y, width, height );
 }
@@ -52,20 +52,20 @@ void Transformable::setPosition ( int32_t x, int32_t y, int32_t width, int32_t h
 // Variant #3 setter for position coordinates; do we have enough options yet???
 void Transformable::setPosition ( const Coords& coords )
 {
-  this->coords = coords;
+  this->setPosition ( coords.x, coords.y, coords.width, coords.height );
 }
 
-void Transformable::setSize ( int32_t width, int32_t height )
+void Transformable::setSize ( int32 width, int32 height )
 {
   this->coords.setSize ( width, height );
 }
 
 void Transformable::setSize ( const Coords& size )
 {
-  this->coords.setSize ( size.width, size.height );
+  this->setSize ( size.width, size.height );
 }
 
-void Transformable::move ( uint32_t x, uint32_t y )
+void Transformable::move ( uint32 x, uint32 y )
 {
   this->coords.x += x;
   this->coords.y += y;
@@ -82,14 +82,14 @@ const Color& Transformable::getColor ( void ) const
   return this->color;
 }
 
-void Transformable::setColor ( const Color& color_ )
-{
-  this->color = color_;
-}
-
-void Transformable::setColor ( uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha )
+void Transformable::setColor ( uint8 red, uint8 green, uint8 blue, uint8 alpha )
 {
   this->color = Color ( red, green, blue, alpha );
+}
+
+void Transformable::setColor ( const Color& color )
+{
+  this->setColor ( color.red, color.green, color.blue, color.alpha );
 }
 
 

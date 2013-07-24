@@ -24,19 +24,19 @@ class Transformable
 
     const Coords getPosition ( void ) const;
     const Coords getSize ( void ) const;
-    void setPosition ( int32_t x, int32_t y );
-    void setPosition ( int32_t x, int32_t y, int32_t width, int32_t height );
+    void setPosition ( int32 x, int32 y );
+    void setPosition ( int32 x, int32 y, int32 width, int32 height );
     void setPosition ( const Coords& coords );
 
-    void setSize ( int32_t width, int32_t height );
+    void setSize ( int32 width, int32 height );
     void setSize ( const Coords& size );
 
-    void move ( uint32_t x = 0, uint32_t y = 0 );
+    void move ( uint32 x = 0, uint32 y = 0 );
     void move ( const Coords& offsets = Coords ( 0, 0 ) );
 
     const Color& getColor ( void ) const;
+    void setColor ( uint8 red, uint8 green, uint8 blue, uint8 alpha = 255 );
     void setColor ( const Color& color );
-    void setColor ( uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255 );
 
   protected:
     Coords coords;

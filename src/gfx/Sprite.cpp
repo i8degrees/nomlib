@@ -19,7 +19,7 @@ NOMLIB_LOG_INFO;
   this->sheet.sprite_height = 0;
   this->sheet.width = 0;
   this->sheet.height = 0;
-  this->sheet.id = -1;
+  this->sheet.id = 1;
   this->sheet.spacing = 0;
   this->sheet.padding = 0;
 }
@@ -32,7 +32,7 @@ NOMLIB_LOG_INFO;
 
   this->state = 0;
 
-  this->sheet.id = -1;
+  this->sheet.id = 1;
   this->sheet.sprite_width = 0;
   this->sheet.sprite_height = 0;
   this->sheet.width = width = 0;
@@ -93,13 +93,10 @@ NOMLIB_LOG_ERR ( "Could not load sprite image file: " + filename );
 
 void Sprite::Update ( void )
 {
-  if ( this->sheet.id != -1 )
-  {
-    // FIXME: Presently, we assume every sprite on our sheet is on the same row
-    this->offsets.setPosition ( this->sheet.id * this->sheet.sprite_width, 0 );
-    this->offsets.setSize ( this->sheet.sprite_width, this->sheet.sprite_height );
-    this->sprite_buffer.setOffsets ( this->offsets );
-  }
+  // FIXME: Presently, we assume every sprite on our sheet is on the same row
+  this->offsets.setPosition ( this->sheet.id * this->sheet.sprite_width, 0 );
+  this->offsets.setSize ( this->sheet.sprite_width, this->sheet.sprite_height );
+  this->sprite_buffer.setOffsets ( this->offsets );
 
   this->sprite_buffer.setPosition ( coords );
 }

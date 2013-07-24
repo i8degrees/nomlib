@@ -2,15 +2,15 @@
   "folders":
   [
     {
-      "name": "src",
-      "path": "src",
-      "file_include_patterns": [ "*.cpp", "*.c" ]
-    },
-
-    {
       "name": "inc",
       "path": "include",
       "file_include_patterns": [ "*.hpp", "*.h" ]
+    },
+
+    {
+      "name": "src",
+      "path": "src",
+      "file_include_patterns": [ "*.cpp", "*.c" ]
     },
 
     {

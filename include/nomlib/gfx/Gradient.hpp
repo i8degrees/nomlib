@@ -19,12 +19,12 @@
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Transformable.hpp"
-#include "nomlib/gfx/SDL_Drawable.hpp"
+#include "nomlib/gfx/IDrawable.hpp"
 #include "nomlib/gfx/SDL_Rectangle.hpp"
 
 namespace nom {
 
-class Gradient: public SDL_Drawable, // "is a" relationship
+class Gradient: public IDrawable, // "is a" relationship
                 public Transformable // "has a" relationship
 {
   public:
@@ -50,7 +50,7 @@ class Gradient: public SDL_Drawable, // "is a" relationship
     void Draw ( void* video_buffer ) const;
 
   private:
-    std::vector<std::shared_ptr<SDL_Drawable>> rectangles;
+    std::vector<std::shared_ptr<IDrawable>> rectangles;
     /// gradient[0] = starting Color
     /// gradient[1] = ending Color
     Color gradient[2];

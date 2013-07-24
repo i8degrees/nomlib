@@ -14,11 +14,11 @@
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Transformable.hpp"
-#include "nomlib/gfx/SDL_Drawable.hpp"
+#include "nomlib/gfx/IDrawable.hpp"
 
 namespace nom {
 
-class Pixel:  public SDL_Drawable,   // "is a" relationship
+class Pixel:  public IDrawable,   // "is a" relationship
               public Transformable   // "has a" relationship
 {
   public:

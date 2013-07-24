@@ -119,7 +119,7 @@ void Gradient::Draw ( void* video_buffer ) const
 {
   for ( auto it = this->rectangles.begin(); it != this->rectangles.end(); ++it )
   {
-    std::shared_ptr<SDL_Drawable> obj = *it;
+    std::shared_ptr<IDrawable> obj = *it;
     obj->Draw ( video_buffer );
   }
 }

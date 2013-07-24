@@ -21,6 +21,7 @@
 #include "nomlib/gfx/IFont.hpp"
 #include "nomlib/gfx/SDL_BitmapFont.hpp"
 #include "nomlib/gfx/SDL_Font.hpp"
+#include "nomlib/gfx/IDrawable.hpp"
 
 namespace nom {
 
@@ -31,7 +32,7 @@ enum FontType
   TrueTypeFont = 2
 };
 
-class Text/*: public SDL_Drawable*/
+class Text/*: public IDrawable*/
 {
   public:
     Text ( void );

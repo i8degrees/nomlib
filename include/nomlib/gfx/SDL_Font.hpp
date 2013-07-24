@@ -21,7 +21,7 @@
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/gfx/SDL_Canvas.hpp"
-#include "nomlib/gfx/SDL_Drawable.hpp"
+#include "nomlib/gfx/IDrawable.hpp"
 
 namespace nom {
   namespace priv {
@@ -35,7 +35,7 @@ void TTF_FreeSurface ( TTF_Font* );
 
 namespace nom {
 
-class SDL_Font: //  public SDL_Drawable, //  "is a" inheritance
+class SDL_Font: //  public IDrawable, //  "is a" inheritance
                     public IFont // "is-a" relationship
 {
   public:

@@ -18,14 +18,14 @@
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Transformable.hpp"
-#include "nomlib/gfx/SDL_Drawable.hpp"
+#include "nomlib/gfx/IDrawable.hpp"
 #include "nomlib/gfx/SDL_Canvas.hpp"
 #include "nomlib/gfx/Gradient.hpp"
 #include "nomlib/gfx/SDL_Line.hpp"
 
 namespace nom {
 
-class SDL_MessageBox: public SDL_Drawable,   // "is a" relationship
+class SDL_MessageBox: public IDrawable,   // "is a" relationship
                       public Transformable   // "has a" relationship
 {
   public:
@@ -45,7 +45,7 @@ class SDL_MessageBox: public SDL_Drawable,   // "is a" relationship
 
   private:
     void initialize ( void );
-    typedef std::vector<std::shared_ptr<SDL_Drawable>> drawable_t;
+    typedef std::vector<std::shared_ptr<IDrawable>> drawable_t;
     drawable_t lines;
     Gradient background;
     SDL_Canvas box;

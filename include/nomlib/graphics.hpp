@@ -15,7 +15,7 @@
 #include "nomlib/gfx/SDL_BitmapFont.hpp"
 #include "nomlib/gfx/SDL_Canvas.hpp"
 #include "nomlib/gfx/SDL_Display.hpp"
-#include "nomlib/gfx/SDL_Drawable.hpp"
+#include "nomlib/gfx/IDrawable.hpp"
 #include "nomlib/gfx/SDL_Font.hpp"
 #include "nomlib/gfx/Gradient.hpp"
 #include "nomlib/gfx/SDL_Image.hpp"

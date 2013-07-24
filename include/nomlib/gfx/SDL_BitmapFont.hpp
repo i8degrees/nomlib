@@ -23,11 +23,11 @@
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/gfx/SDL_Canvas.hpp"
-#include "nomlib/gfx/SDL_Drawable.hpp"
+#include "nomlib/gfx/IDrawable.hpp"
 
 namespace nom {
 
-class SDL_BitmapFont: //  public SDL_Drawable, //  "is a" inheritance
+class SDL_BitmapFont: //  public IDrawable, //  "is a" inheritance
                           public IFont // "is-a" relationship
 {
   public:

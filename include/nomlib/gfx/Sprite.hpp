@@ -13,13 +13,13 @@
 
 #include "nomlib/config.hpp"
 #include "nomlib/sys/Logger.hpp"
-#include "nomlib/gfx/SDL_Drawable.hpp"
+#include "nomlib/gfx/IDrawable.hpp"
 #include "nomlib/gfx/SDL_Canvas.hpp"
 #include "nomlib/math/Transformable.hpp"
 
 namespace nom {
 
-class Sprite: public SDL_Drawable,  //  "is a" inheritance
+class Sprite: public IDrawable,  //  "is a" inheritance
               public Transformable  //  "has a" inheritance
 {
   public:

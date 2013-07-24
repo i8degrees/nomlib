@@ -38,7 +38,7 @@ bool Text::Load ( const std::string& filename, int32 font_size )
   if ( extension.compare ( "application/x-font-ttf" ) != 0 )
   {
     this->font = std::shared_ptr<IFont> ( new BitmapFont );
-    this->font->Load ( filename, nom::Color ( 110, 144, 190 ), font_size, true );
+    this->font->Load ( filename, Color ( 110, 144, 190 ), font_size, true );
 
     if ( this->font != nullptr )
     {
@@ -51,7 +51,7 @@ bool Text::Load ( const std::string& filename, int32 font_size )
   {
     this->font = std::shared_ptr<IFont> ( new TrueTypeFont );
 
-    this->font->Load ( filename, nom::Color::Black, font_size, false );
+    this->font->Load ( filename, Color::Black, font_size, false );
 
     if ( this->font != nullptr )
     {

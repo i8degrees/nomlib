@@ -13,14 +13,14 @@ namespace nom {
 
 SoundBuffer::SoundBuffer ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   // Initialize here
 }
 
 SoundBuffer::~SoundBuffer ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
 //AL_CHECK_ERR ( alDeleteBuffers ( 1, &this->buffers[0] ) );
 AL_CHECK_ERR ( alDeleteBuffers ( NUM_BUFFERS, this->buffers ) );
@@ -42,13 +42,13 @@ bool SoundBuffer::loadFromFile ( const std::string& filename )
 
   if ( ! fp.open ( filename ) )
   {
-NOMLIB_LOG_ERR ( "Could not load audio: " + filename );
+NOM_LOG_ERR ( "Could not load audio: " + filename );
   return false;
   }
 
   if ( ! fp.read ( this->samples ) )
   {
-NOMLIB_LOG_ERR ( "Could not read audio samples: " + filename );
+NOM_LOG_ERR ( "Could not read audio samples: " + filename );
   return false;
   }
 

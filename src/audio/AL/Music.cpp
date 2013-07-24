@@ -13,7 +13,7 @@ namespace nom {
 
 Music::Music ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   // Initialize here
 }
@@ -25,14 +25,14 @@ Music::Music ( const SoundBuffer& copy )
 
 Music::~Music ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   //this->Stop();
 }
 
 void Music::setBuffer ( const SoundBuffer& copy )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
 AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, copy.get() ) );
 }
@@ -75,7 +75,7 @@ void Music::fadeOut ( float seconds )
     {
       std::cout << "\nFading out\n";
       this->setVolume ( current_volume );
-NOMLIB_DUMP_VAR ( current_volume );
+NOM_DUMP_VAR ( current_volume );
     }
     else
     {

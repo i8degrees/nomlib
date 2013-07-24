@@ -17,7 +17,7 @@ namespace nom {
 
 BitmapFont::BitmapFont ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->text_buffer = "\0";
   this->newline = 0; // holds the y coords value to increment upon newline break char
@@ -38,7 +38,7 @@ NOMLIB_LOG_INFO;
 
 BitmapFont::~BitmapFont ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 }
 
 const std::string& BitmapFont::getText ( void ) const
@@ -153,11 +153,11 @@ bool BitmapFont::Load ( const std::string& filename, const Color& colorkey,
 
   if ( this->bitmap_font.loadFromImage ( filename, colorkey, use_cache ) == false )
   {
-NOMLIB_LOG_ERR ( "Could not load bitmap font image file: " + filename );
+NOM_LOG_ERR ( "Could not load bitmap font image file: " + filename );
     return false;
   }
 
-NOMLIB_ASSERT ( this->bitmap_font.valid() );
+NOM_ASSERT ( this->bitmap_font.valid() );
 
   background_color = getColorAsInt ( this->bitmap_font.getCanvasPixelsFormat(), colorkey );
 

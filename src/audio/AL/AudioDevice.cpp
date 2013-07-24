@@ -13,7 +13,7 @@ namespace nom {
 
 void AL_FreeAudioDevice ( ALCdevice* dev )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   if ( dev != nullptr )
   {
@@ -23,7 +23,7 @@ NOMLIB_LOG_INFO;
 
 void AL_FreeAudioContext ( ALCcontext* ctx )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   if ( ctx != nullptr )
   {
@@ -58,12 +58,12 @@ AudioDevice::AudioDevice ( const std::string& device_name )
 
 AudioDevice::~AudioDevice ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 }
 
 bool AudioDevice::initialize ( const ALCchar* device_name )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   audio_device.reset();
   audio_context.reset();
@@ -85,13 +85,13 @@ NOMLIB_LOG_INFO;
     }
     else
     {
-NOMLIB_LOG_ERR ( "Failed to create the audio context." );
+NOM_LOG_ERR ( "Failed to create the audio context." );
       return false;
     }
   }
   else
   {
-NOMLIB_LOG_ERR ( "Failed to open the audio device." );
+NOM_LOG_ERR ( "Failed to open the audio device." );
     return false;
   }
 

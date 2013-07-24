@@ -20,27 +20,27 @@
 // Pretty print C macros
 #ifdef NOMLIB_DEBUG
   // If debugging is turned on, we log all warnings, errors & info
-  #define NOMLIB_LOG(message) \
+  #define NOM_LOG_INFO(message) \
     ( nom::Logger::info ( message ) )
-  #define NOMLIB_LOG_ERR(message) \
+  #define NOM_LOG_ERR(message) \
     ( nom::Logger::err ( __FILE__, __LINE__, message ) )
-  #define NOMLIB_ASSERT(expression) \
+  #define NOM_ASSERT(expression) \
     ( assert (expression) )
-  #define NOMLIB_DUMP_VAR(var) \
+  #define NOM_DUMP_VAR(var) \
   ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
 #else // We do not add any overhead
-  #define NOMLIB_LOG(message)
-  #define NOMLIB_LOG_ERR(message)
-  #define NOMLIB_ASSERT(expression)
-  #define NOMLIB_DUMP_VAR(var)
+  #define NOM_LOG_INFO(message)
+  #define NOM_LOG_ERR(message)
+  #define NOM_ASSERT(expression)
+  #define NOM_DUMP_VAR(var)
 #endif
 
-#ifdef NOMLIB_DEBUG_ALL
-  // If all debugging is turned on, we show class construction and destruction
-  #define NOMLIB_LOG_INFO \
-    ( nom::Logger::info ( __func__ ) )
+#ifdef NOMLIB_DEBUG_TRACE
+  // If trace debugging is turned on, we show class construction and destruction
+  #define NOM_LOG_CLASSINFO \
+    ( nom::Logger::class_info ( __func__ ) )
 #else // We do not add any overhead
-  #define NOMLIB_LOG_INFO
+  #define NOM_LOG_CLASSINFO
 #endif
 
 namespace nom {
@@ -49,6 +49,9 @@ class Logger
 {
   public:
     ~Logger ( void );
+
+    /// Logging of class info
+    static void class_info ( const std::string& message );
 
     /// Logging of info messages
     static void info ( const std::string& message );

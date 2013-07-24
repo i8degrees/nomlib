@@ -14,7 +14,6 @@
 #include "nomlib/graphics.hpp"
 #include "nomlib/system.hpp"
 
-#define dump_var(var) NOMLIB_DUMP_VAR(var)
 const std::string APP_NAME = "nomlib App Demo";
 
 class App: public nom::SDL_App

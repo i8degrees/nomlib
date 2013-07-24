@@ -15,8 +15,6 @@
 #include "nomlib/math.hpp"
 #include "nomlib/system.hpp"
 
-#define dump_var(var) NOMLIB_DUMP_VAR(var)
-
 int main ( int argc, char* argv[] )
 {
   nom::OSXFS dir;
@@ -36,10 +34,9 @@ int main ( int argc, char* argv[] )
     return EXIT_FAILURE;
 
   not_font.Load ( path + "Resources/cards.json", 0 );
-NOMLIB_ASSERT ( not_font.getFontType() != 0 ); // should always err
-
-NOMLIB_ASSERT ( bitmap_font.getFontType() == 1 );
-NOMLIB_ASSERT ( truetype_font.getFontType() == 2 );
+NOM_ASSERT ( not_font.getFontType() != 0 ); // should always err
+NOM_ASSERT ( bitmap_font.getFontType() == 1 );
+NOM_ASSERT ( truetype_font.getFontType() == 2 );
 
   bitmap_font.setColor ( nom::Color ( 255, 255, 255 ) ); // has no effect
   truetype_font.setColor ( nom::Color ( 255, 255, 255 ) );
@@ -77,25 +74,25 @@ NOMLIB_ASSERT ( truetype_font.getFontType() == 2 );
 
   nom::sleep ( 2500 );
 
-dump_var ( bitmap_font.getText() );
-dump_var ( bitmap_font.getFontWidth() );
-dump_var ( bitmap_font.getFontHeight() );
-dump_var ( bitmap_font.getPosition().x );
-dump_var ( bitmap_font.getPosition().y );
-dump_var ( bitmap_font.getColor().red );
-dump_var ( bitmap_font.getColor().green );
-dump_var ( bitmap_font.getColor().blue );
-dump_var ( bitmap_font.getColor().alpha );
+NOM_DUMP_VAR ( bitmap_font.getText() );
+NOM_DUMP_VAR ( bitmap_font.getFontWidth() );
+NOM_DUMP_VAR ( bitmap_font.getFontHeight() );
+NOM_DUMP_VAR ( bitmap_font.getPosition().x );
+NOM_DUMP_VAR ( bitmap_font.getPosition().y );
+NOM_DUMP_VAR ( bitmap_font.getColor().red );
+NOM_DUMP_VAR ( bitmap_font.getColor().green );
+NOM_DUMP_VAR ( bitmap_font.getColor().blue );
+NOM_DUMP_VAR ( bitmap_font.getColor().alpha );
 
-dump_var ( truetype_font.getText() );
-dump_var ( truetype_font.getFontWidth() );
-dump_var ( truetype_font.getFontHeight() );
-dump_var ( truetype_font.getPosition().x );
-dump_var ( truetype_font.getPosition().y );
-dump_var ( truetype_font.getColor().red );
-dump_var ( truetype_font.getColor().green );
-dump_var ( truetype_font.getColor().blue );
-dump_var ( truetype_font.getColor().alpha );
+NOM_DUMP_VAR ( truetype_font.getText() );
+NOM_DUMP_VAR ( truetype_font.getFontWidth() );
+NOM_DUMP_VAR ( truetype_font.getFontHeight() );
+NOM_DUMP_VAR ( truetype_font.getPosition().x );
+NOM_DUMP_VAR ( truetype_font.getPosition().y );
+NOM_DUMP_VAR ( truetype_font.getColor().red );
+NOM_DUMP_VAR ( truetype_font.getColor().green );
+NOM_DUMP_VAR ( truetype_font.getColor().blue );
+NOM_DUMP_VAR ( truetype_font.getColor().alpha );
 
   return EXIT_SUCCESS;
 }

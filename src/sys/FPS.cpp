@@ -11,7 +11,7 @@ namespace nom {
 
 FPS::FPS ( void )
 {
-//NOMLIB_LOG_INFO;
+//NOM_LOG_CLASSINFO;
 
   this->total_frames = 0;
   this->fps.Start();
@@ -20,7 +20,7 @@ FPS::FPS ( void )
 
 FPS::~FPS ( void )
 {
-//NOMLIB_LOG_INFO;
+//NOM_LOG_CLASSINFO;
 
   this->total_frames = 0;
   this->fps.Stop();

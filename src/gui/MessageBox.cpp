@@ -12,7 +12,7 @@ namespace nom {
 
 void MessageBox::initialize ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->enabled = true;
   this->lines.clear();
@@ -58,7 +58,7 @@ MessageBox::MessageBox  ( int32 x, int32 y, int32 width, int32 height,
 
 MessageBox::~MessageBox ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->enabled = false;
 

@@ -11,11 +11,11 @@ namespace nom {
 
 Timer::Timer ( void )
 {
-//NOMLIB_LOG_INFO;
+//NOM_LOG_CLASSINFO;
 
   if ( SDL_InitSubSystem ( SDL_INIT_TIMER ) == -1 )
   {
-NOMLIB_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( SDL_GetError() );
   }
 
   this->started = false;
@@ -26,7 +26,7 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
 
 Timer::~Timer ( void )
 {
-//NOMLIB_LOG_INFO;
+//NOM_LOG_CLASSINFO;
 
   SDL_QuitSubSystem ( SDL_INIT_TIMER );
 }

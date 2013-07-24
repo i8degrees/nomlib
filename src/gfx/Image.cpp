@@ -12,11 +12,11 @@ namespace nom {
 
 Image::Image ( int32 flags )  : image_buffer ( nullptr, nom::priv::Canvas_FreeSurface )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   if ( IMG_Init ( flags ) != flags )
   {
-NOMLIB_LOG_ERR ( IMG_GetError() );
+NOM_LOG_ERR ( IMG_GetError() );
   }
 
   atexit ( IMG_Quit );
@@ -24,12 +24,12 @@ NOMLIB_LOG_ERR ( IMG_GetError() );
 
 Image::Image ( const Image& other )  : image_buffer ( static_cast<SDL_Surface*> ( other.image_buffer.get() ), nom::priv::Canvas_FreeSurface )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 }
 
 Image::~Image ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->image_buffer.reset(); // ...better safe than sorry!
 }
@@ -48,7 +48,7 @@ std::shared_ptr<void> Image::loadFromFile ( const std::string& filename )
 
   if ( ! this->valid() )
   {
-NOMLIB_LOG_ERR ( IMG_GetError() );
+NOM_LOG_ERR ( IMG_GetError() );
     return nullptr;
   }
 
@@ -61,7 +61,7 @@ std::shared_ptr<void> Image::loadFromFile_BMP ( const std::string& filename )
 
   if ( ! this->valid() )
   {
-NOMLIB_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( SDL_GetError() );
     return nullptr;
   }
 
@@ -72,7 +72,7 @@ bool Image::saveToFile ( const std::string& filename, void* video_buffer )
 {
   if ( SDL_SaveBMP ( static_cast<SDL_Surface*> ( video_buffer ), filename.c_str() ) != 0 )
   {
-NOMLIB_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( SDL_GetError() );
     return false;
   }
 

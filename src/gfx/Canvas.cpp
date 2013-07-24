@@ -24,12 +24,12 @@ Canvas::Canvas ( void )  : canvas_buffer ( nullptr, nom::priv::Canvas_FreeSurfac
                                         coords ( 0, 0, -1, -1 ), // only x, y position is used in blitting
                                         offsets ( 0, 0, -1, -1 ) // only the width, height is used in source blitting
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 }
 
 Canvas::Canvas ( void* video_buffer )  : canvas_buffer ( static_cast<SDL_Surface*> ( video_buffer ), nom::priv::Canvas_FreeSurface )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->offsets.setSize ( this->getCanvasWidth(), this->getCanvasHeight() );
 }
@@ -37,12 +37,12 @@ NOMLIB_LOG_INFO;
 Canvas::Canvas ( const Canvas& other ) : canvas_buffer ( static_cast<SDL_Surface*> ( other.canvas_buffer.get() ), nom::priv::Canvas_FreeSurface ),
                                                           coords ( other.coords.x, other.coords.y ), offsets ( other.offsets.width, other.offsets.height )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 }
 
 Canvas::Canvas ( uint32_t flags, int32_t width, int32_t height, int32_t bitsPerPixel, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->canvas_buffer.reset(); // nullptr
 
@@ -51,7 +51,7 @@ NOMLIB_LOG_INFO;
 
 Canvas::Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->canvas_buffer.reset(); // nullptr
 
@@ -60,7 +60,7 @@ NOMLIB_LOG_INFO;
 
 Canvas::~Canvas ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->canvas_buffer.reset(); // nullptr
 }
@@ -178,7 +178,7 @@ bool Canvas::loadFromImage ( const std::string& filename, const Color& colorkey,
   // Validate our obtained data is good before further processing
   if ( this->valid() == false )
   {
-NOMLIB_LOG_ERR ( "Could not load canvas image file: " + filename );
+NOM_LOG_ERR ( "Could not load canvas image file: " + filename );
     return false;
   }
 
@@ -197,7 +197,7 @@ NOMLIB_LOG_ERR ( "Could not load canvas image file: " + filename );
   }
   else
   {
-NOMLIB_LOG ( "The video subsystem has not yet been initialized: surface transparency and format conversion has been skipped." );
+NOM_LOG_INFO ( "The video subsystem has not yet been initialized: surface transparency and format conversion has been skipped." );
   }
 
   // Update our canvas clipping bounds with the new source
@@ -218,13 +218,13 @@ void Canvas::Draw ( void* video_buffer ) const
     if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
     {
       if ( SDL_BlitSurface ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), &blit_offsets, static_cast<SDL_Surface*> ( video_buffer ), &blit_coords ) != 0 )
-NOMLIB_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( SDL_GetError() );
         return;
     }
     else
     {
       if ( SDL_BlitSurface ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), nullptr, (SDL_Surface*) video_buffer, &blit_coords ) != 0 )
-NOMLIB_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( SDL_GetError() );
         return;
     }
   }
@@ -234,7 +234,7 @@ bool Canvas::Update ( void* video_buffer )
 {
   if ( SDL_Flip ( (SDL_Surface*) video_buffer ) != 0 )
   {
-NOMLIB_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( SDL_GetError() );
     return false;
   }
   return true;
@@ -242,11 +242,11 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
 
 bool Canvas::setAlpha ( uint8_t opacity, uint32_t flags )
 {
-NOMLIB_ASSERT ( ! ( opacity > SDL_ALPHA_OPAQUE ) || ( opacity < SDL_ALPHA_TRANSPARENT ) );
+NOM_ASSERT ( ! ( opacity > SDL_ALPHA_OPAQUE ) || ( opacity < SDL_ALPHA_TRANSPARENT ) );
 
   if ( SDL_SetAlpha ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), flags, static_cast<uint32_t>( opacity ) ) == -1 )
   {
-NOMLIB_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( SDL_GetError() );
     return false;
   }
 
@@ -262,7 +262,7 @@ bool Canvas::setTransparent ( const Color& color, uint32_t flags )
 
   if ( SDL_SetColorKey ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), flags, transparent_color ) != 0 )
   {
-NOMLIB_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( SDL_GetError() );
     return false;
   }
 
@@ -273,7 +273,7 @@ bool Canvas::displayFormat ( void )
 {
   this->canvas_buffer.reset ( SDL_DisplayFormat ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ) ), nom::priv::Canvas_FreeSurface );
 
-NOMLIB_ASSERT ( this->valid() );
+NOM_ASSERT ( this->valid() );
 
   return true;
 }
@@ -282,7 +282,7 @@ bool Canvas::displayFormatAlpha ( void )
 {
   this->canvas_buffer.reset ( SDL_DisplayFormatAlpha ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ) ), nom::priv::Canvas_FreeSurface );
 
-NOMLIB_ASSERT ( this->valid() );
+NOM_ASSERT ( this->valid() );
 
   return true;
 }

@@ -15,8 +15,6 @@
 #include "nomlib/math.hpp"
 #include "nomlib/system.hpp"
 
-#define dump_var(var) NOMLIB_DUMP_VAR(var)
-
 int main ( int argc, char* argv[] )
 {
   nom::OSXFS dir;
@@ -32,11 +30,11 @@ int main ( int argc, char* argv[] )
   nom::Timer loops;
   std::string path = dir.getDirName(argv[0]) + "/";
 
-  dump_var ( dev.getDeviceName() );
-  dump_var ( dev2.getDeviceName() );
+NOM_DUMP_VAR ( dev.getDeviceName() );
+NOM_DUMP_VAR ( dev2.getDeviceName() );
 
   listener.setVolume ( MAX_VOLUME );
-  dump_var ( listener.getVolume() );
+NOM_DUMP_VAR ( listener.getVolume() );
 
   bool ret = false;
   if ( argv[1] != nullptr )
@@ -51,7 +49,7 @@ int main ( int argc, char* argv[] )
 
   if ( ! ret )
   {
-NOMLIB_LOG_ERR ( "Buffer loading err" );
+NOM_LOG_ERR ( "Buffer loading err" );
     return EXIT_FAILURE;
   }
 
@@ -71,7 +69,7 @@ NOMLIB_LOG_ERR ( "Buffer loading err" );
 
   nom::uint32 duration = buffer.getDuration();
   float duration_seconds = duration / 1000.0f;
-  dump_var ( duration_seconds );
+NOM_DUMP_VAR ( duration_seconds );
 
   loops.Start();
 
@@ -105,7 +103,7 @@ NOMLIB_LOG_ERR ( "Buffer loading err" );
   }
 
   loops.Stop();
-  dump_var ( loops.getTicks() );
+NOM_DUMP_VAR ( loops.getTicks() );
 
   //alcMakeContextCurrent ( nullptr );
   //alcDestroyContext ( ctx );

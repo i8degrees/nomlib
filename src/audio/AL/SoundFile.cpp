@@ -13,7 +13,7 @@ namespace nom {
 
 SoundFile::SoundFile ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->fp.reset();
 
@@ -22,7 +22,7 @@ NOMLIB_LOG_INFO;
 
 SoundFile::~SoundFile ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
   // Clean up instance variables
 }
 
@@ -59,7 +59,7 @@ bool SoundFile::open ( const std::string& filename )
 
   if ( this->fp.get() == nullptr )
   {
-NOMLIB_LOG_ERR ( "SNDFILE* fp is invalid" );
+NOM_LOG_ERR ( "Could not not audio file: " + filename );
     return false;
   }
 

@@ -13,7 +13,7 @@ namespace nom {
 
 SoundSource::SoundSource ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
 AL_CHECK_ERR ( alGenSources ( 1, &source_id ) );
 AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, 0 ) );
@@ -21,7 +21,7 @@ AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, 0 ) );
 
 SoundSource::~SoundSource ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
 AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, 0 ) );
 AL_CHECK_ERR ( alDeleteSources ( 1, &source_id ) );

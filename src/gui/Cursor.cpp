@@ -12,14 +12,14 @@ namespace nom {
 
 Cursor::Cursor ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   // Not yet implemented
 }
 
 Cursor::Cursor ( unsigned int x, unsigned int y, unsigned int width, unsigned int height )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->cursor = Sprite ( width, height );
   this->cursor.setPosition ( x, y );
@@ -28,7 +28,7 @@ NOMLIB_LOG_INFO;
 
 Cursor::~Cursor ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   // Clean up
 }

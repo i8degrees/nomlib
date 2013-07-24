@@ -13,7 +13,7 @@ namespace nom {
 
 Sound::Sound ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 }
 
 Sound::Sound ( const SoundBuffer& copy )
@@ -23,14 +23,14 @@ Sound::Sound ( const SoundBuffer& copy )
 
 Sound::~Sound ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   //this->Stop();
 }
 
 void Sound::setBuffer ( const SoundBuffer& copy )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
 AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, copy.get() ) );
 }

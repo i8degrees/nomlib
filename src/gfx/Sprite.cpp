@@ -11,7 +11,7 @@ namespace nom {
 
 Sprite::Sprite ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->state = 0;
 
@@ -26,7 +26,7 @@ NOMLIB_LOG_INFO;
 
 Sprite::Sprite ( unsigned int width, unsigned int height )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->coords.setSize ( width, height );
 
@@ -43,7 +43,7 @@ NOMLIB_LOG_INFO;
 
 Sprite::~Sprite ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 }
 
 unsigned int Sprite::getState ( void )
@@ -84,7 +84,7 @@ bool Sprite::Load  ( std::string filename, Color colorkey,
 
   if ( ! this->sprite_buffer.valid() )
   {
-NOMLIB_LOG_ERR ( "Could not load sprite image file: " + filename );
+NOM_LOG_ERR ( "Could not load sprite image file: " + filename );
     return false;
   }
 
@@ -103,7 +103,7 @@ void Sprite::Update ( void )
 
 void Sprite::Draw ( void* video_buffer ) const
 {
-NOMLIB_ASSERT ( this->sprite_buffer.valid() );
+NOM_ASSERT ( this->sprite_buffer.valid() );
 
   this->sprite_buffer.Draw ( video_buffer );
 }

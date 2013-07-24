@@ -17,7 +17,7 @@ Gradient::Gradient ( void )  : gradient { Color::Gray,
                                         x_margin ( 0 ), y_margin ( 0 ),
                                         direction ( 0 )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->Update();
 }
@@ -43,7 +43,7 @@ Gradient::Gradient  ( const Color& starting_color,
 
 Gradient::~Gradient ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 }
 
 Color Gradient::getStartColor ( void ) const

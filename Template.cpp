@@ -12,14 +12,14 @@ namespace nom {
 
 Template::Template ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   // Initialize instance variables
 }
 
 Template::~Template ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   // Clean up instance variables
 }

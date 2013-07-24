@@ -23,7 +23,7 @@ namespace nom {
 
 TrueTypeFont::TrueTypeFont ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->font = nullptr;
   this->coords = Coords ( 0, 0, 0, 0 );
@@ -36,13 +36,13 @@ NOMLIB_LOG_INFO;
 
   if ( TTF_Init () == -1 )
   {
-NOMLIB_LOG_ERR ( TTF_GetError() );
+NOM_LOG_ERR ( TTF_GetError() );
   }
 }
 
 TrueTypeFont::~TrueTypeFont ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->font.reset(); // nullptr
 
@@ -81,7 +81,7 @@ void TrueTypeFont::setFontSize ( int32 point_size )
 {
   if ( this->Load ( this->filename, nom::Color::Black, point_size ) == false )
   {
-NOMLIB_LOG_ERR ( "Could not set font size." );
+NOM_LOG_ERR ( "Could not set font size." );
   }
 }
 
@@ -124,7 +124,7 @@ void TrueTypeFont::setText ( const std::string& text )
   }
   else
   {
-NOMLIB_LOG_ERR ( "Text length must be greater than zero" );
+NOM_LOG_ERR ( "Text length must be greater than zero" );
   }
 }
 
@@ -137,7 +137,7 @@ bool TrueTypeFont::Load ( const std::string& filename, const Color& colorkey,
 
   if ( this->valid() == false )
   {
-NOMLIB_LOG_ERR ( "Could not load TTF file: " + filename );
+NOM_LOG_ERR ( "Could not load TTF file: " + filename );
     return false;
   }
 
@@ -171,7 +171,7 @@ void TrueTypeFont::Update ( void )
 
 void TrueTypeFont::Draw ( void* video_buffer ) /*const*/
 {
-NOMLIB_ASSERT ( this->font_buffer.valid() );
+NOM_ASSERT ( this->font_buffer.valid() );
 
   if ( this->font_buffer.valid() && this->text_buffer.length() > 0 )
   {

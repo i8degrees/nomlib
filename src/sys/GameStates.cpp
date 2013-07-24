@@ -19,7 +19,7 @@ std::vector<std::unique_ptr<IState>> GameStates::states;
 // initialized!
 GameStates::GameStates ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 }
 
 void GameStates::onEvent ( void* event )
@@ -49,7 +49,7 @@ void GameStates::ChangeState ( std::unique_ptr<IState> state )
     states.pop_back();
   }
 
-NOMLIB_ASSERT ( state );
+NOM_ASSERT ( state );
 
   // store the new state
   states.push_back( std::move( state ) );
@@ -59,7 +59,7 @@ NOMLIB_ASSERT ( state );
 
 void GameStates::PushState ( std::unique_ptr<IState> state )
 {
-NOMLIB_ASSERT ( state );
+NOM_ASSERT ( state );
 
   // pause current state
   if ( ! states.empty() )
@@ -85,7 +85,7 @@ void GameStates::PopStateThenChangeState ( std::unique_ptr<IState> state )
   if ( ! states.empty() )
     states.pop_back();
 
-NOMLIB_ASSERT ( state );
+NOM_ASSERT ( state );
 
   //if ( ! states.empty () )
   GameStates::ChangeState( std::move( state ) );

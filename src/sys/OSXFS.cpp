@@ -26,7 +26,7 @@ const std::string OSXFS::getFileType ( const std::string& file )
 
   if ( cookie == nullptr )
   {
-NOMLIB_LOG_ERR ( "Could not initialize magic library." );
+NOM_LOG_ERR ( "Could not initialize magic library." );
 
     magic_close ( cookie );
 
@@ -36,7 +36,7 @@ NOMLIB_LOG_ERR ( "Could not initialize magic library." );
   // TODO: use magic_error ( magic_t cookie ) to obtain err?
   if ( magic_load ( cookie, nullptr ) != 0 )
   {
-NOMLIB_LOG_ERR ( "Could not read magic database." );
+NOM_LOG_ERR ( "Could not read magic database." );
 
     magic_close ( cookie );
 
@@ -138,7 +138,7 @@ const std::string OSXFS::getResourcesPath ( void )
 
   if ( ! CFURLGetFileSystemRepresentation ( resourcesURL, true, ( uint8* ) resources_path, PATH_MAX ) )
   {
-NOMLIB_LOG_ERR ( "Could not obtain the bundle's Resources path." );
+NOM_LOG_ERR ( "Could not obtain the bundle's Resources path." );
 
     CFRelease ( resourcesURL );
 

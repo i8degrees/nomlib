@@ -12,11 +12,11 @@ namespace nom {
 
 Input::Input ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   if ( SDL_InitSubSystem ( SDL_INIT_JOYSTICK ) == -1 )
   {
-NOMLIB_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( SDL_GetError() );
     return;
   }
 
@@ -29,13 +29,13 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
 
     this->joystick = SDL_JoystickOpen ( 0 );
 
-    std::cout << SDL_NumJoysticks() << " joysticks were found " << std::endl << std::endl;
+NOM_LOG_INFO ( std::to_string ( SDL_NumJoysticks() ) + " joysticks were found" );
 
     if ( SDL_NumJoysticks() > 0 )
     {
       for( int idx = 0; idx < SDL_NumJoysticks(); idx++ )
       {
-        std::cout << SDL_JoystickName ( idx ) << std::endl << std::endl;
+NOM_LOG_INFO ( SDL_JoystickName ( idx ) );
       }
     }
   }
@@ -43,7 +43,7 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
 
 Input::~Input ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   // Only close joysticks we have opened
   //if ( SDL_JoystickOpened ( 0 ) == 1 )

@@ -44,7 +44,7 @@
 #define NOMLIB_DEBUG
 
 // Internal development; logging of class object construction and destruction
-#define NOMLIB_DEBUG_ALL
+#define NOMLIB_DEBUG_TRACE
 
 #ifndef __cplusplus
   #warning "nomlib requires a C++11 compiler"

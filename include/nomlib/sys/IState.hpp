@@ -22,7 +22,7 @@ class IState: public Input // "has a" relationship
   public:
     virtual ~IState ( void )
     {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
     }
 
     /// Required interface

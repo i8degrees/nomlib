@@ -64,7 +64,7 @@ void al_err ( const std::string& file, uint32 line )
       break;
     } // end switch
 
-  std::cout << "NOMLIB_LOG_ERR at " << getCurrentTime() << "In file " << file << ":" << line << std::endl << "Error: " << error << ", " << description << std::endl << std::endl;
+  std::cout << "NOM_LOG_ERR at " << getCurrentTime() << "In file " << file << ":" << line << std::endl << "Error: " << error << ", " << description << std::endl << std::endl;
 
   } // end if AL_NO_ERROR
 }

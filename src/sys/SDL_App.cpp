@@ -12,7 +12,7 @@ namespace nom {
 
 SDL_App::SDL_App ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->app_state = false;
 
@@ -25,7 +25,7 @@ NOMLIB_LOG_INFO;
 
 SDL_App::~SDL_App ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->setFullScreen ( false );
 

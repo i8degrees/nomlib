@@ -27,11 +27,11 @@ namespace nom {
 
 Display::Display ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   if ( SDL_Init ( SDL_INIT_VIDEO ) != 0 )
   {
-NOMLIB_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( SDL_GetError() );
   }
 
   atexit ( SDL_Quit );
@@ -39,7 +39,7 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
 
 Display::~Display ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 }
 
 void Display::createWindow  ( int32_t display_width, int32_t display_height,
@@ -52,9 +52,9 @@ void Display::createWindow  ( int32_t display_width, int32_t display_height,
                             );
 
   if ( screen == nullptr )
-NOMLIB_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( SDL_GetError() );
 
-NOMLIB_ASSERT ( screen != nullptr );
+NOM_ASSERT ( screen != nullptr );
 }
 
 void* Display::get ( void ) const
@@ -121,7 +121,7 @@ bool Display::getCanvasLock ( void ) const
 void Display::Update ( void )
 {
   if ( SDL_Flip ( static_cast<SDL_Surface*> ( this->get() ) ) != 0 )
-NOMLIB_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( SDL_GetError() );
 }
 
 void Display::Update ( const Coords& coords )
@@ -168,12 +168,12 @@ void Display::setWindowIcon ( const std::string& app_icon )
   std::shared_ptr<void> icon = nullptr;
 
   if ( this->valid() )
-NOMLIB_LOG_ERR ( "SDL video subsystem has already been initiated." );
+NOM_LOG_ERR ( "SDL video subsystem has already been initiated." );
 
   icon = std::shared_ptr<void> ( image.loadFromFile ( app_icon ) );
   if ( icon == nullptr )
   {
-NOMLIB_LOG_ERR ( "Could not load window icon file: " + app_icon );
+NOM_LOG_ERR ( "Could not load window icon file: " + app_icon );
     return;
   }
 

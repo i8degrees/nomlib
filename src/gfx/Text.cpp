@@ -13,7 +13,7 @@ namespace nom {
 
 Text::Text ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->font.reset();
   this->file_type = Unknown;
@@ -21,7 +21,7 @@ NOMLIB_LOG_INFO;
 
 Text::~Text ( void )
 {
-NOMLIB_LOG_INFO;
+NOM_LOG_CLASSINFO;
 
   this->font.reset();
 }

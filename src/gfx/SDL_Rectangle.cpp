@@ -16,11 +16,6 @@ Rectangle::Rectangle ( void )
   this->color = Color ( 0, 0, 0 );
 }
 
-Rectangle::~Rectangle ( void )
-{
-  // ...
-}
-
 // Constructor variant for creating a rectangle from an existing type
 // This is a "shallow" copy assignment
 Rectangle::Rectangle ( const Rectangle& rect )
@@ -33,6 +28,11 @@ Rectangle::Rectangle ( const Coords& coords, const Color& color )
 {
   this->coords = coords;
   this->color = color;
+}
+
+Rectangle::~Rectangle ( void )
+{
+  // ...
 }
 
 void Rectangle::Update ( void )
@@ -61,6 +61,7 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
 #ifndef NOMLIB_SYSTEM_LINUX
   Rectangle::~Rectangle();
 #endif
+  //SDL_FreeSurface ( buffer );
 }
 
 

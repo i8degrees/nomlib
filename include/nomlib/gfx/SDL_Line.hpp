@@ -27,10 +27,9 @@ class Line: public SDL_Drawable,   // "is a" relationship
 {
   public:
     Line ( void );
-    virtual ~Line ( void );
-
     Line ( const Coords& coords, const Color& color );
-    Line ( int32_t x, int32_t y, int32_t width, int32_t height, const Color& color );
+    Line ( int32 x, int32 y, int32 width, int32 height, const Color& color );
+    virtual ~Line ( void );
 
     void Update ( void );
     void Draw ( void* video_buffer ) const;

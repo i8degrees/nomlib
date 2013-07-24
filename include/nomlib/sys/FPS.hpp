@@ -10,7 +10,7 @@
 
 #include "nomlib/config.hpp"
 #include "nomlib/sys/Logger.hpp"
-#include "nomlib/sys/SDL_Timer.hpp"
+#include "nomlib/sys/Timer.hpp"
 
 namespace nom {
 

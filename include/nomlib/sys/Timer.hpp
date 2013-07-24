@@ -5,8 +5,8 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef NOMLIB_TIMER_HEADERS
-#define NOMLIB_TIMER_HEADERS
+#ifndef NOMLIB_SDL_TIMER_HEADERS
+#define NOMLIB_SDL_TIMER_HEADERS
 
 #include <iostream>
 
@@ -52,4 +52,4 @@ class Timer
 
 } // namespace nom
 
-#endif // NOMLIB_TIMER_HEADERS defined
+#endif // NOMLIB_SDL_TIMER_HEADERS defined

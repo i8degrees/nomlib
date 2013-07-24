@@ -59,7 +59,7 @@ void SDL_App::onQuit ( void )
 
 void SDL_App::onEvent ( SDL_Event* event )
 {
-  SDL_Input::HandleInput ( event );
+  Input::HandleInput ( event );
 }
 
 uint32_t SDL_App::getTicks ( void )

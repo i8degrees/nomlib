@@ -122,8 +122,8 @@ set ( NOMLIB_SOURCE
       ${SRC_DIR}/sys/ObjectCache.cpp
       ${SRC_DIR}/sys/OSXFS.cpp
       ${SRC_DIR}/sys/SDL_App.cpp
-      ${SRC_DIR}/sys/SDL_Input.cpp
-      ${SRC_DIR}/sys/SDL_Timer.cpp
+      ${SRC_DIR}/sys/Input.cpp
+      ${SRC_DIR}/sys/Timer.cpp
       ${SRC_DIR}/sys/Sleep.cpp
       # math
       ${SRC_DIR}/math/Color.cpp

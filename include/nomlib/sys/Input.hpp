@@ -53,11 +53,11 @@ enum PSXBUTTON
 };
 
 // This is an inheritance-only class
-class SDL_Input
+class Input
 {
   public:
-    SDL_Input ( void );
-    virtual ~SDL_Input ( void );
+    Input ( void );
+    virtual ~Input ( void );
 
     virtual void HandleInput ( void* event );
   protected:

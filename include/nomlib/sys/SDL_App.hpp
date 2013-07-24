@@ -19,13 +19,13 @@
 
 #include "nomlib/config.hpp"
 #include "nomlib/sys/Logger.hpp"
-#include "nomlib/sys/SDL_Input.hpp"
-#include "nomlib/sys/SDL_Timer.hpp"
+#include "nomlib/sys/Input.hpp"
+#include "nomlib/sys/Timer.hpp"
 
 namespace nom {
 
 // This is an inheritance-only class
-class SDL_App: public SDL_Input
+class SDL_App: public Input
 {
   protected:
     SDL_App ( void );

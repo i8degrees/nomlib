@@ -13,11 +13,11 @@
 
 #include "nomlib/config.hpp"
 #include "nomlib/sys/Logger.hpp"
-#include "nomlib/sys/SDL_Input.hpp"
+#include "nomlib/sys/Input.hpp"
 
 namespace nom {
 
-class IState: public SDL_Input // "has a" relationship
+class IState: public Input // "has a" relationship
 {
   public:
     virtual ~IState ( void )

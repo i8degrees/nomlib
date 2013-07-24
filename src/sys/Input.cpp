@@ -6,11 +6,11 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/sys/SDL_Input.hpp"
+#include "nomlib/sys/Input.hpp"
 
 namespace nom {
 
-SDL_Input::SDL_Input ( void )
+Input::Input ( void )
 {
 NOMLIB_LOG_INFO;
 
@@ -41,7 +41,7 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
   }
 }
 
-SDL_Input::~SDL_Input ( void )
+Input::~Input ( void )
 {
 NOMLIB_LOG_INFO;
 
@@ -58,7 +58,7 @@ NOMLIB_LOG_INFO;
 }
 
 
-void SDL_Input::HandleInput ( void* event )
+void Input::HandleInput ( void* event )
 {
   SDL_Event* input = static_cast<SDL_Event*> ( event );
 
@@ -189,137 +189,137 @@ void SDL_Input::HandleInput ( void* event )
   } // end switch input->type
 }
 
-void SDL_Input::onUserEvent ( uint8_t type, int32_t code, void* data1, void* data2 )
+void Input::onUserEvent ( uint8_t type, int32_t code, void* data1, void* data2 )
 {
   // virtual implementation
 }
 
-void SDL_Input::onQuit ( void )
+void Input::onQuit ( void )
 {
   // virtual implementation
 }
 
-void SDL_Input::onResize ( int32_t width, int32_t height )
+void Input::onResize ( int32_t width, int32_t height )
 {
   // virtual implementation
 }
 
-void SDL_Input::onRestore ( void )
+void Input::onRestore ( void )
 {
   // virtual implementation
 }
 
-void SDL_Input::onMinimize ( void )
+void Input::onMinimize ( void )
 {
   // virtual implementation
 }
 
-void SDL_Input::onInputFocus ( void )
+void Input::onInputFocus ( void )
 {
   // virtual implementation
 }
 
-void SDL_Input::onInputBlur ( void )
+void Input::onInputBlur ( void )
 {
   // virtual implementation
 }
 
-void SDL_Input::onMouseFocus ( void )
+void Input::onMouseFocus ( void )
 {
   // virtual implementation
 }
 
-void SDL_Input::onMouseBlur ( void )
+void Input::onMouseBlur ( void )
 {
   // virtual implementation
 }
 
-void SDL_Input::onExpose ( void )
+void Input::onExpose ( void )
 {
   // virtual implementation
 }
 
-void SDL_Input::onKeyDown ( int32_t key, int32_t mod )
+void Input::onKeyDown ( int32_t key, int32_t mod )
 {
   // virtual implementation
 }
 
-void SDL_Input::onKeyUp ( int32_t key, int32_t mod )
+void Input::onKeyUp ( int32_t key, int32_t mod )
 {
   // virtual implementation
 }
 
-void SDL_Input::onMouseMotion ( int32_t x, int32_t y )
+void Input::onMouseMotion ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void SDL_Input::onMouseWheel ( bool up, bool down )
+void Input::onMouseWheel ( bool up, bool down )
 {
   // virtual implementation
 }
 
-void SDL_Input::onMouseLeftButtonDown ( int32_t x, int32_t y )
+void Input::onMouseLeftButtonDown ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void SDL_Input::onMouseMiddleButtonDown ( int32_t x, int32_t y )
+void Input::onMouseMiddleButtonDown ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void SDL_Input::onMouseRightButtonDown ( int32_t x, int32_t y )
+void Input::onMouseRightButtonDown ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void SDL_Input::onMouseButtonSixDown ( nom::int32 x, nom::int32 y )
+void Input::onMouseButtonSixDown ( nom::int32 x, nom::int32 y )
 {
   // virtual implementation
 }
 
-void SDL_Input::onMouseButtonSevenDown ( nom::int32 x, nom::int32 y )
+void Input::onMouseButtonSevenDown ( nom::int32 x, nom::int32 y )
 {
   // virtual implementation
 }
 
-void SDL_Input::onMouseLeftButtonUp ( int32_t x, int32_t y )
+void Input::onMouseLeftButtonUp ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void SDL_Input::onMouseMiddleButtonUp ( int32_t x, int32_t y )
+void Input::onMouseMiddleButtonUp ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void SDL_Input::onMouseRightButtonUp ( int32_t x, int32_t y )
+void Input::onMouseRightButtonUp ( int32_t x, int32_t y )
 {
   // virtual implementation
 }
 
-void SDL_Input::onMouseButtonSixUp ( nom::int32 x, nom::int32 y )
+void Input::onMouseButtonSixUp ( nom::int32 x, nom::int32 y )
 {
   // virtual implementation
 }
 
-void SDL_Input::onMouseButtonSevenUp ( nom::int32 x, nom::int32 y )
+void Input::onMouseButtonSevenUp ( nom::int32 x, nom::int32 y )
 {
   // virtual implementation
 }
 
-void SDL_Input::onJoyButtonDown ( int32_t which, int32_t button )
+void Input::onJoyButtonDown ( int32_t which, int32_t button )
 {
   // virtual implementation
 }
 
-void SDL_Input::onJoyButtonUp ( int32_t which, int32_t button )
+void Input::onJoyButtonUp ( int32_t which, int32_t button )
 {
   // virtual implementation
 }
 
-void SDL_Input::onJoyAxis ( int32_t which, int32_t axis, short value )
+void Input::onJoyAxis ( int32_t which, int32_t axis, short value )
 {
   // virtual implementation
 }

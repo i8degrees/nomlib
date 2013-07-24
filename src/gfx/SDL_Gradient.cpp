@@ -11,11 +11,11 @@
 namespace nom {
 
 // Default constructor; initializes with respective defaults
-SDL_Gradient::SDL_Gradient ( void )  : gradient  { Color::Gray,
-                                                        Color::Gray
-                                                      },
-                                            x_margin ( 0 ), y_margin ( 0 ),
-                                            direction ( 0 )
+SDL_Gradient::SDL_Gradient ( void )  : gradient { Color::Gray,
+                                                  Color::Gray
+                                                },
+                                        x_margin ( 0 ), y_margin ( 0 ),
+                                        direction ( 0 )
 {
 NOMLIB_LOG_INFO;
 }

@@ -11,6 +11,8 @@
 
 #include <iostream>
 #include <string>
+#include <memory>
+#include <vector>
 
 #include "nomlib/config.hpp"
 #include "nomlib/sys/Logger.hpp"
@@ -22,7 +24,8 @@
 
 namespace nom {
 
-class SDL_Gradient//: public SDL_Drawable // "is a" relationship
+class SDL_Gradient: public SDL_Drawable, // "is a" relationship
+                    public Transformable // "has a" relationship
 {
   public:
     SDL_Gradient ( void );
@@ -32,7 +35,6 @@ class SDL_Gradient//: public SDL_Drawable // "is a" relationship
                     uint32 direction = 0,  uint32 x_margin = 0,
                     uint32 y_margin = 0
                   );
-
     virtual ~SDL_Gradient ( void );
 
     Color getStartColor ( void ) const;
@@ -41,19 +43,17 @@ class SDL_Gradient//: public SDL_Drawable // "is a" relationship
     void setStartColor ( const Color& starting_color );
     void setEndColor ( const Color& ending_color );
 
-    uint32_t getFillDirection ( void ) const;
+    uint32 getFillDirection ( void ) const;
     void setFillDirection ( const uint32 direction );
 
     void Update ( void );
-    void Draw ( void* video_buffer ); /* const */
+    void Draw ( void* video_buffer ) const;
 
   private:
-    Rectangle rectangle;
+    std::vector<std::shared_ptr<SDL_Drawable>> rectangles;
     /// gradient[0] = starting Color
     /// gradient[1] = ending Color
     Color gradient[2];
-    /// geometry coordinates
-    Coords coords;
     /// x coordinate offset
     int32 x_margin;
     /// y coordinate offset
@@ -68,13 +68,17 @@ class SDL_Gradient//: public SDL_Drawable // "is a" relationship
 } // namespace nom
 /*
 
+  #include <nomlib/graphics.hpp>
+
   nom::SDL_Gradient linear;
 
-  nom::Color starting ( 66, 66, 66 );
-  nom::Color ending ( 99, 99, 99 );
+  linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
+  linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
 
-  linear.Init ( starting, ending, 104, 194, 176, 24, 0, 3, 4 );
-  linear.Draw ( screen, 104, 194, 176, 24, 0 );
+  // Alternative
+  linear = SDL_Gradient ( nom::Color ( 67, 67, 67, 255 ), nom::Color ( 99, 99, 99, 255 ), 104, 194, 176, 24, 0, 3, 4 );
+
+  linear.Draw ( video_buffer );
 
 */
 

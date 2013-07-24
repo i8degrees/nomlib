@@ -2,11 +2,8 @@
 
 * Use C++ templates for Coords class
 
-* Finish Update logic in SDL_Gradient so that we can make it an official SDL_Drawables type;
-  we can then also make SDL_MessageBox an official SDL_Drawables as well -- const
-  issues prevent us from doing so at the moment
-
-* Finish Update logic in BitmapFont class for the same reasons as above!
+* Finish Update logic in BitmapFont class so that we can make it an official
+Drawables type.
 
 * Implement a NULL GameState class?
 * Use exceptions library in C++
@@ -20,6 +17,10 @@ is there
 * Homebrew Formula?
 
 ## Completed
+
+* Finish Update logic in SDL_Gradient so that we can make it an official
+Drawables type; we can then also make SDL_MessageBox an official Drawables as
+well -- const issues prevent us from doing so at the moment.
 
 * Fix nom::Line memory leak (update variable is merely a temporary partial stopgap)
 * nomlib_examples submodule repo and makefile setup

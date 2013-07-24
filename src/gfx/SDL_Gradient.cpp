@@ -18,6 +18,8 @@ SDL_Gradient::SDL_Gradient ( void )  : gradient { Color::Gray,
                                         direction ( 0 )
 {
 NOMLIB_LOG_INFO;
+
+  this->Update();
 }
 
 // Constructor variant
@@ -37,6 +39,8 @@ SDL_Gradient::SDL_Gradient  ( const Color& starting_color,
   this->x_margin = x_margin;
   this->y_margin = y_margin;
   this->direction = 0;
+
+  this->Update();
 }
 
 SDL_Gradient::~SDL_Gradient ( void )
@@ -57,14 +61,18 @@ Color SDL_Gradient::getEndColor ( void ) const
 void SDL_Gradient::setStartColor ( const Color& starting_color )
 {
   this->gradient[0] = starting_color;
+
+  this->Update();
 }
 
 void SDL_Gradient::setEndColor ( const Color& ending_color )
 {
   this->gradient[1] = ending_color;
+
+  this->Update();
 }
 
-uint32_t SDL_Gradient::getFillDirection ( void ) const
+uint32 SDL_Gradient::getFillDirection ( void ) const
 {
   return this->direction;
 }
@@ -72,16 +80,15 @@ uint32_t SDL_Gradient::getFillDirection ( void ) const
 void SDL_Gradient::setFillDirection ( const uint32 direction )
 {
   this->direction = direction;
+
+  this->Update();
 }
 
 void SDL_Gradient::Update ( void )
 {
-  // TODO
-}
+  this->rectangles.clear();
 
-void SDL_Gradient::Draw ( void* video_buffer ) /* const */
-{
-  uint32_t x_offset = this->coords.x + this->coords.width;
+  uint32 x_offset = this->coords.x + this->coords.width;
 
   float currentR = (float) gradient[0].red;
   float currentG = (float) gradient[0].green;
@@ -91,10 +98,9 @@ void SDL_Gradient::Draw ( void* video_buffer ) /* const */
   float destG = (float) ( gradient[1].green - gradient[0].green )  / ( float ) ( this->coords.width - this->x_margin );
   float destB = (float) ( gradient[1].blue - gradient[0].blue )    / ( float ) ( this->coords.width - this->x_margin );
 
-  for ( uint32_t rows = this->coords.x; rows < x_offset - this->x_margin; rows++ )
+  for ( uint32 rows = this->coords.x; rows < x_offset - this->x_margin; rows++ )
   {
-    this->rectangle = Rectangle ( Coords ( rows, this->coords.y, 1, this->coords.height - this->y_margin ), Color ( currentR, currentG, currentB ) );
-    this->rectangle.Draw ( video_buffer );
+    this->rectangles.push_back ( std::shared_ptr<Rectangle> ( new Rectangle ( Coords ( rows, this->coords.y, 1, this->coords.height - this->y_margin ), Color ( currentR, currentG, currentB ) ) ) );
 
     if ( this->direction == 0 )
     {
@@ -109,6 +115,15 @@ void SDL_Gradient::Draw ( void* video_buffer ) /* const */
       currentB -= destB;
     }
   } // end for coords blit loop
+}
+
+void SDL_Gradient::Draw ( void* video_buffer ) const
+{
+  for ( auto it = this->rectangles.begin(); it != this->rectangles.end(); ++it )
+  {
+    std::shared_ptr<SDL_Drawable> obj = *it;
+    obj->Draw ( video_buffer );
+  }
 }
 
 

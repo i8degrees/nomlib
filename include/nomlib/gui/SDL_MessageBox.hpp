@@ -25,7 +25,7 @@
 
 namespace nom {
 
-class SDL_MessageBox:// public SDL_Drawable,   // "is a" relationship
+class SDL_MessageBox: public SDL_Drawable,   // "is a" relationship
                       public Transformable   // "has a" relationship
 {
   public:
@@ -41,7 +41,7 @@ class SDL_MessageBox:// public SDL_Drawable,   // "is a" relationship
     void enable ( void );
 
     void Update ( void );
-    void Draw ( void* video_buffer ); /* const */
+    void Draw ( void* video_buffer ) const;
 
   private:
     void initialize ( void );

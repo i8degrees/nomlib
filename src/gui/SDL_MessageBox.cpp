@@ -89,7 +89,7 @@ void SDL_MessageBox::Update ( void )
 }
 
 // FIXME: how do we iterate through this with unique_ptr type ?
-void SDL_MessageBox::Draw ( void* video_buffer ) /* const */
+void SDL_MessageBox::Draw ( void* video_buffer ) const
 {
   this->background.Draw ( video_buffer );
 

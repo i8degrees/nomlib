@@ -82,17 +82,9 @@ void SDL_MessageBox::enable ( void )
   this->enabled = true;
 }
 
-// FIXME: how do we iterate through this with unique_ptr type ?
 void SDL_MessageBox::Update ( void )
 {
-  this->background.Update();
-
-  for ( auto it = this->lines.begin(); it != this->lines.end(); ++it )
-  {
-    std::shared_ptr<SDL_Drawable> obj = *it;
-    //this->background.Update();
-    obj->Update();
-  }
+  // ...
 }
 
 // FIXME: how do we iterate through this with unique_ptr type ?

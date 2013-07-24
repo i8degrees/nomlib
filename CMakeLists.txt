@@ -108,7 +108,7 @@ set ( NOMLIB_SOURCE
       ${SRC_DIR}/gfx/IDisplay.cpp
       ${SRC_DIR}/gfx/SDL_Canvas.cpp
       ${SRC_DIR}/gfx/SDL_Display.cpp
-      ${SRC_DIR}/gfx/SDL_Gradient.cpp
+      ${SRC_DIR}/gfx/Gradient.cpp
       ${SRC_DIR}/gfx/SDL_Image.cpp
       ${SRC_DIR}/gfx/SDL_Line.cpp
       ${SRC_DIR}/gfx/SDL_Pixel.cpp

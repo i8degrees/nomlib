@@ -30,7 +30,7 @@ SDL_MessageBox::SDL_MessageBox ( void )
 
 SDL_MessageBox::SDL_MessageBox  ( int32 x, int32 y, int32 width, int32 height,
                                   const std::vector<Color> border_colors,
-                                  const SDL_Gradient& background
+                                  const Gradient& background
                                 )
 {
   unsigned int padding = 1;
@@ -44,7 +44,7 @@ SDL_MessageBox::SDL_MessageBox  ( int32 x, int32 y, int32 width, int32 height,
   this->window_borders = border_colors;
   this->background = background;
 
-  this->background = SDL_Gradient ( background.getStartColor(), background.getEndColor(), this->coords.x, this->coords.y, this->coords.width, this->coords.height, background.getFillDirection(), 0, 0 );
+  this->background = Gradient ( background.getStartColor(), background.getEndColor(), this->coords.x, this->coords.y, this->coords.width, this->coords.height, background.getFillDirection(), 0, 0 );
 
   this->lines.push_back ( std::shared_ptr<SDL_Drawable> ( new Line ( x, y, x_offset - padding, y, this->window_borders[0].getColor() ) ) ); // top0
   this->lines.push_back ( std::shared_ptr<SDL_Drawable> ( new Line ( x, y + 1, x_offset - padding, y + 1, this->window_borders[1].getColor() ) ) ); // top1

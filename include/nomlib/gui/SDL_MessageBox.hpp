@@ -20,7 +20,7 @@
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/gfx/SDL_Drawable.hpp"
 #include "nomlib/gfx/SDL_Canvas.hpp"
-#include "nomlib/gfx/SDL_Gradient.hpp"
+#include "nomlib/gfx/Gradient.hpp"
 #include "nomlib/gfx/SDL_Line.hpp"
 
 namespace nom {
@@ -32,7 +32,7 @@ class SDL_MessageBox: public SDL_Drawable,   // "is a" relationship
     SDL_MessageBox ( void );
     SDL_MessageBox  ( int32 x, int32 y, int32 width, int32 height,
                       const std::vector<Color> border_colors,
-                      const SDL_Gradient& background = SDL_Gradient()
+                      const Gradient& background = Gradient()
                     );
     virtual ~SDL_MessageBox ( void );
 
@@ -47,7 +47,7 @@ class SDL_MessageBox: public SDL_Drawable,   // "is a" relationship
     void initialize ( void );
     typedef std::vector<std::shared_ptr<SDL_Drawable>> drawable_t;
     drawable_t lines;
-    SDL_Gradient background;
+    Gradient background;
     SDL_Canvas box;
 
     std::vector<Color> window_borders;

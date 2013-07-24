@@ -1,13 +1,13 @@
 /******************************************************************************
 
-    SDL Gradient effects
+    Gradient effects
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.
 
 ******************************************************************************/
-#ifndef GAMELIB_SDL_GRADIENT_HEADERS
-#define GAMELIB_SDL_GRADIENT_HEADERS
+#ifndef NOMLIB_SDL_GRADIENT_HEADERS
+#define NOMLIB_SDL_GRADIENT_HEADERS
 
 #include <iostream>
 #include <string>
@@ -24,18 +24,18 @@
 
 namespace nom {
 
-class SDL_Gradient: public SDL_Drawable, // "is a" relationship
-                    public Transformable // "has a" relationship
+class Gradient: public SDL_Drawable, // "is a" relationship
+                public Transformable // "has a" relationship
 {
   public:
-    SDL_Gradient ( void );
-    SDL_Gradient  ( const Color& starting_color, const Color& ending_color,
+    Gradient ( void );
+    Gradient  ( const Color& starting_color, const Color& ending_color,
                     int32 x = 0, int32 y = 0,
                     int32 width = 0, int32 height = 0,
                     uint32 direction = 0,  uint32 x_margin = 0,
                     uint32 y_margin = 0
                   );
-    virtual ~SDL_Gradient ( void );
+    virtual ~Gradient ( void );
 
     Color getStartColor ( void ) const;
     Color getEndColor ( void ) const;
@@ -70,7 +70,7 @@ class SDL_Gradient: public SDL_Drawable, // "is a" relationship
 
   #include <nomlib/graphics.hpp>
 
-  nom::SDL_Gradient linear;
+  nom::Gradient linear;
 
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
@@ -82,4 +82,4 @@ class SDL_Gradient: public SDL_Drawable, // "is a" relationship
 
 */
 
-#endif // GAMELIB_SDL_GRADIENT_HEADERS defined
+#endif // NOMLIB_SDL_GRADIENT_HEADERS defined

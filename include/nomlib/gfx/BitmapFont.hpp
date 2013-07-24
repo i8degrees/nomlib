@@ -27,15 +27,15 @@
 
 namespace nom {
 
-class SDL_BitmapFont: //  public IDrawable, //  "is a" inheritance
+class BitmapFont: //  public IDrawable, //  "is a" inheritance
                           public IFont // "is-a" relationship
 {
   public:
     /// Default constructor
-    SDL_BitmapFont ( void );
+    BitmapFont ( void );
 
     /// Default destructor
-    ~SDL_BitmapFont ( void );
+    ~BitmapFont ( void );
 
     /// Obtains set text string buffer; defaults to \0
     const std::string& getText ( void ) const;
@@ -48,8 +48,8 @@ class SDL_BitmapFont: //  public IDrawable, //  "is a" inheritance
     /// TODO: I don't think this is entirely accurate; this->spacing - 2 is
     /// fudged ...
     ///
-    /// We probably ought to be calculating the width based off the same algorithm as
-    /// is shown in SDL_BitmapFont::Load
+    /// We probably ought to be calculating the width based off the same
+    /// algorithm as is shown in ::Load
     /// \endinternal
     int32 getFontWidth ( void ) const;
 
@@ -112,4 +112,4 @@ class SDL_BitmapFont: //  public IDrawable, //  "is a" inheritance
 
 } // namespace nom
 
-#endif // NOMLIB_SDL_BITMAP_FONT_HEADERS defined
+#endif // include guard defined

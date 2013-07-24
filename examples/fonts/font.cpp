@@ -20,7 +20,7 @@
 int main ( int argc, char* argv[] )
 {
   nom::OSXFS dir;
-  nom::SDL_Display context;
+  nom::Display context;
   nom::Text bitmap_font;
   nom::Text truetype_font;
   nom::Text not_font;

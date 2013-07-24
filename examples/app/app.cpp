@@ -67,7 +67,7 @@ class App: public nom::SDL_App
       }
   private:
     /// display context
-    nom::SDL_Display display;
+    nom::Display display;
     /// timer for tracking frames per second
     nom::FPS fps;
     /// Input events

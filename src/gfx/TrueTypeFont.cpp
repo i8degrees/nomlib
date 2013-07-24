@@ -5,7 +5,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "nomlib/gfx/SDL_Font.hpp"
+#include "nomlib/gfx/TrueTypeFont.hpp"
 
 namespace nom {
   namespace priv {
@@ -21,7 +21,7 @@ void TTF_FreeSurface ( TTF_Font* font )
 
 namespace nom {
 
-SDL_Font::SDL_Font ( void )
+TrueTypeFont::TrueTypeFont ( void )
 {
 NOMLIB_LOG_INFO;
 
@@ -40,7 +40,7 @@ NOMLIB_LOG_ERR ( TTF_GetError() );
   }
 }
 
-SDL_Font::~SDL_Font ( void )
+TrueTypeFont::~TrueTypeFont ( void )
 {
 NOMLIB_LOG_INFO;
 
@@ -49,7 +49,7 @@ NOMLIB_LOG_INFO;
   TTF_Quit();
 }
 
-bool SDL_Font::SDL_Font::valid ( void ) const
+bool TrueTypeFont::valid ( void ) const
 {
   if ( this->font.get() != nullptr )
     return true;
@@ -57,27 +57,27 @@ bool SDL_Font::SDL_Font::valid ( void ) const
     return false;
 }
 
-const std::string& SDL_Font::getText ( void ) const
+const std::string& TrueTypeFont::getText ( void ) const
 {
   return this->text_buffer;
 }
 
-int32 SDL_Font::getFontWidth ( void ) const
+int32 TrueTypeFont::getFontWidth ( void ) const
 {
   return this->coords.width;
 }
 
-int32 SDL_Font::getFontHeight ( void ) const
+int32 TrueTypeFont::getFontHeight ( void ) const
 {
   return this->coords.height;
 }
 
-FontStyle SDL_Font::getFontStyle ( void ) const
+FontStyle TrueTypeFont::getFontStyle ( void ) const
 {
   return this->text_style;
 }
 
-void SDL_Font::setFontSize ( int32 point_size )
+void TrueTypeFont::setFontSize ( int32 point_size )
 {
   if ( this->Load ( this->filename, nom::Color::Black, point_size ) == false )
   {
@@ -85,7 +85,7 @@ NOMLIB_LOG_ERR ( "Could not set font size." );
   }
 }
 
-void SDL_Font::setFontStyle ( uint8 style, uint8 options )
+void TrueTypeFont::setFontStyle ( uint8 style, uint8 options )
 {
   enum FontStyle current_style;
 
@@ -110,7 +110,7 @@ void SDL_Font::setFontStyle ( uint8 style, uint8 options )
   }
 }
 
-void SDL_Font::setText ( const std::string& text )
+void TrueTypeFont::setText ( const std::string& text )
 {
   int32_t width, height = 0; // holds the return values; width, height
 
@@ -128,7 +128,7 @@ NOMLIB_LOG_ERR ( "Text length must be greater than zero" );
   }
 }
 
-bool SDL_Font::Load ( const std::string& filename, const Color& colorkey,
+bool TrueTypeFont::Load ( const std::string& filename, const Color& colorkey,
                       int32 font_size, bool use_cache
                     )
 {
@@ -146,7 +146,7 @@ NOMLIB_LOG_ERR ( "Could not load TTF file: " + filename );
   return true;
 }
 
-void SDL_Font::Update ( void )
+void TrueTypeFont::Update ( void )
 {
   // Update display coordinates
   this->font_buffer.setPosition ( this->coords );
@@ -169,7 +169,7 @@ void SDL_Font::Update ( void )
   }
 }
 
-void SDL_Font::Draw ( void* video_buffer ) /*const*/
+void TrueTypeFont::Draw ( void* video_buffer ) /*const*/
 {
 NOMLIB_ASSERT ( this->font_buffer.valid() );
 

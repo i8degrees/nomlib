@@ -19,8 +19,8 @@
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/gfx/Canvas.hpp"
 #include "nomlib/gfx/IFont.hpp"
-#include "nomlib/gfx/SDL_BitmapFont.hpp"
-#include "nomlib/gfx/SDL_Font.hpp"
+#include "nomlib/gfx/BitmapFont.hpp"
+#include "nomlib/gfx/TrueTypeFont.hpp"
 #include "nomlib/gfx/IDrawable.hpp"
 
 namespace nom {
@@ -28,8 +28,8 @@ namespace nom {
 enum FontType
 {
   Unknown = 0,
-  BitmapFont = 1,
-  TrueTypeFont = 2
+  Bitmap = 1,
+  TrueType = 2
 };
 
 class Text/*: public IDrawable*/

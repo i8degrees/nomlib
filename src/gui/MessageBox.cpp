@@ -6,11 +6,11 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/gui/SDL_MessageBox.hpp"
+#include "nomlib/gui/MessageBox.hpp"
 
 namespace nom {
 
-void SDL_MessageBox::initialize ( void )
+void MessageBox::initialize ( void )
 {
 NOMLIB_LOG_INFO;
 
@@ -23,12 +23,12 @@ NOMLIB_LOG_INFO;
     this->window_borders[i] = Color::Black;
 }
 
-SDL_MessageBox::SDL_MessageBox ( void )
+MessageBox::MessageBox ( void )
 {
   initialize();
 }
 
-SDL_MessageBox::SDL_MessageBox  ( int32 x, int32 y, int32 width, int32 height,
+MessageBox::MessageBox  ( int32 x, int32 y, int32 width, int32 height,
                                   const std::vector<Color> border_colors,
                                   const Gradient& background
                                 )
@@ -56,7 +56,7 @@ SDL_MessageBox::SDL_MessageBox  ( int32 x, int32 y, int32 width, int32 height,
   this->lines.push_back ( std::shared_ptr<IDrawable> ( new Line ( x_offset, y, x_offset, y_offset + padding, this->window_borders[7].getColor() ) ) ); // right1
 }
 
-SDL_MessageBox::~SDL_MessageBox ( void )
+MessageBox::~MessageBox ( void )
 {
 NOMLIB_LOG_INFO;
 
@@ -65,7 +65,7 @@ NOMLIB_LOG_INFO;
   this->lines.clear(); // Better safe than sorry!
 }
 
-bool SDL_MessageBox::isEnabled ( void )
+bool MessageBox::isEnabled ( void )
 {
   if ( this->enabled == true )
     return true;
@@ -73,23 +73,23 @@ bool SDL_MessageBox::isEnabled ( void )
     return false;
 }
 
-void SDL_MessageBox::disable ( void )
+void MessageBox::disable ( void )
 {
   this->enabled = false;
 }
 
-void SDL_MessageBox::enable ( void )
+void MessageBox::enable ( void )
 {
   this->enabled = true;
 }
 
-void SDL_MessageBox::Update ( void )
+void MessageBox::Update ( void )
 {
   // ...
 }
 
 // FIXME: how do we iterate through this with unique_ptr type ?
-void SDL_MessageBox::Draw ( void* video_buffer ) const
+void MessageBox::Draw ( void* video_buffer ) const
 {
   this->background.Draw ( video_buffer );
 

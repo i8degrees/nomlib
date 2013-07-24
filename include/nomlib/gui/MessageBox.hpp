@@ -25,16 +25,16 @@
 
 namespace nom {
 
-class SDL_MessageBox: public IDrawable,   // "is a" relationship
+class MessageBox: public IDrawable,   // "is a" relationship
                       public Transformable   // "has a" relationship
 {
   public:
-    SDL_MessageBox ( void );
-    SDL_MessageBox  ( int32 x, int32 y, int32 width, int32 height,
+    MessageBox ( void );
+    MessageBox  ( int32 x, int32 y, int32 width, int32 height,
                       const std::vector<Color> border_colors,
                       const Gradient& background = Gradient()
                     );
-    virtual ~SDL_MessageBox ( void );
+    virtual ~MessageBox ( void );
 
     bool isEnabled ( void );
     void disable ( void );

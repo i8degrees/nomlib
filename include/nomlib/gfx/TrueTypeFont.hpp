@@ -5,8 +5,8 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_TTF_FONT_HEADERS
-#define NOMLIB_SDL_TTF_FONT_HEADERS
+#ifndef NOMLIB_SDL_TRUETYPE_FONT_HEADERS
+#define NOMLIB_SDL_TRUETYPE_FONT_HEADERS
 
 #include <iostream>
 #include <string>
@@ -35,15 +35,15 @@ void TTF_FreeSurface ( TTF_Font* );
 
 namespace nom {
 
-class SDL_Font: //  public IDrawable, //  "is a" inheritance
+class TrueTypeFont: //  public IDrawable, //  "is a" inheritance
                     public IFont // "is-a" relationship
 {
   public:
     /// Default constructor; we initialize the SDL_ttf extension here
-    SDL_Font ( void );
+    TrueTypeFont ( void );
 
     /// Default destructor; we shutdown the SDL_ttf extension here
-    ~SDL_Font ( void );
+    ~TrueTypeFont ( void );
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
@@ -101,4 +101,4 @@ class SDL_Font: //  public IDrawable, //  "is a" inheritance
 
 } // namespace nom
 
-#endif // NOMLIB_SDL_TTF_FONT_HEADERS defined
+#endif // include guard

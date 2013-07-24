@@ -34,11 +34,11 @@ void Display_FreeSurface ( SDL_Surface* );
 
 namespace nom {
 
-class SDL_Display: public IDisplay
+class Display: public IDisplay
 {
   public:
-    SDL_Display ( void );
-    ~SDL_Display ( void );
+    Display ( void );
+    ~Display ( void );
 
     void createWindow ( int32_t display_width, int32_t display_height,
                         int32_t display_colorbit, uint32_t flags = 0

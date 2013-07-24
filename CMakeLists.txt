@@ -103,11 +103,11 @@ set ( NOMLIB_SOURCE
       ${SRC_DIR}/audio/AL/Sound.cpp
       # gfx
       ${SRC_DIR}/gfx/Text.cpp
-      ${SRC_DIR}/gfx/SDL_BitmapFont.cpp
-      ${SRC_DIR}/gfx/SDL_Font.cpp
+      ${SRC_DIR}/gfx/BitmapFont.cpp
+      ${SRC_DIR}/gfx/TrueTypeFont.cpp
       ${SRC_DIR}/gfx/IDisplay.cpp
       ${SRC_DIR}/gfx/Canvas.cpp
-      ${SRC_DIR}/gfx/SDL_Display.cpp
+      ${SRC_DIR}/gfx/Display.cpp
       ${SRC_DIR}/gfx/Gradient.cpp
       ${SRC_DIR}/gfx/Image.cpp
       ${SRC_DIR}/gfx/Line.cpp
@@ -131,7 +131,7 @@ set ( NOMLIB_SOURCE
       ${SRC_DIR}/math/Transformable.cpp
       # gui
       ${SRC_DIR}/gui/Cursor.cpp
-      ${SRC_DIR}/gui/SDL_MessageBox.cpp
+      ${SRC_DIR}/gui/MessageBox.cpp
       # sdl
       ${SRC_DIR}/sdl/utils.cpp
     )

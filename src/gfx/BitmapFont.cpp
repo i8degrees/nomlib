@@ -11,11 +11,11 @@
   1. http://lazyfoo.net/SDL_tutorials/lesson30/index.php
 
 ******************************************************************************/
-#include "nomlib/gfx/SDL_BitmapFont.hpp"
+#include "nomlib/gfx/BitmapFont.hpp"
 
 namespace nom {
 
-SDL_BitmapFont::SDL_BitmapFont ( void )
+BitmapFont::BitmapFont ( void )
 {
 NOMLIB_LOG_INFO;
 
@@ -36,17 +36,17 @@ NOMLIB_LOG_INFO;
   }
 }
 
-SDL_BitmapFont::~SDL_BitmapFont ( void )
+BitmapFont::~BitmapFont ( void )
 {
 NOMLIB_LOG_INFO;
 }
 
-const std::string& SDL_BitmapFont::getText ( void ) const
+const std::string& BitmapFont::getText ( void ) const
 {
   return this->text_buffer;
 }
 
-int32 SDL_BitmapFont::getFontWidth ( void ) const
+int32 BitmapFont::getFontWidth ( void ) const
 {
   int32_t text_width = 0;
 
@@ -66,7 +66,7 @@ int32 SDL_BitmapFont::getFontWidth ( void ) const
   return text_width;
 }
 
-int32 SDL_BitmapFont::getFontHeight ( void ) const
+int32 BitmapFont::getFontHeight ( void ) const
 {
   int32_t text_height = 0;
 
@@ -81,42 +81,42 @@ int32 SDL_BitmapFont::getFontHeight ( void ) const
   return text_height;
 }
 
-void SDL_BitmapFont::setFontSize ( int32 point_size )
+void BitmapFont::setFontSize ( int32 point_size )
 {
   this->font_size = point_size;
 }
 
-void SDL_BitmapFont::setText ( const std::string& text )
+void BitmapFont::setText ( const std::string& text )
 {
   this->text_buffer = text;
 }
 
-uint32 SDL_BitmapFont::getSpacing ( void )
+uint32 BitmapFont::getSpacing ( void )
 {
   return this->spacing;
 }
 
-void SDL_BitmapFont::setSpacing ( uint32 spaces )
+void BitmapFont::setSpacing ( uint32 spaces )
 {
   this->spacing = spaces;
 }
 
-uint32 SDL_BitmapFont::getNewline ( void )
+uint32 BitmapFont::getNewline ( void )
 {
   return this->newline;
 }
 
-void SDL_BitmapFont::setNewline ( uint32 newline )
+void BitmapFont::setNewline ( uint32 newline )
 {
   this->newline = newline;
 }
 
-FontStyle SDL_BitmapFont::getFontStyle ( void ) const
+FontStyle BitmapFont::getFontStyle ( void ) const
 {
   return this->text_style;
 }
 
-void SDL_BitmapFont::setFontStyle ( uint8 style, uint8 options )
+void BitmapFont::setFontStyle ( uint8 style, uint8 options )
 {
   switch ( style )
   {
@@ -140,7 +140,7 @@ void SDL_BitmapFont::setFontStyle ( uint8 style, uint8 options )
   }
 }
 
-bool SDL_BitmapFont::Load ( const std::string& filename, const Color& colorkey,
+bool BitmapFont::Load ( const std::string& filename, const Color& colorkey,
                             int32 font_size, bool use_cache
                           )
 {
@@ -300,7 +300,7 @@ NOMLIB_ASSERT ( this->bitmap_font.valid() );
   return true;
 }
 
-const Coords SDL_BitmapFont::findGlyph ( const std::string& glyph )
+const Coords BitmapFont::findGlyph ( const std::string& glyph )
 {
   uint8 ascii = 0;
   std::istringstream i ( glyph );
@@ -310,13 +310,13 @@ const Coords SDL_BitmapFont::findGlyph ( const std::string& glyph )
   return this->chars[ascii];
 }
 
-void SDL_BitmapFont::Update ( void )
+void BitmapFont::Update ( void )
 {
   // Stub
 }
 
 // TODO: test \t (horizontal tabbing) feature
-void SDL_BitmapFont::Draw ( void* video_buffer ) /*const*/
+void BitmapFont::Draw ( void* video_buffer ) /*const*/
 {
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from

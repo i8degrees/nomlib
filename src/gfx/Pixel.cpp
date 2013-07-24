@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/gfx/SDL_Pixel.hpp"
+#include "nomlib/gfx/Pixel.hpp"
 
 namespace nom {
 

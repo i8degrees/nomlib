@@ -22,7 +22,7 @@
 #include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Transformable.hpp"
-#include "nomlib/gfx/SDL_Canvas.hpp"
+#include "nomlib/gfx/Canvas.hpp"
 #include "nomlib/gfx/IDrawable.hpp"
 
 namespace nom {
@@ -90,7 +90,7 @@ class SDL_BitmapFont: //  public IDrawable, //  "is a" inheritance
 
   private:
     /// pointer reference holding our bitmap font image sheet
-    SDL_Canvas bitmap_font;
+    Canvas bitmap_font;
     /// individual chars positioning offsets within bitmap_font
     Coords chars[256];
     /// height (in pixels) to offset when newline carriage char is encountered

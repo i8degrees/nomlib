@@ -20,7 +20,7 @@
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/gfx/IDrawable.hpp"
-#include "nomlib/gfx/SDL_Rectangle.hpp"
+#include "nomlib/gfx/Rectangle.hpp"
 
 namespace nom {
 

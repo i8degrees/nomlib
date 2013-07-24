@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/gfx/SDL_Rectangle.hpp"
+#include "nomlib/gfx/Rectangle.hpp"
 
 namespace nom {
 

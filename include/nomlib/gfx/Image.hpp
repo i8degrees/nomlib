@@ -22,23 +22,23 @@
 #include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/gfx/SDL_Canvas.hpp"
+#include "nomlib/gfx/Canvas.hpp"
 
 namespace nom {
 
-class SDL_Image
+class Image
 {
   public:
     /// Default constructor; initializes SDL_image extension
-    SDL_Image ( int32 img_flags = IMG_INIT_PNG );
+    Image ( int32 img_flags = IMG_INIT_PNG );
     /// Copy constructor
-    SDL_Image ( const SDL_Image& other );
-    virtual ~SDL_Image ( void );
+    Image ( const Image& other );
+    virtual ~Image ( void );
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
 
-    /// Supports every file type that the SDL_image extension has been
+    /// Supports every file type that the libSDL_image extension has been
     /// compiled with
     std::shared_ptr<void> loadFromFile ( const std::string& filename );
 
@@ -53,8 +53,9 @@ class SDL_Image
     bool saveToFile ( const std::string& filename, void* video_buffer );
 
     const Coords getSize ( void ) const;
+
     /// Copy assignment constructor
-    SDL_Image& operator = ( const SDL_Image& other );
+    Image& operator = ( const Image& other );
 
   private:
     std::shared_ptr<void> image_buffer; // SDL_Surface*

@@ -20,7 +20,7 @@
 #include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Transformable.hpp"
-#include "nomlib/gfx/SDL_Canvas.hpp"
+#include "nomlib/gfx/Canvas.hpp"
 #include "nomlib/gfx/IDrawable.hpp"
 
 namespace nom {
@@ -84,7 +84,7 @@ class SDL_Font: //  public IDrawable, //  "is a" inheritance
 
   private:
     /// Surface where font for drawing is rendered to
-    SDL_Canvas font_buffer;
+    Canvas font_buffer;
     /// Font file data, used by SDL_ttf extension
     std::shared_ptr<TTF_Font> font;
     /// holds contents of text as a string buffer

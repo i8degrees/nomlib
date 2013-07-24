@@ -18,7 +18,7 @@
 #include "nomlib/gfx/IDisplay.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Color.hpp"
-#include "nomlib/gfx/SDL_Canvas.hpp"
+#include "nomlib/gfx/Canvas.hpp"
 
 namespace nom {
   namespace priv {

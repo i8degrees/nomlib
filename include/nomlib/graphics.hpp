@@ -13,15 +13,15 @@
 
 #include "nomlib/gfx/Text.hpp"
 #include "nomlib/gfx/SDL_BitmapFont.hpp"
-#include "nomlib/gfx/SDL_Canvas.hpp"
+#include "nomlib/gfx/Canvas.hpp"
 #include "nomlib/gfx/SDL_Display.hpp"
 #include "nomlib/gfx/IDrawable.hpp"
 #include "nomlib/gfx/SDL_Font.hpp"
 #include "nomlib/gfx/Gradient.hpp"
-#include "nomlib/gfx/SDL_Image.hpp"
-#include "nomlib/gfx/SDL_Line.hpp"
-#include "nomlib/gfx/SDL_Pixel.hpp"
-#include "nomlib/gfx/SDL_Rectangle.hpp"
+#include "nomlib/gfx/Image.hpp"
+#include "nomlib/gfx/Line.hpp"
+#include "nomlib/gfx/Pixel.hpp"
+#include "nomlib/gfx/Rectangle.hpp"
 #include "nomlib/gfx/Sprite.hpp"
 
 #endif // NOMLIB_GFX_HEADERS defined

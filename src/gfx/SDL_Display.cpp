@@ -166,7 +166,7 @@ void SDL_Display::setWindowTitle ( const std::string& app_name )
 
 void SDL_Display::setWindowIcon ( const std::string& app_icon )
 {
-  SDL_Image image; // holds our image in memory during transfer
+  Image image; // holds our image in memory during transfer
   std::shared_ptr<void> icon = nullptr;
 
   if ( this->valid() )

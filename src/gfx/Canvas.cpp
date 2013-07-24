@@ -5,7 +5,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "nomlib/gfx/SDL_Canvas.hpp"
+#include "nomlib/gfx/Canvas.hpp"
 
 namespace nom {
   namespace priv {
@@ -20,27 +20,27 @@ void Canvas_FreeSurface ( SDL_Surface* video_buffer )
 
 namespace nom {
 
-SDL_Canvas::SDL_Canvas ( void )  : canvas_buffer ( nullptr, nom::priv::Canvas_FreeSurface ),
+Canvas::Canvas ( void )  : canvas_buffer ( nullptr, nom::priv::Canvas_FreeSurface ),
                                         coords ( 0, 0, -1, -1 ), // only x, y position is used in blitting
                                         offsets ( 0, 0, -1, -1 ) // only the width, height is used in source blitting
 {
 NOMLIB_LOG_INFO;
 }
 
-SDL_Canvas::SDL_Canvas ( void* video_buffer )  : canvas_buffer ( static_cast<SDL_Surface*> ( video_buffer ), nom::priv::Canvas_FreeSurface )
+Canvas::Canvas ( void* video_buffer )  : canvas_buffer ( static_cast<SDL_Surface*> ( video_buffer ), nom::priv::Canvas_FreeSurface )
 {
 NOMLIB_LOG_INFO;
 
   this->offsets.setSize ( this->getCanvasWidth(), this->getCanvasHeight() );
 }
 
-SDL_Canvas::SDL_Canvas ( const SDL_Canvas& other ) : canvas_buffer ( static_cast<SDL_Surface*> ( other.canvas_buffer.get() ), nom::priv::Canvas_FreeSurface ),
+Canvas::Canvas ( const Canvas& other ) : canvas_buffer ( static_cast<SDL_Surface*> ( other.canvas_buffer.get() ), nom::priv::Canvas_FreeSurface ),
                                                           coords ( other.coords.x, other.coords.y ), offsets ( other.offsets.width, other.offsets.height )
 {
 NOMLIB_LOG_INFO;
 }
 
-SDL_Canvas::SDL_Canvas ( uint32_t flags, int32_t width, int32_t height, int32_t bitsPerPixel, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
+Canvas::Canvas ( uint32_t flags, int32_t width, int32_t height, int32_t bitsPerPixel, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
 {
 NOMLIB_LOG_INFO;
 
@@ -49,7 +49,7 @@ NOMLIB_LOG_INFO;
   this->canvas_buffer = std::shared_ptr<void> ( SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask ), nom::priv::Canvas_FreeSurface );
 }
 
-SDL_Canvas::SDL_Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
+Canvas::Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
 {
 NOMLIB_LOG_INFO;
 
@@ -58,14 +58,14 @@ NOMLIB_LOG_INFO;
   this->canvas_buffer = std::shared_ptr<void> ( SDL_CreateRGBSurfaceFrom ( pixels, width, height, depth, pitch, Rmask, Gmask, Bmask, Amask ), nom::priv::Canvas_FreeSurface );
 }
 
-SDL_Canvas::~SDL_Canvas ( void )
+Canvas::~Canvas ( void )
 {
 NOMLIB_LOG_INFO;
 
   this->canvas_buffer.reset(); // nullptr
 }
 
-bool SDL_Canvas::valid ( void ) const
+bool Canvas::valid ( void ) const
 {
   if ( this->canvas_buffer.get() != nullptr )
     return true;
@@ -73,58 +73,58 @@ bool SDL_Canvas::valid ( void ) const
     return false;
 }
 
-void SDL_Canvas::setCanvas ( void* video_buffer )
+void Canvas::setCanvas ( void* video_buffer )
 {
   this->canvas_buffer.reset ( static_cast<SDL_Surface*> ( video_buffer ), nom::priv::Canvas_FreeSurface );
 }
 
-void SDL_Canvas::setPosition ( const Coords& coords_ )
+void Canvas::setPosition ( const Coords& coords_ )
 {
   this->coords = coords_;
 }
 
-void SDL_Canvas::setOffsets ( const Coords& offsets_ )
+void Canvas::setOffsets ( const Coords& offsets_ )
 {
   this->offsets = offsets_;
 }
 
-const int32_t SDL_Canvas::getCanvasWidth ( void ) const
+const int32_t Canvas::getCanvasWidth ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
   return buffer->w;
 }
 
-const int32_t SDL_Canvas::getCanvasHeight ( void ) const
+const int32_t Canvas::getCanvasHeight ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
   return buffer->h;
 }
 
-uint32_t SDL_Canvas::getCanvasFlags ( void ) const
+uint32_t Canvas::getCanvasFlags ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
   return buffer->flags;
 }
 
-uint16_t SDL_Canvas::getCanvasPitch ( void ) const
+uint16_t Canvas::getCanvasPitch ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
   return buffer->pitch;
 }
 
-void* SDL_Canvas::getCanvasPixels ( void ) const
+void* Canvas::getCanvasPixels ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
   return buffer->pixels;
 }
 
-void* SDL_Canvas::getCanvasPixelsFormat ( void ) const
+void* Canvas::getCanvasPixelsFormat ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
   return buffer->format;
 }
 
-const Coords SDL_Canvas::getCanvasBounds ( void ) const
+const Coords Canvas::getCanvasBounds ( void ) const
 {
   SDL_Rect clip_buffer; // temporary storage struct
   Coords clip_bounds; // transferred values from SDL_Rect clip_buffer
@@ -138,7 +138,7 @@ const Coords SDL_Canvas::getCanvasBounds ( void ) const
   return clip_bounds;
 }
 
-void SDL_Canvas::setCanvasBounds ( const Coords& clip_bounds )
+void Canvas::setCanvasBounds ( const Coords& clip_bounds )
 {
   SDL_Rect clip = getSDL_Rect ( clip_bounds ); // temporary storage struct for setting
 
@@ -147,15 +147,15 @@ void SDL_Canvas::setCanvasBounds ( const Coords& clip_bounds )
   SDL_SetClipRect ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), &clip );
 }
 
-bool SDL_Canvas::getCanvasLock ( void ) const
+bool Canvas::getCanvasLock ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
   return buffer->locked;
 }
 
-bool SDL_Canvas::loadFromImage ( const std::string& filename, const Color& colorkey, bool use_cache, uint32 flags )
+bool Canvas::loadFromImage ( const std::string& filename, const Color& colorkey, bool use_cache, uint32 flags )
 {
-  SDL_Image image;
+  Image image;
 
   // By default -- for peace of mind above all else -- we have caching turned
   // off
@@ -206,7 +206,7 @@ NOMLIB_LOG ( "The video subsystem has not yet been initialized: surface transpar
   return true;
 }
 
-void SDL_Canvas::Draw ( void* video_buffer ) const
+void Canvas::Draw ( void* video_buffer ) const
 {
   // temporary vars to store our wrapped Coords
   SDL_Rect blit_coords = getSDL_Rect ( this->coords );
@@ -230,7 +230,7 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
   }
 }
 
-bool SDL_Canvas::Update ( void* video_buffer )
+bool Canvas::Update ( void* video_buffer )
 {
   if ( SDL_Flip ( (SDL_Surface*) video_buffer ) != 0 )
   {
@@ -240,7 +240,7 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
   return true;
 }
 
-bool SDL_Canvas::setAlpha ( uint8_t opacity, uint32_t flags )
+bool Canvas::setAlpha ( uint8_t opacity, uint32_t flags )
 {
 NOMLIB_ASSERT ( ! ( opacity > SDL_ALPHA_OPAQUE ) || ( opacity < SDL_ALPHA_TRANSPARENT ) );
 
@@ -253,7 +253,7 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
   return true;
 }
 
-bool SDL_Canvas::setTransparent ( const Color& color, uint32_t flags )
+bool Canvas::setTransparent ( const Color& color, uint32_t flags )
 {
   uint32_t transparent_color = 0;
 
@@ -269,7 +269,7 @@ NOMLIB_LOG_ERR ( SDL_GetError() );
   return true;
 }
 
-bool SDL_Canvas::displayFormat ( void )
+bool Canvas::displayFormat ( void )
 {
   this->canvas_buffer.reset ( SDL_DisplayFormat ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ) ), nom::priv::Canvas_FreeSurface );
 
@@ -278,7 +278,7 @@ NOMLIB_ASSERT ( this->valid() );
   return true;
 }
 
-bool SDL_Canvas::displayFormatAlpha ( void )
+bool Canvas::displayFormatAlpha ( void )
 {
   this->canvas_buffer.reset ( SDL_DisplayFormatAlpha ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ) ), nom::priv::Canvas_FreeSurface );
 
@@ -287,14 +287,14 @@ NOMLIB_ASSERT ( this->valid() );
   return true;
 }
 
-void SDL_Canvas::clear ( const Color& color ) const
+void Canvas::clear ( const Color& color ) const
 {
   Rectangle rect ( Coords ( 0, 0, this->getCanvasWidth(), this->getCanvasHeight() ), color );
 
   rect.Draw ( this->canvas_buffer.get() );
 }
 
-bool SDL_Canvas::mustLock ( void* video_buffer ) const
+bool Canvas::mustLock ( void* video_buffer ) const
 {
   if ( SDL_MUSTLOCK ( static_cast<SDL_Surface*> ( video_buffer ) ) )
     return true;
@@ -302,7 +302,7 @@ bool SDL_Canvas::mustLock ( void* video_buffer ) const
     return false;
 }
 
-bool SDL_Canvas::Lock ( void* video_buffer ) const
+bool Canvas::Lock ( void* video_buffer ) const
 {
   if ( this->mustLock ( video_buffer ) )
     SDL_LockSurface ( static_cast<SDL_Surface*> ( video_buffer ) );
@@ -311,12 +311,12 @@ bool SDL_Canvas::Lock ( void* video_buffer ) const
   return true;
 }
 
-void SDL_Canvas::Unlock ( void* video_buffer ) const
+void Canvas::Unlock ( void* video_buffer ) const
 {
   SDL_UnlockSurface ( static_cast<SDL_Surface*> ( video_buffer ) );
 }
 
-int32 SDL_Canvas::getPixel ( int32 x, int32 y )
+int32 Canvas::getPixel ( int32 x, int32 y )
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
 
@@ -358,7 +358,7 @@ int32 SDL_Canvas::getPixel ( int32 x, int32 y )
   } // end switch
 }
 
-SDL_Canvas& SDL_Canvas::operator = ( const SDL_Canvas& other )
+Canvas& Canvas::operator = ( const Canvas& other )
 {
   this->canvas_buffer = other.canvas_buffer;
 

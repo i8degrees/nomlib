@@ -17,7 +17,7 @@
 #include "nomlib/sys/Logger.hpp"
 #include "nomlib/sys/OSXFS.hpp"
 #include "nomlib/math/Transformable.hpp"
-#include "nomlib/gfx/SDL_Canvas.hpp"
+#include "nomlib/gfx/Canvas.hpp"
 #include "nomlib/gfx/IFont.hpp"
 #include "nomlib/gfx/SDL_BitmapFont.hpp"
 #include "nomlib/gfx/SDL_Font.hpp"

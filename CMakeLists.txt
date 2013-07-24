@@ -106,13 +106,13 @@ set ( NOMLIB_SOURCE
       ${SRC_DIR}/gfx/SDL_BitmapFont.cpp
       ${SRC_DIR}/gfx/SDL_Font.cpp
       ${SRC_DIR}/gfx/IDisplay.cpp
-      ${SRC_DIR}/gfx/SDL_Canvas.cpp
+      ${SRC_DIR}/gfx/Canvas.cpp
       ${SRC_DIR}/gfx/SDL_Display.cpp
       ${SRC_DIR}/gfx/Gradient.cpp
-      ${SRC_DIR}/gfx/SDL_Image.cpp
-      ${SRC_DIR}/gfx/SDL_Line.cpp
-      ${SRC_DIR}/gfx/SDL_Pixel.cpp
-      ${SRC_DIR}/gfx/SDL_Rectangle.cpp
+      ${SRC_DIR}/gfx/Image.cpp
+      ${SRC_DIR}/gfx/Line.cpp
+      ${SRC_DIR}/gfx/Pixel.cpp
+      ${SRC_DIR}/gfx/Rectangle.cpp
       ${SRC_DIR}/gfx/Sprite.cpp
       # sys
       ${SRC_DIR}/sys/Clock.cpp

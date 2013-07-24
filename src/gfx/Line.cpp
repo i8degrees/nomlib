@@ -1,13 +1,13 @@
 /******************************************************************************
 
-    SDL Line Primitive; line computation logic derives from Bresenham's line
+    Line Primitive; line computation logic derives from Bresenham's line
   algorithm
 
   Copyright (c) 2013 Jeffrey Carpenter
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/gfx/SDL_Line.hpp"
+#include "nomlib/gfx/Line.hpp"
 
 namespace nom {
 

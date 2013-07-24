@@ -14,7 +14,7 @@
 #include "nomlib/config.hpp"
 #include "nomlib/sys/Logger.hpp"
 #include "nomlib/gfx/IDrawable.hpp"
-#include "nomlib/gfx/SDL_Canvas.hpp"
+#include "nomlib/gfx/Canvas.hpp"
 #include "nomlib/math/Transformable.hpp"
 
 namespace nom {
@@ -42,7 +42,7 @@ class Sprite: public IDrawable,  //  "is a" inheritance
     void Draw ( void* video_buffer ) const;
 
   private:
-    SDL_Canvas sprite_buffer;
+    Canvas sprite_buffer;
     Coords offsets;
 
     unsigned int state; /// alive, dying, dead, ...

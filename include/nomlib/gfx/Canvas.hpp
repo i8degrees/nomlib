@@ -21,8 +21,8 @@
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/sys/ObjectCache.hpp"
-#include "nomlib/gfx/SDL_Image.hpp"
-#include "nomlib/gfx/SDL_Rectangle.hpp"
+#include "nomlib/gfx/Image.hpp"
+#include "nomlib/gfx/Rectangle.hpp"
 
 namespace nom {
   namespace priv {
@@ -37,29 +37,29 @@ void Canvas_FreeSurface ( SDL_Surface* );
 
 namespace nom {
 
-class SDL_Canvas
+class Canvas
 {
   public:
     /// Default constructor; initializes object to its respective defaults
-    SDL_Canvas ( void );
+    Canvas ( void );
     /// Constructor variant for setting the canvas with existing data
-    SDL_Canvas ( void* video_buffer );
+    Canvas ( void* video_buffer );
     /// Copy constructor
-    SDL_Canvas ( const SDL_Canvas& other );
+    Canvas ( const Canvas& other );
     /// Constructor variant for setting the canvas with an empty surface
     ///
     /// As per libSDL docs, this must be called only after video initialization;
     /// (SDL_SetVideoMode)
     ///
     /// http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurface
-    SDL_Canvas ( uint32_t flags, int32_t width, int32_t height, int32_t bitsPerPixel, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask );
+    Canvas ( uint32_t flags, int32_t width, int32_t height, int32_t bitsPerPixel, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask );
     /// Constructor variant for setting the canvas with existing pixel data
     ///
     /// http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurfaceFrom
     ///
     /// Note that we are responsible for freeing our own pixels data
-    SDL_Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask );
-    ~SDL_Canvas ( void );
+    Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask );
+    ~Canvas ( void );
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
@@ -120,7 +120,7 @@ class SDL_Canvas
     /// \internal
     /// Note: this method is not meant to be called inside a loop; memory usage may
     /// run a mock (seems to be fixed by Rectangle::~Rectangle() inside the
-    /// SDL_Rectangle class, although it eludes me as to why precisely
+    /// Rectangle class, although it eludes me as to why precisely
     /// \endinternal
     void clear ( const Color& color = Color::Blue ) const;
 
@@ -137,7 +137,7 @@ class SDL_Canvas
     int32 getPixel ( int32 x, int32 y );
 
     /// Copy assignment constructor
-    SDL_Canvas& operator = ( const SDL_Canvas& other );
+    Canvas& operator = ( const Canvas& other );
 
   private:
     bool mustLock ( void* video_buffer ) const;

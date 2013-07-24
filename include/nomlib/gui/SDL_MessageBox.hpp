@@ -19,9 +19,9 @@
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/gfx/IDrawable.hpp"
-#include "nomlib/gfx/SDL_Canvas.hpp"
+#include "nomlib/gfx/Canvas.hpp"
 #include "nomlib/gfx/Gradient.hpp"
-#include "nomlib/gfx/SDL_Line.hpp"
+#include "nomlib/gfx/Line.hpp"
 
 namespace nom {
 
@@ -48,7 +48,7 @@ class SDL_MessageBox: public IDrawable,   // "is a" relationship
     typedef std::vector<std::shared_ptr<IDrawable>> drawable_t;
     drawable_t lines;
     Gradient background;
-    SDL_Canvas box;
+    Canvas box;
 
     std::vector<Color> window_borders;
     // top border, left border, bottom border, right border; each defined border

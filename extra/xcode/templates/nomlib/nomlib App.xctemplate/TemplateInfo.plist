@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+
+<!--
+SFML - Simple and Fast Multimedia Library
+Copyright (C) 2007-2013 Marco Antognini (antognini.marco@gmail.com),
+                        Laurent Gomila (laurent.gom@gmail.com),
+
+This software is provided 'as-is', without any express or implied warranty.
+In no event will the authors be held liable for any damages arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it freely,
+subject to the following restrictions:
+
+1. The origin of this software must not be misrepresented;
+   you must not claim that you wrote the original software.
+   If you use this software in a product, an acknowledgment
+   in the product documentation would be appreciated but is not required.
+
+2. Altered source versions must be plainly marked as such,
+   and must not be misrepresented as being the original software.
+
+3. This notice may not be removed or altered from any source distribution.
+-->
+
+<!--
+     This template can create a nomlib Bundle Application project.
+ -->
+
+<plist version="1.0">
+    <dict>
+        <!--
+             BASIC INFO
+         -->
+        <key>Identifier</key>
+        <string>org.nomlib-dev.app</string>
+
+        <key>Concrete</key>
+        <true />
+
+        <key>Description</key>
+        <string>This template creates a nomlib Application Bundle.</string>
+
+        <key>Kind</key>
+        <string>Xcode.Xcode3.ProjectTemplateUnitKind</string>
+
+        <key>Ancestors</key>
+        <array>
+            <string>org.nomlib-dev.bundle</string>
+            <string>org.nomlib-dev.compiler</string>
+            <string>org.nomlib-dev.linker</string>
+        </array>
+
+        <!--
+             FILES
+         -->
+        <key>Nodes</key>
+        <array>
+            <string>main.cpp</string>
+            <!--<string>icon.png</string>-->
+        </array>
+
+        <!--
+             DEFINITIONS
+         -->
+        <key>Definitions</key>
+        <dict>
+            <!-- MAIN -->
+            <key>main.cpp</key>
+            <dict>
+                <key>Path</key>
+                <string>main.cpp</string>
+            </dict>
+        </dict>
+
+            <!-- RESOURCE PATH -->
+
+            <!--
+                TODO
+
+            <key>ResourcePath.mm</key>
+            <dict>
+                <key>Path</key>
+                <string></string>
+                <string>ResourcePath.mm</string>
+            </dict>
+            <key>ResourcePath.hpp</key>
+            <dict>
+                <key>Path</key>
+                <string></string>
+                <string>ResourcePath.hpp</string>
+                <key>TargetIndices</key>
+                <array />
+            </dict>
+
+                TODO
+            -->
+
+            <!--
+                TODO / RESOURCES
+
+            <key>icon.png</key>
+            <dict>
+                <key>Path</key>
+                <string>icon.png</string>
+                <key>Group</key>
+                <string>Resources</string>
+            </dict>
+        </dict>
+
+        TODO / RESOURCES
+        -->
+
+        <!--
+             COPY LIBRARY PHASE
+         -->
+        <key>Targets</key>
+        <array>
+            <dict>
+                <key>BuildPhases</key>
+                <array>
+                    <dict>
+                        <key>Class</key>
+                        <string>ShellScript</string>
+
+                        <key>ShellPath</key>
+                        <string>/bin/sh</string>
+
+                        <key>ShellScript</key>
+                        <string># This shell script simply copies required nomlib dylibs/frameworks into the application bundle frameworks folder.
+# If you're using static libraries -- which is not supported nor tested -- you should remove this script from your project.
+
+# Are we building a project that uses framework or dylibs?
+case "$NOMLIB_BINARY_TYPE" in
+    DYLIBS)
+        frameworks="false"
+        ;;
+    *)
+        frameworks="true"
+        ;;
+esac
+
+# Echoes to stderr
+error () # $* message to display
+{
+    echo $* 1>&amp;2
+    exit 2
+}
+
+assert () # $1 is a boolean, $2...N is an error message
+{
+    if [ $# -lt 2 ]
+    then
+        error "Internal error in assert : not enough args"
+    fi
+
+    if [ $1 -ne 0 ]
+    then
+        shift
+        error "$*"
+    fi
+}
+
+force_remove () # $1 is a path
+{
+    test $# -eq 1
+    assert $? "force_remove() requires one parameter"
+    rm -fr "$1"
+    assert $? "couldn't remove $1"
+}
+
+copy () # $1 is a source, $2 is a destination
+{
+    test $# -eq 2
+    assert $? "copy() requires two parameters"
+    ditto "$1" "$2"
+    assert $? "couldn't copy $1 to $2"
+}
+
+require () # $1 is a nomlib module like 'system' or 'audio' (NOT IMPLEMENTED)
+{
+    dest="$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app/Contents/Frameworks"
+
+    if [ -z "$1" ]; then
+
+        error "require() requires one parameter!"
+    else
+        # clean potentially old stuff
+        force_remove "$dest/libnomlib.0.1.dylib"
+        force_remove "$dest/libnomlib-0.1.debug.dylib"
+        force_remove "$dest/nomlib.framework"
+
+        # copy nomlib libraries
+        if [ "$frameworks" = "true" ]; then
+
+            if [ -x "$HOME/Library/Frameworks/nomlib.framework" ]; then
+
+                copy "$HOME/Library/Frameworks/nomlib.framework" "$dest/nomlib.framework"
+
+            else
+                if [ -x "/Library/Frameworks/nomlib.framework" ]; then
+
+                    copy "/Library/Frameworks/nomlib.framework" "$dest/nomlib.framework"
+                fi
+
+        elif [ $CONFIGURATION = "Debug" ] &amp;&amp; [ $NOMLIB_LINK_DYLIBS_SUFFIX_DEBUG != "" ]; then
+
+            copy "/usr/local/lib/libnomlib-0.1.debug.dylib" "$dest/libnomlib-0.1.dylib"
+
+        else
+            copy "/usr/local/lib/libnomlib-0.1.dylib" "$dest/libnomlib-0.1.dylib"
+        fi
+
+        # Dependencies
+        #
+        # TODO
+
+        #if [ "$1" = "audio" ]; then
+            # copy sndfile framework too
+            #copy "/Library/Frameworks/sndfile.framework" "$dest/sndfile.framework"
+        #fi
+
+        #if [ "$1" = "graphics" ]; then
+            # copy freetype framework too
+            #copy "/Library/Frameworks/freetype.framework" "$dest/freetype.framework"
+        #fi
+    fi
+}
+
+if [ -n "$NOMLIB_LIBRARY" ]; then
+
+    #require "system"
+
+fi
+
+
+                </string>
+
+                        <key>RunOnlyForDeploymentPostprocessing</key>
+                        <string>NO</string>
+                    </dict>
+                </array>
+            </dict>
+        </array>
+    </dict>
+</plist>
+

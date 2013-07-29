@@ -147,6 +147,21 @@ void Canvas::setCanvasBounds ( const Coords& clip_bounds )
   SDL_SetClipRect ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), &clip );
 }
 
+nom::int32 Canvas::getCanvasColorDepth ( void ) const
+{
+  SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
+
+  switch ( buffer->format->BytesPerPixel )
+  {
+    default: return -1; break; // Unsupported color depth
+
+    case 1: return 8; break; // 8-bit
+    case 2: return 16; break; // 16-bit
+    case 3: return 24; break; // 24-bit
+    case 4: return 32; break; // 32-bit
+  }
+}
+
 bool Canvas::getCanvasLock ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
@@ -320,11 +335,11 @@ int32 Canvas::getPixel ( int32 x, int32 y )
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
 
-  switch ( buffer->format->BytesPerPixel )
+  switch ( this->getCanvasColorDepth() )
   {
     default: return -1; break; // Unsupported
 
-    case 1: // 8-bit BPP
+    case 8:
     {
       uint8* pixels = static_cast<uint8*> ( buffer->pixels );
 
@@ -332,7 +347,7 @@ int32 Canvas::getPixel ( int32 x, int32 y )
     }
     break;
 
-    case 2: // 15/16-bit BPP
+    case 16:
     {
       uint16* pixels = static_cast<uint16*> ( buffer->pixels );
 
@@ -340,7 +355,7 @@ int32 Canvas::getPixel ( int32 x, int32 y )
     }
     break;
 
-    case 3: // 24-bit BPP
+    case 24:
     {
       uint8* pixels = static_cast<uint8*> ( buffer->pixels );
 
@@ -348,7 +363,7 @@ int32 Canvas::getPixel ( int32 x, int32 y )
     }
     break;
 
-    case 4: // 32-bit BPP
+    case 32:
     {
       uint32* pixels = static_cast<uint32*> ( buffer->pixels );
 

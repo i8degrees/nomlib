@@ -42,12 +42,19 @@ void Pixel::Draw ( void* video_buffer ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( video_buffer );
 
+  // FIXME: Change me to Display::getCanvasColorDepth or such when we get
+  // around to implementing our object wrapper for our rendering context --
+  // SDL_Surface* screen (nom::Display is our future candidate...)
   switch ( buffer->format->BytesPerPixel )
   {
-    // Unsupported
-    default: return; break;
+    default:
+    {
+NOM_LOG_ERR ( "Could not determine color depth -- aborting call." );
+      return;
+    }
+    break; // Unsupported color depth?
 
-    case 1: // 8-bit BPP
+    case 8:
     {
       uint8* pixels = static_cast<uint8*> ( buffer->pixels );
       uint32 pixel_color = getColorAsInt ( buffer->format, this->color );

@@ -78,6 +78,17 @@ class Canvas
     void* getCanvasPixelsFormat ( void ) const;
     const Coords getCanvasBounds ( void ) const;
     void setCanvasBounds ( const Coords& clip_bounds );
+
+    /// Convenience Helper method for calculating the canvas color depth; for
+    /// the time being, this is merely for the convenience of readability in
+    /// our code.
+    ///
+    /// Returns -1 on err -- perhaps an unsupported color depth?
+    ///
+    /// Returns 8, 16, 24 or 32 on successful determination of depth
+    ///
+    nom::int32 getCanvasColorDepth ( void ) const;
+
     /// I think that we are accessing the value of an
     /// (internal?) property of the SDL_Surface structure that is described as being
     /// "private" as per the docs.

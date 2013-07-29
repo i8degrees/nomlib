@@ -20,6 +20,11 @@
       "folder_exclude_patterns": [ "build", "tmp", "docs/public", "docs/man", "src", "examples", "include", "Resources" ]
     },
 
+    {
+      "name": "extra",
+      "path": "extra"
+    },
+
     {} // placeholder
   ],
 

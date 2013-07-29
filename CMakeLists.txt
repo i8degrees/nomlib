@@ -9,6 +9,7 @@ project ( nomlib ) # $PROJECT_NAME
 set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" ) # nomlib/src
 set ( NOMLIB_HEADERS_DIR "include" ) # include/nomlib/
 set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" ) # nomlib/examples
+set ( NOMLIB_RESOURCES_DIR "Resources" ) # folder containing library data (ex.: icon, translations, etc.)
 
 configure_file  ( "${PROJECT_SOURCE_DIR}/cmake/version.hpp.in"
                   "${PROJECT_SOURCE_DIR}/${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}/version.hpp"
@@ -198,14 +199,18 @@ if ( BUILD_SHARED_LIBS AND CMAKE_SYSTEM_NAME STREQUAL Darwin )
     set_target_properties ( ${PROJECT_NAME} PROPERTIES
                             FRAMEWORK
                             TRUE
-                            FRAMEWORK_VERSION
-                            "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
-                            MACOSX_FRAMEWORK_IDENTIFIER
-                            "org.dev.${PROJECT_NAME}"
-                            MACOSX_FRAMEWORK_SHORT_VERSION_STRING
-                            "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+                            MACOSX_FRAMEWORK_INFO_PLIST
+                            "${PROJECT_SOURCE_DIR}/cmake/FrameworkInfo.plist.in"
+                            MACOSX_FRAMEWORK_NAME
+                            "${PROJECT_NAME}"
+                            MACOSX_FRAMEWORK_ICON_FILE
+                            "nomlib.icns"
                             MACOSX_FRAMEWORK_BUNDLE_VERSION
                             "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
+                            MACOSX_FRAMEWORK_SHORT_VERSION_STRING
+                            "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+                            MACOSX_FRAMEWORK_IDENTIFIER
+                            "org.dev.${PROJECT_NAME}"
                           )
 
   endif ( BUILD_FRAMEWORKS )

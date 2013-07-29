@@ -373,6 +373,135 @@ int32 Canvas::getPixel ( int32 x, int32 y )
   } // end switch
 }
 
+void Canvas::scale2x ( SDL_Surface* source_buffer, SDL_Surface* destination_buffer )
+{
+  nom::int32 looph, loopw;
+
+  nom::uint8* srcpix = static_cast<nom::uint8*> ( source_buffer->pixels );
+  nom::uint8* dstpix = static_cast<nom::uint8*> ( destination_buffer->pixels );
+
+  const nom::int32 srcpitch = source_buffer->pitch;
+  const nom::int32 dstpitch = destination_buffer->pitch;
+  const nom::int32 width = source_buffer->w;
+  const nom::int32 height = source_buffer->h;
+
+  switch ( this->getCanvasColorDepth() )
+  {
+    default:
+    {
+NOM_LOG_ERR ( "Could not determine color depth -- aborting call." );
+      return;
+    }
+    break; // Unsupported color depth?
+
+    case 8:
+    {
+      nom::uint8 E0, E1, E2, E3, B, D, E, F, H;
+      for(looph = 0; looph < height; ++looph)
+      {
+        for(loopw = 0; loopw < width; ++ loopw)
+        {
+          B = *(nom::uint8*)(srcpix + (std::max ( 0, looph - 1 ) * srcpitch ) + ( 1 * loopw ) );
+          D = *(nom::uint8*)(srcpix + ( looph * srcpitch ) + ( 1 * std::max ( 0,loopw - 1 ) ) );
+          E = *(nom::uint8*)(srcpix + ( looph * srcpitch ) + ( 1 * loopw ) );
+          F = *(nom::uint8*)(srcpix + ( looph * srcpitch ) + ( 1 * std::min ( width - 1,loopw + 1 ) ) );
+          H = *(nom::uint8*)(srcpix + ( std::min ( height - 1, looph + 1 ) * srcpitch ) + ( 1 * loopw ) );
+
+          E0 = D == B && B != F && D != H ? D : E;
+          E1 = B == F && B != D && F != H ? F : E;
+          E2 = D == H && D != B && H != F ? D : E;
+          E3 = H == F && D != H && B != F ? F : E;
+
+          *(nom::uint8*)(dstpix + looph*2*dstpitch + loopw*2*1) = E0;
+          *(nom::uint8*)(dstpix + looph*2*dstpitch + (loopw*2+1)*1) = E1;
+          *(nom::uint8*)(dstpix + (looph*2+1)*dstpitch + loopw*2*1) = E2;
+          *(nom::uint8*)(dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*1) = E3;
+        }
+      }
+    break;
+    }
+    case 16:
+    {
+      nom::uint16 E0, E1, E2, E3, B, D, E, F, H;
+      for(looph = 0; looph < height; ++looph)
+      {
+        for(loopw = 0; loopw < width; ++ loopw)
+        {
+          B = *(nom::uint16*)(srcpix + ( std::max ( 0, looph - 1 ) * srcpitch ) + ( 2 * loopw ) );
+          D = *(nom::uint16*)(srcpix + ( looph * srcpitch ) + ( 2 * std::max ( 0, loopw - 1 ) ) );
+          E = *(nom::uint16*)(srcpix + ( looph * srcpitch ) + ( 2 * loopw ) );
+          F = *(nom::uint16*)(srcpix + ( looph * srcpitch ) + ( 2 * std::min ( width - 1, loopw + 1 ) ) );
+          H = *(nom::uint16*)(srcpix + ( std::min ( height - 1, looph + 1 ) * srcpitch ) + ( 2 * loopw ) );
+
+          E0 = D == B && B != F && D != H ? D : E;
+          E1 = B == F && B != D && F != H ? F : E;
+          E2 = D == H && D != B && H != F ? D : E;
+          E3 = H == F && D != H && B != F ? F : E;
+
+          *(nom::uint16*)(dstpix + looph*2*dstpitch + loopw*2*2) = E0;
+          *(nom::uint16*)(dstpix + looph*2*dstpitch + (loopw*2+1)*2) = E1;
+          *(nom::uint16*)(dstpix + (looph*2+1)*dstpitch + loopw*2*2) = E2;
+          *(nom::uint16*)(dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*2) = E3;
+        }
+      }
+    break;
+    }
+    case 24:
+    {
+      nom::int32 E0, E1, E2, E3, B, D, E, F, H;
+      for(looph = 0; looph < height; ++looph)
+      {
+        for(loopw = 0; loopw < width; ++ loopw)
+        {
+          B = SCALE2x_READINT24(srcpix + (std::max(0,looph-1)*srcpitch) + (3*loopw));
+          D = SCALE2x_READINT24(srcpix + (looph*srcpitch) + (3*std::max(0,loopw-1)));
+          E = SCALE2x_READINT24(srcpix + (looph*srcpitch) + (3*loopw));
+          F = SCALE2x_READINT24(srcpix + (looph*srcpitch) + (3*std::min(width-1,loopw+1)));
+          H = SCALE2x_READINT24(srcpix + (std::min(height-1,looph+1)*srcpitch) + (3*loopw));
+
+          E0 = D == B && B != F && D != H ? D : E;
+          E1 = B == F && B != D && F != H ? F : E;
+          E2 = D == H && D != B && H != F ? D : E;
+          E3 = H == F && D != H && B != F ? F : E;
+
+          SCALE2x_WRITEINT24((dstpix + looph*2*dstpitch + loopw*2*3), E0);
+          SCALE2x_WRITEINT24((dstpix + looph*2*dstpitch + (loopw*2+1)*3), E1);
+          SCALE2x_WRITEINT24((dstpix + (looph*2+1)*dstpitch + loopw*2*3), E2);
+          SCALE2x_WRITEINT24((dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*3), E3);
+        }
+      }
+    break;
+    }
+
+    case 32:
+    {
+      nom::uint32 E0, E1, E2, E3, B, D, E, F, H;
+      for(looph = 0; looph < height; ++looph)
+      {
+        for(loopw = 0; loopw < width; ++ loopw)
+        {
+          B = *(nom::uint32*)(srcpix + (std::max(0,looph-1)*srcpitch) + (4*loopw));
+          D = *(nom::uint32*)(srcpix + (looph*srcpitch) + (4*std::max(0,loopw-1)));
+          E = *(nom::uint32*)(srcpix + (looph*srcpitch) + (4*loopw));
+          F = *(nom::uint32*)(srcpix + (looph*srcpitch) + (4*std::min(width-1,loopw+1)));
+          H = *(nom::uint32*)(srcpix + (std::min(height-1,looph+1)*srcpitch) + (4*loopw));
+
+          E0 = D == B && B != F && D != H ? D : E;
+          E1 = B == F && B != D && F != H ? F : E;
+          E2 = D == H && D != B && H != F ? D : E;
+          E3 = H == F && D != H && B != F ? F : E;
+
+          *(nom::uint32*)(dstpix + looph*2*dstpitch + loopw*2*4) = E0;
+          *(nom::uint32*)(dstpix + looph*2*dstpitch + (loopw*2+1)*4) = E1;
+          *(nom::uint32*)(dstpix + (looph*2+1)*dstpitch + loopw*2*4) = E2;
+          *(nom::uint32*)(dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*4) = E3;
+        }
+      }
+    break;
+    }
+  } // switch (BytesPerPixel)
+}
+
 Canvas& Canvas::operator = ( const Canvas& other )
 {
   this->canvas_buffer = other.canvas_buffer;

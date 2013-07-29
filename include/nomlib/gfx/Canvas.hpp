@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <algorithm>
 
 #include <SDL/SDL.h>
 
@@ -23,6 +24,13 @@
 #include "nomlib/sys/ObjectCache.hpp"
 #include "nomlib/gfx/Image.hpp"
 #include "nomlib/gfx/Rectangle.hpp"
+
+// C Macros used solely in Canvas::scale2x method
+#define SCALE2x_READINT24(x) \
+  ((x)[0]<<16 | (x)[1]<<8 | (x)[2])
+
+#define SCALE2x_WRITEINT24(x, i) \
+  {(x)[0]=i>>16; (x)[1]=(i>>8)&0xff; x[2]=i&0xff; }
 
 namespace nom {
   namespace priv {
@@ -146,6 +154,20 @@ class Canvas
     ///
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
     int32 getPixel ( int32 x, int32 y );
+
+    /// Uses the AdvanceMAME bitmap scaling algorithm known as scale2x to resize
+    /// a surface without blurring in real-time -- up to 256x256 without
+    /// incurring "heavy" performance hits.
+    ///
+    /// This method re-implements the function scale2x found in the contrib/sdl
+    /// directory of the scale2x distribution.
+    ///
+    /// This requires a destination surface already setup to be twice as
+    /// large as the source. Surface formats must match. No err checks are done
+    /// to ensure this.
+    ///
+    /// See http://scale2x.sourceforge.net/
+    void scale2x ( SDL_Surface* source_buffer, SDL_Surface* destination_buffer );
 
     /// Copy assignment constructor
     Canvas& operator = ( const Canvas& other );

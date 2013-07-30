@@ -42,7 +42,9 @@ typedef uint32_t uint32;
     typedef int64_t int64;
     typedef uint64_t uint64;
   #endif
-#else // We are compiling on a 32-bit system; this needs verification!
+
+#else
+  // We are compiling on a 32-bit system (we may not have int64 types defined)
   typedef signed long long int64;
   typedef unsigned long long uint64;
 
@@ -67,11 +69,5 @@ NOMLIB_COMPILE_TIME_ASSERT(uint32, sizeof(nom::uint32) == 4);
 NOMLIB_COMPILE_TIME_ASSERT(int32, sizeof(nom::int32) == 4);
 NOMLIB_COMPILE_TIME_ASSERT(uint64, sizeof(nom::uint64) == 8);
 NOMLIB_COMPILE_TIME_ASSERT(int64, sizeof(nom::int64) == 8);
-
-#ifdef NOMLIB_64BIT // Need to verify this
-  NOMLIB_COMPILE_TIME_ASSERT(ulong, sizeof(nom::ulong) == 8);
-#else
-  NOMLIB_COMPILE_TIME_ASSERT(ulong, sizeof(nom::ulong) == 4);
-#endif
 
 #endif // NOMLIB_TYPES_HEADERS defined

@@ -1,4 +1,4 @@
-cmake_minimum_required ( VERSION 2.8 )
+cmake_minimum_required ( VERSION 2.6 )
 
 set ( PROJECT_VERSION_MAJOR 0 )
 set ( PROJECT_VERSION_MINOR 1 )
@@ -165,13 +165,8 @@ include_directories ( ${LIBSNDFILE_INCLUDE_DIR} )
 set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 
 find_package ( LibMagic REQUIRED )
-
-if ( ${LIBMAGIC_FOUND} )
-
-  include_directories ( ${LIBMAGIC_INCLUD_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${LIBMAGIC_LIBRARY} )
-
-endif ( ${LIBMAGIC_FOUND} )
+include_directories ( ${LIBMAGIC_INCLUD_DIR} )
+set ( EXTLIBS ${EXTLIBS} ${LIBMAGIC_LIBRARY} )
 
 add_library ( ${PROJECT_NAME} SHARED ${NOMLIB_SOURCE} )
 

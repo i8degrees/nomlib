@@ -6,6 +6,9 @@ set ( PROJECT_VERSION_PATCH 0 )
 
 project ( nomlib ) # $PROJECT_NAME
 
+# Platform detection
+include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
+
 set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" ) # nomlib/src
 set ( NOMLIB_HEADERS_DIR "include" ) # include/nomlib
 set ( NOMLIB_DOCS_DIR "${PROJECT_SOURCE_DIR}/docs" )
@@ -37,10 +40,13 @@ set ( BUILD_SHARED_LIBS on )
 # Project Options
 option ( VERBOSE "Alias for CMAKE_VERBOSE_MAKEFILE -- nice for debugging make scripts" off )
 option ( BUILD_RELEASE "Build release variant; defaults to Debug" off )
-option ( BUILD_UNIVERSAL_LIB "Build as an OSX Universal Library" off )
-option ( BUILD_FRAMEWORK "Build OSX Frameworks instead of dylib" off )
 option ( BUILD_NOMLIB_EXAMPLES "Build nomlib usage examples" on )
 option ( BUILD_DOCS "Generate HTML based API documentation -- requires Doxygen" on )
+
+if ( PLATFORM_OSX )
+  option ( BUILD_UNIVERSAL_LIB "Build as an OSX Universal Library" off )
+  option ( BUILD_FRAMEWORK "Build OSX Framework instead of dylib" off )
+endif ( PLATFORM_OSX )
 
 if ( VERBOSE )
   set ( CMAKE_VERBOSE_MAKEFILE true )
@@ -64,36 +70,30 @@ if ( BUILD_UNIVERSAL_LIB )
   message ( STATUS "Building an OSX Universal Library" )
 endif ( BUILD_UNIVERSAL_LIB )
 
-# Platform specific
-if ( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
-
-  # Tested regularly on a virtualized Ubuntu v12.04-LTS boxen
-  set ( PLATFORM_LINUX true )
-  message ( STATUS "Linux OS detected " )
+# Platform specific configuration
+if ( PLATFORM_LINUX ) # Tested on Ubuntu v12.04-LTS
 
   # Clang is not supported on Linux due to libc++ not being distributed by
   # default yet
   set ( CMAKE_CXX_FLAGS -std=c++0x )
 
-elseif ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" ) # OSX / Apple
-
-  set ( PLATFORM_OSX true )
-  message ( STATUS "Darwin OS (Mac OSX) detected" )
+elseif ( PLATFORM_OSX )
 
   # libc++ requires OSX v10.7+
   set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
 
-  if ( CMAKE_GENERATOR STREQUAL Xcode ) # Available only on OSX, I think
-    message ( STATUS "Setting Xcode-specific project settings " )
+  if ( CMAKE_GENERATOR STREQUAL "Xcode" ) # Available only on OSX, I think
+
     set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
     set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
-  endif ( CMAKE_GENERATOR STREQUAL Xcode )
+
+  endif ( CMAKE_GENERATOR STREQUAL "Xcode" )
 
 else () # Not Linux nor OSX
 
-  message ( STATUS "Unsupported build system detected... Hopefully CMake gets it right for you; good luck!" )
+  # Use whatever CMake gathers for us and hope for the best!
 
-endif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
+endif ( PLATFORM_LINUX )
 
 if ( BUILD_DOCS )
 

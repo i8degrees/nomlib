@@ -8,7 +8,7 @@ before_install:
 # nomlib dependencies (Audio)
   - sudo apt-get install libsndfile1-dev libopenal-dev
 # nomlib dependencies (misc)
-  - sudo apt-get install libmagic-dev doxygen dot #libjson-spirit-dev
+  - sudo apt-get install libmagic-dev doxygen graphviz #libjson-spirit-dev
 before_script:
   - mkdir -p build build-osx && cd build && cmake ..
 script:

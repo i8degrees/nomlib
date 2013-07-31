@@ -8,11 +8,13 @@ project ( nomlib ) # $PROJECT_NAME
 
 set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" ) # nomlib/src
 set ( NOMLIB_HEADERS_DIR "include" ) # include/nomlib
+set ( NOMLIB_DOCS_DIR "${PROJECT_SOURCE_DIR}/docs" )
 set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" ) # nomlib/examples
 set ( NOMLIB_RESOURCES_DIR "Resources" ) # folder containing library data (ex.: icon, translations, etc.)
 
 # CMake Environment
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules" )
+set ( CMAKE_TEMPLATE_PATH ${CMAKE_TEMPLATE_PATH} "${PROJECT_SOURCE_DIR}/cmake/templates" )
 
 # Auto-generated at build-time header files
 configure_file  ( "${PROJECT_SOURCE_DIR}/cmake/version.hpp.in"
@@ -41,6 +43,7 @@ option ( BUILD_RELEASE "Build release variant; defaults to Debug" off )
 option ( BUILD_UNIVERSAL_LIB "Build as an OSX Universal Library" off )
 option ( BUILD_FRAMEWORK "Build OSX Frameworks instead of dylib" off )
 option ( BUILD_NOMLIB_EXAMPLES "Build nomlib usage examples" on )
+option ( BUILD_DOCS "Generate HTML based API documentation -- requires Doxygen" on )
 
 if ( VERBOSE )
   set ( CMAKE_VERBOSE_MAKEFILE true )
@@ -94,6 +97,35 @@ else () # Not Linux nor OSX
   message ( STATUS "Unsupported build system detected... Hopefully CMake gets it right for you; good luck!" )
 
 endif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
+
+if ( BUILD_DOCS )
+
+  find_package ( Doxygen )
+
+  if ( NOT DOXYGEN_FOUND )
+    message ( FATAL_ERROR "Doxygen is needed to build the documentation.")
+  endif ( NOT DOXYGEN_FOUND )
+
+  set ( DOXYFILE_IN ${CMAKE_TEMPLATE_PATH}/Doxyfile.in )
+  set ( DOXYFILE ${PROJECT_BINARY_DIR}/Doxyfile )
+  set ( DOXY_HTML_INDEX_FILE ${NOMLIB_DOCS_DIR}/public/index.html )
+  #set ( DOXY_EXTRA_FILES "" )
+
+  # Template Doxyfile
+  configure_file  ( ${DOXYFILE_IN} ${DOXYFILE} @ONLY )
+
+  # Generate docs only when dependencies change
+  add_custom_command  ( OUTPUT ${DOXY_HTML_INDEX_FILE}
+                        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE}
+                        MAIN_DEPENDENCY ${DOXYFILE} ${DOXYFILE_IN}
+                        #DEPENDS project_targets ${DOXY_EXTRA_FILES}
+                        COMMENT "Generating HTML documentation"
+                      )
+
+  # Add 'make docs' target
+  add_custom_target ( docs ALL DEPENDS ${DOXY_HTML_INDEX_FILE} )
+
+endif ( BUILD_DOCS )
 
 set ( NOMLIB_SOURCE
       # audio
@@ -236,6 +268,15 @@ if ( PLATFORM_OSX )
     install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Headers
               PATTERN ".*" EXCLUDE # do not copy dotfiles
             )
+    if ( BUILD_DOCS )
+
+      # Install generated documentation files
+      install ( DIRECTORY ${NOMLIB_DOCS_DIR}/public
+                DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/${NOMLIB_RESOURCES_DIR}/
+                PATTERN ".*" EXCLUDE # do not include dotfiles
+              )
+
+    endif ( BUILD_DOCS )
 
   endif ( BUILD_FRAMEWORK )
 
@@ -250,6 +291,16 @@ if ( NOT BUILD_FRAMEWORK ) # POSIX install; installs in standard locations
   install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME} DESTINATION include
           PATTERN ".*" EXCLUDE # do not include dotfiles
           )
+
+  if ( BUILD_DOCS )
+
+    # Install documentation files
+    install ( DIRECTORY ${NOMLIB_DOCS_DIR}/public
+              DESTINATION share/doc/${PROJECT_NAME}
+              PATTERN ".*" EXCLUDE # do not include dotfiles
+            )
+
+  endif ( BUILD_DOCS )
 
 if ( PLATFORM_LINUX )
   install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")") # FIXME (prettify)

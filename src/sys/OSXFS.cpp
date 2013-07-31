@@ -150,7 +150,14 @@ NOM_LOG_ERR ( "Could not obtain the bundle's Resources path." );
   return resources_path;
 }
 
-#endif
+#else
+
+const std::string OSXFS::getResourcesPath ( void )
+{
+  // Do nothing stub
+}
+
+#endif // NOMLIB_SYSTEM_OSX
 
 
 } // namespace nom

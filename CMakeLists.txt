@@ -64,7 +64,7 @@ if ( BUILD_UNIVERSAL_LIB )
   message ( STATUS "Building an OSX Universal Library" )
 endif ( BUILD_UNIVERSAL_LIB )
 
-#     Platform specific
+# Platform specific
 if ( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
 
   # Tested regularly on a virtualized Ubuntu v12.04-LTS boxen
@@ -140,33 +140,42 @@ set ( NOMLIB_SOURCE
       ${SRC_DIR}/sdl/utils.cpp
     )
 
-#     Project Header Files
+# Project Header Files
 include_directories ( ${NOMLIB_HEADERS_DIR} )
 
-#     Required Dependencies
+# Required Dependencies
+#
+# We gather up all of the library & header search paths in two separate
+# variables -- EXT_HEADERS & EXTLIBS -- so we can then make a minimal number
+# of calls to include_directories & linking of libraries.
+#
 find_package ( SDL REQUIRED )
-include_directories ( ${SDL_INCLUDE_DIR} )
+set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
 set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
 
 find_package ( SDL_image REQUIRED )
-include_directories ( ${SDL_IMAGE_INCLUDE_DIR} )
+set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_IMAGE_INCLUDE_DIR} )
 set ( EXTLIBS ${EXTLIBS} ${SDLIMAGE_LIBRARY} )
 
 find_package ( SDL_ttf REQUIRED )
-include_directories ( ${SDL_TTF_INCLUDE_DIR} )
+set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_TTF_INCLUDE_DIR} )
 set ( EXTLIBS ${EXTLIBS} ${SDLTTF_LIBRARY} )
 
 find_package ( OpenAL REQUIRED )
-include_directories ( ${OPENAL_INCLUDE_DIR} )
+set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
 set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
 
 find_package ( LibSndFile REQUIRED )
-include_directories ( ${LIBSNDFILE_INCLUDE_DIR} )
+set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
 set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 
 find_package ( LibMagic REQUIRED )
-include_directories ( ${LIBMAGIC_INCLUD_DIR} )
+set ( EXT_HEADERS ${EXT_HEADERS} ${LIBMAGIC_INCLUD_DIR} )
 set ( EXTLIBS ${EXTLIBS} ${LIBMAGIC_LIBRARY} )
+
+# Now that we have collected all the header file search paths we need, we
+# include them all here for the compiler to be made aware of
+include_directories ( ${EXT_HEADERS} )
 
 add_library ( ${PROJECT_NAME} SHARED ${NOMLIB_SOURCE} )
 

@@ -13,7 +13,7 @@ Building instructions
 
 ### Dependencies ###
 
-* cmake
+* cmake v2.6+
 * SDL v1.2.15
 * SDL_image
 * SDL_ttf
@@ -27,21 +27,27 @@ Building instructions
 After installing the necessary dependencies listed above -- either through brew
 or perhaps hunting down each individual dependency Framework:
 
+```
   git clone https://github.com/i8degrees/nomlib
   cd nomlib
   mkdir build && cd build`
+```
 
 * Dynamic library installed under default CMAKE_INSTALL_PREFIX (/usr or /usr/local):
 
+```
   cmake ..
   make
   make install
+```
 
 * Framework bundle:
 
+```
   cmake -DBUILD_FRAMEWORK=on ..
   make
   make install && cp -av nomlib.framework $HOME/Library/Frameworks/.
+```
 
 Uninstall support is provided by running 'make uninstall' within the build directory.
 

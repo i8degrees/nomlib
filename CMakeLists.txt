@@ -31,9 +31,6 @@ add_custom_target ( uninstall COMMAND ${CMAKE_COMMAND} -P
                     ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
                   )
 
-# FIXME: doxygen docs generation
-add_custom_target ( nomlib-docs COMMAND ${DOXYGEN_COMMAND} ${DOXYGEN_CONFIG_FILE} )
-
 # We only support building nomlib as a dynamic library at the moment
 set ( BUILD_SHARED_LIBS on )
 
@@ -256,18 +253,22 @@ if ( PLATFORM_OSX )
                             "org.dev.${PROJECT_NAME}"
                           )
 
+    # Install framework library file
     install ( TARGETS ${PROJECT_NAME} LIBRARY FRAMEWORK DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
 
-    # Optional Resource files (official library icon, docs, libmagic database, etc.)
+    # Install framework header files
+    #
+    # FIXME; should be ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Versions/Current/Headers with a symlink at root of framework
+    install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Headers
+              PATTERN ".*" EXCLUDE # do not copy dotfiles
+            )
+
+    # Install (optional) Resource files -- official library icon, docs, libmagic database, etc.
     install ( DIRECTORY ${NOMLIB_RESOURCES_DIR} DESTINATION "${PROJECT_NAME}.framework"
               OPTIONAL
               PATTERN ".*" EXCLUDE # do not include dotfiles
             )
 
-    # FIXME; should be ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Versions/Current/Headers with a symlink at root of framework
-    install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Headers
-              PATTERN ".*" EXCLUDE # do not copy dotfiles
-            )
     if ( BUILD_DOCS )
 
       # Install generated documentation files

@@ -173,9 +173,9 @@ if ( ${LIBMAGIC_FOUND} )
 
 endif ( ${LIBMAGIC_FOUND} )
 
-link_libraries  ( ${PROJECT_NAME} ${EXTLIBS} )
-
 add_library ( ${PROJECT_NAME} SHARED ${NOMLIB_SOURCE} )
+
+target_link_libraries  ( ${PROJECT_NAME} ${EXTLIBS} )
 
 set_target_properties ( ${PROJECT_NAME} # makefile target
                         PROPERTIES SOVERSION

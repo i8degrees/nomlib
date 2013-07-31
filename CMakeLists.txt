@@ -80,6 +80,7 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" ) # OSX / Apple
   set ( PLATFORM_OSX true )
   message ( STATUS "Darwin OS (Mac OSX) detected" )
 
+  # libc++ requires OSX v10.7+
   set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
 
   if ( CMAKE_GENERATOR STREQUAL Xcode ) # Available only on OSX, I think
@@ -196,6 +197,8 @@ if ( PLATFORM_OSX )
 
     # This allows our Resources, or any other not-quite-standard install command
     # install our data in the right place without further ugliness.
+
+    #set ( CMAKE_INSTALL_PREFIX $ENV{HOME}/Library/Frameworks )
     set ( CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
     message ( STATUS "Building nomlib as an OSX Framework bundle" )
 
@@ -219,14 +222,13 @@ if ( PLATFORM_OSX )
 
     install ( TARGETS ${PROJECT_NAME} LIBRARY FRAMEWORK DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
 
-    # Optional Resource files (official library icon, libmagic database, etc.)
+    # Optional Resource files (official library icon, docs, libmagic database, etc.)
     install ( DIRECTORY ${NOMLIB_RESOURCES_DIR} DESTINATION "${PROJECT_NAME}.framework"
               OPTIONAL
               PATTERN ".*" EXCLUDE # do not include dotfiles
             )
 
     # FIXME; should be ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Versions/Current/Headers with a symlink at root of framework
-    #                   ${NOMLIB_HEADERS_DIR}/$PROJECT_NAME
     install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Headers
               PATTERN ".*" EXCLUDE # do not copy dotfiles
             )
@@ -246,7 +248,7 @@ if ( NOT BUILD_FRAMEWORK ) # POSIX install; installs in standard locations
           )
 
 if ( PLATFORM_LINUX )
-  install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")")
+  install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")") # FIXME (prettify)
 endif ( PLATFORM_LINUX )
 
 endif ( NOT BUILD_FRAMEWORK )

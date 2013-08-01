@@ -321,13 +321,17 @@ if ( NOT BUILD_FRAMEWORK ) # POSIX install; installs in standard locations
 
   if ( BUILD_DOCS )
 
-    # Install documentation files
+    # Install generated HTML documentation
     install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
               DESTINATION share/doc/${PROJECT_NAME}
               PATTERN ".*" EXCLUDE # do not include dotfiles
             )
 
-    # TODO / man pages
+    # Install generated man page documentation
+    install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/man/man3
+              DESTINATION share/man
+              PATTERN ".*" EXCLUDE # do not include dotfiles
+            )
 
   endif ( BUILD_DOCS )
 

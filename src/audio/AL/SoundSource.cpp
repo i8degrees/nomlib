@@ -5,9 +5,6 @@
 Copyright (c) 2013, Jeffrey Carpenter <jeffrey.carp@gmail.com>
 All rights reserved.
 
-Portions Copyright (c) 2004-2013 Lazy Foo' Productions [1]
-All rights reserved.
-
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
@@ -27,8 +24,6 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-1. http://lazyfoo.net/SDL_tutorials/lesson30/index.php
 
 ******************************************************************************/
 #include "nomlib/audio/AL/SoundSource.hpp"

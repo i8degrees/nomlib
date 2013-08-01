@@ -60,7 +60,7 @@ SDL_TFont and wherever else
 * GameState::Draw ( SDL_Surface *video_buffer ) ?
 * rename SDL_TFont && SDL_BitmapFont::setTextBuffer to setText
 * rename methods in nomlib/Sprite to lowerCaseCamelStyle
-* Clean up Timer class; 1. match Timer & FPS; <strikethrough> 2. goodbye FPS (!) </strikethrough>
+* Clean up Timer class; 1. match Timer & FPS
 * msgbox bottom, right border (needs additional depth)
 * Cross-platform considerations (think: Makefiles, OS bins & args, etc.)
 * Library versioning (think: sonames)

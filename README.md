@@ -1,7 +1,7 @@
 nomlib
 ======
 
-Game engine library in C++ using SDL
+C++11 cross-platform game engine
 
 Projects Using nomlib
 ---------------------

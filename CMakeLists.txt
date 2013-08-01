@@ -40,26 +40,55 @@ set ( BUILD_SHARED_LIBS on )
 
 # Project Options
 option ( VERBOSE "Alias for CMAKE_VERBOSE_MAKEFILE -- nice for debugging make scripts" off )
-option ( BUILD_RELEASE "Build release variant; defaults to Debug" off )
-option ( BUILD_NOMLIB_EXAMPLES "Build nomlib usage examples" on )
-option ( BUILD_DOCS "Generate HTML based API documentation -- requires Doxygen" on )
+option ( DEBUG "Build with all debugging features" off )
+option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
+option ( DEBUG_TRACE "Build with trace logging of object construction & destruction" off )
+
+option ( BUILD_EXAMPLES "Build nomlib usage examples" off )
+option ( BUILD_DOCS "Generate HTML based API documentation -- requires Doxygen" off )
 
 if ( PLATFORM_OSX )
+
   option ( BUILD_UNIVERSAL_LIB "Build as an OSX Universal Library" off )
   option ( BUILD_FRAMEWORK "Build OSX Framework instead of dylib" off )
+
 endif ( PLATFORM_OSX )
 
 if ( VERBOSE )
+
   set ( CMAKE_VERBOSE_MAKEFILE true )
+
 endif ( VERBOSE )
 
-if ( BUILD_RELEASE)
-  set ( CMAKE_BUILD_TYPE Release )
-  message ( STATUS "Building Release target" )
-else ( NOT BUILD_RELEASE )
-  set ( CMAKE_BUILD_TYPE Debug )
-  message ( STATUS "Building Debug target" )
-endif ( BUILD_RELEASE )
+if ( DEBUG )
+
+  set ( CMAKE_BUILD_TYPE "Debug" )
+  set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNOM_DEBUG" )
+  message ( STATUS "Building ${PROJECT_NAME} with debugging." )
+
+else () # Build with optimizations for maximum speed and minimal size
+
+  set ( CMAKE_BUILD_TYPE "Release" )
+  message ( STATUS "Building ${PROJECT_NAME} with high speed, low drag!" )
+
+endif ( DEBUG )
+
+if ( DEBUG_ASSERT )
+
+  add_definitions ( "-DNOM_DEBUG_ASSERT" )
+  message ( STATUS "Building ${PROJECT_NAME} with run-time assertions." )
+
+endif ( DEBUG_ASSERT )
+
+if ( DEBUG_TRACE )
+
+  # We intentionally do not set CMAKE_BUILD_TYPE to "Debug" or "Release" here so
+  # we can enable this feature in either target mode to maximize debugging
+  # capabilities.
+  add_definitions ( "-DNOM_DEBUG_TRACE" )
+  message ( STATUS "Building ${PROJECT_NAME} with class object call tracing." )
+
+endif ( DEBUG_TRACE )
 
 # I was able to shave off close to 50% time compiling nomlib by leaving
 # this option off by default.
@@ -67,8 +96,10 @@ endif ( BUILD_RELEASE )
 # PPC is not officially supported because I have no means whatsoever of
 # testing such a package.
 if ( BUILD_UNIVERSAL_LIB )
+
   set ( CMAKE_OSX_ARCHITECTURES i386; x86_64 )
   message ( STATUS "Building an OSX Universal Library" )
+
 endif ( BUILD_UNIVERSAL_LIB )
 
 # Platform specific configuration
@@ -76,12 +107,16 @@ if ( PLATFORM_LINUX ) # Tested on Ubuntu v12.04-LTS
 
   # Clang is not supported on Linux due to libc++ not being distributed by
   # default yet
-  set ( CMAKE_CXX_FLAGS -std=c++0x )
+  #
+  # Do *NOT* use double quotes here, or else GCC freaks out!
+  set ( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++0x )
 
 elseif ( PLATFORM_OSX )
 
   # libc++ requires OSX v10.7+
-  set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
+  #
+  # Do use double quotes here, or else clang freaks out! -_-
+  set ( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -stdlib=libc++" )
 
   if ( CMAKE_GENERATOR STREQUAL "Xcode" ) # Available only on OSX, I think
 
@@ -342,7 +377,7 @@ endif ( PLATFORM_LINUX )
 endif ( NOT BUILD_FRAMEWORK )
 
 # nomlib examples configuration
-if ( BUILD_NOMLIB_EXAMPLES )
+if ( BUILD_EXAMPLES )
 
   set ( EXECUTABLE_OUTPUT_PATH "${EXAMPLES_SRC_DIR}" )
 
@@ -363,4 +398,4 @@ if ( BUILD_NOMLIB_EXAMPLES )
   add_executable ( app/app ${NOMLIB_EXAMPLES_APP} )
   add_executable ( fonts/font ${NOMLIB_EXAMPLES_FONTS} )
 
-endif ( BUILD_NOMLIB_EXAMPLES )
+endif ( BUILD_EXAMPLES )

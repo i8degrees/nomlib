@@ -53,6 +53,7 @@ enum PSXBUTTON
 };
 
 // This is an inheritance-only class
+/// \brief SDL Input Events Handling
 class Input
 {
   public:

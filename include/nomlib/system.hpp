@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/Timer.hpp"
 #include "nomlib/system/Sleep.hpp"
 
-#if defined ( NOM_PLATFORM_OSX )
+#if defined (NOM_PLATFORM_OSX)
   #include <nomlib/system/OSX/ResourcePath.hpp>
 #endif
 

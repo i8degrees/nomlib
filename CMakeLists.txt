@@ -107,16 +107,12 @@ if ( PLATFORM_LINUX ) # Tested on Ubuntu v12.04-LTS
 
   # Clang is not supported on Linux due to libc++ not being distributed by
   # default yet
-  #
-  # Do *NOT* use double quotes here, or else GCC freaks out!
-  set ( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++0x )
+  set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
 
 elseif ( PLATFORM_OSX )
 
   # libc++ requires OSX v10.7+
-  #
-  # Do use double quotes here, or else clang freaks out! -_-
-  set ( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -stdlib=libc++" )
+  set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )
 
   if ( CMAKE_GENERATOR STREQUAL "Xcode" ) # Available only on OSX, I think
 

@@ -17,7 +17,10 @@
 
 #include "nomlib/sys/Clock.hpp"
 
-// Pretty print C macros
+// Pretty print C macros purely for convenience sake
+#define NOM_DUMP_VAR(var) \
+  ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
+
 #ifdef NOM_DEBUG
 
   // If debugging is turned on, we log all warnings, errors & info
@@ -27,15 +30,12 @@
     ( nom::Logger::err ( __FILE__, __LINE__, message ) )
   #define NOM_ASSERT(expression) \
     ( assert (expression) )
-  #define NOM_DUMP_VAR(var) \
-  ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
 
 #else // Do not add any overhead
 
   #define NOM_LOG_INFO(message)
   #define NOM_LOG_ERR(message)
   #define NOM_ASSERT(expression)
-  #define NOM_DUMP_VAR(var)
 
 #endif
 

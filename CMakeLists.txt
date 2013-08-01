@@ -11,9 +11,10 @@ include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
 
 set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" ) # nomlib/src
 set ( NOMLIB_HEADERS_DIR "include" ) # include/nomlib
-set ( NOMLIB_DOCS_DIR "${PROJECT_SOURCE_DIR}/docs" )
 set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" ) # nomlib/examples
 set ( NOMLIB_RESOURCES_DIR "Resources" ) # folder containing library data (ex.: icon, translations, etc.)
+# Files used with documentation generation
+set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${NOMLIB_RESOURCES_DIR}/doxygen" )
 
 # CMake Environment
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules" )
@@ -114,7 +115,7 @@ if ( BUILD_DOCS )
 
   set ( DOXYFILE_IN ${CMAKE_TEMPLATE_PATH}/Doxyfile.in )
   set ( DOXYFILE ${PROJECT_BINARY_DIR}/Doxyfile )
-  set ( DOXY_HTML_INDEX_FILE ${NOMLIB_DOCS_DIR}/public/index.html )
+  set ( DOXY_HTML_INDEX_FILE ${PROJECT_BINARY_DIR}/docs/html/index.html )
   #set ( DOXY_EXTRA_FILES "" )
 
   # Template Doxyfile
@@ -278,11 +279,19 @@ if ( PLATFORM_OSX )
               PATTERN ".*" EXCLUDE # do not include dotfiles
             )
 
+    # Install nomlib's software license & general information
+    install ( FILES
+              ${PROJECT_SOURCE_DIR}/README.md
+              ${PROJECT_SOURCE_DIR}/LICENSE.md
+              ${PROJECT_SOURCE_DIR}/TODO.md
+              DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/${NOMLIB_RESOURCES_DIR}/Documentation
+            )
+
     if ( BUILD_DOCS )
 
-      # Install generated documentation files
-      install ( DIRECTORY ${NOMLIB_DOCS_DIR}/public
-                DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/${NOMLIB_RESOURCES_DIR}/
+      # Install documentation files
+      install ( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/html
+                DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/${NOMLIB_RESOURCES_DIR}/Documentation
                 PATTERN ".*" EXCLUDE # do not include dotfiles
               )
 
@@ -302,13 +311,23 @@ if ( NOT BUILD_FRAMEWORK ) # POSIX install; installs in standard locations
           PATTERN ".*" EXCLUDE # do not include dotfiles
           )
 
+  # Install nomlib's software license & general information
+  install ( FILES
+            ${PROJECT_SOURCE_DIR}/README.md
+            ${PROJECT_SOURCE_DIR}/LICENSE.md
+            ${PROJECT_SOURCE_DIR}/TODO.md
+            DESTINATION share/doc/${PROJECT_NAME}
+          )
+
   if ( BUILD_DOCS )
 
     # Install documentation files
-    install ( DIRECTORY ${NOMLIB_DOCS_DIR}/public
+    install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
               DESTINATION share/doc/${PROJECT_NAME}
               PATTERN ".*" EXCLUDE # do not include dotfiles
             )
+
+    # TODO / man pages
 
   endif ( BUILD_DOCS )
 

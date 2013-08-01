@@ -311,7 +311,7 @@ if ( NOT BUILD_FRAMEWORK ) # POSIX install; installs in standard locations
           PATTERN ".*" EXCLUDE # do not include dotfiles
           )
 
-  # Install nomlib's software license & general information
+  # Install software license & general project information
   install ( FILES
             ${PROJECT_SOURCE_DIR}/README.md
             ${PROJECT_SOURCE_DIR}/LICENSE.md

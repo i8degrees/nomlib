@@ -21,20 +21,30 @@
 #define NOM_DUMP_VAR(var) \
   ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
 
+// nomlib debugging macros
 #ifdef NOM_DEBUG
 
   // If debugging is turned on, we log all warnings, errors & info
   #define NOM_LOG_INFO(message) \
     ( nom::Logger::info ( message ) )
+
   #define NOM_LOG_ERR(message) \
     ( nom::Logger::err ( __FILE__, __LINE__, message ) )
-  #define NOM_ASSERT(expression) \
-    ( assert (expression) )
 
 #else // Do not add any overhead
 
   #define NOM_LOG_INFO(message)
   #define NOM_LOG_ERR(message)
+
+#endif
+
+#ifdef NOM_DEBUG_ASSERT
+
+  #define NOM_ASSERT(expression) \
+    ( assert (expression) )
+
+#else // Do not add any overhead
+
   #define NOM_ASSERT(expression)
 
 #endif
@@ -48,14 +58,6 @@
 #else // Do not add any overhead
 
   #define NOM_LOG_CLASSINFO
-
-#endif
-
-#ifdef NOM_RELEASE_WITH_ASSERT
-
-  #undef NOM_ASSERT
-  #define NOM_ASSERT(expression) \
-    ( assert (expression) )
 
 #endif
 

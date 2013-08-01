@@ -25,11 +25,6 @@
 // Internal development; logging of class object construction and destruction
 #define NOM_DEBUG_TRACE
 
-// Release target with asserts enabled; reasoning logic is because it is
-// that possible that some bugs only show up when optimizations
-// (such as compiler generated) are enabled or even when special debug checks
-// are removed.
-//#define NOM_RELEASE_WITH_ASSERT
 
 #ifndef __cplusplus
   #warning "nomlib requires a C++11 compiler"

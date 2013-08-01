@@ -28,10 +28,10 @@ NOM_LOG_CLASSINFO;
 
 bool Text::Load ( const std::string& filename, int32 font_size )
 {
-  OSXFS file;
+  File file;
   std::string extension = "\0";
 
-  extension = file.getFileType ( filename );
+  extension = file.mime ( filename );
 
   // If we find that the file MIME type is not TTF, we first will try loading
   // the input file as a bitmap font

@@ -169,7 +169,7 @@ if ( BUILD_DOCS )
 
 endif ( BUILD_DOCS )
 
-set ( NOMLIB_SOURCE
+set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       # audio
       ${SRC_DIR}/audio/AL/AudioDevice.cpp
       ${SRC_DIR}/audio/AL/Listener.cpp
@@ -193,12 +193,12 @@ set ( NOMLIB_SOURCE
       ${SRC_DIR}/graphics/Rectangle.cpp
       ${SRC_DIR}/graphics/Sprite.cpp
       # system
+      ${SRC_DIR}/system/File.cpp
       ${SRC_DIR}/system/Clock.cpp
       ${SRC_DIR}/system/FPS.cpp
       ${SRC_DIR}/system/GameStates.cpp
       ${SRC_DIR}/system/Logger.cpp
       ${SRC_DIR}/system/ObjectCache.cpp
-      ${SRC_DIR}/system/OSXFS.cpp
       ${SRC_DIR}/system/SDL_App.cpp
       ${SRC_DIR}/system/Input.cpp
       ${SRC_DIR}/system/Timer.cpp
@@ -213,6 +213,22 @@ set ( NOMLIB_SOURCE
       # sdl
       ${SRC_DIR}/sdl/utils.cpp
     )
+
+# Platform-specific source files
+if ( PLATFORM_OSX )
+
+  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/OSX/ResourcePath.cpp )
+  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/UnixFile.cpp )
+
+elseif ( PLATFORM_LINUX )
+
+  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/UnixFile.cpp )
+
+elseif ( PLATFORM_WINDOWS )
+
+  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/WinFile.cpp )
+
+endif ( PLATFORM_OSX )
 
 # Project Header Files
 include_directories ( ${NOMLIB_HEADERS_DIR} )

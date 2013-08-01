@@ -17,7 +17,7 @@
 
 int main ( int argc, char* argv[] )
 {
-  nom::OSXFS dir;
+  nom::File dir;
   nom::OpenAL::AudioDevice dev; // this must be declared first
   nom::OpenAL::AudioDevice dev2; // this must be declared first
 
@@ -28,7 +28,7 @@ int main ( int argc, char* argv[] )
   nom::OpenAL::Listener listener;
   nom::OpenAL::SoundBuffer buffer;
   nom::Timer loops;
-  std::string path = dir.getDirName(argv[0]) + "/";
+  std::string path = dir.path(argv[0]) + "/";
 
 NOM_DUMP_VAR ( dev.getDeviceName() );
 NOM_DUMP_VAR ( dev2.getDeviceName() );

@@ -17,13 +17,13 @@
 
 int main ( int argc, char* argv[] )
 {
-  nom::OSXFS dir;
+  nom::File dir;
   nom::Display context;
   nom::Text bitmap_font;
   nom::Text truetype_font;
   nom::Text not_font;
 
-  std::string path = dir.getDirName(argv[0]) + "/";
+  std::string path = dir.path(argv[0]) + "/";
 
   context.createWindow ( 640, 480, 32, 0 ); // segmentation fault otherwise
 

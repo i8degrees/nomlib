@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/sys/Clock.hpp"
+#include "nomlib/system/Clock.hpp"
 
 namespace nom {
 

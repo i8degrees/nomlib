@@ -5,7 +5,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "nomlib/sys/Timer.hpp"
+#include "nomlib/system/Timer.hpp"
 
 namespace nom {
 

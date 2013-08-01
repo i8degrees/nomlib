@@ -16,8 +16,8 @@
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
-#include "nomlib/sys/IState.hpp" // abstract class for our interface
+#include "nomlib/system/Logger.hpp"
+#include "nomlib/system/IState.hpp" // abstract class for our interface
 
 namespace nom {
 

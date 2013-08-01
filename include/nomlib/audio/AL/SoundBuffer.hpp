@@ -13,7 +13,7 @@
 #include <set>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
+#include "nomlib/system/Logger.hpp"
 #include "nomlib/audio/AL/OpenAL.hpp"
 #include "nomlib/audio/AL/AudioDevice.hpp"
 #include "nomlib/audio/AL/SoundFile.hpp"

@@ -13,7 +13,7 @@
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
+#include "nomlib/system/Logger.hpp"
 #include "nomlib/audio/AL/OpenAL.hpp"
 
 namespace nom {

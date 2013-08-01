@@ -13,7 +13,7 @@
 #include <algorithm>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
+#include "nomlib/system/Logger.hpp"
 #include "nomlib/audio/AL/OpenAL.hpp"
 #include "nomlib/math/Vector3-inl.hpp"
 

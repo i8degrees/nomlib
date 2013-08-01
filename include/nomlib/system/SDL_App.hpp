@@ -18,9 +18,9 @@
 #include <SDL/SDL.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
-#include "nomlib/sys/Input.hpp"
-#include "nomlib/sys/Timer.hpp"
+#include "nomlib/system/Logger.hpp"
+#include "nomlib/system/Input.hpp"
+#include "nomlib/system/Timer.hpp"
 
 namespace nom {
 

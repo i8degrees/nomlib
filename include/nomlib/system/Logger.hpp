@@ -15,7 +15,7 @@
 
 #include "nomlib/config.hpp"
 
-#include "nomlib/sys/Clock.hpp"
+#include "nomlib/system/Clock.hpp"
 
 // Pretty print C macros purely for convenience sake
 #define NOM_DUMP_VAR(var) \

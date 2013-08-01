@@ -8,7 +8,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/sys/GameStates.hpp"
+#include "nomlib/system/GameStates.hpp"
 
 namespace nom {
 

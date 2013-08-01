@@ -21,7 +21,7 @@
 #include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/sys/ObjectCache.hpp"
+#include "nomlib/system/ObjectCache.hpp"
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/Rectangle.hpp"
 

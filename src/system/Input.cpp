@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/sys/Input.hpp"
+#include "nomlib/system/Input.hpp"
 
 namespace nom {
 

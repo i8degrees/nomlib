@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/sys/SDL_App.hpp"
+#include "nomlib/system/SDL_App.hpp"
 
 namespace nom {
 

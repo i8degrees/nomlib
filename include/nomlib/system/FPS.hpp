@@ -9,8 +9,8 @@
 #define NOMLIB_TIMER_FPS_HEADERS
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
-#include "nomlib/sys/Timer.hpp"
+#include "nomlib/system/Logger.hpp"
+#include "nomlib/system/Timer.hpp"
 
 namespace nom {
 

@@ -12,8 +12,8 @@
 #define NOMLIB_ISTATE_HEADERS
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
-#include "nomlib/sys/Input.hpp"
+#include "nomlib/system/Logger.hpp"
+#include "nomlib/system/Input.hpp"
 
 namespace nom {
 

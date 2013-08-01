@@ -14,7 +14,7 @@
 #include <ctime>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Clock.hpp"
+#include "nomlib/system/Clock.hpp"
 
 #if defined NOM_PLATFORM_OSX
   #include <OpenAL/al.h>

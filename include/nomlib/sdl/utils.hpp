@@ -13,7 +13,7 @@
 #include <SDL/SDL_ttf.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
+#include "nomlib/system/Logger.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
 

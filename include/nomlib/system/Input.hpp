@@ -15,7 +15,7 @@
 #include <SDL/SDL.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
+#include "nomlib/system/Logger.hpp"
 
 namespace nom {
 

@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/sys/Sleep.hpp"
+#include "nomlib/system/Sleep.hpp"
 
 namespace nom {
 

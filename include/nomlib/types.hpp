@@ -90,19 +90,18 @@ typedef unsigned long ulong;
 
 } // namespace nom
 
-// Ensure our defined data types have the right sizes
-// Thanks to SDL for the macro! :-)
-#define NOMLIB_COMPILE_TIME_ASSERT(name, x) \
-  typedef int NOMLIB_dummy_ ## name[(x) * 2 - 1]
+// Ensure our data types have the right sizes
+static_assert ( sizeof ( nom::bit ) == 1, "nom::bit" );
+static_assert ( sizeof ( nom::uint8 ) == 1, "nom::uint8" );
+static_assert ( sizeof ( nom::int8 ) == 1, "nom::int8" );
 
-NOMLIB_COMPILE_TIME_ASSERT(bit, sizeof(nom::bit) == 1);
-NOMLIB_COMPILE_TIME_ASSERT(uint8, sizeof(nom::uint8) == 1);
-NOMLIB_COMPILE_TIME_ASSERT(int8, sizeof(nom::int8) == 1);
-NOMLIB_COMPILE_TIME_ASSERT(uint16, sizeof(nom::uint16) == 2);
-NOMLIB_COMPILE_TIME_ASSERT(int16, sizeof(nom::int16) == 2);
-NOMLIB_COMPILE_TIME_ASSERT(uint32, sizeof(nom::uint32) == 4);
-NOMLIB_COMPILE_TIME_ASSERT(int32, sizeof(nom::int32) == 4);
-NOMLIB_COMPILE_TIME_ASSERT(uint64, sizeof(nom::uint64) == 8);
-NOMLIB_COMPILE_TIME_ASSERT(int64, sizeof(nom::int64) == 8);
+static_assert ( sizeof ( nom::uint16 ) == 2, "nom::uint16" );
+static_assert ( sizeof ( nom::int16 ) == 2, "nom::int16" );
+
+static_assert ( sizeof ( nom::uint32 ) == 4, "nom::uint32" );
+static_assert ( sizeof ( nom::int32 ) == 4, "nom::int32" );
+
+static_assert ( sizeof ( nom::uint64 ) == 8, "nom::uint64" );
+static_assert ( sizeof ( nom::int64 ) == 8, "nom::int64" );
 
 #endif // NOMLIB_TYPES_HEADERS defined

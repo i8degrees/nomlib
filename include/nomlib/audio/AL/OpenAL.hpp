@@ -37,7 +37,7 @@ const nom::uint32 NUM_SOURCES = 16; // not implemented
 const float MIN_VOLUME = 0.0;
 const float MAX_VOLUME = 100.0;
 
-#ifdef NOMLIB_DEBUG
+#ifdef NOM_DEBUG
   #define AL_CHECK_ERR(Function) \
     ( (Function ), nom::priv::al_err ( __FILE__, __LINE__ ) )
 #else

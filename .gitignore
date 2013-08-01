@@ -8,7 +8,6 @@ version.hpp
 *.so
 *.dylib
 *.dSYM
-*.powder
 libnomlib.bc
 # ctags
 *.tags
@@ -19,7 +18,3 @@ examples/audio/audio
 examples/app/app
 examples/fonts/font
 
-# doxygen html gen
-docs/install.sh
-docs/public/
-docs/man

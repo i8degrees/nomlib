@@ -19,6 +19,7 @@
 
 // Pretty print C macros
 #ifdef NOMLIB_DEBUG
+
   // If debugging is turned on, we log all warnings, errors & info
   #define NOM_LOG_INFO(message) \
     ( nom::Logger::info ( message ) )
@@ -28,19 +29,34 @@
     ( assert (expression) )
   #define NOM_DUMP_VAR(var) \
   ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
-#else // We do not add any overhead
+
+#else // Do not add any overhead
+
   #define NOM_LOG_INFO(message)
   #define NOM_LOG_ERR(message)
   #define NOM_ASSERT(expression)
   #define NOM_DUMP_VAR(var)
+
 #endif
 
 #ifdef NOMLIB_DEBUG_TRACE
+
   // If trace debugging is turned on, we show class construction and destruction
   #define NOM_LOG_CLASSINFO \
     ( nom::Logger::class_info ( __func__ ) )
-#else // We do not add any overhead
+
+#else // Do not add any overhead
+
   #define NOM_LOG_CLASSINFO
+
+#endif
+
+#ifdef NOMLIB_RELEASE_WITH_ASSERT
+
+  #undef NOM_ASSERT
+  #define NOM_ASSERT(expression) \
+    ( assert (expression) )
+
 #endif
 
 namespace nom {

@@ -128,7 +128,7 @@ void OSXFS::setWorkingDir ( const std::string& path )
 }
 
 // FIXME
-#if defined NOMLIB_SYSTEM_OSX
+#if defined NOM_PLATFORM_OSX
 
 const std::string OSXFS::getResourcesPath ( void )
 {
@@ -157,7 +157,7 @@ const std::string OSXFS::getResourcesPath ( void )
   // Do nothing stub
 }
 
-#endif // NOMLIB_SYSTEM_OSX
+#endif // NOM_SYSTEM_OSX
 
 
 } // namespace nom

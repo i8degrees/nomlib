@@ -16,7 +16,7 @@
 #include "nomlib/config.hpp"
 #include "nomlib/sys/Clock.hpp"
 
-#if defined NOMLIB_SYSTEM_OSX
+#if defined NOM_PLATFORM_OSX
   #include <OpenAL/al.h>
   #include <OpenAL/alc.h>
 #else // Assumes configuration to be alike (Ubuntu) Linux & Windows platforms

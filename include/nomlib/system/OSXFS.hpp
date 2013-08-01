@@ -20,7 +20,7 @@
 #include "nomlib/config.hpp"
 #include "nomlib/system/Logger.hpp"
 
-#if defined NOMLIB_SYSTEM_OSX
+#if defined NOM_PLATFORM_OSX
   #include <CoreFoundation/CoreFoundation.h>
 #endif
 

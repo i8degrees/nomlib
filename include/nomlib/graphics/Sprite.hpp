@@ -12,9 +12,9 @@
 #include <string>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
-#include "nomlib/gfx/IDrawable.hpp"
-#include "nomlib/gfx/Canvas.hpp"
+#include "nomlib/system/Logger.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/graphics/Canvas.hpp"
 #include "nomlib/math/Transformable.hpp"
 
 namespace nom {

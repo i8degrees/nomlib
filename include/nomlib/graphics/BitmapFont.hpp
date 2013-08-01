@@ -17,13 +17,13 @@
 #include <sstream>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
-#include "nomlib/gfx/IFont.hpp"
+#include "nomlib/system/Logger.hpp"
+#include "nomlib/graphics/IFont.hpp"
 #include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Transformable.hpp"
-#include "nomlib/gfx/Canvas.hpp"
-//#include "nomlib/gfx/IDrawable.hpp"
+#include "nomlib/graphics/Canvas.hpp"
+//#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 

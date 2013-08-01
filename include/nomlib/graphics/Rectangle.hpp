@@ -10,12 +10,12 @@
 #define NOMLIB_SDL_RECTANGLE_HEADERS
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
+#include "nomlib/system/Logger.hpp"
 #include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Transformable.hpp"
-#include "nomlib/gfx/IDrawable.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 

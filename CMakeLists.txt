@@ -144,30 +144,30 @@ set ( NOMLIB_SOURCE
       ${SRC_DIR}/audio/AL/SoundSource.cpp
       ${SRC_DIR}/audio/AL/Music.cpp
       ${SRC_DIR}/audio/AL/Sound.cpp
-      # gfx
-      ${SRC_DIR}/gfx/Text.cpp
-      ${SRC_DIR}/gfx/BitmapFont.cpp
-      ${SRC_DIR}/gfx/TrueTypeFont.cpp
-      ${SRC_DIR}/gfx/IDisplay.cpp
-      ${SRC_DIR}/gfx/Canvas.cpp
-      ${SRC_DIR}/gfx/Display.cpp
-      ${SRC_DIR}/gfx/Gradient.cpp
-      ${SRC_DIR}/gfx/Image.cpp
-      ${SRC_DIR}/gfx/Line.cpp
-      ${SRC_DIR}/gfx/Pixel.cpp
-      ${SRC_DIR}/gfx/Rectangle.cpp
-      ${SRC_DIR}/gfx/Sprite.cpp
-      # sys
-      ${SRC_DIR}/sys/Clock.cpp
-      ${SRC_DIR}/sys/FPS.cpp
-      ${SRC_DIR}/sys/GameStates.cpp
-      ${SRC_DIR}/sys/Logger.cpp
-      ${SRC_DIR}/sys/ObjectCache.cpp
-      ${SRC_DIR}/sys/OSXFS.cpp
-      ${SRC_DIR}/sys/SDL_App.cpp
-      ${SRC_DIR}/sys/Input.cpp
-      ${SRC_DIR}/sys/Timer.cpp
-      ${SRC_DIR}/sys/Sleep.cpp
+      # graphics
+      ${SRC_DIR}/graphics/Text.cpp
+      ${SRC_DIR}/graphics/BitmapFont.cpp
+      ${SRC_DIR}/graphics/TrueTypeFont.cpp
+      ${SRC_DIR}/graphics/IDisplay.cpp
+      ${SRC_DIR}/graphics/Canvas.cpp
+      ${SRC_DIR}/graphics/Display.cpp
+      ${SRC_DIR}/graphics/Gradient.cpp
+      ${SRC_DIR}/graphics/Image.cpp
+      ${SRC_DIR}/graphics/Line.cpp
+      ${SRC_DIR}/graphics/Pixel.cpp
+      ${SRC_DIR}/graphics/Rectangle.cpp
+      ${SRC_DIR}/graphics/Sprite.cpp
+      # system
+      ${SRC_DIR}/system/Clock.cpp
+      ${SRC_DIR}/system/FPS.cpp
+      ${SRC_DIR}/system/GameStates.cpp
+      ${SRC_DIR}/system/Logger.cpp
+      ${SRC_DIR}/system/ObjectCache.cpp
+      ${SRC_DIR}/system/OSXFS.cpp
+      ${SRC_DIR}/system/SDL_App.cpp
+      ${SRC_DIR}/system/Input.cpp
+      ${SRC_DIR}/system/Timer.cpp
+      ${SRC_DIR}/system/Sleep.cpp
       # math
       ${SRC_DIR}/math/Color.cpp
       ${SRC_DIR}/math/Coords.cpp

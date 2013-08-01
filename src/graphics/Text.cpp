@@ -7,7 +7,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/gfx/Text.hpp"
+#include "nomlib/graphics/Text.hpp"
 
 namespace nom {
 

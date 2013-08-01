@@ -18,11 +18,11 @@
 #include <SDL/SDL_image.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
+#include "nomlib/system/Logger.hpp"
 #include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/gfx/Canvas.hpp"
+#include "nomlib/graphics/Canvas.hpp"
 
 namespace nom {
 

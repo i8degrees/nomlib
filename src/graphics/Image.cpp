@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/gfx/Image.hpp"
+#include "nomlib/graphics/Image.hpp"
 
 namespace nom {
 

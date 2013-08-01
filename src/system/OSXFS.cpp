@@ -5,7 +5,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "nomlib/sys/OSXFS.hpp"
+#include "nomlib/system/OSXFS.hpp"
 
 namespace nom {
 

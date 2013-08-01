@@ -14,14 +14,14 @@
 #include <vector>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
+#include "nomlib/system/Logger.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Transformable.hpp"
-#include "nomlib/gfx/IDrawable.hpp"
-#include "nomlib/gfx/Canvas.hpp"
-#include "nomlib/gfx/Gradient.hpp"
-#include "nomlib/gfx/Line.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/Gradient.hpp"
+#include "nomlib/graphics/Line.hpp"
 
 namespace nom {
 

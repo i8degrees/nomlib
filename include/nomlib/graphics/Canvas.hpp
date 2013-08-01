@@ -16,14 +16,14 @@
 #include <SDL/SDL.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
-//#include "nomlib/gfx/ICanvas.hpp"
+#include "nomlib/system/Logger.hpp"
+//#include "nomlib/graphics/ICanvas.hpp"
 #include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/sys/ObjectCache.hpp"
-#include "nomlib/gfx/Image.hpp"
-#include "nomlib/gfx/Rectangle.hpp"
+#include "nomlib/graphics/Image.hpp"
+#include "nomlib/graphics/Rectangle.hpp"
 
 // C Macros used solely in Canvas::scale2x method
 #define SCALE2x_READINT24(x) \

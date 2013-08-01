@@ -5,7 +5,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "nomlib/gfx/Sprite.hpp"
+#include "nomlib/graphics/Sprite.hpp"
 
 namespace nom {
 

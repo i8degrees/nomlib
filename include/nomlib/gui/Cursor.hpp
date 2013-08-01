@@ -14,9 +14,9 @@
 #include <vector>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
+#include "nomlib/system/Logger.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/gfx/Sprite.hpp"
+#include "nomlib/graphics/Sprite.hpp"
 
 namespace nom {
 

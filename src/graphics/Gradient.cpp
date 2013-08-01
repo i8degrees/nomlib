@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/gfx/Gradient.hpp"
+#include "nomlib/graphics/Gradient.hpp"
 
 namespace nom {
 

@@ -15,12 +15,12 @@
 #include <vector>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
+#include "nomlib/system/Logger.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Transformable.hpp"
-#include "nomlib/gfx/IDrawable.hpp"
-#include "nomlib/gfx/Rectangle.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/graphics/Rectangle.hpp"
 
 namespace nom {
 

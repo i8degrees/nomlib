@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/gfx/Rectangle.hpp"
+#include "nomlib/graphics/Rectangle.hpp"
 
 namespace nom {
 

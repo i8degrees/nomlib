@@ -15,10 +15,10 @@
 #include <SDL/SDL.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/gfx/IDisplay.hpp"
+#include "nomlib/graphics/IDisplay.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Color.hpp"
-#include "nomlib/gfx/Canvas.hpp"
+#include "nomlib/graphics/Canvas.hpp"
 
 namespace nom {
   namespace priv {

@@ -6,19 +6,19 @@
   All rights reserved.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYS_HEADERS
-#define NOMLIB_SYS_HEADERS
+#ifndef NOMLIB_SYSTEM_HEADERS
+#define NOMLIB_SYSTEM_HEADERS
 
 #include "nomlib/config.hpp"
 
-#include "nomlib/sys/Clock.hpp"
-#include "nomlib/sys/FPS.hpp"
-#include "nomlib/sys/GameStates.hpp"
-#include "nomlib/sys/ObjectCache.hpp"
-#include "nomlib/sys/OSXFS.hpp"
-#include "nomlib/sys/SDL_App.hpp"
-#include "nomlib/sys/Input.hpp"
-#include "nomlib/sys/Timer.hpp"
-#include "nomlib/sys/Sleep.hpp"
+#include "nomlib/system/Clock.hpp"
+#include "nomlib/system/FPS.hpp"
+#include "nomlib/system/GameStates.hpp"
+#include "nomlib/system/ObjectCache.hpp"
+#include "nomlib/system/OSXFS.hpp"
+#include "nomlib/system/SDL_App.hpp"
+#include "nomlib/system/Input.hpp"
+#include "nomlib/system/Timer.hpp"
+#include "nomlib/system/Sleep.hpp"
 
-#endif // NOMLIB_SYS_HEADERS defined
+#endif // NOMLIB_SYSTEM_HEADERS defined

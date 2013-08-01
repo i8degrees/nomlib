@@ -17,8 +17,8 @@
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Transformable.hpp"
-#include "nomlib/gfx/IDrawable.hpp"
-#include "nomlib/gfx/Pixel.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/graphics/Pixel.hpp"
 
 namespace nom {
 

@@ -5,7 +5,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "nomlib/gfx/Display.hpp"
+#include "nomlib/graphics/Display.hpp"
 
 namespace nom {
   namespace priv {

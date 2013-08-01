@@ -11,7 +11,7 @@
   1. http://lazyfoo.net/SDL_tutorials/lesson30/index.php
 
 ******************************************************************************/
-#include "nomlib/gfx/BitmapFont.hpp"
+#include "nomlib/graphics/BitmapFont.hpp"
 
 namespace nom {
 

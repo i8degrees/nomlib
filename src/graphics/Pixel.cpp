@@ -6,7 +6,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/gfx/Pixel.hpp"
+#include "nomlib/graphics/Pixel.hpp"
 
 namespace nom {
 

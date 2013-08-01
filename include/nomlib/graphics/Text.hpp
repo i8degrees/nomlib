@@ -14,14 +14,14 @@
 #include <string>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
-#include "nomlib/sys/OSXFS.hpp"
+#include "nomlib/system/Logger.hpp"
+#include "nomlib/system/OSXFS.hpp"
 #include "nomlib/math/Transformable.hpp"
-#include "nomlib/gfx/Canvas.hpp"
-#include "nomlib/gfx/IFont.hpp"
-#include "nomlib/gfx/BitmapFont.hpp"
-#include "nomlib/gfx/TrueTypeFont.hpp"
-//#include "nomlib/gfx/IDrawable.hpp"
+#include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/IFont.hpp"
+#include "nomlib/graphics/BitmapFont.hpp"
+#include "nomlib/graphics/TrueTypeFont.hpp"
+//#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 

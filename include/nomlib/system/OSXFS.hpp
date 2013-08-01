@@ -18,7 +18,7 @@
 #include <magic.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sys/Logger.hpp"
+#include "nomlib/system/Logger.hpp"
 
 #if defined NOMLIB_SYSTEM_OSX
   #include <CoreFoundation/CoreFoundation.h>

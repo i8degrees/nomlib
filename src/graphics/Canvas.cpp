@@ -5,7 +5,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "nomlib/gfx/Canvas.hpp"
+#include "nomlib/graphics/Canvas.hpp"
 
 namespace nom {
   namespace priv {

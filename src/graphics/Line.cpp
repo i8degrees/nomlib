@@ -7,7 +7,7 @@
   All rights reserved.
 
 ******************************************************************************/
-#include "nomlib/gfx/Line.hpp"
+#include "nomlib/graphics/Line.hpp"
 
 namespace nom {
 

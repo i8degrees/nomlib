@@ -8,7 +8,7 @@ Projects Using nomlib
 
 * [i8degrees/ttcards](https://github.com/i8degrees/ttcards)
 
-Building instructions
+Building Instructions
 ---------------------
 
 ### Dependencies ###

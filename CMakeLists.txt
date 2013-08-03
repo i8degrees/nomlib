@@ -236,28 +236,41 @@ include_directories ( ${NOMLIB_HEADERS_DIR} )
 # of calls to include_directories & linking of libraries.
 #
 find_package ( SDL REQUIRED )
-set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
-set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
-
 find_package ( SDL_image REQUIRED )
-set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_IMAGE_INCLUDE_DIR} )
-set ( EXTLIBS ${EXTLIBS} ${SDLIMAGE_LIBRARY} )
-
 find_package ( SDL_ttf REQUIRED )
-set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_TTF_INCLUDE_DIR} )
-set ( EXTLIBS ${EXTLIBS} ${SDLTTF_LIBRARY} )
-
 find_package ( OpenAL REQUIRED )
-set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
-set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
-
 find_package ( LibSndFile REQUIRED )
-set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
-set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
-
 find_package ( LibMagic REQUIRED )
-set ( EXT_HEADERS ${EXT_HEADERS} ${LIBMAGIC_INCLUD_DIR} )
-set ( EXTLIBS ${EXTLIBS} ${LIBMAGIC_LIBRARY} )
+
+if ( SDL_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
+endif ( SDL_FOUND )
+
+if ( SDL_IMAGE_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_IMAGE_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDLIMAGE_LIBRARY} )
+endif ( SDL_IMAGE_FOUND )
+
+if ( SDL_TTF_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_TTF_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDLTTF_LIBRARY} )
+endif ( SDL_TTF_FOUND )
+
+if ( OPENAL_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
+endif ( OPENAL_FOUND )
+
+if ( LIBSNDFILE_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
+endif ( LIBSNDFILE_FOUND )
+
+if ( LIBMAGIC_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBMAGIC_INCLUD_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${LIBMAGIC_LIBRARY} )
+endif ( LIBMAGIC_FOUND )
 
 # Now that we have collected all the header file search paths we need, we
 # include them all here for the compiler to be made aware of

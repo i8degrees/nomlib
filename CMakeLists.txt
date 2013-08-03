@@ -50,7 +50,7 @@ option ( BUILD_DOCS "Generate HTML based API documentation -- requires Doxygen" 
 if ( PLATFORM_OSX )
 
   option ( BUILD_UNIVERSAL_LIB "Build as an OSX Universal Library" off )
-  option ( BUILD_FRAMEWORK "Build OSX Framework instead of dylib" off )
+  option ( FRAMEWORK "Build OSX Framework instead of dylib" off )
 
 endif ( PLATFORM_OSX )
 
@@ -101,6 +101,10 @@ if ( BUILD_UNIVERSAL_LIB )
   message ( STATUS "Building an OSX Universal Library" )
 
 endif ( BUILD_UNIVERSAL_LIB )
+
+if ( FRAMEWORK )
+  message ( STATUS "Building OSX Framework bundle." )
+endif ( FRAMEWORK )
 
 # Platform specific configuration
 if ( PLATFORM_LINUX ) # Tested on Ubuntu v12.04-LTS
@@ -287,23 +291,23 @@ set_target_properties ( ${PROJECT_NAME} # makefile target
 
 if ( PLATFORM_OSX )
 
-  # For distribution in user's frameworks / OSX App Bundle
-  # TODO: @rpath
-  # TODO: when a dylib, use @executable_path/../Libraries
-  set_target_properties ( ${PROJECT_NAME} PROPERTIES
-                          BUILD_WITH_INSTALL_RPATH 1
-                          INSTALL_NAME_DIR
-                          "@executable_path/../Frameworks"
-                        )
+  set ( INSTALL_NAME_PATH "@executable_path/../Libraries" )
 
-  if ( BUILD_FRAMEWORK )
+  if ( FRAMEWORK )
 
-    # This allows our Resources, or any other not-quite-standard install command
-    # install our data in the right place without further ugliness.
+    set ( INSTALL_NAME_PATH "@executable_path/../Frameworks" )
 
-    #set ( CMAKE_INSTALL_PREFIX $ENV{HOME}/Library/Frameworks )
-    set ( CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
-    message ( STATUS "Building nomlib as an OSX Framework bundle" )
+    # For distribution in user's frameworks / OSX App Bundle
+    # TODO: @rpath
+    # TODO: when a dylib, use @executable_path/../Libraries
+    set_target_properties ( ${PROJECT_NAME} PROPERTIES
+                            BUILD_WITH_INSTALL_RPATH 1
+                            INSTALL_NAME_DIR
+                            "${INSTALL_NAME_PATH}"
+                          )
+
+    set ( CMAKE_INSTALL_PREFIX "$ENV{HOME}/Library/Frameworks" )
+    set ( FRAMEWORK_PATH "${CMAKE_INSTALL_PREFIX}" )
 
     # Frameworks distribution
     set_target_properties ( ${PROJECT_NAME} PROPERTIES
@@ -324,12 +328,12 @@ if ( PLATFORM_OSX )
                           )
 
     # Install framework library file
-    install ( TARGETS ${PROJECT_NAME} LIBRARY FRAMEWORK DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
+    install ( TARGETS ${PROJECT_NAME} LIBRARY FRAMEWORK DESTINATION "${FRAMEWORK_PATH}" )
 
     # Install framework header files
     #
     # FIXME; should be ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Versions/Current/Headers with a symlink at root of framework
-    install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Headers
+    install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME} DESTINATION "${PROJECT_NAME}.framework/Headers"
               PATTERN ".*" EXCLUDE # do not copy dotfiles
             )
 
@@ -344,24 +348,35 @@ if ( PLATFORM_OSX )
               ${PROJECT_SOURCE_DIR}/README.md
               ${PROJECT_SOURCE_DIR}/LICENSE.md
               ${PROJECT_SOURCE_DIR}/TODO.md
-              DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/${NOMLIB_RESOURCES_DIR}/Documentation
+              DESTINATION "${PROJECT_NAME}.framework/${NOMLIB_RESOURCES_DIR}/Documentation"
             )
 
     if ( BUILD_DOCS )
 
       # Install documentation files
       install ( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/html
-                DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/${NOMLIB_RESOURCES_DIR}/Documentation
+                DESTINATION "${PROJECT_NAME}.framework/${NOMLIB_RESOURCES_DIR}/Documentation"
                 PATTERN ".*" EXCLUDE # do not include dotfiles
               )
 
     endif ( BUILD_DOCS )
 
-  endif ( BUILD_FRAMEWORK )
+  else ( NOT FRAMEWORK )
+
+    # For distribution in user's frameworks / OSX App Bundle
+    # TODO: @rpath
+    # TODO: when a dylib, use @executable_path/../Libraries
+    set_target_properties ( ${PROJECT_NAME} PROPERTIES
+                          BUILD_WITH_INSTALL_RPATH 1
+                          INSTALL_NAME_DIR
+                          "${INSTALL_NAME_PATH}"
+                        )
+
+  endif ( FRAMEWORK )
 
 endif ( PLATFORM_OSX )
 
-if ( NOT BUILD_FRAMEWORK ) # POSIX install; installs in standard locations
+if ( NOT FRAMEWORK ) # POSIX install; installs in standard locations
 
   # Install library in POSIX standard location by default
   install ( TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib )
@@ -399,7 +414,7 @@ if ( PLATFORM_LINUX )
   install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")") # FIXME (prettify)
 endif ( PLATFORM_LINUX )
 
-endif ( NOT BUILD_FRAMEWORK )
+endif ( NOT FRAMEWORK )
 
 # nomlib examples configuration
 if ( BUILD_EXAMPLES )

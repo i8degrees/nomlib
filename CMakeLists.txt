@@ -44,12 +44,12 @@ option ( DEBUG "Build with all debugging features" off )
 option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
 option ( DEBUG_TRACE "Build with trace logging of object construction & destruction" off )
 
-option ( BUILD_EXAMPLES "Build nomlib usage examples" off )
-option ( BUILD_DOCS "Generate HTML based API documentation -- requires Doxygen" off )
+option ( EXAMPLES "Build nomlib usage examples" off )
+option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
 
 if ( PLATFORM_OSX )
 
-  option ( BUILD_UNIVERSAL_LIB "Build as an OSX Universal Library" off )
+  option ( UNIVERSAL "Build as an OSX Universal Library" off )
   option ( FRAMEWORK "Build OSX Framework instead of dylib" off )
 
 endif ( PLATFORM_OSX )
@@ -95,12 +95,12 @@ endif ( DEBUG_TRACE )
 #
 # PPC is not officially supported because I have no means whatsoever of
 # testing such a package.
-if ( BUILD_UNIVERSAL_LIB )
+if ( UNIVERSAL )
 
   set ( CMAKE_OSX_ARCHITECTURES i386; x86_64 )
   message ( STATUS "Building an OSX Universal Library" )
 
-endif ( BUILD_UNIVERSAL_LIB )
+endif ( UNIVERSAL )
 
 if ( FRAMEWORK )
   message ( STATUS "Building OSX Framework bundle." )
@@ -131,7 +131,7 @@ else () # Not Linux nor OSX
 
 endif ( PLATFORM_LINUX )
 
-if ( BUILD_DOCS )
+if ( DOCS )
 
   # Control whether or not to see warnings regarding incomplete documentation
   # from doxygen.
@@ -167,7 +167,7 @@ if ( BUILD_DOCS )
   # Add 'make docs' target
   add_custom_target ( docs ALL DEPENDS ${DOXY_HTML_INDEX_FILE} )
 
-endif ( BUILD_DOCS )
+endif ( DOCS )
 
 set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       # audio
@@ -351,7 +351,7 @@ if ( PLATFORM_OSX )
               DESTINATION "${PROJECT_NAME}.framework/${NOMLIB_RESOURCES_DIR}/Documentation"
             )
 
-    if ( BUILD_DOCS )
+    if ( DOCS )
 
       # Install documentation files
       install ( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/html
@@ -359,7 +359,7 @@ if ( PLATFORM_OSX )
                 PATTERN ".*" EXCLUDE # do not include dotfiles
               )
 
-    endif ( BUILD_DOCS )
+    endif ( DOCS )
 
   else ( NOT FRAMEWORK )
 
@@ -394,7 +394,7 @@ if ( NOT FRAMEWORK ) # POSIX install; installs in standard locations
             DESTINATION share/doc/${PROJECT_NAME}
           )
 
-  if ( BUILD_DOCS )
+  if ( DOCS )
 
     # Install generated HTML documentation
     install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
@@ -408,7 +408,7 @@ if ( NOT FRAMEWORK ) # POSIX install; installs in standard locations
               PATTERN ".*" EXCLUDE # do not include dotfiles
             )
 
-  endif ( BUILD_DOCS )
+  endif ( DOCS )
 
 if ( PLATFORM_LINUX )
   install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")") # FIXME (prettify)
@@ -417,7 +417,7 @@ endif ( PLATFORM_LINUX )
 endif ( NOT FRAMEWORK )
 
 # nomlib examples configuration
-if ( BUILD_EXAMPLES )
+if ( EXAMPLES )
 
   set ( EXECUTABLE_OUTPUT_PATH "${EXAMPLES_SRC_DIR}" )
 
@@ -438,4 +438,4 @@ if ( BUILD_EXAMPLES )
   add_executable ( app/app ${NOMLIB_EXAMPLES_APP} )
   add_executable ( fonts/font ${NOMLIB_EXAMPLES_FONTS} )
 
-endif ( BUILD_EXAMPLES )
+endif ( EXAMPLES )

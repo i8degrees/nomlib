@@ -20,6 +20,8 @@
 #  LibMagic_VERSION            Version of libmagic
 #  LIBMAGIC_LIBRARY            The libmagic library
 #  LIBMAGIC_INCLUDE_DIR        The location of magic.h
+#
+#  LIBMAGIC_REAL_LIBRARY       Absolute path to library with resolved symlinks
 
 find_path(LibMagic_ROOT_DIR
     NAMES include/magic.h
@@ -59,12 +61,23 @@ else ()
     set(LibMagic_VERSION NOTFOUND)
 endif ()
 
+# Set LIBMAGIC_REAL_LIBRARY to the full path of the library with the symbolic
+# links resolved.
+#
+# Example:
+#
+#   /usr/local/lib/libmagic.dylib would become /usr/local/lib/libmagic.1.dylib
+#   because libmagic.dylib is an alias (symbolic link).
+#
+get_filename_component ( LIBMAGIC_REAL_LIBRARY "${LIBMAGIC_LIBRARY}" REALPATH )
+
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(LibMagic DEFAULT_MSG
     LIBMAGIC_LIBRARY
     LIBMAGIC_INCLUDE_DIR
     LibMagic_FILE_EXE
     LibMagic_VERSION
+    LIBMAGIC_REAL_LIBRARY
 )
 
 mark_as_advanced(
@@ -73,4 +86,5 @@ mark_as_advanced(
     LibMagic_VERSION
     LIBMAGIC_LIBRARY
     LIBMAGIC_INCLUDE_DIR
+    LIBMAGIC_REAL_LIBRARY
 )

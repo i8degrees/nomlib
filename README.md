@@ -30,7 +30,7 @@ or perhaps hunting down each individual dependency Framework:
 ```
   git clone https://github.com/i8degrees/nomlib
   cd nomlib
-  mkdir build && cd build`
+  mkdir build && cd build
 ```
 
 * Dynamic library installed under default CMAKE_INSTALL_PREFIX (/usr or /usr/local):
@@ -58,4 +58,4 @@ Uninstall support is provided by running 'make uninstall' within the build direc
 
 #### Linux Build Status ####
 
-[![Build Status](https://travis-ci.org/i8degrees/nomlib.png?branch=master)](https://travis-ci.org/i8degrees/nomlib)
+[![Build Status](https://travis-ci.org/i8degrees/nomlib.png?branch=master,dev)](https://travis-ci.org/i8degrees/nomlib)

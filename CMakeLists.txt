@@ -286,7 +286,7 @@ target_link_libraries  ( ${PROJECT_NAME} ${EXTLIBS} )
 
 set_target_properties ( ${PROJECT_NAME} # makefile target
                         PROPERTIES SOVERSION
-                        "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+                        "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
                       )
 
 if ( PLATFORM_OSX )

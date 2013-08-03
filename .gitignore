@@ -1,6 +1,7 @@
 # CMake auto-generated files
 version.hpp
 
+install_options
 *.sublime-workspace
 *.bck
 *.o
@@ -17,4 +18,5 @@ libnomlib.bc
 examples/audio/audio
 examples/app/app
 examples/fonts/font
+
 

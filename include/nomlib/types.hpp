@@ -31,8 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cstdint>
 
-// Portable fixed-size data types
-
 #ifdef PATH_MAX
   #undef PATH_MAX
 #endif
@@ -46,10 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // See http://stackoverflow.com/questions/833291/is-there-an-equivalent-to-winapis-max-path-under-linux-unix
 #define PATH_MAX 256
 
-// 64-bit kernel
-#define NOMLIB_64BIT
-
-// Derives from stdint.h
+// Portable fixed-size data types derive from stdint.h
 namespace nom {
 
 // 1-bit integer types
@@ -68,22 +63,8 @@ typedef int32_t int32;
 typedef uint32_t uint32;
 
 // 64-bit integer types
-#if defined NOMLIB_64BIT
-
-  #if defined ( _MSC_VER ) // MSVC++
-    typedef signed __int64 int64;
-    typedef unsigned __int64 uint64;
-  #else
-    typedef int64_t int64;
-    typedef uint64_t uint64;
-  #endif
-
-#else
-  // We are compiling on a 32-bit system (we may not have int64 types defined)
-  typedef signed long long int64;
-  typedef unsigned long long uint64;
-
-#endif // NOMLIB_64BIT defined
+typedef signed long long int int64;
+typedef unsigned long long int uint64;
 
 // Additional integer type definitions
 typedef unsigned long ulong;

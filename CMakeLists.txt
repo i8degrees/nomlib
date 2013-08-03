@@ -290,16 +290,12 @@ set_target_properties ( ${PROJECT_NAME} # makefile target
                       )
 
 if ( PLATFORM_OSX )
-
-  set ( INSTALL_NAME_PATH "@executable_path/../Libraries" )
+  set ( INSTALL_NAME_PATH "@rpath/nomlib-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.dylib" )
 
   if ( FRAMEWORK )
-
-    set ( INSTALL_NAME_PATH "@executable_path/../Frameworks" )
+    set ( INSTALL_NAME_PATH "@rpath/nomlib.framework/Versions/A/nomlib" )
 
     # For distribution in user's frameworks / OSX App Bundle
-    # TODO: @rpath
-    # TODO: when a dylib, use @executable_path/../Libraries
     set_target_properties ( ${PROJECT_NAME} PROPERTIES
                             BUILD_WITH_INSTALL_RPATH 1
                             INSTALL_NAME_DIR
@@ -364,8 +360,6 @@ if ( PLATFORM_OSX )
   else ( NOT FRAMEWORK )
 
     # For distribution in user's frameworks / OSX App Bundle
-    # TODO: @rpath
-    # TODO: when a dylib, use @executable_path/../Libraries
     set_target_properties ( ${PROJECT_NAME} PROPERTIES
                           BUILD_WITH_INSTALL_RPATH 1
                           INSTALL_NAME_DIR

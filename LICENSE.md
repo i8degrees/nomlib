@@ -1,5 +1,5 @@
-License
-=======
+Simplified BSD License
+======================
 
 Copyright (c) 2013, Jeffrey Carpenter <jeffrey.carp@gmail.com>
 All rights reserved.

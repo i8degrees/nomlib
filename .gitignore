@@ -1,5 +1,6 @@
 # CMake auto-generated files
 version.hpp
+extlibs/sndfile.framework
 
 install_options
 *.sublime-workspace

@@ -65,8 +65,8 @@ add_custom_target ( uninstall COMMAND ${CMAKE_COMMAND} -P
                   )
 
 if ( PLATFORM_OSX )
+  option ( FRAMEWORK "Build OSX Framework instead of dylib" on )
   option ( UNIVERSAL "Build as an OSX Universal Library" off )
-  option ( FRAMEWORK "Build OSX Framework instead of dylib" off )
 endif ( PLATFORM_OSX )
 
 if ( VERBOSE )
@@ -77,12 +77,9 @@ if ( DEBUG )
   set ( CMAKE_BUILD_TYPE "Debug" )
   set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNOM_DEBUG" )
   message ( STATUS "Building ${PROJECT_NAME} with debugging." )
-
 else () # Build with optimizations for maximum speed and minimal size
-
   set ( CMAKE_BUILD_TYPE "Release" )
   message ( STATUS "Building ${PROJECT_NAME} with high speed, low drag!" )
-
 endif ( DEBUG )
 
 if ( DEBUG_ASSERT )
@@ -109,7 +106,9 @@ if ( UNIVERSAL )
 endif ( UNIVERSAL )
 
 if ( FRAMEWORK )
-  message ( STATUS "Building OSX Framework bundle." )
+  message ( STATUS "Using OSX Framework bundle profile." )
+else ( NOT FRAMEWORK )
+  message ( STATUS "Using POSIX build profile." )
 endif ( FRAMEWORK )
 
 # Platform specific configuration
@@ -150,9 +149,16 @@ include_directories ( ${NOMLIB_HEADERS_DIR} )
 find_package ( SDL REQUIRED )
 find_package ( SDL_image REQUIRED )
 find_package ( SDL_ttf REQUIRED )
+
 find_package ( OpenAL REQUIRED )
 find_package ( LibSndFile REQUIRED )
+
 find_package ( LibMagic REQUIRED )
+
+# LibMagic requires zlib when statically linking
+if ( PLATFORM_OSX )
+  find_package ( ZLIB REQUIRED )
+endif ( PLATFORM_OSX )
 
 if ( SDL_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
@@ -181,7 +187,26 @@ endif ( LIBSNDFILE_FOUND )
 
 if ( LIBMAGIC_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBMAGIC_INCLUD_DIR} )
-  set ( EXTLIBS ${EXTLIBS} "/usr/local/lib/libmagic.a" "z" ) # static lib
+
+  # Statically linking in OS X frees us from the chore of worrying about the
+  # runtime search paths issue, which we never was able to figure out how to
+  # do so with this library ...
+  #
+  # See also cmake/modules/FindLibMagic.cmake
+
+  # We must link zlib into our library because the burden falls on us when
+  # statically linking a library to ours.
+  if ( PLATFORM_OSX )
+    if ( ZLIB_FOUND )
+      set ( EXTLIBS ${EXTLIBS} ${LIBMAGIC_LIBRARY} ${ZLIB_LIBRARY} )
+    endif ( ZLIB_FOUND )
+  # Otherwise we do not need to link zlib with libmagic as we will be linking
+  # libmagic as a dynamic library -- the burden then falls on libmagic for
+  # finding zlib, not us!
+  else ( NOT PLATFORM_OSX )
+    set ( EXTLIBS ${EXTLIBS} ${LIBMAGIC_LIBRARY} )
+  endif ( PLATFORM_OSX )
+
 endif ( LIBMAGIC_FOUND )
 
 # Now that we have collected all the header file search paths we need, we
@@ -210,7 +235,6 @@ if ( PLATFORM_OSX )
 
   if ( FRAMEWORK )
 
-    # CMAKE_INSTALL_PREFIX = ttcards.app
     set ( INSTALL_LIB_PATH "${PROJECT_NAME}.framework" )
 
     set ( INSTALL_ROOT_PATH "${INSTALL_LIB_PATH}" )
@@ -224,8 +248,8 @@ if ( PLATFORM_OSX )
     set ( INSTALL_BINARY_PATH "${INSTALL_ROOT_PATH}/Versions/A/${PROJECT_NAME}" )
 
     # * All paths must *NOT* include closing backslash character
-    set ( INSTALL_FRAMEWORK_PATH "${INSTALL_ROOT_PATH}/Frameworks" )
-    set ( INSTALL_DYLIB_PATH "${INSTALL_ROOT_PATH}/Libraries" )
+    set ( INSTALL_EXT_FRAMEWORKS_PATH "${INSTALL_ROOT_PATH}/Frameworks" )
+    set ( INSTALL_EXT_LIBRARIES_PATH "${INSTALL_ROOT_PATH}/Libraries" )
 
     # For distribution in user's frameworks / OSX App Bundle
     set_target_properties ( ${PROJECT_NAME} PROPERTIES
@@ -276,21 +300,22 @@ if ( PLATFORM_OSX )
     # and bundling this dependency.
     string ( REPLACE "-framework Cocoa" "" SDL_REAL_LIBRARY ${SDL_LIBRARY} )
 
+    # Bundled frameworks we depend on
     install ( DIRECTORY
               "${SDL_REAL_LIBRARY}" # SDL.framework
               "${SDLIMAGE_LIBRARY}" # SDL_image.framework
               "${SDLTTF_LIBRARY}" # SDL_ttf.framework
               "${LIBSNDFILE_LIBRARY}" # sndfile.framework
-              DESTINATION "${INSTALL_FRAMEWORK_PATH}"
+              DESTINATION "${INSTALL_EXT_FRAMEWORKS_PATH}"
             )
 
-    # Install all the necessary runtime search paths for locating the many
-    # embedded dependencies that nomlib has.
+    # Add all the necessary runtime search paths for locating the installed
+    # dependencies we bundled.
     set ( RUNTIME_PATH
           "@loader_path/../Frameworks"
-          "@executable_path/../Frameworks"
+          # SDL_image.framework & SDL_ttf.framework each have their own bundled
+          # dependencies and therefore:
           "@loader_path/../../Frameworks"
-          "@loader_path/../Libraries"
         )
 
     install_rpath ( "${RUNTIME_PATH}" "${INSTALL_BINARY_PATH}" )

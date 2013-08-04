@@ -44,7 +44,7 @@ or perhaps hunting down each individual dependency Framework:
 * Framework bundle:
 
 ```
-  cmake -DBUILD_FRAMEWORK=on ..
+  cmake -D FRAMEWORK=on ..
   make
   make install && cp -av nomlib.framework $HOME/Library/Frameworks/.
 ```

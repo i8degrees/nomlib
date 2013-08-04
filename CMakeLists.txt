@@ -4,10 +4,31 @@ set ( PROJECT_VERSION_MAJOR 0 )
 set ( PROJECT_VERSION_MINOR 1 )
 set ( PROJECT_VERSION_PATCH 0 )
 
+# We only support building nomlib as a dynamic library at the moment
+set ( BUILD_SHARED_LIBS on )
+
+# Project Options
+option ( VERBOSE "Alias for CMAKE_VERBOSE_MAKEFILE -- nice for debugging make scripts" off )
+option ( DEBUG "Build with all debugging features" off )
+option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
+option ( DEBUG_TRACE "Build with trace logging of object construction & destruction" off )
+
+option ( EXAMPLES "Build nomlib usage examples" off )
+option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
+
+option ( CMAKE_INSTALL_PREFIX "Install project in a custom location" ${CMAKE_CURRENT_BINARY_DIR} )
+
+if ( NOT CMAKE_INSTALL_PREFIX )
+  set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" )
+endif ( NOT CMAKE_INSTALL_PREFIX )
+
 project ( nomlib ) # $PROJECT_NAME
 
 # Platform detection
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
+
+# Utility macro helpers
+include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
 
 set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" ) # nomlib/src
 set ( NOMLIB_HEADERS_DIR "include" ) # include/nomlib
@@ -15,6 +36,14 @@ set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" ) # nomlib/examples
 set ( NOMLIB_RESOURCES_DIR "Resources" ) # folder containing library data (ex.: icon, translations, etc.)
 # Files used with documentation generation
 set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${NOMLIB_RESOURCES_DIR}/doxygen" )
+
+# Install paths
+set ( INSTALL_LIB_PATH "lib" )
+set ( INSTALL_RESOURCES_PATH "share/${PROJECT_NAME}" )
+set ( INSTALL_HEADERS_PATH "include" )
+set ( INSTALL_DOCS_PATH "$share/doc/${PROJECT_NAME}" )
+set ( INSTALL_GENERATED_DOCS_PATH "${INSTALL_DOCS_PATH}" )
+set ( INSTALL_MAN_PAGES_PATH "share/man" )
 
 # CMake Environment
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules" )
@@ -35,33 +64,16 @@ add_custom_target ( uninstall COMMAND ${CMAKE_COMMAND} -P
                     ${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake
                   )
 
-# We only support building nomlib as a dynamic library at the moment
-set ( BUILD_SHARED_LIBS on )
-
-# Project Options
-option ( VERBOSE "Alias for CMAKE_VERBOSE_MAKEFILE -- nice for debugging make scripts" off )
-option ( DEBUG "Build with all debugging features" off )
-option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
-option ( DEBUG_TRACE "Build with trace logging of object construction & destruction" off )
-
-option ( EXAMPLES "Build nomlib usage examples" off )
-option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
-
 if ( PLATFORM_OSX )
-
   option ( UNIVERSAL "Build as an OSX Universal Library" off )
   option ( FRAMEWORK "Build OSX Framework instead of dylib" off )
-
 endif ( PLATFORM_OSX )
 
 if ( VERBOSE )
-
   set ( CMAKE_VERBOSE_MAKEFILE true )
-
 endif ( VERBOSE )
 
 if ( DEBUG )
-
   set ( CMAKE_BUILD_TYPE "Debug" )
   set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNOM_DEBUG" )
   message ( STATUS "Building ${PROJECT_NAME} with debugging." )
@@ -74,20 +86,16 @@ else () # Build with optimizations for maximum speed and minimal size
 endif ( DEBUG )
 
 if ( DEBUG_ASSERT )
-
   add_definitions ( "-DNOM_DEBUG_ASSERT" )
   message ( STATUS "Building ${PROJECT_NAME} with run-time assertions." )
-
 endif ( DEBUG_ASSERT )
 
 if ( DEBUG_TRACE )
-
   # We intentionally do not set CMAKE_BUILD_TYPE to "Debug" or "Release" here so
   # we can enable this feature in either target mode to maximize debugging
   # capabilities.
   add_definitions ( "-DNOM_DEBUG_TRACE" )
   message ( STATUS "Building ${PROJECT_NAME} with class object call tracing." )
-
 endif ( DEBUG_TRACE )
 
 # I was able to shave off close to 50% time compiling nomlib by leaving
@@ -96,10 +104,8 @@ endif ( DEBUG_TRACE )
 # PPC is not officially supported because I have no means whatsoever of
 # testing such a package.
 if ( UNIVERSAL )
-
   set ( CMAKE_OSX_ARCHITECTURES i386; x86_64 )
   message ( STATUS "Building an OSX Universal Library" )
-
 endif ( UNIVERSAL )
 
 if ( FRAMEWORK )
@@ -112,123 +118,25 @@ if ( PLATFORM_LINUX ) # Tested on Ubuntu v12.04-LTS
   # Clang is not supported on Linux due to libc++ not being distributed by
   # default yet
   set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
-
 elseif ( PLATFORM_OSX )
 
   # libc++ requires OSX v10.7+
   set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )
 
   if ( CMAKE_GENERATOR STREQUAL "Xcode" ) # Available only on OSX, I think
-
     set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
     set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
-
   endif ( CMAKE_GENERATOR STREQUAL "Xcode" )
-
 else () # Not Linux nor OSX
-
   # Use whatever CMake gathers for us and hope for the best!
-
 endif ( PLATFORM_LINUX )
 
 if ( DOCS )
-
-  # Control whether or not to see warnings regarding incomplete documentation
-  # from doxygen.
-  # Valid values are "YES" or "NO" with a default value of "NO".
-  set ( BUILD_DOCS_DEV "NO" )
-
-  # Control whether or not to see messages generated by doxygen
-  # Valid values are "YES" or "NO" with a default value of "NO".
-  set ( BUILD_DOCS_DEV "YES" )
-
-  find_package ( Doxygen )
-
-  if ( NOT DOXYGEN_FOUND )
-    message ( FATAL_ERROR "Doxygen is needed to build the documentation.")
-  endif ( NOT DOXYGEN_FOUND )
-
-  set ( DOXYFILE_IN ${CMAKE_TEMPLATE_PATH}/Doxyfile.in )
-  set ( DOXYFILE ${PROJECT_BINARY_DIR}/Doxyfile )
-  set ( DOXY_HTML_INDEX_FILE ${PROJECT_BINARY_DIR}/docs/html/index.html )
-  #set ( DOXY_EXTRA_FILES "" )
-
-  # Template Doxyfile
-  configure_file  ( ${DOXYFILE_IN} ${DOXYFILE} @ONLY )
-
-  # Generate docs only when dependencies change
-  add_custom_command  ( OUTPUT ${DOXY_HTML_INDEX_FILE}
-                        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE}
-                        MAIN_DEPENDENCY ${DOXYFILE} ${DOXYFILE_IN}
-                        #DEPENDS project_targets ${DOXY_EXTRA_FILES}
-                        COMMENT "Generating HTML documentation"
-                      )
-
-  # Add 'make docs' target
-  add_custom_target ( docs ALL DEPENDS ${DOXY_HTML_INDEX_FILE} )
-
+  include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
 endif ( DOCS )
 
-set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
-      # audio
-      ${SRC_DIR}/audio/AL/AudioDevice.cpp
-      ${SRC_DIR}/audio/AL/Listener.cpp
-      ${SRC_DIR}/audio/AL/OpenAL.cpp
-      ${SRC_DIR}/audio/AL/SoundBuffer.cpp
-      ${SRC_DIR}/audio/AL/SoundFile.cpp
-      ${SRC_DIR}/audio/AL/SoundSource.cpp
-      ${SRC_DIR}/audio/AL/Music.cpp
-      ${SRC_DIR}/audio/AL/Sound.cpp
-      # graphics
-      ${SRC_DIR}/graphics/Text.cpp
-      ${SRC_DIR}/graphics/BitmapFont.cpp
-      ${SRC_DIR}/graphics/TrueTypeFont.cpp
-      ${SRC_DIR}/graphics/IDisplay.cpp
-      ${SRC_DIR}/graphics/Canvas.cpp
-      ${SRC_DIR}/graphics/Display.cpp
-      ${SRC_DIR}/graphics/Gradient.cpp
-      ${SRC_DIR}/graphics/Image.cpp
-      ${SRC_DIR}/graphics/Line.cpp
-      ${SRC_DIR}/graphics/Pixel.cpp
-      ${SRC_DIR}/graphics/Rectangle.cpp
-      ${SRC_DIR}/graphics/Sprite.cpp
-      # system
-      ${SRC_DIR}/system/File.cpp
-      ${SRC_DIR}/system/Clock.cpp
-      ${SRC_DIR}/system/FPS.cpp
-      ${SRC_DIR}/system/GameStates.cpp
-      ${SRC_DIR}/system/Logger.cpp
-      ${SRC_DIR}/system/ObjectCache.cpp
-      ${SRC_DIR}/system/SDL_App.cpp
-      ${SRC_DIR}/system/Input.cpp
-      ${SRC_DIR}/system/Timer.cpp
-      ${SRC_DIR}/system/Sleep.cpp
-      # math
-      ${SRC_DIR}/math/Color.cpp
-      ${SRC_DIR}/math/Coords.cpp
-      ${SRC_DIR}/math/Transformable.cpp
-      # gui
-      ${SRC_DIR}/gui/Cursor.cpp
-      ${SRC_DIR}/gui/MessageBox.cpp
-      # sdl
-      ${SRC_DIR}/sdl/utils.cpp
-    )
-
-# Platform-specific source files
-if ( PLATFORM_OSX )
-
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/OSX/ResourcePath.cpp )
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/UnixFile.cpp )
-
-elseif ( PLATFORM_LINUX )
-
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/UnixFile.cpp )
-
-elseif ( PLATFORM_WINDOWS )
-
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/WinFile.cpp )
-
-endif ( PLATFORM_OSX )
+# List of our source code to be compiled
+include ( "${SRC_DIR}/CMakeLists.txt" )
 
 # Project Header Files
 include_directories ( ${NOMLIB_HEADERS_DIR} )
@@ -273,7 +181,7 @@ endif ( LIBSNDFILE_FOUND )
 
 if ( LIBMAGIC_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBMAGIC_INCLUD_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${LIBMAGIC_LIBRARY} )
+  set ( EXTLIBS ${EXTLIBS} "/usr/local/lib/libmagic.a" "z" ) # static lib
 endif ( LIBMAGIC_FOUND )
 
 # Now that we have collected all the header file search paths we need, we
@@ -290,10 +198,34 @@ set_target_properties ( ${PROJECT_NAME} # makefile target
                       )
 
 if ( PLATFORM_OSX )
-  set ( INSTALL_NAME_PATH "@rpath/nomlib-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.dylib" )
+
+  set ( INSTALL_NAME_PATH "@rpath" )
+
+  # For distribution in user's frameworks / OSX App Bundle
+  set_target_properties ( ${PROJECT_NAME} PROPERTIES
+                          BUILD_WITH_INSTALL_RPATH 1
+                          INSTALL_NAME_DIR
+                          "${INSTALL_NAME_PATH}"
+                        )
 
   if ( FRAMEWORK )
-    set ( INSTALL_NAME_PATH "@rpath/nomlib.framework/Versions/A/nomlib" )
+
+    # CMAKE_INSTALL_PREFIX = ttcards.app
+    set ( INSTALL_LIB_PATH "${PROJECT_NAME}.framework" )
+
+    set ( INSTALL_ROOT_PATH "${INSTALL_LIB_PATH}" )
+
+    set ( INSTALL_RESOURCES_PATH "${INSTALL_ROOT_PATH}" )
+    set ( INSTALL_HEADERS_PATH "${INSTALL_ROOT_PATH}/Headers" )
+
+    set ( INSTALL_DOCS_PATH "${INSTALL_RESOURCES_PATH}/Resources" )
+    set ( INSTALL_GENERATED_DOCS_PATH "${INSTALL_DOCS_PATH}/Documentation" )
+
+    set ( INSTALL_BINARY_PATH "${INSTALL_ROOT_PATH}/Versions/A/${PROJECT_NAME}" )
+
+    # * All paths must *NOT* include closing backslash character
+    set ( INSTALL_FRAMEWORK_PATH "${INSTALL_ROOT_PATH}/Frameworks" )
+    set ( INSTALL_DYLIB_PATH "${INSTALL_ROOT_PATH}/Libraries" )
 
     # For distribution in user's frameworks / OSX App Bundle
     set_target_properties ( ${PROJECT_NAME} PROPERTIES
@@ -301,9 +233,6 @@ if ( PLATFORM_OSX )
                             INSTALL_NAME_DIR
                             "${INSTALL_NAME_PATH}"
                           )
-
-    set ( CMAKE_INSTALL_PREFIX "$ENV{HOME}/Library/Frameworks" )
-    set ( FRAMEWORK_PATH "${CMAKE_INSTALL_PREFIX}" )
 
     # Frameworks distribution
     set_target_properties ( ${PROJECT_NAME} PROPERTIES
@@ -324,91 +253,100 @@ if ( PLATFORM_OSX )
                           )
 
     # Install framework library file
-    install ( TARGETS ${PROJECT_NAME} LIBRARY FRAMEWORK DESTINATION "${FRAMEWORK_PATH}" )
+    install ( TARGETS ${PROJECT_NAME} LIBRARY FRAMEWORK DESTINATION "${CMAKE_INSTALL_PREFIX}" )
 
-    # Install framework header files
+    # Bundle external dependencies within our application bundle for distribution
     #
-    # FIXME; should be ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Versions/Current/Headers with a symlink at root of framework
-    install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME} DESTINATION "${PROJECT_NAME}.framework/Headers"
-              PATTERN ".*" EXCLUDE # do not copy dotfiles
+    # * All paths must *NOT* include closing backslash character
+    #
+    # SDL frameworks are all from the official distribution, found on the
+    # official web site at https://www.libsdl.org.
+    #
+    # SDL.framework v1.2.15
+    # SDL_image.framework v1.2.12
+    # SDL_ttf.framework v2.0.11
+
+    # sndfile.framework v1.0.25
+    #
+    # See README text within extlibs folder in root of this git repository
+    # for packaging details of libsndfile.
+
+    # The SDL_LIBRARY variable for OS X is appended with the "-framework Cocoa"
+    # linkage flag, so we have to sanitize this before hand for use in locating
+    # and bundling this dependency.
+    string ( REPLACE "-framework Cocoa" "" SDL_REAL_LIBRARY ${SDL_LIBRARY} )
+
+    install ( DIRECTORY
+              "${SDL_REAL_LIBRARY}" # SDL.framework
+              "${SDLIMAGE_LIBRARY}" # SDL_image.framework
+              "${SDLTTF_LIBRARY}" # SDL_ttf.framework
+              "${LIBSNDFILE_LIBRARY}" # sndfile.framework
+              DESTINATION "${INSTALL_FRAMEWORK_PATH}"
             )
 
-    # Install (optional) Resource files -- official library icon, docs, libmagic database, etc.
-    install ( DIRECTORY ${NOMLIB_RESOURCES_DIR} DESTINATION "${PROJECT_NAME}.framework"
-              OPTIONAL
-              PATTERN ".*" EXCLUDE # do not include dotfiles
-            )
+    # Install all the necessary runtime search paths for locating the many
+    # embedded dependencies that nomlib has.
+    set ( RUNTIME_PATH
+          "@loader_path/../Frameworks"
+          "@executable_path/../Frameworks"
+          "@loader_path/../../Frameworks"
+          "@loader_path/../Libraries"
+        )
 
-    # Install nomlib's software license & general information
-    install ( FILES
-              ${PROJECT_SOURCE_DIR}/README.md
-              ${PROJECT_SOURCE_DIR}/LICENSE.md
-              ${PROJECT_SOURCE_DIR}/TODO.md
-              DESTINATION "${PROJECT_NAME}.framework/${NOMLIB_RESOURCES_DIR}/Documentation"
-            )
-
-    if ( DOCS )
-
-      # Install documentation files
-      install ( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/html
-                DESTINATION "${PROJECT_NAME}.framework/${NOMLIB_RESOURCES_DIR}/Documentation"
-                PATTERN ".*" EXCLUDE # do not include dotfiles
-              )
-
-    endif ( DOCS )
-
-  else ( NOT FRAMEWORK )
-
-    # For distribution in user's frameworks / OSX App Bundle
-    set_target_properties ( ${PROJECT_NAME} PROPERTIES
-                          BUILD_WITH_INSTALL_RPATH 1
-                          INSTALL_NAME_DIR
-                          "${INSTALL_NAME_PATH}"
-                        )
+    install_rpath ( "${RUNTIME_PATH}" "${INSTALL_BINARY_PATH}" )
 
   endif ( FRAMEWORK )
 
 endif ( PLATFORM_OSX )
 
-if ( NOT FRAMEWORK ) # POSIX install; installs in standard locations
-
+if ( NOT FRAMEWORK )
   # Install library in POSIX standard location by default
-  install ( TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib )
+  install ( TARGETS ${PROJECT_NAME} LIBRARY
+            DESTINATION "${INSTALL_LIB_PATH}"
+          )
+endif ( NOT FRAMEWORK )
 
-  # Install nomlib header files
-  install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME} DESTINATION include
+# Install nomlib header files
+install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}
+          DESTINATION "${INSTALL_HEADERS_PATH}"
           PATTERN ".*" EXCLUDE # do not include dotfiles
+        )
+
+# Install nomlib Resource files
+install ( FILES
+          "${NOMLIB_RESOURCES_DIR}/nomlib.icns" # icon file
+          DESTINATION "${INSTALL_RESOURCES_PATH}"
+          OPTIONAL
+        )
+
+# Install software license & general project information
+install ( FILES
+          ${PROJECT_SOURCE_DIR}/README.md
+          ${PROJECT_SOURCE_DIR}/LICENSE.md
+          ${PROJECT_SOURCE_DIR}/TODO.md
+          DESTINATION "${INSTALL_DOCS_PATH}"
+        )
+
+if ( DOCS )
+  # Install generated HTML documentation
+  install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
+            DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
+            PATTERN ".*" EXCLUDE # do not include dotfiles
           )
 
-  # Install software license & general project information
-  install ( FILES
-            ${PROJECT_SOURCE_DIR}/README.md
-            ${PROJECT_SOURCE_DIR}/LICENSE.md
-            ${PROJECT_SOURCE_DIR}/TODO.md
-            DESTINATION share/doc/${PROJECT_NAME}
-          )
-
-  if ( DOCS )
-
-    # Install generated HTML documentation
-    install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
-              DESTINATION share/doc/${PROJECT_NAME}
-              PATTERN ".*" EXCLUDE # do not include dotfiles
-            )
+  if ( NOT FRAMEWORK )
 
     # Install generated man page documentation
     install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/man/man3
-              DESTINATION share/man
+              DESTINATION "${INSTALL_MAN_PAGES_PATH}"
               PATTERN ".*" EXCLUDE # do not include dotfiles
             )
-
-  endif ( DOCS )
+    endif ( NOT FRAMEWORK )
+endif ( DOCS )
 
 if ( PLATFORM_LINUX )
   install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")") # FIXME (prettify)
 endif ( PLATFORM_LINUX )
-
-endif ( NOT FRAMEWORK )
 
 # nomlib examples configuration
 if ( EXAMPLES )
@@ -427,7 +365,7 @@ if ( EXAMPLES )
       ${EXAMPLES_SRC_DIR}/fonts/font.cpp
       )
 
-  link_libraries ( ${PROJECT_NAME} SDLmain )
+  link_libraries ( ${PROJECT_NAME} ${SDL_LIBRARY} "SDLMain" )
   add_executable ( audio/audio ${NOMLIB_EXAMPLES_AUDIO} )
   add_executable ( app/app ${NOMLIB_EXAMPLES_APP} )
   add_executable ( fonts/font ${NOMLIB_EXAMPLES_FONTS} )

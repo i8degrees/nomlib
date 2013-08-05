@@ -37,9 +37,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined ( NOM_PLATFORM_OSX )
   #include "nomlib/system/osx/DialogMessageBox.hpp"
 #elif defined ( NOM_PLATFORM_LINUX )
-  #include <nomlib/system/unix/DialogMessageBox.hpp>
+  #include "nomlib/system/unix/DialogMessageBox.hpp"
 #elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/DialogMessageBox.hpp>
+  #include "nomlib/system/windows/DialogMessageBox.hpp"
 #endif
 
 namespace nom {

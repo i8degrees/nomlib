@@ -35,8 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/FPS.hpp"
 #include "nomlib/system/GameStates.hpp"
 #include "nomlib/system/ObjectCache.hpp"
-#include <nomlib/system/DialogMessageBox.hpp>
-#include <nomlib/system/File.hpp>
+#include "nomlib/system/DialogMessageBox.hpp"
+#include "nomlib/system/File.hpp"
 #include "nomlib/system/SDL_App.hpp"
 #include "nomlib/system/Input.hpp"
 #include "nomlib/system/Timer.hpp"

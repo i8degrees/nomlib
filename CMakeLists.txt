@@ -154,12 +154,9 @@ if ( PLATFORM_OSX )
   find_package ( ZLIB REQUIRED )
 endif ( PLATFORM_OSX )
 
-# We need GTK to display dialog message boxes if we are not building a debug
-# enabled library.
+# We need GTK for display of dialog message boxes
 if ( PLATFORM_LINUX )
-  if ( NOT DEBUG )
-    find_package ( GTK2 )
-  endif ( NOT DEBUG )
+  find_package ( GTK2 REQUIRED gtk )
 endif ( PLATFORM_LINUX )
 
 if ( SDL_FOUND )

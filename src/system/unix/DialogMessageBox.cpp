@@ -46,7 +46,7 @@ int32 GTK_DialogMessageBox  ( const std::string& header, const std::string& mess
                                     GTK_MESSAGE_ERROR, // type
                                     GTK_BUTTONS_OK,
                                     header.c_str(),
-                                    message.c_str(),
+                                    message.c_str()
                                   );
 
  gtk_dialog_run ( GTK_DIALOG (dialog) );

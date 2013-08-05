@@ -54,13 +54,36 @@ NOM_LOG_ERR ( "Could not initialize magic library." );
     return extension;
   }
 
+  // First, try loading the system installed copy of the magic mime database,
+  // so that we do not have to.
   if ( magic_load ( cookie, nullptr ) != 0 )
   {
+    std::string cookie_database = "\0";
+
+    // Failed trying to load the system copy, so let's try nomlib's copy next!
+    // We must first obtain the path of our Resources
+#if defined ( FRAMEWORK ) && defined ( NOM_PLATFORM_OSX )
+    cookie_database = getBundleResourcePath ( NOMLIB_BUNDLE_IDENTIFIER );
+#else // Assume POSIX layout
+    cookie_database = NOMLIB_INSTALL_PREFIX + "/share/nomlib/Resources";
+#endif
+
+    cookie_database = "/" + NOMLIB_MAGIC_DATABASE;
+
+    // FIXME; We segfault here if we do not validate that the file actually
+    // exists before passing it to magic_load ... this should work =(
+    if ( ! this->exists ( cookie_database ) )
+      return extension;
+
+    // If we fail loading nomlib's copy, we give up!
+    if ( magic_load ( cookie, cookie_database.c_str() ) != 0 )
+    {
 NOM_LOG_ERR ( "Could not read magic database." );
 
     magic_close ( cookie );
 
     return extension;
+    }
   }
 
   extension = magic_file ( cookie, file.c_str() );

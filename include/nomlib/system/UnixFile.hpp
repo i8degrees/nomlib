@@ -43,6 +43,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/Logger.hpp"
 #include "nomlib/system/IFile.hpp"
 
+#if defined ( FRAMEWORK ) && defined ( NOM_PLATFORM_OSX )
+  #include "nomlib/system/osx/ResourcePath.hpp"
+#endif
 
 namespace nom {
 

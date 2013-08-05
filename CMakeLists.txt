@@ -351,7 +351,7 @@ install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}
 # Install nomlib Resource files
 install ( FILES
           "${NOMLIB_RESOURCES_DIR}/nomlib.icns" # icon file
-          DESTINATION "${INSTALL_RESOURCES_PATH}"
+          DESTINATION "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
           OPTIONAL
         )
 

@@ -58,7 +58,7 @@ set ( BUNDLE_IDENTIFIER "org.i8degrees.${PROJECT_NAME}" )
 set ( INSTALL_LIB_PATH "lib" )
 set ( INSTALL_RESOURCES_PATH "share/${PROJECT_NAME}" )
 set ( INSTALL_HEADERS_PATH "include" )
-set ( INSTALL_DOCS_PATH "$share/doc/${PROJECT_NAME}" )
+set ( INSTALL_DOCS_PATH "share/doc/${PROJECT_NAME}" )
 set ( INSTALL_GENERATED_DOCS_PATH "${INSTALL_DOCS_PATH}" )
 set ( INSTALL_MAN_PAGES_PATH "share/man" )
 

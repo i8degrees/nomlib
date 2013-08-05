@@ -1,5 +1,6 @@
 # TODO
 
+* Fix segmentation fault crash when magic.mgc cannot be found
 * Use C++ templates for Coords class
 
 * Finish Update logic in BitmapFont class so that we can make it an official

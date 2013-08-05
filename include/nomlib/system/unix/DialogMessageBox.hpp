@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
-#include <gtk/gtk.h>
+#include <gtk.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/Logger.hpp"

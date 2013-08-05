@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1FFCE9AF17AFDB94007F869C /* sndfile-config.cmake in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1FFCE9AD17AFDB8A007F869C /* sndfile-config.cmake */; };
 		32B7E55E12DAB185005B82C9 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B7E55D12DAB185005B82C9 /* config.h */; };
 		32B7E5E012DAB20E005B82C9 /* aiff.c in Sources */ = {isa = PBXBuildFile; fileRef = 32B7E56112DAB20E005B82C9 /* aiff.c */; };
 		32B7E5E112DAB20E005B82C9 /* alaw.c in Sources */ = {isa = PBXBuildFile; fileRef = 32B7E56212DAB20E005B82C9 /* alaw.c */; };
@@ -98,7 +99,21 @@
 		32B7E66412DAB277005B82C9 /* sndfile.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B7E66312DAB277005B82C9 /* sndfile.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		1F58AE5017AFD8AC00C9E797 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = CMake;
+			dstSubfolderSpec = 7;
+			files = (
+				1FFCE9AF17AFDB94007F869C /* sndfile-config.cmake in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		1FFCE9AD17AFDB8A007F869C /* sndfile-config.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "sndfile-config.cmake"; sourceTree = "<group>"; };
 		32B7E55D12DAB185005B82C9 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		32B7E56112DAB20E005B82C9 /* aiff.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = aiff.c; path = "libsndfile-src/src/aiff.c"; sourceTree = "<group>"; };
 		32B7E56212DAB20E005B82C9 /* alaw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alaw.c; path = "libsndfile-src/src/alaw.c"; sourceTree = "<group>"; };
@@ -265,6 +280,7 @@
 		089C1665FE841158C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1FFCE9AC17AFDB8A007F869C /* CMake */,
 				32B7E66312DAB277005B82C9 /* sndfile.h */,
 				32B7E55D12DAB185005B82C9 /* config.h */,
 				8DC2EF5A0486A6940098B216 /* Info.plist */,
@@ -371,6 +387,14 @@
 			name = libsndfile;
 			sourceTree = "<group>";
 		};
+		1FFCE9AC17AFDB8A007F869C /* CMake */ = {
+			isa = PBXGroup;
+			children = (
+				1FFCE9AD17AFDB8A007F869C /* sndfile-config.cmake */,
+			);
+			path = CMake;
+			sourceTree = "<group>";
+		};
 		32B7E57812DAB20E005B82C9 /* G72x */ = {
 			isa = PBXGroup;
 			children = (
@@ -466,6 +490,7 @@
 				8DC2EF520486A6940098B216 /* Resources */,
 				8DC2EF540486A6940098B216 /* Sources */,
 				8DC2EF560486A6940098B216 /* Frameworks */,
+				1F58AE5017AFD8AC00C9E797 /* CopyFiles */,
 			);
 			buildRules = (
 			);

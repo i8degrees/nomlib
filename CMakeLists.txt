@@ -145,7 +145,7 @@ find_package ( SDL_image REQUIRED )
 find_package ( SDL_ttf REQUIRED )
 
 find_package ( OpenAL REQUIRED )
-find_package ( LibSndFile REQUIRED )
+find_package ( sndfile REQUIRED )
 
 find_package ( LibMagic REQUIRED )
 

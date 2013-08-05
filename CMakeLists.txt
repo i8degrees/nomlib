@@ -1,5 +1,23 @@
 cmake_minimum_required ( VERSION 2.6 )
 
+# CMake Environment
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" )
+set ( CMAKE_TEMPLATE_PATH ${CMAKE_TEMPLATE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates" )
+
+# CMake options
+option ( VERBOSE "Enable verbose makefile" off )
+option ( CMAKE_INSTALL_PREFIX "Install project in a custom location" ${CMAKE_CURRENT_BINARY_DIR} )
+
+if ( VERBOSE )
+  set ( CMAKE_VERBOSE_MAKEFILE true )
+endif ( VERBOSE )
+
+# Set the install prefix to the current build folder if this option has not been
+# set.
+if ( NOT CMAKE_INSTALL_PREFIX )
+  set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" )
+endif ( NOT CMAKE_INSTALL_PREFIX )
+
 set ( PROJECT_VERSION_MAJOR 0 )
 set ( PROJECT_VERSION_MINOR 1 )
 set ( PROJECT_VERSION_PATCH 0 )
@@ -8,19 +26,12 @@ set ( PROJECT_VERSION_PATCH 0 )
 set ( BUILD_SHARED_LIBS on )
 
 # Project Options
-option ( VERBOSE "Alias for CMAKE_VERBOSE_MAKEFILE -- nice for debugging make scripts" off )
+
 option ( DEBUG "Build with all debugging features" off )
 option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
 option ( DEBUG_TRACE "Build with trace logging of object construction & destruction" off )
-
 option ( EXAMPLES "Build nomlib usage examples" off )
 option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
-
-option ( CMAKE_INSTALL_PREFIX "Install project in a custom location" ${CMAKE_CURRENT_BINARY_DIR} )
-
-if ( NOT CMAKE_INSTALL_PREFIX )
-  set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" )
-endif ( NOT CMAKE_INSTALL_PREFIX )
 
 project ( nomlib ) # $PROJECT_NAME
 
@@ -29,10 +40,6 @@ include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
 
 # Utility macro helpers
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
-
-# CMake Environment
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules" )
-set ( CMAKE_TEMPLATE_PATH ${CMAKE_TEMPLATE_PATH} "${PROJECT_SOURCE_DIR}/cmake/templates" )
 
 set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" ) # nomlib/src
 set ( NOMLIB_HEADERS_DIR "include" ) # include/nomlib
@@ -58,10 +65,6 @@ if ( PLATFORM_OSX )
   option ( FRAMEWORK "Build OSX Framework instead of dylib" on )
   option ( UNIVERSAL "Build as an OSX Universal Library" off )
 endif ( PLATFORM_OSX )
-
-if ( VERBOSE )
-  set ( CMAKE_VERBOSE_MAKEFILE true )
-endif ( VERBOSE )
 
 if ( DEBUG )
   set ( CMAKE_BUILD_TYPE "Debug" )

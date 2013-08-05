@@ -64,7 +64,7 @@ class Text/*: public IDrawable*/
 
     FontType getFontType ( void );
 
-    const std::string& getText ( void ) const;
+    const std::string getText ( void ) const;
     int32 getFontWidth ( void ) const;
     int32 getFontHeight ( void ) const;
     FontStyle getFontStyle ( void ) const;

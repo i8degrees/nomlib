@@ -52,6 +52,13 @@ bool Text::Load ( const std::string& filename, int32 font_size )
 
   extension = file.mime ( filename );
 
+  // If we still have a null terminated string here, it generally means we had
+  // failed loading the libmagic mime database. Of course, there's the fringe
+  // chance perhaps that libmagic could not be initialized for some bizarre
+  // reason!
+  if ( extension == "\0" )
+    return false;
+
   // If we find that the file MIME type is not TTF, we first will try loading
   // the input file as a bitmap font
   if ( extension.compare ( "application/x-font-ttf" ) != 0 )
@@ -97,59 +104,82 @@ void Text::setFontType ( enum FontType type )
   this->file_type = type;
 }
 
-const std::string& Text::getText ( void ) const
+const std::string Text::getText ( void ) const
 {
-  return this->font->getText();
+  if ( this->font )
+    return this->font->getText();
+  else
+    return "\0";
 }
 
 int32 Text::getFontWidth ( void ) const
 {
-  return this->font->getFontWidth();
+  if ( this->font )
+    return this->font->getFontWidth();
+  else
+    return -1;
 }
 
 int32 Text::getFontHeight ( void ) const
 {
-  return this->font->getFontHeight();
+  if ( this->font )
+    return this->font->getFontHeight();
+  else
+    return -1;
 }
 
 FontStyle Text::getFontStyle ( void ) const
 {
-  return this->font->getFontStyle();
+  if ( this->font )
+    return this->font->getFontStyle();
+  else
+    return FontStyle::Regular; // FIXME; should be Unknown or such
 }
 
 const Color Text::getColor ( void ) const
 {
-  return this->font->getColor();
+  if ( this->font )
+    return this->font->getColor();
+  else
+    return nom::Color::Black; // FIXME
 }
 
 const Coords Text::getPosition ( void ) const
 {
-  return this->font->getPosition();
+  if ( this->font )
+    return this->font->getPosition();
+  else
+    return nom::Coords ( 0, 0 ); // FIXME?
 }
 
 void Text::setText ( const std::string& text )
 {
-  this->font->setText ( text );
+  if ( this->font )
+    this->font->setText ( text );
 }
 
 void Text::setColor ( const Color& color )
 {
-  this->font->setColor ( color );
+  if ( this->font )
+    this->font->setColor ( color );
 }
 
 void Text::setPosition ( const Coords& coords )
 {
-  this->font->setPosition ( coords );
+  if ( this->font )
+    this->font->setPosition ( coords );
 }
 
 void Text::setFontSize ( int32 size )
 {
-  this->font->setFontSize( size );
+  if ( this->font )
+    this->font->setFontSize( size );
 }
 
 void Text::setFontStyle ( uint8 style, uint8 options )
 {
-  this->font->setFontStyle ( style, options );
+  if ( this->font )
+    this->font->setFontStyle ( style, options );
 }
 
 void Text::Update ( void )

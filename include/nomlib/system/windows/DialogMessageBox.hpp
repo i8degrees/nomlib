@@ -26,29 +26,26 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#ifndef NOMLIB_WIN_DIALOG_MESSAGEBOX_HPP
+#define NOMLIB_WIN_DIALOG_MESSAGEBOX_HPP
+
+#include <string>
+
+#include <windows.h>
 
 #include "nomlib/config.hpp"
+#include "nomlib/system/Logger.hpp"
 
-#include "nomlib/system/Clock.hpp"
-#include "nomlib/system/FPS.hpp"
-#include "nomlib/system/GameStates.hpp"
-#include "nomlib/system/ObjectCache.hpp"
-#include <nomlib/system/DialogMessageBox.hpp>
-#include <nomlib/system/File.hpp>
-#include "nomlib/system/SDL_App.hpp"
-#include "nomlib/system/Input.hpp"
-#include "nomlib/system/Timer.hpp"
-#include "nomlib/system/Sleep.hpp"
+namespace nom {
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/OSX/DialogMessageBox.hpp>
-  #include <nomlib/system/OSX/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  #include <nomlib/system/unix/DialogMessageBox.hpp>
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/DialogMessageBox.hpp>
-#endif
+const int32 ID_OK = 1;
+const int32 ID_CANCEL = 2;
 
-#endif // NOMLIB_SYSTEM_HEADERS defined
+int32 Windows_DialogMessageBox  ( const std::string& header, const std::string& message,
+                                  int32 messagebox_type = 0
+                                );
+
+
+} // namespace nom
+
+#endif // include guard defined

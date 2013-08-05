@@ -160,6 +160,12 @@ if ( PLATFORM_OSX )
   find_package ( ZLIB REQUIRED )
 endif ( PLATFORM_OSX )
 
+# We need GTK to display dialog message boxes if we are not building a debug
+# enabled library.
+if ( NOT DEFINED DEBUG AND PLATFORM_LINUX )
+  find_package ( GTK )
+endif ( NOT DEFINED DEBUG AND PLATFORM_LINUX )
+
 if ( SDL_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
@@ -208,6 +214,11 @@ if ( LIBMAGIC_FOUND )
   endif ( PLATFORM_OSX )
 
 endif ( LIBMAGIC_FOUND )
+
+if ( PLATFORM_LINUX AND GTK_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${GTK_INCLUD_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${GTK_LIBRARY} )
+endif ( PLATFORM_LINUX AND GTK_FOUND )
 
 # Now that we have collected all the header file search paths we need, we
 # include them all here for the compiler to be made aware of

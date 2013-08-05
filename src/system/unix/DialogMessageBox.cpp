@@ -26,29 +26,25 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#include "nomlib/system/unix/DialogMessageBox.hpp"
 
-#include "nomlib/config.hpp"
+namespace nom {
 
-#include "nomlib/system/Clock.hpp"
-#include "nomlib/system/FPS.hpp"
-#include "nomlib/system/GameStates.hpp"
-#include "nomlib/system/ObjectCache.hpp"
-#include <nomlib/system/DialogMessageBox.hpp>
-#include <nomlib/system/File.hpp>
-#include "nomlib/system/SDL_App.hpp"
-#include "nomlib/system/Input.hpp"
-#include "nomlib/system/Timer.hpp"
-#include "nomlib/system/Sleep.hpp"
+int32 GTK_DialogMessageBox  ( const std::string& header, const std::string& message,
+                              int32 messagebox_type
+                            )
+{
+  dialog = gtk_message_dialog_new ( main_application_window,
+                                    GTK_DIALOG_DESTROY_WITH_PARENT,
+                                    GTK_MESSAGE_ERROR, // type
+                                    GTK_BUTTONS_OK,
+                                    header,
+                                    message,
+                                  );
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/OSX/DialogMessageBox.hpp>
-  #include <nomlib/system/OSX/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  #include <nomlib/system/unix/DialogMessageBox.hpp>
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/DialogMessageBox.hpp>
-#endif
+ gtk_dialog_run ( GTK_DIALOG (dialog) );
+ gtk_widget_destroy ( dialog );
+}
 
-#endif // NOMLIB_SYSTEM_HEADERS defined
+
+} // namespace nom

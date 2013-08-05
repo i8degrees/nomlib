@@ -26,6 +26,7 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       # system
       ${SRC_DIR}/system/File.cpp
       ${SRC_DIR}/system/Clock.cpp
+      ${SRC_DIR}/system/DialogMessageBox.cpp
       ${SRC_DIR}/system/FPS.cpp
       ${SRC_DIR}/system/GameStates.cpp
       ${SRC_DIR}/system/Logger.cpp
@@ -46,17 +47,22 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
     )
 
 # Platform-specific source files
+if ( PLATFORM_OSX OR PLATFORM_LINUX )
+  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/UnixFile.cpp )
+endif ( PLATFORM_OSX OR PLATFORM_LINUX )
+
 if ( PLATFORM_OSX )
 
   set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/OSX/ResourcePath.cpp )
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/UnixFile.cpp )
+  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/OSX/DialogMessageBox.cpp )
 
 elseif ( PLATFORM_LINUX )
 
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/UnixFile.cpp )
+set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/unix/DialogMessageBox.cpp )
 
 elseif ( PLATFORM_WINDOWS )
 
+  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/windows/DialogMessageBox.cpp )
   set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/WinFile.cpp )
 
 endif ( PLATFORM_OSX )

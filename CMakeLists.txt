@@ -41,6 +41,11 @@ set ( NOMLIB_RESOURCES_DIR "Resources" ) # folder containing library data (ex.: 
 # Files used with documentation generation
 set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${NOMLIB_RESOURCES_DIR}/doxygen" )
 
+# Framework bundle info used in the generation of the packaged Info.plist
+set ( FRAMEWORK_TEMPLATE_INFO_PLIST "${CMAKE_TEMPLATE_PATH}/Info.plist.in" )
+set ( FRAMEWORK_ICON "nomlib.icns" )
+set ( FRAMEWORK_IDENTIFIER "org.dev.${PROJECT_NAME}" )
+
 # Install paths
 set ( INSTALL_LIB_PATH "lib" )
 set ( INSTALL_RESOURCES_PATH "share/${PROJECT_NAME}" )
@@ -259,17 +264,17 @@ if ( PLATFORM_OSX )
                             FRAMEWORK
                             TRUE
                             MACOSX_FRAMEWORK_INFO_PLIST
-                            "${CMAKE_TEMPLATE_PATH}/Info.plist.in"
+                            "${FRAMEWORK_TEMPLATE_INFO_PLIST}"
                             MACOSX_FRAMEWORK_NAME
                             "${PROJECT_NAME}"
                             MACOSX_FRAMEWORK_ICON_FILE
-                            "nomlib.icns"
+                            "${FRAMEWORK_ICON}"
                             MACOSX_FRAMEWORK_BUNDLE_VERSION
                             "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
                             MACOSX_FRAMEWORK_SHORT_VERSION_STRING
                             "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
                             MACOSX_FRAMEWORK_IDENTIFIER
-                            "org.dev.${PROJECT_NAME}"
+                            "${FRAMEWORK_IDENTIFIER}"
                           )
 
     # Install framework library file
@@ -335,7 +340,8 @@ install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}
 
 # Install nomlib Resource files
 install ( FILES
-          "${NOMLIB_RESOURCES_DIR}/nomlib.icns" # icon file
+          "${NOMLIB_RESOURCES_DIR}/nomlib.icns" # Icon
+          "${NOMLIB_RESOURCES_DIR}/magic.mgc" # libmagic mime db
           DESTINATION "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
           OPTIONAL
         )

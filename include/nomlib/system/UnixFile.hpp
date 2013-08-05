@@ -38,9 +38,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/stat.h>
 #include <magic.h>
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/Logger.hpp>
-#include <nomlib/system/IFile.hpp>
+#include "nomlib/config.hpp"
+#include "nomlib/resources.hpp"
+#include "nomlib/system/Logger.hpp"
+#include "nomlib/system/IFile.hpp"
+
 
 namespace nom {
 

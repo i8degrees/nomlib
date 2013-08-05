@@ -32,11 +32,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <cstring>
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/Logger.hpp>
-#include <nomlib/system/File.hpp>
-
 #include <CoreFoundation/CoreFoundation.h>
+
+#include "nomlib/config.hpp"
+#include "nomlib/system/Logger.hpp"
+#include "nomlib/system/File.hpp"
 
 namespace nom {
 

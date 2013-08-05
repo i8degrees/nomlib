@@ -11,9 +11,9 @@
 #include <cstdlib>
 #include <cassert>
 
-#include "nomlib/audio.hpp"
-#include "nomlib/math.hpp"
-#include "nomlib/system.hpp"
+#include <nomlib/audio.hpp>
+#include <nomlib/math.hpp>
+#include <nomlib/system.hpp>
 
 int main ( int argc, char* argv[] )
 {

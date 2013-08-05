@@ -11,9 +11,9 @@
 #include <cstdlib>
 #include <cassert>
 
-#include "nomlib/graphics.hpp"
-#include "nomlib/math.hpp"
-#include "nomlib/system.hpp"
+#include <nomlib/graphics.hpp>
+#include <nomlib/math.hpp>
+#include <nomlib/system.hpp>
 
 int main ( int argc, char* argv[] )
 {

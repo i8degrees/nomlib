@@ -11,8 +11,8 @@
 #include <cstdlib>
 #include <cassert>
 
-#include "nomlib/graphics.hpp"
-#include "nomlib/system.hpp"
+#include <nomlib/graphics.hpp>
+#include <nomlib/system.hpp>
 
 const std::string APP_NAME = "nomlib App Demo";
 

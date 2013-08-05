@@ -30,13 +30,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-const std::string getBundleResourcePath ( void )
+const std::string getBundleResourcePath ( const std::string& identifier )
 {
-  File file;
+  char resources_path [ PATH_MAX ]; // file-system path
+  CFBundleRef bundle; // bundle type reference
 
-  char resources_path[ PATH_MAX ];
-  CFBundleRef mainBundle = CFBundleGetMainBundle();
-  CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL ( mainBundle );
+  // Look for a bundle using its identifier if string passed is not null
+  // terminated
+  if ( identifier != "\0" )
+  {
+    CFStringRef identifier_ref; // Apple's string type
+
+    identifier_ref = CFStringCreateWithCString  ( nullptr, identifier.c_str(),
+                                                  strlen ( identifier.c_str() )
+                                                );
+
+    bundle = CFBundleGetBundleWithIdentifier ( identifier_ref );
+  }
+  else // Assume that we are looking for the top-level bundle's Resources path
+  {
+    bundle = CFBundleGetMainBundle();
+  }
+
+  CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL ( bundle );
 
   if ( ! CFURLGetFileSystemRepresentation ( resourcesURL, true, ( uint8* ) resources_path, PATH_MAX ) )
   {
@@ -44,7 +60,7 @@ NOM_LOG_ERR ( "Could not obtain the bundle's Resources path." );
 
     CFRelease ( resourcesURL );
 
-    return file.currentPath();
+    return "\0";
   }
 
   CFRelease ( resourcesURL );

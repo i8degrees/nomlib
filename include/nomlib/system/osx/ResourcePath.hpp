@@ -40,8 +40,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// Returns the path to the Resources folder within an OSX Application Bundle
-const std::string getBundleResourcePath ( void );
+/// Returns the path to the Resources folder within a bundle
+///
+/// If no identifier argument is passed, it is assumed you are looking for the
+/// main application bundle's Resources path, otherwise the identifier is used
+/// to locate a particular bundle from within another bundle.
+///
+/// The bundle's identifier can be found within the Info.plist file of said
+/// bundle, and typically is in reverse DNS notation. The string might look
+/// something like this:
+///
+///   org.dev.nomlib
+///
+///   or, as per the official API documentation,
+///
+///   com.apple.Finder.MyGetInfoPlugIn
+///
+/// The one restriction you have in using this function call is that the bundle
+/// whose identifier you have passed must already be loaded into the application
+/// bundle, or else this function call will fail.
+///
+/// Returns a null terminated string on err
+
+const std::string getBundleResourcePath ( const std::string& identifier = "\0" );
 
 } // namespace nom
 

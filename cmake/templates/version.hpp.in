@@ -42,4 +42,4 @@ const std::string NOMLIB_INSTALL_PREFIX = "@CMAKE_INSTALL_PREFIX@";
 
 // nomlib's bundle identifier is created when we generate his Info.plist file
 // during the framework bundle bootstrap.
-const std::string NOMLIB_BUNDLE_IDENTIFIER = "@FRAMEWORK_IDENTIFIER@";
+const std::string NOMLIB_BUNDLE_IDENTIFIER = "@BUNDLE_IDENTIFIER@";

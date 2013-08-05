@@ -48,10 +48,11 @@ set ( NOMLIB_RESOURCES_DIR "Resources" ) # folder containing library data (ex.: 
 # Files used with documentation generation
 set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${NOMLIB_RESOURCES_DIR}/doxygen" )
 
-# Framework bundle info used in the generation of the packaged Info.plist
-set ( FRAMEWORK_TEMPLATE_INFO_PLIST "${CMAKE_TEMPLATE_PATH}/Info.plist.in" )
-set ( FRAMEWORK_ICON "nomlib.icns" )
-set ( FRAMEWORK_IDENTIFIER "org.dev.${PROJECT_NAME}" )
+# Information used in the generation of the packaged Info.plist
+set ( BUNDLE_TEMPLATE_PLIST "${CMAKE_TEMPLATE_PATH}/Info.plist.in" )
+set ( BUNDLE_NAME "nomlib" )
+set ( BUNDLE_ICON "nomlib.icns" )
+set ( BUNDLE_IDENTIFIER "org.i8degrees.${PROJECT_NAME}" )
 
 # Install paths
 set ( INSTALL_LIB_PATH "lib" )
@@ -267,17 +268,17 @@ if ( PLATFORM_OSX )
                             FRAMEWORK
                             TRUE
                             MACOSX_FRAMEWORK_INFO_PLIST
-                            "${FRAMEWORK_TEMPLATE_INFO_PLIST}"
+                            "${BUNDLE_TEMPLATE_PLIST}"
                             MACOSX_FRAMEWORK_NAME
-                            "${PROJECT_NAME}"
+                            "${BUNDLE_NAME}"
                             MACOSX_FRAMEWORK_ICON_FILE
-                            "${FRAMEWORK_ICON}"
+                            "${BUNDLE_ICON}"
                             MACOSX_FRAMEWORK_BUNDLE_VERSION
                             "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
                             MACOSX_FRAMEWORK_SHORT_VERSION_STRING
                             "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
                             MACOSX_FRAMEWORK_IDENTIFIER
-                            "${FRAMEWORK_IDENTIFIER}"
+                            "${BUNDLE_IDENTIFIER}"
                           )
 
     # Install framework library file

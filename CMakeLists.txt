@@ -6,16 +6,16 @@ set ( CMAKE_TEMPLATE_PATH ${CMAKE_TEMPLATE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cm
 
 # CMake options
 option ( VERBOSE "Enable verbose makefile" off )
-option ( CMAKE_INSTALL_PREFIX "Install project in a custom location" ${CMAKE_CURRENT_BINARY_DIR} )
 
 if ( VERBOSE )
-  set ( CMAKE_VERBOSE_MAKEFILE true )
+  set ( CMAKE_VERBOSE_MAKEFILE on )
 endif ( VERBOSE )
 
 # Set the install prefix to the current build folder if this option has not been
-# set.
+# set; must be set before the project command is issued, or else BAD THINGS will
+# happen.
 if ( NOT CMAKE_INSTALL_PREFIX )
-  set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" )
+  set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "Install path prefix" )
 endif ( NOT CMAKE_INSTALL_PREFIX )
 
 set ( PROJECT_VERSION_MAJOR 0 )
@@ -26,7 +26,6 @@ set ( PROJECT_VERSION_PATCH 0 )
 set ( BUILD_SHARED_LIBS on )
 
 # Project Options
-
 option ( DEBUG "Build with all debugging features" off )
 option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
 option ( DEBUG_TRACE "Build with trace logging of object construction & destruction" off )
@@ -102,8 +101,10 @@ endif ( UNIVERSAL )
 if ( FRAMEWORK )
   message ( STATUS "Using OSX Framework bundle profile." )
 else ( NOT FRAMEWORK )
-  message ( STATUS "Using POSIX build profile." )
+  message ( STATUS "Using POSIX install profile." )
 endif ( FRAMEWORK )
+
+message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
 
 # Platform specific configuration
 if ( PLATFORM_LINUX ) # Tested on Ubuntu v12.04-LTS

@@ -147,7 +147,7 @@ find_package ( SDL_ttf REQUIRED )
 find_package ( OpenAL REQUIRED )
 find_package ( sndfile REQUIRED )
 
-find_package ( LibMagic REQUIRED )
+find_package ( libmagic REQUIRED )
 
 # LibMagic requires zlib when statically linking
 if ( PLATFORM_OSX )

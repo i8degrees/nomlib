@@ -401,7 +401,7 @@ if ( EXAMPLES )
       ${EXAMPLES_SRC_DIR}/fonts/font.cpp
       )
 
-  link_libraries ( ${PROJECT_NAME} ${SDL_LIBRARY} "SDLMain" )
+  link_libraries ( ${PROJECT_NAME} ${SDL_LIBRARY} "SDLmain" )
   add_executable ( audio/audio ${NOMLIB_EXAMPLES_AUDIO} )
   add_executable ( app/app ${NOMLIB_EXAMPLES_APP} )
   add_executable ( fonts/font ${NOMLIB_EXAMPLES_FONTS} )

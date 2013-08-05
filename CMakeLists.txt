@@ -372,6 +372,15 @@ install ( FILES
           OPTIONAL
         )
 
+# Install nomlib's cmake module; this should end up in a spot that is
+# automatically searched by find_package.
+install ( DIRECTORY
+          "${NOMLIB_RESOURCES_DIR}/CMake"
+          DESTINATION
+          "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
+          OPTIONAL
+        )
+
 # Install software license & general project information
 install ( FILES
           ${PROJECT_SOURCE_DIR}/README.md

@@ -43,8 +43,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/Sleep.hpp"
 
 #if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/OSX/DialogMessageBox.hpp>
-  #include <nomlib/system/OSX/ResourcePath.hpp>
+  #include <nomlib/system/osx/DialogMessageBox.hpp>
+  #include <nomlib/system/osx/ResourcePath.hpp>
 #elif defined ( NOM_PLATFORM_LINUX )
   #include <nomlib/system/unix/DialogMessageBox.hpp>
 #elif defined ( NOM_PLATFORM_WINDOWS )

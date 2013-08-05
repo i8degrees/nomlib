@@ -53,8 +53,8 @@ endif ( PLATFORM_OSX OR PLATFORM_LINUX )
 
 if ( PLATFORM_OSX )
 
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/OSX/ResourcePath.cpp )
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/OSX/DialogMessageBox.cpp )
+  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/osx/ResourcePath.cpp )
+  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/osx/DialogMessageBox.cpp )
 
 elseif ( PLATFORM_LINUX )
 

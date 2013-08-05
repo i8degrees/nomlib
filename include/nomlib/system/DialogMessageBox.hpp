@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/Logger.hpp"
 
 #if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/OSX/DialogMessageBox.hpp>
+  #include "nomlib/system/osx/DialogMessageBox.hpp"
 #elif defined ( NOM_PLATFORM_LINUX )
   #include <nomlib/system/unix/DialogMessageBox.hpp>
 #elif defined ( NOM_PLATFORM_WINDOWS )

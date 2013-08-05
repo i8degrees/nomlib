@@ -156,22 +156,24 @@ endif ( PLATFORM_OSX )
 
 # We need GTK to display dialog message boxes if we are not building a debug
 # enabled library.
-if ( NOT DEFINED DEBUG AND PLATFORM_LINUX )
-  find_package ( GTK )
-endif ( NOT DEFINED DEBUG AND PLATFORM_LINUX )
+if ( PLATFORM_LINUX )
+  if ( NOT DEBUG )
+    find_package ( GTK2 )
+  endif ( NOT DEBUG )
+endif ( PLATFORM_LINUX )
 
 if ( SDL_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
 endif ( SDL_FOUND )
 
-if ( SDL_IMAGE_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_IMAGE_INCLUDE_DIR} )
+if ( SDLIMAGE_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDLIMAGE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDLIMAGE_LIBRARY} )
 endif ( SDL_IMAGE_FOUND )
 
-if ( SDL_TTF_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_TTF_INCLUDE_DIR} )
+if ( SDLTTF_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDLTTF_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDLTTF_LIBRARY} )
 endif ( SDL_TTF_FOUND )
 
@@ -209,10 +211,12 @@ if ( LIBMAGIC_FOUND )
 
 endif ( LIBMAGIC_FOUND )
 
-if ( PLATFORM_LINUX AND GTK_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${GTK_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${GTK_LIBRARY} )
-endif ( PLATFORM_LINUX AND GTK_FOUND )
+if ( PLATFORM_LINUX )
+  if ( GTK2_FOUND )
+    set ( EXT_HEADERS ${EXT_HEADERS} ${GTK2_INCLUDE_DIRS} )
+    set ( EXTLIBS ${EXTLIBS} ${GTK2_LIBRARIES} )
+  endif ( GTK2_FOUND )
+endif ( PLATFORM_LINUX )
 
 # Now that we have collected all the header file search paths we need, we
 # include them all here for the compiler to be made aware of

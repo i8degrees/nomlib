@@ -34,15 +34,23 @@ int32 GTK_DialogMessageBox  ( const std::string& header, const std::string& mess
                               int32 messagebox_type
                             )
 {
-  dialog = gtk_message_dialog_new ( main_application_window,
+  GtkWidget* window;
+  GtkWidget* dialog;
+
+  gtk_init ( nullptr, nullptr );
+
+  window = gtk_window_new ( GTK_WINDOW_TOPLEVEL );
+
+  dialog = gtk_message_dialog_new ( GTK_WINDOW(window),
                                     GTK_DIALOG_DESTROY_WITH_PARENT,
                                     GTK_MESSAGE_ERROR, // type
                                     GTK_BUTTONS_OK,
-                                    header,
-                                    message,
+                                    header.c_str(),
+                                    message.c_str(),
                                   );
 
  gtk_dialog_run ( GTK_DIALOG (dialog) );
+
  gtk_widget_destroy ( dialog );
 }
 

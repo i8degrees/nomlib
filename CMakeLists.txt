@@ -154,7 +154,7 @@ if ( PLATFORM_OSX )
   find_package ( ZLIB REQUIRED )
 endif ( PLATFORM_OSX )
 
-# We need GTK for display of dialog message boxes
+# We need GTK2 on Linux for display of dialog message boxes
 if ( PLATFORM_LINUX )
   find_package ( GTK2 REQUIRED gtk )
 endif ( PLATFORM_LINUX )
@@ -163,35 +163,35 @@ if ( SDL_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
 else ( NOT SDL_FOUND )
-  message ( FATAL_ERROR "Required dependency SDL missing" )
+  message ( FATAL_ERROR "Required dependency SDL missing!" )
 endif ( SDL_FOUND )
 
 if ( SDLIMAGE_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDLIMAGE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDLIMAGE_LIBRARY} )
 else ( NOT SDLIMAGE_FOUND )
-  message ( FATAL_ERROR "Required dependency SDL_image missing" )
+  message ( FATAL_ERROR "Required dependency SDL_image missing!" )
 endif ( SDLIMAGE_FOUND )
 
 if ( SDLTTF_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDLTTF_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDLTTF_LIBRARY} )
 else ( NOT SDLTTF_FOUND )
-  message ( FATAL_ERROR "Required dependency SDL_ttf missing" )
+  message ( FATAL_ERROR "Required dependency SDL_ttf missing!" )
 endif ( SDLTTF_FOUND )
 
 if ( OPENAL_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
 else ( NOT OPENAL_FOUND )
-  message ( FATAL_ERROR "Required dependency OpenAL missing" )
+  message ( FATAL_ERROR "Required dependency OpenAL missing!" )
 endif ( OPENAL_FOUND )
 
 if ( LIBSNDFILE_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 else ( NOT LIBSNDFILE_FOUND )
-  message ( FATAL_ERROR "Required dependency sndfile missing" )
+  message ( FATAL_ERROR "Required dependency sndfile missing!" )
 endif ( LIBSNDFILE_FOUND )
 
 if ( LIBMAGIC_FOUND )
@@ -209,7 +209,7 @@ if ( LIBMAGIC_FOUND )
     if ( ZLIB_FOUND )
       set ( EXTLIBS ${EXTLIBS} ${LIBMAGIC_LIBRARY} ${ZLIB_LIBRARY} )
     else ( NOT ZLIB_FOUND )
-      message ( FATAL_ERROR "Required dependency zlib missing" )
+      message ( FATAL_ERROR "Required dependency zlib missing!" )
     endif ( ZLIB_FOUND )
   # Otherwise we do not need to link zlib with libmagic as we will be linking
   # libmagic as a dynamic library -- the burden then falls on libmagic for
@@ -219,7 +219,7 @@ if ( LIBMAGIC_FOUND )
   endif ( PLATFORM_OSX )
 
 else ( NOT LIBMAGIC_FOUND )
-  message ( FATAL_ERROR "Required dependency libmagic missing" )
+  message ( FATAL_ERROR "Required dependency libmagic missing!" )
 endif ( LIBMAGIC_FOUND )
 
 if ( PLATFORM_LINUX )
@@ -227,12 +227,11 @@ if ( PLATFORM_LINUX )
     set ( EXT_HEADERS ${EXT_HEADERS} ${GTK2_INCLUDE_DIRS} )
     set ( EXTLIBS ${EXTLIBS} ${GTK2_LIBRARIES} )
   else ( NOT GTK2_FOUND )
-    message ( FATAL_ERROR "Required dependency GTK2 missing" )
+    message ( FATAL_ERROR "Required dependency GTK2 missing!" )
   endif ( GTK2_FOUND )
 endif ( PLATFORM_LINUX )
 
-# Now that we have collected all the header file search paths we need, we
-# include them all here for the compiler to be made aware of
+# External header files inclusion
 include_directories ( ${EXT_HEADERS} )
 
 add_library ( ${PROJECT_NAME} SHARED ${NOMLIB_SOURCE} )
@@ -303,7 +302,7 @@ if ( PLATFORM_OSX )
 
     # Bundle external dependencies within our application bundle for distribution
     #
-    # * All paths must *NOT* include closing backslash character
+    # All paths must *NOT* include closing backslash character
     #
     # SDL frameworks are all from the official distribution, found on the
     # official web site at https://www.libsdl.org.
@@ -311,8 +310,8 @@ if ( PLATFORM_OSX )
     # SDL.framework v1.2.15
     # SDL_image.framework v1.2.12
     # SDL_ttf.framework v2.0.11
-
     # sndfile.framework v1.0.25
+    # libmagic v5.14
     #
     # See README text within extlibs folder in root of this git repository
     # for packaging details of libsndfile.
@@ -336,7 +335,7 @@ if ( PLATFORM_OSX )
     set ( RUNTIME_PATH
           "@loader_path/../Frameworks"
           # SDL_image.framework & SDL_ttf.framework each have their own bundled
-          # dependencies and therefore:
+          # dependencies and therefore things get a bit crazier:
           "@loader_path/../../Frameworks"
         )
 

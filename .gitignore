@@ -4,17 +4,12 @@ version.hpp
 install_options
 *.sublime-workspace
 *.bck
-*.o
-*.debug
-*.so
-*.dylib
-*.dSYM
-libnomlib.bc
 # ctags
 *.tags
 *.tags_sorted_by_file
 
 # bins
+build
 examples/audio/audio
 examples/app/app
 examples/fonts/font

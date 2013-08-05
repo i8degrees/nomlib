@@ -30,6 +30,10 @@ include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
 # Utility macro helpers
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
 
+# CMake Environment
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules" )
+set ( CMAKE_TEMPLATE_PATH ${CMAKE_TEMPLATE_PATH} "${PROJECT_SOURCE_DIR}/cmake/templates" )
+
 set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" ) # nomlib/src
 set ( NOMLIB_HEADERS_DIR "include" ) # include/nomlib
 set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" ) # nomlib/examples
@@ -44,25 +48,6 @@ set ( INSTALL_HEADERS_PATH "include" )
 set ( INSTALL_DOCS_PATH "$share/doc/${PROJECT_NAME}" )
 set ( INSTALL_GENERATED_DOCS_PATH "${INSTALL_DOCS_PATH}" )
 set ( INSTALL_MAN_PAGES_PATH "share/man" )
-
-# CMake Environment
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules" )
-set ( CMAKE_TEMPLATE_PATH ${CMAKE_TEMPLATE_PATH} "${PROJECT_SOURCE_DIR}/cmake/templates" )
-
-# Auto-generated at build-time header files
-configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
-                  "${PROJECT_SOURCE_DIR}/${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}/version.hpp"
-                )
-
-# Uninstall target support (always available)
-configure_file  ( "${CMAKE_TEMPLATE_PATH}/uninstall.cmake.in"
-                  "${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake"
-                  IMMEDIATE @ONLY
-                )
-
-add_custom_target ( uninstall COMMAND ${CMAKE_COMMAND} -P
-                    ${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake
-                  )
 
 if ( PLATFORM_OSX )
   option ( FRAMEWORK "Build OSX Framework instead of dylib" on )
@@ -407,3 +392,18 @@ if ( EXAMPLES )
   add_executable ( fonts/font ${NOMLIB_EXAMPLES_FONTS} )
 
 endif ( EXAMPLES )
+
+# Auto-generated at build-time header files
+configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
+                  "${PROJECT_SOURCE_DIR}/${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}/version.hpp"
+                )
+
+# Uninstall target support (always available)
+configure_file  ( "${CMAKE_TEMPLATE_PATH}/uninstall.cmake.in"
+                  "${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake"
+                  IMMEDIATE @ONLY
+                )
+
+add_custom_target ( uninstall COMMAND ${CMAKE_COMMAND} -P
+                    ${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake
+                  )

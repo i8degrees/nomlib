@@ -222,6 +222,17 @@ else ( NOT LIBMAGIC_FOUND )
   message ( FATAL_ERROR "Required dependency libmagic missing!" )
 endif ( LIBMAGIC_FOUND )
 
+if ( PLATFORM_OSX )
+  # The SDL_LIBRARY variable for OS X is appended with the "-framework Cocoa"
+  # linkage flag, so we have to sanitize this before hand if we want to use the
+  # value in anything other than linking -- such as packaging the library into a
+  # bundle.
+  #
+  # From here on out, the burden of linking to the Cocoa framework when need be
+  # is entirely on us. I say good riddance!
+  string ( REPLACE "-framework Cocoa" "" SDL_LIBRARY ${SDL_LIBRARY} )
+endif ( PLATFORM_OSX )
+
 if ( PLATFORM_LINUX )
   if ( GTK2_FOUND )
     set ( EXT_HEADERS ${EXT_HEADERS} ${GTK2_INCLUDE_DIRS} )
@@ -314,16 +325,11 @@ if ( PLATFORM_OSX )
     # libmagic v5.14
     #
     # See README text within extlibs folder in root of this git repository
-    # for packaging details of libsndfile.
-
-    # The SDL_LIBRARY variable for OS X is appended with the "-framework Cocoa"
-    # linkage flag, so we have to sanitize this before hand for use in locating
-    # and bundling this dependency.
-    string ( REPLACE "-framework Cocoa" "" SDL_REAL_LIBRARY ${SDL_LIBRARY} )
+    # for packaging details of sndfile.
 
     # Bundled frameworks we depend on
     install ( DIRECTORY
-              "${SDL_REAL_LIBRARY}" # SDL.framework
+              "${SDL_LIBRARY}" # SDL.framework
               "${SDLIMAGE_LIBRARY}" # SDL_image.framework
               "${SDLTTF_LIBRARY}" # SDL_ttf.framework
               "${LIBSNDFILE_LIBRARY}" # sndfile.framework
@@ -412,7 +418,8 @@ if ( EXAMPLES )
       ${EXAMPLES_SRC_DIR}/fonts/font.cpp
       )
 
-  link_libraries ( ${PROJECT_NAME} ${SDL_LIBRARY} "SDLmain" )
+  link_libraries ( ${PROJECT_NAME} ${SDL_LIBRARY} )
+
   add_executable ( audio/audio ${NOMLIB_EXAMPLES_AUDIO} )
   add_executable ( app/app ${NOMLIB_EXAMPLES_APP} )
   add_executable ( fonts/font ${NOMLIB_EXAMPLES_FONTS} )

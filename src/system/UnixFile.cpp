@@ -54,7 +54,6 @@ NOM_LOG_ERR ( "Could not initialize magic library." );
     return extension;
   }
 
-  // TODO: use magic_error ( magic_t cookie ) to obtain err?
   if ( magic_load ( cookie, nullptr ) != 0 )
   {
 NOM_LOG_ERR ( "Could not read magic database." );
@@ -75,8 +74,8 @@ const std::string UnixFile::extension ( const std::string& file )
 {
   std::string extension = "\0";
 
-  if ( file.find_last_of ( "." ) != std::string::npos )
-    extension = file.substr ( file.find_last_of (".") + 1 ); // match found
+  if ( file.find_last_of ( "." ) != std::string::npos ) // match found
+    extension = file.substr ( file.find_last_of (".") + 1 );
 
    // if we reach this point, return false (a null terminated string)
   return extension;

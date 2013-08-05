@@ -60,6 +60,8 @@ class UnixFile: public IFile
     /// $ file -b --mime-type <file>
     ///
     /// Returns a null terminated string on err
+    ///
+    /// \todo Use magic_error ( magic_t cookie ) to obtain err?
     const std::string mime ( const std::string& file );
 
     /// Returns the file extension of the input file path
@@ -81,12 +83,14 @@ class UnixFile: public IFile
     ///
     /// Extract the directory portion of a pathname
     ///
-    /// dir_path is arbitrarily limited to 1024 characters.
+    /// dir_path is arbitrarily limited to the POSIX standard of 256 characters
+    /// for maximum cross-platform portability.
     const std::string path ( const std::string& dir_path );
 
     /// getcwd(3) wrapper
     ///
-    /// Returned path is arbitrarily limited to 1024 characters.
+    /// Return path is arbitrarily limited to the POSIX standard of 256
+    /// characters for maximum cross-platform portability.
     const std::string currentPath ( void );
 
     /// chdir(2) wrapper

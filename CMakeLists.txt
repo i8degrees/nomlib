@@ -240,7 +240,7 @@ if ( PLATFORM_OSX )
 
   if ( FRAMEWORK )
 
-    set ( INSTALL_LIB_PATH "${PROJECT_NAME}.framework" )
+    set ( INSTALL_LIB_PATH "${BUNDLE_NAME}.framework" )
 
     set ( INSTALL_ROOT_PATH "${INSTALL_LIB_PATH}" )
 

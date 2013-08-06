@@ -24,6 +24,12 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/graphics/Pixel.cpp
       ${SRC_DIR}/graphics/Rectangle.cpp
       ${SRC_DIR}/graphics/Sprite.cpp
+      # nomJSON
+      ${SRC_DIR}/json/JSON_Array.cpp
+      ${SRC_DIR}/json/JSON_FileReader.cpp
+      ${SRC_DIR}/json/JSON_FileWriter.cpp
+      ${SRC_DIR}/json/JSON_Object.cpp
+      ${SRC_DIR}/json/JSON_Value.cpp
       # system
       ${SRC_DIR}/system/File.cpp
       ${SRC_DIR}/system/Clock.cpp

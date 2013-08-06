@@ -149,6 +149,7 @@ find_package ( OpenAL REQUIRED )
 find_package ( sndfile REQUIRED )
 
 find_package ( libmagic REQUIRED )
+find_package ( json_spirit REQUIRED )
 
 # LibMagic requires zlib when statically linking
 if ( PLATFORM_OSX )
@@ -222,6 +223,13 @@ if ( LIBMAGIC_FOUND )
 else ( NOT LIBMAGIC_FOUND )
   message ( FATAL_ERROR "Required dependency libmagic missing!" )
 endif ( LIBMAGIC_FOUND )
+
+if ( JSON_SPIRIT_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${JSON_SPIRIT_LIBRARY} )
+else ( NOT JSON_SPIRIT_FOUND )
+  message ( FATAL_ERROR "Required dependency json_spirit missing!" )
+endif ( JSON_SPIRIT_FOUND )
 
 if ( PLATFORM_OSX )
   # The SDL_LIBRARY variable for OS X is appended with the "-framework Cocoa"
@@ -334,6 +342,7 @@ if ( PLATFORM_OSX )
               "${SDLIMAGE_LIBRARY}" # SDL_image.framework
               "${SDLTTF_LIBRARY}" # SDL_ttf.framework
               "${LIBSNDFILE_LIBRARY}" # sndfile.framework
+              "${JSON_SPIRIT_LIBRARY}" # json_spirit.framework
               DESTINATION "${INSTALL_EXT_FRAMEWORKS_PATH}"
             )
 

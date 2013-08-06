@@ -459,3 +459,20 @@ configure_file  ( "${CMAKE_TEMPLATE_PATH}/uninstall.cmake.in"
 add_custom_target ( uninstall COMMAND ${CMAKE_COMMAND} -P
                     ${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake
                   )
+
+# CPack configuration
+include ( "${PROJECT_SOURCE_DIR}/cmake/CPackConfig.cmake" )
+
+include ( InstallRequiredSystemLibraries )
+
+# Platform specific generator presets
+if ( PLATFORM_OSX )
+  set ( CPACK_GENERATOR "DragNDrop" )
+elseif ( PLATFORM_LINUX )
+  set ( CPACK_GENERATOR "DEB" )
+elseif ( PLATFORM_UNKNOWN )
+  set ( CPACK_GENERATOR "ZIP" )
+endif ( PLATFORM_OSX )
+
+include ( CPack )
+

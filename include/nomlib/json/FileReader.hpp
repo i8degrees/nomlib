@@ -26,39 +26,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOM_JSON_OBJECT_HEADERS
-#define NOM_JSON_OBJECT_HEADERS
+#ifndef NOM_JSON_FILEREADER_HEADERS
+#define NOM_JSON_FILEREADER_HEADERS
 
 #include <iostream>
+#include <fstream>
 #include <string>
-#include <array>
 
 #include <json_spirit.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/Logger.hpp"
-#include "nomlib/json/JSON_Value.hpp"
+#include "nomlib/json/Object.hpp"
 
 namespace nom {
+  namespace json {
 
-class JSON_Object
+class FileReader
 {
   public:
-    JSON_Object ( void );
-    ~JSON_Object ( void );
+    FileReader ( void );
+    ~FileReader ( void );
 
-    void Add ( JSON_Value &value );
+    int readInt ( const json_spirit::Value &value );
+    std::string readString ( const json_spirit::Value &value );
 
-    void endl ( void );
-    void clear ( void );
+    Value getObject ( const json_spirit::Object &obj, const std::string& name );
 
-    json_spirit::Object obj; // TODO: relocate to private scope
-    json_spirit::Array values; // TODO: relocate to private scope
+    bool Parse ( std::string filename );
+
+    std::vector<Value> val;
+
   private:
-    // ...
+    std::ifstream fp; // input file stream object
 };
 
-
+  } // namespace json
 } // namespace nom
 
-#endif // NOM_JSON_OBJECT_HEADERS defined
+#endif // include guard defined

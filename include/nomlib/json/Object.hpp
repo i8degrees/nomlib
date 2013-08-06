@@ -26,39 +26,41 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/json/JSON_Object.hpp"
+#ifndef NOM_JSON_OBJECT_HEADERS
+#define NOM_JSON_OBJECT_HEADERS
+
+#include <iostream>
+#include <string>
+#include <array>
+
+#include <json_spirit.h>
+
+#include "nomlib/config.hpp"
+#include "nomlib/system/Logger.hpp"
+#include "nomlib/json/Value.hpp"
 
 namespace nom {
+  namespace json {
 
-JSON_Object::JSON_Object ( void )
+class Object
 {
-NOM_LOG_CLASSINFO;
+  public:
+    Object ( void );
+    ~Object ( void );
 
-  this->obj.clear();
-}
+    void Add ( Value &value );
 
-JSON_Object::~JSON_Object ( void )
-{
-NOM_LOG_CLASSINFO;
+    void endl ( void );
+    void clear ( void );
 
-  this->obj.clear();
-}
-
-void JSON_Object::clear ( void )
-{
-  this->obj.clear();
-}
-
-void JSON_Object::Add ( JSON_Value &value )
-{
-  this->obj.push_back ( json_spirit::Pair ( value.getName(), value.getValue() ) );
-}
-
-void JSON_Object::endl ( void )
-{
-  this->values.push_back ( this->obj );
-  this->clear();
-}
+    json_spirit::Object obj; // TODO: relocate to private scope
+    json_spirit::Array values; // TODO: relocate to private scope
+  private:
+    // ...
+};
 
 
+  } // namespace json
 } // namespace nom
+
+#endif // include guard defined

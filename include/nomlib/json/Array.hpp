@@ -26,86 +26,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/json/JSON_Value.hpp"
+#ifndef NOM_JSON_ARRAY_HEADERS
+#define NOM_JSON_ARRAY_HEADERS
+
+#include <iostream>
+#include <string>
+#include <array>
+
+#include <json_spirit.h>
+
+#include "nomlib/config.hpp"
+#include "nomlib/system/Logger.hpp"
+#include "nomlib/json/Value.hpp"
 
 namespace nom {
+  namespace json {
 
-JSON_Value::JSON_Value ( void )
+class Value;
+
+class Array
 {
-NOM_LOG_CLASSINFO;
+  public:
+    Array ( Value value );
+    ~Array ( void );
 
-  this->name = "\0";
-  this->value = 0;
-}
+    void clear ( void );
+    void Add ( Value value );
+    void endl ( void );
 
-JSON_Value::JSON_Value ( const std::string name_, const json_spirit::Value value_ )
-{
-NOM_LOG_CLASSINFO;
+    std::vector<Value> values;
 
-  this->name = name_;
-  this->value = value_;
-}
-
-/*
-JSON_Value::JSON_Value ( const std::string name_, const JSON_Array value_ )
-{
-  #ifdef DEBUG_JSON_VALUE_OBJ
-    std::cout << "JSON_Value::JSON_Value (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
-
-  this->name = name_;
-  this->value = value_;
-}
-*/
-
-JSON_Value::~JSON_Value ( void )
-{
-NOM_LOG_CLASSINFO;
-}
-
-const std::string JSON_Value::getName ( void )
-{
-  return this->name;
-}
-
-const json_spirit::Value JSON_Value::getValue ( void ) const
-{
-  switch ( this->value.type() )
-  {
-    default:
-    break;
-
-    case json_spirit::int_type:
-      //return json_spirit::Value ( this->value );
-      return this->value.get_int();
-    break;
-
-    case json_spirit::array_type:
-      return this->value.get_array();
-    break;
-
-    case json_spirit::str_type:
-      //return this->value.get_str();
-    break;
-  }
-  return 0;
-  //return "Undefined value";
-}
-
-const std::string JSON_Value::getString ( void ) const
-{
-  return this->value.get_str();
-}
-
-void JSON_Value::setName ( const std::string name_ )
-{
-  this->name = name_;
-}
-
-void JSON_Value::setValue ( const json_spirit::Value value_ )
-{
-  this->value = value_;
-}
+  private:
+    // ...
+};
 
 
+  } // namespace json
 } // namespace nom
+
+#endif // include guard defined

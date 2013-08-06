@@ -26,33 +26,84 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/json/JSON_FileWriter.hpp"
+#include "nomlib/json/Value.hpp"
 
 namespace nom {
+  namespace json {
 
-JSON_FileWriter::JSON_FileWriter ( void )
+Value::Value ( void )
+{
+NOM_LOG_CLASSINFO;
+
+  this->name = "\0";
+  this->value = 0;
+}
+
+Value::Value ( const std::string name_, const json_spirit::Value value_ )
+{
+NOM_LOG_CLASSINFO;
+
+  this->name = name_;
+  this->value = value_;
+}
+
+/*
+Value::Value ( const std::string name_, const Array value_ )
+{
+  this->name = name_;
+  this->value = value_;
+}
+*/
+
+Value::~Value ( void )
 {
 NOM_LOG_CLASSINFO;
 }
 
-JSON_FileWriter::~JSON_FileWriter ( void )
+const std::string Value::getName ( void )
 {
-NOM_LOG_CLASSINFO;
-
-  if ( this->fp.is_open() )
-    this->fp.close();
+  return this->name;
 }
 
-bool JSON_FileWriter::Write ( std::string filename, JSON_Object &root )
+const json_spirit::Value Value::getValue ( void ) const
 {
-  this->fp.open ( filename ); // open for writing
+  switch ( this->value.type() )
+  {
+    default:
+    break;
 
-  //json_spirit::write_formatted ( json_spirit::Value ( root ), this->fp );
+    case json_spirit::int_type:
+      //return json_spirit::Value ( this->value );
+      return this->value.get_int();
+    break;
 
-  this->fp.close();
+    case json_spirit::array_type:
+      return this->value.get_array();
+    break;
 
-  return true;
+    case json_spirit::str_type:
+      //return this->value.get_str();
+    break;
+  }
+  return 0;
+  //return "Undefined value";
+}
+
+const std::string Value::getString ( void ) const
+{
+  return this->value.get_str();
+}
+
+void Value::setName ( const std::string name_ )
+{
+  this->name = name_;
+}
+
+void Value::setValue ( const json_spirit::Value value_ )
+{
+  this->value = value_;
 }
 
 
+  } // namespace json
 } // namespace nom

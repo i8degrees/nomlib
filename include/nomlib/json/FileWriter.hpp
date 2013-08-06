@@ -26,47 +26,38 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOM_JSON_FILEREADER_HEADERS
-#define NOM_JSON_FILEREADER_HEADERS
+#ifndef NOM_JSON_FILEWRITER_HEADERS
+#define NOM_JSON_FILEWRITER_HEADERS
 
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <array>
 
 #include <json_spirit.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/Logger.hpp"
-#include "nomlib/json/JSON_Object.hpp"
+#include "nomlib/json/Object.hpp"
+#include "nomlib/json/Array.hpp"
 
 namespace nom {
+  namespace json {
 
-class JSON_FileReader
+class FileWriter
 {
   public:
-    JSON_FileReader ( void );
-    ~JSON_FileReader ( void );
+    FileWriter ( void );
+    ~FileWriter ( void );
 
-    int readInt ( const json_spirit::Value &value );
-    std::string readString ( const json_spirit::Value &value );
-
-    JSON_Value getObject ( const json_spirit::Object &obj, const std::string& name );
-
-    bool Parse ( std::string filename );
-
-    std::vector<JSON_Value> val;
+    bool Write ( std::string filename, Object &root );
 
   private:
-    std::ifstream fp; // input file stream object
+    std::ofstream fp; // output file stream object
 };
 
 
+  } // namespace json
 } // namespace nom
 
-/*
-    Example Usage:
-
-  * Stub
-*/
-
-#endif // NOM_JSON_FILEREADER_HEADERS defined
+#endif // include guard defined

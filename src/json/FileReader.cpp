@@ -26,16 +26,17 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/json/JSON_FileReader.hpp"
+#include "nomlib/json/FileReader.hpp"
 
 namespace nom {
+  namespace json {
 
-JSON_FileReader::JSON_FileReader ( void )
+FileReader::FileReader ( void )
 {
 NOM_LOG_CLASSINFO;
 }
 
-JSON_FileReader::~JSON_FileReader ( void )
+FileReader::~FileReader ( void )
 {
 NOM_LOG_CLASSINFO;
 
@@ -53,17 +54,17 @@ NOM_LOG_CLASSINFO;
   //return i->second;
 //}
 
-int JSON_FileReader::readInt ( const json_spirit::Value &value )
+int FileReader::readInt ( const json_spirit::Value &value )
 {
   return value.get_int();
 }
 
-std::string JSON_FileReader::readString ( const json_spirit::Value &value )
+std::string FileReader::readString ( const json_spirit::Value &value )
 {
   return value.get_str();
 }
 
-JSON_Value JSON_FileReader::getObject ( const json_spirit::Object &obj, const std::string& name )
+Value FileReader::getObject ( const json_spirit::Object &obj, const std::string& name )
 {
   for ( json_spirit::Object::size_type o = 0; o != obj.size(); o++ )
   {
@@ -80,7 +81,7 @@ JSON_Value JSON_FileReader::getObject ( const json_spirit::Object &obj, const st
 
         case json_spirit::int_type:
           //std::cout << path << ": " << value.get_int() << std::endl;
-          return JSON_Value ( path, value );
+          return Value ( path, value );
         break;
 
         case json_spirit::array_type:
@@ -91,7 +92,7 @@ JSON_Value JSON_FileReader::getObject ( const json_spirit::Object &obj, const st
             //temp.push_back ( arr[i].get_int() );
             //std::cout << arr[i].get_int();
           }
-          //return JSON_Value ( path, temp );
+          //return Value ( path, temp );
           /*
           if ( i == arr.size() - 1 ) // next to last element
             std::cout << " ";
@@ -105,15 +106,15 @@ JSON_Value JSON_FileReader::getObject ( const json_spirit::Object &obj, const st
 
         case json_spirit::str_type:
           //std::cout << path << ": " << value.get_str() << std::endl;
-          return JSON_Value ( path, value );
+          return Value ( path, value );
         break;
       }
     }
   }
-  return JSON_Value ( "ERR", "Undefined" );
+  return Value ( "ERR", "Undefined" );
 }
 
-bool JSON_FileReader::Parse ( std::string filename )
+bool FileReader::Parse ( std::string filename )
 {
   json_spirit::Object root_obj;
   json_spirit::Value value;
@@ -168,4 +169,5 @@ bool JSON_FileReader::Parse ( std::string filename )
 }
 
 
+  } // namespace json
 } // namespace nom

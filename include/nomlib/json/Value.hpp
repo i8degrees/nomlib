@@ -26,11 +26,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOM_JSON_FILEWRITER_HEADERS
-#define NOM_JSON_FILEWRITER_HEADERS
+#ifndef NOM_JSON_VALUE_HEADERS
+#define NOM_JSON_VALUE_HEADERS
 
 #include <iostream>
-#include <fstream>
 #include <string>
 #include <array>
 
@@ -38,30 +37,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/Logger.hpp"
-#include "nomlib/json/JSON_Object.hpp"
-#include "nomlib/json/JSON_Array.hpp"
+#include "nomlib/json/Array.hpp"
 
 namespace nom {
+  namespace json {
 
-class JSON_FileWriter
+class Value
 {
   public:
-    JSON_FileWriter ( void );
-    ~JSON_FileWriter ( void );
+    Value ( void );
+    Value ( const std::string name_, const json_spirit::Value value_ );
+    //Value ( const std::string name_, const JSON_Array value_ );
+    ~Value ( void );
 
-    bool Write ( std::string filename, JSON_Object &root );
+    const std::string getName ( void );
+    const json_spirit::Value getValue ( void ) const;
+    const std::string getString ( void ) const;
+
+    void setName ( const std::string name_ );
+    void setValue ( const json_spirit::Value value_ );
 
   private:
-    std::ofstream fp; // output file stream object
+    std::string name;
+    json_spirit::Value value;
+    //json_spirit::Array arr;
 };
 
 
+  } // namespace json
 } // namespace nom
 
-/*
-    Example Usage:
-
-  * Stub
-*/
-
-#endif // NOM_JSON_FILEWRITER_HEADERS defined
+#endif // include guard defined

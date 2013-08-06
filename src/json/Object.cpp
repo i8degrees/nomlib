@@ -26,10 +26,41 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOM_JSON_CFG_HEADERS
-#define NOM_JSON_CFG_HEADERS
+#include "nomlib/json/Object.hpp"
 
-#include <iostream>
-#include <string>
+namespace nom {
+  namespace json {
 
-#endif // NOM_JSON_CFG_HEADERS defined
+Object::Object ( void )
+{
+NOM_LOG_CLASSINFO;
+
+  this->obj.clear();
+}
+
+Object::~Object ( void )
+{
+NOM_LOG_CLASSINFO;
+
+  this->obj.clear();
+}
+
+void Object::clear ( void )
+{
+  this->obj.clear();
+}
+
+void Object::Add ( Value &value )
+{
+  this->obj.push_back ( json_spirit::Pair ( value.getName(), value.getValue() ) );
+}
+
+void Object::endl ( void )
+{
+  this->values.push_back ( this->obj );
+  this->clear();
+}
+
+
+  } // namespace json
+} // namespace nom

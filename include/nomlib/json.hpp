@@ -30,11 +30,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_JSON_HEADERS
 
 #include "nomlib/config.hpp"
-#include "nomlib/json/JSON_Array.hpp"
-#include "nomlib/json/JSON_FileReader.hpp"
-#include "nomlib/json/JSON_FileWriter.hpp"
-#include "nomlib/json/JSON_Object.hpp"
-#include "nomlib/json/JSON_Value.hpp"
-#include "nomlib/json/JSON_config.hpp"
+#include "nomlib/json/Array.hpp"
+#include "nomlib/json/FileReader.hpp"
+#include "nomlib/json/FileWriter.hpp"
+#include "nomlib/json/Object.hpp"
+#include "nomlib/json/Value.hpp"
 
 #endif // include guard defined

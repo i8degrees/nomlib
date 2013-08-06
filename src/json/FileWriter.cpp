@@ -26,41 +26,35 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/json/JSON_Array.hpp"
+#include "nomlib/json/FileWriter.hpp"
 
 namespace nom {
+  namespace json {
 
-JSON_Array::JSON_Array ( JSON_Value value )
+FileWriter::FileWriter ( void )
+{
+NOM_LOG_CLASSINFO;
+}
+
+FileWriter::~FileWriter ( void )
 {
 NOM_LOG_CLASSINFO;
 
-  this->values.clear();
-
-  this->values.push_back ( value );
+  if ( this->fp.is_open() )
+    this->fp.close();
 }
 
-JSON_Array::~JSON_Array ( void )
+bool FileWriter::Write ( std::string filename, Object &root )
 {
-NOM_LOG_CLASSINFO;
+  this->fp.open ( filename ); // open for writing
 
-  this->values.clear();
-}
+  //json_spirit::write_formatted ( json_spirit::Value ( root ), this->fp );
 
-void JSON_Array::clear ( void )
-{
-  this->values.clear();
-}
+  this->fp.close();
 
-void JSON_Array::Add ( JSON_Value value )
-{
-  this->values.push_back ( value );
-}
-
-void JSON_Array::endl ( void )
-{
-  //this->values.push_back ( this->obj );
-  this->clear();
+  return true;
 }
 
 
+  } // namespace json
 } // namespace nom

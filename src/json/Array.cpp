@@ -26,43 +26,43 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOM_JSON_VALUE_HEADERS
-#define NOM_JSON_VALUE_HEADERS
-
-#include <iostream>
-#include <string>
-#include <array>
-
-#include <json_spirit.h>
-
-#include "nomlib/config.hpp"
-#include "nomlib/system/Logger.hpp"
-#include "nomlib/json/JSON_Array.hpp"
+#include "nomlib/json/Array.hpp"
 
 namespace nom {
+  namespace json {
 
-class JSON_Value
+Array::Array ( Value value )
 {
-  public:
-    JSON_Value ( void );
-    JSON_Value ( const std::string name_, const json_spirit::Value value_ );
-    //JSON_Value ( const std::string name_, const JSON_Array value_ );
-    ~JSON_Value ( void );
+NOM_LOG_CLASSINFO;
 
-    const std::string getName ( void );
-    const json_spirit::Value getValue ( void ) const;
-    const std::string getString ( void ) const;
+  this->values.clear();
 
-    void setName ( const std::string name_ );
-    void setValue ( const json_spirit::Value value_ );
+  this->values.push_back ( value );
+}
 
-  private:
-    std::string name;
-    json_spirit::Value value;
-    //json_spirit::Array arr;
-};
+Array::~Array ( void )
+{
+NOM_LOG_CLASSINFO;
+
+  this->values.clear();
+}
+
+void Array::clear ( void )
+{
+  this->values.clear();
+}
+
+void Array::Add ( Value value )
+{
+  this->values.push_back ( value );
+}
+
+void Array::endl ( void )
+{
+  //this->values.push_back ( this->obj );
+  this->clear();
+}
 
 
+  } // namespace json
 } // namespace nom
-
-#endif // NOM_JSON_VALUE_HEADERS defined

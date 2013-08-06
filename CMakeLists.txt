@@ -451,6 +451,9 @@ if ( EXAMPLES )
   add_executable ( audio/audio ${NOMLIB_EXAMPLES_AUDIO} )
   add_executable ( app/app ${NOMLIB_EXAMPLES_APP} )
   add_executable ( fonts/font ${NOMLIB_EXAMPLES_FONTS} )
+  add_executable ( json/reader ${EXAMPLES_SRC_DIR}/json/reader.cpp )
+  add_executable ( json/writer ${EXAMPLES_SRC_DIR}/json/writer.cpp )
+
 
 endif ( EXAMPLES )
 

@@ -26,10 +26,11 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOM_JSON_OBJECT_HEADERS
-#define NOM_JSON_OBJECT_HEADERS
+#ifndef NOM_JSON_FILEWRITER_HEADERS
+#define NOM_JSON_FILEWRITER_HEADERS
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <array>
 
@@ -37,28 +38,30 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/Logger.hpp"
-#include "nomlib/json/JSON_Value.h"
+#include "nomlib/json/JSON_Object.hpp"
+#include "nomlib/json/JSON_Array.hpp"
 
 namespace nom {
 
-class JSON_Object
+class JSON_FileWriter
 {
   public:
-    JSON_Object ( void );
-    ~JSON_Object ( void );
+    JSON_FileWriter ( void );
+    ~JSON_FileWriter ( void );
 
-    void Add ( JSON_Value &value );
+    bool Write ( std::string filename, JSON_Object &root );
 
-    void endl ( void );
-    void clear ( void );
-
-    json_spirit::Object obj; // TODO: relocate to private scope
-    json_spirit::Array values; // TODO: relocate to private scope
   private:
-    // ...
+    std::ofstream fp; // output file stream object
 };
 
 
 } // namespace nom
 
-#endif // NOM_JSON_OBJECT_HEADERS defined
+/*
+    Example Usage:
+
+  * Stub
+*/
+
+#endif // NOM_JSON_FILEWRITER_HEADERS defined

@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/Logger.hpp"
-#include "nomlib/json/JSON_Array.h"
+#include "nomlib/json/JSON_Array.hpp"
 
 namespace nom {
 

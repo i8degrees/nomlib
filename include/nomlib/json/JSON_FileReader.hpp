@@ -26,40 +26,47 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOM_JSON_ARRAY_HEADERS
-#define NOM_JSON_ARRAY_HEADERS
+#ifndef NOM_JSON_FILEREADER_HEADERS
+#define NOM_JSON_FILEREADER_HEADERS
 
 #include <iostream>
+#include <fstream>
 #include <string>
-#include <array>
 
 #include <json_spirit.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/Logger.hpp"
-#include "nomlib/json/JSON_Value.h"
+#include "nomlib/json/JSON_Object.hpp"
 
 namespace nom {
 
-class JSON_Value;
-
-class JSON_Array
+class JSON_FileReader
 {
   public:
-    JSON_Array ( JSON_Value value );
-    ~JSON_Array ( void );
+    JSON_FileReader ( void );
+    ~JSON_FileReader ( void );
 
-    void clear ( void );
-    void Add ( JSON_Value value );
-    void endl ( void );
+    int readInt ( const json_spirit::Value &value );
+    std::string readString ( const json_spirit::Value &value );
 
-    std::vector<JSON_Value> values;
+    JSON_Value getObject ( const json_spirit::Object &obj, const std::string& name );
 
-    private:
-      // ...
+    bool Parse ( std::string filename );
+
+    std::vector<JSON_Value> val;
+
+  private:
+    std::ifstream fp; // input file stream object
 };
 
 
 } // namespace nom
 
-#endif // NOM_JSON_ARRAY_HEADERS defined
+/*
+    Example Usage:
+
+  * Stub
+*/
+
+#endif // NOM_JSON_FILEREADER_HEADERS defined

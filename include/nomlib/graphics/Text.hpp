@@ -39,8 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/BitmapFont.hpp"
 #include "nomlib/graphics/TrueTypeFont.hpp"
 //#include "nomlib/graphics/IDrawable.hpp"
-#include <nomlib/math/Transformable.hpp>
-#include <nomlib/system/File.hpp>
+#include "nomlib/math/Transformable.hpp"
+#include "nomlib/system/File.hpp"
 
 namespace nom {
 

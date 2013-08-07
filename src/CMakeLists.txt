@@ -36,7 +36,6 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/system/DialogMessageBox.cpp
       ${SRC_DIR}/system/FPS.cpp
       ${SRC_DIR}/system/GameStates.cpp
-      ${SRC_DIR}/system/Logger.cpp
       ${SRC_DIR}/system/ObjectCache.cpp
       ${SRC_DIR}/system/SDL_App.cpp
       ${SRC_DIR}/system/Input.cpp

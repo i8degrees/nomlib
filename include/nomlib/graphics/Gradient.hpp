@@ -35,7 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/Logger.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Transformable.hpp"

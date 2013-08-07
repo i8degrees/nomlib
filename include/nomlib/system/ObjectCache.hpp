@@ -34,7 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/Logger.hpp"
 
 namespace nom {
   namespace priv {

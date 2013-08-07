@@ -30,7 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_TIMER_FPS_HEADERS
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/Logger.hpp"
 #include "nomlib/system/Timer.hpp"
 
 namespace nom {

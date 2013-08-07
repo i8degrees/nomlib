@@ -32,7 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/Logger.hpp"
 
 #if defined ( NOM_PLATFORM_OSX )
   #include "nomlib/system/osx/DialogMessageBox.hpp"

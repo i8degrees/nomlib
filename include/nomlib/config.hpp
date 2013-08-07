@@ -38,6 +38,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Platform detection
 #include "nomlib/platforms.hpp"
 
+// Debugging
+#include <iostream>
+#include <cassert>
+#include "nomlib/system/Clock.hpp"
+
 /// \brief nomlib Debugging Options
 ///
 /// Available preprocessor flags:
@@ -60,6 +65,44 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///     cd build && cmake -DDEBUG=on ..
 ///
 /// You may mix and match these flags however you wish.
+
+// Pretty print C macros purely for convenience sake
+#define NOM_DUMP_VAR(var) \
+  ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
+
+// nomlib debugging macros
+#ifdef NOM_DEBUG
+
+  // If debugging is turned on, we log all warnings, errors & info
+  #define NOM_LOG_INFO(message) \
+    ( std::cout << "NOM_LOG_INFO at " << nom::getCurrentTime() << message << std::endl << std::endl )
+
+  #define NOM_LOG_ERR(message) \
+    ( std::cout << "NOM_LOG_ERR at " << nom::getCurrentTime() << "In file " << __FILE__ << ":" << __LINE__ << std::endl << "Reason: " << message << std::endl << std::endl )
+
+#else // Do not add any overhead
+  #define NOM_LOG_INFO(message)
+  #define NOM_LOG_ERR(message)
+#endif
+
+#ifdef NOM_DEBUG_ASSERT
+
+  #define NOM_ASSERT(expression) \
+    ( assert (expression) )
+
+#else // Do not add any overhead
+  #define NOM_ASSERT(expression)
+#endif
+
+#ifdef NOM_DEBUG_TRACE
+
+  // If trace debugging is turned on, we show class construction and destruction
+  #define NOM_LOG_CLASSINFO \
+    ( std::cout << "NOM_LOG_CLASSINFO at " << nom::getCurrentTime() << __func__ << std::endl << std::endl )
+
+#else // Do not add any overhead
+  #define NOM_LOG_CLASSINFO
+#endif
 
 #ifndef __cplusplus
   #warning "nomlib requires a C++11 compiler"

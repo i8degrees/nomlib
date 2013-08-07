@@ -35,7 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/Logger.hpp"
 #include "nomlib/system/IFile.hpp"
 
 #if defined ( NOM_PLATFORM_OSX ) || defined ( NOM_PLATFORM_LINUX )

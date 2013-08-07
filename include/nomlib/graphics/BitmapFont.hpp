@@ -39,7 +39,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/Logger.hpp"
 #include "nomlib/graphics/IFont.hpp"
 #include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Color.hpp"

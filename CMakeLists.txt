@@ -357,6 +357,7 @@ if ( PLATFORM_OSX )
               "${LIBSNDFILE_LIBRARY}" # sndfile.framework
               "${JSON_SPIRIT_LIBRARY}" # json_spirit.framework
               DESTINATION "${INSTALL_EXT_FRAMEWORKS_PATH}"
+              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
             )
 
     # Add all the necessary runtime search paths for locating the installed
@@ -403,6 +404,7 @@ if ( PLATFORM_OSX AND FRAMEWORK ) # Framework bundle profile
             DESTINATION
             "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
             OPTIONAL
+            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
           )
 else ( NOT PLATFORM_OSX AND NOT FRAMEWORK ) # POSIX install profile
   install ( DIRECTORY
@@ -410,6 +412,7 @@ else ( NOT PLATFORM_OSX AND NOT FRAMEWORK ) # POSIX install profile
             DESTINATION
             "${INSTALL_RESOURCES_PATH}"
             OPTIONAL
+            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
           )
 endif ( PLATFORM_OSX AND FRAMEWORK )
 

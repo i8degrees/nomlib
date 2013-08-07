@@ -11,9 +11,8 @@ if ( VERBOSE )
   set ( CMAKE_VERBOSE_MAKEFILE on )
 endif ( VERBOSE )
 
-# Set the install prefix to the current build folder if this option has not been
-# set; must be set before the project command is issued, or else BAD THINGS will
-# happen.
+# Set the install prefix to the current build folder if the user has not chosen
+# their own prefix path.
 if ( NOT CMAKE_INSTALL_PREFIX )
   set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "Install path prefix" )
 endif ( NOT CMAKE_INSTALL_PREFIX )
@@ -32,7 +31,7 @@ option ( DEBUG_TRACE "Build with trace logging of object construction & destruct
 option ( EXAMPLES "Build nomlib usage examples" off )
 option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
 
-project ( nomlib ) # $PROJECT_NAME
+project ( nomlib ) # Sets PROJECT_NAME variable for us
 
 # Platform detection
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
@@ -40,20 +39,31 @@ include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
 # Utility macro helpers
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
 
-set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" ) # nomlib/src
-set ( NOMLIB_HEADERS_DIR "include" ) # include/nomlib
-set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" ) # nomlib/examples
-set ( NOMLIB_RESOURCES_DIR "Resources" ) # folder containing library data (ex.: icon, translations, etc.)
+# Relative path from project root to compiled source files
+set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" )
+
+# Relative path from project root containing additional data
+set ( NOMLIB_RESOURCES_DIR "Resources" )
+
+# Relative path from project root to header files that are used with the source
+# files for compiling
+set ( NOMLIB_HEADERS_DIR "include" )
+
+# Relative path from project root to nomlib demonstration examples
+set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" )
+
 # Files used with documentation generation
 set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${NOMLIB_RESOURCES_DIR}/doxygen" )
 
-# Information used in the generation of the packaged Info.plist
+# OS X framework bundle variables used in generating the Info.plist
 set ( BUNDLE_TEMPLATE_PLIST "${CMAKE_TEMPLATE_PATH}/Info.plist.in" )
 set ( BUNDLE_NAME "nomlib" )
 set ( BUNDLE_ICON "nomlib.icns" )
 set ( BUNDLE_IDENTIFIER "org.i8degrees.${PROJECT_NAME}" )
 
-# Install paths
+# Installation paths; CMAKE_INSTALL_PREFIX will be appended to these.
+# Depending on the install profile, these paths are updated; such as when we
+# are building an OS X framework bundle.
 set ( INSTALL_LIB_PATH "lib" )
 set ( INSTALL_RESOURCES_PATH "share/${PROJECT_NAME}" )
 set ( INSTALL_HEADERS_PATH "include" )
@@ -318,7 +328,10 @@ if ( PLATFORM_OSX )
                           )
 
     # Install framework library file
-    install ( TARGETS ${PROJECT_NAME} LIBRARY FRAMEWORK DESTINATION "${CMAKE_INSTALL_PREFIX}" )
+    install ( TARGETS ${PROJECT_NAME}
+              LIBRARY FRAMEWORK
+              DESTINATION "${CMAKE_INSTALL_PREFIX}"
+            )
 
     # Bundle external dependencies within our application bundle for distribution
     #
@@ -371,7 +384,7 @@ endif ( NOT FRAMEWORK )
 # Install nomlib header files
 install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}
           DESTINATION "${INSTALL_HEADERS_PATH}"
-          PATTERN ".*" EXCLUDE # do not include dotfiles
+          PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
         )
 
 # Install nomlib Resource files

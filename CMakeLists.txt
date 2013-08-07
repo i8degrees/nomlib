@@ -271,6 +271,7 @@ target_link_libraries  ( ${PROJECT_NAME} ${EXTLIBS} )
 set_target_properties ( ${PROJECT_NAME} # makefile target
                         PROPERTIES SOVERSION
                         "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+                        DEBUG_POSTFIX "-d"
                       )
 
 if ( PLATFORM_OSX )
@@ -372,7 +373,6 @@ if ( PLATFORM_OSX )
     install_rpath ( "${RUNTIME_PATH}" "${INSTALL_BINARY_PATH}" )
 
   endif ( FRAMEWORK )
-
 endif ( PLATFORM_OSX )
 
 if ( NOT FRAMEWORK )

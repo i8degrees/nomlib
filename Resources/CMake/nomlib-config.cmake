@@ -3,8 +3,8 @@
 # This module defines:
 #
 # NOMLIB_LIBRARY
-# NOMLIB_FOUND, if false, do not try to link to nomlib
-# NOMLIB_INCLUDE_DIR, where to find the headers
+# NOMLIB_FOUND          if false, do not try to link to nomlib
+# NOMLIB_INCLUDE_DIR    where to find the headers
 #
 # Created by Jeffrey Carpenter. This was influenced by the FindOpenAL.cmake module.
 #
@@ -35,7 +35,8 @@ find_path ( NOMLIB_INCLUDE_DIR
 
 find_library  ( NOMLIB_LIBRARY
                 NAMES
-                nomlib
+                nomlib # Release version
+                nomlib-d # Debug version
                 PATH_SUFFIXES
                 lib64 lib libs64 libs libs/Win32 libs/Win64
                 PATHS

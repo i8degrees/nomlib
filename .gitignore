@@ -10,8 +10,4 @@ install_options
 
 # bins
 build
-examples/audio/audio
-examples/app/app
-examples/fonts/font
-
 

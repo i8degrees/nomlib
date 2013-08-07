@@ -447,30 +447,7 @@ endif ( PLATFORM_LINUX )
 
 # nomlib examples configuration
 if ( EXAMPLES )
-
-  set ( EXECUTABLE_OUTPUT_PATH "${EXAMPLES_SRC_DIR}" )
-
-  set ( NOMLIB_EXAMPLES_AUDIO
-        ${EXAMPLES_SRC_DIR}/audio/audio.cpp
-      )
-
-  set ( NOMLIB_EXAMPLES_APP
-        ${EXAMPLES_SRC_DIR}/app/app.cpp
-      )
-
-  set ( NOMLIB_EXAMPLES_FONTS
-      ${EXAMPLES_SRC_DIR}/fonts/font.cpp
-      )
-
-  link_libraries ( ${PROJECT_NAME} ${SDL_LIBRARY} )
-
-  add_executable ( audio/audio ${NOMLIB_EXAMPLES_AUDIO} )
-  add_executable ( app/app ${NOMLIB_EXAMPLES_APP} )
-  add_executable ( fonts/font ${NOMLIB_EXAMPLES_FONTS} )
-  add_executable ( json/reader ${EXAMPLES_SRC_DIR}/json/reader.cpp )
-  add_executable ( json/writer ${EXAMPLES_SRC_DIR}/json/writer.cpp )
-
-
+  add_subdirectory ( examples )
 endif ( EXAMPLES )
 
 # Auto-generated at build-time header files

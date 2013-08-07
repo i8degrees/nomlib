@@ -219,22 +219,17 @@ NOM_LOG_ERR ( "Could not load canvas image file: " + filename );
   }
 
   // We produce a segmentation fault here if we do not have SDL's video
-  // subsystem initialized here before making the following calls, so we
-  // skip the calls below if it is not and warn the end-user.
-  if ( SDL_WasInit ( SDL_INIT_VIDEO ) != 0 )
-  {
-    if ( flags & SDL_SRCCOLORKEY )
-      this->setTransparent ( colorkey, flags );
+  // subsystem initialized before making the following calls -- transparency
+  // and display format conversion.
+NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
 
-    if ( flags & SDL_SRCALPHA )
-      this->displayFormatAlpha(); // Optimized video surface with an alpha channel
-    else
-      this->displayFormat(); // Optimized video surface without an alpha channel
-  }
+  if ( flags & SDL_SRCCOLORKEY )
+    this->setTransparent ( colorkey, flags );
+
+  if ( flags & SDL_SRCALPHA )
+    this->displayFormatAlpha(); // Optimized video surface with an alpha channel
   else
-  {
-NOM_LOG_INFO ( "The video subsystem has not yet been initialized: surface transparency and format conversion has been skipped." );
-  }
+    this->displayFormat(); // Optimized video surface without an alpha channel
 
   // Update our canvas clipping bounds with the new source
   this->offsets.setSize ( this->getCanvasWidth(), this->getCanvasHeight() );

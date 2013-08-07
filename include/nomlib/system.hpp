@@ -29,18 +29,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_HEADERS
 #define NOMLIB_SYSTEM_HEADERS
 
-#include "nomlib/config.hpp"
+// Public header file
 
-#include "nomlib/system/Clock.hpp"
-#include "nomlib/system/FPS.hpp"
-#include "nomlib/system/GameStates.hpp"
-#include "nomlib/system/ObjectCache.hpp"
-#include "nomlib/system/DialogMessageBox.hpp"
-#include "nomlib/system/File.hpp"
-#include "nomlib/system/SDL_App.hpp"
-#include "nomlib/system/Input.hpp"
-#include "nomlib/system/Timer.hpp"
-#include "nomlib/system/Sleep.hpp"
+#include <nomlib/config.hpp>
+#include <nomlib/system/Clock.hpp>
+#include <nomlib/system/FPS.hpp>
+#include <nomlib/system/GameStates.hpp>
+#include <nomlib/system/ObjectCache.hpp>
+#include <nomlib/system/DialogMessageBox.hpp>
+#include <nomlib/system/File.hpp>
+#include <nomlib/system/SDL_App.hpp>
+#include <nomlib/system/Input.hpp>
+#include <nomlib/system/Timer.hpp>
+#include <nomlib/system/Sleep.hpp>
 
 #if defined ( NOM_PLATFORM_OSX )
   #include <nomlib/system/osx/DialogMessageBox.hpp>
@@ -51,4 +52,4 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include <nomlib/system/windows/DialogMessageBox.hpp>
 #endif
 
-#endif // NOMLIB_SYSTEM_HEADERS defined
+#endif // include guard defined

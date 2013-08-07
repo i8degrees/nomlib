@@ -109,4 +109,4 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
-#endif // NOMLIB_CONFIG_HEADERS defined
+#endif // include guard defined

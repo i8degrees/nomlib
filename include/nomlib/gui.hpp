@@ -29,9 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GUI_HEADERS
 #define NOMLIB_GUI_HEADERS
 
-#include "nomlib/config.hpp"
+// Public header file
 
-#include "nomlib/gui/Cursor.hpp"
-#include "nomlib/gui/MessageBox.hpp"
+#include <nomlib/config.hpp>
+#include <nomlib/gui/Cursor.hpp>
+#include <nomlib/gui/MessageBox.hpp>
 
-#endif // NOMLIB_GUI_HEADERS defined
+#endif // include guard defined

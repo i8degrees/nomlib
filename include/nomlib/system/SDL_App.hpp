@@ -54,6 +54,7 @@ class SDL_App: public Input
     void Running ( void );
     void Quit ( void );
 
+    virtual bool onInit ( void );
     virtual void onQuit ( void );
     virtual void onEvent ( SDL_Event* event );
 

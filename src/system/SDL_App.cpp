@@ -67,6 +67,11 @@ void SDL_App::Running ( void )
   this->app_state = true;
 }
 
+bool SDL_App::onInit ( void )
+{
+  return true;
+}
+
 void SDL_App::Quit ( void )
 {
   this->app_state = false;

@@ -26,31 +26,19 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#ifndef NOMLIB_RANDOM_HPP
+#define NOMLIB_RANDOM_HPP
 
-// Public header file
+#include <chrono>
+#include <random>
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/Clock.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/GameStates.hpp>
-#include <nomlib/system/ObjectCache.hpp>
-#include <nomlib/system/DialogMessageBox.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDL_App.hpp>
-#include <nomlib/system/Input.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/Sleep.hpp>
-#include <nomlib/system/random.hpp>
+#include "nomlib/config.hpp"
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/DialogMessageBox.hpp>
-  #include <nomlib/system/osx/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  #include <nomlib/system/unix/DialogMessageBox.hpp>
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/DialogMessageBox.hpp>
-#endif
+namespace nom {
+
+int32 randomInteger ( int32 start, int32 end );
+
+
+} // namespace nom
 
 #endif // include guard defined

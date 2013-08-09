@@ -41,6 +41,7 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/system/Input.cpp
       ${SRC_DIR}/system/Timer.cpp
       ${SRC_DIR}/system/Sleep.cpp
+      ${SRC_DIR}/system/random.cpp
       # math
       ${SRC_DIR}/math/Color.cpp
       ${SRC_DIR}/math/Coords.cpp

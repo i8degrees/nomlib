@@ -85,6 +85,8 @@ NOM_ASSERT ( state );
 
   // store the new state
   states.push_back( std::move( state ) );
+
+  states.back()->onInit();
 }
 
 void GameStates::PopState ( void )

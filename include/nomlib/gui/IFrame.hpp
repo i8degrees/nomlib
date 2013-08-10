@@ -26,66 +26,33 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_MESSAGEBOX_HEADERS
-#define NOMLIB_SDL_MESSAGEBOX_HEADERS
+#ifndef NOMLIB_IFRAME_HPP
+#define NOMLIB_IFRAME_HPP
 
 #include <iostream>
 #include <string>
-#include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Color.hpp"
-#include "nomlib/math/Coords.hpp"
-#include "nomlib/math/Transformable.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/graphics/Gradient.hpp"
-#include "nomlib/graphics/Line.hpp"
-#include "nomlib/gui/IFrame.hpp"
-#include "nomlib/gui/GrayFrame.hpp"
 
 namespace nom {
   namespace ui {
 
-enum FrameStyle
-{
-  None = 0,
-  Gray = 1
-};
-
-/// \brief Simple UI interface for drawing a styled message box
-class MessageBox: public IDrawable,     // "is a" relationship
-                  public Transformable  // "has a" relationship
+class IFrame: public IDrawable
 {
   public:
-    MessageBox ( void );
+    IFrame ( void ) {}
+    virtual ~IFrame ( void ) {}
 
-    MessageBox  ( int32 x, int32 y, int32 width, int32 height,
-                  enum FrameStyle, const Gradient& background
-                );
+    virtual void setPosition( int32 x, int32 y ) = 0;
+    virtual void setSize( int32 width, int32 height, int32 padding = 1 ) = 0;
 
-    MessageBox  ( int32 x, int32 y, int32 width, int32 height,
-                  std::shared_ptr<IFrame> style = nullptr,
-                  const Gradient& background = Gradient()
-                );
-
-    virtual ~MessageBox ( void );
-
-    bool isEnabled ( void );
-    void disable ( void );
-    void enable ( void );
-
-    void Update ( void );
-    void Draw ( void* video_buffer ) const;
-
-  private:
-    void initialize ( void );
-    std::shared_ptr<IFrame> frame;
-    Gradient background;
-    bool enabled;
+    virtual void Update ( void ) = 0;
+    virtual void Draw ( void* ) const = 0;
 };
 
 
   } // namespace ui
 } // namespace nom
 
-#endif // NOMLIB_SDL_MESSAGEBOX_HEADERS defined
+#endif // include guard defined

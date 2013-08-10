@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/gui/Cursor.hpp"
 
 namespace nom {
+  namespace ui {
 
 Cursor::Cursor ( void )
 {
@@ -116,4 +117,5 @@ void Cursor::Draw ( void* video_buffer )
 }
 
 
+  } // namespace ui
 } // namespace nom

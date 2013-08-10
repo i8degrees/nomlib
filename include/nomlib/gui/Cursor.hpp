@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Sprite.hpp"
 
 namespace nom {
+  namespace ui {
 
 /// \brief Helper class for loading, positioning and keeping track of a cursor
 /// controlled by a mouse and / or keyboard.
@@ -86,6 +87,7 @@ class Cursor
 };
 
 
+  } // namespace ui
 } // namespace nom
 
 #endif // NOMLIB_SDL_CURSOR_HEADERS defined

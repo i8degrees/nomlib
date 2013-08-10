@@ -49,6 +49,7 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       # gui
       ${SRC_DIR}/gui/Cursor.cpp
       ${SRC_DIR}/gui/MessageBox.cpp
+      ${SRC_DIR}/gui/GrayFrame.cpp
       # sdl
       ${SRC_DIR}/sdl/utils.cpp
     )

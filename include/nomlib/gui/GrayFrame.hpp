@@ -26,66 +26,44 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_MESSAGEBOX_HEADERS
-#define NOMLIB_SDL_MESSAGEBOX_HEADERS
+#ifndef NOMLIB_GREYFRAME_HPP
+#define NOMLIB_GREYFRAME_HPP
 
 #include <iostream>
 #include <string>
-#include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/math/Transformable.hpp"
+#include "nomlib/graphics/Canvas.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/graphics/Gradient.hpp"
 #include "nomlib/graphics/Line.hpp"
 #include "nomlib/gui/IFrame.hpp"
-#include "nomlib/gui/GrayFrame.hpp"
 
 namespace nom {
   namespace ui {
 
-enum FrameStyle
-{
-  None = 0,
-  Gray = 1
-};
-
-/// \brief Simple UI interface for drawing a styled message box
-class MessageBox: public IDrawable,     // "is a" relationship
-                  public Transformable  // "has a" relationship
+class GrayFrame: public IFrame
 {
   public:
-    MessageBox ( void );
+    GrayFrame ( void );
+    GrayFrame ( int32 x, int32 y, int32 width, int32 height, int32 padding = 1 );
+    ~GrayFrame ( void );
 
-    MessageBox  ( int32 x, int32 y, int32 width, int32 height,
-                  enum FrameStyle, const Gradient& background
-                );
-
-    MessageBox  ( int32 x, int32 y, int32 width, int32 height,
-                  std::shared_ptr<IFrame> style = nullptr,
-                  const Gradient& background = Gradient()
-                );
-
-    virtual ~MessageBox ( void );
-
-    bool isEnabled ( void );
-    void disable ( void );
-    void enable ( void );
+    void setPosition( int32 x, int32 y );
+    void setSize( int32 width, int32 height, int32 padding = 1 );
 
     void Update ( void );
-    void Draw ( void* video_buffer ) const;
+    void Draw ( void* ) const;
 
   private:
-    void initialize ( void );
-    std::shared_ptr<IFrame> frame;
-    Gradient background;
-    bool enabled;
+    std::vector<std::shared_ptr<Line>> frame;
+    Canvas box;
+    Coords coords;
+    nom::int32 padding;
 };
 
 
   } // namespace ui
 } // namespace nom
 
-#endif // NOMLIB_SDL_MESSAGEBOX_HEADERS defined
+#endif // include guard defined

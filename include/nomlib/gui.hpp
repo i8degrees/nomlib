@@ -34,5 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/config.hpp>
 #include <nomlib/gui/Cursor.hpp>
 #include <nomlib/gui/MessageBox.hpp>
+#include <nomlib/gui/IFrame.hpp>
+#include <nomlib/gui/GrayFrame.hpp>
 
 #endif // include guard defined

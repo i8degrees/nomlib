@@ -66,7 +66,7 @@ if ( PLATFORM_OSX )
 
 elseif ( PLATFORM_LINUX )
 
-set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/unix/DialogMessageBox.cpp )
+  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/unix/DialogMessageBox.cpp )
 
 elseif ( PLATFORM_WINDOWS )
 

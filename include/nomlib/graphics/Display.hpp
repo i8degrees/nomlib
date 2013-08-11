@@ -90,6 +90,9 @@ class Display: public IDisplay
     /// to be in working order.
     bool getCanvasLock ( void ) const;
 
+    bool lock ( void* video_buffer ) const;
+    void unlock ( void* video_buffer ) const;
+
     void Update ( void );
 
     /// As per libSDL docs, this method call should not be used when the display
@@ -103,6 +106,8 @@ class Display: public IDisplay
 
     void setWindowTitle ( const std::string& app_name = "\0" );
     void setWindowIcon ( const std::string& app_icon = "\0" );
+  private:
+    bool mustLock ( void* video_buffer ) const;
 };
 
 

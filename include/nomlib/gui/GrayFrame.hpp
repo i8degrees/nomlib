@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/Display.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Line.hpp"
 #include "nomlib/gui/IFrame.hpp"
@@ -57,7 +57,7 @@ class GrayFrame: public IFrame
 
   private:
     std::vector<std::shared_ptr<Line>> frame;
-    Canvas box;
+    Display context;
     Coords coords;
     int32 padding;
 };

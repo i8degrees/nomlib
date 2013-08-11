@@ -327,28 +327,6 @@ void Canvas::clear ( const Color& color ) const
   rect.Draw ( this->canvas_buffer.get() );
 }
 
-bool Canvas::mustLock ( void* video_buffer ) const
-{
-  if ( SDL_MUSTLOCK ( static_cast<SDL_Surface*> ( video_buffer ) ) )
-    return true;
-  else
-    return false;
-}
-
-bool Canvas::Lock ( void* video_buffer ) const
-{
-  if ( this->mustLock ( video_buffer ) )
-    SDL_LockSurface ( static_cast<SDL_Surface*> ( video_buffer ) );
-  else
-    return false;
-  return true;
-}
-
-void Canvas::Unlock ( void* video_buffer ) const
-{
-  SDL_UnlockSurface ( static_cast<SDL_Surface*> ( video_buffer ) );
-}
-
 int32 Canvas::getPixel ( int32 x, int32 y )
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );

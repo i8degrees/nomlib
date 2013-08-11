@@ -164,9 +164,6 @@ class Canvas
     /// \endinternal
     void clear ( const Color& color = Color::Blue ) const;
 
-    bool Lock ( void* video_buffer ) const;
-    void Unlock ( void* video_buffer ) const;
-
     /// Pixel reading -- supports 8-bit, 15/16-bit, 24-bit & 32-bit color modes
     ///
     /// Returns -1 on error
@@ -194,7 +191,6 @@ class Canvas
     Canvas& operator = ( const Canvas& other );
 
   private:
-    bool mustLock ( void* video_buffer ) const;
     /// SDL_Surface*
     std::shared_ptr<void> canvas_buffer;
     /// Holds surface position

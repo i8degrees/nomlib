@@ -52,6 +52,8 @@ int32 GTK_DialogMessageBox  ( const std::string& header, const std::string& mess
  gtk_dialog_run ( GTK_DIALOG (dialog) );
 
  gtk_widget_destroy ( dialog );
+
+ return 0;
 }
 
 

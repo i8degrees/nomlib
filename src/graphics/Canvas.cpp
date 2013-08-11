@@ -101,7 +101,8 @@ void Canvas::setCanvas ( void* video_buffer )
 
 void Canvas::setPosition ( const Coords& coords_ )
 {
-  this->coords = coords_;
+  this->coords.x = coords_.x;
+  this->coords.y = coords_.y;
 }
 
 void Canvas::setOffsets ( const Coords& offsets_ )

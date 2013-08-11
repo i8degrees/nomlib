@@ -42,13 +42,13 @@ class Color
     /// Default constructor; sets the color to their respective defaults
     Color ( void );
     /// Constructor variant for setting a color using RGBA values
-    Color ( uint8_t red, uint8_t green, uint8_t blue, int32_t alpha = -1 ); // SDL_ALPHA_OPAQUE (255)
+    Color ( int16 red, int16 green, int16 blue, int16 alpha = -1 ); // SDL_ALPHA_OPAQUE (255)
     /// Copy constructor
     Color ( const Color& color );
     ~Color ( void );
 
     /// Convenience getter helper for obtaining a color by object
-    const Color getColor ( void ) const;
+    const Color& getColor ( void ) const;
 
     /// Copy assignment constructor
     Color& operator = ( const Color& other );
@@ -68,10 +68,10 @@ class Color
     static const Color Gray;
 
   public:
-    uint8_t red;
-    uint8_t green;
-    uint8_t blue;
-    int32_t alpha;
+    int16 red;
+    int16 green;
+    int16 blue;
+    int16 alpha;
 
 }; // class Color
 

@@ -47,7 +47,7 @@ Color::Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ), alpha ( -1 ) // SDL_
   // Nothing to initialize
 }
 
-Color::Color ( uint8_t red, uint8_t green, uint8_t blue, int32_t alpha )
+Color::Color ( int16 red, int16 green, int16 blue, int16 alpha )
 {
   this->red = red;
   this->green = green;
@@ -68,9 +68,9 @@ Color::~Color ( void )
   // Nothing to clean up
 }
 
-const Color Color::getColor ( void ) const
+const Color& Color::getColor ( void ) const
 {
-  return Color ( this->red, this->green, this->blue, this->alpha );
+  return *this;
 }
 
 Color& Color::operator = ( const Color& other )

@@ -46,17 +46,17 @@ namespace nom {
 // This is an inheritance-only class
 class SDL_App: public Input
 {
-  protected:
+  public:
     SDL_App ( void );
     virtual ~SDL_App ( void );
-
-    bool isRunning ( void );
-    void Running ( void );
-    void Quit ( void );
 
     virtual bool onInit ( void );
     virtual void onQuit ( void );
     virtual void onEvent ( SDL_Event* event );
+
+    bool isRunning ( void );
+    void Running ( void );
+    void Quit ( void );
 
     uint32_t getTicks ( void );
 

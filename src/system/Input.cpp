@@ -34,7 +34,7 @@ Input::Input ( void )
 {
 NOM_LOG_CLASSINFO;
 
-  if ( SDL_InitSubSystem ( SDL_INIT_JOYSTICK ) == -1 )
+  if ( SDL_InitSubSystem ( SDL_INIT_JOYSTICK ) < 0 )
   {
 NOM_LOG_ERR ( SDL_GetError() );
     return;
@@ -42,21 +42,17 @@ NOM_LOG_ERR ( SDL_GetError() );
 
   this->joystick = nullptr;
 
-  // Only initialize this joystick if we have yet to
-  if ( SDL_JoystickOpened ( 0 ) == 0 )
+NOM_LOG_INFO ( std::to_string ( SDL_NumJoysticks() ) + " joysticks were found" );
+
+  if ( SDL_NumJoysticks() >= 0 )
   {
     SDL_JoystickEventState ( SDL_ENABLE );
 
-    this->joystick = SDL_JoystickOpen ( 0 );
+    this->joystick = ( SDL_JoystickOpen( 0 ) );
 
-NOM_LOG_INFO ( std::to_string ( SDL_NumJoysticks() ) + " joysticks were found" );
-
-    if ( SDL_NumJoysticks() > 0 )
+    for( int idx = 0; idx < SDL_NumJoysticks(); idx++ )
     {
-      for( int idx = 0; idx < SDL_NumJoysticks(); idx++ )
-      {
 NOM_LOG_INFO ( SDL_JoystickName ( idx ) );
-      }
     }
   }
 }
@@ -64,17 +60,20 @@ NOM_LOG_INFO ( SDL_JoystickName ( idx ) );
 Input::~Input ( void )
 {
 NOM_LOG_CLASSINFO;
+/*
+  if ( this->joystick != nullptr )
+  {
+    // Only close joysticks we have opened
+    if ( SDL_JoystickOpened ( 0 ) == 1 )
+    {
+      SDL_JoystickClose ( this->joystick.get() );
 
-  // Only close joysticks we have opened
-  //if ( SDL_JoystickOpened ( 0 ) == 1 )
-  //{
-    //SDL_JoystickClose ( this->joystick );
-
-    //if ( this->joystick )
-      //this->joystick = nullptr;
-  //}
-
-  //SDL_QuitSubSystem ( SDL_INIT_JOYSTICK );
+      if ( this->joystick != nullptr )
+        this->joystick = nullptr;
+    }
+  }
+*/
+  SDL_QuitSubSystem ( SDL_INIT_JOYSTICK );
 }
 
 

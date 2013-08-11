@@ -47,13 +47,13 @@ class Gradient: public IDrawable,     // "is a" relationship
                 public Transformable  // "has a" relationship
 {
   public:
-    Gradient ( void );
-    Gradient  ( const Color& starting_color, const Color& ending_color,
-                    int32 x = 0, int32 y = 0,
-                    int32 width = 0, int32 height = 0,
-                    uint32 direction = 0,  uint32 x_margin = 0,
-                    uint32 y_margin = 0
-                  );
+    Gradient( void );
+
+    Gradient( const Color& starting_color, const Color& ending_color,
+              int32 x = 0, int32 y = 0, int32 width = 0, int32 height = 0,
+              uint32 direction = 0,  uint32 x_margin = 0, uint32 y_margin = 0
+            );
+
     virtual ~Gradient ( void );
 
     Color getStartColor ( void ) const;

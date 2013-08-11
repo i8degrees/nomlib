@@ -31,11 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // Default constructor; initializes with respective defaults
-Gradient::Gradient ( void )  : gradient { Color::Gray,
-                                                  Color::Gray
-                                                },
-                                        x_margin ( 0 ), y_margin ( 0 ),
-                                        direction ( 0 )
+Gradient::Gradient ( void )  :  gradient{ Color::Gray,
+                                          Color::Gray
+                                        },
+                                x_margin ( 0 ), y_margin ( 0 ),
+                                direction ( 0 )
 {
 NOM_LOG_CLASSINFO;
 
@@ -118,7 +118,7 @@ void Gradient::Update ( void )
 
   for ( uint32 rows = this->coords.x; rows < x_offset - this->x_margin; rows++ )
   {
-    this->rectangles.push_back ( std::shared_ptr<Rectangle> ( new Rectangle ( Coords ( rows, this->coords.y, 1, this->coords.height - this->y_margin ), Color ( currentR, currentG, currentB ) ) ) );
+    this->rectangles.push_back ( std::make_shared<Rectangle> ( Rectangle ( Coords ( rows, this->coords.y, 1, this->coords.height - this->y_margin ), Color ( currentR, currentG, currentB ) ) ) );
 
     if ( this->direction == 0 )
     {

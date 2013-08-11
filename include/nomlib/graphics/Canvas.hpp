@@ -115,7 +115,7 @@ class Canvas
     ///
     /// Returns 8, 16, 24 or 32 on successful determination of depth
     ///
-    nom::int32 getCanvasColorDepth ( void ) const;
+    int32 getCanvasColorDepth ( void ) const;
 
     /// I think that we are accessing the value of an
     /// (internal?) property of the SDL_Surface structure that is described as being

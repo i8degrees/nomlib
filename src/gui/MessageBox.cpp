@@ -49,7 +49,7 @@ MessageBox::MessageBox  ( int32 x, int32 y, int32 width, int32 height,
                           enum FrameStyle, const Gradient& background
                         )
 {
-  nom::int32 padding = 1;
+  int32 padding = 1;
   initialize();
 
   // init geometry coords w/ arguments list
@@ -74,7 +74,7 @@ MessageBox::MessageBox  ( int32 x, int32 y, int32 width, int32 height,
                           const Gradient& background
                         )
 {
-  nom::int32 padding = 1;
+  int32 padding = 1;
 
   initialize();
 

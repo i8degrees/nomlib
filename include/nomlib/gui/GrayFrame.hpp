@@ -59,7 +59,7 @@ class GrayFrame: public IFrame
     std::vector<std::shared_ptr<Line>> frame;
     Canvas box;
     Coords coords;
-    nom::int32 padding;
+    int32 padding;
 };
 
 

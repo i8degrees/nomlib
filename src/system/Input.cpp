@@ -294,12 +294,12 @@ void Input::onMouseRightButtonDown ( int32_t x, int32_t y )
   // virtual implementation
 }
 
-void Input::onMouseButtonSixDown ( nom::int32 x, nom::int32 y )
+void Input::onMouseButtonSixDown ( int32 x, int32 y )
 {
   // virtual implementation
 }
 
-void Input::onMouseButtonSevenDown ( nom::int32 x, nom::int32 y )
+void Input::onMouseButtonSevenDown ( int32 x, int32 y )
 {
   // virtual implementation
 }
@@ -319,12 +319,12 @@ void Input::onMouseRightButtonUp ( int32_t x, int32_t y )
   // virtual implementation
 }
 
-void Input::onMouseButtonSixUp ( nom::int32 x, nom::int32 y )
+void Input::onMouseButtonSixUp ( int32 x, int32 y )
 {
   // virtual implementation
 }
 
-void Input::onMouseButtonSevenUp ( nom::int32 x, nom::int32 y )
+void Input::onMouseButtonSevenUp ( int32 x, int32 y )
 {
   // virtual implementation
 }

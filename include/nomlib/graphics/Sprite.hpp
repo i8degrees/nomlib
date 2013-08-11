@@ -52,7 +52,9 @@ class Sprite: public IDrawable,     //  "is a" inheritance
 
     signed int getSheetID ( void );
     void setSheetID ( signed int id );
-    void setSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding );
+    void setSheetDimensions ( int32 sheet_width, int32 sheet_height,
+                              int32 spacing, int32 padding
+                            );
 
     bool Load ( std::string filename, Color colorkey, bool use_cache = 0,
                 unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL

@@ -87,7 +87,7 @@ void Sprite::setSheetID ( signed int id )
   this->sheet.id = id;
 }
 
-void Sprite::setSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding )
+void Sprite::setSheetDimensions ( int32 sheet_width, int32 sheet_height, int32 spacing, int32 padding )
 {
   this->sheet.sprite_width = this->coords.width;
   this->sheet.sprite_height = this->coords.height;

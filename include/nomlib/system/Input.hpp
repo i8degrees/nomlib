@@ -80,14 +80,14 @@ class Input
     virtual void onMouseLeftButtonDown ( int32_t x, int32_t y );
     virtual void onMouseMiddleButtonDown ( int32_t x, int32_t y );
     virtual void onMouseRightButtonDown ( int32_t x, int32_t y );
-    virtual void onMouseButtonSixDown ( nom::int32 x, nom::int32 y );
-    virtual void onMouseButtonSevenDown ( nom::int32 x, nom::int32 y );
+    virtual void onMouseButtonSixDown ( int32 x, int32 y );
+    virtual void onMouseButtonSevenDown ( int32 x, int32 y );
 
     virtual void onMouseLeftButtonUp ( int32_t x, int32_t y );
     virtual void onMouseMiddleButtonUp ( int32_t x, int32_t y );
     virtual void onMouseRightButtonUp ( int32_t x, int32_t y );
-    virtual void onMouseButtonSixUp ( nom::int32 x, nom::int32 y );
-    virtual void onMouseButtonSevenUp ( nom::int32 x, nom::int32 y );
+    virtual void onMouseButtonSixUp ( int32 x, int32 y );
+    virtual void onMouseButtonSevenUp ( int32 x, int32 y );
 
     virtual void onJoyButtonDown ( int32_t which, int32_t button );
     virtual void onJoyButtonUp ( int32_t which, int32_t button );

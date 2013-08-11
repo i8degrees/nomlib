@@ -67,7 +67,7 @@ const float MAX_VOLUME = 100.0;
 namespace nom {
   namespace priv {
 
-void al_err ( const std::string& file, nom::uint32 line );
+void al_err ( const std::string& file, uint32 line );
 
   } // namespace priv
 } // namespace nom

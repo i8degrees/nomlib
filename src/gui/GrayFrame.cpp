@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
   namespace ui {
 
-GrayFrame::GrayFrame ( void )
+GrayFrame::GrayFrame ( void ) : updated ( false )
 {
   // ...
 }
@@ -41,31 +41,32 @@ GrayFrame::GrayFrame ( int32 x, int32 y, int32 width, int32 height, int32 paddin
   this->setPosition ( x, y );
   this->setSize ( width, height, padding );
 
-  this->Update();
+  this->updated = false;
 }
 
 GrayFrame::~GrayFrame ( void )
 {
-  this->frame.clear();
+  // ...
 }
 
 void GrayFrame::setPosition ( int32 x, int32 y )
 {
   this->coords.setPosition ( x, y );
-
-  this->Update();
+  this->updated = false;
 }
 
 void GrayFrame::setSize ( int32 width, int32 height, int32 padding )
 {
   this->coords.setSize ( width, height );
   this->padding = padding;
-
-  this->Update();
+  this->updated = false;
 }
 
 void GrayFrame::Update ( void )
 {
+  if ( this->updated == true )
+    return;
+
   int32 x = this->coords.x;
   int32 y = this->coords.y;
   int32 width = this->coords.width;
@@ -84,6 +85,8 @@ void GrayFrame::Update ( void )
   this->frame.push_back ( std::shared_ptr<Line> ( new Line ( x, y_offset, x_offset + padding, y_offset, Color ( 41, 41, 41 ) ) ) ); // bottom1
   this->frame.push_back ( std::shared_ptr<Line> ( new Line ( x_offset - padding, y, x_offset - padding, y_offset + padding, Color( 57, 57, 57 ) ) ) ); // right0
   this->frame.push_back ( std::shared_ptr<Line> ( new Line ( x_offset, y, x_offset, y_offset + padding, Color( 41, 41, 41 ) ) ) ); // right1
+
+  this->updated = true;
 }
 
 void GrayFrame::Draw ( void* video_buffer ) const

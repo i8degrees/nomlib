@@ -57,7 +57,11 @@ class Line: public IDrawable,     // "is a" relationship
     void Draw ( void* video_buffer ) const;
 
   private:
+    /// Vector of pointers to Pixel objects
     std::vector<std::unique_ptr<Pixel>> pixels;
+
+    /// Track object logic changes for updating its rendering
+    bool updated;
 };
 
 

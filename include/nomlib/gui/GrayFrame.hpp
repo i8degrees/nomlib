@@ -49,16 +49,32 @@ class GrayFrame: public IFrame
     GrayFrame ( int32 x, int32 y, int32 width, int32 height, int32 padding = 1 );
     ~GrayFrame ( void );
 
+    // Re-implemented from IFrame
     void setPosition( int32 x, int32 y );
+
+    // Re-implemented from IFrame
     void setSize( int32 width, int32 height, int32 padding = 1 );
 
+    // Re-implemented from IDrawable
     void Update ( void );
+
+    // Re-implemented from IDrawable
     void Draw ( void* ) const;
 
   private:
+    /// Holds our line objects used for rendering the object
     std::vector<std::shared_ptr<Line>> frame;
+
+    /// Rendering context
     Display context;
+
+    /// Position & Size
     Coords coords;
+
+    /// Track object logic changes for updating its rendering
+    bool updated;
+
+    /// Deprecated; this will be removed in a future version
     int32 padding;
 };
 

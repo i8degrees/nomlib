@@ -124,7 +124,8 @@ void MessageBox::enable ( void )
 
 void MessageBox::Update ( void )
 {
-  // ...
+  if ( this->frame != nullptr )
+    this->frame->Update();
 }
 
 void MessageBox::Draw ( void* video_buffer ) const

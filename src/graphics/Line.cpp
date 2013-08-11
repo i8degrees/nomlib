@@ -36,6 +36,7 @@ Line::Line ( void )
   this->setSize ( 0, 0 );
   this->setColor ( 0, 0, 0, 255 );
 
+  this->updated = true;
   this->Update();
 }
 
@@ -44,6 +45,7 @@ Line::Line ( const Coords& coords, const Color& color )
   this->coords = coords;
   this->color = color;
 
+  this->updated = false;
   this->Update();
 }
 
@@ -52,17 +54,21 @@ Line::Line ( int32 x, int32 y, int32 width, int32 height, const Color& color )
   this->setPosition ( Coords ( x, y, width, height ) );
   this->setColor ( color );
 
+  this->updated = false;
   this->Update();
 }
 
 Line::~Line ( void )
 {
-  this->pixels.clear();
+  // ...
 }
 
 // Recompute line offsets
 void Line::Update ( void )
 {
+  if ( this->updated == true )
+    return;
+
   // temporary calculation offsets based on user's initial given coordinates
   int32 x1 = this->coords.x;
   int32 y1 = this->coords.y;
@@ -111,6 +117,8 @@ void Line::Update ( void )
       error += dx;
     }
   }
+
+  this->updated = true;
 }
 
 void Line::Draw ( void* video_buffer ) const

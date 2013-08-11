@@ -52,6 +52,11 @@ NOM_LOG_CLASSINFO;
   this->appTime.Stop();
 
   this->app_state = false;
+
+  if ( SDL_WasInit ( SDL_INIT_JOYSTICK ) )
+  {
+    SDL_QuitSubSystem ( SDL_INIT_JOYSTICK );
+  }
 }
 
 bool SDL_App::isRunning ( void )

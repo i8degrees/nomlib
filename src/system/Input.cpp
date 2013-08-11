@@ -34,10 +34,13 @@ Input::Input ( void )
 {
 NOM_LOG_CLASSINFO;
 
-  if ( SDL_InitSubSystem ( SDL_INIT_JOYSTICK ) < 0 )
+  if ( SDL_WasInit( SDL_INIT_JOYSTICK ) == false )
   {
+    if ( SDL_InitSubSystem ( SDL_INIT_JOYSTICK ) < 0 )
+    {
 NOM_LOG_ERR ( SDL_GetError() );
-    return;
+      return;
+    }
   }
 
   this->joystick = nullptr;
@@ -73,7 +76,6 @@ NOM_LOG_CLASSINFO;
     }
   }
 */
-  SDL_QuitSubSystem ( SDL_INIT_JOYSTICK );
 }
 
 

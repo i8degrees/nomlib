@@ -99,9 +99,9 @@ void Line::Update ( void )
   for ( int32 x = ( int32 ) x1; x < maxX; ++x )
   {
     if ( steep )
-      this->pixels.push_back ( std::unique_ptr<Pixel> ( new Pixel ( y, x, this->color ) ) );
+      this->pixels.push_back ( nom::make_unique<Pixel> ( Pixel ( y, x, this->color ) ) );
     else
-      this->pixels.push_back ( std::unique_ptr<Pixel> ( new Pixel ( x, y, this->color ) ) );
+      this->pixels.push_back ( nom::make_unique<Pixel> ( Pixel ( x, y, this->color ) ) );
 
     error -= dy;
 

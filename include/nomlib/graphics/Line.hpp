@@ -39,6 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Pixel.hpp"
+#include "nomlib/system/make_unique.hpp"
 
 namespace nom {
 

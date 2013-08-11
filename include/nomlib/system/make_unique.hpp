@@ -26,32 +26,33 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#ifndef NOMLIB_MAKE_UNIQUE_HELPER_HPP
+#define NOMLIB_MAKE_UNIQUE_HELPER_HPP
 
-// Public header file
+#include <memory>
+#include <utility>
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/Clock.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/GameStates.hpp>
-#include <nomlib/system/ObjectCache.hpp>
-#include <nomlib/system/DialogMessageBox.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDL_App.hpp>
-#include <nomlib/system/Input.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/Sleep.hpp>
-#include <nomlib/system/random.hpp>
-#include <nomlib/system/make_unique.hpp>
+#include "nomlib/config.hpp"
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/DialogMessageBox.hpp>
-  #include <nomlib/system/osx/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  #include <nomlib/system/unix/DialogMessageBox.hpp>
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/DialogMessageBox.hpp>
-#endif
+namespace nom {
+
+/// Convenience helper for providing a version of std::make_unique for
+/// std::unique_ptr -- C++11 forgot to provide one like they did for
+/// std::shared_ptr!
+///
+/// This version only works for non-array types. Custom deleter support also has
+/// not been added.
+///
+///   References
+///
+/// 1. http://stackoverflow.com/questions/7038357/make-unique-and-perfect-forwarding
+template<typename T, typename... Args>
+std::unique_ptr<T> make_unique(Args&&... args)
+{
+  return std::unique_ptr<T>( new T( std::forward<Args>( args ) ... ) );
+}
+
+
+} // namespace nom
 
 #endif // include guard defined

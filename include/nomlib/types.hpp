@@ -34,9 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Portable fixed-size data types derive from stdint.h
 namespace nom {
 
-// 1-bit integer types
-typedef bool bit;
-
 // 8-bit integer types
 typedef int8_t int8;
 typedef uint8_t uint8;
@@ -59,7 +56,6 @@ typedef unsigned long ulong;
 } // namespace nom
 
 // Ensure our data types have the right sizes
-static_assert ( sizeof ( nom::bit ) == 1, "nom::bit" );
 static_assert ( sizeof ( nom::uint8 ) == 1, "nom::uint8" );
 static_assert ( sizeof ( nom::int8 ) == 1, "nom::int8" );
 

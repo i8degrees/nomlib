@@ -30,7 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_UNIX_DIALOG_MESSAGEBOX_HPP
 
 #include <string>
-
 #include <gtk-2.0/gtk/gtk.h>
 
 #include "nomlib/config.hpp"

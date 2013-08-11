@@ -63,7 +63,7 @@ bool Text::load ( const std::string& filename, int32 font_size )
   // the input file as a bitmap font
   if ( extension.compare ( "application/x-font-ttf" ) != 0 )
   {
-    this->font = std::shared_ptr<IFont> ( new BitmapFont );
+    this->font = std::unique_ptr<IFont> ( new BitmapFont() );
     this->font->load ( filename, Color ( 110, 144, 190 ), font_size, true );
 
     if ( this->font != nullptr )
@@ -75,7 +75,7 @@ bool Text::load ( const std::string& filename, int32 font_size )
   }
   else // Try as a TrueType font
   {
-    this->font = std::shared_ptr<IFont> ( new TrueTypeFont );
+    this->font = std::unique_ptr<IFont> ( new TrueTypeFont() );
 
     this->font->load ( filename, Color::Black, font_size, false );
 

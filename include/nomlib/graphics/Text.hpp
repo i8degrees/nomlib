@@ -84,7 +84,7 @@ class Text/*: public IDrawable*/
     /// Set the type of file we are loading; either a bitmap or a TrueType font
     void setFontType ( enum FontType type );
 
-    std::shared_ptr<IFont> font;
+    std::unique_ptr<IFont> font;
     /// Holds type of font in use; see setFontType
     enum FontType file_type;
 };

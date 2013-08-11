@@ -38,8 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/IFont.hpp"
 #include "nomlib/graphics/BitmapFont.hpp"
 #include "nomlib/graphics/TrueTypeFont.hpp"
-//#include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/math/Transformable.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/system/File.hpp"
 
 namespace nom {
@@ -53,13 +52,13 @@ enum FontType
 
 /// \brief Unified text output interface; designed for wrapping Bitmap &
 /// TrueType fonts together to co-exist under one API.
-class Text/*: public IDrawable*/
+class Text: public IDrawable
 {
   public:
     Text ( void );
     virtual ~Text ( void );
 
-    bool load ( const std::string& filename, int32 font_size = 12 );
+    bool load ( const std::string& filename, int32 font_size = 0 );
 
     FontType getFontType ( void );
 
@@ -68,8 +67,8 @@ class Text/*: public IDrawable*/
     int32 getFontHeight ( void ) const;
     FontStyle getFontStyle ( void ) const;
 
+    const Color& getColor ( void ) const;
     const Coords getPosition ( void ) const;
-    const Color getColor ( void ) const;
 
     void setText ( const std::string& text );
     void setColor ( const Color& color );
@@ -78,7 +77,7 @@ class Text/*: public IDrawable*/
     void setFontStyle ( uint8 style, uint8 options = 150 );
 
     virtual void Update ( void );
-    virtual void Draw ( void* video_buffer ) /*const*/;
+    virtual void Draw ( void* video_buffer ) const;
 
   private:
     /// Set the type of file we are loading; either a bitmap or a TrueType font

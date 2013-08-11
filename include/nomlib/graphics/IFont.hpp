@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/math/Transformable.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 
@@ -49,7 +49,7 @@ enum FontStyle
   Faded = 4
 };
 
-class IFont: public Transformable // "is-a" relationship
+class IFont: public IDrawable
 {
   public:
     IFont ( void ) {}
@@ -57,20 +57,21 @@ class IFont: public Transformable // "is-a" relationship
     virtual ~IFont ( void ) {}
 
     virtual bool load ( const std::string& filename, const Color& colorkey,
-                        int32 font_size = 12, bool use_cache = 0
+                        int32 font_size, bool use_cache = false
                       ) = 0;
 
     virtual const std::string& getText ( void ) const = 0;
     virtual int32 getFontWidth ( void ) const = 0;
     virtual int32 getFontHeight ( void ) const = 0;
     virtual FontStyle getFontStyle ( void ) const = 0;
+    virtual const Coords& getPosition ( void ) const = 0;
+    virtual const Color& getColor ( void ) const = 0;
 
     virtual void setText ( const std::string& text ) = 0;
     virtual void setFontSize ( int32 point_size ) = 0;
     virtual void setFontStyle ( uint8 style, uint8 options = 150 ) = 0;
-
-    virtual void Update ( void ) = 0;
-    virtual void Draw ( void* video_buffer ) = 0;
+    virtual void setColor ( const Color& color ) = 0;
+    virtual void setPosition ( const Coords& coords ) = 0;
 };
 
 

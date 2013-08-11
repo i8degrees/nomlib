@@ -41,15 +41,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IFont.hpp"
 #include "nomlib/sdl/utils.hpp"
+#include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Color.hpp"
-#include "nomlib/math/Transformable.hpp"
 #include "nomlib/graphics/Canvas.hpp"
-//#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 
-class BitmapFont: //  public IDrawable, //  "is a" inheritance
-                          public IFont // "is-a" relationship
+class BitmapFont: public IFont
 {
   public:
     /// Default constructor
@@ -77,6 +75,9 @@ class BitmapFont: //  public IDrawable, //  "is a" inheritance
     /// Compute the height in pixels of the set text string; defaults to zero (0)
     int32 getFontHeight ( void ) const;
 
+    const Color& getColor ( void ) const;
+    const Coords& getPosition ( void ) const;
+
     /// Obtain text character spacing width in pixels; defaults to given
     /// sheet_width argument divided by two (2)
     uint32 getSpacing ( void );
@@ -96,35 +97,49 @@ class BitmapFont: //  public IDrawable, //  "is a" inheritance
 
     void setFontSize ( int32 point_size );
 
+    void setColor ( const Color& color );
+    void setPosition ( const Coords& coords );
+
     const Coords findGlyph ( const std::string& glyph );
     /// \brief Loads a new bitmap font from a file
     /// \internal
     /// TODO: add spacing / padding so that we can export with black guidelines
     /// \endinternal
     bool load ( const std::string& filename, const Color& colorkey,
-                int32 font_size = 12, bool use_cache = 0
+                int32 font_size, bool use_cache = false
               );
 
     void Update ( void );
     /// Draw the set text string to the video surface
-    void Draw ( void* video_buffer ) /*const*/;
+    void Draw ( void* video_buffer ) const;
 
   private:
     /// pointer reference holding our bitmap font image sheet
-    Canvas bitmap_font;
+    mutable Canvas bitmap_font;
+
     /// individual chars positioning offsets within bitmap_font
     Coords chars[256];
+
+    /// Positioning coordinates
+    Coords coords;
+
     /// height (in pixels) to offset when newline carriage char is encountered
     uint32 newline;
+
     /// width (in pixels) to offset when a space carriage char is encountered
     uint32 spacing;
+
     /// holds contents of text as a string
     std::string text_buffer;
+
     /// Current text effect set
     enum FontStyle text_style;
 
     /// Not implemented (yet)
     int32 font_size;
+
+    /// Not implemented (yet)
+    Color color;
 
     uint32 sheet_width;
     uint32 sheet_height;

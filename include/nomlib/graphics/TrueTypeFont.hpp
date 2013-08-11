@@ -38,10 +38,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IFont.hpp"
 #include "nomlib/sdl/utils.hpp"
+#include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Color.hpp"
-#include "nomlib/math/Transformable.hpp"
 #include "nomlib/graphics/Canvas.hpp"
-//#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
   namespace priv {
@@ -49,14 +48,14 @@ namespace nom {
 /// Custom deleter for TTF_Font* smart pointers; can be used as a debugging aid.
 void TTF_FreeSurface ( TTF_Font* );
 
+
   } // namespace priv
 } // namespace nom
 
 
 namespace nom {
 
-class TrueTypeFont: //  public IDrawable, //  "is a" inheritance
-                    public IFont // "is-a" relationship
+class TrueTypeFont: public IFont
 {
   public:
     /// Default constructor; we initialize the SDL_ttf extension here
@@ -79,6 +78,9 @@ class TrueTypeFont: //  public IDrawable, //  "is a" inheritance
 
     FontStyle getFontStyle ( void ) const;
 
+    const Color& getColor ( void ) const;
+    const Coords& getPosition ( void ) const;
+
     void setFontStyle ( uint8 style, uint8 options );
 
     /// Set a new text point size
@@ -89,24 +91,35 @@ class TrueTypeFont: //  public IDrawable, //  "is a" inheritance
     /// NOTE: We render the font drawing surface here
     void setText ( const std::string& text );
 
+    void setColor ( const Color& color );
+    void setPosition ( const Coords& coords );
+
     /// \brief Load a new TTF or FON from a file
     ///
     /// Support for the file format is determined
     /// by the SDL_ttf extension
     bool load ( const std::string& filename, const Color& colorkey,
-                int32 font_size = 12, bool use_cache = 0
+                int32 font_size, bool use_cache = false
               );
 
     void Update ( void );
 
     /// Draw the set text string to the video surface
-    void Draw ( void* video_buffer ) /*const*/;
+    void Draw ( void* video_buffer ) const;
 
   private:
     /// Surface where font for drawing is rendered to
     Canvas font_buffer;
+
     /// Font file data, used by SDL_ttf extension
     std::shared_ptr<TTF_Font> font;
+
+    /// Positioning coordinates (including width and height)
+    Coords coords;
+
+    /// Text color
+    Color color;
+
     /// holds contents of text as a string buffer
     std::string text_buffer;
 

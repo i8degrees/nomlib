@@ -36,6 +36,7 @@ void TTF_FreeSurface ( TTF_Font* font )
   TTF_CloseFont ( font );
 }
 
+
   } // namespace priv
 } // namespace nom
 
@@ -65,7 +66,7 @@ TrueTypeFont::~TrueTypeFont ( void )
 {
 NOM_LOG_CLASSINFO;
 
-  this->font.reset(); // nullptr
+  this->font.reset();
 
   TTF_Quit();
 }
@@ -98,6 +99,27 @@ FontStyle TrueTypeFont::getFontStyle ( void ) const
   return this->text_style;
 }
 
+const Color& TrueTypeFont::getColor ( void ) const
+{
+  return this->color;
+}
+
+const Coords& TrueTypeFont::getPosition ( void ) const
+{
+  return this->coords;
+}
+
+void TrueTypeFont::setColor ( const Color& color )
+{
+  this->color = color;
+}
+
+void TrueTypeFont::setPosition ( const Coords& coords )
+{
+  this->coords.x = coords.x;
+  this->coords.y = coords.y;
+}
+
 void TrueTypeFont::setFontSize ( int32 point_size )
 {
   if ( this->load ( this->filename, nom::Color::Black, point_size ) == false )
@@ -112,8 +134,7 @@ void TrueTypeFont::setFontStyle ( uint8 style, uint8 options )
 
   switch ( style )
   {
-    default:
-    break;
+    default: break;
     case FontStyle::Regular:
     case FontStyle::Bold:
     case FontStyle::Italic:
@@ -133,19 +154,15 @@ void TrueTypeFont::setFontStyle ( uint8 style, uint8 options )
 
 void TrueTypeFont::setText ( const std::string& text )
 {
-  int32_t width, height = 0; // holds the return values; width, height
+  if ( text.length() < 1 )
+    return;
 
   this->text_buffer = text;
 
   // Update the width & height of text string, if we can
-  if ( text.length() > 0 )
+  if ( TTF_SizeText ( this->font.get(), this->text_buffer.c_str(), &this->coords.width, &this->coords.height ) == -1 )
   {
-    if ( TTF_SizeText ( this->font.get(), text.c_str(), &width, &height ) != -1 )
-      this->coords.setSize ( width, height );
-  }
-  else
-  {
-NOM_LOG_ERR ( "Text length must be greater than zero" );
+NOM_LOG_ERR ( "Failed to set font width & height." );
   }
 }
 
@@ -153,7 +170,6 @@ bool TrueTypeFont::load ( const std::string& filename, const Color& colorkey,
                           int32 font_size, bool use_cache
                         )
 {
-  this->font.reset();
   this->font = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), font_size ), nom::priv::TTF_FreeSurface );
 
   if ( this->valid() == false )
@@ -173,28 +189,28 @@ void TrueTypeFont::Update ( void )
   this->font_buffer.setPosition ( this->coords );
 
   // Update the rendered text surface here for drawing
-  if ( this->getText().c_str() != nullptr )
-  {
-    this->font_buffer.setCanvas ( TTF_RenderText_Solid
-                                  (
-                                    this->font.get(),
-                                    this->getText().c_str(),
-                                    getSDL_Color ( this->color )
-                                  )
-                                );
+  if ( this->getText().c_str() == nullptr )
+    return;
 
-    if ( this->text_style == FontStyle::Faded )
-    {
-      this->font_buffer.setAlpha ( this->style_options );
-    }
+  this->font_buffer.setCanvas ( TTF_RenderText_Solid
+                                (
+                                  this->font.get(),
+                                  this->getText().c_str(),
+                                  getSDL_Color ( this->color )
+                                )
+                              );
+
+  if ( this->text_style == FontStyle::Faded )
+  {
+    this->font_buffer.setAlpha ( this->style_options );
   }
 }
 
-void TrueTypeFont::Draw ( void* video_buffer ) /*const*/
+void TrueTypeFont::Draw ( void* video_buffer ) const
 {
 NOM_ASSERT ( this->font_buffer.valid() );
 
-  if ( this->font_buffer.valid() && this->text_buffer.length() > 0 )
+  if ( this->font_buffer.valid() )
   {
     this->font_buffer.Draw ( video_buffer );
   }

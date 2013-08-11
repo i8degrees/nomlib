@@ -48,7 +48,7 @@ NOM_LOG_CLASSINFO;
   this->sheet_width = 16;
   this->sheet_height = 16;
 
-  this->setPosition ( 0, 0 );
+  this->coords.setPosition ( 0, 0 );
 
   for ( unsigned int idx = 0; idx < 256; idx++ )
   {
@@ -99,6 +99,26 @@ int32 BitmapFont::getFontHeight ( void ) const
   }
 
   return text_height;
+}
+
+const Color& BitmapFont::getColor ( void ) const
+{
+  return this->color;
+}
+
+const Coords& BitmapFont::getPosition ( void ) const
+{
+  return this->coords;
+}
+
+void BitmapFont::setColor ( const Color& color )
+{
+  this->color = color;
+}
+
+void BitmapFont::setPosition ( const Coords& coords )
+{
+  this->coords = coords;
 }
 
 void BitmapFont::setFontSize ( int32 point_size )
@@ -336,7 +356,7 @@ void BitmapFont::Update ( void )
 }
 
 // TODO: test \t (horizontal tabbing) feature
-void BitmapFont::Draw ( void* video_buffer ) /*const*/
+void BitmapFont::Draw ( void* video_buffer ) const
 {
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from

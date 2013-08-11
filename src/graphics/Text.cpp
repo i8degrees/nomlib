@@ -64,7 +64,7 @@ bool Text::load ( const std::string& filename, int32 font_size )
   if ( extension.compare ( "application/x-font-ttf" ) != 0 )
   {
     this->font = std::unique_ptr<IFont> ( new BitmapFont() );
-    this->font->load ( filename, Color ( 110, 144, 190 ), font_size, true );
+    this->font->load ( filename, Color ( 110, 144, 190 ), true );
 
     if ( this->font != nullptr )
     {
@@ -136,7 +136,7 @@ FontStyle Text::getFontStyle ( void ) const
     return FontStyle::Regular; // FIXME; should be Unknown or such
 }
 
-const Color Text::getColor ( void ) const
+const Color& Text::getColor ( void ) const
 {
   if ( this->font )
     return this->font->getColor();
@@ -188,7 +188,7 @@ void Text::Update ( void )
     this->font->Update();
 }
 
-void Text::Draw ( void* video_buffer )
+void Text::Draw ( void* video_buffer ) const
 {
   if ( this->font )
     this->font->Draw ( video_buffer );

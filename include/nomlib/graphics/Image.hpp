@@ -63,13 +63,13 @@ class Image
 
     /// Uses SDL's built-in BMP file loader; no alpha channeling support ...
     /// perfect for setting window icons!
-    std::shared_ptr<void> loadFromFile_BMP ( const std::string& filename );
+    std::shared_ptr<void> loadBMP ( const std::string& filename );
 
     /// Saves as an uncompressed RGB Windows Bitmap (BMP)
     ///
     /// NOTE: AFAIK, no existing file handling / overwriting checks are done
     /// whatsoever
-    bool saveToFile ( const std::string& filename, void* video_buffer );
+    bool save ( const std::string& filename, void* video_buffer );
 
     const Coords getSize ( void ) const;
 

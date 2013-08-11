@@ -75,7 +75,7 @@ NOM_LOG_ERR ( IMG_GetError() );
   return this->image_buffer;
 }
 
-std::shared_ptr<void> Image::loadFromFile_BMP ( const std::string& filename )
+std::shared_ptr<void> Image::loadBMP ( const std::string& filename )
 {
   this->image_buffer = std::shared_ptr<void> ( SDL_LoadBMP ( filename.c_str() ), nom::priv::Canvas_FreeSurface );
 
@@ -88,7 +88,7 @@ NOM_LOG_ERR ( SDL_GetError() );
   return this->image_buffer;
 }
 
-bool Image::saveToFile ( const std::string& filename, void* video_buffer )
+bool Image::save ( const std::string& filename, void* video_buffer )
 {
   if ( SDL_SaveBMP ( static_cast<SDL_Surface*> ( video_buffer ), filename.c_str() ) != 0 )
   {

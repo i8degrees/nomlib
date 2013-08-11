@@ -46,9 +46,6 @@ class IFrame: public IDrawable
 
     virtual void setPosition( int32 x, int32 y ) = 0;
     virtual void setSize( int32 width, int32 height, int32 padding = 1 ) = 0;
-
-    virtual void Update ( void ) = 0;
-    virtual void Draw ( void* ) const = 0;
 };
 
 

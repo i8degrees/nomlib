@@ -56,8 +56,9 @@ class Sprite: public IDrawable,     //  "is a" inheritance
                               int32 spacing, int32 padding
                             );
 
-    bool Load ( std::string filename, Color colorkey, bool use_cache = 0,
-                unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL
+    bool load ( std::string filename, Color colorkey,
+                bool use_cache = 0,
+                uint32 flags = SDL_SRCCOLORKEY | SDL_RLEACCEL
               );
 
     void Update ( void );

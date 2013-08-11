@@ -101,9 +101,9 @@ void Cursor::setState ( unsigned int state )
   this->cursor.setState ( state );
 }
 
-void Cursor::Load ( std::string filename, Color colorkey, bool use_cache ) // sheet_id ?
+void Cursor::load ( std::string filename, Color colorkey, bool use_cache ) // sheet_id ?
 {
-  this->cursor.Load ( filename, colorkey, use_cache );
+  this->cursor.load ( filename, colorkey, use_cache );
 }
 
 void Cursor::Update ( void )

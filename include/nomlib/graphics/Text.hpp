@@ -59,7 +59,7 @@ class Text/*: public IDrawable*/
     Text ( void );
     virtual ~Text ( void );
 
-    bool Load ( const std::string& filename, int32 font_size = 12 );
+    bool load ( const std::string& filename, int32 font_size = 12 );
 
     FontType getFontType ( void );
 

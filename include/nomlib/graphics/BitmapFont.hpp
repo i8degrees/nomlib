@@ -70,7 +70,7 @@ class BitmapFont: //  public IDrawable, //  "is a" inheritance
     /// fudged ...
     ///
     /// We probably ought to be calculating the width based off the same
-    /// algorithm as is shown in ::Load
+    /// algorithm as is shown in the load method
     /// \endinternal
     int32 getFontWidth ( void ) const;
 
@@ -101,7 +101,7 @@ class BitmapFont: //  public IDrawable, //  "is a" inheritance
     /// \internal
     /// TODO: add spacing / padding so that we can export with black guidelines
     /// \endinternal
-    bool Load ( const std::string& filename, const Color& colorkey,
+    bool load ( const std::string& filename, const Color& colorkey,
                 int32 font_size = 12, bool use_cache = 0
               );
 

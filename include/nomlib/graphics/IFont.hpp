@@ -56,7 +56,7 @@ class IFont: public Transformable // "is-a" relationship
 
     virtual ~IFont ( void ) {}
 
-    virtual bool Load ( const std::string& filename, const Color& colorkey,
+    virtual bool load ( const std::string& filename, const Color& colorkey,
                         int32 font_size = 12, bool use_cache = 0
                       ) = 0;
 

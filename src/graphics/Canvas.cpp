@@ -189,7 +189,9 @@ bool Canvas::getCanvasLock ( void ) const
   return buffer->locked;
 }
 
-bool Canvas::loadFromImage ( const std::string& filename, const Color& colorkey, bool use_cache, uint32 flags )
+bool Canvas::load ( const std::string& filename, const Color& colorkey,
+                    bool use_cache, uint32 flags
+                  )
 {
   Image image;
 
@@ -203,12 +205,12 @@ bool Canvas::loadFromImage ( const std::string& filename, const Color& colorkey,
 
     if ( this->canvas_buffer == nullptr )
     {
-      this->canvas_buffer = cache.addObject ( filename, image.loadFromFile ( filename ) );
+      this->canvas_buffer = cache.addObject ( filename, image.load ( filename ) );
     }
   }
   else // Do not use the object cache
   {
-    this->canvas_buffer = std::shared_ptr<void> ( image.loadFromFile ( filename ) );
+    this->canvas_buffer = std::shared_ptr<void> ( image.load ( filename ) );
   }
 
   // Validate our obtained data is good before further processing

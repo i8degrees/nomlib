@@ -100,7 +100,7 @@ FontStyle TrueTypeFont::getFontStyle ( void ) const
 
 void TrueTypeFont::setFontSize ( int32 point_size )
 {
-  if ( this->Load ( this->filename, nom::Color::Black, point_size ) == false )
+  if ( this->load ( this->filename, nom::Color::Black, point_size ) == false )
   {
 NOM_LOG_ERR ( "Could not set font size." );
   }
@@ -149,9 +149,9 @@ NOM_LOG_ERR ( "Text length must be greater than zero" );
   }
 }
 
-bool TrueTypeFont::Load ( const std::string& filename, const Color& colorkey,
-                      int32 font_size, bool use_cache
-                    )
+bool TrueTypeFont::load ( const std::string& filename, const Color& colorkey,
+                          int32 font_size, bool use_cache
+                        )
 {
   this->font.reset();
   this->font = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), font_size ), nom::priv::TTF_FreeSurface );

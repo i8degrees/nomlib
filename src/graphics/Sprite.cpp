@@ -97,11 +97,11 @@ void Sprite::setSheetDimensions ( int32 sheet_width, int32 sheet_height, int32 s
   this->sheet.padding = padding;
 }
 
-bool Sprite::Load  ( std::string filename, Color colorkey,
-                          bool use_cache, unsigned int flags
-                        )
+bool Sprite::load ( std::string filename, Color colorkey,
+                    bool use_cache, uint32 flags
+                  )
 {
-  this->sprite_buffer.loadFromImage ( filename, colorkey, use_cache, flags );
+  this->sprite_buffer.load ( filename, colorkey, use_cache, flags );
 
   if ( ! this->sprite_buffer.valid() )
   {

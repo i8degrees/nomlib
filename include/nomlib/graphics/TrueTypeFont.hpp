@@ -93,7 +93,7 @@ class TrueTypeFont: //  public IDrawable, //  "is a" inheritance
     ///
     /// Support for the file format is determined
     /// by the SDL_ttf extension
-    bool Load ( const std::string& filename, const Color& colorkey,
+    bool load ( const std::string& filename, const Color& colorkey,
                 int32 font_size = 12, bool use_cache = 0
               );
 

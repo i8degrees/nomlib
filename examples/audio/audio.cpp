@@ -62,12 +62,12 @@ NOM_DUMP_VAR ( listener.getVolume() );
   bool ret = false;
   if ( argv[1] != nullptr )
   {
-    ret = buffer.loadFromFile ( argv[1] );
+    ret = buffer.load ( argv[1] );
   }
   else
   {
-    ret = buffer.loadFromFile ( path + "Resources/cursor_wrong.wav" );
-    //ret = buffer.loadFromFile ( "/Users/jeff/Projects/hax/ttcards.git/ttcards/Resources/audio/15_ShuffleOrBoogie.ogg" );
+    ret = buffer.load ( path + "Resources/cursor_wrong.wav" );
+    //ret = buffer.load ( "/Users/jeff/Projects/hax/ttcards.git/ttcards/Resources/audio/15_ShuffleOrBoogie.ogg" );
   }
 
   if ( ! ret )

@@ -45,7 +45,7 @@ NOM_LOG_CLASSINFO;
   this->font.reset();
 }
 
-bool Text::Load ( const std::string& filename, int32 font_size )
+bool Text::load ( const std::string& filename, int32 font_size )
 {
   File file;
   std::string extension = "\0";
@@ -64,7 +64,7 @@ bool Text::Load ( const std::string& filename, int32 font_size )
   if ( extension.compare ( "application/x-font-ttf" ) != 0 )
   {
     this->font = std::shared_ptr<IFont> ( new BitmapFont );
-    this->font->Load ( filename, Color ( 110, 144, 190 ), font_size, true );
+    this->font->load ( filename, Color ( 110, 144, 190 ), font_size, true );
 
     if ( this->font != nullptr )
     {
@@ -77,7 +77,7 @@ bool Text::Load ( const std::string& filename, int32 font_size )
   {
     this->font = std::shared_ptr<IFont> ( new TrueTypeFont );
 
-    this->font->Load ( filename, Color::Black, font_size, false );
+    this->font->load ( filename, Color::Black, font_size, false );
 
     if ( this->font != nullptr )
     {

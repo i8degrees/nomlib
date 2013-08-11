@@ -160,9 +160,9 @@ void BitmapFont::setFontStyle ( uint8 style, uint8 options )
   }
 }
 
-bool BitmapFont::Load ( const std::string& filename, const Color& colorkey,
-                            int32 font_size, bool use_cache
-                          )
+bool BitmapFont::load ( const std::string& filename, const Color& colorkey,
+                        int32 font_size, bool use_cache
+                      )
 {
   uint32_t tile_width = 0;
   uint32_t tile_height = 0;
@@ -171,7 +171,7 @@ bool BitmapFont::Load ( const std::string& filename, const Color& colorkey,
   uint32_t currentChar = 0;
   int32_t background_color = 0;
 
-  if ( this->bitmap_font.loadFromImage ( filename, colorkey, use_cache ) == false )
+  if ( this->bitmap_font.load ( filename, colorkey, use_cache ) == false )
   {
 NOM_LOG_ERR ( "Could not load bitmap font image file: " + filename );
     return false;

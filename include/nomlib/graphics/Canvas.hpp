@@ -135,10 +135,11 @@ class Canvas
     /// sane to assume that you would not use transparency when you have alpha
     /// surface enabled
     /// \endinternal
-    bool loadFromImage  ( const std::string& filename, const Color&
-                          colorkey = Color ( -1, -1, -1, -1 ),
-                          bool use_cache = 0,
-                          uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY );
+    bool load ( const std::string& filename, const Color&
+                colorkey = Color ( -1, -1, -1, -1 ),
+                bool use_cache = 0,
+                uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY
+              );
 
     bool Update ( void* video_buffer );
     void Draw ( void* video_buffer ) const;

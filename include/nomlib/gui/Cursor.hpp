@@ -70,7 +70,7 @@ class Cursor
     void moveCursorLeft();
     void moveCursorRight();
 
-    void Load ( std::string filename, Color colorkey, bool use_cache );
+    void load( std::string filename, Color colorkey, bool use_cache );
     void Update ( void );
     void Draw ( void* video_buffer );
 

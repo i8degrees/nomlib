@@ -59,7 +59,7 @@ class Image
 
     /// Supports every file type that the libSDL_image extension has been
     /// compiled with
-    std::shared_ptr<void> loadFromFile ( const std::string& filename );
+    std::shared_ptr<void> load ( const std::string& filename );
 
     /// Uses SDL's built-in BMP file loader; no alpha channeling support ...
     /// perfect for setting window icons!

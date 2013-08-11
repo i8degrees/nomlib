@@ -60,7 +60,7 @@ class SoundBuffer
     // getChannelCount
     // ...
 
-    bool loadFromFile ( const std::string& filename );
+    bool load ( const std::string& filename );
 
   private:
     ALuint buffers[NUM_BUFFERS];

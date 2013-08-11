@@ -191,7 +191,7 @@ void Display::setWindowIcon ( const std::string& app_icon )
   if ( this->valid() )
 NOM_LOG_ERR ( "SDL video subsystem has already been initiated." );
 
-  icon = std::shared_ptr<void> ( image.loadFromFile ( app_icon ) );
+  icon = std::shared_ptr<void> ( image.load ( app_icon ) );
   if ( icon == nullptr )
   {
 NOM_LOG_ERR ( "Could not load window icon file: " + app_icon );

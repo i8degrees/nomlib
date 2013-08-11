@@ -56,7 +56,7 @@ uint32 SoundBuffer::getDuration ( void ) const
   return this->buffer_duration;
 }
 
-bool SoundBuffer::loadFromFile ( const std::string& filename )
+bool SoundBuffer::load ( const std::string& filename )
 {
   SoundFile fp;
 

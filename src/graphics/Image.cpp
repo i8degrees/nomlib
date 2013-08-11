@@ -62,7 +62,7 @@ bool Image::valid ( void ) const
     return false;
 }
 
-std::shared_ptr<void> Image::loadFromFile ( const std::string& filename )
+std::shared_ptr<void> Image::load ( const std::string& filename )
 {
   this->image_buffer = std::shared_ptr<void> ( IMG_Load ( filename.c_str() ), nom::priv::Canvas_FreeSurface );
 

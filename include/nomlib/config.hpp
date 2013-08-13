@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Debugging
 #include <iostream>
 #include <cassert>
-#include "nomlib/system/Clock.hpp"
+#include "nomlib/system/clock.hpp"
 
 /// \brief nomlib Debugging Options
 ///

@@ -32,7 +32,7 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/json/Value.cpp
       # system
       ${SRC_DIR}/system/File.cpp
-      ${SRC_DIR}/system/Clock.cpp
+      ${SRC_DIR}/system/clock.cpp
       ${SRC_DIR}/system/DialogMessageBox.cpp
       ${SRC_DIR}/system/FPS.cpp
       ${SRC_DIR}/system/GameStates.cpp

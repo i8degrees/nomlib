@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Public header file
 
 #include <nomlib/config.hpp>
-#include <nomlib/system/Clock.hpp>
+#include <nomlib/system/clock.hpp>
 #include <nomlib/system/FPS.hpp>
 #include <nomlib/system/GameStates.hpp>
 #include <nomlib/system/ObjectCache.hpp>

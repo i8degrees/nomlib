@@ -370,6 +370,8 @@ if ( PLATFORM_OSX )
 
     add_rpath ( "${RUNTIME_PATH}" "${INSTALL_BINARY_PATH}" )
 
+    install_name_rpath ( "@rpath/sndfile.framework/Versions/A/sndfile" "${LIBSNDFILE_LIBRARY}/Versions/A/sndfile" )
+
   endif ( FRAMEWORK )
 endif ( PLATFORM_OSX )
 

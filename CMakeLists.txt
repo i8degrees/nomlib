@@ -236,9 +236,8 @@ endif ( LIBMAGIC_FOUND )
 
 if ( JSON_SPIRIT_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${JSON_SPIRIT_LIBRARY} )
 else ( NOT JSON_SPIRIT_FOUND )
-  message ( FATAL_ERROR "Required dependency json_spirit missing!" )
+  message ( FATAL_ERROR "Required dependency json_spirit (headers only) missing!" )
 endif ( JSON_SPIRIT_FOUND )
 
 if ( PLATFORM_OSX )
@@ -356,7 +355,6 @@ if ( PLATFORM_OSX )
               "${SDLIMAGE_LIBRARY}" # SDL_image.framework
               "${SDLTTF_LIBRARY}" # SDL_ttf.framework
               "${LIBSNDFILE_LIBRARY}" # sndfile.framework
-              "${JSON_SPIRIT_LIBRARY}" # json_spirit.framework
               DESTINATION "${INSTALL_EXT_FRAMEWORKS_PATH}"
               PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
             )

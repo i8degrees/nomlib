@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fstream>
 #include <string>
 
-#include <json_spirit.h>
+#include <json_spirit_reader_template.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/json/Object.hpp"

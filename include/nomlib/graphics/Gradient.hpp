@@ -43,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-class Gradient: public IDrawable,     // "is a" relationship
+class Gradient: //public IDrawable,     // "is a" relationship
                 public Transformable  // "has a" relationship
 {
   public:
@@ -69,7 +69,7 @@ class Gradient: public IDrawable,     // "is a" relationship
     void Draw ( void* video_buffer ) const;
 
   private:
-    std::vector<std::shared_ptr<IDrawable>> rectangles;
+    std::vector<std::shared_ptr<Rectangle>> rectangles;
     /// gradient[0] = starting Color
     /// gradient[1] = ending Color
     Color gradient[2];

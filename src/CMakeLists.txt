@@ -25,11 +25,11 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/graphics/Rectangle.cpp
       ${SRC_DIR}/graphics/Sprite.cpp
       # nomJSON
-      ${SRC_DIR}/json/Array.cpp
-      ${SRC_DIR}/json/FileReader.cpp
-      ${SRC_DIR}/json/FileWriter.cpp
-      ${SRC_DIR}/json/Object.cpp
-      ${SRC_DIR}/json/Value.cpp
+      #${SRC_DIR}/json/Array.cpp
+      #${SRC_DIR}/json/FileReader.cpp
+      #${SRC_DIR}/json/FileWriter.cpp
+      #${SRC_DIR}/json/Object.cpp
+      #${SRC_DIR}/json/Value.cpp
       # system
       ${SRC_DIR}/system/File.cpp
       ${SRC_DIR}/system/clock.cpp

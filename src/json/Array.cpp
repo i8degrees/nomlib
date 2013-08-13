@@ -29,40 +29,30 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/json/Array.hpp"
 
 namespace nom {
-  namespace json {
+  namespace JSON {
+
+Array::Array ( void ) {}
 
 Array::Array ( Value value )
 {
-NOM_LOG_CLASSINFO;
-
   this->values.clear();
-
-  this->values.push_back ( value );
+  //this->values.push_back ( value );
 }
 
-Array::~Array ( void )
-{
-NOM_LOG_CLASSINFO;
-
-  this->values.clear();
-}
-
-void Array::clear ( void )
-{
-  this->values.clear();
-}
-
-void Array::Add ( Value value )
-{
-  this->values.push_back ( value );
-}
+Array::~Array ( void ) {}
 
 void Array::endl ( void )
 {
   //this->values.push_back ( this->obj );
-  this->clear();
+  this->values.clear();
+}
+
+void Array::push_back ( const Value& value )
+{
+  //this->values.push_back ( value );
+  this->values.push_back ( value.getValue() );
 }
 
 
-  } // namespace json
+  } // namespace JSON
 } // namespace nom

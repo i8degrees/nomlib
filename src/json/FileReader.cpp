@@ -29,145 +29,32 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/json/FileReader.hpp"
 
 namespace nom {
-  namespace json {
+  namespace JSON {
 
-FileReader::FileReader ( void )
+FileReader::FileReader ( void ) {}
+
+FileReader::~FileReader ( void ) {}
+
+//bool FileReader::parse ( const std::string& filename, Value& value )
+bool FileReader::parse ( const std::string& filename, json_spirit::Value& value )
 {
-NOM_LOG_CLASSINFO;
-}
+  std::ifstream fp; // input file stream
 
-FileReader::~FileReader ( void )
-{
-NOM_LOG_CLASSINFO;
+  fp.open ( filename );
 
-  if ( this->fp.is_open() )
-    this->fp.close();
-}
-
-//const json_spirit::mValue& find_value ( const json_spirit::mObject& obj, const std::string& name )
-//{
-  //json_spirit::mObject::const_iterator i = obj.find ( name );
-
-  //assert ( i != obj.end() );
-  //assert ( i->first == name );
-
-  //return i->second;
-//}
-
-int FileReader::readInt ( const json_spirit::Value &value )
-{
-  return value.get_int();
-}
-
-std::string FileReader::readString ( const json_spirit::Value &value )
-{
-  return value.get_str();
-}
-
-Value FileReader::getObject ( const json_spirit::Object &obj, const std::string& name )
-{
-  for ( json_spirit::Object::size_type o = 0; o != obj.size(); o++ )
+  if ( fp.is_open() && fp.good() )
   {
-    const json_spirit::Pair &pair = obj[o];
-    const std::string &path = pair.name_;
-    const json_spirit::Value &value = pair.value_;
+    json_spirit::read_stream ( fp, value );
+    //json_spirit::read_stream ( fp, value.getValue() );
 
-    if ( path == name )
-    {
-      switch ( value.type() )
-      {
-        default:
-        break;
-
-        case json_spirit::int_type:
-          //std::cout << path << ": " << value.get_int() << std::endl;
-          return Value ( path, value );
-        break;
-
-        case json_spirit::array_type:
-        {
-          const json_spirit::Array &arr = value.get_array();
-          for ( int i = 0; i < arr.size(); i++ )
-          {
-            //temp.push_back ( arr[i].get_int() );
-            //std::cout << arr[i].get_int();
-          }
-          //return Value ( path, temp );
-          /*
-          if ( i == arr.size() - 1 ) // next to last element
-            std::cout << " ";
-          else
-            std::cout << ", ";
-          }
-          //std::cout << std::endl << "---" << std::endl;
-          */
-        }
-        break;
-
-        case json_spirit::str_type:
-          //std::cout << path << ": " << value.get_str() << std::endl;
-          return Value ( path, value );
-        break;
-      }
-    }
-  }
-  return Value ( "ERR", "Undefined" );
-}
-
-bool FileReader::Parse ( std::string filename )
-{
-  json_spirit::Object root_obj;
-  json_spirit::Value value;
-
-  this->fp.open ( filename );
-
-  if ( this->fp.is_open() )
-  {
-    if ( this->fp.good() )
-    {
-      //json_spirit::read ( fp, value );
-
-      json_spirit::Array &values = value.get_array();
-
-      for ( json_spirit::Array::size_type i = 0; i != values.size(); i++ )
-      {
-        root_obj = values[i].get_obj();
-
-        val.push_back ( getObject ( root_obj, "ID" ) );
-        val.push_back ( getObject ( root_obj, "Element" ) );
-        val.push_back ( getObject ( root_obj, "Name" ) );
-        val.push_back ( getObject ( root_obj, "Ranks" ) );
-      }
-    }
-    else
-    {
-      std::cout << "ERR: " << "Reading file" << std::endl;
-      return false;
-    }
-
-    this->fp.close();
-  }
-  else
-  {
-    std::cout << "ERR: " << "Opening file" << std::endl;
-    return false;
+    fp.close();
+    return true;
   }
 
-  for ( int i = 0; i < val.size(); i++ )
-  {
-    if ( val[i].getName() == "ID" )
-    {
-      std::cout << val[i].getValue().get_int() << "\n";
-    }
-    else if ( val[i].getName() == "Name" )
-    {
-      std::cout << val[i].getString() << "\n";
-    }
-  }
-
-  return true;
+  fp.close();
+  return false;
 }
 
 
-  } // namespace json
+  } // namespace JSON
 } // namespace nom

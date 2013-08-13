@@ -33,34 +33,36 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <array>
 
-#include <json_spirit.h>
+#include <json_spirit_reader_template.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/json/Value.hpp"
+//#include "nomlib/json/Object.hpp"
 
 namespace nom {
-  namespace json {
+  namespace JSON {
 
 class Value;
 
 class Array
 {
   public:
+    Array ( void );
     Array ( Value value );
     ~Array ( void );
 
-    void clear ( void );
-    void Add ( Value value );
     void endl ( void );
 
-    std::vector<Value> values;
+    //void push_back ( const json_spirit::Value& value );
+    void push_back ( const Value& value );
 
+    json_spirit::Array values;
   private:
     // ...
 };
 
 
-  } // namespace json
+  } // namespace JSON
 } // namespace nom
 
 #endif // include guard defined

@@ -36,10 +36,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <json_spirit_reader_template.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/json/Object.hpp"
+#include "nomlib/json/Value.hpp"
 
 namespace nom {
-  namespace json {
+  namespace JSON {
 
 class FileReader
 {
@@ -47,20 +47,11 @@ class FileReader
     FileReader ( void );
     ~FileReader ( void );
 
-    int readInt ( const json_spirit::Value &value );
-    std::string readString ( const json_spirit::Value &value );
-
-    Value getObject ( const json_spirit::Object &obj, const std::string& name );
-
-    bool Parse ( std::string filename );
-
-    std::vector<Value> val;
-
-  private:
-    std::ifstream fp; // input file stream object
+    //bool parse ( const std::string& filename, Value& value );
+    bool parse ( const std::string& filename, json_spirit::Value& value );
 };
 
-  } // namespace json
+  } // namespace JSON
 } // namespace nom
 
 #endif // include guard defined

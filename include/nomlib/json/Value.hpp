@@ -33,37 +33,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <array>
 
-#include <json_spirit.h>
+#include <json_spirit_reader_template.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/json/Array.hpp"
 
 namespace nom {
-  namespace json {
+  namespace JSON {
 
 class Value
 {
   public:
     Value ( void );
     Value ( const std::string name_, const json_spirit::Value value_ );
+    Value ( const json_spirit::Value& value );
     //Value ( const std::string name_, const JSON_Array value_ );
     ~Value ( void );
 
-    const std::string getName ( void );
-    const json_spirit::Value getValue ( void ) const;
+    const std::string getName ( void ) const;
+    json_spirit::Value& getValue ( void ) const;
     const std::string getString ( void ) const;
-
-    void setName ( const std::string name_ );
-    void setValue ( const json_spirit::Value value_ );
 
   private:
     std::string name;
-    json_spirit::Value value;
-    //json_spirit::Array arr;
+    mutable json_spirit::Value value;
 };
 
 
-  } // namespace json
+  } // namespace JSON
 } // namespace nom
 
 #endif // include guard defined

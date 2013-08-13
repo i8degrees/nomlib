@@ -38,10 +38,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/json/Object.hpp"
-#include "nomlib/json/Array.hpp"
+//#include "nomlib/json/Array.hpp"
 
 namespace nom {
-  namespace json {
+  namespace JSON {
+
+enum options
+{
+  none = 0,
+  pretty_print = 1,
+  single_line_arrays = 2
+};
 
 class FileWriter
 {
@@ -49,14 +56,13 @@ class FileWriter
     FileWriter ( void );
     ~FileWriter ( void );
 
-    bool Write ( std::string filename, Object &root );
-
-  private:
-    std::ofstream fp; // output file stream object
+    bool save ( const std::string& filename, Object& root,
+                enum options format = none
+              );
 };
 
 
-  } // namespace json
+  } // namespace JSON
 } // namespace nom
 
 #endif // include guard defined

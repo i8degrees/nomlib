@@ -29,22 +29,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/json/Value.hpp"
 
 namespace nom {
-  namespace json {
+  namespace JSON {
 
-Value::Value ( void )
-{
-NOM_LOG_CLASSINFO;
-
-  this->name = "\0";
-  this->value = 0;
-}
+Value::Value ( void ) : name( "\0" ), value ( 0 ) {}
 
 Value::Value ( const std::string name_, const json_spirit::Value value_ )
 {
-NOM_LOG_CLASSINFO;
-
   this->name = name_;
   this->value = value_;
+}
+
+Value::Value ( const json_spirit::Value& value )
+{
+  this->value = value;
 }
 
 /*
@@ -55,18 +52,16 @@ Value::Value ( const std::string name_, const Array value_ )
 }
 */
 
-Value::~Value ( void )
-{
-NOM_LOG_CLASSINFO;
-}
+Value::~Value ( void ) {}
 
-const std::string Value::getName ( void )
+const std::string Value::getName ( void ) const
 {
   return this->name;
 }
 
-const json_spirit::Value Value::getValue ( void ) const
+json_spirit::Value& Value::getValue ( void ) const
 {
+/*
   switch ( this->value.type() )
   {
     default:
@@ -82,11 +77,13 @@ const json_spirit::Value Value::getValue ( void ) const
     break;
 
     case json_spirit::str_type:
-      //return this->value.get_str();
+      return this->value.get_str();
     break;
   }
   return 0;
   //return "Undefined value";
+*/
+  return this->value;
 }
 
 const std::string Value::getString ( void ) const
@@ -94,16 +91,6 @@ const std::string Value::getString ( void ) const
   return this->value.get_str();
 }
 
-void Value::setName ( const std::string name_ )
-{
-  this->name = name_;
-}
 
-void Value::setValue ( const json_spirit::Value value_ )
-{
-  this->value = value_;
-}
-
-
-  } // namespace json
+  } // namespace JSON
 } // namespace nom

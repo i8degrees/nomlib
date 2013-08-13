@@ -29,38 +29,31 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/json/Object.hpp"
 
 namespace nom {
-  namespace json {
+  namespace JSON {
 
 Object::Object ( void )
 {
-NOM_LOG_CLASSINFO;
-
   this->obj.clear();
 }
 
-Object::~Object ( void )
-{
-NOM_LOG_CLASSINFO;
-
-  this->obj.clear();
-}
-
-void Object::clear ( void )
-{
-  this->obj.clear();
-}
-
-void Object::Add ( Value &value )
-{
-  this->obj.push_back ( json_spirit::Pair ( value.getName(), value.getValue() ) );
-}
+Object::~Object ( void ) {}
 
 void Object::endl ( void )
 {
   this->values.push_back ( this->obj );
-  this->clear();
+  this->obj.clear();
+}
+
+void Object::push_back ( const Value& value )
+{
+  this->obj.push_back ( json_spirit::Pair ( value.getName(), value.getValue() ) );
+}
+
+void Object::push_back ( const std::string& node, const json_spirit::Value& value )
+{
+  this->obj.push_back ( json_spirit::Pair ( node, value ) );
 }
 
 
-  } // namespace json
+  } // namespace JSON
 } // namespace nom

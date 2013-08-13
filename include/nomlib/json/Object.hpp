@@ -33,13 +33,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <array>
 
-#include <json_spirit.h>
+#include <json_spirit_reader_template.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/json/Value.hpp"
 
 namespace nom {
-  namespace json {
+  namespace JSON {
 
 class Object
 {
@@ -47,19 +47,18 @@ class Object
     Object ( void );
     ~Object ( void );
 
-    void Add ( Value &value );
-
     void endl ( void );
-    void clear ( void );
 
-    json_spirit::Object obj; // TODO: relocate to private scope
+    void push_back ( const Value& value );
+    void push_back ( const std::string& node, const json_spirit::Value& value );
+
     json_spirit::Array values; // TODO: relocate to private scope
   private:
-    // ...
+    json_spirit::Object obj;
 };
 
 
-  } // namespace json
+  } // namespace JSON
 } // namespace nom
 
 #endif // include guard defined

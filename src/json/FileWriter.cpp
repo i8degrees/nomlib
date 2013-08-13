@@ -29,32 +29,49 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/json/FileWriter.hpp"
 
 namespace nom {
-  namespace json {
+  namespace JSON {
 
-FileWriter::FileWriter ( void )
+FileWriter::FileWriter ( void ) {}
+
+FileWriter::~FileWriter ( void ) {}
+
+bool FileWriter::save ( const std::string& filename, Object& root,
+                        enum options format
+                      )
 {
-NOM_LOG_CLASSINFO;
+  std::ofstream fp; // output file stream
+
+  fp.open ( filename ); // open for writing
+
+  if ( fp.is_open() && fp.good() )
+  {
+    switch ( format )
+    {
+      default:
+        json_spirit::write_stream ( json_spirit::Value ( root.values ), fp );
+      break;
+
+      case pretty_print:
+        json_spirit::write_stream ( json_spirit::Value ( root.values ), fp,
+                                    json_spirit::pretty_print
+                                  );
+      break;
+
+      case single_line_arrays:
+        json_spirit::write_stream ( json_spirit::Value ( root.values ), fp,
+                                    json_spirit::single_line_arrays
+                                  );
+      break;
+    }
+
+    fp.close();
+    return true;
+  }
+
+  fp.close();
+  return false;
 }
 
-FileWriter::~FileWriter ( void )
-{
-NOM_LOG_CLASSINFO;
 
-  if ( this->fp.is_open() )
-    this->fp.close();
-}
-
-bool FileWriter::Write ( std::string filename, Object &root )
-{
-  this->fp.open ( filename ); // open for writing
-
-  //json_spirit::write_formatted ( json_spirit::Value ( root ), this->fp );
-
-  this->fp.close();
-
-  return true;
-}
-
-
-  } // namespace json
+  } // namespace JSON
 } // namespace nom

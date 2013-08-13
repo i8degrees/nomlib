@@ -3,7 +3,7 @@
 
 # Add runtime search path to our application bundle so that we can find its
 # dependencies at launch.
-macro ( install_rpath rpath binary_path )
+macro ( add_rpath rpath binary_path )
 
   foreach ( path ${rpath} )
     add_custom_command  ( TARGET ${PROJECT_NAME}
@@ -13,4 +13,4 @@ macro ( install_rpath rpath binary_path )
                         )
   endforeach ( path ${rpath} )
 
-endmacro ( install_rpath rpath binary_path )
+endmacro ( add_rpath rpath binary_path )

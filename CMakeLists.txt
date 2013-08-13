@@ -368,7 +368,7 @@ if ( PLATFORM_OSX )
           "@loader_path/../../Frameworks"
         )
 
-    install_rpath ( "${RUNTIME_PATH}" "${INSTALL_BINARY_PATH}" )
+    add_rpath ( "${RUNTIME_PATH}" "${INSTALL_BINARY_PATH}" )
 
   endif ( FRAMEWORK )
 endif ( PLATFORM_OSX )

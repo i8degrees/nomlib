@@ -69,7 +69,7 @@ class SoundBuffer
     void detach ( Sound* sound ) const;
     mutable std::set<Sound*> sounds;
 
-    uint32 buffers; //ALuint buffers[NUM_BUFFERS];
+    uint32 buffers;
     /// We load our audio data into this buffer
     std::vector<int16> samples;
     /// Duration of sound buffer

@@ -36,11 +36,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/AL/OpenAL.hpp"
 #include "nomlib/audio/AL/AudioDevice.hpp"
 #include "nomlib/audio/AL/SoundFile.hpp"
-
-class Sound; // forward declaration
+//#include "nomlib/audio/AL/Sound.hpp"
 
 namespace nom {
   namespace OpenAL {
+
+    class Sound; // forward declaration
 
 class SoundBuffer
 {
@@ -63,10 +64,14 @@ class SoundBuffer
     bool load ( const std::string& filename );
 
   private:
-    ALuint buffers[NUM_BUFFERS];
+    friend class Sound;
+    void attach ( Sound* sound ) const;
+    void detach ( Sound* sound ) const;
+    mutable std::set<Sound*> sounds;
+
+    uint32 buffers; //ALuint buffers[NUM_BUFFERS];
     /// We load our audio data into this buffer
     std::vector<int16> samples;
-    std::set <std::shared_ptr<Sound>> sounds;
     /// Duration of sound buffer
     ///
     /// Default: zero (0)

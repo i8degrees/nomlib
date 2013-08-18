@@ -34,12 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/audio/AL/OpenAL.hpp"
-#include "nomlib/audio/AL/SoundBuffer.hpp"
+
 #include "nomlib/audio/AL/SoundSource.hpp"
 
 namespace nom {
   namespace OpenAL {
-
+    class SoundBuffer;
 /// A sample is the amplitude of the sound signal at a given point of time, and
 /// an array -- 16-bit signed integers -- of samples therefore represents a full
 /// sound.
@@ -61,9 +61,9 @@ class Sound: public SoundSource // "is-a relationship"
 
     /// Set playback position of source in seconds
     //void setPlayPosition ( float seconds );
-
+    void reset ( void );
   private:
-    //SoundBuffer buffer;
+    const SoundBuffer* buffer;
 };
 
 

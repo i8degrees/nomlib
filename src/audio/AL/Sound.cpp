@@ -27,16 +27,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 #include "nomlib/audio/AL/Sound.hpp"
+#include "nomlib/audio/AL/SoundBuffer.hpp"
 
 namespace nom {
   namespace OpenAL {
 
-Sound::Sound ( void )
+Sound::Sound ( void ) : buffer ( nullptr )
 {
 NOM_LOG_CLASSINFO;
 }
 
-Sound::Sound ( const SoundBuffer& copy )
+Sound::Sound ( const SoundBuffer& copy )  : buffer ( nullptr )
 {
   this->setBuffer ( copy );
 }
@@ -45,14 +46,28 @@ Sound::~Sound ( void )
 {
 NOM_LOG_CLASSINFO;
 
-  //this->Stop();
+  this->Stop();
+
+  if ( this->buffer )
+    this->buffer->detach ( this );
 }
 
 void Sound::setBuffer ( const SoundBuffer& copy )
 {
 NOM_LOG_CLASSINFO;
 
-AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, copy.get() ) );
+  // First, detach previous buffer
+  if ( this->buffer )
+  {
+    this->Stop();
+    this->buffer->detach ( this );
+  }
+
+  // Assign new buffer & use it
+  this->buffer = &copy;
+  this->buffer->attach ( this );
+
+AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, this->buffer->buffers ) );
 }
 
 void Sound::Play ( void )
@@ -86,6 +101,15 @@ void Sound::setPlayPosition ( float seconds )
   alSourcef ( source_id, AL_SEC_OFFSET, seconds );
 }
 */
+
+void Sound::reset ( void )
+{
+  this->Stop();
+
+AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, 0 ) );
+
+  buffer = nullptr;
+}
 
   } // namespace OpenAL
 } // namespace nom

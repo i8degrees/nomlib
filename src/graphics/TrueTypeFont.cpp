@@ -130,7 +130,7 @@ NOM_LOG_ERR ( "Could not set font size." );
 
 void TrueTypeFont::setFontStyle ( uint8 style, uint8 options )
 {
-  enum FontStyle current_style;
+  //enum FontStyle current_style;
 
   switch ( style )
   {

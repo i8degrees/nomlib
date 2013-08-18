@@ -36,7 +36,7 @@ SoundBuffer::SoundBuffer ( void ) : buffers ( 0 )
 {
 NOM_LOG_CLASSINFO;
 
-AL_CHECK_ERR ( alGenBuffers ( 1, &this->buffers ) );
+//AL_CHECK_ERR ( alGenBuffers ( 1, &this->buffers ) );
 }
 
 SoundBuffer::~SoundBuffer ( void )
@@ -83,6 +83,8 @@ NOM_LOG_ERR ( "Could not read audio samples: " + filename );
   this->buffer_duration = ( 1000 * fp.getSampleCount() / fp.getSampleRate() / fp.getChannelCount() );
 
 // Fill the buffer
+AL_CHECK_ERR ( alGenBuffers ( 1, &this->buffers ) );
+
 AL_CHECK_ERR  ( alBufferData (  this->buffers, fp.getChannelFormat(),
                           &this->samples.front(), fp.getDataByteSize(),
                           fp.getSampleRate() )

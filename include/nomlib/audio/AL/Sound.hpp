@@ -30,19 +30,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_AL_SOUND_HEADERS
 
 #include <iostream>
-#include <memory>
 
 #include "nomlib/config.hpp"
 #include "nomlib/audio/AL/OpenAL.hpp"
-
+#include "nomlib/audio/AL/SoundBuffer.hpp"
 #include "nomlib/audio/AL/SoundSource.hpp"
 
 namespace nom {
   namespace OpenAL {
-    class SoundBuffer;
-/// A sample is the amplitude of the sound signal at a given point of time, and
-/// an array -- 16-bit signed integers -- of samples therefore represents a full
-/// sound.
+
+// forward declarations
+class SoundBuffer;
+
 class Sound: public SoundSource // "is-a relationship"
 {
   public:
@@ -61,8 +60,12 @@ class Sound: public SoundSource // "is-a relationship"
 
     /// Set playback position of source in seconds
     //void setPlayPosition ( float seconds );
+
+    /// Internally used by SoundBuffer class for properly freeing a sound from
+    /// its attached buffer
     void reset ( void );
   private:
+    /// Buffer that this sound is attached to
     const SoundBuffer* buffer;
 };
 
@@ -71,3 +74,9 @@ class Sound: public SoundSource // "is-a relationship"
 } // namespace nom
 
 #endif // NOMLIB_AL_SOUND_HEADERS defined
+
+/// \class nom::Sound
+///
+/// A sample is the amplitude of the sound signal at a given point of time, and
+/// an array -- 16-bit signed integers -- of samples therefore represents a full
+/// sound.

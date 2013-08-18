@@ -27,7 +27,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 #include "nomlib/audio/AL/Sound.hpp"
-#include "nomlib/audio/AL/SoundBuffer.hpp"
 
 namespace nom {
   namespace OpenAL {
@@ -67,7 +66,7 @@ NOM_LOG_CLASSINFO;
   this->buffer = &copy;
   this->buffer->attach ( this );
 
-AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, this->buffer->buffers ) );
+AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, this->buffer->get() ) );
 }
 
 void Sound::Play ( void )

@@ -44,12 +44,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include <AL/alc.h>
 #endif
 
-/// Seven (7) buffers appears to be the highest my MacBook Air mid-2011 model
-/// can achieve; using Intel 6 Series/C200 Audio Chipset
-///
-/// Minimum value is 1
-const nom::uint32 NUM_BUFFERS = 4;
-
 /// Optimal sound frame size (in bytes); used by libsndfile
 const nom::uint32 BUFFER_SIZE = 4096;
 const nom::uint32 NUM_SOURCES = 16; // not implemented

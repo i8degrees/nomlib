@@ -27,36 +27,37 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 #include "nomlib/audio/AL/SoundBuffer.hpp"
-#include "nomlib/audio/AL/Sound.hpp"
 
 namespace nom {
   namespace OpenAL {
 
-SoundBuffer::SoundBuffer ( void ) : buffers ( 0 )
+SoundBuffer::SoundBuffer ( void ) : buffer ( 0 )
 {
 NOM_LOG_CLASSINFO;
 
-AL_CHECK_ERR ( alGenBuffers ( 1, &this->buffers ) );
+AL_CHECK_ERR ( alGenBuffers ( 1, &this->buffer ) );
 }
 
 SoundBuffer::~SoundBuffer ( void )
 {
 NOM_LOG_CLASSINFO;
 
+  // First, release attached sound resources from this buffer
   for ( auto it = this->sounds.begin(); it != this->sounds.end(); ++it )
   {
     (*it)->reset();
   }
 
-  if ( this->buffers )
+  // Goodbye buffer!
+  if ( this->buffer )
   {
-AL_CHECK_ERR ( alDeleteBuffers ( 1, &this->buffers ) );
+AL_CHECK_ERR ( alDeleteBuffers ( 1, &this->buffer ) );
   }
 }
 
-ALuint SoundBuffer::get ( void ) const
+uint32 SoundBuffer::get ( void ) const
 {
-  return this->buffers;
+  return this->buffer;
 }
 
 uint32 SoundBuffer::getDuration ( void ) const
@@ -82,8 +83,8 @@ NOM_LOG_ERR ( "Could not read audio samples: " + filename );
 
   this->buffer_duration = ( 1000 * fp.getSampleCount() / fp.getSampleRate() / fp.getChannelCount() );
 
-// Fill the buffer
-AL_CHECK_ERR  ( alBufferData (  this->buffers, fp.getChannelFormat(),
+// Fill the audio buffer with loaded sample data
+AL_CHECK_ERR  ( alBufferData (  this->buffer, fp.getChannelFormat(),
                           &this->samples.front(), fp.getDataByteSize(),
                           fp.getSampleRate() )
         );

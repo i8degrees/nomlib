@@ -105,6 +105,7 @@ class SoundSource
   protected:
     /// Constructor can only be called from deriving classes
     SoundSource ( void );
+
     /// Source identification; used by OpenAL
     uint32 source_id;
 };

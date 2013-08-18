@@ -36,12 +36,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/AL/OpenAL.hpp"
 #include "nomlib/audio/AL/AudioDevice.hpp"
 #include "nomlib/audio/AL/SoundFile.hpp"
-//#include "nomlib/audio/AL/Sound.hpp"
+#include "nomlib/audio/AL/Sound.hpp"
 
 namespace nom {
   namespace OpenAL {
 
-    class Sound; // forward declaration
+// forward declarations
+class Sound;
 
 class SoundBuffer
 {
@@ -50,7 +51,7 @@ class SoundBuffer
     ~SoundBuffer ( void );
 
     /// Obtain buffer data
-    ALuint get ( void ) const;
+    uint32 get ( void ) const;
 
     /// Obtain buffer duration in milliseconds
     ///
@@ -64,14 +65,23 @@ class SoundBuffer
     bool load ( const std::string& filename );
 
   private:
-    friend class Sound;
-    void attach ( Sound* sound ) const;
-    void detach ( Sound* sound ) const;
+    friend class Sound; // Sound class needs access to attach & detach methods
+
+    /// Internal list of sounds loaded onto a buffer object
     mutable std::set<Sound*> sounds;
 
-    uint32 buffers;
+    /// Internally used for attaching a sound to our list
+    void attach ( Sound* sound ) const;
+
+    /// Internally used for detaching a sound from our list
+    void detach ( Sound* sound ) const;
+
+    /// Used internally by OpenAL for identification of audio buffer
+    uint32 buffer;
+
     /// We load our audio data into this buffer
     std::vector<int16> samples;
+
     /// Duration of sound buffer
     ///
     /// Default: zero (0)

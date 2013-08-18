@@ -72,13 +72,13 @@ bool SoundBuffer::load ( const std::string& filename )
   if ( ! fp.open ( filename ) )
   {
 NOM_LOG_ERR ( "Could not load audio: " + filename );
-  return false;
+    return false;
   }
 
   if ( ! fp.read ( this->samples ) )
   {
 NOM_LOG_ERR ( "Could not read audio samples: " + filename );
-  return false;
+    return false;
   }
 
   this->buffer_duration = ( 1000 * fp.getSampleCount() / fp.getSampleRate() / fp.getChannelCount() );

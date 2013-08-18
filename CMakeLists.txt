@@ -4,13 +4,6 @@ cmake_minimum_required ( VERSION 2.6 )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" )
 set ( CMAKE_TEMPLATE_PATH ${CMAKE_TEMPLATE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates" )
 
-# CMake options
-option ( VERBOSE "Enable verbose makefile" off )
-
-if ( VERBOSE )
-  set ( CMAKE_VERBOSE_MAKEFILE on )
-endif ( VERBOSE )
-
 # Set the install prefix to the current build folder if the user has not chosen
 # their own prefix path.
 if ( NOT CMAKE_INSTALL_PREFIX )
@@ -79,6 +72,7 @@ endif ( PLATFORM_OSX )
 if ( DEBUG )
   set ( CMAKE_BUILD_TYPE "Debug" )
   set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNOM_DEBUG -Wall" )
+  set ( CMAKE_VERBOSE_MAKEFILE on )
   message ( STATUS "Building ${PROJECT_NAME} with debugging." )
 else () # Build with optimizations for maximum speed and minimal size
   set ( CMAKE_BUILD_TYPE "Release" )

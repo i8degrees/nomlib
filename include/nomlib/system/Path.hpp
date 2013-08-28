@@ -68,13 +68,8 @@ class Path
     const Path& operator= ( const Path& p );
 
   private:
+    static /*const*/ value_type path_separator;
     std::string pathname;
-
-#if defined (NOM_PLATFORM_WINDOWS)
-    const value_type path_separator = "\\";
-#else // Assume POSIX-compliant platform -- home sweet home!
-    const value_type path_separator = "/";
-#endif
 };
 
 

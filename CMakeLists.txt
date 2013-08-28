@@ -71,7 +71,7 @@ endif ( PLATFORM_OSX )
 
 if ( DEBUG )
   set ( CMAKE_BUILD_TYPE "Debug" )
-  set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNOM_DEBUG -Wall" )
+  set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNOM_DEBUG -Wall -Wunused" )
   set ( CMAKE_VERBOSE_MAKEFILE on )
   message ( STATUS "Building ${PROJECT_NAME} with debugging." )
 else () # Build with optimizations for maximum speed and minimal size

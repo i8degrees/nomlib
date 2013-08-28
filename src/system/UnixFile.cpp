@@ -140,7 +140,11 @@ const std::string UnixFile::currentPath ( void )
 {
   char path[PATH_MAX];
 
-  getcwd ( path, PATH_MAX );
+  if ( getcwd ( path, PATH_MAX ) == nullptr )
+  {
+NOM_LOG_ERR ( "Unknown error on attempt to obtain current working directory." );
+    return "\0";
+  }
 
   std::string cwd ( path );
 
@@ -149,7 +153,11 @@ const std::string UnixFile::currentPath ( void )
 
 void UnixFile::setPath ( const std::string& path )
 {
-  chdir ( path.c_str() );
+  if ( chdir ( path.c_str() ) != 0 )
+  {
+NOM_LOG_ERR ( "Unknown error on attempt to change working directory to: " + path );
+    return;
+  }
 }
 
 

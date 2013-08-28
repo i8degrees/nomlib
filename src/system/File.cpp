@@ -40,7 +40,7 @@ File::File ( void )
 
 #elif defined (NOM_PLATFORM_WINDOWS)
 
-  this->file = std::shared_ptr<IFile> ( new WinFile );
+  this->file = std::shared_ptr<IFile> ( new WinFile() );
 
 #endif
 }

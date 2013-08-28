@@ -30,13 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-UnixFile::UnixFile ( void )
-{
-}
+UnixFile::UnixFile ( void ) {}
 
-UnixFile::~UnixFile ( void )
-{
-}
+UnixFile::~UnixFile ( void ) {}
 
 const std::string UnixFile::mime ( const std::string& file )
 {

@@ -30,15 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-WinFile::WinFile ( void )
-{
-  // Stub
-}
+WinFile::WinFile ( void ) {}
 
-WinFile::~WinFile ( void )
-{
-  // Stub
-}
+WinFile::~WinFile ( void ) {}
 
 const std::string WinFile::mime ( const std::string& file )
 {

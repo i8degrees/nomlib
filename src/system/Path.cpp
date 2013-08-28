@@ -26,33 +26,32 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#include "nomlib/system/Path.hpp"
 
-// Public header file
+namespace nom {
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/GameStates.hpp>
-#include <nomlib/system/ObjectCache.hpp>
-#include <nomlib/system/DialogMessageBox.hpp>
-#include <nomlib/system/Path.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDL_App.hpp>
-#include <nomlib/system/Input.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/Sleep.hpp>
-#include <nomlib/system/random.hpp>
-#include <nomlib/system/make_unique.hpp>
+Path::Path ( void ) : pathname ( "\0" ) {}
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/DialogMessageBox.hpp>
-  #include <nomlib/system/osx/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  #include <nomlib/system/unix/DialogMessageBox.hpp>
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/DialogMessageBox.hpp>
-#endif
+Path::Path ( const std::string& p ) : pathname ( p ) {}
 
-#endif // include guard defined
+Path::~Path ( void ) {}
+
+const value_type& Path::native ( void ) const
+{
+  return this->path_separator;
+}
+
+const value_type& Path::path ( void ) const
+{
+  return this->pathname;
+}
+
+const Path& Path::operator= ( const Path& p )
+{
+  this->pathname = p.pathname;
+
+  return *this;
+}
+
+
+} // namespace nom

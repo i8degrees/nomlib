@@ -26,33 +26,62 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#ifndef NOMLIB_PATH_HEADERS
+#define NOMLIB_PATH_HEADERS
 
-// Public header file
+#include <iostream>
+#include <string>
+#include <cstring>
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/GameStates.hpp>
-#include <nomlib/system/ObjectCache.hpp>
-#include <nomlib/system/DialogMessageBox.hpp>
-#include <nomlib/system/Path.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDL_App.hpp>
-#include <nomlib/system/Input.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/Sleep.hpp>
-#include <nomlib/system/random.hpp>
-#include <nomlib/system/make_unique.hpp>
+#include "nomlib/config.hpp"
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/DialogMessageBox.hpp>
-  #include <nomlib/system/osx/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  #include <nomlib/system/unix/DialogMessageBox.hpp>
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/DialogMessageBox.hpp>
+namespace nom {
+
+/// Platform-dependent data typedef used for defining the preferred file
+/// path separator.
+typedef std::string value_type;
+
+/// \brief Platform-independent interface for cross-platform handling of
+/// pathnames
+class Path
+{
+  public:
+    /// Default constructor -- pathname is initialized as a null-terminated
+    /// string.
+    Path ( void );
+
+    /// Initialize instance with an existing pathname
+    Path ( const std::string& p );
+
+    /// Default destructor
+    ~Path ( void );
+
+    /// Obtain native path (directory) separator; the value returned is
+    /// dependent upon the platform and is determined at compile-time, not
+    /// run-time.
+    const value_type& native ( void ) const;
+
+    /// Obtain assigned pathname
+    const value_type& path ( void ) const;
+
+    /// Assignment operator
+    const Path& operator= ( const Path& p );
+
+  private:
+    std::string pathname;
+
+#if defined (NOM_PLATFORM_WINDOWS)
+    const value_type path_separator = "\\";
+#else // Assume POSIX-compliant platform -- home sweet home!
+    const value_type path_separator = "/";
 #endif
+};
 
-#endif // include guard defined
+
+} // namespace nom
+
+#endif // include guard
+
+/// \class nom::Path
+///
+/// Inspired by Boost::Filesystem

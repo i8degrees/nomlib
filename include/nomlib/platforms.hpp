@@ -43,6 +43,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #define NOM_PLATFORM_OSX
 #endif
 
+/// Platform architecture detection; we only check for a 32-bit or 64-bit
+/// environment at the moment as this is all that we can test on.
+#if defined ( __i386__ )
+  #define NOM_PLATFORM_ARCH_X86 1
+#elif defined ( __x86_64__ )
+  #define NOM_PLATFORM_ARCH_X86_64 1
+#endif
+
 // Function names and preferably also its type signature
 #if defined ( _MSC_VER ) // MSVC++
   // TODO: Presumably the same as GNU's __PRETTY_FUNCTION__ ?

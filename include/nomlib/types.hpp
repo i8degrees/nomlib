@@ -51,11 +51,15 @@ typedef signed long long int int64;
 typedef unsigned long long int uint64;
 
 // Additional integer type definitions
-typedef unsigned long ulong;
+#if defined ( NOM_PLATFORM_ARCH_X86_64 )
+  typedef unsigned long ulong;
+#else // Blindly assume 32-bit arch
+  typedef long long ulong;
+#endif
 
 } // namespace nom
 
-// Ensure our data types have the right sizes
+/// Ensure our data types have the right sizes using C++11 compile-time asserts.
 static_assert ( sizeof ( nom::uint8 ) == 1, "nom::uint8" );
 static_assert ( sizeof ( nom::int8 ) == 1, "nom::int8" );
 
@@ -68,4 +72,5 @@ static_assert ( sizeof ( nom::int32 ) == 4, "nom::int32" );
 static_assert ( sizeof ( nom::uint64 ) == 8, "nom::uint64" );
 static_assert ( sizeof ( nom::int64 ) == 8, "nom::int64" );
 
+static_assert ( sizeof ( nom::ulong ) == 8, "nom::ulong" );
 #endif // NOMLIB_TYPES_HEADERS defined

@@ -35,6 +35,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_VERSION_MINOR @PROJECT_VERSION_MINOR@
 #define NOMLIB_VERSION_PATCH @PROJECT_VERSION_PATCH@
 
+/// Platform processing architecture; we can safely assume (for now, anyway!)
+/// that if we are not running on a 64-bit arch, that we are on a 32-bit arch.
+#cmakedefine PLATFORM_ARCH_64_BIT
+
 /// Used in determining strategy to use for obtaining Resources path
 #cmakedefine FRAMEWORK
 extern const std::string NOMLIB_INSTALL_PREFIX;

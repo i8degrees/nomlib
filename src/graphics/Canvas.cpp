@@ -61,7 +61,7 @@ Canvas::Canvas ( const Canvas& other ) : canvas_buffer ( static_cast<SDL_Surface
 NOM_LOG_CLASSINFO;
 }
 
-Canvas::Canvas ( uint32_t flags, int32_t width, int32_t height, int32_t bitsPerPixel, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
+Canvas::Canvas ( uint32 flags, int32 width, int32 height, int32 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
 {
 NOM_LOG_CLASSINFO;
 
@@ -70,7 +70,7 @@ NOM_LOG_CLASSINFO;
   this->canvas_buffer = std::shared_ptr<void> ( SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask ), nom::priv::Canvas_FreeSurface );
 }
 
-Canvas::Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask )
+Canvas::Canvas ( Pixels pixels, int32 width, int32 height, int32 depth, int32 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
 {
 NOM_LOG_CLASSINFO;
 
@@ -134,13 +134,13 @@ uint16_t Canvas::getCanvasPitch ( void ) const
   return buffer->pitch;
 }
 
-void* Canvas::getCanvasPixels ( void ) const
+const Pixels Canvas::getCanvasPixels ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
   return buffer->pixels;
 }
 
-void* Canvas::getCanvasPixelsFormat ( void ) const
+const Pixels Canvas::getCanvasPixelsFormat ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
   return buffer->format;
@@ -394,23 +394,23 @@ int32 Canvas::getPixel ( int32 x, int32 y )
   } // end switch
 }
 
-void Canvas::scale2x ( SDL_Surface* source_buffer, SDL_Surface* destination_buffer )
+void Canvas::scale2x ( int32 source_width, int32 source_height, Pixels source_buffer, Pixels destination_buffer )
 {
   int32 looph, loopw;
 
-  uint8* srcpix = static_cast<uint8*> ( source_buffer->pixels );
-  uint8* dstpix = static_cast<uint8*> ( destination_buffer->pixels );
+  uint8* srcpix = static_cast<uint8*> ( source_buffer );
+  uint8* dstpix = static_cast<uint8*> ( destination_buffer );
 
-  const int32 srcpitch = source_buffer->pitch;
-  const int32 dstpitch = destination_buffer->pitch;
-  const int32 width = source_buffer->w;
-  const int32 height = source_buffer->h;
+  const int32 srcpitch = this->getCanvasPitch();
+  const int32 dstpitch = this->getCanvasPitch(); // FIXME
+  const int32 width = this->getCanvasWidth(); // FIXME?
+  const int32 height = this->getCanvasHeight(); // FIXME?
 
   switch ( this->getCanvasColorDepth() )
   {
     default:
     {
-NOM_LOG_ERR ( "Could not determine color depth -- aborting call." );
+NOM_LOG_ERR ( "Could not determine color depth -- aborting!" );
       return;
     }
     break; // Unsupported color depth?
@@ -524,7 +524,7 @@ NOM_LOG_ERR ( "Could not determine color depth -- aborting call." );
 }
 
 void Canvas::hq2x ( int32 source_width, int32 source_height,
-                    Pixels* source_buffer, Pixels* destination_buffer
+                    Pixels source_buffer, Pixels destination_buffer
                   )
 {
   // FIXME

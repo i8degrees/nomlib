@@ -79,19 +79,23 @@ class Canvas
     Canvas ( void* video_buffer );
     /// Copy constructor
     Canvas ( const Canvas& other );
+
     /// Constructor variant for setting the canvas with an empty surface
     ///
     /// As per libSDL docs, this must be called only after video initialization;
     /// (SDL_SetVideoMode)
     ///
     /// http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurface
-    Canvas ( uint32_t flags, int32_t width, int32_t height, int32_t bitsPerPixel, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask );
+    Canvas ( uint32 flags, int32 width, int32 height, int32 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+
     /// Constructor variant for setting the canvas with existing pixel data
     ///
     /// http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurfaceFrom
     ///
     /// Note that we are responsible for freeing our own pixels data
-    Canvas ( void* pixels, int32_t width, int32_t height, int32_t depth, int32_t pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask );
+    Canvas ( Pixels pixels, int32 width, int32 height, int32 depth, int32 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+
+    /// Lazy destructor -- does nothing.
     ~Canvas ( void );
 
     /// Is this object initialized -- not nullptr?
@@ -107,8 +111,8 @@ class Canvas
     const int32_t getCanvasHeight ( void ) const;
     uint32_t getCanvasFlags ( void ) const;
     u_short getCanvasPitch ( void ) const;
-    void* getCanvasPixels ( void ) const;
-    void* getCanvasPixelsFormat ( void ) const;
+    const Pixels getCanvasPixels ( void ) const;
+    const Pixels getCanvasPixelsFormat ( void ) const;
     const uint32 getCanvasRedMask ( void ) const;
     const uint32 getCanvasGreenMask ( void ) const;
     const uint32 getCanvasBlueMask ( void ) const;
@@ -196,7 +200,7 @@ class Canvas
     /// to ensure this.
     ///
     /// See http://scale2x.sourceforge.net/
-    void scale2x ( SDL_Surface* source_buffer, SDL_Surface* destination_buffer );
+    void scale2x ( int32 source_width, int32 source_height, Pixels source_buffer, Pixels destination_buffer );
 
     /// Use the hqx bitmap algorithm to scale a source buffer by 2x. hqx is a
     /// fast, high-quality magnification filter designed for pixel art. Compared
@@ -224,7 +228,7 @@ class Canvas
     /// \todo FIXME; due to some bizarre linking issue resulting in unresolved
     /// symbols upon trying to use any of the function calls (such as hqxInit),
     /// I am unable to implement this method (or at least test it, anyway...).
-    void hq2x ( int32 source_width, int32 source_height, Pixels* source_buffer, Pixels* destination_buffer );
+    void hq2x ( int32 source_width, int32 source_height, Pixels source_buffer, Pixels destination_buffer );
 
     /// Copy assignment constructor
     Canvas& operator = ( const Canvas& other );

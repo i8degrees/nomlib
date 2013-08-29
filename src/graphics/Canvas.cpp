@@ -499,6 +499,16 @@ NOM_LOG_ERR ( "Could not determine color depth -- aborting call." );
   } // switch (BytesPerPixel)
 }
 
+void Canvas::hq2x ( int32 source_width, int32 source_height,
+                    Pixels* source_buffer, Pixels* destination_buffer
+                  )
+{
+  // FIXME
+  //    :-(
+
+  //hqxInit();
+}
+
 Canvas& Canvas::operator = ( const Canvas& other )
 {
   this->canvas_buffer = other.canvas_buffer;

@@ -45,6 +45,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/Rectangle.hpp"
 
+// Optional library dependencies
+#if defined ( HQX_FOUND )
+    #include <hqx.h>
+#endif
+
 // C Macros used solely in Canvas::scale2x method
 #define SCALE2x_READINT24(x) \
   ((x)[0]<<16 | (x)[1]<<8 | (x)[2])
@@ -173,9 +178,10 @@ class Canvas
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
     int32 getPixel ( int32 x, int32 y );
 
-    /// Uses the AdvanceMAME bitmap scaling algorithm known as scale2x to resize
-    /// a surface without blurring in real-time -- up to 256x256 without
-    /// incurring "heavy" performance hits.
+    /// Uses the AdvanceMAME bitmap scaling algorithm known as scale2x to scale
+    /// a surface while maintaining the quality pixel art feel of the original
+    /// art. The algorithm is designed to be fast enough to process 256x256
+    /// bitmaps in real-time.
     ///
     /// This method re-implements the function scale2x found in the contrib/sdl
     /// directory of the scale2x distribution.
@@ -186,6 +192,34 @@ class Canvas
     ///
     /// See http://scale2x.sourceforge.net/
     void scale2x ( SDL_Surface* source_buffer, SDL_Surface* destination_buffer );
+
+    /// Use the hqx bitmap algorithm to scale a source buffer by 2x. hqx is a
+    /// fast, high-quality magnification filter designed for pixel art. Compared
+    /// to scale2x, you can generally expect similar results but with additional
+    /// anti-aliasing applied. This makes the algorithm likely to be preferable
+    /// for vastly increased resolution support (think: Apple Retina displays).
+    ///
+    /// The algorithm is designed to be fast enough to process 256x256 bitmaps
+    /// in real-time.
+    ///
+    /// The supplied arguments are manipulated at the pixel-level, and are
+    /// static casted to the appropriate fixed-integer size as necessary. If
+    /// you are using libSDL, you ought to be able to pass the surface's pixels
+    /// directly, as in the following:
+    ///
+    /// SDL_Surface* src;
+    /// SDL_Surface* dst;
+    ///
+    /// hq2x ( src.pixels, dst.pixels );
+    ///
+    /// You are responsible for locking and unlocking the surfaces as need be.
+    ///
+    /// See https://code.google.com/p/hqx/wiki/ReadMe
+    ///
+    /// \todo FIXME; due to some bizarre linking issue resulting in unresolved
+    /// symbols upon trying to use any of the function calls (such as hqxInit),
+    /// I am unable to implement this method (or at least test it, anyway...).
+    void hq2x ( int32 source_width, int32 source_height, Pixels* source_buffer, Pixels* destination_buffer );
 
     /// Copy assignment constructor
     Canvas& operator = ( const Canvas& other );

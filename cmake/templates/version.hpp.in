@@ -47,3 +47,5 @@ extern const std::string NOMLIB_INSTALL_PREFIX;
 /// during the framework bundle bootstrap.
 extern const std::string NOMLIB_BUNDLE_IDENTIFIER;
 
+/// Optional library dependencies
+#cmakedefine HQX_FOUND

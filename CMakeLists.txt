@@ -155,6 +155,9 @@ find_package ( sndfile REQUIRED )
 find_package ( libmagic REQUIRED )
 #find_package ( json_spirit REQUIRED )
 
+# Optional dependencies
+find_package ( hqx )
+
 # LibMagic requires zlib when statically linking
 if ( PLATFORM_OSX )
   find_package ( ZLIB REQUIRED )
@@ -233,6 +236,13 @@ endif ( LIBMAGIC_FOUND )
 #else ( NOT JSON_SPIRIT_FOUND )
   #message ( FATAL_ERROR "Required dependency json_spirit (headers only) missing!" )
 #endif ( JSON_SPIRIT_FOUND )
+
+if ( HQX_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${HQX_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${HQX_LIBRARY} )
+else ( NOT HQX_FOUND )
+  message ( STATUS "Optional hqx dependency not found -- proceeding without hq2x support." )
+endif ( HQX_FOUND )
 
 if ( PLATFORM_OSX )
   # The SDL_LIBRARY variable for OS X is appended with the "-framework Cocoa"

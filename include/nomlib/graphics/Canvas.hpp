@@ -109,6 +109,11 @@ class Canvas
     u_short getCanvasPitch ( void ) const;
     void* getCanvasPixels ( void ) const;
     void* getCanvasPixelsFormat ( void ) const;
+    const uint32 getCanvasRedMask ( void ) const;
+    const uint32 getCanvasGreenMask ( void ) const;
+    const uint32 getCanvasBlueMask ( void ) const;
+    const uint32 getCanvasAlphaMask ( void ) const;
+
     const Coords getCanvasBounds ( void ) const;
     void setCanvasBounds ( const Coords& clip_bounds );
 

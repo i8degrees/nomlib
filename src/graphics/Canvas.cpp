@@ -146,6 +146,30 @@ void* Canvas::getCanvasPixelsFormat ( void ) const
   return buffer->format;
 }
 
+const uint32 Canvas::getCanvasRedMask ( void ) const
+{
+  SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
+  return buffer->format->Rmask;
+}
+
+const uint32 Canvas::getCanvasGreenMask ( void ) const
+{
+  SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
+  return buffer->format->Gmask;
+}
+
+const uint32 Canvas::getCanvasBlueMask ( void ) const
+{
+  SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
+  return buffer->format->Bmask;
+}
+
+const uint32 Canvas::getCanvasAlphaMask ( void ) const
+{
+  SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
+  return buffer->format->Amask;
+}
+
 const Coords Canvas::getCanvasBounds ( void ) const
 {
   SDL_Rect clip_buffer; // temporary storage struct

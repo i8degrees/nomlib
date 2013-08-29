@@ -1,6 +1,7 @@
 
 # Project source files
 set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
+      ${SRC_DIR}/version.cpp # auto-generated
       ${SRC_DIR}/resources.cpp
       # audio
       ${SRC_DIR}/audio/AL/AudioDevice.cpp

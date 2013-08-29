@@ -444,7 +444,12 @@ if ( EXAMPLES )
   add_subdirectory ( examples )
 endif ( EXAMPLES )
 
-# Auto-generated at build-time header files
+# Auto-generated source file
+configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.cpp.in"
+                  "${SRC_DIR}/version.cpp"
+                )
+
+# Auto-generated header file
 configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
                   "${PROJECT_SOURCE_DIR}/${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}/version.hpp"
                 )

@@ -86,7 +86,7 @@ class Canvas
     /// (SDL_SetVideoMode)
     ///
     /// http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurface
-    Canvas ( uint32 flags, int32 width, int32 height, int32 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+    Canvas ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
     /// Constructor variant for setting the canvas with existing pixel data
     ///
@@ -112,6 +112,8 @@ class Canvas
     uint32_t getCanvasFlags ( void ) const;
     u_short getCanvasPitch ( void ) const;
     const Pixels getCanvasPixels ( void ) const;
+
+    const uint8 getCanvasBitsPerPixel ( void ) const;
     const Pixels getCanvasPixelsFormat ( void ) const;
     const uint32 getCanvasRedMask ( void ) const;
     const uint32 getCanvasGreenMask ( void ) const;

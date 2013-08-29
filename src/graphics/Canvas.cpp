@@ -61,7 +61,7 @@ Canvas::Canvas ( const Canvas& other ) : canvas_buffer ( static_cast<SDL_Surface
 NOM_LOG_CLASSINFO;
 }
 
-Canvas::Canvas ( uint32 flags, int32 width, int32 height, int32 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
+Canvas::Canvas ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
 {
 NOM_LOG_CLASSINFO;
 
@@ -138,6 +138,12 @@ const Pixels Canvas::getCanvasPixels ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
   return buffer->pixels;
+}
+
+const uint8 Canvas::getCanvasBitsPerPixel ( void ) const
+{
+   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
+  return buffer->format->BitsPerPixel;
 }
 
 const Pixels Canvas::getCanvasPixelsFormat ( void ) const

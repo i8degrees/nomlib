@@ -25,6 +25,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+1. Portions Copyright (c) Andrea Mazzoleni (author of the scale2x algorithm)
+
 ******************************************************************************/
 #ifndef NOMLIB_SDL_CANVAS_HEADERS
 #define NOMLIB_SDL_CANVAS_HEADERS
@@ -75,49 +77,84 @@ class Canvas
   public:
     /// Default constructor; initializes object to its respective defaults
     Canvas ( void );
-    /// Constructor variant for setting the canvas with existing data
+
+    /// Constructor variant for creating a video surface object with existing
+    /// video surface memory.
+    ///
+    /// \deprecated Likely to be removed in the future.
     Canvas ( void* video_buffer );
-    /// Copy constructor
+
+    /// Copy constructor; create a video surface object from an existing Canvas
+    /// object.
     Canvas ( const Canvas& other );
 
-    /// Constructor variant for setting the canvas with an empty surface
+    /// Constructor variant for creating a fresh, empty video surface. You should
+    /// be sure to read over the details gory details scattered throughout the
+    /// documentation for SDL.
+    ///
+    /// The SDL_SWSURFACE flag is passed by default if an argument is not
+    /// specified -- this is optimal for writing to the video memory buffer
+    /// directly (pixel manipulation).
     ///
     /// As per libSDL docs, this must be called only after video initialization;
-    /// (SDL_SetVideoMode)
+    /// (SDL_SetVideoMode).
     ///
-    /// http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurface
-    Canvas ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+    /// See http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurface
+    Canvas ( int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, uint32 flags = SDL_SWSURFACE );
 
-    /// Constructor variant for setting the canvas with existing pixel data
+    /// Construct a video surface object using the data from an existing surface;
+    /// you can think of this as a copy method. As with the previous method, you
+    /// ought to read over the technicalities that the SDL library documentation
+    /// covers.
     ///
-    /// http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurfaceFrom
+    /// You remain the owner of the pointer leading to your existing data and
+    /// therefore are responsible for memory management.
     ///
-    /// Note that we are responsible for freeing our own pixels data
-    Canvas ( Pixels pixels, int32 width, int32 height, int32 depth, int32 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+    /// See http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurfaceFrom
+    Canvas ( Pixels pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
     /// Lazy destructor -- does nothing.
     ~Canvas ( void );
 
+    /// Copy assignment constructor; this can be used to safely clone a video
+    /// surface object.
+    Canvas& operator = ( const Canvas& other );
+
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
 
-    /// Set the canvas with existing surface data
-    void setCanvas ( void* video_buffer );
+    /// Reset the video surface object with another video surface object.
+    void setCanvas ( const Canvas& surface );
 
     void setPosition ( const Coords& coords_ );
     void setOffsets ( const Coords& offsets_ );
 
-    const int32_t getCanvasWidth ( void ) const;
-    const int32_t getCanvasHeight ( void ) const;
-    uint32_t getCanvasFlags ( void ) const;
-    u_short getCanvasPitch ( void ) const;
+    const int32 getCanvasWidth ( void ) const;
+    const int32 getCanvasHeight ( void ) const;
+    uint32 getCanvasFlags ( void ) const;
+    uint16 getCanvasPitch ( void ) const;
     const Pixels getCanvasPixels ( void ) const;
-
     const uint8 getCanvasBitsPerPixel ( void ) const;
+
+    /// \todo Rename to getCanvasPixelFormat
     const Pixels getCanvasPixelsFormat ( void ) const;
+
+    /// Obtain the pixel value of the set transparent color
+    const Color getCanvasColorKey ( void ) const;
+
+    /// Obtain the overall surface alpha value
+    const uint8 getCanvasAlphaValue ( void ) const;
+
+    /// Obtain the video surface's red *ALPHA* mask
     const uint32 getCanvasRedMask ( void ) const;
+
+    /// Obtain the video surface's green *ALPHA* mask
     const uint32 getCanvasGreenMask ( void ) const;
+
+    /// Obtain the video surface's blue *ALPHA* mask
     const uint32 getCanvasBlueMask ( void ) const;
+
+    /// Obtain the video surface's alpha mask
     const uint32 getCanvasAlphaMask ( void ) const;
 
     const Coords getCanvasBounds ( void ) const;
@@ -127,10 +164,11 @@ class Canvas
     /// the time being, this is merely for the convenience of readability in
     /// our code.
     ///
-    /// Returns -1 on err -- perhaps an unsupported color depth?
+    /// Returns an integer of 8, 16, 24 or 32 upon successful determination of
+    /// the current color depth.
     ///
-    /// Returns 8, 16, 24 or 32 on successful determination of depth
-    ///
+    /// Returns -1 on err; perhaps an unsupported color depth or an
+    /// uninitialized video surface?
     int32 getCanvasColorDepth ( void ) const;
 
     /// I think that we are accessing the value of an
@@ -162,17 +200,17 @@ class Canvas
     /// \endinternal
     bool load ( const std::string& filename, const Color&
                 colorkey = Color ( -1, -1, -1, -1 ),
-                bool use_cache = 0,
-                uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY
+                bool use_cache = false,
+                uint32 flags = SDL_RLEACCEL | SDL_SRCCOLORKEY
               );
 
     bool Update ( void* video_buffer );
     void Draw ( void* video_buffer ) const;
 
-    bool setAlpha ( uint8_t opacity, uint32_t flags = SDL_SRCALPHA );
+    bool setAlpha ( uint8 opacity, uint32 flags = SDL_SRCALPHA );
 
     bool setTransparent ( const Color& color = Color ( 0, 0, 0, -1 ),
-                          uint32_t flags = SDL_RLEACCEL | SDL_SRCCOLORKEY
+                          uint32 flags = SDL_RLEACCEL | SDL_SRCCOLORKEY
                         );
 
     /// As per libSDL docs, we must first initialize the video subsystem before using
@@ -206,12 +244,10 @@ class Canvas
     /// This method re-implements the function scale2x found in the contrib/sdl
     /// directory of the scale2x distribution.
     ///
-    /// This requires a destination surface already setup to be twice as
-    /// large as the source. Surface formats must match. No err checks are done
-    /// to ensure this.
-    ///
     /// See http://scale2x.sourceforge.net/
-    void scale2x ( int32 source_width, int32 source_height, Pixels source_buffer, Pixels destination_buffer );
+    ///
+    /// \todo Test the implementation of 8-bit, 16-bit & 24-bit video scaling.
+    void scale2x ( void );
 
     /// Use the hqx bitmap algorithm to scale a source buffer by 2x. hqx is a
     /// fast, high-quality magnification filter designed for pixel art. Compared
@@ -240,9 +276,6 @@ class Canvas
     /// symbols upon trying to use any of the function calls (such as hqxInit),
     /// I am unable to implement this method (or at least test it, anyway...).
     void hq2x ( int32 source_width, int32 source_height, Pixels source_buffer, Pixels destination_buffer );
-
-    /// Copy assignment constructor
-    Canvas& operator = ( const Canvas& other );
 
   private:
     /// Internal method used for checking to see if the video surface actually

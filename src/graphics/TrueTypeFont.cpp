@@ -222,8 +222,6 @@ void TrueTypeFont::Update ( void )
 
 void TrueTypeFont::Draw ( void* video_buffer ) const
 {
-NOM_ASSERT ( this->font_buffer.valid() );
-
   if ( this->font_buffer.valid() )
   {
     this->font_buffer.Draw ( video_buffer );

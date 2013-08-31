@@ -95,8 +95,6 @@ class BitmapFont: public IFont
     FontStyle getFontStyle ( void ) const;
     void setFontStyle ( uint8 style, uint8 options = 150 );
 
-    void setFontSize ( int32 point_size );
-
     void setColor ( const Color& color );
     void setPosition ( const Coords& coords );
 
@@ -106,16 +104,34 @@ class BitmapFont: public IFont
     /// TODO: add spacing / padding so that we can export with black guidelines
     /// \endinternal
     bool load ( const std::string& filename, const Color& colorkey,
-                int32 font_size, bool use_cache = false
+                bool use_cache = false
               );
 
     void Update ( void );
     /// Draw the set text string to the video surface
     void Draw ( void* video_buffer ) const;
 
+    /// Uses the scale2x algorithm implemented in nom::Canvas to scale a sprite
+    /// by a scaling factor of two times the original size.
+    ///
+    /// See Canvas.hpp for additional information.
+    ///
+    /// Re-implements IFont::scale2x when deriving from Text interface class
+    void scale2x ( void );
+
   private:
+    /// Trigger a rebuild of the font characteristics gleaned from the image file;
+    /// recalculate the character sizes, coordinate origins, spacing, etc.
+    bool rebuild ( void );
+
+    const int32 sheet_width;
+    const int32 sheet_height;
+
     /// pointer reference holding our bitmap font image sheet
     mutable Canvas bitmap_font;
+
+    /// Background color used in computation of individual character boundaries.
+    Color colorkey;
 
     /// individual chars positioning offsets within bitmap_font
     Coords chars[256];
@@ -136,13 +152,7 @@ class BitmapFont: public IFont
     enum FontStyle text_style;
 
     /// Not implemented (yet)
-    int32 font_size;
-
-    /// Not implemented (yet)
     Color color;
-
-    uint32 sheet_width;
-    uint32 sheet_height;
 };
 
 

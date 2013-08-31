@@ -50,13 +50,19 @@ int main ( int argc, char* argv[] )
 
   context.createWindow ( 640, 480, 32, 0 ); // segmentation fault otherwise
 
-  if ( ! bitmap_font.load ( path + "Resources/VIII.png" ) )
+  if ( ! bitmap_font.load ( path + "Resources/VIII.png", false ) )
     return EXIT_FAILURE;
 
-  if ( ! truetype_font.load ( path + "Resources/EnvyCodeRb.ttf", 36 ) )
+  if ( ! truetype_font.load ( path + "Resources/EnvyCodeRb.ttf", false ) )
+  {
     return EXIT_FAILURE;
+  }
+  else
+  {
+    truetype_font.setFontSize ( 36 );
+  }
 
-  not_font.load ( path + "Resources/cards.json", 0 );
+  not_font.load ( path + "Resources/cards.json", false );
 NOM_ASSERT ( not_font.getFontType() != 0 ); // should always err
 NOM_ASSERT ( bitmap_font.getFontType() == 1 );
 NOM_ASSERT ( truetype_font.getFontType() == 2 );

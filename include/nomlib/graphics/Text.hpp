@@ -58,7 +58,7 @@ class Text: public IDrawable
     Text ( void );
     virtual ~Text ( void );
 
-    bool load ( const std::string& filename, int32 font_size = 0 );
+    bool load ( const std::string& filename, bool use_cache );
 
     FontType getFontType ( void );
 
@@ -78,6 +78,12 @@ class Text: public IDrawable
 
     virtual void Update ( void );
     virtual void Draw ( void* video_buffer ) const;
+
+    /// Uses the scale2x algorithm implemented in nom::Canvas to scale a sprite
+    /// by a scaling factor of two times the original size.
+    ///
+    /// See Canvas.hpp for additional information.
+    void scale2x ( void );
 
   private:
     /// Set the type of file we are loading; either a bitmap or a TrueType font

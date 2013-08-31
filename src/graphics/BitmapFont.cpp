@@ -35,19 +35,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-BitmapFont::BitmapFont ( void )
+BitmapFont::BitmapFont ( void ) : sheet_width ( 16 ), sheet_height ( 16 )
 {
 NOM_LOG_CLASSINFO;
 
   this->text_buffer = "\0";
-  this->newline = 0; // holds the y coords value to increment upon newline break char
-  this->spacing = 0; // holds the x coords value to increment upon space char
-  this->text_style = FontStyle::Regular; // default text styling effect
-  this->color = Color ( 0, 0, 0 ); // not implemented
+  this->text_style = FontStyle::Regular;
 
-  this->sheet_width = 16;
-  this->sheet_height = 16;
+  this->newline = 0;
+  this->spacing = 0;
 
+  this->color = Color ( 0, 0, 0 );
   this->coords.setPosition ( 0, 0 );
 
   for ( unsigned int idx = 0; idx < 256; idx++ )
@@ -121,11 +119,6 @@ void BitmapFont::setPosition ( const Coords& coords )
   this->coords = coords;
 }
 
-void BitmapFont::setFontSize ( int32 point_size )
-{
-  this->font_size = point_size;
-}
-
 void BitmapFont::setText ( const std::string& text )
 {
   this->text_buffer = text;
@@ -180,31 +173,30 @@ void BitmapFont::setFontStyle ( uint8 style, uint8 options )
   }
 }
 
-bool BitmapFont::load ( const std::string& filename, const Color& colorkey,
-                        int32 font_size, bool use_cache
-                      )
+bool BitmapFont::rebuild ( void )
 {
-  uint32_t tile_width = 0;
-  uint32_t tile_height = 0;
-  uint32_t top = 0;
-  uint32_t baseA = 0;
-  uint32_t currentChar = 0;
-  int32_t background_color = 0;
-
-  if ( this->bitmap_font.load ( filename, colorkey, use_cache ) == false )
-  {
-NOM_LOG_ERR ( "Could not load bitmap font image file: " + filename );
-    return false;
-  }
+  uint32 tile_width = 0;
+  uint32 tile_height = 0;
+  uint32 top = 0;
+  uint32 baseA = 0;
+  uint32 currentChar = 0;
+  uint32 background_color = 0;
 
 NOM_ASSERT ( this->bitmap_font.valid() );
 
-  background_color = getColorAsInt ( this->bitmap_font.getCanvasPixelsFormat(), colorkey );
+  background_color = getColorAsInt  ( this->bitmap_font.getCanvasPixelsFormat(),
+                                      this->colorkey
+                                    );
+
+  this->bitmap_font.setTransparent ( this->colorkey, SDL_SRCCOLORKEY );
 
   tile_width = this->bitmap_font.getCanvasWidth() / this->sheet_width;
   tile_height = this->bitmap_font.getCanvasHeight() / this->sheet_height;
   top = tile_height;
   baseA = tile_height;
+
+  // Reset the text buffer before we recompute font metrics
+  this->text_buffer = "\0";
 
   for ( uint32_t rows = 0; rows < this->sheet_width; rows++ )
   {
@@ -340,6 +332,28 @@ NOM_ASSERT ( this->bitmap_font.valid() );
   return true;
 }
 
+bool BitmapFont::load ( const std::string& filename, const Color& colorkey,
+                        bool use_cache
+                      )
+{
+  if ( this->bitmap_font.load ( filename, colorkey, use_cache ) == false )
+  {
+NOM_LOG_ERR ( "Could not load bitmap font image file: " + filename );
+    return false;
+  }
+
+  this->colorkey = colorkey;
+
+  // Attempt to rebuild font metrics
+  if ( this->rebuild() == false )
+  {
+NOM_LOG_ERR ( "Could not rebuild bitmap font metrics" );
+    return false;
+  }
+
+  return true;
+}
+
 const Coords BitmapFont::findGlyph ( const std::string& glyph )
 {
   uint8 ascii = 0;
@@ -400,6 +414,12 @@ void BitmapFont::Draw ( void* video_buffer ) const
       } // end else
     } // end for loop
   } // end if this->bitmap_font != nullptr
+}
+
+void BitmapFont::scale2x ( void )
+{
+  this->bitmap_font.scale2x();
+  this->rebuild();
 }
 
 

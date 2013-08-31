@@ -57,7 +57,7 @@ class IFont: public IDrawable
     virtual ~IFont ( void ) {}
 
     virtual bool load ( const std::string& filename, const Color& colorkey,
-                        int32 font_size, bool use_cache = false
+                        bool use_cache = false
                       ) = 0;
 
     virtual const std::string& getText ( void ) const = 0;
@@ -68,10 +68,20 @@ class IFont: public IDrawable
     virtual const Color& getColor ( void ) const = 0;
 
     virtual void setText ( const std::string& text ) = 0;
-    virtual void setFontSize ( int32 point_size ) = 0;
+
+    /// Set a new font point (pixel) size.
+    ///
+    /// Optional interface
+    virtual void setFontSize ( int32 point_size ) {}
+
     virtual void setFontStyle ( uint8 style, uint8 options = 150 ) = 0;
     virtual void setColor ( const Color& color ) = 0;
     virtual void setPosition ( const Coords& coords ) = 0;
+
+    /// Scale font using the scale2x algorithm.
+    ///
+    /// Optional interface.
+    virtual void scale2x ( void ) {};
 };
 
 

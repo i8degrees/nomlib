@@ -55,6 +55,8 @@ NOM_LOG_CLASSINFO;
   this->text_style = FontStyle::Regular; // default text styling effect
   this->style_options = 0;
   this->filename = "\0";
+  this->font_size = 12;
+  this->use_cache = false;
 
   if ( TTF_Init () == -1 )
   {
@@ -66,6 +68,8 @@ TrueTypeFont::~TrueTypeFont ( void )
 {
 NOM_LOG_CLASSINFO;
 
+  // Possible bug -- a segmentation fault occurs here if we do not reset the
+  // smart pointer on destruction.
   this->font.reset();
 
   TTF_Quit();
@@ -122,9 +126,15 @@ void TrueTypeFont::setPosition ( const Coords& coords )
 
 void TrueTypeFont::setFontSize ( int32 point_size )
 {
-  if ( this->load ( this->filename, nom::Color::Black, point_size ) == false )
+  int32 original_font_size = this->font_size;
+
+  this->font_size = point_size;
+
+  if ( this->rebuild() == false )
   {
-NOM_LOG_ERR ( "Could not set font size." );
+NOM_LOG_ERR ( "Could not set new font size." );
+    this->font_size = original_font_size;
+    return;
   }
 }
 
@@ -167,10 +177,10 @@ NOM_LOG_ERR ( "Failed to set font width & height." );
 }
 
 bool TrueTypeFont::load ( const std::string& filename, const Color& colorkey,
-                          int32 font_size, bool use_cache
+                          bool use_cache
                         )
 {
-  this->font = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), font_size ), nom::priv::TTF_FreeSurface );
+  this->font = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), this->font_size ), nom::priv::TTF_FreeSurface );
 
   if ( this->valid() == false )
   {
@@ -178,7 +188,11 @@ NOM_LOG_ERR ( "Could not load TTF file: " + filename );
     return false;
   }
 
+  // Store the new filename & caching choice for future reference; primarily
+  // used when rebuilding font metrics, such as when we change the font point
+  // size or load a new font.
   this->filename = filename;
+  this->use_cache = use_cache;
 
   return true;
 }
@@ -214,6 +228,17 @@ NOM_ASSERT ( this->font_buffer.valid() );
   {
     this->font_buffer.Draw ( video_buffer );
   }
+}
+
+bool TrueTypeFont::rebuild ( void )
+{
+  if ( this->load ( this->filename, Color::Black, this->use_cache ) == false )
+  {
+NOM_LOG_ERR ( "Could not rebuild font metrics." );
+    return false;
+  }
+
+  return true;
 }
 
 

@@ -41,11 +41,9 @@ NOM_LOG_CLASSINFO;
 Text::~Text ( void )
 {
 NOM_LOG_CLASSINFO;
-
-  this->font.reset();
 }
 
-bool Text::load ( const std::string& filename, int32 font_size )
+bool Text::load ( const std::string& filename, bool use_cache )
 {
   File file;
   std::string extension = "\0";
@@ -64,7 +62,7 @@ bool Text::load ( const std::string& filename, int32 font_size )
   if ( extension.compare ( "application/x-font-ttf" ) != 0 )
   {
     this->font = std::unique_ptr<IFont> ( new BitmapFont() );
-    this->font->load ( filename, Color ( 110, 144, 190 ), true );
+    this->font->load ( filename, Color ( 110, 144, 190 ), use_cache );
 
     if ( this->font != nullptr )
     {
@@ -77,7 +75,7 @@ bool Text::load ( const std::string& filename, int32 font_size )
   {
     this->font = std::unique_ptr<IFont> ( new TrueTypeFont() );
 
-    this->font->load ( filename, Color::Black, font_size, false );
+    this->font->load ( filename, Color::Black, use_cache );
 
     if ( this->font != nullptr )
     {
@@ -192,6 +190,14 @@ void Text::Draw ( void* video_buffer ) const
 {
   if ( this->font )
     this->font->Draw ( video_buffer );
+}
+
+void Text::scale2x ( void )
+{
+  if ( this->font )
+  {
+    this->font->scale2x();
+  }
 }
 
 

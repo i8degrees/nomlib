@@ -94,12 +94,12 @@ class TrueTypeFont: public IFont
     void setColor ( const Color& color );
     void setPosition ( const Coords& coords );
 
-    /// \brief Load a new TTF or FON from a file
+    /// \brief Load a new font in from a file.
     ///
-    /// Support for the file format is determined
-    /// by the SDL_ttf extension
+    /// Refer to the SDL_ttf documentation for file formats supported. As of
+    /// this writing, TTF and FON file formats are known to be supported.
     bool load ( const std::string& filename, const Color& colorkey,
-                int32 font_size, bool use_cache = false
+                bool use_cache = false
               );
 
     void Update ( void );
@@ -108,6 +108,10 @@ class TrueTypeFont: public IFont
     void Draw ( void* video_buffer ) const;
 
   private:
+    /// Trigger a rebuild of the font metrics from the current font; this
+    /// recalculates character sizes, coordinate origins, spacing, etc.
+    bool rebuild ( void );
+
     /// Surface where font for drawing is rendered to
     Canvas font_buffer;
 
@@ -129,6 +133,12 @@ class TrueTypeFont: public IFont
 
     /// Store the file path so we can change font sizes on the fly
     std::string filename;
+
+    /// Font point (pixel) size; defaults to 12
+    int32 font_size;
+
+    /// Whether or not to use caching features of nom::ObjectCache
+    bool use_cache;
 };
 
 

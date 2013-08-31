@@ -11,7 +11,9 @@ before_script:
 script:
   - make -j4
   - sudo make install
-  - du -csh /usr/local/lib/libnomlib.* /usr/local/share/nomlib/ /usr/local/share/doc/nomlib/
+  - du -csh /usr/local/lib/libnomlib.*
+  - du -csh /usr/local/share/nomlib/
+  - du -csh /usr/local/share/doc/nomlib/
   - sudo make uninstall
   - make clean
 # whitelist

@@ -2,15 +2,18 @@
 
 cmake_policy ( SET CMP0007 NEW )
 
-if (NOT EXISTS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt")
-    message(FATAL_ERROR "Cannot find install manifest: \"@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt\"")
-endif(NOT EXISTS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt")
+# Be quiet about what we are doing if toggled off
+set ( VERBOSE_UNINSTALL off )
 
 file(READ "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" files)
 string(REGEX REPLACE "\n" ";" files "${files}")
 list(REVERSE files)
 foreach (file ${files})
-    message(STATUS "Uninstalling \"$ENV{DESTDIR}${file}\"")
+
+    if ( VERBOSE_UNINSTALL )
+        message(STATUS "Uninstalling \"$ENV{DESTDIR}${file}\"")
+    endif ( VERBOSE_UNINSTALL )
+
     if (EXISTS "$ENV{DESTDIR}${file}")
         execute_process(
             COMMAND @CMAKE_COMMAND@ -E remove "$ENV{DESTDIR}${file}"
@@ -21,6 +24,10 @@ foreach (file ${files})
             message(FATAL_ERROR "Problem when removing \"$ENV{DESTDIR}${file}\"")
         endif (NOT ${rm_retval} EQUAL 0)
     else (EXISTS "$ENV{DESTDIR}${file}")
-        message(STATUS "File \"$ENV{DESTDIR}${file}\" does not exist.")
+
+        if ( VERBOSE_UNINSTALL )
+            message(STATUS "File \"$ENV{DESTDIR}${file}\" does not exist.")
+        endif ( VERBOSE_UNINSTALL )
+
     endif (EXISTS "$ENV{DESTDIR}${file}")
 endforeach(file)

@@ -26,6 +26,29 @@ option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
 
 project ( nomlib ) # Sets PROJECT_NAME variable for us
 
+if ( DEBUG )
+  set ( CMAKE_BUILD_TYPE "Debug" )
+  set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNOM_DEBUG -Wall -Wunused" )
+  set ( CMAKE_VERBOSE_MAKEFILE on )
+  message ( STATUS "Building ${PROJECT_NAME} with debugging." )
+else () # Build with optimizations for maximum speed and minimal size
+  set ( CMAKE_BUILD_TYPE "Release" )
+  message ( STATUS "Building ${PROJECT_NAME} with high speed, low drag!" )
+endif ( DEBUG )
+
+if ( DEBUG_ASSERT )
+  add_definitions ( "-DNOM_DEBUG_ASSERT" )
+  message ( STATUS "Building ${PROJECT_NAME} with run-time assertions." )
+endif ( DEBUG_ASSERT )
+
+if ( DEBUG_TRACE )
+  # We intentionally do not set CMAKE_BUILD_TYPE to "Debug" or "Release" here so
+  # we can enable this feature in either target mode to maximize debugging
+  # capabilities.
+  add_definitions ( "-DNOM_DEBUG_TRACE" )
+  message ( STATUS "Building ${PROJECT_NAME} with class object call tracing." )
+endif ( DEBUG_TRACE )
+
 # Platform detection
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
 
@@ -68,29 +91,6 @@ if ( PLATFORM_OSX )
   option ( FRAMEWORK "Build OSX Framework instead of dylib" on )
   option ( UNIVERSAL "Build as an OSX Universal Library" off )
 endif ( PLATFORM_OSX )
-
-if ( DEBUG )
-  set ( CMAKE_BUILD_TYPE "Debug" )
-  set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNOM_DEBUG -Wall -Wunused" )
-  set ( CMAKE_VERBOSE_MAKEFILE on )
-  message ( STATUS "Building ${PROJECT_NAME} with debugging." )
-else () # Build with optimizations for maximum speed and minimal size
-  set ( CMAKE_BUILD_TYPE "Release" )
-  message ( STATUS "Building ${PROJECT_NAME} with high speed, low drag!" )
-endif ( DEBUG )
-
-if ( DEBUG_ASSERT )
-  add_definitions ( "-DNOM_DEBUG_ASSERT" )
-  message ( STATUS "Building ${PROJECT_NAME} with run-time assertions." )
-endif ( DEBUG_ASSERT )
-
-if ( DEBUG_TRACE )
-  # We intentionally do not set CMAKE_BUILD_TYPE to "Debug" or "Release" here so
-  # we can enable this feature in either target mode to maximize debugging
-  # capabilities.
-  add_definitions ( "-DNOM_DEBUG_TRACE" )
-  message ( STATUS "Building ${PROJECT_NAME} with class object call tracing." )
-endif ( DEBUG_TRACE )
 
 # I was able to shave off close to 50% time compiling nomlib by leaving
 # this option off by default.

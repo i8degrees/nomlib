@@ -83,5 +83,78 @@ Color& Color::operator = ( const Color& other )
   return *this;
 }
 
+bool operator == ( const Color& left, const Color& right )
+{
+  return (left.red == right.red ) &&
+         (left.green == right.green ) &&
+         (left.blue == right.blue ) &&
+         (left.alpha == right.alpha );
+}
+
+bool operator != ( const Color& left, const Color& right )
+{
+  return ! ( left == right );
+}
+
+Color operator + ( const Color& left, const Color& right )
+{
+  return Color  ( static_cast<uint8_t> ( std::min ( left.red + right.red, 255 ) ),
+                  static_cast<uint8_t> ( std::min ( left.green + right.green, 255 ) ),
+                  static_cast<uint8_t> ( std::min ( left.blue + right.blue, 255 ) ),
+                  static_cast<uint8_t> ( std::min ( left.alpha + right.alpha, 255 ) )
+                );
+}
+
+Color operator ++ ( Color& left )
+{
+  return Color  ( static_cast<uint8_t> ( left.red-- ),
+                  static_cast<uint8_t> ( left.green-- ),
+                  static_cast<uint8_t> ( left.blue-- ),
+                  static_cast<uint8_t> ( left.alpha-- )
+                );
+}
+
+Color operator - ( const Color& left, const Color& right )
+{
+  return Color  ( static_cast<uint8_t> ( std::min ( left.red - right.red, 255 ) ),
+                  static_cast<uint8_t> ( std::min ( left.green - right.green, 255 ) ),
+                  static_cast<uint8_t> ( std::min ( left.blue - right.blue, 255 ) ),
+                  static_cast<uint8_t> ( std::min ( left.alpha - right.alpha, 255 ) )
+                );
+}
+
+Color operator -- ( Color& left )
+{
+  return Color  ( static_cast<uint8_t> ( left.red-- ),
+                  static_cast<uint8_t> ( left.green-- ),
+                  static_cast<uint8_t> ( left.blue-- ),
+                  static_cast<uint8_t> ( left.alpha-- )
+                );
+}
+
+Color operator * ( const Color& left, const Color& right )
+{
+  return Color  ( static_cast<uint8_t> ( left.red * right.red / 255 ),
+                  static_cast<uint8_t> ( left.green * right.green / 255 ),
+                  static_cast<uint8_t> ( left.blue * right.blue / 255 ),
+                  static_cast<uint8_t> ( left.alpha * right.alpha / 255 )
+                );
+}
+
+Color& operator += ( Color& left, const Color& right )
+{
+  return left = left + right;
+}
+
+Color& operator -= ( Color& left, const Color& right )
+{
+  return left = left - right;
+}
+
+Color& operator *= ( Color& left, const Color& right )
+{
+  return left = left * right;
+}
+
 
 } // namespace nom

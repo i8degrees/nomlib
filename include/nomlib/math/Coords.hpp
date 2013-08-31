@@ -73,89 +73,17 @@ class Coords
 
 }; // class Coords
 
-// FIXME: not sure why these cannot be put into the class file without
-// linking errs?
-inline bool operator == ( const Coords& left, const Coords& right )
-{
-  return (left.x == right.x ) &&
-         (left.y == right.y ) &&
-         (left.width == right.width ) &&
-         (left.height == right.height );
-}
-
-inline bool operator != ( const Coords& left, const Coords& right )
-{
-  return ! ( left == right );
-}
-
-inline Coords operator + ( const Coords& left, const Coords& right )
-{
-  return Coords  (  static_cast<int32_t> ( left.x + right.x ),
-                    static_cast<int32_t> ( left.y + right.y ),
-                    static_cast<int32_t> ( left.width + right.width ),
-                    static_cast<int32_t> ( left.height + right.height )
-                  );
-}
-
-inline Coords operator ++ ( Coords& left )
-{
-  return Coords  (  static_cast<int32_t> ( left.x ++ ),
-                    static_cast<int32_t> ( left.y ++ ),
-                    static_cast<int32_t> ( left.width ++ ),
-                    static_cast<int32_t> ( left.height ++ )
-                  );
-}
-
-inline Coords operator - ( const Coords& left, const Coords& right )
-{
-  return Coords  (  static_cast<int32_t> ( left.x - right.x ),
-                    static_cast<int32_t> ( left.y - right.y ),
-                    static_cast<int32_t> ( left.width - right.width ),
-                    static_cast<int32_t> ( left.height - right.height )
-                  );
-}
-
-inline Coords operator -- ( Coords& left )
-{
-  return Coords  (  static_cast<int32_t> ( left.x -- ),
-                    static_cast<int32_t> ( left.y -- ),
-                    static_cast<int32_t> ( left.width -- ),
-                    static_cast<int32_t> ( left.height -- )
-                  );
-}
-
-inline Coords operator * ( const Coords& left, const Coords& right)
-{
-  return Coords  ( static_cast<int32_t> ( left.x * right.x ),
-                        static_cast<int32_t> ( left.y * right.y ),
-                        static_cast<int32_t> ( left.width * right.width ),
-                        static_cast<int32_t> ( left.height * right.height )
-                      );
-}
-
-inline Coords operator / ( const Coords& left, const Coords& right)
-{
-  return Coords  (  static_cast<int32_t> ( left.x / right.x ),
-                    static_cast<int32_t> ( left.y / right.y ),
-                    static_cast<int32_t> ( left.width / right.width ),
-                    static_cast<int32_t> ( left.height / right.height )
-                  );
-}
-
-inline Coords& operator += ( Coords& left, const Coords& right)
-{
-  return left = left + right;
-}
-
-inline Coords& operator -= ( Coords& left, const Coords& right )
-{
-  return left = left - right;
-}
-
-inline Coords& operator *= ( Coords& left, const Coords& right)
-{
-  return left = left * right;
-}
+bool operator == ( const Coords& left, const Coords& right );
+bool operator != ( const Coords& left, const Coords& right );
+Coords operator + ( const Coords& left, const Coords& right );
+Coords operator ++ ( Coords& left );
+Coords operator - ( const Coords& left, const Coords& right );
+Coords operator -- ( Coords& left );
+Coords operator * ( const Coords& left, const Coords& right );
+Coords operator / ( const Coords& left, const Coords& right );
+Coords& operator += ( Coords& left, const Coords& right );
+Coords& operator -= ( Coords& left, const Coords& right );
+Coords& operator *= ( Coords& left, const Coords& right );
 
 
 } // namespace nom

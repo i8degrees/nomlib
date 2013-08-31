@@ -134,5 +134,87 @@ Coords& Coords::operator = ( const Coords& other )
   return *this;
 }
 
+bool operator == ( const Coords& left, const Coords& right )
+{
+  return (left.x == right.x ) &&
+         (left.y == right.y ) &&
+         (left.width == right.width ) &&
+         (left.height == right.height );
+}
+
+bool operator != ( const Coords& left, const Coords& right )
+{
+  return ! ( left == right );
+}
+
+Coords operator + ( const Coords& left, const Coords& right )
+{
+  return Coords  (  static_cast<int32_t> ( left.x + right.x ),
+                    static_cast<int32_t> ( left.y + right.y ),
+                    static_cast<int32_t> ( left.width + right.width ),
+                    static_cast<int32_t> ( left.height + right.height )
+                  );
+}
+
+Coords operator ++ ( Coords& left )
+{
+  return Coords  (  static_cast<int32_t> ( left.x ++ ),
+                    static_cast<int32_t> ( left.y ++ ),
+                    static_cast<int32_t> ( left.width ++ ),
+                    static_cast<int32_t> ( left.height ++ )
+                  );
+}
+
+Coords operator - ( const Coords& left, const Coords& right )
+{
+  return Coords  (  static_cast<int32_t> ( left.x - right.x ),
+                    static_cast<int32_t> ( left.y - right.y ),
+                    static_cast<int32_t> ( left.width - right.width ),
+                    static_cast<int32_t> ( left.height - right.height )
+                  );
+}
+
+Coords operator -- ( Coords& left )
+{
+  return Coords  (  static_cast<int32_t> ( left.x -- ),
+                    static_cast<int32_t> ( left.y -- ),
+                    static_cast<int32_t> ( left.width -- ),
+                    static_cast<int32_t> ( left.height -- )
+                  );
+}
+
+Coords operator * ( const Coords& left, const Coords& right )
+{
+  return Coords  ( static_cast<int32_t> ( left.x * right.x ),
+                        static_cast<int32_t> ( left.y * right.y ),
+                        static_cast<int32_t> ( left.width * right.width ),
+                        static_cast<int32_t> ( left.height * right.height )
+                      );
+}
+
+Coords operator / ( const Coords& left, const Coords& right )
+{
+  return Coords  (  static_cast<int32_t> ( left.x / right.x ),
+                    static_cast<int32_t> ( left.y / right.y ),
+                    static_cast<int32_t> ( left.width / right.width ),
+                    static_cast<int32_t> ( left.height / right.height )
+                  );
+}
+
+Coords& operator += ( Coords& left, const Coords& right )
+{
+  return left = left + right;
+}
+
+Coords& operator -= ( Coords& left, const Coords& right )
+{
+  return left = left - right;
+}
+
+Coords& operator *= ( Coords& left, const Coords& right )
+{
+  return left = left * right;
+}
+
 
 } // namespace nom

@@ -75,85 +75,27 @@ class Color
 
 }; // class Color
 
-// FIXME: not sure why these cannot be put into the class file without
-// linking errs?
-inline bool operator == ( const Color& left, const Color& right )
-{
-  return (left.red == right.red ) &&
-         (left.green == right.green ) &&
-         (left.blue == right.blue ) &&
-         (left.alpha == right.alpha );
-}
-
-inline bool operator != ( const Color& left, const Color& right )
-{
-  return ! ( left == right );
-}
+bool operator == ( const Color& left, const Color& right );
+bool operator != ( const Color& left, const Color& right );
 
 /// Values that exceed 255 are clamped to 255
-inline Color operator + ( const Color& left, const Color& right )
-{
-  return Color  ( static_cast<uint8_t> ( std::min ( left.red + right.red, 255 ) ),
-                  static_cast<uint8_t> ( std::min ( left.green + right.green, 255 ) ),
-                  static_cast<uint8_t> ( std::min ( left.blue + right.blue, 255 ) ),
-                  static_cast<uint8_t> ( std::min ( left.alpha + right.alpha, 255 ) )
-                );
-}
+Color operator + ( const Color& left, const Color& right );
 
 /// Values that exceed 255 are clamped to 255
-inline Color operator ++ ( Color& left )
-{
-  return Color  ( static_cast<uint8_t> ( left.red-- ),
-                  static_cast<uint8_t> ( left.green-- ),
-                  static_cast<uint8_t> ( left.blue-- ),
-                  static_cast<uint8_t> ( left.alpha-- )
-                );
-}
+Color operator ++ ( Color& left );
 
 /// Values that exceed 255 are clamped to 255
-inline Color operator - ( const Color& left, const Color& right )
-{
-  return Color  ( static_cast<uint8_t> ( std::min ( left.red - right.red, 255 ) ),
-                  static_cast<uint8_t> ( std::min ( left.green - right.green, 255 ) ),
-                  static_cast<uint8_t> ( std::min ( left.blue - right.blue, 255 ) ),
-                  static_cast<uint8_t> ( std::min ( left.alpha - right.alpha, 255 ) )
-                );
-}
+Color operator - ( const Color& left, const Color& right );
 
 /// Values that exceed 255 are clamped to 255
-inline Color operator -- ( Color& left )
-{
-  return Color  ( static_cast<uint8_t> ( left.red-- ),
-                  static_cast<uint8_t> ( left.green-- ),
-                  static_cast<uint8_t> ( left.blue-- ),
-                  static_cast<uint8_t> ( left.alpha-- )
-                );
-}
+Color operator -- ( Color& left );
 
 /// Values that exceed 255 are clamped to 255
-inline Color operator * ( const Color& left, const Color& right)
-{
-  return Color  ( static_cast<uint8_t> ( left.red * right.red / 255 ),
-                  static_cast<uint8_t> ( left.green * right.green / 255 ),
-                  static_cast<uint8_t> ( left.blue * right.blue / 255 ),
-                  static_cast<uint8_t> ( left.alpha * right.alpha / 255 )
-                );
-}
+Color operator * ( const Color& left, const Color& right);
 
-inline Color& operator += ( Color& left, const Color& right)
-{
-  return left = left + right;
-}
-
-inline Color& operator -= ( Color& left, const Color& right )
-{
-  return left = left - right;
-}
-
-inline Color& operator *= ( Color& left, const Color& right)
-{
-  return left = left * right;
-}
+Color& operator += ( Color& left, const Color& right );
+Color& operator -= ( Color& left, const Color& right );
+Color& operator *= ( Color& left, const Color& right );
 
 
 } // namespace nom

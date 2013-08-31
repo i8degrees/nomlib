@@ -70,6 +70,12 @@ class Sprite: public IDrawable,     //  "is a" inheritance
     /// See Canvas.hpp for additional information.
     void scale2x ( void );
 
+    /// Uses the hq2x algorithm implemented in nom::Canvas to scale a sprite
+    /// by a scaling factor of two times the original size.
+    ///
+    /// See Canvas.hpp for additional information.
+    void hq2x ( void );
+
   private:
     Canvas sprite_buffer;
     Coords offsets;

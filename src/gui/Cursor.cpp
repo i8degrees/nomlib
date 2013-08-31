@@ -127,6 +127,11 @@ void Cursor::scale2x ( void )
   this->cursor.scale2x();
 }
 
+void Cursor::hq2x ( void )
+{
+  this->cursor.hq2x();
+}
+
 
   } // namespace ui
 } // namespace nom

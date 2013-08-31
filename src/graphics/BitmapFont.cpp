@@ -418,8 +418,20 @@ void BitmapFont::Draw ( void* video_buffer ) const
 
 void BitmapFont::scale2x ( void )
 {
-  this->bitmap_font.scale2x();
-  this->rebuild();
+  if ( this->bitmap_font.valid() )
+  {
+    this->bitmap_font.scale2x();
+    this->rebuild();
+  }
+}
+
+void BitmapFont::hq2x ( void )
+{
+  if ( this->bitmap_font.valid() )
+  {
+    this->bitmap_font.hq2x();
+    this->rebuild();
+  }
 }
 
 

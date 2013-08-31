@@ -119,6 +119,12 @@ class BitmapFont: public IFont
     /// Re-implements IFont::scale2x when deriving from Text interface class
     void scale2x ( void );
 
+    /// Uses the hq2x algorithm implemented in nom::Canvas to scale a sprite
+    /// by a scaling factor of two times the original size.
+    ///
+    /// See Canvas.hpp for additional information.
+    void hq2x ( void );
+
   private:
     /// Trigger a rebuild of the font characteristics gleaned from the image file;
     /// recalculate the character sizes, coordinate origins, spacing, etc.

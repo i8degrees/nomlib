@@ -200,5 +200,13 @@ void Text::scale2x ( void )
   }
 }
 
+void Text::hq2x ( void )
+{
+  if ( this->font )
+  {
+    this->font->hq2x();
+  }
+}
+
 
 } // namespace nom

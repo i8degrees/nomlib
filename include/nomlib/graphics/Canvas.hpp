@@ -48,7 +48,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/Rectangle.hpp"
 
-
 namespace nom {
   namespace priv {
 
@@ -248,24 +247,15 @@ class Canvas
     /// The algorithm is designed to be fast enough to process 256x256 bitmaps
     /// in real-time.
     ///
-    /// The supplied arguments are manipulated at the pixel-level, and are
-    /// static casted to the appropriate fixed-integer size as necessary. If
-    /// you are using libSDL, you ought to be able to pass the surface's pixels
-    /// directly, as in the following:
-    ///
-    /// SDL_Surface* src;
-    /// SDL_Surface* dst;
-    ///
-    /// hq2x ( src.pixels, dst.pixels );
-    ///
-    /// You are responsible for locking and unlocking the surfaces as need be.
-    ///
     /// See https://code.google.com/p/hqx/wiki/ReadMe
+    ///
+    /// \todo Test the implementation of 8-bit, 16-bit & 24-bit video scaling.
     ///
     /// \todo FIXME; due to some bizarre linking issue resulting in unresolved
     /// symbols upon trying to use any of the function calls (such as hqxInit),
-    /// I am unable to implement this method (or at least test it, anyway...).
-    void hq2x ( int32 source_width, int32 source_height, Pixels source_buffer, Pixels destination_buffer );
+    /// so we have had to resort to forking a copy of the original source to get
+    /// this working.
+    void hq2x ( void );
 
   private:
     /// Internal method used for checking to see if the video surface actually

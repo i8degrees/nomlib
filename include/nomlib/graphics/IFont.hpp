@@ -82,6 +82,11 @@ class IFont: public IDrawable
     ///
     /// Optional interface.
     virtual void scale2x ( void ) {};
+
+    /// Scale font using the hq2x algorithm.
+    ///
+    /// Optional interface.
+    virtual void hq2x ( void ) { NOM_LOG_INFO ( "Method not implemented." ); };
 };
 
 

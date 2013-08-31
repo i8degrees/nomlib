@@ -80,6 +80,12 @@ class Cursor
     /// See Canvas.hpp for additional information.
     void scale2x ( void );
 
+    /// Uses the hq2x algorithm implemented in nom::Canvas to scale a sprite
+    /// by a scaling factor of two times the original size.
+    ///
+    /// See Canvas.hpp for additional information.
+    void hq2x ( void );
+
   private:
     Sprite cursor; // interface cursor
 

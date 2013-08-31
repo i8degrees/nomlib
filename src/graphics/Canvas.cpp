@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 #include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/hqx/hqx.hpp"
 
 // C Macros used in scale2x method
 #define SCALE2x_READINT24(x) \
@@ -664,19 +665,76 @@ NOM_LOG_ERR ( "Could not determine color depth -- aborting." );
   }
 }
 
-void Canvas::hq2x ( int32 source_width, int32 source_height,
-                    Pixels source_buffer, Pixels destination_buffer
-                  )
+void Canvas::hq2x ( void )
 {
-  // PLZ FIXME
-  //
-  //    :-(
-  //
-  // PLZ FIXME
-  //
-  //    :-(
+  // Not currently implemented; reserved for future refactoring.
+  const int32 scale_factor = 2;
 
-  //hqxInit();
+  // Save a temporary copy of the existing width & height for scaling
+  // calculation.
+  const int32 width = this->getCanvasWidth();
+  const int32 height = this->getCanvasHeight();
+
+  // Current video surface flags state (primarily for handling setting the
+  // color keys and/or alpha values upon our resulting video surface.
+  uint32 flags = this->getCanvasFlags();
+
+  // This is the target video surface object that is created from the existing
+  // video surface (but by a scale factor of two 2).
+  //
+  // We derive our new video surface parameters from the existing video state at
+  // the time of this call with the one exception of the video surface width and
+  // height (these obviously need to be sized up by the scaling factor).
+  Canvas destination_buffer;
+
+  // We must not set an alpha mask value if our existing video surface is color
+  // keyed (or bad things ensue -- like many hours spent reading up on this
+  // surprisingly confusing subject).
+  if ( flags & SDL_SRCCOLORKEY )
+  {
+    destination_buffer = Canvas (
+                                  width * scale_factor,
+                                  height * scale_factor,
+                                  this->getCanvasBitsPerPixel(),
+                                  this->getCanvasRedMask(),
+                                  this->getCanvasGreenMask(),
+                                  this->getCanvasBlueMask(),
+                                  0
+                                );
+  }
+  else // Throw all the alpha you can eat if surface has alpha blending enabled!
+  {
+    destination_buffer = Canvas (
+                                  width * scale_factor,
+                                  height * scale_factor,
+                                  this->getCanvasBitsPerPixel(),
+                                  this->getCanvasRedMask(),
+                                  this->getCanvasGreenMask(),
+                                  this->getCanvasBlueMask(),
+                                  0//this->getCanvasAlphaMask(),
+                                  //SDL_SRCALPHA
+                                );
+  }
+
+  hqxInit();
+
+  this->lock();
+
+  hq2x_32 ( static_cast<uint32*> ( this->getCanvasPixels() ), static_cast<uint32*> ( destination_buffer.getCanvasPixels() ), width, height );
+
+  this->unlock();
+
+  // If we have gotten this far, we assume success has been made in video
+  // surface scaling and thus proceed to reset the video surface object's video
+  // memory to the resulting pixel data.
+  this->setCanvas ( destination_buffer );
+
+  // Last, but not least, we copy over transparency info onto our new video surface
+  // if the appropriate flag is set.
+  if ( flags & SDL_SRCCOLORKEY )
+  {
+    this->setTransparent ( this->getCanvasColorKey(), SDL_RLEACCEL | SDL_SRCCOLORKEY );
+  }
 }
 
 

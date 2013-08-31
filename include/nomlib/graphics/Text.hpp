@@ -85,6 +85,12 @@ class Text: public IDrawable
     /// See Canvas.hpp for additional information.
     void scale2x ( void );
 
+    /// Uses the hq2x algorithm implemented in nom::Canvas to scale a sprite
+    /// by a scaling factor of two times the original size.
+    ///
+    /// See Canvas.hpp for additional information.
+    void hq2x ( void );
+
   private:
     /// Set the type of file we are loading; either a bitmap or a TrueType font
     void setFontType ( enum FontType type );

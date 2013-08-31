@@ -134,5 +134,10 @@ void Sprite::scale2x ( void )
   this->sprite_buffer.scale2x();
 }
 
+void Sprite::hq2x ( void )
+{
+  this->sprite_buffer.hq2x();
+}
+
 
 } // namespace nom

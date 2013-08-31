@@ -31,6 +31,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/Canvas.hpp"
 
+// C Macros used in scale2x method
+#define SCALE2x_READINT24(x) \
+  ((x)[0]<<16 | (x)[1]<<8 | (x)[2])
+
+#define SCALE2x_WRITEINT24(x, i) \
+  {(x)[0]=i>>16; (x)[1]=(i>>8)&0xff; x[2]=i&0xff; }
+
 namespace nom {
   namespace priv {
 

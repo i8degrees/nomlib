@@ -32,11 +32,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <vector>
 
 #include <SDL/SDL.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IDisplay.hpp"
+#include "nomlib/graphics/VideoMode.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/graphics/Canvas.hpp"
@@ -75,12 +77,25 @@ class Display: public IDisplay
 
     int32_t getDisplayWidth ( void ) const;
     int32_t getDisplayHeight ( void ) const;
-    int32_t getDisplayColorBits ( void ) const;
+
+    /// Get display surface bits per pixel
+    ///
+    /// \todo rename method to something more along lines of Canvas equiv.
+    const uint8 getDisplayColorBits ( void ) const;
+
     uint32_t getDisplayFlags ( void ) const;
     u_short getDisplayPitch ( void ) const;
     void* getDisplayPixels ( void ) const;
     void* getDisplayPixelsFormat ( void ) const;
     const Coords getDisplayBounds ( void ) const;
+
+    /// Obtain a list of supported video modes
+    ///
+    /// Returns a sorted vector of VideoMode objects, from greatest to least.
+    ///
+    /// \todo Test out 8-bit, 16-bit, 24-bit video surfaces
+    VideoModeList getVideoModes ( void ) const;
+
     /// I think that we are accessing the value of an
     /// (internal?) property of the SDL_Surface structure that is described as being
     /// "private" as per the docs.

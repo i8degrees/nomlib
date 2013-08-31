@@ -101,9 +101,20 @@ int32_t Display::getDisplayHeight ( void ) const
   return SDL_GetVideoSurface()->h;
 }
 
-int32_t Display::getDisplayColorBits ( void ) const
+const uint8 Display::getDisplayColorBits ( void ) const
 {
-  return SDL_GetVideoSurface()->format->BitsPerPixel;
+  SDL_Surface* screen = static_cast<SDL_Surface*> ( this->get() );
+
+  // We prevent a segmentation fault here by providing a means of accessing the
+  // video modes without already having initialized the video display via
+  // SDL_SetVideoMode.
+  if ( screen == nullptr )
+  {
+    const SDL_VideoInfo* bpp = SDL_GetVideoInfo();
+    return bpp->vfmt->BitsPerPixel;
+  }
+
+  return screen->format->BitsPerPixel;
 }
 
 uint32_t Display::getDisplayFlags ( void ) const
@@ -131,6 +142,35 @@ const Coords Display::getDisplayBounds ( void ) const
   SDL_Rect clip = SDL_GetVideoSurface()->clip_rect;
   Coords clip_coords ( clip.x, clip.y, clip.w, clip.h );
   return clip_coords;
+}
+
+VideoModeList Display::getVideoModes ( void ) const
+{
+  VideoModeList modes;
+  SDL_Rect** mode;
+
+  mode = SDL_ListModes ( nullptr, SDL_FULLSCREEN );
+
+  if ( mode == nullptr )
+  {
+NOM_LOG_INFO ( "Any video mode is supported." ); // FIXME?
+    return modes;
+  }
+  else if ( mode == ( SDL_Rect**) - 1 )
+  {
+NOM_LOG_INFO ( "No video modes are supported." );
+    return modes;
+  }
+  else
+  {
+    for ( int32 idx = 0; mode[idx]; idx++ )
+    {
+      modes.push_back ( VideoMode ( mode[idx]->w, mode[idx]->h, this->getDisplayColorBits() ) );
+    }
+
+    std::sort ( modes.begin(), modes.end(), std::greater<VideoMode>()  );
+  }
+  return modes;
 }
 
 bool Display::getCanvasLock ( void ) const

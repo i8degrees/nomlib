@@ -26,24 +26,67 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_HEADERS
-#define NOMLIB_GRAPHICS_HEADERS
+#include "nomlib/graphics/VideoMode.hpp"
 
-// Public header file
+namespace nom {
 
-#include <nomlib/config.hpp>
-#include <nomlib/graphics/Text.hpp>
-#include <nomlib/graphics/BitmapFont.hpp>
-#include <nomlib/graphics/Canvas.hpp>
-#include <nomlib/graphics/VideoMode.hpp>
-#include <nomlib/graphics/Display.hpp>
-#include <nomlib/graphics/IDrawable.hpp>
-#include <nomlib/graphics/TrueTypeFont.hpp>
-#include <nomlib/graphics/Gradient.hpp>
-#include <nomlib/graphics/Image.hpp>
-#include <nomlib/graphics/Line.hpp>
-#include <nomlib/graphics/Pixel.hpp>
-#include <nomlib/graphics/Rectangle.hpp>
-#include <nomlib/graphics/Sprite.hpp>
+VideoMode::VideoMode ( void ) : width ( 0 ), height ( 0 ), bpp ( 0 ) {}
 
-#endif // include guard defined
+VideoMode::VideoMode ( int32 mode_width, int32 mode_height, uint8 mode_bpp ) : width ( mode_width ), height ( mode_height ), bpp ( mode_bpp )
+{}
+
+VideoMode::~VideoMode ( void ) {}
+
+void VideoMode::pp ( void )
+{
+  std::cout << std::endl << this->width << "x" << this->height << "x" << static_cast<int> ( this->bpp ) << std::endl << std::endl;
+}
+
+bool operator == ( const VideoMode& lhs, const VideoMode& rhs )
+{
+  return  ( lhs.width == rhs.width )                 &&
+          ( lhs.height == rhs.height )               &&
+          ( lhs.bpp == rhs.bpp );
+}
+
+bool operator != ( const VideoMode& lhs, const VideoMode& rhs )
+{
+  return ! ( lhs == rhs );
+}
+
+bool operator < ( const VideoMode& lhs, const VideoMode& rhs )
+{
+  if ( lhs.bpp == rhs.bpp )
+  {
+    if ( lhs.width == rhs.width )
+    {
+      return lhs.height < rhs.height;
+    }
+    else
+    {
+      return lhs.width < rhs.width;
+    }
+  }
+  else
+  {
+    return lhs.bpp < rhs.bpp;
+  }
+}
+
+bool operator > ( const VideoMode& lhs, const VideoMode& rhs )
+{
+  return rhs < lhs;
+}
+
+bool operator <= ( const VideoMode& lhs, const VideoMode& rhs )
+{
+  return ! (rhs < lhs );
+}
+
+bool operator >= ( const VideoMode& lhs, const VideoMode& rhs )
+{
+  return ! ( lhs < rhs );
+}
+
+
+} // namespace nom

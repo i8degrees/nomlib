@@ -101,9 +101,15 @@ void Cursor::setState ( unsigned int state )
   this->cursor.setState ( state );
 }
 
-void Cursor::load ( std::string filename, Color colorkey, bool use_cache ) // sheet_id ?
+bool Cursor::load ( std::string filename, Color colorkey, bool use_cache ) // sheet_id ?
 {
-  this->cursor.load ( filename, colorkey, use_cache );
+  if ( this->cursor.load ( filename, colorkey, use_cache ) == false )
+  {
+NOM_LOG_ERR ( "Could not load cursor resource file: " + filename );
+    return false;
+  }
+
+  return true;
 }
 
 void Cursor::Update ( void )
@@ -114,6 +120,11 @@ void Cursor::Update ( void )
 void Cursor::Draw ( void* video_buffer )
 {
   this->cursor.Draw ( video_buffer );
+}
+
+void Cursor::scale2x ( void )
+{
+  this->cursor.scale2x();
 }
 
 

@@ -64,6 +64,12 @@ class Sprite: public IDrawable,     //  "is a" inheritance
     void Update ( void );
     void Draw ( void* video_buffer ) const;
 
+    /// Uses the scale2x algorithm implemented in nom::Canvas to scale a sprite
+    /// by a scaling factor of two times the original size.
+    ///
+    /// See Canvas.hpp for additional information.
+    void scale2x ( void );
+
   private:
     Canvas sprite_buffer;
     Coords offsets;

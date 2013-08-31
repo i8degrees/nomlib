@@ -70,9 +70,15 @@ class Cursor
     void moveCursorLeft();
     void moveCursorRight();
 
-    void load( std::string filename, Color colorkey, bool use_cache );
+    bool load( std::string filename, Color colorkey, bool use_cache );
     void Update ( void );
     void Draw ( void* video_buffer );
+
+    /// Uses the scale2x algorithm implemented in nom::Canvas to scale a sprite
+    /// by a scaling factor of two times the original size.
+    ///
+    /// See Canvas.hpp for additional information.
+    void scale2x ( void );
 
   private:
     Sprite cursor; // interface cursor

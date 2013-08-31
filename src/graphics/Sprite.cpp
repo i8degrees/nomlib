@@ -129,5 +129,10 @@ NOM_ASSERT ( this->sprite_buffer.valid() );
   this->sprite_buffer.Draw ( video_buffer );
 }
 
+void Sprite::scale2x ( void )
+{
+  this->sprite_buffer.scale2x();
+}
+
 
 } // namespace nom

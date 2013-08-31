@@ -220,6 +220,28 @@ bool Canvas::getCanvasLock ( void ) const
   return buffer->locked;
 }
 
+bool Canvas::mustLock ( void ) const
+{
+  if ( SDL_MUSTLOCK ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ) ) )
+    return true;
+  else
+    return false;
+}
+
+bool Canvas::lock ( void ) const
+{
+  if ( this->mustLock() )
+    SDL_LockSurface ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ) );
+  else
+    return false;
+  return true;
+}
+
+void Canvas::unlock ( void ) const
+{
+  SDL_UnlockSurface ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ) );
+}
+
 bool Canvas::load ( const std::string& filename, const Color& colorkey,
                     bool use_cache, uint32 flags
                   )

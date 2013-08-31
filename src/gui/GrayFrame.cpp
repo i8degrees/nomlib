@@ -92,7 +92,7 @@ void GrayFrame::Update ( void )
 void GrayFrame::Draw ( void* video_buffer ) const
 {
   // nom::Line needs pixel write access, so we must first lock the surface
-  this->context.lock ( video_buffer );
+  this->context.lock();
 
   for ( auto it = this->frame.begin(); it != this->frame.end(); ++it )
   {
@@ -101,7 +101,7 @@ void GrayFrame::Draw ( void* video_buffer ) const
   }
 
   // All done!
-  this->context.unlock ( video_buffer );
+  this->context.unlock();
 }
 
 

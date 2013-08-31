@@ -142,6 +142,15 @@ class Canvas
     /// to be in working order.
     bool getCanvasLock ( void ) const;
 
+    /// Lock the video surface for writing directly to video memory.
+    bool lock ( void ) const;
+
+    /// Unlocks the video surface; this must be done after you are finished
+    /// writing to the video buffer. During the time that the video surface is
+    /// locked, no updates (think: rendering) outside of your local access can
+    /// occur until the surfaces affected by the lock are relinquished.
+    void unlock ( void ) const;
+
     /// Sets transparency only if colorkey Color alpha value is -1, also
     /// important to note is that we only have an alpha channel surface set
     /// if Color value is not -1 (the default)
@@ -236,8 +245,11 @@ class Canvas
     Canvas& operator = ( const Canvas& other );
 
   private:
-    /// SDL_Surface*
-    std::shared_ptr<void> canvas_buffer;
+    /// Internal method used for checking to see if the video surface actually
+    /// needs to be locked before doing so for performance sake.
+    bool mustLock ( void ) const;
+
+    std::shared_ptr<void> canvas_buffer; // SDL_Surface*
     /// Holds surface position
     Coords coords;
     /// Holds surface bounds (input clipping)

@@ -139,18 +139,26 @@ bool Display::getCanvasLock ( void ) const
   return buffer->locked;
 }
 
-bool Display::lock ( void* video_buffer ) const
+bool Display::mustLock ( void ) const
 {
-  if ( this->mustLock ( video_buffer ) )
-    SDL_LockSurface ( static_cast<SDL_Surface*> ( video_buffer ) );
+  if ( SDL_MUSTLOCK ( static_cast<SDL_Surface*> ( this->get() ) ) )
+    return true;
+  else
+    return false;
+}
+
+bool Display::lock ( void ) const
+{
+  if ( this->mustLock() )
+    SDL_LockSurface ( static_cast<SDL_Surface*> ( this->get() ) );
   else
     return false;
   return true;
 }
 
-void Display::unlock ( void* video_buffer ) const
+void Display::unlock ( void ) const
 {
-  SDL_UnlockSurface ( static_cast<SDL_Surface*> ( video_buffer ) );
+  SDL_UnlockSurface ( static_cast<SDL_Surface*> ( this->get() ) );
 }
 
 void Display::Update ( void )
@@ -213,14 +221,6 @@ NOM_LOG_ERR ( "Could not load window icon file: " + app_icon );
   }
 
   SDL_WM_SetIcon ( static_cast<SDL_Surface*> ( icon.get() ) , nullptr );
-}
-
-bool Display::mustLock ( void* video_buffer ) const
-{
-  if ( SDL_MUSTLOCK ( static_cast<SDL_Surface*> ( video_buffer ) ) )
-    return true;
-  else
-    return false;
 }
 
 

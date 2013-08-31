@@ -90,8 +90,16 @@ class Display: public IDisplay
     /// to be in working order.
     bool getCanvasLock ( void ) const;
 
-    bool lock ( void* video_buffer ) const;
-    void unlock ( void* video_buffer ) const;
+    /// Lock the display context's video surface; this must be done before you
+    /// attempt to write directly to video memory, such as when you are
+    /// manipulating surfaces at the pixel level.
+    bool lock ( void ) const;
+
+    /// Unlocks the display context's video surface; this must be done after you
+    /// are finished writing to the video buffer. During the time that the video
+    /// surface is locked, no updates (think: rendering) outside of your local
+    /// access can occur until the surfaces affected by the lock are relinquished.
+    void unlock ( void ) const;
 
     void Update ( void );
 
@@ -106,8 +114,11 @@ class Display: public IDisplay
 
     void setWindowTitle ( const std::string& app_name = "\0" );
     void setWindowIcon ( const std::string& app_icon = "\0" );
+
   private:
-    bool mustLock ( void* video_buffer ) const;
+    /// Internal method used for checking to see if the display context's video
+    /// surfacea actually needs locking before doing so for performance sake.
+    bool mustLock ( void ) const;
 };
 
 

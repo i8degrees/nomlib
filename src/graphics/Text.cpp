@@ -59,7 +59,7 @@ bool Text::load ( const std::string& filename, bool use_cache )
 
   // If we find that the file MIME type is not TTF, we first will try loading
   // the input file as a bitmap font
-  if ( extension.compare ( "application/x-font-ttf" ) != 0 )
+  if ( extension != "application/x-font-ttf" )
   {
     this->font = std::unique_ptr<IFont> ( new BitmapFont() );
     this->font->load ( filename, Color ( 110, 144, 190 ), use_cache );

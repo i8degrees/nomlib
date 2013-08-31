@@ -58,6 +58,10 @@ class Text: public IDrawable
     Text ( void );
     virtual ~Text ( void );
 
+    /// Load a new font into memory from a file
+    ///
+    /// See nom::BitmapFont and nom::TrueTypeFont documentation for supported
+    /// file formats.
     bool load ( const std::string& filename, bool use_cache );
 
     FontType getFontType ( void );

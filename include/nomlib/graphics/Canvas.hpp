@@ -48,11 +48,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/Rectangle.hpp"
 
-// Optional library dependencies
-#if defined ( HQX_FOUND )
-    #include <hqx.h>
-#endif
-
 
 namespace nom {
   namespace priv {

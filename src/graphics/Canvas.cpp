@@ -25,6 +25,9 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+    scale2x Algorithm
+1. Copyright (c) Andrea Mazzoleni
+
 ******************************************************************************/
 #include "nomlib/graphics/Canvas.hpp"
 
@@ -455,7 +458,7 @@ void Canvas::scale2x ( void )
   // Not currently implemented; reserved for future refactoring.
   const int32 scale_factor = 2;
 
-  /// Current video surface flags state (primarily for handling setting the
+  // Current video surface flags state (primarily for handling setting the
   // color keys and/or alpha values upon our resulting video surface.
   uint32 flags = this->getCanvasFlags();
 

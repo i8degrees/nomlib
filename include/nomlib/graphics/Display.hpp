@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <SDL/SDL.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/IDisplay.hpp"
+//#include "nomlib/graphics/IDisplay.hpp"
 #include "nomlib/graphics/VideoMode.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Color.hpp"
@@ -57,7 +57,7 @@ void Display_FreeSurface ( SDL_Surface* );
 
 namespace nom {
 
-class Display: public IDisplay
+class Display/*: public IDisplay*/
 {
   public:
     Display ( void );

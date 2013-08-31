@@ -46,6 +46,7 @@ class Template
     // ...
 };
 
+
 } // namespace nom
 
 #endif // include guard defined

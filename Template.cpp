@@ -33,15 +33,11 @@ namespace nom {
 Template::Template ( void )
 {
 NOM_LOG_CLASSINFO;
-
-  // Initialize instance variables
 }
 
 Template::~Template ( void )
 {
 NOM_LOG_CLASSINFO;
-
-  // Clean up instance variables
 }
 
 

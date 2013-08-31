@@ -46,6 +46,9 @@ namespace nom {
   /// Returns a SDL color structure of a nom::Color object
   SDL_Color getSDL_Color ( const Color& );
 
+  /// Return a nom::Color from a SDL_Color struct
+  const Color mapSDL_Color ( SDL_Color color );
+
   /// Convenience helper for obtaining a color as an integer, respective to
   /// the video surface pixel format (color bit per pixel)
   uint32 getColorAsInt ( void*, const Color& );

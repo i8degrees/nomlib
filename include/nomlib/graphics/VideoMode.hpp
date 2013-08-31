@@ -98,3 +98,27 @@ typedef std::vector<VideoMode> VideoModeList;
 } // namespace nom
 
 #endif // include guard defined
+
+/*
+  VideoMode Class Usage Example
+
+  // Public headers interface; this includes all of nomlib's header files for
+  // the graphics subsystem supported by your platform.
+  #include <nomlib/graphics.hpp>
+
+  // ...or just the header file we need here, if you the minimal route!
+  #include <nomlib/graphics/VideoMode.hpp>
+
+  nom::Display context; // Primary video surface
+
+  // This should be safe to call before the initialization of the video display;
+  // setting of the video resolution beforehand is not necessary.
+  nom::VideoModeList modes = context.getVideoModes();
+
+  // Output to the console the available modes we have
+  for ( nom::uint32 idx = 0; idx != modes.size(); idx++ )
+  {
+    modes[idx].pp();
+  }
+
+*/

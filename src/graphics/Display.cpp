@@ -189,10 +189,14 @@ bool Display::mustLock ( void ) const
 
 bool Display::lock ( void ) const
 {
-  if ( this->mustLock() )
-    SDL_LockSurface ( static_cast<SDL_Surface*> ( this->get() ) );
-  else
-    return false;
+  if ( this->mustLock() == true )
+  {
+    if ( SDL_LockSurface ( static_cast<SDL_Surface*> ( this->get() ) ) == -1 )
+    {
+NOM_LOG_ERR ( "Could not lock video surface memory." );
+      return false;
+    }
+  }
   return true;
 }
 

@@ -264,10 +264,14 @@ bool Canvas::mustLock ( void ) const
 
 bool Canvas::lock ( void ) const
 {
-  if ( this->mustLock() )
-    SDL_LockSurface ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ) );
-  else
-    return false;
+  if ( this->mustLock() == true )
+  {
+    if ( SDL_LockSurface ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ) ) == -1 )
+    {
+NOM_LOG_ERR ( "Could not lock video surface memory." );
+      return false;
+    }
+  }
   return true;
 }
 

@@ -465,10 +465,43 @@ int32 Canvas::getPixel ( int32 x, int32 y )
   } // end switch
 }
 
-void Canvas::scale2x ( void )
+bool Canvas::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
-  // Not currently implemented; reserved for future refactoring.
-  const int32 scale_factor = 2;
+  switch ( scaling_algorithm )
+  {
+    default: // No resizing is applied
+    case ResizeAlgorithm::NearestNeighbor: // Not implemented
+    case ResizeAlgorithm::scale3x: // Not implemented
+    case ResizeAlgorithm::scale4x: // Not implemented
+    case ResizeAlgorithm::hq3x: // Not implemented
+    case ResizeAlgorithm::hq4x: // Not implemented
+      return false;
+    break;
+
+    case ResizeAlgorithm::scale2x:
+    {
+      if ( this->scale2x() == false ) return false;
+    }
+    break;
+
+    case ResizeAlgorithm::hq2x:
+    {
+      if ( this->hq2x() == false ) return false;
+    }
+    break;
+  }
+
+  return true;
+}
+
+bool Canvas::scale2x ( void )
+{
+  // Ensure that our existing video surface is OK first
+  if ( this->valid() == false )
+  {
+NOM_LOG_ERR ( "The existing video surface is not valid." );
+    return false;
+  }
 
   // Current video surface flags state (primarily for handling setting the
   // color keys and/or alpha values upon our resulting video surface.
@@ -493,27 +526,35 @@ void Canvas::scale2x ( void )
   if ( flags & SDL_SRCCOLORKEY )
   {
     destination_buffer = Canvas (
-                                  this->getCanvasWidth() * scale_factor,
-                                  this->getCanvasHeight() * scale_factor,
+                                  this->getCanvasWidth() * 2, // x2 width
+                                  this->getCanvasHeight() * 2, // x2 height
                                   this->getCanvasBitsPerPixel(),
                                   this->getCanvasRedMask(),
                                   this->getCanvasGreenMask(),
                                   this->getCanvasBlueMask(),
-                                  0
+                                  0 // No alpha mask value
                                 );
   }
   else // Throw all the alpha you can eat if surface has alpha blending enabled!
   {
     destination_buffer = Canvas (
-                                  this->getCanvasWidth() * scale_factor,
-                                  this->getCanvasHeight() * scale_factor,
+                                  this->getCanvasWidth() * 2, // x2 width
+                                  this->getCanvasHeight() * 2, // x2 height
                                   this->getCanvasBitsPerPixel(),
                                   this->getCanvasRedMask(),
                                   this->getCanvasGreenMask(),
                                   this->getCanvasBlueMask(),
+                                  // FIXME
                                   0//this->getCanvasAlphaMask(),
                                   //SDL_SRCALPHA
                                 );
+  }
+
+  // Ensure that our new video surface is sane
+  if ( this->valid() == false )
+  {
+NOM_LOG_ERR ( "The destination video surface is not valid." );
+    return false;
   }
 
   // The video surface pitch (width) is saved for scaling calculations.
@@ -527,7 +568,12 @@ void Canvas::scale2x ( void )
   uint8* srcpix = static_cast<uint8*> ( this->getCanvasPixels() );
   uint8* dstpix = static_cast<uint8*> ( destination_buffer.getCanvasPixels() );
 
-  this->lock();
+  // Lock pixels buffer for writing to
+  if ( this->lock() == false )
+  {
+NOM_LOG_ERR ( "Could not lock video surface memory." );
+    return false;
+  }
 
   // Use the existing video surface BPP for choosing scaling algorithm.
   switch ( this->getCanvasColorDepth() )
@@ -535,8 +581,8 @@ void Canvas::scale2x ( void )
     default: // ERR -- could not determine a valid color depth
     {
 NOM_LOG_ERR ( "Could not determine color depth -- aborting." );
-      this->unlock();
-      return;
+      this->unlock(); // Relinquish our write lock
+      return false;
     break;
     } // end unsupported color depth
 
@@ -649,12 +695,11 @@ NOM_LOG_ERR ( "Could not determine color depth -- aborting." );
           *(uint32*)(dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*4) = E3;
         } // for width loop
       } // for height loop
-
-      break;
     } // end case 32
+    break;
   } // end switch (BytesPerPixel)
 
-  this->unlock();
+  this->unlock(); // Relinquish our write lock
 
   // If we have gotten this far, we assume success has been made in video
   // surface scaling and thus proceed to reset the video surface object's video
@@ -665,14 +710,30 @@ NOM_LOG_ERR ( "Could not determine color depth -- aborting." );
   // if the appropriate flag is set.
   if ( flags & SDL_SRCCOLORKEY )
   {
-    this->setTransparent ( this->getCanvasColorKey(), SDL_RLEACCEL | SDL_SRCCOLORKEY );
+    if ( this->setTransparent ( this->getCanvasColorKey(), SDL_RLEACCEL | SDL_SRCCOLORKEY ) == false )
+    {
+      return false;
+    }
   }
+
+  // Do one more sanity check on our new video surface
+  if ( this->valid() == false )
+  {
+NOM_LOG_ERR ( "The rescaled video surface is not valid." );
+    return false;
+  }
+
+  return true;
 }
 
-void Canvas::hq2x ( void )
+bool Canvas::hq2x ( void )
 {
-  // Not currently implemented; reserved for future refactoring.
-  const int32 scale_factor = 2;
+  // Ensure that our existing video surface is OK first
+  if ( this->valid() == false )
+  {
+NOM_LOG_ERR ( "The existing video surface is not valid." );
+    return false;
+  }
 
   // Save a temporary copy of the existing width & height for scaling
   // calculation.
@@ -697,8 +758,8 @@ void Canvas::hq2x ( void )
   if ( flags & SDL_SRCCOLORKEY )
   {
     destination_buffer = Canvas (
-                                  width * scale_factor,
-                                  height * scale_factor,
+                                  width * 2, // x2 width
+                                  height * 2, // x2 height
                                   this->getCanvasBitsPerPixel(),
                                   this->getCanvasRedMask(),
                                   this->getCanvasGreenMask(),
@@ -709,8 +770,8 @@ void Canvas::hq2x ( void )
   else // Throw all the alpha you can eat if surface has alpha blending enabled!
   {
     destination_buffer = Canvas (
-                                  width * scale_factor,
-                                  height * scale_factor,
+                                  width * 2, // x2 width
+                                  height * 2, // x2 height
                                   this->getCanvasBitsPerPixel(),
                                   this->getCanvasRedMask(),
                                   this->getCanvasGreenMask(),
@@ -720,13 +781,26 @@ void Canvas::hq2x ( void )
                                 );
   }
 
+  // Ensure that our new video surface is sane
+  if ( this->valid() == false )
+  {
+NOM_LOG_ERR ( "The destination video surface is not valid." );
+    return false;
+  }
+
   hqxInit();
 
-  this->lock();
+  // Lock pixels buffer for writing to
+  if ( this->lock() == false )
+  {
+NOM_LOG_ERR ( "Could not lock video surface memory." );
+    return false;
+  }
 
+  // Note that we must pass the *original* width and height here
   hq2x_32 ( static_cast<uint32*> ( this->getCanvasPixels() ), static_cast<uint32*> ( destination_buffer.getCanvasPixels() ), width, height );
 
-  this->unlock();
+  this->unlock(); // Relinquish our write lock
 
   // If we have gotten this far, we assume success has been made in video
   // surface scaling and thus proceed to reset the video surface object's video
@@ -737,8 +811,20 @@ void Canvas::hq2x ( void )
   // if the appropriate flag is set.
   if ( flags & SDL_SRCCOLORKEY )
   {
-    this->setTransparent ( this->getCanvasColorKey(), SDL_RLEACCEL | SDL_SRCCOLORKEY );
+    if ( this->setTransparent ( this->getCanvasColorKey(), SDL_RLEACCEL | SDL_SRCCOLORKEY ) == false )
+    {
+      return false;
+    }
   }
+
+  // Do one more sanity check on our new video surface
+  if ( this->valid() == false )
+  {
+NOM_LOG_ERR ( "The rescaled video surface is not valid." );
+    return false;
+  }
+
+  return true;
 }
 
 

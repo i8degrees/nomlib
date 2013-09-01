@@ -122,14 +122,17 @@ void Cursor::Draw ( void* video_buffer )
   this->cursor.Draw ( video_buffer );
 }
 
-void Cursor::scale2x ( void )
+bool Cursor::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
-  this->cursor.scale2x();
-}
+  if ( this->cursor.resize ( scaling_algorithm ) == false )
+  {
+NOM_LOG_ERR ( "Failed to resize the video surface." );
+    return false;
+  }
 
-void Cursor::hq2x ( void )
-{
-  this->cursor.hq2x();
+  //this->cursor.Update();
+
+  return true;
 }
 
 

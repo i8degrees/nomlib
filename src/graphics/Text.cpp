@@ -192,20 +192,17 @@ void Text::Draw ( void* video_buffer ) const
     this->font->Draw ( video_buffer );
 }
 
-void Text::scale2x ( void )
+bool Text::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
-  if ( this->font )
+  if ( ! this->font )
   {
-    this->font->scale2x();
+NOM_LOG_ERR ( "Text font is invalid." );
+    return false;
   }
-}
 
-void Text::hq2x ( void )
-{
-  if ( this->font )
-  {
-    this->font->hq2x();
-  }
+  if ( this->font->resize( scaling_algorithm ) == false ) return false;
+
+  return true;
 }
 
 

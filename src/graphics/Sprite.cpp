@@ -129,14 +129,23 @@ NOM_ASSERT ( this->sprite_buffer.valid() );
   this->sprite_buffer.Draw ( video_buffer );
 }
 
-void Sprite::scale2x ( void )
+bool Sprite::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
-  this->sprite_buffer.scale2x();
-}
+  if ( this->sprite_buffer.valid() == false )
+  {
+NOM_LOG_ERR ( "Video surface is invalid." );
+    return false;
+  }
 
-void Sprite::hq2x ( void )
-{
-  this->sprite_buffer.hq2x();
+  if ( this->sprite_buffer.resize ( scaling_algorithm ) == false )
+  {
+NOM_LOG_ERR ( "Failed to resize the video surface." );
+    return false;
+  }
+
+  //this->Update();
+
+  return true;
 }
 
 

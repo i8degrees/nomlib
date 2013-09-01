@@ -416,22 +416,27 @@ void BitmapFont::Draw ( void* video_buffer ) const
   } // end if this->bitmap_font != nullptr
 }
 
-void BitmapFont::scale2x ( void )
+bool BitmapFont::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
-  if ( this->bitmap_font.valid() )
+  if ( this->bitmap_font.valid() == false )
   {
-    this->bitmap_font.scale2x();
-    this->rebuild();
+NOM_LOG_ERR ( "Video surface is invalid." );
+    return false;
   }
-}
 
-void BitmapFont::hq2x ( void )
-{
-  if ( this->bitmap_font.valid() )
+  if ( this->bitmap_font.resize ( scaling_algorithm ) == false )
   {
-    this->bitmap_font.hq2x();
-    this->rebuild();
+NOM_LOG_ERR ( "Failed to resize the video surface." );
+    return false;
   }
+
+  if ( this->rebuild() == false )
+  {
+NOM_LOG_ERR ( "Could not rebuild bitmap font metrics" );
+    return false;
+  }
+
+  return true;
 }
 
 

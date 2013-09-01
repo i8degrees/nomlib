@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
+#include "nomlib/graphics/Canvas.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
@@ -78,15 +79,15 @@ class IFont: public IDrawable
     virtual void setColor ( const Color& color ) = 0;
     virtual void setPosition ( const Coords& coords ) = 0;
 
-    /// Scale font using the scale2x algorithm.
+    /// Rescale the font with a chosen resizing algorithm
     ///
-    /// Optional interface.
-    virtual void scale2x ( void ) { NOM_LOG_INFO ( "Method not implemented." ); };
-
-    /// Scale font using the hq2x algorithm.
-    ///
-    /// Optional interface.
-    virtual void hq2x ( void ) { NOM_LOG_INFO ( "Method not implemented." ); };
+    /// Optional interface with a return of false when the deriving class has
+    /// chosen not to re-implement this method.
+    virtual bool resize ( enum ResizeAlgorithm scaling_algorithm )
+    {
+NOM_LOG_INFO ( "Method not implemented." );
+      return false;
+    };
 };
 
 

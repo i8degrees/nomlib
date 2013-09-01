@@ -111,19 +111,10 @@ class BitmapFont: public IFont
     /// Draw the set text string to the video surface
     void Draw ( void* video_buffer ) const;
 
-    /// Uses the scale2x algorithm implemented in nom::Canvas to scale a sprite
-    /// by a scaling factor of two times the original size.
+    /// Rescale the font with a chosen resizing algorithm
     ///
-    /// See Canvas.hpp for additional information.
-    ///
-    /// Re-implements IFont::scale2x when deriving from Text interface class
-    void scale2x ( void );
-
-    /// Uses the hq2x algorithm implemented in nom::Canvas to scale a sprite
-    /// by a scaling factor of two times the original size.
-    ///
-    /// See Canvas.hpp for additional information.
-    void hq2x ( void );
+    /// Re-implements IFont::resize
+    bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
   private:
     /// Trigger a rebuild of the font characteristics gleaned from the image file;

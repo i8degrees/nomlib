@@ -61,6 +61,19 @@ void Canvas_FreeSurface ( SDL_Surface* );
 
 namespace nom {
 
+/// Available rescaling algorithms
+enum ResizeAlgorithm
+{
+  None = 0, // No resizing is applied
+  NearestNeighbor, // Reserved for future implementation
+  scale2x,
+  scale3x, // Reserved for future implementation
+  scale4x, // Reserved for future implementation
+  hq2x,
+  hq3x, // Reserved for future implementation
+  hq4x // Reserved for future implementation
+};
+
 class Canvas
 {
   public:
@@ -225,6 +238,16 @@ class Canvas
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
     int32 getPixel ( int32 x, int32 y );
 
+    /// Resize the video surface with the chosen rescaling algorithm.
+    ///
+    /// See the ResizeAlgorithm enum for available rescaling algorithms
+    bool resize ( enum ResizeAlgorithm scaling_algorithm );
+
+  private:
+    /// Internal method used for checking to see if the video surface actually
+    /// needs to be locked before doing so for performance sake.
+    bool mustLock ( void ) const;
+
     /// Uses the AdvanceMAME bitmap scaling algorithm known as scale2x to scale
     /// a surface while maintaining the quality pixel art feel of the original
     /// art. The algorithm is designed to be fast enough to process 256x256
@@ -236,7 +259,7 @@ class Canvas
     /// See http://scale2x.sourceforge.net/
     ///
     /// \todo Test the implementation of 8-bit, 16-bit & 24-bit video scaling.
-    void scale2x ( void );
+    bool scale2x ( void );
 
     /// Use the hqx bitmap algorithm to scale a source buffer by 2x. hqx is a
     /// fast, high-quality magnification filter designed for pixel art. Compared
@@ -255,12 +278,7 @@ class Canvas
     /// symbols upon trying to use any of the function calls (such as hqxInit),
     /// so we have had to resort to forking a copy of the original source to get
     /// this working.
-    void hq2x ( void );
-
-  private:
-    /// Internal method used for checking to see if the video surface actually
-    /// needs to be locked before doing so for performance sake.
-    bool mustLock ( void ) const;
+    bool hq2x ( void );
 
     std::shared_ptr<void> canvas_buffer; // SDL_Surface*
     /// Holds surface position

@@ -43,11 +43,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
   namespace JSON {
 
-enum options
+enum
 {
-  none = 0,
-  pretty_print = 1,
-  single_line_arrays = 2
+  NoFormatting = 0, // no formatting applied
+  PrettyPrint = 1, // json_spirit::pretty_print
+  CompactArrays = 2 // json_spirit::single_line_arrays; implies PrettyPrint
 };
 
 class FileWriter
@@ -55,9 +55,15 @@ class FileWriter
   public:
     FileWriter ( void );
     ~FileWriter ( void );
-
-    bool save ( const std::string& filename, Object& root,
+/*
+    bool save (
+                const std::string& filename, Object& root,
                 enum options format = none
+              );
+*/
+    bool save (
+                const std::string& filename, const json_spirit::Array& root_object,
+                uint32 format = NoFormatting
               );
 };
 

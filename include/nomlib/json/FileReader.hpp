@@ -48,7 +48,7 @@ class FileReader
     ~FileReader ( void );
 
     //bool parse ( const std::string& filename, Value& value );
-    bool parse ( const std::string& filename, json_spirit::Value& value );
+    bool load ( const std::string& filename, json_spirit::Value& value );
 };
 
   } // namespace JSON

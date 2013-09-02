@@ -36,7 +36,7 @@ FileReader::FileReader ( void ) {}
 FileReader::~FileReader ( void ) {}
 
 //bool FileReader::parse ( const std::string& filename, Value& value )
-bool FileReader::parse ( const std::string& filename, json_spirit::Value& value )
+bool FileReader::load ( const std::string& filename, json_spirit::Value& value )
 {
   std::ifstream fp; // input file stream
 
@@ -44,15 +44,22 @@ bool FileReader::parse ( const std::string& filename, json_spirit::Value& value 
 
   if ( fp.is_open() && fp.good() )
   {
-    json_spirit::read_stream ( fp, value );
     //json_spirit::read_stream ( fp, value.getValue() );
-
+    if ( json_spirit::read_stream ( fp, value ) == false )
+    {
+NOM_LOG_ERR ( NOM, "Unable to parse JSON input file at: " + filename );
+      fp.close();
+      return false;
+    }
     fp.close();
-    return true;
+  }
+  else
+  {
+    fp.close();
+    return false;
   }
 
-  fp.close();
-  return false;
+  return true;
 }
 
 

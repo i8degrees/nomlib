@@ -31,9 +31,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <algorithm>
 
+#include <SDL/SDL.h>
+
 #include "nomlib/config.hpp"
 
 namespace nom {
+
+const std::string color_delimiter = ", ";
 
 /// \brief Utility class container for RGBA colors
 class Color
@@ -41,10 +45,17 @@ class Color
   public:
     /// Default constructor; sets the color to their respective defaults
     Color ( void );
+
+    /// Constructor variant for setting a color using RGB values
+    Color ( uint8 red, uint8 green, uint8 blue );
+
     /// Constructor variant for setting a color using RGBA values
-    Color ( int16 red, int16 green, int16 blue, int16 alpha = -1 ); // SDL_ALPHA_OPAQUE (255)
+    Color ( uint8 red, uint8 green, uint8 blue, uint8 alpha );
+
     /// Copy constructor
     Color ( const Color& color );
+
+    /// Destructor
     ~Color ( void );
 
     /// Convenience getter helper for obtaining a color by object
@@ -68,12 +79,20 @@ class Color
     static const Color Gray;
 
   public:
-    int16 red;
-    int16 green;
-    int16 blue;
-    int16 alpha;
-
+    uint8 red;
+    uint8 green;
+    uint8 blue;
+    uint8 alpha;
 }; // class Color
+
+/// Pretty print the color using the following format string:
+///
+/// <color.red>, <color.green>, <color.blue>, <color.alpha>
+///
+/// This will look like:
+///
+/// 99, 144, 255, 128
+std::ostream& operator << ( std::ostream& os, const Color& color );
 
 bool operator == ( const Color& left, const Color& right );
 bool operator != ( const Color& left, const Color& right );

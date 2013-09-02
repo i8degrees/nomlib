@@ -25,9 +25,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-    scale2x Algorithm
-1. Copyright (c) Andrea Mazzoleni
-
 ******************************************************************************/
 #ifndef NOMLIB_SDL_CANVAS_HEADERS
 #define NOMLIB_SDL_CANVAS_HEADERS
@@ -35,7 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 #include <memory>
-#include <algorithm>
 
 #include <SDL/SDL.h>
 
@@ -250,38 +246,19 @@ class Canvas
     /// Return the correct scaling factor of the chosen algorithm
     int32 getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm );
 
-    /// Uses the AdvanceMAME bitmap scaling algorithm known as scale2x to scale
-    /// a surface while maintaining the quality pixel art feel of the original
-    /// art. The algorithm is designed to be fast enough to process 256x256
-    /// bitmaps in real-time.
-    ///
-    /// This method re-implements the function scale2x found in the contrib/sdl
-    /// directory of the scale2x distribution.
-    ///
-    /// See http://scale2x.sourceforge.net/
-    ///
-    /// \todo Test the implementation of 8-bit, 16-bit & 24-bit video scaling.
-    void scale2x ( const Canvas& source_buffer, const Canvas& destination_buffer );
-    void scale3x ( const Canvas& source_buffer, const Canvas& destination_buffer );
-    void scale4x ( const Canvas& source_buffer, const Canvas& destination_buffer );
+    /// Rescale the video surface using the scale2x algorithm.
+    bool scale2x ( const Canvas& source_buffer, const Canvas& destination_buffer );
 
-    /// Use the hqx bitmap algorithm to scale a source buffer by 2x. hqx is a
-    /// fast, high-quality magnification filter designed for pixel art. Compared
-    /// to scale2x, you can generally expect similar results but with additional
-    /// anti-aliasing applied. This makes the algorithm likely to be preferable
-    /// for vastly increased resolution support (think: Apple Retina displays).
+    /// Rescale the video surface using the scale3x algorithm.
     ///
-    /// The algorithm is designed to be fast enough to process 256x256 bitmaps
-    /// in real-time.
+    /// \todo TEST ME
+    bool scale3x ( const Canvas& source_buffer, const Canvas& destination_buffer );
+
+    /// Rescale the video surface using the scale4x algorithm.
     ///
-    /// See https://code.google.com/p/hqx/wiki/ReadMe
-    ///
-    /// \todo Test the implementation of 8-bit, 16-bit & 24-bit video scaling.
-    ///
-    /// \todo FIXME; due to some bizarre linking issue resulting in unresolved
-    /// symbols upon trying to use any of the function calls (such as hqxInit),
-    /// so we have had to resort to forking a copy of the original source to get
-    /// this working.
+    /// \todo TEST ME
+    bool scale4x ( const Canvas& source_buffer, const Canvas& destination_buffer );
+
     /// Rescale the video surface using the hq2x algorithm.
     void hq2x ( const Canvas& source_buffer, const Canvas& destination_buffer );
 

@@ -17,6 +17,10 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/graphics/hqx/hq2x.cpp
       ${SRC_DIR}/graphics/hqx/hq3x.cpp
       ${SRC_DIR}/graphics/hqx/hq4x.cpp
+      # third-party scale2x algorithm
+      ${SRC_DIR}/graphics/scale2x/scale2x.cpp
+      ${SRC_DIR}/graphics/scale2x/scale3x.cpp
+      ${SRC_DIR}/graphics/scale2x/scale4x.cpp
       # graphics
       ${SRC_DIR}/graphics/VideoMode.cpp
       ${SRC_DIR}/graphics/Text.cpp

@@ -30,14 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 #include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/scale2x/scale2x.hpp"
 #include "nomlib/graphics/hqx/hqx.hpp"
-
-// C Macros used in scale2x method
-#define SCALE2x_READINT24(x) \
-  ((x)[0]<<16 | (x)[1]<<8 | (x)[2])
-
-#define SCALE2x_WRITEINT24(x, i) \
-  {(x)[0]=i>>16; (x)[1]=(i>>8)&0xff; x[2]=i&0xff; }
 
 namespace nom {
   namespace priv {
@@ -510,8 +504,8 @@ NOM_LOG_ERR ( "The existing video surface is not valid." );
   }
 
   destination_buffer = Canvas (
-                                this->getCanvasWidth() * scale_factor, // x2 width
-                                this->getCanvasHeight() * scale_factor, // x2 height
+                                this->getCanvasWidth() * scale_factor,
+                                this->getCanvasHeight() * scale_factor,
                                 this->getCanvasBitsPerPixel(),
                                 this->getCanvasRedMask(),
                                 this->getCanvasGreenMask(),
@@ -540,19 +534,34 @@ NOM_LOG_ERR ( "Could not lock video surface memory." );
 
     case ResizeAlgorithm::scale2x:
     {
-      this->scale2x ( *this, destination_buffer );
+      if ( this->scale2x ( *this, destination_buffer ) == false )
+      {
+NOM_LOG_ERR ( "Failed to resize video surface with scale3x due to invalid color depth." );
+        this->unlock(); // Relinquish our write lock
+        return false;
+      }
     }
     break;
 
     case ResizeAlgorithm::scale3x:
     {
-      this->scale3x ( *this, destination_buffer );
+      if ( this->scale3x ( *this, destination_buffer ) == false )
+      {
+NOM_LOG_ERR ( "Failed to resize video surface with scale3x due to invalid color depth." );
+        this->unlock(); // Relinquish our write lock
+        return false;
+      }
     }
     break;
 
     case ResizeAlgorithm::scale4x:
     {
-      this->scale4x ( *this, destination_buffer );
+      if ( this->scale4x ( *this, destination_buffer ) == false )
+      {
+NOM_LOG_ERR ( "Failed to resize video surface with scale3x due to invalid color depth." );
+        this->unlock(); // Relinquish our write lock
+        return false;
+      }
     }
     break;
 
@@ -599,156 +608,43 @@ int32 Canvas::getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm )
   }
 }
 
-void Canvas::scale2x ( const Canvas& source_buffer, const Canvas& destination_buffer )
+bool Canvas::scale2x ( const Canvas& source_buffer, const Canvas& destination_buffer )
 {
-  // Save a temporary copy of the *existing* width & height for scaling
-  // calculation.
-  const int32 width = source_buffer.getCanvasWidth();
-  const int32 height = source_buffer.getCanvasHeight();
-
-  // The existing video surface pitch (width) is used for scaling calculations.
-  const uint16 srcpitch = source_buffer.getCanvasPitch();
-
-  // We must use the new video surface configuration for computing the pitch as
-  // this is dependent upon width & height parameters.
-  const uint16 dstpitch = destination_buffer.getCanvasPitch();
-
-  // Existing & resulting pixel arrays
-  uint8* srcpix = static_cast<uint8*> ( source_buffer.getCanvasPixels() );
-  uint8* dstpix = static_cast<uint8*> ( destination_buffer.getCanvasPixels() );
-
-  // Use the existing video surface BPP for choosing scaling algorithm.
-  switch ( this->getCanvasColorDepth() )
-  {
-    default: // Err, we could not determine a valid color depth!
-    {
-NOM_LOG_ERR ( "Could not determine color depth -- aborting." );
-      return;
-    break;
-    } // end unsupported color depth
-
-    case 8:
-    {
-      uint8 E0, E1, E2, E3, B, D, E, F, H;
-
-      for ( int32 looph = 0; looph < height; ++looph)
-      {
-        for ( int32 loopw = 0; loopw < width; ++loopw)
-        {
-          B = *(uint8*)(srcpix + (std::max ( 0, looph - 1 ) * srcpitch ) + ( 1 * loopw ) );
-          D = *(uint8*)(srcpix + ( looph * srcpitch ) + ( 1 * std::max ( 0,loopw - 1 ) ) );
-          E = *(uint8*)(srcpix + ( looph * srcpitch ) + ( 1 * loopw ) );
-          F = *(uint8*)(srcpix + ( looph * srcpitch ) + ( 1 * std::min ( width - 1,loopw + 1 ) ) );
-          H = *(uint8*)(srcpix + ( std::min ( height - 1, looph + 1 ) * srcpitch ) + ( 1 * loopw ) );
-
-          E0 = D == B && B != F && D != H ? D : E;
-          E1 = B == F && B != D && F != H ? F : E;
-          E2 = D == H && D != B && H != F ? D : E;
-          E3 = H == F && D != H && B != F ? F : E;
-
-          *(uint8*)(dstpix + looph*2*dstpitch + loopw*2*1) = E0;
-          *(uint8*)(dstpix + looph*2*dstpitch + (loopw*2+1)*1) = E1;
-          *(uint8*)(dstpix + (looph*2+1)*dstpitch + loopw*2*1) = E2;
-          *(uint8*)(dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*1) = E3;
-        } // for width loop
-      } // for height loop
-    break;
-    } // end case 8
-
-    case 16:
-    {
-      uint16 E0, E1, E2, E3, B, D, E, F, H;
-
-      for ( int32 looph = 0; looph < height; ++looph)
-      {
-        for ( int32 loopw = 0; loopw < width; ++loopw)
-        {
-          B = *(uint16*)(srcpix + ( std::max ( 0, looph - 1 ) * srcpitch ) + ( 2 * loopw ) );
-          D = *(uint16*)(srcpix + ( looph * srcpitch ) + ( 2 * std::max ( 0, loopw - 1 ) ) );
-          E = *(uint16*)(srcpix + ( looph * srcpitch ) + ( 2 * loopw ) );
-          F = *(uint16*)(srcpix + ( looph * srcpitch ) + ( 2 * std::min ( width - 1, loopw + 1 ) ) );
-          H = *(uint16*)(srcpix + ( std::min ( height - 1, looph + 1 ) * srcpitch ) + ( 2 * loopw ) );
-
-          E0 = D == B && B != F && D != H ? D : E;
-          E1 = B == F && B != D && F != H ? F : E;
-          E2 = D == H && D != B && H != F ? D : E;
-          E3 = H == F && D != H && B != F ? F : E;
-
-          *(uint16*)(dstpix + looph*2*dstpitch + loopw*2*2) = E0;
-          *(uint16*)(dstpix + looph*2*dstpitch + (loopw*2+1)*2) = E1;
-          *(uint16*)(dstpix + (looph*2+1)*dstpitch + loopw*2*2) = E2;
-          *(uint16*)(dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*2) = E3;
-        } // for width loop
-      } // for height loop
-    break;
-    } // end case 16
-
-    case 24:
-    {
-      int32 E0, E1, E2, E3, B, D, E, F, H;
-
-      for ( int32 looph = 0; looph < height; ++looph)
-      {
-        for ( int32 loopw = 0; loopw < width; ++loopw)
-        {
-          B = SCALE2x_READINT24(srcpix + (std::max(0,looph-1)*srcpitch) + (3*loopw));
-          D = SCALE2x_READINT24(srcpix + (looph*srcpitch) + (3*std::max(0,loopw-1)));
-          E = SCALE2x_READINT24(srcpix + (looph*srcpitch) + (3*loopw));
-          F = SCALE2x_READINT24(srcpix + (looph*srcpitch) + (3*std::min(width-1,loopw+1)));
-          H = SCALE2x_READINT24(srcpix + (std::min(height-1,looph+1)*srcpitch) + (3*loopw));
-
-          E0 = D == B && B != F && D != H ? D : E;
-          E1 = B == F && B != D && F != H ? F : E;
-          E2 = D == H && D != B && H != F ? D : E;
-          E3 = H == F && D != H && B != F ? F : E;
-
-          SCALE2x_WRITEINT24((dstpix + looph*2*dstpitch + loopw*2*3), E0);
-          SCALE2x_WRITEINT24((dstpix + looph*2*dstpitch + (loopw*2+1)*3), E1);
-          SCALE2x_WRITEINT24((dstpix + (looph*2+1)*dstpitch + loopw*2*3), E2);
-          SCALE2x_WRITEINT24((dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*3), E3);
-        } // for width loop
-      } // for height loop
-    break;
-    } // end case 24
-
-    case 32:
-    {
-      uint32 E0, E1, E2, E3, B, D, E, F, H;
-
-      for ( int32 looph = 0; looph < height; ++looph)
-      {
-        for ( int32 loopw = 0; loopw < width; ++loopw)
-        {
-          B = *(uint32*)(srcpix + (std::max(0,looph-1)*srcpitch) + (4*loopw));
-          D = *(uint32*)(srcpix + (looph*srcpitch) + (4*std::max(0,loopw-1)));
-          E = *(uint32*)(srcpix + (looph*srcpitch) + (4*loopw));
-          F = *(uint32*)(srcpix + (looph*srcpitch) + (4*std::min(width-1,loopw+1)));
-          H = *(uint32*)(srcpix + (std::min(height-1,looph+1)*srcpitch) + (4*loopw));
-
-          E0 = D == B && B != F && D != H ? D : E;
-          E1 = B == F && B != D && F != H ? F : E;
-          E2 = D == H && D != B && H != F ? D : E;
-          E3 = H == F && D != H && B != F ? F : E;
-
-          *(uint32*)(dstpix + looph*2*dstpitch + loopw*2*4) = E0;
-          *(uint32*)(dstpix + looph*2*dstpitch + (loopw*2+1)*4) = E1;
-          *(uint32*)(dstpix + (looph*2+1)*dstpitch + loopw*2*4) = E2;
-          *(uint32*)(dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*4) = E3;
-        } // for width loop
-      } // for height loop
-    } // end case 32
-    break;
-  } // end switch (BytesPerPixel)
+  return priv::scale2x  (
+                          source_buffer.getCanvasPixels(),
+                          destination_buffer.getCanvasPixels(),
+                          source_buffer.getCanvasWidth(),
+                          source_buffer.getCanvasHeight(),
+                          this->getCanvasColorDepth(),
+                          source_buffer.getCanvasPitch(),
+                          destination_buffer.getCanvasPitch()
+                        );
 }
 
-void Canvas::scale3x ( const Canvas& source_buffer, const Canvas& destination_buffer )
+bool Canvas::scale3x ( const Canvas& source_buffer, const Canvas& destination_buffer )
 {
-  // Not implemented
+  return priv::scale3x  (
+                          source_buffer.getCanvasPixels(),
+                          destination_buffer.getCanvasPixels(),
+                          source_buffer.getCanvasWidth(),
+                          source_buffer.getCanvasHeight(),
+                          this->getCanvasColorDepth(),
+                          source_buffer.getCanvasPitch(),
+                          destination_buffer.getCanvasPitch()
+                        );
 }
 
-void Canvas::scale4x ( const Canvas& source_buffer, const Canvas& destination_buffer )
+bool Canvas::scale4x ( const Canvas& source_buffer, const Canvas& destination_buffer )
 {
-  // Not implemented
+  return priv::scale4x  (
+                          source_buffer.getCanvasPixels(),
+                          destination_buffer.getCanvasPixels(),
+                          source_buffer.getCanvasWidth(),
+                          source_buffer.getCanvasHeight(),
+                          this->getCanvasColorDepth(),
+                          source_buffer.getCanvasPitch(),
+                          destination_buffer.getCanvasPitch()
+                        );
 }
 
 void Canvas::hq2x ( const Canvas& source_buffer, const Canvas& destination_buffer )

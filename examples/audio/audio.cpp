@@ -72,7 +72,7 @@ NOM_DUMP_VAR ( listener.getVolume() );
 
   if ( ! ret )
   {
-NOM_LOG_ERR ( "Buffer loading err" );
+NOM_LOG_ERR ( NOM, "Buffer loading err" );
     return EXIT_FAILURE;
   }
 

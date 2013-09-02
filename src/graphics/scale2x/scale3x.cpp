@@ -39,19 +39,19 @@ bool scale3x  ( const Pixels source_buffer, Pixels destination_buffer,
 {
   // Save a temporary copy of the *existing* width & height for scaling
   // calculation.
-  int32 width = source_width;
-  int32 height = source_height;
+  //int32 width = source_width;
+  //int32 height = source_height;
 
   // The existing video surface pitch (width) is used for scaling calculations.
-  uint16 srcpitch = source_pitch;
+  //uint16 srcpitch = source_pitch;
 
   // We must use the new video surface configuration for computing the pitch as
   // this is dependent upon width & height parameters.
-  uint16 dstpitch = destination_pitch;
+  //uint16 dstpitch = destination_pitch;
 
   // Existing & resulting pixel arrays
-  uint8* srcpix = static_cast<uint8*> ( source_buffer );
-  uint8* dstpix = static_cast<uint8*> ( destination_buffer );
+  //uint8* srcpix = static_cast<uint8*> ( source_buffer );
+  //uint8* dstpix = static_cast<uint8*> ( destination_buffer );
 
   // Use the existing video surface BPP for choosing scaling algorithm.
   switch ( depth )

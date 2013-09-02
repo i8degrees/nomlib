@@ -33,6 +33,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_HQX_HPP
 #define NOMLIB_HQX_HPP
 
+/// Use the hqx bitmap algorithm to scale a source buffer. hqx is a
+/// fast, high-quality magnification filter designed for pixel art. Compared
+/// to scale2x, you can generally expect similar results but with additional
+/// anti-aliasing applied. This makes the algorithm likely to be preferable
+/// for vastly increased resolution support (think: Apple Retina displays).
+///
+/// The algorithm is designed to be fast enough to process 256x256 bitmaps
+/// in real-time.
+///
+/// See https://code.google.com/p/hqx/wiki/ReadMe
+///
+/// \todo Test the implementation of 8-bit, 16-bit & 24-bit video scaling
+/// functions.
+///
+/// \todo FIXME; due to some bizarre linking issue resulting in unresolved
+/// symbols upon trying to use any of the function calls (such as hqxInit),
+/// so we have had to resort to forking a copy of the original source to get
+/// this working.
+
 #include "nomlib/config.hpp"
 
 #define MASK_2     0x0000FF00
@@ -151,26 +170,35 @@ static inline uint32 Interp10(uint32 c1, uint32 c2, uint32 c3)
     return Interpolate_3(c1, 14, c2, 1, c3, 1, 4);
 }
 
+/// Internal function for rescaling using hq2x algorithm
 void hq2x_32_rb( uint32* sp, uint32 srb, uint32* dp, uint32 drb, int32 Xres, int32 Yres );
+
+/// Internal function for rescaling using hq3x algorithm
 void hq3x_32_rb( uint32* sp, uint32 srb, uint32* dp, uint32 drb, int32 Xres, int32 Yres );
+
+/// Internal function for rescaling using hq4x algorithm
 void hq4x_32_rb( uint32* sp, uint32 srb, uint32* dp, uint32 drb, int32 Xres, int32 Yres );
-
-
-} // namespace priv
 
 /// Public interface for initialization of hqx algorithm
 void hqxInit ( void );
 
 /// Public interface for scaling a video surface with the hq2x algorithm
+///
+/// Note that we expect a *source* width & height.
 void hq2x_32 ( uint32* src, uint32* dest, int32 width, int32 height );
 
 /// Public interface for scaling a video surface with the hq3x algorithm
+///
+/// Note that we expect a *source* width & height.
 void hq3x_32 ( uint32* src, uint32* dest, int32 width, int32 height );
 
 /// Public interface for scaling a video surface with the hq4x algorithm
+///
+/// Note that we expect a *source* width & height.
 void hq4x_32 ( uint32* src, uint32* dest, int32 width, int32 height );
 
 
+  } // namespace priv
 } // namespace nom
 
 #endif // include guard defined

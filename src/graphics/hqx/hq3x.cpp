@@ -3793,15 +3793,13 @@ void hq3x_32_rb( uint32* sp, uint32 srb, uint32* dp, uint32 drb, int32 Xres, int
     }
 }
 
-
-  } // namespace priv
-
 void hq3x_32 ( uint32* src, uint32* dest, int32 width, int32 height )
 {
   uint32 rowBytesL = width * 4;
 
-  priv::hq3x_32_rb (src, rowBytesL, dest, rowBytesL * 2, width, height );
+  hq3x_32_rb (src, rowBytesL, dest, rowBytesL * 2, width, height );
 }
 
 
+  } // namespace priv
 } // namespace nom

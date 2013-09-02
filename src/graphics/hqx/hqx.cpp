@@ -38,9 +38,6 @@ namespace nom {
 uint32 RGBtoYUV[16777216];
 uint32 YUV1, YUV2;
 
-
-  } // namespace priv
-
 void hqxInit ( void )
 {
   /* Initalize RGB to YUV lookup table */
@@ -54,9 +51,10 @@ void hqxInit ( void )
     y = (uint32)(0.299*r + 0.587*g + 0.114*b);
     u = (uint32)(-0.169*r - 0.331*g + 0.5*b) + 128;
     v = (uint32)(0.5*r - 0.419*g - 0.081*b) + 128;
-    priv::RGBtoYUV[c] = (y << 16) + (u << 8) + v;
+    RGBtoYUV[c] = (y << 16) + (u << 8) + v;
   }
 }
 
 
+  } // namespace priv
 } // namespace nom

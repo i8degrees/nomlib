@@ -753,10 +753,10 @@ void Canvas::scale4x ( const Canvas& source_buffer, const Canvas& destination_bu
 
 void Canvas::hq2x ( const Canvas& source_buffer, const Canvas& destination_buffer )
 {
-  hqxInit();
+  priv::hqxInit();
 
   // Note that we must pass the *source* width and height here
-  hq2x_32 (
+  priv::hq2x_32 (
             static_cast<uint32*> ( source_buffer.getCanvasPixels() ),
             static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
             source_buffer.getCanvasWidth(), source_buffer.getCanvasHeight()
@@ -765,10 +765,10 @@ void Canvas::hq2x ( const Canvas& source_buffer, const Canvas& destination_buffe
 
 void Canvas::hq3x ( const Canvas& source_buffer, const Canvas& destination_buffer )
 {
-  hqxInit();
+  priv::hqxInit();
 
   // Note that we must pass the *source* width and height here
-  hq3x_32 (
+  priv::hq3x_32 (
             static_cast<uint32*> ( source_buffer.getCanvasPixels() ),
             static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
             source_buffer.getCanvasWidth(), source_buffer.getCanvasHeight()
@@ -777,10 +777,10 @@ void Canvas::hq3x ( const Canvas& source_buffer, const Canvas& destination_buffe
 
 void Canvas::hq4x ( const Canvas& source_buffer, const Canvas& destination_buffer )
 {
-  hqxInit();
+  priv::hqxInit();
 
   // Note that we must pass the *source* width and height here
-  hq4x_32 (
+  priv::hq4x_32 (
             static_cast<uint32*> ( source_buffer.getCanvasPixels() ),
             static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
             source_buffer.getCanvasWidth(), source_buffer.getCanvasHeight()

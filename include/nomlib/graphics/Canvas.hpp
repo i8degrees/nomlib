@@ -282,12 +282,17 @@ class Canvas
     /// symbols upon trying to use any of the function calls (such as hqxInit),
     /// so we have had to resort to forking a copy of the original source to get
     /// this working.
+    /// Rescale the video surface using the hq2x algorithm.
     void hq2x ( const Canvas& source_buffer, const Canvas& destination_buffer );
 
-    /// \todo Test me out
+    /// Rescale the video surface using the hq3x algorithm.
+    ///
+    /// \todo TEST ME
     void hq3x ( const Canvas& source_buffer, const Canvas& destination_buffer );
 
-    /// \todo Test me out
+    /// Rescale the video surface using the hq4x algorithm.
+    ///
+    /// \todo TEST ME
     void hq4x ( const Canvas& source_buffer, const Canvas& destination_buffer );
 
     std::shared_ptr<void> canvas_buffer; // SDL_Surface*

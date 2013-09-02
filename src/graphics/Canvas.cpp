@@ -80,6 +80,16 @@ NOM_LOG_CLASSINFO;
 
   this->canvas_buffer = std::shared_ptr<void> ( SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask ), nom::priv::Canvas_FreeSurface );
   this->offsets.setSize ( width, height );
+
+  // If the video surface is marked for color keying transparency, we must do
+  // so here.
+  if ( flags & SDL_SRCCOLORKEY )
+  {
+    if ( this->setTransparent ( this->getCanvasColorKey(), SDL_RLEACCEL | SDL_SRCCOLORKEY ) == false )
+    {
+NOM_LOG_ERR ( "Could not create the video surface with color key transparency." );
+    }
+  }
 }
 
 Canvas::Canvas ( Pixels pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
@@ -503,8 +513,8 @@ NOM_LOG_ERR ( "The existing video surface is not valid." );
     return false;
   }
 
-  // Current video surface flags state (primarily for handling setting the
-  // color keys and/or alpha values upon our resulting video surface.
+  // Current video surface flags state -- the destination buffer will be set
+  // with these.
   uint32 flags = this->getCanvasFlags();
 
   // Save a temporary copy of the existing width & height for scaling
@@ -532,7 +542,8 @@ NOM_LOG_ERR ( "The existing video surface is not valid." );
                                   this->getCanvasRedMask(),
                                   this->getCanvasGreenMask(),
                                   this->getCanvasBlueMask(),
-                                  0 // No alpha mask value
+                                  0, // No alpha mask value
+                                  flags
                                 );
   }
   else // Throw all the alpha you can eat if surface has alpha blending enabled!
@@ -545,8 +556,9 @@ NOM_LOG_ERR ( "The existing video surface is not valid." );
                                   this->getCanvasGreenMask(),
                                   this->getCanvasBlueMask(),
                                   // FIXME
-                                  0//this->getCanvasAlphaMask(),
+                                  0,//this->getCanvasAlphaMask(),
                                   //SDL_SRCALPHA
+                                  flags
                                 );
   }
 
@@ -706,16 +718,6 @@ NOM_LOG_ERR ( "Could not determine color depth -- aborting." );
   // memory to the resulting pixel data.
   this->setCanvas ( destination_buffer );
 
-  // Last, but not least, we copy over transparency info onto our new video surface
-  // if the appropriate flag is set.
-  if ( flags & SDL_SRCCOLORKEY )
-  {
-    if ( this->setTransparent ( this->getCanvasColorKey(), SDL_RLEACCEL | SDL_SRCCOLORKEY ) == false )
-    {
-      return false;
-    }
-  }
-
   // Do one more sanity check on our new video surface
   if ( this->valid() == false )
   {
@@ -740,8 +742,8 @@ NOM_LOG_ERR ( "The existing video surface is not valid." );
   const int32 width = this->getCanvasWidth();
   const int32 height = this->getCanvasHeight();
 
-  // Current video surface flags state (primarily for handling setting the
-  // color keys and/or alpha values upon our resulting video surface.
+  // Current video surface flags state -- the destination buffer will be set
+  // with these.
   uint32 flags = this->getCanvasFlags();
 
   // This is the target video surface object that is created from the existing
@@ -764,7 +766,8 @@ NOM_LOG_ERR ( "The existing video surface is not valid." );
                                   this->getCanvasRedMask(),
                                   this->getCanvasGreenMask(),
                                   this->getCanvasBlueMask(),
-                                  0
+                                  0,
+                                  flags
                                 );
   }
   else // Throw all the alpha you can eat if surface has alpha blending enabled!
@@ -776,8 +779,8 @@ NOM_LOG_ERR ( "The existing video surface is not valid." );
                                   this->getCanvasRedMask(),
                                   this->getCanvasGreenMask(),
                                   this->getCanvasBlueMask(),
-                                  0//this->getCanvasAlphaMask(),
-                                  //SDL_SRCALPHA
+                                  0,//this->getCanvasAlphaMask(),
+                                  flags//SDL_SRCALPHA
                                 );
   }
 
@@ -806,16 +809,6 @@ NOM_LOG_ERR ( "Could not lock video surface memory." );
   // surface scaling and thus proceed to reset the video surface object's video
   // memory to the resulting pixel data.
   this->setCanvas ( destination_buffer );
-
-  // Last, but not least, we copy over transparency info onto our new video surface
-  // if the appropriate flag is set.
-  if ( flags & SDL_SRCCOLORKEY )
-  {
-    if ( this->setTransparent ( this->getCanvasColorKey(), SDL_RLEACCEL | SDL_SRCCOLORKEY ) == false )
-    {
-      return false;
-    }
-  }
 
   // Do one more sanity check on our new video surface
   if ( this->valid() == false )

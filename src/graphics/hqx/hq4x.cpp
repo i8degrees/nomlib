@@ -5243,7 +5243,7 @@ void hq4x_32 ( uint32* src, uint32* dest, int32 width, int32 height )
 {
   uint32 rowBytesL = width * 4;
 
-  hq4x_32_rb (src, rowBytesL, dest, rowBytesL * 2, width, height );
+  hq4x_32_rb (src, rowBytesL, dest, rowBytesL * 4, width, height );
 }
 
 

@@ -3797,7 +3797,7 @@ void hq3x_32 ( uint32* src, uint32* dest, int32 width, int32 height )
 {
   uint32 rowBytesL = width * 4;
 
-  hq3x_32_rb (src, rowBytesL, dest, rowBytesL * 2, width, height );
+  hq3x_32_rb (src, rowBytesL, dest, rowBytesL * 3, width, height );
 }
 
 

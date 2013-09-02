@@ -12,9 +12,13 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/audio/AL/SoundSource.cpp
       ${SRC_DIR}/audio/AL/Music.cpp
       ${SRC_DIR}/audio/AL/Sound.cpp
+      # third-party hqx algorithm
+      ${SRC_DIR}/graphics/hqx/hqx.cpp
+      ${SRC_DIR}/graphics/hqx/hq2x.cpp
+      ${SRC_DIR}/graphics/hqx/hq3x.cpp
+      ${SRC_DIR}/graphics/hqx/hq4x.cpp
       # graphics
       ${SRC_DIR}/graphics/VideoMode.cpp
-      ${SRC_DIR}/graphics/hqx/hqx.cpp
       ${SRC_DIR}/graphics/Text.cpp
       ${SRC_DIR}/graphics/BitmapFont.cpp
       ${SRC_DIR}/graphics/TrueTypeFont.cpp

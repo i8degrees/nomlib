@@ -152,6 +152,8 @@ static inline uint32 Interp10(uint32 c1, uint32 c2, uint32 c3)
 }
 
 void hq2x_32_rb( uint32* sp, uint32 srb, uint32* dp, uint32 drb, int32 Xres, int32 Yres );
+void hq3x_32_rb( uint32* sp, uint32 srb, uint32* dp, uint32 drb, int32 Xres, int32 Yres );
+void hq4x_32_rb( uint32* sp, uint32 srb, uint32* dp, uint32 drb, int32 Xres, int32 Yres );
 
 
 } // namespace priv
@@ -159,8 +161,14 @@ void hq2x_32_rb( uint32* sp, uint32 srb, uint32* dp, uint32 drb, int32 Xres, int
 /// Public interface for initialization of hqx algorithm
 void hqxInit ( void );
 
-/// Public interface for scaling a video surface
+/// Public interface for scaling a video surface with the hq2x algorithm
 void hq2x_32 ( uint32* src, uint32* dest, int32 width, int32 height );
+
+/// Public interface for scaling a video surface with the hq3x algorithm
+void hq3x_32 ( uint32* src, uint32* dest, int32 width, int32 height );
+
+/// Public interface for scaling a video surface with the hq4x algorithm
+void hq4x_32 ( uint32* src, uint32* dest, int32 width, int32 height );
 
 
 } // namespace nom

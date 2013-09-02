@@ -56,7 +56,7 @@ const std::string getBundleResourcePath ( const std::string& identifier )
 
   if ( ! CFURLGetFileSystemRepresentation ( resourcesURL, true, ( uint8* ) resources_path, PATH_MAX ) )
   {
-NOM_LOG_ERR ( "Could not obtain the bundle's Resources path." );
+NOM_LOG_ERR ( NOM, "Could not obtain the bundle's Resources path." );
 
     CFRelease ( resourcesURL );
 

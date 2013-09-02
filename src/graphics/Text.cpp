@@ -32,7 +32,7 @@ namespace nom {
 
 Text::Text ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   this->font.reset();
   this->file_type = Unknown;
@@ -40,7 +40,7 @@ NOM_LOG_TRACE;
 
 Text::~Text ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 }
 
 bool Text::load ( const std::string& filename, bool use_cache )
@@ -196,7 +196,7 @@ bool Text::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
   if ( ! this->font )
   {
-NOM_LOG_ERR ( "Text font is invalid." );
+NOM_LOG_ERR ( NOM, "Text font is invalid." );
     return false;
   }
 

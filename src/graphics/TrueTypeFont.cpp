@@ -45,7 +45,7 @@ namespace nom {
 
 TrueTypeFont::TrueTypeFont ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   this->font = nullptr;
   this->coords = Coords ( 0, 0, 0, 0 );
@@ -60,13 +60,13 @@ NOM_LOG_TRACE;
 
   if ( TTF_Init () == -1 )
   {
-NOM_LOG_ERR ( TTF_GetError() );
+NOM_LOG_ERR ( NOM, TTF_GetError() );
   }
 }
 
 TrueTypeFont::~TrueTypeFont ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   // Possible bug -- a segmentation fault occurs here if we do not reset the
   // smart pointer on destruction.
@@ -132,7 +132,7 @@ void TrueTypeFont::setFontSize ( int32 point_size )
 
   if ( this->rebuild() == false )
   {
-NOM_LOG_ERR ( "Could not set new font size." );
+NOM_LOG_ERR ( NOM, "Could not set new font size." );
     this->font_size = original_font_size;
     return;
   }
@@ -172,7 +172,7 @@ void TrueTypeFont::setText ( const std::string& text )
   // Update the width & height of text string, if we can
   if ( TTF_SizeText ( this->font.get(), this->text_buffer.c_str(), &this->coords.width, &this->coords.height ) == -1 )
   {
-NOM_LOG_ERR ( "Failed to set font width & height." );
+NOM_LOG_ERR ( NOM, "Failed to set font width & height." );
   }
 }
 
@@ -184,7 +184,7 @@ bool TrueTypeFont::load ( const std::string& filename, const Color& colorkey,
 
   if ( this->valid() == false )
   {
-NOM_LOG_ERR ( "Could not load TTF file: " + filename );
+NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
     return false;
   }
 
@@ -232,7 +232,7 @@ bool TrueTypeFont::rebuild ( void )
 {
   if ( this->load ( this->filename, Color::Black, this->use_cache ) == false )
   {
-NOM_LOG_ERR ( "Could not rebuild font metrics." );
+NOM_LOG_ERR ( NOM, "Could not rebuild font metrics." );
     return false;
   }
 

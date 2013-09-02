@@ -73,7 +73,7 @@ class IFont: public IDrawable
     /// Set a new font point (pixel) size.
     ///
     /// Optional interface
-    virtual void setFontSize ( int32 point_size ) { NOM_LOG_INFO ( "Method not implemented." ); }
+    virtual void setFontSize ( int32 point_size ) { NOM_LOG_INFO ( NOM, "Method not implemented." ); }
 
     virtual void setFontStyle ( uint8 style, uint8 options = 150 ) = 0;
     virtual void setColor ( const Color& color ) = 0;
@@ -85,7 +85,7 @@ class IFont: public IDrawable
     /// chosen not to re-implement this method.
     virtual bool resize ( enum ResizeAlgorithm scaling_algorithm )
     {
-NOM_LOG_INFO ( "Method not implemented." );
+NOM_LOG_INFO ( NOM, "Method not implemented." );
       return false;
     };
 };

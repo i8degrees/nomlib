@@ -69,7 +69,7 @@ void Pixel::Draw ( void* video_buffer ) const
   {
     default:
     {
-NOM_LOG_ERR ( "Could not determine color depth -- aborting call." );
+NOM_LOG_ERR ( NOM, "Could not determine color depth -- aborting call." );
       return;
     }
     break; // Unsupported color depth?

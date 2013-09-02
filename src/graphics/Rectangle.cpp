@@ -70,7 +70,7 @@ void Rectangle::Draw ( void* video_buffer ) const
 
   if ( SDL_FillRect ( buffer, &rectangle, rectangle_color ) != 0 )
   {
-NOM_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     return;
   }
 

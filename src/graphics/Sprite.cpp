@@ -32,7 +32,7 @@ namespace nom {
 
 Sprite::Sprite ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   this->state = 0;
 
@@ -47,7 +47,7 @@ NOM_LOG_TRACE;
 
 Sprite::Sprite ( unsigned int width, unsigned int height )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   this->coords.setSize ( width, height );
 
@@ -64,7 +64,7 @@ NOM_LOG_TRACE;
 
 Sprite::~Sprite ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 }
 
 unsigned int Sprite::getState ( void )
@@ -105,7 +105,7 @@ bool Sprite::load ( std::string filename, Color colorkey,
 
   if ( ! this->sprite_buffer.valid() )
   {
-NOM_LOG_ERR ( "Could not load sprite image file: " + filename );
+NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
     return false;
   }
 
@@ -133,13 +133,13 @@ bool Sprite::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
   if ( this->sprite_buffer.valid() == false )
   {
-NOM_LOG_ERR ( "Video surface is invalid." );
+NOM_LOG_ERR ( NOM, "Video surface is invalid." );
     return false;
   }
 
   if ( this->sprite_buffer.resize ( scaling_algorithm ) == false )
   {
-NOM_LOG_ERR ( "Failed to resize the video surface." );
+NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
     return false;
   }
 

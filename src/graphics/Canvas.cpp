@@ -50,12 +50,12 @@ Canvas::Canvas ( void )  : canvas_buffer ( nullptr, nom::priv::Canvas_FreeSurfac
                                         coords ( 0, 0, -1, -1 ), // only x, y position is used in blitting
                                         offsets ( 0, 0, -1, -1 ) // only the width, height is used in source blitting
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 }
 
 Canvas::Canvas ( void* video_buffer )  : canvas_buffer ( static_cast<SDL_Surface*> ( video_buffer ), nom::priv::Canvas_FreeSurface )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( video_buffer );
 
@@ -65,12 +65,12 @@ NOM_LOG_TRACE;
 Canvas::Canvas ( const Canvas& other ) : canvas_buffer ( static_cast<SDL_Surface*> ( other.canvas_buffer.get() ), nom::priv::Canvas_FreeSurface ),
                                                           coords ( other.coords.x, other.coords.y ), offsets ( other.offsets.width, other.offsets.height )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 }
 
 Canvas::Canvas ( int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, uint32 flags )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   this->canvas_buffer = std::shared_ptr<void> ( SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask ), nom::priv::Canvas_FreeSurface );
   this->offsets.setSize ( width, height );
@@ -81,14 +81,14 @@ NOM_LOG_TRACE;
   {
     if ( this->setTransparent ( this->getCanvasColorKey(), SDL_RLEACCEL | SDL_SRCCOLORKEY ) == false )
     {
-NOM_LOG_ERR ( "Could not create the video surface with color key transparency." );
+NOM_LOG_ERR ( NOM, "Could not create the video surface with color key transparency." );
     }
   }
 }
 
 Canvas::Canvas ( Pixels pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   this->canvas_buffer = std::shared_ptr<void> ( SDL_CreateRGBSurfaceFrom ( pixels, width, height, depth, pitch, Rmask, Gmask, Bmask, Amask ), nom::priv::Canvas_FreeSurface );
   this->offsets.setSize ( width, height );
@@ -96,7 +96,7 @@ NOM_LOG_TRACE;
 
 Canvas::~Canvas ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 }
 
 Canvas& Canvas::operator = ( const Canvas& other )
@@ -272,7 +272,7 @@ bool Canvas::lock ( void ) const
   {
     if ( SDL_LockSurface ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ) ) == -1 )
     {
-NOM_LOG_ERR ( "Could not lock video surface memory." );
+NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
       return false;
     }
   }
@@ -311,7 +311,7 @@ bool Canvas::load ( const std::string& filename, const Color& colorkey,
   // Validate our obtained data is good before further processing
   if ( this->valid() == false )
   {
-NOM_LOG_ERR ( "Could not load canvas image file: " + filename );
+NOM_LOG_ERR ( NOM, "Could not load canvas image file: " + filename );
     return false;
   }
 
@@ -351,13 +351,13 @@ void Canvas::Draw ( void* video_buffer ) const
     if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
     {
       if ( SDL_BlitSurface ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), &blit_offsets, static_cast<SDL_Surface*> ( video_buffer ), &blit_coords ) != 0 )
-NOM_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
         return;
     }
     else
     {
       if ( SDL_BlitSurface ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), nullptr, (SDL_Surface*) video_buffer, &blit_coords ) != 0 )
-NOM_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
         return;
     }
   }
@@ -367,7 +367,7 @@ bool Canvas::Update ( void* video_buffer )
 {
   if ( SDL_Flip ( (SDL_Surface*) video_buffer ) != 0 )
   {
-NOM_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
   return true;
@@ -379,7 +379,7 @@ NOM_ASSERT ( ! ( opacity > SDL_ALPHA_OPAQUE ) || ( opacity < SDL_ALPHA_TRANSPARE
 
   if ( SDL_SetAlpha ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), flags, static_cast<uint32_t>( opacity ) ) == -1 )
   {
-NOM_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
 
@@ -395,7 +395,7 @@ bool Canvas::setTransparent ( const Color& color, uint32_t flags )
 
   if ( SDL_SetColorKey ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), flags, transparent_color ) != 0 )
   {
-NOM_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
 
@@ -474,7 +474,7 @@ bool Canvas::resize ( enum ResizeAlgorithm scaling_algorithm )
   // Ensure that our existing video surface is OK first
   if ( this->valid() == false )
   {
-NOM_LOG_ERR ( "The existing video surface is not valid." );
+NOM_LOG_ERR ( NOM, "The existing video surface is not valid." );
     return false;
   }
 
@@ -517,14 +517,14 @@ NOM_LOG_ERR ( "The existing video surface is not valid." );
   // Ensure that our new video surface is sane before feeding
   if ( destination_buffer.valid() == false )
   {
-NOM_LOG_ERR ( "The destination video surface is not valid." );
+NOM_LOG_ERR ( NOM, "The destination video surface is not valid." );
     return false;
   }
 
   // Lock pixels buffer for writing to
   if ( this->lock() == false )
   {
-NOM_LOG_ERR ( "Could not lock video surface memory." );
+NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
     return false;
   }
 
@@ -544,7 +544,7 @@ NOM_LOG_ERR ( "Could not lock video surface memory." );
                             destination_buffer.getCanvasPitch()
                           ) == false )
       {
-NOM_LOG_ERR ( "Failed to resize video surface with scale2x." );
+NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale2x." );
         this->unlock(); // Relinquish our write lock
         return false;
       }
@@ -563,7 +563,7 @@ NOM_LOG_ERR ( "Failed to resize video surface with scale2x." );
                             destination_buffer.getCanvasPitch()
                           ) == false )
       {
-NOM_LOG_ERR ( "Failed to resize video surface with scale3x." );
+NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale3x." );
         this->unlock(); // Relinquish our write lock
         return false;
       }
@@ -582,7 +582,7 @@ NOM_LOG_ERR ( "Failed to resize video surface with scale3x." );
                             destination_buffer.getCanvasPitch()
                           ) == false )
       {
-NOM_LOG_ERR ( "Failed to resize video surface with scale4x." );
+NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
         this->unlock(); // Relinquish our write lock
         return false;
       }
@@ -631,7 +631,7 @@ NOM_LOG_ERR ( "Failed to resize video surface with scale4x." );
   // Do one more sanity check on our new video surface before do the transfer
   if ( destination_buffer.valid() == false )
   {
-NOM_LOG_ERR ( "The rescaled video surface is not valid." );
+NOM_LOG_ERR ( NOM, "The rescaled video surface is not valid." );
     return false;
   }
 

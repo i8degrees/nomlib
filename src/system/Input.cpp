@@ -32,20 +32,20 @@ namespace nom {
 
 Input::Input ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   if ( SDL_WasInit( SDL_INIT_JOYSTICK ) == false )
   {
     if ( SDL_InitSubSystem ( SDL_INIT_JOYSTICK ) < 0 )
     {
-NOM_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
       return;
     }
   }
 
   this->joystick = nullptr;
 
-NOM_LOG_INFO ( std::to_string ( SDL_NumJoysticks() ) + " joysticks were found" );
+NOM_LOG_INFO ( NOM, std::to_string ( SDL_NumJoysticks() ) + " joysticks were found" );
 
   if ( SDL_NumJoysticks() >= 0 )
   {
@@ -55,14 +55,14 @@ NOM_LOG_INFO ( std::to_string ( SDL_NumJoysticks() ) + " joysticks were found" )
 
     for( int idx = 0; idx < SDL_NumJoysticks(); idx++ )
     {
-NOM_LOG_INFO ( SDL_JoystickName ( idx ) );
+NOM_LOG_INFO ( NOM, SDL_JoystickName ( idx ) );
     }
   }
 }
 
 Input::~Input ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 /*
   if ( this->joystick != nullptr )
   {

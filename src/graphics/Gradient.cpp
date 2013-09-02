@@ -37,7 +37,7 @@ Gradient::Gradient ( void )  :  gradient{ Color::Gray,
                                 x_margin ( 0 ), y_margin ( 0 ),
                                 direction ( 0 )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   this->Update();
 }
@@ -63,7 +63,7 @@ Gradient::Gradient  ( const Color& starting_color,
 
 Gradient::~Gradient ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 }
 
 Color Gradient::getStartColor ( void ) const

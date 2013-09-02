@@ -33,14 +33,14 @@ namespace nom {
 
 SoundBuffer::SoundBuffer ( void ) : buffer ( 0 )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
 AL_CHECK_ERR ( alGenBuffers ( 1, &this->buffer ) );
 }
 
 SoundBuffer::~SoundBuffer ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   // First, release attached sound resources from this buffer
   for ( auto it = this->sounds.begin(); it != this->sounds.end(); ++it )
@@ -71,13 +71,13 @@ bool SoundBuffer::load ( const std::string& filename )
 
   if ( ! fp.open ( filename ) )
   {
-NOM_LOG_ERR ( "Could not load audio: " + filename );
+NOM_LOG_ERR ( NOM, "Could not load audio: " + filename );
     return false;
   }
 
   if ( ! fp.read ( this->samples ) )
   {
-NOM_LOG_ERR ( "Could not read audio samples: " + filename );
+NOM_LOG_ERR ( NOM, "Could not read audio samples: " + filename );
     return false;
   }
 

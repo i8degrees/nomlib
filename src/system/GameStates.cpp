@@ -37,7 +37,7 @@ std::vector<std::unique_ptr<IState>> GameStates::states;
 // initialized!
 GameStates::GameStates ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 }
 
 void GameStates::onEvent ( void* event )

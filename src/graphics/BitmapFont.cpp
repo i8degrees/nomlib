@@ -37,7 +37,7 @@ namespace nom {
 
 BitmapFont::BitmapFont ( void ) : sheet_width ( 16 ), sheet_height ( 16 )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   this->text_buffer = "\0";
   this->text_style = FontStyle::Regular;
@@ -56,7 +56,7 @@ NOM_LOG_TRACE;
 
 BitmapFont::~BitmapFont ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 }
 
 const std::string& BitmapFont::getText ( void ) const
@@ -338,7 +338,7 @@ bool BitmapFont::load ( const std::string& filename, const Color& colorkey,
 {
   if ( this->bitmap_font.load ( filename, colorkey, use_cache ) == false )
   {
-NOM_LOG_ERR ( "Could not load bitmap font image file: " + filename );
+NOM_LOG_ERR ( NOM, "Could not load bitmap font image file: " + filename );
     return false;
   }
 
@@ -347,7 +347,7 @@ NOM_LOG_ERR ( "Could not load bitmap font image file: " + filename );
   // Attempt to rebuild font metrics
   if ( this->rebuild() == false )
   {
-NOM_LOG_ERR ( "Could not rebuild bitmap font metrics" );
+NOM_LOG_ERR ( NOM, "Could not rebuild bitmap font metrics" );
     return false;
   }
 
@@ -420,19 +420,19 @@ bool BitmapFont::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
   if ( this->bitmap_font.valid() == false )
   {
-NOM_LOG_ERR ( "Video surface is invalid." );
+NOM_LOG_ERR ( NOM, "Video surface is invalid." );
     return false;
   }
 
   if ( this->bitmap_font.resize ( scaling_algorithm ) == false )
   {
-NOM_LOG_ERR ( "Failed to resize the video surface." );
+NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
     return false;
   }
 
   if ( this->rebuild() == false )
   {
-NOM_LOG_ERR ( "Could not rebuild bitmap font metrics" );
+NOM_LOG_ERR ( NOM, "Could not rebuild bitmap font metrics" );
     return false;
   }
 

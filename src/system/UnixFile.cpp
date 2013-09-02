@@ -43,7 +43,7 @@ const std::string UnixFile::mime ( const std::string& file )
 
   if ( cookie == nullptr )
   {
-NOM_LOG_ERR ( "Could not initialize magic library." );
+NOM_LOG_ERR ( NOM, "Could not initialize magic library." );
 
     magic_close ( cookie );
 
@@ -74,7 +74,7 @@ NOM_LOG_ERR ( "Could not initialize magic library." );
     // If we fail loading nomlib's copy, we give up!
     if ( magic_load ( cookie, cookie_database.c_str() ) != 0 )
     {
-NOM_LOG_ERR ( "Could not read magic database." );
+NOM_LOG_ERR ( NOM, "Could not read magic database." );
 
     magic_close ( cookie );
 
@@ -142,7 +142,7 @@ const std::string UnixFile::currentPath ( void )
 
   if ( getcwd ( path, PATH_MAX ) == nullptr )
   {
-NOM_LOG_ERR ( "Unknown error on attempt to obtain current working directory." );
+NOM_LOG_ERR ( NOM, "Unknown error on attempt to obtain current working directory." );
     return "\0";
   }
 
@@ -155,7 +155,7 @@ void UnixFile::setPath ( const std::string& path )
 {
   if ( chdir ( path.c_str() ) != 0 )
   {
-NOM_LOG_ERR ( "Unknown error on attempt to change working directory to: " + path );
+NOM_LOG_ERR ( NOM, "Unknown error on attempt to change working directory to: " + path );
     return;
   }
 }

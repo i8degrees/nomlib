@@ -48,11 +48,11 @@ namespace nom {
 
 Display::Display ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   if ( SDL_Init ( SDL_INIT_VIDEO ) != 0 )
   {
-NOM_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
   }
 
   atexit ( SDL_Quit );
@@ -60,7 +60,7 @@ NOM_LOG_ERR ( SDL_GetError() );
 
 Display::~Display ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 }
 
 void Display::createWindow  ( int32_t display_width, int32_t display_height,
@@ -73,7 +73,7 @@ void Display::createWindow  ( int32_t display_width, int32_t display_height,
                             );
 
   if ( screen == nullptr )
-NOM_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
 
 NOM_ASSERT ( screen != nullptr );
 }
@@ -153,12 +153,12 @@ VideoModeList Display::getVideoModes ( void ) const
 
   if ( mode == nullptr )
   {
-NOM_LOG_INFO ( "Any video mode is supported." ); // FIXME?
+NOM_LOG_INFO ( NOM, "Any video mode is supported." ); // FIXME?
     return modes;
   }
   else if ( mode == ( SDL_Rect**) - 1 )
   {
-NOM_LOG_INFO ( "No video modes are supported." );
+NOM_LOG_INFO ( NOM, "No video modes are supported." );
     return modes;
   }
   else
@@ -193,7 +193,7 @@ bool Display::lock ( void ) const
   {
     if ( SDL_LockSurface ( static_cast<SDL_Surface*> ( this->get() ) ) == -1 )
     {
-NOM_LOG_ERR ( "Could not lock video surface memory." );
+NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
       return false;
     }
   }
@@ -208,7 +208,7 @@ void Display::unlock ( void ) const
 void Display::Update ( void )
 {
   if ( SDL_Flip ( static_cast<SDL_Surface*> ( this->get() ) ) != 0 )
-NOM_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
 }
 
 void Display::Update ( const Coords& coords )
@@ -255,12 +255,12 @@ void Display::setWindowIcon ( const std::string& app_icon )
   std::shared_ptr<void> icon = nullptr;
 
   if ( this->valid() )
-NOM_LOG_ERR ( "SDL video subsystem has already been initiated." );
+NOM_LOG_ERR ( NOM, "SDL video subsystem has already been initiated." );
 
   icon = std::shared_ptr<void> ( image.load ( app_icon ) );
   if ( icon == nullptr )
   {
-NOM_LOG_ERR ( "Could not load window icon file: " + app_icon );
+NOM_LOG_ERR ( NOM, "Could not load window icon file: " + app_icon );
     return;
   }
 

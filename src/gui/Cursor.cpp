@@ -33,14 +33,14 @@ namespace nom {
 
 Cursor::Cursor ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   // Not yet implemented
 }
 
 Cursor::Cursor ( unsigned int x, unsigned int y, unsigned int width, unsigned int height )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   this->cursor = Sprite ( width, height );
   this->cursor.setPosition ( x, y );
@@ -49,7 +49,7 @@ NOM_LOG_TRACE;
 
 Cursor::~Cursor ( void )
 {
-NOM_LOG_TRACE;
+NOM_LOG_TRACE ( NOM );
 
   // Clean up
 }
@@ -105,7 +105,7 @@ bool Cursor::load ( std::string filename, Color colorkey, bool use_cache ) // sh
 {
   if ( this->cursor.load ( filename, colorkey, use_cache ) == false )
   {
-NOM_LOG_ERR ( "Could not load cursor resource file: " + filename );
+NOM_LOG_ERR ( NOM, "Could not load cursor resource file: " + filename );
     return false;
   }
 
@@ -126,7 +126,7 @@ bool Cursor::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
   if ( this->cursor.resize ( scaling_algorithm ) == false )
   {
-NOM_LOG_ERR ( "Failed to resize the video surface." );
+NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
     return false;
   }
 

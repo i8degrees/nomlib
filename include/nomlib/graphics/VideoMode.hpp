@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_VIDEO_MODE_HPP
 
 #include <iostream>
+#include <string>
 #include <vector>
 #include <algorithm>
 #include <functional>
@@ -50,18 +51,6 @@ class VideoMode
     /// Destructor
     ~VideoMode ( void );
 
-    /// Pretty print the mode using <width>x<height>x<bpp> as the format string
-    /// in the following form:
-    ///
-    ///     1440x900x32
-    ///
-    ///
-    /// (Yes, that is one newline preceeding the mode followed by two more
-    /// newlines).
-    ///
-    /// Outputs to the console
-    void pp ( void );
-
   public:
     /// Horizontal number of pixels
     int32 width;
@@ -72,6 +61,12 @@ class VideoMode
     /// Bits per pixel
     uint8 bpp;
 };
+
+/// Pretty print the mode using <mode.width>x<mode.height>x<mode.bpp> as the
+/// formatting string, and will look like this:
+///
+/// 1280x720x32
+std::ostream& operator << ( std::ostream& os, const VideoMode& mode );
 
 /// Compare two video modes for equality
 bool operator == ( const VideoMode& lhs, const VideoMode& rhs );

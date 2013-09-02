@@ -37,9 +37,10 @@ VideoMode::VideoMode ( int32 mode_width, int32 mode_height, uint8 mode_bpp ) : w
 
 VideoMode::~VideoMode ( void ) {}
 
-void VideoMode::pp ( void )
+std::ostream& operator << ( std::ostream& os, const VideoMode& mode )
 {
-  std::cout << std::endl << this->width << "x" << this->height << "x" << static_cast<int> ( this->bpp ) << std::endl << std::endl;
+  os << mode.width << "x" << mode.height << "x" << static_cast<int> ( mode.bpp );
+  return os;
 }
 
 bool operator == ( const VideoMode& lhs, const VideoMode& rhs )

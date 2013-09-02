@@ -59,6 +59,7 @@ typedef unsigned long long int uint64;
 
 typedef void* Pixels;
 
+
 } // namespace nom
 
 /// Ensure our data types have the right sizes using C++11 compile-time asserts.

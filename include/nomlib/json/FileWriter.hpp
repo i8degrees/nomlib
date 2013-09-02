@@ -34,10 +34,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <array>
 
-#include <json_spirit_writer_template.h>
+#ifndef JSON_SPIRIT_VALUE_ENABLED
+  #define JSON_SPIRIT_VALUE_ENABLED
+#endif
+
+#include "json_spirit_writer_template.h"
 
 #include "nomlib/config.hpp"
-#include "nomlib/json/Object.hpp"
+//#include "nomlib/json/Object.hpp"
 //#include "nomlib/json/Array.hpp"
 
 namespace nom {

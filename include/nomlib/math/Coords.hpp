@@ -33,16 +33,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+const std::string coords_delimiter = ", ";
+
 /// \brief Coordinate values (x, y, z, width, height ) wrapper
 class Coords
 {
   public:
     /// Default constructor; sets all values to their respective defaults
     Coords ( void );
-    /// Constructor variant for setting coords by x, y, width, height values
-    Coords ( int32_t x, int32_t y, int32_t width = 0, int32_t height = 0 );
+
+    /// Constructor variant for creating coords
+    Coords ( int32 x, int32 y, int32 width, int32 height );
+
+    /// Constructor variant for creating coords
+    Coords ( int32 x, int32 y );
+
     /// Copy constructor
     Coords ( const Coords& coords );
+
+    /// Destructor
     ~Coords ( void );
 
     Coords getPosition ( void ) const;
@@ -65,13 +74,22 @@ class Coords
     Coords& operator = ( const Coords& other );
 
   public:
-    signed int x;
-    signed int y;
-    signed int z; // reserved
-    signed int width;
-    signed int height;
+    int32 x;
+    int32 y;
+    int32 z; // reserved
+    int32 width;
+    int32 height;
 
 }; // class Coords
+
+/// Pretty print the color using the following format string:
+///
+/// <coords.x>, <coords.y>, <coords.width>, <coords.height>
+///
+/// This will look like:
+///
+/// 128, 144, 64, 64
+std::ostream& operator << ( std::ostream& os, const Coords& coords );
 
 bool operator == ( const Coords& left, const Coords& right );
 bool operator != ( const Coords& left, const Coords& right );

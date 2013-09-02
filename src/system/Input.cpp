@@ -32,7 +32,7 @@ namespace nom {
 
 Input::Input ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   if ( SDL_WasInit( SDL_INIT_JOYSTICK ) == false )
   {
@@ -62,7 +62,7 @@ NOM_LOG_INFO ( SDL_JoystickName ( idx ) );
 
 Input::~Input ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 /*
   if ( this->joystick != nullptr )
   {

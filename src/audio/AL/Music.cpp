@@ -33,7 +33,7 @@ namespace nom {
 
 Music::Music ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   // Initialize here
 }
@@ -45,14 +45,14 @@ Music::Music ( const SoundBuffer& copy )
 
 Music::~Music ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   //this->Stop();
 }
 
 void Music::setBuffer ( const SoundBuffer& copy )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
 AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, copy.get() ) );
 }

@@ -32,7 +32,7 @@ namespace nom {
 
 Timer::Timer ( void )
 {
-//NOM_LOG_CLASSINFO;
+//NOM_LOG_TRACE;
 
   if ( SDL_InitSubSystem ( SDL_INIT_TIMER ) == -1 )
   {
@@ -47,7 +47,7 @@ NOM_LOG_ERR ( SDL_GetError() );
 
 Timer::~Timer ( void )
 {
-//NOM_LOG_CLASSINFO;
+//NOM_LOG_TRACE;
 
   SDL_QuitSubSystem ( SDL_INIT_TIMER );
 }

@@ -32,7 +32,7 @@ namespace nom {
 
 Sprite::Sprite ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   this->state = 0;
 
@@ -47,7 +47,7 @@ NOM_LOG_CLASSINFO;
 
 Sprite::Sprite ( unsigned int width, unsigned int height )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   this->coords.setSize ( width, height );
 
@@ -64,7 +64,7 @@ NOM_LOG_CLASSINFO;
 
 Sprite::~Sprite ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 }
 
 unsigned int Sprite::getState ( void )

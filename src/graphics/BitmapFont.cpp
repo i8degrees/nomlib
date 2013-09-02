@@ -37,7 +37,7 @@ namespace nom {
 
 BitmapFont::BitmapFont ( void ) : sheet_width ( 16 ), sheet_height ( 16 )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   this->text_buffer = "\0";
   this->text_style = FontStyle::Regular;
@@ -56,7 +56,7 @@ NOM_LOG_CLASSINFO;
 
 BitmapFont::~BitmapFont ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 }
 
 const std::string& BitmapFont::getText ( void ) const

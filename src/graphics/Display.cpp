@@ -48,7 +48,7 @@ namespace nom {
 
 Display::Display ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   if ( SDL_Init ( SDL_INIT_VIDEO ) != 0 )
   {
@@ -60,7 +60,7 @@ NOM_LOG_ERR ( SDL_GetError() );
 
 Display::~Display ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 }
 
 void Display::createWindow  ( int32_t display_width, int32_t display_height,

@@ -50,12 +50,12 @@ Canvas::Canvas ( void )  : canvas_buffer ( nullptr, nom::priv::Canvas_FreeSurfac
                                         coords ( 0, 0, -1, -1 ), // only x, y position is used in blitting
                                         offsets ( 0, 0, -1, -1 ) // only the width, height is used in source blitting
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 }
 
 Canvas::Canvas ( void* video_buffer )  : canvas_buffer ( static_cast<SDL_Surface*> ( video_buffer ), nom::priv::Canvas_FreeSurface )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( video_buffer );
 
@@ -65,12 +65,12 @@ NOM_LOG_CLASSINFO;
 Canvas::Canvas ( const Canvas& other ) : canvas_buffer ( static_cast<SDL_Surface*> ( other.canvas_buffer.get() ), nom::priv::Canvas_FreeSurface ),
                                                           coords ( other.coords.x, other.coords.y ), offsets ( other.offsets.width, other.offsets.height )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 }
 
 Canvas::Canvas ( int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, uint32 flags )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   this->canvas_buffer = std::shared_ptr<void> ( SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask ), nom::priv::Canvas_FreeSurface );
   this->offsets.setSize ( width, height );
@@ -88,7 +88,7 @@ NOM_LOG_ERR ( "Could not create the video surface with color key transparency." 
 
 Canvas::Canvas ( Pixels pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   this->canvas_buffer = std::shared_ptr<void> ( SDL_CreateRGBSurfaceFrom ( pixels, width, height, depth, pitch, Rmask, Gmask, Bmask, Amask ), nom::priv::Canvas_FreeSurface );
   this->offsets.setSize ( width, height );
@@ -96,7 +96,7 @@ NOM_LOG_CLASSINFO;
 
 Canvas::~Canvas ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 }
 
 Canvas& Canvas::operator = ( const Canvas& other )

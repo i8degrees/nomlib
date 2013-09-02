@@ -32,7 +32,7 @@ namespace nom {
 
 Image::Image ( int32 flags )  : image_buffer ( nullptr, nom::priv::Canvas_FreeSurface )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   if ( IMG_Init ( flags ) != flags )
   {
@@ -44,12 +44,12 @@ NOM_LOG_ERR ( IMG_GetError() );
 
 Image::Image ( const Image& other )  : image_buffer ( static_cast<SDL_Surface*> ( other.image_buffer.get() ), nom::priv::Canvas_FreeSurface )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 }
 
 Image::~Image ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   this->image_buffer.reset(); // ...better safe than sorry!
 }

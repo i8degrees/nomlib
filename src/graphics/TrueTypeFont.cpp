@@ -45,7 +45,7 @@ namespace nom {
 
 TrueTypeFont::TrueTypeFont ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   this->font = nullptr;
   this->coords = Coords ( 0, 0, 0, 0 );
@@ -66,7 +66,7 @@ NOM_LOG_ERR ( TTF_GetError() );
 
 TrueTypeFont::~TrueTypeFont ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   // Possible bug -- a segmentation fault occurs here if we do not reset the
   // smart pointer on destruction.

@@ -32,7 +32,7 @@ namespace nom {
 
 Text::Text ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   this->font.reset();
   this->file_type = Unknown;
@@ -40,7 +40,7 @@ NOM_LOG_CLASSINFO;
 
 Text::~Text ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 }
 
 bool Text::load ( const std::string& filename, bool use_cache )

@@ -40,7 +40,7 @@ class IState: public Input // "has a" relationship
   public:
     virtual ~IState ( void )
     {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
     }
 
     /// Required interface

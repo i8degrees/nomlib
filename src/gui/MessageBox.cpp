@@ -33,7 +33,7 @@ namespace nom {
 
 void MessageBox::initialize ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   this->enabled = true;
   this->coords = Coords( 0, 0, 0, 0 );
@@ -99,7 +99,7 @@ MessageBox::MessageBox  ( int32 x, int32 y, int32 width, int32 height,
 
 MessageBox::~MessageBox ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   this->disable();
 }

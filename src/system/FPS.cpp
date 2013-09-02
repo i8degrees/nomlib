@@ -32,7 +32,7 @@ namespace nom {
 
 FPS::FPS ( void )
 {
-//NOM_LOG_CLASSINFO;
+//NOM_LOG_TRACE;
 
   this->total_frames = 0;
   this->fps.Start();
@@ -41,7 +41,7 @@ FPS::FPS ( void )
 
 FPS::~FPS ( void )
 {
-//NOM_LOG_CLASSINFO;
+//NOM_LOG_TRACE;
 
   this->total_frames = 0;
   this->fps.Stop();

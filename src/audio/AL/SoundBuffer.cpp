@@ -33,14 +33,14 @@ namespace nom {
 
 SoundBuffer::SoundBuffer ( void ) : buffer ( 0 )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
 AL_CHECK_ERR ( alGenBuffers ( 1, &this->buffer ) );
 }
 
 SoundBuffer::~SoundBuffer ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE;
 
   // First, release attached sound resources from this buffer
   for ( auto it = this->sounds.begin(); it != this->sounds.end(); ++it )

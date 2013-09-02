@@ -97,11 +97,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef NOM_DEBUG_TRACE
 
   // If trace debugging is turned on, we show class construction and destruction
-  #define NOM_LOG_CLASSINFO \
-    ( std::cout << "NOM_LOG_CLASSINFO at " << nom::getCurrentTime() << __func__ << std::endl << std::endl )
+  #define NOM_LOG_TRACE \
+    ( std::cout << "NOM_LOG_TRACE at " << nom::getCurrentTime() << __func__ << std::endl << std::endl )
 
 #else // Do not add any overhead
-  #define NOM_LOG_CLASSINFO
+  #define NOM_LOG_TRACE
 #endif
 
 #ifndef __cplusplus

@@ -36,12 +36,12 @@ std::map <std::string, std::shared_ptr<void>> ObjectCache::cache;
 
 ObjectCache::ObjectCache ( void )
 {
-//NOM_LOG_CLASSINFO;
+//NOM_LOG_TRACE;
 }
 
 ObjectCache::~ObjectCache ( void )
 {
-//NOM_LOG_CLASSINFO;
+//NOM_LOG_TRACE;
 }
 
 std::shared_ptr<void> ObjectCache::addObject  ( const std::string& key,

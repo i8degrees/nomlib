@@ -65,7 +65,6 @@ namespace nom {
 enum ResizeAlgorithm
 {
   None = 0, // No resizing is applied
-  NearestNeighbor, // Reserved for future implementation
   scale2x,
   scale3x, // Reserved for future implementation
   scale4x, // Reserved for future implementation
@@ -248,6 +247,9 @@ class Canvas
     /// needs to be locked before doing so for performance sake.
     bool mustLock ( void ) const;
 
+    /// Return the correct scaling factor of the chosen algorithm
+    int32 getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm );
+
     /// Uses the AdvanceMAME bitmap scaling algorithm known as scale2x to scale
     /// a surface while maintaining the quality pixel art feel of the original
     /// art. The algorithm is designed to be fast enough to process 256x256
@@ -259,7 +261,7 @@ class Canvas
     /// See http://scale2x.sourceforge.net/
     ///
     /// \todo Test the implementation of 8-bit, 16-bit & 24-bit video scaling.
-    bool scale2x ( void );
+    void scale2x ( const Canvas& source_buffer, const Canvas& destination_buffer );
 
     /// Use the hqx bitmap algorithm to scale a source buffer by 2x. hqx is a
     /// fast, high-quality magnification filter designed for pixel art. Compared
@@ -278,7 +280,7 @@ class Canvas
     /// symbols upon trying to use any of the function calls (such as hqxInit),
     /// so we have had to resort to forking a copy of the original source to get
     /// this working.
-    bool hq2x ( void );
+    void hq2x ( const Canvas& source_buffer, const Canvas& destination_buffer );
 
     std::shared_ptr<void> canvas_buffer; // SDL_Surface*
     /// Holds surface position

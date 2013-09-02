@@ -262,6 +262,8 @@ class Canvas
     ///
     /// \todo Test the implementation of 8-bit, 16-bit & 24-bit video scaling.
     void scale2x ( const Canvas& source_buffer, const Canvas& destination_buffer );
+    void scale3x ( const Canvas& source_buffer, const Canvas& destination_buffer );
+    void scale4x ( const Canvas& source_buffer, const Canvas& destination_buffer );
 
     /// Use the hqx bitmap algorithm to scale a source buffer by 2x. hqx is a
     /// fast, high-quality magnification filter designed for pixel art. Compared
@@ -281,6 +283,12 @@ class Canvas
     /// so we have had to resort to forking a copy of the original source to get
     /// this working.
     void hq2x ( const Canvas& source_buffer, const Canvas& destination_buffer );
+
+    /// \todo Test me out
+    void hq3x ( const Canvas& source_buffer, const Canvas& destination_buffer );
+
+    /// \todo Test me out
+    void hq4x ( const Canvas& source_buffer, const Canvas& destination_buffer );
 
     std::shared_ptr<void> canvas_buffer; // SDL_Surface*
     /// Holds surface position

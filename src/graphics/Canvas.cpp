@@ -536,13 +536,7 @@ NOM_LOG_ERR ( "Could not lock video surface memory." );
 
   switch ( scaling_algorithm )
   {
-    default: // No resizing is applied
-    case ResizeAlgorithm::scale3x: // Not implemented
-    case ResizeAlgorithm::scale4x: // Not implemented
-    case ResizeAlgorithm::hq3x: // Not implemented
-    case ResizeAlgorithm::hq4x: // Not implemented
-      return false;
-    break;
+    default: this->unlock(); return false; break; // No resizing is applied
 
     case ResizeAlgorithm::scale2x:
     {
@@ -550,11 +544,21 @@ NOM_LOG_ERR ( "Could not lock video surface memory." );
     }
     break;
 
-    case ResizeAlgorithm::hq2x:
+    case ResizeAlgorithm::scale3x:
     {
-      this->hq2x ( *this, destination_buffer );
+      this->scale3x ( *this, destination_buffer );
     }
     break;
+
+    case ResizeAlgorithm::scale4x:
+    {
+      this->scale4x ( *this, destination_buffer );
+    }
+    break;
+
+    case ResizeAlgorithm::hq2x: this->hq2x ( *this, destination_buffer ); break;
+    case ResizeAlgorithm::hq3x: this->hq3x ( *this, destination_buffer ); break;
+    case ResizeAlgorithm::hq4x: this->hq4x ( *this, destination_buffer ); break;
   }
 
   this->unlock(); // Relinquish our write lock
@@ -737,12 +741,46 @@ NOM_LOG_ERR ( "Could not determine color depth -- aborting." );
   } // end switch (BytesPerPixel)
 }
 
+void Canvas::scale3x ( const Canvas& source_buffer, const Canvas& destination_buffer )
+{
+  // Not implemented
+}
+
+void Canvas::scale4x ( const Canvas& source_buffer, const Canvas& destination_buffer )
+{
+  // Not implemented
+}
+
 void Canvas::hq2x ( const Canvas& source_buffer, const Canvas& destination_buffer )
 {
   hqxInit();
 
   // Note that we must pass the *source* width and height here
   hq2x_32 (
+            static_cast<uint32*> ( source_buffer.getCanvasPixels() ),
+            static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
+            source_buffer.getCanvasWidth(), source_buffer.getCanvasHeight()
+          );
+}
+
+void Canvas::hq3x ( const Canvas& source_buffer, const Canvas& destination_buffer )
+{
+  hqxInit();
+
+  // Note that we must pass the *source* width and height here
+  hq3x_32 (
+            static_cast<uint32*> ( source_buffer.getCanvasPixels() ),
+            static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
+            source_buffer.getCanvasWidth(), source_buffer.getCanvasHeight()
+          );
+}
+
+void Canvas::hq4x ( const Canvas& source_buffer, const Canvas& destination_buffer )
+{
+  hqxInit();
+
+  // Note that we must pass the *source* width and height here
+  hq4x_32 (
             static_cast<uint32*> ( source_buffer.getCanvasPixels() ),
             static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
             source_buffer.getCanvasWidth(), source_buffer.getCanvasHeight()

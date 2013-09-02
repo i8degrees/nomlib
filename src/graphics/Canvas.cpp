@@ -534,7 +534,15 @@ NOM_LOG_ERR ( "Could not lock video surface memory." );
 
     case ResizeAlgorithm::scale2x:
     {
-      if ( this->scale2x ( *this, destination_buffer ) == false )
+      if ( priv::scale2x  (
+                            this->getCanvasPixels(),
+                            destination_buffer.getCanvasPixels(),
+                            this->getCanvasWidth(),
+                            this->getCanvasHeight(),
+                            this->getCanvasColorDepth(),
+                            this->getCanvasPitch(),
+                            destination_buffer.getCanvasPitch()
+                          ) == false )
       {
 NOM_LOG_ERR ( "Failed to resize video surface with scale2x." );
         this->unlock(); // Relinquish our write lock
@@ -545,7 +553,15 @@ NOM_LOG_ERR ( "Failed to resize video surface with scale2x." );
 
     case ResizeAlgorithm::scale3x:
     {
-      if ( this->scale3x ( *this, destination_buffer ) == false )
+      if ( priv::scale3x  (
+                            this->getCanvasPixels(),
+                            destination_buffer.getCanvasPixels(),
+                            this->getCanvasWidth(),
+                            this->getCanvasHeight(),
+                            this->getCanvasColorDepth(),
+                            this->getCanvasPitch(),
+                            destination_buffer.getCanvasPitch()
+                          ) == false )
       {
 NOM_LOG_ERR ( "Failed to resize video surface with scale3x." );
         this->unlock(); // Relinquish our write lock
@@ -556,7 +572,15 @@ NOM_LOG_ERR ( "Failed to resize video surface with scale3x." );
 
     case ResizeAlgorithm::scale4x:
     {
-      if ( this->scale4x ( *this, destination_buffer ) == false )
+      if ( priv::scale2x  (
+                            this->getCanvasPixels(),
+                            destination_buffer.getCanvasPixels(),
+                            this->getCanvasWidth(),
+                            this->getCanvasHeight(),
+                            this->getCanvasColorDepth(),
+                            this->getCanvasPitch(),
+                            destination_buffer.getCanvasPitch()
+                          ) == false )
       {
 NOM_LOG_ERR ( "Failed to resize video surface with scale4x." );
         this->unlock(); // Relinquish our write lock
@@ -565,10 +589,42 @@ NOM_LOG_ERR ( "Failed to resize video surface with scale4x." );
     }
     break;
 
-    case ResizeAlgorithm::hq2x: this->hq2x ( *this, destination_buffer ); break;
-    case ResizeAlgorithm::hq3x: this->hq3x ( *this, destination_buffer ); break;
-    case ResizeAlgorithm::hq4x: this->hq4x ( *this, destination_buffer ); break;
-  }
+    case ResizeAlgorithm::hq2x:
+    {
+      priv::hqxInit();
+      // Note that we must pass the *source* width and height here
+      priv::hq2x_32 (
+                      static_cast<uint32*> ( this->getCanvasPixels() ),
+                      static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
+                      this->getCanvasWidth(), this->getCanvasHeight()
+                    );
+    }
+    break;
+
+    case ResizeAlgorithm::hq3x:
+    {
+      priv::hqxInit();
+      // Note that we must pass the *source* width and height here
+      priv::hq3x_32 (
+                      static_cast<uint32*> ( this->getCanvasPixels() ),
+                      static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
+                      this->getCanvasWidth(), this->getCanvasHeight()
+                    );
+    }
+    break;
+
+    case ResizeAlgorithm::hq4x:
+    {
+      priv::hqxInit();
+      // Note that we must pass the *source* width and height here
+      priv::hq4x_32 (
+                      static_cast<uint32*> ( this->getCanvasPixels() ),
+                      static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
+                      this->getCanvasWidth(), this->getCanvasHeight()
+                    );
+    }
+    break;
+  } // end switch scaling_algorithm
 
   this->unlock(); // Relinquish our write lock
 
@@ -606,81 +662,6 @@ int32 Canvas::getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm )
       return 4;
     break;
   }
-}
-
-bool Canvas::scale2x ( const Canvas& source_buffer, const Canvas& destination_buffer )
-{
-  return priv::scale2x  (
-                          source_buffer.getCanvasPixels(),
-                          destination_buffer.getCanvasPixels(),
-                          source_buffer.getCanvasWidth(),
-                          source_buffer.getCanvasHeight(),
-                          this->getCanvasColorDepth(),
-                          source_buffer.getCanvasPitch(),
-                          destination_buffer.getCanvasPitch()
-                        );
-}
-
-bool Canvas::scale3x ( const Canvas& source_buffer, const Canvas& destination_buffer )
-{
-  return priv::scale3x  (
-                          source_buffer.getCanvasPixels(),
-                          destination_buffer.getCanvasPixels(),
-                          source_buffer.getCanvasWidth(),
-                          source_buffer.getCanvasHeight(),
-                          this->getCanvasColorDepth(),
-                          source_buffer.getCanvasPitch(),
-                          destination_buffer.getCanvasPitch()
-                        );
-}
-
-bool Canvas::scale4x ( const Canvas& source_buffer, const Canvas& destination_buffer )
-{
-  return priv::scale4x  (
-                          source_buffer.getCanvasPixels(),
-                          destination_buffer.getCanvasPixels(),
-                          source_buffer.getCanvasWidth(),
-                          source_buffer.getCanvasHeight(),
-                          this->getCanvasColorDepth(),
-                          source_buffer.getCanvasPitch(),
-                          destination_buffer.getCanvasPitch()
-                        );
-}
-
-void Canvas::hq2x ( const Canvas& source_buffer, const Canvas& destination_buffer )
-{
-  priv::hqxInit();
-
-  // Note that we must pass the *source* width and height here
-  priv::hq2x_32 (
-                  static_cast<uint32*> ( source_buffer.getCanvasPixels() ),
-                  static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
-                  source_buffer.getCanvasWidth(), source_buffer.getCanvasHeight()
-                );
-}
-
-void Canvas::hq3x ( const Canvas& source_buffer, const Canvas& destination_buffer )
-{
-  priv::hqxInit();
-
-  // Note that we must pass the *source* width and height here
-  priv::hq3x_32 (
-                  static_cast<uint32*> ( source_buffer.getCanvasPixels() ),
-                  static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
-                  source_buffer.getCanvasWidth(), source_buffer.getCanvasHeight()
-                );
-}
-
-void Canvas::hq4x ( const Canvas& source_buffer, const Canvas& destination_buffer )
-{
-  priv::hqxInit();
-
-  // Note that we must pass the *source* width and height here
-  priv::hq4x_32 (
-                  static_cast<uint32*> ( source_buffer.getCanvasPixels() ),
-                  static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
-                  source_buffer.getCanvasWidth(), source_buffer.getCanvasHeight()
-                );
 }
 
 

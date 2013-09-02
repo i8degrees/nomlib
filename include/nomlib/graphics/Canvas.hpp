@@ -246,28 +246,6 @@ class Canvas
     /// Return the correct scaling factor of the chosen algorithm
     int32 getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm );
 
-    /// Rescale the video surface using the scale2x algorithm.
-    bool scale2x ( const Canvas& source_buffer, const Canvas& destination_buffer );
-
-    /// Rescale the video surface using the scale3x algorithm.
-    ///
-    /// \todo TEST ME
-    bool scale3x ( const Canvas& source_buffer, const Canvas& destination_buffer );
-
-    /// Rescale the video surface using the scale4x algorithm.
-    ///
-    /// \todo TEST ME
-    bool scale4x ( const Canvas& source_buffer, const Canvas& destination_buffer );
-
-    /// Rescale the video surface using the hq2x algorithm.
-    void hq2x ( const Canvas& source_buffer, const Canvas& destination_buffer );
-
-    /// Rescale the video surface using the hq3x algorithm.
-    void hq3x ( const Canvas& source_buffer, const Canvas& destination_buffer );
-
-    /// Rescale the video surface using the hq4x algorithm.
-    void hq4x ( const Canvas& source_buffer, const Canvas& destination_buffer );
-
     std::shared_ptr<void> canvas_buffer; // SDL_Surface*
     /// Holds surface position
     Coords coords;

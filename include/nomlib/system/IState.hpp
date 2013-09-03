@@ -44,7 +44,7 @@ NOM_LOG_TRACE ( NOM );
     }
 
     /// Required interface
-    virtual void Update ( uint32 ) = 0;
+    virtual void Update ( float ) = 0;
 
     /// Required interface
     virtual void Draw ( void* ) = 0;

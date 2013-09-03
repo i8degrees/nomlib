@@ -46,7 +46,7 @@ void GameStates::onEvent ( void* event )
   states.back()->HandleInput ( event );
 }
 
-void GameStates::Update ( uint32 delta_time )
+void GameStates::Update ( float delta_time )
 {
   // let the state update the scene with regard to the delta (change) in timing
   states.back()->Update ( delta_time );

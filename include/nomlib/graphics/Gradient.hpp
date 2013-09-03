@@ -44,7 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-class Gradient//: //public IDrawable,     // "is a" relationship
+class Gradient: public IDrawable     // "is a" relationship
                 //public Transformable  // "has a" relationship
 {
   public:

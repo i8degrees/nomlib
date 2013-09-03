@@ -40,29 +40,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Rectangle.hpp"
-//#include "nomlib/graphics/Line.hpp"
 
 namespace nom {
 
-class Gradient//: //public IDrawable,     // "is a" relationship
-                //public Transformable  // "has a" relationship
+class Gradient: //public IDrawable,     // "is a" relationship
+                public Transformable  // "has a" relationship
 {
   public:
     Gradient( void );
 
-    Gradient  (
-                const Color& starting_color, const Color& ending_color,
-                int32 x, int32 y, int32 width, int32 height,
-                uint32 direction = 0, uint32 x_margin = 0, uint32 y_margin = 0
-              );
+    Gradient( const Color& starting_color, const Color& ending_color,
+              int32 x = 0, int32 y = 0, int32 width = 0, int32 height = 0,
+              uint32 direction = 0,  uint32 x_margin = 0, uint32 y_margin = 0
+            );
 
     virtual ~Gradient ( void );
-
-    const Coords getPosition ( void ) const;
-    void setPosition ( const Coords& pos );
-
-    const Coords getSize ( void ) const;
-    void setSize ( const Coords& size );
 
     Color getStartColor ( void ) const;
     Color getEndColor ( void ) const;
@@ -77,23 +69,15 @@ class Gradient//: //public IDrawable,     // "is a" relationship
     void Draw ( void* video_buffer ) const;
 
   private:
-    std::vector<std::shared_ptr<Rectangle>> lines;
-
+    std::vector<std::shared_ptr<Rectangle>> rectangles;
     /// gradient[0] = starting Color
     /// gradient[1] = ending Color
     Color gradient[2];
-
-    /// X, Y, width & height container
-    Coords coords;
-
     /// x coordinate offset
     int32 x_margin;
-
     /// y coordinate offset
     int32 y_margin;
-
     /// color fill direction:
-    ///
     /// direction = 0 is ending color to starting color
     /// direction = 1 is starting color to ending color
     uint32 direction;

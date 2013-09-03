@@ -38,6 +38,8 @@ Gradient::Gradient ( void )  :  gradient{ Color::Gray,
                                 direction ( 0 )
 {
 NOM_LOG_TRACE ( NOM );
+
+  this->Update();
 }
 
 // Constructor variant

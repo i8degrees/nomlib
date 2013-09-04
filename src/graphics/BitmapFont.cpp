@@ -68,16 +68,19 @@ int32 BitmapFont::getFontWidth ( void ) const
 {
   int32_t text_width = 0;
 
-  if ( this->bitmap_font.valid() )
+  for ( ulong t = 0; t < this->text_buffer.length(); t++ )
   {
-    for ( ulong t = 0; t < this->text_buffer.length(); t++ )
+    if ( this->text_buffer[t] == ' ' )
     {
-      if ( this->text_buffer[t] == ' ' )
-        text_width += this->chars[t].width / this->spacing;
-      else if ( this->text_buffer[t] == '\n' )
-        text_width = 0;
-      else
-        text_width += this->chars[t].width - ( this->spacing + 2 );
+      text_width += this->chars[t].width / this->spacing;
+    }
+    else if ( this->text_buffer[t] == '\n' )
+    {
+      text_width = 0;
+    }
+    else
+    {
+      text_width += this->chars[t].width - ( this->spacing + 2 );
     }
   }
 
@@ -91,11 +94,14 @@ int32 BitmapFont::getFontHeight ( void ) const
   for ( ulong t = 0; t < this->text_buffer.length(); t++ )
   {
     if ( this->text_buffer[t] == '\n' )
+    {
       text_height += this->newline;
+    }
     else
+    {
       text_height = this->chars[t].height;
+    }
   }
-
   return text_height;
 }
 
@@ -194,9 +200,6 @@ NOM_ASSERT ( this->bitmap_font.valid() );
   tile_height = this->bitmap_font.getCanvasHeight() / this->sheet_height;
   top = tile_height;
   baseA = tile_height;
-
-  // Reset the text buffer before we recompute font metrics
-  this->text_buffer = "\0";
 
   for ( uint32_t rows = 0; rows < this->sheet_width; rows++ )
   {

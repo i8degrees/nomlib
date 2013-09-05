@@ -46,48 +46,72 @@ class Cursor
 {
   public:
     Cursor ( void );
-    Cursor ( unsigned int x, unsigned int y, unsigned int width, unsigned int height );
+    Cursor ( int32 x, int32 y, int32 width, int32 height );
     virtual ~Cursor ( void );
 
-    int32 getX ( void );
-    int32 getY ( void );
-    void setPosition ( unsigned int x = 0, unsigned int y = 0 );
-    void move ( unsigned int x = 0, unsigned int y = 0 );
+    int32 getX ( void ) const;
+    int32 getY ( void ) const;
 
-    signed int getSheetID ( void );
-    void setSheetID ( signed int sheet_id = -1 );
-    void setSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding );
+    /// Set the size of the cursor bitmap.
+    void setSize ( int32 width, int32 height );
 
-    unsigned int getState ( void );
-    void setState ( unsigned int state );
+    /// Set the X, Y coordinates of the cursor bitmap.
+    void setPosition ( int32 x, int32 y );
+
+    void move ( int32 x, int32 y );
+
+    int32 getSheetID ( void );
+
+    void setSheetID ( int32 sheet_id = -1 );
+    void setSheetDimensions ( int32 sheet_width, int32 sheet_height, int32 spacing, int32 padding );
+
+    int32 getState ( void );
+    void setState ( int32 state );
 
     //bool isCursorLocked ( void );
     //void lockCursor ( bool toggle );
 
-    Coords getCursorPos ( unsigned int x, unsigned int y );
-    void moveCursorUp();
-    void moveCursorDown();
-    void moveCursorLeft();
-    void moveCursorRight();
+    /// Move the cursor up.
+    ///
+    /// Returns the Y coordinate position of the cursor after it has been moved.
+    ///
+    /// \todo Rename me to up?
+    virtual int32 moveCursorUp ( void );
 
-    bool load( std::string filename, Color colorkey, bool use_cache );
+    /// Move the cursor down.
+    ///
+    /// Returns the Y coordinate position of the cursor after it has been moved.
+    ///
+    /// \todo Rename me to down?
+    virtual int32 moveCursorDown ( void );
 
-    void Update ( void );
-    void Draw ( void* video_buffer );
+    /// Move the cursor to the left.
+    ///
+    /// Returns the X coordinate position of the cursor after it has been moved.
+    ///
+    /// \todo Rename me to left?
+    virtual int32 moveCursorLeft ( void );
+
+    /// Move the cursor to the right.
+    ///
+    /// Returns the X coordinate position of the cursor after it has been moved.
+    ///
+    /// \todo Rename me to right?
+    virtual int32 moveCursorRight ( void );
+
+    bool load( const std::string& filename, const Color& colorkey, bool use_cache );
+
+    void update ( void );
+    void draw ( void* video_buffer );
 
     /// Rescale the font with a chosen resizing algorithm
     bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
-  private:
-    Sprite cursor; // interface cursor
+  protected:
+    void initialize ( int32 x, int32 y, int32 width, int32 height );
 
-    // cursor XY coords mapping
-    std::vector<Coords> coords_map;
-
-    //    coords_map schema:
-    //
-    //  [index-pos].[ x, y, width, height ]
-    //
+    /// Bitmap for our interface cursor
+    Sprite cursor;
 };
 
 

@@ -83,11 +83,11 @@ class BitmapFont: public IFont
     uint32 getSpacing ( void );
 
     /// Set new text character spacing width in pixels
-    void setSpacing ( uint32_t spaces );
+    void setSpacing ( uint32 spaces );
 
     /// Obtain text character spacing height offsets in pixels; defaults to
     /// variable calculations made within Load method
-    uint32 getNewline ( void );
+    uint32 getNewline ( void ) const;
 
     /// Set new text character spacing height offsets in pixels
     void setNewline ( uint32_t newline );

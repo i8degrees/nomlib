@@ -67,17 +67,22 @@ class IFont: public IDrawable
     virtual FontStyle getFontStyle ( void ) const = 0;
     virtual const Coords& getPosition ( void ) const = 0;
     virtual const Color& getColor ( void ) const = 0;
+    virtual uint32 getNewline ( void ) const = 0;
 
     virtual void setText ( const std::string& text ) = 0;
 
     /// Set a new font point (pixel) size.
     ///
     /// Optional interface
-    virtual void setFontSize ( int32 point_size ) { NOM_LOG_INFO ( NOM, "Method not implemented." ); }
+    virtual void setFontSize ( int32 point_size )
+    {
+NOM_LOG_ERR ( NOM, "Method not implemented." );
+    }
 
     virtual void setFontStyle ( uint8 style, uint8 options = 150 ) = 0;
     virtual void setColor ( const Color& color ) = 0;
     virtual void setPosition ( const Coords& coords ) = 0;
+    virtual void setSpacing ( uint32 spaces ) = 0;
 
     /// Rescale the font with a chosen resizing algorithm
     ///
@@ -85,9 +90,9 @@ class IFont: public IDrawable
     /// chosen not to re-implement this method.
     virtual bool resize ( enum ResizeAlgorithm scaling_algorithm )
     {
-NOM_LOG_INFO ( NOM, "Method not implemented." );
+NOM_LOG_ERR ( NOM, "Method not implemented." );
       return false;
-    };
+    }
 };
 
 

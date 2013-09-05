@@ -113,6 +113,12 @@ const Coords& TrueTypeFont::getPosition ( void ) const
   return this->coords;
 }
 
+uint32 TrueTypeFont::getNewline ( void ) const
+{
+  // Not implemented
+  return 0;
+}
+
 void TrueTypeFont::setColor ( const Color& color )
 {
   this->color = color;
@@ -174,6 +180,11 @@ void TrueTypeFont::setText ( const std::string& text )
   {
 NOM_LOG_ERR ( NOM, "Failed to set font width & height." );
   }
+}
+
+void TrueTypeFont::setSpacing ( uint32 spaces )
+{
+  // Not implemented
 }
 
 bool TrueTypeFont::load ( const std::string& filename, const Color& colorkey,

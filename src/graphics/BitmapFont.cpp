@@ -140,7 +140,7 @@ void BitmapFont::setSpacing ( uint32 spaces )
   this->spacing = spaces;
 }
 
-uint32 BitmapFont::getNewline ( void )
+uint32 BitmapFont::getNewline ( void ) const
 {
   return this->newline;
 }

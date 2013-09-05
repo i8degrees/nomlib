@@ -150,6 +150,15 @@ const Coords Text::getPosition ( void ) const
     return nom::Coords ( 0, 0 ); // FIXME?
 }
 
+uint32 Text::getNewline ( void ) const
+{
+  if ( this->font )
+  {
+    return this->font->getNewline();
+  }
+  return 0;
+}
+
 void Text::setText ( const std::string& text )
 {
   if ( this->font )
@@ -178,6 +187,14 @@ void Text::setFontStyle ( uint8 style, uint8 options )
 {
   if ( this->font )
     this->font->setFontStyle ( style, options );
+}
+
+void Text::setSpacing ( uint32 spaces )
+{
+  if ( this->font )
+  {
+    this->font->setSpacing ( spaces );
+  }
 }
 
 void Text::Update ( void )

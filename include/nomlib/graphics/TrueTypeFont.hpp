@@ -81,6 +81,9 @@ class TrueTypeFont: public IFont
     const Color& getColor ( void ) const;
     const Coords& getPosition ( void ) const;
 
+    /// Not implemented
+    uint32 getNewline ( void ) const;
+
     void setFontStyle ( uint8 style, uint8 options );
 
     /// Set a new text point size
@@ -93,6 +96,9 @@ class TrueTypeFont: public IFont
 
     void setColor ( const Color& color );
     void setPosition ( const Coords& coords );
+
+    /// Not implemented
+    void setSpacing ( uint32 spaces );
 
     /// \brief Load a new font in from a file.
     ///

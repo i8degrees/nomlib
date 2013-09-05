@@ -74,11 +74,15 @@ class Text: public IDrawable
     const Color& getColor ( void ) const;
     const Coords getPosition ( void ) const;
 
+    uint32 getNewline ( void ) const;
+
     void setText ( const std::string& text );
     void setColor ( const Color& color );
     void setPosition ( const Coords& coords );
     void setFontSize ( int32 size );
     void setFontStyle ( uint8 style, uint8 options = 150 );
+
+    void setSpacing ( uint32 spaces );
 
     virtual void Update ( void );
     virtual void Draw ( void* video_buffer ) const;

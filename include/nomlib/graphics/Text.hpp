@@ -62,7 +62,10 @@ class Text: public IDrawable
     ///
     /// See nom::BitmapFont and nom::TrueTypeFont documentation for supported
     /// file formats.
-    bool load ( const std::string& filename, bool use_cache );
+    bool load ( const std::string& filename,
+                const Color& colorkey = Color::Black,
+                bool use_cache = false
+              );
 
     FontType getFontType ( void );
 
@@ -95,7 +98,7 @@ class Text: public IDrawable
     /// Set the type of file we are loading; either a bitmap or a TrueType font
     void setFontType ( enum FontType type );
 
-    std::unique_ptr<IFont> font;
+    std::shared_ptr<IFont> font;
     /// Holds type of font in use; see setFontType
     enum FontType file_type;
 };

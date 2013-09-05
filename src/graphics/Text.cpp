@@ -43,7 +43,9 @@ Text::~Text ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
-bool Text::load ( const std::string& filename, bool use_cache )
+bool Text::load ( const std::string& filename, const Color& colorkey,
+                  bool use_cache
+                )
 {
   File file;
   std::string extension = "\0";
@@ -61,8 +63,8 @@ bool Text::load ( const std::string& filename, bool use_cache )
   // the input file as a bitmap font
   if ( extension != "application/x-font-ttf" )
   {
-    this->font = std::unique_ptr<IFont> ( new BitmapFont() );
-    this->font->load ( filename, Color ( 110, 144, 190 ), use_cache );
+    this->font = std::shared_ptr<IFont> ( new BitmapFont() );
+    this->font->load ( filename, colorkey, use_cache );
 
     if ( this->font != nullptr )
     {
@@ -73,9 +75,9 @@ bool Text::load ( const std::string& filename, bool use_cache )
   }
   else // Try as a TrueType font
   {
-    this->font = std::unique_ptr<IFont> ( new TrueTypeFont() );
+    this->font = std::shared_ptr<IFont> ( new TrueTypeFont() );
 
-    this->font->load ( filename, Color::Black, use_cache );
+    this->font->load ( filename, colorkey, use_cache );
 
     if ( this->font != nullptr )
     {

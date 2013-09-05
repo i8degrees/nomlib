@@ -65,6 +65,8 @@ class Color
     Color& operator = ( const Color& other );
 
     /// Predefined color constants for convenience sake
+    static const Color null;
+
     static const Color Black;
     static const Color White;
     static const Color Red;

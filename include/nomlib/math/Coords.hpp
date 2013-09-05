@@ -73,6 +73,8 @@ class Coords
     /// Copy assignment constructor
     Coords& operator = ( const Coords& other );
 
+    static const Coords null;
+
   public:
     int32 x;
     int32 y;

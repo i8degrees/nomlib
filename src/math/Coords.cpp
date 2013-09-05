@@ -30,6 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+const Coords Coords::null ( -1, -1, -1, -1 );
+
 Coords::Coords ( void ) : x ( 0 ), y ( 0 ), z ( 0 ), width ( 0 ), height ( 0 )
 {}
 

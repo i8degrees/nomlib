@@ -39,8 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-class Sprite: public IDrawable,     //  "is a" inheritance
-              public Transformable  //  "has a" inheritance
+class Sprite: public IDrawable,
+              public Transformable
 {
   public:
     Sprite ( void );

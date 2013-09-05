@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief State pure abstract class
-class IState: public Input // "has a" relationship
+class IState: public Input
 {
   public:
     virtual ~IState ( void )

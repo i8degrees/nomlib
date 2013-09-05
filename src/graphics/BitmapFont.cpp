@@ -398,7 +398,7 @@ void BitmapFont::Draw ( void* video_buffer ) const
         y_offset += this->newline;
         x_offset = this->coords.x;
       }
-      // If the current character is a newline
+      // If the current character is a tab
       else if( this->text_buffer[show] == '\t' )
       {
         x_offset += this->spacing * 4;

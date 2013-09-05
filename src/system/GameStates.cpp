@@ -81,7 +81,9 @@ NOM_ASSERT ( state );
 
   // pause current state
   if ( ! states.empty() )
+  {
     states.back()->Pause();
+  }
 
   // store the new state
   states.push_back( std::move( state ) );
@@ -93,7 +95,9 @@ void GameStates::PopState ( void )
 {
   // cleanup the current state
   if ( ! states.empty() )
+  {
     states.pop_back();
+  }
 
   // resume previous state
   states.back()->Resume();
@@ -103,7 +107,9 @@ void GameStates::PopStateThenChangeState ( std::unique_ptr<IState> state )
 {
   // cleanup the current state
   if ( ! states.empty() )
+  {
     states.pop_back();
+  }
 
 NOM_ASSERT ( state );
 

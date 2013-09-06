@@ -119,6 +119,12 @@ uint32 TrueTypeFont::getNewline ( void ) const
   return 0;
 }
 
+uint32 TrueTypeFont::getSpacing ( void ) const
+{
+  // Not implemented
+  return 0;
+}
+
 void TrueTypeFont::setColor ( const Color& color )
 {
   this->color = color;

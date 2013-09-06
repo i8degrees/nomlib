@@ -80,7 +80,7 @@ class BitmapFont: public IFont
 
     /// Obtain text character spacing width in pixels; defaults to given
     /// sheet_width argument divided by two (2)
-    uint32 getSpacing ( void );
+    uint32 getSpacing ( void ) const;
 
     /// Set new text character spacing width in pixels
     void setSpacing ( uint32 spaces );

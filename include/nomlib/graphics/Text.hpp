@@ -78,6 +78,7 @@ class Text: public IDrawable
     const Coords getPosition ( void ) const;
 
     uint32 getNewline ( void ) const;
+    uint32 getSpacing ( void ) const;
 
     void setText ( const std::string& text );
     void setColor ( const Color& color );

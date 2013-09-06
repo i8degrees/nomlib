@@ -161,6 +161,15 @@ uint32 Text::getNewline ( void ) const
   return 0;
 }
 
+uint32 Text::getSpacing ( void ) const
+{
+  if ( this->font )
+  {
+    return this->font->getSpacing();
+  }
+  return 0;
+}
+
 void Text::setText ( const std::string& text )
 {
   if ( this->font )

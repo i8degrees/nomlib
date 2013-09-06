@@ -68,6 +68,7 @@ class IFont: public IDrawable
     virtual const Coords& getPosition ( void ) const = 0;
     virtual const Color& getColor ( void ) const = 0;
     virtual uint32 getNewline ( void ) const = 0;
+    virtual uint32 getSpacing ( void ) const = 0;
 
     virtual void setText ( const std::string& text ) = 0;
 

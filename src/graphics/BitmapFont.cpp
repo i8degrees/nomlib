@@ -130,7 +130,7 @@ void BitmapFont::setText ( const std::string& text )
   this->text_buffer = text;
 }
 
-uint32 BitmapFont::getSpacing ( void )
+uint32 BitmapFont::getSpacing ( void ) const
 {
   return this->spacing;
 }

@@ -84,6 +84,9 @@ class TrueTypeFont: public IFont
     /// Not implemented
     uint32 getNewline ( void ) const;
 
+    /// Not implemented
+    uint32 getSpacing ( void ) const;
+
     void setFontStyle ( uint8 style, uint8 options );
 
     /// Set a new text point size

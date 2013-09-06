@@ -99,6 +99,11 @@ Canvas::~Canvas ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
+Canvas::SharedPtr Canvas::clone ( void ) const
+{
+  return Canvas::SharedPtr ( new Canvas ( *this ) );
+}
+
 Canvas& Canvas::operator = ( const Canvas& other )
 {
   this->canvas_buffer = other.canvas_buffer;

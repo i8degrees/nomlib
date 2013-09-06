@@ -43,17 +43,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Canvas.hpp"
 
 namespace nom {
-  namespace priv {
-
-/// Custom deleter for TTF_Font* smart pointers; can be used as a debugging aid.
-void TTF_FreeSurface ( TTF_Font* );
-
-
-  } // namespace priv
-} // namespace nom
-
-
-namespace nom {
 
 class TrueTypeFont: public IFont
 {
@@ -63,6 +52,9 @@ class TrueTypeFont: public IFont
 
     /// Default destructor; we shutdown the SDL_ttf extension here
     ~TrueTypeFont ( void );
+
+    /// Return a std::shared_ptr copy of this instance
+    IFont::SharedPtr clone ( void ) const;
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
@@ -150,7 +142,17 @@ class TrueTypeFont: public IFont
     bool use_cache;
 };
 
+  namespace priv {
 
+/// Custom deleter for TTF_Font* smart pointers; can be used as a debugging aid.
+void TTF_FreeSurface ( TTF_Font* );
+
+/// \todo FIXME; we need to figure out how to free this resource when we are
+/// using it within the MessageBox class -- we are leaking kilobytes as-is.
+void Free_TrueTypeFont ( TrueTypeFont* ptr );
+
+
+  } // namespace priv
 } // namespace nom
 
 #endif // include guard

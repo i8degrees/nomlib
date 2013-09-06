@@ -29,19 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/TrueTypeFont.hpp"
 
 namespace nom {
-  namespace priv {
-
-void TTF_FreeSurface ( TTF_Font* font )
-{
-  TTF_CloseFont ( font );
-}
-
-
-  } // namespace priv
-} // namespace nom
-
-
-namespace nom {
 
 TrueTypeFont::TrueTypeFont ( void )
 {
@@ -73,6 +60,11 @@ NOM_LOG_TRACE ( NOM );
   this->font.reset();
 
   TTF_Quit();
+}
+
+IFont::SharedPtr TrueTypeFont::clone ( void ) const
+{
+  return IFont::SharedPtr ( new TrueTypeFont ( *this ), priv::Free_TrueTypeFont );
 }
 
 bool TrueTypeFont::valid ( void ) const
@@ -256,5 +248,21 @@ NOM_LOG_ERR ( NOM, "Could not rebuild font metrics." );
   return true;
 }
 
+  namespace priv {
 
+void TTF_FreeSurface ( TTF_Font* font )
+{
+  TTF_CloseFont ( font );
+}
+
+void Free_TrueTypeFont ( TrueTypeFont* ptr )
+{
+  // Do nothing custom deleter
+  //
+  // FIXME; this is a known bug (memory leak).
+}
+
+
+  } // namespace priv
 } // namespace nom
+

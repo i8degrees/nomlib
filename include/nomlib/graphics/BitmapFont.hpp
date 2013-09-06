@@ -56,6 +56,9 @@ class BitmapFont: public IFont
     /// Default destructor
     ~BitmapFont ( void );
 
+    /// Return a std::shared_ptr copy of this instance
+    IFont::SharedPtr clone ( void ) const;
+
     /// Obtains set text string buffer; defaults to \0
     const std::string& getText ( void ) const;
 
@@ -156,7 +159,14 @@ class BitmapFont: public IFont
     Color color;
 };
 
+  namespace priv {
 
+/// \todo FIXME; we need to figure out how to free this resource when we are
+/// using it within the MessageBox class -- we are leaking kilobytes as-is.
+void Free_BitmapFont ( BitmapFont* ptr );
+
+
+  } // namespace priv
 } // namespace nom
 
 #endif // include guard defined

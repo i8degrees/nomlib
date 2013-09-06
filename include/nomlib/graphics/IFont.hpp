@@ -58,6 +58,8 @@ class IFont: public IDrawable
 
     virtual ~IFont ( void ) {}
 
+    virtual IFont::SharedPtr clone ( void ) const = 0;
+
     virtual bool load ( const std::string& filename, const Color& colorkey,
                         bool use_cache = false
                       ) = 0;

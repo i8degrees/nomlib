@@ -59,6 +59,11 @@ BitmapFont::~BitmapFont ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
+IFont::SharedPtr BitmapFont::clone ( void ) const
+{
+  return IFont::SharedPtr ( new BitmapFont ( *this ), priv::Free_BitmapFont );
+}
+
 const std::string& BitmapFont::getText ( void ) const
 {
   return this->text_buffer;
@@ -442,5 +447,16 @@ NOM_LOG_ERR ( NOM, "Could not rebuild bitmap font metrics" );
   return true;
 }
 
+  namespace priv {
 
+void Free_BitmapFont ( BitmapFont* ptr )
+{
+  // Do nothing custom deleter
+  //
+  // FIXME; this is a known bug (memory leak).
+}
+
+
+  } // namespace priv
 } // namespace nom
+

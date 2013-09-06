@@ -114,8 +114,11 @@ class Canvas
     /// Lazy destructor -- does nothing.
     ~Canvas ( void );
 
-    /// Copy assignment constructor; this can be used to safely clone a video
-    /// surface object.
+    /// Return a std::shared_ptr copy of this instance
+    /// \todo Test me out!
+    Canvas::SharedPtr clone ( void ) const;
+
+    /// Copy assignment operator
     Canvas& operator = ( const Canvas& other );
 
     /// Is this object initialized -- not nullptr?

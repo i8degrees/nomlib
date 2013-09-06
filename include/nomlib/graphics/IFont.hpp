@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_IFONT_HPP
 
 #include <iostream>
-#include <string>
+#include <memory>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color.hpp"
@@ -53,6 +53,7 @@ enum FontStyle
 class IFont: public IDrawable
 {
   public:
+    typedef std::shared_ptr<IFont> SharedPtr;
     IFont ( void ) {}
 
     virtual ~IFont ( void ) {}

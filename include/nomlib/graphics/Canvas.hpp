@@ -72,6 +72,7 @@ enum ResizeAlgorithm
 class Canvas
 {
   public:
+    typedef std::shared_ptr<Canvas> SharedPtr;
     /// Default constructor; initializes object to its respective defaults
     Canvas ( void );
 

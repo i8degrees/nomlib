@@ -41,6 +41,7 @@ namespace nom {
 class IFrame: public IDrawable
 {
   public:
+    typedef std::shared_ptr<IFrame> SharedPtr;
     IFrame ( void ) {}
     virtual ~IFrame ( void ) {}
 

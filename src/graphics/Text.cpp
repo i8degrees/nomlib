@@ -56,8 +56,7 @@ bool Text::load ( const std::string& filename, const Color& colorkey,
   // failed loading the libmagic mime database. Of course, there's the fringe
   // chance perhaps that libmagic could not be initialized for some bizarre
   // reason!
-  if ( extension == "\0" )
-    return false;
+  if ( extension == "\0" ) return false;
 
   // If we find that the file MIME type is not TTF, we first will try loading
   // the input file as a bitmap font
@@ -107,49 +106,61 @@ void Text::setFontType ( enum FontType type )
 const std::string Text::getText ( void ) const
 {
   if ( this->font )
+  {
     return this->font->getText();
-  else
-    return "\0";
+  }
+
+  return "\0";
 }
 
 int32 Text::getFontWidth ( void ) const
 {
   if ( this->font )
+  {
     return this->font->getFontWidth();
-  else
-    return -1;
+  }
+
+  return -1;
 }
 
 int32 Text::getFontHeight ( void ) const
 {
   if ( this->font )
+  {
     return this->font->getFontHeight();
-  else
-    return -1;
+  }
+
+  return -1;
 }
 
 FontStyle Text::getFontStyle ( void ) const
 {
   if ( this->font )
+  {
     return this->font->getFontStyle();
-  else
-    return FontStyle::Regular; // FIXME; should be Unknown or such
+  }
+
+  return FontStyle::Regular; // FIXME; should be Unknown or such
 }
 
 const Color& Text::getColor ( void ) const
 {
   if ( this->font )
+  {
     return this->font->getColor();
-  else
-    return nom::Color::Black; // FIXME
+  }
+
+  return nom::Color::Black; // FIXME
 }
 
 const Coords Text::getPosition ( void ) const
 {
   if ( this->font )
+  {
     return this->font->getPosition();
-  else
-    return nom::Coords ( 0, 0 ); // FIXME?
+  }
+
+  return nom::Coords ( 0, 0 ); // FIXME?
 }
 
 uint32 Text::getNewline ( void ) const
@@ -158,6 +169,7 @@ uint32 Text::getNewline ( void ) const
   {
     return this->font->getNewline();
   }
+
   return 0;
 }
 
@@ -167,37 +179,48 @@ uint32 Text::getSpacing ( void ) const
   {
     return this->font->getSpacing();
   }
+
   return 0;
 }
 
 void Text::setText ( const std::string& text )
 {
   if ( this->font )
+  {
     this->font->setText ( text );
+  }
 }
 
 void Text::setColor ( const Color& color )
 {
   if ( this->font )
+  {
     this->font->setColor ( color );
+  }
 }
 
 void Text::setPosition ( const Coords& coords )
 {
   if ( this->font )
+  {
     this->font->setPosition ( coords );
+  }
 }
 
 void Text::setFontSize ( int32 size )
 {
   if ( this->font )
+  {
     this->font->setFontSize( size );
+  }
 }
 
 void Text::setFontStyle ( uint8 style, uint8 options )
 {
   if ( this->font )
+  {
     this->font->setFontStyle ( style, options );
+  }
 }
 
 void Text::setSpacing ( uint32 spaces )
@@ -211,13 +234,17 @@ void Text::setSpacing ( uint32 spaces )
 void Text::Update ( void )
 {
   if ( this->font )
+  {
     this->font->Update();
+  }
 }
 
 void Text::Draw ( void* video_buffer ) const
 {
   if ( this->font )
+  {
     this->font->Draw ( video_buffer );
+  }
 }
 
 bool Text::resize ( enum ResizeAlgorithm scaling_algorithm )

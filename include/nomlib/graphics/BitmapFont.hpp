@@ -121,8 +121,8 @@ class BitmapFont: public IFont
     /// recalculate the character sizes, coordinate origins, spacing, etc.
     bool rebuild ( void );
 
-    const int32 sheet_width;
-    const int32 sheet_height;
+    int32 sheet_width;
+    int32 sheet_height;
 
     /// pointer reference holding our bitmap font image sheet
     mutable Canvas bitmap_font;

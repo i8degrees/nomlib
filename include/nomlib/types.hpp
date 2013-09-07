@@ -79,6 +79,9 @@ static_assert ( sizeof ( nom::int64 ) == 8, "nom::int64" );
 
 static_assert ( sizeof ( nom::ulong ) == 8, "nom::ulong" );
 
+/// Something is *seriously* wrong if this fails!
+static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
+
 /// \todo FIXME
 //#if defined ( NOM_PLATFORM_ARCH_X86_64 )
   //static_assert ( sizeof ( nom::Pixels ) == 8, "nom::Pixels" );

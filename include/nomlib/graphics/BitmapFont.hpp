@@ -45,6 +45,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Color.hpp"
 #include "nomlib/graphics/Canvas.hpp"
 
+//#define NOM_DEBUG_SDL_BITMAP_FONT
+
 namespace nom {
 
 class BitmapFont: public IFont
@@ -65,27 +67,34 @@ class BitmapFont: public IFont
     /// Set a new text string for drawing; defaults to \0
     void setText ( const std::string& text );
 
-    /// Compute the width in pixels of the set text string; defaults to zero (0)
-    /// \internal
-    /// TODO: I don't think this is entirely accurate; this->spacing - 2 is
-    /// fudged ...
+    /// Obtain the text width in pixels of the set text string.
     ///
-    /// We probably ought to be calculating the width based off the same
-    /// algorithm as is shown in the load method
-    /// \endinternal
+    /// This calculation mimics the rendering calculations done and should be
+    /// exact within one pixel accuracy.
+    ///
+    /// \todo Rename me to text_width
+    /// \todo Support multi-line texts
     int32 getFontWidth ( void ) const;
 
-    /// Compute the height in pixels of the set text string; defaults to zero (0)
+    /// Obtain the text height in pixels of the set text string.
+    ///
+    /// This calculation mimics the rendering calculations done and should be
+    /// exact within one pixel accuracy.
+    ///
+    /// \todo Rename me to text_height
     int32 getFontHeight ( void ) const;
 
     const Color& getColor ( void ) const;
     const Coords& getPosition ( void ) const;
 
-    /// Obtain text character spacing width in pixels; defaults to given
-    /// sheet_width argument divided by two (2)
+    /// Obtain text character spacing width in pixels; this variable is affected
+    /// by the total image width size.
     uint32 getSpacing ( void ) const;
 
-    /// Set new text character spacing width in pixels
+    /// Set new text character spacing width (in pixels) -- this variable is
+    /// used during the calculation of the text width (see getFontWidth method)
+    /// in addition to the rendering process (see draw method) when there is a
+    /// space character (' ') found in the provided text string.
     void setSpacing ( uint32 spaces );
 
     /// Obtain text character spacing height offsets in pixels; defaults to

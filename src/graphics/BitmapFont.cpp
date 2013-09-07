@@ -71,42 +71,80 @@ const std::string& BitmapFont::getText ( void ) const
 
 int32 BitmapFont::getFontWidth ( void ) const
 {
-  int32_t text_width = 0;
+  int32 text_width = 0;
 
-  for ( ulong t = 0; t < this->text_buffer.length(); t++ )
+  for ( int32 char_pos = 0; char_pos < this->text_buffer.length(); char_pos++ )
   {
-    if ( this->text_buffer[t] == ' ' )
+    if ( this->text_buffer [ char_pos ] == ' ' )
     {
-      text_width += this->chars[t].width / this->spacing;
+      text_width += this->spacing;
+
+// Dump each character's table used for calculation
+#if defined ( NOM_DEBUG_SDL_BITMAP_FONT )
+NOM_DUMP_VAR ( char_pos );
+NOM_DUMP_VAR ( this->text_buffer [ char_pos ] );
+NOM_DUMP_VAR ( text_width );
+#endif
+
     }
-    else if ( this->text_buffer[t] == '\n' )
+    else if ( this->text_buffer [ char_pos ] == '\n' ) // TODO
     {
       text_width = 0;
     }
     else
     {
-      text_width += this->chars[t].width - ( this->spacing + 2 );
+      uint8 ascii_char = static_cast<uchar> ( this->text_buffer [ char_pos ] );
+      text_width += this->chars [ ascii_char ].width + 1;
+
+// Dump each character's table used for calculation
+#if defined ( NOM_DEBUG_SDL_BITMAP_FONT )
+NOM_DUMP_VAR ( char_pos );
+NOM_DUMP_VAR ( this->text_buffer [ char_pos ] );
+NOM_DUMP_VAR ( this->chars [ ascii_char ].width + 1 );
+NOM_DUMP_VAR ( text_width );
+#endif
+
     }
-  }
+  } // end for loop
 
   return text_width;
 }
 
 int32 BitmapFont::getFontHeight ( void ) const
 {
-  int32_t text_height = 0;
+  int32 text_height = 0;
 
-  for ( ulong t = 0; t < this->text_buffer.length(); t++ )
+  for ( int32 char_pos = 0; char_pos < this->text_buffer.length(); char_pos++ )
   {
-    if ( this->text_buffer[t] == '\n' )
+    if ( this->text_buffer [ char_pos ] == '\n' )
     {
       text_height += this->newline;
+
+// Dump each character's table used for calculation
+#if defined ( NOM_DEBUG_SDL_BITMAP_FONT )
+NOM_DUMP_VAR ( char_pos );
+NOM_DUMP_VAR ( this->text_buffer [ char_pos ] );
+NOM_DUMP_VAR ( text_height );
+#endif
+
     }
     else
     {
-      text_height = this->chars[t].height;
+      uint8 ascii_char = static_cast<uchar> ( this->text_buffer [ char_pos ] );
+
+      text_height = this->chars [ ascii_char ].height;
+
+// Dump each character's table used for calculation
+#if defined ( NOM_DEBUG_SDL_BITMAP_FONT )
+NOM_DUMP_VAR ( char_pos );
+NOM_DUMP_VAR ( this->text_buffer [ char_pos ] );
+NOM_DUMP_VAR ( this->chars [ ascii_char ].height );
+NOM_DUMP_VAR ( text_height );
+#endif
+
     }
   }
+
   return text_height;
 }
 
@@ -319,13 +357,8 @@ NOM_ASSERT ( this->bitmap_font.valid() );
     }
   }
 
-  // Checks to see if we have modified the instance variable before calling this
-  // method
-  if ( this->spacing == 0 )
-  {
-    // Calculate space
-    this->spacing = tile_width / 2;
-  }
+  // Calculate space
+  this->spacing = tile_width / 2;
 
   // Calculate new line
   this->newline = baseA - top;
@@ -336,6 +369,19 @@ NOM_ASSERT ( this->bitmap_font.valid() );
     this->chars[ t ].y += top;
     this->chars[ t ].height -= top;
   }
+
+// Dump table of calculated bitmap character positions
+#if defined ( NOM_DEBUG_SDL_BITMAP_FONT )
+  for ( uint32 pos = 0; pos < 256; pos++ )
+  {
+NOM_DUMP_VAR ( pos );
+NOM_DUMP_VAR ( static_cast<uchar> ( pos ) );
+NOM_DUMP_VAR ( this->chars [ pos ].x );
+NOM_DUMP_VAR ( this->chars [ pos ].y );
+NOM_DUMP_VAR ( this->chars [ pos ].width );
+NOM_DUMP_VAR ( this->chars [ pos ].height );
+  }
+#endif
 
   return true;
 }

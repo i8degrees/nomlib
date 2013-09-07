@@ -79,6 +79,8 @@ class TrueTypeFont: public IFont
     /// Not implemented
     uint32 getSpacing ( void ) const;
 
+    enum TextAlignment getTextJustification ( void ) const;
+
     void setFontStyle ( uint8 style, uint8 options );
 
     /// Set a new text point size
@@ -94,6 +96,9 @@ class TrueTypeFont: public IFont
 
     /// Not implemented
     void setSpacing ( uint32 spaces );
+
+    /// Not implemented.
+    void setTextJustification ( enum TextAlignment alignment );
 
     /// \brief Load a new font in from a file.
     ///
@@ -140,6 +145,8 @@ class TrueTypeFont: public IFont
 
     /// Whether or not to use caching features of nom::ObjectCache
     bool use_cache;
+
+    enum TextAlignment text_alignment;
 };
 
   namespace priv {

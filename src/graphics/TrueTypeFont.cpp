@@ -38,8 +38,8 @@ NOM_LOG_TRACE ( NOM );
   this->coords = Coords ( 0, 0, 0, 0 );
   this->color = Color ( 0, 0, 0 );
   this->text_buffer = "\0";
-
   this->text_style = FontStyle::Regular; // default text styling effect
+  this->text_alignment = TextAlignment::MiddleLeft;
   this->style_options = 0;
   this->filename = "\0";
   this->font_size = 12;
@@ -117,6 +117,11 @@ uint32 TrueTypeFont::getSpacing ( void ) const
   return 0;
 }
 
+enum TextAlignment TrueTypeFont::getTextJustification ( void ) const
+{
+  return this->text_alignment;
+}
+
 void TrueTypeFont::setColor ( const Color& color )
 {
   this->color = color;
@@ -183,6 +188,11 @@ NOM_LOG_ERR ( NOM, "Failed to set font width & height." );
 void TrueTypeFont::setSpacing ( uint32 spaces )
 {
   // Not implemented
+}
+
+void TrueTypeFont::setTextJustification ( enum TextAlignment alignment )
+{
+  this->text_alignment = alignment;
 }
 
 bool TrueTypeFont::load ( const std::string& filename, const Color& colorkey,

@@ -41,10 +41,9 @@ NOM_LOG_TRACE ( NOM );
 
   this->text_buffer = "\0";
   this->text_style = FontStyle::Regular;
-
+  this->text_alignment = TextAlignment::MiddleLeft;
   this->newline = 0;
   this->spacing = 0;
-
   this->color = Color ( 0, 0, 0 );
   this->coords.setPosition ( 0, 0 );
 
@@ -186,6 +185,11 @@ void BitmapFont::setSpacing ( uint32 spaces )
 uint32 BitmapFont::getNewline ( void ) const
 {
   return this->newline;
+}
+
+enum TextAlignment BitmapFont::getTextJustification ( void ) const
+{
+  return this->text_alignment;
 }
 
 void BitmapFont::setNewline ( uint32 newline )
@@ -408,6 +412,11 @@ NOM_LOG_ERR ( NOM, "Could not rebuild bitmap font metrics" );
   return true;
 }
 
+void BitmapFont::setTextJustification ( enum TextAlignment alignment )
+{
+  this->text_alignment = alignment;
+}
+
 const Coords BitmapFont::findGlyph ( const std::string& glyph )
 {
   uint8 ascii = 0;
@@ -423,13 +432,36 @@ void BitmapFont::Update ( void )
   // Stub
 }
 
-// TODO: test \t (horizontal tabbing) feature
 void BitmapFont::Draw ( void* video_buffer ) const
 {
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from
-  int32_t x_offset = this->coords.x;
-  int32_t y_offset = this->coords.y;
+  int32 x_offset = this->coords.x;
+  int32 y_offset = this->coords.y;
+
+  switch ( this->text_alignment )
+  {
+    default:
+    case TextAlignment::MiddleLeft:
+    {
+      x_offset = this->coords.x;
+      y_offset = this->coords.y;
+    }
+    break;
+
+    case TextAlignment::MiddleCenter:
+    {
+      x_offset = this->coords.x + ( this->coords.width / 2 ) - ( this->getFontWidth() / 2 );
+      y_offset = ( this->coords.height / 2 ) + this->coords.y - ( this->getFontHeight() / 2 );
+    }
+    break;
+
+    case TextAlignment::MiddleRight:
+    {
+      // TODO
+    }
+    break;
+  } // end switch
 
   //If the font has been built
   if ( this->bitmap_font.valid() )

@@ -50,6 +50,19 @@ enum FontStyle
   Faded = 4
 };
 
+enum TextAlignment
+{
+  TopLeft = 0,
+  TopCenter,
+  TopRight,
+  MiddleLeft,
+  MiddleCenter,
+  MiddleRight,
+  BottomLeft,
+  BottomCenter,
+  BottomRight
+};
+
 class IFont: public IDrawable
 {
   public:
@@ -60,7 +73,8 @@ class IFont: public IDrawable
 
     virtual IFont::SharedPtr clone ( void ) const = 0;
 
-    virtual bool load ( const std::string& filename, const Color& colorkey,
+    virtual bool load (
+                        const std::string& filename, const Color& colorkey,
                         bool use_cache = false
                       ) = 0;
 
@@ -72,6 +86,8 @@ class IFont: public IDrawable
     virtual const Color& getColor ( void ) const = 0;
     virtual uint32 getNewline ( void ) const = 0;
     virtual uint32 getSpacing ( void ) const = 0;
+    virtual enum TextAlignment getTextJustification ( void ) const = 0;
+
 
     virtual void setText ( const std::string& text ) = 0;
 
@@ -87,7 +103,7 @@ NOM_LOG_ERR ( NOM, "Method not implemented." );
     virtual void setColor ( const Color& color ) = 0;
     virtual void setPosition ( const Coords& coords ) = 0;
     virtual void setSpacing ( uint32 spaces ) = 0;
-
+    virtual void setTextJustification ( enum TextAlignment alignment ) = 0;
     /// Rescale the font with a chosen resizing algorithm
     ///
     /// Optional interface with a return of false when the deriving class has

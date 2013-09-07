@@ -101,6 +101,8 @@ class BitmapFont: public IFont
     /// variable calculations made within Load method
     uint32 getNewline ( void ) const;
 
+    enum TextAlignment getTextJustification ( void ) const;
+
     /// Set new text character spacing height offsets in pixels
     void setNewline ( uint32_t newline );
 
@@ -110,17 +112,25 @@ class BitmapFont: public IFont
     void setColor ( const Color& color );
     void setPosition ( const Coords& coords );
 
+    /// Set the justification of the text.
+    ///
+    /// This modifies the destination positions used in rendering text.
+    void setTextJustification ( enum TextAlignment alignment );
+
     const Coords findGlyph ( const std::string& glyph );
-    /// \brief Loads a new bitmap font from a file
-    /// \internal
-    /// TODO: add spacing / padding so that we can export with black guidelines
-    /// \endinternal
-    bool load ( const std::string& filename, const Color& colorkey,
+
+    /// Loads a new bitmap font from a file
+    ///
+    /// \todo Add spacing / padding so that we can export with black guidelines
+    bool load (
+                const std::string& filename, const Color& colorkey,
                 bool use_cache = false
               );
 
     void Update ( void );
+
     /// Draw the set text string to the video surface
+    /// \todo Test horizontal tabbing '\t'
     void Draw ( void* video_buffer ) const;
 
     /// Rescale the font with a chosen resizing algorithm
@@ -166,6 +176,8 @@ class BitmapFont: public IFont
 
     /// Not implemented (yet)
     Color color;
+
+    enum TextAlignment text_alignment;
 };
 
   namespace priv {

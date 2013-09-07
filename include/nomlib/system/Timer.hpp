@@ -43,30 +43,31 @@ class Timer
     Timer ( void );
     virtual ~Timer ( void );
 
-    void Start ( void );
-    void Stop ( void );
-    void Pause ( void );
-    void Unpause ( void );
+    void start ( void );
+    void stop ( void );
+    void pause ( void );
+    void unpause ( void );
 
-    // void Update ( void );
+    uint32 ticks ( void ) const;
 
-    unsigned int getTicks ( void );
-
-    bool isStarted ( void );
-    bool isPaused ( void );
+    bool started ( void ) const;
+    bool paused ( void ) const;
 
     /// Helper method; conversion from milliseconds to seconds
-    uint32_t seconds( float seconds ) const;
+    uint32 seconds( float milliseconds ) const;
 
   private:
     /// Milliseconds since timer start
-    unsigned int elapsed_ticks;
+    uint32 elapsed_ticks;
+
     /// Holds ticks while paused
-    unsigned int paused_ticks;
+    uint32 paused_ticks;
+
     /// Tracks whether we are paused or not
-    bool paused;
+    bool timer_paused;
+
     /// Tracks whether we are started or not
-    bool started;
+    bool timer_started;
 };
 
 

@@ -32,47 +32,43 @@ namespace nom {
 
 FPS::FPS ( void )
 {
-//NOM_LOG_TRACE ( NOM );
-
   this->total_frames = 0;
-  this->fps.Start();
-  this->fps_update.Start();
+  this->fps_timer.start();
+  this->fps_update_timer.start();
 }
 
-FPS::~FPS ( void )
-{
-//NOM_LOG_TRACE ( NOM );
+FPS::~FPS ( void ) {}
 
-  this->total_frames = 0;
-  this->fps.Stop();
-  this->fps_update.Stop();
-}
-
-void FPS::Start ( void )
+void FPS::start ( void )
 {
   this->total_frames = 0;
-  this->fps.Start();
-  this->fps_update.Start();
+  this->fps_timer.start();
+  this->fps_update_timer.start();
 }
 
-void FPS::Stop ( void )
+void FPS::stop ( void )
 {
   this->total_frames = 0;
-  this->fps.Stop();
-  this->fps_update.Stop();
+  this->fps_timer.stop();
+  this->fps_update_timer.stop();
 }
 
-unsigned int FPS::getFrames ( void )
+uint32 FPS::frames ( void ) const
 {
   return this->total_frames;
 }
 
-unsigned int FPS::getFPS ( void )
+const std::string FPS::fpsAsString ( void ) const
 {
-  return this->getFrames() / ( this->fps.getTicks() / 1000.f );
+  return std::to_string ( static_cast<uint32> ( this->frames() / ( this->fps_timer.ticks() / 1000.f ) ) );
 }
 
-void FPS::Update ( void )
+uint32 FPS::fps ( void ) const
+{
+  return this->frames() / ( this->fps_timer.ticks() / 1000.f );
+}
+
+void FPS::update ( void )
 {
   this->total_frames++;
 }

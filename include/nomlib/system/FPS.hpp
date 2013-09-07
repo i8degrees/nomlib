@@ -29,28 +29,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_TIMER_FPS_HEADERS
 #define NOMLIB_TIMER_FPS_HEADERS
 
+#include <string>
+
 #include "nomlib/config.hpp"
 #include "nomlib/system/Timer.hpp"
 
 namespace nom {
 
 /// \brief FPS timer
-class FPS: public Timer // "is a" relationship
+class FPS: public Timer
 {
   public:
     FPS ( void );
     ~FPS ( void );
 
-    void Start ( void );
-    void Stop ( void );
+    void start ( void );
+    void stop ( void );
 
-    unsigned int getFrames ( void );
-    unsigned int getFPS ( void );
-    void Update ( void );
+    uint32 frames ( void ) const;
+
+    const std::string fpsAsString ( void ) const;
+
+    uint32 fps ( void ) const;
+
+    void update ( void );
 
   private:
-    unsigned int total_frames;
-    Timer fps, fps_update;
+    uint32 total_frames;
+    Timer fps_timer, fps_update_timer;
 };
 
 

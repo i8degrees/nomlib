@@ -58,7 +58,7 @@ class SDL_App: public Input
     void Running ( void );
     void Quit ( void );
 
-    uint32_t getTicks ( void );
+    uint32 ticks ( void );
 
     bool isFullScreen ( void );
     void setFullScreen ( bool toggle );

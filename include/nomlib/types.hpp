@@ -57,6 +57,8 @@ typedef unsigned long long int uint64;
   typedef long long ulong;
 #endif
 
+typedef unsigned char uchar;
+
 typedef void* Pixels;
 
 

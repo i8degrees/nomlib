@@ -75,10 +75,15 @@ class Color
     static const Color Yellow;
     static const Color Magenta;
     static const Color Cyan;
-    static const Color Transparent;
 
     /// Additional predefined color constants
     static const Color Gray;
+
+    /// Sky blue color key
+    static const Color NomPrimaryColorKey;
+
+    /// Light magenta color key
+    static const Color NomSecondaryColorKey;
 
   public:
     uint8 red;

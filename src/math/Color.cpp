@@ -40,9 +40,10 @@ const Color Color::Blue ( 0, 0, 255 );
 const Color Color::Yellow ( 255, 255, 255 );
 const Color Color::Magenta ( 255, 0, 255 );
 const Color Color::Cyan ( 0, 255, 255 );
-const Color Color::Transparent ( 0, 0, 0 );
 
 const Color Color::Gray ( 99, 99, 99 );
+const Color Color::NomPrimaryColorKey ( 110, 144, 190 );
+const Color Color::NomSecondaryColorKey ( 223, 75, 255 );
 
 Color::Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ),
                         alpha ( SDL_ALPHA_OPAQUE )

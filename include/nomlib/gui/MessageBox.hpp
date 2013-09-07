@@ -42,6 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Line.hpp"
 #include "nomlib/gui/IFrame.hpp"
 #include "nomlib/gui/GrayFrame.hpp"
+#include "nomlib/graphics/IFont.hpp"
 
 namespace nom {
   namespace ui {
@@ -53,34 +54,52 @@ enum FrameStyle
 };
 
 /// \brief Simple UI interface for drawing a styled message box
-class MessageBox: public IDrawable,     // "is a" relationship
-                  public Transformable  // "has a" relationship
+class MessageBox: public IDrawable,
+                  public Transformable
 {
   public:
     MessageBox ( void );
 
-    MessageBox  ( int32 x, int32 y, int32 width, int32 height,
-                  enum FrameStyle, const Gradient& background
+    MessageBox  (
+                  int32 x, int32 y, int32 width, int32 height,
+                  enum FrameStyle style, const Gradient& background
                 );
 
-    MessageBox  ( int32 x, int32 y, int32 width, int32 height,
+    MessageBox  (
+                  int32 x, int32 y, int32 width, int32 height,
                   std::shared_ptr<IFrame> style = nullptr,
                   const Gradient& background = Gradient()
                 );
 
     virtual ~MessageBox ( void );
 
-    bool isEnabled ( void );
+    bool isEnabled ( void ) const;
+    const std::string getWindowTitle ( void );
+    const std::string getLabel ( void );
+
     void disable ( void );
     void enable ( void );
+
+    void setWindowTitleFont ( const IFont* font );
+    void setLabelFont ( const IFont* font );
+
+    void setLabelPosition ( const Coords& pos );
+    void setLabelTextAlignment ( enum TextAlignment alignment );
+    void setWindowTitle ( const std::string& text );
+    void setLabel ( const std::string& text );
 
     void Update ( void );
     void Draw ( void* video_buffer ) const;
 
   private:
     void initialize ( void );
-    std::shared_ptr<IFrame> frame;
+    IFrame::SharedPtr frame;
     Gradient background;
+
+    IFont::SharedPtr window_title;
+    IFont::SharedPtr label;
+
+    enum TextAlignment label_alignment;
     bool enabled;
 };
 

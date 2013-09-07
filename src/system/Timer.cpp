@@ -116,6 +116,11 @@ bool Timer::paused ( void ) const
   return this->timer_paused;
 }
 
+const std::string Timer::ticksAsString ( void ) const
+{
+  return std::to_string ( static_cast<uint32> ( this->ticks() ) );
+}
+
 uint32 Timer::seconds ( float milliseconds ) const
 {
   return static_cast<uint32> ( milliseconds * 1000.f );

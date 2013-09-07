@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_SDL_TIMER_HEADERS
 
 #include <iostream>
+#include <string>
 
 #include <SDL/SDL.h>
 
@@ -52,6 +53,8 @@ class Timer
 
     bool started ( void ) const;
     bool paused ( void ) const;
+
+    const std::string ticksAsString ( void ) const;
 
     /// Helper method; conversion from milliseconds to seconds
     uint32 seconds( float milliseconds ) const;

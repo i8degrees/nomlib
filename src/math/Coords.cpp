@@ -79,12 +79,12 @@ void Coords::setSize ( int32_t width, int32_t height )
   this->height = height;
 }
 
-bool Coords::contains ( int32_t x, int32_t y ) const
+bool Coords::contains ( int32 x, int32 y ) const
 {
-  int32_t X = this->x + this->width;
-  int32_t Y = this->y + this->height;
-
-  return ( x >= X ) && ( y >= Y );
+  return  (
+            ( x >= this->x && x <= this->x + this->width )    &&
+            ( y >= this->y && y <= this->y + this->height )
+          );
 }
 
 bool Coords::contains ( const Coords& pos ) const
@@ -94,10 +94,10 @@ bool Coords::contains ( const Coords& pos ) const
 
 bool Coords::intersects ( Coords& rectangle ) const
 {
-  unsigned int leftA, leftB = 0;
-  unsigned int rightA, rightB = 0;
-  unsigned int topA, topB = 0;
-  unsigned int bottomA, bottomB = 0;
+  uint32 leftA, leftB = 0;
+  uint32 rightA, rightB = 0;
+  uint32 topA, topB = 0;
+  uint32 bottomA, bottomB = 0;
 
   // Calculate sides of RectA
   leftA = this->x;
@@ -111,14 +111,10 @@ bool Coords::intersects ( Coords& rectangle ) const
   topB = rectangle.y;
   bottomB = rectangle.y + rectangle.height;
 
-  if ( bottomA <= topB )
-    return false;
-  if ( topA >= bottomB )
-    return false;
-  if ( rightA <= leftB )
-    return false;
-  if ( leftA >= rightB )
-    return false;
+  if ( bottomA <= topB ) return false;
+  if ( topA >= bottomB ) return false;
+  if ( rightA <= leftB ) return false;
+  if ( leftA >= rightB ) return false;
 
   return true; // we've got a collision!
 }

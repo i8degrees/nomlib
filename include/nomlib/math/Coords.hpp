@@ -60,19 +60,24 @@ class Coords
     Coords getSize ( void ) const;
     void setSize ( int32_t width, int32_t height );
 
-    /// \todo TEST ME
-    bool contains ( int32_t x, int32_t y ) const;
+    /// Check to see if input X, Y coordinates are within the bounds of this
+    /// object -- or in other words, a collision!
+    bool contains ( int32 x, int32 y ) const;
 
-    /// \todo TEST ME
+    /// Check to see if input X, Y coordinates are within the bounds of this
+    /// object -- or in other words, a collision!
+    ///
+    /// ...
     bool contains ( const Coords& pos ) const;
 
     /// Checks to see if our rectangle overlaps with another
-    /// \todo TEST ME
     bool intersects ( Coords& rectangle ) const;
 
     /// Copy assignment constructor
     Coords& operator = ( const Coords& other );
 
+    /// Convenience object that will always contain a value of:
+    /// -1, -1, -1, -1, -1
     static const Coords null;
 
   public:

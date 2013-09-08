@@ -57,6 +57,7 @@ class GameStates
     static void PushState ( std::unique_ptr<IState> state );
     static void PopState ( void );
     static void PopStateThenChangeState ( std::unique_ptr<IState> state );
+    static void PopState ( int32 response );
 
     /// States stack; we hold pointer references to IState inherited classes
     static std::vector<std::unique_ptr<IState>> states;

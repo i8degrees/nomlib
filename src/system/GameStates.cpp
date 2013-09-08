@@ -104,6 +104,18 @@ void GameStates::PopState ( void )
 }
 
 void GameStates::PopStateThenChangeState ( std::unique_ptr<IState> state )
+void GameStates::PopState ( int32 response )
+{
+  // cleanup the current state
+  if ( ! states.empty() )
+  {
+    states.pop_back();
+  }
+
+  // resume previous state
+  states.back()->Resume( response );
+}
+
 {
   // cleanup the current state
   if ( ! states.empty() )

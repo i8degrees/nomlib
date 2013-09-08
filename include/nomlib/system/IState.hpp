@@ -59,6 +59,7 @@ NOM_LOG_TRACE ( NOM );
     virtual void Pause ( void ) {}
 
     /// Optional interface
+    virtual void Resume ( int32 response ) {}
     virtual void Resume ( void ) {}
 };
 

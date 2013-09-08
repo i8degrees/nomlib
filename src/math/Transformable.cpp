@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Transformable::Transformable ( void )  :  pos ( 0, 0, 0, 0 ),
+Transformable::Transformable ( void )  :  coords ( 0, 0, 0, 0 ),
                                           color ( 0, 0, 0, 255 )
 {
   // Nothing to initialize
@@ -38,7 +38,7 @@ Transformable::Transformable ( void )  :  pos ( 0, 0, 0, 0 ),
 
 Transformable::Transformable ( const Coords& coords, const Color& color )
 {
-  this->pos = coords;
+  this->coords = coords;
   this->color = color;
 }
 
@@ -49,24 +49,24 @@ Transformable::~Transformable ( void )
 
 const Coords Transformable::getPosition ( void ) const
 {
-  return Coords ( this->pos.x, this->pos.y );
+  return Coords ( this->coords.x, this->coords.y );
 }
 
 const Coords Transformable::getSize ( void ) const
 {
-  return Coords ( this->pos.width, this->pos.height );
+  return Coords ( this->coords.width, this->coords.height );
 }
 
 // Variant #1 setter for position coordinates
 void Transformable::setPosition ( int32 x, int32 y )
 {
-  this->pos.setPosition ( x, y );
+  this->coords.setPosition ( x, y );
 }
 
 // Variant #2 setter for position coordinates
 void Transformable::setPosition ( int32 x, int32 y, int32 width, int32 height )
 {
-  this->pos = Coords ( x, y, width, height );
+  this->coords = Coords ( x, y, width, height );
 }
 
 // Variant #3 setter for position coordinates; do we have enough options yet???
@@ -77,7 +77,7 @@ void Transformable::setPosition ( const Coords& coords )
 
 void Transformable::setSize ( int32 width, int32 height )
 {
-  this->pos.setSize ( width, height );
+  this->coords.setSize ( width, height );
 }
 
 void Transformable::setSize ( const Coords& size )
@@ -87,14 +87,14 @@ void Transformable::setSize ( const Coords& size )
 
 void Transformable::move ( uint32 x, uint32 y )
 {
-  this->pos.x += x;
-  this->pos.y += y;
+  this->coords.x += x;
+  this->coords.y += y;
 }
 
 void Transformable::move ( const Coords& offsets )
 {
-  this->pos.x += offsets.x;
-  this->pos.y += offsets.y;
+  this->coords.x += offsets.x;
+  this->coords.y += offsets.y;
 }
 
 const Color& Transformable::getColor ( void ) const

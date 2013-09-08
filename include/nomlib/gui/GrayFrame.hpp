@@ -35,7 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/graphics/Display.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Line.hpp"
 #include "nomlib/gui/IFrame.hpp"
 
@@ -63,7 +62,7 @@ class GrayFrame: public IFrame
 
   private:
     /// Holds our line objects used for rendering the object
-    std::vector<std::shared_ptr<Line>> frame;
+    std::vector<std::shared_ptr<IDrawable>> frame;
 
     /// Rendering context
     Display context;

@@ -30,33 +30,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Pixel::Pixel ( void )
-{
-  this->setPosition ( 0, 0 );
-  this->setColor ( Color ( 0, 0, 0, 255 ) );
-}
+Pixel::Pixel ( void ) {}
 
-Pixel::~Pixel ( void )
-{
-  // Do nothing
-}
+Pixel::~Pixel ( void ) {}
 
 Pixel::Pixel ( const Coords& coords, const Color& color )
 {
-  this->setPosition ( coords );
-  this->setColor ( color );
+  this->coords = coords;
+  this->color = color;
 }
 
 Pixel::Pixel ( int32 x, int32 y, const Color& color )
 {
-  this->setPosition ( x, y );
-  this->setColor ( color );
+  this->coords = Coords ( x, y );
+  this->color = color;
 }
 
-void Pixel::Update ( void )
-{
-  // Do nothing
-}
+void Pixel::Update ( void ) {}
 
 void Pixel::Draw ( void* video_buffer ) const
 {

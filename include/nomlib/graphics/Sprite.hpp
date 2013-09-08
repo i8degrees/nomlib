@@ -33,13 +33,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Canvas.hpp"
 #include "nomlib/math/Transformable.hpp"
 
 namespace nom {
 
-class Sprite: public IDrawable,
+class Sprite:
               public Transformable
 {
   public:
@@ -69,7 +68,6 @@ class Sprite: public IDrawable,
 
   private:
     Canvas sprite_buffer;
-    Coords coords;
     unsigned int state; /// alive, dying, dead, ...
 
     Coords offsets;

@@ -32,10 +32,6 @@ namespace nom {
 
 Line::Line ( void )
 {
-  this->setPosition ( 0, 0 );
-  this->setSize ( 0, 0 );
-  this->setColor ( 0, 0, 0, 255 );
-
   this->updated = true;
   this->Update();
 }
@@ -51,8 +47,8 @@ Line::Line ( const Coords& coords, const Color& color )
 
 Line::Line ( int32 x, int32 y, int32 width, int32 height, const Color& color )
 {
-  this->setPosition ( Coords ( x, y, width, height ) );
-  this->setColor ( color );
+  this->coords = Coords ( x, y, width, height );
+  this->color = color;
 
   this->updated = false;
   this->Update();

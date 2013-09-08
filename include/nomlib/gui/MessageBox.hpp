@@ -37,7 +37,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/math/Transformable.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Gradient.hpp"
 #include "nomlib/graphics/Line.hpp"
@@ -55,8 +54,9 @@ enum FrameStyle
 };
 
 /// \brief Simple UI interface for drawing a styled message box
-class MessageBox: public IDrawable,
-                  public Transformable
+class MessageBox:
+                  public IDrawable
+
 {
   public:
     MessageBox ( void );

@@ -36,7 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/math/Transformable.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Pixel.hpp"
 #include "nomlib/system/make_unique.hpp"
@@ -44,8 +43,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Bresenham's line algorithm
-class Line: public IDrawable,     // "is a" relationship
-            public Transformable  // "has a" relationship
+class Line:
+            public IDrawable
 {
   public:
     Line ( void );

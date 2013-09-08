@@ -37,14 +37,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Color.hpp"
-#include "nomlib/math/Transformable.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Rectangle.hpp"
 
 namespace nom {
 
-class Gradient: //public IDrawable,     // "is a" relationship
-                public Transformable  // "has a" relationship
+class Gradient:
+                public IDrawable
+
 {
   public:
     Gradient( void );
@@ -69,7 +69,7 @@ class Gradient: //public IDrawable,     // "is a" relationship
     void Draw ( void* video_buffer ) const;
 
   private:
-    std::vector<std::shared_ptr<Rectangle>> rectangles;
+    std::vector<std::shared_ptr<IDrawable>> rectangles;
     /// gradient[0] = starting Color
     /// gradient[1] = ending Color
     Color gradient[2];

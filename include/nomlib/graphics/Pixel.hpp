@@ -33,13 +33,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/math/Transformable.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 
-class Pixel:  public IDrawable,     // "is a" relationship
-              public Transformable  // "has a" relationship
+class Pixel:
+              public IDrawable
 {
   public:
     Pixel ( void );

@@ -118,7 +118,7 @@ void Gradient::Update ( void )
 
   for ( uint32 rows = this->coords.x; rows < x_offset - this->x_margin; rows++ )
   {
-    this->rectangles.push_back ( std::shared_ptr<Rectangle> ( new Rectangle ( Coords ( rows, this->coords.y, 1, this->coords.height - this->y_margin ), Color ( currentR, currentG, currentB ) ) ) );
+    this->rectangles.push_back ( std::shared_ptr<IDrawable> ( new Rectangle ( Coords ( rows, this->coords.y, 1, this->coords.height - this->y_margin ), Color ( currentR, currentG, currentB ) ) ) );
 
     if ( this->direction == 0 )
     {

@@ -210,7 +210,7 @@ void Input::HandleInput ( void* event )
   } // end switch input->type
 }
 
-void Input::onUserEvent ( uint8_t type, int32_t code, void* data1, void* data2 )
+void Input::onUserEvent ( uint8 type, int32 code, void* data1, void* data2 )
 {
   // virtual implementation
 }
@@ -220,7 +220,7 @@ void Input::onQuit ( void )
   // virtual implementation
 }
 
-void Input::onResize ( int32_t width, int32_t height )
+void Input::onResize ( int32 width, int32 height )
 {
   // virtual implementation
 }
@@ -260,17 +260,17 @@ void Input::onExpose ( void )
   // virtual implementation
 }
 
-void Input::onKeyDown ( int32_t key, int32_t mod )
+void Input::onKeyDown ( int32 key, int32 mod )
 {
   // virtual implementation
 }
 
-void Input::onKeyUp ( int32_t key, int32_t mod )
+void Input::onKeyUp ( int32 key, int32 mod )
 {
   // virtual implementation
 }
 
-void Input::onMouseMotion ( int32_t x, int32_t y )
+void Input::onMouseMotion ( int32 x, int32 y )
 {
   // virtual implementation
 }
@@ -280,17 +280,17 @@ void Input::onMouseWheel ( bool up, bool down )
   // virtual implementation
 }
 
-void Input::onMouseLeftButtonDown ( int32_t x, int32_t y )
+void Input::onMouseLeftButtonDown ( int32 x, int32 y )
 {
   // virtual implementation
 }
 
-void Input::onMouseMiddleButtonDown ( int32_t x, int32_t y )
+void Input::onMouseMiddleButtonDown ( int32 x, int32 y )
 {
   // virtual implementation
 }
 
-void Input::onMouseRightButtonDown ( int32_t x, int32_t y )
+void Input::onMouseRightButtonDown ( int32 x, int32 y )
 {
   // virtual implementation
 }
@@ -305,17 +305,17 @@ void Input::onMouseButtonSevenDown ( int32 x, int32 y )
   // virtual implementation
 }
 
-void Input::onMouseLeftButtonUp ( int32_t x, int32_t y )
+void Input::onMouseLeftButtonUp ( int32 x, int32 y )
 {
   // virtual implementation
 }
 
-void Input::onMouseMiddleButtonUp ( int32_t x, int32_t y )
+void Input::onMouseMiddleButtonUp ( int32 x, int32 y )
 {
   // virtual implementation
 }
 
-void Input::onMouseRightButtonUp ( int32_t x, int32_t y )
+void Input::onMouseRightButtonUp ( int32 x, int32 y )
 {
   // virtual implementation
 }
@@ -330,17 +330,17 @@ void Input::onMouseButtonSevenUp ( int32 x, int32 y )
   // virtual implementation
 }
 
-void Input::onJoyButtonDown ( int32_t which, int32_t button )
+void Input::onJoyButtonDown ( int32 which, int32 button )
 {
   // virtual implementation
 }
 
-void Input::onJoyButtonUp ( int32_t which, int32_t button )
+void Input::onJoyButtonUp ( int32 which, int32 button )
 {
   // virtual implementation
 }
 
-void Input::onJoyAxis ( int32_t which, int32_t axis, short value )
+void Input::onJoyAxis ( int32 which, int32 axis, uint16 value )
 {
   // virtual implementation
 }

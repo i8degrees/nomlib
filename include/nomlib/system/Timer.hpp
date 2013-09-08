@@ -46,6 +46,10 @@ class Timer
 
     void start ( void );
     void stop ( void );
+
+    /// Alias for start
+    void restart ( void );
+
     void pause ( void );
     void unpause ( void );
 

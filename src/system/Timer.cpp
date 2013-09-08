@@ -65,8 +65,14 @@ void Timer::start ( void )
 
 void Timer::stop ( void )
 {
+  this->elapsed_ticks = 0;
   this->timer_started = false;
   this->timer_paused = false;
+}
+
+void Timer::restart ( void )
+{
+  this->start();
 }
 
 void Timer::pause ( void )

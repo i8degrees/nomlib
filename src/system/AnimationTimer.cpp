@@ -26,35 +26,87 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#include "nomlib/system/AnimationTimer.hpp"
 
-// Public header file
+namespace nom {
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/GameStates.hpp>
-#include <nomlib/system/ObjectCache.hpp>
-#include <nomlib/system/DialogMessageBox.hpp>
-#include <nomlib/system/Path.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDL_App.hpp>
-#include <nomlib/system/Input.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/Sleep.hpp>
-#include <nomlib/system/random.hpp>
-#include <nomlib/system/make_unique.hpp>
-#include <nomlib/system/EventDispatcher.hpp>
-#include <nomlib/system/AnimationTimer.hpp>
+AnimationTimer::AnimationTimer ( void )
+{
+//NOM_LOG_TRACE ( NOM );
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/DialogMessageBox.hpp>
-  #include <nomlib/system/osx/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  #include <nomlib/system/unix/DialogMessageBox.hpp>
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/DialogMessageBox.hpp>
-#endif
+  if ( SDL_WasInit( SDL_INIT_TIMER ) == false )
+  {
+    if ( SDL_InitSubSystem ( SDL_INIT_TIMER ) == -1 )
+    {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return;
+    }
+  }
 
-#endif // include guard defined
+  this->timer_started = false;
+  this->elapsed_ticks = 0;
+  this->frame_rate = 0;
+}
+
+AnimationTimer::~AnimationTimer ( void )
+{
+//NOM_LOG_TRACE ( NOM );
+
+  SDL_QuitSubSystem ( SDL_INIT_TIMER );
+}
+
+void AnimationTimer::start ( void )
+{
+  this->elapsed_ticks = SDL_GetTicks();
+  this->timer_started = true;
+}
+
+void AnimationTimer::stop ( void )
+{
+  this->elapsed_ticks = 0;
+  this->timer_started = false;
+}
+
+void AnimationTimer::restart ( void )
+{
+  this->start();
+}
+
+uint32 AnimationTimer::ticks ( void ) const
+{
+  if ( this->timer_started == true )
+  {
+    return this->elapsed_ticks;
+  }
+
+  // Timer is not running
+  return 0;
+}
+
+bool AnimationTimer::started ( void ) const
+{
+  return this->timer_started;
+}
+
+const std::string AnimationTimer::ticksAsString ( void ) const
+{
+  return std::to_string ( static_cast<uint32> ( this->ticks() ) );
+}
+
+uint32 AnimationTimer::seconds ( float milliseconds ) const
+{
+  return static_cast<uint32> ( milliseconds * 1000.f );
+}
+
+uint32 AnimationTimer::framerate ( void ) const
+{
+  return this->frame_rate;
+}
+
+void AnimationTimer::setFrameRate ( uint32 rate )
+{
+  this->frame_rate = rate;
+}
+
+
+} // namespace nom

@@ -26,35 +26,55 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#ifndef NOMLIB_SDL_ANIMATION_TIMER_HEADERS
+#define NOMLIB_SDL_ANIMATION_TIMER_HEADERS
 
-// Public header file
+#include <iostream>
+#include <string>
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/GameStates.hpp>
-#include <nomlib/system/ObjectCache.hpp>
-#include <nomlib/system/DialogMessageBox.hpp>
-#include <nomlib/system/Path.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDL_App.hpp>
-#include <nomlib/system/Input.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/Sleep.hpp>
-#include <nomlib/system/random.hpp>
-#include <nomlib/system/make_unique.hpp>
-#include <nomlib/system/EventDispatcher.hpp>
-#include <nomlib/system/AnimationTimer.hpp>
+#include <SDL/SDL.h>
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/DialogMessageBox.hpp>
-  #include <nomlib/system/osx/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  #include <nomlib/system/unix/DialogMessageBox.hpp>
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/DialogMessageBox.hpp>
-#endif
+#include "nomlib/config.hpp"
+
+namespace nom {
+
+class AnimationTimer
+{
+  public:
+    AnimationTimer ( void );
+    virtual ~AnimationTimer ( void );
+
+    void start ( void );
+    void stop ( void );
+
+    /// Alias for start
+    void restart ( void );
+
+    uint32 ticks ( void ) const;
+
+    bool started ( void ) const;
+
+    const std::string ticksAsString ( void ) const;
+
+    /// Helper method; conversion from milliseconds to seconds
+    uint32 seconds( float milliseconds ) const;
+
+    uint32 framerate ( void ) const;
+
+    void setFrameRate ( uint32 rate );
+
+  private:
+    /// Milliseconds since timer start
+    uint32 elapsed_ticks;
+
+    /// Tracks whether we are started or not
+    bool timer_started;
+
+    /// Convenience container
+    uint32 frame_rate;
+};
+
+
+} // namespace nom
 
 #endif // include guard defined

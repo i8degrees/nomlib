@@ -52,6 +52,7 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/system/ObjectCache.cpp
       ${SRC_DIR}/system/SDL_App.cpp
       ${SRC_DIR}/system/Input.cpp
+      ${SRC_DIR}/system/AnimationTimer.cpp
       ${SRC_DIR}/system/Timer.cpp
       ${SRC_DIR}/system/Sleep.cpp
       ${SRC_DIR}/system/random.cpp

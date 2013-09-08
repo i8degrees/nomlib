@@ -26,34 +26,53 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#include "nomlib/system/EventDispatcher.hpp"
 
-// Public header file
+namespace nom {
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/GameStates.hpp>
-#include <nomlib/system/ObjectCache.hpp>
-#include <nomlib/system/DialogMessageBox.hpp>
-#include <nomlib/system/Path.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDL_App.hpp>
-#include <nomlib/system/Input.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/Sleep.hpp>
-#include <nomlib/system/random.hpp>
-#include <nomlib/system/make_unique.hpp>
-#include <nomlib/system/EventDispatcher.hpp>
+EventDispatcher::EventDispatcher ( void )
+{
+NOM_LOG_TRACE ( NOM );
+}
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/DialogMessageBox.hpp>
-  #include <nomlib/system/osx/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  #include <nomlib/system/unix/DialogMessageBox.hpp>
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/DialogMessageBox.hpp>
-#endif
+EventDispatcher::~EventDispatcher ( void )
+{
+NOM_LOG_TRACE ( NOM );
+}
 
-#endif // include guard defined
+int32 EventDispatcher::push ( SDL_Event* event, int32 code, void* params )
+{
+  SDL_UserEvent user_event;
+
+  user_event.type = SDL_USEREVENT;
+  user_event.code = code;
+  user_event.data1 = params;
+  user_event.data2 = nullptr;
+
+  event->type = SDL_USEREVENT;
+  event->user = user_event;
+
+  if ( SDL_PushEvent ( event ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return -1;
+  }
+
+  return 0;
+}
+
+int32 EventDispatcher::dispatch ( enum UserEvent code, void* params )
+{
+  SDL_Event event;
+
+  if ( this->push ( &event, static_cast<int32> ( code ), nullptr ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, "Could not dispatch event." );
+    return -1;
+  }
+
+  return 0;
+}
+
+
+} // namespace nom

@@ -26,34 +26,46 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#ifndef NOMLIB_EVENT_DISPATCHER_HPP
+#define NOMLIB_EVENT_DISPATCHER_HPP
 
-// Public header file
+#include <iostream>
+#include <string>
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/GameStates.hpp>
-#include <nomlib/system/ObjectCache.hpp>
-#include <nomlib/system/DialogMessageBox.hpp>
-#include <nomlib/system/Path.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDL_App.hpp>
-#include <nomlib/system/Input.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/Sleep.hpp>
-#include <nomlib/system/random.hpp>
-#include <nomlib/system/make_unique.hpp>
-#include <nomlib/system/EventDispatcher.hpp>
+#include <SDL/SDL.h>
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/DialogMessageBox.hpp>
-  #include <nomlib/system/osx/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  #include <nomlib/system/unix/DialogMessageBox.hpp>
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/DialogMessageBox.hpp>
-#endif
+#include "nomlib/config.hpp"
+
+namespace nom {
+
+enum class UserEvent: int32
+{
+  Unknown = 000,
+  AI,
+  Animation,
+  Application,
+  Audio,
+  General,
+  Library,
+  State,
+  UI
+};
+
+class EventDispatcher
+{
+  public:
+    EventDispatcher ( void );
+    ~EventDispatcher ( void );
+
+    int32 push ( SDL_Event* event, int32 code, void* params );
+
+    int32 dispatch ( enum UserEvent code, void* params = nullptr );
+
+  private:
+    // ...
+};
+
+
+} // namespace nom
 
 #endif // include guard defined

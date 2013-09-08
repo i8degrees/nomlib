@@ -161,9 +161,13 @@ void MessageBox::setLabelTextAlignment ( enum TextAlignment alignment )
 
 void MessageBox::setWindowTitle ( const std::string& text )
 {
+  std::string text_buffer = text;
   if ( ! this->window_title ) return;
 
-  this->window_title->setText ( text );
+  // I LIKE TO YELL AT YOU IN ALL CAPS
+  std::transform ( text_buffer.begin(), text_buffer.end(), text_buffer.begin(), ::toupper);
+
+  this->window_title->setText ( text_buffer );
 }
 
 void MessageBox::setLabel ( const std::string& text )

@@ -66,7 +66,7 @@ class App: public nom::SDL_App
 
     int32_t Run ( void )
     {
-      this->fps.Start();
+      this->fps.start();
 
       this->Running(); // ...here we go!
 
@@ -78,11 +78,11 @@ class App: public nom::SDL_App
         }
 
         if ( this->getShowFPS() )
-          this->display.setWindowTitle ( APP_NAME + " " + "-" + " " + std::to_string ( this->fps.getFPS() ) + " " + "fps" );
+          this->display.setWindowTitle ( APP_NAME + " " + "-" + " " + std::to_string ( this->fps.fps() ) + " " + "fps" );
         else
           this->display.setWindowTitle ( APP_NAME );
 
-        this->fps.Update();
+        this->fps.update();
         } // isRunning() == true
 
         return EXIT_SUCCESS;

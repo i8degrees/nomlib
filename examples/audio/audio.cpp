@@ -53,8 +53,8 @@ int main ( int argc, char* argv[] )
   nom::Timer loops;
   std::string path = dir.path(argv[0]) + "/";
 
-NOM_DUMP_VAR ( dev.getDeviceName() );
-NOM_DUMP_VAR ( dev2.getDeviceName() );
+//NOM_DUMP_VAR ( dev.getDeviceName() );
+//NOM_DUMP_VAR ( dev2.getDeviceName() );
 
   listener.setVolume ( MAX_VOLUME );
 NOM_DUMP_VAR ( listener.getVolume() );
@@ -94,7 +94,7 @@ NOM_LOG_ERR ( NOM, "Buffer loading err" );
   float duration_seconds = duration / 1000.0f;
 NOM_DUMP_VAR ( duration_seconds );
 
-  loops.Start();
+  loops.start();
 
   //float step = 1.0;
   // volume / seconds = step
@@ -104,9 +104,9 @@ NOM_DUMP_VAR ( duration_seconds );
 
   float pos = snd.getPlayPosition();
 
-  snd.fadeOut ( 4 );
+    snd.fadeOut ( 4 );
 
-  while ( ( loops.getTicks() <= duration * 2 ) && ( snd.getStatus() != nom::SoundStatus::Paused && snd.getStatus() != nom::SoundStatus::Stopped ) )
+  while ( ( loops.ticks() <= duration * 2 ) && ( snd.getStatus() != nom::SoundStatus::Paused && snd.getStatus() != nom::SoundStatus::Stopped ) )
   {
     // 0.455*2/4
     // ( duration * total_loops ) / milliseconds*2 where seconds is desired fade
@@ -125,8 +125,8 @@ NOM_DUMP_VAR ( duration_seconds );
     }
   }
 
-  loops.Stop();
-NOM_DUMP_VAR ( loops.getTicks() );
+  loops.stop();
+NOM_DUMP_VAR ( loops.ticks() );
 
   //alcMakeContextCurrent ( nullptr );
   //alcDestroyContext ( ctx );

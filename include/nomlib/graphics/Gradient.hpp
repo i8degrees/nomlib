@@ -73,6 +73,8 @@ class Gradient: //public IDrawable,     // "is a" relationship
     /// gradient[0] = starting Color
     /// gradient[1] = ending Color
     Color gradient[2];
+
+    Coords coords;
     /// x coordinate offset
     int32 x_margin;
     /// y coordinate offset

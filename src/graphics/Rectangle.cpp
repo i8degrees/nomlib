@@ -36,8 +36,6 @@ Rectangle::Rectangle ( void )
   this->color = Color ( 0, 0, 0 );
 }
 
-// Constructor variant for creating a rectangle from an existing type
-// This is a "shallow" copy assignment
 Rectangle::Rectangle ( const Rectangle& rect )
 {
   this->coords = rect.coords;
@@ -63,8 +61,8 @@ void Rectangle::Update ( void )
 void Rectangle::Draw ( void* video_buffer ) const
 {
   SDL_Rect rectangle = getSDL_Rect ( this->coords );
-  unsigned int rectangle_color = 0;
-  SDL_Surface *buffer = static_cast<SDL_Surface*> ( video_buffer );
+  uint32 rectangle_color = 0;
+  SDL_Surface* buffer = static_cast<SDL_Surface*> ( video_buffer );
 
   rectangle_color = getColorAsInt ( buffer->format, this->color );
 

@@ -94,12 +94,14 @@ class MessageBox: public IDrawable,
 
   private:
     void initialize ( void );
+
     IFrame::SharedPtr frame;
     Gradient background;
 
     IFont::SharedPtr window_title;
     IFont::SharedPtr label;
 
+    Coords coords;
     enum TextAlignment label_alignment;
     bool enabled;
 };

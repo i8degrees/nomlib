@@ -119,7 +119,7 @@ void Sprite::Update ( void )
   this->offsets.setSize ( this->sheet.sprite_width, this->sheet.sprite_height );
   this->sprite_buffer.setOffsets ( this->offsets );
 
-  this->sprite_buffer.setPosition ( coords );
+  this->sprite_buffer.setPosition ( this->coords );
 }
 
 void Sprite::Draw ( void* video_buffer ) const

@@ -69,10 +69,10 @@ class Sprite: public IDrawable,
 
   private:
     Canvas sprite_buffer;
-    Coords offsets;
-
+    Coords coords;
     unsigned int state; /// alive, dying, dead, ...
 
+    Coords offsets;
     struct {
       signed int id; /// maps a specific sprite within sheet
       unsigned int sprite_width; /// width of sprite in sheet

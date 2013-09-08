@@ -69,7 +69,7 @@ class GrayFrame: public IFrame
     Display context;
 
     /// Position & Size
-    Coords coords;
+    Coords frame_position;
 
     /// Track object logic changes for updating its rendering
     bool updated;

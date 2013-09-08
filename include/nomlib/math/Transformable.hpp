@@ -59,7 +59,7 @@ class Transformable
     void setColor ( const Color& color );
 
   protected:
-    Coords coords;
+    Coords pos;
     Color color;
 };
 

@@ -44,12 +44,21 @@ class Rectangle:  public IDrawable,     // "is a" relationship
 {
   public:
     Rectangle ( void );
+
+    /// Constructor variant for creating a rectangle from an existing type
+    /// This is a "shallow" copy assignment
     Rectangle ( const Rectangle& rect );
+
     Rectangle ( const Coords& coords, const Color& color );
+
     virtual ~Rectangle ( void );
 
     void Update ( void );
     void Draw ( void* ) const;
+
+  private:
+    Coords coords;
+    Color color;
 };
 
 

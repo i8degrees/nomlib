@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/Canvas.hpp"
 #include "nomlib/math/Transformable.hpp"
+#include "nomlib/graphics/SpriteSheet.hpp"
 
 namespace nom {
 
@@ -54,6 +55,8 @@ class Sprite:
     Sprite ( void );
 
     Sprite ( uint32 width, uint32 height );
+
+    Sprite ( const SpriteSheet& sheet );
 
     Sprite ( const Canvas& copy );
 
@@ -90,6 +93,7 @@ class Sprite:
     unsigned int state; /// alive, dying, dead, ...
 
     Coords offsets;
+    SpriteSheet sprite_sheet;
     struct {
       signed int id; /// maps a specific sprite within sheet
       unsigned int sprite_width; /// width of sprite in sheet

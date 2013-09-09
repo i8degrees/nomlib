@@ -60,6 +60,12 @@ NOM_LOG_TRACE ( NOM );
   this->sheet.padding = 0;
 }
 
+Sprite::Sprite ( const SpriteSheet& copy ) : sprite_sheet ( copy )
+                              //coords ( copy.coords.x, copy.coords.y ),
+                              //offsets ( copy.offsets.width, copy.offsets.height )
+{
+NOM_LOG_TRACE ( NOM );
+}
 
 Sprite::Sprite ( const Canvas& copy ) : sprite  ( copy )
                               //coords ( copy.coords.x, copy.coords.y ),

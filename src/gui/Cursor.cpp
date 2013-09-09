@@ -42,7 +42,7 @@ Cursor::Cursor ( int32 x, int32 y, int32 width, int32 height )
 {
 NOM_LOG_TRACE ( NOM );
 
-  initialize ( x, y, width, height );
+  this->initialize ( x, y, width, height );
 }
 
 Cursor::~Cursor ( void )

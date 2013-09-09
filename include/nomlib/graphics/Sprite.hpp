@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
+#include <utility>
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/Canvas.hpp"
@@ -51,7 +52,9 @@ class Sprite:
 
     signed int getSheetID ( void );
     void setSheetID ( signed int id );
-    void setSheetDimensions ( int32 sheet_width, int32 sheet_height,
+
+    void setSheetDimensions (
+                              int32 sheet_width, int32 sheet_height,
                               int32 spacing, int32 padding
                             );
 
@@ -67,7 +70,7 @@ class Sprite:
     bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
   private:
-    Canvas sprite_buffer;
+    Canvas sprite;
     unsigned int state; /// alive, dying, dead, ...
 
     Coords offsets;

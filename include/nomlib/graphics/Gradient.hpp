@@ -39,6 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Color.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Rectangle.hpp"
+#include "nomlib/graphics/Line.hpp"
 
 namespace nom {
 

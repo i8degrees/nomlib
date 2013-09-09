@@ -42,6 +42,8 @@ namespace nom {
 
 /// \brief Helper class for loading, positioning and keeping track of a cursor
 /// controlled by a mouse and / or keyboard.
+///
+/// \TODO inherit from Sprite
 class Cursor
 {
   public:
@@ -109,7 +111,6 @@ class Cursor
 
   protected:
     void initialize ( int32 x, int32 y, int32 width, int32 height );
-
     /// Bitmap for our interface cursor
     Sprite cursor;
 };

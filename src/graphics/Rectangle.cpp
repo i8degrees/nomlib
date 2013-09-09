@@ -61,6 +61,7 @@ void Rectangle::Update ( void )
 void Rectangle::Draw ( void* video_buffer ) const
 {
   SDL_Rect rectangle = getSDL_Rect ( this->coords );
+
   uint32 rectangle_color = 0;
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( video_buffer );
 

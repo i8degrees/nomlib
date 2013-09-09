@@ -39,12 +39,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+enum class SpriteState
+{
+  Reserved = 0,
+  Alive,
+  Dying,
+  Dead
+};
+
 class Sprite:
               public Transformable
 {
   public:
     Sprite ( void );
-    Sprite ( unsigned int width, unsigned int height );
+
+    Sprite ( uint32 width, uint32 height );
+
+    Sprite ( const Canvas& copy );
+
+/* FIXME
+    Sprite& operator = ( const Sprite& other );
+*/
+
     virtual ~Sprite ( void );
 
     unsigned int getState ( void );

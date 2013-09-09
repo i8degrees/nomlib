@@ -45,14 +45,12 @@ NOM_LOG_TRACE ( NOM );
   this->sheet.padding = 0;
 }
 
-Sprite::Sprite ( unsigned int width, unsigned int height )
+Sprite::Sprite ( uint32 width, uint32 height )
 {
 NOM_LOG_TRACE ( NOM );
 
   this->coords.setSize ( width, height );
-
   this->state = 0;
-
   this->sheet.id = 1;
   this->sheet.sprite_width = 0;
   this->sheet.sprite_height = 0;
@@ -61,6 +59,25 @@ NOM_LOG_TRACE ( NOM );
   this->sheet.spacing = 0;
   this->sheet.padding = 0;
 }
+
+
+Sprite::Sprite ( const Canvas& copy ) : sprite  ( copy )
+                              //coords ( copy.coords.x, copy.coords.y ),
+                              //offsets ( copy.offsets.width, copy.offsets.height )
+{
+NOM_LOG_TRACE ( NOM );
+}
+
+/* FIXME
+Sprite& Sprite::operator = ( const Sprite& other )
+{
+  //std::swap ( *this, other );
+  //std::swap ( this->coords, other.sprite.coords );
+  //std::swap ( this->offsets, other.sprite.offsets );
+
+  return *this;
+}
+*/
 
 Sprite::~Sprite ( void )
 {
@@ -101,9 +118,9 @@ bool Sprite::load ( std::string filename, Color colorkey,
                     bool use_cache, uint32 flags
                   )
 {
-  this->sprite_buffer.load ( filename, colorkey, use_cache, flags );
+  this->sprite.load ( filename, colorkey, use_cache, flags );
 
-  if ( ! this->sprite_buffer.valid() )
+  if ( ! this->sprite.valid() )
   {
 NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
     return false;
@@ -117,27 +134,27 @@ void Sprite::Update ( void )
   // FIXME: Presently, we assume every sprite on our sheet is on the same row
   this->offsets.setPosition ( this->sheet.id * this->sheet.sprite_width, 0 );
   this->offsets.setSize ( this->sheet.sprite_width, this->sheet.sprite_height );
-  this->sprite_buffer.setOffsets ( this->offsets );
+  this->sprite.setOffsets ( this->offsets );
 
-  this->sprite_buffer.setPosition ( this->coords );
+  this->sprite.setPosition ( this->coords );
 }
 
 void Sprite::Draw ( void* video_buffer ) const
 {
-NOM_ASSERT ( this->sprite_buffer.valid() );
+NOM_ASSERT ( this->sprite.valid() );
 
-  this->sprite_buffer.Draw ( video_buffer );
+  this->sprite.Draw ( video_buffer );
 }
 
 bool Sprite::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
-  if ( this->sprite_buffer.valid() == false )
+  if ( this->sprite.valid() == false )
   {
 NOM_LOG_ERR ( NOM, "Video surface is invalid." );
     return false;
   }
 
-  if ( this->sprite_buffer.resize ( scaling_algorithm ) == false )
+  if ( this->sprite.resize ( scaling_algorithm ) == false )
   {
 NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
     return false;

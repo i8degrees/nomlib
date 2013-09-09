@@ -26,18 +26,38 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_MATH_HEADERS
-#define NOMLIB_MATH_HEADERS
+#ifndef NOMLIB_MATH_RECT_HEADERS
+#define NOMLIB_MATH_RECT_HEADERS
 
-// Public header file
+#include "nomlib/config.hpp"
 
-#include <nomlib/config.hpp>
-#include <nomlib/math/Color.hpp>
-#include <nomlib/math/Coords.hpp>
-#include <nomlib/math/Rect-inl.hpp>
-#include <nomlib/math/Vector2-inl.hpp>
-#include <nomlib/math/Vector3-inl.hpp>
-#include <nomlib/math/Vector4-inl.hpp>
-#include <nomlib/math/Transformable.hpp>
+namespace nom {
 
-#endif // include guard defined
+/// \brief Rectangle class container (template version)
+template<class T>
+class Rect
+{
+  public:
+    Rect ( void ) : left(), top(), right(), bottom() {}
+
+    Rect ( T left, T top, T right, T bottom)  :
+      left ( left ), top ( top ), right ( right ), bottom ( bottom ) {}
+
+    template<class Point>
+    Rect ( Point p, T width, T height ) :
+      left ( p.x ), top ( p.y ), right ( p.x + width ), bottom ( p.y + height ) {}
+
+  public:
+    T left;
+    T top;
+    T right;
+    T bottom;
+};
+
+typedef Rect<int32> IntRect;
+typedef Rect<float> FloatRect;
+
+
+} // namespace nom
+
+#endif // NOMLIB_VECTOR4_HEADERS defined

@@ -65,8 +65,8 @@ enum ResizeAlgorithm
   scale3x, // Reserved for future implementation
   scale4x, // Reserved for future implementation
   hq2x,
-  hq3x, // Reserved for future implementation
-  hq4x // Reserved for future implementation
+  hq3x,
+  hq4x
 };
 
 class Canvas
@@ -242,13 +242,13 @@ class Canvas
     /// See the ResizeAlgorithm enum for available rescaling algorithms
     bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
+    /// Return the correct scaling factor of the chosen algorithm
+    int32 getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm );
+
   private:
     /// Internal method used for checking to see if the video surface actually
     /// needs to be locked before doing so for performance sake.
     bool mustLock ( void ) const;
-
-    /// Return the correct scaling factor of the chosen algorithm
-    int32 getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm );
 
     std::shared_ptr<void> canvas_buffer; // SDL_Surface*
     /// Holds surface position

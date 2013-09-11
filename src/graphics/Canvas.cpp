@@ -126,6 +126,11 @@ void Canvas::setCanvas ( const Canvas& surface )
   this->offsets.setSize ( surface.getCanvasWidth(), surface.getCanvasHeight() );
 }
 
+const Coords& Canvas::getPosition ( void ) const
+{
+  return this->coords;
+}
+
 void Canvas::setPosition ( const Coords& coords_ )
 {
   this->coords.x = coords_.x;

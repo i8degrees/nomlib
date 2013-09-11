@@ -121,6 +121,8 @@ class Canvas
     /// Copy assignment operator
     Canvas& operator = ( const Canvas& other );
 
+    const Coords& getPosition ( void ) const;
+
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
 

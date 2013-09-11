@@ -36,16 +36,15 @@ Transformable::Transformable ( void )  :  coords ( 0, 0, 0, 0 ),
   // Nothing to initialize
 }
 
+Transformable::Transformable ( const Coords& coords ):  coords ( coords ) {}
+
 Transformable::Transformable ( const Coords& coords, const Color& color )
 {
   this->coords = coords;
   this->color = color;
 }
 
-Transformable::~Transformable ( void )
-{
-// Nothing to clean up!
-}
+Transformable::~Transformable ( void ) {}
 
 const Coords Transformable::getPosition ( void ) const
 {

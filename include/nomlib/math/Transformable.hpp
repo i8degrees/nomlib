@@ -41,6 +41,7 @@ class Transformable:
 {
   public:
     Transformable ( void );
+    Transformable ( const Coords& coords );
     Transformable ( const Coords& coords, const Color& color );
     virtual ~Transformable ( void );
 

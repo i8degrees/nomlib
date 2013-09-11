@@ -31,10 +31,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
-#include <vector>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Coords.hpp"
+#include "nomlib/math/Transformable.hpp"
 #include "nomlib/graphics/Sprite.hpp"
 
 namespace nom {
@@ -42,33 +42,30 @@ namespace nom {
 
 /// \brief Helper class for loading, positioning and keeping track of a cursor
 /// controlled by a mouse and / or keyboard.
-///
-/// \TODO inherit from Sprite
-class Cursor
+class Cursor:
+              public Sprite
 {
   public:
+    /// Default construct for initializing instance variables to their
+    /// respective defaults.
     Cursor ( void );
+
+    /// Construct a new Cursor object, initializing the Sprite with the given
+    /// coordinates.
     Cursor ( int32 x, int32 y, int32 width, int32 height );
+
+    /// Construct a new Cursor object, initializing the Sprite with a
+    /// SpriteSheet.
+    Cursor ( const SpriteSheet* sheet );
+
+    /// Destructor
     virtual ~Cursor ( void );
+
+    /// Copy assignment operator
+    Cursor& operator = ( const Cursor& other );
 
     int32 getX ( void ) const;
     int32 getY ( void ) const;
-
-    /// Set the size of the cursor bitmap.
-    void setSize ( int32 width, int32 height );
-
-    /// Set the X, Y coordinates of the cursor bitmap.
-    void setPosition ( int32 x, int32 y );
-
-    void move ( int32 x, int32 y );
-
-    int32 getSheetID ( void );
-
-    void setSheetID ( int32 sheet_id = -1 );
-    void setSheetDimensions ( int32 sheet_width, int32 sheet_height, int32 spacing, int32 padding );
-
-    int32 getState ( void );
-    void setState ( int32 state );
 
     //bool isCursorLocked ( void );
     //void lockCursor ( bool toggle );
@@ -101,18 +98,11 @@ class Cursor
     /// \todo Rename me to right?
     virtual int32 moveCursorRight ( void );
 
-    bool load( const std::string& filename, const Color& colorkey, bool use_cache );
-
     void update ( void );
     void draw ( void* video_buffer );
 
-    /// Rescale the font with a chosen resizing algorithm
-    bool resize ( enum ResizeAlgorithm scaling_algorithm );
-
   protected:
-    void initialize ( int32 x, int32 y, int32 width, int32 height );
-    /// Bitmap for our interface cursor
-    Sprite cursor;
+    // ...
 };
 
 

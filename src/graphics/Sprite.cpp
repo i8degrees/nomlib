@@ -30,97 +30,81 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Sprite::Sprite ( void )
+Sprite::Sprite ( void ) : state ( 0 ), sheet_id ( 0 ), scale_factor ( 1 )
+{
+NOM_LOG_TRACE ( NOM );
+}
+
+Sprite::Sprite ( int32 width, int32 height )  :
+  Transformable { Coords ( 0, 0, width, height ) }, state ( 0 ), sheet_id ( 0 ),
+  scale_factor ( 1 )
+
+{
+NOM_LOG_TRACE ( NOM );
+}
+
+Sprite::Sprite ( const SpriteSheet* sheet )
 {
 NOM_LOG_TRACE ( NOM );
 
+  this->sprite_sheet = SpriteSheet::SharedPtr ( sheet->clone() );
+
+  Coords dims = sheet->dimensions(0);
+
+  this->coords.setSize ( dims.width, dims.height );
   this->state = 0;
-
-  this->sheet.sprite_width = 0;
-  this->sheet.sprite_height = 0;
-  this->sheet.width = 0;
-  this->sheet.height = 0;
-  this->sheet.id = 1;
-  this->sheet.spacing = 0;
-  this->sheet.padding = 0;
-}
-
-Sprite::Sprite ( uint32 width, uint32 height )
-{
-NOM_LOG_TRACE ( NOM );
-
-  this->coords.setSize ( width, height );
-  this->state = 0;
-  this->sheet.id = 1;
-  this->sheet.sprite_width = 0;
-  this->sheet.sprite_height = 0;
-  this->sheet.width = width = 0;
-  this->sheet.height = height = 0;
-  this->sheet.spacing = 0;
-  this->sheet.padding = 0;
-}
-
-Sprite::Sprite ( const SpriteSheet& copy ) : sprite_sheet ( copy )
-                              //coords ( copy.coords.x, copy.coords.y ),
-                              //offsets ( copy.offsets.width, copy.offsets.height )
-{
-NOM_LOG_TRACE ( NOM );
-}
-
-Sprite::Sprite ( const Canvas& copy ) : sprite  ( copy )
-                              //coords ( copy.coords.x, copy.coords.y ),
-                              //offsets ( copy.offsets.width, copy.offsets.height )
-{
-NOM_LOG_TRACE ( NOM );
+  this->sheet_id = 0;
+  this->scale_factor = 1;
 }
 
 /* FIXME
+Sprite::Sprite ( const Canvas& copy ) : sprite  ( copy ), state ( 0 ),
+  offsets ( copy.getCanvasWidth(), copy.getCanvasHeight() ),
+  sprite_sheet ( nullptr ), sheet_id ( 0 ), scale_factor ( 1 )
+{
+NOM_LOG_TRACE ( NOM );
+}
+*/
+
 Sprite& Sprite::operator = ( const Sprite& other )
 {
-  //std::swap ( *this, other );
-  //std::swap ( this->coords, other.sprite.coords );
-  //std::swap ( this->offsets, other.sprite.offsets );
+  this->sprite = other.sprite;
+  this->coords = other.coords;
+  this->offsets = other.offsets;
+  this->state = other.state;
+  this->sprite_sheet = other.sprite_sheet;
+  this->scale_factor = other.scale_factor;
 
   return *this;
 }
-*/
 
 Sprite::~Sprite ( void )
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-unsigned int Sprite::getState ( void )
+uint32 Sprite::getState ( void )
 {
   return this->state;
 }
 
-void Sprite::setState ( unsigned int state )
+void Sprite::setState ( uint32 state )
 {
   this->state = state;
 }
 
-signed int Sprite::getSheetID ( void )
+int32 Sprite::getSheetID ( void )
 {
-  return this->sheet.id;
+  return this->sheet_id;
 }
 
-void Sprite::setSheetID ( signed int id )
+void Sprite::setSheetID ( int32 id )
 {
-  this->sheet.id = id;
+  this->sheet_id = id;
 }
 
-void Sprite::setSheetDimensions ( int32 sheet_width, int32 sheet_height, int32 spacing, int32 padding )
-{
-  this->sheet.sprite_width = this->coords.width;
-  this->sheet.sprite_height = this->coords.height;
-  this->sheet.width = sheet_width;
-  this->sheet.height = sheet_height;
-  this->sheet.spacing = spacing;
-  this->sheet.padding = padding;
-}
-
-bool Sprite::load ( std::string filename, Color colorkey,
+bool Sprite::load (
+                    std::string filename, Color colorkey,
                     bool use_cache, uint32 flags
                   )
 {
@@ -137,10 +121,14 @@ NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
 
 void Sprite::Update ( void )
 {
-  // FIXME: Presently, we assume every sprite on our sheet is on the same row
-  this->offsets.setPosition ( this->sheet.id * this->sheet.sprite_width, 0 );
-  this->offsets.setSize ( this->sheet.sprite_width, this->sheet.sprite_height );
-  this->sprite.setOffsets ( this->offsets );
+  if ( sprite_sheet )
+  {
+    Coords dims = this->sprite_sheet->dimensions ( this->sheet_id );
+
+    this->offsets.setPosition ( dims.x * scale_factor, dims.y * scale_factor );
+    this->offsets.setSize ( dims.width * scale_factor, dims.height * scale_factor );
+    this->sprite.setOffsets ( this->offsets );
+  }
 
   this->sprite.setPosition ( this->coords );
 }
@@ -166,7 +154,8 @@ NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
     return false;
   }
 
-  //this->Update();
+  this->scale_factor = this->sprite.getResizeScaleFactor ( scaling_algorithm );
+  this->Update();
 
   return true;
 }

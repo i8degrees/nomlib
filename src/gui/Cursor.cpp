@@ -35,14 +35,22 @@ Cursor::Cursor ( void )
 {
 NOM_LOG_TRACE ( NOM );
 
-  initialize ( 0, 0, 0, 0 );
+  // Nothing else to do
 }
 
 Cursor::Cursor ( int32 x, int32 y, int32 width, int32 height )
+  : Sprite ( width, height )
 {
 NOM_LOG_TRACE ( NOM );
 
-  this->initialize ( x, y, width, height );
+  this->setPosition ( x, y );
+}
+
+Cursor::Cursor ( const SpriteSheet* sheet ):  Sprite ( sheet )
+{
+NOM_LOG_TRACE ( NOM );
+
+  // Nothing else to do
 }
 
 Cursor::~Cursor ( void )
@@ -50,56 +58,28 @@ Cursor::~Cursor ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
+Cursor& Cursor::operator = ( const Cursor& other )
+{
+  this->sprite = other.sprite;
+  this->coords = other.coords;
+  this->offsets = other.offsets;
+  this->state = other.state;
+  this->sprite_sheet = other.sprite_sheet;
+  this->scale_factor = other.scale_factor;
+
+  return *this;
+}
+
 int32 Cursor::getX ( void ) const
 {
-  Coords x_value = this->cursor.getPosition();
+  Coords x_value = this->getPosition();
   return x_value.x;
 }
 
 int32 Cursor::getY ( void ) const
 {
-  Coords y_value = this->cursor.getPosition();
+  Coords y_value = this->getPosition();
   return y_value.y;
-}
-
-void Cursor::setSize ( int32 width, int32 height )
-{
-  this->cursor.setSize ( width, height );
-}
-
-void Cursor::setPosition ( int32 x, int32 y )
-{
-  this->cursor.setPosition ( x, y );
-}
-
-void Cursor::move ( int32 x, int32 y )
-{
-  this->cursor.move ( x, y );
-}
-
-int32 Cursor::getSheetID ( void )
-{
-  return this->cursor.getSheetID();
-}
-
-void Cursor::setSheetID ( int32 sheet_id )
-{
-  this->cursor.setSheetID ( sheet_id );
-}
-
-void Cursor::setSheetDimensions ( int32 sheet_width, int32 sheet_height, int32 spacing, int32 padding )
-{
-  this->cursor.setSheetDimensions ( sheet_width, sheet_height, spacing, padding );
-}
-
-int32 Cursor::getState ( void )
-{
-  return this->cursor.getState();
-}
-
-void Cursor::setState ( int32 state )
-{
-  this->cursor.setState ( state );
 }
 
 int32 Cursor::moveCursorUp ( void )
@@ -122,45 +102,14 @@ int32 Cursor::moveCursorRight ( void )
   return -1; // Do nothing virtual implementation
 }
 
-bool Cursor::load ( const std::string& filename, const Color& colorkey, bool use_cache )
-{
-  if ( this->cursor.load ( filename, colorkey, use_cache ) == false )
-  {
-NOM_LOG_ERR ( NOM, "Could not load cursor resource file: " + filename );
-    return false;
-  }
-
-  return true;
-}
-
 void Cursor::update ( void )
 {
-  this->cursor.Update();
+  this->Update();
 }
 
 void Cursor::draw ( void* video_buffer )
 {
-  this->cursor.Draw ( video_buffer );
-}
-
-bool Cursor::resize ( enum ResizeAlgorithm scaling_algorithm )
-{
-  if ( this->cursor.resize ( scaling_algorithm ) == false )
-  {
-NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
-    return false;
-  }
-
-  //this->cursor.Update();
-
-  return true;
-}
-
-void Cursor::initialize ( int32 x, int32 y, int32 width, int32 height )
-{
-  this->cursor = Sprite ( width, height );
-  this->cursor.setPosition ( x, y );
-  this->cursor.setState ( 0 );
+  this->Draw ( video_buffer );
 }
 
 

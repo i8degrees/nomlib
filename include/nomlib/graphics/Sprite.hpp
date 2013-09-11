@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
-#include <utility>
+#include <memory>
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/Canvas.hpp"
@@ -40,45 +40,46 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-enum class SpriteState
-{
-  Reserved = 0,
-  Alive,
-  Dying,
-  Dead
-};
-
 class Sprite:
               public Transformable
 {
   public:
+    /// Default construct for initializing instance variables to their
+    // respective defaults.
     Sprite ( void );
 
-    Sprite ( uint32 width, uint32 height );
+    /// Construct a Sprite object, initializing the width & height coordinates.
+    Sprite ( int32 width, int32 height );
 
-    Sprite ( const SpriteSheet& sheet );
+    /// Construct a Sprite object, initializing it with a SpriteSheet object.
+    Sprite ( const SpriteSheet* sheet );
 
-    Sprite ( const Canvas& copy );
+    /// Construct a Sprite object, initializing it with a Canvas object.
+    /// \FIXME
+    //Sprite ( const Canvas& copy );
 
-/* FIXME
+    /// Copy assignment operator.
     Sprite& operator = ( const Sprite& other );
-*/
 
+    /// Destructor.
     virtual ~Sprite ( void );
 
-    unsigned int getState ( void );
-    void setState ( unsigned int state );
+    /// Get the object's state.
+    uint32 getState ( void );
 
-    signed int getSheetID ( void );
-    void setSheetID ( signed int id );
+    /// Get the object's sheet_id.
+    int32 getSheetID ( void );
 
-    void setSheetDimensions (
-                              int32 sheet_width, int32 sheet_height,
-                              int32 spacing, int32 padding
-                            );
+    /// Set a new state.
+    void setState ( uint32 state );
 
-    bool load ( std::string filename, Color colorkey,
-                bool use_cache = 0,
+    /// Set a new sheet_id to render (only effective if a SpriteSheet is in use).
+    void setSheetID ( int32 id );
+
+    /// Load a new image onto the Sprite.
+    bool load (
+                std::string filename, Color colorkey,
+                bool use_cache = false,
                 uint32 flags = SDL_SRCCOLORKEY | SDL_RLEACCEL
               );
 
@@ -88,21 +89,24 @@ class Sprite:
     /// Rescale the font with a chosen resizing algorithm
     bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
-  private:
+  protected:
+    /// Object that holds our sprite image
     Canvas sprite;
-    unsigned int state; /// alive, dying, dead, ...
 
+    /// alive, dying, dead, ...
+    uint32 state;
+
+    /// Source (input) coordinates, used for sprite sheet positioning
     Coords offsets;
-    SpriteSheet sprite_sheet;
-    struct {
-      signed int id; /// maps a specific sprite within sheet
-      unsigned int sprite_width; /// width of sprite in sheet
-      unsigned int sprite_height; /// height of sprite in sheet
-      unsigned int width; /// width of sprite sheet
-      unsigned int height; /// height of sprite sheet
-      unsigned int spacing; /// applied between each sheet tile
-      unsigned int padding; /// applied on all four sides of sheet tile
-    } sheet;
+
+    /// Our attached sprite sheet, if we have one
+    std::shared_ptr<SpriteSheet> sprite_sheet;
+
+    /// The sheet ID currently in use, if we have a sprite sheet loaded
+    int32 sheet_id;
+
+    /// Scale factor applied if the resize method is called
+    int32 scale_factor;
 };
 
 

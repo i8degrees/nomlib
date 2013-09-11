@@ -32,89 +32,93 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <map>
-#include "math.h"
+#include <vector>
+#include <cmath>
 
 #include "json_spirit_writer_template.h"
 #include "json_spirit_reader_template.h"
 
+#ifndef JSON_SPIRIT_VALUE_ENABLED
+  #define JSON_SPIRIT_VALUE_ENABLED
+#endif
+
+#include <nomlib/json.hpp>
+
 #include "nomlib/config.hpp"
+#include "nomlib/version.hpp"
 #include "nomlib/math/Coords.hpp"
 
 namespace nom {
 
-#define NOM_DEBUG_SPRITE_SHEET
+//#define NOM_DEBUG_SPRITE_SHEET
 
-/// \brief SpriteSheet data container class
+/// \brief Data container class for offset (input) coordinates for efficient
+/// rendering of many frames within an image.
 class SpriteSheet
 {
   public:
-    /// Default, do nothing much constructor.
+    typedef std::shared_ptr<SpriteSheet> SharedPtr;
+
+    /// Default construct for initializing instance variables to their
+    /// respective defaults.
     SpriteSheet ( void );
 
+    /// Construct a sprite sheet from an existing sprite sheet file
+    SpriteSheet ( const std::string& filename );
+
     /// Construct a sprite sheet from a given list of arguments. The total tile
-    /// count is used if the num_sprites argument is not initialized, otherwise
-    /// user-defined number of tiles, with a padding of plus one to the number
-    /// given.
+    /// count is used if the num_sprites argument is not initialized.
+    ///
+    /// The filename specified is used only as meta-data.
     ///
     /// Padding is applied on all four sides. Spacing is applied between each
     /// tile.
-    ///
-    /// \TODO Spacing and padding calculations
     SpriteSheet (
+                  const std::string& filename,
                   int32 sheet_width, int32 sheet_height,
                   int32 sprite_width, int32 sprite_height,
-                  int32 spacing = 0, int32 padding = 0, int32 num_sprites = 0
+                  int32 spacing, int32 padding, int32 num_sprites
                 );
 
     /// Destructor.
     ~SpriteSheet ( void );
 
+    /// Make a duplicate of this object's instance
+    SpriteSheet::SharedPtr clone ( void ) const;
+
     /// Get the calculations made for a particular ID number.
     const Coords dimensions ( int32 index ) const;
 
-    /// - Sprite Sheet JSON files:
-    ///
-    ///   * RECT coordinates
-    ///   * spacing, padding, sheet_width & sheet_height, number of sprites,
-    /// etc.
-    ///   * timestamp
-    ///   * perhaps scaling / rotation info?
-    ///   * ...
-    ///
-    /// \TODO
+    /// Save the current sprite sheet data calculations to a file as a series
+    /// of RFC 4627 compliant JSON objects.
     bool save ( const std::string& filename );
+
+    /// Load saved sprite sheet data from a file encoded as an RFC 4627
+    /// compliant JSON object.
     bool load ( const std::string& filename );
 
-    //bool rebuild ( void );
-    //void update ( void );
-    //void draw ( void );
-
   private:
-    /// ...
-    std::map<int32, Coords> sheet;
-/*
-    /// ...
-    int32 num_sprites;
+    /// Our sprite sheet values container.
+    std::vector<Coords> sheet;
 
-    /// ...
-    int32 sprite_width;
+    /// Source filename used is saved with the output (meta-data)
+    std::string sheet_filename;
 
-    /// ...
-    int32 sprite_height;
+    /// Source number of sprites specified; this is saved with the resulting
+    /// output as meta-data.
+    int32 sheet_sprites;
 
-    /// ...
-    int32 spacing;
+    /// Source spacing used is saved with the output (meta-data)
+    int32 sheet_spacing;
 
-    /// ...
-    int32 padding;
+    /// Source padding used is saved with the output (meta-data)
+    int32 sheet_padding;
 
-    /// ...
+    /// Source sheet_width used is saved with the output (meta-data)
     int32 sheet_width;
 
-    /// ...
+    /// Source sheet_height used is saved with the output (meta-data)
     int32 sheet_height;
-*/
 };
 
 
@@ -122,13 +126,26 @@ class SpriteSheet
 
 #endif // include guard defined
 
-// Example of 4X4 Sheet
-//   ________________
-//  | 0 | 1 | 2 | 3 |
-//  |===============|
-//  | 0 | 1 | 2 | 3 |
-//  |===============|
-//  | 0 | 1 | 2 | 3 |
-//  |===============|
-//  | 0 | 1 | 2 | 3 |
-//  |---------------|
+/// Example of 4X4 Sheet
+///   ________________
+///  | 0 | 1 | 2 | 3 |
+///  |===============|
+///  | 0 | 1 | 2 | 3 |
+///  |===============|
+///  | 0 | 1 | 2 | 3 |
+///  |===============|
+///  | 0 | 1 | 2 | 3 |
+///  |---------------|
+///
+/// #include <nomlib/graphics/SpriteSheet.hpp>
+/// #include <nomlib/graphics/Sprite.hpp>
+///
+/// nom::SpriteSheet card_faces_sheet ( "faces.png", 256, 262, 64, 64, 0, 1, 16 );
+/// card_faces_sheet.save( "faces.json" );
+///
+/// nom::Sprite card_face = nom::Sprite ( card_faces_sheet );
+///
+/// ...or
+///
+/// nom::Sprite card_face ( nom::SpriteSheet ( card_faces_sheet ( "faces.json" ) ) );
+///

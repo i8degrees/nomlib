@@ -59,7 +59,7 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/system/Timer.cpp
       ${SRC_DIR}/system/Sleep.cpp
       # math
-      ${SRC_DIR}/math/random.cpp
+      ${SRC_DIR}/math/helpers.cpp
       ${SRC_DIR}/math/Color.cpp
       ${SRC_DIR}/math/Coords.cpp
       ${SRC_DIR}/math/Transformable.cpp

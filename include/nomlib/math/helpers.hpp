@@ -26,11 +26,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_RANDOM_NUMBERS_HPP
-#define NOMLIB_RANDOM_NUMBERS_HPP
+#ifndef NOMLIB_MATH_HELPERS_HPP
+#define NOMLIB_MATH_HELPERS_HPP
 
 #include <chrono>
 #include <random>
+#include <cmath>
 
 #include "nomlib/config.hpp"
 

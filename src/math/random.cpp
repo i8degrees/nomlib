@@ -26,15 +26,15 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/random.hpp"
+#include "nomlib/math/random.hpp"
 
 namespace nom {
 
-int32 randomInteger ( int32 start, int32 end )
+int32 rand ( int32 start, int32 end )
 {
   uint64 seed = std::chrono::system_clock::now().time_since_epoch().count();
   std::default_random_engine rand_generator ( seed );
-  std::uniform_int_distribution<uint32> distribution ( start, end );
+  std::uniform_int_distribution<int32> distribution ( start, end );
 
   return distribution ( rand_generator );
 }

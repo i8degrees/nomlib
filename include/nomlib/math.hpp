@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Public header file
 
 #include <nomlib/config.hpp>
+#include <nomlib/math/random.hpp>
 #include <nomlib/math/Color.hpp>
 #include <nomlib/math/Coords.hpp>
 #include <nomlib/math/Rect-inl.hpp>

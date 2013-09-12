@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_RANDOM_HPP
-#define NOMLIB_RANDOM_HPP
+#ifndef NOMLIB_RANDOM_NUMBERS_HPP
+#define NOMLIB_RANDOM_NUMBERS_HPP
 
 #include <chrono>
 #include <random>
@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-int32 randomInteger ( int32 start, int32 end );
+int32 rand ( int32 start, int32 end );
 
 
 } // namespace nom

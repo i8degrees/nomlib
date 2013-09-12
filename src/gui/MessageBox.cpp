@@ -55,7 +55,7 @@ MessageBox::MessageBox  (
   // init geometry coords w/ arguments list
   this->coords = Coords ( x, y, width, height );
 
-  this->background = Gradient ( background.getStartColor(), background.getEndColor(), this->coords.x, this->coords.y, this->coords.width, this->coords.height, background.getFillDirection(), 0, 0 );
+  this->background = Gradient ( background.getStartColor(), background.getEndColor(), Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background.getFillDirection() );
 
   if ( style == FrameStyle::Gray )
   {
@@ -76,7 +76,7 @@ MessageBox::MessageBox  (
   // init geometry coords w/ arguments list
   this->coords = Coords ( x, y, width, height );
 
-  this->background = Gradient ( background.getStartColor(), background.getEndColor(), this->coords.x, this->coords.y, this->coords.width, this->coords.height, background.getFillDirection(), 0, 0 );
+  //this->background.initialize ( background.getStartColor(), background.getEndColor(), Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background.getFillDirection() );
 
   if ( style != nullptr )
   {
@@ -88,7 +88,6 @@ MessageBox::MessageBox  (
   {
     this->frame = std::make_shared<GrayFrame> ( GrayFrame ( x, y, width, height, padding ) );
   }
-
 }
 
 MessageBox::~MessageBox ( void )
@@ -179,6 +178,8 @@ void MessageBox::setLabel ( const std::string& text )
 
 void MessageBox::Update ( void )
 {
+  this->background.Update();
+
   if ( this->frame != nullptr )
   {
     this->frame->Update();

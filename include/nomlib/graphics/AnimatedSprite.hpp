@@ -104,16 +104,19 @@ class AnimatedSprite:
     /// Set a new style of animation for this object
     void setAnimationStyle ( enum AnimationStyle style );
 
-    /// Commence the playback of the animation
-    void update ( void );
-
-    /// Alias for the update method.
+    /// Play the animation
     void play ( void );
 
     /// Stop the animation playback.
     void stop ( void );
 
-  private:
+    /// Pause the animation playback.
+    void pause ( void );
+
+    /// Un-pause the animation playback.
+    void unpause ( void );
+
+  protected:
     /// Initialize values to their respective defaults
     void initialize ( void );
 
@@ -125,6 +128,9 @@ class AnimatedSprite:
 
     /// Set a new status state for this object
     void setAnimationStatus ( enum AnimationStatus status );
+
+    /// Updates the playback of the animation
+    void update ( void );
 
     /// Total number of animation frames
     int32 max_frames;

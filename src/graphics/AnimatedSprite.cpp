@@ -36,6 +36,7 @@ void AnimatedSprite::initialize ( void )
   this->setCurrentFrame ( 0 );
   this->setFrameIncrement ( 1 );
   this->setAnimationStyle ( AnimationStyle::NoStyle );
+  this->setAnimationStatus ( AnimationStatus::Stopped );
   this->fps.setFrameRate ( 100 );
 }
 
@@ -53,7 +54,7 @@ NOM_LOG_TRACE ( NOM );
 
   this->initialize();
 
-  this->setMaxFrames ( this->sprite_sheet.frames() );
+  this->setMaxFrames ( this->sprite_sheet.frames() - 1 ); // We start from zero
   this->fps.setFrameRate ( 100 );
 }
 
@@ -64,7 +65,7 @@ NOM_LOG_TRACE ( NOM );
 
   this->initialize();
 
-  this->setMaxFrames ( this->sprite_sheet.frames() );
+  this->setMaxFrames ( this->sprite_sheet.frames() - 1 ); // We start from zero
   this->fps.setFrameRate ( 100 );
 }
 
@@ -115,7 +116,11 @@ void AnimatedSprite::setFrameRate ( int32 rate )
 
 void AnimatedSprite::setCurrentFrame ( int32 frame )
 {
-  if ( frame < 0 || frame >= this->total_frames() ) return;
+  if ( frame < 0 || frame > this->total_frames() )
+  {
+NOM_LOG_ERR ( NOM, "Could not update animation frame: requested frame value is too low or too high." );
+    return;
+  }
 
   this->current_frame = frame;
 }
@@ -132,7 +137,7 @@ void AnimatedSprite::setAnimationStatus ( enum AnimationStatus status )
 
 void AnimatedSprite::update ( void )
 {
-  if ( this->status() == AnimationStatus::Stopped ) return;
+  if ( this->status() != AnimationStatus::Playing ) return;
 
   if ( this->fps.ticks() + this->fps.framerate() > SDL_GetTicks() )
   {
@@ -140,13 +145,8 @@ void AnimatedSprite::update ( void )
   }
 
   this->fps.start();
-  this->setAnimationStatus ( AnimationStatus::Playing );
 
-#if defined ( NOM_DEBUG_ANIMATED_SPRITE )
-NOM_DUMP_VAR( this->frame() );
-#endif
-
-  this->setCurrentFrame ( this->current_frame += this->frame_increment );
+  this->setCurrentFrame ( this->current_frame + this->frame_increment );
 
   if ( this->style() == AnimationStyle::Oscillate )
   {
@@ -169,7 +169,17 @@ NOM_DUMP_VAR( this->frame() );
   {
     if ( this->frame() >= this->total_frames() )
     {
+
+#if defined ( NOM_DEBUG_ANIMATED_SPRITE )
+  NOM_DUMP_VAR( this->frame() );
+#endif
+
       this->setCurrentFrame ( this->frame() - 2 );
+
+#if defined ( NOM_DEBUG_ANIMATED_SPRITE )
+  NOM_DUMP_VAR( this->frame() );
+#endif
+
     }
   }
   else
@@ -181,17 +191,28 @@ NOM_DUMP_VAR( this->frame() );
   }
 
   this->setSheetID ( this->frame() );
-  this->Update();
+  //this->Update();
 }
 
 void AnimatedSprite::play ( void )
 {
+  this->setAnimationStatus ( AnimationStatus::Playing );
   this->update();
 }
 
 void AnimatedSprite::stop ( void )
 {
   this->setAnimationStatus ( AnimationStatus::Stopped );
+}
+
+void AnimatedSprite::pause ( void )
+{
+  this->setAnimationStatus ( AnimationStatus::Paused );
+}
+
+void AnimatedSprite::unpause ( void )
+{
+  this->setAnimationStatus ( AnimationStatus::Playing );
 }
 
 } // namespace nom

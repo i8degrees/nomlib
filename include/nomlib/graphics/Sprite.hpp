@@ -36,10 +36,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/Canvas.hpp"
 #include "nomlib/math/Transformable.hpp"
-#include "nomlib/graphics/SpriteSheet.hpp"
 
 namespace nom {
 
+/// \brief Sprite object container
 class Sprite:
               public Transformable
 {
@@ -50,9 +50,6 @@ class Sprite:
 
     /// Construct a Sprite object, initializing the width & height coordinates.
     Sprite ( int32 width, int32 height );
-
-    /// Construct a Sprite object, initializing it with a SpriteSheet object.
-    Sprite ( const SpriteSheet* sheet );
 
     /// Construct a Sprite object, initializing it with a Canvas object.
     /// \FIXME
@@ -65,20 +62,14 @@ class Sprite:
     virtual ~Sprite ( void );
 
     /// Get the object's state.
-    uint32 getState ( void );
-
-    /// Get the object's sheet_id.
-    int32 getSheetID ( void );
+    uint32 getState ( void ) const;
 
     /// Set a new state.
     void setState ( uint32 state );
 
-    /// Set a new sheet_id to render (only effective if a SpriteSheet is in use).
-    void setSheetID ( int32 id );
-
     /// Load a new image onto the Sprite.
     bool load (
-                std::string filename, Color colorkey,
+                const std::string& filename, const Color& colorkey,
                 bool use_cache = false,
                 uint32 flags = SDL_SRCCOLORKEY | SDL_RLEACCEL
               );
@@ -93,17 +84,8 @@ class Sprite:
     /// Object that holds our sprite image
     Canvas sprite;
 
-    /// alive, dying, dead, ...
+    /// Convenience instance variable (user-defined)
     uint32 state;
-
-    /// Source (input) coordinates, used for sprite sheet positioning
-    Coords offsets;
-
-    /// Our attached sprite sheet, if we have one
-    std::shared_ptr<SpriteSheet> sprite_sheet;
-
-    /// The sheet ID currently in use, if we have a sprite sheet loaded
-    int32 sheet_id;
 
     /// Scale factor applied if the resize method is called
     int32 scale_factor;

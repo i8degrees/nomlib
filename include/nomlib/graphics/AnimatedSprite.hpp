@@ -35,10 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <SDL/SDL.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Transformable.hpp"
-#include "nomlib/graphics/Sprite.hpp"
-#include "nomlib/graphics/Canvas.hpp"
-#include "nomlib/graphics/SpriteSheet.hpp"
+#include "nomlib/graphics/SpriteBatch.hpp"
 #include "nomlib/system/AnimationTimer.hpp"
 
 //#define NOM_DEBUG_ANIMATED_SPRITE
@@ -60,7 +57,7 @@ enum class AnimationStatus: int32
 };
 
 class AnimatedSprite:
-                        public Sprite
+                        public SpriteBatch
 {
   public:
     /// Default construct for initializing instance variables to their
@@ -69,10 +66,14 @@ class AnimatedSprite:
 
     /// Construct an AnimatedSprite object, initializing it with a SpriteSheet
     /// object.
-    AnimatedSprite ( const SpriteSheet* sheet );
+    AnimatedSprite ( const SpriteSheet& sheet );
+
+    /// Construct an AnimatedSprite from an existing filename saved with
+    /// SpriteSheet.
+    AnimatedSprite ( const std::string& filename );
 
     /// Destructor.
-    ~AnimatedSprite ( void );
+    virtual ~AnimatedSprite ( void );
 
     /// Get the maximum number of animation frames for this object
     int32 total_frames ( void ) const;

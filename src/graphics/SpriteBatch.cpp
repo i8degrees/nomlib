@@ -26,102 +26,89 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/graphics/Sprite.hpp"
+#include "nomlib/graphics/SpriteBatch.hpp"
 
 namespace nom {
 
-Sprite::Sprite ( void ) : state ( 0 ), scale_factor ( 1 )
+SpriteBatch::SpriteBatch ( void ) : sheet_id ( 0 )
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-Sprite::Sprite ( int32 width, int32 height )  :
-  Transformable { Coords ( 0, 0, width, height ) }, state ( 0 ),
-  scale_factor ( 1 )
-
+SpriteBatch::SpriteBatch ( const SpriteSheet& sheet )
 {
 NOM_LOG_TRACE ( NOM );
+
+  Coords dims;
+
+  this->sprite_sheet = sheet;
+
+  dims = this->sprite_sheet.dimensions(0);
+
+  Sprite ( dims.width, dims.height );
+
+  this->sheet_id = 0;
 }
 
-/* FIXME
-Sprite::Sprite ( const Canvas& copy ) : sprite  ( copy ), state ( 0 ),
-  scale_factor ( 1 )
+SpriteBatch::SpriteBatch ( const std::string& filename )
 {
 NOM_LOG_TRACE ( NOM );
-}
-*/
 
-Sprite& Sprite::operator = ( const Sprite& other )
+  Coords dims;
+
+  this->sprite_sheet.load ( filename );
+
+  dims = this->sprite_sheet.dimensions(0);
+
+  Sprite ( dims.width, dims.height );
+
+  this->sheet_id = 0;
+}
+
+SpriteBatch& SpriteBatch::operator = ( const SpriteBatch& other )
 {
   this->sprite = other.sprite;
   this->coords = other.coords;
+  this->offsets = other.offsets;
   this->state = other.state;
+  this->sprite_sheet = other.sprite_sheet;
+  this->sheet_id = other.sheet_id;
   this->scale_factor = other.scale_factor;
 
   return *this;
 }
 
-Sprite::~Sprite ( void )
+SpriteBatch::~SpriteBatch ( void )
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-uint32 Sprite::getState ( void ) const
+int32 SpriteBatch::getSheetID ( void ) const
 {
-  return this->state;
+  return this->sheet_id;
 }
 
-void Sprite::setState ( uint32 state )
+void SpriteBatch::setSheetID ( int32 id )
 {
-  this->state = state;
+  this->sheet_id = id;
 }
 
-bool Sprite::load (
-                    const std::string& filename, const Color& colorkey,
-                    bool use_cache, uint32 flags
-                  )
+void SpriteBatch::Update ( void )
 {
-  this->sprite.load ( filename, colorkey, use_cache, flags );
+  Coords dims = this->sprite_sheet.dimensions ( this->getSheetID() );
 
-  if ( this->sprite.valid() == false )
-  {
-NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
-    return false;
-  }
+  this->offsets.setPosition (
+                              dims.x * this->scale_factor,
+                              dims.y * this->scale_factor
+                            );
 
-  return true;
-}
+  this->offsets.setSize (
+                          dims.width * this->scale_factor,
+                          dims.height * this->scale_factor
+                        );
 
-void Sprite::Update ( void )
-{
+  this->sprite.setOffsets ( this->offsets );
   this->sprite.setPosition ( this->coords );
-}
-
-void Sprite::Draw ( void* video_buffer ) const
-{
-NOM_ASSERT ( this->sprite.valid() );
-
-  this->sprite.Draw ( video_buffer );
-}
-
-bool Sprite::resize ( enum ResizeAlgorithm scaling_algorithm )
-{
-  if ( this->sprite.valid() == false )
-  {
-NOM_LOG_ERR ( NOM, "Video surface is invalid." );
-    return false;
-  }
-
-  if ( this->sprite.resize ( scaling_algorithm ) == false )
-  {
-NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
-    return false;
-  }
-
-  this->scale_factor = this->sprite.getResizeScaleFactor ( scaling_algorithm );
-  this->Update();
-
-  return true;
 }
 
 

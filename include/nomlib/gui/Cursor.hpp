@@ -34,8 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/math/Transformable.hpp"
-#include "nomlib/graphics/Sprite.hpp"
+#include "nomlib/graphics/AnimatedSprite.hpp"
+//#include "nomlib/graphics/SpriteBatch.hpp"
 
 namespace nom {
   namespace ui {
@@ -43,25 +43,25 @@ namespace nom {
 /// \brief Helper class for loading, positioning and keeping track of a cursor
 /// controlled by a mouse and / or keyboard.
 class Cursor:
-              public Sprite
+              public AnimatedSprite
 {
   public:
     /// Default construct for initializing instance variables to their
     /// respective defaults.
     Cursor ( void );
 
-    /// Construct a new Cursor object, initializing the Sprite with the given
-    /// coordinates.
-    Cursor ( int32 x, int32 y, int32 width, int32 height );
+    /// Construct a new Cursor object, initializing with a SpriteSheet object.
+    Cursor ( const SpriteSheet& sheet );
 
-    /// Construct a new Cursor object, initializing the Sprite with a
-    /// SpriteSheet.
-    Cursor ( const SpriteSheet* sheet );
+    /// Construct a Cursor from an existing sprite sheet filename.
+    Cursor ( const std::string& filename );
 
     /// Destructor
     virtual ~Cursor ( void );
 
     /// Copy assignment operator
+    ///
+    /// \TODO Add copy assignment of AnimatedSprite parameters
     Cursor& operator = ( const Cursor& other );
 
     int32 getX ( void ) const;

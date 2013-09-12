@@ -26,28 +26,64 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_HEADERS
-#define NOMLIB_GRAPHICS_HEADERS
+#ifndef NOMLIB_SPRITE_BATCH_HEADERS
+#define NOMLIB_SPRITE_BATCH_HEADERS
 
-// Public header file
+#include <iostream>
+#include <string>
 
-#include <nomlib/config.hpp>
-#include <nomlib/graphics/Text.hpp>
-#include <nomlib/graphics/BitmapFont.hpp>
-#include <nomlib/graphics/Canvas.hpp>
-#include <nomlib/graphics/VideoMode.hpp>
-#include <nomlib/graphics/Display.hpp>
-#include <nomlib/graphics/IDrawable.hpp>
-#include <nomlib/graphics/TrueTypeFont.hpp>
-#include <nomlib/graphics/Gradient.hpp>
-#include <nomlib/graphics/Image.hpp>
-#include <nomlib/graphics/Line.hpp>
-#include <nomlib/graphics/Pixel.hpp>
-#include <nomlib/graphics/Rectangle.hpp>
-#include <nomlib/graphics/Sprite.hpp>
-#include <nomlib/graphics/SpriteBatch.hpp>
-#include <nomlib/graphics/SpriteSheet.hpp>
-#include <nomlib/graphics/AnimatedSprite.hpp>
+#include "nomlib/config.hpp"
+#include "nomlib/math/Coords.hpp"
+#include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/Sprite.hpp"
+#include "nomlib/graphics/SpriteSheet.hpp"
 
+namespace nom {
+
+/// \brief Sprite rendering with sprite sheets
+class SpriteBatch:
+                    public Sprite
+{
+  public:
+    /// Default construct for initializing instance variables to their
+    /// respective defaults.
+    SpriteBatch ( void );
+
+    /// Construct a SpriteBatch object, initializing it with a SpriteSheet
+    /// object.
+    SpriteBatch ( const SpriteSheet& sheet );
+
+    /// Construct a SpriteBatch object from an existing sprite sheet filename.
+    SpriteBatch ( const std::string& filename );
+
+    /// Copy assignment operator.
+    SpriteBatch& operator = ( const SpriteBatch& other );
+
+    /// Destructor.
+    virtual ~SpriteBatch ( void );
+
+    /// Get the object's sheet_id.
+    int32 getSheetID ( void ) const;
+
+    /// Set a new frame ID to render
+    void setSheetID ( int32 id );
+
+    /// Update the sprite for rendering with regard to positioning coordinates
+    /// and target frame ID.
+    void Update ( void );
+
+  protected:
+    /// Source (input) coordinates -- used for sprite sheet positioning
+    Coords offsets;
+
+    /// Our attached sprite sheet object
+    SpriteSheet sprite_sheet;
+
+    /// The sheet's frame ID presently in use
+    int32 sheet_id;
+};
+
+
+} // namespace nom
 
 #endif // include guard defined

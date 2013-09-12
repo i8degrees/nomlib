@@ -22,6 +22,7 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/graphics/scale2x/scale3x.cpp
       ${SRC_DIR}/graphics/scale2x/scale4x.cpp
       # graphics
+      ${SRC_DIR}/graphics/SpriteBatch.cpp
       ${SRC_DIR}/graphics/AnimatedSprite.cpp
       ${SRC_DIR}/graphics/SpriteSheet.cpp
       ${SRC_DIR}/graphics/VideoMode.cpp

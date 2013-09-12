@@ -34,23 +34,16 @@ namespace nom {
 Cursor::Cursor ( void )
 {
 NOM_LOG_TRACE ( NOM );
-
-  // Nothing else to do
 }
 
-Cursor::Cursor ( int32 x, int32 y, int32 width, int32 height )
-  : Sprite ( width, height )
+Cursor::Cursor ( const SpriteSheet& sheet ):  AnimatedSprite ( sheet )
 {
 NOM_LOG_TRACE ( NOM );
-
-  this->setPosition ( x, y );
 }
 
-Cursor::Cursor ( const SpriteSheet* sheet ):  Sprite ( sheet )
+Cursor::Cursor ( const std::string& filename ):  AnimatedSprite ( filename )
 {
 NOM_LOG_TRACE ( NOM );
-
-  // Nothing else to do
 }
 
 Cursor::~Cursor ( void )
@@ -65,6 +58,7 @@ Cursor& Cursor::operator = ( const Cursor& other )
   this->offsets = other.offsets;
   this->state = other.state;
   this->sprite_sheet = other.sprite_sheet;
+  this->sheet_id = other.sheet_id;
   this->scale_factor = other.scale_factor;
 
   return *this;

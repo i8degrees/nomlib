@@ -46,13 +46,25 @@ NOM_LOG_TRACE ( NOM );
   this->initialize();
 }
 
-AnimatedSprite::AnimatedSprite ( const SpriteSheet* sheet ) : Sprite ( sheet )
+AnimatedSprite::AnimatedSprite ( const SpriteSheet& sheet ) :
+  SpriteBatch ( sheet )
 {
 NOM_LOG_TRACE ( NOM );
 
   this->initialize();
 
-  this->setMaxFrames ( sheet->frames() );
+  this->setMaxFrames ( this->sprite_sheet.frames() );
+  this->fps.setFrameRate ( 100 );
+}
+
+AnimatedSprite::AnimatedSprite ( const std::string& filename ) :
+  SpriteBatch ( filename )
+{
+NOM_LOG_TRACE ( NOM );
+
+  this->initialize();
+
+  this->setMaxFrames ( this->sprite_sheet.frames() );
   this->fps.setFrameRate ( 100 );
 }
 

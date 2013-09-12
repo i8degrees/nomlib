@@ -45,7 +45,7 @@ class Sprite:
 {
   public:
     /// Default construct for initializing instance variables to their
-    // respective defaults.
+    /// respective defaults.
     Sprite ( void );
 
     /// Construct a Sprite object, initializing the width & height coordinates.
@@ -56,7 +56,7 @@ class Sprite:
 
     /// Construct a Sprite object, initializing it with a Canvas object.
     /// \FIXME
-    //Sprite ( const Canvas& copy );
+    ///Sprite ( const Canvas& copy );
 
     /// Copy assignment operator.
     Sprite& operator = ( const Sprite& other );

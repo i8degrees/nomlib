@@ -61,6 +61,13 @@ Cursor& Cursor::operator = ( const Cursor& other )
   this->sheet_id = other.sheet_id;
   this->scale_factor = other.scale_factor;
 
+  this->max_frames = other.max_frames;
+  this->current_frame = other.current_frame;
+  this->frame_increment = other.frame_increment;
+  this->animation_style = other.animation_style;
+  this->animation_status = other.animation_status;
+  this->fps = other.fps;
+
   return *this;
 }
 

@@ -60,8 +60,6 @@ class Cursor:
     virtual ~Cursor ( void );
 
     /// Copy assignment operator
-    ///
-    /// \TODO Add copy assignment of AnimatedSprite parameters
     Cursor& operator = ( const Cursor& other );
 
     int32 getX ( void ) const;

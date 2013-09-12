@@ -148,6 +148,11 @@ const Coords SpriteSheet::dimensions  ( int32 index ) const
   return this->sheet.at ( index );
 }
 
+int32 SpriteSheet::frames ( void ) const
+{
+  return this->sheet.size();
+}
+
 SpriteSheet::SharedPtr SpriteSheet::clone ( void ) const
 {
   return SpriteSheet::SharedPtr ( new SpriteSheet ( *this ) );

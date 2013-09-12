@@ -89,6 +89,9 @@ class SpriteSheet
     /// Get the calculations made for a particular ID number.
     const Coords dimensions ( int32 index ) const;
 
+    /// Obtain the number of frames this object contains
+    int32 frames ( void ) const;
+
     /// Save the current sprite sheet data calculations to a file as a series
     /// of RFC 4627 compliant JSON objects.
     bool save ( const std::string& filename );

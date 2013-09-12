@@ -41,7 +41,9 @@ const Color Color::Yellow ( 255, 255, 255 );
 const Color Color::Magenta ( 255, 0, 255 );
 const Color Color::Cyan ( 0, 255, 255 );
 
-const Color Color::Gray ( 99, 99, 99 );
+const Color Color::LightGray ( 99, 99, 99 );
+const Color Color::Gray ( 67, 67, 67 );
+
 const Color Color::NomPrimaryColorKey ( 110, 144, 190 );
 const Color Color::NomSecondaryColorKey ( 223, 75, 255 );
 

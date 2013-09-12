@@ -77,6 +77,7 @@ class Color
     static const Color Cyan;
 
     /// Additional predefined color constants
+    static const Color LightGray;
     static const Color Gray;
 
     /// Sky blue color key

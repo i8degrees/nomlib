@@ -34,9 +34,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sdl/utils.hpp"
-#include "nomlib/graphics/Canvas.hpp"
 #include "nomlib/math/Transformable.hpp"
+#include "nomlib/math/Rect-inl.hpp"
+#include "nomlib/graphics/Canvas.hpp"
 
 namespace nom {
 

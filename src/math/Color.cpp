@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-const Color Color::null ( -1, -1, -1, -1 );
+const Color Color::null ( -1, -1, -1, SDL_ALPHA_OPAQUE );
 
 const Color Color::Black ( 0, 0, 0 );
 const Color Color::White ( 255, 255, 255 );
@@ -71,7 +71,7 @@ Color::Color ( const Color& color ) : red ( color.red ),
 
 Color::~Color ( void ) {}
 
-const Color& Color::getColor ( void ) const
+const Color& Color::get ( void ) const
 {
   return *this;
 }

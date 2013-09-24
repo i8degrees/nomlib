@@ -64,7 +64,7 @@ namespace nom {
 /// like: 8, 16, 24, 32.
 ///
 /// \todo IMPLEMENT ME
-bool scale2x  ( const Pixels source_buffer, Pixels destination_buffer,
+bool scale2x  ( void* source_buffer, void* destination_buffer,
                 const int32 source_width, const int32 source_height,
                 const int32 depth,
                 const int16 source_pitch, int16 destination_pitch
@@ -75,7 +75,7 @@ bool scale2x  ( const Pixels source_buffer, Pixels destination_buffer,
 /// like: 8, 16, 24, 32.
 ///
 /// \todo IMPLEMENT ME
-bool scale3x  ( const Pixels source_buffer, Pixels destination_buffer,
+bool scale3x  ( void* source_buffer, void* destination_buffer,
                 const int32 source_width, const int32 source_height,
                 const int32 depth,
                 const int16 source_pitch, int16 destination_pitch
@@ -86,7 +86,7 @@ bool scale3x  ( const Pixels source_buffer, Pixels destination_buffer,
 /// like: 8, 16, 24, 32.
 ///
 /// \todo IMPLEMENT ME
-bool scale4x  ( const Pixels source_buffer, Pixels destination_buffer,
+bool scale4x  ( void* source_buffer, void* destination_buffer,
                 const int32 source_width, const int32 source_height,
                 const int32 depth,
                 const int16 source_pitch, int16 destination_pitch

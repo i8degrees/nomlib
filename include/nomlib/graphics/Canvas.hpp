@@ -37,11 +37,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 //#include "nomlib/graphics/ICanvas.hpp"
-#include "nomlib/sdl/utils.hpp"
 #include "nomlib/system/make_unique.hpp"
 #include "nomlib/math/helpers.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
+#include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/math/Vector2-inl.hpp"
 #include "nomlib/system/ObjectCache.hpp"
 #include "nomlib/graphics/Pixel.hpp"
@@ -118,7 +118,7 @@ class Canvas
     /// therefore are responsible for memory management.
     ///
     /// See http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurfaceFrom
-    Canvas ( Pixels pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+    Canvas ( void* pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
     /// Lazy destructor -- does nothing.
     ~Canvas ( void );
@@ -150,11 +150,11 @@ class Canvas
     const int32 getCanvasHeight ( void ) const;
     uint32 getCanvasFlags ( void ) const;
     uint16 getCanvasPitch ( void ) const;
-    const Pixels getCanvasPixels ( void ) const;
+    void* getCanvasPixels ( void ) const;
     const uint8 getCanvasBitsPerPixel ( void ) const;
 
     /// \todo Rename to getCanvasPixelFormat
-    const Pixels getCanvasPixelsFormat ( void ) const;
+    SDL_PixelFormat* getCanvasPixelsFormat ( void ) const;
 
     /// Obtain the pixel value of the set transparent color
     const Color getCanvasColorKey ( void ) const;

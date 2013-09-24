@@ -75,7 +75,7 @@ NOM_LOG_TRACE ( NOM );
   this->initialize ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask );
 }
 
-Canvas::Canvas ( Pixels pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
+Canvas::Canvas ( void* pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -180,7 +180,7 @@ uint16 Canvas::getCanvasPitch ( void ) const
   return buffer->pitch;
 }
 
-const Pixels Canvas::getCanvasPixels ( void ) const
+void* Canvas::getCanvasPixels ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
   return buffer->pixels;
@@ -192,7 +192,7 @@ const uint8 Canvas::getCanvasBitsPerPixel ( void ) const
   return buffer->format->BitsPerPixel;
 }
 
-const Pixels Canvas::getCanvasPixelsFormat ( void ) const
+SDL_PixelFormat* Canvas::getCanvasPixelsFormat ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
   return buffer->format;
@@ -203,7 +203,7 @@ const Color Canvas::getCanvasColorKey ( void ) const
   uint32 transparent_color = 0; // holds me color for conversion
   Color colorkey; // native container
 
-  transparent_color = getColorAsInt ( this->getCanvasPixelsFormat(), colorkey );
+  transparent_color = RGBA::asInt32 ( this->getCanvasPixelsFormat(), colorkey );
 
   return colorkey;
 }
@@ -254,7 +254,7 @@ const Coords Canvas::getCanvasBounds ( void ) const
 
 void Canvas::setCanvasBounds ( const Coords& clip_bounds )
 {
-  SDL_Rect clip = getSDL_Rect ( clip_bounds ); // temporary storage struct for setting
+  SDL_Rect clip = IntRect::asSDLRect ( clip_bounds ); // temporary storage struct for setting
 
   // As per libSDL docs, if SDL_Rect is nullptr, the clipping rectangle is set
   // to the full size of the surface
@@ -366,8 +366,8 @@ NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
 void Canvas::Draw ( void* video_buffer ) const
 {
   // temporary vars to store our wrapped Coords
-  SDL_Rect blit_coords = getSDL_Rect ( this->coords );
-  SDL_Rect blit_offsets = getSDL_Rect ( this->offsets );
+  SDL_Rect blit_coords = IntRect::asSDLRect ( this->coords );
+  SDL_Rect blit_offsets = IntRect::asSDLRect ( this->offsets );
 
   // Perhaps also check to see if video_buffer is nullptr?
   if ( this->valid() )
@@ -415,7 +415,7 @@ bool Canvas::setTransparent ( const Color& color, uint32_t flags )
   uint32_t transparent_color = 0;
 
   // TODO: Alpha value needs testing
-  transparent_color = getColorAsInt ( this->getCanvasPixelsFormat(), color );
+  transparent_color = RGBA::asInt32 ( this->getCanvasPixelsFormat(), color );
 
   if ( SDL_SetColorKey ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), flags, transparent_color ) != 0 )
   {
@@ -742,7 +742,7 @@ NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
         for ( int sX = 0; sX < stretch_x; sX++ )
         {
           uint32 pixel = this->getPixel ( x, y );
-          get_rgb ( pixel, this->getCanvasPixelsFormat(), color );
+          RGBA::asRGB ( pixel, this->getCanvasPixelsFormat(), color );
           //NOM_DUMP_VAR(color);
           if ( color.red == 0 && color.green == 0 && color.blue == 0 ) continue;
 

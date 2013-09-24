@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
   namespace priv {
 
-bool scale3x  ( const Pixels source_buffer, Pixels destination_buffer,
+bool scale3x  ( void* source_buffer, void* destination_buffer,
                 const int32 source_width, const int32 source_height,
                 const int32 depth,
                 const int16 source_pitch, int16 destination_pitch

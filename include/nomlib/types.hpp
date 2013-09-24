@@ -59,8 +59,6 @@ typedef unsigned long long int uint64;
 
 typedef unsigned char uchar;
 
-typedef void* Pixels;
-
 
 } // namespace nom
 
@@ -81,12 +79,5 @@ static_assert ( sizeof ( nom::ulong ) == 8, "nom::ulong" );
 
 /// Something is *seriously* wrong if this fails!
 static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
-
-/// \todo FIXME
-//#if defined ( NOM_PLATFORM_ARCH_X86_64 )
-  //static_assert ( sizeof ( nom::Pixels ) == 8, "nom::Pixels" );
-//#else
-  //static_assert ( sizeof ( nom::Pixels ) == 4, "nom::Pixels" );
-//#endif
 
 #endif // NOMLIB_TYPES_HEADERS defined

@@ -59,7 +59,7 @@ class Color
     ~Color ( void );
 
     /// Convenience getter helper for obtaining a color by object
-    const Color& getColor ( void ) const;
+    const Color& get ( void ) const;
 
     /// Copy assignment constructor
     Color& operator = ( const Color& other );
@@ -91,7 +91,46 @@ class Color
     uint8 green;
     uint8 blue;
     uint8 alpha;
-}; // class Color
+};
+
+class RGBA
+{
+  public:
+    RGBA ( void ) {};
+    ~RGBA ( void ) {};
+
+    /// Returns a SDL color structure of a nom::Color object
+    static inline SDL_Color asSDLCOLOR ( const Color& color )
+    {
+      SDL_Color c;
+
+      c.r = color.red;
+      c.g = color.green;
+      c.b = color.blue;
+      //      SDLv2 SDL_Color struct
+      //
+      //  c.a = color.alpha;
+
+      return c;
+    }
+
+    /// Returns RGBA components via nom::Color object, holding the red, green, blue
+    /// and alpha values.
+    static inline void asRGB ( uint32 pixel, SDL_PixelFormat* fmt, Color& color )
+    {
+      SDL_GetRGBA ( pixel, fmt, &color.red, &color.green, &color.blue, &color.alpha );
+    }
+
+    /// Convenience helper for obtaining a color as an integer, respective to
+    /// the video surface pixel format (color bit per pixel)
+    ///
+    /// Returns RGBA components via nom::Color object, holding the red, green, blue
+    /// and alpha values.
+    static inline uint32 asInt32 ( SDL_PixelFormat* fmt, const Color& color )
+    {
+      return SDL_MapRGBA ( fmt, color.red, color.green, color.blue, color.alpha );
+    }
+};
 
 /// Pretty print the color using the following format string:
 ///

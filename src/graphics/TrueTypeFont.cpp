@@ -229,7 +229,7 @@ void TrueTypeFont::Update ( void )
                                 (
                                   this->font.get(),
                                   this->getText().c_str(),
-                                  getSDL_Color ( this->color )
+                                  RGBA::asSDLCOLOR ( this->color )
                                 )
                               );
 

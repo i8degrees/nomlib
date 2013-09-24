@@ -237,7 +237,7 @@ bool BitmapFont::rebuild ( void )
 
 NOM_ASSERT ( this->bitmap_font.valid() );
 
-  background_color = getColorAsInt  ( this->bitmap_font.getCanvasPixelsFormat(),
+  background_color = RGBA::asInt32  ( this->bitmap_font.getCanvasPixelsFormat(),
                                       this->colorkey
                                     );
 

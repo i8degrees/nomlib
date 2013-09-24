@@ -37,8 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IFont.hpp"
-#include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Coords.hpp"
+#include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/graphics/Canvas.hpp"
 

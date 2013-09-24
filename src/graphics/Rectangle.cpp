@@ -48,24 +48,17 @@ Rectangle::Rectangle ( const Coords& coords, const Color& color )
   this->color = color;
 }
 
-Rectangle::~Rectangle ( void )
-{
-  // ...
-}
-
-void Rectangle::Update ( void )
-{
-  // Stub
-}
+Rectangle::~Rectangle ( void ) {}
+void Rectangle::Update ( void ) {}
 
 void Rectangle::Draw ( void* video_buffer ) const
 {
-  SDL_Rect rectangle = getSDL_Rect ( this->coords );
+  SDL_Rect rectangle = IntRect::asSDLRect ( this->coords );
 
   uint32 rectangle_color = 0;
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( video_buffer );
 
-  rectangle_color = getColorAsInt ( buffer->format, this->color );
+  rectangle_color = RGBA::asInt32 ( buffer->format, this->color );
 
   if ( SDL_FillRect ( buffer, &rectangle, rectangle_color ) != 0 )
   {

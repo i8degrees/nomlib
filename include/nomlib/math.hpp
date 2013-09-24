@@ -38,7 +38,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/math/Rect-inl.hpp>
 #include <nomlib/math/Vector2-inl.hpp>
 #include <nomlib/math/Vector3-inl.hpp>
-#include <nomlib/math/Vector4-inl.hpp>
 #include <nomlib/math/Transformable.hpp>
 
 #endif // include guard defined

@@ -38,11 +38,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 //#include "nomlib/graphics/ICanvas.hpp"
 #include "nomlib/sdl/utils.hpp"
+#include "nomlib/system/make_unique.hpp"
+#include "nomlib/math/helpers.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
+#include "nomlib/math/Vector2-inl.hpp"
 #include "nomlib/system/ObjectCache.hpp"
+#include "nomlib/graphics/Pixel.hpp"
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/Rectangle.hpp"
+
+//#define NOM_DEBUG_SDL_CANVAS
 
 namespace nom {
   namespace priv {
@@ -66,13 +72,16 @@ enum ResizeAlgorithm
   scale4x, // Reserved for future implementation
   hq2x,
   hq3x,
-  hq4x
+  hq4x,
+  Stretch
 };
 
 class Canvas
 {
   public:
     typedef std::shared_ptr<Canvas> SharedPtr;
+    typedef void* RawPtr;
+
     /// Default constructor; initializes object to its respective defaults
     Canvas ( void );
 
@@ -114,6 +123,8 @@ class Canvas
     /// Lazy destructor -- does nothing.
     ~Canvas ( void );
 
+    void initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+
     /// Return a std::shared_ptr copy of this instance
     /// \todo Test me out!
     Canvas::SharedPtr clone ( void ) const;
@@ -122,6 +133,9 @@ class Canvas
     Canvas& operator = ( const Canvas& other );
 
     const Coords& getPosition ( void ) const;
+
+    /// Get the video memory surface of the canvas object
+    Canvas::RawPtr get ( void ) const;
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
@@ -237,12 +251,14 @@ class Canvas
     /// You are responsible for locking & unlocking of the canvas before-hand
     ///
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
-    int32 getPixel ( int32 x, int32 y );
+    uint32 getPixel ( int32 x, int32 y );
 
     /// Resize the video surface with the chosen rescaling algorithm.
     ///
     /// See the ResizeAlgorithm enum for available rescaling algorithms
     bool resize ( enum ResizeAlgorithm scaling_algorithm );
+
+    bool resize ( const Vector2f& scale_factor );
 
     /// Return the correct scaling factor of the chosen algorithm
     int32 getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm );

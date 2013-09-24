@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
+#include "nomlib/sdl/utils.hpp"
 #include "nomlib/graphics/Canvas.hpp"
 #include "nomlib/math/Transformable.hpp"
 
@@ -61,6 +62,8 @@ class Sprite:
     /// Destructor.
     virtual ~Sprite ( void );
 
+    const Coords getSize ( void ) const;
+
     /// Get the object's state.
     uint32 getState ( void ) const;
 
@@ -79,6 +82,8 @@ class Sprite:
 
     /// Rescale the font with a chosen resizing algorithm
     bool resize ( enum ResizeAlgorithm scaling_algorithm );
+
+    bool resize ( const Vector2f& scale_factor );
 
   protected:
     /// Object that holds our sprite image

@@ -66,6 +66,11 @@ Sprite::~Sprite ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
+const Coords Sprite::getSize ( void ) const
+{
+  return Coords ( 0, 0, this->sprite.getCanvasWidth(), this->sprite.getCanvasHeight() );
+}
+
 uint32 Sprite::getState ( void ) const
 {
   return this->state;
@@ -88,6 +93,8 @@ bool Sprite::load (
 NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
     return false;
   }
+
+  this->setSize ( this->sprite.getCanvasWidth(), this->sprite.getCanvasHeight() );
 
   return true;
 }
@@ -119,6 +126,26 @@ NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
   }
 
   this->scale_factor = this->sprite.getResizeScaleFactor ( scaling_algorithm );
+  this->Update();
+
+  return true;
+}
+
+bool Sprite::resize ( const Vector2f& scale_factor )
+{
+  if ( this->sprite.valid() == false )
+  {
+NOM_LOG_ERR ( NOM, "Video surface is invalid." );
+    return false;
+  }
+
+  if ( this->sprite.resize ( scale_factor ) == false )
+  {
+NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
+    return false;
+  }
+
+  //this->scale_factor = this->sprite.getResizeScaleFactor ( scaling_algorithm );
   this->Update();
 
   return true;

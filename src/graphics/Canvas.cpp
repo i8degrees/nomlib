@@ -72,18 +72,7 @@ Canvas::Canvas ( int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, ui
 {
 NOM_LOG_TRACE ( NOM );
 
-  this->canvas_buffer = std::shared_ptr<void> ( SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask ), nom::priv::Canvas_FreeSurface );
-  this->offsets.setSize ( width, height );
-
-  // If the video surface is marked for color keying transparency, we must do
-  // so here.
-  if ( flags & SDL_SRCCOLORKEY )
-  {
-    if ( this->setTransparent ( this->getCanvasColorKey(), SDL_RLEACCEL | SDL_SRCCOLORKEY ) == false )
-    {
-NOM_LOG_ERR ( NOM, "Could not create the video surface with color key transparency." );
-    }
-  }
+  this->initialize ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask );
 }
 
 Canvas::Canvas ( Pixels pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
@@ -99,6 +88,24 @@ Canvas::~Canvas ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
+void Canvas::initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
+{
+NOM_LOG_TRACE ( NOM );
+
+  this->canvas_buffer.reset ( SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask ), nom::priv::Canvas_FreeSurface );
+  this->offsets.setSize ( width, height );
+
+  // If the video surface is marked for color keying transparency, we must do
+  // so here.
+  if ( flags & SDL_SRCCOLORKEY )
+  {
+    if ( this->setTransparent ( this->getCanvasColorKey(), SDL_RLEACCEL | SDL_SRCCOLORKEY ) == false )
+    {
+NOM_LOG_ERR ( NOM, "Could not create the video surface with color key transparency." );
+    }
+  }
+}
+
 Canvas::SharedPtr Canvas::clone ( void ) const
 {
   return Canvas::SharedPtr ( new Canvas ( *this ) );
@@ -107,8 +114,15 @@ Canvas::SharedPtr Canvas::clone ( void ) const
 Canvas& Canvas::operator = ( const Canvas& other )
 {
   this->canvas_buffer = other.canvas_buffer;
+  this->coords = other.coords;
+  this->offsets = other.offsets;
 
   return *this;
+}
+
+Canvas::RawPtr Canvas::get ( void ) const
+{
+  return this->canvas_buffer.get();
 }
 
 bool Canvas::valid ( void ) const
@@ -437,7 +451,7 @@ void Canvas::clear ( const Color& color ) const
   rect.Draw ( this->canvas_buffer.get() );
 }
 
-int32 Canvas::getPixel ( int32 x, int32 y )
+uint32 Canvas::getPixel ( int32 x, int32 y )
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
 
@@ -642,6 +656,109 @@ NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
   if ( destination_buffer.valid() == false )
   {
 NOM_LOG_ERR ( NOM, "The rescaled video surface is not valid." );
+    return false;
+  }
+
+  // Reset the video surface object's video memory to the rescaled pixel data.
+  this->setCanvas ( destination_buffer );
+
+  return true;
+}
+
+bool Canvas::resize ( const Vector2f& scale_factor )
+{
+  // set ResizeAlgorithm::Stretch
+
+  // Ensure that our existing video surface is OK first
+  if ( this->valid() == false )
+  {
+NOM_LOG_ERR ( NOM, "The existing video surface is not valid." );
+    return false;
+  }
+
+  // Current video surface flags state -- the destination buffer will be set
+  // with these.
+  uint32 flags = this->getCanvasFlags();
+
+  // This is the target video surface object that is created from the existing
+  // video surface, with the existing width & height recomputed to whatever the
+  // chosen algorithm expects. The target buffer (upon success) becomes the new
+  // video surface of this instance.
+  Canvas destination_buffer;
+
+  // Pick out the suitable scaling factor for determining the new video surface
+  // width and height.
+  //int32 scale_factor = getResizeScaleFactor ( scaling_algorithm );
+
+  // We must not set an alpha mask value if our existing video surface is color
+  // keyed (or bad things ensue -- like many hours spent reading up on this
+  // surprisingly confusing subject).
+  uint32 alpha_mask = 0; // no alpha mask is default (works with color keying)
+
+  // If the video surface does *NOT* have color keying set
+  if ( ! ( flags & SDL_SRCCOLORKEY ) )
+  {
+    //alpha_mask = this->getCanvasAlphaMask();
+  }
+
+  destination_buffer = Canvas (
+                                this->getCanvasWidth()*scale_factor.x,
+                                this->getCanvasHeight()*scale_factor.y,
+                                this->getCanvasBitsPerPixel(),
+                                this->getCanvasRedMask(),
+                                this->getCanvasGreenMask(),
+                                this->getCanvasBlueMask(),
+                                alpha_mask,
+                                flags
+                              );
+
+  // Ensure that our new video surface is sane before feeding
+  if ( destination_buffer.valid() == false )
+  {
+NOM_LOG_ERR ( NOM, "The destination video surface is not valid." );
+    return false;
+  }
+
+  // Lock pixels buffer for writing to
+  if ( this->lock() == false )
+  {
+NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
+    return false;
+  }
+
+  Vector2f r;
+  Color color;
+  Pixel pixels;
+
+  double stretch_x = (double) this->getCanvasWidth() * scale_factor.x / (double) this->getCanvasWidth();
+  double stretch_y = (double) this->getCanvasHeight() * scale_factor.y / (double) this->getCanvasHeight();
+
+  for ( int y = 0; y < this->getCanvasHeight(); y++ )
+  {
+    for ( int x = 0; x < this->getCanvasWidth(); x++ )
+    {
+      for ( int sY = 0; sY < stretch_y; sY++ )
+      {
+        for ( int sX = 0; sX < stretch_x; sX++ )
+        {
+          uint32 pixel = this->getPixel ( x, y );
+          get_rgb ( pixel, this->getCanvasPixelsFormat(), color );
+          //NOM_DUMP_VAR(color);
+          if ( color.red == 0 && color.green == 0 && color.blue == 0 ) continue;
+
+          pixels = Pixel ( ( stretch_x * x ) + sX, ( stretch_y * y ) + sY, color );
+          pixels.Draw ( static_cast<SDL_Surface*> ( destination_buffer.get() ) );
+        }
+      }
+    }
+  }
+
+  this->unlock(); // Relinquish our write lock
+
+  // Do one more sanity check on our new video surface before do the transfer
+  if ( destination_buffer.valid() == false )
+  {
+NOM_LOG_ERR ( NOM, "The destination video surface is not valid." );
     return false;
   }
 

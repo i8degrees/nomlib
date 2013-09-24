@@ -37,25 +37,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Coords.hpp"
 
 /// \brief SDL backwards-compatibility wrappers for nomlib
-
 namespace nom {
 
-  /// Returns a SDL_Rect structure of a nom::Coords object
-  SDL_Rect getSDL_Rect ( const Coords& );
+/// Returns a SDL_Rect structure of a nom::Coords object
+SDL_Rect getSDL_Rect ( const Coords& );
 
-  /// Returns a SDL color structure of a nom::Color object
-  SDL_Color getSDL_Color ( const Color& );
+/// Returns a SDL color structure of a nom::Color object
+SDL_Color getSDL_Color ( const Color& );
 
-  /// Return a nom::Color from a SDL_Color struct
-  const Color mapSDL_Color ( SDL_Color color );
+/// Returns a Color object of the RGB color associated with the pixel.
+void get_rgb ( uint32 pixel, void* pixel_format, Color& color );
 
-  /// Convenience helper for obtaining a color as an integer, respective to
-  /// the video surface pixel format (color bit per pixel)
-  uint32 getColorAsInt ( void*, const Color& );
+/// Convenience helper for obtaining a color as an integer, respective to
+/// the video surface pixel format (color bit per pixel)
+uint32 getColorAsInt ( void*, const Color& );
 
-  /// Convenience helper for obtaining a color as an integer, respective to
-  /// the video surface pixel format (color bit per pixel)
-  uint32 getAlphaColorAsInt ( void*, const Color& );
+/// Convenience helper for obtaining a color as an integer, respective to
+/// the video surface pixel format (color bit per pixel)
+uint32 getAlphaColorAsInt ( void*, const Color& );
+
 
 } // namespace nom
 

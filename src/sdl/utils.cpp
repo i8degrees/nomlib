@@ -54,9 +54,9 @@ SDL_Color getSDL_Color ( const Color& color_ )
   return color;
 }
 
-const Color mapSDL_Color ( SDL_Color color )
+void get_rgb ( uint32 pixel, void* pixel_format, Color& color )
 {
-  return Color ( color.r, color.g, color.b );
+  SDL_GetRGB ( pixel, static_cast<SDL_PixelFormat*> ( pixel_format ), &color.red, &color.green, &color.blue );
 }
 
 uint32 getColorAsInt ( void* pixel_format, const Color& color )

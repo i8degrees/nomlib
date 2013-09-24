@@ -46,7 +46,8 @@ MessageBox::MessageBox ( void )
 
 MessageBox::MessageBox  (
                           int32 x, int32 y, int32 width, int32 height,
-                          enum FrameStyle style, const Gradient& background
+                          enum FrameStyle style,
+                          const Gradient& background
                         )
 {
   int32 padding = 1;
@@ -55,18 +56,18 @@ MessageBox::MessageBox  (
   // init geometry coords w/ arguments list
   this->coords = Coords ( x, y, width, height );
 
-  this->background = Gradient ( background.getStartColor(), background.getEndColor(), Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background.getFillDirection() );
+  this->drawable.push_back ( std::shared_ptr<Gradient> ( new Gradient ( background.getStartColor(), background.getEndColor(), Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background.getFillDirection() ) ) );
 
   if ( style == FrameStyle::Gray )
   {
-    this->frame = std::make_shared<GrayFrame> ( GrayFrame ( x, y, width, height, padding ) );
+    this->drawable.push_back ( std::make_shared<GrayFrame> ( GrayFrame ( x, y, width, height, padding ) ) );
   }
 }
 
 MessageBox::MessageBox  (
                           int32 x, int32 y, int32 width, int32 height,
-                          std::shared_ptr<IFrame> style,
-                          const Gradient& background
+                          std::shared_ptr<GrayFrame> style,
+                          std::shared_ptr<Gradient> background
                         )
 {
   int32 padding = 1;
@@ -76,17 +77,17 @@ MessageBox::MessageBox  (
   // init geometry coords w/ arguments list
   this->coords = Coords ( x, y, width, height );
 
-  //this->background.initialize ( background.getStartColor(), background.getEndColor(), Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background.getFillDirection() );
+  this->drawable.push_back ( std::shared_ptr<Gradient> ( new Gradient ( background->getStartColor(), background->getEndColor(), Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background->getFillDirection() ) ) );
 
   if ( style != nullptr )
   {
-    this->frame = style;
-    this->frame->setPosition ( x, y );
-    this->frame->setSize ( width, height, padding );
+    style->setPosition ( x, y );
+    style->setSize ( width, height, padding );
+    this->drawable.push_back ( style );
   }
   else // default frame style
   {
-    this->frame = std::make_shared<GrayFrame> ( GrayFrame ( x, y, width, height, padding ) );
+    this->drawable.push_back ( std::make_shared<GrayFrame> ( GrayFrame ( x, y, width, height, padding ) ) );
   }
 }
 
@@ -138,12 +139,16 @@ void MessageBox::setWindowTitleFont ( const IFont* font )
 
   this->window_title->setText ( "INFO." );
   this->window_title->setTextJustification ( TextAlignment::MiddleLeft );
+
+  this->drawable.push_back ( std::shared_ptr<IDrawable> ( this->window_title ) );
 }
 
 void MessageBox::setLabelFont ( const IFont* font )
 {
   this->label = IFont::SharedPtr ( font->clone() );
   this->label->setPosition ( this->coords );
+
+  this->drawable.push_back ( std::shared_ptr<IDrawable> ( this->label ) );
 }
 
 void MessageBox::setLabelPosition ( const Coords& pos )
@@ -161,6 +166,7 @@ void MessageBox::setLabelTextAlignment ( enum TextAlignment alignment )
 void MessageBox::setWindowTitle ( const std::string& text )
 {
   std::string text_buffer = text;
+
   if ( ! this->window_title ) return;
 
   // I LIKE TO YELL AT YOU IN ALL CAPS
@@ -178,11 +184,10 @@ void MessageBox::setLabel ( const std::string& text )
 
 void MessageBox::Update ( void )
 {
-  this->background.Update();
-
-  if ( this->frame != nullptr )
+  for ( auto it = this->drawable.begin(); it != this->drawable.end(); ++it )
   {
-    this->frame->Update();
+    std::shared_ptr<IDrawable> obj = *it;
+    obj->Update();
   }
 
   if ( ! this->label ) return;
@@ -208,29 +213,17 @@ void MessageBox::Update ( void )
     }
     break;
   } // end switch
-
-  this->label->Update();
 }
 
 void MessageBox::Draw ( void* video_buffer ) const
 {
   if ( this->isEnabled() == false ) return;
 
-  this->background.Draw ( video_buffer );
-
-  if ( this->frame != nullptr )
+  for ( auto it = this->drawable.begin(); it != this->drawable.end(); ++it )
   {
-    this->frame->Draw( video_buffer );
+    std::shared_ptr<IDrawable> obj = *it;
+    obj->Draw ( video_buffer );
   }
-
-  if ( this->window_title )
-  {
-    this->window_title->Draw ( video_buffer );
-  }
-
-  if ( ! this->label ) return;
-
-  this->label->Draw ( video_buffer );
 }
 
 

@@ -40,7 +40,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Gradient.hpp"
 #include "nomlib/graphics/Line.hpp"
-#include "nomlib/gui/IFrame.hpp"
 #include "nomlib/gui/GrayFrame.hpp"
 #include "nomlib/graphics/IFont.hpp"
 
@@ -55,7 +54,7 @@ enum FrameStyle
 
 /// \brief Simple UI interface for drawing a styled message box
 class MessageBox:
-                  public IDrawable
+                    public IDrawable
 
 {
   public:
@@ -68,11 +67,13 @@ class MessageBox:
 
     MessageBox  (
                   int32 x, int32 y, int32 width, int32 height,
-                  std::shared_ptr<IFrame> style = nullptr,
-                  const Gradient& background = Gradient()
+                  std::shared_ptr<GrayFrame> style = nullptr,
+                  std::shared_ptr<Gradient> background = nullptr
                 );
 
     virtual ~MessageBox ( void );
+
+    //void initialize ( const Gradient& background );
 
     bool isEnabled ( void ) const;
     const std::string getWindowTitle ( void );
@@ -95,8 +96,7 @@ class MessageBox:
   private:
     void initialize ( void );
 
-    IFrame::SharedPtr frame;
-    Gradient background;
+    IDrawable::Drawables drawable;
 
     IFont::SharedPtr window_title;
     IFont::SharedPtr label;

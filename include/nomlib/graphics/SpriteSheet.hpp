@@ -54,6 +54,10 @@ namespace nom {
 
 /// \brief Data container class for offset (input) coordinates for efficient
 /// rendering of many frames within an image.
+///
+///     REFERENCES
+///
+/// 1.  http://www.dreamincode.net/forums/topic/179429-sdl-sprite-sheet/
 class SpriteSheet
 {
   public:

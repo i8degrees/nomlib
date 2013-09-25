@@ -84,7 +84,7 @@ class Text: public IDrawable
     void setColor ( const Color& color );
     void setPosition ( const Coords& coords );
     void setFontSize ( int32 size );
-    void setFontStyle ( uint8 style, uint8 options = 150 );
+    void setFontStyle ( int32 style, uint8 options = 150 );
 
     void setSpacing ( uint32 spaces );
 

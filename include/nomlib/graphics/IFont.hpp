@@ -50,7 +50,7 @@ enum FontStyle
   Faded = 4
 };
 
-enum TextAlignment
+enum class TextAlignment: int32
 {
   TopLeft = 0,
   TopCenter,
@@ -99,7 +99,7 @@ class IFont: public IDrawable
 NOM_LOG_ERR ( NOM, "Method not implemented." );
     }
 
-    virtual void setFontStyle ( uint8 style, uint8 options = 150 ) = 0;
+    virtual void setFontStyle ( int32 style, uint8 options = 150 ) = 0;
     virtual void setColor ( const Color& color ) = 0;
     virtual void setPosition ( const Coords& coords ) = 0;
     virtual void setSpacing ( uint32 spaces ) = 0;

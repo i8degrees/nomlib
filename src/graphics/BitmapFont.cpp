@@ -202,7 +202,7 @@ FontStyle BitmapFont::getFontStyle ( void ) const
   return this->text_style;
 }
 
-void BitmapFont::setFontStyle ( uint8 style, uint8 options )
+void BitmapFont::setFontStyle ( int32 style, uint8 options )
 {
   switch ( style )
   {

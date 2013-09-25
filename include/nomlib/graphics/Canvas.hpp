@@ -55,7 +55,7 @@ namespace nom {
 
 /// Custom deleter for SDL_Surface* smart pointers; can be used as a debugging
 /// aid.
-void Canvas_FreeSurface ( SDL_Surface* );
+void Canvas_FreeSurface ( Surface* );
 
   } // namespace priv
 } // namespace nom
@@ -80,7 +80,7 @@ class Canvas
 {
   public:
     typedef std::shared_ptr<Canvas> SharedPtr;
-    typedef void* RawPtr;
+    typedef Surface* RawPtr;
 
     /// Default constructor; initializes object to its respective defaults
     Canvas ( void );
@@ -89,7 +89,7 @@ class Canvas
     /// video surface memory.
     ///
     /// \deprecated Likely to be removed in the future.
-    Canvas ( void* video_buffer );
+    Canvas ( Surface* video_buffer );
 
     /// Copy constructor; create a video surface object from an existing Canvas
     /// object.
@@ -143,8 +143,8 @@ class Canvas
     /// Reset the video surface object with another video surface object.
     void setCanvas ( const Canvas& surface );
 
-    void setPosition ( const Coords& coords_ );
-    void setOffsets ( const Coords& offsets_ );
+    void setPosition ( const Coords& pos );
+    void setOffsets ( const Coords& clip );
 
     const int32 getCanvasWidth ( void ) const;
     const int32 getCanvasHeight ( void ) const;
@@ -154,7 +154,7 @@ class Canvas
     const uint8 getCanvasBitsPerPixel ( void ) const;
 
     /// \todo Rename to getCanvasPixelFormat
-    SDL_PixelFormat* getCanvasPixelsFormat ( void ) const;
+    PixelFormat* getCanvasPixelsFormat ( void ) const;
 
     /// Obtain the pixel value of the set transparent color
     const Color getCanvasColorKey ( void ) const;
@@ -216,17 +216,17 @@ class Canvas
     /// surface enabled
     /// \endinternal
     bool load ( const std::string& filename, const Color&
-                colorkey = Color ( -1, -1, -1, -1 ),
+                colorkey = Color::null,
                 bool use_cache = false,
                 uint32 flags = SDL_RLEACCEL | SDL_SRCCOLORKEY
               );
 
-    bool Update ( void* video_buffer );
-    void Draw ( void* video_buffer ) const;
+    bool Update ( Surface* video_buffer );
+    void Draw ( Surface* video_buffer ) const;
 
     bool setAlpha ( uint8 opacity, uint32 flags = SDL_SRCALPHA );
 
-    bool setTransparent ( const Color& color = Color ( 0, 0, 0, -1 ),
+    bool setTransparent ( const Color& color = Color::null,
                           uint32 flags = SDL_RLEACCEL | SDL_SRCCOLORKEY
                         );
 
@@ -268,7 +268,7 @@ class Canvas
     /// needs to be locked before doing so for performance sake.
     bool mustLock ( void ) const;
 
-    std::shared_ptr<void> canvas_buffer; // SDL_Surface*
+    std::shared_ptr<Surface> canvas_buffer;
     /// Holds surface position
     Coords coords;
     /// Holds surface bounds (input clipping)

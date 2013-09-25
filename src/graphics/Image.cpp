@@ -42,7 +42,7 @@ NOM_LOG_ERR ( NOM, IMG_GetError() );
   atexit ( IMG_Quit );
 }
 
-Image::Image ( const Image& other )  : image_buffer ( static_cast<SDL_Surface*> ( other.image_buffer.get() ), nom::priv::Canvas_FreeSurface )
+Image::Image ( const Image& other )  : image_buffer { other.image_buffer.get(), nom::priv::Canvas_FreeSurface }
 {
 NOM_LOG_TRACE ( NOM );
 }
@@ -62,9 +62,9 @@ bool Image::valid ( void ) const
     return false;
 }
 
-std::shared_ptr<void> Image::load ( const std::string& filename )
+std::shared_ptr<Surface> Image::load ( const std::string& filename )
 {
-  this->image_buffer = std::shared_ptr<void> ( IMG_Load ( filename.c_str() ), nom::priv::Canvas_FreeSurface );
+  this->image_buffer.reset ( IMG_Load ( filename.c_str() ), nom::priv::Canvas_FreeSurface );
 
   if ( ! this->valid() )
   {
@@ -75,9 +75,9 @@ NOM_LOG_ERR ( NOM, IMG_GetError() );
   return this->image_buffer;
 }
 
-std::shared_ptr<void> Image::loadBMP ( const std::string& filename )
+std::shared_ptr<Surface> Image::loadBMP ( const std::string& filename )
 {
-  this->image_buffer = std::shared_ptr<void> ( SDL_LoadBMP ( filename.c_str() ), nom::priv::Canvas_FreeSurface );
+  this->image_buffer = std::shared_ptr<Surface> ( SDL_LoadBMP ( filename.c_str() ), nom::priv::Canvas_FreeSurface );
 
   if ( ! this->valid() )
   {
@@ -88,9 +88,9 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return this->image_buffer;
 }
 
-bool Image::save ( const std::string& filename, void* video_buffer )
+bool Image::save ( const std::string& filename, Surface* video_buffer )
 {
-  if ( SDL_SaveBMP ( static_cast<SDL_Surface*> ( video_buffer ), filename.c_str() ) != 0 )
+  if ( SDL_SaveBMP ( video_buffer, filename.c_str() ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
@@ -101,7 +101,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
 const Coords Image::getSize ( void ) const
 {
-  SDL_Surface *buffer = static_cast<SDL_Surface*> ( this->image_buffer.get() );
+  SDL_Surface *buffer = this->image_buffer.get();
 
   return Coords ( 0, 0, buffer->w, buffer->h );
 }

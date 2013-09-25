@@ -111,7 +111,7 @@ class TrueTypeFont: public IFont
     void Update ( void );
 
     /// Draw the set text string to the video surface
-    void Draw ( void* video_buffer ) const;
+    void Draw ( Surface* video_buffer ) const;
 
   private:
     /// Trigger a rebuild of the font metrics from the current font; this

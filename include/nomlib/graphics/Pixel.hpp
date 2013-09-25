@@ -56,7 +56,7 @@ class Pixel:
     /// You are responsible for locking & unlocking of the canvas before-hand
     ///
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
-    void Draw ( void* video_buffer ) const;
+    void Draw ( Surface* video_buffer ) const;
   private:
     Coords coords;
     Color color;

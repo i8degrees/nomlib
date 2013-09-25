@@ -59,7 +59,7 @@ class Input
     Input ( void );
     virtual ~Input ( void );
 
-    virtual void HandleInput ( void* event );
+    virtual void HandleInput ( Event* event );
   protected:
     virtual void onUserEvent ( uint8 type, int32 code, void* data1, void* data2 );
 

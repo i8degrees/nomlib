@@ -108,7 +108,7 @@ void Cursor::update ( void )
   this->Update();
 }
 
-void Cursor::draw ( void* video_buffer )
+void Cursor::draw ( Surface* video_buffer )
 {
   this->Draw ( video_buffer );
 }

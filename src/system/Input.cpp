@@ -79,9 +79,9 @@ NOM_LOG_TRACE ( NOM );
 }
 
 
-void Input::HandleInput ( void* event )
+void Input::HandleInput ( Event* event )
 {
-  SDL_Event* input = static_cast<SDL_Event*> ( event );
+  Event* input = event;
 
   switch ( input->type )
   {

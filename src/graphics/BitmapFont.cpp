@@ -432,7 +432,7 @@ void BitmapFont::Update ( void )
   // Stub
 }
 
-void BitmapFont::Draw ( void* video_buffer ) const
+void BitmapFont::Draw ( Surface* video_buffer ) const
 {
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from

@@ -104,7 +104,7 @@ void Sprite::Update ( void )
   this->sprite.setPosition ( this->coords );
 }
 
-void Sprite::Draw ( void* video_buffer ) const
+void Sprite::Draw ( Surface* video_buffer ) const
 {
 NOM_ASSERT ( this->sprite.valid() );
 

@@ -44,17 +44,17 @@ class ObjectCache
     ObjectCache ( void );
     ~ObjectCache ( void );
 
-    std::shared_ptr<void> addObject ( const std::string& key,
-                                      std::shared_ptr<void> object
+    std::shared_ptr<Surface> addObject ( const std::string& key,
+                                      std::shared_ptr<Surface> object
                                     );
 
     /// \todo TEST ME
     bool removeObject ( const std::string& key );
 
-    std::shared_ptr<void> getObject ( const std::string& key );
+    std::shared_ptr<Surface> getObject ( const std::string& key );
 
   private:
-    static std::map <std::string, std::shared_ptr<void>> cache;
+    static std::map <std::string, std::shared_ptr<Surface>> cache;
 };
 
 

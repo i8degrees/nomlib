@@ -109,6 +109,12 @@ class BitmapFont: public IFont
     FontStyle getFontStyle ( void ) const;
     void setFontStyle ( int32 style, uint8 options = 150 );
 
+    /// Not implemented
+    //RenderStyle getRenderingStyle ( void ) const;
+
+    /// Not implemented
+    //void setRenderingStyle ( enum RenderStyle );
+
     void setColor ( const Color& color );
     void setPosition ( const Coords& coords );
 
@@ -178,6 +184,8 @@ class BitmapFont: public IFont
     Color color;
 
     enum TextAlignment text_alignment;
+
+    enum RenderStyle rendering;
 };
 
   namespace priv {

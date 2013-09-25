@@ -40,6 +40,7 @@ NOM_LOG_TRACE ( NOM );
   this->text_buffer = "\0";
   this->text_style = FontStyle::Regular; // default text styling effect
   this->text_alignment = TextAlignment::MiddleLeft;
+  this->rendering = RenderStyle::Solid; // Fast, but ugly
   this->style_options = 0;
   this->filename = "\0";
   this->font_size = 12;
@@ -70,9 +71,13 @@ IFont::SharedPtr TrueTypeFont::clone ( void ) const
 bool TrueTypeFont::valid ( void ) const
 {
   if ( this->font.get() != nullptr )
+  {
     return true;
+  }
   else
+  {
     return false;
+  }
 }
 
 const std::string& TrueTypeFont::getText ( void ) const
@@ -186,10 +191,29 @@ void TrueTypeFont::setFontStyle ( int32 style, uint8 options )
   }
 }
 
+int32 TrueTypeFont::getFontOutline ( void ) const
+{
+  return TTF_GetFontOutline ( this->font.get() );
+}
+
+void TrueTypeFont::setFontOutline ( int32 depth )
+{
+  TTF_SetFontOutline ( this->font.get(), depth );
+}
+
+RenderStyle TrueTypeFont::getRenderingStyle ( void ) const
+{
+  return this->rendering;
+}
+
+void TrueTypeFont::setRenderingStyle ( enum RenderStyle style )
+{
+  this->rendering = style;
+}
+
 void TrueTypeFont::setText ( const std::string& text )
 {
-  if ( text.length() < 1 )
-    return;
+  if ( text.length() < 1 ) return;
 
   this->text_buffer = text;
 
@@ -237,16 +261,40 @@ void TrueTypeFont::Update ( void )
   this->font_buffer.setPosition ( this->coords );
 
   // Update the rendered text surface here for drawing
-  if ( this->getText().c_str() == nullptr )
-    return;
+  if ( this->getText().c_str() == nullptr ) return;
 
-  this->font_buffer.setCanvas ( TTF_RenderText_Solid
-                                (
-                                  this->font.get(),
-                                  this->getText().c_str(),
-                                  RGBA::asSDLCOLOR ( this->color )
-                                )
-                              );
+  if ( this->rendering == RenderStyle::Shaded )
+  {
+    this->font_buffer.setCanvas ( TTF_RenderText_Shaded
+                                  (
+                                    this->font.get(),
+                                    this->getText().c_str(),
+                                    RGBA::asSDLCOLOR ( this->color ),
+                                    // TODO / implement me!
+                                    RGBA::asSDLCOLOR ( Color ( 97, 97, 97 ) )
+                                  )
+                                );
+  }
+  else if ( this->rendering == RenderStyle::Blended )
+  {
+    this->font_buffer.setCanvas ( TTF_RenderText_Blended
+                                  (
+                                    this->font.get(),
+                                    this->getText().c_str(),
+                                    RGBA::asSDLCOLOR ( this->color )
+                                  )
+                                );
+  }
+  else // Assume low quality rendering
+  {
+    this->font_buffer.setCanvas ( TTF_RenderText_Solid
+                                  (
+                                    this->font.get(),
+                                    this->getText().c_str(),
+                                    RGBA::asSDLCOLOR ( this->color )
+                                  )
+                                );
+  }
 
   if ( this->text_style == FontStyle::Faded )
   {

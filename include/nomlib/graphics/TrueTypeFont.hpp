@@ -100,6 +100,18 @@ class TrueTypeFont: public IFont
     /// Not implemented.
     void setTextJustification ( enum TextAlignment alignment );
 
+    /// Getter for obtaining the vector outline of the loaded font.
+    int32 getFontOutline ( void ) const;
+
+    /// Set a new vector outline -- in pixels -- for the loaded font.
+    void setFontOutline ( int32 depth );
+
+    /// Getter for obtaining the current font rendering style in use
+    RenderStyle getRenderingStyle ( void ) const;
+
+    /// Set a new font rendering style.
+    void setRenderingStyle ( enum RenderStyle );
+
     /// \brief Load a new font in from a file.
     ///
     /// Refer to the SDL_ttf documentation for file formats supported. As of
@@ -147,6 +159,8 @@ class TrueTypeFont: public IFont
     bool use_cache;
 
     enum TextAlignment text_alignment;
+
+    enum RenderStyle rendering;
 };
 
   namespace priv {

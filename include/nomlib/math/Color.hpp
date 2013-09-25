@@ -116,9 +116,9 @@ class RGBA
 
     /// Returns RGBA components via nom::Color object, holding the red, green, blue
     /// and alpha values.
-    static inline void asRGB ( uint32 pixel, SDL_PixelFormat* fmt, Color& color )
+    static inline void asRGB ( uint32 pixel, PixelFormat* fmt, Color& color )
     {
-      SDL_GetRGBA ( pixel, fmt, &color.red, &color.green, &color.blue, &color.alpha );
+      SDL_GetRGB ( pixel, fmt, &color.red, &color.green, &color.blue );
     }
 
     /// Convenience helper for obtaining a color as an integer, respective to
@@ -126,9 +126,9 @@ class RGBA
     ///
     /// Returns RGBA components via nom::Color object, holding the red, green, blue
     /// and alpha values.
-    static inline uint32 asInt32 ( SDL_PixelFormat* fmt, const Color& color )
+    static inline uint32 asInt32 ( PixelFormat* fmt, const Color& color )
     {
-      return SDL_MapRGBA ( fmt, color.red, color.green, color.blue, color.alpha );
+      return SDL_MapRGB ( fmt, color.red, color.green, color.blue );
     }
 };
 

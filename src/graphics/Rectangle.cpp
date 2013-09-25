@@ -51,16 +51,15 @@ Rectangle::Rectangle ( const Coords& coords, const Color& color )
 Rectangle::~Rectangle ( void ) {}
 void Rectangle::Update ( void ) {}
 
-void Rectangle::Draw ( void* video_buffer ) const
+void Rectangle::Draw ( Surface* video_buffer ) const
 {
   SDL_Rect rectangle = IntRect::asSDLRect ( this->coords );
 
   uint32 rectangle_color = 0;
-  SDL_Surface* buffer = static_cast<SDL_Surface*> ( video_buffer );
 
-  rectangle_color = RGBA::asInt32 ( buffer->format, this->color );
+  rectangle_color = RGBA::asInt32 ( video_buffer->format, this->color );
 
-  if ( SDL_FillRect ( buffer, &rectangle, rectangle_color ) != 0 )
+  if ( SDL_FillRect ( video_buffer, &rectangle, rectangle_color ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return;

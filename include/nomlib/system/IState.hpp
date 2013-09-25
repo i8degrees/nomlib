@@ -47,7 +47,7 @@ NOM_LOG_TRACE ( NOM );
     virtual void Update ( float ) = 0;
 
     /// Required interface
-    virtual void Draw ( void* ) = 0;
+    virtual void Draw ( Surface* ) = 0;
 
     /// Optional interface
     virtual void onInit ( void ) {}

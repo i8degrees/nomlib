@@ -34,8 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 #include <memory>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include "SDL.h"
+#include "SDL/SDL_image.h"
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color.hpp"
@@ -59,17 +59,17 @@ class Image
 
     /// Supports every file type that the libSDL_image extension has been
     /// compiled with
-    std::shared_ptr<void> load ( const std::string& filename );
+    std::shared_ptr<Surface> load ( const std::string& filename );
 
     /// Uses SDL's built-in BMP file loader; no alpha channeling support ...
     /// perfect for setting window icons!
-    std::shared_ptr<void> loadBMP ( const std::string& filename );
+    std::shared_ptr<Surface> loadBMP ( const std::string& filename );
 
     /// Saves as an uncompressed RGB Windows Bitmap (BMP)
     ///
     /// NOTE: AFAIK, no existing file handling / overwriting checks are done
     /// whatsoever
-    bool save ( const std::string& filename, void* video_buffer );
+    bool save ( const std::string& filename, Surface* video_buffer );
 
     const Coords getSize ( void ) const;
 
@@ -77,7 +77,7 @@ class Image
     Image& operator = ( const Image& other );
 
   private:
-    std::shared_ptr<void> image_buffer; // SDL_Surface*
+    std::shared_ptr<Surface> image_buffer;
 };
 
 

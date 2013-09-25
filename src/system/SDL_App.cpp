@@ -87,7 +87,7 @@ void SDL_App::onQuit ( void )
   this->Quit();
 }
 
-void SDL_App::onEvent ( SDL_Event* event )
+void SDL_App::onEvent ( Event* event )
 {
   Input::HandleInput ( event );
 }
@@ -129,7 +129,7 @@ void SDL_App::setFullScreen ( bool toggle )
   this->fullscreen = toggle;
 }
 
-bool SDL_App::PollEvents ( SDL_Event* event )
+bool SDL_App::PollEvents ( Event* event )
 {
   if ( SDL_PollEvent ( event ) )
   {

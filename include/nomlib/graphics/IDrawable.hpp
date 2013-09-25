@@ -54,7 +54,7 @@ class IDrawable
     virtual void Update ( void ) = 0;
 
     /// Draw the prepared video buffer contents of this object
-    virtual void Draw ( void* ) const = 0;
+    virtual void Draw ( Surface* ) const = 0;
 };
 
 

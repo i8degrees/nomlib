@@ -52,7 +52,7 @@ class SDL_App: public Input
 
     virtual bool onInit ( void );
     virtual void onQuit ( void );
-    virtual void onEvent ( SDL_Event* event );
+    virtual void onEvent ( Event* event );
 
     bool isRunning ( void );
     void Running ( void );
@@ -67,7 +67,7 @@ class SDL_App: public Input
     void toggleFPS ( void );
 
     /// Let the user know if there are pending events
-    bool PollEvents ( SDL_Event* );
+    bool PollEvents ( Event* );
 
     /// Set the rate at which we would like to receive keyboard input
     void enableKeyRepeat ( int32 delay, int32 interval );

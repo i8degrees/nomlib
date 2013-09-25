@@ -117,7 +117,7 @@ void Line::Update ( void )
   this->updated = true;
 }
 
-void Line::Draw ( void* video_buffer ) const
+void Line::Draw ( Surface* video_buffer ) const
 {
   for ( ulong idx = 0; idx < this->pixels.size(); ++idx )
     this->pixels[idx]->Draw ( video_buffer );

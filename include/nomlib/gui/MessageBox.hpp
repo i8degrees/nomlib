@@ -91,7 +91,7 @@ class MessageBox:
     void setLabel ( const std::string& text );
 
     void Update ( void );
-    void Draw ( void* video_buffer ) const;
+    void Draw ( Surface* video_buffer ) const;
 
   private:
     void initialize ( void );

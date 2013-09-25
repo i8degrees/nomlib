@@ -59,7 +59,7 @@ class GrayFrame:
     void Update ( void );
 
     // Re-implemented from IDrawable
-    void Draw ( void* ) const;
+    void Draw ( Surface* ) const;
 
   private:
     /// Holds our line objects used for rendering the object

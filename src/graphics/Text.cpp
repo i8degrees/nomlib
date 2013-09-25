@@ -239,7 +239,7 @@ void Text::Update ( void )
   }
 }
 
-void Text::Draw ( void* video_buffer ) const
+void Text::Draw ( Surface* video_buffer ) const
 {
   if ( this->font )
   {

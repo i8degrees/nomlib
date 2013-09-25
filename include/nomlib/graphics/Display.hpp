@@ -49,7 +49,7 @@ namespace nom {
 /// Custom deleter for the display context smart pointer -- this is managed by
 /// SDL and thus we do not own it -- we must let SDL manage it, so we
 /// intentionally will do nothing in this call.
-void Display_FreeSurface ( SDL_Surface* );
+void Display_FreeSurface ( Surface* );
 
   } // namespace priv
 } // namespace nom
@@ -70,7 +70,7 @@ class Display/*: public IDisplay*/
     ///
     /// Returns ( SDL_Surface* )
     ///
-    void* get ( void ) const;
+    Surface* get ( void ) const;
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
@@ -86,7 +86,7 @@ class Display/*: public IDisplay*/
     uint32_t getDisplayFlags ( void ) const;
     u_short getDisplayPitch ( void ) const;
     void* getDisplayPixels ( void ) const;
-    void* getDisplayPixelsFormat ( void ) const;
+    PixelFormat* getDisplayPixelsFormat ( void ) const;
     const Coords getDisplayBounds ( void ) const;
 
     /// Obtain a list of supported video modes

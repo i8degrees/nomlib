@@ -12,7 +12,7 @@
 #include <iostream>
 #include <string>
 
-#include <SDL/SDL.h>
+#include "SDL2/SDL.h"
 
 #include "nomlib/config.hpp"
 

@@ -42,6 +42,7 @@ NOM_LOG_TRACE ( NOM );
   this->text_buffer = "\0";
   this->text_style = FontStyle::Regular;
   this->text_alignment = TextAlignment::MiddleLeft;
+  this->rendering = RenderStyle::Solid; // Fast, but ugly
   this->newline = 0;
   this->spacing = 0;
   this->color = Color ( 0, 0, 0 );
@@ -225,6 +226,18 @@ void BitmapFont::setFontStyle ( int32 style, uint8 options )
     }
   }
 }
+
+/*
+RenderStyle BitmapFont::getRenderingStyle ( void )
+{
+  return this->rendering; // Not implemented
+}
+
+void BitmapFont::setRenderingStyle ( enum RenderStyle style )
+{
+  this->rendering = style; // Not implemented
+}
+*/
 
 bool BitmapFont::rebuild ( void )
 {

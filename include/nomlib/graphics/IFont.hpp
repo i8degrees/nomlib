@@ -63,6 +63,15 @@ enum class TextAlignment: int32
   BottomRight
 };
 
+/// Text rendering qualities
+enum class RenderStyle: uint32
+{
+  NotImplemented = 0,
+  Solid,
+  Shaded,
+  Blended
+};
+
 class IFont: public IDrawable
 {
   public:
@@ -104,6 +113,18 @@ NOM_LOG_ERR ( NOM, "Method not implemented." );
     virtual void setPosition ( const Coords& coords ) = 0;
     virtual void setSpacing ( uint32 spaces ) = 0;
     virtual void setTextJustification ( enum TextAlignment alignment ) = 0;
+
+    virtual RenderStyle getRenderingStyle ( void ) const
+    {
+NOM_LOG_ERR ( NOM, "Method not implemented." );
+      return RenderStyle::Solid;
+    }
+
+    virtual void setRenderingStyle ( enum RenderStyle )
+    {
+NOM_LOG_ERR ( NOM, "Method not implemented." );
+    }
+
     /// Rescale the font with a chosen resizing algorithm
     ///
     /// Optional interface with a return of false when the deriving class has

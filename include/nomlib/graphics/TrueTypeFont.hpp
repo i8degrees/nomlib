@@ -81,7 +81,7 @@ class TrueTypeFont: public IFont
 
     enum TextAlignment getTextJustification ( void ) const;
 
-    void setFontStyle ( uint8 style, uint8 options );
+    void setFontStyle ( int32 style, uint8 options = 150 );
 
     /// Set a new text point size
     void setFontSize ( int32 point_size );

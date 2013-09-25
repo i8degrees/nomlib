@@ -215,7 +215,7 @@ void Text::setFontSize ( int32 size )
   }
 }
 
-void Text::setFontStyle ( uint8 style, uint8 options )
+void Text::setFontStyle ( int32 style, uint8 options )
 {
   if ( this->font )
   {

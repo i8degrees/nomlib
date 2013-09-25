@@ -107,7 +107,7 @@ class BitmapFont: public IFont
     void setNewline ( uint32_t newline );
 
     FontStyle getFontStyle ( void ) const;
-    void setFontStyle ( uint8 style, uint8 options = 150 );
+    void setFontStyle ( int32 style, uint8 options = 150 );
 
     void setColor ( const Color& color );
     void setPosition ( const Coords& coords );

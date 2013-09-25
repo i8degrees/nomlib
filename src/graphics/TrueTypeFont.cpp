@@ -147,18 +147,33 @@ NOM_LOG_ERR ( NOM, "Could not set new font size." );
   }
 }
 
-void TrueTypeFont::setFontStyle ( uint8 style, uint8 options )
+void TrueTypeFont::setFontStyle ( int32 style, uint8 options )
 {
-  //enum FontStyle current_style;
-
   switch ( style )
   {
     default: break;
     case FontStyle::Regular:
+    {
+      TTF_SetFontStyle ( this->font.get(), TTF_STYLE_NORMAL );
+    }
+    break;
+
     case FontStyle::Bold:
+    {
+      TTF_SetFontStyle ( this->font.get(), TTF_STYLE_BOLD );
+    }
+    break;
+
     case FontStyle::Italic:
+    {
+      TTF_SetFontStyle ( this->font.get(), TTF_STYLE_ITALIC );
+    }
+    break;
+
     case FontStyle::Underlined:
-      // Do nothing stub
+    {
+      TTF_SetFontStyle ( this->font.get(), TTF_STYLE_UNDERLINE );
+    }
     break;
 
     /// Text effect utilizing alpha channels for the appearance of gray text

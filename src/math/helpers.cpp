@@ -26,19 +26,51 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_RANDOM_HPP
-#define NOMLIB_RANDOM_HPP
-
-#include <chrono>
-#include <random>
-
-#include "nomlib/config.hpp"
+#include "nomlib/math/helpers.hpp"
 
 namespace nom {
 
-int32 randomInteger ( int32 start, int32 end );
+const double PI = 4.0 * atan ( 1.0 );
+
+int32 rand ( int32 start, int32 end )
+{
+  uint64 seed = std::chrono::system_clock::now().time_since_epoch().count();
+  std::default_random_engine rand_generator ( seed );
+  std::uniform_int_distribution<int32> distribution ( start, end );
+
+  return distribution ( rand_generator );
+}
+
+const Vector2f rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y )
+{
+  Vector2f p;
+  float rotated_x = 0;
+  float rotated_y = 0;
+  float translated_x = 0;
+  float translated_y = 0;
+
+  float center_x = pivot_x / 2.0;
+  float center_y = pivot_y / 2.0;
+
+  translated_x = x - center_x;
+  translated_y = y - center_y;
+
+  rotated_x = ( translated_x * cos ( -angle * PI / 180 ) - translated_y * sin ( -angle * PI / 180 ) );
+  rotated_y = ( translated_x * sin ( -angle * PI / 180 ) + translated_y * cos ( -angle * PI / 180 ) );
+
+  rotated_x += center_x;
+  rotated_y += center_y;
+
+  p.x = rotated_x;
+  p.y = rotated_y;
+
+  return p;
+}
+
+double round ( double number )
+{
+  return number < 0.0 ? ceil ( number - 0.5 ) : floor ( number + 0.5 );
+}
 
 
 } // namespace nom
-
-#endif // include guard defined

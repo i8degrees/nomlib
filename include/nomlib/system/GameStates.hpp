@@ -47,7 +47,7 @@ class GameStates
     static void onEvent ( void* );
 
     /// State logic
-    static void Update ( uint32 delta_time );
+    static void Update ( float delta_time );
 
     /// State rendering
     static void Draw ( void* video_buffer );
@@ -57,6 +57,7 @@ class GameStates
     static void PushState ( std::unique_ptr<IState> state );
     static void PopState ( void );
     static void PopStateThenChangeState ( std::unique_ptr<IState> state );
+    static void PopState ( int32 response );
 
     /// States stack; we hold pointer references to IState inherited classes
     static std::vector<std::unique_ptr<IState>> states;

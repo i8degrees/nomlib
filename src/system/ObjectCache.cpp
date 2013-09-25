@@ -36,12 +36,12 @@ std::map <std::string, std::shared_ptr<void>> ObjectCache::cache;
 
 ObjectCache::ObjectCache ( void )
 {
-//NOM_LOG_CLASSINFO;
+//NOM_LOG_TRACE ( NOM );
 }
 
 ObjectCache::~ObjectCache ( void )
 {
-//NOM_LOG_CLASSINFO;
+//NOM_LOG_TRACE ( NOM );
 }
 
 std::shared_ptr<void> ObjectCache::addObject  ( const std::string& key,
@@ -52,7 +52,7 @@ std::shared_ptr<void> ObjectCache::addObject  ( const std::string& key,
 
   res = cache.insert( std::pair< std::string, std::shared_ptr<void>> ( key, object ) ).first;
 
-NOM_LOG_INFO ( "ObjectCache: " + key + " has been added to the cache." );
+NOM_LOG_INFO ( NOM, "ObjectCache: " + key + " has been added to the cache." );
 
   return res->second;
 }

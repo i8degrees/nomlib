@@ -50,10 +50,10 @@ int main ( int argc, char* argv[] )
 
   context.createWindow ( 640, 480, 32, 0 ); // segmentation fault otherwise
 
-  if ( ! bitmap_font.load ( path + "Resources/VIII.png", false ) )
+  if ( ! bitmap_font.load ( path + "Resources/VIII.png", nom::Color::NomPrimaryColorKey, false ) )
     return EXIT_FAILURE;
 
-  if ( ! truetype_font.load ( path + "Resources/EnvyCodeRb.ttf", false ) )
+  if ( ! truetype_font.load ( path + "Resources/EnvyCodeRb.ttf", nom::Color::Black, false ) )
   {
     return EXIT_FAILURE;
   }
@@ -62,7 +62,7 @@ int main ( int argc, char* argv[] )
     truetype_font.setFontSize ( 36 );
   }
 
-  not_font.load ( path + "Resources/cards.json", false );
+  not_font.load ( path + "Resources/cards.json", nom::Color::Black, false );
 NOM_ASSERT ( not_font.getFontType() != 0 ); // should always err
 NOM_ASSERT ( bitmap_font.getFontType() == 1 );
 NOM_ASSERT ( truetype_font.getFontType() == 2 );

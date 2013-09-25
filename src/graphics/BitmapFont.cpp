@@ -37,14 +37,13 @@ namespace nom {
 
 BitmapFont::BitmapFont ( void ) : sheet_width ( 16 ), sheet_height ( 16 )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
 
   this->text_buffer = "\0";
   this->text_style = FontStyle::Regular;
-
+  this->text_alignment = TextAlignment::MiddleLeft;
   this->newline = 0;
   this->spacing = 0;
-
   this->color = Color ( 0, 0, 0 );
   this->coords.setPosition ( 0, 0 );
 
@@ -56,7 +55,12 @@ NOM_LOG_CLASSINFO;
 
 BitmapFont::~BitmapFont ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
+}
+
+IFont::SharedPtr BitmapFont::clone ( void ) const
+{
+  return IFont::SharedPtr ( new BitmapFont ( *this ), priv::Free_BitmapFont );
 }
 
 const std::string& BitmapFont::getText ( void ) const
@@ -66,34 +70,78 @@ const std::string& BitmapFont::getText ( void ) const
 
 int32 BitmapFont::getFontWidth ( void ) const
 {
-  int32_t text_width = 0;
+  int32 text_width = 0;
 
-  if ( this->bitmap_font.valid() )
+  for ( int32 char_pos = 0; char_pos < this->text_buffer.length(); char_pos++ )
   {
-    for ( ulong t = 0; t < this->text_buffer.length(); t++ )
+    if ( this->text_buffer [ char_pos ] == ' ' )
     {
-      if ( this->text_buffer[t] == ' ' )
-        text_width += this->chars[t].width / this->spacing;
-      else if ( this->text_buffer[t] == '\n' )
-        text_width = 0;
-      else
-        text_width += this->chars[t].width - ( this->spacing + 2 );
+      text_width += this->spacing;
+
+// Dump each character's table used for calculation
+#if defined ( NOM_DEBUG_SDL_BITMAP_FONT )
+NOM_DUMP_VAR ( char_pos );
+NOM_DUMP_VAR ( this->text_buffer [ char_pos ] );
+NOM_DUMP_VAR ( text_width );
+#endif
+
     }
-  }
+    else if ( this->text_buffer [ char_pos ] == '\n' ) // TODO
+    {
+      text_width = 0;
+    }
+    else
+    {
+      uint8 ascii_char = static_cast<uchar> ( this->text_buffer [ char_pos ] );
+      text_width += this->chars [ ascii_char ].width + 1;
+
+// Dump each character's table used for calculation
+#if defined ( NOM_DEBUG_SDL_BITMAP_FONT )
+NOM_DUMP_VAR ( char_pos );
+NOM_DUMP_VAR ( this->text_buffer [ char_pos ] );
+NOM_DUMP_VAR ( this->chars [ ascii_char ].width + 1 );
+NOM_DUMP_VAR ( text_width );
+#endif
+
+    }
+  } // end for loop
 
   return text_width;
 }
 
 int32 BitmapFont::getFontHeight ( void ) const
 {
-  int32_t text_height = 0;
+  int32 text_height = 0;
 
-  for ( ulong t = 0; t < this->text_buffer.length(); t++ )
+  for ( int32 char_pos = 0; char_pos < this->text_buffer.length(); char_pos++ )
   {
-    if ( this->text_buffer[t] == '\n' )
+    if ( this->text_buffer [ char_pos ] == '\n' )
+    {
       text_height += this->newline;
+
+// Dump each character's table used for calculation
+#if defined ( NOM_DEBUG_SDL_BITMAP_FONT )
+NOM_DUMP_VAR ( char_pos );
+NOM_DUMP_VAR ( this->text_buffer [ char_pos ] );
+NOM_DUMP_VAR ( text_height );
+#endif
+
+    }
     else
-      text_height = this->chars[t].height;
+    {
+      uint8 ascii_char = static_cast<uchar> ( this->text_buffer [ char_pos ] );
+
+      text_height = this->chars [ ascii_char ].height;
+
+// Dump each character's table used for calculation
+#if defined ( NOM_DEBUG_SDL_BITMAP_FONT )
+NOM_DUMP_VAR ( char_pos );
+NOM_DUMP_VAR ( this->text_buffer [ char_pos ] );
+NOM_DUMP_VAR ( this->chars [ ascii_char ].height );
+NOM_DUMP_VAR ( text_height );
+#endif
+
+    }
   }
 
   return text_height;
@@ -124,7 +172,7 @@ void BitmapFont::setText ( const std::string& text )
   this->text_buffer = text;
 }
 
-uint32 BitmapFont::getSpacing ( void )
+uint32 BitmapFont::getSpacing ( void ) const
 {
   return this->spacing;
 }
@@ -134,9 +182,14 @@ void BitmapFont::setSpacing ( uint32 spaces )
   this->spacing = spaces;
 }
 
-uint32 BitmapFont::getNewline ( void )
+uint32 BitmapFont::getNewline ( void ) const
 {
   return this->newline;
+}
+
+enum TextAlignment BitmapFont::getTextJustification ( void ) const
+{
+  return this->text_alignment;
 }
 
 void BitmapFont::setNewline ( uint32 newline )
@@ -184,7 +237,7 @@ bool BitmapFont::rebuild ( void )
 
 NOM_ASSERT ( this->bitmap_font.valid() );
 
-  background_color = getColorAsInt  ( this->bitmap_font.getCanvasPixelsFormat(),
+  background_color = RGBA::asInt32  ( this->bitmap_font.getCanvasPixelsFormat(),
                                       this->colorkey
                                     );
 
@@ -194,9 +247,6 @@ NOM_ASSERT ( this->bitmap_font.valid() );
   tile_height = this->bitmap_font.getCanvasHeight() / this->sheet_height;
   top = tile_height;
   baseA = tile_height;
-
-  // Reset the text buffer before we recompute font metrics
-  this->text_buffer = "\0";
 
   for ( uint32_t rows = 0; rows < this->sheet_width; rows++ )
   {
@@ -311,13 +361,8 @@ NOM_ASSERT ( this->bitmap_font.valid() );
     }
   }
 
-  // Checks to see if we have modified the instance variable before calling this
-  // method
-  if ( this->spacing == 0 )
-  {
-    // Calculate space
-    this->spacing = tile_width / 2;
-  }
+  // Calculate space
+  this->spacing = tile_width / 2;
 
   // Calculate new line
   this->newline = baseA - top;
@@ -329,6 +374,19 @@ NOM_ASSERT ( this->bitmap_font.valid() );
     this->chars[ t ].height -= top;
   }
 
+// Dump table of calculated bitmap character positions
+#if defined ( NOM_DEBUG_SDL_BITMAP_FONT )
+  for ( uint32 pos = 0; pos < 256; pos++ )
+  {
+NOM_DUMP_VAR ( pos );
+NOM_DUMP_VAR ( static_cast<uchar> ( pos ) );
+NOM_DUMP_VAR ( this->chars [ pos ].x );
+NOM_DUMP_VAR ( this->chars [ pos ].y );
+NOM_DUMP_VAR ( this->chars [ pos ].width );
+NOM_DUMP_VAR ( this->chars [ pos ].height );
+  }
+#endif
+
   return true;
 }
 
@@ -338,7 +396,7 @@ bool BitmapFont::load ( const std::string& filename, const Color& colorkey,
 {
   if ( this->bitmap_font.load ( filename, colorkey, use_cache ) == false )
   {
-NOM_LOG_ERR ( "Could not load bitmap font image file: " + filename );
+NOM_LOG_ERR ( NOM, "Could not load bitmap font image file: " + filename );
     return false;
   }
 
@@ -347,11 +405,16 @@ NOM_LOG_ERR ( "Could not load bitmap font image file: " + filename );
   // Attempt to rebuild font metrics
   if ( this->rebuild() == false )
   {
-NOM_LOG_ERR ( "Could not rebuild bitmap font metrics" );
+NOM_LOG_ERR ( NOM, "Could not rebuild bitmap font metrics" );
     return false;
   }
 
   return true;
+}
+
+void BitmapFont::setTextJustification ( enum TextAlignment alignment )
+{
+  this->text_alignment = alignment;
 }
 
 const Coords BitmapFont::findGlyph ( const std::string& glyph )
@@ -369,13 +432,36 @@ void BitmapFont::Update ( void )
   // Stub
 }
 
-// TODO: test \t (horizontal tabbing) feature
 void BitmapFont::Draw ( void* video_buffer ) const
 {
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from
-  int32_t x_offset = this->coords.x;
-  int32_t y_offset = this->coords.y;
+  int32 x_offset = this->coords.x;
+  int32 y_offset = this->coords.y;
+
+  switch ( this->text_alignment )
+  {
+    default:
+    case TextAlignment::MiddleLeft:
+    {
+      x_offset = this->coords.x;
+      y_offset = this->coords.y;
+    }
+    break;
+
+    case TextAlignment::MiddleCenter:
+    {
+      x_offset = this->coords.x + ( this->coords.width / 2 ) - ( this->getFontWidth() / 2 );
+      y_offset = ( this->coords.height / 2 ) + this->coords.y - ( this->getFontHeight() / 2 );
+    }
+    break;
+
+    case TextAlignment::MiddleRight:
+    {
+      // TODO
+    }
+    break;
+  } // end switch
 
   //If the font has been built
   if ( this->bitmap_font.valid() )
@@ -395,7 +481,7 @@ void BitmapFont::Draw ( void* video_buffer ) const
         y_offset += this->newline;
         x_offset = this->coords.x;
       }
-      // If the current character is a newline
+      // If the current character is a tab
       else if( this->text_buffer[show] == '\t' )
       {
         x_offset += this->spacing * 4;
@@ -416,23 +502,39 @@ void BitmapFont::Draw ( void* video_buffer ) const
   } // end if this->bitmap_font != nullptr
 }
 
-void BitmapFont::scale2x ( void )
+bool BitmapFont::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
-  if ( this->bitmap_font.valid() )
+  if ( this->bitmap_font.valid() == false )
   {
-    this->bitmap_font.scale2x();
-    this->rebuild();
+NOM_LOG_ERR ( NOM, "Video surface is invalid." );
+    return false;
   }
+
+  if ( this->bitmap_font.resize ( scaling_algorithm ) == false )
+  {
+NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
+    return false;
+  }
+
+  if ( this->rebuild() == false )
+  {
+NOM_LOG_ERR ( NOM, "Could not rebuild bitmap font metrics" );
+    return false;
+  }
+
+  return true;
 }
 
-void BitmapFont::hq2x ( void )
+  namespace priv {
+
+void Free_BitmapFont ( BitmapFont* ptr )
 {
-  if ( this->bitmap_font.valid() )
-  {
-    this->bitmap_font.hq2x();
-    this->rebuild();
-  }
+  // Do nothing custom deleter
+  //
+  // FIXME; this is a known bug (memory leak).
 }
 
 
+  } // namespace priv
 } // namespace nom
+

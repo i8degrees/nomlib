@@ -26,18 +26,46 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/random.hpp"
+#ifndef NOMLIB_EVENT_DISPATCHER_HPP
+#define NOMLIB_EVENT_DISPATCHER_HPP
+
+#include <iostream>
+#include <string>
+
+#include <SDL/SDL.h>
+
+#include "nomlib/config.hpp"
 
 namespace nom {
 
-int32 randomInteger ( int32 start, int32 end )
+enum class UserEvent: int32
 {
-  uint64 seed = std::chrono::system_clock::now().time_since_epoch().count();
-  std::default_random_engine rand_generator ( seed );
-  std::uniform_int_distribution<uint32> distribution ( start, end );
+  Unknown = 000,
+  AI,
+  Animation,
+  Application,
+  Audio,
+  General,
+  Library,
+  State,
+  UI
+};
 
-  return distribution ( rand_generator );
-}
+class EventDispatcher
+{
+  public:
+    EventDispatcher ( void );
+    ~EventDispatcher ( void );
+
+    int32 push ( SDL_Event* event, int32 code, void* params );
+
+    int32 dispatch ( enum UserEvent code, void* params = nullptr );
+
+  private:
+    // ...
+};
 
 
 } // namespace nom
+
+#endif // include guard defined

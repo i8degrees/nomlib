@@ -32,7 +32,7 @@ namespace nom {
 
 SDL_App::SDL_App ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
 
   this->app_state = false;
 
@@ -40,16 +40,16 @@ NOM_LOG_CLASSINFO;
 
   this->setFullScreen ( false );
 
-  this->appTime.Start();
+  this->appTime.start();
 }
 
 SDL_App::~SDL_App ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
 
   this->setFullScreen ( false );
 
-  this->appTime.Stop();
+  this->appTime.stop();
 
   this->app_state = false;
 
@@ -92,9 +92,9 @@ void SDL_App::onEvent ( SDL_Event* event )
   Input::HandleInput ( event );
 }
 
-uint32_t SDL_App::getTicks ( void )
+uint32 SDL_App::ticks ( void )
 {
-  return this->appTime.getTicks();
+  return this->appTime.ticks();
 }
 
 bool SDL_App::getShowFPS ( void )

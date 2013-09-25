@@ -34,9 +34,16 @@ namespace nom {
 FileWriter::FileWriter ( void ) {}
 
 FileWriter::~FileWriter ( void ) {}
-
-bool FileWriter::save ( const std::string& filename, Object& root,
+/*
+bool FileWriter::save (
+                        const std::string& filename, Object& root,
                         enum options format
+                      )
+*/
+bool FileWriter::save (
+                        const std::string& filename,
+                        const json_spirit::Array& root_object,
+                        uint32 format
                       )
 {
   std::ofstream fp; // output file stream
@@ -48,28 +55,43 @@ bool FileWriter::save ( const std::string& filename, Object& root,
     switch ( format )
     {
       default:
-        json_spirit::write_stream ( json_spirit::Value ( root.values ), fp );
+      case NoFormatting:
+      {
+        json_spirit::write_stream ( json_spirit::Value ( root_object ), fp );
+        //json_spirit::write_stream ( json_spirit::Value ( root.values ), fp );
+      }
       break;
 
-      case pretty_print:
-        json_spirit::write_stream ( json_spirit::Value ( root.values ), fp,
+      case PrettyPrint:
+      {
+        json_spirit::write_stream (
+                                    json_spirit::Value ( root_object ), fp,
+                                    //json_spirit::Value ( root.values ), fp,
                                     json_spirit::pretty_print
                                   );
+      }
       break;
 
-      case single_line_arrays:
-        json_spirit::write_stream ( json_spirit::Value ( root.values ), fp,
+      case CompactArrays:
+      {
+        json_spirit::write_stream (
+                                    json_spirit::Value ( root_object ), fp,
+                                    //json_spirit::Value ( root.values ), fp,
                                     json_spirit::single_line_arrays
                                   );
+      }
       break;
     }
-
-    fp.close();
-    return true;
   }
+  else // fp is *NOT* open and / or good
+  {
+NOM_LOG_ERR ( NOM, "Unable to save JSON file at: " + filename );
+    fp.close();
+    return false;
+  } // end if fp is open && good
 
   fp.close();
-  return false;
+  return true;
 }
 
 

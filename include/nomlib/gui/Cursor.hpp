@@ -31,71 +31,76 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
-#include <vector>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/graphics/Sprite.hpp"
+#include "nomlib/graphics/AnimatedSprite.hpp"
+//#include "nomlib/graphics/SpriteBatch.hpp"
 
 namespace nom {
   namespace ui {
 
 /// \brief Helper class for loading, positioning and keeping track of a cursor
 /// controlled by a mouse and / or keyboard.
-class Cursor
+class Cursor:
+              public AnimatedSprite
 {
   public:
+    /// Default construct for initializing instance variables to their
+    /// respective defaults.
     Cursor ( void );
-    Cursor ( unsigned int x, unsigned int y, unsigned int width, unsigned int height );
+
+    /// Construct a new Cursor object, initializing with a SpriteSheet object.
+    Cursor ( const SpriteSheet& sheet );
+
+    /// Construct a Cursor from an existing sprite sheet filename.
+    Cursor ( const std::string& filename );
+
+    /// Destructor
     virtual ~Cursor ( void );
 
-    int32 getX ( void );
-    int32 getY ( void );
-    void setPosition ( unsigned int x = 0, unsigned int y = 0 );
-    void move ( unsigned int x = 0, unsigned int y = 0 );
+    /// Copy assignment operator
+    Cursor& operator = ( const Cursor& other );
 
-    signed int getSheetID ( void );
-    void setSheetID ( signed int sheet_id = -1 );
-    void setSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding );
-
-    unsigned int getState ( void );
-    void setState ( unsigned int state );
+    int32 getX ( void ) const;
+    int32 getY ( void ) const;
 
     //bool isCursorLocked ( void );
     //void lockCursor ( bool toggle );
 
-    Coords getCursorPos ( unsigned int x, unsigned int y );
-    void moveCursorUp();
-    void moveCursorDown();
-    void moveCursorLeft();
-    void moveCursorRight();
-
-    bool load( std::string filename, Color colorkey, bool use_cache );
-    void Update ( void );
-    void Draw ( void* video_buffer );
-
-    /// Uses the scale2x algorithm implemented in nom::Canvas to scale a sprite
-    /// by a scaling factor of two times the original size.
+    /// Move the cursor up.
     ///
-    /// See Canvas.hpp for additional information.
-    void scale2x ( void );
-
-    /// Uses the hq2x algorithm implemented in nom::Canvas to scale a sprite
-    /// by a scaling factor of two times the original size.
+    /// Returns the Y coordinate position of the cursor after it has been moved.
     ///
-    /// See Canvas.hpp for additional information.
-    void hq2x ( void );
+    /// \todo Rename me to up?
+    virtual int32 moveCursorUp ( void );
 
-  private:
-    Sprite cursor; // interface cursor
+    /// Move the cursor down.
+    ///
+    /// Returns the Y coordinate position of the cursor after it has been moved.
+    ///
+    /// \todo Rename me to down?
+    virtual int32 moveCursorDown ( void );
 
-    // cursor XY coords mapping
-    std::vector<Coords> coords_map;
+    /// Move the cursor to the left.
+    ///
+    /// Returns the X coordinate position of the cursor after it has been moved.
+    ///
+    /// \todo Rename me to left?
+    virtual int32 moveCursorLeft ( void );
 
-    //    coords_map schema:
-    //
-    //  [index-pos].[ x, y, width, height ]
-    //
+    /// Move the cursor to the right.
+    ///
+    /// Returns the X coordinate position of the cursor after it has been moved.
+    ///
+    /// \todo Rename me to right?
+    virtual int32 moveCursorRight ( void );
+
+    void update ( void );
+    void draw ( void* video_buffer );
+
+  protected:
+    // ...
 };
 
 

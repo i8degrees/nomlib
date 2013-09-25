@@ -32,11 +32,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Public header file
 
 #include <nomlib/config.hpp>
+#include <nomlib/math/helpers.hpp>
 #include <nomlib/math/Color.hpp>
 #include <nomlib/math/Coords.hpp>
+#include <nomlib/math/Rect-inl.hpp>
 #include <nomlib/math/Vector2-inl.hpp>
 #include <nomlib/math/Vector3-inl.hpp>
-#include <nomlib/math/Vector4-inl.hpp>
 #include <nomlib/math/Transformable.hpp>
 
 #endif // include guard defined

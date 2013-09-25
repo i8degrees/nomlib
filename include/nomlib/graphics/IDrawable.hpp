@@ -29,6 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_IDRAWABLE_HEADERS
 #define NOMLIB_IDRAWABLE_HEADERS
 
+#include <vector>
+#include <memory>
+
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -37,6 +40,9 @@ namespace nom {
 class IDrawable
 {
   public:
+    typedef std::shared_ptr<IDrawable> SharedPtr;
+    typedef std::vector<std::shared_ptr<IDrawable>> Drawables;
+
     IDrawable ( void ) {}
     virtual ~IDrawable ( void ) {}
 

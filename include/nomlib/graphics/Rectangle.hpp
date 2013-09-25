@@ -29,27 +29,37 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SDL_RECTANGLE_HEADERS
 #define NOMLIB_SDL_RECTANGLE_HEADERS
 
+#include <SDL/SDL.h>
+
 #include "nomlib/config.hpp"
-#include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/math/Transformable.hpp"
+#include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 
-class Rectangle:  public IDrawable,     // "is a" relationship
-                  public Transformable  // "has a" relationship
+class Rectangle:
+                  public IDrawable
 
 {
   public:
     Rectangle ( void );
+
+    /// Constructor variant for creating a rectangle from an existing type
+    /// This is a "shallow" copy assignment
     Rectangle ( const Rectangle& rect );
+
     Rectangle ( const Coords& coords, const Color& color );
+
     virtual ~Rectangle ( void );
 
     void Update ( void );
     void Draw ( void* ) const;
+
+  private:
+    Coords coords;
+    Color color;
 };
 
 

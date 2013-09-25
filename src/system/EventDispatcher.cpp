@@ -26,69 +26,53 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_VECTOR4_HEADERS
-#define NOMLIB_VECTOR4_HEADERS
-
-#include "nomlib/config.hpp"
+#include "nomlib/system/EventDispatcher.hpp"
 
 namespace nom {
 
-template <typename T>
-/// \brief Vector4 template class
-class Vector4
+EventDispatcher::EventDispatcher ( void )
 {
-  public:
-    /// Default constructor; sets all values to their respective defaults
-    Vector4 ( void )
-    {
-      this->x = x;
-      this->y = y;
-      this->z = z;
-      this->t = t;
-    }
+NOM_LOG_TRACE ( NOM );
+}
 
-    /// Constructor variant for initializing x, y, z, t at construction
-    Vector4 ( T x, T y, T z, T t )
-    {
-      this->x = x;
-      this->y = y;
-      this->z = z;
-      this->t = t;
-    }
+EventDispatcher::~EventDispatcher ( void )
+{
+NOM_LOG_TRACE ( NOM );
+}
 
-    /// Copy constructor
-    template <typename U>
-    Vector4<T> ( const Vector4<U>& copy )
-    {
-      this->x = static_cast<T> ( copy.x );
-      this->y = static_cast<T> ( copy.y );
-      this->z = static_cast<T> ( copy.z );
-      this->t = static_cast<T> ( copy.t );
-    }
+int32 EventDispatcher::push ( SDL_Event* event, int32 code, void* params )
+{
+  SDL_UserEvent user_event;
 
-    /// Copy assignment constructor
-    Vector4& operator = ( const T& other )
-    {
-      this->x = other.x;
-      this->y = other.y;
-      this->z = other.z;
-      this->t = other.t;
-    }
+  user_event.type = SDL_USEREVENT;
+  user_event.code = code;
+  user_event.data1 = params;
+  user_event.data2 = nullptr;
 
-    ~Vector4 ( void ) {}
+  event->type = SDL_USEREVENT;
+  event->user = user_event;
 
-    T x;
-    T y;
-    T z;
-    T t;
-};
+  if ( SDL_PushEvent ( event ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return -1;
+  }
 
-// Define the most common types
-typedef Vector4<int32> Vector4i;
-typedef Vector4<uint32> Vector4u;
-typedef Vector4<float> Vector4f;
+  return 0;
+}
+
+int32 EventDispatcher::dispatch ( enum UserEvent code, void* params )
+{
+  SDL_Event event;
+
+  if ( this->push ( &event, static_cast<int32> ( code ), nullptr ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, "Could not dispatch event." );
+    return -1;
+  }
+
+  return 0;
+}
 
 
 } // namespace nom
-
-#endif // NOMLIB_VECTOR4_HEADERS defined

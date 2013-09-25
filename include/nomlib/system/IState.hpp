@@ -35,16 +35,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief State pure abstract class
-class IState: public Input // "has a" relationship
+class IState: public Input
 {
   public:
     virtual ~IState ( void )
     {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
     }
 
     /// Required interface
-    virtual void Update ( uint32 ) = 0;
+    virtual void Update ( float ) = 0;
 
     /// Required interface
     virtual void Draw ( void* ) = 0;
@@ -59,6 +59,7 @@ NOM_LOG_CLASSINFO;
     virtual void Pause ( void ) {}
 
     /// Optional interface
+    virtual void Resume ( int32 response ) {}
     virtual void Resume ( void ) {}
 };
 

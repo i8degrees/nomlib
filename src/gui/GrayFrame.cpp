@@ -51,13 +51,13 @@ GrayFrame::~GrayFrame ( void )
 
 void GrayFrame::setPosition ( int32 x, int32 y )
 {
-  this->coords.setPosition ( x, y );
+  this->frame_position.setPosition ( x, y );
   this->updated = false;
 }
 
 void GrayFrame::setSize ( int32 width, int32 height, int32 padding )
 {
-  this->coords.setSize ( width, height );
+  frame_position.setSize ( width, height );
   this->padding = padding;
   this->updated = false;
 }
@@ -67,24 +67,24 @@ void GrayFrame::Update ( void )
   if ( this->updated == true )
     return;
 
-  int32 x = this->coords.x;
-  int32 y = this->coords.y;
-  int32 width = this->coords.width;
-  int32 height = this->coords.height;
+  int32 x = this->frame_position.x;
+  int32 y = this->frame_position.y;
+  int32 width = this->frame_position.width;
+  int32 height = this->frame_position.height;
 
   int32 x_offset = x + width;
   int32 y_offset = y + height;
 
   this->frame.clear();
 
-  this->frame.push_back ( std::shared_ptr<Line> ( new Line ( x, y, x_offset - padding, y, Color( 41, 41, 41 ) ) ) ); // top0
-  this->frame.push_back ( std::shared_ptr<Line> ( new Line ( x, y + 1, x_offset - padding, y + 1, Color( 133, 133, 133 ) ) ) ); // top1
-  this->frame.push_back ( std::shared_ptr<Line> ( new Line ( x, y + 1, x, y_offset - padding, Color( 41, 41, 41 ) ) ) ); // left0
-  this->frame.push_back ( std::shared_ptr<Line> ( new Line ( x + 1, y + 2, x + 1, y_offset - padding, Color( 133, 133, 133 ) ) ) ); // left1
-  this->frame.push_back ( std::shared_ptr<Line> ( new Line ( x, y_offset - padding, x_offset - padding, y_offset - padding, Color( 57, 57, 57 ) ) ) ); //bottom0
-  this->frame.push_back ( std::shared_ptr<Line> ( new Line ( x, y_offset, x_offset + padding, y_offset, Color ( 41, 41, 41 ) ) ) ); // bottom1
-  this->frame.push_back ( std::shared_ptr<Line> ( new Line ( x_offset - padding, y, x_offset - padding, y_offset + padding, Color( 57, 57, 57 ) ) ) ); // right0
-  this->frame.push_back ( std::shared_ptr<Line> ( new Line ( x_offset, y, x_offset, y_offset + padding, Color( 41, 41, 41 ) ) ) ); // right1
+  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x, y, x_offset - padding, y, Color( 41, 41, 41 ) ) ) ); // top0
+  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x, y + 1, x_offset - padding, y + 1, Color( 133, 133, 133 ) ) ) ); // top1
+  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x, y + 1, x, y_offset - padding, Color( 41, 41, 41 ) ) ) ); // left0
+  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x + 1, y + 2, x + 1, y_offset - padding, Color( 133, 133, 133 ) ) ) ); // left1
+  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x, y_offset - padding, x_offset - padding, y_offset - padding, Color( 57, 57, 57 ) ) ) ); //bottom0
+  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x, y_offset, x_offset + padding, y_offset, Color ( 41, 41, 41 ) ) ) ); // bottom1
+  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x_offset - padding, y, x_offset - padding, y_offset + padding, Color( 57, 57, 57 ) ) ) ); // right0
+  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x_offset, y, x_offset, y_offset + padding, Color( 41, 41, 41 ) ) ) ); // right1
 
   this->updated = true;
 }

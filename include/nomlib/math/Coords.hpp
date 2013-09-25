@@ -33,16 +33,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+const std::string coords_delimiter = ", ";
+
 /// \brief Coordinate values (x, y, z, width, height ) wrapper
 class Coords
 {
   public:
     /// Default constructor; sets all values to their respective defaults
     Coords ( void );
-    /// Constructor variant for setting coords by x, y, width, height values
-    Coords ( int32_t x, int32_t y, int32_t width = 0, int32_t height = 0 );
+
+    /// Constructor variant for creating coords
+    Coords ( int32 x, int32 y, int32 width, int32 height );
+
+    /// Constructor variant for creating coords
+    Coords ( int32 x, int32 y );
+
     /// Copy constructor
     Coords ( const Coords& coords );
+
+    /// Destructor
     ~Coords ( void );
 
     Coords getPosition ( void ) const;
@@ -51,27 +60,43 @@ class Coords
     Coords getSize ( void ) const;
     void setSize ( int32_t width, int32_t height );
 
-    /// \todo TEST ME
-    bool contains ( int32_t x, int32_t y ) const;
+    /// Check to see if input X, Y coordinates are within the bounds of this
+    /// object -- or in other words, a collision!
+    bool contains ( int32 x, int32 y ) const;
 
-    /// \todo TEST ME
+    /// Check to see if input X, Y coordinates are within the bounds of this
+    /// object -- or in other words, a collision!
+    ///
+    /// ...
     bool contains ( const Coords& pos ) const;
 
     /// Checks to see if our rectangle overlaps with another
-    /// \todo TEST ME
     bool intersects ( Coords& rectangle ) const;
 
     /// Copy assignment constructor
     Coords& operator = ( const Coords& other );
 
+    /// Convenience object that will always contain a value of:
+    /// -1, -1, -1, -1, -1
+    static const Coords null;
+
   public:
-    signed int x;
-    signed int y;
-    signed int z; // reserved
-    signed int width;
-    signed int height;
+    int32 x;
+    int32 y;
+    int32 z; // reserved
+    int32 width;
+    int32 height;
 
 }; // class Coords
+
+/// Pretty print the color using the following format string:
+///
+/// <coords.x>, <coords.y>, <coords.width>, <coords.height>
+///
+/// This will look like:
+///
+/// 128, 144, 64, 64
+std::ostream& operator << ( std::ostream& os, const Coords& coords );
 
 bool operator == ( const Coords& left, const Coords& right );
 bool operator != ( const Coords& left, const Coords& right );

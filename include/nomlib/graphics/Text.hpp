@@ -62,7 +62,10 @@ class Text: public IDrawable
     ///
     /// See nom::BitmapFont and nom::TrueTypeFont documentation for supported
     /// file formats.
-    bool load ( const std::string& filename, bool use_cache );
+    bool load ( const std::string& filename,
+                const Color& colorkey = Color::Black,
+                bool use_cache = false
+              );
 
     FontType getFontType ( void );
 
@@ -74,32 +77,29 @@ class Text: public IDrawable
     const Color& getColor ( void ) const;
     const Coords getPosition ( void ) const;
 
+    uint32 getNewline ( void ) const;
+    uint32 getSpacing ( void ) const;
+
     void setText ( const std::string& text );
     void setColor ( const Color& color );
     void setPosition ( const Coords& coords );
     void setFontSize ( int32 size );
     void setFontStyle ( uint8 style, uint8 options = 150 );
 
+    void setSpacing ( uint32 spaces );
+
     virtual void Update ( void );
     virtual void Draw ( void* video_buffer ) const;
 
-    /// Uses the scale2x algorithm implemented in nom::Canvas to scale a sprite
-    /// by a scaling factor of two times the original size.
+    /// Rescale the font with a chosen resizing algorithm
     ///
-    /// See Canvas.hpp for additional information.
-    void scale2x ( void );
-
-    /// Uses the hq2x algorithm implemented in nom::Canvas to scale a sprite
-    /// by a scaling factor of two times the original size.
-    ///
-    /// See Canvas.hpp for additional information.
-    void hq2x ( void );
+    /* virtual */ bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
   private:
     /// Set the type of file we are loading; either a bitmap or a TrueType font
     void setFontType ( enum FontType type );
 
-    std::unique_ptr<IFont> font;
+    std::shared_ptr<IFont> font;
     /// Holds type of font in use; see setFontType
     enum FontType file_type;
 };

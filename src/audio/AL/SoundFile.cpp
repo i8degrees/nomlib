@@ -33,7 +33,7 @@ namespace nom {
 
 SoundFile::SoundFile ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
 
   this->fp.reset();
 
@@ -42,7 +42,7 @@ NOM_LOG_CLASSINFO;
 
 SoundFile::~SoundFile ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
   // Clean up instance variables
 }
 
@@ -79,7 +79,7 @@ bool SoundFile::open ( const std::string& filename )
 
   if ( this->fp.get() == nullptr )
   {
-NOM_LOG_ERR ( "Could not not audio file: " + filename );
+NOM_LOG_ERR ( NOM, "Could not not audio file: " + filename );
     return false;
   }
 

@@ -33,103 +33,84 @@ namespace nom {
 
 Cursor::Cursor ( void )
 {
-NOM_LOG_CLASSINFO;
-
-  // Not yet implemented
+NOM_LOG_TRACE ( NOM );
 }
 
-Cursor::Cursor ( unsigned int x, unsigned int y, unsigned int width, unsigned int height )
+Cursor::Cursor ( const SpriteSheet& sheet ):  AnimatedSprite ( sheet )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
+}
 
-  this->cursor = Sprite ( width, height );
-  this->cursor.setPosition ( x, y );
-  this->cursor.setState ( 0 ); // default state init
+Cursor::Cursor ( const std::string& filename ):  AnimatedSprite ( filename )
+{
+NOM_LOG_TRACE ( NOM );
 }
 
 Cursor::~Cursor ( void )
 {
-NOM_LOG_CLASSINFO;
-
-  // Clean up
+NOM_LOG_TRACE ( NOM );
 }
 
-int32 Cursor::getX ( void )
+Cursor& Cursor::operator = ( const Cursor& other )
 {
-  Coords x_value = this->cursor.getPosition();
+  this->sprite = other.sprite;
+  this->coords = other.coords;
+  this->offsets = other.offsets;
+  this->state = other.state;
+  this->sprite_sheet = other.sprite_sheet;
+  this->sheet_id = other.sheet_id;
+  this->scale_factor = other.scale_factor;
+
+  this->max_frames = other.max_frames;
+  this->current_frame = other.current_frame;
+  this->frame_increment = other.frame_increment;
+  this->animation_style = other.animation_style;
+  this->animation_status = other.animation_status;
+  this->fps = other.fps;
+
+  return *this;
+}
+
+int32 Cursor::getX ( void ) const
+{
+  Coords x_value = this->getPosition();
   return x_value.x;
 }
 
-int32 Cursor::getY ( void )
+int32 Cursor::getY ( void ) const
 {
-  Coords y_value = this->cursor.getPosition();
+  Coords y_value = this->getPosition();
   return y_value.y;
 }
 
-void Cursor::setPosition ( unsigned int x, unsigned int y )
+int32 Cursor::moveCursorUp ( void )
 {
-  this->cursor.setPosition ( x, y );
+  return -1; // Do nothing virtual implementation
 }
 
-void Cursor::move ( unsigned int x, unsigned int y )
+int32 Cursor::moveCursorDown ( void )
 {
-  this->cursor.move ( x, y );
+  return -1; // Do nothing virtual implementation
 }
 
-signed int Cursor::getSheetID ( void )
+int32 Cursor::moveCursorLeft ( void )
 {
-  return this->cursor.getSheetID();
+  return -1; // Do nothing virtual implementation
 }
 
-void Cursor::setSheetID ( signed int sheet_id )
+int32 Cursor::moveCursorRight ( void )
 {
-  this->cursor.setSheetID ( sheet_id );
+  return -1; // Do nothing virtual implementation
 }
 
-void Cursor::setSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding )
+void Cursor::update ( void )
 {
-  this->cursor.setSheetDimensions ( sheet_width, sheet_height, spacing, padding );
+  this->Update();
 }
 
-unsigned int Cursor::getState ( void )
+void Cursor::draw ( void* video_buffer )
 {
-  return this->cursor.getState();
-}
-
-void Cursor::setState ( unsigned int state )
-{
-  this->cursor.setState ( state );
-}
-
-bool Cursor::load ( std::string filename, Color colorkey, bool use_cache ) // sheet_id ?
-{
-  if ( this->cursor.load ( filename, colorkey, use_cache ) == false )
-  {
-NOM_LOG_ERR ( "Could not load cursor resource file: " + filename );
-    return false;
-  }
-
-  return true;
-}
-
-void Cursor::Update ( void )
-{
-  this->cursor.Update();
-}
-
-void Cursor::Draw ( void* video_buffer )
-{
-  this->cursor.Draw ( video_buffer );
-}
-
-void Cursor::scale2x ( void )
-{
-  this->cursor.scale2x();
-}
-
-void Cursor::hq2x ( void )
-{
-  this->cursor.hq2x();
+  this->Draw ( video_buffer );
 }
 
 

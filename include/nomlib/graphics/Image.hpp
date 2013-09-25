@@ -38,9 +38,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <SDL/SDL_image.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
+#include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/graphics/Canvas.hpp"
 
 namespace nom {

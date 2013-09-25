@@ -30,14 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 #include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/scale2x/scale2x.hpp"
 #include "nomlib/graphics/hqx/hqx.hpp"
-
-// C Macros used in scale2x method
-#define SCALE2x_READINT24(x) \
-  ((x)[0]<<16 | (x)[1]<<8 | (x)[2])
-
-#define SCALE2x_WRITEINT24(x, i) \
-  {(x)[0]=i>>16; (x)[1]=(i>>8)&0xff; x[2]=i&0xff; }
 
 namespace nom {
   namespace priv {
@@ -56,12 +50,12 @@ Canvas::Canvas ( void )  : canvas_buffer ( nullptr, nom::priv::Canvas_FreeSurfac
                                         coords ( 0, 0, -1, -1 ), // only x, y position is used in blitting
                                         offsets ( 0, 0, -1, -1 ) // only the width, height is used in source blitting
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
 }
 
 Canvas::Canvas ( void* video_buffer )  : canvas_buffer ( static_cast<SDL_Surface*> ( video_buffer ), nom::priv::Canvas_FreeSurface )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
 
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( video_buffer );
 
@@ -71,20 +65,19 @@ NOM_LOG_CLASSINFO;
 Canvas::Canvas ( const Canvas& other ) : canvas_buffer ( static_cast<SDL_Surface*> ( other.canvas_buffer.get() ), nom::priv::Canvas_FreeSurface ),
                                                           coords ( other.coords.x, other.coords.y ), offsets ( other.offsets.width, other.offsets.height )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
 }
 
 Canvas::Canvas ( int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, uint32 flags )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
 
-  this->canvas_buffer = std::shared_ptr<void> ( SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask ), nom::priv::Canvas_FreeSurface );
-  this->offsets.setSize ( width, height );
+  this->initialize ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask );
 }
 
-Canvas::Canvas ( Pixels pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
+Canvas::Canvas ( void* pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
 
   this->canvas_buffer = std::shared_ptr<void> ( SDL_CreateRGBSurfaceFrom ( pixels, width, height, depth, pitch, Rmask, Gmask, Bmask, Amask ), nom::priv::Canvas_FreeSurface );
   this->offsets.setSize ( width, height );
@@ -92,14 +85,44 @@ NOM_LOG_CLASSINFO;
 
 Canvas::~Canvas ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
+}
+
+void Canvas::initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
+{
+NOM_LOG_TRACE ( NOM );
+
+  this->canvas_buffer.reset ( SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask ), nom::priv::Canvas_FreeSurface );
+  this->offsets.setSize ( width, height );
+
+  // If the video surface is marked for color keying transparency, we must do
+  // so here.
+  if ( flags & SDL_SRCCOLORKEY )
+  {
+    if ( this->setTransparent ( this->getCanvasColorKey(), SDL_RLEACCEL | SDL_SRCCOLORKEY ) == false )
+    {
+NOM_LOG_ERR ( NOM, "Could not create the video surface with color key transparency." );
+    }
+  }
+}
+
+Canvas::SharedPtr Canvas::clone ( void ) const
+{
+  return Canvas::SharedPtr ( new Canvas ( *this ) );
 }
 
 Canvas& Canvas::operator = ( const Canvas& other )
 {
   this->canvas_buffer = other.canvas_buffer;
+  this->coords = other.coords;
+  this->offsets = other.offsets;
 
   return *this;
+}
+
+Canvas::RawPtr Canvas::get ( void ) const
+{
+  return this->canvas_buffer.get();
 }
 
 bool Canvas::valid ( void ) const
@@ -115,6 +138,11 @@ void Canvas::setCanvas ( const Canvas& surface )
   this->canvas_buffer.reset ( SDL_ConvertSurface ( static_cast<SDL_Surface*> ( surface.canvas_buffer.get() ), static_cast<SDL_PixelFormat*> ( surface.getCanvasPixelsFormat() ), surface.getCanvasFlags() ), nom::priv::Canvas_FreeSurface );
 
   this->offsets.setSize ( surface.getCanvasWidth(), surface.getCanvasHeight() );
+}
+
+const Coords& Canvas::getPosition ( void ) const
+{
+  return this->coords;
 }
 
 void Canvas::setPosition ( const Coords& coords_ )
@@ -152,7 +180,7 @@ uint16 Canvas::getCanvasPitch ( void ) const
   return buffer->pitch;
 }
 
-const Pixels Canvas::getCanvasPixels ( void ) const
+void* Canvas::getCanvasPixels ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
   return buffer->pixels;
@@ -164,7 +192,7 @@ const uint8 Canvas::getCanvasBitsPerPixel ( void ) const
   return buffer->format->BitsPerPixel;
 }
 
-const Pixels Canvas::getCanvasPixelsFormat ( void ) const
+SDL_PixelFormat* Canvas::getCanvasPixelsFormat ( void ) const
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
   return buffer->format;
@@ -175,7 +203,7 @@ const Color Canvas::getCanvasColorKey ( void ) const
   uint32 transparent_color = 0; // holds me color for conversion
   Color colorkey; // native container
 
-  transparent_color = getColorAsInt ( this->getCanvasPixelsFormat(), colorkey );
+  transparent_color = RGBA::asInt32 ( this->getCanvasPixelsFormat(), colorkey );
 
   return colorkey;
 }
@@ -226,7 +254,7 @@ const Coords Canvas::getCanvasBounds ( void ) const
 
 void Canvas::setCanvasBounds ( const Coords& clip_bounds )
 {
-  SDL_Rect clip = getSDL_Rect ( clip_bounds ); // temporary storage struct for setting
+  SDL_Rect clip = IntRect::asSDLRect ( clip_bounds ); // temporary storage struct for setting
 
   // As per libSDL docs, if SDL_Rect is nullptr, the clipping rectangle is set
   // to the full size of the surface
@@ -264,10 +292,14 @@ bool Canvas::mustLock ( void ) const
 
 bool Canvas::lock ( void ) const
 {
-  if ( this->mustLock() )
-    SDL_LockSurface ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ) );
-  else
-    return false;
+  if ( this->mustLock() == true )
+  {
+    if ( SDL_LockSurface ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ) ) == -1 )
+    {
+NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
+      return false;
+    }
+  }
   return true;
 }
 
@@ -303,7 +335,7 @@ bool Canvas::load ( const std::string& filename, const Color& colorkey,
   // Validate our obtained data is good before further processing
   if ( this->valid() == false )
   {
-NOM_LOG_ERR ( "Could not load canvas image file: " + filename );
+NOM_LOG_ERR ( NOM, "Could not load canvas image file: " + filename );
     return false;
   }
 
@@ -334,8 +366,8 @@ NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
 void Canvas::Draw ( void* video_buffer ) const
 {
   // temporary vars to store our wrapped Coords
-  SDL_Rect blit_coords = getSDL_Rect ( this->coords );
-  SDL_Rect blit_offsets = getSDL_Rect ( this->offsets );
+  SDL_Rect blit_coords = IntRect::asSDLRect ( this->coords );
+  SDL_Rect blit_offsets = IntRect::asSDLRect ( this->offsets );
 
   // Perhaps also check to see if video_buffer is nullptr?
   if ( this->valid() )
@@ -343,13 +375,13 @@ void Canvas::Draw ( void* video_buffer ) const
     if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
     {
       if ( SDL_BlitSurface ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), &blit_offsets, static_cast<SDL_Surface*> ( video_buffer ), &blit_coords ) != 0 )
-NOM_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
         return;
     }
     else
     {
       if ( SDL_BlitSurface ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), nullptr, (SDL_Surface*) video_buffer, &blit_coords ) != 0 )
-NOM_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
         return;
     }
   }
@@ -359,7 +391,7 @@ bool Canvas::Update ( void* video_buffer )
 {
   if ( SDL_Flip ( (SDL_Surface*) video_buffer ) != 0 )
   {
-NOM_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
   return true;
@@ -371,7 +403,7 @@ NOM_ASSERT ( ! ( opacity > SDL_ALPHA_OPAQUE ) || ( opacity < SDL_ALPHA_TRANSPARE
 
   if ( SDL_SetAlpha ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), flags, static_cast<uint32_t>( opacity ) ) == -1 )
   {
-NOM_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
 
@@ -383,11 +415,11 @@ bool Canvas::setTransparent ( const Color& color, uint32_t flags )
   uint32_t transparent_color = 0;
 
   // TODO: Alpha value needs testing
-  transparent_color = getColorAsInt ( this->getCanvasPixelsFormat(), color );
+  transparent_color = RGBA::asInt32 ( this->getCanvasPixelsFormat(), color );
 
   if ( SDL_SetColorKey ( static_cast<SDL_Surface*> ( this->canvas_buffer.get() ), flags, transparent_color ) != 0 )
   {
-NOM_LOG_ERR ( SDL_GetError() );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
 
@@ -419,7 +451,7 @@ void Canvas::clear ( const Color& color ) const
   rect.Draw ( this->canvas_buffer.get() );
 }
 
-int32 Canvas::getPixel ( int32 x, int32 y )
+uint32 Canvas::getPixel ( int32 x, int32 y )
 {
   SDL_Surface* buffer = static_cast<SDL_Surface*> ( this->canvas_buffer.get() );
 
@@ -461,279 +493,301 @@ int32 Canvas::getPixel ( int32 x, int32 y )
   } // end switch
 }
 
-void Canvas::scale2x ( void )
+bool Canvas::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
-  // Not currently implemented; reserved for future refactoring.
-  const int32 scale_factor = 2;
+  // Ensure that our existing video surface is OK first
+  if ( this->valid() == false )
+  {
+NOM_LOG_ERR ( NOM, "The existing video surface is not valid." );
+    return false;
+  }
 
-  // Current video surface flags state (primarily for handling setting the
-  // color keys and/or alpha values upon our resulting video surface.
+  // Current video surface flags state -- the destination buffer will be set
+  // with these.
   uint32 flags = this->getCanvasFlags();
 
-  // Save a temporary copy of the existing width & height for scaling
-  // calculation.
-  const int32 width = this->getCanvasWidth();
-  const int32 height = this->getCanvasHeight();
-
   // This is the target video surface object that is created from the existing
-  // video surface (but by a scale factor of two 2).
-  //
-  // We derive our new video surface parameters from the existing video state at
-  // the time of this call with the one exception of the video surface width and
-  // height (these obviously need to be sized up by the scaling factor).
+  // video surface, with the existing width & height recomputed to whatever the
+  // chosen algorithm expects. The target buffer (upon success) becomes the new
+  // video surface of this instance.
   Canvas destination_buffer;
+
+  // Pick out the suitable scaling factor for determining the new video surface
+  // width and height.
+  int32 scale_factor = getResizeScaleFactor ( scaling_algorithm );
 
   // We must not set an alpha mask value if our existing video surface is color
   // keyed (or bad things ensue -- like many hours spent reading up on this
   // surprisingly confusing subject).
-  if ( flags & SDL_SRCCOLORKEY )
+  uint32 alpha_mask = 0; // no alpha mask is default (works with color keying)
+
+  // If the video surface does *NOT* have color keying set
+  if ( ! ( flags & SDL_SRCCOLORKEY ) )
   {
-    destination_buffer = Canvas (
-                                  this->getCanvasWidth() * scale_factor,
-                                  this->getCanvasHeight() * scale_factor,
-                                  this->getCanvasBitsPerPixel(),
-                                  this->getCanvasRedMask(),
-                                  this->getCanvasGreenMask(),
-                                  this->getCanvasBlueMask(),
-                                  0
-                                );
-  }
-  else // Throw all the alpha you can eat if surface has alpha blending enabled!
-  {
-    destination_buffer = Canvas (
-                                  this->getCanvasWidth() * scale_factor,
-                                  this->getCanvasHeight() * scale_factor,
-                                  this->getCanvasBitsPerPixel(),
-                                  this->getCanvasRedMask(),
-                                  this->getCanvasGreenMask(),
-                                  this->getCanvasBlueMask(),
-                                  0//this->getCanvasAlphaMask(),
-                                  //SDL_SRCALPHA
-                                );
+    alpha_mask = this->getCanvasAlphaMask();
   }
 
-  // The video surface pitch (width) is saved for scaling calculations.
-  const uint16 srcpitch = this->getCanvasPitch();
+  destination_buffer = Canvas (
+                                this->getCanvasWidth() * scale_factor,
+                                this->getCanvasHeight() * scale_factor,
+                                this->getCanvasBitsPerPixel(),
+                                this->getCanvasRedMask(),
+                                this->getCanvasGreenMask(),
+                                this->getCanvasBlueMask(),
+                                alpha_mask,
+                                flags
+                              );
 
-  // We must use the new video surface configuration for computing the pitch as
-  // this is dependent upon width & height parameters.
-  const uint16 dstpitch = destination_buffer.getCanvasPitch();
-
-  // Existing & resulting pixel arrays
-  uint8* srcpix = static_cast<uint8*> ( this->getCanvasPixels() );
-  uint8* dstpix = static_cast<uint8*> ( destination_buffer.getCanvasPixels() );
-
-  this->lock();
-
-  // Use the existing video surface BPP for choosing scaling algorithm.
-  switch ( this->getCanvasColorDepth() )
+  // Ensure that our new video surface is sane before feeding
+  if ( destination_buffer.valid() == false )
   {
-    default: // ERR -- could not determine a valid color depth
-    {
-NOM_LOG_ERR ( "Could not determine color depth -- aborting." );
-      this->unlock();
-      return;
-    break;
-    } // end unsupported color depth
+NOM_LOG_ERR ( NOM, "The destination video surface is not valid." );
+    return false;
+  }
 
-    case 8:
-    {
-      uint8 E0, E1, E2, E3, B, D, E, F, H;
+  // Lock pixels buffer for writing to
+  if ( this->lock() == false )
+  {
+NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
+    return false;
+  }
 
-      for ( int32 looph = 0; looph < height; ++looph)
+  switch ( scaling_algorithm )
+  {
+    default: this->unlock(); return false; break; // No resizing is applied
+
+    case ResizeAlgorithm::scale2x:
+    {
+      if ( priv::scale2x  (
+                            this->getCanvasPixels(),
+                            destination_buffer.getCanvasPixels(),
+                            this->getCanvasWidth(),
+                            this->getCanvasHeight(),
+                            this->getCanvasColorDepth(),
+                            this->getCanvasPitch(),
+                            destination_buffer.getCanvasPitch()
+                          ) == false )
       {
-        for ( int32 loopw = 0; loopw < width; ++loopw)
-        {
-          B = *(uint8*)(srcpix + (std::max ( 0, looph - 1 ) * srcpitch ) + ( 1 * loopw ) );
-          D = *(uint8*)(srcpix + ( looph * srcpitch ) + ( 1 * std::max ( 0,loopw - 1 ) ) );
-          E = *(uint8*)(srcpix + ( looph * srcpitch ) + ( 1 * loopw ) );
-          F = *(uint8*)(srcpix + ( looph * srcpitch ) + ( 1 * std::min ( width - 1,loopw + 1 ) ) );
-          H = *(uint8*)(srcpix + ( std::min ( height - 1, looph + 1 ) * srcpitch ) + ( 1 * loopw ) );
-
-          E0 = D == B && B != F && D != H ? D : E;
-          E1 = B == F && B != D && F != H ? F : E;
-          E2 = D == H && D != B && H != F ? D : E;
-          E3 = H == F && D != H && B != F ? F : E;
-
-          *(uint8*)(dstpix + looph*2*dstpitch + loopw*2*1) = E0;
-          *(uint8*)(dstpix + looph*2*dstpitch + (loopw*2+1)*1) = E1;
-          *(uint8*)(dstpix + (looph*2+1)*dstpitch + loopw*2*1) = E2;
-          *(uint8*)(dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*1) = E3;
-        } // for width loop
-      } // for height loop
+NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale2x." );
+        this->unlock(); // Relinquish our write lock
+        return false;
+      }
+    }
     break;
-    } // end case 8
 
-    case 16:
+    case ResizeAlgorithm::scale3x:
     {
-      uint16 E0, E1, E2, E3, B, D, E, F, H;
-
-      for ( int32 looph = 0; looph < height; ++looph)
+      if ( priv::scale3x  (
+                            this->getCanvasPixels(),
+                            destination_buffer.getCanvasPixels(),
+                            this->getCanvasWidth(),
+                            this->getCanvasHeight(),
+                            this->getCanvasColorDepth(),
+                            this->getCanvasPitch(),
+                            destination_buffer.getCanvasPitch()
+                          ) == false )
       {
-        for ( int32 loopw = 0; loopw < width; ++loopw)
-        {
-          B = *(uint16*)(srcpix + ( std::max ( 0, looph - 1 ) * srcpitch ) + ( 2 * loopw ) );
-          D = *(uint16*)(srcpix + ( looph * srcpitch ) + ( 2 * std::max ( 0, loopw - 1 ) ) );
-          E = *(uint16*)(srcpix + ( looph * srcpitch ) + ( 2 * loopw ) );
-          F = *(uint16*)(srcpix + ( looph * srcpitch ) + ( 2 * std::min ( width - 1, loopw + 1 ) ) );
-          H = *(uint16*)(srcpix + ( std::min ( height - 1, looph + 1 ) * srcpitch ) + ( 2 * loopw ) );
-
-          E0 = D == B && B != F && D != H ? D : E;
-          E1 = B == F && B != D && F != H ? F : E;
-          E2 = D == H && D != B && H != F ? D : E;
-          E3 = H == F && D != H && B != F ? F : E;
-
-          *(uint16*)(dstpix + looph*2*dstpitch + loopw*2*2) = E0;
-          *(uint16*)(dstpix + looph*2*dstpitch + (loopw*2+1)*2) = E1;
-          *(uint16*)(dstpix + (looph*2+1)*dstpitch + loopw*2*2) = E2;
-          *(uint16*)(dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*2) = E3;
-        } // for width loop
-      } // for height loop
+NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale3x." );
+        this->unlock(); // Relinquish our write lock
+        return false;
+      }
+    }
     break;
-    } // end case 16
 
-    case 24:
+    case ResizeAlgorithm::scale4x:
     {
-      int32 E0, E1, E2, E3, B, D, E, F, H;
-
-      for ( int32 looph = 0; looph < height; ++looph)
+      if ( priv::scale2x  (
+                            this->getCanvasPixels(),
+                            destination_buffer.getCanvasPixels(),
+                            this->getCanvasWidth(),
+                            this->getCanvasHeight(),
+                            this->getCanvasColorDepth(),
+                            this->getCanvasPitch(),
+                            destination_buffer.getCanvasPitch()
+                          ) == false )
       {
-        for ( int32 loopw = 0; loopw < width; ++loopw)
-        {
-          B = SCALE2x_READINT24(srcpix + (std::max(0,looph-1)*srcpitch) + (3*loopw));
-          D = SCALE2x_READINT24(srcpix + (looph*srcpitch) + (3*std::max(0,loopw-1)));
-          E = SCALE2x_READINT24(srcpix + (looph*srcpitch) + (3*loopw));
-          F = SCALE2x_READINT24(srcpix + (looph*srcpitch) + (3*std::min(width-1,loopw+1)));
-          H = SCALE2x_READINT24(srcpix + (std::min(height-1,looph+1)*srcpitch) + (3*loopw));
-
-          E0 = D == B && B != F && D != H ? D : E;
-          E1 = B == F && B != D && F != H ? F : E;
-          E2 = D == H && D != B && H != F ? D : E;
-          E3 = H == F && D != H && B != F ? F : E;
-
-          SCALE2x_WRITEINT24((dstpix + looph*2*dstpitch + loopw*2*3), E0);
-          SCALE2x_WRITEINT24((dstpix + looph*2*dstpitch + (loopw*2+1)*3), E1);
-          SCALE2x_WRITEINT24((dstpix + (looph*2+1)*dstpitch + loopw*2*3), E2);
-          SCALE2x_WRITEINT24((dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*3), E3);
-        } // for width loop
-      } // for height loop
+NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
+        this->unlock(); // Relinquish our write lock
+        return false;
+      }
+    }
     break;
-    } // end case 24
 
-    case 32:
+    case ResizeAlgorithm::hq2x:
     {
-      uint32 E0, E1, E2, E3, B, D, E, F, H;
+      priv::hqxInit();
+      // Note that we must pass the *source* width and height here
+      priv::hq2x_32 (
+                      static_cast<uint32*> ( this->getCanvasPixels() ),
+                      static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
+                      this->getCanvasWidth(), this->getCanvasHeight()
+                    );
+    }
+    break;
 
-      for ( int32 looph = 0; looph < height; ++looph)
-      {
-        for ( int32 loopw = 0; loopw < width; ++loopw)
-        {
-          B = *(uint32*)(srcpix + (std::max(0,looph-1)*srcpitch) + (4*loopw));
-          D = *(uint32*)(srcpix + (looph*srcpitch) + (4*std::max(0,loopw-1)));
-          E = *(uint32*)(srcpix + (looph*srcpitch) + (4*loopw));
-          F = *(uint32*)(srcpix + (looph*srcpitch) + (4*std::min(width-1,loopw+1)));
-          H = *(uint32*)(srcpix + (std::min(height-1,looph+1)*srcpitch) + (4*loopw));
+    case ResizeAlgorithm::hq3x:
+    {
+      priv::hqxInit();
+      // Note that we must pass the *source* width and height here
+      priv::hq3x_32 (
+                      static_cast<uint32*> ( this->getCanvasPixels() ),
+                      static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
+                      this->getCanvasWidth(), this->getCanvasHeight()
+                    );
+    }
+    break;
 
-          E0 = D == B && B != F && D != H ? D : E;
-          E1 = B == F && B != D && F != H ? F : E;
-          E2 = D == H && D != B && H != F ? D : E;
-          E3 = H == F && D != H && B != F ? F : E;
+    case ResizeAlgorithm::hq4x:
+    {
+      priv::hqxInit();
+      // Note that we must pass the *source* width and height here
+      priv::hq4x_32 (
+                      static_cast<uint32*> ( this->getCanvasPixels() ),
+                      static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
+                      this->getCanvasWidth(), this->getCanvasHeight()
+                    );
+    }
+    break;
+  } // end switch scaling_algorithm
 
-          *(uint32*)(dstpix + looph*2*dstpitch + loopw*2*4) = E0;
-          *(uint32*)(dstpix + looph*2*dstpitch + (loopw*2+1)*4) = E1;
-          *(uint32*)(dstpix + (looph*2+1)*dstpitch + loopw*2*4) = E2;
-          *(uint32*)(dstpix + (looph*2+1)*dstpitch + (loopw*2+1)*4) = E3;
-        } // for width loop
-      } // for height loop
+  this->unlock(); // Relinquish our write lock
 
-      break;
-    } // end case 32
-  } // end switch (BytesPerPixel)
+  // Do one more sanity check on our new video surface before do the transfer
+  if ( destination_buffer.valid() == false )
+  {
+NOM_LOG_ERR ( NOM, "The rescaled video surface is not valid." );
+    return false;
+  }
 
-  this->unlock();
-
-  // If we have gotten this far, we assume success has been made in video
-  // surface scaling and thus proceed to reset the video surface object's video
-  // memory to the resulting pixel data.
+  // Reset the video surface object's video memory to the rescaled pixel data.
   this->setCanvas ( destination_buffer );
 
-  // Last, but not least, we copy over transparency info onto our new video surface
-  // if the appropriate flag is set.
-  if ( flags & SDL_SRCCOLORKEY )
-  {
-    this->setTransparent ( this->getCanvasColorKey(), SDL_RLEACCEL | SDL_SRCCOLORKEY );
-  }
+  return true;
 }
 
-void Canvas::hq2x ( void )
+bool Canvas::resize ( const Vector2f& scale_factor )
 {
-  // Not currently implemented; reserved for future refactoring.
-  const int32 scale_factor = 2;
+  // set ResizeAlgorithm::Stretch
 
-  // Save a temporary copy of the existing width & height for scaling
-  // calculation.
-  const int32 width = this->getCanvasWidth();
-  const int32 height = this->getCanvasHeight();
+  // Ensure that our existing video surface is OK first
+  if ( this->valid() == false )
+  {
+NOM_LOG_ERR ( NOM, "The existing video surface is not valid." );
+    return false;
+  }
 
-  // Current video surface flags state (primarily for handling setting the
-  // color keys and/or alpha values upon our resulting video surface.
+  // Current video surface flags state -- the destination buffer will be set
+  // with these.
   uint32 flags = this->getCanvasFlags();
 
   // This is the target video surface object that is created from the existing
-  // video surface (but by a scale factor of two 2).
-  //
-  // We derive our new video surface parameters from the existing video state at
-  // the time of this call with the one exception of the video surface width and
-  // height (these obviously need to be sized up by the scaling factor).
+  // video surface, with the existing width & height recomputed to whatever the
+  // chosen algorithm expects. The target buffer (upon success) becomes the new
+  // video surface of this instance.
   Canvas destination_buffer;
+
+  // Pick out the suitable scaling factor for determining the new video surface
+  // width and height.
+  //int32 scale_factor = getResizeScaleFactor ( scaling_algorithm );
 
   // We must not set an alpha mask value if our existing video surface is color
   // keyed (or bad things ensue -- like many hours spent reading up on this
   // surprisingly confusing subject).
-  if ( flags & SDL_SRCCOLORKEY )
+  uint32 alpha_mask = 0; // no alpha mask is default (works with color keying)
+
+  // If the video surface does *NOT* have color keying set
+  if ( ! ( flags & SDL_SRCCOLORKEY ) )
   {
-    destination_buffer = Canvas (
-                                  width * scale_factor,
-                                  height * scale_factor,
-                                  this->getCanvasBitsPerPixel(),
-                                  this->getCanvasRedMask(),
-                                  this->getCanvasGreenMask(),
-                                  this->getCanvasBlueMask(),
-                                  0
-                                );
-  }
-  else // Throw all the alpha you can eat if surface has alpha blending enabled!
-  {
-    destination_buffer = Canvas (
-                                  width * scale_factor,
-                                  height * scale_factor,
-                                  this->getCanvasBitsPerPixel(),
-                                  this->getCanvasRedMask(),
-                                  this->getCanvasGreenMask(),
-                                  this->getCanvasBlueMask(),
-                                  0//this->getCanvasAlphaMask(),
-                                  //SDL_SRCALPHA
-                                );
+    //alpha_mask = this->getCanvasAlphaMask();
   }
 
-  hqxInit();
+  destination_buffer = Canvas (
+                                this->getCanvasWidth()*scale_factor.x,
+                                this->getCanvasHeight()*scale_factor.y,
+                                this->getCanvasBitsPerPixel(),
+                                this->getCanvasRedMask(),
+                                this->getCanvasGreenMask(),
+                                this->getCanvasBlueMask(),
+                                alpha_mask,
+                                flags
+                              );
 
-  this->lock();
+  // Ensure that our new video surface is sane before feeding
+  if ( destination_buffer.valid() == false )
+  {
+NOM_LOG_ERR ( NOM, "The destination video surface is not valid." );
+    return false;
+  }
 
-  hq2x_32 ( static_cast<uint32*> ( this->getCanvasPixels() ), static_cast<uint32*> ( destination_buffer.getCanvasPixels() ), width, height );
+  // Lock pixels buffer for writing to
+  if ( this->lock() == false )
+  {
+NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
+    return false;
+  }
 
-  this->unlock();
+  Vector2f r;
+  Color color;
+  Pixel pixels;
 
-  // If we have gotten this far, we assume success has been made in video
-  // surface scaling and thus proceed to reset the video surface object's video
-  // memory to the resulting pixel data.
+  double stretch_x = (double) this->getCanvasWidth() * scale_factor.x / (double) this->getCanvasWidth();
+  double stretch_y = (double) this->getCanvasHeight() * scale_factor.y / (double) this->getCanvasHeight();
+
+  for ( int y = 0; y < this->getCanvasHeight(); y++ )
+  {
+    for ( int x = 0; x < this->getCanvasWidth(); x++ )
+    {
+      for ( int sY = 0; sY < stretch_y; sY++ )
+      {
+        for ( int sX = 0; sX < stretch_x; sX++ )
+        {
+          uint32 pixel = this->getPixel ( x, y );
+          RGBA::asRGB ( pixel, this->getCanvasPixelsFormat(), color );
+          //NOM_DUMP_VAR(color);
+          if ( color.red == 0 && color.green == 0 && color.blue == 0 ) continue;
+
+          pixels = Pixel ( ( stretch_x * x ) + sX, ( stretch_y * y ) + sY, color );
+          pixels.Draw ( static_cast<SDL_Surface*> ( destination_buffer.get() ) );
+        }
+      }
+    }
+  }
+
+  this->unlock(); // Relinquish our write lock
+
+  // Do one more sanity check on our new video surface before do the transfer
+  if ( destination_buffer.valid() == false )
+  {
+NOM_LOG_ERR ( NOM, "The destination video surface is not valid." );
+    return false;
+  }
+
+  // Reset the video surface object's video memory to the rescaled pixel data.
   this->setCanvas ( destination_buffer );
 
-  // Last, but not least, we copy over transparency info onto our new video surface
-  // if the appropriate flag is set.
-  if ( flags & SDL_SRCCOLORKEY )
+  return true;
+}
+
+int32 Canvas::getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm )
+{
+  switch ( scaling_algorithm )
   {
-    this->setTransparent ( this->getCanvasColorKey(), SDL_RLEACCEL | SDL_SRCCOLORKEY );
+    default: return 1; break;
+
+    case ResizeAlgorithm::hq2x:
+    case ResizeAlgorithm::scale2x:
+      return 2;
+    break;
+
+    case ResizeAlgorithm::scale3x:
+    case ResizeAlgorithm::hq3x:
+      return 3;
+    break;
+
+    case ResizeAlgorithm::scale4x:
+    case ResizeAlgorithm::hq4x:
+      return 4;
+    break;
   }
 }
 

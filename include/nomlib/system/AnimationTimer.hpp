@@ -26,48 +26,55 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/sdl/utils.hpp"
+#ifndef NOMLIB_SDL_ANIMATION_TIMER_HEADERS
+#define NOMLIB_SDL_ANIMATION_TIMER_HEADERS
+
+#include <iostream>
+#include <string>
+
+#include <SDL/SDL.h>
+
+#include "nomlib/config.hpp"
 
 namespace nom {
 
-SDL_Rect getSDL_Rect ( const Coords& coords_ )
+class AnimationTimer
 {
-  SDL_Rect coords;
+  public:
+    AnimationTimer ( void );
+    virtual ~AnimationTimer ( void );
 
-  coords.x = coords_.x;
-  coords.y = coords_.y;
-  coords.w = coords_.width;
-  coords.h = coords_.height;
+    void start ( void );
+    void stop ( void );
 
-  return coords;
-}
+    /// Alias for start
+    void restart ( void );
 
-SDL_Color getSDL_Color ( const Color& color_ )
-{
-  SDL_Color color;
+    uint32 ticks ( void ) const;
 
-  color.r = color_.red;
-  color.g = color_.green;
-  color.b = color_.blue;
-  //color.a = color_.alpha;
+    bool started ( void ) const;
 
-  return color;
-}
+    const std::string ticksAsString ( void ) const;
 
-const Color mapSDL_Color ( SDL_Color color )
-{
-  return Color ( color.r, color.g, color.b );
-}
+    /// Helper method; conversion from milliseconds to seconds
+    uint32 seconds( float milliseconds ) const;
 
-uint32 getColorAsInt ( void* pixel_format, const Color& color )
-{
-  return SDL_MapRGB ( static_cast<SDL_PixelFormat*> ( pixel_format ), color.red, color.green, color.blue );
-}
+    uint32 framerate ( void ) const;
 
-uint32 getAlphaColorAsInt ( void* pixel_format, const Color& color )
-{
-  return SDL_MapRGBA ( static_cast<SDL_PixelFormat*> ( pixel_format ), color.red, color.green, color.blue, color.alpha );
-}
+    void setFrameRate ( uint32 rate );
+
+  private:
+    /// Milliseconds since timer start
+    uint32 elapsed_ticks;
+
+    /// Tracks whether we are started or not
+    bool timer_started;
+
+    /// Convenience container
+    uint32 frame_rate;
+};
 
 
 } // namespace nom
+
+#endif // include guard defined

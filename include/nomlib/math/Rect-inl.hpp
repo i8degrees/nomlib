@@ -26,30 +26,53 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_IFRAME_HPP
-#define NOMLIB_IFRAME_HPP
-
-#include <iostream>
-#include <string>
+#ifndef NOMLIB_MATH_RECT_HEADERS
+#define NOMLIB_MATH_RECT_HEADERS
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
-  namespace ui {
 
-class IFrame: public IDrawable
+/// \brief Rectangle class container (template version)
+template<class T>
+class Rect
 {
   public:
-    IFrame ( void ) {}
-    virtual ~IFrame ( void ) {}
+    Rect ( void ) : left(), top(), right(), bottom() {}
 
-    virtual void setPosition( int32 x, int32 y ) = 0;
-    virtual void setSize( int32 width, int32 height, int32 padding = 1 ) = 0;
+    Rect ( T left, T top, T right, T bottom)  :
+      left ( left ), top ( top ), right ( right ), bottom ( bottom ) {}
+
+    template<class Point>
+    Rect ( Point p, T width, T height ) :
+      left ( p.x ), top ( p.y ), right ( p.x + width ), bottom ( p.y + height ) {}
+
+    /// SDL backwards-compatibility wrappers for nomlib
+    ///
+    /// Returns a SDL_Rect structure of a nom::Coords object
+    static inline SDL_Rect asSDLRect ( const Coords& coords )
+    {
+      SDL_Rect r;
+
+      r.x = coords.x;
+      r.y = coords.y;
+      r.w = coords.width;
+      r.h = coords.height;
+
+      return r;
+    }
+
+  public:
+    T left;
+    T top;
+    T right;
+    T bottom;
 };
 
+typedef Rect<int32> IntRect;
+typedef Rect<float> FloatRect;
 
-  } // namespace ui
+
 } // namespace nom
 
-#endif // include guard defined
+#endif // NOMLIB_VECTOR4_HEADERS defined

@@ -74,6 +74,7 @@ class Vector2
 typedef Vector2<int32> Vector2i;
 typedef Vector2<uint32> Vector2u;
 typedef Vector2<float> Vector2f;
+typedef Vector2<double> Vector2d;
 
 
 } // namespace nom

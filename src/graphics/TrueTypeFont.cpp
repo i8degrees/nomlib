@@ -29,30 +29,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/TrueTypeFont.hpp"
 
 namespace nom {
-  namespace priv {
-
-void TTF_FreeSurface ( TTF_Font* font )
-{
-  TTF_CloseFont ( font );
-}
-
-
-  } // namespace priv
-} // namespace nom
-
-
-namespace nom {
 
 TrueTypeFont::TrueTypeFont ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
 
   this->font = nullptr;
   this->coords = Coords ( 0, 0, 0, 0 );
   this->color = Color ( 0, 0, 0 );
   this->text_buffer = "\0";
-
   this->text_style = FontStyle::Regular; // default text styling effect
+  this->text_alignment = TextAlignment::MiddleLeft;
   this->style_options = 0;
   this->filename = "\0";
   this->font_size = 12;
@@ -60,19 +47,24 @@ NOM_LOG_CLASSINFO;
 
   if ( TTF_Init () == -1 )
   {
-NOM_LOG_ERR ( TTF_GetError() );
+NOM_LOG_ERR ( NOM, TTF_GetError() );
   }
 }
 
 TrueTypeFont::~TrueTypeFont ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
 
   // Possible bug -- a segmentation fault occurs here if we do not reset the
   // smart pointer on destruction.
   this->font.reset();
 
   TTF_Quit();
+}
+
+IFont::SharedPtr TrueTypeFont::clone ( void ) const
+{
+  return IFont::SharedPtr ( new TrueTypeFont ( *this ), priv::Free_TrueTypeFont );
 }
 
 bool TrueTypeFont::valid ( void ) const
@@ -113,6 +105,23 @@ const Coords& TrueTypeFont::getPosition ( void ) const
   return this->coords;
 }
 
+uint32 TrueTypeFont::getNewline ( void ) const
+{
+  // Not implemented
+  return 0;
+}
+
+uint32 TrueTypeFont::getSpacing ( void ) const
+{
+  // Not implemented
+  return 0;
+}
+
+enum TextAlignment TrueTypeFont::getTextJustification ( void ) const
+{
+  return this->text_alignment;
+}
+
 void TrueTypeFont::setColor ( const Color& color )
 {
   this->color = color;
@@ -132,7 +141,7 @@ void TrueTypeFont::setFontSize ( int32 point_size )
 
   if ( this->rebuild() == false )
   {
-NOM_LOG_ERR ( "Could not set new font size." );
+NOM_LOG_ERR ( NOM, "Could not set new font size." );
     this->font_size = original_font_size;
     return;
   }
@@ -172,8 +181,18 @@ void TrueTypeFont::setText ( const std::string& text )
   // Update the width & height of text string, if we can
   if ( TTF_SizeText ( this->font.get(), this->text_buffer.c_str(), &this->coords.width, &this->coords.height ) == -1 )
   {
-NOM_LOG_ERR ( "Failed to set font width & height." );
+NOM_LOG_ERR ( NOM, "Failed to set font width & height." );
   }
+}
+
+void TrueTypeFont::setSpacing ( uint32 spaces )
+{
+  // Not implemented
+}
+
+void TrueTypeFont::setTextJustification ( enum TextAlignment alignment )
+{
+  this->text_alignment = alignment;
 }
 
 bool TrueTypeFont::load ( const std::string& filename, const Color& colorkey,
@@ -184,7 +203,7 @@ bool TrueTypeFont::load ( const std::string& filename, const Color& colorkey,
 
   if ( this->valid() == false )
   {
-NOM_LOG_ERR ( "Could not load TTF file: " + filename );
+NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
     return false;
   }
 
@@ -210,7 +229,7 @@ void TrueTypeFont::Update ( void )
                                 (
                                   this->font.get(),
                                   this->getText().c_str(),
-                                  getSDL_Color ( this->color )
+                                  RGBA::asSDLCOLOR ( this->color )
                                 )
                               );
 
@@ -232,12 +251,28 @@ bool TrueTypeFont::rebuild ( void )
 {
   if ( this->load ( this->filename, Color::Black, this->use_cache ) == false )
   {
-NOM_LOG_ERR ( "Could not rebuild font metrics." );
+NOM_LOG_ERR ( NOM, "Could not rebuild font metrics." );
     return false;
   }
 
   return true;
 }
 
+  namespace priv {
 
+void TTF_FreeSurface ( TTF_Font* font )
+{
+  TTF_CloseFont ( font );
+}
+
+void Free_TrueTypeFont ( TrueTypeFont* ptr )
+{
+  // Do nothing custom deleter
+  //
+  // FIXME; this is a known bug (memory leak).
+}
+
+
+  } // namespace priv
 } // namespace nom
+

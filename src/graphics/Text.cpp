@@ -32,7 +32,7 @@ namespace nom {
 
 Text::Text ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
 
   this->font.reset();
   this->file_type = Unknown;
@@ -40,10 +40,12 @@ NOM_LOG_CLASSINFO;
 
 Text::~Text ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
 }
 
-bool Text::load ( const std::string& filename, bool use_cache )
+bool Text::load ( const std::string& filename, const Color& colorkey,
+                  bool use_cache
+                )
 {
   File file;
   std::string extension = "\0";
@@ -54,15 +56,14 @@ bool Text::load ( const std::string& filename, bool use_cache )
   // failed loading the libmagic mime database. Of course, there's the fringe
   // chance perhaps that libmagic could not be initialized for some bizarre
   // reason!
-  if ( extension == "\0" )
-    return false;
+  if ( extension == "\0" ) return false;
 
   // If we find that the file MIME type is not TTF, we first will try loading
   // the input file as a bitmap font
   if ( extension != "application/x-font-ttf" )
   {
-    this->font = std::unique_ptr<IFont> ( new BitmapFont() );
-    this->font->load ( filename, Color ( 110, 144, 190 ), use_cache );
+    this->font = std::shared_ptr<IFont> ( new BitmapFont() );
+    this->font->load ( filename, colorkey, use_cache );
 
     if ( this->font != nullptr )
     {
@@ -73,9 +74,9 @@ bool Text::load ( const std::string& filename, bool use_cache )
   }
   else // Try as a TrueType font
   {
-    this->font = std::unique_ptr<IFont> ( new TrueTypeFont() );
+    this->font = std::shared_ptr<IFont> ( new TrueTypeFont() );
 
-    this->font->load ( filename, Color::Black, use_cache );
+    this->font->load ( filename, colorkey, use_cache );
 
     if ( this->font != nullptr )
     {
@@ -105,107 +106,158 @@ void Text::setFontType ( enum FontType type )
 const std::string Text::getText ( void ) const
 {
   if ( this->font )
+  {
     return this->font->getText();
-  else
-    return "\0";
+  }
+
+  return "\0";
 }
 
 int32 Text::getFontWidth ( void ) const
 {
   if ( this->font )
+  {
     return this->font->getFontWidth();
-  else
-    return -1;
+  }
+
+  return -1;
 }
 
 int32 Text::getFontHeight ( void ) const
 {
   if ( this->font )
+  {
     return this->font->getFontHeight();
-  else
-    return -1;
+  }
+
+  return -1;
 }
 
 FontStyle Text::getFontStyle ( void ) const
 {
   if ( this->font )
+  {
     return this->font->getFontStyle();
-  else
-    return FontStyle::Regular; // FIXME; should be Unknown or such
+  }
+
+  return FontStyle::Regular; // FIXME; should be Unknown or such
 }
 
 const Color& Text::getColor ( void ) const
 {
   if ( this->font )
+  {
     return this->font->getColor();
-  else
-    return nom::Color::Black; // FIXME
+  }
+
+  return nom::Color::Black; // FIXME
 }
 
 const Coords Text::getPosition ( void ) const
 {
   if ( this->font )
+  {
     return this->font->getPosition();
-  else
-    return nom::Coords ( 0, 0 ); // FIXME?
+  }
+
+  return nom::Coords ( 0, 0 ); // FIXME?
+}
+
+uint32 Text::getNewline ( void ) const
+{
+  if ( this->font )
+  {
+    return this->font->getNewline();
+  }
+
+  return 0;
+}
+
+uint32 Text::getSpacing ( void ) const
+{
+  if ( this->font )
+  {
+    return this->font->getSpacing();
+  }
+
+  return 0;
 }
 
 void Text::setText ( const std::string& text )
 {
   if ( this->font )
+  {
     this->font->setText ( text );
+  }
 }
 
 void Text::setColor ( const Color& color )
 {
   if ( this->font )
+  {
     this->font->setColor ( color );
+  }
 }
 
 void Text::setPosition ( const Coords& coords )
 {
   if ( this->font )
+  {
     this->font->setPosition ( coords );
+  }
 }
 
 void Text::setFontSize ( int32 size )
 {
   if ( this->font )
+  {
     this->font->setFontSize( size );
+  }
 }
 
 void Text::setFontStyle ( uint8 style, uint8 options )
 {
   if ( this->font )
+  {
     this->font->setFontStyle ( style, options );
+  }
+}
+
+void Text::setSpacing ( uint32 spaces )
+{
+  if ( this->font )
+  {
+    this->font->setSpacing ( spaces );
+  }
 }
 
 void Text::Update ( void )
 {
   if ( this->font )
+  {
     this->font->Update();
+  }
 }
 
 void Text::Draw ( void* video_buffer ) const
 {
   if ( this->font )
+  {
     this->font->Draw ( video_buffer );
-}
-
-void Text::scale2x ( void )
-{
-  if ( this->font )
-  {
-    this->font->scale2x();
   }
 }
 
-void Text::hq2x ( void )
+bool Text::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
-  if ( this->font )
+  if ( ! this->font )
   {
-    this->font->hq2x();
+NOM_LOG_ERR ( NOM, "Text font is invalid." );
+    return false;
   }
+
+  if ( this->font->resize( scaling_algorithm ) == false ) return false;
+
+  return true;
 }
 
 

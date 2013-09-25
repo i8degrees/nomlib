@@ -26,37 +26,70 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_UTILS_HEADERS
-#define NOMLIB_SDL_UTILS_HEADERS
-
-#include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
-
-#include "nomlib/config.hpp"
-#include "nomlib/math/Color.hpp"
-#include "nomlib/math/Coords.hpp"
-
-/// \brief SDL backwards-compatibility wrappers for nomlib
+#include "nomlib/graphics/scale2x/scale2x.hpp"
 
 namespace nom {
+  namespace priv {
 
-  /// Returns a SDL_Rect structure of a nom::Coords object
-  SDL_Rect getSDL_Rect ( const Coords& );
+bool scale4x  ( void* source_buffer, void* destination_buffer,
+                const int32 source_width, const int32 source_height,
+                const int32 depth,
+                const int16 source_pitch, int16 destination_pitch
+              )
+{
+  // Save a temporary copy of the *existing* width & height for scaling
+  // calculation.
+  //int32 width = source_width;
+  //int32 height = source_height;
 
-  /// Returns a SDL color structure of a nom::Color object
-  SDL_Color getSDL_Color ( const Color& );
+  // The existing video surface pitch (width) is used for scaling calculations.
+  //uint16 srcpitch = source_pitch;
 
-  /// Return a nom::Color from a SDL_Color struct
-  const Color mapSDL_Color ( SDL_Color color );
+  // We must use the new video surface configuration for computing the pitch as
+  // this is dependent upon width & height parameters.
+  //uint16 dstpitch = destination_pitch;
 
-  /// Convenience helper for obtaining a color as an integer, respective to
-  /// the video surface pixel format (color bit per pixel)
-  uint32 getColorAsInt ( void*, const Color& );
+  // Existing & resulting pixel arrays
+  //uint8* srcpix = static_cast<uint8*> ( source_buffer );
+  //uint8* dstpix = static_cast<uint8*> ( destination_buffer );
 
-  /// Convenience helper for obtaining a color as an integer, respective to
-  /// the video surface pixel format (color bit per pixel)
-  uint32 getAlphaColorAsInt ( void*, const Color& );
+  // Use the existing video surface BPP for choosing scaling algorithm.
+  switch ( depth )
+  {
+    default: // Err, we could not determine a valid color depth!
+    {
+      return false;
+    } // end unsupported color depth
+    break;
 
+    case 8:
+    {
+      // Not implemented
+    }
+    break;
+
+    case 16:
+    {
+      // Not implemented
+    }
+    break;
+
+    case 24:
+    {
+      // Not implemented
+    }
+    break;
+
+    case 32:
+    {
+      // Not implemented
+    }
+    break;
+  } // end switch (BytesPerPixel)
+
+  return false;
+}
+
+
+  } // namespace priv
 } // namespace nom
-
-#endif // NOMLIB_SDL_UTILS_HEADERS defined

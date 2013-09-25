@@ -40,10 +40,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IFont.hpp"
-#include "nomlib/sdl/utils.hpp"
 #include "nomlib/math/Coords.hpp"
+#include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/graphics/Canvas.hpp"
+
+//#define NOM_DEBUG_SDL_BITMAP_FONT
 
 namespace nom {
 
@@ -56,38 +58,50 @@ class BitmapFont: public IFont
     /// Default destructor
     ~BitmapFont ( void );
 
+    /// Return a std::shared_ptr copy of this instance
+    IFont::SharedPtr clone ( void ) const;
+
     /// Obtains set text string buffer; defaults to \0
     const std::string& getText ( void ) const;
 
     /// Set a new text string for drawing; defaults to \0
     void setText ( const std::string& text );
 
-    /// Compute the width in pixels of the set text string; defaults to zero (0)
-    /// \internal
-    /// TODO: I don't think this is entirely accurate; this->spacing - 2 is
-    /// fudged ...
+    /// Obtain the text width in pixels of the set text string.
     ///
-    /// We probably ought to be calculating the width based off the same
-    /// algorithm as is shown in the load method
-    /// \endinternal
+    /// This calculation mimics the rendering calculations done and should be
+    /// exact within one pixel accuracy.
+    ///
+    /// \todo Rename me to text_width
+    /// \todo Support multi-line texts
     int32 getFontWidth ( void ) const;
 
-    /// Compute the height in pixels of the set text string; defaults to zero (0)
+    /// Obtain the text height in pixels of the set text string.
+    ///
+    /// This calculation mimics the rendering calculations done and should be
+    /// exact within one pixel accuracy.
+    ///
+    /// \todo Rename me to text_height
     int32 getFontHeight ( void ) const;
 
     const Color& getColor ( void ) const;
     const Coords& getPosition ( void ) const;
 
-    /// Obtain text character spacing width in pixels; defaults to given
-    /// sheet_width argument divided by two (2)
-    uint32 getSpacing ( void );
+    /// Obtain text character spacing width in pixels; this variable is affected
+    /// by the total image width size.
+    uint32 getSpacing ( void ) const;
 
-    /// Set new text character spacing width in pixels
-    void setSpacing ( uint32_t spaces );
+    /// Set new text character spacing width (in pixels) -- this variable is
+    /// used during the calculation of the text width (see getFontWidth method)
+    /// in addition to the rendering process (see draw method) when there is a
+    /// space character (' ') found in the provided text string.
+    void setSpacing ( uint32 spaces );
 
     /// Obtain text character spacing height offsets in pixels; defaults to
     /// variable calculations made within Load method
-    uint32 getNewline ( void );
+    uint32 getNewline ( void ) const;
+
+    enum TextAlignment getTextJustification ( void ) const;
 
     /// Set new text character spacing height offsets in pixels
     void setNewline ( uint32_t newline );
@@ -98,40 +112,39 @@ class BitmapFont: public IFont
     void setColor ( const Color& color );
     void setPosition ( const Coords& coords );
 
+    /// Set the justification of the text.
+    ///
+    /// This modifies the destination positions used in rendering text.
+    void setTextJustification ( enum TextAlignment alignment );
+
     const Coords findGlyph ( const std::string& glyph );
-    /// \brief Loads a new bitmap font from a file
-    /// \internal
-    /// TODO: add spacing / padding so that we can export with black guidelines
-    /// \endinternal
-    bool load ( const std::string& filename, const Color& colorkey,
+
+    /// Loads a new bitmap font from a file
+    ///
+    /// \todo Add spacing / padding so that we can export with black guidelines
+    bool load (
+                const std::string& filename, const Color& colorkey,
                 bool use_cache = false
               );
 
     void Update ( void );
+
     /// Draw the set text string to the video surface
+    /// \todo Test horizontal tabbing '\t'
     void Draw ( void* video_buffer ) const;
 
-    /// Uses the scale2x algorithm implemented in nom::Canvas to scale a sprite
-    /// by a scaling factor of two times the original size.
+    /// Rescale the font with a chosen resizing algorithm
     ///
-    /// See Canvas.hpp for additional information.
-    ///
-    /// Re-implements IFont::scale2x when deriving from Text interface class
-    void scale2x ( void );
-
-    /// Uses the hq2x algorithm implemented in nom::Canvas to scale a sprite
-    /// by a scaling factor of two times the original size.
-    ///
-    /// See Canvas.hpp for additional information.
-    void hq2x ( void );
+    /// Re-implements IFont::resize
+    bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
   private:
     /// Trigger a rebuild of the font characteristics gleaned from the image file;
     /// recalculate the character sizes, coordinate origins, spacing, etc.
     bool rebuild ( void );
 
-    const int32 sheet_width;
-    const int32 sheet_height;
+    int32 sheet_width;
+    int32 sheet_height;
 
     /// pointer reference holding our bitmap font image sheet
     mutable Canvas bitmap_font;
@@ -148,7 +161,11 @@ class BitmapFont: public IFont
     /// height (in pixels) to offset when newline carriage char is encountered
     uint32 newline;
 
-    /// width (in pixels) to offset when a space carriage char is encountered
+    /// Width in pixels to offset when a space carriage char is encountered.
+    ///
+    /// Note that you may need to reset this if you are using bitmap fonts with
+    /// high resolution graphics. I recently went from 384x224 to 768x448 and
+    /// this was enough to offset this variable by 18 pixels.
     uint32 spacing;
 
     /// holds contents of text as a string
@@ -159,9 +176,18 @@ class BitmapFont: public IFont
 
     /// Not implemented (yet)
     Color color;
+
+    enum TextAlignment text_alignment;
 };
 
+  namespace priv {
 
+/// \todo FIXME; we need to figure out how to free this resource when we are
+/// using it within the MessageBox class -- we are leaking kilobytes as-is.
+void Free_BitmapFont ( BitmapFont* ptr );
+
+
+  } // namespace priv
 } // namespace nom
 
 #endif // include guard defined

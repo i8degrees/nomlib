@@ -31,9 +31,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <algorithm>
 
+#include <SDL/SDL.h>
+
 #include "nomlib/config.hpp"
 
 namespace nom {
+
+const std::string color_delimiter = ", ";
 
 /// \brief Utility class container for RGBA colors
 class Color
@@ -41,19 +45,28 @@ class Color
   public:
     /// Default constructor; sets the color to their respective defaults
     Color ( void );
+
+    /// Constructor variant for setting a color using RGB values
+    Color ( uint8 red, uint8 green, uint8 blue );
+
     /// Constructor variant for setting a color using RGBA values
-    Color ( int16 red, int16 green, int16 blue, int16 alpha = -1 ); // SDL_ALPHA_OPAQUE (255)
+    Color ( uint8 red, uint8 green, uint8 blue, uint8 alpha );
+
     /// Copy constructor
     Color ( const Color& color );
+
+    /// Destructor
     ~Color ( void );
 
     /// Convenience getter helper for obtaining a color by object
-    const Color& getColor ( void ) const;
+    const Color& get ( void ) const;
 
     /// Copy assignment constructor
     Color& operator = ( const Color& other );
 
     /// Predefined color constants for convenience sake
+    static const Color null;
+
     static const Color Black;
     static const Color White;
     static const Color Red;
@@ -62,18 +75,71 @@ class Color
     static const Color Yellow;
     static const Color Magenta;
     static const Color Cyan;
-    static const Color Transparent;
 
     /// Additional predefined color constants
+    static const Color LightGray;
     static const Color Gray;
 
-  public:
-    int16 red;
-    int16 green;
-    int16 blue;
-    int16 alpha;
+    /// Sky blue color key
+    static const Color NomPrimaryColorKey;
 
-}; // class Color
+    /// Light magenta color key
+    static const Color NomSecondaryColorKey;
+
+  public:
+    uint8 red;
+    uint8 green;
+    uint8 blue;
+    uint8 alpha;
+};
+
+class RGBA
+{
+  public:
+    RGBA ( void ) {};
+    ~RGBA ( void ) {};
+
+    /// Returns a SDL color structure of a nom::Color object
+    static inline SDL_Color asSDLCOLOR ( const Color& color )
+    {
+      SDL_Color c;
+
+      c.r = color.red;
+      c.g = color.green;
+      c.b = color.blue;
+      //      SDLv2 SDL_Color struct
+      //
+      //  c.a = color.alpha;
+
+      return c;
+    }
+
+    /// Returns RGBA components via nom::Color object, holding the red, green, blue
+    /// and alpha values.
+    static inline void asRGB ( uint32 pixel, SDL_PixelFormat* fmt, Color& color )
+    {
+      SDL_GetRGBA ( pixel, fmt, &color.red, &color.green, &color.blue, &color.alpha );
+    }
+
+    /// Convenience helper for obtaining a color as an integer, respective to
+    /// the video surface pixel format (color bit per pixel)
+    ///
+    /// Returns RGBA components via nom::Color object, holding the red, green, blue
+    /// and alpha values.
+    static inline uint32 asInt32 ( SDL_PixelFormat* fmt, const Color& color )
+    {
+      return SDL_MapRGBA ( fmt, color.red, color.green, color.blue, color.alpha );
+    }
+};
+
+/// Pretty print the color using the following format string:
+///
+/// <color.red>, <color.green>, <color.blue>, <color.alpha>
+///
+/// This will look like:
+///
+/// 99, 144, 255, 128
+std::ostream& operator << ( std::ostream& os, const Color& color );
 
 bool operator == ( const Color& left, const Color& right );
 bool operator != ( const Color& left, const Color& right );

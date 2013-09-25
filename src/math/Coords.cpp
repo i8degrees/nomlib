@@ -30,32 +30,32 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Coords::Coords ( void )  : x ( 0 ), y ( 0 ), z ( 0 ),
-                                width ( 0 ), height ( 0 )
-{
-  // Nothing to initialize
-}
+const Coords Coords::null ( -1, -1, -1, -1 );
 
-Coords::Coords ( int32_t x, int32_t y, int32_t width, int32_t height )
-{
-  this->x = x;
-  this->y = y;
-  this->width = width;
-  this->height = height;
-}
+Coords::Coords ( void ) : x ( 0 ), y ( 0 ), z ( 0 ), width ( 0 ), height ( 0 )
+{}
 
-Coords::Coords ( const Coords& coords )
-{
-  this->x = coords.x;
-  this->y = coords.y;
-  this->width = coords.width;
-  this->height = coords.height;
-}
+Coords::Coords ( int32 x, int32 y, int32 w, int32 h ) : x ( x ),
+                                                        y ( y ),
+                                                        z ( 0 ),
+                                                        width ( w ),
+                                                        height ( h )
+{}
 
-Coords::~Coords ( void )
-{
-  // Nothing to clean up
-}
+Coords::Coords ( int32 x, int32 y ) : x ( x ),
+                                      y ( y ),
+                                      z ( 0 ),
+                                      width ( 0 ),
+                                      height ( 0 )
+{}
+
+Coords::Coords ( const Coords& coords ) : x ( coords.x ), y ( coords.y ),
+                                          z ( coords.z ),
+                                          width ( coords.width ),
+                                          height ( coords.height )
+{}
+
+Coords::~Coords ( void ) {}
 
 Coords Coords::getPosition ( void ) const
 {
@@ -79,12 +79,12 @@ void Coords::setSize ( int32_t width, int32_t height )
   this->height = height;
 }
 
-bool Coords::contains ( int32_t x, int32_t y ) const
+bool Coords::contains ( int32 x, int32 y ) const
 {
-  int32_t X = this->x + this->width;
-  int32_t Y = this->y + this->height;
-
-  return ( x >= X ) && ( y >= Y );
+  return  (
+            ( x >= this->x && x <= this->x + this->width )    &&
+            ( y >= this->y && y <= this->y + this->height )
+          );
 }
 
 bool Coords::contains ( const Coords& pos ) const
@@ -94,10 +94,10 @@ bool Coords::contains ( const Coords& pos ) const
 
 bool Coords::intersects ( Coords& rectangle ) const
 {
-  unsigned int leftA, leftB = 0;
-  unsigned int rightA, rightB = 0;
-  unsigned int topA, topB = 0;
-  unsigned int bottomA, bottomB = 0;
+  uint32 leftA, leftB = 0;
+  uint32 rightA, rightB = 0;
+  uint32 topA, topB = 0;
+  uint32 bottomA, bottomB = 0;
 
   // Calculate sides of RectA
   leftA = this->x;
@@ -111,16 +111,21 @@ bool Coords::intersects ( Coords& rectangle ) const
   topB = rectangle.y;
   bottomB = rectangle.y + rectangle.height;
 
-  if ( bottomA <= topB )
-    return false;
-  if ( topA >= bottomB )
-    return false;
-  if ( rightA <= leftB )
-    return false;
-  if ( leftA >= rightB )
-    return false;
+  if ( bottomA <= topB ) return false;
+  if ( topA >= bottomB ) return false;
+  if ( rightA <= leftB ) return false;
+  if ( leftA >= rightB ) return false;
 
   return true; // we've got a collision!
+}
+
+std::ostream& operator << ( std::ostream& os, const Coords& coords )
+{
+  os << coords.x << coords_delimiter
+  << coords.y << coords_delimiter
+  << coords.width << coords_delimiter
+  << coords.height;
+  return os;
 }
 
 Coords& Coords::operator = ( const Coords& other )

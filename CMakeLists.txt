@@ -11,7 +11,7 @@ if ( NOT CMAKE_INSTALL_PREFIX )
 endif ( NOT CMAKE_INSTALL_PREFIX )
 
 set ( PROJECT_VERSION_MAJOR 0 )
-set ( PROJECT_VERSION_MINOR 1 )
+set ( PROJECT_VERSION_MINOR 9 )
 set ( PROJECT_VERSION_PATCH 0 )
 
 # We only support building nomlib as a dynamic library at the moment
@@ -64,6 +64,10 @@ set ( NOMLIB_RESOURCES_DIR "Resources" )
 # Relative path from project root to header files that are used with the source
 # files for compiling
 set ( NOMLIB_HEADERS_DIR "include" )
+set ( EXTERNAL_HEADERS_DIR "extlibs/osx/include" )
+
+# Absolute path to the json_spirit header files
+set ( HEADERS_JSON_SPIRIT_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_HEADERS_DIR}/json_spirit" )
 
 # Relative path from project root to nomlib demonstration examples
 set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" )
@@ -153,7 +157,6 @@ find_package ( OpenAL REQUIRED )
 find_package ( sndfile REQUIRED )
 
 find_package ( libmagic REQUIRED )
-#find_package ( json_spirit REQUIRED )
 
 # LibMagic requires zlib when statically linking
 if ( PLATFORM_OSX )
@@ -228,11 +231,25 @@ else ( NOT LIBMAGIC_FOUND )
   message ( FATAL_ERROR "Required dependency libmagic missing!" )
 endif ( LIBMAGIC_FOUND )
 
-#if ( JSON_SPIRIT_FOUND )
-  #set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
-#else ( NOT JSON_SPIRIT_FOUND )
-  #message ( FATAL_ERROR "Required dependency json_spirit (headers only) missing!" )
-#endif ( JSON_SPIRIT_FOUND )
+# First, try finding our packaged header files for json_spirit;
+# ...if this fails, attempt to find the headers directory of a system install of
+# the library header files
+if ( IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
+
+  set ( EXT_HEADERS ${EXT_HEADERS} "${HEADERS_JSON_SPIRIT_DIR}" )
+  message ( STATUS "Found packaged json_spirit: ${HEADERS_JSON_SPIRIT_DIR}" )
+elseif ( NOT IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
+
+  find_package ( json_spirit REQUIRED )
+
+  if ( JSON_SPIRIT_FOUND )
+    set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
+    message ( WARNING "Found json_spirit: ${JSON_SPIRIT_INCLUDE_DIR}" )
+  else ( NOT JSON_SPIRIT_FOUND )
+    message ( FATAL_ERROR "Required dependency json_spirit (headers only) missing!" )
+  endif ( JSON_SPIRIT_FOUND )
+
+endif ( IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
 
 if ( PLATFORM_OSX )
   # The SDL_LIBRARY variable for OS X is appended with the "-framework Cocoa"

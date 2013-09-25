@@ -32,10 +32,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Public header file
 
 #include <nomlib/config.hpp>
-#include <nomlib/json/Array.hpp>
+//#include <nomlib/json/Array.hpp>
 #include <nomlib/json/FileReader.hpp>
 #include <nomlib/json/FileWriter.hpp>
-#include <nomlib/json/Object.hpp>
-#include <nomlib/json/Value.hpp>
+//#include <nomlib/json/Object.hpp>
+//#include <nomlib/json/Value.hpp>
 
 #endif // include guard defined

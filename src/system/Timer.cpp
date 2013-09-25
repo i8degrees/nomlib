@@ -32,63 +32,73 @@ namespace nom {
 
 Timer::Timer ( void )
 {
-//NOM_LOG_CLASSINFO;
+//NOM_LOG_TRACE ( NOM );
 
-  if ( SDL_InitSubSystem ( SDL_INIT_TIMER ) == -1 )
+  if ( SDL_WasInit( SDL_INIT_TIMER ) == false )
   {
-NOM_LOG_ERR ( SDL_GetError() );
+    if ( SDL_InitSubSystem ( SDL_INIT_TIMER ) == -1 )
+    {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return;
+    }
   }
 
-  this->started = false;
-  this->paused = false;
+  this->timer_started = false;
+  this->timer_paused = false;
   this->elapsed_ticks = 0;
   this->paused_ticks = 0;
 }
 
 Timer::~Timer ( void )
 {
-//NOM_LOG_CLASSINFO;
+//NOM_LOG_TRACE ( NOM );
 
   SDL_QuitSubSystem ( SDL_INIT_TIMER );
 }
 
-void Timer::Start ( void )
+void Timer::start ( void )
 {
-  this->elapsed_ticks = SDL_GetTicks ();
-  this->started = true;
-  this->paused = false;
+  this->elapsed_ticks = SDL_GetTicks();
+  this->timer_started = true;
+  this->timer_paused = false;
 }
 
-void Timer::Stop ( void )
+void Timer::stop ( void )
 {
-  this->started = false;
-  this->paused = false;
+  this->elapsed_ticks = 0;
+  this->timer_started = false;
+  this->timer_paused = false;
 }
 
-void Timer::Pause ( void )
+void Timer::restart ( void )
 {
-  if ( ( this->started == true ) && ( this->paused == false ) )
+  this->start();
+}
+
+void Timer::pause ( void )
+{
+  if ( ( this->timer_started == true ) && ( this->timer_paused == false ) )
   {
-    this->paused = true;
+    this->timer_paused = true;
     this->paused_ticks = SDL_GetTicks() - this->elapsed_ticks;
   }
 }
 
-void Timer::Unpause ( void )
+void Timer::unpause ( void )
 {
-  if ( this->paused == true )
+  if ( this->timer_paused == true )
   {
-    this->paused = false;
+    this->timer_paused = false;
     this->elapsed_ticks = SDL_GetTicks() - this->paused_ticks;
     this->paused_ticks = 0;
   }
 }
 
-unsigned int Timer::getTicks ( void )
+uint32 Timer::ticks ( void ) const
 {
-  if ( this->started == true )
+  if ( this->timer_started == true )
   {
-    if ( this->paused == true )
+    if ( this->timer_paused == true )
     {
       return this->paused_ticks;
     }
@@ -97,22 +107,29 @@ unsigned int Timer::getTicks ( void )
       return SDL_GetTicks() - this->elapsed_ticks;
     }
   }
-  return SDL_GetTicks();
+
+  // Timer is not running
+  return 0;
 }
 
-bool Timer::isStarted ( void )
+bool Timer::started ( void ) const
 {
-  return this->started;
+  return this->timer_started;
 }
 
-bool Timer::isPaused ( void )
+bool Timer::paused ( void ) const
 {
-  return this->paused;
+  return this->timer_paused;
 }
 
-uint32_t Timer::seconds ( float seconds ) const
+const std::string Timer::ticksAsString ( void ) const
 {
-  return static_cast<uint32_t> ( seconds * 1000.f );
+  return std::to_string ( static_cast<uint32> ( this->ticks() ) );
+}
+
+uint32 Timer::seconds ( float milliseconds ) const
+{
+  return static_cast<uint32> ( milliseconds * 1000.f );
 }
 
 

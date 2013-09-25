@@ -68,21 +68,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Pretty print C macros purely for convenience sake
 #define NOM_DUMP_VAR(var) \
-  ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
+  ( std::cout << #var << ": " << var << std::endl )
 
 // nomlib debugging macros
 #ifdef NOM_DEBUG
 
   // If debugging is turned on, we log all warnings, errors & info
-  #define NOM_LOG_INFO(message) \
-    ( std::cout << "NOM_LOG_INFO at " << nom::getCurrentTime() << message << std::endl << std::endl )
+  #define NOM_LOG_INFO(identifier, message) \
+    ( std::cout << #identifier << "_LOG_INFO at " << nom::getCurrentTime() << message << std::endl << std::endl )
 
-  #define NOM_LOG_ERR(message) \
-    ( std::cout << "NOM_LOG_ERR at " << nom::getCurrentTime() << "In file " << __FILE__ << ":" << __LINE__ << std::endl << "Reason: " << message << std::endl << std::endl )
+  #define NOM_LOG_ERR(identifier, message) \
+    ( std::cout << #identifier << "_LOG_ERR at " << nom::getCurrentTime() << "In file " << __FILE__ << ":" << __LINE__ << std::endl << "Reason: " << message << std::endl << std::endl )
 
 #else // Do not add any overhead
-  #define NOM_LOG_INFO(message)
-  #define NOM_LOG_ERR(message)
+  #define NOM_LOG_INFO(identifier, message)
+  #define NOM_LOG_ERR(identifier, message)
 #endif
 
 #ifdef NOM_DEBUG_ASSERT
@@ -97,11 +97,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef NOM_DEBUG_TRACE
 
   // If trace debugging is turned on, we show class construction and destruction
-  #define NOM_LOG_CLASSINFO \
-    ( std::cout << "NOM_LOG_CLASSINFO at " << nom::getCurrentTime() << __func__ << std::endl << std::endl )
+  #define NOM_LOG_TRACE(identifier) \
+    ( std::cout << #identifier << "_LOG_TRACE at " << nom::getCurrentTime() << __func__ << std::endl << std::endl )
 
 #else // Do not add any overhead
-  #define NOM_LOG_CLASSINFO
+  #define NOM_LOG_TRACE(identifier)
 #endif
 
 #ifndef __cplusplus

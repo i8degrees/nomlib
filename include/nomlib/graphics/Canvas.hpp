@@ -25,9 +25,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-    scale2x Algorithm
-1. Copyright (c) Andrea Mazzoleni
-
 ******************************************************************************/
 #ifndef NOMLIB_SDL_CANVAS_HEADERS
 #define NOMLIB_SDL_CANVAS_HEADERS
@@ -35,18 +32,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 #include <memory>
-#include <algorithm>
 
 #include <SDL/SDL.h>
 
 #include "nomlib/config.hpp"
 //#include "nomlib/graphics/ICanvas.hpp"
-#include "nomlib/sdl/utils.hpp"
+#include "nomlib/system/make_unique.hpp"
+#include "nomlib/math/helpers.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
+#include "nomlib/math/Rect-inl.hpp"
+#include "nomlib/math/Vector2-inl.hpp"
 #include "nomlib/system/ObjectCache.hpp"
+#include "nomlib/graphics/Pixel.hpp"
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/Rectangle.hpp"
+
+//#define NOM_DEBUG_SDL_CANVAS
 
 namespace nom {
   namespace priv {
@@ -61,9 +63,25 @@ void Canvas_FreeSurface ( SDL_Surface* );
 
 namespace nom {
 
+/// Available rescaling algorithms
+enum ResizeAlgorithm
+{
+  None = 0, // No resizing is applied
+  scale2x,
+  scale3x, // Reserved for future implementation
+  scale4x, // Reserved for future implementation
+  hq2x,
+  hq3x,
+  hq4x,
+  Stretch
+};
+
 class Canvas
 {
   public:
+    typedef std::shared_ptr<Canvas> SharedPtr;
+    typedef void* RawPtr;
+
     /// Default constructor; initializes object to its respective defaults
     Canvas ( void );
 
@@ -100,14 +118,24 @@ class Canvas
     /// therefore are responsible for memory management.
     ///
     /// See http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurfaceFrom
-    Canvas ( Pixels pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+    Canvas ( void* pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
     /// Lazy destructor -- does nothing.
     ~Canvas ( void );
 
-    /// Copy assignment constructor; this can be used to safely clone a video
-    /// surface object.
+    void initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+
+    /// Return a std::shared_ptr copy of this instance
+    /// \todo Test me out!
+    Canvas::SharedPtr clone ( void ) const;
+
+    /// Copy assignment operator
     Canvas& operator = ( const Canvas& other );
+
+    const Coords& getPosition ( void ) const;
+
+    /// Get the video memory surface of the canvas object
+    Canvas::RawPtr get ( void ) const;
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
@@ -122,11 +150,11 @@ class Canvas
     const int32 getCanvasHeight ( void ) const;
     uint32 getCanvasFlags ( void ) const;
     uint16 getCanvasPitch ( void ) const;
-    const Pixels getCanvasPixels ( void ) const;
+    void* getCanvasPixels ( void ) const;
     const uint8 getCanvasBitsPerPixel ( void ) const;
 
     /// \todo Rename to getCanvasPixelFormat
-    const Pixels getCanvasPixelsFormat ( void ) const;
+    SDL_PixelFormat* getCanvasPixelsFormat ( void ) const;
 
     /// Obtain the pixel value of the set transparent color
     const Color getCanvasColorKey ( void ) const;
@@ -223,39 +251,17 @@ class Canvas
     /// You are responsible for locking & unlocking of the canvas before-hand
     ///
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
-    int32 getPixel ( int32 x, int32 y );
+    uint32 getPixel ( int32 x, int32 y );
 
-    /// Uses the AdvanceMAME bitmap scaling algorithm known as scale2x to scale
-    /// a surface while maintaining the quality pixel art feel of the original
-    /// art. The algorithm is designed to be fast enough to process 256x256
-    /// bitmaps in real-time.
+    /// Resize the video surface with the chosen rescaling algorithm.
     ///
-    /// This method re-implements the function scale2x found in the contrib/sdl
-    /// directory of the scale2x distribution.
-    ///
-    /// See http://scale2x.sourceforge.net/
-    ///
-    /// \todo Test the implementation of 8-bit, 16-bit & 24-bit video scaling.
-    void scale2x ( void );
+    /// See the ResizeAlgorithm enum for available rescaling algorithms
+    bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
-    /// Use the hqx bitmap algorithm to scale a source buffer by 2x. hqx is a
-    /// fast, high-quality magnification filter designed for pixel art. Compared
-    /// to scale2x, you can generally expect similar results but with additional
-    /// anti-aliasing applied. This makes the algorithm likely to be preferable
-    /// for vastly increased resolution support (think: Apple Retina displays).
-    ///
-    /// The algorithm is designed to be fast enough to process 256x256 bitmaps
-    /// in real-time.
-    ///
-    /// See https://code.google.com/p/hqx/wiki/ReadMe
-    ///
-    /// \todo Test the implementation of 8-bit, 16-bit & 24-bit video scaling.
-    ///
-    /// \todo FIXME; due to some bizarre linking issue resulting in unresolved
-    /// symbols upon trying to use any of the function calls (such as hqxInit),
-    /// so we have had to resort to forking a copy of the original source to get
-    /// this working.
-    void hq2x ( void );
+    bool resize ( const Vector2f& scale_factor );
+
+    /// Return the correct scaling factor of the chosen algorithm
+    int32 getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm );
 
   private:
     /// Internal method used for checking to see if the video surface actually

@@ -30,11 +30,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_IFONT_HPP
 
 #include <iostream>
-#include <string>
+#include <memory>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
+#include "nomlib/graphics/Canvas.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
@@ -49,14 +50,31 @@ enum FontStyle
   Faded = 4
 };
 
+enum TextAlignment
+{
+  TopLeft = 0,
+  TopCenter,
+  TopRight,
+  MiddleLeft,
+  MiddleCenter,
+  MiddleRight,
+  BottomLeft,
+  BottomCenter,
+  BottomRight
+};
+
 class IFont: public IDrawable
 {
   public:
+    typedef std::shared_ptr<IFont> SharedPtr;
     IFont ( void ) {}
 
     virtual ~IFont ( void ) {}
 
-    virtual bool load ( const std::string& filename, const Color& colorkey,
+    virtual IFont::SharedPtr clone ( void ) const = 0;
+
+    virtual bool load (
+                        const std::string& filename, const Color& colorkey,
                         bool use_cache = false
                       ) = 0;
 
@@ -66,27 +84,35 @@ class IFont: public IDrawable
     virtual FontStyle getFontStyle ( void ) const = 0;
     virtual const Coords& getPosition ( void ) const = 0;
     virtual const Color& getColor ( void ) const = 0;
+    virtual uint32 getNewline ( void ) const = 0;
+    virtual uint32 getSpacing ( void ) const = 0;
+    virtual enum TextAlignment getTextJustification ( void ) const = 0;
+
 
     virtual void setText ( const std::string& text ) = 0;
 
     /// Set a new font point (pixel) size.
     ///
     /// Optional interface
-    virtual void setFontSize ( int32 point_size ) { NOM_LOG_INFO ( "Method not implemented." ); }
+    virtual void setFontSize ( int32 point_size )
+    {
+NOM_LOG_ERR ( NOM, "Method not implemented." );
+    }
 
     virtual void setFontStyle ( uint8 style, uint8 options = 150 ) = 0;
     virtual void setColor ( const Color& color ) = 0;
     virtual void setPosition ( const Coords& coords ) = 0;
-
-    /// Scale font using the scale2x algorithm.
+    virtual void setSpacing ( uint32 spaces ) = 0;
+    virtual void setTextJustification ( enum TextAlignment alignment ) = 0;
+    /// Rescale the font with a chosen resizing algorithm
     ///
-    /// Optional interface.
-    virtual void scale2x ( void ) { NOM_LOG_INFO ( "Method not implemented." ); };
-
-    /// Scale font using the hq2x algorithm.
-    ///
-    /// Optional interface.
-    virtual void hq2x ( void ) { NOM_LOG_INFO ( "Method not implemented." ); };
+    /// Optional interface with a return of false when the deriving class has
+    /// chosen not to re-implement this method.
+    virtual bool resize ( enum ResizeAlgorithm scaling_algorithm )
+    {
+NOM_LOG_ERR ( NOM, "Method not implemented." );
+      return false;
+    }
 };
 
 

@@ -32,13 +32,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Color.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 
-class Transformable
+class Transformable:
+                      public virtual IDrawable
 {
   public:
     Transformable ( void );
+    Transformable ( const Coords& coords );
     Transformable ( const Coords& coords, const Color& color );
     virtual ~Transformable ( void );
 

@@ -34,20 +34,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <array>
 
-#include <json_spirit_writer_template.h>
+#include "json_spirit_writer_template.h"
+
+#ifndef JSON_SPIRIT_VALUE_ENABLED
+  #define JSON_SPIRIT_VALUE_ENABLED
+#endif
 
 #include "nomlib/config.hpp"
-#include "nomlib/json/Object.hpp"
+//#include "nomlib/json/Object.hpp"
 //#include "nomlib/json/Array.hpp"
 
 namespace nom {
   namespace JSON {
 
-enum options
+enum
 {
-  none = 0,
-  pretty_print = 1,
-  single_line_arrays = 2
+  NoFormatting = 0, // no formatting applied
+  PrettyPrint = 1, // json_spirit::pretty_print
+  CompactArrays = 2 // json_spirit::single_line_arrays; implies PrettyPrint
 };
 
 class FileWriter
@@ -55,9 +59,15 @@ class FileWriter
   public:
     FileWriter ( void );
     ~FileWriter ( void );
-
-    bool save ( const std::string& filename, Object& root,
+/*
+    bool save (
+                const std::string& filename, Object& root,
                 enum options format = none
+              );
+*/
+    bool save (
+                const std::string& filename, const json_spirit::Array& root_object,
+                uint32 format = NoFormatting
               );
 };
 

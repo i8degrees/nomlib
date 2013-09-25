@@ -31,66 +31,69 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
+#include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/graphics/Canvas.hpp"
 #include "nomlib/math/Transformable.hpp"
+#include "nomlib/math/Rect-inl.hpp"
+#include "nomlib/graphics/Canvas.hpp"
 
 namespace nom {
 
-class Sprite: public IDrawable,     //  "is a" inheritance
-              public Transformable  //  "has a" inheritance
+/// \brief Sprite object container
+class Sprite:
+              public Transformable
 {
   public:
+    /// Default construct for initializing instance variables to their
+    /// respective defaults.
     Sprite ( void );
-    Sprite ( unsigned int width, unsigned int height );
+
+    /// Construct a Sprite object, initializing the width & height coordinates.
+    Sprite ( int32 width, int32 height );
+
+    /// Construct a Sprite object, initializing it with a Canvas object.
+    /// \FIXME
+    ///Sprite ( const Canvas& copy );
+
+    /// Copy assignment operator.
+    Sprite& operator = ( const Sprite& other );
+
+    /// Destructor.
     virtual ~Sprite ( void );
 
-    unsigned int getState ( void );
-    void setState ( unsigned int state );
+    const Coords getSize ( void ) const;
 
-    signed int getSheetID ( void );
-    void setSheetID ( signed int id );
-    void setSheetDimensions ( int32 sheet_width, int32 sheet_height,
-                              int32 spacing, int32 padding
-                            );
+    /// Get the object's state.
+    uint32 getState ( void ) const;
 
-    bool load ( std::string filename, Color colorkey,
-                bool use_cache = 0,
+    /// Set a new state.
+    void setState ( uint32 state );
+
+    /// Load a new image onto the Sprite.
+    bool load (
+                const std::string& filename, const Color& colorkey,
+                bool use_cache = false,
                 uint32 flags = SDL_SRCCOLORKEY | SDL_RLEACCEL
               );
 
     void Update ( void );
     void Draw ( void* video_buffer ) const;
 
-    /// Uses the scale2x algorithm implemented in nom::Canvas to scale a sprite
-    /// by a scaling factor of two times the original size.
-    ///
-    /// See Canvas.hpp for additional information.
-    void scale2x ( void );
+    /// Rescale the font with a chosen resizing algorithm
+    bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
-    /// Uses the hq2x algorithm implemented in nom::Canvas to scale a sprite
-    /// by a scaling factor of two times the original size.
-    ///
-    /// See Canvas.hpp for additional information.
-    void hq2x ( void );
+    bool resize ( const Vector2f& scale_factor );
 
-  private:
-    Canvas sprite_buffer;
-    Coords offsets;
+  protected:
+    /// Object that holds our sprite image
+    Canvas sprite;
 
-    unsigned int state; /// alive, dying, dead, ...
+    /// Convenience instance variable (user-defined)
+    uint32 state;
 
-    struct {
-      signed int id; /// maps a specific sprite within sheet
-      unsigned int sprite_width; /// width of sprite in sheet
-      unsigned int sprite_height; /// height of sprite in sheet
-      unsigned int width; /// width of sprite sheet
-      unsigned int height; /// height of sprite sheet
-      unsigned int spacing; /// applied between each sheet tile
-      unsigned int padding; /// applied on all four sides of sheet tile
-    } sheet;
+    /// Scale factor applied if the resize method is called
+    int32 scale_factor;
 };
 
 

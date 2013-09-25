@@ -31,74 +31,116 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
-#include <memory>
 #include <vector>
+#include <memory>
+#include <utility>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Color.hpp"
-#include "nomlib/math/Transformable.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Rectangle.hpp"
 
 namespace nom {
 
-class Gradient: //public IDrawable,     // "is a" relationship
-                public Transformable  // "has a" relationship
+enum class FillDirection: int32
+{
+  Top = 0,    // Top down
+  Bottom,     // Bottom's up!
+  Left,       // Left to right
+  Right       // Right to left
+};
+
+class Gradient:
+                public IDrawable
+
 {
   public:
-    Gradient( void );
+    /// Default construct for initializing instance variables to their
+    /// respective defaults.
+    Gradient ( void );
 
-    Gradient( const Color& starting_color, const Color& ending_color,
-              int32 x = 0, int32 y = 0, int32 width = 0, int32 height = 0,
-              uint32 direction = 0,  uint32 x_margin = 0, uint32 y_margin = 0
-            );
+    /// Construct an object, fully initializing it.
+    ///
+    /// \DEPRECATED
+    Gradient  (
+                const Color& starting_color, const Color& ending_color,
+                const Coords& bounds, int32 x_margin, int32 y_margin,
+                enum FillDirection direction
+              );
 
+    /// Destructor
     virtual ~Gradient ( void );
 
+    /// Fully initialize this object
+    void initialize (
+                      const Color& starting_color, const Color& ending_color,
+                      const Coords& bounds, int32 x_margin, int32 y_margin,
+                      enum FillDirection direction
+                    );
+
+    const Coords getPosition ( void ) const;
+    const Coords getSize ( void ) const;
     Color getStartColor ( void ) const;
     Color getEndColor ( void ) const;
+    enum FillDirection getFillDirection ( void ) const;
+    bool dithering ( void ) const;
 
     void setStartColor ( const Color& starting_color );
     void setEndColor ( const Color& ending_color );
-
-    uint32 getFillDirection ( void ) const;
-    void setFillDirection ( const uint32 direction );
+    void reverseColors ( void );
+    void setFillDirection ( enum FillDirection direction );
+    void setPosition ( int32 x, int32 y );
+    void setSize ( int32 width, int32 height );
+    void setMargins ( int32 x, int32 y );
+    void enableDithering ( bool toggle );
 
     void Update ( void );
     void Draw ( void* video_buffer ) const;
 
   private:
-    std::vector<std::shared_ptr<Rectangle>> rectangles;
-    /// gradient[0] = starting Color
-    /// gradient[1] = ending Color
+    void strategyTopDown ( void );
+    void strategyLeftToRight ( void );
+
+    std::vector<std::shared_ptr<IDrawable>> rectangles;
+
+    /// starting & ending colors
     Color gradient[2];
+
+    /// Rendering coordinates (X, Y, width & height)
+    Coords coords;
+
     /// x coordinate offset
     int32 x_margin;
+
     /// y coordinate offset
     int32 y_margin;
-    /// color fill direction:
-    /// direction = 0 is ending color to starting color
-    /// direction = 1 is starting color to ending color
-    uint32 direction;
+
+    /// Color fill axis -- X or Y increment
+    enum FillDirection fill_direction;
+
+    /// Toggle automatic dithering of colors
+    bool enable_dithering;
 };
 
 
 } // namespace nom
-/*
 
+/*
   #include <nomlib/graphics.hpp>
 
   nom::Gradient linear;
 
-  linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
-  linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
+  this->linear.setSize ( 64, 64 );
+  this->linear.setMargins ( 4, 4 );
+  this->linear.setFillDirection ( nom::FillDirection::Top );
 
-  // Alternative
-  linear = SDL_Gradient ( nom::Color ( 67, 67, 67, 255 ), nom::Color ( 99, 99, 99, 255 ), 104, 194, 176, 24, 0, 3, 4 );
+  this->linear.setStartColor ( nom::Color ( 208, 223, 255 ) );
+  this->linear.setEndColor ( nom::Color ( 50, 59, 114 ) );
 
-  linear.Draw ( video_buffer );
-
+  this->linear.setPosition ( 96, 16 );
+  this->linear.Update();
+  this->linear.Draw ( video_buffer );
 */
 
 #endif // NOMLIB_SDL_GRADIENT_HEADERS defined

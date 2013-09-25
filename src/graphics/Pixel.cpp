@@ -30,33 +30,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Pixel::Pixel ( void )
-{
-  this->setPosition ( 0, 0 );
-  this->setColor ( Color ( 0, 0, 0, 255 ) );
-}
+Pixel::Pixel ( void ) {}
 
-Pixel::~Pixel ( void )
-{
-  // Do nothing
-}
+Pixel::~Pixel ( void ) {}
 
 Pixel::Pixel ( const Coords& coords, const Color& color )
 {
-  this->setPosition ( coords );
-  this->setColor ( color );
+  this->coords = coords;
+  this->color = color;
 }
 
 Pixel::Pixel ( int32 x, int32 y, const Color& color )
 {
-  this->setPosition ( x, y );
-  this->setColor ( color );
+  this->coords = Coords ( x, y );
+  this->color = color;
 }
 
-void Pixel::Update ( void )
-{
-  // Do nothing
-}
+void Pixel::Update ( void ) {}
 
 void Pixel::Draw ( void* video_buffer ) const
 {
@@ -69,7 +59,7 @@ void Pixel::Draw ( void* video_buffer ) const
   {
     default:
     {
-NOM_LOG_ERR ( "Could not determine color depth -- aborting call." );
+NOM_LOG_ERR ( NOM, "Could not determine color depth -- aborting call." );
       return;
     }
     break; // Unsupported color depth?
@@ -77,7 +67,7 @@ NOM_LOG_ERR ( "Could not determine color depth -- aborting call." );
     case 8:
     {
       uint8* pixels = static_cast<uint8*> ( buffer->pixels );
-      uint32 pixel_color = getColorAsInt ( buffer->format, this->color );
+      uint32 pixel_color = RGBA::asInt32 ( buffer->format, this->color );
 
       pixels[ ( this->coords.y * buffer->pitch ) + this->coords.x ] = pixel_color;
     }
@@ -86,7 +76,7 @@ NOM_LOG_ERR ( "Could not determine color depth -- aborting call." );
     case 2: // 15/16-bit BPP
     {
       uint16* pixels = static_cast<uint16*> ( buffer->pixels );
-      uint32 pixel_color = getColorAsInt ( buffer->format, this->color );
+      uint32 pixel_color = RGBA::asInt32 ( buffer->format, this->color );
 
       pixels[ ( this->coords.y * buffer->pitch/2 ) + this->coords.x ] = pixel_color;
     }
@@ -95,7 +85,7 @@ NOM_LOG_ERR ( "Could not determine color depth -- aborting call." );
     case 3: // 24-bit BPP
     {
       uint8* pixels = static_cast<uint8*> ( buffer->pixels );
-      uint32 pixel_color = getColorAsInt ( buffer->format, this->color );
+      uint32 pixel_color = RGBA::asInt32 ( buffer->format, this->color );
 
       pixels[ ( this->coords.y * buffer->pitch ) + this->coords.x ] = pixel_color;
       *(pixels + buffer->format->Rshift/8 ) = this->color.red;
@@ -108,7 +98,7 @@ NOM_LOG_ERR ( "Could not determine color depth -- aborting call." );
     case 4: // 32-bit BPP
     {
       uint32* pixels = static_cast<uint32*> ( buffer->pixels );
-      uint32 pixel_color = getColorAsInt ( buffer->format, this->color );
+      uint32 pixel_color = RGBA::asInt32 ( buffer->format, this->color );
 
       pixels[ ( this->coords.y * buffer->pitch/4 ) + this->coords.x ] = pixel_color;
     }

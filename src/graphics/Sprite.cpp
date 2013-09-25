@@ -30,113 +30,125 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Sprite::Sprite ( void )
+Sprite::Sprite ( void ) : state ( 0 ), scale_factor ( 1 )
 {
-NOM_LOG_CLASSINFO;
-
-  this->state = 0;
-
-  this->sheet.sprite_width = 0;
-  this->sheet.sprite_height = 0;
-  this->sheet.width = 0;
-  this->sheet.height = 0;
-  this->sheet.id = 1;
-  this->sheet.spacing = 0;
-  this->sheet.padding = 0;
+NOM_LOG_TRACE ( NOM );
 }
 
-Sprite::Sprite ( unsigned int width, unsigned int height )
+Sprite::Sprite ( int32 width, int32 height )  :
+  Transformable { Coords ( 0, 0, width, height ) }, state ( 0 ),
+  scale_factor ( 1 )
+
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
+}
 
-  this->coords.setSize ( width, height );
+/* FIXME
+Sprite::Sprite ( const Canvas& copy ) : sprite  ( copy ), state ( 0 ),
+  scale_factor ( 1 )
+{
+NOM_LOG_TRACE ( NOM );
+}
+*/
 
-  this->state = 0;
+Sprite& Sprite::operator = ( const Sprite& other )
+{
+  this->sprite = other.sprite;
+  this->coords = other.coords;
+  this->state = other.state;
+  this->scale_factor = other.scale_factor;
 
-  this->sheet.id = 1;
-  this->sheet.sprite_width = 0;
-  this->sheet.sprite_height = 0;
-  this->sheet.width = width = 0;
-  this->sheet.height = height = 0;
-  this->sheet.spacing = 0;
-  this->sheet.padding = 0;
+  return *this;
 }
 
 Sprite::~Sprite ( void )
 {
-NOM_LOG_CLASSINFO;
+NOM_LOG_TRACE ( NOM );
 }
 
-unsigned int Sprite::getState ( void )
+const Coords Sprite::getSize ( void ) const
+{
+  return Coords ( 0, 0, this->sprite.getCanvasWidth(), this->sprite.getCanvasHeight() );
+}
+
+uint32 Sprite::getState ( void ) const
 {
   return this->state;
 }
 
-void Sprite::setState ( unsigned int state )
+void Sprite::setState ( uint32 state )
 {
   this->state = state;
 }
 
-signed int Sprite::getSheetID ( void )
-{
-  return this->sheet.id;
-}
-
-void Sprite::setSheetID ( signed int id )
-{
-  this->sheet.id = id;
-}
-
-void Sprite::setSheetDimensions ( int32 sheet_width, int32 sheet_height, int32 spacing, int32 padding )
-{
-  this->sheet.sprite_width = this->coords.width;
-  this->sheet.sprite_height = this->coords.height;
-  this->sheet.width = sheet_width;
-  this->sheet.height = sheet_height;
-  this->sheet.spacing = spacing;
-  this->sheet.padding = padding;
-}
-
-bool Sprite::load ( std::string filename, Color colorkey,
+bool Sprite::load (
+                    const std::string& filename, const Color& colorkey,
                     bool use_cache, uint32 flags
                   )
 {
-  this->sprite_buffer.load ( filename, colorkey, use_cache, flags );
+  this->sprite.load ( filename, colorkey, use_cache, flags );
 
-  if ( ! this->sprite_buffer.valid() )
+  if ( this->sprite.valid() == false )
   {
-NOM_LOG_ERR ( "Could not load sprite image file: " + filename );
+NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
     return false;
   }
+
+  this->setSize ( this->sprite.getCanvasWidth(), this->sprite.getCanvasHeight() );
 
   return true;
 }
 
 void Sprite::Update ( void )
 {
-  // FIXME: Presently, we assume every sprite on our sheet is on the same row
-  this->offsets.setPosition ( this->sheet.id * this->sheet.sprite_width, 0 );
-  this->offsets.setSize ( this->sheet.sprite_width, this->sheet.sprite_height );
-  this->sprite_buffer.setOffsets ( this->offsets );
-
-  this->sprite_buffer.setPosition ( coords );
+  this->sprite.setPosition ( this->coords );
 }
 
 void Sprite::Draw ( void* video_buffer ) const
 {
-NOM_ASSERT ( this->sprite_buffer.valid() );
+NOM_ASSERT ( this->sprite.valid() );
 
-  this->sprite_buffer.Draw ( video_buffer );
+  this->sprite.Draw ( video_buffer );
 }
 
-void Sprite::scale2x ( void )
+bool Sprite::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
-  this->sprite_buffer.scale2x();
+  if ( this->sprite.valid() == false )
+  {
+NOM_LOG_ERR ( NOM, "Video surface is invalid." );
+    return false;
+  }
+
+  if ( this->sprite.resize ( scaling_algorithm ) == false )
+  {
+NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
+    return false;
+  }
+
+  this->scale_factor = this->sprite.getResizeScaleFactor ( scaling_algorithm );
+  this->Update();
+
+  return true;
 }
 
-void Sprite::hq2x ( void )
+bool Sprite::resize ( const Vector2f& scale_factor )
 {
-  this->sprite_buffer.hq2x();
+  if ( this->sprite.valid() == false )
+  {
+NOM_LOG_ERR ( NOM, "Video surface is invalid." );
+    return false;
+  }
+
+  if ( this->sprite.resize ( scale_factor ) == false )
+  {
+NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
+    return false;
+  }
+
+  //this->scale_factor = this->sprite.getResizeScaleFactor ( scaling_algorithm );
+  this->Update();
+
+  return true;
 }
 
 

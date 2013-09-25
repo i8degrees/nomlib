@@ -11,7 +11,7 @@ if ( NOT CMAKE_INSTALL_PREFIX )
 endif ( NOT CMAKE_INSTALL_PREFIX )
 
 set ( PROJECT_VERSION_MAJOR 0 )
-set ( PROJECT_VERSION_MINOR 1 )
+set ( PROJECT_VERSION_MINOR 9 )
 set ( PROJECT_VERSION_PATCH 0 )
 
 # We only support building nomlib as a dynamic library at the moment

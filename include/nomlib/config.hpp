@@ -68,7 +68,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Pretty print C macros purely for convenience sake
 #define NOM_DUMP_VAR(var) \
-  ( std::cout << #var << ": " << var << std::endl )
+  ( std::cout << #var << ": " << var << std::endl << std::endl )
 
 // nomlib debugging macros
 #ifdef NOM_DEBUG

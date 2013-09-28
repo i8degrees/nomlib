@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/audio/AL/OpenAL.hpp"
-#include "nomlib/math/Vector3-inl.hpp"
+#include "nomlib/math/Point3-inl.hpp"
 #include "nomlib/audio/AL/AudioDevice.hpp"
 
 namespace nom {
@@ -54,25 +54,25 @@ class Listener
     float getVolume ( void ) const;
 
     /// Obtain position
-    const Vector3f getPosition ( void ) const;
+    const Point3f getPosition ( void ) const;
 
     /// Obtain velocity
-    const Vector3f getVelocity ( void ) const;
+    const Point3f getVelocity ( void ) const;
 
     /// Obtain direction
-    const Vector3f getDirection ( void ) const;
+    const Point3f getDirection ( void ) const;
 
     /// Set position
     void setPosition ( float x, float y, float z );
-    void setPosition ( const Vector3f& position );
+    void setPosition ( const Point3f& position );
 
     /// Set velocity
     void setVelocity ( float x, float y, float z );
-    void setVelocity ( const Vector3f& velocity );
+    void setVelocity ( const Point3f& velocity );
 
     /// Set direction
     void setDirection ( float x, float y, float z );
-    void setDirection ( const Vector3f& direction );
+    void setDirection ( const Point3f& direction );
 
     /// Set master gain (volume)
     ///

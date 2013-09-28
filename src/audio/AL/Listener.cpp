@@ -67,27 +67,27 @@ AL_CHECK_ERR ( alGetListenerf ( AL_GAIN, &master_volume ) );
   return master_volume * 100.f;
 }
 
-const Vector3f Listener::getPosition ( void ) const
+const Point3f Listener::getPosition ( void ) const
 {
-  Vector3f position;
+  Point3f position;
 
 AL_CHECK_ERR ( alGetListener3f ( AL_POSITION, &position.x, &position.y, &position.z ) );
 
   return position;
 }
 
-const Vector3f Listener::getVelocity ( void ) const
+const Point3f Listener::getVelocity ( void ) const
 {
-  Vector3f velocity;
+  Point3f velocity;
 
 AL_CHECK_ERR ( alGetListener3f ( AL_VELOCITY, &velocity.x, &velocity.y, &velocity.z ) );
 
   return velocity;
 }
 
-const Vector3f Listener::getDirection ( void ) const
+const Point3f Listener::getDirection ( void ) const
 {
-  Vector3f direction;
+  Point3f direction;
 
 AL_CHECK_ERR ( alGetListener3f ( AL_ORIENTATION, &direction.x, &direction.y, &direction.z ) );
 
@@ -99,7 +99,7 @@ void Listener::setPosition ( float x, float y, float z )
 AL_CHECK_ERR ( alListener3f ( AL_POSITION, x, y, z ) );
 }
 
-void Listener::setPosition ( const Vector3f& position )
+void Listener::setPosition ( const Point3f& position )
 {
   this->setPosition ( position.x, position.y, position.z );
 }
@@ -109,7 +109,7 @@ void Listener::setVelocity ( float x, float y, float z )
 AL_CHECK_ERR ( alListener3f ( AL_VELOCITY, x, y, z ) );
 }
 
-void Listener::setVelocity ( const Vector3f& velocity )
+void Listener::setVelocity ( const Point3f& velocity )
 {
   this->setVelocity ( velocity.x, velocity.y, velocity.z );
 }
@@ -119,7 +119,7 @@ void Listener::setDirection ( float x, float y, float z )
 AL_CHECK_ERR ( alListener3f ( AL_ORIENTATION, x, y, z ) );
 }
 
-void Listener::setDirection ( const Vector3f& direction )
+void Listener::setDirection ( const Point3f& direction )
 {
   this->setDirection ( direction.x, direction.y, direction.z );
 }

@@ -59,7 +59,7 @@ class Input
     Input ( void );
     virtual ~Input ( void );
 
-    virtual void HandleInput ( Event* event );
+    virtual void HandleInput ( SDL_Event* event );
   protected:
     virtual void onUserEvent ( uint8 type, int32 code, void* data1, void* data2 );
 

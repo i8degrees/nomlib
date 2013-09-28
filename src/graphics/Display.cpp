@@ -29,22 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Display.hpp"
 
 namespace nom {
-  namespace priv {
 
-void Display_FreeSurface ( Surface* video_buffer )
-{
-  // As per docs, we must not free the publicly available surface, AKA
-  // SDL_Surface *screen. This is explicitly stated as a role of the SDL_Quit()
-  // function.
-  //
-  // http://sdl.beuc.net/sdl.wiki/SDL_SetVideoMode
-}
-
-  } // namespace priv
-} // namespace nom
-
-
-namespace nom {
+std::shared_ptr<SDL_Renderer> context = nullptr;
 
 Display::Display ( void )
 {
@@ -63,89 +49,118 @@ Display::~Display ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
-void Display::createWindow  ( int32_t display_width, int32_t display_height,
-                                  int32_t display_colorbit, uint32_t flags )
+bool Display::create  ( int32 width, int32 height, uint32 window_flags, uint32 context_flags )
 {
-  Surface* screen = nullptr; // Better safe than sorry!
+  window = std::shared_ptr<SDL_Window>  (
+                                      SDL_CreateWindow
+                                      (
+                                        nullptr,
+                                        SDL_WINDOWPOS_CENTERED,
+                                        SDL_WINDOWPOS_CENTERED,
+                                        width,
+                                        height,
+                                        window_flags
+                                      ),
+                                      priv::FreeWindow
+                                    );
 
-  screen = SDL_SetVideoMode ( display_width, display_height,
-                              display_colorbit, flags
-                            );
+  if ( window == nullptr )
+  {
+NOM_LOG_ERR ( NOM, "Could not create window." );
+    return false;
+  }
 
-  if ( screen == nullptr )
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+  context = std::shared_ptr<SDL_Renderer> ( SDL_CreateRenderer
+                                            (
+                                              this->window.get(),
+                                              -1,
+                                              context_flags
+                                            ),
+                                            priv::FreeRenderTarget
+                                          );
+  if ( context == nullptr )
+  {
+NOM_LOG_ERR ( NOM, "Could not create rendering context." );
+    return false;
+  }
 
-NOM_ASSERT ( screen != nullptr );
+  return true;
 }
 
-Surface* Display::get ( void ) const
+SDL_Window* Display::get ( void ) const
 {
-  return SDL_GetVideoSurface();
+  return this->window.get();
 }
 
 bool Display::valid ( void ) const
 {
   if ( this->get() != nullptr )
+  {
     return true;
+  }
   else
+  {
     return false;
+  }
 }
 
-int32_t Display::getDisplayWidth ( void ) const
+Point2i Display::getPosition ( void ) const
 {
-  return SDL_GetVideoSurface()->w;
-}
+  Point2i pos;
 
-int32_t Display::getDisplayHeight ( void ) const
-{
-  return SDL_GetVideoSurface()->h;
+  SDL_GetWindowPosition ( this->window.get(), &pos.x, &pos.y );
+
+  return pos;
 }
 
 const uint8 Display::getDisplayColorBits ( void ) const
 {
-  Surface* screen = this->get();
+/*
+  SDL_Surface* screen = this->get();
 
   // We prevent a segmentation fault here by providing a means of accessing the
   // video modes without already having initialized the video display via
   // SDL_SetVideoMode.
   if ( screen == nullptr )
   {
-    const SDL_VideoInfo* bpp = SDL_GetVideoInfo();
-    return bpp->vfmt->BitsPerPixel;
+    //const SDL_VideoInfo* bpp = SDL_GetVideoInfo();
+    //return bpp->vfmt->BitsPerPixel;
   }
 
   return screen->format->BitsPerPixel;
+*/
 }
 
-uint32_t Display::getDisplayFlags ( void ) const
+uint32 Display::getDisplayFlags ( void ) const
 {
-  return SDL_GetVideoSurface()->flags;
+  return SDL_GetWindowFlags ( this->window.get() );
 }
 
-uint16_t Display::getDisplayPitch ( void ) const
+uint16 Display::getDisplayPitch ( void ) const
 {
-  return SDL_GetVideoSurface()->pitch;
+  //return SDL_GetVideoSurface()->pitch;
 }
 
 void* Display::getDisplayPixels ( void ) const
 {
-  return SDL_GetVideoSurface()->pixels;
+  //return SDL_GetVideoSurface()->pixels;
 }
 
-PixelFormat* Display::getDisplayPixelsFormat ( void ) const
+SDL_PixelFormat* Display::getDisplayPixelsFormat ( void ) const
 {
-  return SDL_GetVideoSurface()->format;
+  //return SDL_GetVideoSurface()->format;
 }
 
 const Coords Display::getDisplayBounds ( void ) const
 {
-  SDL_Rect clip = SDL_GetVideoSurface()->clip_rect;
-  Coords clip_coords ( clip.x, clip.y, clip.w, clip.h );
-  return clip_coords;
+  //SDL_Rect clip = SDL_GetVideoSurface()->clip_rect;
+  //Coords clip_coords ( clip.x, clip.y, clip.w, clip.h );
+  //return clip_coords;
 }
 
 VideoModeList Display::getVideoModes ( void ) const
 {
+/*
   VideoModeList modes;
   SDL_Rect** mode;
 
@@ -171,15 +186,17 @@ NOM_LOG_INFO ( NOM, "No video modes are supported." );
     std::sort ( modes.begin(), modes.end(), std::greater<VideoMode>()  );
   }
   return modes;
+*/
 }
 
 bool Display::getCanvasLock ( void ) const
 {
-  return this->get()->locked;
+  //return this->get()->locked;
 }
 
 bool Display::mustLock ( void ) const
 {
+/*
   if ( SDL_MUSTLOCK ( this->get() ) )
   {
     return true;
@@ -188,10 +205,12 @@ bool Display::mustLock ( void ) const
   {
     return false;
   }
+*/
 }
 
 bool Display::lock ( void ) const
 {
+/*
   if ( this->mustLock() == true )
   {
     if ( SDL_LockSurface ( this->get() ) == -1 )
@@ -200,28 +219,47 @@ NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
       return false;
     }
   }
+*/
   return true;
 }
 
 void Display::unlock ( void ) const
 {
+/*
   SDL_UnlockSurface ( this->get() );
+*/
 }
 
-void Display::Update ( void )
+void Display::update ( void )
 {
-  if ( SDL_Flip ( this->get() ) != 0 )
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+  SDL_RenderPresent ( context.get() );
 }
 
-void Display::Update ( const Coords& coords )
+bool Display::toggleFullScreen ( uint32 flags )
 {
-  SDL_UpdateRect ( this->get(), coords.x, coords.y, coords.width, coords.height );
-}
+  Point2i pos;
 
-void Display::toggleFullScreenWindow ( int32_t width, int32_t height )
-{
-  uint32_t flags = 0; // save our current flags before attempting to switch
+  pos = this->getPosition();
+
+  if ( SDL_SetWindowFullscreen ( this->window.get(), flags ) != 0 )
+  {
+    NOM_LOG_ERR ( NOM, "Could not toggle SDL fullscreen mode." );
+    return false;
+  }
+
+  // We must reset the window position back to the center of the display if we
+  // initialize in windowed state, otherwise upon exiting full-screen, we end
+  // up with a misaligned window.
+  //
+  // Possible bug on OS X
+  if ( pos.x == SDL_WINDOWPOS_CENTERED && pos.y == SDL_WINDOWPOS_CENTERED );
+  {
+    this->setPosition ( SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED );
+  }
+
+  return true;
+/*
+  uint32 flags = 0; // save our current flags before attempting to switch
 
   flags = this->getDisplayFlags();
 
@@ -231,44 +269,49 @@ void Display::toggleFullScreenWindow ( int32_t width, int32_t height )
   //  back to our previous configuration
   if ( ! this->valid() )
     this->createWindow ( width, height, 0, flags );
+*/
 }
 
-// FIXME
 const std::string Display::getWindowTitle ( void ) const
 {
-  char *window_title;
-  SDL_WM_GetCaption ( &window_title, nullptr );
-  return std::to_string ( *window_title );
+  std::string title = SDL_GetWindowTitle ( this->window.get() );
+
+  return title;
 }
 
-// TODO
-void* Display::getWindowIcon ( void ) const
+void Display::setWindowTitle ( const std::string& title )
 {
-  return nullptr;
+  SDL_SetWindowTitle ( this->window.get(), title.c_str() );
 }
 
-void Display::setWindowTitle ( const std::string& app_name )
+bool Display::setWindowIcon ( const std::string& filename )
 {
-  SDL_WM_SetCaption ( app_name.c_str(), nullptr );
-}
+  //Image image; // holds our image in memory during transfer
+  std::shared_ptr<SDL_Surface> icon;
 
-void Display::setWindowIcon ( const std::string& app_icon )
-{
-  Image image; // holds our image in memory during transfer
-  std::shared_ptr<Surface> icon = nullptr;
+  icon.reset ( IMG_Load ( filename.c_str() ), priv::FreeSurface );
 
-  if ( this->valid() )
-NOM_LOG_ERR ( NOM, "SDL video subsystem has already been initiated." );
-
-  icon = std::shared_ptr<Surface> ( image.load ( app_icon ) );
   if ( icon == nullptr )
   {
-NOM_LOG_ERR ( NOM, "Could not load window icon file: " + app_icon );
-    return;
+    NOM_LOG_ERR ( NOM, "Could not set application icon." );
+    return false;
   }
 
-  SDL_WM_SetIcon ( icon.get() , nullptr );
+  SDL_SetWindowIcon ( this->window.get(), icon.get() );
+
+  return true;
 }
 
+void Display::clear ( const Color& color )
+{
+  SDL_SetRenderDrawColor ( context.get(), color.red, color.green, color.blue, color.alpha );
+
+  SDL_RenderClear ( context.get() );
+}
+
+void Display::setPosition ( int32 x, int32 y )
+{
+  SDL_SetWindowPosition ( this->window.get(), x, y );
+}
 
 } // namespace nom

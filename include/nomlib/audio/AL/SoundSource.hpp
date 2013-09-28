@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/audio/AL/OpenAL.hpp"
-#include "nomlib/math/Vector3-inl.hpp"
+#include "nomlib/math/Point3-inl.hpp"
 
 namespace nom {
 
@@ -65,8 +65,8 @@ class SoundSource
     float getPitch ( void ) const;
     bool getLooping ( void ) const;
 
-    Vector3f getPosition ( void ) const;
-    Vector3f getVelocity ( void ) const;
+    Point3f getPosition ( void ) const;
+    Point3f getVelocity ( void ) const;
 
     bool getPositionRelativeToListener ( void ) const;
     float getMinDistance ( void ) const;
@@ -91,10 +91,10 @@ class SoundSource
     void setLooping ( bool loops );
 
     void setPosition ( float x, float y, float z );
-    void setPosition ( const Vector3f& position );
+    void setPosition ( const Point3f& position );
 
     void setVelocity ( float x, float y, float z );
-    void setVelocity ( const Vector3f& velocity );
+    void setVelocity ( const Point3f& velocity );
 
     void setPositionRelativeToListener ( bool position );
     void setMinDistance ( float distance );

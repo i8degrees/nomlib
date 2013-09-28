@@ -51,7 +51,7 @@ Rectangle::Rectangle ( const Coords& coords, const Color& color )
 Rectangle::~Rectangle ( void ) {}
 void Rectangle::Update ( void ) {}
 
-void Rectangle::Draw ( Surface* video_buffer ) const
+void Rectangle::Draw ( SDL_Surface* video_buffer ) const
 {
   SDL_Rect rectangle = IntRect::asSDLRect ( this->coords );
 

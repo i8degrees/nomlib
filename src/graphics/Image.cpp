@@ -30,7 +30,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Image::Image ( int32 flags )  : image_buffer ( nullptr, nom::priv::Canvas_FreeSurface )
+Image::Image ( void ) : image_buffer ( nullptr, priv::FreeTexture )
+{
+NOM_LOG_TRACE ( NOM );
+
+  if ( IMG_Init ( IMG_INIT_PNG ) != IMG_INIT_PNG )
+  {
+NOM_LOG_ERR ( NOM, IMG_GetError() );
+  }
+
+  atexit ( IMG_Quit );
+}
+
+Image::~Image ( void )
+{
+NOM_LOG_TRACE ( NOM );
+}
+
+Image::Image ( uint32 flags )  : image_buffer ( nullptr, priv::FreeTexture )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -42,53 +59,66 @@ NOM_LOG_ERR ( NOM, IMG_GetError() );
   atexit ( IMG_Quit );
 }
 
-Image::Image ( const Image& other )  : image_buffer { other.image_buffer.get(), nom::priv::Canvas_FreeSurface }
+Image::Image ( const Image& other )  : image_buffer { other.image_buffer.get(), priv::FreeTexture }
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-Image::~Image ( void )
+Image& Image::operator = ( const Image& other )
 {
-NOM_LOG_TRACE ( NOM );
+  this->image_buffer = other.image_buffer;
 
-  this->image_buffer.reset(); // ...better safe than sorry!
+  return *this;
 }
 
 bool Image::valid ( void ) const
 {
   if ( this->image_buffer.get() != nullptr )
+  {
     return true;
+  }
   else
+  {
     return false;
+  }
 }
 
-std::shared_ptr<Surface> Image::load ( const std::string& filename )
+std::shared_ptr<SDL_Texture> Image::load ( const std::string& filename )
 {
-  this->image_buffer.reset ( IMG_Load ( filename.c_str() ), nom::priv::Canvas_FreeSurface );
+  SDL_Surface* image = nullptr;
 
-  if ( ! this->valid() )
+  image = IMG_Load ( filename.c_str() );
+
+  if ( image == nullptr )
   {
 NOM_LOG_ERR ( NOM, IMG_GetError() );
     return nullptr;
   }
 
+  this->image_buffer.reset ( SDL_CreateTextureFromSurface ( context.get(), image ), priv::FreeTexture );
+  priv::FreeSurface ( image );
+
   return this->image_buffer;
 }
 
-std::shared_ptr<Surface> Image::loadBMP ( const std::string& filename )
+std::shared_ptr<SDL_Texture> Image::loadBMP ( const std::string& filename )
 {
-  this->image_buffer = std::shared_ptr<Surface> ( SDL_LoadBMP ( filename.c_str() ), nom::priv::Canvas_FreeSurface );
+  SDL_Surface* image = nullptr;
+  image = SDL_LoadBMP ( filename.c_str() );
 
-  if ( ! this->valid() )
+  if ( image == nullptr )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return nullptr;
   }
 
+  this->image_buffer.reset ( SDL_CreateTextureFromSurface ( context.get(), image ), priv::FreeTexture );
+  priv::FreeSurface ( image );
+
   return this->image_buffer;
 }
 
-bool Image::save ( const std::string& filename, Surface* video_buffer )
+bool Image::save ( const std::string& filename, SDL_Surface* video_buffer )
 {
   if ( SDL_SaveBMP ( video_buffer, filename.c_str() ) != 0 )
   {
@@ -101,16 +131,11 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
 const Coords Image::getSize ( void ) const
 {
-  SDL_Surface *buffer = this->image_buffer.get();
+  Coords size;
 
-  return Coords ( 0, 0, buffer->w, buffer->h );
-}
+  SDL_QueryTexture ( this->image_buffer.get(), nullptr, nullptr, &size.width, &size.height );
 
-Image& Image::operator = ( const Image& other )
-{
-  this->image_buffer = other.image_buffer;
-
-  return *this;
+  return size;
 }
 
 

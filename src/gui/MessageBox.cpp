@@ -215,7 +215,7 @@ void MessageBox::Update ( void )
   } // end switch
 }
 
-void MessageBox::Draw ( Surface* video_buffer ) const
+void MessageBox::Draw ( SDL_Surface* video_buffer ) const
 {
   if ( this->isEnabled() == false ) return;
 

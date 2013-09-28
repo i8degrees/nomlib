@@ -41,9 +41,9 @@ int32 rand ( int32 start, int32 end )
   return distribution ( rand_generator );
 }
 
-const Vector2f rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y )
+const Point2f rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y )
 {
-  Vector2f p;
+  Point2f p;
   float rotated_x = 0;
   float rotated_y = 0;
   float translated_x = 0;

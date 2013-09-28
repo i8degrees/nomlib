@@ -96,7 +96,7 @@ class Gradient:
     void enableDithering ( bool toggle );
 
     void Update ( void );
-    void Draw ( Surface* video_buffer ) const;
+    void Draw ( SDL_Surface* video_buffer ) const;
 
   private:
     void strategyTopDown ( void );

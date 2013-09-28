@@ -40,7 +40,7 @@ GameStates::GameStates ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
-void GameStates::onEvent ( Event* event )
+void GameStates::onEvent ( SDL_Event* event )
 {
   // let the state handle events
   states.back()->HandleInput ( event );
@@ -52,7 +52,7 @@ void GameStates::Update ( float delta_time )
   states.back()->Update ( delta_time );
 }
 
-void GameStates::Draw ( Surface* video_buffer )
+void GameStates::Draw ( SDL_Surface* video_buffer )
 {
   // let the state draw the scene onto the display buffer
   states.back()->Draw ( video_buffer );

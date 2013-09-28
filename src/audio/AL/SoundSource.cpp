@@ -98,9 +98,9 @@ AL_CHECK_ERR ( alGetSourcei ( source_id, AL_LOOPING, &looping ) );
   return false;
 }
 
-Vector3f SoundSource::getPosition ( void ) const
+Point3f SoundSource::getPosition ( void ) const
 {
-  Vector3f position;
+  Point3f position;
 
 AL_CHECK_ERR  ( alGetSource3f ( source_id, AL_POSITION, &position.x, &position.y,
                           &position.z )
@@ -109,9 +109,9 @@ AL_CHECK_ERR  ( alGetSource3f ( source_id, AL_POSITION, &position.x, &position.y
   return position;
 }
 
-Vector3f SoundSource::getVelocity ( void ) const
+Point3f SoundSource::getVelocity ( void ) const
 {
-  Vector3f velocity;
+  Point3f velocity;
 
 AL_CHECK_ERR  (  alGetSource3f  ( source_id, AL_VELOCITY, &velocity.x, &velocity.y,
                             &velocity.z )
@@ -212,7 +212,7 @@ void SoundSource::setPosition ( float x, float y, float z )
 AL_CHECK_ERR ( alSource3f ( source_id, AL_POSITION, x, y, z ) );
 }
 
-void SoundSource::setPosition ( const Vector3f& position )
+void SoundSource::setPosition ( const Point3f& position )
 {
   this->setPosition ( position.x, position.y, position.z );
 }
@@ -222,7 +222,7 @@ void SoundSource::setVelocity ( float x, float y, float z )
 AL_CHECK_ERR ( alSource3f ( source_id, AL_VELOCITY, x, y, z ) );
 }
 
-void SoundSource::setVelocity ( const Vector3f& velocity )
+void SoundSource::setVelocity ( const Point3f& velocity )
 {
   this->setVelocity ( velocity.x, velocity.y, velocity.z );
 }

@@ -302,7 +302,7 @@ void TrueTypeFont::Update ( void )
   }
 }
 
-void TrueTypeFont::Draw ( Surface* video_buffer ) const
+void TrueTypeFont::Draw ( SDL_Surface* video_buffer ) const
 {
   if ( this->font_buffer.valid() )
   {

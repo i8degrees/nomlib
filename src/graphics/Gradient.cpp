@@ -224,7 +224,7 @@ void Gradient::Update ( void )
   }
 }
 
-void Gradient::Draw ( Surface* video_buffer ) const
+void Gradient::Draw ( SDL_Surface* video_buffer ) const
 {
   for ( auto it = this->rectangles.begin(); it != this->rectangles.end(); ++it )
   {

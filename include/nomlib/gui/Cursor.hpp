@@ -97,7 +97,7 @@ class Cursor:
     virtual int32 moveCursorRight ( void );
 
     void update ( void );
-    void draw ( Surface* video_buffer );
+    void draw ( SDL_Surface* video_buffer );
 
   protected:
     // ...

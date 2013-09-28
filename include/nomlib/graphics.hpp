@@ -32,22 +32,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Public header file
 
 #include <nomlib/config.hpp>
-#include <nomlib/graphics/Text.hpp>
-#include <nomlib/graphics/BitmapFont.hpp>
+#include <nomlib/graphics/smart_ptr.hpp>
+//#include <nomlib/graphics/Text.hpp>
+//#include <nomlib/graphics/BitmapFont.hpp>
 #include <nomlib/graphics/Canvas.hpp>
-#include <nomlib/graphics/VideoMode.hpp>
+//#include <nomlib/graphics/VideoMode.hpp>
 #include <nomlib/graphics/Display.hpp>
 #include <nomlib/graphics/IDrawable.hpp>
-#include <nomlib/graphics/TrueTypeFont.hpp>
-#include <nomlib/graphics/Gradient.hpp>
+//#include <nomlib/graphics/TrueTypeFont.hpp>
+//#include <nomlib/graphics/Gradient.hpp>
 #include <nomlib/graphics/Image.hpp>
 #include <nomlib/graphics/Line.hpp>
 #include <nomlib/graphics/Pixel.hpp>
 #include <nomlib/graphics/Rectangle.hpp>
-#include <nomlib/graphics/Sprite.hpp>
-#include <nomlib/graphics/SpriteBatch.hpp>
-#include <nomlib/graphics/SpriteSheet.hpp>
-#include <nomlib/graphics/AnimatedSprite.hpp>
+//#include <nomlib/graphics/Sprite.hpp>
+//#include <nomlib/graphics/SpriteBatch.hpp>
+//#include <nomlib/graphics/SpriteSheet.hpp>
+//#include <nomlib/graphics/AnimatedSprite.hpp>
 
 
 #endif // include guard defined

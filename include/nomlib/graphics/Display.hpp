@@ -37,56 +37,43 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL2/SDL.h"
 
 #include "nomlib/config.hpp"
-//#include "nomlib/graphics/IDisplay.hpp"
-#include "nomlib/graphics/VideoMode.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Color.hpp"
+//#include "nomlib/graphics/IDisplay.hpp"
+#include "nomlib/graphics/smart_ptr.hpp"
+#include "nomlib/graphics/VideoMode.hpp"
 #include "nomlib/graphics/Canvas.hpp"
 
 namespace nom {
-  namespace priv {
 
-/// Custom deleter for the display context smart pointer -- this is managed by
-/// SDL and thus we do not own it -- we must let SDL manage it, so we
-/// intentionally will do nothing in this call.
-void Display_FreeSurface ( Surface* );
+extern std::shared_ptr<SDL_Renderer> context;
 
-  } // namespace priv
-} // namespace nom
-
-
-namespace nom {
-
-class Display/*: public IDisplay*/
+class Display
+                /*: public IDisplay*/
 {
   public:
     Display ( void );
     ~Display ( void );
 
-    void createWindow ( int32_t display_width, int32_t display_height,
-                        int32_t display_colorbit, uint32_t flags = 0
-                      );
-    /// Obtains raw pointer to the object's video surface buffer
-    ///
-    /// Returns ( SDL_Surface* )
-    ///
-    Surface* get ( void ) const;
+    bool create  ( int32 width, int32 height, uint32 window_flags, uint32 context_flags = SDL_RENDERER_ACCELERATED );
+
+    /// Returns a raw pointer to the SDL_Window struct in use for this object
+    SDL_Window* get ( void ) const;
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
 
-    int32_t getDisplayWidth ( void ) const;
-    int32_t getDisplayHeight ( void ) const;
+    Point2i getPosition ( void ) const;
 
     /// Get display surface bits per pixel
     ///
     /// \todo rename method to something more along lines of Canvas equiv.
     const uint8 getDisplayColorBits ( void ) const;
 
-    uint32_t getDisplayFlags ( void ) const;
-    u_short getDisplayPitch ( void ) const;
+    uint32 getDisplayFlags ( void ) const;
+    uint16 getDisplayPitch ( void ) const;
     void* getDisplayPixels ( void ) const;
-    PixelFormat* getDisplayPixelsFormat ( void ) const;
+    SDL_PixelFormat* getDisplayPixelsFormat ( void ) const;
     const Coords getDisplayBounds ( void ) const;
 
     /// Obtain a list of supported video modes
@@ -105,6 +92,8 @@ class Display/*: public IDisplay*/
     /// to be in working order.
     bool getCanvasLock ( void ) const;
 
+    void setPosition ( int32 x, int32 y );
+
     /// Lock the display context's video surface; this must be done before you
     /// attempt to write directly to video memory, such as when you are
     /// manipulating surfaces at the pixel level.
@@ -116,24 +105,24 @@ class Display/*: public IDisplay*/
     /// access can occur until the surfaces affected by the lock are relinquished.
     void unlock ( void ) const;
 
-    void Update ( void );
+    void update ( void );
 
-    /// As per libSDL docs, this method call should not be used when the display
-    /// surface is locked
-    /// \todo TEST ME
-    void Update ( const Coords& coords );
-    void toggleFullScreenWindow ( int32_t width, int32_t height );
+    bool toggleFullScreen ( uint32 flags );
 
     const std::string getWindowTitle ( void ) const;
-    void* getWindowIcon ( void ) const;
 
-    void setWindowTitle ( const std::string& app_name = "\0" );
-    void setWindowIcon ( const std::string& app_icon = "\0" );
+    void setWindowTitle ( const std::string& title );
+    bool setWindowIcon ( const std::string& filename );
+
+    /// Fill the rendering target video display with a new color.
+    void clear ( const Color& color = Color::Blue );
 
   private:
     /// Internal method used for checking to see if the display context's video
     /// surfacea actually needs locking before doing so for performance sake.
     bool mustLock ( void ) const;
+
+    std::shared_ptr<SDL_Window> window;
 };
 
 

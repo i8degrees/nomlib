@@ -78,7 +78,7 @@ class Sprite:
               );
 
     void Update ( void );
-    void Draw ( Surface* video_buffer ) const;
+    void Draw ( SDL_Surface* video_buffer ) const;
 
     /// Rescale the font with a chosen resizing algorithm
     bool resize ( enum ResizeAlgorithm scaling_algorithm );

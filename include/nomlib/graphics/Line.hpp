@@ -53,7 +53,7 @@ class Line:
     virtual ~Line ( void );
 
     void Update ( void );
-    void Draw ( Surface* video_buffer ) const;
+    void Draw ( SDL_Surface* video_buffer ) const;
 
   private:
     /// Vector of pointers to Pixel objects

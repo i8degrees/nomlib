@@ -42,24 +42,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Rect-inl.hpp"
-#include "nomlib/math/Vector2-inl.hpp"
+#include "nomlib/math/Point2-inl.hpp"
 #include "nomlib/system/ObjectCache.hpp"
+#include "nomlib/graphics/smart_ptr.hpp"
 #include "nomlib/graphics/Pixel.hpp"
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/Rectangle.hpp"
 
 //#define NOM_DEBUG_SDL_CANVAS
-
-namespace nom {
-  namespace priv {
-
-/// Custom deleter for SDL_Surface* smart pointers; can be used as a debugging
-/// aid.
-void Canvas_FreeSurface ( Surface* );
-
-  } // namespace priv
-} // namespace nom
-
 
 namespace nom {
 
@@ -80,7 +70,7 @@ class Canvas
 {
   public:
     typedef std::shared_ptr<Canvas> SharedPtr;
-    typedef Surface* RawPtr;
+    typedef SDL_Texture* RawPtr;
 
     /// Default constructor; initializes object to its respective defaults
     Canvas ( void );
@@ -89,7 +79,9 @@ class Canvas
     /// video surface memory.
     ///
     /// \deprecated Likely to be removed in the future.
-    Canvas ( Surface* video_buffer );
+    //Canvas ( SDL_Surface* video_buffer );
+
+    Canvas ( SDL_Texture* video_buffer );
 
     /// Copy constructor; create a video surface object from an existing Canvas
     /// object.
@@ -154,7 +146,7 @@ class Canvas
     const uint8 getCanvasBitsPerPixel ( void ) const;
 
     /// \todo Rename to getCanvasPixelFormat
-    PixelFormat* getCanvasPixelsFormat ( void ) const;
+    SDL_PixelFormat* getCanvasPixelsFormat ( void ) const;
 
     /// Obtain the pixel value of the set transparent color
     const Color getCanvasColorKey ( void ) const;
@@ -218,16 +210,16 @@ class Canvas
     bool load ( const std::string& filename, const Color&
                 colorkey = Color::null,
                 bool use_cache = false,
-                uint32 flags = SDL_RLEACCEL | SDL_SRCCOLORKEY
+                uint32 flags = SDL_RLEACCEL | SDL_TRUE//SRCCOLORKEY
               );
 
-    bool Update ( Surface* video_buffer );
-    void Draw ( Surface* video_buffer ) const;
+    void Update ( SDL_Renderer* );
+    void Draw ( SDL_Surface* video_buffer ) const;
 
-    bool setAlpha ( uint8 opacity, uint32 flags = SDL_SRCALPHA );
+    bool setAlpha ( uint8 opacity );//, uint32 flags/* = SDL_SRCALPHA*/ );
 
     bool setTransparent ( const Color& color = Color::null,
-                          uint32 flags = SDL_RLEACCEL | SDL_SRCCOLORKEY
+                          uint32 flags = SDL_RLEACCEL | SDL_TRUE//SDL_SRCCOLORKEY
                         );
 
     /// As per libSDL docs, we must first initialize the video subsystem before using
@@ -236,13 +228,6 @@ class Canvas
     /// As per libSDL docs, we must first initialize the video subsystem before using
     /// this method call, otherwise an access violation fault is sure to occur.
     bool displayFormatAlpha ( void );
-
-    /// \internal
-    /// Note: this method is not meant to be called inside a loop; memory usage may
-    /// run a mock (seems to be fixed by Rectangle::~Rectangle() inside the
-    /// Rectangle class, although it eludes me as to why precisely
-    /// \endinternal
-    void clear ( const Color& color = Color::Blue ) const;
 
     /// Pixel reading -- supports 8-bit, 15/16-bit, 24-bit & 32-bit color modes
     ///
@@ -258,7 +243,7 @@ class Canvas
     /// See the ResizeAlgorithm enum for available rescaling algorithms
     bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
-    bool resize ( const Vector2f& scale_factor );
+    bool resize ( const Point2f& scale_factor );
 
     /// Return the correct scaling factor of the chosen algorithm
     int32 getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm );
@@ -268,7 +253,7 @@ class Canvas
     /// needs to be locked before doing so for performance sake.
     bool mustLock ( void ) const;
 
-    std::shared_ptr<Surface> canvas_buffer;
+    std::shared_ptr<SDL_Texture> canvas_buffer;
     /// Holds surface position
     Coords coords;
     /// Holds surface bounds (input clipping)

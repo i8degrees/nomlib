@@ -89,7 +89,7 @@ class Text: public IDrawable
     void setSpacing ( uint32 spaces );
 
     virtual void Update ( void );
-    virtual void Draw ( Surface* video_buffer ) const;
+    virtual void Draw ( SDL_Surface* video_buffer ) const;
 
     /// Rescale the font with a chosen resizing algorithm
     ///

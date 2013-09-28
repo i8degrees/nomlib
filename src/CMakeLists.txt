@@ -13,35 +13,36 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/audio/AL/Music.cpp
       ${SRC_DIR}/audio/AL/Sound.cpp
       # third-party hqx algorithm
-      ${SRC_DIR}/graphics/hqx/hqx.cpp
-      ${SRC_DIR}/graphics/hqx/hq2x.cpp
-      ${SRC_DIR}/graphics/hqx/hq3x.cpp
-      ${SRC_DIR}/graphics/hqx/hq4x.cpp
+      #${SRC_DIR}/graphics/hqx/hqx.cpp
+      #${SRC_DIR}/graphics/hqx/hq2x.cpp
+      #${SRC_DIR}/graphics/hqx/hq3x.cpp
+      #${SRC_DIR}/graphics/hqx/hq4x.cpp
       # third-party scale2x algorithm
-      ${SRC_DIR}/graphics/scale2x/scale2x.cpp
-      ${SRC_DIR}/graphics/scale2x/scale3x.cpp
-      ${SRC_DIR}/graphics/scale2x/scale4x.cpp
+      #${SRC_DIR}/graphics/scale2x/scale2x.cpp
+      #${SRC_DIR}/graphics/scale2x/scale3x.cpp
+      #${SRC_DIR}/graphics/scale2x/scale4x.cpp
       # graphics
-      ${SRC_DIR}/graphics/SpriteBatch.cpp
-      ${SRC_DIR}/graphics/AnimatedSprite.cpp
-      ${SRC_DIR}/graphics/SpriteSheet.cpp
-      ${SRC_DIR}/graphics/VideoMode.cpp
-      ${SRC_DIR}/graphics/Text.cpp
-      ${SRC_DIR}/graphics/BitmapFont.cpp
-      ${SRC_DIR}/graphics/TrueTypeFont.cpp
-      ${SRC_DIR}/graphics/IDisplay.cpp
-      ${SRC_DIR}/graphics/Canvas.cpp
-      ${SRC_DIR}/graphics/Display.cpp
-      ${SRC_DIR}/graphics/Gradient.cpp
-      ${SRC_DIR}/graphics/Image.cpp
-      ${SRC_DIR}/graphics/Line.cpp
+      ${SRC_DIR}/graphics/smart_ptr.cpp
       ${SRC_DIR}/graphics/Pixel.cpp
+      ${SRC_DIR}/graphics/Line.cpp
       ${SRC_DIR}/graphics/Rectangle.cpp
-      ${SRC_DIR}/graphics/Sprite.cpp
+      ${SRC_DIR}/graphics/Canvas.cpp
+      ${SRC_DIR}/graphics/Image.cpp
+      ${SRC_DIR}/graphics/Display.cpp
+      #${SRC_DIR}/graphics/SpriteBatch.cpp
+      #${SRC_DIR}/graphics/AnimatedSprite.cpp
+      #${SRC_DIR}/graphics/SpriteSheet.cpp
+      #${SRC_DIR}/graphics/VideoMode.cpp
+      #${SRC_DIR}/graphics/Text.cpp
+      #${SRC_DIR}/graphics/BitmapFont.cpp
+      #${SRC_DIR}/graphics/TrueTypeFont.cpp
+      #${SRC_DIR}/graphics/IDisplay.cpp
+      #${SRC_DIR}/graphics/Gradient.cpp
+      #${SRC_DIR}/graphics/Sprite.cpp
       # nomJSON
       #${SRC_DIR}/json/Array.cpp
-      ${SRC_DIR}/json/FileReader.cpp
-      ${SRC_DIR}/json/FileWriter.cpp
+      #${SRC_DIR}/json/FileReader.cpp
+      #${SRC_DIR}/json/FileWriter.cpp
       #${SRC_DIR}/json/Object.cpp
       #${SRC_DIR}/json/Value.cpp
       # system
@@ -64,9 +65,9 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/math/Coords.cpp
       ${SRC_DIR}/math/Transformable.cpp
       # gui
-      ${SRC_DIR}/gui/Cursor.cpp
-      ${SRC_DIR}/gui/MessageBox.cpp
-      ${SRC_DIR}/gui/GrayFrame.cpp
+      #${SRC_DIR}/gui/Cursor.cpp
+      #${SRC_DIR}/gui/MessageBox.cpp
+      #${SRC_DIR}/gui/GrayFrame.cpp
     )
 
 # Platform-specific source files

@@ -57,7 +57,7 @@ class EventDispatcher
     EventDispatcher ( void );
     ~EventDispatcher ( void );
 
-    int32 push ( Event* event, int32 code, void* params );
+    int32 push ( SDL_Event* event, int32 code, void* params );
 
     int32 dispatch ( enum UserEvent code, void* params = nullptr );
 

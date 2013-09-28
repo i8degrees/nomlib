@@ -32,30 +32,24 @@ namespace nom {
 
 const Coords Coords::null ( -1, -1, -1, -1 );
 
-Coords::Coords ( void ) : x ( 0 ), y ( 0 ), z ( 0 ), width ( 0 ), height ( 0 )
-{}
+Coords::Coords ( void ) : x ( 0 ), y ( 0 ), width ( 0 ), height ( 0 ) {}
+
+Coords::~Coords ( void ) {}
 
 Coords::Coords ( int32 x, int32 y, int32 w, int32 h ) : x ( x ),
                                                         y ( y ),
-                                                        z ( 0 ),
                                                         width ( w ),
                                                         height ( h )
 {}
 
-Coords::Coords ( int32 x, int32 y ) : x ( x ),
-                                      y ( y ),
-                                      z ( 0 ),
-                                      width ( 0 ),
-                                      height ( 0 )
+Coords::Coords ( int32 x, int32 y ) : x ( x ), y ( y ),
+                                      width ( 0 ), height ( 0 )
 {}
 
 Coords::Coords ( const Coords& coords ) : x ( coords.x ), y ( coords.y ),
-                                          z ( coords.z ),
                                           width ( coords.width ),
                                           height ( coords.height )
 {}
-
-Coords::~Coords ( void ) {}
 
 Coords Coords::getPosition ( void ) const
 {
@@ -67,13 +61,13 @@ Coords Coords::getSize ( void ) const
   return Coords ( this->width, this->height );
 }
 
-void Coords::setPosition ( int32_t x, int32_t y )
+void Coords::setPosition ( int32 x, int32 y )
 {
   this->x = x;
   this->y = y;
 }
 
-void Coords::setSize ( int32_t width, int32_t height )
+void Coords::setSize ( int32 width, int32 height )
 {
   this->width = width;
   this->height = height;
@@ -119,6 +113,21 @@ bool Coords::intersects ( Coords& rectangle ) const
   return true; // we've got a collision!
 }
 
+bool Coords::isNull ( void ) const
+{
+  if ( *this == Coords::null )
+  {
+    return true;
+  }
+
+  return false;
+}
+
+const Coords& Coords::get ( void ) const
+{
+  return *this;
+}
+
 std::ostream& operator << ( std::ostream& os, const Coords& coords )
 {
   os << coords.x << coords_delimiter
@@ -132,7 +141,6 @@ Coords& Coords::operator = ( const Coords& other )
 {
   this->x = other.x;
   this->y = other.y;
-  this->z = other.z;
   this->width = other.width;
   this->height = other.height;
 
@@ -154,55 +162,55 @@ bool operator != ( const Coords& left, const Coords& right )
 
 Coords operator + ( const Coords& left, const Coords& right )
 {
-  return Coords  (  static_cast<int32_t> ( left.x + right.x ),
-                    static_cast<int32_t> ( left.y + right.y ),
-                    static_cast<int32_t> ( left.width + right.width ),
-                    static_cast<int32_t> ( left.height + right.height )
+  return Coords  (  static_cast<int32> ( left.x + right.x ),
+                    static_cast<int32> ( left.y + right.y ),
+                    static_cast<int32> ( left.width + right.width ),
+                    static_cast<int32> ( left.height + right.height )
                   );
 }
 
 Coords operator ++ ( Coords& left )
 {
-  return Coords  (  static_cast<int32_t> ( left.x ++ ),
-                    static_cast<int32_t> ( left.y ++ ),
-                    static_cast<int32_t> ( left.width ++ ),
-                    static_cast<int32_t> ( left.height ++ )
+  return Coords  (  static_cast<int32> ( left.x ++ ),
+                    static_cast<int32> ( left.y ++ ),
+                    static_cast<int32> ( left.width ++ ),
+                    static_cast<int32> ( left.height ++ )
                   );
 }
 
 Coords operator - ( const Coords& left, const Coords& right )
 {
-  return Coords  (  static_cast<int32_t> ( left.x - right.x ),
-                    static_cast<int32_t> ( left.y - right.y ),
-                    static_cast<int32_t> ( left.width - right.width ),
-                    static_cast<int32_t> ( left.height - right.height )
+  return Coords  (  static_cast<int32> ( left.x - right.x ),
+                    static_cast<int32> ( left.y - right.y ),
+                    static_cast<int32> ( left.width - right.width ),
+                    static_cast<int32> ( left.height - right.height )
                   );
 }
 
 Coords operator -- ( Coords& left )
 {
-  return Coords  (  static_cast<int32_t> ( left.x -- ),
-                    static_cast<int32_t> ( left.y -- ),
-                    static_cast<int32_t> ( left.width -- ),
-                    static_cast<int32_t> ( left.height -- )
+  return Coords  (  static_cast<int32> ( left.x -- ),
+                    static_cast<int32> ( left.y -- ),
+                    static_cast<int32> ( left.width -- ),
+                    static_cast<int32> ( left.height -- )
                   );
 }
 
 Coords operator * ( const Coords& left, const Coords& right )
 {
-  return Coords  ( static_cast<int32_t> ( left.x * right.x ),
-                        static_cast<int32_t> ( left.y * right.y ),
-                        static_cast<int32_t> ( left.width * right.width ),
-                        static_cast<int32_t> ( left.height * right.height )
+  return Coords  ( static_cast<int32> ( left.x * right.x ),
+                        static_cast<int32> ( left.y * right.y ),
+                        static_cast<int32> ( left.width * right.width ),
+                        static_cast<int32> ( left.height * right.height )
                       );
 }
 
 Coords operator / ( const Coords& left, const Coords& right )
 {
-  return Coords  (  static_cast<int32_t> ( left.x / right.x ),
-                    static_cast<int32_t> ( left.y / right.y ),
-                    static_cast<int32_t> ( left.width / right.width ),
-                    static_cast<int32_t> ( left.height / right.height )
+  return Coords  (  static_cast<int32> ( left.x / right.x ),
+                    static_cast<int32> ( left.y / right.y ),
+                    static_cast<int32> ( left.width / right.width ),
+                    static_cast<int32> ( left.height / right.height )
                   );
 }
 

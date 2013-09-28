@@ -40,11 +40,19 @@ namespace nom {
 const std::string color_delimiter = ", ";
 
 /// \brief Utility class container for RGBA colors
+///
+/// \todo Convert to a template class
 class Color
 {
   public:
     /// Default constructor; sets the color to their respective defaults
     Color ( void );
+
+    /// Destructor
+    ~Color ( void );
+
+    /// Copy constructor
+    Color ( const Color& color );
 
     /// Constructor variant for setting a color using RGB values
     Color ( uint8 red, uint8 green, uint8 blue );
@@ -52,21 +60,22 @@ class Color
     /// Constructor variant for setting a color using RGBA values
     Color ( uint8 red, uint8 green, uint8 blue, uint8 alpha );
 
-    /// Copy constructor
-    Color ( const Color& color );
+    /// Convenience method for determining if this object is initialized or not;
+    /// an initialized object should never be equal to nom::Color::null
+    ///
+    /// \todo Fully implement me
+    bool isNull ( void ) const;
 
-    /// Destructor
-    ~Color ( void );
-
-    /// Convenience getter helper for obtaining a color by object
+    /// Convenience getter for obtaining a copy of this object
     const Color& get ( void ) const;
 
-    /// Copy assignment constructor
+    /// Copy assignment operator
     Color& operator = ( const Color& other );
 
-    /// Predefined color constants for convenience sake
+    /// Convenience object that will always contain a value of -1
     static const Color null;
 
+    /// Predefined color constants for convenience sake
     static const Color Black;
     static const Color White;
     static const Color Red;
@@ -91,6 +100,17 @@ class Color
     uint8 green;
     uint8 blue;
     uint8 alpha;
+
+    /// \todo Test me
+    ///uint8& r = red;
+    /// \todo Test me
+    ///uint8& g = green;
+
+    /// \todo Test me
+    ///uint8& b = blue;
+
+    /// \todo Test me
+    ///uint8& a = alpha;
 };
 
 class RGBA
@@ -116,7 +136,7 @@ class RGBA
 
     /// Returns RGBA components via nom::Color object, holding the red, green, blue
     /// and alpha values.
-    static inline void asRGB ( uint32 pixel, PixelFormat* fmt, Color& color )
+    static inline void asRGB ( uint32 pixel, SDL_PixelFormat* fmt, Color& color )
     {
       SDL_GetRGB ( pixel, fmt, &color.red, &color.green, &color.blue );
     }
@@ -126,7 +146,7 @@ class RGBA
     ///
     /// Returns RGBA components via nom::Color object, holding the red, green, blue
     /// and alpha values.
-    static inline uint32 asInt32 ( PixelFormat* fmt, const Color& color )
+    static inline uint32 asInt32 ( SDL_PixelFormat* fmt, const Color& color )
     {
       return SDL_MapRGB ( fmt, color.red, color.green, color.blue );
     }

@@ -89,7 +89,7 @@ void GrayFrame::Update ( void )
   this->updated = true;
 }
 
-void GrayFrame::Draw ( Surface* video_buffer ) const
+void GrayFrame::Draw ( SDL_Surface* video_buffer ) const
 {
   // nom::Line needs pixel write access, so we must first lock the surface
   this->context.lock();

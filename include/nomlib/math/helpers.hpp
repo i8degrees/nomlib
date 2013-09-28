@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Vector2-inl.hpp"
+#include "nomlib/math/Point2-inl.hpp"
 
 namespace nom {
 
@@ -45,7 +45,7 @@ int32 rand ( int32 start, int32 end );
 
 /// Rotates a given X & Y coordinate point along a given pivot axis
 /// (rotation point) at the given angle (in degrees), clockwise.
-const Vector2f rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y );
+const Point2f rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y );
 
 /// ...
 double round ( double number );

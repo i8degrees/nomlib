@@ -48,11 +48,11 @@ Pixel::Pixel ( int32 x, int32 y, const Color& color )
 
 void Pixel::Update ( void ) {}
 
-void Pixel::Draw ( Surface* video_buffer ) const
+void Pixel::Draw ( SDL_Surface* video_buffer ) const
 {
   // FIXME: Change me to Display::getCanvasColorDepth or such when we get
   // around to implementing our object wrapper for our rendering context --
-  // SDL_Surface* screen (nom::Display is our future candidate...)
+  // SDL_SDL_Surface* screen (nom::Display is our future candidate...)
   switch ( video_buffer->format->BytesPerPixel )
   {
     default:

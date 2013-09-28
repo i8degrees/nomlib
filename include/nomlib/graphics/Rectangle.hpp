@@ -55,7 +55,7 @@ class Rectangle:
     virtual ~Rectangle ( void );
 
     void Update ( void );
-    void Draw ( Surface* ) const;
+    void Draw ( SDL_Surface* ) const;
 
   private:
     Coords coords;

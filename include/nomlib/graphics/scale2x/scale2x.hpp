@@ -29,8 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 1. Copyright (c) Andrea Mazzoleni
 
 ******************************************************************************/
-#ifndef NOMLIB_TEMPLATE_HPP
-#define NOMLIB_TEMPLATE_HPP
+#ifndef NOMLIB_SCALE2X_HPP
+#define NOMLIB_SCALE2X_HPP
 
 #include <algorithm>
 

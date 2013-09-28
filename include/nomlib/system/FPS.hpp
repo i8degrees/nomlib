@@ -48,7 +48,7 @@ class FPS: public Timer
 
     uint32 frames ( void ) const;
 
-    const std::string fpsAsString ( void ) const;
+    const std::string asString ( void ) const;
 
     uint32 fps ( void ) const;
 

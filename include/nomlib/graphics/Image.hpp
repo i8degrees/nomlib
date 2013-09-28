@@ -26,21 +26,23 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_IMAGE_HEADERS
-#define NOMLIB_SDL_IMAGE_HEADERS
+#ifndef NOMLIB_SDL2_IMAGE_HEADERS
+#define NOMLIB_SDL2_IMAGE_HEADERS
 
 #include <iostream>
 #include <string>
 #include <cstdlib>
 #include <memory>
 
-#include "SDL.h"
-#include "SDL/SDL_image.h"
+#include "SDL2/SDL.h"
+#include "SDL_image.h"
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Rect-inl.hpp"
+#include "nomlib/graphics/smart_ptr.hpp"
+#include "nomlib/graphics/Display.hpp"
 #include "nomlib/graphics/Canvas.hpp"
 
 namespace nom {
@@ -48,36 +50,43 @@ namespace nom {
 class Image
 {
   public:
-    /// Default constructor; initializes SDL_image extension
-    Image ( int32 img_flags = IMG_INIT_PNG );
+    /// Default constructor -- initializes to sensible defaults.
+    Image ( void );
+
+    /// Destructor.
+    virtual ~Image ( void );
+
+    /// Construct an Image object with specified flags passed to the library
+    /// extension(s) used in this object.
+    Image ( uint32 img_flags );
+
     /// Copy constructor
     Image ( const Image& other );
-    virtual ~Image ( void );
+
+    /// Copy assignment constructor
+    Image& operator = ( const Image& other );
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
 
     /// Supports every file type that the libSDL_image extension has been
     /// compiled with
-    std::shared_ptr<Surface> load ( const std::string& filename );
+    std::shared_ptr<SDL_Texture> load ( const std::string& filename );
 
     /// Uses SDL's built-in BMP file loader; no alpha channeling support ...
     /// perfect for setting window icons!
-    std::shared_ptr<Surface> loadBMP ( const std::string& filename );
+    std::shared_ptr<SDL_Texture> loadBMP ( const std::string& filename );
 
     /// Saves as an uncompressed RGB Windows Bitmap (BMP)
     ///
     /// NOTE: AFAIK, no existing file handling / overwriting checks are done
     /// whatsoever
-    bool save ( const std::string& filename, Surface* video_buffer );
+    bool save ( const std::string& filename, SDL_Surface* video_buffer );
 
     const Coords getSize ( void ) const;
 
-    /// Copy assignment constructor
-    Image& operator = ( const Image& other );
-
   private:
-    std::shared_ptr<Surface> image_buffer;
+    std::shared_ptr<SDL_Texture> image_buffer;
 };
 
 

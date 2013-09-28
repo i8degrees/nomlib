@@ -137,7 +137,7 @@ class BitmapFont: public IFont
 
     /// Draw the set text string to the video surface
     /// \todo Test horizontal tabbing '\t'
-    void Draw ( Surface* video_buffer ) const;
+    void Draw ( SDL_Surface* video_buffer ) const;
 
     /// Rescale the font with a chosen resizing algorithm
     ///

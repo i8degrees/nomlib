@@ -33,6 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <map>
 
+#include "SDL2/SDL.h"
+
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -44,17 +46,17 @@ class ObjectCache
     ObjectCache ( void );
     ~ObjectCache ( void );
 
-    std::shared_ptr<Surface> addObject ( const std::string& key,
-                                      std::shared_ptr<Surface> object
+    std::shared_ptr<SDL_Surface> addObject ( const std::string& key,
+                                      std::shared_ptr<SDL_Surface> object
                                     );
 
     /// \todo TEST ME
     bool removeObject ( const std::string& key );
 
-    std::shared_ptr<Surface> getObject ( const std::string& key );
+    std::shared_ptr<SDL_Surface> getObject ( const std::string& key );
 
   private:
-    static std::map <std::string, std::shared_ptr<Surface>> cache;
+    static std::map <std::string, std::shared_ptr<SDL_Surface>> cache;
 };
 
 

@@ -58,7 +58,7 @@ uint32 FPS::frames ( void ) const
   return this->total_frames;
 }
 
-const std::string FPS::fpsAsString ( void ) const
+const std::string FPS::asString ( void ) const
 {
   return std::to_string ( static_cast<uint32> ( this->frames() / ( this->fps_timer.ticks() / 1000.f ) ) );
 }

@@ -1,7 +1,7 @@
 nomlib
 ======
 
-C++11 cross-platform game engine
+C++11 cross-platform game engine using SDL2 framework
 
 Projects Using nomlib
 ---------------------
@@ -14,13 +14,13 @@ Building Instructions
 ### Dependencies ###
 
 * cmake v2.6+
-* SDL v1.2.15
-* SDL_image
-* SDL_ttf
+* SDL v2.0.0
+* SDL_image v2.0.0
+* SDL_ttf v2.0.12
 * OpenAL
 * libsndfile
 * libmagic
-* A recent compiler that has support for the latest C++11 extensions
+* clang (v3.x) with libc++ libraries or recent GCC version (known to work with v4.6.x) with c++0x
 
 ### OSX ###
 

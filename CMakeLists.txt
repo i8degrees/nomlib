@@ -171,22 +171,16 @@ endif ( PLATFORM_LINUX )
 if ( SDL2_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
-else ( NOT SDL2_FOUND )
-  message ( FATAL_ERROR "Required dependency SDL2 missing!" )
 endif ( SDL2_FOUND )
 
 if ( SDL2_IMAGE_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
-else ( NOT SDL2_IMAGE_FOUND )
-  message ( FATAL_ERROR "Required dependency SDL2_image missing!" )
 endif ( SDL2_IMAGE_FOUND )
 
 if ( SDL2_TTF_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
-else ( NOT SDL2_TTF_FOUND )
-  message ( FATAL_ERROR "Required dependency SDL2_ttf missing!" )
 endif ( SDL2_TTF_FOUND )
 
 if ( OPENAL_FOUND )
@@ -251,16 +245,11 @@ elseif ( NOT IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
 
 endif ( IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
 
-# if ( PLATFORM_OSX )
-#   # The SDL_LIBRARY variable for OS X is appended with the "-framework Cocoa"
-#   # linkage flag, so we have to sanitize this before hand if we want to use the
-#   # value in anything other than linking -- such as packaging the library into a
-#   # bundle.
-#   #
-#   # From here on out, the burden of linking to the Cocoa framework when need be
-#   # is entirely on us. I say good riddance!
-#   string ( REPLACE "-framework Cocoa" "" SDL_LIBRARY ${SDL_LIBRARY} )
-# endif ( PLATFORM_OSX )
+if ( PLATFORM_OSX )
+  find_library ( COCOA_LIBRARY Cocoa )
+  mark_as_advanced ( COCOA_LIBRARY )
+  set ( EXTLIBS ${EXTLIBS} ${COCOA_LIBRARY} )
+endif ( PLATFORM_OSX )
 
 if ( PLATFORM_LINUX )
   if ( GTK2_FOUND )

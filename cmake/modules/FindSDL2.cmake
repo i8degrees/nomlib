@@ -18,9 +18,9 @@
 # If found, this will prefer the Framework version over others.
 #
 
-find_path ( SDL2_INCLUDE_DIR SDL.h
+find_path ( SDL2_INCLUDE_DIR
             NAMES
-            SDL2
+            SDL2/SDL.h
             PATH_SUFFIXES
             include/SDL2 SDL2
             PATHS

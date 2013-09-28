@@ -1,15 +1,12 @@
-nomlib
-======
+# nomlib #
 
 C++11 cross-platform game engine using SDL2 framework
 
-Projects Using nomlib
----------------------
+## Projects Using nomlib ##
 
 * [i8degrees/ttcards](https://github.com/i8degrees/ttcards)
 
-Building Instructions
----------------------
+## Building Instructions ##
 
 ### Dependencies ###
 

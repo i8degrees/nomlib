@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 #include <vector>
 
-#include "SDL2/SDL.h"
+#include "SDL.h"
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Coords.hpp"

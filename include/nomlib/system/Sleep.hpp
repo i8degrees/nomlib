@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <algorithm>
 
-#include "SDL2/SDL.h"
+#include "SDL.h"
 
 #include "nomlib/config.hpp"
 

@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SDL_RECTANGLE_HEADERS
 #define NOMLIB_SDL_RECTANGLE_HEADERS
 
-#include "SDL2/SDL.h"
+#include "SDL.h"
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color.hpp"

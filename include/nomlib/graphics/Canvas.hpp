@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <memory>
 
-#include "SDL2/SDL.h"
+#include "SDL.h"
 
 #include "nomlib/config.hpp"
 //#include "nomlib/graphics/ICanvas.hpp"

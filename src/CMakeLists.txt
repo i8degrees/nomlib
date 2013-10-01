@@ -50,7 +50,7 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/system/Path.cpp
       ${SRC_DIR}/system/File.cpp
       ${SRC_DIR}/system/clock.cpp
-      ${SRC_DIR}/system/DialogMessageBox.cpp
+      ${SRC_DIR}/system/IDialogMessageBox.cpp
       ${SRC_DIR}/system/FPS.cpp
       ${SRC_DIR}/system/GameStates.cpp
       ${SRC_DIR}/system/ObjectCache.cpp

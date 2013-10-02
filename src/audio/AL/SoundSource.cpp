@@ -126,7 +126,7 @@ bool SoundSource::getPositionRelativeToListener ( void ) const
 
 AL_CHECK_ERR ( alGetSourcei ( source_id, AL_SOURCE_RELATIVE, &relative ) );
 
-  return relative;
+  return (relative != 0);
 }
 
 float SoundSource::getMinDistance ( void ) const

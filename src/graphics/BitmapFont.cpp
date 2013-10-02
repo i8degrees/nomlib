@@ -73,7 +73,7 @@ int32 BitmapFont::getFontWidth ( void ) const
 {
   int32 text_width = 0;
 
-  for ( int32 char_pos = 0; char_pos < this->text_buffer.length(); char_pos++ )
+  for ( uint32 char_pos = 0; char_pos < this->text_buffer.length(); char_pos++ )
   {
     if ( this->text_buffer [ char_pos ] == ' ' )
     {
@@ -114,7 +114,7 @@ int32 BitmapFont::getFontHeight ( void ) const
 {
   int32 text_height = 0;
 
-  for ( int32 char_pos = 0; char_pos < this->text_buffer.length(); char_pos++ )
+  for ( uint32 char_pos = 0; char_pos < this->text_buffer.length(); char_pos++ )
   {
     if ( this->text_buffer [ char_pos ] == '\n' )
     {
@@ -261,9 +261,9 @@ NOM_ASSERT ( this->bitmap_font.valid() );
   top = tile_height;
   baseA = tile_height;
 
-  for ( uint32_t rows = 0; rows < this->sheet_width; rows++ )
+  for ( int32_t rows = 0; rows < this->sheet_width; rows++ )
   {
-    for ( uint32_t cols = 0; cols < this->sheet_height; cols++ )
+    for ( int32_t cols = 0; cols < this->sheet_height; cols++ )
     {
       // Set character offsets
       this->chars[ currentChar ].setPosition ( tile_width * cols, tile_height * rows );
@@ -502,7 +502,7 @@ void BitmapFont::Draw ( SDL_Surface* video_buffer ) const
       else
       {
         //Get the ASCII value of the character
-        uint8_t ascii = static_cast<u_char>( this->text_buffer[show] );
+        uint8_t ascii = static_cast<nom::uchar>( this->text_buffer[show] );
 
         this->bitmap_font.setPosition ( Coords ( x_offset, y_offset ) );
         this->bitmap_font.setOffsets ( this->chars[ascii] );

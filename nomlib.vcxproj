@@ -221,7 +221,7 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <Lib>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>third-party/SDL2/lib;third-party/SDL2_ttf/lib;third-party/SDL2_image/lib;third-party/OpenAL/lib;third-party/libsndfile/lib;third-party/magiclib/lib</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Lib>

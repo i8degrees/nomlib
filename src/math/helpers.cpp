@@ -72,9 +72,5 @@ double round ( double number )
   return number < 0.0 ? ceil ( number - 0.5 ) : floor ( number + 0.5 );
 }
 
-int abs ( int value )
-{
-  return static_cast<int> ( abs ( value ) );
-}
 
 } // namespace nom

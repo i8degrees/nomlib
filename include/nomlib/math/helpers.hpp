@@ -50,6 +50,8 @@ const Point2f rotate_points ( float angle, float x, float y, float pivot_x, floa
 /// ...
 double round ( double number );
 
+int abs ( int value );
+
 } // namespace nom
 
 #endif // include guard defined

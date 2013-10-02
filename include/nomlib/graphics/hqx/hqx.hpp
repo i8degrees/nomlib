@@ -53,6 +53,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// this working.
 
 #include "nomlib/config.hpp"
+#include "nomlib/math/helpers.hpp"
 
 #define MASK_2     0x0000FF00
 #define MASK_13    0x00FF00FF
@@ -80,9 +81,9 @@ static inline uint32 rgb_to_yuv(uint32 c)
 
 /* Test if there is difference in color */
 static inline int32 yuv_diff(uint32 yuv1, uint32 yuv2) {
-    return (( abs((yuv1 & Ymask) - (yuv2 & Ymask)) > trY ) ||
-            ( abs((yuv1 & Umask) - (yuv2 & Umask)) > trU ) ||
-            ( abs((yuv1 & Vmask) - (yuv2 & Vmask)) > trV ) );
+    return (( nom::abs((yuv1 & Ymask) - (yuv2 & Ymask)) > trY ) ||
+            ( nom::abs((yuv1 & Umask) - (yuv2 & Umask)) > trU ) ||
+            ( nom::abs((yuv1 & Vmask) - (yuv2 & Vmask)) > trV ) );
 }
 
 static inline int32 Diff(uint32 c1, uint32 c2)

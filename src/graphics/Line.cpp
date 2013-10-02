@@ -66,10 +66,10 @@ void Line::Update ( void )
     return;
 
   // temporary calculation offsets based on user's initial given coordinates
-  int32 x1 = this->coords.x;
-  int32 y1 = this->coords.y;
-  int32 x2 = this->coords.width;
-  int32 y2 = this->coords.height;
+  float x1 = static_cast<float> ( this->coords.x );
+  float y1 = static_cast<float> ( this->coords.y );
+  float x2 = static_cast<float> ( this->coords.width );
+  float y2 = static_cast<float> ( this->coords.height );
 
   // A surprisingly fast growing memory leak occurs here if we do not clear our
   // pixels array every update cycle

@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Canvas::Canvas ( void )  : canvas_buffer ( nullptr, priv::FreeSurface ),
+Canvas::Canvas ( void )  : canvas_buffer ( nullptr, priv::FreeTexture ),
                                         coords ( 0, 0, -1, -1 ), // only x, y position is used in blitting
                                         offsets ( 0, 0, -1, -1 ) // only the width, height is used in source blitting
 {
@@ -176,31 +176,37 @@ const int32 Canvas::getCanvasHeight ( void ) const
 
 uint32 Canvas::getCanvasFlags ( void ) const
 {
+  return 0;
   //return this->get()->flags;;
 }
 
 uint16 Canvas::getCanvasPitch ( void ) const
 {
+  return 0;
   //return this->get()->pitch;
 }
 
 void* Canvas::getCanvasPixels ( void ) const
 {
+  return nullptr;
   //return this->get()->pixels;
 }
 
 const uint8 Canvas::getCanvasBitsPerPixel ( void ) const
 {
+  return 0;
   //return this->canvas_buffer.get()->format->BitsPerPixel;
 }
 
 SDL_PixelFormat* Canvas::getCanvasPixelsFormat ( void ) const
 {
+  return nullptr;  
   //return this->canvas_buffer.get()->format;
 }
 
 const Color Canvas::getCanvasColorKey ( void ) const
 {
+  return Color::null;
 /*
   uint32 transparent_color = 0; // holds me color for conversion
   Color colorkey; // native container
@@ -213,31 +219,37 @@ const Color Canvas::getCanvasColorKey ( void ) const
 
 const uint8 Canvas::getCanvasAlphaValue ( void ) const
 {
+  return 0;
   //return this->getCanvasPixelsFormat()->alpha;
 }
 
 const uint32 Canvas::getCanvasRedMask ( void ) const
 {
+  return 0;
   //return this->getCanvasPixelsFormat()->Rmask;
 }
 
 const uint32 Canvas::getCanvasGreenMask ( void ) const
 {
+  return 0;
   //return this->getCanvasPixelsFormat()->Gmask;
 }
 
 const uint32 Canvas::getCanvasBlueMask ( void ) const
 {
+  return 0;
   //return this->getCanvasPixelsFormat()->Bmask;
 }
 
 const uint32 Canvas::getCanvasAlphaMask ( void ) const
 {
+  return 0;
   //return this->getCanvasPixelsFormat()->Amask;
 }
 
 const Coords Canvas::getCanvasBounds ( void ) const
 {
+  return Coords::null;
 /*
   SDL_Rect clip_buffer; // temporary storage struct
   Coords clip_bounds; // transferred values from SDL_Rect clip_buffer
@@ -265,6 +277,7 @@ void Canvas::setCanvasBounds ( const Coords& clip_bounds )
 
 int32 Canvas::getCanvasColorDepth ( void ) const
 {
+  return 0;
 /*
   switch ( this->getCanvasPixelsFormat()->BytesPerPixel )
   {
@@ -280,11 +293,13 @@ int32 Canvas::getCanvasColorDepth ( void ) const
 
 bool Canvas::getCanvasLock ( void ) const
 {
+  return false;
   //return this->canvas_buffer.get()->locked;
 }
 
 bool Canvas::mustLock ( void ) const
 {
+  return false;
 /*
   if ( SDL_MUSTLOCK ( this->canvas_buffer.get() ) )
   {
@@ -299,6 +314,7 @@ bool Canvas::mustLock ( void ) const
 
 bool Canvas::lock ( void ) const
 {
+  return false;
 /*
   if ( this->mustLock() == true )
   {

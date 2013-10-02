@@ -81,6 +81,7 @@ bool App::onInit ( void )
   if ( this->context.setWindowIcon ( RESOURCE_ICON ) == false )
   {
     // FIXME
+    // (Windows does not like this call for some reason!)
     // Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
     //return false;
   }

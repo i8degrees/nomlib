@@ -200,7 +200,7 @@ const uint8 Canvas::getCanvasBitsPerPixel ( void ) const
 
 SDL_PixelFormat* Canvas::getCanvasPixelsFormat ( void ) const
 {
-  return nullptr;  
+  return nullptr;
   //return this->canvas_buffer.get()->format;
 }
 

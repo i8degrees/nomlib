@@ -119,7 +119,7 @@ void Line::Update ( void )
 
 void Line::Draw ( SDL_Surface* video_buffer ) const
 {
-  for ( ulong idx = 0; idx < this->pixels.size(); ++idx )
+  for ( unsigned int idx = 0; idx < this->pixels.size(); ++idx )
     this->pixels[idx]->Draw ( video_buffer );
 }
 

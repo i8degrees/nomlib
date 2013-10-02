@@ -10,4 +10,5 @@ install_options
 
 # bins
 build
-
+third-party/*
+!third-party/README.md

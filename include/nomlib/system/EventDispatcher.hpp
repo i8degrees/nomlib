@@ -38,7 +38,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-enum class UserEvent: int32
+/// FIXME
+/// MSVC++ does not accept valid C++11 code here
+/// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
+enum /*class*/ UserEvent: int32
 {
   Unknown = 000,
   AI,

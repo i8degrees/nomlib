@@ -112,6 +112,15 @@ class Display
     const std::string getWindowTitle ( void ) const;
 
     void setWindowTitle ( const std::string& title );
+
+    /// FIXME
+    /// (Windows does not like using IMG_Load (SDL2_image extension) for some
+    /// reason, which limits us solely to BMP (Windows Bitmap) files, which
+    /// arguably is inconvenient ;-P I think I just need to take another look at
+    /// the SDL documentation to see if this is a known limitation of their icon
+    /// loader on Windows platform.
+    ///
+    /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
     bool setWindowIcon ( const std::string& filename );
 
     /// Fill the rendering target video display with a new color.

@@ -57,7 +57,8 @@ const nom::int32 WINDOW_WIDTH = 768;
 const nom::int32 WINDOW_HEIGHT = 448;
 
 /// Relative file path name of our resource example
-const std::string RESOURCE_ICON = "icon.png";
+const std::string RESOURCE_ICON = "icon.bmp";
+//const std::string RESOURCE_ICON = "icon.png";
 
 /// \brief Usage example
 class App:

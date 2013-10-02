@@ -297,7 +297,8 @@ bool Display::setWindowIcon ( const std::string& filename )
   //Image image; // holds our image in memory during transfer
   std::shared_ptr<SDL_Surface> icon;
 
-  icon.reset ( IMG_Load ( filename.c_str() ), priv::FreeSurface );
+  icon.reset ( SDL_LoadBMP ( filename.c_str() ), priv::FreeSurface );
+  //icon.reset ( IMG_Load ( filename.c_str() ), priv::FreeSurface );
 
   if ( icon == nullptr )
   {

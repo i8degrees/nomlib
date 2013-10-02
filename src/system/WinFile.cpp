@@ -37,31 +37,37 @@ WinFile::~WinFile ( void ) {}
 const std::string WinFile::mime ( const std::string& file )
 {
   // Stub
+    return "";
 }
 
 const std::string WinFile::extension ( const std::string& file )
 {
   // Stub
+    return "";
 }
 
 int32 WinFile::size ( const std::string& file_path )
 {
   // Stub
+    return 0;
 }
 
 bool WinFile::exists ( const std::string& file_path )
 {
   // Stub
+    return false;
 }
 
 const std::string WinFile::path ( const std::string& dir_path )
 {
   // Stub
+    return "";
 }
 
 const std::string WinFile::currentPath ( void )
 {
   // Stub
+    return "";
 }
 
 void WinFile::setPath ( const std::string& path )

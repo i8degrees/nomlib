@@ -129,6 +129,7 @@ const uint8 Display::getDisplayColorBits ( void ) const
 
   return screen->format->BitsPerPixel;
 */
+    return 0;
 }
 
 uint32 Display::getDisplayFlags ( void ) const
@@ -139,16 +140,19 @@ uint32 Display::getDisplayFlags ( void ) const
 uint16 Display::getDisplayPitch ( void ) const
 {
   //return SDL_GetVideoSurface()->pitch;
+    return 0;
 }
 
 void* Display::getDisplayPixels ( void ) const
 {
   //return SDL_GetVideoSurface()->pixels;
+    return 0;
 }
 
 SDL_PixelFormat* Display::getDisplayPixelsFormat ( void ) const
 {
   //return SDL_GetVideoSurface()->format;
+    return nullptr;
 }
 
 const Coords Display::getDisplayBounds ( void ) const
@@ -156,6 +160,7 @@ const Coords Display::getDisplayBounds ( void ) const
   //SDL_Rect clip = SDL_GetVideoSurface()->clip_rect;
   //Coords clip_coords ( clip.x, clip.y, clip.w, clip.h );
   //return clip_coords;
+    return Coords(0, 0);
 }
 
 VideoModeList Display::getVideoModes ( void ) const
@@ -187,11 +192,13 @@ NOM_LOG_INFO ( NOM, "No video modes are supported." );
   }
   return modes;
 */
+    return VideoModeList();
 }
 
 bool Display::getCanvasLock ( void ) const
 {
   //return this->get()->locked;
+    return false;
 }
 
 bool Display::mustLock ( void ) const
@@ -206,6 +213,7 @@ bool Display::mustLock ( void ) const
     return false;
   }
 */
+    return false;
 }
 
 bool Display::lock ( void ) const

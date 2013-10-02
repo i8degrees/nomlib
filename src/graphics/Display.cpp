@@ -297,8 +297,19 @@ bool Display::setWindowIcon ( const std::string& filename )
   //Image image; // holds our image in memory during transfer
   std::shared_ptr<SDL_Surface> icon;
 
+// FIXME
+// (Windows does not like using IMG_Load (SDL2_image extension) for some
+// reason, which limits us solely to BMP (Windows Bitmap) files, which
+// arguably is inconvenient ;-P I think I just need to take another look at
+// the SDL documentation to see if this is a known limitation of their icon
+// loader on Windows platform.
+//
+// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
+#if defined ( NOM_PLATFORM_WINDOWS )
   icon.reset ( SDL_LoadBMP ( filename.c_str() ), priv::FreeSurface );
-  //icon.reset ( IMG_Load ( filename.c_str() ), priv::FreeSurface );
+#else // assume POSIX platform
+  icon.reset ( IMG_Load ( filename.c_str() ), priv::FreeSurface );
+#endif
 
   if ( icon == nullptr )
   {

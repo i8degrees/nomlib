@@ -102,30 +102,6 @@
     <ClInclude Include="include\nomlib\version.hpp">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\nomlib\audio\AL\AudioDevice.hpp">
-      <Filter>include\audio\AL</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\audio\AL\Listener.hpp">
-      <Filter>include\audio\AL</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\audio\AL\Music.hpp">
-      <Filter>include\audio\AL</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\audio\AL\OpenAL.hpp">
-      <Filter>include\audio\AL</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\audio\AL\Sound.hpp">
-      <Filter>include\audio\AL</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\audio\AL\SoundBuffer.hpp">
-      <Filter>include\audio\AL</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\audio\AL\SoundFile.hpp">
-      <Filter>include\audio\AL</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\audio\AL\SoundSource.hpp">
-      <Filter>include\audio\AL</Filter>
-    </ClInclude>
     <ClInclude Include="include\nomlib\graphics\Canvas.hpp">
       <Filter>include\graphics</Filter>
     </ClInclude>
@@ -237,32 +213,32 @@
     <ClInclude Include="include\nomlib\system\IDialogMessageBox.hpp">
       <Filter>include\system</Filter>
     </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\AudioDevice.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\Listener.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\Music.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\OpenAL.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\Sound.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\SoundBuffer.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\SoundFile.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\SoundSource.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\audio\AL\AudioDevice.cpp">
-      <Filter>src\audio\AL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\audio\AL\Listener.cpp">
-      <Filter>src\audio\AL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\audio\AL\Music.cpp">
-      <Filter>src\audio\AL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\audio\AL\OpenAL.cpp">
-      <Filter>src\audio\AL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\audio\AL\Sound.cpp">
-      <Filter>src\audio\AL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\audio\AL\SoundBuffer.cpp">
-      <Filter>src\audio\AL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\audio\AL\SoundFile.cpp">
-      <Filter>src\audio\AL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\audio\AL\SoundSource.cpp">
-      <Filter>src\audio\AL</Filter>
-    </ClCompile>
     <ClCompile Include="src\graphics\Canvas.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
@@ -346,6 +322,30 @@
     </ClCompile>
     <ClCompile Include="src\system\IDialogMessageBox.cpp">
       <Filter>src\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AL\AudioDevice.cpp">
+      <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AL\Listener.cpp">
+      <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AL\Music.cpp">
+      <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AL\OpenAL.cpp">
+      <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AL\Sound.cpp">
+      <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AL\SoundBuffer.cpp">
+      <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AL\SoundFile.cpp">
+      <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AL\SoundSource.cpp">
+      <Filter>src\audio\AL</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

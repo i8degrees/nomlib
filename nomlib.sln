@@ -1,23 +1,28 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2013 for Windows Desktop
+VisualStudioVersion = 12.0.20827.3
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nomlib", "nomlib.vcxproj", "{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example_app", "examples\example_app.vcxproj", "{F514AB25-7BD0-434D-BB5B-143EA6451931}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42} = {4EA5298C-5E30-4929-8B1F-6ECD611D2F42}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
-		MinSizeRel|Win32 = MinSizeRel|Win32
 		Release|Win32 = Release|Win32
-		RelWithDebInfo|Win32 = RelWithDebInfo|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.Debug|Win32.ActiveCfg = Debug|Win32
 		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.Debug|Win32.Build.0 = Debug|Win32
-		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.MinSizeRel|Win32.ActiveCfg = MinSizeRel|Win32
-		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.MinSizeRel|Win32.Build.0 = MinSizeRel|Win32
 		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.Release|Win32.ActiveCfg = Release|Win32
 		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.Release|Win32.Build.0 = Release|Win32
-		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
-		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
+		{F514AB25-7BD0-434D-BB5B-143EA6451931}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F514AB25-7BD0-434D-BB5B-143EA6451931}.Debug|Win32.Build.0 = Debug|Win32
+		{F514AB25-7BD0-434D-BB5B-143EA6451931}.Release|Win32.ActiveCfg = Release|Win32
+		{F514AB25-7BD0-434D-BB5B-143EA6451931}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

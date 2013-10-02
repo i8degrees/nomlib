@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_DISPLAY_HEADERS
-#define NOMLIB_SDL_DISPLAY_HEADERS
+#ifndef NOMLIB_SDL_WINDOW_HPP
+#define NOMLIB_SDL_WINDOW_HPP
 
 #include <iostream>
 #include <string>
@@ -48,12 +48,12 @@ namespace nom {
 
 extern std::shared_ptr<SDL_Renderer> context;
 
-class Display
+class Window
                 /*: public IDisplay*/
 {
   public:
-    Display ( void );
-    ~Display ( void );
+    Window ( void );
+    ~Window ( void );
 
     bool create  ( int32 width, int32 height, uint32 window_flags, uint32 context_flags = SDL_RENDERER_ACCELERATED );
 
@@ -137,4 +137,4 @@ class Display
 
 } // namespace nom
 
-#endif // NOMLIB_SDL_DISPLAY_HEADERS defined
+#endif // include guard defined

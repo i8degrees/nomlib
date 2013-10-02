@@ -42,7 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/graphics/smart_ptr.hpp"
-#include "nomlib/graphics/Display.hpp"
+#include "nomlib/graphics/Window.hpp"
 #include "nomlib/graphics/Canvas.hpp"
 
 namespace nom {

@@ -26,13 +26,13 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/graphics/Display.hpp"
+#include "nomlib/graphics/Window.hpp"
 
 namespace nom {
 
 std::shared_ptr<SDL_Renderer> context = nullptr;
 
-Display::Display ( void )
+Window::Window ( void )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -44,12 +44,12 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   atexit ( SDL_Quit );
 }
 
-Display::~Display ( void )
+Window::~Window ( void )
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-bool Display::create  ( int32 width, int32 height, uint32 window_flags, uint32 context_flags )
+bool Window::create  ( int32 width, int32 height, uint32 window_flags, uint32 context_flags )
 {
   window = std::shared_ptr<SDL_Window>  (
                                       SDL_CreateWindow
@@ -87,12 +87,12 @@ NOM_LOG_ERR ( NOM, "Could not create rendering context." );
   return true;
 }
 
-SDL_Window* Display::get ( void ) const
+SDL_Window* Window::get ( void ) const
 {
   return this->window.get();
 }
 
-bool Display::valid ( void ) const
+bool Window::valid ( void ) const
 {
   if ( this->get() != nullptr )
   {
@@ -104,7 +104,7 @@ bool Display::valid ( void ) const
   }
 }
 
-Point2i Display::getPosition ( void ) const
+Point2i Window::getPosition ( void ) const
 {
   Point2i pos;
 
@@ -113,7 +113,7 @@ Point2i Display::getPosition ( void ) const
   return pos;
 }
 
-const uint8 Display::getDisplayColorBits ( void ) const
+const uint8 Window::getDisplayColorBits ( void ) const
 {
 /*
   SDL_Surface* screen = this->get();
@@ -132,30 +132,30 @@ const uint8 Display::getDisplayColorBits ( void ) const
     return 0;
 }
 
-uint32 Display::getDisplayFlags ( void ) const
+uint32 Window::getDisplayFlags ( void ) const
 {
   return SDL_GetWindowFlags ( this->window.get() );
 }
 
-uint16 Display::getDisplayPitch ( void ) const
+uint16 Window::getDisplayPitch ( void ) const
 {
   //return SDL_GetVideoSurface()->pitch;
     return 0;
 }
 
-void* Display::getDisplayPixels ( void ) const
+void* Window::getDisplayPixels ( void ) const
 {
   //return SDL_GetVideoSurface()->pixels;
     return 0;
 }
 
-SDL_PixelFormat* Display::getDisplayPixelsFormat ( void ) const
+SDL_PixelFormat* Window::getDisplayPixelsFormat ( void ) const
 {
   //return SDL_GetVideoSurface()->format;
     return nullptr;
 }
 
-const Coords Display::getDisplayBounds ( void ) const
+const Coords Window::getDisplayBounds ( void ) const
 {
   //SDL_Rect clip = SDL_GetVideoSurface()->clip_rect;
   //Coords clip_coords ( clip.x, clip.y, clip.w, clip.h );
@@ -163,7 +163,7 @@ const Coords Display::getDisplayBounds ( void ) const
     return Coords(0, 0);
 }
 
-VideoModeList Display::getVideoModes ( void ) const
+VideoModeList Window::getVideoModes ( void ) const
 {
 /*
   VideoModeList modes;
@@ -195,13 +195,13 @@ NOM_LOG_INFO ( NOM, "No video modes are supported." );
     return VideoModeList();
 }
 
-bool Display::getCanvasLock ( void ) const
+bool Window::getCanvasLock ( void ) const
 {
   //return this->get()->locked;
     return false;
 }
 
-bool Display::mustLock ( void ) const
+bool Window::mustLock ( void ) const
 {
 /*
   if ( SDL_MUSTLOCK ( this->get() ) )
@@ -216,7 +216,7 @@ bool Display::mustLock ( void ) const
     return false;
 }
 
-bool Display::lock ( void ) const
+bool Window::lock ( void ) const
 {
 /*
   if ( this->mustLock() == true )
@@ -231,19 +231,19 @@ NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
   return true;
 }
 
-void Display::unlock ( void ) const
+void Window::unlock ( void ) const
 {
 /*
   SDL_UnlockSurface ( this->get() );
 */
 }
 
-void Display::update ( void )
+void Window::update ( void )
 {
   SDL_RenderPresent ( context.get() );
 }
 
-bool Display::toggleFullScreen ( uint32 flags )
+bool Window::toggleFullScreen ( uint32 flags )
 {
   Point2i pos;
 
@@ -280,19 +280,19 @@ bool Display::toggleFullScreen ( uint32 flags )
 */
 }
 
-const std::string Display::getWindowTitle ( void ) const
+const std::string Window::getWindowTitle ( void ) const
 {
   std::string title = SDL_GetWindowTitle ( this->window.get() );
 
   return title;
 }
 
-void Display::setWindowTitle ( const std::string& title )
+void Window::setWindowTitle ( const std::string& title )
 {
   SDL_SetWindowTitle ( this->window.get(), title.c_str() );
 }
 
-bool Display::setWindowIcon ( const std::string& filename )
+bool Window::setWindowIcon ( const std::string& filename )
 {
   //Image image; // holds our image in memory during transfer
   std::shared_ptr<SDL_Surface> icon;
@@ -322,14 +322,14 @@ bool Display::setWindowIcon ( const std::string& filename )
   return true;
 }
 
-void Display::clear ( const Color& color )
+void Window::clear ( const Color& color )
 {
   SDL_SetRenderDrawColor ( context.get(), color.red, color.green, color.blue, color.alpha );
 
   SDL_RenderClear ( context.get() );
 }
 
-void Display::setPosition ( int32 x, int32 y )
+void Window::setPosition ( int32 x, int32 y )
 {
   SDL_SetWindowPosition ( this->window.get(), x, y );
 }

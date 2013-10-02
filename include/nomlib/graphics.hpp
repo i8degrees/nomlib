@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //#include <nomlib/graphics/BitmapFont.hpp>
 #include <nomlib/graphics/Canvas.hpp>
 //#include <nomlib/graphics/VideoMode.hpp>
-#include <nomlib/graphics/Display.hpp>
+#include <nomlib/graphics/Window.hpp>
 #include <nomlib/graphics/IDrawable.hpp>
 //#include <nomlib/graphics/TrueTypeFont.hpp>
 //#include <nomlib/graphics/Gradient.hpp>

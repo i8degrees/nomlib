@@ -28,7 +28,7 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/graphics/Rectangle.cpp
       ${SRC_DIR}/graphics/Canvas.cpp
       ${SRC_DIR}/graphics/Image.cpp
-      ${SRC_DIR}/graphics/Display.cpp
+      ${SRC_DIR}/graphics/Window.cpp
       #${SRC_DIR}/graphics/SpriteBatch.cpp
       #${SRC_DIR}/graphics/AnimatedSprite.cpp
       #${SRC_DIR}/graphics/SpriteSheet.cpp

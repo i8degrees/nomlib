@@ -84,8 +84,8 @@ class App:
   private:
     void onKeyDown ( nom::int32 key, nom::int32 mod );
 
-    /// Display handle
-    nom::Display context;
+    /// Window handle
+    nom::Window context;
 
     /// Interval at which we refresh the frames per second counter
     nom::Timer update;

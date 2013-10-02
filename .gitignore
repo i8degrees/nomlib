@@ -12,3 +12,7 @@ install_options
 build
 third-party/*
 !third-party/README.md
+
+# bins: Visual C++ Studio Project Files
+*.suo # user options
+*.sdf # db

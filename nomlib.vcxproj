@@ -32,6 +32,7 @@
     <ClInclude Include="include\nomlib\graphics.hpp" />
     <ClInclude Include="include\nomlib\graphics\Canvas.hpp" />
     <ClInclude Include="include\nomlib\graphics\Display.hpp" />
+    <ClInclude Include="include\nomlib\graphics\hqx\hqx.hpp" />
     <ClInclude Include="include\nomlib\graphics\IDrawable.hpp" />
     <ClInclude Include="include\nomlib\graphics\IFont.hpp" />
     <ClInclude Include="include\nomlib\graphics\Image.hpp" />
@@ -87,6 +88,10 @@
     <ClCompile Include="src\audio\AL\SoundSource.cpp" />
     <ClCompile Include="src\graphics\Canvas.cpp" />
     <ClCompile Include="src\graphics\Display.cpp" />
+    <ClCompile Include="src\graphics\hqx\hq2x.cpp" />
+    <ClCompile Include="src\graphics\hqx\hq3x.cpp" />
+    <ClCompile Include="src\graphics\hqx\hq4x.cpp" />
+    <ClCompile Include="src\graphics\hqx\hqx.cpp" />
     <ClCompile Include="src\graphics\Image.cpp" />
     <ClCompile Include="src\graphics\Line.cpp" />
     <ClCompile Include="src\graphics\Pixel.cpp" />

@@ -237,6 +237,9 @@
     <ClInclude Include="include\nomlib\audio\AL\SoundSource.hpp">
       <Filter>include\audio\AL</Filter>
     </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\hqx\hqx.hpp">
+      <Filter>include\graphics\hqx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\graphics\Canvas.cpp">
@@ -346,6 +349,18 @@
     </ClCompile>
     <ClCompile Include="src\audio\AL\SoundSource.cpp">
       <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\hqx\hq2x.cpp">
+      <Filter>src\graphics\hqx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\hqx\hq3x.cpp">
+      <Filter>src\graphics\hqx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\hqx\hq4x.cpp">
+      <Filter>src\graphics\hqx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\hqx\hqx.cpp">
+      <Filter>src\graphics\hqx</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

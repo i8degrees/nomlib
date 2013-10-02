@@ -1,5 +1,6 @@
 # CMake auto-generated files
-version.hpp
+#version.cpp
+#version.hpp
 
 install_options
 *.sublime-workspace

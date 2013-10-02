@@ -1,0 +1,351 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{7bd226ab-34d7-43b4-a26a-1682f3ccd69b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{8dc62bae-3842-4fd5-a6a4-c67270e6244c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\audio">
+      <UniqueIdentifier>{9d87cbbe-bfd6-4507-8420-7af1644e4773}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\audio\AL">
+      <UniqueIdentifier>{9fed4778-52ca-46e7-8160-cf311a092468}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\graphics">
+      <UniqueIdentifier>{ed50cfc8-7350-4776-b9db-dd534a57c2b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\audio">
+      <UniqueIdentifier>{a612f84c-1985-4322-88d3-d824c3fbab58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\graphics\scale2x">
+      <UniqueIdentifier>{a20943a9-d7a7-404e-b72a-a83c186d0ce8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\gui">
+      <UniqueIdentifier>{ee061eb4-bbd3-48e9-ab10-c99754bd2ea3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\json">
+      <UniqueIdentifier>{9fe90116-6190-43d9-b768-96c0555f20e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\math">
+      <UniqueIdentifier>{028ac072-aef2-4523-b230-ec9045bf684d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\system">
+      <UniqueIdentifier>{174b8ff2-74b0-4ad1-b62b-b050a77c6b97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\system\windows">
+      <UniqueIdentifier>{83974ac1-5e9c-4083-979b-183761ef5373}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\graphics">
+      <UniqueIdentifier>{4f113334-bd95-493e-8052-452f599ad2c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\audio\AL">
+      <UniqueIdentifier>{2ebf3272-c8f9-4d9b-81b0-f28f44c47239}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\graphics\scale2x">
+      <UniqueIdentifier>{794aea45-4ffb-45f8-9a76-fc49d7edf14d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\graphics\hqx">
+      <UniqueIdentifier>{ccd69fc1-d181-4376-8f38-9cc141c9dbd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\graphics\hqx">
+      <UniqueIdentifier>{09776694-ad9b-4bb7-89c0-39fba549be03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\gui">
+      <UniqueIdentifier>{4a2a5b11-102b-43f4-b91a-d82696824906}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\json">
+      <UniqueIdentifier>{44feb847-a3cf-4796-b5db-6e1e9700fb47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\math">
+      <UniqueIdentifier>{25ba61dd-3057-43f6-9847-59ec135cf53e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\system">
+      <UniqueIdentifier>{362c2447-0f9f-4512-9034-500201d43489}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\system\windows">
+      <UniqueIdentifier>{8ed925ed-7a39-4d39-b1f3-102582dd48f6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\nomlib\audio.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\config.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\gui.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\json.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\math.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\platforms.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\resources.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\types.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\version.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\AudioDevice.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\Listener.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\Music.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\OpenAL.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\Sound.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\SoundBuffer.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\SoundFile.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\audio\AL\SoundSource.hpp">
+      <Filter>include\audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\Canvas.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\Display.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\IDrawable.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\IFont.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\Image.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\Line.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\Pixel.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\Rectangle.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\smart_ptr.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\TrueTypeFont.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\math\Color.hpp">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\math\Coords.hpp">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\math\helpers.hpp">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\math\Point2-inl.hpp">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\math\Point3-inl.hpp">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\math\Rect-inl.hpp">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\math\Transformable.hpp">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\math\Vector2-inl.hpp">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\math\Vector3-inl.hpp">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\AnimationTimer.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\clock.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\EventDispatcher.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\File.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\FPS.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\GameStates.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\IFile.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\Input.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\IState.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\make_unique.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\ObjectCache.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\Path.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\SDL_App.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\Sleep.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\Timer.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\WinFile.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\windows\DialogMessageBox.hpp">
+      <Filter>include\system\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\system\IDialogMessageBox.hpp">
+      <Filter>include\system</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\audio\AL\AudioDevice.cpp">
+      <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AL\Listener.cpp">
+      <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AL\Music.cpp">
+      <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AL\OpenAL.cpp">
+      <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AL\Sound.cpp">
+      <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AL\SoundBuffer.cpp">
+      <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AL\SoundFile.cpp">
+      <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AL\SoundSource.cpp">
+      <Filter>src\audio\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\Canvas.cpp">
+      <Filter>src\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\Display.cpp">
+      <Filter>src\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\Image.cpp">
+      <Filter>src\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\Line.cpp">
+      <Filter>src\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\Pixel.cpp">
+      <Filter>src\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\Rectangle.cpp">
+      <Filter>src\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\smart_ptr.cpp">
+      <Filter>src\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\resources.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\version.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\Color.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\Coords.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\helpers.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\Transformable.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\AnimationTimer.cpp">
+      <Filter>src\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\clock.cpp">
+      <Filter>src\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\EventDispatcher.cpp">
+      <Filter>src\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\File.cpp">
+      <Filter>src\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\FPS.cpp">
+      <Filter>src\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\GameStates.cpp">
+      <Filter>src\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\Input.cpp">
+      <Filter>src\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\ObjectCache.cpp">
+      <Filter>src\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\Path.cpp">
+      <Filter>src\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\SDL_App.cpp">
+      <Filter>src\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\Sleep.cpp">
+      <Filter>src\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\Timer.cpp">
+      <Filter>src\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\WinFile.cpp">
+      <Filter>src\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\windows\DialogMessageBox.cpp">
+      <Filter>src\system\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\IDialogMessageBox.cpp">
+      <Filter>src\system</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,25 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nomlib", "nomlib.vcxproj", "{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		MinSizeRel|Win32 = MinSizeRel|Win32
+		Release|Win32 = Release|Win32
+		RelWithDebInfo|Win32 = RelWithDebInfo|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.Debug|Win32.Build.0 = Debug|Win32
+		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.MinSizeRel|Win32.ActiveCfg = MinSizeRel|Win32
+		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.MinSizeRel|Win32.Build.0 = MinSizeRel|Win32
+		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.Release|Win32.ActiveCfg = Release|Win32
+		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.Release|Win32.Build.0 = Release|Win32
+		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
+		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

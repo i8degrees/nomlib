@@ -36,7 +36,7 @@ int32 Win_DialogMessageBox  ( const std::string& header, const std::string& mess
 {
   int32 result = 0;
 
-  result = MessageBox ( nullptr, ( LPCWSTR ) message, ( LPCWSTR ) header,
+  result = MessageBox ( nullptr, message.c_str(), header.c_str(),
                         MB_ICONWARNING | MB_OK
                       );
 

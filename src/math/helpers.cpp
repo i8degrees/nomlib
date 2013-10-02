@@ -49,8 +49,8 @@ const Point2f rotate_points ( float angle, float x, float y, float pivot_x, floa
   float translated_x = 0;
   float translated_y = 0;
 
-  float center_x = pivot_x / 2.0;
-  float center_y = pivot_y / 2.0;
+  float center_x = pivot_x / 2.0f;
+  float center_y = pivot_y / 2.0f;
 
   translated_x = x - center_x;
   translated_y = y - center_y;

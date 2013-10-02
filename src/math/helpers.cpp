@@ -34,18 +34,18 @@ const double PI = 4.0 * atan ( 1.0 );
 
 int32 rand ( int32 start, int32 end )
 {
-  uint64 seed = std::chrono::system_clock::now().time_since_epoch().count();
+  auto seed = std::chrono::system_clock::now().time_since_epoch().count();
   std::default_random_engine rand_generator ( seed );
   std::uniform_int_distribution<int32> distribution ( start, end );
 
   return distribution ( rand_generator );
 }
 
-const Point2f rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y )
+const Point2d rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y )
 {
-  Point2f p;
-  float rotated_x = 0;
-  float rotated_y = 0;
+  Point2d p;
+  double  rotated_x = 0;
+  double rotated_y = 0;
   float translated_x = 0;
   float translated_y = 0;
 

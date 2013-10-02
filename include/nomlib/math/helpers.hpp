@@ -45,7 +45,7 @@ int32 rand ( int32 start, int32 end );
 
 /// Rotates a given X & Y coordinate point along a given pivot axis
 /// (rotation point) at the given angle (in degrees), clockwise.
-const Point2f rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y );
+const Point2d rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y );
 
 /// ...
 double round ( double number );

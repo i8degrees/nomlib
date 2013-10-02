@@ -48,7 +48,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <PreprocessorDefinitions>NOM_DEBUG NOM_DEBUG_ASSERT NOM_DEBUG_TRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOM_DEBUG;NOM_DEBUG_ASSERT;NOM_DEBUG_TRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <CompileAs>CompileAsCpp</CompileAs>
       <AdditionalIncludeDirectories>../include/;../third-party/SDL2/include;../third-party/SDL2_ttf/include;../third-party/SDL2_image/include;../third-party/OpenAL/include;../third-party/libsndfile/include;../third-party/magiclib/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

@@ -39,7 +39,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>../include/;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;include/;$(IncludePath)</IncludePath>
+    <IncludePath>../include/;../third-party/SDL2/include;../third-party/SDL2_ttf/include;../third-party/SDL2_img/include;../third-party/OpenAL/include;../third-party/libsndfile/include;../third-party/magiclib/include;$(IncludePath)</IncludePath>
     <LibraryPath>../build/Debug/;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

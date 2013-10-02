@@ -260,7 +260,7 @@ bool Display::toggleFullScreen ( uint32 flags )
   // up with a misaligned window.
   //
   // Possible bug on OS X
-  if ( pos.x == SDL_WINDOWPOS_CENTERED && pos.y == SDL_WINDOWPOS_CENTERED );
+  if ( pos.x == SDL_WINDOWPOS_CENTERED && pos.y == SDL_WINDOWPOS_CENTERED )
   {
     this->setPosition ( SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED );
   }

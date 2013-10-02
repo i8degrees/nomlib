@@ -16,3 +16,4 @@ third-party/*
 # bins: Visual C++ Studio Project Files
 *.suo # user options
 *.sdf # db
+*.opensdf # db

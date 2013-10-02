@@ -13,10 +13,10 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/audio/AL/Music.cpp
       ${SRC_DIR}/audio/AL/Sound.cpp
       # third-party hqx algorithm
-      #${SRC_DIR}/graphics/hqx/hqx.cpp
-      #${SRC_DIR}/graphics/hqx/hq2x.cpp
-      #${SRC_DIR}/graphics/hqx/hq3x.cpp
-      #${SRC_DIR}/graphics/hqx/hq4x.cpp
+      ${SRC_DIR}/graphics/hqx/hqx.cpp
+      ${SRC_DIR}/graphics/hqx/hq2x.cpp
+      ${SRC_DIR}/graphics/hqx/hq3x.cpp
+      ${SRC_DIR}/graphics/hqx/hq4x.cpp
       # third-party scale2x algorithm
       #${SRC_DIR}/graphics/scale2x/scale2x.cpp
       #${SRC_DIR}/graphics/scale2x/scale3x.cpp

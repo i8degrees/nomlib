@@ -81,8 +81,8 @@ NOM_LOG_ERR ( NOM, "Buffer loading err" );
 
   snd.setPitch ( 1.0 );
   snd.setVolume ( MAX_VOLUME );
-  snd.setPosition ( nom::Vector3f ( 0.0, 0.0, 0.0 ) );
-  snd.setVelocity ( nom::Vector3f ( 0.0, 0.0, 0.0 ) );
+  snd.setPosition ( nom::Point3f ( 0.0, 0.0, 0.0 ) );
+  snd.setVelocity ( nom::Point3f ( 0.0, 0.0, 0.0 ) );
   snd.setLooping ( true );
 
   snd.setPlayPosition ( 8.0 );

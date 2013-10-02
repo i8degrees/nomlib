@@ -39,7 +39,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>../include/;../third-party/SDL2/include;../third-party/SDL2_ttf/include;../third-party/SDL2_img/include;../third-party/OpenAL/include;../third-party/libsndfile/include;../third-party/magiclib/include;$(IncludePath)</IncludePath>
+    <IncludePath>../include/;../third-party/SDL2/include;../third-party/SDL2_ttf/include;../third-party/SDL2_image/include;../third-party/OpenAL/include;../third-party/libsndfile/include;../third-party/magiclib/include;$(IncludePath)</IncludePath>
     <LibraryPath>../build/Debug/;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -51,6 +51,7 @@
       <PreprocessorDefinitions>NOM_DEBUG NOM_DEBUG_ASSERT NOM_DEBUG_TRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <CompileAs>CompileAsCpp</CompileAs>
+      <AdditionalIncludeDirectories>../include/;../third-party/SDL2/include;../third-party/SDL2_ttf/include;../third-party/SDL2_image/include;../third-party/OpenAL/include;../third-party/libsndfile/include;../third-party/magiclib/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

@@ -57,8 +57,18 @@ const nom::int32 WINDOW_WIDTH = 768;
 const nom::int32 WINDOW_HEIGHT = 448;
 
 /// Relative file path name of our resource example
-const std::string RESOURCE_ICON = "icon.bmp";
-//const std::string RESOURCE_ICON = "icon.png";
+///
+/// FIXME
+/// This is a temporary fix until we can use IMG_Load for loading the PNG image 
+/// again.
+/// (See FIXME notes inside Display.hpp at setWindowIcon method for details).
+/// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
+#if defined ( NOM_PLATFORM_WINDOWS )
+  const std::string RESOURCE_ICON = "icon.bmp";
+#else // assume POSIX platform
+  const std::string RESOURCE_ICON = "icon.png";
+#endif
+
 
 /// \brief Usage example
 class App:

@@ -56,7 +56,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libsndfile-1.lib;nomlib-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>nomlib-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>../third-party/libsndfile/lib</AdditionalLibraryDirectories>
     </Link>

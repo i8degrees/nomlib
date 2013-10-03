@@ -45,7 +45,7 @@ Line::Line ( int32 x, int32 y, int32 width, int32 height, const Color& color )
   this->color = color;
 }
 
-void Line::update ( void ) {}
+void Line::update ( void ) { /* NO-OP */ }
 
 void Line::draw ( SDL_Renderer* target ) const
 {

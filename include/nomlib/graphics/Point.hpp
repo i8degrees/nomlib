@@ -37,24 +37,43 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief 3D Point shape (pixel)
+///
+/// \todo Perhaps look at implementing the multi-point variant; SDL_RenderDrawPoints.
+/// I bet, in terms of efficiency, gains are to be seen!
+/// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
 class Point:
               public IDrawable
 {
   public:
+    /// Default constructor; construct component objects with their sane defaults.
     Point ( void );
+
+    /// Lazy destructor with nothing to do. Please inherit me!
     virtual ~Point ( void );
 
+    /// Construct a Point object using Point2i X, Y coordinates and a chosen
+    /// color.
     Point ( const Point2i& coords, const Color& color );
+
+    /// Construct a Point object using X, Y integers and a chosen color.
     Point ( int32 x, int32 y, const Color& color );
 
-    /// Intentional interface stub
+    /// Do nothing method; we have it only because it is required by interface
+    /// contract with IDrawable (which is fine).
+    ///
+    /// \todo Measure performance (CPU cycles, ticks/FPS, ...) difference with
+    /// using a return / abort on rendering when our line object is up-to-date
+    /// and determine if it is worth the implementation VS risk of inconsistency.
+    /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
     void update ( void );
 
     /// Draw a 3D point (pixel) onto the the attached renderer
     void draw ( SDL_Renderer* target ) const;
 
   private:
+    /// X, Y signed integer rendering coordinates
     Point2i coords;
+    /// Rendering color (RGBA).
     Color color;
 };
 

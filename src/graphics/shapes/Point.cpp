@@ -45,7 +45,7 @@ Point::Point ( int32 x, int32 y, const Color& color )
   this->color = color;
 }
 
-void Point::update ( void ) {}
+void Point::update ( void ) { /* NO-OP */ }
 
 void Point::draw ( SDL_Renderer* target ) const
 {

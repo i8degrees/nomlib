@@ -51,7 +51,7 @@ Rectangle::Rectangle ( int32 x, int32 y, int32 width, int32 height, const Color&
   this->color = color;
 }
 
-void Rectangle::update ( void ) {}
+void Rectangle::update ( void ) { /* NO-OP */ }
 
 void Rectangle::draw ( SDL_Renderer* target ) const
 {

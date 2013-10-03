@@ -43,9 +43,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //#include <nomlib/graphics/TrueTypeFont.hpp>
 //#include <nomlib/graphics/Gradient.hpp>
 #include <nomlib/graphics/Image.hpp>
-#include <nomlib/graphics/Line.hpp>
-#include <nomlib/graphics/Pixel.hpp>
-#include <nomlib/graphics/Rectangle.hpp>
+//#include <nomlib/graphics/Line.hpp>
+#include <nomlib/graphics/Point.hpp>
+//#include <nomlib/graphics/Pixel.hpp>
+//#include <nomlib/graphics/Rectangle.hpp>
 //#include <nomlib/graphics/Sprite.hpp>
 //#include <nomlib/graphics/SpriteBatch.hpp>
 //#include <nomlib/graphics/SpriteSheet.hpp>

@@ -47,7 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/smart_ptr.hpp"
 #include "nomlib/graphics/Pixel.hpp"
 #include "nomlib/graphics/Image.hpp"
-#include "nomlib/graphics/Rectangle.hpp"
+//#include "nomlib/graphics/Rectangle.hpp"
 
 //#define NOM_DEBUG_SDL_CANVAS
 

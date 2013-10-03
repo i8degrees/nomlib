@@ -99,12 +99,12 @@ NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
   return true;
 }
 
-void Sprite::Update ( void )
+void Sprite::update ( void )
 {
   this->sprite.setPosition ( this->coords );
 }
 
-void Sprite::Draw ( SDL_Surface* video_buffer ) const
+void Sprite::draw ( SDL_Renderer* target ) const
 {
 NOM_ASSERT ( this->sprite.valid() );
 
@@ -126,12 +126,12 @@ NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
   }
 
   this->scale_factor = this->sprite.getResizeScaleFactor ( scaling_algorithm );
-  this->Update();
+  this->update();
 
   return true;
 }
 
-bool Sprite::resize ( const Vector2f& scale_factor )
+bool Sprite::resize ( const Point2f& scale_factor )
 {
   if ( this->sprite.valid() == false )
   {
@@ -146,7 +146,7 @@ NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
   }
 
   //this->scale_factor = this->sprite.getResizeScaleFactor ( scaling_algorithm );
-  this->Update();
+  this->update();
 
   return true;
 }

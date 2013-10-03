@@ -31,16 +31,16 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/graphics/Image.cpp
       ${SRC_DIR}/graphics/Window.cpp
       ${SRC_DIR}/graphics/Renderer.cpp
-      #${SRC_DIR}/graphics/SpriteBatch.cpp
-      #${SRC_DIR}/graphics/AnimatedSprite.cpp
-      #${SRC_DIR}/graphics/SpriteSheet.cpp
+      ${SRC_DIR}/graphics/SpriteBatch.cpp
+      ${SRC_DIR}/graphics/AnimatedSprite.cpp
+      ${SRC_DIR}/graphics/SpriteSheet.cpp
       #${SRC_DIR}/graphics/VideoMode.cpp
       #${SRC_DIR}/graphics/Text.cpp
       #${SRC_DIR}/graphics/BitmapFont.cpp
       #${SRC_DIR}/graphics/TrueTypeFont.cpp
       #${SRC_DIR}/graphics/IDisplay.cpp
-      #${SRC_DIR}/graphics/Sprite.cpp
       ${SRC_DIR}/graphics/Gradient.cpp
+      ${SRC_DIR}/graphics/Sprite.cpp
       # nomJSON
       #${SRC_DIR}/json/Array.cpp
       ${SRC_DIR}/json/FileReader.cpp

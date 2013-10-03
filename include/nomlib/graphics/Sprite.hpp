@@ -36,11 +36,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/math/Rect-inl.hpp"
+#include "nomlib/math/Point2-inl.hpp"
 #include "nomlib/graphics/Canvas.hpp"
 
 namespace nom {
 
-/// \brief Sprite object container
+/// \brief Base class for bitmap objects
 class Sprite:
               public Transformable
 {
@@ -71,19 +72,22 @@ class Sprite:
     void setState ( uint32 state );
 
     /// Load a new image onto the Sprite.
+    ///
+    /// Source color keying (single pixel color transparency) is enabled by
+    /// default.
     bool load (
                 const std::string& filename, const Color& colorkey,
                 bool use_cache = false,
-                uint32 flags = SDL_SRCCOLORKEY | SDL_RLEACCEL
+                uint32 flags = SDL_TRUE | SDL_RLEACCEL
               );
 
-    void Update ( void );
-    void Draw ( SDL_Surface* video_buffer ) const;
+    void update ( void );
+    void draw ( SDL_Renderer* target ) const;
 
     /// Rescale the font with a chosen resizing algorithm
     bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
-    bool resize ( const Vector2f& scale_factor );
+    bool resize ( const Point2f& scale_factor );
 
   protected:
     /// Object that holds our sprite image

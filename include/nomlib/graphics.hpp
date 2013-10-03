@@ -47,10 +47,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics/shapes/Point.hpp>
 #include <nomlib/graphics/shapes/Line.hpp>
 #include <nomlib/graphics/shapes/Rectangle.hpp>
-//#include <nomlib/graphics/Sprite.hpp>
-//#include <nomlib/graphics/SpriteBatch.hpp>
-//#include <nomlib/graphics/SpriteSheet.hpp>
-//#include <nomlib/graphics/AnimatedSprite.hpp>
+#include <nomlib/graphics/Sprite.hpp>
+#include <nomlib/graphics/SpriteBatch.hpp>
+#include <nomlib/graphics/SpriteSheet.hpp>
+#include <nomlib/graphics/AnimatedSprite.hpp>
 
 
 #endif // include guard defined

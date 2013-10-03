@@ -52,8 +52,8 @@ namespace nom {
 
 //#define NOM_DEBUG_SPRITE_SHEET
 
-/// \brief Data container class for offset (input) coordinates for efficient
-/// rendering of many frames within an image.
+/// \brief Specialized class container for the creation of sprite sheets via
+/// JSON-compliant file input.
 ///
 ///     REFERENCES
 ///
@@ -133,6 +133,11 @@ class SpriteSheet
 
 #endif // include guard defined
 
+/// \class nom::SpriteSheet
+/// \ingroup graphics
+///
+///         [DESCRIPTION STUB]
+///
 /// Example of 4X4 Sheet
 ///   ________________
 ///  | 0 | 1 | 2 | 3 |
@@ -144,6 +149,9 @@ class SpriteSheet
 ///  | 0 | 1 | 2 | 3 |
 ///  |---------------|
 ///
+/// Usage example:
+/// \code
+///
 /// #include <nomlib/graphics/SpriteSheet.hpp>
 /// #include <nomlib/graphics/Sprite.hpp>
 ///
@@ -152,7 +160,12 @@ class SpriteSheet
 ///
 /// nom::Sprite card_face = nom::Sprite ( card_faces_sheet );
 ///
-/// ...or
+/// \endcode
+///
+/// ...or!
+///
+/// \code
 ///
 /// nom::Sprite card_face ( nom::SpriteSheet ( card_faces_sheet ( "faces.json" ) ) );
 ///
+/// \endcode

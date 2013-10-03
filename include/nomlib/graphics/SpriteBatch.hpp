@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief Sprite rendering with sprite sheets
+/// \brief Extended bitmap object rendering -- utilizes sprite sheets
 class SpriteBatch:
                     public Sprite
 {

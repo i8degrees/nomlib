@@ -203,11 +203,10 @@ nom::int32 App::Run ( void )
         }
         else
         {
-          this->window[idx].set_window_title ( APP_NAME + " " + std::to_string(idx) );
+          this->window[idx].set_window_title ( APP_NAME + " " + std::to_string(idx) + " - " + std::to_string ( this->window[idx].window_display_id() ) );
         }
 
         this->update[idx].restart();
-
       } // end refresh cycle
     } // end for MAXIMUM_WINDOWS update loop
   } // end while isRunning() is true

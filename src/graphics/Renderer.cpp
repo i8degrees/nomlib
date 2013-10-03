@@ -26,30 +26,29 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_HEADERS
-#define NOMLIB_GRAPHICS_HEADERS
+#include "nomlib/graphics/Renderer.hpp"
 
-// Public header file
+namespace nom {
 
-#include <nomlib/config.hpp>
-#include <nomlib/graphics/smart_ptr.hpp>
-//#include <nomlib/graphics/Text.hpp>
-//#include <nomlib/graphics/BitmapFont.hpp>
-#include <nomlib/graphics/Canvas.hpp>
-//#include <nomlib/graphics/VideoMode.hpp>
-#include <nomlib/graphics/Window.hpp>
-#include <nomlib/graphics/Renderer.hpp>
-#include <nomlib/graphics/IDrawable.hpp>
-//#include <nomlib/graphics/TrueTypeFont.hpp>
-//#include <nomlib/graphics/Gradient.hpp>
-#include <nomlib/graphics/Image.hpp>
-#include <nomlib/graphics/Line.hpp>
-#include <nomlib/graphics/Pixel.hpp>
-#include <nomlib/graphics/Rectangle.hpp>
-//#include <nomlib/graphics/Sprite.hpp>
-//#include <nomlib/graphics/SpriteBatch.hpp>
-//#include <nomlib/graphics/SpriteSheet.hpp>
-//#include <nomlib/graphics/AnimatedSprite.hpp>
+Renderer::Renderer ( void )
+{
+NOM_LOG_TRACE ( NOM );
+
+  if ( renderer == nullptr )
+  {
+NOM_LOG_ERR ( NOM, "Could not create SDL renderer target." );
+  }
+}
+
+Renderer::~Renderer ( void )
+{
+NOM_LOG_TRACE ( NOM );
+}
+
+SDL_Renderer* Renderer::get ( void ) const
+{
+  return this->renderer;
+}
 
 
-#endif // include guard defined
+} // namespace nom

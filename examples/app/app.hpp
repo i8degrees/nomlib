@@ -48,7 +48,8 @@ const std::string APP_INSTALL_PREFIX = "\0";
 const std::string APP_RESOURCES_DIR = "Resources";
 
 /// Name of our application.
-const std::string APP_NAME = "nom::SDL_App Example";
+const std::string APP_NAME1 =   "nom::SDL2 Demo - Window 1";
+const std::string APP_NAME2 =   "nom::SDL2 Demo - Window 2";
 
 /// Width, in pixels, of our effective rendering surface.
 const nom::int32 WINDOW_WIDTH = 768;
@@ -85,13 +86,14 @@ class App:
     void onKeyDown ( nom::int32 key, nom::int32 mod );
 
     /// Window handle
-    nom::Window context;
+    nom::Window window1;
+    nom::Window window2;
 
     /// Interval at which we refresh the frames per second counter
-    nom::Timer update;
+    nom::Timer update[2];
 
     /// Timer for tracking frames per second
-    nom::FPS fps;
+    nom::FPS fps[2];
 
     /// Input events
     SDL_Event event;

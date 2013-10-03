@@ -72,12 +72,12 @@ bool App::onInit ( void )
   // specified:
   //
   // nom::uint32 context_flags = SDL_RENDERER_ACCELERATED;
-  if ( this->context.create ( APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, window_flags /*, context_flags*/ ) == false )
+  if ( this->window1.create ( APP_NAME1, WINDOW_WIDTH, WINDOW_HEIGHT, window_flags /*, context_flags*/ ) == false || this->window2.create ( APP_NAME2, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, window_flags /*, context_flags*/ ) == false )
   {
     return false;
   }
 
-  if ( this->context.setWindowIcon ( RESOURCE_ICON ) == false )
+  if ( this->window1.setWindowIcon ( RESOURCE_ICON ) == false )
   {
     return false;
   }
@@ -102,12 +102,12 @@ void App::onKeyDown ( nom::int32 key, nom::int32 mod )
     {
       if ( this->isFullScreen() == true )
       {
-        this->context.toggleFullScreen ( 0 );
+        this->window1.toggleFullScreen ( 0 );
         this->setFullScreen ( false );
       }
       else
       {
-        this->context.toggleFullScreen ( SDL_WINDOW_FULLSCREEN_DESKTOP );
+        this->window1.toggleFullScreen ( SDL_WINDOW_FULLSCREEN_DESKTOP );
         this->setFullScreen ( true );
       }
     }
@@ -117,8 +117,10 @@ void App::onKeyDown ( nom::int32 key, nom::int32 mod )
 
 nom::int32 App::Run ( void )
 {
-  this->update.start();
-  this->fps.start();
+  this->update[0].start();
+  this->update[1].start();
+  this->fps[0].start();
+  this->fps[1].start();
 
   // 1. Events
   // 2. Logic
@@ -130,34 +132,52 @@ nom::int32 App::Run ( void )
       this->onEvent ( &this->event );
     }
 
-    this->context.update();
+    this->window1.update();
+    this->window2.update();
 
     if ( this->isFullScreen() == true )
     {
-      this->context.clear ( nom::Color::NomPrimaryColorKey );
+      this->window1.clear ( nom::Color::NomPrimaryColorKey );
+      this->window2.clear ( nom::Color::NomSecondaryColorKey );
     }
     else
     {
-      this->context.clear ( nom::Color::NomSecondaryColorKey );
+      this->window1.clear ( nom::Color::NomSecondaryColorKey );
+      this->window2.clear ( nom::Color::NomPrimaryColorKey );
     }
 
     //this->background.Update( this->context.get() );
     //this->background.Draw();
 
-    this->fps.update();
+    this->fps[0].update();
+    this->fps[1].update();
 
     // Refresh the frames per second at 1 second intervals
-    if ( this->update.ticks() > 1000 )
+    if ( this->update[0].ticks() > 1000 )
     {
       if ( this->getShowFPS() == true )
       {
-        this->context.setWindowTitle ( APP_NAME + " - " + this->fps.asString() + '\x20' + "fps" );
+        this->window1.setWindowTitle ( APP_NAME1 + " - " + this->fps[0].asString() + '\x20' + "fps" );
       }
       else
       {
-        this->context.setWindowTitle ( APP_NAME );
+        this->window1.setWindowTitle ( APP_NAME1 );
       }
-      this->update.restart();
+      this->update[0].restart();
+    }
+
+    // Refresh the frames per second at 1 second intervals
+    if ( this->update[1].ticks() > 1000 )
+    {
+      if ( this->getShowFPS() == true )
+      {
+        this->window2.setWindowTitle ( APP_NAME2 + " - " + this->fps[1].asString() + '\x20' + "fps" );
+      }
+      else
+      {
+        this->window2.setWindowTitle ( APP_NAME2 );
+      }
+      this->update[1].restart();
     }
   } // end while isRunning() is true
 

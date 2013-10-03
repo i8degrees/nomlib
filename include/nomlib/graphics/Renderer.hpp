@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color.hpp"
+#include "nomlib/math/Coords.hpp"
 #include "nomlib/graphics/smart_ptr.hpp"
 
 namespace nom {
@@ -70,13 +71,48 @@ class Renderer
     /// Is this object initialized? Valid when *NOT* nullptr
     bool renderer_valid ( void ) const;
 
+    Coords viewport ( void ) const;
+
     /// Update the renderer surface on the attached window
     void update ( void ) const;
 
+    /// Set an input texture source as the new rendering target.
+    ///
+    /// \param input_texture    The targeted texture
+    bool update ( SDL_Texture* input_texture );
+
+    /// Clear the whole rendering object; ignoring the viewport.
+    ///
+    /// (to a rendering color, if set?)
+    ///
+    /// This method is usually called after setting the rendering draw color.
+    bool clear ( void ) const;
+
     /// Fill the rendering target video display with a new color.
     ///
+    /// This combines two methods into one: set_color() and clear().
+    ///
     /// Default color fill is "BSOD (TM) Blue".
-    bool clear ( const Color& color = Color::Blue );
+    bool fill ( const Color& color = Color::Blue );
+
+    /// \brief Set device independent resolution for rendering
+    ///
+    /// \param width      Width of the new logical resolution
+    /// \param height     Height of the new logical resolution
+    ///
+    /// Sets both a new view port and any necessary rescaling to fit within a
+    /// fixed, logical resolution for rendering.
+    bool set_viewport ( int width, int height );
+
+    bool set_color ( const Color& color );
+
+    /// Set the color blending mode (fill and line).
+    ///
+    /// SDL_BLENDMODE_NONE
+    /// SDL_BLENDMODE_BLEND
+    /// SDL_BLENDMODE_ADD
+    /// SDL_BLENDMODE_MOD
+    bool set_blend_mode ( SDL_BlendMode mode );
 
   protected:
     /// This is automatically released after the attached nom::Window has been

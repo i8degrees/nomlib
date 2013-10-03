@@ -72,19 +72,38 @@ bool Renderer::renderer_valid ( void ) const
   }
 }
 
+Coords Renderer::viewport ( void ) const
+{
+  SDL_Rect v;
+  Coords view_pos;
+
+  SDL_RenderGetViewport ( this->renderer(), &v );
+
+  view_pos.x = v.x;
+  view_pos.y = v.y;
+  view_pos.width = v.w;
+  view_pos.height = v.h;
+
+  return view_pos;
+}
+
 void Renderer::update ( void ) const
 {
   SDL_RenderPresent ( this->renderer() );
 }
 
-bool Renderer::clear ( const Color& color )
+bool Renderer::update ( SDL_Texture* input_texture )
 {
-  if ( SDL_SetRenderDrawColor ( this->renderer(), color.red, color.green, color.blue, color.alpha ) != 0 )
+  if ( SDL_SetRenderTarget ( this->renderer(), input_texture ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
+  return true;
+}
 
+bool Renderer::clear ( void ) const
+{
   if ( SDL_RenderClear ( this->renderer() ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
@@ -94,5 +113,51 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
+bool Renderer::fill ( const Color& color )
+{
+  if ( this->set_color ( color ) == false )
+  {
+    return false;
+  }
+
+  if ( this->clear() == false )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+bool Renderer::set_viewport ( int width, int height )
+{
+  // This should be supported by DirectX and OpenGL
+  SDL_SetHint ( SDL_HINT_RENDER_SCALE_QUALITY, "linear" );
+
+  if ( SDL_RenderSetLogicalSize ( this->renderer(), width, height ) != 0 )
+  {
+    return false;
+  }
+  return true;
+}
+
+bool Renderer::set_color ( const Color& color )
+{
+  if ( SDL_SetRenderDrawColor ( this->renderer(), color.red, color.green, color.blue, color.alpha ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+  return true;
+}
+
+bool Renderer::set_blend_mode ( SDL_BlendMode mode )
+{
+  if ( SDL_SetRenderDrawBlendMode ( this->renderer(), mode ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+  return true;
+}
 
 } // namespace nom

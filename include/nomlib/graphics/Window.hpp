@@ -43,12 +43,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/smart_ptr.hpp"
 #include "nomlib/graphics/VideoMode.hpp"
 #include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/Renderer.hpp"
 
 namespace nom {
 
-extern std::shared_ptr<SDL_Renderer> context;
+//class Renderer;
 
-class Window
+class Window:
+              public Renderer
                 /*: public IDisplay*/
 {
   public:

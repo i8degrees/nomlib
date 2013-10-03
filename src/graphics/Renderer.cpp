@@ -30,24 +30,68 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Renderer::Renderer ( void )
+Renderer::Renderer ( void ):  renderer_
+    { Renderer::UniquePtr ( nullptr, priv::FreeRenderTarget ) }
 {
 NOM_LOG_TRACE ( NOM );
 
-  if ( renderer == nullptr )
-  {
-NOM_LOG_ERR ( NOM, "Could not create SDL renderer target." );
-  }
 }
 
 Renderer::~Renderer ( void )
 {
 NOM_LOG_TRACE ( NOM );
+
+  // Thanks for all the fish!
 }
 
-SDL_Renderer* Renderer::get ( void ) const
+bool Renderer::initialize ( SDL_Window* window, int32 rendering_driver, uint32 context_flags )
 {
-  return this->renderer;
+NOM_LOG_TRACE ( NOM );
+
+  this->renderer_.reset ( SDL_CreateRenderer ( window, rendering_driver, context_flags ) );
+
+  if ( this->renderer_valid() == false ) return false;
+
+  return true;
+}
+
+SDL_Renderer* Renderer::renderer ( void ) const
+{
+  return this->renderer_.get();
+}
+
+bool Renderer::renderer_valid ( void ) const
+{
+  if ( this->renderer() != nullptr )
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+void Renderer::update ( void ) const
+{
+  SDL_RenderPresent ( this->renderer() );
+}
+
+bool Renderer::clear ( const Color& color )
+{
+  if ( SDL_SetRenderDrawColor ( this->renderer(), color.red, color.green, color.blue, color.alpha ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  if ( SDL_RenderClear ( this->renderer() ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  return true;
 }
 
 

@@ -31,26 +31,57 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
-#include <vector>
 #include <memory>
 
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
+#include "nomlib/math/Color.hpp"
 #include "nomlib/graphics/smart_ptr.hpp"
 
 namespace nom {
 
+/// \brief Video subsystem responsible for managing high-level graphics display
+/// (think: fancy backbuffer).
+///
+/// A nom::Window is lifeless without its attached Renderer buddy!
 class Renderer
 {
   public:
+    /// Convenience definition type for the std::unique_ptr variant
+    typedef std::unique_ptr<SDL_Renderer, void(*)(SDL_Renderer*)> UniquePtr;
+
+    /// Default constructor; initializes instance to sane defaults
     Renderer ( void );
-    ~Renderer ( void );
 
-    SDL_Renderer* get ( void ) const;
+    /// Lazy destructor with nothing to do
+    virtual ~Renderer ( void );
 
-  private:
-    SDL_Renderer* renderer;
+    /// Initialize a Renderer instance with an existing, initialized SDL_Window
+    ///
+    /// Initializes with the first rendering driver supporting our request
+    /// flags
+    /// Enables video acceleration when able
+    bool initialize ( SDL_Window* window, int32 rendering_driver = -1, uint32 context_flags = SDL_RENDERER_ACCELERATED );
+
+    /// Get a raw pointer to the SDL_Renderer in use
+    SDL_Renderer* renderer ( void ) const;
+
+    /// Is this object initialized? Valid when *NOT* nullptr
+    bool renderer_valid ( void ) const;
+
+    /// Update the renderer surface on the attached window
+    void update ( void ) const;
+
+    /// Fill the rendering target video display with a new color.
+    ///
+    /// Default color fill is "BSOD (TM) Blue".
+    bool clear ( const Color& color = Color::Blue );
+
+  protected:
+    /// This is automatically released after the attached nom::Window has been
+    /// destroyed.
+    Renderer::UniquePtr renderer_;
 };
 
 

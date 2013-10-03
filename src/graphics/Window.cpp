@@ -27,10 +27,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 #include "nomlib/graphics/Window.hpp"
+//#include "nomlib/graphics/Renderer.hpp"
 
 namespace nom {
-
-std::shared_ptr<SDL_Renderer> context = nullptr;
 
 Window::Window ( void )
 {
@@ -72,17 +71,10 @@ NOM_LOG_ERR ( NOM, "Could not create SDL window." );
     return false;
   }
 
-  context = std::shared_ptr<SDL_Renderer> ( SDL_CreateRenderer
-                                            (
-                                              this->window.get(),
-                                              -1,
-                                              context_flags
-                                            ),
-                                            priv::FreeRenderTarget
-                                          );
-  if ( context == nullptr )
+  this->initialize ( this->get(), -1, context_flags );
+  if ( this->renderer_valid() == false )
   {
-NOM_LOG_ERR ( NOM, "Could not create rendering context." );
+NOM_LOG_ERR ( NOM, "Could not create SDL renderer." );
     return false;
   }
 

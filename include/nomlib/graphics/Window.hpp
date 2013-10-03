@@ -110,7 +110,12 @@ class Window
     /// access can occur until the surfaces affected by the lock are relinquished.
     //void unlock ( void ) const;
 
-    void update ( void );
+    /// Update the surface of the screen inside the window
+    ///
+    /// (For use only with SDL Surfaces API)
+    ///
+    /// Equivalent to SDL 1.2 API SDL_Flip()
+    bool flip ( void ) const;
 
     bool toggleFullScreen ( uint32 flags );
 
@@ -127,9 +132,6 @@ class Window
     ///
     /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
     bool setWindowIcon ( const std::string& filename );
-
-    /// Fill the rendering target video display with a new color.
-    void clear ( const Color& color = Color::Blue );
 
   private:
     /// Internal method used for checking to see if the display context's video

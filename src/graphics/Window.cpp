@@ -236,10 +236,15 @@ void Window::unlock ( void ) const
 {
   SDL_UnlockSurface ( this->get() );
 }
-void Window::update ( void )
 */
+bool Window::flip ( void ) const
 {
-  SDL_RenderPresent ( context.get() );
+  if ( SDL_UpdateWindowSurface ( this->get() ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, "Could not update window surface: " + std::string ( SDL_GetError() ) );
+    return false;
+  }
+  return true;
 }
 
 bool Window::toggleFullScreen ( uint32 flags )
@@ -319,13 +324,6 @@ bool Window::setWindowIcon ( const std::string& filename )
   SDL_SetWindowIcon ( this->get(), icon.get() );
 
   return true;
-}
-
-void Window::clear ( const Color& color )
-{
-  SDL_SetRenderDrawColor ( context.get(), color.red, color.green, color.blue, color.alpha );
-
-  SDL_RenderClear ( context.get() );
 }
 
 void Window::setPosition ( int32 x, int32 y )

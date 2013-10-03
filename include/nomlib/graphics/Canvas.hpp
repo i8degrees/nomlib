@@ -45,7 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Point2-inl.hpp"
 #include "nomlib/system/ObjectCache.hpp"
 #include "nomlib/graphics/smart_ptr.hpp"
-#include "nomlib/graphics/Pixel.hpp"
+//#include "nomlib/graphics/shapes/Pixel.hpp"
 #include "nomlib/graphics/Image.hpp"
 //#include "nomlib/graphics/Rectangle.hpp"
 

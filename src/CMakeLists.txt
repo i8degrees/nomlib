@@ -23,10 +23,10 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       #${SRC_DIR}/graphics/scale2x/scale4x.cpp
       # graphics
       ${SRC_DIR}/graphics/smart_ptr.cpp
-      ${SRC_DIR}/graphics/Point.cpp
-      #${SRC_DIR}/graphics/Pixel.cpp
-      #${SRC_DIR}/graphics/Line.cpp
-      #${SRC_DIR}/graphics/Rectangle.cpp
+      ${SRC_DIR}/graphics/shapes/Point.cpp
+      #${SRC_DIR}/graphics/shapes/Pixel.cpp
+      #${SRC_DIR}/graphics/shapes/Line.cpp
+      #${SRC_DIR}/graphics/shapes/Rectangle.cpp
       ${SRC_DIR}/graphics/Canvas.cpp
       ${SRC_DIR}/graphics/Image.cpp
       ${SRC_DIR}/graphics/Window.cpp

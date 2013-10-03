@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 Point::Point ( void ) {}
-
 Point::~Point ( void ) {}
 
 Point::Point ( const Point2i& coords, const Color& color )
@@ -50,15 +49,15 @@ void Point::update ( void ) {}
 
 void Point::draw ( SDL_Renderer* target ) const
 {
-  if ( SDL_SetRenderDrawColor ( target, color.r, color.g, color.b, color.a ) != 0 )
+  if ( SDL_SetRenderDrawColor ( target, this->color.r, this->color.g, this->color.b, this->color.a ) != 0 )
   {
-NOM_LOG_ERR ( NOM, "Could not render SDL draw color: " + std::string (SDL_GetError()) );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     return;
   }
 
-  if ( SDL_RenderDrawPoint ( target, coords.x, coords.y ) != 0 )
+  if ( SDL_RenderDrawPoint ( target, this->coords.x, this->coords.y ) != 0 )
   {
-NOM_LOG_ERR ( NOM, "Could not render SDL 2D point: " + std::string (SDL_GetError()) );
+NOM_LOG_ERR ( NOM, "Could not render 3D SDL point: " + std::string (SDL_GetError()) );
     return;
   }
 }

@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+/// \brief 3D Point shape (pixel)
 class Point:
               public IDrawable
 {
@@ -46,8 +47,10 @@ class Point:
     Point ( const Point2i& coords, const Color& color );
     Point ( int32 x, int32 y, const Color& color );
 
+    /// Intentional interface stub
     void update ( void );
 
+    /// Draw a 3D point (pixel) onto the the attached renderer
     void draw ( SDL_Renderer* target ) const;
 
   private:

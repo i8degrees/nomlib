@@ -139,12 +139,17 @@ class Window:
     /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
     bool set_window_icon ( const std::string& filename );
 
+    int window_id ( void ) const;
+    int window_display_id ( void ) const;
+
   private:
     /// Internal method used for checking to see if the display context's video
     /// surfacea actually needs locking before doing so for performance sake.
     //bool mustLock ( void ) const;
-
     Window::UniquePtr window_;
+
+    int window_id_;
+    int window_display_id_;
 };
 
 

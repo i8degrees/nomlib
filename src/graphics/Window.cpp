@@ -32,7 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 Window::Window ( void ) : window_
-    ( Window::UniquePtr ( nullptr, priv::FreeWindow ) )
+    { Window::UniquePtr ( nullptr, priv::FreeWindow ), },
+    window_id_ ( -1 ), window_display_id_ ( - 1 ),
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -76,6 +77,13 @@ NOM_LOG_ERR ( NOM, "Could not create SDL window." );
 NOM_LOG_ERR ( NOM, "Could not create SDL renderer." );
     return false;
   }
+
+  // Track our unique identifiers for our brand spanking new window!
+  this->window_id_ = this->window_id();
+  this->window_display_id_ = this->window_display_id();
+  // Try to ensure that we have no leftover artifacts by clearing and filling
+  // window with a solid black paint bucket fill.
+  this->fill ( Color::Black );
 
   return true;
 }
@@ -320,6 +328,16 @@ bool Window::set_window_icon ( const std::string& filename )
 void Window::set_position ( int32 x, int32 y )
 {
   SDL_SetWindowPosition ( this->window(), x, y );
+}
+
+int Window::window_id ( void ) const
+{
+  return SDL_GetWindowID ( this->window() );
+}
+
+int Window::window_display_id ( void ) const
+{
+  return SDL_GetWindowDisplayIndex ( this->window() );
 }
 
 } // namespace nom

@@ -95,20 +95,20 @@ class Window
     /// Return value of this internal property is presumed to be boolean -- no
     /// verification has been made of this. Testing of this method *appears*
     /// to be in working order.
-    bool getCanvasLock ( void ) const;
+    //bool getCanvasLock ( void ) const;
 
     void setPosition ( int32 x, int32 y );
 
     /// Lock the display context's video surface; this must be done before you
     /// attempt to write directly to video memory, such as when you are
     /// manipulating surfaces at the pixel level.
-    bool lock ( void ) const;
+    //bool lock ( void ) const;
 
     /// Unlocks the display context's video surface; this must be done after you
     /// are finished writing to the video buffer. During the time that the video
     /// surface is locked, no updates (think: rendering) outside of your local
     /// access can occur until the surfaces affected by the lock are relinquished.
-    void unlock ( void ) const;
+    //void unlock ( void ) const;
 
     void update ( void );
 
@@ -134,7 +134,7 @@ class Window
   private:
     /// Internal method used for checking to see if the display context's video
     /// surfacea actually needs locking before doing so for performance sake.
-    bool mustLock ( void ) const;
+    //bool mustLock ( void ) const;
 
     std::shared_ptr<SDL_Window> window;
 };

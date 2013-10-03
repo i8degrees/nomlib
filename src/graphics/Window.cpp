@@ -196,16 +196,16 @@ NOM_LOG_INFO ( NOM, "No video modes are supported." );
 */
     return VideoModeList();
 }
-
+/*
 bool Window::getCanvasLock ( void ) const
 {
   //return this->get()->locked;
     return false;
 }
-
+*/
+/*
 bool Window::mustLock ( void ) const
 {
-/*
   if ( SDL_MUSTLOCK ( this->get() ) )
   {
     return true;
@@ -214,13 +214,12 @@ bool Window::mustLock ( void ) const
   {
     return false;
   }
-*/
     return false;
 }
-
+*/
+/*
 bool Window::lock ( void ) const
 {
-/*
   if ( this->mustLock() == true )
   {
     if ( SDL_LockSurface ( this->get() ) == -1 )
@@ -229,18 +228,16 @@ NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
       return false;
     }
   }
-*/
   return true;
 }
-
+*/
+/*
 void Window::unlock ( void ) const
 {
-/*
   SDL_UnlockSurface ( this->get() );
-*/
 }
-
 void Window::update ( void )
+*/
 {
   SDL_RenderPresent ( context.get() );
 }

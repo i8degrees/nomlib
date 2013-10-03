@@ -41,6 +41,11 @@ void FreeRenderTarget ( SDL_Renderer* handle )
   SDL_DestroyRenderer ( handle );
 }
 
+void FreeRenderTarget ( void* renderer )
+{
+  SDL_DestroyRenderer ( static_cast<SDL_Renderer*> ( renderer ) );
+}
+
 void FreeSurface ( SDL_Surface* video_buffer )
 {
   SDL_FreeSurface ( video_buffer );

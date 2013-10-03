@@ -41,8 +41,13 @@ namespace nom {
 /// Custom deleter for SDL_Window struct
 void FreeWindow ( SDL_Window* );
 
-/// Custom deleter for SDL_Renderer struct
+/// Custom deleter for SDL_Renderer struct; function overload for
+/// std::shared_ptr
 void FreeRenderTarget ( SDL_Renderer* );
+
+/// Custom deleter for SDL_Renderer struct; function overload for
+/// std::unique_ptr
+void FreeRenderTarget ( void* renderer );
 
 /// Custom deleter for SDL_Surface struct
 void FreeSurface ( SDL_Surface* );

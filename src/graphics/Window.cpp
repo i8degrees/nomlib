@@ -49,22 +49,23 @@ Window::~Window ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
-bool Window::create  ( int32 width, int32 height, uint32 window_flags, uint32 context_flags )
+bool Window::create (
+                      const std::string& window_title, int32 width, int32 height,
+                      uint32 window_flags, uint32 context_flags
+                    )
 {
-  window = std::shared_ptr<SDL_Window>  (
-                                      SDL_CreateWindow
-                                      (
-                                        nullptr,
-                                        SDL_WINDOWPOS_CENTERED,
-                                        SDL_WINDOWPOS_CENTERED,
-                                        width,
-                                        height,
-                                        window_flags
-                                      ),
-                                      priv::FreeWindow
-                                    );
+  this->window = std::shared_ptr<SDL_Window>  (
+                                                SDL_CreateWindow
+                                                (
+                                                  window_title.c_str(),
+                                                  SDL_WINDOWPOS_CENTERED,
+                                                  SDL_WINDOWPOS_CENTERED,
+                                                  width,
+                                                  height,
+                                                  window_flags
+                                                ), priv::FreeWindow
+                                              );
 
-  if ( window == nullptr )
   {
 NOM_LOG_ERR ( NOM, "Could not create window." );
     return false;

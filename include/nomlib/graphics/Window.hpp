@@ -55,7 +55,12 @@ class Window
     Window ( void );
     ~Window ( void );
 
-    bool create  ( int32 width, int32 height, uint32 window_flags, uint32 context_flags = SDL_RENDERER_ACCELERATED );
+    /// Initialize a SDL window and renderer
+    bool create (
+                  const std::string& window_title, int32 width, int32 height,
+                  uint32 window_flags,
+                  uint32 context_flags = SDL_RENDERER_ACCELERATED
+                );
 
     /// Returns a raw pointer to the SDL_Window struct in use for this object
     SDL_Window* get ( void ) const;

@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 1. Copyright (c) Andrea Mazzoleni
 
 ******************************************************************************/
-#include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/scale2x/scale2x.hpp"
 #include "nomlib/graphics/hqx/hqx.hpp"
 

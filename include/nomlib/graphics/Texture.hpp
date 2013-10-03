@@ -36,7 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
-//#include "nomlib/graphics/ICanvas.hpp"
 #include "nomlib/system/make_unique.hpp"
 #include "nomlib/math/helpers.hpp"
 #include "nomlib/math/Color.hpp"

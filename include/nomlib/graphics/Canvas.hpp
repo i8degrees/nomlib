@@ -202,6 +202,19 @@ class Canvas
     /// important to note is that we only have an alpha channel surface set
     /// if Color value is not -1 (the default)
     ///
+    /// \param filename         File path you wish to load into memory as a
+    ///                         valid bitmap / texture
+    ///                         (think: supported image file types).
+    ///
+    /// \param colorkey         The color key you wish to use to apply a color
+    ///                         key to
+    /// \param use_cache        Whether or not to use an internal object cache
+    ///                         feature of nomlib. Defaults to off.
+    ///
+    /// \param flags            The flags you wish for the method loader to
+    ///                         consider for you, such as color keying
+    ///                         (single pixel transparency). Defaults to color
+    ///                         keying and RLE blit acceleration enabled.
     /// \internal
     /// Clean up this documentation note and also verify that it is
     /// sane to assume that you would not use transparency when you have alpha
@@ -210,7 +223,7 @@ class Canvas
     bool load ( const std::string& filename, const Color&
                 colorkey = Color::null,
                 bool use_cache = false,
-                uint32 flags = SDL_RLEACCEL | SDL_TRUE//SRCCOLORKEY
+                uint32 flags = SDL_RLEACCEL | SDL_TRUE
               );
 
     void update ( SDL_Renderer* );

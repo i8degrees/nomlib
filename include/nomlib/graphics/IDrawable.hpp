@@ -51,10 +51,10 @@ class IDrawable
     /// Whereas both Update & Draw are typically publicly exposed to the
     /// end-user, only the Draw method call should be expected of the end-user
     /// to be explicitly called.
-    virtual void Update ( void ) = 0;
+    virtual void update ( void ) = 0;
 
     /// Draw the prepared video buffer contents of this object
-    virtual void Draw ( SDL_Surface* ) const = 0;
+    virtual void draw ( SDL_Surface* ) const = 0;
 };
 
 

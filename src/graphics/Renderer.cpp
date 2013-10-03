@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 Renderer::Renderer ( void ):  renderer_
-    { Renderer::UniquePtr ( nullptr, priv::FreeRenderTarget ) }
+    ( Renderer::UniquePtr ( nullptr, priv::FreeRenderTarget ) )
 {
 NOM_LOG_TRACE ( NOM );
 

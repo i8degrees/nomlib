@@ -93,8 +93,13 @@ bool App::onInit ( void )
     return false;
   }
 
-  this->Running(); // If all is well, here goes nothing!
+  this->ui_frame = nom::ui::GrayFrame ( 50, 50, 200, 200 );
 
+  this->linear.setSize ( 200 - 4, 200 - 4 );
+  this->linear.setMargins ( 4, 4 );
+  this->linear.setFillDirection ( nom::FillDirection::Top );
+
+  this->Running(); // If all is well, here goes nothing!
   return true;
 }
 
@@ -176,6 +181,13 @@ nom::int32 App::Run ( void )
     nom::Point pixel = nom::Point ( 500, 245, nom::Color::White );
     pixel.draw ( this->window[2].renderer() );
 
+    this->linear.setStartColor ( nom::Color ( 251, 222, 232 ) );
+    this->linear.setEndColor ( nom::Color ( 114, 66, 66 ) );
+    this->linear.setPosition ( 50, 50 );
+    this->linear.update();
+    this->linear.draw( this->window[2].renderer() );
+    this->ui_frame.draw ( this->window[2].renderer() );
+
     nom::Line line2 = nom::Line ( 100, 100, 250, 250, nom::Color( 133, 133, 133 ) );
     line2.draw ( this->window[1].renderer() );
 
@@ -190,9 +202,10 @@ nom::int32 App::Run ( void )
 
     for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
     {
-      this->window[idx].update();
 
+      this->window[idx].update();
       this->fps[idx].update();
+      this->ui_frame.update();
 
       // Refresh the frames per second at 1 second intervals
       if ( this->update[idx].ticks() > 1000 )

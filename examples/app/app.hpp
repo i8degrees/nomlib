@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
+#include <nomlib/gui.hpp>
 
 /// Installation prefix of our application.
 ///
@@ -98,6 +99,10 @@ class App:
 
     /// Input events
     SDL_Event event;
+
+    nom::ui::GrayFrame ui_frame;
+
+    nom::Gradient linear;
 };
 
 #endif // include guard defined

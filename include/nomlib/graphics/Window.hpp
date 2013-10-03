@@ -150,6 +150,7 @@ class Window:
 
     int window_id_;
     int window_display_id_;
+    bool enabled_;
 };
 
 

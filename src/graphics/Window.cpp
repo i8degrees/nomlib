@@ -34,6 +34,7 @@ namespace nom {
 Window::Window ( void ) : window_
     { Window::UniquePtr ( nullptr, priv::FreeWindow ), },
     window_id_ ( -1 ), window_display_id_ ( - 1 ),
+    enabled_ ( false )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -81,6 +82,8 @@ NOM_LOG_ERR ( NOM, "Could not create SDL renderer." );
   // Track our unique identifiers for our brand spanking new window!
   this->window_id_ = this->window_id();
   this->window_display_id_ = this->window_display_id();
+  this->enabled_ = true;
+
   // Try to ensure that we have no leftover artifacts by clearing and filling
   // window with a solid black paint bucket fill.
   this->fill ( Color::Black );

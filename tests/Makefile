@@ -1,4 +1,4 @@
-CFLAGS=/usr/bin/clang++ -std=c++11 -stdlib=libc++ -I../include -D NOM_DEBUG -F${HOME}/Library/Frameworks -F/Library/Frameworks -I${HOME}/Library/Frameworks/SDL2_image.framework/Headers
+CFLAGS=/usr/bin/clang++ -std=c++11 -stdlib=libc++ -I../include -D NOM_DEBUG -F${HOME}/Library/Frameworks -F/Library/Frameworks -I${HOME}/Library/Frameworks/SDL2_image.framework/Headers -I${HOME}/Library/Frameworks/SDL2.framework/Headers
 LDFLAGS=-framework nomlib -framework SDL2
 
 all: test

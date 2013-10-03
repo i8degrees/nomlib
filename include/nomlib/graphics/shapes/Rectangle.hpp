@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_RECTANGLE_HEADERS
-#define NOMLIB_SDL_RECTANGLE_HEADERS
+#ifndef NOMLIB_SDL2_RECTANGLE_HEADERS
+#define NOMLIB_SDL2_RECTANGLE_HEADERS
 
 #include "SDL.h"
 
@@ -45,17 +45,15 @@ class Rectangle:
 {
   public:
     Rectangle ( void );
+    virtual ~Rectangle ( void );
 
     /// Constructor variant for creating a rectangle from an existing type
     /// This is a "shallow" copy assignment
     Rectangle ( const Rectangle& rect );
-
     Rectangle ( const Coords& coords, const Color& color );
 
-    virtual ~Rectangle ( void );
-
-    void Update ( void );
-    void Draw ( SDL_Surface* ) const;
+    void update ( void );
+    void draw ( SDL_Renderer* target ) const;
 
   private:
     Coords coords;
@@ -65,4 +63,4 @@ class Rectangle:
 
 } // namespace nom
 
-#endif // NOMLIB_SDL_RECTANGLE_HEADERS defined
+#endif // include guard defined

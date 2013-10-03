@@ -24,9 +24,9 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       # graphics
       ${SRC_DIR}/graphics/smart_ptr.cpp
       ${SRC_DIR}/graphics/shapes/Point.cpp
-      #${SRC_DIR}/graphics/shapes/Pixel.cpp
-      #${SRC_DIR}/graphics/shapes/Line.cpp
-      #${SRC_DIR}/graphics/shapes/Rectangle.cpp
+      ${SRC_DIR}/graphics/shapes/Line.cpp
+      ${SRC_DIR}/graphics/shapes/Rectangle.cpp
+      ${SRC_DIR}/graphics/shapes/Pixel.cpp
       ${SRC_DIR}/graphics/Canvas.cpp
       ${SRC_DIR}/graphics/Image.cpp
       ${SRC_DIR}/graphics/Window.cpp

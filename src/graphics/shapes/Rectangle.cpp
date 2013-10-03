@@ -26,7 +26,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/graphics/Rectangle.hpp"
+#include "nomlib/graphics/shapes/Rectangle.hpp"
 
 namespace nom {
 
@@ -35,6 +35,8 @@ Rectangle::Rectangle ( void )
   this->coords = Coords ( 0, 0, 0, 0 );
   this->color = Color ( 0, 0, 0 );
 }
+
+Rectangle::~Rectangle ( void ) {}
 
 Rectangle::Rectangle ( const Rectangle& rect )
 {
@@ -48,31 +50,12 @@ Rectangle::Rectangle ( const Coords& coords, const Color& color )
   this->color = color;
 }
 
-Rectangle::~Rectangle ( void ) {}
-void Rectangle::Update ( void ) {}
 
-void Rectangle::Draw ( SDL_Surface* video_buffer ) const
+void Rectangle::update ( void ) {}
+
+void Rectangle::draw ( SDL_Renderer* target ) const
 {
-  SDL_Rect rectangle = IntRect::asSDLRect ( this->coords );
-
-  uint32 rectangle_color = 0;
-
-  rectangle_color = RGBA::asInt32 ( video_buffer->format, this->color );
-
-  if ( SDL_FillRect ( video_buffer, &rectangle, rectangle_color ) != 0 )
-  {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return;
-  }
-
-#ifndef NOM_PLATFORM_LINUX
-  // Destruct as soon as we are done to free memory
-  // that could otherwise be held too long before
-  // cleaned up, resulting in slow, but steady climb
-  // in memory usage
-  Rectangle::~Rectangle();
-#endif
-  //SDL_FreeSurface ( buffer );
+  // ...
 }
 
 

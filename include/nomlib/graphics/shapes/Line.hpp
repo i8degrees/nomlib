@@ -26,39 +26,35 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_LINE_HEADERS
-#define NOMLIB_SDL_LINE_HEADERS
+#ifndef NOMLIB_SDL2_LINE_HEADERS
+#define NOMLIB_SDL2_LINE_HEADERS
 
 #include <cmath>
 #include <vector>
-#include <memory>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/graphics/Pixel.hpp"
 #include "nomlib/system/make_unique.hpp"
 
 namespace nom {
 
-/// \brief Bresenham's line algorithm
+/// \brief OpenGL Line segments
 class Line:
             public IDrawable
 {
   public:
     Line ( void );
-    Line ( const Coords& coords, const Color& color );
-    Line ( int32 x, int32 y, int32 width, int32 height, const Color& color );
     virtual ~Line ( void );
 
-    void Update ( void );
-    void Draw ( SDL_Surface* video_buffer ) const;
+    Line ( const Coords& coords, const Color& color );
+    Line ( int32 x, int32 y, int32 width, int32 height, const Color& color );
+
+    void update ( void );
+    void draw ( SDL_Renderer* target ) const;
 
   private:
-    /// Vector of pointers to Pixel objects
-    std::vector<std::unique_ptr<Pixel>> pixels;
-
     Coords coords;
     Color color;
 
@@ -69,4 +65,4 @@ class Line:
 
 } // namespace nom
 
-#endif // NOMLIB_SDL_LINE_HEADERS defined
+#endif // include guard defined

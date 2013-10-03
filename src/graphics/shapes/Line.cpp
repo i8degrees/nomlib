@@ -26,15 +26,17 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/graphics/Line.hpp"
+#include "nomlib/graphics/shapes/Line.hpp"
 
 namespace nom {
 
 Line::Line ( void )
 {
   this->updated = true;
-  this->Update();
+  this->update();
 }
+
+Line::~Line ( void ) {}
 
 Line::Line ( const Coords& coords, const Color& color )
 {
@@ -42,7 +44,7 @@ Line::Line ( const Coords& coords, const Color& color )
   this->color = color;
 
   this->updated = false;
-  this->Update();
+  this->update();
 }
 
 Line::Line ( int32 x, int32 y, int32 width, int32 height, const Color& color )
@@ -51,76 +53,14 @@ Line::Line ( int32 x, int32 y, int32 width, int32 height, const Color& color )
   this->color = color;
 
   this->updated = false;
-  this->Update();
+  this->update();
 }
 
-Line::~Line ( void )
+void Line::update ( void ) {}
+
+void Line::draw ( SDL_Renderer* target ) const
 {
   // ...
-}
-
-// Recompute line offsets
-void Line::Update ( void )
-{
-  if ( this->updated == true )
-    return;
-
-  // temporary calculation offsets based on user's initial given coordinates
-  float x1 = static_cast<float> ( this->coords.x );
-  float y1 = static_cast<float> ( this->coords.y );
-  float x2 = static_cast<float> ( this->coords.width );
-  float y2 = static_cast<float> ( this->coords.height );
-
-  // A surprisingly fast growing memory leak occurs here if we do not clear our
-  // pixels array every update cycle
-  this->pixels.clear();
-
-  bool steep = ( fabs ( y2 - y1 ) > fabs ( x2 - x1 ) );
-
-  if ( steep )
-  {
-      std::swap ( x1, y1 );
-      std::swap ( x2, y2 );
-  }
-
-  if ( x1 > x2 )
-  {
-      std::swap ( x1, x2 );
-      std::swap ( y1, y2 );
-  }
-
-  float dx = x2 - x1;
-  float dy = fabs ( y2 - y1 );
-
-  float error = dx / 2.0f;
-  int32 ystep = ( y1 < y2 ) ? 1 : -1;
-  int32 y = ( int32 ) y1;
-
-  int32 maxX = ( int32 ) x2;
-
-  for ( int32 x = ( int32 ) x1; x < maxX; ++x )
-  {
-    if ( steep )
-      this->pixels.push_back ( nom::make_unique<Pixel> ( Pixel ( y, x, this->color ) ) );
-    else
-      this->pixels.push_back ( nom::make_unique<Pixel> ( Pixel ( x, y, this->color ) ) );
-
-    error -= dy;
-
-    if( error < 0 )
-    {
-      y += ystep;
-      error += dx;
-    }
-  }
-
-  this->updated = true;
-}
-
-void Line::Draw ( SDL_Surface* video_buffer ) const
-{
-  for ( unsigned int idx = 0; idx < this->pixels.size(); ++idx )
-    this->pixels[idx]->Draw ( video_buffer );
 }
 
 

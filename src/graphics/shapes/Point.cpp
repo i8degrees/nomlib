@@ -26,44 +26,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_PIXEL_HEADERS
-#define NOMLIB_SDL_PIXEL_HEADERS
-
-#include "nomlib/config.hpp"
-#include "nomlib/math/Color.hpp"
-#include "nomlib/math/Coords.hpp"
-#include "nomlib/math/Rect-inl.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/graphics/shapes/Point.hpp"
 
 namespace nom {
 
-/// \brief OMG, they still do pixels?!
-class Pixel:
-              public IDrawable
+Point::Point ( void ) {}
+
+Point::~Point ( void ) {}
+
+Point::Point ( const Point2i& coords, const Color& color )
 {
-  public:
-    Pixel ( void );
-    Pixel ( const Coords& coords, const Color& color );
-    Pixel ( int32 x, int32 y, const Color& color );
-    virtual ~Pixel ( void );
+  this->coords = coords;
+  this->color = color;
+}
 
-    void Update ( void );
+Point::Point ( int32 x, int32 y, const Color& color )
+{
+  this->coords = Point2i ( x, y );
+  this->color = color;
+}
 
-    /// Pixel blitting -- supports 8-bit, 15/16-bit, 24-bit & 32-bit color modes
-    ///
-    /// If an unsupported canvas is detected, returns without attempting to
-    /// write
-    ///
-    /// You are responsible for locking & unlocking of the canvas before-hand
-    ///
-    /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
-    void Draw ( SDL_Surface* video_buffer ) const;
-  private:
-    Coords coords;
-    Color color;
-};
+void Point::update ( void ) {}
+
+void Point::draw ( SDL_Renderer* target ) const
+{
+  if ( SDL_SetRenderDrawColor ( target, color.r, color.g, color.b, color.a ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, "Could not render SDL draw color: " + std::string (SDL_GetError()) );
+    return;
+  }
+
+  if ( SDL_RenderDrawPoint ( target, coords.x, coords.y ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, "Could not render SDL 2D point: " + std::string (SDL_GetError()) );
+    return;
+  }
+}
 
 
 } // namespace nom
-
-#endif // NOMLIB_SDL_PIXEL_HEADERS defined

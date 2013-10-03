@@ -31,17 +31,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
   namespace ui {
 
-Cursor::Cursor ( void )
+Cursor::Cursor ( void ):  locked_ ( false )
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-Cursor::Cursor ( const SpriteSheet& sheet ):  AnimatedSprite ( sheet )
+Cursor::Cursor ( const SpriteSheet& sheet ):  AnimatedSprite ( sheet ),
+    locked_ ( false )
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-Cursor::Cursor ( const std::string& filename ):  AnimatedSprite ( filename )
+Cursor::Cursor ( const std::string& filename ):  AnimatedSprite ( filename ),
+    locked_ ( false )
 {
 NOM_LOG_TRACE ( NOM );
 }
@@ -71,46 +73,44 @@ Cursor& Cursor::operator = ( const Cursor& other )
   return *this;
 }
 
-int32 Cursor::getX ( void ) const
+int32 Cursor::x ( void ) const
 {
-  Coords x_value = this->getPosition();
-  return x_value.x;
+  return this->getPosition().x;
 }
 
-int32 Cursor::getY ( void ) const
+int32 Cursor::y ( void ) const
 {
-  Coords y_value = this->getPosition();
-  return y_value.y;
+  return this->getPosition().y;
 }
 
-int32 Cursor::moveCursorUp ( void )
+bool Cursor::locked ( void ) const
+{
+  return this->locked_;
+}
+
+void Cursor::toggle_lock ( bool toggle )
+{
+  this->locked_ = toggle;
+}
+
+int32 Cursor::move_up ( void )
 {
   return -1; // Do nothing virtual implementation
 }
 
-int32 Cursor::moveCursorDown ( void )
+int32 Cursor::move_down ( void )
 {
   return -1; // Do nothing virtual implementation
 }
 
-int32 Cursor::moveCursorLeft ( void )
+int32 Cursor::move_left ( void )
 {
   return -1; // Do nothing virtual implementation
 }
 
-int32 Cursor::moveCursorRight ( void )
+int32 Cursor::move_right ( void )
 {
   return -1; // Do nothing virtual implementation
-}
-
-void Cursor::update ( void )
-{
-  this->Update();
-}
-
-void Cursor::draw ( SDL_Surface* video_buffer )
-{
-  this->Draw ( video_buffer );
 }
 
 

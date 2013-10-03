@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_TEXT_HPP
-#define NOMLIB_TEXT_HPP
+#ifndef NOMLIB_SDL2_TEXT_HPP
+#define NOMLIB_SDL2_TEXT_HPP
 
 #include <iostream>
 #include <string>
@@ -43,7 +43,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-enum FontType
+/// Definition type of the font format we have encountered
+enum FontType : int32
 {
   Unknown = 0,
   Bitmap = 1,
@@ -88,8 +89,8 @@ class Text: public IDrawable
 
     void setSpacing ( uint32 spaces );
 
-    virtual void Update ( void );
-    virtual void Draw ( SDL_Surface* video_buffer ) const;
+    virtual void update ( void );
+    virtual void draw ( SDL_Renderer* target ) const;
 
     /// Rescale the font with a chosen resizing algorithm
     ///

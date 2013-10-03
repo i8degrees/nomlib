@@ -26,21 +26,21 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_HEADERS
-#define NOMLIB_GRAPHICS_HEADERS
+#ifndef NOMLIB_GRAPHICS_HPP
+#define NOMLIB_GRAPHICS_HPP
 
 // Public header file
 
 #include <nomlib/config.hpp>
 #include <nomlib/graphics/smart_ptr.hpp>
-//#include <nomlib/graphics/Text.hpp>
-//#include <nomlib/graphics/BitmapFont.hpp>
+#include <nomlib/graphics/Text.hpp>
+#include <nomlib/graphics/BitmapFont.hpp>
 #include <nomlib/graphics/Canvas.hpp>
-//#include <nomlib/graphics/VideoMode.hpp>
+#include <nomlib/graphics/VideoMode.hpp>
 #include <nomlib/graphics/Window.hpp>
 #include <nomlib/graphics/Renderer.hpp>
 #include <nomlib/graphics/IDrawable.hpp>
-//#include <nomlib/graphics/TrueTypeFont.hpp>
+#include <nomlib/graphics/TrueTypeFont.hpp>
 #include <nomlib/graphics/Gradient.hpp>
 #include <nomlib/graphics/Image.hpp>
 #include <nomlib/graphics/shapes/Pixel.hpp>

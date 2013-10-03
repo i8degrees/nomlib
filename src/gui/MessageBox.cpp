@@ -182,12 +182,12 @@ void MessageBox::setLabel ( const std::string& text )
   this->label->setText ( text );
 }
 
-void MessageBox::Update ( void )
+void MessageBox::update ( void )
 {
   for ( auto it = this->drawable.begin(); it != this->drawable.end(); ++it )
   {
     std::shared_ptr<IDrawable> obj = *it;
-    obj->Update();
+    obj->update();
   }
 
   if ( ! this->label ) return;
@@ -215,14 +215,14 @@ void MessageBox::Update ( void )
   } // end switch
 }
 
-void MessageBox::Draw ( SDL_Surface* video_buffer ) const
+void MessageBox::draw ( SDL_Renderer* target ) const
 {
   if ( this->isEnabled() == false ) return;
 
   for ( auto it = this->drawable.begin(); it != this->drawable.end(); ++it )
   {
     std::shared_ptr<IDrawable> obj = *it;
-    obj->Draw ( video_buffer );
+    obj->draw ( target );
   }
 }
 

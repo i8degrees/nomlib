@@ -31,8 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 1. http://lazyfoo.net/SDL_tutorials/lesson30/index.php
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_BITMAP_FONT_HEADERS
-#define NOMLIB_SDL_BITMAP_FONT_HEADERS
+#ifndef NOMLIB_SDL2_BITMAP_FONT_HEADERS
+#define NOMLIB_SDL2_BITMAP_FONT_HEADERS
 
 #include <iostream>
 #include <string>
@@ -133,11 +133,11 @@ class BitmapFont: public IFont
                 bool use_cache = false
               );
 
-    void Update ( void );
+    void update ( void );
 
     /// Draw the set text string to the video surface
     /// \todo Test horizontal tabbing '\t'
-    void Draw ( SDL_Surface* video_buffer ) const;
+    void draw ( SDL_Renderer* target ) const;
 
     /// Rescale the font with a chosen resizing algorithm
     ///

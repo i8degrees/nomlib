@@ -231,19 +231,19 @@ void Text::setSpacing ( uint32 spaces )
   }
 }
 
-void Text::Update ( void )
+void Text::update ( void )
 {
   if ( this->font )
   {
-    this->font->Update();
+    this->font->update();
   }
 }
 
-void Text::Draw ( SDL_Surface* video_buffer ) const
+void Text::draw ( SDL_Renderer* target ) const
 {
   if ( this->font )
   {
-    this->font->Draw ( video_buffer );
+    this->font->draw ( target );
   }
 }
 

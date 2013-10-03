@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_MESSAGEBOX_HEADERS
-#define NOMLIB_SDL_MESSAGEBOX_HEADERS
+#ifndef NOMLIB_SDL2_MESSAGEBOX_HEADERS
+#define NOMLIB_SDL2_MESSAGEBOX_HEADERS
 
 #include <iostream>
 #include <string>
@@ -90,8 +90,8 @@ class MessageBox:
     void setWindowTitle ( const std::string& text );
     void setLabel ( const std::string& text );
 
-    void Update ( void );
-    void Draw ( SDL_Surface* video_buffer ) const;
+    void update ( void );
+    void draw ( SDL_Renderer* target ) const;
 
   private:
     void initialize ( void );
@@ -110,4 +110,4 @@ class MessageBox:
   } // namespace ui
 } // namespace nom
 
-#endif // NOMLIB_SDL_MESSAGEBOX_HEADERS defined
+#endif // include guard defined

@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_TRUETYPE_FONT_HEADERS
-#define NOMLIB_SDL_TRUETYPE_FONT_HEADERS
+#ifndef NOMLIB_SDL2_TRUETYPE_FONT_HEADERS
+#define NOMLIB_SDL2_TRUETYPE_FONT_HEADERS
 
 #include <iostream>
 #include <string>
@@ -120,10 +120,10 @@ class TrueTypeFont: public IFont
                 bool use_cache = false
               );
 
-    void Update ( void );
+    void update ( void );
 
     /// Draw the set text string to the video surface
-    void Draw ( SDL_Surface* video_buffer ) const;
+    void draw ( SDL_Renderer* target ) const;
 
   private:
     /// Trigger a rebuild of the font metrics from the current font; this
@@ -176,4 +176,4 @@ void Free_TrueTypeFont ( TrueTypeFont* ptr );
   } // namespace priv
 } // namespace nom
 
-#endif // include guard
+#endif // include guard defined

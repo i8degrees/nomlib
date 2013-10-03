@@ -255,8 +255,9 @@ NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
   return true;
 }
 
-void TrueTypeFont::Update ( void )
+void TrueTypeFont::update ( void )
 {
+/*  FIXME
   // Update display coordinates
   this->font_buffer.setPosition ( this->coords );
 
@@ -300,13 +301,14 @@ void TrueTypeFont::Update ( void )
   {
     this->font_buffer.setAlpha ( this->style_options );
   }
+    FIXME */
 }
 
-void TrueTypeFont::Draw ( SDL_Surface* video_buffer ) const
+void TrueTypeFont::draw ( SDL_Renderer* target ) const
 {
   if ( this->font_buffer.valid() )
   {
-    this->font_buffer.Draw ( video_buffer );
+    this->font_buffer.draw ( target );
   }
 }
 

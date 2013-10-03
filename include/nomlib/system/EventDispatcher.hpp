@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_EVENT_DISPATCHER_HPP
-#define NOMLIB_EVENT_DISPATCHER_HPP
+#ifndef NOMLIB_SDL2_EVENT_DISPATCHER_HPP
+#define NOMLIB_SDL2_EVENT_DISPATCHER_HPP
 
 #include <iostream>
 #include <string>
@@ -63,9 +63,6 @@ class EventDispatcher
     int32 push ( SDL_Event* event, int32 code, void* params );
 
     int32 dispatch ( enum UserEvent code, void* params = nullptr );
-
-  private:
-    // ...
 };
 
 

@@ -31,7 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Window::Window ( void )
+Window::Window ( void ) : window
+    ( Window::UniquePtr ( nullptr, priv::FreeWindow ) )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -53,17 +54,15 @@ bool Window::create (
                       uint32 window_flags, uint32 context_flags
                     )
 {
-  this->window = std::shared_ptr<SDL_Window>  (
-                                                SDL_CreateWindow
-                                                (
-                                                  window_title.c_str(),
-                                                  SDL_WINDOWPOS_CENTERED,
-                                                  SDL_WINDOWPOS_CENTERED,
-                                                  width,
-                                                  height,
-                                                  window_flags
-                                                ), priv::FreeWindow
-                                              );
+  this->window.reset  ( SDL_CreateWindow  (
+                                            window_title.c_str(),
+                                            SDL_WINDOWPOS_CENTERED,
+                                            SDL_WINDOWPOS_CENTERED,
+                                            width,
+                                            height,
+                                            window_flags
+                                          )
+                      );
 
   if ( this->valid() == false )
   {

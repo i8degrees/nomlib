@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <cstdlib>
 #include <vector>
+#include <memory>
 
 #include "SDL.h"
 
@@ -54,6 +55,9 @@ class Window:
                 /*: public IDisplay*/
 {
   public:
+    /// Convenience definition type for the std::unique_ptr variant
+    typedef std::unique_ptr<SDL_Window, void (*)(SDL_Window*)> UniquePtr;
+
     Window ( void );
     ~Window ( void );
 
@@ -140,7 +144,7 @@ class Window:
     /// surfacea actually needs locking before doing so for performance sake.
     //bool mustLock ( void ) const;
 
-    std::shared_ptr<SDL_Window> window;
+    Window::UniquePtr window;
 };
 
 

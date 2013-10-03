@@ -72,8 +72,7 @@ bool App::onInit ( void )
   // specified:
   //
   // nom::uint32 context_flags = SDL_RENDERER_ACCELERATED;
-
-  if ( this->context.create ( WINDOW_WIDTH, WINDOW_HEIGHT, window_flags /*, context_flags*/ ) == false )
+  if ( this->context.create ( APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, window_flags /*, context_flags*/ ) == false )
   {
     return false;
   }
@@ -82,8 +81,6 @@ bool App::onInit ( void )
   {
     return false;
   }
-
-  this->context.setWindowTitle ( APP_NAME );
 
   this->Running(); // If all is well, here goes nothing!
 

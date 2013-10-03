@@ -43,8 +43,8 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/graphics/Gradient.cpp
       # nomJSON
       #${SRC_DIR}/json/Array.cpp
-      #${SRC_DIR}/json/FileReader.cpp
-      #${SRC_DIR}/json/FileWriter.cpp
+      ${SRC_DIR}/json/FileReader.cpp
+      ${SRC_DIR}/json/FileWriter.cpp
       #${SRC_DIR}/json/Object.cpp
       #${SRC_DIR}/json/Value.cpp
       # system

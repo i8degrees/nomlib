@@ -38,25 +38,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// FIXME
-/// MSVC++ does not accept valid C++11 code here
-/// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
-enum /*class*/ UserEvent: int32
-{
-  Unknown = 000,
-  AI,
-  Animation,
-  Application,
-  Audio,
-  General,
-  Library,
-  State,
-  UI
-};
-
 class EventDispatcher
 {
   public:
+    /// Definition type of the event we are dispatching
+    enum UserEvent: int32
+    {
+      Unknown = 0,
+      AI,
+      Animation,
+      Application,
+      Audio,
+      General,
+      Library,
+      State,
+      UI
+    };
+
     EventDispatcher ( void );
     ~EventDispatcher ( void );
 

@@ -10,6 +10,8 @@ Drawables type.
 - [ ] Use Uint32, etc. definitions
 - [ ] const types
 - [ ] Test alpha values within color class with graphics engine; experimental support is there
+- [x] MSVC++ does not accept valid C++11 code in EventDispatcher by defining an enum class.
+> Resolved by removing the desire for the enum class (duplicate definitions). I moved the enum definition to inside the class.
 - [x] Makefile Dependencies
 - [x] Add SDL_EnableKeyRepeat() into SDLInput
 - [x] Fix Color ( -1, -1, -1, -1 ) issue

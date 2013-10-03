@@ -72,20 +72,26 @@ bool App::onInit ( void )
   // specified:
   //
   // nom::uint32 context_flags = SDL_RENDERER_ACCELERATED;
-  if ( this->window1.create ( APP_NAME1, WINDOW_WIDTH, WINDOW_HEIGHT, window_flags /*, context_flags*/ ) == false || this->window2.create ( APP_NAME2, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, window_flags /*, context_flags*/ ) == false )
+  for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
+  {
+    if ( this->window[idx].create ( APP_NAME, WINDOW_WIDTH/2, WINDOW_HEIGHT, window_flags ) == false )
+    {
+      return false;
+    }
+    if ( idx == 0 )
+    {
+      this->window[0].set_position ( 0, 0 );
+    }
+    else
+    {
+      this->window[idx].set_position ( 0+(WINDOW_WIDTH/2) * idx, 0-WINDOW_HEIGHT );
+    }
+  }
+
+  if ( this->window[0].set_window_icon ( RESOURCE_ICON ) == false )
   {
     return false;
   }
-
-  if ( this->window1.set_window_icon ( RESOURCE_ICON ) == false )
-  {
-    return false;
-  }
-
-NOM_DUMP_VAR ( this->window1.viewport() );
-NOM_DUMP_VAR ( this->window2.viewport() );
-NOM_DUMP_VAR ( this->window1.viewport() );
-NOM_DUMP_VAR ( this->window2.viewport() );
 
   this->Running(); // If all is well, here goes nothing!
 
@@ -107,12 +113,12 @@ void App::onKeyDown ( nom::int32 key, nom::int32 mod )
     {
       if ( this->isFullScreen() == true )
       {
-        this->window1.fullscreen ( 0 );
+        this->window[0].fullscreen ( 0 );
         this->setFullScreen ( false );
       }
       else
       {
-        this->window1.fullscreen ( SDL_WINDOW_FULLSCREEN_DESKTOP );
+        this->window[0].fullscreen ( SDL_WINDOW_FULLSCREEN_DESKTOP );
         this->setFullScreen ( true );
       }
     }
@@ -122,10 +128,11 @@ void App::onKeyDown ( nom::int32 key, nom::int32 mod )
 
 nom::int32 App::Run ( void )
 {
-  this->update[0].start();
-  this->update[1].start();
-  this->fps[0].start();
-  this->fps[1].start();
+  for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
+  {
+    this->update[idx].start();
+    this->fps[idx].start();
+  }
 
   // 1. Events
   // 2. Logic
@@ -137,53 +144,72 @@ nom::int32 App::Run ( void )
       this->onEvent ( &this->event );
     }
 
-    this->window1.update();
-    this->window2.update();
+    this->window[0].fill ( nom::Color::NomSecondaryColorKey );
+    this->window[1].fill ( nom::Color::NomPrimaryColorKey );
+    this->window[2].fill ( nom::Color::Black );
+
+    for ( auto idx = 3; idx < MAXIMUM_WINDOWS; idx++ )
+    {
+      nom::int32 random_color = nom::rand ( 1, 11 );
+
+      switch ( random_color )
+      {
+        default: this->window[idx].fill ( nom::Color::Black ); break;
+
+        case 1: this->window[idx].fill ( nom::Color::White ); break;
+        case 2: this->window[idx].fill ( nom::Color::Red ); break;
+        case 3: this->window[idx].fill ( nom::Color::Green ); break;
+        case 4: this->window[idx].fill ( nom::Color::Blue ); break;
+        case 5: this->window[idx].fill ( nom::Color::Yellow ); break;
+        case 6: this->window[idx].fill ( nom::Color::Magenta ); break;
+        case 7: this->window[idx].fill ( nom::Color::Cyan ); break;
+        case 8: this->window[idx].fill ( nom::Color::LightGray ); break;
+        case 9: this->window[idx].fill ( nom::Color::Gray ); break;
+        case 10: this->window[idx].fill ( nom::Color::NomPrimaryColorKey ); break;
+        case 11: this->window[idx].fill ( nom::Color::NomSecondaryColorKey ); break;
+      }
+    }
+
+    nom::Line line1 = nom::Line ( ((WINDOW_WIDTH-176)*2)/2, 194*2, 176*2, 24*2, nom::Color( 133, 133, 133 ) );
+    line1.draw ( this->window[0].renderer() );
+
+    nom::Point pixel = nom::Point ( 500, 245, nom::Color::White );
+    pixel.draw ( this->window[2].renderer() );
+
+    nom::Line line2 = nom::Line ( 100, 100, 250, 250, nom::Color( 133, 133, 133 ) );
+    line2.draw ( this->window[1].renderer() );
+
+    nom::Rectangle rectangle = nom::Rectangle ( 100, 100, 200, 200, nom::Color::Gray );
+    rectangle.draw ( this->window[0].renderer() );
 
     if ( this->isFullScreen() == true )
     {
-      this->window1.clear ( nom::Color::NomPrimaryColorKey );
-      this->window2.clear ( nom::Color::NomSecondaryColorKey );
+      //this->window[0].fill ( nom::Color::NomPrimaryColorKey );
+      this->window[1].fill ( nom::Color::NomSecondaryColorKey );
     }
-    else
+
+    for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
     {
-      this->window1.clear ( nom::Color::NomSecondaryColorKey );
-      this->window2.clear ( nom::Color::NomPrimaryColorKey );
-    }
+      this->window[idx].update();
 
-    //this->background.Update( this->context.get() );
-    //this->background.Draw();
+      this->fps[idx].update();
 
-    this->fps[0].update();
-    this->fps[1].update();
+      // Refresh the frames per second at 1 second intervals
+      if ( this->update[idx].ticks() > 1000 )
+      {
+        if ( this->getShowFPS() == true )
+        {
+          this->window[idx].set_window_title ( APP_NAME + " " + std::to_string(idx) + " - " + this->fps[idx].asString() + '\x20' + "fps" );
+        }
+        else
+        {
+          this->window[idx].set_window_title ( APP_NAME + " " + std::to_string(idx) );
+        }
 
-    // Refresh the frames per second at 1 second intervals
-    if ( this->update[0].ticks() > 1000 )
-    {
-      if ( this->getShowFPS() == true )
-      {
-        this->window1.set_window_title ( APP_NAME1 + " - " + this->fps[0].asString() + '\x20' + "fps" );
-      }
-      else
-      {
-        this->window1.set_window_title ( APP_NAME1 );
-      }
-      this->update[0].restart();
-    }
+        this->update[idx].restart();
 
-    // Refresh the frames per second at 1 second intervals
-    if ( this->update[1].ticks() > 1000 )
-    {
-      if ( this->getShowFPS() == true )
-      {
-        this->window2.set_window_title ( APP_NAME2 + " - " + this->fps[1].asString() + '\x20' + "fps" );
-      }
-      else
-      {
-        this->window2.set_window_title ( APP_NAME2 );
-      }
-      this->update[1].restart();
-    }
+      } // end refresh cycle
+    } // end for MAXIMUM_WINDOWS update loop
   } // end while isRunning() is true
 
   return EXIT_SUCCESS;

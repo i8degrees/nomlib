@@ -82,6 +82,11 @@ bool App::onInit ( void )
     return false;
   }
 
+NOM_DUMP_VAR ( this->window1.viewport() );
+NOM_DUMP_VAR ( this->window2.viewport() );
+NOM_DUMP_VAR ( this->window1.viewport() );
+NOM_DUMP_VAR ( this->window2.viewport() );
+
   this->Running(); // If all is well, here goes nothing!
 
   return true;

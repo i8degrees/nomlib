@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Image::Image ( void ) : image_buffer ( nullptr, priv::FreeTexture )
+Image::Image ( void )// : image_buffer ( nullptr, priv::FreeTexture )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -47,7 +47,7 @@ Image::~Image ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
-Image::Image ( uint32 flags )  : image_buffer ( nullptr, priv::FreeTexture )
+Image::Image ( uint32 flags )// : image_buffer ( nullptr, priv::FreeTexture )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -58,19 +58,21 @@ NOM_LOG_ERR ( NOM, IMG_GetError() );
 
   atexit ( IMG_Quit );
 }
-
+/*
 Image::Image ( const Image& other )  : image_buffer { other.image_buffer.get(), priv::FreeTexture }
 {
 NOM_LOG_TRACE ( NOM );
 }
-
+*/
+/*
 Image& Image::operator = ( const Image& other )
 {
   this->image_buffer = other.image_buffer;
 
   return *this;
 }
-
+*/
+/*
 bool Image::valid ( void ) const
 {
   if ( this->image_buffer.get() != nullptr )
@@ -82,12 +84,10 @@ bool Image::valid ( void ) const
     return false;
   }
 }
-
-std::shared_ptr<SDL_Texture> Image::load ( const std::string& filename )
+*/
+SDL_Surface* Image::load ( const std::string& filename )
 {
-  SDL_Surface* image = nullptr;
-
-  image = IMG_Load ( filename.c_str() );
+  SDL_Surface* image = IMG_Load ( filename.c_str() );
 
   if ( image == nullptr )
   {
@@ -95,16 +95,16 @@ NOM_LOG_ERR ( NOM, IMG_GetError() );
     return nullptr;
   }
 
-  this->image_buffer.reset ( SDL_CreateTextureFromSurface ( context.get(), image ), priv::FreeTexture );
-  priv::FreeSurface ( image );
+  //this->image_buffer.reset ( SDL_CreateTextureFromSurface ( context.get(), image ), priv::FreeTexture );
+  //priv::FreeSurface ( buffer );
 
-  return this->image_buffer;
+  return image;
+  //return this->image_buffer;
 }
 
-std::shared_ptr<SDL_Texture> Image::loadBMP ( const std::string& filename )
+SDL_Surface* Image::loadBMP ( const std::string& filename )
 {
-  SDL_Surface* image = nullptr;
-  image = SDL_LoadBMP ( filename.c_str() );
+  SDL_Surface* image = SDL_LoadBMP ( filename.c_str() );
 
   if ( image == nullptr )
   {
@@ -112,10 +112,11 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
     return nullptr;
   }
 
-  this->image_buffer.reset ( SDL_CreateTextureFromSurface ( context.get(), image ), priv::FreeTexture );
-  priv::FreeSurface ( image );
+  //this->image_buffer.reset ( SDL_CreateTextureFromSurface ( context.get(), image ), priv::FreeTexture );
+  //priv::FreeSurface ( image );
 
-  return this->image_buffer;
+  return image;
+  //return this->image_buffer;
 }
 
 bool Image::save ( const std::string& filename, SDL_Surface* video_buffer )
@@ -128,7 +129,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
   return true;
 }
-
+/*
 const Coords Image::getSize ( void ) const
 {
   Coords size;
@@ -137,6 +138,6 @@ const Coords Image::getSize ( void ) const
 
   return size;
 }
-
+*/
 
 } // namespace nom

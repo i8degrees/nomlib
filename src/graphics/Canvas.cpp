@@ -355,7 +355,7 @@ bool Canvas::load ( const std::string& filename, const Color& colorkey,
   else // Do not use the object cache
   {
 */
-    this->canvas_buffer = image.load ( filename );
+    //this->canvas_buffer = image.load ( filename );
   //}
 
   // Validate our obtained data is good before further processing

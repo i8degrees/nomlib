@@ -61,21 +61,21 @@ class Image
     Image ( uint32 img_flags );
 
     /// Copy constructor
-    Image ( const Image& other );
+    //Image ( const Image& other );
 
     /// Copy assignment constructor
-    Image& operator = ( const Image& other );
+    //Image& operator = ( const Image& other );
 
     /// Is this object initialized -- not nullptr?
-    bool valid ( void ) const;
+    //bool valid ( void ) const;
 
     /// Supports every file type that the libSDL_image extension has been
     /// compiled with
-    std::shared_ptr<SDL_Texture> load ( const std::string& filename );
+    SDL_Surface* load ( const std::string& filename );
 
     /// Uses SDL's built-in BMP file loader; no alpha channeling support ...
     /// perfect for setting window icons!
-    std::shared_ptr<SDL_Texture> loadBMP ( const std::string& filename );
+    SDL_Surface* loadBMP ( const std::string& filename );
 
     /// Saves as an uncompressed RGB Windows Bitmap (BMP)
     ///
@@ -83,10 +83,10 @@ class Image
     /// whatsoever
     bool save ( const std::string& filename, SDL_Surface* video_buffer );
 
-    const Coords getSize ( void ) const;
+    //const Coords getSize ( void ) const;
 
-  private:
-    std::shared_ptr<SDL_Texture> image_buffer;
+  //private:
+    //std::shared_ptr<SDL_Texture> image_buffer;
 };
 
 

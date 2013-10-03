@@ -48,12 +48,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/AnimationTimer.hpp>
 
 #if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/DialogMessageBox.hpp>
   #include <nomlib/system/osx/ResourcePath.hpp>
 #elif defined ( NOM_PLATFORM_LINUX )
-  #include <nomlib/system/unix/DialogMessageBox.hpp>
+  // Nothing to do
 #elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/DialogMessageBox.hpp>
+  // Nothing to do
 #endif
 
 #endif // include guard defined

@@ -30,21 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-int32 DialogMessageBox  ( const std::string& header, const std::string& message,
-                          int32 messagebox_type
                         )
 {
-  int32 result = 0;
 
-#if defined ( NOM_PLATFORM_OSX )
-  result = OSX_DialogMessageBox ( header, message, messagebox_type );
-#elif defined ( NOM_PLATFORM_LINUX )
-  result = GTK_DialogMessageBox ( header, message, messagebox_type );
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  result = Windows_DialogMessageBox ( header, message, messagebox_type );
-#endif
-
-  return result;
 }
 
 

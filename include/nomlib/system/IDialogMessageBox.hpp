@@ -31,20 +31,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
-#include "nomlib/config.hpp"
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include "nomlib/system/osx/DialogMessageBox.hpp"
-#elif defined ( NOM_PLATFORM_LINUX )
-  #include "nomlib/system/unix/DialogMessageBox.hpp"
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include "nomlib/system/windows/DialogMessageBox.hpp"
-#endif
 
 namespace nom {
 
-int32 DialogMessageBox  ( const std::string& header, const std::string& message,
-                          int32 messagebox_type = 0
                         );
 
 

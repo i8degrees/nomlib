@@ -163,11 +163,6 @@ if ( PLATFORM_OSX )
   find_package ( ZLIB REQUIRED )
 endif ( PLATFORM_OSX )
 
-# We need GTK2 on Linux for display of dialog message boxes
-if ( PLATFORM_LINUX )
-  find_package ( GTK2 REQUIRED gtk )
-endif ( PLATFORM_LINUX )
-
 if ( SDL2_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
@@ -250,15 +245,6 @@ if ( PLATFORM_OSX )
   mark_as_advanced ( COCOA_LIBRARY )
   set ( EXTLIBS ${EXTLIBS} ${COCOA_LIBRARY} )
 endif ( PLATFORM_OSX )
-
-if ( PLATFORM_LINUX )
-  if ( GTK2_FOUND )
-    set ( EXT_HEADERS ${EXT_HEADERS} ${GTK2_INCLUDE_DIRS} )
-    set ( EXTLIBS ${EXTLIBS} ${GTK2_LIBRARIES} )
-  else ( NOT GTK2_FOUND )
-    message ( FATAL_ERROR "Required dependency GTK2 missing!" )
-  endif ( GTK2_FOUND )
-endif ( PLATFORM_LINUX )
 
 # External header files inclusion
 include_directories ( ${EXT_HEADERS} )

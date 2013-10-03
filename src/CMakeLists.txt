@@ -77,17 +77,9 @@ if ( PLATFORM_OSX OR PLATFORM_LINUX )
 endif ( PLATFORM_OSX OR PLATFORM_LINUX )
 
 if ( PLATFORM_OSX )
-
   set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/osx/ResourcePath.cpp )
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/osx/DialogMessageBox.cpp )
-
 elseif ( PLATFORM_LINUX )
-
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/unix/DialogMessageBox.cpp )
-
+  # nothing to do be done
 elseif ( PLATFORM_WINDOWS )
-
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/windows/DialogMessageBox.cpp )
   set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/WinFile.cpp )
-
 endif ( PLATFORM_OSX )

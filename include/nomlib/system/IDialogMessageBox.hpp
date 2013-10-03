@@ -26,15 +26,40 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_DIALOG_MESSAGEBOX_HPP
-#define NOMLIB_DIALOG_MESSAGEBOX_HPP
+#ifndef NOMLIB_SDL_DIALOG_MESSAGEBOX_HPP
+#define NOMLIB_SDL_DIALOG_MESSAGEBOX_HPP
 
 #include <string>
 
+#include "SDL.h"
 
+#include "nomlib/config.hpp"
 
 namespace nom {
 
+enum MessageBoxType
+{
+  NOM_DIALOG_ERROR = SDL_MESSAGEBOX_ERROR,
+  NOM_DIALOG_WARNING = SDL_MESSAGEBOX_WARNING,
+  NOM_DIALOG_INFORMATION = SDL_MESSAGEBOX_INFORMATION
+};
+
+/// Display a modal dialog message box.
+///
+/// \param    title     The title of the dialog message box
+/// \param    message   Message on the dialog message box
+/// \param    type      Type of dialog message box; see nom::MessageBoxType for
+///                     the possible types to display.
+/// \param    parent    Optional pointer to the parent window to spawn from
+///
+/// Returns zero (0) on success, -1 on err
+///
+/// \todo
+/// Implement a fall-back mechanism for when video subsystem fails to initialize
+/// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
+int32 DialogMessageBox  (
+                          const std::string& title, const std::string& message,
+                          enum MessageBoxType type, SDL_Window* parent = nullptr
                         );
 
 

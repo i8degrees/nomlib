@@ -30,9 +30,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+int32 DialogMessageBox  (
+                          const std::string& title, const std::string& message,
+                          enum MessageBoxType type, SDL_Window* parent
                         )
 {
+  if ( SDL_ShowSimpleMessageBox ( type, title.c_str(), message.c_str(), parent ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, "Could not initialize SDL Dialog MessageBox: " + std::string ( SDL_GetError() ) );
+    return -1;
+  }
 
+  return 0;
 }
 
 

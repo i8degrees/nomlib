@@ -35,8 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/graphics/Texture.hpp"
-#include "nomlib/graphics/Sprite.hpp"
-#include "nomlib/graphics/SpriteSheet.hpp"
+#include "nomlib/graphics/sprite/Sprite.hpp"
+#include "nomlib/graphics/sprite/SpriteSheet.hpp"
 
 namespace nom {
 

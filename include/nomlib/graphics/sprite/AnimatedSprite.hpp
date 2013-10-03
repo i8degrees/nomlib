@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/SpriteBatch.hpp"
+#include "nomlib/graphics/sprite/SpriteBatch.hpp"
 #include "nomlib/system/AnimationTimer.hpp"
 
 //#define NOM_DEBUG_ANIMATED_SPRITE

@@ -12,34 +12,36 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/audio/AL/SoundSource.cpp
       ${SRC_DIR}/audio/AL/Music.cpp
       ${SRC_DIR}/audio/AL/Sound.cpp
-      # third-party hqx algorithm
+      # third-party graphics/hqx algorithm
       ${SRC_DIR}/graphics/hqx/hqx.cpp
       ${SRC_DIR}/graphics/hqx/hq2x.cpp
       ${SRC_DIR}/graphics/hqx/hq3x.cpp
       ${SRC_DIR}/graphics/hqx/hq4x.cpp
-      # third-party scale2x algorithm
+      # third-party graphics/scale2x algorithm
       ${SRC_DIR}/graphics/scale2x/scale2x.cpp
       ${SRC_DIR}/graphics/scale2x/scale3x.cpp
       ${SRC_DIR}/graphics/scale2x/scale4x.cpp
       # graphics
       ${SRC_DIR}/graphics/smart_ptr.cpp
-      ${SRC_DIR}/graphics/shapes/Point.cpp
-      ${SRC_DIR}/graphics/shapes/Line.cpp
-      ${SRC_DIR}/graphics/shapes/Rectangle.cpp
-      ${SRC_DIR}/graphics/shapes/Pixel.cpp
       ${SRC_DIR}/graphics/Texture.cpp
       ${SRC_DIR}/graphics/Image.cpp
       ${SRC_DIR}/graphics/Window.cpp
       ${SRC_DIR}/graphics/Renderer.cpp
-      ${SRC_DIR}/graphics/SpriteBatch.cpp
-      ${SRC_DIR}/graphics/AnimatedSprite.cpp
-      ${SRC_DIR}/graphics/SpriteSheet.cpp
       ${SRC_DIR}/graphics/VideoMode.cpp
       ${SRC_DIR}/graphics/BitmapFont.cpp
       ${SRC_DIR}/graphics/TrueTypeFont.cpp
-      #${SRC_DIR}/graphics/IDisplay.cpp
       ${SRC_DIR}/graphics/Gradient.cpp
-      ${SRC_DIR}/graphics/Sprite.cpp
+      #${SRC_DIR}/graphics/IDisplay.cpp
+      # graphics/shapes
+      ${SRC_DIR}/graphics/shapes/Point.cpp
+      ${SRC_DIR}/graphics/shapes/Line.cpp
+      ${SRC_DIR}/graphics/shapes/Rectangle.cpp
+      ${SRC_DIR}/graphics/shapes/Pixel.cpp
+      # graphics/sprite
+      ${SRC_DIR}/graphics/sprite/Sprite.cpp
+      ${SRC_DIR}/graphics/sprite/SpriteBatch.cpp
+      ${SRC_DIR}/graphics/sprite/AnimatedSprite.cpp
+      ${SRC_DIR}/graphics/sprite/SpriteSheet.cpp
       # nomJSON
       #${SRC_DIR}/json/Array.cpp
       ${SRC_DIR}/json/FileReader.cpp

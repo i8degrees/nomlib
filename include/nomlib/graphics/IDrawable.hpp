@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_IDRAWABLE_HEADERS
-#define NOMLIB_IDRAWABLE_HEADERS
+#ifndef NOMLIB_SDL2_IDRAWABLE_HPP
+#define NOMLIB_SDL2_IDRAWABLE_HPP
 
 #include <vector>
 #include <memory>

@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SPRITE_HEADERS
-#define NOMLIB_SPRITE_HEADERS
+#ifndef NOMLIB_SDL2_SPRITE_HPP
+#define NOMLIB_SDL2_SPRITE_HPP
 
 #include <iostream>
 #include <string>
@@ -99,4 +99,4 @@ class Sprite:
 
 } // namespace nom
 
-#endif // NOMLIB_SPRITE_HEADERS defined
+#endif // include guard defined

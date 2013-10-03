@@ -108,7 +108,7 @@ void Sprite::Draw ( SDL_Surface* video_buffer ) const
 {
 NOM_ASSERT ( this->sprite.valid() );
 
-  this->sprite.Draw ( video_buffer );
+  this->sprite.draw ( target );
 }
 
 bool Sprite::resize ( enum ResizeAlgorithm scaling_algorithm )

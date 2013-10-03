@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_GRADIENT_HEADERS
-#define NOMLIB_SDL_GRADIENT_HEADERS
+#ifndef NOMLIB_SDL2_GRADIENT_HPP
+#define NOMLIB_SDL2_GRADIENT_HPP
 
 #include <iostream>
 #include <string>

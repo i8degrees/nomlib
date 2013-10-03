@@ -389,7 +389,7 @@ NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
   return true;
 }
 
-void Canvas::Draw ( SDL_Surface* video_buffer ) const
+void Canvas::draw ( SDL_Renderer* target ) const
 {
 /*
   // temporary vars to store our wrapped Coords
@@ -415,7 +415,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 */
 }
 
-void Canvas::Update ( SDL_Renderer* video_target )
+void Canvas::update ( SDL_Renderer* video_target )
 {
   SDL_RenderPresent ( video_target );
 }

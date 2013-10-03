@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GREYFRAME_HPP
-#define NOMLIB_GREYFRAME_HPP
+#ifndef NOMLIB_SDL2_GRAYFRAME_HPP
+#define NOMLIB_SDL2_GRAYFRAME_HPP
 
 #include <iostream>
 #include <string>

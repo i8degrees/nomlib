@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SPRITE_BATCH_HEADERS
-#define NOMLIB_SPRITE_BATCH_HEADERS
+#ifndef NOMLIB_SDL2_SPRITE_BATCH_HEADERS
+#define NOMLIB_SDL2_SPRITE_BATCH_HEADERS
 
 #include <iostream>
 #include <string>

@@ -213,8 +213,8 @@ class Canvas
                 uint32 flags = SDL_RLEACCEL | SDL_TRUE//SRCCOLORKEY
               );
 
-    void Update ( SDL_Renderer* );
-    void Draw ( SDL_Surface* video_buffer ) const;
+    void update ( SDL_Renderer* );
+    void draw ( SDL_Renderer* target ) const;
 
     bool setAlpha ( uint8 opacity );//, uint32 flags/* = SDL_SRCALPHA*/ );
 

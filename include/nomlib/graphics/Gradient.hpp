@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/graphics/Rectangle.hpp"
+#include "nomlib/graphics/shapes/Rectangle.hpp"
 
 namespace nom {
 
@@ -51,6 +51,7 @@ enum class FillDirection: int32
   Right       // Right to left
 };
 
+/// \brief Rectangle fill class with dithered, linear gradient colors
 class Gradient:
                 public IDrawable
 
@@ -69,7 +70,7 @@ class Gradient:
                 enum FillDirection direction
               );
 
-    /// Destructor
+    /// Destructor; OK to inherit me.
     virtual ~Gradient ( void );
 
     /// Fully initialize this object
@@ -95,16 +96,32 @@ class Gradient:
     void setMargins ( int32 x, int32 y );
     void enableDithering ( bool toggle );
 
-    void Update ( void );
-    void Draw ( SDL_Surface* video_buffer ) const;
+    void update ( void );
+    void draw ( SDL_Renderer* target ) const;
 
   private:
     void strategyTopDown ( void );
     void strategyLeftToRight ( void );
 
+    /// Drawables vector containing rectangle objects to be blit
+    ///
+    /// \todo Yes, you heard me right! We are using a rectangle function to draw
+    /// what are one pixel wide / high line segments in a row single row
+    /// iteration. Imaginably, performance would hardly measure a difference,
+    /// but nevertheless. FIXME!
+    ///
+    /// \todo Figure out how to get this vector of Drawables compiling as a
+    /// std::unique_ptr (if this is even possible).
+    /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
     std::vector<std::shared_ptr<IDrawable>> rectangles;
 
-    /// starting & ending colors
+    /// The starting & ending colors (nom::Color objects) used in the gradient.
+    ///
+    /// \todo Expand this into a dynamic array -- std::vector -- so we (should)
+    /// be able to increase dithering capabilities higher. Perhaps increasing
+    /// this threshold will also allow us to start thinking about other gradient
+    /// types?
+    /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
     Color gradient[2];
 
     /// Rendering coordinates (X, Y, width & height)
@@ -126,21 +143,30 @@ class Gradient:
 
 } // namespace nom
 
-/*
-  #include <nomlib/graphics.hpp>
+#endif // include guard defined
 
-  nom::Gradient linear;
+/// \class nom::Gradient
+/// \ingroup graphics
+///
+/// nom::Gradient is a beautiful class that paints as rectangle coordinates
+/// would, but with dithered, linear gradient effects applied. Color range and
+/// fill direction are the two likely features of your interest.
+///
+/// Usage example:
+/// \code
+/// #include <nomlib/graphics.hpp>
+///
+/// nom::Gradient linear;
+///
+/// this->linear.setSize ( 64, 64 );
+/// this->linear.setMargins ( 4, 4 );
+/// this->linear.setFillDirection ( nom::FillDirection::Top );
 
-  this->linear.setSize ( 64, 64 );
-  this->linear.setMargins ( 4, 4 );
-  this->linear.setFillDirection ( nom::FillDirection::Top );
+/// this->linear.setStartColor ( nom::Color ( 208, 223, 255 ) );
+/// this->linear.setEndColor ( nom::Color ( 50, 59, 114 ) );
 
-  this->linear.setStartColor ( nom::Color ( 208, 223, 255 ) );
-  this->linear.setEndColor ( nom::Color ( 50, 59, 114 ) );
-
-  this->linear.setPosition ( 96, 16 );
-  this->linear.Update();
-  this->linear.Draw ( video_buffer );
-*/
-
-#endif // NOMLIB_SDL_GRADIENT_HEADERS defined
+/// this->linear.setPosition ( 96, 16 );
+/// this->linear.Update();
+/// this->linear.Draw ( video_buffer );
+///
+/// \endcode

@@ -200,7 +200,7 @@ void Gradient::strategyLeftToRight ( void )
   } // end blit loop
 }
 
-void Gradient::Update ( void )
+void Gradient::update ( void )
 {
   this->rectangles.clear();
 
@@ -224,12 +224,12 @@ void Gradient::Update ( void )
   }
 }
 
-void Gradient::Draw ( SDL_Surface* video_buffer ) const
+void Gradient::draw ( SDL_Renderer* target ) const
 {
   for ( auto it = this->rectangles.begin(); it != this->rectangles.end(); ++it )
   {
     std::shared_ptr<IDrawable> obj = *it;
-    obj->Draw ( video_buffer );
+    obj->draw ( target );
   }
 }
 

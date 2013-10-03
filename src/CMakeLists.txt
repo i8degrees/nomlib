@@ -39,8 +39,8 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       #${SRC_DIR}/graphics/BitmapFont.cpp
       #${SRC_DIR}/graphics/TrueTypeFont.cpp
       #${SRC_DIR}/graphics/IDisplay.cpp
-      #${SRC_DIR}/graphics/Gradient.cpp
       #${SRC_DIR}/graphics/Sprite.cpp
+      ${SRC_DIR}/graphics/Gradient.cpp
       # nomJSON
       #${SRC_DIR}/json/Array.cpp
       #${SRC_DIR}/json/FileReader.cpp

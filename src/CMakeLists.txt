@@ -35,7 +35,6 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/graphics/AnimatedSprite.cpp
       ${SRC_DIR}/graphics/SpriteSheet.cpp
       ${SRC_DIR}/graphics/VideoMode.cpp
-      ${SRC_DIR}/graphics/Text.cpp
       ${SRC_DIR}/graphics/BitmapFont.cpp
       ${SRC_DIR}/graphics/TrueTypeFont.cpp
       #${SRC_DIR}/graphics/IDisplay.cpp

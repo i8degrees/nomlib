@@ -36,15 +36,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unistd.h>
 #include <libgen.h>
 #include <sys/stat.h>
-#include <magic.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/resources.hpp"
 #include "nomlib/system/IFile.hpp"
 
+/*
 #if defined ( FRAMEWORK ) && defined ( NOM_PLATFORM_OSX )
   #include "nomlib/system/osx/ResourcePath.hpp"
 #endif
+*/
 
 namespace nom {
 
@@ -54,17 +55,6 @@ class UnixFile: public IFile
   public:
     UnixFile ( void );
     ~UnixFile ( void );
-
-    /// Obtain the input file's mime type; uses libmagic to determine said type
-    ///
-    /// Returns a string in the same format as the following terminal command:
-    ///
-    /// $ file -b --mime-type <file>
-    ///
-    /// Returns a null terminated string on err
-    ///
-    /// \todo Use magic_error ( magic_t cookie ) to obtain err?
-    const std::string mime ( const std::string& file );
 
     /// Returns the file extension of the input file path
     ///

@@ -34,12 +34,6 @@ WinFile::WinFile ( void ) {}
 
 WinFile::~WinFile ( void ) {}
 
-const std::string WinFile::mime ( const std::string& file )
-{
-  // Stub
-    return "";
-}
-
 const std::string WinFile::extension ( const std::string& file )
 {
   // Stub

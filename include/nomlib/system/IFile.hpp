@@ -44,15 +44,6 @@ class IFile
     IFile ( void ) {}
     virtual ~IFile ( void ) {}
 
-    /// Obtain the input file's mime type; uses libmagic to determine said type
-    ///
-    /// Returns a string in the same format as the following terminal command:
-    ///
-    /// $ file -b --mime-type <file>
-    ///
-    /// Returns a null terminated string on err
-    virtual const std::string mime ( const std::string& file ) = 0;
-
     /// Returns the file extension of the input file path
     ///
     /// Returns a null terminated string on err

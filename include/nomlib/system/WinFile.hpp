@@ -45,9 +45,6 @@ class WinFile: public IFile
     ~WinFile ( void );
 
     /// Stub
-    const std::string mime ( const std::string& file );
-
-    /// Stub
     const std::string extension ( const std::string& file );
 
     /// Stub

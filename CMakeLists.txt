@@ -156,13 +156,6 @@ find_package ( SDL2_ttf REQUIRED )
 find_package ( OpenAL REQUIRED )
 find_package ( sndfile REQUIRED )
 
-find_package ( libmagic REQUIRED )
-
-# LibMagic requires zlib when statically linking
-if ( PLATFORM_OSX )
-  find_package ( ZLIB REQUIRED )
-endif ( PLATFORM_OSX )
-
 if ( SDL2_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
@@ -191,34 +184,6 @@ if ( LIBSNDFILE_FOUND )
 else ( NOT LIBSNDFILE_FOUND )
   message ( FATAL_ERROR "Required dependency sndfile missing!" )
 endif ( LIBSNDFILE_FOUND )
-
-if ( LIBMAGIC_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBMAGIC_INCLUD_DIR} )
-
-  # Statically linking in OS X frees us from the chore of worrying about the
-  # runtime search paths issue, which we never was able to figure out how to
-  # do so with this library ...
-  #
-  # See also cmake/modules/FindLibMagic.cmake
-
-  # We must link zlib into our library because the burden falls on us when
-  # statically linking a library to ours.
-  if ( PLATFORM_OSX )
-    if ( ZLIB_FOUND )
-      set ( EXTLIBS ${EXTLIBS} ${LIBMAGIC_LIBRARY} ${ZLIB_LIBRARY} )
-    else ( NOT ZLIB_FOUND )
-      message ( FATAL_ERROR "Required dependency zlib missing!" )
-    endif ( ZLIB_FOUND )
-  # Otherwise we do not need to link zlib with libmagic as we will be linking
-  # libmagic as a dynamic library -- the burden then falls on libmagic for
-  # finding zlib, not us!
-  else ( NOT PLATFORM_OSX )
-    set ( EXTLIBS ${EXTLIBS} ${LIBMAGIC_LIBRARY} )
-  endif ( PLATFORM_OSX )
-
-else ( NOT LIBMAGIC_FOUND )
-  message ( FATAL_ERROR "Required dependency libmagic missing!" )
-endif ( LIBMAGIC_FOUND )
 
 # First, try finding our packaged header files for json_spirit;
 # ...if this fails, attempt to find the headers directory of a system install of
@@ -330,7 +295,6 @@ if ( PLATFORM_OSX )
     # SDL2_image.framework
     # SDL2_ttf.framework
     # sndfile.framework v1.0.25
-    # libmagic v5.14
     #
     # See README text within extlibs folder in root of this git repository
     # for packaging details of sndfile.
@@ -377,7 +341,6 @@ install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}
 # Install nomlib Resource files
 install ( FILES
           "${NOMLIB_RESOURCES_DIR}/nomlib.icns" # Icon
-          "${NOMLIB_RESOURCES_DIR}/magic.mgc" # libmagic mime db
           DESTINATION "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
           OPTIONAL
         )

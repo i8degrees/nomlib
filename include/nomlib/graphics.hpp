@@ -33,7 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/config.hpp>
 #include <nomlib/graphics/smart_ptr.hpp>
-#include <nomlib/graphics/Text.hpp>
 #include <nomlib/graphics/BitmapFont.hpp>
 #include <nomlib/graphics/Canvas.hpp>
 #include <nomlib/graphics/VideoMode.hpp>

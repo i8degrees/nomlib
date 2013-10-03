@@ -39,11 +39,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined ( NOM_PLATFORM_OSX ) || defined ( NOM_PLATFORM_LINUX )
 
-  #include "nomlib/system/UnixFile.hpp"
+  #include "nomlib/system/unix/UnixFile.hpp"
 
 #elif defined ( NOM_PLATFORM_WINDOWS )
 
-  #include "nomlib/system/WinFile.hpp"
+  #include "nomlib/system/windows/WinFile.hpp"
 
 #endif
 

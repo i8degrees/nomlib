@@ -75,7 +75,7 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
 
 # Platform-specific source files
 if ( PLATFORM_OSX OR PLATFORM_LINUX )
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/UnixFile.cpp )
+  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/unix/UnixFile.cpp )
 endif ( PLATFORM_OSX OR PLATFORM_LINUX )
 
 if ( PLATFORM_OSX )
@@ -83,5 +83,5 @@ if ( PLATFORM_OSX )
 elseif ( PLATFORM_LINUX )
   # nothing to do be done
 elseif ( PLATFORM_WINDOWS )
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/WinFile.cpp )
+  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/windows/WinFile.cpp )
 endif ( PLATFORM_OSX )

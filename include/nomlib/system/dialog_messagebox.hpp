@@ -59,7 +59,8 @@ enum MessageBoxType
 /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
 int32 DialogMessageBox  (
                           const std::string& title, const std::string& message,
-                          enum MessageBoxType type, SDL_Window* parent = nullptr
+                          enum MessageBoxType type = NOM_DIALOG_INFORMATION,
+                          SDL_Window* parent = nullptr
                         );
 
 

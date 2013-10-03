@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Window::Window ( void ) : window
+Window::Window ( void ) : window_
     ( Window::UniquePtr ( nullptr, priv::FreeWindow ) )
 {
 NOM_LOG_TRACE ( NOM );
@@ -54,7 +54,7 @@ bool Window::create (
                       uint32 window_flags, uint32 context_flags
                     )
 {
-  this->window.reset  ( SDL_CreateWindow  (
+  this->window_.reset ( SDL_CreateWindow  (
                                             window_title.c_str(),
                                             SDL_WINDOWPOS_CENTERED,
                                             SDL_WINDOWPOS_CENTERED,
@@ -64,13 +64,13 @@ bool Window::create (
                                           )
                       );
 
-  if ( this->valid() == false )
+  if ( this->window_valid() == false )
   {
 NOM_LOG_ERR ( NOM, "Could not create SDL window." );
     return false;
   }
 
-  this->initialize ( this->get(), -1, context_flags );
+  this->initialize ( this->window(), -1, context_flags );
   if ( this->renderer_valid() == false )
   {
 NOM_LOG_ERR ( NOM, "Could not create SDL renderer." );
@@ -80,14 +80,14 @@ NOM_LOG_ERR ( NOM, "Could not create SDL renderer." );
   return true;
 }
 
-SDL_Window* Window::get ( void ) const
+SDL_Window* Window::window ( void ) const
 {
-  return this->window.get();
+  return this->window_.get();
 }
 
-bool Window::valid ( void ) const
+bool Window::window_valid ( void ) const
 {
-  if ( this->get() != nullptr )
+  if ( this->window() != nullptr )
   {
     return true;
   }
@@ -97,11 +97,11 @@ bool Window::valid ( void ) const
   }
 }
 
-Point2i Window::getPosition ( void ) const
+Point2i Window::get_position ( void ) const
 {
   Point2i pos;
 
-  SDL_GetWindowPosition ( this->window.get(), &pos.x, &pos.y );
+  SDL_GetWindowPosition ( this->window(), &pos.x, &pos.y );
 
   return pos;
 }
@@ -109,7 +109,7 @@ Point2i Window::getPosition ( void ) const
 const uint8 Window::getDisplayColorBits ( void ) const
 {
 /*
-  SDL_Surface* screen = this->get();
+  SDL_Surface* screen = this->window();
 
   // We prevent a segmentation fault here by providing a means of accessing the
   // video modes without already having initialized the video display via
@@ -127,7 +127,7 @@ const uint8 Window::getDisplayColorBits ( void ) const
 
 uint32 Window::getDisplayFlags ( void ) const
 {
-  return SDL_GetWindowFlags ( this->get() );
+  return SDL_GetWindowFlags ( this->window() );
 }
 
 uint16 Window::getDisplayPitch ( void ) const
@@ -190,14 +190,14 @@ NOM_LOG_INFO ( NOM, "No video modes are supported." );
 /*
 bool Window::getCanvasLock ( void ) const
 {
-  //return this->get()->locked;
+  //return this->window()->locked;
     return false;
 }
 */
 /*
 bool Window::mustLock ( void ) const
 {
-  if ( SDL_MUSTLOCK ( this->get() ) )
+  if ( SDL_MUSTLOCK ( this->window() ) )
   {
     return true;
   }
@@ -213,7 +213,7 @@ bool Window::lock ( void ) const
 {
   if ( this->mustLock() == true )
   {
-    if ( SDL_LockSurface ( this->get() ) == -1 )
+    if ( SDL_LockSurface ( this->window() ) == -1 )
     {
 NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
       return false;
@@ -225,12 +225,12 @@ NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
 /*
 void Window::unlock ( void ) const
 {
-  SDL_UnlockSurface ( this->get() );
+  SDL_UnlockSurface ( this->window() );
 }
 */
 bool Window::flip ( void ) const
 {
-  if ( SDL_UpdateWindowSurface ( this->get() ) != 0 )
+  if ( SDL_UpdateWindowSurface ( this->window() ) != 0 )
   {
 NOM_LOG_ERR ( NOM, "Could not update window surface: " + std::string ( SDL_GetError() ) );
     return false;
@@ -238,13 +238,13 @@ NOM_LOG_ERR ( NOM, "Could not update window surface: " + std::string ( SDL_GetEr
   return true;
 }
 
-bool Window::toggleFullScreen ( uint32 flags )
+bool Window::fullscreen ( uint32 flags )
 {
   Point2i pos;
 
-  pos = this->getPosition();
+  pos = this->get_position();
 
-  if ( SDL_SetWindowFullscreen ( this->get(), flags ) != 0 )
+  if ( SDL_SetWindowFullscreen ( this->window(), flags ) != 0 )
   {
     NOM_LOG_ERR ( NOM, "Could not toggle SDL fullscreen mode." );
     return false;
@@ -257,7 +257,7 @@ bool Window::toggleFullScreen ( uint32 flags )
   // Possible bug on OS X
   if ( pos.x == SDL_WINDOWPOS_CENTERED && pos.y == SDL_WINDOWPOS_CENTERED )
   {
-    this->setPosition ( SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED );
+    this->set_position ( SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED );
   }
 
   return true;
@@ -270,24 +270,24 @@ bool Window::toggleFullScreen ( uint32 flags )
 
   //  If for whatever reason, we cannot toggle fullscreen, try reverting
   //  back to our previous configuration
-  if ( ! this->valid() )
+  if ( ! this->window_valid() )
     this->createWindow ( width, height, 0, flags );
 */
 }
 
-const std::string Window::getWindowTitle ( void ) const
+const std::string Window::window_title ( void ) const
 {
-  std::string title = SDL_GetWindowTitle ( this->get() );
+  std::string title = SDL_GetWindowTitle ( this->window() );
 
   return title;
 }
 
-void Window::setWindowTitle ( const std::string& title )
+void Window::set_window_title ( const std::string& title )
 {
-  SDL_SetWindowTitle ( this->get(), title.c_str() );
+  SDL_SetWindowTitle ( this->window(), title.c_str() );
 }
 
-bool Window::setWindowIcon ( const std::string& filename )
+bool Window::set_window_icon ( const std::string& filename )
 {
   //Image image; // holds our image in memory during transfer
   std::shared_ptr<SDL_Surface> icon;
@@ -312,14 +312,14 @@ bool Window::setWindowIcon ( const std::string& filename )
     return false;
   }
 
-  SDL_SetWindowIcon ( this->get(), icon.get() );
+  SDL_SetWindowIcon ( this->window(), icon.get() );
 
   return true;
 }
 
-void Window::setPosition ( int32 x, int32 y )
+void Window::set_position ( int32 x, int32 y )
 {
-  SDL_SetWindowPosition ( this->get(), x, y );
+  SDL_SetWindowPosition ( this->window(), x, y );
 }
 
 } // namespace nom

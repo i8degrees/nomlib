@@ -69,12 +69,12 @@ class Window:
                 );
 
     /// Returns a raw pointer to the SDL_Window struct in use for this object
-    SDL_Window* get ( void ) const;
+    SDL_Window* window ( void ) const;
 
     /// Is this object initialized -- not nullptr?
-    bool valid ( void ) const;
+    bool window_valid ( void ) const;
 
-    Point2i getPosition ( void ) const;
+    Point2i get_position ( void ) const;
 
     /// Get display surface bits per pixel
     ///
@@ -103,7 +103,7 @@ class Window:
     /// to be in working order.
     //bool getCanvasLock ( void ) const;
 
-    void setPosition ( int32 x, int32 y );
+    void set_position ( int32 x, int32 y );
 
     /// Lock the display context's video surface; this must be done before you
     /// attempt to write directly to video memory, such as when you are
@@ -123,11 +123,11 @@ class Window:
     /// Equivalent to SDL 1.2 API SDL_Flip()
     bool flip ( void ) const;
 
-    bool toggleFullScreen ( uint32 flags );
+    bool fullscreen ( uint32 flags );
 
-    const std::string getWindowTitle ( void ) const;
+    const std::string window_title ( void ) const;
 
-    void setWindowTitle ( const std::string& title );
+    void set_window_title ( const std::string& title );
 
     /// FIXME
     /// (Windows does not like using IMG_Load (SDL2_image extension) for some
@@ -137,14 +137,14 @@ class Window:
     /// loader on Windows platform.
     ///
     /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
-    bool setWindowIcon ( const std::string& filename );
+    bool set_window_icon ( const std::string& filename );
 
   private:
     /// Internal method used for checking to see if the display context's video
     /// surfacea actually needs locking before doing so for performance sake.
     //bool mustLock ( void ) const;
 
-    Window::UniquePtr window;
+    Window::UniquePtr window_;
 };
 
 

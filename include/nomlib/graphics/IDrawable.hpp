@@ -54,7 +54,7 @@ class IDrawable
     virtual void update ( void ) = 0;
 
     /// Draw the prepared video buffer contents of this object
-    virtual void draw ( SDL_Surface* ) const = 0;
+    virtual void draw ( SDL_Renderer* ) const = 0;
 };
 
 

@@ -59,7 +59,7 @@ class IDrawable
     /// end-user, only the Draw method call should be expected of the end-user
     /// to be explicitly called.
     ///
-    /// \fixme Not all the interfaced (inherited) IDrawable objects in this
+    /// \todo Not all the interfaced (inherited) IDrawable objects in this
     /// library conform to the expectations stated above. We need to first
     /// figure out if we wish to stay on this course (of expectation), or
     /// diverge all together. Undecided.

@@ -108,7 +108,7 @@ class Gradient:
     /// \todo Yes, you heard me right! We are using a rectangle function to draw
     /// what are one pixel wide / high line segments in a row single row
     /// iteration. Imaginably, performance would hardly measure a difference,
-    /// but nevertheless. FIXME!
+    /// but nevertheless.
     ///
     /// \todo Figure out how to get this vector of Drawables compiling as a
     /// std::unique_ptr (if this is even possible).

@@ -94,7 +94,6 @@ bool App::onInit ( void )
   }
 
   this->ui_frame = nom::ui::GrayFrame ( 50, 50, 200, 200 );
-
   this->linear.setSize ( 200 - 4, 200 - 4 );
   this->linear.setMargins ( 4, 4 );
   this->linear.setFillDirection ( nom::FillDirection::Top );

@@ -54,10 +54,6 @@ namespace nom {
 
 /// \brief Specialized class container for the creation of sprite sheets via
 /// JSON-compliant file input.
-///
-///     REFERENCES
-///
-/// 1.  http://www.dreamincode.net/forums/topic/179429-sdl-sprite-sheet/
 class SpriteSheet
 {
   public:
@@ -138,6 +134,8 @@ class SpriteSheet
 ///
 ///         [DESCRIPTION STUB]
 ///
+/// \code
+///
 /// Example of 4X4 Sheet
 ///   ________________
 ///  | 0 | 1 | 2 | 3 |
@@ -148,6 +146,8 @@ class SpriteSheet
 ///  |===============|
 ///  | 0 | 1 | 2 | 3 |
 ///  |---------------|
+///
+/// \endcode
 ///
 /// Usage example:
 /// \code
@@ -168,4 +168,11 @@ class SpriteSheet
 ///
 /// nom::Sprite card_face ( nom::SpriteSheet ( card_faces_sheet ( "faces.json" ) ) );
 ///
+/// \endcode
+///
+/// \code
+///
+///     REFERENCES
+///
+/// 1.  http://www.dreamincode.net/forums/topic/179429-sdl-sprite-sheet/
 /// \endcode

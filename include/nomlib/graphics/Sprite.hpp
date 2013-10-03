@@ -53,9 +53,8 @@ class Sprite:
     /// Construct a Sprite object, initializing the width & height coordinates.
     Sprite ( int32 width, int32 height );
 
-    /// Construct a Sprite object, initializing it with a Canvas object.
-    /// \FIXME
-    ///Sprite ( const Canvas& copy );
+    // Construct a Sprite object, initializing it with a Canvas object.
+    //Sprite ( const Canvas& copy );
 
     /// Copy assignment operator.
     Sprite& operator = ( const Sprite& other );

@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief OpenGL Line segments
+/// \brief 3D Line segment shape
 class Line:
             public IDrawable
 {
@@ -51,15 +51,15 @@ class Line:
     Line ( const Coords& coords, const Color& color );
     Line ( int32 x, int32 y, int32 width, int32 height, const Color& color );
 
+    /// Intentional interface stub
     void update ( void );
+
+    /// Draw a 3D line segment onto the the attached renderer
     void draw ( SDL_Renderer* target ) const;
 
   private:
     Coords coords;
     Color color;
-
-    /// Track object logic changes for updating its rendering
-    bool updated;
 };
 
 

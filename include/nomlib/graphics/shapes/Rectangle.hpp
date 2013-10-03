@@ -39,6 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+/// \brief 3D Rectangle shape
 class Rectangle:
                   public IDrawable
 
@@ -52,7 +53,11 @@ class Rectangle:
     Rectangle ( const Rectangle& rect );
     Rectangle ( const Coords& coords, const Color& color );
 
+    /// Intentional interface stub
     void update ( void );
+
+    /// Draw a 3D four sided cube shape (rectangle) onto the the attached
+    /// renderer
     void draw ( SDL_Renderer* target ) const;
 
   private:

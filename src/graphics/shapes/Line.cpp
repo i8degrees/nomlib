@@ -30,37 +30,36 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Line::Line ( void )
-{
-  this->updated = true;
-  this->update();
-}
-
+Line::Line ( void ) {}
 Line::~Line ( void ) {}
 
 Line::Line ( const Coords& coords, const Color& color )
 {
   this->coords = coords;
   this->color = color;
-
-  this->updated = false;
-  this->update();
 }
 
 Line::Line ( int32 x, int32 y, int32 width, int32 height, const Color& color )
 {
   this->coords = Coords ( x, y, width, height );
   this->color = color;
-
-  this->updated = false;
-  this->update();
 }
 
 void Line::update ( void ) {}
 
 void Line::draw ( SDL_Renderer* target ) const
 {
-  // ...
+  if ( SDL_SetRenderDrawColor ( target, this->color.r, this->color.g, this->color.b, this->color.a ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return;
+  }
+
+  if ( SDL_RenderDrawLine ( target, this->coords.x, this->coords.y, this->coords.w, this->coords.h ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, "Could not render 3D SDL line: " + std::string (SDL_GetError()) );
+    return;
+  }
 }
 
 

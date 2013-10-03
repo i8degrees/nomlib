@@ -30,12 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Rectangle::Rectangle ( void )
-{
-  this->coords = Coords ( 0, 0, 0, 0 );
-  this->color = Color ( 0, 0, 0 );
-}
-
+Rectangle::Rectangle ( void ) {}
 Rectangle::~Rectangle ( void ) {}
 
 Rectangle::Rectangle ( const Rectangle& rect )
@@ -55,7 +50,20 @@ void Rectangle::update ( void ) {}
 
 void Rectangle::draw ( SDL_Renderer* target ) const
 {
-  // ...
+  if ( SDL_SetRenderDrawColor ( target, this->color.r, this->color.g, this->color.b, this->color.a ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return;
+  }
+
+  // convert nom::Coords to SDL_Rect
+  SDL_Rect r = IntRect::asSDLRect ( this->coords );
+
+  if ( SDL_RenderFillRect ( target, &r ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, "Could not render 3D SDL rectangle: " + std::string (SDL_GetError()) );
+    return;
+  }
 }
 
 

@@ -35,14 +35,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Canvas::Canvas ( void )  : canvas_buffer ( nullptr, priv::FreeTexture ),
+Texture::Texture ( void )  : texture_buffer ( nullptr, priv::FreeTexture ),
                                         coords ( 0, 0, -1, -1 ), // only x, y position is used in blitting
                                         offsets ( 0, 0, -1, -1 ) // only the width, height is used in source blitting
 {
 NOM_LOG_TRACE ( NOM );
 }
 /*
-Canvas::Canvas ( SDL_Surface* video_buffer )  : canvas_buffer { video_buffer, nom::priv::FreeSurface }
+Texture::Texture ( SDL_Surface* video_buffer )  : texture_buffer { video_buffer, nom::priv::FreeSurface }
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -50,204 +50,204 @@ NOM_LOG_TRACE ( NOM );
 }
 */
 
-Canvas::Canvas ( SDL_Texture* video_buffer )  : canvas_buffer { video_buffer, priv::FreeTexture }
+Texture::Texture ( SDL_Texture* video_buffer )  : texture_buffer { video_buffer, priv::FreeTexture }
 {
 NOM_LOG_TRACE ( NOM );
 
   Coords size;
 
-  SDL_QueryTexture ( this->canvas_buffer.get(), nullptr, nullptr, &size.width, &size.height );
+  SDL_QueryTexture ( this->texture_buffer.get(), nullptr, nullptr, &size.width, &size.height );
 
   this->offsets.setSize ( size.width, size.height );
 }
 
-Canvas::Canvas ( const Canvas& other ) : canvas_buffer { other.canvas_buffer.get(), nom::priv::FreeTexture },
+Texture::Texture ( const Texture& other ) : texture_buffer { other.texture_buffer.get(), nom::priv::FreeTexture },
                                                           coords ( other.coords.x, other.coords.y ), offsets ( other.offsets.width, other.offsets.height )
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-Canvas::Canvas ( int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, uint32 flags )
+Texture::Texture ( int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, uint32 flags )
 {
 NOM_LOG_TRACE ( NOM );
 
   this->initialize ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask );
 }
 
-Canvas::Canvas ( void* pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
+Texture::Texture ( void* pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
 {
 NOM_LOG_TRACE ( NOM );
 
-  //this->canvas_buffer.reset ( SDL_CreateRGBSurfaceFrom ( pixels, width, height, depth, pitch, Rmask, Gmask, Bmask, Amask ), nom::priv::FreeSurface );
+  //this->texture_buffer.reset ( SDL_CreateRGBSurfaceFrom ( pixels, width, height, depth, pitch, Rmask, Gmask, Bmask, Amask ), nom::priv::FreeSurface );
 
   this->offsets.setSize ( width, height );
 }
 
-Canvas::~Canvas ( void )
+Texture::~Texture ( void )
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-void Canvas::initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
+void Texture::initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
 {
 NOM_LOG_TRACE ( NOM );
 
-  //this->canvas_buffer.reset ( SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask ), nom::priv::FreeSurface );
+  //this->texture_buffer.reset ( SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask ), nom::priv::FreeSurface );
   this->offsets.setSize ( width, height );
 
   // If the video surface is marked for color keying transparency, we must do
   // so here.
   if ( flags & SDL_TRUE )//SDL_SRCCOLORKEY )
   {
-    if ( this->setTransparent ( this->getCanvasColorKey(), SDL_RLEACCEL | SDL_TRUE ) == false )//SDL_SRCCOLORKEY ) == false )
+    if ( this->setTransparent ( this->getTextureColorKey(), SDL_RLEACCEL | SDL_TRUE ) == false )//SDL_SRCCOLORKEY ) == false )
     {
 NOM_LOG_ERR ( NOM, "Could not create the video surface with color key transparency." );
     }
   }
 }
 
-Canvas::SharedPtr Canvas::clone ( void ) const
+Texture::SharedPtr Texture::clone ( void ) const
 {
-  return Canvas::SharedPtr ( new Canvas ( *this ) );
+  return Texture::SharedPtr ( new Texture ( *this ) );
 }
 
-Canvas& Canvas::operator = ( const Canvas& other )
+Texture& Texture::operator = ( const Texture& other )
 {
-  this->canvas_buffer = other.canvas_buffer;
+  this->texture_buffer = other.texture_buffer;
   this->coords = other.coords;
   this->offsets = other.offsets;
 
   return *this;
 }
 
-Canvas::RawPtr Canvas::get ( void ) const
+Texture::RawPtr Texture::get ( void ) const
 {
-  return this->canvas_buffer.get();
+  return this->texture_buffer.get();
 }
 
-bool Canvas::valid ( void ) const
+bool Texture::valid ( void ) const
 {
-  if ( this->canvas_buffer.get() != nullptr )
+  if ( this->texture_buffer.get() != nullptr )
     return true;
   else
     return false;
 }
 
-void Canvas::setCanvas ( const Canvas& surface )
+void Texture::setTexture ( const Texture& surface )
 {
-  //this->canvas_buffer.reset ( SDL_ConvertSurface ( surface.canvas_buffer.get(), surface.getCanvasPixelsFormat(), surface.getCanvasFlags() ), nom::priv::FreeSurface );
+  //this->texture_buffer.reset ( SDL_ConvertSurface ( surface.texture_buffer.get(), surface.getTexturePixelsFormat(), surface.getTextureFlags() ), nom::priv::FreeSurface );
 
-  this->offsets.setSize ( surface.getCanvasWidth(), surface.getCanvasHeight() );
+  this->offsets.setSize ( surface.getTextureWidth(), surface.getTextureHeight() );
 }
 
-const Coords& Canvas::getPosition ( void ) const
+const Coords& Texture::getPosition ( void ) const
 {
   return this->coords;
 }
 
-void Canvas::setPosition ( const Coords& pos )
+void Texture::setPosition ( const Coords& pos )
 {
   this->coords.x = pos.x;
   this->coords.y = pos.y;
 }
 
-void Canvas::setOffsets ( const Coords& clip )
+void Texture::setOffsets ( const Coords& clip )
 {
   this->offsets = clip;
 }
 
-const int32 Canvas::getCanvasWidth ( void ) const
+const int32 Texture::getTextureWidth ( void ) const
 {
   Coords size;
 
-  SDL_QueryTexture ( this->canvas_buffer.get(), nullptr, nullptr, &size.width, &size.height );
+  SDL_QueryTexture ( this->texture_buffer.get(), nullptr, nullptr, &size.width, &size.height );
 
   return size.width;
 }
 
-const int32 Canvas::getCanvasHeight ( void ) const
+const int32 Texture::getTextureHeight ( void ) const
 {
   Coords size;
 
-  SDL_QueryTexture ( this->canvas_buffer.get(), nullptr, nullptr, &size.width, &size.height );
+  SDL_QueryTexture ( this->texture_buffer.get(), nullptr, nullptr, &size.width, &size.height );
 
   return size.height;
 }
 
-uint32 Canvas::getCanvasFlags ( void ) const
+uint32 Texture::getTextureFlags ( void ) const
 {
   return 0;
   //return this->get()->flags;;
 }
 
-uint16 Canvas::getCanvasPitch ( void ) const
+uint16 Texture::getTexturePitch ( void ) const
 {
   return 0;
   //return this->get()->pitch;
 }
 
-void* Canvas::getCanvasPixels ( void ) const
+void* Texture::getTexturePixels ( void ) const
 {
   return nullptr;
   //return this->get()->pixels;
 }
 
-const uint8 Canvas::getCanvasBitsPerPixel ( void ) const
+const uint8 Texture::getTextureBitsPerPixel ( void ) const
 {
   return 0;
-  //return this->canvas_buffer.get()->format->BitsPerPixel;
+  //return this->texture_buffer.get()->format->BitsPerPixel;
 }
 
-SDL_PixelFormat* Canvas::getCanvasPixelsFormat ( void ) const
+SDL_PixelFormat* Texture::getTexturePixelsFormat ( void ) const
 {
   return nullptr;
-  //return this->canvas_buffer.get()->format;
+  //return this->texture_buffer.get()->format;
 }
 
-const Color Canvas::getCanvasColorKey ( void ) const
+const Color Texture::getTextureColorKey ( void ) const
 {
   return Color::null;
 /*
   uint32 transparent_color = 0; // holds me color for conversion
   Color colorkey; // native container
 
-  transparent_color = RGBA::asInt32 ( this->getCanvasPixelsFormat(), colorkey );
+  transparent_color = RGBA::asInt32 ( this->getTexturePixelsFormat(), colorkey );
 
   return colorkey;
 */
 }
 
-const uint8 Canvas::getCanvasAlphaValue ( void ) const
+const uint8 Texture::getTextureAlphaValue ( void ) const
 {
   return 0;
-  //return this->getCanvasPixelsFormat()->alpha;
+  //return this->getTexturePixelsFormat()->alpha;
 }
 
-const uint32 Canvas::getCanvasRedMask ( void ) const
+const uint32 Texture::getTextureRedMask ( void ) const
 {
   return 0;
-  //return this->getCanvasPixelsFormat()->Rmask;
+  //return this->getTexturePixelsFormat()->Rmask;
 }
 
-const uint32 Canvas::getCanvasGreenMask ( void ) const
+const uint32 Texture::getTextureGreenMask ( void ) const
 {
   return 0;
-  //return this->getCanvasPixelsFormat()->Gmask;
+  //return this->getTexturePixelsFormat()->Gmask;
 }
 
-const uint32 Canvas::getCanvasBlueMask ( void ) const
+const uint32 Texture::getTextureBlueMask ( void ) const
 {
   return 0;
-  //return this->getCanvasPixelsFormat()->Bmask;
+  //return this->getTexturePixelsFormat()->Bmask;
 }
 
-const uint32 Canvas::getCanvasAlphaMask ( void ) const
+const uint32 Texture::getTextureAlphaMask ( void ) const
 {
   return 0;
-  //return this->getCanvasPixelsFormat()->Amask;
+  //return this->getTexturePixelsFormat()->Amask;
 }
 
-const Coords Canvas::getCanvasBounds ( void ) const
+const Coords Texture::getTextureBounds ( void ) const
 {
   return Coords::null;
 /*
@@ -255,7 +255,7 @@ const Coords Canvas::getCanvasBounds ( void ) const
   Coords clip_bounds; // transferred values from SDL_Rect clip_buffer
 
   // Return values are put into the clip_buffer SDL_Rect after executing:
-  SDL_GetClipRect ( this->canvas_buffer.get(), &clip_buffer );
+  SDL_GetClipRect ( this->texture_buffer.get(), &clip_buffer );
 
   // Now transfer the values into our preferred data container type
   clip_bounds = Coords ( clip_buffer.x, clip_buffer.y, clip_buffer.w, clip_buffer.h );
@@ -264,22 +264,22 @@ const Coords Canvas::getCanvasBounds ( void ) const
 */
 }
 
-void Canvas::setCanvasBounds ( const Coords& clip_bounds )
+void Texture::setTextureBounds ( const Coords& clip_bounds )
 {
 /*
   SDL_Rect clip = IntRect::asSDLRect ( clip_bounds ); // temporary storage struct for setting
 
   // As per libSDL docs, if SDL_Rect is nullptr, the clipping rectangle is set
   // to the full size of the surface
-  SDL_SetClipRect ( this->canvas_buffer.get(), &clip );
+  SDL_SetClipRect ( this->texture_buffer.get(), &clip );
 */
 }
 
-int32 Canvas::getCanvasColorDepth ( void ) const
+int32 Texture::getTextureColorDepth ( void ) const
 {
   return 0;
 /*
-  switch ( this->getCanvasPixelsFormat()->BytesPerPixel )
+  switch ( this->getTexturePixelsFormat()->BytesPerPixel )
   {
     default: return -1; break; // Unsupported color depth
 
@@ -291,17 +291,17 @@ int32 Canvas::getCanvasColorDepth ( void ) const
 */
 }
 
-bool Canvas::getCanvasLock ( void ) const
+bool Texture::getTextureLock ( void ) const
 {
   return false;
-  //return this->canvas_buffer.get()->locked;
+  //return this->texture_buffer.get()->locked;
 }
 
-bool Canvas::mustLock ( void ) const
+bool Texture::mustLock ( void ) const
 {
   return false;
 /*
-  if ( SDL_MUSTLOCK ( this->canvas_buffer.get() ) )
+  if ( SDL_MUSTLOCK ( this->texture_buffer.get() ) )
   {
   return true;
   }
@@ -312,13 +312,13 @@ bool Canvas::mustLock ( void ) const
 */
 }
 
-bool Canvas::lock ( void ) const
+bool Texture::lock ( void ) const
 {
   return false;
 /*
   if ( this->mustLock() == true )
   {
-    if ( SDL_LockSurface ( this->canvas_buffer.get() ) == -1 )
+    if ( SDL_LockSurface ( this->texture_buffer.get() ) == -1 )
     {
 NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
       return false;
@@ -328,12 +328,12 @@ NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
   return true;
 }
 
-void Canvas::unlock ( void ) const
+void Texture::unlock ( void ) const
 {
-  //SDL_UnlockSurface ( this->canvas_buffer.get() );
+  //SDL_UnlockSurface ( this->texture_buffer.get() );
 }
 
-bool Canvas::load ( const std::string& filename, const Color& colorkey,
+bool Texture::load ( const std::string& filename, const Color& colorkey,
                     bool use_cache, uint32 flags
                   )
 {
@@ -345,23 +345,23 @@ bool Canvas::load ( const std::string& filename, const Color& colorkey,
   {
     priv::ObjectCache cache;
 
-    this->canvas_buffer = cache.getObject ( filename );
+    this->texture_buffer = cache.getObject ( filename );
 
-    if ( this->canvas_buffer == nullptr )
+    if ( this->texture_buffer == nullptr )
     {
-      this->canvas_buffer = cache.addObject ( filename, image.load ( filename ) );
+      this->texture_buffer = cache.addObject ( filename, image.load ( filename ) );
     }
   }
   else // Do not use the object cache
   {
 */
-    //this->canvas_buffer = image.load ( filename );
+    //this->texture_buffer = image.load ( filename );
   //}
 
   // Validate our obtained data is good before further processing
   if ( this->valid() == false )
   {
-NOM_LOG_ERR ( NOM, "Could not load canvas image file: " + filename );
+NOM_LOG_ERR ( NOM, "Could not load Texture image file: " + filename );
     return false;
   }
 
@@ -382,14 +382,14 @@ NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
     this->displayFormat(); // Optimized video surface without an alpha channel
   //}
 
-  // Update our canvas clipping bounds with the new source; not sure if we still
+  // Update our Texture clipping bounds with the new source; not sure if we still
   // need to be doing this.
-  this->offsets.setSize ( this->getCanvasWidth(), this->getCanvasHeight() );
+  this->offsets.setSize ( this->getTextureWidth(), this->getTextureHeight() );
 
   return true;
 }
 
-void Canvas::draw ( SDL_Renderer* target ) const
+void Texture::draw ( SDL_Renderer* target ) const
 {
 /*
   // temporary vars to store our wrapped Coords
@@ -401,13 +401,13 @@ void Canvas::draw ( SDL_Renderer* target ) const
   {
     if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
     {
-      if ( SDL_BlitSurface ( this->canvas_buffer.get(), &blit_offsets, video_buffer, &blit_coords ) != 0 )
+      if ( SDL_BlitSurface ( this->texture_buffer.get(), &blit_offsets, video_buffer, &blit_coords ) != 0 )
 NOM_LOG_ERR ( NOM, SDL_GetError() );
         return;
     }
     else
     {
-      if ( SDL_BlitSurface ( this->canvas_buffer.get(), nullptr, (SDL_SDL_Surface*) video_buffer, &blit_coords ) != 0 )
+      if ( SDL_BlitSurface ( this->texture_buffer.get(), nullptr, (SDL_SDL_Surface*) video_buffer, &blit_coords ) != 0 )
 NOM_LOG_ERR ( NOM, SDL_GetError() );
         return;
     }
@@ -415,23 +415,23 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 */
 }
 
-void Canvas::update ( SDL_Renderer* video_target )
+void Texture::update ( SDL_Renderer* video_target )
 {
   SDL_RenderPresent ( video_target );
 }
 
-bool Canvas::setAlpha ( uint8_t opacity )
+bool Texture::setAlpha ( uint8_t opacity )
 {
 NOM_ASSERT ( ! ( opacity > SDL_ALPHA_OPAQUE ) || ( opacity < SDL_ALPHA_TRANSPARENT ) );
 /*
-  if ( SDL_SetAlpha ( this->canvas_buffer.get(), flags, static_cast<uint32>( opacity ) ) == -1 )
+  if ( SDL_SetAlpha ( this->texture_buffer.get(), flags, static_cast<uint32>( opacity ) ) == -1 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
 */
 /*
-  if ( SDL_SetTextureAlphaMod ( this->canvas_buffer.get(), opacity ) != 0 )
+  if ( SDL_SetTextureAlphaMod ( this->texture_buffer.get(), opacity ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
@@ -440,15 +440,15 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Canvas::setTransparent ( const Color& color, uint32_t flags )
+bool Texture::setTransparent ( const Color& color, uint32_t flags )
 {
 /*
   uint32_t transparent_color = 0;
 
   // TODO: Alpha value needs testing
-  transparent_color = RGBA::asInt32 ( this->getCanvasPixelsFormat(), color );
+  transparent_color = RGBA::asInt32 ( this->getTexturePixelsFormat(), color );
 
-  if ( SDL_SetColorKey ( this->canvas_buffer.get(), flags, transparent_color ) != 0 )
+  if ( SDL_SetColorKey ( this->texture_buffer.get(), flags, transparent_color ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
@@ -457,65 +457,65 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Canvas::displayFormat ( void )
+bool Texture::displayFormat ( void )
 {
-  //this->canvas_buffer.reset ( SDL_DisplayFormat ( this->canvas_buffer.get() ), nom::priv::FreeSurface );
+  //this->texture_buffer.reset ( SDL_DisplayFormat ( this->texture_buffer.get() ), nom::priv::FreeSurface );
 
 //NOM_ASSERT ( this->valid() );
 
   return true;
 }
 
-bool Canvas::displayFormatAlpha ( void )
+bool Texture::displayFormatAlpha ( void )
 {
-  //this->canvas_buffer.reset ( SDL_DisplayFormatAlpha ( this->canvas_buffer.get()), nom::priv::FreeSurface );
+  //this->texture_buffer.reset ( SDL_DisplayFormatAlpha ( this->texture_buffer.get()), nom::priv::FreeSurface );
 
 //NOM_ASSERT ( this->valid() );
 
   return true;
 }
 
-uint32 Canvas::getPixel ( int32 x, int32 y )
+uint32 Texture::getPixel ( int32 x, int32 y )
 {
-  switch ( this->getCanvasColorDepth() )
+  switch ( this->getTextureColorDepth() )
   {
     default: return -1; break; // Unsupported
 
     case 8:
     {
-      uint8* pixels = static_cast<uint8*> ( this->getCanvasPixels() );
+      uint8* pixels = static_cast<uint8*> ( this->getTexturePixels() );
 
-      return pixels[ ( y * this->getCanvasPitch() ) + x ];
+      return pixels[ ( y * this->getTexturePitch() ) + x ];
     }
     break;
 
     case 16:
     {
-      uint16* pixels = static_cast<uint16*> ( this->getCanvasPixels() );
+      uint16* pixels = static_cast<uint16*> ( this->getTexturePixels() );
 
-      return pixels[ ( y * this->getCanvasPitch() / 2 ) + x ];
+      return pixels[ ( y * this->getTexturePitch() / 2 ) + x ];
     }
     break;
 
     case 24:
     {
-      uint8* pixels = static_cast<uint8*> ( this->getCanvasPixels() );
+      uint8* pixels = static_cast<uint8*> ( this->getTexturePixels() );
 
-      return pixels[ ( y * this->getCanvasPitch() ) + x ];
+      return pixels[ ( y * this->getTexturePitch() ) + x ];
     }
     break;
 
     case 32:
     {
-      uint32* pixels = static_cast<uint32*> ( this->getCanvasPixels() );
+      uint32* pixels = static_cast<uint32*> ( this->getTexturePixels() );
 
-      return pixels[ ( y * this->getCanvasPitch()/4 ) + x ];
+      return pixels[ ( y * this->getTexturePitch()/4 ) + x ];
     }
     break;
   } // end switch
 }
 
-bool Canvas::resize ( enum ResizeAlgorithm scaling_algorithm )
+bool Texture::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
 /*
   // Ensure that our existing video surface is OK first
@@ -527,13 +527,13 @@ NOM_LOG_ERR ( NOM, "The existing video surface is not valid." );
 
   // Current video surface flags state -- the destination buffer will be set
   // with these.
-  uint32 flags = this->getCanvasFlags();
+  uint32 flags = this->getTextureFlags();
 
   // This is the target video surface object that is created from the existing
   // video surface, with the existing width & height recomputed to whatever the
   // chosen algorithm expects. The target buffer (upon success) becomes the new
   // video surface of this instance.
-  Canvas destination_buffer;
+  Texture destination_buffer;
 
   // Pick out the suitable scaling factor for determining the new video surface
   // width and height.
@@ -547,16 +547,16 @@ NOM_LOG_ERR ( NOM, "The existing video surface is not valid." );
   // If the video surface does *NOT* have color keying set
   if ( ! ( flags & SDL_TRUE ) )//SDL_SRCCOLORKEY ) )
   {
-    alpha_mask = this->getCanvasAlphaMask();
+    alpha_mask = this->getTextureAlphaMask();
   }
 
-  destination_buffer = Canvas (
-                                this->getCanvasWidth() * scale_factor,
-                                this->getCanvasHeight() * scale_factor,
-                                this->getCanvasBitsPerPixel(),
-                                this->getCanvasRedMask(),
-                                this->getCanvasGreenMask(),
-                                this->getCanvasBlueMask(),
+  destination_buffer = Texture (
+                                this->getTextureWidth() * scale_factor,
+                                this->getTextureHeight() * scale_factor,
+                                this->getTextureBitsPerPixel(),
+                                this->getTextureRedMask(),
+                                this->getTextureGreenMask(),
+                                this->getTextureBlueMask(),
                                 alpha_mask,
                                 flags
                               );
@@ -582,13 +582,13 @@ NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
     case ResizeAlgorithm::scale2x:
     {
       if ( priv::scale2x  (
-                            this->getCanvasPixels(),
-                            destination_buffer.getCanvasPixels(),
-                            this->getCanvasWidth(),
-                            this->getCanvasHeight(),
-                            this->getCanvasColorDepth(),
-                            this->getCanvasPitch(),
-                            destination_buffer.getCanvasPitch()
+                            this->getTexturePixels(),
+                            destination_buffer.getTexturePixels(),
+                            this->getTextureWidth(),
+                            this->getTextureHeight(),
+                            this->getTextureColorDepth(),
+                            this->getTexturePitch(),
+                            destination_buffer.getTexturePitch()
                           ) == false )
       {
 NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale2x." );
@@ -601,13 +601,13 @@ NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale2x." );
     case ResizeAlgorithm::scale3x:
     {
       if ( priv::scale3x  (
-                            this->getCanvasPixels(),
-                            destination_buffer.getCanvasPixels(),
-                            this->getCanvasWidth(),
-                            this->getCanvasHeight(),
-                            this->getCanvasColorDepth(),
-                            this->getCanvasPitch(),
-                            destination_buffer.getCanvasPitch()
+                            this->getTexturePixels(),
+                            destination_buffer.getTexturePixels(),
+                            this->getTextureWidth(),
+                            this->getTextureHeight(),
+                            this->getTextureColorDepth(),
+                            this->getTexturePitch(),
+                            destination_buffer.getTexturePitch()
                           ) == false )
       {
 NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale3x." );
@@ -620,13 +620,13 @@ NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale3x." );
     case ResizeAlgorithm::scale4x:
     {
       if ( priv::scale2x  (
-                            this->getCanvasPixels(),
-                            destination_buffer.getCanvasPixels(),
-                            this->getCanvasWidth(),
-                            this->getCanvasHeight(),
-                            this->getCanvasColorDepth(),
-                            this->getCanvasPitch(),
-                            destination_buffer.getCanvasPitch()
+                            this->getTexturePixels(),
+                            destination_buffer.getTexturePixels(),
+                            this->getTextureWidth(),
+                            this->getTextureHeight(),
+                            this->getTextureColorDepth(),
+                            this->getTexturePitch(),
+                            destination_buffer.getTexturePitch()
                           ) == false )
       {
 NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
@@ -641,9 +641,9 @@ NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
       priv::hqxInit();
       // Note that we must pass the *source* width and height here
       priv::hq2x_32 (
-                      static_cast<uint32*> ( this->getCanvasPixels() ),
-                      static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
-                      this->getCanvasWidth(), this->getCanvasHeight()
+                      static_cast<uint32*> ( this->getTexturePixels() ),
+                      static_cast<uint32*> ( destination_buffer.getTexturePixels() ),
+                      this->getTextureWidth(), this->getTextureHeight()
                     );
     }
     break;
@@ -653,9 +653,9 @@ NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
       priv::hqxInit();
       // Note that we must pass the *source* width and height here
       priv::hq3x_32 (
-                      static_cast<uint32*> ( this->getCanvasPixels() ),
-                      static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
-                      this->getCanvasWidth(), this->getCanvasHeight()
+                      static_cast<uint32*> ( this->getTexturePixels() ),
+                      static_cast<uint32*> ( destination_buffer.getTexturePixels() ),
+                      this->getTextureWidth(), this->getTextureHeight()
                     );
     }
     break;
@@ -665,9 +665,9 @@ NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
       priv::hqxInit();
       // Note that we must pass the *source* width and height here
       priv::hq4x_32 (
-                      static_cast<uint32*> ( this->getCanvasPixels() ),
-                      static_cast<uint32*> ( destination_buffer.getCanvasPixels() ),
-                      this->getCanvasWidth(), this->getCanvasHeight()
+                      static_cast<uint32*> ( this->getTexturePixels() ),
+                      static_cast<uint32*> ( destination_buffer.getTexturePixels() ),
+                      this->getTextureWidth(), this->getTextureHeight()
                     );
     }
     break;
@@ -683,12 +683,12 @@ NOM_LOG_ERR ( NOM, "The rescaled video surface is not valid." );
   }
 
   // Reset the video surface object's video memory to the rescaled pixel data.
-  this->setCanvas ( destination_buffer );
+  this->setTexture ( destination_buffer );
 */
   return true;
 }
 
-bool Canvas::resize ( const Point2f& scale_factor )
+bool Texture::resize ( const Point2f& scale_factor )
 {
 /*
   // set ResizeAlgorithm::Stretch
@@ -702,13 +702,13 @@ NOM_LOG_ERR ( NOM, "The existing video surface is not valid." );
 
   // Current video surface flags state -- the destination buffer will be set
   // with these.
-  uint32 flags = this->getCanvasFlags();
+  uint32 flags = this->getTextureFlags();
 
   // This is the target video surface object that is created from the existing
   // video surface, with the existing width & height recomputed to whatever the
   // chosen algorithm expects. The target buffer (upon success) becomes the new
   // video surface of this instance.
-  Canvas destination_buffer;
+  Texture destination_buffer;
 
   // Pick out the suitable scaling factor for determining the new video surface
   // width and height.
@@ -722,16 +722,16 @@ NOM_LOG_ERR ( NOM, "The existing video surface is not valid." );
   // If the video surface does *NOT* have color keying set
   if ( ! ( flags & SDL_TRUE ) )//SDL_SRCCOLORKEY ) )
   {
-    //alpha_mask = this->getCanvasAlphaMask();
+    //alpha_mask = this->getTextureAlphaMask();
   }
 
-  destination_buffer = Canvas (
-                                this->getCanvasWidth()*scale_factor.x,
-                                this->getCanvasHeight()*scale_factor.y,
-                                this->getCanvasBitsPerPixel(),
-                                this->getCanvasRedMask(),
-                                this->getCanvasGreenMask(),
-                                this->getCanvasBlueMask(),
+  destination_buffer = Texture (
+                                this->getTextureWidth()*scale_factor.x,
+                                this->getTextureHeight()*scale_factor.y,
+                                this->getTextureBitsPerPixel(),
+                                this->getTextureRedMask(),
+                                this->getTextureGreenMask(),
+                                this->getTextureBlueMask(),
                                 alpha_mask,
                                 flags
                               );
@@ -754,19 +754,19 @@ NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
   Color color;
   Pixel pixels;
 
-  double stretch_x = (double) this->getCanvasWidth() * scale_factor.x / (double) this->getCanvasWidth();
-  double stretch_y = (double) this->getCanvasHeight() * scale_factor.y / (double) this->getCanvasHeight();
+  double stretch_x = (double) this->getTextureWidth() * scale_factor.x / (double) this->getTextureWidth();
+  double stretch_y = (double) this->getTextureHeight() * scale_factor.y / (double) this->getTextureHeight();
 
-  for ( int y = 0; y < this->getCanvasHeight(); y++ )
+  for ( int y = 0; y < this->getTextureHeight(); y++ )
   {
-    for ( int x = 0; x < this->getCanvasWidth(); x++ )
+    for ( int x = 0; x < this->getTextureWidth(); x++ )
     {
       for ( int sY = 0; sY < stretch_y; sY++ )
       {
         for ( int sX = 0; sX < stretch_x; sX++ )
         {
           uint32 pixel = this->getPixel ( x, y );
-          RGBA::asRGB ( pixel, this->getCanvasPixelsFormat(), color );
+          RGBA::asRGB ( pixel, this->getTexturePixelsFormat(), color );
           //NOM_DUMP_VAR(color);
           if ( color.red == 0 && color.green == 0 && color.blue == 0 ) continue;
 
@@ -787,12 +787,12 @@ NOM_LOG_ERR ( NOM, "The destination video surface is not valid." );
   }
 
   // Reset the video surface object's video memory to the rescaled pixel data.
-  this->setCanvas ( destination_buffer );
+  this->setTexture ( destination_buffer );
 */
   return true;
 }
 
-int32 Canvas::getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm )
+int32 Texture::getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm )
 {
   switch ( scaling_algorithm )
   {

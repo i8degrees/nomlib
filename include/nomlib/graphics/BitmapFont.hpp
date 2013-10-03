@@ -153,7 +153,7 @@ class BitmapFont: public IFont
     int32 sheet_height;
 
     /// pointer reference holding our bitmap font image sheet
-    mutable Canvas bitmap_font;
+    mutable Texture bitmap_font;
 
     /// Background color used in computation of individual character boundaries.
     Color colorkey;

@@ -131,7 +131,7 @@ class TrueTypeFont: public IFont
     bool rebuild ( void );
 
     /// Surface where font for drawing is rendered to
-    Canvas font_buffer;
+    Texture font_buffer;
 
     /// Font file data, used by SDL_ttf extension
     std::shared_ptr<TTF_Font> font;

@@ -68,7 +68,7 @@ NOM_LOG_TRACE ( NOM );
 
 const Coords Sprite::getSize ( void ) const
 {
-  return Coords ( 0, 0, this->sprite.getCanvasWidth(), this->sprite.getCanvasHeight() );
+  return Coords ( 0, 0, this->sprite.getTextureWidth(), this->sprite.getTextureHeight() );
 }
 
 uint32 Sprite::getState ( void ) const
@@ -94,7 +94,7 @@ NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
     return false;
   }
 
-  this->setSize ( this->sprite.getCanvasWidth(), this->sprite.getCanvasHeight() );
+  this->setSize ( this->sprite.getTextureWidth(), this->sprite.getTextureHeight() );
 
   return true;
 }

@@ -49,7 +49,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Image.hpp"
 //#include "nomlib/graphics/Rectangle.hpp"
 
-//#define NOM_DEBUG_SDL_CANVAS
+//#define NOM_DEBUG_SDL_TEXTURE
 
 namespace nom {
 
@@ -66,26 +66,26 @@ enum ResizeAlgorithm
   Stretch
 };
 
-class Canvas
+class Texture
 {
   public:
-    typedef std::shared_ptr<Canvas> SharedPtr;
+    typedef std::shared_ptr<Texture> SharedPtr;
     typedef SDL_Texture* RawPtr;
 
     /// Default constructor; initializes object to its respective defaults
-    Canvas ( void );
+    Texture ( void );
 
     /// Constructor variant for creating a video surface object with existing
     /// video surface memory.
     ///
     /// \deprecated Likely to be removed in the future.
-    //Canvas ( SDL_Surface* video_buffer );
+    //Texture ( SDL_Surface* video_buffer );
 
-    Canvas ( SDL_Texture* video_buffer );
+    Texture ( SDL_Texture* video_buffer );
 
-    /// Copy constructor; create a video surface object from an existing Canvas
+    /// Copy constructor; create a video surface object from an existing Texture
     /// object.
-    Canvas ( const Canvas& other );
+    Texture ( const Texture& other );
 
     /// Constructor variant for creating a fresh, empty video surface. You should
     /// be sure to read over the details gory details scattered throughout the
@@ -99,7 +99,7 @@ class Canvas
     /// (SDL_SetVideoMode).
     ///
     /// See http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurface
-    Canvas ( int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, uint32 flags = SDL_SWSURFACE );
+    Texture ( int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, uint32 flags = SDL_SWSURFACE );
 
     /// Construct a video surface object using the data from an existing surface;
     /// you can think of this as a copy method. As with the previous method, you
@@ -110,66 +110,66 @@ class Canvas
     /// therefore are responsible for memory management.
     ///
     /// See http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurfaceFrom
-    Canvas ( void* pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+    Texture ( void* pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
     /// Lazy destructor -- does nothing.
-    ~Canvas ( void );
+    ~Texture ( void );
 
     void initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
     /// Return a std::shared_ptr copy of this instance
     /// \todo Test me out!
-    Canvas::SharedPtr clone ( void ) const;
+    Texture::SharedPtr clone ( void ) const;
 
     /// Copy assignment operator
-    Canvas& operator = ( const Canvas& other );
+    Texture& operator = ( const Texture& other );
 
     const Coords& getPosition ( void ) const;
 
-    /// Get the video memory surface of the canvas object
-    Canvas::RawPtr get ( void ) const;
+    /// Get the video memory surface of the Texture object
+    Texture::RawPtr get ( void ) const;
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
 
     /// Reset the video surface object with another video surface object.
-    void setCanvas ( const Canvas& surface );
+    void setTexture ( const Texture& surface );
 
     void setPosition ( const Coords& pos );
     void setOffsets ( const Coords& clip );
 
-    const int32 getCanvasWidth ( void ) const;
-    const int32 getCanvasHeight ( void ) const;
-    uint32 getCanvasFlags ( void ) const;
-    uint16 getCanvasPitch ( void ) const;
-    void* getCanvasPixels ( void ) const;
-    const uint8 getCanvasBitsPerPixel ( void ) const;
+    const int32 getTextureWidth ( void ) const;
+    const int32 getTextureHeight ( void ) const;
+    uint32 getTextureFlags ( void ) const;
+    uint16 getTexturePitch ( void ) const;
+    void* getTexturePixels ( void ) const;
+    const uint8 getTextureBitsPerPixel ( void ) const;
 
-    /// \todo Rename to getCanvasPixelFormat
-    SDL_PixelFormat* getCanvasPixelsFormat ( void ) const;
+    /// \todo Rename to getTexturePixelFormat
+    SDL_PixelFormat* getTexturePixelsFormat ( void ) const;
 
     /// Obtain the pixel value of the set transparent color
-    const Color getCanvasColorKey ( void ) const;
+    const Color getTextureColorKey ( void ) const;
 
     /// Obtain the overall surface alpha value
-    const uint8 getCanvasAlphaValue ( void ) const;
+    const uint8 getTextureAlphaValue ( void ) const;
 
     /// Obtain the video surface's red *ALPHA* mask
-    const uint32 getCanvasRedMask ( void ) const;
+    const uint32 getTextureRedMask ( void ) const;
 
     /// Obtain the video surface's green *ALPHA* mask
-    const uint32 getCanvasGreenMask ( void ) const;
+    const uint32 getTextureGreenMask ( void ) const;
 
     /// Obtain the video surface's blue *ALPHA* mask
-    const uint32 getCanvasBlueMask ( void ) const;
+    const uint32 getTextureBlueMask ( void ) const;
 
     /// Obtain the video surface's alpha mask
-    const uint32 getCanvasAlphaMask ( void ) const;
+    const uint32 getTextureAlphaMask ( void ) const;
 
-    const Coords getCanvasBounds ( void ) const;
-    void setCanvasBounds ( const Coords& clip_bounds );
+    const Coords getTextureBounds ( void ) const;
+    void setTextureBounds ( const Coords& clip_bounds );
 
-    /// Convenience Helper method for calculating the canvas color depth; for
+    /// Convenience Helper method for calculating the Texture color depth; for
     /// the time being, this is merely for the convenience of readability in
     /// our code.
     ///
@@ -178,7 +178,7 @@ class Canvas
     ///
     /// Returns -1 on err; perhaps an unsupported color depth or an
     /// uninitialized video surface?
-    int32 getCanvasColorDepth ( void ) const;
+    int32 getTextureColorDepth ( void ) const;
 
     /// I think that we are accessing the value of an
     /// (internal?) property of the SDL_Surface structure that is described as being
@@ -187,7 +187,7 @@ class Canvas
     /// Return value of this internal property is presumed to be boolean -- no
     /// verification has been made of this. Testing of this method *appears*
     /// to be in working order.
-    bool getCanvasLock ( void ) const;
+    bool getTextureLock ( void ) const;
 
     /// Lock the video surface for writing directly to video memory.
     bool lock ( void ) const;
@@ -246,7 +246,7 @@ class Canvas
     ///
     /// Returns -1 on error
     ///
-    /// You are responsible for locking & unlocking of the canvas before-hand
+    /// You are responsible for locking & unlocking of the Texture before-hand
     ///
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
     uint32 getPixel ( int32 x, int32 y );
@@ -266,7 +266,7 @@ class Canvas
     /// needs to be locked before doing so for performance sake.
     bool mustLock ( void ) const;
 
-    std::shared_ptr<SDL_Texture> canvas_buffer;
+    std::shared_ptr<SDL_Texture> texture_buffer;
     /// Holds surface position
     Coords coords;
     /// Holds surface bounds (input clipping)
@@ -276,4 +276,4 @@ class Canvas
 
 } // namespace nom
 
-#endif // NOMLIB_SDL_CANVAS_HEADERS defined
+#endif // include guard defined

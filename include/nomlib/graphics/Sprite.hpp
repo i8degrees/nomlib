@@ -53,8 +53,8 @@ class Sprite:
     /// Construct a Sprite object, initializing the width & height coordinates.
     Sprite ( int32 width, int32 height );
 
-    // Construct a Sprite object, initializing it with a Canvas object.
-    //Sprite ( const Canvas& copy );
+    // Construct a Sprite object, initializing it with a Texture object.
+    //Sprite ( const Texture& copy );
 
     /// Copy assignment operator.
     Sprite& operator = ( const Sprite& other );
@@ -90,7 +90,7 @@ class Sprite:
 
   protected:
     /// Object that holds our sprite image
-    Canvas sprite;
+    Texture sprite;
 
     /// Convenience instance variable (user-defined)
     uint32 state;

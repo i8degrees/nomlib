@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/math/Color.hpp"
-#include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/Texture.hpp"
 
 namespace nom {
 

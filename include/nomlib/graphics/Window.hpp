@@ -43,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //#include "nomlib/graphics/IDisplay.hpp"
 #include "nomlib/graphics/smart_ptr.hpp"
 #include "nomlib/graphics/VideoMode.hpp"
-#include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/Renderer.hpp"
 
 namespace nom {

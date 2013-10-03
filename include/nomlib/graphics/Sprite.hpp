@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/math/Point2-inl.hpp"
-#include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/Texture.hpp"
 
 namespace nom {
 

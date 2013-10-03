@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/config.hpp>
 #include <nomlib/graphics/smart_ptr.hpp>
 #include <nomlib/graphics/BitmapFont.hpp>
-#include <nomlib/graphics/Canvas.hpp>
+#include <nomlib/graphics/Texture.hpp>
 #include <nomlib/graphics/VideoMode.hpp>
 #include <nomlib/graphics/Window.hpp>
 #include <nomlib/graphics/Renderer.hpp>

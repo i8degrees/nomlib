@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Gradient.hpp"
-#include "nomlib/graphics/Line.hpp"
+#include "nomlib/graphics/shapes/Line.hpp"
 #include "nomlib/gui/GrayFrame.hpp"
 #include "nomlib/graphics/IFont.hpp"
 

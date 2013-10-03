@@ -66,8 +66,9 @@ bool Window::create (
                                                 ), priv::FreeWindow
                                               );
 
+  if ( this->valid() == false )
   {
-NOM_LOG_ERR ( NOM, "Could not create window." );
+NOM_LOG_ERR ( NOM, "Could not create SDL window." );
     return false;
   }
 
@@ -135,7 +136,7 @@ const uint8 Window::getDisplayColorBits ( void ) const
 
 uint32 Window::getDisplayFlags ( void ) const
 {
-  return SDL_GetWindowFlags ( this->window.get() );
+  return SDL_GetWindowFlags ( this->get() );
 }
 
 uint16 Window::getDisplayPitch ( void ) const
@@ -250,7 +251,7 @@ bool Window::toggleFullScreen ( uint32 flags )
 
   pos = this->getPosition();
 
-  if ( SDL_SetWindowFullscreen ( this->window.get(), flags ) != 0 )
+  if ( SDL_SetWindowFullscreen ( this->get(), flags ) != 0 )
   {
     NOM_LOG_ERR ( NOM, "Could not toggle SDL fullscreen mode." );
     return false;
@@ -283,14 +284,14 @@ bool Window::toggleFullScreen ( uint32 flags )
 
 const std::string Window::getWindowTitle ( void ) const
 {
-  std::string title = SDL_GetWindowTitle ( this->window.get() );
+  std::string title = SDL_GetWindowTitle ( this->get() );
 
   return title;
 }
 
 void Window::setWindowTitle ( const std::string& title )
 {
-  SDL_SetWindowTitle ( this->window.get(), title.c_str() );
+  SDL_SetWindowTitle ( this->get(), title.c_str() );
 }
 
 bool Window::setWindowIcon ( const std::string& filename )
@@ -318,7 +319,7 @@ bool Window::setWindowIcon ( const std::string& filename )
     return false;
   }
 
-  SDL_SetWindowIcon ( this->window.get(), icon.get() );
+  SDL_SetWindowIcon ( this->get(), icon.get() );
 
   return true;
 }
@@ -332,7 +333,7 @@ void Window::clear ( const Color& color )
 
 void Window::setPosition ( int32 x, int32 y )
 {
-  SDL_SetWindowPosition ( this->window.get(), x, y );
+  SDL_SetWindowPosition ( this->get(), x, y );
 }
 
 } // namespace nom

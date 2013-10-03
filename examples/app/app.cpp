@@ -77,7 +77,7 @@ bool App::onInit ( void )
     return false;
   }
 
-  if ( this->window1.setWindowIcon ( RESOURCE_ICON ) == false )
+  if ( this->window1.set_window_icon ( RESOURCE_ICON ) == false )
   {
     return false;
   }
@@ -102,12 +102,12 @@ void App::onKeyDown ( nom::int32 key, nom::int32 mod )
     {
       if ( this->isFullScreen() == true )
       {
-        this->window1.toggleFullScreen ( 0 );
+        this->window1.fullscreen ( 0 );
         this->setFullScreen ( false );
       }
       else
       {
-        this->window1.toggleFullScreen ( SDL_WINDOW_FULLSCREEN_DESKTOP );
+        this->window1.fullscreen ( SDL_WINDOW_FULLSCREEN_DESKTOP );
         this->setFullScreen ( true );
       }
     }
@@ -157,11 +157,11 @@ nom::int32 App::Run ( void )
     {
       if ( this->getShowFPS() == true )
       {
-        this->window1.setWindowTitle ( APP_NAME1 + " - " + this->fps[0].asString() + '\x20' + "fps" );
+        this->window1.set_window_title ( APP_NAME1 + " - " + this->fps[0].asString() + '\x20' + "fps" );
       }
       else
       {
-        this->window1.setWindowTitle ( APP_NAME1 );
+        this->window1.set_window_title ( APP_NAME1 );
       }
       this->update[0].restart();
     }
@@ -171,11 +171,11 @@ nom::int32 App::Run ( void )
     {
       if ( this->getShowFPS() == true )
       {
-        this->window2.setWindowTitle ( APP_NAME2 + " - " + this->fps[1].asString() + '\x20' + "fps" );
+        this->window2.set_window_title ( APP_NAME2 + " - " + this->fps[1].asString() + '\x20' + "fps" );
       }
       else
       {
-        this->window2.setWindowTitle ( APP_NAME2 );
+        this->window2.set_window_title ( APP_NAME2 );
       }
       this->update[1].restart();
     }

@@ -45,6 +45,11 @@ Rectangle::Rectangle ( const Coords& coords, const Color& color )
   this->color = color;
 }
 
+Rectangle::Rectangle ( int32 x, int32 y, int32 width, int32 height, const Color& color )
+{
+  this->coords = Coords ( x, y, width, height );
+  this->color = color;
+}
 
 void Rectangle::update ( void ) {}
 

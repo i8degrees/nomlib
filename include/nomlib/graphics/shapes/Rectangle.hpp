@@ -52,6 +52,7 @@ class Rectangle:
     /// This is a "shallow" copy assignment
     Rectangle ( const Rectangle& rect );
     Rectangle ( const Coords& coords, const Color& color );
+    Rectangle ( int32 x1, int32 y1, int32 width, int32 height, const Color& color );
 
     /// Intentional interface stub
     void update ( void );

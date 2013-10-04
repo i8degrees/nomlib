@@ -42,15 +42,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/graphics/smart_ptr.hpp"
-#include "nomlib/graphics/Window.hpp"
-#include "nomlib/graphics/Texture.hpp"
 
 namespace nom {
 
+/// \brief Bitmap storage container
 class Image
 {
   public:
-    /// Default constructor -- initializes to sensible defaults.
+    /// Default constructor -- initializes to sane defaults.
     Image ( void );
 
     /// Destructor.
@@ -61,21 +60,27 @@ class Image
     Image ( uint32 img_flags );
 
     /// Copy constructor
-    //Image ( const Image& other );
+    Image ( const Image& other );
 
     /// Copy assignment constructor
-    //Image& operator = ( const Image& other );
+    Image& operator = ( const Image& other );
 
-    /// Is this object initialized -- not nullptr?
-    //bool valid ( void ) const;
+    /// Obtain the SDL_Surface struct used in this object instance
+    std::shared_ptr<SDL_Surface> get ( void ) const;
+
+    /// Is this object initialized? Valid when *NOT* nullptr
+    bool valid ( void ) const;
 
     /// Supports every file type that the libSDL_image extension has been
     /// compiled with
-    SDL_Surface* load ( const std::string& filename );
+    bool load ( const std::string& filename );
 
     /// Uses SDL's built-in BMP file loader; no alpha channeling support ...
     /// perfect for setting window icons!
-    SDL_Surface* loadBMP ( const std::string& filename );
+    ///
+    /// (I have yet to find success using IMG_Load to load an ordinary bitmap
+    /// file, whereas SDL_LoadBMP does load fine).
+    bool load_bmp ( const std::string& filename );
 
     /// Saves as an uncompressed RGB Windows Bitmap (BMP)
     ///
@@ -83,10 +88,11 @@ class Image
     /// whatsoever
     bool save ( const std::string& filename, SDL_Surface* video_buffer );
 
-    //const Coords getSize ( void ) const;
+    /// Obtain the width and height (in pixels) of the stored bitmap buffer
+    const Coords getSize ( void ) const;
 
-  //private:
-    //std::shared_ptr<SDL_Texture> image_buffer;
+  private:
+    std::shared_ptr<SDL_Surface> image_buffer;
 };
 
 

@@ -44,10 +44,10 @@ NOM_LOG_TRACE ( NOM );
     }
 
     /// Required interface
-    virtual void Update ( float ) = 0;
+    virtual void update ( float ) = 0;
 
     /// Required interface
-    virtual void Draw ( SDL_Surface* ) = 0;
+    virtual void draw ( SDL_Renderer* ) = 0;
 
     /// Optional interface
     virtual void onInit ( void ) {}

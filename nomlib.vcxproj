@@ -204,12 +204,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <IncludePath>include/;third-party/SDL2/include;third-party/SDL2_ttf/include;third-party/SDL2_image/include;third-party/OpenAL/include;third-party/libsndfile/include;third-party/magiclib/include;$(IncludePath)</IncludePath>
-    <LibraryPath>third-party/SDL2/lib;third-party/SDL2_ttf/lib;third-party/SDL2_image/lib;third-party/OpenAL/lib;third-party/libsndfile/lib;third-party/magiclib/lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>include/;third-party/SDL2/include;third-party/SDL2_ttf/include;third-party/SDL2_image/include;third-party/OpenAL/include;third-party/libsndfile/include;$(IncludePath)</IncludePath>
+    <LibraryPath>third-party/SDL2/lib;third-party/SDL2_ttf/lib;third-party/SDL2_image/lib;third-party/OpenAL/lib;third-party/libsndfile/lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>include/;third-party/SDL2/include;third-party/SDL2_ttf/include;third-party/SDL2_image/include;third-party/OpenAL/include;third-party/libsndfile/include;third-party/magiclib/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include/;third-party/SDL2/include;third-party/SDL2_ttf/include;third-party/SDL2_image/include;third-party/OpenAL/include;third-party/libsndfile/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -241,14 +241,14 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Lib>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;OpenAL32.lib;libsndfile-1.lib;libmagic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;OpenAL32.lib;libsndfile-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <Lib>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>third-party/SDL2/lib;third-party/SDL2_ttf/lib;third-party/SDL2_image/lib;third-party/OpenAL/lib;third-party/libsndfile/lib;third-party/magiclib/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>third-party/SDL2/lib;third-party/SDL2_ttf/lib;third-party/SDL2_image/lib;third-party/OpenAL/lib;third-party/libsndfile/lib</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>

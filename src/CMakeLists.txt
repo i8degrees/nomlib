@@ -31,12 +31,12 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/graphics/BitmapFont.cpp
       ${SRC_DIR}/graphics/TrueTypeFont.cpp
       ${SRC_DIR}/graphics/Gradient.cpp
+      ${SRC_DIR}/graphics/Pixel.cpp
       #${SRC_DIR}/graphics/IDisplay.cpp
       # graphics/shapes
       ${SRC_DIR}/graphics/shapes/Point.cpp
       ${SRC_DIR}/graphics/shapes/Line.cpp
       ${SRC_DIR}/graphics/shapes/Rectangle.cpp
-      ${SRC_DIR}/graphics/shapes/Pixel.cpp
       # graphics/sprite
       ${SRC_DIR}/graphics/sprite/Sprite.cpp
       ${SRC_DIR}/graphics/sprite/SpriteBatch.cpp

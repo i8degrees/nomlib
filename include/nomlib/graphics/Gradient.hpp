@@ -43,20 +43,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-enum class FillDirection: int32
-{
-  Top = 0,    // Top down
-  Bottom,     // Bottom's up!
-  Left,       // Left to right
-  Right       // Right to left
-};
-
 /// \brief Rectangle fill class with dithered, linear gradient colors
 class Gradient:
                 public IDrawable
 
 {
   public:
+    /// \todo
+    /// Rename me -- Direction seems fitting?
+    /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-05
+    enum FillDirection
+    {
+      Top = 0,    // Top down
+      Bottom,     // Bottom's up!
+      Left,       // Left to right
+      Right       // Right to left
+    };
+
     /// Default construct for initializing instance variables to their
     /// respective defaults.
     Gradient ( void );
@@ -65,9 +68,9 @@ class Gradient:
     ///
     /// \DEPRECATED
     Gradient  (
-                const Color& starting_color, const Color& ending_color,
+                Color gradient_color[2],
                 const Coords& bounds, int32 x_margin, int32 y_margin,
-                enum FillDirection direction
+                Gradient::FillDirection direction
               );
 
     /// Destructor; OK to inherit me.
@@ -75,22 +78,22 @@ class Gradient:
 
     /// Fully initialize this object
     void initialize (
-                      const Color& starting_color, const Color& ending_color,
+                      Color gradient_color[2],
                       const Coords& bounds, int32 x_margin, int32 y_margin,
-                      enum FillDirection direction
+                      Gradient::FillDirection direction
                     );
 
     const Coords getPosition ( void ) const;
     const Coords getSize ( void ) const;
     Color getStartColor ( void ) const;
     Color getEndColor ( void ) const;
-    enum FillDirection getFillDirection ( void ) const;
+    Gradient::FillDirection getFillDirection ( void ) const;
     bool dithering ( void ) const;
 
     void setStartColor ( const Color& starting_color );
     void setEndColor ( const Color& ending_color );
     void reverseColors ( void );
-    void setFillDirection ( enum FillDirection direction );
+    void setFillDirection ( Gradient::FillDirection direction );
     void setPosition ( int32 x, int32 y );
     void setSize ( int32 width, int32 height );
     void setMargins ( int32 x, int32 y );
@@ -134,7 +137,7 @@ class Gradient:
     int32 y_margin;
 
     /// Color fill axis -- X or Y increment
-    enum FillDirection fill_direction;
+    enum Gradient::FillDirection fill_direction;
 
     /// Toggle automatic dithering of colors
     bool enable_dithering;

@@ -163,15 +163,12 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">nomlib.dir\Debug\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">nomlib-d</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Documents\Programming\Projects\C++\nomlib\build\Release\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">nomlib.dir\Release\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">nomlib</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\Documents\Programming\Projects\C++\nomlib\build\MinSizeRel\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">nomlib.dir\MinSizeRel\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">nomlib</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.lib</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\Documents\Programming\Projects\C++\nomlib\build\RelWithDebInfo\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">nomlib.dir\RelWithDebInfo\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">nomlib</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.lib</TargetExt>
@@ -204,10 +201,8 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -228,7 +223,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -244,14 +238,11 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>Release</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <ProgramDataBaseFileName>D:/Documents/Programming/Projects/C++/nomlib/build/Release/nomlib.pdb</ProgramDataBaseFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -261,7 +252,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
@@ -277,14 +267,11 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>MinSizeRel</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <ProgramDataBaseFileName>D:/Documents/Programming/Projects/C++/nomlib/build/MinSizeRel/nomlib.pdb</ProgramDataBaseFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -294,7 +281,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -309,14 +295,11 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>RelWithDebInfo</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <ProgramDataBaseFileName>D:/Documents/Programming/Projects/C++/nomlib/build/RelWithDebInfo/nomlib.pdb</ProgramDataBaseFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>

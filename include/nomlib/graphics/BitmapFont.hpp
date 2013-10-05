@@ -101,12 +101,12 @@ class BitmapFont: public IFont
     /// variable calculations made within Load method
     uint32 getNewline ( void ) const;
 
-    enum TextAlignment getTextJustification ( void ) const;
+    IFont::TextAlignment getTextJustification ( void ) const;
 
     /// Set new text character spacing height offsets in pixels
     void setNewline ( uint32_t newline );
 
-    FontStyle getFontStyle ( void ) const;
+    IFont::FontStyle getFontStyle ( void ) const;
     void setFontStyle ( int32 style, uint8 options = 150 );
 
     /// Not implemented
@@ -121,7 +121,7 @@ class BitmapFont: public IFont
     /// Set the justification of the text.
     ///
     /// This modifies the destination positions used in rendering text.
-    void setTextJustification ( enum TextAlignment alignment );
+    void setTextJustification ( IFont::TextAlignment alignment );
 
     const Coords findGlyph ( const std::string& glyph );
 
@@ -178,14 +178,14 @@ class BitmapFont: public IFont
     std::string text_buffer;
 
     /// Current text effect set
-    enum FontStyle text_style;
+    enum IFont::FontStyle text_style;
 
     /// Not implemented (yet)
     Color color;
 
-    enum TextAlignment text_alignment;
+    enum IFont::TextAlignment text_alignment;
 
-    enum RenderStyle rendering;
+    enum IFont::RenderStyle rendering;
 };
 
   namespace priv {

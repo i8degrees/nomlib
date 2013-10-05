@@ -35,8 +35,8 @@ void AnimatedSprite::initialize ( void )
   this->setMaxFrames ( 1 );
   this->setCurrentFrame ( 0 );
   this->setFrameIncrement ( 1 );
-  this->setAnimationStyle ( AnimationStyle::NoStyle );
-  this->setAnimationStatus ( AnimationStatus::Stopped );
+  this->setAnimationStyle ( AnimatedSprite::AnimationStyle::NoStyle );
+  this->setAnimationStatus ( AnimatedSprite::AnimationStatus::Stopped );
   this->fps.setFrameRate ( 100 );
 }
 
@@ -89,12 +89,12 @@ int32 AnimatedSprite::frame ( void ) const
   return this->current_frame;
 }
 
-enum AnimationStyle AnimatedSprite::style ( void ) const
+AnimatedSprite::AnimationStyle AnimatedSprite::style ( void ) const
 {
   return this->animation_style;
 }
 
-enum AnimationStatus AnimatedSprite::status ( void ) const
+AnimatedSprite::AnimationStatus AnimatedSprite::status ( void ) const
 {
   return this->animation_status;
 }
@@ -125,19 +125,19 @@ NOM_LOG_ERR ( NOM, "Could not update animation frame: requested frame value is t
   this->current_frame = frame;
 }
 
-void AnimatedSprite::setAnimationStyle ( enum AnimationStyle style )
+void AnimatedSprite::setAnimationStyle ( AnimatedSprite::AnimationStyle style )
 {
   this->animation_style = style;
 }
 
-void AnimatedSprite::setAnimationStatus ( enum AnimationStatus status )
+void AnimatedSprite::setAnimationStatus ( AnimatedSprite::AnimationStatus status )
 {
   this->animation_status = status;
 }
 
 void AnimatedSprite::update ( void )
 {
-  if ( this->status() != AnimationStatus::Playing ) return;
+  if ( this->status() != AnimatedSprite::AnimationStatus::Playing ) return;
 
   if ( this->fps.ticks() + this->fps.framerate() > SDL_GetTicks() )
   {
@@ -148,7 +148,7 @@ void AnimatedSprite::update ( void )
 
   this->setCurrentFrame ( this->current_frame + this->frame_increment );
 
-  if ( this->style() == AnimationStyle::Oscillate )
+  if ( this->style() == AnimatedSprite::AnimationStyle::Oscillate )
   {
     if ( this->frame_inc() > 0 )
     {
@@ -165,7 +165,7 @@ void AnimatedSprite::update ( void )
       }
     }
   }
-  else if ( this->style() == AnimationStyle::Blink )
+  else if ( this->style() == AnimatedSprite::AnimationStyle::Blink )
   {
     if ( this->frame() >= this->total_frames() )
     {
@@ -196,23 +196,23 @@ void AnimatedSprite::update ( void )
 
 void AnimatedSprite::play ( void )
 {
-  this->setAnimationStatus ( AnimationStatus::Playing );
+  this->setAnimationStatus ( AnimatedSprite::AnimationStatus::Playing );
   this->update();
 }
 
 void AnimatedSprite::stop ( void )
 {
-  this->setAnimationStatus ( AnimationStatus::Stopped );
+  this->setAnimationStatus ( AnimatedSprite::AnimationStatus::Stopped );
 }
 
 void AnimatedSprite::pause ( void )
 {
-  this->setAnimationStatus ( AnimationStatus::Paused );
+  this->setAnimationStatus ( AnimatedSprite::AnimationStatus::Paused );
 }
 
 void AnimatedSprite::unpause ( void )
 {
-  this->setAnimationStatus ( AnimationStatus::Playing );
+  this->setAnimationStatus ( AnimatedSprite::AnimationStatus::Playing );
 }
 
 } // namespace nom

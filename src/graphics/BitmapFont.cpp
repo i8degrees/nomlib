@@ -188,7 +188,7 @@ uint32 BitmapFont::getNewline ( void ) const
   return this->newline;
 }
 
-enum TextAlignment BitmapFont::getTextJustification ( void ) const
+IFont::TextAlignment BitmapFont::getTextJustification ( void ) const
 {
   return this->text_alignment;
 }
@@ -198,7 +198,7 @@ void BitmapFont::setNewline ( uint32 newline )
   this->newline = newline;
 }
 
-FontStyle BitmapFont::getFontStyle ( void ) const
+IFont::FontStyle BitmapFont::getFontStyle ( void ) const
 {
   return this->text_style;
 }

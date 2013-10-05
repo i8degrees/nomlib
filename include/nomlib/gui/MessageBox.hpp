@@ -87,7 +87,7 @@ class MessageBox:
     void setLabelFont ( const IFont* font );
 
     void setLabelPosition ( const Coords& pos );
-    void setLabelTextAlignment ( enum TextAlignment alignment );
+    void setLabelTextAlignment ( IFont::TextAlignment alignment );
     void setWindowTitle ( const std::string& text );
     void setLabel ( const std::string& text );
 
@@ -103,7 +103,7 @@ class MessageBox:
     IFont::SharedPtr label;
 
     Coords coords;
-    enum TextAlignment label_alignment;
+    enum IFont::TextAlignment label_alignment;
     bool enabled;
 };
 

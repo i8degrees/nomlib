@@ -95,7 +95,7 @@ int32 TrueTypeFont::getFontHeight ( void ) const
   return this->coords.height;
 }
 
-FontStyle TrueTypeFont::getFontStyle ( void ) const
+IFont::FontStyle TrueTypeFont::getFontStyle ( void ) const
 {
   return this->text_style;
 }
@@ -122,7 +122,7 @@ uint32 TrueTypeFont::getSpacing ( void ) const
   return 0;
 }
 
-enum TextAlignment TrueTypeFont::getTextJustification ( void ) const
+IFont::TextAlignment TrueTypeFont::getTextJustification ( void ) const
 {
   return this->text_alignment;
 }
@@ -201,12 +201,12 @@ void TrueTypeFont::setFontOutline ( int32 depth )
   TTF_SetFontOutline ( this->font.get(), depth );
 }
 
-RenderStyle TrueTypeFont::getRenderingStyle ( void ) const
+IFont::RenderStyle TrueTypeFont::getRenderingStyle ( void ) const
 {
   return this->rendering;
 }
 
-void TrueTypeFont::setRenderingStyle ( enum RenderStyle style )
+void TrueTypeFont::setRenderingStyle ( IFont::RenderStyle style )
 {
   this->rendering = style;
 }
@@ -229,7 +229,7 @@ void TrueTypeFont::setSpacing ( uint32 spaces )
   // Not implemented
 }
 
-void TrueTypeFont::setTextJustification ( enum TextAlignment alignment )
+void TrueTypeFont::setTextJustification ( IFont::TextAlignment alignment )
 {
   this->text_alignment = alignment;
 }

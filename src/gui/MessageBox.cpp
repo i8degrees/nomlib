@@ -36,7 +36,7 @@ void MessageBox::initialize ( void )
 NOM_LOG_TRACE ( NOM );
 
   this->enabled = true;
-  this->label_alignment = TextAlignment::MiddleLeft;
+  this->label_alignment = IFont::TextAlignment::MiddleLeft;
 }
 
 MessageBox::MessageBox ( void )
@@ -138,7 +138,7 @@ void MessageBox::setWindowTitleFont ( const IFont* font )
   this->window_title->setPosition ( Coords ( this->coords.x + 4, this->coords.y, this->coords.width, this->coords.height ) );
 
   this->window_title->setText ( "INFO." );
-  this->window_title->setTextJustification ( TextAlignment::MiddleLeft );
+  this->window_title->setTextJustification ( IFont::TextAlignment::MiddleLeft );
 
   this->drawable.push_back ( std::shared_ptr<IDrawable> ( this->window_title ) );
 }
@@ -158,7 +158,7 @@ void MessageBox::setLabelPosition ( const Coords& pos )
   this->label->setPosition ( pos );
 }
 
-void MessageBox::setLabelTextAlignment ( enum TextAlignment alignment )
+void MessageBox::setLabelTextAlignment ( IFont::TextAlignment alignment )
 {
   this->label_alignment = alignment;
 }
@@ -195,21 +195,21 @@ void MessageBox::update ( void )
   switch ( this->label_alignment )
   {
     default:
-    case TextAlignment::MiddleLeft: // TODO
+    case IFont::TextAlignment::MiddleLeft: // TODO
     {
-      this->label->setTextJustification ( TextAlignment::MiddleLeft );
+      this->label->setTextJustification ( IFont::TextAlignment::MiddleLeft );
     }
     break;
 
-    case TextAlignment::MiddleCenter:
+    case IFont::TextAlignment::MiddleCenter:
     {
-      this->label->setTextJustification ( TextAlignment::MiddleCenter );
+      this->label->setTextJustification ( IFont::TextAlignment::MiddleCenter );
     }
     break;
 
-    case TextAlignment::MiddleRight: // TODO
+    case IFont::TextAlignment::MiddleRight: // TODO
     {
-      this->label->setTextJustification ( TextAlignment::MiddleRight );
+      this->label->setTextJustification ( IFont::TextAlignment::MiddleRight );
     }
     break;
   } // end switch

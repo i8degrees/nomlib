@@ -42,25 +42,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-enum class AnimationStyle: int32
-{
-  NoStyle = 0,
-  Blink,
-  Oscillate
-};
-
-enum class AnimationStatus: int32
-{
-  Stopped = 0,
-  Playing,
-  Paused
-};
-
 class AnimatedSprite:
                         public SpriteBatch
 {
   public:
-    /// Default construct for initializing instance variables to their
+    enum AnimationStyle
+    {
+      NoStyle = 0,
+      Blink,
+      Oscillate
+    };
+
+    enum AnimationStatus
+    {
+      Stopped = 0,
+      Playing,
+      Paused
+    };
+
+/// Default construct for initializing instance variables to their
     /// respective defaults.
     AnimatedSprite ( void );
 
@@ -85,10 +85,10 @@ class AnimatedSprite:
     int32 frame ( void ) const;
 
     /// Get the current animation style for this object
-    enum AnimationStyle style ( void ) const;
+    AnimatedSprite::AnimationStyle style ( void ) const;
 
     /// Get the current status of this animation
-    enum AnimationStatus status ( void ) const;
+    AnimatedSprite::AnimationStatus status ( void ) const;
 
     /// Set a new frame rate for the animation
     ///
@@ -102,7 +102,7 @@ class AnimatedSprite:
     void setCurrentFrame ( int32 frame );
 
     /// Set a new style of animation for this object
-    void setAnimationStyle ( enum AnimationStyle style );
+    void setAnimationStyle ( AnimatedSprite::AnimationStyle style );
 
     /// Play the animation
     void play ( void );
@@ -127,7 +127,7 @@ class AnimatedSprite:
     void setFrameIncrement ( int32 increment );
 
     /// Set a new status state for this object
-    void setAnimationStatus ( enum AnimationStatus status );
+    void setAnimationStatus ( AnimatedSprite::AnimationStatus status );
 
     /// Updates the playback of the animation
     void update ( void );
@@ -142,10 +142,10 @@ class AnimatedSprite:
     int32 frame_increment;
 
     /// Animation playback logic
-    enum AnimationStyle animation_style;
+    enum AnimatedSprite::AnimationStyle animation_style;
 
     /// Status info
-    enum AnimationStatus animation_status;
+    enum AnimatedSprite::AnimationStatus animation_status;
 
     /// Keeps record of our current tick and frame rate (think: frame delay)
     AnimationTimer fps;

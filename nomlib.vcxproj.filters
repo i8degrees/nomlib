@@ -102,36 +102,6 @@
     <ClInclude Include="include\nomlib\version.hpp">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\nomlib\graphics\Canvas.hpp">
-      <Filter>include\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\graphics\Display.hpp">
-      <Filter>include\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\graphics\IDrawable.hpp">
-      <Filter>include\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\graphics\IFont.hpp">
-      <Filter>include\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\graphics\Image.hpp">
-      <Filter>include\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\graphics\Line.hpp">
-      <Filter>include\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\graphics\Pixel.hpp">
-      <Filter>include\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\graphics\Rectangle.hpp">
-      <Filter>include\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\graphics\smart_ptr.hpp">
-      <Filter>include\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\graphics\TrueTypeFont.hpp">
-      <Filter>include\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="include\nomlib\math\Color.hpp">
       <Filter>include\math</Filter>
     </ClInclude>
@@ -158,51 +128,6 @@
     </ClInclude>
     <ClInclude Include="include\nomlib\math\Vector3-inl.hpp">
       <Filter>include\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\system\AnimationTimer.hpp">
-      <Filter>include\system</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\system\clock.hpp">
-      <Filter>include\system</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\system\EventDispatcher.hpp">
-      <Filter>include\system</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\system\File.hpp">
-      <Filter>include\system</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\system\FPS.hpp">
-      <Filter>include\system</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\system\GameStates.hpp">
-      <Filter>include\system</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\system\IFile.hpp">
-      <Filter>include\system</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\system\Input.hpp">
-      <Filter>include\system</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\system\IState.hpp">
-      <Filter>include\system</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\system\make_unique.hpp">
-      <Filter>include\system</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\system\ObjectCache.hpp">
-      <Filter>include\system</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\system\Path.hpp">
-      <Filter>include\system</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\system\SDL_App.hpp">
-      <Filter>include\system</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\system\Sleep.hpp">
-      <Filter>include\system</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\system\Timer.hpp">
-      <Filter>include\system</Filter>
     </ClInclude>
     <ClInclude Include="include\nomlib\system\WinFile.hpp">
       <Filter>include\system</Filter>
@@ -240,6 +165,84 @@
     <ClInclude Include="include\nomlib\graphics\hqx\hqx.hpp">
       <Filter>include\graphics\hqx</Filter>
     </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\scale2x\scale2x.hpp">
+      <Filter>src\graphics\scale2x</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\BitmapFont.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\Gradient.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\IDisplay.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\IDrawable.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\IFont.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\Image.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\Point.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\Renderer.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\smart_ptr.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\Texture.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\TrueTypeFont.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\VideoMode.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\Window.hpp">
+      <Filter>include\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\gui\Cursor.hpp">
+      <Filter>include\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\gui\GrayFrame.hpp">
+      <Filter>include\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\gui\MessageBox.hpp">
+      <Filter>include\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nomlib\graphics\shapes\Line.hpp" />
+    <ClInclude Include="include\nomlib\graphics\shapes\Pixel.hpp" />
+    <ClInclude Include="include\nomlib\graphics\shapes\Point.hpp" />
+    <ClInclude Include="include\nomlib\graphics\shapes\Rectangle.hpp" />
+    <ClInclude Include="include\nomlib\graphics\sprite\AnimatedSprite.hpp" />
+    <ClInclude Include="include\nomlib\graphics\sprite\Sprite.hpp" />
+    <ClInclude Include="include\nomlib\graphics\sprite\SpriteBatch.hpp" />
+    <ClInclude Include="include\nomlib\graphics\sprite\SpriteSheet.hpp" />
+    <ClInclude Include="include\nomlib\system\AnimationTimer.hpp" />
+    <ClInclude Include="include\nomlib\system\clock.hpp" />
+    <ClInclude Include="include\nomlib\system\dialog_messagebox.hpp" />
+    <ClInclude Include="include\nomlib\system\EventDispatcher.hpp" />
+    <ClInclude Include="include\nomlib\system\File.hpp" />
+    <ClInclude Include="include\nomlib\system\FPS.hpp" />
+    <ClInclude Include="include\nomlib\system\GameStates.hpp" />
+    <ClInclude Include="include\nomlib\system\IFile.hpp" />
+    <ClInclude Include="include\nomlib\system\Input.hpp" />
+    <ClInclude Include="include\nomlib\system\IState.hpp" />
+    <ClInclude Include="include\nomlib\system\make_unique.hpp" />
+    <ClInclude Include="include\nomlib\system\ObjectCache.hpp" />
+    <ClInclude Include="include\nomlib\system\osx\ResourcePath.hpp" />
+    <ClInclude Include="include\nomlib\system\Path.hpp" />
+    <ClInclude Include="include\nomlib\system\SDL_App.hpp" />
+    <ClInclude Include="include\nomlib\system\Sleep.hpp" />
+    <ClInclude Include="include\nomlib\system\Timer.hpp" />
+    <ClInclude Include="include\nomlib\system\unix\UnixFile.hpp" />
+    <ClInclude Include="include\nomlib\system\windows\WinFile.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\graphics\Canvas.cpp">
@@ -362,5 +365,38 @@
     <ClCompile Include="src\graphics\hqx\hqx.cpp">
       <Filter>src\graphics\hqx</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\scale2x\scale2x.cpp">
+      <Filter>src\graphics\scale2x</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\scale2x\scale3x.cpp">
+      <Filter>src\graphics\scale2x</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\scale2x\scale4x.cpp">
+      <Filter>src\graphics\scale2x</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\shapes\Line.cpp" />
+    <ClCompile Include="src\graphics\shapes\Pixel.cpp" />
+    <ClCompile Include="src\graphics\shapes\Point.cpp" />
+    <ClCompile Include="src\graphics\shapes\Rectangle.cpp" />
+    <ClCompile Include="src\graphics\sprite\AnimatedSprite.cpp" />
+    <ClCompile Include="src\graphics\sprite\Sprite.cpp" />
+    <ClCompile Include="src\graphics\sprite\SpriteBatch.cpp" />
+    <ClCompile Include="src\graphics\sprite\SpriteSheet.cpp" />
+    <ClCompile Include="src\graphics\BitmapFont.cpp" />
+    <ClCompile Include="src\graphics\Gradient.cpp" />
+    <ClCompile Include="src\graphics\IDisplay.cpp" />
+    <ClCompile Include="src\graphics\Point.cpp" />
+    <ClCompile Include="src\graphics\Renderer.cpp" />
+    <ClCompile Include="src\graphics\Texture.cpp" />
+    <ClCompile Include="src\graphics\TrueTypeFont.cpp" />
+    <ClCompile Include="src\graphics\VideoMode.cpp" />
+    <ClCompile Include="src\graphics\Window.cpp" />
+    <ClCompile Include="src\gui\Cursor.cpp" />
+    <ClCompile Include="src\gui\GrayFrame.cpp" />
+    <ClCompile Include="src\gui\MessageBox.cpp" />
+    <ClCompile Include="src\system\osx\ResourcePath.cpp" />
+    <ClCompile Include="src\system\unix\UnixFile.cpp" />
+    <ClCompile Include="src\system\windows\WinFile.cpp" />
+    <ClCompile Include="src\system\dialog_messagebox.cpp" />
   </ItemGroup>
 </Project>

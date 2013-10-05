@@ -34,7 +34,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fstream>
 #include <vector>
 #include <cmath>
+#include <memory>
 
+// nomlib/config.hpp MUST be defined before using conditional preprocessing 
+// statements for detecting platform
+#include "nomlib/config.hpp"
+#include "nomlib/version.hpp"
+#include "nomlib/math/Coords.hpp"
+
+#if ! defined ( NOM_PLATFORM_WINDOWS )
 #include "json_spirit_writer_template.h"
 #include "json_spirit_reader_template.h"
 
@@ -43,10 +51,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <nomlib/json.hpp>
-
-#include "nomlib/config.hpp"
-#include "nomlib/version.hpp"
-#include "nomlib/math/Coords.hpp"
+#endif // end if NOT Windows platform
 
 namespace nom {
 

@@ -52,13 +52,13 @@ const std::string APP_RESOURCES_DIR = "Resources";
 const std::string APP_NAME = "nom::SDL2 Demo - Window";
 
 /// Width, in pixels, of our effective rendering surface.
-constexpr nom::int32 WINDOW_WIDTH = 768;
+const nom::int32 WINDOW_WIDTH = 768;
 
 /// Height, in pixels, of our effective rendering surface.
-constexpr nom::int32 WINDOW_HEIGHT = 448;
+const nom::int32 WINDOW_HEIGHT = 448;
 
 /// Maximum number of active windows we will attempt to spawn in this example
-constexpr nom::int32 MAXIMUM_WINDOWS = 3;
+const nom::int32 MAXIMUM_WINDOWS = 12;
 
 /// Relative file path name of our resource example
 ///

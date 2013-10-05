@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 Window::Window ( void ) : window_
-    { Window::UniquePtr ( nullptr, priv::FreeWindow ), },
+    { Window::UniquePtr ( nullptr, priv::FreeWindow ) },
     window_id_ ( -1 ), window_display_id_ ( - 1 ),
     enabled_ ( false )
 {

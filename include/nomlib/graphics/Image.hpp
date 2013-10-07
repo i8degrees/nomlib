@@ -66,7 +66,7 @@ class Image
     Image& operator = ( const Image& other );
 
     /// Obtain the SDL_Surface struct used in this object instance
-    std::shared_ptr<SDL_Surface> get ( void ) const;
+    SDL_Surface* get ( void ) const;
 
     /// Is this object initialized? Valid when *NOT* nullptr
     bool valid ( void ) const;

@@ -71,9 +71,9 @@ Image& Image::operator = ( const Image& other )
   return *this;
 }
 
-std::shared_ptr<SDL_Surface> Image::get ( void ) const
+SDL_Surface* Image::get ( void ) const
 {
-  return this->image_buffer;
+  return this->image_buffer.get();
 }
 
 bool Image::valid ( void ) const

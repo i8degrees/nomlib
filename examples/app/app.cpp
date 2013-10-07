@@ -208,7 +208,7 @@ nom::int32 App::Run ( void )
         }
         else
         {
-          this->window[idx].set_window_title ( APP_NAME + " " + std::to_string(idx) + " - " + std::to_string ( this->window[idx].window_display_id() ) );
+          this->window[idx].set_window_title ( APP_NAME + " " + std::to_string(idx) + " - " + "Display" + " " + std::to_string ( this->window[idx].window_display_id() ) );
         }
 
         this->update[idx].restart();

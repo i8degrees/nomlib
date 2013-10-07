@@ -31,6 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+SDL_Renderer* Window::context_ = nullptr;
+
 Window::Window ( void ) : window_
     { Window::UniquePtr ( nullptr, priv::FreeWindow ) },
     window_id_ ( -1 ), window_display_id_ ( - 1 ),
@@ -84,6 +86,13 @@ NOM_LOG_ERR ( NOM, "Could not create SDL renderer." );
   this->window_display_id_ = this->window_display_id();
   this->enabled_ = true;
 
+  // We must always have an active rendering context before we do any rendering
+  // calls; this includes even creating SDL textures!
+  if ( context_ == nullptr )
+  {
+    this->set_active();
+  }
+
   // Try to ensure that we have no leftover artifacts by clearing and filling
   // window with a solid black paint bucket fill.
   this->fill ( Color::Black );
@@ -91,9 +100,19 @@ NOM_LOG_ERR ( NOM, "Could not create SDL renderer." );
   return true;
 }
 
+Window::RawPtr Window::get ( void )
+{
+  return this;
+}
+
 SDL_Window* Window::window ( void ) const
 {
   return this->window_.get();
+}
+
+SDL_Surface* Window::window_surface ( void ) const
+{
+  return SDL_GetWindowSurface ( this->window() );
 }
 
 bool Window::window_valid ( void ) const
@@ -323,9 +342,84 @@ uint32 Window::window_id ( void ) const
   return SDL_GetWindowID ( this->window() );
 }
 
+SDL_Window* Window::window_id ( uint32 id )
+{
+  return SDL_GetWindowFromID ( id );
+}
+
 int Window::window_display_id ( void ) const
 {
   return SDL_GetWindowDisplayIndex ( this->window() );
+}
+
+void Window::disable_screensaver ( void )
+{
+  SDL_DisableScreenSaver();
+}
+
+bool Window::screen_saver ( void )
+{
+  return SDL_IsScreenSaverEnabled();
+}
+
+void Window::maximize_window ( void )
+{
+  SDL_MaximizeWindow ( this->window() );
+}
+
+void Window::minimize_window ( void )
+{
+  SDL_MinimizeWindow ( this->window() );
+}
+
+void Window::raise_window ( void )
+{
+  SDL_RaiseWindow ( this->window() );
+}
+
+void Window::restore_window ( void )
+{
+  SDL_RestoreWindow ( this->window() );
+}
+
+void Window::show_window ( void )
+{
+  SDL_ShowWindow ( this->window() );
+}
+
+void Window::hide_window ( void )
+{
+  SDL_HideWindow ( this->window() );
+}
+
+void Window::set_window_grab ( bool grab )
+{
+  SDL_SetWindowGrab ( this->window(), static_cast<SDL_bool> ( grab)  );
+}
+
+void Window::set_minimum_window_size ( int min_width, int min_height )
+{
+  SDL_SetWindowMaximumSize ( this->window(), min_width, min_height );
+}
+
+void Window::set_maximum_window_size ( int max_width, int max_height )
+{
+  SDL_SetWindowMaximumSize ( this->window(), max_width, max_height );
+}
+
+void Window::set_active ( void )
+{
+  set_context ( this->get() );
+}
+
+SDL_Renderer* Window::context ( void )
+{
+  return context_;
+}
+
+void Window::set_context ( Window::RawPtr window )
+{
+  context_ = window->renderer();
 }
 
 } // namespace nom

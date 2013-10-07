@@ -59,6 +59,7 @@ class Window:
   public:
     /// Convenience definition type for the std::unique_ptr variant
     typedef std::unique_ptr<SDL_Window, void (*)(SDL_Window*)> UniquePtr;
+    typedef Window* RawPtr;
 
     Window ( void );
     ~Window ( void );
@@ -70,8 +71,14 @@ class Window:
                   uint32 context_flags = SDL_RENDERER_ACCELERATED
                 );
 
+    /// Obtain a pointer to this Window object.
+    Window::RawPtr get ( void );
+
     /// Returns a raw pointer to the SDL_Window struct in use for this object
     SDL_Window* window ( void ) const;
+
+    /// Obtain a SDL_Surface pointer from this Window.
+    SDL_Surface* window_surface ( void ) const;
 
     /// Is this object initialized -- not nullptr?
     bool window_valid ( void ) const;
@@ -154,12 +161,116 @@ class Window:
     ///
     /// \returns an integer between ??? and ???
     uint32 window_id ( void ) const;
+
+    /// Obtain a pointer to a SDL_Window struct by ID.
+    ///
+    /// \param id           Unique identifier used for the lookup
+    ///
+    /// \return SDL_Window pointer if exists; NULL if no Window exists
+    static SDL_Window* window_id ( uint32 id );
+
+    /// Obtain this window's unique display identifier
+    ///
+    /// \returns an integer between ??? and ???
     int window_display_id ( void ) const;
 
+    /// Allow the screen to be blanked by a screen saver.
+    ///
+    /// \todo Test me
+    void enable_screensaver ( void );
+
+    /// Prevent the screen from being blanked by a screen saver.
+    ///
+    /// It is automatically re-enabled by SDL upon exit.
+    ///
+    /// \todo Test me
+    void disable_screensaver ( void );
+
+    /// Get the status of the screensaver.
+    ///
+    /// \return TRUE if screensaver is enabled; FALSE if it is disabled.
+    ///
+    /// \todo Test me
+    bool screen_saver ( void );
+
+    /// Maximize this window.
+    ///
+    /// \todo Test me
+    void maximize_window ( void );
+
+    /// Minimize this window.
+    ///
+    /// \todo Test me
+    void minimize_window ( void );
+
+    /// Raise this window.
+    ///
+    /// \todo Test me
+    void raise_window ( void );
+
+    /// Restore this window.
+    ///
+    /// \todo Test me
+    void restore_window ( void );
+
+    /// Show this window
+    ///
+    /// \todo Test me
+    void show_window ( void );
+
+    /// Hide this window
+    ///
+    /// \todo Test me
+    void hide_window ( void );
+
+    /// Set the window input grab mode.
+    ///
+    /// \param grab     TRUE to grab input; FALSE to release input
+    ///
+    /// \todo Test me
+    void set_window_grab ( bool grab );
+
+    /// Set the minimum size of the window's client area.
+    ///
+    /// \param min_width    Minimum width of window in pixels
+    /// \param min_height   Minimum height of window in pixels
+    ///
+    /// \todo Test me
+    void set_minimum_window_size ( int min_width, int min_height );
+
+    /// Set the maximum size of the window's client area.
+    ///
+    /// \param max_width    Maximum width of window in pixels
+    /// \param max_height   Maximum height of window in pixels
+    ///
+    /// \todo Test me
+    void set_maximum_window_size ( int max_width, int max_height );
+
+    /// Set the current Window as the active rendering context; this must be
+    /// called before doing any drawing (this includes creation of textures)
+    /// when using multiple rendering windows.
+    void set_active ( void );
+
+    /// Get the active rendering context
+    ///
+    /// \return SDL_Renderer*   Structure containing the active rendering
+    ///                         context
+    static SDL_Renderer* context ( void );
+
+    /// Set a new nom::Window as the active rendering context; we must always
+    /// have at least one context active at any given time, even for generating
+    /// SDL_Textures.
+    ///
+    /// This is a low-level, internal function call, to be used within this
+    /// library elsewhere.
+    static void set_context ( Window::RawPtr window );
+
   private:
+    static SDL_Renderer* context_;
     /// Internal method used for checking to see if the display context's video
     /// surfacea actually needs locking before doing so for performance sake.
     //bool mustLock ( void ) const;
+
     Window::UniquePtr window_;
 
     uint32 window_id_;

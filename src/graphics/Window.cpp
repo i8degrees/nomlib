@@ -264,39 +264,13 @@ NOM_LOG_ERR ( NOM, "Could not update window surface: " + std::string ( SDL_GetEr
 
 bool Window::fullscreen ( uint32 flags )
 {
-  Point2i pos;
-
-  pos = this->get_position();
-
   if ( SDL_SetWindowFullscreen ( this->window(), flags ) != 0 )
   {
     NOM_LOG_ERR ( NOM, "Could not toggle SDL fullscreen mode." );
     return false;
   }
 
-  // We must reset the window position back to the center of the display if we
-  // initialize in windowed state, otherwise upon exiting full-screen, we end
-  // up with a misaligned window.
-  //
-  // Possible bug on OS X
-  if ( pos.x == SDL_WINDOWPOS_CENTERED && pos.y == SDL_WINDOWPOS_CENTERED )
-  {
-    this->set_position ( SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED );
-  }
-
   return true;
-/*
-  uint32 flags = 0; // save our current flags before attempting to switch
-
-  flags = this->getDisplayFlags();
-
-  this->createWindow ( width, height, 0, flags ^ SDL_FULLSCREEN );
-
-  //  If for whatever reason, we cannot toggle fullscreen, try reverting
-  //  back to our previous configuration
-  if ( ! this->window_valid() )
-    this->createWindow ( width, height, 0, flags );
-*/
 }
 
 const std::string Window::window_title ( void ) const

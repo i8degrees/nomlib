@@ -49,6 +49,9 @@ namespace nom {
 class Image
 {
   public:
+    /// Convenience definition type for the std::unique_ptr variant
+    typedef std::shared_ptr<SDL_Surface> SharedPtr;
+
     /// Default constructor -- initializes to sane defaults.
     Image ( void );
 
@@ -92,7 +95,7 @@ class Image
     const Coords getSize ( void ) const;
 
   private:
-    std::shared_ptr<SDL_Surface> image_buffer;
+    Image::SharedPtr image_buffer;
 };
 
 

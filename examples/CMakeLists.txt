@@ -1,6 +1,6 @@
 cmake_minimum_required ( VERSION 2.6 )
 
-link_libraries ( ${PROJECT_NAME} ${SDL_LIBRARY} )
+link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
 
 set ( EXECUTABLE_FLAGS "" )
 

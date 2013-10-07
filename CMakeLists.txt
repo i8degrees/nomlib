@@ -165,26 +165,34 @@ include_directories ( ${NOMLIB_HEADERS_DIR} )
 if ( PLATFORM_WINDOWS )
 
   # SDL2 dependency
-  set ( SDL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/third-party/SDL2/include" )
-  set ( SDL_LIBRARY "${PROJECT_SOURCE_DIR}/third-party/SDL2/lib" )
+  set ( SDL_INCLUDE_DIR "third-party/SDL2/include" )
+  set ( SDL_LIBRARY "third-party/SDL2/lib" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
 
   # SDL2_image dependency
-  set ( EXT_HEADERS ${EXT_HEADERS} "${PROJECT_SOURCE_DIR}/third-party/SDL2_image/include" )
-  set ( EXTLIBS ${EXTLIBS} "${PROJECT_SOURCE_DIR}/third-party/SDL2_image/lib" )
+  set ( SDL2_IMAGE_INCLUDE_DIR "third-party/SDL2_image/lib" )
+  set ( SDL2_IMAGE_LIBRARY "third-party/SDL2_image/lib" )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY}  )
 
   # SDL2_ttf dependency
-  set ( EXT_HEADERS ${EXT_HEADERS} "${PROJECT_SOURCE_DIR}/third-party/SDL2_ttf/include" )
-  set ( EXTLIBS ${EXTLIBS} "${PROJECT_SOURCE_DIR}/third-party/SDL2_ttf/lib" )
+  set ( SDL2_TTF_INCLUDE_DIR "third-party/SDL2_ttf/include" )
+  set ( SDL2_TTF_LIBRARY "third-party/SDL2_ttf/lib" )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
 
   # OpenAL dependency -- must be 32-bit library
-  set ( EXT_HEADERS ${EXT_HEADERS} "${PROJECT_SOURCE_DIR}/third-party/OpenAL/include" )
-  set ( EXTLIBS ${EXTLIBS} "${PROJECT_SOURCE_DIR}/third-party/OpenAL/lib" )
+  set ( OPENAL_INCLUDE_DIR "third-party/OpenAL/include" )
+  set ( OPENAL_LIBRARY "third-party/OpenAL/lib" )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
 
   # libsndfile dependency -- must be 32-bit library
-  set ( EXT_HEADERS ${EXT_HEADERS} "${PROJECT_SOURCE_DIR}/third-party/libsndfile/include" )
-  set ( EXTLIBS ${EXTLIBS} "${PROJECT_SOURCE_DIR}/third-party/libsndfile/lib" )
+  set ( LIBSNDFILE_INCLUDE_DIR "third-party/libsndfile/include" )
+  set ( LIBSNDFILE_LIBRARY "third-party/libsndfile/lib" )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 
 else ( NOT PLATFORM_WINDOWS )
 

@@ -78,7 +78,9 @@ set ( NOMLIB_RESOURCES_DIR "Resources" )
 # Relative path from project root to header files that are used with the source
 # files for compiling
 set ( NOMLIB_HEADERS_DIR "include" )
-set ( EXTERNAL_HEADERS_DIR "extlibs/osx/include" )
+
+# Relative path from project root to the external dependencies directory
+set ( EXTERNAL_DEPS_DIR "third-party" )
 
 # Absolute path to the json_spirit header files
 #set ( HEADERS_JSON_SPIRIT_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_HEADERS_DIR}/json_spirit" )
@@ -165,96 +167,76 @@ include_directories ( ${NOMLIB_HEADERS_DIR} )
 if ( PLATFORM_WINDOWS )
 
   # SDL2 dependency
-  set ( SDL_INCLUDE_DIR "third-party/SDL2/include/" )
-  set ( SDL_LIBRARY "third-party/SDL2/lib/SDL2" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
+  set ( SDL2_INCLUDE_DIR "${EXTERNAL_DEPS_DIR}/SDL2/include/" )
+  set ( SDL2_LIBRARY "${EXTERNAL_DEPS_DIR}/SDL2/lib/SDL2" )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
 
   # SDL2_image dependency
-  set ( SDL2_IMAGE_INCLUDE_DIR "third-party/SDL2_image/include/" )
-  set ( SDL2_IMAGE_LIBRARY "third-party/SDL2_image/lib/SDL2_image" )
+  set ( SDL2_IMAGE_INCLUDE_DIR "${EXTERNAL_DEPS_DIR}/SDL2_image/include/" )
+  set ( SDL2_IMAGE_LIBRARY "${EXTERNAL_DEPS_DIR}/SDL2_image/lib/SDL2_image" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY}  )
+  set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
 
   # SDL2_ttf dependency
-  set ( SDL2_TTF_INCLUDE_DIR "third-party/SDL2_ttf/include/" )
-  set ( SDL2_TTF_LIBRARY "third-party/SDL2_ttf/lib/SDL2_ttf" )
+  set ( SDL2_TTF_INCLUDE_DIR "${EXTERNAL_DEPS_DIR}/SDL2_ttf/include/" )
+  set ( SDL2_TTF_LIBRARY "${EXTERNAL_DEPS_DIR}/SDL2_ttf/lib/SDL2_ttf" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
 
   # OpenAL dependency -- must be 32-bit library
-  set ( OPENAL_INCLUDE_DIR "third-party/OpenAL/include/" )
-  set ( OPENAL_LIBRARY "third-party/OpenAL/lib/OpenAL32" )
+  set ( OPENAL_INCLUDE_DIR "${EXTERNAL_DEPS_DIR}/OpenAL/include/" )
+  set ( OPENAL_LIBRARY "${EXTERNAL_DEPS_DIR}/OpenAL/lib/OpenAL32" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
 
   # libsndfile dependency -- must be 32-bit library
-  set ( LIBSNDFILE_INCLUDE_DIR "third-party/libsndfile/include/" )
-  set ( LIBSNDFILE_LIBRARY "third-party/libsndfile/lib/libsndfile-1" )
+  set ( LIBSNDFILE_INCLUDE_DIR "${EXTERNAL_DEPS_DIR}/libsndfile/include/" )
+  set ( LIBSNDFILE_LIBRARY "${EXTERNAL_DEPS_DIR}/libsndfile/lib/libsndfile-1" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 
-else ( NOT PLATFORM_WINDOWS )
+elseif ( PLATFORM_OSX )
 
-  find_package ( SDL2 REQUIRED )
-  find_package ( SDL2_image REQUIRED )
-  find_package ( SDL2_ttf REQUIRED )
+  # All library dependencies -- both frameworks and libraries -- must be
+  # OS X Universal binaries (both 32-bit and 64-bit compatibility).
 
-  find_package ( OpenAL REQUIRED )
-  find_package ( sndfile REQUIRED )
+  # SDL2 dependency
+  set ( SDL2_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2.framework/Headers" )
+  set ( SDL2_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2.framework" )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
 
-  if ( SDL2_FOUND )
-    set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
-    set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
-  endif ( SDL2_FOUND )
+  # SDL2_image dependency
+  set ( SDL2_IMAGE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_image.framework/Headers" )
+  set ( SDL2_IMAGE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_image.framework" )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
 
-  if ( SDL2_IMAGE_FOUND )
-    set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
-    set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
-  endif ( SDL2_IMAGE_FOUND )
+  # SDL2_ttf dependency
+  set ( SDL2_TTF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_ttf.framework/Headers" )
+  set ( SDL2_TTF_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_ttf.framework" )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
 
-  if ( SDL2_TTF_FOUND )
-    set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
-    set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
-  endif ( SDL2_TTF_FOUND )
+  # OpenAL dependency
+  set ( OPENAL_INCLUDE_DIR "/System/Library/Frameworks/OpenAL.framework" )
+  set ( OPENAL_LIBRARY "/System/Library/Frameworks/OpenAL.framework" )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
 
-  if ( OPENAL_FOUND )
-    set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
-    set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
-  else ( NOT OPENAL_FOUND )
-    message ( FATAL_ERROR "Required dependency OpenAL missing!" )
-  endif ( OPENAL_FOUND )
+  # libsndfile dependency
+  set ( LIBSNDFILE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/sndfile.framework/Headers" )
+  set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/sndfile.framework" )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 
-  if ( LIBSNDFILE_FOUND )
-    set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
-    set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
-  else ( NOT LIBSNDFILE_FOUND )
-    message ( FATAL_ERROR "Required dependency sndfile missing!" )
-  endif ( LIBSNDFILE_FOUND )
+  find_library ( COCOA_LIBRARY Cocoa )
+  mark_as_advanced ( COCOA_LIBRARY )
+  set ( EXTLIBS ${EXTLIBS} ${COCOA_LIBRARY} )
 
-  # First, try finding our packaged header files for json_spirit;
-  # ...if this fails, attempt to find the headers directory of a system install of
-  # the library header files
-  if ( IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
-    set ( EXT_HEADERS ${EXT_HEADERS} "${HEADERS_JSON_SPIRIT_DIR}" )
-    message ( STATUS "Found packaged json_spirit: ${HEADERS_JSON_SPIRIT_DIR}" )
-  elseif ( NOT IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
-
-    find_package ( json_spirit REQUIRED )
-    if ( JSON_SPIRIT_FOUND )
-      set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
-      message ( WARNING "Found json_spirit: ${JSON_SPIRIT_INCLUDE_DIR}" )
-    else ( NOT JSON_SPIRIT_FOUND )
-      message ( FATAL_ERROR "Required dependency json_spirit (headers only) missing!" )
-    endif ( JSON_SPIRIT_FOUND )
-  endif ( IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
-
-  if ( PLATFORM_OSX )
-    find_library ( COCOA_LIBRARY Cocoa )
-    mark_as_advanced ( COCOA_LIBRARY )
-    set ( EXTLIBS ${EXTLIBS} ${COCOA_LIBRARY} )
-  endif ( PLATFORM_OSX )
-
+elseif ( PLATFORM_LINUX )
+  # TODO
 endif ( PLATFORM_WINDOWS )
 
 # External header files inclusion
@@ -351,16 +333,16 @@ if ( PLATFORM_OSX )
 
     # Bundled frameworks we depend on
     install ( DIRECTORY
-              "${SDL2_LIBRARY}" # SDL.framework
-              "${SDL2_IMAGE_LIBRARY}" # SDL_image.framework
-              "${SDL2_TTF_LIBRARY}" # SDL_ttf.framework
+              "${SDL2_LIBRARY}" # SDL2.framework
+              "${SDL2_IMAGE_LIBRARY}" # SDL2_image.framework
+              "${SDL2_TTF_LIBRARY}" # SDL2_ttf.framework
               "${LIBSNDFILE_LIBRARY}" # sndfile.framework
               DESTINATION "${INSTALL_EXT_FRAMEWORKS_PATH}"
               PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
             )
 
-    # Add all the necessary runtime search paths for locating the installed
-    # dependencies we bundled.
+    # # Add all the necessary runtime search paths for locating the installed
+    # # dependencies we bundled.
     set ( RUNTIME_PATH
           "@loader_path/../Frameworks"
           # SDL2_image.framework & SDL2_ttf.framework each have their own bundled

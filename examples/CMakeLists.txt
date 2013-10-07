@@ -9,8 +9,8 @@ if ( PLATFORM_WINDOWS )
   # SDL2 dependency
   set ( SDL_INCLUDE_DIR "../../third-party/SDL2/include/" )
   set ( SDL_LIBRARY "../../third-party/SDL2/lib/SDL2" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
 
   # SDL2_image dependency
   set ( SDL2_IMAGE_INCLUDE_DIR "../../third-party/SDL2_image/include/" )

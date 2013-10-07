@@ -1,46 +1,5 @@
 cmake_minimum_required ( VERSION 2.6 )
 
-# FIXME
-if ( PLATFORM_WINDOWS )
-
-  set ( EXT_HEADERS "" )
-  set ( EXTLIBS "" )
-
-  # SDL2 dependency
-  set ( SDL_INCLUDE_DIR "../../third-party/SDL2/include/" )
-  set ( SDL_LIBRARY "../../third-party/SDL2/lib/SDL2" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
-
-  # SDL2_image dependency
-  set ( SDL2_IMAGE_INCLUDE_DIR "../../third-party/SDL2_image/include/" )
-  set ( SDL2_IMAGE_LIBRARY "../../third-party/SDL2_image/lib/SDL2_image" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY}  )
-
-  # SDL2_ttf dependency
-  set ( SDL2_TTF_INCLUDE_DIR "../../third-party/SDL2_ttf/include/" )
-  set ( SDL2_TTF_LIBRARY "../../third-party/SDL2_ttf/lib/SDL2_ttf" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
-
-  # OpenAL dependency -- must be 32-bit library
-  set ( OPENAL_INCLUDE_DIR "../../third-party/OpenAL/include/" )
-  set ( OPENAL_LIBRARY "../../third-party/OpenAL/lib/OpenAL32" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
-
-  # libsndfile dependency -- must be 32-bit library
-  set ( LIBSNDFILE_INCLUDE_DIR "../../third-party/libsndfile/include/" )
-  set ( LIBSNDFILE_LIBRARY "../../third-party/libsndfile/lib/libsndfile-1" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
-
-# FIXME
-link_libraries ( "../../nomlib-d" ${EXTLIBS} "../../third-party/SDL2/lib/SDL2main" )
-
-endif ( PLATFORM_WINDOWS )
-
 link_libraries ( ${PROJECT_NAME} )
 
 set ( EXECUTABLE_FLAGS "" )
@@ -53,6 +12,7 @@ endif ( PLATFORM_WINDOWS )
 
 # Add header files (*.hpp) and source files (*.cpp) to IDE project list
 # (For those that use Xcode, MSVC++, etc.)
+# FIXME
 file ( GLOB EXAMPLE_HEADER_FILES "${EXAMPLES_SRC_DIR}/*.hpp" )
 file ( GLOB EXAMPLE_SOURCE_FILES "${EXAMPLES_SRC_DIR}/*.cpp" )
 source_group  ( "include" FILES ${EXAMPLE_HEADER_FILES} )
@@ -92,3 +52,16 @@ install ( DIRECTORY
           "${CMAKE_CURRENT_BINARY_DIR}"
           PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
         )
+
+# Install library dependencies into binary output directory
+# FIXME
+if ( PLATFORM_WINDOWS )
+  install ( FILES
+            "${SDL2_LIBRARY_DLL}"
+            "${SDL2_IMAGE_LIBRARY_DLL}"
+            "${SDL2_TTF_LIBRARY_DLL}"
+            "${LIBSNDFILE_LIBRARY_DLL}"
+            "${OPENAL_LIBRARY_DLL}"
+            DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}"
+          )
+endif ( PLATFORM_WINDOWS )

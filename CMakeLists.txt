@@ -167,32 +167,56 @@ include_directories ( ${NOMLIB_HEADERS_DIR} )
 if ( PLATFORM_WINDOWS )
 
   # SDL2 dependency
-  set ( SDL2_INCLUDE_DIR "${EXTERNAL_DEPS_DIR}/SDL2/include/" )
-  set ( SDL2_LIBRARY "${EXTERNAL_DEPS_DIR}/SDL2/lib/SDL2" )
+  set ( SDL2_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2/include/" )
+  set ( SDL2_LIBRARY
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2/lib/SDL2.lib"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2/lib/SDL2main.lib"
+      )
+  set ( SDL2_LIBRARY_DLL
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2/lib/SDL2.dll"
+      )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
 
   # SDL2_image dependency
-  set ( SDL2_IMAGE_INCLUDE_DIR "${EXTERNAL_DEPS_DIR}/SDL2_image/include/" )
-  set ( SDL2_IMAGE_LIBRARY "${EXTERNAL_DEPS_DIR}/SDL2_image/lib/SDL2_image" )
+  set ( SDL2_IMAGE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/include/" )
+  set ( SDL2_IMAGE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/lib/SDL2_image.lib" )
+  set ( SDL2_IMAGE_LIBRARY_DLL
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/lib/libjpeg-9.dll"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/lib/libpng16-16.dll"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/libtiff-5.dll"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/libwebp-4.dll"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/SDL2_image.dll"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/zlib1.dll"
+      )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
 
   # SDL2_ttf dependency
-  set ( SDL2_TTF_INCLUDE_DIR "${EXTERNAL_DEPS_DIR}/SDL2_ttf/include/" )
-  set ( SDL2_TTF_LIBRARY "${EXTERNAL_DEPS_DIR}/SDL2_ttf/lib/SDL2_ttf" )
+  set ( SDL2_TTF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_ttf/include/" )
+  set ( SDL2_TTF_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_ttf/lib/SDL2_ttf.lib" )
+  set ( SDL2_TTF_LIBRARY_DLL
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_ttf/lib/libfreetype-6.dll"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_ttf/lib/SDL2_ttf.dll"
+      )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
 
   # OpenAL dependency -- must be 32-bit library
-  set ( OPENAL_INCLUDE_DIR "${EXTERNAL_DEPS_DIR}/OpenAL/include/" )
-  set ( OPENAL_LIBRARY "${EXTERNAL_DEPS_DIR}/OpenAL/lib/OpenAL32" )
+  set ( OPENAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/OpenAL/include/" )
+  set ( OPENAL_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/OpenAL/lib/OpenAL32.lib" )
+  set ( OPENAL_LIBRARY_DLL
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/OpenAL/lib/OpenAL32.dll"
+      )
   set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
 
   # libsndfile dependency -- must be 32-bit library
-  set ( LIBSNDFILE_INCLUDE_DIR "${EXTERNAL_DEPS_DIR}/libsndfile/include/" )
-  set ( LIBSNDFILE_LIBRARY "${EXTERNAL_DEPS_DIR}/libsndfile/lib/libsndfile-1" )
+  set ( LIBSNDFILE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/libsndfile/include/" )
+  set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/libsndfile/lib/libsndfile-1.lib" )
+  set ( LIBSNDFILE_LIBRARY_DLL
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/libsndfile/lib/libsndfile-1.dll"
+      )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 

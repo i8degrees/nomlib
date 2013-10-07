@@ -94,6 +94,7 @@ endif ( PLATFORM_OSX )
 
 # Add header files (*.hpp) and source files (*.cpp) to IDE project list
 # (For those that use Xcode, MSVC++, etc.)
+# FIXME
 file ( GLOB HEADER_FILE_LIST "include/nomlib/*.hpp" )
 source_group  ( "include" FILES ${HEADER_FILE_LIST} )
 source_group ( "src" FILES ${NOMLIB_SOURCE} )

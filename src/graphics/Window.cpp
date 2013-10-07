@@ -300,8 +300,7 @@ void Window::set_window_title ( const std::string& title )
 
 bool Window::set_window_icon ( const std::string& filename )
 {
-  //Image image; // holds our image in memory during transfer
-  std::shared_ptr<SDL_Surface> icon;
+  Image icon; // holds our image in memory during transfer
 
 // FIXME
 // (Windows does not like using IMG_Load (SDL2_image extension) for some
@@ -309,17 +308,16 @@ bool Window::set_window_icon ( const std::string& filename )
 // arguably is inconvenient ;-P I think I just need to take another look at
 // the SDL documentation to see if this is a known limitation of their icon
 // loader on Windows platform.
-//
 // Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
-#if defined ( NOM_PLATFORM_WINDOWS )
-  icon.reset ( SDL_LoadBMP ( filename.c_str() ), priv::FreeSurface );
-#else // assume POSIX platform
-  icon.reset ( IMG_Load ( filename.c_str() ), priv::FreeSurface );
+#if defined ( NOM_PLATFORM_WINDOWS ) // Use SDL's built-in BMP loader
+  if ( icon.load_bmp ( filename ) == false ) return false;
+#else // Use SDL2_image for additional image types
+  if ( icon.load ( filename ) == false ) return false;
 #endif
 
-  if ( icon == nullptr )
+  if ( icon.valid() == false )
   {
-    NOM_LOG_ERR ( NOM, "Could not set application icon." );
+    NOM_LOG_ERR ( NOM, "Could not obtain a valid icon." );
     return false;
   }
 

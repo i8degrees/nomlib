@@ -45,6 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/VideoMode.hpp"
 #include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/Renderer.hpp"
+#include "nomlib/graphics/Image.hpp"
 
 namespace nom {
 

@@ -40,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Color.hpp"
+#include "nomlib/math/Point2-inl.hpp"
 //#include "nomlib/graphics/IDisplay.hpp"
 #include "nomlib/graphics/smart_ptr.hpp"
 #include "nomlib/graphics/VideoMode.hpp"
@@ -75,7 +76,8 @@ class Window:
     /// Is this object initialized -- not nullptr?
     bool window_valid ( void ) const;
 
-    Point2i get_position ( void ) const;
+    /// Obtain this Window's position.
+    Point2i position ( void ) const;
 
     /// Get display surface bits per pixel
     ///

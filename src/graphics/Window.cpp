@@ -108,7 +108,7 @@ bool Window::window_valid ( void ) const
   }
 }
 
-Point2i Window::get_position ( void ) const
+Point2i Window::position ( void ) const
 {
   Point2i pos;
 

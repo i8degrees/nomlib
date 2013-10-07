@@ -78,14 +78,8 @@ bool App::onInit ( void )
     {
       return false;
     }
-    if ( idx == 0 )
-    {
-      this->window[0].set_position ( 0, 0 );
-    }
-    else
-    {
-      this->window[idx].set_position ( 0+(WINDOW_WIDTH/2) * idx, 0-WINDOW_HEIGHT );
-    }
+
+    this->window[idx].set_position ( 0+(WINDOW_WIDTH/2) * idx, WINDOW_HEIGHT/2 );
   }
 
   if ( this->window[0].set_window_icon ( RESOURCE_ICON ) == false )
@@ -201,7 +195,6 @@ nom::int32 App::Run ( void )
 
     for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
     {
-
       this->window[idx].update();
       this->fps[idx].update();
       this->ui_frame.update();

@@ -60,8 +60,8 @@ bool Window::create (
 {
   this->window_.reset ( SDL_CreateWindow  (
                                             window_title.c_str(),
-                                            SDL_WINDOWPOS_CENTERED,
-                                            SDL_WINDOWPOS_CENTERED,
+                                            SDL_WINDOWPOS_UNDEFINED,
+                                            SDL_WINDOWPOS_UNDEFINED,
                                             width,
                                             height,
                                             window_flags

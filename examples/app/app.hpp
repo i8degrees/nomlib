@@ -58,7 +58,7 @@ const nom::int32 WINDOW_WIDTH = 768;
 const nom::int32 WINDOW_HEIGHT = 448;
 
 /// Maximum number of active windows we will attempt to spawn in this example
-const nom::int32 MAXIMUM_WINDOWS = 12;
+const nom::int32 MAXIMUM_WINDOWS = 3;
 
 /// Relative file path name of our resource example
 ///

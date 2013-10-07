@@ -171,7 +171,7 @@ if ( PLATFORM_WINDOWS )
   set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
 
   # SDL2_image dependency
-  set ( SDL2_IMAGE_INCLUDE_DIR "third-party/SDL2_image/lib" )
+  set ( SDL2_IMAGE_INCLUDE_DIR "third-party/SDL2_image/include" )
   set ( SDL2_IMAGE_LIBRARY "third-party/SDL2_image/lib" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY}  )

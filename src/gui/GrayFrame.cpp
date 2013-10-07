@@ -31,10 +31,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
   namespace ui {
 
-GrayFrame::GrayFrame ( void ) : updated ( false )
-{
-  // ...
-}
+GrayFrame::GrayFrame ( void ) : updated ( false ) {}
+
+GrayFrame::~GrayFrame ( void ) {}
 
 GrayFrame::GrayFrame ( int32 x, int32 y, int32 width, int32 height, int32 padding )
 {
@@ -42,11 +41,6 @@ GrayFrame::GrayFrame ( int32 x, int32 y, int32 width, int32 height, int32 paddin
   this->setSize ( width, height, padding );
 
   this->updated = false;
-}
-
-GrayFrame::~GrayFrame ( void )
-{
-  // ...
 }
 
 void GrayFrame::setPosition ( int32 x, int32 y )
@@ -62,7 +56,7 @@ void GrayFrame::setSize ( int32 width, int32 height, int32 padding )
   this->updated = false;
 }
 
-void GrayFrame::Update ( void )
+void GrayFrame::update ( void )
 {
   if ( this->updated == true )
     return;
@@ -77,31 +71,25 @@ void GrayFrame::Update ( void )
 
   this->frame.clear();
 
-  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x, y, x_offset - padding, y, Color( 41, 41, 41 ) ) ) ); // top0
-  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x, y + 1, x_offset - padding, y + 1, Color( 133, 133, 133 ) ) ) ); // top1
-  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x, y + 1, x, y_offset - padding, Color( 41, 41, 41 ) ) ) ); // left0
-  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x + 1, y + 2, x + 1, y_offset - padding, Color( 133, 133, 133 ) ) ) ); // left1
-  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x, y_offset - padding, x_offset - padding, y_offset - padding, Color( 57, 57, 57 ) ) ) ); //bottom0
-  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x, y_offset, x_offset + padding, y_offset, Color ( 41, 41, 41 ) ) ) ); // bottom1
-  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x_offset - padding, y, x_offset - padding, y_offset + padding, Color( 57, 57, 57 ) ) ) ); // right0
-  this->frame.push_back ( std::shared_ptr<IDrawable> ( new Line ( x_offset, y, x_offset, y_offset + padding, Color( 41, 41, 41 ) ) ) ); // right1
+  this->frame.push_back ( std::unique_ptr<IDrawable> ( new Line ( x, y, x_offset - padding, y, Color( 41, 41, 41 ) ) ) ); // top0
+  this->frame.push_back ( std::unique_ptr<IDrawable> ( new Line ( x, y + 1, x_offset - padding, y + 1, Color( 133, 133, 133 ) ) ) ); // top1
+  this->frame.push_back ( std::unique_ptr<IDrawable> ( new Line ( x, y + 1, x, y_offset - padding, Color( 41, 41, 41 ) ) ) ); // left0
+  this->frame.push_back ( std::unique_ptr<IDrawable> ( new Line ( x + 1, y + 2, x + 1, y_offset - padding, Color( 133, 133, 133 ) ) ) ); // left1
+  this->frame.push_back ( std::unique_ptr<IDrawable> ( new Line ( x, y_offset - padding, x_offset - padding, y_offset - padding, Color( 57, 57, 57 ) ) ) ); //bottom0
+  this->frame.push_back ( std::unique_ptr<IDrawable> ( new Line ( x, y_offset, x_offset + padding, y_offset, Color ( 41, 41, 41 ) ) ) ); // bottom1
+  this->frame.push_back ( std::unique_ptr<IDrawable> ( new Line ( x_offset - padding, y, x_offset - padding, y_offset + padding, Color( 57, 57, 57 ) ) ) ); // right0
+  this->frame.push_back ( std::unique_ptr<IDrawable> ( new Line ( x_offset, y, x_offset, y_offset + padding, Color( 41, 41, 41 ) ) ) ); // right1
 
   this->updated = true;
 }
 
-void GrayFrame::Draw ( void* video_buffer ) const
+void GrayFrame::draw ( SDL_Renderer* target ) const
 {
-  // nom::Line needs pixel write access, so we must first lock the surface
-  this->context.lock();
-
   for ( auto it = this->frame.begin(); it != this->frame.end(); ++it )
   {
     std::shared_ptr<IDrawable> obj = *it;
-    obj->Draw ( video_buffer );
+    obj->draw ( target );
   }
-
-  // All done!
-  this->context.unlock();
 }
 
 

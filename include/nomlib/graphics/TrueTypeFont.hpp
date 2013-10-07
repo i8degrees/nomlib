@@ -26,21 +26,21 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_TRUETYPE_FONT_HEADERS
-#define NOMLIB_SDL_TRUETYPE_FONT_HEADERS
+#ifndef NOMLIB_SDL2_TRUETYPE_FONT_HEADERS
+#define NOMLIB_SDL2_TRUETYPE_FONT_HEADERS
 
 #include <iostream>
 #include <string>
 #include <memory>
 
-#include <SDL/SDL_ttf.h>
+#include <SDL_ttf.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IFont.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/math/Color.hpp"
-#include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/Texture.hpp"
 
 namespace nom {
 
@@ -68,7 +68,7 @@ class TrueTypeFont: public IFont
     /// Compute the height in pixels of the set text string; defaults to zero (0)
     int32 getFontHeight ( void ) const;
 
-    FontStyle getFontStyle ( void ) const;
+    IFont::FontStyle getFontStyle ( void ) const;
 
     const Color& getColor ( void ) const;
     const Coords& getPosition ( void ) const;
@@ -79,9 +79,9 @@ class TrueTypeFont: public IFont
     /// Not implemented
     uint32 getSpacing ( void ) const;
 
-    enum TextAlignment getTextJustification ( void ) const;
+    IFont::TextAlignment getTextJustification ( void ) const;
 
-    void setFontStyle ( uint8 style, uint8 options );
+    void setFontStyle ( int32 style, uint8 options = 150 );
 
     /// Set a new text point size
     void setFontSize ( int32 point_size );
@@ -98,7 +98,19 @@ class TrueTypeFont: public IFont
     void setSpacing ( uint32 spaces );
 
     /// Not implemented.
-    void setTextJustification ( enum TextAlignment alignment );
+    void setTextJustification ( IFont::TextAlignment alignment );
+
+    /// Getter for obtaining the vector outline of the loaded font.
+    int32 getFontOutline ( void ) const;
+
+    /// Set a new vector outline -- in pixels -- for the loaded font.
+    void setFontOutline ( int32 depth );
+
+    /// Getter for obtaining the current font rendering style in use
+    IFont::RenderStyle getRenderingStyle ( void ) const;
+
+    /// Set a new font rendering style.
+    void setRenderingStyle ( IFont::RenderStyle );
 
     /// \brief Load a new font in from a file.
     ///
@@ -108,10 +120,10 @@ class TrueTypeFont: public IFont
                 bool use_cache = false
               );
 
-    void Update ( void );
+    void update ( void );
 
     /// Draw the set text string to the video surface
-    void Draw ( void* video_buffer ) const;
+    void draw ( SDL_Renderer* target ) const;
 
   private:
     /// Trigger a rebuild of the font metrics from the current font; this
@@ -119,7 +131,7 @@ class TrueTypeFont: public IFont
     bool rebuild ( void );
 
     /// Surface where font for drawing is rendered to
-    Canvas font_buffer;
+    Texture font_buffer;
 
     /// Font file data, used by SDL_ttf extension
     std::shared_ptr<TTF_Font> font;
@@ -134,7 +146,7 @@ class TrueTypeFont: public IFont
     std::string text_buffer;
 
     /// Current text effect set
-    enum FontStyle text_style;
+    FontStyle text_style;
     uint8 style_options;
 
     /// Store the file path so we can change font sizes on the fly
@@ -146,7 +158,9 @@ class TrueTypeFont: public IFont
     /// Whether or not to use caching features of nom::ObjectCache
     bool use_cache;
 
-    enum TextAlignment text_alignment;
+    enum IFont::TextAlignment text_alignment;
+
+    enum IFont::RenderStyle rendering;
 };
 
   namespace priv {
@@ -162,4 +176,4 @@ void Free_TrueTypeFont ( TrueTypeFont* ptr );
   } // namespace priv
 } // namespace nom
 
-#endif // include guard
+#endif // include guard defined

@@ -40,6 +40,7 @@ NOM_LOG_TRACE ( NOM );
   this->text_buffer = "\0";
   this->text_style = FontStyle::Regular; // default text styling effect
   this->text_alignment = TextAlignment::MiddleLeft;
+  this->rendering = RenderStyle::Solid; // Fast, but ugly
   this->style_options = 0;
   this->filename = "\0";
   this->font_size = 12;
@@ -70,9 +71,13 @@ IFont::SharedPtr TrueTypeFont::clone ( void ) const
 bool TrueTypeFont::valid ( void ) const
 {
   if ( this->font.get() != nullptr )
+  {
     return true;
+  }
   else
+  {
     return false;
+  }
 }
 
 const std::string& TrueTypeFont::getText ( void ) const
@@ -90,7 +95,7 @@ int32 TrueTypeFont::getFontHeight ( void ) const
   return this->coords.height;
 }
 
-FontStyle TrueTypeFont::getFontStyle ( void ) const
+IFont::FontStyle TrueTypeFont::getFontStyle ( void ) const
 {
   return this->text_style;
 }
@@ -117,7 +122,7 @@ uint32 TrueTypeFont::getSpacing ( void ) const
   return 0;
 }
 
-enum TextAlignment TrueTypeFont::getTextJustification ( void ) const
+IFont::TextAlignment TrueTypeFont::getTextJustification ( void ) const
 {
   return this->text_alignment;
 }
@@ -147,18 +152,33 @@ NOM_LOG_ERR ( NOM, "Could not set new font size." );
   }
 }
 
-void TrueTypeFont::setFontStyle ( uint8 style, uint8 options )
+void TrueTypeFont::setFontStyle ( int32 style, uint8 options )
 {
-  //enum FontStyle current_style;
-
   switch ( style )
   {
     default: break;
     case FontStyle::Regular:
+    {
+      TTF_SetFontStyle ( this->font.get(), TTF_STYLE_NORMAL );
+    }
+    break;
+
     case FontStyle::Bold:
+    {
+      TTF_SetFontStyle ( this->font.get(), TTF_STYLE_BOLD );
+    }
+    break;
+
     case FontStyle::Italic:
+    {
+      TTF_SetFontStyle ( this->font.get(), TTF_STYLE_ITALIC );
+    }
+    break;
+
     case FontStyle::Underlined:
-      // Do nothing stub
+    {
+      TTF_SetFontStyle ( this->font.get(), TTF_STYLE_UNDERLINE );
+    }
     break;
 
     /// Text effect utilizing alpha channels for the appearance of gray text
@@ -171,10 +191,29 @@ void TrueTypeFont::setFontStyle ( uint8 style, uint8 options )
   }
 }
 
+int32 TrueTypeFont::getFontOutline ( void ) const
+{
+  return TTF_GetFontOutline ( this->font.get() );
+}
+
+void TrueTypeFont::setFontOutline ( int32 depth )
+{
+  TTF_SetFontOutline ( this->font.get(), depth );
+}
+
+IFont::RenderStyle TrueTypeFont::getRenderingStyle ( void ) const
+{
+  return this->rendering;
+}
+
+void TrueTypeFont::setRenderingStyle ( IFont::RenderStyle style )
+{
+  this->rendering = style;
+}
+
 void TrueTypeFont::setText ( const std::string& text )
 {
-  if ( text.length() < 1 )
-    return;
+  if ( text.length() < 1 ) return;
 
   this->text_buffer = text;
 
@@ -190,7 +229,7 @@ void TrueTypeFont::setSpacing ( uint32 spaces )
   // Not implemented
 }
 
-void TrueTypeFont::setTextJustification ( enum TextAlignment alignment )
+void TrueTypeFont::setTextJustification ( IFont::TextAlignment alignment )
 {
   this->text_alignment = alignment;
 }
@@ -216,34 +255,60 @@ NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
   return true;
 }
 
-void TrueTypeFont::Update ( void )
+void TrueTypeFont::update ( void )
 {
+/*  FIXME
   // Update display coordinates
   this->font_buffer.setPosition ( this->coords );
 
   // Update the rendered text surface here for drawing
-  if ( this->getText().c_str() == nullptr )
-    return;
+  if ( this->getText().c_str() == nullptr ) return;
 
-  this->font_buffer.setCanvas ( TTF_RenderText_Solid
-                                (
-                                  this->font.get(),
-                                  this->getText().c_str(),
-                                  RGBA::asSDLCOLOR ( this->color )
-                                )
-                              );
+  if ( this->rendering == RenderStyle::Shaded )
+  {
+    this->font_buffer.setCanvas ( TTF_RenderText_Shaded
+                                  (
+                                    this->font.get(),
+                                    this->getText().c_str(),
+                                    RGBA::asSDLCOLOR ( this->color ),
+                                    // TODO / implement me!
+                                    RGBA::asSDLCOLOR ( Color ( 97, 97, 97 ) )
+                                  )
+                                );
+  }
+  else if ( this->rendering == RenderStyle::Blended )
+  {
+    this->font_buffer.setCanvas ( TTF_RenderText_Blended
+                                  (
+                                    this->font.get(),
+                                    this->getText().c_str(),
+                                    RGBA::asSDLCOLOR ( this->color )
+                                  )
+                                );
+  }
+  else // Assume low quality rendering
+  {
+    this->font_buffer.setCanvas ( TTF_RenderText_Solid
+                                  (
+                                    this->font.get(),
+                                    this->getText().c_str(),
+                                    RGBA::asSDLCOLOR ( this->color )
+                                  )
+                                );
+  }
 
   if ( this->text_style == FontStyle::Faded )
   {
     this->font_buffer.setAlpha ( this->style_options );
   }
+    FIXME */
 }
 
-void TrueTypeFont::Draw ( void* video_buffer ) const
+void TrueTypeFont::draw ( SDL_Renderer* target ) const
 {
   if ( this->font_buffer.valid() )
   {
-    this->font_buffer.Draw ( video_buffer );
+    this->font_buffer.draw ( target );
   }
 }
 

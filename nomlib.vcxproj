@@ -1,0 +1,356 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\nomlib\audio.hpp" />
+    <ClInclude Include="include\nomlib\audio\AL\AudioDevice.hpp" />
+    <ClInclude Include="include\nomlib\audio\AL\Listener.hpp" />
+    <ClInclude Include="include\nomlib\audio\AL\Music.hpp" />
+    <ClInclude Include="include\nomlib\audio\AL\OpenAL.hpp" />
+    <ClInclude Include="include\nomlib\audio\AL\Sound.hpp" />
+    <ClInclude Include="include\nomlib\audio\AL\SoundBuffer.hpp" />
+    <ClInclude Include="include\nomlib\audio\AL\SoundFile.hpp" />
+    <ClInclude Include="include\nomlib\audio\AL\SoundSource.hpp" />
+    <ClInclude Include="include\nomlib\config.hpp" />
+    <ClInclude Include="include\nomlib\graphics.hpp" />
+    <ClInclude Include="include\nomlib\graphics\BitmapFont.hpp" />
+    <ClInclude Include="include\nomlib\graphics\Gradient.hpp" />
+    <ClInclude Include="include\nomlib\graphics\hqx\hqx.hpp" />
+    <ClInclude Include="include\nomlib\graphics\IDrawable.hpp" />
+    <ClInclude Include="include\nomlib\graphics\IFont.hpp" />
+    <ClInclude Include="include\nomlib\graphics\Image.hpp" />
+    <ClInclude Include="include\nomlib\graphics\Pixel.hpp" />
+    <ClInclude Include="include\nomlib\graphics\Renderer.hpp" />
+    <ClInclude Include="include\nomlib\graphics\scale2x\scale2x.hpp" />
+    <ClInclude Include="include\nomlib\graphics\shapes\Line.hpp" />
+    <ClInclude Include="include\nomlib\graphics\shapes\Point.hpp" />
+    <ClInclude Include="include\nomlib\graphics\shapes\Rectangle.hpp" />
+    <ClInclude Include="include\nomlib\graphics\smart_ptr.hpp" />
+    <ClInclude Include="include\nomlib\graphics\sprite\AnimatedSprite.hpp" />
+    <ClInclude Include="include\nomlib\graphics\sprite\Sprite.hpp" />
+    <ClInclude Include="include\nomlib\graphics\sprite\SpriteBatch.hpp" />
+    <ClInclude Include="include\nomlib\graphics\sprite\SpriteSheet.hpp" />
+    <ClInclude Include="include\nomlib\graphics\Texture.hpp" />
+    <ClInclude Include="include\nomlib\graphics\TrueTypeFont.hpp" />
+    <ClInclude Include="include\nomlib\graphics\VideoMode.hpp" />
+    <ClInclude Include="include\nomlib\graphics\Window.hpp" />
+    <ClInclude Include="include\nomlib\gui.hpp" />
+    <ClInclude Include="include\nomlib\gui\Cursor.hpp" />
+    <ClInclude Include="include\nomlib\gui\GrayFrame.hpp" />
+    <ClInclude Include="include\nomlib\gui\MessageBox.hpp" />
+    <ClInclude Include="include\nomlib\math.hpp" />
+    <ClInclude Include="include\nomlib\math\Color.hpp" />
+    <ClInclude Include="include\nomlib\math\Coords.hpp" />
+    <ClInclude Include="include\nomlib\math\helpers.hpp" />
+    <ClInclude Include="include\nomlib\math\Point2-inl.hpp" />
+    <ClInclude Include="include\nomlib\math\Point3-inl.hpp" />
+    <ClInclude Include="include\nomlib\math\Rect-inl.hpp" />
+    <ClInclude Include="include\nomlib\math\Transformable.hpp" />
+    <ClInclude Include="include\nomlib\math\Vector2-inl.hpp" />
+    <ClInclude Include="include\nomlib\math\Vector3-inl.hpp" />
+    <ClInclude Include="include\nomlib\platforms.hpp" />
+    <ClInclude Include="include\nomlib\resources.hpp" />
+    <ClInclude Include="include\nomlib\system.hpp" />
+    <ClInclude Include="include\nomlib\system\AnimationTimer.hpp" />
+    <ClInclude Include="include\nomlib\system\clock.hpp" />
+    <ClInclude Include="include\nomlib\system\dialog_messagebox.hpp" />
+    <ClInclude Include="include\nomlib\system\EventDispatcher.hpp" />
+    <ClInclude Include="include\nomlib\system\File.hpp" />
+    <ClInclude Include="include\nomlib\system\FPS.hpp" />
+    <ClInclude Include="include\nomlib\system\GameStates.hpp" />
+    <ClInclude Include="include\nomlib\system\IFile.hpp" />
+    <ClInclude Include="include\nomlib\system\Input.hpp" />
+    <ClInclude Include="include\nomlib\system\IState.hpp" />
+    <ClInclude Include="include\nomlib\system\make_unique.hpp" />
+    <ClInclude Include="include\nomlib\system\ObjectCache.hpp" />
+    <ClInclude Include="include\nomlib\system\Path.hpp" />
+    <ClInclude Include="include\nomlib\system\SDL_App.hpp" />
+    <ClInclude Include="include\nomlib\system\Sleep.hpp" />
+    <ClInclude Include="include\nomlib\system\Timer.hpp" />
+    <ClInclude Include="include\nomlib\system\windows\WinFile.hpp" />
+    <ClInclude Include="include\nomlib\types.hpp" />
+    <ClInclude Include="include\nomlib\version.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\audio\AL\AudioDevice.cpp" />
+    <ClCompile Include="src\audio\AL\Listener.cpp" />
+    <ClCompile Include="src\audio\AL\Music.cpp" />
+    <ClCompile Include="src\audio\AL\OpenAL.cpp" />
+    <ClCompile Include="src\audio\AL\Sound.cpp" />
+    <ClCompile Include="src\audio\AL\SoundBuffer.cpp" />
+    <ClCompile Include="src\audio\AL\SoundFile.cpp" />
+    <ClCompile Include="src\audio\AL\SoundSource.cpp" />
+    <ClCompile Include="src\graphics\BitmapFont.cpp" />
+    <ClCompile Include="src\graphics\Gradient.cpp" />
+    <ClCompile Include="src\graphics\hqx\hqx.cpp" />
+    <ClCompile Include="src\graphics\hqx\hq2x.cpp" />
+    <ClCompile Include="src\graphics\hqx\hq3x.cpp" />
+    <ClCompile Include="src\graphics\hqx\hq4x.cpp" />
+    <ClCompile Include="src\graphics\Renderer.cpp" />
+    <ClCompile Include="src\graphics\scale2x\scale2x.cpp" />
+    <ClCompile Include="src\graphics\scale2x\scale3x.cpp" />
+    <ClCompile Include="src\graphics\scale2x\scale4x.cpp" />
+    <ClCompile Include="src\graphics\Image.cpp" />
+    <ClCompile Include="src\graphics\Pixel.cpp" />
+    <ClCompile Include="src\graphics\shapes\Line.cpp" />
+    <ClCompile Include="src\graphics\shapes\Point.cpp" />
+    <ClCompile Include="src\graphics\shapes\Rectangle.cpp" />
+    <ClCompile Include="src\graphics\smart_ptr.cpp" />
+    <ClCompile Include="src\graphics\sprite\AnimatedSprite.cpp" />
+    <ClCompile Include="src\graphics\sprite\Sprite.cpp" />
+    <ClCompile Include="src\graphics\sprite\SpriteBatch.cpp" />
+    <ClCompile Include="src\graphics\sprite\SpriteSheet.cpp" />
+    <ClCompile Include="src\graphics\Texture.cpp" />
+    <ClCompile Include="src\graphics\TrueTypeFont.cpp" />
+    <ClCompile Include="src\graphics\VideoMode.cpp" />
+    <ClCompile Include="src\graphics\Window.cpp" />
+    <ClCompile Include="src\gui\Cursor.cpp" />
+    <ClCompile Include="src\gui\GrayFrame.cpp" />
+    <ClCompile Include="src\gui\MessageBox.cpp" />
+    <ClCompile Include="src\math\Color.cpp" />
+    <ClCompile Include="src\math\Coords.cpp" />
+    <ClCompile Include="src\math\helpers.cpp" />
+    <ClCompile Include="src\math\Transformable.cpp" />
+    <ClCompile Include="src\resources.cpp" />
+    <ClCompile Include="src\system\AnimationTimer.cpp" />
+    <ClCompile Include="src\system\clock.cpp" />
+    <ClCompile Include="src\system\dialog_messagebox.cpp" />
+    <ClCompile Include="src\system\EventDispatcher.cpp" />
+    <ClCompile Include="src\system\File.cpp" />
+    <ClCompile Include="src\system\FPS.cpp" />
+    <ClCompile Include="src\system\GameStates.cpp" />
+    <ClCompile Include="src\system\Input.cpp" />
+    <ClCompile Include="src\system\ObjectCache.cpp" />
+    <ClCompile Include="src\system\Path.cpp" />
+    <ClCompile Include="src\system\SDL_App.cpp" />
+    <ClCompile Include="src\system\Sleep.cpp" />
+    <ClCompile Include="src\system\Timer.cpp" />
+    <ClCompile Include="src\system\windows\WinFile.cpp" />
+    <ClCompile Include="src\version.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{4EA5298C-5E30-4929-8B1F-6ECD611D2F42}</ProjectGUID>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>nomlib</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">build\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">nomlib.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">nomlib-d</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Documents\Programming\Projects\C++\nomlib\build\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">nomlib.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">nomlib</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\Documents\Programming\Projects\C++\nomlib\build\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">nomlib.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">nomlib</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\Documents\Programming\Projects\C++\nomlib\build\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">nomlib.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">nomlib</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <IncludePath>include/;third-party/SDL2/include;third-party/SDL2_ttf/include;third-party/SDL2_image/include;third-party/OpenAL/include;third-party/libsndfile/include;$(IncludePath)</IncludePath>
+    <LibraryPath>third-party/SDL2/lib;third-party/SDL2_ttf/lib;third-party/SDL2_image/lib;third-party/OpenAL/lib;third-party/libsndfile/lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>include/;third-party/SDL2/include;third-party/SDL2_ttf/include;third-party/SDL2_image/include;third-party/OpenAL/include;third-party/libsndfile/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NOM_DEBUG;NOM_DEBUG_ASSERT;NOM_DEBUG_TRACE;WIN32;_WINDOWS;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>Debug</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>build/Debug/nomlib-d.pdb</ProgramDataBaseFileName>
+      <EnablePREfast>false</EnablePREfast>
+      <SDLCheck>false</SDLCheck>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;OpenAL32.lib;libsndfile-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <Lib>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>third-party/SDL2/lib;third-party/SDL2_ttf/lib;third-party/SDL2_image/lib;third-party/OpenAL/lib;third-party/libsndfile/lib</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SuppressStartupBanner>
+      </SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>Release</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>D:/Documents/Programming/Projects/C++/nomlib/build/Release/nomlib.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SuppressStartupBanner>
+      </SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>MinSizeRel</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>D:/Documents/Programming/Projects/C++/nomlib/build/MinSizeRel/nomlib.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SuppressStartupBanner>
+      </SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>RelWithDebInfo</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>D:/Documents/Programming/Projects/C++/nomlib/build/RelWithDebInfo/nomlib.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:/Documents/Programming/Projects/C++/nomlib/include;D:/Documents/Programming/Libraries/SDL2/include;D:/Documents/Programming/Libraries/SDL2_image/include;D:/Documents/Programming/Libraries/SDL2_ttf/include;D:/Documents/Programming/Libraries/OpenAL/include;D:/Documents/Programming/Libraries/libsndfile/include;D:/Documents/Programming/Libraries/magiclib/include;D:/Documents/Programming/Projects/C++/nomlib/extlibs/osx/include/json_spirit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -29,6 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_COORDS_HEADERS
 #define NOMLIB_COORDS_HEADERS
 
+#include <algorithm>
+
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -36,11 +38,20 @@ namespace nom {
 const std::string coords_delimiter = ", ";
 
 /// \brief Coordinate values (x, y, z, width, height ) wrapper
+///
+/// \deprecated This class is likely to be phased out & replaced by nom::Point2,
+/// nom::Point3 and nom::Rect at some point in the near future!
 class Coords
 {
   public:
     /// Default constructor; sets all values to their respective defaults
     Coords ( void );
+
+    /// Destructor
+    ~Coords ( void );
+
+    /// Copy constructor
+    Coords ( const Coords& coords );
 
     /// Constructor variant for creating coords
     Coords ( int32 x, int32 y, int32 width, int32 height );
@@ -48,17 +59,20 @@ class Coords
     /// Constructor variant for creating coords
     Coords ( int32 x, int32 y );
 
-    /// Copy constructor
-    Coords ( const Coords& coords );
+    /// Convenience method for determining if this object is initialized or not;
+    /// an initialized object should never be equal to nom::Coords::null
+    ///
+    /// \todo Fully implement me
+    bool isNull ( void ) const;
 
-    /// Destructor
-    ~Coords ( void );
+    /// Convenience getter for obtaining a copy of this object
+    const Coords& get ( void ) const;
 
     Coords getPosition ( void ) const;
-    void setPosition ( int32_t x, int32_t y );
+    void setPosition ( int32 x, int32 y );
 
     Coords getSize ( void ) const;
-    void setSize ( int32_t width, int32_t height );
+    void setSize ( int32 width, int32 height );
 
     /// Check to see if input X, Y coordinates are within the bounds of this
     /// object -- or in other words, a collision!
@@ -73,21 +87,23 @@ class Coords
     /// Checks to see if our rectangle overlaps with another
     bool intersects ( Coords& rectangle ) const;
 
-    /// Copy assignment constructor
+    /// Copy assignment operator
     Coords& operator = ( const Coords& other );
 
-    /// Convenience object that will always contain a value of:
-    /// -1, -1, -1, -1, -1
+    /// Convenience object that will always contain a value of -1
     static const Coords null;
 
   public:
     int32 x;
     int32 y;
-    int32 z; // reserved
     int32 width;
     int32 height;
 
-}; // class Coords
+    /// Reference alias for width instance variable
+    int32& w = width;
+    /// Reference alias for height instance variable
+    int32& h = height;
+};
 
 /// Pretty print the color using the following format string:
 ///

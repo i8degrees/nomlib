@@ -1,4 +1,5 @@
 # CMake auto-generated files
+version.cpp
 version.hpp
 
 install_options
@@ -10,4 +11,13 @@ install_options
 
 # bins
 build
+third-party/*
+!third-party/README.md
 
+# bins: Visual C++ Studio Project Files
+*.suo
+*.sdf
+*.opensdf
+*.tlog
+*.lastbuildstate
+*.idb

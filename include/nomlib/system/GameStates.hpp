@@ -44,13 +44,13 @@ class GameStates
 {
   public:
     /// State events handling
-    static void onEvent ( void* );
+    static void onEvent ( SDL_Event* );
 
     /// State logic
-    static void Update ( float delta_time );
+    static void update ( float delta_time );
 
     /// State rendering
-    static void Draw ( void* video_buffer );
+    static void draw ( SDL_Renderer* target );
 
     /// State management
     static void ChangeState ( std::unique_ptr<IState> state );

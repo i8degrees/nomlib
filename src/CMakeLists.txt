@@ -12,32 +12,36 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/audio/AL/SoundSource.cpp
       ${SRC_DIR}/audio/AL/Music.cpp
       ${SRC_DIR}/audio/AL/Sound.cpp
-      # third-party hqx algorithm
+      # third-party graphics/hqx algorithm
       ${SRC_DIR}/graphics/hqx/hqx.cpp
       ${SRC_DIR}/graphics/hqx/hq2x.cpp
       ${SRC_DIR}/graphics/hqx/hq3x.cpp
       ${SRC_DIR}/graphics/hqx/hq4x.cpp
-      # third-party scale2x algorithm
+      # third-party graphics/scale2x algorithm
       ${SRC_DIR}/graphics/scale2x/scale2x.cpp
       ${SRC_DIR}/graphics/scale2x/scale3x.cpp
       ${SRC_DIR}/graphics/scale2x/scale4x.cpp
       # graphics
-      ${SRC_DIR}/graphics/SpriteBatch.cpp
-      ${SRC_DIR}/graphics/AnimatedSprite.cpp
-      ${SRC_DIR}/graphics/SpriteSheet.cpp
+      ${SRC_DIR}/graphics/smart_ptr.cpp
+      ${SRC_DIR}/graphics/Texture.cpp
+      ${SRC_DIR}/graphics/Image.cpp
+      ${SRC_DIR}/graphics/Window.cpp
+      ${SRC_DIR}/graphics/Renderer.cpp
       ${SRC_DIR}/graphics/VideoMode.cpp
-      ${SRC_DIR}/graphics/Text.cpp
       ${SRC_DIR}/graphics/BitmapFont.cpp
       ${SRC_DIR}/graphics/TrueTypeFont.cpp
-      ${SRC_DIR}/graphics/IDisplay.cpp
-      ${SRC_DIR}/graphics/Canvas.cpp
-      ${SRC_DIR}/graphics/Display.cpp
       ${SRC_DIR}/graphics/Gradient.cpp
-      ${SRC_DIR}/graphics/Image.cpp
-      ${SRC_DIR}/graphics/Line.cpp
       ${SRC_DIR}/graphics/Pixel.cpp
-      ${SRC_DIR}/graphics/Rectangle.cpp
-      ${SRC_DIR}/graphics/Sprite.cpp
+      #${SRC_DIR}/graphics/IDisplay.cpp
+      # graphics/shapes
+      ${SRC_DIR}/graphics/shapes/Point.cpp
+      ${SRC_DIR}/graphics/shapes/Line.cpp
+      ${SRC_DIR}/graphics/shapes/Rectangle.cpp
+      # graphics/sprite
+      ${SRC_DIR}/graphics/sprite/Sprite.cpp
+      ${SRC_DIR}/graphics/sprite/SpriteBatch.cpp
+      ${SRC_DIR}/graphics/sprite/AnimatedSprite.cpp
+      ${SRC_DIR}/graphics/sprite/SpriteSheet.cpp
       # nomJSON
       #${SRC_DIR}/json/Array.cpp
       ${SRC_DIR}/json/FileReader.cpp
@@ -45,11 +49,11 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       #${SRC_DIR}/json/Object.cpp
       #${SRC_DIR}/json/Value.cpp
       # system
+      ${SRC_DIR}/system/dialog_messagebox.cpp
       ${SRC_DIR}/system/EventDispatcher.cpp
       ${SRC_DIR}/system/Path.cpp
       ${SRC_DIR}/system/File.cpp
       ${SRC_DIR}/system/clock.cpp
-      ${SRC_DIR}/system/DialogMessageBox.cpp
       ${SRC_DIR}/system/FPS.cpp
       ${SRC_DIR}/system/GameStates.cpp
       ${SRC_DIR}/system/ObjectCache.cpp
@@ -71,21 +75,13 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
 
 # Platform-specific source files
 if ( PLATFORM_OSX OR PLATFORM_LINUX )
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/UnixFile.cpp )
+  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/unix/UnixFile.cpp )
 endif ( PLATFORM_OSX OR PLATFORM_LINUX )
 
 if ( PLATFORM_OSX )
-
   set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/osx/ResourcePath.cpp )
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/osx/DialogMessageBox.cpp )
-
 elseif ( PLATFORM_LINUX )
-
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/unix/DialogMessageBox.cpp )
-
+  # nothing to do be done
 elseif ( PLATFORM_WINDOWS )
-
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/windows/DialogMessageBox.cpp )
-  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/WinFile.cpp )
-
+  set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/windows/WinFile.cpp )
 endif ( PLATFORM_OSX )

@@ -53,6 +53,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// this working.
 
 #include "nomlib/config.hpp"
+#include "nomlib/math/helpers.hpp"
 
 #define MASK_2     0x0000FF00
 #define MASK_13    0x00FF00FF
@@ -78,8 +79,14 @@ static inline uint32 rgb_to_yuv(uint32 c)
     return RGBtoYUV[MASK_RGB & c];
 }
 
+/// Possible FIXME
+/// It *may* be possible that a signed integer here is not always large 
+/// enough to compare colors accurately in all cases. More research /
+/// testing is needed here to determine. 
+/// (Original integer types were unsigned integers).
+/// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
 /* Test if there is difference in color */
-static inline int32 yuv_diff(uint32 yuv1, uint32 yuv2) {
+static inline int yuv_diff(int yuv1, int yuv2) {
     return (( abs((yuv1 & Ymask) - (yuv2 & Ymask)) > trY ) ||
             ( abs((yuv1 & Umask) - (yuv2 & Umask)) > trU ) ||
             ( abs((yuv1 & Vmask) - (yuv2 & Vmask)) > trV ) );

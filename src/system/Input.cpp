@@ -44,7 +44,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   }
 
   this->joystick = nullptr;
-
+/*
 NOM_LOG_INFO ( NOM, std::to_string ( SDL_NumJoysticks() ) + " joysticks were found" );
 
   if ( SDL_NumJoysticks() >= 0 )
@@ -58,6 +58,7 @@ NOM_LOG_INFO ( NOM, std::to_string ( SDL_NumJoysticks() ) + " joysticks were fou
 NOM_LOG_INFO ( NOM, SDL_JoystickName ( idx ) );
     }
   }
+*/
 }
 
 Input::~Input ( void )
@@ -79,13 +80,13 @@ NOM_LOG_TRACE ( NOM );
 }
 
 
-void Input::HandleInput ( void* event )
+void Input::HandleInput ( SDL_Event* event )
 {
-  SDL_Event* input = static_cast<SDL_Event*> ( event );
+  SDL_Event* input = event;
 
   switch ( input->type )
   {
-    case SDL_ACTIVEEVENT:
+    /*case SDL_ACTIVEEVENT:
     {
       switch ( input->active.state )
       {
@@ -117,7 +118,7 @@ void Input::HandleInput ( void* event )
 
       }
     break;
-    }
+    }*/
 
     case SDL_USEREVENT:
       this->onUserEvent ( input->user.type, input->user.code, input->user.data1,
@@ -125,8 +126,8 @@ void Input::HandleInput ( void* event )
                         );
     break;
 
-    case SDL_VIDEORESIZE: this->onResize ( input->resize.w, input->resize.h ); break;
-    case SDL_VIDEOEXPOSE: this->onExpose (); break;
+    //case SDL_VIDEORESIZE: this->onResize ( input->resize.w, input->resize.h ); break;
+    //case SDL_VIDEOEXPOSE: this->onExpose (); break;
     case SDL_SYSWMEVENT: /* Ignore */ break;
     case SDL_QUIT: this->onQuit(); break;
 
@@ -164,10 +165,11 @@ void Input::HandleInput ( void* event )
         case SDL_BUTTON_X2:
           this->onMouseButtonSevenDown ( input->button.x, input->button.y );
         break;
-
+/*
         case SDL_BUTTON_WHEELDOWN: this->onMouseWheel ( false, true ); break;
 
         case SDL_BUTTON_WHEELUP: this->onMouseWheel ( true, false ); break;
+*/
       }
     break;
 

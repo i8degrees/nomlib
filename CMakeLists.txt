@@ -149,45 +149,27 @@ include_directories ( ${NOMLIB_HEADERS_DIR} )
 # variables -- EXT_HEADERS & EXTLIBS -- so we can then make a minimal number
 # of calls to include_directories & linking of libraries.
 #
-find_package ( SDL REQUIRED )
-find_package ( SDL_image REQUIRED )
-find_package ( SDL_ttf REQUIRED )
+find_package ( SDL2 REQUIRED )
+find_package ( SDL2_image REQUIRED )
+find_package ( SDL2_ttf REQUIRED )
 
 find_package ( OpenAL REQUIRED )
 find_package ( sndfile REQUIRED )
 
-find_package ( libmagic REQUIRED )
+if ( SDL2_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
+endif ( SDL2_FOUND )
 
-# LibMagic requires zlib when statically linking
-if ( PLATFORM_OSX )
-  find_package ( ZLIB REQUIRED )
-endif ( PLATFORM_OSX )
+if ( SDL2_IMAGE_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
+endif ( SDL2_IMAGE_FOUND )
 
-# We need GTK2 on Linux for display of dialog message boxes
-if ( PLATFORM_LINUX )
-  find_package ( GTK2 REQUIRED gtk )
-endif ( PLATFORM_LINUX )
-
-if ( SDL_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
-else ( NOT SDL_FOUND )
-  message ( FATAL_ERROR "Required dependency SDL missing!" )
-endif ( SDL_FOUND )
-
-if ( SDLIMAGE_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDLIMAGE_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDLIMAGE_LIBRARY} )
-else ( NOT SDLIMAGE_FOUND )
-  message ( FATAL_ERROR "Required dependency SDL_image missing!" )
-endif ( SDLIMAGE_FOUND )
-
-if ( SDLTTF_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDLTTF_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDLTTF_LIBRARY} )
-else ( NOT SDLTTF_FOUND )
-  message ( FATAL_ERROR "Required dependency SDL_ttf missing!" )
-endif ( SDLTTF_FOUND )
+if ( SDL2_TTF_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
+endif ( SDL2_TTF_FOUND )
 
 if ( OPENAL_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
@@ -202,34 +184,6 @@ if ( LIBSNDFILE_FOUND )
 else ( NOT LIBSNDFILE_FOUND )
   message ( FATAL_ERROR "Required dependency sndfile missing!" )
 endif ( LIBSNDFILE_FOUND )
-
-if ( LIBMAGIC_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBMAGIC_INCLUD_DIR} )
-
-  # Statically linking in OS X frees us from the chore of worrying about the
-  # runtime search paths issue, which we never was able to figure out how to
-  # do so with this library ...
-  #
-  # See also cmake/modules/FindLibMagic.cmake
-
-  # We must link zlib into our library because the burden falls on us when
-  # statically linking a library to ours.
-  if ( PLATFORM_OSX )
-    if ( ZLIB_FOUND )
-      set ( EXTLIBS ${EXTLIBS} ${LIBMAGIC_LIBRARY} ${ZLIB_LIBRARY} )
-    else ( NOT ZLIB_FOUND )
-      message ( FATAL_ERROR "Required dependency zlib missing!" )
-    endif ( ZLIB_FOUND )
-  # Otherwise we do not need to link zlib with libmagic as we will be linking
-  # libmagic as a dynamic library -- the burden then falls on libmagic for
-  # finding zlib, not us!
-  else ( NOT PLATFORM_OSX )
-    set ( EXTLIBS ${EXTLIBS} ${LIBMAGIC_LIBRARY} )
-  endif ( PLATFORM_OSX )
-
-else ( NOT LIBMAGIC_FOUND )
-  message ( FATAL_ERROR "Required dependency libmagic missing!" )
-endif ( LIBMAGIC_FOUND )
 
 # First, try finding our packaged header files for json_spirit;
 # ...if this fails, attempt to find the headers directory of a system install of
@@ -252,24 +206,10 @@ elseif ( NOT IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
 endif ( IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
 
 if ( PLATFORM_OSX )
-  # The SDL_LIBRARY variable for OS X is appended with the "-framework Cocoa"
-  # linkage flag, so we have to sanitize this before hand if we want to use the
-  # value in anything other than linking -- such as packaging the library into a
-  # bundle.
-  #
-  # From here on out, the burden of linking to the Cocoa framework when need be
-  # is entirely on us. I say good riddance!
-  string ( REPLACE "-framework Cocoa" "" SDL_LIBRARY ${SDL_LIBRARY} )
+  find_library ( COCOA_LIBRARY Cocoa )
+  mark_as_advanced ( COCOA_LIBRARY )
+  set ( EXTLIBS ${EXTLIBS} ${COCOA_LIBRARY} )
 endif ( PLATFORM_OSX )
-
-if ( PLATFORM_LINUX )
-  if ( GTK2_FOUND )
-    set ( EXT_HEADERS ${EXT_HEADERS} ${GTK2_INCLUDE_DIRS} )
-    set ( EXTLIBS ${EXTLIBS} ${GTK2_LIBRARIES} )
-  else ( NOT GTK2_FOUND )
-    message ( FATAL_ERROR "Required dependency GTK2 missing!" )
-  endif ( GTK2_FOUND )
-endif ( PLATFORM_LINUX )
 
 # External header files inclusion
 include_directories ( ${EXT_HEADERS} )
@@ -351,20 +291,19 @@ if ( PLATFORM_OSX )
     # SDL frameworks are all from the official distribution, found on the
     # official web site at https://www.libsdl.org.
     #
-    # SDL.framework v1.2.15
-    # SDL_image.framework v1.2.12
-    # SDL_ttf.framework v2.0.11
+    # SDL2.framework
+    # SDL2_image.framework
+    # SDL2_ttf.framework
     # sndfile.framework v1.0.25
-    # libmagic v5.14
     #
     # See README text within extlibs folder in root of this git repository
     # for packaging details of sndfile.
 
     # Bundled frameworks we depend on
     install ( DIRECTORY
-              "${SDL_LIBRARY}" # SDL.framework
-              "${SDLIMAGE_LIBRARY}" # SDL_image.framework
-              "${SDLTTF_LIBRARY}" # SDL_ttf.framework
+              "${SDL2_LIBRARY}" # SDL.framework
+              "${SDL2_IMAGE_LIBRARY}" # SDL_image.framework
+              "${SDL2_TTF_LIBRARY}" # SDL_ttf.framework
               "${LIBSNDFILE_LIBRARY}" # sndfile.framework
               DESTINATION "${INSTALL_EXT_FRAMEWORKS_PATH}"
               PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
@@ -374,7 +313,7 @@ if ( PLATFORM_OSX )
     # dependencies we bundled.
     set ( RUNTIME_PATH
           "@loader_path/../Frameworks"
-          # SDL_image.framework & SDL_ttf.framework each have their own bundled
+          # SDL2_image.framework & SDL2_ttf.framework each have their own bundled
           # dependencies and therefore things get a bit crazier:
           "@loader_path/../../Frameworks"
         )
@@ -402,7 +341,6 @@ install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}
 # Install nomlib Resource files
 install ( FILES
           "${NOMLIB_RESOURCES_DIR}/nomlib.icns" # Icon
-          "${NOMLIB_RESOURCES_DIR}/magic.mgc" # libmagic mime db
           DESTINATION "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
           OPTIONAL
         )

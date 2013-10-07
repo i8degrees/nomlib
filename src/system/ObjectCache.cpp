@@ -32,7 +32,7 @@ namespace nom {
   namespace priv {
 
 // Initialize our cache in global space
-std::map <std::string, std::shared_ptr<void>> ObjectCache::cache;
+std::map <std::string, std::shared_ptr<SDL_Surface>> ObjectCache::cache;
 
 ObjectCache::ObjectCache ( void )
 {
@@ -44,13 +44,13 @@ ObjectCache::~ObjectCache ( void )
 //NOM_LOG_TRACE ( NOM );
 }
 
-std::shared_ptr<void> ObjectCache::addObject  ( const std::string& key,
-                                                std::shared_ptr<void> object
+std::shared_ptr<SDL_Surface> ObjectCache::addObject  ( const std::string& key,
+                                                std::shared_ptr<SDL_Surface> object
                                               )
 {
-  std::map <std::string, std::shared_ptr<void>>::iterator res;
+  std::map <std::string, std::shared_ptr<SDL_Surface>>::iterator res;
 
-  res = cache.insert( std::pair< std::string, std::shared_ptr<void>> ( key, object ) ).first;
+  res = cache.insert( std::pair< std::string, std::shared_ptr<SDL_Surface>> ( key, object ) ).first;
 
 NOM_LOG_INFO ( NOM, "ObjectCache: " + key + " has been added to the cache." );
 
@@ -64,9 +64,9 @@ bool ObjectCache::removeObject ( const std::string& key )
   return true;
 }
 
-std::shared_ptr<void> ObjectCache::getObject ( const std::string& key )
+std::shared_ptr<SDL_Surface> ObjectCache::getObject ( const std::string& key )
 {
-  std::map <std::string, std::shared_ptr<void>>::iterator itr;
+  std::map <std::string, std::shared_ptr<SDL_Surface>>::iterator itr;
 
   itr = cache.find ( key );
 

@@ -26,58 +26,76 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_IMAGE_HEADERS
-#define NOMLIB_SDL_IMAGE_HEADERS
+#ifndef NOMLIB_SDL2_IMAGE_HEADERS
+#define NOMLIB_SDL2_IMAGE_HEADERS
 
 #include <iostream>
 #include <string>
 #include <cstdlib>
 #include <memory>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include "SDL.h"
+#include "SDL_image.h"
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Rect-inl.hpp"
-#include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/smart_ptr.hpp"
 
 namespace nom {
 
+/// \brief Bitmap storage container
 class Image
 {
   public:
-    /// Default constructor; initializes SDL_image extension
-    Image ( int32 img_flags = IMG_INIT_PNG );
-    /// Copy constructor
-    Image ( const Image& other );
+    /// Convenience definition type for the std::unique_ptr variant
+    typedef std::shared_ptr<SDL_Surface> SharedPtr;
+
+    /// Default constructor -- initializes to sane defaults.
+    Image ( void );
+
+    /// Destructor.
     virtual ~Image ( void );
 
-    /// Is this object initialized -- not nullptr?
+    /// Construct an Image object with specified flags passed to the library
+    /// extension(s) used in this object.
+    Image ( uint32 img_flags );
+
+    /// Copy constructor
+    Image ( const Image& other );
+
+    /// Copy assignment constructor
+    Image& operator = ( const Image& other );
+
+    /// Obtain the SDL_Surface struct used in this object instance
+    SDL_Surface* get ( void ) const;
+
+    /// Is this object initialized? Valid when *NOT* nullptr
     bool valid ( void ) const;
 
     /// Supports every file type that the libSDL_image extension has been
     /// compiled with
-    std::shared_ptr<void> load ( const std::string& filename );
+    bool load ( const std::string& filename );
 
     /// Uses SDL's built-in BMP file loader; no alpha channeling support ...
     /// perfect for setting window icons!
-    std::shared_ptr<void> loadBMP ( const std::string& filename );
+    ///
+    /// (I have yet to find success using IMG_Load to load an ordinary bitmap
+    /// file, whereas SDL_LoadBMP does load fine).
+    bool load_bmp ( const std::string& filename );
 
     /// Saves as an uncompressed RGB Windows Bitmap (BMP)
     ///
     /// NOTE: AFAIK, no existing file handling / overwriting checks are done
     /// whatsoever
-    bool save ( const std::string& filename, void* video_buffer );
+    bool save ( const std::string& filename, SDL_Surface* video_buffer );
 
+    /// Obtain the width and height (in pixels) of the stored bitmap buffer
     const Coords getSize ( void ) const;
 
-    /// Copy assignment constructor
-    Image& operator = ( const Image& other );
-
   private:
-    std::shared_ptr<void> image_buffer; // SDL_Surface*
+    Image::SharedPtr image_buffer;
 };
 
 

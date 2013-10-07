@@ -59,7 +59,6 @@ typedef unsigned long long int uint64;
 
 typedef unsigned char uchar;
 
-
 } // namespace nom
 
 /// Ensure our data types have the right sizes using C++11 compile-time asserts.

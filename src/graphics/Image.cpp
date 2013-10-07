@@ -30,7 +30,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Image::Image ( int32 flags )  : image_buffer ( nullptr, nom::priv::Canvas_FreeSurface )
+Image::Image ( void ) : image_buffer ( nullptr, priv::FreeSurface )
+{
+NOM_LOG_TRACE ( NOM );
+
+  if ( IMG_Init ( IMG_INIT_PNG ) != IMG_INIT_PNG )
+  {
+NOM_LOG_ERR ( NOM, IMG_GetError() );
+  }
+
+  atexit ( IMG_Quit );
+}
+
+Image::~Image ( void )
+{
+NOM_LOG_TRACE ( NOM );
+}
+
+Image::Image ( uint32 flags ) : image_buffer ( nullptr, priv::FreeSurface )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -42,56 +59,68 @@ NOM_LOG_ERR ( NOM, IMG_GetError() );
   atexit ( IMG_Quit );
 }
 
-Image::Image ( const Image& other )  : image_buffer ( static_cast<SDL_Surface*> ( other.image_buffer.get() ), nom::priv::Canvas_FreeSurface )
+Image::Image ( const Image& other )  : image_buffer { other.image_buffer.get(), priv::FreeSurface }
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-Image::~Image ( void )
+Image& Image::operator = ( const Image& other )
 {
-NOM_LOG_TRACE ( NOM );
+  this->image_buffer = other.image_buffer;
 
-  this->image_buffer.reset(); // ...better safe than sorry!
+  return *this;
+}
+
+SDL_Surface* Image::get ( void ) const
+{
+  return this->image_buffer.get();
 }
 
 bool Image::valid ( void ) const
 {
   if ( this->image_buffer.get() != nullptr )
+  {
     return true;
+  }
   else
+  {
     return false;
+  }
 }
 
-std::shared_ptr<void> Image::load ( const std::string& filename )
+bool Image::load ( const std::string& filename )
 {
-  this->image_buffer = std::shared_ptr<void> ( IMG_Load ( filename.c_str() ), nom::priv::Canvas_FreeSurface );
+  this->image_buffer.reset ( IMG_Load ( filename.c_str() ), priv::FreeSurface );
 
-  if ( ! this->valid() )
+  if ( this->valid() == false )
   {
+NOM_LOG_ERR ( NOM, "Could not load filename at: " + filename );
 NOM_LOG_ERR ( NOM, IMG_GetError() );
-    return nullptr;
+    return false;
   }
 
-  return this->image_buffer;
+  return true;
 }
 
-std::shared_ptr<void> Image::loadBMP ( const std::string& filename )
+bool Image::load_bmp ( const std::string& filename )
 {
-  this->image_buffer = std::shared_ptr<void> ( SDL_LoadBMP ( filename.c_str() ), nom::priv::Canvas_FreeSurface );
+  this->image_buffer.reset ( SDL_LoadBMP ( filename.c_str() ), priv::FreeSurface );
 
-  if ( ! this->valid() )
+  if ( this->valid() == false )
   {
+NOM_LOG_ERR ( NOM, "Could not load filename at: " + filename );
 NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return nullptr;
+    return false;
   }
 
-  return this->image_buffer;
+  return true;
 }
 
-bool Image::save ( const std::string& filename, void* video_buffer )
+bool Image::save ( const std::string& filename, SDL_Surface* video_buffer )
 {
-  if ( SDL_SaveBMP ( static_cast<SDL_Surface*> ( video_buffer ), filename.c_str() ) != 0 )
+  if ( SDL_SaveBMP ( video_buffer, filename.c_str() ) != 0 )
   {
+NOM_LOG_ERR ( NOM, "Could not save filename at: " + filename );
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
@@ -101,16 +130,10 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
 const Coords Image::getSize ( void ) const
 {
-  SDL_Surface *buffer = static_cast<SDL_Surface*> ( this->image_buffer.get() );
+  SDL_Surface* buffer = this->image_buffer.get();
+  Coords image_pos ( 0, 0, buffer->w, buffer->h );
 
-  return Coords ( 0, 0, buffer->w, buffer->h );
-}
-
-Image& Image::operator = ( const Image& other )
-{
-  this->image_buffer = other.image_buffer;
-
-  return *this;
+  return image_pos;
 }
 
 

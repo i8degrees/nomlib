@@ -31,8 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 1. http://lazyfoo.net/SDL_tutorials/lesson30/index.php
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_BITMAP_FONT_HEADERS
-#define NOMLIB_SDL_BITMAP_FONT_HEADERS
+#ifndef NOMLIB_SDL2_BITMAP_FONT_HEADERS
+#define NOMLIB_SDL2_BITMAP_FONT_HEADERS
 
 #include <iostream>
 #include <string>
@@ -43,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/math/Color.hpp"
-#include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/Texture.hpp"
 
 //#define NOM_DEBUG_SDL_BITMAP_FONT
 
@@ -101,13 +101,19 @@ class BitmapFont: public IFont
     /// variable calculations made within Load method
     uint32 getNewline ( void ) const;
 
-    enum TextAlignment getTextJustification ( void ) const;
+    IFont::TextAlignment getTextJustification ( void ) const;
 
     /// Set new text character spacing height offsets in pixels
     void setNewline ( uint32_t newline );
 
-    FontStyle getFontStyle ( void ) const;
-    void setFontStyle ( uint8 style, uint8 options = 150 );
+    IFont::FontStyle getFontStyle ( void ) const;
+    void setFontStyle ( int32 style, uint8 options = 150 );
+
+    /// Not implemented
+    //RenderStyle getRenderingStyle ( void ) const;
+
+    /// Not implemented
+    //void setRenderingStyle ( enum RenderStyle );
 
     void setColor ( const Color& color );
     void setPosition ( const Coords& coords );
@@ -115,7 +121,7 @@ class BitmapFont: public IFont
     /// Set the justification of the text.
     ///
     /// This modifies the destination positions used in rendering text.
-    void setTextJustification ( enum TextAlignment alignment );
+    void setTextJustification ( IFont::TextAlignment alignment );
 
     const Coords findGlyph ( const std::string& glyph );
 
@@ -127,11 +133,11 @@ class BitmapFont: public IFont
                 bool use_cache = false
               );
 
-    void Update ( void );
+    void update ( void );
 
     /// Draw the set text string to the video surface
     /// \todo Test horizontal tabbing '\t'
-    void Draw ( void* video_buffer ) const;
+    void draw ( SDL_Renderer* target ) const;
 
     /// Rescale the font with a chosen resizing algorithm
     ///
@@ -147,7 +153,7 @@ class BitmapFont: public IFont
     int32 sheet_height;
 
     /// pointer reference holding our bitmap font image sheet
-    mutable Canvas bitmap_font;
+    mutable Texture bitmap_font;
 
     /// Background color used in computation of individual character boundaries.
     Color colorkey;
@@ -172,12 +178,14 @@ class BitmapFont: public IFont
     std::string text_buffer;
 
     /// Current text effect set
-    enum FontStyle text_style;
+    enum IFont::FontStyle text_style;
 
     /// Not implemented (yet)
     Color color;
 
-    enum TextAlignment text_alignment;
+    enum IFont::TextAlignment text_alignment;
+
+    enum IFont::RenderStyle rendering;
 };
 
   namespace priv {

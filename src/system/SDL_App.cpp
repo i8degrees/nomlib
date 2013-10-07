@@ -141,7 +141,7 @@ bool SDL_App::PollEvents ( SDL_Event* event )
 
 void SDL_App::enableKeyRepeat ( int32 delay, int32 interval )
 {
-  SDL_EnableKeyRepeat ( delay, interval );
+  //SDL_EnableKeyRepeat ( delay, interval );
 }
 
 

@@ -39,11 +39,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined ( NOM_PLATFORM_OSX ) || defined ( NOM_PLATFORM_LINUX )
 
-  #include "nomlib/system/UnixFile.hpp"
+  #include "nomlib/system/unix/UnixFile.hpp"
 
 #elif defined ( NOM_PLATFORM_WINDOWS )
 
-  #include "nomlib/system/WinFile.hpp"
+  #include "nomlib/system/windows/WinFile.hpp"
 
 #endif
 
@@ -55,15 +55,6 @@ class File
   public:
     File ( void );
     ~File ( void );
-
-    /// Obtain the input file's mime type; uses libmagic to determine said type
-    ///
-    /// Returns a string in the same format as the following terminal command:
-    ///
-    /// $ file -b --mime-type <file>
-    ///
-    /// Returns a null terminated string on err
-    const std::string mime ( const std::string& file );
 
     /// Returns the file extension of the input file path
     ///

@@ -26,79 +26,210 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
+#include "App.hpp"
 
-// App class usage example
-
-#include <iostream>
-#include <string>
-#include <cstdlib>
-#include <cassert>
-
-#include <nomlib/graphics.hpp>
-#include <nomlib/system.hpp>
-
-const std::string APP_NAME = "nomlib App Demo";
-
-class App: public nom::SDL_App
+App::App ( nom::int32 args_count, char* args[] )
 {
-  public:
-    App ( void )
+  NOM_LOG_TRACE ( NOM );
+
+  nom::File dir;
+  // Use this class to obtain the platform's directory delimiter
+  nom::Path p;
+  // Form the PWD (parent working directory); this must be an absolute file
+  // path.
+  std::string pwd = "\0";
+
+  // Define these definitions at build time via header files or passing
+  // manually to your compiler.
+  #if defined ( OSXAPP ) // OS X Application Bundle; assumes Darwin platform
+    // <app_name.app/Contents/Resources
+    pwd = nom::getBundleResourcePath();
+  #elif defined ( PLATFORM_WINDOWS )
+    pwd = APP_INSTALL_PREFIX + APP_NAME + p.native() + APP_RESOURCES_DIR;
+  #elif defined ( PLATFORM_POSIX ) // TODO / Assume POSIX-compatible platform
+    pwd = APP_INSTALL_PREFIX + p.native() + "share" + p.native() + APP_NAME + p.native() + APP_RESOURCES_DIR;
+  #else
+    pwd = dir.path ( args[0] ) + p.native() + APP_RESOURCES_DIR;
+  #endif
+
+  // Change the working directory to whatever pwd has been set to.
+  //
+  // This should generally be done *after* processing command line
+  // arguments!
+  dir.setPath ( pwd );
+}
+
+App::~App ( void )
+{
+NOM_LOG_TRACE ( NOM );
+}
+
+bool App::onInit ( void )
+{
+  nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
+
+  // optional flags below; accelerated rendering is the default when not
+  // specified:
+  //
+  // nom::uint32 context_flags = SDL_RENDERER_ACCELERATED;
+  for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
+  {
+    if ( this->window[idx].create ( APP_NAME, WINDOW_WIDTH/2, WINDOW_HEIGHT, window_flags ) == false )
     {
-      this->display.createWindow ( 720, 480, 32 );
+      return false;
     }
 
-    ~App ( void )
-    {
-      // ...
-    }
+    this->window[idx].set_position ( 0+(WINDOW_WIDTH/2) * idx, WINDOW_HEIGHT/2 );
+  }
 
-    void onKeyDown ( int32_t key, int32_t mod )
+  if ( this->window[0].set_window_icon ( RESOURCE_ICON ) == false )
+  {
+    return false;
+  }
+
+  this->ui_frame = nom::ui::GrayFrame ( 50, 50, 200, 200 );
+  this->linear.setSize ( 200 - 4, 200 - 4 );
+  this->linear.setMargins ( 4, 4 );
+  this->linear.setFillDirection ( nom::Gradient::FillDirection::Top );
+
+  this->Running(); // If all is well, here goes nothing!
+  return true;
+}
+
+void App::onKeyDown ( nom::int32 key, nom::int32 mod )
+{
+  switch ( key )
+  {
+    default: break;
+
+    case SDLK_ESCAPE:
+    case SDLK_q: this->onQuit(); break;
+
+    case SDLK_BACKSLASH: this->toggleFPS(); break;
+
+    case SDLK_f:
     {
-      switch ( key )
+      if ( this->isFullScreen() == true )
       {
-        default: break;
+        this->window[0].fullscreen ( 0 );
+        this->setFullScreen ( false );
+      }
+      else
+      {
+        this->window[0].fullscreen ( SDL_WINDOW_FULLSCREEN_DESKTOP );
+        this->setFullScreen ( true );
+      }
+    }
+    break;
+  } // end switch key
+}
 
-        case SDLK_ESCAPE:
-        case SDLK_q: this->onQuit(); break;
-        case SDLK_f: this->toggleFPS(); break;
+nom::int32 App::Run ( void )
+{
+  for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
+  {
+    this->update[idx].start();
+    this->fps[idx].start();
+  }
+
+  // 1. Events
+  // 2. Logic
+  // 3. Render
+  while ( this->isRunning() == true )
+  {
+    while ( this->PollEvents ( &this->event ) )
+    {
+      this->onEvent ( &this->event );
+    }
+
+    this->window[0].fill ( nom::Color::NomSecondaryColorKey );
+    this->window[1].fill ( nom::Color::NomPrimaryColorKey );
+    this->window[2].fill ( nom::Color::Black );
+
+    for ( auto idx = 3; idx < MAXIMUM_WINDOWS; idx++ )
+    {
+      nom::int32 random_color = nom::rand ( 1, 11 );
+
+      switch ( random_color )
+      {
+        default: this->window[idx].fill ( nom::Color::Black ); break;
+
+        case 1: this->window[idx].fill ( nom::Color::White ); break;
+        case 2: this->window[idx].fill ( nom::Color::Red ); break;
+        case 3: this->window[idx].fill ( nom::Color::Green ); break;
+        case 4: this->window[idx].fill ( nom::Color::Blue ); break;
+        case 5: this->window[idx].fill ( nom::Color::Yellow ); break;
+        case 6: this->window[idx].fill ( nom::Color::Magenta ); break;
+        case 7: this->window[idx].fill ( nom::Color::Cyan ); break;
+        case 8: this->window[idx].fill ( nom::Color::LightGray ); break;
+        case 9: this->window[idx].fill ( nom::Color::Gray ); break;
+        case 10: this->window[idx].fill ( nom::Color::NomPrimaryColorKey ); break;
+        case 11: this->window[idx].fill ( nom::Color::NomSecondaryColorKey ); break;
       }
     }
 
-    int32_t Run ( void )
+    nom::Line line1 = nom::Line ( ((WINDOW_WIDTH-176)*2)/2, 194*2, 176*2, 24*2, nom::Color( 133, 133, 133 ) );
+    line1.draw ( this->window[0].renderer() );
+
+    nom::Point pixel = nom::Point ( 500, 245, nom::Color::White );
+    pixel.draw ( this->window[2].renderer() );
+
+    this->linear.setStartColor ( nom::Color ( 251, 222, 232 ) );
+    this->linear.setEndColor ( nom::Color ( 114, 66, 66 ) );
+    this->linear.setPosition ( 50, 50 );
+    this->linear.update();
+    this->linear.draw( this->window[2].renderer() );
+    this->ui_frame.draw ( this->window[2].renderer() );
+
+    nom::Line line2 = nom::Line ( 100, 100, 250, 250, nom::Color( 133, 133, 133 ) );
+    line2.draw ( this->window[1].renderer() );
+
+    nom::Rectangle rectangle = nom::Rectangle ( 100, 100, 200, 200, nom::Color::Gray );
+    rectangle.draw ( this->window[0].renderer() );
+
+    if ( this->isFullScreen() == true )
     {
-      this->fps.start();
+      //this->window[0].fill ( nom::Color::NomPrimaryColorKey );
+      this->window[1].fill ( nom::Color::NomSecondaryColorKey );
+    }
 
-      this->Running(); // ...here we go!
+    for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
+    {
+      this->window[idx].update();
+      this->fps[idx].update();
+      this->ui_frame.update();
 
-      while ( this->isRunning() == true )
+      // Refresh the frames per second at 1 second intervals
+      if ( this->update[idx].ticks() > 1000 )
       {
-        while ( this->PollEvents ( &this->event ) )
+        if ( this->getShowFPS() == true )
         {
-          this->onEvent ( &this->event );
+          this->window[idx].set_window_title ( APP_NAME + " " + std::to_string(idx) + " - " + this->fps[idx].asString() + '\x20' + "fps" );
+        }
+        else
+        {
+          this->window[idx].set_window_title ( APP_NAME + " " + std::to_string(idx) + " - " + "Display" + " " + std::to_string ( this->window[idx].window_display_id() ) );
         }
 
-        if ( this->getShowFPS() )
-          this->display.setWindowTitle ( APP_NAME + " " + "-" + " " + std::to_string ( this->fps.fps() ) + " " + "fps" );
-        else
-          this->display.setWindowTitle ( APP_NAME );
+        this->update[idx].restart();
+      } // end refresh cycle
+    } // end for MAXIMUM_WINDOWS update loop
+  } // end while isRunning() is true
 
-        this->fps.update();
-        } // isRunning() == true
+  return EXIT_SUCCESS;
+}
 
-        return EXIT_SUCCESS;
-      }
-  private:
-    /// display context
-    nom::Display display;
-    /// timer for tracking frames per second
-    nom::FPS fps;
-    /// Input events
-    SDL_Event event;
-};
-
-int main ( int argc, char* argv[] )
+nom::int32 main ( nom::int32 argc, char* argv[] )
 {
-  App engine;
+  App game ( argc, argv );
 
-  return engine.Run();
+  if ( game.onInit() == false )
+  {
+NOM_LOG_ERR ( NOM_EXAMPLES, "Could not initialize game." );
+    return EXIT_FAILURE;
+  }
+
+  return game.Run();
+
+  // END OF EXECUTION; anything beyond this comment will never get executed!
 }

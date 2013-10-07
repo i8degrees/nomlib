@@ -32,6 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <cstring>
 
+#include <errno.h>
+#include <direct.h>
+
 #include "nomlib/config.hpp"
 #include "nomlib/system/IFile.hpp"
 

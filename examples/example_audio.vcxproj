@@ -39,7 +39,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>../include/;../third-party/SDL2/include;../third-party/SDL2_ttf/include;../third-party/SDL2_image/include;../third-party/OpenAL/include;../third-party/libsndfile/include;$(IncludePath)</IncludePath>
+    <IncludePath>../include/;../third-party/windows/SDL2/include;../third-party/windows/SDL2_ttf/include;../third-party/windows/SDL2_image/include;../third-party/windows/OpenAL/include;../third-party/windows/libsndfile/include;$(IncludePath)</IncludePath>
     <LibraryPath>../build/Debug/;$(LibraryPath)</LibraryPath>
     <IntDir>build\Debug\audio\</IntDir>
     <OutDir>$(SolutionDir)\build\Debug\</OutDir>

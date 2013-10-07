@@ -31,6 +31,7 @@
     <ClInclude Include="include\nomlib\config.hpp" />
     <ClInclude Include="include\nomlib\graphics.hpp" />
     <ClInclude Include="include\nomlib\graphics\BitmapFont.hpp" />
+    <ClInclude Include="include\nomlib\graphics\Display.hpp" />
     <ClInclude Include="include\nomlib\graphics\Gradient.hpp" />
     <ClInclude Include="include\nomlib\graphics\hqx\hqx.hpp" />
     <ClInclude Include="include\nomlib\graphics\IDrawable.hpp" />
@@ -55,6 +56,7 @@
     <ClInclude Include="include\nomlib\gui\Cursor.hpp" />
     <ClInclude Include="include\nomlib\gui\GrayFrame.hpp" />
     <ClInclude Include="include\nomlib\gui\MessageBox.hpp" />
+    <ClInclude Include="include\nomlib\json.hpp" />
     <ClInclude Include="include\nomlib\math.hpp" />
     <ClInclude Include="include\nomlib\math\Color.hpp" />
     <ClInclude Include="include\nomlib\math\Coords.hpp" />
@@ -63,8 +65,6 @@
     <ClInclude Include="include\nomlib\math\Point3-inl.hpp" />
     <ClInclude Include="include\nomlib\math\Rect-inl.hpp" />
     <ClInclude Include="include\nomlib\math\Transformable.hpp" />
-    <ClInclude Include="include\nomlib\math\Vector2-inl.hpp" />
-    <ClInclude Include="include\nomlib\math\Vector3-inl.hpp" />
     <ClInclude Include="include\nomlib\platforms.hpp" />
     <ClInclude Include="include\nomlib\resources.hpp" />
     <ClInclude Include="include\nomlib\system.hpp" />
@@ -98,17 +98,19 @@
     <ClCompile Include="src\audio\AL\SoundFile.cpp" />
     <ClCompile Include="src\audio\AL\SoundSource.cpp" />
     <ClCompile Include="src\graphics\BitmapFont.cpp" />
+    <ClCompile Include="src\graphics\Display.cpp" />
     <ClCompile Include="src\graphics\Gradient.cpp" />
-    <ClCompile Include="src\graphics\hqx\hqx.cpp" />
     <ClCompile Include="src\graphics\hqx\hq2x.cpp" />
     <ClCompile Include="src\graphics\hqx\hq3x.cpp" />
     <ClCompile Include="src\graphics\hqx\hq4x.cpp" />
+    <ClCompile Include="src\graphics\hqx\hqx.cpp" />
+    <ClCompile Include="src\graphics\Image.cpp" />
+    <ClCompile Include="src\graphics\Line.cpp" />
+    <ClCompile Include="src\graphics\Pixel.cpp" />
     <ClCompile Include="src\graphics\Renderer.cpp" />
     <ClCompile Include="src\graphics\scale2x\scale2x.cpp" />
     <ClCompile Include="src\graphics\scale2x\scale3x.cpp" />
     <ClCompile Include="src\graphics\scale2x\scale4x.cpp" />
-    <ClCompile Include="src\graphics\Image.cpp" />
-    <ClCompile Include="src\graphics\Pixel.cpp" />
     <ClCompile Include="src\graphics\shapes\Line.cpp" />
     <ClCompile Include="src\graphics\shapes\Point.cpp" />
     <ClCompile Include="src\graphics\shapes\Rectangle.cpp" />
@@ -128,7 +130,6 @@
     <ClCompile Include="src\math\Coords.cpp" />
     <ClCompile Include="src\math\helpers.cpp" />
     <ClCompile Include="src\math\Transformable.cpp" />
-    <ClCompile Include="src\resources.cpp" />
     <ClCompile Include="src\system\AnimationTimer.cpp" />
     <ClCompile Include="src\system\clock.cpp" />
     <ClCompile Include="src\system\dialog_messagebox.cpp" />
@@ -201,8 +202,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <IncludePath>include/;third-party/SDL2/include;third-party/SDL2_ttf/include;third-party/SDL2_image/include;third-party/OpenAL/include;third-party/libsndfile/include;$(IncludePath)</IncludePath>
-    <LibraryPath>third-party/SDL2/lib;third-party/SDL2_ttf/lib;third-party/SDL2_image/lib;third-party/OpenAL/lib;third-party/libsndfile/lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>include/;third-party/windows/SDL2/include;third-party/windows/SDL2_ttf/include;third-party/windows/SDL2_image/include;third-party/windows/OpenAL/include;third-party/windows/libsndfile/include;$(IncludePath)</IncludePath>
+    <LibraryPath>third-party/windows/SDL2/lib;third-party/windows/SDL2_ttf/lib;third-party/windows/SDL2_image/lib;third-party/windows/OpenAL/lib;third-party/windows/libsndfile/lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -243,7 +244,7 @@
     </ProjectReference>
     <Lib>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>third-party/SDL2/lib;third-party/SDL2_ttf/lib;third-party/SDL2_image/lib;third-party/OpenAL/lib;third-party/libsndfile/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(LibraryDirectoties);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>

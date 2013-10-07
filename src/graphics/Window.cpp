@@ -116,10 +116,9 @@ Point2i Window::position ( void ) const
 
   return pos;
 }
-
+/*
 const uint8 Window::getDisplayColorBits ( void ) const
 {
-/*
   SDL_Surface* screen = this->window();
 
   // We prevent a segmentation fault here by providing a means of accessing the
@@ -132,26 +131,29 @@ const uint8 Window::getDisplayColorBits ( void ) const
   }
 
   return screen->format->BitsPerPixel;
-*/
-    return 0;
+  return 0;
 }
+*/
 
 uint32 Window::getDisplayFlags ( void ) const
 {
   return SDL_GetWindowFlags ( this->window() );
 }
 
+/*
 uint16 Window::getDisplayPitch ( void ) const
 {
   //return SDL_GetVideoSurface()->pitch;
     return 0;
 }
-
+*/
+/*
 void* Window::getDisplayPixels ( void ) const
 {
   //return SDL_GetVideoSurface()->pixels;
     return 0;
 }
+*/
 
 SDL_PixelFormat* Window::getDisplayPixelsFormat ( void ) const
 {

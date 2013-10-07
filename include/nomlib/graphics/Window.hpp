@@ -82,13 +82,13 @@ class Window:
     /// Get display surface bits per pixel
     ///
     /// \todo rename method to something more along lines of Canvas equiv.
-    const uint8 getDisplayColorBits ( void ) const;
+    //const uint8 getDisplayColorBits ( void ) const;
 
     uint32 getDisplayFlags ( void ) const;
-    uint16 getDisplayPitch ( void ) const;
-    void* getDisplayPixels ( void ) const;
     SDL_PixelFormat* getDisplayPixelsFormat ( void ) const;
     const Coords getDisplayBounds ( void ) const;
+    //uint16 getDisplayPitch ( void ) const;
+    //void* getDisplayPixels ( void ) const;
 
     /// Obtain a list of supported video modes
     ///

@@ -81,7 +81,7 @@ set ( NOMLIB_HEADERS_DIR "include" )
 set ( EXTERNAL_HEADERS_DIR "extlibs/osx/include" )
 
 # Absolute path to the json_spirit header files
-set ( HEADERS_JSON_SPIRIT_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_HEADERS_DIR}/json_spirit" )
+#set ( HEADERS_JSON_SPIRIT_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_HEADERS_DIR}/json_spirit" )
 
 # Relative path from project root to nomlib demonstration examples
 set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" )

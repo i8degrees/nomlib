@@ -160,7 +160,7 @@ SpriteSheet::SharedPtr SpriteSheet::clone ( void ) const
 
 bool SpriteSheet::save ( const std::string& filename )
 {
-#if ! defined ( NOM_PLATFORM_WINDOWS )
+/*
   nom::JSON::FileWriter fp; // json_spirit wrapper for file output
   json_spirit::Array sheet_data; // Overall container; this is the parent
   json_spirit::Object node; // JSON object record; the child
@@ -202,16 +202,13 @@ NOM_LOG_ERR ( NOM, "Unable to save the sprite sheet as a JSON file: " + filename
   }
 
   return true;
-#endif // end if NOT Windows platform
-
-#if defined ( NOM_PLATFORM_WINDOWS )
+*/
   return false;
-#endif
 }
 
 bool SpriteSheet::load ( const std::string& filename )
 {
-#if ! defined ( NOM_PLATFORM_WINDOWS )
+/*
   std::ifstream fp; // input file handle
   json_spirit::Object node;
   json_spirit::Value value;
@@ -287,11 +284,8 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
   } // end current array node
 
   return true;
-#endif // end if NOT Windows platform
-
-#if defined ( NOM_PLATFORM_WINDOWS )
+*/
   return false;
-#endif
 }
 
 

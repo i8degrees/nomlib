@@ -389,67 +389,70 @@ if ( NOT FRAMEWORK )
   endif ( PLATFORM_WINDOWS )
 endif ( NOT FRAMEWORK )
 
-# Install nomlib header files
-# install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}
-#           DESTINATION "${INSTALL_HEADERS_PATH}"
-#           PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
-#         )
+if ( NOT PLATFORM_WINDOWS )
 
-# # Install nomlib Resource files
-# install ( FILES
-#           "${NOMLIB_RESOURCES_DIR}/nomlib.icns" # Icon
-#           DESTINATION "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
-#           OPTIONAL
-#         )
+  # Install nomlib header files
+  install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}
+            DESTINATION "${INSTALL_HEADERS_PATH}"
+            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
+          )
 
-# # Install nomlib's cmake module; this should end up in a spot that is
-# # automatically searched by find_package.
-# if ( PLATFORM_OSX AND FRAMEWORK ) # Framework bundle profile
-#   install ( DIRECTORY
-#             "${NOMLIB_RESOURCES_DIR}/CMake"
-#             DESTINATION
-#             "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
-#             OPTIONAL
-#             PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
-#           )
-# else ( NOT PLATFORM_OSX AND NOT FRAMEWORK ) # POSIX install profile
-#   install ( DIRECTORY
-#             "${NOMLIB_RESOURCES_DIR}/CMake"
-#             DESTINATION
-#             "${INSTALL_RESOURCES_PATH}"
-#             OPTIONAL
-#             PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
-#           )
-# endif ( PLATFORM_OSX AND FRAMEWORK )
+  # Install nomlib Resource files
+  install ( FILES
+            "${NOMLIB_RESOURCES_DIR}/nomlib.icns" # Icon
+            DESTINATION "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
+            OPTIONAL
+          )
 
-# # Install software license & general project information
-# install ( FILES
-#           ${PROJECT_SOURCE_DIR}/README.md
-#           ${PROJECT_SOURCE_DIR}/LICENSE.md
-#           ${PROJECT_SOURCE_DIR}/TODO.md
-#           DESTINATION "${INSTALL_DOCS_PATH}"
-#         )
+  # Install nomlib's cmake module; this should end up in a spot that is
+  # automatically searched by find_package.
+  if ( PLATFORM_OSX AND FRAMEWORK ) # Framework bundle profile
+    install ( DIRECTORY
+              "${NOMLIB_RESOURCES_DIR}/CMake"
+              DESTINATION
+              "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
+              OPTIONAL
+              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
+            )
+  else ( NOT PLATFORM_OSX AND NOT FRAMEWORK ) # POSIX install profile
+    install ( DIRECTORY
+              "${NOMLIB_RESOURCES_DIR}/CMake"
+              DESTINATION
+              "${INSTALL_RESOURCES_PATH}"
+              OPTIONAL
+              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
+            )
+  endif ( PLATFORM_OSX AND FRAMEWORK )
 
-# if ( DOCS )
-#   # Install generated HTML documentation
-#   install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
-#             DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
-#             PATTERN ".*" EXCLUDE # do not include dotfiles
-#           )
+  # Install software license & general project information
+  install ( FILES
+            ${PROJECT_SOURCE_DIR}/README.md
+            ${PROJECT_SOURCE_DIR}/LICENSE.md
+            ${PROJECT_SOURCE_DIR}/TODO.md
+            DESTINATION "${INSTALL_DOCS_PATH}"
+          )
 
-#   if ( NOT FRAMEWORK )
+  if ( DOCS )
+    # Install generated HTML documentation
+    install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
+              DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
+              PATTERN ".*" EXCLUDE # do not include dotfiles
+            )
 
-#     # Install generated man page documentation
-#     install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/man/man3
-#               DESTINATION "${INSTALL_MAN_PAGES_PATH}"
-#               PATTERN ".*" EXCLUDE # do not include dotfiles
-#             )
-#     endif ( NOT FRAMEWORK )
-# endif ( DOCS )
+    if ( NOT FRAMEWORK )
 
-# if ( PLATFORM_LINUX )
-#   install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")") # FIXME (prettify)
-# endif ( PLATFORM_LINUX )
+      # Install generated man page documentation
+      install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/man/man3
+                DESTINATION "${INSTALL_MAN_PAGES_PATH}"
+                PATTERN ".*" EXCLUDE # do not include dotfiles
+              )
+      endif ( NOT FRAMEWORK )
+  endif ( DOCS )
+
+  if ( PLATFORM_LINUX )
+    install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")") # FIXME (prettify)
+  endif ( PLATFORM_LINUX )
+endif ( NOT PLATFORM_WINDOWS )
 
 # nomlib examples configuration
 if ( EXAMPLES )

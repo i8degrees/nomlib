@@ -31,7 +31,6 @@
     <ClInclude Include="include\nomlib\config.hpp" />
     <ClInclude Include="include\nomlib\graphics.hpp" />
     <ClInclude Include="include\nomlib\graphics\BitmapFont.hpp" />
-    <ClInclude Include="include\nomlib\graphics\Display.hpp" />
     <ClInclude Include="include\nomlib\graphics\Gradient.hpp" />
     <ClInclude Include="include\nomlib\graphics\hqx\hqx.hpp" />
     <ClInclude Include="include\nomlib\graphics\IDrawable.hpp" />
@@ -56,7 +55,6 @@
     <ClInclude Include="include\nomlib\gui\Cursor.hpp" />
     <ClInclude Include="include\nomlib\gui\GrayFrame.hpp" />
     <ClInclude Include="include\nomlib\gui\MessageBox.hpp" />
-    <ClInclude Include="include\nomlib\json.hpp" />
     <ClInclude Include="include\nomlib\math.hpp" />
     <ClInclude Include="include\nomlib\math\Color.hpp" />
     <ClInclude Include="include\nomlib\math\Coords.hpp" />
@@ -98,14 +96,12 @@
     <ClCompile Include="src\audio\AL\SoundFile.cpp" />
     <ClCompile Include="src\audio\AL\SoundSource.cpp" />
     <ClCompile Include="src\graphics\BitmapFont.cpp" />
-    <ClCompile Include="src\graphics\Display.cpp" />
     <ClCompile Include="src\graphics\Gradient.cpp" />
     <ClCompile Include="src\graphics\hqx\hq2x.cpp" />
     <ClCompile Include="src\graphics\hqx\hq3x.cpp" />
     <ClCompile Include="src\graphics\hqx\hq4x.cpp" />
     <ClCompile Include="src\graphics\hqx\hqx.cpp" />
     <ClCompile Include="src\graphics\Image.cpp" />
-    <ClCompile Include="src\graphics\Line.cpp" />
     <ClCompile Include="src\graphics\Pixel.cpp" />
     <ClCompile Include="src\graphics\Renderer.cpp" />
     <ClCompile Include="src\graphics\scale2x\scale2x.cpp" />
@@ -130,6 +126,7 @@
     <ClCompile Include="src\math\Coords.cpp" />
     <ClCompile Include="src\math\helpers.cpp" />
     <ClCompile Include="src\math\Transformable.cpp" />
+    <ClCompile Include="src\resources.cpp" />
     <ClCompile Include="src\system\AnimationTimer.cpp" />
     <ClCompile Include="src\system\clock.cpp" />
     <ClCompile Include="src\system\dialog_messagebox.cpp" />

@@ -19,9 +19,6 @@
     <Filter Include="include\gui">
       <UniqueIdentifier>{a2cdbba7-adc6-47d4-8b26-2daed99fb044}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include\json">
-      <UniqueIdentifier>{01d1cea5-3ac4-4f7b-9ffc-731075c704e4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="include\graphics\hqx">
       <UniqueIdentifier>{237c5adb-5581-426e-b702-3394e323e450}</UniqueIdentifier>
     </Filter>
@@ -64,9 +61,6 @@
     <Filter Include="src\gui">
       <UniqueIdentifier>{8d05bf25-7b17-4448-8185-29073c701698}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\json">
-      <UniqueIdentifier>{439b2287-18ce-4af7-81d6-29e9d9b17282}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\math">
       <UniqueIdentifier>{ca42dae4-7b2f-405b-bfb1-1c2faaa2a036}</UniqueIdentifier>
     </Filter>
@@ -85,9 +79,6 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\nomlib\gui.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\json.hpp">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\nomlib\math.hpp">
@@ -130,9 +121,6 @@
       <Filter>include\audio\AL</Filter>
     </ClInclude>
     <ClInclude Include="include\nomlib\graphics\BitmapFont.hpp">
-      <Filter>include\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nomlib\graphics\Display.hpp">
       <Filter>include\graphics</Filter>
     </ClInclude>
     <ClInclude Include="include\nomlib\graphics\Gradient.hpp">
@@ -308,16 +296,10 @@
     <ClCompile Include="src\graphics\BitmapFont.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\Display.cpp">
-      <Filter>src\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\graphics\Gradient.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\Image.cpp">
-      <Filter>src\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\Line.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\Pixel.cpp">
@@ -447,6 +429,9 @@
       <Filter>src\system</Filter>
     </ClCompile>
     <ClCompile Include="src\version.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\resources.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,5 +1,7 @@
 cmake_minimum_required ( VERSION 2.6 )
 
+include_directories ( ${EXT_HEADERS} )
+
 link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
 
 set ( EXECUTABLE_FLAGS "" )

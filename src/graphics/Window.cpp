@@ -135,7 +135,7 @@ const uint8 Window::getDisplayColorBits ( void ) const
 }
 */
 
-uint32 Window::getDisplayFlags ( void ) const
+uint32 Window::window_flags ( void ) const
 {
   return SDL_GetWindowFlags ( this->window() );
 }
@@ -155,18 +155,29 @@ void* Window::getDisplayPixels ( void ) const
 }
 */
 
-SDL_PixelFormat* Window::getDisplayPixelsFormat ( void ) const
+uint32 Window::pixel_format ( void ) const
 {
-  //return SDL_GetVideoSurface()->format;
-    return nullptr;
+  return SDL_GetWindowPixelFormat ( this->window() );
 }
 
-const Coords Window::getDisplayBounds ( void ) const
+const Coords Window::display_bounds ( void ) const
 {
-  //SDL_Rect clip = SDL_GetVideoSurface()->clip_rect;
-  //Coords clip_coords ( clip.x, clip.y, clip.w, clip.h );
-  //return clip_coords;
-    return Coords(0, 0);
+  SDL_Rect display_bounds;
+  Coords bounds;
+
+  if ( SDL_GetDisplayBounds ( this->window_display_id(), &display_bounds ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, "Could not obtain Window index " + std::to_string ( this->window_display_id() ) + "display bounds." );
+NOM_LOG_ERR ( NOM, std::string ( SDL_GetError() ) );
+    return Coords::null;
+  }
+
+  bounds.x = display_bounds.x;
+  bounds.y = display_bounds.y;
+  bounds.w = display_bounds.w;
+  bounds.h = display_bounds.h;
+
+  return bounds;
 }
 
 VideoModeList Window::getVideoModes ( void ) const

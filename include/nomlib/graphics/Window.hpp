@@ -84,11 +84,19 @@ class Window:
     /// \todo rename method to something more along lines of Canvas equiv.
     //const uint8 getDisplayColorBits ( void ) const;
 
-    uint32 getDisplayFlags ( void ) const;
-    SDL_PixelFormat* getDisplayPixelsFormat ( void ) const;
-    const Coords getDisplayBounds ( void ) const;
+    uint32 window_flags ( void ) const;
     //uint16 getDisplayPitch ( void ) const;
     //void* getDisplayPixels ( void ) const;
+    uint32 pixel_format ( void ) const;
+
+    /// Get the desktop area represented by a display monitor
+    ///
+    /// The primary desktop display is located at 0, 0.
+    ///
+    /// \return A nom::Coords object filled with the display bounds.
+    ///
+    /// \todo Test me
+    const Coords display_bounds ( void ) const;
 
     /// Obtain a list of supported video modes
     ///

@@ -91,6 +91,7 @@ elseif ( PLATFORM_WINDOWS )
   set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/windows/WinFile.cpp )
 
   # Add header files (*.hpp) and source files (*.cpp) to project inside MSVC++ IDE
+  # FIXME
   source_group  (
                   "include/nomlib"
                   FILES "*.hpp"

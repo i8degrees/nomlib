@@ -42,7 +42,7 @@
     <IncludePath>../include/;../third-party/SDL2/include;../third-party/SDL2_ttf/include;../third-party/SDL2_image/include;../third-party/OpenAL/include;../third-party/libsndfile/include;$(IncludePath)</IncludePath>
     <LibraryPath>../build/Debug/;$(LibraryPath)</LibraryPath>
     <IntDir>build\Debug\app\</IntDir>
-    <OutDir>$(SolutionDir)\build\</OutDir>
+    <OutDir>$(SolutionDir)\build\Debug\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

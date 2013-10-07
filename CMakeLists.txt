@@ -14,9 +14,6 @@ set ( PROJECT_VERSION_MAJOR 0 )
 set ( PROJECT_VERSION_MINOR 9 )
 set ( PROJECT_VERSION_PATCH 0 )
 
-# We only support building nomlib as a dynamic library at the moment
-set ( BUILD_SHARED_LIBS on )
-
 # Project Options
 option ( DEBUG "Build with all debugging features" off )
 option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
@@ -26,14 +23,34 @@ option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
 
 project ( nomlib ) # Sets PROJECT_NAME variable for us
 
+# Platform detection
+include ( "${CMAKE_SOURCE_DIR}/cmake/platform.cmake" )
+
+if ( PLATFORM_WINDOWS )
+  # Building nomlib on Windows is only supported as a static library for the
+  # moment
+  set ( BUILD_SHARED_LIBS off )
+else ( NOT PLATFORM_WINDOWS )
+  # We only support building nomlib as a dynamic library at the moment
+  set ( BUILD_SHARED_LIBS on )
+endif ( PLATFORM_WINDOWS )
+
 if ( DEBUG )
   set ( CMAKE_BUILD_TYPE "Debug" )
-  set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNOM_DEBUG -Wall -Wunused" )
+
+  if ( NOT PLATFORM_WINDOWS )
+    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused" )
+  else ( PLATFORM_WINDOWS )
+    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D NOM_DEBUG /D NOM_DEBUG_ASSERT /D NOM_DEBUG_TRACE" )
+  endif( NOT PLATFORM_WINDOWS )
+
   set ( CMAKE_VERBOSE_MAKEFILE on )
   message ( STATUS "Building ${PROJECT_NAME} with debugging." )
+  message ( STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}" )
 else () # Build with optimizations for maximum speed and minimal size
   set ( CMAKE_BUILD_TYPE "Release" )
   message ( STATUS "Building ${PROJECT_NAME} with high speed, low drag!" )
+  message ( STATUS "CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}" )
 endif ( DEBUG )
 
 if ( DEBUG_ASSERT )
@@ -48,9 +65,6 @@ if ( DEBUG_TRACE )
   add_definitions ( "-DNOM_DEBUG_TRACE" )
   message ( STATUS "Building ${PROJECT_NAME} with class object call tracing." )
 endif ( DEBUG_TRACE )
-
-# Platform detection
-include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
 
 # Utility macro helpers
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
@@ -106,12 +120,6 @@ if ( UNIVERSAL )
   message ( STATUS "Building an OSX Universal Library" )
 endif ( UNIVERSAL )
 
-if ( FRAMEWORK )
-  message ( STATUS "Using OSX Framework bundle profile." )
-else ( NOT FRAMEWORK )
-  message ( STATUS "Using POSIX install profile." )
-endif ( FRAMEWORK )
-
 message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
 
 # Platform specific configuration
@@ -129,7 +137,12 @@ elseif ( PLATFORM_OSX )
     set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
     set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
   endif ( CMAKE_GENERATOR STREQUAL "Xcode" )
-else () # Not Linux nor OSX
+
+elseif ( PLATFORM_WINDOWS )
+
+  set ( CMAKE_CONFIGURATION_TYPES "${CMAKE_BUILD_TYPE}" )
+
+else () # Not Linux nor OS X nor Windows
   # Use whatever CMake gathers for us and hope for the best!
 endif ( PLATFORM_LINUX )
 
@@ -149,72 +162,101 @@ include_directories ( ${NOMLIB_HEADERS_DIR} )
 # variables -- EXT_HEADERS & EXTLIBS -- so we can then make a minimal number
 # of calls to include_directories & linking of libraries.
 #
-find_package ( SDL2 REQUIRED )
-find_package ( SDL2_image REQUIRED )
-find_package ( SDL2_ttf REQUIRED )
+if ( PLATFORM_WINDOWS )
 
-find_package ( OpenAL REQUIRED )
-find_package ( sndfile REQUIRED )
+  # SDL2 dependency
+  set ( SDL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/third-party/SDL2/include" )
+  set ( SDL_LIBRARY "${PROJECT_SOURCE_DIR}/third-party/SDL2/lib" )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
 
-if ( SDL2_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
-endif ( SDL2_FOUND )
+  # SDL2_image dependency
+  set ( EXT_HEADERS ${EXT_HEADERS} "${PROJECT_SOURCE_DIR}/third-party/SDL2_image/include" )
+  set ( EXTLIBS ${EXTLIBS} "${PROJECT_SOURCE_DIR}/third-party/SDL2_image/lib" )
 
-if ( SDL2_IMAGE_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
-endif ( SDL2_IMAGE_FOUND )
+  # SDL2_ttf dependency
+  set ( EXT_HEADERS ${EXT_HEADERS} "${PROJECT_SOURCE_DIR}/third-party/SDL2_ttf/include" )
+  set ( EXTLIBS ${EXTLIBS} "${PROJECT_SOURCE_DIR}/third-party/SDL2_ttf/lib" )
 
-if ( SDL2_TTF_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
-endif ( SDL2_TTF_FOUND )
+  # OpenAL dependency -- must be 32-bit library
+  set ( EXT_HEADERS ${EXT_HEADERS} "${PROJECT_SOURCE_DIR}/third-party/OpenAL/include" )
+  set ( EXTLIBS ${EXTLIBS} "${PROJECT_SOURCE_DIR}/third-party/OpenAL/lib" )
 
-if ( OPENAL_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
-else ( NOT OPENAL_FOUND )
-  message ( FATAL_ERROR "Required dependency OpenAL missing!" )
-endif ( OPENAL_FOUND )
+  # libsndfile dependency -- must be 32-bit library
+  set ( EXT_HEADERS ${EXT_HEADERS} "${PROJECT_SOURCE_DIR}/third-party/libsndfile/include" )
+  set ( EXTLIBS ${EXTLIBS} "${PROJECT_SOURCE_DIR}/third-party/libsndfile/lib" )
 
-if ( LIBSNDFILE_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
-else ( NOT LIBSNDFILE_FOUND )
-  message ( FATAL_ERROR "Required dependency sndfile missing!" )
-endif ( LIBSNDFILE_FOUND )
+else ( NOT PLATFORM_WINDOWS )
 
-# First, try finding our packaged header files for json_spirit;
-# ...if this fails, attempt to find the headers directory of a system install of
-# the library header files
-if ( IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
+  find_package ( SDL2 REQUIRED )
+  find_package ( SDL2_image REQUIRED )
+  find_package ( SDL2_ttf REQUIRED )
 
-  set ( EXT_HEADERS ${EXT_HEADERS} "${HEADERS_JSON_SPIRIT_DIR}" )
-  message ( STATUS "Found packaged json_spirit: ${HEADERS_JSON_SPIRIT_DIR}" )
-elseif ( NOT IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
+  find_package ( OpenAL REQUIRED )
+  find_package ( sndfile REQUIRED )
 
-  find_package ( json_spirit REQUIRED )
+  if ( SDL2_FOUND )
+    set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
+    set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
+  endif ( SDL2_FOUND )
 
-  if ( JSON_SPIRIT_FOUND )
-    set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
-    message ( WARNING "Found json_spirit: ${JSON_SPIRIT_INCLUDE_DIR}" )
-  else ( NOT JSON_SPIRIT_FOUND )
-    message ( FATAL_ERROR "Required dependency json_spirit (headers only) missing!" )
-  endif ( JSON_SPIRIT_FOUND )
+  if ( SDL2_IMAGE_FOUND )
+    set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
+    set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
+  endif ( SDL2_IMAGE_FOUND )
 
-endif ( IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
+  if ( SDL2_TTF_FOUND )
+    set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
+    set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
+  endif ( SDL2_TTF_FOUND )
 
-if ( PLATFORM_OSX )
-  find_library ( COCOA_LIBRARY Cocoa )
-  mark_as_advanced ( COCOA_LIBRARY )
-  set ( EXTLIBS ${EXTLIBS} ${COCOA_LIBRARY} )
-endif ( PLATFORM_OSX )
+  if ( OPENAL_FOUND )
+    set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
+    set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
+  else ( NOT OPENAL_FOUND )
+    message ( FATAL_ERROR "Required dependency OpenAL missing!" )
+  endif ( OPENAL_FOUND )
+
+  if ( LIBSNDFILE_FOUND )
+    set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
+    set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
+  else ( NOT LIBSNDFILE_FOUND )
+    message ( FATAL_ERROR "Required dependency sndfile missing!" )
+  endif ( LIBSNDFILE_FOUND )
+
+  # First, try finding our packaged header files for json_spirit;
+  # ...if this fails, attempt to find the headers directory of a system install of
+  # the library header files
+  if ( IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
+    set ( EXT_HEADERS ${EXT_HEADERS} "${HEADERS_JSON_SPIRIT_DIR}" )
+    message ( STATUS "Found packaged json_spirit: ${HEADERS_JSON_SPIRIT_DIR}" )
+  elseif ( NOT IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
+
+    find_package ( json_spirit REQUIRED )
+    if ( JSON_SPIRIT_FOUND )
+      set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
+      message ( WARNING "Found json_spirit: ${JSON_SPIRIT_INCLUDE_DIR}" )
+    else ( NOT JSON_SPIRIT_FOUND )
+      message ( FATAL_ERROR "Required dependency json_spirit (headers only) missing!" )
+    endif ( JSON_SPIRIT_FOUND )
+  endif ( IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
+
+  if ( PLATFORM_OSX )
+    find_library ( COCOA_LIBRARY Cocoa )
+    mark_as_advanced ( COCOA_LIBRARY )
+    set ( EXTLIBS ${EXTLIBS} ${COCOA_LIBRARY} )
+  endif ( PLATFORM_OSX )
+
+endif ( PLATFORM_WINDOWS )
 
 # External header files inclusion
 include_directories ( ${EXT_HEADERS} )
 
-add_library ( ${PROJECT_NAME} SHARED ${NOMLIB_SOURCE} )
+if ( BUILD_SHARED_LIBS )
+  add_library ( ${PROJECT_NAME} SHARED ${NOMLIB_SOURCE} )
+else ( NOT BUILD_SHARED_LIBS )
+  add_library ( ${PROJECT_NAME} STATIC ${NOMLIB_SOURCE} )
+endif ( BUILD_SHARED_LIBS )
 
 target_link_libraries  ( ${PROJECT_NAME} ${EXTLIBS} )
 
@@ -326,73 +368,80 @@ if ( PLATFORM_OSX )
 endif ( PLATFORM_OSX )
 
 if ( NOT FRAMEWORK )
-  # Install library in POSIX standard location by default
-  install ( TARGETS ${PROJECT_NAME} LIBRARY
-            DESTINATION "${INSTALL_LIB_PATH}"
-          )
+
+  if ( PLATFORM_WINDOWS )
+
+    install ( TARGETS ${PROJECT_NAME} ARCHIVE DESTINATION "${INSTALL_LIB_PATH}" )
+  else ( NOT PLATFORM_WINDOWS )
+
+    # Install library in POSIX standard location by default
+    install ( TARGETS ${PROJECT_NAME} LIBRARY
+              DESTINATION "${INSTALL_LIB_PATH}"
+            )
+  endif ( PLATFORM_WINDOWS )
 endif ( NOT FRAMEWORK )
 
 # Install nomlib header files
-install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}
-          DESTINATION "${INSTALL_HEADERS_PATH}"
-          PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
-        )
+# install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}
+#           DESTINATION "${INSTALL_HEADERS_PATH}"
+#           PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
+#         )
 
-# Install nomlib Resource files
-install ( FILES
-          "${NOMLIB_RESOURCES_DIR}/nomlib.icns" # Icon
-          DESTINATION "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
-          OPTIONAL
-        )
+# # Install nomlib Resource files
+# install ( FILES
+#           "${NOMLIB_RESOURCES_DIR}/nomlib.icns" # Icon
+#           DESTINATION "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
+#           OPTIONAL
+#         )
 
-# Install nomlib's cmake module; this should end up in a spot that is
-# automatically searched by find_package.
-if ( PLATFORM_OSX AND FRAMEWORK ) # Framework bundle profile
-  install ( DIRECTORY
-            "${NOMLIB_RESOURCES_DIR}/CMake"
-            DESTINATION
-            "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
-            OPTIONAL
-            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
-          )
-else ( NOT PLATFORM_OSX AND NOT FRAMEWORK ) # POSIX install profile
-  install ( DIRECTORY
-            "${NOMLIB_RESOURCES_DIR}/CMake"
-            DESTINATION
-            "${INSTALL_RESOURCES_PATH}"
-            OPTIONAL
-            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
-          )
-endif ( PLATFORM_OSX AND FRAMEWORK )
+# # Install nomlib's cmake module; this should end up in a spot that is
+# # automatically searched by find_package.
+# if ( PLATFORM_OSX AND FRAMEWORK ) # Framework bundle profile
+#   install ( DIRECTORY
+#             "${NOMLIB_RESOURCES_DIR}/CMake"
+#             DESTINATION
+#             "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
+#             OPTIONAL
+#             PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
+#           )
+# else ( NOT PLATFORM_OSX AND NOT FRAMEWORK ) # POSIX install profile
+#   install ( DIRECTORY
+#             "${NOMLIB_RESOURCES_DIR}/CMake"
+#             DESTINATION
+#             "${INSTALL_RESOURCES_PATH}"
+#             OPTIONAL
+#             PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
+#           )
+# endif ( PLATFORM_OSX AND FRAMEWORK )
 
-# Install software license & general project information
-install ( FILES
-          ${PROJECT_SOURCE_DIR}/README.md
-          ${PROJECT_SOURCE_DIR}/LICENSE.md
-          ${PROJECT_SOURCE_DIR}/TODO.md
-          DESTINATION "${INSTALL_DOCS_PATH}"
-        )
+# # Install software license & general project information
+# install ( FILES
+#           ${PROJECT_SOURCE_DIR}/README.md
+#           ${PROJECT_SOURCE_DIR}/LICENSE.md
+#           ${PROJECT_SOURCE_DIR}/TODO.md
+#           DESTINATION "${INSTALL_DOCS_PATH}"
+#         )
 
-if ( DOCS )
-  # Install generated HTML documentation
-  install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
-            DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
-            PATTERN ".*" EXCLUDE # do not include dotfiles
-          )
+# if ( DOCS )
+#   # Install generated HTML documentation
+#   install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
+#             DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
+#             PATTERN ".*" EXCLUDE # do not include dotfiles
+#           )
 
-  if ( NOT FRAMEWORK )
+#   if ( NOT FRAMEWORK )
 
-    # Install generated man page documentation
-    install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/man/man3
-              DESTINATION "${INSTALL_MAN_PAGES_PATH}"
-              PATTERN ".*" EXCLUDE # do not include dotfiles
-            )
-    endif ( NOT FRAMEWORK )
-endif ( DOCS )
+#     # Install generated man page documentation
+#     install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/man/man3
+#               DESTINATION "${INSTALL_MAN_PAGES_PATH}"
+#               PATTERN ".*" EXCLUDE # do not include dotfiles
+#             )
+#     endif ( NOT FRAMEWORK )
+# endif ( DOCS )
 
-if ( PLATFORM_LINUX )
-  install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")") # FIXME (prettify)
-endif ( PLATFORM_LINUX )
+# if ( PLATFORM_LINUX )
+#   install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")") # FIXME (prettify)
+# endif ( PLATFORM_LINUX )
 
 # nomlib examples configuration
 if ( EXAMPLES )

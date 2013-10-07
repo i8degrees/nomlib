@@ -42,12 +42,6 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
       ${SRC_DIR}/graphics/sprite/SpriteBatch.cpp
       ${SRC_DIR}/graphics/sprite/AnimatedSprite.cpp
       ${SRC_DIR}/graphics/sprite/SpriteSheet.cpp
-      # nomJSON
-      #${SRC_DIR}/json/Array.cpp
-      ${SRC_DIR}/json/FileReader.cpp
-      ${SRC_DIR}/json/FileWriter.cpp
-      #${SRC_DIR}/json/Object.cpp
-      #${SRC_DIR}/json/Value.cpp
       # system
       ${SRC_DIR}/system/dialog_messagebox.cpp
       ${SRC_DIR}/system/EventDispatcher.cpp
@@ -76,6 +70,16 @@ set ( NOMLIB_SOURCE ${NOMLIB_SOURCE}
 # Platform-specific source files
 if ( PLATFORM_OSX OR PLATFORM_LINUX )
   set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/unix/UnixFile.cpp )
+
+  # nomJSON
+  set ( NOMLIB_SOURCE
+        ${NOMLIB_SOURCE}
+        #${SRC_DIR}/json/Array.cpp
+        ${SRC_DIR}/json/FileReader.cpp
+        ${SRC_DIR}/json/FileWriter.cpp
+        #${SRC_DIR}/json/Object.cpp
+        #${SRC_DIR}/json/Value.cpp
+      )
 endif ( PLATFORM_OSX OR PLATFORM_LINUX )
 
 if ( PLATFORM_OSX )
@@ -83,5 +87,16 @@ if ( PLATFORM_OSX )
 elseif ( PLATFORM_LINUX )
   # nothing to do be done
 elseif ( PLATFORM_WINDOWS )
+
   set ( NOMLIB_SOURCE ${NOMLIB_SOURCE} ${SRC_DIR}/system/windows/WinFile.cpp )
+
+  # Add header files (*.hpp) and source files (*.cpp) to project inside MSVC++ IDE
+  source_group  (
+                  "include/nomlib"
+                  FILES "*.hpp"
+                )
+
+  source_group ( "src" FILES ${NOMLIB_SOURCE} )
+
 endif ( PLATFORM_OSX )
+

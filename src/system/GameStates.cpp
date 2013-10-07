@@ -46,16 +46,16 @@ void GameStates::onEvent ( SDL_Event* event )
   states.back()->HandleInput ( event );
 }
 
-void GameStates::Update ( float delta_time )
+void GameStates::update ( float delta_time )
 {
   // let the state update the scene with regard to the delta (change) in timing
-  states.back()->Update ( delta_time );
+  states.back()->update ( delta_time );
 }
 
-void GameStates::Draw ( SDL_Surface* video_buffer )
+void GameStates::draw ( SDL_Renderer* target )
 {
   // let the state draw the scene onto the display buffer
-  states.back()->Draw ( video_buffer );
+  states.back()->draw ( target );
 }
 
 void GameStates::ChangeState ( std::unique_ptr<IState> state )

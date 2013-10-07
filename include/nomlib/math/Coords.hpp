@@ -99,12 +99,10 @@ class Coords
     int32 width;
     int32 height;
 
-    /// \todo Test me
-    ///int32& w = width;
-
-    /// \todo Test me
-    ///int32& h = height;
-
+    /// Reference alias for width instance variable
+    int32& w = width;
+    /// Reference alias for height instance variable
+    int32& h = height;
 };
 
 /// Pretty print the color using the following format string:

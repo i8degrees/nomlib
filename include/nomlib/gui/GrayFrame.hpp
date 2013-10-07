@@ -26,17 +26,19 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GREYFRAME_HPP
-#define NOMLIB_GREYFRAME_HPP
+#ifndef NOMLIB_SDL2_GRAYFRAME_HPP
+#define NOMLIB_SDL2_GRAYFRAME_HPP
 
 #include <iostream>
 #include <string>
 
+#include "SDL.h"
+
 #include "nomlib/config.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/graphics/Display.hpp"
-#include "nomlib/graphics/Line.hpp"
+#include "nomlib/graphics/Window.hpp"
+#include "nomlib/graphics/shapes/Line.hpp"
 
 namespace nom {
   namespace ui {
@@ -56,17 +58,18 @@ class GrayFrame:
     void setSize( int32 width, int32 height, int32 padding = 1 );
 
     // Re-implemented from IDrawable
-    void Update ( void );
+    void update ( void );
 
     // Re-implemented from IDrawable
-    void Draw ( SDL_Surface* ) const;
+    void draw ( SDL_Renderer* target ) const;
 
   private:
-    /// Holds our line objects used for rendering the object
+    /// Holds our line objects used for rendering the object.
+    ///
+    /// \todo Figure out how to get this vector of Drawables compiling as a
+    /// std::unique_ptr (if this is even possible).
+    /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
     std::vector<std::shared_ptr<IDrawable>> frame;
-
-    /// Rendering context
-    Display context;
 
     /// Position & Size
     Coords frame_position;

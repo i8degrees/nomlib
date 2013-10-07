@@ -10,6 +10,11 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
   set ( PLATFORM_LINUX true )
   message ( STATUS "Platform: Linux" )
 
+elseif ( CMAKE_SYSTEM_NAME STREQUAL "Windows" )
+
+  set ( PLATFORM_WINDOWS true )
+  message ( STATUS "Platform: Windows" )
+
 else () # Not Linux nor OSX
 
   set ( PLATFORM_UNKNOWN true )

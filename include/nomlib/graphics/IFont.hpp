@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_IFONT_HPP
-#define NOMLIB_IFONT_HPP
+#ifndef NOMLIB_SDL2_IFONT_HPP
+#define NOMLIB_SDL2_IFONT_HPP
 
 #include <iostream>
 #include <memory>
@@ -35,49 +35,49 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/graphics/Canvas.hpp"
+#include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 
-/// Text effect styling
-enum FontStyle
-{
-  Regular = 0,
-  Bold = 1,
-  Italic = 2,
-  Underlined = 3,
-  Faded = 4
-};
-
-enum class TextAlignment: int32
-{
-  TopLeft = 0,
-  TopCenter,
-  TopRight,
-  MiddleLeft,
-  MiddleCenter,
-  MiddleRight,
-  BottomLeft,
-  BottomCenter,
-  BottomRight
-};
-
-/// Text rendering qualities
-enum class RenderStyle: uint32
-{
-  NotImplemented = 0,
-  Solid,
-  Shaded,
-  Blended
-};
-
 class IFont: public IDrawable
 {
   public:
-    typedef std::shared_ptr<IFont> SharedPtr;
-    IFont ( void ) {}
+    /// Text effect styling
+    enum FontStyle
+    {
+      Regular = 0,
+      Bold = 1,
+      Italic = 2,
+      Underlined = 3,
+      Faded = 4
+    };
 
+    enum TextAlignment
+    {
+      TopLeft = 0,
+      TopCenter,
+      TopRight,
+      MiddleLeft,
+      MiddleCenter,
+      MiddleRight,
+      BottomLeft,
+      BottomCenter,
+      BottomRight
+    };
+
+    /// Text rendering qualities
+    enum RenderStyle
+    {
+      NotImplemented = 0,
+      Solid,
+      Shaded,
+      Blended
+    };
+    
+    typedef std::shared_ptr<IFont> SharedPtr;
+
+    IFont ( void ) {}
     virtual ~IFont ( void ) {}
 
     virtual IFont::SharedPtr clone ( void ) const = 0;
@@ -90,12 +90,12 @@ class IFont: public IDrawable
     virtual const std::string& getText ( void ) const = 0;
     virtual int32 getFontWidth ( void ) const = 0;
     virtual int32 getFontHeight ( void ) const = 0;
-    virtual FontStyle getFontStyle ( void ) const = 0;
+    virtual IFont::FontStyle getFontStyle ( void ) const = 0;
     virtual const Coords& getPosition ( void ) const = 0;
     virtual const Color& getColor ( void ) const = 0;
     virtual uint32 getNewline ( void ) const = 0;
     virtual uint32 getSpacing ( void ) const = 0;
-    virtual enum TextAlignment getTextJustification ( void ) const = 0;
+    virtual IFont::TextAlignment getTextJustification ( void ) const = 0;
 
 
     virtual void setText ( const std::string& text ) = 0;
@@ -112,15 +112,15 @@ NOM_LOG_ERR ( NOM, "Method not implemented." );
     virtual void setColor ( const Color& color ) = 0;
     virtual void setPosition ( const Coords& coords ) = 0;
     virtual void setSpacing ( uint32 spaces ) = 0;
-    virtual void setTextJustification ( enum TextAlignment alignment ) = 0;
+    virtual void setTextJustification ( IFont::TextAlignment alignment ) = 0;
 
-    virtual RenderStyle getRenderingStyle ( void ) const
+    virtual IFont::RenderStyle getRenderingStyle ( void ) const
     {
 NOM_LOG_ERR ( NOM, "Method not implemented." );
-      return RenderStyle::Solid;
+      return IFont::RenderStyle::Solid;
     }
 
-    virtual void setRenderingStyle ( enum RenderStyle )
+    virtual void setRenderingStyle ( IFont::RenderStyle )
     {
 NOM_LOG_ERR ( NOM, "Method not implemented." );
     }

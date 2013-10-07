@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
+#include <nomlib/gui.hpp>
 
 /// Installation prefix of our application.
 ///
@@ -48,13 +49,16 @@ const std::string APP_INSTALL_PREFIX = "\0";
 const std::string APP_RESOURCES_DIR = "Resources";
 
 /// Name of our application.
-const std::string APP_NAME = "nom::SDL_App Example";
+const std::string APP_NAME = "nom::SDL2 Demo - Window";
 
 /// Width, in pixels, of our effective rendering surface.
 const nom::int32 WINDOW_WIDTH = 768;
 
 /// Height, in pixels, of our effective rendering surface.
 const nom::int32 WINDOW_HEIGHT = 448;
+
+/// Maximum number of active windows we will attempt to spawn in this example
+const nom::int32 MAXIMUM_WINDOWS = 3;
 
 /// Relative file path name of our resource example
 ///
@@ -84,17 +88,21 @@ class App:
   private:
     void onKeyDown ( nom::int32 key, nom::int32 mod );
 
-    /// Display handle
-    nom::Display context;
+    /// Window handles
+    nom::Window window[MAXIMUM_WINDOWS];
 
     /// Interval at which we refresh the frames per second counter
-    nom::Timer update;
+    nom::Timer update[MAXIMUM_WINDOWS];
 
     /// Timer for tracking frames per second
-    nom::FPS fps;
+    nom::FPS fps[MAXIMUM_WINDOWS];
 
     /// Input events
     SDL_Event event;
+
+    nom::ui::GrayFrame ui_frame;
+
+    nom::Gradient linear;
 };
 
 #endif // include guard defined

@@ -53,8 +53,7 @@ find_library  ( NOMLIB_LIBRARY
 
 # handle the QUIETLY and REQUIRED arguments and set NOMLIB_FOUND to TRUE if
 # all listed variables are TRUE
-#include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
-
+include ( FindPackageHandleStandardArgs )
 FIND_PACKAGE_HANDLE_STANDARD_ARGS ( nomlib DEFAULT_MSG NOMLIB_LIBRARY NOMLIB_INCLUDE_DIR )
 
 mark_as_advanced ( NOMLIB_LIBRARY NOMLIB_INCLUDE_DIR )

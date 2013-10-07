@@ -10,9 +10,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example_app", "examples\exa
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example_audio", "examples\example_audio.vcxproj", "{78FAFAB0-5D6B-44D9-8F21-2514F11D66AD}"
-	ProjectSection(ProjectDependencies) = postProject
-		{4EA5298C-5E30-4929-8B1F-6ECD611D2F42} = {4EA5298C-5E30-4929-8B1F-6ECD611D2F42}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

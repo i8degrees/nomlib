@@ -101,16 +101,14 @@ class Color
     uint8 blue;
     uint8 alpha;
 
-    /// \todo Test me
-    ///uint8& r = red;
-    /// \todo Test me
-    ///uint8& g = green;
-
-    /// \todo Test me
-    ///uint8& b = blue;
-
-    /// \todo Test me
-    ///uint8& a = alpha;
+    /// Reference alias for red instance variable
+    uint8& r = red;
+    /// Reference alias for green instance variable
+    uint8& g = green;
+    /// Reference alias for blue instance variable
+    uint8& b = blue;
+    /// Reference alias for alpha instance variable
+    uint8& a = alpha;
 };
 
 class RGBA

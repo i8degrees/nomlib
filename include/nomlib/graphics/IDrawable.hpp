@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_IDRAWABLE_HEADERS
-#define NOMLIB_IDRAWABLE_HEADERS
+#ifndef NOMLIB_SDL2_IDRAWABLE_HPP
+#define NOMLIB_SDL2_IDRAWABLE_HPP
 
 #include <vector>
 #include <memory>
@@ -36,28 +36,61 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-// This is an inheritance-only class
+/// \brief Base interface class for grouping objects under a united front
 class IDrawable
 {
   public:
+    /// std::unique_ptr definition type for your convenience, sir!
+    typedef std::unique_ptr<IDrawable> UniquePtr;
+    /// std::shared_ptr definition type at your leisure, sir!
     typedef std::shared_ptr<IDrawable> SharedPtr;
+    /// Vector of std::shared_ptr definition type for the brotherhood, sir!
     typedef std::vector<std::shared_ptr<IDrawable>> Drawables;
 
+    /// Do nothing at all default constructor
     IDrawable ( void ) {}
+
+    /// Do nothing at all destructor
     virtual ~IDrawable ( void ) {}
 
     /// Intended to be used internally by the class re-implementing this method;
-    /// for use in preparing the buffer to be drawn using the Draw method call.
+    /// for use in preparing the buffer to be drawn using the draw method call.
     /// Whereas both Update & Draw are typically publicly exposed to the
     /// end-user, only the Draw method call should be expected of the end-user
     /// to be explicitly called.
-    virtual void Update ( void ) = 0;
+    ///
+    /// \todo Not all the interfaced (inherited) IDrawable objects in this
+    /// library conform to the expectations stated above. We need to first
+    /// figure out if we wish to stay on this course (of expectation), or
+    /// diverge all together. Undecided.
+    /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
+    virtual void update ( void ) = 0;
 
-    /// Draw the prepared video buffer contents of this object
-    virtual void Draw ( SDL_Surface* ) const = 0;
+    /// Render the object onto the primary video buffer -- your visible screen.
+    virtual void draw ( SDL_Renderer* ) const = 0;
 };
 
 
 } // namespace nom
 
 #endif // NOMLIB_IDRAWABLE_HEADERS defined
+
+/// \class nom::IDrawable
+/// \ingroup graphics
+///
+/// nom::IDrawable is a simple, small base interface class ("a pure abstract class")
+/// intended for bridging a reliable contract between two or more classes.
+///
+///           [ADDITIONAL DESCRIPTION]
+///
+/// You may freely use this class both inside and outside of the library, with
+/// little worry of trouble arising. Sprite layering (think: groups) are the
+/// first use that comes to mind!
+///
+/// Usage example:
+/// \code
+/// #include <nomlib/graphics.hpp>
+///
+///           [TODO]
+///
+/// \endcode

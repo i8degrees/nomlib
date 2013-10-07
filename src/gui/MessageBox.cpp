@@ -36,7 +36,7 @@ void MessageBox::initialize ( void )
 NOM_LOG_TRACE ( NOM );
 
   this->enabled = true;
-  this->label_alignment = TextAlignment::MiddleLeft;
+  this->label_alignment = IFont::TextAlignment::MiddleLeft;
 }
 
 MessageBox::MessageBox ( void )
@@ -56,7 +56,11 @@ MessageBox::MessageBox  (
   // init geometry coords w/ arguments list
   this->coords = Coords ( x, y, width, height );
 
-  this->drawable.push_back ( std::shared_ptr<Gradient> ( new Gradient ( background.getStartColor(), background.getEndColor(), Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background.getFillDirection() ) ) );
+  Color gradient_color[2];
+  gradient_color[0] = background.getStartColor();
+  gradient_color[1] = background.getEndColor();
+
+  this->drawable.push_back ( std::shared_ptr<Gradient> ( new Gradient ( gradient_color, Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background.getFillDirection() ) ) );
 
   if ( style == FrameStyle::Gray )
   {
@@ -77,7 +81,10 @@ MessageBox::MessageBox  (
   // init geometry coords w/ arguments list
   this->coords = Coords ( x, y, width, height );
 
-  this->drawable.push_back ( std::shared_ptr<Gradient> ( new Gradient ( background->getStartColor(), background->getEndColor(), Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background->getFillDirection() ) ) );
+  Color gradient_color[2];
+  gradient_color[0] = background->getStartColor();
+  gradient_color[1] = background->getEndColor();
+  this->drawable.push_back ( std::shared_ptr<Gradient> ( new Gradient ( gradient_color, Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background->getFillDirection() ) ) );
 
   if ( style != nullptr )
   {
@@ -138,7 +145,7 @@ void MessageBox::setWindowTitleFont ( const IFont* font )
   this->window_title->setPosition ( Coords ( this->coords.x + 4, this->coords.y, this->coords.width, this->coords.height ) );
 
   this->window_title->setText ( "INFO." );
-  this->window_title->setTextJustification ( TextAlignment::MiddleLeft );
+  this->window_title->setTextJustification ( IFont::TextAlignment::MiddleLeft );
 
   this->drawable.push_back ( std::shared_ptr<IDrawable> ( this->window_title ) );
 }
@@ -158,7 +165,7 @@ void MessageBox::setLabelPosition ( const Coords& pos )
   this->label->setPosition ( pos );
 }
 
-void MessageBox::setLabelTextAlignment ( enum TextAlignment alignment )
+void MessageBox::setLabelTextAlignment ( IFont::TextAlignment alignment )
 {
   this->label_alignment = alignment;
 }
@@ -182,12 +189,12 @@ void MessageBox::setLabel ( const std::string& text )
   this->label->setText ( text );
 }
 
-void MessageBox::Update ( void )
+void MessageBox::update ( void )
 {
   for ( auto it = this->drawable.begin(); it != this->drawable.end(); ++it )
   {
     std::shared_ptr<IDrawable> obj = *it;
-    obj->Update();
+    obj->update();
   }
 
   if ( ! this->label ) return;
@@ -195,34 +202,34 @@ void MessageBox::Update ( void )
   switch ( this->label_alignment )
   {
     default:
-    case TextAlignment::MiddleLeft: // TODO
+    case IFont::TextAlignment::MiddleLeft: // TODO
     {
-      this->label->setTextJustification ( TextAlignment::MiddleLeft );
+      this->label->setTextJustification ( IFont::TextAlignment::MiddleLeft );
     }
     break;
 
-    case TextAlignment::MiddleCenter:
+    case IFont::TextAlignment::MiddleCenter:
     {
-      this->label->setTextJustification ( TextAlignment::MiddleCenter );
+      this->label->setTextJustification ( IFont::TextAlignment::MiddleCenter );
     }
     break;
 
-    case TextAlignment::MiddleRight: // TODO
+    case IFont::TextAlignment::MiddleRight: // TODO
     {
-      this->label->setTextJustification ( TextAlignment::MiddleRight );
+      this->label->setTextJustification ( IFont::TextAlignment::MiddleRight );
     }
     break;
   } // end switch
 }
 
-void MessageBox::Draw ( SDL_Surface* video_buffer ) const
+void MessageBox::draw ( SDL_Renderer* target ) const
 {
   if ( this->isEnabled() == false ) return;
 
   for ( auto it = this->drawable.begin(); it != this->drawable.end(); ++it )
   {
     std::shared_ptr<IDrawable> obj = *it;
-    obj->Draw ( video_buffer );
+    obj->draw ( target );
   }
 }
 

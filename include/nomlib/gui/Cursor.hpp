@@ -26,22 +26,21 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_CURSOR_HEADERS
-#define NOMLIB_SDL_CURSOR_HEADERS
+#ifndef NOMLIB_SDL2_CURSOR_HPP
+#define NOMLIB_SDL2_CURSOR_HPP
 
 #include <iostream>
 #include <string>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/graphics/AnimatedSprite.hpp"
-//#include "nomlib/graphics/SpriteBatch.hpp"
+#include "nomlib/graphics/sprite/AnimatedSprite.hpp"
 
 namespace nom {
   namespace ui {
 
 /// \brief Helper class for loading, positioning and keeping track of a cursor
-/// controlled by a mouse and / or keyboard.
+/// controlled by an user-defined input.
 class Cursor:
               public AnimatedSprite
 {
@@ -50,61 +49,64 @@ class Cursor:
     /// respective defaults.
     Cursor ( void );
 
+    /// Destructor
+    virtual ~Cursor ( void );
+
     /// Construct a new Cursor object, initializing with a SpriteSheet object.
     Cursor ( const SpriteSheet& sheet );
 
     /// Construct a Cursor from an existing sprite sheet filename.
     Cursor ( const std::string& filename );
 
-    /// Destructor
-    virtual ~Cursor ( void );
-
     /// Copy assignment operator
     Cursor& operator = ( const Cursor& other );
 
-    int32 getX ( void ) const;
-    int32 getY ( void ) const;
+    /// X axis position
+    ///
+    /// \return The position this cursor is on in the X axis
+    int32 x ( void ) const;
 
-    //bool isCursorLocked ( void );
-    //void lockCursor ( bool toggle );
+    /// Y axis position
+    ///
+    /// \return The position this cursor is on in the Y axis
+    int32 y ( void ) const;
 
-    /// Move the cursor up.
-    ///
-    /// Returns the Y coordinate position of the cursor after it has been moved.
-    ///
-    /// \todo Rename me to up?
-    virtual int32 moveCursorUp ( void );
+    /// Getter for obtaining locked status.
+    bool locked ( void ) const;
 
-    /// Move the cursor down.
-    ///
-    /// Returns the Y coordinate position of the cursor after it has been moved.
-    ///
-    /// \todo Rename me to down?
-    virtual int32 moveCursorDown ( void );
-
-    /// Move the cursor to the left.
-    ///
-    /// Returns the X coordinate position of the cursor after it has been moved.
-    ///
-    /// \todo Rename me to left?
-    virtual int32 moveCursorLeft ( void );
-
-    /// Move the cursor to the right.
-    ///
-    /// Returns the X coordinate position of the cursor after it has been moved.
-    ///
-    /// \todo Rename me to right?
-    virtual int32 moveCursorRight ( void );
-
-    void update ( void );
-    void draw ( SDL_Surface* video_buffer );
+    /// Toggle the lock variable.
+    void toggle_lock ( bool toggle );
 
   protected:
-    // ...
+    /// The deriving classes must implement this iteration for the 'up' action
+    ///
+    /// \return -1 when this base class method is left undefined
+    virtual int32 move_up ( void );
+
+    /// The deriving classes must implement this iteration for the 'down' action
+    ///
+    /// \return -1 when this base class method is left undefined
+    virtual int32 move_down ( void );
+
+    /// The deriving classes must implement this iteration for the 'left' action
+    ///
+    /// \return -1 when this base class method is left undefined
+    virtual int32 move_left ( void );
+
+    /// The deriving classes must implement this iteration for the 'right' action
+    ///
+    /// \return -1 when this base class method is left undefined
+    virtual int32 move_right ( void );
+
+  private:
+    /// Convenience variable left to the end-user to define, if chosen.
+    ///
+    /// Initialized to false at object creation.
+    bool locked_;
 };
 
 
   } // namespace ui
 } // namespace nom
 
-#endif // NOMLIB_SDL_CURSOR_HEADERS defined
+#endif // include guard defined

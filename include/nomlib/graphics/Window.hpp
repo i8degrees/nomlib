@@ -150,7 +150,10 @@ class Window:
     /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
     bool set_window_icon ( const std::string& filename );
 
-    int window_id ( void ) const;
+    /// Obtain this window's unique identifier
+    ///
+    /// \returns an integer between ??? and ???
+    uint32 window_id ( void ) const;
     int window_display_id ( void ) const;
 
   private:
@@ -159,7 +162,7 @@ class Window:
     //bool mustLock ( void ) const;
     Window::UniquePtr window_;
 
-    int window_id_;
+    uint32 window_id_;
     int window_display_id_;
     bool enabled_;
 };

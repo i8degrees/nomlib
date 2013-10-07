@@ -318,7 +318,7 @@ void Window::set_position ( int32 x, int32 y )
   SDL_SetWindowPosition ( this->window(), x, y );
 }
 
-int Window::window_id ( void ) const
+uint32 Window::window_id ( void ) const
 {
   return SDL_GetWindowID ( this->window() );
 }

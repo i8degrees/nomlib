@@ -41,7 +41,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>../include/;../third-party/SDL2/include;../third-party/SDL2_ttf/include;../third-party/SDL2_image/include;../third-party/OpenAL/include;../third-party/libsndfile/include;../third-party/magiclib/include;$(IncludePath)</IncludePath>
     <LibraryPath>../build/Debug/;$(LibraryPath)</LibraryPath>
-    <IntDir>$(Configuration)\audio\</IntDir>
+    <IntDir>build\Debug\audio\</IntDir>
+    <OutDir>$(SolutionDir)\build\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

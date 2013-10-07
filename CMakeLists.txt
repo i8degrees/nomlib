@@ -359,9 +359,8 @@ endif ( PLATFORM_OSX )
 
 if ( NOT FRAMEWORK )
 
-  if ( PLATFORM_WINDOWS )
-
-    install ( TARGETS ${PROJECT_NAME} ARCHIVE DESTINATION "${INSTALL_LIB_PATH}" )
+  if ( PLATFORM_WINDOWS ) # TODO
+    #install ( TARGETS ${PROJECT_NAME} ARCHIVE DESTINATION "${INSTALL_LIB_PATH}" )
   else ( NOT PLATFORM_WINDOWS )
 
     # Install library in POSIX standard location by default

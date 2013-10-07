@@ -36,10 +36,12 @@ if ( PLATFORM_WINDOWS )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 
-endif ( PLATFORM_WINDOWS )
-
 # FIXME
 link_libraries ( "../../nomlib-d" ${EXTLIBS} "../../third-party/SDL2/lib/SDL2main" )
+
+endif ( PLATFORM_WINDOWS )
+
+link_libraries ( ${PROJECT_NAME} )
 
 set ( EXECUTABLE_FLAGS "" )
 
@@ -49,6 +51,13 @@ else ( NOT PLATFORM_WINDOWS )
   # Do nothing -- use the default set EXECUTABLE_FLAGS
 endif ( PLATFORM_WINDOWS )
 
+# Add header files (*.hpp) and source files (*.cpp) to IDE project list
+# (For those that use Xcode, MSVC++, etc.)
+file ( GLOB EXAMPLE_HEADER_FILES "${EXAMPLES_SRC_DIR}/*.hpp" )
+file ( GLOB EXAMPLE_SOURCE_FILES "${EXAMPLES_SRC_DIR}/*.cpp" )
+source_group  ( "include" FILES ${EXAMPLE_HEADER_FILES} )
+source_group  ( "src" FILES ${EXAMPLE_SOURCE_FILES} )
+
 add_executable ( audio "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/audio/audio.cpp" )
 add_executable ( app "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/app/app.cpp" )
 #add_executable ( font "${EXAMPLES_SRC_DIR}/fonts/font.cpp" )
@@ -56,34 +65,30 @@ add_executable ( app "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/app/app.cpp" )
 #add_executable ( writer "${EXAMPLES_SRC_DIR}/json/writer.cpp" )
 
 # Install example resources
-if ( PLATFORM_WINDOWS )
-  # Do nothing stub
-else ( NOT PLATFORM_WINDOWS ) # Assume POSIX-like platform
-  install ( DIRECTORY
-            "${EXAMPLES_SRC_DIR}/audio/Resources"
-            DESTINATION
-            "${CMAKE_CURRENT_BINARY_DIR}"
-            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-          )
+install ( DIRECTORY
+          "${EXAMPLES_SRC_DIR}/audio/Resources"
+          DESTINATION
+          "${CMAKE_CURRENT_BINARY_DIR}"
+          PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+        )
 
-  install ( DIRECTORY
-            "${EXAMPLES_SRC_DIR}/fonts/Resources"
-            DESTINATION
-            "${CMAKE_CURRENT_BINARY_DIR}"
-            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-          )
+install ( DIRECTORY
+          "${EXAMPLES_SRC_DIR}/fonts/Resources"
+          DESTINATION
+          "${CMAKE_CURRENT_BINARY_DIR}"
+          PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+        )
 
-  install ( DIRECTORY
-            "${EXAMPLES_SRC_DIR}/json/Resources"
-            DESTINATION
-            "${CMAKE_CURRENT_BINARY_DIR}"
-            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-          )
+install ( DIRECTORY
+          "${EXAMPLES_SRC_DIR}/json/Resources"
+          DESTINATION
+          "${CMAKE_CURRENT_BINARY_DIR}"
+          PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+        )
 
-  install ( DIRECTORY
-            "${EXAMPLES_SRC_DIR}/app/Resources"
-            DESTINATION
-            "${CMAKE_CURRENT_BINARY_DIR}"
-            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-          )
-endif ( PLATFORM_WINDOWS )
+install ( DIRECTORY
+          "${EXAMPLES_SRC_DIR}/app/Resources"
+          DESTINATION
+          "${CMAKE_CURRENT_BINARY_DIR}"
+          PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+        )

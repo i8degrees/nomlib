@@ -11,8 +11,9 @@ install_options
 
 # bins
 build
-third-party/*
-!third-party/README.md
+third-party/windows
+third-party/osx
+third-party/linux
 
 # bins: Visual C++ Studio Project Files
 *.suo

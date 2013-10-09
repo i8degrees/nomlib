@@ -22,3 +22,8 @@ third-party/linux
 *.tlog
 *.lastbuildstate
 *.idb
+
+# Local BitTorrent Sync app files
+.SyncID
+.SyncArchive
+.SyncIgnore

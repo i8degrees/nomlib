@@ -54,14 +54,24 @@ bool WinFile::exists ( const std::string& file_path )
 
 const std::string WinFile::path ( const std::string& dir_path )
 {
-  // Stub
-    return "";
+  Path p; // Just to be safe, we'll let nom::Path determine our path separator!
+
+  uint32 pos = dir_path.find_last_of ( p.native(), PATH_MAX );
+
+  // If no matches are found, this means the file path given is actually a base
+  // file name path, without any directory path at all. 
+  // See also 'man 3 basename'
+  if ( pos == std::string::npos ) return ".";
+  
+  // A match was found -- return only the directory path leading up to the 
+  // file name path, without a a trailing path separator.
+  return dir_path.substr ( 0, pos );
 }
 
 const std::string WinFile::currentPath ( void )
 {
   // Stub
-    return "";
+  return "";
 }
 
 void WinFile::setPath ( const std::string& path )

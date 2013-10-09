@@ -32,10 +32,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <cstring>
 
+#include <stdlib.h>
 #include <errno.h>
 #include <direct.h>
 
 #include "nomlib/config.hpp"
+#include "nomlib/system/Path.hpp"
 #include "nomlib/system/IFile.hpp"
 
 namespace nom {
@@ -56,13 +58,16 @@ class WinFile: public IFile
     /// Stub
     bool exists ( const std::string& file_path );
 
-    /// Stub
+    /// Emulates POSIX dirname() function -- see 'man 3 dirname'.
+    /// \todo We might consider using this in the UnixFile 
+    /// implementation as well, in order to ensure consistency?
+    ///
+    /// \todo This should probably be renamed to dirname ...
     const std::string path ( const std::string& dir_path );
 
     /// Stub
     const std::string currentPath ( void );
 
-    /// Stub
     void setPath ( const std::string& path );
 };
 

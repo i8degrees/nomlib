@@ -41,6 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 int main ( int argc, char* argv[] )
 {
   nom::File dir;
+  nom::Path p;
   nom::OpenAL::AudioDevice dev; // this must be declared first
   nom::OpenAL::AudioDevice dev2; // this must be declared first
 
@@ -51,7 +52,7 @@ int main ( int argc, char* argv[] )
   nom::OpenAL::Listener listener;
   nom::OpenAL::SoundBuffer buffer;
   nom::Timer loops;
-  std::string path = dir.path(argv[0]) + "/";
+  std::string path = dir.path(argv[0]) + p.native() + "Resources";
 
 //NOM_DUMP_VAR ( dev.getDeviceName() );
 //NOM_DUMP_VAR ( dev2.getDeviceName() );
@@ -66,17 +67,7 @@ NOM_DUMP_VAR ( listener.getVolume() );
   }
   else
   {
-
-// FIXME
-// This is a temporary fix until we get around to creating proper Resource 
-// folders for each of our examples.
-// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
-#if defined ( NOM_PLATFORM_WINDOWS )
-  ret = buffer.load ( "cursor_wrong.wav" );
-#else // assume POSIX platform
-  ret = buffer.load ( path + "Resources/cursor_wrong.wav" );
-#endif
-    //ret = buffer.load ( "/Users/jeff/Projects/hax/ttcards.git/ttcards/Resources/audio/15_ShuffleOrBoogie.ogg" );
+    ret = buffer.load ( path + p.native() + "cursor_wrong.wav" );
   }
 
   if ( ! ret )

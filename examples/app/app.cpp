@@ -44,9 +44,9 @@ App::App ( nom::int32 args_count, char* args[] )
   #if defined ( OSXAPP ) // OS X Application Bundle; assumes Darwin platform
     // <app_name.app/Contents/Resources
     pwd = nom::getBundleResourcePath();
-  #elif defined ( PLATFORM_WINDOWS )
-    pwd = APP_INSTALL_PREFIX + APP_NAME + p.native() + APP_RESOURCES_DIR;
-  #elif defined ( PLATFORM_POSIX ) // TODO / Assume POSIX-compatible platform
+  #elif defined ( NOM_PLATFORM_WINDOWS )
+    pwd = dir.path ( args[0] ) + p.native() + APP_RESOURCES_DIR;
+  #elif defined ( NOM_PLATFORM_POSIX ) // TODO / Assume POSIX-compatible platform
     pwd = APP_INSTALL_PREFIX + p.native() + "share" + p.native() + APP_NAME + p.native() + APP_RESOURCES_DIR;
   #else
     pwd = dir.path ( args[0] ) + p.native() + APP_RESOURCES_DIR;

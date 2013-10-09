@@ -63,7 +63,7 @@ const nom::int32 MAXIMUM_WINDOWS = 3;
 /// Relative file path name of our resource example
 ///
 /// FIXME
-/// This is a temporary fix until we can use IMG_Load for loading the PNG image 
+/// This is a temporary fix until we can use IMG_Load for loading the PNG image
 /// again.
 /// (See FIXME notes inside Display.hpp at setWindowIcon method for details).
 /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01

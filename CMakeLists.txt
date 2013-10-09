@@ -41,6 +41,7 @@ if ( DEBUG )
   if ( NOT PLATFORM_WINDOWS )
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused" )
   else ( PLATFORM_WINDOWS )
+    # TODO: split these options up like we have for other platforms
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D NOM_DEBUG /D NOM_DEBUG_ASSERT /D NOM_DEBUG_TRACE" )
   endif( NOT PLATFORM_WINDOWS )
 
@@ -69,15 +70,16 @@ endif ( DEBUG_TRACE )
 # Utility macro helpers
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
 
-# Relative path from project root to compiled source files
+# Absolute path from project root to compiled source files
 set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" )
 
 # Relative path from project root containing additional data
 set ( NOMLIB_RESOURCES_DIR "Resources" )
 
-# Relative path from project root to header files that are used with the source
-# files for compiling
-set ( NOMLIB_HEADERS_DIR "include" )
+set ( NOMLIB_HEADERS_ROOT "include" )
+
+# Relative path from project root to nomlib's header files root
+set ( NOMLIB_HEADERS_DIR "include/nomlib" )
 
 # Relative path from project root to the external dependencies directory
 set ( EXTERNAL_DEPS_DIR "third-party" )
@@ -156,7 +158,7 @@ endif ( DOCS )
 include ( "${SRC_DIR}/CMakeLists.txt" )
 
 # Project Header Files
-include_directories ( ${NOMLIB_HEADERS_DIR} )
+include_directories ( "${NOMLIB_HEADERS_ROOT}" )
 
 # Required Dependencies
 #
@@ -167,56 +169,40 @@ include_directories ( ${NOMLIB_HEADERS_DIR} )
 if ( PLATFORM_WINDOWS )
 
   # SDL2 dependency
-  set ( SDL2_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2/include/" )
+  set ( SDL2_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/include/" )
   set ( SDL2_LIBRARY
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2/lib/SDL2.lib"
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2/lib/SDL2main.lib"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/lib/SDL2.lib"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/lib/SDL2main.lib"
       )
-  set ( SDL2_LIBRARY_DLL
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2/lib/SDL2.dll"
-      )
+  set ( SDL2_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/lib/" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
 
   # SDL2_image dependency
-  set ( SDL2_IMAGE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/include/" )
-  set ( SDL2_IMAGE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/lib/SDL2_image.lib" )
-  set ( SDL2_IMAGE_LIBRARY_DLL
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/lib/libjpeg-9.dll"
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/lib/libpng16-16.dll"
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/libtiff-5.dll"
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/libwebp-4.dll"
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/SDL2_image.dll"
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_image/zlib1.dll"
-      )
+  set ( SDL2_IMAGE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_image/include/" )
+  set ( SDL2_IMAGE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_image/lib/SDL2_image.lib" )
+  set ( SDL2_IMAGE_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_image/lib/" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
 
   # SDL2_ttf dependency
-  set ( SDL2_TTF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_ttf/include/" )
-  set ( SDL2_TTF_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_ttf/lib/SDL2_ttf.lib" )
-  set ( SDL2_TTF_LIBRARY_DLL
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_ttf/lib/libfreetype-6.dll"
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/SDL2_ttf/lib/SDL2_ttf.dll"
-      )
+  set ( SDL2_TTF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_ttf/include/" )
+  set ( SDL2_TTF_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_ttf/lib/SDL2_ttf.lib" )
+  set ( SDL2_TTF_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_ttf/lib/" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
 
   # OpenAL dependency -- must be 32-bit library
-  set ( OPENAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/OpenAL/include/" )
-  set ( OPENAL_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/OpenAL/lib/OpenAL32.lib" )
-  set ( OPENAL_LIBRARY_DLL
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/OpenAL/lib/OpenAL32.dll"
-      )
+  set ( OPENAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/OpenAL/include/" )
+  set ( OPENAL_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/OpenAL/lib/OpenAL32.lib" )
+  set ( OPENAL_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/OpenAL/lib/" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
 
   # libsndfile dependency -- must be 32-bit library
-  set ( LIBSNDFILE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/libsndfile/include/" )
-  set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/libsndfile/lib/libsndfile-1.lib" )
-  set ( LIBSNDFILE_LIBRARY_DLL
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/libsndfile/lib/libsndfile-1.dll"
-      )
+  set ( LIBSNDFILE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libsndfile/include/" )
+  set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libsndfile/lib/libsndfile-1.lib" )
+  set ( LIBSNDFILE_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libsndfile/lib/" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 
@@ -267,9 +253,9 @@ endif ( PLATFORM_WINDOWS )
 include_directories ( ${EXT_HEADERS} )
 
 if ( BUILD_SHARED_LIBS )
-  add_library ( ${PROJECT_NAME} SHARED ${NOMLIB_SOURCE} )
+  add_library ( ${PROJECT_NAME} SHARED ${NOMLIB_SOURCE} ${NOMLIB_HEADERS} )
 else ( NOT BUILD_SHARED_LIBS )
-  add_library ( ${PROJECT_NAME} STATIC ${NOMLIB_SOURCE} )
+  add_library ( ${PROJECT_NAME} STATIC ${NOMLIB_SOURCE} ${NOMLIB_HEADERS} )
 endif ( BUILD_SHARED_LIBS )
 
 target_link_libraries  ( ${PROJECT_NAME} ${EXTLIBS} )
@@ -397,7 +383,7 @@ endif ( NOT FRAMEWORK )
 if ( NOT PLATFORM_WINDOWS )
 
   # Install nomlib header files
-  install ( DIRECTORY ${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}
+  install ( DIRECTORY ${NOMLIB_HEADERS_DIR}
             DESTINATION "${INSTALL_HEADERS_PATH}"
             PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
           )
@@ -471,7 +457,7 @@ configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.cpp.in"
 
 # Auto-generated header file
 configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
-                  "${PROJECT_SOURCE_DIR}/${NOMLIB_HEADERS_DIR}/${PROJECT_NAME}/version.hpp"
+                  "${PROJECT_SOURCE_DIR}/${NOMLIB_HEADERS_DIR}/version.hpp"
                 )
 
 # Uninstall target support (always available)
@@ -484,19 +470,20 @@ add_custom_target ( uninstall COMMAND ${CMAKE_COMMAND} -P
                     ${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake
                   )
 
-# CPack configuration
-include ( "${PROJECT_SOURCE_DIR}/cmake/CPackConfig.cmake" )
+if ( NOT PLATFORM_WINDOWS )
+  # CPack configuration
+  include ( "${PROJECT_SOURCE_DIR}/cmake/CPackConfig.cmake" )
 
-include ( InstallRequiredSystemLibraries )
+  include ( InstallRequiredSystemLibraries )
 
-# Platform specific generator presets
-if ( PLATFORM_OSX )
-  set ( CPACK_GENERATOR "DragNDrop" )
-elseif ( PLATFORM_LINUX )
-  set ( CPACK_GENERATOR "DEB" )
-elseif ( PLATFORM_UNKNOWN )
-  set ( CPACK_GENERATOR "ZIP" )
-endif ( PLATFORM_OSX )
+  # Platform specific generator presets
+  if ( PLATFORM_OSX )
+    set ( CPACK_GENERATOR "DragNDrop" )
+  elseif ( PLATFORM_LINUX )
+    set ( CPACK_GENERATOR "DEB" )
+  elseif ( PLATFORM_UNKNOWN )
+    set ( CPACK_GENERATOR "ZIP" )
+  endif ( PLATFORM_OSX )
 
-include ( CPack )
-
+  include ( CPack )
+endif ( NOT PLATFORM_WINDOWS )

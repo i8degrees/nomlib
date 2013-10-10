@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/math/Rect-inl.hpp"
+#include "nomlib/math/Point2-inl.hpp"
 #include "nomlib/graphics/smart_ptr.hpp"
 
 namespace nom {
@@ -92,7 +92,12 @@ class Image
     bool save ( const std::string& filename, SDL_Surface* video_buffer );
 
     /// Obtain the width and height (in pixels) of the stored bitmap buffer
-    const Coords getSize ( void ) const;
+    const Point2i size ( void ) const;
+
+    /// Set a new color key on the image loaded into memory.
+    ///
+    /// \param flags    SDL_RLEACCEL
+    bool set_colorkey ( const Color& key, uint32 flags );
 
   private:
     Image::SharedPtr image_buffer;

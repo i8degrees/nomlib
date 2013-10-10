@@ -128,12 +128,36 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-const Coords Image::getSize ( void ) const
+const Point2i Image::size ( void ) const
 {
   SDL_Surface* buffer = this->image_buffer.get();
-  Coords image_pos ( 0, 0, buffer->w, buffer->h );
+  Point2i image_pos ( buffer->w, buffer->h );
 
+  priv::FreeSurface ( buffer );
   return image_pos;
+}
+
+bool Image::set_colorkey ( const Color& key, uint32 flags )
+{
+  SDL_Surface* buffer = this->image_buffer.get();
+  uint32 transparent_color = RGBA::asInt32 ( buffer->format, key );
+
+  if ( this->valid() == false )
+  {
+NOM_LOG_ERR ( NOM, "Could not set color key: invalid image buffer." );
+    priv::FreeSurface ( buffer );
+    return false;
+  }
+
+  if ( SDL_SetColorKey ( buffer, SDL_TRUE ^ flags, transparent_color ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, std::string ( SDL_GetError() ) );
+    priv::FreeSurface ( buffer );
+    return false;
+  }
+
+  priv::FreeSurface ( buffer );
+  return true;
 }
 
 

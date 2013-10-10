@@ -103,10 +103,13 @@ class Color
 
     /// Reference alias for red instance variable
     uint8& r = red;
+
     /// Reference alias for green instance variable
     uint8& g = green;
+
     /// Reference alias for blue instance variable
     uint8& b = blue;
+
     /// Reference alias for alpha instance variable
     uint8& a = alpha;
 };

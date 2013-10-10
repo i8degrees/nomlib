@@ -101,6 +101,7 @@ class Coords
 
     /// Reference alias for width instance variable
     int32& w = width;
+
     /// Reference alias for height instance variable
     int32& h = height;
 };

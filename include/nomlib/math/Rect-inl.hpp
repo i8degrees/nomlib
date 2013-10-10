@@ -72,7 +72,6 @@ class Rect
 typedef Rect<int32> IntRect;
 typedef Rect<float> FloatRect;
 
-
 } // namespace nom
 
 #endif // NOMLIB_VECTOR4_HEADERS defined

@@ -92,7 +92,6 @@ typedef Point3<float> Point3f;
 /// Point3D object defined with double precision floating-point integers
 typedef Point3<double> Point3d;
 
-
 } // namespace nom
 
 #endif // include guard defined

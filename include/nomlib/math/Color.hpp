@@ -128,9 +128,7 @@ class RGBA
       c.r = color.red;
       c.g = color.green;
       c.b = color.blue;
-      //      SDLv2 SDL_Color struct
-      //
-      //  c.a = color.alpha;
+      c.a = color.alpha;
 
       return c;
     }

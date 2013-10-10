@@ -212,7 +212,7 @@ nom::int32 main ( nom::int32 argc, char* argv[] )
 
   if ( game.onInit() == false )
   {
-NOM_LOG_ERR ( NOM_EXAMPLES, "Could not initialize game." );
+    nom::DialogMessageBox ( APP_NAME, "Could not initialize application." );
     return EXIT_FAILURE;
   }
 

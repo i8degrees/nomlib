@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Image::Image ( void ) : image_buffer ( nullptr, priv::FreeSurface )
+Image::Image ( void ) : image_ ( nullptr, priv::FreeSurface )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -47,7 +47,7 @@ Image::~Image ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
-Image::Image ( uint32 flags ) : image_buffer ( nullptr, priv::FreeSurface )
+Image::Image ( uint32 flags ) : image_ ( nullptr, priv::FreeSurface )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -59,26 +59,26 @@ NOM_LOG_ERR ( NOM, IMG_GetError() );
   atexit ( IMG_Quit );
 }
 
-Image::Image ( const Image& other )  : image_buffer { other.image_buffer.get(), priv::FreeSurface }
+Image::Image ( const Image& other )  : image_ { other.image(), priv::FreeSurface }
 {
 NOM_LOG_TRACE ( NOM );
 }
 
 Image& Image::operator = ( const Image& other )
 {
-  this->image_buffer = other.image_buffer;
+  this->image_ = other.image_;
 
   return *this;
 }
 
-SDL_Surface* Image::get ( void ) const
+SDL_Surface* Image::image ( void ) const
 {
-  return this->image_buffer.get();
+  return this->image_.get();
 }
 
 bool Image::valid ( void ) const
 {
-  if ( this->image_buffer.get() != nullptr )
+  if ( this->image() != nullptr )
   {
     return true;
   }
@@ -90,7 +90,7 @@ bool Image::valid ( void ) const
 
 bool Image::load ( const std::string& filename )
 {
-  this->image_buffer.reset ( IMG_Load ( filename.c_str() ), priv::FreeSurface );
+  this->image_.reset ( IMG_Load ( filename.c_str() ), priv::FreeSurface );
 
   if ( this->valid() == false )
   {
@@ -104,7 +104,7 @@ NOM_LOG_ERR ( NOM, IMG_GetError() );
 
 bool Image::load_bmp ( const std::string& filename )
 {
-  this->image_buffer.reset ( SDL_LoadBMP ( filename.c_str() ), priv::FreeSurface );
+  this->image_.reset ( SDL_LoadBMP ( filename.c_str() ), priv::FreeSurface );
 
   if ( this->valid() == false )
   {
@@ -130,7 +130,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
 const Point2i Image::size ( void ) const
 {
-  SDL_Surface* buffer = this->image_buffer.get();
+  SDL_Surface* buffer = this->image();
   Point2i image_pos ( buffer->w, buffer->h );
 
   priv::FreeSurface ( buffer );
@@ -139,7 +139,7 @@ const Point2i Image::size ( void ) const
 
 bool Image::set_colorkey ( const Color& key, uint32 flags )
 {
-  SDL_Surface* buffer = this->image_buffer.get();
+  SDL_Surface* buffer = this->image();
   uint32 transparent_color = RGBA::asInt32 ( buffer->format, key );
 
   if ( this->valid() == false )

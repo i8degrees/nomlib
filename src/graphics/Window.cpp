@@ -327,7 +327,7 @@ bool Window::set_window_icon ( const std::string& filename )
     return false;
   }
 
-  SDL_SetWindowIcon ( this->window(), icon.get() );
+  SDL_SetWindowIcon ( this->window(), icon.image() );
 
   return true;
 }

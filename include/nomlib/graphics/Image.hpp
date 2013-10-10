@@ -69,7 +69,7 @@ class Image
     Image& operator = ( const Image& other );
 
     /// Obtain the SDL_Surface struct used in this object instance
-    SDL_Surface* get ( void ) const;
+    SDL_Surface* image ( void ) const;
 
     /// Is this object initialized? Valid when *NOT* nullptr
     bool valid ( void ) const;
@@ -100,7 +100,7 @@ class Image
     bool set_colorkey ( const Color& key, uint32 flags );
 
   private:
-    Image::SharedPtr image_buffer;
+    Image::SharedPtr image_;
 };
 
 

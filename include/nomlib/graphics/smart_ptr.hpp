@@ -39,15 +39,23 @@ namespace nom {
   namespace priv {
 
 /// Custom deleter for SDL_Window struct
+///
+/// \todo Remove me from priv namespace
 void FreeWindow ( SDL_Window* );
 
 /// Custom deleter for SDL_Renderer struct
+///
+/// \todo Remove me from priv namespace
 void FreeRenderTarget ( SDL_Renderer* );
 
 /// Custom deleter for SDL_Surface struct
+///
+/// \todo Remove me from priv namespace
 void FreeSurface ( SDL_Surface* );
 
 /// Custom deleter for SDL_Texture struct
+///
+/// \todo Remove me from priv namespace
 void FreeTexture ( SDL_Texture* );
 
 

@@ -39,18 +39,7 @@ App::App ( nom::int32 args_count, char* args[] )
   // path.
   std::string pwd = "\0";
 
-  // Define these definitions at build time via header files or passing
-  // manually to your compiler.
-  #if defined ( OSXAPP ) // OS X Application Bundle; assumes Darwin platform
-    // <app_name.app/Contents/Resources
-    pwd = nom::getBundleResourcePath();
-  #elif defined ( NOM_PLATFORM_WINDOWS )
-    pwd = dir.path ( args[0] ) + p.native() + APP_RESOURCES_DIR;
-  #elif defined ( NOM_PLATFORM_POSIX ) // TODO / Assume POSIX-compatible platform
-    pwd = APP_INSTALL_PREFIX + p.native() + "share" + p.native() + APP_NAME + p.native() + APP_RESOURCES_DIR;
-  #else
-    pwd = dir.path ( args[0] ) + p.native() + APP_RESOURCES_DIR;
-  #endif
+  pwd = dir.path ( args[0] ) + p.native() + APP_RESOURCES_DIR;
 
   // Change the working directory to whatever pwd has been set to.
   //
@@ -68,10 +57,6 @@ bool App::onInit ( void )
 {
   nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
 
-  // optional flags below; accelerated rendering is the default when not
-  // specified:
-  //
-  // nom::uint32 context_flags = SDL_RENDERER_ACCELERATED;
   for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
   {
     if ( this->window[idx].create ( APP_NAME, WINDOW_WIDTH/2, WINDOW_HEIGHT, window_flags ) == false )
@@ -80,11 +65,11 @@ bool App::onInit ( void )
     }
 
     this->window[idx].set_position ( 0+(WINDOW_WIDTH/2) * idx, WINDOW_HEIGHT/2 );
-  }
 
-  if ( this->window[0].set_window_icon ( RESOURCE_ICON ) == false )
-  {
-    return false;
+    if ( this->window[idx].set_window_icon ( RESOURCE_ICON ) == false )
+    {
+      return false;
+    }
   }
 
   this->ui_frame = nom::ui::GrayFrame ( 50, 50, 200, 200 );
@@ -96,12 +81,14 @@ bool App::onInit ( void )
   return true;
 }
 
-void App::onKeyDown ( nom::int32 key, nom::int32 mod )
+void App::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
 {
   switch ( key )
   {
     default: break;
 
+    // Use inherited SDL_App::onQuit() method -- you may also provide your own
+    // event handler for this.
     case SDLK_ESCAPE:
     case SDLK_q: this->onQuit(); break;
 
@@ -189,7 +176,7 @@ nom::int32 App::Run ( void )
 
     if ( this->isFullScreen() == true )
     {
-      //this->window[0].fill ( nom::Color::NomPrimaryColorKey );
+      this->window[0].fill ( nom::Color::NomPrimaryColorKey );
       this->window[1].fill ( nom::Color::NomSecondaryColorKey );
     }
 
@@ -204,11 +191,11 @@ nom::int32 App::Run ( void )
       {
         if ( this->getShowFPS() == true )
         {
-          this->window[idx].set_window_title ( APP_NAME + " " + std::to_string(idx) + " - " + this->fps[idx].asString() + '\x20' + "fps" );
+          this->window[idx].set_window_title ( APP_NAME + " " + std::to_string(this->window[idx].window_id()) + " - " + this->fps[idx].asString() + '\x20' + "fps" );
         }
         else
         {
-          this->window[idx].set_window_title ( APP_NAME + " " + std::to_string(idx) + " - " + "Display" + " " + std::to_string ( this->window[idx].window_display_id() ) );
+          this->window[idx].set_window_title ( APP_NAME + " " + std::to_string(this->window[idx].window_id()) + " - " + "Display" + " " + std::to_string ( this->window[idx].window_display_id() ) );
         }
 
         this->update[idx].restart();

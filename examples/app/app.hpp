@@ -26,14 +26,15 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_EXAMPLES_SDL_APP_HPP
-#define NOMLIB_EXAMPLES_SDL_APP_HPP
+#ifndef NOMLIB_EXAMPLES_SDL2_APP_HPP
+#define NOMLIB_EXAMPLES_SDL2_APP_HPP
 
 #include <iostream>
 #include <string>
 #include <cstdlib>
 #include <cassert>
 
+// Pubic nomlib interface headers
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
@@ -65,7 +66,7 @@ const nom::int32 MAXIMUM_WINDOWS = 3;
 /// FIXME
 /// This is a temporary fix until we can use IMG_Load for loading the PNG image
 /// again.
-/// (See FIXME notes inside Display.hpp at setWindowIcon method for details).
+/// (See FIXME notes inside Window::set_window_icon)
 /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
 #if defined ( NOM_PLATFORM_WINDOWS )
   const std::string RESOURCE_ICON = "icon.bmp";
@@ -82,11 +83,16 @@ class App:
     App ( nom::int32 args_count, char* args[] );
     ~App ( void );
 
+    /// Re-implements nom::SDL_App::onInit()
     bool onInit ( void );
+
     nom::int32 Run ( void );
 
   private:
-    void onKeyDown ( nom::int32 key, nom::int32 mod );
+    /// Event handler for key down actions
+    ///
+    /// Re-implements nom::Input::onKeyDown()
+    void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
 
     /// Window handles
     nom::Window window[MAXIMUM_WINDOWS];

@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_APP_HEADERS
-#define NOMLIB_SDL_APP_HEADERS
+#ifndef NOMLIB_SDL2_APP_HEADERS
+#define NOMLIB_SDL2_APP_HEADERS
 
 #include <iostream>
 #include <string>
@@ -51,7 +51,10 @@ class SDL_App: public Input
     virtual ~SDL_App ( void );
 
     virtual bool onInit ( void );
+
+    /// Re-implements nom::Input::onQuit()
     virtual void onQuit ( void );
+
     virtual void onEvent ( SDL_Event* event );
 
     bool isRunning ( void );
@@ -69,9 +72,6 @@ class SDL_App: public Input
     /// Let the user know if there are pending events
     bool PollEvents ( SDL_Event* );
 
-    /// Set the rate at which we would like to receive keyboard input
-    void enableKeyRepeat ( int32 delay, int32 interval );
-
   private:
     /// global app state
     bool app_state;
@@ -82,6 +82,8 @@ class SDL_App: public Input
     /// global app timer
     Timer appTime;
 };
-}
 
-#endif // NOMLIB_SDL_APP_HEADERS defined
+
+} // namespace nom
+
+#endif // include guard defined

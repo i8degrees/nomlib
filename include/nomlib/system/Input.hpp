@@ -1,13 +1,33 @@
 /******************************************************************************
 
-    SDL Input Events Handling
+  nomlib - C++11 cross-platform game engine
 
-  Copyright (c) 2013 Jeffrey Carpenter
-  All rights reserved.
+Copyright (c) 2013, Jeffrey Carpenter <jeffrey.carp@gmail.com>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_INPUT_HEADERS
-#define NOMLIB_SDL_INPUT_HEADERS
+#ifndef NOMLIB_SDL2_INPUT_HEADERS
+#define NOMLIB_SDL2_INPUT_HEADERS
 
 #include <iostream>
 #include <string>
@@ -15,6 +35,15 @@
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
+
+/// Enable debugging output of every key press & release event
+//#define NOM_DEBUG_SDL2_KEYBOARD_INPUT
+
+/// Enable debugging output of every mouse click, release & motion
+//#define NOM_DEBUG_SDL2_MOUSE_INPUT
+
+/// Enable debugging output of every joystick event (TODO: implement)
+//#define NOM_DEBUG_SDL2_JOYSTICK_INPUT
 
 namespace nom {
 
@@ -73,26 +102,28 @@ class Input
     virtual void onMouseBlur ( void );
     virtual void onExpose ( void );
 
-    virtual void onKeyDown ( int32 key, int32 mod );
-    virtual void onKeyUp ( int32 key, int32 mod );
+    virtual void onKeyDown ( int32 key, int32 mod, uint32 window_id );
+    virtual void onKeyUp ( int32 key, int32 mod, uint32 window_id  );
 
-    virtual void onMouseMotion ( int32 x, int32 y );
-    virtual void onMouseWheel ( bool up, bool down );
-    virtual void onMouseLeftButtonDown ( int32 x, int32 y );
-    virtual void onMouseMiddleButtonDown ( int32 x, int32 y );
-    virtual void onMouseRightButtonDown ( int32 x, int32 y );
-    virtual void onMouseButtonSixDown ( int32 x, int32 y );
-    virtual void onMouseButtonSevenDown ( int32 x, int32 y );
+    virtual void onMouseMotion ( int32 x, int32 y, uint32 window_id );
+    virtual void onMouseWheel ( int32 x, int32 y, uint32 window_id );
+    virtual void onMouseLeftButtonDown ( int32 x, int32 y, uint32 window_id  );
+    virtual void onMouseMiddleButtonDown ( int32 x, int32 y, uint32 window_id  );
+    virtual void onMouseRightButtonDown ( int32 x, int32 y, uint32 window_id  );
+    virtual void onMouseButtonSixDown ( int32 x, int32 y, uint32 window_id  );
+    virtual void onMouseButtonSevenDown ( int32 x, int32 y, uint32 window_id  );
 
-    virtual void onMouseLeftButtonUp ( int32 x, int32 y );
-    virtual void onMouseMiddleButtonUp ( int32 x, int32 y );
-    virtual void onMouseRightButtonUp ( int32 x, int32 y );
-    virtual void onMouseButtonSixUp ( int32 x, int32 y );
-    virtual void onMouseButtonSevenUp ( int32 x, int32 y );
+    virtual void onMouseLeftButtonUp ( int32 x, int32 y, uint32 window_id  );
+    virtual void onMouseMiddleButtonUp ( int32 x, int32 y, uint32 window_id  );
+    virtual void onMouseRightButtonUp ( int32 x, int32 y, uint32 window_id  );
+    virtual void onMouseButtonSixUp ( int32 x, int32 y, uint32 window_id  );
+    virtual void onMouseButtonSevenUp ( int32 x, int32 y, uint32 window_id  );
 
     virtual void onJoyButtonDown ( int32 which, int32 button );
     virtual void onJoyButtonUp ( int32 which, int32 button );
     virtual void onJoyAxis ( int32 which, int32 axis, uint16 value );
+
+    virtual void onDragDrop ( const std::string& file_path );
 
   private:
     SDL_Joystick* joystick;
@@ -101,4 +132,4 @@ class Input
 
 } // namespace nom
 
-#endif // NOMLIB_SDL_INPUT_HEADERS defined
+#endif // include guard defined

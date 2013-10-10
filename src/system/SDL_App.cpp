@@ -139,10 +139,5 @@ bool SDL_App::PollEvents ( SDL_Event* event )
   return false;
 }
 
-void SDL_App::enableKeyRepeat ( int32 delay, int32 interval )
-{
-  //SDL_EnableKeyRepeat ( delay, interval );
-}
-
 
 } // namespace nom

@@ -94,7 +94,6 @@ bool Image::load ( const std::string& filename )
 
   if ( this->valid() == false )
   {
-NOM_LOG_ERR ( NOM, "Could not load filename at: " + filename );
 NOM_LOG_ERR ( NOM, IMG_GetError() );
     return false;
   }
@@ -108,7 +107,6 @@ bool Image::load_bmp ( const std::string& filename )
 
   if ( this->valid() == false )
   {
-NOM_LOG_ERR ( NOM, "Could not load filename at: " + filename );
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
@@ -120,7 +118,6 @@ bool Image::save ( const std::string& filename, SDL_Surface* video_buffer )
 {
   if ( SDL_SaveBMP ( video_buffer, filename.c_str() ) != 0 )
   {
-NOM_LOG_ERR ( NOM, "Could not save filename at: " + filename );
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
@@ -151,7 +148,7 @@ NOM_LOG_ERR ( NOM, "Could not set color key: invalid image buffer." );
 
   if ( SDL_SetColorKey ( buffer, SDL_TRUE ^ flags, transparent_color ) != 0 )
   {
-NOM_LOG_ERR ( NOM, std::string ( SDL_GetError() ) );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     priv::FreeSurface ( buffer );
     return false;
   }

@@ -186,8 +186,7 @@ const Coords Window::display_bounds ( void ) const
 
   if ( SDL_GetDisplayBounds ( this->window_display_id(), &display_bounds ) != 0 )
   {
-NOM_LOG_ERR ( NOM, "Could not obtain Window index " + std::to_string ( this->window_display_id() ) + "display bounds." );
-NOM_LOG_ERR ( NOM, std::string ( SDL_GetError() ) );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     return Coords::null;
   }
 
@@ -275,7 +274,7 @@ bool Window::flip ( void ) const
 {
   if ( SDL_UpdateWindowSurface ( this->window() ) != 0 )
   {
-NOM_LOG_ERR ( NOM, "Could not update window surface: " + std::string ( SDL_GetError() ) );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
   return true;
@@ -285,7 +284,7 @@ bool Window::fullscreen ( uint32 flags )
 {
   if ( SDL_SetWindowFullscreen ( this->window(), flags ) != 0 )
   {
-    NOM_LOG_ERR ( NOM, "Could not toggle SDL fullscreen mode." );
+    NOM_LOG_ERR ( NOM, std::string ( SDL_GetError() ) );
     return false;
   }
 

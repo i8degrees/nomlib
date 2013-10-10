@@ -135,6 +135,7 @@ bool Renderer::set_viewport ( int width, int height )
 
   if ( SDL_RenderSetLogicalSize ( this->renderer(), width, height ) != 0 )
   {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
   return true;

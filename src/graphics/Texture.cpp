@@ -243,7 +243,7 @@ uint32 Texture::pixel_format ( void ) const
 
   if ( SDL_QueryTexture ( this->texture(), &format, nullptr, nullptr, nullptr ) != 0 )
   {
-NOM_LOG_ERR ( NOM, std::string ( SDL_GetError() ) );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     return 0;
   }
 
@@ -326,7 +326,7 @@ bool Texture::lock ( void )
 {
   if ( SDL_LockTexture ( this->texture(), nullptr, &this->pixels_, this->pitch_ ) != 0 )
   {
-NOM_LOG_ERR ( NOM, std::string ( SDL_GetError() ) );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
   return true;
@@ -338,7 +338,7 @@ bool Texture::lock ( const Coords& lock_coords )
 
   if ( SDL_LockTexture ( this->texture(), &area, &this->pixels_, this->pitch_ ) != 0 )
   {
-NOM_LOG_ERR ( NOM, std::string ( SDL_GetError() ) );
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
   return true;

@@ -107,8 +107,8 @@ void SpriteBatch::Update ( void )
                           dims.height * this->scale_factor
                         );
 
-  this->sprite.setOffsets ( this->offsets );
-  this->sprite.setPosition ( this->coords );
+  this->sprite.set_bounds ( this->offsets );
+  this->sprite.set_position ( Point2i ( this->coords.x, this->coords.y ) );
 }
 
 

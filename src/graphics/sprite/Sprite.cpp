@@ -68,7 +68,7 @@ NOM_LOG_TRACE ( NOM );
 
 const Coords Sprite::getSize ( void ) const
 {
-  return Coords ( 0, 0, this->sprite.getTextureWidth(), this->sprite.getTextureHeight() );
+  return Coords ( 0, 0, this->sprite.width(), this->sprite.height() );
 }
 
 uint32 Sprite::getState ( void ) const
@@ -94,14 +94,14 @@ NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
     return false;
   }
 
-  this->setSize ( this->sprite.getTextureWidth(), this->sprite.getTextureHeight() );
+  this->setSize ( this->sprite.width(), this->sprite.height() );
 
   return true;
 }
 
 void Sprite::update ( void )
 {
-  this->sprite.setPosition ( this->coords );
+  this->sprite.set_position ( Point2i ( this->coords.x, this->coords.y ) );
 }
 
 void Sprite::draw ( SDL_Renderer* target ) const

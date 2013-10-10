@@ -69,10 +69,12 @@ class Texture
 {
   public:
     typedef std::shared_ptr<Texture> SharedPtr;
-    typedef SDL_Texture* RawPtr;
 
     /// Default constructor; initializes object to its respective defaults
     Texture ( void );
+
+    /// Lazy destructor -- does nothing.
+    ~Texture ( void );
 
     /// Constructor variant for creating a video surface object with existing
     /// video surface memory.
@@ -111,9 +113,6 @@ class Texture
     /// See http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurfaceFrom
     Texture ( void* pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
-    /// Lazy destructor -- does nothing.
-    ~Texture ( void );
-
     void initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
     /// Return a std::shared_ptr copy of this instance
@@ -123,61 +122,55 @@ class Texture
     /// Copy assignment operator
     Texture& operator = ( const Texture& other );
 
-    const Coords& getPosition ( void ) const;
+    const Point2i& position ( void ) const;
+
+    const Coords& bounds ( void ) const;
 
     /// Get the video memory surface of the Texture object
-    Texture::RawPtr get ( void ) const;
+    SDL_Texture* texture ( void ) const;
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
 
     /// Reset the video surface object with another video surface object.
-    void setTexture ( const Texture& surface );
+    /// \todo Relocate me to a surface class
+    ///void setTexture ( const Texture& surface );
 
-    void setPosition ( const Coords& pos );
-    void setOffsets ( const Coords& clip );
+    void set_position ( const Point2i& pos );
+    void set_bounds ( const Coords& clip );
 
-    const int32 getTextureWidth ( void ) const;
-    const int32 getTextureHeight ( void ) const;
-    uint32 getTextureFlags ( void ) const;
-    uint16 getTexturePitch ( void ) const;
-    void* getTexturePixels ( void ) const;
-    const uint8 getTextureBitsPerPixel ( void ) const;
+    int32 width ( void ) const;
+    int32 height ( void ) const;
+    uint16 pitch ( void ) const;
+    void* pixels ( void ) const;
 
-    /// \todo Rename to getTexturePixelFormat
-    SDL_PixelFormat* getTexturePixelsFormat ( void ) const;
+    uint8 bytes_per_pixel ( void ) const;
 
-    /// Obtain the pixel value of the set transparent color
-    const Color getTextureColorKey ( void ) const;
+    uint32 pixel_format ( void ) const;
 
     /// Obtain the overall surface alpha value
-    const uint8 getTextureAlphaValue ( void ) const;
+    //const uint8 getTextureAlphaValue ( void ) const;
 
     /// Obtain the video surface's red *ALPHA* mask
-    const uint32 getTextureRedMask ( void ) const;
+    //const uint32 getTextureRedMask ( void ) const;
 
     /// Obtain the video surface's green *ALPHA* mask
-    const uint32 getTextureGreenMask ( void ) const;
+    //const uint32 getTextureGreenMask ( void ) const;
 
     /// Obtain the video surface's blue *ALPHA* mask
-    const uint32 getTextureBlueMask ( void ) const;
+    //const uint32 getTextureBlueMask ( void ) const;
 
     /// Obtain the video surface's alpha mask
-    const uint32 getTextureAlphaMask ( void ) const;
+    //const uint32 getTextureAlphaMask ( void ) const;
 
-    const Coords getTextureBounds ( void ) const;
-    void setTextureBounds ( const Coords& clip_bounds );
+    //const Coords getTextureBounds ( void ) const;
+    //void setTextureBounds ( const Coords& clip_bounds );
 
-    /// Convenience Helper method for calculating the Texture color depth; for
-    /// the time being, this is merely for the convenience of readability in
-    /// our code.
+    /// Calculate this object's bits per pixel (color depth)
     ///
-    /// Returns an integer of 8, 16, 24 or 32 upon successful determination of
-    /// the current color depth.
-    ///
-    /// Returns -1 on err; perhaps an unsupported color depth or an
-    /// uninitialized video surface?
-    int32 getTextureColorDepth ( void ) const;
+    /// \return Unsigned 8-bit integer (8, 16, 24 or 32 bits per pixel); zero (0)
+    /// on error (unknown color depth).
+    uint8 bits_per_pixel ( void ) const;
 
     /// I think that we are accessing the value of an
     /// (internal?) property of the SDL_Surface structure that is described as being
@@ -186,15 +179,22 @@ class Texture
     /// Return value of this internal property is presumed to be boolean -- no
     /// verification has been made of this. Testing of this method *appears*
     /// to be in working order.
-    bool getTextureLock ( void ) const;
+    /// \todo bool getTextureLock ( void ) const;
 
-    /// Lock the video surface for writing directly to video memory.
-    bool lock ( void ) const;
+    /// Lock a portion of the texture for **write-only** pixel access.
+    ///
+    /// Texture must be created with SDL_TEXTUREACCESS_STREAMING
+    /// \todo pixels access
+    bool lock ( void );
 
-    /// Unlocks the video surface; this must be done after you are finished
-    /// writing to the video buffer. During the time that the video surface is
-    /// locked, no updates (think: rendering) outside of your local access can
-    /// occur until the surfaces affected by the lock are relinquished.
+    /// Lock a portion of this texture for write-only pixel access.
+    ///
+    /// \param lock_coords  The area encompassing the area to lock for pixel
+    /// access
+    bool lock ( const Coords& lock_coords );
+
+    /// Unlock this texture, thereby uploading the necessary changes (if any)
+    /// to video memory.
     void unlock ( void ) const;
 
     /// Sets transparency only if colorkey Color alpha value is -1, also
@@ -210,36 +210,37 @@ class Texture
     /// \param use_cache        Whether or not to use an internal object cache
     ///                         feature of nomlib. Defaults to off.
     ///
-    /// \param flags            The flags you wish for the method loader to
-    ///                         consider for you, such as color keying
-    ///                         (single pixel transparency). Defaults to color
-    ///                         keying and RLE blit acceleration enabled.
-    /// \internal
-    /// Clean up this documentation note and also verify that it is
-    /// sane to assume that you would not use transparency when you have alpha
-    /// surface enabled
-    /// \endinternal
+    /// \param flags            SDL_RLEACCEL
+    ///
+    /// \todo Test/Research Texture caching -- nom::ObjectCache worked
+    /// beautifully with SDL_Surface, is the same true of SDL_Texture?
+    /// \todo Consider removing SDL_RLEACCEL flag
+    /// \todo Merge use_cache into flags variable
     bool load ( const std::string& filename, const Color&
                 colorkey = Color::null,
                 bool use_cache = false,
-                uint32 flags = SDL_RLEACCEL | SDL_TRUE
+                uint32 flags = SDL_RLEACCEL
               );
 
+    bool update ( const void* pixels, uint16 pitch, const Coords& update_area );
     void update ( SDL_Renderer* );
     void draw ( SDL_Renderer* target ) const;
 
-    bool setAlpha ( uint8 opacity );//, uint32 flags/* = SDL_SRCALPHA*/ );
-
-    bool setTransparent ( const Color& color = Color::null,
-                          uint32 flags = SDL_RLEACCEL | SDL_TRUE//SDL_SRCCOLORKEY
-                        );
+    bool set_alpha ( uint8 opacity );
 
     /// As per libSDL docs, we must first initialize the video subsystem before using
     /// this method call, otherwise an access violation fault is sure to occur.
-    bool displayFormat ( void );
+    ///
+    /// \todo Relocate to nom::Image or whichever class becomes home to surfaces
+    /// (video memory buffers in system RAM)
+    ///bool displayFormat ( void );
+
     /// As per libSDL docs, we must first initialize the video subsystem before using
     /// this method call, otherwise an access violation fault is sure to occur.
-    bool displayFormatAlpha ( void );
+    ///
+    /// \todo Relocate to nom::Image or whichever class becomes home to surfaces
+    /// (video memory buffers in system RAM)
+    ///bool displayFormatAlpha ( void );
 
     /// Pixel reading -- supports 8-bit, 15/16-bit, 24-bit & 32-bit color modes
     ///
@@ -248,6 +249,8 @@ class Texture
     /// You are responsible for locking & unlocking of the Texture before-hand
     ///
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
+    /// \todo Relocate to nom::Image or whichever class becomes home to surfaces
+    /// (video memory buffers in system RAM)
     uint32 getPixel ( int32 x, int32 y );
 
     /// Resize the video surface with the chosen rescaling algorithm.
@@ -261,15 +264,15 @@ class Texture
     int32 getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm );
 
   private:
-    /// Internal method used for checking to see if the video surface actually
-    /// needs to be locked before doing so for performance sake.
-    bool mustLock ( void ) const;
+    std::shared_ptr<SDL_Texture> texture_;
+    void* pixels_;
+    int* pitch_;
 
-    std::shared_ptr<SDL_Texture> texture_buffer;
-    /// Holds surface position
-    Coords coords;
-    /// Holds surface bounds (input clipping)
-    Coords offsets;
+    /// Holds surface position (X, Y)
+    Point2i position_;
+
+    /// Holds surface offsets (clipping area: X, Y, width & height)
+    Coords bounds_;
 };
 
 

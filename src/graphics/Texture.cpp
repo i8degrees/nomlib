@@ -35,14 +35,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Texture::Texture ( void )  : texture_buffer ( nullptr, priv::FreeTexture ),
-                                        coords ( 0, 0, -1, -1 ), // only x, y position is used in blitting
-                                        offsets ( 0, 0, -1, -1 ) // only the width, height is used in source blitting
+Texture::Texture ( void )  :  texture_ ( nullptr, priv::FreeTexture ),
+    position_ ( 0, 0 ), bounds_ ( 0, 0, -1, -1 )
 {
 NOM_LOG_TRACE ( NOM );
 }
 /*
-Texture::Texture ( SDL_Surface* video_buffer )  : texture_buffer { video_buffer, nom::priv::FreeSurface }
+Texture::Texture ( SDL_Surface* video_buffer )  : texture_ { video_buffer, nom::priv::FreeSurface }
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -50,19 +49,22 @@ NOM_LOG_TRACE ( NOM );
 }
 */
 
-Texture::Texture ( SDL_Texture* video_buffer )  : texture_buffer { video_buffer, priv::FreeTexture }
+Texture::Texture ( SDL_Texture* video_buffer )  :
+    texture_ { video_buffer, priv::FreeTexture }
 {
 NOM_LOG_TRACE ( NOM );
 
-  Coords size;
+  Point2i size;
 
-  SDL_QueryTexture ( this->texture_buffer.get(), nullptr, nullptr, &size.width, &size.height );
+  SDL_QueryTexture ( this->texture(), nullptr, nullptr, &size.x, &size.y );
 
-  this->offsets.setSize ( size.width, size.height );
+  this->bounds_.setSize ( size.x, size.y );
 }
 
-Texture::Texture ( const Texture& other ) : texture_buffer { other.texture_buffer.get(), nom::priv::FreeTexture },
-                                                          coords ( other.coords.x, other.coords.y ), offsets ( other.offsets.width, other.offsets.height )
+Texture::Texture ( const Texture& other ) :
+    texture_ { other.texture(), nom::priv::FreeTexture },
+    position_ ( other.position_.x, other.position_.y ),
+    bounds_ ( other.bounds_.width, other.bounds_.height )
 {
 NOM_LOG_TRACE ( NOM );
 }
@@ -78,9 +80,9 @@ Texture::Texture ( void* pixels, int32 width, int32 height, int32 depth, uint16 
 {
 NOM_LOG_TRACE ( NOM );
 
-  //this->texture_buffer.reset ( SDL_CreateRGBSurfaceFrom ( pixels, width, height, depth, pitch, Rmask, Gmask, Bmask, Amask ), nom::priv::FreeSurface );
+  //this->texture_.reset ( SDL_CreateRGBSurfaceFrom ( pixels, width, height, depth, pitch, Rmask, Gmask, Bmask, Amask ), nom::priv::FreeSurface );
 
-  this->offsets.setSize ( width, height );
+  this->bounds_.setSize ( width, height );
 }
 
 Texture::~Texture ( void )
@@ -92,18 +94,18 @@ void Texture::initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPe
 {
 NOM_LOG_TRACE ( NOM );
 
-  //this->texture_buffer.reset ( SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask ), nom::priv::FreeSurface );
-  this->offsets.setSize ( width, height );
+  //this->texture_.reset ( SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask ), nom::priv::FreeSurface );
+  this->bounds_.setSize ( width, height );
 
   // If the video surface is marked for color keying transparency, we must do
   // so here.
-  if ( flags & SDL_TRUE )//SDL_SRCCOLORKEY )
+  /*if ( flags & SDL_TRUE )//SDL_SRCCOLORKEY )
   {
     if ( this->setTransparent ( this->getTextureColorKey(), SDL_RLEACCEL | SDL_TRUE ) == false )//SDL_SRCCOLORKEY ) == false )
     {
 NOM_LOG_ERR ( NOM, "Could not create the video surface with color key transparency." );
     }
-  }
+  }*/
 }
 
 Texture::SharedPtr Texture::clone ( void ) const
@@ -113,224 +115,238 @@ Texture::SharedPtr Texture::clone ( void ) const
 
 Texture& Texture::operator = ( const Texture& other )
 {
-  this->texture_buffer = other.texture_buffer;
-  this->coords = other.coords;
-  this->offsets = other.offsets;
+  this->texture_ = other.texture_;
+  this->position_ = other.position_;
+  this->bounds_ = other.bounds_;
 
   return *this;
 }
 
-Texture::RawPtr Texture::get ( void ) const
+SDL_Texture* Texture::texture ( void ) const
 {
-  return this->texture_buffer.get();
+  return this->texture_.get();
 }
 
 bool Texture::valid ( void ) const
 {
-  if ( this->texture_buffer.get() != nullptr )
+  if ( this->texture() != nullptr )
+  {
     return true;
+  }
   else
+  {
     return false;
+  }
 }
 
+/* RELOCATE
 void Texture::setTexture ( const Texture& surface )
 {
-  //this->texture_buffer.reset ( SDL_ConvertSurface ( surface.texture_buffer.get(), surface.getTexturePixelsFormat(), surface.getTextureFlags() ), nom::priv::FreeSurface );
+  //this->texture_.reset ( SDL_ConvertSurface ( surface.texture_.get(), surface.getTexturePixelsFormat(), surface.getTextureFlags() ), nom::priv::FreeSurface );
 
-  this->offsets.setSize ( surface.getTextureWidth(), surface.getTextureHeight() );
+  //this->offsets.setSize ( surface.width(), surface.height() );
+}
+RELOCATE */
+
+const Point2i& Texture::position ( void ) const
+{
+  return this->position_;
 }
 
-const Coords& Texture::getPosition ( void ) const
+const Coords& Texture::bounds ( void ) const
 {
-  return this->coords;
+  return this->bounds_;
 }
 
-void Texture::setPosition ( const Coords& pos )
+void Texture::set_position ( const Point2i& pos )
 {
-  this->coords.x = pos.x;
-  this->coords.y = pos.y;
+  this->position_.x = pos.x;
+  this->position_.y = pos.y;
 }
 
-void Texture::setOffsets ( const Coords& clip )
+void Texture::set_bounds ( const Coords& clip )
 {
-  this->offsets = clip;
+  this->bounds_ = clip;
 }
 
-const int32 Texture::getTextureWidth ( void ) const
+int32 Texture::width ( void ) const
 {
-  Coords size;
+  int32 tex_width;
 
-  SDL_QueryTexture ( this->texture_buffer.get(), nullptr, nullptr, &size.width, &size.height );
+  SDL_QueryTexture ( this->texture(), nullptr, nullptr, &tex_width, nullptr );
 
-  return size.width;
+  return tex_width;
 }
 
-const int32 Texture::getTextureHeight ( void ) const
+int32 Texture::height ( void ) const
 {
-  Coords size;
+  int32 tex_height;
 
-  SDL_QueryTexture ( this->texture_buffer.get(), nullptr, nullptr, &size.width, &size.height );
+  SDL_QueryTexture ( this->texture(), nullptr, nullptr, nullptr, &tex_height );
 
-  return size.height;
+  return tex_height;
 }
 
-uint32 Texture::getTextureFlags ( void ) const
+uint16 Texture::pitch ( void ) const
 {
-  return 0;
-  //return this->get()->flags;;
+  uint16 pitch;
+
+  // Pixel pitch calculation borrowed from SDL2/video/SDL_pixels.c
+  pitch = this->width() * this->bytes_per_pixel();
+  switch ( this->bits_per_pixel() )
+  {
+    default: break;
+
+    case 1: // 8-bit bpp
+    {
+      pitch = ( pitch + 7 ) / 8;
+    }
+    break;
+
+    case 4: // 32-bit bpp
+    {
+      pitch = ( pitch + 1 ) / 2;
+    }
+    break;
+  }
+  pitch = ( pitch + 3 ) & ~3; // 4-byte aligned for speed
+
+  return pitch;
 }
 
-uint16 Texture::getTexturePitch ( void ) const
+void* Texture::pixels ( void ) const
 {
-  return 0;
-  //return this->get()->pitch;
+  return this->pixels_;
 }
 
-void* Texture::getTexturePixels ( void ) const
+uint8 Texture::bits_per_pixel ( void ) const
 {
-  return nullptr;
-  //return this->get()->pixels;
+  switch ( this->bytes_per_pixel() )
+  {
+    default: return 0; break; // Unknown color depth
+
+    case 1: return 8; break; // 8-bit bpp
+    case 2: return 16; break; // 16-bit bpp
+    case 3: return 24; break; // 24-bit bpp
+    case 4: return 32; break; // 32-bit bpp
+  }
 }
 
-const uint8 Texture::getTextureBitsPerPixel ( void ) const
+uint8 Texture::bytes_per_pixel ( void ) const
 {
-  return 0;
-  //return this->texture_buffer.get()->format->BitsPerPixel;
+  return SDL_BYTESPERPIXEL ( this->pixel_format() );
 }
 
-SDL_PixelFormat* Texture::getTexturePixelsFormat ( void ) const
+uint32 Texture::pixel_format ( void ) const
 {
-  return nullptr;
-  //return this->texture_buffer.get()->format;
-}
+  uint32 format = 0;
 
-const Color Texture::getTextureColorKey ( void ) const
-{
-  return Color::null;
+  if ( SDL_QueryTexture ( this->texture(), &format, nullptr, nullptr, nullptr ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, std::string ( SDL_GetError() ) );
+    return 0;
+  }
+
+  return format;
+}
 /*
-  uint32 transparent_color = 0; // holds me color for conversion
-  Color colorkey; // native container
-
-  transparent_color = RGBA::asInt32 ( this->getTexturePixelsFormat(), colorkey );
-
-  return colorkey;
-*/
-}
-
 const uint8 Texture::getTextureAlphaValue ( void ) const
 {
   return 0;
   //return this->getTexturePixelsFormat()->alpha;
 }
-
+*/
+/*
 const uint32 Texture::getTextureRedMask ( void ) const
 {
   return 0;
   //return this->getTexturePixelsFormat()->Rmask;
 }
-
+*/
+/*
 const uint32 Texture::getTextureGreenMask ( void ) const
 {
   return 0;
   //return this->getTexturePixelsFormat()->Gmask;
 }
-
+*/
+/*
 const uint32 Texture::getTextureBlueMask ( void ) const
 {
   return 0;
   //return this->getTexturePixelsFormat()->Bmask;
 }
-
+*/
+/*
 const uint32 Texture::getTextureAlphaMask ( void ) const
 {
   return 0;
   //return this->getTexturePixelsFormat()->Amask;
 }
+*/
 
+/* RELOCATE
 const Coords Texture::getTextureBounds ( void ) const
 {
   return Coords::null;
-/*
+
   SDL_Rect clip_buffer; // temporary storage struct
   Coords clip_bounds; // transferred values from SDL_Rect clip_buffer
 
   // Return values are put into the clip_buffer SDL_Rect after executing:
-  SDL_GetClipRect ( this->texture_buffer.get(), &clip_buffer );
+  SDL_GetClipRect ( this->texture_.get(), &clip_buffer );
 
   // Now transfer the values into our preferred data container type
   clip_bounds = Coords ( clip_buffer.x, clip_buffer.y, clip_buffer.w, clip_buffer.h );
 
   return clip_bounds;
-*/
 }
+RELOCATE */
 
+/* RELOCATE
 void Texture::setTextureBounds ( const Coords& clip_bounds )
 {
-/*
   SDL_Rect clip = IntRect::asSDLRect ( clip_bounds ); // temporary storage struct for setting
 
   // As per libSDL docs, if SDL_Rect is nullptr, the clipping rectangle is set
   // to the full size of the surface
-  SDL_SetClipRect ( this->texture_buffer.get(), &clip );
-*/
+  SDL_SetClipRect ( this->texture_.get(), &clip );
 }
+RELOCATE */
 
-int32 Texture::getTextureColorDepth ( void ) const
-{
-  return 0;
-/*
-  switch ( this->getTexturePixelsFormat()->BytesPerPixel )
-  {
-    default: return -1; break; // Unsupported color depth
-
-    case 1: return 8; break; // 8-bit
-    case 2: return 16; break; // 16-bit
-    case 3: return 24; break; // 24-bit
-    case 4: return 32; break; // 32-bit
-  }
-*/
-}
-
+/* TODO
 bool Texture::getTextureLock ( void ) const
 {
   return false;
-  //return this->texture_buffer.get()->locked;
+  //return this->texture_.get()->locked;
 }
+TODO */
 
-bool Texture::mustLock ( void ) const
+bool Texture::lock ( void )
 {
-  return false;
-/*
-  if ( SDL_MUSTLOCK ( this->texture_buffer.get() ) )
+  if ( SDL_LockTexture ( this->texture(), nullptr, &this->pixels_, this->pitch_ ) != 0 )
   {
-  return true;
-  }
-  else
-  {
+NOM_LOG_ERR ( NOM, std::string ( SDL_GetError() ) );
     return false;
   }
-*/
+  return true;
 }
 
-bool Texture::lock ( void ) const
+bool Texture::lock ( const Coords& lock_coords )
 {
-  return false;
-/*
-  if ( this->mustLock() == true )
+  SDL_Rect area = IntRect::asSDLRect ( lock_coords );
+
+  if ( SDL_LockTexture ( this->texture(), &area, &this->pixels_, this->pitch_ ) != 0 )
   {
-    if ( SDL_LockSurface ( this->texture_buffer.get() ) == -1 )
-    {
-NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
-      return false;
-    }
+NOM_LOG_ERR ( NOM, std::string ( SDL_GetError() ) );
+    return false;
   }
-*/
   return true;
 }
 
 void Texture::unlock ( void ) const
 {
-  //SDL_UnlockSurface ( this->texture_buffer.get() );
+  SDL_UnlockTexture ( this->texture() );
 }
 
 bool Texture::load ( const std::string& filename, const Color& colorkey,
@@ -345,17 +361,17 @@ bool Texture::load ( const std::string& filename, const Color& colorkey,
   {
     priv::ObjectCache cache;
 
-    this->texture_buffer = cache.getObject ( filename );
+    this->texture_ = cache.getObject ( filename );
 
-    if ( this->texture_buffer == nullptr )
+    if ( this->texture_ == nullptr )
     {
-      this->texture_buffer = cache.addObject ( filename, image.load ( filename ) );
+      this->texture_ = cache.addObject ( filename, image.load ( filename ) );
     }
   }
   else // Do not use the object cache
   {
 */
-    //this->texture_buffer = image.load ( filename );
+    //this->texture_ = image.load ( filename );
   //}
 
   // Validate our obtained data is good before further processing
@@ -370,8 +386,10 @@ NOM_LOG_ERR ( NOM, "Could not load Texture image file: " + filename );
   // and display format conversion.
 NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
 
-  if ( flags & SDL_TRUE )//SDL_SRCCOLORKEY )
-    this->setTransparent ( colorkey, flags );
+  if ( colorkey != Color::null ) // Requests color keying
+  {
+    image.set_colorkey ( colorkey, flags );
+  }
 
   /*if ( flags & SDL_SRCALPHA )
   {
@@ -379,12 +397,12 @@ NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
   }
   else
   {*/
-    this->displayFormat(); // Optimized video surface without an alpha channel
+    //this->displayFormat(); // Optimized video surface without an alpha channel
   //}
 
   // Update our Texture clipping bounds with the new source; not sure if we still
   // need to be doing this.
-  this->offsets.setSize ( this->getTextureWidth(), this->getTextureHeight() );
+  this->bounds_.setSize ( this->width(), this->height() );
 
   return true;
 }
@@ -401,18 +419,23 @@ void Texture::draw ( SDL_Renderer* target ) const
   {
     if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
     {
-      if ( SDL_BlitSurface ( this->texture_buffer.get(), &blit_offsets, video_buffer, &blit_coords ) != 0 )
+      if ( SDL_BlitSurface ( this->texture_.get(), &blit_offsets, video_buffer, &blit_coords ) != 0 )
 NOM_LOG_ERR ( NOM, SDL_GetError() );
         return;
     }
     else
     {
-      if ( SDL_BlitSurface ( this->texture_buffer.get(), nullptr, (SDL_SDL_Surface*) video_buffer, &blit_coords ) != 0 )
+      if ( SDL_BlitSurface ( this->texture_.get(), nullptr, (SDL_SDL_Surface*) video_buffer, &blit_coords ) != 0 )
 NOM_LOG_ERR ( NOM, SDL_GetError() );
         return;
     }
   }
 */
+}
+
+bool Texture::update ( const void* pixels, uint16 pitch, const Coords& update_area )
+{
+  return false; // Stub
 }
 
 void Texture::update ( SDL_Renderer* video_target )
@@ -420,96 +443,76 @@ void Texture::update ( SDL_Renderer* video_target )
   SDL_RenderPresent ( video_target );
 }
 
-bool Texture::setAlpha ( uint8_t opacity )
+bool Texture::set_alpha ( uint8 opacity )
 {
 NOM_ASSERT ( ! ( opacity > SDL_ALPHA_OPAQUE ) || ( opacity < SDL_ALPHA_TRANSPARENT ) );
-/*
-  if ( SDL_SetAlpha ( this->texture_buffer.get(), flags, static_cast<uint32>( opacity ) ) == -1 )
+
+  if ( SDL_SetTextureAlphaMod ( this->texture(), opacity ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
-*/
-/*
-  if ( SDL_SetTextureAlphaMod ( this->texture_buffer.get(), opacity ) != 0 )
-  {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return false;
-  }
-*/
+
   return true;
 }
 
-bool Texture::setTransparent ( const Color& color, uint32_t flags )
-{
-/*
-  uint32_t transparent_color = 0;
-
-  // TODO: Alpha value needs testing
-  transparent_color = RGBA::asInt32 ( this->getTexturePixelsFormat(), color );
-
-  if ( SDL_SetColorKey ( this->texture_buffer.get(), flags, transparent_color ) != 0 )
-  {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return false;
-  }
-*/
-  return true;
-}
-
+/* RELOCATE
 bool Texture::displayFormat ( void )
 {
-  //this->texture_buffer.reset ( SDL_DisplayFormat ( this->texture_buffer.get() ), nom::priv::FreeSurface );
+  //this->texture_.reset ( SDL_DisplayFormat ( this->texture_.get() ), nom::priv::FreeSurface );
 
 //NOM_ASSERT ( this->valid() );
 
   return true;
 }
+RELOCATE */
 
+/* RELOCATE
 bool Texture::displayFormatAlpha ( void )
 {
-  //this->texture_buffer.reset ( SDL_DisplayFormatAlpha ( this->texture_buffer.get()), nom::priv::FreeSurface );
+  //this->texture_.reset ( SDL_DisplayFormatAlpha ( this->texture_.get()), nom::priv::FreeSurface );
 
 //NOM_ASSERT ( this->valid() );
 
   return true;
 }
+RELOCATE */
 
 uint32 Texture::getPixel ( int32 x, int32 y )
 {
-  switch ( this->getTextureColorDepth() )
+  switch ( this->bits_per_pixel() )
   {
-    default: return -1; break; // Unsupported
+    default: return -1; break; // Unknown
 
     case 8:
     {
-      uint8* pixels = static_cast<uint8*> ( this->getTexturePixels() );
+      uint8* pixels = static_cast<uint8*> ( this->pixels() );
 
-      return pixels[ ( y * this->getTexturePitch() ) + x ];
+      return pixels[ ( y * this->pitch() ) + x ];
     }
     break;
 
     case 16:
     {
-      uint16* pixels = static_cast<uint16*> ( this->getTexturePixels() );
+      uint16* pixels = static_cast<uint16*> ( this->pixels() );
 
-      return pixels[ ( y * this->getTexturePitch() / 2 ) + x ];
+      return pixels[ ( y * this->pitch() / 2 ) + x ];
     }
     break;
 
     case 24:
     {
-      uint8* pixels = static_cast<uint8*> ( this->getTexturePixels() );
+      uint8* pixels = static_cast<uint8*> ( this->pixels() );
 
-      return pixels[ ( y * this->getTexturePitch() ) + x ];
+      return pixels[ ( y * this->pitch() ) + x ];
     }
     break;
 
     case 32:
     {
-      uint32* pixels = static_cast<uint32*> ( this->getTexturePixels() );
+      uint32* pixels = static_cast<uint32*> ( this->pixels() );
 
-      return pixels[ ( y * this->getTexturePitch()/4 ) + x ];
+      return pixels[ ( y * this->pitch()/4 ) + x ];
     }
     break;
   } // end switch
@@ -551,8 +554,8 @@ NOM_LOG_ERR ( NOM, "The existing video surface is not valid." );
   }
 
   destination_buffer = Texture (
-                                this->getTextureWidth() * scale_factor,
-                                this->getTextureHeight() * scale_factor,
+                                this->width() * scale_factor,
+                                this->height() * scale_factor,
                                 this->getTextureBitsPerPixel(),
                                 this->getTextureRedMask(),
                                 this->getTextureGreenMask(),
@@ -584,8 +587,8 @@ NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
       if ( priv::scale2x  (
                             this->getTexturePixels(),
                             destination_buffer.getTexturePixels(),
-                            this->getTextureWidth(),
-                            this->getTextureHeight(),
+                            this->width(),
+                            this->height(),
                             this->getTextureColorDepth(),
                             this->getTexturePitch(),
                             destination_buffer.getTexturePitch()
@@ -603,8 +606,8 @@ NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale2x." );
       if ( priv::scale3x  (
                             this->getTexturePixels(),
                             destination_buffer.getTexturePixels(),
-                            this->getTextureWidth(),
-                            this->getTextureHeight(),
+                            this->width(),
+                            this->height(),
                             this->getTextureColorDepth(),
                             this->getTexturePitch(),
                             destination_buffer.getTexturePitch()
@@ -622,8 +625,8 @@ NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale3x." );
       if ( priv::scale2x  (
                             this->getTexturePixels(),
                             destination_buffer.getTexturePixels(),
-                            this->getTextureWidth(),
-                            this->getTextureHeight(),
+                            this->width(),
+                            this->height(),
                             this->getTextureColorDepth(),
                             this->getTexturePitch(),
                             destination_buffer.getTexturePitch()
@@ -643,7 +646,7 @@ NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
       priv::hq2x_32 (
                       static_cast<uint32*> ( this->getTexturePixels() ),
                       static_cast<uint32*> ( destination_buffer.getTexturePixels() ),
-                      this->getTextureWidth(), this->getTextureHeight()
+                      this->width(), this->height()
                     );
     }
     break;
@@ -655,7 +658,7 @@ NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
       priv::hq3x_32 (
                       static_cast<uint32*> ( this->getTexturePixels() ),
                       static_cast<uint32*> ( destination_buffer.getTexturePixels() ),
-                      this->getTextureWidth(), this->getTextureHeight()
+                      this->width(), this->height()
                     );
     }
     break;
@@ -667,7 +670,7 @@ NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
       priv::hq4x_32 (
                       static_cast<uint32*> ( this->getTexturePixels() ),
                       static_cast<uint32*> ( destination_buffer.getTexturePixels() ),
-                      this->getTextureWidth(), this->getTextureHeight()
+                      this->width(), this->height()
                     );
     }
     break;
@@ -726,8 +729,8 @@ NOM_LOG_ERR ( NOM, "The existing video surface is not valid." );
   }
 
   destination_buffer = Texture (
-                                this->getTextureWidth()*scale_factor.x,
-                                this->getTextureHeight()*scale_factor.y,
+                                this->width()*scale_factor.x,
+                                this->height()*scale_factor.y,
                                 this->getTextureBitsPerPixel(),
                                 this->getTextureRedMask(),
                                 this->getTextureGreenMask(),
@@ -754,12 +757,12 @@ NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
   Color color;
   Pixel pixels;
 
-  double stretch_x = (double) this->getTextureWidth() * scale_factor.x / (double) this->getTextureWidth();
-  double stretch_y = (double) this->getTextureHeight() * scale_factor.y / (double) this->getTextureHeight();
+  double stretch_x = (double) this->width() * scale_factor.x / (double) this->width();
+  double stretch_y = (double) this->height() * scale_factor.y / (double) this->height();
 
-  for ( int y = 0; y < this->getTextureHeight(); y++ )
+  for ( int y = 0; y < this->height(); y++ )
   {
-    for ( int x = 0; x < this->getTextureWidth(); x++ )
+    for ( int x = 0; x < this->width(); x++ )
     {
       for ( int sY = 0; sY < stretch_y; sY++ )
       {

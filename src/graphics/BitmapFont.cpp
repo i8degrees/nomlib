@@ -220,8 +220,12 @@ void BitmapFont::setFontStyle ( int32 style, uint8 options )
     case FontStyle::Faded:
     {
       if ( this->bitmap_font.valid() )
-        if ( this->bitmap_font.setAlpha ( options ) == true )
+      {
+        if ( this->bitmap_font.set_alpha ( options ) == true )
+        {
           this->text_style = FontStyle::Faded;
+        }
+      }
     break;
     }
   }
@@ -250,14 +254,14 @@ bool BitmapFont::rebuild ( void )
 
 NOM_ASSERT ( this->bitmap_font.valid() );
 
-  background_color = RGBA::asInt32  ( this->bitmap_font.getTexturePixelsFormat(),
-                                      this->colorkey
-                                    );
+  //background_color = RGBA::asInt32  ( this->bitmap_font.getTexturePixelsFormat(),
+                                      //this->colorkey
+                                    //);
 
-  this->bitmap_font.setTransparent ( this->colorkey, SDL_TRUE );
+  //this->bitmap_font.setTransparent ( this->colorkey, SDL_TRUE );
 
-  tile_width = this->bitmap_font.getTextureWidth() / this->sheet_width;
-  tile_height = this->bitmap_font.getTextureHeight() / this->sheet_height;
+  //tile_width = this->bitmap_font.getTextureWidth() / this->sheet_width;
+  //tile_height = this->bitmap_font.getTextureHeight() / this->sheet_height;
   top = tile_height;
   baseA = tile_height;
 
@@ -504,8 +508,8 @@ void BitmapFont::draw ( SDL_Renderer* target ) const
         //Get the ASCII value of the character
         uint8 ascii = static_cast<uchar>( this->text_buffer[show] );
 
-        this->bitmap_font.setPosition ( Coords ( x_offset, y_offset ) );
-        this->bitmap_font.setOffsets ( this->chars[ascii] );
+        this->bitmap_font.set_position ( Point2i ( x_offset, y_offset ) );
+        this->bitmap_font.set_bounds ( this->chars[ascii] );
         this->bitmap_font.draw ( target );
 
         // Move over the width of the character with one pixel of padding

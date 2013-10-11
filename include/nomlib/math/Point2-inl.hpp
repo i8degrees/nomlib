@@ -29,9 +29,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_POINT2D_HEADERS
 #define NOMLIB_POINT2D_HEADERS
 
+#include <iostream>
+
 #include "nomlib/config.hpp"
 
 namespace nom {
+
+const std::string point_delimiter = ", ";
 
 /// \brief 2D Point class
 template <typename T>
@@ -39,17 +43,13 @@ class Point2
 {
   public:
     /// Default constructor; sets all values to their respective defaults
-    Point2 ( void )
-    {
-      this->x = 0;
-      this->y = 0;
-    }
+    Point2 ( void ) : x ( 0 ), y ( 0 ) {}
 
     /// Destructor
     ~Point2 ( void ) {}
 
     /// Constructor variant for initializing x, y at construction
-    Point2 ( T x, T y )  : x ( x ), y ( y ) {}
+    Point2 ( T x, T y ) : x ( x ), y ( y ) {}
 
     /// Copy constructor
     template <typename U>
@@ -70,6 +70,21 @@ class Point2
     T x;
     T y;
 };
+
+/// Pretty print a Point2 object using the following formatting:
+///
+///     <Point2.x>, <Point2.y>
+///
+/// An example print:
+///
+///     128, 144
+template <typename T>
+std::ostream& operator << ( std::ostream& os, const Point2<T>& coords )
+{
+  os  << coords.x << point_delimiter
+      << coords.y;
+  return os;
+}
 
 /// Point2D object defined with 32-bit signed integers
 typedef Point2<int32> Point2i;

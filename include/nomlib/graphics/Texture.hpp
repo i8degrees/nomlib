@@ -47,6 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/Pixel.hpp"
 #include "nomlib/graphics/shapes/Rectangle.hpp"
+#include "nomlib/graphics/Window.hpp"
 
 //#define NOM_DEBUG_SDL_TEXTURE
 
@@ -78,11 +79,9 @@ class Texture
 
     /// Constructor variant for creating a video surface object with existing
     /// video surface memory.
-    ///
-    /// \deprecated Likely to be removed in the future.
-    //Texture ( SDL_Surface* video_buffer );
+    Texture ( SDL_Surface* video_buffer );
 
-    Texture ( SDL_Texture* video_buffer );
+    //Texture ( SDL_Texture* video_buffer );
 
     /// Copy constructor; create a video surface object from an existing Texture
     /// object.
@@ -114,6 +113,8 @@ class Texture
     Texture ( void* pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
     void initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+
+    bool initialize ( SDL_Surface* video_buffer );
 
     /// Return a std::shared_ptr copy of this instance
     /// \todo Test me out!
@@ -222,9 +223,13 @@ class Texture
                 uint32 flags = SDL_RLEACCEL
               );
 
+    /// Stub for SDL_UpdateTexture implementation
     bool update ( const void* pixels, uint16 pitch, const Coords& update_area );
-    void update ( SDL_Renderer* );
+
+    /// \todo Remove me
     void draw ( SDL_Renderer* target ) const;
+
+    void draw ( const Window& target ) const;
 
     bool set_alpha ( uint8 opacity );
 

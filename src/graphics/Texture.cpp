@@ -40,15 +40,23 @@ Texture::Texture ( void )  :  texture_ ( nullptr, priv::FreeTexture ),
 {
 NOM_LOG_TRACE ( NOM );
 }
-/*
-Texture::Texture ( SDL_Surface* video_buffer )  : texture_ { video_buffer, nom::priv::FreeSurface }
+
+Texture::~Texture ( void )
+{
+NOM_LOG_TRACE ( NOM );
+}
+
+Texture::Texture ( SDL_Surface* video_buffer )
 {
 NOM_LOG_TRACE ( NOM );
 
-  this->offsets.setSize ( video_buffer->w, video_buffer->h );
+  if ( this->initialize ( video_buffer ) == false )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+  }
 }
-*/
 
+/* TODO
 Texture::Texture ( SDL_Texture* video_buffer )  :
     texture_ { video_buffer, priv::FreeTexture }
 {
@@ -60,6 +68,7 @@ NOM_LOG_TRACE ( NOM );
 
   this->bounds_.setSize ( size.x, size.y );
 }
+TODO */
 
 Texture::Texture ( const Texture& other ) :
     texture_ { other.texture(), nom::priv::FreeTexture },
@@ -85,11 +94,6 @@ NOM_LOG_TRACE ( NOM );
   this->bounds_.setSize ( width, height );
 }
 
-Texture::~Texture ( void )
-{
-NOM_LOG_TRACE ( NOM );
-}
-
 void Texture::initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
 {
 NOM_LOG_TRACE ( NOM );
@@ -106,6 +110,18 @@ NOM_LOG_TRACE ( NOM );
 NOM_LOG_ERR ( NOM, "Could not create the video surface with color key transparency." );
     }
   }*/
+}
+
+bool Texture::initialize ( SDL_Surface* video_buffer )
+{
+  this->texture_.reset ( SDL_CreateTextureFromSurface ( Window::context(), video_buffer ), priv::FreeTexture );
+
+  if ( this->valid() == false ) return false;
+
+  // Cache the size of our new Texture object with the existing surface info
+  this->bounds_.setSize ( video_buffer->w, video_buffer->h );
+
+  return true;
 }
 
 Texture::SharedPtr Texture::clone ( void ) const
@@ -129,14 +145,9 @@ SDL_Texture* Texture::texture ( void ) const
 
 bool Texture::valid ( void ) const
 {
-  if ( this->texture() != nullptr )
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  if ( this->texture() != nullptr ) return true;
+
+  return false;
 }
 
 /* RELOCATE
@@ -354,7 +365,7 @@ bool Texture::load ( const std::string& filename, const Color& colorkey,
                   )
 {
   Image image;
-/*
+/* TODO
   // By default -- for peace of mind above all else -- we have caching turned
   // off
   if ( use_cache )
@@ -370,26 +381,26 @@ bool Texture::load ( const std::string& filename, const Color& colorkey,
   }
   else // Do not use the object cache
   {
-*/
+TODO */
     //this->texture_ = image.load ( filename );
   //}
 
-  // Validate our obtained data is good before further processing
-  if ( this->valid() == false )
-  {
-NOM_LOG_ERR ( NOM, "Could not load Texture image file: " + filename );
-    return false;
-  }
+  if ( image.load ( filename ) == false ) return false;
 
   // We produce a segmentation fault here if we do not have SDL's video
   // subsystem initialized before making the following calls -- transparency
   // and display format conversion.
 NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
 
-  if ( colorkey != Color::null ) // Requests color keying
+  // If a color key is requested, we must set one BEFORE creating the texture,
+  // for efficiency's sake; we would need to convert the texture back to a surface
+  // and then again to a texture otherwise!
+  if ( colorkey != Color::null )
   {
-    image.set_colorkey ( colorkey, flags );
+    if ( image.set_colorkey ( colorkey, flags ) == false ) return false;
   }
+
+  if ( this->initialize ( image.image() ) == false ) return false;
 
   /*if ( flags & SDL_SRCALPHA )
   {
@@ -409,7 +420,22 @@ NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
 
 void Texture::draw ( SDL_Renderer* target ) const
 {
+  Point2i pos = this->position();
+  SDL_Rect render_coords;//, render_clips;
+  render_coords.x = pos.x;
+  render_coords.y = pos.y;
+  //NOM_DUMP_VAR(this->position());
+  render_coords.w = this->width();
+  render_coords.h = this->height();
+  //NOM_DUMP_VAR(this->width()); NOM_DUMP_VAR(this->height());
+  if ( SDL_RenderCopy ( target, this->texture(), nullptr, &render_coords ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+  }
+}
 /*
+void Texture::draw ( SDL_Renderer* target ) const
+{
   // temporary vars to store our wrapped Coords
   SDL_Rect blit_coords = IntRect::asSDLRect ( this->coords );
   SDL_Rect blit_offsets = IntRect::asSDLRect ( this->offsets );
@@ -430,17 +456,20 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
         return;
     }
   }
-*/
 }
+*/
 
 bool Texture::update ( const void* pixels, uint16 pitch, const Coords& update_area )
 {
   return false; // Stub
 }
 
-void Texture::update ( SDL_Renderer* video_target )
+void Texture::draw ( const Window& target ) const
 {
-  SDL_RenderPresent ( video_target );
+  if ( SDL_RenderCopy ( target.renderer(), this->texture(), nullptr, nullptr ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+  }
 }
 
 bool Texture::set_alpha ( uint8 opacity )

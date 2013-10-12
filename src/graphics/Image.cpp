@@ -127,26 +127,30 @@ const SDL_PixelFormat* Image::pixel_format ( void ) const
 
 bool Image::load ( const std::string& filename )
 {
-  this->image_.reset ( IMG_Load ( filename.c_str() ), priv::FreeSurface );
-
-  if ( this->valid() == false )
+  SDL_Surface *buffer = IMG_Load ( filename.c_str() );
+  if ( buffer == nullptr )
   {
-NOM_LOG_ERR ( NOM, IMG_GetError() );
+    NOM_LOG_ERR ( NOM, IMG_GetError() );
     return false;
   }
+
+  this->image_.reset ( SDL_ConvertSurfaceFormat ( buffer, SDL_PIXELFORMAT_RGBA8888, 0 ), priv::FreeSurface );
+  priv::FreeSurface ( buffer );
 
   return true;
 }
 
 bool Image::load_bmp ( const std::string& filename )
 {
-  this->image_.reset ( SDL_LoadBMP ( filename.c_str() ), priv::FreeSurface );
-
-  if ( this->valid() == false )
+  SDL_Surface *buffer = IMG_Load ( filename.c_str() );
+  if ( buffer == nullptr )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+    NOM_LOG_ERR ( NOM, IMG_GetError() );
     return false;
   }
+
+  this->image_.reset ( SDL_ConvertSurfaceFormat ( buffer, SDL_PIXELFORMAT_RGBA8888, 0 ), priv::FreeSurface );
+  priv::FreeSurface ( buffer );
 
   return true;
 }

@@ -96,16 +96,27 @@ void App::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
 
     case SDLK_f:
     {
-      if ( this->isFullScreen() == true )
+      for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
       {
-        this->window[0].fullscreen ( 0 );
-        this->setFullScreen ( false );
-      }
-      else
-      {
-        this->window[0].fullscreen ( SDL_WINDOW_FULLSCREEN_DESKTOP );
-        this->setFullScreen ( true );
-      }
+        if ( this->window[idx].window_id() == window_id )
+        {
+          if ( this->window[idx].fullscreen() == true )
+          {
+            this->window[idx].toggle_fullscreen();
+            break;
+          }
+
+          if ( this->window[idx].fullscreen() == false )
+          {
+            nom::Point2i window_size = this->window[idx].size();
+            this->window[idx].toggle_fullscreen();
+
+            // Scale window contents up by the new width & height
+            this->window[idx].set_viewport ( window_size.x, window_size.y );
+            break;
+          }
+        } // end window_id match
+      } // end for window loop
     }
     break;
   } // end switch key

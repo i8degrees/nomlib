@@ -38,16 +38,12 @@ NOM_LOG_TRACE ( NOM );
 
   this->showFPS ( true );
 
-  this->setFullScreen ( false );
-
   this->appTime.start();
 }
 
 SDL_App::~SDL_App ( void )
 {
 NOM_LOG_TRACE ( NOM );
-
-  this->setFullScreen ( false );
 
   this->appTime.stop();
 
@@ -114,19 +110,6 @@ void SDL_App::toggleFPS ( void )
     this->showFPS ( false );
   else
     this->showFPS ( true );
-}
-
-bool SDL_App::isFullScreen ( void )
-{
-  if ( this->fullscreen )
-    return true;
-  else
-    return false;
-}
-
-void SDL_App::setFullScreen ( bool toggle )
-{
-  this->fullscreen = toggle;
 }
 
 bool SDL_App::PollEvents ( SDL_Event* event )

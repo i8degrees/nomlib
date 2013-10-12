@@ -43,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Point2-inl.hpp"
 #include "nomlib/graphics/smart_ptr.hpp"
 #include "nomlib/graphics/VideoMode.hpp"
-#include "nomlib/graphics/Texture.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Renderer.hpp"
 #include "nomlib/graphics/Image.hpp"
 
@@ -85,6 +85,11 @@ class Window:
     /// Obtain this Window's position.
     Point2i position ( void ) const;
 
+    /// Get this window's size in pixels
+    ///
+    /// \return Point2i object containing the width (x) and height (y)
+    Point2i size ( void ) const;
+
     /// Get display surface bits per pixel
     ///
     /// \todo rename method to something more along lines of Canvas equiv.
@@ -92,7 +97,12 @@ class Window:
 
     uint32 window_flags ( void ) const;
     //uint16 getDisplayPitch ( void ) const;
-    //void* getDisplayPixels ( void ) const;
+
+    /// Obtain a pointer to this object's pixels
+    ///
+    /// \fixme See FIXME note on nom::Window::save_screenshot
+    //void* pixels ( void ) const;
+
     uint32 pixel_format ( void ) const;
 
     /// Get the desktop area represented by a display monitor
@@ -133,6 +143,9 @@ class Window:
     /// access can occur until the surfaces affected by the lock are relinquished.
     //void unlock ( void ) const;
 
+    /// Render an IDrawable object from this window
+    void draw ( const IDrawable& object ) const;
+
     /// Update the surface of the screen inside the window
     ///
     /// (For use only with SDL Surfaces API)
@@ -140,7 +153,20 @@ class Window:
     /// Equivalent to SDL 1.2 API SDL_Flip()
     bool flip ( void ) const;
 
-    bool fullscreen ( uint32 flags );
+    /// Getter for fullscreen_ state variable
+    bool fullscreen ( void ) const;
+
+    /// Set new fullscreen state
+    void set_fullscreen ( bool state );
+
+    /// Set this window fullscreen if it is windowed, and windowed if it is
+    /// fullscreen.
+    ///
+    /// \todo Implement SDL_WINDOW_FULLSCREEN support -- this will lead us to
+    /// also looking further into the SDL_(Get/Set)WindowDisplayMode functions.
+    /// We can probably get away with extending nom::VideoMode with SDL_DisplayMode*
+    /// somehow; these two have the same end-goals in mind.
+    bool toggle_fullscreen ( void );
 
     const std::string window_title ( void ) const;
 
@@ -158,7 +184,7 @@ class Window:
 
     /// Obtain this window's unique identifier
     ///
-    /// \returns an integer between ??? and ???
+    /// \return This window's unique identifier
     uint32 window_id ( void ) const;
 
     /// Obtain a pointer to a SDL_Window struct by ID.
@@ -168,9 +194,9 @@ class Window:
     /// \return SDL_Window pointer if exists; NULL if no Window exists
     static SDL_Window* window_id ( uint32 id );
 
-    /// Obtain this window's unique display identifier
+    /// Obtain this window's display index
     ///
-    /// \returns an integer between ??? and ???
+    /// \return This window's display index
     int window_display_id ( void ) const;
 
     /// Allow the screen to be blanked by a screen saver.
@@ -245,6 +271,15 @@ class Window:
     /// \todo Test me
     void set_maximum_window_size ( int max_width, int max_height );
 
+    /// Saves a screenshot of this window as an uncompressed RGB Windows Bitmap
+    /// file (BMP).
+    ///
+    /// \fixme We cannot do this when using the 3D rendering API, so we may have
+    /// to resort to creating a surface and writing out the pixels of this
+    /// window via SDL_RenderReadPixels or such to our surface before calling
+    /// SDL_SaveBMP.
+    //bool save_screenshot ( const std::string& filename ) const;
+
     /// Set the current Window as the active rendering context; this must be
     /// called before doing any drawing (this includes creation of textures)
     /// when using multiple rendering windows.
@@ -272,9 +307,17 @@ class Window:
 
     Window::UniquePtr window_;
 
+    /// Cache the unique window identifier we get from SDL upon initialization
     uint32 window_id_;
+
+    /// Cache the display identifier we get from SDL upon initialization
     int window_display_id_;
+
+    /// State of the window (visible or not)
     bool enabled_;
+
+    /// Toggle window & full-screen states
+    bool fullscreen_;
 };
 
 

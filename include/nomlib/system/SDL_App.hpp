@@ -63,8 +63,6 @@ class SDL_App: public Input
 
     uint32 ticks ( void );
 
-    bool isFullScreen ( void );
-    void setFullScreen ( bool toggle );
     bool getShowFPS ( void );
     void showFPS ( bool toggle );
     void toggleFPS ( void );
@@ -75,10 +73,10 @@ class SDL_App: public Input
   private:
     /// global app state
     bool app_state;
+
     /// fps counter
     bool show_fps;
-     /// toggle windowed & fullscreen states
-    bool fullscreen;
+
     /// global app timer
     Timer appTime;
 };

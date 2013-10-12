@@ -31,12 +31,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// static initialization
 SDL_Renderer* Window::context_ = nullptr;
 
 Window::Window ( void ) : window_
     { Window::UniquePtr ( nullptr, priv::FreeWindow ) },
-    window_id_ ( -1 ), window_display_id_ ( - 1 ),
-    enabled_ ( false )
+    window_id_ ( 0 ), window_display_id_ ( -1 ),
+    enabled_ ( false ), fullscreen_ ( false )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -82,8 +83,8 @@ NOM_LOG_ERR ( NOM, "Could not create SDL renderer." );
   }
 
   // Track our unique identifiers for our brand spanking new window!
-  this->window_id_ = this->window_id();
-  this->window_display_id_ = this->window_display_id();
+  this->window_id_ = SDL_GetWindowID ( this->window() );
+  this->window_display_id_ = SDL_GetWindowDisplayIndex ( this->window() );
   this->enabled_ = true;
 
   // We must always have an active rendering context before we do any rendering
@@ -117,14 +118,9 @@ SDL_Surface* Window::window_surface ( void ) const
 
 bool Window::window_valid ( void ) const
 {
-  if ( this->window() != nullptr )
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  if ( this->window() != nullptr ) return true;
+
+  return false;
 }
 
 Point2i Window::position ( void ) const
@@ -135,6 +131,14 @@ Point2i Window::position ( void ) const
 
   return pos;
 }
+
+Point2i Window::size ( void ) const
+{
+  Point2i size;
+  SDL_GetWindowSize ( this->window(), &size.x, &size.y );
+  return size;
+}
+
 /*
 const uint8 Window::getDisplayColorBits ( void ) const
 {
@@ -166,13 +170,15 @@ uint16 Window::getDisplayPitch ( void ) const
     return 0;
 }
 */
-/*
-void* Window::getDisplayPixels ( void ) const
+
+/* FIXME
+void* Window::pixels ( void ) const
 {
-  //return SDL_GetVideoSurface()->pixels;
-    return 0;
+  SDL_Surface *buffer = this->window_surface();
+
+  return buffer->pixels;
 }
-*/
+FIXME */
 
 uint32 Window::pixel_format ( void ) const
 {
@@ -270,6 +276,12 @@ void Window::unlock ( void ) const
   SDL_UnlockSurface ( this->window() );
 }
 */
+
+void Window::draw ( const IDrawable& object ) const
+{
+  object.draw ( this->renderer() );
+}
+
 bool Window::flip ( void ) const
 {
   if ( SDL_UpdateWindowSurface ( this->window() ) != 0 )
@@ -280,15 +292,43 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Window::fullscreen ( uint32 flags )
+bool Window::fullscreen ( void ) const
 {
-  if ( SDL_SetWindowFullscreen ( this->window(), flags ) != 0 )
+  if ( this->fullscreen_ ) return true;
+
+  return false;
+}
+
+void Window::set_fullscreen ( bool state )
+{
+  this->fullscreen_ = state;
+}
+
+bool Window::toggle_fullscreen ( void )
+{
+  if ( this->fullscreen() == true ) // Go back to window state
   {
-    NOM_LOG_ERR ( NOM, std::string ( SDL_GetError() ) );
-    return false;
+    if ( SDL_SetWindowFullscreen ( this->window(), 0 ) != 0 )
+    {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return false;
+    }
+    this->set_fullscreen ( false );
+    return true;
   }
 
-  return true;
+  if ( this->fullscreen() == false )
+  {
+    if ( SDL_SetWindowFullscreen ( this->window(), SDL_WINDOW_FULLSCREEN_DESKTOP ) != 0 )
+    {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return false;
+    }
+    this->set_fullscreen ( true );
+    return true;
+  }
+
+  return false; // We should never reach this statement
 }
 
 const std::string Window::window_title ( void ) const
@@ -338,7 +378,7 @@ void Window::set_position ( int32 x, int32 y )
 
 uint32 Window::window_id ( void ) const
 {
-  return SDL_GetWindowID ( this->window() );
+  return this->window_id_;
 }
 
 SDL_Window* Window::window_id ( uint32 id )
@@ -348,7 +388,7 @@ SDL_Window* Window::window_id ( uint32 id )
 
 int Window::window_display_id ( void ) const
 {
-  return SDL_GetWindowDisplayIndex ( this->window() );
+  return this->window_display_id_;
 }
 
 void Window::disable_screensaver ( void )
@@ -405,6 +445,26 @@ void Window::set_maximum_window_size ( int max_width, int max_height )
 {
   SDL_SetWindowMaximumSize ( this->window(), max_width, max_height );
 }
+
+/*  FIXME
+bool Window::save_screenshot ( const std::string& filename ) const
+{
+  SDL_Surface* buffer = this->window_surface();
+  if ( buffer == nullptr )
+  {
+NOM_LOG_ERR ( NOM, "Window surface for screenshot capture is invalid." );
+    return false;
+  }
+
+  if ( SDL_SaveBMP ( this->window_surface(), filename.c_str() ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  return true;
+}
+FIXME */
 
 void Window::set_active ( void )
 {

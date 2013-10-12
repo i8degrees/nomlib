@@ -46,19 +46,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
   namespace ui {
 
+enum FrameStyle
+{
+  None = 0,
+  Gray = 1
+};
+
 /// \brief Simple UI interface for drawing a styled message box
 class MessageBox:
                     public IDrawable
 
 {
   public:
-
-    enum FrameStyle
-    {
-      None = 0,
-      Gray = 1
-    };
-
     MessageBox ( void );
 
     MessageBox  (

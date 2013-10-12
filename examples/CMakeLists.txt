@@ -23,20 +23,12 @@ endif ( PLATFORM_WINDOWS )
 
 add_executable ( audio "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/audio/audio.cpp" )
 add_executable ( app "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/app/app.cpp" "${EXAMPLES_SRC_DIR}/app/app.hpp" )
-#add_executable ( font "${EXAMPLES_SRC_DIR}/fonts/font.cpp" )
 add_executable ( json_reader "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/json/json_reader.cpp" )
 add_executable ( json_writer "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/json/json_writer.cpp" )
 
 # Install example resources
 install ( DIRECTORY
           "${EXAMPLES_SRC_DIR}/audio/Resources"
-          DESTINATION
-          "${EXAMPLES_INSTALL_PEFIX}"
-          PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-        )
-
-install ( DIRECTORY
-          "${EXAMPLES_SRC_DIR}/fonts/Resources"
           DESTINATION
           "${EXAMPLES_INSTALL_PEFIX}"
           PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!

@@ -70,7 +70,7 @@ set ( GRAPHICS_SPRITE_SOURCE
     )
 
 # User Interface module
-file ( GLOB GUI_HEADERS "${NOMLIB_HEADERS_DIR}/graphics/gui/*.hpp" )
+file ( GLOB GUI_HEADERS "${NOMLIB_HEADERS_DIR}/gui/*.hpp" )
 set ( GUI_SOURCE
       ${SRC_DIR}/gui/Cursor.cpp
       ${SRC_DIR}/gui/MessageBox.cpp

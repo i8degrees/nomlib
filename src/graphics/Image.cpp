@@ -88,6 +88,43 @@ bool Image::valid ( void ) const
   }
 }
 
+int32 Image::width ( void ) const
+{
+  SDL_Surface* buffer = this->image();
+  return buffer->w;
+}
+
+int32 Image::height ( void ) const
+{
+  SDL_Surface* buffer = this->image();
+  return buffer->h;
+}
+
+void* Image::pixels ( void ) const
+{
+  SDL_Surface* buffer = this->image();
+  return buffer->pixels;
+}
+
+uint16 Image::pitch ( void ) const
+{
+  SDL_Surface* buffer = this->image();
+  return buffer->pitch;
+}
+
+uint8 Image::bits_per_pixel ( void ) const
+{
+  SDL_Surface* buffer = this->image();
+
+  return buffer->format->BitsPerPixel;
+}
+
+const SDL_PixelFormat* Image::pixel_format ( void ) const
+{
+  SDL_Surface* buffer = this->image();
+  return buffer->format;
+}
+
 bool Image::load ( const std::string& filename )
 {
   this->image_.reset ( IMG_Load ( filename.c_str() ), priv::FreeSurface );
@@ -155,6 +192,46 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
   priv::FreeSurface ( buffer );
   return true;
+}
+
+uint32 Image::pixel ( int32 x, int32 y )
+{
+  switch ( this->bits_per_pixel() )
+  {
+    default: return -1; break; // Unknown
+
+    case 8:
+    {
+      uint8* pixels = static_cast<uint8*> ( this->pixels() );
+
+      return pixels[ ( y * this->pitch() ) + x ];
+    }
+    break;
+
+    case 16:
+    {
+      uint16* pixels = static_cast<uint16*> ( this->pixels() );
+
+      return pixels[ ( y * this->pitch() / 2 ) + x ];
+    }
+    break;
+
+    case 24:
+    {
+      uint8* pixels = static_cast<uint8*> ( this->pixels() );
+
+      return pixels[ ( y * this->pitch() ) + x ];
+    }
+    break;
+
+    case 32:
+    {
+      uint32* pixels = static_cast<uint32*> ( this->pixels() );
+
+      return pixels[ ( y * this->pitch()/4 ) + x ];
+    }
+    break;
+  } // end switch
 }
 
 

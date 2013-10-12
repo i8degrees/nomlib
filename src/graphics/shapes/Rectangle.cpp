@@ -62,7 +62,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   }
 
   // convert nom::Coords to SDL_Rect
-  SDL_Rect r = IntRect::asSDLRect ( this->coords );
+  SDL_Rect r = this->coords.SDL();
 
   if ( SDL_RenderFillRect ( target, &r ) != 0 )
   {

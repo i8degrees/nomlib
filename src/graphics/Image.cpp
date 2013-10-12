@@ -137,7 +137,7 @@ const Point2i Image::size ( void ) const
 bool Image::set_colorkey ( const Color& key, uint32 flags )
 {
   SDL_Surface* buffer = this->image();
-  uint32 transparent_color = RGBA::asInt32 ( buffer->format, key );
+  uint32 transparent_color = key.RGB ( buffer->format );
 
   if ( this->valid() == false )
   {

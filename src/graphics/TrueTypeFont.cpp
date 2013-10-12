@@ -270,9 +270,11 @@ void TrueTypeFont::update ( void )
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
-                                    RGBA::asSDLCOLOR ( this->color ),
-                                    // TODO / implement me!
-                                    RGBA::asSDLCOLOR ( Color ( 97, 97, 97 ) )
+                                    this->color.SDL(),
+                                    // TODO; implement me -- a second color
+                                    // possibility means needing two colors in
+                                    // class
+                                    Color ( 97, 97, 97 ).SDL()
                                   )
                                 );
   }
@@ -282,7 +284,7 @@ void TrueTypeFont::update ( void )
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
-                                    RGBA::asSDLCOLOR ( this->color )
+                                    this->color.SDL()
                                   )
                                 );
   }
@@ -292,7 +294,7 @@ void TrueTypeFont::update ( void )
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
-                                    RGBA::asSDLCOLOR ( this->color )
+                                    this->color.SDL()
                                   )
                                 );
   }

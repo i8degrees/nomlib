@@ -81,6 +81,9 @@ set ( NOMLIB_HEADERS_ROOT "include" )
 # Relative path from project root to nomlib's header files root
 set ( NOMLIB_HEADERS_DIR "include/nomlib" )
 
+# Relative path from project root to jsoncpp header files
+set ( JSONCPP_HEADERS_DIR "${NOMLIB_HEADERS_DIR}/json/jsoncpp" )
+
 # Relative path from project root to the external dependencies directory
 set ( EXTERNAL_DEPS_DIR "third-party" )
 
@@ -158,7 +161,7 @@ endif ( DOCS )
 include ( "${SRC_DIR}/CMakeLists.txt" )
 
 # Project Header Files
-include_directories ( "${NOMLIB_HEADERS_ROOT}" )
+include_directories ( "${NOMLIB_HEADERS_ROOT}" "${JSONCPP_HEADERS_DIR}" )
 
 # Required Dependencies
 #

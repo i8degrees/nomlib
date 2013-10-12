@@ -34,11 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <array>
 
-#include "json_spirit_writer_template.h"
-
-#ifndef JSON_SPIRIT_VALUE_ENABLED
-  #define JSON_SPIRIT_VALUE_ENABLED
-#endif
+#include "json.h" // jsoncpp library
 
 #include "nomlib/config.hpp"
 //#include "nomlib/json/Object.hpp"
@@ -47,6 +43,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
   namespace JSON {
 
+/// Formatting options (not presently used).
+/// \todo Look into jsoncpp documentation and see if there's an equivalent for
+/// any of these formatting options? Convert and extend as necessary.
 enum
 {
   NoFormatting = 0, // no formatting applied
@@ -59,14 +58,9 @@ class FileWriter
   public:
     FileWriter ( void );
     ~FileWriter ( void );
-/*
+
     bool save (
-                const std::string& filename, Object& root,
-                enum options format = none
-              );
-*/
-    bool save (
-                const std::string& filename, const json_spirit::Array& root_object,
+                const std::string& filename, const Json::Value& object,
                 uint32 format = NoFormatting
               );
 };

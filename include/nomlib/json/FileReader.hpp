@@ -33,11 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fstream>
 #include <string>
 
-#include "json_spirit_reader_template.h"
-
-#ifndef JSON_SPIRIT_VALUE_ENABLED
-  #define JSON_SPIRIT_VALUE_ENABLED
-#endif
+#include "json.h" // jsoncpp library
 
 #include "nomlib/config.hpp"
 //#include "nomlib/json/Value.hpp"
@@ -51,9 +47,9 @@ class FileReader
     FileReader ( void );
     ~FileReader ( void );
 
-    //bool parse ( const std::string& filename, Value& value );
-    bool load ( const std::string& filename, json_spirit::Value& value );
+    bool load ( const std::string& filename, Json::Value& object );
 };
+
 
   } // namespace JSON
 } // namespace nom

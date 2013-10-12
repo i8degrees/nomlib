@@ -77,6 +77,19 @@ set ( GUI_SOURCE
       ${SRC_DIR}/gui/GrayFrame.cpp
     )
 
+# JSON module
+file ( GLOB JSON_HEADERS "${NOMLIB_HEADERS_DIR}/json/*.hpp" )
+set ( JSON_SOURCE
+      ${SRC_DIR}/json/FileReader.cpp
+      ${SRC_DIR}/json/FileWriter.cpp
+    )
+
+# third-party jsoncpp library
+file ( GLOB JSONCPP_HEADERS "${JSONCPP_HEADERS_DIR}/*.hpp" )
+set ( JSONCPP_SOURCE
+      ${SRC_DIR}/json/jsoncpp/jsoncpp.cpp
+    )
+
 # Math module
 file ( GLOB MATH_HEADERS "${NOMLIB_HEADERS_DIR}/math/*.hpp" )
 set ( MATH_HEADERS
@@ -137,16 +150,6 @@ set ( SYSTEM_SOURCE
 # Platform-specific source files
 if ( PLATFORM_OSX OR PLATFORM_LINUX )
   set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/unix/UnixFile.cpp" )
-
-  # nomJSON
-  #set ( NOMLIB_SOURCE
-        #${NOMLIB_SOURCE}
-        #${SRC_DIR}/json/Array.cpp
-        #${SRC_DIR}/json/FileReader.cpp
-        #${SRC_DIR}/json/FileWriter.cpp
-        #${SRC_DIR}/json/Object.cpp
-        #${SRC_DIR}/json/Value.cpp
-      #)
 endif ( PLATFORM_OSX OR PLATFORM_LINUX )
 
 if ( PLATFORM_OSX )
@@ -171,6 +174,8 @@ set ( NOMLIB_HEADERS
       ${GRAPHICS_SHAPES_HEADERS}
       ${GRAPHICS_SPRITE_HEADERS}
       ${GUI_HEADERS}
+      ${JSON_HEADERS}
+      ${JSONCPP_HEADERS}
       ${MATH_HEADERS}
       ${SYSTEM_HEADERS}
       ${SYSTEM_OSX_HEADERS}
@@ -188,6 +193,8 @@ set ( NOMLIB_SOURCE
       ${GRAPHICS_SHAPES_SOURCE}
       ${GRAPHICS_SPRITE_SOURCE}
       ${GUI_SOURCE}
+      ${JSON_SOURCE}
+      ${JSONCPP_SOURCE}
       ${MATH_SOURCE}
       ${SYSTEM_SOURCE}
     )
@@ -202,6 +209,8 @@ source_group ( "include\\graphics\\scale2x" FILES ${GRAPHICS_SCALE2X_HEADERS} )
 source_group ( "include\\graphics\\shapes" FILES ${GRAPHICS_SHAPES_HEADERS} )
 source_group ( "include\\graphics\\sprite" FILES ${GRAPHICS_SPRITE_HEADERS} )
 source_group ( "include\\gui" FILES ${GUI_HEADERS} )
+source_group ( "include\\json" FILES ${JSON_HEADERS} )
+source_group ( "include\\json\\jsoncpp" FILES ${JSONCPP_HEADERS} )
 source_group ( "include\\math" FILES ${MATH_HEADERS} )
 source_group ( "include\\system" FILES ${SYSTEM_HEADERS} )
 source_group ( "include\\system\\osx" FILES ${SYSTEM_OSX_HEADERS} )
@@ -216,6 +225,8 @@ source_group ( "src\\graphics\\scale2x" FILES ${GRAPHICS_SCALE2X_SOURCE} )
 source_group ( "src\\graphics\\shapes" FILES ${GRAPHICS_SHAPES_SOURCE} )
 source_group ( "src\\graphics\\sprite" FILES ${GRAPHICS_SPRITE_SOURCE} )
 source_group ( "src\\gui" FILES ${GUI_SOURCE} )
+source_group ( "src\\json" FILES ${JSON_SOURCE} )
+source_group ( "src\\json\\jsoncpp" FILES ${JSONCPP_SOURCE} )
 source_group ( "src\\math" FILES ${MATH_SOURCE} )
 source_group ( "src\\system" FILES ${SYSTEM_SOURCE} )
 

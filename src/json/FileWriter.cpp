@@ -32,33 +32,30 @@ namespace nom {
   namespace JSON {
 
 FileWriter::FileWriter ( void ) {}
-
 FileWriter::~FileWriter ( void ) {}
-/*
-bool FileWriter::save (
-                        const std::string& filename, Object& root,
-                        enum options format
-                      )
-*/
+
 bool FileWriter::save (
                         const std::string& filename,
-                        const json_spirit::Array& root_object,
+                        const Json::Value& object,
                         uint32 format
                       )
 {
   std::ofstream fp; // output file stream
+  Json::StyledWriter writer; // jsoncpp library
+  std::string output = writer.write ( object );
 
   fp.open ( filename ); // open for writing
 
   if ( fp.is_open() && fp.good() )
   {
+    fp << output;
+/* FIXME
     switch ( format )
     {
       default:
       case NoFormatting:
       {
-        json_spirit::write_stream ( json_spirit::Value ( root_object ), fp );
-        //json_spirit::write_stream ( json_spirit::Value ( root.values ), fp );
+
       }
       break;
 
@@ -82,18 +79,16 @@ bool FileWriter::save (
       }
       break;
     }
+*/
   }
-  else // fp is *NOT* open and / or good
+  else // file error
   {
-NOM_LOG_ERR ( NOM, "Unable to save JSON file at: " + filename );
-    fp.close();
+NOM_LOG_ERR ( NOM, "Unable to save JSON output file at: " + filename );
     return false;
-  } // end if fp is open && good
+  } // end if fp is good
 
-  fp.close();
   return true;
 }
-
 
   } // namespace JSON
 } // namespace nom

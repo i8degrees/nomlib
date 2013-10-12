@@ -97,6 +97,10 @@ class Image
     /// Set a new color key on the image loaded into memory.
     ///
     /// \param flags    SDL_RLEACCEL
+    ///
+    /// This method only works on SDL_Surface video buffers -- if converted to
+    /// a SDL_Texture*, you will lose it, and possibly create a segmentation
+    /// fault!
     bool set_colorkey ( const Color& key, uint32 flags );
 
   private:

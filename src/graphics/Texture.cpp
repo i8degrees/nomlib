@@ -392,14 +392,6 @@ TODO */
   // and display format conversion.
 NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
 
-  // If a color key is requested, we must set one BEFORE creating the texture,
-  // for efficiency's sake; we would need to convert the texture back to a surface
-  // and then again to a texture otherwise!
-  if ( colorkey != Color::null )
-  {
-    if ( image.set_colorkey ( colorkey, flags ) == false ) return false;
-  }
-
   if ( this->initialize ( image.image() ) == false ) return false;
 
   /*if ( flags & SDL_SRCALPHA )

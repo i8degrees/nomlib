@@ -257,16 +257,16 @@ NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
 
 void TrueTypeFont::update ( void )
 {
-/*  FIXME
+  if ( updated == true ) return;
   // Update display coordinates
-  this->font_buffer.setPosition ( this->coords );
+  this->font_buffer.set_position ( Point2i ( this->coords.x, this->coords.y ) );
 
   // Update the rendered text surface here for drawing
   if ( this->getText().c_str() == nullptr ) return;
 
   if ( this->rendering == RenderStyle::Shaded )
   {
-    this->font_buffer.setCanvas ( TTF_RenderText_Shaded
+    this->font_buffer.initialize ( TTF_RenderText_Shaded
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
@@ -278,7 +278,7 @@ void TrueTypeFont::update ( void )
   }
   else if ( this->rendering == RenderStyle::Blended )
   {
-    this->font_buffer.setCanvas ( TTF_RenderText_Blended
+    this->font_buffer.initialize ( TTF_RenderText_Blended
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
@@ -288,7 +288,7 @@ void TrueTypeFont::update ( void )
   }
   else // Assume low quality rendering
   {
-    this->font_buffer.setCanvas ( TTF_RenderText_Solid
+    this->font_buffer.initialize ( TTF_RenderText_Solid
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
@@ -299,9 +299,10 @@ void TrueTypeFont::update ( void )
 
   if ( this->text_style == FontStyle::Faded )
   {
-    this->font_buffer.setAlpha ( this->style_options );
+    this->font_buffer.set_alpha ( this->style_options );
   }
-    FIXME */
+
+  updated = true;
 }
 
 void TrueTypeFont::draw ( SDL_Renderer* target ) const
@@ -309,6 +310,14 @@ void TrueTypeFont::draw ( SDL_Renderer* target ) const
   if ( this->font_buffer.valid() )
   {
     this->font_buffer.draw ( target );
+  }
+}
+
+void TrueTypeFont::draw ( const Window& target ) const
+{
+  if ( this->font_buffer.valid() )
+  {
+    this->font_buffer.draw ( target.renderer() );
   }
 }
 

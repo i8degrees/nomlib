@@ -41,6 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/graphics/Texture.hpp"
+#include "nomlib/graphics/Window.hpp"
 
 namespace nom {
 
@@ -125,6 +126,8 @@ class TrueTypeFont: public IFont
     /// Draw the set text string to the video surface
     void draw ( SDL_Renderer* target ) const;
 
+    void draw ( const Window& target ) const;
+    bool updated = false;
   private:
     /// Trigger a rebuild of the font metrics from the current font; this
     /// recalculates character sizes, coordinate origins, spacing, etc.

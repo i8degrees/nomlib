@@ -24,8 +24,8 @@ endif ( PLATFORM_WINDOWS )
 add_executable ( audio "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/audio/audio.cpp" )
 add_executable ( app "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/app/app.cpp" "${EXAMPLES_SRC_DIR}/app/app.hpp" )
 #add_executable ( font "${EXAMPLES_SRC_DIR}/fonts/font.cpp" )
-#add_executable ( reader "${EXAMPLES_SRC_DIR}/json/reader.cpp" )
-#add_executable ( writer "${EXAMPLES_SRC_DIR}/json/writer.cpp" )
+add_executable ( json_reader "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/json/json_reader.cpp" )
+add_executable ( json_writer "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/json/json_writer.cpp" )
 
 # Install example resources
 install ( DIRECTORY

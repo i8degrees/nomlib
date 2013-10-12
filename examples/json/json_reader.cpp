@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 
-// JSON FileWriter usage example
+// JSON FileReader usage example
 
 #include <iostream>
 #include <string>
@@ -35,10 +35,55 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cassert>
 
 #include <nomlib/json.hpp>
+#include <nomlib/system.hpp>
+
+const std::string APP_NAME = "examples/json_reader";
+
+const std::string APP_RESOURCES_DIR = "Resources";
+const std::string RESOURCE_JSON_EXAMPLE1_GOOD = "ex1_good.json";
+const std::string RESOURCE_JSON_EXAMPLE1_BAD = "ex1_bad.json";
 
 int main ( int argc, char* argv[] )
 {
-  std::cout << std::endl << "Stub for JSON FileWriter usage example" << std::endl;
+  nom::JSON::FileReader parser;
+  Json::Value root;
+
+  nom::File dir;
+  nom::Path p;
+  std::string pwd = dir.path ( argv[0] ) + p.native() + APP_RESOURCES_DIR;
+  dir.setPath ( pwd );
+
+  if ( parser.load ( RESOURCE_JSON_EXAMPLE1_GOOD, root ) == false )
+  {
+    nom::DialogMessageBox ( APP_NAME, "Could not parse input resource file: " + RESOURCE_JSON_EXAMPLE1_GOOD );
+    return EXIT_FAILURE;
+  }
+
+  if ( root.isObject() == false )
+  {
+    nom::DialogMessageBox ( APP_NAME, "Invalid JSON: does not begin as an object declaration." );
+    return EXIT_FAILURE;
+  }
+
+  if ( root["User"]["UserName"].isNull() == false )
+  {
+    nom::DialogMessageBox ( APP_NAME, "Root node 'User' has a UserName of '" + root["User"]["UserName"].asString() + "'", nom::NOM_DIALOG_INFORMATION );
+  }
+  else
+  {
+    nom::DialogMessageBox ( APP_NAME, "Could not parse root node 'User' parameter 'UserName' with input file: " + RESOURCE_JSON_EXAMPLE1_GOOD );
+    return EXIT_FAILURE;
+  }
+
+  if ( root["User2"]["UserName"].isNull() == false )
+  {
+    nom::DialogMessageBox ( APP_NAME, "Root node 'User2' has a UserName of '" + root["User2"]["UserName"].asString() + "'", nom::NOM_DIALOG_INFORMATION );
+  }
+  else
+  {
+    nom::DialogMessageBox ( APP_NAME, "Could not parse root node 'User2' parameter 'UserName' with input file: " + RESOURCE_JSON_EXAMPLE1_GOOD );
+    return EXIT_FAILURE;
+  }
 
   return EXIT_SUCCESS;
 }

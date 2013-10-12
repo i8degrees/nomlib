@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 
-// JSON FileReader usage example
+// JSON FileWriter usage example
 
 #include <iostream>
 #include <string>
@@ -35,10 +35,45 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cassert>
 
 #include <nomlib/json.hpp>
+#include <nomlib/system.hpp>
+
+const std::string APP_NAME = "examples/json_writer";
+const std::string OUTPUT_JSON_FILENAME = "json_writer.json";
 
 int main ( int argc, char* argv[] )
 {
-  std::cout << std::endl << "Stub for JSON FileReader usage example" << std::endl;
+  nom::JSON::FileWriter writer;
+  Json::Value root;
+
+  nom::File dir;
+  nom::Path p;
+  std::string pwd = dir.path ( argv[0] ) + p.native();
+  dir.setPath ( pwd );
+
+  root[0]["HelloWorld"] = "I am a string!";
+  root[0]["SignedInteger"] = -42;
+  root[0]["UnsignedInteger"] = 42;
+  root[0]["Float"] = 42.56;
+  root[0]["BooleanTrue"] = true;
+  root[0]["BooleanFalse"] = false;
+  root[0]["null"];
+  root[0]["StringArray"][0] = "StringArray index 0";
+  root[0]["StringArray"][1] = "StringArray index 1";
+  root[0]["StringArray"][2] = "StringArray index 2";
+  root[0]["StringArray"][3] = "StringArray index 3";
+
+  root[0]["IntegerArray"][0] = 6;
+  root[0]["IntegerArray"][1] = 10;
+  root[0]["IntegerArray"][2] = 9;
+  root[0]["IntegerArray"][3] = 8;
+
+  if ( writer.save ( OUTPUT_JSON_FILENAME, root ) == false )
+  {
+    nom::DialogMessageBox ( APP_NAME, "Could not save output JSON file: " + OUTPUT_JSON_FILENAME );
+    return EXIT_FAILURE;
+  }
+
+  nom::DialogMessageBox ( APP_NAME, "Success! The resulting JSON output has been saved at: " + OUTPUT_JSON_FILENAME );
 
   return EXIT_SUCCESS;
 }

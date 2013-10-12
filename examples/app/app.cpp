@@ -68,14 +68,42 @@ bool App::onInit ( void )
 
     if ( this->window[idx].set_window_icon ( RESOURCE_ICON ) == false )
     {
+      nom::DialogMessageBox ( APP_NAME, "Could not load window icon: " + RESOURCE_ICON );
       return false;
     }
   }
 
-  this->ui_frame = nom::ui::GrayFrame ( 50, 50, 200, 200 );
-  this->linear.setSize ( 200 - 4, 200 - 4 );
-  this->linear.setMargins ( 4, 4 );
-  this->linear.setFillDirection ( nom::Gradient::FillDirection::Top );
+  this->window[1].set_active();
+  if ( this->background.load ( RESOURCE_STATIC_IMAGE ) == false )
+  {
+    nom::DialogMessageBox ( APP_NAME, "Could not load image file: " + RESOURCE_STATIC_IMAGE );
+    return false;
+  }
+
+  this->window[0].set_active();
+  if ( this->font.load ( RESOURCE_TRUETYPE_FONT, nom::Color::White ) == false )
+  {
+    nom::DialogMessageBox ( APP_NAME, "Could not load TrueType font: " + RESOURCE_TRUETYPE_FONT );
+    return false;
+  }
+
+  nom::Point2i window_size = this->window[0].size();
+
+  this->font.setFontSize ( 36 );
+  this->font.setRenderingStyle ( nom::IFont::RenderStyle::Blended );
+  this->font.setColor ( nom::Color::White );
+  this->font.setText ( "Hello, world!" );
+  this->font.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, ( window_size.y - 48 ) / 2 ) );
+  this->font.update();
+
+  // Setup a gradient fill for initializing the ui_frame object with as a
+  // background
+  this->gradient.setStartColor ( nom::Color::Gray );
+  this->gradient.setEndColor ( nom::Color::LightGray );
+  this->gradient.setFillDirection ( nom::Gradient::FillDirection::Left );
+
+  // Setup our fancy dangled user interface frame
+  this->ui_frame = nom::ui::MessageBox ( ( window_size.x - 200 ) / 2, ( window_size.y - 48 ) / 2, 200, 48, nom::ui::FrameStyle::Gray, this->gradient );
 
   this->Running(); // If all is well, here goes nothing!
   return true;
@@ -140,14 +168,25 @@ nom::int32 App::Run ( void )
       this->onEvent ( &this->event );
     }
 
-    this->window[0].fill ( nom::Color::NomSecondaryColorKey );
-    this->window[1].fill ( nom::Color::NomPrimaryColorKey );
-    this->window[2].fill ( nom::Color::Black );
+    this->window[0].set_active();
+    this->window[0].fill ( nom::Color::NomPrimaryColorKey );
+    this->ui_frame.draw ( this->window[0].renderer() );
+    this->font.draw ( this->window[0].renderer() );
 
+    this->window[1].set_active();
+    this->window[1].fill ( nom::Color::Black );
+    this->background.draw ( this->window[1] ); //this->window[1].draw ( this->background );
+
+    this->window[2].set_active();
+    this->window[2].fill ( nom::Color::NomSecondaryColorKey );
+
+    // Choose a random color for filling the window with as a backdrop when
+    // MAXIMUM_WINDOWS is greater than 3
     for ( auto idx = 3; idx < MAXIMUM_WINDOWS; idx++ )
     {
       nom::int32 random_color = nom::rand ( 1, 11 );
 
+      this->window[idx].set_active();
       switch ( random_color )
       {
         default: this->window[idx].fill ( nom::Color::Black ); break;
@@ -166,47 +205,35 @@ nom::int32 App::Run ( void )
       }
     }
 
-    nom::Line line1 = nom::Line ( ((WINDOW_WIDTH-176)*2)/2, 194*2, 176*2, 24*2, nom::Color( 133, 133, 133 ) );
-    line1.draw ( this->window[0].renderer() );
+    //nom::Line line1 = nom::Line ( ((WINDOW_WIDTH-176)*2)/2, 194*2, 176*2, 24*2, nom::Color( 133, 133, 133 ) );
+    //line1.draw ( this->window[0].renderer() );
 
-    nom::Point pixel = nom::Point ( 500, 245, nom::Color::White );
-    pixel.draw ( this->window[2].renderer() );
+    //nom::Point pixel = nom::Point ( 500, 245, nom::Color::White );
+    //pixel.draw ( this->window[2].renderer() );
 
-    this->linear.setStartColor ( nom::Color ( 251, 222, 232 ) );
-    this->linear.setEndColor ( nom::Color ( 114, 66, 66 ) );
-    this->linear.setPosition ( 50, 50 );
-    this->linear.update();
-    this->linear.draw( this->window[2].renderer() );
-    this->ui_frame.draw ( this->window[2].renderer() );
+    //nom::Line line2 = nom::Line ( 100, 100, 250, 250, nom::Color( 133, 133, 133 ) );
+    //line2.draw ( this->window[1].renderer() );
 
-    nom::Line line2 = nom::Line ( 100, 100, 250, 250, nom::Color( 133, 133, 133 ) );
-    line2.draw ( this->window[1].renderer() );
-
-    nom::Rectangle rectangle = nom::Rectangle ( 100, 100, 200, 200, nom::Color::Gray );
-    rectangle.draw ( this->window[0].renderer() );
-
-    if ( this->isFullScreen() == true )
-    {
-      this->window[0].fill ( nom::Color::NomPrimaryColorKey );
-      this->window[1].fill ( nom::Color::NomSecondaryColorKey );
-    }
+    //nom::Rectangle rectangle = nom::Rectangle ( 100, 100, 200, 200, nom::Color::Gray );
+    //rectangle.draw ( this->window[0].renderer() );
 
     for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
     {
       this->window[idx].update();
       this->fps[idx].update();
       this->ui_frame.update();
+      this->font.update();
 
       // Refresh the frames per second at 1 second intervals
       if ( this->update[idx].ticks() > 1000 )
       {
         if ( this->getShowFPS() == true )
         {
-          this->window[idx].set_window_title ( APP_NAME + " " + std::to_string(this->window[idx].window_id()) + " - " + this->fps[idx].asString() + '\x20' + "fps" );
+          this->window[idx].set_window_title ( APP_NAME + " - " + this->fps[idx].asString() + ' ' + "fps" );
         }
         else
         {
-          this->window[idx].set_window_title ( APP_NAME + " " + std::to_string(this->window[idx].window_id()) + " - " + "Display" + " " + std::to_string ( this->window[idx].window_display_id() ) );
+          this->window[idx].set_window_title ( APP_NAME + " [" + std::to_string(this->window[idx].window_id()) + "]" + " - " + "Display" + ' ' + std::to_string ( this->window[idx].window_display_id() ) );
         }
 
         this->update[idx].restart();

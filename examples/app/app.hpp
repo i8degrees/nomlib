@@ -50,7 +50,7 @@ const std::string APP_INSTALL_PREFIX = "\0";
 const std::string APP_RESOURCES_DIR = "Resources";
 
 /// Name of our application.
-const std::string APP_NAME = "nom::SDL2 Demo - Window";
+const std::string APP_NAME = "nomlib Demo | Multiple Windows";
 
 /// Width, in pixels, of our effective rendering surface.
 const nom::int32 WINDOW_WIDTH = 768;
@@ -74,6 +74,10 @@ const nom::int32 MAXIMUM_WINDOWS = 3;
   const std::string RESOURCE_ICON = "icon.png";
 #endif
 
+const std::string RESOURCE_TRUETYPE_FONT = "arial.ttf";
+
+/// Copyright (c) 2013 Fielding Johnston. All rights reserved.
+const std::string RESOURCE_STATIC_IMAGE = "boardoutline.png";
 
 /// \brief Usage example
 class App:
@@ -95,6 +99,8 @@ class App:
     void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
 
     /// Window handles
+    ///
+    /// \todo Use std::vector
     nom::Window window[MAXIMUM_WINDOWS];
 
     /// Interval at which we refresh the frames per second counter
@@ -106,9 +112,17 @@ class App:
     /// Input events
     SDL_Event event;
 
-    nom::ui::GrayFrame ui_frame;
+    /// nom::ui::MessageBox utilizes nom::GrayFrame (which uses nom::Line),
+    /// nom::Gradient and nom::IFont
+    nom::ui::MessageBox ui_frame;
 
-    nom::Gradient linear;
+    /// nom::Gradient utilizes nom::Rectangle
+    nom::Gradient gradient;
+
+    /// Texture used as a static background image
+    nom::Texture background;
+
+    nom::TrueTypeFont font;
 };
 
 #endif // include guard defined

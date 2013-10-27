@@ -362,7 +362,7 @@ bool Window::set_window_icon ( const std::string& filename )
 
   if ( icon.valid() == false )
   {
-    NOM_LOG_ERR ( NOM, "Could not obtain a valid icon." );
+NOM_LOG_ERR ( NOM, "Could not obtain a valid icon." );
     return false;
   }
 

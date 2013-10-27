@@ -74,6 +74,13 @@ class Image
     /// Is this object initialized? Valid when *NOT* nullptr
     bool valid ( void ) const;
 
+    int32 width ( void ) const;
+    int32 height ( void ) const;
+    void* pixels ( void ) const;
+    uint16 pitch ( void ) const;
+    uint8 bits_per_pixel ( void ) const;
+    const SDL_PixelFormat* pixel_format ( void ) const;
+
     /// Supports every file type that the libSDL_image extension has been
     /// compiled with
     bool load ( const std::string& filename );
@@ -97,7 +104,22 @@ class Image
     /// Set a new color key on the image loaded into memory.
     ///
     /// \param flags    SDL_RLEACCEL
+    ///
+    /// This method only works on SDL_Surface video buffers -- if converted to
+    /// a SDL_Texture*, you will lose it, and possibly create a segmentation
+    /// fault!
     bool set_colorkey ( const Color& key, uint32 flags );
+
+    /// Pixel reading -- supports 8-bit, 15/16-bit, 24-bit & 32-bit color modes
+    ///
+    /// Returns -1 on error
+    ///
+    /// You are responsible for locking & unlocking of the Texture before-hand
+    ///
+    /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
+    /// \todo Relocate to nom::Image or whichever class becomes home to surfaces
+    /// (video memory buffers in system RAM)
+    uint32 pixel ( int32 x, int32 y );
 
   private:
     Image::SharedPtr image_;

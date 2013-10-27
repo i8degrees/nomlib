@@ -68,5 +68,31 @@ NOM_LOG_ERR ( NOM, "Could not obtain the bundle's Resources path." );
   return resources_path;
 }
 
+const std::string user_documents_path ( void )
+{
+  FSRef ref;
+  OSType folderType = kDocumentsFolderType;
+  char path[PATH_MAX];
+
+  FSFindFolder ( kUserDomain, folderType, kCreateFolder, &ref );
+
+  FSRefMakePath ( &ref, (uint8*) &path, PATH_MAX );
+
+  return std::string ( path );
+}
+
+const std::string user_app_support_path ( void )
+{
+  FSRef ref;
+  OSType folderType = kApplicationSupportFolderType;
+  char path[PATH_MAX];
+
+  FSFindFolder ( kUserDomain, folderType, kCreateFolder, &ref );
+
+  FSRefMakePath ( &ref, (uint8*) &path, PATH_MAX );
+
+  return std::string ( path );
+}
+
 
 } // namespace nom

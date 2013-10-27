@@ -40,7 +40,7 @@ EventDispatcher::~EventDispatcher ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
-int32 EventDispatcher::push ( Event* event, int32 code, void* params )
+int32 EventDispatcher::push ( SDL_Event* event, int32 code, void* params )
 {
   SDL_UserEvent user_event;
 

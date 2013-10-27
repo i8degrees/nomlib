@@ -32,30 +32,30 @@ namespace nom {
   namespace JSON {
 
 FileReader::FileReader ( void ) {}
-
 FileReader::~FileReader ( void ) {}
 
-//bool FileReader::parse ( const std::string& filename, Value& value )
-bool FileReader::load ( const std::string& filename, json_spirit::Value& value )
+bool FileReader::load ( const std::string& filename, Json::Value& object )
 {
   std::ifstream fp; // input file stream
+  Json::Reader reader; // jsoncpp library
 
   fp.open ( filename );
 
   if ( fp.is_open() && fp.good() )
   {
-    //json_spirit::read_stream ( fp, value.getValue() );
-    if ( json_spirit::read_stream ( fp, value ) == false )
+    // We enable collecting / parsing comments; comments are technically not
+    // valid JSON -- as per the official standard -- but is an extension that is
+    // widely accepted with most parsers, and is a most welcome feature in my
+    // opinion.
+    if ( reader.parse ( fp, object, true ) == false )
     {
-NOM_LOG_ERR ( NOM, "Unable to parse JSON input file at: " + filename );
-      fp.close();
+NOM_LOG_ERR ( NOM, "Unable to parse input JSON file at: " + filename );
       return false;
     }
-    fp.close();
   }
   else
   {
-    fp.close();
+NOM_LOG_ERR ( NOM, "Could not open given file: " + filename );
     return false;
   }
 

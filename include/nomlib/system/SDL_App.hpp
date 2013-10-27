@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_APP_HEADERS
-#define NOMLIB_SDL_APP_HEADERS
+#ifndef NOMLIB_SDL2_APP_HEADERS
+#define NOMLIB_SDL2_APP_HEADERS
 
 #include <iostream>
 #include <string>
@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <cstdlib>
 
-#include <SDL/SDL.h>
+#include "SDL.h"
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/Input.hpp"
@@ -51,8 +51,11 @@ class SDL_App: public Input
     virtual ~SDL_App ( void );
 
     virtual bool onInit ( void );
+
+    /// Re-implements nom::Input::onQuit()
     virtual void onQuit ( void );
-    virtual void onEvent ( Event* event );
+
+    virtual void onEvent ( SDL_Event* event );
 
     bool isRunning ( void );
     void Running ( void );
@@ -60,28 +63,25 @@ class SDL_App: public Input
 
     uint32 ticks ( void );
 
-    bool isFullScreen ( void );
-    void setFullScreen ( bool toggle );
     bool getShowFPS ( void );
     void showFPS ( bool toggle );
     void toggleFPS ( void );
 
     /// Let the user know if there are pending events
-    bool PollEvents ( Event* );
-
-    /// Set the rate at which we would like to receive keyboard input
-    void enableKeyRepeat ( int32 delay, int32 interval );
+    bool PollEvents ( SDL_Event* );
 
   private:
     /// global app state
     bool app_state;
+
     /// fps counter
     bool show_fps;
-     /// toggle windowed & fullscreen states
-    bool fullscreen;
+
     /// global app timer
     Timer appTime;
 };
-}
 
-#endif // NOMLIB_SDL_APP_HEADERS defined
+
+} // namespace nom
+
+#endif // include guard defined

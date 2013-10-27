@@ -44,7 +44,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   }
 
   this->joystick = nullptr;
-
+/* TODO
 NOM_LOG_INFO ( NOM, std::to_string ( SDL_NumJoysticks() ) + " joysticks were found" );
 
   if ( SDL_NumJoysticks() >= 0 )
@@ -58,6 +58,7 @@ NOM_LOG_INFO ( NOM, std::to_string ( SDL_NumJoysticks() ) + " joysticks were fou
 NOM_LOG_INFO ( NOM, SDL_JoystickName ( idx ) );
     }
   }
+TODO */
 }
 
 Input::~Input ( void )
@@ -79,45 +80,41 @@ NOM_LOG_TRACE ( NOM );
 }
 
 
-void Input::HandleInput ( Event* event )
+void Input::HandleInput ( SDL_Event* event )
 {
-  Event* input = event;
+  // TODO: Remove me
+  SDL_Event* input = event;
 
   switch ( input->type )
   {
-    case SDL_ACTIVEEVENT:
+    default: /* Ignore unknown events */ break;
+
+    case SDL_QUIT: this->onQuit(); break;
+
+    case SDL_WINDOWEVENT:
     {
-      switch ( input->active.state )
+      switch ( input->window.event )
       {
-        case SDL_APPMOUSEFOCUS:
-        {
-          if ( input->active.gain )
-            this->onMouseFocus();
-          else
-            this->onMouseBlur();
-          break;
-        }
+        default: /* Ignore unknown events */ break;
 
-        case SDL_APPINPUTFOCUS:
-        {
-          if ( input->active.gain )
-            this->onInputFocus();
-          else
-            this->onInputBlur();
-          break;
-        }
-        case SDL_APPACTIVE:
-        {
-          if ( input->active.gain )
-            this->onRestore();
-          else
-            this->onMinimize();
-          break;
-        }
+        case SDL_WINDOWEVENT_CLOSE: this->onQuit(); break;
 
-      }
-    break;
-    }
+/* TODO
+      case SDL_WINDOWEVENT_ENTER: break;
+      case SDL_WINDOWEVENT_EXPOSED: break;
+      case SDL_WINDOWEVENT_FOCUS_GAINED: break;
+      case SDL_WINDOWEVENT_FOCUS_LOST: break;
+      case SDL_WINDOWEVENT_HIDDEN: break;
+      case SDL_WINDOWEVENT_LEAVE: break;
+      case SDL_WINDOWEVENT_MAXIMIZED: break;
+      case SDL_WINDOWEVENT_MINIMIZED: break;
+      case SDL_WINDOWEVENT_MOVED: break;
+      case SDL_WINDOWEVENT_RESIZED: break;
+      case SDL_WINDOWEVENT_RESTORED: break;
+      case SDL_WINDOWEVENT_SHOWN: break;
+TODO */
+    } // end input->window.event switch
+  } // end input->type switch
 
     case SDL_USEREVENT:
       this->onUserEvent ( input->user.type, input->user.code, input->user.data1,
@@ -125,75 +122,76 @@ void Input::HandleInput ( Event* event )
                         );
     break;
 
-    case SDL_VIDEORESIZE: this->onResize ( input->resize.w, input->resize.h ); break;
-    case SDL_VIDEOEXPOSE: this->onExpose (); break;
     case SDL_SYSWMEVENT: /* Ignore */ break;
-    case SDL_QUIT: this->onQuit(); break;
 
     case SDL_KEYDOWN:
-      this->onKeyDown ( input->key.keysym.sym, input->key.keysym.mod );
+      this->onKeyDown ( input->key.keysym.sym, input->key.keysym.mod, input->button.windowID );
     break;
 
     case SDL_KEYUP:
-      this->onKeyUp ( input->key.keysym.sym, input->key.keysym.mod );
+      this->onKeyUp ( input->key.keysym.sym, input->key.keysym.mod, input->button.windowID );
     break;
 
     case SDL_MOUSEMOTION:
-      this->onMouseMotion ( input->motion.x, input->motion.y );
+      this->onMouseMotion ( input->motion.x, input->motion.y, input->motion.windowID );
     break;
 
     case SDL_MOUSEBUTTONDOWN:
+    {
       switch ( input->button.button )
       {
         case SDL_BUTTON_LEFT:
-          this->onMouseLeftButtonDown ( input->button.x, input->button.y );
+          this->onMouseLeftButtonDown ( input->button.x, input->button.y, input->button.windowID );
         break;
 
         case SDL_BUTTON_MIDDLE:
-          this->onMouseMiddleButtonDown ( input->button.x, input->button.y );
+          this->onMouseMiddleButtonDown ( input->button.x, input->button.y, input->button.windowID );
         break;
 
         case SDL_BUTTON_RIGHT:
-          this->onMouseRightButtonDown ( input->button.x, input->button.y );
+          this->onMouseRightButtonDown ( input->button.x, input->button.y, input->button.windowID );
         break;
 
         case SDL_BUTTON_X1:
-          this->onMouseButtonSixDown ( input->button.x, input->button.y );
+          this->onMouseButtonSixDown ( input->button.x, input->button.y, input->button.windowID );
         break;
 
         case SDL_BUTTON_X2:
-          this->onMouseButtonSevenDown ( input->button.x, input->button.y );
+          this->onMouseButtonSevenDown ( input->button.x, input->button.y, input->button.windowID );
         break;
-
-        case SDL_BUTTON_WHEELDOWN: this->onMouseWheel ( false, true ); break;
-
-        case SDL_BUTTON_WHEELUP: this->onMouseWheel ( true, false ); break;
       }
-    break;
+      break;
+    } // end SDL_MOUSEBUTTONDOWN event
 
     case SDL_MOUSEBUTTONUP:
       switch ( input->button.button )
       {
         case SDL_BUTTON_LEFT:
-          this->onMouseLeftButtonUp ( input->button.x, input->button.y );
+          this->onMouseLeftButtonUp ( input->button.x, input->button.y, input->button.windowID );
         break;
 
         case SDL_BUTTON_MIDDLE:
-          this->onMouseMiddleButtonUp ( input->button.x, input->button.y );
+          this->onMouseMiddleButtonUp ( input->button.x, input->button.y, input->button.windowID );
         break;
 
         case SDL_BUTTON_RIGHT:
-          this->onMouseRightButtonUp ( input->button.x, input->button.y );
+          this->onMouseRightButtonUp ( input->button.x, input->button.y, input->button.windowID );
         break;
 
         case SDL_BUTTON_X1:
-          this->onMouseButtonSixUp ( input->button.x, input->button.y );
+          this->onMouseButtonSixUp ( input->button.x, input->button.y, input->button.windowID );
         break;
 
         case SDL_BUTTON_X2:
-          this->onMouseButtonSevenUp ( input->button.x, input->button.y );
+          this->onMouseButtonSevenUp ( input->button.x, input->button.y, input->button.windowID );
         break;
       }
+    break;
+
+    case SDL_MOUSEWHEEL:
+    {
+      this->onMouseWheel ( input->wheel.x, input->wheel.y, input->wheel.windowID );
+    } // end SDL_MOUSEWHEEL event
     break;
 
     case SDL_JOYBUTTONDOWN:
@@ -207,6 +205,15 @@ void Input::HandleInput ( Event* event )
     case SDL_JOYAXISMOTION:
       this->onJoyAxis ( input->jaxis.which, input->jaxis.axis, input->jaxis.value );
     break;
+
+    case SDL_DROPFILE:
+    {
+      char* file = input->drop.file;
+      this->onDragDrop ( file );
+      SDL_free ( file );
+    } // end SDL_DROPFILE event
+    break;
+
   } // end switch input->type
 }
 
@@ -260,74 +267,144 @@ void Input::onExpose ( void )
   // virtual implementation
 }
 
-void Input::onKeyDown ( int32 key, int32 mod )
+void Input::onKeyDown ( int32 key, int32 mod, uint32 window_id )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_KEYBOARD_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( key );
+  NOM_DUMP_VAR ( mod );
+  NOM_DUMP_VAR ( window_id );
+#endif
 }
 
-void Input::onKeyUp ( int32 key, int32 mod )
+void Input::onKeyUp ( int32 key, int32 mod, uint32 window_id )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_KEYBOARD_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( key );
+  NOM_DUMP_VAR ( mod );
+  NOM_DUMP_VAR ( window_id );
+#endif
 }
 
-void Input::onMouseMotion ( int32 x, int32 y )
+void Input::onMouseMotion ( int32 x, int32 y, uint32 window_id )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( x );
+  NOM_DUMP_VAR ( y );
+  NOM_DUMP_VAR ( window_id );
+#endif
 }
 
-void Input::onMouseWheel ( bool up, bool down )
+void Input::onMouseWheel ( int32 x, int32 y, uint32 window_id )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( x );
+  NOM_DUMP_VAR ( y );
+  NOM_DUMP_VAR ( window_id );
+#endif
 }
 
-void Input::onMouseLeftButtonDown ( int32 x, int32 y )
+void Input::onMouseLeftButtonDown ( int32 x, int32 y, uint32 window_id )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( x );
+  NOM_DUMP_VAR ( y );
+  NOM_DUMP_VAR ( window_id );
+#endif
 }
 
-void Input::onMouseMiddleButtonDown ( int32 x, int32 y )
+void Input::onMouseMiddleButtonDown ( int32 x, int32 y, uint32 window_id )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( x );
+  NOM_DUMP_VAR ( y );
+  NOM_DUMP_VAR ( window_id );
+#endif
 }
 
-void Input::onMouseRightButtonDown ( int32 x, int32 y )
+void Input::onMouseRightButtonDown ( int32 x, int32 y, uint32 window_id )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( x );
+  NOM_DUMP_VAR ( y );
+  NOM_DUMP_VAR ( window_id );
+#endif
 }
 
-void Input::onMouseButtonSixDown ( int32 x, int32 y )
+void Input::onMouseButtonSixDown ( int32 x, int32 y, uint32 window_id )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( x );
+  NOM_DUMP_VAR ( y );
+  NOM_DUMP_VAR ( window_id );
+#endif
 }
 
-void Input::onMouseButtonSevenDown ( int32 x, int32 y )
+void Input::onMouseButtonSevenDown ( int32 x, int32 y, uint32 window_id )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( x );
+  NOM_DUMP_VAR ( y );
+  NOM_DUMP_VAR ( window_id );
+#endif
 }
 
-void Input::onMouseLeftButtonUp ( int32 x, int32 y )
+void Input::onMouseLeftButtonUp ( int32 x, int32 y, uint32 window_id )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( x );
+  NOM_DUMP_VAR ( y );
+  NOM_DUMP_VAR ( window_id );
+#endif
 }
 
-void Input::onMouseMiddleButtonUp ( int32 x, int32 y )
+void Input::onMouseMiddleButtonUp ( int32 x, int32 y, uint32 window_id )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( x );
+  NOM_DUMP_VAR ( y );
+  NOM_DUMP_VAR ( window_id );
+#endif
 }
 
-void Input::onMouseRightButtonUp ( int32 x, int32 y )
+void Input::onMouseRightButtonUp ( int32 x, int32 y, uint32 window_id )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( x );
+  NOM_DUMP_VAR ( y );
+  NOM_DUMP_VAR ( window_id );
+#endif
 }
 
-void Input::onMouseButtonSixUp ( int32 x, int32 y )
+void Input::onMouseButtonSixUp ( int32 x, int32 y, uint32 window_id )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( x );
+  NOM_DUMP_VAR ( y );
+  NOM_DUMP_VAR ( window_id );
+#endif
 }
 
-void Input::onMouseButtonSevenUp ( int32 x, int32 y )
+void Input::onMouseButtonSevenUp ( int32 x, int32 y, uint32 window_id )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( x );
+  NOM_DUMP_VAR ( y );
+  NOM_DUMP_VAR ( window_id );
+#endif
 }
 
 void Input::onJoyButtonDown ( int32 which, int32 button )
@@ -343,6 +420,11 @@ void Input::onJoyButtonUp ( int32 which, int32 button )
 void Input::onJoyAxis ( int32 which, int32 axis, uint16 value )
 {
   // virtual implementation
+}
+
+void Input::onDragDrop ( const std::string& file_path )
+{
+  // Do nothing virtual implementation
 }
 
 

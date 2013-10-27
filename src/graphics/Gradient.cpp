@@ -32,25 +32,32 @@ namespace nom {
 
 Gradient::Gradient ( void )
 {
+  Color gradient_color[2];
+  gradient_color[0] = Color::LightGray;
+  gradient_color[1] = Color::Gray;
+
   this->initialize  (
-                      Color::LightGray, Color::Gray,
-                      Coords ( 0, 0, 0, 0 ), 0, 0, FillDirection::Left
+                      gradient_color,
+                      Coords ( 0, 0, 0, 0 ), 0, 0, Gradient::FillDirection::Left
                     );
 }
 
 Gradient::Gradient  (
-                      const Color& starting_color,
-                      const Color& ending_color,
+                      Color gradient_color[2],
                       const Coords& bounds, int32 x_margin, int32 y_margin,
-                      enum FillDirection direction
+                      Gradient::FillDirection direction
                     )
-  : gradient { starting_color, ending_color }, coords { bounds },
+  : gradient {}, coords { bounds },
   x_margin ( x_margin ), y_margin ( y_margin ), fill_direction ( direction ),
-  enable_dithering ( true ) {}
+  enable_dithering ( true ) 
+{
+  this->setStartColor ( gradient_color[0] ); 
+  this->setEndColor ( gradient_color[1] );
+}
 /* FIXME
 {
   this->initialize  (
-                      starting_color, ending_color,
+                      gradient_color,
                       bounds, x_margin, y_margin, direction
                     );
 }
@@ -59,15 +66,14 @@ FIXME */
 Gradient::~Gradient ( void ) {}
 
 void Gradient::initialize (
-                            const Color& starting_color,
-                            const Color& ending_color,
+                            Color gradient_color[2],
                             const Coords& bounds,
                             int32 x_margin, int32 y_margin,
-                            enum FillDirection direction
+                            Gradient::FillDirection direction
                           )
 {
-  this->setStartColor ( starting_color );
-  this->setEndColor ( starting_color );
+  this->setStartColor ( gradient_color[0] );
+  this->setEndColor ( gradient_color[1] );
   this->setSize ( bounds.width, bounds.height );
   this->setPosition ( bounds.x, bounds.y );
   this->setMargins ( x_margin, y_margin );
@@ -129,12 +135,12 @@ void Gradient::reverseColors ( void )
   std::swap ( this->gradient[0], this->gradient[1] );
 }
 
-enum FillDirection Gradient::getFillDirection ( void ) const
+Gradient::FillDirection Gradient::getFillDirection ( void ) const
 {
   return this->fill_direction;
 }
 
-void Gradient::setFillDirection ( enum FillDirection direction )
+void Gradient::setFillDirection ( Gradient::FillDirection direction )
 {
   this->fill_direction = direction;
 }
@@ -200,7 +206,7 @@ void Gradient::strategyLeftToRight ( void )
   } // end blit loop
 }
 
-void Gradient::Update ( void )
+void Gradient::update ( void )
 {
   this->rectangles.clear();
 
@@ -224,12 +230,12 @@ void Gradient::Update ( void )
   }
 }
 
-void Gradient::Draw ( Surface* video_buffer ) const
+void Gradient::draw ( SDL_Renderer* target ) const
 {
   for ( auto it = this->rectangles.begin(); it != this->rectangles.end(); ++it )
   {
     std::shared_ptr<IDrawable> obj = *it;
-    obj->Draw ( video_buffer );
+    obj->draw ( target );
   }
 }
 

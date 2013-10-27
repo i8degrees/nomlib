@@ -1,4 +1,5 @@
 # CMake auto-generated files
+version.cpp
 version.hpp
 
 install_options
@@ -10,4 +11,19 @@ install_options
 
 # bins
 build
+third-party/windows
+third-party/osx
+third-party/linux
 
+# bins: Visual C++ Studio Project Files
+*.suo
+*.sdf
+*.opensdf
+*.tlog
+*.lastbuildstate
+*.idb
+
+# Local BitTorrent Sync app files
+.SyncID
+.SyncArchive
+.SyncIgnore

@@ -33,4 +33,3 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Identifiers of the resources nomlib contains
 const std::string NOMLIB_ICON_FILE = "nomlib.icns";
-const std::string NOMLIB_MAGIC_DATABASE = "magic.mgc";

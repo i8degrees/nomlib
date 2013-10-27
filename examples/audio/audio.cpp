@@ -41,6 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 int main ( int argc, char* argv[] )
 {
   nom::File dir;
+  nom::Path p;
   nom::OpenAL::AudioDevice dev; // this must be declared first
   nom::OpenAL::AudioDevice dev2; // this must be declared first
 
@@ -51,7 +52,7 @@ int main ( int argc, char* argv[] )
   nom::OpenAL::Listener listener;
   nom::OpenAL::SoundBuffer buffer;
   nom::Timer loops;
-  std::string path = dir.path(argv[0]) + "/";
+  std::string path = dir.path(argv[0]) + p.native() + "Resources";
 
 //NOM_DUMP_VAR ( dev.getDeviceName() );
 //NOM_DUMP_VAR ( dev2.getDeviceName() );
@@ -66,8 +67,7 @@ NOM_DUMP_VAR ( listener.getVolume() );
   }
   else
   {
-    ret = buffer.load ( path + "Resources/cursor_wrong.wav" );
-    //ret = buffer.load ( "/Users/jeff/Projects/hax/ttcards.git/ttcards/Resources/audio/15_ShuffleOrBoogie.ogg" );
+    ret = buffer.load ( path + p.native() + "cursor_wrong.wav" );
   }
 
   if ( ! ret )
@@ -81,8 +81,8 @@ NOM_LOG_ERR ( NOM, "Buffer loading err" );
 
   snd.setPitch ( 1.0 );
   snd.setVolume ( MAX_VOLUME );
-  snd.setPosition ( nom::Vector3f ( 0.0, 0.0, 0.0 ) );
-  snd.setVelocity ( nom::Vector3f ( 0.0, 0.0, 0.0 ) );
+  snd.setPosition ( nom::Point3f ( 0.0, 0.0, 0.0 ) );
+  snd.setVelocity ( nom::Point3f ( 0.0, 0.0, 0.0 ) );
   snd.setLooping ( true );
 
   snd.setPlayPosition ( 8.0 );

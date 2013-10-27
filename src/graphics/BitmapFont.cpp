@@ -73,7 +73,7 @@ int32 BitmapFont::getFontWidth ( void ) const
 {
   int32 text_width = 0;
 
-  for ( int32 char_pos = 0; char_pos < this->text_buffer.length(); char_pos++ )
+  for ( uint32 char_pos = 0; char_pos < this->text_buffer.length(); char_pos++ )
   {
     if ( this->text_buffer [ char_pos ] == ' ' )
     {
@@ -114,7 +114,7 @@ int32 BitmapFont::getFontHeight ( void ) const
 {
   int32 text_height = 0;
 
-  for ( int32 char_pos = 0; char_pos < this->text_buffer.length(); char_pos++ )
+  for ( uint32 char_pos = 0; char_pos < this->text_buffer.length(); char_pos++ )
   {
     if ( this->text_buffer [ char_pos ] == '\n' )
     {
@@ -188,7 +188,7 @@ uint32 BitmapFont::getNewline ( void ) const
   return this->newline;
 }
 
-enum TextAlignment BitmapFont::getTextJustification ( void ) const
+IFont::TextAlignment BitmapFont::getTextJustification ( void ) const
 {
   return this->text_alignment;
 }
@@ -198,7 +198,7 @@ void BitmapFont::setNewline ( uint32 newline )
   this->newline = newline;
 }
 
-FontStyle BitmapFont::getFontStyle ( void ) const
+IFont::FontStyle BitmapFont::getFontStyle ( void ) const
 {
   return this->text_style;
 }
@@ -220,8 +220,12 @@ void BitmapFont::setFontStyle ( int32 style, uint8 options )
     case FontStyle::Faded:
     {
       if ( this->bitmap_font.valid() )
-        if ( this->bitmap_font.setAlpha ( options ) == true )
+      {
+        if ( this->bitmap_font.set_alpha ( options ) == true )
+        {
           this->text_style = FontStyle::Faded;
+        }
+      }
     break;
     }
   }
@@ -250,20 +254,20 @@ bool BitmapFont::rebuild ( void )
 
 NOM_ASSERT ( this->bitmap_font.valid() );
 
-  background_color = RGBA::asInt32  ( this->bitmap_font.getCanvasPixelsFormat(),
-                                      this->colorkey
-                                    );
+  //background_color = RGBA::asInt32  ( this->bitmap_font.getTexturePixelsFormat(),
+                                      //this->colorkey
+                                    //);
 
-  this->bitmap_font.setTransparent ( this->colorkey, SDL_SRCCOLORKEY );
+  //this->bitmap_font.setTransparent ( this->colorkey, SDL_TRUE );
 
-  tile_width = this->bitmap_font.getCanvasWidth() / this->sheet_width;
-  tile_height = this->bitmap_font.getCanvasHeight() / this->sheet_height;
+  //tile_width = this->bitmap_font.getTextureWidth() / this->sheet_width;
+  //tile_height = this->bitmap_font.getTextureHeight() / this->sheet_height;
   top = tile_height;
   baseA = tile_height;
 
-  for ( uint32_t rows = 0; rows < this->sheet_width; rows++ )
+  for ( int32_t rows = 0; rows < this->sheet_width; rows++ )
   {
-    for ( uint32_t cols = 0; cols < this->sheet_height; cols++ )
+    for ( int32_t cols = 0; cols < this->sheet_height; cols++ )
     {
       // Set character offsets
       this->chars[ currentChar ].setPosition ( tile_width * cols, tile_height * rows );
@@ -440,12 +444,12 @@ const Coords BitmapFont::findGlyph ( const std::string& glyph )
   return this->chars[ascii];
 }
 
-void BitmapFont::Update ( void )
+void BitmapFont::update ( void )
 {
   // Stub
 }
 
-void BitmapFont::Draw ( Surface* video_buffer ) const
+void BitmapFont::draw ( SDL_Renderer* target ) const
 {
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from
@@ -502,11 +506,11 @@ void BitmapFont::Draw ( Surface* video_buffer ) const
       else
       {
         //Get the ASCII value of the character
-        uint8_t ascii = static_cast<u_char>( this->text_buffer[show] );
+        uint8 ascii = static_cast<uchar>( this->text_buffer[show] );
 
-        this->bitmap_font.setPosition ( Coords ( x_offset, y_offset ) );
-        this->bitmap_font.setOffsets ( this->chars[ascii] );
-        this->bitmap_font.Draw ( video_buffer );
+        this->bitmap_font.set_position ( Point2i ( x_offset, y_offset ) );
+        this->bitmap_font.set_bounds ( this->chars[ascii] );
+        this->bitmap_font.draw ( target );
 
         // Move over the width of the character with one pixel of padding
         x_offset += ( this->chars[ascii].width ) + 1;

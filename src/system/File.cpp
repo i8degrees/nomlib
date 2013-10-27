@@ -50,15 +50,6 @@ File::~File ( void )
   this->file.reset();
 }
 
-const std::string File::mime ( const std::string& file )
-{
-  std::string extension = "\0";
-
-  extension = this->file->mime ( file );
-
-  return extension;
-}
-
 const std::string File::extension ( const std::string& file )
 {
   std::string extension = "\0";

@@ -31,4 +31,3 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Identifiers of the resources nomlib contains
 extern const std::string NOMLIB_ICON_FILE;
-extern const std::string NOMLIB_MAGIC_DATABASE;

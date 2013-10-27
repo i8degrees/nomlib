@@ -95,7 +95,7 @@ int32 TrueTypeFont::getFontHeight ( void ) const
   return this->coords.height;
 }
 
-FontStyle TrueTypeFont::getFontStyle ( void ) const
+IFont::FontStyle TrueTypeFont::getFontStyle ( void ) const
 {
   return this->text_style;
 }
@@ -122,7 +122,7 @@ uint32 TrueTypeFont::getSpacing ( void ) const
   return 0;
 }
 
-enum TextAlignment TrueTypeFont::getTextJustification ( void ) const
+IFont::TextAlignment TrueTypeFont::getTextJustification ( void ) const
 {
   return this->text_alignment;
 }
@@ -201,12 +201,12 @@ void TrueTypeFont::setFontOutline ( int32 depth )
   TTF_SetFontOutline ( this->font.get(), depth );
 }
 
-RenderStyle TrueTypeFont::getRenderingStyle ( void ) const
+IFont::RenderStyle TrueTypeFont::getRenderingStyle ( void ) const
 {
   return this->rendering;
 }
 
-void TrueTypeFont::setRenderingStyle ( enum RenderStyle style )
+void TrueTypeFont::setRenderingStyle ( IFont::RenderStyle style )
 {
   this->rendering = style;
 }
@@ -229,7 +229,7 @@ void TrueTypeFont::setSpacing ( uint32 spaces )
   // Not implemented
 }
 
-void TrueTypeFont::setTextJustification ( enum TextAlignment alignment )
+void TrueTypeFont::setTextJustification ( IFont::TextAlignment alignment )
 {
   this->text_alignment = alignment;
 }
@@ -255,58 +255,71 @@ NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
   return true;
 }
 
-void TrueTypeFont::Update ( void )
+void TrueTypeFont::update ( void )
 {
+  if ( updated == true ) return;
   // Update display coordinates
-  this->font_buffer.setPosition ( this->coords );
+  this->font_buffer.set_position ( Point2i ( this->coords.x, this->coords.y ) );
 
   // Update the rendered text surface here for drawing
   if ( this->getText().c_str() == nullptr ) return;
 
   if ( this->rendering == RenderStyle::Shaded )
   {
-    this->font_buffer.setCanvas ( TTF_RenderText_Shaded
+    this->font_buffer.initialize ( TTF_RenderText_Shaded
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
-                                    RGBA::asSDLCOLOR ( this->color ),
-                                    // TODO / implement me!
-                                    RGBA::asSDLCOLOR ( Color ( 97, 97, 97 ) )
+                                    this->color.SDL(),
+                                    // TODO; implement me -- a second color
+                                    // possibility means needing two colors in
+                                    // class
+                                    Color ( 97, 97, 97 ).SDL()
                                   )
                                 );
   }
   else if ( this->rendering == RenderStyle::Blended )
   {
-    this->font_buffer.setCanvas ( TTF_RenderText_Blended
+    this->font_buffer.initialize ( TTF_RenderText_Blended
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
-                                    RGBA::asSDLCOLOR ( this->color )
+                                    this->color.SDL()
                                   )
                                 );
   }
   else // Assume low quality rendering
   {
-    this->font_buffer.setCanvas ( TTF_RenderText_Solid
+    this->font_buffer.initialize ( TTF_RenderText_Solid
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
-                                    RGBA::asSDLCOLOR ( this->color )
+                                    this->color.SDL()
                                   )
                                 );
   }
 
   if ( this->text_style == FontStyle::Faded )
   {
-    this->font_buffer.setAlpha ( this->style_options );
+    this->font_buffer.set_alpha ( this->style_options );
   }
+
+  updated = true;
 }
 
-void TrueTypeFont::Draw ( Surface* video_buffer ) const
+void TrueTypeFont::draw ( SDL_Renderer* target ) const
 {
   if ( this->font_buffer.valid() )
   {
-    this->font_buffer.Draw ( video_buffer );
+    this->font_buffer.draw ( target );
+  }
+}
+
+void TrueTypeFont::draw ( const Window& target ) const
+{
+  if ( this->font_buffer.valid() )
+  {
+    this->font_buffer.draw ( target.renderer() );
   }
 }
 

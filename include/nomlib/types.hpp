@@ -31,8 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cstdint>
 
-#include "SDL.h"
-
 // Portable fixed-size data types derive from stdint.h
 namespace nom {
 
@@ -60,29 +58,6 @@ typedef unsigned long long int uint64;
 #endif
 
 typedef unsigned char uchar;
-
-/// Video memory buffer held in system RAM; non-accelerated AKA software/CPU
-typedef SDL_Surface Surface;
-
-/// Pixel-level access to information such as the color format of of a video
-/// surface.
-typedef SDL_PixelFormat PixelFormat;
-
-/// Video memory held on GPU memory; dedicated & accelerated..!
-//typedef SDL_Texture Texture;
-
-/// [Description]
-//typedef SDL_Renderer Renderer;
-
-/// [Description]
-//typedef SDL_Window Window;
-
-/// [Description]
-//typedef SDL_WindowEvent EV_window;
-
-/// Event queue (think: inputs)
-typedef SDL_Event Event;
-
 
 } // namespace nom
 

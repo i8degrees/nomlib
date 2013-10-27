@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <algorithm>
 
-#include <SDL/SDL.h>
+#include "SDL.h"
 
 #include "nomlib/config.hpp"
 
@@ -40,11 +40,19 @@ namespace nom {
 const std::string color_delimiter = ", ";
 
 /// \brief Utility class container for RGBA colors
+///
+/// \todo Convert to a template class
 class Color
 {
   public:
     /// Default constructor; sets the color to their respective defaults
     Color ( void );
+
+    /// Destructor
+    ~Color ( void );
+
+    /// Copy constructor
+    Color ( const Color& color );
 
     /// Constructor variant for setting a color using RGB values
     Color ( uint8 red, uint8 green, uint8 blue );
@@ -52,21 +60,53 @@ class Color
     /// Constructor variant for setting a color using RGBA values
     Color ( uint8 red, uint8 green, uint8 blue, uint8 alpha );
 
-    /// Copy constructor
-    Color ( const Color& color );
+    /// Convenience method for determining if this object is initialized or not;
+    /// an initialized object should never be equal to nom::Color::null
+    ///
+    /// \todo Fully implement me
+    bool isNull ( void ) const;
 
-    /// Destructor
-    ~Color ( void );
-
-    /// Convenience getter helper for obtaining a color by object
+    /// Convenience getter for obtaining a copy of this object
     const Color& get ( void ) const;
 
-    /// Copy assignment constructor
+    inline SDL_Color SDL ( void ) const
+    {
+      SDL_Color c;
+
+      c.r = this->red;
+      c.g = this->green;
+      c.b = this->blue;
+      c.a = this->alpha;
+
+      return c;
+    }
+
+    /// Returns RGBA components via nom::Color object, holding the red, green, blue
+    /// and alpha values.
+    inline const Color pixel ( uint32 pixel, const SDL_PixelFormat* fmt ) const
+    {
+      Color c = *this;
+      SDL_GetRGBA ( pixel, fmt, &c.red, &c.green, &c.b, &c.a );
+      return c;
+    }
+
+    /// Convenience helper for obtaining a color as an integer, respective to
+    /// the video surface pixel format (color bit per pixel)
+    ///
+    /// Returns RGBA components via nom::Color object, holding the red, green, blue
+    /// and alpha values.
+    inline uint32 RGB ( const SDL_PixelFormat* fmt ) const
+    {
+      return SDL_MapRGBA ( fmt, this->red, this->green, this->blue, this->alpha );
+    }
+
+    /// Copy assignment operator
     Color& operator = ( const Color& other );
 
-    /// Predefined color constants for convenience sake
+    /// Convenience object that will always contain a value of -1
     static const Color null;
 
+    /// Predefined color constants for convenience sake
     static const Color Black;
     static const Color White;
     static const Color Red;
@@ -91,45 +131,18 @@ class Color
     uint8 green;
     uint8 blue;
     uint8 alpha;
-};
 
-class RGBA
-{
-  public:
-    RGBA ( void ) {};
-    ~RGBA ( void ) {};
+    /// Reference alias for red instance variable
+    uint8& r = red;
 
-    /// Returns a SDL color structure of a nom::Color object
-    static inline SDL_Color asSDLCOLOR ( const Color& color )
-    {
-      SDL_Color c;
+    /// Reference alias for green instance variable
+    uint8& g = green;
 
-      c.r = color.red;
-      c.g = color.green;
-      c.b = color.blue;
-      //      SDLv2 SDL_Color struct
-      //
-      //  c.a = color.alpha;
+    /// Reference alias for blue instance variable
+    uint8& b = blue;
 
-      return c;
-    }
-
-    /// Returns RGBA components via nom::Color object, holding the red, green, blue
-    /// and alpha values.
-    static inline void asRGB ( uint32 pixel, PixelFormat* fmt, Color& color )
-    {
-      SDL_GetRGB ( pixel, fmt, &color.red, &color.green, &color.blue );
-    }
-
-    /// Convenience helper for obtaining a color as an integer, respective to
-    /// the video surface pixel format (color bit per pixel)
-    ///
-    /// Returns RGBA components via nom::Color object, holding the red, green, blue
-    /// and alpha values.
-    static inline uint32 asInt32 ( PixelFormat* fmt, const Color& color )
-    {
-      return SDL_MapRGB ( fmt, color.red, color.green, color.blue );
-    }
+    /// Reference alias for alpha instance variable
+    uint8& a = alpha;
 };
 
 /// Pretty print the color using the following format string:

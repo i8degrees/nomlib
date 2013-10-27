@@ -38,16 +38,12 @@ NOM_LOG_TRACE ( NOM );
 
   this->showFPS ( true );
 
-  this->setFullScreen ( false );
-
   this->appTime.start();
 }
 
 SDL_App::~SDL_App ( void )
 {
 NOM_LOG_TRACE ( NOM );
-
-  this->setFullScreen ( false );
 
   this->appTime.stop();
 
@@ -87,7 +83,7 @@ void SDL_App::onQuit ( void )
   this->Quit();
 }
 
-void SDL_App::onEvent ( Event* event )
+void SDL_App::onEvent ( SDL_Event* event )
 {
   Input::HandleInput ( event );
 }
@@ -116,20 +112,7 @@ void SDL_App::toggleFPS ( void )
     this->showFPS ( true );
 }
 
-bool SDL_App::isFullScreen ( void )
-{
-  if ( this->fullscreen )
-    return true;
-  else
-    return false;
-}
-
-void SDL_App::setFullScreen ( bool toggle )
-{
-  this->fullscreen = toggle;
-}
-
-bool SDL_App::PollEvents ( Event* event )
+bool SDL_App::PollEvents ( SDL_Event* event )
 {
   if ( SDL_PollEvent ( event ) )
   {
@@ -137,11 +120,6 @@ bool SDL_App::PollEvents ( Event* event )
   }
 
   return false;
-}
-
-void SDL_App::enableKeyRepeat ( int32 delay, int32 interval )
-{
-  SDL_EnableKeyRepeat ( delay, interval );
 }
 
 

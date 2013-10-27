@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL_MESSAGEBOX_HEADERS
-#define NOMLIB_SDL_MESSAGEBOX_HEADERS
+#ifndef NOMLIB_SDL2_MESSAGEBOX_HEADERS
+#define NOMLIB_SDL2_MESSAGEBOX_HEADERS
 
 #include <iostream>
 #include <string>
@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Gradient.hpp"
-#include "nomlib/graphics/Line.hpp"
+#include "nomlib/graphics/shapes/Line.hpp"
 #include "nomlib/gui/GrayFrame.hpp"
 #include "nomlib/graphics/IFont.hpp"
 
@@ -86,12 +86,12 @@ class MessageBox:
     void setLabelFont ( const IFont* font );
 
     void setLabelPosition ( const Coords& pos );
-    void setLabelTextAlignment ( enum TextAlignment alignment );
+    void setLabelTextAlignment ( IFont::TextAlignment alignment );
     void setWindowTitle ( const std::string& text );
     void setLabel ( const std::string& text );
 
-    void Update ( void );
-    void Draw ( Surface* video_buffer ) const;
+    void update ( void );
+    void draw ( SDL_Renderer* target ) const;
 
   private:
     void initialize ( void );
@@ -102,7 +102,7 @@ class MessageBox:
     IFont::SharedPtr label;
 
     Coords coords;
-    enum TextAlignment label_alignment;
+    enum IFont::TextAlignment label_alignment;
     bool enabled;
 };
 
@@ -110,4 +110,4 @@ class MessageBox:
   } // namespace ui
 } // namespace nom
 
-#endif // NOMLIB_SDL_MESSAGEBOX_HEADERS defined
+#endif // include guard defined

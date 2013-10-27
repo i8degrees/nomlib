@@ -56,7 +56,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   // TODO: Presumably the same as GNU's __PRETTY_FUNCTION__ ?
   //
   // SOURCE: http://msdn.microsoft.com/en-us/library/b0084kay(v=vs.80).aspx
-  #define __func__ __FUNCSIG__
+  #define __func__ __FUNCTION__
 #else // We assume GNU v2+
 
   // The type signature is nice because this shows if the function calling type

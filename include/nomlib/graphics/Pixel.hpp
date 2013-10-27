@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+/// \brief OMG, they still do pixels?!
 class Pixel:
               public IDrawable
 {
@@ -56,7 +57,7 @@ class Pixel:
     /// You are responsible for locking & unlocking of the canvas before-hand
     ///
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
-    void Draw ( Surface* video_buffer ) const;
+    void Draw ( SDL_Surface* video_buffer ) const;
   private:
     Coords coords;
     Color color;

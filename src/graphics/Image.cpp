@@ -30,7 +30,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Image::Image ( int32 flags )  : image_buffer ( nullptr, nom::priv::Canvas_FreeSurface )
+Image::Image ( void ) : image_ ( nullptr, priv::FreeSurface )
+{
+NOM_LOG_TRACE ( NOM );
+
+  if ( IMG_Init ( IMG_INIT_PNG ) != IMG_INIT_PNG )
+  {
+NOM_LOG_ERR ( NOM, IMG_GetError() );
+  }
+
+  atexit ( IMG_Quit );
+}
+
+Image::~Image ( void )
+{
+NOM_LOG_TRACE ( NOM );
+}
+
+Image::Image ( uint32 flags ) : image_ ( nullptr, priv::FreeSurface )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -42,53 +59,103 @@ NOM_LOG_ERR ( NOM, IMG_GetError() );
   atexit ( IMG_Quit );
 }
 
-Image::Image ( const Image& other )  : image_buffer { other.image_buffer.get(), nom::priv::Canvas_FreeSurface }
+Image::Image ( const Image& other )  : image_ { other.image(), priv::FreeSurface }
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-Image::~Image ( void )
+Image& Image::operator = ( const Image& other )
 {
-NOM_LOG_TRACE ( NOM );
+  this->image_ = other.image_;
 
-  this->image_buffer.reset(); // ...better safe than sorry!
+  return *this;
+}
+
+SDL_Surface* Image::image ( void ) const
+{
+  return this->image_.get();
 }
 
 bool Image::valid ( void ) const
 {
-  if ( this->image_buffer.get() != nullptr )
+  if ( this->image() != nullptr )
+  {
     return true;
+  }
   else
+  {
     return false;
+  }
 }
 
-std::shared_ptr<Surface> Image::load ( const std::string& filename )
+int32 Image::width ( void ) const
 {
-  this->image_buffer.reset ( IMG_Load ( filename.c_str() ), nom::priv::Canvas_FreeSurface );
+  SDL_Surface* buffer = this->image();
+  return buffer->w;
+}
 
-  if ( ! this->valid() )
+int32 Image::height ( void ) const
+{
+  SDL_Surface* buffer = this->image();
+  return buffer->h;
+}
+
+void* Image::pixels ( void ) const
+{
+  SDL_Surface* buffer = this->image();
+  return buffer->pixels;
+}
+
+uint16 Image::pitch ( void ) const
+{
+  SDL_Surface* buffer = this->image();
+  return buffer->pitch;
+}
+
+uint8 Image::bits_per_pixel ( void ) const
+{
+  SDL_Surface* buffer = this->image();
+
+  return buffer->format->BitsPerPixel;
+}
+
+const SDL_PixelFormat* Image::pixel_format ( void ) const
+{
+  SDL_Surface* buffer = this->image();
+  return buffer->format;
+}
+
+bool Image::load ( const std::string& filename )
+{
+  SDL_Surface *buffer = IMG_Load ( filename.c_str() );
+  if ( buffer == nullptr )
   {
-NOM_LOG_ERR ( NOM, IMG_GetError() );
-    return nullptr;
+    NOM_LOG_ERR ( NOM, IMG_GetError() );
+    return false;
   }
 
-  return this->image_buffer;
+  this->image_.reset ( SDL_ConvertSurfaceFormat ( buffer, SDL_PIXELFORMAT_RGBA8888, 0 ), priv::FreeSurface );
+  priv::FreeSurface ( buffer );
+
+  return true;
 }
 
-std::shared_ptr<Surface> Image::loadBMP ( const std::string& filename )
+bool Image::load_bmp ( const std::string& filename )
 {
-  this->image_buffer = std::shared_ptr<Surface> ( SDL_LoadBMP ( filename.c_str() ), nom::priv::Canvas_FreeSurface );
-
-  if ( ! this->valid() )
+  SDL_Surface *buffer = IMG_Load ( filename.c_str() );
+  if ( buffer == nullptr )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return nullptr;
+    NOM_LOG_ERR ( NOM, IMG_GetError() );
+    return false;
   }
 
-  return this->image_buffer;
+  this->image_.reset ( SDL_ConvertSurfaceFormat ( buffer, SDL_PIXELFORMAT_RGBA8888, 0 ), priv::FreeSurface );
+  priv::FreeSurface ( buffer );
+
+  return true;
 }
 
-bool Image::save ( const std::string& filename, Surface* video_buffer )
+bool Image::save ( const std::string& filename, SDL_Surface* video_buffer )
 {
   if ( SDL_SaveBMP ( video_buffer, filename.c_str() ) != 0 )
   {
@@ -99,18 +166,76 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-const Coords Image::getSize ( void ) const
+const Point2i Image::size ( void ) const
 {
-  SDL_Surface *buffer = this->image_buffer.get();
+  SDL_Surface* buffer = this->image();
+  Point2i image_pos ( buffer->w, buffer->h );
 
-  return Coords ( 0, 0, buffer->w, buffer->h );
+  priv::FreeSurface ( buffer );
+  return image_pos;
 }
 
-Image& Image::operator = ( const Image& other )
+bool Image::set_colorkey ( const Color& key, uint32 flags )
 {
-  this->image_buffer = other.image_buffer;
+  SDL_Surface* buffer = this->image();
+  uint32 transparent_color = key.RGB ( buffer->format );
 
-  return *this;
+  if ( this->valid() == false )
+  {
+NOM_LOG_ERR ( NOM, "Could not set color key: invalid image buffer." );
+    priv::FreeSurface ( buffer );
+    return false;
+  }
+
+  if ( SDL_SetColorKey ( buffer, SDL_TRUE ^ flags, transparent_color ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    priv::FreeSurface ( buffer );
+    return false;
+  }
+
+  priv::FreeSurface ( buffer );
+  return true;
+}
+
+uint32 Image::pixel ( int32 x, int32 y )
+{
+  switch ( this->bits_per_pixel() )
+  {
+    default: return -1; break; // Unknown
+
+    case 8:
+    {
+      uint8* pixels = static_cast<uint8*> ( this->pixels() );
+
+      return pixels[ ( y * this->pitch() ) + x ];
+    }
+    break;
+
+    case 16:
+    {
+      uint16* pixels = static_cast<uint16*> ( this->pixels() );
+
+      return pixels[ ( y * this->pitch() / 2 ) + x ];
+    }
+    break;
+
+    case 24:
+    {
+      uint8* pixels = static_cast<uint8*> ( this->pixels() );
+
+      return pixels[ ( y * this->pitch() ) + x ];
+    }
+    break;
+
+    case 32:
+    {
+      uint32* pixels = static_cast<uint32*> ( this->pixels() );
+
+      return pixels[ ( y * this->pitch()/4 ) + x ];
+    }
+    break;
+  } // end switch
 }
 
 

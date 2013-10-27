@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <cstring>
 
+#include <CoreServices/CoreServices.h>
 #include <CoreFoundation/CoreFoundation.h>
 
 #include "nomlib/config.hpp"
@@ -60,8 +61,21 @@ namespace nom {
 /// bundle, or else this function call will fail.
 ///
 /// Returns a null terminated string on err
-
 const std::string getBundleResourcePath ( const std::string& identifier = "\0" );
+
+/// Obtain the path to the logged in user's Documents folder
+///
+///     $HOME/Documents/
+///
+/// These are standard folders that may be used for saving user data under.
+const std::string user_documents_path ( void );
+
+/// Obtain the path to the logged in user's Application Support folder
+///
+///     $HOME/Library/Application\ Support/
+///
+/// These are standard folders that may be used for saving user data under.
+const std::string user_app_support_path ( void );
 
 } // namespace nom
 

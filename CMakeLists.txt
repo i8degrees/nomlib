@@ -112,29 +112,14 @@ set ( INSTALL_DOCS_PATH "share/doc/${PROJECT_NAME}" )
 set ( INSTALL_GENERATED_DOCS_PATH "${INSTALL_DOCS_PATH}" )
 set ( INSTALL_MAN_PAGES_PATH "share/man" )
 
-if ( PLATFORM_OSX )
-  option ( FRAMEWORK "Build OSX Framework instead of dylib" on )
-  option ( UNIVERSAL "Build as an OSX Universal Library" off )
-endif ( PLATFORM_OSX )
-
-# I was able to shave off close to 50% time compiling nomlib by leaving
-# this option off by default.
-#
-# PPC is not officially supported because I have no means whatsoever of
-# testing such a package.
-if ( UNIVERSAL )
-  set ( CMAKE_OSX_ARCHITECTURES i386; x86_64 )
-  message ( STATUS "Building an OSX Universal Library" )
-endif ( UNIVERSAL )
-
 message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
 
 # Platform specific configuration
 if ( PLATFORM_LINUX ) # Tested on Ubuntu v12.04-LTS
-
   # Clang is not supported on Linux due to libc++ not being distributed by
   # default yet
   set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
+  message ( STATUS "CMake Generator: ${CMAKE_GENERATOR}" )
 elseif ( PLATFORM_OSX )
 
   # libc++ requires OSX v10.7+
@@ -145,12 +130,13 @@ elseif ( PLATFORM_OSX )
     set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
   endif ( CMAKE_GENERATOR STREQUAL "Xcode" )
 
+  message ( STATUS "CMake Generator: ${CMAKE_GENERATOR}" )
 elseif ( PLATFORM_WINDOWS )
-
   set ( CMAKE_CONFIGURATION_TYPES "${CMAKE_BUILD_TYPE}" )
-
+  message ( STATUS "CMake Generator: ${CMAKE_GENERATOR}" )
 else () # Not Linux nor OS X nor Windows
   # Use whatever CMake gathers for us and hope for the best!
+  message ( STATUS "CMake Generator: ${CMAKE_GENERATOR}" )
 endif ( PLATFORM_LINUX )
 
 if ( DOCS )
@@ -170,49 +156,52 @@ include_directories ( "${NOMLIB_HEADERS_ROOT}" "${JSONCPP_HEADERS_DIR}" )
 # of calls to include_directories & linking of libraries.
 #
 if ( PLATFORM_WINDOWS )
+  # Header and library paths -- *INCLUDE_DIR and *LIBRARY_DIR, respectively --
+  # *MUST* include trailing backslash for this platform!
+  #
+  # *LIBRARY_DIR variables are used to ease the install of run-time dependencies.
+  # You should have only DLL and LIB file types in the library directories, in
+  # order for our file filtering to weed out the proper ones during installation.
 
   # SDL2 dependency
   set ( SDL2_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/include/" )
   set ( SDL2_LIBRARY
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/lib/SDL2.lib"
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/lib/SDL2main.lib"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/lib/${PLATFORM_ARCH}/SDL2.lib"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/lib/${PLATFORM_ARCH}/SDL2main.lib"
       )
-  set ( SDL2_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/lib/" )
+  set ( SDL2_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/lib/${PLATFORM_ARCH}/" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
 
   # SDL2_image dependency
   set ( SDL2_IMAGE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_image/include/" )
-  set ( SDL2_IMAGE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_image/lib/SDL2_image.lib" )
-  set ( SDL2_IMAGE_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_image/lib/" )
+  set ( SDL2_IMAGE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_image/lib/${PLATFORM_ARCH}/SDL2_image.lib" )
+  set ( SDL2_IMAGE_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_image/lib/${PLATFORM_ARCH}/" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
 
   # SDL2_ttf dependency
   set ( SDL2_TTF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_ttf/include/" )
-  set ( SDL2_TTF_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_ttf/lib/SDL2_ttf.lib" )
-  set ( SDL2_TTF_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_ttf/lib/" )
+  set ( SDL2_TTF_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_ttf/lib/${PLATFORM_ARCH}/SDL2_ttf.lib" )
+  set ( SDL2_TTF_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_ttf/lib/${PLATFORM_ARCH}/" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
 
-  # OpenAL dependency -- must be 32-bit library
+  # OpenAL dependency
   set ( OPENAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/OpenAL/include/" )
-  set ( OPENAL_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/OpenAL/lib/OpenAL32.lib" )
-  set ( OPENAL_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/OpenAL/lib/" )
+  set ( OPENAL_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/OpenAL/lib/${PLATFORM_ARCH}/OpenAL32.lib" )
+  set ( OPENAL_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/OpenAL/lib/${PLATFORM_ARCH}/" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
 
-  # libsndfile dependency -- must be 32-bit library
+  # libsndfile dependency
   set ( LIBSNDFILE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libsndfile/include/" )
-  set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libsndfile/lib/libsndfile-1.lib" )
-  set ( LIBSNDFILE_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libsndfile/lib/" )
+  set ( LIBSNDFILE_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libsndfile/lib/${PLATFORM_ARCH}/" )
+  set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libsndfile/lib/${PLATFORM_ARCH}/libsndfile-1.lib" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 
 elseif ( PLATFORM_OSX )
-
-  # All library dependencies -- both frameworks and libraries -- must be
-  # OS X Universal binaries (both 32-bit and 64-bit compatibility).
 
   # SDL2 dependency
   set ( SDL2_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2.framework/Headers" )
@@ -251,6 +240,21 @@ elseif ( PLATFORM_OSX )
 elseif ( PLATFORM_LINUX )
   # TODO
 endif ( PLATFORM_WINDOWS )
+
+message ( STATUS "SDL2 headers: ${SDL2_INCLUDE_DIR}" )
+message ( STATUS "SDL2 library: ${SDL2_LIBRARY}" )
+
+message ( STATUS "SDL2_image headers: ${SDL2_IMAGE_INCLUDE_DIR}" )
+message ( STATUS "SDL2_image library: ${SDL2_IMAGE_LIBRARY}" )
+
+message ( STATUS "SDL2_ttf headers: ${SDL2_TTF_INCLUDE_DIR}" )
+message ( STATUS "SDL2_ttf library: ${SDL2_TTF_LIBRARY}" )
+
+message ( STATUS "OpenAL headers: ${OPENAL_INCLUDE_DIR}" )
+message ( STATUS "OpenAL library: ${OPENAL_LIBRARY}" )
+
+message ( STATUS "libsndfile headers: ${LIBSNDFILE_INCLUDE_DIR}" )
+message ( STATUS "libsndfile library: ${LIBSNDFILE_LIBRARY}" )
 
 # External header files inclusion
 include_directories ( ${EXT_HEADERS} )
@@ -354,8 +358,8 @@ if ( PLATFORM_OSX )
               PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
             )
 
-    # # Add all the necessary runtime search paths for locating the installed
-    # # dependencies we bundled.
+    # Add all the necessary runtime search paths for locating the installed
+    # dependencies we bundled.
     set ( RUNTIME_PATH
           "@loader_path/../Frameworks"
           # SDL2_image.framework & SDL2_ttf.framework each have their own bundled

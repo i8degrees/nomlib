@@ -60,4 +60,5 @@ if ( PLATFORM_WINDOWS )
             "${EXAMPLES_INSTALL_PEFIX}"
             FILES_MATCHING PATTERN "*.dll"
           )
+
 endif ( PLATFORM_WINDOWS )

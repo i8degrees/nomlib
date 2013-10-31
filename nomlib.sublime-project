@@ -23,7 +23,7 @@
     {
       "name": "docs",
       "path": ".",
-      "file_include_patterns": [ "*.md", "*.css", "*.html", "doxygen.cfg", "*.txt", "*.cmake", ".gitignore", "cmake/*", ".travis.yml", "Template.cpp", "Template.hpp", "*.bat", "*.rb" ],
+      "file_include_patterns": [ "*.md", "*.css", "*.html", "doxygen.cfg", "*.txt", "*.cmake", ".gitignore", "cmake/*", ".travis.yml", "Template.cpp", "Template.hpp", "*.bat", "*.rb", "*.log" ],
       "folder_exclude_patterns": [ "build", "tmp", "docs/public", "docs/man", "src", "include" ]
     },
 

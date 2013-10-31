@@ -21,6 +21,6 @@ script:
 # whitelist
 branches:
   only:
-    - travis
+    - feature/travis/jeff
     #- dev
     #- master

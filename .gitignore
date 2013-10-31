@@ -27,3 +27,7 @@ third-party/linux
 .SyncID
 .SyncArchive
 .SyncIgnore
+
+# nomlib's github wiki
+wiki
+

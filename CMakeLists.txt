@@ -155,6 +155,8 @@ include_directories ( "${NOMLIB_HEADERS_ROOT}" "${JSONCPP_HEADERS_DIR}" )
 # variables -- EXT_HEADERS & EXTLIBS -- so we can then make a minimal number
 # of calls to include_directories & linking of libraries.
 #
+# TODO: we should be checking for the existence of these directories beforehand!
+#
 if ( PLATFORM_WINDOWS )
   # Header and library paths -- *INCLUDE_DIR and *LIBRARY_DIR, respectively --
   # *MUST* include trailing backslash for this platform!
@@ -401,6 +403,8 @@ if ( NOT PLATFORM_WINDOWS )
             DESTINATION "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
             OPTIONAL
           )
+
+  # TODO: Install nomlib "SharedSupport" Resource files.
 
   # Install nomlib's cmake module; this should end up in a spot that is
   # automatically searched by find_package.

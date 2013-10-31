@@ -1,7 +1,27 @@
 #!/usr/bin/env ruby
+#
+#   TODO
+#
+# * add checks for existence of external binaries: tar and zip;
+#   consider distributing the OSS 7-zip cmd-line binary under windows?
+#
+# * ensure that we are always in the project root of nomlib
+#
+# * verify integrity of third-party files downloaded with a sha1 checksum
+#
+# * Research using vcvarsall.bat script for setting up paths for visual studio;
+#   this ought to free us from figuring things out ourselves!
+#
+# * 'init' command that permanently records the working directory it is
+#   initialized with, to always work from (think: a prefix). In other words:
+#   a simple jail or sandbox to minimize potentially dangerous modifications,
+#   such as when we blow away an entire 'build' directory.
+#
 require 'fileutils'
 require 'open-uri'
 require 'rbconfig'
+
+#WORKING_DIRECTORY = FileUtils.pwd
 
 # http://stackoverflow.com/questions/11784109/detecting-operating-systems-in-ruby/13586108#13586108
 def platform
@@ -23,10 +43,16 @@ def platform
   )
 end
 
-# Do not close out of our console window until we have been given a chance to
-# read error messages.
+# Graceful exit; do not close out of our console windows until we have been
+# given a chance to read the error messages!
+#
+# FIXME: I'm unwisely assuming that we are being ran inside an interactive
+# terminal (user controlled) unless we are on the Windows platform.
 def quit
-  system "pause"
+  if platform["windows"]
+    system "pause"
+  end
+
   exit 1
 end
 
@@ -53,8 +79,6 @@ class ThirdPartyDeps
     if self.debug?
       puts "File has been saved at " << @pwd << "/" << @save_path
     end
-
-    # TODO; verify integrity of file with sha1sum
   end
 
   def debug?
@@ -66,7 +90,39 @@ class ThirdPartyDeps
   end
 end
 
-class VisualStudio
+#class CMakeGenerator < CMakeBuild
+  #def initialize
+  #end
+
+  #def build
+  #end
+
+  #def clean
+  #end
+
+  #def install
+  #end
+
+  #def remove
+  #end
+
+  #def package
+  #end
+
+  #def analyze
+  #end
+
+  #def test
+  #end
+
+  #def docs
+  #end
+#end
+
+#class UnixMakeFiles < CMakeGenerator
+#class VisualStudio12 < CMakeGenerator
+
+class VisualStudio #< CMakeGenerator
   def initialize
     # Setup the development environment for CMake with Visual Studio (2013 RC1)
     existing_path = ENV['path']
@@ -76,42 +132,46 @@ class VisualStudio
     if File.exists? msvcpp_path
       ENV['PATH'] = msvcpp_path + ";" + existing_path
     end
-    @build_opts = ""
+
+    @build_dir = "build" # current cmake build directory
+
+    # A complete record of the project compile, when invoked by the 'build'
+    # command, saved at the project's build dir -- overwritten with the latest
+    # build log.
+    @build_opts = "/fileLogger /fileLoggerParameters:LogFile=#{@build_dir}\\nomlib.log"
     #@build_opts = "/p:RunCodeAnalysis=False"
   end
 
   def build
-    system "msbuild" + " " + @build_opts + " " + "/t:build ALL_BUILD.vcxproj" or quit
-    system "msbuild" + " " + @build_opts + " " + "/t:build INSTALL.vcxproj" or quit
+    system "msbuild #{@build_opts} /t:build #{@build_dir}\\ALL_BUILD.vcxproj" or quit
+    system "msbuild #{@build_opts} /t:build #{@build_dir}\\INSTALL.vcxproj" or quit
   end # build
 
   def clean
-    if File.exists? 'ALL_BUILD.vcxproj'
-      system "msbuild /t:clean ALL_BUILD.vcxproj" or quit
+    if File.exists? "#{@build_dir}\\ALL_BUILD.vcxproj"
+      system "msbuild /t:clean #{@build_dir}\\ALL_BUILD.vcxproj" or quit
     end
 
-    if File.exists? 'INSTALL.vcxproj'
-      system "msbuild /t:clean INSTALL.vcxproj" or quit
+    if File.exists? "#{@build_dir}\\INSTALL.vcxproj"
+      system "msbuild /t:clean #{@build_dir}\\INSTALL.vcxproj" or quit
     end
   end # clean
 
 end # End class VisualStudio
 
-class CMakeDev
+class CMakeDev #CMakeBuild < NomDev
   def initialize
     if ! File.exists? 'build'
       FileUtils.mkdir 'build'
     end
 
-    FileUtils.cd 'build'
+    FileUtils.cd 'build' #if WORKING_DIRECTORY != "build"
 
     # Clean out CMake variable cache
     FileUtils.rm 'CMakeCache.txt', :force => true
     FileUtils.rm 'CMakeFiles', :force => true
   end
 
-  # TODO; we should probably generate x86 and x64 project files in separate
-  # build dirs -- "build-x86" and "build-x64".
   def generate
     if ARGV[0] == "gen" and ARGV[1] == "x64" # 64-bit build
       system "cmake -G \"Visual Studio 12 Win64\" -D DEBUG=on -D EXAMPLES=on -D ARCH_64=on .." or quit
@@ -133,14 +193,14 @@ if ! platform["windows"]
   exit 1
 end
 
-cxx = VisualStudio.new
-cmake = CMakeDev.new
-
 if command == "gen"
+  cmake = CMakeDev.new
   cmake.generate
 elsif command == "build"
+  cxx = VisualStudio.new
   cxx.build
 elsif command == "clean"
+  cxx = VisualStudio.new
   cxx.clean
 else
   exit 0
@@ -148,3 +208,5 @@ end
 
 # Return to where we came from
 FileUtils.cd ".." if FileUtils.pwd == 'build'
+
+exit 0 # ...for added peace of mind =P

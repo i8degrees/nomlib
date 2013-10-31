@@ -56,7 +56,7 @@ def quit
   exit 1
 end
 
-class ThirdPartyDeps
+class ThirdPartyDeps #ExternalDeps < NomDev
   #attr_writer :save_path, :deps_path
   #attr_accessor :save_path, :deps_path
   @debug = false
@@ -64,6 +64,10 @@ class ThirdPartyDeps
     @save_path = "nomlib_windows-dependencies.zip"
     @deps_path = "http://sourceforge.net/projects/nomlib/files/nomlib_windows-dependencies.zip/download"
     @pwd = FileUtils.pwd
+    @osx_deps_filename = 'nomlib_osx-dependencies.tar.gz'
+    @windows_deps_filename = 'nomlib_windows-dependencies.zip'
+    @osx_deps_cmd = 'tar czvf ./nomlib_osx-dependencies.tar.gz --exclude="*.DS_Store*" --exclude="windows" --exclude="linux" third-party/'
+    @windows_deps_cmd = 'zip -r ./nomlib_windows-dependencies.zip third-party/ -x \*.DS_Store* \*osx\* \*linux\*'
   end
 
   def get
@@ -80,6 +84,30 @@ class ThirdPartyDeps
       puts "File has been saved at " << @pwd << "/" << @save_path
     end
   end
+
+  def archive(os)
+    case os
+      when 'osx'
+        if File.exists? @osx_deps_filename
+          puts "ERR: " << @pwd << "/" << @osx_deps_filename << " " << "already exists!"
+          exit 1
+        else
+          system @osx_deps_cmd or quit
+        end # file exists
+      when 'windows', 'win'
+        if File.exists? @windows_deps_filename
+          puts "ERR: " << @pwd << "/" << @windows_deps_filename << " " << "already exists!"
+          exit 1
+        else
+          system @windows_deps_cmd or quit
+        end # file exists
+      else
+        puts "ERR: You must specify the platform third-party dependencies you wish to archive."
+        exit 1
+    end # case
+
+    exit 0
+  end # archive
 
   def debug?
     return @debug
@@ -184,15 +212,6 @@ end # CMakeDev
 
 command = ARGV[0]
 
-#deps = ThirdPartyDeps.new
-#deps.debug = true
-#deps.get
-
-if ! platform["windows"]
-  puts "ERR: Detected platform is not Windows."
-  exit 1
-end
-
 if command == "gen"
   cmake = CMakeDev.new
   cmake.generate
@@ -202,6 +221,9 @@ elsif command == "build"
 elsif command == "clean"
   cxx = VisualStudio.new
   cxx.clean
+elsif command == "archive"
+  deps = ThirdPartyDeps.new
+  deps.archive(argument)
 else
   exit 0
 end

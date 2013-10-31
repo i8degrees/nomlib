@@ -1,70 +1,113 @@
 # nomlib #
 
-C++11 cross-platform game engine using SDL2 framework
+C++11 cross-platform game engine using the SDL2 framework.
 
 ## Projects Using nomlib ##
 
 * [i8degrees/ttcards](https://github.com/i8degrees/ttcards)
 
-## Building Instructions ##
+## Building ##
 
-### Dependencies ###
+First, ensure that you have the following core dependencies installed:
 
 * [cmake v2.6+](http://www.cmake.org/)
+* [git](http://git-scm.com/download/)
+* [doxygen v1.8.x](http://www.stack.nl/~dimitri/doxygen/) and [graphviz](http://www.graphviz.org/) only if you want to generate developer documentation.
 
-* [SDL v2.0.0](http://libsdl.org/)
-* [SDL_image v2.0.0](http://www.libsdl.org/projects/SDL_image/)
-* [SDL_ttf v2.0.12](http://www.libsdl.org/projects/SDL_ttf/)
+Next, you should visit the dependencies section for your platform. After these mundane chores are complete, you should be ready to start the building process for your platform!
 
-  - OpenAL
-    * Windows: [OpenALSoft](http://kcat.strangesoft.net/openal.html)
-    > I'd suggest trying the 32-bit bins first; I've had trouble with the 64-bit bins.
-    * Linux: libopenal-dev
-    * OS X: Creative Labs OpenAL SDK or [OpenALSoft](http://kcat.strangesoft.net/openal.html)
+### OS X ###
 
-* [libsndfile](http://www.mega-nerd.com/libsndfile/)
-> I'd suggest trying the 32-bit bins if you are on Windows!
-
-* [doxygen v1.8.x](http://www.stack.nl/~dimitri/doxygen/) and [graphviz](http://www.graphviz.org/) are needed if you plan on generating the documentation.
-
-* clang (v3.x) with libc++ libraries or recent GCC version (known to work with v4.6.x) with c++0x
-
-### OS X v10.7+ ###
-
-Home sweet home! Feel free to try installing one dependency via [homebrew](http://brew.sh/) and another via Framework bundle, it *may* work for you as it did for me. Once you have procured the necessary library dependencies, you may begin the fun:
+After you have the dependencies taken care of, execute the following commands at your terminal prompt:
 
 ```
 git clone https://github.com/i8degrees/nomlib
 cd nomlib
 mkdir build && cd build
-```
-
-If you do not specify a install prefix using **-D CMAKE_INSTALL_PREFIX**, the libraries will be installed under the local cmake build directory.
-
-```
-cmake -D CMAKE_INSTALL_PREFIX=/usr/local ..
+cmake ..
 make
 make install
 ```
 
-  - Other options include
-    * Documentation: **-D DOCS=on**
-    * Library Demos: **-D EXAMPLES=on**
-    * Debugging (my favorite =P): **-D DEBUG=on -D DEBUG_ASSERT=on -D DEBUG_TRACE=on**
-
-A framework bundle will automatically be built if it is detected that you are on OS X. There is currently no way of overriding this (to build a POSIX style install) other than editing the root project **CMakeLists.txt** file directly: option **FRAMEWORK** must be **"OFF"**.
-
-Uninstall is provided by executing **make uninstall** inside your local build directory; or manually doing so by looking at the **cmake_uninstall.cmake** list provided in the local cmake build directory.
+Upon a successful build, you should have the library built as a Framework bundle, under your current build directory, named **nomlib.framework**.
 
 ### Linux ###
 
-Until I get around to writing proper instructions, you may take a look at my
-.travis.yml build script in the root of this repository for hints.
+Linux builds are broken at the moment.
+
+~~Until I get around to writing the proper instructions, you may take a look at my
+.travis.yml build script in the project root of nomlib for hints!~~
+
+#### Linux Build Status #####
+
+[![Build Status](https://travis-ci.org/i8degrees/nomlib.png?branch=master,dev)](https://travis-ci.org/i8degrees/nomlib)
 
 ### Windows ###
 
-A slow but sure work in progress.
+After you have the dependencies taken care of, execute the following commands at the DOS prompt:
 
-#### Linux Build Status ####
+```
+git clone https://github.com/i8degrees/nomlib
+cd nomlib
+windev.rb gen
+```
 
-[![Build Status](https://travis-ci.org/i8degrees/nomlib.png?branch=master,dev)](https://travis-ci.org/i8degrees/nomlib)
+Upon a successful generation, you should have populated your current build directory with several Visual Studio project files: **nomlib.vcxproj** is the one you will want to work with.
+
+You may also be interested in the functionality of **windev.rb build**. (Uses the MSVCPP build tools chain with MSBuild to compile the project via command line).
+
+### Project Options ###
+
+Build options are passed to cmake with the -D option. For example, to change the installation prefix:
+
+```
+cmake -D CMAKE_INSTALL_PREFIX=~/Library/Frameworks ..
+```
+
+  - Installation path: -D CMAKE_INSTALL_PREFIX=**\<DIRECTORY_PREFIX\>**
+    * Defaults to your current **build** directory
+
+  - Documentation: -D DOCS=**\<BOOLEAN\>**
+    * Defaults to **OFF**
+    * When built (**ON**), the resulting documentation will reside in a new directory named **docs**
+
+  - Examples: -D EXAMPLES=**\<BOOLEAN\>**
+    * Defaults to **OFF**
+    * When built (**ON**), the resulting binaries will reside in a new directory named **examples**
+
+  - Debugging: -D DEBUG=**\<BOOLEAN\>** -D DEBUG_ASSERT=**\<BOOLEAN\>** -D DEBUG_TRACE=**\<BOOLEAN\>**
+    * Defaults to **OFF**
+
+  - Universal binary: -D UNIVERSAL=**\<BOOLEAN\>**
+    * Defaults to **OFF**
+
+Removal is provided by executing **make uninstall** within your current build directory.
+
+## OS X Dependencies ##
+
+* See **third-party/README.md** for where to obtain pre-packaged libraries and how to install them.
+* clang (v3.x) with libc++ libraries -- this *may* restrict compiling to OS X v10.7+
+
+## Linux Dependencies ##
+
+* SDL v2.0.1
+* SDL_image v2.0.0
+* SDL_ttf v2.0.12
+* libsndfile v1.0.25
+* OpenAL
+* Recent version of GNU's GCC compiler with support for C++11 (known to work with v4.6.x)
+
+## Windows Dependencies ##
+
+* See **third-party/README.md** for where to obtain pre-packaged libraries and how to install them.
+* [Ruby 1.9.3-p448](http://rubyinstaller.org/downloads/)
+
+* [Microsoft Visual Studio Express 2013 for Windows](http://www.microsoft.com/visualstudio/eng#downloads)
+
+  - Required software tools in your system PATH
+    * MSVSCPP -- **\<MSVSCPP_INSTALL_PATH\>\bin**
+    * CMake -- **\<CMAKE_INSTALL_PATH\>\bin**
+    * Ruby -- **\<RUBY_INSTALL_PATH\>\bin**
+    * Git -- **\<GIT_INSTALL_PATH\>\bin**
+
+If this is your first time installing the tools, you might be happy to know that the official installers can do this task for you automatically.

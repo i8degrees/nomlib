@@ -49,12 +49,12 @@ After you have the dependencies taken care of, execute the following commands at
 ```
 git clone https://github.com/i8degrees/nomlib
 cd nomlib
-windev.rb gen
+nomdev.rb gen
 ```
 
 Upon a successful generation, you should have populated your current build directory with several Visual Studio project files: **nomlib.vcxproj** is the one you will want to work with.
 
-You may also be interested in the functionality of **windev.rb build**. (Uses the MSVCPP build tools chain with MSBuild to compile the project via command line).
+You may also be interested in the functionality of **nomdev.rb build**. (Uses the MSVCPP build tools chain with MSBuild to compile the project via command line).
 
 ### Project Options ###
 

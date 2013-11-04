@@ -205,13 +205,13 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
     return Color::null;
   }
 
-  return key.pixel ( transparent_color, buffer->format );
+  return nom::pixel ( transparent_color, buffer->format );
 }
 
 bool Image::set_colorkey ( const Color& colorkey, bool flag )
 {
   SDL_Surface* buffer = this->image();
-  uint32 transparent_color = colorkey.RGB ( buffer->format );
+  uint32 transparent_color = RGB ( colorkey, buffer->format );
 
   if ( this->valid() == false )
   {

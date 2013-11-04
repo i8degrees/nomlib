@@ -31,8 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <algorithm>
 
-#include "SDL.h"
-
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -68,37 +66,6 @@ class Color
 
     /// Convenience getter for obtaining a copy of this object
     const Color& get ( void ) const;
-
-    inline SDL_Color SDL ( void ) const
-    {
-      SDL_Color c;
-
-      c.r = this->red;
-      c.g = this->green;
-      c.b = this->blue;
-      c.a = this->alpha;
-
-      return c;
-    }
-
-    /// Returns RGBA components via nom::Color object, holding the red, green, blue
-    /// and alpha values.
-    inline const Color pixel ( uint32 pixel, const SDL_PixelFormat* fmt ) const
-    {
-      Color c = *this;
-      SDL_GetRGBA ( pixel, fmt, &c.red, &c.green, &c.b, &c.a );
-      return c;
-    }
-
-    /// Convenience helper for obtaining a color as an integer, respective to
-    /// the video surface pixel format (color bit per pixel)
-    ///
-    /// Returns RGBA components via nom::Color object, holding the red, green, blue
-    /// and alpha values.
-    inline uint32 RGB ( const SDL_PixelFormat* fmt ) const
-    {
-      return SDL_MapRGBA ( fmt, this->red, this->green, this->blue, this->alpha );
-    }
 
     /// Copy assignment operator
     Color& operator = ( const Color& other );

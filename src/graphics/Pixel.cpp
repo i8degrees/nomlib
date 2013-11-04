@@ -65,7 +65,7 @@ NOM_LOG_ERR ( NOM, "Could not determine color depth -- aborting call." );
     case 8:
     {
       uint8* pixels = static_cast<uint8*> ( video_buffer->pixels );
-      uint32 pixel_color = this->color.RGB ( video_buffer->format );
+      uint32 pixel_color = RGB ( this->color, video_buffer->format );
 
       pixels[ ( this->coords.y * video_buffer->pitch ) + this->coords.x ] = pixel_color;
     }
@@ -74,7 +74,7 @@ NOM_LOG_ERR ( NOM, "Could not determine color depth -- aborting call." );
     case 2: // 15/16-bit BPP
     {
       uint16* pixels = static_cast<uint16*> ( video_buffer->pixels );
-      uint32 pixel_color = this->color.RGB ( video_buffer->format );
+      uint32 pixel_color = RGB ( this->color, video_buffer->format );
 
       pixels[ ( this->coords.y * video_buffer->pitch/2 ) + this->coords.x ] = pixel_color;
     }
@@ -83,7 +83,7 @@ NOM_LOG_ERR ( NOM, "Could not determine color depth -- aborting call." );
     case 3: // 24-bit BPP
     {
       uint8* pixels = static_cast<uint8*> ( video_buffer->pixels );
-      uint32 pixel_color = this->color.RGB ( video_buffer->format );
+      uint32 pixel_color = RGB ( this->color, video_buffer->format );
 
       pixels[ ( this->coords.y * video_buffer->pitch ) + this->coords.x ] = pixel_color;
       *(pixels + video_buffer->format->Rshift/8 ) = this->color.red;
@@ -96,7 +96,7 @@ NOM_LOG_ERR ( NOM, "Could not determine color depth -- aborting call." );
     case 4: // 32-bit BPP
     {
       uint32* pixels = static_cast<uint32*> ( video_buffer->pixels );
-      uint32 pixel_color = this->color.RGB ( video_buffer->format );
+      uint32 pixel_color = RGB ( this->color, video_buffer->format );
 
       pixels[ ( this->coords.y * video_buffer->pitch/4 ) + this->coords.x ] = pixel_color;
     }

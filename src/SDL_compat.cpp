@@ -54,4 +54,44 @@ SDL_Rect SDL_RECT ( const Coords& coords )
   return r;
 }
 
+SDL_Color SDL_COLOR ( const Color& color )
+{
+  SDL_Color c;
+
+  c.r = color.red;
+  c.g = color.green;
+  c.b = color.blue;
+  c.a = color.alpha;
+
+  return c;
+}
+
+const Color pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
+{
+  Color c;
+
+  SDL_GetRGB ( pixel, fmt, &c.red, &c.green, &c.blue );
+
+  return c;
+}
+
+const Color alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
+{
+  Color c;
+
+  SDL_GetRGBA ( pixel, fmt, &c.red, &c.green, &c.blue, &c.alpha );
+
+  return c;
+}
+
+uint32 RGB ( const Color& color, const SDL_PixelFormat* fmt )
+{
+  return SDL_MapRGB ( fmt, color.red, color.green, color.blue );
+}
+
+uint32 RGBA ( const Color& color, const SDL_PixelFormat* fmt )
+{
+  return SDL_MapRGBA ( fmt, color.red, color.green, color.blue, color.alpha );
+}
+
 } // namespace nom

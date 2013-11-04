@@ -32,7 +32,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
+#include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
+#include "nomlib/math/Rect-inl.hpp"
+#include "nomlib/math/Point2-inl.hpp"
 
 namespace nom {
 
@@ -45,6 +48,61 @@ SDL_bool SDL_BOOL ( bool value );
 ///
 /// \return A SDL_Rect structure composed from a nom::Coords object
 SDL_Rect SDL_RECT ( const Coords& coords );
+
+/// SDL2 data structure wrappers for nomlib
+///
+/// \return SDL_Rect structure composed from a nom::Rect<T> object
+///
+/// \todo Implement me
+template <typename T>
+SDL_Rect SDL_RECT ( const Rect<T>& )
+{
+  SDL_Rect null;
+  return null;
+}
+
+/// SDL2 data structure wrappers for nomlib
+///
+/// \return SDL_Point structure composed from a nom::Point2<T> object
+///
+/// \todo Implement me
+template <typename T>
+SDL_Point SDL_POINT ( const Point2<T>& )
+{
+  SDL_Point null;
+  return null;
+}
+
+/// SDL2 data structure wrappers for nomlib
+///
+/// \return A SDL_Color structure composed from a nom::Color object
+SDL_Color SDL_COLOR ( const Color& color );
+
+/// SDL2 helper functions for nomlib
+///
+/// \return RGB components of a pixel represented as a nom::Color object
+const Color pixel ( uint32 pixel, const SDL_PixelFormat* fmt );
+
+/// SDL2 helper functions for nomlib
+///
+/// \return RGBA components of a pixel represented as a nom::Color object
+const Color alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt );
+
+/// SDL2 helper functions for nomlib
+///
+/// Obtain a color as an integer, respective to the video surface pixel format
+/// (color bit per pixel).
+///
+/// \return RGB components as an unsigned integer.
+uint32 RGB ( const Color& color, const SDL_PixelFormat* fmt );
+
+/// SDL2 helper functions for nomlib
+///
+/// Obtain a color as an integer, respective to the video surface pixel format
+/// (color bit per pixel).
+///
+/// \return RGBA components as an unsigned integer.
+uint32 RGBA ( const Color& color, const SDL_PixelFormat* fmt );
 
 
 } // namespace nom

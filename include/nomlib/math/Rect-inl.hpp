@@ -47,17 +47,6 @@ class Rect
     Rect ( Point p, T width, T height ) :
       left ( p.x ), top ( p.y ), right ( p.x + width ), bottom ( p.y + height ) {}
 
-    /// SDL backwards-compatibility wrappers for nomlib
-    ///
-    /// Returns a SDL_Rect structure of a nom::Rect object
-    ///
-    /// \todo Implement me
-    inline SDL_Rect SDL ( void ) const
-    {
-      SDL_Rect empty;
-      return empty;
-    }
-
   public:
     T left;
     T top;

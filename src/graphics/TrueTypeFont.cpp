@@ -270,11 +270,11 @@ void TrueTypeFont::update ( void )
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
-                                    this->color.SDL(),
+                                    SDL_COLOR(this->color),
                                     // TODO; implement me -- a second color
                                     // possibility means needing two colors in
                                     // class
-                                    Color ( 97, 97, 97 ).SDL()
+                                    SDL_COLOR ( Color ( 97, 97, 97 ) )
                                   )
                                 );
   }
@@ -284,7 +284,7 @@ void TrueTypeFont::update ( void )
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
-                                    this->color.SDL()
+                                    SDL_COLOR(this->color)
                                   )
                                 );
   }
@@ -294,7 +294,7 @@ void TrueTypeFont::update ( void )
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
-                                    this->color.SDL()
+                                    SDL_COLOR(this->color)
                                   )
                                 );
   }

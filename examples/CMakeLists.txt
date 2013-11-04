@@ -40,6 +40,10 @@ else ( NOT PLATFORM_WINDOWS )
 
   else ( NOT CMAKE_GENERATOR STREQUAL "Xcode" )
 
+    # We prefer lower-case file paths
+    string ( TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE )
+
+    # Match build/debug/examples
     set ( EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/examples/${CMAKE_BUILD_TYPE}" )
     set ( EXAMPLES_INSTALL_PEFIX "${EXECUTABLE_OUTPUT_PATH}" )
   endif ( CMAKE_GENERATOR STREQUAL "Xcode" )

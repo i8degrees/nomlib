@@ -1,6 +1,8 @@
 cmake_minimum_required ( VERSION 2.6 )
 
 # CMake Environment
+
+set ( CMAKE_VERBOSE_MAKEFILE OFF CACHE PATH "Verbose Makefile" )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" )
 set ( CMAKE_TEMPLATE_PATH ${CMAKE_TEMPLATE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates" )
 
@@ -45,7 +47,6 @@ if ( DEBUG )
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D NOM_DEBUG /D NOM_DEBUG_ASSERT /D NOM_DEBUG_TRACE" )
   endif( NOT PLATFORM_WINDOWS )
 
-  set ( CMAKE_VERBOSE_MAKEFILE on )
   message ( STATUS "Building ${PROJECT_NAME} with debugging." )
   message ( STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}" )
 else () # Build with optimizations for maximum speed and minimal size

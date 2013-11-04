@@ -4,9 +4,11 @@ compiler:
   - gcc
 before_install:
 # nomlib dependencies (SDL, OpenAL, libsndfile, libmagic, GTK)
-  - sudo apt-get install libsdl1.2-dev libsdl1.2debian libsdl-image1.2-dev libsdl-image1.2 libsdl-ttf2.0-dev libsdl-ttf2.0-0 libsndfile1-dev libopenal-dev libmagic-dev libgtk2.0-dev libjson-spirit-dev #doxygen graphviz
+  - echo "y" | sudo add-apt-repository ppa:zoogie/sdl2-snapshots
+  - sudo apt-get update
+  - sudo apt-get install -qq libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libopenal-dev # doxygen graphviz
 before_script:
-  - mkdir -p build build-osx && cd build
+  - mkdir -p build && cd build
   - cmake -D CMAKE_VERBOSE_MAKEFILE=on -D EXAMPLES=on -D CMAKE_INSTALL_PREFIX=/usr/local ..
 script:
   - make -j4
@@ -19,6 +21,6 @@ script:
 # whitelist
 branches:
   only:
-    - travis
-    - dev
-    - master
+    - feature/travis/jeff
+    #- dev
+    #- master

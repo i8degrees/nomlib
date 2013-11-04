@@ -62,17 +62,7 @@ const nom::int32 WINDOW_HEIGHT = 448;
 const nom::int32 MAXIMUM_WINDOWS = 3;
 
 /// Relative file path name of our resource example
-///
-/// FIXME
-/// This is a temporary fix until we can use IMG_Load for loading the PNG image
-/// again.
-/// (See FIXME notes inside Window::set_window_icon)
-/// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
-#if defined ( NOM_PLATFORM_WINDOWS )
-  const std::string RESOURCE_ICON = "icon.bmp";
-#else // assume POSIX platform
-  const std::string RESOURCE_ICON = "icon.png";
-#endif
+const std::string RESOURCE_ICON = "icon.png";
 
 const std::string RESOURCE_TRUETYPE_FONT = "arial.ttf";
 

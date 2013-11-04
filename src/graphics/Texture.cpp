@@ -297,24 +297,6 @@ const uint32 Texture::getTextureAlphaMask ( void ) const
 */
 
 /* RELOCATE
-const Coords Texture::getTextureBounds ( void ) const
-{
-  return Coords::null;
-
-  SDL_Rect clip_buffer; // temporary storage struct
-  Coords clip_bounds; // transferred values from SDL_Rect clip_buffer
-
-  // Return values are put into the clip_buffer SDL_Rect after executing:
-  SDL_GetClipRect ( this->texture_.get(), &clip_buffer );
-
-  // Now transfer the values into our preferred data container type
-  clip_bounds = Coords ( clip_buffer.x, clip_buffer.y, clip_buffer.w, clip_buffer.h );
-
-  return clip_bounds;
-}
-RELOCATE */
-
-/* RELOCATE
 void Texture::setTextureBounds ( const Coords& clip_bounds )
 {
   SDL_Rect clip = IntRect::asSDLRect ( clip_bounds ); // temporary storage struct for setting
@@ -361,7 +343,7 @@ void Texture::unlock ( void ) const
 }
 
 bool Texture::load ( const std::string& filename, const Color& colorkey,
-                    bool use_cache, uint32 flags
+                    bool use_cache
                   )
 {
   Image image;
@@ -386,6 +368,14 @@ TODO */
   //}
 
   if ( image.load ( filename ) == false ) return false;
+
+  if ( colorkey != Color::null )
+  {
+    if ( image.set_colorkey ( colorkey, true ) == false )
+    {
+      return false;
+    }
+  }
 
   // We produce a segmentation fault here if we do not have SDL's video
   // subsystem initialized before making the following calls -- transparency

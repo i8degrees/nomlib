@@ -164,7 +164,6 @@ class Texture
     /// Obtain the video surface's alpha mask
     //const uint32 getTextureAlphaMask ( void ) const;
 
-    //const Coords getTextureBounds ( void ) const;
     //void setTextureBounds ( const Coords& clip_bounds );
 
     /// Calculate this object's bits per pixel (color depth)
@@ -211,16 +210,11 @@ class Texture
     /// \param use_cache        Whether or not to use an internal object cache
     ///                         feature of nomlib. Defaults to off.
     ///
-    /// \param flags            SDL_RLEACCEL
-    ///
     /// \todo Test/Research Texture caching -- nom::ObjectCache worked
     /// beautifully with SDL_Surface, is the same true of SDL_Texture?
-    /// \todo Consider removing SDL_RLEACCEL flag
-    /// \todo Merge use_cache into flags variable
     bool load ( const std::string& filename, const Color&
                 colorkey = Color::null,
-                bool use_cache = false,
-                uint32 flags = SDL_RLEACCEL
+                bool use_cache = false
               );
 
     /// Stub for SDL_UpdateTexture implementation

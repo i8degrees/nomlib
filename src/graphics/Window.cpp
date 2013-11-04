@@ -345,20 +345,9 @@ void Window::set_window_title ( const std::string& title )
 
 bool Window::set_window_icon ( const std::string& filename )
 {
-  Image icon; // holds our image in memory during transfer
+  Image icon;
 
-// FIXME
-// (Windows does not like using IMG_Load (SDL2_image extension) for some
-// reason, which limits us solely to BMP (Windows Bitmap) files, which
-// arguably is inconvenient ;-P I think I just need to take another look at
-// the SDL documentation to see if this is a known limitation of their icon
-// loader on Windows platform.
-// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
-#if defined ( NOM_PLATFORM_WINDOWS ) // Use SDL's built-in BMP loader
-  if ( icon.load_bmp ( filename ) == false ) return false;
-#else // Use SDL2_image for additional image types
   if ( icon.load ( filename ) == false ) return false;
-#endif
 
   if ( icon.valid() == false )
   {

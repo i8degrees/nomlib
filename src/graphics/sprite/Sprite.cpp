@@ -83,10 +83,10 @@ void Sprite::setState ( uint32 state )
 
 bool Sprite::load (
                     const std::string& filename, const Color& colorkey,
-                    bool use_cache, uint32 flags
+                    bool use_cache
                   )
 {
-  this->sprite.load ( filename, colorkey, use_cache, flags );
+  this->sprite.load ( filename, colorkey, use_cache );
 
   if ( this->sprite.valid() == false )
   {

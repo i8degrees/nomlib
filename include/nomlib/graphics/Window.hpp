@@ -173,14 +173,7 @@ class Window:
 
     void set_window_title ( const std::string& title );
 
-    /// FIXME
-    /// (Windows does not like using IMG_Load (SDL2_image extension) for some
-    /// reason, which limits us solely to BMP (Windows Bitmap) files, which
-    /// arguably is inconvenient ;-P I think I just need to take another look at
-    /// the SDL documentation to see if this is a known limitation of their icon
-    /// loader on Windows platform.
-    ///
-    /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
+    /// Set an icon for this window
     bool set_window_icon ( const std::string& filename );
 
     /// Obtain this window's unique identifier

@@ -369,9 +369,12 @@ if ( PLATFORM_OSX )
           "@loader_path/../../Frameworks"
         )
 
-    add_rpath ( "${RUNTIME_PATH}" "${INSTALL_BINARY_PATH}" )
-
-    install_name_rpath ( "@rpath/sndfile.framework/Versions/A/sndfile" "${LIBSNDFILE_LIBRARY}/Versions/A/sndfile" )
+    # Let Xcode take care of things for us if user is building from Xcode
+    # project files
+    if ( NOT CMAKE_GENERATOR STREQUAL "Xcode" )
+      add_rpath ( "${RUNTIME_PATH}" "${INSTALL_BINARY_PATH}" )
+      install_name_rpath ( "@rpath/sndfile.framework/Versions/A/sndfile" "${LIBSNDFILE_LIBRARY}/Versions/A/sndfile" )
+    endif ( NOT CMAKE_GENERATOR STREQUAL "Xcode" )
 
   endif ( FRAMEWORK )
 endif ( PLATFORM_OSX )

@@ -1,3 +1,19 @@
+# TODO: consider adding a custom POST_BUILD command here so that we do not have
+# to manually execute the 'install' target in order to get the example's
+# Resources, etc. to copy.
+#
+#   OS X with cmake generated Xcode project files:
+#
+# xcodebuild -target install
+#
+#   MSBuild with Visual Studio 2012 project files:
+#
+# msbuild /t:build INSTALL.vcxproj
+#
+#   See also,
+#
+# http://stackoverflow.com/questions/13422202/adding-distinct-xcode-resources-for-multiple-executables-using-cmake
+# http://stackoverflow.com/questions/6077810/how-to-correctly-add-resources-to-a-project?rq=1
 cmake_minimum_required ( VERSION 2.6 )
 
 link_libraries ( ${PROJECT_NAME} )
@@ -16,9 +32,18 @@ if ( PLATFORM_WINDOWS )
   # build/Debug/examples under MSVC++
   set ( EXAMPLES_INSTALL_PEFIX "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}" )
 else ( NOT PLATFORM_WINDOWS )
-  # Match the above path for other platforms (this is the way
-  set ( EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/examples/${CMAKE_BUILD_TYPE}" )
-  set ( EXAMPLES_INSTALL_PEFIX "${EXECUTABLE_OUTPUT_PATH}" )
+
+  if ( CMAKE_GENERATOR STREQUAL "Xcode" )
+
+    # Match build/Debug/examples
+    set ( EXAMPLES_INSTALL_PEFIX "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}" )
+
+  else ( NOT CMAKE_GENERATOR STREQUAL "Xcode" )
+
+    set ( EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/examples/${CMAKE_BUILD_TYPE}" )
+    set ( EXAMPLES_INSTALL_PEFIX "${EXECUTABLE_OUTPUT_PATH}" )
+  endif ( CMAKE_GENERATOR STREQUAL "Xcode" )
+
 endif ( PLATFORM_WINDOWS )
 
 add_executable ( audio "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/audio/audio.cpp" )

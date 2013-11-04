@@ -45,6 +45,23 @@ if ( DEBUG )
   else ( PLATFORM_WINDOWS )
     # TODO: split these options up like we have for other platforms
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D NOM_DEBUG /D NOM_DEBUG_ASSERT /D NOM_DEBUG_TRACE" )
+
+    # Faster builds by reducing the size of system header files, such as
+    # Cryptography, DDE, RPC, Shell, and Windows Sockets.
+    set ( CMAKE_CXX_FLAGS_DEBUG "/D WIN32_LEAN_AND_MEAN" )
+
+    # FIXME: Windows XP Targeting
+    #
+    # http://blogs.msdn.com/b/vcblog/archive/2012/10/08/10357555.aspx
+    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D WINVER=0x0501 /D _WIN32_WINNT=0x0501 /D NTDDI_VERSION=0x05010300" )
+
+    if ( ARCH_64 )
+      set ( WIN32_TARGET "/SUBSYSTEM:CONSOLE,5.02" )
+    else () # Assume ARCH_32
+      set ( WIN32_TARGET "/SUBSYSTEM:CONSOLE,5.01" )
+    endif ( ARCH_64 )
+
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${WIN32_TARGET}" )
   endif( NOT PLATFORM_WINDOWS )
 
   message ( STATUS "Building ${PROJECT_NAME} with debugging." )
@@ -203,6 +220,10 @@ if ( PLATFORM_WINDOWS )
   set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libsndfile/lib/${PLATFORM_ARCH}/libsndfile-1.lib" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
+
+  # TODO: we should only be copying either the debug or the release DLLs,
+  # depending on user's build type.
+  set ( MSVCPP_REDIST_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/msvcpp2013/${PLATFORM_ARCH}/" )
 
 elseif ( PLATFORM_OSX )
 

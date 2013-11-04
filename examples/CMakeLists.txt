@@ -85,6 +85,7 @@ if ( PLATFORM_WINDOWS )
             "${SDL2_TTF_LIBRARY_DIR}"
             "${OPENAL_LIBRARY_DIR}"
             "${LIBSNDFILE_LIBRARY_DIR}"
+            "{MSVCPP_REDIST_DIR}" # FIXME: this isn't getting copied over...
             DESTINATION
             "${EXAMPLES_INSTALL_PEFIX}"
             FILES_MATCHING PATTERN "*.dll"

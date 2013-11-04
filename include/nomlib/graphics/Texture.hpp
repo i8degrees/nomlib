@@ -180,6 +180,8 @@ class Texture
     /// verification has been made of this. Testing of this method *appears*
     /// to be in working order.
     /// \todo bool getTextureLock ( void ) const;
+    /// Obtain the blending mode used for texture copies
+    const SDL_BlendMode blend_mode ( void ) const;
 
     /// Lock a portion of the texture for **write-only** pixel access.
     ///
@@ -261,6 +263,9 @@ class Texture
 
     /// Return the correct scaling factor of the chosen algorithm
     int32 getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm );
+
+    /// Set a new blending mode for this texture
+    bool set_blend_mode ( const SDL_BlendMode blend );
 
   private:
     std::shared_ptr<SDL_Texture> texture_;

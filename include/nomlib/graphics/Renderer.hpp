@@ -73,6 +73,9 @@ class Renderer
 
     Coords viewport ( void ) const;
 
+    /// Obtain the blending mode used for drawing
+    const SDL_BlendMode blend_mode ( void ) const;
+
     /// Update the renderer surface on the attached window
     void update ( void ) const;
 
@@ -112,7 +115,7 @@ class Renderer
     /// SDL_BLENDMODE_BLEND
     /// SDL_BLENDMODE_ADD
     /// SDL_BLENDMODE_MOD
-    bool set_blend_mode ( SDL_BlendMode mode );
+    bool set_blend_mode ( const SDL_BlendMode mode );
 
   protected:
     /// This is automatically released after the attached nom::Window has been

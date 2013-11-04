@@ -110,6 +110,9 @@ class Image
     /// \return Returns new nom::Color on success; nom::Color::null on failure
     const Color colorkey ( void ) const;
 
+    /// Obtain the blend mode used for blitting
+    const SDL_BlendMode blend_mode ( void ) const;
+
     /// Set a new color key on the image loaded into memory.
     ///
     /// \param colorkey     Pixel color to mark transparent
@@ -133,6 +136,9 @@ class Image
     ///
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
     uint32 pixel ( int32 x, int32 y );
+
+    /// Set a new blending mode for blitting
+    bool set_blend_mode ( const SDL_BlendMode blend );
 
   private:
     Image::SharedPtr image_;

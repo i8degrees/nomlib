@@ -87,6 +87,19 @@ Coords Renderer::viewport ( void ) const
   return view_pos;
 }
 
+const SDL_BlendMode Renderer::blend_mode ( void ) const
+{
+  SDL_BlendMode blend;
+
+  if ( SDL_GetRenderDrawBlendMode ( this->renderer(), &blend ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return blend;
+  }
+
+  return blend;
+}
+
 void Renderer::update ( void ) const
 {
   SDL_RenderPresent ( this->renderer() );
@@ -151,7 +164,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Renderer::set_blend_mode ( SDL_BlendMode mode )
+bool Renderer::set_blend_mode ( const SDL_BlendMode mode )
 {
   if ( SDL_SetRenderDrawBlendMode ( this->renderer(), mode ) != 0 )
   {

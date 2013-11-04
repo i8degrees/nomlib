@@ -208,6 +208,19 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return nom::pixel ( transparent_color, buffer->format );
 }
 
+const SDL_BlendMode Image::blend_mode ( void ) const
+{
+  SDL_BlendMode blend;
+
+  if ( SDL_GetSurfaceBlendMode ( this->image(), &blend ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return blend;
+  }
+
+  return blend;
+}
+
 bool Image::set_colorkey ( const Color& colorkey, bool flag )
 {
   SDL_Surface* buffer = this->image();
@@ -278,6 +291,17 @@ uint32 Image::pixel ( int32 x, int32 y )
     }
     break;
   } // end switch
+}
+
+bool Image::set_blend_mode ( const SDL_BlendMode blend )
+{
+  if ( SDL_SetSurfaceBlendMode ( this->image(), blend ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  return true;
 }
 
 

@@ -42,4 +42,16 @@ SDL_bool SDL_BOOL ( bool value )
   }
 }
 
+SDL_Rect SDL_RECT ( const Coords& coords )
+{
+  SDL_Rect r;
+
+  r.x = coords.x;
+  r.y = coords.y;
+  r.w = coords.width;
+  r.h = coords.height;
+
+  return r;
+}
+
 } // namespace nom

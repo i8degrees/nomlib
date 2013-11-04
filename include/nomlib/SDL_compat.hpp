@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
+#include "nomlib/math/Coords.hpp"
 
 namespace nom {
 
@@ -39,6 +40,11 @@ namespace nom {
 ///
 /// \return A SDL_bool from a boolean value
 SDL_bool SDL_BOOL ( bool value );
+
+/// SDL2 data structure wrappers for nomlib
+///
+/// \return A SDL_Rect structure composed from a nom::Coords object
+SDL_Rect SDL_RECT ( const Coords& coords );
 
 
 } // namespace nom

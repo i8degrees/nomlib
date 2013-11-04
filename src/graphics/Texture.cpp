@@ -327,7 +327,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
 bool Texture::lock ( const Coords& lock_coords )
 {
-  SDL_Rect area = lock_coords.SDL();
+  SDL_Rect area = SDL_RECT(lock_coords);
 
   if ( SDL_LockTexture ( this->texture(), &area, &this->pixels_, this->pitch_ ) != 0 )
   {

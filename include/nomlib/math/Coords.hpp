@@ -31,8 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <algorithm>
 
-#include "SDL.h"
-
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -94,20 +92,6 @@ class Coords
 
     /// Convenience object that will always contain a value of -1
     static const Coords null;
-
-    /// SDL backwards-compatibility wrappers for nomlib
-    ///
-    /// Returns a SDL_Rect structure of a nom::Coords object
-    inline SDL_Rect SDL ( void ) const
-    {
-      SDL_Rect r;
-
-      r.x = this->x;
-      r.y = this->y;
-      r.w = this->width;
-      r.h = this->height;
-      return r;
-    }
 
   public:
     int32 x;

@@ -433,7 +433,7 @@ void Window::hide_window ( void )
 
 void Window::set_window_grab ( bool grab )
 {
-  SDL_SetWindowGrab ( this->window(), static_cast<SDL_bool> ( grab)  );
+  SDL_SetWindowGrab ( this->window(), SDL_BOOL(grab) );
 }
 
 void Window::set_minimum_window_size ( int min_width, int min_height )

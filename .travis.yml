@@ -4,7 +4,7 @@ compiler:
   - gcc
 before_install:
 # nomlib dependencies (SDL, OpenAL, libsndfile, libmagic, GTK)
-  - echo "y" | sudo add-apt-repository ppa:zoogie/sdl2
+  - echo "y" | sudo add-apt-repository ppa:zoogie/sdl2-snapshots
   - sudo apt-get update
   - sudo apt-get install -qq libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libopenal-dev # doxygen graphviz
 before_script:

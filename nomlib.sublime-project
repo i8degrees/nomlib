@@ -10,7 +10,7 @@
     {
       "name": "src",
       "path": "src",
-      "file_include_patterns": [ "*.txt", "*.cpp", "*.c" ]
+      "file_include_patterns": [ "*.txt", "*.cpp", "*.c", "*.rb" ]
     },
 
     {

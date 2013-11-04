@@ -2,6 +2,7 @@
 version.cpp
 version.hpp
 
+.loc.yml
 install_options
 *.sublime-workspace
 *.bck

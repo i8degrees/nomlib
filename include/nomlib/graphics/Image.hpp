@@ -50,9 +50,6 @@ namespace nom {
 class Image
 {
   public:
-    /// Convenience definition type for the std::unique_ptr variant
-    typedef std::shared_ptr<SDL_Surface> SharedPtr;
-
     /// Default constructor -- initializes to sane defaults.
     Image ( void );
 
@@ -126,7 +123,7 @@ class Image
     /// pixels.
     ///
     /// \param      TRUE to enable RLE acceleration; FALSE to disable
-    bool set_RLE ( bool flag );
+    bool RLE ( bool flag );
 
     /// Pixel reading -- supports 8-bit, 15/16-bit, 24-bit & 32-bit color modes
     ///
@@ -141,7 +138,7 @@ class Image
     bool set_blend_mode ( const SDL_BlendMode blend );
 
   private:
-    Image::SharedPtr image_;
+    std::shared_ptr<SDL_Surface> image_;
 };
 
 

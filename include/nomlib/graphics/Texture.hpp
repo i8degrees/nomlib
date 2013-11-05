@@ -74,14 +74,8 @@ class Texture
     /// Default constructor; initializes object to its respective defaults
     Texture ( void );
 
-    /// Lazy destructor -- does nothing.
+    /// Lazy destructor -- automatic cleanup!
     ~Texture ( void );
-
-    /// Constructor variant for creating a video surface object with existing
-    /// video surface memory.
-    Texture ( SDL_Surface* video_buffer );
-
-    //Texture ( SDL_Texture* video_buffer );
 
     /// Copy constructor; create a video surface object from an existing Texture
     /// object.
@@ -99,7 +93,7 @@ class Texture
     /// (SDL_SetVideoMode).
     ///
     /// See http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurface
-    Texture ( int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, uint32 flags = SDL_SWSURFACE );
+    //Texture ( int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, uint32 flags = SDL_SWSURFACE );
 
     /// Construct a video surface object using the data from an existing surface;
     /// you can think of this as a copy method. As with the previous method, you
@@ -110,11 +104,13 @@ class Texture
     /// therefore are responsible for memory management.
     ///
     /// See http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurfaceFrom
-    Texture ( void* pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+    //Texture ( void* pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
-    void initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+    //void initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
     bool initialize ( SDL_Surface* video_buffer );
+
+    bool initialize ( int32 width, int32 height, uint32 format, uint32 flags );
 
     /// Return a std::shared_ptr copy of this instance
     /// \todo Test me out!
@@ -133,6 +129,11 @@ class Texture
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
 
+    /// Query texture access type
+    ///
+    /// \return SDL_TextureAccess enum type
+    int access ( void ) const;
+
     /// Reset the video surface object with another video surface object.
     /// \todo Relocate me to a surface class
     ///void setTexture ( const Texture& surface );
@@ -140,9 +141,17 @@ class Texture
     void set_position ( const Point2i& pos );
     void set_bounds ( const Coords& clip );
 
+    /// Obtain width, in pixels, of texture
+    ///
+    /// \return -1 on error; non-zero width on success
     int32 width ( void ) const;
+
+    /// Obtain height, in pixels, of texture
+    ///
+    /// \return -1 on error; non-zero height on success
     int32 height ( void ) const;
-    uint16 pitch ( void ) const;
+
+    int pitch ( void ) const;
     void* pixels ( void ) const;
 
     uint8 bytes_per_pixel ( void ) const;
@@ -164,62 +173,62 @@ class Texture
     /// Obtain the video surface's alpha mask
     //const uint32 getTextureAlphaMask ( void ) const;
 
-    //void setTextureBounds ( const Coords& clip_bounds );
-
     /// Calculate this object's bits per pixel (color depth)
     ///
     /// \return Unsigned 8-bit integer (8, 16, 24 or 32 bits per pixel); zero (0)
     /// on error (unknown color depth).
     uint8 bits_per_pixel ( void ) const;
 
-    /// I think that we are accessing the value of an
-    /// (internal?) property of the SDL_Surface structure that is described as being
-    /// "private" as per the docs.
-    ///
-    /// Return value of this internal property is presumed to be boolean -- no
-    /// verification has been made of this. Testing of this method *appears*
-    /// to be in working order.
-    /// \todo bool getTextureLock ( void ) const;
     /// Obtain the blending mode used for texture copies
     const SDL_BlendMode blend_mode ( void ) const;
 
+    /// Query memory lock status
+    bool locked ( void ) const;
+
+    /// Obtain the set color key for this image
+    ///
+    /// \return   Returns non-negative nom::Color on success;
+    ///           nom::Color::null on failure
+    const Color& colorkey ( void ) const;
+
     /// Lock a portion of the texture for **write-only** pixel access.
     ///
-    /// Texture must be created with SDL_TEXTUREACCESS_STREAMING
-    /// \todo pixels access
+    /// Texture must be created with SDL_TEXTUREACCESS_STREAMING.
     bool lock ( void );
 
     /// Lock a portion of this texture for write-only pixel access.
     ///
-    /// \param lock_coords  The area encompassing the area to lock for pixel
-    /// access
+    /// Texture must be created with SDL_TEXTUREACCESS_STREAMING.
+    ///
+    /// \param lock_coords  The area encompassing the area to lock for write
+    ///                     access.
     bool lock ( const Coords& lock_coords );
 
-    /// Unlock this texture, thereby uploading the necessary changes (if any)
+    /// Unlock this texture, thereby uploading any applicable changes
     /// to video memory.
-    void unlock ( void ) const;
+    void unlock ( void );
 
-    /// Sets transparency only if colorkey Color alpha value is -1, also
-    /// important to note is that we only have an alpha channel surface set
-    /// if Color value is not -1 (the default)
+    /// Load an image into memory from a file
     ///
     /// \param filename         File path you wish to load into memory as a
     ///                         valid bitmap / texture
     ///                         (think: supported image file types).
     ///
-    /// \param colorkey         The color key you wish to use to apply a color
-    ///                         key to
+    /// \param flags            [...TO BE WRITTEN...]
+    ///
     /// \param use_cache        Whether or not to use an internal object cache
     ///                         feature of nomlib. Defaults to off.
     ///
     /// \todo Test/Research Texture caching -- nom::ObjectCache worked
     /// beautifully with SDL_Surface, is the same true of SDL_Texture?
-    bool load ( const std::string& filename, const Color&
-                colorkey = Color::null,
+    ///
+    /// \todo merge use_cache in with flags
+    bool load (
+                const std::string& filename, uint32 flags,
                 bool use_cache = false
               );
 
-    /// Stub for SDL_UpdateTexture implementation
+    /// Update texture with new pixel data
     bool update ( const void* pixels, uint16 pitch, const Coords& update_area );
 
     /// \todo Remove me
@@ -229,20 +238,6 @@ class Texture
 
     bool set_alpha ( uint8 opacity );
 
-    /// As per libSDL docs, we must first initialize the video subsystem before using
-    /// this method call, otherwise an access violation fault is sure to occur.
-    ///
-    /// \todo Relocate to nom::Image or whichever class becomes home to surfaces
-    /// (video memory buffers in system RAM)
-    ///bool displayFormat ( void );
-
-    /// As per libSDL docs, we must first initialize the video subsystem before using
-    /// this method call, otherwise an access violation fault is sure to occur.
-    ///
-    /// \todo Relocate to nom::Image or whichever class becomes home to surfaces
-    /// (video memory buffers in system RAM)
-    ///bool displayFormatAlpha ( void );
-
     /// Pixel reading -- supports 8-bit, 15/16-bit, 24-bit & 32-bit color modes
     ///
     /// Returns -1 on error
@@ -250,9 +245,7 @@ class Texture
     /// You are responsible for locking & unlocking of the Texture before-hand
     ///
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
-    /// \todo Relocate to nom::Image or whichever class becomes home to surfaces
-    /// (video memory buffers in system RAM)
-    uint32 getPixel ( int32 x, int32 y );
+    uint32 pixel ( int32 x, int32 y );
 
     /// Resize the video surface with the chosen rescaling algorithm.
     ///
@@ -267,16 +260,33 @@ class Texture
     /// Set a new blending mode for this texture
     bool set_blend_mode ( const SDL_BlendMode blend );
 
+    /// Set a new color key
+    ///
+    /// \param colorkey     nom::Color object representing the RGB pixel to be
+    ///                     marked transparent.
+    ///
+    /// \todo ERR check on locking call, etc.
+    ///
+    /// (This method requires locking the texture; use wisely!).
+    bool set_colorkey ( const Color& colorkey );
+
   private:
     std::shared_ptr<SDL_Texture> texture_;
+
+    /// Texture's pixels; these are only available when a Texture is locked and
+    /// is intended for writing to.
     void* pixels_;
-    int* pitch_;
+
+    /// Texture's pixel pitch; these are only available when a Texture is locked.
+    int pitch_;
 
     /// Holds surface position (X, Y)
     Point2i position_;
 
     /// Holds surface offsets (clipping area: X, Y, width & height)
     Coords bounds_;
+
+    Color colorkey_;
 };
 
 

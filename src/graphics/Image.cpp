@@ -243,7 +243,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Image::set_RLE ( bool flag )
+bool Image::RLE ( bool flag )
 {
   if ( SDL_SetSurfaceRLE ( this->image(), SDL_BOOL(flag) ) != 0 )
   {

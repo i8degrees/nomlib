@@ -155,9 +155,6 @@ class BitmapFont: public IFont
     /// pointer reference holding our bitmap font image sheet
     mutable Texture bitmap_font;
 
-    /// Background color used in computation of individual character boundaries.
-    Color colorkey;
-
     /// individual chars positioning offsets within bitmap_font
     Coords chars[256];
 

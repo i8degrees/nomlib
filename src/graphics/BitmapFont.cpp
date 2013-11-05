@@ -254,14 +254,18 @@ bool BitmapFont::rebuild ( void )
 
 NOM_ASSERT ( this->bitmap_font.valid() );
 
-  //background_color = RGBA::asInt32  ( this->bitmap_font.getTexturePixelsFormat(),
-                                      //this->colorkey
-                                    //);
+  if ( this->bitmap_font.lock() == false )
+  {
+NOM_LOG_ERR ( NOM, "Could not lock Texture." );
+    return false;
+  }
 
-  //this->bitmap_font.setTransparent ( this->colorkey, SDL_TRUE );
+  background_color = RGBA ( this->bitmap_font.colorkey(),
+                            this->bitmap_font.pixel_format()
+                          );
 
-  //tile_width = this->bitmap_font.getTextureWidth() / this->sheet_width;
-  //tile_height = this->bitmap_font.getTextureHeight() / this->sheet_height;
+  tile_width = this->bitmap_font.width() / this->sheet_width;
+  tile_height = this->bitmap_font.height() / this->sheet_height;
   top = tile_height;
   baseA = tile_height;
 
@@ -284,7 +288,7 @@ NOM_ASSERT ( this->bitmap_font.valid() );
           int pY = ( tile_height * rows ) + pRow;
 
           //If a non colorkey pixel is found
-          if( this->bitmap_font.getPixel ( pX, pY ) != background_color )
+          if( this->bitmap_font.pixel ( pX, pY ) != background_color )
           {
               //Set the x offset
               this->chars[ currentChar ].x = pX;
@@ -307,7 +311,7 @@ NOM_ASSERT ( this->bitmap_font.valid() );
           uint32_t pY = ( tile_height * rows ) + pRow_w;
 
           //If a non colorkey pixel is found
-          if ( this->bitmap_font.getPixel ( pX, pY ) != background_color )
+          if ( this->bitmap_font.pixel ( pX, pY ) != background_color )
           {
             //Set the width
             this->chars[ currentChar ].width = ( pX - this->chars[ currentChar ].x ) + 1;
@@ -330,7 +334,7 @@ NOM_ASSERT ( this->bitmap_font.valid() );
           uint32_t pY = ( tile_height * rows ) + pRow;
 
           // If a non colorkey pixel is found
-          if( this->bitmap_font.getPixel ( pX, pY ) != background_color )
+          if( this->bitmap_font.pixel ( pX, pY ) != background_color )
           {
             // If new top is found
             if ( pRow < top )
@@ -360,7 +364,7 @@ NOM_ASSERT ( this->bitmap_font.valid() );
             unsigned int pY = ( tile_height * rows ) + pRow;
 
             // If a non colorkey pixel is found
-            if ( this->bitmap_font.getPixel ( pX, pY ) != background_color )
+            if ( this->bitmap_font.pixel ( pX, pY ) != background_color )
             {
               // Bottom of a is found
               baseA = pRow;
@@ -377,6 +381,7 @@ NOM_ASSERT ( this->bitmap_font.valid() );
       currentChar++;
     }
   }
+  this->bitmap_font.unlock();
 
   // Calculate space
   this->spacing = tile_width / 2;
@@ -411,13 +416,16 @@ bool BitmapFont::load ( const std::string& filename, const Color& colorkey,
                         bool use_cache
                       )
 {
-  if ( this->bitmap_font.load ( filename, colorkey, use_cache ) == false )
+  if ( this->bitmap_font.load ( filename, 0, use_cache ) == false )
   {
 NOM_LOG_ERR ( NOM, "Could not load bitmap font image file: " + filename );
     return false;
   }
 
-  this->colorkey = colorkey;
+  if ( colorkey != Color::null )
+  {
+    this->bitmap_font.set_colorkey ( colorkey );
+  }
 
   // Attempt to rebuild font metrics
   if ( this->rebuild() == false )

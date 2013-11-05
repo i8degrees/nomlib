@@ -73,7 +73,7 @@ class Sprite:
     /// Load a new image onto the Sprite.
     bool load (
                 const std::string& filename,
-                const Color& colorkey = Color::null,
+                const Color& colorkey,
                 bool use_cache = false
               );
 

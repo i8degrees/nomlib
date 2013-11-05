@@ -73,28 +73,48 @@ bool App::onInit ( void )
     }
   }
 
+  this->window[0].set_active();
+  if ( this->bfont.load ( RESOURCE_BITMAP_FONT, nom::Color(255, 0, 255, 0) ) == false )
+  {
+    nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
+    return false;
+  }
+/*
+  if ( this->font.load ( RESOURCE_TRUETYPE_FONT, nom::Color::White ) == false )
+  {
+    nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
+    return false;
+  }
+*/
   this->window[1].set_active();
-  if ( this->background.load ( RESOURCE_STATIC_IMAGE ) == false )
+  if ( this->background.load ( RESOURCE_STATIC_IMAGE, 0 ) == false )
   {
     nom::DialogMessageBox ( APP_NAME, "Could not load image file: " + RESOURCE_STATIC_IMAGE );
     return false;
   }
 
-  this->window[0].set_active();
-  if ( this->font.load ( RESOURCE_TRUETYPE_FONT, nom::Color::White ) == false )
+  this->window[2].set_active();
+  if ( this->sprite.load ( RESOURCE_SPRITE, nom::Color(255, 0, 255, 0) ) == false )
   {
-    nom::DialogMessageBox ( APP_NAME, "Could not load TrueType font: " + RESOURCE_TRUETYPE_FONT );
+    nom::DialogMessageBox ( APP_NAME, "Could not load sprite: " + RESOURCE_SPRITE );
     return false;
   }
 
+  this->window[0].set_active();
   nom::Point2i window_size = this->window[0].size();
 
+  this->bfont.setText ( "Hello, world!" );
+  this->bfont.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, ( window_size.y - 48 ) / 2 ) );
+  this->bfont.update();
+
+/*
   this->font.setFontSize ( 36 );
   this->font.setRenderingStyle ( nom::IFont::RenderStyle::Blended );
   this->font.setColor ( nom::Color::White );
   this->font.setText ( "Hello, world!" );
   this->font.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, ( window_size.y - 48 ) / 2 ) );
   this->font.update();
+*/
 
   // Setup a gradient fill for initializing the ui_frame object with as a
   // background
@@ -171,14 +191,20 @@ nom::int32 App::Run ( void )
     this->window[0].set_active();
     this->window[0].fill ( nom::Color::NomPrimaryColorKey );
     this->ui_frame.draw ( this->window[0].renderer() );
-    this->font.draw ( this->window[0].renderer() );
+
+    this->bfont.draw ( this->window[0].renderer() );
+    //this->font.draw ( this->window[0].renderer() );
 
     this->window[1].set_active();
     this->window[1].fill ( nom::Color::Black );
-    this->background.draw ( this->window[1] ); //this->window[1].draw ( this->background );
+    this->background.draw ( this->window[1] );
+    //this->window[1].draw ( this->background );
 
     this->window[2].set_active();
-    this->window[2].fill ( nom::Color::NomSecondaryColorKey );
+    this->window[2].fill ( nom::Color::Black );
+    //this->window[2].fill ( nom::Color::NomSecondaryColorKey );
+    this->sprite.draw ( this->window[2].renderer() );
+
 
     // Choose a random color for filling the window with as a backdrop when
     // MAXIMUM_WINDOWS is greater than 3
@@ -222,7 +248,11 @@ nom::int32 App::Run ( void )
       this->window[idx].update();
       this->fps[idx].update();
       this->ui_frame.update();
-      this->font.update();
+
+      this->bfont.update();
+      //this->font.update();
+
+      this->sprite.update();
 
       // Refresh the frames per second at 1 second intervals
       if ( this->update[idx].ticks() > 1000 )

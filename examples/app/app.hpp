@@ -65,6 +65,9 @@ const nom::int32 MAXIMUM_WINDOWS = 3;
 const std::string RESOURCE_ICON = "icon.png";
 
 const std::string RESOURCE_TRUETYPE_FONT = "arial.ttf";
+const std::string RESOURCE_BITMAP_FONT = "VIII.png";
+
+const std::string RESOURCE_SPRITE = "dots.png";
 
 /// Copyright (c) 2013 Fielding Johnston. All rights reserved.
 const std::string RESOURCE_STATIC_IMAGE = "boardoutline.png";
@@ -112,7 +115,10 @@ class App:
     /// Texture used as a static background image
     nom::Texture background;
 
+    nom::BitmapFont bfont;
     nom::TrueTypeFont font;
+
+    nom::Sprite sprite;
 };
 
 #endif // include guard defined

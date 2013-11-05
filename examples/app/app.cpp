@@ -124,13 +124,12 @@ class App: public nom::SDL_App
         nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
         return false;
       }
-    /*
       if ( this->font.load ( RESOURCE_TRUETYPE_FONT, nom::Color::White ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
         return false;
       }
-    */
+
       this->window[1].set_active();
       if ( this->background.load ( RESOURCE_STATIC_IMAGE, 0 ) == false )
       {
@@ -148,18 +147,12 @@ class App: public nom::SDL_App
       this->window[0].set_active();
       nom::Point2i window_size = this->window[0].size();
 
-      this->bfont.setText ( "Hello, world!" );
-      this->bfont.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, ( window_size.y - 48 ) / 2 ) );
-      this->bfont.update();
-
-    /*
-      this->font.setFontSize ( 36 );
+      this->font.setFontSize ( 24 );
       this->font.setRenderingStyle ( nom::IFont::RenderStyle::Blended );
       this->font.setColor ( nom::Color::White );
-      this->font.setText ( "Hello, world!" );
-      this->font.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, ( window_size.y - 48 ) / 2 ) );
+      this->font.setText ( "I am a TrueType Font!" );
+      this->font.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, window_size.y - 100 ) );
       this->font.update();
-    */
 
       // Setup a gradient fill for initializing the ui_frame object with as a
       // background
@@ -169,6 +162,9 @@ class App: public nom::SDL_App
 
       // Setup our fancy dangled user interface frame
       this->ui_frame = nom::ui::MessageBox ( ( window_size.x - 200 ) / 2, ( window_size.y - 48 ) / 2, 200, 48, nom::ui::FrameStyle::Gray, this->gradient );
+      this->ui_frame.setLabelFont ( &this->bfont );
+      this->ui_frame.setLabel ( "I am a Bitmap Font!" );
+      this->ui_frame.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
 
       this->Running(); // If all is well, here goes nothing!
       return true;
@@ -196,7 +192,7 @@ class App: public nom::SDL_App
         this->ui_frame.draw ( this->window[0].renderer() );
 
         this->bfont.draw ( this->window[0].renderer() );
-        //this->font.draw ( this->window[0].renderer() );
+        this->font.draw ( this->window[0].renderer() );
 
         this->window[1].set_active();
         this->window[1].fill ( nom::Color::Black );
@@ -253,7 +249,7 @@ class App: public nom::SDL_App
           this->ui_frame.update();
 
           this->bfont.update();
-          //this->font.update();
+          this->font.update();
 
           this->sprite.update();
 

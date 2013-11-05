@@ -44,12 +44,12 @@ namespace nom {
 /// \return A SDL_bool from a boolean value
 SDL_bool SDL_BOOL ( bool value );
 
-/// SDL2 data structure wrappers for nomlib
+/// SDL data structure wrappers for nomlib
 ///
 /// \return A SDL_Rect structure composed from a nom::Coords object
 SDL_Rect SDL_RECT ( const Coords& coords );
 
-/// SDL2 data structure wrappers for nomlib
+/// SDL data structure wrappers for nomlib
 ///
 /// \return SDL_Rect structure composed from a nom::Rect<T> object
 ///
@@ -78,17 +78,17 @@ SDL_Point SDL_POINT ( const Point2<T>& )
 /// \return A SDL_Color structure composed from a nom::Color object
 SDL_Color SDL_COLOR ( const Color& color );
 
-/// SDL2 helper functions for nomlib
+/// SDL helper functions for nomlib
 ///
 /// \return RGB components of a pixel represented as a nom::Color object
 const Color pixel ( uint32 pixel, const SDL_PixelFormat* fmt );
 
-/// SDL2 helper functions for nomlib
+/// SDL helper functions for nomlib
 ///
 /// \return RGBA components of a pixel represented as a nom::Color object
 const Color alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt );
 
-/// SDL2 helper functions for nomlib
+/// SDL helper functions for nomlib
 ///
 /// Obtain a color as an integer, respective to the video surface pixel format
 /// (color bit per pixel).
@@ -99,10 +99,26 @@ uint32 RGB ( const Color& color, const SDL_PixelFormat* fmt );
 /// SDL2 helper functions for nomlib
 ///
 /// Obtain a color as an integer, respective to the video surface pixel format
+/// enum, a new SDL2 structure
+///
+/// \return RGBA components as an unsigned integer.
+uint32 RGB ( const Color& color, uint32 fmt );
+
+/// SDL helper functions for nomlib
+///
+/// Obtain a color as an integer, respective to the video surface pixel format
 /// (color bit per pixel).
 ///
 /// \return RGBA components as an unsigned integer.
 uint32 RGBA ( const Color& color, const SDL_PixelFormat* fmt );
+
+/// SDL2 helper functions for nomlib
+///
+/// Obtain a color as an integer, respective to the video surface pixel format
+/// enum, a new SDL2 structure
+///
+/// \return RGBA components as an unsigned integer.
+uint32 RGBA ( const Color& color, uint32 fmt );
 
 
 } // namespace nom

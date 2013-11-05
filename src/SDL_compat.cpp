@@ -89,9 +89,19 @@ uint32 RGB ( const Color& color, const SDL_PixelFormat* fmt )
   return SDL_MapRGB ( fmt, color.red, color.green, color.blue );
 }
 
+uint32 RGB ( const Color& color, uint32 fmt )
+{
+  return SDL_MapRGB ( SDL_AllocFormat(fmt), color.red, color.green, color.blue );
+}
+
 uint32 RGBA ( const Color& color, const SDL_PixelFormat* fmt )
 {
   return SDL_MapRGBA ( fmt, color.red, color.green, color.blue, color.alpha );
+}
+
+uint32 RGBA ( const Color& color, uint32 fmt )
+{
+  return SDL_MapRGBA ( SDL_AllocFormat(fmt), color.red, color.green, color.blue, color.alpha );
 }
 
 } // namespace nom

@@ -4,7 +4,7 @@ file ( GLOB ROOT_HEADERS "${NOMLIB_HEADERS_DIR}/*.hpp" )
 set ( ROOT_SOURCE
       ${SRC_DIR}/resources.cpp
       ${SRC_DIR}/version.cpp # auto-generated
-      ${SRC_DIR}/SDL_compat.cpp
+      ${SRC_DIR}/SDL_helpers.cpp
       ${SRC_DIR}/CMakeLists.txt # added so it will show up within source_group
     )
 

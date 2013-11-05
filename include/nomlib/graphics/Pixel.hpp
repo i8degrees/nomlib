@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/SDL_compat.hpp"
+#include "nomlib/SDL_helpers.hpp"
 
 namespace nom {
 

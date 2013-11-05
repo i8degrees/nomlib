@@ -268,42 +268,6 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return format;
 }
 
-/*
-const uint8 Texture::getTextureAlphaValue ( void ) const
-{
-  return 0;
-  //return this->getTexturePixelsFormat()->alpha;
-}
-*/
-/*
-const uint32 Texture::getTextureRedMask ( void ) const
-{
-  return 0;
-  //return this->getTexturePixelsFormat()->Rmask;
-}
-*/
-/*
-const uint32 Texture::getTextureGreenMask ( void ) const
-{
-  return 0;
-  //return this->getTexturePixelsFormat()->Gmask;
-}
-*/
-/*
-const uint32 Texture::getTextureBlueMask ( void ) const
-{
-  return 0;
-  //return this->getTexturePixelsFormat()->Bmask;
-}
-*/
-/*
-const uint32 Texture::getTextureAlphaMask ( void ) const
-{
-  return 0;
-  //return this->getTexturePixelsFormat()->Amask;
-}
-*/
-
 const SDL_BlendMode Texture::blend_mode ( void ) const
 {
   SDL_BlendMode blend;
@@ -477,34 +441,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     }
   }
-
-  //NOM_DUMP_VAR(this->position()); NOM_DUMP_VAR(this->width()); NOM_DUMP_VAR(this->height()); NOM_DUMP_VAR(this->bounds_.w); NOM_DUMP_VAR(this->bounds_.h);
 }
-/*
-void Texture::draw ( SDL_Renderer* target ) const
-{
-  // temporary vars to store our wrapped Coords
-  SDL_Rect blit_coords = IntRect::asSDLRect ( this->coords );
-  SDL_Rect blit_offsets = IntRect::asSDLRect ( this->offsets );
-
-  // Perhaps also check to see if video_buffer is nullptr?
-  if ( this->valid() )
-  {
-    if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
-    {
-      if ( SDL_BlitSurface ( this->texture_.get(), &blit_offsets, video_buffer, &blit_coords ) != 0 )
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-        return;
-    }
-    else
-    {
-      if ( SDL_BlitSurface ( this->texture_.get(), nullptr, (SDL_SDL_Surface*) video_buffer, &blit_coords ) != 0 )
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-        return;
-    }
-  }
-}
-*/
 
 bool Texture::update ( const void* pixels, uint16 pitch, const Coords& update_area )
 {
@@ -513,8 +450,8 @@ bool Texture::update ( const void* pixels, uint16 pitch, const Coords& update_ar
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
-  return true;
 
+  return true;
 }
 
 void Texture::draw ( const Window& target ) const

@@ -282,6 +282,31 @@ void Window::draw ( const IDrawable& object ) const
   object.draw ( this->renderer() );
 }
 
+void Window::draw ( SDL_Surface* video_buffer, const Coords& bounds ) const
+{
+  SDL_Rect blit_coords = SDL_RECT ( bounds );
+  SDL_Rect blit_offsets = SDL_RECT ( bounds );
+
+  //if ( ! this->valid() ) return;
+
+  if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
+  {
+    if ( SDL_BlitSurface ( this->window_surface(), &blit_offsets, video_buffer, &blit_coords ) != 0 )
+    {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return; // ERR
+    }
+  }
+
+  return; // success!
+
+  if ( SDL_BlitSurface ( this->window_surface(), nullptr, video_buffer, &blit_coords ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return; // ERR
+  }
+}
+
 bool Window::flip ( void ) const
 {
   if ( SDL_UpdateWindowSurface ( this->window() ) != 0 )
@@ -469,5 +494,6 @@ void Window::set_context ( Window::RawPtr window )
 {
   context_ = window->renderer();
 }
+
 
 } // namespace nom

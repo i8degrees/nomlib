@@ -36,17 +36,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/make_unique.hpp"
 #include "nomlib/math/helpers.hpp"
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/math/Point2-inl.hpp"
 #include "nomlib/system/ObjectCache.hpp"
 #include "nomlib/graphics/smart_ptr.hpp"
 #include "nomlib/graphics/Image.hpp"
-#include "nomlib/graphics/Pixel.hpp"
-#include "nomlib/graphics/shapes/Rectangle.hpp"
 #include "nomlib/graphics/Window.hpp"
 
 //#define NOM_DEBUG_SDL_TEXTURE
@@ -54,6 +50,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// Available rescaling algorithms
+/// \todo SDL2 port
 enum ResizeAlgorithm
 {
   None = 0, // No resizing is applied
@@ -71,14 +68,13 @@ class Texture
   public:
     typedef std::shared_ptr<Texture> SharedPtr;
 
-    /// Default constructor; initializes object to its respective defaults
+    /// Default constructor
     Texture ( void );
 
-    /// Lazy destructor -- automatic cleanup!
+    /// Lazy destructor
     ~Texture ( void );
 
-    /// Copy constructor; create a video surface object from an existing Texture
-    /// object.
+    /// Copy constructor
     Texture ( const Texture& other );
 
     /// Constructor variant for creating a fresh, empty video surface. You should
@@ -108,8 +104,13 @@ class Texture
 
     //void initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
+    /// Initialize object with SDL1 video surface
+    ///
+    /// The new texture created will be of type 'SDL_TEXTUREACCESS_STATIC'
     bool initialize ( SDL_Surface* video_buffer );
 
+    /// Initialize object with new specified parameters
+    /// ...
     bool initialize ( int32 width, int32 height, uint32 format, uint32 flags );
 
     /// Return a std::shared_ptr copy of this instance
@@ -139,6 +140,7 @@ class Texture
     ///void setTexture ( const Texture& surface );
 
     void set_position ( const Point2i& pos );
+
     void set_bounds ( const Coords& clip );
 
     /// Obtain width, in pixels, of texture
@@ -152,31 +154,19 @@ class Texture
     int32 height ( void ) const;
 
     int pitch ( void ) const;
+
     void* pixels ( void ) const;
 
+    /// \todo Rename me to BPP
     uint8 bytes_per_pixel ( void ) const;
 
     uint32 pixel_format ( void ) const;
-
-    /// Obtain the overall surface alpha value
-    //const uint8 getTextureAlphaValue ( void ) const;
-
-    /// Obtain the video surface's red *ALPHA* mask
-    //const uint32 getTextureRedMask ( void ) const;
-
-    /// Obtain the video surface's green *ALPHA* mask
-    //const uint32 getTextureGreenMask ( void ) const;
-
-    /// Obtain the video surface's blue *ALPHA* mask
-    //const uint32 getTextureBlueMask ( void ) const;
-
-    /// Obtain the video surface's alpha mask
-    //const uint32 getTextureAlphaMask ( void ) const;
 
     /// Calculate this object's bits per pixel (color depth)
     ///
     /// \return Unsigned 8-bit integer (8, 16, 24 or 32 bits per pixel); zero (0)
     /// on error (unknown color depth).
+    /// \todo Rename me to bpp
     uint8 bits_per_pixel ( void ) const;
 
     /// Obtain the blending mode used for texture copies
@@ -222,13 +212,13 @@ class Texture
     /// \todo Test/Research Texture caching -- nom::ObjectCache worked
     /// beautifully with SDL_Surface, is the same true of SDL_Texture?
     ///
-    /// \todo merge use_cache in with flags
+    /// \todo merge 'use_cache' in with 'flags'
     bool load (
                 const std::string& filename, uint32 flags,
                 bool use_cache = false
               );
 
-    /// Update texture with new pixel data
+    /// Upload texture copy with new pixel data
     bool update ( const void* pixels, uint16 pitch, const Coords& update_area );
 
     /// \todo Remove me
@@ -250,11 +240,16 @@ class Texture
     /// Resize the video surface with the chosen rescaling algorithm.
     ///
     /// See the ResizeAlgorithm enum for available rescaling algorithms
+    ///
+    /// \todo SDL2 port
     bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
+    /// \todo SDL2 port
     bool resize ( const Point2f& scale_factor );
 
     /// Return the correct scaling factor of the chosen algorithm
+    ///
+    /// \todo SDL2 port
     int32 getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm );
 
     /// Set a new blending mode for this texture
@@ -286,6 +281,7 @@ class Texture
     /// Holds surface offsets (clipping area: X, Y, width & height)
     Coords bounds_;
 
+    /// Cached upon use of the set_colorkey method for use by external classes
     Color colorkey_;
 };
 

@@ -43,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Video subsystem responsible for managing high-level graphics display
-/// (think: fancy backbuffer).
+/// (think: *very* fancy back-buffer).
 ///
 /// A nom::Window is lifeless without its attached Renderer buddy!
 class Renderer

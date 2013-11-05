@@ -76,8 +76,44 @@ class Image
     int32 height ( void ) const;
     void* pixels ( void ) const;
     uint16 pitch ( void ) const;
+
+    /// \todo Rename me to bppp
     uint8 bits_per_pixel ( void ) const;
+
     const SDL_PixelFormat* pixel_format ( void ) const;
+
+    /// Obtain the video surface's red alpha mask
+    const uint32 red_mask ( void ) const;
+
+    /// Obtain the video surface's green alpha mask
+    const uint32 green_mask ( void ) const;
+
+    /// Obtain the video surface's blue alpha mask
+    const uint32 blue_mask ( void ) const;
+
+    /// Obtain the video surface's alpha mask
+    const uint32 alpha_mask ( void ) const;
+
+    /// I think that we are accessing the value of an
+    /// (internal?) property of the SDL_Surface structure that is described as being
+    /// "private" as per the docs.
+    ///
+    /// Return value of this internal property is presumed to be boolean -- no
+    /// verification has been made of this. Testing of this method *appears*
+    /// to be in working order.
+    //bool getCanvasLock ( void ) const;
+
+    /// Lock the display context's video surface; this must be done before you
+    /// attempt to write directly to video memory, such as when you are
+    /// manipulating surfaces at the pixel level.
+    //bool lock ( void ) const;
+
+    /// Unlocks the display context's video surface; this must be done after you
+    /// are finished writing to the video buffer. During the time that the video
+    /// surface is locked, no updates (think: rendering) outside of your local
+    /// access can occur until the surfaces affected by the lock are relinquished.
+    //void unlock ( void ) const;
+
     const Coords bounds ( void ) const;
 
     void set_bounds ( const Coords& clip_bounds );

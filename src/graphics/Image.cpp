@@ -120,6 +120,26 @@ const SDL_PixelFormat* Image::pixel_format ( void ) const
   return buffer->format;
 }
 
+const uint32 Image::red_mask ( void ) const
+{
+  return this->pixel_format()->Rmask;
+}
+
+const uint32 Image::green_mask ( void ) const
+{
+  return this->pixel_format()->Gmask;
+}
+
+const uint32 Image::blue_mask ( void ) const
+{
+  return this->pixel_format()->Bmask;
+}
+
+const uint32 Image::alpha_mask ( void ) const
+{
+  return this->pixel_format()->Amask;
+}
+
 const Coords Image::bounds ( void ) const
 {
   SDL_Rect clip_buffer; // temporary storage struct

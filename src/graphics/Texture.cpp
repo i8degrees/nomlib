@@ -409,10 +409,10 @@ void Texture::draw ( SDL_Renderer* target ) const
   render_coords.y = pos.y;
 
   // Use set clipping bounds for the width and height of this texture
-  if ( this->bounds_.w != -1 && this->bounds_.h != -1 )
+  if ( this->bounds().w != -1 && this->bounds().h != -1 )
   {
-    render_coords.w = this->bounds_.w;
-    render_coords.h = this->bounds_.h;
+    render_coords.w = this->bounds().w;
+    render_coords.h = this->bounds().h;
   }
   else // Use Texture's known total width and height
   {
@@ -421,14 +421,14 @@ void Texture::draw ( SDL_Renderer* target ) const
   }
 
   // Render with set clipping bounds; we are rendering only a portion of a
-  // larger Texture, like how it is done with sprite sheets.
-  if ( this->bounds_.w != -1 && this->bounds_.h != -1 )
+  // larger Texture; think: sprite sheets.
+  if ( this->bounds().w != -1 && this->bounds().h != -1 )
   {
     SDL_Rect render_bounds;
-    render_bounds.x = this->bounds_.x;
-    render_bounds.y = this->bounds_.y;
-    render_bounds.w = this->bounds_.w;
-    render_bounds.h = this->bounds_.h;
+    render_bounds.x = this->bounds().x;
+    render_bounds.y = this->bounds().y;
+    render_bounds.w = this->bounds().w;
+    render_bounds.h = this->bounds().h;
     if ( SDL_RenderCopy ( target, this->texture(), &render_bounds, &render_coords ) != 0 )
     {
 NOM_LOG_ERR ( NOM, SDL_GetError() );

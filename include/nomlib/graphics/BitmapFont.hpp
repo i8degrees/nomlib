@@ -143,6 +143,7 @@ class BitmapFont: public IFont
     /// Rescale the font with a chosen resizing algorithm
     ///
     /// Re-implements IFont::resize
+    /// \todo SDL2 port
     bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
   private:

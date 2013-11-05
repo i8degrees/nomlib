@@ -269,19 +269,19 @@ NOM_LOG_ERR ( NOM, "Could not lock Texture." );
   top = tile_height;
   baseA = tile_height;
 
-  for ( int32_t rows = 0; rows < this->sheet_width; rows++ )
+  for ( int32 rows = 0; rows < this->sheet_width; rows++ )
   {
-    for ( int32_t cols = 0; cols < this->sheet_height; cols++ )
+    for ( int32 cols = 0; cols < this->sheet_height; cols++ )
     {
       // Set character offsets
       this->chars[ currentChar ].setPosition ( tile_width * cols, tile_height * rows );
       this->chars[ currentChar ].setSize ( tile_width, tile_height );
 
       //Find Left Side; go through pixel columns
-      for ( uint32_t pCol = 0; pCol < tile_width; pCol++ )
+      for ( uint32 pCol = 0; pCol < tile_width; pCol++ )
       {
         //Go through pixel rows
-        for ( uint32_t pRow = 0; pRow < tile_height; pRow++ )
+        for ( uint32 pRow = 0; pRow < tile_height; pRow++ )
         {
           //Get the pixel offsets
           int pX = ( tile_width * cols ) + pCol;
@@ -290,25 +290,25 @@ NOM_LOG_ERR ( NOM, "Could not lock Texture." );
           //If a non colorkey pixel is found
           if( this->bitmap_font.pixel ( pX, pY ) != background_color )
           {
-              //Set the x offset
-              this->chars[ currentChar ].x = pX;
+            //Set the x offset
+            this->chars[ currentChar ].x = pX;
 
-              //Break the loops
-              pCol = tile_width;
-              pRow = tile_height;
+            //Break the loops
+            pCol = tile_width;
+            pRow = tile_height;
           }
         }
       }
 
       //Find Right Side; go through pixel columns
-      for ( int32_t pCol_w = tile_width - 1; pCol_w >= 0; pCol_w-- )
+      for ( int32 pCol_w = tile_width - 1; pCol_w >= 0; pCol_w-- )
       {
         //Go through pixel rows
         for ( uint32 pRow_w = 0; pRow_w < tile_height; pRow_w++ )
         {
           //Get the pixel offsets
-          uint32_t pX = ( tile_width * cols ) + pCol_w;
-          uint32_t pY = ( tile_height * rows ) + pRow_w;
+          uint32 pX = ( tile_width * cols ) + pCol_w;
+          uint32 pY = ( tile_height * rows ) + pRow_w;
 
           //If a non colorkey pixel is found
           if ( this->bitmap_font.pixel ( pX, pY ) != background_color )
@@ -330,8 +330,8 @@ NOM_LOG_ERR ( NOM, "Could not lock Texture." );
         for ( uint32 pCol = 0; pCol < tile_width; pCol++ )
         {
           //Get the pixel offsets
-          uint32_t pX = ( tile_width * cols ) + pCol;
-          uint32_t pY = ( tile_height * rows ) + pRow;
+          uint32 pX = ( tile_width * cols ) + pCol;
+          uint32 pY = ( tile_height * rows ) + pRow;
 
           // If a non colorkey pixel is found
           if( this->bitmap_font.pixel ( pX, pY ) != background_color )
@@ -354,7 +354,7 @@ NOM_LOG_ERR ( NOM, "Could not lock Texture." );
       if ( currentChar == 'A' )
       {
         // Go through pixel rows
-        for ( int32_t pRow = tile_height - 1; pRow >= 0; pRow-- )
+        for ( int32 pRow = tile_height - 1; pRow >= 0; pRow-- )
         {
           // Go through pixel columns
           for ( uint32 pCol = 0; pCol < tile_width; pCol++ )
@@ -381,7 +381,7 @@ NOM_LOG_ERR ( NOM, "Could not lock Texture." );
       currentChar++;
     }
   }
-  this->bitmap_font.unlock();
+  this->bitmap_font.unlock(); // Finished uploading to texture
 
   // Calculate space
   this->spacing = tile_width / 2;
@@ -390,7 +390,7 @@ NOM_LOG_ERR ( NOM, "Could not lock Texture." );
   this->newline = baseA - top;
 
   // Loop off excess top pixels
-  for ( uint32_t t = 0; t < 256; t++ )
+  for ( uint32 t = 0; t < 256; t++ )
   {
     this->chars[ t ].y += top;
     this->chars[ t ].height -= top;
@@ -491,7 +491,7 @@ void BitmapFont::draw ( SDL_Renderer* target ) const
   //If the font has been built
   if ( this->bitmap_font.valid() )
   {
-    for ( uint32_t show = 0; show < this->text_buffer.length(); show++ )
+    for ( uint32 show = 0; show < this->text_buffer.length(); show++ )
     {
       //If the current character is a space
       if ( this->text_buffer[show] == ' ' )

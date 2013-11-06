@@ -238,7 +238,7 @@ bool TrueTypeFont::load ( const std::string& filename, const Color& colorkey,
                           bool use_cache
                         )
 {
-  this->font = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), this->font_size ), nom::priv::TTF_FreeSurface );
+  this->font = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), this->font_size ), nom::priv::TTF_FreeFont );
 
   if ( this->valid() == false )
   {
@@ -334,12 +334,7 @@ NOM_LOG_ERR ( NOM, "Could not rebuild font metrics." );
   return true;
 }
 
-  namespace priv {
-
-void TTF_FreeSurface ( TTF_Font* font )
-{
-  TTF_CloseFont ( font );
-}
+namespace priv {
 
 void Free_TrueTypeFont ( TrueTypeFont* ptr )
 {
@@ -348,7 +343,6 @@ void Free_TrueTypeFont ( TrueTypeFont* ptr )
   // FIXME; this is a known bug (memory leak).
 }
 
-
-  } // namespace priv
+} // namespace priv
 } // namespace nom
 

@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_SDL2_HELPERS_HPP
 
 #include "SDL.h"
+#include "SDL_ttf.h"
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color.hpp"
@@ -120,7 +121,24 @@ uint32 RGBA ( const Color& color, const SDL_PixelFormat* fmt );
 /// \return RGBA components as an unsigned integer.
 uint32 RGBA ( const Color& color, uint32 fmt );
 
+namespace priv {
 
+/// Custom deleter for SDL_Window structures
+void FreeWindow ( SDL_Window* );
+
+/// Custom deleter for SDL_Renderer structures
+void FreeRenderTarget ( SDL_Renderer* );
+
+/// Custom deleter for SDL_Texture structures
+void FreeTexture ( SDL_Texture* );
+
+/// Custom deleter for SDL_Surface structures
+void FreeSurface ( SDL_Surface* );
+
+/// Custom deleter for TTF_Font* structures
+void TTF_FreeFont ( TTF_Font* );
+
+} // namespace priv
 } // namespace nom
 
 #endif // include guard defined

@@ -104,4 +104,32 @@ uint32 RGBA ( const Color& color, uint32 fmt )
   return SDL_MapRGBA ( SDL_AllocFormat(fmt), color.red, color.green, color.blue, color.alpha );
 }
 
+namespace priv {
+
+void FreeWindow ( SDL_Window* handle )
+{
+  SDL_DestroyWindow ( handle );
+}
+
+void FreeRenderTarget ( SDL_Renderer* handle )
+{
+  SDL_DestroyRenderer ( handle );
+}
+
+void FreeTexture ( SDL_Texture* video_buffer )
+{
+  SDL_DestroyTexture ( video_buffer );
+}
+
+void FreeSurface ( SDL_Surface* video_buffer )
+{
+  SDL_FreeSurface ( video_buffer );
+}
+
+void TTF_FreeFont ( TTF_Font* font )
+{
+  TTF_CloseFont ( font );
+}
+
+} // namespace priv
 } // namespace nom

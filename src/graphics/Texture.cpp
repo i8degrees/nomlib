@@ -35,8 +35,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Texture::Texture ( void )  :  texture_ ( nullptr, priv::FreeTexture ),
-    position_ ( 0, 0 ), bounds_ ( 0, 0, -1, -1 )
+Texture::Texture ( void )  :  texture_ { nullptr, priv::FreeTexture },
+    pixels_ ( nullptr ), pitch_ ( 0 ), position_ ( 0, 0 ),
+    bounds_ ( 0, 0, -1, -1 ), colorkey_ { Color::null }
 {
 NOM_LOG_TRACE ( NOM );
 }
@@ -46,38 +47,16 @@ Texture::~Texture ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
-Texture::Texture ( SDL_Surface* video_buffer )
-{
-NOM_LOG_TRACE ( NOM );
-
-  if ( this->initialize ( video_buffer ) == false )
-  {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-  }
-}
-
-/* TODO
-Texture::Texture ( SDL_Texture* video_buffer )  :
-    texture_ { video_buffer, priv::FreeTexture }
-{
-NOM_LOG_TRACE ( NOM );
-
-  Point2i size;
-
-  SDL_QueryTexture ( this->texture(), nullptr, nullptr, &size.x, &size.y );
-
-  this->bounds_.setSize ( size.x, size.y );
-}
-TODO */
-
 Texture::Texture ( const Texture& other ) :
-    texture_ { other.texture(), nom::priv::FreeTexture },
-    position_ ( other.position_.x, other.position_.y ),
-    bounds_ ( other.bounds_.width, other.bounds_.height )
+    texture_ { other.texture(), priv::FreeTexture },
+    pixels_ { other.pixels() }, pitch_ { other.pitch() },
+    position_ { other.position() }, bounds_ { other.bounds() },
+    colorkey_ { other.colorkey() }
 {
 NOM_LOG_TRACE ( NOM );
 }
 
+/*
 Texture::Texture ( int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, uint32 flags )
 {
 NOM_LOG_TRACE ( NOM );
@@ -93,7 +72,9 @@ NOM_LOG_TRACE ( NOM );
 
   this->bounds_.setSize ( width, height );
 }
+*/
 
+/*
 void Texture::initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
 {
 NOM_LOG_TRACE ( NOM );
@@ -103,23 +84,48 @@ NOM_LOG_TRACE ( NOM );
 
   // If the video surface is marked for color keying transparency, we must do
   // so here.
-  /*if ( flags & SDL_TRUE )//SDL_SRCCOLORKEY )
-  {
-    if ( this->setTransparent ( this->getTextureColorKey(), SDL_RLEACCEL | SDL_TRUE ) == false )//SDL_SRCCOLORKEY ) == false )
-    {
-NOM_LOG_ERR ( NOM, "Could not create the video surface with color key transparency." );
-    }
-  }*/
-}
+  //if ( flags & SDL_TRUE )//SDL_SRCCOLORKEY )
+  //{
+    //if ( this->setTransparent ( this->getTextureColorKey(), SDL_RLEACCEL | SDL_TRUE ) == false )//SDL_SRCCOLORKEY ) == false )
+    //{
+//NOM_LOG_ERR ( NOM, "Could not create the video surface with color key transparency." );
+    //}
+  //}
+//}
+*/
 
 bool Texture::initialize ( SDL_Surface* video_buffer )
 {
   this->texture_.reset ( SDL_CreateTextureFromSurface ( Window::context(), video_buffer ), priv::FreeTexture );
 
-  if ( this->valid() == false ) return false;
+  if ( this->valid() == false )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  // TODO: cache width & height
 
   // Cache the size of our new Texture object with the existing surface info
-  this->bounds_.setSize ( video_buffer->w, video_buffer->h );
+  this->set_bounds ( Coords ( 0, 0, video_buffer->w, video_buffer->h ) );
+
+  return true;
+}
+
+bool Texture::initialize ( int32 width, int32 height, uint32 format, uint32 flags )
+{
+  this->texture_.reset ( SDL_CreateTexture ( Window::context(), format, flags, width, height ), priv::FreeTexture );
+
+  if ( this->valid() == false )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  // TODO: cache width & height
+
+  // Cache the size of our new Texture object with the existing surface info
+  this->set_bounds( Coords ( 0, 0, width, height ) );
 
   return true;
 }
@@ -132,6 +138,8 @@ Texture::SharedPtr Texture::clone ( void ) const
 Texture& Texture::operator = ( const Texture& other )
 {
   this->texture_ = other.texture_;
+  this->pixels_ = other.pixels_;
+  this->pitch_ = other.pitch_;
   this->position_ = other.position_;
   this->bounds_ = other.bounds_;
 
@@ -148,6 +156,19 @@ bool Texture::valid ( void ) const
   if ( this->texture() != nullptr ) return true;
 
   return false;
+}
+
+int Texture::access ( void ) const
+{
+  int type;
+
+  if ( SDL_QueryTexture ( this->texture(), nullptr, &type, nullptr, nullptr ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return type;
+  }
+
+  return type;
 }
 
 /* RELOCATE
@@ -184,7 +205,11 @@ int32 Texture::width ( void ) const
 {
   int32 tex_width;
 
-  SDL_QueryTexture ( this->texture(), nullptr, nullptr, &tex_width, nullptr );
+  if ( SDL_QueryTexture ( this->texture(), nullptr, nullptr, &tex_width, nullptr ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return -1;
+  }
 
   return tex_width;
 }
@@ -193,36 +218,18 @@ int32 Texture::height ( void ) const
 {
   int32 tex_height;
 
-  SDL_QueryTexture ( this->texture(), nullptr, nullptr, nullptr, &tex_height );
+  if ( SDL_QueryTexture ( this->texture(), nullptr, nullptr, nullptr, &tex_height ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return -1;
+  }
 
   return tex_height;
 }
 
-uint16 Texture::pitch ( void ) const
+int Texture::pitch ( void ) const
 {
-  uint16 pitch;
-
-  // Pixel pitch calculation borrowed from SDL2/video/SDL_pixels.c
-  pitch = this->width() * this->bytes_per_pixel();
-  switch ( this->bits_per_pixel() )
-  {
-    default: break;
-
-    case 1: // 8-bit bpp
-    {
-      pitch = ( pitch + 7 ) / 8;
-    }
-    break;
-
-    case 4: // 32-bit bpp
-    {
-      pitch = ( pitch + 1 ) / 2;
-    }
-    break;
-  }
-  pitch = ( pitch + 3 ) & ~3; // 4-byte aligned for speed
-
-  return pitch;
+  return pitch_;
 }
 
 void* Texture::pixels ( void ) const
@@ -260,111 +267,88 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
   return format;
 }
-/*
-const uint8 Texture::getTextureAlphaValue ( void ) const
+
+const SDL_BlendMode Texture::blend_mode ( void ) const
 {
-  return 0;
-  //return this->getTexturePixelsFormat()->alpha;
+  SDL_BlendMode blend;
+
+  if ( SDL_GetTextureBlendMode ( this->texture(), &blend ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return blend;
+  }
+
+  return blend;
 }
-*/
-/*
-const uint32 Texture::getTextureRedMask ( void ) const
+
+bool Texture::locked ( void ) const
 {
-  return 0;
-  //return this->getTexturePixelsFormat()->Rmask;
-}
-*/
-/*
-const uint32 Texture::getTextureGreenMask ( void ) const
-{
-  return 0;
-  //return this->getTexturePixelsFormat()->Gmask;
-}
-*/
-/*
-const uint32 Texture::getTextureBlueMask ( void ) const
-{
-  return 0;
-  //return this->getTexturePixelsFormat()->Bmask;
-}
-*/
-/*
-const uint32 Texture::getTextureAlphaMask ( void ) const
-{
-  return 0;
-  //return this->getTexturePixelsFormat()->Amask;
-}
-*/
+  if ( this->pixels() != nullptr ) return true;
 
-/* RELOCATE
-const Coords Texture::getTextureBounds ( void ) const
-{
-  return Coords::null;
-
-  SDL_Rect clip_buffer; // temporary storage struct
-  Coords clip_bounds; // transferred values from SDL_Rect clip_buffer
-
-  // Return values are put into the clip_buffer SDL_Rect after executing:
-  SDL_GetClipRect ( this->texture_.get(), &clip_buffer );
-
-  // Now transfer the values into our preferred data container type
-  clip_bounds = Coords ( clip_buffer.x, clip_buffer.y, clip_buffer.w, clip_buffer.h );
-
-  return clip_bounds;
-}
-RELOCATE */
-
-/* RELOCATE
-void Texture::setTextureBounds ( const Coords& clip_bounds )
-{
-  SDL_Rect clip = IntRect::asSDLRect ( clip_bounds ); // temporary storage struct for setting
-
-  // As per libSDL docs, if SDL_Rect is nullptr, the clipping rectangle is set
-  // to the full size of the surface
-  SDL_SetClipRect ( this->texture_.get(), &clip );
-}
-RELOCATE */
-
-/* TODO
-bool Texture::getTextureLock ( void ) const
-{
   return false;
-  //return this->texture_.get()->locked;
 }
-TODO */
+
+const Color& Texture::colorkey ( void ) const
+{
+  return this->colorkey_;
+}
 
 bool Texture::lock ( void )
 {
-  if ( SDL_LockTexture ( this->texture(), nullptr, &this->pixels_, this->pitch_ ) != 0 )
+  if ( this->locked() )
+  {
+NOM_LOG_ERR ( NOM, "Texture is already locked." );
+    return false;
+  }
+
+  if ( SDL_LockTexture ( this->texture(), nullptr, &this->pixels_, &this->pitch_ ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
+
   return true;
 }
 
 bool Texture::lock ( const Coords& lock_coords )
 {
-  SDL_Rect area = lock_coords.SDL();
+  SDL_Rect area = SDL_RECT(lock_coords);
 
-  if ( SDL_LockTexture ( this->texture(), &area, &this->pixels_, this->pitch_ ) != 0 )
+  if ( this->locked() )
+  {
+NOM_LOG_ERR ( NOM, "Texture is already locked." );
+    return false;
+  }
+
+  if ( SDL_LockTexture ( this->texture(), &area, &this->pixels_, &this->pitch_ ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
+
   return true;
 }
 
-void Texture::unlock ( void ) const
+void Texture::unlock ( void )
 {
+  if ( this->pixels() == nullptr )
+  {
+NOM_LOG_INFO ( NOM, "Texture is not locked." );
+    return;
+  }
+
   SDL_UnlockTexture ( this->texture() );
+  this->pixels_ = nullptr;
+  this->pitch_ = 0;
 }
 
-bool Texture::load ( const std::string& filename, const Color& colorkey,
-                    bool use_cache, uint32 flags
-                  )
+bool Texture::load  (
+                      const std::string& filename, uint32 flags,
+                      bool use_cache
+                    )
 {
   Image image;
+
 /* TODO
   // By default -- for peace of mind above all else -- we have caching turned
   // off
@@ -381,9 +365,10 @@ bool Texture::load ( const std::string& filename, const Color& colorkey,
   }
   else // Do not use the object cache
   {
+
+    this->texture_ = image.load ( filename );
+  }
 TODO */
-    //this->texture_ = image.load ( filename );
-  //}
 
   if ( image.load ( filename ) == false ) return false;
 
@@ -392,20 +377,25 @@ TODO */
   // and display format conversion.
 NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
 
-  if ( this->initialize ( image.image() ) == false ) return false;
-
-  /*if ( flags & SDL_SRCALPHA )
+  if ( this->initialize ( image.width(), image.height(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING ) == false )
   {
-    this->displayFormatAlpha(); // Optimized video surface with an alpha channel
+NOM_LOG_ERR ( NOM, "Error: Failed to initialize texture." );
+    return false;
   }
-  else
-  {*/
-    //this->displayFormat(); // Optimized video surface without an alpha channel
-  //}
 
-  // Update our Texture clipping bounds with the new source; not sure if we still
-  // need to be doing this.
-  this->bounds_.setSize ( this->width(), this->height() );
+  // Set our default blending mode for texture copies
+  this->set_blend_mode( SDL_BLENDMODE_BLEND );
+
+  this->lock ( image.bounds() ); // Safe for writing
+
+  // Copy pixels from image into our freshly initialized texture
+  memcpy ( this->pixels(), image.pixels(), image.pitch() * image.height() );
+
+  // Once we unlock the texture, it will be uploaded to the GPU for us!
+  this->unlock();
+
+  // Update our Texture clipping bounds with the new source
+  this->set_bounds ( image.bounds() );
 
   return true;
 }
@@ -419,10 +409,10 @@ void Texture::draw ( SDL_Renderer* target ) const
   render_coords.y = pos.y;
 
   // Use set clipping bounds for the width and height of this texture
-  if ( this->bounds_.w != -1 && this->bounds_.h != -1 )
+  if ( this->bounds().w != -1 && this->bounds().h != -1 )
   {
-    render_coords.w = this->bounds_.w;
-    render_coords.h = this->bounds_.h;
+    render_coords.w = this->bounds().w;
+    render_coords.h = this->bounds().h;
   }
   else // Use Texture's known total width and height
   {
@@ -431,14 +421,14 @@ void Texture::draw ( SDL_Renderer* target ) const
   }
 
   // Render with set clipping bounds; we are rendering only a portion of a
-  // larger Texture, like how it is done with sprite sheets.
-  if ( this->bounds_.w != -1 && this->bounds_.h != -1 )
+  // larger Texture; think: sprite sheets.
+  if ( this->bounds().w != -1 && this->bounds().h != -1 )
   {
     SDL_Rect render_bounds;
-    render_bounds.x = this->bounds_.x;
-    render_bounds.y = this->bounds_.y;
-    render_bounds.w = this->bounds_.w;
-    render_bounds.h = this->bounds_.h;
+    render_bounds.x = this->bounds().x;
+    render_bounds.y = this->bounds().y;
+    render_bounds.w = this->bounds().w;
+    render_bounds.h = this->bounds().h;
     if ( SDL_RenderCopy ( target, this->texture(), &render_bounds, &render_coords ) != 0 )
     {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
@@ -451,38 +441,17 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     }
   }
-
-  //NOM_DUMP_VAR(this->position()); NOM_DUMP_VAR(this->width()); NOM_DUMP_VAR(this->height()); NOM_DUMP_VAR(this->bounds_.w); NOM_DUMP_VAR(this->bounds_.h);
 }
-/*
-void Texture::draw ( SDL_Renderer* target ) const
-{
-  // temporary vars to store our wrapped Coords
-  SDL_Rect blit_coords = IntRect::asSDLRect ( this->coords );
-  SDL_Rect blit_offsets = IntRect::asSDLRect ( this->offsets );
-
-  // Perhaps also check to see if video_buffer is nullptr?
-  if ( this->valid() )
-  {
-    if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
-    {
-      if ( SDL_BlitSurface ( this->texture_.get(), &blit_offsets, video_buffer, &blit_coords ) != 0 )
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-        return;
-    }
-    else
-    {
-      if ( SDL_BlitSurface ( this->texture_.get(), nullptr, (SDL_SDL_Surface*) video_buffer, &blit_coords ) != 0 )
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-        return;
-    }
-  }
-}
-*/
 
 bool Texture::update ( const void* pixels, uint16 pitch, const Coords& update_area )
 {
-  return false; // Stub
+  if ( SDL_UpdateTexture ( this->texture(), nullptr, pixels, pitch ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  return true;
 }
 
 void Texture::draw ( const Window& target ) const
@@ -506,29 +475,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-/* RELOCATE
-bool Texture::displayFormat ( void )
-{
-  //this->texture_.reset ( SDL_DisplayFormat ( this->texture_.get() ), nom::priv::FreeSurface );
-
-//NOM_ASSERT ( this->valid() );
-
-  return true;
-}
-RELOCATE */
-
-/* RELOCATE
-bool Texture::displayFormatAlpha ( void )
-{
-  //this->texture_.reset ( SDL_DisplayFormatAlpha ( this->texture_.get()), nom::priv::FreeSurface );
-
-//NOM_ASSERT ( this->valid() );
-
-  return true;
-}
-RELOCATE */
-
-uint32 Texture::getPixel ( int32 x, int32 y )
+uint32 Texture::pixel ( int32 x, int32 y )
 {
   switch ( this->bits_per_pixel() )
   {
@@ -868,5 +815,37 @@ int32 Texture::getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm )
   }
 }
 
+bool Texture::set_blend_mode ( const SDL_BlendMode blend )
+{
+  if ( SDL_SetTextureBlendMode ( this->texture(), blend ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  return true;
+}
+
+bool Texture::set_colorkey ( const Color& colorkey )
+{
+  this->lock ( this->bounds() ); // Safe for writing
+
+  uint32* pixels = static_cast<uint32*> ( this->pixels() );
+
+  uint32 key = RGB ( colorkey, this->pixel_format() );
+  uint32 transparent = RGBA ( colorkey, this->pixel_format() );
+
+  for ( auto idx = 0; idx < ( this->pitch() / 4 ) * this->height(); ++idx )
+  {
+    if ( pixels[idx] == key ) pixels[idx] = transparent;
+  }
+
+  // Once we unlock the texture, it will be uploaded to the GPU
+  this->unlock();
+
+  this->colorkey_ = colorkey; // Cache the state of our color key used
+
+  return true;
+}
 
 } // namespace nom

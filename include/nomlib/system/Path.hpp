@@ -68,7 +68,7 @@ class Path
     const Path& operator= ( const Path& p );
 
   private:
-    static /*const*/ value_type path_separator;
+    value_type path_separator;
     std::string pathname;
 };
 

@@ -96,13 +96,15 @@ NOM_LOG_ERR ( NOM, "Unknown error on attempt to obtain current working directory
   return cwd;
 }
 
-void UnixFile::setPath ( const std::string& path )
+bool UnixFile::set_path ( const std::string& path )
 {
   if ( chdir ( path.c_str() ) != 0 )
   {
 NOM_LOG_ERR ( NOM, "Unknown error on attempt to change working directory to: " + path );
-    return;
+    return false;
   }
+
+  return true;
 }
 
 

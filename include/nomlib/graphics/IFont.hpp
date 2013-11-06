@@ -129,6 +129,7 @@ NOM_LOG_ERR ( NOM, "Method not implemented." );
     ///
     /// Optional interface with a return of false when the deriving class has
     /// chosen not to re-implement this method.
+    /// \todo SDL2 port
     virtual bool resize ( enum ResizeAlgorithm scaling_algorithm )
     {
 NOM_LOG_ERR ( NOM, "Method not implemented." );

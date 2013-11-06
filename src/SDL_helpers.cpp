@@ -26,74 +26,82 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_FILE_HEADERS
-#define NOMLIB_FILE_HEADERS
-
-#include <iostream>
-#include <string>
-#include <cstring>
-#include <memory>
-
-#include "nomlib/config.hpp"
-#include "nomlib/system/IFile.hpp"
-
-#if defined ( NOM_PLATFORM_OSX ) || defined ( NOM_PLATFORM_LINUX )
-
-  #include "nomlib/system/unix/UnixFile.hpp"
-
-#elif defined ( NOM_PLATFORM_WINDOWS )
-
-  #include "nomlib/system/windows/WinFile.hpp"
-
-#endif
+#include "nomlib/SDL_helpers.hpp"
 
 namespace nom {
 
-/// \brief Platform-agnostic file system interface
-class File
+SDL_bool SDL_BOOL ( bool value )
 {
-  public:
-    File ( void );
-    ~File ( void );
+  if ( value )
+  {
+    return SDL_TRUE;
+  }
+  else
+  {
+    return SDL_FALSE;
+  }
+}
 
-    /// Returns the file extension of the input file path
-    ///
-    /// Returns a null terminated string on err
-    ///
-    const std::string extension ( const std::string& file );
+SDL_Rect SDL_RECT ( const Coords& coords )
+{
+  SDL_Rect r;
 
-    /// Uses stat(2) to determine input file size (in bytes)
-    ///
-    /// -1 on err
-    int32 size ( const std::string& file_path );
+  r.x = coords.x;
+  r.y = coords.y;
+  r.w = coords.width;
+  r.h = coords.height;
 
-    /// Uses stat(2) to determine if the input file exists
-    ///
-    bool exists ( const std::string& file_path );
+  return r;
+}
 
-    /// dirname(3) wrapper
-    ///
-    /// Extract the directory portion of a pathname
-    ///
-    /// dir_path is arbitrarily limited to 1024 characters.
-    const std::string path ( const std::string& dir_path );
+SDL_Color SDL_COLOR ( const Color& color )
+{
+  SDL_Color c;
 
-    /// getcwd(3) wrapper
-    ///
-    /// Returned path is arbitrarily limited to 1024 characters.
-    const std::string currentPath ( void );
+  c.r = color.red;
+  c.g = color.green;
+  c.b = color.blue;
+  c.a = color.alpha;
 
-    /// chdir(2) wrapper
-    bool set_path ( const std::string& path );
+  return c;
+}
 
-  private:
-    std::shared_ptr<IFile> file;
-};
+const Color pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
+{
+  Color c;
 
+  SDL_GetRGB ( pixel, fmt, &c.red, &c.green, &c.blue );
+
+  return c;
+}
+
+const Color alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
+{
+  Color c;
+
+  SDL_GetRGBA ( pixel, fmt, &c.red, &c.green, &c.blue, &c.alpha );
+
+  return c;
+}
+
+uint32 RGB ( const Color& color, const SDL_PixelFormat* fmt )
+{
+  return SDL_MapRGB ( fmt, color.red, color.green, color.blue );
+}
+
+uint32 RGB ( const Color& color, uint32 fmt )
+{
+  return SDL_MapRGB ( SDL_AllocFormat(fmt), color.red, color.green, color.blue );
+}
+
+uint32 RGBA ( const Color& color, const SDL_PixelFormat* fmt )
+{
+  return SDL_MapRGBA ( fmt, color.red, color.green, color.blue, color.alpha );
+}
+
+uint32 RGBA ( const Color& color, uint32 fmt )
+{
+  return SDL_MapRGBA ( SDL_AllocFormat(fmt), color.red, color.green, color.blue, color.alpha );
+}
 
 } // namespace nom
-
-#endif // include guard
-
-/// \class nom::File
-///

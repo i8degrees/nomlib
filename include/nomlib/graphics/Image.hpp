@@ -42,6 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Point2-inl.hpp"
 #include "nomlib/graphics/smart_ptr.hpp"
+#include "nomlib/SDL_helpers.hpp"
 
 namespace nom {
 
@@ -49,9 +50,6 @@ namespace nom {
 class Image
 {
   public:
-    /// Convenience definition type for the std::unique_ptr variant
-    typedef std::shared_ptr<SDL_Surface> SharedPtr;
-
     /// Default constructor -- initializes to sane defaults.
     Image ( void );
 
@@ -78,8 +76,47 @@ class Image
     int32 height ( void ) const;
     void* pixels ( void ) const;
     uint16 pitch ( void ) const;
+
+    /// \todo Rename me to bppp
     uint8 bits_per_pixel ( void ) const;
+
     const SDL_PixelFormat* pixel_format ( void ) const;
+
+    /// Obtain the video surface's red alpha mask
+    const uint32 red_mask ( void ) const;
+
+    /// Obtain the video surface's green alpha mask
+    const uint32 green_mask ( void ) const;
+
+    /// Obtain the video surface's blue alpha mask
+    const uint32 blue_mask ( void ) const;
+
+    /// Obtain the video surface's alpha mask
+    const uint32 alpha_mask ( void ) const;
+
+    /// I think that we are accessing the value of an
+    /// (internal?) property of the SDL_Surface structure that is described as being
+    /// "private" as per the docs.
+    ///
+    /// Return value of this internal property is presumed to be boolean -- no
+    /// verification has been made of this. Testing of this method *appears*
+    /// to be in working order.
+    //bool getCanvasLock ( void ) const;
+
+    /// Lock the display context's video surface; this must be done before you
+    /// attempt to write directly to video memory, such as when you are
+    /// manipulating surfaces at the pixel level.
+    //bool lock ( void ) const;
+
+    /// Unlocks the display context's video surface; this must be done after you
+    /// are finished writing to the video buffer. During the time that the video
+    /// surface is locked, no updates (think: rendering) outside of your local
+    /// access can occur until the surfaces affected by the lock are relinquished.
+    //void unlock ( void ) const;
+
+    const Coords bounds ( void ) const;
+
+    void set_bounds ( const Coords& clip_bounds );
 
     /// Supports every file type that the libSDL_image extension has been
     /// compiled with
@@ -101,28 +138,43 @@ class Image
     /// Obtain the width and height (in pixels) of the stored bitmap buffer
     const Point2i size ( void ) const;
 
+    /// Obtain the set color key for this image
+    ///
+    /// \return Returns new nom::Color on success; nom::Color::null on failure
+    const Color colorkey ( void ) const;
+
+    /// Obtain the blend mode used for blitting
+    const SDL_BlendMode blend_mode ( void ) const;
+
     /// Set a new color key on the image loaded into memory.
     ///
-    /// \param flags    SDL_RLEACCEL
+    /// \param colorkey     Pixel color to mark transparent
+    /// \param flag         TRUE to enable color key; FALSE to disable color key
+    bool set_colorkey ( const Color& colorkey, bool flag );
+
+    /// Set RLE acceleration for this image
     ///
-    /// This method only works on SDL_Surface video buffers -- if converted to
-    /// a SDL_Texture*, you will lose it, and possibly create a segmentation
-    /// fault!
-    bool set_colorkey ( const Color& key, uint32 flags );
+    /// If enabled, color keying and alpha blending blits are much faster, but
+    /// at the cost of requiring surface locking before directly accessing
+    /// pixels.
+    ///
+    /// \param      TRUE to enable RLE acceleration; FALSE to disable
+    bool RLE ( bool flag );
 
     /// Pixel reading -- supports 8-bit, 15/16-bit, 24-bit & 32-bit color modes
     ///
     /// Returns -1 on error
     ///
-    /// You are responsible for locking & unlocking of the Texture before-hand
+    /// You are responsible for locking & unlocking of the Image before-hand
     ///
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
-    /// \todo Relocate to nom::Image or whichever class becomes home to surfaces
-    /// (video memory buffers in system RAM)
     uint32 pixel ( int32 x, int32 y );
 
+    /// Set a new blending mode for blitting
+    bool set_blend_mode ( const SDL_BlendMode blend );
+
   private:
-    Image::SharedPtr image_;
+    std::shared_ptr<SDL_Surface> image_;
 };
 
 

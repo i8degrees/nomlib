@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/json.hpp>
 #include <nomlib/system.hpp>
 
+const nom::Path p;
 const std::string APP_NAME = "examples/json_writer";
 const std::string OUTPUT_JSON_FILENAME = "json_writer.json";
 
@@ -45,10 +46,13 @@ int main ( int argc, char* argv[] )
   nom::JSON::FileWriter writer;
   Json::Value root;
 
-  nom::File dir;
-  nom::Path p;
-  std::string pwd = dir.path ( argv[0] ) + p.native();
-  dir.setPath ( pwd );
+  // Fatal error; if we are not able to complete this step, it means that
+  // we probably cannot rely on our resource paths!
+  if ( nom::nomlib_init ( argc, argv ) == false )
+  {
+    nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
+    exit ( EXIT_FAILURE );
+  }
 
   root[0]["HelloWorld"] = "I am a string!";
   root[0]["SignedInteger"] = -42;

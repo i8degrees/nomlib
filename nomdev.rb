@@ -73,6 +73,11 @@ case command
   when "clean"
     build_system = BuildSystem.new( options )
     build_system.clean
+  when "rebuild"
+    build_system = BuildSystem.new( options )
+    build_system.clean
+    build_system.build
+    build_system.install
   when "install"
     build_system = BuildSystem.new( options )
     build_system.install

@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <array>
+#include <sstream>
 
 #include "json.h" // jsoncpp library
 
@@ -53,6 +53,7 @@ enum
   CompactArrays = 2 // json_spirit::single_line_arrays; implies PrettyPrint
 };
 
+/// \brief Wrapper class for JSON output with jsoncpp
 class FileWriter
 {
   public:
@@ -62,9 +63,10 @@ class FileWriter
     bool save (
                 const std::string& filename, const Json::Value& object,
                 uint32 format = NoFormatting
-              );
-};
+              ) const;
 
+    const std::string stringify ( const Json::Value& object, uint32 format = 0 ) const;
+};
 
   } // namespace JSON
 } // namespace nom

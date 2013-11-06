@@ -78,14 +78,9 @@ SDL_Surface* Image::image ( void ) const
 
 bool Image::valid ( void ) const
 {
-  if ( this->image() != nullptr )
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  if ( this->image() != nullptr ) return true;
+
+  return false;
 }
 
 int32 Image::width ( void ) const
@@ -125,12 +120,55 @@ const SDL_PixelFormat* Image::pixel_format ( void ) const
   return buffer->format;
 }
 
+const uint32 Image::red_mask ( void ) const
+{
+  return this->pixel_format()->Rmask;
+}
+
+const uint32 Image::green_mask ( void ) const
+{
+  return this->pixel_format()->Gmask;
+}
+
+const uint32 Image::blue_mask ( void ) const
+{
+  return this->pixel_format()->Bmask;
+}
+
+const uint32 Image::alpha_mask ( void ) const
+{
+  return this->pixel_format()->Amask;
+}
+
+const Coords Image::bounds ( void ) const
+{
+  SDL_Rect clip_buffer; // temporary storage struct
+  Coords clip_bounds; // transferred values from SDL_Rect clip_buffer
+
+  // Return values are put into the clip_buffer SDL_Rect after executing:
+  SDL_GetClipRect ( this->image(), &clip_buffer );
+
+  // Now transfer the values into our preferred data container type
+  clip_bounds = Coords ( clip_buffer.x, clip_buffer.y, clip_buffer.w, clip_buffer.h );
+
+  return clip_bounds;
+}
+
+void Image::set_bounds ( const Coords& clip_bounds )
+{
+  SDL_Rect clip = SDL_RECT ( clip_bounds );
+
+  // As per libSDL docs, if SDL_Rect is nullptr, the clipping rectangle is set
+  // to the full size of the surface
+  SDL_SetClipRect ( this->image(), &clip );
+}
+
 bool Image::load ( const std::string& filename )
 {
   SDL_Surface *buffer = IMG_Load ( filename.c_str() );
   if ( buffer == nullptr )
   {
-    NOM_LOG_ERR ( NOM, IMG_GetError() );
+NOM_LOG_ERR ( NOM, IMG_GetError() );
     return false;
   }
 
@@ -171,14 +209,42 @@ const Point2i Image::size ( void ) const
   SDL_Surface* buffer = this->image();
   Point2i image_pos ( buffer->w, buffer->h );
 
-  priv::FreeSurface ( buffer );
   return image_pos;
 }
 
-bool Image::set_colorkey ( const Color& key, uint32 flags )
+const Color Image::colorkey ( void ) const
 {
   SDL_Surface* buffer = this->image();
-  uint32 transparent_color = key.RGB ( buffer->format );
+  uint32 transparent_color = 0;
+  Color key;
+
+  if ( SDL_GetColorKey ( this->image(), &transparent_color ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    priv::FreeSurface ( buffer );
+    return Color::null;
+  }
+
+  return nom::pixel ( transparent_color, buffer->format );
+}
+
+const SDL_BlendMode Image::blend_mode ( void ) const
+{
+  SDL_BlendMode blend;
+
+  if ( SDL_GetSurfaceBlendMode ( this->image(), &blend ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return blend;
+  }
+
+  return blend;
+}
+
+bool Image::set_colorkey ( const Color& colorkey, bool flag )
+{
+  SDL_Surface* buffer = this->image();
+  uint32 transparent_color = RGB ( colorkey, buffer->format );
 
   if ( this->valid() == false )
   {
@@ -187,14 +253,23 @@ NOM_LOG_ERR ( NOM, "Could not set color key: invalid image buffer." );
     return false;
   }
 
-  if ( SDL_SetColorKey ( buffer, SDL_TRUE ^ flags, transparent_color ) != 0 )
+  if ( SDL_SetColorKey ( buffer, SDL_BOOL(flag), transparent_color ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     priv::FreeSurface ( buffer );
     return false;
   }
 
-  priv::FreeSurface ( buffer );
+  return true;
+}
+
+bool Image::RLE ( bool flag )
+{
+  if ( SDL_SetSurfaceRLE ( this->image(), SDL_BOOL(flag) ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
   return true;
 }
 
@@ -236,6 +311,17 @@ uint32 Image::pixel ( int32 x, int32 y )
     }
     break;
   } // end switch
+}
+
+bool Image::set_blend_mode ( const SDL_BlendMode blend )
+{
+  if ( SDL_SetSurfaceBlendMode ( this->image(), blend ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  return true;
 }
 
 

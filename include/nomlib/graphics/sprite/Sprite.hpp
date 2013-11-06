@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/math/Point2-inl.hpp"
 #include "nomlib/graphics/Texture.hpp"
+#include "nomlib/graphics/Renderer.hpp"
 
 namespace nom {
 
@@ -71,13 +72,10 @@ class Sprite:
     void setState ( uint32 state );
 
     /// Load a new image onto the Sprite.
-    ///
-    /// Source color keying (single pixel color transparency) is enabled by
-    /// default.
     bool load (
-                const std::string& filename, const Color& colorkey,
-                bool use_cache = false,
-                uint32 flags = SDL_TRUE | SDL_RLEACCEL
+                const std::string& filename,
+                const Color& colorkey,
+                bool use_cache = false
               );
 
     void update ( void );

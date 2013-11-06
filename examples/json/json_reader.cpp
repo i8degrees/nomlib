@@ -39,19 +39,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 const std::string APP_NAME = "examples/json_reader";
 
+const nom::Path p;
 const std::string APP_RESOURCES_DIR = "Resources";
-const std::string RESOURCE_JSON_EXAMPLE1_GOOD = "ex1_good.json";
-const std::string RESOURCE_JSON_EXAMPLE1_BAD = "ex1_bad.json";
+const std::string RESOURCE_JSON_EXAMPLE1_GOOD = APP_RESOURCES_DIR + p.native() + "ex1_good.json";
+const std::string RESOURCE_JSON_EXAMPLE1_BAD = APP_RESOURCES_DIR + p.native() + "ex1_bad.json";
 
 int main ( int argc, char* argv[] )
 {
   nom::JSON::FileReader parser;
   Json::Value root;
 
-  nom::File dir;
-  nom::Path p;
-  std::string pwd = dir.path ( argv[0] ) + p.native() + APP_RESOURCES_DIR;
-  dir.setPath ( pwd );
+  // Fatal error; if we are not able to complete this step, it means that
+  // we probably cannot rely on our resource paths!
+  if ( nom::nomlib_init ( argc, argv ) == false )
+  {
+    nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
+    exit ( EXIT_FAILURE );
+  }
 
   if ( parser.load ( RESOURCE_JSON_EXAMPLE1_GOOD, root ) == false )
   {

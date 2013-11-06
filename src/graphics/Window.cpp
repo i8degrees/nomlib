@@ -282,6 +282,31 @@ void Window::draw ( const IDrawable& object ) const
   object.draw ( this->renderer() );
 }
 
+void Window::draw ( SDL_Surface* video_buffer, const Coords& bounds ) const
+{
+  SDL_Rect blit_coords = SDL_RECT ( bounds );
+  SDL_Rect blit_offsets = SDL_RECT ( bounds );
+
+  //if ( ! this->valid() ) return;
+
+  if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
+  {
+    if ( SDL_BlitSurface ( this->window_surface(), &blit_offsets, video_buffer, &blit_coords ) != 0 )
+    {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return; // ERR
+    }
+  }
+
+  return; // success!
+
+  if ( SDL_BlitSurface ( this->window_surface(), nullptr, video_buffer, &blit_coords ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return; // ERR
+  }
+}
+
 bool Window::flip ( void ) const
 {
   if ( SDL_UpdateWindowSurface ( this->window() ) != 0 )
@@ -345,20 +370,9 @@ void Window::set_window_title ( const std::string& title )
 
 bool Window::set_window_icon ( const std::string& filename )
 {
-  Image icon; // holds our image in memory during transfer
+  Image icon;
 
-// FIXME
-// (Windows does not like using IMG_Load (SDL2_image extension) for some
-// reason, which limits us solely to BMP (Windows Bitmap) files, which
-// arguably is inconvenient ;-P I think I just need to take another look at
-// the SDL documentation to see if this is a known limitation of their icon
-// loader on Windows platform.
-// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
-#if defined ( NOM_PLATFORM_WINDOWS ) // Use SDL's built-in BMP loader
-  if ( icon.load_bmp ( filename ) == false ) return false;
-#else // Use SDL2_image for additional image types
   if ( icon.load ( filename ) == false ) return false;
-#endif
 
   if ( icon.valid() == false )
   {
@@ -433,7 +447,7 @@ void Window::hide_window ( void )
 
 void Window::set_window_grab ( bool grab )
 {
-  SDL_SetWindowGrab ( this->window(), static_cast<SDL_bool> ( grab)  );
+  SDL_SetWindowGrab ( this->window(), SDL_BOOL(grab) );
 }
 
 void Window::set_minimum_window_size ( int min_width, int min_height )
@@ -480,5 +494,6 @@ void Window::set_context ( Window::RawPtr window )
 {
   context_ = window->renderer();
 }
+
 
 } // namespace nom

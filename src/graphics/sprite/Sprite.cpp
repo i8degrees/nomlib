@@ -83,10 +83,10 @@ void Sprite::setState ( uint32 state )
 
 bool Sprite::load (
                     const std::string& filename, const Color& colorkey,
-                    bool use_cache, uint32 flags
+                    bool use_cache
                   )
 {
-  this->sprite.load ( filename, colorkey, use_cache, flags );
+  this->sprite.load ( filename, 0, use_cache );
 
   if ( this->sprite.valid() == false )
   {
@@ -95,6 +95,11 @@ NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
   }
 
   this->setSize ( this->sprite.width(), this->sprite.height() );
+
+  if ( colorkey != Color::null )
+  {
+    this->sprite.set_colorkey ( colorkey );
+  }
 
   return true;
 }

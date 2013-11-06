@@ -86,7 +86,7 @@ class UnixFile: public IFile
     const std::string currentPath ( void );
 
     /// chdir(2) wrapper
-    void setPath ( const std::string& path );
+    bool set_path ( const std::string& path );
 };
 
 

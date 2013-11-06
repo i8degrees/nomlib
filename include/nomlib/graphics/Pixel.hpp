@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/SDL_helpers.hpp"
 
 namespace nom {
 
@@ -58,6 +59,7 @@ class Pixel:
     ///
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
     void Draw ( SDL_Surface* video_buffer ) const;
+
   private:
     Coords coords;
     Color color;

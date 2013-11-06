@@ -46,6 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/make_unique.hpp>
 #include <nomlib/system/EventDispatcher.hpp>
 #include <nomlib/system/AnimationTimer.hpp>
+#include <nomlib/system/init.hpp>
 
 #if defined ( NOM_PLATFORM_OSX )
   #include <nomlib/system/osx/ResourcePath.hpp>

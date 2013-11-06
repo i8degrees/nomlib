@@ -48,13 +48,13 @@ const Color Color::NomPrimaryColorKey ( 110, 144, 190 );
 const Color Color::NomSecondaryColorKey ( 223, 75, 255 );
 
 Color::Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ),
-                        alpha ( SDL_ALPHA_OPAQUE )
+                        alpha ( 255 )
 {}
 
 Color::Color ( uint8 r, uint8 g, uint8 b )  : red ( r ),
                                               green ( g ),
                                               blue ( b ),
-                                              alpha ( SDL_ALPHA_OPAQUE )
+                                              alpha ( 255 )
 {}
 
 Color::Color ( uint8 r, uint8 g, uint8 b, uint8 a ):  red ( r ),

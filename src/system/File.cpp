@@ -79,9 +79,11 @@ const std::string File::currentPath ( void )
   return this->file->currentPath();
 }
 
-void File::setPath ( const std::string& path )
+bool File::set_path ( const std::string& path )
 {
-  this->file->setPath ( path );
+  if ( this->file->set_path ( path ) == false ) return false;
+
+  return true;
 }
 
 

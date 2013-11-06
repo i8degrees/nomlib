@@ -72,7 +72,7 @@ class IFile
     virtual const std::string currentPath ( void ) = 0;
 
     /// chdir(2) wrapper
-    virtual void setPath ( const std::string& path ) = 0;
+    virtual bool set_path ( const std::string& path ) = 0;
 };
 
 

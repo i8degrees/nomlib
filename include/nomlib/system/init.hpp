@@ -26,74 +26,25 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_FILE_HEADERS
-#define NOMLIB_FILE_HEADERS
+#ifndef NOMLIB_INIT_HPP
+#define NOMLIB_INIT_HPP
 
 #include <iostream>
-#include <string>
-#include <cstring>
-#include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/IFile.hpp"
-
-#if defined ( NOM_PLATFORM_OSX ) || defined ( NOM_PLATFORM_LINUX )
-
-  #include "nomlib/system/unix/UnixFile.hpp"
-
-#elif defined ( NOM_PLATFORM_WINDOWS )
-
-  #include "nomlib/system/windows/WinFile.hpp"
-
-#endif
+#include "nomlib/system/File.hpp"
+#include "nomlib/system/Path.hpp"
 
 namespace nom {
 
-/// \brief Platform-agnostic file system interface
-class File
-{
-  public:
-    File ( void );
-    ~File ( void );
-
-    /// Returns the file extension of the input file path
-    ///
-    /// Returns a null terminated string on err
-    ///
-    const std::string extension ( const std::string& file );
-
-    /// Uses stat(2) to determine input file size (in bytes)
-    ///
-    /// -1 on err
-    int32 size ( const std::string& file_path );
-
-    /// Uses stat(2) to determine if the input file exists
-    ///
-    bool exists ( const std::string& file_path );
-
-    /// dirname(3) wrapper
-    ///
-    /// Extract the directory portion of a pathname
-    ///
-    /// dir_path is arbitrarily limited to 1024 characters.
-    const std::string path ( const std::string& dir_path );
-
-    /// getcwd(3) wrapper
-    ///
-    /// Returned path is arbitrarily limited to 1024 characters.
-    const std::string currentPath ( void );
-
-    /// chdir(2) wrapper
-    bool set_path ( const std::string& path );
-
-  private:
-    std::shared_ptr<IFile> file;
-};
-
+/// Initialize nomlib
+///
+/// \note The function call will attempt to change the working directory to
+/// the location of the binary being executed. This is not guaranteed to succeed.
+///
+/// \note This should be called before calling any other library methods!
+bool nomlib_init ( int32 argc, char* argv[] );
 
 } // namespace nom
 
-#endif // include guard
-
-/// \class nom::File
-///
+#endif // include guard defined

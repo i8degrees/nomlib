@@ -254,60 +254,64 @@ bool BitmapFont::rebuild ( void )
 
 NOM_ASSERT ( this->bitmap_font.valid() );
 
-  //background_color = RGBA::asInt32  ( this->bitmap_font.getTexturePixelsFormat(),
-                                      //this->colorkey
-                                    //);
+  if ( this->bitmap_font.lock() == false )
+  {
+NOM_LOG_ERR ( NOM, "Could not lock Texture." );
+    return false;
+  }
 
-  //this->bitmap_font.setTransparent ( this->colorkey, SDL_TRUE );
+  background_color = RGBA ( this->bitmap_font.colorkey(),
+                            this->bitmap_font.pixel_format()
+                          );
 
-  //tile_width = this->bitmap_font.getTextureWidth() / this->sheet_width;
-  //tile_height = this->bitmap_font.getTextureHeight() / this->sheet_height;
+  tile_width = this->bitmap_font.width() / this->sheet_width;
+  tile_height = this->bitmap_font.height() / this->sheet_height;
   top = tile_height;
   baseA = tile_height;
 
-  for ( int32_t rows = 0; rows < this->sheet_width; rows++ )
+  for ( int32 rows = 0; rows < this->sheet_width; rows++ )
   {
-    for ( int32_t cols = 0; cols < this->sheet_height; cols++ )
+    for ( int32 cols = 0; cols < this->sheet_height; cols++ )
     {
       // Set character offsets
       this->chars[ currentChar ].setPosition ( tile_width * cols, tile_height * rows );
       this->chars[ currentChar ].setSize ( tile_width, tile_height );
 
       //Find Left Side; go through pixel columns
-      for ( uint32_t pCol = 0; pCol < tile_width; pCol++ )
+      for ( uint32 pCol = 0; pCol < tile_width; pCol++ )
       {
         //Go through pixel rows
-        for ( uint32_t pRow = 0; pRow < tile_height; pRow++ )
+        for ( uint32 pRow = 0; pRow < tile_height; pRow++ )
         {
           //Get the pixel offsets
           int pX = ( tile_width * cols ) + pCol;
           int pY = ( tile_height * rows ) + pRow;
 
           //If a non colorkey pixel is found
-          if( this->bitmap_font.getPixel ( pX, pY ) != background_color )
+          if( this->bitmap_font.pixel ( pX, pY ) != background_color )
           {
-              //Set the x offset
-              this->chars[ currentChar ].x = pX;
+            //Set the x offset
+            this->chars[ currentChar ].x = pX;
 
-              //Break the loops
-              pCol = tile_width;
-              pRow = tile_height;
+            //Break the loops
+            pCol = tile_width;
+            pRow = tile_height;
           }
         }
       }
 
       //Find Right Side; go through pixel columns
-      for ( int32_t pCol_w = tile_width - 1; pCol_w >= 0; pCol_w-- )
+      for ( int32 pCol_w = tile_width - 1; pCol_w >= 0; pCol_w-- )
       {
         //Go through pixel rows
         for ( uint32 pRow_w = 0; pRow_w < tile_height; pRow_w++ )
         {
           //Get the pixel offsets
-          uint32_t pX = ( tile_width * cols ) + pCol_w;
-          uint32_t pY = ( tile_height * rows ) + pRow_w;
+          uint32 pX = ( tile_width * cols ) + pCol_w;
+          uint32 pY = ( tile_height * rows ) + pRow_w;
 
           //If a non colorkey pixel is found
-          if ( this->bitmap_font.getPixel ( pX, pY ) != background_color )
+          if ( this->bitmap_font.pixel ( pX, pY ) != background_color )
           {
             //Set the width
             this->chars[ currentChar ].width = ( pX - this->chars[ currentChar ].x ) + 1;
@@ -326,11 +330,11 @@ NOM_ASSERT ( this->bitmap_font.valid() );
         for ( uint32 pCol = 0; pCol < tile_width; pCol++ )
         {
           //Get the pixel offsets
-          uint32_t pX = ( tile_width * cols ) + pCol;
-          uint32_t pY = ( tile_height * rows ) + pRow;
+          uint32 pX = ( tile_width * cols ) + pCol;
+          uint32 pY = ( tile_height * rows ) + pRow;
 
           // If a non colorkey pixel is found
-          if( this->bitmap_font.getPixel ( pX, pY ) != background_color )
+          if( this->bitmap_font.pixel ( pX, pY ) != background_color )
           {
             // If new top is found
             if ( pRow < top )
@@ -350,7 +354,7 @@ NOM_ASSERT ( this->bitmap_font.valid() );
       if ( currentChar == 'A' )
       {
         // Go through pixel rows
-        for ( int32_t pRow = tile_height - 1; pRow >= 0; pRow-- )
+        for ( int32 pRow = tile_height - 1; pRow >= 0; pRow-- )
         {
           // Go through pixel columns
           for ( uint32 pCol = 0; pCol < tile_width; pCol++ )
@@ -360,7 +364,7 @@ NOM_ASSERT ( this->bitmap_font.valid() );
             unsigned int pY = ( tile_height * rows ) + pRow;
 
             // If a non colorkey pixel is found
-            if ( this->bitmap_font.getPixel ( pX, pY ) != background_color )
+            if ( this->bitmap_font.pixel ( pX, pY ) != background_color )
             {
               // Bottom of a is found
               baseA = pRow;
@@ -377,6 +381,7 @@ NOM_ASSERT ( this->bitmap_font.valid() );
       currentChar++;
     }
   }
+  this->bitmap_font.unlock(); // Finished uploading to texture
 
   // Calculate space
   this->spacing = tile_width / 2;
@@ -385,7 +390,7 @@ NOM_ASSERT ( this->bitmap_font.valid() );
   this->newline = baseA - top;
 
   // Loop off excess top pixels
-  for ( uint32_t t = 0; t < 256; t++ )
+  for ( uint32 t = 0; t < 256; t++ )
   {
     this->chars[ t ].y += top;
     this->chars[ t ].height -= top;
@@ -411,13 +416,16 @@ bool BitmapFont::load ( const std::string& filename, const Color& colorkey,
                         bool use_cache
                       )
 {
-  if ( this->bitmap_font.load ( filename, colorkey, use_cache ) == false )
+  if ( this->bitmap_font.load ( filename, 0, use_cache ) == false )
   {
 NOM_LOG_ERR ( NOM, "Could not load bitmap font image file: " + filename );
     return false;
   }
 
-  this->colorkey = colorkey;
+  if ( colorkey != Color::null )
+  {
+    this->bitmap_font.set_colorkey ( colorkey );
+  }
 
   // Attempt to rebuild font metrics
   if ( this->rebuild() == false )
@@ -483,7 +491,7 @@ void BitmapFont::draw ( SDL_Renderer* target ) const
   //If the font has been built
   if ( this->bitmap_font.valid() )
   {
-    for ( uint32_t show = 0; show < this->text_buffer.length(); show++ )
+    for ( uint32 show = 0; show < this->text_buffer.length(); show++ )
     {
       //If the current character is a space
       if ( this->text_buffer[show] == ' ' )

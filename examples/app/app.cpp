@@ -118,6 +118,9 @@ class App: public nom::SDL_App
         }
       }
 
+      // Best quality for rescaling low resolution artwork, such as bitmap fonts!
+      SDL_SetHint ( SDL_HINT_RENDER_SCALE_QUALITY, "Nearest" );
+
       this->window[0].set_active();
       if ( this->bfont.load ( RESOURCE_BITMAP_FONT, nom::Color(255, 0, 255, 0) ) == false )
       {
@@ -229,18 +232,6 @@ class App: public nom::SDL_App
             case 11: this->window[idx].fill ( nom::Color::NomSecondaryColorKey ); break;
           }
         }
-
-        //nom::Line line1 = nom::Line ( ((WINDOW_WIDTH-176)*2)/2, 194*2, 176*2, 24*2, nom::Color( 133, 133, 133 ) );
-        //line1.draw ( this->window[0].renderer() );
-
-        //nom::Point pixel = nom::Point ( 500, 245, nom::Color::White );
-        //pixel.draw ( this->window[2].renderer() );
-
-        //nom::Line line2 = nom::Line ( 100, 100, 250, 250, nom::Color( 133, 133, 133 ) );
-        //line2.draw ( this->window[1].renderer() );
-
-        //nom::Rectangle rectangle = nom::Rectangle ( 100, 100, 200, 200, nom::Color::Gray );
-        //rectangle.draw ( this->window[0].renderer() );
 
         for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
         {

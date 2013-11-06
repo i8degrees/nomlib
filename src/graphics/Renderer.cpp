@@ -143,9 +143,6 @@ bool Renderer::fill ( const Color& color )
 
 bool Renderer::set_viewport ( int width, int height )
 {
-  // This should be supported by DirectX and OpenGL
-  SDL_SetHint ( SDL_HINT_RENDER_SCALE_QUALITY, "Nearest" );
-
   if ( SDL_RenderSetLogicalSize ( this->renderer(), width, height ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );

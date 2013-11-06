@@ -30,19 +30,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-// GCC v4.6.3 -- as per Ubuntu x64 v12.04 "Precise" -- has not (yet?)
-// implemented non-static data member initializers, so... we have relocated
-// these compile-time macros here for the time being.
-//
-//                        [*] -_- [*]
-//
-#if defined (NOM_PLATFORM_WINDOWS)
-  value_type Path::path_separator = "\\";
-#else // Assume POSIX-compliant platform -- home sweet home!
-  value_type Path::path_separator = "/";
+Path::Path ( void ) : pathname ( "\0" )
+{
+#if defined ( NOM_PLATFORM_WINDOWS )
+  path_separator = "\\";
+#else // Assume POSIX-compliant platform
+  path_separator = "/";
 #endif
-
-Path::Path ( void ) : pathname ( "\0" ) {}
+}
 
 Path::Path ( const std::string& p ) : pathname ( p ) {}
 

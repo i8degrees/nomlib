@@ -36,29 +36,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include <memory>
 
-// nomlib/config.hpp MUST be defined before using conditional preprocessing
-// statements for detecting platform
+#include "json.h" // jsoncpp library
+
 #include "nomlib/config.hpp"
 #include "nomlib/version.hpp"
 #include "nomlib/math/Coords.hpp"
-
-/*
-#include "json_spirit_writer_template.h"
-#include "json_spirit_reader_template.h"
-
-#ifndef JSON_SPIRIT_VALUE_ENABLED
-  #define JSON_SPIRIT_VALUE_ENABLED
-#endif
-
-#include <nomlib/json.hpp>
-*/
+#include "nomlib/json/FileReader.hpp"
+#include "nomlib/json/FileWriter.hpp"
 
 namespace nom {
 
+extern const int NOM_SPRITE_SHEET_MAJOR_VERSION;
+extern const int NOM_SPRITE_SHEET_MINOR_VERSION;
+extern const int NOM_SPRITE_SHEET_PATCH_VERSION;
+
 //#define NOM_DEBUG_SPRITE_SHEET
 
+/// Not implemented; reserved for future usage
+#define NOM_DEBUG_SPRITE_SHEET_JSON_SAVE
+
+//#define NOM_DEBUG_SPRITE_SHEET_JSON_LOAD
+
 /// \brief Specialized class container for the creation of sprite sheets via
-/// JSON-compliant file input.
+/// RFC 4627 JSON-compliant file input
 class SpriteSheet
 {
   public:
@@ -67,6 +67,9 @@ class SpriteSheet
     /// Default construct for initializing instance variables to their
     /// respective defaults.
     SpriteSheet ( void );
+
+    /// Destructor.
+    ~SpriteSheet ( void );
 
     /// Construct a sprite sheet from an existing sprite sheet file
     SpriteSheet ( const std::string& filename );
@@ -78,6 +81,8 @@ class SpriteSheet
     ///
     /// Padding is applied on all four sides. Spacing is applied between each
     /// tile.
+    ///
+    /// \todo Re-order these arguments to match the order of instance variables
     SpriteSheet (
                   const std::string& filename,
                   int32 sheet_width, int32 sheet_height,
@@ -85,14 +90,11 @@ class SpriteSheet
                   int32 spacing, int32 padding, int32 num_sprites
                 );
 
-    /// Destructor.
-    ~SpriteSheet ( void );
-
     /// Make a duplicate of this object's instance
     SpriteSheet::SharedPtr clone ( void ) const;
 
     /// Get the calculations made for a particular ID number.
-    const Coords dimensions ( int32 index ) const;
+    const Coords& dimensions ( int32 index ) const;
 
     /// Obtain the number of frames this object contains
     int32 frames ( void ) const;
@@ -105,15 +107,18 @@ class SpriteSheet
     /// compliant JSON object.
     bool load ( const std::string& filename );
 
+    /// Dump the state of this object instance
+    void dump ( void ) const;
+
   private:
-    /// Our sprite sheet values container.
+    /// Our sprite sheet values container
     std::vector<Coords> sheet;
 
     /// Source filename used is saved with the output (meta-data)
     std::string sheet_filename;
 
     /// Source number of sprites specified; this is saved with the resulting
-    /// output as meta-data.
+    /// output as meta-data
     int32 sheet_sprites;
 
     /// Source spacing used is saved with the output (meta-data)
@@ -165,15 +170,12 @@ class SpriteSheet
 ///
 /// nom::Sprite card_face = nom::Sprite ( card_faces_sheet );
 ///
-/// \endcode
-///
-/// ...or!
-///
-/// \code
+/// // ...or!
 ///
 /// nom::Sprite card_face ( nom::SpriteSheet ( card_faces_sheet ( "faces.json" ) ) );
 ///
 /// \endcode
+///
 ///
 /// \code
 ///
@@ -181,3 +183,14 @@ class SpriteSheet
 ///
 /// 1.  http://www.dreamincode.net/forums/topic/179429-sdl-sprite-sheet/
 /// \endcode
+///
+/// \todo Re-design the JSON layout used, perhaps with something like:
+/// { "metadata": { }, "<filename>": { "<ID>": { } } }
+///
+/// \todo Re-consider our sheet vector's data type (nom::Coords); we should
+/// ideally be loading the object's ID into this vector
+///
+/// \todo Create structs for our instance vars
+///
+/// \todo Buffer the file meta-data like we do the other JSON objects inside
+/// load method

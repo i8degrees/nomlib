@@ -68,7 +68,7 @@ class WinFile: public IFile
     /// Stub
     const std::string currentPath ( void );
 
-    void setPath ( const std::string& path );
+    bool set_path ( const std::string& path );
 };
 
 

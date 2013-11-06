@@ -74,13 +74,15 @@ const std::string WinFile::currentPath ( void )
   return "";
 }
 
-void WinFile::setPath ( const std::string& path )
+bool WinFile::set_path ( const std::string& path )
 {
   if ( _chdir ( path.c_str() ) != 0 )
   {
 NOM_LOG_ERR ( NOM, "Unknown error on attempt to change working directory to: " + path );
-    return;
+    return false;
   }
+
+  return true;
 }
 
 

@@ -133,6 +133,7 @@ set ( SYSTEM_HEADERS
       ${NOMLIB_HEADERS_DIR}/system/Timer.hpp
     )
 set ( SYSTEM_SOURCE
+      ${SRC_DIR}/system/init.cpp
       ${SRC_DIR}/system/dialog_messagebox.cpp
       ${SRC_DIR}/system/EventDispatcher.cpp
       ${SRC_DIR}/system/Path.cpp

@@ -59,38 +59,32 @@ const nom::int32 WINDOW_HEIGHT = 448;
 const nom::int32 MAXIMUM_WINDOWS = 3;
 
 /// Relative file path name of our resource example
-const std::string RESOURCE_ICON = "icon.png";
+const nom::Path p;
+const std::string RESOURCE_ICON = APP_RESOURCES_DIR + p.native() + "icon.png";
 
-const std::string RESOURCE_TRUETYPE_FONT = "arial.ttf";
-const std::string RESOURCE_BITMAP_FONT = "VIII.png";
+const std::string RESOURCE_TRUETYPE_FONT = APP_RESOURCES_DIR + p.native() + "arial.ttf";
+const std::string RESOURCE_BITMAP_FONT = APP_RESOURCES_DIR + p.native() + "VIII.png";
 
-const std::string RESOURCE_SPRITE = "dots.png";
+const std::string RESOURCE_SPRITE = APP_RESOURCES_DIR + p.native() + "dots.png";
 
 /// Copyright (c) 2013 Fielding Johnston. All rights reserved.
-const std::string RESOURCE_STATIC_IMAGE = "boardoutline.png";
+const std::string RESOURCE_STATIC_IMAGE = APP_RESOURCES_DIR + p.native() + "boardoutline.png";
 
 /// \brief Usage example
 class App: public nom::SDL_App
 {
   public:
-    App ( nom::int32 args_count, char* args[] )
+    App ( nom::int32 argc, char* argv[] )
     {
       NOM_LOG_TRACE ( NOM );
 
-      nom::File dir;
-      // Use this class to obtain the platform's directory delimiter
-      nom::Path p;
-      // Form the PWD (parent working directory); this must be an absolute file
-      // path.
-      std::string pwd = "\0";
-
-      pwd = dir.path ( args[0] ) + p.native() + APP_RESOURCES_DIR;
-
-      // Change the working directory to whatever pwd has been set to.
-      //
-      // This should generally be done *after* processing command line
-      // arguments!
-      dir.setPath ( pwd );
+      // Fatal error; if we are not able to complete this step, it means that
+      // we probably cannot rely on our resource paths!
+      if ( nom::nomlib_init ( argc, argv ) == false )
+      {
+        nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
+        exit ( EXIT_FAILURE );
+      }
     } // App
 
     ~App ( void )

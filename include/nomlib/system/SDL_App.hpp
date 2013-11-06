@@ -63,9 +63,13 @@ class SDL_App: public Input
 
     uint32 ticks ( void );
 
-    bool getShowFPS ( void );
-    void showFPS ( bool toggle );
-    void toggleFPS ( void );
+    bool show_fps ( void ) const;
+    void set_show_fps ( bool toggle );
+
+    /// Helper method for toggling the state of nom::SDL_App::show_fps
+    ///
+    /// \return State of nom::SDL_App::show_fps_ after call to nom::SDL_App::set_show_fps
+    bool toggle_fps ( void );
 
     /// Let the user know if there are pending events
     bool PollEvents ( SDL_Event* );
@@ -75,7 +79,7 @@ class SDL_App: public Input
     bool app_state;
 
     /// fps counter
-    bool show_fps;
+    bool show_fps_;
 
     /// global app timer
     Timer appTime;

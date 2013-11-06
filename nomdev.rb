@@ -74,10 +74,14 @@ case command
     build_system = BuildSystem.new( options )
     build_system.clean
   when "rebuild"
-    build_system = BuildSystem.new( options )
-    build_system.clean
-    build_system.build
-    build_system.install
+    if platform["windows"]
+      puts "Error: feature currently disabled; broken on Windows platform."
+      quit
+    else
+      build_system = BuildSystem.new( options )
+      build_system.clean
+      build_system.build
+    end
   when "install"
     build_system = BuildSystem.new( options )
     build_system.install
@@ -95,49 +99,45 @@ case command
       FileUtils.rmtree "#{pwd}/#{options.build_dir}", :verbose => false, :noop => false
     end
     exit 0
-  when "docs", "documentation"
+  when "docs", "documentation" # experimental
     build_system = BuildSystem.new( options )
     build_system.docs
   when "analyze"
     build_system = BuildSystem.new( options )
     build_system.analyze
-  when "get"
+  when "get" # experimental
     deps = ExternalDeps.new( options )
     deps.get
   when "archive" # experimental
     deps = ExternalDeps.new( options )
     deps.archive
-  when "LOC", "loc"
+  when "LOC", "loc" # Uses CLOC: http://cloc.sourceforge.net/
     loc_filename = "#{NOMDEV_WORKING_DIRECTORY}/.loc.yml"
+
+    args = Array.new
+    args << '--quiet'
+    args << "--ignored=#{NOMDEV_WORKING_DIRECTORY}/.cloc_ignored.log" if NOMDEV_DEBUG
+    args << "--out=#{loc_filename}"
+    args << '--yaml'
+    args << '--exclude-dir=scale2x,hqx,jsoncpp,build,extra,third-party,tmp,wiki'
+    args << "#{NOMDEV_WORKING_DIRECTORY}"
+
+    if ! run( 'cloc', *args, options )
+      puts "Error: Could not save #{loc_filename} using cloc."
+      quit
+    end
 
     if File.exists? loc_filename
       buffer = YAML.load_file( loc_filename )
     else
-      args = Array.new
-      args << '--quiet'
-      args << "--ignored=#{NOMDEV_WORKING_DIRECTORY}/.cloc_ignored.log" if NOMDEV_DEBUG
-      args << "--out=#{loc_filename}"
-      args << '--yaml'
-      args << '--exclude-dir=scale2x,hqx,jsoncpp,build,extra,third-party,tmp,wiki'
-      args << "#{NOMDEV_WORKING_DIRECTORY}"
-
-      if ! run( 'cloc', *args, options )
-        puts "Error: Could not save #{loc_filename}."
-        quit
-      end
-
-      if File.exists? loc_filename
-        buffer = YAML.load_file( loc_filename )
-      else
-        puts "Error: Could not open #{loc_filename}."
-        quit
-      end
+      puts "Error: Could not open #{loc_filename}."
+      quit
     end
 
     config = buffer["SUM"]["code"]
 
     if config
-      puts "\n"
+      puts "\n" # Clear the buffer that CLOC seems to leave behind
       puts config
     else
       puts "Error: Could not parse #{loc_filename}."

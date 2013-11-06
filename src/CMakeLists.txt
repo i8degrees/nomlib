@@ -93,15 +93,6 @@ set ( JSONCPP_SOURCE
 
 # Math module
 file ( GLOB MATH_HEADERS "${NOMLIB_HEADERS_DIR}/math/*.hpp" )
-set ( MATH_HEADERS
-      ${NOMLIB_HEADERS_DIR}/math/Color.hpp
-      ${NOMLIB_HEADERS_DIR}/math/Coords.hpp
-      ${NOMLIB_HEADERS_DIR}/math/helpers.hpp
-      ${NOMLIB_HEADERS_DIR}/math/Point2-inl.hpp
-      ${NOMLIB_HEADERS_DIR}/math/Point3-inl.hpp
-      ${NOMLIB_HEADERS_DIR}/math/Rect-inl.hpp
-      ${NOMLIB_HEADERS_DIR}/math/Transformable.hpp
-    )
 set ( MATH_SOURCE
       ${SRC_DIR}/math/helpers.cpp
       ${SRC_DIR}/math/Color.cpp
@@ -114,24 +105,6 @@ file ( GLOB SYSTEM_HEADERS "${NOMLIB_HEADERS_DIR}/system/*.hpp" )
 file ( GLOB SYSTEM_OSX_HEADERS "${NOMLIB_HEADERS_DIR}/system/osx/*.hpp" )
 file ( GLOB SYSTEM_UNIX_HEADERS "${NOMLIB_HEADERS_DIR}/system/unix/*.hpp" )
 file ( GLOB SYSTEM_WINDOWS_HEADERS "${NOMLIB_HEADERS_DIR}/system/windows/*.hpp" )
-set ( SYSTEM_HEADERS
-      ${NOMLIB_HEADERS_DIR}/system/AnimationTimer.hpp
-      ${NOMLIB_HEADERS_DIR}/system/clock.hpp
-      ${NOMLIB_HEADERS_DIR}/system/dialog_messagebox.hpp
-      ${NOMLIB_HEADERS_DIR}/system/EventDispatcher.hpp
-      ${NOMLIB_HEADERS_DIR}/system/File.hpp
-      ${NOMLIB_HEADERS_DIR}/system/FPS.hpp
-      ${NOMLIB_HEADERS_DIR}/system/GameStates.hpp
-      ${NOMLIB_HEADERS_DIR}/system/IFile.hpp
-      ${NOMLIB_HEADERS_DIR}/system/Input.hpp
-      ${NOMLIB_HEADERS_DIR}/system/IState.hpp
-      ${NOMLIB_HEADERS_DIR}/system/make_unique.hpp
-      ${NOMLIB_HEADERS_DIR}/system/ObjectCache.hpp
-      ${NOMLIB_HEADERS_DIR}/system/Path.hpp
-      ${NOMLIB_HEADERS_DIR}/system/SDL_App.hpp
-      ${NOMLIB_HEADERS_DIR}/system/Sleep.hpp
-      ${NOMLIB_HEADERS_DIR}/system/Timer.hpp
-    )
 set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/init.cpp
       ${SRC_DIR}/system/dialog_messagebox.cpp

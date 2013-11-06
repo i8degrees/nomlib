@@ -47,6 +47,7 @@ class FileReader
     FileReader ( void );
     ~FileReader ( void );
 
+    /// \todo Provide option for enabling comments parsing
     bool load ( const std::string& filename, Json::Value& object );
 };
 

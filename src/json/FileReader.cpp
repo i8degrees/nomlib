@@ -37,28 +37,28 @@ FileReader::~FileReader ( void ) {}
 bool FileReader::load ( const std::string& filename, Json::Value& object )
 {
   std::ifstream fp; // input file stream
-  Json::Reader reader; // jsoncpp library
+  Json::Reader parser; // jsoncpp library
 
   fp.open ( filename );
 
   if ( fp.is_open() && fp.good() )
   {
-    // We enable collecting / parsing comments; comments are technically not
-    // valid JSON -- as per the official standard -- but is an extension that is
-    // widely accepted with most parsers, and is a most welcome feature in my
-    // opinion.
-    if ( reader.parse ( fp, object, true ) == false )
+    // disable comments parsing
+    if ( parser.parse ( fp, object, false ) == false )
     {
 NOM_LOG_ERR ( NOM, "Unable to parse input JSON file at: " + filename );
+      fp.close();
       return false;
     }
   }
   else
   {
 NOM_LOG_ERR ( NOM, "Could not open given file: " + filename );
+    fp.close();
     return false;
   }
 
+  fp.close();
   return true;
 }
 

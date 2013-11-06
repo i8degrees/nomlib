@@ -41,14 +41,14 @@ bool FileWriter::save (
                       )
 {
   std::ofstream fp; // output file stream
-  Json::StyledWriter writer; // jsoncpp library
-  std::string output = writer.write ( object );
+  Json::StyledStreamWriter writer ( "  " ); // jsoncpp library with two spaces
+                                            // indention
 
-  fp.open ( filename ); // open for writing
+  fp.open ( filename );
 
   if ( fp.is_open() && fp.good() )
   {
-    fp << output;
+    writer.write ( fp, object );
 /* FIXME
     switch ( format )
     {
@@ -84,9 +84,11 @@ bool FileWriter::save (
   else // file error
   {
 NOM_LOG_ERR ( NOM, "Unable to save JSON output file at: " + filename );
+    fp.close();
     return false;
   } // end if fp is good
 
+  fp.close();
   return true;
 }
 

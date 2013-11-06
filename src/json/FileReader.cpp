@@ -34,7 +34,11 @@ namespace nom {
 FileReader::FileReader ( void ) {}
 FileReader::~FileReader ( void ) {}
 
-bool FileReader::load ( const std::string& filename, Json::Value& object )
+bool FileReader::load (
+                        const std::string& filename,
+                        Json::Value& object,
+                        bool parse_comments
+                      )
 {
   std::ifstream fp; // input file stream
   Json::Reader parser; // jsoncpp library
@@ -44,7 +48,7 @@ bool FileReader::load ( const std::string& filename, Json::Value& object )
   if ( fp.is_open() && fp.good() )
   {
     // disable comments parsing
-    if ( parser.parse ( fp, object, false ) == false )
+    if ( parser.parse ( fp, object, parse_comments ) == false )
     {
 NOM_LOG_ERR ( NOM, "Unable to parse input JSON file at: " + filename );
       fp.close();
@@ -62,6 +66,125 @@ NOM_LOG_ERR ( NOM, "Could not open given file: " + filename );
   return true;
 }
 
+void FileReader::dump_key ( const Json::Value& key ) const
+{
+  switch ( key.type() )
+  {
+    // Unkonwn type; let jsoncpp try figuring it out
+    default: printf ( " [type=%d, size=%d]", key.type(), key.size() ); break;
+
+    case 0: // NULL
+    {
+      printf ( " [type=nullValue, size=%d]", key.size() );
+      break;
+    }
+
+    case 1: // JSON signed integer
+    {
+      printf ( " [type=intValue, size=%lu]", sizeof ( key.asInt() ) );
+      break;
+    }
+
+    case 2: // JSON unsigned integer
+    {
+      printf ( " [type=uintValue, size=%lu]", sizeof ( key.asUInt() ) );
+      break;
+    }
+
+    case 3: // JSON double
+    {
+      printf ( " [type=realValue, size=%lu]", sizeof ( key.asDouble() ) );
+      break;
+    }
+
+    case 4: // JSON string
+    {
+      printf ( " [type=stringValue, size=%lu]", key.asString().length() );
+      break;
+    }
+
+    case 5: // JSON boolean
+    {
+      printf ( " [type=booleanValue, size=%lu]", sizeof ( key.asBool() ) );
+      break;
+    }
+
+    case 6: // JSON Array
+    {
+      printf ( " [type=arrayValue, size=%d]", key.size() );
+      break;
+    }
+
+    case 7:
+    {
+      printf ( " [type=objectValue, size=%d]", key.size() );
+      break;
+    }
+  } // switch key.type()
+}
+
+void FileReader::dump_value ( const Json::Value& value ) const
+{
+  if ( value.isString() )
+  {
+    printf ( "string (%s)", value.asString().c_str() );
+  }
+  else if ( value.isBool() )
+  {
+    printf ( "bool (%d)", value.asBool() );
+  }
+  else if ( value.isInt() )
+  {
+    printf ( "int (%d)", value.asInt() );
+  }
+  else if ( value.isUInt() )
+  {
+    printf ( "uint (%u)", value.asUInt() );
+  }
+  else if ( value.isDouble() )
+  {
+    printf ( "double (%f)", value.asDouble() );
+  }
+  else // Unkonwn type; let jsoncpp try figuring it out
+  {
+    printf ( "unknown type=%d", value.type() );
+  }
+}
+
+bool FileReader::dump ( const Json::Value& root, int depth ) const
+{
+  depth += 1;
+
+  this->dump_key ( root );
+
+  if ( root.size() > 0 )
+  {
+    std::cout << std::endl;
+    for ( auto itr = root.begin() ; itr != root.end() ; ++itr )
+    {
+      // Pretty print depth.
+      for ( auto tab = 0 ; tab < depth; tab++ )
+      {
+        std::cout << "-";
+      }
+
+      std::cout << " subvalue (";
+      this->dump_value ( itr.key() );
+      std::cout << ") -";
+      this->dump ( *itr, depth );
+    }
+
+    return true;
+  }
+  else
+  {
+    std::cout << " ";
+    this->dump_value ( root );
+    std::cout << std::endl;
+  }
+
+  return true;
+}
 
   } // namespace JSON
 } // namespace nom

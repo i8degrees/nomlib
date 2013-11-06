@@ -38,7 +38,7 @@ bool FileWriter::save (
                         const std::string& filename,
                         const Json::Value& object,
                         uint32 format
-                      )
+                      ) const
 {
   std::ofstream fp; // output file stream
   Json::StyledStreamWriter writer ( "  " ); // jsoncpp library with two spaces
@@ -90,6 +90,18 @@ NOM_LOG_ERR ( NOM, "Unable to save JSON output file at: " + filename );
 
   fp.close();
   return true;
+}
+
+const std::string FileWriter::stringify (
+                                          const Json::Value& object,
+                                          uint32 format
+                                        ) const
+{
+  std::stringstream os;
+
+  os << object;
+
+  return os.str();
 }
 
   } // namespace JSON

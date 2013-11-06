@@ -41,18 +41,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
   namespace JSON {
 
+/// \brief Wrapper class for JSON input with jsoncpp
 class FileReader
 {
   public:
     FileReader ( void );
     ~FileReader ( void );
 
-    /// \todo Provide option for enabling comments parsing
-    bool load ( const std::string& filename, Json::Value& object );
-};
+    bool load (
+                const std::string& filename,
+                Json::Value& object, bool parse_comments = false
+              );
 
+    void dump_key ( const Json::Value& key ) const;
+    void dump_value ( const Json::Value& value ) const;
+    bool dump ( const Json::Value& root, int depth = 0 ) const;
+};
 
   } // namespace JSON
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::JSON::FileReader
+/// \ingroup json
+///
+///   [TO BE WRITTEN]
+///
+/// The dump methods originate (with my modifications) from:
+///
+/// http://stackoverflow.com/questions/4800605/jsoncpp-iterate-thru-all-the-objects

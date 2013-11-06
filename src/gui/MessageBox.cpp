@@ -134,6 +134,16 @@ void MessageBox::enable ( void )
   this->enabled = true;
 }
 
+const Point2i MessageBox::size ( void ) const
+{
+  return Point2i ( this->coords.w, this->coords.h );
+}
+
+const Point2i MessageBox::position ( void ) const
+{
+  return Point2i ( this->coords.x, this->coords.y );
+}
+
 void MessageBox::setWindowTitleFont ( const IFont* font )
 {
   this->window_title = IFont::SharedPtr ( font->clone() );

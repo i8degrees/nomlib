@@ -73,6 +73,7 @@ class MessageBox:
 
     virtual ~MessageBox ( void );
 
+    void initialize ( void );
     //void initialize ( const Gradient& background );
 
     bool isEnabled ( void ) const;
@@ -81,6 +82,9 @@ class MessageBox:
 
     void disable ( void );
     void enable ( void );
+
+    const Point2i size ( void ) const;
+    const Point2i position ( void ) const;
 
     void setWindowTitleFont ( const IFont* font );
     void setLabelFont ( const IFont* font );
@@ -94,8 +98,6 @@ class MessageBox:
     void draw ( SDL_Renderer* target ) const;
 
   private:
-    void initialize ( void );
-
     IDrawable::Drawables drawable;
 
     IFont::SharedPtr window_title;

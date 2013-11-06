@@ -65,7 +65,7 @@ class CMakeGenerator
 
     # Clean out CMake variable cache
     FileUtils.rm( "#{pwd}/CMakeCache.txt", file_opts ) if File.exists? 'CMakeCache.txt'
-    FileUtils.rmtree( "#{pwd}/CMakeFiles", file_opts ) if Dir.exists? 'CMakeFiles'
+    #FileUtils.rmtree( "#{pwd}/CMakeFiles", file_opts ) if Dir.exists? 'CMakeFiles'
 
     case @options.platform
       when 'macosx'

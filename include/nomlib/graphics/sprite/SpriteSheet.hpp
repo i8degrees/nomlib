@@ -83,6 +83,8 @@ class SpriteSheet
     /// tile.
     ///
     /// \todo Re-order these arguments to match the order of instance variables
+    /// \todo Add additional sanity-check asserts for spacing, padding
+    /// and so on
     SpriteSheet (
                   const std::string& filename,
                   int32 sheet_width, int32 sheet_height,
@@ -97,7 +99,12 @@ class SpriteSheet
     const Coords& dimensions ( int32 index ) const;
 
     /// Obtain the number of frames this object contains
+    ///
+    /// \todo Decide on if we want to use number of frames count as per
+    /// vector::size (starting from one) or if we want to start from zero
     int32 frames ( void ) const;
+
+    const std::string& sheet_filename ( void ) const;
 
     /// Save the current sprite sheet data calculations to a file as a series
     /// of RFC 4627 compliant JSON objects.
@@ -115,7 +122,7 @@ class SpriteSheet
     std::vector<Coords> sheet;
 
     /// Source filename used is saved with the output (meta-data)
-    std::string sheet_filename;
+    std::string sheet_filename_;
 
     /// Source number of sprites specified; this is saved with the resulting
     /// output as meta-data

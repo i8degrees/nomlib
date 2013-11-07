@@ -297,13 +297,13 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
       return; // ERR
     }
   }
-
-  return; // success!
-
-  if ( SDL_BlitSurface ( this->window_surface(), nullptr, video_buffer, &blit_coords ) != 0 )
+  else
   {
+    if ( SDL_BlitSurface ( this->window_surface(), nullptr, video_buffer, &blit_coords ) != 0 )
+    {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return; // ERR
+      return; // ERR
+    }
   }
 }
 

@@ -43,14 +43,6 @@ Sprite::Sprite ( int32 width, int32 height )  :
 NOM_LOG_TRACE ( NOM );
 }
 
-/* FIXME
-Sprite::Sprite ( const Canvas& copy ) : sprite  ( copy ), state ( 0 ),
-  scale_factor ( 1 )
-{
-NOM_LOG_TRACE ( NOM );
-}
-*/
-
 Sprite& Sprite::operator = ( const Sprite& other )
 {
   this->sprite = other.sprite;
@@ -66,9 +58,14 @@ Sprite::~Sprite ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
-const Coords Sprite::getSize ( void ) const
+const Point2i Sprite::size ( void ) const
 {
-  return Coords ( 0, 0, this->sprite.width(), this->sprite.height() );
+  return Point2i ( this->sprite.width(), this->sprite.height() );
+}
+
+const Point2i Sprite::position ( void ) const
+{
+  return Point2i ( this->coords.x, this->coords.y );
 }
 
 uint32 Sprite::getState ( void ) const

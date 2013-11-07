@@ -35,7 +35,7 @@ SpriteBatch::SpriteBatch ( void ) : sheet_id ( 0 )
 NOM_LOG_TRACE ( NOM );
 }
 
-SpriteBatch::SpriteBatch ( const SpriteSheet& sheet )
+SpriteBatch::SpriteBatch ( const SpriteSheet& sheet ) : sheet_id ( 0 )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -50,7 +50,7 @@ NOM_LOG_TRACE ( NOM );
   this->sheet_id = 0;
 }
 
-SpriteBatch::SpriteBatch ( const std::string& filename )
+SpriteBatch::SpriteBatch ( const std::string& filename ) : sheet_id ( 0 )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -85,15 +85,27 @@ NOM_LOG_TRACE ( NOM );
 
 int32 SpriteBatch::getSheetID ( void ) const
 {
+//NOM_ASSERT ( this->sheet_id != ( this->frames() - 1 ) );
   return this->sheet_id;
+}
+
+int32 SpriteBatch::frames ( void ) const
+{
+  return this->sprite_sheet.frames();
+}
+
+const std::string& SpriteBatch::sheet_filename ( void ) const
+{
+  return this->sprite_sheet.sheet_filename();
 }
 
 void SpriteBatch::setSheetID ( int32 id )
 {
+//NOM_ASSERT ( id != ( this->frames() - 1 ) );
   this->sheet_id = id;
 }
 
-void SpriteBatch::Update ( void )
+void SpriteBatch::update ( void )
 {
   Coords dims = this->sprite_sheet.dimensions ( this->getSheetID() );
 

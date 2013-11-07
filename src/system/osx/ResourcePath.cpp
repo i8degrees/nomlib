@@ -68,6 +68,9 @@ NOM_LOG_ERR ( NOM, "Could not obtain the bundle's Resources path." );
   return resources_path;
 }
 
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 const std::string user_documents_path ( void )
 {
   FSRef ref;
@@ -94,5 +97,6 @@ const std::string user_app_support_path ( void )
   return std::string ( path );
 }
 
+#pragma clang diagnostic pop
 
 } // namespace nom

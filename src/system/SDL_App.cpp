@@ -36,7 +36,7 @@ NOM_LOG_TRACE ( NOM );
 
   this->app_state = false;
 
-  this->showFPS ( true );
+  this->set_show_fps ( true );
 
   this->appTime.start();
 }
@@ -57,10 +57,9 @@ NOM_LOG_TRACE ( NOM );
 
 bool SDL_App::isRunning ( void )
 {
-  if ( this->app_state )
-    return true;
-  else
-    return false;
+  if ( this->app_state ) return true;
+
+  return false;
 }
 
 void SDL_App::Running ( void )
@@ -93,23 +92,28 @@ uint32 SDL_App::ticks ( void )
   return this->appTime.ticks();
 }
 
-bool SDL_App::getShowFPS ( void )
+bool SDL_App::show_fps ( void ) const
 {
-  return this->show_fps;
+  return this->show_fps_;
 }
 
-void SDL_App::showFPS ( bool toggle )
+void SDL_App::set_show_fps ( bool toggle )
 {
-  this->show_fps = toggle;
+  this->show_fps_ = toggle;
 }
 
-// Helper method; toggles showing FPS counter (or not)
-void SDL_App::toggleFPS ( void )
+bool SDL_App::toggle_fps ( void )
 {
-  if ( this->getShowFPS() )
-    this->showFPS ( false );
+  if ( this->show_fps() )
+  {
+    this->set_show_fps ( false );
+  }
   else
-    this->showFPS ( true );
+  {
+    this->set_show_fps ( true );
+  }
+
+  return this->show_fps_;
 }
 
 bool SDL_App::PollEvents ( SDL_Event* event )

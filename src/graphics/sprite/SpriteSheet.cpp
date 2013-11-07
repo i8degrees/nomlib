@@ -35,7 +35,7 @@ const int NOM_SPRITE_SHEET_MINOR_VERSION = 2;
 const int NOM_SPRITE_SHEET_PATCH_VERSION = 0;
 
 SpriteSheet::SpriteSheet ( void ) :
-    sheet_filename ( "\0" ), sheet_sprites ( 0 ),
+    sheet_filename_ ( "\0" ), sheet_sprites ( 0 ),
     sheet_spacing ( 0 ), sheet_padding ( 0 ),
     sheet_width ( 0 ), sheet_height ( 0 )
 {}
@@ -43,7 +43,7 @@ SpriteSheet::SpriteSheet ( void ) :
 SpriteSheet::~SpriteSheet ( void ) {}
 
 SpriteSheet::SpriteSheet ( const std::string& filename ):
-    sheet_filename ( filename ), sheet_sprites ( 0 ),
+    sheet_filename_ ( filename ), sheet_sprites ( 0 ),
     sheet_spacing ( 0 ), sheet_padding ( 0 ),
     sheet_width ( 0 ), sheet_height ( 0 )
 {
@@ -59,7 +59,7 @@ SpriteSheet::SpriteSheet  (
                             int32 sprite_width, int32 sprite_height,
                             int32 spacing, int32 padding, int32 num_sprites
                           ):
-  sheet_filename ( filename ), sheet_sprites ( num_sprites ),
+  sheet_filename_ ( filename ), sheet_sprites ( num_sprites ),
   sheet_spacing ( spacing ), sheet_padding ( padding ),
   sheet_width ( sheet_width ), sheet_height ( sheet_height )
 {
@@ -146,11 +146,14 @@ SpriteSheet::SpriteSheet  (
     // ...The show must go on..
   } // end for loop
 
-  this->sheet_filename = filename;
-  this->sheet_sprites = num_sprites;
+  this->sheet_filename_ = filename;
+NOM_ASSERT ( this->sheet.size() == num_sprites );
+  this->sheet_sprites = this->sheet.size();
   this->sheet_spacing = spacing;
   this->sheet_padding = padding;
+NOM_ASSERT ( sprite_width * num_sprites == sheet_width );
   this->sheet_width = sheet_width;
+NOM_ASSERT ( sprite_height * num_sprites == sheet_height );
   this->sheet_height = sheet_height;
 }
 
@@ -162,6 +165,11 @@ const Coords& SpriteSheet::dimensions  ( int32 index ) const
 int32 SpriteSheet::frames ( void ) const
 {
   return this->sheet.size();
+}
+
+const std::string& SpriteSheet::sheet_filename ( void ) const
+{
+  return this->sheet_filename_;
 }
 
 SpriteSheet::SharedPtr SpriteSheet::clone ( void ) const
@@ -189,7 +197,7 @@ bool SpriteSheet::save ( const std::string& filename )
   }
 
   // Push out our file meta-data last
-  node[id]["sheet_filename"] = this->sheet_filename;
+  node[id]["sheet_filename"] = this->sheet_filename_;
   node[id]["sheet_sprites"] = this->sheet_sprites;
   node[id]["sheet_spacing"] = this->sheet_spacing;
   node[id]["sheet_padding"] = this->sheet_padding;
@@ -295,7 +303,7 @@ NOM_LOG_ERR ( NOM, "Unable to parse JSON (expected type: signed integer)." );
   {
     if ( root[idx]["sheet_filename"].type() == Json::ValueType::stringValue )
     {
-      this->sheet_filename = root[idx]["sheet_filename"].asString();
+      this->sheet_filename_ = root[idx]["sheet_filename"].asString();
     }
     else
     {
@@ -305,6 +313,7 @@ NOM_LOG_ERR ( NOM, "Unable to parse JSON (expected type: string value)." );
 
     if ( root[idx]["sheet_sprites"].type() == Json::ValueType::intValue )
     {
+NOM_ASSERT ( this->sheet.size() == root[idx]["sheet_sprites"].asInt() );
       this->sheet_sprites = root[idx]["sheet_sprites"].asInt();
     }
     else
@@ -335,6 +344,7 @@ NOM_LOG_ERR ( NOM, "Unable to parse JSON (expected type: integer value)." );
 
     if ( root[idx]["sheet_width"].type() == Json::ValueType::intValue )
     {
+NOM_ASSERT ( this->sheet[0].width * this->sheet.size() == root[idx]["sheet_width"].asInt() );
       this->sheet_width = root[idx]["sheet_width"].asInt();
     }
     else
@@ -345,6 +355,7 @@ NOM_LOG_ERR ( NOM, "Unable to parse JSON (expected type: integer value)." );
 
     if ( root[idx]["sheet_height"].type() == Json::ValueType::intValue )
     {
+NOM_ASSERT ( this->sheet[0].height * this->sheet.size() == root[idx]["sheet_height"].asInt() );
       this->sheet_height = root[idx]["sheet_height"].asInt();
     }
     else
@@ -373,7 +384,7 @@ NOM_DUMP_VAR(itr->height);
   }
 
   // Sheet's meta-data
-NOM_DUMP_VAR(this->sheet_filename);
+NOM_DUMP_VAR(this->sheet_filename_);
 NOM_DUMP_VAR(this->sheet_sprites);
 NOM_DUMP_VAR(this->sheet_spacing);
 NOM_DUMP_VAR(this->sheet_padding);

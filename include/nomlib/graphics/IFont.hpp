@@ -40,7 +40,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-class IFont: public IDrawable
+class IFont:
+              public IDrawable
 {
   public:
     /// Text effect styling
@@ -74,7 +75,7 @@ class IFont: public IDrawable
       Shaded,
       Blended
     };
-    
+
     typedef std::shared_ptr<IFont> SharedPtr;
 
     IFont ( void ) {}
@@ -136,7 +137,6 @@ NOM_LOG_ERR ( NOM, "Method not implemented." );
       return false;
     }
 };
-
 
 } // namespace nom
 

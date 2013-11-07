@@ -42,10 +42,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Color.hpp"
 #include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/Window.hpp"
+#include "nomlib/SDL_helpers.hpp"
 
 namespace nom {
 
-class TrueTypeFont: public IFont
+/// \brief TrueType fonts renderer
+class TrueTypeFont:
+                    public IFont
 {
   public:
     /// Default constructor; we initialize the SDL_ttf extension here
@@ -127,7 +130,7 @@ class TrueTypeFont: public IFont
     void draw ( SDL_Renderer* target ) const;
 
     void draw ( const Window& target ) const;
-    bool updated = false;
+
   private:
     /// Trigger a rebuild of the font metrics from the current font; this
     /// recalculates character sizes, coordinate origins, spacing, etc.
@@ -166,17 +169,21 @@ class TrueTypeFont: public IFont
     enum IFont::RenderStyle rendering;
 };
 
-  namespace priv {
-
-/// Custom deleter for TTF_Font* smart pointers; can be used as a debugging aid.
-void TTF_FreeSurface ( TTF_Font* );
+namespace priv {
 
 /// \todo FIXME; we need to figure out how to free this resource when we are
 /// using it within the MessageBox class -- we are leaking kilobytes as-is.
 void Free_TrueTypeFont ( TrueTypeFont* ptr );
 
-
-  } // namespace priv
+} // namespace priv
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::TrueTypeFont
+/// \ingroup graphics
+///
+///   [TO BE WRITTEN]
+///
+/// \todo Re-write the class to render fonts from a cached nom::Texture source,
+/// much like we do in nom::BitmapFont or nom::SpriteBatch.

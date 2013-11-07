@@ -238,7 +238,7 @@ bool TrueTypeFont::load ( const std::string& filename, const Color& colorkey,
                           bool use_cache
                         )
 {
-  this->font = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), this->font_size ), nom::priv::TTF_FreeSurface );
+  this->font = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), this->font_size ), nom::priv::TTF_FreeFont );
 
   if ( this->valid() == false )
   {
@@ -257,14 +257,13 @@ NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
 
 void TrueTypeFont::update ( void )
 {
-  if ( updated == true ) return;
   // Update display coordinates
   this->font_buffer.set_position ( Point2i ( this->coords.x, this->coords.y ) );
 
   // Update the rendered text surface here for drawing
   if ( this->getText().c_str() == nullptr ) return;
 
-  if ( this->rendering == RenderStyle::Shaded )
+  if ( this->rendering == RenderStyle::Shaded ) // Moderate-quality
   {
     this->font_buffer.initialize ( TTF_RenderText_Shaded
                                   (
@@ -278,7 +277,7 @@ void TrueTypeFont::update ( void )
                                   )
                                 );
   }
-  else if ( this->rendering == RenderStyle::Blended )
+  else if ( this->rendering == RenderStyle::Blended ) // Highest-quality
   {
     this->font_buffer.initialize ( TTF_RenderText_Blended
                                   (
@@ -288,7 +287,7 @@ void TrueTypeFont::update ( void )
                                   )
                                 );
   }
-  else // Assume low quality rendering
+  else // Low-quality rendering (the default)
   {
     this->font_buffer.initialize ( TTF_RenderText_Solid
                                   (
@@ -303,8 +302,6 @@ void TrueTypeFont::update ( void )
   {
     this->font_buffer.set_alpha ( this->style_options );
   }
-
-  updated = true;
 }
 
 void TrueTypeFont::draw ( SDL_Renderer* target ) const
@@ -334,12 +331,7 @@ NOM_LOG_ERR ( NOM, "Could not rebuild font metrics." );
   return true;
 }
 
-  namespace priv {
-
-void TTF_FreeSurface ( TTF_Font* font )
-{
-  TTF_CloseFont ( font );
-}
+namespace priv {
 
 void Free_TrueTypeFont ( TrueTypeFont* ptr )
 {
@@ -348,7 +340,6 @@ void Free_TrueTypeFont ( TrueTypeFont* ptr )
   // FIXME; this is a known bug (memory leak).
 }
 
-
-  } // namespace priv
+} // namespace priv
 } // namespace nom
 

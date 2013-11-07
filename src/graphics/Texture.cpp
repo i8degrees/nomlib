@@ -96,6 +96,12 @@ NOM_LOG_TRACE ( NOM );
 
 bool Texture::initialize ( SDL_Surface* video_buffer )
 {
+  // We leak memory, or even worse, crash, depending on state at the time, if we
+  // do not ensure that we free existing buffers! Certain rendering methods --
+  // *cough* nom::TrueTypeFont -- need this done because they create new
+  // surfaces (instead of updating what they have) upon every update cycle.
+  if ( this->valid() ) this->texture_.reset();
+
   this->texture_.reset ( SDL_CreateTextureFromSurface ( Window::context(), video_buffer ), priv::FreeTexture );
 
   if ( this->valid() == false )
@@ -108,6 +114,8 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
   // Cache the size of our new Texture object with the existing surface info
   this->set_bounds ( Coords ( 0, 0, video_buffer->w, video_buffer->h ) );
+
+  priv::FreeSurface ( video_buffer );
 
   return true;
 }

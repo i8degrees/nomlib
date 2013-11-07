@@ -166,9 +166,11 @@ void Image::set_bounds ( const Coords& clip_bounds )
 bool Image::load ( const std::string& filename )
 {
   SDL_Surface *buffer = IMG_Load ( filename.c_str() );
+
   if ( buffer == nullptr )
   {
 NOM_LOG_ERR ( NOM, IMG_GetError() );
+    priv::FreeSurface ( buffer );
     return false;
   }
 
@@ -184,6 +186,7 @@ bool Image::load_bmp ( const std::string& filename )
   if ( buffer == nullptr )
   {
     NOM_LOG_ERR ( NOM, IMG_GetError() );
+    priv::FreeSurface ( buffer );
     return false;
   }
 

@@ -46,7 +46,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-class TrueTypeFont: public IFont
+/// \brief TrueType fonts renderer
+class TrueTypeFont:
+                    public IFont
 {
   public:
     /// Default constructor; we initialize the SDL_ttf extension here
@@ -128,7 +130,7 @@ class TrueTypeFont: public IFont
     void draw ( SDL_Renderer* target ) const;
 
     void draw ( const Window& target ) const;
-    bool updated = false;
+
   private:
     /// Trigger a rebuild of the font metrics from the current font; this
     /// recalculates character sizes, coordinate origins, spacing, etc.
@@ -177,3 +179,11 @@ void Free_TrueTypeFont ( TrueTypeFont* ptr );
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::TrueTypeFont
+/// \ingroup graphics
+///
+///   [TO BE WRITTEN]
+///
+/// \todo Re-write the class to render fonts from a cached nom::Texture source,
+/// much like we do in nom::BitmapFont or nom::SpriteBatch.

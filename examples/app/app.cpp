@@ -184,6 +184,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
         this->update[idx].start();
         this->fps[idx].start();
       }
+
       // 1. Events
       // 2. Logic
       // 3. Render
@@ -193,6 +194,36 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
         {
           this->onEvent ( &this->event );
         }
+
+        for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
+        {
+          this->window[idx].update();
+          this->fps[idx].update();
+          this->ui_frame.update();
+          this->bfont.update();
+          this->sprite.update();
+
+          // FIXME: We must update the window before updating the TrueType font;
+          // see TODO item 1 for nom::TrueTypeFont for details on how to correct
+          // this issue.
+          this->window[0].set_active();
+          this->font.update();
+
+          // Refresh the frames per second at 1 second intervals
+          if ( this->update[idx].ticks() > 1000 )
+          {
+            if ( this->show_fps() == true )
+            {
+              this->window[idx].set_window_title ( APP_NAME + " - " + this->fps[idx].asString() + ' ' + "fps" );
+            }
+            else
+            {
+              this->window[idx].set_window_title ( APP_NAME + " [" + std::to_string(this->window[idx].window_id()) + "]" + " - " + "Display" + ' ' + std::to_string ( this->window[idx].window_display_id() ) );
+            }
+
+            this->update[idx].restart();
+          } // end refresh cycle
+        } // end for MAXIMUM_WINDOWS update loop
 
         this->window[0].set_active();
         this->window[0].fill ( nom::Color::NomPrimaryColorKey );
@@ -236,35 +267,6 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           }
         }
 
-        for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
-        {
-          this->window[idx].update();
-          this->fps[idx].update();
-          this->ui_frame.update();
-          this->bfont.update();
-          this->sprite.update();
-
-          // FIXME: We must update the window before updating the TrueType font;
-          // see TODO item 1 for nom::TrueTypeFont for details on how to correct
-          // this issue.
-          this->window[0].set_active();
-          this->font.update();
-
-          // Refresh the frames per second at 1 second intervals
-          if ( this->update[idx].ticks() > 1000 )
-          {
-            if ( this->show_fps() == true )
-            {
-              this->window[idx].set_window_title ( APP_NAME + " - " + this->fps[idx].asString() + ' ' + "fps" );
-            }
-            else
-            {
-              this->window[idx].set_window_title ( APP_NAME + " [" + std::to_string(this->window[idx].window_id()) + "]" + " - " + "Display" + ' ' + std::to_string ( this->window[idx].window_display_id() ) );
-            }
-
-            this->update[idx].restart();
-          } // end refresh cycle
-        } // end for MAXIMUM_WINDOWS update loop
       } // end while isRunning() is true
       return EXIT_SUCCESS;
     } // Run

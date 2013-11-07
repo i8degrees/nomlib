@@ -440,6 +440,7 @@ void Texture::draw ( SDL_Renderer* target ) const
     if ( SDL_RenderCopy ( target, this->texture(), &render_bounds, &render_coords ) != 0 )
     {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return;
     }
   }
   else // Render the entire Texture we have in memory
@@ -447,6 +448,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
     if ( SDL_RenderCopy ( target, this->texture(), nullptr, &render_coords ) != 0 )
     {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return;
     }
   }
 }

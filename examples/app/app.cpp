@@ -65,7 +65,8 @@ const std::string RESOURCE_ICON = APP_RESOURCES_DIR + p.native() + "icon.png";
 const std::string RESOURCE_TRUETYPE_FONT = APP_RESOURCES_DIR + p.native() + "arial.ttf";
 const std::string RESOURCE_BITMAP_FONT = APP_RESOURCES_DIR + p.native() + "VIII.png";
 
-const std::string RESOURCE_SPRITE = APP_RESOURCES_DIR + p.native() + "dots.png";
+const std::string RESOURCE_SPRITE = APP_RESOURCES_DIR + p.native() + "cursors.json";
+//const std::string RESOURCE_SPRITE = APP_RESOURCES_DIR + p.native() + "dots.png";
 
 /// Copyright (c) 2013 Fielding Johnston. All rights reserved.
 const std::string RESOURCE_STATIC_IMAGE = APP_RESOURCES_DIR + p.native() + "boardoutline.png";
@@ -127,6 +128,16 @@ class App: public nom::SDL_App
         return false;
       }
 
+      // Load a sprite sheet, using the sheet_filename as the base path to load
+      // the image file from disk
+      this->sprite = nom::SpriteBatch ( RESOURCE_SPRITE );
+      if ( this->sprite.load ( APP_RESOURCES_DIR + p.native() + this->sprite.sheet_filename(), nom::Color(255, 0, 255, 0) ) == false )
+      {
+        nom::DialogMessageBox ( APP_NAME, "Could not load sprite: " + this->sprite.sheet_filename() );
+        return false;
+      }
+      this->sprite.setSheetID ( 1 ); // Left-pointing cursor hand
+
       this->window[1].set_active();
       if ( this->background.load ( RESOURCE_STATIC_IMAGE, 0 ) == false )
       {
@@ -134,22 +145,16 @@ class App: public nom::SDL_App
         return false;
       }
 
-      this->window[2].set_active();
-      if ( this->sprite.load ( RESOURCE_SPRITE, nom::Color(255, 0, 255, 0) ) == false )
-      {
-        nom::DialogMessageBox ( APP_NAME, "Could not load sprite: " + RESOURCE_SPRITE );
-        return false;
-      }
+      //this->window[2].set_active();
 
       this->window[0].set_active();
       nom::Point2i window_size = this->window[0].size();
 
-      this->font.setFontSize ( 24 );
+      this->font.setFontSize ( 18 );
       this->font.setRenderingStyle ( nom::IFont::RenderStyle::Blended );
       this->font.setColor ( nom::Color::White );
-      this->font.setText ( "I am a TrueType Font!" );
+      this->font.setText ( "Use arrow keys to change cursor!" );
       this->font.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, window_size.y - 100 ) );
-      this->font.update();
 
       // Setup a gradient fill for initializing the ui_frame object with as a
       // background
@@ -159,11 +164,16 @@ class App: public nom::SDL_App
 
       // Setup our fancy dangled user interface frame
       this->ui_frame = nom::ui::MessageBox ( ( window_size.x - 200 ) / 2, ( window_size.y - 48 ) / 2, 200, 48, nom::ui::FrameStyle::Gray, this->gradient );
+
       this->ui_frame.setLabelFont ( &this->bfont );
       this->ui_frame.setLabel ( "I am a Bitmap Font!" );
       this->ui_frame.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
+NOM_DUMP_VAR(this->sprite.size().x); // FIXME: should be 26 (sprite sheet width), but is 130 (total texture size)
+      this->sprite.setPosition ( this->ui_frame.position().x - 26, this->ui_frame.position().y );
+NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
 
       this->Running(); // If all is well, here goes nothing!
+
       return true;
     } // onInit
 
@@ -187,6 +197,7 @@ class App: public nom::SDL_App
         this->window[0].set_active();
         this->window[0].fill ( nom::Color::NomPrimaryColorKey );
         this->ui_frame.draw ( this->window[0].renderer() );
+        this->sprite.draw ( this->window[0].renderer() );
 
         this->bfont.draw ( this->window[0].renderer() );
         this->font.draw ( this->window[0].renderer() );
@@ -198,9 +209,7 @@ class App: public nom::SDL_App
 
         this->window[2].set_active();
         this->window[2].fill ( nom::Color::Black );
-        //this->window[2].fill ( nom::Color::NomSecondaryColorKey );
-        this->sprite.draw ( this->window[2].renderer() );
-
+        this->window[2].fill ( nom::Color::NomSecondaryColorKey );
 
         // Choose a random color for filling the window with as a backdrop when
         // MAXIMUM_WINDOWS is greater than 3
@@ -232,16 +241,19 @@ class App: public nom::SDL_App
           this->window[idx].update();
           this->fps[idx].update();
           this->ui_frame.update();
-
           this->bfont.update();
-          this->font.update();
-
           this->sprite.update();
+
+          // FIXME: We must update the window before updating the TrueType font;
+          // see TODO item 1 for nom::TrueTypeFont for details on how to correct
+          // this issue.
+          this->window[0].set_active();
+          this->font.update();
 
           // Refresh the frames per second at 1 second intervals
           if ( this->update[idx].ticks() > 1000 )
           {
-            if ( this->getShowFPS() == true )
+            if ( this->show_fps() == true )
             {
               this->window[idx].set_window_title ( APP_NAME + " - " + this->fps[idx].asString() + ' ' + "fps" );
             }
@@ -272,7 +284,39 @@ class App: public nom::SDL_App
         case SDLK_ESCAPE:
         case SDLK_q: this->onQuit(); break;
 
-        case SDLK_BACKSLASH: this->toggleFPS(); break;
+        case SDLK_BACKSLASH:
+        {
+          if ( this->toggle_fps() )
+          {
+            // Stub for doing something cool here
+          }
+          else
+          {
+            // Stub for doing something cool here
+          }
+          break;
+        }
+
+        case SDLK_LEFT:
+        {
+          nom::int32 id = this->sprite.getSheetID();
+
+          if ( id > 0 ) id--;
+
+          this->sprite.setSheetID ( id );
+          this->font.setText( "Light weight!" );
+          break;
+        }
+        case SDLK_RIGHT:
+        {
+          nom::int32 id = this->sprite.getSheetID();
+
+          if ( id < this->sprite.frames() - 1 ) id++;
+
+          this->sprite.setSheetID ( id );
+          this->font.setText( "Yeah buddy!" );
+          break;
+        }
 
         case SDLK_f:
         {
@@ -330,8 +374,7 @@ class App: public nom::SDL_App
     nom::BitmapFont bfont;
     nom::TrueTypeFont font;
 
-    nom::Sprite sprite;
-
+    nom::SpriteBatch sprite;
 }; // class App
 
 nom::int32 main ( nom::int32 argc, char* argv[] )

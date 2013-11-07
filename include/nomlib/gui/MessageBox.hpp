@@ -95,7 +95,7 @@ class MessageBox:
     void setLabel ( const std::string& text );
 
     void update ( void );
-    void draw ( SDL_Renderer* target ) const;
+    void draw ( RenderTarget target ) const;
 
   private:
     IDrawable::Drawables drawable;

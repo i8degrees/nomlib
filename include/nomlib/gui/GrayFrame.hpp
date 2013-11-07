@@ -61,7 +61,7 @@ class GrayFrame:
     void update ( void );
 
     // Re-implemented from IDrawable
-    void draw ( SDL_Renderer* target ) const;
+    void draw ( RenderTarget target ) const;
 
   private:
     /// Holds our line objects used for rendering the object.

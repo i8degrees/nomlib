@@ -79,7 +79,7 @@ class Rectangle:
 
     /// Draw a 3D four sided cube shape (rectangle) onto the the attached
     /// renderer
-    void draw ( SDL_Renderer* target ) const;
+    void draw ( RenderTarget target ) const;
 
   private:
     /// X, Y signed integer rendering coordinates

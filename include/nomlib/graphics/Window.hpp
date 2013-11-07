@@ -42,7 +42,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Color.hpp"
 #include "nomlib/math/Point2-inl.hpp"
 #include "nomlib/graphics/VideoMode.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Renderer.hpp"
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/SDL_helpers.hpp"
@@ -123,9 +122,6 @@ class Window:
     VideoModeList getVideoModes ( void ) const;
 
     void set_position ( int32 x, int32 y );
-
-    /// Render an IDrawable object from this window
-    void draw ( const IDrawable& object ) const;
 
     /// Render SDL1 video surfaces
     ///

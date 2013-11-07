@@ -145,8 +145,6 @@ class App: public nom::SDL_App
         return false;
       }
 
-      //this->window[2].set_active();
-
       this->window[0].set_active();
       nom::Point2i window_size = this->window[0].size();
 
@@ -203,10 +201,6 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           this->bfont.update();
           this->sprite.update();
 
-          // FIXME: We must update the window before updating the TrueType font;
-          // see TODO item 1 for nom::TrueTypeFont for details on how to correct
-          // this issue.
-          this->window[0].set_active();
           this->font.update();
 
           // Refresh the frames per second at 1 second intervals
@@ -225,20 +219,16 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           } // end refresh cycle
         } // end for MAXIMUM_WINDOWS update loop
 
-        this->window[0].set_active();
         this->window[0].fill ( nom::Color::NomPrimaryColorKey );
-        this->ui_frame.draw ( this->window[0].renderer() );
-        this->sprite.draw ( this->window[0].renderer() );
+        this->ui_frame.draw ( this->window[0] );
+        this->sprite.draw ( this->window[0] );
 
-        this->bfont.draw ( this->window[0].renderer() );
-        this->font.draw ( this->window[0].renderer() );
+        this->bfont.draw ( this->window[0] );
+        this->font.draw ( this->window[0] );
 
-        this->window[1].set_active();
         this->window[1].fill ( nom::Color::Black );
         this->background.draw ( this->window[1] );
-        //this->window[1].draw ( this->background );
 
-        this->window[2].set_active();
         this->window[2].fill ( nom::Color::Black );
         this->window[2].fill ( nom::Color::NomSecondaryColorKey );
 
@@ -248,7 +238,6 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
         {
           nom::int32 random_color = nom::rand ( 1, 11 );
 
-          this->window[idx].set_active();
           switch ( random_color )
           {
             default: this->window[idx].fill ( nom::Color::Black ); break;

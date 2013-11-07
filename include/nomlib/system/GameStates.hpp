@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GAMESTATES_HEADERS
-#define NOMLIB_GAMESTATES_HEADERS
+#ifndef NOMLIB_SDL2_GAMESTATES_HEADERS
+#define NOMLIB_SDL2_GAMESTATES_HEADERS
 
 #include <iostream>
 #include <vector>
@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/IState.hpp" // abstract class for our interface
+#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 
@@ -47,10 +48,10 @@ class GameStates
     static void onEvent ( SDL_Event* );
 
     /// State logic
-    static void update ( float delta_time );
+    static void update ( float );
 
     /// State rendering
-    static void draw ( SDL_Renderer* target );
+    static void draw ( IDrawable::RenderTarget );
 
     /// State management
     static void ChangeState ( std::unique_ptr<IState> state );

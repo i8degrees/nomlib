@@ -106,11 +106,11 @@ void Sprite::update ( void )
   this->sprite.set_position ( Point2i ( this->coords.x, this->coords.y ) );
 }
 
-void Sprite::draw ( SDL_Renderer* target ) const
+void Sprite::draw ( RenderTarget target ) const
 {
 NOM_ASSERT ( this->sprite.valid() );
 
-  this->sprite.draw ( target );
+  this->sprite.draw ( target.renderer() );
 }
 
 bool Sprite::resize ( enum ResizeAlgorithm scaling_algorithm )

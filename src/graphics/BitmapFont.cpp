@@ -457,7 +457,7 @@ void BitmapFont::update ( void )
   // Stub
 }
 
-void BitmapFont::draw ( SDL_Renderer* target ) const
+void BitmapFont::draw ( RenderTarget target ) const
 {
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from
@@ -518,7 +518,7 @@ void BitmapFont::draw ( SDL_Renderer* target ) const
 
         this->bitmap_font.set_position ( Point2i ( x_offset, y_offset ) );
         this->bitmap_font.set_bounds ( this->chars[ascii] );
-        this->bitmap_font.draw ( target );
+        this->bitmap_font.draw ( target.renderer() );
 
         // Move over the width of the character with one pixel of padding
         x_offset += ( this->chars[ascii].width ) + 1;

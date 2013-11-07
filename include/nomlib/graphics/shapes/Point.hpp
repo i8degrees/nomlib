@@ -47,7 +47,7 @@ class Point:
     Point ( int32 x, int32 y, const Color& color );
 
     void update ( void );
-    void draw ( SDL_Renderer* target ) const;
+    void draw ( RenderTarget target ) const;
 
   private:
     Point2i coords;

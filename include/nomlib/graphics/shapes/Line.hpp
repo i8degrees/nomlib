@@ -73,7 +73,7 @@ class Line:
     void update ( void );
 
     /// Draw a 3D line segment onto the the attached renderer
-    void draw ( SDL_Renderer* target ) const;
+    void draw ( RenderTarget target ) const;
 
   private:
     /// X, Y signed integer rendering coordinates

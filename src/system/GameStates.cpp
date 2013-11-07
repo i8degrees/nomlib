@@ -52,7 +52,7 @@ void GameStates::update ( float delta_time )
   states.back()->update ( delta_time );
 }
 
-void GameStates::draw ( SDL_Renderer* target )
+void GameStates::draw ( IDrawable::RenderTarget target )
 {
   // let the state draw the scene onto the display buffer
   states.back()->draw ( target );

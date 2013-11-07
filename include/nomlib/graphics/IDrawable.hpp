@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
+#include "nomlib/graphics/Window.hpp"
 
 namespace nom {
 
@@ -48,6 +49,8 @@ class IDrawable
     typedef std::shared_ptr<IDrawable> SharedPtr;
     /// Vector of std::shared_ptr definition type for the brotherhood, sir!
     typedef std::vector<std::shared_ptr<IDrawable>> Drawables;
+
+    typedef const Window& RenderTarget;
 
     /// Do nothing at all default constructor
     IDrawable ( void ) {}
@@ -69,7 +72,7 @@ class IDrawable
     virtual void update ( void ) = 0;
 
     /// Render the object onto the primary video buffer -- your visible screen.
-    virtual void draw ( SDL_Renderer* ) const = 0;
+    virtual void draw ( RenderTarget ) const = 0;
 };
 
 

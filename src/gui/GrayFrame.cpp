@@ -83,7 +83,7 @@ void GrayFrame::update ( void )
   this->updated = true;
 }
 
-void GrayFrame::draw ( SDL_Renderer* target ) const
+void GrayFrame::draw ( RenderTarget target ) const
 {
   for ( auto it = this->frame.begin(); it != this->frame.end(); ++it )
   {

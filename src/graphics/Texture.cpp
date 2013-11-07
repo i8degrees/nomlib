@@ -451,6 +451,11 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   }
 }
 
+void Texture::draw ( const Window& target ) const
+{
+  this->draw ( target.renderer() );
+}
+
 bool Texture::update ( const void* pixels, uint16 pitch, const Coords& update_area )
 {
   if ( SDL_UpdateTexture ( this->texture(), nullptr, pixels, pitch ) != 0 )
@@ -460,14 +465,6 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   }
 
   return true;
-}
-
-void Texture::draw ( const Window& target ) const
-{
-  if ( SDL_RenderCopy ( target.renderer(), this->texture(), nullptr, nullptr ) != 0 )
-  {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-  }
 }
 
 bool Texture::set_alpha ( uint8 opacity )

@@ -26,11 +26,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_ISTATE_HEADERS
-#define NOMLIB_ISTATE_HEADERS
+#ifndef NOMLIB_SDL2_ISTATE_HEADERS
+#define NOMLIB_SDL2_ISTATE_HEADERS
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/Input.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 
@@ -47,7 +48,7 @@ NOM_LOG_TRACE ( NOM );
     virtual void update ( float ) = 0;
 
     /// Required interface
-    virtual void draw ( SDL_Renderer* ) = 0;
+    virtual void draw ( IDrawable::RenderTarget ) = 0;
 
     /// Optional interface
     virtual void onInit ( void ) {}

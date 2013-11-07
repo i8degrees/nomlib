@@ -277,11 +277,6 @@ void Window::unlock ( void ) const
 }
 */
 
-void Window::draw ( const IDrawable& object ) const
-{
-  object.draw ( this->renderer() );
-}
-
 void Window::draw ( SDL_Surface* video_buffer, const Coords& bounds ) const
 {
   SDL_Rect blit_coords = SDL_RECT ( bounds );

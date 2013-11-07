@@ -100,7 +100,7 @@ class Gradient:
     void enableDithering ( bool toggle );
 
     void update ( void );
-    void draw ( SDL_Renderer* target ) const;
+    void draw ( RenderTarget target ) const;
 
   private:
     void strategyTopDown ( void );

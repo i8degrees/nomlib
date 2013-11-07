@@ -53,9 +53,9 @@ Rectangle::Rectangle ( int32 x, int32 y, int32 width, int32 height, const Color&
 
 void Rectangle::update ( void ) { /* NO-OP */ }
 
-void Rectangle::draw ( SDL_Renderer* target ) const
+void Rectangle::draw ( RenderTarget target ) const
 {
-  if ( SDL_SetRenderDrawColor ( target, this->color.r, this->color.g, this->color.b, this->color.a ) != 0 )
+  if ( SDL_SetRenderDrawColor ( target.renderer(), this->color.r, this->color.g, this->color.b, this->color.a ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return;
@@ -63,7 +63,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
   SDL_Rect r = SDL_RECT(this->coords); // convert nom::Coords to SDL_Rect
 
-  if ( SDL_RenderFillRect ( target, &r ) != 0 )
+  if ( SDL_RenderFillRect ( target.renderer(), &r ) != 0 )
   {
 NOM_LOG_ERR ( NOM, "Could not render 3D SDL rectangle: " + std::string (SDL_GetError()) );
     return;

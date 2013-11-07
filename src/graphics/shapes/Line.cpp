@@ -47,15 +47,15 @@ Line::Line ( int32 x, int32 y, int32 width, int32 height, const Color& color )
 
 void Line::update ( void ) { /* NO-OP */ }
 
-void Line::draw ( SDL_Renderer* target ) const
+void Line::draw ( RenderTarget target ) const
 {
-  if ( SDL_SetRenderDrawColor ( target, this->color.r, this->color.g, this->color.b, this->color.a ) != 0 )
+  if ( SDL_SetRenderDrawColor ( target.renderer(), this->color.r, this->color.g, this->color.b, this->color.a ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return;
   }
 
-  if ( SDL_RenderDrawLine ( target, this->coords.x, this->coords.y, this->coords.w, this->coords.h ) != 0 )
+  if ( SDL_RenderDrawLine ( target.renderer(), this->coords.x, this->coords.y, this->coords.w, this->coords.h ) != 0 )
   {
 NOM_LOG_ERR ( NOM, "Could not render 3D SDL line: " + std::string (SDL_GetError()) );
     return;

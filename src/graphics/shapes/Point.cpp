@@ -47,15 +47,15 @@ Point::Point ( int32 x, int32 y, const Color& color )
 
 void Point::update ( void ) { /* NO-OP */ }
 
-void Point::draw ( SDL_Renderer* target ) const
+void Point::draw ( RenderTarget target ) const
 {
-  if ( SDL_SetRenderDrawColor ( target, this->color.r, this->color.g, this->color.b, this->color.a ) != 0 )
+  if ( SDL_SetRenderDrawColor ( target.renderer(), this->color.r, this->color.g, this->color.b, this->color.a ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return;
   }
 
-  if ( SDL_RenderDrawPoint ( target, this->coords.x, this->coords.y ) != 0 )
+  if ( SDL_RenderDrawPoint ( target.renderer(), this->coords.x, this->coords.y ) != 0 )
   {
 NOM_LOG_ERR ( NOM, "Could not render 3D SDL point: " + std::string (SDL_GetError()) );
     return;

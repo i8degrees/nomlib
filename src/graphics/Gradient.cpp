@@ -230,7 +230,7 @@ void Gradient::update ( void )
   }
 }
 
-void Gradient::draw ( SDL_Renderer* target ) const
+void Gradient::draw ( RenderTarget target ) const
 {
   for ( auto it = this->rectangles.begin(); it != this->rectangles.end(); ++it )
   {

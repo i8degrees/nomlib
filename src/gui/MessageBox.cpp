@@ -232,7 +232,7 @@ void MessageBox::update ( void )
   } // end switch
 }
 
-void MessageBox::draw ( SDL_Renderer* target ) const
+void MessageBox::draw ( RenderTarget target ) const
 {
   if ( this->isEnabled() == false ) return;
 

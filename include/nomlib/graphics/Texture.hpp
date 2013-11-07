@@ -222,9 +222,17 @@ class Texture
     /// Upload texture copy with new pixel data
     bool update ( const void* pixels, uint16 pitch, const Coords& update_area );
 
-    /// \todo Remove me
+    /// Draw a nom::Texture to a SDL_Renderer target
+    ///
+    /// \param  SDL_Renderer
+    ///
     void draw ( SDL_Renderer* target ) const;
 
+    /// Draw a nom::Texture to a nom::Window target
+    ///
+    /// \param  nom::Window
+    ///
+    /// \note This is an alias for nom::Texture::draw ( SDL_Renderer* )
     void draw ( const Window& target ) const;
 
     bool set_alpha ( uint8 opacity );

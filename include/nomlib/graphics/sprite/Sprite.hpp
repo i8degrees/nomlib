@@ -77,7 +77,7 @@ class Sprite:
               );
 
     virtual void update ( void );
-    void draw ( SDL_Renderer* target ) const;
+    void draw ( RenderTarget target ) const;
 
     /// Rescale the font with a chosen resizing algorithm
     bool resize ( enum ResizeAlgorithm scaling_algorithm );

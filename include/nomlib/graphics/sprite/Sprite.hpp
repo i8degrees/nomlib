@@ -54,16 +54,14 @@ class Sprite:
     /// Construct a Sprite object, initializing the width & height coordinates.
     Sprite ( int32 width, int32 height );
 
-    // Construct a Sprite object, initializing it with a Texture object.
-    //Sprite ( const Texture& copy );
-
     /// Copy assignment operator.
     Sprite& operator = ( const Sprite& other );
 
     /// Destructor.
     virtual ~Sprite ( void );
 
-    const Coords getSize ( void ) const;
+    const Point2i size ( void ) const;
+    const Point2i position ( void ) const;
 
     /// Get the object's state.
     uint32 getState ( void ) const;
@@ -78,7 +76,7 @@ class Sprite:
                 bool use_cache = false
               );
 
-    void update ( void );
+    virtual void update ( void );
     void draw ( SDL_Renderer* target ) const;
 
     /// Rescale the font with a chosen resizing algorithm

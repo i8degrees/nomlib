@@ -60,7 +60,7 @@ class AnimatedSprite:
       Paused
     };
 
-/// Default construct for initializing instance variables to their
+    /// Default construct for initializing instance variables to their
     /// respective defaults.
     AnimatedSprite ( void );
 

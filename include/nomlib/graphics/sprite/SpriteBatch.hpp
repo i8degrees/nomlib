@@ -49,6 +49,9 @@ class SpriteBatch:
     /// respective defaults.
     SpriteBatch ( void );
 
+    /// Destructor.
+    virtual ~SpriteBatch ( void );
+
     /// Construct a SpriteBatch object, initializing it with a SpriteSheet
     /// object.
     SpriteBatch ( const SpriteSheet& sheet );
@@ -59,18 +62,20 @@ class SpriteBatch:
     /// Copy assignment operator.
     SpriteBatch& operator = ( const SpriteBatch& other );
 
-    /// Destructor.
-    virtual ~SpriteBatch ( void );
-
-    /// Get the object's sheet_id.
+    /// Get the object's current sheet_id.
     int32 getSheetID ( void ) const;
+
+    /// Obtain the number of frames available
+    int32 frames ( void ) const;
+
+    const std::string& sheet_filename ( void ) const;
 
     /// Set a new frame ID to render
     void setSheetID ( int32 id );
 
     /// Update the sprite for rendering with regard to positioning coordinates
     /// and target frame ID.
-    void Update ( void );
+    virtual void update ( void );
 
   protected:
     /// Source (input) coordinates -- used for sprite sheet positioning

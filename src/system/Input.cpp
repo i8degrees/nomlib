@@ -80,10 +80,10 @@ NOM_LOG_TRACE ( NOM );
 }
 
 
-void Input::HandleInput ( SDL_Event* event )
+void Input::HandleInput ( EventType* event )
 {
   // TODO: Remove me
-  SDL_Event* input = event;
+  EventType* input = event;
 
   switch ( input->type )
   {

@@ -67,8 +67,8 @@ class MessageBox:
 
     MessageBox  (
                   int32 x, int32 y, int32 width, int32 height,
-                  std::shared_ptr<GrayFrame> style = nullptr,
-                  std::shared_ptr<Gradient> background = nullptr
+                  GrayFrame::SharedPtr style = nullptr,
+                  Gradient::SharedPtr background = nullptr
                 );
 
     virtual ~MessageBox ( void );
@@ -86,8 +86,8 @@ class MessageBox:
     const Point2i size ( void ) const;
     const Point2i position ( void ) const;
 
-    void setWindowTitleFont ( const IFont* font );
-    void setLabelFont ( const IFont* font );
+    void setWindowTitleFont ( const IFont::RawPtr font );
+    void setLabelFont ( const IFont::RawPtr font );
 
     void setLabelPosition ( const Coords& pos );
     void setLabelTextAlignment ( IFont::TextAlignment alignment );
@@ -98,7 +98,7 @@ class MessageBox:
     void draw ( RenderTarget target ) const;
 
   private:
-    IDrawable::Drawables drawable;
+    IDrawable::SharedDrawables drawable;
 
     IFont::SharedPtr window_title;
     IFont::SharedPtr label;

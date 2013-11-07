@@ -49,9 +49,9 @@ Gradient::Gradient  (
                     )
   : gradient {}, coords { bounds },
   x_margin ( x_margin ), y_margin ( y_margin ), fill_direction ( direction ),
-  enable_dithering ( true ) 
+  enable_dithering ( true )
 {
-  this->setStartColor ( gradient_color[0] ); 
+  this->setStartColor ( gradient_color[0] );
   this->setEndColor ( gradient_color[1] );
 }
 /* FIXME
@@ -170,7 +170,7 @@ void Gradient::strategyTopDown ( void )
 
   for ( uint32 rows = this->coords.y + this->y_margin; rows < y_offset; rows++ )
   {
-    this->rectangles.push_back ( std::shared_ptr<IDrawable> ( new Rectangle ( Coords ( this->coords.x + this->x_margin, rows, this->coords.width - this->x_margin, 1 ), Color ( currentR, currentG, currentB ) ) ) );
+    this->rectangles.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( this->coords.x + this->x_margin, rows, this->coords.width - this->x_margin, 1 ), Color ( currentR, currentG, currentB ) ) ) );
 
     if ( this->dithering() )
     {
@@ -195,7 +195,7 @@ void Gradient::strategyLeftToRight ( void )
 
   for ( uint32 rows = this->coords.x + this->x_margin; rows < x_offset; rows++ )
   {
-    this->rectangles.push_back ( std::shared_ptr<IDrawable> ( new Rectangle ( Coords ( rows, this->coords.y + this->y_margin, 1, this->coords.height - this->y_margin ), Color ( currentR, currentG, currentB ) ) ) );
+    this->rectangles.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( rows, this->coords.y + this->y_margin, 1, this->coords.height - this->y_margin ), Color ( currentR, currentG, currentB ) ) ) );
 
     if ( this->dithering() )
     {
@@ -232,10 +232,9 @@ void Gradient::update ( void )
 
 void Gradient::draw ( RenderTarget target ) const
 {
-  for ( auto it = this->rectangles.begin(); it != this->rectangles.end(); ++it )
+  for ( auto idx = 0; idx != this->rectangles.size(); ++idx )
   {
-    std::shared_ptr<IDrawable> obj = *it;
-    obj->draw ( target );
+    this->rectangles[idx]->draw ( target );
   }
 }
 

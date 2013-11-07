@@ -82,7 +82,7 @@ void SDL_App::onQuit ( void )
   this->Quit();
 }
 
-void SDL_App::onEvent ( SDL_Event* event )
+void SDL_App::onEvent ( EventType* event )
 {
   Input::HandleInput ( event );
 }
@@ -116,7 +116,7 @@ bool SDL_App::toggle_fps ( void )
   return this->show_fps_;
 }
 
-bool SDL_App::PollEvents ( SDL_Event* event )
+bool SDL_App::PollEvents ( EventType* event )
 {
   if ( SDL_PollEvent ( event ) )
   {

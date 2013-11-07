@@ -47,6 +47,10 @@ class GrayFrame:
                   public IDrawable
 {
   public:
+    typedef std::shared_ptr<GrayFrame> SharedPtr;
+    typedef std::unique_ptr<GrayFrame> UniquePtr;
+    typedef GrayFrame* RawPtr;
+
     GrayFrame ( void );
     GrayFrame ( int32 x, int32 y, int32 width, int32 height, int32 padding = 1 );
     ~GrayFrame ( void );
@@ -65,11 +69,7 @@ class GrayFrame:
 
   private:
     /// Holds our line objects used for rendering the object.
-    ///
-    /// \todo Figure out how to get this vector of Drawables compiling as a
-    /// std::unique_ptr (if this is even possible).
-    /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
-    std::vector<std::shared_ptr<IDrawable>> frame;
+    IDrawable::UniqueDrawables frame;
 
     /// Position & Size
     Coords frame_position;

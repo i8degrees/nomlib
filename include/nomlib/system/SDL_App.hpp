@@ -55,7 +55,7 @@ class SDL_App: public Input
     /// Re-implements nom::Input::onQuit()
     virtual void onQuit ( void );
 
-    virtual void onEvent ( SDL_Event* event );
+    virtual void onEvent ( EventType* );
 
     bool isRunning ( void );
     void Running ( void );
@@ -72,7 +72,7 @@ class SDL_App: public Input
     bool toggle_fps ( void );
 
     /// Let the user know if there are pending events
-    bool PollEvents ( SDL_Event* );
+    bool PollEvents ( EventType* );
 
   private:
     /// global app state

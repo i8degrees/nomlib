@@ -40,7 +40,7 @@ GameStates::GameStates ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
-void GameStates::onEvent ( SDL_Event* event )
+void GameStates::onEvent ( EventType* event )
 {
   // let the state handle events
   states.back()->HandleInput ( event );

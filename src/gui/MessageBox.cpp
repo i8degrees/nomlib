@@ -60,18 +60,18 @@ MessageBox::MessageBox  (
   gradient_color[0] = background.getStartColor();
   gradient_color[1] = background.getEndColor();
 
-  this->drawable.push_back ( std::shared_ptr<Gradient> ( new Gradient ( gradient_color, Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background.getFillDirection() ) ) );
+  this->drawable.push_back ( Gradient::SharedPtr ( new Gradient ( gradient_color, Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background.getFillDirection() ) ) );
 
   if ( style == FrameStyle::Gray )
   {
-    this->drawable.push_back ( std::make_shared<GrayFrame> ( GrayFrame ( x, y, width, height, padding ) ) );
+    this->drawable.push_back ( GrayFrame::SharedPtr ( new GrayFrame ( x, y, width, height, padding ) ) );
   }
 }
 
 MessageBox::MessageBox  (
                           int32 x, int32 y, int32 width, int32 height,
-                          std::shared_ptr<GrayFrame> style,
-                          std::shared_ptr<Gradient> background
+                          GrayFrame::SharedPtr style,
+                          Gradient::SharedPtr background
                         )
 {
   int32 padding = 1;
@@ -84,7 +84,7 @@ MessageBox::MessageBox  (
   Color gradient_color[2];
   gradient_color[0] = background->getStartColor();
   gradient_color[1] = background->getEndColor();
-  this->drawable.push_back ( std::shared_ptr<Gradient> ( new Gradient ( gradient_color, Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background->getFillDirection() ) ) );
+  this->drawable.push_back ( Gradient::SharedPtr ( new Gradient ( gradient_color, Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background->getFillDirection() ) ) );
 
   if ( style != nullptr )
   {
@@ -94,7 +94,7 @@ MessageBox::MessageBox  (
   }
   else // default frame style
   {
-    this->drawable.push_back ( std::make_shared<GrayFrame> ( GrayFrame ( x, y, width, height, padding ) ) );
+    this->drawable.push_back ( GrayFrame::SharedPtr ( new GrayFrame ( x, y, width, height, padding ) ) );
   }
 }
 
@@ -144,7 +144,7 @@ const Point2i MessageBox::position ( void ) const
   return Point2i ( this->coords.x, this->coords.y );
 }
 
-void MessageBox::setWindowTitleFont ( const IFont* font )
+void MessageBox::setWindowTitleFont ( const IFont::RawPtr font )
 {
   this->window_title = IFont::SharedPtr ( font->clone() );
 
@@ -157,15 +157,15 @@ void MessageBox::setWindowTitleFont ( const IFont* font )
   this->window_title->setText ( "INFO." );
   this->window_title->setTextJustification ( IFont::TextAlignment::MiddleLeft );
 
-  this->drawable.push_back ( std::shared_ptr<IDrawable> ( this->window_title ) );
+  this->drawable.push_back ( IDrawable::SharedPtr ( this->window_title ) );
 }
 
-void MessageBox::setLabelFont ( const IFont* font )
+void MessageBox::setLabelFont ( const IFont::RawPtr font )
 {
   this->label = IFont::SharedPtr ( font->clone() );
   this->label->setPosition ( this->coords );
 
-  this->drawable.push_back ( std::shared_ptr<IDrawable> ( this->label ) );
+  this->drawable.push_back ( IDrawable::SharedPtr ( this->label ) );
 }
 
 void MessageBox::setLabelPosition ( const Coords& pos )
@@ -203,7 +203,7 @@ void MessageBox::update ( void )
 {
   for ( auto it = this->drawable.begin(); it != this->drawable.end(); ++it )
   {
-    std::shared_ptr<IDrawable> obj = *it;
+    IDrawable::SharedPtr obj = *it;
     obj->update();
   }
 
@@ -238,7 +238,7 @@ void MessageBox::draw ( RenderTarget target ) const
 
   for ( auto it = this->drawable.begin(); it != this->drawable.end(); ++it )
   {
-    std::shared_ptr<IDrawable> obj = *it;
+    IDrawable::SharedPtr obj = *it;
     obj->draw ( target );
   }
 }

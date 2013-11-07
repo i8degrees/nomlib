@@ -77,6 +77,7 @@ class IFont:
     };
 
     typedef std::shared_ptr<IFont> SharedPtr;
+    typedef IFont* RawPtr;
 
     IFont ( void ) {}
     virtual ~IFont ( void ) {}

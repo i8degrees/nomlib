@@ -40,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Color.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/shapes/Rectangle.hpp"
+#include "nomlib/system/make_unique.hpp"
 
 namespace nom {
 
@@ -49,6 +50,10 @@ class Gradient:
 
 {
   public:
+    typedef std::shared_ptr<Gradient> SharedPtr;
+    typedef std::unique_ptr<Gradient> UniquePtr;
+    typedef Gradient* RawPtr;
+
     /// \todo
     /// Rename me -- Direction seems fitting?
     /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-05
@@ -112,11 +117,7 @@ class Gradient:
     /// what are one pixel wide / high line segments in a row single row
     /// iteration. Imaginably, performance would hardly measure a difference,
     /// but nevertheless.
-    ///
-    /// \todo Figure out how to get this vector of Drawables compiling as a
-    /// std::unique_ptr (if this is even possible).
-    /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
-    std::vector<std::shared_ptr<IDrawable>> rectangles;
+    IDrawable::UniqueDrawables rectangles;
 
     /// The starting & ending colors (nom::Color objects) used in the gradient.
     ///

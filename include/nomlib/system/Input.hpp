@@ -85,6 +85,7 @@ enum PSXBUTTON
 class Input
 {
   public:
+    typedef SDL_Event EventType;
     Input ( void );
     virtual ~Input ( void );
 

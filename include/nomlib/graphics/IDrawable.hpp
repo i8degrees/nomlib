@@ -48,7 +48,10 @@ class IDrawable
     /// std::shared_ptr definition type at your leisure, sir!
     typedef std::shared_ptr<IDrawable> SharedPtr;
     /// Vector of std::shared_ptr definition type for the brotherhood, sir!
-    typedef std::vector<std::shared_ptr<IDrawable>> Drawables;
+    typedef std::vector<std::shared_ptr<IDrawable>> SharedDrawables;
+
+    /// std::unique_ptr vector container type
+    typedef std::vector<std::unique_ptr<IDrawable>> UniqueDrawables;
 
     typedef const Window& RenderTarget;
 

@@ -118,8 +118,9 @@ class Value
     double get_double ( int index );
 
     int get_int ( int index );
-    /// Get signed integer array values by index
-    std::vector<int> get_ints ( int index );
+
+    /// Get signed integer array values by key, index
+    std::vector<int> get_ints ( const std::string& key, int index );
 
     uint get_uint ( int index );
     /// Get unsigned integer array values by index

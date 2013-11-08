@@ -169,12 +169,12 @@ int Value::get_int ( int index )
   return this->object_[index].asInt();
 }
 
-std::vector<int> Value::get_ints ( int index )
+std::vector<int> Value::get_ints ( const std::string& key, int index )
 {
   std::vector<int> members;
-  for ( uint i = 0; i < this->object_[i].size(); ++i )
+  for ( uint i = 0; i < this->object_[index][key].size(); ++i )
   {
-    members.push_back ( this->object_[index][i].asInt() );
+    members.push_back ( this->object_[index][key][i].asInt() );
   }
   return members;
 }

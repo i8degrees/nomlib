@@ -93,6 +93,11 @@ void Cursor::toggle_lock ( bool toggle )
   this->locked_ = toggle;
 }
 
+void Cursor::update ( void )
+{
+  // FIXME
+}
+
 int32 Cursor::move_up ( void )
 {
   return -1; // Do nothing virtual implementation

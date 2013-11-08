@@ -99,9 +99,6 @@ class SpriteSheet
     const Coords& dimensions ( int32 index ) const;
 
     /// Obtain the number of frames this object contains
-    ///
-    /// \todo Decide on if we want to use number of frames count as per
-    /// vector::size (starting from one) or if we want to start from zero
     int32 frames ( void ) const;
 
     const std::string& sheet_filename ( void ) const;

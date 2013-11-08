@@ -26,34 +26,24 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOM_JSON_FILEWRITER_HEADERS
-#define NOM_JSON_FILEWRITER_HEADERS
+#ifndef NOMLIB_JSON_FILEWRITER_HPP
+#define NOMLIB_JSON_FILEWRITER_HPP
 
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
 
-#include "json.h" // jsoncpp library
+#include "json.h" // JSONCPP
 
 #include "nomlib/config.hpp"
-//#include "nomlib/json/Object.hpp"
-//#include "nomlib/json/Array.hpp"
+#include "nomlib/json/config_json.hpp"
+#include "nomlib/json/Value.hpp"
 
 namespace nom {
-  namespace JSON {
+namespace JSON {
 
-/// Formatting options (not presently used).
-/// \todo Look into jsoncpp documentation and see if there's an equivalent for
-/// any of these formatting options? Convert and extend as necessary.
-enum
-{
-  NoFormatting = 0, // no formatting applied
-  PrettyPrint = 1, // json_spirit::pretty_print
-  CompactArrays = 2 // json_spirit::single_line_arrays; implies PrettyPrint
-};
-
-/// \brief Wrapper class for JSON output with jsoncpp
+/// \brief Wrapper class for JSON output with JSONCPP
 class FileWriter
 {
   public:
@@ -61,14 +51,20 @@ class FileWriter
     ~FileWriter ( void );
 
     bool save (
-                const std::string& filename, const Json::Value& object,
+                const std::string& filename, const Value& object,
                 uint32 format = NoFormatting
               ) const;
 
-    const std::string stringify ( const Json::Value& object, uint32 format = 0 ) const;
+    const std::string stringify ( Value& object, uint32 format = 0 ) const;
 };
 
-  } // namespace JSON
+} // namespace JSON
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::JSON::FileWriter
+/// \ingroup json
+///
+///   [TO BE WRITTEN]
+///

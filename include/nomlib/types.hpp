@@ -58,6 +58,8 @@ typedef unsigned long long int uint64;
 #endif
 
 typedef unsigned char uchar;
+typedef signed int sint;
+typedef unsigned int uint;
 
 } // namespace nom
 

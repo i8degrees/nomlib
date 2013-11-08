@@ -36,28 +36,25 @@ FileReader::~FileReader ( void ) {}
 
 bool FileReader::load (
                         const std::string& filename,
-                        Json::Value& object,
+                        Value& object,
                         bool parse_comments
                       )
 {
-  std::ifstream fp; // input file stream
-  Json::Reader parser; // jsoncpp library
+  std::ifstream fp;
+  Json::Reader parser;
 
   fp.open ( filename );
 
-  if ( fp.is_open() && fp.good() )
-  {
-    // disable comments parsing
-    if ( parser.parse ( fp, object, parse_comments ) == false )
-    {
-NOM_LOG_ERR ( NOM, "Unable to parse input JSON file at: " + filename );
-      fp.close();
-      return false;
-    }
-  }
-  else
+  if ( fp.is_open() == false || fp.good() == false )
   {
 NOM_LOG_ERR ( NOM, "Could not open given file: " + filename );
+    fp.close();
+    return false;
+  }
+
+  if ( parser.parse ( fp, object.get(), parse_comments ) == false )
+  {
+NOM_LOG_ERR ( NOM, "Unable to parse input JSON file: " + filename );
     fp.close();
     return false;
   }
@@ -66,7 +63,7 @@ NOM_LOG_ERR ( NOM, "Could not open given file: " + filename );
   return true;
 }
 
-void FileReader::dump_key ( const Json::Value& key ) const
+void FileReader::dump_key ( const ValueType& key ) const
 {
   switch ( key.type() )
   {
@@ -115,7 +112,7 @@ void FileReader::dump_key ( const Json::Value& key ) const
       break;
     }
 
-    case 7:
+    case 7: // JSON object
     {
       printf ( " [type=objectValue, size=%d]", key.size() );
       break;
@@ -123,7 +120,7 @@ void FileReader::dump_key ( const Json::Value& key ) const
   } // switch key.type()
 }
 
-void FileReader::dump_value ( const Json::Value& value ) const
+void FileReader::dump_value ( const ValueType& value ) const
 {
   if ( value.isString() )
   {
@@ -151,7 +148,7 @@ void FileReader::dump_value ( const Json::Value& value ) const
   }
 }
 
-bool FileReader::dump ( const Json::Value& root, int depth ) const
+bool FileReader::dump ( const ValueType& root, int depth ) const
 {
   depth += 1;
 

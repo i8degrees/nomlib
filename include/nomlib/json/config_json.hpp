@@ -26,18 +26,43 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/json/Object.hpp"
+#ifndef NOMLIB_JSON_CONFIG_HPP
+#define NOMLIB_JSON_CONFIG_HPP
+
+#include "json.h" // JSONCPP
+
+#include "nomlib/config.hpp"
 
 namespace nom {
 namespace JSON {
 
-Object::Object ( void ):
-    root_ ( 0 )
-{
-  // ...
-}
+/// Platform / library dependent definition
+typedef Json::Value ValueType;
+typedef enum Json::ValueType JSONValueType;
 
-Object::~Object ( void ) {}
+/// Formatting options (not presently used).
+///
+/// \todo Look into jsoncpp documentation and see if there's an equivalent for
+/// any of these formatting options?
+enum
+{
+  NoFormatting = 0, // no formatting applied
+  PrettyPrint = 1, // json_spirit::pretty_print
+  CompactArrays = 2 // json_spirit::single_line_arrays; implies PrettyPrint
+};
+
+/// Number of spaces to pass to jsoncpp for tab indention
+const std::string indention_spaces = "  "; // two spaces
+
 
 } // namespace JSON
 } // namespace nom
+
+#endif // include guard defined
+
+/// \brief Configuration options for nom::JSON engine
+///
+/// \ingroup json
+///
+///   [TO BE WRITTEN]
+///

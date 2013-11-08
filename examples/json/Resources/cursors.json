@@ -1,0 +1,54 @@
+
+[
+
+  {
+    "height" : 16,
+    "id" : 0,
+    "width" : 26,
+    "x" : 0,
+    "y" : 0
+  },
+
+  {
+    "height" : 16,
+    "id" : 1,
+    "width" : 26,
+    "x" : 26,
+    "y" : 0
+  },
+
+  {
+    "height" : 16,
+    "id" : 2,
+    "width" : 26,
+    "x" : 52,
+    "y" : 0
+  },
+
+  {
+    "height" : 16,
+    "id" : 3,
+    "width" : 26,
+    "x" : 78,
+    "y" : 0
+  },
+
+  {
+    "height" : 16,
+    "id" : 4,
+    "width" : 26,
+    "x" : 104,
+    "y" : 0
+  },
+
+  {
+    "sheet_filename" : "cursors.png",
+    "sheet_height" : 16,
+    "sheet_modified" : "Thu Nov  7 22:23:34 2013\n",
+    "sheet_padding" : 0,
+    "sheet_spacing" : 0,
+    "sheet_sprites" : 5,
+    "sheet_version" : "0.2.0",
+    "sheet_width" : 130
+  }
+]

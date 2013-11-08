@@ -26,39 +26,54 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOM_JSON_FILEREADER_HEADERS
-#define NOM_JSON_FILEREADER_HEADERS
+#ifndef NOMLIB_JSON_FILEREADER_HPP
+#define NOMLIB_JSON_FILEREADER_HPP
 
 #include <iostream>
 #include <fstream>
 #include <string>
 
-#include "json.h" // jsoncpp library
+#include "json.h" // JSONCPP
 
 #include "nomlib/config.hpp"
-//#include "nomlib/json/Value.hpp"
+#include "nomlib/json/config_json.hpp"
+#include "nomlib/json/Value.hpp"
 
 namespace nom {
-  namespace JSON {
+namespace JSON {
 
-/// \brief Wrapper class for JSON input with jsoncpp
+/// \brief Wrapper class for JSON input with JSONCPP
 class FileReader
 {
   public:
     FileReader ( void );
     ~FileReader ( void );
 
+    /// Load JSON input from a specified file path
+    ///
+    /// \param      filename            Absolute file path
+    ///
+    /// \param      object              nom::JSON::Value object container for
+    ///                                 storing parsed JSON file input
+    ///
+    /// \param      parse_comments      Disabled by default
     bool load (
                 const std::string& filename,
-                Json::Value& object, bool parse_comments = false
+                Value& object, bool parse_comments = false
               );
 
-    void dump_key ( const Json::Value& key ) const;
-    void dump_value ( const Json::Value& value ) const;
-    bool dump ( const Json::Value& root, int depth = 0 ) const;
+    /// Debugging aid; helper method for nom::JSON::FileReader::dump
+    void dump_key ( const ValueType& object ) const;
+
+    /// Debugging aid; helper method for nom::JSON::FileReader::dump
+    void dump_value ( const ValueType& key ) const;
+
+    /// A convenient, detailed console output dump of the JSON object, as the
+    /// underlying engine (JSONCPP) sees it.
+    bool dump ( const ValueType& object, int depth = 0 ) const;
 };
 
-  } // namespace JSON
+} // namespace JSON
 } // namespace nom
 
 #endif // include guard defined
@@ -71,3 +86,4 @@ class FileReader
 /// The dump methods originate (with my modifications) from:
 ///
 /// http://stackoverflow.com/questions/4800605/jsoncpp-iterate-thru-all-the-objects
+///

@@ -26,20 +26,22 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOM_JSON_OBJECT_HEADERS
-#define NOM_JSON_OBJECT_HEADERS
+#ifndef NOMLIB_JSON_OBJECT_HPP
+#define NOMLIB_JSON_OBJECT_HPP
 
 #include <iostream>
 #include <string>
 #include <array>
+#include <vector>
 
-#include <json_spirit_reader_template.h>
+#include "json.h"
 
 #include "nomlib/config.hpp"
+#include "nomlib/json/config_json.hpp"
 #include "nomlib/json/Value.hpp"
 
 namespace nom {
-  namespace JSON {
+namespace JSON {
 
 class Object
 {
@@ -47,18 +49,11 @@ class Object
     Object ( void );
     ~Object ( void );
 
-    void endl ( void );
-
-    void push_back ( const Value& value );
-    void push_back ( const std::string& node, const json_spirit::Value& value );
-
-    json_spirit::Array values; // TODO: relocate to private scope
   private:
-    json_spirit::Object obj;
+    ValueType root_;
 };
 
-
-  } // namespace JSON
+} // namespace JSON
 } // namespace nom
 
 #endif // include guard defined

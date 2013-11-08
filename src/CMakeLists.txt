@@ -80,8 +80,10 @@ set ( GUI_SOURCE
 # JSON module
 file ( GLOB JSON_HEADERS "${NOMLIB_HEADERS_DIR}/json/*.hpp" )
 set ( JSON_SOURCE
+      #${SRC_DIR}/json/Object.cpp
       ${SRC_DIR}/json/FileReader.cpp
       ${SRC_DIR}/json/FileWriter.cpp
+      ${SRC_DIR}/json/Value.cpp
     )
 
 # third-party jsoncpp library

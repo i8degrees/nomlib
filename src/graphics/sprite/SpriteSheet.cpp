@@ -151,9 +151,11 @@ NOM_ASSERT ( this->sheet.size() == num_sprites );
   this->sheet_sprites = this->sheet.size();
   this->sheet_spacing = spacing;
   this->sheet_padding = padding;
+/* FIXME
 NOM_ASSERT ( sprite_width * num_sprites == sheet_width );
   this->sheet_width = sheet_width;
 NOM_ASSERT ( sprite_height * num_sprites == sheet_height );
+FIXME */
   this->sheet_height = sheet_height;
 }
 
@@ -179,32 +181,32 @@ SpriteSheet::SharedPtr SpriteSheet::clone ( void ) const
 
 bool SpriteSheet::save ( const std::string& filename )
 {
-  Json::Value node; // Starting JSON node
+  nom::JSON::Value node;
   nom::JSON::FileWriter writer;
 
   std::string sprite_sheet_version = std::to_string ( NOM_SPRITE_SHEET_MAJOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_MINOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_PATCH_VERSION );
 
   if ( this->sheet.empty() ) return false;
 
-  auto id = 0;
+  uint32 id = 0;
   for ( id = 0; id < this->sheet.size(); ++id )
   {
-    node[id]["id"] = id;
-    node[id]["x"] = this->sheet[id].x;
-    node[id]["y"] = this->sheet[id].y;
-    node[id]["width"] = this->sheet[id].width;
-    node[id]["height"] = this->sheet[id].height;
+    node.insert ( "id", id, id );
+    node.insert ( "x", this->sheet[id].x, id );
+    node.insert ( "y", this->sheet[id].y, id );
+    node.insert ( "width", this->sheet[id].w, id );
+    node.insert ( "height", this->sheet[id].h, id );
   }
 
   // Push out our file meta-data last
-  node[id]["sheet_filename"] = this->sheet_filename_;
-  node[id]["sheet_sprites"] = this->sheet_sprites;
-  node[id]["sheet_spacing"] = this->sheet_spacing;
-  node[id]["sheet_padding"] = this->sheet_padding;
-  node[id]["sheet_width"] = this->sheet_width;
-  node[id]["sheet_height"] = this->sheet_height;
-  node[id]["sheet_version"] = sprite_sheet_version;
-  node[id]["sheet_modified"] = getCurrentTime();
+  node.insert ( "sheet_filename", this->sheet_filename(), id );
+  node.insert ( "sheet_sprites", this->sheet_sprites, id );
+  node.insert ( "sheet_spacing", this->sheet_spacing, id );
+  node.insert ( "sheet_padding", this->sheet_padding, id );
+  node.insert ( "sheet_width", this->sheet_width, id );
+  node.insert ( "sheet_height", this->sheet_height, id );
+  node.insert ( "sheet_version", sprite_sheet_version, id );
+  node.insert ( "sheet_modified", getCurrentTime(), id );
 
   if ( writer.save ( filename, node ) == false )
   {
@@ -218,7 +220,7 @@ NOM_LOG_ERR ( NOM, "Unable to save file: " + filename );
 bool SpriteSheet::load ( const std::string& filename )
 {
   nom::JSON::FileReader parser;
-  Json::Value root; // JSON root node
+  nom::JSON::Value root;
 
   // Temporary holding buffers to hold data until we are ready to commit
   Coords buffer;
@@ -230,63 +232,14 @@ NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
     return false;
   }
 
-  // Layout sanity check
-  if ( root.type() != Json::ValueType::arrayValue )
-  {
-NOM_LOG_ERR ( NOM, "Unable to parse JSON (does not begin as a JSON array)." );
-    return false;
-  }
-
   // Populate our sheet vector while skipping the last JSON object;
   // this should always be file mete-data!
   for ( auto idx = 0; idx < root.size() - 1; ++idx )
   {
-    // Layout sanity check
-    if ( root[idx].type() != Json::ValueType::objectValue )
-    {
-NOM_LOG_ERR ( NOM, "Unable to parse JSON (does not contain a JSON object)." );
-      return false;
-    }
-
-    if ( root[idx]["x"].type() == Json::ValueType::intValue )
-    {
-      buffer.x = root[idx]["x"].asInt();
-    }
-    else
-    {
-NOM_LOG_ERR ( NOM, "Unable to parse JSON (expected type: signed integer)." );
-      return false;
-    }
-
-    if ( root[idx]["y"].type() == Json::ValueType::intValue )
-    {
-      buffer.y = root[idx]["y"].asInt();
-    }
-    else
-    {
-NOM_LOG_ERR ( NOM, "Unable to parse JSON (expected type: signed integer)." );
-      return false;
-    }
-
-    if ( root[idx]["width"].type() == Json::ValueType::intValue )
-    {
-      buffer.w = root[idx]["width"].asInt();
-    }
-    else
-    {
-NOM_LOG_ERR ( NOM, "Unable to parse JSON (expected type: signed integer)." );
-      return false;
-    }
-
-    if ( root[idx]["height"].type() == Json::ValueType::intValue )
-    {
-      buffer.h = root[idx]["height"].asInt();
-    }
-    else
-    {
-NOM_LOG_ERR ( NOM, "Unable to parse JSON (expected type: signed integer)." );
-      return false;
-    }
+    buffer.x = root.get_int ( "x", idx );
+    buffer.y = root.get_int ( "y", idx );
+    buffer.w = root.get_int ("width", idx );
+    buffer.h = root.get_int ("height", idx );
 
     // Commit contents to our buffer if all goes well
     buffer_sheet.push_back ( buffer );
@@ -301,68 +254,22 @@ NOM_LOG_ERR ( NOM, "Unable to parse JSON (expected type: signed integer)." );
   // this should always be file mete-data!
   for ( auto idx = root.size() - 1; idx != root.size(); ++idx )
   {
-    if ( root[idx]["sheet_filename"].type() == Json::ValueType::stringValue )
-    {
-      this->sheet_filename_ = root[idx]["sheet_filename"].asString();
-    }
-    else
-    {
-NOM_LOG_ERR ( NOM, "Unable to parse JSON (expected type: string value)." );
-      return false;
-    }
+    this->sheet_filename_ = root.get_string ( "sheet_filename", idx );
 
-    if ( root[idx]["sheet_sprites"].type() == Json::ValueType::intValue )
-    {
-NOM_ASSERT ( this->sheet.size() == root[idx]["sheet_sprites"].asInt() );
-      this->sheet_sprites = root[idx]["sheet_sprites"].asInt();
-    }
-    else
-    {
-NOM_LOG_ERR ( NOM, "Unable to parse JSON (expected type: integer value)." );
-      return false;
-    }
+NOM_ASSERT ( this->sheet.size() == root.get_int ( "sheet_sprites", idx ) );
+    this->sheet_sprites = root.get_int ( "sheet_sprites", idx );
 
-    if ( root[idx]["sheet_spacing"].type() == Json::ValueType::intValue )
-    {
-      this->sheet_spacing = root[idx]["sheet_spacing"].asInt();
-    }
-    else
-    {
-NOM_LOG_ERR ( NOM, "Unable to parse JSON (expected type: integer value)." );
-      return false;
-    }
+    this->sheet_spacing = root.get_int ( "sheet_spacing", idx );
+    this->sheet_padding = root.get_int ( "sheet_padding", idx );
+/* FIXME
+NOM_ASSERT ( this->sheet[0].width * this->sheet.size() == root.get_int ( "sheet_width", idx ) );
+FIXME */
+    this->sheet_width = root.get_int ( "sheet_width", idx );
 
-    if ( root[idx]["sheet_padding"].type() == Json::ValueType::intValue )
-    {
-      this->sheet_padding = root[idx]["sheet_padding"].asInt();
-    }
-    else
-    {
-NOM_LOG_ERR ( NOM, "Unable to parse JSON (expected type: integer value)." );
-      return false;
-    }
-
-    if ( root[idx]["sheet_width"].type() == Json::ValueType::intValue )
-    {
-NOM_ASSERT ( this->sheet[0].width * this->sheet.size() == root[idx]["sheet_width"].asInt() );
-      this->sheet_width = root[idx]["sheet_width"].asInt();
-    }
-    else
-    {
-NOM_LOG_ERR ( NOM, "Unable to parse JSON (expected type: integer value)." );
-      return false;
-    }
-
-    if ( root[idx]["sheet_height"].type() == Json::ValueType::intValue )
-    {
-NOM_ASSERT ( this->sheet[0].height * this->sheet.size() == root[idx]["sheet_height"].asInt() );
-      this->sheet_height = root[idx]["sheet_height"].asInt();
-    }
-    else
-    {
-NOM_LOG_ERR ( NOM, "Unable to parse JSON (expected type: integer value)." );
-      return false;
-    }
+/* FIXME
+NOM_ASSERT ( this->sheet[0].height * this->sheet.size() == root.get_int ( "sheet_height", idx ) );
+FIXME */
+    this->sheet_height = root.get_int ( "sheet_height", idx );
   }
 
 #if defined ( NOM_DEBUG_SPRITE_SHEET_JSON_LOAD )
@@ -384,7 +291,7 @@ NOM_DUMP_VAR(itr->height);
   }
 
   // Sheet's meta-data
-NOM_DUMP_VAR(this->sheet_filename_);
+NOM_DUMP_VAR(this->sheet_filename());
 NOM_DUMP_VAR(this->sheet_sprites);
 NOM_DUMP_VAR(this->sheet_spacing);
 NOM_DUMP_VAR(this->sheet_padding);

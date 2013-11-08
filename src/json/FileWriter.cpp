@@ -29,80 +29,46 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/json/FileWriter.hpp"
 
 namespace nom {
-  namespace JSON {
+namespace JSON {
 
 FileWriter::FileWriter ( void ) {}
 FileWriter::~FileWriter ( void ) {}
 
 bool FileWriter::save (
                         const std::string& filename,
-                        const Json::Value& object,
+                        const Value& object,
                         uint32 format
                       ) const
 {
-  std::ofstream fp; // output file stream
-  Json::StyledStreamWriter writer ( "  " ); // jsoncpp library with two spaces
-                                            // indention
+  std::ofstream fp;
+  Json::StyledStreamWriter writer ( indention_spaces );
 
   fp.open ( filename );
 
-  if ( fp.is_open() && fp.good() )
+  if ( fp.is_open() == false || fp.good() == false )
   {
-    writer.write ( fp, object );
-/* FIXME
-    switch ( format )
-    {
-      default:
-      case NoFormatting:
-      {
-
-      }
-      break;
-
-      case PrettyPrint:
-      {
-        json_spirit::write_stream (
-                                    json_spirit::Value ( root_object ), fp,
-                                    //json_spirit::Value ( root.values ), fp,
-                                    json_spirit::pretty_print
-                                  );
-      }
-      break;
-
-      case CompactArrays:
-      {
-        json_spirit::write_stream (
-                                    json_spirit::Value ( root_object ), fp,
-                                    //json_spirit::Value ( root.values ), fp,
-                                    json_spirit::single_line_arrays
-                                  );
-      }
-      break;
-    }
-*/
-  }
-  else // file error
-  {
-NOM_LOG_ERR ( NOM, "Unable to save JSON output file at: " + filename );
+NOM_LOG_ERR ( NOM, "Unable to save JSON output file: " + filename );
     fp.close();
     return false;
-  } // end if fp is good
+  }
+
+  writer.write ( fp, object.get() );
 
   fp.close();
   return true;
 }
 
 const std::string FileWriter::stringify (
-                                          const Json::Value& object,
+                                          Value& object,
                                           uint32 format
                                         ) const
 {
   std::stringstream os;
 
-  os << object;
+  os << object.get();
 
   return os.str();
 }
 
-  } // namespace JSON
+} // namespace JSON
 } // namespace nom

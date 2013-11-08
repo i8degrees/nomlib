@@ -29,68 +29,235 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/json/Value.hpp"
 
 namespace nom {
-  namespace JSON {
+namespace JSON {
 
-Value::Value ( void ) : name( "\0" ), value ( 0 ) {}
-
-Value::Value ( const std::string name_, const json_spirit::Value value_ )
-{
-  this->name = name_;
-  this->value = value_;
-}
-
-Value::Value ( const json_spirit::Value& value )
-{
-  this->value = value;
-}
-
-/*
-Value::Value ( const std::string name_, const Array value_ )
-{
-  this->name = name_;
-  this->value = value_;
-}
-*/
+Value::Value ( void ) :
+    object_ { Json::Value ( Json::nullValue ) }, key_ { "\0" }
+{}
 
 Value::~Value ( void ) {}
 
-const std::string Value::getName ( void ) const
+Value::Value ( const Value& copy )
 {
-  return this->name;
+  this->object_ = copy.object_;
+  this->key_ = copy.key_;
 }
 
-json_spirit::Value& Value::getValue ( void ) const
+Value& Value::operator = ( const ValueType& other )
 {
-/*
-  switch ( this->value.type() )
+  this->object_ = other;
+  return *this;
+}
+
+ValueType& Value::get ( void ) const
+{
+  return this->object_;
+}
+
+void Value::insert ( const std::string& key, int index )
+{
+  this->object_[index][key] = Json::Value ( Json::nullValue );
+}
+
+void Value::insert ( const std::string& key, int value, int index )
+{
+  this->object_[index][key] = Json::Value ( value );
+}
+
+void Value::insert ( const std::string& key, std::vector<int> values )
+{
+  for ( auto member = values.begin(); member != values.end(); ++member )
   {
-    default:
-    break;
-
-    case json_spirit::int_type:
-      //return json_spirit::Value ( this->value );
-      return this->value.get_int();
-    break;
-
-    case json_spirit::array_type:
-      return this->value.get_array();
-    break;
-
-    case json_spirit::str_type:
-      return this->value.get_str();
-    break;
+    this->object_[key].append ( * member );
   }
-  return 0;
-  //return "Undefined value";
-*/
-  return this->value;
 }
 
-const std::string Value::getString ( void ) const
+void Value::insert ( const std::string& key, uint value, int index )
 {
-  return this->value.get_str();
+  this->object_[index][key] = Json::Value ( value );
 }
 
+void Value::insert ( const std::string& key, const std::vector<uint>& values )
+{
+  for ( auto member = values.begin(); member != values.end(); ++member )
+  {
+    this->object_[key].append ( * member );
+  }
+}
 
-  } // namespace JSON
+void Value::insert ( const std::string& key, double value, int index )
+{
+  this->object_[index][key] = Json::Value ( value );
+}
+
+void Value::insert ( const std::string& key, float value, int index )
+{
+  this->object_[index][key] = Json::Value ( value );
+}
+
+void Value::insert ( const std::string& key, const char* value, int index )
+{
+  this->object_[index][key] = Json::Value ( value );
+}
+
+void Value::insert ( const std::string& key, const std::string& value,
+                     int index )
+{
+  this->object_[index][key] = Json::Value ( value );
+}
+
+void Value::insert ( const std::string& key,
+                     const std::vector<std::string>& values )
+{
+  for ( auto member = values.begin(); member != values.end(); ++member )
+  {
+    this->object_[key].append ( * member );
+  }
+}
+
+void Value::insert ( const std::string& key, bool value, int index )
+{
+  this->object_[index][key] = Json::Value ( value );
+}
+
+void Value::insert ( const std::string& key,
+                     const std::vector<ValueType>& values )
+{
+  for ( auto member = values.begin(); member != values.end(); ++member )
+  {
+    this->object_[key].append ( *member );
+  }
+}
+
+bool Value::get_bool ( int index )
+{
+  return this->object_[index].asBool();
+}
+
+std::vector<bool> Value::get_bools ( int index )
+{
+  std::vector<bool> members;
+  for ( uint i = 0; i < this->object_[i].size(); ++i )
+  {
+    members.push_back ( this->object_[index][i].asBool() );
+  }
+  return members;
+}
+
+const char* Value::c_str ( int index )
+{
+  return this->object_[index].asCString();
+}
+
+std::string Value::get_string ( int index )
+{
+  return this->object_[index].asString();
+}
+
+std::vector<std::string> Value::get_strings ( int index )
+{
+  std::vector<std::string> members;
+  for ( uint i = 0; i < this->object_[i].size(); ++i )
+  {
+    members.push_back ( this->object_[index][i].asString() );
+  }
+  return members;
+}
+
+int Value::get_int ( int index )
+{
+  return this->object_[index].asInt();
+}
+
+std::vector<int> Value::get_ints ( int index )
+{
+  std::vector<int> members;
+  for ( uint i = 0; i < this->object_[i].size(); ++i )
+  {
+    members.push_back ( this->object_[index][i].asInt() );
+  }
+  return members;
+}
+
+uint Value::get_uint ( int index )
+{
+  return this->object_[index].asUInt();
+}
+
+std::vector<uint> Value::get_uints ( int index )
+{
+  std::vector<uint> members;
+  for ( uint i = 0; i < this->object_[i].size(); ++i )
+  {
+    members.push_back ( this->object_[index][i].asUInt() );
+  }
+  return members;
+}
+
+ValueType Value::value ( int index )
+{
+  return this->object_[index];
+}
+
+std::vector<ValueType> Value::values ( int index )
+{
+  std::vector<ValueType> members;
+  for ( uint i = 0; i < this->object_[i].size(); ++i )
+  {
+    members.push_back ( this->object_[index][i] );
+  }
+  return members;
+}
+
+bool Value::get_bool ( const std::string& key )
+{
+  return this->object_[key].asBool();
+}
+
+int Value::get_int ( const std::string& key, int index )
+{
+  return this->object_[index][key].asInt();
+}
+
+uint Value::get_uint ( const std::string& key )
+{
+  return this->object_[key].asUInt();
+}
+
+const char* Value::c_str ( const std::string& key )
+{
+  return this->object_[key].asCString();
+}
+
+std::string Value::get_string ( const std::string& key, int index )
+{
+  return this->object_[index][key].asString();
+}
+
+ValueType Value::value ( const std::string& key )
+{
+  return this->object_[key];
+}
+
+uint32 Value::size ( void ) const
+{
+  return this->object_.size();
+}
+
+JSONValueType Value::type ( void ) const
+{
+  return this->object_.type();
+}
+
+JSONValueType Value::type ( int index ) const
+{
+  return this->object_[index].type();
+}
+
+JSONValueType Value::type ( const std::string& key, int index ) const
+{
+  return this->object_[index][key].type();
+}
+
+} // namespace JSON
 } // namespace nom

@@ -16,8 +16,8 @@
     {
       "name": "examples",
       "path": "examples",
-      "file_include_patterns": [ "*.txt", "*.hpp", "*.cpp", "Template.cpp", "Template.hpp", "*.json" ],
-      "folder_exclude_patterns": [ "Resources" ]
+      "file_include_patterns": [ "*.txt", "*.hpp", "*.cpp", "Template.cpp", "Template.hpp", "*.json" ]
+      //"folder_exclude_patterns": [ "Resources" ]
     },
 
     {

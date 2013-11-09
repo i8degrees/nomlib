@@ -54,6 +54,136 @@ ValueType& Value::get ( void ) const
   return this->object_;
 }
 
+uint32 Value::size ( void ) const
+{
+  return this->object_.size();
+}
+
+JSONValueType Value::type ( void ) const
+{
+  return this->object_.type();
+}
+
+JSONValueType Value::type ( int index ) const
+{
+  return this->object_[index].type();
+}
+
+JSONValueType Value::type ( const std::string& key, int index ) const
+{
+  return this->object_[index][key].type();
+}
+
+int Value::get_int ( int index )
+{
+  return this->object_[index].asInt();
+}
+
+std::vector<int> Value::get_ints ( const std::string& key, int index )
+{
+  std::vector<int> members;
+  for ( uint i = 0; i < this->object_[index][key].size(); ++i )
+  {
+    members.push_back ( this->object_[index][key][i].asInt() );
+  }
+  return members;
+}
+
+int Value::get_int ( const std::string& key, int index )
+{
+  return this->object_[index][key].asInt();
+}
+
+uint Value::get_uint ( int index )
+{
+  return this->object_[index].asUInt();
+}
+
+std::vector<uint> Value::get_uints ( int index )
+{
+  std::vector<uint> members;
+  for ( uint i = 0; i < this->object_[i].size(); ++i )
+  {
+    members.push_back ( this->object_[index][i].asUInt() );
+  }
+  return members;
+}
+
+uint Value::get_uint ( const std::string& key )
+{
+  return this->object_[key].asUInt();
+}
+
+const char* Value::c_str ( int index )
+{
+  return this->object_[index].asCString();
+}
+
+std::string Value::get_string ( int index )
+{
+  return this->object_[index].asString();
+}
+
+std::vector<std::string> Value::get_strings ( int index )
+{
+  std::vector<std::string> members;
+  for ( uint i = 0; i < this->object_[i].size(); ++i )
+  {
+    members.push_back ( this->object_[index][i].asString() );
+  }
+  return members;
+}
+
+const char* Value::c_str ( const std::string& key )
+{
+  return this->object_[key].asCString();
+}
+
+std::string Value::get_string ( const std::string& key, int index )
+{
+  return this->object_[index][key].asString();
+}
+
+bool Value::get_bool ( int index )
+{
+  return this->object_[index].asBool();
+}
+
+std::vector<bool> Value::get_bools ( int index )
+{
+  std::vector<bool> members;
+  for ( uint i = 0; i < this->object_[i].size(); ++i )
+  {
+    members.push_back ( this->object_[index][i].asBool() );
+  }
+  return members;
+}
+
+bool Value::get_bool ( const std::string& key )
+{
+  return this->object_[key].asBool();
+}
+
+ValueType Value::value ( int index )
+{
+  return this->object_[index];
+}
+
+std::vector<ValueType> Value::values ( int index )
+{
+  std::vector<ValueType> members;
+  for ( uint i = 0; i < this->object_[i].size(); ++i )
+  {
+    members.push_back ( this->object_[index][i] );
+  }
+  return members;
+}
+
+ValueType Value::value ( const std::string& key )
+{
+  return this->object_[key];
+}
+
 void Value::insert ( const std::string& key, int index )
 {
   this->object_[index][key] = Json::Value ( Json::nullValue );
@@ -127,136 +257,6 @@ void Value::insert ( const std::string& key,
   {
     this->object_[key].append ( *member );
   }
-}
-
-bool Value::get_bool ( int index )
-{
-  return this->object_[index].asBool();
-}
-
-std::vector<bool> Value::get_bools ( int index )
-{
-  std::vector<bool> members;
-  for ( uint i = 0; i < this->object_[i].size(); ++i )
-  {
-    members.push_back ( this->object_[index][i].asBool() );
-  }
-  return members;
-}
-
-const char* Value::c_str ( int index )
-{
-  return this->object_[index].asCString();
-}
-
-std::string Value::get_string ( int index )
-{
-  return this->object_[index].asString();
-}
-
-std::vector<std::string> Value::get_strings ( int index )
-{
-  std::vector<std::string> members;
-  for ( uint i = 0; i < this->object_[i].size(); ++i )
-  {
-    members.push_back ( this->object_[index][i].asString() );
-  }
-  return members;
-}
-
-int Value::get_int ( int index )
-{
-  return this->object_[index].asInt();
-}
-
-std::vector<int> Value::get_ints ( const std::string& key, int index )
-{
-  std::vector<int> members;
-  for ( uint i = 0; i < this->object_[index][key].size(); ++i )
-  {
-    members.push_back ( this->object_[index][key][i].asInt() );
-  }
-  return members;
-}
-
-uint Value::get_uint ( int index )
-{
-  return this->object_[index].asUInt();
-}
-
-std::vector<uint> Value::get_uints ( int index )
-{
-  std::vector<uint> members;
-  for ( uint i = 0; i < this->object_[i].size(); ++i )
-  {
-    members.push_back ( this->object_[index][i].asUInt() );
-  }
-  return members;
-}
-
-ValueType Value::value ( int index )
-{
-  return this->object_[index];
-}
-
-std::vector<ValueType> Value::values ( int index )
-{
-  std::vector<ValueType> members;
-  for ( uint i = 0; i < this->object_[i].size(); ++i )
-  {
-    members.push_back ( this->object_[index][i] );
-  }
-  return members;
-}
-
-bool Value::get_bool ( const std::string& key )
-{
-  return this->object_[key].asBool();
-}
-
-int Value::get_int ( const std::string& key, int index )
-{
-  return this->object_[index][key].asInt();
-}
-
-uint Value::get_uint ( const std::string& key )
-{
-  return this->object_[key].asUInt();
-}
-
-const char* Value::c_str ( const std::string& key )
-{
-  return this->object_[key].asCString();
-}
-
-std::string Value::get_string ( const std::string& key, int index )
-{
-  return this->object_[index][key].asString();
-}
-
-ValueType Value::value ( const std::string& key )
-{
-  return this->object_[key];
-}
-
-uint32 Value::size ( void ) const
-{
-  return this->object_.size();
-}
-
-JSONValueType Value::type ( void ) const
-{
-  return this->object_.type();
-}
-
-JSONValueType Value::type ( int index ) const
-{
-  return this->object_[index].type();
-}
-
-JSONValueType Value::type ( const std::string& key, int index ) const
-{
-  return this->object_[index][key].type();
 }
 
 } // namespace JSON

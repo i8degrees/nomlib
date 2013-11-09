@@ -57,6 +57,41 @@ class Value
     /// Obtain the underlying container of this object
     ValueType& get ( void ) const;
 
+    uint32 size ( void ) const;
+
+    JSONValueType type ( void ) const;
+    JSONValueType type ( int index ) const;
+    JSONValueType type ( const std::string& key, int index ) const;
+
+    int get_int ( int index );
+    /// Get signed integer array values by key, index
+    std::vector<int> get_ints ( const std::string& key, int index );
+    int get_int ( const std::string& key, int index );
+
+    uint get_uint ( int index );
+    /// Get unsigned integer array values by index
+    std::vector<uint> get_uints ( int index );
+    uint get_uint ( const std::string& key );
+
+    //double get_double ( int index );
+
+    const char* c_str ( int index );
+    std::string get_string ( int index );
+    /// Get C++ string array values by index
+    std::vector<std::string> get_strings ( int index );
+    const char* c_str ( const std::string& key );
+    std::string get_string ( const std::string& key, int index );
+
+    bool get_bool ( int index );
+    /// Get bool array values by index
+    std::vector<bool> get_bools ( int index );
+    bool get_bool ( const std::string& key );
+
+    ValueType value ( int index );
+    std::vector<ValueType> values ( int index );
+
+    ValueType value ( const std::string& key );
+
     /// JSON NULL
     ///
     /// \note Type 0 -- Json::Value::nullValue
@@ -70,7 +105,7 @@ class Value
 
     /// JSON unsigned integer
     ///
-    /// \note Type 2 -- Json::Value::intValue
+    /// \note Type 2 -- Json::Value::uintValue
     void insert ( const std::string& key, uint value, int index );
     void insert ( const std::string& key, const std::vector<uint>& values );
 
@@ -104,46 +139,6 @@ class Value
     ///
     /// \note Type [6||7] -- Json::Value::arrayValue || Json::Value::objectValue
     void insert ( const std::string& key, const std::vector<ValueType>& values );
-
-    bool get_bool ( int index );
-    /// Get bool array values by index
-    std::vector<bool> get_bools ( int index );
-
-    const char* c_str ( int index );
-
-    std::string get_string ( int index );
-    /// Get C++ string array values by index
-    std::vector<std::string> get_strings ( int index );
-
-    double get_double ( int index );
-
-    int get_int ( int index );
-
-    /// Get signed integer array values by key, index
-    std::vector<int> get_ints ( const std::string& key, int index );
-
-    uint get_uint ( int index );
-    /// Get unsigned integer array values by index
-    std::vector<uint> get_uints ( int index );
-
-    ValueType value ( int index );
-    std::vector<ValueType> values ( int index );
-
-    bool get_bool ( const std::string& key );
-
-    int get_int ( const std::string& key, int index );
-    uint get_uint ( const std::string& key );
-
-    const char* c_str ( const std::string& key );
-    std::string get_string ( const std::string& key, int index );
-
-    ValueType value ( const std::string& key );
-
-    uint32 size ( void ) const;
-
-    JSONValueType type ( void ) const;
-    JSONValueType type ( int index ) const;
-    JSONValueType type ( const std::string& key, int index ) const;
 
   private:
     /// Contents of a key

@@ -121,6 +121,8 @@ uint32 RGBA ( const Color& color, const SDL_PixelFormat* fmt );
 /// \return RGBA components as an unsigned integer.
 uint32 RGBA ( const Color& color, uint32 fmt );
 
+uint32 ticks ( void );
+
 namespace priv {
 
 /// Custom deleter for SDL_Window structures

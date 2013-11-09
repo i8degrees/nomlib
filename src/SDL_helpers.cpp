@@ -104,6 +104,11 @@ uint32 RGBA ( const Color& color, uint32 fmt )
   return SDL_MapRGBA ( SDL_AllocFormat(fmt), color.red, color.green, color.blue, color.alpha );
 }
 
+uint32 ticks ( void )
+{
+  return SDL_GetTicks();
+}
+
 namespace priv {
 
 void FreeWindow ( SDL_Window* handle )

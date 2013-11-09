@@ -77,9 +77,6 @@ class Cursor:
     /// Toggle the lock variable.
     void toggle_lock ( bool toggle );
 
-    /// \fixme (broken in TTcards without this here)
-    void update ( void );
-
   protected:
     /// The deriving classes must implement this iteration for the 'up' action
     ///

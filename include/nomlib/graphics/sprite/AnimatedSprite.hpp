@@ -117,6 +117,9 @@ class AnimatedSprite:
     void unpause ( void );
 
   protected:
+    /// Updates the playback of the animation
+    void update_animation ( void );
+
     /// Initialize values to their respective defaults
     void initialize ( void );
 
@@ -128,9 +131,6 @@ class AnimatedSprite:
 
     /// Set a new status state for this object
     void setAnimationStatus ( AnimatedSprite::AnimationStatus status );
-
-    /// Updates the playback of the animation
-    void update ( void );
 
     /// Total number of animation frames
     int32 max_frames;

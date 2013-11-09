@@ -147,6 +147,15 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       }
       this->sprite.setSheetID ( 1 ); // Left-pointing cursor hand
 
+      // Load the same sprite sheet -- but this time -- used for animation
+      // effects!
+      this->ani_sprite = nom::AnimatedSprite ( RESOURCE_SPRITE );
+      if ( this->ani_sprite.load ( APP_RESOURCES_DIR + p.native() + this->ani_sprite.sheet_filename(), nom::Color(255, 0, 255, 0) ) == false )
+      {
+        nom::DialogMessageBox ( APP_NAME, "Could not load sprite: " + this->ani_sprite.sheet_filename() );
+        return false;
+      }
+
       this->window[1].set_active();
       if ( this->background.load ( RESOURCE_STATIC_IMAGE, 0 ) == false )
       {
@@ -177,6 +186,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       this->ui_frame.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
 NOM_DUMP_VAR(this->sprite.size().x); // FIXME: should be 26 (sprite sheet width), but is 130 (total texture size)
       this->sprite.setPosition ( this->ui_frame.position().x - 26, this->ui_frame.position().y );
+      this->ani_sprite.setPosition ( this->ui_frame.position().x + this->ui_frame.size().x + 26, this->ui_frame.position().y );
 NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
 
       this->Running(); // If all is well, here goes nothing!
@@ -209,6 +219,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           this->ui_frame.update();
           this->bfont.update();
           this->sprite.update();
+          this->ani_sprite.play();
 
           this->font.update();
 
@@ -231,6 +242,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
         this->window[0].fill ( nom::Color::NomPrimaryColorKey );
         this->ui_frame.draw ( this->window[0] );
         this->sprite.draw ( this->window[0] );
+        this->ani_sprite.draw ( this->window[0] );
 
         this->bfont.draw ( this->window[0] );
         this->font.draw ( this->window[0] );
@@ -375,6 +387,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
     nom::TrueTypeFont font;
 
     nom::SpriteBatch sprite;
+    nom::AnimatedSprite ani_sprite;
 }; // class App
 
 nom::int32 main ( nom::int32 argc, char* argv[] )

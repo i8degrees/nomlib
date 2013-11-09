@@ -135,7 +135,7 @@ void AnimatedSprite::setAnimationStatus ( AnimatedSprite::AnimationStatus status
   this->animation_status = status;
 }
 
-void AnimatedSprite::update ( void )
+void AnimatedSprite::update_animation ( void )
 {
   if ( this->status() != AnimatedSprite::AnimationStatus::Playing ) return;
 
@@ -191,13 +191,13 @@ void AnimatedSprite::update ( void )
   }
 
   this->setSheetID ( this->frame() );
-  //this->Update();
+  SpriteBatch::update();
 }
 
 void AnimatedSprite::play ( void )
 {
   this->setAnimationStatus ( AnimatedSprite::AnimationStatus::Playing );
-  this->update();
+  this->update_animation();
 }
 
 void AnimatedSprite::stop ( void )

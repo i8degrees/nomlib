@@ -75,7 +75,7 @@ class SpriteBatch:
 
     /// Update the sprite for rendering with regard to positioning coordinates
     /// and target frame ID.
-    virtual void update ( void );
+    /*virtual*/ void update ( void );
 
   protected:
     /// Source (input) coordinates -- used for sprite sheet positioning

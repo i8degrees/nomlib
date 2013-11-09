@@ -97,6 +97,18 @@ class App: public nom::SDL_App
     {
       nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
 
+      if ( nom::set_hint ( SDL_HINT_RENDER_VSYNC, "0" ) == false )
+      {
+NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
+      }
+
+      // Best quality is Nearest rescaling for low resolution artwork, such as
+      // our bitmap fonts!
+      if ( nom::set_hint ( SDL_HINT_RENDER_SCALE_QUALITY, "Nearest" ) == false )
+      {
+NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" ) );
+      }
+
       for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
       {
         if ( this->window[idx].create ( APP_NAME, WINDOW_WIDTH/2, WINDOW_HEIGHT, window_flags ) == false )
@@ -112,9 +124,6 @@ class App: public nom::SDL_App
           return false;
         }
       }
-
-      // Best quality for rescaling low resolution artwork, such as bitmap fonts!
-      SDL_SetHint ( SDL_HINT_RENDER_SCALE_QUALITY, "Nearest" );
 
       this->window[0].set_active();
       if ( this->bfont.load ( RESOURCE_BITMAP_FONT, nom::Color(255, 0, 255, 0) ) == false )

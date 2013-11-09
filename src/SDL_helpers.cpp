@@ -109,6 +109,21 @@ uint32 ticks ( void )
   return SDL_GetTicks();
 }
 
+const std::string hint ( const std::string& name )
+{
+  std::string result;
+
+  result = SDL_GetHint ( name.c_str() );
+  return result;
+}
+
+bool set_hint ( const std::string& name, const std::string& value )
+{
+  if ( SDL_SetHint ( name.c_str(), value.c_str() ) == false ) return false;
+
+  return true;
+}
+
 namespace priv {
 
 void FreeWindow ( SDL_Window* handle )

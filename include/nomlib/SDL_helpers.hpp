@@ -121,7 +121,30 @@ uint32 RGBA ( const Color& color, const SDL_PixelFormat* fmt );
 /// \return RGBA components as an unsigned integer.
 uint32 RGBA ( const Color& color, uint32 fmt );
 
+/// SDL helper function
+///
+/// Wrapper for SDL_GetTicks
 uint32 ticks ( void );
+
+/// SDL2 helper function
+///
+/// Wrapper for SDL_GetHint
+///
+/// \param name   Hint to query
+///
+/// \return Value of the queried name, or a null-terminated string if not set
+const std::string hint ( const std::string& name );
+
+/// SDL2 helper function
+///
+/// Wrapper for SDL_SetHint
+///
+/// \param name   Name of hint to set
+/// \param value  New value to set
+///
+/// Note that it is best to set certain hints -- such as
+/// SDL_RENDERER_PRESENTVSYNC -- before the first call to nom::Window::create.
+bool set_hint ( const std::string& name, const std::string& value );
 
 namespace priv {
 

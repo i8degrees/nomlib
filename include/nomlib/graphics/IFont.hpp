@@ -76,8 +76,9 @@ class IFont:
       Blended
     };
 
-    typedef std::shared_ptr<IFont> SharedPtr;
     typedef IFont* RawPtr;
+    typedef std::unique_ptr<IFont> UniquePtr;
+    typedef std::shared_ptr<IFont> SharedPtr;
 
     IFont ( void ) {}
     virtual ~IFont ( void ) {}

@@ -550,7 +550,7 @@ NOM_LOG_ERR ( NOM, "Could not rebuild bitmap font metrics" );
   return true;
 }
 
-  namespace priv {
+namespace priv {
 
 void Free_BitmapFont ( BitmapFont* ptr )
 {
@@ -559,7 +559,6 @@ void Free_BitmapFont ( BitmapFont* ptr )
   // FIXME; this is a known bug (memory leak).
 }
 
-
-  } // namespace priv
+} // namespace priv
 } // namespace nom
 

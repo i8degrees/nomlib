@@ -72,7 +72,25 @@ bool Renderer::renderer_valid ( void ) const
   }
 }
 
-Coords Renderer::viewport ( void ) const
+const Point2i Renderer::scale_factor ( void ) const
+{
+  Point2f scale_factor;
+
+  SDL_RenderGetScale ( this->renderer(), &scale_factor.x, &scale_factor.y );
+
+  return scale_factor;
+}
+
+const Point2i Renderer::logical_resolution ( void ) const
+{
+  Point2i size;
+
+  SDL_RenderGetLogicalSize ( this->renderer(), &size.x, &size.y );
+
+  return size;
+}
+
+const Coords Renderer::viewport ( void ) const
 {
   SDL_Rect v;
   Coords view_pos;
@@ -141,13 +159,37 @@ bool Renderer::fill ( const Color& color )
   return true;
 }
 
-bool Renderer::set_viewport ( int width, int height )
+bool Renderer::set_logical_resolution ( int width, int height )
 {
   if ( SDL_RenderSetLogicalSize ( this->renderer(), width, height ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
+  return true;
+}
+
+bool Renderer::set_viewport ( const Coords& rect )
+{
+  if ( rect != Coords::null )
+  {
+    SDL_Rect area = SDL_RECT(rect);
+
+    if ( SDL_RenderSetViewport ( this->renderer(), &area ) != 0 )
+    {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return false;
+    }
+  }
+  else
+  {
+    if ( SDL_RenderSetViewport ( this->renderer(), nullptr ) != 0 )
+    {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return false;
+    }
+  }
+
   return true;
 }
 

@@ -71,7 +71,18 @@ class Renderer
     /// Is this object initialized? Valid when *NOT* nullptr
     bool renderer_valid ( void ) const;
 
-    Coords viewport ( void ) const;
+    /// Get the current logical resolution size
+    ///
+    /// \todo Test me!
+    const Point2i logical_resolution ( void ) const;
+
+    /// Get the current viewport dimensions
+    ///
+    /// \todo Test me!
+    const Coords viewport ( void ) const;
+
+    /// Obtain the current scale factor
+    const Point2i scale_factor ( void ) const;
 
     /// Obtain the blending mode used for drawing
     const SDL_BlendMode blend_mode ( void ) const;
@@ -98,14 +109,25 @@ class Renderer
     /// Default color fill is "BSOD (TM) Blue".
     bool fill ( const Color& color = Color::Blue );
 
-    /// \brief Set device independent resolution for rendering
+    /// Set device independent resolution for rendering
     ///
     /// \param width      Width of the new logical resolution
     /// \param height     Height of the new logical resolution
     ///
     /// Sets both a new view port and any necessary rescaling to fit within a
     /// fixed, logical resolution for rendering.
-    bool set_viewport ( int width, int height );
+    bool set_logical_resolution ( int width, int height );
+
+    /// Set a new drawing area for rendering
+    ///
+    /// \param rect       Represents the drawing area to update;
+    ///                   passing Coords::null to set the viewport to the entire
+    ///                   target
+    ///
+    /// \note When the window is resized, the current viewport is automatically
+    /// resized to compensate.
+    /// \todo Test me!
+    bool set_viewport ( const Coords& rect );
 
     bool set_color ( const Color& color );
 

@@ -336,7 +336,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
                 this->window[idx].toggle_fullscreen();
 
                 // Scale window contents up by the new width & height
-                this->window[idx].set_viewport ( window_size.x, window_size.y );
+                this->window[idx].set_logical_resolution ( window_size.x, window_size.y );
                 break;
               }
             } // end window_id match

@@ -91,7 +91,7 @@ class Input
 
     virtual void HandleInput ( SDL_Event* event );
   protected:
-    virtual void onUserEvent ( uint8 type, int32 code, void* data1, void* data2 );
+    virtual void onUserEvent ( uint32 type, int32 code, void* data1, void* data2 );
 
     virtual void onQuit ( void );
     virtual void onResize ( int32 width, int32 height );

@@ -217,7 +217,7 @@ TODO */
   } // end switch input->type
 }
 
-void Input::onUserEvent ( uint8 type, int32 code, void* data1, void* data2 )
+void Input::onUserEvent ( uint32 type, int32 code, void* data1, void* data2 )
 {
   // virtual implementation
 }

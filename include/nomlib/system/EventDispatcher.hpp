@@ -58,8 +58,14 @@ class EventDispatcher
     EventDispatcher ( void );
     ~EventDispatcher ( void );
 
+    /// Internal method wrapper for dispatch
+    ///
+    /// \todo Use SDL2's register event function
     int32 push ( SDL_Event* event, int32 code, void* params );
 
+    /// Dispatch an event
+    ///
+    /// \todo Use SDL2's register event function
     int32 dispatch ( enum UserEvent code, void* params = nullptr );
 };
 

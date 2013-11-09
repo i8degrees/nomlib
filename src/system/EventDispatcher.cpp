@@ -52,7 +52,7 @@ int32 EventDispatcher::push ( SDL_Event* event, int32 code, void* params )
   event->type = SDL_USEREVENT;
   event->user = user_event;
 
-  if ( SDL_PushEvent ( event ) != 0 )
+  if ( SDL_PushEvent ( event ) != 1 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return -1;

@@ -13,15 +13,15 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
 
   # ARCH_32 and ARCH_64 are not presently used here, but are reserved for future
   # consistency with the other supported platforms.
-  option ( ARCH_32 "Compile nomlib as a 32-bit library" off )
-  option ( ARCH_64 "Compile nomlib as a 64-bit library" on )
+  option ( ARCH_32 "Compile ${PROJECT_NAME} as a 32-bit library" off )
+  option ( ARCH_64 "Compile ${PROJECT_NAME} as a 64-bit library" on )
 
   message ( STATUS "Platform: Linux" )
 elseif ( CMAKE_SYSTEM_NAME STREQUAL "Windows" )
   set ( PLATFORM_WINDOWS true )
 
-  option ( ARCH_32 "Compile nomlib as a 32-bit library" off )
-  option ( ARCH_64 "Compile nomlib as a 64-bit library" on )
+  option ( ARCH_32 "Compile ${PROJECT_NAME} as a 32-bit library" off )
+  option ( ARCH_64 "Compile ${PROJECT_NAME} as a 64-bit library" on )
 
   message ( STATUS "Platform: Windows" )
 else () # Not Linux nor OSX

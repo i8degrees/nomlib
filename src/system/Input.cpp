@@ -200,10 +200,13 @@ TODO */
     case SDL_DROPFILE:
     {
       char* file = input->drop.file;
-      this->onDragDrop ( file );
+      this->onDragDrop ( file, input->drop.timestamp );
+
       SDL_free ( file );
-    } // end SDL_DROPFILE event
+      file = nullptr;
     break;
+    } // SDL_DROPFILE
+
 
   } // end switch input->type
 }
@@ -426,9 +429,13 @@ void Input::onJoyAxis ( int32 which, int32 axis, uint16 value )
 #endif
 }
 
-void Input::onDragDrop ( const std::string& file_path )
+void Input::onDragDrop ( const std::string& file_path, uint32 timestamp )
 {
-  // Do nothing virtual implementation
+#if defined ( NOM_DEBUG_SDL2_DRAG_DROP_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( file_path );
+  NOM_DUMP_VAR ( timestamp );
+#endif
 }
 
 

@@ -126,5 +126,4 @@ bool SDL_App::PollEvents ( EventType* event )
   return false;
 }
 
-
 } // namespace nom

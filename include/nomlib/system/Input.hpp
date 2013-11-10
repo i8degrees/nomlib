@@ -50,6 +50,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// Enable debugging output of every joystick axis event
 //#define NOM_DEBUG_SDL2_JOYSTICK_AXIS_INPUT
 
+/// Enable debugging output of every Drag 'N' Drop event
+#define NOM_DEBUG_SDL2_DRAG_DROP_INPUT
+
 namespace nom {
 
 /// SDL mapping to individual PS3 axes
@@ -131,7 +134,13 @@ class Input
     virtual void onJoyButtonUp ( int32 which, int32 button );
     virtual void onJoyAxis ( int32 which, int32 axis, uint16 value );
 
-    virtual void onDragDrop ( const std::string& file_path );
+    /// Drag 'N' Drop events
+    ///
+    /// \note To enable drag and drop events on Mac OS X, you must add the
+    /// appropriate "Document Types" in your application bundle's Info.plist.
+    ///
+    /// (Document Types: public.data to enable all types)
+    virtual void onDragDrop ( const std::string& file_path, uint32 timestamp );
 
   private:
     JoystickUniquePtr joystick_;

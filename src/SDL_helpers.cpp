@@ -151,5 +151,17 @@ void TTF_FreeFont ( TTF_Font* font )
   TTF_CloseFont ( font );
 }
 
+void Free_Joystick ( SDL_Joystick* joy )
+{
+  if ( joy != nullptr )
+  {
+    if ( SDL_JoystickGetAttached ( joy ) )
+    {
+      SDL_JoystickClose ( joy );
+      joy = nullptr;
+    }
+  }
+}
+
 } // namespace priv
 } // namespace nom

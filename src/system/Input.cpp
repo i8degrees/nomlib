@@ -30,7 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Input::Input ( void )
+Input::Input ( void ) :
+    joystick_ { Input::JoystickUniquePtr ( nullptr, priv::Free_Joystick ) },
+    joystick_id_ ( 0 )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -43,40 +45,29 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
     }
   }
 
-  this->joystick = nullptr;
-/* TODO
 NOM_LOG_INFO ( NOM, std::to_string ( SDL_NumJoysticks() ) + " joysticks were found" );
 
-  if ( SDL_NumJoysticks() >= 0 )
+  if ( SDL_NumJoysticks() > 0 )
   {
-    SDL_JoystickEventState ( SDL_ENABLE );
+    this->joystick_.reset ( SDL_JoystickOpen ( 0 ) );
 
-    this->joystick = ( SDL_JoystickOpen( 0 ) );
-
-    for( int idx = 0; idx < SDL_NumJoysticks(); idx++ )
+    if ( this->joystick_.get() )
     {
-NOM_LOG_INFO ( NOM, SDL_JoystickName ( idx ) );
+      for( int idx = 0; idx < SDL_NumJoysticks(); idx++ )
+      {
+NOM_LOG_INFO ( NOM, SDL_JoystickNameForIndex ( idx ) );
+      }
+
+      SDL_JoystickEventState ( SDL_ENABLE );
+
+      this->joystick_id_ = SDL_JoystickInstanceID ( this->joystick_.get() );
     }
   }
-TODO */
 }
 
 Input::~Input ( void )
 {
 NOM_LOG_TRACE ( NOM );
-/*
-  if ( this->joystick != nullptr )
-  {
-    // Only close joysticks we have opened
-    if ( SDL_JoystickOpened ( 0 ) == 1 )
-    {
-      SDL_JoystickClose ( this->joystick.get() );
-
-      if ( this->joystick != nullptr )
-        this->joystick = nullptr;
-    }
-  }
-*/
 }
 
 
@@ -195,15 +186,15 @@ TODO */
     break;
 
     case SDL_JOYBUTTONDOWN:
-      this->onJoyButtonDown ( input->jbutton.which, input->jbutton.button );
+      this->onJoyButtonDown ( this->joystick_id_, input->jbutton.button );
     break;
 
     case SDL_JOYBUTTONUP:
-      this->onJoyButtonUp ( input->jbutton.which, input->jbutton.button );
+      this->onJoyButtonUp ( this->joystick_id_, input->jbutton.button );
     break;
 
     case SDL_JOYAXISMOTION:
-      this->onJoyAxis ( input->jaxis.which, input->jaxis.axis, input->jaxis.value );
+      this->onJoyAxis ( this->joystick_id_, input->jaxis.axis, input->jaxis.value );
     break;
 
     case SDL_DROPFILE:
@@ -409,17 +400,30 @@ void Input::onMouseButtonSevenUp ( int32 x, int32 y, uint32 window_id )
 
 void Input::onJoyButtonDown ( int32 which, int32 button )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_JOYSTICK_BUTTON_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( which );
+  NOM_DUMP_VAR ( button );
+#endif
 }
 
 void Input::onJoyButtonUp ( int32 which, int32 button )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_JOYSTICK_BUTTON_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( which );
+  NOM_DUMP_VAR ( button );
+#endif
 }
 
 void Input::onJoyAxis ( int32 which, int32 axis, uint16 value )
 {
-  // virtual implementation
+#if defined ( NOM_DEBUG_SDL2_JOYSTICK_AXIS_INPUT )
+  NOM_LOG_TRACE ( NOM );
+  NOM_DUMP_VAR ( which );
+  NOM_DUMP_VAR ( axis );
+  NOM_DUMP_VAR ( value );
+#endif
 }
 
 void Input::onDragDrop ( const std::string& file_path )

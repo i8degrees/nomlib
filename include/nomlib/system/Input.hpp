@@ -31,10 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
+#include <memory>
 
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
+#include "nomlib/SDL_helpers.hpp"
 
 /// Enable debugging output of every key press & release event
 //#define NOM_DEBUG_SDL2_KEYBOARD_INPUT
@@ -42,8 +44,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// Enable debugging output of every mouse click, release & motion
 //#define NOM_DEBUG_SDL2_MOUSE_INPUT
 
-/// Enable debugging output of every joystick event (TODO: implement)
-//#define NOM_DEBUG_SDL2_JOYSTICK_INPUT
+/// Enable debugging output of every joystick button event
+//#define NOM_DEBUG_SDL2_JOYSTICK_BUTTON_INPUT
+
+/// Enable debugging output of every joystick axis event
+//#define NOM_DEBUG_SDL2_JOYSTICK_AXIS_INPUT
 
 namespace nom {
 
@@ -86,6 +91,8 @@ class Input
 {
   public:
     typedef SDL_Event EventType;
+    typedef std::unique_ptr<SDL_Joystick, void (*)(SDL_Joystick*)> JoystickUniquePtr;
+
     Input ( void );
     virtual ~Input ( void );
 
@@ -127,7 +134,8 @@ class Input
     virtual void onDragDrop ( const std::string& file_path );
 
   private:
-    SDL_Joystick* joystick;
+    JoystickUniquePtr joystick_;
+    SDL_JoystickID joystick_id_;
 };
 
 

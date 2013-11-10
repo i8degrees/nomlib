@@ -163,6 +163,9 @@ void FreeSurface ( SDL_Surface* );
 /// Custom deleter for TTF_Font* structures
 void TTF_FreeFont ( TTF_Font* );
 
+/// Custom deleter for SDL_Joystick* structures
+void Free_Joystick ( SDL_Joystick* );
+
 } // namespace priv
 } // namespace nom
 

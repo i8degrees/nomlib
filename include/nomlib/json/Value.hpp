@@ -63,6 +63,8 @@ class Value
     JSONValueType type ( int index ) const;
     JSONValueType type ( const std::string& key, int index ) const;
 
+    JSONMemberType members ( int index ) const;
+
     int get_int ( int index );
     /// Get signed integer array values by key, index
     std::vector<int> get_ints ( const std::string& key, int index );
@@ -94,50 +96,50 @@ class Value
 
     /// JSON NULL
     ///
-    /// \note Type 0 -- Json::Value::nullValue
+    /// \note Type 0 -- Json::nullValue
     void insert ( const std::string& key, int index );
 
     /// JSON signed integer
     ///
-    /// \note Type 1 -- Json::Value::intValue
+    /// \note Type 1 -- Json::intValue
     void insert ( const std::string& key, int value, int index );
     void insert ( const std::string& key, std::vector<int> values );
 
     /// JSON unsigned integer
     ///
-    /// \note Type 2 -- Json::Value::uintValue
+    /// \note Type 2 -- Json::uintValue
     void insert ( const std::string& key, uint value, int index );
     void insert ( const std::string& key, const std::vector<uint>& values );
 
     /// JSON double
     ///
-    /// \note Type 3 -- Json::Value::realNumber
+    /// \note Type 3 -- Json::realValue
     void insert ( const std::string& key, double value, int index );
 
     /// JSON float
     ///
-    /// \note Type 3 -- Json::Value::realNumber
+    /// \note Type 3 -- Json::realValue
     void insert ( const std::string& key, float value, int index );
 
     /// JSON string (C string)
     ///
-    /// \note Type 4 -- Json::Value::stringValue
+    /// \note Type 4 -- Json::stringValue
     void insert ( const std::string& key, const char* value, int index );
 
     /// JSON string (C++ string)
     ///
-    /// \note Type 4 -- Json::Value::stringValue
+    /// \note Type 4 -- Json::stringValue
     void insert ( const std::string& key, const std::string& value, int index );
     void insert ( const std::string& key, const std::vector<std::string>& values );
 
     /// JSON boolean
     ///
-    /// \note Type 5 -- Json::Value::booleanValue
+    /// \note Type 5 -- Json::booleanValue
     void insert ( const std::string& key, bool value, int index );
 
     /// JSON [...???...]
     ///
-    /// \note Type [6||7] -- Json::Value::arrayValue || Json::Value::objectValue
+    /// \note Type [6||7] -- Json::arrayValue || Json::objectValue
     void insert ( const std::string& key, const std::vector<ValueType>& values );
 
   private:

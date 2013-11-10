@@ -36,9 +36,32 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 namespace JSON {
 
-/// Platform / library dependent definition
+/// Platform / library dependent definitions
+///
+/// JSONCPP's public API for JSON I/O
 typedef Json::Value ValueType;
-typedef enum Json::ValueType JSONValueType;
+
+/// Platform / library dependent definitions
+///
+/// JSONCPP typedef for an enum defining JSON data type
+typedef Json::ValueType JSONValueType;
+
+/// Platform / library dependent definitions
+///
+/// JSONCPP typedef for std::vector<std::string>
+typedef Json::Value::Members JSONMemberType;
+
+enum
+{
+  Null = Json::nullValue,
+  Integer = Json::intValue,
+  UInteger = Json::uintValue,
+  Real = Json::realValue,
+  String = Json::stringValue,
+  Boolean = Json::booleanValue,
+  Array = Json::arrayValue,
+  Object = Json::objectValue
+};
 
 /// Formatting options (not presently used).
 ///

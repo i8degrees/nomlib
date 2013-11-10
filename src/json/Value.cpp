@@ -74,6 +74,11 @@ JSONValueType Value::type ( const std::string& key, int index ) const
   return this->object_[index][key].type();
 }
 
+JSONMemberType Value::members ( int index ) const
+{
+  return this->object_[index].getMemberNames();
+}
+
 int Value::get_int ( int index )
 {
   return this->object_[index].asInt();

@@ -48,25 +48,25 @@ nom::int32 do_window_test1 ( void )
 {
   const int WINDOW_WIDTH = 320;
   const int WINDOW_HEIGHT = 240;
-  nom::Display window;
+  nom::Window window;
 
-  if ( window.create ( WINDOW_WIDTH, WINDOW_HEIGHT, 0 ) == false )
+  if ( window.create ( "window_test1", WINDOW_WIDTH, WINDOW_HEIGHT, 0 ) == false )
   {
     return EXIT_FAILURE;
   }
 
-  if ( window.setWindowIcon ( "icon.png" ) == false ) return EXIT_FAILURE;
+  if ( window.set_window_icon( "icon.png" ) == false ) return EXIT_FAILURE;
 
   return EXIT_SUCCESS;
 }
 
 nom::int32 do_window_test2 ( void )
 {
-  nom::Display window;
+  nom::Window window;
   std::string title = "nomlib::RenderWindow Unit Test 2";
-  window.setWindowTitle ( title );
+  window.set_window_title( title );
 
-  if ( window.getWindowTitle() != title ) return EXIT_SUCCESS;
+  if ( window.window_title() != title ) return EXIT_SUCCESS;
 
   return EXIT_FAILURE;
 }

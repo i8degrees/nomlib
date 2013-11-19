@@ -79,6 +79,13 @@ class Sprite:
     virtual void update ( void );
     void draw ( RenderTarget target ) const;
 
+    /// Draw a rotated nom::Sprite on a nom::Window
+    ///
+    /// \param  target  Reference to an active nom::Window
+    /// \param  angle   Rotation angle in degrees
+    ///
+    void draw ( RenderTarget target, const double angle ) const;
+
     /// Rescale the font with a chosen resizing algorithm
     bool resize ( enum ResizeAlgorithm scaling_algorithm );
 

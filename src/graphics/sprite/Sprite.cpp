@@ -113,6 +113,11 @@ NOM_ASSERT ( this->sprite.valid() );
   this->sprite.draw ( target.renderer() );
 }
 
+void Sprite::draw ( RenderTarget target, const double degrees ) const
+{
+  this->sprite.draw ( target.renderer(), degrees );
+}
+
 bool Sprite::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
   if ( this->sprite.valid() == false )

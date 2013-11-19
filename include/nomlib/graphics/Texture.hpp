@@ -235,6 +235,20 @@ class Texture
     /// \note This is an alias for nom::Texture::draw ( SDL_Renderer* )
     void draw ( const Window& target ) const;
 
+    /// Draw a rotated nom::Texture to a rendering target
+    ///
+    /// \param  target  Pointer to SDL_Renderer context
+    /// \param  angle   Rotation angle in degrees
+    ///
+    /// \todo Implement pivot point & make use of SDL_RendererFlip enum
+    void draw ( SDL_RENDERER::RawPtr target, const double angle ) const;
+
+    /// Draw a rotated nom::Texture on a nom::Window
+    ///
+    /// \param  target  Reference to an active nom::Window
+    /// \param  angle   Rotation angle in degrees
+    void draw ( const Window& target, const double angle ) const;
+
     bool set_alpha ( uint8 opacity );
 
     /// Pixel reading -- supports 8-bit, 15/16-bit, 24-bit & 32-bit color modes

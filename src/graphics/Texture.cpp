@@ -408,6 +408,17 @@ NOM_LOG_ERR ( NOM, "Error: Failed to initialize texture." );
   return true;
 }
 
+bool Texture::update ( const void* pixels, uint16 pitch, const Coords& update_area )
+{
+  if ( SDL_UpdateTexture ( this->texture(), nullptr, pixels, pitch ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  return true;
+}
+
 void Texture::draw ( SDL_RENDERER::RawPtr target ) const
 {
   Point2i pos = this->position();
@@ -416,17 +427,9 @@ void Texture::draw ( SDL_RENDERER::RawPtr target ) const
   render_coords.x = pos.x;
   render_coords.y = pos.y;
 
-  // Use set clipping bounds for the width and height of this texture
-  if ( this->bounds().w != -1 && this->bounds().h != -1 )
-  {
-    render_coords.w = this->bounds().w;
-    render_coords.h = this->bounds().h;
-  }
-  else // Use Texture's known total width and height
-  {
-    render_coords.w = this->width();
-    render_coords.h = this->height();
-  }
+  // Use preset clipping bounds for the width and height of this texture
+  render_coords.w = this->bounds().w;
+  render_coords.h = this->bounds().h;
 
   // Render with set clipping bounds; we are rendering only a portion of a
   // larger Texture; think: sprite sheets.
@@ -458,15 +461,46 @@ void Texture::draw ( const Window& target ) const
   this->draw ( target.renderer() );
 }
 
-bool Texture::update ( const void* pixels, uint16 pitch, const Coords& update_area )
+void Texture::draw ( SDL_RENDERER::RawPtr target, const double angle ) const
 {
-  if ( SDL_UpdateTexture ( this->texture(), nullptr, pixels, pitch ) != 0 )
-  {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return false;
-  }
+  Point2i pos = this->position();
+  SDL_Rect render_coords;
 
-  return true;
+  render_coords.x = pos.x;
+  render_coords.y = pos.y;
+
+  // Use preset clipping bounds for the width and height of this texture
+  render_coords.w = this->bounds().w;
+  render_coords.h = this->bounds().h;
+
+  // Render with set clipping bounds; we are rendering only a portion of a
+  // larger Texture; think: sprite sheets.
+  if ( this->bounds().w != -1 && this->bounds().h != -1 )
+  {
+    SDL_Rect render_bounds;
+    render_bounds.x = this->bounds().x;
+    render_bounds.y = this->bounds().y;
+    render_bounds.w = this->bounds().w;
+    render_bounds.h = this->bounds().h;
+    if ( SDL_RenderCopyEx ( target, this->texture(), &render_bounds, &render_coords, angle, nullptr, SDL_FLIP_NONE ) != 0 )
+    {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return;
+    }
+  }
+  else // Render the entire Texture we have in memory
+  {
+    if ( SDL_RenderCopyEx ( target, this->texture(), nullptr, &render_coords, angle, nullptr, SDL_FLIP_NONE ) != 0 )
+    {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return;
+    }
+  }
+}
+
+void Texture::draw ( const Window& target, const double degrees ) const
+{
+  this->draw ( target.renderer(), degrees );
 }
 
 bool Texture::set_alpha ( uint8 opacity )

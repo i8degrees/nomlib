@@ -92,6 +92,8 @@ class App: public nom::SDL_App
         nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
         exit ( EXIT_FAILURE );
       }
+
+      this->deg = -90;
     } // App
 
     ~App ( void )
@@ -247,7 +249,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
 
         this->window[0].fill ( nom::Color::NomPrimaryColorKey );
         this->ui_frame.draw ( this->window[0] );
-        this->sprite.draw ( this->window[0] );
+        this->sprite.draw ( this->window[0], this->deg );
         this->ani_sprite.draw ( this->window[0] );
 
         this->bfont.draw ( this->window[0] );
@@ -317,6 +319,12 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
 
         case SDLK_LEFT:
         {
+          if ( mod == KMOD_LSHIFT )
+          {
+            this->deg -= 90;
+            break;
+          }
+
           nom::int32 id = this->sprite.getSheetID();
 
           if ( id > 0 ) id--;
@@ -327,6 +335,12 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
         }
         case SDLK_RIGHT:
         {
+          if ( mod == KMOD_LSHIFT )
+          {
+            this->deg += 90;
+            break;
+          }
+
           nom::int32 id = this->sprite.getSheetID();
 
           if ( id < this->sprite.frames() - 1 ) id++;
@@ -416,6 +430,8 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
 
     nom::SpriteBatch sprite;
     nom::AnimatedSprite ani_sprite;
+
+    double deg;
 }; // class App
 
 nom::int32 main ( nom::int32 argc, char* argv[] )

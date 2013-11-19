@@ -73,10 +73,7 @@ NOM_LOG_TRACE ( NOM );
 
 void Input::HandleInput ( EventType* event )
 {
-  // TODO: Remove me
-  EventType* input = event;
-
-  switch ( input->type )
+  switch ( event->type )
   {
     default: /* Ignore unknown events */ break;
 
@@ -84,13 +81,13 @@ void Input::HandleInput ( EventType* event )
 
     case SDL_WINDOWEVENT:
     {
-      switch ( input->window.event )
+      switch ( event->window.event )
       {
         default: /* Ignore unknown events */ break;
 
         case SDL_WINDOWEVENT_CLOSE: this->onQuit(); break;
 
-/* TODO
+/* TODO: SDL2 window events handling
       case SDL_WINDOWEVENT_ENTER: break;
       case SDL_WINDOWEVENT_EXPOSED: break;
       case SDL_WINDOWEVENT_FOCUS_GAINED: break;
@@ -104,103 +101,103 @@ void Input::HandleInput ( EventType* event )
       case SDL_WINDOWEVENT_RESTORED: break;
       case SDL_WINDOWEVENT_SHOWN: break;
 TODO */
-    } // end input->window.event switch
-  } // end input->type switch
+    } // end event->window.event switch
+  } // end event->type switch
 
     case SDL_USEREVENT:
-      this->onUserEvent ( input->user.type, input->user.code, input->user.data1,
-                          input->user.data2
+      this->onUserEvent ( event->user.type, event->user.code, event->user.data1,
+                          event->user.data2
                         );
     break;
 
     case SDL_SYSWMEVENT: /* Ignore */ break;
 
     case SDL_KEYDOWN:
-      this->onKeyDown ( input->key.keysym.sym, input->key.keysym.mod, input->button.windowID );
+      this->onKeyDown ( event->key.keysym.sym, event->key.keysym.mod, event->button.windowID );
     break;
 
     case SDL_KEYUP:
-      this->onKeyUp ( input->key.keysym.sym, input->key.keysym.mod, input->button.windowID );
+      this->onKeyUp ( event->key.keysym.sym, event->key.keysym.mod, event->button.windowID );
     break;
 
     case SDL_MOUSEMOTION:
-      this->onMouseMotion ( input->motion.x, input->motion.y, input->motion.windowID );
+      this->onMouseMotion ( event->motion.x, event->motion.y, event->motion.windowID );
     break;
 
     case SDL_MOUSEBUTTONDOWN:
     {
-      switch ( input->button.button )
+      switch ( event->button.button )
       {
         case SDL_BUTTON_LEFT:
-          this->onMouseLeftButtonDown ( input->button.x, input->button.y, input->button.windowID );
+          this->onMouseLeftButtonDown ( event->button.x, event->button.y, event->button.windowID );
         break;
 
         case SDL_BUTTON_MIDDLE:
-          this->onMouseMiddleButtonDown ( input->button.x, input->button.y, input->button.windowID );
+          this->onMouseMiddleButtonDown ( event->button.x, event->button.y, event->button.windowID );
         break;
 
         case SDL_BUTTON_RIGHT:
-          this->onMouseRightButtonDown ( input->button.x, input->button.y, input->button.windowID );
+          this->onMouseRightButtonDown ( event->button.x, event->button.y, event->button.windowID );
         break;
 
         case SDL_BUTTON_X1:
-          this->onMouseButtonSixDown ( input->button.x, input->button.y, input->button.windowID );
+          this->onMouseButtonSixDown ( event->button.x, event->button.y, event->button.windowID );
         break;
 
         case SDL_BUTTON_X2:
-          this->onMouseButtonSevenDown ( input->button.x, input->button.y, input->button.windowID );
+          this->onMouseButtonSevenDown ( event->button.x, event->button.y, event->button.windowID );
         break;
       }
       break;
     } // end SDL_MOUSEBUTTONDOWN event
 
     case SDL_MOUSEBUTTONUP:
-      switch ( input->button.button )
+      switch ( event->button.button )
       {
         case SDL_BUTTON_LEFT:
-          this->onMouseLeftButtonUp ( input->button.x, input->button.y, input->button.windowID );
+          this->onMouseLeftButtonUp ( event->button.x, event->button.y, event->button.windowID );
         break;
 
         case SDL_BUTTON_MIDDLE:
-          this->onMouseMiddleButtonUp ( input->button.x, input->button.y, input->button.windowID );
+          this->onMouseMiddleButtonUp ( event->button.x, event->button.y, event->button.windowID );
         break;
 
         case SDL_BUTTON_RIGHT:
-          this->onMouseRightButtonUp ( input->button.x, input->button.y, input->button.windowID );
+          this->onMouseRightButtonUp ( event->button.x, event->button.y, event->button.windowID );
         break;
 
         case SDL_BUTTON_X1:
-          this->onMouseButtonSixUp ( input->button.x, input->button.y, input->button.windowID );
+          this->onMouseButtonSixUp ( event->button.x, event->button.y, event->button.windowID );
         break;
 
         case SDL_BUTTON_X2:
-          this->onMouseButtonSevenUp ( input->button.x, input->button.y, input->button.windowID );
+          this->onMouseButtonSevenUp ( event->button.x, event->button.y, event->button.windowID );
         break;
       }
     break;
 
     case SDL_MOUSEWHEEL:
     {
-      this->onMouseWheel ( input->wheel.x, input->wheel.y, input->wheel.windowID );
+      this->onMouseWheel ( event->wheel.x, event->wheel.y, event->wheel.windowID );
     } // end SDL_MOUSEWHEEL event
     break;
 
     case SDL_JOYBUTTONDOWN:
-      this->onJoyButtonDown ( this->joystick_id_, input->jbutton.button );
+      this->onJoyButtonDown ( this->joystick_id_, event->jbutton.button );
     break;
 
     case SDL_JOYBUTTONUP:
-      this->onJoyButtonUp ( this->joystick_id_, input->jbutton.button );
+      this->onJoyButtonUp ( this->joystick_id_, event->jbutton.button );
     break;
 
     case SDL_JOYAXISMOTION:
-      this->onJoyAxis ( this->joystick_id_, input->jaxis.axis, input->jaxis.value );
+      this->onJoyAxis ( this->joystick_id_, event->jaxis.axis, event->jaxis.value );
     break;
 
     case SDL_DROPFILE:
     {
-      char* file = input->drop.file;
-      this->onDragDrop ( file, input->drop.timestamp );
+      char* file = event->drop.file;
+      this->onDragDrop ( file, event->drop.timestamp );
 
       SDL_free ( file );
       file = nullptr;
@@ -208,7 +205,7 @@ TODO */
     } // SDL_DROPFILE
 
 
-  } // end switch input->type
+  } // end switch event->type
 }
 
 void Input::onUserEvent ( uint32 type, int32 code, void* data1, void* data2 )

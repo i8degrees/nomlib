@@ -73,12 +73,15 @@ void GrayFrame::update ( void )
 
   this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y, x_offset - padding, y, Color( 41, 41, 41 ) ) ) ); // top0
   this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y + 1, x_offset - padding, y + 1, Color( 133, 133, 133 ) ) ) ); // top1
+
   this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y + 1, x, y_offset - padding, Color( 41, 41, 41 ) ) ) ); // left0
   this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x + 1, y + 2, x + 1, y_offset - padding, Color( 133, 133, 133 ) ) ) ); // left1
+
+  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x_offset, y, x_offset, y_offset - padding, Color( 57, 57, 57 ) ) ) ); // right0
+  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x_offset, y, x_offset, y_offset - padding, Color( 41, 41, 41 ) ) ) ); // right1
+
   this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y_offset - padding, x_offset - padding, y_offset - padding, Color( 57, 57, 57 ) ) ) ); //bottom0
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y_offset, x_offset + padding, y_offset, Color ( 41, 41, 41 ) ) ) ); // bottom1
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x_offset - padding, y, x_offset - padding, y_offset + padding, Color( 57, 57, 57 ) ) ) ); // right0
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x_offset, y, x_offset, y_offset + padding, Color( 41, 41, 41 ) ) ) ); // right1
+  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y_offset - padding, x_offset - padding, y_offset - padding, Color ( 41, 41, 41 ) ) ) ); // bottom1
 
   this->updated = true;
 }

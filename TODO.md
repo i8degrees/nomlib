@@ -1,15 +1,13 @@
 # TODO #
 
-- [ ] Use C++ templates for Coords class
+~~- [ ] Use C++ templates for Coords class~~
 - [ ] joystick buttons demo
 - [ ] Homebrew Formula?
-- [ ] nomlib_examples submodule repo and makefile setup
-- [ ] Finish Update logic in BitmapFont class so that we can make it an official
-Drawables type.
+- [ ] Finish Update logic in BitmapFont class so that we can make it an official Drawables type.
 - [ ] Implement a NULL GameState class?
 - [ ] Use Uint32, etc. definitions
-- [ ] const types
-- [ ] Test alpha values within color class with graphics engine; experimental support is there
+- [x] const types
+- [x] Test alpha values within color class with graphics engine; experimental support is there
 - [x] MSVC++ does not accept valid C++11 code in EventDispatcher by defining an enum class.
 > Resolved by removing the desire for the enum class (duplicate definitions). I moved the enum definition to inside the class.
 - [x] Makefile Dependencies

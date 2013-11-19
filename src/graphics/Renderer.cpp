@@ -118,6 +118,29 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return blend;
 }
 
+const Point2i Renderer::size ( void ) const
+{
+  Point2i size; // width & height in pixels
+
+  if ( SDL_GetRendererOutputSize ( this->renderer(), &size.x, &size.y ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return Point2i( -1, -1 );
+    //return Point2i::null;
+  }
+
+  return size;
+}
+
+const Coords Renderer::bounds ( void ) const
+{
+  SDL_Rect clip_bounds;
+
+  SDL_RenderGetClipRect( this->renderer(), &clip_bounds );
+
+  return Coords( clip_bounds.x, clip_bounds.y, clip_bounds.w, clip_bounds.h );
+}
+
 void Renderer::update ( void ) const
 {
   SDL_RenderPresent ( this->renderer() );
@@ -210,6 +233,29 @@ bool Renderer::set_blend_mode ( const SDL_BlendMode mode )
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
+  return true;
+}
+
+bool Renderer::set_bounds ( const Coords& clip_bounds )
+{
+  if ( clip_bounds == Coords::null ) // Disable clipping bounds rectangle
+  {
+    if ( SDL_RenderSetClipRect( this->renderer(), nullptr ) != 0 )
+    {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return false;
+    }
+
+    return true;
+  }
+
+  SDL_Rect bounds = SDL_RECT ( clip_bounds );
+  if ( SDL_RenderSetClipRect( this->renderer(), &bounds ) != 0 )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
   return true;
 }
 

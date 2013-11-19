@@ -87,6 +87,16 @@ class Renderer
     /// Obtain the blending mode used for drawing
     const SDL_BlendMode blend_mode ( void ) const;
 
+    /// Obtain the renderer's output size (width & height) in pixels
+    ///
+    /// \return Point2i::null on ERR
+    const Point2i size ( void ) const;
+
+    /// Obtain the renderer's clipping rectangle bounds (X, Y, width & height)
+    /// in pixels
+    /// \todo Test me!
+    const Coords bounds ( void ) const;
+
     /// Update the renderer surface on the attached window
     void update ( void ) const;
 
@@ -138,6 +148,14 @@ class Renderer
     /// SDL_BLENDMODE_ADD
     /// SDL_BLENDMODE_MOD
     bool set_blend_mode ( const SDL_BlendMode mode );
+
+    /// Set new clipping rectangle bounds for the rendering target.
+    ///
+    /// \param clip_bounds  Passing nom::Coords::null will disable clipping on
+    ///                     the target
+    ///
+    /// \todo Test me!
+    bool set_bounds ( const Coords& clip_bounds );
 
   protected:
     /// This is automatically released after the attached nom::Window has been

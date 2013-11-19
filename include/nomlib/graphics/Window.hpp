@@ -97,8 +97,6 @@ class Window:
     //uint16 getDisplayPitch ( void ) const;
 
     /// Obtain a pointer to this object's pixels
-    ///
-    /// \fixme See FIXME note on nom::Window::save_screenshot
     //void* pixels ( void ) const;
 
     uint32 pixel_format ( void ) const;
@@ -244,14 +242,11 @@ class Window:
     /// \todo Test me
     void set_maximum_window_size ( int max_width, int max_height );
 
-    /// Saves a screenshot of this window as an uncompressed RGB Windows Bitmap
-    /// file (BMP).
+    /// Save a screenshot of the window as an uncompressed RGB Windows Bitmap
+    /// (BMP) file.
     ///
-    /// \fixme We cannot do this when using the 3D rendering API, so we may have
-    /// to resort to creating a surface and writing out the pixels of this
-    /// window via SDL_RenderReadPixels or such to our surface before calling
-    /// SDL_SaveBMP.
-    //bool save_screenshot ( const std::string& filename ) const;
+    /// \fixme Pixels pitch calculation
+    bool save_screenshot ( const std::string& filename ) const;
 
     /// Set the current Window as the active rendering context; this must be
     /// called before doing any drawing (this includes creation of textures)

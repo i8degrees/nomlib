@@ -71,6 +71,25 @@ Image& Image::operator = ( const Image& other )
   return *this;
 }
 
+bool Image::initialize( void* pixels, int32 width, int32 height,
+                        int32 bpp, uint16 pitch,
+                        uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask
+                      )
+{
+NOM_LOG_TRACE ( NOM );
+
+  this->image_.reset ( SDL_CreateRGBSurfaceFrom ( pixels, width, height, bpp, pitch, Rmask, Gmask, Bmask, Amask ), priv::FreeSurface );
+  //this->bounds_.setSize ( width, height );
+
+  if ( this->valid() == false )
+  {
+    NOM_LOG_ERR ( NOM, "Image buffer created from existing SDL_Surface is null." );
+    return false;
+  }
+
+  return true;
+}
+
 SDL_SURFACE::RawPtr Image::image ( void ) const
 {
   return this->image_.get();
@@ -196,7 +215,7 @@ bool Image::load_bmp ( const std::string& filename )
   return true;
 }
 
-bool Image::save ( const std::string& filename, SDL_SURFACE::RawPtr video_buffer )
+bool Image::save ( const std::string& filename, SDL_SURFACE::RawPtr video_buffer ) const
 {
   if ( SDL_SaveBMP ( video_buffer, filename.c_str() ) != 0 )
   {
@@ -204,6 +223,14 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
 
+  return true;
+}
+
+bool Image::save ( const std::string& filename ) const
+{
+  if ( this->save( filename, this->image() ) == false ) return false;
+
+  // Success!
   return true;
 }
 

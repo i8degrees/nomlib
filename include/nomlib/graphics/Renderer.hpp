@@ -154,6 +154,11 @@ class Renderer
     /// \todo Test me!
     bool set_bounds ( const Coords& clip_bounds );
 
+    /// Obtain pixels buffer of the entire rendering target
+    ///
+    /// \fixme Pixels pitch calculation
+    void* pixels ( void ) const;
+
   protected:
     /// This is automatically released after the attached nom::Window has been
     /// destroyed.

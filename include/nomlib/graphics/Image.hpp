@@ -65,6 +65,18 @@ class Image
     /// Copy assignment constructor
     Image& operator = ( const Image& other );
 
+    /// Initialize an image surface using the data from an existing pixel buffer
+    /// source.
+    ///
+    /// \param pixels   Typically a void pointer cast to nom::uint16 or nom::uint32
+    /// \param bpp      Bits per pixel
+    ///
+    /// \note You maintain ownership of your pixel buffer pointer; don't forget
+    /// to clean up after you're done!
+    bool initialize(  void* pixels, int32 width, int32 height,
+                      int32 bpp, uint16 pitch,
+                      uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+
     /// Obtain the SDL_Surface struct used in this object instance
     SDL_SURFACE::RawPtr image ( void ) const;
 
@@ -128,9 +140,18 @@ class Image
     /// file, whereas SDL_LoadBMP does load fine).
     bool load_bmp ( const std::string& filename );
 
-    /// Save a screenshot of the image as an uncompressed RGB Windows Bitmap
+    /// Save a screenshot as an uncompressed RGB Windows Bitmap
     /// (BMP) file.
-    bool save ( const std::string& filename, SDL_SURFACE::RawPtr video_buffer );
+    ///
+    /// \param filename       Output filename path
+    /// \param video_buffer   Surface used to save to filename
+    bool save ( const std::string& filename, SDL_SURFACE::RawPtr video_buffer ) const;
+
+    /// Save a screenshot of this image as an uncompressed RGB Windows Bitmap
+    /// (BMP) file.
+    ///
+    /// \param filename       Output filename path
+    bool save ( const std::string& filename ) const;
 
     /// Obtain the width and height (in pixels) of the stored bitmap buffer
     const Point2i size ( void ) const;

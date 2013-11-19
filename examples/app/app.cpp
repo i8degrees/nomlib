@@ -71,6 +71,12 @@ const std::string RESOURCE_SPRITE = APP_RESOURCES_DIR + p.native() + "cursors.js
 /// Copyright (c) 2013 Fielding Johnston. All rights reserved.
 const std::string RESOURCE_STATIC_IMAGE = APP_RESOURCES_DIR + p.native() + "boardoutline.png";
 
+/// Relative filename path to saved screenshot example
+///
+/// Default path should resolve to the same directory as the app example
+/// executable
+const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.bmp";
+
 /// \brief Usage example
 class App: public nom::SDL_App
 {
@@ -327,6 +333,28 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
 
           this->sprite.setSheetID ( id );
           this->font.setText( "Yeah buddy!" );
+          break;
+        }
+
+        case SDLK_F1:
+        {
+          for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
+          {
+            if ( this->window[idx].window_id() == window_id )
+            {
+              if ( this->window[idx].save_screenshot( OUTPUT_SCREENSHOT_FILENAME ) == false )
+              {
+                nom::DialogMessageBox( APP_NAME,  "Could not save screenshot: " +
+                                                  OUTPUT_SCREENSHOT_FILENAME );
+                break;
+              }
+
+              // Success!
+              NOM_LOG_INFO( NOM,  "The screenshot has been saved at: " +
+                                  OUTPUT_SCREENSHOT_FILENAME );
+              break;
+            }
+          }
           break;
         }
 

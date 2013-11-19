@@ -259,4 +259,23 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
+void* Renderer::pixels ( void ) const
+{
+  void* pixels = static_cast<uint32*> ( malloc (this->size().x * this->size().y * 4) );
+
+  if ( SDL_RenderReadPixels(  this->renderer(),
+                              nullptr,  // Dump pixels of the entire target
+                              0,        // Use the pixel format of the render
+                                        // target.
+                              pixels,   // Pointer to be filled in with pixels
+                                        // from rendering target.
+                              this->size().x * 4 ) != 0 )
+  {
+NOM_LOG_ERR( NOM, SDL_GetError() );
+    return nullptr;
+  }
+
+  return pixels;
+}
+
 } // namespace nom

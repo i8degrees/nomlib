@@ -49,9 +49,6 @@ namespace nom {
 class Renderer
 {
   public:
-    /// Convenience definition type for the std::unique_ptr variant
-    typedef std::unique_ptr<SDL_Renderer, void(*)(SDL_Renderer*)> UniquePtr;
-
     /// Default constructor; initializes instance to sane defaults
     Renderer ( void );
 
@@ -63,10 +60,10 @@ class Renderer
     /// Initializes with the first rendering driver supporting our request
     /// flags
     /// Enables video acceleration when able
-    bool initialize ( SDL_Window* window, int32 rendering_driver = -1, uint32 context_flags = SDL_RENDERER_ACCELERATED );
+    bool initialize ( SDL_WINDOW::RawPtr window, int32 rendering_driver = -1, uint32 context_flags = SDL_RENDERER_ACCELERATED );
 
     /// Get a raw pointer to the SDL_Renderer in use
-    SDL_Renderer* renderer ( void ) const;
+    SDL_RENDERER::RawPtr renderer ( void ) const;
 
     /// Is this object initialized? Valid when *NOT* nullptr
     bool renderer_valid ( void ) const;
@@ -103,7 +100,7 @@ class Renderer
     /// Set an input texture source as the new rendering target.
     ///
     /// \param input_texture    The targeted texture
-    bool update ( SDL_Texture* input_texture );
+    bool update ( SDL_TEXTURE::RawPtr input_texture );
 
     /// Clear the whole rendering object; ignoring the viewport.
     ///
@@ -160,7 +157,7 @@ class Renderer
   protected:
     /// This is automatically released after the attached nom::Window has been
     /// destroyed.
-    Renderer::UniquePtr renderer_;
+    SDL_RENDERER::UniquePtr renderer_;
 };
 
 

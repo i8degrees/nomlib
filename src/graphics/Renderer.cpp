@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 Renderer::Renderer ( void ):  renderer_
-    { Renderer::UniquePtr ( nullptr, priv::FreeRenderTarget ) }
+    { SDL_RENDERER::UniquePtr ( nullptr, priv::FreeRenderTarget ) }
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -44,7 +44,7 @@ NOM_LOG_TRACE ( NOM );
   // Thanks for all the fish!
 }
 
-bool Renderer::initialize ( SDL_Window* window, int32 rendering_driver, uint32 context_flags )
+bool Renderer::initialize ( SDL_WINDOW::RawPtr window, int32 rendering_driver, uint32 context_flags )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -55,7 +55,7 @@ NOM_LOG_TRACE ( NOM );
   return true;
 }
 
-SDL_Renderer* Renderer::renderer ( void ) const
+SDL_RENDERER::RawPtr Renderer::renderer ( void ) const
 {
   return this->renderer_.get();
 }
@@ -146,7 +146,7 @@ void Renderer::update ( void ) const
   SDL_RenderPresent ( this->renderer() );
 }
 
-bool Renderer::update ( SDL_Texture* input_texture )
+bool Renderer::update ( SDL_TEXTURE::RawPtr input_texture )
 {
   if ( SDL_SetRenderTarget ( this->renderer(), input_texture ) != 0 )
   {

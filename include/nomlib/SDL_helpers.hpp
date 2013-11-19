@@ -29,6 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SDL2_HELPERS_HPP
 #define NOMLIB_SDL2_HELPERS_HPP
 
+#include <memory>
+
 #include "SDL.h"
 #include "SDL_ttf.h"
 
@@ -39,6 +41,41 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Point2-inl.hpp"
 
 namespace nom {
+
+/// \brief Convenience definitions for pointer types
+namespace SDL_WINDOW
+{
+  typedef std::unique_ptr<SDL_Window, void (*)(SDL_Window*)> UniquePtr;
+  typedef SDL_Window* RawPtr;
+}
+
+/// \brief Convenience definitions for pointer types
+namespace SDL_RENDERER
+{
+  typedef std::unique_ptr<SDL_Renderer, void(*)(SDL_Renderer*)> UniquePtr;
+  typedef SDL_Renderer* RawPtr;
+}
+
+/// \brief Convenience definitions for pointer types
+namespace SDL_PIXELFORMAT
+{
+  typedef SDL_PixelFormat* RawPtr;
+}
+
+/// \brief Convenience definitions for pointer types
+namespace SDL_SURFACE
+{
+  typedef std::unique_ptr<SDL_Surface, void(*) (SDL_Surface*)> UniquePtr;
+  typedef std::shared_ptr<SDL_Surface> SharedPtr;
+  typedef SDL_Surface* RawPtr;
+}
+
+/// \brief Convenience definitions for pointer types
+namespace SDL_TEXTURE
+{
+  typedef std::shared_ptr<SDL_Texture> SharedPtr;
+  typedef SDL_Texture* RawPtr;
+}
 
 /// SDL2 data structure wrappers for nomlib
 ///

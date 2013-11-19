@@ -108,7 +108,7 @@ class Texture
     /// Initialize object with SDL1 video surface
     ///
     /// The new texture created will be of type 'SDL_TEXTUREACCESS_STATIC'
-    bool initialize ( SDL_Surface* video_buffer );
+    bool initialize ( SDL_SURFACE::RawPtr video_buffer );
 
     /// Initialize object with new specified parameters
     /// ...
@@ -126,7 +126,7 @@ class Texture
     const Coords& bounds ( void ) const;
 
     /// Get the video memory surface of the Texture object
-    SDL_Texture* texture ( void ) const;
+    SDL_TEXTURE::RawPtr texture ( void ) const;
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
@@ -226,7 +226,7 @@ class Texture
     ///
     /// \param  SDL_Renderer
     ///
-    void draw ( SDL_Renderer* target ) const;
+    void draw ( SDL_RENDERER::RawPtr target ) const;
 
     /// Draw a nom::Texture to a nom::Window target
     ///
@@ -275,7 +275,7 @@ class Texture
     bool set_colorkey ( const Color& colorkey );
 
   private:
-    std::shared_ptr<SDL_Texture> texture_;
+    SDL_TEXTURE::SharedPtr texture_;
 
     /// Texture's pixels; these are only available when a Texture is locked and
     /// is intended for writing to.

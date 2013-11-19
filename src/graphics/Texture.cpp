@@ -94,7 +94,7 @@ NOM_LOG_TRACE ( NOM );
 //}
 */
 
-bool Texture::initialize ( SDL_Surface* video_buffer )
+bool Texture::initialize ( SDL_SURFACE::RawPtr video_buffer )
 {
   // We leak memory, or even worse, crash, depending on state at the time, if we
   // do not ensure that we free existing buffers! Certain rendering methods --
@@ -154,7 +154,7 @@ Texture& Texture::operator = ( const Texture& other )
   return *this;
 }
 
-SDL_Texture* Texture::texture ( void ) const
+SDL_TEXTURE::RawPtr Texture::texture ( void ) const
 {
   return this->texture_.get();
 }
@@ -408,7 +408,7 @@ NOM_LOG_ERR ( NOM, "Error: Failed to initialize texture." );
   return true;
 }
 
-void Texture::draw ( SDL_Renderer* target ) const
+void Texture::draw ( SDL_RENDERER::RawPtr target ) const
 {
   Point2i pos = this->position();
   SDL_Rect render_coords;

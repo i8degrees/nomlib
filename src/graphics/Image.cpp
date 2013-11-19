@@ -71,7 +71,7 @@ Image& Image::operator = ( const Image& other )
   return *this;
 }
 
-SDL_Surface* Image::image ( void ) const
+SDL_SURFACE::RawPtr Image::image ( void ) const
 {
   return this->image_.get();
 }
@@ -114,7 +114,7 @@ uint8 Image::bits_per_pixel ( void ) const
   return buffer->format->BitsPerPixel;
 }
 
-const SDL_PixelFormat* Image::pixel_format ( void ) const
+const SDL_PIXELFORMAT::RawPtr Image::pixel_format ( void ) const
 {
   SDL_Surface* buffer = this->image();
   return buffer->format;
@@ -196,7 +196,7 @@ bool Image::load_bmp ( const std::string& filename )
   return true;
 }
 
-bool Image::save ( const std::string& filename, SDL_Surface* video_buffer )
+bool Image::save ( const std::string& filename, SDL_SURFACE::RawPtr video_buffer )
 {
   if ( SDL_SaveBMP ( video_buffer, filename.c_str() ) != 0 )
   {

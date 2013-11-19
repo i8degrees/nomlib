@@ -32,10 +32,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // static initialization
-SDL_Renderer* Window::context_ = nullptr;
+SDL_RENDERER::RawPtr Window::context_ = nullptr;
 
 Window::Window ( void ) : window_
-    { Window::UniquePtr ( nullptr, priv::FreeWindow ) },
+    { SDL_WINDOW::UniquePtr ( nullptr, priv::FreeWindow ) },
     window_id_ ( 0 ), window_display_id_ ( -1 ),
     enabled_ ( false ), fullscreen_ ( false )
 {
@@ -106,12 +106,12 @@ Window::RawPtr Window::get ( void )
   return this;
 }
 
-SDL_Window* Window::window ( void ) const
+SDL_WINDOW::RawPtr Window::window ( void ) const
 {
   return this->window_.get();
 }
 
-SDL_Surface* Window::window_surface ( void ) const
+SDL_SURFACE::RawPtr Window::window_surface ( void ) const
 {
   return SDL_GetWindowSurface ( this->window() );
 }
@@ -277,7 +277,7 @@ void Window::unlock ( void ) const
 }
 */
 
-void Window::draw ( SDL_Surface* video_buffer, const Coords& bounds ) const
+void Window::draw ( SDL_SURFACE::RawPtr video_buffer, const Coords& bounds ) const
 {
   SDL_Rect blit_coords = SDL_RECT ( bounds );
   SDL_Rect blit_offsets = SDL_RECT ( bounds );
@@ -480,7 +480,7 @@ void Window::set_active ( void )
   set_context ( this->get() );
 }
 
-SDL_Renderer* Window::context ( void )
+SDL_RENDERER::RawPtr Window::context ( void )
 {
   return context_;
 }

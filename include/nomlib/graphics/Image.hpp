@@ -66,7 +66,7 @@ class Image
     Image& operator = ( const Image& other );
 
     /// Obtain the SDL_Surface struct used in this object instance
-    SDL_Surface* image ( void ) const;
+    SDL_SURFACE::RawPtr image ( void ) const;
 
     /// Is this object initialized? Valid when *NOT* nullptr
     bool valid ( void ) const;
@@ -79,7 +79,7 @@ class Image
     /// \todo Rename me to bppp
     uint8 bits_per_pixel ( void ) const;
 
-    const SDL_PixelFormat* pixel_format ( void ) const;
+    const SDL_PIXELFORMAT::RawPtr pixel_format ( void ) const;
 
     /// Obtain the video surface's red alpha mask
     const uint32 red_mask ( void ) const;
@@ -128,11 +128,9 @@ class Image
     /// file, whereas SDL_LoadBMP does load fine).
     bool load_bmp ( const std::string& filename );
 
-    /// Saves as an uncompressed RGB Windows Bitmap (BMP)
-    ///
-    /// NOTE: AFAIK, no existing file handling / overwriting checks are done
-    /// whatsoever
-    bool save ( const std::string& filename, SDL_Surface* video_buffer );
+    /// Save a screenshot of the image as an uncompressed RGB Windows Bitmap
+    /// (BMP) file.
+    bool save ( const std::string& filename, SDL_SURFACE::RawPtr video_buffer );
 
     /// Obtain the width and height (in pixels) of the stored bitmap buffer
     const Point2i size ( void ) const;
@@ -173,7 +171,7 @@ class Image
     bool set_blend_mode ( const SDL_BlendMode blend );
 
   private:
-    std::shared_ptr<SDL_Surface> image_;
+    SDL_SURFACE::SharedPtr image_;
 };
 
 

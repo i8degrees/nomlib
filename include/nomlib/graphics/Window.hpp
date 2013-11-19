@@ -54,8 +54,6 @@ class Window:
               public Renderer
 {
   public:
-    /// Convenience definition type for the std::unique_ptr variant
-    typedef std::unique_ptr<SDL_Window, void (*)(SDL_Window*)> UniquePtr;
     typedef Window* RawPtr;
 
     Window ( void );
@@ -74,10 +72,10 @@ class Window:
     Window::RawPtr get ( void );
 
     /// Returns a raw pointer to the SDL_Window struct in use for this object
-    SDL_Window* window ( void ) const;
+    SDL_WINDOW::RawPtr window ( void ) const;
 
     /// Obtain a SDL_Surface pointer from this Window.
-    SDL_Surface* window_surface ( void ) const;
+    SDL_SURFACE::RawPtr window_surface ( void ) const;
 
     /// Is this object initialized -- not nullptr?
     bool window_valid ( void ) const;
@@ -126,7 +124,7 @@ class Window:
     /// Render SDL1 video surfaces
     ///
     /// \todo Test me!
-    void draw ( SDL_Surface* video_buffer, const Coords& bounds ) const;
+    void draw ( SDL_SURFACE::RawPtr video_buffer, const Coords& bounds ) const;
 
     /// Update the surface of the screen inside the window
     ///
@@ -167,7 +165,7 @@ class Window:
     /// \param id           Unique identifier used for the lookup
     ///
     /// \return SDL_Window pointer if exists; NULL if no Window exists
-    static SDL_Window* window_id ( uint32 id );
+    static SDL_WINDOW::RawPtr window_id ( uint32 id );
 
     /// Obtain this window's display index
     ///
@@ -186,9 +184,9 @@ class Window:
     /// \todo Test me
     void disable_screensaver ( void );
 
-    /// Get the status of the screensaver.
+    /// Get the status of the OS screensaver.
     ///
-    /// \return TRUE if screensaver is enabled; FALSE if it is disabled.
+    /// \return TRUE if enabled; FALSE if disabled.
     ///
     /// \todo Test me
     bool screen_saver ( void );
@@ -264,7 +262,7 @@ class Window:
     ///
     /// \return SDL_Renderer*   Structure containing the active rendering
     ///                         context
-    static SDL_Renderer* context ( void );
+    static SDL_RENDERER::RawPtr context ( void );
 
     /// Set a new nom::Window as the active rendering context; we must always
     /// have at least one context active at any given time, even for generating
@@ -275,9 +273,9 @@ class Window:
     static void set_context ( Window::RawPtr window );
 
   private:
-    static SDL_Renderer* context_;
+    static SDL_RENDERER::RawPtr context_;
 
-    Window::UniquePtr window_;
+    SDL_WINDOW::UniquePtr window_;
 
     /// Cache the unique window identifier we get from SDL upon initialization
     uint32 window_id_;

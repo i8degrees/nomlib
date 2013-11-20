@@ -93,7 +93,7 @@ class App: public nom::SDL_App
         exit ( EXIT_FAILURE );
       }
 
-      this->deg = -90;
+      this->deg = 0;
     } // App
 
     ~App ( void )

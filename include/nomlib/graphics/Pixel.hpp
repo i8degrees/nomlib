@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_SDL_PIXEL_HEADERS
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Color.hpp"
+#include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Rect-inl.hpp"
 #include "nomlib/graphics/IDrawable.hpp"

@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_RGBA_COLOR_HPP
-#define NOMLIB_RGBA_COLOR_HPP
+#ifndef NOMLIB_RGBA_COLOR4_HPP
+#define NOMLIB_RGBA_COLOR4_HPP
 
 #include <algorithm>
 
@@ -44,18 +44,18 @@ const std::string COLOR_DELIMITER = ", ";
 ///
 /// \todo Implement lesser than, greater than and so on operators?
 template <typename T>
-class Color
+class Color4
 {
   public:
     /// Default constructor; sets the color to their respective defaults
-    Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ), alpha ( Color::ALPHA_OPAQUE ) {}
+    Color4 ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ), alpha ( Color4::ALPHA_OPAQUE ) {}
 
     /// Destructor
-    ~Color ( void ) {}
+    ~Color4 ( void ) {}
 
     /// Copy constructor
     template <typename U>
-    Color ( const Color<U>& copy )
+    Color4 ( const Color4<U>& copy )
     {
       this->red = static_cast<T> ( copy.red );
       this->green = static_cast<T> ( copy.green );
@@ -64,15 +64,15 @@ class Color
     }
 
     /// Constructor variant for setting a color using RGB values
-    Color ( T r, T g, T b ) : red ( r ), green ( g ),
-      blue ( b ), alpha ( Color::ALPHA_OPAQUE ) {}
+    Color4 ( T r, T g, T b ) : red ( r ), green ( g ),
+      blue ( b ), alpha ( Color4::ALPHA_OPAQUE ) {}
 
     /// Constructor variant for setting a color using RGBA values
-    Color ( T red, T green, T blue, T alpha ) : red ( red ),
+    Color4 ( T red, T green, T blue, T alpha ) : red ( red ),
       green ( green ), blue ( blue ), alpha ( alpha ) {}
 
     /// Copy assignment operator
-    inline Color<T>& operator = ( const Color<T>& other )
+    inline Color4<T>& operator = ( const Color4<T>& other )
     {
       this->red = other.red;
       this->green = other.green;
@@ -83,7 +83,7 @@ class Color
     }
 
     /// Convenience getter for obtaining a copy of this object
-    inline const Color<T>& get ( void ) const
+    inline const Color4<T>& get ( void ) const
     {
       return *this;
     }
@@ -95,24 +95,24 @@ class Color
     static const int ALPHA_OPAQUE;
 
     /// Primary colors
-    static const Color Black;
-    static const Color White;
-    static const Color Red;
-    static const Color Green;
-    static const Color Blue;
-    static const Color Yellow;
-    static const Color Magenta;
-    static const Color Cyan;
+    static const Color4 Black;
+    static const Color4 White;
+    static const Color4 Red;
+    static const Color4 Green;
+    static const Color4 Blue;
+    static const Color4 Yellow;
+    static const Color4 Magenta;
+    static const Color4 Cyan;
 
     /// Additional colors
-    static const Color LightGray;
-    static const Color Gray;
+    static const Color4 LightGray;
+    static const Color4 Gray;
 
     /// Sky blue color key
-    static const Color NomPrimaryColorKey;
+    static const Color4 NomPrimaryColorKey;
 
     /// Light magenta color key
-    static const Color NomSecondaryColorKey;
+    static const Color4 NomSecondaryColorKey;
 
   public:
     T red;
@@ -142,7 +142,7 @@ class Color
 /// 99, 144, 255, 128
 template <typename T>
 static inline std::ostream& operator << ( std::ostream& os,
-                                          const Color<T>& color
+                                          const Color4<T>& color
                                         )
 {
   os << static_cast<T> ( color.red ) << COLOR_DELIMITER
@@ -153,7 +153,7 @@ static inline std::ostream& operator << ( std::ostream& os,
 }
 
 template <typename T>
-static inline bool operator == ( const Color<T>& left, const Color<T>& right )
+static inline bool operator == ( const Color4<T>& left, const Color4<T>& right )
 {
   return ( left.red == right.red ) &&
          ( left.green == right.green ) &&
@@ -162,16 +162,16 @@ static inline bool operator == ( const Color<T>& left, const Color<T>& right )
 }
 
 template <typename T>
-static inline bool operator != ( const Color<T>& left, const Color<T>& right )
+static inline bool operator != ( const Color4<T>& left, const Color4<T>& right )
 {
   return ! ( left == right );
 }
 
 /// Values that exceed 255 are clamped to 255
 template <typename T>
-static inline Color<T> operator + ( const Color<T>& left, const Color<T>& right )
+static inline Color4<T> operator + ( const Color4<T>& left, const Color4<T>& right )
 {
-  return Color<T> ( static_cast<T> ( std::min ( left.red + right.red, 255 ) ),
+  return Color4<T> ( static_cast<T> ( std::min ( left.red + right.red, 255 ) ),
                     static_cast<T> ( std::min ( left.green + right.green, 255 ) ),
                     static_cast<T> ( std::min ( left.blue + right.blue, 255 ) ),
                     static_cast<T> ( std::min ( left.alpha + right.alpha, 255 ) )
@@ -180,9 +180,9 @@ static inline Color<T> operator + ( const Color<T>& left, const Color<T>& right 
 
 /// Values that exceed 255 are clamped to 255
 template <typename T>
-static inline Color<T> operator ++ ( Color<T>& left )
+static inline Color4<T> operator ++ ( Color4<T>& left )
 {
-  return Color<T> ( static_cast<T> ( left.red-- ),
+  return Color4<T> ( static_cast<T> ( left.red-- ),
                     static_cast<T> ( left.green-- ),
                     static_cast<T> ( left.blue-- ),
                     static_cast<T> ( left.alpha-- )
@@ -191,9 +191,9 @@ static inline Color<T> operator ++ ( Color<T>& left )
 
 /// Values that exceed 255 are clamped to 255
 template <typename T>
-static inline Color<T> operator - ( const Color<T>& left, const Color<T>& right )
+static inline Color4<T> operator - ( const Color4<T>& left, const Color4<T>& right )
 {
-  return Color<T> ( static_cast<T> ( std::min ( left.red - right.red, 255 ) ),
+  return Color4<T> ( static_cast<T> ( std::min ( left.red - right.red, 255 ) ),
                     static_cast<T> ( std::min ( left.green - right.green, 255 ) ),
                     static_cast<T> ( std::min ( left.blue - right.blue, 255 ) ),
                     static_cast<T> ( std::min ( left.alpha - right.alpha, 255 ) )
@@ -202,9 +202,9 @@ static inline Color<T> operator - ( const Color<T>& left, const Color<T>& right 
 
 /// Values that exceed 255 are clamped to 255
 template <typename T>
-static inline Color<T> operator -- ( Color<T>& left )
+static inline Color4<T> operator -- ( Color4<T>& left )
 {
-  return Color<T> ( static_cast<T> ( left.red-- ),
+  return Color4<T> ( static_cast<T> ( left.red-- ),
                     static_cast<T> ( left.green-- ),
                     static_cast<T> ( left.blue-- ),
                     static_cast<T> ( left.alpha-- )
@@ -213,9 +213,9 @@ static inline Color<T> operator -- ( Color<T>& left )
 
 /// Values that exceed 255 are clamped to 255
 template <typename T>
-static inline Color<T> operator * ( const Color<T>& left, const Color<T>& right )
+static inline Color4<T> operator * ( const Color4<T>& left, const Color4<T>& right )
 {
-  return Color<T> ( static_cast<T> ( left.red * right.red / 255 ),
+  return Color4<T> ( static_cast<T> ( left.red * right.red / 255 ),
                     static_cast<T> ( left.green * right.green / 255 ),
                     static_cast<T> ( left.blue * right.blue / 255 ),
                     static_cast<T> ( left.alpha * right.alpha / 255 )
@@ -223,25 +223,25 @@ static inline Color<T> operator * ( const Color<T>& left, const Color<T>& right 
 }
 
 template <typename T>
-static inline Color<T>& operator += ( Color<T>& left, const Color<T>& right )
+static inline Color4<T>& operator += ( Color4<T>& left, const Color4<T>& right )
 {
   return left = left + right;
 }
 
 template <typename T>
-static inline Color<T>& operator -= ( Color<T>& left, const Color<T>& right )
+static inline Color4<T>& operator -= ( Color4<T>& left, const Color4<T>& right )
 {
   return left = left - right;
 }
 
 template <typename T>
-static inline Color<T>& operator *= ( Color<T>& left, const Color<T>& right )
+static inline Color4<T>& operator *= ( Color4<T>& left, const Color4<T>& right )
 {
   return left = left * right;
 }
 
-typedef Color<uint8> Color4u;
-typedef Color<float> Color4f;
+typedef Color4<uint8> Color4u;
+typedef Color4<float> Color4f;
 
 } // namespace nom
 

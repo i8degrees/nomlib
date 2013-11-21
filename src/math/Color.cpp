@@ -33,19 +33,19 @@ namespace nom {
 template <> const int Color4u::ALPHA_TRANSPARENT = 0;
 template <> const int Color4u::ALPHA_OPAQUE = 255;
 
-template <> const Color4u Color4u::Black ( 0, 0, 0, Color::ALPHA_OPAQUE );
-template <> const Color4u Color4u::White ( 255, 255, Color::ALPHA_OPAQUE );
-template <> const Color4u Color4u::Red ( 255, 0, 0, Color::ALPHA_OPAQUE );
-template <> const Color4u Color4u::Green ( 0, 255, 0, Color::ALPHA_OPAQUE );
-template <> const Color4u Color4u::Blue ( 0, 0, 255, Color::ALPHA_OPAQUE );
-template <> const Color4u Color4u::Yellow ( 255, 255, 255, Color::ALPHA_OPAQUE );
-template <> const Color4u Color4u::Magenta ( 255, 0, 255, Color::ALPHA_OPAQUE );
-template <> const Color4u Color4u::Cyan ( 0, 255, 255, Color::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Black ( 0, 0, 0, Color4::ALPHA_OPAQUE );
+template <> const Color4u Color4u::White ( 255, 255, Color4::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Red ( 255, 0, 0, Color4::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Green ( 0, 255, 0, Color4::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Blue ( 0, 0, 255, Color4::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Yellow ( 255, 255, 255, Color4::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Magenta ( 255, 0, 255, Color4::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Cyan ( 0, 255, 255, Color4::ALPHA_OPAQUE );
 
-template <> const Color4u Color4u::LightGray ( 99, 99, 99, Color::ALPHA_OPAQUE );
-template <> const Color4u Color4u::Gray ( 67, 67, 67, Color::ALPHA_OPAQUE );
+template <> const Color4u Color4u::LightGray ( 99, 99, 99, Color4::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Gray ( 67, 67, 67, Color4::ALPHA_OPAQUE );
 
-template <> const Color4u Color4u::NomPrimaryColorKey ( 110, 144, 190, Color::ALPHA_OPAQUE );
-template <> const Color4u Color4u::NomSecondaryColorKey ( 223, 75, 255, Color::ALPHA_OPAQUE );
+template <> const Color4u Color4u::NomPrimaryColorKey ( 110, 144, 190, Color4::ALPHA_OPAQUE );
+template <> const Color4u Color4u::NomSecondaryColorKey ( 223, 75, 255, Color4::ALPHA_OPAQUE );
 
 } // namespace nom

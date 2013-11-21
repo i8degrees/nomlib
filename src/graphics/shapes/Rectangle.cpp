@@ -39,13 +39,13 @@ Rectangle::Rectangle ( const Rectangle& rect )
   this->color = rect.color;
 }
 
-Rectangle::Rectangle ( const Coords& coords, const Color& color )
+Rectangle::Rectangle ( const Coords& coords, const Color4u& color )
 {
   this->coords = coords;
   this->color = color;
 }
 
-Rectangle::Rectangle ( int32 x, int32 y, int32 width, int32 height, const Color& color )
+Rectangle::Rectangle ( int32 x, int32 y, int32 width, int32 height, const Color4u& color )
 {
   this->coords = Coords ( x, y, width, height );
   this->color = color;

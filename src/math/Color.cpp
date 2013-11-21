@@ -30,23 +30,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-const int Color::ALPHA_TRANSPARENT = 0;
-const int Color::ALPHA_OPAQUE = 255;
+template <> const int Color4u::ALPHA_TRANSPARENT = 0;
+template <> const int Color4u::ALPHA_OPAQUE = 255;
 
-const Color Color::Black ( 0, 0, 0, Color::ALPHA_OPAQUE );
-const Color Color::White ( 255, 255, Color::ALPHA_OPAQUE );
-const Color Color::Red ( 255, 0, 0, Color::ALPHA_OPAQUE );
-const Color Color::Green ( 0, 255, 0, Color::ALPHA_OPAQUE );
-const Color Color::Blue ( 0, 0, 255, Color::ALPHA_OPAQUE );
-const Color Color::Yellow ( 255, 255, 255, Color::ALPHA_OPAQUE );
-const Color Color::Magenta ( 255, 0, 255, Color::ALPHA_OPAQUE );
-const Color Color::Cyan ( 0, 255, 255, Color::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Black ( 0, 0, 0, Color::ALPHA_OPAQUE );
+template <> const Color4u Color4u::White ( 255, 255, Color::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Red ( 255, 0, 0, Color::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Green ( 0, 255, 0, Color::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Blue ( 0, 0, 255, Color::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Yellow ( 255, 255, 255, Color::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Magenta ( 255, 0, 255, Color::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Cyan ( 0, 255, 255, Color::ALPHA_OPAQUE );
 
-const Color Color::LightGray ( 99, 99, 99, Color::ALPHA_OPAQUE );
-const Color Color::Gray ( 67, 67, 67, Color::ALPHA_OPAQUE );
+template <> const Color4u Color4u::LightGray ( 99, 99, 99, Color::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Gray ( 67, 67, 67, Color::ALPHA_OPAQUE );
 
-const Color Color::NomPrimaryColorKey ( 110, 144, 190, Color::ALPHA_OPAQUE );
-const Color Color::NomSecondaryColorKey ( 223, 75, 255, Color::ALPHA_OPAQUE );
-
+template <> const Color4u Color4u::NomPrimaryColorKey ( 110, 144, 190, Color::ALPHA_OPAQUE );
+template <> const Color4u Color4u::NomSecondaryColorKey ( 223, 75, 255, Color::ALPHA_OPAQUE );
 
 } // namespace nom

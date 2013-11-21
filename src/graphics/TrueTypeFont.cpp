@@ -36,7 +36,7 @@ NOM_LOG_TRACE ( NOM );
 
   this->font = nullptr;
   this->coords = Coords ( 0, 0, 0, 0 );
-  this->color = Color ( 0, 0, 0 );
+  this->color = Color4u ( 0, 0, 0 );
   this->text_buffer = "\0";
   this->text_style = FontStyle::Regular; // default text styling effect
   this->text_alignment = TextAlignment::MiddleLeft;
@@ -100,7 +100,7 @@ IFont::FontStyle TrueTypeFont::getFontStyle ( void ) const
   return this->text_style;
 }
 
-const Color& TrueTypeFont::getColor ( void ) const
+const Color4u& TrueTypeFont::getColor ( void ) const
 {
   return this->color;
 }
@@ -127,7 +127,7 @@ IFont::TextAlignment TrueTypeFont::getTextJustification ( void ) const
   return this->text_alignment;
 }
 
-void TrueTypeFont::setColor ( const Color& color )
+void TrueTypeFont::setColor ( const Color4u& color )
 {
   this->color = color;
 }
@@ -234,7 +234,7 @@ void TrueTypeFont::setTextJustification ( IFont::TextAlignment alignment )
   this->text_alignment = alignment;
 }
 
-bool TrueTypeFont::load ( const std::string& filename, const Color& colorkey,
+bool TrueTypeFont::load ( const std::string& filename, const Color4u& colorkey,
                           bool use_cache
                         )
 {
@@ -273,7 +273,7 @@ void TrueTypeFont::update ( void )
                                     // TODO; implement me -- a second color
                                     // possibility means needing two colors in
                                     // class
-                                    SDL_COLOR ( Color ( 97, 97, 97 ) )
+                                    SDL_COLOR ( Color4u ( 97, 97, 97 ) )
                                   )
                                 );
   }
@@ -322,7 +322,7 @@ void TrueTypeFont::draw ( const Window& target ) const
 
 bool TrueTypeFont::rebuild ( void )
 {
-  if ( this->load ( this->filename, Color::Black, this->use_cache ) == false )
+  if ( this->load ( this->filename, Color4u::Black, this->use_cache ) == false )
   {
 NOM_LOG_ERR ( NOM, "Could not rebuild font metrics." );
     return false;

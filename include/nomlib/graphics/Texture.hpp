@@ -180,7 +180,7 @@ class Texture
     ///
     /// \return   Returns non-negative nom::Color on success;
     ///           nom::Color::null on failure
-    const Color& colorkey ( void ) const;
+    const Color4u& colorkey ( void ) const;
 
     /// Lock a portion of the texture for **write-only** pixel access.
     ///
@@ -286,7 +286,7 @@ class Texture
     /// \todo ERR check on locking call, etc.
     ///
     /// (This method requires locking the texture; use wisely!).
-    bool set_colorkey ( const Color& colorkey );
+    bool set_colorkey ( const Color4u& colorkey );
 
   private:
     SDL_TEXTURE::SharedPtr texture_;
@@ -305,7 +305,7 @@ class Texture
     Coords bounds_;
 
     /// Cached upon use of the set_colorkey method for use by external classes
-    Color colorkey_;
+    Color4u colorkey_;
 };
 
 

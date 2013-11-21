@@ -43,15 +43,15 @@ class Point:
     Point ( void );
     virtual ~Point ( void );
 
-    Point ( const Point2i& coords, const Color& color );
-    Point ( int32 x, int32 y, const Color& color );
+    Point ( const Point2i& coords, const Color4u& color );
+    Point ( int32 x, int32 y, const Color4u& color );
 
     void update ( void );
     void draw ( RenderTarget target ) const;
 
   private:
     Point2i coords;
-    Color color;
+    Color4u color;
 };
 
 

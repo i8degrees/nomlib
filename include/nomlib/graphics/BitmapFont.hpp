@@ -85,7 +85,7 @@ class BitmapFont: public IFont
     /// \todo Rename me to text_height
     int32 getFontHeight ( void ) const;
 
-    const Color& getColor ( void ) const;
+    const Color4u& getColor ( void ) const;
     const Coords& getPosition ( void ) const;
 
     /// Obtain text character spacing width in pixels; this variable is affected
@@ -116,7 +116,7 @@ class BitmapFont: public IFont
     /// Not implemented
     //void setRenderingStyle ( enum RenderStyle );
 
-    void setColor ( const Color& color );
+    void setColor ( const Color4u& color );
     void setPosition ( const Coords& coords );
 
     /// Set the justification of the text.
@@ -130,7 +130,7 @@ class BitmapFont: public IFont
     ///
     /// \todo Add spacing / padding so that we can export with black guidelines
     bool load (
-                const std::string& filename, const Color& colorkey,
+                const std::string& filename, const Color4u& colorkey,
                 bool use_cache = false
               );
 
@@ -180,7 +180,7 @@ class BitmapFont: public IFont
     enum IFont::FontStyle text_style;
 
     /// Not implemented (yet)
-    Color color;
+    Color4u color;
 
     enum IFont::TextAlignment text_alignment;
 

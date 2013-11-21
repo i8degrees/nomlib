@@ -34,13 +34,13 @@ Pixel::Pixel ( void ) {}
 
 Pixel::~Pixel ( void ) {}
 
-Pixel::Pixel ( const Coords& coords, const Color& color )
+Pixel::Pixel ( const Coords& coords, const Color4u& color )
 {
   this->coords = coords;
   this->color = color;
 }
 
-Pixel::Pixel ( int32 x, int32 y, const Color& color )
+Pixel::Pixel ( int32 x, int32 y, const Color4u& color )
 {
   this->coords = Coords ( x, y );
   this->color = color;

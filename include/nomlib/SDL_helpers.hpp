@@ -85,46 +85,34 @@ SDL_bool SDL_BOOL ( bool value );
 /// SDL data structure wrappers for nomlib
 ///
 /// \return A SDL_Rect structure composed from a nom::Coords object
-SDL_Rect SDL_RECT ( const Coords& coords );
+SDL_Rect SDL_RECT ( const Coords& rectangle );
 
 /// SDL data structure wrappers for nomlib
 ///
-/// \return SDL_Rect structure composed from a nom::Rect<T> object
+/// \return SDL_Rect structure composed from a nom::IntRect object
 ///
-/// \todo Implement me
-template <typename T>
-SDL_Rect SDL_RECT ( const Rect<T>& )
-{
-  SDL_Rect null;
-  return null;
-}
+/// \todo Test me out
+SDL_Rect SDL_RECT ( const IntRect& rectangle );
 
 /// SDL2 data structure wrappers for nomlib
 ///
-/// \return SDL_Point structure composed from a nom::Point2<T> object
-///
-/// \todo Implement me
-template <typename T>
-SDL_Point SDL_POINT ( const Point2<T>& )
-{
-  SDL_Point null;
-  return null;
-}
+/// \return SDL_Point structure composed from a nom::Point2i object
+SDL_Point SDL_POINT ( const Point2i& );
 
 /// SDL2 data structure wrappers for nomlib
 ///
 /// \return A SDL_Color structure composed from a nom::Color object
-SDL_Color SDL_COLOR ( const Color& color );
+SDL_Color SDL_COLOR ( const Color4u& color );
 
 /// SDL helper functions for nomlib
 ///
 /// \return RGB components of a pixel represented as a nom::Color object
-const Color pixel ( uint32 pixel, const SDL_PixelFormat* fmt );
+const Color4u pixel ( uint32 pixel, const SDL_PixelFormat* fmt );
 
 /// SDL helper functions for nomlib
 ///
 /// \return RGBA components of a pixel represented as a nom::Color object
-const Color alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt );
+const Color4u alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt );
 
 /// SDL helper functions for nomlib
 ///
@@ -132,7 +120,7 @@ const Color alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt );
 /// (color bit per pixel).
 ///
 /// \return RGB components as an unsigned integer.
-uint32 RGB ( const Color& color, const SDL_PixelFormat* fmt );
+uint32 RGB ( const Color4u& color, const SDL_PixelFormat* fmt );
 
 /// SDL2 helper functions for nomlib
 ///
@@ -140,7 +128,7 @@ uint32 RGB ( const Color& color, const SDL_PixelFormat* fmt );
 /// enum, a new SDL2 structure
 ///
 /// \return RGBA components as an unsigned integer.
-uint32 RGB ( const Color& color, uint32 fmt );
+uint32 RGB ( const Color4u& color, uint32 fmt );
 
 /// SDL helper functions for nomlib
 ///
@@ -148,7 +136,7 @@ uint32 RGB ( const Color& color, uint32 fmt );
 /// (color bit per pixel).
 ///
 /// \return RGBA components as an unsigned integer.
-uint32 RGBA ( const Color& color, const SDL_PixelFormat* fmt );
+uint32 RGBA ( const Color4u& color, const SDL_PixelFormat* fmt );
 
 /// SDL2 helper functions for nomlib
 ///
@@ -156,7 +144,7 @@ uint32 RGBA ( const Color& color, const SDL_PixelFormat* fmt );
 /// enum, a new SDL2 structure
 ///
 /// \return RGBA components as an unsigned integer.
-uint32 RGBA ( const Color& color, uint32 fmt );
+uint32 RGBA ( const Color4u& color, uint32 fmt );
 
 /// SDL helper function
 ///

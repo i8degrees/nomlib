@@ -79,7 +79,7 @@ void Sprite::setState ( uint32 state )
 }
 
 bool Sprite::load (
-                    const std::string& filename, const Color& colorkey,
+                    const std::string& filename, const Color4u& colorkey,
                     bool use_cache
                   )
 {

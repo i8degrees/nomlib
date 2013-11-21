@@ -45,7 +45,7 @@ NOM_LOG_TRACE ( NOM );
   this->rendering = RenderStyle::Solid; // Fast, but ugly
   this->newline = 0;
   this->spacing = 0;
-  this->color = Color ( 0, 0, 0 );
+  this->color = Color4u ( 0, 0, 0 );
   this->coords.setPosition ( 0, 0 );
 
   for ( unsigned int idx = 0; idx < 256; idx++ )
@@ -148,7 +148,7 @@ NOM_DUMP_VAR ( text_height );
   return text_height;
 }
 
-const Color& BitmapFont::getColor ( void ) const
+const Color4u& BitmapFont::getColor ( void ) const
 {
   return this->color;
 }
@@ -158,7 +158,7 @@ const Coords& BitmapFont::getPosition ( void ) const
   return this->coords;
 }
 
-void BitmapFont::setColor ( const Color& color )
+void BitmapFont::setColor ( const Color4u& color )
 {
   this->color = color;
 }
@@ -412,7 +412,7 @@ NOM_DUMP_VAR ( this->chars [ pos ].height );
   return true;
 }
 
-bool BitmapFont::load ( const std::string& filename, const Color& colorkey,
+bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
                         bool use_cache
                       )
 {

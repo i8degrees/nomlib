@@ -33,13 +33,13 @@ namespace nom {
 Point::Point ( void ) {}
 Point::~Point ( void ) {}
 
-Point::Point ( const Point2i& coords, const Color& color )
+Point::Point ( const Point2i& coords, const Color4u& color )
 {
   this->coords = coords;
   this->color = color;
 }
 
-Point::Point ( int32 x, int32 y, const Color& color )
+Point::Point ( int32 x, int32 y, const Color4u& color )
 {
   this->coords = Point2i ( x, y );
   this->color = color;

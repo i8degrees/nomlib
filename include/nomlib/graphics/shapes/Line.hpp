@@ -57,11 +57,11 @@ class Line:
 
     /// Construct a Line object using a nom::Coords (X, Y, width & height)
     /// coordinates and a chosen color.
-    Line ( const Coords& coords, const Color& color );
+    Line ( const Coords& coords, const Color4u& color );
 
     /// Construct a Line object using X, Y, width and height integers and a
     /// chosen color.
-    Line ( int32 x, int32 y, int32 width, int32 height, const Color& color );
+    Line ( int32 x, int32 y, int32 width, int32 height, const Color4u& color );
 
     /// Do nothing method; we have it only because it is required by interface
     /// contract with IDrawable (which is fine).
@@ -79,7 +79,7 @@ class Line:
     /// X, Y signed integer rendering coordinates
     Coords coords;
     /// Rendering color (RGBA).
-    Color color;
+    Color4u color;
 };
 
 

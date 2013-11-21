@@ -38,7 +38,7 @@ Transformable::Transformable ( void )  :  coords ( 0, 0, 0, 0 ),
 
 Transformable::Transformable ( const Coords& coords ):  coords ( coords ) {}
 
-Transformable::Transformable ( const Coords& coords, const Color& color )
+Transformable::Transformable ( const Coords& coords, const Color4u& color )
 {
   this->coords = coords;
   this->color = color;
@@ -96,17 +96,17 @@ void Transformable::move ( const Coords& offsets )
   this->coords.y += offsets.y;
 }
 
-const Color& Transformable::getColor ( void ) const
+const Color4u& Transformable::getColor ( void ) const
 {
   return this->color;
 }
 
 void Transformable::setColor ( uint8 red, uint8 green, uint8 blue, uint8 alpha )
 {
-  this->color = Color ( red, green, blue, alpha );
+  this->color = Color4u ( red, green, blue, alpha );
 }
 
-void Transformable::setColor ( const Color& color )
+void Transformable::setColor ( const Color4u& color )
 {
   this->setColor ( color.red, color.green, color.blue, color.alpha );
 }

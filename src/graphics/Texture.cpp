@@ -37,7 +37,7 @@ namespace nom {
 
 Texture::Texture ( void )  :  texture_ { nullptr, priv::FreeTexture },
     pixels_ ( nullptr ), pitch_ ( 0 ), position_ ( 0, 0 ),
-    bounds_ ( 0, 0, -1, -1 ), colorkey_ { Color::Black }
+    bounds_ ( 0, 0, -1, -1 ), colorkey_ { Color4u::Black }
 {
 NOM_LOG_TRACE ( NOM );
 }
@@ -296,7 +296,7 @@ bool Texture::locked ( void ) const
   return false;
 }
 
-const Color& Texture::colorkey ( void ) const
+const Color4u& Texture::colorkey ( void ) const
 {
   return this->colorkey_;
 }
@@ -867,7 +867,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Texture::set_colorkey ( const Color& colorkey )
+bool Texture::set_colorkey ( const Color4u& colorkey )
 {
   this->lock ( this->bounds() ); // Safe for writing
 

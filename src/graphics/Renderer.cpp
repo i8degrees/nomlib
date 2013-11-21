@@ -167,7 +167,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Renderer::fill ( const Color& color )
+bool Renderer::fill ( const Color4u& color )
 {
   if ( this->set_color ( color ) == false )
   {
@@ -216,7 +216,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Renderer::set_color ( const Color& color )
+bool Renderer::set_color ( const Color4u& color )
 {
   if ( SDL_SetRenderDrawColor ( this->renderer(), color.red, color.green, color.blue, color.alpha ) != 0 )
   {

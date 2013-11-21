@@ -58,8 +58,8 @@ nom::int32 do_coords_test4 ( void );
 
 nom::int32 do_color_test1 ( void )
 {
-  nom::Color testme1 ( 242, 1, 1, 255 );
-  nom::Color testme2 = nom::Color::Black;
+  nom::Color4u testme1 ( 242, 1, 1, 255 );
+  nom::Color4u testme2 = nom::Color4u::Black;
 
   if ( testme2 == testme1 ) return EXIT_FAILURE;
 

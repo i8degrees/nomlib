@@ -242,20 +242,20 @@ const Point2i Image::size ( void ) const
   return image_pos;
 }
 
-const Color Image::colorkey ( void ) const
+const Color4u Image::colorkey ( void ) const
 {
   SDL_Surface* buffer = this->image();
   uint32 transparent_color = 0;
-  Color key;
+  Color4u key;
 
   if ( SDL_GetColorKey ( this->image(), &transparent_color ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     priv::FreeSurface ( buffer );
-    return Color::Black;
+    return Color4u::Black;
   }
 
-  return nom::pixel ( transparent_color, buffer->format );
+  return nom::pixel ( transparent_color, buffer->format ); // SDL_helper function
 }
 
 const SDL_BlendMode Image::blend_mode ( void ) const
@@ -271,7 +271,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return blend;
 }
 
-bool Image::set_colorkey ( const Color& colorkey, bool flag )
+bool Image::set_colorkey ( const Color4u& colorkey, bool flag )
 {
   SDL_Surface* buffer = this->image();
   uint32 transparent_color = RGB ( colorkey, buffer->format );

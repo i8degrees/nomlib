@@ -134,12 +134,12 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       }
 
       this->window[0].set_active();
-      if ( this->bfont.load ( RESOURCE_BITMAP_FONT, nom::Color(255, 0, 255, 0) ) == false )
+      if ( this->bfont.load ( RESOURCE_BITMAP_FONT, nom::Color4u(255, 0, 255, 0) ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
         return false;
       }
-      if ( this->font.load ( RESOURCE_TRUETYPE_FONT, nom::Color::White ) == false )
+      if ( this->font.load ( RESOURCE_TRUETYPE_FONT, nom::Color4u::White ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
         return false;
@@ -148,7 +148,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       // Load a sprite sheet, using the sheet_filename as the base path to load
       // the image file from disk
       this->sprite = nom::SpriteBatch ( RESOURCE_SPRITE );
-      if ( this->sprite.load ( APP_RESOURCES_DIR + p.native() + this->sprite.sheet_filename(), nom::Color(255, 0, 255, 0) ) == false )
+      if ( this->sprite.load ( APP_RESOURCES_DIR + p.native() + this->sprite.sheet_filename(), nom::Color4u(255, 0, 255, 0) ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load sprite: " + this->sprite.sheet_filename() );
         return false;
@@ -158,7 +158,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       // Load the same sprite sheet -- but this time -- used for animation
       // effects!
       this->ani_sprite = nom::AnimatedSprite ( RESOURCE_SPRITE );
-      if ( this->ani_sprite.load ( APP_RESOURCES_DIR + p.native() + this->ani_sprite.sheet_filename(), nom::Color(255, 0, 255, 0) ) == false )
+      if ( this->ani_sprite.load ( APP_RESOURCES_DIR + p.native() + this->ani_sprite.sheet_filename(), nom::Color4u(255, 0, 255, 0) ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load sprite: " + this->ani_sprite.sheet_filename() );
         return false;
@@ -176,14 +176,14 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
 
       this->font.setFontSize ( 18 );
       this->font.setRenderingStyle ( nom::IFont::RenderStyle::Blended );
-      this->font.setColor ( nom::Color::White );
+      this->font.setColor ( nom::Color4u::White );
       this->font.setText ( "Use arrow keys to change cursor!" );
       this->font.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, window_size.y - 100 ) );
 
       // Setup a gradient fill for initializing the ui_frame object with as a
       // background
-      this->gradient.setStartColor ( nom::Color::Gray );
-      this->gradient.setEndColor ( nom::Color::LightGray );
+      this->gradient.setStartColor ( nom::Color4u::Gray );
+      this->gradient.setEndColor ( nom::Color4u::LightGray );
       this->gradient.setFillDirection ( nom::Gradient::FillDirection::Left );
 
       // Setup our fancy dangled user interface frame
@@ -247,7 +247,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           } // end refresh cycle
         } // end for MAXIMUM_WINDOWS update loop
 
-        this->window[0].fill ( nom::Color::NomPrimaryColorKey );
+        this->window[0].fill ( nom::Color4u::NomPrimaryColorKey );
         this->ui_frame.draw ( this->window[0] );
         this->sprite.draw ( this->window[0], this->deg );
         this->ani_sprite.draw ( this->window[0] );
@@ -255,11 +255,11 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
         this->bfont.draw ( this->window[0] );
         this->font.draw ( this->window[0] );
 
-        this->window[1].fill ( nom::Color::Black );
+        this->window[1].fill ( nom::Color4u::Black );
         this->background.draw ( this->window[1] );
 
-        this->window[2].fill ( nom::Color::Black );
-        this->window[2].fill ( nom::Color::NomSecondaryColorKey );
+        this->window[2].fill ( nom::Color4u::Black );
+        this->window[2].fill ( nom::Color4u::NomSecondaryColorKey );
 
         // Choose a random color for filling the window with as a backdrop when
         // MAXIMUM_WINDOWS is greater than 3
@@ -269,19 +269,19 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
 
           switch ( random_color )
           {
-            default: this->window[idx].fill ( nom::Color::Black ); break;
+            default: this->window[idx].fill ( nom::Color4u::Black ); break;
 
-            case 1: this->window[idx].fill ( nom::Color::White ); break;
-            case 2: this->window[idx].fill ( nom::Color::Red ); break;
-            case 3: this->window[idx].fill ( nom::Color::Green ); break;
-            case 4: this->window[idx].fill ( nom::Color::Blue ); break;
-            case 5: this->window[idx].fill ( nom::Color::Yellow ); break;
-            case 6: this->window[idx].fill ( nom::Color::Magenta ); break;
-            case 7: this->window[idx].fill ( nom::Color::Cyan ); break;
-            case 8: this->window[idx].fill ( nom::Color::LightGray ); break;
-            case 9: this->window[idx].fill ( nom::Color::Gray ); break;
-            case 10: this->window[idx].fill ( nom::Color::NomPrimaryColorKey ); break;
-            case 11: this->window[idx].fill ( nom::Color::NomSecondaryColorKey ); break;
+            case 1: this->window[idx].fill ( nom::Color4u::White ); break;
+            case 2: this->window[idx].fill ( nom::Color4u::Red ); break;
+            case 3: this->window[idx].fill ( nom::Color4u::Green ); break;
+            case 4: this->window[idx].fill ( nom::Color4u::Blue ); break;
+            case 5: this->window[idx].fill ( nom::Color4u::Yellow ); break;
+            case 6: this->window[idx].fill ( nom::Color4u::Magenta ); break;
+            case 7: this->window[idx].fill ( nom::Color4u::Cyan ); break;
+            case 8: this->window[idx].fill ( nom::Color4u::LightGray ); break;
+            case 9: this->window[idx].fill ( nom::Color4u::Gray ); break;
+            case 10: this->window[idx].fill ( nom::Color4u::NomPrimaryColorKey ); break;
+            case 11: this->window[idx].fill ( nom::Color4u::NomSecondaryColorKey ); break;
           }
         }
 

@@ -44,8 +44,8 @@ class Pixel:
 {
   public:
     Pixel ( void );
-    Pixel ( const Coords& coords, const Color& color );
-    Pixel ( int32 x, int32 y, const Color& color );
+    Pixel ( const Coords& coords, const Color4u& color );
+    Pixel ( int32 x, int32 y, const Color4u& color );
     virtual ~Pixel ( void );
 
     void Update ( void );
@@ -62,7 +62,7 @@ class Pixel:
 
   private:
     Coords coords;
-    Color color;
+    Color4u color;
 };
 
 

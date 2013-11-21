@@ -33,13 +33,13 @@ namespace nom {
 Line::Line ( void ) {}
 Line::~Line ( void ) {}
 
-Line::Line ( const Coords& coords, const Color& color )
+Line::Line ( const Coords& coords, const Color4u& color )
 {
   this->coords = coords;
   this->color = color;
 }
 
-Line::Line ( int32 x, int32 y, int32 width, int32 height, const Color& color )
+Line::Line ( int32 x, int32 y, int32 width, int32 height, const Color4u& color )
 {
   this->coords = Coords ( x, y, width, height );
   this->color = color;

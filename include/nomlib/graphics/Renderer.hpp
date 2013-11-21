@@ -114,7 +114,7 @@ class Renderer
     /// This combines two methods into one: set_color() and clear().
     ///
     /// Default color fill is "BSOD (TM) Blue".
-    bool fill ( const Color& color = Color::Blue );
+    bool fill ( const Color4u& color = Color4u::Blue );
 
     /// Set device independent resolution for rendering
     ///
@@ -136,7 +136,7 @@ class Renderer
     /// \todo Test me!
     bool set_viewport ( const Coords& rect );
 
-    bool set_color ( const Color& color );
+    bool set_color ( const Color4u& color );
 
     /// Set the color blending mode (fill and line).
     ///

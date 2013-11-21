@@ -42,19 +42,40 @@ SDL_bool SDL_BOOL ( bool value )
   }
 }
 
-SDL_Rect SDL_RECT ( const Coords& coords )
+SDL_Rect SDL_RECT ( const Coords& rectangle )
 {
   SDL_Rect r;
 
-  r.x = coords.x;
-  r.y = coords.y;
-  r.w = coords.width;
-  r.h = coords.height;
+  r.x = rectangle.x;
+  r.y = rectangle.y;
+  r.w = rectangle.w;
+  r.h = rectangle.h;
 
   return r;
 }
 
-SDL_Color SDL_COLOR ( const Color& color )
+SDL_Rect SDL_RECT ( const IntRect& rectangle )
+{
+  SDL_Rect r;
+
+  r.x = rectangle.left;
+  r.y = rectangle.top;
+  r.w = rectangle.left + rectangle.right;
+  r.h = rectangle.top + rectangle.bottom;
+
+  return r;
+}
+
+SDL_Point SDL_POINT ( const Point2i& point )
+{
+  SDL_Point p;
+  p.x = point.x;
+  p.y = point.y;
+
+  return p;
+}
+
+SDL_Color SDL_COLOR ( const Color4u& color )
 {
   SDL_Color c;
 
@@ -66,40 +87,40 @@ SDL_Color SDL_COLOR ( const Color& color )
   return c;
 }
 
-const Color pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
+const Color4u pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
 {
-  Color c;
+  Color4u c;
 
   SDL_GetRGB ( pixel, fmt, &c.r, &c.g, &c.b );
 
   return c;
 }
 
-const Color alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
+const Color4u alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
 {
-  Color c;
+  Color4u c;
 
   SDL_GetRGBA ( pixel, fmt, &c.r, &c.g, &c.b, &c.a );
 
   return c;
 }
 
-uint32 RGB ( const Color& color, const SDL_PixelFormat* fmt )
+uint32 RGB ( const Color4u& color, const SDL_PixelFormat* fmt )
 {
   return SDL_MapRGB ( fmt, color.red, color.green, color.blue );
 }
 
-uint32 RGB ( const Color& color, uint32 fmt )
+uint32 RGB ( const Color4u& color, uint32 fmt )
 {
   return SDL_MapRGB ( SDL_AllocFormat(fmt), color.red, color.green, color.blue );
 }
 
-uint32 RGBA ( const Color& color, const SDL_PixelFormat* fmt )
+uint32 RGBA ( const Color4u& color, const SDL_PixelFormat* fmt )
 {
   return SDL_MapRGBA ( fmt, color.red, color.green, color.blue, color.alpha );
 }
 
-uint32 RGBA ( const Color& color, uint32 fmt )
+uint32 RGBA ( const Color4u& color, uint32 fmt )
 {
   return SDL_MapRGBA ( SDL_AllocFormat(fmt), color.red, color.green, color.blue, color.alpha );
 }

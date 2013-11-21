@@ -162,7 +162,7 @@ class Image
     ///
     /// \note If a colorkey has not been set for the image, you should have the
     /// value of nom::Color::Black returned.
-    const Color colorkey ( void ) const;
+    const Color4u colorkey ( void ) const;
 
     /// Obtain the blend mode used for blitting
     const SDL_BlendMode blend_mode ( void ) const;
@@ -171,7 +171,7 @@ class Image
     ///
     /// \param colorkey     Pixel color to mark transparent
     /// \param flag         TRUE to enable color key; FALSE to disable color key
-    bool set_colorkey ( const Color& colorkey, bool flag );
+    bool set_colorkey ( const Color4u& colorkey, bool flag );
 
     /// Set RLE acceleration for this image
     ///

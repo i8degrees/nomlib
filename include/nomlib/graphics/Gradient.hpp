@@ -73,7 +73,7 @@ class Gradient:
     ///
     /// \DEPRECATED
     Gradient  (
-                Color gradient_color[2],
+                Color4u gradient_color[2],
                 const Coords& bounds, int32 x_margin, int32 y_margin,
                 Gradient::FillDirection direction
               );
@@ -83,20 +83,20 @@ class Gradient:
 
     /// Fully initialize this object
     void initialize (
-                      Color gradient_color[2],
+                      Color4u gradient_color[2],
                       const Coords& bounds, int32 x_margin, int32 y_margin,
                       Gradient::FillDirection direction
                     );
 
     const Coords getPosition ( void ) const;
     const Coords getSize ( void ) const;
-    Color getStartColor ( void ) const;
-    Color getEndColor ( void ) const;
+    Color4u getStartColor ( void ) const;
+    Color4u getEndColor ( void ) const;
     Gradient::FillDirection getFillDirection ( void ) const;
     bool dithering ( void ) const;
 
-    void setStartColor ( const Color& starting_color );
-    void setEndColor ( const Color& ending_color );
+    void setStartColor ( const Color4u& starting_color );
+    void setEndColor ( const Color4u& ending_color );
     void reverseColors ( void );
     void setFillDirection ( Gradient::FillDirection direction );
     void setPosition ( int32 x, int32 y );
@@ -126,7 +126,7 @@ class Gradient:
     /// this threshold will also allow us to start thinking about other gradient
     /// types?
     /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
-    Color gradient[2];
+    Color4u gradient[2];
 
     /// Rendering coordinates (X, Y, width & height)
     Coords coords;

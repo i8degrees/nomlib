@@ -74,7 +74,7 @@ class TrueTypeFont:
 
     IFont::FontStyle getFontStyle ( void ) const;
 
-    const Color& getColor ( void ) const;
+    const Color4u& getColor ( void ) const;
     const Coords& getPosition ( void ) const;
 
     /// Not implemented
@@ -95,7 +95,7 @@ class TrueTypeFont:
     /// NOTE: We render the font drawing surface here
     void setText ( const std::string& text );
 
-    void setColor ( const Color& color );
+    void setColor ( const Color4u& color );
     void setPosition ( const Coords& coords );
 
     /// Not implemented
@@ -120,7 +120,7 @@ class TrueTypeFont:
     ///
     /// Refer to the SDL_ttf documentation for file formats supported. As of
     /// this writing, TTF and FON file formats are known to be supported.
-    bool load ( const std::string& filename, const Color& colorkey,
+    bool load ( const std::string& filename, const Color4u& colorkey,
                 bool use_cache = false
               );
 
@@ -146,7 +146,7 @@ class TrueTypeFont:
     Coords coords;
 
     /// Text color
-    Color color;
+    Color4u color;
 
     /// holds contents of text as a string buffer
     std::string text_buffer;

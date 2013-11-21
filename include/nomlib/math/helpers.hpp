@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Point2-inl.hpp"
+#include "nomlib/math/Point2.hpp"
 
 namespace nom {
 

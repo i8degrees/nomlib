@@ -35,9 +35,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/math/helpers.hpp>
 #include <nomlib/math/Color4.hpp>
 #include <nomlib/math/Coords.hpp>
-#include <nomlib/math/Rect-inl.hpp>
-#include <nomlib/math/Point2-inl.hpp>
-#include <nomlib/math/Point3-inl.hpp>
+#include <nomlib/math/Rect.hpp>
+#include <nomlib/math/Point2.hpp>
+#include <nomlib/math/Point3.hpp>
 #include <nomlib/math/Transformable.hpp>
 
 #endif // include guard defined

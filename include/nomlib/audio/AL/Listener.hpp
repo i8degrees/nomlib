@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/audio/AL/OpenAL.hpp"
-#include "nomlib/math/Point3-inl.hpp"
+#include "nomlib/math/Point3.hpp"
 #include "nomlib/audio/AL/AudioDevice.hpp"
 
 namespace nom {

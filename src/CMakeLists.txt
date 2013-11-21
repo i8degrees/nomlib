@@ -4,7 +4,6 @@ file ( GLOB ROOT_HEADERS "${NOMLIB_HEADERS_DIR}/*.hpp" )
 set ( ROOT_SOURCE
       ${SRC_DIR}/resources.cpp
       ${SRC_DIR}/version.cpp # auto-generated
-      ${SRC_DIR}/SDL_helpers.cpp
       ${SRC_DIR}/CMakeLists.txt # added so it will show up within source_group
     )
 
@@ -107,6 +106,7 @@ file ( GLOB SYSTEM_OSX_HEADERS "${NOMLIB_HEADERS_DIR}/system/osx/*.hpp" )
 file ( GLOB SYSTEM_UNIX_HEADERS "${NOMLIB_HEADERS_DIR}/system/unix/*.hpp" )
 file ( GLOB SYSTEM_WINDOWS_HEADERS "${NOMLIB_HEADERS_DIR}/system/windows/*.hpp" )
 set ( SYSTEM_SOURCE
+      ${SRC_DIR}/system/SDL_helpers.cpp
       ${SRC_DIR}/system/init.cpp
       ${SRC_DIR}/system/dialog_messagebox.cpp
       ${SRC_DIR}/system/EventDispatcher.cpp

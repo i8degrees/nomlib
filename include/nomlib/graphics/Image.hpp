@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Point2.hpp"
-#include "nomlib/SDL_helpers.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
 
 namespace nom {
 

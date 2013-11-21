@@ -44,7 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/graphics/Texture.hpp"
-#include "nomlib/SDL_helpers.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
 
 //#define NOM_DEBUG_SDL_BITMAP_FONT
 

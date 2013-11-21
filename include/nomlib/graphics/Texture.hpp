@@ -36,13 +36,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
-#include "nomlib/SDL_helpers.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/math/helpers.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/system/ObjectCache.hpp"
-#include "nomlib/SDL_helpers.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/Window.hpp"
 

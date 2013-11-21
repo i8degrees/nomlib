@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
-#include "nomlib/SDL_helpers.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
 
 /// Enable debugging output of every key press & release event
 //#define NOM_DEBUG_SDL2_KEYBOARD_INPUT

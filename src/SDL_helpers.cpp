@@ -70,7 +70,7 @@ const Color pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
 {
   Color c;
 
-  SDL_GetRGB ( pixel, fmt, &c.red, &c.green, &c.blue );
+  SDL_GetRGB ( pixel, fmt, &c.r, &c.g, &c.b );
 
   return c;
 }
@@ -79,7 +79,7 @@ const Color alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
 {
   Color c;
 
-  SDL_GetRGBA ( pixel, fmt, &c.red, &c.green, &c.blue, &c.alpha );
+  SDL_GetRGBA ( pixel, fmt, &c.r, &c.g, &c.b, &c.a );
 
   return c;
 }

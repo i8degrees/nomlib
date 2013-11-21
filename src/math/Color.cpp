@@ -30,153 +30,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-const Color Color::null ( -1, -1, -1, -1 );
+const int Color::ALPHA_TRANSPARENT = 0;
+const int Color::ALPHA_OPAQUE = 255;
 
-const Color Color::Black ( 0, 0, 0 );
-const Color Color::White ( 255, 255, 255 );
-const Color Color::Red ( 255, 0, 0 );
-const Color Color::Green ( 0, 255, 0 );
-const Color Color::Blue ( 0, 0, 255 );
-const Color Color::Yellow ( 255, 255, 255 );
-const Color Color::Magenta ( 255, 0, 255 );
-const Color Color::Cyan ( 0, 255, 255 );
+const Color Color::Black ( 0, 0, 0, Color::ALPHA_OPAQUE );
+const Color Color::White ( 255, 255, Color::ALPHA_OPAQUE );
+const Color Color::Red ( 255, 0, 0, Color::ALPHA_OPAQUE );
+const Color Color::Green ( 0, 255, 0, Color::ALPHA_OPAQUE );
+const Color Color::Blue ( 0, 0, 255, Color::ALPHA_OPAQUE );
+const Color Color::Yellow ( 255, 255, 255, Color::ALPHA_OPAQUE );
+const Color Color::Magenta ( 255, 0, 255, Color::ALPHA_OPAQUE );
+const Color Color::Cyan ( 0, 255, 255, Color::ALPHA_OPAQUE );
 
-const Color Color::LightGray ( 99, 99, 99 );
-const Color Color::Gray ( 67, 67, 67 );
+const Color Color::LightGray ( 99, 99, 99, Color::ALPHA_OPAQUE );
+const Color Color::Gray ( 67, 67, 67, Color::ALPHA_OPAQUE );
 
-const Color Color::NomPrimaryColorKey ( 110, 144, 190 );
-const Color Color::NomSecondaryColorKey ( 223, 75, 255 );
-
-Color::Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ),
-                        alpha ( 255 )
-{}
-
-Color::Color ( uint8 r, uint8 g, uint8 b )  : red ( r ),
-                                              green ( g ),
-                                              blue ( b ),
-                                              alpha ( 255 )
-{}
-
-Color::Color ( uint8 r, uint8 g, uint8 b, uint8 a ):  red ( r ),
-                                                      green ( g ),
-                                                      blue ( b ),
-                                                      alpha ( a )
-{}
-
-Color::Color ( const Color& color ) : red ( color.red ),
-                                      green ( color.green ),
-                                      blue ( color.blue ),
-                                      alpha ( color.alpha )
-{}
-
-Color::~Color ( void ) {}
-
-bool Color::isNull ( void ) const
-{
-  if ( *this == Color::null )
-  {
-    return true;
-  }
-
-  return false;
-}
-
-const Color& Color::get ( void ) const
-{
-  return *this;
-}
-
-Color& Color::operator = ( const Color& other )
-{
-  this->red = other.red;
-  this->green = other.green;
-  this->blue = other.blue;
-  this->alpha = other.alpha;
-
-  return *this;
-}
-
-std::ostream& operator << ( std::ostream& os, const Color& color )
-{
-  os << static_cast<int> ( color.red ) << color_delimiter
-  << static_cast<int> ( color.green) << color_delimiter
-  << static_cast<int> ( color.blue ) << color_delimiter
-  << static_cast<int> ( color.alpha );
-  return os;
-}
-
-bool operator == ( const Color& left, const Color& right )
-{
-  return (left.red == right.red ) &&
-         (left.green == right.green ) &&
-         (left.blue == right.blue ) &&
-         (left.alpha == right.alpha );
-}
-
-bool operator != ( const Color& left, const Color& right )
-{
-  return ! ( left == right );
-}
-
-Color operator + ( const Color& left, const Color& right )
-{
-  return Color  ( static_cast<uint8> ( std::min ( left.red + right.red, 255 ) ),
-                  static_cast<uint8> ( std::min ( left.green + right.green, 255 ) ),
-                  static_cast<uint8> ( std::min ( left.blue + right.blue, 255 ) ),
-                  static_cast<uint8> ( std::min ( left.alpha + right.alpha, 255 ) )
-                );
-}
-
-Color operator ++ ( Color& left )
-{
-  return Color  ( static_cast<uint8> ( left.red-- ),
-                  static_cast<uint8> ( left.green-- ),
-                  static_cast<uint8> ( left.blue-- ),
-                  static_cast<uint8> ( left.alpha-- )
-                );
-}
-
-Color operator - ( const Color& left, const Color& right )
-{
-  return Color  ( static_cast<uint8> ( std::min ( left.red - right.red, 255 ) ),
-                  static_cast<uint8> ( std::min ( left.green - right.green, 255 ) ),
-                  static_cast<uint8> ( std::min ( left.blue - right.blue, 255 ) ),
-                  static_cast<uint8> ( std::min ( left.alpha - right.alpha, 255 ) )
-                );
-}
-
-Color operator -- ( Color& left )
-{
-  return Color  ( static_cast<uint8> ( left.red-- ),
-                  static_cast<uint8> ( left.green-- ),
-                  static_cast<uint8> ( left.blue-- ),
-                  static_cast<uint8> ( left.alpha-- )
-                );
-}
-
-Color operator * ( const Color& left, const Color& right )
-{
-  return Color  ( static_cast<uint8> ( left.red * right.red / 255 ),
-                  static_cast<uint8> ( left.green * right.green / 255 ),
-                  static_cast<uint8> ( left.blue * right.blue / 255 ),
-                  static_cast<uint8> ( left.alpha * right.alpha / 255 )
-                );
-}
-
-Color& operator += ( Color& left, const Color& right )
-{
-  return left = left + right;
-}
-
-Color& operator -= ( Color& left, const Color& right )
-{
-  return left = left - right;
-}
-
-Color& operator *= ( Color& left, const Color& right )
-{
-  return left = left * right;
-}
+const Color Color::NomPrimaryColorKey ( 110, 144, 190, Color::ALPHA_OPAQUE );
+const Color Color::NomSecondaryColorKey ( 223, 75, 255, Color::ALPHA_OPAQUE );
 
 
 } // namespace nom

@@ -422,10 +422,7 @@ NOM_LOG_ERR ( NOM, "Could not load bitmap font image file: " + filename );
     return false;
   }
 
-  if ( colorkey != Color::null )
-  {
-    this->bitmap_font.set_colorkey ( colorkey );
-  }
+  this->bitmap_font.set_colorkey ( colorkey );
 
   // Attempt to rebuild font metrics
   if ( this->rebuild() == false )

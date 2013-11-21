@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_COLORS_HEADERS
-#define NOMLIB_COLORS_HEADERS
+#ifndef NOMLIB_RGBA_COLOR_HPP
+#define NOMLIB_RGBA_COLOR_HPP
 
 #include <algorithm>
 
@@ -35,45 +35,65 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-const std::string color_delimiter = ", ";
+/// Delimiter character to use with << operator
+///
+/// \todo Fix style; all uppercase letters
+const std::string COLOR_DELIMITER = ", ";
 
-/// \brief Utility class container for RGBA colors
+/// \brief RGBA color
 ///
 /// \todo Convert to a template class
+/// \todo Implement lesser than, greater than and so on operators?
 class Color
 {
   public:
     /// Default constructor; sets the color to their respective defaults
-    Color ( void );
+    Color ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ), alpha ( Color::ALPHA_OPAQUE ) {}
 
     /// Destructor
-    ~Color ( void );
+    ~Color ( void ) {}
 
     /// Copy constructor
-    Color ( const Color& color );
+    Color ( const Color& other )
+    {
+      this->red = other.red;
+      this->green = other.green;
+      this->blue = other.blue;
+      this->alpha = other.alpha;
+    }
 
     /// Constructor variant for setting a color using RGB values
-    Color ( uint8 red, uint8 green, uint8 blue );
+    Color ( uint8 r, uint8 g, uint8 b ) : red ( r ), green ( g ),
+      blue ( b ), alpha ( Color::ALPHA_OPAQUE ) {}
 
     /// Constructor variant for setting a color using RGBA values
-    Color ( uint8 red, uint8 green, uint8 blue, uint8 alpha );
-
-    /// Convenience method for determining if this object is initialized or not;
-    /// an initialized object should never be equal to nom::Color::null
-    ///
-    /// \todo Fully implement me
-    bool isNull ( void ) const;
-
-    /// Convenience getter for obtaining a copy of this object
-    const Color& get ( void ) const;
+    Color ( uint8 red, uint8 green, uint8 blue, uint8 alpha ) : red ( red ),
+      green ( green ), blue ( blue ), alpha ( alpha ) {}
 
     /// Copy assignment operator
-    Color& operator = ( const Color& other );
+    inline Color& operator = ( const Color& other )
+    {
+      this->red = other.red;
+      this->green = other.green;
+      this->blue = other.blue;
+      this->alpha = other.alpha;
 
-    /// Convenience object that will always contain a value of -1
-    static const Color null;
+      return *this;
+    }
 
-    /// Predefined color constants for convenience sake
+    /// Convenience getter for obtaining a copy of this object
+    inline const Color& get ( void ) const
+    {
+      return *this;
+    }
+
+    /// 100% transparent alpha channel value
+    static const int ALPHA_TRANSPARENT;
+
+    /// 100% opaque alpha channel value
+    static const int ALPHA_OPAQUE;
+
+    /// Primary colors
     static const Color Black;
     static const Color White;
     static const Color Red;
@@ -83,7 +103,7 @@ class Color
     static const Color Magenta;
     static const Color Cyan;
 
-    /// Additional predefined color constants
+    /// Additional colors
     static const Color LightGray;
     static const Color Gray;
 
@@ -119,31 +139,94 @@ class Color
 /// This will look like:
 ///
 /// 99, 144, 255, 128
-std::ostream& operator << ( std::ostream& os, const Color& color );
+static inline std::ostream& operator << ( std::ostream& os,
+    const Color& color )
+{
+  os << static_cast<uint8> ( color.red ) << COLOR_DELIMITER
+     << static_cast<uint8> ( color.green ) << COLOR_DELIMITER
+     << static_cast<uint8> ( color.blue ) << COLOR_DELIMITER
+     << static_cast<uint8> ( color.alpha );
+  return os;
+}
 
-bool operator == ( const Color& left, const Color& right );
-bool operator != ( const Color& left, const Color& right );
+static inline bool operator == ( const Color& left, const Color& right )
+{
+  return ( left.red == right.red ) &&
+         ( left.green == right.green ) &&
+         ( left.blue == right.blue ) &&
+         ( left.alpha == right.alpha );
+}
+
+static inline bool operator != ( const Color& left, const Color& right )
+{
+  return ! ( left == right );
+}
 
 /// Values that exceed 255 are clamped to 255
-Color operator + ( const Color& left, const Color& right );
+static inline Color operator + ( const Color& left, const Color& right )
+{
+  return Color  ( static_cast<uint8> ( std::min ( left.red + right.red, 255 ) ),
+                  static_cast<uint8> ( std::min ( left.green + right.green, 255 ) ),
+                  static_cast<uint8> ( std::min ( left.blue + right.blue, 255 ) ),
+                  static_cast<uint8> ( std::min ( left.alpha + right.alpha, 255 ) )
+                );
+}
 
 /// Values that exceed 255 are clamped to 255
-Color operator ++ ( Color& left );
+static inline Color operator ++ ( Color& left )
+{
+  return Color  ( static_cast<uint8> ( left.red-- ),
+                  static_cast<uint8> ( left.green-- ),
+                  static_cast<uint8> ( left.blue-- ),
+                  static_cast<uint8> ( left.alpha-- )
+                );
+}
 
 /// Values that exceed 255 are clamped to 255
-Color operator - ( const Color& left, const Color& right );
+static inline Color operator - ( const Color& left, const Color& right )
+{
+  return Color  ( static_cast<uint8> ( std::min ( left.red - right.red, 255 ) ),
+                  static_cast<uint8> ( std::min ( left.green - right.green, 255 ) ),
+                  static_cast<uint8> ( std::min ( left.blue - right.blue, 255 ) ),
+                  static_cast<uint8> ( std::min ( left.alpha - right.alpha, 255 ) )
+                );
+}
 
 /// Values that exceed 255 are clamped to 255
-Color operator -- ( Color& left );
+static inline Color operator -- ( Color& left )
+{
+  return Color  ( static_cast<uint8> ( left.red-- ),
+                  static_cast<uint8> ( left.green-- ),
+                  static_cast<uint8> ( left.blue-- ),
+                  static_cast<uint8> ( left.alpha-- )
+                );
+}
 
 /// Values that exceed 255 are clamped to 255
-Color operator * ( const Color& left, const Color& right);
+static inline Color operator * ( const Color& left, const Color& right )
+{
+  return Color  ( static_cast<uint8> ( left.red * right.red / 255 ),
+                  static_cast<uint8> ( left.green * right.green / 255 ),
+                  static_cast<uint8> ( left.blue * right.blue / 255 ),
+                  static_cast<uint8> ( left.alpha * right.alpha / 255 )
+                );
+}
 
-Color& operator += ( Color& left, const Color& right );
-Color& operator -= ( Color& left, const Color& right );
-Color& operator *= ( Color& left, const Color& right );
+static inline Color& operator += ( Color& left, const Color& right )
+{
+  return left = left + right;
+}
 
+static inline Color& operator -= ( Color& left, const Color& right )
+{
+  return left = left - right;
+}
+
+static inline Color& operator *= ( Color& left, const Color& right )
+{
+  return left = left * right;
+}
 
 } // namespace nom
 
-#endif // NOMLIB_COLORS_HEADERS defined
+#endif // include guard defined

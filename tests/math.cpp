@@ -58,18 +58,10 @@ nom::int32 do_coords_test4 ( void );
 
 nom::int32 do_color_test1 ( void )
 {
-  nom::Color testme1 ( 242, 1, 1, 0 );
-  nom::Color testme2 ( -1, -1, -1, -1 );
+  nom::Color testme1 ( 242, 1, 1, 255 );
+  nom::Color testme2 = nom::Color::Black;
 
-  if ( testme1.isNull() ) return EXIT_FAILURE;
-  if ( testme2.isNull() ) return EXIT_SUCCESS;
-  if ( testme2 == nom::Color::null ) return EXIT_SUCCESS;
-
-  testme1 = testme2;
-
-  if ( testme1.isNull() ) return EXIT_SUCCESS;
-  if ( testme2.isNull() ) return EXIT_SUCCESS;
-  if ( testme2 == nom::Color::null ) return EXIT_SUCCESS;
+  if ( testme2 == testme1 ) return EXIT_FAILURE;
 
   return EXIT_SUCCESS;
 }

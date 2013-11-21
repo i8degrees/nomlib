@@ -252,7 +252,7 @@ const Color Image::colorkey ( void ) const
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     priv::FreeSurface ( buffer );
-    return Color::null;
+    return Color::Black;
   }
 
   return nom::pixel ( transparent_color, buffer->format );

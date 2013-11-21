@@ -37,7 +37,7 @@ namespace nom {
 
 Texture::Texture ( void )  :  texture_ { nullptr, priv::FreeTexture },
     pixels_ ( nullptr ), pitch_ ( 0 ), position_ ( 0, 0 ),
-    bounds_ ( 0, 0, -1, -1 ), colorkey_ { Color::null }
+    bounds_ ( 0, 0, -1, -1 ), colorkey_ { Color::Black }
 {
 NOM_LOG_TRACE ( NOM );
 }

@@ -37,7 +37,7 @@ namespace nom {
 
 const std::string point_delimiter = ", ";
 
-/// \brief 2D Point class
+/// \brief 2D point container
 template <typename T>
 class Point2
 {
@@ -53,17 +53,20 @@ class Point2
 
     /// Copy constructor
     template <typename U>
-    Point2<T> ( const Point2<U>& copy )
+    Point2 ( const Point2<U>& copy )
     {
       this->x = static_cast<T> ( copy.x );
       this->y = static_cast<T> ( copy.y );
     }
 
     /// Copy assignment operator
-    Point2& operator = ( const T& other )
+    template <typename U>
+    Point2<T>& operator = ( const Point2<U>& other )
     {
-      this->x = other.x;
-      this->y = other.y;
+      this->x = static_cast<T> ( other.x );
+      this->y = static_cast<T> ( other.y );
+
+      return *this;
     }
 
   public:
@@ -97,7 +100,6 @@ typedef Point2<float> Point2f;
 
 /// Point2D object defined with double precision floating-point integers.
 typedef Point2<double> Point2d;
-
 
 } // namespace nom
 

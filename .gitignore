@@ -15,6 +15,9 @@ build
 third-party/windows
 third-party/osx
 third-party/linux
+tests/graphics
+tests/math
+tests/system
 
 # bins: Visual C++ Studio Project Files
 *.suo

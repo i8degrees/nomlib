@@ -322,7 +322,7 @@ void TrueTypeFont::draw ( const Window& target ) const
 
 bool TrueTypeFont::rebuild ( void )
 {
-  if ( this->load ( this->filename, Color4u::Black, this->use_cache ) == false )
+  if ( this->load ( this->filename, NOM_COLOR4U_BLACK, this->use_cache ) == false )
   {
 NOM_LOG_ERR ( NOM, "Could not rebuild font metrics." );
     return false;

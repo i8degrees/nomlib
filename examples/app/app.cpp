@@ -139,7 +139,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
         nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
         return false;
       }
-      if ( this->font.load ( RESOURCE_TRUETYPE_FONT, nom::Color4u::White ) == false )
+      if ( this->font.load ( RESOURCE_TRUETYPE_FONT, NOM_COLOR4U_WHITE ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
         return false;
@@ -176,14 +176,14 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
 
       this->font.setFontSize ( 18 );
       this->font.setRenderingStyle ( nom::IFont::RenderStyle::Blended );
-      this->font.setColor ( nom::Color4u::White );
+      this->font.setColor ( NOM_COLOR4U_WHITE );
       this->font.setText ( "Use arrow keys to change cursor!" );
       this->font.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, window_size.y - 100 ) );
 
       // Setup a gradient fill for initializing the ui_frame object with as a
       // background
-      this->gradient.setStartColor ( nom::Color4u::Gray );
-      this->gradient.setEndColor ( nom::Color4u::LightGray );
+      this->gradient.setStartColor ( NOM_COLOR4U_GRAY );
+      this->gradient.setEndColor ( NOM_COLOR4U_LIGHT_GRAY );
       this->gradient.setFillDirection ( nom::Gradient::FillDirection::Left );
 
       // Setup our fancy dangled user interface frame
@@ -247,7 +247,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           } // end refresh cycle
         } // end for MAXIMUM_WINDOWS update loop
 
-        this->window[0].fill ( nom::Color4u::NomPrimaryColorKey );
+        this->window[0].fill ( NOM_COLOR4U_PRIMARY_COLORKEY );
         this->ui_frame.draw ( this->window[0] );
         this->sprite.draw ( this->window[0], this->deg );
         this->ani_sprite.draw ( this->window[0] );
@@ -255,11 +255,10 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
         this->bfont.draw ( this->window[0] );
         this->font.draw ( this->window[0] );
 
-        this->window[1].fill ( nom::Color4u::Black );
+        this->window[1].fill ( NOM_COLOR4U_BLACK );
         this->background.draw ( this->window[1] );
 
-        this->window[2].fill ( nom::Color4u::Black );
-        this->window[2].fill ( nom::Color4u::NomSecondaryColorKey );
+        this->window[2].fill ( NOM_COLOR4U_SECONDARY_COLORKEY );
 
         // Choose a random color for filling the window with as a backdrop when
         // MAXIMUM_WINDOWS is greater than 3
@@ -269,19 +268,19 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
 
           switch ( random_color )
           {
-            default: this->window[idx].fill ( nom::Color4u::Black ); break;
+            default: this->window[idx].fill ( NOM_COLOR4U_BLACK ); break;
 
-            case 1: this->window[idx].fill ( nom::Color4u::White ); break;
-            case 2: this->window[idx].fill ( nom::Color4u::Red ); break;
-            case 3: this->window[idx].fill ( nom::Color4u::Green ); break;
-            case 4: this->window[idx].fill ( nom::Color4u::Blue ); break;
-            case 5: this->window[idx].fill ( nom::Color4u::Yellow ); break;
-            case 6: this->window[idx].fill ( nom::Color4u::Magenta ); break;
-            case 7: this->window[idx].fill ( nom::Color4u::Cyan ); break;
-            case 8: this->window[idx].fill ( nom::Color4u::LightGray ); break;
-            case 9: this->window[idx].fill ( nom::Color4u::Gray ); break;
-            case 10: this->window[idx].fill ( nom::Color4u::NomPrimaryColorKey ); break;
-            case 11: this->window[idx].fill ( nom::Color4u::NomSecondaryColorKey ); break;
+            case 1: this->window[idx].fill ( NOM_COLOR4U_WHITE ); break;
+            case 2: this->window[idx].fill ( NOM_COLOR4U_RED ); break;
+            case 3: this->window[idx].fill ( NOM_COLOR4U_GREEN ); break;
+            case 4: this->window[idx].fill ( NOM_COLOR4U_BLUE ); break;
+            case 5: this->window[idx].fill ( NOM_COLOR4U_YELLOW ); break;
+            case 6: this->window[idx].fill ( NOM_COLOR4U_MAGENTA ); break;
+            case 7: this->window[idx].fill ( NOM_COLOR4U_CYAN ); break;
+            case 8: this->window[idx].fill ( NOM_COLOR4U_ORANGE ); break;
+            case 9: this->window[idx].fill ( NOM_COLOR4U_LIGHT_GRAY ); break;
+            case 10: this->window[idx].fill ( NOM_COLOR4U_PRIMARY_COLORKEY ); break;
+            case 11: this->window[idx].fill ( NOM_COLOR4U_SECONDARY_COLORKEY ); break;
           }
         }
 

@@ -112,9 +112,7 @@ class Renderer
     /// Fill the rendering target video display with a new color.
     ///
     /// This combines two methods into one: set_color() and clear().
-    ///
-    /// Default color fill is "BSOD (TM) Blue".
-    bool fill ( const Color4u& color = Color4u::Blue );
+    bool fill ( const Color4u& color );
 
     /// Set device independent resolution for rendering
     ///

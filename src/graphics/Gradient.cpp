@@ -33,8 +33,8 @@ namespace nom {
 Gradient::Gradient ( void )
 {
   Color4u gradient_color[2];
-  gradient_color[0] = Color4u::LightGray;
-  gradient_color[1] = Color4u::Gray;
+  gradient_color[0] = NOM_COLOR4U_LIGHT_GRAY;
+  gradient_color[1] = NOM_COLOR4U_GRAY;
 
   this->initialize  (
                       gradient_color,

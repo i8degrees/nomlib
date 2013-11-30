@@ -252,7 +252,7 @@ const Color4u Image::colorkey ( void ) const
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     priv::FreeSurface ( buffer );
-    return Color4u::Black;
+    return NOM_COLOR4U_BLACK;
   }
 
   return nom::pixel ( transparent_color, buffer->format ); // SDL_helper function

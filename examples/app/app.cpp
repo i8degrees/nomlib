@@ -193,8 +193,8 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       this->ui_frame.setLabel ( "I am a Bitmap Font!" );
       this->ui_frame.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
 NOM_DUMP_VAR(this->sprite.size().x); // FIXME: should be 26 (sprite sheet width), but is 130 (total texture size)
-      this->sprite.setPosition ( this->ui_frame.position().x - 26, this->ui_frame.position().y );
-      this->ani_sprite.setPosition ( this->ui_frame.position().x + this->ui_frame.size().x + 26, this->ui_frame.position().y );
+      this->sprite.set_position ( this->ui_frame.position().x - 26, this->ui_frame.position().y );
+      this->ani_sprite.set_position ( this->ui_frame.position().x + this->ui_frame.size().x + 26, this->ui_frame.position().y );
 NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
 
       this->Running(); // If all is well, here goes nothing!

@@ -56,7 +56,7 @@ NOM_LOG_TRACE ( NOM );
 Cursor& Cursor::operator = ( const Cursor& other )
 {
   this->sprite = other.sprite;
-  this->coords = other.coords;
+  this->set_position ( other.position().x, other.position().y );
   this->offsets = other.offsets;
   this->state = other.state;
   this->sprite_sheet = other.sprite_sheet;
@@ -75,12 +75,12 @@ Cursor& Cursor::operator = ( const Cursor& other )
 
 int32 Cursor::x ( void ) const
 {
-  return this->getPosition().x;
+  return this->position().x;
 }
 
 int32 Cursor::y ( void ) const
 {
-  return this->getPosition().y;
+  return this->position().y;
 }
 
 bool Cursor::locked ( void ) const

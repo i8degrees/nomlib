@@ -68,7 +68,7 @@ NOM_LOG_TRACE ( NOM );
 SpriteBatch& SpriteBatch::operator = ( const SpriteBatch& other )
 {
   this->sprite = other.sprite;
-  this->coords = other.coords;
+  this->set_position ( other.position().x, other.position().y );
   this->offsets = other.offsets;
   this->state = other.state;
   this->sprite_sheet = other.sprite_sheet;
@@ -120,7 +120,7 @@ void SpriteBatch::update ( void )
                         );
 
   this->sprite.set_bounds ( this->offsets );
-  this->sprite.set_position ( Point2i ( this->coords.x, this->coords.y ) );
+  this->sprite.set_position ( Point2i ( this->position().x, this->position().y ) );
 }
 
 

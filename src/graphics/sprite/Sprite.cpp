@@ -46,7 +46,7 @@ NOM_LOG_TRACE ( NOM );
 Sprite& Sprite::operator = ( const Sprite& other )
 {
   this->sprite = other.sprite;
-  this->coords = other.coords;
+  this->set_position ( other.position().x, other.position().y );
   this->state = other.state;
   this->scale_factor = other.scale_factor;
 
@@ -65,7 +65,8 @@ const Point2i Sprite::size ( void ) const
 
 const Point2i Sprite::position ( void ) const
 {
-  return Point2i ( this->coords.x, this->coords.y );
+  // FIXME
+  return Point2i ( this->position_.x, this->position_.y );
 }
 
 uint32 Sprite::getState ( void ) const
@@ -100,7 +101,8 @@ NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
 
 void Sprite::update ( void )
 {
-  this->sprite.set_position ( Point2i ( this->coords.x, this->coords.y ) );
+  // FIXME
+  this->sprite.set_position ( Point2i ( this->position_.x, this->position_.y ) );
 }
 
 void Sprite::draw ( RenderTarget target ) const

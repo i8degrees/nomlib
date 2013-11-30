@@ -30,53 +30,45 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Transformable::Transformable ( void )  :  coords ( 0, 0, 0, 0 ),
-                                          color ( 0, 0, 0, 255 )
-{
-  // Nothing to initialize
-}
-
-Transformable::Transformable ( const Coords& coords ):  coords ( coords ) {}
-
-Transformable::Transformable ( const Coords& coords, const Color4u& color )
-{
-  this->coords = coords;
-  this->color = color;
-}
+Transformable::Transformable ( void )  :  position_ ( 0, 0, 0, 0 ),
+  color_ ( 0, 0, 0, ALPHA_OPAQUE ) {}
 
 Transformable::~Transformable ( void ) {}
 
-const Coords Transformable::getPosition ( void ) const
+Transformable::Transformable ( const Coords& coords ):  position_ ( coords ) {}
+
+Transformable::Transformable ( const Coords& coords, const Color4u& color ) :
+  position_ ( coords ), color_ ( color ) {}
+
+const Coords Transformable::position ( void ) const
 {
-  return Coords ( this->coords.x, this->coords.y );
+  return Coords ( this->position_.x, this->position_.y );
 }
 
 const Coords Transformable::getSize ( void ) const
 {
-  return Coords ( this->coords.width, this->coords.height );
+  return Coords ( this->position_.width, this->position_.height );
 }
 
-// Variant #1 setter for position coordinates
-void Transformable::setPosition ( int32 x, int32 y )
+void Transformable::set_position ( int32 x, int32 y )
 {
-  this->coords.setPosition ( x, y );
+  this->position_.setPosition ( x, y );
 }
 
-// Variant #2 setter for position coordinates
-void Transformable::setPosition ( int32 x, int32 y, int32 width, int32 height )
+void Transformable::set_position ( int32 x, int32 y, int32 width, int32 height )
 {
-  this->coords = Coords ( x, y, width, height );
+  this->position_ = Coords ( x, y, width, height );
 }
 
-// Variant #3 setter for position coordinates; do we have enough options yet???
-void Transformable::setPosition ( const Coords& coords )
+void Transformable::set_position ( const Coords& coords )
 {
-  this->setPosition ( coords.x, coords.y, coords.width, coords.height );
+  this->set_position ( coords.x, coords.y, coords.width, coords.height );
 }
 
 void Transformable::setSize ( int32 width, int32 height )
 {
-  this->coords.setSize ( width, height );
+  // FIXME
+  this->position_.setSize ( width, height );
 }
 
 void Transformable::setSize ( const Coords& size )
@@ -86,30 +78,29 @@ void Transformable::setSize ( const Coords& size )
 
 void Transformable::move ( uint32 x, uint32 y )
 {
-  this->coords.x += x;
-  this->coords.y += y;
+  this->position_.x += x;
+  this->position_.y += y;
 }
 
 void Transformable::move ( const Coords& offsets )
 {
-  this->coords.x += offsets.x;
-  this->coords.y += offsets.y;
+  this->position_.x += offsets.x;
+  this->position_.y += offsets.y;
 }
 
-const Color4u& Transformable::getColor ( void ) const
+const Color4u& Transformable::color ( void ) const
 {
-  return this->color;
+  return this->color_;
 }
 
-void Transformable::setColor ( uint8 red, uint8 green, uint8 blue, uint8 alpha )
+void Transformable::set_color ( uint8 red, uint8 green, uint8 blue, uint8 alpha )
 {
-  this->color = Color4u ( red, green, blue, alpha );
+  this->color_ = Color4u ( red, green, blue, alpha );
 }
 
-void Transformable::setColor ( const Color4u& color )
+void Transformable::set_color ( const Color4u& color )
 {
-  this->setColor ( color.red, color.green, color.blue, color.alpha );
+  this->set_color ( color.red, color.green, color.blue, color.alpha );
 }
-
 
 } // namespace nom

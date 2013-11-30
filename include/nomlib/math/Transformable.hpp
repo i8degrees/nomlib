@@ -41,15 +41,16 @@ class Transformable:
 {
   public:
     Transformable ( void );
-    Transformable ( const Coords& coords );
-    Transformable ( const Coords& coords, const Color4u& color );
     virtual ~Transformable ( void );
 
-    const Coords getPosition ( void ) const;
+    Transformable ( const Coords& coords );
+    Transformable ( const Coords& coords, const Color4u& color );
+
+    const Coords position ( void ) const;
     const Coords getSize ( void ) const;
-    void setPosition ( int32 x, int32 y );
-    void setPosition ( int32 x, int32 y, int32 width, int32 height );
-    void setPosition ( const Coords& coords );
+    void set_position ( int32 x, int32 y );
+    void set_position ( int32 x, int32 y, int32 width, int32 height );
+    void set_position ( const Coords& coords );
 
     void setSize ( int32 width, int32 height );
     void setSize ( const Coords& size );
@@ -57,13 +58,13 @@ class Transformable:
     void move ( uint32 x = 0, uint32 y = 0 );
     void move ( const Coords& offsets = Coords ( 0, 0 ) );
 
-    const Color4u& getColor ( void ) const;
-    void setColor ( uint8 red, uint8 green, uint8 blue, uint8 alpha = 255 );
-    void setColor ( const Color4u& color );
+    const Color4u& color ( void ) const;
+    void set_color ( uint8 red, uint8 green, uint8 blue, uint8 alpha = 255 );
+    void set_color ( const Color4u& color );
 
   protected:
-    Coords coords;
-    Color4u color;
+    Coords position_;
+    Color4u color_;
 };
 
 

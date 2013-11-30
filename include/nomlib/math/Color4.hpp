@@ -103,6 +103,9 @@ class Color4
     static const Color4 Yellow;
     static const Color4 Magenta;
     static const Color4 Cyan;
+    static const Color4 Silver;
+    static const Color4 Purple;
+    static const Color4 Orange;
 
     /// Additional colors
     static const Color4 LightGray;

@@ -38,18 +38,51 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-extern const double PI;
+const double PI = 4.0 * atan ( 1.0 );
 
 /// Returns a random number between the specified start and end numbers.
-int32 rand ( int32 start, int32 end );
+inline int32 rand ( int32 start, int32 end )
+{
+  auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+  std::default_random_engine rand_generator ( seed );
+  std::uniform_int_distribution<int32> distribution ( start, end );
+
+  return distribution ( rand_generator );
+}
 
 /// Rotates a given X & Y coordinate point along a given pivot axis
 /// (rotation point) at the given angle (in degrees), clockwise.
-const Point2d rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y );
+inline const Point2d rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y )
+{
+  Point2d p;
+  double  rotated_x = 0;
+  double rotated_y = 0;
+  float translated_x = 0;
+  float translated_y = 0;
+
+  float center_x = pivot_x / 2.0f;
+  float center_y = pivot_y / 2.0f;
+
+  translated_x = x - center_x;
+  translated_y = y - center_y;
+
+  rotated_x = ( translated_x * cos ( -angle * PI / 180 ) - translated_y * sin ( -angle * PI / 180 ) );
+  rotated_y = ( translated_x * sin ( -angle * PI / 180 ) + translated_y * cos ( -angle * PI / 180 ) );
+
+  rotated_x += center_x;
+  rotated_y += center_y;
+
+  p.x = rotated_x;
+  p.y = rotated_y;
+
+  return p;
+}
 
 /// ...
-double round ( double number );
-
+inline double round ( double number )
+{
+  return number < 0.0 ? ceil ( number - 0.5 ) : floor ( number + 0.5 );
+}
 
 } // namespace nom
 

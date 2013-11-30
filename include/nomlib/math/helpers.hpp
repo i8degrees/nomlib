@@ -40,7 +40,9 @@ namespace nom {
 
 const double PI = 4.0 * atan ( 1.0 );
 
-/// Returns a random number between the specified start and end numbers.
+/// Generate a random number
+///
+/// \return Random number between the specified start and end numbers.
 inline int32 rand ( int32 start, int32 end )
 {
   auto seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -78,8 +80,15 @@ inline const Point2d rotate_points ( float angle, float x, float y, float pivot_
   return p;
 }
 
-/// ...
-inline double round ( double number )
+/// Round a fractional value
+///
+/// \param number Number to round up or down
+///
+/// \return Rounded value
+///
+/// \note Round up when number > 0.5; round down when number < 0.5
+template <typename T>
+inline T round ( T number )
 {
   return number < 0.0 ? ceil ( number - 0.5 ) : floor ( number + 0.5 );
 }

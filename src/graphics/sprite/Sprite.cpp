@@ -30,13 +30,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Sprite::Sprite ( void ) : state ( 0 ), scale_factor ( 1 )
+Sprite::Sprite ( void ) : state_ ( 0 ), scale_factor ( 1 )
+{
+NOM_LOG_TRACE ( NOM );
+}
+
+Sprite::~Sprite ( void )
 {
 NOM_LOG_TRACE ( NOM );
 }
 
 Sprite::Sprite ( int32 width, int32 height )  :
-  Transformable { Coords ( 0, 0, width, height ) }, state ( 0 ),
+  Transformable { Coords ( 0, 0, width, height ) }, state_ ( 0 ),
   scale_factor ( 1 )
 
 {
@@ -45,22 +50,22 @@ NOM_LOG_TRACE ( NOM );
 
 Sprite& Sprite::operator = ( const Sprite& other )
 {
-  this->sprite = other.sprite;
+  this->sprite_ = other.sprite();
   this->set_position ( other.position().x, other.position().y );
-  this->state = other.state;
+  this->set_state ( other.state() );
   this->scale_factor = other.scale_factor;
 
   return *this;
 }
 
-Sprite::~Sprite ( void )
+const Texture& Sprite::sprite ( void ) const
 {
-NOM_LOG_TRACE ( NOM );
+  return this->sprite_;
 }
 
 const Point2i Sprite::size ( void ) const
 {
-  return Point2i ( this->sprite.width(), this->sprite.height() );
+  return Point2i ( this->sprite_.width(), this->sprite_.height() );
 }
 
 const Point2i Sprite::position ( void ) const
@@ -69,14 +74,14 @@ const Point2i Sprite::position ( void ) const
   return Point2i ( this->position_.x, this->position_.y );
 }
 
-uint32 Sprite::getState ( void ) const
+uint32 Sprite::state ( void ) const
 {
-  return this->state;
+  return this->state_;
 }
 
-void Sprite::setState ( uint32 state )
+void Sprite::set_state ( uint32 state )
 {
-  this->state = state;
+  this->state_ = state;
 }
 
 bool Sprite::load (
@@ -84,17 +89,17 @@ bool Sprite::load (
                     bool use_cache
                   )
 {
-  this->sprite.load ( filename, 0, use_cache );
+  this->sprite_.load ( filename, 0, use_cache );
 
-  if ( this->sprite.valid() == false )
+  if ( this->sprite_.valid() == false )
   {
 NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
     return false;
   }
 
-  this->setSize ( this->sprite.width(), this->sprite.height() );
+  this->setSize ( this->sprite_.width(), this->sprite_.height() );
 
-  this->sprite.set_colorkey ( colorkey );
+  this->sprite_.set_colorkey ( colorkey );
 
   return true;
 }
@@ -102,36 +107,36 @@ NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
 void Sprite::update ( void )
 {
   // FIXME
-  this->sprite.set_position ( Point2i ( this->position_.x, this->position_.y ) );
+  this->sprite_.set_position ( Point2i ( this->position_.x, this->position_.y ) );
 }
 
 void Sprite::draw ( RenderTarget target ) const
 {
-NOM_ASSERT ( this->sprite.valid() );
+NOM_ASSERT ( this->sprite_.valid() );
 
-  this->sprite.draw ( target.renderer() );
+  this->sprite_.draw ( target.renderer() );
 }
 
 void Sprite::draw ( RenderTarget target, const double degrees ) const
 {
-  this->sprite.draw ( target.renderer(), degrees );
+  this->sprite_.draw ( target.renderer(), degrees );
 }
 
 bool Sprite::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
-  if ( this->sprite.valid() == false )
+  if ( this->sprite_.valid() == false )
   {
 NOM_LOG_ERR ( NOM, "Video surface is invalid." );
     return false;
   }
 
-  if ( this->sprite.resize ( scaling_algorithm ) == false )
+  if ( this->sprite_.resize ( scaling_algorithm ) == false )
   {
 NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
     return false;
   }
 
-  this->scale_factor = this->sprite.getResizeScaleFactor ( scaling_algorithm );
+  this->scale_factor = this->sprite_.getResizeScaleFactor ( scaling_algorithm );
   this->update();
 
   return true;
@@ -139,19 +144,19 @@ NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
 
 bool Sprite::resize ( const Point2f& scale_factor )
 {
-  if ( this->sprite.valid() == false )
+  if ( this->sprite_.valid() == false )
   {
 NOM_LOG_ERR ( NOM, "Video surface is invalid." );
     return false;
   }
 
-  if ( this->sprite.resize ( scale_factor ) == false )
+  if ( this->sprite_.resize ( scale_factor ) == false )
   {
 NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
     return false;
   }
 
-  //this->scale_factor = this->sprite.getResizeScaleFactor ( scaling_algorithm );
+  //this->scale_factor = this->sprite_.getResizeScaleFactor ( scaling_algorithm );
   this->update();
 
   return true;

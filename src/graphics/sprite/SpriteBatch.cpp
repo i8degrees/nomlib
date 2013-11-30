@@ -30,12 +30,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-SpriteBatch::SpriteBatch ( void ) : sheet_id ( 0 )
+SpriteBatch::SpriteBatch ( void ) : sheet_id_ ( 0 )
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-SpriteBatch::SpriteBatch ( const SpriteSheet& sheet ) : sheet_id ( 0 )
+SpriteBatch::SpriteBatch ( const SpriteSheet& sheet )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -47,10 +47,10 @@ NOM_LOG_TRACE ( NOM );
 
   Sprite ( dims.width, dims.height );
 
-  this->sheet_id = 0;
+  this->set_frame ( 0 );
 }
 
-SpriteBatch::SpriteBatch ( const std::string& filename ) : sheet_id ( 0 )
+SpriteBatch::SpriteBatch ( const std::string& filename )
 {
 NOM_LOG_TRACE ( NOM );
 
@@ -62,17 +62,17 @@ NOM_LOG_TRACE ( NOM );
 
   Sprite ( dims.width, dims.height );
 
-  this->sheet_id = 0;
+  this->set_frame ( 0 );
 }
 
 SpriteBatch& SpriteBatch::operator = ( const SpriteBatch& other )
 {
-  this->sprite = other.sprite;
+  this->sprite_ = other.sprite();
   this->set_position ( other.position().x, other.position().y );
   this->offsets = other.offsets;
-  this->state = other.state;
+  this->set_state ( other.state() );
   this->sprite_sheet = other.sprite_sheet;
-  this->sheet_id = other.sheet_id;
+  this->set_frame ( other.frame() );
   this->scale_factor = other.scale_factor;
 
   return *this;
@@ -83,10 +83,10 @@ SpriteBatch::~SpriteBatch ( void )
 NOM_LOG_TRACE ( NOM );
 }
 
-int32 SpriteBatch::getSheetID ( void ) const
+int32 SpriteBatch::frame ( void ) const
 {
 //NOM_ASSERT ( this->sheet_id != ( this->frames() - 1 ) );
-  return this->sheet_id;
+  return this->sheet_id_;
 }
 
 int32 SpriteBatch::frames ( void ) const
@@ -99,15 +99,15 @@ const std::string& SpriteBatch::sheet_filename ( void ) const
   return this->sprite_sheet.sheet_filename();
 }
 
-void SpriteBatch::setSheetID ( int32 id )
+void SpriteBatch::set_frame ( int32 id )
 {
 //NOM_ASSERT ( id != ( this->frames() - 1 ) );
-  this->sheet_id = id;
+  this->sheet_id_ = id;
 }
 
 void SpriteBatch::update ( void )
 {
-  Coords dims = this->sprite_sheet.dimensions ( this->getSheetID() );
+  Coords dims = this->sprite_sheet.dimensions ( this->frame() );
 
   this->offsets.setPosition (
                               dims.x * this->scale_factor,
@@ -119,8 +119,8 @@ void SpriteBatch::update ( void )
                           dims.height * this->scale_factor
                         );
 
-  this->sprite.set_bounds ( this->offsets );
-  this->sprite.set_position ( Point2i ( this->position().x, this->position().y ) );
+  this->sprite_.set_bounds ( this->offsets );
+  this->sprite_.set_position ( Point2i ( this->position().x, this->position().y ) );
 }
 
 

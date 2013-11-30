@@ -190,7 +190,7 @@ void AnimatedSprite::update_animation ( void )
     }
   }
 
-  this->setSheetID ( this->frame() );
+  this->set_frame ( this->frame() );
   SpriteBatch::update();
 }
 

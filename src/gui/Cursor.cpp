@@ -55,12 +55,12 @@ NOM_LOG_TRACE ( NOM );
 
 Cursor& Cursor::operator = ( const Cursor& other )
 {
-  this->sprite = other.sprite;
+  this->sprite_ = other.sprite();
   this->set_position ( other.position().x, other.position().y );
   this->offsets = other.offsets;
-  this->state = other.state;
+  this->set_state ( other.state() );
   this->sprite_sheet = other.sprite_sheet;
-  this->sheet_id = other.sheet_id;
+  this->set_frame ( other.frame() );
   this->scale_factor = other.scale_factor;
 
   this->max_frames = other.max_frames;

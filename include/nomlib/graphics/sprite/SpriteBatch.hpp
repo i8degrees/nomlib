@@ -63,7 +63,7 @@ class SpriteBatch:
     SpriteBatch& operator = ( const SpriteBatch& other );
 
     /// Get the object's current sheet_id.
-    int32 getSheetID ( void ) const;
+    int32 frame ( void ) const;
 
     /// Obtain the number of frames available
     int32 frames ( void ) const;
@@ -71,7 +71,7 @@ class SpriteBatch:
     const std::string& sheet_filename ( void ) const;
 
     /// Set a new frame ID to render
-    void setSheetID ( int32 id );
+    void set_frame ( int32 id );
 
     /// Update the sprite for rendering with regard to positioning coordinates
     /// and target frame ID.
@@ -85,7 +85,7 @@ class SpriteBatch:
     SpriteSheet sprite_sheet;
 
     /// The sheet's frame ID presently in use
-    int32 sheet_id;
+    int32 sheet_id_;
 };
 
 

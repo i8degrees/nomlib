@@ -153,7 +153,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
         nom::DialogMessageBox ( APP_NAME, "Could not load sprite: " + this->sprite.sheet_filename() );
         return false;
       }
-      this->sprite.setSheetID ( 1 ); // Left-pointing cursor hand
+      this->sprite.set_frame ( 1 ); // Left-pointing cursor hand
 
       // Load the same sprite sheet -- but this time -- used for animation
       // effects!
@@ -324,11 +324,11 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
             break;
           }
 
-          nom::int32 id = this->sprite.getSheetID();
+          nom::int32 id = this->sprite.frame();
 
           if ( id > 0 ) id--;
 
-          this->sprite.setSheetID ( id );
+          this->sprite.set_frame ( id );
           this->font.setText( "Light weight!" );
           break;
         }
@@ -340,11 +340,11 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
             break;
           }
 
-          nom::int32 id = this->sprite.getSheetID();
+          nom::int32 id = this->sprite.frame();
 
           if ( id < this->sprite.frames() - 1 ) id++;
 
-          this->sprite.setSheetID ( id );
+          this->sprite.set_frame ( id );
           this->font.setText( "Yeah buddy!" );
           break;
         }

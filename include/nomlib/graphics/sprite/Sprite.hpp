@@ -51,23 +51,25 @@ class Sprite:
     /// respective defaults.
     Sprite ( void );
 
+    /// Destructor.
+    virtual ~Sprite ( void );
+
     /// Construct a Sprite object, initializing the width & height coordinates.
     Sprite ( int32 width, int32 height );
 
     /// Copy assignment operator.
     Sprite& operator = ( const Sprite& other );
 
-    /// Destructor.
-    virtual ~Sprite ( void );
+    const Texture& sprite ( void ) const;
 
     const Point2i size ( void ) const;
     const Point2i position ( void ) const;
 
     /// Get the object's state.
-    uint32 getState ( void ) const;
+    uint32 state ( void ) const;
 
     /// Set a new state.
-    void setState ( uint32 state );
+    void set_state ( uint32 state );
 
     /// Load a new image onto the Sprite.
     bool load (
@@ -93,10 +95,10 @@ class Sprite:
 
   protected:
     /// Object that holds our sprite image
-    Texture sprite;
+    Texture sprite_;
 
     /// Convenience instance variable (user-defined)
-    uint32 state;
+    uint32 state_;
 
     /// Scale factor applied if the resize method is called
     int32 scale_factor;

@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-const std::string point_delimiter = ", ";
+const std::string POINT_DELIMITER = ", ";
 
 /// \brief 2D point container
 template <typename T>
@@ -60,18 +60,30 @@ class Point2
     }
 
     /// Copy assignment operator
+/*
     template <typename U>
     Point2<T>& operator = ( const Point2<U>& other )
+*/
+    inline Point2<T>& operator = ( const Point2<T>& other )
     {
-      this->x = static_cast<T> ( other.x );
-      this->y = static_cast<T> ( other.y );
+      this->x = other.x;
+      this->y = other.y;
 
       return *this;
     }
 
   public:
+    /// Represents the X-axis coordinate point
     T x;
+
+    /// Represents the Y-axis coordinate point
     T y;
+
+    /// Accessor alias for x
+    T& width = x;
+
+    /// Accessor alias for y
+    T& height = y;
 };
 
 /// Pretty print a Point2 object using the following formatting:
@@ -82,9 +94,9 @@ class Point2
 ///
 ///     128, 144
 template <typename T>
-std::ostream& operator << ( std::ostream& os, const Point2<T>& coords )
+inline std::ostream& operator << ( std::ostream& os, const Point2<T>& coords )
 {
-  os  << coords.x << point_delimiter
+  os  << coords.x << POINT_DELIMITER
       << coords.y;
   return os;
 }

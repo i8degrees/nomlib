@@ -33,7 +33,7 @@ namespace nom {
 void AnimatedSprite::initialize ( void )
 {
   this->setMaxFrames ( 1 );
-  this->setCurrentFrame ( 0 );
+  this->set_frame ( 0 );
   this->setFrameIncrement ( 1 );
   this->setAnimationStyle ( AnimatedSprite::AnimationStyle::NoStyle );
   this->setAnimationStatus ( AnimatedSprite::AnimationStatus::Stopped );
@@ -114,7 +114,7 @@ void AnimatedSprite::setFrameRate ( int32 rate )
   this->fps.setFrameRate ( rate );
 }
 
-void AnimatedSprite::setCurrentFrame ( int32 frame )
+void AnimatedSprite::set_frame ( int32 frame )
 {
   if ( frame < 0 || frame > this->total_frames() )
   {
@@ -146,7 +146,7 @@ void AnimatedSprite::update_animation ( void )
 
   this->fps.start();
 
-  this->setCurrentFrame ( this->current_frame + this->frame_increment );
+  this->set_frame ( this->current_frame + this->frame_increment );
 
   if ( this->style() == AnimatedSprite::AnimationStyle::Oscillate )
   {
@@ -174,7 +174,7 @@ void AnimatedSprite::update_animation ( void )
   NOM_DUMP_VAR( this->frame() );
 #endif
 
-      this->setCurrentFrame ( this->frame() - 2 );
+      this->set_frame ( this->frame() - 2 );
 
 #if defined ( NOM_DEBUG_ANIMATED_SPRITE )
   NOM_DUMP_VAR( this->frame() );
@@ -186,7 +186,7 @@ void AnimatedSprite::update_animation ( void )
   {
     if ( this->frame() >= this->total_frames() )
     {
-      this->setCurrentFrame ( 0 );
+      this->set_frame ( 0 );
     }
   }
 

@@ -63,7 +63,7 @@ class SpriteBatch:
     SpriteBatch& operator = ( const SpriteBatch& other );
 
     /// Get the object's current sheet_id.
-    int32 frame ( void ) const;
+    virtual int32 frame ( void ) const;
 
     /// Obtain the number of frames available
     int32 frames ( void ) const;

@@ -99,7 +99,7 @@ class AnimatedSprite:
     ///
     /// The frame you are setting must be greater than or equal to
     /// total_frames().
-    void setCurrentFrame ( int32 frame );
+    void set_frame ( int32 frame );
 
     /// Set a new style of animation for this object
     void setAnimationStyle ( AnimatedSprite::AnimationStyle style );

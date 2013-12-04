@@ -1,6 +1,7 @@
 # TODO #
 
 ~~- [ ] Use C++ templates for Coords class~~
+
 - [ ] joystick buttons demo
 - [ ] Homebrew Formula?
 - [ ] Finish Update logic in BitmapFont class so that we can make it an official Drawables type.

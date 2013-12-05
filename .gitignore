@@ -19,19 +19,5 @@ tests/graphics
 tests/math
 tests/system
 
-# bins: Visual C++ Studio Project Files
-*.suo
-*.sdf
-*.opensdf
-*.tlog
-*.lastbuildstate
-*.idb
-
-# Local BitTorrent Sync app files
-.SyncID
-.SyncArchive
-.SyncIgnore
-
 # nomlib's github wiki
 wiki
-

@@ -108,5 +108,4 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #warning "nomlib requires a C++11 compiler"
 #endif
 
-
 #endif // include guard defined

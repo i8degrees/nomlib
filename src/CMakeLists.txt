@@ -133,8 +133,8 @@ if ( PLATFORM_OSX )
 elseif ( PLATFORM_LINUX )
   # nothing to be done
 elseif ( PLATFORM_WINDOWS )
-
   set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/windows/WinFile.cpp" )
+  set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/windows/ResourcePath.cpp" )
 
 endif ( PLATFORM_OSX )
 

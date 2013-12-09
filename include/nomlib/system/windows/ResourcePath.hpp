@@ -26,35 +26,38 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#ifndef NOMLIB_WINDOWS_RESOURCE_PATH_HPP
+#define NOMLIB_WINDOWS_RESOURCE_PATH_HPP
 
-// Public header file
+#include <string>
+#include <cstring>
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/GameStates.hpp>
-#include <nomlib/system/ObjectCache.hpp>
-#include <nomlib/system/dialog_messagebox.hpp>
-#include <nomlib/system/Path.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDL_App.hpp>
-#include <nomlib/system/Input.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/Sleep.hpp>
-#include <nomlib/system/make_unique.hpp>
-#include <nomlib/system/EventDispatcher.hpp>
-#include <nomlib/system/AnimationTimer.hpp>
-#include <nomlib/system/init.hpp>
-#include <nomlib/system/SDL_helpers.hpp>
+#include "nomlib/config.hpp"
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  // Nothing to do
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/ResourcePath.hpp>
-#endif
+namespace nom {
 
-#endif // include guard defined
+/// Obtain the path to the logged in user's Documents folder
+///
+///     $HOME/Documents
+///
+/// \remark This is a standard folder that may be used for saving user data
+///
+/// \note This function requires Windows Vista or above
+///
+/// \todo Support for when the user has changed the default save folder; see http://stackoverflow.com/a/12607759 and http://stackoverflow.com/questions/19553311/windows-8-how-to-read-the-user-documents-folder-path-programmatically-using-c
+const std::string user_documents_path ( void );
+
+/// Obtain the path to the logged in user's (local) Application Data folder
+///
+///     $HOME/AppData/Local
+///
+/// \remark This is a standard folder that may be used for saving user data
+///
+/// \note This function requires Windows Vista or above
+///
+/// \todo Support for when the user has changed the default save folder; see http://stackoverflow.com/a/12607759 and http://stackoverflow.com/questions/19553311/windows-8-how-to-read-the-user-documents-folder-path-programmatically-using-c
+const std::string user_app_support_path ( void );
+
+} // namespace nom
+
+#endif // include guard

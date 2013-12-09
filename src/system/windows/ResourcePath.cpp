@@ -26,35 +26,43 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#include "nomlib/system/windows/ResourcePath.hpp"
 
-// Public header file
+// We need to keep these two header files out of the public header files, or
+// else all hell breaks lose in the linking stage of example executables!
+#include <windows.h>
+#include <shlobj.h>
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/GameStates.hpp>
-#include <nomlib/system/ObjectCache.hpp>
-#include <nomlib/system/dialog_messagebox.hpp>
-#include <nomlib/system/Path.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDL_App.hpp>
-#include <nomlib/system/Input.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/Sleep.hpp>
-#include <nomlib/system/make_unique.hpp>
-#include <nomlib/system/EventDispatcher.hpp>
-#include <nomlib/system/AnimationTimer.hpp>
-#include <nomlib/system/init.hpp>
-#include <nomlib/system/SDL_helpers.hpp>
+namespace nom {
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  // Nothing to do
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/ResourcePath.hpp>
-#endif
+const std::string user_documents_path ( void )
+{
+  CHAR path[PATH_MAX];
 
-#endif // include guard defined
+  HRESULT result =  SHGetFolderPath(  nullptr,
+                                      CSIDL_PERSONAL,
+                                      nullptr,
+                                      SHGFP_TYPE_CURRENT,
+                                      path );
+
+  if ( result != S_OK ) return "\0";
+
+  return path;
+}
+
+const std::string user_app_support_path ( void )
+{
+  CHAR path[PATH_MAX];
+
+  HRESULT result =  SHGetFolderPath(  nullptr,
+                                      CSIDL_LOCAL_APPDATA,
+                                      nullptr,
+                                      SHGFP_TYPE_CURRENT,
+                                      path );
+
+  if ( result != S_OK ) return "\0";
+
+  return path;
+}
+
+} // namespace nom

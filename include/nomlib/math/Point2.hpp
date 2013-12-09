@@ -82,8 +82,14 @@ class Point2
     /// Accessor alias for x
     T& width = x;
 
+    /// SDL style accessor alias for x
+    T& w = x;
+
     /// Accessor alias for y
     T& height = y;
+
+    /// SDL style accessor alias for y
+    T& h = y;
 };
 
 /// Pretty print a Point2 object using the following formatting:

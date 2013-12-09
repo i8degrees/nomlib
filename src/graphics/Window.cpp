@@ -380,6 +380,11 @@ NOM_LOG_ERR ( NOM, "Could not obtain a valid icon." );
   return true;
 }
 
+void Window::set_size ( int32 width, int32 height )
+{
+  SDL_SetWindowSize ( this->window(), width, height );
+}
+
 void Window::set_position ( int32 x, int32 y )
 {
   SDL_SetWindowPosition ( this->window(), x, y );

@@ -117,6 +117,8 @@ class Window:
     /// \todo Test out 8-bit, 16-bit, 24-bit video surfaces
     VideoModeList getVideoModes ( void ) const;
 
+    void set_size ( int32 width, int32 height );
+
     void set_position ( int32 x, int32 y );
 
     /// Render SDL1 video surfaces

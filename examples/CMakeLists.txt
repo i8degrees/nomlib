@@ -18,15 +18,15 @@ cmake_minimum_required ( VERSION 2.6 )
 
 link_libraries ( ${PROJECT_NAME} )
 
-# Additional flags to pass the add_executable command
-set ( EXECUTABLE_FLAGS "" )
-
-# We wish to compile our examples as console apps on Windows
-# TODO: Console app should perhaps be a Debug release default, whereas if
-# compiling a Release binary, we might ought to toggle WIN32 flag? Further
-# investigation is needed...
 if ( PLATFORM_WINDOWS )
-  #set ( EXECUTABLE_FLAGS "WIN32" )
+  # Build as console app -- shows cmd.exe window for logging -- only when
+  # debugging is toggled on
+  if ( NOT DEBUG )
+    set ( EXECUTABLE_FLAGS "WIN32" ) # Implies WIN_MAIN
+  else ( DEBUG )
+    # MSVCPP should default to Console if we set EXECUTABLE_FLAGS empty
+    set ( EXECUTABLE_FLAGS "" )
+  endif ( NOT DEBUG )
 
   # This workaround is to get the file paths to match up on all platforms -_-
   # build/Debug/examples under MSVC++
@@ -88,6 +88,7 @@ if ( PLATFORM_WINDOWS )
             "${SDL2_TTF_LIBRARY_DIR}"
             "${OPENAL_LIBRARY_DIR}"
             "${LIBSNDFILE_LIBRARY_DIR}"
+            "${MSVCPP_LIBRARY_REDIST}"
             DESTINATION
             "${EXAMPLES_INSTALL_PEFIX}"
             FILES_MATCHING PATTERN "*.dll"

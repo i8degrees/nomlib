@@ -38,13 +38,20 @@ else ( NOT PLATFORM_WINDOWS )
 endif ( PLATFORM_WINDOWS )
 
 if ( DEBUG )
+  set ( CMAKE_VERBOSE_MAKEFILE ON )
   set ( CMAKE_BUILD_TYPE "Debug" )
 
   if ( NOT PLATFORM_WINDOWS )
-    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused" )
+    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused -O0" ) #-D_GLIBCXX_DEBUG
   else ( PLATFORM_WINDOWS )
     # TODO: split these options up like we have for other platforms
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D NOM_DEBUG /D NOM_DEBUG_ASSERT /D NOM_DEBUG_TRACE" )
+
+    # FIXME: _ITERATOR_DEBUG_LEVEL is intended as a *temporary* patch to get
+    # TTcards up and going; this is only needed here because we are building
+    # statically at the moment -- we must match compile flags when linking with
+    # TTcards.
+    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D_ITERATOR_DEBUG_LEVEL=0" )
   endif( NOT PLATFORM_WINDOWS )
 
   message ( STATUS "Building ${PROJECT_NAME} with debugging." )
@@ -56,8 +63,11 @@ else () # Build with optimizations for maximum speed and minimal size
 endif ( DEBUG )
 
 if ( DEBUG_ASSERT )
-  add_definitions ( "-DNOM_DEBUG_ASSERT" )
-  message ( STATUS "Building ${PROJECT_NAME} with run-time assertions." )
+  add_definitions ( "-DNOM_DEBUG_ASSERT" ) # Enable NOM_ASSERT macros
+  message ( STATUS "Run-time assertions are ON." )
+else ( NOT DEBUG_ASSERT )
+  add_definitions ( "-DNDEBUG" ) # Disable NOM_ASSERT macros
+  message ( STATUS "Run-time assertions are OFF." )
 endif ( DEBUG_ASSERT )
 
 if ( DEBUG_TRACE )
@@ -94,6 +104,10 @@ set ( EXTERNAL_DEPS_DIR "third-party" )
 # Relative path from project root to nomlib demonstration examples
 set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" )
 
+# Additional flags to pass add_executable -- used when library examples are
+# built
+set ( EXECUTABLE_FLAGS "" )
+
 # Files used with documentation generation
 set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${NOMLIB_RESOURCES_DIR}/doxygen" )
 
@@ -113,6 +127,11 @@ set ( INSTALL_DOCS_PATH "share/doc/${PROJECT_NAME}" )
 set ( INSTALL_GENERATED_DOCS_PATH "${INSTALL_DOCS_PATH}" )
 set ( INSTALL_MAN_PAGES_PATH "share/man" )
 
+# CMAKE_SYSTEM_PREFIX_PATH is searched to find libraries when the find_package
+# command is used
+message ( STATUS "Library Search Prefix: ${CMAKE_SYSTEM_PREFIX_PATH}" )
+
+# Installation prefix path set for our project
 message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
 
 # Platform specific configuration
@@ -203,6 +222,8 @@ if ( PLATFORM_WINDOWS )
   set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libsndfile/lib/${PLATFORM_ARCH}/libsndfile-1.lib" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
+
+  set ( MSVCPP_LIBRARY_REDIST "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/msvcpp2013/${PLATFORM_ARCH}/" )
 
 elseif ( PLATFORM_OSX )
 
@@ -485,6 +506,7 @@ add_custom_target ( uninstall COMMAND ${CMAKE_COMMAND} -P
                     ${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake
                   )
 
+# TODO: Windows platform support
 if ( NOT PLATFORM_WINDOWS )
   # CPack configuration
   include ( "${PROJECT_SOURCE_DIR}/cmake/CPackConfig.cmake" )

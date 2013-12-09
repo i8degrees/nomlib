@@ -116,6 +116,15 @@ class Input
     virtual void onKeyUp ( int32 key, int32 mod, uint32 window_id  );
 
     virtual void onMouseMotion ( int32 x, int32 y, uint32 window_id );
+
+    /// Handler for mouse wheel events
+    ///
+    /// \remark x > 0 = Left
+    /// \remark x < 0 = Right
+    /// \remark y > 0 = Up
+    /// \remark y < 0 = Down
+    ///
+    /// \note Coordinates values X & Y are inverted
     virtual void onMouseWheel ( int32 x, int32 y, uint32 window_id );
     virtual void onMouseLeftButtonDown ( int32 x, int32 y, uint32 window_id  );
     virtual void onMouseMiddleButtonDown ( int32 x, int32 y, uint32 window_id  );

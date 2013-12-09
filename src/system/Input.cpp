@@ -204,6 +204,58 @@ TODO */
       this->onJoystickRemove();
       break;
     }
+/*
+    case SDL_FINGERMOTION:
+    {
+      NOM_DUMP_VAR( event->tfinger.timestamp );
+      NOM_DUMP_VAR( event->tfinger.touchId );
+      NOM_DUMP_VAR( event->tfinger.fingerId );
+      NOM_DUMP_VAR( event->tfinger.x );
+      NOM_DUMP_VAR( event->tfinger.y );
+      NOM_DUMP_VAR( event->tfinger.dx );
+      NOM_DUMP_VAR( event->tfinger.dy );
+      NOM_DUMP_VAR( event->tfinger.pressure );
+      break;
+    }
+
+    case SDL_FINGERDOWN:
+    {
+      NOM_DUMP_VAR( event->tfinger.timestamp );
+      NOM_DUMP_VAR( event->tfinger.touchId );
+      NOM_DUMP_VAR( event->tfinger.fingerId );
+      NOM_DUMP_VAR( event->tfinger.x );
+      NOM_DUMP_VAR( event->tfinger.y );
+      NOM_DUMP_VAR( event->tfinger.dx );
+      NOM_DUMP_VAR( event->tfinger.dy );
+      NOM_DUMP_VAR( event->tfinger.pressure );
+      break;
+    }
+
+    case SDL_FINGERUP:
+    {
+      NOM_DUMP_VAR( event->tfinger.timestamp );
+      NOM_DUMP_VAR( event->tfinger.touchId );
+      NOM_DUMP_VAR( event->tfinger.fingerId );
+      NOM_DUMP_VAR( event->tfinger.x );
+      NOM_DUMP_VAR( event->tfinger.y );
+      NOM_DUMP_VAR( event->tfinger.dx );
+      NOM_DUMP_VAR( event->tfinger.dy );
+      NOM_DUMP_VAR( event->tfinger.pressure );
+      break;
+    }
+
+    case SDL_MULTIGESTURE:
+    {
+      NOM_DUMP_VAR( event->mgesture.timestamp );
+      NOM_DUMP_VAR( event->mgesture.touchId );
+      NOM_DUMP_VAR( event->mgesture.dTheta );
+      NOM_DUMP_VAR( event->mgesture.dDist );
+      NOM_DUMP_VAR( event->mgesture.x );
+      NOM_DUMP_VAR( event->mgesture.y );
+      NOM_DUMP_VAR( event->mgesture.numFingers );
+      break;
+    }
+*/
     case SDL_DROPFILE:
     {
       char* file = event->drop.file;
@@ -211,10 +263,8 @@ TODO */
 
       SDL_free ( file );
       file = nullptr;
-    break;
+      break;
     } // SDL_DROPFILE
-
-
   } // end switch event->type
 }
 

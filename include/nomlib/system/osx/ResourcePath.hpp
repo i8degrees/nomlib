@@ -36,7 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <CoreFoundation/CoreFoundation.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/File.hpp"
 
 namespace nom {
 

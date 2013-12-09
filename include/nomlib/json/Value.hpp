@@ -103,7 +103,7 @@ class Value
     ///
     /// \note Type 1 -- Json::intValue
     void insert ( const std::string& key, int value, int index );
-    void insert ( const std::string& key, std::vector<int> values );
+    void insert ( const std::string& key, std::vector<int> values, int index );
 
     /// JSON unsigned integer
     ///
@@ -159,6 +159,9 @@ class Value
 
 /// \class nom::JSON::Value
 /// \ingroup json
+///
+/// \todo Rename insert methods to prevent method overloading; the overloading
+/// makes it a nightmare in tracking which method is being called...
 ///
 ///   [TO BE WRITTEN]
 ///

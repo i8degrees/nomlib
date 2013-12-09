@@ -199,11 +199,11 @@ void Value::insert ( const std::string& key, int value, int index )
   this->object_[index][key] = Json::Value ( value );
 }
 
-void Value::insert ( const std::string& key, std::vector<int> values )
+void Value::insert ( const std::string& key, std::vector<int> values, int index )
 {
   for ( auto member = values.begin(); member != values.end(); ++member )
   {
-    this->object_[key].append ( * member );
+    this->object_[index][key].append ( * member );
   }
 }
 

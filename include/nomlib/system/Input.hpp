@@ -124,7 +124,9 @@ class Input
     /// \remark y > 0 = Up
     /// \remark y < 0 = Down
     ///
-    /// \note Coordinates values X & Y are inverted
+    /// \note Coordinates values X & Y are typically inverted; software -- such
+    /// as the Mouse Preference Pane under OS X v10.7+ -- allow you to reverse
+    /// this while using the Apple Mighty Mouse.
     virtual void onMouseWheel ( int32 x, int32 y, uint32 window_id );
     virtual void onMouseLeftButtonDown ( int32 x, int32 y, uint32 window_id  );
     virtual void onMouseMiddleButtonDown ( int32 x, int32 y, uint32 window_id  );

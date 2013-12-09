@@ -68,13 +68,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #undef PATH_MAX
 #endif
 
-// Apparently determining a safe, portable maximum file path is a bit trickier
-// than meets the eye -- for the time being, I am going to assume the POSIX
-// standard of 256 bytes is sufficient for my needs. I have my doubts as to this
-// working out well for us if nomlib ever sees the light of day on the Windows
-// platform, but alas!
-//
-// See http://stackoverflow.com/questions/833291/is-there-an-equivalent-to-winapis-max-path-under-linux-unix
+/// FIXME: Apparently determining a safe, portable maximum file path is a bit
+/// trickier
+/// than meets the eye -- for the time being, I am going to assume the POSIX
+/// standard of 256 bytes is sufficient for my needs.
+///
+/// Linux: #include <linux/limits.h>
+/// OSX: #include <sys/syslimits.h>
+/// Windows: #include <windows.h> ???
+///
+/// See also:
+///
+/// 1. http://stackoverflow.com/questions/833291/is-there-an-equivalent-to-winapis-max-path-under-linux-unix
+/// 2.
 #define PATH_MAX 256
 
 #endif // include guard

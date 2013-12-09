@@ -141,11 +141,11 @@ TODO */
         break;
 
         case SDL_BUTTON_X1:
-          this->onMouseButtonSixDown ( event->button.x, event->button.y, event->button.windowID );
+          this->onMouseButtonFourDown ( event->button.x, event->button.y, event->button.windowID );
         break;
 
         case SDL_BUTTON_X2:
-          this->onMouseButtonSevenDown ( event->button.x, event->button.y, event->button.windowID );
+          this->onMouseButtonFiveDown ( event->button.x, event->button.y, event->button.windowID );
         break;
       }
       break;
@@ -167,11 +167,11 @@ TODO */
         break;
 
         case SDL_BUTTON_X1:
-          this->onMouseButtonSixUp ( event->button.x, event->button.y, event->button.windowID );
+          this->onMouseButtonFourUp ( event->button.x, event->button.y, event->button.windowID );
         break;
 
         case SDL_BUTTON_X2:
-          this->onMouseButtonSevenUp ( event->button.x, event->button.y, event->button.windowID );
+          this->onMouseButtonFiveUp ( event->button.x, event->button.y, event->button.windowID );
         break;
       }
     break;
@@ -328,7 +328,7 @@ void Input::onMouseRightButtonDown ( int32 x, int32 y, uint32 window_id )
 #endif
 }
 
-void Input::onMouseButtonSixDown ( int32 x, int32 y, uint32 window_id )
+void Input::onMouseButtonFourDown ( int32 x, int32 y, uint32 window_id )
 {
 #if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
   NOM_LOG_TRACE ( NOM );
@@ -338,7 +338,7 @@ void Input::onMouseButtonSixDown ( int32 x, int32 y, uint32 window_id )
 #endif
 }
 
-void Input::onMouseButtonSevenDown ( int32 x, int32 y, uint32 window_id )
+void Input::onMouseButtonFiveDown ( int32 x, int32 y, uint32 window_id )
 {
 #if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
   NOM_LOG_TRACE ( NOM );
@@ -378,7 +378,7 @@ void Input::onMouseRightButtonUp ( int32 x, int32 y, uint32 window_id )
 #endif
 }
 
-void Input::onMouseButtonSixUp ( int32 x, int32 y, uint32 window_id )
+void Input::onMouseButtonFourUp ( int32 x, int32 y, uint32 window_id )
 {
 #if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
   NOM_LOG_TRACE ( NOM );
@@ -388,7 +388,7 @@ void Input::onMouseButtonSixUp ( int32 x, int32 y, uint32 window_id )
 #endif
 }
 
-void Input::onMouseButtonSevenUp ( int32 x, int32 y, uint32 window_id )
+void Input::onMouseButtonFiveUp ( int32 x, int32 y, uint32 window_id )
 {
 #if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
   NOM_LOG_TRACE ( NOM );

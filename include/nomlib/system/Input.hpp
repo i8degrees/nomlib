@@ -129,14 +129,14 @@ class Input
     virtual void onMouseLeftButtonDown ( int32 x, int32 y, uint32 window_id  );
     virtual void onMouseMiddleButtonDown ( int32 x, int32 y, uint32 window_id  );
     virtual void onMouseRightButtonDown ( int32 x, int32 y, uint32 window_id  );
-    virtual void onMouseButtonSixDown ( int32 x, int32 y, uint32 window_id  );
-    virtual void onMouseButtonSevenDown ( int32 x, int32 y, uint32 window_id  );
+    virtual void onMouseButtonFourDown ( int32 x, int32 y, uint32 window_id  );
+    virtual void onMouseButtonFiveDown ( int32 x, int32 y, uint32 window_id  );
 
     virtual void onMouseLeftButtonUp ( int32 x, int32 y, uint32 window_id  );
     virtual void onMouseMiddleButtonUp ( int32 x, int32 y, uint32 window_id  );
     virtual void onMouseRightButtonUp ( int32 x, int32 y, uint32 window_id  );
-    virtual void onMouseButtonSixUp ( int32 x, int32 y, uint32 window_id  );
-    virtual void onMouseButtonSevenUp ( int32 x, int32 y, uint32 window_id  );
+    virtual void onMouseButtonFourUp ( int32 x, int32 y, uint32 window_id  );
+    virtual void onMouseButtonFiveUp ( int32 x, int32 y, uint32 window_id  );
 
     virtual void onJoyButtonDown ( int32 which, int32 button );
     virtual void onJoyButtonUp ( int32 which, int32 button );

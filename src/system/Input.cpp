@@ -194,6 +194,16 @@ TODO */
       this->onJoyAxis ( this->joystick_id_, event->jaxis.axis, event->jaxis.value );
     break;
 
+    case SDL_JOYDEVICEADDED:
+    {
+      this->onJoystickAdd();
+      break;
+    }
+    case SDL_JOYDEVICEREMOVED:
+    {
+      this->onJoystickRemove();
+      break;
+    }
     case SDL_DROPFILE:
     {
       char* file = event->drop.file;
@@ -425,6 +435,9 @@ void Input::onJoyAxis ( int32 which, int32 axis, uint16 value )
   NOM_DUMP_VAR ( value );
 #endif
 }
+
+void Input::onJoystickAdd ( void ) {}
+void Input::onJoystickRemove ( void ) {}
 
 void Input::onDragDrop ( const std::string& file_path, uint32 timestamp )
 {

@@ -143,6 +143,8 @@ class Input
     virtual void onJoyButtonDown ( int32 which, int32 button );
     virtual void onJoyButtonUp ( int32 which, int32 button );
     virtual void onJoyAxis ( int32 which, int32 axis, uint16 value );
+    virtual void onJoystickAdd ( void );
+    virtual void onJoystickRemove ( void );
 
     /// Drag 'N' Drop events
     ///

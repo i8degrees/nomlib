@@ -34,7 +34,7 @@ if ( PLATFORM_WINDOWS )
   set ( BUILD_SHARED_LIBS off )
 else ( NOT PLATFORM_WINDOWS )
   # We only support building nomlib as a dynamic library at the moment
-  set ( BUILD_SHARED_LIBS on )
+  set ( BUILD_SHARED_LIBS off )
 endif ( PLATFORM_WINDOWS )
 
 if ( DEBUG )
@@ -205,36 +205,71 @@ elseif ( PLATFORM_OSX )
   # SDL2 dependency
   set ( SDL2_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2.framework/Headers" )
   set ( SDL2_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2.framework" )
+
+  set ( SDL2_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/ios/SDL2/include" )
+  set ( SDL2_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/ios/SDL2/libs/iphonesimulator7/SDL2-d.a" )
+
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
 
   # SDL2_image dependency
   set ( SDL2_IMAGE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_image.framework/Headers" )
   set ( SDL2_IMAGE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_image.framework" )
+
+  set ( SDL2_IMAGE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/ios/SDL2_image/include" )
+  set ( SDL2_IMAGE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/ios/SDL2_image/libs/iphonesimulator7/SDL2_image-d.a" )
+
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
 
   # SDL2_ttf dependency
   set ( SDL2_TTF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_ttf.framework/Headers" )
   set ( SDL2_TTF_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_ttf.framework" )
+
+  set ( SDL2_TTF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/ios/SDL2_ttf/include" )
+  set ( SDL2_TTF_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/ios/SDL2_ttf/libs/iphonesimulator7/SDL2_ttf-d.a" )
+
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
 
   # OpenAL dependency
-  set ( OPENAL_INCLUDE_DIR "/System/Library/Frameworks/OpenAL.framework" )
-  set ( OPENAL_LIBRARY "/System/Library/Frameworks/OpenAL.framework" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
+  #set ( OPENAL_INCLUDE_DIR "/System/Library/Frameworks/OpenAL.framework" )
+  #set ( OPENAL_LIBRARY "/System/Library/Frameworks/OpenAL.framework" )
+  #set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
+  #set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
 
   # libsndfile dependency
-  set ( LIBSNDFILE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/sndfile.framework/Headers" )
-  set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/sndfile.framework" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
+  #set ( LIBSNDFILE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/sndfile.framework/Headers" )
+  #set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/sndfile.framework" )
+  #set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
+  #set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 
-  find_library ( COCOA_LIBRARY Cocoa )
-  mark_as_advanced ( COCOA_LIBRARY )
-  set ( EXTLIBS ${EXTLIBS} ${COCOA_LIBRARY} )
+  # find_library ( AUDIOTOOLBOX_LIBRARY AudioToolbox )
+  # mark_as_advanced ( AUDIOTOOLBOX_LIBRARY )
+  # set ( EXTLIBS ${EXTLIBS} ${AUDIOTOOLBOX_LIBRARY} )
+
+  # find_library ( FOUNDATION_LIBRARY Foundation )
+  # mark_as_advanced ( FOUNDATION_LIBRARY )
+  # set ( EXTLIBS ${EXTLIBS} ${FOUNDATION_LIBRARY} )
+
+  # find_library ( COREGRAPHICS_LIBRARY CoreGraphics )
+  # mark_as_advanced ( COREGRAPHICS_LIBRARY )
+  # set ( EXTLIBS ${EXTLIBS} ${COREGRAPHICS_LIBRARY} )
+
+  # find_library ( QUARTZCORE_LIBRARY QuartzCore )
+  # mark_as_advanced ( QUARTZCORE_LIBRARY )
+  # set ( EXTLIBS ${EXTLIBS} ${QUARTZCORE_LIBRARY} )
+
+  #find_library ( OPENGLES_LIBRARY OpenGLES )
+  #mark_as_advanced ( OPENGLES_LIBRARY )
+  set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework AudioToolbox")
+  set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework Foundation")
+  set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework CoreGraphics")
+  set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework QuartzCore")
+  set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework UIKit")
+  set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework OpenGLES")
+  #set ( EXTLIBS ${EXTLIBS} "UIKit" )
+  #set ( EXTLIBS ${EXTLIBS} "OpenGLES" )
 
 elseif ( PLATFORM_LINUX )
   # TODO
@@ -277,11 +312,11 @@ if ( PLATFORM_OSX )
   set ( INSTALL_NAME_PATH "@rpath" )
 
   # For distribution in user's frameworks / OSX App Bundle
-  set_target_properties ( ${PROJECT_NAME} PROPERTIES
-                          BUILD_WITH_INSTALL_RPATH 1
-                          INSTALL_NAME_DIR
-                          "${INSTALL_NAME_PATH}"
-                        )
+  #set_target_properties ( ${PROJECT_NAME} PROPERTIES
+                          #BUILD_WITH_INSTALL_RPATH 1
+                          #INSTALL_NAME_DIR
+                          #"${INSTALL_NAME_PATH}"
+                        #)
 
   if ( FRAMEWORK )
 
@@ -374,6 +409,9 @@ if ( PLATFORM_OSX )
     endif ( NOT CMAKE_GENERATOR STREQUAL "Xcode" )
 
   endif ( FRAMEWORK )
+
+  set ( EXECUTABLE_FLAGS "MACOSX_BUNDLE" )
+  set ( MACOSX_BUNDLE_GUI_IDENTIFIER "org.i8degrees.\${PRODUCT_NAME:identifier}" )
 
   # ...PLATFORM_OSX...
 

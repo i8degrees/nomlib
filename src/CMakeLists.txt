@@ -128,7 +128,7 @@ endif ( PLATFORM_OSX OR PLATFORM_LINUX )
 
 if ( PLATFORM_OSX )
 
-  set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/osx/ResourcePath.cpp" )
+  #set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/osx/ResourcePath.cpp" )
 
 elseif ( PLATFORM_LINUX )
   # nothing to be done
@@ -141,7 +141,7 @@ endif ( PLATFORM_OSX )
 # Full nomlib project header files (*.hpp; *.h)
 set ( NOMLIB_HEADERS
       ${ROOT_HEADERS}
-      ${AUDIO_HEADERS}
+      #${AUDIO_HEADERS}
       ${GRAPHICS_HEADERS}
       ${GRAPHICS_HQX_HEADERS}
       ${GRAPHICS_SCALE2X_HEADERS}
@@ -160,7 +160,7 @@ set ( NOMLIB_HEADERS
 # Full nomlib project source files (*.cpp; *.c)
 set ( NOMLIB_SOURCE
       ${ROOT_SOURCE}
-      ${AUDIO_SOURCE}
+      #${AUDIO_SOURCE}
       ${GRAPHICS_SOURCE}
       ${GRAPHICS_HQX_SOURCE}
       ${GRAPHICS_SCALE2X_SOURCE}

@@ -50,7 +50,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/SDL_helpers.hpp>
 
 #if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/ResourcePath.hpp>
+  //#include <nomlib/system/osx/ResourcePath.hpp>
 #elif defined ( NOM_PLATFORM_LINUX )
   // Nothing to do
 #elif defined ( NOM_PLATFORM_WINDOWS )

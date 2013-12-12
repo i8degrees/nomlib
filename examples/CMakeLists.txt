@@ -50,9 +50,9 @@ else ( NOT PLATFORM_WINDOWS )
 
 endif ( PLATFORM_WINDOWS )
 
-add_executable ( audio "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/audio/audio.cpp" )
+#add_executable ( audio "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/audio/audio.cpp" )
 add_executable ( app "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/app/app.cpp" )
-add_executable ( sprite_sheets "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/sprites/sprite_sheets.cpp" )
+#add_executable ( sprite_sheets "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/sprites/sprite_sheets.cpp" )
 # TODO (re-write with new nom::JSON API)
 #add_executable ( json_reader "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/json/json_reader.cpp" )
 #add_executable ( json_writer "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/json/json_writer.cpp" )

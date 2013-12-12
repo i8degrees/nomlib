@@ -134,31 +134,6 @@ message ( STATUS "Library Search Prefix: ${CMAKE_SYSTEM_PREFIX_PATH}" )
 # Installation prefix path set for our project
 message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
 
-# Platform specific configuration
-if ( PLATFORM_LINUX ) # Tested on Ubuntu v12.04-LTS
-  # Clang is not supported on Linux due to libc++ not being distributed by
-  # default yet
-  set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
-  message ( STATUS "CMake Generator: ${CMAKE_GENERATOR}" )
-elseif ( PLATFORM_OSX )
-
-  # libc++ requires OSX v10.7+
-  set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )
-
-  if ( CMAKE_GENERATOR STREQUAL "Xcode" ) # Available only on OSX, I think
-    set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
-    set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
-  endif ( CMAKE_GENERATOR STREQUAL "Xcode" )
-
-  message ( STATUS "CMake Generator: ${CMAKE_GENERATOR}" )
-elseif ( PLATFORM_WINDOWS )
-  set ( CMAKE_CONFIGURATION_TYPES "${CMAKE_BUILD_TYPE}" )
-  message ( STATUS "CMake Generator: ${CMAKE_GENERATOR}" )
-else () # Not Linux nor OS X nor Windows
-  # Use whatever CMake gathers for us and hope for the best!
-  message ( STATUS "CMake Generator: ${CMAKE_GENERATOR}" )
-endif ( PLATFORM_LINUX )
-
 if ( DOCS )
   include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
 endif ( DOCS )

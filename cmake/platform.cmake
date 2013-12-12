@@ -6,6 +6,19 @@ if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
   option ( FRAMEWORK "Build OSX Framework instead of dylib" on )
   option ( UNIVERSAL "Build as an OSX Universal Library" off )
 
+  # Setup the SDK selection for backwards compatibility
+  set ( SDKVER "10.7" )
+  set ( DEVROOT "/Applications/Developer/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer" )
+  set ( SDKROOT "${DEVROOT}/SDKs/MacOSX${SDKVER}.sdk" )
+
+  if ( EXISTS ${SDKROOT} )
+    set ( CMAKE_OSX_SYSROOT "${SDKROOT}" )
+    set ( CMAKE_OSX_DEPLOYMENT_TARGET "${SDKVER}" )
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=${SDKVER}" )
+  else () # Mac OS X v10.5 SDK not found -- that's OK
+    message ( WARNING "Warning, Mac OS X ${SDKVER} SDK path not found: ${SDKROOT}" )
+  endif ( EXISTS ${SDKROOT} )
+
   # libc++ requires OSX v10.7+
   set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )
 
@@ -38,11 +51,10 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL "Windows" )
 
   message ( STATUS "Platform: Windows" )
 else () # Not Linux nor OSX
+
   set ( PLATFORM_UNKNOWN true )
-
-  # Use whatever CMake gathers for us and pray for the best!
-
   message ( STATUS "Platform: Unknown" )
+
 endif ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
 
 message ( STATUS "Generating build files for: ${CMAKE_GENERATOR}" )
@@ -60,9 +72,9 @@ if ( UNIVERSAL )
   set ( PLATFORM_ARCH "x86; x64" ) # Reserved for future use
 
 else ( NOT UNIVERSAL )
-  # TODO: We should probably consider bumping the architecture down to i386 $(ARCHS_STANDARD_32_BIT)
   set ( CMAKE_OSX_ARCHITECTURES x86_64 )
   set ( PLATFORM_ARCH "x64" ) # Reserved for future use
+
 endif ( UNIVERSAL )
 
 if ( PLATFORM_WINDOWS AND ARCH_32 )

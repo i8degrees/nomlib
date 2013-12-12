@@ -29,7 +29,7 @@ if ( PLATFORM_WINDOWS )
   endif ( NOT DEBUG )
 
   # This workaround is to get the file paths to match up on all platforms -_-
-  # build/Debug/examples under MSVC++
+  # build/examples/Debug under MSVC++
   set ( EXAMPLES_INSTALL_PEFIX "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}" )
 else ( NOT PLATFORM_WINDOWS )
 
@@ -43,7 +43,7 @@ else ( NOT PLATFORM_WINDOWS )
     # We prefer lower-case file paths
     string ( TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE )
 
-    # Match build/debug/examples
+    # Match build/examples/debug (from MSVC++ configuration)
     set ( EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/examples/${CMAKE_BUILD_TYPE}" )
     set ( EXAMPLES_INSTALL_PEFIX "${EXECUTABLE_OUTPUT_PATH}" )
   endif ( CMAKE_GENERATOR STREQUAL "Xcode" )

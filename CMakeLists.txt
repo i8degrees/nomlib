@@ -374,87 +374,103 @@ if ( PLATFORM_OSX )
     endif ( NOT CMAKE_GENERATOR STREQUAL "Xcode" )
 
   endif ( FRAMEWORK )
-endif ( PLATFORM_OSX )
 
-if ( NOT FRAMEWORK )
+  # ...PLATFORM_OSX...
 
-  if ( PLATFORM_WINDOWS ) # TODO
-    #install ( TARGETS ${PROJECT_NAME} ARCHIVE DESTINATION "${INSTALL_LIB_PATH}" )
-  else ( NOT PLATFORM_WINDOWS )
+elseif ( PLATFORM_LINUX ) # POSIX install layout
+  # TODO: set paths, etc. like we do above with OSX & Windows platforms
 
-    # Install library in POSIX standard location by default
-    install ( TARGETS ${PROJECT_NAME} LIBRARY
-              DESTINATION "${INSTALL_LIB_PATH}"
-            )
-  endif ( PLATFORM_WINDOWS )
-endif ( NOT FRAMEWORK )
+  # Install binaries to our platform-dependent paths we've set
+  install ( TARGETS ${PROJECT_NAME} LIBRARY DESTINATION "${INSTALL_LIB_PATH}" )
+elseif ( PLATFORM_WINDOWS )
+  # CMAKE_INSTALL_PREFIX will be appended here for us when we issue the install
+  # command.
+  #set ( INSTALL_LIB_PATH "lib" )
 
-if ( NOT PLATFORM_WINDOWS )
+  # TODO:
+  #set ( INSTALL_RESOURCES_PATH "${INSTALL_APP_PATH}" )
+  #set ( INSTALL_DOCS_PATH "share/doc/${PROJECT_NAME}" )
+  #set ( INSTALL_DOCS_HELP_PATH "${INSTALL_DOCS_PATH}" )
+  #set ( INSTALL_GENERATED_DOCS_PATH "share/doc/${PROJECT_NAME}" )
 
-  # Install nomlib header files
-  install ( DIRECTORY ${NOMLIB_HEADERS_DIR}
-            DESTINATION "${INSTALL_HEADERS_PATH}"
+  #if ( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+    #set ( LIBRARY_NAME "${PROJECT_NAME}-d" )
+  #else ( NOT CMAKE_BUILD_TYPE STREQUAL "Debug" )
+    #set ( LIBRARY_NAME "${PROJECT_NAME}" )
+  #endif ( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+
+  # This is a workaround hack
+  #install ( FILES "${CMAKE_CURRENT_BINARY_DIR}/Debug/${PROJECT_NAME}-d.lib"
+            #DESTINATION "${INSTALL_LIB_PATH}"
+          #)
+
+  # Install library
+  #install ( TARGETS ${PROJECT_NAME} ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}" )
+endif ( PLATFORM_OSX ) # Platform-dependent build setup
+
+# Install nomlib header files
+install ( DIRECTORY ${NOMLIB_HEADERS_DIR}
+          DESTINATION "${INSTALL_HEADERS_PATH}"
+          PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
+        )
+
+# Install nomlib Resource files
+install ( FILES
+          "${NOMLIB_RESOURCES_DIR}/nomlib.icns" # Icon
+          DESTINATION "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
+          OPTIONAL
+        )
+
+# TODO: Install nomlib "SharedSupport" Resource files.
+
+# Install nomlib's cmake module; this should end up in a spot that is
+# automatically searched by find_package.
+if ( PLATFORM_OSX AND FRAMEWORK ) # Framework bundle profile
+  install ( DIRECTORY
+            "${NOMLIB_RESOURCES_DIR}/CMake"
+            DESTINATION
+            "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
+            OPTIONAL
             PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
           )
-
-  # Install nomlib Resource files
-  install ( FILES
-            "${NOMLIB_RESOURCES_DIR}/nomlib.icns" # Icon
-            DESTINATION "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
+else ( NOT PLATFORM_OSX AND NOT FRAMEWORK ) # POSIX install profile
+  install ( DIRECTORY
+            "${NOMLIB_RESOURCES_DIR}/CMake"
+            DESTINATION
+            "${INSTALL_RESOURCES_PATH}"
             OPTIONAL
+            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
+          )
+endif ( PLATFORM_OSX AND FRAMEWORK )
+
+# Install software license & general project information
+install ( FILES
+          ${PROJECT_SOURCE_DIR}/README.md
+          ${PROJECT_SOURCE_DIR}/LICENSE.md
+          ${PROJECT_SOURCE_DIR}/TODO.md
+          DESTINATION "${INSTALL_DOCS_PATH}"
+        )
+
+if ( DOCS )
+  # Install generated HTML documentation
+  install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
+            DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
+            PATTERN ".*" EXCLUDE # do not include dotfiles
           )
 
-  # TODO: Install nomlib "SharedSupport" Resource files.
-
-  # Install nomlib's cmake module; this should end up in a spot that is
-  # automatically searched by find_package.
-  if ( PLATFORM_OSX AND FRAMEWORK ) # Framework bundle profile
-    install ( DIRECTORY
-              "${NOMLIB_RESOURCES_DIR}/CMake"
-              DESTINATION
-              "${INSTALL_RESOURCES_PATH}/${NOMLIB_RESOURCES_DIR}"
-              OPTIONAL
-              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
-            )
-  else ( NOT PLATFORM_OSX AND NOT FRAMEWORK ) # POSIX install profile
-    install ( DIRECTORY
-              "${NOMLIB_RESOURCES_DIR}/CMake"
-              DESTINATION
-              "${INSTALL_RESOURCES_PATH}"
-              OPTIONAL
-              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
-            )
-  endif ( PLATFORM_OSX AND FRAMEWORK )
-
-  # Install software license & general project information
-  install ( FILES
-            ${PROJECT_SOURCE_DIR}/README.md
-            ${PROJECT_SOURCE_DIR}/LICENSE.md
-            ${PROJECT_SOURCE_DIR}/TODO.md
-            DESTINATION "${INSTALL_DOCS_PATH}"
-          )
-
-  if ( DOCS )
-    # Install generated HTML documentation
-    install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
-              DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
-              PATTERN ".*" EXCLUDE # do not include dotfiles
-            )
-
-    if ( NOT FRAMEWORK )
+  if ( NOT FRAMEWORK )
 
       # Install generated man page documentation
       install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/man/man3
                 DESTINATION "${INSTALL_MAN_PAGES_PATH}"
                 PATTERN ".*" EXCLUDE # do not include dotfiles
               )
-      endif ( NOT FRAMEWORK )
-  endif ( DOCS )
+    endif ( NOT FRAMEWORK )
+endif ( DOCS )
 
-  if ( PLATFORM_LINUX )
-    install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")") # FIXME (prettify)
-  endif ( PLATFORM_LINUX )
-endif ( NOT PLATFORM_WINDOWS )
+if ( PLATFORM_LINUX )
+  install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")") # FIXME (prettify)
+endif ( PLATFORM_LINUX )
 
 # nomlib examples configuration
 if ( EXAMPLES )

@@ -360,7 +360,7 @@ TODO */
   // and display format conversion.
 NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
 
-  if ( this->initialize ( image.width(), image.height(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING ) == false )
+  if ( this->initialize ( image.width(), image.height(), SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING ) == false )
   {
 NOM_LOG_ERR ( NOM, "Error: Failed to initialize texture." );
     return false;

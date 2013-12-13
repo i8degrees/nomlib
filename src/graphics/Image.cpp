@@ -232,7 +232,7 @@ NOM_LOG_ERR ( NOM, IMG_GetError() );
     return false;
   }
 
-  this->image_.reset ( SDL_ConvertSurfaceFormat ( buffer, SDL_PIXELFORMAT_RGBA8888, 0 ), priv::FreeSurface );
+  this->image_.reset ( SDL_ConvertSurfaceFormat ( buffer, SDL_PIXELFORMAT_ARGB8888, 0 ), priv::FreeSurface );
   priv::FreeSurface ( buffer );
 
   return true;
@@ -248,7 +248,7 @@ bool Image::load_bmp ( const std::string& filename )
     return false;
   }
 
-  this->image_.reset ( SDL_ConvertSurfaceFormat ( buffer, SDL_PIXELFORMAT_RGBA8888, 0 ), priv::FreeSurface );
+  this->image_.reset ( SDL_ConvertSurfaceFormat ( buffer, SDL_PIXELFORMAT_ARGB8888, 0 ), priv::FreeSurface );
   priv::FreeSurface ( buffer );
 
   return true;

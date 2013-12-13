@@ -171,6 +171,8 @@ const std::string hint ( const std::string& name );
 /// SDL_RENDERER_PRESENTVSYNC -- before the first call to nom::Window::create.
 bool set_hint ( const std::string& name, const std::string& value );
 
+const std::string PIXEL_FORMAT_NAME ( uint32 format );
+
 namespace priv {
 
 /// Custom deleter for SDL_Window structures

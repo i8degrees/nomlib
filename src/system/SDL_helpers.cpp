@@ -145,6 +145,11 @@ bool set_hint ( const std::string& name, const std::string& value )
   return true;
 }
 
+const std::string PIXEL_FORMAT_NAME ( uint32 format )
+{
+  return std::string (SDL_GetPixelFormatName ( format ) );
+}
+
 namespace priv {
 
 void FreeWindow ( SDL_Window* handle )

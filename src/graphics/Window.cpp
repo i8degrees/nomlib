@@ -425,21 +425,23 @@ bool Window::save_screenshot ( const std::string& filename ) const
   Point2i renderer_size = Renderer::size(); // Width & height of target in pixels
   SDL_SURFACE::UniquePtr buffer ( nullptr, priv::FreeSurface );
 
-  int bpp = 0; // bytes per pixel
+  int bpp = 0; // bits per pixel
   uint32 red_mask = 0;
   uint32 green_mask = 0;
   uint32 blue_mask = 0;
   uint32 alpha_mask = 0;
 
+  // We need ARGB pixel ordering in order to save the bitmap to disk correctly;
+  // otherwise the colors are out of order!
   if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( SDL_PIXELFORMAT_ARGB8888, &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
   {
-NOM_LOG_ERR( NOM, SDL_GetError() );
+    NOM_LOG_ERR( NOM, SDL_GetError() );
     return false;
   }
 
   screenshot.initialize( Renderer::pixels(), renderer_size.x, renderer_size.y, bpp, (renderer_size.x * 4), red_mask, green_mask, blue_mask, alpha_mask );
 
-  if ( screenshot.save( filename ) == false )
+  if ( screenshot.save_png( filename ) == false )
   {
     return false;
   }

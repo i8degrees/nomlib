@@ -244,8 +244,9 @@ class Window:
     /// \todo Test me
     void set_maximum_window_size ( int max_width, int max_height );
 
-    /// Save a screenshot of the window as an uncompressed RGB Windows Bitmap
-    /// (BMP) file.
+    /// Save a screen shot of the window as a PNG file
+    ///
+    /// \param filename     Absolute or relative file path
     ///
     /// \fixme Pixels pitch calculation
     bool save_screenshot ( const std::string& filename ) const;

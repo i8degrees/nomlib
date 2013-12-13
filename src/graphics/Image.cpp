@@ -246,6 +246,18 @@ bool Image::save ( const std::string& filename ) const
   return true;
 }
 
+bool Image::save_png ( const std::string& filename ) const
+{
+  // Undocumented method for writing out a PNG file with SDL2_image
+  if ( IMG_SavePNG ( this->image(), filename.c_str() ) != 0 )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  return true;
+}
+
 const Point2i Image::size ( void ) const
 {
   SDL_Surface* buffer = this->image();

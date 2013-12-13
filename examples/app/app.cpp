@@ -75,7 +75,7 @@ const std::string RESOURCE_STATIC_IMAGE = APP_RESOURCES_DIR + p.native() + "boar
 ///
 /// Default path should resolve to the same directory as the app example
 /// executable
-const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.bmp";
+const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
 
 /// \brief Usage example
 class App: public nom::SDL_App

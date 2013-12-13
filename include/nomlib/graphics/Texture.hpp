@@ -78,33 +78,6 @@ class Texture
     /// Copy constructor
     Texture ( const Texture& other );
 
-    /// Constructor variant for creating a fresh, empty video surface. You should
-    /// be sure to read over the details gory details scattered throughout the
-    /// documentation for SDL.
-    ///
-    /// The SDL_SWSURFACE flag is passed by default if an argument is not
-    /// specified -- this is optimal for writing to the video memory buffer
-    /// directly (pixel manipulation).
-    ///
-    /// As per libSDL docs, this must be called only after video initialization;
-    /// (SDL_SetVideoMode).
-    ///
-    /// See http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurface
-    //Texture ( int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, uint32 flags = SDL_SWSURFACE );
-
-    /// Construct a video surface object using the data from an existing surface;
-    /// you can think of this as a copy method. As with the previous method, you
-    /// ought to read over the technicalities that the SDL library documentation
-    /// covers.
-    ///
-    /// You remain the owner of the pointer leading to your existing data and
-    /// therefore are responsible for memory management.
-    ///
-    /// See http://sdl.beuc.net/sdl.wiki/SDL_CreateRGBSurfaceFrom
-    //Texture ( void* pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
-
-    //void initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
-
     /// Initialize object with SDL1 video surface
     ///
     /// The new texture created will be of type 'SDL_TEXTUREACCESS_STATIC'
@@ -158,7 +131,6 @@ class Texture
 
     void* pixels ( void ) const;
 
-    /// \todo Rename me to BPP
     uint8 bytes_per_pixel ( void ) const;
 
     uint32 pixel_format ( void ) const;
@@ -167,7 +139,6 @@ class Texture
     ///
     /// \return Unsigned 8-bit integer (8, 16, 24 or 32 bits per pixel); zero (0)
     /// on error (unknown color depth).
-    /// \todo Rename me to bpp
     uint8 bits_per_pixel ( void ) const;
 
     /// Obtain the blending mode used for texture copies

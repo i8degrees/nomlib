@@ -56,44 +56,6 @@ Texture::Texture ( const Texture& other ) :
 NOM_LOG_TRACE ( NOM );
 }
 
-/*
-Texture::Texture ( int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, uint32 flags )
-{
-NOM_LOG_TRACE ( NOM );
-
-  this->initialize ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask );
-}
-
-Texture::Texture ( void* pixels, int32 width, int32 height, int32 depth, uint16 pitch, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
-{
-NOM_LOG_TRACE ( NOM );
-
-  //this->texture_.reset ( SDL_CreateRGBSurfaceFrom ( pixels, width, height, depth, pitch, Rmask, Gmask, Bmask, Amask ), nom::priv::FreeSurface );
-
-  this->bounds_.setSize ( width, height );
-}
-*/
-
-/*
-void Texture::initialize ( uint32 flags, int32 width, int32 height, uint8 bitsPerPixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
-{
-NOM_LOG_TRACE ( NOM );
-
-  //this->texture_.reset ( SDL_CreateRGBSurface ( flags, width, height, bitsPerPixel, Rmask, Gmask, Bmask, Amask ), nom::priv::FreeSurface );
-  this->bounds_.setSize ( width, height );
-
-  // If the video surface is marked for color keying transparency, we must do
-  // so here.
-  //if ( flags & SDL_TRUE )//SDL_SRCCOLORKEY )
-  //{
-    //if ( this->setTransparent ( this->getTextureColorKey(), SDL_RLEACCEL | SDL_TRUE ) == false )//SDL_SRCCOLORKEY ) == false )
-    //{
-//NOM_LOG_ERR ( NOM, "Could not create the video surface with color key transparency." );
-    //}
-  //}
-//}
-*/
-
 bool Texture::initialize ( SDL_SURFACE::RawPtr video_buffer )
 {
   // We leak memory, or even worse, crash, depending on state at the time, if we

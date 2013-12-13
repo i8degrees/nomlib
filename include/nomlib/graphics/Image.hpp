@@ -77,6 +77,11 @@ class Image
                       int32 bpp, uint16 pitch,
                       uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
+    /// Constructor variant for creating a fresh, empty video surface. You should
+    /// be sure to read over the details gory details scattered throughout the
+    /// documentation for SDL.
+    bool initialize ( int32 width, int32 height, uint8 bits_per_pixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, bool colorkey );
+
     /// Obtain the SDL_Surface struct used in this object instance
     SDL_SURFACE::RawPtr image ( void ) const;
 
@@ -88,7 +93,6 @@ class Image
     void* pixels ( void ) const;
     uint16 pitch ( void ) const;
 
-    /// \todo Rename me to bppp
     uint8 bits_per_pixel ( void ) const;
 
     const SDL_PIXELFORMAT::RawPtr pixel_format ( void ) const;

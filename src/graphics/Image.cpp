@@ -84,7 +84,29 @@ NOM_LOG_TRACE ( NOM );
   if ( this->valid() == false )
   {
     NOM_LOG_ERR ( NOM, "Image buffer created from existing SDL_Surface is null." );
+
+bool Image::initialize ( int32 width, int32 height, uint8 bits_per_pixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, bool colorkey )
+{
+NOM_LOG_TRACE ( NOM );
+
+  this->image_.reset ( SDL_CreateRGBSurface ( 0, width, height, bits_per_pixel, Rmask, Gmask, Bmask, Amask ), priv::FreeSurface );
+  //this->set_bounds ( Coords ( 0, 0, width, height ) );
+
+  if ( this->valid() == false )
+  {
+NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
+  }
+
+  // If the video surface is marked for color keying transparency, we need to
+  // set it up here and now!
+  if ( colorkey )
+  {
+    if ( this->set_colorkey ( this->colorkey(), true ) == false )
+    {
+      NOM_LOG_ERR ( NOM, "Could not create the video surface with color key transparency." );
+      return false;
+    }
   }
 
   return true;

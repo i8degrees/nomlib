@@ -153,6 +153,8 @@ class Texture
     ///           nom::Color::null on failure
     const Color4u& colorkey ( void ) const;
 
+    const uint8 alpha ( void ) const;
+
     /// Lock a portion of the texture for **write-only** pixel access.
     ///
     /// Texture must be created with SDL_TEXTUREACCESS_STREAMING.

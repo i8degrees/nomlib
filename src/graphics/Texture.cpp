@@ -263,6 +263,19 @@ const Color4u& Texture::colorkey ( void ) const
   return this->colorkey_;
 }
 
+const uint8 Texture::alpha ( void ) const
+{
+  uint8 alpha;
+
+  if ( SDL_GetTextureAlphaMod ( this->texture(), &alpha ) != 0 )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return nom::ALPHA_OPAQUE;
+  }
+
+  return alpha;
+}
+
 bool Texture::lock ( void )
 {
   if ( this->locked() )
@@ -467,7 +480,7 @@ void Texture::draw ( const Window& target, const double degrees ) const
 
 bool Texture::set_alpha ( uint8 opacity )
 {
-NOM_ASSERT ( ! ( opacity > SDL_ALPHA_OPAQUE ) || ( opacity < SDL_ALPHA_TRANSPARENT ) );
+NOM_ASSERT ( ! ( opacity > nom::ALPHA_OPAQUE ) || ( opacity < nom::ALPHA_TRANSPARENT ) );
 
   if ( SDL_SetTextureAlphaMod ( this->texture(), opacity ) != 0 )
   {

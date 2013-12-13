@@ -72,18 +72,23 @@ Image& Image::operator = ( const Image& other )
 }
 
 bool Image::initialize( void* pixels, int32 width, int32 height,
-                        int32 bpp, uint16 pitch,
+                        int32 bits_per_pixel, uint16 pitch,
                         uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask
                       )
 {
 NOM_LOG_TRACE ( NOM );
 
-  this->image_.reset ( SDL_CreateRGBSurfaceFrom ( pixels, width, height, bpp, pitch, Rmask, Gmask, Bmask, Amask ), priv::FreeSurface );
-  //this->bounds_.setSize ( width, height );
+  this->image_.reset ( SDL_CreateRGBSurfaceFrom ( pixels, width, height, bits_per_pixel, pitch, Rmask, Gmask, Bmask, Amask ), priv::FreeSurface );
+  //this->set_bounds ( Coords ( 0, 0, width, height ) );
 
   if ( this->valid() == false )
   {
-    NOM_LOG_ERR ( NOM, "Image buffer created from existing SDL_Surface is null." );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  return true;
+}
 
 bool Image::initialize ( int32 width, int32 height, uint8 bits_per_pixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, bool colorkey )
 {

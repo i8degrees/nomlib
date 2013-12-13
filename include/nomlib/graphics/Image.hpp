@@ -68,13 +68,13 @@ class Image
     /// Initialize an image surface using the data from an existing pixel buffer
     /// source.
     ///
-    /// \param pixels   Typically a void pointer cast to nom::uint16 or nom::uint32
-    /// \param bpp      Bits per pixel
+    /// \param pixels           Typically a void pointer cast to nom::uint16 or nom::uint32
+    /// \param bits_per_pixel   Bits per pixel
     ///
     /// \note You maintain ownership of your pixel buffer pointer; don't forget
     /// to clean up after you're done!
     bool initialize(  void* pixels, int32 width, int32 height,
-                      int32 bpp, uint16 pitch,
+                      int32 bits_per_pixel, uint16 pitch,
                       uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
     /// Constructor variant for creating a fresh, empty video surface. You should

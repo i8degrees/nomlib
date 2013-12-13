@@ -133,6 +133,26 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
         }
       }
 
+      // TODO: move renderer info dump into its own example
+      SDL_RendererInfo renderer_info;
+      SDL_GetRendererInfo ( this->window[0].renderer(), &renderer_info );
+      NOM_DUMP_VAR(renderer_info.name);
+
+      if ( renderer_info.flags & SDL_RENDERER_TARGETTEXTURE )
+        NOM_DUMP_VAR("SDL_RENDERER_TARGETTEXTURE");
+
+      if ( renderer_info.flags & SDL_RENDERER_ACCELERATED )
+        NOM_DUMP_VAR("SDL_RENDERER_ACCELERATED");
+
+      if ( renderer_info.flags & SDL_RENDERER_PRESENTVSYNC )
+        NOM_DUMP_VAR("SDL_RENDERER_PRESENTVSYNC");
+
+      for ( auto idx = 0; idx < renderer_info.num_texture_formats; ++idx )
+        NOM_DUMP_VAR(nom::PIXEL_FORMAT_NAME(renderer_info.texture_formats[idx]));
+
+      NOM_DUMP_VAR(renderer_info.max_texture_width);
+      NOM_DUMP_VAR(renderer_info.max_texture_height);
+
       this->window[0].set_active();
       if ( this->bfont.load ( RESOURCE_BITMAP_FONT, nom::Color4u(255, 0, 255, 0) ) == false )
       {

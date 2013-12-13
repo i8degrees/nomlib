@@ -29,8 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 1. Copyright (c) Andrea Mazzoleni
 
 ******************************************************************************/
-#ifndef NOMLIB_SCALE2X_HPP
-#define NOMLIB_SCALE2X_HPP
+#ifndef NOMLIB_SDL2_SCALE2X_HPP
+#define NOMLIB_SDL2_SCALE2X_HPP
 
 #include <algorithm>
 
@@ -66,7 +66,7 @@ namespace nom {
 /// \todo IMPLEMENT ME
 bool scale2x  ( void* source_buffer, void* destination_buffer,
                 const int32 source_width, const int32 source_height,
-                const int32 depth,
+                const int32 bits_per_pixel,
                 const int16 source_pitch, int16 destination_pitch
               );
 
@@ -77,7 +77,7 @@ bool scale2x  ( void* source_buffer, void* destination_buffer,
 /// \todo IMPLEMENT ME
 bool scale3x  ( void* source_buffer, void* destination_buffer,
                 const int32 source_width, const int32 source_height,
-                const int32 depth,
+                const int32 bits_per_pixel,
                 const int16 source_pitch, int16 destination_pitch
               );
 
@@ -88,7 +88,7 @@ bool scale3x  ( void* source_buffer, void* destination_buffer,
 /// \todo IMPLEMENT ME
 bool scale4x  ( void* source_buffer, void* destination_buffer,
                 const int32 source_width, const int32 source_height,
-                const int32 depth,
+                const int32 bits_per_pixel,
                 const int16 source_pitch, int16 destination_pitch
               );
 

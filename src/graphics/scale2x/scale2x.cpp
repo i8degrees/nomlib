@@ -33,7 +33,7 @@ namespace nom {
 
 bool scale2x  ( void* source_buffer, void* destination_buffer,
                 const int32 source_width, const int32 source_height,
-                const int32 depth,
+                const int32 bits_per_pixel,
                 const int16 source_pitch, int16 destination_pitch
               )
 {
@@ -54,7 +54,7 @@ bool scale2x  ( void* source_buffer, void* destination_buffer,
   uint8* dstpix = static_cast<uint8*> ( destination_buffer );
 
   // Use the existing video surface BPP for choosing scaling algorithm.
-  switch ( depth )
+  switch ( bits_per_pixel )
   {
     default: // Err, we could not determine a valid color depth!
     {
@@ -173,7 +173,7 @@ bool scale2x  ( void* source_buffer, void* destination_buffer,
       } // for height loop
     } // end case 32
     break;
-  } // end switch (BytesPerPixel)
+  } // end switch (bits_per_pixel)
 
   return true;
 }

@@ -142,25 +142,4 @@ NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
   return true;
 }
 
-bool Sprite::resize ( const Point2f& scale_factor )
-{
-  if ( this->sprite_.valid() == false )
-  {
-NOM_LOG_ERR ( NOM, "Video surface is invalid." );
-    return false;
-  }
-
-  if ( this->sprite_.resize ( scale_factor ) == false )
-  {
-NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
-    return false;
-  }
-
-  //this->scale_factor = this->sprite_.getResizeScaleFactor ( scaling_algorithm );
-  this->update();
-
-  return true;
-}
-
-
 } // namespace nom

@@ -269,9 +269,9 @@ NOM_LOG_ERR ( NOM, "Could not lock Texture." );
   top = tile_height;
   baseA = tile_height;
 
-  for ( int32 rows = 0; rows < this->sheet_width; rows++ )
+  for ( uint32 rows = 0; rows < this->sheet_width; rows++ )
   {
-    for ( int32 cols = 0; cols < this->sheet_height; cols++ )
+    for ( uint32 cols = 0; cols < this->sheet_height; cols++ )
     {
       // Set character offsets
       this->chars[ currentChar ].setPosition ( tile_width * cols, tile_height * rows );

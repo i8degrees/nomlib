@@ -149,23 +149,6 @@ uint32 Window::window_flags ( void ) const
   return SDL_GetWindowFlags ( this->window() );
 }
 
-/*
-uint16 Window::getDisplayPitch ( void ) const
-{
-  //return SDL_GetVideoSurface()->pitch;
-    return 0;
-}
-*/
-
-/* FIXME
-void* Window::pixels ( void ) const
-{
-  SDL_Surface *buffer = this->window_surface();
-
-  return buffer->pixels;
-}
-FIXME */
-
 uint32 Window::pixel_format ( void ) const
 {
   return SDL_GetWindowPixelFormat ( this->window() );

@@ -93,10 +93,6 @@ class Window:
     const uint8 bits_per_pixel ( void ) const;
 
     uint32 window_flags ( void ) const;
-    //uint16 getDisplayPitch ( void ) const;
-
-    /// Obtain a pointer to this object's pixels
-    //void* pixels ( void ) const;
 
     uint32 pixel_format ( void ) const;
 

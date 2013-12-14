@@ -25,9 +25,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-    scale2x Algorithm
-1. Copyright (c) Andrea Mazzoleni
-
 ******************************************************************************/
 #include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/scale2x/scale2x.hpp"

@@ -82,11 +82,20 @@ class Texture
 
     /// Initialize object with SDL1 video surface
     ///
-    /// The new texture created will be of type 'SDL_TEXTUREACCESS_STATIC'
+    /// \note The new texture created will be of type 'SDL_TEXTUREACCESS_STATIC'
     bool initialize ( SDL_SURFACE::RawPtr video_buffer );
 
-    /// Initialize object with new specified parameters
-    /// ...
+    /// Initialize an object with specified parameters
+    ///
+    /// \param width    Width -- in pixels -- of the new texture
+    ///
+    /// \param height   Height -- in pixels -- of the new texture
+    ///
+    /// \param format   A pixel format; one of the enumerated values in
+    ///                 SDL_PixelFormatEnum
+    ///
+    /// \param flags    Texture access type; one of the enumerated values in
+    ///                 SDL_TextureAccess
     bool initialize ( int32 width, int32 height, uint32 format, uint32 flags );
 
     /// Return a std::shared_ptr copy of this instance
@@ -195,6 +204,8 @@ class Texture
               );
 
     /// Upload texture copy with new pixel data
+    ///
+    /// \todo Use update_area argument
     bool update ( const void* pixels, uint16 pitch, const Coords& update_area );
 
     /// Draw a nom::Texture to a SDL_Renderer target

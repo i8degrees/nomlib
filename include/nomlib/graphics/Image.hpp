@@ -105,27 +105,18 @@ class Image
     /// Obtain the video surface's alpha mask
     const uint32 alpha_mask ( void ) const;
 
-    /// I think that we are accessing the value of an
-    /// (internal?) property of the SDL_Surface structure that is described as being
-    /// "private" as per the docs.
-    ///
-    /// Return value of this internal property is presumed to be boolean -- no
-    /// verification has been made of this. Testing of this method *appears*
-    /// to be in working order.
-    //bool getCanvasLock ( void ) const;
-
-    /// Lock the display context's video surface; this must be done before you
-    /// attempt to write directly to video memory, such as when you are
-    /// manipulating surfaces at the pixel level.
-    //bool lock ( void ) const;
-
-    /// Unlocks the display context's video surface; this must be done after you
-    /// are finished writing to the video buffer. During the time that the video
-    /// surface is locked, no updates (think: rendering) outside of your local
-    /// access can occur until the surfaces affected by the lock are relinquished.
-    //void unlock ( void ) const;
-
     const Coords bounds ( void ) const;
+
+    /// Check to see if the video surfacea needs locking
+    bool must_lock ( void ) const;
+
+    /// Obtain the locked status of the video surface memory
+    ///
+    /// \note This method accesses internal (private) data within our
+    /// SDL_Surface structure.
+    ///
+    /// \todo Verify if the SDL_MUSTLOCK macro does the same thing here
+    bool locked ( void ) const;
 
     void set_bounds ( const Coords& clip_bounds );
 
@@ -193,6 +184,16 @@ class Image
 
     /// Set a new blending mode for blitting
     bool set_blend_mode ( const SDL_BlendMode blend );
+
+    /// Lock the video surface; this must be done before you attempt to write
+    /// directly to video memory (pixel manipulation).
+    bool lock ( void ) const;
+
+    /// Unlocks the video surface; this must be done after you are finished
+    /// writing to the video buffer. During the time that the video surface is
+    /// locked, no updates (think: rendering) outside of your local access can
+    /// occur until the surfaces affected by the lock are relinquished.
+    void unlock ( void ) const;
 
   private:
     SDL_SURFACE::SharedPtr image_;

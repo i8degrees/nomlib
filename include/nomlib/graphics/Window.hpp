@@ -285,10 +285,6 @@ class Window:
 
     /// Toggle window & full-screen states
     bool fullscreen_;
-
-    /// Internal method used for checking to see if the display context's video
-    /// surfacea actually needs locking before doing so for performance sake.
-    //bool mustLock ( void ) const;
 };
 
 

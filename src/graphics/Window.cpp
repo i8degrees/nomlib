@@ -235,47 +235,6 @@ NOM_LOG_INFO ( NOM, "No video modes are supported." );
 */
     return VideoModeList();
 }
-/*
-bool Window::getCanvasLock ( void ) const
-{
-  //return this->window()->locked;
-    return false;
-}
-*/
-/*
-bool Window::mustLock ( void ) const
-{
-  if ( SDL_MUSTLOCK ( this->window() ) )
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-    return false;
-}
-*/
-/*
-bool Window::lock ( void ) const
-{
-  if ( this->mustLock() == true )
-  {
-    if ( SDL_LockSurface ( this->window() ) == -1 )
-    {
-NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
-      return false;
-    }
-  }
-  return true;
-}
-*/
-/*
-void Window::unlock ( void ) const
-{
-  SDL_UnlockSurface ( this->window() );
-}
-*/
 
 void Window::draw ( SDL_SURFACE::RawPtr video_buffer, const Coords& bounds ) const
 {

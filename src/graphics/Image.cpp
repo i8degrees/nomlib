@@ -173,6 +173,18 @@ const Coords Image::bounds ( void ) const
   return clip_bounds;
 }
 
+bool Image::must_lock ( void ) const
+{
+  if ( SDL_MUSTLOCK ( this->image() ) ) return true;
+
+  return false;
+}
+
+bool Image::locked ( void ) const
+{
+  return this->image()->locked;
+}
+
 void Image::set_bounds ( const Coords& clip_bounds )
 {
   SDL_Rect clip = SDL_RECT ( clip_bounds );
@@ -352,6 +364,25 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   }
 
   return true;
+}
+
+bool Image::lock ( void ) const
+{
+  if ( SDL_BOOL ( this->must_lock() ) )
+  {
+    if ( SDL_LockSurface ( this->image() ) != 0 )
+    {
+NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
+      return false;
+    }
+  }
+
+  return true;
+}
+
+void Image::unlock ( void ) const
+{
+  SDL_UnlockSurface ( this->image() );
 }
 
 

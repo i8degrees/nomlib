@@ -154,11 +154,15 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       NOM_DUMP_VAR(renderer_info.max_texture_height);
 
       this->window[0].set_active();
+
+      // FIXME: if ( this->bfont.load ( RESOURCE_BITMAP_FONT, nom::Color4u(110, 144, 190, 255) ) == false )
       if ( this->bfont.load ( RESOURCE_BITMAP_FONT, nom::Color4u(255, 0, 255, 0) ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
         return false;
       }
+      // FIXME: this->bfont.resize ( nom::ResizeAlgorithm::scale2x );
+
       if ( this->font.load ( RESOURCE_TRUETYPE_FONT, NOM_COLOR4U_WHITE ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
@@ -173,6 +177,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
         nom::DialogMessageBox ( APP_NAME, "Could not load sprite: " + this->sprite.sheet_filename() );
         return false;
       }
+      // FIXME: this->sprite.resize ( nom::ResizeAlgorithm::scale2x );
       this->sprite.set_frame ( 1 ); // Left-pointing cursor hand
 
       // Load the same sprite sheet -- but this time -- used for animation

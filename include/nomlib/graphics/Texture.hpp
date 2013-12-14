@@ -46,7 +46,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/Window.hpp"
 
+/// \todo Rename NOM_DEBUG_SDL_TEXTURE to NOM_DEBUG_SDL2_TEXTURE
 //#define NOM_DEBUG_SDL_TEXTURE
+#define NOM_DEBUG_SDL2_RESIZE
 
 namespace nom {
 

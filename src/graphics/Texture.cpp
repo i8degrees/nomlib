@@ -84,6 +84,8 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
 bool Texture::initialize ( int32 width, int32 height, uint32 format, uint32 flags )
 {
+  //if ( this->valid() ) this->texture_.reset();
+
   this->texture_.reset ( SDL_CreateTexture ( Window::context(), format, flags, width, height ), priv::FreeTexture );
 
   if ( this->valid() == false )
@@ -533,23 +535,35 @@ uint32 Texture::pixel ( int32 x, int32 y )
 
 bool Texture::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
-/*
+  int bpp = 0; // bits per pixel
+  uint32 red_mask = 0;
+  uint32 green_mask = 0;
+  uint32 blue_mask = 0;
+  uint32 alpha_mask = 0;
+
   // Ensure that our existing video surface is OK first
   if ( this->valid() == false )
   {
-NOM_LOG_ERR ( NOM, "The existing video surface is not valid." );
+    NOM_LOG_ERR ( NOM, "The existing video surface is not valid." );
+    return false;
+  }
+
+  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( this->pixel_format(), &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
+  {
+    NOM_LOG_ERR( NOM, SDL_GetError() );
     return false;
   }
 
   // Current video surface flags state -- the destination buffer will be set
   // with these.
-  uint32 flags = this->getTextureFlags();
+  //uint32 flags = this->getTextureFlags();
 
   // This is the target video surface object that is created from the existing
   // video surface, with the existing width & height recomputed to whatever the
   // chosen algorithm expects. The target buffer (upon success) becomes the new
   // video surface of this instance.
-  Texture destination_buffer;
+  //Texture destination_buffer;
+  Image destination_buffer;
 
   // Pick out the suitable scaling factor for determining the new video surface
   // width and height.
@@ -558,62 +572,96 @@ NOM_LOG_ERR ( NOM, "The existing video surface is not valid." );
   // We must not set an alpha mask value if our existing video surface is color
   // keyed (or bad things ensue -- like many hours spent reading up on this
   // surprisingly confusing subject).
-  uint32 alpha_mask = 0; // no alpha mask is default (works with color keying)
+  //uint8 alpha_mask = 0; // no alpha mask is default (works with color keying)
 
   // If the video surface does *NOT* have color keying set
-  if ( ! ( flags & SDL_TRUE ) )//SDL_SRCCOLORKEY ) )
-  {
-    alpha_mask = this->getTextureAlphaMask();
-  }
+  //if ( ! ( flags & SDL_TRUE ) )//SDL_SRCCOLORKEY ) )
+  //{
+  //alpha_mask = this->alpha();
+  //}
 
-  destination_buffer = Texture (
-                                this->width() * scale_factor,
-                                this->height() * scale_factor,
-                                this->getTextureBitsPerPixel(),
-                                this->getTextureRedMask(),
-                                this->getTextureGreenMask(),
-                                this->getTextureBlueMask(),
-                                alpha_mask,
-                                flags
-                              );
+  destination_buffer.initialize (
+                                  this->width() * scale_factor,
+                                  this->height() * scale_factor,
+                                  bpp, // bits per pixel
+                                  red_mask,
+                                  green_mask,
+                                  blue_mask,
+                                  alpha_mask,
+                                  true // color key enabled
+                                );
+
+#if defined (NOM_DEBUG_SDL2_RESIZE)
+  NOM_DUMP_VAR((int)this->alpha());
+  NOM_DUMP_VAR(this->width());
+  NOM_DUMP_VAR(this->height());
+  NOM_DUMP_VAR(scale_factor);
+  NOM_DUMP_VAR(bpp);
+  NOM_DUMP_VAR(red_mask);
+  NOM_DUMP_VAR(green_mask);
+  NOM_DUMP_VAR(blue_mask);
+  NOM_DUMP_VAR(alpha_mask);
+  NOM_DUMP_VAR(PIXEL_FORMAT_NAME(this->pixel_format()));
+
+  NOM_DUMP_VAR((int)destination_buffer.alpha());
+  NOM_DUMP_VAR(destination_buffer.pitch());
+#endif
 
   // Ensure that our new video surface is sane before feeding
   if ( destination_buffer.valid() == false )
   {
-NOM_LOG_ERR ( NOM, "The destination video surface is not valid." );
+    NOM_LOG_ERR ( NOM, "The destination video surface is not valid." );
     return false;
   }
 
-  // Lock pixels buffer for writing to
+  // Lock pixels buffer so we can obtain access to its pixels & pitch
   if ( this->lock() == false )
   {
-NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
+    NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
     return false;
   }
+
+  // Lock destination memory for writing to
+  if ( destination_buffer.lock() == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not lock destination video surface." );
+    return false;
+  }
+
+  // Dump pixels from existing texture onto the destination texture
+  memcpy  ( this->pixels(), destination_buffer.pixels(),
+            destination_buffer.pitch() / destination_buffer.height()
+          );
 
   switch ( scaling_algorithm )
   {
-    default: this->unlock(); return false; break; // No resizing is applied
+    default: // Error: insufficient input; no resizing is applied.
+    {
+      NOM_LOG_ERR ( NOM, "Invalid resizing algorithm specified." );
+      this->unlock();
+      destination_buffer.unlock();
+      return false;
+    }
 
     case ResizeAlgorithm::scale2x:
     {
       if ( priv::scale2x  (
-                            this->getTexturePixels(),
-                            destination_buffer.getTexturePixels(),
-                            this->width(),
-                            this->height(),
-                            this->getTextureColorDepth(),
-                            this->getTexturePitch(),
-                            destination_buffer.getTexturePitch()
+                            this->pixels(), // source
+                            destination_buffer.pixels(), // destination
+                            this->width(), // source
+                            this->height(), // source
+                            this->bits_per_pixel(), // source
+                            this->pitch(), // source
+                            destination_buffer.pitch() // destination
                           ) == false )
       {
-NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale2x." );
+        NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale2x." );
         this->unlock(); // Relinquish our write lock
         return false;
       }
+      break;
     }
-    break;
-
+/*
     case ResizeAlgorithm::scale3x:
     {
       if ( priv::scale3x  (
@@ -687,20 +735,45 @@ NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
                     );
     }
     break;
+*/
   } // end switch scaling_algorithm
 
-  this->unlock(); // Relinquish our write lock
+  // Once we unlock the texture, it will be uploaded to the GPU for us!
+  destination_buffer.unlock();
+  this->unlock();
 
   // Do one more sanity check on our new video surface before do the transfer
   if ( destination_buffer.valid() == false )
   {
-NOM_LOG_ERR ( NOM, "The rescaled video surface is not valid." );
+    NOM_LOG_ERR ( NOM, "The rescaled video surface is not valid." );
     return false;
   }
 
+  // This appears fine -- something past this is where everything goes south...
+  destination_buffer.save_png("testme.png");
+
+  if ( this->initialize ( destination_buffer.width(), destination_buffer.height(), SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "The rescaled video surface is not valid." );
+    return false;
+  }
+
+  // Lock pixels buffer so we can obtain access to its pixels & pitch
+  this->lock ( destination_buffer.bounds() );
+
+  // Copy pixels from image into our freshly initialized texture
+  memcpy ( destination_buffer.pixels(), this->pixels(), destination_buffer.pitch() );
+
+  // Once we unlock the texture, it will be uploaded to the GPU for us!
+  this->unlock();
+
+  //this->set_colorkey ( Color4u(0,0,0,0) );
+
+  this->set_bounds ( destination_buffer.bounds() );
+
   // Reset the video surface object's video memory to the rescaled pixel data.
-  this->setTexture ( destination_buffer );
-*/
+  //this->setTexture ( destination_buffer );
+
   return true;
 }
 

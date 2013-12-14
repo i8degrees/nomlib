@@ -314,8 +314,7 @@ const Color4u Image::colorkey ( void ) const
 
   if ( SDL_GetColorKey ( this->image(), &transparent_color ) != 0 )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-    priv::FreeSurface ( buffer );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return NOM_COLOR4U_BLACK;
   }
 
@@ -436,6 +435,5 @@ void Image::unlock ( void ) const
 {
   SDL_UnlockSurface ( this->image() );
 }
-
 
 } // namespace nom

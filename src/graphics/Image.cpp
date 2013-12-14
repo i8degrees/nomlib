@@ -212,6 +212,19 @@ bool Image::locked ( void ) const
   return this->image()->locked;
 }
 
+const uint8 Image::alpha ( void ) const
+{
+  uint8 alpha;
+
+  if ( SDL_GetSurfaceAlphaMod ( this->image(), &alpha ) != 0 )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return 0;
+  }
+
+  return alpha;
+}
+
 void Image::set_bounds ( const Coords& clip_bounds )
 {
   SDL_Rect clip = SDL_RECT ( clip_bounds );

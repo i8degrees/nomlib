@@ -122,6 +122,9 @@ class Image
     /// \todo Verify if the SDL_MUSTLOCK macro does the same thing here
     bool locked ( void ) const;
 
+    /// Obtain the alpha value of this video surface
+    const uint8 alpha ( void ) const;
+
     void set_bounds ( const Coords& clip_bounds );
 
     /// Supports every file type that the libSDL_image extension has been

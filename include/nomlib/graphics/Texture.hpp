@@ -52,24 +52,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// Available rescaling algorithms
-/// \todo SDL2 port
-enum ResizeAlgorithm
-{
-  None = 0, // No resizing is applied
-  scale2x,
-  scale3x, // Reserved for future implementation
-  scale4x, // Reserved for future implementation
-  hq2x,
-  hq3x,
-  hq4x,
-  Stretch
-};
-
 class Texture
 {
   public:
     typedef std::shared_ptr<Texture> SharedPtr;
+
+    /// Available rescaling algorithms
+    /// \todo SDL2 port
+    enum ResizeAlgorithm
+    {
+      None = 0, // No resizing is applied
+      scale2x,
+      scale3x, // Reserved for future implementation
+      scale4x, // Reserved for future implementation
+      hq2x,
+      hq3x,
+      hq4x,
+      Stretch
+    };
 
     /// Default constructor
     Texture ( void );
@@ -206,6 +206,9 @@ class Texture
     /// Upload texture copy with new pixel data
     ///
     /// \todo Use update_area argument
+    ///
+    /// \note This is intended for use with SDL_TEXTUREACCESS_STATIC texture
+    /// type
     bool update ( const void* pixels, uint16 pitch, const Coords& update_area );
 
     /// Draw a nom::Texture to a SDL_Renderer target

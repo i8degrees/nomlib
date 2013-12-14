@@ -122,7 +122,7 @@ void Sprite::draw ( RenderTarget target, const double degrees ) const
   this->sprite_.draw ( target.renderer(), degrees );
 }
 
-bool Sprite::resize ( enum ResizeAlgorithm scaling_algorithm )
+bool Sprite::resize ( enum Texture::ResizeAlgorithm scaling_algorithm )
 {
   if ( this->sprite_.valid() == false )
   {

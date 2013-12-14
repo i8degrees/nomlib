@@ -144,7 +144,7 @@ class BitmapFont: public IFont
     ///
     /// Re-implements IFont::resize
     /// \todo SDL2 port
-    bool resize ( enum ResizeAlgorithm scaling_algorithm );
+    bool resize ( enum Texture::ResizeAlgorithm scaling_algorithm );
 
   private:
     /// Trigger a rebuild of the font characteristics gleaned from the image file;

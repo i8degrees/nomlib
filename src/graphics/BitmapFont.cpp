@@ -524,7 +524,7 @@ void BitmapFont::draw ( RenderTarget target ) const
   } // end if this->bitmap_font != nullptr
 }
 
-bool BitmapFont::resize ( enum ResizeAlgorithm scaling_algorithm )
+bool BitmapFont::resize ( enum Texture::ResizeAlgorithm scaling_algorithm )
 {
   if ( this->bitmap_font.valid() == false )
   {

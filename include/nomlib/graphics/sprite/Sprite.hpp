@@ -89,7 +89,7 @@ class Sprite:
     void draw ( RenderTarget target, const double angle ) const;
 
     /// Rescale the font with a chosen resizing algorithm
-    bool resize ( enum ResizeAlgorithm scaling_algorithm );
+    bool resize ( enum Texture::ResizeAlgorithm scaling_algorithm );
 
   protected:
     /// Object that holds our sprite image

@@ -71,7 +71,7 @@ class Renderer
     /// Get the current logical resolution size
     ///
     /// \todo Test me!
-    const Point2i logical_resolution ( void ) const;
+    const Point2i logical_size ( void ) const;
 
     /// Get the current viewport dimensions
     ///
@@ -121,7 +121,7 @@ class Renderer
     ///
     /// Sets both a new view port and any necessary rescaling to fit within a
     /// fixed, logical resolution for rendering.
-    bool set_logical_resolution ( int width, int height );
+    bool set_logical_size ( int width, int height );
 
     /// Set a new drawing area for rendering
     ///

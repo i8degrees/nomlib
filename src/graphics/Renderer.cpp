@@ -81,7 +81,7 @@ const Point2i Renderer::scale_factor ( void ) const
   return scale_factor;
 }
 
-const Point2i Renderer::logical_resolution ( void ) const
+const Point2i Renderer::logical_size ( void ) const
 {
   Point2i size;
 
@@ -182,7 +182,7 @@ bool Renderer::fill ( const Color4u& color )
   return true;
 }
 
-bool Renderer::set_logical_resolution ( int width, int height )
+bool Renderer::set_logical_size ( int width, int height )
 {
   if ( SDL_RenderSetLogicalSize ( this->renderer(), width, height ) != 0 )
   {

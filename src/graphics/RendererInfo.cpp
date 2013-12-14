@@ -26,30 +26,57 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_HPP
-#define NOMLIB_GRAPHICS_HPP
+#include "nomlib/graphics/RendererInfo.hpp"
 
-// Public header file
+namespace nom {
 
-#include <nomlib/config.hpp>
-#include <nomlib/graphics/RendererInfo.hpp>
-#include <nomlib/graphics/BitmapFont.hpp>
-#include <nomlib/graphics/Texture.hpp>
-#include <nomlib/graphics/VideoMode.hpp>
-#include <nomlib/graphics/Window.hpp>
-#include <nomlib/graphics/Renderer.hpp>
-#include <nomlib/graphics/IDrawable.hpp>
-#include <nomlib/graphics/TrueTypeFont.hpp>
-#include <nomlib/graphics/Gradient.hpp>
-#include <nomlib/graphics/Image.hpp>
-#include <nomlib/graphics/Pixel.hpp>
-#include <nomlib/graphics/shapes/Point.hpp>
-#include <nomlib/graphics/shapes/Line.hpp>
-#include <nomlib/graphics/shapes/Rectangle.hpp>
-#include <nomlib/graphics/sprite/Sprite.hpp>
-#include <nomlib/graphics/sprite/SpriteBatch.hpp>
-#include <nomlib/graphics/sprite/SpriteSheet.hpp>
-#include <nomlib/graphics/sprite/AnimatedSprite.hpp>
+RendererInfo::RendererInfo ( void ) {}
+RendererInfo::~RendererInfo ( void ) {}
 
+const uint32 RendererInfo::optimal_texture_format ( void ) const
+{
+  return this->texture_formats.front();
+}
 
-#endif // include guard defined
+std::ostream& operator << ( std::ostream& os, const RendererInfo& info )
+{
+  os << "Renderer Name: " << info.name
+  << std::endl << std::endl
+  << "Device Capabilities: "
+  << std::endl << std::endl;
+
+  if ( info.flags & SDL_RENDERER_TARGETTEXTURE )
+  {
+    os << "SDL_RENDERER_TARGETTEXTURE"
+    << std::endl;
+  }
+
+  if ( info.flags & SDL_RENDERER_ACCELERATED )
+  {
+    os << "SDL_RENDERER_ACCELERATED"
+    << std::endl;
+  }
+
+  if ( info.flags & SDL_RENDERER_PRESENTVSYNC )
+  {
+    os << "SDL_RENDERER_PRESENTVSYNC"
+    << std::endl;
+  }
+
+  os << std::endl
+  << "Texture Formats: "
+  << std::endl << std::endl;
+  for ( nom::uint32 idx = 0; idx < info.texture_formats.size(); ++idx )
+  {
+    os << PIXEL_FORMAT_NAME( info.texture_formats[idx] )
+    << std::endl;
+  }
+  os << "Texture Width: " << info.texture_width
+  << std::endl;
+  os << "Texture Height: " << info.texture_height
+  << std::endl;
+
+  return os;
+}
+
+} // namespace nom

@@ -236,6 +236,33 @@ NOM_LOG_INFO ( NOM, "No video modes are supported." );
     return VideoModeList();
 }
 
+const RendererInfo Window::caps ( void ) const
+{
+  RendererInfo renderer_info;
+  SDL_RendererInfo info;
+
+  if ( SDL_GetRendererInfo ( this->renderer(), &info ) != 0 )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return renderer_info;
+  }
+
+  renderer_info.name = info.name;
+  renderer_info.flags = info.flags;
+
+  NOM_ASSERT ( info.num_texture_formats > 1 );
+
+  for ( uint32 idx = 0; idx < info.num_texture_formats; ++idx )
+  {
+    renderer_info.texture_formats.push_back ( info.texture_formats[idx] );
+  }
+
+  renderer_info.texture_width = info.max_texture_width;
+  renderer_info.texture_height = info.max_texture_height;
+
+  return renderer_info;
+}
+
 void Window::draw ( SDL_SURFACE::RawPtr video_buffer, const Coords& bounds ) const
 {
   SDL_Rect blit_coords = SDL_RECT ( bounds );

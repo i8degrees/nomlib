@@ -139,24 +139,10 @@ Point2i Window::size ( void ) const
   return size;
 }
 
-/*
-const uint8 Window::getDisplayColorBits ( void ) const
+const uint8 Window::bits_per_pixel ( void ) const
 {
-  SDL_Surface* screen = this->window();
-
-  // We prevent a segmentation fault here by providing a means of accessing the
-  // video modes without already having initialized the video display via
-  // SDL_SetVideoMode.
-  if ( screen == nullptr )
-  {
-    //const SDL_VideoInfo* bpp = SDL_GetVideoInfo();
-    //return bpp->vfmt->BitsPerPixel;
-  }
-
-  return screen->format->BitsPerPixel;
-  return 0;
+  return SDL_BITSPERPIXEL ( this->pixel_format() );
 }
-*/
 
 uint32 Window::window_flags ( void ) const
 {

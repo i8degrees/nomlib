@@ -89,10 +89,8 @@ class Window:
     /// \return Point2i object containing the width (x) and height (y)
     Point2i size ( void ) const;
 
-    /// Get display surface bits per pixel
-    ///
-    /// \todo rename method to something more along lines of Canvas equiv.
-    //const uint8 getDisplayColorBits ( void ) const;
+    /// Obtain the BPP (bits per pixel) of this window
+    const uint8 bits_per_pixel ( void ) const;
 
     uint32 window_flags ( void ) const;
     //uint16 getDisplayPitch ( void ) const;
@@ -116,6 +114,8 @@ class Window:
     /// Returns a sorted vector of VideoMode objects, from greatest to least.
     ///
     /// \todo Test out 8-bit, 16-bit, 24-bit video surfaces
+    ///
+    /// \todo SDL2 support
     VideoModeList getVideoModes ( void ) const;
 
     const RendererInfo caps ( void ) const;

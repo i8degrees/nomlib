@@ -26,30 +26,43 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_HPP
-#define NOMLIB_GRAPHICS_HPP
 
-// Public header file
+/// \brief Dump information on rendering capabilities of a device
 
-#include <nomlib/config.hpp>
-#include <nomlib/graphics/RendererInfo.hpp>
-#include <nomlib/graphics/BitmapFont.hpp>
-#include <nomlib/graphics/Texture.hpp>
-#include <nomlib/graphics/VideoMode.hpp>
-#include <nomlib/graphics/Window.hpp>
-#include <nomlib/graphics/Renderer.hpp>
-#include <nomlib/graphics/IDrawable.hpp>
-#include <nomlib/graphics/TrueTypeFont.hpp>
-#include <nomlib/graphics/Gradient.hpp>
-#include <nomlib/graphics/Image.hpp>
-#include <nomlib/graphics/Pixel.hpp>
-#include <nomlib/graphics/shapes/Point.hpp>
-#include <nomlib/graphics/shapes/Line.hpp>
-#include <nomlib/graphics/shapes/Rectangle.hpp>
-#include <nomlib/graphics/sprite/Sprite.hpp>
-#include <nomlib/graphics/sprite/SpriteBatch.hpp>
-#include <nomlib/graphics/sprite/SpriteSheet.hpp>
-#include <nomlib/graphics/sprite/AnimatedSprite.hpp>
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <cassert>
 
+#include <nomlib/graphics.hpp>
+#include <nomlib/system.hpp>
 
-#endif // include guard defined
+const std::string APP_NAME = "device_info";
+
+const int WINDOW_WIDTH = 0;
+const int WINDOW_HEIGHT = 0;
+
+int main ( int argc, char* argv[] )
+{
+  nom::Window window;
+  nom::RendererInfo renderer_info;
+
+  if ( nom::nomlib_init ( argc, argv ) == false )
+  {
+    NOM_LOG_ERR ( APP_NAME, "Could not initialize nomlib." );
+    exit ( EXIT_FAILURE );
+  }
+
+  nom::uint32 window_flags = SDL_WINDOW_HIDDEN;
+
+  if ( window.create ( APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, window_flags ) == false )
+  {
+    NOM_LOG_ERR ( APP_NAME, "Could not create a window." );
+    exit ( EXIT_FAILURE );
+  }
+
+  renderer_info = window.caps();
+  std::cout << renderer_info << std::endl;
+
+  return EXIT_SUCCESS;
+}

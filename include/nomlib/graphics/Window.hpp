@@ -45,6 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Renderer.hpp"
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
+#include "nomlib/graphics/RendererInfo.hpp"
 
 namespace nom {
 
@@ -116,6 +117,8 @@ class Window:
     ///
     /// \todo Test out 8-bit, 16-bit, 24-bit video surfaces
     VideoModeList getVideoModes ( void ) const;
+
+    const RendererInfo caps ( void ) const;
 
     void set_size ( int32 width, int32 height );
 

@@ -26,30 +26,58 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_HPP
-#define NOMLIB_GRAPHICS_HPP
+#ifndef NOMLIB_SDL2_RENDERER_INFO_HPP
+#define NOMLIB_SDL2_RENDERER_INFO_HPP
 
-// Public header file
+#include <iostream>
+#include <string>
+#include <vector>
 
-#include <nomlib/config.hpp>
-#include <nomlib/graphics/RendererInfo.hpp>
-#include <nomlib/graphics/BitmapFont.hpp>
-#include <nomlib/graphics/Texture.hpp>
-#include <nomlib/graphics/VideoMode.hpp>
-#include <nomlib/graphics/Window.hpp>
-#include <nomlib/graphics/Renderer.hpp>
-#include <nomlib/graphics/IDrawable.hpp>
-#include <nomlib/graphics/TrueTypeFont.hpp>
-#include <nomlib/graphics/Gradient.hpp>
-#include <nomlib/graphics/Image.hpp>
-#include <nomlib/graphics/Pixel.hpp>
-#include <nomlib/graphics/shapes/Point.hpp>
-#include <nomlib/graphics/shapes/Line.hpp>
-#include <nomlib/graphics/shapes/Rectangle.hpp>
-#include <nomlib/graphics/sprite/Sprite.hpp>
-#include <nomlib/graphics/sprite/SpriteBatch.hpp>
-#include <nomlib/graphics/sprite/SpriteSheet.hpp>
-#include <nomlib/graphics/sprite/AnimatedSprite.hpp>
+#include "SDL.h"
 
+#include "nomlib/config.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
+
+namespace nom {
+
+/// \brief Container class for the current renderer driver capabilities
+class RendererInfo
+{
+  public:
+    /// Raw pointer type
+    typedef RendererInfo* RawPtr;
+
+    /// Default constructor
+    RendererInfo ( void );
+
+    /// Destructor
+    ~RendererInfo ( void );
+
+    /// Obtain the most optimal texture (pixel) format available
+    const uint32 optimal_texture_format ( void ) const;
+
+  public:
+    /// Renderer designation
+    std::string name;
+
+    /// Mask of supported renderer flags
+    uint32 flags;
+
+    /// Available texture (pixel) formats
+    ///
+    /// \note The most optimal pixel format will always be the first element
+    std::vector<uint32> texture_formats;
+
+    /// Maximum texture width (in pixels) supported
+    int texture_width;
+
+    /// Maximum texture height (in pixels) supported
+    int texture_height;
+};
+
+/// Pretty print the available device capabilities
+std::ostream& operator << ( std::ostream& os, const RendererInfo& info );
+
+} // namespace nom
 
 #endif // include guard defined

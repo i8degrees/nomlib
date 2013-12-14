@@ -91,8 +91,6 @@ class Sprite:
     /// Rescale the font with a chosen resizing algorithm
     bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
-    bool resize ( const Point2f& scale_factor );
-
   protected:
     /// Object that holds our sprite image
     Texture sprite_;

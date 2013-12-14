@@ -242,9 +242,6 @@ class Texture
     /// \todo SDL2 port
     bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
-    /// \todo SDL2 port
-    bool resize ( const Point2f& scale_factor );
-
     /// Return the correct scaling factor of the chosen algorithm
     ///
     /// \todo SDL2 port

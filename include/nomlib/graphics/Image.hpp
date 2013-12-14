@@ -138,21 +138,13 @@ class Image
     /// file, whereas SDL_LoadBMP does load fine).
     bool load_bmp ( const std::string& filename );
 
-    /// Save a screenshot as an uncompressed RGB Windows Bitmap
-    /// (BMP) file.
+    /// Save a screen shot of this image surface as an uncompressed BMP file
     ///
     /// \param filename       Output filename path
-    /// \param video_buffer   Surface used to save to filename
     ///
     /// \note SDL2 appears to be saving bitmap files with ARGB pixel ordering;
     /// SDL_PIXELFORMAT_ARGB8888
-    bool save ( const std::string& filename, SDL_SURFACE::RawPtr video_buffer ) const;
-
-    /// Save a screenshot of this image as an uncompressed RGB Windows Bitmap
-    /// (BMP) file.
-    ///
-    /// \param filename       Output filename path
-    bool save ( const std::string& filename ) const;
+    bool save_bmp ( const std::string& filename ) const;
 
     /// Save a screen shot as a Portable Network Graphics (PNG) file.
     ///

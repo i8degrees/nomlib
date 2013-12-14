@@ -267,22 +267,14 @@ bool Image::load_bmp ( const std::string& filename )
   return true;
 }
 
-bool Image::save ( const std::string& filename, SDL_SURFACE::RawPtr video_buffer ) const
+bool Image::save_bmp ( const std::string& filename ) const
 {
-  if ( SDL_SaveBMP ( video_buffer, filename.c_str() ) != 0 )
+  if ( SDL_SaveBMP ( this->image(), filename.c_str() ) != 0 )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
 
-  return true;
-}
-
-bool Image::save ( const std::string& filename ) const
-{
-  if ( this->save( filename, this->image() ) == false ) return false;
-
-  // Success!
   return true;
 }
 

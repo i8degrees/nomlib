@@ -49,7 +49,7 @@ class SoundFile
     ~SoundFile ( void );
 
     /// Obtain number of samples in audio file
-    size_t getSampleCount ( void ) const;
+    sf_count_t getSampleCount ( void ) const;
 
     /// Obtain number of channels used by audio file
     uint32 getChannelCount ( void ) const;
@@ -61,18 +61,19 @@ class SoundFile
     uint32 getChannelFormat ( void ) const;
 
     /// Obtain audio data size in bytes
-    size_t getDataByteSize ( void ) const;
+    sf_count_t getDataByteSize ( void ) const;
 
     bool open ( const std::string& filename );
     bool read ( std::vector<int16>& data );
 
   private:
     /// SNDFILE* file descriptor
+    /// \todo Change me to a std::unique_ptr
     std::shared_ptr<SNDFILE> fp;
     /// Extracted audio stream from file
     std::vector<int16> samples;
     /// Total number of samples in the file
-    std::size_t sample_count;
+    sf_count_t sample_count;
     /// Number of audio channels used by sound
     uint32 channel_count;
     /// Number of samples per second

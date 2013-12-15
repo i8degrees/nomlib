@@ -56,7 +56,7 @@ class SoundBuffer
     /// Obtain buffer duration in milliseconds
     ///
     /// Default: zero (0)
-    uint32 getDuration ( void ) const;
+    sf_count_t getDuration ( void ) const;
 
     // getSampleRate
     // getChannelCount
@@ -85,7 +85,7 @@ class SoundBuffer
     /// Duration of sound buffer
     ///
     /// Default: zero (0)
-    uint32 buffer_duration;
+    sf_count_t buffer_duration;
 };
 
 

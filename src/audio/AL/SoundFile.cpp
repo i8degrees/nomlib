@@ -46,7 +46,7 @@ NOM_LOG_TRACE ( NOM );
   // Clean up instance variables
 }
 
-size_t SoundFile::getSampleCount ( void ) const
+sf_count_t SoundFile::getSampleCount ( void ) const
 {
   return this->sample_count;
 }
@@ -66,7 +66,7 @@ uint32 SoundFile::getChannelFormat ( void ) const
   return this->channel_format;
 }
 
-size_t SoundFile::getDataByteSize ( void ) const
+sf_count_t SoundFile::getDataByteSize ( void ) const
 {
   return this->getSampleCount() * sizeof ( int16 );
 }
@@ -104,7 +104,7 @@ NOM_LOG_ERR ( NOM, "Could not not audio file: " + filename );
 
 bool SoundFile::read ( std::vector<int16>& data )
 {
-  size_t read_size = 0;
+  sf_count_t read_size = 0;
   std::vector<int16> read_buffer;
   read_buffer.resize ( BUFFER_SIZE );
 

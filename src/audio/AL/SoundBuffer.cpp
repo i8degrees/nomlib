@@ -60,7 +60,7 @@ uint32 SoundBuffer::get ( void ) const
   return this->buffer;
 }
 
-uint32 SoundBuffer::getDuration ( void ) const
+sf_count_t SoundBuffer::getDuration ( void ) const
 {
   return this->buffer_duration;
 }

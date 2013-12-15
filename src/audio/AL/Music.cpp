@@ -47,7 +47,7 @@ Music::~Music ( void )
 {
 NOM_LOG_TRACE ( NOM );
 
-  //this->Stop();
+  this->Stop();
 }
 
 void Music::setBuffer ( const SoundBuffer& copy )

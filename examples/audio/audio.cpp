@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 
-// Audio playback usage example
+/// \brief Audio playback usage example
 
 #include <iostream>
 #include <string>
@@ -38,28 +38,36 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
 
+/// Name of our application.
+const std::string APP_NAME = "Audio Playback";
+
+/// File path name of the resources directory; this must be a relative file path.
+const std::string APP_RESOURCES_DIR = "Resources";
+
+/// Relative file path name of our resource example
+const nom::Path p;
+
+/// Sound effect resource file
+const std::string RESOURCE_AUDIO_SOUND = APP_RESOURCES_DIR + p.native() + "cursor_wrong.wav";
+
 int main ( int argc, char* argv[] )
 {
-  nom::File dir;
-  nom::Path p;
   nom::OpenAL::AudioDevice dev; // this must be declared first
-  nom::OpenAL::AudioDevice dev2; // this must be declared first
-
-  //ALCdevice* dev = alcOpenDevice ( nullptr );
-  //ALCcontext* ctx = alcCreateContext ( dev, nullptr );
-  //alcMakeContextCurrent ( ctx );
-
-  nom::OpenAL::Listener listener;
+  nom::OpenAL::Listener listener; // Global audio volume control
   nom::OpenAL::SoundBuffer buffer;
   nom::Timer loops;
-  std::string path = dir.path(argv[0]) + p.native() + "Resources";
 
-//NOM_DUMP_VAR ( dev.getDeviceName() );
-//NOM_DUMP_VAR ( dev2.getDeviceName() );
+  // Fatal error; if we are not able to complete this step, it means that
+  // we probably cannot rely on our resource paths!
+  if ( nom::nomlib_init ( argc, argv ) == false )
+  {
+    nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
+    exit ( EXIT_FAILURE );
+  }
+
+  NOM_DUMP_VAR ( dev.getDeviceName() );
 
   listener.setVolume ( MAX_VOLUME );
-NOM_DUMP_VAR ( listener.getVolume() );
-
   bool ret = false;
   if ( argv[1] != nullptr )
   {
@@ -67,12 +75,12 @@ NOM_DUMP_VAR ( listener.getVolume() );
   }
   else
   {
-    ret = buffer.load ( path + p.native() + "cursor_wrong.wav" );
+    ret = buffer.load ( RESOURCE_AUDIO_SOUND );
   }
 
   if ( ! ret )
   {
-NOM_LOG_ERR ( NOM, "Buffer loading err" );
+    NOM_LOG_ERR ( NOM, "Buffer loading err" );
     return EXIT_FAILURE;
   }
 
@@ -85,10 +93,7 @@ NOM_LOG_ERR ( NOM, "Buffer loading err" );
   snd.setVelocity ( nom::Point3f ( 0.0, 0.0, 0.0 ) );
   snd.setLooping ( true );
 
-  snd.setPlayPosition ( 8.0 );
-
-  if ( snd.getStatus() != nom::SoundStatus::Playing )
-    snd.Play();
+  if ( snd.getStatus() != nom::SoundStatus::Playing ) snd.Play();
 
   nom::uint32 duration = buffer.getDuration();
   float duration_seconds = duration / 1000.0f;
@@ -128,13 +133,9 @@ NOM_DUMP_VAR ( duration_seconds );
   loops.stop();
 NOM_DUMP_VAR ( loops.ticks() );
 
-  //alcMakeContextCurrent ( nullptr );
-  //alcDestroyContext ( ctx );
-  //alcCloseDevice ( dev );
-
-  //std::cout << "Sample Count: " << sndfile.getSampleCount() << std::endl;
-  //std::cout << "Channel Count: " << sndfile.getChannelCount() << std::endl;
-  //std::cout << "Sample Rate: " << sndfile.getSampleRate() << std::endl;
+  //std::cout << "Sample Count: " << snd.getSampleCount() << std::endl;
+  //std::cout << "Channel Count: " << snd.getChannelCount() << std::endl;
+  //std::cout << "Sample Rate: " << snd.getSampleRate() << std::endl;
 
   return EXIT_SUCCESS;
 }

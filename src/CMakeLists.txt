@@ -158,21 +158,26 @@ set ( NOMLIB_HEADERS
       ${SYSTEM_WINDOWS_HEADERS}
     )
 
-# Full nomlib project source files (*.cpp; *.c)
-set ( NOMLIB_SOURCE
-      ${ROOT_SOURCE}
-      ${AUDIO_SOURCE}
-      ${GRAPHICS_SOURCE}
-      ${GRAPHICS_HQX_SOURCE}
-      ${GRAPHICS_SCALE2X_SOURCE}
-      ${GRAPHICS_SHAPES_SOURCE}
-      ${GRAPHICS_SPRITE_SOURCE}
-      ${GUI_SOURCE}
-      ${JSON_SOURCE}
-      ${JSONCPP_SOURCE}
-      ${MATH_SOURCE}
-      ${SYSTEM_SOURCE}
-    )
+if ( NOM_BUILD_MINI )
+  # Build an absolute minimum nomlib -- for testing new CMake options, etc.
+  set ( NOMLIB_SOURCE ${ROOT_SOURCE} )
+else ( NOT NOM_BUILD_MINI )
+  # Full nomlib project
+  set ( NOMLIB_SOURCE
+        ${ROOT_SOURCE}
+        ${AUDIO_SOURCE}
+        ${GRAPHICS_SOURCE}
+        ${GRAPHICS_HQX_SOURCE}
+        ${GRAPHICS_SCALE2X_SOURCE}
+        ${GRAPHICS_SHAPES_SOURCE}
+        ${GRAPHICS_SPRITE_SOURCE}
+        ${GUI_SOURCE}
+        ${JSON_SOURCE}
+        ${JSONCPP_SOURCE}
+        ${MATH_SOURCE}
+        ${SYSTEM_SOURCE}
+      )
+endif ( NOM_BUILD_MINI )
 
 # Add header files (*.hpp) and source files (*.cpp) to IDE project list
 # (For those that use Xcode, MSVC++, etc.)

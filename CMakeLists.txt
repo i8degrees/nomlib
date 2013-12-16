@@ -23,6 +23,13 @@ option ( DEBUG_TRACE "Build with trace logging of object construction & destruct
 option ( EXAMPLES "Build nomlib usage examples" off )
 option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
 
+# Build a minimal nomlib; useful for testing new CMake builds and such
+#
+# NOTE:
+# Enabling this will disable project examples from building, even when
+# explicitly set!
+set ( NOM_BUILD_MINI off )
+
 project ( nomlib ) # Sets PROJECT_NAME variable for us
 
 # Platform detection
@@ -473,9 +480,9 @@ if ( PLATFORM_LINUX )
 endif ( PLATFORM_LINUX )
 
 # nomlib examples configuration
-if ( EXAMPLES )
+if ( EXAMPLES AND NOT NOM_BUILD_MINI )
   add_subdirectory ( examples )
-endif ( EXAMPLES )
+endif ( EXAMPLES AND NOT NOM_BUILD_MINI )
 
 # Auto-generated source file
 configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.cpp.in"

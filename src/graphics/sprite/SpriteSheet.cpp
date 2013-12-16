@@ -181,7 +181,7 @@ SpriteSheet::SharedPtr SpriteSheet::clone ( void ) const
 
 bool SpriteSheet::save ( const std::string& filename )
 {
-  nom::JSON::Value node;
+  nom::JSON::Value object;
   nom::JSON::FileWriter writer;
 
   std::string sprite_sheet_version = std::to_string ( NOM_SPRITE_SHEET_MAJOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_MINOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_PATCH_VERSION );
@@ -191,24 +191,25 @@ bool SpriteSheet::save ( const std::string& filename )
   uint32 id = 0;
   for ( id = 0; id < this->sheet.size(); ++id )
   {
-    node.insert ( "id", id, id );
-    node.insert ( "x", this->sheet[id].x, id );
-    node.insert ( "y", this->sheet[id].y, id );
-    node.insert ( "width", this->sheet[id].w, id );
-    node.insert ( "height", this->sheet[id].h, id );
+    object.insert ( "id", id );
+    object.insert ( "x", this->sheet[id].x );
+    object.insert ( "y", this->sheet[id].y );
+    object.insert ( "width", this->sheet[id].w );
+    object.insert ( "height", this->sheet[id].h );
+    object.endl();
   }
 
   // Push out our file meta-data last
-  node.insert ( "sheet_filename", this->sheet_filename(), id );
-  node.insert ( "sheet_sprites", this->sheet_sprites, id );
-  node.insert ( "sheet_spacing", this->sheet_spacing, id );
-  node.insert ( "sheet_padding", this->sheet_padding, id );
-  node.insert ( "sheet_width", this->sheet_width, id );
-  node.insert ( "sheet_height", this->sheet_height, id );
-  node.insert ( "sheet_version", sprite_sheet_version, id );
-  node.insert ( "sheet_modified", getCurrentTime(), id );
+  object.insert ( "sheet_filename", this->sheet_filename() );
+  object.insert ( "sheet_sprites", this->sheet_sprites );
+  object.insert ( "sheet_spacing", this->sheet_spacing  );
+  object.insert ( "sheet_padding", this->sheet_padding );
+  object.insert ( "sheet_width", this->sheet_width );
+  object.insert ( "sheet_height", this->sheet_height );
+  object.insert ( "sheet_version", sprite_sheet_version );
+  object.insert ( "sheet_modified", getCurrentTime() );
 
-  if ( writer.save ( filename, node ) == false )
+  if ( writer.save ( filename, object ) == false )
   {
 NOM_LOG_ERR ( NOM, "Unable to save file: " + filename );
     return false;
@@ -220,13 +221,13 @@ NOM_LOG_ERR ( NOM, "Unable to save file: " + filename );
 bool SpriteSheet::load ( const std::string& filename )
 {
   nom::JSON::FileReader parser;
-  nom::JSON::Value root;
+  nom::JSON::Value object;
 
   // Temporary holding buffers to hold data until we are ready to commit
   Coords buffer;
   std::vector<Coords> buffer_sheet;
 
-  if ( parser.load ( filename, root ) == false )
+  if ( parser.load ( filename, object ) == false )
   {
 NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
     return false;
@@ -234,12 +235,13 @@ NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
 
   // Populate our sheet vector while skipping the last JSON object;
   // this should always be file mete-data!
-  for ( auto idx = 0; idx < root.size() - 1; ++idx )
+  for ( auto idx = 0; idx < object.size() - 1; ++idx )
   {
-    buffer.x = root.get_int ( "x", idx );
-    buffer.y = root.get_int ( "y", idx );
-    buffer.w = root.get_int ("width", idx );
-    buffer.h = root.get_int ("height", idx );
+    buffer.x = object.get_int ( "x" );
+    buffer.y = object.get_int ( "y" );
+    buffer.w = object.get_int ("width" );
+    buffer.h = object.get_int ("height" );
+    object.endl();
 
     // Commit contents to our buffer if all goes well
     buffer_sheet.push_back ( buffer );
@@ -252,24 +254,26 @@ NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
 
   // Populate our other instance variables with the last JSON object;
   // this should always be file mete-data!
-  for ( auto idx = root.size() - 1; idx != root.size(); ++idx )
+  for ( auto idx = object.size() - 1; idx != object.size(); ++idx )
   {
-    this->sheet_filename_ = root.get_string ( "sheet_filename", idx );
+    this->sheet_filename_ = object.get_string ( "sheet_filename" );
 
-NOM_ASSERT ( this->sheet.size() == root.get_int ( "sheet_sprites", idx ) );
-    this->sheet_sprites = root.get_int ( "sheet_sprites", idx );
+NOM_ASSERT ( this->sheet.size() == object.get_int ( "sheet_sprites" ) );
+    this->sheet_sprites = object.get_int ( "sheet_sprites" );
 
-    this->sheet_spacing = root.get_int ( "sheet_spacing", idx );
-    this->sheet_padding = root.get_int ( "sheet_padding", idx );
+    this->sheet_spacing = object.get_int ( "sheet_spacing" );
+    this->sheet_padding = object.get_int ( "sheet_padding" );
 /* FIXME
-NOM_ASSERT ( this->sheet[0].width * this->sheet.size() == root.get_int ( "sheet_width", idx ) );
+NOM_ASSERT ( this->sheet[0].width * this->sheet.size() == object.get_int ( "sheet_width" ) );
 FIXME */
-    this->sheet_width = root.get_int ( "sheet_width", idx );
+    this->sheet_width = object.get_int ( "sheet_width" );
 
 /* FIXME
-NOM_ASSERT ( this->sheet[0].height * this->sheet.size() == root.get_int ( "sheet_height", idx ) );
+NOM_ASSERT ( this->sheet[0].height * this->sheet.size() == object.get_int ( "sheet_height" ) );
 FIXME */
-    this->sheet_height = root.get_int ( "sheet_height", idx );
+    this->sheet_height = object.get_int ( "sheet_height" );
+
+    object.endl();
   }
 
 #if defined ( NOM_DEBUG_SPRITE_SHEET_JSON_LOAD )

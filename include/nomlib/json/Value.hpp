@@ -45,11 +45,20 @@ namespace JSON {
 class Value
 {
   public:
+    /// Default constructor
     Value ( void );
+
+    /// Destructor
     ~Value ( void );
 
-    /// Copy constructor
+    /// Copy constructor for self
     Value ( const Value& copy );
+
+    /// Copy constructor for ValueType
+    Value ( const ValueType& copy );
+
+    /// Copy assignment operator
+    Value& operator = ( const Value& other );
 
     /// Copy assignment operator
     Value& operator = ( const ValueType& other );
@@ -58,89 +67,75 @@ class Value
     ValueType& get ( void ) const;
 
     uint32 size ( void ) const;
-
     JSONValueType type ( void ) const;
     JSONValueType type ( int index ) const;
-    JSONValueType type ( const std::string& key, int index ) const;
-
+    JSONValueType type ( const std::string& key ) const;
     JSONMemberType members ( int index ) const;
 
-    int get_int ( int index );
-    /// Get signed integer array values by key, index
-    std::vector<int> get_ints ( const std::string& key, int index );
-    int get_int ( const std::string& key, int index );
+    /// Get signed integer array values by key
+    std::vector<int> get_ints ( const std::string& key );
+    int get_int ( const std::string& key );
 
-    uint get_uint ( int index );
-    /// Get unsigned integer array values by index
-    std::vector<uint> get_uints ( int index );
+    /// Get unsigned integer array values by key
+    std::vector<uint> get_uints ( const std::string& key );
     uint get_uint ( const std::string& key );
 
-    //double get_double ( int index );
+    /// Get C++ string value by key
+    std::string get_string ( const std::string& key );
 
-    const char* c_str ( int index );
-    std::string get_string ( int index );
-    /// Get C++ string array values by index
-    std::vector<std::string> get_strings ( int index );
-    const char* c_str ( const std::string& key );
-    std::string get_string ( const std::string& key, int index );
+    /// Get C++ string array values by key
+    std::vector<std::string> get_strings ( const std::string& key );
 
-    bool get_bool ( int index );
-    /// Get bool array values by index
-    std::vector<bool> get_bools ( int index );
+    /// Get bool array values by key
+    std::vector<bool> get_bools ( const std::string& key );
+
+    /// Get bool value by key
     bool get_bool ( const std::string& key );
-
-    ValueType value ( int index );
-    std::vector<ValueType> values ( int index );
-
-    ValueType value ( const std::string& key );
 
     /// JSON NULL
     ///
     /// \note Type 0 -- Json::nullValue
-    void insert ( const std::string& key, int index );
+    void insert ( const std::string& key );
 
     /// JSON signed integer
     ///
     /// \note Type 1 -- Json::intValue
-    void insert ( const std::string& key, int value, int index );
-    void insert ( const std::string& key, std::vector<int> values, int index );
+    void insert ( const std::string& key, int value );
+    void insert ( const std::string& key, std::vector<int> values );
 
     /// JSON unsigned integer
     ///
     /// \note Type 2 -- Json::uintValue
-    void insert ( const std::string& key, uint value, int index );
+    void insert ( const std::string& key, uint value );
     void insert ( const std::string& key, const std::vector<uint>& values );
 
     /// JSON double
     ///
     /// \note Type 3 -- Json::realValue
-    void insert ( const std::string& key, double value, int index );
+    void insert ( const std::string& key, double value );
 
     /// JSON float
     ///
     /// \note Type 3 -- Json::realValue
-    void insert ( const std::string& key, float value, int index );
-
-    /// JSON string (C string)
-    ///
-    /// \note Type 4 -- Json::stringValue
-    void insert ( const std::string& key, const char* value, int index );
+    void insert ( const std::string& key, float value );
 
     /// JSON string (C++ string)
     ///
     /// \note Type 4 -- Json::stringValue
-    void insert ( const std::string& key, const std::string& value, int index );
+    void insert ( const std::string& key, const std::string& value );
     void insert ( const std::string& key, const std::vector<std::string>& values );
 
     /// JSON boolean
     ///
     /// \note Type 5 -- Json::booleanValue
-    void insert ( const std::string& key, bool value, int index );
+    void insert ( const std::string& key, bool value );
 
-    /// JSON [...???...]
+    void endl ( void );
+
+    /// JSON array or object
     ///
-    /// \note Type [6||7] -- Json::arrayValue || Json::objectValue
-    void insert ( const std::string& key, const std::vector<ValueType>& values );
+    /// \note Type [6..7] -- Json::arrayValue || Json::objectValue
+    void insert ( const Value& values );
 
   private:
     /// Contents of a key
@@ -148,8 +143,8 @@ class Value
     /// \fixme Mutable is a temporary workaround!
     mutable ValueType object_;
 
-    /// Identifying access string for an object node
-    std::string key_;
+    /// Tracks the position of ValueType
+    uint32 pos_;
 };
 
 } // namespace JSON

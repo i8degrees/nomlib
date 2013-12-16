@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_JSON_CONFIG_HPP
 #define NOMLIB_JSON_CONFIG_HPP
 
-#include "json.h" // JSONCPP
+#include "nomlib/json/jsoncpp/json.h" // JSONCPP
 
 #include "nomlib/config.hpp"
 

@@ -31,8 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Public header files
 
-#include "json.h" // JSONCPP
-
 #include <nomlib/config.hpp>
 #include <nomlib/json/config_json.hpp>
 #include <nomlib/json/FileReader.hpp>

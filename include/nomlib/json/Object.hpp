@@ -34,8 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <array>
 #include <vector>
 
-#include "json.h"
-
 #include "nomlib/config.hpp"
 #include "nomlib/json/config_json.hpp"
 #include "nomlib/json/Value.hpp"

@@ -36,13 +36,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include <memory>
 
-#include "json.h" // jsoncpp library
-
 #include "nomlib/config.hpp"
 #include "nomlib/version.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/json/FileReader.hpp"
-#include "nomlib/json/FileWriter.hpp"
+#include "nomlib/json.hpp"
 
 namespace nom {
 

@@ -32,7 +32,7 @@ namespace nom {
 
 bool nomlib_init ( int32 argc, char* argv[] )
 {
-  NOM_LOG_TRACE ( NOM );
+  //NOM_LOG_TRACE ( NOM );
 
   nom::File dir;
   std::string pwd = "\0";

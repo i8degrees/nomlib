@@ -36,8 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// Delimiter character to use with << operator
-///
-/// \todo Fix style; all uppercase letters
 const std::string COLOR_DELIMITER = ", ";
 
 /// 100% transparent alpha channel value

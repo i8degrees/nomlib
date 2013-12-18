@@ -154,27 +154,47 @@ namespace priv {
 
 void FreeWindow ( SDL_Window* handle )
 {
-  SDL_DestroyWindow ( handle );
+  if ( handle != nullptr )
+  {
+    SDL_DestroyWindow ( handle );
+    handle = nullptr;
+  }
 }
 
 void FreeRenderTarget ( SDL_Renderer* handle )
 {
-  SDL_DestroyRenderer ( handle );
+  if ( handle != nullptr )
+  {
+    SDL_DestroyRenderer ( handle );
+    handle = nullptr;
+  }
 }
 
 void FreeTexture ( SDL_Texture* video_buffer )
 {
-  SDL_DestroyTexture ( video_buffer );
+  if ( video_buffer != nullptr )
+  {
+    SDL_DestroyTexture ( video_buffer );
+    video_buffer = nullptr;
+  }
 }
 
 void FreeSurface ( SDL_Surface* video_buffer )
 {
-  SDL_FreeSurface ( video_buffer );
+  if ( video_buffer != nullptr )
+  {
+    SDL_FreeSurface ( video_buffer );
+    video_buffer = nullptr;
+  }
 }
 
 void TTF_FreeFont ( TTF_Font* font )
 {
-  TTF_CloseFont ( font );
+  if ( font != nullptr )
+  {
+    TTF_CloseFont ( font );
+    font = nullptr;
+  }
 }
 
 void Free_Joystick ( SDL_Joystick* joy )

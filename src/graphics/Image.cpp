@@ -227,7 +227,7 @@ void Image::set_bounds ( const Coords& clip_bounds )
   SDL_SetClipRect ( this->image(), &clip );
 }
 
-bool Image::load ( const std::string& filename )
+bool Image::load ( const std::string& filename, uint32 pixel_format )
 {
   SDL_Surface *buffer = IMG_Load ( filename.c_str() );
 
@@ -238,13 +238,13 @@ NOM_LOG_ERR ( NOM, IMG_GetError() );
     return false;
   }
 
-  this->image_.reset ( SDL_ConvertSurfaceFormat ( buffer, SDL_PIXELFORMAT_ARGB8888, 0 ), priv::FreeSurface );
+  this->image_.reset ( SDL_ConvertSurfaceFormat ( buffer, pixel_format, 0 ), priv::FreeSurface );
   priv::FreeSurface ( buffer );
 
   return true;
 }
 
-bool Image::load_bmp ( const std::string& filename )
+bool Image::load_bmp ( const std::string& filename, uint32 pixel_format )
 {
   SDL_Surface *buffer = IMG_Load ( filename.c_str() );
   if ( buffer == nullptr )
@@ -254,7 +254,7 @@ bool Image::load_bmp ( const std::string& filename )
     return false;
   }
 
-  this->image_.reset ( SDL_ConvertSurfaceFormat ( buffer, SDL_PIXELFORMAT_ARGB8888, 0 ), priv::FreeSurface );
+  this->image_.reset ( SDL_ConvertSurfaceFormat ( buffer, pixel_format, 0 ), priv::FreeSurface );
   priv::FreeSurface ( buffer );
 
   return true;
@@ -317,6 +317,11 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   }
 
   return blend;
+}
+
+const Point2i Image::position ( void ) const
+{
+  return this->position_;
 }
 
 bool Image::set_colorkey ( const Color4u& colorkey, bool flag )
@@ -419,6 +424,25 @@ NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
 void Image::unlock ( void ) const
 {
   SDL_UnlockSurface ( this->image() );
+}
+
+bool Image::set_alpha ( uint8 opacity )
+{
+  NOM_ASSERT ( ! ( opacity > nom::ALPHA_OPAQUE ) || ( opacity < nom::ALPHA_TRANSPARENT ) );
+
+  if ( SDL_SetSurfaceAlphaMod ( this->image(), opacity ) != 0 )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  return true;
+}
+
+void Image::set_position ( const Point2i& pos )
+{
+  this->position_.x = pos.x;
+  this->position_.y = pos.y;
 }
 
 } // namespace nom

@@ -125,18 +125,20 @@ class Image
     /// Obtain the alpha value of this video surface
     const uint8 alpha ( void ) const;
 
+    const Point2i position ( void ) const;
+
     void set_bounds ( const Coords& clip_bounds );
 
     /// Supports every file type that the libSDL_image extension has been
     /// compiled with
-    bool load ( const std::string& filename );
+    bool load ( const std::string& filename, uint32 pixel_format = SDL_PIXELFORMAT_ARGB8888 );
 
     /// Uses SDL's built-in BMP file loader; no alpha channeling support ...
     /// perfect for setting window icons!
     ///
     /// (I have yet to find success using IMG_Load to load an ordinary bitmap
     /// file, whereas SDL_LoadBMP does load fine).
-    bool load_bmp ( const std::string& filename );
+    bool load_bmp ( const std::string& filename, uint32 pixel_format = SDL_PIXELFORMAT_ARGB8888 );
 
     /// Save a screen shot of this image surface as an uncompressed BMP file
     ///
@@ -205,8 +207,14 @@ class Image
     /// occur until the surfaces affected by the lock are relinquished.
     void unlock ( void ) const;
 
+    bool set_alpha ( uint8 opacity );
+
+    void set_position ( const Point2i& pos );
+
   private:
     SDL_SURFACE::SharedPtr image_;
+
+    Point2i position_;
 };
 
 

@@ -74,7 +74,11 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   // Cache the size of our new Texture object with the existing surface info
   this->set_bounds ( Coords ( 0, 0, video_buffer->w, video_buffer->h ) );
 
-  priv::FreeSurface ( video_buffer );
+  // FIXME: See GitHub Issue #8
+  //
+  // By commenting this line out, we are creating a massive memory leak in
+  // TrueTypeFont
+  //priv::FreeSurface ( video_buffer );
 
   return true;
 }

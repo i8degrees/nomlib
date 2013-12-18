@@ -54,6 +54,7 @@ add_executable ( audio "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/audio/audio.cp
 add_executable ( app "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/app/app.cpp" )
 add_executable ( sprite_sheets "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/sprites/sprite_sheets.cpp" )
 add_executable ( device_info "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/device_info.cpp" )
+add_executable ( fonts "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/fonts.cpp" )
 # TODO (re-write with new nom::JSON API)
 #add_executable ( json_reader "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/json/json_reader.cpp" )
 #add_executable ( json_writer "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/json/json_writer.cpp" )
@@ -76,6 +77,13 @@ install ( DIRECTORY
 
 install ( DIRECTORY
           "${EXAMPLES_SRC_DIR}/app/Resources"
+          DESTINATION
+          "${EXAMPLES_INSTALL_PEFIX}"
+          PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+        )
+
+install ( DIRECTORY
+          "${EXAMPLES_SRC_DIR}/fonts/Resources"
           DESTINATION
           "${EXAMPLES_INSTALL_PEFIX}"
           PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!

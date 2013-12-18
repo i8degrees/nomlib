@@ -225,16 +225,16 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           this->onEvent ( &this->event );
         }
 
+        this->ui_frame.update();
+        this->bfont.update();
+        this->font.update();
+        this->sprite.update();
+        this->ani_sprite.play();
+
         for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
         {
           this->window[idx].update();
           this->fps[idx].update();
-          this->ui_frame.update();
-          this->bfont.update();
-          this->sprite.update();
-          this->ani_sprite.play();
-
-          this->font.update();
 
           // Refresh the frames per second at 1 second intervals
           if ( this->update[idx].ticks() > 1000 )

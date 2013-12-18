@@ -206,6 +206,9 @@ void TrueTypeFont::setText ( const std::string& text )
 
   this->text_buffer = text;
 
+  // Font is not valid -- TTF_SizeText will crash if we go further
+  if ( ! this->valid() ) return;
+
   // Update the width & height of text string, if we can
   if ( TTF_SizeText ( this->font.get(), this->text_buffer.c_str(), &this->coords.width, &this->coords.height ) == -1 )
   {
@@ -246,12 +249,16 @@ NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
 
 void TrueTypeFont::update ( void )
 {
+  // Font is not valid -- nothing to draw
+  if ( ! this->valid() ) return;
+
+  // No text string set -- nothing to draw
+  if ( this->getText().length() < 1 ) return;
+
   // Update display coordinates
   this->font_buffer.set_position ( Point2i ( this->coords.x, this->coords.y ) );
 
   // Update the rendered text surface here for drawing
-  if ( this->getText().c_str() == nullptr ) return;
-
   if ( this->rendering == RenderStyle::Shaded ) // Moderate-quality
   {
     this->font_buffer.initialize ( TTF_RenderText_Shaded

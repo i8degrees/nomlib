@@ -127,9 +127,7 @@ class TrueTypeFont:
     void update ( void );
 
     /// Draw the set text string to the video surface
-    void draw ( SDL_Renderer* target ) const;
-
-    void draw ( const Window& target ) const;
+    void draw ( RenderTarget target ) const;
 
   private:
     /// Trigger a rebuild of the font metrics from the current font; this

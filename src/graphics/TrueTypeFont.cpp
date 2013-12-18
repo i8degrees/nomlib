@@ -300,19 +300,11 @@ void TrueTypeFont::update ( void )
   }
 }
 
-void TrueTypeFont::draw ( SDL_Renderer* target ) const
+void TrueTypeFont::draw ( RenderTarget target ) const
 {
   if ( this->font_buffer.valid() )
   {
     this->font_buffer.draw ( target );
-  }
-}
-
-void TrueTypeFont::draw ( const Window& target ) const
-{
-  if ( this->font_buffer.valid() )
-  {
-    this->font_buffer.draw ( target.renderer() );
   }
 }
 

@@ -119,8 +119,14 @@ class Color4
 /// This will look like:
 ///
 /// 99, 144, 255, 128
-template <typename T>
-inline std::ostream& operator << ( std::ostream& os, const Color4<T>& color )
+inline std::ostream& operator << ( std::ostream& os, const Color4<uint8>& color )
+{
+  os << static_cast<int> ( color.red ) << COLOR_DELIMITER
+     << static_cast<int> ( color.green ) << COLOR_DELIMITER
+     << static_cast<int> ( color.blue ) << COLOR_DELIMITER
+     << static_cast<int> ( color.alpha );
+  return os;
+}
 {
   os << static_cast<T> ( color.red ) << COLOR_DELIMITER
      << static_cast<T> ( color.green ) << COLOR_DELIMITER

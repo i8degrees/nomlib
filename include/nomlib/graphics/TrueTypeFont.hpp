@@ -55,6 +55,10 @@ class TrueTypeFont:
     TrueTypeFont ( void );
 
     /// Default destructor; we shutdown the SDL_ttf extension here
+    ///
+    /// \FIXME Resetting the font pointer is a temporary workaround patch;
+    /// SDL_App destructs long before TrueTypeFont does in TTcards, which
+    /// doesn't allow us to free our font resources here properly.
     ~TrueTypeFont ( void );
 
     /// Return a std::shared_ptr copy of this instance

@@ -39,14 +39,7 @@ NOM_LOG_TRACE ( NOM );
     NOM_LOG_ERR ( NOM, IMG_GetError() );
   }
 
-  if ( TTF_Init () == -1 )
-  {
-    NOM_LOG_ERR ( NOM, TTF_GetError() );
-  }
-
   atexit ( IMG_Quit );
-  atexit ( TTF_Quit );
-
   this->app_state = false;
 
   this->set_show_fps ( true );

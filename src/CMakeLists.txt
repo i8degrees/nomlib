@@ -23,6 +23,8 @@ set ( AUDIO_SOURCE
 # Graphics module
 file ( GLOB GRAPHICS_HEADERS "${NOMLIB_HEADERS_DIR}/graphics/*.hpp" )
 set ( GRAPHICS_SOURCE
+      ${SRC_DIR}/graphics/Glyph.cpp
+      ${SRC_DIR}/graphics/Label.cpp
       ${SRC_DIR}/graphics/RendererInfo.cpp
       ${SRC_DIR}/graphics/Texture.cpp
       ${SRC_DIR}/graphics/Image.cpp

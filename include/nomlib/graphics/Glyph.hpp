@@ -26,84 +26,38 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_MESSAGEBOX_HEADERS
-#define NOMLIB_SDL2_MESSAGEBOX_HEADERS
+#ifndef NOMLIB_GLYPH_HPP
+#define NOMLIB_GLYPH_HPP
 
 #include <iostream>
 #include <string>
-#include <memory>
-#include <algorithm>
+#include <map>
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Color4.hpp"
-#include "nomlib/math/Coords.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/graphics/Label.hpp"
-#include "nomlib/graphics/Gradient.hpp"
-#include "nomlib/gui/GrayFrame.hpp"
+#include "nomlib/math/Rect.hpp"
 
 namespace nom {
-  namespace ui {
 
-enum FrameStyle
+/// \brief Character metrics container
+struct Glyph
 {
-  None = 0,
-  Gray = 1
+  typedef std::map<uint32, Glyph> GlyphMap;
+
+  Glyph ( void );
+  ~Glyph ( void );
+
+  /// Offset to move horizontally to the next character
+  int advance_;
+
+  /// Bounding rectangle coordinates of the glyph (relative to the baseline?)
+  ///
+  /// \todo Rename to bounds_ ???
+  IntRect bounds;
+
+  /// Bounding rectangle coordinates of the glyph inside font's bitmap / texture
+  IntRect texture_bounds_;
 };
 
-/// \brief Simple UI interface for drawing a styled message box
-class MessageBox:
-                    public IDrawable
-
-{
-  public:
-    MessageBox ( void );
-
-    MessageBox  (
-                  int32 x, int32 y, int32 width, int32 height,
-                  enum FrameStyle style, const Gradient& background
-                );
-
-    MessageBox  (
-                  int32 x, int32 y, int32 width, int32 height,
-                  GrayFrame::SharedPtr style = nullptr,
-                  Gradient::SharedPtr background = nullptr
-                );
-
-    virtual ~MessageBox ( void );
-
-    void initialize ( void );
-    //void initialize ( const Gradient& background );
-
-    bool isEnabled ( void ) const;
-
-    const std::string title ( void );
-    const std::string text ( void );
-
-    void disable ( void );
-    void enable ( void );
-
-    const Point2i size ( void ) const;
-    const Point2i position ( void ) const;
-
-    void set_title ( Label& title );
-    void set_text ( Label& text );
-
-    void update ( void );
-    void draw ( RenderTarget target ) const;
-
-  private:
-    IDrawable::SharedDrawables drawable;
-
-    Label mbox_title_;
-    Label mbox_text_;
-
-    Coords coords;
-    bool enabled;
-};
-
-
-  } // namespace ui
 } // namespace nom
 
 #endif // include guard defined

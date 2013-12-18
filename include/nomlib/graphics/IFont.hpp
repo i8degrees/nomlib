@@ -36,15 +36,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/graphics/Texture.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 
-class IFont:
-              public IDrawable
+class IFont/*:
+              public IDrawable*/
 {
   public:
     /// Text effect styling
+    ///
+    /// \todo REMOVE
+/*
     enum FontStyle
     {
       Regular = 0,
@@ -53,7 +55,12 @@ class IFont:
       Underlined = 3,
       Faded = 4
     };
+*/
 
+    /// Text alignment
+    ///
+    /// \todo REMOVE
+/*
     enum TextAlignment
     {
       TopLeft = 0,
@@ -66,14 +73,25 @@ class IFont:
       BottomCenter,
       BottomRight
     };
-
+*/
     /// Text rendering qualities
+    ///
+    /// \todo REMOVE
+/*
     enum RenderStyle
     {
       NotImplemented = 0,
       Solid,
       Shaded,
       Blended
+    };
+*/
+    enum FileType
+    {
+      NotDefined = 0,
+      BitmapFont = 1,
+      TrueTypeFont = 2,
+      UserDefined = 3,
     };
 
     typedef IFont* RawPtr;
@@ -83,61 +101,70 @@ class IFont:
     IFont ( void ) {}
     virtual ~IFont ( void ) {}
 
-    virtual IFont::SharedPtr clone ( void ) const = 0;
-
+    //virtual IFont::SharedPtr clone ( void ) const = 0;
+/*
     virtual bool load (
                         const std::string& filename, const Color4u& colorkey,
                         bool use_cache = false
                       ) = 0;
+*/
+    // REFACTOR:
+    //virtual int32 getFontWidth ( void ) const = 0;
+    // REFACTOR:
+    //virtual int32 getFontHeight ( void ) const = 0;
 
-    virtual const std::string& getText ( void ) const = 0;
-    virtual int32 getFontWidth ( void ) const = 0;
-    virtual int32 getFontHeight ( void ) const = 0;
-    virtual IFont::FontStyle getFontStyle ( void ) const = 0;
-    virtual const Coords& getPosition ( void ) const = 0;
-    virtual const Color4u& getColor ( void ) const = 0;
-    virtual uint32 getNewline ( void ) const = 0;
-    virtual uint32 getSpacing ( void ) const = 0;
-    virtual IFont::TextAlignment getTextJustification ( void ) const = 0;
-
-
-    virtual void setText ( const std::string& text ) = 0;
+    //virtual IFont::FontStyle getFontStyle ( void ) const = 0;
+    //virtual const Coords& getPosition ( void ) const = 0;
+    //virtual const Color4u& getColor ( void ) const = 0;
+    virtual uint newline ( void ) const = 0;
+    virtual uint spacing ( void ) const = 0;
+    //virtual IFont::TextAlignment getTextJustification ( void ) const = 0;
 
     /// Set a new font point (pixel) size.
     ///
     /// Optional interface
+/*
     virtual void setFontSize ( int32 point_size )
     {
 NOM_LOG_ERR ( NOM, "Method not implemented." );
     }
+*/
 
-    virtual void setFontStyle ( int32 style, uint8 options = 150 ) = 0;
-    virtual void setColor ( const Color4u& color ) = 0;
-    virtual void setPosition ( const Coords& coords ) = 0;
-    virtual void setSpacing ( uint32 spaces ) = 0;
-    virtual void setTextJustification ( IFont::TextAlignment alignment ) = 0;
-
+    //virtual void setFontStyle ( int32 style, uint8 options = 150 ) = 0;
+    //virtual void setColor ( const Color4u& color ) = 0;
+    //virtual void setPosition ( const Coords& coords ) = 0;
+    virtual void set_spacing ( uint spaces ) = 0;
+    //virtual void setTextJustification ( IFont::TextAlignment alignment ) = 0;
+/*
     virtual IFont::RenderStyle getRenderingStyle ( void ) const
     {
 NOM_LOG_ERR ( NOM, "Method not implemented." );
       return IFont::RenderStyle::Solid;
     }
-
+*/
+/*
     virtual void setRenderingStyle ( IFont::RenderStyle )
     {
 NOM_LOG_ERR ( NOM, "Method not implemented." );
     }
-
+*/
     /// Rescale the font with a chosen resizing algorithm
     ///
     /// Optional interface with a return of false when the deriving class has
     /// chosen not to re-implement this method.
     /// \todo SDL2 port
+/*
     virtual bool resize ( enum Texture::ResizeAlgorithm scaling_algorithm )
     {
 NOM_LOG_ERR ( NOM, "Method not implemented." );
       return false;
     }
+*/
+    virtual const IntRect& glyph ( uint32 ) = 0;
+    virtual SDL_SURFACE::RawPtr image ( void ) const = 0;
+    virtual enum IFont::FileType type ( void ) const = 0;
+    /// \todo This method should be part of the *required* implementation
+    virtual bool build ( void ) { return false; }/*= 0*/;
 };
 
 } // namespace nom

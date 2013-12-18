@@ -35,215 +35,59 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-BitmapFont::BitmapFont ( void ) : sheet_width ( 16 ), sheet_height ( 16 )
+BitmapFont::BitmapFont ( void ) :
+  sheet_width ( 16 ),
+  sheet_height ( 16 ),
+  newline_ ( 0 ),
+  spacing_ ( 0 ),
+  type_ ( IFont::FileType::BitmapFont )
 {
-NOM_LOG_TRACE ( NOM );
-
-  this->text_buffer = "\0";
-  this->text_style = FontStyle::Regular;
-  this->text_alignment = TextAlignment::MiddleLeft;
-  this->rendering = RenderStyle::Solid; // Fast, but ugly
-  this->newline = 0;
-  this->spacing = 0;
-  this->color = Color4u ( 0, 0, 0 );
-  this->coords.setPosition ( 0, 0 );
-
-  for ( unsigned int idx = 0; idx < 256; idx++ )
-  {
-    this->chars[idx] = Coords ( 0, 0, 0, 0 );
-  }
+  NOM_LOG_TRACE ( NOM );
 }
 
 BitmapFont::~BitmapFont ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE ( NOM );
 }
 
-IFont::SharedPtr BitmapFont::clone ( void ) const
+bool BitmapFont::valid ( void ) const
 {
-  return IFont::SharedPtr ( new BitmapFont ( *this ), priv::Free_BitmapFont );
+  if ( this->bitmap_font_.valid() == true ) return true;
+
+  return false;
 }
 
-const std::string& BitmapFont::getText ( void ) const
+enum IFont::FileType BitmapFont::type ( void ) const
 {
-  return this->text_buffer;
+  return this->type_;
 }
 
-int32 BitmapFont::getFontWidth ( void ) const
+SDL_SURFACE::RawPtr BitmapFont::image ( void ) const
 {
-  int32 text_width = 0;
-
-  for ( uint32 char_pos = 0; char_pos < this->text_buffer.length(); char_pos++ )
-  {
-    if ( this->text_buffer [ char_pos ] == ' ' )
-    {
-      text_width += this->spacing;
-
-// Dump each character's table used for calculation
-#if defined ( NOM_DEBUG_SDL_BITMAP_FONT )
-NOM_DUMP_VAR ( char_pos );
-NOM_DUMP_VAR ( this->text_buffer [ char_pos ] );
-NOM_DUMP_VAR ( text_width );
-#endif
-
-    }
-    else if ( this->text_buffer [ char_pos ] == '\n' ) // TODO
-    {
-      text_width = 0;
-    }
-    else
-    {
-      uint8 ascii_char = static_cast<uchar> ( this->text_buffer [ char_pos ] );
-      text_width += this->chars [ ascii_char ].width + 1;
-
-// Dump each character's table used for calculation
-#if defined ( NOM_DEBUG_SDL_BITMAP_FONT )
-NOM_DUMP_VAR ( char_pos );
-NOM_DUMP_VAR ( this->text_buffer [ char_pos ] );
-NOM_DUMP_VAR ( this->chars [ ascii_char ].width + 1 );
-NOM_DUMP_VAR ( text_width );
-#endif
-
-    }
-  } // end for loop
-
-  return text_width;
+  return this->bitmap_font_.image();
 }
 
-int32 BitmapFont::getFontHeight ( void ) const
+uint BitmapFont::spacing ( void ) const
 {
-  int32 text_height = 0;
-
-  for ( uint32 char_pos = 0; char_pos < this->text_buffer.length(); char_pos++ )
-  {
-    if ( this->text_buffer [ char_pos ] == '\n' )
-    {
-      text_height += this->newline;
-
-// Dump each character's table used for calculation
-#if defined ( NOM_DEBUG_SDL_BITMAP_FONT )
-NOM_DUMP_VAR ( char_pos );
-NOM_DUMP_VAR ( this->text_buffer [ char_pos ] );
-NOM_DUMP_VAR ( text_height );
-#endif
-
-    }
-    else
-    {
-      uint8 ascii_char = static_cast<uchar> ( this->text_buffer [ char_pos ] );
-
-      text_height = this->chars [ ascii_char ].height;
-
-// Dump each character's table used for calculation
-#if defined ( NOM_DEBUG_SDL_BITMAP_FONT )
-NOM_DUMP_VAR ( char_pos );
-NOM_DUMP_VAR ( this->text_buffer [ char_pos ] );
-NOM_DUMP_VAR ( this->chars [ ascii_char ].height );
-NOM_DUMP_VAR ( text_height );
-#endif
-
-    }
-  }
-
-  return text_height;
+  return this->spacing_;
 }
 
-const Color4u& BitmapFont::getColor ( void ) const
+void BitmapFont::set_spacing ( uint spaces )
 {
-  return this->color;
+  this->spacing_ = spaces;
 }
 
-const Coords& BitmapFont::getPosition ( void ) const
+uint BitmapFont::newline ( void ) const
 {
-  return this->coords;
+  return this->newline_;
 }
 
-void BitmapFont::setColor ( const Color4u& color )
+void BitmapFont::set_newline ( uint newline )
 {
-  this->color = color;
+  this->newline_ = newline;
 }
 
-void BitmapFont::setPosition ( const Coords& coords )
-{
-  this->coords = coords;
-}
-
-void BitmapFont::setText ( const std::string& text )
-{
-  this->text_buffer = text;
-}
-
-uint32 BitmapFont::getSpacing ( void ) const
-{
-  return this->spacing;
-}
-
-void BitmapFont::setSpacing ( uint32 spaces )
-{
-  this->spacing = spaces;
-}
-
-uint32 BitmapFont::getNewline ( void ) const
-{
-  return this->newline;
-}
-
-IFont::TextAlignment BitmapFont::getTextJustification ( void ) const
-{
-  return this->text_alignment;
-}
-
-void BitmapFont::setNewline ( uint32 newline )
-{
-  this->newline = newline;
-}
-
-IFont::FontStyle BitmapFont::getFontStyle ( void ) const
-{
-  return this->text_style;
-}
-
-void BitmapFont::setFontStyle ( int32 style, uint8 options )
-{
-  switch ( style )
-  {
-    default:
-    break;
-    case FontStyle::Regular:
-    case FontStyle::Bold:
-    case FontStyle::Italic:
-    case FontStyle::Underlined:
-      // Do nothing stub
-    break;
-
-    /// Text effect utilizing alpha channels for the appearance of gray text
-    case FontStyle::Faded:
-    {
-      if ( this->render_font.valid() )
-      {
-        if ( this->render_font.set_alpha ( options ) == true )
-        {
-          this->text_style = FontStyle::Faded;
-        }
-      }
-    break;
-    }
-  }
-}
-
-/*
-RenderStyle BitmapFont::getRenderingStyle ( void )
-{
-  return this->rendering; // Not implemented
-}
-
-void BitmapFont::setRenderingStyle ( enum RenderStyle style )
-{
-  this->rendering = style; // Not implemented
-}
-*/
-
-bool BitmapFont::rebuild ( void )
+bool BitmapFont::build ( void )
 {
   uint32 tile_width = 0;
   uint32 tile_height = 0;
@@ -252,21 +96,21 @@ bool BitmapFont::rebuild ( void )
   uint32 currentChar = 0;
   uint32 background_color = 0;
 
-NOM_ASSERT ( this->bitmap_font.valid() );
+NOM_ASSERT ( this->bitmap_font_.valid() );
 
-  if ( this->bitmap_font.lock() == false )
+  if ( this->bitmap_font_.lock() == false )
   {
-NOM_LOG_ERR ( NOM, "Could not lock surface." );
+    NOM_LOG_ERR ( NOM, "Could not lock surface." );
     return false;
   }
 
   background_color = RGBA (
-                            this->bitmap_font.colorkey(),
-                            this->bitmap_font.pixel_format()
+                            this->bitmap_font_.colorkey(),
+                            this->bitmap_font_.pixel_format()
                           );
 
-  tile_width = this->bitmap_font.width() / this->sheet_width;
-  tile_height = this->bitmap_font.height() / this->sheet_height;
+  tile_width = this->bitmap_font_.width() / this->sheet_width;
+  tile_height = this->bitmap_font_.height() / this->sheet_height;
   top = tile_height;
   baseA = tile_height;
 
@@ -275,8 +119,10 @@ NOM_LOG_ERR ( NOM, "Could not lock surface." );
     for ( int32 cols = 0; cols < this->sheet_height; cols++ )
     {
       // Set character offsets
-      this->chars[ currentChar ].setPosition ( tile_width * cols, tile_height * rows );
-      this->chars[ currentChar ].setSize ( tile_width, tile_height );
+      this->glyphs[ currentChar ].bounds.x = tile_width * cols;
+      this->glyphs[ currentChar ].bounds.y = tile_height * rows;
+      this->glyphs[ currentChar ].bounds.width = tile_width;
+      this->glyphs[ currentChar ].bounds.height = tile_height;
 
       //Find Left Side; go through pixel columns
       for ( uint32 pCol = 0; pCol < tile_width; pCol++ )
@@ -285,14 +131,14 @@ NOM_LOG_ERR ( NOM, "Could not lock surface." );
         for ( uint32 pRow = 0; pRow < tile_height; pRow++ )
         {
           //Get the pixel offsets
-          int pX = ( tile_width * cols ) + pCol;
-          int pY = ( tile_height * rows ) + pRow;
+          uint32 pX = ( tile_width * cols ) + pCol;
+          uint32 pY = ( tile_height * rows ) + pRow;
 
           //If a non colorkey pixel is found
-          if( this->bitmap_font.pixel ( pX, pY ) != background_color )
+          if( this->bitmap_font_.pixel ( pX, pY ) != background_color )
           {
             //Set the x offset
-            this->chars[ currentChar ].x = pX;
+            this->glyphs[ currentChar ].bounds.x = pX;
 
             //Break the loops
             pCol = tile_width;
@@ -312,10 +158,10 @@ NOM_LOG_ERR ( NOM, "Could not lock surface." );
           uint32 pY = ( tile_height * rows ) + pRow_w;
 
           //If a non colorkey pixel is found
-          if ( this->bitmap_font.pixel ( pX, pY ) != background_color )
+          if ( this->bitmap_font_.pixel ( pX, pY ) != background_color )
           {
             //Set the width
-            this->chars[ currentChar ].width = ( pX - this->chars[ currentChar ].x ) + 1;
+            this->glyphs[ currentChar ].bounds.width = ( pX - this->glyphs[ currentChar ].bounds.x ) + 1;
 
             //Break the loops
             pCol_w = -1;
@@ -335,7 +181,7 @@ NOM_LOG_ERR ( NOM, "Could not lock surface." );
           uint32 pY = ( tile_height * rows ) + pRow;
 
           // If a non colorkey pixel is found
-          if( this->bitmap_font.pixel ( pX, pY ) != background_color )
+          if( this->bitmap_font_.pixel ( pX, pY ) != background_color )
           {
             // If new top is found
             if ( pRow < top )
@@ -361,11 +207,11 @@ NOM_LOG_ERR ( NOM, "Could not lock surface." );
           for ( uint32 pCol = 0; pCol < tile_width; pCol++ )
           {
             // Get the pixel offsets
-            unsigned int pX = ( tile_width * cols ) + pCol;
-            unsigned int pY = ( tile_height * rows ) + pRow;
+            uint32 pX = ( tile_width * cols ) + pCol;
+            uint32 pY = ( tile_height * rows ) + pRow;
 
             // If a non colorkey pixel is found
-            if ( this->bitmap_font.pixel ( pX, pY ) != background_color )
+            if ( this->bitmap_font_.pixel ( pX, pY ) != background_color )
             {
               // Bottom of a is found
               baseA = pRow;
@@ -382,35 +228,36 @@ NOM_LOG_ERR ( NOM, "Could not lock surface." );
       currentChar++;
     }
   }
-  this->bitmap_font.unlock(); // Finished messing with pixels
+  this->bitmap_font_.unlock(); // Finished messing with pixels
 
   // Calculate space
-  this->spacing = tile_width / 2;
+  this->set_spacing ( tile_width / 2 );
 
   // Calculate new line
-  this->newline = baseA - top;
+  this->set_newline ( baseA - top );
 
   // Loop off excess top pixels
   for ( uint32 t = 0; t < 256; t++ )
   {
-    this->chars[ t ].y += top;
-    this->chars[ t ].height -= top;
+    this->glyphs[ t ].bounds.y += top;
+    this->glyphs[ t ].bounds.height -= top;
   }
 
 // Dump table of calculated bitmap character positions
-#if defined ( NOM_DEBUG_SDL_BITMAP_FONT )
-  for ( uint32 pos = 0; pos < 256; pos++ )
+#if defined (NOM_DEBUG_SDL2_BITMAP_FONT)
+  NOM_DUMP_VAR(this->spacing());
+  NOM_DUMP_VAR(this->newline());
+  for ( uint32 glyph = 0; glyph < 256; ++glyph )
   {
-NOM_DUMP_VAR ( pos );
-NOM_DUMP_VAR ( static_cast<uchar> ( pos ) );
-NOM_DUMP_VAR ( this->chars [ pos ].x );
-NOM_DUMP_VAR ( this->chars [ pos ].y );
-NOM_DUMP_VAR ( this->chars [ pos ].width );
-NOM_DUMP_VAR ( this->chars [ pos ].height );
+    NOM_DUMP_VAR ( glyph );
+    NOM_DUMP_VAR ( this->glyphs[ glyph ].bounds.x );
+    NOM_DUMP_VAR ( this->glyphs[ glyph ].bounds.y );
+    NOM_DUMP_VAR ( this->glyphs[ glyph ].bounds.width );
+    NOM_DUMP_VAR ( this->glyphs[ glyph ].bounds.height );
   }
 #endif
 
-  this->render_font.initialize ( this->bitmap_font.image() );
+  //this->render_font.initialize ( this->bitmap_font_.image() );
 
   return true;
 }
@@ -422,137 +269,33 @@ bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
   // I don't understand why RGBA8888 is necessary here, but it is the only pixel
   // format that I have found that works when we are initializing a
   // nom::Texture (SDL_Texture) from a nom::Image (SDL_Surface).
-  if ( this->bitmap_font.load ( filename, SDL_PIXELFORMAT_RGBA8888 ) == false )
+  if ( this->bitmap_font_.load ( filename, SDL_PIXELFORMAT_RGBA8888 ) == false )
   {
-NOM_LOG_ERR ( NOM, "Could not load bitmap font image file: " + filename );
+    NOM_LOG_ERR ( NOM, "Could not load bitmap font image file: " + filename );
     return false;
   }
 
-  this->bitmap_font.set_colorkey ( colorkey, true );
+  this->bitmap_font_.set_colorkey ( colorkey, true );
 
-  // Attempt to rebuild font metrics
-  if ( this->rebuild() == false )
+  // Attempt to build font metrics
+  if ( this->build() == false )
   {
-NOM_LOG_ERR ( NOM, "Could not rebuild bitmap font metrics" );
-    return false;
-  }
-
-  return true;
-}
-
-void BitmapFont::setTextJustification ( enum TextAlignment alignment )
-{
-  this->text_alignment = alignment;
-}
-
-const Coords BitmapFont::findGlyph ( const std::string& glyph )
-{
-  uint8 ascii = 0;
-  std::istringstream i ( glyph );
-
-  i >> ascii;
-
-  return this->chars[ascii];
-}
-
-void BitmapFont::update ( void )
-{
-  // Stub
-}
-
-void BitmapFont::draw ( RenderTarget target ) const
-{
-  // Use coordinates provided by interface user as our starting origin
-  // coordinates to compute from
-  int32 x_offset = this->coords.x;
-  int32 y_offset = this->coords.y;
-
-  switch ( this->text_alignment )
-  {
-    default:
-    case TextAlignment::MiddleLeft:
-    {
-      x_offset = this->coords.x;
-      y_offset = this->coords.y;
-    }
-    break;
-
-    case TextAlignment::MiddleCenter:
-    {
-      x_offset = this->coords.x + ( this->coords.width / 2 ) - ( this->getFontWidth() / 2 );
-      y_offset = ( this->coords.height / 2 ) + this->coords.y - ( this->getFontHeight() / 2 );
-    }
-    break;
-
-    case TextAlignment::MiddleRight:
-    {
-      // TODO
-    }
-    break;
-  } // end switch
-
-  //If the font has been built
-  if ( this->bitmap_font.valid() )
-  {
-    for ( uint32 show = 0; show < this->text_buffer.length(); show++ )
-    {
-      //If the current character is a space
-      if ( this->text_buffer[show] == ' ' )
-      {
-        //Move over
-        x_offset += this->spacing;
-      }
-      // If the current character is a newline
-      else if( this->text_buffer[show] == '\n' )
-      {
-        //Move down and back over to the beginning of line
-        y_offset += this->newline;
-        x_offset = this->coords.x;
-      }
-      // If the current character is a tab
-      else if( this->text_buffer[show] == '\t' )
-      {
-        x_offset += this->spacing * 4;
-      }
-      else
-      {
-        //Get the ASCII value of the character
-        uint8 ascii = static_cast<uchar>( this->text_buffer[show] );
-
-        this->render_font.set_position ( Point2i ( x_offset, y_offset ) );
-        this->render_font.set_bounds ( this->chars[ascii] );
-        this->render_font.draw ( target.renderer() );
-
-        // Move over the width of the character with one pixel of padding
-        x_offset += ( this->chars[ascii].width ) + 1;
-      } // end else
-    } // end for loop
-  } // end if this->bitmap_font != nullptr
-}
-
-bool BitmapFont::resize ( enum Texture::ResizeAlgorithm scaling_algorithm )
-{
-  if ( this->bitmap_font.valid() == false )
-  {
-NOM_LOG_ERR ( NOM, "Video surface is invalid." );
-    return false;
-  }
-/* TODO: (an implementation in nom::Image)
-  if ( this->bitmap_font.resize ( scaling_algorithm ) == false )
-  {
-NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
-    return false;
-  }
-TODO */
-  if ( this->rebuild() == false )
-  {
-NOM_LOG_ERR ( NOM, "Could not rebuild bitmap font metrics" );
+    NOM_LOG_ERR ( NOM, "Could not build bitmap font metrics" );
     return false;
   }
 
   return true;
 }
 
+const IntRect& BitmapFont::glyph ( uint32 character )
+{
+  //uint8 ascii = 0;
+  //std::istringstream i ( glyph );
+  //i >> ascii;
+  return this->glyphs[ character ].bounds;
+}
+
+/*
 namespace priv {
 
 void Free_BitmapFont ( BitmapFont* ptr )
@@ -563,5 +306,7 @@ void Free_BitmapFont ( BitmapFont* ptr )
 }
 
 } // namespace priv
+*/
+
 } // namespace nom
 

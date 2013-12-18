@@ -36,7 +36,6 @@ void MessageBox::initialize ( void )
 NOM_LOG_TRACE ( NOM );
 
   this->enabled = true;
-  this->label_alignment = IFont::TextAlignment::MiddleLeft;
 }
 
 MessageBox::MessageBox ( void )
@@ -110,16 +109,22 @@ bool MessageBox::isEnabled ( void ) const
   return true;
 }
 
-const std::string MessageBox::getWindowTitle ( void )
+const std::string MessageBox::title ( void )
 {
-  if ( this->label ) return this->window_title->getText();
+  if ( this->mbox_title_.valid() )
+  {
+    return this->mbox_title_.text();
+  }
 
   return "\0";
 }
 
-const std::string MessageBox::getLabel ( void )
+const std::string MessageBox::text ( void )
 {
-  if ( this->label ) return this->label->getText();
+  if ( this->mbox_text_.valid() )
+  {
+    return this->mbox_text_.text();
+  }
 
   return "\0";
 }
@@ -144,59 +149,30 @@ const Point2i MessageBox::position ( void ) const
   return Point2i ( this->coords.x, this->coords.y );
 }
 
-void MessageBox::setWindowTitleFont ( const IFont::RawPtr font )
+void MessageBox::set_title ( Label& title )
 {
-  this->window_title = IFont::SharedPtr ( font->clone() );
+  this->mbox_title_ = title;
 
   // This positions the title text of the message box on top of the second "top"
   // bordering color of GrayFrame, commented as "top1".
   //
   // The original coords.x value was + 8, but I think + 4 looks best.
-  this->window_title->setPosition ( Coords ( this->coords.x + 4, this->coords.y, this->coords.width, this->coords.height ) );
+  this->mbox_title_.set_position ( IntRect ( this->coords.x + 4, this->coords.y, this->coords.w, this->coords.h ) );
 
-  this->window_title->setText ( "INFO." );
-  this->window_title->setTextJustification ( IFont::TextAlignment::MiddleLeft );
+  this->mbox_title_.set_text ( "INFO." );
+  this->mbox_title_.set_alignment ( Label::TextAlignment::MiddleLeft );
 
-  this->drawable.push_back ( IDrawable::SharedPtr ( this->window_title ) );
+  this->drawable.push_back ( IDrawable::SharedPtr ( new nom::Label ( this->mbox_title_ ) ) );
+  //this->drawable.push_back ( IDrawable::SharedPtr ( &this->mbox_title_ ) );
 }
 
-void MessageBox::setLabelFont ( const IFont::RawPtr font )
+void MessageBox::set_text ( Label& text )
 {
-  this->label = IFont::SharedPtr ( font->clone() );
-  this->label->setPosition ( this->coords );
+  this->mbox_text_ = text;
+  this->mbox_text_.set_position ( IntRect ( this->coords.x, this->coords.y, this->coords.w, this->coords.h ) );
 
-  this->drawable.push_back ( IDrawable::SharedPtr ( this->label ) );
-}
-
-void MessageBox::setLabelPosition ( const Coords& pos )
-{
-  if ( ! this->label ) return;
-
-  this->label->setPosition ( pos );
-}
-
-void MessageBox::setLabelTextAlignment ( IFont::TextAlignment alignment )
-{
-  this->label_alignment = alignment;
-}
-
-void MessageBox::setWindowTitle ( const std::string& text )
-{
-  std::string text_buffer = text;
-
-  if ( ! this->window_title ) return;
-
-  // I LIKE TO YELL AT YOU IN ALL CAPS
-  std::transform ( text_buffer.begin(), text_buffer.end(), text_buffer.begin(), ::toupper);
-
-  this->window_title->setText ( text_buffer );
-}
-
-void MessageBox::setLabel ( const std::string& text )
-{
-  if ( ! this->label ) return;
-
-  this->label->setText ( text );
+  this->drawable.push_back ( IDrawable::SharedPtr ( new nom::Label ( this->mbox_text_ ) ) );
+  //this->drawable.push_back ( IDrawable::SharedPtr ( &this->mbox_text_ ) );
 }
 
 void MessageBox::update ( void )
@@ -207,28 +183,28 @@ void MessageBox::update ( void )
     obj->update();
   }
 
-  if ( ! this->label ) return;
+  if ( this->mbox_text_.valid() == false ) return;
 
-  switch ( this->label_alignment )
+  switch ( this->mbox_text_.alignment() )
   {
     default:
-    case IFont::TextAlignment::MiddleLeft: // TODO
+    case Label::TextAlignment::MiddleLeft: // TODO
     {
-      this->label->setTextJustification ( IFont::TextAlignment::MiddleLeft );
+      this->mbox_text_.set_alignment ( Label::TextAlignment::MiddleLeft );
+      break;
     }
-    break;
 
-    case IFont::TextAlignment::MiddleCenter:
+    case Label::TextAlignment::MiddleCenter:
     {
-      this->label->setTextJustification ( IFont::TextAlignment::MiddleCenter );
+      this->mbox_text_.set_alignment ( Label::TextAlignment::MiddleCenter );
+      break;
     }
-    break;
 
-    case IFont::TextAlignment::MiddleRight: // TODO
+    case Label::TextAlignment::MiddleRight: // TODO
     {
-      this->label->setTextJustification ( IFont::TextAlignment::MiddleRight );
+      this->mbox_text_.set_alignment ( Label::TextAlignment::MiddleRight );
+      break;
     }
-    break;
   } // end switch
 }
 

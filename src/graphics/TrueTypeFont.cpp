@@ -30,21 +30,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-TrueTypeFont::TrueTypeFont ( void )
+TrueTypeFont::TrueTypeFont ( void ) :
+  font_ ( nullptr ),
+  type_ ( IFont::FileType::BitmapFont ),
+  font_size_ ( 12 ),
+  newline_ ( 0 ),
+  spacing_ ( 0 ),
+  use_cache_ ( false )
 {
-NOM_LOG_TRACE ( NOM );
-
-  this->font = nullptr;
-  this->coords = Coords ( 0, 0, 0, 0 );
-  this->color = Color4u ( 0, 0, 0 );
-  this->text_buffer = "\0";
-  this->text_style = FontStyle::Regular; // default text styling effect
-  this->text_alignment = TextAlignment::MiddleLeft;
-  this->rendering = RenderStyle::Solid; // Fast, but ugly
-  this->style_options = 0;
-  this->filename = "\0";
-  this->font_size = 12;
-  this->use_cache = false;
+  NOM_LOG_TRACE ( NOM );
 
   if ( TTF_Init () == -1 )
   {
@@ -54,103 +48,73 @@ NOM_LOG_TRACE ( NOM );
 
 TrueTypeFont::~TrueTypeFont ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE ( NOM );
 
   // See FIXME note (nomlib/graphics/TrueTypeFont.hpp)
-  this->font.reset();
+  this->font_.reset();
 
   TTF_Quit();
 }
 
-IFont::SharedPtr TrueTypeFont::clone ( void ) const
-{
-  return IFont::SharedPtr ( new TrueTypeFont ( *this ), priv::Free_TrueTypeFont );
-}
-
 bool TrueTypeFont::valid ( void ) const
 {
-  if ( this->font.get() != nullptr )
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  if ( this->font_.get() != nullptr ) return true;
+
+  return false;
 }
 
-const std::string& TrueTypeFont::getText ( void ) const
+enum IFont::FileType TrueTypeFont::type ( void ) const
 {
-  return this->text_buffer;
+  return this->type_;
 }
 
-int32 TrueTypeFont::getFontWidth ( void ) const
+SDL_SURFACE::RawPtr TrueTypeFont::image ( void ) const
 {
-  return this->coords.width;
+  return nullptr;
 }
 
-int32 TrueTypeFont::getFontHeight ( void ) const
+uint TrueTypeFont::spacing ( void ) const
 {
-  return this->coords.height;
+  return this->spacing_;
 }
 
-IFont::FontStyle TrueTypeFont::getFontStyle ( void ) const
+int32 TrueTypeFont::font_size ( void ) const
 {
-  return this->text_style;
+  return this->font_size_;
 }
 
-const Color4u& TrueTypeFont::getColor ( void ) const
+void TrueTypeFont::set_spacing ( uint spaces )
 {
-  return this->color;
+  this->spacing_ = spaces;
 }
 
-const Coords& TrueTypeFont::getPosition ( void ) const
+uint TrueTypeFont::newline ( void ) const
 {
-  return this->coords;
+  return this->newline_;
 }
 
-uint32 TrueTypeFont::getNewline ( void ) const
+void TrueTypeFont::set_newline ( uint newline )
 {
-  // Not implemented
-  return 0;
+  this->newline_ = newline;
 }
 
-uint32 TrueTypeFont::getSpacing ( void ) const
+/*
+void TrueTypeFont::set_font_size ( sint point_size )
 {
-  // Not implemented
-  return 0;
-}
+  sint original_font_size = this->font_size_;
 
-IFont::TextAlignment TrueTypeFont::getTextJustification ( void ) const
-{
-  return this->text_alignment;
-}
-
-void TrueTypeFont::setColor ( const Color4u& color )
-{
-  this->color = color;
-}
-
-void TrueTypeFont::setPosition ( const Coords& coords )
-{
-  this->coords.x = coords.x;
-  this->coords.y = coords.y;
-}
-
-void TrueTypeFont::setFontSize ( int32 point_size )
-{
-  int32 original_font_size = this->font_size;
-
-  this->font_size = point_size;
+  this->font_size_ = point_size;
 
   if ( this->rebuild() == false )
   {
 NOM_LOG_ERR ( NOM, "Could not set new font size." );
-    this->font_size = original_font_size;
+    this->font_size_ = original_font_size;
     return;
   }
 }
+*/
 
+/*
 void TrueTypeFont::setFontStyle ( int32 style, uint8 options )
 {
   switch ( style )
@@ -189,7 +153,9 @@ void TrueTypeFont::setFontStyle ( int32 style, uint8 options )
     }
   }
 }
+*/
 
+/*
 int32 TrueTypeFont::getFontOutline ( void ) const
 {
   return TTF_GetFontOutline ( this->font.get() );
@@ -199,17 +165,9 @@ void TrueTypeFont::setFontOutline ( int32 depth )
 {
   TTF_SetFontOutline ( this->font.get(), depth );
 }
+*/
 
-IFont::RenderStyle TrueTypeFont::getRenderingStyle ( void ) const
-{
-  return this->rendering;
-}
-
-void TrueTypeFont::setRenderingStyle ( IFont::RenderStyle style )
-{
-  this->rendering = style;
-}
-
+/*
 void TrueTypeFont::setText ( const std::string& text )
 {
   if ( text.length() < 1 ) return;
@@ -225,22 +183,19 @@ void TrueTypeFont::setText ( const std::string& text )
 NOM_LOG_ERR ( NOM, "Failed to set font width & height." );
   }
 }
+*/
 
-void TrueTypeFont::setSpacing ( uint32 spaces )
+const IntRect& TrueTypeFont::glyph ( uint32 character )
 {
-  // Not implemented
-}
-
-void TrueTypeFont::setTextJustification ( IFont::TextAlignment alignment )
-{
-  this->text_alignment = alignment;
+  // TODO
+  return this->glyphs_[ character ].bounds;
 }
 
 bool TrueTypeFont::load ( const std::string& filename, const Color4u& colorkey,
                           bool use_cache
                         )
 {
-  this->font = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), this->font_size ), nom::priv::TTF_FreeFont );
+  this->font_ = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), this->font_size() ), priv::TTF_FreeFont );
 
   if ( this->valid() == false )
   {
@@ -251,27 +206,28 @@ NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
   // Store the new filename & caching choice for future reference; primarily
   // used when rebuilding font metrics, such as when we change the font point
   // size or load a new font.
-  this->filename = filename;
-  this->use_cache = use_cache;
+  this->filename_ = filename;
+  this->use_cache_ = use_cache;
 
   return true;
 }
 
+/*
 void TrueTypeFont::update ( void )
 {
   // Font is not valid -- nothing to draw
-  if ( ! this->valid() ) return;
+  if ( this->valid() == false ) return;
 
   // No text string set -- nothing to draw
   if ( this->getText().length() < 1 ) return;
 
   // Update display coordinates
-  this->font_buffer.set_position ( Point2i ( this->coords.x, this->coords.y ) );
+  this->font_buffer_.set_position ( Point2i ( this->coords.x, this->coords.y ) );
 
   // Update the rendered text surface here for drawing
   if ( this->rendering == RenderStyle::Shaded ) // Moderate-quality
   {
-    this->font_buffer.initialize ( TTF_RenderText_Shaded
+    this->font_buffer_.initialize ( TTF_RenderText_Shaded
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
@@ -285,7 +241,7 @@ void TrueTypeFont::update ( void )
   }
   else if ( this->rendering == RenderStyle::Blended ) // Highest-quality
   {
-    this->font_buffer.initialize ( TTF_RenderText_Blended
+    this->font_buffer_.initialize ( TTF_RenderText_Blended
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
@@ -295,7 +251,7 @@ void TrueTypeFont::update ( void )
   }
   else // Low-quality rendering (the default)
   {
-    this->font_buffer.initialize ( TTF_RenderText_Solid
+    this->font_buffer_.initialize ( TTF_RenderText_Solid
                                   (
                                     this->font.get(),
                                     this->getText().c_str(),
@@ -306,29 +262,33 @@ void TrueTypeFont::update ( void )
 
   if ( this->text_style == FontStyle::Faded )
   {
-    this->font_buffer.set_alpha ( this->style_options );
+    this->font_buffer_.set_alpha ( this->style_options );
   }
 }
+*/
 
+/*
 void TrueTypeFont::draw ( RenderTarget target ) const
 {
-  if ( this->font_buffer.valid() )
+  if ( this->font_buffer_.valid() )
   {
-    this->font_buffer.draw ( target );
+    this->font_buffer_.draw ( target );
   }
 }
+*/
 
-bool TrueTypeFont::rebuild ( void )
+bool TrueTypeFont::build ( void )
 {
-  if ( this->load ( this->filename, NOM_COLOR4U_BLACK, this->use_cache ) == false )
+  if ( this->load ( this->filename_, NOM_COLOR4U_BLACK, this->use_cache_ ) == false )
   {
-NOM_LOG_ERR ( NOM, "Could not rebuild font metrics." );
+NOM_LOG_ERR ( NOM, "Could not build font metrics." );
     return false;
   }
 
   return true;
 }
 
+/*
 namespace priv {
 
 void Free_TrueTypeFont ( TrueTypeFont* ptr )
@@ -339,5 +299,7 @@ void Free_TrueTypeFont ( TrueTypeFont* ptr )
 }
 
 } // namespace priv
+*/
+
 } // namespace nom
 

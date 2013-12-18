@@ -26,32 +26,15 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_HPP
-#define NOMLIB_GRAPHICS_HPP
+#include "nomlib/graphics/Glyph.hpp"
 
-// Public header file
+namespace nom {
 
-#include <nomlib/config.hpp>
-#include <nomlib/graphics/Glyph.hpp>
-#include <nomlib/graphics/Label.hpp>
-#include <nomlib/graphics/RendererInfo.hpp>
-#include <nomlib/graphics/BitmapFont.hpp>
-#include <nomlib/graphics/Texture.hpp>
-#include <nomlib/graphics/VideoMode.hpp>
-#include <nomlib/graphics/Window.hpp>
-#include <nomlib/graphics/Renderer.hpp>
-#include <nomlib/graphics/IDrawable.hpp>
-#include <nomlib/graphics/TrueTypeFont.hpp>
-#include <nomlib/graphics/Gradient.hpp>
-#include <nomlib/graphics/Image.hpp>
-#include <nomlib/graphics/Pixel.hpp>
-#include <nomlib/graphics/shapes/Point.hpp>
-#include <nomlib/graphics/shapes/Line.hpp>
-#include <nomlib/graphics/shapes/Rectangle.hpp>
-#include <nomlib/graphics/sprite/Sprite.hpp>
-#include <nomlib/graphics/sprite/SpriteBatch.hpp>
-#include <nomlib/graphics/sprite/SpriteSheet.hpp>
-#include <nomlib/graphics/sprite/AnimatedSprite.hpp>
+Glyph::Glyph ( void ) :
+  advance_ ( 0 )
+{}
 
+Glyph::~Glyph ( void )
+{}
 
-#endif // include guard defined
+} // namespace nom

@@ -40,13 +40,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IFont.hpp"
-#include "nomlib/math/Coords.hpp"
+#include "nomlib/graphics/Glyph.hpp"
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/graphics/Texture.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
-//#define NOM_DEBUG_SDL_BITMAP_FONT
+//#define NOM_DEBUG_SDL2_BITMAP_FONT
 
 namespace nom {
 
@@ -59,72 +59,32 @@ class BitmapFont: public IFont
     /// Default destructor
     ~BitmapFont ( void );
 
-    /// Return a std::shared_ptr copy of this instance
-    IFont::SharedPtr clone ( void ) const;
+    /// Is this object initialized -- not nullptr?
+    bool valid ( void ) const;
 
-    /// Obtains set text string buffer; defaults to \0
-    const std::string& getText ( void ) const;
+    enum IFont::FileType type ( void ) const;
 
-    /// Set a new text string for drawing; defaults to \0
-    void setText ( const std::string& text );
-
-    /// Obtain the text width in pixels of the set text string.
-    ///
-    /// This calculation mimics the rendering calculations done and should be
-    /// exact within one pixel accuracy.
-    ///
-    /// \todo Rename me to text_width
-    /// \todo Support multi-line texts
-    int32 getFontWidth ( void ) const;
-
-    /// Obtain the text height in pixels of the set text string.
-    ///
-    /// This calculation mimics the rendering calculations done and should be
-    /// exact within one pixel accuracy.
-    ///
-    /// \todo Rename me to text_height
-    int32 getFontHeight ( void ) const;
-
-    const Color4u& getColor ( void ) const;
-    const Coords& getPosition ( void ) const;
+    SDL_SURFACE::RawPtr image ( void ) const;
 
     /// Obtain text character spacing width in pixels; this variable is affected
     /// by the total image width size.
-    uint32 getSpacing ( void ) const;
+    uint spacing ( void ) const;
 
     /// Set new text character spacing width (in pixels) -- this variable is
-    /// used during the calculation of the text width (see getFontWidth method)
+    /// used during the calculation of the text width; see
+    /// nom::BitmapFont::width method.
     /// in addition to the rendering process (see draw method) when there is a
     /// space character (' ') found in the provided text string.
-    void setSpacing ( uint32 spaces );
+    void set_spacing ( uint spaces );
 
     /// Obtain text character spacing height offsets in pixels; defaults to
     /// variable calculations made within Load method
-    uint32 getNewline ( void ) const;
-
-    IFont::TextAlignment getTextJustification ( void ) const;
+    uint newline ( void ) const;
 
     /// Set new text character spacing height offsets in pixels
-    void setNewline ( uint32_t newline );
+    void set_newline ( uint newline );
 
-    IFont::FontStyle getFontStyle ( void ) const;
-    void setFontStyle ( int32 style, uint8 options = 150 );
-
-    /// Not implemented
-    //RenderStyle getRenderingStyle ( void ) const;
-
-    /// Not implemented
-    //void setRenderingStyle ( enum RenderStyle );
-
-    void setColor ( const Color4u& color );
-    void setPosition ( const Coords& coords );
-
-    /// Set the justification of the text.
-    ///
-    /// This modifies the destination positions used in rendering text.
-    void setTextJustification ( IFont::TextAlignment alignment );
-
-    const Coords findGlyph ( const std::string& glyph );
+    const IntRect& glyph ( uint32 character );
 
     /// Loads a new bitmap font from a file
     ///
@@ -134,60 +94,38 @@ class BitmapFont: public IFont
                 bool use_cache = false
               );
 
-    void update ( void );
-
-    /// Draw the set text string to the video surface
-    /// \todo Test horizontal tabbing '\t'
-    void draw ( RenderTarget target ) const;
-
-    /// Rescale the font with a chosen resizing algorithm
-    ///
-    /// Re-implements IFont::resize
-    /// \todo SDL2 port
-    bool resize ( enum Texture::ResizeAlgorithm scaling_algorithm );
-
   private:
-    /// Trigger a rebuild of the font characteristics gleaned from the image file;
+    /// Trigger a build of the font characteristics gleaned from the image file;
     /// recalculate the character sizes, coordinate origins, spacing, etc.
-    bool rebuild ( void );
+    bool build ( void );
 
-    int32 sheet_width;
-    int32 sheet_height;
+    /// Width -- in pixels -- of overall texture atlas sheet
+    ///
+    /// \todo Change type to int
+    sint sheet_width;
+
+    /// Height -- in pixels -- of overall texture atlas sheet
+    ///
+    /// \todo Change type to int
+    sint sheet_height;
 
     /// Our bitmap font's bitmap atlas
-    Image bitmap_font;
-
-    /// Rendered bitmap font (renders from what is stored in bitmap_font)
-    mutable Texture render_font;
+    Image bitmap_font_;
 
     /// individual chars positioning offsets within bitmap_font
-    Coords chars[256];
+    Glyph::GlyphMap glyphs;
 
-    /// Positioning coordinates
-    Coords coords;
-
-    /// height (in pixels) to offset when newline carriage char is encountered
-    uint32 newline;
+    /// Height (in pixels) to offset when newline carriage char is encountered
+    uint newline_;
 
     /// Width in pixels to offset when a space carriage char is encountered.
     ///
     /// Note that you may need to reset this if you are using bitmap fonts with
     /// high resolution graphics. I recently went from 384x224 to 768x448 and
     /// this was enough to offset this variable by 18 pixels.
-    uint32 spacing;
+    uint spacing_;
 
-    /// holds contents of text as a string
-    std::string text_buffer;
-
-    /// Current text effect set
-    enum IFont::FontStyle text_style;
-
-    /// Not implemented (yet)
-    Color4u color;
-
-    enum IFont::TextAlignment text_alignment;
-
-    enum IFont::RenderStyle rendering;
+    enum IFont::FileType type_;
 };
 
 namespace priv {

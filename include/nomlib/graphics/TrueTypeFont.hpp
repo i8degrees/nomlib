@@ -36,7 +36,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <SDL_ttf.h>
 
 #include "nomlib/config.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/IFont.hpp"
+#include "nomlib/graphics/Glyph.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/math/Color4.hpp"
@@ -61,64 +63,40 @@ class TrueTypeFont:
     /// doesn't allow us to free our font resources here properly.
     ~TrueTypeFont ( void );
 
-    /// Return a std::shared_ptr copy of this instance
-    IFont::SharedPtr clone ( void ) const;
-
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
 
-    /// Obtains set text string buffer; defaults to \0
-    const std::string& getText ( void ) const;
+    enum IFont::FileType type ( void ) const;
 
-    /// Compute the width in pixels of the set text string; defaults to zero (0)
-    int32 getFontWidth ( void ) const;
+    SDL_SURFACE::RawPtr image ( void ) const;
 
-    /// Compute the height in pixels of the set text string; defaults to zero (0)
-    int32 getFontHeight ( void ) const;
+    /// Obtain text character spacing width in pixels; this variable is affected
+    /// by the total image width size.
+    uint spacing ( void ) const;
 
-    IFont::FontStyle getFontStyle ( void ) const;
+    sint font_size ( void ) const;
 
-    const Color4u& getColor ( void ) const;
-    const Coords& getPosition ( void ) const;
+    /// Set new text character spacing width (in pixels) -- this variable is
+    /// used during the calculation of the text width; see
+    /// nom::BitmapFont::width method.
+    /// in addition to the rendering process (see draw method) when there is a
+    /// space character (' ') found in the provided text string.
+    void set_spacing ( uint spaces );
 
-    /// Not implemented
-    uint32 getNewline ( void ) const;
+    /// Obtain text character spacing height offsets in pixels; defaults to
+    /// variable calculations made within Load method
+    uint newline ( void ) const;
 
-    /// Not implemented
-    uint32 getSpacing ( void ) const;
-
-    IFont::TextAlignment getTextJustification ( void ) const;
-
-    void setFontStyle ( int32 style, uint8 options = 150 );
-
-    /// Set a new text point size
-    void setFontSize ( int32 point_size );
-
-    /// \brief Set a new text string for drawing; defaults to \0
-    ///
-    /// NOTE: We render the font drawing surface here
-    void setText ( const std::string& text );
-
-    void setColor ( const Color4u& color );
-    void setPosition ( const Coords& coords );
-
-    /// Not implemented
-    void setSpacing ( uint32 spaces );
-
-    /// Not implemented.
-    void setTextJustification ( IFont::TextAlignment alignment );
+    /// Set new text character spacing height offsets in pixels
+    void set_newline ( uint newline );
 
     /// Getter for obtaining the vector outline of the loaded font.
-    int32 getFontOutline ( void ) const;
+    //int32 getFontOutline ( void ) const;
 
     /// Set a new vector outline -- in pixels -- for the loaded font.
-    void setFontOutline ( int32 depth );
+    //void setFontOutline ( int32 depth );
 
-    /// Getter for obtaining the current font rendering style in use
-    IFont::RenderStyle getRenderingStyle ( void ) const;
-
-    /// Set a new font rendering style.
-    void setRenderingStyle ( IFont::RenderStyle );
+    const IntRect& glyph ( uint32 character );
 
     /// \brief Load a new font in from a file.
     ///
@@ -128,47 +106,42 @@ class TrueTypeFont:
                 bool use_cache = false
               );
 
-    void update ( void );
-
-    /// Draw the set text string to the video surface
-    void draw ( RenderTarget target ) const;
-
   private:
     /// Trigger a rebuild of the font metrics from the current font; this
     /// recalculates character sizes, coordinate origins, spacing, etc.
-    bool rebuild ( void );
+    bool build ( void );
 
     /// Surface where font for drawing is rendered to
-    Texture font_buffer;
+    Texture font_buffer_;
 
     /// Font file data, used by SDL_ttf extension
-    std::shared_ptr<TTF_Font> font;
+    std::shared_ptr<TTF_Font> font_;
 
-    /// Positioning coordinates (including width and height)
-    Coords coords;
+    /// individual chars positioning offsets within bitmap_font
+    ///
+    /// \todo Implement
+    Glyph::GlyphMap glyphs_;
 
-    /// Text color
-    Color4u color;
-
-    /// holds contents of text as a string buffer
-    std::string text_buffer;
-
-    /// Current text effect set
-    FontStyle text_style;
-    uint8 style_options;
-
-    /// Store the file path so we can change font sizes on the fly
-    std::string filename;
+    enum IFont::FileType type_;
 
     /// Font point (pixel) size; defaults to 12
-    int32 font_size;
+    sint font_size_;
+
+    /// Height (in pixels) to offset when newline carriage char is encountered
+    uint newline_;
+
+    /// Width in pixels to offset when a space carriage char is encountered.
+    ///
+    /// Note that you may need to reset this if you are using bitmap fonts with
+    /// high resolution graphics. I recently went from 384x224 to 768x448 and
+    /// this was enough to offset this variable by 18 pixels.
+    uint spacing_;
+
+    /// Store the file path so we can change font sizes on the fly
+    std::string filename_;
 
     /// Whether or not to use caching features of nom::ObjectCache
-    bool use_cache;
-
-    enum IFont::TextAlignment text_alignment;
-
-    enum IFont::RenderStyle rendering;
+    bool use_cache_;
 };
 
 namespace priv {

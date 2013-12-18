@@ -45,22 +45,11 @@ NOM_LOG_TRACE ( NOM );
   this->filename = "\0";
   this->font_size = 12;
   this->use_cache = false;
-
-  if ( TTF_Init () == -1 )
-  {
-NOM_LOG_ERR ( NOM, TTF_GetError() );
-  }
 }
 
 TrueTypeFont::~TrueTypeFont ( void )
 {
 NOM_LOG_TRACE ( NOM );
-
-  // Possible bug -- a segmentation fault occurs here if we do not reset the
-  // smart pointer on destruction.
-  this->font.reset();
-
-  TTF_Quit();
 }
 
 IFont::SharedPtr TrueTypeFont::clone ( void ) const

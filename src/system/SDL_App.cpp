@@ -34,6 +34,13 @@ SDL_App::SDL_App ( void )
 {
 NOM_LOG_TRACE ( NOM );
 
+  if ( TTF_Init () == -1 )
+  {
+    NOM_LOG_ERR ( NOM, TTF_GetError() );
+  }
+
+  atexit ( TTF_Quit );
+
   this->app_state = false;
 
   this->set_show_fps ( true );

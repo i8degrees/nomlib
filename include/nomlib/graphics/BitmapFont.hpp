@@ -154,8 +154,11 @@ class BitmapFont: public IFont
     int32 sheet_width;
     int32 sheet_height;
 
-    /// pointer reference holding our bitmap font image sheet
-    mutable Texture bitmap_font;
+    /// Our bitmap font's bitmap atlas
+    Image bitmap_font;
+
+    /// Rendered bitmap font (renders from what is stored in bitmap_font)
+    mutable Texture render_font;
 
     /// individual chars positioning offsets within bitmap_font
     Coords chars[256];
@@ -187,14 +190,13 @@ class BitmapFont: public IFont
     enum IFont::RenderStyle rendering;
 };
 
-  namespace priv {
+namespace priv {
 
 /// \todo FIXME; we need to figure out how to free this resource when we are
 /// using it within the MessageBox class -- we are leaking kilobytes as-is.
 void Free_BitmapFont ( BitmapFont* ptr );
 
-
-  } // namespace priv
+} // namespace priv
 } // namespace nom
 
 #endif // include guard defined

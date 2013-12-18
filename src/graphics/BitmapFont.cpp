@@ -219,9 +219,9 @@ void BitmapFont::setFontStyle ( int32 style, uint8 options )
     /// Text effect utilizing alpha channels for the appearance of gray text
     case FontStyle::Faded:
     {
-      if ( this->bitmap_font.valid() )
+      if ( this->render_font.valid() )
       {
-        if ( this->bitmap_font.set_alpha ( options ) == true )
+        if ( this->render_font.set_alpha ( options ) == true )
         {
           this->text_style = FontStyle::Faded;
         }
@@ -256,11 +256,12 @@ NOM_ASSERT ( this->bitmap_font.valid() );
 
   if ( this->bitmap_font.lock() == false )
   {
-NOM_LOG_ERR ( NOM, "Could not lock Texture." );
+NOM_LOG_ERR ( NOM, "Could not lock surface." );
     return false;
   }
 
-  background_color = RGBA ( this->bitmap_font.colorkey(),
+  background_color = RGBA (
+                            this->bitmap_font.colorkey(),
                             this->bitmap_font.pixel_format()
                           );
 
@@ -381,7 +382,7 @@ NOM_LOG_ERR ( NOM, "Could not lock Texture." );
       currentChar++;
     }
   }
-  this->bitmap_font.unlock(); // Finished uploading to texture
+  this->bitmap_font.unlock(); // Finished messing with pixels
 
   // Calculate space
   this->spacing = tile_width / 2;
@@ -409,6 +410,8 @@ NOM_DUMP_VAR ( this->chars [ pos ].height );
   }
 #endif
 
+  this->render_font.initialize ( this->bitmap_font.image() );
+
   return true;
 }
 
@@ -416,13 +419,16 @@ bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
                         bool use_cache
                       )
 {
-  if ( this->bitmap_font.load ( filename, 0, use_cache ) == false )
+  // I don't understand why RGBA8888 is necessary here, but it is the only pixel
+  // format that I have found that works when we are initializing a
+  // nom::Texture (SDL_Texture) from a nom::Image (SDL_Surface).
+  if ( this->bitmap_font.load ( filename, SDL_PIXELFORMAT_RGBA8888 ) == false )
   {
 NOM_LOG_ERR ( NOM, "Could not load bitmap font image file: " + filename );
     return false;
   }
 
-  this->bitmap_font.set_colorkey ( colorkey );
+  this->bitmap_font.set_colorkey ( colorkey, true );
 
   // Attempt to rebuild font metrics
   if ( this->rebuild() == false )
@@ -513,9 +519,9 @@ void BitmapFont::draw ( RenderTarget target ) const
         //Get the ASCII value of the character
         uint8 ascii = static_cast<uchar>( this->text_buffer[show] );
 
-        this->bitmap_font.set_position ( Point2i ( x_offset, y_offset ) );
-        this->bitmap_font.set_bounds ( this->chars[ascii] );
-        this->bitmap_font.draw ( target.renderer() );
+        this->render_font.set_position ( Point2i ( x_offset, y_offset ) );
+        this->render_font.set_bounds ( this->chars[ascii] );
+        this->render_font.draw ( target.renderer() );
 
         // Move over the width of the character with one pixel of padding
         x_offset += ( this->chars[ascii].width ) + 1;
@@ -531,13 +537,13 @@ bool BitmapFont::resize ( enum Texture::ResizeAlgorithm scaling_algorithm )
 NOM_LOG_ERR ( NOM, "Video surface is invalid." );
     return false;
   }
-
+/* TODO: (an implementation in nom::Image)
   if ( this->bitmap_font.resize ( scaling_algorithm ) == false )
   {
 NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
     return false;
   }
-
+TODO */
   if ( this->rebuild() == false )
   {
 NOM_LOG_ERR ( NOM, "Could not rebuild bitmap font metrics" );

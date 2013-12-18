@@ -33,13 +33,6 @@ namespace nom {
 Image::Image ( void ) : image_ ( nullptr, priv::FreeSurface )
 {
 NOM_LOG_TRACE ( NOM );
-
-  if ( IMG_Init ( IMG_INIT_PNG ) != IMG_INIT_PNG )
-  {
-NOM_LOG_ERR ( NOM, IMG_GetError() );
-  }
-
-  atexit ( IMG_Quit );
 }
 
 Image::~Image ( void )

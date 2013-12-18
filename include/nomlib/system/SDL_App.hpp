@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 
 #include "SDL.h"
+#include "SDL_image.h"
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/Input.hpp"

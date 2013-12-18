@@ -34,11 +34,17 @@ SDL_App::SDL_App ( void )
 {
 NOM_LOG_TRACE ( NOM );
 
+  if ( IMG_Init ( IMG_INIT_PNG ) != IMG_INIT_PNG )
+  {
+    NOM_LOG_ERR ( NOM, IMG_GetError() );
+  }
+
   if ( TTF_Init () == -1 )
   {
     NOM_LOG_ERR ( NOM, TTF_GetError() );
   }
 
+  atexit ( IMG_Quit );
   atexit ( TTF_Quit );
 
   this->app_state = false;

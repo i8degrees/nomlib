@@ -127,11 +127,13 @@ inline std::ostream& operator << ( std::ostream& os, const Color4<uint8>& color 
      << static_cast<int> ( color.alpha );
   return os;
 }
+
+inline std::ostream& operator << ( std::ostream& os, const Color4<float>& color )
 {
-  os << static_cast<T> ( color.red ) << COLOR_DELIMITER
-     << static_cast<T> ( color.green ) << COLOR_DELIMITER
-     << static_cast<T> ( color.blue ) << COLOR_DELIMITER
-     << static_cast<T> ( color.alpha );
+  os << color.red << COLOR_DELIMITER
+     << color.green << COLOR_DELIMITER
+     << color.blue << COLOR_DELIMITER
+     << color.alpha;
   return os;
 }
 

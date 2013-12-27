@@ -166,6 +166,13 @@ class Texture
 
     const uint8 alpha ( void ) const;
 
+    /// Obtain the additional color value multiplied into render copy
+    /// operations
+    ///
+    /// \return nom::Color4u red, green, blue values on success --
+    /// NOM_COLOR4U_WHITE on failure
+    const Color4u color_modulation ( void ) const;
+
     /// Lock a portion of the texture for **write-only** pixel access.
     ///
     /// Texture must be created with SDL_TEXTUREACCESS_STREAMING.
@@ -273,6 +280,17 @@ class Texture
     ///
     /// (This method requires locking the texture; use wisely!).
     bool set_colorkey ( const Color4u& colorkey );
+
+    /// Set an additional color value multiplied into render copy operations
+    ///
+    /// \param    nom::Color4u  red, green & blue values multiplied into
+    ///                         color operations
+    ///
+    /// \return   TRUE on success; FALSE on failure
+    ///
+    /// \remarks  SDL2 color modulation formula:
+    ///           srcC = srcC * ( color / 255 )
+    bool set_color_modulation ( const Color4u& color );
 
   private:
     SDL_TEXTURE::SharedPtr texture_;

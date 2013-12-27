@@ -280,6 +280,19 @@ const uint8 Texture::alpha ( void ) const
   return alpha;
 }
 
+const Color4u Texture::color_modulation ( void ) const
+{
+  Color4u color;
+
+  if ( SDL_GetTextureColorMod ( this->texture(), &color.r, &color.g, &color.b ) != 0 )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return NOM_COLOR4U_WHITE;
+  }
+
+  return color;
+}
+
 bool Texture::lock ( void )
 {
   if ( this->locked() )
@@ -831,6 +844,17 @@ bool Texture::set_colorkey ( const Color4u& colorkey )
   this->unlock();
 
   this->colorkey_ = colorkey; // Cache the state of our color key used
+
+  return true;
+}
+
+bool Texture::set_color_modulation ( const Color4u& color )
+{
+  if ( SDL_SetTextureColorMod ( this->texture(), color.r, color.g, color.b ) != 0 )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
 
   return true;
 }

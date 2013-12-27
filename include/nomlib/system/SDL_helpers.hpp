@@ -43,6 +43,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Convenience definitions for pointer types
+///
+/// \todo Consider renaming to WINDOW or such
 namespace SDL_WINDOW
 {
   typedef std::unique_ptr<SDL_Window, void (*)(SDL_Window*)> UniquePtr;
@@ -57,12 +59,16 @@ namespace SDL_RENDERER
 }
 
 /// \brief Convenience definitions for pointer types
+///
+/// \todo Consider renaming to PIXEL_FORMAT or such
 namespace SDL_PIXELFORMAT
 {
   typedef SDL_PixelFormat* RawPtr;
 }
 
 /// \brief Convenience definitions for pointer types
+///
+/// \todo Consider renaming to SURFACE, BITMAP or such
 namespace SDL_SURFACE
 {
   typedef std::unique_ptr<SDL_Surface, void(*) (SDL_Surface*)> UniquePtr;
@@ -71,6 +77,8 @@ namespace SDL_SURFACE
 }
 
 /// \brief Convenience definitions for pointer types
+///
+/// \todo Consider renaming to TEXTURE or such
 namespace SDL_TEXTURE
 {
   typedef std::shared_ptr<SDL_Texture> SharedPtr;

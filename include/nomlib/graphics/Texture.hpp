@@ -126,7 +126,12 @@ class Texture
 
     void set_position ( const Point2i& pos );
 
+    /// Set bounding coordinates of the Texture
+    ///
+    /// \deprecated This method will be phased out soon
     void set_bounds ( const Coords& clip );
+
+    void set_bounds ( const IntRect& bounds );
 
     /// Obtain width, in pixels, of texture
     ///
@@ -306,6 +311,8 @@ class Texture
     Point2i position_;
 
     /// Holds surface offsets (clipping area: X, Y, width & height)
+    ///
+    /// \deprecated This instance variable type will soon be changed to IntRect
     Coords bounds_;
 
     /// Cached upon use of the set_colorkey method for use by external classes

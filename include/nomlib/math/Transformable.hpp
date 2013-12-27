@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Coords.hpp"
-#include "nomlib/math/Color4.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
@@ -44,7 +43,6 @@ class Transformable:
     virtual ~Transformable ( void );
 
     Transformable ( const Coords& coords );
-    Transformable ( const Coords& coords, const Color4u& color );
 
     const Coords position ( void ) const;
     const Coords getSize ( void ) const;
@@ -58,13 +56,9 @@ class Transformable:
     void move ( uint32 x = 0, uint32 y = 0 );
     void move ( const Coords& offsets = Coords ( 0, 0 ) );
 
-    const Color4u& color ( void ) const;
-    void set_color ( uint8 red, uint8 green, uint8 blue, uint8 alpha = 255 );
-    void set_color ( const Color4u& color );
-
   protected:
+    /// \deprecated Phasing nom::Coords class out -- use IntRects instead.
     Coords position_;
-    Color4u color_;
 };
 
 

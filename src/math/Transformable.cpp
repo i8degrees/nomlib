@@ -30,15 +30,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Transformable::Transformable ( void )  :  position_ ( 0, 0, 0, 0 ),
-  color_ ( 0, 0, 0, ALPHA_OPAQUE ) {}
+Transformable::Transformable ( void )  :
+  position_ ( 0, 0, 0, 0 )
+{}
 
 Transformable::~Transformable ( void ) {}
 
-Transformable::Transformable ( const Coords& coords ):  position_ ( coords ) {}
-
-Transformable::Transformable ( const Coords& coords, const Color4u& color ) :
-  position_ ( coords ), color_ ( color ) {}
+Transformable::Transformable ( const Coords& coords ):
+  position_ ( coords )
+{}
 
 const Coords Transformable::position ( void ) const
 {
@@ -86,21 +86,6 @@ void Transformable::move ( const Coords& offsets )
 {
   this->position_.x += offsets.x;
   this->position_.y += offsets.y;
-}
-
-const Color4u& Transformable::color ( void ) const
-{
-  return this->color_;
-}
-
-void Transformable::set_color ( uint8 red, uint8 green, uint8 blue, uint8 alpha )
-{
-  this->color_ = Color4u ( red, green, blue, alpha );
-}
-
-void Transformable::set_color ( const Color4u& color )
-{
-  this->set_color ( color.red, color.green, color.blue, color.alpha );
 }
 
 } // namespace nom

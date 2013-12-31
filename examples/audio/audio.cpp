@@ -62,7 +62,7 @@ int main ( int argc, char* argv[] )
   if ( nom::nomlib_init ( argc, argv ) == false )
   {
     nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
-    exit ( EXIT_FAILURE );
+    exit ( NOM_EXIT_FAILURE );
   }
 
   NOM_DUMP_VAR ( dev.getDeviceName() );
@@ -81,7 +81,7 @@ int main ( int argc, char* argv[] )
   if ( ! ret )
   {
     NOM_LOG_ERR ( NOM, "Buffer loading err" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
   //nom::OpenAL::Sound snd ( buffer );
@@ -137,5 +137,5 @@ NOM_DUMP_VAR ( loops.ticks() );
   //std::cout << "Channel Count: " << snd.getChannelCount() << std::endl;
   //std::cout << "Sample Rate: " << snd.getSampleRate() << std::endl;
 
-  return EXIT_SUCCESS;
+  return NOM_EXIT_SUCCESS;
 }

@@ -51,10 +51,10 @@ nom::int32 do_file_test1 ( nom::int32 args_count, char* args[] )
 
   pwd = dir.path ( args[0] );
 
-  if ( args_count < 1 ) return EXIT_FAILURE;
-  if ( pwd == "" || pwd == "\0" ) return EXIT_FAILURE;
+  if ( args_count < 1 ) return NOM_EXIT_FAILURE;
+  if ( pwd == "" || pwd == "\0" ) return NOM_EXIT_FAILURE;
 
-  return EXIT_SUCCESS;
+  return NOM_EXIT_SUCCESS;
 }
 
 nom::int32 do_file_test2 ( void )
@@ -62,45 +62,45 @@ nom::int32 do_file_test2 ( void )
   nom::Path p;
 
   #if defined ( NOM_PLATFORM_OSX ) || defined ( NOM_PLATFORM_LINUX ) || defined ( NOM_PLATFORM_POSIX )
-    if ( p.native().compare ("/") != 0 ) return EXIT_FAILURE;
+    if ( p.native().compare ("/") != 0 ) return NOM_EXIT_FAILURE;
   #elif defined ( NOM_PLATFORM_WINDOWS )
-    if ( p.native().compare ("\\") != 0 ) return EXIT_FAILURE;
+    if ( p.native().compare ("\\") != 0 ) return NOM_EXIT_FAILURE;
   #else // Unsupported
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   #endif
 
-  return EXIT_SUCCESS;
+  return NOM_EXIT_SUCCESS;
 }
 
-nom::int32 do_file_test3 ( void ) { return EXIT_SUCCESS; }
-nom::int32 do_file_test4 ( void ) { return EXIT_SUCCESS; }
+nom::int32 do_file_test3 ( void ) { return NOM_EXIT_SUCCESS; }
+nom::int32 do_file_test4 ( void ) { return NOM_EXIT_SUCCESS; }
 
 nom::int32 main ( nom::int32 args_count, char* args[] )
 {
-  if ( do_file_test1 ( args_count, args ) != EXIT_SUCCESS )
+  if ( do_file_test1 ( args_count, args ) != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::File unit test 1" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
-  if ( do_file_test2() != EXIT_SUCCESS )
+  if ( do_file_test2() != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::File unit test 2" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
-  if ( do_file_test3() != EXIT_SUCCESS )
+  if ( do_file_test3() != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::File unit test 3" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
-  if ( do_file_test4() != EXIT_SUCCESS )
+  if ( do_file_test4() != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::File unit test 4" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
   NOM_LOG_INFO ( NOM_UNIT_TEST, "System Unit Tests: Pass!" );
-  return EXIT_SUCCESS;
+  return NOM_EXIT_SUCCESS;
 }

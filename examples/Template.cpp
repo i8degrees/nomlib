@@ -128,7 +128,7 @@ nom::int32 App::Run ( void )
     }
   } // end while isRunning() is true
 
-  return EXIT_SUCCESS;
+  return NOM_EXIT_SUCCESS;
 }
 
 nom::int32 main ( nom::int32 argc, char* argv[] )
@@ -138,7 +138,7 @@ nom::int32 main ( nom::int32 argc, char* argv[] )
   if ( game.onInit() == false )
   {
 NOM_LOG_ERR ( NOM_EXAMPLES, "Could not initialize game." );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
   return game.Run();

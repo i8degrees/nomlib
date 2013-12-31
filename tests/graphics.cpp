@@ -52,12 +52,12 @@ nom::int32 do_window_test1 ( void )
 
   if ( window.create ( "window_test1", WINDOW_WIDTH, WINDOW_HEIGHT, 0 ) == false )
   {
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
-  if ( window.set_window_icon( "icon.png" ) == false ) return EXIT_FAILURE;
+  if ( window.set_window_icon( "icon.png" ) == false ) return NOM_EXIT_FAILURE;
 
-  return EXIT_SUCCESS;
+  return NOM_EXIT_SUCCESS;
 }
 
 nom::int32 do_window_test2 ( void )
@@ -66,40 +66,40 @@ nom::int32 do_window_test2 ( void )
   std::string title = "nomlib::RenderWindow Unit Test 2";
   window.set_window_title( title );
 
-  if ( window.window_title() != title ) return EXIT_SUCCESS;
+  if ( window.window_title() != title ) return NOM_EXIT_SUCCESS;
 
-  return EXIT_FAILURE;
+  return NOM_EXIT_FAILURE;
 }
 
-nom::int32 do_window_test3 ( void ) { return EXIT_SUCCESS; }
-nom::int32 do_window_test4 ( void ) { return EXIT_SUCCESS; }
+nom::int32 do_window_test3 ( void ) { return NOM_EXIT_SUCCESS; }
+nom::int32 do_window_test4 ( void ) { return NOM_EXIT_SUCCESS; }
 
 nom::int32 main ( nom::int32 args_count, char* args[] )
 {
-  if ( do_window_test1() != EXIT_SUCCESS )
+  if ( do_window_test1() != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::RenderWindow unit test 1" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
-  if ( do_window_test2() != EXIT_SUCCESS )
+  if ( do_window_test2() != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::RenderWindow unit test 2" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
-  if ( do_window_test3() != EXIT_SUCCESS )
+  if ( do_window_test3() != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::RenderWindow unit test 3" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
-  if ( do_window_test4() != EXIT_SUCCESS )
+  if ( do_window_test4() != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::RenderWindow unit test 4" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
   NOM_LOG_INFO ( NOM_UNIT_TEST, "Graphics Unit Tests: Pass!" );
-  return EXIT_SUCCESS;
+  return NOM_EXIT_SUCCESS;
 }

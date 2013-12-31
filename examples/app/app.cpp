@@ -90,7 +90,7 @@ class App: public nom::SDL_App
       if ( nom::nomlib_init ( argc, argv ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
-        exit ( EXIT_FAILURE );
+        exit ( NOM_EXIT_FAILURE );
       }
 
       this->deg = 0;
@@ -290,7 +290,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
         }
 
       } // end while isRunning() is true
-      return EXIT_SUCCESS;
+      return NOM_EXIT_SUCCESS;
     } // Run
 
   private:
@@ -445,7 +445,7 @@ nom::int32 main ( nom::int32 argc, char* argv[] )
   if ( game.onInit() == false )
   {
     nom::DialogMessageBox ( APP_NAME, "Could not initialize application." );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
   return game.Run();

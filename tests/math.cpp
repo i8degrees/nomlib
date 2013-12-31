@@ -61,87 +61,87 @@ nom::int32 do_color_test1 ( void )
   nom::Color4u testme1 ( 242, 1, 1, 255 );
   nom::Color4u testme2 = NOM_COLOR4U_BLACK;
 
-  if ( testme2 == testme1 ) return EXIT_FAILURE;
+  if ( testme2 == testme1 ) return NOM_EXIT_FAILURE;
 
-  return EXIT_SUCCESS;
+  return NOM_EXIT_SUCCESS;
 }
 
-nom::int32 do_color_test2 ( void ) { return EXIT_SUCCESS; }
-nom::int32 do_color_test3 ( void ) { return EXIT_SUCCESS; }
-nom::int32 do_color_test4 ( void ) { return EXIT_SUCCESS; }
+nom::int32 do_color_test2 ( void ) { return NOM_EXIT_SUCCESS; }
+nom::int32 do_color_test3 ( void ) { return NOM_EXIT_SUCCESS; }
+nom::int32 do_color_test4 ( void ) { return NOM_EXIT_SUCCESS; }
 
 nom::int32 do_coords_test1 ( void )
 {
   nom::Coords testme1 ( 242, 1, 1, 0 );
   nom::Coords testme2 ( -1, -1, -1, -1 );
 
-  if ( testme1.isNull() ) return EXIT_FAILURE;
-  if ( testme2.isNull() ) return EXIT_SUCCESS;
-  if ( testme2 == nom::Coords::null ) return EXIT_SUCCESS;
+  if ( testme1.isNull() ) return NOM_EXIT_FAILURE;
+  if ( testme2.isNull() ) return NOM_EXIT_SUCCESS;
+  if ( testme2 == nom::Coords::null ) return NOM_EXIT_SUCCESS;
 
   testme1 = testme2;
 
-  if ( testme1.isNull() ) return EXIT_SUCCESS;
-  if ( testme2.isNull() ) return EXIT_SUCCESS;
-  if ( testme2 == nom::Coords::null ) return EXIT_SUCCESS;
+  if ( testme1.isNull() ) return NOM_EXIT_SUCCESS;
+  if ( testme2.isNull() ) return NOM_EXIT_SUCCESS;
+  if ( testme2 == nom::Coords::null ) return NOM_EXIT_SUCCESS;
 
-  return EXIT_SUCCESS;
+  return NOM_EXIT_SUCCESS;
 }
 
-nom::int32 do_coords_test2 ( void ) { return EXIT_SUCCESS; }
-nom::int32 do_coords_test3 ( void ) { return EXIT_SUCCESS; }
-nom::int32 do_coords_test4 ( void ) { return EXIT_SUCCESS; }
+nom::int32 do_coords_test2 ( void ) { return NOM_EXIT_SUCCESS; }
+nom::int32 do_coords_test3 ( void ) { return NOM_EXIT_SUCCESS; }
+nom::int32 do_coords_test4 ( void ) { return NOM_EXIT_SUCCESS; }
 
 nom::int32 main ( nom::int32 args_count, char* args[] )
 {
-  if ( do_color_test1() != EXIT_SUCCESS )
+  if ( do_color_test1() != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Color unit test 1" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
-  if ( do_color_test2() != EXIT_SUCCESS )
+  if ( do_color_test2() != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Color unit test 2" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
-  if ( do_color_test3() != EXIT_SUCCESS )
+  if ( do_color_test3() != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Color unit test 3" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
-  if ( do_color_test4() != EXIT_SUCCESS )
+  if ( do_color_test4() != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Color unit test 4" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
-  if ( do_coords_test1() != EXIT_SUCCESS )
+  if ( do_coords_test1() != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Coords unit test 1" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
-  if ( do_coords_test2() != EXIT_SUCCESS )
+  if ( do_coords_test2() != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Coords unit test 2" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
-  if ( do_coords_test3() != EXIT_SUCCESS )
+  if ( do_coords_test3() != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Coords unit test 3" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
-  if ( do_coords_test4() != EXIT_SUCCESS )
+  if ( do_coords_test4() != NOM_EXIT_SUCCESS )
   {
     NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Coords unit test 4" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
   NOM_LOG_INFO ( NOM_UNIT_TEST, "Math Unit Tests: Pass!" );
-  return EXIT_SUCCESS;
+  return NOM_EXIT_SUCCESS;
 }

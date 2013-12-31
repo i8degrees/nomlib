@@ -30,9 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// \brief Dump information on rendering capabilities of a device
 
 #include <iostream>
-#include <string>
-#include <cstdlib>
-#include <cassert>
 
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
@@ -50,7 +47,7 @@ int main ( int argc, char* argv[] )
   if ( nom::nomlib_init ( argc, argv ) == false )
   {
     NOM_LOG_ERR ( APP_NAME, "Could not initialize nomlib." );
-    exit ( EXIT_FAILURE );
+    exit ( NOM_EXIT_FAILURE );
   }
 
   nom::uint32 window_flags = SDL_WINDOW_HIDDEN;
@@ -58,11 +55,11 @@ int main ( int argc, char* argv[] )
   if ( window.create ( APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, window_flags ) == false )
   {
     NOM_LOG_ERR ( APP_NAME, "Could not create a window." );
-    exit ( EXIT_FAILURE );
+    exit ( NOM_EXIT_FAILURE );
   }
 
   renderer_info = window.caps();
   std::cout << renderer_info << std::endl;
 
-  return EXIT_SUCCESS;
+  return NOM_EXIT_SUCCESS;
 }

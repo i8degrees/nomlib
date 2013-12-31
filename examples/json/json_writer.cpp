@@ -54,7 +54,7 @@ int main ( int argc, char* argv[] )
   if ( nom::nomlib_init ( argc, argv ) == false )
   {
     nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
-    exit ( EXIT_FAILURE );
+    exit ( NOM_EXIT_FAILURE );
   }
 
   node1[0]["HelloWorld"] = "I am a string!";
@@ -188,10 +188,10 @@ int main ( int argc, char* argv[] )
   if ( writer.save ( OUTPUT_JSON_FILENAME, root ) == false )
   {
     nom::DialogMessageBox ( APP_NAME, "Could not save output JSON file: " + OUTPUT_JSON_FILENAME );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
   nom::DialogMessageBox ( APP_NAME, "Success! The resulting JSON output has been saved at: " + OUTPUT_JSON_FILENAME );
 */
-  return EXIT_SUCCESS;
+  return NOM_EXIT_SUCCESS;
 }

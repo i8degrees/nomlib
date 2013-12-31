@@ -52,7 +52,7 @@ int main ( int argc, char* argv[] )
   if ( nom::nomlib_init ( argc, argv ) == false )
   {
     nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
-    exit ( EXIT_FAILURE );
+    exit ( NOM_EXIT_FAILURE );
   }
 
   // Existing sprite sheet
@@ -62,7 +62,7 @@ int main ( int argc, char* argv[] )
   if ( cursors.frames() < 1 )
   {
     nom::DialogMessageBox ( APP_NAME, "Error: Sprite sheet " + RESOURCE_SPRITE_SHEET + " appears to be empty!" );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
   // Creating a new sprite sheet!
@@ -80,10 +80,10 @@ int main ( int argc, char* argv[] )
   if ( faces.save ( OUTPUT_SHEET_FILENAME ) == false )
   {
     nom::DialogMessageBox ( APP_NAME, "Could not save sprite sheet file: " + OUTPUT_SHEET_FILENAME );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
   nom::DialogMessageBox ( APP_NAME, "Sprite sheet saved at: " + OUTPUT_SHEET_FILENAME );
 
-  return EXIT_SUCCESS;
+  return NOM_EXIT_SUCCESS;
 }

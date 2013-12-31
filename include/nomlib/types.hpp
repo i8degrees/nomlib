@@ -81,4 +81,9 @@ static_assert ( sizeof ( nom::ulong ) == 8, "nom::ulong" );
 /// Something is *seriously* wrong if this fails!
 static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
 
+/// Additional type definitions
+
+const nom::sint NOM_EXIT_FAILURE = 1; // EXIT_FAILURE from cstdlib headers
+const nom::sint NOM_EXIT_SUCCESS = 0; // EXIT_SUCCESS from cstdlib headers
+
 #endif // NOMLIB_TYPES_HEADERS defined

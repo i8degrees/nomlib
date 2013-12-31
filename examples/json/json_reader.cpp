@@ -54,19 +54,19 @@ int main ( int argc, char* argv[] )
   if ( nom::nomlib_init ( argc, argv ) == false )
   {
     nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
-    exit ( EXIT_FAILURE );
+    exit ( NOM_EXIT_FAILURE );
   }
 
   if ( parser.load ( RESOURCE_JSON_EXAMPLE1_GOOD, root ) == false )
   {
     nom::DialogMessageBox ( APP_NAME, "Could not parse input resource file: " + RESOURCE_JSON_EXAMPLE1_GOOD );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
   if ( root.isObject() == false )
   {
     nom::DialogMessageBox ( APP_NAME, "Invalid JSON: does not begin as an object declaration." );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
   if ( root["User"]["UserName"].isNull() == false )
@@ -76,7 +76,7 @@ int main ( int argc, char* argv[] )
   else
   {
     nom::DialogMessageBox ( APP_NAME, "Could not parse root node 'User' parameter 'UserName' with input file: " + RESOURCE_JSON_EXAMPLE1_GOOD );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
   if ( root["User2"]["UserName"].isNull() == false )
@@ -86,8 +86,8 @@ int main ( int argc, char* argv[] )
   else
   {
     nom::DialogMessageBox ( APP_NAME, "Could not parse root node 'User2' parameter 'UserName' with input file: " + RESOURCE_JSON_EXAMPLE1_GOOD );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
-  return EXIT_SUCCESS;
+  return NOM_EXIT_SUCCESS;
 }

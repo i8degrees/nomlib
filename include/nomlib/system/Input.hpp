@@ -92,13 +92,13 @@ enum PSXBUTTON
 class Input
 {
   public:
-    typedef SDL_Event EventType;
+    typedef SDL_Event Event;
     typedef std::unique_ptr<SDL_Joystick, void (*)(SDL_Joystick*)> JoystickUniquePtr;
 
     Input ( void );
     virtual ~Input ( void );
 
-    virtual void HandleInput ( SDL_Event* event );
+    virtual void HandleInput ( Event* event );
   protected:
     virtual void onUserEvent ( uint32 type, int32 code, void* data1, void* data2 );
 

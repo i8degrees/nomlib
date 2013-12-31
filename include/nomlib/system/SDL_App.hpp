@@ -48,6 +48,8 @@ namespace nom {
 class SDL_App: public Input
 {
   public:
+    typedef SDL_Event EventType;
+
     SDL_App ( void );
     virtual ~SDL_App ( void );
 
@@ -58,9 +60,8 @@ class SDL_App: public Input
 
     virtual void onEvent ( EventType* );
 
-    bool isRunning ( void );
-    void Running ( void );
-    void Quit ( void );
+    bool running ( void );
+    void quit ( void );
 
     uint32 ticks ( void );
 

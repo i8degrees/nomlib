@@ -40,7 +40,7 @@ NOM_LOG_TRACE ( NOM );
   }
 
   atexit ( IMG_Quit );
-  this->app_state = false;
+  this->app_state = true;
 
   this->set_show_fps ( true );
 
@@ -61,16 +61,11 @@ NOM_LOG_TRACE ( NOM );
   }
 }
 
-bool SDL_App::isRunning ( void )
+bool SDL_App::running ( void )
 {
-  if ( this->app_state ) return true;
+  if ( this->app_state == true ) return true;
 
   return false;
-}
-
-void SDL_App::Running ( void )
-{
-  this->app_state = true;
 }
 
 bool SDL_App::onInit ( void )
@@ -78,14 +73,14 @@ bool SDL_App::onInit ( void )
   return true;
 }
 
-void SDL_App::Quit ( void )
+void SDL_App::quit ( void )
 {
   this->app_state = false;
 }
 
 void SDL_App::onQuit ( void )
 {
-  this->Quit();
+  this->quit();
 }
 
 void SDL_App::onEvent ( EventType* event )

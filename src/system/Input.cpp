@@ -71,7 +71,7 @@ NOM_LOG_TRACE ( NOM );
 }
 
 
-void Input::HandleInput ( EventType* event )
+void Input::HandleInput ( Event* event )
 {
   switch ( event->type )
   {

@@ -202,8 +202,6 @@ NOM_DUMP_VAR(this->sprite.size().x); // FIXME: should be 26 (sprite sheet width)
       this->ani_sprite.set_position ( this->ui_frame.position().x + this->ui_frame.size().x + 26, this->ui_frame.position().y );
 NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
 
-      this->Running(); // If all is well, here goes nothing!
-
       return true;
     } // onInit
 
@@ -218,7 +216,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
       // 1. Events
       // 2. Logic
       // 3. Render
-      while ( this->isRunning() == true )
+      while ( this->running() == true )
       {
         while ( this->PollEvents ( &this->event ) )
         {
@@ -289,7 +287,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           }
         }
 
-      } // end while isRunning() is true
+      } // end while SDL_App::running() is true
       return NOM_EXIT_SUCCESS;
     } // Run
 
@@ -417,7 +415,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
     nom::FPS fps[MAXIMUM_WINDOWS];
 
     /// Input events
-    SDL_Event event;
+    Input::Event event;
 
     /// nom::ui::MessageBox utilizes nom::GrayFrame (which uses nom::Line),
     /// nom::Gradient and nom::IFont

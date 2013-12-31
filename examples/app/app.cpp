@@ -185,11 +185,11 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       this->font.setText ( "Use arrow keys to change cursor!" );
       this->font.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, window_size.y - 100 ) );
 
-      // Setup a gradient fill for initializing the ui_frame object with as a
-      // background
-      this->gradient.setStartColor ( NOM_COLOR4U_GRAY );
-      this->gradient.setEndColor ( NOM_COLOR4U_LIGHT_GRAY );
-      this->gradient.setFillDirection ( nom::Gradient::FillDirection::Left );
+      // Initialize the background to use in our ui_frame object as a gradient
+      // filled background
+      this->gradient.set_start_color ( NOM_COLOR4U_GRAY );
+      this->gradient.set_end_color ( NOM_COLOR4U_LIGHT_GRAY );
+      this->gradient.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
       // Setup our fancy dangled user interface frame
       this->ui_frame = nom::ui::MessageBox ( ( window_size.x - 200 ) / 2, ( window_size.y - 48 ) / 2, 200, 48, nom::ui::FrameStyle::Gray, this->gradient );

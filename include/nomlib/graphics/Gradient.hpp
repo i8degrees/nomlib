@@ -88,28 +88,28 @@ class Gradient:
                       Gradient::FillDirection direction
                     );
 
-    const Coords getPosition ( void ) const;
-    const Coords getSize ( void ) const;
-    Color4u getStartColor ( void ) const;
-    Color4u getEndColor ( void ) const;
-    Gradient::FillDirection getFillDirection ( void ) const;
+    const Coords position ( void ) const;
+    const Coords size ( void ) const;
+    Color4u start_color ( void ) const;
+    Color4u end_color ( void ) const;
+    Gradient::FillDirection fill_direction ( void ) const;
     bool dithering ( void ) const;
 
-    void setStartColor ( const Color4u& starting_color );
-    void setEndColor ( const Color4u& ending_color );
-    void reverseColors ( void );
-    void setFillDirection ( Gradient::FillDirection direction );
-    void setPosition ( int32 x, int32 y );
-    void setSize ( int32 width, int32 height );
-    void setMargins ( int32 x, int32 y );
-    void enableDithering ( bool toggle );
+    void set_start_color ( const Color4u& starting_color );
+    void set_end_color ( const Color4u& ending_color );
+    void reverse_colors ( void );
+    void set_fill_direction ( Gradient::FillDirection direction );
+    void set_position ( int32 x, int32 y );
+    void set_size ( int32 width, int32 height );
+    void set_margins ( int32 x, int32 y );
+    void enable_dithering ( bool toggle );
 
     void update ( void );
     void draw ( RenderTarget target ) const;
 
   private:
-    void strategyTopDown ( void );
-    void strategyLeftToRight ( void );
+    void strategy_top_down ( void );
+    void strategy_left_right ( void );
 
     /// Drawables vector containing rectangle objects to be blit
     ///
@@ -117,7 +117,7 @@ class Gradient:
     /// what are one pixel wide / high line segments in a row single row
     /// iteration. Imaginably, performance would hardly measure a difference,
     /// but nevertheless.
-    IDrawable::UniqueDrawables rectangles;
+    IDrawable::UniqueDrawables rectangles_;
 
     /// The starting & ending colors (nom::Color objects) used in the gradient.
     ///
@@ -126,24 +126,23 @@ class Gradient:
     /// this threshold will also allow us to start thinking about other gradient
     /// types?
     /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
-    Color4u gradient[2];
+    Color4u gradient_[2];
 
     /// Rendering coordinates (X, Y, width & height)
-    Coords coords;
+    Coords coords_;
 
     /// x coordinate offset
-    int32 x_margin;
+    int32 x_margin_;
 
     /// y coordinate offset
-    int32 y_margin;
+    int32 y_margin_;
 
     /// Color fill axis -- X or Y increment
-    enum Gradient::FillDirection fill_direction;
+    enum Gradient::FillDirection fill_direction_;
 
     /// Toggle automatic dithering of colors
-    bool enable_dithering;
+    bool enable_dithering_;
 };
-
 
 } // namespace nom
 
@@ -162,15 +161,15 @@ class Gradient:
 ///
 /// nom::Gradient linear;
 ///
-/// this->linear.setSize ( 64, 64 );
-/// this->linear.setMargins ( 4, 4 );
-/// this->linear.setFillDirection ( nom::FillDirection::Top );
+/// linear.set_size ( 64, 64 );
+/// linear.set_margins ( 4, 4 );
+/// linear.set_fill_direction ( nom::Gradient::FillDirection::Top );
 
-/// this->linear.setStartColor ( nom::Color ( 208, 223, 255 ) );
-/// this->linear.setEndColor ( nom::Color ( 50, 59, 114 ) );
+/// linear.set_start_color ( nom::Color4u ( 208, 223, 255 ) );
+/// linear.set_end_color ( nom::Color4u ( 50, 59, 114 ) );
 
-/// this->linear.setPosition ( 96, 16 );
-/// this->linear.Update();
-/// this->linear.Draw ( video_buffer );
+/// linear.set_position ( 96, 16 );
+/// linear.update();
+/// linear.draw ( window );
 ///
 /// \endcode

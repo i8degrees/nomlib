@@ -46,13 +46,15 @@ Gradient::Gradient  (
                       Color4u gradient_color[2],
                       const Coords& bounds, int32 x_margin, int32 y_margin,
                       Gradient::FillDirection direction
-                    )
-  : gradient {}, coords { bounds },
-  x_margin ( x_margin ), y_margin ( y_margin ), fill_direction ( direction ),
-  enable_dithering ( true )
+                    ) :
+  coords_ { bounds },
+  x_margin_ ( x_margin ),
+  y_margin_ ( y_margin ),
+  fill_direction_ ( direction ),
+  enable_dithering_ ( true )
 {
-  this->setStartColor ( gradient_color[0] );
-  this->setEndColor ( gradient_color[1] );
+  this->set_start_color ( gradient_color[0] );
+  this->set_end_color ( gradient_color[1] );
 }
 /* FIXME
 {
@@ -72,105 +74,105 @@ void Gradient::initialize (
                             Gradient::FillDirection direction
                           )
 {
-  this->setStartColor ( gradient_color[0] );
-  this->setEndColor ( gradient_color[1] );
-  this->setSize ( bounds.width, bounds.height );
-  this->setPosition ( bounds.x, bounds.y );
-  this->setMargins ( x_margin, y_margin );
-  this->setFillDirection ( direction );
+  this->set_start_color ( gradient_color[0] );
+  this->set_end_color ( gradient_color[1] );
+  this->set_size ( bounds.width, bounds.height );
+  this->set_position ( bounds.x, bounds.y );
+  this->set_margins ( x_margin, y_margin );
+  this->set_fill_direction ( direction );
 
   // Internal option
-  this->enableDithering ( true );
+  this->enable_dithering ( true );
 }
 
-const Coords Gradient::getPosition ( void ) const
+const Coords Gradient::position ( void ) const
 {
-  return this->coords;
+  return this->coords_;
 }
 
-const Coords Gradient::getSize ( void ) const
+const Coords Gradient::size ( void ) const
 {
-  return this->coords;
+  return this->coords_;
 }
 
 bool Gradient::dithering ( void ) const
 {
-  return this->enable_dithering;
+  return this->enable_dithering_;
 }
 
-void Gradient::setPosition ( int32 x, int32 y )
+void Gradient::set_position ( int32 x, int32 y )
 {
-  this->coords.x = x;
-  this->coords.y = y;
+  this->coords_.x = x;
+  this->coords_.y = y;
 }
 
-void Gradient::setSize ( int32 width, int32 height )
+void Gradient::set_size ( int32 width, int32 height )
 {
-  this->coords.width = width;
-  this->coords.height = height;
+  this->coords_.width = width;
+  this->coords_.height = height;
 }
 
-Color4u Gradient::getStartColor ( void ) const
+Color4u Gradient::start_color ( void ) const
 {
-  return this->gradient[0];
+  return this->gradient_[0];
 }
 
-Color4u Gradient::getEndColor ( void ) const
+Color4u Gradient::end_color ( void ) const
 {
-  return this->gradient[1];
+  return this->gradient_[1];
 }
 
-void Gradient::setStartColor ( const Color4u& starting_color )
+void Gradient::set_start_color ( const Color4u& starting_color )
 {
-  this->gradient[0] = starting_color;
+  this->gradient_[0] = starting_color;
 }
 
-void Gradient::setEndColor ( const Color4u& ending_color )
+void Gradient::set_end_color ( const Color4u& ending_color )
 {
-  this->gradient[1] = ending_color;
+  this->gradient_[1] = ending_color;
 }
 
-void Gradient::reverseColors ( void )
+void Gradient::reverse_colors ( void )
 {
-  std::swap ( this->gradient[0], this->gradient[1] );
+  std::swap ( this->gradient_[0], this->gradient_[1] );
 }
 
-Gradient::FillDirection Gradient::getFillDirection ( void ) const
+Gradient::FillDirection Gradient::fill_direction ( void ) const
 {
-  return this->fill_direction;
+  return this->fill_direction_;
 }
 
-void Gradient::setFillDirection ( Gradient::FillDirection direction )
+void Gradient::set_fill_direction ( Gradient::FillDirection direction )
 {
-  this->fill_direction = direction;
+  this->fill_direction_ = direction;
 }
 
-void Gradient::setMargins ( int32 x, int32 y )
+void Gradient::set_margins ( int32 x, int32 y )
 {
-  this->x_margin = x;
-  this->y_margin = y;
+  this->x_margin_ = x;
+  this->y_margin_ = y;
 }
 
-void Gradient::enableDithering ( bool toggle )
+void Gradient::enable_dithering ( bool toggle )
 {
-  this->enable_dithering = toggle;
+  this->enable_dithering_ = toggle;
 }
 
-void Gradient::strategyTopDown ( void )
+void Gradient::strategy_top_down ( void )
 {
-  uint32 y_offset = ( this->coords.y + this->coords.height ) - this->y_margin;
+  uint32 y_offset = ( this->coords_.y + this->coords_.height ) - this->y_margin_;
 
-  float currentR = (float) gradient[0].red;
-  float currentG = (float) gradient[0].green;
-  float currentB = (float) gradient[0].blue;
+  float currentR = (float) gradient_[0].red;
+  float currentG = (float) gradient_[0].green;
+  float currentB = (float) gradient_[0].blue;
 
-  float destR = (float) ( gradient[1].red - gradient[0].red )      / ( float ) ( this->coords.height - this->y_margin );
-  float destG = (float) ( gradient[1].green - gradient[0].green )  / ( float ) ( this->coords.height - this->y_margin );
-  float destB = (float) ( gradient[1].blue - gradient[0].blue )    / ( float ) ( this->coords.height - this->y_margin );
+  float destR = (float) ( gradient_[1].red - gradient_[0].red )      / ( float ) ( this->coords_.height - this->y_margin_ );
+  float destG = (float) ( gradient_[1].green - gradient_[0].green )  / ( float ) ( this->coords_.height - this->y_margin_ );
+  float destB = (float) ( gradient_[1].blue - gradient_[0].blue )    / ( float ) ( this->coords_.height - this->y_margin_ );
 
-  for ( uint32 rows = this->coords.y + this->y_margin; rows < y_offset; rows++ )
+  for ( uint32 rows = this->coords_.y + this->y_margin_; rows < y_offset; rows++ )
   {
-    this->rectangles.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( this->coords.x + this->x_margin, rows, this->coords.width - this->x_margin, 1 ), Color4u ( currentR, currentG, currentB ) ) ) );
+    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( this->coords_.x + this->x_margin_, rows, this->coords_.width - this->x_margin_, 1 ), Color4u ( currentR, currentG, currentB ) ) ) );
 
     if ( this->dithering() )
     {
@@ -181,21 +183,21 @@ void Gradient::strategyTopDown ( void )
   } // end blit loop
 }
 
-void Gradient::strategyLeftToRight ( void )
+void Gradient::strategy_left_right ( void )
 {
-  uint32 x_offset = ( this->coords.x + this->coords.width ) - this->x_margin;
+  uint32 x_offset = ( this->coords_.x + this->coords_.width ) - this->x_margin_;
 
-  float currentR = (float) gradient[0].red;
-  float currentG = (float) gradient[0].green;
-  float currentB = (float) gradient[0].blue;
+  float currentR = (float) gradient_[0].red;
+  float currentG = (float) gradient_[0].green;
+  float currentB = (float) gradient_[0].blue;
 
-  float destR = (float) ( gradient[1].red - gradient[0].red )      / ( float ) ( this->coords.width - this->x_margin );
-  float destG = (float) ( gradient[1].green - gradient[0].green )  / ( float ) ( this->coords.width - this->x_margin );
-  float destB = (float) ( gradient[1].blue - gradient[0].blue )    / ( float ) ( this->coords.width - this->x_margin );
+  float destR = (float) ( gradient_[1].red - gradient_[0].red )      / ( float ) ( this->coords_.width - this->x_margin_ );
+  float destG = (float) ( gradient_[1].green - gradient_[0].green )  / ( float ) ( this->coords_.width - this->x_margin_ );
+  float destB = (float) ( gradient_[1].blue - gradient_[0].blue )    / ( float ) ( this->coords_.width - this->x_margin_ );
 
-  for ( uint32 rows = this->coords.x + this->x_margin; rows < x_offset; rows++ )
+  for ( uint32 rows = this->coords_.x + this->x_margin_; rows < x_offset; rows++ )
   {
-    this->rectangles.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( rows, this->coords.y + this->y_margin, 1, this->coords.height - this->y_margin ), Color4u ( currentR, currentG, currentB ) ) ) );
+    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( rows, this->coords_.y + this->y_margin_, 1, this->coords_.height - this->y_margin_ ), Color4u ( currentR, currentG, currentB ) ) ) );
 
     if ( this->dithering() )
     {
@@ -208,35 +210,34 @@ void Gradient::strategyLeftToRight ( void )
 
 void Gradient::update ( void )
 {
-  this->rectangles.clear();
+  this->rectangles_.clear();
 
-  if ( this->getFillDirection() == FillDirection::Top )
+  if ( this->fill_direction() == FillDirection::Top )
   {
-    this->strategyTopDown();
+    this->strategy_top_down();
   }
-  else if ( this->getFillDirection() == FillDirection::Bottom )
+  else if ( this->fill_direction() == FillDirection::Bottom )
   {
-    this->reverseColors();
-    this->strategyTopDown();
+    this->reverse_colors();
+    this->strategy_top_down();
   }
-  else if ( this->getFillDirection() == FillDirection::Left )
+  else if ( this->fill_direction() == FillDirection::Left )
   {
-    this->strategyLeftToRight();
+    this->strategy_left_right();
   }
-  else if ( this->getFillDirection() == FillDirection::Right )
+  else if ( this->fill_direction() == FillDirection::Right )
   {
-    this->reverseColors();
-    this->strategyLeftToRight();
+    this->reverse_colors();
+    this->strategy_left_right();
   }
 }
 
 void Gradient::draw ( RenderTarget target ) const
 {
-  for ( auto idx = 0; idx != this->rectangles.size(); ++idx )
+  for ( auto idx = 0; idx != this->rectangles_.size(); ++idx )
   {
-    this->rectangles[idx]->draw ( target );
+    this->rectangles_[idx]->draw ( target );
   }
 }
-
 
 } // namespace nom

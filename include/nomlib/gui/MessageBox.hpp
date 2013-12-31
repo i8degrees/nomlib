@@ -107,3 +107,57 @@ class MessageBox:
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::MessageBox
+/// \ingroup gui
+///
+///         [DESCRIPTION STUB]
+///
+/// Usage example:
+/// \code
+///
+/// #include <nomlib/graphics.hpp>
+
+/// // Position & size declarations
+/// const nom::int WINDOW_WIDTH = 768;
+/// const nom::int WINDOW_HEIGHT = 448;
+/// const nom::int INFO_BOX_WIDTH = 352;
+/// const nom::int INFO_BOX_HEIGHT = 48;
+/// const nom::int INFO_BOX_ORIGIN_X = ( WINDOW_WIDTH - INFO_BOX_WIDTH ) / 2;
+/// const nom::int INFO_BOX_ORIGIN_Y = ( WINDOW_HEIGHT - INFO_BOX_HEIGHT ) / 2;
+
+/// // Object declarations
+/// nom::Label label;
+/// nom::Gradient linear;
+/// nom::ui::MessageBox info_box;
+
+/// // Initialize the background to use in our info_box object as a gradient filled
+/// // background
+/// linear.set_start_color ( nom::Color4u ( 67, 67, 67, 255 ) );
+/// linear.set_end_color ( nom::Color4u ( 99, 99, 99, 255 ) );
+/// linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
+
+/// // Initialize our info_box object
+/// info_box = nom::ui::MessageBox  (
+///                                   INFO_BOX_ORIGIN_X,
+///                                   INFO_BOX_ORIGIN_Y,
+///                                   INFO_BOX_WIDTH,
+///                                   INFO_BOX_HEIGHT,
+///                                   // Use the built-in "gray" frame style
+///                                   nom::ui::FrameStyle::Gray,
+///                                   // Use a custom background style object
+///                                   linear
+///                                 );
+
+/// info_box.set_window_title_font ( &bitmap_font );
+/// info_box.set_label_font ( &bitmap_font );
+/// info_box.set_label ( "Hello, world!" );
+/// info_box.set_window_title ( "INFO" );
+/// info_box.set_label_text_alignment ( nom::Label::TextAlignment::MiddleCenter );
+
+/// info_box.update();
+
+/// // Render our info_box from a previously initialized nom::Window object
+/// info_box.draw ( window );
+///
+/// \endcode

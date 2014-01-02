@@ -163,8 +163,7 @@ class SpriteSheet
 /// Usage example:
 /// \code
 ///
-/// #include <nomlib/graphics/SpriteSheet.hpp>
-/// #include <nomlib/graphics/Sprite.hpp>
+/// #include <nomlib/graphics/graphics.hpp>
 ///
 /// nom::SpriteSheet card_faces_sheet ( "faces.png", 256, 262, 64, 64, 0, 1, 16 );
 /// card_faces_sheet.save( "faces.json" );

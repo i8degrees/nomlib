@@ -52,11 +52,7 @@ File::~File ( void )
 
 const std::string File::extension ( const std::string& file )
 {
-  std::string extension = "\0";
-
-  extension = this->file->extension ( file );
-
-  return extension;
+  return this->file->extension ( file );
 }
 
 int32 File::size ( const std::string& file_path )

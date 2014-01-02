@@ -36,8 +36,15 @@ WinFile::~WinFile ( void ) {}
 
 const std::string WinFile::extension ( const std::string& file )
 {
-  // Stub
-    return "";
+  std::string extension = "\0";
+
+  if ( file.find_last_of ( "." ) != std::string::npos ) // match found
+  {
+    extension = file.substr ( file.find_last_of (".") + 1 );
+  }
+
+  // if we reach this point, return false (a null terminated string)
+  return extension;
 }
 
 int32 WinFile::size ( const std::string& file_path )

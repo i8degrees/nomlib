@@ -48,7 +48,11 @@ class Transformable:
     const Coords getSize ( void ) const;
     void set_position ( int32 x, int32 y );
     void set_position ( int32 x, int32 y, int32 width, int32 height );
+
+    /// \deprecated Use nom::Transformable::set_position(const IntRect& coords)
     void set_position ( const Coords& coords );
+
+    void set_position ( const IntRect& coords );
 
     void setSize ( int32 width, int32 height );
     void setSize ( const Coords& size );

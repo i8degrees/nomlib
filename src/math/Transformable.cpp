@@ -65,6 +65,12 @@ void Transformable::set_position ( const Coords& coords )
   this->set_position ( coords.x, coords.y, coords.width, coords.height );
 }
 
+void Transformable::set_position ( const IntRect& coords )
+{
+  this->set_position ( coords.x, coords.y, coords.w, coords.h );
+  //this->set_position ( coords.x, coords.y );
+}
+
 void Transformable::setSize ( int32 width, int32 height )
 {
   // FIXME

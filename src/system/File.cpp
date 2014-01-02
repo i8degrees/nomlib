@@ -82,5 +82,9 @@ bool File::set_path ( const std::string& path )
   return true;
 }
 
+const std::string File::basename ( const std::string& filename )
+{
+  return this->file->basename(filename);
+}
 
 } // namespace nom

@@ -107,5 +107,17 @@ NOM_LOG_ERR ( NOM, "Unknown error on attempt to change working directory to: " +
   return true;
 }
 
+const std::string UnixFile::basename ( const std::string& filename )
+{
+  size_t pos = 0;
+  pos = filename.find_last_of ( ".", PATH_MAX );
+
+  // If no matches are found, return the input filename back to the end-user.
+  if ( pos == std::string::npos ) return filename; // Failure
+
+  // Bingo! A match was found -- return everything leading up to --
+  // the last '.' character found (excluding the dot).
+  return filename.substr ( 0, pos );
+}
 
 } // namespace nom

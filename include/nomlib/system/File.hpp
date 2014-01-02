@@ -86,6 +86,9 @@ class File
     /// chdir(2) wrapper
     bool set_path ( const std::string& path );
 
+    /// Re-implements nom::IFile::basename
+    const std::string basename ( const std::string& filename );
+
   private:
     std::shared_ptr<IFile> file;
 };

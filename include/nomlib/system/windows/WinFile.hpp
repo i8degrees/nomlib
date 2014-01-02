@@ -69,6 +69,11 @@ class WinFile: public IFile
     const std::string currentPath ( void );
 
     bool set_path ( const std::string& path );
+
+    /// Implements nom::IFile::basename
+    ///
+    /// \remarks See nom::IFile::basename
+    const std::string basename ( const std::string& filename );
 };
 
 

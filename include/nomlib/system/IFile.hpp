@@ -73,6 +73,14 @@ class IFile
 
     /// chdir(2) wrapper
     virtual bool set_path ( const std::string& path ) = 0;
+
+    /// Return the base file name
+    ///
+    /// \param filename   Complete file name (including its suffix/extension)
+    ///
+    /// \returns          File name path with its file extension removed upon
+    ///                   success -- unmodified input filename on failure.
+    virtual const std::string basename ( const std::string& filename ) = 0;
 };
 
 

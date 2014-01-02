@@ -60,6 +60,7 @@ typedef unsigned long long int uint64;
 typedef unsigned char uchar;
 typedef signed int sint;
 typedef unsigned int uint;
+typedef std::size_t size_t;
 
 } // namespace nom
 

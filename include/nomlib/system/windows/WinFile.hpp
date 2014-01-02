@@ -49,25 +49,38 @@ class WinFile: public IFile
     WinFile ( void );
     ~WinFile ( void );
 
-    /// Stub
+    /// Implements nom::IFile::extension
+    ///
+    /// \remarks See nom::IFile::extension
     const std::string extension ( const std::string& file );
 
-    /// Stub
+    /// Implements nom::IFile::size
+    ///
+    /// \remarks See nom::IFile::size
     int32 size ( const std::string& file_path );
 
-    /// Stub
+    /// Implements nom::IFile::exists
+    ///
+    /// \remarks See nom::IFile::exists
     bool exists ( const std::string& file_path );
 
-    /// Emulates POSIX dirname() function -- see 'man 3 dirname'.
-    /// \todo We might consider using this in the UnixFile 
-    /// implementation as well, in order to ensure consistency?
+    /// Implements nom::IFile::path
     ///
-    /// \todo This should probably be renamed to dirname ...
+    /// Emulates POSIX dirname() function; see man (3) dirname.
+    ///
+    /// \todo This should probably be renamed to dirname?
+    ///
+    /// Implements nom::IFile::path
     const std::string path ( const std::string& dir_path );
 
-    /// Stub
+    /// Implements nom::IFile::currentPath
+    ///
+    /// \remarks See nom::IFile::currentPath
     const std::string currentPath ( void );
 
+    /// Implements nom::IFile::set_path
+    ///
+    /// \remarks See nom::IFile::set_path
     bool set_path ( const std::string& path );
 
     /// Implements nom::IFile::basename

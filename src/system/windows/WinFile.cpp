@@ -50,13 +50,13 @@ const std::string WinFile::extension ( const std::string& file )
 int32 WinFile::size ( const std::string& file_path )
 {
   // Stub
-    return 0;
+  return 0;
 }
 
 bool WinFile::exists ( const std::string& file_path )
 {
   // Stub
-    return false;
+  return false;
 }
 
 const std::string WinFile::path ( const std::string& dir_path )
@@ -66,11 +66,11 @@ const std::string WinFile::path ( const std::string& dir_path )
   uint32 pos = dir_path.find_last_of ( p.native(), PATH_MAX );
 
   // If no matches are found, this means the file path given is actually a base
-  // file name path, without any directory path at all. 
+  // file name path, without any directory path at all.
   // See also 'man 3 basename'
   if ( pos == std::string::npos ) return ".";
-  
-  // A match was found -- return only the directory path leading up to the 
+
+  // A match was found -- return only the directory path leading up to the
   // file name path, without a a trailing path separator.
   return dir_path.substr ( 0, pos );
 }

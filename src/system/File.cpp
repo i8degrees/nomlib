@@ -32,23 +32,14 @@ namespace nom {
 
 File::File ( void )
 {
-  this->file.reset();
-
-#if defined (NOM_PLATFORM_OSX) || defined (NOM_PLATFORM_LINUX)
-
-  this->file = std::shared_ptr<IFile> ( new UnixFile() );
-
-#elif defined (NOM_PLATFORM_WINDOWS)
-
-  this->file = std::shared_ptr<IFile> ( new WinFile() );
-
-#endif
+  #if defined (NOM_PLATFORM_WINDOWS) // Use Windows APIs
+    this->file = std::shared_ptr<IFile> ( new WinFile() );
+  #else // Assume POSIX compatibility; use POSIX / BSD & GNU APIs
+    this->file = std::shared_ptr<IFile> ( new UnixFile() );
+  #endif
 }
 
-File::~File ( void )
-{
-  this->file.reset();
-}
+File::~File ( void ) {}
 
 const std::string File::extension ( const std::string& file )
 {
@@ -77,9 +68,7 @@ const std::string File::currentPath ( void )
 
 bool File::set_path ( const std::string& path )
 {
-  if ( this->file->set_path ( path ) == false ) return false;
-
-  return true;
+  return this->file->set_path(path);
 }
 
 const std::string File::basename ( const std::string& filename )

@@ -39,7 +39,9 @@ const std::string UnixFile::extension ( const std::string& file )
   std::string extension = "\0";
 
   if ( file.find_last_of ( "." ) != std::string::npos ) // match found
+  {
     extension = file.substr ( file.find_last_of (".") + 1 );
+  }
 
    // if we reach this point, return false (a null terminated string)
   return extension;
@@ -61,8 +63,10 @@ bool UnixFile::exists ( const std::string& file_path )
 {
   struct stat file;
 
-  if ( stat ( file_path.c_str(), &file ) != 0 || !S_ISREG ( file.st_mode ))
+  if ( stat ( file_path.c_str(), &file ) != 0 || ! S_ISREG (file.st_mode) )
+  {
     return false;
+  }
 
   return true;
 }

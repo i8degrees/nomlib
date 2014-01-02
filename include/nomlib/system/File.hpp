@@ -56,34 +56,22 @@ class File
     File ( void );
     ~File ( void );
 
-    /// Returns the file extension of the input file path
-    ///
-    /// Returns a null terminated string on err
-    ///
+    /// Re-implements nom::IFile::extension
     const std::string extension ( const std::string& file );
 
-    /// Uses stat(2) to determine input file size (in bytes)
-    ///
-    /// -1 on err
+    /// Re-implements nom::IFile::size
     int32 size ( const std::string& file_path );
 
-    /// Uses stat(2) to determine if the input file exists
-    ///
+    /// Re-implements nom::IFile::exists
     bool exists ( const std::string& file_path );
 
-    /// dirname(3) wrapper
-    ///
-    /// Extract the directory portion of a pathname
-    ///
-    /// dir_path is arbitrarily limited to 1024 characters.
+    /// Re-implements nom::IFile::path
     const std::string path ( const std::string& dir_path );
 
-    /// getcwd(3) wrapper
-    ///
-    /// Returned path is arbitrarily limited to 1024 characters.
+    /// Re-implements nom::IFile::currentPath
     const std::string currentPath ( void );
 
-    /// chdir(2) wrapper
+    /// Re-implements nom::IFile::set_path
     bool set_path ( const std::string& path );
 
     /// Re-implements nom::IFile::basename

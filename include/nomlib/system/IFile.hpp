@@ -46,29 +46,27 @@ class IFile
 
     /// Returns the file extension of the input file path
     ///
-    /// Returns a null terminated string on err
-    ///
+    /// \returns a null terminated string on err
     virtual const std::string extension ( const std::string& file ) = 0;
 
     /// Uses stat(2) to determine input file size (in bytes)
     ///
-    /// -1 on err
+    /// \returns -1 on err
     virtual int32 size ( const std::string& file_path ) = 0;
 
     /// Uses stat(2) to determine if the input file exists
-    ///
     virtual bool exists ( const std::string& file_path ) = 0;
 
     /// dirname(3) wrapper
     ///
     /// Extract the directory portion of a pathname
     ///
-    /// dir_path is arbitrarily limited to 1024 characters.
+    /// \remarks dir_path is arbitrarily limited to 1024 characters.
     virtual const std::string path ( const std::string& dir_path ) = 0;
 
     /// getcwd(3) wrapper
     ///
-    /// Returned path is arbitrarily limited to 1024 characters.
+    /// \remarks Returned path is arbitrarily limited to 1024 characters.
     virtual const std::string currentPath ( void ) = 0;
 
     /// chdir(2) wrapper

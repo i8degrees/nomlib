@@ -124,7 +124,7 @@ const Point2i Renderer::size ( void ) const
 
   if ( SDL_GetRendererOutputSize ( this->renderer(), &size.x, &size.y ) != 0 )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return Point2i( -1, -1 );
     //return Point2i::null;
   }

@@ -56,37 +56,36 @@ class UnixFile: public IFile
     UnixFile ( void );
     ~UnixFile ( void );
 
-    /// Returns the file extension of the input file path
+    /// Implements nom::IFile::extension
     ///
-    /// Returns a null terminated string on err
-    ///
+    /// \remarks See nom::IFile::extension
     const std::string extension ( const std::string& file );
 
-    /// Uses stat(2) to determine input file size (in bytes)
+    /// Implements nom::IFile::size
     ///
-    /// -1 on err
+    /// \remarks See nom::IFile::size
     int32 size ( const std::string& file_path );
 
-    /// Uses stat(2) to determine if the input file exists
+    /// Implements nom::IFile::exists
     ///
+    /// \remarks See nom::IFile::exists
     bool exists ( const std::string& file_path );
 
-    /// dirname(3) wrapper
+    /// Implements nom::IFile::path
     ///
-    /// Extract the directory portion of a pathname
-    ///
-    /// dir_path is arbitrarily limited to the POSIX standard of 256 characters
-    /// for maximum cross-platform portability.
+    /// \remarks See nom::IFile::path
     const std::string path ( const std::string& dir_path );
 
-    /// getcwd(3) wrapper
+    /// Implements nom::IFile::currentPath
     ///
-    /// Return path is arbitrarily limited to the POSIX standard of 256
-    /// characters for maximum cross-platform portability.
+    /// \remarks See nom::IFile::currentPath
     const std::string currentPath ( void );
 
-    /// chdir(2) wrapper
+    /// Implements nom::IFile::set_path
+    ///
+    /// \remarks See nom::IFile::set_path
     bool set_path ( const std::string& path );
+
     /// Implements nom::IFile::basename
     ///
     /// \remarks See nom::IFile::basename

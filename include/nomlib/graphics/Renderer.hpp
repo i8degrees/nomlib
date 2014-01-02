@@ -86,7 +86,9 @@ class Renderer
 
     /// Obtain the renderer's output size (width & height) in pixels
     ///
-    /// \return Point2i::null on ERR
+    /// \returns  nom::Point2i object filled in with determined output values
+    ///           (x = width, y = height; pixels) on success -- nom::Point2i
+    ///           object with negative 1 (-1) x & y values on failure.
     const Point2i size ( void ) const;
 
     /// Obtain the renderer's clipping rectangle bounds (X, Y, width & height)

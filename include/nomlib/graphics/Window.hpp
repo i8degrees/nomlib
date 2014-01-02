@@ -44,8 +44,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/VideoMode.hpp"
 #include "nomlib/graphics/Renderer.hpp"
 #include "nomlib/graphics/Image.hpp"
-#include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/graphics/RendererInfo.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
+#include "nomlib/system/File.hpp"
 
 namespace nom {
 
@@ -245,9 +246,15 @@ class Window:
 
     /// Save a screen shot of the window as a PNG file
     ///
-    /// \param filename     Absolute or relative file path
+    /// \param    filename  Absolute or relative file path
     ///
-    /// \fixme Pixels pitch calculation
+    /// \returns  std::string containing the complete file path to the saved
+    ///           image on success -- a null-terminated string on failure.
+    ///
+    /// \remarks  This method automatically appends a unique ID onto the end of
+    ///           the given filename string.
+    ///
+    /// \fixme    Pixels pitch calculation (see screenshot.initialize call)
     bool save_screenshot ( const std::string& filename ) const;
 
     /// Set the current Window as the active rendering context; this must be

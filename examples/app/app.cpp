@@ -360,17 +360,11 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
             {
               if ( this->window[idx].save_screenshot( OUTPUT_SCREENSHOT_FILENAME ) == false )
               {
-                nom::DialogMessageBox( APP_NAME,  "Could not save screenshot: " +
-                                                  OUTPUT_SCREENSHOT_FILENAME );
+                nom::DialogMessageBox( APP_NAME,  "Could not save screenshot");
                 break;
-              }
-
-              // Success!
-              NOM_LOG_INFO( NOM,  "The screenshot has been saved at: " +
-                                  OUTPUT_SCREENSHOT_FILENAME );
-              break;
-            }
-          }
+              } // end save_screenshot err check
+            } // end window_id check
+          } // end for loop
           break;
         }
 

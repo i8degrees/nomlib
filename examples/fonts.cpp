@@ -203,12 +203,8 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
         {
           if ( this->window.save_screenshot( OUTPUT_SCREENSHOT_FILENAME ) == false )
           {
-            nom::DialogMessageBox( APP_NAME,  "Could not save screenshot: " + OUTPUT_SCREENSHOT_FILENAME );
-            break;
+            nom::DialogMessageBox( APP_NAME,  "Could not save screenshot");
           }
-
-          // Success!
-          NOM_LOG_INFO( NOM,  "The screenshot has been saved at: " + OUTPUT_SCREENSHOT_FILENAME );
           break;
         }
 

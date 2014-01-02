@@ -418,6 +418,12 @@ void Window::set_maximum_window_size ( int max_width, int max_height )
 bool Window::save_screenshot ( const std::string& filename ) const
 {
   Image screenshot;
+  File fp; // Using File::exists
+
+  // We create a new file path deriving from the given filename string by
+  // appending a unique identifier onto the end of the given filename string.
+  std::string file_name, basename, prefix, timestamp, extension;
+
   Point2i renderer_size = Renderer::size(); // Width & height of target in pixels
   SDL_SURFACE::UniquePtr buffer ( nullptr, priv::FreeSurface );
 
@@ -437,10 +443,17 @@ bool Window::save_screenshot ( const std::string& filename ) const
 
   screenshot.initialize( Renderer::pixels(), renderer_size.x, renderer_size.y, bpp, (renderer_size.x * 4), red_mask, green_mask, blue_mask, alpha_mask );
 
-  if ( screenshot.save_png( filename ) == false )
-  {
-    return false;
-  }
+  // TODO: additional err checking -- basename & extension can fail!
+  basename = fp.basename(filename);
+  prefix = "_";
+  timestamp = std::to_string( nom::ticks() ); // SDL_GetTicks
+  extension = fp.extension(filename);
+  file_name = basename + prefix + timestamp + "." + extension;
+
+  if ( screenshot.save_png( file_name ) == false ) return false;
+
+  // Success!
+  NOM_LOG_INFO( NOM, "The screenshot file is saved at: " + file_name );
 
   return true;
 }

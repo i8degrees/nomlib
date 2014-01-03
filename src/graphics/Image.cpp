@@ -52,14 +52,17 @@ NOM_LOG_ERR ( NOM, IMG_GetError() );
   atexit ( IMG_Quit );
 }
 
-Image::Image ( const Image& other )  : image_ { other.image(), priv::FreeSurface }
+Image::Image ( const Image& copy )  :
+  image_ { copy.image(), priv::FreeSurface },
+  position_ { copy.position_ }
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE ( NOM );
 }
 
 Image& Image::operator = ( const Image& other )
 {
   this->image_ = other.image_;
+  this->position_ = other.position_;
 
   return *this;
 }

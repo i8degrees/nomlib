@@ -63,7 +63,7 @@ class Image
     Image ( uint32 img_flags );
 
     /// Copy constructor
-    Image ( const Image& other );
+    Image ( const Image& copy );
 
     /// Copy assignment constructor
     Image& operator = ( const Image& other );

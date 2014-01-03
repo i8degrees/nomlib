@@ -80,7 +80,9 @@ class Label: public Transformable
     ~Label ( void );
 
     /// Construct an object deriving from IFont
-    Label ( /*const*/ IFont& font );
+    Label ( const IFont& font );
+
+    bool initialize ( const IFont& font );
 
     Label::RawPtr get ( void );
 
@@ -123,9 +125,8 @@ class Label: public Transformable
     /// Get label's text character size (in pixels?)
     uint text_size ( void ) const;
 
-    /// Set a new font (deriving from IFont).
-    //void set_font ( IFont& font );
-    void set_font ( /*const*/ IFont& font );
+    /// Set a new font, deriving from IFont.
+    void set_font ( const IFont& font );
 
     /// Set new label text
     void set_text ( const std::string& text );
@@ -173,11 +174,6 @@ class Label: public Transformable
 */
 };
 
-namespace priv {
-
-//void Free_IFont ( IFont* ptr );
-
-} // namespace priv
 } // namespace nom
 
 #endif // include guard defined

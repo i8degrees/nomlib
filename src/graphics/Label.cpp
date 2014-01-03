@@ -31,10 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 Label::Label ( void ) :
-  font_ ( nullptr ), text_ (), text_size_ ( 14 ),
+  font_ { nullptr },
+  text_size_ { 14 },
   color_ { NOM_COLOR4U_WHITE },
-  style_ ( Label::FontStyle::Regular ),
-  alignment_ ( Label::TextAlignment::MiddleLeft )
+  style_ { Label::FontStyle::Regular },
+  alignment_ { Label::TextAlignment::MiddleLeft }
 {
   NOM_LOG_TRACE ( NOM );
 }
@@ -44,15 +45,28 @@ Label::~Label ( void )
   NOM_LOG_TRACE ( NOM );
 }
 
-Label::Label ( /*const*/ IFont& font )  :
-//Label::Label ( IFont& font )  :
-  font_ { &font },
-  text_ (), text_size_ ( 14 ),
+Label::Label ( const IFont& font )  :
+  text_size_ { 14 },
   color_ { NOM_COLOR4U_WHITE },
-  style_ ( Label::FontStyle::Regular ),
-  alignment_ ( Label::TextAlignment::MiddleLeft )
+  style_ { Label::FontStyle::Regular },
+  alignment_ { Label::TextAlignment::MiddleLeft }
 {
   NOM_LOG_TRACE ( NOM );
+
+  this->initialize ( font );
+}
+
+bool Label::initialize ( const IFont& font )
+{
+  this->font_ = std::shared_ptr<IFont>( font.clone() );
+
+  if ( this->valid() == false || this->render_font_.initialize ( this->font()->image() ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not initialize label from given IFont" );
+    return false;
+  }
+
+  return true;
 }
 
 Label::RawPtr Label::get ( void )
@@ -211,16 +225,13 @@ enum Label::TextAlignment Label::alignment ( void ) const
   return this->alignment_;
 }
 
-//void Label::set_font ( IFont& font )
-void Label::set_font ( /*const*/ IFont& font )
+void Label::set_font ( const IFont& font )
 {
-  if ( this->font() != &font )
-  {
-    this->font_ = std::shared_ptr<IFont>(font.clone() );
-    this->render_font_.initialize ( this->font()->image() );
+  if ( this->font() == &font ) return;
 
-    // Update logic
-  }
+  this->initialize ( font );
+
+  // Update logic
 }
 
 void Label::set_text ( const std::string& text )

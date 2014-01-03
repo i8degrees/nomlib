@@ -31,8 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 TrueTypeFont::TrueTypeFont ( void ) :
-  font_ ( nullptr ),
-  type_ ( IFont::FileType::BitmapFont ),
+  type_ ( IFont::FileType::TrueTypeFont ),
   font_size_ ( 12 ),
   newline_ ( 0 ),
   spacing_ ( 0 ),
@@ -205,7 +204,6 @@ NOM_LOG_ERR ( NOM, "Failed to set font width & height." );
 
 const IntRect& TrueTypeFont::glyph ( uint32 character )
 {
-  // TODO
   return this->glyphs_[ character ].bounds;
 }
 

@@ -36,11 +36,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 BitmapFont::BitmapFont ( void ) :
-  sheet_width ( 16 ),
-  sheet_height ( 16 ),
-  newline_ ( 0 ),
-  spacing_ ( 0 ),
-  type_ ( IFont::FileType::BitmapFont )
+  sheet_width_ { 16 },
+  sheet_height_ { 16 },
+  newline_ { 0 },
+  spacing_ { 0 },
+  type_ { IFont::FileType::BitmapFont }
 {
   NOM_LOG_TRACE ( NOM );
 }
@@ -52,8 +52,8 @@ BitmapFont::~BitmapFont ( void )
 
 BitmapFont::BitmapFont ( const BitmapFont& copy )
 {
-  this->sheet_width = copy.sheet_width;
-  this->sheet_height = copy.sheet_height;
+  this->sheet_width_ = copy.sheet_width();
+  this->sheet_height_ = copy.sheet_height();
   this->bitmap_font_ = copy.bitmap_font_;
   this->glyphs_ = copy.glyphs();
   this->newline_ = copy.newline_;
@@ -116,6 +116,31 @@ void BitmapFont::set_newline ( uint newline )
   this->newline_ = newline;
 }
 
+bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
+                        bool use_cache
+                      )
+{
+  // I don't understand why RGBA8888 is necessary here, but it is the only pixel
+  // format that I have found that works when we are initializing a
+  // nom::Texture (SDL_Texture) from a nom::Image (SDL_Surface).
+  if ( this->bitmap_font_.load ( filename, SDL_PIXELFORMAT_RGBA8888 ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not load bitmap font image file: " + filename );
+    return false;
+  }
+
+  this->bitmap_font_.set_colorkey ( colorkey, true );
+
+  // Attempt to build font metrics
+  if ( this->build() == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not build bitmap font metrics" );
+    return false;
+  }
+
+  return true;
+}
+
 bool BitmapFont::build ( void )
 {
   uint32 tile_width = 0;
@@ -138,14 +163,14 @@ NOM_ASSERT ( this->bitmap_font_.valid() );
                             this->bitmap_font_.pixel_format()
                           );
 
-  tile_width = this->bitmap_font_.width() / this->sheet_width;
-  tile_height = this->bitmap_font_.height() / this->sheet_height;
+  tile_width = this->bitmap_font_.width() / this->sheet_width();
+  tile_height = this->bitmap_font_.height() / this->sheet_height();
   top = tile_height;
   baseA = tile_height;
 
-  for ( int32 rows = 0; rows < this->sheet_width; rows++ )
+  for ( int32 rows = 0; rows < this->sheet_width(); rows++ )
   {
-    for ( int32 cols = 0; cols < this->sheet_height; cols++ )
+    for ( int32 cols = 0; cols < this->sheet_height(); cols++ )
     {
       // Set character offsets
       this->glyphs_[ currentChar ].bounds.x = tile_width * cols;
@@ -292,29 +317,14 @@ NOM_ASSERT ( this->bitmap_font_.valid() );
   return true;
 }
 
-bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
-                        bool use_cache
-                      )
+sint BitmapFont::sheet_width ( void ) const
 {
-  // I don't understand why RGBA8888 is necessary here, but it is the only pixel
-  // format that I have found that works when we are initializing a
-  // nom::Texture (SDL_Texture) from a nom::Image (SDL_Surface).
-  if ( this->bitmap_font_.load ( filename, SDL_PIXELFORMAT_RGBA8888 ) == false )
-  {
-    NOM_LOG_ERR ( NOM, "Could not load bitmap font image file: " + filename );
-    return false;
-  }
+  return this->sheet_width_;
+}
 
-  this->bitmap_font_.set_colorkey ( colorkey, true );
-
-  // Attempt to build font metrics
-  if ( this->build() == false )
-  {
-    NOM_LOG_ERR ( NOM, "Could not build bitmap font metrics" );
-    return false;
-  }
-
-  return true;
+sint BitmapFont::sheet_height ( void ) const
+{
+  return this->sheet_height_;
 }
 
 } // namespace nom

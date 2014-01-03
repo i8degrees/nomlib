@@ -109,15 +109,14 @@ class BitmapFont: public IFont
     /// recalculate the character sizes, coordinate origins, spacing, etc.
     bool build ( void );
 
+    sint sheet_width ( void ) const;
+    sint sheet_height ( void ) const;
+
     /// Width -- in pixels -- of overall texture atlas sheet
-    ///
-    /// \todo Change type to int
-    sint sheet_width;
+    sint sheet_width_;
 
     /// Height -- in pixels -- of overall texture atlas sheet
-    ///
-    /// \todo Change type to int
-    sint sheet_height;
+    sint sheet_height_;
 
     /// Our bitmap font's bitmap atlas
     Image bitmap_font_;

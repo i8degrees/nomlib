@@ -39,10 +39,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/IFont.hpp"
 #include "nomlib/graphics/Glyph.hpp"
-#include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Rect.hpp"
-#include "nomlib/math/Color4.hpp"
 #include "nomlib/graphics/Texture.hpp"
+#include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/Window.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 

@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 Glyph::Glyph ( void ) :
-  advance_ ( 0 )
+  advance ( 0 )
 {}
 
 Glyph::~Glyph ( void )

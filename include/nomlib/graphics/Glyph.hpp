@@ -47,15 +47,13 @@ struct Glyph
   ~Glyph ( void );
 
   /// Offset to move horizontally to the next character
-  int advance_;
+  int advance;
 
   /// Bounding rectangle coordinates of the glyph (relative to the baseline?)
-  ///
-  /// \todo Rename to bounds_ ???
   IntRect bounds;
 
   /// Bounding rectangle coordinates of the glyph inside font's bitmap / texture
-  IntRect texture_bounds_;
+  IntRect texture_bounds;
 };
 
 } // namespace nom

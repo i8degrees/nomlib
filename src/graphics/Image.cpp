@@ -110,6 +110,11 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
+Image::RawPtr Image::get ( void ) const
+{
+  return this;
+}
+
 SDL_SURFACE::RawPtr Image::image ( void ) const
 {
   return this->image_.get();

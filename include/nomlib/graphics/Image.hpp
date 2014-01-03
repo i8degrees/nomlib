@@ -49,6 +49,9 @@ namespace nom {
 class Image
 {
   public:
+    typedef const Image* RawPtr;
+    typedef std::shared_ptr<Image> SharedPtr;
+
     /// Default constructor -- initializes to sane defaults.
     Image ( void );
 
@@ -64,6 +67,8 @@ class Image
 
     /// Copy assignment constructor
     Image& operator = ( const Image& other );
+
+    Image::RawPtr get ( void ) const;
 
     /// Initialize an image surface using the data from an existing pixel buffer
     /// source.

@@ -42,6 +42,7 @@ NOM_LOG_TRACE ( NOM );
 Texture::~Texture ( void )
 {
 NOM_LOG_TRACE ( NOM );
+  delete this->pixels_;
 }
 
 Texture::Texture ( const Texture& other ) :

@@ -122,6 +122,7 @@ set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${NOMLIB_RESOURCES_DIR}/doxygen
 set ( BUNDLE_TEMPLATE_PLIST "${CMAKE_TEMPLATE_PATH}/Info.plist.in" )
 set ( BUNDLE_NAME "nomlib" )
 set ( BUNDLE_ICON "nomlib.icns" )
+# TODO: Rename identifier prefix to net.i8degrees
 set ( BUNDLE_IDENTIFIER "org.i8degrees.${PROJECT_NAME}" )
 
 # Installation paths; CMAKE_INSTALL_PREFIX will be appended to these.

@@ -29,17 +29,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
-#include <cstdlib>
-#include <cassert>
 
 #include <nomlib/graphics.hpp>
+#include <nomlib/gui.hpp>
 #include <nomlib/system.hpp>
 
 /// File path name of the resources directory; this must be a relative file path.
 const std::string APP_RESOURCES_DIR = "Resources";
 
 const nom::Path p;
+const std::string RESOURCE_ICON = APP_RESOURCES_DIR + p.native() + "icon.png";
 const std::string RESOURCE_BITMAP_FONT = APP_RESOURCES_DIR + p.native() + "VIII.png";
+const std::string RESOURCE_BITMAP_SMALL_FONT = APP_RESOURCES_DIR + p.native() + "VIII_small.png";
+const std::string RESOURCE_TRUETYPE_FONT = APP_RESOURCES_DIR + p.native() + "arial.ttf";
 
 /// Name of our application.
 const std::string APP_NAME = "nom::BitmapFont";
@@ -54,7 +56,7 @@ const nom::int32 WINDOW_HEIGHT = 448;
 ///
 /// Default path should resolve to the same directory as the app example
 /// executable
-const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot_fonts.png";
+const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
 
 /// \brief nom::BitmapFont usage example
 class App: public nom::SDL_App
@@ -80,47 +82,77 @@ class App: public nom::SDL_App
 
     bool onInit ( void )
     {
-      nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
-
+      nom::uint32 window_flags = 0; //SDL_WINDOW_RESIZABLE
       if ( nom::set_hint ( SDL_HINT_RENDER_VSYNC, "0" ) == false )
       {
 NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
       }
-
+/*
+      if ( nom::set_hint ( SDL_HINT_RENDER_SCALE_QUALITY, "Nearest" ) == false )
+      {
+        NOM_LOG_INFO ( NOM, "Could not set scale quality." );
+      }
+*/
       if ( this->window.create ( APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, window_flags ) == false )
       {
         return false;
       }
+      this->window_size = this->window.size();
 
-      nom::Point2i window_size = this->window.size();
-/*
       if ( this->window.set_window_icon ( RESOURCE_ICON ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load window icon: " + RESOURCE_ICON );
         return false;
       }
-*/
-      if ( this->bfont.load ( RESOURCE_BITMAP_FONT, nom::Color4u(255, 0, 255, 0) ) == false )
+
+      if ( this->bitmap_font.load ( RESOURCE_BITMAP_FONT, NOM_COLOR4U_MAGENTA ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
         return false;
       }
-      this->bfont.setPosition ( nom::Coords ( ( window_size.x - this->bfont.getFontWidth() ) / 2, ( window_size.y - this->bfont.getFontHeight() ) / 2 ) );
-      this->bfont.setText ( "Bitmap Font" );
-/*
-      if ( this->font.load ( RESOURCE_TRUETYPE_FONT, NOM_COLOR4U_WHITE ) == false )
+
+      if ( this->bitmap_small_font.load ( RESOURCE_BITMAP_SMALL_FONT, NOM_COLOR4U_MAGENTA ) == false )
+      {
+        nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_SMALL_FONT );
+        return false;
+      }
+
+      if ( this->truetype_font.load ( RESOURCE_TRUETYPE_FONT, NOM_COLOR4U_WHITE ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
         return false;
       }
-*/
+
 /*
-      this->font.setFontSize ( 18 );
-      this->font.setRenderingStyle ( nom::IFont::RenderStyle::Blended );
-      this->font.setColor ( NOM_COLOR4U_WHITE );
-      this->font.setText ( "Use arrow keys to change cursor!" );
-      this->font.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, window_size.y - 100 ) );
+      this->truetype_font.setFontSize ( 18 );
+      this->truetype_font.setRenderingStyle ( nom::IFont::RenderStyle::Blended );
+      this->truetype_font.setColor ( NOM_COLOR4U_WHITE );
+      this->truetype_font.setText ( "Use arrow keys to change cursor!" );
+      this->truetype_font.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, window_size.y - 100 ) );
 */
+
+NOM_DUMP_VAR(this->label.type());
+NOM_DUMP_VAR(this->label_title.type());
+      this->label.set_font ( this->bitmap_font );
+      this->label_title.set_font ( this->bitmap_small_font );
+
+      this->label.set_position  ( ( this->window_size.w - this->label.width() ) / 2,
+                                  ( this->window_size.h - this->label.height() ) / 2
+                                );
+
+      this->label_title.set_position  ( ( this->window_size.w - this->label_title.width() ) / 2,
+                                        ( this->window_size.h - this->label_title.height() ) / 8
+                                      );
+
+      this->label.set_text ( "I am a bitmap font!" );
+      //this->label_title.set_text ( "INFO" );
+      this->label.set_color ( NOM_COLOR4U_WHITE );
+      this->label_title.set_color ( NOM_COLOR4U_RED );
+      //this->label.set_style ( nom::Label::FontStyle::Faded );
+      this->label.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
+      //this->label_title.set_alignment ( nom::Label::TextAlignment::MiddleLeft );
+NOM_DUMP_VAR(this->label.type());
+NOM_DUMP_VAR(this->label_title.type());
 
       return true;
     } // onInit
@@ -158,14 +190,10 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
           this->update.restart();
         } // end refresh cycle
 
-        this->bfont.update();
-        //this->font.update();
-
         this->window.fill ( NOM_COLOR4U_PRIMARY_COLORKEY );
 
-        this->bfont.draw ( this->window );
-        //this->font.draw ( this->window );
-      } // end while isRunning() is true
+        this->label.draw ( this->window );
+        this->label_title.draw ( this->window );
       } // end while SDL_App::running() is true
 
       return NOM_EXIT_SUCCESS;
@@ -216,11 +244,10 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
           }
           else if ( this->window.fullscreen() == false )
           {
-            nom::Point2i window_size = this->window.size();
             this->window.toggle_fullscreen();
 
             // Scale window contents up by the new width & height
-            this->window.set_logical_size ( window_size.x, window_size.y );
+            this->window.set_logical_size ( this->window_size.w, this->window_size.h );
           }
         }
         break;
@@ -230,6 +257,7 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
   private:
     /// Window handle
     nom::Window window;
+    nom::Point2i window_size;
 
     /// Interval at which we refresh the frames per second counter
     nom::Timer update;
@@ -240,8 +268,13 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
     /// Input events
     Input::Event event;
 
-    nom::BitmapFont bfont;
-    //nom::TrueTypeFont font;
+    nom::BitmapFont bitmap_font;
+    nom::BitmapFont bitmap_small_font;
+
+    nom::TrueTypeFont truetype_font;
+
+    nom::Label label;
+    nom::Label label_title;
 }; // class App
 
 nom::int32 main ( nom::int32 argc, char* argv[] )
@@ -258,4 +291,3 @@ nom::int32 main ( nom::int32 argc, char* argv[] )
 
   // ...Goodbye cruel world..!
 }
-

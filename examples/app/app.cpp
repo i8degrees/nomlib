@@ -191,13 +191,13 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
 
       this->window[0].set_active();
       nom::Point2i window_size = this->window[0].size();
-
+/*
       this->font.setFontSize ( 18 );
       this->font.setRenderingStyle ( nom::IFont::RenderStyle::Blended );
       this->font.setColor ( NOM_COLOR4U_WHITE );
       this->font.setText ( "Use arrow keys to change cursor!" );
       this->font.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, window_size.y - 100 ) );
-
+*/
       this->label.set_font ( this->bitmap_font );
       this->label_title.set_font ( this->bitmap_small_font );
       this->label.set_text ( "I am a Bitmap Font!" );
@@ -357,7 +357,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           if ( id > 0 ) id--;
 
           this->sprite.set_frame ( id );
-          this->font.setText( "Light weight!" );
+          //this->font.setText( "Light weight!" );
           break;
         }
         case SDLK_RIGHT:
@@ -373,7 +373,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           if ( id < this->sprite.frames() - 1 ) id++;
 
           this->sprite.set_frame ( id );
-          this->font.setText( "Yeah buddy!" );
+          //this->font.setText( "Yeah buddy!" );
           break;
         }
 

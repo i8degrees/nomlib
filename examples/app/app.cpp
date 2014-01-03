@@ -58,12 +58,19 @@ const nom::int32 WINDOW_HEIGHT = 448;
 /// Maximum number of active windows we will attempt to spawn in this example
 const nom::int32 MAXIMUM_WINDOWS = 3;
 
+/// Position & size declarations for our info_box object
+const nom::sint INFO_BOX_WIDTH = 200;
+const nom::sint INFO_BOX_HEIGHT = 48;
+const nom::sint INFO_BOX_ORIGIN_X = ( WINDOW_WIDTH / 2 - INFO_BOX_WIDTH ) / 2;
+const nom::sint INFO_BOX_ORIGIN_Y = ( WINDOW_HEIGHT - INFO_BOX_HEIGHT ) / 2;
+
 /// Relative file path name of our resource example
 const nom::Path p;
 const std::string RESOURCE_ICON = APP_RESOURCES_DIR + p.native() + "icon.png";
 
 const std::string RESOURCE_TRUETYPE_FONT = APP_RESOURCES_DIR + p.native() + "arial.ttf";
 const std::string RESOURCE_BITMAP_FONT = APP_RESOURCES_DIR + p.native() + "VIII.png";
+const std::string RESOURCE_BITMAP_SMALL_FONT = APP_RESOURCES_DIR + p.native() + "VIII_small.png";
 
 const std::string RESOURCE_SPRITE = APP_RESOURCES_DIR + p.native() + "cursors.json";
 //const std::string RESOURCE_SPRITE = APP_RESOURCES_DIR + p.native() + "dots.png";
@@ -135,13 +142,19 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
 
       this->window[0].set_active();
 
-      // FIXME: if ( this->bfont.load ( RESOURCE_BITMAP_FONT, nom::Color4u(110, 144, 190, 255) ) == false )
-      if ( this->bfont.load ( RESOURCE_BITMAP_FONT, nom::Color4u(255, 0, 255, 0) ) == false )
+      // FIXME: if ( this->bitmap_font.load ( RESOURCE_BITMAP_FONT, nom::Color4u(110, 144, 190, 255) ) == false )
+      if ( this->bitmap_font.load ( RESOURCE_BITMAP_FONT, NOM_COLOR4U_MAGENTA ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
         return false;
       }
-      // FIXME: this->bfont.resize ( nom::ResizeAlgorithm::scale2x );
+      // FIXME: this->bitmap_font.resize ( nom::ResizeAlgorithm::scale2x );
+
+      if ( this->bitmap_small_font.load ( RESOURCE_BITMAP_SMALL_FONT, NOM_COLOR4U_MAGENTA ) == false )
+      {
+        nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_SMALL_FONT );
+        return false;
+      }
 
       if ( this->font.load ( RESOURCE_TRUETYPE_FONT, NOM_COLOR4U_WHITE ) == false )
       {
@@ -185,21 +198,37 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       this->font.setText ( "Use arrow keys to change cursor!" );
       this->font.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, window_size.y - 100 ) );
 
-      // Initialize the background to use in our ui_frame object as a gradient
+      this->label.set_font ( this->bitmap_font );
+      this->label_title.set_font ( this->bitmap_small_font );
+      this->label.set_text ( "I am a Bitmap Font!" );
+      this->label.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
+
+      // Initialize the background to use in our info_box object as a gradient
       // filled background
       this->gradient.set_start_color ( NOM_COLOR4U_GRAY );
       this->gradient.set_end_color ( NOM_COLOR4U_LIGHT_GRAY );
       this->gradient.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
-      // Setup our fancy dangled user interface frame
-      this->ui_frame = nom::ui::MessageBox ( ( window_size.x - 200 ) / 2, ( window_size.y - 48 ) / 2, 200, 48, nom::ui::FrameStyle::Gray, this->gradient );
+      // Initialize our info_box object
+      this->info_box = nom::ui::MessageBox  (
+                                              INFO_BOX_ORIGIN_X,
+                                              INFO_BOX_ORIGIN_Y,
+                                              INFO_BOX_WIDTH,
+                                              INFO_BOX_HEIGHT,
+                                              // Use the built-in "gray" frame
+                                              // style
+                                              nom::ui::FrameStyle::Gray,
+                                              // Use a custom background style
+                                              // object
+                                              this->gradient
+                                            );
 
-      this->ui_frame.setLabelFont ( &this->bfont );
-      this->ui_frame.setLabel ( "I am a Bitmap Font!" );
-      this->ui_frame.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
+      this->info_box.set_title ( this->label_title );
+      this->info_box.set_text ( this->label );
+
 NOM_DUMP_VAR(this->sprite.size().x); // FIXME: should be 26 (sprite sheet width), but is 130 (total texture size)
-      this->sprite.set_position ( this->ui_frame.position().x - 26, this->ui_frame.position().y );
-      this->ani_sprite.set_position ( this->ui_frame.position().x + this->ui_frame.size().x + 26, this->ui_frame.position().y );
+      this->sprite.set_position ( this->info_box.position().x - 26, this->info_box.position().y );
+      this->ani_sprite.set_position ( this->info_box.position().x + this->info_box.size().x + 26, this->info_box.position().y );
 NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
 
       return true;
@@ -223,9 +252,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           this->onEvent ( &this->event );
         }
 
-        this->ui_frame.update();
-        this->bfont.update();
-        this->font.update();
+        this->info_box.update();
         this->sprite.update();
         this->ani_sprite.play();
 
@@ -251,12 +278,10 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
         } // end for MAXIMUM_WINDOWS update loop
 
         this->window[0].fill ( NOM_COLOR4U_PRIMARY_COLORKEY );
-        this->ui_frame.draw ( this->window[0] );
+        this->info_box.draw ( this->window[0] );
         this->sprite.draw ( this->window[0], this->deg );
         this->ani_sprite.draw ( this->window[0] );
 
-        this->bfont.draw ( this->window[0] );
-        this->font.draw ( this->window[0] );
 
         this->window[1].fill ( NOM_COLOR4U_BLACK );
         this->background.draw ( this->window[1] );
@@ -413,7 +438,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
 
     /// nom::ui::MessageBox utilizes nom::GrayFrame (which uses nom::Line),
     /// nom::Gradient and nom::IFont
-    nom::ui::MessageBox ui_frame;
+    nom::ui::MessageBox info_box;
 
     /// nom::Gradient utilizes nom::Rectangle
     nom::Gradient gradient;
@@ -421,8 +446,12 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
     /// Texture used as a static background image
     nom::Texture background;
 
-    nom::BitmapFont bfont;
+    nom::BitmapFont bitmap_font;
+    nom::BitmapFont bitmap_small_font;
     nom::TrueTypeFont font;
+
+    nom::Label label;
+    nom::Label label_title;
 
     nom::SpriteBatch sprite;
     nom::AnimatedSprite ani_sprite;

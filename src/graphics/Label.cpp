@@ -42,12 +42,11 @@ Label::Label ( void ) :
 Label::~Label ( void )
 {
   NOM_LOG_TRACE ( NOM );
-  delete font_;
 }
 
 Label::Label ( /*const*/ IFont& font )  :
 //Label::Label ( IFont& font )  :
-  font_ ( &font ),
+  font_ { &font },
   text_ (), text_size_ ( 14 ),
   color_ { NOM_COLOR4U_WHITE },
   style_ ( Label::FontStyle::Regular ),
@@ -56,27 +55,28 @@ Label::Label ( /*const*/ IFont& font )  :
   NOM_LOG_TRACE ( NOM );
 }
 
-enum IFont::FileType Label::type ( void ) const
+Label::RawPtr Label::get ( void )
 {
-  if ( this->valid() ) return this->font_->type();
-
-  return IFont::FileType::NotDefined;
+  return this;
 }
 
-/*
-const Label::RawPtr Label::get ( void ) const
+IFont::RawPtr Label::font ( void ) const
 {
-  return this->font_;
-  //return this->font_.get();
+  return this->font_.get();
 }
-*/
 
 bool Label::valid ( void ) const
 {
-  if ( this->font_ != nullptr ) return true;
-  //if ( this->get() != nullptr ) return true;
+  if ( this->font() != nullptr ) return true;
 
   return false;
+}
+
+enum IFont::FileType Label::type ( void ) const
+{
+  if ( this->valid() ) return this->font()->type();
+
+  return IFont::FileType::NotDefined;
 }
 
 int Label::width ( void ) const
@@ -84,13 +84,17 @@ int Label::width ( void ) const
   int text_width = 0;
   std::string text_buffer = this->text();
 
-  if ( this->valid() == false ) return -1;
+  if ( this->valid() == false )
+  {
+    NOM_LOG_ERR( NOM, "Invalid label font for width calculation" );
+    return -1;
+  }
 
   for ( uint32 char_pos = 0; char_pos < text_buffer.length(); ++char_pos )
   {
     if ( text_buffer[ char_pos ] == ' ' )
     {
-      text_width += this->font_->spacing();
+      text_width += this->font()->spacing();
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
@@ -106,19 +110,21 @@ int Label::width ( void ) const
     }
     else
     {
-      text_width += this->font_->glyph(text_buffer[ char_pos ]).width + 1;
+      text_width += this->font()->glyph(text_buffer[ char_pos ]).width + 1;
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
         NOM_DUMP_VAR ( char_pos );
         NOM_DUMP_VAR ( text_buffer[ char_pos ] );
-        NOM_DUMP_VAR ( this->font_->glyph(text_buffer[ char_pos ]).width + 1 );
-        //NOM_DUMP_VAR ( this->glyphs [ ascii_char ].bounds.width + 1 );
-        NOM_DUMP_VAR ( text_width );
+        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[ char_pos ]).width + 1 );
       #endif
 
     }
   } // end for loop
+
+  #if defined (NOM_DEBUG_LABEL)
+    NOM_DUMP_VAR ( text_width );
+  #endif
 
   return text_width;
 }
@@ -128,13 +134,17 @@ int Label::height ( void ) const
   int text_height = 0;
   std::string text_buffer = this->text();
 
-  if ( this->valid() == false ) return -1;
+  if ( this->valid() == false )
+  {
+    NOM_LOG_ERR( NOM, "Invalid label font for height calculation" );
+    return -1;
+  }
 
   for ( uint32 char_pos = 0; char_pos < text_buffer.length(); ++char_pos )
   {
     if ( text_buffer[ char_pos ] == '\n' )
     {
-      text_height += this->font_->newline();
+      text_height += this->font()->newline();
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
@@ -146,18 +156,20 @@ int Label::height ( void ) const
     }
     else
     {
-      text_height = this->font_->glyph(text_buffer[ char_pos ]).height;
+      text_height = this->font()->glyph(text_buffer[ char_pos ]).height;
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
         NOM_DUMP_VAR ( char_pos );
         NOM_DUMP_VAR ( text_buffer[ char_pos ] );
-        NOM_DUMP_VAR ( this->font_->glyph(text_buffer[ char_pos ]).height );
-        //NOM_DUMP_VAR ( this->glyphs[ ascii_char ].bounds.height );
-        NOM_DUMP_VAR ( text_height );
+        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[ char_pos ]).height );
       #endif
     }
   }
+
+  #if defined (NOM_DEBUG_LABEL)
+    NOM_DUMP_VAR ( text_height );
+  #endif
 
   return text_height;
 }
@@ -202,12 +214,10 @@ enum Label::TextAlignment Label::alignment ( void ) const
 //void Label::set_font ( IFont& font )
 void Label::set_font ( /*const*/ IFont& font )
 {
-  if ( this->font_ != &font )
-  //if ( this->get() != &font )
+  if ( this->font() != &font )
   {
-    this->font_ = &font;
-    this->render_font_.initialize ( this->font_->image() );
-    //this->font_.reset ( &font );
+    this->font_ = std::shared_ptr<IFont>(font.clone() );
+    this->render_font_.initialize ( this->font()->image() );
 
     // Update logic
   }
@@ -269,42 +279,14 @@ void Label::set_alignment ( enum Label::TextAlignment align )
   }
 }
 
-void Label::update ( void )
-{
-  // No font has been loaded -- nothing to draw!
-  if ( this->valid() == false ) return;
-
-  // Text string to draw is empty -- nothing to draw!
-  if ( this->text().length() < 1 ) return;
-
-  //this->font_->update();
-  switch ( style_ )
-  {
-    default: break;
-
-    case FontStyle::Regular:
-    case FontStyle::Bold:
-    case FontStyle::Italic:
-    case FontStyle::Underlined:
-      // Do nothing stub
-    break;
-
-    /// Text effect utilizing alpha channels for the appearance of gray text
-    case FontStyle::Faded:
-    {
-      if ( this->render_font_.set_alpha ( 150 ) == true )
-      {
-        this->style_ = Label::FontStyle::Faded;
-      }
-      break;
-    }
-  } // end switch
-}
-
 void Label::draw ( RenderTarget target ) const
 {
   // No font has been loaded -- nothing to draw!
-  if ( ! this->valid() ) return;
+  if ( ! this->valid() )
+  {
+    NOM_LOG_ERR( NOM, "Invalid label font" );
+    return;
+  }
 
   // Text string to draw is empty -- nothing to draw!
   if ( this->text().length() < 1 ) return;
@@ -345,20 +327,20 @@ void Label::draw ( RenderTarget target ) const
     if ( this->text()[show] == ' ' )
     {
       //Move over
-      x_offset += this->font_->spacing();
+      x_offset += this->font()->spacing();
     }
 
     // If the current character is a newline
     else if( this->text()[show] == '\n' )
     {
       //Move down and back over to the beginning of line
-      y_offset += this->font_->newline();
+      y_offset += this->font()->newline();
       x_offset = this->position_.x;
     }
     // If the current character is a tab
     else if( this->text()[show] == '\t' )
     {
-      x_offset += this->font_->spacing();
+      x_offset += this->font()->spacing();
     }
     else
     {
@@ -366,12 +348,12 @@ void Label::draw ( RenderTarget target ) const
       uint32 ascii = static_cast<uint32>( this->text()[show] );
 
       this->render_font_.set_position ( Point2i ( x_offset, y_offset ) );
-      this->render_font_.set_bounds ( this->font_->glyph(ascii) );
+      this->render_font_.set_bounds ( this->font()->glyph(ascii) );
 
       this->render_font_.draw ( target.renderer() );
 
       // Move over the width of the character with one pixel of padding
-      x_offset += ( this->font_->glyph(ascii).width ) + 1;
+      x_offset += ( this->font()->glyph(ascii).width ) + 1;
     } // end else
   } // end for loop
 }
@@ -400,6 +382,38 @@ TODO */
 TODO */
 
   return true;
+}
+
+void Label::update ( void )
+{
+  // No font has been loaded -- nothing to draw!
+  if ( this->valid() == false ) return;
+
+  // Text string to draw is empty -- nothing to draw!
+  if ( this->text().length() < 1 ) return;
+
+  //this->font_->update();
+  switch ( style_ )
+  {
+    default: break;
+
+    case FontStyle::Regular:
+    case FontStyle::Bold:
+    case FontStyle::Italic:
+    case FontStyle::Underlined:
+      // Do nothing stub
+    break;
+
+    /// Text effect utilizing alpha channels for the appearance of gray text
+    case FontStyle::Faded:
+    {
+      if ( this->render_font_.set_alpha ( 150 ) == true )
+      {
+        this->style_ = Label::FontStyle::Faded;
+      }
+      break;
+    }
+  } // end switch
 }
 
 } // namespace nom

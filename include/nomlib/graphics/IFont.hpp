@@ -33,59 +33,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Color4.hpp"
-#include "nomlib/math/Coords.hpp"
-#include "nomlib/graphics/Texture.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/graphics/Glyph.hpp"
 
 namespace nom {
 
-class IFont/*:
-              public IDrawable*/
+class IFont
 {
   public:
-    /// Text effect styling
-    ///
-    /// \todo REMOVE
-/*
-    enum FontStyle
-    {
-      Regular = 0,
-      Bold = 1,
-      Italic = 2,
-      Underlined = 3,
-      Faded = 4
-    };
-*/
+    typedef IFont* RawPtr;
+    typedef std::shared_ptr<IFont> SharedPtr;
 
-    /// Text alignment
-    ///
-    /// \todo REMOVE
-/*
-    enum TextAlignment
-    {
-      TopLeft = 0,
-      TopCenter,
-      TopRight,
-      MiddleLeft,
-      MiddleCenter,
-      MiddleRight,
-      BottomLeft,
-      BottomCenter,
-      BottomRight
-    };
-*/
-    /// Text rendering qualities
-    ///
-    /// \todo REMOVE
-/*
-    enum RenderStyle
-    {
-      NotImplemented = 0,
-      Solid,
-      Shaded,
-      Blended
-    };
-*/
     enum FileType
     {
       NotDefined = 0,
@@ -94,14 +52,9 @@ class IFont/*:
       UserDefined = 3,
     };
 
-    typedef IFont* RawPtr;
-    typedef std::unique_ptr<IFont> UniquePtr;
-    typedef std::shared_ptr<IFont> SharedPtr;
-
     IFont ( void ) {}
     virtual ~IFont ( void ) {}
-
-    //virtual IFont::SharedPtr clone ( void ) const = 0;
+    virtual IFont::SharedPtr clone ( void ) const = 0;
 /*
     virtual bool load (
                         const std::string& filename, const Color4u& colorkey,
@@ -160,7 +113,7 @@ NOM_LOG_ERR ( NOM, "Method not implemented." );
       return false;
     }
 */
-    virtual const IntRect& glyph ( uint32 ) = 0;
+    virtual const IntRect& glyph ( uint32 character ) = 0;
     virtual SDL_SURFACE::RawPtr image ( void ) const = 0;
     virtual enum IFont::FileType type ( void ) const = 0;
     /// \todo This method should be part of the *required* implementation

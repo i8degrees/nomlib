@@ -49,10 +49,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief TrueType fonts renderer
-class TrueTypeFont:
-                    public IFont
+class TrueTypeFont: public IFont
 {
   public:
+    typedef TrueTypeFont* RawPtr;
+    typedef std::shared_ptr<TrueTypeFont> SharedPtr;
+
     /// Default constructor; we initialize the SDL_ttf extension here
     TrueTypeFont ( void );
 
@@ -62,6 +64,12 @@ class TrueTypeFont:
     /// SDL_App destructs long before TrueTypeFont does in TTcards, which
     /// doesn't allow us to free our font resources here properly.
     ~TrueTypeFont ( void );
+
+    /// Copy constructor
+    TrueTypeFont ( const TrueTypeFont& copy );
+
+    /// Construct an new, identical instance from the existing
+    virtual IFont::SharedPtr clone ( void ) const;
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
@@ -144,13 +152,6 @@ class TrueTypeFont:
     bool use_cache_;
 };
 
-namespace priv {
-
-/// \todo FIXME; we need to figure out how to free this resource when we are
-/// using it within the MessageBox class -- we are leaking kilobytes as-is.
-void Free_TrueTypeFont ( TrueTypeFont* ptr );
-
-} // namespace priv
 } // namespace nom
 
 #endif // include guard defined

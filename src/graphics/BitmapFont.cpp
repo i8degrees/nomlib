@@ -50,6 +50,22 @@ BitmapFont::~BitmapFont ( void )
   NOM_LOG_TRACE ( NOM );
 }
 
+BitmapFont::BitmapFont ( const BitmapFont& copy )
+{
+  this->sheet_width = copy.sheet_width;
+  this->sheet_height = copy.sheet_height;
+  this->bitmap_font_ = copy.bitmap_font_;
+  this->glyphs_ = copy.glyphs();
+  this->newline_ = copy.newline_;
+  this->spacing_ = copy.spacing_;
+  this->type_ = copy.type_;
+}
+
+IFont::SharedPtr BitmapFont::clone ( void ) const
+{
+  return BitmapFont::SharedPtr ( new BitmapFont ( *this ) );
+}
+
 bool BitmapFont::valid ( void ) const
 {
   if ( this->bitmap_font_.valid() == true ) return true;
@@ -70,6 +86,19 @@ SDL_SURFACE::RawPtr BitmapFont::image ( void ) const
 uint BitmapFont::spacing ( void ) const
 {
   return this->spacing_;
+}
+
+const Glyph::GlyphMap& BitmapFont::glyphs ( void ) const
+{
+  return this->glyphs_;
+}
+
+const IntRect& BitmapFont::glyph ( uint32 character )
+{
+  //uint8 ascii = 0;
+  //std::istringstream i ( glyph );
+  //i >> ascii;
+  return this->glyphs_[ character ].bounds;
 }
 
 void BitmapFont::set_spacing ( uint spaces )
@@ -119,10 +148,11 @@ NOM_ASSERT ( this->bitmap_font_.valid() );
     for ( int32 cols = 0; cols < this->sheet_height; cols++ )
     {
       // Set character offsets
-      this->glyphs[ currentChar ].bounds.x = tile_width * cols;
-      this->glyphs[ currentChar ].bounds.y = tile_height * rows;
-      this->glyphs[ currentChar ].bounds.width = tile_width;
-      this->glyphs[ currentChar ].bounds.height = tile_height;
+      this->glyphs_[ currentChar ].bounds.x = tile_width * cols;
+      this->glyphs_[ currentChar ].bounds.y = tile_height * rows;
+      this->glyphs_[ currentChar ].bounds.width = tile_width;
+      this->glyphs_[ currentChar ].bounds.height = tile_height;
+
 
       //Find Left Side; go through pixel columns
       for ( uint32 pCol = 0; pCol < tile_width; pCol++ )
@@ -138,7 +168,7 @@ NOM_ASSERT ( this->bitmap_font_.valid() );
           if( this->bitmap_font_.pixel ( pX, pY ) != background_color )
           {
             //Set the x offset
-            this->glyphs[ currentChar ].bounds.x = pX;
+            this->glyphs_[ currentChar ].bounds.x = pX;
 
             //Break the loops
             pCol = tile_width;
@@ -161,7 +191,7 @@ NOM_ASSERT ( this->bitmap_font_.valid() );
           if ( this->bitmap_font_.pixel ( pX, pY ) != background_color )
           {
             //Set the width
-            this->glyphs[ currentChar ].bounds.width = ( pX - this->glyphs[ currentChar ].bounds.x ) + 1;
+            this->glyphs_[ currentChar ].bounds.width = ( pX - this->glyphs_[ currentChar ].bounds.x ) + 1;
 
             //Break the loops
             pCol_w = -1;
@@ -237,25 +267,25 @@ NOM_ASSERT ( this->bitmap_font_.valid() );
   this->set_newline ( baseA - top );
 
   // Loop off excess top pixels
-  for ( uint32 t = 0; t < 256; t++ )
+  for ( uint32 p = 0; p < 256; p++ )
   {
-    this->glyphs[ t ].bounds.y += top;
-    this->glyphs[ t ].bounds.height -= top;
+    this->glyphs_[ p ].bounds.y += top;
+    this->glyphs_[ p ].bounds.height -= top;
   }
 
-// Dump table of calculated bitmap character positions
-#if defined (NOM_DEBUG_SDL2_BITMAP_FONT)
-  NOM_DUMP_VAR(this->spacing());
-  NOM_DUMP_VAR(this->newline());
-  for ( uint32 glyph = 0; glyph < 256; ++glyph )
-  {
-    NOM_DUMP_VAR ( glyph );
-    NOM_DUMP_VAR ( this->glyphs[ glyph ].bounds.x );
-    NOM_DUMP_VAR ( this->glyphs[ glyph ].bounds.y );
-    NOM_DUMP_VAR ( this->glyphs[ glyph ].bounds.width );
-    NOM_DUMP_VAR ( this->glyphs[ glyph ].bounds.height );
-  }
-#endif
+  // Dump table of calculated bitmap character positions
+  #if defined (NOM_DEBUG_SDL2_BITMAP_FONT)
+    NOM_DUMP_VAR(this->spacing());
+    NOM_DUMP_VAR(this->newline());
+    for ( uint32 glyph = 0; glyph < 256; ++glyph )
+    {
+      NOM_DUMP_VAR ( glyph );
+      NOM_DUMP_VAR ( this->glyphs_[ glyph ].bounds.x );
+      NOM_DUMP_VAR ( this->glyphs_[ glyph ].bounds.y );
+      NOM_DUMP_VAR ( this->glyphs_[ glyph ].bounds.width );
+      NOM_DUMP_VAR ( this->glyphs_[ glyph ].bounds.height );
+    }
+  #endif
 
   //this->render_font.initialize ( this->bitmap_font_.image() );
 
@@ -286,27 +316,6 @@ bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
 
   return true;
 }
-
-const IntRect& BitmapFont::glyph ( uint32 character )
-{
-  //uint8 ascii = 0;
-  //std::istringstream i ( glyph );
-  //i >> ascii;
-  return this->glyphs[ character ].bounds;
-}
-
-/*
-namespace priv {
-
-void Free_BitmapFont ( BitmapFont* ptr )
-{
-  // Do nothing custom deleter
-  //
-  // FIXME; this is a known bug (memory leak).
-}
-
-} // namespace priv
-*/
 
 } // namespace nom
 

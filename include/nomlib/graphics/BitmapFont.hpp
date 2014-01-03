@@ -42,8 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/IFont.hpp"
 #include "nomlib/graphics/Glyph.hpp"
 #include "nomlib/math/Rect.hpp"
-#include "nomlib/math/Color4.hpp"
-#include "nomlib/graphics/Texture.hpp"
+#include "nomlib/graphics/Image.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
 //#define NOM_DEBUG_SDL2_BITMAP_FONT
@@ -53,11 +52,20 @@ namespace nom {
 class BitmapFont: public IFont
 {
   public:
+    typedef BitmapFont* RawPtr;
+    typedef std::shared_ptr<BitmapFont> SharedPtr;
+
     /// Default constructor
     BitmapFont ( void );
 
     /// Default destructor
     ~BitmapFont ( void );
+
+    /// Copy constructor
+    BitmapFont ( const BitmapFont& copy );
+
+    /// Construct an new, identical instance from the existing
+    virtual IFont::SharedPtr clone ( void ) const;
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
@@ -69,6 +77,10 @@ class BitmapFont: public IFont
     /// Obtain text character spacing width in pixels; this variable is affected
     /// by the total image width size.
     uint spacing ( void ) const;
+
+    const Glyph::GlyphMap& glyphs ( void ) const;
+
+    const IntRect& glyph ( uint32 character );
 
     /// Set new text character spacing width (in pixels) -- this variable is
     /// used during the calculation of the text width; see
@@ -83,8 +95,6 @@ class BitmapFont: public IFont
 
     /// Set new text character spacing height offsets in pixels
     void set_newline ( uint newline );
-
-    const IntRect& glyph ( uint32 character );
 
     /// Loads a new bitmap font from a file
     ///
@@ -113,7 +123,7 @@ class BitmapFont: public IFont
     Image bitmap_font_;
 
     /// individual chars positioning offsets within bitmap_font
-    Glyph::GlyphMap glyphs;
+    Glyph::GlyphMap glyphs_;
 
     /// Height (in pixels) to offset when newline carriage char is encountered
     uint newline_;
@@ -128,13 +138,6 @@ class BitmapFont: public IFont
     enum IFont::FileType type_;
 };
 
-namespace priv {
-
-/// \todo FIXME; we need to figure out how to free this resource when we are
-/// using it within the MessageBox class -- we are leaking kilobytes as-is.
-void Free_BitmapFont ( BitmapFont* ptr );
-
-} // namespace priv
 } // namespace nom
 
 #endif // include guard defined

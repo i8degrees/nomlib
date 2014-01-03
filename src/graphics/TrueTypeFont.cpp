@@ -56,6 +56,24 @@ TrueTypeFont::~TrueTypeFont ( void )
   TTF_Quit();
 }
 
+TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy )
+{
+  this->font_buffer_ = copy.font_buffer_;
+  this->font_ = copy.font_;
+  this->glyphs_ = copy.glyphs_;
+  this->type_ = copy.type_;
+  this->font_size_ = copy.font_size_;
+  this->newline_ = copy.newline_;
+  this->spacing_ = copy.spacing_;
+  this->filename_ = copy.filename_;
+  this->use_cache_ = copy.use_cache_;
+}
+
+IFont::SharedPtr TrueTypeFont::clone ( void ) const
+{
+  return TrueTypeFont::SharedPtr ( new TrueTypeFont ( *this ) );
+}
+
 bool TrueTypeFont::valid ( void ) const
 {
   if ( this->font_.get() != nullptr ) return true;
@@ -288,18 +306,4 @@ NOM_LOG_ERR ( NOM, "Could not build font metrics." );
   return true;
 }
 
-/*
-namespace priv {
-
-void Free_TrueTypeFont ( TrueTypeFont* ptr )
-{
-  // Do nothing custom deleter
-  //
-  // FIXME; this is a known bug (memory leak).
-}
-
-} // namespace priv
-*/
-
 } // namespace nom
-

@@ -44,11 +44,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-class Label:
-            public Transformable
+class Label: public Transformable
 {
   public:
-    typedef IFont::RawPtr RawPtr;
+    typedef Label* RawPtr;
+    typedef std::shared_ptr<Label> SharedPtr;
 
     /// Text effect styling
     enum FontStyle
@@ -80,15 +80,16 @@ class Label:
     ~Label ( void );
 
     /// Construct an object deriving from IFont
-    //Label ( IFont& font );
     Label ( /*const*/ IFont& font );
 
-    enum IFont::FileType type ( void ) const;
+    Label::RawPtr get ( void );
 
-    //const Label::RawPtr get ( void ) const;
+    IFont::RawPtr font ( void ) const;
 
     /// Obtain validity of the label object
     bool valid ( void ) const;
+
+    enum IFont::FileType type ( void ) const;
 
     /// Obtain the text width in pixels of the set text string.
     ///
@@ -155,11 +156,9 @@ class Label:
     bool resize ( enum Texture::ResizeAlgorithm scaling_algorithm );
 
   private:
-    /// \todo Consider making me protected
     void update ( void );
-    //std::unique_ptr<IFont> font_;
-    mutable /*const*/ IFont* font_;
-    mutable Texture render_font_;
+    IFont::SharedPtr font_;
+    mutable Texture render_font_; /// \FIXME
     /// Holds contents of text as a string buffer
     std::string text_;
     uint text_size_;

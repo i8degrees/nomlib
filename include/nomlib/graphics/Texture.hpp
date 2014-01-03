@@ -74,7 +74,9 @@ class Texture
     /// Default constructor
     Texture ( void );
 
-    /// Lazy destructor
+    /// Destructor.
+    ///
+    /// \remarks Frees any pixel data associated with the Texture
     ~Texture ( void );
 
     /// Copy constructor

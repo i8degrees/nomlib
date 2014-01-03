@@ -163,7 +163,6 @@ void MessageBox::set_title ( Label& title )
   this->mbox_title_.set_alignment ( Label::TextAlignment::MiddleLeft );
 
   this->drawable.push_back ( IDrawable::SharedPtr ( new nom::Label ( this->mbox_title_ ) ) );
-  //this->drawable.push_back ( IDrawable::SharedPtr ( &this->mbox_title_ ) );
 }
 
 void MessageBox::set_text ( Label& text )
@@ -172,7 +171,6 @@ void MessageBox::set_text ( Label& text )
   this->mbox_text_.set_position ( IntRect ( this->coords.x, this->coords.y, this->coords.w, this->coords.h ) );
 
   this->drawable.push_back ( IDrawable::SharedPtr ( new nom::Label ( this->mbox_text_ ) ) );
-  //this->drawable.push_back ( IDrawable::SharedPtr ( &this->mbox_text_ ) );
 }
 
 void MessageBox::update ( void )

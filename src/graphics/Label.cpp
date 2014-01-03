@@ -42,6 +42,7 @@ Label::Label ( void ) :
 Label::~Label ( void )
 {
   NOM_LOG_TRACE ( NOM );
+  delete font_;
 }
 
 Label::Label ( /*const*/ IFont& font )  :

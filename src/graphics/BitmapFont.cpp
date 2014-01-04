@@ -175,8 +175,8 @@ NOM_ASSERT ( this->bitmap_font_.valid() );
       // Set character offsets
       this->glyphs_[ currentChar ].bounds.x = tile_width * cols;
       this->glyphs_[ currentChar ].bounds.y = tile_height * rows;
-      this->glyphs_[ currentChar ].bounds.width = tile_width;
-      this->glyphs_[ currentChar ].bounds.height = tile_height;
+      this->glyphs_[ currentChar ].bounds.w = tile_width;
+      this->glyphs_[ currentChar ].bounds.h = tile_height;
 
 
       //Find Left Side; go through pixel columns
@@ -216,7 +216,7 @@ NOM_ASSERT ( this->bitmap_font_.valid() );
           if ( this->bitmap_font_.pixel ( pX, pY ) != background_color )
           {
             //Set the width
-            this->glyphs_[ currentChar ].bounds.width = ( pX - this->glyphs_[ currentChar ].bounds.x ) + 1;
+            this->glyphs_[ currentChar ].bounds.w = ( pX - this->glyphs_[ currentChar ].bounds.x ) + 1;
 
             //Break the loops
             pCol_w = -1;
@@ -295,7 +295,7 @@ NOM_ASSERT ( this->bitmap_font_.valid() );
   for ( uint32 p = 0; p < 256; p++ )
   {
     this->glyphs_[ p ].bounds.y += top;
-    this->glyphs_[ p ].bounds.height -= top;
+    this->glyphs_[ p ].bounds.h -= top;
   }
 
   // Dump table of calculated bitmap character positions
@@ -307,8 +307,8 @@ NOM_ASSERT ( this->bitmap_font_.valid() );
       NOM_DUMP_VAR ( glyph );
       NOM_DUMP_VAR ( this->glyphs_[ glyph ].bounds.x );
       NOM_DUMP_VAR ( this->glyphs_[ glyph ].bounds.y );
-      NOM_DUMP_VAR ( this->glyphs_[ glyph ].bounds.width );
-      NOM_DUMP_VAR ( this->glyphs_[ glyph ].bounds.height );
+      NOM_DUMP_VAR ( this->glyphs_[ glyph ].bounds.w );
+      NOM_DUMP_VAR ( this->glyphs_[ glyph ].bounds.h );
     }
   #endif
 

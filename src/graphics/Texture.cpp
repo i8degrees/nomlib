@@ -177,7 +177,7 @@ void Texture::set_bounds ( const Coords& clip )
 
 void Texture::set_bounds ( const IntRect& bounds )
 {
-  this->bounds_ = Coords ( bounds.x, bounds.y, bounds.width, bounds.height );
+  this->bounds_ = Coords ( bounds.x, bounds.y, bounds.w, bounds.h );
 }
 
 int32 Texture::width ( void ) const

@@ -44,38 +44,48 @@ class Rect
   public:
     /// Default constructor.
     Rect ( void ) :
-      left ( 0 ), top ( 0 ), width ( 0 ), height ( 0 ) {}
+      x ( 0 ),
+      y ( 0 ),
+      w ( 0 ),
+      h ( 0 )
+    {}
 
     /// Destructor.
     ~Rect ( void ) {}
 
     /// Construct a Rectangle from coordinates
     Rect ( T left, T top, T w, T h ) :
-      left ( left ), top ( top ), width ( w ), height ( h ) {}
+      x ( left ),
+      y ( top ),
+      w ( w ),
+      h ( h )
+    {}
 
     /// Construct an object from two Point2 containers (position and size)
-    Rect ( const Point2<T>& pos, const Point2<T>& size ) :
-      left ( pos.x ), top ( pos.y ),
-      width ( pos.x + size.w ),
-      height ( pos.y + size.h ) {}
+    Rect ( const Point2<T>& pos, const Point2<T>& size )  :
+      x ( pos.x ),
+      y ( pos.y ),
+      w ( pos.x + size.w ),
+      h ( pos.y + size.h )
+    {}
 
     /// Copy constructor
     template <typename U>
     Rect ( const Rect<U>& copy )
     {
-      this->left = static_cast<T> ( copy.left );
-      this->top = static_cast<T> ( copy.top );
-      this->width = static_cast<T> ( copy.width );
-      this->height = static_cast<T> ( copy.height );
+      this->x = static_cast<T> ( copy.x );
+      this->y = static_cast<T> ( copy.y );
+      this->w = static_cast<T> ( copy.w );
+      this->h = static_cast<T> ( copy.h );
     }
 
     /// Copy assignment operator
     inline Rect<T>& operator = ( const Rect<T>& other )
     {
-      this->left = other.left;
-      this->top = other.top;
-      this->width = other.width;
-      this->height = other.height;
+      this->x = other.x;
+      this->y = other.y;
+      this->w = other.w;
+      this->h = other.h;
 
       return *this;
     }
@@ -85,8 +95,8 @@ class Rect
     bool contains ( int x, int y ) const
     {
       return  (
-                ( x >= this->left && x <= this->left + this->width ) &&
-                ( y >= this->top && y <= this->top + this->height )
+                ( x >= this->x && x <= this->x + this->w  ) &&
+                ( y >= this->y && y <= this->y + this->h )
               );
     }
 
@@ -106,16 +116,16 @@ class Rect
       uint bottomA, bottomB = 0;
 
       // Calculate sides of RectA
-      leftA = this->left;
-      rightA = leftA + this->width;
-      topA = this->top;
-      bottomA = topA + this->height;
+      leftA = this->x;
+      rightA = leftA + this->w;
+      topA = this->y;
+      bottomA = topA + this->h;
 
       // Calculate sides of RectB
-      leftB = rectangle.left;
-      rightB = leftB + rectangle.width;
-      topB = rectangle.top;
-      bottomB = topB + rectangle.height;
+      leftB = rectangle.x;
+      rightB = leftB + rectangle.w;
+      topB = rectangle.y;
+      bottomB = topB + rectangle.h;
 
       if ( bottomA <= topB ) return false; // No collision
       if ( topA >= bottomB ) return false; // No collision
@@ -127,27 +137,18 @@ class Rect
 
   public:
     /// Left coordinate of the rectangle (X coordinate of Rectangle)
-    T left;
+    T x;
     /// Top coordinate of the rectangle (Y coordinate of Rectangle)
-    T top;
+    T y;
     /// Width of the rectangle (right side of Rectangle)
-    T width;
+    T w;
     /// Height of the rectangle (bottom side of Rectangle)
-    T height;
-
-    /// Reference alias for left
-    T& x = left;
-    /// Reference alias for top
-    T& y = top;
-    /// Reference alias for width
-    T& w = width;
-    /// Reference alias for height
-    T& h = height;
+    T h;
 };
 
 /// Pretty print the Rectangle using the following format string:
 ///
-/// <Rect.left>, <Rect.top>, <Rect.width>, <Rect.height>
+/// <Rect.x>, <Rect.y>, <Rect.w>, <Rect.h>
 ///
 /// \note This is a convenience for us, so that we are able to quickly debug
 /// an object:
@@ -164,29 +165,29 @@ template <typename T>
 inline std::ostream& operator << ( std::ostream& os, const Rect<T>& rect )
 {
   os
-  << rect.left
+  << rect.x
   << RECT_DELIMITER
-  << rect.top
+  << rect.y
   << RECT_DELIMITER
-  << rect.width
+  << rect.w
   << RECT_DELIMITER
-  << rect.height;
+  << rect.h;
   return os;
 }
 
 template <typename T>
-inline bool operator == ( const Rect<T>& left, const Rect<T>& right )
+inline bool operator == ( const Rect<T>& lhs, const Rect<T>& rhs )
 {
-    return ( left.left == right.left ) && ( left.width == right.width ) &&
-           ( left.top == right.top ) && ( left.height == right.height );
+  return  ( lhs.x == rhs.lhs )  &&  ( lhs.w   == rhs.w )  &&
+          ( lhs.y == rhs.y )    &&  ( lhs.h  == rhs.h );
 }
 
 
 ////////////////////////////////////////////////////////////
 template <typename T>
-inline bool operator != ( const Rect<T>& left, const Rect<T>& right )
+inline bool operator != ( const Rect<T>& lhs, const Rect<T>& rhs )
 {
-    return ! ( left == right );
+  return ! ( lhs == rhs );
 }
 
 /// Construct a signed integer Rectangle

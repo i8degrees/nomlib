@@ -124,13 +124,13 @@ int Label::width ( void ) const
     }
     else
     {
-      text_width += this->font()->glyph(text_buffer[ char_pos ]).width + 1;
+      text_width += this->font()->glyph(text_buffer[ char_pos ]).w + 1;
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
         NOM_DUMP_VAR ( char_pos );
         NOM_DUMP_VAR ( text_buffer[ char_pos ] );
-        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[ char_pos ]).width + 1 );
+        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[ char_pos ]).w + 1 );
       #endif
 
     }
@@ -170,13 +170,13 @@ int Label::height ( void ) const
     }
     else
     {
-      text_height = this->font()->glyph(text_buffer[ char_pos ]).height;
+      text_height = this->font()->glyph(text_buffer[ char_pos ]).h;
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
         NOM_DUMP_VAR ( char_pos );
         NOM_DUMP_VAR ( text_buffer[ char_pos ] );
-        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[ char_pos ]).height );
+        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[ char_pos ]).h );
       #endif
     }
   }
@@ -364,7 +364,7 @@ void Label::draw ( RenderTarget target ) const
       this->render_font_.draw ( target.renderer() );
 
       // Move over the width of the character with one pixel of padding
-      x_offset += ( this->font()->glyph(ascii).width ) + 1;
+      x_offset += ( this->font()->glyph(ascii).w ) + 1;
     } // end else
   } // end for loop
 }

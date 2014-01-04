@@ -66,14 +66,14 @@ bool Texture::initialize ( SDL_SURFACE::RawPtr video_buffer )
 
   if ( this->valid() == false )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
 
-  // TODO: cache width & height
+  // TODO: cache width & height?
 
   // Cache the size of our new Texture object with the existing surface info
-  this->set_bounds ( Coords ( 0, 0, video_buffer->w, video_buffer->h ) );
+  this->set_bounds ( IntRect(0, 0, video_buffer->w, video_buffer->h) );
 
   // FIXME: See GitHub Issue #8
   //
@@ -92,14 +92,14 @@ bool Texture::initialize ( int32 width, int32 height, uint32 format, uint32 flag
 
   if ( this->valid() == false )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
 
-  // TODO: cache width & height
+  // TODO: cache width & height?
 
   // Cache the size of our new Texture object with the existing surface info
-  this->set_bounds( Coords ( 0, 0, width, height ) );
+  this->set_bounds( IntRect(0, 0, width, height) );
 
   return true;
 }
@@ -115,7 +115,7 @@ Texture& Texture::operator = ( const Texture& other )
   this->pixels_ = other.pixels_;
   this->pitch_ = other.pitch_;
   this->position_ = other.position_;
-  this->bounds_ = other.bounds_;
+  this->bounds_ = other.bounds();
 
   return *this;
 }
@@ -159,7 +159,7 @@ const Point2i& Texture::position ( void ) const
   return this->position_;
 }
 
-const Coords& Texture::bounds ( void ) const
+const IntRect& Texture::bounds ( void ) const
 {
   return this->bounds_;
 }
@@ -170,14 +170,9 @@ void Texture::set_position ( const Point2i& pos )
   this->position_.y = pos.y;
 }
 
-void Texture::set_bounds ( const Coords& clip )
-{
-  this->bounds_ = clip;
-}
-
 void Texture::set_bounds ( const IntRect& bounds )
 {
-  this->bounds_ = Coords ( bounds.x, bounds.y, bounds.w, bounds.h );
+  this->bounds_ = bounds;
 }
 
 int32 Texture::width ( void ) const
@@ -315,19 +310,19 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Texture::lock ( const Coords& lock_coords )
+bool Texture::lock ( const IntRect& bounds )
 {
-  SDL_Rect area = SDL_RECT(lock_coords);
+  SDL_Rect clip = SDL_RECT(bounds);
 
   if ( this->locked() )
   {
-NOM_LOG_ERR ( NOM, "Texture is already locked." );
+    NOM_LOG_ERR ( NOM, "Texture is already locked." );
     return false;
   }
 
-  if ( SDL_LockTexture ( this->texture(), &area, &this->pixels_, &this->pitch_ ) != 0 )
+  if ( SDL_LockTexture ( this->texture(), &clip, &this->pixels_, &this->pitch_ ) != 0 )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
 

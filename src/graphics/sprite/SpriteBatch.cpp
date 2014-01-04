@@ -109,17 +109,12 @@ void SpriteBatch::update ( void )
 {
   Coords dims = this->sprite_sheet.dimensions ( this->frame() );
 
-  this->offsets.setPosition (
-                              dims.x * this->scale_factor,
-                              dims.y * this->scale_factor
-                            );
+  this->offsets.x = dims.x * this->scale_factor;
+  this->offsets.y = dims.y * this->scale_factor;
+  this->offsets.w = dims.width * this->scale_factor;
+  this->offsets.h = dims.width * this->scale_factor;
 
-  this->offsets.setSize (
-                          dims.width * this->scale_factor,
-                          dims.height * this->scale_factor
-                        );
-
-  this->sprite_.set_bounds ( this->offsets );
+  this->sprite_.set_bounds( this->offsets );
   this->sprite_.set_position ( Point2i ( this->position().x, this->position().y ) );
 }
 

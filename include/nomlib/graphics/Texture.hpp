@@ -39,9 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/math/helpers.hpp"
 #include "nomlib/math/Color4.hpp"
-#include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Point2.hpp"
-#include "nomlib/system/ObjectCache.hpp"
+//#include "nomlib/system/ObjectCache.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/Window.hpp"
@@ -117,7 +116,7 @@ class Texture
 
     const Point2i& position ( void ) const;
 
-    const Coords& bounds ( void ) const;
+    const IntRect& bounds ( void ) const;
 
     /// Get the video memory surface of the Texture object
     SDL_TEXTURE::RawPtr texture ( void ) const;
@@ -137,10 +136,6 @@ class Texture
     void set_position ( const Point2i& pos );
 
     /// Set bounding coordinates of the Texture
-    ///
-    /// \deprecated This method will be phased out soon
-    void set_bounds ( const Coords& clip );
-
     void set_bounds ( const IntRect& bounds );
 
     /// Obtain width, in pixels, of texture
@@ -199,7 +194,7 @@ class Texture
     ///
     /// \param lock_coords  The area encompassing the area to lock for write
     ///                     access.
-    bool lock ( const Coords& lock_coords );
+    bool lock ( const IntRect& bounds );
 
     /// Unlock this texture, thereby uploading any applicable changes
     /// to video memory.
@@ -322,9 +317,7 @@ class Texture
     Point2i position_;
 
     /// Holds surface offsets (clipping area: X, Y, width & height)
-    ///
-    /// \deprecated This instance variable type will soon be changed to IntRect
-    Coords bounds_;
+    IntRect bounds_;
 
     /// Cached upon use of the set_colorkey method for use by external classes
     Color4u colorkey_;

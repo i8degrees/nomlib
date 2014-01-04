@@ -33,7 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Coords.hpp"
 #include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/sprite/Sprite.hpp"
 #include "nomlib/graphics/sprite/SpriteSheet.hpp"
@@ -79,7 +78,7 @@ class SpriteBatch:
 
   protected:
     /// Source (input) coordinates -- used for sprite sheet positioning
-    Coords offsets;
+    IntRect offsets;
 
     /// Our attached sprite sheet object
     SpriteSheet sprite_sheet;

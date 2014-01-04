@@ -39,7 +39,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
-#include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
@@ -114,7 +113,7 @@ class Image
     /// Obtain the video surface's alpha mask
     const uint32 alpha_mask ( void ) const;
 
-    const Coords bounds ( void ) const;
+    const IntRect bounds ( void ) const;
 
     /// Check to see if the video surfacea needs locking
     bool must_lock ( void ) const;
@@ -132,7 +131,7 @@ class Image
 
     const Point2i position ( void ) const;
 
-    void set_bounds ( const Coords& clip_bounds );
+    void set_bounds ( const IntRect& bounds );
 
     /// Supports every file type that the libSDL_image extension has been
     /// compiled with
@@ -217,9 +216,10 @@ class Image
     void set_position ( const Point2i& pos );
 
   private:
+    /// Container for our image pixels buffer
     SDL_SURFACE::SharedPtr image_;
 
-    Point2i position_;
+    Point2i position_; /// Not currently used
 };
 
 

@@ -75,7 +75,7 @@ bool Image::initialize( void* pixels, int32 width, int32 height,
 NOM_LOG_TRACE ( NOM );
 
   this->image_.reset ( SDL_CreateRGBSurfaceFrom ( pixels, width, height, bits_per_pixel, pitch, Rmask, Gmask, Bmask, Amask ), priv::FreeSurface );
-  //this->set_bounds ( Coords ( 0, 0, width, height ) );
+  //this->set_bounds ( IntRect( 0, 0, width, height) );
 
   if ( this->valid() == false )
   {
@@ -91,7 +91,7 @@ bool Image::initialize ( int32 width, int32 height, uint8 bits_per_pixel, uint32
 NOM_LOG_TRACE ( NOM );
 
   this->image_.reset ( SDL_CreateRGBSurface ( 0, width, height, bits_per_pixel, Rmask, Gmask, Bmask, Amask ), priv::FreeSurface );
-  //this->set_bounds ( Coords ( 0, 0, width, height ) );
+  //this->set_bounds ( IntRect( 0, 0, width, height) );
 
   if ( this->valid() == false )
   {
@@ -187,18 +187,15 @@ const uint32 Image::alpha_mask ( void ) const
   return this->pixel_format()->Amask;
 }
 
-const Coords Image::bounds ( void ) const
+const IntRect Image::bounds ( void ) const
 {
-  SDL_Rect clip_buffer; // temporary storage struct
-  Coords clip_bounds; // transferred values from SDL_Rect clip_buffer
+  SDL_Rect bounds;
 
   // Return values are put into the clip_buffer SDL_Rect after executing:
-  SDL_GetClipRect ( this->image(), &clip_buffer );
+  SDL_GetClipRect ( this->image(), &bounds );
 
   // Now transfer the values into our preferred data container type
-  clip_bounds = Coords ( clip_buffer.x, clip_buffer.y, clip_buffer.w, clip_buffer.h );
-
-  return clip_bounds;
+  return IntRect(bounds.x, bounds.y, bounds.w, bounds.h);
 }
 
 bool Image::must_lock ( void ) const
@@ -226,9 +223,9 @@ const uint8 Image::alpha ( void ) const
   return alpha;
 }
 
-void Image::set_bounds ( const Coords& clip_bounds )
+void Image::set_bounds ( const IntRect& bounds )
 {
-  SDL_Rect clip = SDL_RECT ( clip_bounds );
+  SDL_Rect clip = SDL_RECT(bounds);
 
   // As per libSDL docs, if SDL_Rect is nullptr, the clipping rectangle is set
   // to the full size of the surface

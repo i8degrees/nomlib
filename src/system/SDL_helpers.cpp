@@ -60,8 +60,8 @@ SDL_Rect SDL_RECT ( const IntRect& rectangle )
 
   r.x = rectangle.left;
   r.y = rectangle.top;
-  r.w = rectangle.left + rectangle.width;
-  r.h = rectangle.top + rectangle.height;
+  r.w = rectangle.width;
+  r.h = rectangle.height;
 
   return r;
 }

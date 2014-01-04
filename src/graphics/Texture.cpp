@@ -405,11 +405,13 @@ NOM_LOG_ERR ( NOM, "Error: Failed to initialize texture." );
   return true;
 }
 
-bool Texture::update ( const void* pixels, uint16 pitch, const Coords& update_area )
+bool Texture::update ( const void* pixels, uint16 pitch, const IntRect& update_area )
 {
-  if ( SDL_UpdateTexture ( this->texture(), nullptr, pixels, pitch ) != 0 )
+  SDL_Rect clip_area = SDL_RECT(update_area);
+
+  if ( SDL_UpdateTexture ( this->texture(), &clip_area, pixels, pitch ) != 0 )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
 

@@ -219,11 +219,12 @@ class Texture
 
     /// Upload texture copy with new pixel data
     ///
-    /// \todo Use update_area argument
+    /// \todo Add IntRect::null type so we can emulate passing nullptr for
+    /// the update_area argument (this tells SDL2 to update the whole texture).
     ///
-    /// \note This is intended for use with SDL_TEXTUREACCESS_STATIC texture
-    /// type
-    bool update ( const void* pixels, uint16 pitch, const Coords& update_area );
+    /// \remarks  This is intended for use with SDL_TEXTUREACCESS_STATIC
+    /// texture type
+    bool update ( const void* pixels, uint16 pitch, const IntRect& update_area );
 
     /// Draw a nom::Texture to a SDL_Renderer target
     ///

@@ -58,6 +58,9 @@ const nom::int32 WINDOW_HEIGHT = 448;
 /// executable
 const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
 
+//const std::string RESOURCE_FONT_TEXT_STRING = "!"#$%&'()*+,-.//0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+const std::string RESOURCE_FONT_TEXT_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n0123456789\n...\n,'[]()/\\n";
+
 /// \brief nom::BitmapFont usage example
 class App: public nom::SDL_App
 {
@@ -144,7 +147,7 @@ NOM_DUMP_VAR(this->label_title.type());
                                         ( this->window_size.y - this->label_title.height() ) / 8
                                       );
 
-      this->label.set_text ( "I am a bitmap font!" );
+      this->label.set_text ( RESOURCE_FONT_TEXT_STRING );
       //this->label_title.set_text ( "INFO" );
       this->label.set_color ( NOM_COLOR4U_WHITE );
       this->label_title.set_color ( NOM_COLOR4U_RED );

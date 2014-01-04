@@ -31,11 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 TrueTypeFont::TrueTypeFont ( void ) :
-  type_ ( IFont::FileType::TrueTypeFont ),
   font_size_ ( 12 ),
   newline_ ( 0 ),
   spacing_ ( 0 ),
-  use_cache_ ( false )
+  use_cache_ ( false ),
+  type_ ( IFont::FontType::TrueTypeFont )
 {
   NOM_LOG_TRACE ( NOM );
 
@@ -59,11 +59,11 @@ TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy )
 {
   this->font_buffer_ = copy.font_buffer_;
   this->font_ = copy.font_;
-  this->glyphs_ = copy.glyphs_;
-  this->type_ = copy.type_;
-  this->font_size_ = copy.font_size_;
-  this->newline_ = copy.newline_;
-  this->spacing_ = copy.spacing_;
+  this->pages_ = copy.pages_;
+  this->type_ = copy.type();
+  this->font_size_ = copy.font_size();
+  this->newline_ = copy.newline();
+  this->spacing_ = copy.spacing();
   this->filename_ = copy.filename_;
   this->use_cache_ = copy.use_cache_;
 }
@@ -80,7 +80,7 @@ bool TrueTypeFont::valid ( void ) const
   return false;
 }
 
-enum IFont::FileType TrueTypeFont::type ( void ) const
+enum IFont::FontType TrueTypeFont::type ( void ) const
 {
   return this->type_;
 }
@@ -88,6 +88,11 @@ enum IFont::FileType TrueTypeFont::type ( void ) const
 SDL_SURFACE::RawPtr TrueTypeFont::image ( void ) const
 {
   return nullptr;
+}
+
+const Texture& TrueTypeFont::texture ( uint32 character_size ) /*const*/
+{
+  return this->pages_[character_size].texture;
 }
 
 uint TrueTypeFont::spacing ( void ) const
@@ -202,9 +207,24 @@ NOM_LOG_ERR ( NOM, "Failed to set font width & height." );
 }
 */
 
-const IntRect& TrueTypeFont::glyph ( uint32 character )
+const Glyph& TrueTypeFont::glyph ( uint32 codepoint, uint32 character_size ) /*const*/
 {
-  return this->glyphs_[ character ].bounds;
+  GlyphAtlas& glyphs = this->pages_[character_size].glyphs;
+
+  return glyphs[codepoint];
+/* TODO
+  GlyphAtlas::const_iterator it = glyphs.find(codepoint);
+
+  if ( it != glyphs.end() )
+  {
+    return it->second;
+  }
+  else
+  {
+    // FIXME: implement support for handling this condition
+    return Glyph();
+  }
+*/
 }
 
 bool TrueTypeFont::load ( const std::string& filename, const Color4u& colorkey,
@@ -293,7 +313,12 @@ void TrueTypeFont::draw ( RenderTarget target ) const
 }
 */
 
-bool TrueTypeFont::build ( void )
+const GlyphPage& TrueTypeFont::pages ( void ) const
+{
+  return this->pages_;
+}
+
+bool TrueTypeFont::build ( uint32 character_size )
 {
   if ( this->load ( this->filename_, NOM_COLOR4U_BLACK, this->use_cache_ ) == false )
   {

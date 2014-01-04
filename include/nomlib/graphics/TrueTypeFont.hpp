@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/IFont.hpp"
-#include "nomlib/graphics/Glyph.hpp"
+#include "nomlib/graphics/FontPage.hpp"
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/Image.hpp"
@@ -68,14 +68,16 @@ class TrueTypeFont: public IFont
     TrueTypeFont ( const TrueTypeFont& copy );
 
     /// Construct an new, identical instance from the existing
-    virtual IFont::SharedPtr clone ( void ) const;
+    IFont::SharedPtr clone ( void ) const;
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
 
-    enum IFont::FileType type ( void ) const;
+    enum IFont::FontType type ( void ) const;
 
     SDL_SURFACE::RawPtr image ( void ) const;
+
+    const Texture& texture ( uint32 character_size = 0 ) /*const*/;
 
     /// Obtain text character spacing width in pixels; this variable is affected
     /// by the total image width size.
@@ -86,7 +88,7 @@ class TrueTypeFont: public IFont
     /// Set new text character spacing width (in pixels) -- this variable is
     /// used during the calculation of the text width; see
     /// nom::BitmapFont::width method.
-    /// in addition to the rendering process (see draw method) when there is a
+    /// In addition to the rendering process (see draw method) when there is a
     /// space character (' ') found in the provided text string.
     void set_spacing ( uint spaces );
 
@@ -103,7 +105,7 @@ class TrueTypeFont: public IFont
     /// Set a new vector outline -- in pixels -- for the loaded font.
     //void setFontOutline ( int32 depth );
 
-    const IntRect& glyph ( uint32 character );
+    const Glyph& glyph ( uint32 codepoint, uint32 character_size = 0 ) /*const*/;
 
     /// \brief Load a new font in from a file.
     ///
@@ -116,7 +118,11 @@ class TrueTypeFont: public IFont
   private:
     /// Trigger a rebuild of the font metrics from the current font; this
     /// recalculates character sizes, coordinate origins, spacing, etc.
-    bool build ( void );
+    ///
+    /// \param character_size   Reserved for future implementation.
+    bool build ( uint32 character_size = 0 );
+
+    const GlyphPage& pages ( void ) const;
 
     /// Surface where font for drawing is rendered to
     Texture font_buffer_;
@@ -124,12 +130,9 @@ class TrueTypeFont: public IFont
     /// Font file data, used by SDL_ttf extension
     std::shared_ptr<TTF_Font> font_;
 
-    /// individual chars positioning offsets within bitmap_font
-    ///
-    /// \todo Implement
-    Glyph::GlyphMap glyphs_;
-
-    enum IFont::FileType type_;
+    /// Table mapping a character size to its page -- a texture atlas combined
+    /// with corresponding glyphs data.
+    /*mutable*/GlyphPage pages_;
 
     /// Font point (pixel) size; defaults to 12
     sint font_size_;
@@ -149,6 +152,9 @@ class TrueTypeFont: public IFont
 
     /// Whether or not to use caching features of nom::ObjectCache
     bool use_cache_;
+
+    /// The type of font we are
+    enum IFont::FontType type_;
 };
 
 } // namespace nom

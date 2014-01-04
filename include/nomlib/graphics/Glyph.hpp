@@ -26,35 +26,41 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GLYPH_HPP
-#define NOMLIB_GLYPH_HPP
+#ifndef NOMLIB_GRAPHICS_GLYPH_HPP
+#define NOMLIB_GRAPHICS_GLYPH_HPP
 
-#include <iostream>
-#include <string>
 #include <map>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Rect.hpp"
+#include "nomlib/graphics/Texture.hpp"
 
 namespace nom {
 
-/// \brief Character metrics container
+/// \brief Container structure for font data
 struct Glyph
 {
-  typedef std::map<uint32, Glyph> GlyphMap;
+  Glyph ( void )  :
+    advance ( 0 )
+  {}
 
-  Glyph ( void );
-  ~Glyph ( void );
+  ~Glyph ( void ) {}
 
   /// Offset to move horizontally to the next character
-  int advance;
+  sint advance;
 
   /// Bounding rectangle coordinates of the glyph (relative to the baseline?)
   IntRect bounds;
 
   /// Bounding rectangle coordinates of the glyph inside font's bitmap / texture
-  IntRect texture_bounds;
+  //IntRect texture_bounds;
+
+  /// Container for the glyph's pixel buffer
+  //Texture texture;
 };
+
+/// Table mapping glyph data with its corresponding texture
+typedef std::map<uint32, Glyph> GlyphAtlas;
 
 } // namespace nom
 

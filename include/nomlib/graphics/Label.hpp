@@ -91,7 +91,7 @@ class Label: public Transformable
     /// Obtain validity of the label object
     bool valid ( void ) const;
 
-    enum IFont::FileType type ( void ) const;
+    enum IFont::FontType type ( void ) const;
 
     /// Obtain the text width in pixels of the set text string.
     ///

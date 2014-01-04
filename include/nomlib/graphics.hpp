@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/config.hpp>
 #include <nomlib/graphics/Glyph.hpp>
+#include <nomlib/graphics/FontPage.hpp>
 #include <nomlib/graphics/Label.hpp>
 #include <nomlib/graphics/RendererInfo.hpp>
 #include <nomlib/graphics/BitmapFont.hpp>

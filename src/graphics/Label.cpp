@@ -86,11 +86,11 @@ bool Label::valid ( void ) const
   return false;
 }
 
-enum IFont::FileType Label::type ( void ) const
+enum IFont::FontType Label::type ( void ) const
 {
   if ( this->valid() ) return this->font()->type();
 
-  return IFont::FileType::NotDefined;
+  return IFont::FontType::NotDefined;
 }
 
 int Label::width ( void ) const
@@ -104,33 +104,33 @@ int Label::width ( void ) const
     return -1;
   }
 
-  for ( uint32 char_pos = 0; char_pos < text_buffer.length(); ++char_pos )
+  for ( uint32 pos = 0; pos < text_buffer.length(); ++pos )
   {
-    if ( text_buffer[ char_pos ] == ' ' )
+    if ( text_buffer[pos] == ' ' )
     {
       text_width += this->font()->spacing();
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
-        NOM_DUMP_VAR ( char_pos );
-        NOM_DUMP_VAR ( text_buffer[ char_pos ] );
+        NOM_DUMP_VAR ( pos );
+        NOM_DUMP_VAR ( text_buffer[pos] );
         NOM_DUMP_VAR ( text_width );
       #endif
 
     }
-    else if ( text_buffer[ char_pos ] == '\n' ) // TODO
+    else if ( text_buffer[pos] == '\n' ) // TODO
     {
       text_width = 0;
     }
     else
     {
-      text_width += this->font()->glyph(text_buffer[ char_pos ]).w + 1;
+      text_width += this->font()->glyph(text_buffer[pos]).bounds.w + 1;
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
-        NOM_DUMP_VAR ( char_pos );
-        NOM_DUMP_VAR ( text_buffer[ char_pos ] );
-        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[ char_pos ]).w + 1 );
+        NOM_DUMP_VAR ( pos );
+        NOM_DUMP_VAR ( text_buffer[pos] );
+        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[pos]).bounds.w + 1 );
       #endif
 
     }
@@ -154,29 +154,29 @@ int Label::height ( void ) const
     return -1;
   }
 
-  for ( uint32 char_pos = 0; char_pos < text_buffer.length(); ++char_pos )
+  for ( uint32 pos = 0; pos < text_buffer.length(); ++pos )
   {
-    if ( text_buffer[ char_pos ] == '\n' )
+    if ( text_buffer[pos] == '\n' )
     {
       text_height += this->font()->newline();
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
-        NOM_DUMP_VAR ( char_pos );
-        NOM_DUMP_VAR ( text_buffer[ char_pos ] );
+        NOM_DUMP_VAR ( pos );
+        NOM_DUMP_VAR ( text_buffer[pos] );
         NOM_DUMP_VAR ( text_height );
       #endif
 
     }
     else
     {
-      text_height = this->font()->glyph(text_buffer[ char_pos ]).h;
+      text_height = this->font()->glyph(text_buffer[pos]).bounds.h;
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
-        NOM_DUMP_VAR ( char_pos );
-        NOM_DUMP_VAR ( text_buffer[ char_pos ] );
-        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[ char_pos ]).h );
+        NOM_DUMP_VAR ( pos );
+        NOM_DUMP_VAR ( text_buffer[pos] );
+        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[pos]).bounds.h );
       #endif
     }
   }
@@ -268,7 +268,7 @@ void Label::set_color ( const Color4u& color )
 void Label::set_style ( enum Label::FontStyle style )
 {
   // We do not have an atlas map to go from -- nothing to set a style on!
-  if ( ! this->render_font_.valid() ) return;
+  if ( this->render_font_.valid() == false ) return;
 
   // Style being set is already set -- nothing to do!
   if ( style == this->style() ) return;
@@ -292,35 +292,37 @@ void Label::set_alignment ( enum Label::TextAlignment align )
 
 void Label::draw ( RenderTarget target ) const
 {
+  std::string text_buffer = this->text();
+
   // No font has been loaded -- nothing to draw!
-  if ( ! this->valid() )
+  if ( this->valid() == false )
   {
     NOM_LOG_ERR( NOM, "Invalid label font" );
     return;
   }
 
   // Text string to draw is empty -- nothing to draw!
-  if ( this->text().length() < 1 ) return;
+  if ( text_buffer.length() < 1 ) return;
 
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from
-  int32 x_offset = this->position_.x;
-  int32 y_offset = this->position_.y;
+  int32 x_offset = this->position().x;
+  int32 y_offset = this->position().y;
 
   switch ( this->alignment() )
   {
     default:
     case Label::TextAlignment::MiddleLeft:
     {
-      x_offset = this->position_.x;
-      y_offset = this->position_.y;
+      x_offset = this->position().x;
+      y_offset = this->position().y;
       break;
     }
 
     case Label::TextAlignment::MiddleCenter:
     {
-      x_offset = this->position_.x + ( this->position_.w / 2 ) - ( this->width() / 2 );
-      y_offset = this->position_.y + ( this->position_.h / 2 ) - ( this->height() / 2 );
+      x_offset = this->position().x + ( this->position().w / 2 ) - ( this->width() / 2 );
+      y_offset = this->position().y + ( this->position().h / 2 ) - ( this->height() / 2 );
       break;
     }
 
@@ -332,39 +334,39 @@ void Label::draw ( RenderTarget target ) const
 
   } // end switch
 
-  for ( uint32 show = 0; show < this->text().length(); show++ )
+  for ( uint32 pos = 0; pos < text_buffer.length(); pos++ )
   {
     //If the current character is a space
-    if ( this->text()[show] == ' ' )
+    if ( text_buffer[pos] == ' ' )
     {
       //Move over
       x_offset += this->font()->spacing();
     }
 
     // If the current character is a newline
-    else if( this->text()[show] == '\n' )
+    else if( text_buffer[pos] == '\n' )
     {
       //Move down and back over to the beginning of line
       y_offset += this->font()->newline();
-      x_offset = this->position_.x;
+      x_offset = this->position().x;
     }
     // If the current character is a tab
-    else if( this->text()[show] == '\t' )
+    else if( text_buffer[pos] == '\t' )
     {
       x_offset += this->font()->spacing();
     }
     else
     {
       //Get the ASCII value of the character
-      uint32 ascii = static_cast<uint32>( this->text()[show] );
+      uint32 ascii = static_cast<uint32>( text_buffer[pos] );
 
       this->render_font_.set_position ( Point2i ( x_offset, y_offset ) );
-      this->render_font_.set_bounds ( this->font()->glyph(ascii) );
+      this->render_font_.set_bounds ( this->font()->glyph(ascii).bounds );
 
       this->render_font_.draw ( target.renderer() );
 
       // Move over the width of the character with one pixel of padding
-      x_offset += ( this->font()->glyph(ascii).w ) + 1;
+      x_offset += ( this->font()->glyph(ascii).bounds.w ) + 1;
     } // end else
   } // end for loop
 }

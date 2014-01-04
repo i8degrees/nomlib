@@ -44,80 +44,36 @@ class IFont
     typedef IFont* RawPtr;
     typedef std::shared_ptr<IFont> SharedPtr;
 
-    enum FileType
+    enum FontType
     {
       NotDefined = 0,
-      BitmapFont = 1,
-      TrueTypeFont = 2,
-      UserDefined = 3,
+      BitmapFont,
+      TrueTypeFont,
+      UserDefined
     };
 
-    IFont ( void ) {}
-    virtual ~IFont ( void ) {}
-    virtual IFont::SharedPtr clone ( void ) const = 0;
-/*
-    virtual bool load (
-                        const std::string& filename, const Color4u& colorkey,
-                        bool use_cache = false
-                      ) = 0;
-*/
-    // REFACTOR:
-    //virtual int32 getFontWidth ( void ) const = 0;
-    // REFACTOR:
-    //virtual int32 getFontHeight ( void ) const = 0;
+    IFont ( void )
+    {
+      //NOM_LOG_TRACE(NOM);
+    }
 
-    //virtual IFont::FontStyle getFontStyle ( void ) const = 0;
-    //virtual const Coords& getPosition ( void ) const = 0;
-    //virtual const Color4u& getColor ( void ) const = 0;
+    virtual ~IFont ( void )
+    {
+      //NOM_LOG_TRACE(NOM);
+    }
+
+    virtual IFont::SharedPtr clone ( void ) const = 0;
+
+    virtual SDL_SURFACE::RawPtr image ( void ) const = 0;
+    virtual const Texture& texture ( uint32 = 0 ) /*const*/ = 0;
+    virtual enum IFont::FontType type ( void ) const = 0;
+
+    virtual const Glyph& glyph ( uint32, uint32 = 0 ) /*const*/ = 0;
     virtual uint newline ( void ) const = 0;
     virtual uint spacing ( void ) const = 0;
-    //virtual IFont::TextAlignment getTextJustification ( void ) const = 0;
 
-    /// Set a new font point (pixel) size.
-    ///
-    /// Optional interface
-/*
-    virtual void setFontSize ( int32 point_size )
-    {
-NOM_LOG_ERR ( NOM, "Method not implemented." );
-    }
-*/
-
-    //virtual void setFontStyle ( int32 style, uint8 options = 150 ) = 0;
-    //virtual void setColor ( const Color4u& color ) = 0;
-    //virtual void setPosition ( const Coords& coords ) = 0;
-    virtual void set_spacing ( uint spaces ) = 0;
-    //virtual void setTextJustification ( IFont::TextAlignment alignment ) = 0;
-/*
-    virtual IFont::RenderStyle getRenderingStyle ( void ) const
-    {
-NOM_LOG_ERR ( NOM, "Method not implemented." );
-      return IFont::RenderStyle::Solid;
-    }
-*/
-/*
-    virtual void setRenderingStyle ( IFont::RenderStyle )
-    {
-NOM_LOG_ERR ( NOM, "Method not implemented." );
-    }
-*/
-    /// Rescale the font with a chosen resizing algorithm
-    ///
-    /// Optional interface with a return of false when the deriving class has
-    /// chosen not to re-implement this method.
-    /// \todo SDL2 port
-/*
-    virtual bool resize ( enum Texture::ResizeAlgorithm scaling_algorithm )
-    {
-NOM_LOG_ERR ( NOM, "Method not implemented." );
-      return false;
-    }
-*/
-    virtual const IntRect& glyph ( uint32 character ) = 0;
-    virtual SDL_SURFACE::RawPtr image ( void ) const = 0;
-    virtual enum IFont::FileType type ( void ) const = 0;
-    /// \todo This method should be part of the *required* implementation
-    virtual bool build ( void ) { return false; }/*= 0*/;
+    virtual void set_spacing ( uint ) = 0;
+    virtual bool build ( uint32 = 0 );
 };
 
 } // namespace nom

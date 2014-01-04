@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IFont.hpp"
-#include "nomlib/graphics/Glyph.hpp"
+#include "nomlib/graphics/FontPage.hpp"
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
@@ -65,22 +65,26 @@ class BitmapFont: public IFont
     BitmapFont ( const BitmapFont& copy );
 
     /// Construct an new, identical instance from the existing
-    virtual IFont::SharedPtr clone ( void ) const;
+    IFont::SharedPtr clone ( void ) const;
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
 
-    enum IFont::FileType type ( void ) const;
+    enum IFont::FontType type ( void ) const;
 
     SDL_SURFACE::RawPtr image ( void ) const;
+
+    const Texture& texture ( uint32 character_size = 0 ) /*const*/;
 
     /// Obtain text character spacing width in pixels; this variable is affected
     /// by the total image width size.
     uint spacing ( void ) const;
 
-    const Glyph::GlyphMap& glyphs ( void ) const;
-
-    const IntRect& glyph ( uint32 character );
+    /// Obtain a glyph
+    ///
+    /// \param codepoint        ASCII character to lookup
+    /// \param character_size   Reserved for future implementation
+    const Glyph& glyph ( uint32 codepoint, uint32 character_size = 0 ) /*const*/;
 
     /// Set new text character spacing width (in pixels) -- this variable is
     /// used during the calculation of the text width; see
@@ -107,7 +111,11 @@ class BitmapFont: public IFont
   private:
     /// Trigger a build of the font characteristics gleaned from the image file;
     /// recalculate the character sizes, coordinate origins, spacing, etc.
-    bool build ( void );
+    ///
+    /// \param character_size   Reserved for future implementation.
+    bool build ( uint32 character_size = 0 );
+
+    const GlyphPage& pages ( void ) const;
 
     sint sheet_width ( void ) const;
     sint sheet_height ( void ) const;
@@ -121,8 +129,9 @@ class BitmapFont: public IFont
     /// Our bitmap font's bitmap atlas
     Image bitmap_font_;
 
-    /// individual chars positioning offsets within bitmap_font
-    Glyph::GlyphMap glyphs_;
+    /// Table mapping a character size to its page -- a texture atlas combined
+    /// with corresponding glyphs data.
+    /*mutable*/GlyphPage pages_;
 
     /// Height (in pixels) to offset when newline carriage char is encountered
     uint newline_;
@@ -134,7 +143,8 @@ class BitmapFont: public IFont
     /// this was enough to offset this variable by 18 pixels.
     uint spacing_;
 
-    enum IFont::FileType type_;
+    /// The type of font we are
+    enum IFont::FontType type_;
 };
 
 } // namespace nom

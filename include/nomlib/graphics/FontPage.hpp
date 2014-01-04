@@ -26,15 +26,37 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
+#ifndef NOMLIB_GRAPHICS_FONT_PAGE_HPP
+#define NOMLIB_GRAPHICS_FONT_PAGE_HPP
+
+#include <map>
+
+#include "nomlib/config.hpp"
+#include "nomlib/math/Rect.hpp"
+#include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/Glyph.hpp"
 
 namespace nom {
 
-Glyph::Glyph ( void ) :
-  advance ( 0 )
-{}
+/// \brief Container structure for font data
+struct GlyphPage
+{
+  GlyphPage ( void )
+  {
+    //NOM_LOG_TRACE(NOM);
+  }
 
-Glyph::~Glyph ( void )
-{}
+  ~GlyphPage ( void ) {}
+
+  GlyphAtlas glyph;
+
+  /// Container for the glyph's pixel buffer
+  Texture texture;
+};
+
+/// Table mapping glyph data with its corresponding texture
+typedef std::map<uint32, GlyphPage> GlyphPage;
 
 } // namespace nom
+
+#endif // include guard defined

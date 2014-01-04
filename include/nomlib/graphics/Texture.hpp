@@ -71,6 +71,14 @@ class Texture
       Stretch
     };
 
+    /// Will be implemented in a future version
+    enum TextureAccess
+    {
+      Invalid = 0,
+      Static = SDL_TEXTUREACCESS_STATIC,
+      Streaming = SDL_TEXTUREACCESS_STREAMING
+    };
+
     /// Default constructor
     Texture ( void );
 

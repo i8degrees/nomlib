@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_POINT2D_HEADERS
-#define NOMLIB_POINT2D_HEADERS
+#ifndef NOMLIB_MATH_POINT2_HEADERS
+#define NOMLIB_MATH_POINT2_HEADERS
 
 #include <iostream>
 
@@ -39,57 +39,49 @@ const std::string POINT_DELIMITER = ", ";
 
 /// \brief 2D point container
 template <typename T>
-class Point2
+struct Point2
 {
-  public:
-    /// Default constructor; sets all values to their respective defaults
-    Point2 ( void ) : x ( 0 ), y ( 0 ) {}
+  /// Default constructor; sets all values to their respective defaults
+  Point2 ( void ) :
+    x ( 0 ),
+    y ( 0 )
+  {}
 
-    /// Destructor
-    ~Point2 ( void ) {}
+  /// Destructor
+  ~Point2 ( void ) {}
 
-    /// Constructor variant for initializing x, y at construction
-    Point2 ( T x, T y ) : x ( x ), y ( y ) {}
+  /// Constructor variant for initializing x, y at construction
+  Point2 ( T x, T y ) :
+    x ( x ),
+    y ( y )
+  {}
 
-    /// Copy constructor
-    template <typename U>
-    Point2 ( const Point2<U>& copy )
-    {
-      this->x = static_cast<T> ( copy.x );
-      this->y = static_cast<T> ( copy.y );
-    }
+  /// Copy constructor
+  template <typename U>
+  Point2 ( const Point2<U>& copy )
+  {
+    this->x = static_cast<T> ( copy.x );
+    this->y = static_cast<T> ( copy.y );
+  }
 
     /// Copy assignment operator
 /*
     template <typename U>
     Point2<T>& operator = ( const Point2<U>& other )
 */
-    inline Point2<T>& operator = ( const Point2<T>& other )
-    {
-      this->x = other.x;
-      this->y = other.y;
+  inline Point2<T>& operator = ( const Point2<T>& other )
+  {
+    this->x = other.x;
+    this->y = other.y;
 
-      return *this;
-    }
+    return *this;
+  }
 
-  public:
-    /// Represents the X-axis coordinate point
-    T x;
+  /// Represents the X-axis coordinate point
+  T x;
 
-    /// Represents the Y-axis coordinate point
-    T y;
-
-    /// Accessor alias for x
-    T& width = x;
-
-    /// SDL style accessor alias for x
-    T& w = x;
-
-    /// Accessor alias for y
-    T& height = y;
-
-    /// SDL style accessor alias for y
-    T& h = y;
+  /// Represents the Y-axis coordinate point
+  T y;
 };
 
 /// Pretty print a Point2 object using the following formatting:
@@ -102,8 +94,11 @@ class Point2
 template <typename T>
 inline std::ostream& operator << ( std::ostream& os, const Point2<T>& coords )
 {
-  os  << coords.x << POINT_DELIMITER
-      << coords.y;
+  os
+  << coords.x
+  << POINT_DELIMITER
+  << coords.y;
+
   return os;
 }
 

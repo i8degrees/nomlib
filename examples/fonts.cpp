@@ -136,12 +136,12 @@ NOM_DUMP_VAR(this->label_title.type());
       this->label.set_font ( this->bitmap_font );
       this->label_title.set_font ( this->bitmap_small_font );
 
-      this->label.set_position  ( ( this->window_size.w - this->label.width() ) / 2,
-                                  ( this->window_size.h - this->label.height() ) / 2
+      this->label.set_position  ( ( this->window_size.x - this->label.width() ) / 2,
+                                  ( this->window_size.y - this->label.height() ) / 2
                                 );
 
-      this->label_title.set_position  ( ( this->window_size.w - this->label_title.width() ) / 2,
-                                        ( this->window_size.h - this->label_title.height() ) / 8
+      this->label_title.set_position  ( ( this->window_size.x - this->label_title.width() ) / 2,
+                                        ( this->window_size.y - this->label_title.height() ) / 8
                                       );
 
       this->label.set_text ( "I am a bitmap font!" );
@@ -247,7 +247,7 @@ NOM_DUMP_VAR(this->label_title.type());
             this->window.toggle_fullscreen();
 
             // Scale window contents up by the new width & height
-            this->window.set_logical_size ( this->window_size.w, this->window_size.h );
+            this->window.set_logical_size ( this->window_size.x, this->window_size.y );
           }
         }
         break;

@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_POINT3D_HEADERS
-#define NOMLIB_POINT3D_HEADERS
+#ifndef NOMLIB_MATH_POINT3_HEADERS
+#define NOMLIB_MATH_POINT3_HEADERS
 
 #include "nomlib/config.hpp"
 
@@ -35,49 +35,47 @@ namespace nom {
 
 /// \brief 3D Point class
 template <typename T>
-class Point3
+struct Point3
 {
-  public:
-    /// Default constructor; sets all values to their respective defaults
-    Point3 ( void )
-    {
-      this->x = 0;
-      this->y = 0;
-      this->z = 0;
-    }
+  /// Default constructor; sets all values to their respective defaults
+  Point3 ( void )
+  {
+    this->x = 0;
+    this->y = 0;
+    this->z = 0;
+  }
 
-    /// Destructor
-    ~Point3 ( void ) {}
+  /// Destructor
+  ~Point3 ( void ) {}
 
-    /// Constructor variant for initializing x, y, z at construction
-    Point3 ( T x, T y, T z )
-    {
-      this->x = x;
-      this->y = y;
-      this->z = z;
-    }
+  /// Constructor variant for initializing x, y, z at construction
+  Point3 ( T x, T y, T z )
+  {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+  }
 
-    /// Copy constructor
-    template <typename U>
-    Point3<T> ( const Point3<U>& copy )
-    {
-      this->x = static_cast<T> ( copy.x );
-      this->y = static_cast<T> ( copy.y );
-      this->z = static_cast<T> ( copy.z );
-    }
+  /// Copy constructor
+  template <typename U>
+  Point3<T> ( const Point3<U>& copy )
+  {
+    this->x = static_cast<T> ( copy.x );
+    this->y = static_cast<T> ( copy.y );
+    this->z = static_cast<T> ( copy.z );
+  }
 
-    /// Copy assignment operator
-    Point3& operator = ( const T& other )
-    {
-      this->x = other.x;
-      this->y = other.y;
-      this->z = other.z;
-    }
+  /// Copy assignment operator
+  Point3& operator = ( const T& other )
+  {
+    this->x = other.x;
+    this->y = other.y;
+    this->z = other.z;
+  }
 
-  public:
-    T x;
-    T y;
-    T z;
+  T x;
+  T y;
+  T z;
 };
 
 /// Point3D object defined with 32-bit signed integers

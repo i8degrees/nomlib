@@ -39,111 +39,109 @@ const std::string RECT_DELIMITER = ", ";
 
 /// \brief Rectangle class container
 template<typename T>
-class Rect
+struct Rect
 {
-  public:
-    /// Default constructor.
-    Rect ( void ) :
-      x ( 0 ),
-      y ( 0 ),
-      w ( 0 ),
-      h ( 0 )
-    {}
+  /// Default constructor.
+  Rect ( void ) :
+    x ( 0 ),
+    y ( 0 ),
+    w ( 0 ),
+    h ( 0 )
+  {}
 
-    /// Destructor.
-    ~Rect ( void ) {}
+  /// Destructor.
+  ~Rect ( void ) {}
 
-    /// Construct a Rectangle from coordinates
-    Rect ( T left, T top, T w, T h ) :
-      x ( left ),
-      y ( top ),
-      w ( w ),
-      h ( h )
-    {}
+  /// Construct a Rectangle from coordinates
+  Rect ( T left, T top, T w, T h ) :
+    x ( left ),
+    y ( top ),
+    w ( w ),
+    h ( h )
+  {}
 
-    /// Construct an object from two Point2 containers (position and size)
-    Rect ( const Point2<T>& pos, const Point2<T>& size )  :
-      x ( pos.x ),
-      y ( pos.y ),
-      w ( pos.x + size.w ),
-      h ( pos.y + size.h )
-    {}
+  /// Construct an object from two Point2 containers (position and size)
+  Rect ( const Point2<T>& pos, const Point2<T>& size )  :
+    x ( pos.x ),
+    y ( pos.y ),
+    w ( pos.x + size.w ),
+    h ( pos.y + size.h )
+  {}
 
-    /// Copy constructor
-    template <typename U>
-    Rect ( const Rect<U>& copy )
-    {
-      this->x = static_cast<T> ( copy.x );
-      this->y = static_cast<T> ( copy.y );
-      this->w = static_cast<T> ( copy.w );
-      this->h = static_cast<T> ( copy.h );
-    }
+  /// Copy constructor
+  template <typename U>
+  Rect ( const Rect<U>& copy )
+  {
+    this->x = static_cast<T> ( copy.x );
+    this->y = static_cast<T> ( copy.y );
+    this->w = static_cast<T> ( copy.w );
+    this->h = static_cast<T> ( copy.h );
+  }
 
-    /// Copy assignment operator
-    inline Rect<T>& operator = ( const Rect<T>& other )
-    {
-      this->x = other.x;
-      this->y = other.y;
-      this->w = other.w;
-      this->h = other.h;
+  /// Copy assignment operator
+  inline Rect<T>& operator = ( const Rect<T>& other )
+  {
+    this->x = other.x;
+    this->y = other.y;
+    this->w = other.w;
+    this->h = other.h;
 
-      return *this;
-    }
+    return *this;
+  }
 
-    /// Check to see if input coordinates X and Y are within the bounds
-    /// of this object (think: colliding)
-    bool contains ( int x, int y ) const
-    {
-      return  (
-                ( x >= this->x && x <= this->x + this->w  ) &&
-                ( y >= this->y && y <= this->y + this->h )
-              );
-    }
+  /// Check to see if input coordinates X and Y are within the bounds
+  /// of this object (think: colliding)
+  bool contains ( int x, int y ) const
+  {
+    return  (
+              ( x >= this->x && x <= this->x + this->w  ) &&
+              ( y >= this->y && y <= this->y + this->h )
+            );
+  }
 
-    /// Check to see if an input Point2 container are within the bounds
-    /// of this object (think: colliding)
-    bool contains ( const Point2<T>& pos ) const
-    {
-      return this->contains ( pos.x, pos.y );
-    }
+  /// Check to see if an input Point2 container are within the bounds
+  /// of this object (think: colliding)
+  bool contains ( const Point2<T>& pos ) const
+  {
+    return this->contains ( pos.x, pos.y );
+  }
 
-    /// Checks to see if our rectangle overlaps with another
-    bool intersects ( const Rect<T>& rectangle ) const
-    {
-      uint leftA, leftB = 0;
-      uint rightA, rightB = 0;
-      uint topA, topB = 0;
-      uint bottomA, bottomB = 0;
+  /// Checks to see if our rectangle overlaps with another
+  bool intersects ( const Rect<T>& rectangle ) const
+  {
+    uint leftA, leftB = 0;
+    uint rightA, rightB = 0;
+    uint topA, topB = 0;
+    uint bottomA, bottomB = 0;
 
-      // Calculate sides of RectA
-      leftA = this->x;
-      rightA = leftA + this->w;
-      topA = this->y;
-      bottomA = topA + this->h;
+    // Calculate sides of RectA
+    leftA = this->x;
+    rightA = leftA + this->w;
+    topA = this->y;
+    bottomA = topA + this->h;
 
-      // Calculate sides of RectB
-      leftB = rectangle.x;
-      rightB = leftB + rectangle.w;
-      topB = rectangle.y;
-      bottomB = topB + rectangle.h;
+    // Calculate sides of RectB
+    leftB = rectangle.x;
+    rightB = leftB + rectangle.w;
+    topB = rectangle.y;
+    bottomB = topB + rectangle.h;
 
-      if ( bottomA <= topB ) return false; // No collision
-      if ( topA >= bottomB ) return false; // No collision
-      if ( rightA <= leftB ) return false; // No collision
-      if ( leftA >= rightB ) return false; // No collision
+    if ( bottomA <= topB ) return false; // No collision
+    if ( topA >= bottomB ) return false; // No collision
+    if ( rightA <= leftB ) return false; // No collision
+    if ( leftA >= rightB ) return false; // No collision
 
-      return true; // Collision!
-    }
+    return true; // Collision!
+  }
 
-  public:
-    /// Left coordinate of the rectangle (X coordinate of Rectangle)
-    T x;
-    /// Top coordinate of the rectangle (Y coordinate of Rectangle)
-    T y;
-    /// Width of the rectangle (right side of Rectangle)
-    T w;
-    /// Height of the rectangle (bottom side of Rectangle)
-    T h;
+  /// Left coordinate of the rectangle (X coordinate of Rectangle)
+  T x;
+  /// Top coordinate of the rectangle (Y coordinate of Rectangle)
+  T y;
+  /// Width of the rectangle (right side of Rectangle)
+  T w;
+  /// Height of the rectangle (bottom side of Rectangle)
+  T h;
 };
 
 /// Pretty print the Rectangle using the following format string:

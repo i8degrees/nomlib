@@ -201,33 +201,22 @@ if ( PLATFORM_WINDOWS )
   set ( MSVCPP_LIBRARY_REDIST "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/msvcpp2013/${PLATFORM_ARCH}/" )
 
 elseif ( PLATFORM_OSX )
-
-  # SDL2 dependency
-  set ( SDL2_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2.framework/Headers" )
-  set ( SDL2_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2.framework" )
-
   set ( SDL2_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/ios/SDL2/include" )
-  set ( SDL2_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/ios/SDL2/libs/iphonesimulator7/SDL2-d.a" )
+  set ( SDL2_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/ios/SDL2/libs/iphonesimulator7/libSDL2.a" )
 
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
 
   # SDL2_image dependency
-  set ( SDL2_IMAGE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_image.framework/Headers" )
-  set ( SDL2_IMAGE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_image.framework" )
-
   set ( SDL2_IMAGE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/ios/SDL2_image/include" )
-  set ( SDL2_IMAGE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/ios/SDL2_image/libs/iphonesimulator7/SDL2_image-d.a" )
+  set ( SDL2_IMAGE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/ios/SDL2_image/libs/iphonesimulator7/libSDL2_image.a" )
 
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
 
   # SDL2_ttf dependency
-  set ( SDL2_TTF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_ttf.framework/Headers" )
-  set ( SDL2_TTF_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_ttf.framework" )
-
   set ( SDL2_TTF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/ios/SDL2_ttf/include" )
-  set ( SDL2_TTF_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/ios/SDL2_ttf/libs/iphonesimulator7/SDL2_ttf-d.a" )
+  set ( SDL2_TTF_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/ios/SDL2_ttf/libs/iphonesimulator7/libSDL2_ttf.a" )
 
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
@@ -262,12 +251,12 @@ elseif ( PLATFORM_OSX )
 
   #find_library ( OPENGLES_LIBRARY OpenGLES )
   #mark_as_advanced ( OPENGLES_LIBRARY )
-  set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework AudioToolbox")
-  set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework Foundation")
-  set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework CoreGraphics")
-  set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework QuartzCore")
-  set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework UIKit")
-  set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework OpenGLES")
+  #set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework AudioToolbox")
+  #set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework Foundation")
+  #set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework CoreGraphics")
+  #set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework QuartzCore")
+  #set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework UIKit")
+  #set ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework OpenGLES")
   #set ( EXTLIBS ${EXTLIBS} "UIKit" )
   #set ( EXTLIBS ${EXTLIBS} "OpenGLES" )
 
@@ -301,22 +290,24 @@ endif ( BUILD_SHARED_LIBS )
 
 target_link_libraries  ( ${PROJECT_NAME} ${EXTLIBS} )
 
-set_target_properties ( ${PROJECT_NAME} # makefile target
-                        PROPERTIES SOVERSION
-                        "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
-                        DEBUG_POSTFIX "-d"
-                      )
+if ( NOT NOM_IOS_TARGET )
+  set_target_properties ( ${PROJECT_NAME} # makefile target
+                          PROPERTIES SOVERSION
+                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+                          DEBUG_POSTFIX "-d"
+                        )
+endif ( NOT NOM_IOS_TARGET )
 
 if ( PLATFORM_OSX )
 
   set ( INSTALL_NAME_PATH "@rpath" )
 
   # For distribution in user's frameworks / OSX App Bundle
-  #set_target_properties ( ${PROJECT_NAME} PROPERTIES
-                          #BUILD_WITH_INSTALL_RPATH 1
-                          #INSTALL_NAME_DIR
-                          #"${INSTALL_NAME_PATH}"
-                        #)
+  set_target_properties ( ${PROJECT_NAME} PROPERTIES
+                          BUILD_WITH_INSTALL_RPATH 1
+                          INSTALL_NAME_DIR
+                          "${INSTALL_NAME_PATH}"
+                        )
 
   if ( FRAMEWORK )
 
@@ -362,10 +353,10 @@ if ( PLATFORM_OSX )
                           )
 
     # Install framework library file
-    install ( TARGETS ${PROJECT_NAME}
-              LIBRARY FRAMEWORK
-              DESTINATION "${CMAKE_INSTALL_PREFIX}"
-            )
+    #install ( TARGETS ${PROJECT_NAME}
+    #          LIBRARY FRAMEWORK
+    #          DESTINATION "${CMAKE_INSTALL_PREFIX}"
+    #        )
 
     # Bundle external dependencies within our application bundle for distribution
     #
@@ -383,14 +374,14 @@ if ( PLATFORM_OSX )
     # for packaging details of sndfile.
 
     # Bundled frameworks we depend on
-    install ( DIRECTORY
-              "${SDL2_LIBRARY}" # SDL2.framework
-              "${SDL2_IMAGE_LIBRARY}" # SDL2_image.framework
-              "${SDL2_TTF_LIBRARY}" # SDL2_ttf.framework
-              "${LIBSNDFILE_LIBRARY}" # sndfile.framework
-              DESTINATION "${INSTALL_EXT_FRAMEWORKS_PATH}"
-              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
-            )
+    #install ( DIRECTORY
+              #"${SDL2_LIBRARY}" # SDL2.framework
+              #"${SDL2_IMAGE_LIBRARY}" # SDL2_image.framework
+              #"${SDL2_TTF_LIBRARY}" # SDL2_ttf.framework
+              #"${LIBSNDFILE_LIBRARY}" # sndfile.framework
+              #DESTINATION "${INSTALL_EXT_FRAMEWORKS_PATH}"
+              #PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
+            #)
 
     # Add all the necessary runtime search paths for locating the installed
     # dependencies we bundled.
@@ -419,7 +410,7 @@ elseif ( PLATFORM_LINUX ) # POSIX install layout
   # TODO: set paths, etc. like we do above with OSX & Windows platforms
 
   # Install binaries to our platform-dependent paths we've set
-  install ( TARGETS ${PROJECT_NAME} LIBRARY DESTINATION "${INSTALL_LIB_PATH}" )
+  #install ( TARGETS ${PROJECT_NAME} LIBRARY DESTINATION "${INSTALL_LIB_PATH}" )
 elseif ( PLATFORM_WINDOWS )
   # CMAKE_INSTALL_PREFIX will be appended here for us when we issue the install
   # command.

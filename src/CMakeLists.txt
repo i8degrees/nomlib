@@ -122,20 +122,18 @@ set ( SYSTEM_SOURCE
     )
 
 # Platform-specific source files
-if ( PLATFORM_OSX OR PLATFORM_LINUX )
-  set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/unix/UnixFile.cpp" )
-endif ( PLATFORM_OSX OR PLATFORM_LINUX )
-
 if ( PLATFORM_OSX )
-
   #set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/osx/ResourcePath.cpp" )
+
+  if ( NOM_IOS_TARGET )
+    #set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/unix/UnixFile.cpp" )
+  endif ( NOM_IOS_TARGET )
 
 elseif ( PLATFORM_LINUX )
   # nothing to be done
 elseif ( PLATFORM_WINDOWS )
   set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/windows/WinFile.cpp" )
   set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/windows/ResourcePath.cpp" )
-
 endif ( PLATFORM_OSX )
 
 # Full nomlib project header files (*.hpp; *.h)

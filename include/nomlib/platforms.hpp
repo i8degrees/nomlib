@@ -41,6 +41,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #define NOM_PLATFORM_LINUX
 #elif defined ( __APPLE__ ) || defined ( MACOSX ) || defined ( macintosh ) || defined ( Macintosh )
   #define NOM_PLATFORM_OSX
+
+  #define NOM_PLATFORM_IOS // FIXME
 #endif
 
 /// Platform architecture detection; we only check for a 32-bit or 64-bit

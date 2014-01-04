@@ -34,14 +34,10 @@ File::File ( void )
 {
   this->file.reset();
 
-#if defined (NOM_PLATFORM_OSX) || defined (NOM_PLATFORM_LINUX)
-
-  this->file = std::shared_ptr<IFile> ( new UnixFile() );
-
-#elif defined (NOM_PLATFORM_WINDOWS)
-
+#if defined(NOM_PLATFORM_WINDOWS)
   this->file = std::shared_ptr<IFile> ( new WinFile() );
-
+#else
+  this->file = std::shared_ptr<IFile> ( new UnixFile() );
 #endif
 }
 

@@ -5,32 +5,50 @@ if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
 
   option ( FRAMEWORK "Build OSX Framework instead of dylib" off )
   option ( UNIVERSAL "Build as an OSX Universal Library" off )
+  option ( NOM_IOS_TARGET "Build iOS static library" on )
 
-  SET( CMAKE_CROSSCOMPILING TRUE )
-  SET( CMAKE_SYSTEM_NAME "Darwin" )
-  SET( CMAKE_SYSTEM_PROCESSOR "arm" )
+  if ( NOM_IOS_TARGET )
+    SET( CMAKE_CROSSCOMPILING TRUE )
+    SET( CMAKE_SYSTEM_NAME "Darwin" )
+    SET( CMAKE_SYSTEM_PROCESSOR "arm" )
 
-  # Setup the SDK selection for backwards compatibility
-  set ( SDKVER "7.0" )
-  set ( DEVROOT "/Applications/Developer/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer" )
-  set ( SDKROOT "${DEVROOT}/SDKs/iPhoneOS${SDKVER}.sdk" )
+    # Setup the SDK selection for backwards compatibility starting at v6.1+
+    set ( SDKVER "7.0" ) #v6.1
+    set ( DEVROOT "/Applications/Developer/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer" )
+    set ( SDKROOT "${DEVROOT}/SDKs/iPhoneOS${SDKVER}.sdk" )
 
-  if ( EXISTS ${SDKROOT} )
-    set ( CMAKE_OSX_SYSROOT "${SDKROOT}" )
-    set ( CMAKE_OSX_DEPLOYMENT_TARGET "${SDKVER}" )
-    #set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=${SDKVER}" )
-  else () # Mac OS X v10.5 SDK not found -- that's OK
-    message ( WARNING "Warning, iPhoneOS${SDKVER} SDK path not found: ${SDKROOT}" )
-  endif ( EXISTS ${SDKROOT} )
+    if ( EXISTS ${SDKROOT} )
+      set ( CMAKE_OSX_SYSROOT "${SDKROOT}" )
+      set ( CMAKE_OSX_DEPLOYMENT_TARGET "${SDKVER}" )
 
-  # libc++ requires OSX v10.7+
-  set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )
+      set ( IOS_FRAMEWORKS
+            "Foundation"
+            "AudioToolbox"
+            "CoreGraphics"
+            "QuartzCore"
+            "UIKit"
+            "OpenGLES"
+          )
+      #set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=${SDKVER}" )
+    else () # Mac OS X v10.5 SDK not found -- that's OK
+      message ( WARNING "Warning, iPhoneOS${SDKVER} SDK not found: ${SDKROOT}" )
+    endif ( EXISTS ${SDKROOT} )
 
-  if ( CMAKE_GENERATOR STREQUAL "Xcode" )
-    set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
-    set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
-    set ( CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator" )
-  endif ( CMAKE_GENERATOR STREQUAL "Xcode" )
+    # libc++ requires OSX v10.7+
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )
+
+    if ( CMAKE_GENERATOR STREQUAL "Xcode" )
+      set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
+      set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
+      #set ( CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator" )
+      set ( CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos" )
+    endif ( CMAKE_GENERATOR STREQUAL "Xcode" )
+
+    foreach(FW ${IOS_FRAMEWORKS})
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework ${FW}")
+    endforeach()
+
+  endif ( NOM_IOS_TARGET )
 
   message ( STATUS "Platform: Darwin (Mac OS X)" )
 elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" ) # Tested on Ubuntu v12.04-LTS
@@ -75,10 +93,12 @@ message ( STATUS "Generating build files for: ${CMAKE_GENERATOR}" )
 if ( UNIVERSAL )
   set ( CMAKE_OSX_ARCHITECTURES i386; x86_64 )
   set ( PLATFORM_ARCH "x86; x64" ) # Reserved for future use
-else ( NOT UNIVERSAL )
-  set ( CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD_32_BIT)" )
-  set ( PLATFORM_ARCH "x64" ) # Reserved for future use
 endif ( UNIVERSAL )
+
+if ( NOM_IOS_TARGET )
+  set ( CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD_32_BIT)" )
+  #set ( PLATFORM_ARCH "x64" ) # Reserved for future use
+endif ( NOM_IOS_TARGET )
 
 if ( PLATFORM_WINDOWS AND ARCH_32 )
   set ( PLATFORM_ARCH "x86" )

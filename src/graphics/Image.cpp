@@ -551,4 +551,27 @@ void Image::set_position ( const Point2i& pos )
   this->position_.y = pos.y;
 }
 
+void Image::draw ( SDL_SURFACE::RawPtr buffer, const IntRect& bounds ) const
+{
+  SDL_Rect blit_coords = SDL_RECT ( bounds );
+  SDL_Rect blit_offsets = SDL_RECT ( bounds );
+
+  if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
+  {
+    if ( SDL_BlitSurface ( this->image(), &blit_offsets, buffer, &blit_coords ) != 0 )
+    {
+      NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return; // ERR
+    }
+  }
+  else
+  {
+    if ( SDL_BlitSurface ( this->image(), nullptr, buffer, &blit_coords ) != 0 )
+    {
+      NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return; // ERR
+    }
+  }
+}
+
 } // namespace nom

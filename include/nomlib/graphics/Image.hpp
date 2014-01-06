@@ -247,6 +247,9 @@ class Image
 
     void set_position ( const Point2i& pos );
 
+    /// Render a video surface
+    void draw ( SDL_SURFACE::RawPtr, const IntRect& bounds ) const;
+
   private:
     /// Container for our image pixels buffer
     SDL_SURFACE::SharedPtr image_;

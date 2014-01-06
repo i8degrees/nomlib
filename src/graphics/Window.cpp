@@ -237,31 +237,6 @@ const RendererInfo Window::caps ( SDL_RENDERER::RawPtr target )
   return renderer_info;
 }
 
-void Window::draw ( SDL_SURFACE::RawPtr video_buffer, const Coords& bounds ) const
-{
-  SDL_Rect blit_coords = SDL_RECT ( bounds );
-  SDL_Rect blit_offsets = SDL_RECT ( bounds );
-
-  //if ( ! this->valid() ) return;
-
-  if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
-  {
-    if ( SDL_BlitSurface ( this->window_surface(), &blit_offsets, video_buffer, &blit_coords ) != 0 )
-    {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-      return; // ERR
-    }
-  }
-  else
-  {
-    if ( SDL_BlitSurface ( this->window_surface(), nullptr, video_buffer, &blit_coords ) != 0 )
-    {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-      return; // ERR
-    }
-  }
-}
-
 bool Window::flip ( void ) const
 {
   if ( SDL_UpdateWindowSurface ( this->window() ) != 0 )

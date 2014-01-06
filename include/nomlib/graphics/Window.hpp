@@ -132,11 +132,6 @@ class Window:
 
     void set_position ( int32 x, int32 y );
 
-    /// Render SDL1 video surfaces
-    ///
-    /// \todo Test me!
-    void draw ( SDL_SURFACE::RawPtr video_buffer, const Coords& bounds ) const;
-
     /// Update the surface of the screen inside the window
     ///
     /// (For use only with SDL Surfaces API)

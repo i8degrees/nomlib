@@ -207,7 +207,7 @@ bool SpriteSheet::save ( const std::string& filename )
   object.insert ( "sheet_width", this->sheet_width );
   object.insert ( "sheet_height", this->sheet_height );
   object.insert ( "sheet_version", sprite_sheet_version );
-  object.insert ( "sheet_modified", getCurrentTime() );
+  object.insert ( "sheet_modified", nom::time() );
 
   if ( writer.save ( filename, object ) == false )
   {

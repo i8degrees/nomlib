@@ -75,10 +75,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   // If debugging is turned on, we log all warnings, errors & info
   #define NOM_LOG_INFO(identifier, message) \
-    ( std::cout << #identifier << "_LOG_INFO at " << nom::getCurrentTime() << message << std::endl << std::endl )
+    ( std::cout << #identifier << "_LOG_INFO at " << nom::time() << message << std::endl << std::endl )
 
   #define NOM_LOG_ERR(identifier, message) \
-    ( std::cout << #identifier << "_LOG_ERR at " << nom::getCurrentTime() << "In file " << __FILE__ << ":" << __LINE__ << std::endl << "Reason: " << message << std::endl << std::endl )
+    ( std::cout << #identifier << "_LOG_ERR at " << nom::time() << "In file " << __FILE__ << ":" << __LINE__ << std::endl << "Reason: " << message << std::endl << std::endl )
 
 #else // Do not add any overhead
   #define NOM_LOG_INFO(identifier, message)
@@ -98,7 +98,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   // If trace debugging is turned on, we show class construction and destruction
   #define NOM_LOG_TRACE(identifier) \
-    ( std::cout << #identifier << "_LOG_TRACE at " << nom::getCurrentTime() << __func__ << std::endl << std::endl )
+    ( std::cout << #identifier << "_LOG_TRACE at " << nom::time() << __func__ << std::endl << std::endl )
 
 #else // Do not add any overhead
   #define NOM_LOG_TRACE(identifier)

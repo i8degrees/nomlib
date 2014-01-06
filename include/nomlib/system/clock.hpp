@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_CLOCK_HEADERS
-#define NOMLIB_CLOCK_HEADERS
+#ifndef NOMLIB_SYSTEM_CLOCK_HPP
+#define NOMLIB_SYSTEM_CLOCK_HPP
 
 #include <string>
 #include <ctime>
@@ -37,9 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// Get the current date & time
-const std::string getCurrentTime ( void );
-
+const std::string time ( void );
 
 } // namespace nom
 
-#endif // NOMLIB_CLOCK_HEADERS defined
+#endif // include guard defined

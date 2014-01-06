@@ -30,12 +30,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-const std::string getCurrentTime ( void )
+const std::string time ( void )
 {
-  time_t timer = time ( nullptr );
+  time_t timer = std::time ( nullptr );
 
   return ctime ( &timer );
 }
-
 
 } // namespace nom

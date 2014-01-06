@@ -91,9 +91,9 @@ NOM_LOG_TRACE ( NOM );
   return true;
 }
 
-bool Image::initialize ( int32 width, int32 height, uint8 bits_per_pixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, bool colorkey )
+bool Image::initialize ( int32 width, int32 height, uint8 bits_per_pixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE ( NOM );
 
   this->image_.reset ( SDL_CreateRGBSurface ( 0, width, height, bits_per_pixel, Rmask, Gmask, Bmask, Amask ), priv::FreeSurface );
   //this->set_bounds ( IntRect( 0, 0, width, height) );
@@ -106,7 +106,17 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
   // If the video surface is marked for color keying transparency, we need to
   // set it up here and now!
-  if ( colorkey )
+  // if ( colorkey )
+  // {
+  //   if ( this->set_colorkey ( this->colorkey(), true ) == false )
+  //   {
+  //     NOM_LOG_ERR ( NOM, "Could not create the video surface with color key transparency." );
+  //     return false;
+  //   }
+  // }
+
+  return true;
+}
   {
     if ( this->set_colorkey ( this->colorkey(), true ) == false )
     {

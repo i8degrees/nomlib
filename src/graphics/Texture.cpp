@@ -606,8 +606,8 @@ bool Texture::resize ( enum ResizeAlgorithm scaling_algorithm )
                                   red_mask,
                                   green_mask,
                                   blue_mask,
-                                  alpha_mask,
-                                  true // color key enabled
+                                  alpha_mask
+                                  //true // color key enabled
                                 );
 
 #if defined (NOM_DEBUG_SDL2_RESIZE)

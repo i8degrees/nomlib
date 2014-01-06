@@ -55,7 +55,7 @@ class Image
     Image ( void );
 
     /// Destructor.
-    virtual ~Image ( void );
+    ~Image ( void );
 
     /// Construct an Image object with specified flags passed to the library
     /// extension(s) used in this object.
@@ -66,6 +66,8 @@ class Image
 
     /// Copy assignment constructor
     Image& operator = ( const Image& other );
+
+    Image::SharedPtr clone ( void ) const;
 
     Image::RawPtr get ( void ) const;
 

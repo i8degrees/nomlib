@@ -67,6 +67,11 @@ Image& Image::operator = ( const Image& other )
   return *this;
 }
 
+Image::SharedPtr Image::clone ( void ) const
+{
+  return Image::SharedPtr ( new Image ( *this ) );
+}
+
 bool Image::initialize( void* pixels, int32 width, int32 height,
                         int32 bits_per_pixel, uint16 pitch,
                         uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask

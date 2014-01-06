@@ -201,7 +201,9 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       this->label.set_font ( this->bitmap_font );
       this->label_title.set_font ( this->bitmap_small_font );
       this->label.set_text ( "I am a Bitmap Font!" );
-      this->label.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
+
+      // FIXME: setting alignment here messes up alignment within our info_box
+      //this->label.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
 
       // Initialize the background to use in our info_box object as a gradient
       // filled background

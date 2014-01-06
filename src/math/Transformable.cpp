@@ -40,14 +40,15 @@ Transformable::Transformable ( const Coords& coords ):
   position_ ( coords )
 {}
 
-const Coords Transformable::position ( void ) const
+const Coords& Transformable::position ( void ) const
 {
   return Coords ( this->position_.x, this->position_.y );
 }
 
-const Coords Transformable::getSize ( void ) const
+const Coords& Transformable::size ( void ) const
 {
-  return Coords ( this->position_.w, this->position_.h );
+  return Coords ( 0, 0, this->position_.w, this->position_.h );
+  //return Coords ( this->position_.w, this->position_.h );
 }
 
 void Transformable::set_position ( int32 x, int32 y )

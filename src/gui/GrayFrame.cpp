@@ -63,8 +63,8 @@ void GrayFrame::update ( void )
 
   int32 x = this->frame_position.x;
   int32 y = this->frame_position.y;
-  int32 width = this->frame_position.width;
-  int32 height = this->frame_position.height;
+  int32 width = this->frame_position.w;
+  int32 height = this->frame_position.h;
 
   int32 x_offset = x + width;
   int32 y_offset = y + height;

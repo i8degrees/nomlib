@@ -76,7 +76,7 @@ class Renderer
     /// Get the current viewport dimensions
     ///
     /// \todo Test me!
-    const Coords viewport ( void ) const;
+    const IntRect viewport ( void ) const;
 
     /// Obtain the current scale factor
     const Point2i scale_factor ( void ) const;

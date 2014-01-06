@@ -89,8 +89,8 @@ SpriteSheet::SpriteSheet  (
   // Initializing the first sprite frame
   this->sheet[0].x = spacing;
   this->sheet[0].y = padding;
-  this->sheet[0].width = sprite_width;
-  this->sheet[0].height = sprite_height;
+  this->sheet[0].w = sprite_width;
+  this->sheet[0].h = sprite_height;
 
   y_offset = padding;
 
@@ -130,15 +130,15 @@ SpriteSheet::SpriteSheet  (
 
     // plus one padding (we count from zero)
     this->sheet[id].y = sprite_height * ( cols ) + y_offset;
-    this->sheet[id].width = sprite_width;
-    this->sheet[id].height = sprite_height;
+    this->sheet[id].w = sprite_width;
+    this->sheet[id].h = sprite_height;
 
 #if defined (NOM_DEBUG_SPRITE_SHEET)
   NOM_DUMP_VAR ( id );
   NOM_DUMP_VAR ( this->sheet[id].x );
   NOM_DUMP_VAR ( this->sheet[id].y );
-  NOM_DUMP_VAR ( this->sheet[id].width );
-  NOM_DUMP_VAR ( this->sheet[id].height );
+  NOM_DUMP_VAR ( this->sheet[id].w );
+  NOM_DUMP_VAR ( this->sheet[id].h );
 #endif
 
     rows++;
@@ -290,8 +290,8 @@ void SpriteSheet::dump ( void ) const
   {
 NOM_DUMP_VAR(itr->x);
 NOM_DUMP_VAR(itr->y);
-NOM_DUMP_VAR(itr->width);
-NOM_DUMP_VAR(itr->height);
+NOM_DUMP_VAR(itr->w);
+NOM_DUMP_VAR(itr->h);
   }
 
   // Sheet's meta-data

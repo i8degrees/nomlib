@@ -76,7 +76,7 @@ void Gradient::initialize (
 {
   this->set_start_color ( gradient_color[0] );
   this->set_end_color ( gradient_color[1] );
-  this->set_size ( bounds.width, bounds.height );
+  this->set_size ( bounds.w, bounds.h );
   this->set_position ( bounds.x, bounds.y );
   this->set_margins ( x_margin, y_margin );
   this->set_fill_direction ( direction );
@@ -108,8 +108,8 @@ void Gradient::set_position ( int32 x, int32 y )
 
 void Gradient::set_size ( int32 width, int32 height )
 {
-  this->coords_.width = width;
-  this->coords_.height = height;
+  this->coords_.w = width;
+  this->coords_.h = height;
 }
 
 Color4u Gradient::start_color ( void ) const
@@ -160,19 +160,19 @@ void Gradient::enable_dithering ( bool toggle )
 
 void Gradient::strategy_top_down ( void )
 {
-  uint32 y_offset = ( this->coords_.y + this->coords_.height ) - this->y_margin_;
+  uint32 y_offset = ( this->coords_.y + this->coords_.h ) - this->y_margin_;
 
   float currentR = (float) gradient_[0].red;
   float currentG = (float) gradient_[0].green;
   float currentB = (float) gradient_[0].blue;
 
-  float destR = (float) ( gradient_[1].red - gradient_[0].red )      / ( float ) ( this->coords_.height - this->y_margin_ );
-  float destG = (float) ( gradient_[1].green - gradient_[0].green )  / ( float ) ( this->coords_.height - this->y_margin_ );
-  float destB = (float) ( gradient_[1].blue - gradient_[0].blue )    / ( float ) ( this->coords_.height - this->y_margin_ );
+  float destR = (float) ( gradient_[1].red - gradient_[0].red )      / ( float ) ( this->coords_.h - this->y_margin_ );
+  float destG = (float) ( gradient_[1].green - gradient_[0].green )  / ( float ) ( this->coords_.h - this->y_margin_ );
+  float destB = (float) ( gradient_[1].blue - gradient_[0].blue )    / ( float ) ( this->coords_.h - this->y_margin_ );
 
   for ( uint32 rows = this->coords_.y + this->y_margin_; rows < y_offset; rows++ )
   {
-    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( this->coords_.x + this->x_margin_, rows, this->coords_.width - this->x_margin_, 1 ), Color4u ( currentR, currentG, currentB ) ) ) );
+    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( this->coords_.x + this->x_margin_, rows, this->coords_.w - this->x_margin_, 1 ), Color4u ( currentR, currentG, currentB ) ) ) );
 
     if ( this->dithering() )
     {
@@ -185,19 +185,19 @@ void Gradient::strategy_top_down ( void )
 
 void Gradient::strategy_left_right ( void )
 {
-  uint32 x_offset = ( this->coords_.x + this->coords_.width ) - this->x_margin_;
+  uint32 x_offset = ( this->coords_.x + this->coords_.w ) - this->x_margin_;
 
   float currentR = (float) gradient_[0].red;
   float currentG = (float) gradient_[0].green;
   float currentB = (float) gradient_[0].blue;
 
-  float destR = (float) ( gradient_[1].red - gradient_[0].red )      / ( float ) ( this->coords_.width - this->x_margin_ );
-  float destG = (float) ( gradient_[1].green - gradient_[0].green )  / ( float ) ( this->coords_.width - this->x_margin_ );
-  float destB = (float) ( gradient_[1].blue - gradient_[0].blue )    / ( float ) ( this->coords_.width - this->x_margin_ );
+  float destR = (float) ( gradient_[1].red - gradient_[0].red )      / ( float ) ( this->coords_.w - this->x_margin_ );
+  float destG = (float) ( gradient_[1].green - gradient_[0].green )  / ( float ) ( this->coords_.w - this->x_margin_ );
+  float destB = (float) ( gradient_[1].blue - gradient_[0].blue )    / ( float ) ( this->coords_.w - this->x_margin_ );
 
   for ( uint32 rows = this->coords_.x + this->x_margin_; rows < x_offset; rows++ )
   {
-    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( rows, this->coords_.y + this->y_margin_, 1, this->coords_.height - this->y_margin_ ), Color4u ( currentR, currentG, currentB ) ) ) );
+    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( rows, this->coords_.y + this->y_margin_, 1, this->coords_.h - this->y_margin_ ), Color4u ( currentR, currentG, currentB ) ) ) );
 
     if ( this->dithering() )
     {

@@ -52,9 +52,7 @@ enum FrameStyle
 };
 
 /// \brief Simple UI interface for drawing a styled message box
-class MessageBox:
-                    public IDrawable
-
+class MessageBox: public IDrawable
 {
   public:
     MessageBox ( void );

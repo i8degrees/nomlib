@@ -45,7 +45,7 @@ NOM_LOG_TRACE ( NOM );
 
   dims = this->sprite_sheet.dimensions(0);
 
-  Sprite ( dims.width, dims.height );
+  Sprite ( dims.w, dims.h );
 
   this->set_frame ( 0 );
 }
@@ -60,7 +60,7 @@ NOM_LOG_TRACE ( NOM );
 
   dims = this->sprite_sheet.dimensions(0);
 
-  Sprite ( dims.width, dims.height );
+  Sprite ( dims.w, dims.h );
 
   this->set_frame ( 0 );
 }
@@ -111,8 +111,8 @@ void SpriteBatch::update ( void )
 
   this->offsets.x = dims.x * this->scale_factor;
   this->offsets.y = dims.y * this->scale_factor;
-  this->offsets.w = dims.width * this->scale_factor;
-  this->offsets.h = dims.width * this->scale_factor;
+  this->offsets.w = dims.w * this->scale_factor;
+  this->offsets.h = dims.h * this->scale_factor;
 
   this->sprite_.set_bounds( this->offsets );
   this->sprite_.set_position ( Point2i ( this->position().x, this->position().y ) );

@@ -59,7 +59,7 @@ MessageBox::MessageBox  (
   gradient_color[0] = background.start_color();
   gradient_color[1] = background.end_color();
 
-  this->drawable.push_back ( Gradient::SharedPtr ( new Gradient ( gradient_color, Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background.fill_direction() ) ) );
+  this->drawable.push_back ( Gradient::SharedPtr ( new Gradient ( gradient_color, Coords ( this->coords.x, this->coords.y, this->coords.w, this->coords.h ), 0, 0, background.fill_direction() ) ) );
 
   if ( style == FrameStyle::Gray )
   {
@@ -83,7 +83,7 @@ MessageBox::MessageBox  (
   Color4u gradient_color[2];
   gradient_color[0] = background->start_color();
   gradient_color[1] = background->end_color();
-  this->drawable.push_back ( Gradient::SharedPtr ( new Gradient ( gradient_color, Coords ( this->coords.x, this->coords.y, this->coords.width, this->coords.height ), 0, 0, background->fill_direction() ) ) );
+  this->drawable.push_back ( Gradient::SharedPtr ( new Gradient ( gradient_color, Coords ( this->coords.x, this->coords.y, this->coords.w, this->coords.h ), 0, 0, background->fill_direction() ) ) );
 
   if ( style != nullptr )
   {

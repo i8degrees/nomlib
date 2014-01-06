@@ -32,23 +32,23 @@ namespace nom {
 
 const Coords Coords::null ( -1, -1, -1, -1 );
 
-Coords::Coords ( void ) : x ( 0 ), y ( 0 ), width ( 0 ), height ( 0 ) {}
+Coords::Coords ( void ) : x ( 0 ), y ( 0 ), w ( 0 ), h ( 0 ) {}
 
 Coords::~Coords ( void ) {}
 
 Coords::Coords ( int32 x, int32 y, int32 w, int32 h ) : x ( x ),
                                                         y ( y ),
-                                                        width ( w ),
-                                                        height ( h )
+                                                        w ( w ),
+                                                        h ( h )
 {}
 
 Coords::Coords ( int32 x, int32 y ) : x ( x ), y ( y ),
-                                      width ( 0 ), height ( 0 )
+                                      w ( 0 ), h ( 0 )
 {}
 
 Coords::Coords ( const Coords& coords ) : x ( coords.x ), y ( coords.y ),
-                                          width ( coords.width ),
-                                          height ( coords.height )
+                                          w ( coords.w ),
+                                          h ( coords.h )
 {}
 
 Coords Coords::getPosition ( void ) const
@@ -58,7 +58,7 @@ Coords Coords::getPosition ( void ) const
 
 Coords Coords::getSize ( void ) const
 {
-  return Coords ( this->width, this->height );
+  return Coords ( this->w, this->h );
 }
 
 void Coords::setPosition ( int32 x, int32 y )
@@ -69,15 +69,15 @@ void Coords::setPosition ( int32 x, int32 y )
 
 void Coords::setSize ( int32 width, int32 height )
 {
-  this->width = width;
-  this->height = height;
+  this->w = width;
+  this->h = height;
 }
 
 bool Coords::contains ( int32 x, int32 y ) const
 {
   return  (
-            ( x >= this->x && x <= this->x + this->width )    &&
-            ( y >= this->y && y <= this->y + this->height )
+            ( x >= this->x && x <= this->x + this->w )    &&
+            ( y >= this->y && y <= this->y + this->h )
           );
 }
 
@@ -95,15 +95,15 @@ bool Coords::intersects ( Coords& rectangle ) const
 
   // Calculate sides of RectA
   leftA = this->x;
-  rightA = this->x + this->width;
+  rightA = this->x + this->w;
   topA = this->y;
-  bottomA = this->y + this->height;
+  bottomA = this->y + this->h;
 
   // Calculate sides of RectB
   leftB = rectangle.x;
-  rightB = rectangle.x + rectangle.width;
+  rightB = rectangle.x + rectangle.w;
   topB = rectangle.y;
-  bottomB = rectangle.y + rectangle.height;
+  bottomB = rectangle.y + rectangle.h;
 
   if ( bottomA <= topB ) return false;
   if ( topA >= bottomB ) return false;
@@ -132,8 +132,8 @@ std::ostream& operator << ( std::ostream& os, const Coords& coords )
 {
   os << coords.x << coords_delimiter
   << coords.y << coords_delimiter
-  << coords.width << coords_delimiter
-  << coords.height;
+  << coords.w << coords_delimiter
+  << coords.h;
   return os;
 }
 
@@ -141,8 +141,8 @@ Coords& Coords::operator = ( const Coords& other )
 {
   this->x = other.x;
   this->y = other.y;
-  this->width = other.width;
-  this->height = other.height;
+  this->w = other.w;
+  this->h = other.h;
 
   return *this;
 }
@@ -151,8 +151,8 @@ bool operator == ( const Coords& left, const Coords& right )
 {
   return (left.x == right.x ) &&
          (left.y == right.y ) &&
-         (left.width == right.width ) &&
-         (left.height == right.height );
+         (left.w == right.w ) &&
+         (left.h == right.h );
 }
 
 bool operator != ( const Coords& left, const Coords& right )
@@ -164,8 +164,8 @@ Coords operator + ( const Coords& left, const Coords& right )
 {
   return Coords  (  static_cast<int32> ( left.x + right.x ),
                     static_cast<int32> ( left.y + right.y ),
-                    static_cast<int32> ( left.width + right.width ),
-                    static_cast<int32> ( left.height + right.height )
+                    static_cast<int32> ( left.w + right.w ),
+                    static_cast<int32> ( left.h + right.h )
                   );
 }
 
@@ -173,8 +173,8 @@ Coords operator ++ ( Coords& left )
 {
   return Coords  (  static_cast<int32> ( left.x ++ ),
                     static_cast<int32> ( left.y ++ ),
-                    static_cast<int32> ( left.width ++ ),
-                    static_cast<int32> ( left.height ++ )
+                    static_cast<int32> ( left.w ++ ),
+                    static_cast<int32> ( left.h ++ )
                   );
 }
 
@@ -182,8 +182,8 @@ Coords operator - ( const Coords& left, const Coords& right )
 {
   return Coords  (  static_cast<int32> ( left.x - right.x ),
                     static_cast<int32> ( left.y - right.y ),
-                    static_cast<int32> ( left.width - right.width ),
-                    static_cast<int32> ( left.height - right.height )
+                    static_cast<int32> ( left.w - right.w ),
+                    static_cast<int32> ( left.h - right.h )
                   );
 }
 
@@ -191,8 +191,8 @@ Coords operator -- ( Coords& left )
 {
   return Coords  (  static_cast<int32> ( left.x -- ),
                     static_cast<int32> ( left.y -- ),
-                    static_cast<int32> ( left.width -- ),
-                    static_cast<int32> ( left.height -- )
+                    static_cast<int32> ( left.w -- ),
+                    static_cast<int32> ( left.h -- )
                   );
 }
 
@@ -200,8 +200,8 @@ Coords operator * ( const Coords& left, const Coords& right )
 {
   return Coords  ( static_cast<int32> ( left.x * right.x ),
                         static_cast<int32> ( left.y * right.y ),
-                        static_cast<int32> ( left.width * right.width ),
-                        static_cast<int32> ( left.height * right.height )
+                        static_cast<int32> ( left.w * right.w ),
+                        static_cast<int32> ( left.h * right.h )
                       );
 }
 
@@ -209,8 +209,8 @@ Coords operator / ( const Coords& left, const Coords& right )
 {
   return Coords  (  static_cast<int32> ( left.x / right.x ),
                     static_cast<int32> ( left.y / right.y ),
-                    static_cast<int32> ( left.width / right.width ),
-                    static_cast<int32> ( left.height / right.height )
+                    static_cast<int32> ( left.w / right.w ),
+                    static_cast<int32> ( left.h / right.h )
                   );
 }
 

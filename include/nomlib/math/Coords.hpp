@@ -96,14 +96,8 @@ class Coords
   public:
     int32 x;
     int32 y;
-    int32 width;
-    int32 height;
-
-    /// Reference alias for width instance variable
-    int32& w = width;
-
-    /// Reference alias for height instance variable
-    int32& h = height;
+    int32 w;
+    int32 h;
 };
 
 /// Pretty print the color using the following format string:

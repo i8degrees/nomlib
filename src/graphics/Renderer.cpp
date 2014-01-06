@@ -90,19 +90,14 @@ const Point2i Renderer::logical_size ( void ) const
   return size;
 }
 
-const Coords Renderer::viewport ( void ) const
+const IntRect Renderer::viewport ( void ) const
 {
   SDL_Rect v;
-  Coords view_pos;
+  IntRect viewport; // returned
 
   SDL_RenderGetViewport ( this->renderer(), &v );
 
-  view_pos.x = v.x;
-  view_pos.y = v.y;
-  view_pos.width = v.w;
-  view_pos.height = v.h;
-
-  return view_pos;
+  return IntRect ( v.x, v.y, v.w, v.h );
 }
 
 const SDL_BlendMode Renderer::blend_mode ( void ) const

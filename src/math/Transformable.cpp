@@ -47,7 +47,7 @@ const Coords Transformable::position ( void ) const
 
 const Coords Transformable::getSize ( void ) const
 {
-  return Coords ( this->position_.width, this->position_.height );
+  return Coords ( this->position_.w, this->position_.h );
 }
 
 void Transformable::set_position ( int32 x, int32 y )
@@ -62,7 +62,7 @@ void Transformable::set_position ( int32 x, int32 y, int32 width, int32 height )
 
 void Transformable::set_position ( const Coords& coords )
 {
-  this->set_position ( coords.x, coords.y, coords.width, coords.height );
+  this->set_position ( coords.x, coords.y, coords.w, coords.h );
 }
 
 void Transformable::set_position ( const IntRect& coords )
@@ -79,7 +79,7 @@ void Transformable::setSize ( int32 width, int32 height )
 
 void Transformable::setSize ( const Coords& size )
 {
-  this->setSize ( size.width, size.height );
+  this->setSize ( size.w, size.h );
 }
 
 void Transformable::move ( uint32 x, uint32 y )

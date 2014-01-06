@@ -26,51 +26,61 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_GLYPH_HPP
-#define NOMLIB_GRAPHICS_GLYPH_HPP
-
-#include <map>
-
-#include "nomlib/config.hpp"
-#include "nomlib/math/Rect.hpp"
+#include "nomlib/graphics/Glyph.hpp"
 
 namespace nom {
 
-/// Delimiter character to use with << operator
-const std::string GLYPH_DELIMITER = ", ";
-
-/// \brief Container structure for font data
-struct Glyph
+Glyph::Glyph ( void )  :
+  advance ( 0 )
 {
-  Glyph ( void );
+  //NOM_LOG_TRACE(NOM);
+}
 
-  ~Glyph ( void );
+Glyph::~Glyph ( void )
+{
+  //NOM_LOG_TRACE(NOM);
+}
 
-  /// Bounding rectangle coordinates of the glyph (relative to the baseline?)
-  IntRect bounds;
+std::ostream& operator << ( std::ostream& os, const Glyph& glyph )
+{
+  os
+  << glyph.bounds.x
+  << GLYPH_DELIMITER
+  << glyph.bounds.y
+  << GLYPH_DELIMITER
+  << glyph.bounds.w
+  << GLYPH_DELIMITER
+  << glyph.bounds.h
+  << GLYPH_DELIMITER
+  << glyph.advance;
 
-  /// Offset to move horizontally to the next character (spacing)
-  sint advance;
+  return os;
+}
 
-  /// Bounding rectangle coordinates of the glyph inside font's bitmap / texture
-  //IntRect texture_bounds;
-};
+bool operator == ( const Glyph& lhs, const Glyph& rhs )
+{
+  return  ( lhs.bounds.x == rhs.bounds.x )  &&  ( lhs.bounds.w == rhs.bounds.w )
+                                            &&
+          ( lhs.bounds.y == rhs.bounds.y )  &&  ( lhs.bounds.h == rhs.bounds.h );
+}
 
-/// Table mapping glyph data with its corresponding texture
-typedef std::map<uint32, Glyph> GlyphAtlas;
+bool operator < ( const Glyph& lhs, const Glyph& rhs )
+{
+  if ( lhs.bounds.w == rhs.bounds.w )
+  {
+    return lhs.bounds.x < rhs.bounds.x;
+  }
+  else
+  {
+    return lhs.bounds.w < rhs.bounds.w;
+  }
 
-/// Pretty print the glyph
-inline std::ostream& operator << ( std::ostream& os, const Glyph& mode );
+  return lhs.bounds.w < rhs.bounds.w;
+}
 
-/// Compare two glyphs for equality
-inline bool operator == ( const Glyph& lhs, const Glyph& rhs );
-
-/// Compare two glyphs for less-than equality
-inline bool operator < ( const Glyph& lhs, const Glyph& rhs );
-
-/// Compare two glyphs for greater-than equality
-inline bool operator > ( const Glyph& lhs, const Glyph& rhs );
+bool operator > ( const Glyph& lhs, const Glyph& rhs )
+{
+  return rhs < lhs;
+}
 
 } // namespace nom
-
-#endif // include guard defined

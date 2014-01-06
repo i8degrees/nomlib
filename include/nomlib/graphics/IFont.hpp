@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Glyph.hpp"
+#include "nomlib/graphics/Texture.hpp"
 
 namespace nom {
 
@@ -73,7 +74,7 @@ class IFont
     virtual uint spacing ( void ) const = 0;
 
     virtual void set_spacing ( uint ) = 0;
-    virtual bool build ( uint32 = 0 );
+    virtual bool build ( uint32 = 0 ) = 0;
 };
 
 } // namespace nom

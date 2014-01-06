@@ -38,21 +38,11 @@ TrueTypeFont::TrueTypeFont ( void ) :
   type_ ( IFont::FontType::TrueTypeFont )
 {
   NOM_LOG_TRACE ( NOM );
-
-  if ( TTF_Init () == -1 )
-  {
-    NOM_LOG_ERR ( NOM, TTF_GetError() );
-  }
 }
 
 TrueTypeFont::~TrueTypeFont ( void )
 {
   NOM_LOG_TRACE ( NOM );
-
-  // See FIXME note (nomlib/graphics/TrueTypeFont.hpp)
-  this->font_.reset();
-
-  TTF_Quit();
 }
 
 TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy )

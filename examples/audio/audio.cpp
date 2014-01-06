@@ -59,11 +59,12 @@ int main ( int argc, char* argv[] )
 
   // Fatal error; if we are not able to complete this step, it means that
   // we probably cannot rely on our resource paths!
-  if ( nom::nomlib_init ( argc, argv ) == false )
+  if ( nom::init ( argc, argv ) == false )
   {
     nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
     exit ( NOM_EXIT_FAILURE );
   }
+  atexit(nom::quit);
 
   NOM_DUMP_VAR ( dev.getDeviceName() );
 

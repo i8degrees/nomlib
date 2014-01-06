@@ -51,11 +51,12 @@ int main ( int argc, char* argv[] )
 
   // Fatal error; if we are not able to complete this step, it means that
   // we probably cannot rely on our resource paths!
-  if ( nom::nomlib_init ( argc, argv ) == false )
+  if ( nom::init ( argc, argv ) == false )
   {
     nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
     exit ( NOM_EXIT_FAILURE );
   }
+  atexit(nom::quit);
 
   node1[0]["HelloWorld"] = "I am a string!";
   node1[0]["SignedInteger"] = -42;
@@ -193,5 +194,6 @@ int main ( int argc, char* argv[] )
 
   nom::DialogMessageBox ( APP_NAME, "Success! The resulting JSON output has been saved at: " + OUTPUT_JSON_FILENAME );
 */
+
   return NOM_EXIT_SUCCESS;
 }

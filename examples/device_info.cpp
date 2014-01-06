@@ -44,14 +44,14 @@ int main ( int argc, char* argv[] )
   nom::Window window;
   nom::RendererInfo renderer_info;
 
-  if ( nom::nomlib_init ( argc, argv ) == false )
+  if ( nom::init ( argc, argv ) == false )
   {
     NOM_LOG_ERR ( APP_NAME, "Could not initialize nomlib." );
     exit ( NOM_EXIT_FAILURE );
   }
+  atexit(nom::quit);
 
   nom::uint32 window_flags = SDL_WINDOW_HIDDEN;
-
   if ( window.create ( APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, window_flags ) == false )
   {
     NOM_LOG_ERR ( APP_NAME, "Could not create a window." );

@@ -30,9 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-bool nomlib_init ( int32 argc, char* argv[] )
+bool init ( int32 argc, char* argv[] )
 {
-  //NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE ( NOM );
 
   nom::File dir;
   std::string pwd = "\0";
@@ -43,7 +43,20 @@ bool nomlib_init ( int32 argc, char* argv[] )
 
   if ( dir.set_path ( pwd ) == false ) return false;
 
+  if ( TTF_Init () != 0 )
+  {
+    NOM_LOG_ERR(NOM, TTF_GetError());
+    return false;
+  }
+
   return true;
+}
+
+void quit ( void )
+{
+  NOM_LOG_TRACE ( NOM );
+
+  TTF_Quit();
 }
 
 } // namespace nom

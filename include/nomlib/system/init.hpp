@@ -31,6 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 
+#include "SDL_ttf.h"
+
 #include "nomlib/config.hpp"
 #include "nomlib/system/File.hpp"
 #include "nomlib/system/Path.hpp"
@@ -43,7 +45,9 @@ namespace nom {
 /// the location of the binary being executed. This is not guaranteed to succeed.
 ///
 /// \note This should be called before calling any other library methods!
-bool nomlib_init ( int32 argc, char* argv[] );
+bool init ( int32 argc, char* argv[] );
+
+void quit ( void );
 
 } // namespace nom
 

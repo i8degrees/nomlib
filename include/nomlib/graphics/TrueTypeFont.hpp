@@ -45,6 +45,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Window.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
+/// Dump glyph bounding coordinates
+//#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT
+
 namespace nom {
 
 /// \brief TrueType fonts renderer
@@ -77,7 +80,7 @@ class TrueTypeFont: public IFont
 
     SDL_SURFACE::RawPtr image ( void ) const;
 
-    const Texture& texture ( uint32 character_size = 0 ) /*const*/;
+    //const Texture& texture ( uint32 character_size = 0 ) /*const*/;
 
     /// Obtain text character spacing width in pixels; this variable is affected
     /// by the total image width size.
@@ -105,7 +108,7 @@ class TrueTypeFont: public IFont
     /// Set a new vector outline -- in pixels -- for the loaded font.
     //void setFontOutline ( int32 depth );
 
-    const Glyph& glyph ( uint32 codepoint, uint32 character_size = 0 ) /*const*/;
+    const Glyph& glyph ( uint32 codepoint, uint32 character_size = 0 ) const;
 
     /// \brief Load a new font in from a file.
     ///
@@ -132,7 +135,7 @@ class TrueTypeFont: public IFont
 
     /// Table mapping a character size to its page -- a texture atlas combined
     /// with corresponding glyphs data.
-    /*mutable*/GlyphPage pages_;
+    mutable GlyphPage pages_;
 
     /// Font point (pixel) size; defaults to 12
     sint font_size_;

@@ -286,13 +286,40 @@ void Label::set_alignment ( enum Label::TextAlignment align )
   {
     this->alignment_ = align;
 
-    // Update logic
+    int x_offset = this->position().x;
+    int y_offset = this->position().y;
+
+    switch ( this->alignment() )
+    {
+      default:
+      case Label::TextAlignment::MiddleLeft:
+      {
+        x_offset = this->position().x;
+        y_offset = this->position().y;
+        break;
+      }
+
+      case Label::TextAlignment::MiddleCenter:
+      {
+        x_offset = this->position().x + ( this->size().w / 2 ) - ( this->width() / 2 );
+        y_offset = this->position().y + ( this->size().h / 2 ) - ( this->height() / 2 );
+        break;
+      }
+
+      case Label::TextAlignment::MiddleRight:
+      {
+        // TODO
+        break;
+      }
+    } // end switch
+
+    this->set_position ( x_offset, y_offset );
   }
 }
 
 void Label::draw ( RenderTarget target ) const
 {
-  std::string text_buffer = this->text();
+  std::string text_buffer;
 
   // No font has been loaded -- nothing to draw!
   if ( this->valid() == false )
@@ -301,68 +328,45 @@ void Label::draw ( RenderTarget target ) const
     return;
   }
 
+  text_buffer = this->text();
+
   // Text string to draw is empty -- nothing to draw!
   if ( text_buffer.length() < 1 ) return;
 
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from
-  int32 x_offset = this->position().x;
-  int32 y_offset = this->position().y;
+  int x_offset = this->position().x;
+  int y_offset = this->position().y;
 
-  switch ( this->alignment() )
-  {
-    default:
-    case Label::TextAlignment::MiddleLeft:
-    {
-      x_offset = this->position().x;
-      y_offset = this->position().y;
-      break;
-    }
-
-    case Label::TextAlignment::MiddleCenter:
-    {
-      x_offset = this->position().x + ( this->position().w / 2 ) - ( this->width() / 2 );
-      y_offset = this->position().y + ( this->position().h / 2 ) - ( this->height() / 2 );
-      break;
-    }
-
-    case Label::TextAlignment::MiddleRight:
-    {
-      // TODO
-      break;
-    }
-
-  } // end switch
+  //this->render_font_ = this->font()->texture(0);
+  //this->render_font_.set_position ( Point2i ( x_offset, y_offset ) );
+  //this->render_font_.draw ( target.renderer() );
+  //return;
 
   for ( uint32 pos = 0; pos < text_buffer.length(); pos++ )
   {
-    //If the current character is a space
-    if ( text_buffer[pos] == ' ' )
+    if ( text_buffer[pos] == ' ' ) // Space character
     {
       //Move over
       x_offset += this->font()->spacing();
     }
-
-    // If the current character is a newline
-    else if( text_buffer[pos] == '\n' )
+    else if( text_buffer[pos] == '\n' ) // Newline character
     {
       //Move down and back over to the beginning of line
       y_offset += this->font()->newline();
       x_offset = this->position().x;
     }
-    // If the current character is a tab
-    else if( text_buffer[pos] == '\t' )
+    else if( text_buffer[pos] == '\t' ) // Tab character
     {
       x_offset += this->font()->spacing();
     }
-    else
+    else // The time to render is now!
     {
       //Get the ASCII value of the character
       uint32 ascii = static_cast<uint32>( text_buffer[pos] );
 
       this->render_font_.set_position ( Point2i ( x_offset, y_offset ) );
       this->render_font_.set_bounds ( this->font()->glyph(ascii).bounds );
-
       this->render_font_.draw ( target.renderer() );
 
       // Move over the width of the character with one pixel of padding

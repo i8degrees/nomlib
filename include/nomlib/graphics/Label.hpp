@@ -40,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/math/Point2.hpp"
 
+/// Dump each character's glyph data used in width & height calculations
 //#define NOM_DEBUG_LABEL
 
 namespace nom {

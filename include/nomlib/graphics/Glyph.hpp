@@ -33,7 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Rect.hpp"
-#include "nomlib/graphics/Texture.hpp"
 
 namespace nom {
 
@@ -42,9 +41,14 @@ struct Glyph
 {
   Glyph ( void )  :
     advance ( 0 )
-  {}
+  {
+    //NOM_LOG_TRACE(NOM);
+  }
 
-  ~Glyph ( void ) {}
+  ~Glyph ( void )
+  {
+    //NOM_LOG_TRACE(NOM);
+  }
 
   /// Offset to move horizontally to the next character
   sint advance;
@@ -54,9 +58,6 @@ struct Glyph
 
   /// Bounding rectangle coordinates of the glyph inside font's bitmap / texture
   //IntRect texture_bounds;
-
-  /// Container for the glyph's pixel buffer
-  //Texture texture;
 };
 
 /// Table mapping glyph data with its corresponding texture

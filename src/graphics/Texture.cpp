@@ -36,13 +36,12 @@ Texture::Texture ( void )  :  texture_ { nullptr, priv::FreeTexture },
     pixels_ ( nullptr ), pitch_ ( 0 ), position_ ( 0, 0 ),
     bounds_ ( 0, 0, -1, -1 ), colorkey_ { NOM_COLOR4U_BLACK }
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE ( NOM );
 }
 
 Texture::~Texture ( void )
 {
-NOM_LOG_TRACE ( NOM );
-  delete this->pixels_;
+  NOM_LOG_TRACE ( NOM );
 }
 
 Texture::Texture ( const Texture& other ) :
@@ -51,7 +50,7 @@ Texture::Texture ( const Texture& other ) :
     position_ { other.position() }, bounds_ { other.bounds() },
     colorkey_ { other.colorkey() }
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE ( NOM );
 }
 
 bool Texture::initialize ( SDL_SURFACE::RawPtr video_buffer )
@@ -86,7 +85,7 @@ bool Texture::initialize ( SDL_SURFACE::RawPtr video_buffer )
 
 bool Texture::initialize ( int32 width, int32 height, uint32 format, uint32 flags )
 {
-  //if ( this->valid() ) this->texture_.reset();
+  if ( this->valid() ) this->texture_.reset();
 
   this->texture_.reset ( SDL_CreateTexture ( Window::context(), format, flags, width, height ), priv::FreeTexture );
 
@@ -100,7 +99,10 @@ bool Texture::initialize ( int32 width, int32 height, uint32 format, uint32 flag
 
   // Cache the size of our new Texture object with the existing surface info
   this->set_bounds( IntRect(0, 0, width, height) );
-
+//NOM_DUMP_VAR(this->pitch());
+//NOM_DUMP_VAR(this->width());
+//NOM_DUMP_VAR(this->height());
+//NOM_DUMP_VAR(this->position());
   return true;
 }
 
@@ -112,9 +114,9 @@ Texture::SharedPtr Texture::clone ( void ) const
 Texture& Texture::operator = ( const Texture& other )
 {
   this->texture_ = other.texture_;
-  this->pixels_ = other.pixels_;
-  this->pitch_ = other.pitch_;
-  this->position_ = other.position_;
+  this->pixels_ = other.pixels();
+  this->pitch_ = other.pitch();
+  this->position_ = other.position();
   this->bounds_ = other.bounds();
 
   return *this;
@@ -181,7 +183,7 @@ int32 Texture::width ( void ) const
 
   if ( SDL_QueryTexture ( this->texture(), nullptr, nullptr, &tex_width, nullptr ) != 0 )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return -1;
   }
 
@@ -194,7 +196,7 @@ int32 Texture::height ( void ) const
 
   if ( SDL_QueryTexture ( this->texture(), nullptr, nullptr, nullptr, &tex_height ) != 0 )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return -1;
   }
 
@@ -436,7 +438,7 @@ void Texture::draw ( SDL_RENDERER::RawPtr target ) const
     render_bounds.h = this->bounds().h;
     if ( SDL_RenderCopy ( target, this->texture(), &render_bounds, &render_coords ) != 0 )
     {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+      NOM_LOG_ERR ( NOM, SDL_GetError() );
       return;
     }
   }
@@ -444,7 +446,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   {
     if ( SDL_RenderCopy ( target, this->texture(), nullptr, &render_coords ) != 0 )
     {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+      NOM_LOG_ERR ( NOM, SDL_GetError() );
       return;
     }
   }

@@ -66,10 +66,10 @@ class IFont
     virtual IFont::SharedPtr clone ( void ) const = 0;
 
     virtual SDL_SURFACE::RawPtr image ( void ) const = 0;
-    virtual const Texture& texture ( uint32 = 0 ) /*const*/ = 0;
+    //virtual const Texture& texture ( uint32 = 0 ) /*const*/ = 0;
     virtual enum IFont::FontType type ( void ) const = 0;
 
-    virtual const Glyph& glyph ( uint32, uint32 = 0 ) /*const*/ = 0;
+    virtual const Glyph& glyph ( uint32, uint32 = 0 ) const = 0;
     virtual uint newline ( void ) const = 0;
     virtual uint spacing ( void ) const = 0;
 

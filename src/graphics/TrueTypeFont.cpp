@@ -59,7 +59,7 @@ TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy )
 {
   this->font_buffer_ = copy.font_buffer_;
   this->font_ = copy.font_;
-  this->pages_ = copy.pages_;
+  this->pages_ = copy.pages();
   this->type_ = copy.type();
   this->font_size_ = copy.font_size();
   this->newline_ = copy.newline();
@@ -89,12 +89,12 @@ SDL_SURFACE::RawPtr TrueTypeFont::image ( void ) const
 {
   return nullptr;
 }
-
-const Texture& TrueTypeFont::texture ( uint32 character_size ) /*const*/
+/*
+const Texture& TrueTypeFont::texture ( uint32 character_size ) //const
 {
   return this->pages_[character_size].texture;
 }
-
+*/
 uint TrueTypeFont::spacing ( void ) const
 {
   return this->spacing_;
@@ -207,7 +207,7 @@ NOM_LOG_ERR ( NOM, "Failed to set font width & height." );
 }
 */
 
-const Glyph& TrueTypeFont::glyph ( uint32 codepoint, uint32 character_size ) /*const*/
+const Glyph& TrueTypeFont::glyph ( uint32 codepoint, uint32 character_size ) const
 {
   GlyphAtlas& glyphs = this->pages_[character_size].glyphs;
 

@@ -39,23 +39,30 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Container structure for font data
-struct GlyphPage
+struct FontPage
 {
-  GlyphPage ( void )
+  /// Default constructor
+  FontPage ( void ) :
+    texture { new Image() }
   {
     //NOM_LOG_TRACE(NOM);
   }
 
-  ~GlyphPage ( void ) {}
+  /// Destructor
+  ~FontPage ( void )
+  {
+    //NOM_LOG_TRACE(NOM);
+  }
 
-  GlyphAtlas glyph;
+  GlyphAtlas glyphs;
 
   /// Container for the glyph's pixel buffer
-  Texture texture;
+  //Image texture;
+  std::shared_ptr<Image> texture;
 };
 
 /// Table mapping glyph data with its corresponding texture
-typedef std::map<uint32, GlyphPage> GlyphPage;
+typedef std::map<uint32, FontPage> GlyphPage;
 
 } // namespace nom
 

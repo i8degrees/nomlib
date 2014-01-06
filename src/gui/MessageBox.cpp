@@ -160,7 +160,7 @@ void MessageBox::set_title ( Label& title )
   this->mbox_title_.set_position ( IntRect ( this->coords.x + 4, this->coords.y, this->coords.w, this->coords.h ) );
 
   this->mbox_title_.set_text ( "INFO." );
-  this->mbox_title_.set_alignment ( Label::TextAlignment::MiddleLeft );
+  //this->mbox_title_.set_alignment ( Label::TextAlignment::MiddleLeft );
 
   this->drawable.push_back ( IDrawable::SharedPtr ( new nom::Label ( this->mbox_title_ ) ) );
 }
@@ -168,7 +168,9 @@ void MessageBox::set_title ( Label& title )
 void MessageBox::set_text ( Label& text )
 {
   this->mbox_text_ = text;
+
   this->mbox_text_.set_position ( IntRect ( this->coords.x, this->coords.y, this->coords.w, this->coords.h ) );
+  this->mbox_text_.set_alignment ( Label::MiddleCenter );
 
   this->drawable.push_back ( IDrawable::SharedPtr ( new nom::Label ( this->mbox_text_ ) ) );
 }
@@ -180,30 +182,6 @@ void MessageBox::update ( void )
     IDrawable::SharedPtr obj = *it;
     obj->update();
   }
-
-  if ( this->mbox_text_.valid() == false ) return;
-
-  switch ( this->mbox_text_.alignment() )
-  {
-    default:
-    case Label::TextAlignment::MiddleLeft: // TODO
-    {
-      this->mbox_text_.set_alignment ( Label::TextAlignment::MiddleLeft );
-      break;
-    }
-
-    case Label::TextAlignment::MiddleCenter:
-    {
-      this->mbox_text_.set_alignment ( Label::TextAlignment::MiddleCenter );
-      break;
-    }
-
-    case Label::TextAlignment::MiddleRight: // TODO
-    {
-      this->mbox_text_.set_alignment ( Label::TextAlignment::MiddleRight );
-      break;
-    }
-  } // end switch
 }
 
 void MessageBox::draw ( RenderTarget target ) const
@@ -217,6 +195,5 @@ void MessageBox::draw ( RenderTarget target ) const
   }
 }
 
-
-  } // namespace ui
+} // namespace ui
 } // namespace nom

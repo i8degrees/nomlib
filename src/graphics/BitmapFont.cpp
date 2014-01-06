@@ -54,7 +54,7 @@ BitmapFont::BitmapFont ( const BitmapFont& copy )
 {
   this->sheet_width_ = copy.sheet_width();
   this->sheet_height_ = copy.sheet_height();
-  this->bitmap_font_ = copy.bitmap_font_;
+  //this->bitmap_font_ = copy.bitmap_font_;
   this->pages_ = copy.pages();
   this->newline_ = copy.newline();
   this->spacing_ = copy.spacing();
@@ -68,7 +68,7 @@ IFont::SharedPtr BitmapFont::clone ( void ) const
 
 bool BitmapFont::valid ( void ) const
 {
-  if ( this->bitmap_font_.valid() == true ) return true;
+  if ( this->pages_[0].texture->valid() == true ) return true;
 
   return false;
 }
@@ -80,20 +80,22 @@ enum IFont::FontType BitmapFont::type ( void ) const
 
 SDL_SURFACE::RawPtr BitmapFont::image ( void ) const
 {
-  return this->bitmap_font_.image();
+  return this->pages_[0].texture->image();
 }
 
-const Texture& BitmapFont::texture ( uint32 character_size ) /*const*/
+/*
+const Texture& BitmapFont::texture ( uint32 character_size ) //const
 {
   return this->pages_[character_size].texture;
 }
+*/
 
 uint BitmapFont::spacing ( void ) const
 {
   return this->spacing_;
 }
 
-const Glyph& BitmapFont::glyph ( uint32 codepoint, uint32 character_size ) /*const*/
+const Glyph& BitmapFont::glyph ( uint32 codepoint, uint32 character_size ) const
 {
   GlyphAtlas& glyphs = this->pages_[character_size].glyphs;
 
@@ -135,13 +137,13 @@ bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
   // I don't understand why RGBA8888 is necessary here, but it is the only pixel
   // format that I have found that works when we are initializing a
   // nom::Texture (SDL_Texture) from a nom::Image (SDL_Surface).
-  if ( this->bitmap_font_.load ( filename, SDL_PIXELFORMAT_RGBA8888 ) == false )
+  if ( this->pages_[0].texture->load ( filename, SDL_PIXELFORMAT_RGBA8888 ) == false )
   {
     NOM_LOG_ERR ( NOM, "Could not load bitmap font image file: " + filename );
     return false;
   }
 
-  this->bitmap_font_.set_colorkey ( colorkey, true );
+  this->pages_[0].texture->set_colorkey ( colorkey, true );
 
   // Attempt to build font metrics
   if ( this->build() == false )
@@ -163,23 +165,23 @@ bool BitmapFont::build ( uint32 character_size )
   uint32 background_color = 0;
 
   // GlyphPage to be filled in (indexed by character_size)
-  struct FontPage page;
+  //struct FontPage page;
 
-  NOM_ASSERT ( this->bitmap_font_.valid() );
+  NOM_ASSERT ( this->pages_[0].texture->valid() );
 
-  if ( this->bitmap_font_.lock() == false )
+  if ( this->pages_[0].texture->lock() == false )
   {
     NOM_LOG_ERR ( NOM, "Could not lock surface." );
     return false;
   }
 
   background_color = RGBA (
-                            this->bitmap_font_.colorkey(),
-                            this->bitmap_font_.pixel_format()
+                            this->pages_[0].texture->colorkey(),
+                            this->pages_[0].texture->pixel_format()
                           );
 
-  tile_width = this->bitmap_font_.width() / this->sheet_width();
-  tile_height = this->bitmap_font_.height() / this->sheet_height();
+  tile_width = this->pages_[0].texture->width() / this->sheet_width();
+  tile_height = this->pages_[0].texture->height() / this->sheet_height();
   top = tile_height;
   base = tile_height;
 
@@ -188,10 +190,10 @@ bool BitmapFont::build ( uint32 character_size )
     for ( int32 cols = 0; cols < this->sheet_height(); cols++ )
     {
       // Set character offsets
-      page.glyphs[current_char].bounds.x = tile_width * cols;
-      page.glyphs[current_char].bounds.y = tile_height * rows;
-      page.glyphs[current_char].bounds.w = tile_width;
-      page.glyphs[current_char].bounds.h = tile_height;
+      this->pages_[0].glyphs[current_char].bounds.x = tile_width * cols;
+      this->pages_[0].glyphs[current_char].bounds.y = tile_height * rows;
+      this->pages_[0].glyphs[current_char].bounds.w = tile_width;
+      this->pages_[0].glyphs[current_char].bounds.h = tile_height;
 
       //Find Left Side; go through pixel columns
       for ( uint32 pCol = 0; pCol < tile_width; pCol++ )
@@ -204,10 +206,10 @@ bool BitmapFont::build ( uint32 character_size )
           uint32 pY = ( tile_height * rows ) + pRow;
 
           //If a non colorkey pixel is found
-          if( this->bitmap_font_.pixel ( pX, pY ) != background_color )
+          if( this->pages_[0].texture->pixel ( pX, pY ) != background_color )
           {
             //Set the x offset
-            page.glyphs[current_char].bounds.x = pX;
+            this->pages_[0].glyphs[current_char].bounds.x = pX;
 
             //Break the loops
             pCol = tile_width;
@@ -227,10 +229,10 @@ bool BitmapFont::build ( uint32 character_size )
           uint32 pY = ( tile_height * rows ) + pRow_w;
 
           //If a non colorkey pixel is found
-          if ( this->bitmap_font_.pixel ( pX, pY ) != background_color )
+          if ( this->pages_[0].texture->pixel ( pX, pY ) != background_color )
           {
             //Set the width
-            page.glyphs[current_char].bounds.w = ( pX - page.glyphs[current_char].bounds.x ) + 1;
+            this->pages_[0].glyphs[current_char].bounds.w = ( pX - this->pages_[0].glyphs[current_char].bounds.x ) + 1;
 
             //Break the loops
             pCol_w = -1;
@@ -250,7 +252,7 @@ bool BitmapFont::build ( uint32 character_size )
           uint32 pY = ( tile_height * rows ) + pRow;
 
           // If a non colorkey pixel is found
-          if( this->bitmap_font_.pixel ( pX, pY ) != background_color )
+          if( this->pages_[0].texture->pixel ( pX, pY ) != background_color )
           {
             // If new top is found
             if ( pRow < top )
@@ -280,7 +282,7 @@ bool BitmapFont::build ( uint32 character_size )
             uint32 pY = ( tile_height * rows ) + pRow;
 
             // If a non colorkey pixel is found
-            if ( this->bitmap_font_.pixel ( pX, pY ) != background_color )
+            if ( this->pages_[0].texture->pixel ( pX, pY ) != background_color )
             {
               // Bottom of a is found
               base = pRow;
@@ -297,7 +299,7 @@ bool BitmapFont::build ( uint32 character_size )
       current_char++;
     }
   }
-  this->bitmap_font_.unlock(); // Finished messing with pixels
+  this->pages_[0].texture->unlock(); // Finished messing with pixels
 
   // Calculate space
   this->set_spacing ( tile_width / 2 );
@@ -306,10 +308,10 @@ bool BitmapFont::build ( uint32 character_size )
   this->set_newline ( base - top );
 
   // Loop off excess top pixels
-  for ( uint32 top_pixels = 0; top_pixels < current_char; top_pixels++ )
+  for ( uint32 top_pixels = 0; top_pixels < current_char; ++top_pixels )
   {
-    page.glyphs[top_pixels].bounds.y += top;
-    page.glyphs[top_pixels].bounds.h -= top;
+    this->pages_[0].glyphs[top_pixels].bounds.y += top;
+    this->pages_[0].glyphs[top_pixels].bounds.h -= top;
   }
 
   // Dump table of calculated bitmap character positions
@@ -319,16 +321,39 @@ bool BitmapFont::build ( uint32 character_size )
     for ( uint32 glyph = 0; glyph < current_char; ++glyph )
     {
       NOM_DUMP_VAR ( glyph );
-      NOM_DUMP_VAR ( page.glyphs[glyph].bounds.x );
-      NOM_DUMP_VAR ( page.glyphs[glyph].bounds.y );
-      NOM_DUMP_VAR ( page.glyphs[glyph].bounds.w );
-      NOM_DUMP_VAR ( page.glyphs[glyph].bounds.h );
+      NOM_DUMP_VAR ( this->pages_[0].glyphs[glyph].bounds.x );
+      NOM_DUMP_VAR ( this->pages_[0].glyphs[glyph].bounds.y );
+      NOM_DUMP_VAR ( this->pages_[0].glyphs[glyph].bounds.w );
+      NOM_DUMP_VAR ( this->pages_[0].glyphs[glyph].bounds.h );
     }
   #endif
 
-  //this->render_font.initialize ( this->bitmap_font_.image() );
-  this->pages_.insert( std::pair<uint, FontPage> ( 0, page ) ).first;
+/*
+  page.texture.initialize ( this->pages_[0].texture->width(),
+                            this->pages_[0].texture->height(),
+                            SDL_PIXELFORMAT_RGBA8888,
+                            SDL_TEXTUREACCESS_STATIC
+                          );
+*/
 
+  for ( uint32 glyph = 0; glyph < current_char; ++glyph )
+  {
+    //IntRect gbounds = IntRect ( page.glyphs[glyph].bounds );
+    /*
+    page.texture.initialize ( gbounds.w, gbounds.h, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC );
+    page.texture.update ( this->pages_[0].texture->pixels(), this->pages_[0].texture->pitch(), gbounds );
+    */
+    //page.texture->set_bounds ( page.glyphs[glyph].bounds );
+  }
+
+  //page.texture = pages_[0].texture;
+  //page.texture = std::shared_ptr<Image> ( this->pages_[0].texture->clone() );
+  //this->pages_.insert( std::pair<uint32, FontPage> ( character_size, page ) ).first;
+
+  //NOM_DUMP_VAR(this->pages_[0].glyphs[65].bounds.x);
+  //NOM_DUMP_VAR(this->pages_[0].glyphs[65].bounds.y);
+  //NOM_DUMP_VAR(this->pages_[0].glyphs[65].bounds.w);
+  //NOM_DUMP_VAR(this->pages_[0].glyphs[65].bounds.h);
   return true;
 }
 

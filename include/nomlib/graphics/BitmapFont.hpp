@@ -45,6 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
+/// Dump glyph bounding coordinates
 //#define NOM_DEBUG_SDL2_BITMAP_FONT
 
 namespace nom {
@@ -74,7 +75,7 @@ class BitmapFont: public IFont
 
     SDL_SURFACE::RawPtr image ( void ) const;
 
-    const Texture& texture ( uint32 character_size = 0 ) /*const*/;
+    //const Texture& texture ( uint32 character_size = 0 ) /*const*/;
 
     /// Obtain text character spacing width in pixels; this variable is affected
     /// by the total image width size.
@@ -84,7 +85,7 @@ class BitmapFont: public IFont
     ///
     /// \param codepoint        ASCII character to lookup
     /// \param character_size   Reserved for future implementation
-    const Glyph& glyph ( uint32 codepoint, uint32 character_size = 0 ) /*const*/;
+    const Glyph& glyph ( uint32 codepoint, uint32 character_size = 0 ) const;
 
     /// Set new text character spacing width (in pixels) -- this variable is
     /// used during the calculation of the text width; see
@@ -116,6 +117,7 @@ class BitmapFont: public IFont
     bool build ( uint32 character_size = 0 );
 
     const GlyphPage& pages ( void ) const;
+    //const GlyphPage& pages ( uint32 character_size ) const;
 
     sint sheet_width ( void ) const;
     sint sheet_height ( void ) const;
@@ -127,11 +129,11 @@ class BitmapFont: public IFont
     sint sheet_height_;
 
     /// Our bitmap font's bitmap atlas
-    Image bitmap_font_;
+    //Image bitmap_font_;
 
     /// Table mapping a character size to its page -- a texture atlas combined
     /// with corresponding glyphs data.
-    /*mutable*/GlyphPage pages_;
+    mutable GlyphPage pages_;
 
     /// Height (in pixels) to offset when newline carriage char is encountered
     uint newline_;

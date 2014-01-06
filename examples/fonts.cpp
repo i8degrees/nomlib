@@ -60,7 +60,7 @@ const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
 
 //const std::string RESOURCE_FONT_TEXT_STRING = "!"#$%&'()*+,-.//0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 const std::string RESOURCE_FONT_TEXT_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n0123456789\n...\n,'[]()/\\n";
-//const std::string RESOURCE_FONT_TEXT_STRING = "A";
+//const std::string RESOURCE_FONT_TEXT_STRING = "I am a Bitmap Font";
 
 /// \brief nom::BitmapFont usage example
 class App: public nom::SDL_App
@@ -196,7 +196,6 @@ NOM_DUMP_VAR(this->label_title.type());
 
         this->window.fill ( NOM_COLOR4U_PRIMARY_COLORKEY );
         this->label.draw ( this->window );
-
         //this->label_title.draw ( this->window );
       } // end while SDL_App::running() is true
 

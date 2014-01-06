@@ -295,6 +295,22 @@ const Color4u Texture::color_modulation ( void ) const
   return color;
 }
 
+const Point2i Texture::maximum_size ( void ) const
+{
+  RendererInfo info;
+  info = Window::caps ( Window::context() );
+
+  return Point2i ( info.texture_width, info.texture_height );
+}
+
+uint32 Texture::optimal_pixel_format ( void ) const
+{
+  RendererInfo info;
+  info = Window::caps ( Window::context() );
+
+  return info.optimal_texture_format();
+}
+
 bool Texture::lock ( void )
 {
   if ( this->locked() )
@@ -379,7 +395,7 @@ TODO */
   // and display format conversion.
 NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
 
-  if ( this->initialize ( image.width(), image.height(), SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING ) == false )
+  if ( this->initialize ( image.width(), image.height(), this->optimal_pixel_format(), SDL_TEXTUREACCESS_STREAMING ) == false )
   {
 NOM_LOG_ERR ( NOM, "Error: Failed to initialize texture." );
     return false;

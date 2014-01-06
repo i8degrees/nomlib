@@ -181,6 +181,28 @@ class Texture
     /// NOM_COLOR4U_WHITE on failure
     const Color4u color_modulation ( void ) const;
 
+    /// \brief Obtain the largest nom::Texture size allowable by your graphics
+    /// hardware.
+    ///
+    /// \return A new Point2i object filled in with width (x) and height (y)
+    /// values, in pixel units.
+    ///
+    /// \note The values obtained here are dependent upon the nom::Renderer
+    /// context used at the time of creation of the nom::Texture -- in other
+    /// words, whichever nom::Window was active at the time of the nom::Texture
+    /// creation.
+    const Point2i maximum_size ( void ) const;
+
+    /// \brief Obtain the most optimal texture format available
+    ///
+    /// \return Resulting value is graphics hardware dependent
+    ///
+    /// \note The values obtained here are dependent upon the nom::Renderer
+    /// context used at the time of creation of the nom::Texture -- in other
+    /// words, whichever nom::Window was active at the time of the nom::Texture
+    /// creation.
+    uint32 optimal_pixel_format ( void ) const;
+
     /// Lock a portion of the texture for **write-only** pixel access.
     ///
     /// Texture must be created with SDL_TEXTUREACCESS_STREAMING.

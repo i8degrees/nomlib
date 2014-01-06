@@ -301,6 +301,12 @@ bool Image::load_bmp ( const std::string& filename, uint32 pixel_format )
 
 bool Image::save_bmp ( const std::string& filename ) const
 {
+  if ( this->valid() == false )
+  {
+    NOM_LOG_ERR(NOM, "Image is not valid for saving output" );
+    return false;
+  }
+
   if ( SDL_SaveBMP ( this->image(), filename.c_str() ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
@@ -312,6 +318,12 @@ bool Image::save_bmp ( const std::string& filename ) const
 
 bool Image::save_png ( const std::string& filename ) const
 {
+  if ( this->valid() == false )
+  {
+    NOM_LOG_ERR(NOM, "Image is not valid for saving output" );
+    return false;
+  }
+
   // Undocumented method for writing out a PNG file with SDL2_image
   if ( IMG_SavePNG ( this->image(), filename.c_str() ) != 0 )
   {

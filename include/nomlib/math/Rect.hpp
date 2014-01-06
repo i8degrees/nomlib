@@ -176,8 +176,9 @@ inline std::ostream& operator << ( std::ostream& os, const Rect<T>& rect )
 template <typename T>
 inline bool operator == ( const Rect<T>& lhs, const Rect<T>& rhs )
 {
-  return  ( lhs.x == rhs.lhs )  &&  ( lhs.w   == rhs.w )  &&
-          ( lhs.y == rhs.y )    &&  ( lhs.h  == rhs.h );
+  return  ( lhs.x == rhs.x )  &&  ( lhs.w == rhs.w )
+                              &&
+          ( lhs.y == rhs.y )  &&  ( lhs.h == rhs.h );
 }
 
 

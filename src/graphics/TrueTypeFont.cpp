@@ -49,7 +49,6 @@ TrueTypeFont::~TrueTypeFont ( void )
 
 TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy )
 {
-  //this->font_buffer_ = copy.font_buffer_;
   this->font_ = copy.font_;
   this->pages_ = copy.pages();
   this->type_ = copy.type();
@@ -77,34 +76,29 @@ enum IFont::FontType TrueTypeFont::type ( void ) const
   return this->type_;
 }
 
-SDL_SURFACE::RawPtr TrueTypeFont::image ( void ) const
+SDL_SURFACE::RawPtr TrueTypeFont::image ( uint32 character_size ) const
 {
-  return this->pages_[0].texture->image();
+  return this->pages_[character_size].texture->image();
 }
 
-uint TrueTypeFont::spacing ( void ) const
+sint TrueTypeFont::spacing ( uint32 character_size ) const
 {
   return this->spacing_;
 }
 
-int32 TrueTypeFont::font_size ( void ) const
+sint TrueTypeFont::font_size ( void ) const
 {
   return this->font_size_;
 }
 
-void TrueTypeFont::set_spacing ( uint spaces )
-{
-  this->spacing_ = spaces;
-}
-
-uint TrueTypeFont::newline ( void ) const
+sint TrueTypeFont::newline ( uint32 character_size ) const
 {
   return this->newline_;
 }
 
-void TrueTypeFont::set_newline ( uint newline )
+sint TrueTypeFont::kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) const
 {
-  this->newline_ = newline;
+  return -1; // TODO
 }
 
 /*
@@ -448,6 +442,16 @@ sint TrueTypeFont::sheet_width ( void ) const
 sint TrueTypeFont::sheet_height ( void ) const
 {
   return this->sheet_height_;
+}
+
+void TrueTypeFont::set_spacing ( sint spaces )
+{
+  this->spacing_ = spaces;
+}
+
+void TrueTypeFont::set_newline ( sint newline )
+{
+  this->newline_ = newline;
 }
 
 } // namespace nom

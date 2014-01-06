@@ -30,11 +30,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_GRAPHICS_FONT_PAGE_HPP
 
 #include <map>
+#include <vector>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/Glyph.hpp"
+#include "nomlib/graphics/fonts/FontRow.hpp"
 
 namespace nom {
 
@@ -57,8 +59,10 @@ struct FontPage
   GlyphAtlas glyphs;
 
   /// Container for the glyph's pixel buffer
-  //Image texture;
   std::shared_ptr<Image> texture;
+
+  /// Positioning of all the existing rows
+  std::vector<FontRow> rows;
 };
 
 /// Table mapping glyph data with its corresponding texture

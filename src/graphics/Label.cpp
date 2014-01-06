@@ -60,7 +60,7 @@ bool Label::initialize ( const IFont& font )
 {
   this->font_ = std::shared_ptr<IFont>( font.clone() );
 
-  if ( this->valid() == false || this->render_font_.initialize ( this->font()->image() ) == false )
+  if ( this->valid() == false || this->render_font_.initialize ( this->font()->image(0) ) == false )
   {
     NOM_LOG_ERR ( NOM, "Could not initialize label from given IFont" );
     return false;

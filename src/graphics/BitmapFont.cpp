@@ -54,7 +54,6 @@ BitmapFont::BitmapFont ( const BitmapFont& copy )
 {
   this->sheet_width_ = copy.sheet_width();
   this->sheet_height_ = copy.sheet_height();
-  //this->bitmap_font_ = copy.bitmap_font_;
   this->pages_ = copy.pages();
   this->newline_ = copy.newline();
   this->spacing_ = copy.spacing();
@@ -78,21 +77,19 @@ enum IFont::FontType BitmapFont::type ( void ) const
   return this->type_;
 }
 
-SDL_SURFACE::RawPtr BitmapFont::image ( void ) const
+SDL_SURFACE::RawPtr BitmapFont::image ( uint32 character_size ) const
 {
-  return this->pages_[0].texture->image();
+  return this->pages_[character_size].texture->image();
 }
 
-/*
-const Texture& BitmapFont::texture ( uint32 character_size ) //const
+sint BitmapFont::spacing ( uint32 character_size ) const
 {
-  return this->pages_[character_size].texture;
+  return this->spacing_; // TODO
 }
-*/
 
-uint BitmapFont::spacing ( void ) const
+sint BitmapFont::kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) const
 {
-  return this->spacing_;
+  return -1; // TODO
 }
 
 const Glyph& BitmapFont::glyph ( uint32 codepoint, uint32 character_size ) const
@@ -115,19 +112,9 @@ const Glyph& BitmapFont::glyph ( uint32 codepoint, uint32 character_size ) const
   }
 */
 
-void BitmapFont::set_spacing ( uint spaces )
-{
-  this->spacing_ = spaces;
-}
-
-uint BitmapFont::newline ( void ) const
+sint BitmapFont::newline ( uint32 character_size ) const
 {
   return this->newline_;
-}
-
-void BitmapFont::set_newline ( uint newline )
-{
-  this->newline_ = newline;
 }
 
 bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
@@ -371,6 +358,16 @@ sint BitmapFont::sheet_height ( void ) const
 const GlyphPage& BitmapFont::pages ( void ) const
 {
   return this->pages_;
+}
+
+void BitmapFont::set_spacing ( sint spaces )
+{
+  this->spacing_ = spaces;
+}
+
+void BitmapFont::set_newline ( sint newline )
+{
+  this->newline_ = newline;
 }
 
 } // namespace nom

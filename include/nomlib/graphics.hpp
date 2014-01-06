@@ -45,6 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics/TrueTypeFont.hpp>
 #include <nomlib/graphics/Gradient.hpp>
 #include <nomlib/graphics/Image.hpp>
+#include <nomlib/graphics/fonts/FontRow.hpp>
 #include <nomlib/graphics/shapes/Point.hpp>
 #include <nomlib/graphics/shapes/Line.hpp>
 #include <nomlib/graphics/shapes/Rectangle.hpp>

@@ -26,54 +26,47 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_IFONT_HPP
-#define NOMLIB_SDL2_IFONT_HPP
-
-#include <iostream>
-#include <memory>
+#ifndef NOMLIB_GRAPHICS_FONTS_FONT_ROW_HPP
+#define NOMLIB_GRAPHICS_FONTS_FONT_ROW_HPP
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/graphics/Glyph.hpp"
-#include "nomlib/graphics/Texture.hpp"
 
 namespace nom {
 
-class IFont
+/// \brief Container structure for a row of glyphs
+struct FontRow
 {
-  public:
-    typedef IFont* RawPtr;
-    typedef std::shared_ptr<IFont> SharedPtr;
+  /// Default constructor
+  FontRow ( void ) :
+    width ( 0 ),
+    top ( 0 ),
+    height ( 0 )
+  {
+    //NOM_LOG_TRACE(NOM);
+  }
 
-    enum FontType
-    {
-      NotDefined = 0,
-      BitmapFont,
-      TrueTypeFont,
-      UserDefined
-    };
+  /// Destructor
+  ~FontRow ( void )
+  {
+    //NOM_LOG_TRACE(NOM);
+  }
 
-    IFont ( void )
-    {
-      //NOM_LOG_TRACE(NOM);
-    }
+  FontRow ( uint top, uint height ) :
+    width ( 0 ),
+    top ( top ),
+    height ( height )
+  {
+    //NOM_LOG_TRACE(NOM);
+  }
 
-    virtual ~IFont ( void )
-    {
-      //NOM_LOG_TRACE(NOM);
-    }
+  /// Current width of the row
+  uint width;
 
-    virtual IFont::SharedPtr clone ( void ) const = 0;
+  /// Y position of the row into the texture
+  uint top;
 
-    virtual SDL_SURFACE::RawPtr image ( uint32 = 0 ) const = 0;
-    virtual enum IFont::FontType type ( void ) const = 0;
-
-    virtual const Glyph& glyph ( uint32, uint32 = 0 ) const = 0;
-    virtual sint newline ( uint32 = 0 ) const = 0;
-    virtual sint spacing ( uint32 = 0 ) const = 0;
-    virtual sint kerning ( uint32, uint32, uint32 = 0 ) const = 0;
-
-    virtual bool build ( uint32 = 0 ) = 0;
+  /// Height of the row
+  uint height;
 };
 
 } // namespace nom

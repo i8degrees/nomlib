@@ -80,35 +80,19 @@ class TrueTypeFont: public IFont
 
     enum IFont::FontType type ( void ) const;
 
-    SDL_SURFACE::RawPtr image ( void ) const;
-
-    //const Texture& texture ( uint32 character_size = 0 ) /*const*/;
+    SDL_SURFACE::RawPtr image ( uint32 character_size = 0 ) const;
 
     /// Obtain text character spacing width in pixels; this variable is affected
     /// by the total image width size.
-    uint spacing ( void ) const;
+    sint spacing ( uint32 character_size = 0 ) const;
 
     sint font_size ( void ) const;
 
-    /// Set new text character spacing width (in pixels) -- this variable is
-    /// used during the calculation of the text width; see
-    /// nom::BitmapFont::width method.
-    /// In addition to the rendering process (see draw method) when there is a
-    /// space character (' ') found in the provided text string.
-    void set_spacing ( uint spaces );
-
     /// Obtain text character spacing height offsets in pixels; defaults to
     /// variable calculations made within Load method
-    uint newline ( void ) const;
+    sint newline ( uint32 character_size = 0 ) const;
 
-    /// Set new text character spacing height offsets in pixels
-    void set_newline ( uint newline );
-
-    /// Getter for obtaining the vector outline of the loaded font.
-    //int32 getFontOutline ( void ) const;
-
-    /// Set a new vector outline -- in pixels -- for the loaded font.
-    //void setFontOutline ( int32 depth );
+    sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size = 0 ) const;
 
     const Glyph& glyph ( uint32 codepoint, uint32 character_size = 0 ) const;
 
@@ -132,14 +116,21 @@ class TrueTypeFont: public IFont
     sint sheet_width ( void ) const;
     sint sheet_height ( void ) const;
 
+    /// Set new text character spacing width (in pixels) -- this variable is
+    /// used during the calculation of the text width; see
+    /// nom::BitmapFont::width method.
+    /// in addition to the rendering process (see draw method) when there is a
+    /// space character (' ') found in the provided text string.
+    void set_spacing ( sint spaces );
+
+    /// Set new text character spacing height offsets in pixels
+    void set_newline ( sint newline );
+
     /// Width -- in pixels -- of overall texture atlas sheet
     sint sheet_width_;
 
     /// Height -- in pixels -- of overall texture atlas sheet
     sint sheet_height_;
-
-    /// Surface where font for drawing is rendered to
-    //Texture font_buffer_;
 
     /// Font file data, used by SDL_ttf extension
     std::shared_ptr<TTF_Font> font_;
@@ -152,14 +143,14 @@ class TrueTypeFont: public IFont
     sint font_size_;
 
     /// Height (in pixels) to offset when newline carriage char is encountered
-    uint newline_;
+    sint newline_;
 
     /// Width in pixels to offset when a space carriage char is encountered.
     ///
     /// Note that you may need to reset this if you are using bitmap fonts with
     /// high resolution graphics. I recently went from 384x224 to 768x448 and
     /// this was enough to offset this variable by 18 pixels.
-    uint spacing_;
+    sint spacing_;
 
     /// Store the file path so we can change font sizes on the fly
     std::string filename_;

@@ -26,36 +26,60 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#include "nomlib/system/log.hpp"
 
-// Public header file
+namespace nom {
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/log.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/GameStates.hpp>
-#include <nomlib/system/ObjectCache.hpp>
-#include <nomlib/system/dialog_messagebox.hpp>
-#include <nomlib/system/Path.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDL_App.hpp>
-#include <nomlib/system/Input.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/Sleep.hpp>
-#include <nomlib/system/make_unique.hpp>
-#include <nomlib/system/EventDispatcher.hpp>
-#include <nomlib/system/AnimationTimer.hpp>
-#include <nomlib/system/init.hpp>
-#include <nomlib/system/SDL_helpers.hpp>
+void log ( void* userdata, int category, SDL_LogPriority prio, const char* message )
+{
+/*
+  std::cout
+  << "NOM_LOG at "
+  << nom::time()
+  << std::endl
+  << "Reason: "
+  << std::string(message)
+  << std::endl
+  << "Priority: "
+  << prio
+  << std::endl
+  << "Category: "
+  << category
+  << std::endl;
+*/
+  /*
+  std::cout
+  << identifier
+  << "_LOG_ERR at "
+  << nom::time(),
+  << "In file "
+  << __FILE__
+  << ":"
+  << __LINE__
+  << std::endl
+  << "Reason: "
+  << message
+  << std::endl
+  << std::endl;
+  */
+}
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  // Nothing to do
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/ResourcePath.hpp>
-#endif
+void log_err ( const std::string& identifier, const std::string& message )
+{
+  //
+}
 
-#endif // include guard defined
+void log_trace ( const std::string& identifier )
+{
+  /*
+  std::cout
+  << identifier
+  << "_LOG_TRACE at "
+  << nom::time(),
+  << __func__
+  << std::endl
+  << std::endl;
+  */
+}
+
+} // namespace nom

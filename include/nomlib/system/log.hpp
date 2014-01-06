@@ -26,36 +26,23 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#ifndef NOMLIB_SYSTEM_LOG_HPP
+#define NOMLIB_SYSTEM_LOG_HPP
 
-// Public header file
+#include <iostream>
+#include <string>
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/log.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/GameStates.hpp>
-#include <nomlib/system/ObjectCache.hpp>
-#include <nomlib/system/dialog_messagebox.hpp>
-#include <nomlib/system/Path.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDL_App.hpp>
-#include <nomlib/system/Input.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/Sleep.hpp>
-#include <nomlib/system/make_unique.hpp>
-#include <nomlib/system/EventDispatcher.hpp>
-#include <nomlib/system/AnimationTimer.hpp>
-#include <nomlib/system/init.hpp>
-#include <nomlib/system/SDL_helpers.hpp>
+#include "SDL.h"
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  // Nothing to do
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/ResourcePath.hpp>
-#endif
+#include "nomlib/config.hpp"
+#include "nomlib/system/clock.hpp"
+
+namespace nom {
+
+void log ( void* userdata, int category, SDL_LogPriority prio, const char* message );
+void log_err ( const std::string& identifier, const std::string& message );
+void log_trace ( const std::string& identifier );
+
+} // namespace nom
 
 #endif // include guard defined

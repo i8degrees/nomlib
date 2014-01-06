@@ -31,9 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 
+#include "SDL.h"
 #include "SDL_ttf.h"
 
 #include "nomlib/config.hpp"
+#include "nomlib/system/log.hpp"
 #include "nomlib/system/File.hpp"
 #include "nomlib/system/Path.hpp"
 

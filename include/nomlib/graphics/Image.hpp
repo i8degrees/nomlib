@@ -88,6 +88,18 @@ class Image
     /// documentation for SDL.
     bool initialize ( int32 width, int32 height, uint8 bits_per_pixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
+    /// \brief Initialize a nom::Image from a new video buffer, created with
+    /// specified dimensions
+    ///
+    /// \param size     Width & height specified in pixels
+    /// \param bpp      Bits per pixel -- 8, 16, 24 or 32
+    bool initialize ( const Point2i& size, uint8 bpp = 32 );
+
+    /// \brief Initialize a nom::Image from an existing SDL_Surface
+    ///
+    /// \param buffer   Existing SDL_Surface structure
+    bool initialize ( SDL_SURFACE::RawPtr buffer );
+
     /// Obtain the SDL_Surface struct used in this object instance
     SDL_SURFACE::RawPtr image ( void ) const;
 

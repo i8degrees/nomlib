@@ -32,12 +32,12 @@ namespace nom {
 
 Image::Image ( void ) : image_ ( nullptr, priv::FreeSurface )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE ( NOM );
 }
 
 Image::~Image ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE ( NOM );
 }
 
 Image::Image ( uint32 flags ) : image_ ( nullptr, priv::FreeSurface )
@@ -77,7 +77,7 @@ bool Image::initialize( void* pixels, int32 width, int32 height,
                         uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask
                       )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE ( NOM );
 
   this->image_.reset ( SDL_CreateRGBSurfaceFrom ( pixels, width, height, bits_per_pixel, pitch, Rmask, Gmask, Bmask, Amask ), priv::FreeSurface );
   //this->set_bounds ( IntRect( 0, 0, width, height) );
@@ -117,12 +117,31 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
   return true;
 }
+
+bool Image::initialize ( SDL_SURFACE::RawPtr buffer )
+{
+  if ( this->valid() == true ) this->image_.reset();
+
+  this->image_.reset ( buffer, priv::FreeSurface );
+
+  if ( this->valid() == false )
   {
-    if ( this->set_colorkey ( this->colorkey(), true ) == false )
-    {
-      NOM_LOG_ERR ( NOM, "Could not create the video surface with color key transparency." );
-      return false;
-    }
+    NOM_LOG_ERR ( NOM, "Could not initialize Image from existing surface: " + std::string(SDL_GetError()) );
+    return false;
+  }
+
+  return true;
+}
+
+bool Image::initialize ( const Point2i& size, uint8 bpp )
+{
+  // Let SDL handle figuring out the color masks
+  if ( this->initialize ( size.x, size.y, bpp, 0, 0, 0, 0 ) == false )
+  {
+    NOM_LOG_ERR(NOM,"Could not initialize Image from dimensions:" );
+    NOM_DUMP_VAR(size.x);
+    NOM_DUMP_VAR(size.y);
+    return false;
   }
 
   return true;

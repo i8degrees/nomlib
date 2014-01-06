@@ -203,14 +203,32 @@ class Image
     /// \param      TRUE to enable RLE acceleration; FALSE to disable
     bool RLE ( bool flag );
 
-    /// Pixel reading -- supports 8-bit, 15/16-bit, 24-bit & 32-bit color modes
+    /// \brief Read a RGBA pixel from the video surface
     ///
-    /// Returns -1 on error
+    /// \returns  A 32-bit encoded color value, dependent upon the pixel format.
     ///
-    /// You are responsible for locking & unlocking of the Image before-hand
+    /// \remarks You are responsible for any necessary video surface locking
+    /// and unlocking.
     ///
-    /// \todo Test 8-bit, 15/16-bit & 24-bit pixels
-    uint32 pixel ( int32 x, int32 y );
+    /// \note The color depth is determined by the existing color depth of the
+    ///       nom::Image -- 8-bit, 15/16-bit, 24-bit or 32-bit bits per pixel
+    ///       depths are supported. When a color depth cannot be determined, it
+    ///       is assumed 32-bit.
+    ///
+    /// \todo Test 8-bit, 15/16-bit & 24-bit pixel blits
+    uint32 pixel ( int x, int y );
+
+    /// \brief Blit a RGBA pixel onto the video surface
+    ///
+    /// \remarks You are responsible for any necessary video surface locking
+    /// and unlocking.
+    ///
+    /// \note The color depth is determined by the existing color depth of the
+    ///       nom::Image -- 8-bit, 15/16-bit, 24-bit or 32-bit bits per pixel
+    ///       depths are supported.
+    ///
+    /// \todo Test 8-bit, 15/16-bit & 24-bit pixel blits
+    void set_pixel ( int x, int y, const Color4u& color );
 
     /// Set a new blending mode for blitting
     bool set_blend_mode ( const SDL_BlendMode blend );

@@ -532,39 +532,41 @@ uint32 Texture::pixel ( int32 x, int32 y )
 {
   switch ( this->bits_per_pixel() )
   {
-    default: return -1; break; // Unknown
-
     case 8:
     {
       uint8* pixels = static_cast<uint8*> ( this->pixels() );
 
       return pixels[ ( y * this->pitch() ) + x ];
+      break;
     }
-    break;
 
     case 16:
     {
       uint16* pixels = static_cast<uint16*> ( this->pixels() );
 
       return pixels[ ( y * this->pitch() / 2 ) + x ];
+      break;
     }
-    break;
 
     case 24:
     {
       uint8* pixels = static_cast<uint8*> ( this->pixels() );
 
       return pixels[ ( y * this->pitch() ) + x ];
+      break;
     }
-    break;
 
+    default: // Unknown color depth; log a debug message & assume 32-bit bpp
+    {
+      NOM_LOG_ERR ( NOM, "Could not determine color depth for pixel reading; assuming 32-bit" );
+    }
     case 32:
     {
-      uint32* pixels = static_cast<uint32*> ( this->pixels() );
+      uint8* pixels = static_cast<uint8*> ( this->pixels() );
 
       return pixels[ ( y * this->pitch()/4 ) + x ];
+      break;
     }
-    break;
   } // end switch
 }
 

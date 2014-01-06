@@ -120,7 +120,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
 bool Image::initialize ( SDL_SURFACE::RawPtr buffer )
 {
-  if ( this->valid() == true ) this->image_.reset();
+  //if ( this->valid() == true ) this->image_.reset();
 
   this->image_.reset ( buffer, priv::FreeSurface );
 
@@ -407,43 +407,98 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-uint32 Image::pixel ( int32 x, int32 y )
+uint32 Image::pixel ( int x, int y )
 {
   switch ( this->bits_per_pixel() )
   {
-    default: return -1; break; // Unknown
-
     case 8:
     {
       uint8* pixels = static_cast<uint8*> ( this->pixels() );
 
       return pixels[ ( y * this->pitch() ) + x ];
+      break;
     }
-    break;
 
     case 16:
     {
       uint16* pixels = static_cast<uint16*> ( this->pixels() );
 
       return pixels[ ( y * this->pitch() / 2 ) + x ];
+      break;
     }
-    break;
 
     case 24:
     {
       uint8* pixels = static_cast<uint8*> ( this->pixels() );
 
       return pixels[ ( y * this->pitch() ) + x ];
+      break;
     }
-    break;
 
+    default: // Unknown color depth; log a debug message & assume 32-bit bpp
+    {
+      NOM_LOG_ERR ( NOM, "Could not determine color depth for pixel reading; assuming 32-bit" );
+    }
     case 32:
     {
-      uint32* pixels = static_cast<uint32*> ( this->pixels() );
+      uint8* pixels = static_cast<uint8*> ( this->pixels() );
 
       return pixels[ ( y * this->pitch()/4 ) + x ];
+      break;
     }
-    break;
+  } // end switch
+}
+
+void Image::set_pixel ( int x, int y, const Color4u& color )
+{
+  uint32 c = 0;
+
+  switch ( this->bits_per_pixel() )
+  {
+    case 8:
+    {
+      uint8* pixels = static_cast<uint8*> ( this->pixels() );
+      c = RGB ( color, this->pixel_format() );
+
+      pixels[ ( y * this->pitch() ) + x ] = c;
+      break;
+    }
+
+    case 16:
+    {
+      uint16* pixels = static_cast<uint16*> ( this->pixels() );
+      c = RGBA ( color, this->pixel_format() );
+
+      pixels[ ( y * this->pitch()/2 ) + x ] = c;
+      break;
+    }
+
+    case 24:
+    {
+      SDL_PixelFormat* fmt = this->image()->format;
+      uint8* pixels = static_cast<uint8*> ( this->pixels() );
+      c = RGBA ( color, this->pixel_format() );
+
+      pixels[ ( y * this->pitch() ) + x ] = c;
+      *(pixels + fmt->Rshift/8 ) = color.red;
+      *(pixels + fmt->Gshift/8 ) = color.green;
+      *(pixels + fmt->Bshift/8 ) = color.blue;
+      *(pixels + fmt->Ashift/8 ) = color.alpha;
+      break;
+    }
+
+    default: // Unknown color depth; log a debug message & assume 32-bit bpp
+    {
+      NOM_LOG_ERR ( NOM, "Could not determine color depth for pixel writing; assuming 32-bit" );
+    }
+    case 32:
+    {
+      uint8* pixels = static_cast<uint8*> ( this->pixels() );
+      c = RGBA ( color, this->pixel_format() );
+
+      pixels[ ( y * this->pitch()/4 ) + x ] = c;
+      break;
+    }
   } // end switch
 }
 

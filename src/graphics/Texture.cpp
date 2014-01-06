@@ -562,7 +562,7 @@ uint32 Texture::pixel ( int32 x, int32 y )
     }
     case 32:
     {
-      uint8* pixels = static_cast<uint8*> ( this->pixels() );
+      uint32* pixels = static_cast<uint32*> ( this->pixels() );
 
       return pixels[ ( y * this->pitch()/4 ) + x ];
       break;

@@ -441,7 +441,7 @@ uint32 Image::pixel ( int x, int y )
     }
     case 32:
     {
-      uint8* pixels = static_cast<uint8*> ( this->pixels() );
+      uint32* pixels = static_cast<uint32*> ( this->pixels() );
 
       return pixels[ ( y * this->pitch()/4 ) + x ];
       break;
@@ -493,7 +493,7 @@ void Image::set_pixel ( int x, int y, const Color4u& color )
     }
     case 32:
     {
-      uint8* pixels = static_cast<uint8*> ( this->pixels() );
+      uint32* pixels = static_cast<uint32*> ( this->pixels() );
       c = RGBA ( color, this->pixel_format() );
 
       pixels[ ( y * this->pitch()/4 ) + x ] = c;

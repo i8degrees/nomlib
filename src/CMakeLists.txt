@@ -33,7 +33,6 @@ set ( GRAPHICS_SOURCE
       ${SRC_DIR}/graphics/BitmapFont.cpp
       ${SRC_DIR}/graphics/TrueTypeFont.cpp
       ${SRC_DIR}/graphics/Gradient.cpp
-      #${SRC_DIR}/graphics/Pixel.cpp
     )
 
 # third-party hqx algorithm

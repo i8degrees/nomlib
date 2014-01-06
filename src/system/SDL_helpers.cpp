@@ -150,6 +150,24 @@ const std::string PIXEL_FORMAT_NAME ( uint32 format )
   return std::string (SDL_GetPixelFormatName ( format ) );
 }
 
+bool save_png ( SDL_SURFACE::RawPtr buffer, const std::string& filename )
+{
+  if ( buffer == nullptr )
+  {
+    NOM_LOG_ERR( NOM, "Video surface memory is not valid for saving output");
+    return false;
+  }
+
+  // Undocumented method for writing out a PNG file with SDL2_image
+  if ( IMG_SavePNG ( buffer, filename.c_str() ) != 0 )
+  {
+    NOM_LOG_ERR(NOM,SDL_GetError());
+    return false;
+  }
+
+  return true;
+}
+
 namespace priv {
 
 void FreeWindow ( SDL_Window* handle )

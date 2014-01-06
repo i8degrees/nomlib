@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "SDL.h"
+#include "SDL_image.h"
 #include "SDL_ttf.h"
 
 #include "nomlib/config.hpp"
@@ -180,6 +181,15 @@ const std::string hint ( const std::string& name );
 bool set_hint ( const std::string& name, const std::string& value );
 
 const std::string PIXEL_FORMAT_NAME ( uint32 format );
+
+/// Save a screen shot as a Portable Network Graphics (PNG) file.
+///
+/// \param  buffer          Input SDL_Surface video surface to save
+/// \param  filename        Output filename path
+///
+/// \note SDL2_image appears to be saving PNG files with ARGB pixel
+/// ordering; SDL_PIXELFORMAT_ARGB8888
+bool save_png ( SDL_SURFACE::RawPtr, const std::string& filename );
 
 namespace priv {
 

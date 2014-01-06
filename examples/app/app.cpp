@@ -226,10 +226,10 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
                                               this->gradient
                                             );
 
-      // this->info_box.set_title ( nom::Label::SharedPtr ( nom::Label ( this->label_title ) ) );
-      // this->info_box.set_text ( nom::Label::SharedPtr ( nom::Label ( this->label ) ) );
-       this->info_box.set_title ( this->label_title );
-       this->info_box.set_text ( this->label );
+      //this->info_box.set_title ( nom::Label::SharedPtr ( nom::Label ( this->label_title ) ) );
+      //this->info_box.set_text ( nom::Label::SharedPtr ( nom::Label ( this->label ) ) );
+      this->info_box.set_title ( this->label_title );
+      this->info_box.set_text ( this->label );
 
 NOM_DUMP_VAR(this->sprite.size().x); // FIXME: should be 26 (sprite sheet width), but is 130 (total texture size)
       this->sprite.set_position ( this->info_box.position().x - 26, this->info_box.position().y );

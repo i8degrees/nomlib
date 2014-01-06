@@ -168,7 +168,6 @@ class Label: public Transformable
     /// Current text effect set
     enum FontStyle style_;
     enum TextAlignment alignment_;
-
 /*
     Point2i local_bounds;
     Point2i global_bounds;

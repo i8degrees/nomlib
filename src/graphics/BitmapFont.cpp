@@ -36,11 +36,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 BitmapFont::BitmapFont ( void ) :
-  sheet_width_ { 16 },
-  sheet_height_ { 16 },
-  newline_ { 0 },
-  spacing_ { 0 },
-  type_ { IFont::FontType::BitmapFont }
+  sheet_width_ ( 16 ),
+  sheet_height_ ( 16 ),
+  newline_ ( 0 ),
+  spacing_ ( 0 ),
+  type_ ( IFont::FontType::BitmapFont )
 {
   NOM_LOG_TRACE ( NOM );
 }
@@ -354,6 +354,7 @@ bool BitmapFont::build ( uint32 character_size )
   //NOM_DUMP_VAR(this->pages_[0].glyphs[65].bounds.y);
   //NOM_DUMP_VAR(this->pages_[0].glyphs[65].bounds.w);
   //NOM_DUMP_VAR(this->pages_[0].glyphs[65].bounds.h);
+
   return true;
 }
 

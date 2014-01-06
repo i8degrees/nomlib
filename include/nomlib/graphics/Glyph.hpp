@@ -50,7 +50,7 @@ struct Glyph
     //NOM_LOG_TRACE(NOM);
   }
 
-  /// Offset to move horizontally to the next character
+  /// Offset to move horizontally to the next character (spacing)
   sint advance;
 
   /// Bounding rectangle coordinates of the glyph (relative to the baseline?)

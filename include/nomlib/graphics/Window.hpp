@@ -115,7 +115,18 @@ class Window:
     /// \todo SDL2 support
     VideoModeList getVideoModes ( void ) const;
 
+    /// \brief Obtain information specific to your rendering hardware
+    /// capabilities.
+    ///
+    /// \remarks See nom::RendererInfo
     const RendererInfo caps ( void ) const;
+
+    /// \brief Obtain information specific to your rendering hardware
+    /// capabilities.
+    ///
+    /// \note   This method is used internally by nomlib -- nom::Window::caps()
+    ///         is probably the API you want to use outside of nomlib.
+    static const RendererInfo caps ( SDL_RENDERER::RawPtr target );
 
     void set_size ( int32 width, int32 height );
 

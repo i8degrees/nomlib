@@ -30,10 +30,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-RendererInfo::RendererInfo ( void ) {}
-RendererInfo::~RendererInfo ( void ) {}
+RendererInfo::RendererInfo ( void ) :
+  flags ( 0 ),
+  texture_width ( 0 ),
+  texture_height ( 0 )
+{
+  //NOM_LOG_TRACE(NOM);
+}
 
-const uint32 RendererInfo::optimal_texture_format ( void ) const
+RendererInfo::~RendererInfo ( void )
+{
+  //NOM_LOG_TRACE(NOM);
+}
+
+uint32 RendererInfo::optimal_texture_format ( void ) const
 {
   return this->texture_formats.front();
 }

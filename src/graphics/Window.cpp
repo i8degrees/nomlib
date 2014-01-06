@@ -207,10 +207,15 @@ NOM_LOG_INFO ( NOM, "No video modes are supported." );
 
 const RendererInfo Window::caps ( void ) const
 {
+  return this->caps ( this->renderer() );
+}
+
+const RendererInfo Window::caps ( SDL_RENDERER::RawPtr target )
+{
   RendererInfo renderer_info;
   SDL_RendererInfo info;
 
-  if ( SDL_GetRendererInfo ( this->renderer(), &info ) != 0 )
+  if ( SDL_GetRendererInfo ( target, &info ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
     return renderer_info;
@@ -417,6 +422,7 @@ void Window::set_maximum_window_size ( int max_width, int max_height )
 
 bool Window::save_screenshot ( const std::string& filename ) const
 {
+  RendererInfo caps = this->caps();
   Image screenshot;
   File fp; // Using File::exists
 
@@ -433,9 +439,10 @@ bool Window::save_screenshot ( const std::string& filename ) const
   uint32 blue_mask = 0;
   uint32 alpha_mask = 0;
 
+  uint32 optimal_pixel_format = caps.optimal_texture_format();
   // We need ARGB pixel ordering in order to save the bitmap to disk correctly;
   // otherwise the colors are out of order!
-  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( SDL_PIXELFORMAT_ARGB8888, &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
+  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( optimal_pixel_format, &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
   {
     NOM_LOG_ERR( NOM, SDL_GetError() );
     return false;

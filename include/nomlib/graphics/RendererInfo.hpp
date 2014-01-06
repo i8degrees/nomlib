@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Container class for the current renderer driver capabilities
-class RendererInfo
+struct RendererInfo
 {
   public:
     /// Raw pointer type
@@ -54,9 +54,8 @@ class RendererInfo
     ~RendererInfo ( void );
 
     /// Obtain the most optimal texture (pixel) format available
-    const uint32 optimal_texture_format ( void ) const;
+    uint32 optimal_texture_format ( void ) const;
 
-  public:
     /// Renderer designation
     std::string name;
 

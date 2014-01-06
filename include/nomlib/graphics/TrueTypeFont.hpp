@@ -46,7 +46,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/SDL_helpers.hpp"
 
 /// Dump glyph bounding coordinates
-//#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT
+#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS
+/// Dump glyph bitmaps
+//#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS_PNG
 
 namespace nom {
 
@@ -127,8 +129,17 @@ class TrueTypeFont: public IFont
 
     const GlyphPage& pages ( void ) const;
 
+    sint sheet_width ( void ) const;
+    sint sheet_height ( void ) const;
+
+    /// Width -- in pixels -- of overall texture atlas sheet
+    sint sheet_width_;
+
+    /// Height -- in pixels -- of overall texture atlas sheet
+    sint sheet_height_;
+
     /// Surface where font for drawing is rendered to
-    Texture font_buffer_;
+    //Texture font_buffer_;
 
     /// Font file data, used by SDL_ttf extension
     std::shared_ptr<TTF_Font> font_;

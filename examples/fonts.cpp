@@ -59,7 +59,7 @@ const nom::int32 WINDOW_HEIGHT = 448;
 const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
 
 //const std::string RESOURCE_FONT_TEXT_STRING = "!"#$%&'()*+,-.//0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
-const std::string RESOURCE_FONT_TEXT_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n0123456789\n...\n,'[]()/\\n";
+const std::string RESOURCE_FONT_TEXT_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n0123456789\n...\n,'[]()/\\";
 //const std::string RESOURCE_FONT_TEXT_STRING = "I am a Bitmap Font";
 
 /// \brief nom::BitmapFont usage example
@@ -116,6 +116,7 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
         nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
         return false;
       }
+      this->label_bfont.set_font ( this->bitmap_font );
 /*
       if ( this->bitmap_small_font.load ( RESOURCE_BITMAP_SMALL_FONT, NOM_COLOR4U_MAGENTA ) == false )
       {
@@ -128,7 +129,7 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
         nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
         return false;
       }
-
+      this->label_tfont.set_font ( this->truetype_font );
 /*
       this->truetype_font.setFontSize ( 18 );
       this->truetype_font.setRenderingStyle ( nom::IFont::RenderStyle::Blended );
@@ -136,29 +137,31 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
       this->truetype_font.setText ( "Use arrow keys to change cursor!" );
       this->truetype_font.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, window_size.y - 100 ) );
 */
-
-NOM_DUMP_VAR(this->label.type());
-NOM_DUMP_VAR(this->label_title.type());
-      this->label.set_font ( this->bitmap_font );
-      //this->label_title.set_font ( this->bitmap_small_font );
-
-      this->label.set_position  ( ( this->window_size.x - this->label.width() ) / 2,
-                                  ( this->window_size.y - this->label.height() ) / 2
-                                );
+      this->label_bfont.set_position  ( ( this->window_size.x
+                                          -
+                                          this->label_bfont.width() ) / 2,
+                                        ( this->window_size.y
+                                          -
+                                          this->label_bfont.height() ) / 2
+                                      );
 /*
-      this->label_title.set_position  ( ( this->window_size.x - this->label_title.width() ) / 2,
-                                        ( this->window_size.y - this->label_title.height() ) / 8
+      this->label_tfont.set_position  ( ( this->window_size.x
+                                          -
+                                          this->label_tfont.width() ) / 2,
+                                        ( this->window_size.y
+                                          -
+                                          this->label_tfont.height() ) / 2
                                       );
 */
-      this->label.set_text ( RESOURCE_FONT_TEXT_STRING );
-      //this->label_title.set_text ( "INFO" );
-      this->label.set_color ( NOM_COLOR4U_WHITE );
-      //this->label_title.set_color ( NOM_COLOR4U_RED );
-      //this->label.set_style ( nom::Label::FontStyle::Faded );
-      this->label.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
-      //this->label_title.set_alignment ( nom::Label::TextAlignment::MiddleLeft );
-NOM_DUMP_VAR(this->label.type());
-NOM_DUMP_VAR(this->label_title.type());
+      this->label_tfont.set_position(24,24);
+
+      this->label_bfont.set_text ( RESOURCE_FONT_TEXT_STRING );
+      this->label_bfont.set_color ( NOM_COLOR4U_WHITE );
+
+      //this->label_bfont.set_style ( nom::Label::FontStyle::Faded );
+      this->label_bfont.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
+
+      this->label_tfont.set_text ( "b00bs" );
 
       return true;
     } // onInit
@@ -197,10 +200,9 @@ NOM_DUMP_VAR(this->label_title.type());
         } // end refresh cycle
 
         this->window.fill ( NOM_COLOR4U_PRIMARY_COLORKEY );
-        this->label.draw ( this->window );
-        //this->label_title.draw ( this->window );
+        this->label_bfont.draw ( this->window );
+        this->label_tfont.draw ( this->window );
       } // end while SDL_App::running() is true
-
       return NOM_EXIT_SUCCESS;
     } // Run
 
@@ -278,8 +280,8 @@ NOM_DUMP_VAR(this->label_title.type());
 
     nom::TrueTypeFont truetype_font;
 
-    nom::Label label;
-    nom::Label label_title;
+    nom::Label label_bfont;
+    nom::Label label_tfont;
 }; // class App
 
 nom::int32 main ( nom::int32 argc, char* argv[] )

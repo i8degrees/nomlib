@@ -31,7 +31,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 TrueTypeFont::TrueTypeFont ( void ) :
-  font_size_ ( 12 ),
+  sheet_width_ ( 16 ),  // Arbitrary; based on nom::BitmapFont
+  sheet_height_ ( 16 ), // Arbitrary; based on nom::BitmapFont
+  font_size_ ( 14 ), // Terrible Eyesight (TM)
   newline_ ( 0 ),
   spacing_ ( 0 ),
   use_cache_ ( false ),
@@ -47,7 +49,7 @@ TrueTypeFont::~TrueTypeFont ( void )
 
 TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy )
 {
-  this->font_buffer_ = copy.font_buffer_;
+  //this->font_buffer_ = copy.font_buffer_;
   this->font_ = copy.font_;
   this->pages_ = copy.pages();
   this->type_ = copy.type();
@@ -77,14 +79,9 @@ enum IFont::FontType TrueTypeFont::type ( void ) const
 
 SDL_SURFACE::RawPtr TrueTypeFont::image ( void ) const
 {
-  return nullptr;
+  return this->pages_[0].texture->image();
 }
-/*
-const Texture& TrueTypeFont::texture ( uint32 character_size ) //const
-{
-  return this->pages_[character_size].texture;
-}
-*/
+
 uint TrueTypeFont::spacing ( void ) const
 {
   return this->spacing_;
@@ -235,6 +232,13 @@ NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
   this->filename_ = filename;
   this->use_cache_ = use_cache;
 
+  // Attempt to build font metrics
+  if ( this->build() == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not build TrueType font metrics" );
+    return false;
+  }
+
   return true;
 }
 
@@ -303,20 +307,147 @@ void TrueTypeFont::draw ( RenderTarget target ) const
 }
 */
 
+bool TrueTypeFont::build ( uint32 character_size )
+{
+  int ret = 0; // Error code
+  uint16 ascii_char; // Integer type expected by SDL2_ttf
+
+  // Glyph metrics
+  int advance = 0;
+  //int x_offset = 0;
+  //int y_offset = 0;
+  //int width = 0;
+  //int height = 0;
+
+  // Counters used in sheet calculations;
+  int rows = 0; // Left to right (X axis)
+  int cols = 0; // Top to bottom (Y axis)
+  int padding = 1;
+  int spacing = 2;
+
+  std::vector<Glyph> glyph_sort;
+  Image glyph_image; // Raster bitmap of a glyph
+
+  if ( this->valid() == false )
+  {
+    NOM_LOG_ERR ( NOM, "TTF pointer is invalid" );
+    return false;
+  }
+
+  const Point2i sheet_size =  Point2i ( sheet_width() * sheet_height(), // 256
+                                        sheet_width() * sheet_height()  // 256
+                                      );
+
+  this->pages_[0].texture->initialize ( sheet_size );
+  glyph_sort.resize ( sheet_size.y );
+
+  for ( uint32 glyph = 33; glyph < 100; ++glyph )
+  //for ( uint32 glyph = 0; glyph < (sheet_width() * sheet_height()); ++glyph )
+  {
+    ascii_char = static_cast<uint16> ( glyph );
+    //ascii_char = static_cast<uint16> ( 'g' );
+
+    if ( TTF_GlyphIsProvided ( this->font_.get(), ascii_char ) )
+    {
+      if ( (rows + 1) > sheet_width() )
+      {
+        rows = 0;
+        cols += 1;
+
+        padding = padding * cols + 1;
+      }
+
+      // We obtain width & height of a glyph from its rendered form
+      glyph_image.initialize ( TTF_RenderGlyph_Solid ( this->font_.get(), ascii_char, SDL_COLOR(NOM_COLOR4U_WHITE) ) );
+
+      if ( glyph_image.valid() == false )
+      {
+        NOM_LOG_ERR(NOM, TTF_GetError() );
+        //NOM_LOG_ERR(NOM, "Could not store surface from glyph character: " + std::to_string(ascii_char) );
+        return false;
+      }
+
+      // -_-
+      // Disappointedly, the only metric that we can use here is the advance
+      ret = TTF_GlyphMetrics  ( this->font_.get(),
+                                ascii_char,
+                                nullptr, // Left (X) origin
+                                nullptr, // Width
+                                nullptr, // Top (Y) origin
+                                nullptr, // Height
+                                &advance
+                              );
+
+      if ( ret != 0 ) // Likely to be a missing glyph
+      {
+        NOM_LOG_ERR ( NOM, TTF_GetError() );
+        return false;
+      }
+
+      // FIXME: we need to deal with the varying widths
+      this->pages_[0].glyphs[glyph].bounds.x = ( spacing + rows ) + glyph_image.width() * rows;
+      this->pages_[0].glyphs[glyph].bounds.y = glyph_image.height() * ( cols ) + padding;
+      this->pages_[0].glyphs[glyph].bounds.w = glyph_image.width();
+      this->pages_[0].glyphs[glyph].bounds.h = glyph_image.height();
+      this->pages_[0].glyphs[glyph].advance = advance;
+
+      #if defined(NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS)
+        NOM_DUMP_VAR(static_cast<uchar>(glyph));
+        NOM_DUMP_VAR(this->glyph(glyph).bounds);
+        //NOM_DUMP_VAR(advance);
+      #endif
+
+      IntRect bounds;
+      bounds.x = this->pages_[0].glyphs[glyph].bounds.x;
+      bounds.y = this->pages_[0].glyphs[glyph].bounds.y;
+      bounds.w = -1;
+      bounds.h = -1;
+
+      glyph_image.draw( this->pages_[0].texture->image(), bounds );
+      //glyph_image.draw( this->pages_[0].texture->image(), this->pages_[0].glyphs[glyph].bounds );
+
+      //this->pages_[0].texture->set_alpha(255);
+      //this->pages_[0].texture->set_blend_mode(SDL_BLENDMODE_NONE);
+      //this->pages_[0].texture->draw ( glyph_image, this->pages_[0].glyphs[glyph].bounds );
+
+      //this->pages_[0].texture->initialize ( glyph_image );
+      //priv::FreeSurface ( glyph );
+
+      this->pages_[0].texture->set_colorkey ( Color4u(0,0,0,255), true );
+
+      #if defined(NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS_PNG)
+        std::string ascii_fname = std::to_string(ascii_char);
+        ascii_fname.append(".png");
+        glyph_image.save_png(ascii_fname);
+      #endif
+    } // end if glyph is provided
+    rows++;
+  } // end for loop
+
+  //std::sort ( glyph_sort.begin(), glyph_sort.end(), std::greater<Glyph>() );
+  //for ( GlyphAtlas::iterator it = this->pages_[0].glyphs.begin(); it != this->pages_[0].glyphs.end(); ++it )
+  //{
+    //std::cout << it->first << " => " << it->second << "\n";
+  //}
+
+  this->pages_[0].texture->save_png("dest.png");
+
+  return true;
+}
+
 const GlyphPage& TrueTypeFont::pages ( void ) const
 {
   return this->pages_;
 }
 
-bool TrueTypeFont::build ( uint32 character_size )
+sint TrueTypeFont::sheet_width ( void ) const
 {
-  if ( this->load ( this->filename_, NOM_COLOR4U_BLACK, this->use_cache_ ) == false )
-  {
-NOM_LOG_ERR ( NOM, "Could not build font metrics." );
-    return false;
-  }
+  return this->sheet_width_;
+}
 
-  return true;
+sint TrueTypeFont::sheet_height ( void ) const
+{
+  return this->sheet_height_;
 }
 
 } // namespace nom

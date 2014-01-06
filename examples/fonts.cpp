@@ -60,6 +60,7 @@ const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
 
 //const std::string RESOURCE_FONT_TEXT_STRING = "!"#$%&'()*+,-.//0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 const std::string RESOURCE_FONT_TEXT_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n0123456789\n...\n,'[]()/\\n";
+//const std::string RESOURCE_FONT_TEXT_STRING = "A";
 
 /// \brief nom::BitmapFont usage example
 class App: public nom::SDL_App
@@ -113,13 +114,13 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
         nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
         return false;
       }
-
+/*
       if ( this->bitmap_small_font.load ( RESOURCE_BITMAP_SMALL_FONT, NOM_COLOR4U_MAGENTA ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_SMALL_FONT );
         return false;
       }
-
+*/
       if ( this->truetype_font.load ( RESOURCE_TRUETYPE_FONT, NOM_COLOR4U_WHITE ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
@@ -137,20 +138,20 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
 NOM_DUMP_VAR(this->label.type());
 NOM_DUMP_VAR(this->label_title.type());
       this->label.set_font ( this->bitmap_font );
-      this->label_title.set_font ( this->bitmap_small_font );
+      //this->label_title.set_font ( this->bitmap_small_font );
 
       this->label.set_position  ( ( this->window_size.x - this->label.width() ) / 2,
                                   ( this->window_size.y - this->label.height() ) / 2
                                 );
-
+/*
       this->label_title.set_position  ( ( this->window_size.x - this->label_title.width() ) / 2,
                                         ( this->window_size.y - this->label_title.height() ) / 8
                                       );
-
+*/
       this->label.set_text ( RESOURCE_FONT_TEXT_STRING );
       //this->label_title.set_text ( "INFO" );
       this->label.set_color ( NOM_COLOR4U_WHITE );
-      this->label_title.set_color ( NOM_COLOR4U_RED );
+      //this->label_title.set_color ( NOM_COLOR4U_RED );
       //this->label.set_style ( nom::Label::FontStyle::Faded );
       this->label.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
       //this->label_title.set_alignment ( nom::Label::TextAlignment::MiddleLeft );
@@ -194,9 +195,9 @@ NOM_DUMP_VAR(this->label_title.type());
         } // end refresh cycle
 
         this->window.fill ( NOM_COLOR4U_PRIMARY_COLORKEY );
-
         this->label.draw ( this->window );
-        this->label_title.draw ( this->window );
+
+        //this->label_title.draw ( this->window );
       } // end while SDL_App::running() is true
 
       return NOM_EXIT_SUCCESS;

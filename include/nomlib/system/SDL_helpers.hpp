@@ -123,6 +123,9 @@ const Color4u pixel ( uint32 pixel, const SDL_PixelFormat* fmt );
 /// \return RGBA components of a pixel represented as a nom::Color object
 const Color4u alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt );
 
+const Color4u pixel ( uint32 pixel, uint32 fmt );
+const Color4u alpha_pixel ( uint32 pixel, uint32 fmt );
+
 /// SDL helper functions for nomlib
 ///
 /// Obtain a color as an integer, respective to the video surface pixel format

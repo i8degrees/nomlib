@@ -105,6 +105,16 @@ const Color4u alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
   return c;
 }
 
+const Color4u pixel ( uint32 pixel, uint32 fmt )
+{
+  return nom::pixel ( pixel, SDL_AllocFormat(fmt) );
+}
+
+const Color4u alpha_pixel ( uint32 pixel, uint32 fmt )
+{
+  return nom::alpha_pixel ( pixel, SDL_AllocFormat(fmt) );
+}
+
 uint32 RGB ( const Color4u& color, const SDL_PixelFormat* fmt )
 {
   return SDL_MapRGB ( fmt, color.red, color.green, color.blue );

@@ -261,11 +261,19 @@ void Window::set_fullscreen ( bool state )
 
 bool Window::toggle_fullscreen ( void )
 {
+  if ( this->toggle_fullscreen ( SDL_WINDOW_FULLSCREEN_DESKTOP ) == false )
+  {
+    return false;
+  }
+}
+
+bool Window::toggle_fullscreen ( uint32 flags )
+{
   if ( this->fullscreen() == true ) // Go back to window state
   {
     if ( SDL_SetWindowFullscreen ( this->window(), 0 ) != 0 )
     {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+      NOM_LOG_ERR ( NOM, SDL_GetError() );
       return false;
     }
     this->set_fullscreen ( false );
@@ -274,16 +282,16 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
   if ( this->fullscreen() == false )
   {
-    if ( SDL_SetWindowFullscreen ( this->window(), SDL_WINDOW_FULLSCREEN_DESKTOP ) != 0 )
+    if ( SDL_SetWindowFullscreen ( this->window(), flags ) != 0 )
     {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+      NOM_LOG_ERR ( NOM, SDL_GetError() );
       return false;
     }
     this->set_fullscreen ( true );
     return true;
   }
 
-  return false; // We should never reach this statement
+  return false; // We should *never* reach this statement
 }
 
 const std::string Window::window_title ( void ) const

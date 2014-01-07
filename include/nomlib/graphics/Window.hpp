@@ -145,14 +145,17 @@ class Window:
     /// Set new fullscreen state
     void set_fullscreen ( bool state );
 
-    /// Set this window fullscreen if it is windowed, and windowed if it is
-    /// fullscreen.
+    /// \brief Set this window full screen if it is windowed, and windowed if
+    /// it is full screen.
     ///
-    /// \todo Implement SDL_WINDOW_FULLSCREEN support -- this will lead us to
-    /// also looking further into the SDL_(Get/Set)WindowDisplayMode functions.
-    /// We can probably get away with extending nom::VideoMode with SDL_DisplayMode*
-    /// somehow; these two have the same end-goals in mind.
+    /// \note This method calls SDL_WINDOW_FULLSCREEN_DESKTOP
     bool toggle_fullscreen ( void );
+
+    /// Set this window full screen if it is windowed, and windowed if it is
+    /// full screen.
+    ///
+    /// \param flags  SDL_WINDOW_FULLSCREEN_DESKTOP || SDL_WINDOW_FULLSCREEN
+    bool toggle_fullscreen ( uint32 flags );
 
     const std::string window_title ( void ) const;
 

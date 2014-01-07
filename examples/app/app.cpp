@@ -199,7 +199,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       this->label.set_text ( "I am a Bitmap Font!" );
 
       // FIXME: setting alignment here messes up alignment within our info_box
-      // this->label.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
+      //this->label.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
 
       // TODO: implement method calls
       // this->label_tfont.set_font_size ( 18 );

@@ -31,11 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 Label::Label ( void ) :
-  font_ { nullptr },
-  text_size_ { 14 },
-  color_ { NOM_COLOR4U_WHITE },
-  style_ { Label::FontStyle::Regular },
-  alignment_ { Label::TextAlignment::MiddleLeft }
+  font_ ( nullptr ),
+  text_size_ ( 14 ),
+  color_ ( NOM_COLOR4U_WHITE ),
+  style_ ( Label::FontStyle::Regular ),
+  alignment_ ( Label::TextAlignment::MiddleLeft )
 {
   NOM_LOG_TRACE ( NOM );
 }
@@ -45,11 +45,39 @@ Label::~Label ( void )
   NOM_LOG_TRACE ( NOM );
 }
 
+/*
+Label::Label ( const Label& copy ) :
+  font_ { copy.font() },
+  texture_ { copy.texture() },
+  text_ { copy.text() },
+  text_size_ { copy.text_size() },
+  color_ { copy.color() },
+  style_ { copy.style() },
+  alignment_ { copy.alignment() }
+{
+  NOM_LOG_TRACE ( NOM );
+}
+*/
+
+Label& Label::operator = ( const Label& other )
+{
+  this->font_ = other.font();
+  this->texture_ = other.texture();
+  this->text_ = other.text();
+  this->text_size_ = other.text_size();
+  this->color_ = other.color();
+  this->style_ = other.style();
+  //this->alignment_ = Label::TextAlignment::MiddleLeft;
+  this->alignment_ = other.alignment();
+
+  return *this;
+}
+
 Label::Label ( const IFont& font )  :
-  text_size_ { 14 },
-  color_ { NOM_COLOR4U_WHITE },
-  style_ { Label::FontStyle::Regular },
-  alignment_ { Label::TextAlignment::MiddleLeft }
+  text_size_ ( 14 ),
+  color_ ( NOM_COLOR4U_WHITE ),
+  style_ ( Label::FontStyle::Regular ),
+  alignment_ ( Label::TextAlignment::MiddleLeft )
 {
   NOM_LOG_TRACE ( NOM );
 
@@ -60,7 +88,7 @@ bool Label::initialize ( const IFont& font )
 {
   this->font_ = std::shared_ptr<IFont>( font.clone() );
 
-  if ( this->valid() == false || this->render_font_.initialize ( this->font()->image(0) ) == false )
+  if ( this->valid() == false || this->texture_.initialize ( this->font()->image(0) ) == false )
   {
     NOM_LOG_ERR ( NOM, "Could not initialize label from given IFont" );
     return false;
@@ -74,9 +102,14 @@ Label::RawPtr Label::get ( void )
   return this;
 }
 
-IFont::RawPtr Label::font ( void ) const
+IFont::SharedPtr Label::font ( void ) const
 {
-  return this->font_.get();
+  return this->font_;
+}
+
+const Texture& Label::texture ( void ) const
+{
+  return this->texture_;
 }
 
 bool Label::valid ( void ) const
@@ -226,7 +259,7 @@ enum Label::TextAlignment Label::alignment ( void ) const
 
 void Label::set_font ( const IFont& font )
 {
-  if ( this->font() == &font ) return;
+  if ( this->font().get() == &font ) return;
 
   this->initialize ( font );
 
@@ -258,7 +291,7 @@ void Label::set_color ( const Color4u& color )
   if ( color != this->color() )
   {
     this->color_ = color;
-    this->render_font_.set_color_modulation ( color );
+    this->texture_.set_color_modulation ( color );
 
     // Update logic
   }
@@ -267,7 +300,7 @@ void Label::set_color ( const Color4u& color )
 void Label::set_style ( enum Label::FontStyle style )
 {
   // We do not have an atlas map to go from -- nothing to set a style on!
-  if ( this->render_font_.valid() == false ) return;
+  if ( this->texture_.valid() == false ) return;
 
   // Style being set is already set -- nothing to do!
   if ( style == this->style() ) return;
@@ -359,9 +392,9 @@ void Label::draw ( RenderTarget target ) const
       //Get the ASCII value of the character
       uint32 ascii = static_cast<uint32>( text_buffer[pos] );
 
-      this->render_font_.set_position ( Point2i ( x_offset, y_offset ) );
-      this->render_font_.set_bounds ( this->font()->glyph(ascii).bounds );
-      this->render_font_.draw ( target.renderer() );
+      this->texture_.set_position ( Point2i ( x_offset, y_offset ) );
+      this->texture_.set_bounds ( this->font()->glyph(ascii).bounds );
+      this->texture_.draw ( target.renderer() );
 
       // Move over the width of the character with one pixel of padding
       //x_offset += ( this->font()->glyph(ascii).bounds.w ) + 1;
@@ -419,7 +452,7 @@ void Label::update ( void )
     /// Text effect utilizing alpha channels for the appearance of gray text
     case FontStyle::Faded:
     {
-      if ( this->render_font_.set_alpha ( 150 ) == true )
+      if ( this->texture_.set_alpha ( 150 ) == true )
       {
         this->style_ = Label::FontStyle::Faded;
       }

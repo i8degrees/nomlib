@@ -80,14 +80,21 @@ class Label: public Transformable
     /// Destructor
     ~Label ( void );
 
+    /// Copy constructor
+    //Label ( const Label& copy );
+
     /// Construct an object deriving from IFont
     Label ( const IFont& font );
 
     bool initialize ( const IFont& font );
 
+    Label& operator = ( const Label& other );
+
     Label::RawPtr get ( void );
 
-    IFont::RawPtr font ( void ) const;
+    IFont::SharedPtr font ( void ) const;
+
+    const Texture& texture ( void ) const;
 
     /// Obtain validity of the label object
     bool valid ( void ) const;
@@ -160,7 +167,7 @@ class Label: public Transformable
   private:
     void update ( void );
     IFont::SharedPtr font_;
-    mutable Texture render_font_; /// \FIXME
+    mutable Texture texture_; /// \FIXME
     /// Holds contents of text as a string buffer
     std::string text_;
     uint text_size_;

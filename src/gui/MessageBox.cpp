@@ -31,16 +31,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
   namespace ui {
 
-void MessageBox::initialize ( void )
+MessageBox::MessageBox ( void ) :
+  enabled_ ( true )
 {
-NOM_LOG_TRACE ( NOM );
-
-  this->enabled = true;
+  NOM_LOG_TRACE(NOM);
 }
 
-MessageBox::MessageBox ( void )
+MessageBox::~MessageBox ( void )
 {
-  this->initialize();
+  NOM_LOG_TRACE ( NOM );
 }
 
 MessageBox::MessageBox  (
@@ -50,7 +49,8 @@ MessageBox::MessageBox  (
                         )
 {
   int32 padding = 1;
-  this->initialize();
+
+  this->enable();
 
   // init geometry coords w/ arguments list
   this->coords = Coords ( x, y, width, height );
@@ -75,7 +75,7 @@ MessageBox::MessageBox  (
 {
   int32 padding = 1;
 
-  this->initialize();
+  this->enable();
 
   // init geometry coords w/ arguments list
   this->coords = Coords ( x, y, width, height );
@@ -97,46 +97,21 @@ MessageBox::MessageBox  (
   }
 }
 
-MessageBox::~MessageBox ( void )
+bool MessageBox::enabled ( void ) const
 {
-NOM_LOG_TRACE ( NOM );
-}
-
-bool MessageBox::isEnabled ( void ) const
-{
-  if ( ! this->enabled ) return false;
+  if ( this->enabled_ == false ) return false;
 
   return true;
 }
 
 const std::string MessageBox::title ( void )
 {
-  if ( this->mbox_title_.valid() )
-  {
-    return this->mbox_title_.text();
-  }
-
-  return "\0";
+  return this->mbox_title_.text();
 }
 
 const std::string MessageBox::text ( void )
 {
-  if ( this->mbox_text_.valid() )
-  {
-    return this->mbox_text_.text();
-  }
-
-  return "\0";
-}
-
-void MessageBox::disable ( void )
-{
-  this->enabled = false;
-}
-
-void MessageBox::enable ( void )
-{
-  this->enabled = true;
+  return this->mbox_text_.text();
 }
 
 const Point2i MessageBox::size ( void ) const
@@ -147,6 +122,16 @@ const Point2i MessageBox::size ( void ) const
 const Point2i MessageBox::position ( void ) const
 {
   return Point2i ( this->coords.x, this->coords.y );
+}
+
+void MessageBox::disable ( void )
+{
+  this->enabled_ = false;
+}
+
+void MessageBox::enable ( void )
+{
+  this->enabled_ = true;
 }
 
 void MessageBox::set_title ( Label& title )
@@ -160,9 +145,9 @@ void MessageBox::set_title ( Label& title )
   this->mbox_title_.set_position ( IntRect ( this->coords.x + 4, this->coords.y, this->coords.w, this->coords.h ) );
 
   this->mbox_title_.set_text ( "INFO." );
-  //this->mbox_title_.set_alignment ( Label::TextAlignment::MiddleLeft );
+  this->mbox_title_.set_alignment ( Label::TextAlignment::MiddleLeft );
 
-  this->drawable.push_back ( IDrawable::SharedPtr ( new nom::Label ( this->mbox_title_ ) ) );
+  this->drawable.push_back ( IDrawable::SharedPtr ( new Label ( this->mbox_title_ ) ) );
 }
 
 void MessageBox::set_text ( Label& text )
@@ -172,7 +157,7 @@ void MessageBox::set_text ( Label& text )
   this->mbox_text_.set_position ( IntRect ( this->coords.x, this->coords.y, this->coords.w, this->coords.h ) );
   this->mbox_text_.set_alignment ( Label::MiddleCenter );
 
-  this->drawable.push_back ( IDrawable::SharedPtr ( new nom::Label ( this->mbox_text_ ) ) );
+  this->drawable.push_back ( IDrawable::SharedPtr ( new Label ( this->mbox_text_ ) ) );
 }
 
 void MessageBox::update ( void )
@@ -186,7 +171,7 @@ void MessageBox::update ( void )
 
 void MessageBox::draw ( RenderTarget target ) const
 {
-  if ( this->isEnabled() == false ) return;
+  if ( this->enabled() == false ) return;
 
   for ( auto it = this->drawable.begin(); it != this->drawable.end(); ++it )
   {

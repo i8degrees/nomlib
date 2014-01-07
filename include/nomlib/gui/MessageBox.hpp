@@ -70,10 +70,7 @@ class MessageBox: public IDrawable
 
     virtual ~MessageBox ( void );
 
-    void initialize ( void );
-    //void initialize ( const Gradient& background );
-
-    bool isEnabled ( void ) const;
+    bool enabled ( void ) const;
 
     const std::string title ( void );
     const std::string text ( void );
@@ -97,7 +94,7 @@ class MessageBox: public IDrawable
     Label mbox_text_;
 
     Coords coords;
-    bool enabled;
+    bool enabled_;
 };
 
 

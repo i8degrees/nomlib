@@ -104,6 +104,9 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
       }
       this->window_size = this->window.size();
 
+      // Scale window contents up by the new width & height
+      this->window.set_logical_size ( window_size.x, window_size.y );
+
       if ( this->window.set_window_icon ( RESOURCE_ICON ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load window icon: " + RESOURCE_ICON );
@@ -232,17 +235,7 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
 
         case SDLK_f:
         {
-          if ( this->window.fullscreen() == true )
-          {
-            this->window.toggle_fullscreen();
-          }
-          else if ( this->window.fullscreen() == false )
-          {
-            this->window.toggle_fullscreen();
-
-            // Scale window contents up by the new width & height
-            this->window.set_logical_size ( this->window_size.x, this->window_size.y );
-          }
+          this->window.toggle_fullscreen();
         }
         break;
       } // end switch key

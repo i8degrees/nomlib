@@ -113,7 +113,6 @@ class Texture
     Texture& operator = ( const Texture& other );
 
     const Point2i& position ( void ) const;
-
     const IntRect& bounds ( void ) const;
 
     /// Get the video memory surface of the Texture object
@@ -191,7 +190,7 @@ class Texture
     /// context used at the time of creation of the nom::Texture -- in other
     /// words, whichever nom::Window was active at the time of the nom::Texture
     /// creation.
-    const Point2i maximum_size ( void ) const;
+    static const Point2i maximum_size ( void );
 
     /// \brief Obtain the most optimal texture format available
     ///

@@ -295,7 +295,7 @@ const Color4u Texture::color_modulation ( void ) const
   return color;
 }
 
-const Point2i Texture::maximum_size ( void ) const
+const Point2i Texture::maximum_size ( void )
 {
   RendererInfo info;
   info = Window::caps ( Window::context() );

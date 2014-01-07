@@ -82,6 +82,8 @@ class TrueTypeFont: public IFont
 
     enum IFont::FontType type ( void ) const;
 
+    TTF_Font* font ( void ) const;
+
     SDL_SURFACE::RawPtr image ( uint32 character_size = 0 ) const;
 
     /// Obtain text character spacing width in pixels; this variable is affected

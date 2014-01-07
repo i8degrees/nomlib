@@ -63,7 +63,7 @@ IFont::SharedPtr TrueTypeFont::clone ( void ) const
 
 bool TrueTypeFont::valid ( void ) const
 {
-  if ( this->font_.get() != nullptr ) return true;
+  if ( this->font() != nullptr ) return true;
 
   return false;
 }
@@ -71,6 +71,11 @@ bool TrueTypeFont::valid ( void ) const
 enum IFont::FontType TrueTypeFont::type ( void ) const
 {
   return this->type_;
+}
+
+TTF_Font* TrueTypeFont::font ( void ) const
+{
+  return this->font_.get();
 }
 
 SDL_SURFACE::RawPtr TrueTypeFont::image ( uint32 character_size ) const
@@ -167,24 +172,6 @@ void TrueTypeFont::setFontOutline ( int32 depth )
 }
 */
 
-/*
-void TrueTypeFont::setText ( const std::string& text )
-{
-  if ( text.length() < 1 ) return;
-
-  this->text_buffer = text;
-
-  // Font is not valid -- TTF_SizeText will crash if we go further
-  if ( ! this->valid() ) return;
-
-  // Update the width & height of text string, if we can
-  if ( TTF_SizeText ( this->font.get(), this->text_buffer.c_str(), &this->coords.width, &this->coords.height ) == -1 )
-  {
-NOM_LOG_ERR ( NOM, "Failed to set font width & height." );
-  }
-}
-*/
-
 const Glyph& TrueTypeFont::glyph ( uint32 codepoint, uint32 character_size ) const
 {
   GlyphAtlas& glyphs = this->pages_[character_size].glyphs;
@@ -233,71 +220,6 @@ NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
   return true;
 }
 
-/*
-void TrueTypeFont::update ( void )
-{
-  // Font is not valid -- nothing to draw
-  if ( this->valid() == false ) return;
-
-  // No text string set -- nothing to draw
-  if ( this->getText().length() < 1 ) return;
-
-  // Update display coordinates
-  this->font_buffer_.set_position ( Point2i ( this->coords.x, this->coords.y ) );
-
-  // Update the rendered text surface here for drawing
-  if ( this->rendering == RenderStyle::Shaded ) // Moderate-quality
-  {
-    this->font_buffer_.initialize ( TTF_RenderText_Shaded
-                                  (
-                                    this->font.get(),
-                                    this->getText().c_str(),
-                                    SDL_COLOR(this->color),
-                                    // TODO; implement me -- a second color
-                                    // possibility means needing two colors in
-                                    // class
-                                    SDL_COLOR ( Color4u ( 97, 97, 97 ) )
-                                  )
-                                );
-  }
-  else if ( this->rendering == RenderStyle::Blended ) // Highest-quality
-  {
-    this->font_buffer_.initialize ( TTF_RenderText_Blended
-                                  (
-                                    this->font.get(),
-                                    this->getText().c_str(),
-                                    SDL_COLOR(this->color)
-                                  )
-                                );
-  }
-  else // Low-quality rendering (the default)
-  {
-    this->font_buffer_.initialize ( TTF_RenderText_Solid
-                                  (
-                                    this->font.get(),
-                                    this->getText().c_str(),
-                                    SDL_COLOR(this->color)
-                                  )
-                                );
-  }
-
-  if ( this->text_style == FontStyle::Faded )
-  {
-    this->font_buffer_.set_alpha ( this->style_options );
-  }
-}
-*/
-
-/*
-void TrueTypeFont::draw ( RenderTarget target ) const
-{
-  if ( this->font_buffer_.valid() )
-  {
-    this->font_buffer_.draw ( target );
-  }
-}
-*/
-
 bool TrueTypeFont::build ( uint32 character_size )
 {
   int ret = 0; // Error code
@@ -342,10 +264,10 @@ bool TrueTypeFont::build ( uint32 character_size )
   {
     ascii_char = static_cast<uint16> ( glyph );
 
-    if ( TTF_GlyphIsProvided ( this->font_.get(), ascii_char ) )
+    if ( TTF_GlyphIsProvided ( this->font(), ascii_char ) )
     {
       // We obtain width & height of a glyph from its rendered form
-      glyph_image.initialize ( TTF_RenderGlyph_Solid ( this->font_.get(), ascii_char, SDL_COLOR(NOM_COLOR4U_WHITE) ) );
+      glyph_image.initialize ( TTF_RenderGlyph_Solid ( this->font(), ascii_char, SDL_COLOR(NOM_COLOR4U_WHITE) ) );
 
       if ( glyph_image.valid() == false )
       {
@@ -358,7 +280,7 @@ bool TrueTypeFont::build ( uint32 character_size )
 
       // -_-
       // Disappointedly, the only metric that we can use here is the advance
-      ret = TTF_GlyphMetrics  ( this->font_.get(),
+      ret = TTF_GlyphMetrics  ( this->font(),
                                 ascii_char,
                                 nullptr, // Left (X) origin
                                 nullptr, // Width
@@ -395,7 +317,7 @@ bool TrueTypeFont::build ( uint32 character_size )
       glyph_image.draw( this->pages_[0].texture->image(), blit );
 
       //this->pages_[0].texture->set_alpha(255);
-      //this->pages_[0].texture->set_blend_mode(SDL_BLENDMODE_NONE);
+      //this->pages_[0].texture->set_blend_mode(SDL_BLENDMODE_BLEND);
 
       // Turn color key transparency on so we are not left with a black,
       // AKA non-transparent background.
@@ -435,14 +357,11 @@ bool TrueTypeFont::build ( uint32 character_size )
     return false;
   }
 
-  this->metrics_.height = TTF_FontHeight ( this->font_.get() );
-  this->metrics_.newline = TTF_FontLineSkip ( this->font_.get() );
-  this->metrics_.ascent = TTF_FontAscent ( this->font_.get() );
-  this->metrics_.descent = TTF_FontDescent ( this->font_.get() );
-
-  std::string family = TTF_FontFaceFamilyName ( this->font_.get() );
-  NOM_DUMP_VAR(family);
-  this->metrics_.family = family;
+  this->metrics_.height = TTF_FontHeight ( this->font() );
+  this->metrics_.newline = TTF_FontLineSkip ( this->font() );
+  this->metrics_.ascent = TTF_FontAscent ( this->font() );
+  this->metrics_.descent = TTF_FontDescent ( this->font() );
+  this->metrics_.family = TTF_FontFaceFamilyName ( this->font() );
 
   return true;
 }

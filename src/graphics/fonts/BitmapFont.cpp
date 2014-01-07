@@ -131,6 +131,18 @@ bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
     return false;
   }
 
+  if ( this->pages_[0].texture->valid() == false )
+  {
+    NOM_LOG_ERR ( NOM, "Internal bitmap texture is invalid" );
+    return false;
+  }
+
+  // TODO: consider using 0, 0 color keying like so:
+  //
+  // Set pixel at coordinates 0, 0 to be color keyed (transparent)
+  //uint32 key = this->pages_[0].texture->pixel( 0, 0 );
+  //Color4u ck = nom::pixel ( key, this->pages_[0].texture->pixel_format() );
+
   this->pages_[0].texture->set_colorkey ( colorkey, true );
 
   // Attempt to build font metrics

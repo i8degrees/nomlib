@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL_image.h"
 
 #include "nomlib/config.hpp"
+#include "nomlib/graphics/Window.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
@@ -80,20 +81,20 @@ class Image
     /// \note You maintain ownership of your pixel buffer pointer; don't forget
     /// to clean up after you're done!
     bool initialize(  void* pixels, int32 width, int32 height,
-                      int32 bits_per_pixel, uint16 pitch,
+                      int bits_per_pixel, uint16 pitch,
                       uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
     /// Constructor variant for creating a fresh, empty video surface. You should
     /// be sure to read over the details gory details scattered throughout the
     /// documentation for SDL.
-    bool initialize ( int32 width, int32 height, uint8 bits_per_pixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+    bool initialize ( int32 width, int32 height, int bits_per_pixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
     /// \brief Initialize a nom::Image from a new video buffer, created with
     /// specified dimensions
     ///
     /// \param size     Width & height specified in pixels
     /// \param bpp      Bits per pixel -- 8, 16, 24 or 32
-    bool initialize ( const Point2i& size, uint8 bpp = 32 );
+    bool initialize ( const Point2i& size );
 
     /// \brief Initialize a nom::Image from an existing SDL_Surface
     ///

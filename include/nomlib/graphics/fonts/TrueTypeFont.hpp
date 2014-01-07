@@ -47,7 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/SDL_helpers.hpp"
 
 /// Dump glyph bounding coordinates & output destination sheet as a PNG
-#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS
+//#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS
 
 /// Dump the individual glyph bitmaps
 //#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS_PNG

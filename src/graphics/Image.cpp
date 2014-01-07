@@ -73,7 +73,7 @@ Image::SharedPtr Image::clone ( void ) const
 }
 
 bool Image::initialize( void* pixels, int32 width, int32 height,
-                        int32 bits_per_pixel, uint16 pitch,
+                        int bits_per_pixel, uint16 pitch,
                         uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask
                       )
 {
@@ -91,7 +91,7 @@ bool Image::initialize( void* pixels, int32 width, int32 height,
   return true;
 }
 
-bool Image::initialize ( int32 width, int32 height, uint8 bits_per_pixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
+bool Image::initialize ( int32 width, int32 height, int bits_per_pixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
 {
   NOM_LOG_TRACE ( NOM );
 
@@ -121,7 +121,6 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 bool Image::initialize ( SDL_SURFACE::RawPtr buffer )
 {
   //if ( this->valid() == true ) this->image_.reset();
-
   this->image_.reset ( buffer, priv::FreeSurface );
 
   if ( this->valid() == false )
@@ -133,14 +132,27 @@ bool Image::initialize ( SDL_SURFACE::RawPtr buffer )
   return true;
 }
 
-bool Image::initialize ( const Point2i& size, uint8 bpp )
+bool Image::initialize ( const Point2i& size )
 {
+  int bpp = 0; // bits per pixel
+  uint32 red_mask = 0;
+  uint32 green_mask = 0;
+  uint32 blue_mask = 0;
+  uint32 alpha_mask = 0;
+  RendererInfo caps = Window::caps( Window::context() );
+
+  // We need ARGB pixel ordering in order to save the bitmap to disk correctly;
+  // otherwise the colors are out of order!
+  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( caps.optimal_texture_format(), &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
+  {
+    NOM_LOG_ERR( NOM, SDL_GetError() );
+    return false;
+  }
+
   // Let SDL handle figuring out the color masks
-  if ( this->initialize ( size.x, size.y, bpp, 0, 0, 0, 0 ) == false )
+  if ( this->initialize ( size.x, size.y, bpp, red_mask, green_mask, blue_mask, alpha_mask ) == false )
   {
     NOM_LOG_ERR(NOM,"Could not initialize Image from dimensions:" );
-    NOM_DUMP_VAR(size.x);
-    NOM_DUMP_VAR(size.y);
     return false;
   }
 

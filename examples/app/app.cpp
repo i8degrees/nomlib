@@ -139,6 +139,10 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
           nom::DialogMessageBox ( APP_NAME, "Could not load window icon: " + RESOURCE_ICON );
           return false;
         }
+        this->window_size[idx] = this->window[idx].size();
+
+        // Scale window contents up by the new width & height
+        this->window[idx].set_logical_size ( this->window_size[idx].x, this->window_size[idx].y );
       }
 
       this->window[0].set_active();
@@ -192,7 +196,6 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       }
 
       this->window[0].set_active();
-      nom::Point2i window_size = this->window[0].size();
 
       this->label.set_font ( this->bitmap_font );
       this->label_title.set_font ( this->bitmap_small_font );
@@ -204,7 +207,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       // TODO: implement method calls
       // this->label_tfont.set_font_size ( 18 );
       this->label_tfont.set_text ( "Use arrow keys to change cursor!" );
-      this->label_tfont.set_position ( (window_size.x - 200) / 2, window_size.y - 100 );
+      this->label_tfont.set_position ( (this->window_size[0].x - 200) / 2, this->window_size[0].y - 100 );
 
       // Initialize the background to use in our info_box object as a gradient
       // filled background
@@ -405,25 +408,12 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           {
             if ( this->window[idx].window_id() == window_id )
             {
-              if ( this->window[idx].fullscreen() == true )
-              {
-                this->window[idx].toggle_fullscreen();
-                break;
-              }
-
-              if ( this->window[idx].fullscreen() == false )
-              {
-                nom::Point2i window_size = this->window[idx].size();
-                this->window[idx].toggle_fullscreen();
-
-                // Scale window contents up by the new width & height
-                this->window[idx].set_logical_size ( window_size.x, window_size.y );
-                break;
-              }
+              this->window[idx].toggle_fullscreen();
+              break;
             } // end window_id match
           } // end for window loop
-        }
-        break;
+          break;
+        } // end SDLK_f
       } // end switch key
     } // onKeyDown
 
@@ -432,6 +422,8 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
     ///
     /// \todo Use std::vector
     nom::Window window[MAXIMUM_WINDOWS];
+
+    nom::Point2i window_size[MAXIMUM_WINDOWS];
 
     /// Interval at which we refresh the frames per second counter
     nom::Timer update[MAXIMUM_WINDOWS];

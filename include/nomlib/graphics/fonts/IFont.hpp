@@ -34,8 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/graphics/Glyph.hpp"
-#include "nomlib/graphics/Texture.hpp"
+#include "nomlib/graphics/fonts/Glyph.hpp"
 
 namespace nom {
 

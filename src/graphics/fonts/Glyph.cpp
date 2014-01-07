@@ -26,48 +26,61 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_FONT_PAGE_HPP
-#define NOMLIB_GRAPHICS_FONT_PAGE_HPP
-
-#include <map>
-#include <vector>
-
-#include "nomlib/config.hpp"
-#include "nomlib/math/Rect.hpp"
-#include "nomlib/graphics/Texture.hpp"
-#include "nomlib/graphics/Glyph.hpp"
-#include "nomlib/graphics/fonts/FontRow.hpp"
+#include "nomlib/graphics/fonts/Glyph.hpp"
 
 namespace nom {
 
-/// \brief Container structure for font data
-struct FontPage
+Glyph::Glyph ( void )  :
+  advance ( 0 )
 {
-  /// Default constructor
-  FontPage ( void ) :
-    texture { new Image() }
+  //NOM_LOG_TRACE(NOM);
+}
+
+Glyph::~Glyph ( void )
+{
+  //NOM_LOG_TRACE(NOM);
+}
+
+std::ostream& operator << ( std::ostream& os, const Glyph& glyph )
+{
+  os
+  << glyph.bounds.x
+  << GLYPH_DELIMITER
+  << glyph.bounds.y
+  << GLYPH_DELIMITER
+  << glyph.bounds.w
+  << GLYPH_DELIMITER
+  << glyph.bounds.h
+  << GLYPH_DELIMITER
+  << glyph.advance;
+
+  return os;
+}
+
+bool operator == ( const Glyph& lhs, const Glyph& rhs )
+{
+  return  ( lhs.bounds.x == rhs.bounds.x )  &&  ( lhs.bounds.w == rhs.bounds.w )
+                                            &&
+          ( lhs.bounds.y == rhs.bounds.y )  &&  ( lhs.bounds.h == rhs.bounds.h );
+}
+
+bool operator < ( const Glyph& lhs, const Glyph& rhs )
+{
+  if ( lhs.bounds.w == rhs.bounds.w )
   {
-    //NOM_LOG_TRACE(NOM);
+    return lhs.bounds.x < rhs.bounds.x;
+  }
+  else
+  {
+    return lhs.bounds.w < rhs.bounds.w;
   }
 
-  /// Destructor
-  ~FontPage ( void )
-  {
-    //NOM_LOG_TRACE(NOM);
-  }
+  return lhs.bounds.w < rhs.bounds.w;
+}
 
-  GlyphAtlas glyphs;
-
-  /// Container for the glyph's pixel buffer
-  std::shared_ptr<Image> texture;
-
-  /// Positioning of all the existing rows
-  std::vector<FontRow> rows;
-};
-
-/// Table mapping glyph data with its corresponding texture
-typedef std::map<uint32, FontPage> GlyphPage;
+bool operator > ( const Glyph& lhs, const Glyph& rhs )
+{
+  return rhs < lhs;
+}
 
 } // namespace nom
-
-#endif // include guard defined

@@ -35,8 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-class Transformable:
-                      public virtual IDrawable
+class Transformable: public virtual IDrawable
 {
   public:
     Transformable ( void );

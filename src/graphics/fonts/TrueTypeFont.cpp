@@ -26,7 +26,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/graphics/TrueTypeFont.hpp"
+#include "nomlib/graphics/fonts/TrueTypeFont.hpp"
 
 namespace nom {
 
@@ -34,8 +34,6 @@ TrueTypeFont::TrueTypeFont ( void ) :
   sheet_width_ ( 16 ),  // Arbitrary; based on nom::BitmapFont
   sheet_height_ ( 16 ), // Arbitrary; based on nom::BitmapFont
   font_size_ ( 14 ), // Terrible Eyesight (TM)
-  newline_ ( 0 ),
-  spacing_ ( 0 ),
   use_cache_ ( false ),
   type_ ( IFont::FontType::TrueTypeFont )
 {
@@ -53,10 +51,9 @@ TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy )
   this->pages_ = copy.pages();
   this->type_ = copy.type();
   this->font_size_ = copy.font_size();
-  this->newline_ = copy.newline();
-  this->spacing_ = copy.spacing();
   this->filename_ = copy.filename_;
   this->use_cache_ = copy.use_cache_;
+  this->metrics_ = copy.metrics_;
 }
 
 IFont::SharedPtr TrueTypeFont::clone ( void ) const
@@ -81,9 +78,9 @@ SDL_SURFACE::RawPtr TrueTypeFont::image ( uint32 character_size ) const
   return this->pages_[character_size].texture->image();
 }
 
-sint TrueTypeFont::spacing ( uint32 character_size ) const
+int TrueTypeFont::spacing ( uint32 character_size ) const
 {
-  return this->spacing_;
+  return this->pages_[character_size].glyphs[32].advance; // FIXME?
 }
 
 sint TrueTypeFont::font_size ( void ) const
@@ -91,9 +88,9 @@ sint TrueTypeFont::font_size ( void ) const
   return this->font_size_;
 }
 
-sint TrueTypeFont::newline ( uint32 character_size ) const
+int TrueTypeFont::newline ( uint32 character_size ) const
 {
-  return this->newline_;
+  return this->metrics_.newline;
 }
 
 sint TrueTypeFont::kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) const
@@ -305,22 +302,21 @@ bool TrueTypeFont::build ( uint32 character_size )
 {
   int ret = 0; // Error code
   uint16 ascii_char; // Integer type expected by SDL2_ttf
+  const uint32 starting_glyph = 32; // space character
+  const uint32 ending_glyph = 127; // tilde character
 
   // Glyph metrics
-  int advance = 0;
-  //int x_offset = 0;
-  //int y_offset = 0;
-  //int width = 0;
-  //int height = 0;
+  int advance = 0; // spacing in between characters separated by a space char
+  int glyph_width = 0; // glyph's width in pixels
+  int glyph_height = 0; // glyph's height in pixels
 
-  // Counters used in sheet calculations;
-  int rows = 0; // Left to right (X axis)
-  int cols = 0; // Top to bottom (Y axis)
+  // Texture sheet calculations
   int padding = 1;
   int spacing = 2;
 
-  std::vector<Glyph> glyph_sort;
   Image glyph_image; // Raster bitmap of a glyph
+  IntRect blit; // rendering bounding coordinates
+  //FontPage& page = this->pages_[0]; // our font's glyph page
 
   if ( this->valid() == false )
   {
@@ -333,33 +329,32 @@ bool TrueTypeFont::build ( uint32 character_size )
                                       );
 
   this->pages_[0].texture->initialize ( sheet_size );
-  glyph_sort.resize ( sheet_size.y );
 
-  for ( uint32 glyph = 33; glyph < 100; ++glyph )
-  //for ( uint32 glyph = 0; glyph < (sheet_width() * sheet_height()); ++glyph )
+  // ASCII 32..127 is the standard glyph set -- 94 printable characters;
+  //
+  // 32 = ' ' (space)
+  // 65 = 'A'
+  // 122 = 'z'
+  // 126 = '~' (tilde)
+  //
+  // glyph < sheet_width() * sheet_height() = 256 glyphs
+  for ( uint32 glyph = starting_glyph; glyph < ending_glyph; ++glyph )
   {
     ascii_char = static_cast<uint16> ( glyph );
-    //ascii_char = static_cast<uint16> ( 'g' );
 
     if ( TTF_GlyphIsProvided ( this->font_.get(), ascii_char ) )
     {
-      if ( (rows + 1) > sheet_width() )
-      {
-        rows = 0;
-        cols += 1;
-
-        padding = padding * cols + 1;
-      }
-
       // We obtain width & height of a glyph from its rendered form
       glyph_image.initialize ( TTF_RenderGlyph_Solid ( this->font_.get(), ascii_char, SDL_COLOR(NOM_COLOR4U_WHITE) ) );
 
       if ( glyph_image.valid() == false )
       {
         NOM_LOG_ERR(NOM, TTF_GetError() );
-        //NOM_LOG_ERR(NOM, "Could not store surface from glyph character: " + std::to_string(ascii_char) );
         return false;
       }
+
+      glyph_width = glyph_image.width();
+      glyph_height = glyph_image.height();
 
       // -_-
       // Disappointedly, the only metric that we can use here is the advance
@@ -377,54 +372,77 @@ bool TrueTypeFont::build ( uint32 character_size )
         NOM_LOG_ERR ( NOM, TTF_GetError() );
         return false;
       }
-
-      // FIXME: we need to deal with the varying widths
-      this->pages_[0].glyphs[glyph].bounds.x = ( spacing + rows ) + glyph_image.width() * rows;
-      this->pages_[0].glyphs[glyph].bounds.y = glyph_image.height() * ( cols ) + padding;
-      this->pages_[0].glyphs[glyph].bounds.w = glyph_image.width();
-      this->pages_[0].glyphs[glyph].bounds.h = glyph_image.height();
       this->pages_[0].glyphs[glyph].advance = advance;
 
+      // Calculate the best packing of the glyph, so that we are able to fit
+      // everything on the sheet without overlap, etc.
+      this->pages_[0].glyphs[glyph].bounds = this->glyph_rect ( this->pages_[0], glyph_width + spacing * padding, glyph_height + spacing * padding );
+
       #if defined(NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS)
-        NOM_DUMP_VAR(static_cast<uchar>(glyph));
-        NOM_DUMP_VAR(this->glyph(glyph).bounds);
-        //NOM_DUMP_VAR(advance);
+        NOM_DUMP_VAR(glyph); // integer position
+        NOM_DUMP_VAR(static_cast<uchar>(glyph)); // printable
+        NOM_DUMP_VAR(this->glyph(glyph).bounds); // bounding box
+        NOM_DUMP_VAR(advance); // spacing
       #endif
 
-      IntRect bounds;
-      bounds.x = this->pages_[0].glyphs[glyph].bounds.x;
-      bounds.y = this->pages_[0].glyphs[glyph].bounds.y;
-      bounds.w = -1;
-      bounds.h = -1;
-
-      glyph_image.draw( this->pages_[0].texture->image(), bounds );
-      //glyph_image.draw( this->pages_[0].texture->image(), this->pages_[0].glyphs[glyph].bounds );
+      // Prepare the rendering coordinates for writing the glyph our texture map
+      // Prepare the coordinates for rendering a glyph onto our texture sheet
+      // we are creating.
+      blit.x = this->pages_[0].glyphs[glyph].bounds.x;
+      blit.y = this->pages_[0].glyphs[glyph].bounds.y;
+      blit.w = -1; // Why -1 ???
+      blit.h = -1; // Why -1 ???
+      glyph_image.draw( this->pages_[0].texture->image(), blit );
 
       //this->pages_[0].texture->set_alpha(255);
       //this->pages_[0].texture->set_blend_mode(SDL_BLENDMODE_NONE);
-      //this->pages_[0].texture->draw ( glyph_image, this->pages_[0].glyphs[glyph].bounds );
 
-      //this->pages_[0].texture->initialize ( glyph_image );
-      //priv::FreeSurface ( glyph );
+      // Turn color key transparency on so we are not left with a black,
+      // AKA non-transparent background.
+      this->pages_[0].texture->set_colorkey ( NOM_COLOR4U_BLACK, true );
 
-      this->pages_[0].texture->set_colorkey ( Color4u(0,0,0,255), true );
-
+      // Dump all of the rendered glyphs as a series of image files -- the
+      // filenames will be the ASCII numeric values. The output should consist
+      // of individual glyph files, at whatever font scale previously loaded.
+      //
+      // You could easily create a new sprite sheet out of these individual
+      // frames!
       #if defined(NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS_PNG)
-        std::string ascii_fname = std::to_string(ascii_char);
-        ascii_fname.append(".png");
-        glyph_image.save_png(ascii_fname);
+        std::string ascii_filename = std::to_string(ascii_char);
+        ascii_filename.append(".png");
+        glyph_image.save_png(ascii_filename);
       #endif
     } // end if glyph is provided
-    rows++;
-  } // end for loop
+  } // end for glyphs loop
 
-  //std::sort ( glyph_sort.begin(), glyph_sort.end(), std::greater<Glyph>() );
-  //for ( GlyphAtlas::iterator it = this->pages_[0].glyphs.begin(); it != this->pages_[0].glyphs.end(); ++it )
-  //{
-    //std::cout << it->first << " => " << it->second << "\n";
-  //}
+  // Export the destination texture -- this should be a texture sheet that we
+  // can render from within the nom::Label class.
+  #if defined(NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS)
+    // We intentionally flip color keying off here temporarily so that our eyes
+    // have an easier time.
+    //
+    // You'll may want to leave color keying on if you are interested in using
+    // these bitmap glyphs for anything else!
+    this->pages_[0].texture->set_colorkey ( NOM_COLOR4U_BLACK, false );
+    this->pages_[0].texture->save_png("ttf_dest.png");
+    this->pages_[0].texture->set_colorkey ( NOM_COLOR4U_BLACK, true );
+  #endif
 
-  this->pages_[0].texture->save_png("dest.png");
+  // Build up our font-wide metrics
+  if (this->valid() == false )
+  {
+    NOM_LOG_ERR(NOM, "Could not build font metrics; our font is invalid" );
+    return false;
+  }
+
+  this->metrics_.height = TTF_FontHeight ( this->font_.get() );
+  this->metrics_.newline = TTF_FontLineSkip ( this->font_.get() );
+  this->metrics_.ascent = TTF_FontAscent ( this->font_.get() );
+  this->metrics_.descent = TTF_FontDescent ( this->font_.get() );
+
+  std::string family = TTF_FontFaceFamilyName ( this->font_.get() );
+  NOM_DUMP_VAR(family);
+  this->metrics_.family = family;
 
   return true;
 }
@@ -444,14 +462,91 @@ sint TrueTypeFont::sheet_height ( void ) const
   return this->sheet_height_;
 }
 
-void TrueTypeFont::set_spacing ( sint spaces )
+void TrueTypeFont::set_spacing ( int spaces )
 {
-  this->spacing_ = spaces;
+  return; // TODO
+  //this->spacing_ = spaces;
 }
 
-void TrueTypeFont::set_newline ( sint newline )
+void TrueTypeFont::set_newline ( int newline )
 {
-  this->newline_ = newline;
+  return; // TODO
+  //this->newline_ = newline;
+}
+
+const IntRect TrueTypeFont::glyph_rect ( FontPage& page, int width, int height ) const
+{
+  //std::unique_ptr<FontRow> row;
+  FontRow* row = nullptr;
+  float best_ratio = 0;
+
+  // Find an optimal layout within our texture's sheet for a specified glyph
+  for ( std::vector<FontRow>::iterator it = page.rows.begin(); it != page.rows.end() && ! row; ++it )
+  {
+    float ratio = static_cast<float> ( height ) / it->height;
+
+    // Ignore rows that are either too small or too high
+    if ( ( ratio < 0.7f ) || ( ratio > 1.f ) )
+    {
+      continue;
+    }
+
+    // Check if there's enough horizontal space left in the row
+    if ( width > page.texture->width() - it->width )
+    {
+      continue;
+    }
+
+    // Make sure that this new row is the best found so far
+    if ( ratio < best_ratio )
+    {
+      continue;
+    }
+
+    // The current row passed all the tests: we can select it
+    row = &*it;
+    best_ratio = ratio;
+  }
+
+  // If we didn't find a matching row, create a new one (10% taller than the glyph)
+  if ( ! row )
+  {
+    int row_height = height + height / 10;
+    while ( page.next_row + row_height >= page.texture->height() )
+    {
+      // Not enough space: resize the texture if possible
+      uint texture_width  = page.texture->width();
+      uint texture_height = page.texture->height();
+      if ( ( texture_width * 2 <= Texture::maximum_size().x )
+           && ( texture_height * 2 <= Texture::maximum_size().y ) )
+      {
+        // Make the texture 2 times bigger
+        NOM_LOG_ERR(NOM,"WATCH OUT -- texture rescaling is 50/50 chance of working");
+        Image sheet;
+        sheet.initialize ( Point2i( texture_width * 2, texture_height * 2 ) );
+        sheet.draw ( page.texture->image(), IntRect(0,0,-1,-1) );
+      }
+      else
+      {
+        // Oops, we've reached the maximum texture size...
+        NOM_LOG_ERR( NOM, "Failed to add new character to sheet: sheet >= maximum texture size" );
+        return IntRect ( 0, 0, 2, 2 );
+      }
+    }
+
+    // We can now create the new row
+    page.rows.push_back ( FontRow ( page.next_row, row_height ) );
+    page.next_row += row_height;
+    row = &page.rows.back();
+  }
+
+  // Find the glyph's rectangle on the selected row
+  IntRect rect ( row->width, row->top, width, height );
+
+  // Update the row informations
+  row->width += width;
+
+  return rect;
 }
 
 } // namespace nom

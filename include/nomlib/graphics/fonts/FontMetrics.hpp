@@ -26,50 +26,47 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_FONTS_FONT_ROW_HPP
-#define NOMLIB_GRAPHICS_FONTS_FONT_ROW_HPP
+#ifndef NOMLIB_GRAPHICS_FONTS_FONT_METRICS_HPP
+#define NOMLIB_GRAPHICS_FONTS_FONT_METRICS_HPP
 
 #include "nomlib/config.hpp"
 
 namespace nom {
 
-/// \brief Container structure for a row of glyphs
-struct FontRow
+/// \brief Container structure for global font metric data
+struct FontMetrics
 {
   /// Default constructor
-  FontRow ( void ) :
-    width ( 0 ),
-    top ( 0 ),
-    height ( 0 )
+  FontMetrics ( void )  :
+    height ( 0 ),
+    newline ( 0 ),
+    ascent ( 0 ),
+    descent ( 0 )
   {
     //NOM_LOG_TRACE(NOM);
   }
 
   /// Destructor
-  ~FontRow ( void )
+  ~FontMetrics ( void )
   {
     //NOM_LOG_TRACE(NOM);
   }
 
-  FontRow ( uint top, uint height ) :
-    width ( 0 ),
-    top ( top ),
-    height ( height )
-  {
-    //NOM_LOG_TRACE(NOM);
-  }
+  /// Maximum height of a font
+  sint height;
 
-  /// Current width of the row
-  uint width;
+  /// Line skip height of a font; maximum pixel height of any glyph in a font
+  sint newline;
 
-  /// Y position of the row into the texture
-  uint top;
+  /// Height from the top of the font to the baseline
+  sint ascent;
 
-  /// Height of the row
-  uint height;
+  /// Height from the baseline to the bottom of the font
+  sint descent;
+
+  /// Font family
+  std::string family;
 };
-
-typedef std::vector<FontRow> PageRow;
 
 } // namespace nom
 

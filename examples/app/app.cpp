@@ -157,11 +157,12 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
         return false;
       }
 
-      if ( this->font.load ( RESOURCE_TRUETYPE_FONT, NOM_COLOR4U_WHITE ) == false )
+      if ( this->truetype_font.load ( RESOURCE_TRUETYPE_FONT, NOM_COLOR4U_WHITE ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
         return false;
       }
+      this->label_tfont.set_font ( this->truetype_font );
 
       // Load a sprite sheet, using the sheet_filename as the base path to load
       // the image file from disk
@@ -192,19 +193,18 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
 
       this->window[0].set_active();
       nom::Point2i window_size = this->window[0].size();
-/*
-      this->font.setFontSize ( 18 );
-      this->font.setRenderingStyle ( nom::IFont::RenderStyle::Blended );
-      this->font.setColor ( NOM_COLOR4U_WHITE );
-      this->font.setText ( "Use arrow keys to change cursor!" );
-      this->font.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, window_size.y - 100 ) );
-*/
+
       this->label.set_font ( this->bitmap_font );
       this->label_title.set_font ( this->bitmap_small_font );
       this->label.set_text ( "I am a Bitmap Font!" );
 
       // FIXME: setting alignment here messes up alignment within our info_box
-      //this->label.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
+      // this->label.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
+
+      // TODO: implement method calls
+      // this->label_tfont.set_font_size ( 18 );
+      this->label_tfont.set_text ( "Use arrow keys to change cursor!" );
+      this->label_tfont.set_position ( (window_size.x - 200) / 2, window_size.y - 100 );
 
       // Initialize the background to use in our info_box object as a gradient
       // filled background
@@ -284,6 +284,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
 
         this->window[0].fill ( NOM_COLOR4U_PRIMARY_COLORKEY );
         this->info_box.draw ( this->window[0] );
+        this->label_tfont.draw ( this->window[0] );
         this->sprite.draw ( this->window[0], this->deg );
         this->ani_sprite.draw ( this->window[0] );
 
@@ -362,7 +363,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           if ( id > 0 ) id--;
 
           this->sprite.set_frame ( id );
-          //this->font.setText( "Light weight!" );
+          this->label_tfont.set_text( "Light weight!" );
           break;
         }
         case SDLK_RIGHT:
@@ -378,7 +379,7 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           if ( id < this->sprite.frames() - 1 ) id++;
 
           this->sprite.set_frame ( id );
-          //this->font.setText( "Yeah buddy!" );
+          this->label_tfont.set_text( "Yeah buddy!" );
           break;
         }
 
@@ -451,15 +452,16 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
     /// Texture used as a static background image
     nom::Texture background;
 
+    nom::SpriteBatch sprite;
+    nom::AnimatedSprite ani_sprite;
+
     nom::BitmapFont bitmap_font;
     nom::BitmapFont bitmap_small_font;
-    nom::TrueTypeFont font;
-
     nom::Label label;
     nom::Label label_title;
 
-    nom::SpriteBatch sprite;
-    nom::AnimatedSprite ani_sprite;
+    nom::TrueTypeFont truetype_font;
+    nom::Label label_tfont;
 
     double deg;
 }; // class App

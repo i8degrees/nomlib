@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 1. http://lazyfoo.net/SDL_tutorials/lesson30/index.php
 
 ******************************************************************************/
-#include "nomlib/graphics/BitmapFont.hpp"
+#include "nomlib/graphics/fonts/BitmapFont.hpp"
 
 namespace nom {
 
@@ -84,7 +84,8 @@ SDL_SURFACE::RawPtr BitmapFont::image ( uint32 character_size ) const
 
 sint BitmapFont::spacing ( uint32 character_size ) const
 {
-  return this->spacing_; // TODO
+  return this->spacing_;
+  //return this->pages_[0].glyphs[32].advance; // FIXME?
 }
 
 sint BitmapFont::kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) const
@@ -114,7 +115,7 @@ const Glyph& BitmapFont::glyph ( uint32 codepoint, uint32 character_size ) const
 
 sint BitmapFont::newline ( uint32 character_size ) const
 {
-  return this->newline_;
+  return this->newline_; // TODO
 }
 
 bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
@@ -152,7 +153,7 @@ bool BitmapFont::build ( uint32 character_size )
   uint32 background_color = 0;
 
   // GlyphPage to be filled in (indexed by character_size)
-  //struct FontPage page;
+  //FontPage& page;
 
   NOM_ASSERT ( this->pages_[0].texture->valid() );
 
@@ -282,13 +283,15 @@ bool BitmapFont::build ( uint32 character_size )
         } // end for pixel rows loop
       } // end if current_char
 
+      // Calculate character spacing
+      //this->pages_[0].glyphs[current_char].advance = tile_width / 2;
+
       // Go to the next character
       current_char++;
     }
   }
   this->pages_[0].texture->unlock(); // Finished messing with pixels
 
-  // Calculate space
   this->set_spacing ( tile_width / 2 );
 
   // Calculate new line
@@ -315,33 +318,6 @@ bool BitmapFont::build ( uint32 character_size )
     }
   #endif
 
-/*
-  page.texture.initialize ( this->pages_[0].texture->width(),
-                            this->pages_[0].texture->height(),
-                            SDL_PIXELFORMAT_RGBA8888,
-                            SDL_TEXTUREACCESS_STATIC
-                          );
-*/
-
-  for ( uint32 glyph = 0; glyph < current_char; ++glyph )
-  {
-    //IntRect gbounds = IntRect ( page.glyphs[glyph].bounds );
-    /*
-    page.texture.initialize ( gbounds.w, gbounds.h, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC );
-    page.texture.update ( this->pages_[0].texture->pixels(), this->pages_[0].texture->pitch(), gbounds );
-    */
-    //page.texture->set_bounds ( page.glyphs[glyph].bounds );
-  }
-
-  //page.texture = pages_[0].texture;
-  //page.texture = std::shared_ptr<Image> ( this->pages_[0].texture->clone() );
-  //this->pages_.insert( std::pair<uint32, FontPage> ( character_size, page ) ).first;
-
-  //NOM_DUMP_VAR(this->pages_[0].glyphs[65].bounds.x);
-  //NOM_DUMP_VAR(this->pages_[0].glyphs[65].bounds.y);
-  //NOM_DUMP_VAR(this->pages_[0].glyphs[65].bounds.w);
-  //NOM_DUMP_VAR(this->pages_[0].glyphs[65].bounds.h);
-
   return true;
 }
 
@@ -362,11 +338,13 @@ const GlyphPage& BitmapFont::pages ( void ) const
 
 void BitmapFont::set_spacing ( sint spaces )
 {
+  //return; // TODO
   this->spacing_ = spaces;
 }
 
 void BitmapFont::set_newline ( sint newline )
 {
+  // FIXME: Implement alike TrueTyprFont class
   this->newline_ = newline;
 }
 

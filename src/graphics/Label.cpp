@@ -166,7 +166,6 @@ int Label::height ( void ) const
         NOM_DUMP_VAR ( text_buffer[pos] );
         NOM_DUMP_VAR ( text_height );
       #endif
-
     }
     else
     {
@@ -338,11 +337,6 @@ void Label::draw ( RenderTarget target ) const
   int x_offset = this->position().x;
   int y_offset = this->position().y;
 
-  //this->render_font_ = this->font()->texture(0);
-  //this->render_font_.set_position ( Point2i ( x_offset, y_offset ) );
-  //this->render_font_.draw ( target.renderer() );
-  //return;
-
   for ( uint32 pos = 0; pos < text_buffer.length(); pos++ )
   {
     if ( text_buffer[pos] == ' ' ) // Space character
@@ -370,6 +364,7 @@ void Label::draw ( RenderTarget target ) const
       this->render_font_.draw ( target.renderer() );
 
       // Move over the width of the character with one pixel of padding
+      //x_offset += ( this->font()->glyph(ascii).bounds.w ) + 1;
       x_offset += ( this->font()->glyph(ascii).bounds.w ) + 1;
     } // end else
   } // end for loop

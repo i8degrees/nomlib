@@ -32,20 +32,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Public header file
 
 #include <nomlib/config.hpp>
-#include <nomlib/graphics/Glyph.hpp>
-#include <nomlib/graphics/FontPage.hpp>
 #include <nomlib/graphics/Label.hpp>
 #include <nomlib/graphics/RendererInfo.hpp>
-#include <nomlib/graphics/BitmapFont.hpp>
 #include <nomlib/graphics/Texture.hpp>
 #include <nomlib/graphics/VideoMode.hpp>
 #include <nomlib/graphics/Window.hpp>
 #include <nomlib/graphics/Renderer.hpp>
 #include <nomlib/graphics/IDrawable.hpp>
-#include <nomlib/graphics/TrueTypeFont.hpp>
 #include <nomlib/graphics/Gradient.hpp>
 #include <nomlib/graphics/Image.hpp>
+#include <nomlib/graphics/fonts/BitmapFont.hpp>
+#include <nomlib/graphics/fonts/FontMetrics.hpp>
+#include <nomlib/graphics/fonts/FontPage.hpp>
 #include <nomlib/graphics/fonts/FontRow.hpp>
+#include <nomlib/graphics/fonts/Glyph.hpp>
+#include <nomlib/graphics/fonts/TrueTypeFont.hpp>
 #include <nomlib/graphics/shapes/Point.hpp>
 #include <nomlib/graphics/shapes/Line.hpp>
 #include <nomlib/graphics/shapes/Rectangle.hpp>
@@ -53,6 +54,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics/sprite/SpriteBatch.hpp>
 #include <nomlib/graphics/sprite/SpriteSheet.hpp>
 #include <nomlib/graphics/sprite/AnimatedSprite.hpp>
-
 
 #endif // include guard defined

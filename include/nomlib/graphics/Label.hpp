@@ -34,11 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/graphics/IFont.hpp"
-#include "nomlib/graphics/BitmapFont.hpp"
-#include "nomlib/graphics/TrueTypeFont.hpp"
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/math/Point2.hpp"
+#include "nomlib/graphics/fonts/BitmapFont.hpp"
+#include "nomlib/graphics/fonts/IFont.hpp"
+#include "nomlib/graphics/fonts/TrueTypeFont.hpp"
 
 /// Dump each character's glyph data used in width & height calculations
 //#define NOM_DEBUG_LABEL

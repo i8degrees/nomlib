@@ -58,8 +58,7 @@ const nom::int32 WINDOW_HEIGHT = 448;
 /// executable
 const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
 
-//const std::string RESOURCE_FONT_TEXT_STRING = "!"#$%&'()*+,-.//0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
-const std::string RESOURCE_FONT_TEXT_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n0123456789\n...\n,'[]()/\\";
+const std::string RESOURCE_FONT_TEXT_STRING = "!\"#$%&'()*+,-.\n//0123456789\n:;<=>?@\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n[\\]^_`\nabcdefghijklmnopqrstuvwxyz\n{|}~";
 //const std::string RESOURCE_FONT_TEXT_STRING = "I am a Bitmap Font";
 
 /// \brief nom::BitmapFont usage example
@@ -130,13 +129,8 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
         return false;
       }
       this->label_tfont.set_font ( this->truetype_font );
-/*
-      this->truetype_font.setFontSize ( 18 );
-      this->truetype_font.setRenderingStyle ( nom::IFont::RenderStyle::Blended );
-      this->truetype_font.setColor ( NOM_COLOR4U_WHITE );
-      this->truetype_font.setText ( "Use arrow keys to change cursor!" );
-      this->truetype_font.setPosition ( nom::Coords ( ( window_size.x - 200 ) / 2, window_size.y - 100 ) );
-*/
+      //this->truetype_font.set_font_size ( 18 );
+
       this->label_bfont.set_position  ( ( this->window_size.x
                                           -
                                           this->label_bfont.width() ) / 2,
@@ -144,15 +138,7 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
                                           -
                                           this->label_bfont.height() ) / 2
                                       );
-/*
-      this->label_tfont.set_position  ( ( this->window_size.x
-                                          -
-                                          this->label_tfont.width() ) / 2,
-                                        ( this->window_size.y
-                                          -
-                                          this->label_tfont.height() ) / 2
-                                      );
-*/
+
       this->label_tfont.set_position(24,24);
 
       this->label_bfont.set_text ( RESOURCE_FONT_TEXT_STRING );
@@ -160,8 +146,9 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
 
       //this->label_bfont.set_style ( nom::Label::FontStyle::Faded );
       this->label_bfont.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
+      this->label_tfont.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
 
-      this->label_tfont.set_text ( "b00bs" );
+      this->label_tfont.set_text ( RESOURCE_FONT_TEXT_STRING );
 
       return true;
     } // onInit

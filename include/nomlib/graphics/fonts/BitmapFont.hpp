@@ -5,6 +5,9 @@
 Copyright (c) 2013, Jeffrey Carpenter <jeffrey.carp@gmail.com>
 All rights reserved.
 
+Portions Copyright (c) 2004-2013 Lazy Foo' Productions [1]
+All rights reserved.
+
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
@@ -25,52 +28,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+1. http://lazyfoo.net/SDL_tutorials/lesson30/index.php
+
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_TRUETYPE_FONT_HEADERS
-#define NOMLIB_SDL2_TRUETYPE_FONT_HEADERS
+#ifndef NOMLIB_SDL2_BITMAP_FONT_HEADERS
+#define NOMLIB_SDL2_BITMAP_FONT_HEADERS
 
 #include <iostream>
 #include <string>
-#include <memory>
-
-#include <SDL_ttf.h>
+#include <sstream>
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/graphics/IFont.hpp"
-#include "nomlib/graphics/FontPage.hpp"
+#include "nomlib/graphics/fonts/FontPage.hpp"
+#include "nomlib/graphics/fonts/IFont.hpp"
 #include "nomlib/math/Rect.hpp"
-#include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/Image.hpp"
-#include "nomlib/graphics/Window.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
 /// Dump glyph bounding coordinates
-#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS
-/// Dump glyph bitmaps
-//#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS_PNG
+//#define NOM_DEBUG_SDL2_BITMAP_FONT
 
 namespace nom {
 
-/// \brief TrueType fonts renderer
-class TrueTypeFont: public IFont
+class BitmapFont: public IFont
 {
   public:
-    typedef TrueTypeFont* RawPtr;
-    typedef std::shared_ptr<TrueTypeFont> SharedPtr;
+    typedef BitmapFont* RawPtr;
+    typedef std::shared_ptr<BitmapFont> SharedPtr;
 
-    /// Default constructor; we initialize the SDL_ttf extension here
-    TrueTypeFont ( void );
+    /// Default constructor
+    BitmapFont ( void );
 
-    /// Default destructor; we shutdown the SDL_ttf extension here
-    ///
-    /// \FIXME Resetting the font pointer is a temporary workaround patch;
-    /// SDL_App destructs long before TrueTypeFont does in TTcards, which
-    /// doesn't allow us to free our font resources here properly.
-    ~TrueTypeFont ( void );
+    /// Default destructor
+    ~BitmapFont ( void );
 
     /// Copy constructor
-    TrueTypeFont ( const TrueTypeFont& copy );
+    BitmapFont ( const BitmapFont& copy );
 
     /// Construct an new, identical instance from the existing
     IFont::SharedPtr clone ( void ) const;
@@ -86,32 +79,35 @@ class TrueTypeFont: public IFont
     /// by the total image width size.
     sint spacing ( uint32 character_size = 0 ) const;
 
-    sint font_size ( void ) const;
+    sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size = 0 ) const;
+
+    /// Obtain a glyph
+    ///
+    /// \param codepoint        ASCII character to lookup
+    /// \param character_size   Reserved for future implementation
+    const Glyph& glyph ( uint32 codepoint, uint32 character_size = 0 ) const;
 
     /// Obtain text character spacing height offsets in pixels; defaults to
     /// variable calculations made within Load method
     sint newline ( uint32 character_size = 0 ) const;
 
-    sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size = 0 ) const;
-
-    const Glyph& glyph ( uint32 codepoint, uint32 character_size = 0 ) const;
-
-    /// \brief Load a new font in from a file.
+    /// Loads a new bitmap font from a file
     ///
-    /// Refer to the SDL_ttf documentation for file formats supported. As of
-    /// this writing, TTF and FON file formats are known to be supported.
-    bool load ( const std::string& filename, const Color4u& colorkey,
+    /// \todo Add spacing / padding so that we can export with black guidelines
+    bool load (
+                const std::string& filename, const Color4u& colorkey,
                 bool use_cache = false
               );
 
   private:
-    /// Trigger a rebuild of the font metrics from the current font; this
-    /// recalculates character sizes, coordinate origins, spacing, etc.
+    /// Trigger a build of the font characteristics gleaned from the image file;
+    /// recalculate the character sizes, coordinate origins, spacing, etc.
     ///
     /// \param character_size   Reserved for future implementation.
     bool build ( uint32 character_size = 0 );
 
     const GlyphPage& pages ( void ) const;
+    //const GlyphPage& pages ( uint32 character_size ) const;
 
     sint sheet_width ( void ) const;
     sint sheet_height ( void ) const;
@@ -132,15 +128,9 @@ class TrueTypeFont: public IFont
     /// Height -- in pixels -- of overall texture atlas sheet
     sint sheet_height_;
 
-    /// Font file data, used by SDL_ttf extension
-    std::shared_ptr<TTF_Font> font_;
-
     /// Table mapping a character size to its page -- a texture atlas combined
     /// with corresponding glyphs data.
     mutable GlyphPage pages_;
-
-    /// Font point (pixel) size; defaults to 12
-    sint font_size_;
 
     /// Height (in pixels) to offset when newline carriage char is encountered
     sint newline_;
@@ -152,12 +142,6 @@ class TrueTypeFont: public IFont
     /// this was enough to offset this variable by 18 pixels.
     sint spacing_;
 
-    /// Store the file path so we can change font sizes on the fly
-    std::string filename_;
-
-    /// Whether or not to use caching features of nom::ObjectCache
-    bool use_cache_;
-
     /// The type of font we are
     enum IFont::FontType type_;
 };
@@ -165,11 +149,3 @@ class TrueTypeFont: public IFont
 } // namespace nom
 
 #endif // include guard defined
-
-/// \class nom::TrueTypeFont
-/// \ingroup graphics
-///
-///   [TO BE WRITTEN]
-///
-/// \todo Re-write the class to render fonts from a cached nom::Texture source,
-/// much like we do in nom::BitmapFont or nom::SpriteBatch.

@@ -5,9 +5,6 @@
 Copyright (c) 2013, Jeffrey Carpenter <jeffrey.carp@gmail.com>
 All rights reserved.
 
-Portions Copyright (c) 2004-2013 Lazy Foo' Productions [1]
-All rights reserved.
-
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
@@ -28,42 +25,54 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-1. http://lazyfoo.net/SDL_tutorials/lesson30/index.php
-
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_BITMAP_FONT_HEADERS
-#define NOMLIB_SDL2_BITMAP_FONT_HEADERS
+#ifndef NOMLIB_SDL2_TRUETYPE_FONT_HEADERS
+#define NOMLIB_SDL2_TRUETYPE_FONT_HEADERS
 
 #include <iostream>
 #include <string>
-#include <sstream>
+#include <memory>
+
+#include <SDL_ttf.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/IFont.hpp"
-#include "nomlib/graphics/FontPage.hpp"
+#include "nomlib/graphics/fonts/IFont.hpp"
+#include "nomlib/graphics/fonts/FontMetrics.hpp"
+#include "nomlib/graphics/fonts/FontPage.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/math/Rect.hpp"
+#include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/Image.hpp"
+#include "nomlib/graphics/Window.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
-/// Dump glyph bounding coordinates
-//#define NOM_DEBUG_SDL2_BITMAP_FONT
+/// Dump glyph bounding coordinates & output destination sheet as a PNG
+#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS
+
+/// Dump the individual glyph bitmaps
+//#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS_PNG
 
 namespace nom {
 
-class BitmapFont: public IFont
+/// \brief TrueType fonts renderer
+class TrueTypeFont: public IFont
 {
   public:
-    typedef BitmapFont* RawPtr;
-    typedef std::shared_ptr<BitmapFont> SharedPtr;
+    typedef TrueTypeFont* RawPtr;
+    typedef std::shared_ptr<TrueTypeFont> SharedPtr;
 
-    /// Default constructor
-    BitmapFont ( void );
+    /// Default constructor; we initialize the SDL_ttf extension here
+    TrueTypeFont ( void );
 
-    /// Default destructor
-    ~BitmapFont ( void );
+    /// Default destructor; we shutdown the SDL_ttf extension here
+    ///
+    /// \FIXME Resetting the font pointer is a temporary workaround patch;
+    /// SDL_App destructs long before TrueTypeFont does in TTcards, which
+    /// doesn't allow us to free our font resources here properly.
+    ~TrueTypeFont ( void );
 
     /// Copy constructor
-    BitmapFont ( const BitmapFont& copy );
+    TrueTypeFont ( const TrueTypeFont& copy );
 
     /// Construct an new, identical instance from the existing
     IFont::SharedPtr clone ( void ) const;
@@ -79,35 +88,32 @@ class BitmapFont: public IFont
     /// by the total image width size.
     sint spacing ( uint32 character_size = 0 ) const;
 
-    sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size = 0 ) const;
-
-    /// Obtain a glyph
-    ///
-    /// \param codepoint        ASCII character to lookup
-    /// \param character_size   Reserved for future implementation
-    const Glyph& glyph ( uint32 codepoint, uint32 character_size = 0 ) const;
+    sint font_size ( void ) const;
 
     /// Obtain text character spacing height offsets in pixels; defaults to
     /// variable calculations made within Load method
     sint newline ( uint32 character_size = 0 ) const;
 
-    /// Loads a new bitmap font from a file
+    sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size = 0 ) const;
+
+    const Glyph& glyph ( uint32 codepoint, uint32 character_size = 0 ) const;
+
+    /// \brief Load a new font in from a file.
     ///
-    /// \todo Add spacing / padding so that we can export with black guidelines
-    bool load (
-                const std::string& filename, const Color4u& colorkey,
+    /// Refer to the SDL_ttf documentation for file formats supported. As of
+    /// this writing, TTF and FON file formats are known to be supported.
+    bool load ( const std::string& filename, const Color4u& colorkey,
                 bool use_cache = false
               );
 
   private:
-    /// Trigger a build of the font characteristics gleaned from the image file;
-    /// recalculate the character sizes, coordinate origins, spacing, etc.
+    /// Trigger a rebuild of the font metrics from the current font; this
+    /// recalculates character sizes, coordinate origins, spacing, etc.
     ///
     /// \param character_size   Reserved for future implementation.
     bool build ( uint32 character_size = 0 );
 
     const GlyphPage& pages ( void ) const;
-    //const GlyphPage& pages ( uint32 character_size ) const;
 
     sint sheet_width ( void ) const;
     sint sheet_height ( void ) const;
@@ -117,10 +123,33 @@ class BitmapFont: public IFont
     /// nom::BitmapFont::width method.
     /// in addition to the rendering process (see draw method) when there is a
     /// space character (' ') found in the provided text string.
+    ///
+    /// \note This is an advanced setting, and should not normally need to be
+    /// changed
+    ///
+    /// \todo Implement method
     void set_spacing ( sint spaces );
 
     /// Set new text character spacing height offsets in pixels
+    ///
+    /// \note This is an advanced setting, and should not normally need to be
+    /// changed
+    ///
+    /// \todo Implement method
     void set_newline ( sint newline );
+
+    /// \brief Find a suitable rectangle within the texture for a glyph
+    ///
+    /// \param page   Page of glyphs to search in
+    /// \param width  Width of the rectangle
+    /// \param height Height of the rectangle
+    ///
+    /// \return Found rectangle within the texture
+    ///
+    /// \remark This method makes it possible to store bitmap sheets efficiently
+    ///
+    /// \note Derived from SFML's sf::Font class -- thanks!
+    const IntRect glyph_rect ( FontPage& page, int width, int height ) const;
 
     /// Width -- in pixels -- of overall texture atlas sheet
     sint sheet_width_;
@@ -128,24 +157,44 @@ class BitmapFont: public IFont
     /// Height -- in pixels -- of overall texture atlas sheet
     sint sheet_height_;
 
+    /// Font file data, used by SDL_ttf extension
+    std::shared_ptr<TTF_Font> font_;
+
     /// Table mapping a character size to its page -- a texture atlas combined
     /// with corresponding glyphs data.
     mutable GlyphPage pages_;
 
-    /// Height (in pixels) to offset when newline carriage char is encountered
-    sint newline_;
+    /// Font point (pixel) size; defaults to 12
+    sint font_size_;
 
-    /// Width in pixels to offset when a space carriage char is encountered.
-    ///
-    /// Note that you may need to reset this if you are using bitmap fonts with
-    /// high resolution graphics. I recently went from 384x224 to 768x448 and
-    /// this was enough to offset this variable by 18 pixels.
-    sint spacing_;
+    /// Store the file path so we can change font sizes on the fly
+    std::string filename_;
+
+    /// Whether or not to use caching features of nom::ObjectCache
+    bool use_cache_;
 
     /// The type of font we are
     enum IFont::FontType type_;
+
+    struct FontMetrics metrics_;
 };
 
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::TrueTypeFont
+/// \ingroup graphics
+///
+///   [TO BE WRITTEN]
+///
+/// \todo Re-write the class to render fonts from a cached nom::Texture source,
+/// much like we do in nom::BitmapFont or nom::SpriteBatch.
+///
+/// ## REFERENCES
+///
+/// * http://freetype.sourceforge.net/freetype2/docs/tutorial/step2.html
+/// * http://www.libsdl.org/projects/SDL_ttf/docs/SDL_ttf_toc.html#SEC_Contents
+/// * http://chanae.walon.org/pub/ttf/ttf_glyphs.htm
+/// * SFML's sf::Font class
+///

@@ -397,8 +397,7 @@ void Label::draw ( RenderTarget target ) const
       this->texture_.draw ( target.renderer() );
 
       // Move over the width of the character with one pixel of padding
-      //x_offset += ( this->font()->glyph(ascii).bounds.w ) + 1;
-      x_offset += ( this->font()->glyph(ascii).bounds.w ) + 1;
+      x_offset += ( this->font()->glyph(ascii).advance ) + 1;
     } // end else
   } // end for loop
 }

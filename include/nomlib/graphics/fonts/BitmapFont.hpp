@@ -112,13 +112,6 @@ class BitmapFont: public IFont
     sint sheet_width ( void ) const;
     sint sheet_height ( void ) const;
 
-    /// Set new text character spacing width (in pixels) -- this variable is
-    /// used during the calculation of the text width; see
-    /// nom::BitmapFont::width method.
-    /// in addition to the rendering process (see draw method) when there is a
-    /// space character (' ') found in the provided text string.
-    void set_spacing ( sint spaces );
-
     /// Set new text character spacing height offsets in pixels
     void set_newline ( sint newline );
 

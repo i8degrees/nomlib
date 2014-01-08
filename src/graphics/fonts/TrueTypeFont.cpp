@@ -85,7 +85,7 @@ SDL_SURFACE::RawPtr TrueTypeFont::image ( uint32 character_size ) const
 
 int TrueTypeFont::spacing ( uint32 character_size ) const
 {
-  return this->pages_[character_size].glyphs[32].advance; // FIXME?
+  return this->pages_[character_size].glyphs[32].advance;
 }
 
 sint TrueTypeFont::font_size ( void ) const

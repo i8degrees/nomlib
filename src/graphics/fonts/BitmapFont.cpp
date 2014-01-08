@@ -84,8 +84,7 @@ SDL_SURFACE::RawPtr BitmapFont::image ( uint32 character_size ) const
 
 sint BitmapFont::spacing ( uint32 character_size ) const
 {
-  return this->spacing_;
-  //return this->pages_[0].glyphs[32].advance; // FIXME?
+  return this->pages_[0].glyphs[65].advance; // 'A' ASCII character
 }
 
 sint BitmapFont::kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) const
@@ -296,15 +295,13 @@ bool BitmapFont::build ( uint32 character_size )
       } // end if current_char
 
       // Calculate character spacing
-      //this->pages_[0].glyphs[current_char].advance = tile_width / 2;
+      this->pages_[0].glyphs[current_char].advance = this->pages_[0].glyphs[current_char].bounds.w;
 
       // Go to the next character
       current_char++;
     }
   }
   this->pages_[0].texture->unlock(); // Finished messing with pixels
-
-  this->set_spacing ( tile_width / 2 );
 
   // Calculate new line
   this->set_newline ( base - top );
@@ -346,12 +343,6 @@ sint BitmapFont::sheet_height ( void ) const
 const GlyphPage& BitmapFont::pages ( void ) const
 {
   return this->pages_;
-}
-
-void BitmapFont::set_spacing ( sint spaces )
-{
-  //return; // TODO
-  this->spacing_ = spaces;
 }
 
 void BitmapFont::set_newline ( sint newline )

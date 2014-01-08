@@ -80,14 +80,16 @@ class Label: public Transformable
     /// Destructor
     ~Label ( void );
 
-    /// Copy constructor
-    //Label ( const Label& copy );
-
-    /// Construct an object deriving from IFont
+    /// Construct a label, initializing it with a font (deriving from IFont)
     Label ( const IFont& font );
 
-    bool initialize ( const IFont& font );
+    /// Construct a label
+    Label ( const std::string& text, const IFont& font, uint character_size );
 
+    /// Copy constructor
+    Label ( const Label& copy );
+
+    /// Copy assignment overload
     Label& operator = ( const Label& other );
 
     Label::RawPtr get ( void );
@@ -133,7 +135,7 @@ class Label: public Transformable
     /// Get label's text character size (in pixels?)
     uint text_size ( void ) const;
 
-    /// Set a new font, deriving from IFont.
+    /// Set a new font (deriving from IFont).
     void set_font ( const IFont& font );
 
     /// Set new label text

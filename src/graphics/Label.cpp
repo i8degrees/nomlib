@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 Label::Label ( void ) :
-  font_ ( nullptr ),
+  Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_size_ ( 14 ),
   color_ ( NOM_COLOR4U_WHITE ),
   style_ ( Label::FontStyle::Regular ),
@@ -45,8 +45,36 @@ Label::~Label ( void )
   NOM_LOG_TRACE ( NOM );
 }
 
-/*
+Label::Label ( const IFont& font )  :
+  Transformable { 0, 0, 0, 0 }, // Our inherited class
+  text_size_ ( 14 ),
+  color_ ( NOM_COLOR4U_WHITE ),
+  style_ ( Label::FontStyle::Regular ),
+  alignment_ ( Label::TextAlignment::MiddleLeft )
+{
+  NOM_LOG_TRACE ( NOM );
+
+  this->set_font ( font );
+}
+
+Label::Label  ( const std::string& text,
+                const IFont& font,
+                uint character_size
+              )  :
+  Transformable { 0, 0, 0, 0 }, // Our inherited class
+  text_ ( text ),
+  text_size_ ( character_size ),
+  color_ ( NOM_COLOR4U_WHITE ),
+  style_ ( Label::FontStyle::Regular ),
+  alignment_ ( Label::TextAlignment::MiddleLeft )
+{
+  NOM_LOG_TRACE(NOM);
+
+  this->set_font ( font );
+}
+
 Label::Label ( const Label& copy ) :
+  Transformable { copy.position() }, // Our inherited class
   font_ { copy.font() },
   texture_ { copy.texture() },
   text_ { copy.text() },
@@ -57,44 +85,19 @@ Label::Label ( const Label& copy ) :
 {
   NOM_LOG_TRACE ( NOM );
 }
-*/
 
 Label& Label::operator = ( const Label& other )
 {
+  this->position_ = other.position(); // Our inherited class
   this->font_ = other.font();
   this->texture_ = other.texture();
   this->text_ = other.text();
   this->text_size_ = other.text_size();
   this->color_ = other.color();
   this->style_ = other.style();
-  //this->alignment_ = Label::TextAlignment::MiddleLeft;
   this->alignment_ = other.alignment();
 
   return *this;
-}
-
-Label::Label ( const IFont& font )  :
-  text_size_ ( 14 ),
-  color_ ( NOM_COLOR4U_WHITE ),
-  style_ ( Label::FontStyle::Regular ),
-  alignment_ ( Label::TextAlignment::MiddleLeft )
-{
-  NOM_LOG_TRACE ( NOM );
-
-  this->initialize ( font );
-}
-
-bool Label::initialize ( const IFont& font )
-{
-  this->font_ = std::shared_ptr<IFont>( font.clone() );
-
-  if ( this->valid() == false || this->texture_.initialize ( this->font()->image(0) ) == false )
-  {
-    NOM_LOG_ERR ( NOM, "Could not initialize label from given IFont" );
-    return false;
-  }
-
-  return true;
 }
 
 Label::RawPtr Label::get ( void )
@@ -259,11 +262,16 @@ enum Label::TextAlignment Label::alignment ( void ) const
 
 void Label::set_font ( const IFont& font )
 {
-  if ( this->font().get() == &font ) return;
+  if ( this->font().get() != &font )
+  {
+    this->font_ = std::shared_ptr<IFont>( font.clone() );
 
-  this->initialize ( font );
-
-  // Update logic
+    if ( this->valid() == false || this->texture_.initialize ( this->font()->image(0) ) == false )
+    {
+      NOM_LOG_ERR ( NOM, "Could not initialize label from given IFont" );
+      return;
+    }
+  }
 }
 
 void Label::set_text ( const std::string& text )

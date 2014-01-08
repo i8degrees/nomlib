@@ -309,7 +309,6 @@ void Label::set_style ( enum Label::FontStyle style )
   this->style_ = style;
 
   this->update();
-
 }
 
 void Label::set_alignment ( enum Label::TextAlignment align )
@@ -351,7 +350,11 @@ void Label::set_alignment ( enum Label::TextAlignment align )
 
 void Label::draw ( RenderTarget target ) const
 {
-  std::string text_buffer;
+  // Use coordinates provided by interface user as our starting origin
+  // coordinates to compute from
+  int x_offset = this->position().x;
+  int y_offset = this->position().y;
+  std::string text_buffer = this->text();
 
   // No font has been loaded -- nothing to draw!
   if ( this->valid() == false )
@@ -359,16 +362,6 @@ void Label::draw ( RenderTarget target ) const
     NOM_LOG_ERR( NOM, "Invalid label font" );
     return;
   }
-
-  text_buffer = this->text();
-
-  // Text string to draw is empty -- nothing to draw!
-  if ( text_buffer.length() < 1 ) return;
-
-  // Use coordinates provided by interface user as our starting origin
-  // coordinates to compute from
-  int x_offset = this->position().x;
-  int y_offset = this->position().y;
 
   for ( uint32 pos = 0; pos < text_buffer.length(); pos++ )
   {
@@ -432,9 +425,6 @@ void Label::update ( void )
 {
   // No font has been loaded -- nothing to draw!
   if ( this->valid() == false ) return;
-
-  // Text string to draw is empty -- nothing to draw!
-  if ( this->text().length() < 1 ) return;
 
   //this->font_->update();
   switch ( style_ )

@@ -265,6 +265,8 @@ bool Window::toggle_fullscreen ( void )
   {
     return false;
   }
+
+  return true;
 }
 
 bool Window::toggle_fullscreen ( uint32 flags )

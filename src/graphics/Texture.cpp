@@ -59,7 +59,7 @@ bool Texture::initialize ( SDL_SURFACE::RawPtr video_buffer )
   // do not ensure that we free existing buffers! Certain rendering methods --
   // *cough* nom::TrueTypeFont -- need this done because they create new
   // surfaces (instead of updating what they have) upon every update cycle.
-  if ( this->valid() ) this->texture_.reset();
+  //if ( this->valid() ) this->texture_.reset();
 
   this->texture_.reset ( SDL_CreateTextureFromSurface ( Window::context(), video_buffer ), priv::FreeTexture );
 
@@ -85,8 +85,7 @@ bool Texture::initialize ( SDL_SURFACE::RawPtr video_buffer )
 
 bool Texture::initialize ( int32 width, int32 height, uint32 format, uint32 flags )
 {
-  if ( this->valid() ) this->texture_.reset();
-
+  //if ( this->valid() ) this->texture_.reset();
   this->texture_.reset ( SDL_CreateTexture ( Window::context(), format, flags, width, height ), priv::FreeTexture );
 
   if ( this->valid() == false )
@@ -99,10 +98,7 @@ bool Texture::initialize ( int32 width, int32 height, uint32 format, uint32 flag
 
   // Cache the size of our new Texture object with the existing surface info
   this->set_bounds( IntRect(0, 0, width, height) );
-//NOM_DUMP_VAR(this->pitch());
-//NOM_DUMP_VAR(this->width());
-//NOM_DUMP_VAR(this->height());
-//NOM_DUMP_VAR(this->position());
+
   return true;
 }
 

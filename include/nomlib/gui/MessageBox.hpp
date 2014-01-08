@@ -81,8 +81,8 @@ class MessageBox: public IDrawable
     const Point2i size ( void ) const;
     const Point2i position ( void ) const;
 
-    void set_title ( Label& title );
-    void set_text ( Label& text );
+    void set_title ( const Label& title );
+    void set_text ( const Label& text );
 
     void update ( void );
     void draw ( RenderTarget target ) const;

@@ -134,7 +134,7 @@ void MessageBox::enable ( void )
   this->enabled_ = true;
 }
 
-void MessageBox::set_title ( Label& title )
+void MessageBox::set_title ( const Label& title )
 {
   this->mbox_title_ = title;
 
@@ -150,7 +150,7 @@ void MessageBox::set_title ( Label& title )
   this->drawable.push_back ( IDrawable::SharedPtr ( new Label ( this->mbox_title_ ) ) );
 }
 
-void MessageBox::set_text ( Label& text )
+void MessageBox::set_text ( const Label& text )
 {
   this->mbox_text_ = text;
 

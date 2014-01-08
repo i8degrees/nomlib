@@ -154,10 +154,13 @@ bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
 
 bool BitmapFont::build ( uint32 character_size )
 {
+  // The glyph used to base every glyph's height, Y bounds coordinate and
+  // newline calculations off
+  const uint32 baseline_glyph = 'A'; // ASCII character for 'A'
   uint32 tile_width = 0;
   uint32 tile_height = 0;
-  uint32 top = 0;
-  uint32 base = 0; // baseline of character 'A'
+  uint32 top = 0; // Ascent (I think)
+  uint32 base = 0; // Baseline of character 'A'
   uint32 current_char = 0; // counter
   uint32 background_color = 0;
 
@@ -172,6 +175,9 @@ bool BitmapFont::build ( uint32 character_size )
     return false;
   }
 
+  // The color mask used during our glyph scan -- in other words, this is the
+  // pixel color we filter out (ignore) -- any other pixel color becomes part
+  // of our glyph atlas.
   background_color = RGBA (
                             this->pages_[0].texture->colorkey(),
                             this->pages_[0].texture->pixel_format()
@@ -179,6 +185,7 @@ bool BitmapFont::build ( uint32 character_size )
 
   tile_width = this->pages_[0].texture->width() / this->sheet_width();
   tile_height = this->pages_[0].texture->height() / this->sheet_height();
+
   top = tile_height;
   base = tile_height;
 
@@ -186,23 +193,22 @@ bool BitmapFont::build ( uint32 character_size )
   {
     for ( int32 cols = 0; cols < this->sheet_height(); cols++ )
     {
-      // Set character offsets
+      // Initialize the glyph offsets
       this->pages_[0].glyphs[current_char].bounds.x = tile_width * cols;
       this->pages_[0].glyphs[current_char].bounds.y = tile_height * rows;
       this->pages_[0].glyphs[current_char].bounds.w = tile_width;
       this->pages_[0].glyphs[current_char].bounds.h = tile_height;
 
-      //Find Left Side; go through pixel columns
-      for ( uint32 pCol = 0; pCol < tile_width; pCol++ )
+      //Find the left side of the glyph
+      for ( int pCol = 0; pCol < tile_width; pCol++ )
       {
-        //Go through pixel rows
-        for ( uint32 pRow = 0; pRow < tile_height; pRow++ )
+        for ( int pRow = 0; pRow < tile_height; pRow++ )
         {
           //Get the pixel offsets
           uint32 pX = ( tile_width * cols ) + pCol;
           uint32 pY = ( tile_height * rows ) + pRow;
 
-          //If a non colorkey pixel is found
+          // Bingo -- a match is found (non-mask pixel color)
           if( this->pages_[0].texture->pixel ( pX, pY ) != background_color )
           {
             //Set the x offset
@@ -215,17 +221,16 @@ bool BitmapFont::build ( uint32 character_size )
         }
       }
 
-      //Find Right Side; go through pixel columns
-      for ( int32 pCol_w = tile_width - 1; pCol_w >= 0; pCol_w-- )
+      //Find the right side of the glyph
+      for ( int pCol_w = tile_width - 1; pCol_w >= 0; pCol_w-- )
       {
-        //Go through pixel rows
-        for ( uint32 pRow_w = 0; pRow_w < tile_height; pRow_w++ )
+        for ( int pRow_w = 0; pRow_w < tile_height; pRow_w++ )
         {
           //Get the pixel offsets
           uint32 pX = ( tile_width * cols ) + pCol_w;
           uint32 pY = ( tile_height * rows ) + pRow_w;
 
-          //If a non colorkey pixel is found
+          // Bingo -- a match is found (non-mask pixel color)
           if ( this->pages_[0].texture->pixel ( pX, pY ) != background_color )
           {
             //Set the width
@@ -238,17 +243,16 @@ bool BitmapFont::build ( uint32 character_size )
         }
       }
 
-      //Find Top; go through pixel rows
-      for ( uint32 pRow = 0; pRow < tile_height; pRow++ )
+      //Find the top of the glyph
+      for ( int pRow = 0; pRow < tile_height; pRow++ )
       {
-        //Go through pixel columns
-        for ( uint32 pCol = 0; pCol < tile_width; pCol++ )
+        for ( int pCol = 0; pCol < tile_width; pCol++ )
         {
           //Get the pixel offsets
           uint32 pX = ( tile_width * cols ) + pCol;
           uint32 pY = ( tile_height * rows ) + pRow;
 
-          // If a non colorkey pixel is found
+          // Bingo -- a match is found (non-mask pixel color)
           if( this->pages_[0].texture->pixel ( pX, pY ) != background_color )
           {
             // If new top is found
@@ -264,21 +268,21 @@ bool BitmapFont::build ( uint32 character_size )
         }
       }
 
-      // Calculate the baseline of 'A' so that we can use this in our
-      // newline offset calculation
-      if ( current_char == 'A' )
+      // Calculate character spacing
+      this->pages_[0].glyphs[current_char].advance = this->pages_[0].glyphs[current_char].bounds.w;
+
+      // Calculate baseline from chosen glyph
+      if ( current_char == baseline_glyph )
       {
-        // Go through pixel rows
-        for ( int32 pRow = tile_height - 1; pRow >= 0; pRow-- )
+        for ( int pRow = tile_height - 1; pRow >= 0; pRow-- )
         {
-          // Go through pixel columns
-          for ( uint32 pCol = 0; pCol < tile_width; pCol++ )
+          for ( int pCol = 0; pCol < tile_width; pCol++ )
           {
             // Get the pixel offsets
             uint32 pX = ( tile_width * cols ) + pCol;
             uint32 pY = ( tile_height * rows ) + pRow;
 
-            // If a non colorkey pixel is found
+            // Bingo -- a match is found (non-mask pixel color)
             if ( this->pages_[0].texture->pixel ( pX, pY ) != background_color )
             {
               // Bottom of a is found
@@ -291,17 +295,15 @@ bool BitmapFont::build ( uint32 character_size )
           } // end for pixel columns loop
         } // end for pixel rows loop
       } // end if current_char
-
-      // Calculate character spacing
-      this->pages_[0].glyphs[current_char].advance = this->pages_[0].glyphs[current_char].bounds.w;
-
-      // Go to the next character
       current_char++;
-    }
-  }
+    } // end sheet height loop
+  } // end sheet width loop
   this->pages_[0].texture->unlock(); // Finished messing with pixels
 
-  // Calculate new line
+  // Calculate new line by subtracting the baseline of the "chosen glyph"
+  // from the bitmap's ascent.
+  //
+  // (See also: baseline_glyph variable)
   this->metrics_.newline = base - top;
 
   // Loop off excess top pixels

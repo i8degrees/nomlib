@@ -39,7 +39,6 @@ BitmapFont::BitmapFont ( void ) :
   sheet_width_ ( 16 ),
   sheet_height_ ( 16 ),
   newline_ ( 0 ),
-  spacing_ ( 0 ),
   type_ ( IFont::FontType::BitmapFont )
 {
   NOM_LOG_TRACE ( NOM );
@@ -56,7 +55,6 @@ BitmapFont::BitmapFont ( const BitmapFont& copy )
   this->sheet_height_ = copy.sheet_height();
   this->pages_ = copy.pages();
   this->newline_ = copy.newline();
-  this->spacing_ = copy.spacing();
   this->type_ = copy.type();
 }
 

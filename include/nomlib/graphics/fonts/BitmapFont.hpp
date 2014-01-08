@@ -128,13 +128,6 @@ class BitmapFont: public IFont
     /// Height (in pixels) to offset when newline carriage char is encountered
     sint newline_;
 
-    /// Width in pixels to offset when a space carriage char is encountered.
-    ///
-    /// Note that you may need to reset this if you are using bitmap fonts with
-    /// high resolution graphics. I recently went from 384x224 to 768x448 and
-    /// this was enough to offset this variable by 18 pixels.
-    sint spacing_;
-
     /// The type of font we are
     enum IFont::FontType type_;
 };

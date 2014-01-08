@@ -322,39 +322,37 @@ void Label::set_style ( enum Label::FontStyle style )
 
 void Label::set_alignment ( enum Label::TextAlignment align )
 {
-  if ( align != this->alignment() )
+  this->alignment_ = align;
+
+  int x_offset = 0;
+  int y_offset = 0;
+
+  switch ( this->alignment() )
   {
-    this->alignment_ = align;
-
-    int x_offset = this->position().x;
-    int y_offset = this->position().y;
-
-    switch ( this->alignment() )
+    default:
+    case Label::TextAlignment::MiddleLeft:
     {
-      default:
-      case Label::TextAlignment::MiddleLeft:
-      {
-        x_offset = this->position().x;
-        y_offset = this->position().y;
-        break;
-      }
+      x_offset = this->position().x;
+      y_offset = this->position().y + ( this->size().h - this->height() ) / 2;
+      break;
+    }
 
-      case Label::TextAlignment::MiddleCenter:
-      {
-        x_offset = this->position().x + ( this->size().w / 2 ) - ( this->width() / 2 );
-        y_offset = this->position().y + ( this->size().h / 2 ) - ( this->height() / 2 );
-        break;
-      }
+    case Label::TextAlignment::MiddleCenter:
+    {
+      x_offset = this->position().x + ( this->size().w - this->width() ) / 2;
+      y_offset = this->position().y + ( this->size().h - this->height() ) / 2;
+      break;
+    }
 
-      case Label::TextAlignment::MiddleRight:
-      {
-        // TODO
-        break;
-      }
-    } // end switch
+    case Label::TextAlignment::MiddleRight:
+    {
+      x_offset = this->position().x + ( this->size().w - this->width() );
+      y_offset = this->position().y + ( this->size().h - this->height() ) / 2;
+      break;
+    }
+  } // end switch
 
-    this->set_position ( x_offset, y_offset );
-  }
+  this->set_position ( x_offset, y_offset );
 }
 
 void Label::draw ( RenderTarget target ) const

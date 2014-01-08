@@ -120,26 +120,6 @@ class TrueTypeFont: public IFont
     sint sheet_width ( void ) const;
     sint sheet_height ( void ) const;
 
-    /// Set new text character spacing width (in pixels) -- this variable is
-    /// used during the calculation of the text width; see
-    /// nom::BitmapFont::width method.
-    /// in addition to the rendering process (see draw method) when there is a
-    /// space character (' ') found in the provided text string.
-    ///
-    /// \note This is an advanced setting, and should not normally need to be
-    /// changed
-    ///
-    /// \todo Implement method
-    void set_spacing ( sint spaces );
-
-    /// Set new text character spacing height offsets in pixels
-    ///
-    /// \note This is an advanced setting, and should not normally need to be
-    /// changed
-    ///
-    /// \todo Implement method
-    void set_newline ( sint newline );
-
     /// \brief Find a suitable rectangle within the texture for a glyph
     ///
     /// \param page   Page of glyphs to search in
@@ -152,6 +132,11 @@ class TrueTypeFont: public IFont
     ///
     /// \note Derived from SFML's sf::Font class -- thanks!
     const IntRect glyph_rect ( FontPage& page, int width, int height ) const;
+
+    struct FontMetrics metrics ( void ) const;
+
+    /// The type of font we are
+    const enum IFont::FontType type_;
 
     /// Width -- in pixels -- of overall texture atlas sheet
     sint sheet_width_;
@@ -175,9 +160,7 @@ class TrueTypeFont: public IFont
     /// Whether or not to use caching features of nom::ObjectCache
     bool use_cache_;
 
-    /// The type of font we are
-    enum IFont::FontType type_;
-
+    /// General font metric data, such as the proper value for newline spacing
     struct FontMetrics metrics_;
 };
 

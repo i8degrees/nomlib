@@ -36,10 +36,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 BitmapFont::BitmapFont ( void ) :
+  type_ ( IFont::FontType::BitmapFont ),
   sheet_width_ ( 16 ),
-  sheet_height_ ( 16 ),
-  newline_ ( 0 ),
-  type_ ( IFont::FontType::BitmapFont )
+  sheet_height_ ( 16 )
 {
   NOM_LOG_TRACE ( NOM );
 }
@@ -49,13 +48,14 @@ BitmapFont::~BitmapFont ( void )
   NOM_LOG_TRACE ( NOM );
 }
 
-BitmapFont::BitmapFont ( const BitmapFont& copy )
+BitmapFont::BitmapFont ( const BitmapFont& copy ) :
+  type_ { copy.type() },
+  sheet_width_ { copy.sheet_width() },
+  sheet_height_ { copy.sheet_height() },
+  pages_ { copy.pages() },
+  metrics_ { copy.metrics() }
 {
-  this->sheet_width_ = copy.sheet_width();
-  this->sheet_height_ = copy.sheet_height();
-  this->pages_ = copy.pages();
-  this->newline_ = copy.newline();
-  this->type_ = copy.type();
+  //
 }
 
 IFont::SharedPtr BitmapFont::clone ( void ) const
@@ -85,6 +85,11 @@ sint BitmapFont::spacing ( uint32 character_size ) const
   return this->pages_[0].glyphs[65].advance; // 'A' ASCII character
 }
 
+sint BitmapFont::newline ( uint32 character_size ) const
+{
+  return this->metrics_.newline;
+}
+
 sint BitmapFont::kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) const
 {
   return -1; // TODO
@@ -109,11 +114,6 @@ const Glyph& BitmapFont::glyph ( uint32 codepoint, uint32 character_size ) const
     return Glyph();
   }
 */
-
-sint BitmapFont::newline ( uint32 character_size ) const
-{
-  return this->newline_; // TODO
-}
 
 bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
                         bool use_cache
@@ -302,7 +302,7 @@ bool BitmapFont::build ( uint32 character_size )
   this->pages_[0].texture->unlock(); // Finished messing with pixels
 
   // Calculate new line
-  this->set_newline ( base - top );
+  this->metrics_.newline = base - top;
 
   // Loop off excess top pixels
   for ( uint32 top_pixels = 0; top_pixels < current_char; ++top_pixels )
@@ -343,10 +343,9 @@ const GlyphPage& BitmapFont::pages ( void ) const
   return this->pages_;
 }
 
-void BitmapFont::set_newline ( sint newline )
+struct FontMetrics BitmapFont::metrics ( void ) const
 {
-  // FIXME: Implement alike TrueTyprFont class
-  this->newline_ = newline;
+  return this->metrics_;
 }
 
 } // namespace nom

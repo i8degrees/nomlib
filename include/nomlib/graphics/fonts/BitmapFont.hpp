@@ -39,8 +39,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/fonts/FontPage.hpp"
 #include "nomlib/graphics/fonts/IFont.hpp"
+#include "nomlib/graphics/fonts/FontMetrics.hpp"
+#include "nomlib/graphics/fonts/FontPage.hpp"
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
@@ -79,6 +80,10 @@ class BitmapFont: public IFont
     /// by the total image width size.
     sint spacing ( uint32 character_size = 0 ) const;
 
+    /// Obtain text character spacing height offsets in pixels; defaults to
+    /// variable calculations made within Load method
+    sint newline ( uint32 character_size = 0 ) const;
+
     sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size = 0 ) const;
 
     /// Obtain a glyph
@@ -86,10 +91,6 @@ class BitmapFont: public IFont
     /// \param codepoint        ASCII character to lookup
     /// \param character_size   Reserved for future implementation
     const Glyph& glyph ( uint32 codepoint, uint32 character_size = 0 ) const;
-
-    /// Obtain text character spacing height offsets in pixels; defaults to
-    /// variable calculations made within Load method
-    sint newline ( uint32 character_size = 0 ) const;
 
     /// Loads a new bitmap font from a file
     ///
@@ -107,13 +108,13 @@ class BitmapFont: public IFont
     bool build ( uint32 character_size = 0 );
 
     const GlyphPage& pages ( void ) const;
-    //const GlyphPage& pages ( uint32 character_size ) const;
 
     sint sheet_width ( void ) const;
     sint sheet_height ( void ) const;
+    struct FontMetrics metrics ( void ) const;
 
-    /// Set new text character spacing height offsets in pixels
-    void set_newline ( sint newline );
+    /// The type of font we are
+    const enum IFont::FontType type_;
 
     /// Width -- in pixels -- of overall texture atlas sheet
     sint sheet_width_;
@@ -125,11 +126,8 @@ class BitmapFont: public IFont
     /// with corresponding glyphs data.
     mutable GlyphPage pages_;
 
-    /// Height (in pixels) to offset when newline carriage char is encountered
-    sint newline_;
-
-    /// The type of font we are
-    enum IFont::FontType type_;
+    /// General font metric data, such as the proper value for newline spacing
+    struct FontMetrics metrics_;
 };
 
 } // namespace nom

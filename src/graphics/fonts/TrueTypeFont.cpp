@@ -31,11 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 TrueTypeFont::TrueTypeFont ( void ) :
+  type_ ( IFont::FontType::TrueTypeFont ),
   sheet_width_ ( 16 ),  // Arbitrary; based on nom::BitmapFont
   sheet_height_ ( 16 ), // Arbitrary; based on nom::BitmapFont
   font_size_ ( 14 ), // Terrible Eyesight (TM)
-  use_cache_ ( false ),
-  type_ ( IFont::FontType::TrueTypeFont )
+  use_cache_ ( false )
 {
   NOM_LOG_TRACE ( NOM );
 }
@@ -45,15 +45,18 @@ TrueTypeFont::~TrueTypeFont ( void )
   NOM_LOG_TRACE ( NOM );
 }
 
-TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy )
+TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy ) :
+  type_ { copy.type() },
+  sheet_width_ { copy.sheet_width() },
+  sheet_height_ { copy.sheet_height() },
+  font_ { copy.font_ },
+  pages_ { copy.pages() },
+  font_size_ { copy.font_size() },
+  filename_ { copy.filename_ },
+  use_cache_ { copy.use_cache_ },
+  metrics_ { copy.metrics() }
 {
-  this->font_ = copy.font_;
-  this->pages_ = copy.pages();
-  this->type_ = copy.type();
-  this->font_size_ = copy.font_size();
-  this->filename_ = copy.filename_;
-  this->use_cache_ = copy.use_cache_;
-  this->metrics_ = copy.metrics_;
+  //
 }
 
 IFont::SharedPtr TrueTypeFont::clone ( void ) const
@@ -381,18 +384,6 @@ sint TrueTypeFont::sheet_height ( void ) const
   return this->sheet_height_;
 }
 
-void TrueTypeFont::set_spacing ( int spaces )
-{
-  return; // TODO
-  //this->spacing_ = spaces;
-}
-
-void TrueTypeFont::set_newline ( int newline )
-{
-  return; // TODO
-  //this->newline_ = newline;
-}
-
 const IntRect TrueTypeFont::glyph_rect ( FontPage& page, int width, int height ) const
 {
   //std::unique_ptr<FontRow> row;
@@ -466,6 +457,11 @@ const IntRect TrueTypeFont::glyph_rect ( FontPage& page, int width, int height )
   row->width += width;
 
   return rect;
+}
+
+struct FontMetrics TrueTypeFont::metrics ( void ) const
+{
+  return this->metrics_;
 }
 
 } // namespace nom

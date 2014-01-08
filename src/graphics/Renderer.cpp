@@ -288,17 +288,50 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
 void* Renderer::pixels ( void ) const
 {
+  SDL_Rect clip;
   void* pixels = static_cast<uint32*> ( malloc (this->size().x * this->size().y * 4) );
 
+  // In order to accurately capture our window, with respect to aspect ratio,
+  // such as the case of us using device independent scaling [1], we must
+  // calculate the true bounding dimensions of our rendering target.
+  //
+  // We did not need to do this previously [2], due to the fact that we were
+  // only setting the device independent resolution *after* toggling the full
+  // screen state to true.
+  //
+  // I *think* that the changes are more accurate because of the greater
+  // resolutions screen captured from [3], *with* regard to the aspect ratio.
+  // Since the screen capture dumps are intended primarily for debugging
+  // purposes, the more gory details we can glean, generally the better.
+  //
+  // Note that what we see is still after the "device independent resolution" is
+  // taken into consideration.
+  //
+  // 1. nom::Renderer::set_logical_size
+  // 2. Before changes made in git commit SHA:
+  //    155628b8dcc47187bf6f03aa760e5aede728ac09
+  // 3. nom::Window::save_screenshot
+  clip.x = 0;
+  clip.y = 0;
+  clip.w = this->size().x;
+  clip.h = this->size().y;
+
   if ( SDL_RenderReadPixels(  this->renderer(),
-                              nullptr,  // Dump pixels of the entire target
-                              0,        // Use the pixel format of the render
-                                        // target.
-                              pixels,   // Pointer to be filled in with pixels
-                                        // from rendering target.
+                              // Use calculated bounding dimensions;
+                              // Pass null to dump the pixels of the entire
+                              // render target
+                              &clip,
+                              // Use the most optimal pixel format;
+                              // Pass zero here to obtain the pixel format of
+                              // the render target
+                              this->caps().optimal_texture_format(),
+                              // Allocated pointer to be filled in with pixels
+                              // from render target
+                              pixels,
+                              // Pitch of our pixels pointer
                               this->size().x * 4 ) != 0 )
   {
-NOM_LOG_ERR( NOM, SDL_GetError() );
+    NOM_LOG_ERR( NOM, SDL_GetError() );
     return nullptr;
   }
 

@@ -94,7 +94,7 @@ class Renderer
     /// Obtain the renderer's clipping rectangle bounds (X, Y, width & height)
     /// in pixels
     /// \todo Test me!
-    const Coords bounds ( void ) const;
+    const IntRect bounds ( void ) const;
 
     /// Update the renderer surface on the attached window
     void update ( void ) const;

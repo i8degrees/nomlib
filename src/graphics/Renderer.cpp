@@ -127,13 +127,15 @@ const Point2i Renderer::size ( void ) const
   return size;
 }
 
-const Coords Renderer::bounds ( void ) const
+const IntRect Renderer::bounds ( void ) const
 {
-  SDL_Rect clip_bounds;
+  SDL_Rect clip;
 
-  SDL_RenderGetClipRect( this->renderer(), &clip_bounds );
+  SDL_RenderGetClipRect( this->renderer(), &clip );
 
-  return Coords( clip_bounds.x, clip_bounds.y, clip_bounds.w, clip_bounds.h );
+  return IntRect ( clip.x, clip.y, clip.w, clip.h );
+}
+
 }
 
 void Renderer::update ( void ) const

@@ -136,6 +136,36 @@ const IntRect Renderer::bounds ( void ) const
   return IntRect ( clip.x, clip.y, clip.w, clip.h );
 }
 
+const RendererInfo Renderer::caps ( void ) const
+{
+  return this->caps ( this->renderer() );
+}
+
+const RendererInfo Renderer::caps ( SDL_RENDERER::RawPtr target )
+{
+  RendererInfo renderer_info;
+  SDL_RendererInfo info;
+
+  if ( SDL_GetRendererInfo ( target, &info ) != 0 )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return renderer_info;
+  }
+
+  renderer_info.name = info.name;
+  renderer_info.flags = info.flags;
+
+  NOM_ASSERT ( info.num_texture_formats > 1 );
+
+  for ( uint32 idx = 0; idx < info.num_texture_formats; ++idx )
+  {
+    renderer_info.texture_formats.push_back ( info.texture_formats[idx] );
+  }
+
+  renderer_info.texture_width = info.max_texture_width;
+  renderer_info.texture_height = info.max_texture_height;
+
+  return renderer_info;
 }
 
 void Renderer::update ( void ) const

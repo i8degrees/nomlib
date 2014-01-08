@@ -44,7 +44,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/VideoMode.hpp"
 #include "nomlib/graphics/Renderer.hpp"
 #include "nomlib/graphics/Image.hpp"
-#include "nomlib/graphics/RendererInfo.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/system/File.hpp"
 
@@ -115,19 +114,6 @@ class Window:
     /// \todo SDL2 support
     VideoModeList getVideoModes ( void ) const;
 
-    /// \brief Obtain information specific to your rendering hardware
-    /// capabilities.
-    ///
-    /// \remarks See nom::RendererInfo
-    const RendererInfo caps ( void ) const;
-
-    /// \brief Obtain information specific to your rendering hardware
-    /// capabilities.
-    ///
-    /// \note   This method is used internally by nomlib -- nom::Window::caps()
-    ///         is probably the API you want to use outside of nomlib.
-    static const RendererInfo caps ( SDL_RENDERER::RawPtr target );
-
     void set_size ( int32 width, int32 height );
 
     void set_position ( int32 x, int32 y );
@@ -174,6 +160,8 @@ class Window:
     /// \param id           Unique identifier used for the lookup
     ///
     /// \return SDL_Window pointer if exists; NULL if no Window exists
+    ///
+    /// \todo Is there a reason why this is a static method???
     static SDL_WINDOW::RawPtr window_id ( uint32 id );
 
     /// Obtain this window's display index

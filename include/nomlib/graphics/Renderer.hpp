@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Coords.hpp"
+#include "nomlib/graphics/RendererInfo.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
 namespace nom {
@@ -95,6 +96,19 @@ class Renderer
     /// in pixels
     /// \todo Test me!
     const IntRect bounds ( void ) const;
+
+    /// \brief Obtain information specific to your rendering hardware
+    /// capabilities.
+    ///
+    /// \remarks See nom::RendererInfo
+    const RendererInfo caps ( void ) const;
+
+    /// \brief Obtain information specific to your rendering hardware
+    /// capabilities.
+    ///
+    /// \note   This method is used internally by nomlib -- nom::Renderer::caps()
+    ///         is probably the API you want to use outside of nomlib.
+    static const RendererInfo caps ( SDL_RENDERER::RawPtr target );
 
     /// Update the renderer surface on the attached window
     void update ( void ) const;

@@ -32,13 +32,23 @@ namespace nom {
 
 Transformable::Transformable ( void )  :
   position_ ( 0, 0, 0, 0 )
-{}
+{
+  // ...
+}
 
 Transformable::~Transformable ( void ) {}
 
-Transformable::Transformable ( const Coords& coords ):
+Transformable::Transformable ( int x, int y, int w, int h ) :
+  position_ { Coords (x, y, w, h) }
+{
+  // ...
+}
+
+Transformable::Transformable ( const Coords& coords ) :
   position_ ( coords )
-{}
+{
+  // ...
+}
 
 const Coords Transformable::position ( void ) const
 {

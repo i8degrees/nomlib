@@ -41,6 +41,7 @@ class Transformable: public virtual IDrawable
     Transformable ( void );
     virtual ~Transformable ( void );
 
+    Transformable ( int x, int y, int w, int h );
     Transformable ( const Coords& coords );
 
     const Coords position ( void ) const;

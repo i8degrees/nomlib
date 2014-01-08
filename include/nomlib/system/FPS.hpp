@@ -51,6 +51,7 @@ class FPS: public Timer
     const std::string asString ( void ) const;
 
     uint32 fps ( void ) const;
+    float fps_float ( void ) const;
 
     void update ( void );
 

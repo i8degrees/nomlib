@@ -68,10 +68,14 @@ uint32 FPS::fps ( void ) const
   return this->frames() / static_cast<uint32> ( ( this->fps_timer.ticks() / 1000.f ) );
 }
 
+float FPS::fps_float ( void ) const
+{
+  return this->frames() / (this->fps_timer.ticks() / 1000.f);
+}
+
 void FPS::update ( void )
 {
   this->total_frames++;
 }
-
 
 } // namespace nom

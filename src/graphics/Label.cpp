@@ -160,13 +160,14 @@ int Label::width ( void ) const
     }
     else
     {
-      text_width += this->font()->glyph(text_buffer[pos]).bounds.w + 1;
+      // Match the offset calculations done in the text rendering
+      text_width += this->font()->glyph(text_buffer[pos]).advance + 1;
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
         NOM_DUMP_VAR ( pos );
         NOM_DUMP_VAR ( text_buffer[pos] );
-        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[pos]).bounds.w + 1 );
+        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[pos]).advance + 1 );
       #endif
 
     }

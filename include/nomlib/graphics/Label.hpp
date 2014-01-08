@@ -103,18 +103,18 @@ class Label: public Transformable
 
     enum IFont::FontType type ( void ) const;
 
-    /// Obtain the text width in pixels of the set text string.
+    /// \brief Obtain the text width (in pixels) of the set text
     ///
-    /// This calculation mimics the rendering calculations done and should be
-    /// exact within one pixel accuracy.
+    /// \remarks  This calculation should mimic the rendering calculations
+    ///           precisely.
     ///
     /// \todo Support multi-line texts
     int width ( void ) const;
 
-    /// Obtain the text height in pixels of the set text string.
+    /// \brief Obtain the text height in pixels of the set text
     ///
-    /// This calculation mimics the rendering calculations done and should be
-    /// exact within one pixel accuracy.
+    /// \remarks  This calculation should mimic the rendering calculations
+    ///           precisely.
     int height ( void ) const;
 
     /// Get label's text string

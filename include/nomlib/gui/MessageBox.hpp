@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 #include <memory>
-#include <algorithm>
+#include <array>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
@@ -45,6 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
   namespace ui {
 
+/// \todo Relocate me to nom::GrayFrame
 enum FrameStyle
 {
   None = 0,
@@ -90,11 +91,13 @@ class MessageBox: public IDrawable
   private:
     IDrawable::SharedDrawables drawable;
 
-    Label mbox_title_;
-    Label mbox_text_;
+    /// Array holding our up to two labels (title and text, respectively)
+    std::array<Label, 2> labels;
 
     Coords coords;
     bool enabled_;
+
+    bool updated;
 };
 
 

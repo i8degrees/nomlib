@@ -32,7 +32,8 @@ namespace nom {
   namespace ui {
 
 MessageBox::MessageBox ( void ) :
-  enabled_ ( true )
+  enabled_ ( true ),
+  updated ( false )
 {
   NOM_LOG_TRACE(NOM);
 }
@@ -46,11 +47,11 @@ MessageBox::MessageBox  (
                           int32 x, int32 y, int32 width, int32 height,
                           enum FrameStyle style,
                           const Gradient& background
-                        )
+                        ) :
+  enabled_ ( true ),
+  updated ( false )
 {
   int32 padding = 1;
-
-  this->enable();
 
   // init geometry coords w/ arguments list
   this->coords = Coords ( x, y, width, height );
@@ -65,17 +66,19 @@ MessageBox::MessageBox  (
   {
     this->drawable.push_back ( GrayFrame::SharedPtr ( new GrayFrame ( x, y, width, height, padding ) ) );
   }
+
+  this->update();
 }
 
 MessageBox::MessageBox  (
                           int32 x, int32 y, int32 width, int32 height,
                           GrayFrame::SharedPtr style,
                           Gradient::SharedPtr background
-                        )
+                        ) :
+  enabled_ ( true ),
+  updated ( false )
 {
   int32 padding = 1;
-
-  this->enable();
 
   // init geometry coords w/ arguments list
   this->coords = Coords ( x, y, width, height );
@@ -95,6 +98,8 @@ MessageBox::MessageBox  (
   {
     this->drawable.push_back ( GrayFrame::SharedPtr ( new GrayFrame ( x, y, width, height, padding ) ) );
   }
+
+  this->update();
 }
 
 bool MessageBox::enabled ( void ) const
@@ -106,12 +111,14 @@ bool MessageBox::enabled ( void ) const
 
 const std::string MessageBox::title ( void )
 {
-  return this->mbox_title_.text();
+  // nom::Label should be handling all of the necessary validity checks for us
+  return this->labels[0].text();
 }
 
 const std::string MessageBox::text ( void )
 {
-  return this->mbox_text_.text();
+  // nom::Label should be handling all of the necessary validity checks for us
+  return this->labels[1].text();
 }
 
 const Point2i MessageBox::size ( void ) const
@@ -136,37 +143,63 @@ void MessageBox::enable ( void )
 
 void MessageBox::set_title ( const Label& title )
 {
-  this->mbox_title_ = title;
+  this->updated = false;
 
+  if ( title.valid() == false )
+  {
+    NOM_LOG_ERR( NOM, "Label text for nom::MessageBox is invalid" );
+    return;
+  }
+
+  this->labels[0] = title;
   // This positions the title text of the message box on top of the second "top"
   // bordering color of GrayFrame, commented as "top1".
   //
   // The original coords.x value was + 8, but I think + 4 looks best.
-  this->mbox_title_.set_position ( IntRect ( this->coords.x + 4, this->coords.y, this->coords.w, this->coords.h ) );
+  this->labels[0].set_position ( IntRect ( this->coords.x + 4, this->coords.y, this->coords.w, this->coords.h ) );
 
-  this->mbox_title_.set_text ( "INFO." );
-  this->mbox_title_.set_alignment ( Label::TextAlignment::MiddleLeft );
+  // In order to preserve the text alignment of the original object, we must
+  // copy the state of the original alignment *after* we set the positioning
+  // on the new object we create for this class
+  this->labels[0].set_alignment ( title.alignment() );
 
-  this->drawable.push_back ( IDrawable::SharedPtr ( new Label ( this->mbox_title_ ) ) );
+  // Update our message box -- we have new objects in the rendering pipeline!
+  this->update();
 }
 
 void MessageBox::set_text ( const Label& text )
 {
-  this->mbox_text_ = text;
+  this->updated = false;
 
-  this->mbox_text_.set_position ( IntRect ( this->coords.x, this->coords.y, this->coords.w, this->coords.h ) );
-  this->mbox_text_.set_alignment ( Label::MiddleCenter );
+  if ( text.valid() == false )
+  {
+    NOM_LOG_ERR( NOM, "Label text for nom::MessageBox is invalid" );
+    return;
+  }
 
-  this->drawable.push_back ( IDrawable::SharedPtr ( new Label ( this->mbox_text_ ) ) );
+  this->labels[1] = text;
+  this->labels[1].set_position ( IntRect ( this->coords.x, this->coords.y, this->coords.w, this->coords.h ) );
+
+  // In order to preserve the text alignment of the original object, we must
+  // copy the state of the original alignment *after* we set the positioning
+  // on the new object we create for this class
+  this->labels[1].set_alignment ( text.alignment() );
+
+  // Update our message box -- we have new objects in the rendering pipeline!
+  this->update();
 }
 
 void MessageBox::update ( void )
 {
+  if ( this->updated == true ) return;
+
   for ( auto it = this->drawable.begin(); it != this->drawable.end(); ++it )
   {
     IDrawable::SharedPtr obj = *it;
     obj->update();
   }
+
+  this->updated = true;
 }
 
 void MessageBox::draw ( RenderTarget target ) const
@@ -178,6 +211,12 @@ void MessageBox::draw ( RenderTarget target ) const
     IDrawable::SharedPtr obj = *it;
     obj->draw ( target );
   }
+
+  // nom::Label should be handling all of the necessary validity checks for us;
+  // if a Label object is not valid, the routine should return immediately,
+  // discarding any data prepared within that frame.
+  this->labels[0].draw ( target );
+  this->labels[1].draw ( target );
 }
 
 } // namespace ui

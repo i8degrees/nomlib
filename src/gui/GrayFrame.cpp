@@ -29,7 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/gui/GrayFrame.hpp"
 
 namespace nom {
-  namespace ui {
 
 GrayFrame::GrayFrame ( void ) : updated ( false ) {}
 
@@ -94,6 +93,4 @@ void GrayFrame::draw ( RenderTarget target ) const
   }
 }
 
-
-  } // namespace ui
 } // namespace nom

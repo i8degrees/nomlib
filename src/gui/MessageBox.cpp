@@ -29,7 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/gui/MessageBox.hpp"
 
 namespace nom {
-  namespace ui {
 
 MessageBox::MessageBox ( void ) :
   enabled_ ( true ),
@@ -219,5 +218,4 @@ void MessageBox::draw ( RenderTarget target ) const
   this->labels[1].draw ( target );
 }
 
-} // namespace ui
 } // namespace nom

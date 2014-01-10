@@ -37,7 +37,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/sprite/AnimatedSprite.hpp"
 
 namespace nom {
-  namespace ui {
 
 /// \brief Helper class for loading, positioning and keeping track of a cursor
 /// controlled by an user-defined input.
@@ -105,8 +104,6 @@ class Cursor:
     bool locked_;
 };
 
-
-  } // namespace ui
 } // namespace nom
 
 #endif // include guard defined

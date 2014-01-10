@@ -41,7 +41,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/shapes/Line.hpp"
 
 namespace nom {
-  namespace ui {
 
 class GrayFrame:
                   public IDrawable
@@ -81,8 +80,6 @@ class GrayFrame:
     int32 padding;
 };
 
-
-  } // namespace ui
 } // namespace nom
 
 #endif // include guard defined

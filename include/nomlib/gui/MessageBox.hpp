@@ -43,7 +43,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/gui/GrayFrame.hpp"
 
 namespace nom {
-  namespace ui {
 
 /// \brief Simple UI interface for drawing a styled message box
 class MessageBox: public IDrawable
@@ -99,8 +98,6 @@ class MessageBox: public IDrawable
     bool updated;
 };
 
-
-  } // namespace ui
 } // namespace nom
 
 #endif // include guard defined

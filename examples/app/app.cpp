@@ -237,14 +237,14 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       gradient.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
       // Initialize our info_box[0] object
-      this->info_box[0] = nom::ui::MessageBox (
+      this->info_box[0] = nom::MessageBox (
                                                 INFO_BOX_ORIGIN_X[0],
                                                 INFO_BOX_ORIGIN_Y[0],
                                                 INFO_BOX_WIDTH[0],
                                                 INFO_BOX_HEIGHT[0],
                                                 // Use the built-in "gray" frame
                                                 // style
-                                                nom::ui::MessageBox::Style::Gray,
+                                                nom::MessageBox::Style::Gray,
                                                 // Use a custom background style
                                                 // object. A copy is made of
                                                 // the object, so forgetting
@@ -257,14 +257,14 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       this->info_box[0].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[0], this->bitmap_font, 12, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] ) );
 
       // Initialize our info_box[1] object
-      this->info_box[1] = nom::ui::MessageBox (
+      this->info_box[1] = nom::MessageBox (
                                                 INFO_BOX_ORIGIN_X[1],
                                                 INFO_BOX_ORIGIN_Y[1],
                                                 INFO_BOX_WIDTH[1],
                                                 INFO_BOX_HEIGHT[1],
                                                 // Use the built-in "gray" frame
                                                 // style
-                                                nom::ui::MessageBox::Style::Gray,
+                                                nom::MessageBox::Style::Gray,
                                                 // Use a custom background style
                                                 // object
                                                 gradient
@@ -574,7 +574,7 @@ NOM_DUMP_VAR(this->sprite.size().y);
     /// Utilize one of nomlib's advanced class object types -- the dialog
     /// message box; this is a part of an interface kit with game interfacing in
     /// mind.
-    nom::ui::MessageBox info_box[2];
+    nom::MessageBox info_box[2];
 
     /// Texture used as a static background image
     nom::Texture background;

@@ -29,7 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/gui/Cursor.hpp"
 
 namespace nom {
-  namespace ui {
 
 Cursor::Cursor ( void ):  locked_ ( false )
 {
@@ -113,6 +112,4 @@ int32 Cursor::move_right ( void )
   return -1; // Do nothing virtual implementation
 }
 
-
-  } // namespace ui
 } // namespace nom

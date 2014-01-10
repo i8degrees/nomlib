@@ -140,9 +140,9 @@ uint Label::width ( void ) const
     return text_width;
   }
 
-  for ( uint32 pos = 0; pos < text_buffer.length(); ++pos )
+  for ( uint32 pos = 0; pos < text_buffer.length() && text_buffer[pos] != '\n'; ++pos )
   {
-    if ( text_buffer[pos] == ' ' )
+    if ( text_buffer[pos] == ' ' ) // ASCII space glyph (32)
     {
       text_width += this->font()->spacing();
 
@@ -152,15 +152,11 @@ uint Label::width ( void ) const
         NOM_DUMP_VAR ( text_buffer[pos] );
         NOM_DUMP_VAR ( text_width );
       #endif
-
     }
-    else if ( text_buffer[pos] == '\n' ) // TODO
+    else // Printable ASCII glyph (33..127)
     {
-      text_width = 0;
-    }
-    else
-    {
-      // Match the offset calculations done in the text rendering
+      // Match the offset calculations done in the text rendering -- hence the
+      // plus one (+1) spacing.
       text_width += this->font()->glyph(text_buffer[pos]).advance + 1;
 
       // Dump each character's table used for calculation
@@ -169,7 +165,6 @@ uint Label::width ( void ) const
         NOM_DUMP_VAR ( text_buffer[pos] );
         NOM_DUMP_VAR ( this->font()->glyph(text_buffer[pos]).advance + 1 );
       #endif
-
     }
   } // end for loop
 
@@ -191,9 +186,18 @@ uint Label::height ( void ) const
     return text_height;
   }
 
+  // Initialize our text string's height to be whatever the font's newline
+  // metric was set to.
+  text_height = this->font()->newline();
+
+  // Calculate the text string's height adding the font's newline metric onto
+  // our text_height counter every time we find a newline character.
+  //
+  // If no newline characters are found, we fall back to returning our
+  // initialized text height value.
   for ( uint32 pos = 0; pos < text_buffer.length(); ++pos )
   {
-    if ( text_buffer[pos] == '\n' )
+    if ( text_buffer[pos] == '\n' ) // Multi-line case
     {
       text_height += this->font()->newline();
 
@@ -204,18 +208,7 @@ uint Label::height ( void ) const
         NOM_DUMP_VAR ( text_height );
       #endif
     }
-    else
-    {
-      text_height = this->font()->glyph(text_buffer[pos]).bounds.h;
-
-      // Dump each character's table used for calculation
-      #if defined (NOM_DEBUG_LABEL)
-        NOM_DUMP_VAR ( pos );
-        NOM_DUMP_VAR ( text_buffer[pos] );
-        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[pos]).bounds.h );
-      #endif
-    }
-  }
+  } // end for loop
 
   #if defined (NOM_DEBUG_LABEL)
     NOM_DUMP_VAR ( text_height );

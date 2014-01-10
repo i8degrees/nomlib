@@ -182,15 +182,14 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
 
       this->window[0].set_active();
 
-      // FIXME: if ( this->bitmap_font.load ( RESOURCE_BITMAP_FONT, nom::Color4u(110, 144, 190, 255) ) == false )
-      if ( this->bitmap_font.load ( RESOURCE_BITMAP_FONT, NOM_COLOR4U_MAGENTA ) == false )
+      if ( this->bitmap_font.load ( RESOURCE_BITMAP_FONT ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
         return false;
       }
       // FIXME: this->bitmap_font.resize ( nom::ResizeAlgorithm::scale2x );
 
-      if ( this->bitmap_small_font.load ( RESOURCE_BITMAP_SMALL_FONT, NOM_COLOR4U_MAGENTA ) == false )
+      if ( this->bitmap_small_font.load ( RESOURCE_BITMAP_SMALL_FONT ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_SMALL_FONT );
         return false;

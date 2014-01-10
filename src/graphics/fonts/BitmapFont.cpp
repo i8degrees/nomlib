@@ -115,9 +115,7 @@ bool BitmapFont::set_point_size ( sint size )
   return false; // TODO
 }
 
-bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
-                        bool use_cache
-                      )
+bool BitmapFont::load ( const std::string& filename, bool use_cache )
 {
   // I don't understand why RGBA8888 is necessary here, but it is the only pixel
   // format that I have found that works when we are initializing a
@@ -134,13 +132,15 @@ bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
     return false;
   }
 
-  // TODO: consider using 0, 0 color keying like so:
-  //
   // Set pixel at coordinates 0, 0 to be color keyed (transparent)
-  //uint32 key = this->pages_[0].texture->pixel( 0, 0 );
-  //Color4u ck = nom::pixel ( key, this->pages_[0].texture->pixel_format() );
+  uint32 key = this->pages_[0].texture->pixel( 0, 0 );
+  Color4u colorkey = nom::pixel ( key, this->pages_[0].texture->pixel_format() );
 
-  this->pages_[0].texture->set_colorkey ( colorkey, true );
+  if ( this->pages_[0].texture->set_colorkey ( colorkey, true ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not set color key" );
+    return false;
+  }
 
   // Attempt to build font metrics
   if ( this->build(0) == false )

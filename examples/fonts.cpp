@@ -113,14 +113,14 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
         return false;
       }
 
-      if ( this->bitmap_font.load ( RESOURCE_BITMAP_FONT, NOM_COLOR4U_MAGENTA ) == false )
+      if ( this->bitmap_font.load ( RESOURCE_BITMAP_FONT ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
         return false;
       }
       this->label_bfont.set_font ( this->bitmap_font );
 /*
-      if ( this->bitmap_small_font.load ( RESOURCE_BITMAP_SMALL_FONT, NOM_COLOR4U_MAGENTA ) == false )
+      if ( this->bitmap_small_font.load ( RESOURCE_BITMAP_SMALL_FONT ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_SMALL_FONT );
         return false;

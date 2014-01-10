@@ -106,13 +106,8 @@ class BitmapFont: public IFont
     /// \remarks Not implemented
     bool set_point_size ( sint size );
 
-    /// Loads a new bitmap font from a file
-    ///
-    /// \todo Add spacing / padding so that we can export with black guidelines
-    bool load (
-                const std::string& filename, const Color4u& colorkey,
-                bool use_cache = false
-              );
+    /// \brief Loads a new bitmap font from a file
+    bool load ( const std::string& filename, bool use_cache = false );
 
     /// \brief Obtain information about the loaded font
     struct FontMetrics metrics ( void ) const;

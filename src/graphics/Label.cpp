@@ -406,6 +406,8 @@ void Label::draw ( RenderTarget target ) const
   int x_offset = this->position().x;
   int y_offset = this->position().y;
 
+  double angle = 0;
+
   std::string text_buffer = this->text();
 
   // No font has been loaded -- nothing to draw!
@@ -413,6 +415,11 @@ void Label::draw ( RenderTarget target ) const
   {
     NOM_LOG_ERR( NOM, "Invalid label font" );
     return;
+  }
+
+  if ( this->style() == Label::Style::Italic )
+  {
+    angle = 12; // 12 degrees as per SDL2_ttf
   }
 
   for ( uint32 pos = 0; pos < text_buffer.length(); pos++ )
@@ -439,7 +446,8 @@ void Label::draw ( RenderTarget target ) const
 
       this->texture_.set_position ( Point2i ( x_offset, y_offset ) );
       this->texture_.set_bounds ( this->font()->glyph(ascii, this->text_size() ).bounds );
-      this->texture_.draw ( target.renderer() );
+
+      this->texture_.draw ( target.renderer(), angle );
 
       // Move over the width of the character with one pixel of padding
       x_offset += ( this->font()->glyph(ascii, this->text_size() ).advance ) + 1;
@@ -478,17 +486,32 @@ void Label::update ( void )
   // No font has been loaded -- nothing to draw!
   if ( this->valid() == false ) return;
 
-  //this->font_->update();
   switch ( style_ )
   {
-    default: break;
+    default:
+    case Label::Style::Regular: /* Do nothing */ break; // Default
 
-    case Label::Style::Regular:
     case Label::Style::Bold:
+    {
+      if ( this->type() == IFont::FontType::BitmapFont )
+      {
+        NOM_LOG_ERR ( NOM, "nom::BitmapFont does not support nom::Label::Style::Bold." );
+        break;
+      }
+
+      // TODO: Bold logic
+      break;
+    }
+
     case Label::Style::Italic:
-    case Label::Style::Underlined:
-      // Do nothing stub
+     // This style is handled in Label's draw method
     break;
+
+    case Label::Style::Underlined:
+    {
+      // TODO: Underline logic
+      break;
+    }
   } // end switch
 }
 

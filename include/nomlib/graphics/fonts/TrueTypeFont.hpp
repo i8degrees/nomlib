@@ -101,9 +101,7 @@ class TrueTypeFont: public IFont
     ///
     /// Refer to the SDL_ttf documentation for file formats supported. As of
     /// this writing, TTF and FON file formats are known to be supported.
-    bool load ( const std::string& filename, const Color4u& colorkey,
-                bool use_cache = false
-              );
+    bool load ( const std::string& filename, bool use_cache = false );
 
   private:
     /// Trigger a rebuild of the font metrics from the current font; this
@@ -150,12 +148,6 @@ class TrueTypeFont: public IFont
 
     /// Font point size
     sint point_size_;
-
-    /// Store the file path so we can change font sizes on the fly
-    std::string filename_;
-
-    /// Whether or not to use caching features of nom::ObjectCache
-    bool use_cache_;
 
     /// General font metric data, such as the proper value for newline spacing
     struct FontMetrics metrics_;

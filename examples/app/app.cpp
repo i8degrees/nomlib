@@ -187,7 +187,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
         return false;
       }
 
-      if ( this->truetype_font.load ( RESOURCE_TRUETYPE_FONT, NOM_COLOR4U_WHITE ) == false )
+      if ( this->truetype_font.load ( RESOURCE_TRUETYPE_FONT ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
         return false;

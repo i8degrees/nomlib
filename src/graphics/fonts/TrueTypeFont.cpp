@@ -34,8 +34,7 @@ TrueTypeFont::TrueTypeFont ( void ) :
   type_ ( IFont::FontType::TrueTypeFont ),
   sheet_width_ ( 16 ),  // Arbitrary; based on nom::BitmapFont
   sheet_height_ ( 16 ), // Arbitrary; based on nom::BitmapFont
-  point_size_ ( 14 ), // Terrible Eyesight (TM)
-  use_cache_ ( false )
+  point_size_ ( 14 )    // Terrible Eyesight (TM)
 {
   NOM_LOG_TRACE ( NOM );
 }
@@ -52,8 +51,6 @@ TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy ) :
   font_ { copy.font_ },
   pages_ { copy.pages() },
   point_size_ { copy.point_size() },
-  filename_ { copy.filename_ },
-  use_cache_ { copy.use_cache_ },
   metrics_ { copy.metrics() }
 {
   //
@@ -154,9 +151,7 @@ const Glyph& TrueTypeFont::glyph ( uint32 codepoint, uint32 character_size ) con
 */
 }
 
-bool TrueTypeFont::load ( const std::string& filename, const Color4u& colorkey,
-                          bool use_cache
-                        )
+bool TrueTypeFont::load ( const std::string& filename, bool use_cache )
 {
   this->font_ = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), this->point_size() ), priv::TTF_FreeFont );
 
@@ -165,12 +160,6 @@ bool TrueTypeFont::load ( const std::string& filename, const Color4u& colorkey,
 NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
     return false;
   }
-
-  // Store the new filename & caching choice for future reference; primarily
-  // used when rebuilding font metrics, such as when we change the font point
-  // size or load a new font.
-  this->filename_ = filename;
-  this->use_cache_ = use_cache;
 
   // Attempt to build font metrics
   if ( this->build() == false )

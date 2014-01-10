@@ -319,13 +319,6 @@ bool TrueTypeFont::build ( uint32 character_size )
       blit.h = -1; // Why -1 ???
       glyph_image.draw( this->pages_[0].texture->image(), blit );
 
-      //this->pages_[0].texture->set_alpha(255);
-      //this->pages_[0].texture->set_blend_mode(SDL_BLENDMODE_BLEND);
-
-      // Turn color key transparency on so we are not left with a black,
-      // AKA non-transparent background.
-      this->pages_[0].texture->set_colorkey ( NOM_COLOR4U_BLACK, true );
-
       // Dump all of the rendered glyphs as a series of image files -- the
       // filenames will be the ASCII numeric values. The output should consist
       // of individual glyph files, at whatever font scale previously loaded.
@@ -339,6 +332,10 @@ bool TrueTypeFont::build ( uint32 character_size )
       #endif
     } // end if glyph is provided
   } // end for glyphs loop
+
+  // Turn color key transparency on so we are not left with a black,
+  // AKA non-transparent background.
+  this->pages_[0].texture->set_colorkey ( NOM_COLOR4U_BLACK, true );
 
   // Export the destination texture -- this should be a texture sheet that we
   // can render from within the nom::Label class.
@@ -418,23 +415,28 @@ const IntRect TrueTypeFont::glyph_rect ( FontPage& page, int width, int height )
     best_ratio = ratio;
   }
 
-  // If we didn't find a matching row, create a new one (10% taller than the glyph)
+  // If we didn't find a matching row, create a new one
+  // (10% taller than the glyph)
   if ( ! row )
   {
     int row_height = height + height / 10;
-    while ( page.next_row + row_height >= page.texture->height() )
+    if ( page.next_row + row_height >= page.texture->height() )
     {
       // Not enough space: resize the texture if possible
       uint texture_width  = page.texture->width();
       uint texture_height = page.texture->height();
-      if ( ( texture_width * 2 <= Texture::maximum_size().x )
-           && ( texture_height * 2 <= Texture::maximum_size().y ) )
+      if  (
+            ( texture_width * 2 <= Texture::maximum_size().x )
+            &&
+            ( texture_height * 2 <= Texture::maximum_size().y )
+          )
       {
         // Make the texture 2 times bigger
-        NOM_LOG_ERR(NOM,"WATCH OUT -- texture rescaling is 50/50 chance of working");
         Image sheet;
         sheet.initialize ( Point2i( texture_width * 2, texture_height * 2 ) );
-        sheet.draw ( page.texture->image(), IntRect(0,0,-1,-1) );
+        page.texture->draw ( sheet.image(), IntRect(0, 0, -1, -1) );
+        //sheet.save_png("src.png");
+        page.texture->initialize ( sheet.image() );
       }
       else
       {

@@ -120,9 +120,10 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
 bool Image::initialize ( SDL_SURFACE::RawPtr source )
 {
-  //if ( this->valid() == true ) this->image_.reset();
-  this->image_.reset ( buffer, priv::FreeSurface );
-  this->image_.reset( source, priv::FreeSurface );
+  // Discover the optimal pixel format using gathered device capabilities
+  RendererInfo caps = Window::caps( Window::context() );
+
+  this->image_.reset ( SDL_ConvertSurfaceFormat ( source, caps.optimal_texture_format(), 0 ), priv::FreeSurface );
 
   if ( this->valid() == false )
   {
@@ -142,15 +143,14 @@ bool Image::initialize ( const Point2i& size )
   uint32 alpha_mask = 0;
   RendererInfo caps = Window::caps( Window::context() );
 
-  // We need ARGB pixel ordering in order to save the bitmap to disk correctly;
-  // otherwise the colors are out of order!
+  // Find the most optimal pixel format for our new object to be initialized with;
+  // let SDL handle figuring out the correct color masks
   if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( caps.optimal_texture_format(), &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
   {
     NOM_LOG_ERR( NOM, SDL_GetError() );
     return false;
   }
 
-  // Let SDL handle figuring out the color masks
   if ( this->initialize ( size.x, size.y, bpp, red_mask, green_mask, blue_mask, alpha_mask ) == false )
   {
     NOM_LOG_ERR(NOM,"Could not initialize Image from dimensions:" );

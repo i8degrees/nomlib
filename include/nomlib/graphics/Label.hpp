@@ -60,8 +60,7 @@ class Label: public Transformable
       Regular = 1, // Default
       Bold = 2,
       Italic = 4,
-      Underlined = 8,
-      Faded = 16
+      Underlined = 8
     };
 
     /// Text alignment choices (pick one).

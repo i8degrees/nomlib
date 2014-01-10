@@ -147,12 +147,14 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
       this->label_bfont.set_text ( RESOURCE_FONT_TEXT_STRING );
       this->label_bfont.set_color ( NOM_COLOR4U_WHITE );
 
-      //this->label_bfont.set_style ( nom::Label::FontStyle::Faded );
       this->label_bfont.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
       this->label_tfont.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
 
       this->label_tfont.set_text ( RESOURCE_FONT_TEXT_STRING );
 
+      // What was previously internally known as nom::Label::FontStyle::Faded
+      //this->label_bfont.set_color ( nom::Color4u(195,209,228) );
+      //this->label_tfont.set_color ( nom::Color4u(195,209,228) );
       return true;
     } // onInit
 

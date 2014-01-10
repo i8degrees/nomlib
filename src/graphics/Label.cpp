@@ -498,16 +498,6 @@ void Label::update ( void )
     case FontStyle::Underlined:
       // Do nothing stub
     break;
-
-    /// Text effect utilizing alpha channels for the appearance of gray text
-    case FontStyle::Faded:
-    {
-      if ( this->texture_.set_alpha ( 150 ) == true )
-      {
-        this->style_ = Label::FontStyle::Faded;
-      }
-      break;
-    }
   } // end switch
 }
 

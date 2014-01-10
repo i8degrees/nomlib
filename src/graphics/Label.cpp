@@ -72,18 +72,6 @@ Label& Label::operator = ( const Label& other )
   return *this;
 }
 
-Label::Label ( const IFont& font )  :
-  Transformable { 0, 0, 0, 0 }, // Our inherited class
-  text_size_ ( 14 ),
-  color_ ( NOM_COLOR4U_WHITE ),
-  style_ ( Label::FontStyle::Regular ),
-  alignment_ ( Label::TextAlignment::TopLeft )
-{
-  NOM_LOG_TRACE ( NOM );
-
-  this->set_font ( font );
-}
-
 Label::Label  ( const std::string& text,
                 const IFont& font,
                 uint character_size,

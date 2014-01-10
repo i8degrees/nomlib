@@ -97,9 +97,6 @@ class Label: public Transformable
     /// Copy assignment overload
     Label& operator = ( const Label& other );
 
-    /// Construct a label, initializing it with a font (deriving from IFont)
-    Label ( const IFont& font );
-
     /// Construct a label, initializing it with a text string, an IFont
     /// reference, character size and text alignment.
     Label ( const std::string& text,

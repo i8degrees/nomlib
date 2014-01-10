@@ -96,9 +96,16 @@ sint TrueTypeFont::point_size ( void ) const
   return this->point_size_;
 }
 
-int TrueTypeFont::newline ( uint32 character_size ) const
+int TrueTypeFont::newline ( uint32 character_size ) /*const*/
 {
-  return this->metrics_.newline;
+  if ( this->valid() == true && this->set_point_size ( character_size ) )
+  {
+    return this->metrics_.newline;
+  }
+  else
+  {
+    return 0;
+  }
 }
 
 sint TrueTypeFont::kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) const
@@ -106,7 +113,7 @@ sint TrueTypeFont::kerning ( uint32 first_char, uint32 second_char, uint32 chara
   return -1; // TODO
 }
 
-void TrueTypeFont::set_point_size ( sint size )
+bool TrueTypeFont::set_point_size ( sint size )
 {
   // Expensive method call
   if ( this->point_size() != size )
@@ -120,9 +127,13 @@ void TrueTypeFont::set_point_size ( sint size )
     {
       NOM_LOG_ERR ( NOM, "Could not set new point size." );
       this->point_size_ = original_font_size;
-      return;
+      return false;
     }
+
+    return true;
   }
+
+  return true;
 }
 
 const Glyph& TrueTypeFont::glyph ( uint32 codepoint, uint32 character_size ) const

@@ -89,9 +89,12 @@ class TrueTypeFont: public IFont
 
     sint point_size ( void ) const;
 
-    /// Obtain text character spacing height offsets in pixels; defaults to
-    /// variable calculations made within Load method
-    sint newline ( uint32 character_size ) const;
+    /// \brief Obtain font's line spacing
+    ///
+    /// \param size Point size in pixels
+    ///
+    /// \returns  Height offset in pixels
+    sint newline ( uint32 character_size ) /*const*/;
 
     sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) const;
 
@@ -102,7 +105,7 @@ class TrueTypeFont: public IFont
     /// \param size Point size in pixels
     ///
     /// \remarks This is an expensive method call; every glyph must be re-built
-    void set_point_size ( sint size );
+    bool set_point_size ( sint size );
 
     /// \brief Load a new font in from a file.
     ///
@@ -193,5 +196,4 @@ class TrueTypeFont: public IFont
 /// * http://chanae.walon.org/pub/ttf/ttf_glyphs.htm
 /// * SFML's sf::Font class
 ///
-/// \todo Convert SDL2_TTF calls over to FreeType2 so we can implement font
-/// kerning
+/// \todo Implement font kerning (see undocumented TTF_GetFontKerningSize)

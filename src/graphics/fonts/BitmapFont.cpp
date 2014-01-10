@@ -85,7 +85,7 @@ sint BitmapFont::spacing ( uint32 character_size ) const
   return this->pages_[0].glyphs[65].advance; // 'A' ASCII character
 }
 
-sint BitmapFont::newline ( uint32 character_size ) const
+sint BitmapFont::newline ( uint32 character_size ) /*const*/
 {
   return this->metrics_.newline;
 }
@@ -115,9 +115,9 @@ const Glyph& BitmapFont::glyph ( uint32 codepoint, uint32 character_size ) const
   }
 */
 
-void BitmapFont::set_point_size ( sint size )
+bool BitmapFont::set_point_size ( sint size )
 {
-  return; // TODO
+  return false; // TODO
 }
 
 bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,

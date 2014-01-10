@@ -80,9 +80,12 @@ class BitmapFont: public IFont
     ///         applied when the space carriage is encountered when rendered.
     sint spacing ( uint32 character_size ) const;
 
-    /// Obtain text character spacing height offsets in pixels; defaults to
-    /// variable calculations made within Load method
-    sint newline ( uint32 character_size ) const;
+    /// \brief Obtain font's line spacing
+    ///
+    /// \param size Point size in pixels
+    ///
+    /// \returns  Height offset in pixels
+    sint newline ( uint32 character_size ) /*const*/;
 
     sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) const;
 
@@ -97,7 +100,7 @@ class BitmapFont: public IFont
     /// \param size Point size in pixels
     ///
     /// \remarks Not yet implemented
-    void set_point_size ( sint size );
+    bool set_point_size ( sint size );
 
     /// Loads a new bitmap font from a file
     ///

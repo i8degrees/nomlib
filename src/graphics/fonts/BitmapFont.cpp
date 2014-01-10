@@ -164,12 +164,12 @@ bool BitmapFont::build ( uint32 character_size )
   uint32 current_char = 0; // counter
   uint32 background_color = 0;
 
-  // GlyphPage to be filled in (indexed by character_size)
-  //FontPage& page;
+  FontPage& page = this->pages_[character_size];  // Our font's current glyph
+                                                  // page
 
-  NOM_ASSERT ( this->pages_[0].texture->valid() );
+  NOM_ASSERT ( page.texture->valid() );
 
-  if ( this->pages_[0].texture->lock() == false )
+  if ( page.texture->lock() == false )
   {
     NOM_LOG_ERR ( NOM, "Could not lock surface." );
     return false;
@@ -179,12 +179,12 @@ bool BitmapFont::build ( uint32 character_size )
   // pixel color we filter out (ignore) -- any other pixel color becomes part
   // of our glyph atlas.
   background_color = RGBA (
-                            this->pages_[0].texture->colorkey(),
-                            this->pages_[0].texture->pixel_format()
+                            page.texture->colorkey(),
+                            page.texture->pixel_format()
                           );
 
-  tile_width = this->pages_[0].texture->width() / this->sheet_width();
-  tile_height = this->pages_[0].texture->height() / this->sheet_height();
+  tile_width = page.texture->width() / this->sheet_width();
+  tile_height = page.texture->height() / this->sheet_height();
 
   top = tile_height;
   base = tile_height;
@@ -194,10 +194,10 @@ bool BitmapFont::build ( uint32 character_size )
     for ( int32 cols = 0; cols < this->sheet_height(); cols++ )
     {
       // Initialize the glyph offsets
-      this->pages_[0].glyphs[current_char].bounds.x = tile_width * cols;
-      this->pages_[0].glyphs[current_char].bounds.y = tile_height * rows;
-      this->pages_[0].glyphs[current_char].bounds.w = tile_width;
-      this->pages_[0].glyphs[current_char].bounds.h = tile_height;
+      page.glyphs[current_char].bounds.x = tile_width * cols;
+      page.glyphs[current_char].bounds.y = tile_height * rows;
+      page.glyphs[current_char].bounds.w = tile_width;
+      page.glyphs[current_char].bounds.h = tile_height;
 
       //Find the left side of the glyph
       for ( int pCol = 0; pCol < tile_width; pCol++ )
@@ -209,10 +209,10 @@ bool BitmapFont::build ( uint32 character_size )
           uint32 pY = ( tile_height * rows ) + pRow;
 
           // Bingo -- a match is found (non-mask pixel color)
-          if( this->pages_[0].texture->pixel ( pX, pY ) != background_color )
+          if( page.texture->pixel ( pX, pY ) != background_color )
           {
             //Set the x offset
-            this->pages_[0].glyphs[current_char].bounds.x = pX;
+            page.glyphs[current_char].bounds.x = pX;
 
             //Break the loops
             pCol = tile_width;
@@ -231,10 +231,10 @@ bool BitmapFont::build ( uint32 character_size )
           uint32 pY = ( tile_height * rows ) + pRow_w;
 
           // Bingo -- a match is found (non-mask pixel color)
-          if ( this->pages_[0].texture->pixel ( pX, pY ) != background_color )
+          if ( page.texture->pixel ( pX, pY ) != background_color )
           {
             //Set the width
-            this->pages_[0].glyphs[current_char].bounds.w = ( pX - this->pages_[0].glyphs[current_char].bounds.x ) + 1;
+            page.glyphs[current_char].bounds.w = ( pX - page.glyphs[current_char].bounds.x ) + 1;
 
             //Break the loops
             pCol_w = -1;
@@ -253,7 +253,7 @@ bool BitmapFont::build ( uint32 character_size )
           uint32 pY = ( tile_height * rows ) + pRow;
 
           // Bingo -- a match is found (non-mask pixel color)
-          if( this->pages_[0].texture->pixel ( pX, pY ) != background_color )
+          if( page.texture->pixel ( pX, pY ) != background_color )
           {
             // If new top is found
             if ( pRow < top )
@@ -269,7 +269,7 @@ bool BitmapFont::build ( uint32 character_size )
       }
 
       // Calculate character spacing
-      this->pages_[0].glyphs[current_char].advance = this->pages_[0].glyphs[current_char].bounds.w;
+      page.glyphs[current_char].advance = page.glyphs[current_char].bounds.w;
 
       // Calculate baseline from chosen glyph
       if ( current_char == baseline_glyph )
@@ -283,7 +283,7 @@ bool BitmapFont::build ( uint32 character_size )
             uint32 pY = ( tile_height * rows ) + pRow;
 
             // Bingo -- a match is found (non-mask pixel color)
-            if ( this->pages_[0].texture->pixel ( pX, pY ) != background_color )
+            if ( page.texture->pixel ( pX, pY ) != background_color )
             {
               // Bottom of a is found
               base = pRow;
@@ -298,7 +298,8 @@ bool BitmapFont::build ( uint32 character_size )
       current_char++;
     } // end sheet height loop
   } // end sheet width loop
-  this->pages_[0].texture->unlock(); // Finished messing with pixels
+
+  page.texture->unlock(); // Finished messing with pixels
 
   // Calculate new line by subtracting the baseline of the "chosen glyph"
   // from the bitmap's ascent.
@@ -309,8 +310,8 @@ bool BitmapFont::build ( uint32 character_size )
   // Loop off excess top pixels
   for ( uint32 top_pixels = 0; top_pixels < current_char; ++top_pixels )
   {
-    this->pages_[0].glyphs[top_pixels].bounds.y += top;
-    this->pages_[0].glyphs[top_pixels].bounds.h -= top;
+    page.glyphs[top_pixels].bounds.y += top;
+    page.glyphs[top_pixels].bounds.h -= top;
   }
 
   // Dump table of calculated bitmap character positions
@@ -320,10 +321,10 @@ bool BitmapFont::build ( uint32 character_size )
     for ( uint32 glyph = 0; glyph < current_char; ++glyph )
     {
       NOM_DUMP_VAR ( glyph );
-      NOM_DUMP_VAR ( this->pages_[0].glyphs[glyph].bounds.x );
-      NOM_DUMP_VAR ( this->pages_[0].glyphs[glyph].bounds.y );
-      NOM_DUMP_VAR ( this->pages_[0].glyphs[glyph].bounds.w );
-      NOM_DUMP_VAR ( this->pages_[0].glyphs[glyph].bounds.h );
+      NOM_DUMP_VAR ( page.glyphs[glyph].bounds.x );
+      NOM_DUMP_VAR ( page.glyphs[glyph].bounds.y );
+      NOM_DUMP_VAR ( page.glyphs[glyph].bounds.w );
+      NOM_DUMP_VAR ( page.glyphs[glyph].bounds.h );
     }
   #endif
 

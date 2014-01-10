@@ -46,10 +46,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Window.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
-/// Dump glyph bounding coordinates & output destination sheet as a PNG
+/// Dump glyph bounding coordinates & save source, destination sheets as PNG
+/// files
 //#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS
 
-/// Dump the individual glyph bitmaps
+/// Dump the individual glyph bitmaps as PNG files
 //#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS_PNG
 
 namespace nom {
@@ -65,10 +66,6 @@ class TrueTypeFont: public IFont
     TrueTypeFont ( void );
 
     /// Default destructor; we shutdown the SDL_ttf extension here
-    ///
-    /// \FIXME Resetting the font pointer is a temporary workaround patch;
-    /// SDL_App destructs long before TrueTypeFont does in TTcards, which
-    /// doesn't allow us to free our font resources here properly.
     ~TrueTypeFont ( void );
 
     /// Copy constructor
@@ -173,9 +170,6 @@ class TrueTypeFont: public IFont
 ///
 ///   [TO BE WRITTEN]
 ///
-/// \todo Re-write the class to render fonts from a cached nom::Texture source,
-/// much like we do in nom::BitmapFont or nom::SpriteBatch.
-///
 /// ## REFERENCES
 ///
 /// * http://freetype.sourceforge.net/freetype2/docs/tutorial/step2.html
@@ -183,3 +177,5 @@ class TrueTypeFont: public IFont
 /// * http://chanae.walon.org/pub/ttf/ttf_glyphs.htm
 /// * SFML's sf::Font class
 ///
+/// \todo Convert SDL2_TTF calls over to FreeType2 so we can implement font
+/// kerning

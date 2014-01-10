@@ -123,47 +123,6 @@ NOM_LOG_ERR ( NOM, "Could not set new font size." );
 */
 
 /*
-void TrueTypeFont::setFontStyle ( int32 style, uint8 options )
-{
-  switch ( style )
-  {
-    default: break;
-    case FontStyle::Regular:
-    {
-      TTF_SetFontStyle ( this->font.get(), TTF_STYLE_NORMAL );
-    }
-    break;
-
-    case FontStyle::Bold:
-    {
-      TTF_SetFontStyle ( this->font.get(), TTF_STYLE_BOLD );
-    }
-    break;
-
-    case FontStyle::Italic:
-    {
-      TTF_SetFontStyle ( this->font.get(), TTF_STYLE_ITALIC );
-    }
-    break;
-
-    case FontStyle::Underlined:
-    {
-      TTF_SetFontStyle ( this->font.get(), TTF_STYLE_UNDERLINE );
-    }
-    break;
-
-    /// Text effect utilizing alpha channels for the appearance of gray text
-    case FontStyle::Faded:
-    {
-      this->text_style = FontStyle::Faded;
-      this->style_options = options;
-    break;
-    }
-  }
-}
-*/
-
-/*
 int32 TrueTypeFont::getFontOutline ( void ) const
 {
   return TTF_GetFontOutline ( this->font.get() );
@@ -225,23 +184,24 @@ NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
 
 bool TrueTypeFont::build ( uint32 character_size )
 {
-  int ret = 0; // Error code
-  uint16 ascii_char; // Integer type expected by SDL2_ttf
-  const uint32 starting_glyph = 32; // space character
-  const uint32 ending_glyph = 127; // tilde character
+  int ret = 0;                      // Error code
+  uint16 ascii_char;                // Integer type expected by SDL2_ttf
+  const uint32 starting_glyph = 32; // Space character
+  const uint32 ending_glyph = 127;  // Tilde character
 
   // Glyph metrics
-  int advance = 0; // spacing in between characters separated by a space char
-  int glyph_width = 0; // glyph's width in pixels
-  int glyph_height = 0; // glyph's height in pixels
+  int advance = 0;      // Spacing between characters
+  int glyph_width = 0;  // Glyph's width in pixels
+  int glyph_height = 0; // Glyph's height in pixels
 
   // Texture sheet calculations
   int padding = 1;
   int spacing = 2;
 
-  Image glyph_image; // Raster bitmap of a glyph
-  IntRect blit; // rendering bounding coordinates
-  //FontPage& page = this->pages_[0]; // our font's glyph page
+  Image glyph_image;                              // Raster bitmap of a glyph
+  IntRect blit;                                   // Rendering bounding coords
+  FontPage& page = this->pages_[character_size];  // Our font's current glyph
+                                                  // page
 
   if ( this->valid() == false )
   {
@@ -249,11 +209,12 @@ bool TrueTypeFont::build ( uint32 character_size )
     return false;
   }
 
+  // Our starting sheet size (we will allocate a larger sheet size if needed)
   const Point2i sheet_size =  Point2i ( sheet_width() * sheet_height(), // 256
                                         sheet_width() * sheet_height()  // 256
                                       );
 
-  this->pages_[0].texture->initialize ( sheet_size );
+  page.texture->initialize ( sheet_size );
 
   // ASCII 32..127 is the standard glyph set -- 94 printable characters;
   //
@@ -261,7 +222,7 @@ bool TrueTypeFont::build ( uint32 character_size )
   // 65 = 'A'
   // 122 = 'z'
   // 126 = '~' (tilde)
-  //
+
   // glyph < sheet_width() * sheet_height() = 256 glyphs
   for ( uint32 glyph = starting_glyph; glyph < ending_glyph; ++glyph )
   {
@@ -297,11 +258,13 @@ bool TrueTypeFont::build ( uint32 character_size )
         NOM_LOG_ERR ( NOM, TTF_GetError() );
         return false;
       }
-      this->pages_[0].glyphs[glyph].advance = advance;
+      page.glyphs[glyph].advance = advance;
 
       // Calculate the best packing of the glyph, so that we are able to fit
-      // everything on the sheet without overlap, etc.
-      this->pages_[0].glyphs[glyph].bounds = this->glyph_rect ( this->pages_[0], glyph_width + spacing * padding, glyph_height + spacing * padding );
+      // everything on the sheet without overlaps; if we cannot fit all of our
+      // glyphs onto the default sheet dimensions, we allocate a larger sheet
+      // size.
+      page.glyphs[glyph].bounds = this->glyph_rect ( page, glyph_width + spacing * padding, glyph_height + spacing * padding );
 
       #if defined(NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS)
         NOM_DUMP_VAR(glyph); // integer position
@@ -310,14 +273,13 @@ bool TrueTypeFont::build ( uint32 character_size )
         NOM_DUMP_VAR(advance); // spacing
       #endif
 
-      // Prepare the rendering coordinates for writing the glyph our texture map
       // Prepare the coordinates for rendering a glyph onto our texture sheet
       // we are creating.
-      blit.x = this->pages_[0].glyphs[glyph].bounds.x;
-      blit.y = this->pages_[0].glyphs[glyph].bounds.y;
+      blit.x = page.glyphs[glyph].bounds.x;
+      blit.y = page.glyphs[glyph].bounds.y;
       blit.w = -1; // Why -1 ???
       blit.h = -1; // Why -1 ???
-      glyph_image.draw( this->pages_[0].texture->image(), blit );
+      glyph_image.draw( page.texture->image(), blit );
 
       // Dump all of the rendered glyphs as a series of image files -- the
       // filenames will be the ASCII numeric values. The output should consist
@@ -335,19 +297,19 @@ bool TrueTypeFont::build ( uint32 character_size )
 
   // Turn color key transparency on so we are not left with a black,
   // AKA non-transparent background.
-  this->pages_[0].texture->set_colorkey ( NOM_COLOR4U_BLACK, true );
+  page.texture->set_colorkey ( NOM_COLOR4U_BLACK, true );
 
   // Export the destination texture -- this should be a texture sheet that we
-  // can render from within the nom::Label class.
+  // expect to be able to render from within the nom::Label class.
   #if defined(NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS)
     // We intentionally flip color keying off here temporarily so that our eyes
     // have an easier time.
     //
     // You'll may want to leave color keying on if you are interested in using
     // these bitmap glyphs for anything else!
-    this->pages_[0].texture->set_colorkey ( NOM_COLOR4U_BLACK, false );
-    this->pages_[0].texture->save_png("ttf_dest.png");
-    this->pages_[0].texture->set_colorkey ( NOM_COLOR4U_BLACK, true );
+    page.texture->set_colorkey ( NOM_COLOR4U_BLACK, false );
+    page.texture->save_png("ttf_dest.png");
+    page.texture->set_colorkey ( NOM_COLOR4U_BLACK, true );
   #endif
 
   // Build up our font-wide metrics
@@ -357,6 +319,7 @@ bool TrueTypeFont::build ( uint32 character_size )
     return false;
   }
 
+  // Save global font metrics
   this->metrics_.height = TTF_FontHeight ( this->font() );
   this->metrics_.newline = TTF_FontLineSkip ( this->font() );
   this->metrics_.ascent = TTF_FontAscent ( this->font() );
@@ -383,7 +346,6 @@ sint TrueTypeFont::sheet_height ( void ) const
 
 const IntRect TrueTypeFont::glyph_rect ( FontPage& page, int width, int height ) const
 {
-  //std::unique_ptr<FontRow> row;
   FontRow* row = nullptr;
   float best_ratio = 0;
 
@@ -435,7 +397,9 @@ const IntRect TrueTypeFont::glyph_rect ( FontPage& page, int width, int height )
         Image sheet;
         sheet.initialize ( Point2i( texture_width * 2, texture_height * 2 ) );
         page.texture->draw ( sheet.image(), IntRect(0, 0, -1, -1) );
-        //sheet.save_png("src.png");
+        #if defined(NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS)
+          sheet.save_png("ttf_src.png");
+        #endif
         page.texture->initialize ( sheet.image() );
       }
       else

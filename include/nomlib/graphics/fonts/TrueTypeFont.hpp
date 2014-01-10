@@ -62,19 +62,23 @@ class TrueTypeFont: public IFont
     typedef TrueTypeFont* RawPtr;
     typedef std::shared_ptr<TrueTypeFont> SharedPtr;
 
-    /// Default constructor; we initialize the SDL_ttf extension here
+    /// \brief Default constructor
+    ///
+    /// \remarks The SDL2_TTF extension must be initialized; see nom::init
     TrueTypeFont ( void );
 
-    /// Default destructor; we shutdown the SDL_ttf extension here
+    /// \brief Destructor
+    ///
+    /// \remarks The SDL2_TTF extension should be shutdown using nom::quit
     ~TrueTypeFont ( void );
 
-    /// Copy constructor
+    /// \brief Copy constructor
     TrueTypeFont ( const TrueTypeFont& copy );
 
-    /// Construct an new, identical instance from the existing
+    /// \brief Construct a clone of the existing instance
     IFont::SharedPtr clone ( void ) const;
 
-    /// Is this object initialized -- not nullptr?
+    /// \brief Validity check
     bool valid ( void ) const;
 
     enum IFont::FontType type ( void ) const;
@@ -83,21 +87,29 @@ class TrueTypeFont: public IFont
 
     SDL_SURFACE::RawPtr image ( uint32 character_size ) const;
 
-    /// \brief  Obtain text character spacing width in pixels -- the width
-    ///         applied when the space carriage is encountered when rendered.
+    /// \brief Obtain text character spacing width in pixels
+    ///
+    /// \returns  The width applied when the space carriage is encountered when
+    ///           rendered.
     sint spacing ( uint32 character_size ) const;
 
     sint point_size ( void ) const;
 
     /// \brief Obtain font's line spacing
     ///
-    /// \param size Point size in pixels
+    /// \param character_size Point size in pixels
     ///
     /// \returns  Height offset in pixels
     sint newline ( uint32 character_size ) /*const*/;
 
     sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) /*const*/;
 
+    /// \brief Obtain a glyph
+    ///
+    /// \param    codepoint        ASCII character to lookup
+    /// \param    character_size   Reserved for future implementation
+    ///
+    /// \returns  nom::Glyph structure
     const Glyph& glyph ( uint32 codepoint, uint32 character_size ) const;
 
     /// \brief Obtain font's outline size
@@ -121,19 +133,20 @@ class TrueTypeFont: public IFont
     /// \remarks This is an expensive method call; every glyph must be re-built!
     bool set_outline ( int outline );
 
-    /// \brief Load a new font in from a file.
+    /// \brief Load a new TrueType font from a file.
     ///
-    /// Refer to the SDL_ttf documentation for file formats supported. As of
-    /// this writing, TTF and FON file formats are known to be supported.
+    /// \remarks Refer to the SDL_ttf documentation for file formats supported.
+    /// TTF and FON file formats are known to be supported as of this writing.
     bool load ( const std::string& filename, bool use_cache = false );
 
+    /// \brief Obtain information about the loaded font
     struct FontMetrics metrics ( void ) const;
 
   private:
     /// Trigger a rebuild of the font metrics from the current font; this
     /// recalculates character sizes, coordinate origins, spacing, etc.
     ///
-    /// \param character_size   Reserved for future implementation.
+    /// \param character_size Font's point size, in pixels, to build glyphs for
     bool build ( uint32 character_size );
 
     const GlyphPage& pages ( void ) const;

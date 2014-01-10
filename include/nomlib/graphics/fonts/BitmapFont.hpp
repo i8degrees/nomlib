@@ -57,49 +57,53 @@ class BitmapFont: public IFont
     typedef BitmapFont* RawPtr;
     typedef std::shared_ptr<BitmapFont> SharedPtr;
 
-    /// Default constructor
+    /// \brief Default constructor
     BitmapFont ( void );
 
-    /// Default destructor
+    /// \brief Destructor
     ~BitmapFont ( void );
 
-    /// Copy constructor
+    /// \brief Copy constructor
     BitmapFont ( const BitmapFont& copy );
 
-    /// Construct an new, identical instance from the existing
+    /// \brief Construct a clone of the existing instance
     IFont::SharedPtr clone ( void ) const;
 
-    /// Is this object initialized -- not nullptr?
+    /// \brief Validity check
     bool valid ( void ) const;
 
     enum IFont::FontType type ( void ) const;
 
     SDL_SURFACE::RawPtr image ( uint32 character_size ) const;
 
-    /// \brief  Obtain text character spacing width in pixels -- the width
-    ///         applied when the space carriage is encountered when rendered.
+    /// \brief Obtain text character spacing width in pixels
+    ///
+    /// \returns  The width applied when the space carriage is encountered when
+    ///           rendered.
     sint spacing ( uint32 character_size ) const;
 
     /// \brief Obtain font's line spacing
     ///
-    /// \param size Point size in pixels
+    /// \param character_size Point size in pixels
     ///
     /// \returns  Height offset in pixels
     sint newline ( uint32 character_size ) /*const*/;
 
     sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) /*const*/;
 
-    /// Obtain a glyph
+    /// \brief Obtain a glyph
     ///
-    /// \param codepoint        ASCII character to lookup
-    /// \param character_size   Reserved for future implementation
+    /// \param    codepoint        ASCII character to lookup
+    /// \param    character_size   Reserved for future implementation
+    ///
+    /// \returns  nom::Glyph structure
     const Glyph& glyph ( uint32 codepoint, uint32 character_size ) const;
 
     /// \brief Set a new font point size
     ///
     /// \param size Point size in pixels
     ///
-    /// \remarks Not yet implemented
+    /// \remarks Not implemented
     bool set_point_size ( sint size );
 
     /// Loads a new bitmap font from a file
@@ -110,6 +114,7 @@ class BitmapFont: public IFont
                 bool use_cache = false
               );
 
+    /// \brief Obtain information about the loaded font
     struct FontMetrics metrics ( void ) const;
 
   private:

@@ -72,7 +72,7 @@ class IFont
     virtual const Glyph& glyph ( uint32, uint32 ) const = 0;
     virtual sint newline ( uint32 ) /*const*/ = 0;
     virtual sint spacing ( uint32 ) const = 0;
-    virtual sint kerning ( uint32, uint32, uint32 ) const = 0;
+    virtual sint kerning ( uint32, uint32, uint32 ) /*const*/ = 0;
 
     virtual bool set_point_size ( sint ) = 0;
 };

@@ -108,9 +108,19 @@ int TrueTypeFont::newline ( uint32 character_size ) /*const*/
   }
 }
 
-sint TrueTypeFont::kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) const
+sint TrueTypeFont::kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) /*const*/
 {
-  return -1; // TODO
+  // Null character
+  if ( first_char == 0 || second_char == 0 ) return 0;
+
+  if ( this->valid() && TTF_GetFontKerning(this->font()) && this->set_point_size(character_size) )
+  {
+    return TTF_GetFontKerningSize ( this->font(), first_char, second_char );
+  }
+  else
+  {
+    return 0;
+  }
 }
 
 bool TrueTypeFont::set_point_size ( sint size )

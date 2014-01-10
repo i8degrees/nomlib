@@ -45,6 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+/// \todo Implement back-buffer for texture rendering
 class Label: public Transformable
 {
   public:
@@ -57,10 +58,10 @@ class Label: public Transformable
     // result from using this style with a bitmap font.
     enum Style: uint32
     {
-      Regular = 1, // Default
-      Bold = 2,
+      Regular = 1,    // Default
+      Bold = 2,       // Not implemented
       Italic = 4,
-      Underlined = 8
+      Underlined = 8  // Not
     };
 
     /// Text alignment choices (pick one).

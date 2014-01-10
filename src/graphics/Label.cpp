@@ -146,16 +146,22 @@ uint Label::width ( void ) const
     return text_width;
   }
 
+  uint32 previous_char = 0;
   for ( uint32 pos = 0; pos < text_buffer.length() && text_buffer[pos] != '\n'; ++pos )
   {
-    if ( text_buffer[pos] == ' ' ) // ASCII space glyph (32)
+    // Apply kerning offset
+    uint32 current_char = text_buffer[pos];
+    text_width += this->font()->kerning ( previous_char, current_char, this->text_size() );
+    previous_char = current_char;
+
+    if ( current_char == ' ' ) // ASCII space glyph (32)
     {
       text_width += this->font()->spacing ( this->text_size() );
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
         NOM_DUMP_VAR ( pos );
-        NOM_DUMP_VAR ( text_buffer[pos] );
+        NOM_DUMP_VAR ( static_cast<uchar>(current_char) );
         NOM_DUMP_VAR ( text_width );
       #endif
     }
@@ -163,13 +169,13 @@ uint Label::width ( void ) const
     {
       // Match the offset calculations done in the text rendering -- hence the
       // plus one (+1) spacing.
-      text_width += this->font()->glyph(text_buffer[pos], this->text_size() ).advance + 1;
+      text_width += this->font()->glyph(current_char, this->text_size() ).advance + 1;
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
         NOM_DUMP_VAR ( pos );
-        NOM_DUMP_VAR ( text_buffer[pos] );
-        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[pos], this->text_size() ).advance + 1 );
+        NOM_DUMP_VAR ( static_cast<uchar>(current_char) );
+        NOM_DUMP_VAR ( this->font()->glyph(current_char, this->text_size() ).advance + 1 );
       #endif
     }
   } // end for loop
@@ -203,14 +209,16 @@ uint Label::height ( void ) const
   // initialized text height value.
   for ( uint32 pos = 0; pos < text_buffer.length(); ++pos )
   {
-    if ( text_buffer[pos] == '\n' ) // Multi-line case
+    uint32 current_char = text_buffer[pos];
+
+    if ( current_char == '\n' ) // Multi-line case
     {
       text_height += this->font()->newline ( this->text_size() );
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
         NOM_DUMP_VAR ( pos );
-        NOM_DUMP_VAR ( text_buffer[pos] );
+        NOM_DUMP_VAR ( static_cast<uchar>(current_char) );
         NOM_DUMP_VAR ( text_height );
       #endif
     }
@@ -422,35 +430,38 @@ void Label::draw ( RenderTarget target ) const
     angle = 12; // 12 degrees as per SDL2_ttf
   }
 
+  uint32 previous_char = 0;
   for ( uint32 pos = 0; pos < text_buffer.length(); pos++ )
   {
-    if ( text_buffer[pos] == ' ' ) // Space character
+    // Apply kerning offset
+    uint32 current_char = text_buffer[pos];
+    x_offset += this->font()->kerning ( previous_char, current_char, this->text_size() );
+    previous_char = current_char;
+
+    if ( current_char == ' ' ) // Space character
     {
       //Move over
       x_offset += this->font()->spacing ( this->text_size() );
     }
-    else if( text_buffer[pos] == '\n' ) // Newline character
+    else if( current_char == '\n' ) // Newline character
     {
       //Move down and back over to the beginning of line
       y_offset += this->font()->newline ( this->text_size() );
       x_offset = this->position().x;
     }
-    else if( text_buffer[pos] == '\t' ) // Tab character
+    else if( current_char == '\t' ) // Tab character
     {
       x_offset += this->font()->spacing ( this->text_size() );
     }
     else // The time to render is now!
     {
-      //Get the ASCII value of the character
-      uint32 ascii = static_cast<uint32>( text_buffer[pos] );
-
       this->texture_.set_position ( Point2i ( x_offset, y_offset ) );
-      this->texture_.set_bounds ( this->font()->glyph(ascii, this->text_size() ).bounds );
+      this->texture_.set_bounds ( this->font()->glyph(current_char, this->text_size() ).bounds );
 
       this->texture_.draw ( target.renderer(), angle );
 
       // Move over the width of the character with one pixel of padding
-      x_offset += ( this->font()->glyph(ascii, this->text_size() ).advance ) + 1;
+      x_offset += ( this->font()->glyph(current_char, this->text_size() ).advance ) + 1;
     } // end else
   } // end for loop
 }

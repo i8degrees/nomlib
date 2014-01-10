@@ -87,7 +87,7 @@ class BitmapFont: public IFont
     /// \returns  Height offset in pixels
     sint newline ( uint32 character_size ) /*const*/;
 
-    sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) const;
+    sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) /*const*/;
 
     /// Obtain a glyph
     ///

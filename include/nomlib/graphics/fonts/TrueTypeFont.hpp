@@ -96,7 +96,7 @@ class TrueTypeFont: public IFont
     /// \returns  Height offset in pixels
     sint newline ( uint32 character_size ) /*const*/;
 
-    sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) const;
+    sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) /*const*/;
 
     const Glyph& glyph ( uint32 codepoint, uint32 character_size ) const;
 
@@ -196,4 +196,3 @@ class TrueTypeFont: public IFont
 /// * http://chanae.walon.org/pub/ttf/ttf_glyphs.htm
 /// * SFML's sf::Font class
 ///
-/// \todo Implement font kerning (see undocumented TTF_GetFontKerningSize)

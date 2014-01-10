@@ -90,9 +90,9 @@ sint BitmapFont::newline ( uint32 character_size ) /*const*/
   return this->metrics_.newline;
 }
 
-sint BitmapFont::kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) const
+sint BitmapFont::kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) /*const*/
 {
-  return -1; // TODO
+  return 0; // TODO
 }
 
 const Glyph& BitmapFont::glyph ( uint32 codepoint, uint32 character_size ) const

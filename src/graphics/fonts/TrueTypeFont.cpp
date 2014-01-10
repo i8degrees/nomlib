@@ -34,7 +34,7 @@ TrueTypeFont::TrueTypeFont ( void ) :
   type_ ( IFont::FontType::TrueTypeFont ),
   sheet_width_ ( 16 ),  // Arbitrary; based on nom::BitmapFont
   sheet_height_ ( 16 ), // Arbitrary; based on nom::BitmapFont
-  font_size_ ( 14 ), // Terrible Eyesight (TM)
+  point_size_ ( 14 ), // Terrible Eyesight (TM)
   use_cache_ ( false )
 {
   NOM_LOG_TRACE ( NOM );
@@ -51,7 +51,7 @@ TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy ) :
   sheet_height_ { copy.sheet_height() },
   font_ { copy.font_ },
   pages_ { copy.pages() },
-  font_size_ { copy.font_size() },
+  point_size_ { copy.point_size() },
   filename_ { copy.filename_ },
   use_cache_ { copy.use_cache_ },
   metrics_ { copy.metrics() }
@@ -91,9 +91,9 @@ int TrueTypeFont::spacing ( uint32 character_size ) const
   return this->pages_[character_size].glyphs[32].advance;
 }
 
-sint TrueTypeFont::font_size ( void ) const
+sint TrueTypeFont::point_size ( void ) const
 {
-  return this->font_size_;
+  return this->point_size_;
 }
 
 int TrueTypeFont::newline ( uint32 character_size ) const
@@ -158,7 +158,7 @@ bool TrueTypeFont::load ( const std::string& filename, const Color4u& colorkey,
                           bool use_cache
                         )
 {
-  this->font_ = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), this->font_size() ), priv::TTF_FreeFont );
+  this->font_ = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), this->point_size() ), priv::TTF_FreeFont );
 
   if ( this->valid() == false )
   {

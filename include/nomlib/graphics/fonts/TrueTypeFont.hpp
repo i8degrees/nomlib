@@ -87,7 +87,7 @@ class TrueTypeFont: public IFont
     /// by the total image width size.
     sint spacing ( uint32 character_size = 0 ) const;
 
-    sint font_size ( void ) const;
+    sint point_size ( void ) const;
 
     /// Obtain text character spacing height offsets in pixels; defaults to
     /// variable calculations made within Load method
@@ -148,8 +148,8 @@ class TrueTypeFont: public IFont
     /// with corresponding glyphs data.
     mutable GlyphPage pages_;
 
-    /// Font point (pixel) size; defaults to 12
-    sint font_size_;
+    /// Font point size
+    sint point_size_;
 
     /// Store the file path so we can change font sizes on the fly
     std::string filename_;

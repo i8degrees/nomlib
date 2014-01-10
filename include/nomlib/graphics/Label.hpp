@@ -55,7 +55,7 @@ class Label: public Transformable
     ///
     /// \remarks Bold is only available with TrueType fonts. No action will
     // result from using this style with a bitmap font.
-    enum FontStyle: uint32
+    enum Style: uint32
     {
       Regular = 1, // Default
       Bold = 2,
@@ -72,7 +72,7 @@ class Label: public Transformable
     /// most natural, and thus easier to remember and type out.
     ///
     /// \endinternal
-    enum TextAlignment: uint32
+    enum Alignment: uint32
     {
       TopLeft = 0,  // Default
       TopCenter,    // 1
@@ -102,7 +102,7 @@ class Label: public Transformable
     Label ( const std::string& text,
             const IFont& font,
             uint character_size,
-            enum TextAlignment align = Label::TopLeft
+            enum Label::Alignment align = Label::Alignment::TopLeft
           );
 
     /// Construct a label, initializing it with a text string, an IFont
@@ -110,7 +110,7 @@ class Label: public Transformable
     Label ( const std::string& text,
             const IFont::SharedPtr& font,
             uint character_size,
-            enum TextAlignment align = Label::TopLeft
+            enum Label::Alignment align = Label::Alignment::TopLeft
           );
 
     Label::RawPtr get ( void );
@@ -158,13 +158,13 @@ class Label: public Transformable
     const Color4u& color ( void ) const;
 
     /// Get label's text style
-    enum Label::FontStyle style ( void ) const;
+    enum Label::Style style ( void ) const;
 
     //const Point2i& local_bounds ( void ) const;
     //const Point2i& global_bounds ( void ) const;
 
     /// Get label's text alignment
-    enum Label::TextAlignment alignment ( void ) const;
+    enum Label::Alignment alignment ( void ) const;
 
     /// Get label's text character size (in pixels?)
     uint text_size ( void ) const;
@@ -182,13 +182,13 @@ class Label: public Transformable
     void set_color ( const Color4u& text_color );
 
     /// Set new label text style
-    void set_style ( enum Label::FontStyle style );
+    void set_style ( enum Label::Style style );
 
     /// Set new label text alignment
     ///
     /// \remarks This method modifies the destination positions used in
     /// rendering text.
-    void set_alignment ( enum Label::TextAlignment align );
+    void set_alignment ( enum Label::Alignment align );
 
     /// Render label to a target
     ///
@@ -215,8 +215,8 @@ class Label: public Transformable
     uint text_size_;
     Color4u color_;
     /// Current text effect set
-    enum FontStyle style_;
-    enum TextAlignment alignment_;
+    enum Style style_;
+    enum Alignment alignment_;
 /*
     Point2i local_bounds;
     Point2i global_bounds;

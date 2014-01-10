@@ -147,8 +147,8 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
       this->label_bfont.set_text ( RESOURCE_FONT_TEXT_STRING );
       this->label_bfont.set_color ( NOM_COLOR4U_WHITE );
 
-      this->label_bfont.set_alignment ( nom::Label::TextAlignment::TopLeft );
-      this->label_tfont.set_alignment ( nom::Label::TextAlignment::TopLeft );
+      this->label_bfont.set_alignment ( nom::Label::Alignment::TopLeft );
+      this->label_tfont.set_alignment ( nom::Label::Alignment::TopLeft );
 
       this->label_tfont.set_text ( RESOURCE_FONT_TEXT_STRING );
 

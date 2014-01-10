@@ -34,8 +34,8 @@ Label::Label ( void ) :
   Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_size_ ( 14 ),
   color_ ( NOM_COLOR4U_WHITE ),
-  style_ ( Label::FontStyle::Regular ),
-  alignment_ ( Label::TextAlignment::TopLeft )
+  style_ ( Label::Style::Regular ),
+  alignment_ ( Label::Alignment::TopLeft )
 {
   NOM_LOG_TRACE ( NOM );
 }
@@ -75,13 +75,13 @@ Label& Label::operator = ( const Label& other )
 Label::Label  ( const std::string& text,
                 const IFont& font,
                 uint character_size,
-                enum TextAlignment align // Default parameter (TopLeft)
+                enum Label::Alignment align // Default parameter (TopLeft)
               )  :
   Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_ ( text ),
   text_size_ ( character_size ),
   color_ ( NOM_COLOR4U_WHITE ),
-  style_ ( Label::FontStyle::Regular )
+  style_ ( Label::Style::Regular )
 {
   NOM_LOG_TRACE(NOM);
 
@@ -92,13 +92,13 @@ Label::Label  ( const std::string& text,
 Label::Label  ( const std::string& text,
                 const IFont::SharedPtr& font,
                 uint character_size,
-                enum TextAlignment align // Default parameter (TopLeft)
+                enum Label::Alignment align // Default parameter (TopLeft)
               )  :
   Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_ ( text ),
   text_size_ ( character_size ),
   color_ ( NOM_COLOR4U_WHITE ),
-  style_ ( Label::FontStyle::Regular )
+  style_ ( Label::Style::Regular )
 {
   NOM_LOG_TRACE(NOM);
 
@@ -238,7 +238,7 @@ const Color4u& Label::color ( void ) const
   return this->color_;
 }
 
-enum Label::FontStyle Label::style ( void ) const
+enum Label::Style Label::style ( void ) const
 {
   return this->style_;
 }
@@ -255,7 +255,7 @@ const Point2i& Label::global_bounds ( void ) const
 }
 */
 
-enum Label::TextAlignment Label::alignment ( void ) const
+enum Label::Alignment Label::alignment ( void ) const
 {
   return this->alignment_;
 }
@@ -308,7 +308,7 @@ void Label::set_color ( const Color4u& color )
   }
 }
 
-void Label::set_style ( enum Label::FontStyle style )
+void Label::set_style ( enum Label::Style style )
 {
   // We do not have an atlas map to go from -- nothing to set a style on!
   if ( this->texture_.valid() == false ) return;
@@ -322,7 +322,7 @@ void Label::set_style ( enum Label::FontStyle style )
   this->update();
 }
 
-void Label::set_alignment ( enum Label::TextAlignment align )
+void Label::set_alignment ( enum Label::Alignment align )
 {
   this->alignment_ = align;
 
@@ -332,63 +332,63 @@ void Label::set_alignment ( enum Label::TextAlignment align )
   switch ( this->alignment() )
   {
     default:
-    case Label::TextAlignment::TopLeft: // Default case
+    case Label::Alignment::TopLeft: // Default case
     {
       x_offset = this->position().x;
       y_offset = this->position().y;
       break;
     }
 
-    case Label::TextAlignment::TopCenter:
+    case Label::Alignment::TopCenter:
     {
       x_offset = this->position().x + ( this->size().w - this->width() ) / 2;
       y_offset = this->position().y;
       break;
     }
 
-    case Label::TextAlignment::TopRight:
+    case Label::Alignment::TopRight:
     {
       x_offset = this->position().x + ( this->size().w - this->width() );
       y_offset = this->position().y;
       break;
     }
 
-    case Label::TextAlignment::MiddleLeft:
+    case Label::Alignment::MiddleLeft:
     {
       x_offset = this->position().x;
       y_offset = this->position().y + ( this->size().h - this->height() ) / 2;
       break;
     }
 
-    case Label::TextAlignment::MiddleCenter:
+    case Label::Alignment::MiddleCenter:
     {
       x_offset = this->position().x + ( this->size().w - this->width() ) / 2;
       y_offset = this->position().y + ( this->size().h - this->height() ) / 2;
       break;
     }
 
-    case Label::TextAlignment::MiddleRight:
+    case Label::Alignment::MiddleRight:
     {
       x_offset = this->position().x + ( this->size().w - this->width() );
       y_offset = this->position().y + ( this->size().h - this->height() ) / 2;
       break;
     }
 
-    case Label::TextAlignment::BottomLeft:
+    case Label::Alignment::BottomLeft:
     {
       x_offset = this->position().x;
       y_offset = this->position().y + ( this->size().h - this->height() );
       break;
     }
 
-    case Label::TextAlignment::BottomCenter:
+    case Label::Alignment::BottomCenter:
     {
       x_offset = this->position().x + ( this->size().w - this->width() ) / 2;
       y_offset = this->position().y + ( this->size().h - this->height() );
       break;
     }
 
-    case Label::TextAlignment::BottomRight:
+    case Label::Alignment::BottomRight:
     {
       x_offset = this->position().x + ( this->size().w - this->width() );
       y_offset = this->position().y + ( this->size().h - this->height() );
@@ -483,10 +483,10 @@ void Label::update ( void )
   {
     default: break;
 
-    case FontStyle::Regular:
-    case FontStyle::Bold:
-    case FontStyle::Italic:
-    case FontStyle::Underlined:
+    case Label::Style::Regular:
+    case Label::Style::Bold:
+    case Label::Style::Italic:
+    case Label::Style::Underlined:
       // Do nothing stub
     break;
   } // end switch

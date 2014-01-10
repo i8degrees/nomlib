@@ -95,16 +95,16 @@ const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
 /// Text string displayed on our message boxes
 const std::string RESOURCE_INFO_BOX_TITLE_STRINGS[2] = { "INFO.", "INFO." };
 const std::string RESOURCE_INFO_BOX_TEXT_STRINGS[4] = { "I am a Bitmap Font!", "Use the arrow keys to update me...", "Yeah Buddy!!!", "...Light weight!" };
-const enum nom::Label::TextAlignment RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[9] = {
-                                                                              nom::Label::TextAlignment::TopLeft,       // 0
-                                                                              nom::Label::TextAlignment::TopCenter,
-                                                                              nom::Label::TextAlignment::TopRight,
-                                                                              nom::Label::TextAlignment::MiddleLeft,
-                                                                              nom::Label::TextAlignment::MiddleCenter,  // 4
-                                                                              nom::Label::TextAlignment::MiddleRight,
-                                                                              nom::Label::TextAlignment::BottomLeft,
-                                                                              nom::Label::TextAlignment::BottomCenter,
-                                                                              nom::Label::TextAlignment::BottomRight    // 8
+const enum nom::Label::Alignment RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[9] = {
+                                                                              nom::Label::Alignment::TopLeft,       // 0
+                                                                              nom::Label::Alignment::TopCenter,
+                                                                              nom::Label::Alignment::TopRight,
+                                                                              nom::Label::Alignment::MiddleLeft,
+                                                                              nom::Label::Alignment::MiddleCenter,  // 4
+                                                                              nom::Label::Alignment::MiddleRight,
+                                                                              nom::Label::Alignment::BottomLeft,
+                                                                              nom::Label::Alignment::BottomCenter,
+                                                                              nom::Label::Alignment::BottomRight    // 8
                                                                             };
 
 const int MIN_FONT_POINT_SIZE = 9;
@@ -117,7 +117,7 @@ class App: public nom::SDL_App
     App ( nom::int32 argc, char* argv[] ) :
       sprite_angle ( -90.0f ),
       selected_font ( 0 ), // nom::TrueType font
-      selected_alignment ( 4 ), // nom::Label::TextAlignment::TopLeft
+      selected_alignment ( 4 ), // nom::Label::Alignment::TopLeft
       selected_font_size ( 14 )
 
     {
@@ -606,7 +606,7 @@ NOM_DUMP_VAR(this->sprite.size().y);
       }
     }
 
-    enum nom::Label::TextAlignment select_alignment ( void )
+    enum nom::Label::Alignment select_alignment ( void )
     {
       switch ( this->selected_alignment )
       {

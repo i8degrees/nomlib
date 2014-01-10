@@ -432,12 +432,17 @@ const IntRect TrueTypeFont::glyph_rect ( FontPage& page, int width, int height )
           )
       {
         // Make the texture 2 times bigger
-        Image sheet;
+        Image sheet; // new (destination) sheet
         sheet.initialize ( Point2i( texture_width * 2, texture_height * 2 ) );
+
+        // Copy existing texture sheet to new sheet
         page.texture->draw ( sheet.image(), IntRect(0, 0, -1, -1) );
+
         #if defined(NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS)
           sheet.save_png("ttf_src.png");
         #endif
+
+        // Re-initialize our texture sheet with our resized sheet
         page.texture->initialize ( sheet.image() );
       }
       else

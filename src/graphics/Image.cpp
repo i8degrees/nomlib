@@ -53,10 +53,10 @@ NOM_LOG_ERR ( NOM, IMG_GetError() );
 }
 
 Image::Image ( const Image& copy )  :
-  image_ { copy.image(), priv::FreeSurface },
+  image_ { copy.image() },
   position_ { copy.position_ }
 {
-  NOM_LOG_TRACE ( NOM );
+  // ...
 }
 
 Image& Image::operator = ( const Image& other )
@@ -94,7 +94,6 @@ bool Image::initialize( void* pixels, int32 width, int32 height,
 bool Image::initialize ( int32 width, int32 height, int bits_per_pixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
 {
   NOM_LOG_TRACE ( NOM );
-
   this->image_.reset ( SDL_CreateRGBSurface ( 0, width, height, bits_per_pixel, Rmask, Gmask, Bmask, Amask ), priv::FreeSurface );
   //this->set_bounds ( IntRect( 0, 0, width, height) );
 
@@ -123,13 +122,26 @@ bool Image::initialize ( SDL_SURFACE::RawPtr source )
   // Discover the optimal pixel format using gathered device capabilities
   RendererInfo caps = Window::caps( Window::context() );
 
+  if ( source == nullptr )
+  {
+    NOM_LOG_ERR ( NOM, "Could not initialize Image from existing surface: NULL" );
+    priv::FreeSurface ( source );
+    return false;
+  }
+
   this->image_.reset ( SDL_ConvertSurfaceFormat ( source, caps.optimal_texture_format(), 0 ), priv::FreeSurface );
 
   if ( this->valid() == false )
   {
     NOM_LOG_ERR ( NOM, "Could not initialize Image from existing surface: " + std::string(SDL_GetError()) );
+    priv::FreeSurface ( source );
     return false;
   }
+
+  // FIXME: See GitHub Issue #9
+  //
+  // By commenting this line out, we are creating a small memory leak
+  //priv::FreeSurface ( source );
 
   return true;
 }

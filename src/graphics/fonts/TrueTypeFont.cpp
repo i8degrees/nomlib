@@ -34,6 +34,7 @@ TrueTypeFont::TrueTypeFont ( void ) :
   type_ ( IFont::FontType::TrueTypeFont ),
   sheet_width_ ( 16 ),  // Arbitrary; based on nom::BitmapFont
   sheet_height_ ( 16 ), // Arbitrary; based on nom::BitmapFont
+  use_cache_ ( false ), // Not used (reserved for future implementation)
   point_size_ ( 14 )    // Terrible Eyesight (TM)
 {
   NOM_LOG_TRACE ( NOM );
@@ -50,8 +51,10 @@ TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy ) :
   sheet_height_ { copy.sheet_height() },
   font_ { copy.font_ },
   pages_ { copy.pages() },
-  point_size_ { copy.point_size() },
-  metrics_ { copy.metrics() }
+  metrics_ { copy.metrics() },
+  filename_ { copy.filename_ },
+  use_cache_ { copy.use_cache_ },
+  point_size_ { copy.point_size() }
 {
   //
 }
@@ -103,33 +106,24 @@ sint TrueTypeFont::kerning ( uint32 first_char, uint32 second_char, uint32 chara
   return -1; // TODO
 }
 
-/*
-void TrueTypeFont::set_font_size ( sint point_size )
+void TrueTypeFont::set_point_size ( sint size )
 {
-  sint original_font_size = this->font_size_;
-
-  this->font_size_ = point_size;
-
-  if ( this->rebuild() == false )
+  // Expensive method call
+  if ( this->point_size() != size )
   {
-NOM_LOG_ERR ( NOM, "Could not set new font size." );
-    this->font_size_ = original_font_size;
-    return;
+    sint original_font_size = this->point_size();
+
+    this->point_size_ = size; // Cached point_size will be used upon reload
+
+    // Reset point size back to the previous if fail to reload
+    if ( this->load ( this->filename_, this->use_cache_ ) == false )
+    {
+      NOM_LOG_ERR ( NOM, "Could not set new point size." );
+      this->point_size_ = original_font_size;
+      return;
+    }
   }
 }
-*/
-
-/*
-int32 TrueTypeFont::getFontOutline ( void ) const
-{
-  return TTF_GetFontOutline ( this->font.get() );
-}
-
-void TrueTypeFont::setFontOutline ( int32 depth )
-{
-  TTF_SetFontOutline ( this->font.get(), depth );
-}
-*/
 
 const Glyph& TrueTypeFont::glyph ( uint32 codepoint, uint32 character_size ) const
 {
@@ -157,12 +151,17 @@ bool TrueTypeFont::load ( const std::string& filename, bool use_cache )
 
   if ( this->valid() == false )
   {
-NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
+    NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
     return false;
   }
 
+  // Store the filename for future reference; we use this cached filename for
+  // when a new font point size is requested.
+  this->filename_ = filename;
+  this->use_cache_ = use_cache; // Not used
+
   // Attempt to build font metrics
-  if ( this->build() == false )
+  if ( this->build ( this->point_size() ) == false )
   {
     NOM_LOG_ERR ( NOM, "Could not build TrueType font metrics" );
     return false;

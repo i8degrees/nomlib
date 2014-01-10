@@ -66,13 +66,15 @@ class IFont
     virtual IFont::SharedPtr clone ( void ) const = 0;
     virtual bool valid ( void ) const = 0;
 
-    virtual SDL_SURFACE::RawPtr image ( uint32 = 0 ) const = 0;
+    virtual SDL_SURFACE::RawPtr image ( uint32 ) const = 0;
     virtual enum IFont::FontType type ( void ) const = 0;
 
-    virtual const Glyph& glyph ( uint32, uint32 = 0 ) const = 0;
-    virtual sint newline ( uint32 = 0 ) const = 0;
-    virtual sint spacing ( uint32 = 0 ) const = 0;
-    virtual sint kerning ( uint32, uint32, uint32 = 0 ) const = 0;
+    virtual const Glyph& glyph ( uint32, uint32 ) const = 0;
+    virtual sint newline ( uint32 ) const = 0;
+    virtual sint spacing ( uint32 ) const = 0;
+    virtual sint kerning ( uint32, uint32, uint32 ) const = 0;
+
+    virtual void set_point_size ( sint ) = 0;
 };
 
 } // namespace nom

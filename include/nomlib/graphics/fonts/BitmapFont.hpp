@@ -74,23 +74,30 @@ class BitmapFont: public IFont
 
     enum IFont::FontType type ( void ) const;
 
-    SDL_SURFACE::RawPtr image ( uint32 character_size = 0 ) const;
+    SDL_SURFACE::RawPtr image ( uint32 character_size ) const;
 
-    /// Obtain text character spacing width in pixels; this variable is affected
-    /// by the total image width size.
-    sint spacing ( uint32 character_size = 0 ) const;
+    /// \brief  Obtain text character spacing width in pixels -- the width
+    ///         applied when the space carriage is encountered when rendered.
+    sint spacing ( uint32 character_size ) const;
 
     /// Obtain text character spacing height offsets in pixels; defaults to
     /// variable calculations made within Load method
-    sint newline ( uint32 character_size = 0 ) const;
+    sint newline ( uint32 character_size ) const;
 
-    sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size = 0 ) const;
+    sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) const;
 
     /// Obtain a glyph
     ///
     /// \param codepoint        ASCII character to lookup
     /// \param character_size   Reserved for future implementation
-    const Glyph& glyph ( uint32 codepoint, uint32 character_size = 0 ) const;
+    const Glyph& glyph ( uint32 codepoint, uint32 character_size ) const;
+
+    /// \brief Set a new font point size
+    ///
+    /// \param size Point size in pixels
+    ///
+    /// \remarks Not yet implemented
+    void set_point_size ( sint size );
 
     /// Loads a new bitmap font from a file
     ///
@@ -107,7 +114,7 @@ class BitmapFont: public IFont
     /// recalculate the character sizes, coordinate origins, spacing, etc.
     ///
     /// \param character_size   Reserved for future implementation.
-    bool build ( uint32 character_size = 0 );
+    bool build ( uint32 character_size );
 
     const GlyphPage& pages ( void ) const;
 

@@ -81,21 +81,28 @@ class TrueTypeFont: public IFont
 
     TTF_Font* font ( void ) const;
 
-    SDL_SURFACE::RawPtr image ( uint32 character_size = 0 ) const;
+    SDL_SURFACE::RawPtr image ( uint32 character_size ) const;
 
-    /// Obtain text character spacing width in pixels; this variable is affected
-    /// by the total image width size.
-    sint spacing ( uint32 character_size = 0 ) const;
+    /// \brief  Obtain text character spacing width in pixels -- the width
+    ///         applied when the space carriage is encountered when rendered.
+    sint spacing ( uint32 character_size ) const;
 
     sint point_size ( void ) const;
 
     /// Obtain text character spacing height offsets in pixels; defaults to
     /// variable calculations made within Load method
-    sint newline ( uint32 character_size = 0 ) const;
+    sint newline ( uint32 character_size ) const;
 
-    sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size = 0 ) const;
+    sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) const;
 
-    const Glyph& glyph ( uint32 codepoint, uint32 character_size = 0 ) const;
+    const Glyph& glyph ( uint32 codepoint, uint32 character_size ) const;
+
+    /// \brief Set a new font point size
+    ///
+    /// \param size Point size in pixels
+    ///
+    /// \remarks This is an expensive method call; every glyph must be re-built
+    void set_point_size ( sint size );
 
     /// \brief Load a new font in from a file.
     ///
@@ -110,7 +117,7 @@ class TrueTypeFont: public IFont
     /// recalculates character sizes, coordinate origins, spacing, etc.
     ///
     /// \param character_size   Reserved for future implementation.
-    bool build ( uint32 character_size = 0 );
+    bool build ( uint32 character_size );
 
     const GlyphPage& pages ( void ) const;
 
@@ -146,11 +153,28 @@ class TrueTypeFont: public IFont
     /// with corresponding glyphs data.
     mutable GlyphPage pages_;
 
-    /// Font point size
-    sint point_size_;
-
     /// General font metric data, such as the proper value for newline spacing
     struct FontMetrics metrics_;
+
+    /// Store the file path so we can change font sizes on the fly
+    ///
+    /// \internal
+    /// \note Replace with FT_Face face (using FreeType2 library)
+    /// \endinternal
+    std::string filename_;
+
+    /// Whether or not to use caching features of nom::ObjectCache
+    ///
+    /// \remarks Not used (reserved for future implementation)
+    bool use_cache_;
+
+    /// Font point size (in pixels)
+    ///
+    /// \internal
+    /// \note   This instance variable is obsolete with FreeType2;
+    ///         see FT_Face->size->metrics.x_ppem
+    /// \endinternal
+    sint point_size_;
 };
 
 } // namespace nom

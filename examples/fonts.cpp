@@ -131,8 +131,8 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
         nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
         return false;
       }
+
       this->label_tfont.set_font ( this->truetype_font );
-      //this->truetype_font.set_font_size ( 18 );
 
       this->label_bfont.set_position  ( ( this->window_size.x
                                           -
@@ -155,6 +155,10 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
       // What was previously internally known as nom::Label::FontStyle::Faded
       //this->label_bfont.set_color ( nom::Color4u(195,209,228) );
       //this->label_tfont.set_color ( nom::Color4u(195,209,228) );
+
+      //this->label_tfont.set_text_size ( 24 );
+      //this->label_bfont.set_text_size ( 24 ); // NO-OP
+
       return true;
     } // onInit
 

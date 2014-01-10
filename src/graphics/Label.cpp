@@ -150,7 +150,7 @@ uint Label::width ( void ) const
   {
     if ( text_buffer[pos] == ' ' ) // ASCII space glyph (32)
     {
-      text_width += this->font()->spacing();
+      text_width += this->font()->spacing ( this->text_size() );
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
@@ -163,13 +163,13 @@ uint Label::width ( void ) const
     {
       // Match the offset calculations done in the text rendering -- hence the
       // plus one (+1) spacing.
-      text_width += this->font()->glyph(text_buffer[pos]).advance + 1;
+      text_width += this->font()->glyph(text_buffer[pos], this->text_size() ).advance + 1;
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
         NOM_DUMP_VAR ( pos );
         NOM_DUMP_VAR ( text_buffer[pos] );
-        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[pos]).advance + 1 );
+        NOM_DUMP_VAR ( this->font()->glyph(text_buffer[pos], this->text_size() ).advance + 1 );
       #endif
     }
   } // end for loop
@@ -194,7 +194,7 @@ uint Label::height ( void ) const
 
   // Initialize our text string's height to be whatever the font's newline
   // metric was set to.
-  text_height = this->font()->newline();
+  text_height = this->font()->newline ( this->text_size() );
 
   // Calculate the text string's height adding the font's newline metric onto
   // our text_height counter every time we find a newline character.
@@ -205,7 +205,7 @@ uint Label::height ( void ) const
   {
     if ( text_buffer[pos] == '\n' ) // Multi-line case
     {
-      text_height += this->font()->newline();
+      text_height += this->font()->newline ( this->text_size() );
 
       // Dump each character's table used for calculation
       #if defined (NOM_DEBUG_LABEL)
@@ -262,15 +262,15 @@ enum Label::TextAlignment Label::alignment ( void ) const
 
 void Label::set_font ( const IFont& font )
 {
-  if ( this->font().get() != &font )
-  {
-    this->font_ = std::shared_ptr<IFont>( font.clone() );
+  //if ( this->font().get() != &font )
+  this->font_ = std::shared_ptr<IFont>( font.clone() );
 
-    if ( this->valid() == false || this->texture_.initialize ( this->font()->image(0) ) == false )
-    {
-      NOM_LOG_ERR ( NOM, "Could not initialize label from given IFont" );
-      return;
-    }
+  this->font()->set_point_size ( this->text_size() );
+
+  if ( this->valid() == false || this->texture_.initialize ( this->font()->image (this->text_size()) ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not initialize label from given IFont" );
+    return;
   }
 }
 
@@ -286,10 +286,13 @@ void Label::set_text ( const std::string& text )
 
 void Label::set_text_size ( uint character_size )
 {
-  if ( character_size != this->text_size() )
+  if ( this->valid() == false ) return;
+
+  if ( this->text_size() != character_size )
   {
     this->text_size_ = character_size;
 
+    this->set_font ( *this->font().get() );
     // Update logic
   }
 }
@@ -417,17 +420,17 @@ void Label::draw ( RenderTarget target ) const
     if ( text_buffer[pos] == ' ' ) // Space character
     {
       //Move over
-      x_offset += this->font()->spacing();
+      x_offset += this->font()->spacing ( this->text_size() );
     }
     else if( text_buffer[pos] == '\n' ) // Newline character
     {
       //Move down and back over to the beginning of line
-      y_offset += this->font()->newline();
+      y_offset += this->font()->newline ( this->text_size() );
       x_offset = this->position().x;
     }
     else if( text_buffer[pos] == '\t' ) // Tab character
     {
-      x_offset += this->font()->spacing();
+      x_offset += this->font()->spacing ( this->text_size() );
     }
     else // The time to render is now!
     {
@@ -435,11 +438,11 @@ void Label::draw ( RenderTarget target ) const
       uint32 ascii = static_cast<uint32>( text_buffer[pos] );
 
       this->texture_.set_position ( Point2i ( x_offset, y_offset ) );
-      this->texture_.set_bounds ( this->font()->glyph(ascii).bounds );
+      this->texture_.set_bounds ( this->font()->glyph(ascii, this->text_size() ).bounds );
       this->texture_.draw ( target.renderer() );
 
       // Move over the width of the character with one pixel of padding
-      x_offset += ( this->font()->glyph(ascii).advance ) + 1;
+      x_offset += ( this->font()->glyph(ascii, this->text_size() ).advance ) + 1;
     } // end else
   } // end for loop
 }

@@ -77,7 +77,7 @@ enum IFont::FontType BitmapFont::type ( void ) const
 
 SDL_SURFACE::RawPtr BitmapFont::image ( uint32 character_size ) const
 {
-  return this->pages_[character_size].texture->image();
+  return this->pages_[0].texture->image();
 }
 
 sint BitmapFont::spacing ( uint32 character_size ) const
@@ -97,7 +97,7 @@ sint BitmapFont::kerning ( uint32 first_char, uint32 second_char, uint32 charact
 
 const Glyph& BitmapFont::glyph ( uint32 codepoint, uint32 character_size ) const
 {
-  GlyphAtlas& glyphs = this->pages_[character_size].glyphs;
+  GlyphAtlas& glyphs = this->pages_[0].glyphs;
 
   return glyphs[codepoint];
 }
@@ -114,6 +114,11 @@ const Glyph& BitmapFont::glyph ( uint32 codepoint, uint32 character_size ) const
     return Glyph();
   }
 */
+
+void BitmapFont::set_point_size ( sint size )
+{
+  return; // TODO
+}
 
 bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
                         bool use_cache
@@ -143,7 +148,7 @@ bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
   this->pages_[0].texture->set_colorkey ( colorkey, true );
 
   // Attempt to build font metrics
-  if ( this->build() == false )
+  if ( this->build(0) == false )
   {
     NOM_LOG_ERR ( NOM, "Could not build bitmap font metrics" );
     return false;
@@ -169,8 +174,7 @@ bool BitmapFont::build ( uint32 character_size )
   uint32 current_char = 0; // counter
   uint32 background_color = 0;
 
-  FontPage& page = this->pages_[character_size];  // Our font's current glyph
-                                                  // page
+  FontPage& page = this->pages_[0]; // Our font's current glyph page
 
   NOM_ASSERT ( page.texture->valid() );
 

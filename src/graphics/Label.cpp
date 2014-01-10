@@ -341,6 +341,27 @@ void Label::set_alignment ( enum Label::TextAlignment align )
   switch ( this->alignment() )
   {
     default:
+    case Label::TextAlignment::TopLeft: // Default case
+    {
+      x_offset = this->position().x;
+      y_offset = this->position().y;
+      break;
+    }
+
+    case Label::TextAlignment::TopCenter:
+    {
+      x_offset = this->position().x + ( this->size().w - this->width() ) / 2;
+      y_offset = this->position().y;
+      break;
+    }
+
+    case Label::TextAlignment::TopRight:
+    {
+      x_offset = this->position().x + ( this->size().w - this->width() );
+      y_offset = this->position().y;
+      break;
+    }
+
     case Label::TextAlignment::MiddleLeft:
     {
       x_offset = this->position().x;
@@ -361,6 +382,27 @@ void Label::set_alignment ( enum Label::TextAlignment align )
       y_offset = this->position().y + ( this->size().h - this->height() ) / 2;
       break;
     }
+
+    case Label::TextAlignment::BottomLeft:
+    {
+      x_offset = this->position().x;
+      y_offset = this->position().y + ( this->size().h - this->height() );
+      break;
+    }
+
+    case Label::TextAlignment::BottomCenter:
+    {
+      x_offset = this->position().x + ( this->size().w - this->width() ) / 2;
+      y_offset = this->position().y + ( this->size().h - this->height() );
+      break;
+    }
+
+    case Label::TextAlignment::BottomRight:
+    {
+      x_offset = this->position().x + ( this->size().w - this->width() );
+      y_offset = this->position().y + ( this->size().h - this->height() );
+      break;
+    }
   } // end switch
 
   this->set_position ( x_offset, y_offset );
@@ -372,6 +414,7 @@ void Label::draw ( RenderTarget target ) const
   // coordinates to compute from
   int x_offset = this->position().x;
   int y_offset = this->position().y;
+
   std::string text_buffer = this->text();
 
   // No font has been loaded -- nothing to draw!

@@ -205,7 +205,13 @@ class Label: public Transformable
     bool resize ( enum Texture::ResizeAlgorithm scaling_algorithm );
 
   private:
+    /// \brief Apply requested transformations, styles, etc
+    ///
+    /// \remarks Implements nom::IDrawable::update
+    ///
+    /// \fixme Logic for this feature is incomplete!
     void update ( void );
+
     IFont::SharedPtr font_;
     mutable Texture texture_; /// \FIXME
     /// Holds contents of text as a string buffer

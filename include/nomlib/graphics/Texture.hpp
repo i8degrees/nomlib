@@ -87,10 +87,10 @@ class Texture
     /// Copy constructor
     Texture ( const Texture& other );
 
-    /// Initialize object with SDL1 video surface
+    /// Initialize object with SDL2 video surface
     ///
     /// \note The new texture created will be of type 'SDL_TEXTUREACCESS_STATIC'
-    bool initialize ( SDL_SURFACE::RawPtr video_buffer );
+    bool initialize ( SDL_SURFACE::RawPtr source );
 
     /// Initialize an object with specified parameters
     ///

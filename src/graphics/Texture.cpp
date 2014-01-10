@@ -53,15 +53,14 @@ Texture::Texture ( const Texture& other ) :
   NOM_LOG_TRACE ( NOM );
 }
 
-bool Texture::initialize ( SDL_SURFACE::RawPtr video_buffer )
+bool Texture::initialize ( SDL_SURFACE::RawPtr source )
 {
   // We leak memory, or even worse, crash, depending on state at the time, if we
   // do not ensure that we free existing buffers! Certain rendering methods --
   // *cough* nom::TrueTypeFont -- need this done because they create new
   // surfaces (instead of updating what they have) upon every update cycle.
   //if ( this->valid() ) this->texture_.reset();
-
-  this->texture_.reset ( SDL_CreateTextureFromSurface ( Window::context(), video_buffer ), priv::FreeTexture );
+  this->texture_.reset ( SDL_CreateTextureFromSurface ( Window::context(), source ), priv::FreeTexture );
 
   if ( this->valid() == false )
   {
@@ -72,13 +71,13 @@ bool Texture::initialize ( SDL_SURFACE::RawPtr video_buffer )
   // TODO: cache width & height?
 
   // Cache the size of our new Texture object with the existing surface info
-  this->set_bounds ( IntRect(0, 0, video_buffer->w, video_buffer->h) );
+  this->set_bounds ( IntRect(0, 0, source->w, source->h) );
 
   // FIXME: See GitHub Issue #8
   //
   // By commenting this line out, we are creating a massive memory leak in
   // TrueTypeFont
-  //priv::FreeSurface ( video_buffer );
+  //priv::FreeSurface ( source );
 
   return true;
 }

@@ -35,7 +35,7 @@ Label::Label ( void ) :
   text_size_ ( 14 ),
   color_ ( NOM_COLOR4U_WHITE ),
   style_ ( Label::FontStyle::Regular ),
-  alignment_ ( Label::TextAlignment::MiddleLeft )
+  alignment_ ( Label::TextAlignment::TopLeft )
 {
   NOM_LOG_TRACE ( NOM );
 }
@@ -50,7 +50,7 @@ Label::Label ( const IFont& font )  :
   text_size_ ( 14 ),
   color_ ( NOM_COLOR4U_WHITE ),
   style_ ( Label::FontStyle::Regular ),
-  alignment_ ( Label::TextAlignment::MiddleLeft )
+  alignment_ ( Label::TextAlignment::TopLeft )
 {
   NOM_LOG_TRACE ( NOM );
 

@@ -51,27 +51,39 @@ class Label: public Transformable
     typedef Label* RawPtr;
     typedef std::shared_ptr<Label> SharedPtr;
 
-    /// Text effect styling
-    enum FontStyle
+    /// Font face style; multiple styles can be combined from bitwise masks
+    ///
+    /// \remarks Bold is only available with TrueType fonts. No action will
+    // result from using this style with a bitmap font.
+    enum FontStyle: uint32
     {
-      Regular = 0,
-      Bold = 1,
-      Italic = 2,
-      Underlined = 3,
-      Faded = 4
+      Regular = 1, // Default
+      Bold = 2,
+      Italic = 4,
+      Underlined = 8,
+      Faded = 16
     };
 
-    enum TextAlignment
+    /// Text alignment choices (pick one).
+    ///
+    /// \internal
+    ///
+    /// \note Bitwise masks were intentionally not chosen here, in order to
+    /// allow my preferred naming scheme. I think the scheme chosen feels
+    /// most natural, and thus easier to remember and type out.
+    ///
+    /// \endinternal
+    enum TextAlignment: uint32
     {
-      TopLeft = 0,
-      TopCenter,
-      TopRight,
-      MiddleLeft,
-      MiddleCenter,
-      MiddleRight,
-      BottomLeft,
-      BottomCenter,
-      BottomRight
+      TopLeft = 0,  // Default
+      TopCenter,    // 1
+      TopRight,     // 2
+      MiddleLeft,   // 3
+      MiddleCenter, // 4
+      MiddleRight,  // 5
+      BottomLeft,   // 6
+      BottomCenter, // 7
+      BottomRight   // 8
     };
 
     /// Default constructor

@@ -123,6 +123,36 @@ sint TrueTypeFont::kerning ( uint32 first_char, uint32 second_char, uint32 chara
   }
 }
 
+const Glyph& TrueTypeFont::glyph ( uint32 codepoint, uint32 character_size ) const
+{
+  GlyphAtlas& glyphs = this->pages_[character_size].glyphs;
+
+  return glyphs[codepoint];
+/* TODO
+  GlyphAtlas::const_iterator it = glyphs.find(codepoint);
+
+  if ( it != glyphs.end() )
+  {
+    return it->second;
+  }
+  else
+  {
+    // FIXME: implement support for handling this condition
+    return Glyph();
+  }
+*/
+}
+
+int TrueTypeFont::outline ( /*uint32 character_size*/void ) /*const*/
+{
+  if ( this->valid() == true && this->set_point_size ( /*character_size*/this->point_size() ) == true )
+  {
+    return TTF_GetFontOutline ( this->font() );
+  }
+
+  return 0;
+}
+
 bool TrueTypeFont::set_point_size ( sint size )
 {
   // Expensive method call
@@ -146,24 +176,23 @@ bool TrueTypeFont::set_point_size ( sint size )
   return true;
 }
 
-const Glyph& TrueTypeFont::glyph ( uint32 codepoint, uint32 character_size ) const
+bool TrueTypeFont::set_outline ( int outline )
 {
-  GlyphAtlas& glyphs = this->pages_[character_size].glyphs;
-
-  return glyphs[codepoint];
-/* TODO
-  GlyphAtlas::const_iterator it = glyphs.find(codepoint);
-
-  if ( it != glyphs.end() )
+  // Expensive function call
+  if ( this->outline() != outline )
   {
-    return it->second;
+    TTF_SetFontOutline ( this->font(), outline );
+
+    if ( this->build ( this->point_size() ) == false )
+    {
+      NOM_LOG_ERR ( NOM, "Could not set new point size." );
+      return false;
+    }
+
+    return true;
   }
-  else
-  {
-    // FIXME: implement support for handling this condition
-    return Glyph();
-  }
-*/
+
+  return true;
 }
 
 bool TrueTypeFont::load ( const std::string& filename, bool use_cache )

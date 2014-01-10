@@ -100,12 +100,26 @@ class TrueTypeFont: public IFont
 
     const Glyph& glyph ( uint32 codepoint, uint32 character_size ) const;
 
+    /// \brief Obtain font's outline size
+    ///
+    /// \param character_size The point size to retrieve the outline size for
+    ///
+    /// \returns Outline size in pixels
+    int outline ( /*uint32 character_size*/void ) /*const*/;
+
     /// \brief Set a new font point size
     ///
     /// \param size Point size in pixels
     ///
-    /// \remarks This is an expensive method call; every glyph must be re-built
+    /// \remarks This is an expensive method call; every glyph must be re-built!
     bool set_point_size ( sint size );
+
+    /// \brief Set font's outline size
+    ///
+    /// \param outline The outline size in pixels
+    ///
+    /// \remarks This is an expensive method call; every glyph must be re-built!
+    bool set_outline ( int outline );
 
     /// \brief Load a new font in from a file.
     ///

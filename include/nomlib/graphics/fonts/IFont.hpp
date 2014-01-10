@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+/// \brief Pure abstract interface for a font resource
 class IFont
 {
   public:
@@ -63,6 +64,7 @@ class IFont
     }
 
     virtual IFont::SharedPtr clone ( void ) const = 0;
+    virtual bool valid ( void ) const = 0;
 
     virtual SDL_SURFACE::RawPtr image ( uint32 = 0 ) const = 0;
     virtual enum IFont::FontType type ( void ) const = 0;
@@ -78,3 +80,28 @@ class IFont
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::IFont
+/// \ingroup graphics/fonts
+///
+/// nomlib's built-in font classes all derive from this pure abstract class.
+/// nom::Label focuses solely on text rendering, utilizing this common interface
+/// defined here.
+///
+/// In short: a font resource class is responsible for computing available
+/// glyphs (including their bounds, sizes, etc.) and most importantly, a
+/// complete cache of usable glyph bitmaps laid out in a texture atlas (in no
+/// particular packing order). nom::Label uses the font's texture atlas in
+/// addition to the font's glyph metrics (the bounds being most critical for
+/// rendering from this atlas to the screen).
+///
+/// See the source files of nom::BitmapFont for a complete example of how to
+/// write a custom font resource class that is suitable for nom::Label to
+/// render from. Supporting data structures include: nom::FontMetrics,
+/// nom::FontPage, nom::FontRow, nom::Glyph and so on.
+///
+/// \code
+///
+///       [USAGE EXAMPLE STUB]
+///
+/// \endcode

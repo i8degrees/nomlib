@@ -99,21 +99,16 @@ const Glyph& BitmapFont::glyph ( uint32 codepoint, uint32 character_size ) const
 {
   GlyphAtlas& glyphs = this->pages_[0].glyphs;
 
-  return glyphs[codepoint];
-}
-/* TODO
   GlyphAtlas::const_iterator it = glyphs.find(codepoint);
-
   if ( it != glyphs.end() )
   {
-    return it->second;
+    return it->second; // Found a match
   }
   else
   {
-    // FIXME: implement support for handling this condition
-    return Glyph();
+    return glyphs[codepoint]; // Err (probably going to receive an empty glyph)
   }
-*/
+}
 
 bool BitmapFont::set_point_size ( sint size )
 {

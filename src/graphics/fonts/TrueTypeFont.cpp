@@ -127,20 +127,15 @@ const Glyph& TrueTypeFont::glyph ( uint32 codepoint, uint32 character_size ) con
 {
   GlyphAtlas& glyphs = this->pages_[character_size].glyphs;
 
-  return glyphs[codepoint];
-/* TODO
   GlyphAtlas::const_iterator it = glyphs.find(codepoint);
-
   if ( it != glyphs.end() )
   {
-    return it->second;
+    return it->second; // Found a match
   }
   else
   {
-    // FIXME: implement support for handling this condition
-    return Glyph();
+    return glyphs[codepoint]; // Err (probably going to receive an empty glyph)
   }
-*/
 }
 
 int TrueTypeFont::outline ( /*uint32 character_size*/void ) /*const*/

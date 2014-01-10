@@ -73,8 +73,6 @@ class IFont
     virtual sint newline ( uint32 = 0 ) const = 0;
     virtual sint spacing ( uint32 = 0 ) const = 0;
     virtual sint kerning ( uint32, uint32, uint32 = 0 ) const = 0;
-
-    virtual bool build ( uint32 = 0 ) = 0;
 };
 
 } // namespace nom

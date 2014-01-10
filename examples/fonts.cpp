@@ -90,7 +90,7 @@ class App: public nom::SDL_App
       nom::uint32 window_flags = 0; //SDL_WINDOW_RESIZABLE
       if ( nom::set_hint ( SDL_HINT_RENDER_VSYNC, "0" ) == false )
       {
-NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
+        NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
       }
 /*
       if ( nom::set_hint ( SDL_HINT_RENDER_SCALE_QUALITY, "Nearest" ) == false )
@@ -113,51 +113,8 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
         return false;
       }
 
-      if ( this->bitmap_font.load ( RESOURCE_BITMAP_FONT ) == false )
-      {
-        nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
-        return false;
-      }
-      this->label_bfont.set_font ( this->bitmap_font );
-/*
-      if ( this->bitmap_small_font.load ( RESOURCE_BITMAP_SMALL_FONT ) == false )
-      {
-        nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_SMALL_FONT );
-        return false;
-      }
-*/
-      if ( this->truetype_font.load ( RESOURCE_TRUETYPE_FONT ) == false )
-      {
-        nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
-        return false;
-      }
-
-      this->label_tfont.set_font ( this->truetype_font );
-
-      this->label_bfont.set_position  ( ( this->window_size.x
-                                          -
-                                          this->label_bfont.width() ) / 2,
-                                        ( this->window_size.y
-                                          -
-                                          this->label_bfont.height() ) / 2
-                                      );
-
-      this->label_tfont.set_position(24,24);
-
-      this->label_bfont.set_text ( RESOURCE_FONT_TEXT_STRING );
-      this->label_bfont.set_color ( NOM_COLOR4U_WHITE );
-
-      this->label_bfont.set_alignment ( nom::Label::Alignment::TopLeft );
-      this->label_tfont.set_alignment ( nom::Label::Alignment::TopLeft );
-
-      this->label_tfont.set_text ( RESOURCE_FONT_TEXT_STRING );
-
-      // What was previously internally known as nom::Label::FontStyle::Faded
-      //this->label_bfont.set_color ( nom::Color4u(195,209,228) );
-      //this->label_tfont.set_color ( nom::Color4u(195,209,228) );
-
-      //this->label_tfont.set_text_size ( 24 );
-      //this->label_bfont.set_text_size ( 24 ); // NO-OP
+      this->load_bitmap_font();
+      this->load_truetype_font();
 
       return true;
     } // onInit
@@ -196,6 +153,7 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
         } // end refresh cycle
 
         this->window.fill ( NOM_COLOR4U_PRIMARY_COLORKEY );
+
         this->label_bfont.draw ( this->window );
         this->label_tfont.draw ( this->window );
       } // end while SDL_App::running() is true
@@ -268,6 +226,58 @@ NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
 
     nom::Label label_bfont;
     nom::Label label_tfont;
+
+    bool load_bitmap_font ( void )
+    {
+      if ( this->bitmap_font.load ( RESOURCE_BITMAP_FONT ) == false )
+      {
+        nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
+        return false;
+      }
+      this->label_bfont.set_font ( this->bitmap_font );
+
+/*
+      if ( this->bitmap_small_font.load ( RESOURCE_BITMAP_SMALL_FONT ) == false )
+      {
+        nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_SMALL_FONT );
+        return false;
+      }
+*/
+
+      this->label_bfont.set_position  ( ( this->window_size.x
+                                          -
+                                          this->label_bfont.width() ) / 2,
+                                        ( this->window_size.y
+                                          -
+                                          this->label_bfont.height() ) / 2
+                                      );
+
+      this->label_bfont.set_text ( RESOURCE_FONT_TEXT_STRING );
+      this->label_bfont.set_color ( NOM_COLOR4U_WHITE );
+      //this->label_bfont.set_color ( nom::Color4u(195,209,228) );
+      this->label_bfont.set_text_size ( 24 ); // NO-OP
+      this->label_bfont.set_alignment ( nom::Label::Alignment::TopLeft );
+
+      return true;
+    }
+
+    bool load_truetype_font ( void )
+    {
+      if ( this->truetype_font.load ( RESOURCE_TRUETYPE_FONT ) == false )
+      {
+        nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
+        return false;
+      }
+      this->label_tfont.set_font ( this->truetype_font );
+
+      this->label_tfont.set_position(24,24);
+      //this->label_tfont.set_color ( nom::Color4u(195,209,228) );
+      this->label_tfont.set_text ( RESOURCE_FONT_TEXT_STRING );
+      //this->label_tfont.set_text_size ( 24 );
+      this->label_tfont.set_alignment ( nom::Label::Alignment::TopLeft );
+
+      return true;
+    }
 }; // class App
 
 nom::int32 main ( nom::int32 argc, char* argv[] )

@@ -29,6 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GRAPHICS_FONTS_FONT_METRICS_HPP
 #define NOMLIB_GRAPHICS_FONTS_FONT_METRICS_HPP
 
+#include <string>
+
 #include "nomlib/config.hpp"
 
 namespace nom {

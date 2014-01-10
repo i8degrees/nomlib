@@ -45,7 +45,7 @@ MessageBox::~MessageBox ( void )
 
 MessageBox::MessageBox  (
                           int32 x, int32 y, int32 width, int32 height,
-                          enum FrameStyle style,
+                          enum MessageBox::Style style,
                           const Gradient& background
                         ) :
   enabled_ ( true ),
@@ -62,7 +62,7 @@ MessageBox::MessageBox  (
 
   this->drawable.push_back ( Gradient::SharedPtr ( new Gradient ( gradient_color, Coords ( this->coords.x, this->coords.y, this->coords.w, this->coords.h ), 0, 0, background.fill_direction() ) ) );
 
-  if ( style == FrameStyle::Gray )
+  if ( style == MessageBox::Style::Gray )
   {
     this->drawable.push_back ( GrayFrame::SharedPtr ( new GrayFrame ( x, y, width, height, padding ) ) );
   }

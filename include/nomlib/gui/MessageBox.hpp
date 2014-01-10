@@ -45,22 +45,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
   namespace ui {
 
-/// \todo Relocate me to nom::GrayFrame
-enum FrameStyle
-{
-  None = 0,
-  Gray = 1
-};
-
 /// \brief Simple UI interface for drawing a styled message box
 class MessageBox: public IDrawable
 {
   public:
+    enum Style
+    {
+      None = 0,
+      Gray = 1
+    };
+
     MessageBox ( void );
 
     MessageBox  (
                   int32 x, int32 y, int32 width, int32 height,
-                  enum FrameStyle style, const Gradient& background
+                  enum MessageBox::Style style, const Gradient& background
                 );
 
     MessageBox  (

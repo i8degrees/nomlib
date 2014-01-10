@@ -244,7 +244,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
                                                 INFO_BOX_HEIGHT[0],
                                                 // Use the built-in "gray" frame
                                                 // style
-                                                nom::ui::FrameStyle::Gray,
+                                                nom::ui::MessageBox::Style::Gray,
                                                 // Use a custom background style
                                                 // object. A copy is made of
                                                 // the object, so forgetting
@@ -264,7 +264,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
                                                 INFO_BOX_HEIGHT[1],
                                                 // Use the built-in "gray" frame
                                                 // style
-                                                nom::ui::FrameStyle::Gray,
+                                                nom::ui::MessageBox::Style::Gray,
                                                 // Use a custom background style
                                                 // object
                                                 gradient

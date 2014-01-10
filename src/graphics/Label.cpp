@@ -59,18 +59,20 @@ Label::Label ( const IFont& font )  :
 
 Label::Label  ( const std::string& text,
                 const IFont& font,
-                uint character_size
+                uint character_size,
+                enum TextAlignment align // Default parameter (TopLeft)
               )  :
   Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_ ( text ),
   text_size_ ( character_size ),
   color_ ( NOM_COLOR4U_WHITE ),
-  style_ ( Label::FontStyle::Regular ),
-  alignment_ ( Label::TextAlignment::MiddleLeft )
+  style_ ( Label::FontStyle::Regular )
 {
   NOM_LOG_TRACE(NOM);
 
   this->set_font ( font );
+  this->set_alignment ( align );
+}
 }
 
 Label::Label ( const Label& copy ) :

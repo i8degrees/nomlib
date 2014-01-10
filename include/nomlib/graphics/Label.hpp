@@ -95,8 +95,13 @@ class Label: public Transformable
     /// Construct a label, initializing it with a font (deriving from IFont)
     Label ( const IFont& font );
 
-    /// Construct a label
-    Label ( const std::string& text, const IFont& font, uint character_size );
+    /// Construct a label, initializing it with a text string, an IFont
+    /// reference, character size and text alignment.
+    Label ( const std::string& text,
+            const IFont& font,
+            uint character_size,
+            enum TextAlignment align = Label::TopLeft
+          );
 
     /// Copy constructor
     Label ( const Label& copy );

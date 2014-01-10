@@ -155,8 +155,8 @@ class Texture
 
     /// Calculate this object's bits per pixel (color depth)
     ///
-    /// \return Unsigned 8-bit integer (8, 16, 24 or 32 bits per pixel); zero (0)
-    /// on error (unknown color depth).
+    /// \returns  Integer value of 8, 16, 24 or 32 on success; 32-bit if the
+    ///           color depth is unknown.
     uint8 bits_per_pixel ( void ) const;
 
     /// Obtain the blending mode used for texture copies

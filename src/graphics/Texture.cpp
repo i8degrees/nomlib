@@ -213,11 +213,13 @@ uint8 Texture::bits_per_pixel ( void ) const
 {
   switch ( this->bytes_per_pixel() )
   {
-    default: return 0; break; // Unknown color depth
-
     case 1: return 8; break; // 8-bit bpp
     case 2: return 16; break; // 16-bit bpp
     case 3: return 24; break; // 24-bit bpp
+    default: // Unknown color depth; log a debugging message & assume 32-bit bpp
+    {
+      NOM_LOG_ERR ( NOM, "Could not determine color depth for pixel reading; assuming 32-bit" );
+    }
     case 4: return 32; break; // 32-bit bpp
   }
 }
@@ -552,10 +554,7 @@ uint32 Texture::pixel ( int32 x, int32 y )
       break;
     }
 
-    default: // Unknown color depth; log a debug message & assume 32-bit bpp
-    {
-      NOM_LOG_ERR ( NOM, "Could not determine color depth for pixel reading; assuming 32-bit" );
-    }
+    default: // Unknown color depth; assuming 32-bit bpp
     case 32:
     {
       uint32* pixels = static_cast<uint32*> ( this->pixels() );

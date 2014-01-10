@@ -108,14 +108,27 @@ class Label: public Transformable
     /// \remarks  This calculation should mimic the rendering calculations
     ///           precisely.
     ///
-    /// \todo Support multi-line texts
-    int width ( void ) const;
+    /// \returns  Non-negative integer value of the object's text string width,
+    ///           in pixels, on success. Zero (0) integer value on failure;
+    ///           a possible combination of: no font, bad font, no text string
+    ///           etc.
+    ///
+    /// \todo Support multi-line texts (newline character handling)
+    uint width ( void ) const;
 
     /// \brief Obtain the text height in pixels of the set text
     ///
     /// \remarks  This calculation should mimic the rendering calculations
     ///           precisely.
-    int height ( void ) const;
+    ///
+    /// \returns  Non-negative integer value of the object's text string height,
+    ///           in pixels, on success. Zero (0) integer value on failure;
+    ///           a possible combination of: no font, bad font, no text string
+    ///           etc.
+    ///
+    /// \todo     We *may* have a better height value to use in our height
+    // computation -- see nom::FontMetrics.
+    uint height ( void ) const;
 
     /// Get label's text string
     const std::string& text ( void ) const;

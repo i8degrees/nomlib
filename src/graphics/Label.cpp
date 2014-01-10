@@ -129,15 +129,15 @@ enum IFont::FontType Label::type ( void ) const
   return IFont::FontType::NotDefined;
 }
 
-int Label::width ( void ) const
+uint Label::width ( void ) const
 {
-  int text_width = 0;
+  uint text_width = 0;
   std::string text_buffer = this->text();
 
   if ( this->valid() == false )
   {
     NOM_LOG_ERR( NOM, "Invalid label font for width calculation" );
-    return -1;
+    return text_width;
   }
 
   for ( uint32 pos = 0; pos < text_buffer.length(); ++pos )
@@ -180,15 +180,15 @@ int Label::width ( void ) const
   return text_width;
 }
 
-int Label::height ( void ) const
+uint Label::height ( void ) const
 {
-  int text_height = 0;
+  uint text_height = 0;
   std::string text_buffer = this->text();
 
   if ( this->valid() == false )
   {
     NOM_LOG_ERR( NOM, "Invalid label font for height calculation" );
-    return -1;
+    return text_height;
   }
 
   for ( uint32 pos = 0; pos < text_buffer.length(); ++pos )

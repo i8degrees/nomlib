@@ -171,6 +171,11 @@ NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
   return true;
 }
 
+struct FontMetrics TrueTypeFont::metrics ( void ) const
+{
+  return this->metrics_;
+}
+
 bool TrueTypeFont::build ( uint32 character_size )
 {
   int ret = 0;                      // Error code
@@ -412,11 +417,6 @@ const IntRect TrueTypeFont::glyph_rect ( FontPage& page, int width, int height )
   row->width += width;
 
   return rect;
-}
-
-struct FontMetrics TrueTypeFont::metrics ( void ) const
-{
-  return this->metrics_;
 }
 
 } // namespace nom

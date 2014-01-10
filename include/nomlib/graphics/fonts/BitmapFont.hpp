@@ -100,6 +100,8 @@ class BitmapFont: public IFont
                 bool use_cache = false
               );
 
+    struct FontMetrics metrics ( void ) const;
+
   private:
     /// Trigger a build of the font characteristics gleaned from the image file;
     /// recalculate the character sizes, coordinate origins, spacing, etc.
@@ -111,7 +113,6 @@ class BitmapFont: public IFont
 
     sint sheet_width ( void ) const;
     sint sheet_height ( void ) const;
-    struct FontMetrics metrics ( void ) const;
 
     /// The type of font we are
     const enum IFont::FontType type_;

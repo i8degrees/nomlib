@@ -152,6 +152,11 @@ bool BitmapFont::load ( const std::string& filename, const Color4u& colorkey,
   return true;
 }
 
+struct FontMetrics BitmapFont::metrics ( void ) const
+{
+  return this->metrics_;
+}
+
 bool BitmapFont::build ( uint32 character_size )
 {
   // The glyph used to base every glyph's height, Y bounds coordinate and
@@ -346,10 +351,4 @@ const GlyphPage& BitmapFont::pages ( void ) const
   return this->pages_;
 }
 
-struct FontMetrics BitmapFont::metrics ( void ) const
-{
-  return this->metrics_;
-}
-
 } // namespace nom
-

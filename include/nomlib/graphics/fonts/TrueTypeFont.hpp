@@ -103,6 +103,8 @@ class TrueTypeFont: public IFont
     /// this writing, TTF and FON file formats are known to be supported.
     bool load ( const std::string& filename, bool use_cache = false );
 
+    struct FontMetrics metrics ( void ) const;
+
   private:
     /// Trigger a rebuild of the font metrics from the current font; this
     /// recalculates character sizes, coordinate origins, spacing, etc.
@@ -127,8 +129,6 @@ class TrueTypeFont: public IFont
     ///
     /// \note Derived from SFML's sf::Font class -- thanks!
     const IntRect glyph_rect ( FontPage& page, int width, int height ) const;
-
-    struct FontMetrics metrics ( void ) const;
 
     /// The type of font we are
     const enum IFont::FontType type_;

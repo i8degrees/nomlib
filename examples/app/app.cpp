@@ -59,10 +59,18 @@ const nom::int32 WINDOW_HEIGHT = 448;
 const nom::int32 MAXIMUM_WINDOWS = 3;
 
 /// Position & size declarations for our info_box object
-const nom::sint INFO_BOX_WIDTH = 200;
-const nom::sint INFO_BOX_HEIGHT = 48;
-const nom::sint INFO_BOX_ORIGIN_X = ( WINDOW_WIDTH / 2 - INFO_BOX_WIDTH ) / 2;
-const nom::sint INFO_BOX_ORIGIN_Y = ( WINDOW_HEIGHT - INFO_BOX_HEIGHT ) / 2;
+const nom::sint INFO_BOX_WIDTH[2] = { 200, 300 };
+const nom::sint INFO_BOX_HEIGHT[2] = { 48, 48 };
+
+const nom::sint INFO_BOX_ORIGIN_X[2] =  {
+                                          ( WINDOW_WIDTH / 2 - INFO_BOX_WIDTH[0] ) / 2,
+                                          ( (WINDOW_WIDTH/2) - INFO_BOX_WIDTH[1] ) / 2
+                                        };
+
+const nom::sint INFO_BOX_ORIGIN_Y[2] =  {
+                                          ( WINDOW_HEIGHT - INFO_BOX_HEIGHT[0] ) / 2,
+                                          ( WINDOW_HEIGHT - 100 - INFO_BOX_HEIGHT[1] )
+                                        };
 
 /// Relative file path name of our resource example
 const nom::Path p;
@@ -78,17 +86,35 @@ const std::string RESOURCE_SPRITE = APP_RESOURCES_DIR + p.native() + "cursors.js
 /// Copyright (c) 2013 Fielding Johnston. All rights reserved.
 const std::string RESOURCE_STATIC_IMAGE = APP_RESOURCES_DIR + p.native() + "boardoutline.png";
 
-/// Relative filename path to saved screenshot example
+/// Relative filename path to saved screen shot example
 ///
 /// Default path should resolve to the same directory as the app example
 /// executable
 const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
 
+/// Text string displayed on our message boxes
+const std::string RESOURCE_INFO_BOX_TITLE_STRINGS[2] = { "INFO.", "INFO." };
+const std::string RESOURCE_INFO_BOX_TEXT_STRINGS[4] = { "I am a Bitmap Font!", "Use the arrow keys to update me...", "Yeah Buddy!!!", "...Light weight!" };
+const enum nom::Label::TextAlignment RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[9] = {
+                                                                              nom::Label::TextAlignment::TopLeft,       // 0
+                                                                              nom::Label::TextAlignment::TopCenter,
+                                                                              nom::Label::TextAlignment::TopRight,
+                                                                              nom::Label::TextAlignment::MiddleLeft,
+                                                                              nom::Label::TextAlignment::MiddleCenter,  // 4
+                                                                              nom::Label::TextAlignment::MiddleRight,
+                                                                              nom::Label::TextAlignment::BottomLeft,
+                                                                              nom::Label::TextAlignment::BottomCenter,
+                                                                              nom::Label::TextAlignment::BottomRight    // 8
+                                                                            };
+
 /// \brief Usage example
 class App: public nom::SDL_App
 {
   public:
-    App ( nom::int32 argc, char* argv[] )
+    App ( nom::int32 argc, char* argv[] ) :
+      sprite_angle ( -90.0f ),
+      selected_font ( 0 ),
+      selected_alignment ( 0 )
     {
       NOM_LOG_TRACE ( NOM );
 
@@ -100,8 +126,6 @@ class App: public nom::SDL_App
         exit ( NOM_EXIT_FAILURE );
       }
       atexit(nom::quit);
-
-      this->deg = 0;
     } // App
 
     ~App ( void )
@@ -111,8 +135,10 @@ class App: public nom::SDL_App
 
     bool onInit ( void )
     {
-      nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
+      // nom::Gradient utilizes nom::Rectangle
+      nom::Gradient gradient;
 
+      nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
       if ( nom::set_hint ( SDL_HINT_RENDER_VSYNC, "0" ) == false )
       {
 NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
@@ -166,7 +192,6 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
         nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
         return false;
       }
-      this->label_tfont.set_font ( this->truetype_font );
 
       // Load a sprite sheet, using the sheet_filename as the base path to load
       // the image file from disk
@@ -197,47 +222,55 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
 
       this->window[0].set_active();
 
-      this->label.set_font ( this->bitmap_font );
-      this->label_title.set_font ( this->bitmap_small_font );
-      this->label.set_text ( "I am a Bitmap Font!" );
-
-      // FIXME: setting alignment here messes up alignment within our info_box
-      //this->label.set_alignment ( nom::Label::TextAlignment::MiddleCenter );
-
-      // TODO: implement method calls
-      // this->label_tfont.set_font_size ( 18 );
-      this->label_tfont.set_text ( "Use arrow keys to change cursor!" );
-      this->label_tfont.set_position ( (this->window_size[0].x - 200) / 2, this->window_size[0].y - 100 );
-
       // Initialize the background to use in our info_box object as a gradient
       // filled background
-      this->gradient.set_start_color ( NOM_COLOR4U_GRAY );
-      this->gradient.set_end_color ( NOM_COLOR4U_LIGHT_GRAY );
-      this->gradient.set_fill_direction ( nom::Gradient::FillDirection::Left );
+      gradient.set_start_color ( NOM_COLOR4U_GRAY );
+      gradient.set_end_color ( NOM_COLOR4U_LIGHT_GRAY );
+      gradient.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
-      // Initialize our info_box object
-      this->info_box = nom::ui::MessageBox  (
-                                              INFO_BOX_ORIGIN_X,
-                                              INFO_BOX_ORIGIN_Y,
-                                              INFO_BOX_WIDTH,
-                                              INFO_BOX_HEIGHT,
-                                              // Use the built-in "gray" frame
-                                              // style
-                                              nom::ui::FrameStyle::Gray,
-                                              // Use a custom background style
-                                              // object
-                                              this->gradient
-                                            );
+      // Initialize our info_box[0] object
+      this->info_box[0] = nom::ui::MessageBox (
+                                                INFO_BOX_ORIGIN_X[0],
+                                                INFO_BOX_ORIGIN_Y[0],
+                                                INFO_BOX_WIDTH[0],
+                                                INFO_BOX_HEIGHT[0],
+                                                // Use the built-in "gray" frame
+                                                // style
+                                                nom::ui::FrameStyle::Gray,
+                                                // Use a custom background style
+                                                // object. A copy is made of
+                                                // the object, so forgetting
+                                                // about the object afterwards
+                                                // is OK!
+                                                gradient
+                                              );
 
-      //this->info_box.set_title ( nom::Label::SharedPtr ( nom::Label ( this->label_title ) ) );
-      //this->info_box.set_text ( nom::Label::SharedPtr ( nom::Label ( this->label ) ) );
-      this->info_box.set_title ( this->label_title );
-      this->info_box.set_text ( this->label );
+      this->info_box[0].set_title ( nom::Label ( RESOURCE_INFO_BOX_TITLE_STRINGS[0], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] ) );
+      this->info_box[0].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[0], this->bitmap_font, 12, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] ) );
 
-NOM_DUMP_VAR(this->sprite.size().x); // FIXME: should be 26 (sprite sheet width), but is 130 (total texture size)
-      this->sprite.set_position ( this->info_box.position().x - 26, this->info_box.position().y );
-      this->ani_sprite.set_position ( this->info_box.position().x + this->info_box.size().x + 26, this->info_box.position().y );
-NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
+      // Initialize our info_box[1] object
+      this->info_box[1] = nom::ui::MessageBox (
+                                                INFO_BOX_ORIGIN_X[1],
+                                                INFO_BOX_ORIGIN_Y[1],
+                                                INFO_BOX_WIDTH[1],
+                                                INFO_BOX_HEIGHT[1],
+                                                // Use the built-in "gray" frame
+                                                // style
+                                                nom::ui::FrameStyle::Gray,
+                                                // Use a custom background style
+                                                // object
+                                                gradient
+                                              );
+
+      this->info_box[1].set_title ( nom::Label ( RESOURCE_INFO_BOX_TITLE_STRINGS[1], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] ) );
+      this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[1], this->truetype_font, 12, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] ) );
+
+// FIXME: should be 26 (sprite sheet width), but is 130 (total texture size)
+NOM_DUMP_VAR(this->sprite.size().x);
+      this->sprite.set_position ( this->info_box[0].position().x - 26, this->info_box[0].position().y );
+      this->ani_sprite.set_position ( this->info_box[0].position().x + this->info_box[0].size().x + 26, this->info_box[0].position().y );
+ // 16 is correct
+NOM_DUMP_VAR(this->sprite.size().y);
 
       return true;
     } // onInit
@@ -260,7 +293,8 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           this->onEvent ( &this->event );
         }
 
-        this->info_box.update();
+        this->info_box[0].update();
+        this->info_box[1].update();
         this->sprite.update();
         this->ani_sprite.play();
 
@@ -285,10 +319,14 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           } // end refresh cycle
         } // end for MAXIMUM_WINDOWS update loop
 
+        // Compute rotation angle to pass to renderer
+        this->sprite_angle += 360.0f / this->fps[0].fps_float();
+        if ( this->sprite_angle > 360.0f ) this->sprite_angle -= 360.0f;
+
         this->window[0].fill ( NOM_COLOR4U_PRIMARY_COLORKEY );
-        this->info_box.draw ( this->window[0] );
-        this->label_tfont.draw ( this->window[0] );
-        this->sprite.draw ( this->window[0], this->deg );
+        this->info_box[0].draw ( this->window[0] );
+        this->info_box[1].draw ( this->window[0] );
+        this->sprite.draw ( this->window[0], this->sprite_angle );
         this->ani_sprite.draw ( this->window[0] );
 
         this->window[1].fill ( NOM_COLOR4U_BLACK );
@@ -353,36 +391,116 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
           break;
         }
 
+        case SDLK_PLUS:
+        {
+          // TODO: Increase font size
+          break;
+        }
+        case SDLK_MINUS:
+        {
+          // TODO: Decrease font size
+          break;
+        }
+
+        case SDLK_0:
+        {
+          if ( mod == KMOD_SHIFT )
+          {
+            // TOOD: Reset font size to defaults
+            break;
+          }
+          this->selected_alignment = 0;
+          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), 12, this->select_alignment() ) );
+          break;
+        }
+
+        case SDLK_1:
+        {
+          this->selected_alignment = 1;
+          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), 12, this->select_alignment() ) );
+          break;
+        }
+
+        case SDLK_2:
+        {
+          this->selected_alignment = 2;
+          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), 12, this->select_alignment() ) );
+          break;
+        }
+
+        case SDLK_3:
+        {
+          this->selected_alignment = 3;
+          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), 12, this->select_alignment() ) );
+          break;
+        }
+
+        case SDLK_4:
+        {
+          this->selected_alignment = 4;
+          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), 12, this->select_alignment() ) );
+          break;
+        }
+
+        case SDLK_5:
+        {
+          this->selected_alignment = 5;
+          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), 12, this->select_alignment() ) );
+          break;
+        }
+
+        case SDLK_6:
+        {
+          this->selected_alignment = 6;
+          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), 12, this->select_alignment() ) );
+          break;
+        }
+
+        case SDLK_7:
+        {
+          this->selected_alignment = 7;
+          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), 12, this->select_alignment() ) );
+          break;
+        }
+
+        case SDLK_8:
+        {
+          this->selected_alignment = 8;
+          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), 12, this->select_alignment() ) );
+          break;
+        }
+
+        case SDLK_UP:
+        {
+          // Do something cool
+          break;
+        }
+
+        case SDLK_DOWN:
+        {
+          // Do something cool
+          break;
+        }
+
         case SDLK_LEFT:
         {
           if ( mod == KMOD_LSHIFT )
           {
-            this->deg -= 90;
-            break;
+            this->selected_font = 0; // nom::TrueTypeFont
           }
 
-          nom::int32 id = this->sprite.frame();
-
-          if ( id > 0 ) id--;
-
-          this->sprite.set_frame ( id );
-          this->label_tfont.set_text( "Light weight!" );
+          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), 12, this->select_alignment() ) );
           break;
         }
+
         case SDLK_RIGHT:
         {
           if ( mod == KMOD_LSHIFT )
           {
-            this->deg += 90;
-            break;
+            this->selected_font = 1; // nom::BitmapFont
           }
 
-          nom::int32 id = this->sprite.frame();
-
-          if ( id < this->sprite.frames() - 1 ) id++;
-
-          this->sprite.set_frame ( id );
-          this->label_tfont.set_text( "Yeah buddy!" );
+          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[3], this->select_font(), 12, this->select_alignment() ) );
           break;
         }
 
@@ -434,28 +552,59 @@ NOM_DUMP_VAR(this->sprite.size().y); // 16 is correct
     /// Input events
     Input::Event event;
 
-    /// nom::ui::MessageBox utilizes nom::GrayFrame (which uses nom::Line),
-    /// nom::Gradient and nom::IFont
-    nom::ui::MessageBox info_box;
-
-    /// nom::Gradient utilizes nom::Rectangle
-    nom::Gradient gradient;
+    /// Utilize one of nomlib's advanced class object types -- the dialog
+    /// message box; this is a part of an interface kit with game interfacing in
+    /// mind.
+    nom::ui::MessageBox info_box[2];
 
     /// Texture used as a static background image
     nom::Texture background;
 
+    /// Our spiffy sprites
     nom::SpriteBatch sprite;
+    double sprite_angle;
     nom::AnimatedSprite ani_sprite;
 
+    /// Our font resources for nom::Label, our text rendering API
     nom::BitmapFont bitmap_font;
     nom::BitmapFont bitmap_small_font;
-    nom::Label label;
-    nom::Label label_title;
-
     nom::TrueTypeFont truetype_font;
-    nom::Label label_tfont;
 
-    double deg;
+    int selected_font;
+    int selected_alignment;
+
+    nom::IFont::SharedPtr select_font ( void )
+    {
+      if ( this->selected_font == 0 && this->truetype_font.valid() == true )
+      {
+        return std::shared_ptr<nom::IFont> ( this->truetype_font.clone() );
+      }
+      else if ( this->selected_font == 1 && this->bitmap_font.valid() == true )
+      {
+        return std::shared_ptr<nom::IFont> ( this->bitmap_font.clone() );
+      }
+      else
+      {
+        return nullptr;
+      }
+    }
+
+    enum nom::Label::TextAlignment select_alignment ( void )
+    {
+      switch ( this->selected_alignment )
+      {
+        default:
+        case 0: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0]; break;
+        case 1: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[1]; break;
+        case 2: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[2]; break;
+        case 3: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[3]; break;
+        case 4: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4]; break;
+        case 5: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[5]; break;
+        case 6: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[6]; break;
+        case 7: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[7]; break;
+        case 8: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[8]; break;
+      }
+    }
 }; // class App
 
 nom::int32 main ( nom::int32 argc, char* argv[] )

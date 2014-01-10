@@ -73,6 +73,22 @@ Label::Label  ( const std::string& text,
   this->set_font ( font );
   this->set_alignment ( align );
 }
+
+Label::Label  ( const std::string& text,
+                const IFont::SharedPtr font,
+                uint character_size,
+                enum TextAlignment align // Default parameter (TopLeft)
+              )  :
+  Transformable { 0, 0, 0, 0 }, // Our inherited class
+  text_ ( text ),
+  text_size_ ( character_size ),
+  color_ ( NOM_COLOR4U_WHITE ),
+  style_ ( Label::FontStyle::Regular )
+{
+  NOM_LOG_TRACE(NOM);
+
+  this->set_font ( *font.get() );
+  this->set_alignment ( align );
 }
 
 Label::Label ( const Label& copy ) :

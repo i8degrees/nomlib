@@ -98,8 +98,8 @@ class Image
 
     /// \brief Initialize a nom::Image from an existing SDL_Surface
     ///
-    /// \param buffer   Existing SDL_Surface structure
-    bool initialize ( SDL_SURFACE::RawPtr buffer );
+    /// \param source   Existing SDL_Surface structure
+    bool initialize ( SDL_SURFACE::RawPtr source );
 
     /// Obtain the SDL_Surface struct used in this object instance
     SDL_SURFACE::RawPtr image ( void ) const;
@@ -249,7 +249,7 @@ class Image
     void set_position ( const Point2i& pos );
 
     /// Render a video surface
-    void draw ( SDL_SURFACE::RawPtr, const IntRect& bounds ) const;
+    void draw ( SDL_SURFACE::RawPtr destination, const IntRect& bounds ) const;
 
   private:
     /// Container for our image pixels buffer

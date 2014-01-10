@@ -118,10 +118,11 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Image::initialize ( SDL_SURFACE::RawPtr buffer )
+bool Image::initialize ( SDL_SURFACE::RawPtr source )
 {
   //if ( this->valid() == true ) this->image_.reset();
   this->image_.reset ( buffer, priv::FreeSurface );
+  this->image_.reset( source, priv::FreeSurface );
 
   if ( this->valid() == false )
   {
@@ -563,14 +564,14 @@ void Image::set_position ( const Point2i& pos )
   this->position_.y = pos.y;
 }
 
-void Image::draw ( SDL_SURFACE::RawPtr buffer, const IntRect& bounds ) const
+void Image::draw ( SDL_SURFACE::RawPtr destination, const IntRect& bounds ) const
 {
   SDL_Rect blit_coords = SDL_RECT ( bounds );
   SDL_Rect blit_offsets = SDL_RECT ( bounds );
 
   if ( blit_offsets.w != -1 && blit_offsets.h != -1 )
   {
-    if ( SDL_BlitSurface ( this->image(), &blit_offsets, buffer, &blit_coords ) != 0 )
+    if ( SDL_BlitSurface ( this->image(), &blit_offsets, destination, &blit_coords ) != 0 )
     {
       NOM_LOG_ERR ( NOM, SDL_GetError() );
       return; // ERR
@@ -578,7 +579,7 @@ void Image::draw ( SDL_SURFACE::RawPtr buffer, const IntRect& bounds ) const
   }
   else
   {
-    if ( SDL_BlitSurface ( this->image(), nullptr, buffer, &blit_coords ) != 0 )
+    if ( SDL_BlitSurface ( this->image(), nullptr, destination, &blit_coords ) != 0 )
     {
       NOM_LOG_ERR ( NOM, SDL_GetError() );
       return; // ERR

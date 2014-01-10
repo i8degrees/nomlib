@@ -92,6 +92,12 @@ class Label: public Transformable
     /// Destructor
     ~Label ( void );
 
+    /// Copy constructor
+    Label ( const Label& copy );
+
+    /// Copy assignment overload
+    Label& operator = ( const Label& other );
+
     /// Construct a label, initializing it with a font (deriving from IFont)
     Label ( const IFont& font );
 
@@ -110,12 +116,6 @@ class Label: public Transformable
             uint character_size,
             enum TextAlignment align = Label::TopLeft
           );
-
-    /// Copy constructor
-    Label ( const Label& copy );
-
-    /// Copy assignment overload
-    Label& operator = ( const Label& other );
 
     Label::RawPtr get ( void );
 

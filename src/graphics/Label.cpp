@@ -45,6 +45,33 @@ Label::~Label ( void )
   NOM_LOG_TRACE ( NOM );
 }
 
+Label::Label ( const Label& copy ) :
+  Transformable { copy.position() }, // Our inherited class
+  font_ { copy.font() },
+  texture_ { copy.texture() },
+  text_ { copy.text() },
+  text_size_ { copy.text_size() },
+  color_ { copy.color() },
+  style_ { copy.style() },
+  alignment_ { copy.alignment() }
+{
+  NOM_LOG_TRACE ( NOM );
+}
+
+Label& Label::operator = ( const Label& other )
+{
+  this->position_ = other.position(); // Our inherited class
+  this->font_ = other.font();
+  this->texture_ = other.texture();
+  this->text_ = other.text();
+  this->text_size_ = other.text_size();
+  this->color_ = other.color();
+  this->style_ = other.style();
+  this->alignment_ = other.alignment();
+
+  return *this;
+}
+
 Label::Label ( const IFont& font )  :
   Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_size_ ( 14 ),
@@ -89,33 +116,6 @@ Label::Label  ( const std::string& text,
 
   this->set_font ( *font.get() );
   this->set_alignment ( align );
-}
-
-Label::Label ( const Label& copy ) :
-  Transformable { copy.position() }, // Our inherited class
-  font_ { copy.font() },
-  texture_ { copy.texture() },
-  text_ { copy.text() },
-  text_size_ { copy.text_size() },
-  color_ { copy.color() },
-  style_ { copy.style() },
-  alignment_ { copy.alignment() }
-{
-  NOM_LOG_TRACE ( NOM );
-}
-
-Label& Label::operator = ( const Label& other )
-{
-  this->position_ = other.position(); // Our inherited class
-  this->font_ = other.font();
-  this->texture_ = other.texture();
-  this->text_ = other.text();
-  this->text_size_ = other.text_size();
-  this->color_ = other.color();
-  this->style_ = other.style();
-  this->alignment_ = other.alignment();
-
-  return *this;
 }
 
 Label::RawPtr Label::get ( void )

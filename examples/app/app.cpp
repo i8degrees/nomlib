@@ -76,7 +76,11 @@ const nom::sint INFO_BOX_ORIGIN_Y[2] =  {
 const nom::Path p;
 const std::string RESOURCE_ICON = APP_RESOURCES_DIR + p.native() + "icon.png";
 
-const std::string RESOURCE_TRUETYPE_FONT = APP_RESOURCES_DIR + p.native() + "arial.ttf";
+const std::string RESOURCE_TRUETYPE_FONT[2] = {
+                                                APP_RESOURCES_DIR + p.native() + "arial.ttf",
+                                                APP_RESOURCES_DIR + p.native() + "TimesNewRoman.ttf"
+                                              };
+
 const std::string RESOURCE_BITMAP_FONT = APP_RESOURCES_DIR + p.native() + "VIII.png";
 const std::string RESOURCE_BITMAP_SMALL_FONT = APP_RESOURCES_DIR + p.native() + "VIII_small.png";
 
@@ -192,9 +196,9 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
         return false;
       }
 
-      if ( this->truetype_font.load ( RESOURCE_TRUETYPE_FONT ) == false )
+      if ( this->truetype_font.load ( RESOURCE_TRUETYPE_FONT[0] ) == false )
       {
-        nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
+        nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT[0] );
         return false;
       }
 

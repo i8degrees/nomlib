@@ -108,7 +108,7 @@ class Label: public Transformable
     /// Construct a label, initializing it with a text string, an IFont
     /// pointer, character size and text alignment.
     Label ( const std::string& text,
-            const IFont::SharedPtr font,
+            const IFont::SharedPtr& font,
             uint character_size,
             enum TextAlignment align = Label::TopLeft
           );

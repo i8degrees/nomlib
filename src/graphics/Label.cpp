@@ -90,7 +90,7 @@ Label::Label  ( const std::string& text,
 }
 
 Label::Label  ( const std::string& text,
-                const IFont::SharedPtr font,
+                const IFont::SharedPtr& font,
                 uint character_size,
                 enum TextAlignment align // Default parameter (TopLeft)
               )  :

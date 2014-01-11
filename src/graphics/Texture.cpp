@@ -392,23 +392,29 @@ TODO */
   // and display format conversion.
 NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
 
-  if ( this->initialize ( image.width(), image.height(), this->optimal_pixel_format(), SDL_TEXTUREACCESS_STREAMING ) == false )
+  if ( flags & SDL_TEXTUREACCESS_STREAMING )
   {
-NOM_LOG_ERR ( NOM, "Error: Failed to initialize texture." );
-    return false;
+    if ( this->initialize ( image.width(), image.height(), this->optimal_pixel_format(), SDL_TEXTUREACCESS_STREAMING ) == false )
+    {
+      NOM_LOG_ERR ( NOM, "Error: Failed to initialize texture." );
+      return false;
+    }
+
+    this->lock ( image.bounds() ); // Safe for writing
+
+    // Copy pixels from image into our freshly initialized texture
+    std::memcpy ( this->pixels(), image.pixels(), image.pitch() * image.height() );
+
+    // Once we unlock the texture, it will be uploaded to the GPU for us!
+    this->unlock();
+  }
+  else // Assume SDL_TEXTUREACCESS_STATIC
+  {
+    this->initialize ( image.image() );
   }
 
   // Set our default blending mode for texture copies
   this->set_blend_mode( SDL_BLENDMODE_BLEND );
-
-  this->lock ( image.bounds() ); // Safe for writing
-
-  // Copy pixels from image into our freshly initialized texture
-  memcpy ( this->pixels(), image.pixels(), image.pitch() * image.height() );
-
-  // Once we unlock the texture, it will be uploaded to the GPU for us!
-  this->unlock();
-
   // Update our Texture clipping bounds with the new source
   this->set_bounds ( image.bounds() );
 

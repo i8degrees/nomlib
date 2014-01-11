@@ -89,7 +89,7 @@ bool Sprite::load (
                     bool use_cache
                   )
 {
-  this->sprite_.load ( filename, 0, use_cache );
+  this->sprite_.load ( filename, SDL_TEXTUREACCESS_STREAMING, use_cache );
 
   if ( this->sprite_.valid() == false )
   {

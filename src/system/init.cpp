@@ -30,7 +30,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-bool init ( int32 argc, char* argv[] )
+bool init_third_party ( uint32 flags )
+{
+  if ( IMG_Init ( IMG_INIT_PNG ) != IMG_INIT_PNG )
+  {
+    NOM_LOG_ERR ( NOM, IMG_GetError() );
+    return false;
+  }
+
+  return true;
+}
+
+bool init ( int argc, char* argv[] )
 {
   NOM_LOG_TRACE ( NOM );
 
@@ -43,11 +54,7 @@ bool init ( int32 argc, char* argv[] )
 
   if ( dir.set_path ( pwd ) == false ) return false;
 
-  if ( TTF_Init () != 0 )
-  {
-    NOM_LOG_ERR(NOM, TTF_GetError());
-    return false;
-  }
+  if ( init_third_party(0) == false ) return false;
 
   return true;
 }
@@ -56,7 +63,7 @@ void quit ( void )
 {
   NOM_LOG_TRACE ( NOM );
 
-  TTF_Quit();
+  IMG_Quit();
 }
 
 } // namespace nom

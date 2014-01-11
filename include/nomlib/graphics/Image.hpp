@@ -58,10 +58,6 @@ class Image
     /// Destructor.
     ~Image ( void );
 
-    /// Construct an Image object with specified flags passed to the library
-    /// extension(s) used in this object.
-    Image ( uint32 img_flags );
-
     /// Copy constructor
     Image ( const Image& copy );
 

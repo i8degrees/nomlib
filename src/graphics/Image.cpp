@@ -40,18 +40,6 @@ Image::~Image ( void )
   NOM_LOG_TRACE ( NOM );
 }
 
-Image::Image ( uint32 flags ) : image_ ( nullptr, priv::FreeSurface )
-{
-NOM_LOG_TRACE ( NOM );
-
-  if ( IMG_Init ( flags ) != flags )
-  {
-NOM_LOG_ERR ( NOM, IMG_GetError() );
-  }
-
-  atexit ( IMG_Quit );
-}
-
 Image::Image ( const Image& copy )  :
   image_ { copy.image() },
   position_ { copy.position_ }

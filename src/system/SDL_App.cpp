@@ -34,12 +34,6 @@ SDL_App::SDL_App ( void )
 {
 NOM_LOG_TRACE ( NOM );
 
-  if ( IMG_Init ( IMG_INIT_PNG ) != IMG_INIT_PNG )
-  {
-    NOM_LOG_ERR ( NOM, IMG_GetError() );
-  }
-
-  atexit ( IMG_Quit );
   this->app_state = true;
 
   this->set_show_fps ( true );

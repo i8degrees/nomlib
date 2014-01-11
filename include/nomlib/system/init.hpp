@@ -32,7 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 
 #include "SDL.h"
-#include "SDL_ttf.h"
+#include "SDL_image.h"
+//#include "SDL_ttf.h"
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/log.hpp"
@@ -41,13 +42,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+bool init_third_party ( uint32 flags );
+
 /// Initialize nomlib
 ///
 /// \note The function call will attempt to change the working directory to
 /// the location of the binary being executed. This is not guaranteed to succeed.
 ///
 /// \note This should be called before calling any other library methods!
-bool init ( int32 argc, char* argv[] );
+bool init ( int argc, char* argv[] );
 
 void quit ( void );
 

@@ -38,11 +38,24 @@ TrueTypeFont::TrueTypeFont ( void ) :
   point_size_ ( 14 )    // Terrible Eyesight (TM)
 {
   NOM_LOG_TRACE ( NOM );
+
+  // We must initialize SDL2_ttf on every instance in order to shutdown properly
+  // without crashing when ran within nom::GameStates
+  if ( TTF_Init () != 0 )
+  {
+    NOM_LOG_ERR(NOM, TTF_GetError());
+  }
 }
 
 TrueTypeFont::~TrueTypeFont ( void )
 {
   NOM_LOG_TRACE ( NOM );
+
+  // Workaround hack to get SDL2_ttf to shutdown properly without crashing when
+  // ran within nom::GameStates
+  this->font_.reset();
+
+  //TTF_Quit();
 }
 
 TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy ) :

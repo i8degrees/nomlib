@@ -73,12 +73,6 @@ bool Texture::initialize ( SDL_SURFACE::RawPtr source )
   // Cache the size of our new Texture object with the existing surface info
   this->set_bounds ( IntRect(0, 0, source->w, source->h) );
 
-  // FIXME: See GitHub Issue #8
-  //
-  // By commenting this line out, we are creating a massive memory leak in
-  // TrueTypeFont
-  //priv::FreeSurface ( source );
-
   return true;
 }
 

@@ -455,8 +455,8 @@ const IntRect TrueTypeFont::glyph_rect ( FontPage& page, int width, int height )
           sheet.save_png("ttf_src.png");
         #endif
 
-        // Re-initialize our texture sheet with our resized sheet
-        page.texture->initialize ( sheet.image() );
+        // Re-initialize our texture sheet with a copy of the resized sheet
+        page.texture->initialize ( sheet.clone() );
       }
       else
       {

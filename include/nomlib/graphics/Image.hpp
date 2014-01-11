@@ -64,6 +64,11 @@ class Image
     /// Copy assignment constructor
     Image& operator = ( const Image& other );
 
+    /// \brief Make a copy of the existing surface
+    ///
+    /// \returns Pointer to a new SDL_Surface structure
+    SDL_SURFACE::RawPtr clone ( void ) const;
+
     /// Obtain the SDL_Surface struct used in this object instance
     SDL_SURFACE::RawPtr image ( void ) const;
 

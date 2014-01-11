@@ -55,6 +55,14 @@ Image& Image::operator = ( const Image& other )
   return *this;
 }
 
+SDL_SURFACE::RawPtr Image::clone ( void ) const
+{
+  // Find the optimal pixel format
+  RendererInfo caps = Window::caps( Window::context() );
+
+  return SDL_ConvertSurfaceFormat ( this->image(), caps.optimal_texture_format(), 0 );
+}
+
 SDL_SURFACE::RawPtr Image::image ( void ) const
 {
   return this->image_.get();
@@ -133,10 +141,7 @@ bool Image::initialize ( SDL_SURFACE::RawPtr source )
     return false;
   }
 
-  // FIXME: See GitHub Issue #9
-  //
-  // By commenting this line out, we are creating a small memory leak
-  //priv::FreeSurface ( source );
+  priv::FreeSurface ( source );
 
   return true;
 }

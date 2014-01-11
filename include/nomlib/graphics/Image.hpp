@@ -49,7 +49,7 @@ namespace nom {
 class Image
 {
   public:
-    typedef const Image* RawPtr;
+    typedef Image* RawPtr;
     typedef std::shared_ptr<Image> SharedPtr;
 
     /// Default constructor -- initializes to sane defaults.
@@ -64,9 +64,11 @@ class Image
     /// Copy assignment constructor
     Image& operator = ( const Image& other );
 
-    Image::SharedPtr clone ( void ) const;
+    /// Obtain the SDL_Surface struct used in this object instance
+    SDL_SURFACE::RawPtr image ( void ) const;
 
-    Image::RawPtr get ( void ) const;
+    /// Is this object initialized? Valid when *NOT* nullptr
+    bool valid ( void ) const;
 
     /// Initialize an image surface using the data from an existing pixel buffer
     /// source.
@@ -96,12 +98,6 @@ class Image
     ///
     /// \param source   Existing SDL_Surface structure
     bool initialize ( SDL_SURFACE::RawPtr source );
-
-    /// Obtain the SDL_Surface struct used in this object instance
-    SDL_SURFACE::RawPtr image ( void ) const;
-
-    /// Is this object initialized? Valid when *NOT* nullptr
-    bool valid ( void ) const;
 
     int32 width ( void ) const;
     int32 height ( void ) const;

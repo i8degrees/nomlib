@@ -55,9 +55,16 @@ Image& Image::operator = ( const Image& other )
   return *this;
 }
 
-Image::SharedPtr Image::clone ( void ) const
+SDL_SURFACE::RawPtr Image::image ( void ) const
 {
-  return Image::SharedPtr ( new Image ( *this ) );
+  return this->image_.get();
+}
+
+bool Image::valid ( void ) const
+{
+  if ( this->image() != nullptr ) return true;
+
+  return false;
 }
 
 bool Image::initialize( void* pixels, int32 width, int32 height,
@@ -158,23 +165,6 @@ bool Image::initialize ( const Point2i& size )
   }
 
   return true;
-}
-
-Image::RawPtr Image::get ( void ) const
-{
-  return this;
-}
-
-SDL_SURFACE::RawPtr Image::image ( void ) const
-{
-  return this->image_.get();
-}
-
-bool Image::valid ( void ) const
-{
-  if ( this->image() != nullptr ) return true;
-
-  return false;
 }
 
 int32 Image::width ( void ) const

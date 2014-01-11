@@ -147,7 +147,10 @@ class Window:
 
     void set_window_title ( const std::string& title );
 
-    /// Set an icon for this window
+    /// \brief Set an icon for this window
+    ///
+    /// \remarks  A nom::Window must first be initialized before using this
+    ///           method call; see nom::Window::create
     bool set_window_icon ( const std::string& filename );
 
     /// Obtain this window's unique identifier

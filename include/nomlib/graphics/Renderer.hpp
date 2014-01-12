@@ -61,7 +61,7 @@ class Renderer
     /// Initializes with the first rendering driver supporting our request
     /// flags
     /// Enables video acceleration when able
-    bool initialize ( SDL_WINDOW::RawPtr window, int32 rendering_driver = -1, uint32 context_flags = SDL_RENDERER_ACCELERATED );
+    bool create ( SDL_WINDOW::RawPtr window, int32 rendering_driver = -1, uint32 context_flags = SDL_RENDERER_ACCELERATED );
 
     /// Get a raw pointer to the SDL_Renderer in use
     SDL_RENDERER::RawPtr renderer ( void ) const;

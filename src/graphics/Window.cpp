@@ -68,7 +68,7 @@ NOM_LOG_ERR ( NOM, "Could not create SDL window." );
     return false;
   }
 
-  this->initialize ( this->window(), -1, context_flags );
+  Renderer::create ( this->window(), -1, context_flags );
   if ( this->renderer_valid() == false )
   {
 NOM_LOG_ERR ( NOM, "Could not create SDL renderer." );
@@ -385,10 +385,7 @@ bool Window::save_screenshot ( const std::string& filename ) const
   uint32 blue_mask = 0;
   uint32 alpha_mask = 0;
 
-  uint32 optimal_pixel_format = caps.optimal_texture_format();
-  // We need ARGB pixel ordering in order to save the bitmap to disk correctly;
-  // otherwise the colors are out of order!
-  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( optimal_pixel_format, &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
+  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( caps.optimal_texture_format(), &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
   {
     NOM_LOG_ERR( NOM, SDL_GetError() );
     return false;

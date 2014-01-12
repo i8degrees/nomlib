@@ -44,7 +44,7 @@ NOM_LOG_TRACE ( NOM );
   // Thanks for all the fish!
 }
 
-bool Renderer::initialize ( SDL_WINDOW::RawPtr window, int32 rendering_driver, uint32 context_flags )
+bool Renderer::create ( SDL_WINDOW::RawPtr window, int32 rendering_driver, uint32 context_flags )
 {
 NOM_LOG_TRACE ( NOM );
 

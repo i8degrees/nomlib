@@ -90,7 +90,7 @@ class Label: public Transformable
     Label ( void );
 
     /// Destructor
-    ~Label ( void );
+    virtual ~Label ( void );
 
     /// Copy constructor
     Label ( const Label& copy );
@@ -102,7 +102,7 @@ class Label: public Transformable
     /// reference, character size and text alignment.
     Label ( const std::string& text,
             const IFont& font,
-            uint character_size,
+            uint character_size = 14,
             enum Label::Alignment align = Label::Alignment::TopLeft
           );
 
@@ -110,7 +110,7 @@ class Label: public Transformable
     /// pointer, character size and text alignment.
     Label ( const std::string& text,
             const IFont::SharedPtr& font,
-            uint character_size,
+            uint character_size = 14,
             enum Label::Alignment align = Label::Alignment::TopLeft
           );
 

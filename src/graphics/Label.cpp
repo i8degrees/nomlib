@@ -74,8 +74,8 @@ Label& Label::operator = ( const Label& other )
 
 Label::Label  ( const std::string& text,
                 const IFont& font,
-                uint character_size,
-                enum Label::Alignment align // Default parameter (TopLeft)
+                uint character_size,        // Default parameter
+                enum Label::Alignment align // Default parameter
               )  :
   Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_ ( text ),
@@ -91,8 +91,8 @@ Label::Label  ( const std::string& text,
 
 Label::Label  ( const std::string& text,
                 const IFont::SharedPtr& font,
-                uint character_size,
-                enum Label::Alignment align // Default parameter (TopLeft)
+                uint character_size,        // Default parameter
+                enum Label::Alignment align // Default parameter
               )  :
   Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_ ( text ),

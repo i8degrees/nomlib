@@ -60,7 +60,7 @@ class Sprite:
     /// Copy assignment operator.
     Sprite& operator = ( const Sprite& other );
 
-    const Texture& sprite ( void ) const;
+    SDL_TEXTURE::RawPtr texture ( void ) const;
 
     const Point2i size ( void ) const;
     const Point2i position ( void ) const;

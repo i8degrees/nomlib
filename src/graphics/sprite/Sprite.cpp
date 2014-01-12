@@ -50,7 +50,7 @@ NOM_LOG_TRACE ( NOM );
 
 Sprite& Sprite::operator = ( const Sprite& other )
 {
-  this->sprite_ = other.sprite();
+  this->sprite_ = other.sprite_;
   this->set_position ( other.position().x, other.position().y );
   this->set_state ( other.state() );
   this->scale_factor = other.scale_factor;
@@ -58,9 +58,9 @@ Sprite& Sprite::operator = ( const Sprite& other )
   return *this;
 }
 
-const Texture& Sprite::sprite ( void ) const
+SDL_TEXTURE::RawPtr Sprite::texture ( void ) const
 {
-  return this->sprite_;
+  return this->sprite_.texture();
 }
 
 const Point2i Sprite::size ( void ) const

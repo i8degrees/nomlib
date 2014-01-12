@@ -162,13 +162,13 @@ void Gradient::strategy_top_down ( void )
 {
   uint32 y_offset = ( this->coords_.y + this->coords_.h ) - this->y_margin_;
 
-  float currentR = (float) gradient_[0].red;
-  float currentG = (float) gradient_[0].green;
-  float currentB = (float) gradient_[0].blue;
+  float currentR = (float) gradient_[0].r;
+  float currentG = (float) gradient_[0].g;
+  float currentB = (float) gradient_[0].b;
 
-  float destR = (float) ( gradient_[1].red - gradient_[0].red )      / ( float ) ( this->coords_.h - this->y_margin_ );
-  float destG = (float) ( gradient_[1].green - gradient_[0].green )  / ( float ) ( this->coords_.h - this->y_margin_ );
-  float destB = (float) ( gradient_[1].blue - gradient_[0].blue )    / ( float ) ( this->coords_.h - this->y_margin_ );
+  float destR = (float) ( gradient_[1].r - gradient_[0].r )      / ( float ) ( this->coords_.h - this->y_margin_ );
+  float destG = (float) ( gradient_[1].g - gradient_[0].g )  / ( float ) ( this->coords_.h - this->y_margin_ );
+  float destB = (float) ( gradient_[1].b - gradient_[0].b )    / ( float ) ( this->coords_.h - this->y_margin_ );
 
   for ( uint32 rows = this->coords_.y + this->y_margin_; rows < y_offset; rows++ )
   {
@@ -187,13 +187,13 @@ void Gradient::strategy_left_right ( void )
 {
   uint32 x_offset = ( this->coords_.x + this->coords_.w ) - this->x_margin_;
 
-  float currentR = (float) gradient_[0].red;
-  float currentG = (float) gradient_[0].green;
-  float currentB = (float) gradient_[0].blue;
+  float currentR = (float) gradient_[0].r;
+  float currentG = (float) gradient_[0].g;
+  float currentB = (float) gradient_[0].b;
 
-  float destR = (float) ( gradient_[1].red - gradient_[0].red )      / ( float ) ( this->coords_.w - this->x_margin_ );
-  float destG = (float) ( gradient_[1].green - gradient_[0].green )  / ( float ) ( this->coords_.w - this->x_margin_ );
-  float destB = (float) ( gradient_[1].blue - gradient_[0].blue )    / ( float ) ( this->coords_.w - this->x_margin_ );
+  float destR = (float) ( gradient_[1].r - gradient_[0].r )      / ( float ) ( this->coords_.w - this->x_margin_ );
+  float destG = (float) ( gradient_[1].g - gradient_[0].g )  / ( float ) ( this->coords_.w - this->x_margin_ );
+  float destB = (float) ( gradient_[1].b - gradient_[0].b )    / ( float ) ( this->coords_.w - this->x_margin_ );
 
   for ( uint32 rows = this->coords_.x + this->x_margin_; rows < x_offset; rows++ )
   {

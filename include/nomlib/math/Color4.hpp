@@ -49,15 +49,14 @@ const int ALPHA_OPAQUE = 255;
 /// \todo Implement lesser than, greater than and so on operators?
 /// \todo Implement specialized Color4<float> operators
 template <typename T>
-class Color4
+struct Color4
 {
-  public:
     /// Default constructor; initialize values to Color<T>::null
     Color4 ( void ) :
-      red ( -1 ),
-      green ( -1 ),
-      blue ( -1 ),
-      alpha ( Color4<T>::ALPHA_OPAQUE )
+      r ( -1 ),
+      g ( -1 ),
+      b ( -1 ),
+      a ( Color4<T>::ALPHA_OPAQUE )
     {
       //NOM_LOG_TRACE(NOM);
     }
@@ -72,28 +71,28 @@ class Color4
     template <typename U>
     Color4 ( const Color4<U>& copy )
     {
-      this->red = static_cast<T> ( copy.red );
-      this->green = static_cast<T> ( copy.green );
-      this->blue = static_cast<T> ( copy.blue );
-      this->alpha = static_cast<T> ( copy.alpha );
+      this->r = static_cast<T> ( copy.r );
+      this->g = static_cast<T> ( copy.g );
+      this->b = static_cast<T> ( copy.b );
+      this->a = static_cast<T> ( copy.a );
     }
 
     /// Constructor variant for setting a color using RGB values
     Color4 ( T r, T g, T b )  :
-      red ( r ),
-      green ( g ),
-      blue ( b ),
-      alpha ( Color4<T>::ALPHA_OPAQUE )
+      r ( r ),
+      g ( g ),
+      b ( b ),
+      a ( Color4<T>::ALPHA_OPAQUE )
     {
       //NOM_LOG_TRACE(NOM);
     }
 
     /// Constructor variant for setting a color using RGBA values
     Color4 ( T red, T green, T blue, T alpha )  :
-      red ( red ),
-      green ( green ),
-      blue ( blue ),
-      alpha ( alpha )
+      r ( red ),
+      g ( green ),
+      b ( blue ),
+      a ( alpha )
     {
       //NOM_LOG_TRACE(NOM);
     }
@@ -101,10 +100,10 @@ class Color4
     /// Copy assignment operator
     inline Color4<T>& operator = ( const Color4<T>& other )
     {
-      this->red = other.red;
-      this->green = other.green;
-      this->blue = other.blue;
-      this->alpha = other.alpha;
+      this->r = other.r;
+      this->g = other.g;
+      this->b = other.b;
+      this->a = other.a;
 
       return *this;
     }
@@ -152,39 +151,33 @@ class Color4
     /// \deprecated
     static const Color4 NomSecondaryColorKey;
 
-  public:
-    T red;
-    T green;
-    T blue;
-    T alpha;
+    /// Red component
+    T r;
 
-    /// Reference alias for red instance variable
-    T& r = red;
+    /// Green component
+    T g;
 
-    /// Reference alias for green instance variable
-    T& g = green;
+    /// Blue component
+    T b;
 
-    /// Reference alias for blue instance variable
-    T& b = blue;
-
-    /// Reference alias for alpha instance variable
-    T& a = alpha;
+    /// Alpha component
+    T a;
 };
 
 /// Pretty prints nom::Color4 using the following format string:
 ///
-/// <color.red>, <color.green>, <color.blue>, <color.alpha>
+/// <color.r>, <color.g>, <color.b>, <color.a>
 template <typename T>
 inline std::ostream& operator << ( std::ostream& os, const Color4<T>& color )
 {
   os
-  << color.red
+  << color.r
   << COLOR_DELIMITER
-  << color.green
+  << color.g
   << COLOR_DELIMITER
-  << color.blue
+  << color.b
   << COLOR_DELIMITER
-  << color.alpha;
+  << color.a;
 
   return os;
 }
@@ -192,10 +185,10 @@ inline std::ostream& operator << ( std::ostream& os, const Color4<T>& color )
 template <typename T>
 inline bool operator == ( const Color4<T>& left, const Color4<T>& right )
 {
-  return ( left.red == right.red ) &&
-         ( left.green == right.green ) &&
-         ( left.blue == right.blue ) &&
-         ( left.alpha == right.alpha );
+  return ( left.r == right.r ) &&
+         ( left.g == right.g ) &&
+         ( left.b == right.b ) &&
+         ( left.a == right.a );
 }
 
 template <typename T>
@@ -208,10 +201,10 @@ inline bool operator != ( const Color4<T>& left, const Color4<T>& right )
 template <typename T>
 inline Color4<T> operator + ( const Color4<T>& left, const Color4<T>& right )
 {
-  return Color4<T> (  static_cast<T> ( std::min ( left.red + right.red, 255 ) ),
-                    static_cast<T> ( std::min ( left.green + right.green, 255 ) ),
-                    static_cast<T> ( std::min ( left.blue + right.blue, 255 ) ),
-                    static_cast<T> ( std::min ( left.alpha + right.alpha, 255 ) )
+  return Color4<T> (  static_cast<T> ( std::min ( left.r + right.r, 255 ) ),
+                    static_cast<T> ( std::min ( left.g + right.g, 255 ) ),
+                    static_cast<T> ( std::min ( left.b + right.b, 255 ) ),
+                    static_cast<T> ( std::min ( left.a + right.a, 255 ) )
                   );
 }
 
@@ -219,10 +212,10 @@ inline Color4<T> operator + ( const Color4<T>& left, const Color4<T>& right )
 template <typename T>
 inline Color4<T> operator ++ ( Color4<T>& left )
 {
-  return Color4<T> (  static_cast<T> ( left.red-- ),
-                    static_cast<T> ( left.green-- ),
-                    static_cast<T> ( left.blue-- ),
-                    static_cast<T> ( left.alpha-- )
+  return Color4<T> (  static_cast<T> ( left.r-- ),
+                    static_cast<T> ( left.g-- ),
+                    static_cast<T> ( left.b-- ),
+                    static_cast<T> ( left.a-- )
                 );
 }
 
@@ -230,10 +223,10 @@ inline Color4<T> operator ++ ( Color4<T>& left )
 template <typename T>
 inline Color4<T> operator - ( const Color4<int16>& left, const Color4<int16>& right )
 {
-  return Color4<T> (  static_cast<T> ( std::min ( left.red - right.red, 255 ) ),
-                    static_cast<T> ( std::min ( left.green - right.green, 255 ) ),
-                    static_cast<T> ( std::min ( left.blue - right.blue, 255 ) ),
-                    static_cast<T> ( std::min ( left.alpha - right.alpha, 255 ) )
+  return Color4<T> (  static_cast<T> ( std::min ( left.r - right.r, 255 ) ),
+                    static_cast<T> ( std::min ( left.g - right.g, 255 ) ),
+                    static_cast<T> ( std::min ( left.b - right.b, 255 ) ),
+                    static_cast<T> ( std::min ( left.a - right.a, 255 ) )
                   );
 }
 
@@ -241,10 +234,10 @@ inline Color4<T> operator - ( const Color4<int16>& left, const Color4<int16>& ri
 template <typename T>
 inline Color4<T> operator -- ( Color4<T>& left )
 {
-  return Color4<T> ( static_cast<T> ( left.red-- ),
-                    static_cast<T> ( left.green-- ),
-                    static_cast<T> ( left.blue-- ),
-                    static_cast<T> ( left.alpha-- )
+  return Color4<T> ( static_cast<T> ( left.r-- ),
+                    static_cast<T> ( left.g-- ),
+                    static_cast<T> ( left.b-- ),
+                    static_cast<T> ( left.a-- )
                   );
 }
 
@@ -252,10 +245,10 @@ inline Color4<T> operator -- ( Color4<T>& left )
 template <typename T>
 inline Color4<T> operator * ( const Color4<int16>& left, const Color4<int16>& right )
 {
-  return Color4<T> ( static_cast<T> ( left.red * right.red / 255 ),
-                    static_cast<T> ( left.green * right.green / 255 ),
-                    static_cast<T> ( left.blue * right.blue / 255 ),
-                    static_cast<T> ( left.alpha * right.alpha / 255 )
+  return Color4<T> ( static_cast<T> ( left.r * right.r / 255 ),
+                    static_cast<T> ( left.g * right.g / 255 ),
+                    static_cast<T> ( left.b * right.b / 255 ),
+                    static_cast<T> ( left.a * right.a / 255 )
                   );
 }
 

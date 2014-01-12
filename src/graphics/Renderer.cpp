@@ -245,7 +245,7 @@ bool Renderer::set_viewport ( const IntRect& bounds )
 
 bool Renderer::set_color ( const Color4u& color )
 {
-  if ( SDL_SetRenderDrawColor ( this->renderer(), color.red, color.green, color.blue, color.alpha ) != 0 )
+  if ( SDL_SetRenderDrawColor ( this->renderer(), color.r, color.g, color.b, color.a ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;

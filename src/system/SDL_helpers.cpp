@@ -79,10 +79,10 @@ SDL_Color SDL_COLOR ( const Color4u& color )
 {
   SDL_Color c;
 
-  c.r = color.red;
-  c.g = color.green;
-  c.b = color.blue;
-  c.a = color.alpha;
+  c.r = color.r;
+  c.g = color.g;
+  c.b = color.b;
+  c.a = color.a;
 
   return c;
 }
@@ -117,22 +117,22 @@ const Color4u alpha_pixel ( uint32 pixel, uint32 fmt )
 
 uint32 RGB ( const Color4u& color, const SDL_PixelFormat* fmt )
 {
-  return SDL_MapRGB ( fmt, color.red, color.green, color.blue );
+  return SDL_MapRGB ( fmt, color.r, color.g, color.b );
 }
 
 uint32 RGB ( const Color4u& color, uint32 fmt )
 {
-  return SDL_MapRGB ( SDL_AllocFormat(fmt), color.red, color.green, color.blue );
+  return SDL_MapRGB ( SDL_AllocFormat(fmt), color.r, color.g, color.b );
 }
 
 uint32 RGBA ( const Color4u& color, const SDL_PixelFormat* fmt )
 {
-  return SDL_MapRGBA ( fmt, color.red, color.green, color.blue, color.alpha );
+  return SDL_MapRGBA ( fmt, color.r, color.g, color.b, color.a );
 }
 
 uint32 RGBA ( const Color4u& color, uint32 fmt )
 {
-  return SDL_MapRGBA ( SDL_AllocFormat(fmt), color.red, color.green, color.blue, color.alpha );
+  return SDL_MapRGBA ( SDL_AllocFormat(fmt), color.r, color.g, color.b, color.a );
 }
 
 uint32 ticks ( void )

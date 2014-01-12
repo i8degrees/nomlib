@@ -488,10 +488,10 @@ void Image::set_pixel ( int x, int y, const Color4u& color )
       c = RGBA ( color, this->pixel_format() );
 
       pixels[ ( y * this->pitch() ) + x ] = c;
-      *(pixels + fmt->Rshift/8 ) = color.red;
-      *(pixels + fmt->Gshift/8 ) = color.green;
-      *(pixels + fmt->Bshift/8 ) = color.blue;
-      *(pixels + fmt->Ashift/8 ) = color.alpha;
+      *(pixels + fmt->Rshift/8 ) = color.r;
+      *(pixels + fmt->Gshift/8 ) = color.g;
+      *(pixels + fmt->Bshift/8 ) = color.b;
+      *(pixels + fmt->Ashift/8 ) = color.a;
       break;
     }
 

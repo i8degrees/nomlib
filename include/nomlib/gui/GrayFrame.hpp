@@ -42,8 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-class GrayFrame:
-                  public IDrawable
+class GrayFrame: public IDrawable
 {
   public:
     typedef std::shared_ptr<GrayFrame> SharedPtr;
@@ -51,8 +50,9 @@ class GrayFrame:
     typedef GrayFrame* RawPtr;
 
     GrayFrame ( void );
+    virtual ~GrayFrame ( void );
+
     GrayFrame ( int32 x, int32 y, int32 width, int32 height, int32 padding = 1 );
-    ~GrayFrame ( void );
 
     GrayFrame& operator = ( const GrayFrame& other );
 

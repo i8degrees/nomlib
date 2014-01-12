@@ -56,6 +56,8 @@ class MessageBox: public IDrawable
 
     MessageBox ( void );
 
+    virtual ~MessageBox ( void );
+
     MessageBox  (
                   int32 x, int32 y, int32 width, int32 height,
                   enum MessageBox::Style style, const Gradient& background
@@ -67,7 +69,6 @@ class MessageBox: public IDrawable
                   Gradient::SharedPtr background = nullptr
                 );
 
-    virtual ~MessageBox ( void );
     MessageBox& operator = ( const MessageBox& other );
 
     bool enabled ( void ) const;

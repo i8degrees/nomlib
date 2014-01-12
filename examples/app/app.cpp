@@ -306,8 +306,6 @@ NOM_DUMP_VAR(this->sprite.size().y);
           this->onEvent ( &this->event );
         }
 
-        this->info_box[0].update();
-        this->info_box[1].update();
         this->sprite.update();
         this->ani_sprite.play();
 
@@ -563,7 +561,7 @@ NOM_DUMP_VAR(this->sprite.size().y);
             {
               if ( this->window[idx].save_screenshot( OUTPUT_SCREENSHOT_FILENAME ) == false )
               {
-                nom::DialogMessageBox( APP_NAME,  "Could not save screenshot");
+                nom::DialogMessageBox( APP_NAME, "Could not save screenshot");
                 break;
               } // end save_screenshot err check
             } // end window_id check

@@ -85,8 +85,10 @@ class MessageBox: public IDrawable
     void set_title ( const Label& title );
     void set_text ( const Label& text );
 
-    void update ( void );
     void draw ( RenderTarget target ) const;
+
+  protected:
+    void update ( void );
 
   private:
     IDrawable::SharedDrawables drawable;

@@ -32,6 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/math.hpp>
 
+using namespace nom;
+
 /// nom::Color Unit Test 1
 nom::int32 do_color_test1 ( void );
 
@@ -58,10 +60,21 @@ nom::int32 do_coords_test4 ( void );
 
 nom::int32 do_color_test1 ( void )
 {
+  NOM_LOG_TRACE(NOM);
+
   nom::Color4u testme1 ( 242, 1, 1, 255 );
-  nom::Color4u testme2 = NOM_COLOR4U_BLACK;
+  nom::Color4u testme2 = nom::Color4u::Black;
+  nom::Color4u testme3 (-1,-1,-1, Color4u::ALPHA_OPAQUE );
+  nom::Color4f testme4 (-1,-1,-1, Color4f::ALPHA_OPAQUE );
+
+  NOM_DUMP_VAR(testme1);
+  NOM_DUMP_VAR(testme2);
+  NOM_DUMP_VAR(testme3);
+  NOM_DUMP_VAR(testme4);
 
   if ( testme2 == testme1 ) return NOM_EXIT_FAILURE;
+  if ( testme3 != Color4u::null ) return NOM_EXIT_FAILURE;
+  if ( testme4 != Color4f::null ) return NOM_EXIT_FAILURE;
 
   return NOM_EXIT_SUCCESS;
 }
@@ -88,9 +101,42 @@ nom::int32 do_coords_test1 ( void )
   return NOM_EXIT_SUCCESS;
 }
 
-nom::int32 do_coords_test2 ( void ) { return NOM_EXIT_SUCCESS; }
-nom::int32 do_coords_test3 ( void ) { return NOM_EXIT_SUCCESS; }
-nom::int32 do_coords_test4 ( void ) { return NOM_EXIT_SUCCESS; }
+nom::int32 do_coords_test2 ( void )
+{
+  NOM_LOG_TRACE(NOM);
+
+  IntRect testme1 ( -1, -1, -1, -1 );
+  FloatRect testme2 ( -1, -1, -1, -1 );
+
+  NOM_DUMP_VAR(testme1);
+  NOM_DUMP_VAR(testme2);
+
+  if ( testme1 != IntRect::null ) return NOM_EXIT_FAILURE;
+  if ( testme2 != FloatRect::null ) return NOM_EXIT_FAILURE;
+
+  return NOM_EXIT_SUCCESS;
+}
+
+nom::int32 do_coords_test3 ( void )
+{
+  NOM_LOG_TRACE(NOM);
+
+  Point2i testme1 ( -1, -1 );
+  Point2f testme2 ( -1, -1 );
+
+  NOM_DUMP_VAR(testme1);
+  NOM_DUMP_VAR(testme2);
+
+  if ( testme1 != Point2i::null ) return NOM_EXIT_FAILURE;
+  if ( testme2 != Point2f::null ) return NOM_EXIT_FAILURE;
+
+  return NOM_EXIT_SUCCESS;
+}
+
+nom::int32 do_coords_test4 ( void )
+{
+  return NOM_EXIT_SUCCESS;
+}
 
 nom::int32 main ( nom::int32 args_count, char* args[] )
 {

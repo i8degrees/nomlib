@@ -58,10 +58,11 @@ class Label: public Transformable
     // result from using this style with a bitmap font.
     enum Style: uint32
     {
-      Regular = 1,    // Default
-      Bold = 2,       // Not implemented
+      Regular = 1,        /// Default
+      Bold = 2,           /// Not implemented
       Italic = 4,
-      Underlined = 8  // Not
+      Underlined = 8,     /// Not implemented
+      Strikethrough = 16  /// Not implemented
     };
 
     /// Text alignment choices (pick one).

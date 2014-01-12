@@ -85,7 +85,6 @@ const std::string RESOURCE_BITMAP_FONT = APP_RESOURCES_DIR + p.native() + "VIII.
 const std::string RESOURCE_BITMAP_SMALL_FONT = APP_RESOURCES_DIR + p.native() + "VIII_small.png";
 
 const std::string RESOURCE_SPRITE = APP_RESOURCES_DIR + p.native() + "cursors.json";
-//const std::string RESOURCE_SPRITE = APP_RESOURCES_DIR + p.native() + "dots.png";
 
 /// Copyright (c) 2013 Fielding Johnston. All rights reserved.
 const std::string RESOURCE_STATIC_IMAGE = APP_RESOURCES_DIR + p.native() + "boardoutline.png";
@@ -98,7 +97,13 @@ const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
 
 /// Text string displayed on our message boxes
 const std::string RESOURCE_INFO_BOX_TITLE_STRINGS[2] = { "INFO.", "INFO." };
-const std::string RESOURCE_INFO_BOX_TEXT_STRINGS[4] = { "I am a Bitmap Font!", "Use the arrow keys to update me...", "Yeah Buddy!!!", "...Light weight!" };
+const std::string RESOURCE_INFO_BOX_TEXT_STRINGS[4] = {
+                                                        "I am a Bitmap Font!", // 0
+                                                        "Use the arrow keys to update me...",
+                                                        "Yeah Buddy!!!",
+                                                        "...Light weight!" // 3
+                                                      };
+
 const enum nom::Label::Alignment RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[9] = {
                                                                               nom::Label::Alignment::TopLeft,       // 0
                                                                               nom::Label::Alignment::TopCenter,
@@ -120,10 +125,10 @@ class App: public nom::SDL_App
   public:
     App ( nom::int32 argc, char* argv[] ) :
       sprite_angle ( -90.0f ),
-      selected_font ( 0 ), // nom::TrueType font
-      selected_alignment ( 4 ), // nom::Label::Alignment::TopLeft
-      selected_font_size ( 14 )
-
+      selected_font ( 0 ),        // nom::TrueType font
+      selected_alignment ( 4 ),   // nom::Label::Alignment::TopLeft
+      selected_font_size ( 14 ),  // Font's size (in pixels)
+      selected_text_string ( 2 )  // "Yeah Buddy!!!"
     {
       NOM_LOG_TRACE ( NOM );
 
@@ -405,7 +410,7 @@ NOM_DUMP_VAR(this->sprite.size().y);
           // because this is the maximum size that can fit inside our info box.
           if ( this->selected_font_size < MAX_FONT_POINT_SIZE ) this->selected_font_size += 1;
 
-          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
           break;
         }
 
@@ -414,7 +419,7 @@ NOM_DUMP_VAR(this->sprite.size().y);
           // Cap our minimal font point size (defaults is 9)
           if ( this->selected_font_size > MIN_FONT_POINT_SIZE ) this->selected_font_size -= 1;
 
-          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
           break;
         }
 
@@ -423,68 +428,95 @@ NOM_DUMP_VAR(this->sprite.size().y);
           if ( mod == KMOD_LSHIFT )
           {
             this->selected_font_size = 14;
-            this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), this->select_font_size(), this->select_alignment() ) );
+            this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+            break;
+          }
+          else if ( mod == KMOD_LGUI )
+          {
+            this->selected_text_string = 0;
+            this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
             break;
           }
 
           this->selected_alignment = 0;
-          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
           break;
         }
 
         case SDLK_1:
         {
+          if ( mod == KMOD_LGUI )
+          {
+            this->selected_text_string = 1;
+            this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+            break;
+          }
+
           this->selected_alignment = 1;
-          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
           break;
         }
 
         case SDLK_2:
         {
+          if ( mod == KMOD_LGUI )
+          {
+            this->selected_text_string = 2;
+            this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+            break;
+          }
+
           this->selected_alignment = 2;
-          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
           break;
         }
 
         case SDLK_3:
         {
+          if ( mod == KMOD_LGUI )
+          {
+            this->selected_text_string = 3;
+            this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+            break;
+          }
+
           this->selected_alignment = 3;
-          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
           break;
         }
 
         case SDLK_4:
         {
           this->selected_alignment = 4;
-          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
           break;
         }
 
         case SDLK_5:
         {
           this->selected_alignment = 5;
-          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
           break;
         }
 
         case SDLK_6:
         {
           this->selected_alignment = 6;
-          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
           break;
         }
 
         case SDLK_7:
         {
           this->selected_alignment = 7;
-          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
           break;
         }
 
         case SDLK_8:
         {
           this->selected_alignment = 8;
-          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
           break;
         }
 
@@ -508,7 +540,7 @@ NOM_DUMP_VAR(this->sprite.size().y);
             this->selected_font_size = 24;
           }
 
-          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
           break;
         }
 
@@ -519,7 +551,7 @@ NOM_DUMP_VAR(this->sprite.size().y);
             this->selected_font = 1; // nom::BitmapFont
           }
 
-          this->info_box[1].set_text ( nom::Label ( RESOURCE_INFO_BOX_TEXT_STRINGS[3], this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text ( nom::Label ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
           break;
         }
 
@@ -592,6 +624,7 @@ NOM_DUMP_VAR(this->sprite.size().y);
     int selected_font;
     int selected_alignment;
     int selected_font_size;
+    nom::sint selected_text_string;
 
     nom::IFont::SharedPtr select_font ( void )
     {
@@ -626,9 +659,21 @@ NOM_DUMP_VAR(this->sprite.size().y);
       }
     }
 
-    int select_font_size ( void )
+    nom::sint select_font_size ( void )
     {
       return this->selected_font_size;
+    }
+
+    const std::string& select_text_string ( void )
+    {
+      switch ( this->selected_text_string )
+      {
+        default:
+        case 0: return RESOURCE_INFO_BOX_TEXT_STRINGS[0]; break;
+        case 1: return RESOURCE_INFO_BOX_TEXT_STRINGS[1]; break;
+        case 2: return RESOURCE_INFO_BOX_TEXT_STRINGS[2]; break;
+        case 3: return RESOURCE_INFO_BOX_TEXT_STRINGS[3]; break;
+      }
     }
 }; // class App
 

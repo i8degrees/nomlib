@@ -209,7 +209,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       // Load a sprite sheet, using the sheet_filename as the base path to load
       // the image file from disk
       this->sprite = nom::SpriteBatch ( RESOURCE_SPRITE );
-      if ( this->sprite.load ( APP_RESOURCES_DIR + p.native() + this->sprite.sheet_filename(), nom::Color4u(255, 0, 255, 0) ) == false )
+      if ( this->sprite.load ( APP_RESOURCES_DIR + p.native() + this->sprite.sheet_filename() ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load sprite: " + this->sprite.sheet_filename() );
         return false;
@@ -220,7 +220,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       // Load the same sprite sheet -- but this time -- used for animation
       // effects!
       this->ani_sprite = nom::AnimatedSprite ( RESOURCE_SPRITE );
-      if ( this->ani_sprite.load ( APP_RESOURCES_DIR + p.native() + this->ani_sprite.sheet_filename(), nom::Color4u(255, 0, 255, 0) ) == false )
+      if ( this->ani_sprite.load ( APP_RESOURCES_DIR + p.native() + this->ani_sprite.sheet_filename() ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load sprite: " + this->ani_sprite.sheet_filename() );
         return false;

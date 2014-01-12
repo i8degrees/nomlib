@@ -72,11 +72,7 @@ class Sprite:
     void set_state ( uint32 state );
 
     /// Load a new image onto the Sprite.
-    bool load (
-                const std::string& filename,
-                const Color4u& colorkey,
-                bool use_cache = false
-              );
+    bool load ( const std::string& filename, bool use_cache = false );
 
     virtual void update ( void );
     void draw ( RenderTarget target ) const;

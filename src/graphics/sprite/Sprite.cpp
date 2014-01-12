@@ -84,22 +84,17 @@ void Sprite::set_state ( uint32 state )
   this->state_ = state;
 }
 
-bool Sprite::load (
-                    const std::string& filename, const Color4u& colorkey,
-                    bool use_cache
-                  )
+bool Sprite::load ( const std::string& filename, bool use_cache )
 {
-  this->sprite_.load ( filename, SDL_TEXTUREACCESS_STREAMING, use_cache );
+  this->sprite_.load ( filename, SDL_TEXTUREACCESS_STATIC, use_cache );
 
   if ( this->sprite_.valid() == false )
   {
-NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
+    NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
     return false;
   }
 
   this->setSize ( this->sprite_.width(), this->sprite_.height() );
-
-  this->sprite_.set_colorkey ( colorkey );
 
   return true;
 }

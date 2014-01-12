@@ -195,16 +195,6 @@ class Texture
     /// creation.
     static const Point2i maximum_size ( void );
 
-    /// \brief Obtain the most optimal texture format available
-    ///
-    /// \return Resulting value is graphics hardware dependent
-    ///
-    /// \note The values obtained here are dependent upon the nom::Renderer
-    /// context used at the time of creation of the nom::Texture -- in other
-    /// words, whichever nom::Window was active at the time of the nom::Texture
-    /// creation.
-    uint32 optimal_pixel_format ( void ) const;
-
     /// Lock a portion of the texture for **write-only** pixel access.
     ///
     /// Texture must be created with SDL_TEXTUREACCESS_STREAMING.

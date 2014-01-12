@@ -40,13 +40,6 @@ Window::Window ( void ) : window_
     enabled_ ( false ), fullscreen_ ( false )
 {
 NOM_LOG_TRACE ( NOM );
-
-  if ( SDL_Init ( SDL_INIT_VIDEO ) != 0 )
-  {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-  }
-
-  atexit ( SDL_Quit );
 }
 
 Window::~Window ( void )

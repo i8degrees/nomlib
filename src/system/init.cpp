@@ -38,6 +38,13 @@ bool init_third_party ( uint32 flags )
     return false;
   }
 
+  if ( SDL_Init ( SDL_INIT_VIDEO ) != 0 )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+  }
+
+  atexit( SDL_Quit );
+
   return true;
 }
 

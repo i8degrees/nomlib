@@ -33,27 +33,35 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+/// \brief Delimiter character to use with << operator
+const std::string POINT3_DELIMITER = ", ";
+
 /// \brief 3D Point class
 template <typename T>
 struct Point3
 {
-  /// Default constructor; sets all values to their respective defaults
-  Point3 ( void )
+  /// Default constructor; initialize values to Point3<T>::null
+  Point3 ( void ) :
+    x ( -1 ),
+    y ( -1 ),
+    z ( -1 )
   {
-    this->x = 0;
-    this->y = 0;
-    this->z = 0;
+    //NOM_LOG_TRACE(NOM);
   }
 
   /// Destructor
-  ~Point3 ( void ) {}
+  ~Point3 ( void )
+  {
+    //NOM_LOG_TRACE(NOM);
+  }
 
   /// Constructor variant for initializing x, y, z at construction
-  Point3 ( T x, T y, T z )
+  Point3 ( T x, T y, T z )  :
+    x ( x ),
+    y ( y ),
+    z ( z )
   {
-    this->x = x;
-    this->y = y;
-    this->z = z;
+    //NOM_LOG_TRACE(NOM);
   }
 
   /// Copy constructor
@@ -73,21 +81,55 @@ struct Point3
     this->z = other.z;
   }
 
+  /// \brief Null value
+  ///
+  /// \remarks  Null value implementation depends on signed (negative) numbers.
+  static const Point3 null;
+
   T x;
   T y;
   T z;
 };
 
-/// Point3D object defined with 32-bit signed integers
-typedef Point3<int32> Point3i;
+/// Pretty print a Point3 object using the following formatting:
+///
+///     <Point3.x>, <Point3.y>, <Point3.z>
+///
+/// An example print:
+///
+///     128, 144, 0
+template <typename T>
+inline std::ostream& operator << ( std::ostream& os, const Point3<T>& pos )
+{
+  os
+  << pos.x
+  << POINT3_DELIMITER
+  << pos.y
+  << POINT3_DELIMITER
+  << pos.z;
 
-/// Point3D object defined with 32-bit unsigned integers
-typedef Point3<uint32> Point3u;
+  return os;
+}
 
-/// Point3D object defined with floating-point integers
+template <typename T>
+inline bool operator == ( const Point3<T>& lhs, const Point3<T>& rhs )
+{
+  return  ( lhs.x == rhs.x )  &&  ( lhs.y == rhs.y )  && ( lhs.z == rhs.z );
+}
+
+template <typename T>
+inline bool operator != ( const Point3<T>& lhs, const Point3<T>& rhs )
+{
+  return ! ( lhs == rhs );
+}
+
+/// Point3 object defined using signed integers
+typedef Point3<int> Point3i;
+
+/// Point3 object defined using floating-point numbers
 typedef Point3<float> Point3f;
 
-/// Point3D object defined with double precision floating-point integers
+/// Point3 object defined using double precision floating-point numbers
 typedef Point3<double> Point3d;
 
 } // namespace nom

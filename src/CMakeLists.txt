@@ -97,6 +97,9 @@ set ( JSONCPP_SOURCE
 # Math module
 file ( GLOB MATH_HEADERS "${NOMLIB_HEADERS_DIR}/math/*.hpp" )
 set ( MATH_SOURCE
+      ${SRC_DIR}/math/Point2.cpp
+      ${SRC_DIR}/math/Point3.cpp
+      ${SRC_DIR}/math/Rect.cpp
       ${SRC_DIR}/math/Coords.cpp
       ${SRC_DIR}/math/Transformable.cpp
     )

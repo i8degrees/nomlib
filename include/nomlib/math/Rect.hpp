@@ -34,23 +34,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// Delimiter character to use with << operator
+/// \brief Delimiter character to use with << operator
 const std::string RECT_DELIMITER = ", ";
 
 /// \brief Rectangle class container
 template<typename T>
 struct Rect
 {
-  /// Default constructor.
+  /// Default constructor; initialize values to Rect<T>::null
   Rect ( void ) :
-    x ( 0 ),
-    y ( 0 ),
-    w ( 0 ),
-    h ( 0 )
-  {}
+    x ( -1 ),
+    y ( -1 ),
+    w ( -1 ),
+    h ( -1 )
+  {
+    //NOM_LOG_TRACE(NOM);
+  }
 
   /// Destructor.
-  ~Rect ( void ) {}
+  ~Rect ( void )
+  {
+    //NOM_LOG_TRACE(NOM);
+  }
 
   /// Construct a Rectangle from coordinates
   Rect ( T left, T top, T w, T h ) :
@@ -58,7 +63,9 @@ struct Rect
     y ( top ),
     w ( w ),
     h ( h )
-  {}
+  {
+    //NOM_LOG_TRACE(NOM);
+  }
 
   /// Construct an object from two Point2 containers (position and size)
   Rect ( const Point2<T>& pos, const Point2<T>& size )  :
@@ -66,7 +73,9 @@ struct Rect
     y ( pos.y ),
     w ( pos.x + size.w ),
     h ( pos.y + size.h )
-  {}
+  {
+    //NOM_LOG_TRACE(NOM);
+  }
 
   /// Copy constructor
   template <typename U>
@@ -109,10 +118,10 @@ struct Rect
   /// Checks to see if our rectangle overlaps with another
   bool intersects ( const Rect<T>& rectangle ) const
   {
-    uint leftA, leftB = 0;
-    uint rightA, rightB = 0;
-    uint topA, topB = 0;
-    uint bottomA, bottomB = 0;
+    T leftA, leftB = 0;
+    T rightA, rightB = 0;
+    T topA, topB = 0;
+    T bottomA, bottomB = 0;
 
     // Calculate sides of RectA
     leftA = this->x;
@@ -133,6 +142,11 @@ struct Rect
 
     return true; // Collision!
   }
+
+  /// \brief Null value
+  ///
+  /// \remarks  Null value implementation depends on signed (negative) numbers.
+  static const Rect null;
 
   /// Left coordinate of the rectangle (X coordinate of Rectangle)
   T x;
@@ -181,19 +195,20 @@ inline bool operator == ( const Rect<T>& lhs, const Rect<T>& rhs )
           ( lhs.y == rhs.y )  &&  ( lhs.h == rhs.h );
 }
 
-
-////////////////////////////////////////////////////////////
 template <typename T>
 inline bool operator != ( const Rect<T>& lhs, const Rect<T>& rhs )
 {
   return ! ( lhs == rhs );
 }
 
-/// Construct a signed integer Rectangle
+/// Rect object defined using signed integers
 typedef Rect<int> IntRect;
 
-/// Construct a floating-point number Rectangle
+/// Rect object defined using floating point numbers
 typedef Rect<float> FloatRect;
+
+/// Rect object defined using double precision floating point numbers
+typedef Rect<double> DoubleRect;
 
 } // namespace nom
 

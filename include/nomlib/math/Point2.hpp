@@ -35,26 +35,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+/// \brief Delimiter character to use with << operator
 const std::string POINT_DELIMITER = ", ";
 
 /// \brief 2D point container
 template <typename T>
 struct Point2
 {
-  /// Default constructor; sets all values to their respective defaults
+  /// Default constructor; initialize values to Point2<T>::null
   Point2 ( void ) :
-    x ( 0 ),
-    y ( 0 )
-  {}
+    x ( -1 ),
+    y ( -1 )
+  {
+    //NOM_LOG_TRACE(NOM);
+  }
 
   /// Destructor
-  ~Point2 ( void ) {}
+  ~Point2 ( void )
+  {
+    //NOM_LOG_TRACE(NOM);
+  }
 
   /// Constructor variant for initializing x, y at construction
   Point2 ( T x, T y ) :
     x ( x ),
     y ( y )
-  {}
+  {
+    //NOM_LOG_TRACE(NOM);
+  }
 
   /// Copy constructor
   template <typename U>
@@ -64,7 +72,7 @@ struct Point2
     this->y = static_cast<T> ( copy.y );
   }
 
-    /// Copy assignment operator
+  /// Copy assignment operator
 /*
     template <typename U>
     Point2<T>& operator = ( const Point2<U>& other )
@@ -76,6 +84,11 @@ struct Point2
 
     return *this;
   }
+
+  /// \brief Null value
+  ///
+  /// \remarks  Null value implementation depends on signed (negative) numbers.
+  static const Point2 null;
 
   /// Represents the X-axis coordinate point
   T x;
@@ -92,26 +105,35 @@ struct Point2
 ///
 ///     128, 144
 template <typename T>
-inline std::ostream& operator << ( std::ostream& os, const Point2<T>& coords )
+inline std::ostream& operator << ( std::ostream& os, const Point2<T>& pos )
 {
   os
-  << coords.x
+  << pos.x
   << POINT_DELIMITER
-  << coords.y;
+  << pos.y;
 
   return os;
 }
 
-/// Point2D object defined with 32-bit signed integers
-typedef Point2<int32> Point2i;
+template <typename T>
+inline bool operator == ( const Point2<T>& lhs, const Point2<T>& rhs )
+{
+  return  ( lhs.x == rhs.x )  &&  ( lhs.y == rhs.y );
+}
 
-/// Point2D object defined with 32-bit unsigned integers
-typedef Point2<uint32> Point2u;
+template <typename T>
+inline bool operator != ( const Point2<T>& lhs, const Point2<T>& rhs )
+{
+  return ! ( lhs == rhs );
+}
 
-/// Point2D object defined with floating-point integers.
+/// Point2 object defined using signed integers
+typedef Point2<int> Point2i;
+
+/// Point2 object defined using floating-point numbers
 typedef Point2<float> Point2f;
 
-/// Point2D object defined with double precision floating-point integers.
+/// Point2 object defined using double precision floating-point numbers
 typedef Point2<double> Point2d;
 
 } // namespace nom

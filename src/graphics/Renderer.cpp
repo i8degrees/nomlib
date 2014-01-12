@@ -120,8 +120,7 @@ const Point2i Renderer::size ( void ) const
   if ( SDL_GetRendererOutputSize ( this->renderer(), &size.x, &size.y ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return Point2i( -1, -1 );
-    //return Point2i::null;
+    return Point2i::null;
   }
 
   return size;
@@ -221,23 +220,24 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 
 bool Renderer::set_viewport ( const IntRect& bounds )
 {
-  if ( bounds != IntRect::null )
-  {
-    SDL_Rect clip = SDL_RECT(bounds);
-
-    if ( SDL_RenderSetViewport ( this->renderer(), &clip ) != 0 )
-    {
-      NOM_LOG_ERR ( NOM, SDL_GetError() );
-      return false;
-    }
-  }
-  else
+  // Bounds argument is null -- try setting entire viewport bounds
+  if ( bounds == IntRect::null )
   {
     if ( SDL_RenderSetViewport ( this->renderer(), nullptr ) != 0 )
     {
       NOM_LOG_ERR ( NOM, SDL_GetError() );
       return false;
     }
+
+    return true;
+  }
+
+  // Try honoring requested clipping bounds
+  SDL_Rect clip = SDL_RECT(bounds);
+  if ( SDL_RenderSetViewport ( this->renderer(), &clip ) != 0 )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
   }
 
   return true;
@@ -276,6 +276,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
     return true;
   }
 
+  // IntRect argument is not null -- try setting the requested bounds
   SDL_Rect clip = SDL_RECT ( bounds );
   if ( SDL_RenderSetClipRect( this->renderer(), &clip ) != 0 )
   {

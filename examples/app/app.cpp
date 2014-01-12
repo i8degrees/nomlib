@@ -185,7 +185,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
         this->window[idx].set_logical_size ( this->window_size[idx].x, this->window_size[idx].y );
       }
 
-      this->window[0].set_active();
+      this->window[0].make_current();
 
       if ( this->bitmap_font.load ( RESOURCE_BITMAP_FONT ) == false )
       {
@@ -226,14 +226,14 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
         return false;
       }
 
-      this->window[1].set_active();
+      this->window[1].make_current();
       if ( this->background.load ( RESOURCE_STATIC_IMAGE, 0 ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load image file: " + RESOURCE_STATIC_IMAGE );
         return false;
       }
 
-      this->window[0].set_active();
+      this->window[0].make_current();
 
       // Initialize the background to use in our info_box object as a gradient
       // filled background

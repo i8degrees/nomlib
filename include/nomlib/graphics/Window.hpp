@@ -260,23 +260,23 @@ class Window:
     /// Set the current Window as the active rendering context; this must be
     /// called before doing any drawing (this includes creation of textures)
     /// when using multiple rendering windows.
-    void set_active ( void );
+    void make_current ( void );
 
-    /// Get the active rendering context
+    /// \brief Obtain the active rendering context
     ///
-    /// \return SDL_Renderer*   Structure containing the active rendering
-    ///                         context
+    /// \returns  Pointer to the SDL_Renderer structure containing the active
+    ///           rendering context.
+    ///
+    /// \remarks  Used internally within nomlib for automatically using the
+    ///           active context -- set by nom::Window::make_current.
     static SDL_RENDERER::RawPtr context ( void );
 
-    /// Set a new nom::Window as the active rendering context; we must always
-    /// have at least one context active at any given time, even for generating
-    /// SDL_Textures.
-    ///
-    /// This is a low-level, internal function call, to be used within this
-    /// library elsewhere.
+  private:
+    /// \brief  Set a new nom::Window as the active rendering context; we must
+    ///         always have a context active at any given time for generating
+    ///         resources -- nom::Texture, nom::Image, etc.
     static void set_context ( Window::RawPtr window );
 
-  private:
     static SDL_RENDERER::RawPtr context_;
 
     SDL_WINDOW::UniquePtr window_;

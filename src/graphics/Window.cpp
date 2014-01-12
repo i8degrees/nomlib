@@ -84,7 +84,7 @@ NOM_LOG_ERR ( NOM, "Could not create SDL renderer." );
   // calls; this includes even creating SDL textures!
   if ( context_ == nullptr )
   {
-    this->set_active();
+    this->make_current();
   }
 
   // Try to ensure that we have no leftover artifacts by clearing and filling
@@ -411,7 +411,7 @@ bool Window::save_screenshot ( const std::string& filename ) const
   return true;
 }
 
-void Window::set_active ( void )
+void Window::make_current ( void )
 {
   set_context ( this->get() );
 }

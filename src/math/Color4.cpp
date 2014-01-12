@@ -42,28 +42,28 @@ template <> const Color4u Color4u::null ( -1, -1, -1, Color4u::ALPHA_OPAQUE );
 /// Null value for a nom::Color4 using floating point numbers
 template <> const Color4f Color4f::null ( -1, -1, -1, Color4f::ALPHA_OPAQUE );
 
-template <> const Color4u Color4u::Black ( 0, 0, 0, Color4u::ALPHA_OPAQUE );
-template <> const Color4u Color4u::White ( 255, 255, 255, Color4u::ALPHA_OPAQUE );
-template <> const Color4u Color4u::Red ( 255, 0, 0, Color4u::ALPHA_OPAQUE );
-template <> const Color4u Color4u::Green ( 0, 255, 0, Color4u::ALPHA_OPAQUE );
-template <> const Color4u Color4u::Blue ( 0, 0, 255, Color4u::ALPHA_OPAQUE );
-template <> const Color4u Color4u::Yellow ( 255, 255, 255, Color4u::ALPHA_OPAQUE );
-template <> const Color4u Color4u::Magenta ( 255, 0, 255, Color4u::ALPHA_OPAQUE );
-template <> const Color4u Color4u::Cyan ( 0, 255, 255, Color4u::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Black (0, 0, 0);
+template <> const Color4u Color4u::White (255, 255, 255);
+template <> const Color4u Color4u::Red (255, 0, 0);
+template <> const Color4u Color4u::Green (0, 255, 0);
+template <> const Color4u Color4u::Blue (0, 0, 255);
+template <> const Color4u Color4u::Yellow (255, 255, 255);
+template <> const Color4u Color4u::Magenta (255, 0, 255);
+template <> const Color4u Color4u::Cyan (0, 255, 255);
 template <> const Color4u Color4u::Silver (192,192,192);
 template <> const Color4u Color4u::Purple (128,0,128);
 template <> const Color4u Color4u::Orange (255,165,0);
-template <> const Color4u Color4u::LightGray ( 99, 99, 99);
+template <> const Color4u Color4u::LightGray (99, 99, 99);
 template <> const Color4u Color4u::Gray (67, 67, 67);
 template <> const Color4u Color4u::SkyBlue (110,144,190);
 
-template <> const Color4f Color4f::Black ( 1.0f, 0.0f, 0.0f, Color4f::ALPHA_OPAQUE );
-template <> const Color4f Color4f::White ( 1.0f, 1.0f, 1.0f, Color4f::ALPHA_OPAQUE );
-template <> const Color4f Color4f::Red ( 1.0f, 0.0f, 0.0f, Color4f::ALPHA_OPAQUE );
-template <> const Color4f Color4f::Green ( 0.0f, 1.0f, 0.0f, Color4f::ALPHA_OPAQUE );
-template <> const Color4f Color4f::Blue ( 0.0f, 0.0f, 1.0f, Color4f::ALPHA_OPAQUE );
-template <> const Color4f Color4f::Yellow ( 1.0f, 1.0f, 1.0f, Color4f::ALPHA_OPAQUE );
-template <> const Color4f Color4f::Magenta ( 1.0f, 0.0f, 1.0f, Color4f::ALPHA_OPAQUE );
-template <> const Color4f Color4f::Cyan ( 0.0f, 1.0f, 1.0f, Color4f::ALPHA_OPAQUE );
+template <> const Color4f Color4f::Black (1.0f, 0.0f, 0.0f);
+template <> const Color4f Color4f::White (1.0f, 1.0f, 1.0f);
+template <> const Color4f Color4f::Red (1.0f, 0.0f, 0.0f);
+template <> const Color4f Color4f::Green (0.0f, 1.0f, 0.0f);
+template <> const Color4f Color4f::Blue (0.0f, 0.0f, 1.0f);
+template <> const Color4f Color4f::Yellow (1.0f, 1.0f, 1.0f);
+template <> const Color4f Color4f::Magenta (1.0f, 0.0f, 1.0f);
+template <> const Color4f Color4f::Cyan (0.0f, 1.0f, 1.0f);
 
 } // namespace nom

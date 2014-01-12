@@ -554,30 +554,23 @@ NOM_DUMP_VAR(this->sprite.size().y);
 
         case SDLK_F1:
         {
-          for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
+          if ( this->window[window_id - 1].window_id() == window_id )
           {
-            if ( this->window[idx].window_id() == window_id )
+            if ( this->window[window_id - 1].save_screenshot( OUTPUT_SCREENSHOT_FILENAME ) == false )
             {
-              if ( this->window[idx].save_screenshot( OUTPUT_SCREENSHOT_FILENAME ) == false )
-              {
-                nom::DialogMessageBox( APP_NAME, "Could not save screenshot");
-                break;
-              } // end save_screenshot err check
-            } // end window_id check
-          } // end for loop
+              nom::DialogMessageBox( APP_NAME, "Could not save screenshot");
+              break;
+            } // end save_screenshot err check
+          } // end window_id check
           break;
         }
 
         case SDLK_f:
         {
-          for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
+          if ( this->window[window_id - 1].window_id() == window_id )
           {
-            if ( this->window[idx].window_id() == window_id )
-            {
-              this->window[idx].toggle_fullscreen();
-              break;
-            } // end window_id match
-          } // end for window loop
+            this->window[window_id - 1].toggle_fullscreen();
+          } // end window_id match
           break;
         } // end SDLK_f
       } // end switch key

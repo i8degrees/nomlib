@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Coords.hpp"
+#include "nomlib/math/Rect.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/graphics/VideoMode.hpp"
@@ -100,10 +100,10 @@ class Window:
     ///
     /// The primary desktop display is located at 0, 0.
     ///
-    /// \return A nom::Coords object filled with the display bounds.
+    /// \returns  nom::IntRect object filled with the display bounds.
     ///
     /// \todo Test me
-    const Coords display_bounds ( void ) const;
+    const IntRect display_bounds ( void ) const;
 
     /// Obtain a list of supported video modes
     ///

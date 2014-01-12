@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
-#include "nomlib/math/Coords.hpp"
+#include "nomlib/math/Rect.hpp"
 #include "nomlib/graphics/RendererInfo.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
@@ -141,14 +141,14 @@ class Renderer
 
     /// Set a new drawing area for rendering
     ///
-    /// \param rect       Represents the drawing area to update;
-    ///                   passing Coords::null to set the viewport to the entire
-    ///                   target
+    /// \param bounds     Represents the drawing area to update;
+    ///                   passing IntRect::null to set the viewport to the
+    ///                   entire target
     ///
     /// \note When the window is resized, the current viewport is automatically
     /// resized to compensate.
     /// \todo Test me!
-    bool set_viewport ( const Coords& rect );
+    bool set_viewport ( const IntRect& bounds );
 
     bool set_color ( const Color4u& color );
 
@@ -162,11 +162,11 @@ class Renderer
 
     /// Set new clipping rectangle bounds for the rendering target.
     ///
-    /// \param clip_bounds  Passing nom::Coords::null will disable clipping on
-    ///                     the target
+    /// \param bounds    Passing nom::IntRect::null will disable clipping on
+    ///                  the target
     ///
     /// \todo Test me!
-    bool set_bounds ( const Coords& clip_bounds );
+    bool set_bounds ( const IntRect& bounds );
 
     /// Obtain pixels buffer of the entire rendering target
     ///

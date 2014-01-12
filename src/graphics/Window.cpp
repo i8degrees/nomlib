@@ -154,15 +154,15 @@ uint32 Window::pixel_format ( void ) const
   return SDL_GetWindowPixelFormat ( this->window() );
 }
 
-const Coords Window::display_bounds ( void ) const
+const IntRect Window::display_bounds ( void ) const
 {
   SDL_Rect display_bounds;
-  Coords bounds;
+  IntRect bounds;
 
   if ( SDL_GetDisplayBounds ( this->window_display_id(), &display_bounds ) != 0 )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return Coords::null;
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return IntRect::null;
   }
 
   bounds.x = display_bounds.x;

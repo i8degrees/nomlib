@@ -219,15 +219,15 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Renderer::set_viewport ( const Coords& rect )
+bool Renderer::set_viewport ( const IntRect& bounds )
 {
-  if ( rect != Coords::null )
+  if ( bounds != IntRect::null )
   {
-    SDL_Rect area = SDL_RECT(rect);
+    SDL_Rect clip = SDL_RECT(bounds);
 
-    if ( SDL_RenderSetViewport ( this->renderer(), &area ) != 0 )
+    if ( SDL_RenderSetViewport ( this->renderer(), &clip ) != 0 )
     {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+      NOM_LOG_ERR ( NOM, SDL_GetError() );
       return false;
     }
   }
@@ -235,7 +235,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   {
     if ( SDL_RenderSetViewport ( this->renderer(), nullptr ) != 0 )
     {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+      NOM_LOG_ERR ( NOM, SDL_GetError() );
       return false;
     }
   }
@@ -263,9 +263,9 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Renderer::set_bounds ( const Coords& clip_bounds )
+bool Renderer::set_bounds ( const IntRect& bounds )
 {
-  if ( clip_bounds == Coords::null ) // Disable clipping bounds rectangle
+  if ( bounds == IntRect::null ) // Disable clipping bounds rectangle
   {
     if ( SDL_RenderSetClipRect( this->renderer(), nullptr ) != 0 )
     {
@@ -276,8 +276,8 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
     return true;
   }
 
-  SDL_Rect bounds = SDL_RECT ( clip_bounds );
-  if ( SDL_RenderSetClipRect( this->renderer(), &bounds ) != 0 )
+  SDL_Rect clip = SDL_RECT ( bounds );
+  if ( SDL_RenderSetClipRect( this->renderer(), &clip ) != 0 )
   {
 NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;

@@ -89,20 +89,20 @@ SDL_Color SDL_COLOR ( const Color4u& color )
 
 const Color4u pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
 {
-  Color4u c;
+  SDL_Color c;
 
   SDL_GetRGB ( pixel, fmt, &c.r, &c.g, &c.b );
 
-  return c;
+  return Color4u ( c.r, c.g, c.b, Color4u::ALPHA_OPAQUE );
 }
 
 const Color4u alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
 {
-  Color4u c;
+  SDL_Color c;
 
   SDL_GetRGBA ( pixel, fmt, &c.r, &c.g, &c.b, &c.a );
 
-  return c;
+  return Color4u ( c.r, c.g, c.b, c.a );
 }
 
 const Color4u pixel ( uint32 pixel, uint32 fmt )

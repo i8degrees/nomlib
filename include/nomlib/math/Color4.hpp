@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_RGBA_COLOR4_HPP
-#define NOMLIB_RGBA_COLOR4_HPP
+#ifndef NOMLIB_MATH_COLOR4_HPP
+#define NOMLIB_MATH_COLOR4_HPP
 
 #include <algorithm>
 
@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// Delimiter character to use with << operator
+/// \brief Delimiter character to use with << operator
 const std::string COLOR_DELIMITER = ", ";
 
 /// 100% transparent alpha channel value
@@ -44,19 +44,29 @@ const int ALPHA_TRANSPARENT = 0;
 /// 100% opaque alpha channel value
 const int ALPHA_OPAQUE = 255;
 
-/// \brief RGBA color
+/// \brief RGBA color container
 ///
 /// \todo Implement lesser than, greater than and so on operators?
+/// \todo Implement specialized Color4<float> operators
 template <typename T>
 class Color4
 {
   public:
-    /// Default constructor; sets the color to their respective defaults
-    Color4 ( void ) : red ( 0 ), green ( 0 ), blue ( 0 ),
-      alpha ( ALPHA_OPAQUE ) {}
+    /// Default constructor; initialize values to Color<T>::null
+    Color4 ( void ) :
+      red ( -1 ),
+      green ( -1 ),
+      blue ( -1 ),
+      alpha ( Color4<T>::ALPHA_OPAQUE )
+    {
+      //NOM_LOG_TRACE(NOM);
+    }
 
     /// Destructor
-    ~Color4 ( void ) {}
+    ~Color4 ( void )
+    {
+      //NOM_LOG_TRACE(NOM);
+    }
 
     /// Copy constructor
     template <typename U>
@@ -69,12 +79,24 @@ class Color4
     }
 
     /// Constructor variant for setting a color using RGB values
-    Color4 ( T r, T g, T b ) : red ( r ), green ( g ),
-      blue ( b ), alpha ( ALPHA_OPAQUE ) {}
+    Color4 ( T r, T g, T b )  :
+      red ( r ),
+      green ( g ),
+      blue ( b ),
+      alpha ( Color4<T>::ALPHA_OPAQUE )
+    {
+      //NOM_LOG_TRACE(NOM);
+    }
 
     /// Constructor variant for setting a color using RGBA values
-    Color4 ( T red, T green, T blue, T alpha ) : red ( red ),
-      green ( green ), blue ( blue ), alpha ( alpha ) {}
+    Color4 ( T red, T green, T blue, T alpha )  :
+      red ( red ),
+      green ( green ),
+      blue ( blue ),
+      alpha ( alpha )
+    {
+      //NOM_LOG_TRACE(NOM);
+    }
 
     /// Copy assignment operator
     inline Color4<T>& operator = ( const Color4<T>& other )
@@ -92,6 +114,43 @@ class Color4
     {
       return *this;
     }
+
+    /// \brief 100% transparent alpha channel value
+    static const T ALPHA_TRANSPARENT;
+
+    /// \brief 100% opaque alpha channel value
+    static const T ALPHA_OPAQUE;
+
+    /// \brief Null value
+    ///
+    /// \remarks  Null value implementation depends on signed (negative) numbers.
+    static const Color4 null;
+
+    /// Primary colors
+    static const Color4 Black;
+    static const Color4 White;
+    static const Color4 Red;
+    static const Color4 Green;
+    static const Color4 Blue;
+    static const Color4 Yellow;
+    static const Color4 Magenta;
+    static const Color4 Cyan;
+
+    /// Additional colors
+    /// \deprecated
+    static const Color4 LightGray;
+
+    /// Additional colors
+    /// \deprecated
+    static const Color4 Gray;
+
+    /// Sky blue color key
+    /// \deprecated
+    static const Color4 NomPrimaryColorKey;
+
+    /// Light magenta color key
+    /// \deprecated
+    static const Color4 NomSecondaryColorKey;
 
   public:
     T red;
@@ -112,28 +171,21 @@ class Color4
     T& a = alpha;
 };
 
-/// Pretty print the color using the following format string:
+/// Pretty prints nom::Color4 using the following format string:
 ///
 /// <color.red>, <color.green>, <color.blue>, <color.alpha>
-///
-/// This will look like:
-///
-/// 99, 144, 255, 128
-inline std::ostream& operator << ( std::ostream& os, const Color4<uint8>& color )
+template <typename T>
+inline std::ostream& operator << ( std::ostream& os, const Color4<T>& color )
 {
-  os << static_cast<int> ( color.red ) << COLOR_DELIMITER
-     << static_cast<int> ( color.green ) << COLOR_DELIMITER
-     << static_cast<int> ( color.blue ) << COLOR_DELIMITER
-     << static_cast<int> ( color.alpha );
-  return os;
-}
+  os
+  << color.red
+  << COLOR_DELIMITER
+  << color.green
+  << COLOR_DELIMITER
+  << color.blue
+  << COLOR_DELIMITER
+  << color.alpha;
 
-inline std::ostream& operator << ( std::ostream& os, const Color4<float>& color )
-{
-  os << color.red << COLOR_DELIMITER
-     << color.green << COLOR_DELIMITER
-     << color.blue << COLOR_DELIMITER
-     << color.alpha;
   return os;
 }
 
@@ -156,7 +208,7 @@ inline bool operator != ( const Color4<T>& left, const Color4<T>& right )
 template <typename T>
 inline Color4<T> operator + ( const Color4<T>& left, const Color4<T>& right )
 {
-  return Color4<T> ( static_cast<T> ( std::min ( left.red + right.red, 255 ) ),
+  return Color4<T> (  static_cast<T> ( std::min ( left.red + right.red, 255 ) ),
                     static_cast<T> ( std::min ( left.green + right.green, 255 ) ),
                     static_cast<T> ( std::min ( left.blue + right.blue, 255 ) ),
                     static_cast<T> ( std::min ( left.alpha + right.alpha, 255 ) )
@@ -167,7 +219,7 @@ inline Color4<T> operator + ( const Color4<T>& left, const Color4<T>& right )
 template <typename T>
 inline Color4<T> operator ++ ( Color4<T>& left )
 {
-  return Color4<T> ( static_cast<T> ( left.red-- ),
+  return Color4<T> (  static_cast<T> ( left.red-- ),
                     static_cast<T> ( left.green-- ),
                     static_cast<T> ( left.blue-- ),
                     static_cast<T> ( left.alpha-- )
@@ -176,9 +228,9 @@ inline Color4<T> operator ++ ( Color4<T>& left )
 
 /// Values that exceed 255 are clamped to 255
 template <typename T>
-inline Color4<T> operator - ( const Color4<T>& left, const Color4<T>& right )
+inline Color4<T> operator - ( const Color4<int16>& left, const Color4<int16>& right )
 {
-  return Color4<T> ( static_cast<T> ( std::min ( left.red - right.red, 255 ) ),
+  return Color4<T> (  static_cast<T> ( std::min ( left.red - right.red, 255 ) ),
                     static_cast<T> ( std::min ( left.green - right.green, 255 ) ),
                     static_cast<T> ( std::min ( left.blue - right.blue, 255 ) ),
                     static_cast<T> ( std::min ( left.alpha - right.alpha, 255 ) )
@@ -198,7 +250,7 @@ inline Color4<T> operator -- ( Color4<T>& left )
 
 /// Values that exceed 255 are clamped to 255
 template <typename T>
-inline Color4<T> operator * ( const Color4<T>& left, const Color4<T>& right )
+inline Color4<T> operator * ( const Color4<int16>& left, const Color4<int16>& right )
 {
   return Color4<T> ( static_cast<T> ( left.red * right.red / 255 ),
                     static_cast<T> ( left.green * right.green / 255 ),
@@ -225,7 +277,10 @@ inline Color4<T>& operator *= ( Color4<T>& left, const Color4<T>& right )
   return left = left * right;
 }
 
-typedef Color4<uint8> Color4u;
+/// Color4 object defined using signed 16-bit integers
+typedef Color4<int16> Color4u;
+
+/// Color4 object defined using floating point numbers
 typedef Color4<float> Color4f;
 
 } // namespace nom

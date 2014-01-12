@@ -275,15 +275,15 @@ const uint8 Texture::alpha ( void ) const
 
 const Color4u Texture::color_modulation ( void ) const
 {
-  Color4u color;
+  SDL_Color c;
 
-  if ( SDL_GetTextureColorMod ( this->texture(), &color.r, &color.g, &color.b ) != 0 )
+  if ( SDL_GetTextureColorMod ( this->texture(), &c.r, &c.g, &c.b ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
     return NOM_COLOR4U_WHITE;
   }
 
-  return color;
+  return Color4u ( c.r, c.g, c.b, Color4u::ALPHA_OPAQUE );
 }
 
 const Point2i Texture::maximum_size ( void )

@@ -48,6 +48,13 @@ uint32 RendererInfo::optimal_texture_format ( void ) const
   return this->texture_formats.front();
 }
 
+bool RendererInfo::target_texture ( void ) const
+{
+  if ( this->flags & SDL_RENDERER_TARGETTEXTURE ) return true;
+
+  return false;
+}
+
 std::ostream& operator << ( std::ostream& os, const RendererInfo& info )
 {
   os << "Renderer Name: " << info.name

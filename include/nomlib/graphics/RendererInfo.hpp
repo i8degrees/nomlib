@@ -53,8 +53,14 @@ struct RendererInfo
     /// Destructor
     ~RendererInfo ( void );
 
-    /// Obtain the most optimal texture (pixel) format available
+    /// \brief    Obtain the most optimal texture format available.
+    ///
+    /// \remarks  Value returned is graphics hardware dependent.
     uint32 optimal_texture_format ( void ) const;
+
+    /// \brief    Query support for setting a nom::Texture as a
+    ///           nom::Renderer target.
+    bool target_texture ( void ) const;
 
     /// Renderer designation
     std::string name;

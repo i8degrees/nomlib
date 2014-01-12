@@ -62,9 +62,9 @@ nom::int32 do_color_test1 ( void )
 {
   NOM_LOG_TRACE(NOM);
 
-  nom::Color4u testme1 ( 242, 1, 1, 255 );
-  nom::Color4u testme2 = nom::Color4u::Black;
-  nom::Color4u testme3 (-1,-1,-1, Color4u::ALPHA_OPAQUE );
+  nom::Color4i testme1 ( 242, 1, 1, 255 );
+  nom::Color4i testme2 = nom::Color4i::Black;
+  nom::Color4i testme3 (-1,-1,-1, Color4i::ALPHA_OPAQUE );
   nom::Color4f testme4 (-1,-1,-1, Color4f::ALPHA_OPAQUE );
 
   NOM_DUMP_VAR(testme1);
@@ -73,7 +73,7 @@ nom::int32 do_color_test1 ( void )
   NOM_DUMP_VAR(testme4);
 
   if ( testme2 == testme1 ) return NOM_EXIT_FAILURE;
-  if ( testme3 != Color4u::null ) return NOM_EXIT_FAILURE;
+  if ( testme3 != Color4i::null ) return NOM_EXIT_FAILURE;
   if ( testme4 != Color4f::null ) return NOM_EXIT_FAILURE;
 
   return NOM_EXIT_SUCCESS;

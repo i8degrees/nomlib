@@ -79,17 +79,17 @@ void GrayFrame::update ( void )
 
   this->frame.clear();
 
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y, x_offset - padding, y, Color4u( 41, 41, 41 ) ) ) ); // top0
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y + 1, x_offset - padding, y + 1, Color4u( 133, 133, 133 ) ) ) ); // top1
+  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y, x_offset - padding, y, Color4i( 41, 41, 41 ) ) ) ); // top0
+  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y + 1, x_offset - padding, y + 1, Color4i( 133, 133, 133 ) ) ) ); // top1
 
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y + 1, x, y_offset - padding, Color4u( 41, 41, 41 ) ) ) ); // left0
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x + 1, y + 2, x + 1, y_offset - padding, Color4u( 133, 133, 133 ) ) ) ); // left1
+  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y + 1, x, y_offset - padding, Color4i( 41, 41, 41 ) ) ) ); // left0
+  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x + 1, y + 2, x + 1, y_offset - padding, Color4i( 133, 133, 133 ) ) ) ); // left1
 
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x_offset, y, x_offset, y_offset - padding, Color4u( 57, 57, 57 ) ) ) ); // right0
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x_offset, y, x_offset, y_offset - padding, Color4u( 41, 41, 41 ) ) ) ); // right1
+  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x_offset, y, x_offset, y_offset - padding, Color4i( 57, 57, 57 ) ) ) ); // right0
+  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x_offset, y, x_offset, y_offset - padding, Color4i( 41, 41, 41 ) ) ) ); // right1
 
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y_offset - padding, x_offset - padding, y_offset - padding, Color4u( 57, 57, 57 ) ) ) ); //bottom0
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y_offset - padding, x_offset - padding, y_offset - padding, Color4u ( 41, 41, 41 ) ) ) ); // bottom1
+  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y_offset - padding, x_offset - padding, y_offset - padding, Color4i( 57, 57, 57 ) ) ) ); //bottom0
+  this->frame.push_back ( IDrawable::UniquePtr ( new Line ( x, y_offset - padding, x_offset - padding, y_offset - padding, Color4i ( 41, 41, 41 ) ) ) ); // bottom1
 
   this->updated = true;
 }

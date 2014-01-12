@@ -32,9 +32,9 @@ namespace nom {
 
 Gradient::Gradient ( void )
 {
-  Color4u gradient_color[2];
-  gradient_color[0] = Color4u::LightGray;
-  gradient_color[1] = Color4u::Gray;
+  Color4i gradient_color[2];
+  gradient_color[0] = Color4i::LightGray;
+  gradient_color[1] = Color4i::Gray;
 
   this->initialize  (
                       gradient_color,
@@ -43,7 +43,7 @@ Gradient::Gradient ( void )
 }
 
 Gradient::Gradient  (
-                      Color4u gradient_color[2],
+                      Color4i gradient_color[2],
                       const Coords& bounds, int32 x_margin, int32 y_margin,
                       Gradient::FillDirection direction
                     ) :
@@ -68,7 +68,7 @@ FIXME */
 Gradient::~Gradient ( void ) {}
 
 void Gradient::initialize (
-                            Color4u gradient_color[2],
+                            Color4i gradient_color[2],
                             const Coords& bounds,
                             int32 x_margin, int32 y_margin,
                             Gradient::FillDirection direction
@@ -112,22 +112,22 @@ void Gradient::set_size ( int32 width, int32 height )
   this->coords_.h = height;
 }
 
-Color4u Gradient::start_color ( void ) const
+Color4i Gradient::start_color ( void ) const
 {
   return this->gradient_[0];
 }
 
-Color4u Gradient::end_color ( void ) const
+Color4i Gradient::end_color ( void ) const
 {
   return this->gradient_[1];
 }
 
-void Gradient::set_start_color ( const Color4u& starting_color )
+void Gradient::set_start_color ( const Color4i& starting_color )
 {
   this->gradient_[0] = starting_color;
 }
 
-void Gradient::set_end_color ( const Color4u& ending_color )
+void Gradient::set_end_color ( const Color4i& ending_color )
 {
   this->gradient_[1] = ending_color;
 }
@@ -172,7 +172,7 @@ void Gradient::strategy_top_down ( void )
 
   for ( uint32 rows = this->coords_.y + this->y_margin_; rows < y_offset; rows++ )
   {
-    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( this->coords_.x + this->x_margin_, rows, this->coords_.w - this->x_margin_, 1 ), Color4u ( currentR, currentG, currentB ) ) ) );
+    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( this->coords_.x + this->x_margin_, rows, this->coords_.w - this->x_margin_, 1 ), Color4i ( currentR, currentG, currentB ) ) ) );
 
     if ( this->dithering() )
     {
@@ -197,7 +197,7 @@ void Gradient::strategy_left_right ( void )
 
   for ( uint32 rows = this->coords_.x + this->x_margin_; rows < x_offset; rows++ )
   {
-    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( rows, this->coords_.y + this->y_margin_, 1, this->coords_.h - this->y_margin_ ), Color4u ( currentR, currentG, currentB ) ) ) );
+    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( rows, this->coords_.y + this->y_margin_, 1, this->coords_.h - this->y_margin_ ), Color4i ( currentR, currentG, currentB ) ) ) );
 
     if ( this->dithering() )
     {

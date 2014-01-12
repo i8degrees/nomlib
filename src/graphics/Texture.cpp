@@ -34,7 +34,7 @@ namespace nom {
 
 Texture::Texture ( void )  :  texture_ { nullptr, priv::FreeTexture },
     pixels_ ( nullptr ), pitch_ ( 0 ), position_ ( 0, 0 ),
-    bounds_ ( 0, 0, -1, -1 ), colorkey_ { Color4u::Black }
+    bounds_ ( 0, 0, -1, -1 ), colorkey_ { Color4i::Black }
 {
   NOM_LOG_TRACE ( NOM );
 }
@@ -249,7 +249,7 @@ bool Texture::locked ( void ) const
   return false;
 }
 
-const Color4u& Texture::colorkey ( void ) const
+const Color4i& Texture::colorkey ( void ) const
 {
   return this->colorkey_;
 }
@@ -261,23 +261,23 @@ const uint8 Texture::alpha ( void ) const
   if ( SDL_GetTextureAlphaMod ( this->texture(), &alpha ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return Color4u::ALPHA_OPAQUE;
+    return Color4i::ALPHA_OPAQUE;
   }
 
   return alpha;
 }
 
-const Color4u Texture::color_modulation ( void ) const
+const Color4i Texture::color_modulation ( void ) const
 {
   SDL_Color c;
 
   if ( SDL_GetTextureColorMod ( this->texture(), &c.r, &c.g, &c.b ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return Color4u::null;
+    return Color4i::null;
   }
 
-  return Color4u ( c.r, c.g, c.b, Color4u::ALPHA_OPAQUE );
+  return Color4i ( c.r, c.g, c.b, Color4i::ALPHA_OPAQUE );
 }
 
 const Point2i Texture::maximum_size ( void )
@@ -515,7 +515,7 @@ void Texture::draw ( const Window& target, const double degrees ) const
 
 bool Texture::set_alpha ( uint8 opacity )
 {
-NOM_ASSERT ( ! ( opacity > Color4u::ALPHA_OPAQUE ) || ( opacity < Color4u::ALPHA_TRANSPARENT ) );
+NOM_ASSERT ( ! ( opacity > Color4i::ALPHA_OPAQUE ) || ( opacity < Color4i::ALPHA_TRANSPARENT ) );
 
   if ( SDL_SetTextureAlphaMod ( this->texture(), opacity ) != 0 )
   {
@@ -799,7 +799,7 @@ NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
   // Once we unlock the texture, it will be uploaded to the GPU for us!
   this->unlock();
 
-  //this->set_colorkey ( Color4u(0,0,0,0) );
+  //this->set_colorkey ( Color4i(0,0,0,0) );
 
   this->set_bounds ( destination_buffer.bounds() );
 
@@ -843,7 +843,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Texture::set_colorkey ( const Color4u& colorkey )
+bool Texture::set_colorkey ( const Color4i& colorkey )
 {
   this->lock ( this->bounds() ); // Safe for writing
 
@@ -865,7 +865,7 @@ bool Texture::set_colorkey ( const Color4u& colorkey )
   return true;
 }
 
-bool Texture::set_color_modulation ( const Color4u& color )
+bool Texture::set_color_modulation ( const Color4i& color )
 {
   if ( SDL_SetTextureColorMod ( this->texture(), color.r, color.g, color.b ) != 0 )
   {

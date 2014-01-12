@@ -237,8 +237,8 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
 
       // Initialize the background to use in our info_box object as a gradient
       // filled background
-      gradient.set_start_color ( nom::Color4u::Gray );
-      gradient.set_end_color ( nom::Color4u::LightGray );
+      gradient.set_start_color ( nom::Color4i::Gray );
+      gradient.set_end_color ( nom::Color4i::LightGray );
       gradient.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
       // Initialize our info_box[0] object
@@ -334,16 +334,16 @@ NOM_DUMP_VAR(this->sprite.size().y);
         this->sprite_angle += 360.0f / this->fps[0].fps_float();
         if ( this->sprite_angle > 360.0f ) this->sprite_angle -= 360.0f;
 
-        this->window[0].fill ( nom::Color4u::SkyBlue );
+        this->window[0].fill ( nom::Color4i::SkyBlue );
         this->info_box[0].draw ( this->window[0] );
         this->info_box[1].draw ( this->window[0] );
         this->sprite.draw ( this->window[0], this->sprite_angle );
         this->ani_sprite.draw ( this->window[0] );
 
-        this->window[1].fill ( nom::Color4u::Black );
+        this->window[1].fill ( nom::Color4i::Black );
         this->background.draw ( this->window[1] );
 
-        this->window[2].fill ( nom::Color4u::Magenta );
+        this->window[2].fill ( nom::Color4i::Magenta );
 
         // Choose a random color for filling the window with as a backdrop when
         // MAXIMUM_WINDOWS is greater than 3
@@ -353,18 +353,18 @@ NOM_DUMP_VAR(this->sprite.size().y);
 
           switch ( random_color )
           {
-            default: this->window[idx].fill ( nom::Color4u::Black ); break;
-            case 1: this->window[idx].fill ( nom::Color4u::White ); break;
-            case 2: this->window[idx].fill ( nom::Color4u::Red ); break;
-            case 3: this->window[idx].fill ( nom::Color4u::Green ); break;
-            case 4: this->window[idx].fill ( nom::Color4u::Blue ); break;
-            case 5: this->window[idx].fill ( nom::Color4u::Yellow ); break;
-            case 6: this->window[idx].fill ( nom::Color4u::Magenta ); break;
-            case 7: this->window[idx].fill ( nom::Color4u::Cyan ); break;
-            case 8: this->window[idx].fill ( nom::Color4u::Orange ); break;
-            case 9: this->window[idx].fill ( nom::Color4u::LightGray ); break;
-            case 10: this->window[idx].fill ( nom::Color4u::SkyBlue ); break;
-            case 11: this->window[idx].fill ( nom::Color4u::Magenta ); break;
+            default: this->window[idx].fill ( nom::Color4i::Black ); break;
+            case 1: this->window[idx].fill ( nom::Color4i::White ); break;
+            case 2: this->window[idx].fill ( nom::Color4i::Red ); break;
+            case 3: this->window[idx].fill ( nom::Color4i::Green ); break;
+            case 4: this->window[idx].fill ( nom::Color4i::Blue ); break;
+            case 5: this->window[idx].fill ( nom::Color4i::Yellow ); break;
+            case 6: this->window[idx].fill ( nom::Color4i::Magenta ); break;
+            case 7: this->window[idx].fill ( nom::Color4i::Cyan ); break;
+            case 8: this->window[idx].fill ( nom::Color4i::Orange ); break;
+            case 9: this->window[idx].fill ( nom::Color4i::LightGray ); break;
+            case 10: this->window[idx].fill ( nom::Color4i::SkyBlue ); break;
+            case 11: this->window[idx].fill ( nom::Color4i::Magenta ); break;
           }
         }
 

@@ -128,7 +128,7 @@ class Renderer
     /// Fill the rendering target video display with a new color.
     ///
     /// This combines two methods into one: set_color() and clear().
-    bool fill ( const Color4u& color );
+    bool fill ( const Color4i& color );
 
     /// Set device independent resolution for rendering
     ///
@@ -150,7 +150,7 @@ class Renderer
     /// \todo Test me!
     bool set_viewport ( const IntRect& bounds );
 
-    bool set_color ( const Color4u& color );
+    bool set_color ( const Color4i& color );
 
     /// Set the color blending mode (fill and line).
     ///

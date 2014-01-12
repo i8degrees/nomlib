@@ -193,7 +193,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Renderer::fill ( const Color4u& color )
+bool Renderer::fill ( const Color4i& color )
 {
   if ( this->set_color ( color ) == false )
   {
@@ -243,7 +243,7 @@ bool Renderer::set_viewport ( const IntRect& bounds )
   return true;
 }
 
-bool Renderer::set_color ( const Color4u& color )
+bool Renderer::set_color ( const Color4i& color )
 {
   if ( SDL_SetRenderDrawColor ( this->renderer(), color.r, color.g, color.b, color.a ) != 0 )
   {

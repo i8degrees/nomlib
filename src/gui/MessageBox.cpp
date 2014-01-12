@@ -55,7 +55,7 @@ MessageBox::MessageBox  (
   // init geometry coords w/ arguments list
   this->coords = Coords ( x, y, width, height );
 
-  Color4u gradient_color[2];
+  Color4i gradient_color[2];
   gradient_color[0] = background.start_color();
   gradient_color[1] = background.end_color();
 
@@ -82,7 +82,7 @@ MessageBox::MessageBox  (
   // init geometry coords w/ arguments list
   this->coords = Coords ( x, y, width, height );
 
-  Color4u gradient_color[2];
+  Color4i gradient_color[2];
   gradient_color[0] = background->start_color();
   gradient_color[1] = background->end_color();
   this->drawable.push_back ( Gradient::SharedPtr ( new Gradient ( gradient_color, Coords ( this->coords.x, this->coords.y, this->coords.w, this->coords.h ), 0, 0, background->fill_direction() ) ) );

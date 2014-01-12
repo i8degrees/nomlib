@@ -131,8 +131,8 @@ class MessageBox: public IDrawable
 
 /// // Initialize the background to use in our info_box object as a gradient filled
 /// // background
-/// linear.set_start_color ( nom::Color4u ( 67, 67, 67, 255 ) );
-/// linear.set_end_color ( nom::Color4u ( 99, 99, 99, 255 ) );
+/// linear.set_start_color ( nom::Color4i ( 67, 67, 67, 255 ) );
+/// linear.set_end_color ( nom::Color4i ( 99, 99, 99, 255 ) );
 /// linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
 /// // Initialize our info_box object

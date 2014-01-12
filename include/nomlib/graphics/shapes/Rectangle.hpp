@@ -62,11 +62,11 @@ class Rectangle:
 
     /// Construct a Rectangle object using a nom::Coords (X, Y, width & height)
     /// coordinates and a chosen color.
-    Rectangle ( const Coords& coords, const Color4u& color );
+    Rectangle ( const Coords& coords, const Color4i& color );
 
     /// Construct a Rectangle object using a nom::Coords (X, Y, width & height)
     /// coordinates and a chosen color.
-    Rectangle ( int32 x1, int32 y1, int32 width, int32 height, const Color4u& color );
+    Rectangle ( int32 x1, int32 y1, int32 width, int32 height, const Color4i& color );
 
     /// Do nothing method; we have it only because it is required by interface
     /// contract with IDrawable (which is fine).
@@ -85,7 +85,7 @@ class Rectangle:
     /// X, Y signed integer rendering coordinates
     Coords coords;
     /// Rendering color (RGBA).
-    Color4u color;
+    Color4i color;
 };
 
 

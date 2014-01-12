@@ -30,32 +30,32 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-template <> const int16 Color4u::ALPHA_TRANSPARENT = 0;
-template <> const int16 Color4u::ALPHA_OPAQUE = 255;
+template <> const int16 Color4i::ALPHA_TRANSPARENT = 0;
+template <> const int16 Color4i::ALPHA_OPAQUE = 255;
 
 template <> const float Color4f::ALPHA_TRANSPARENT = 0.0f;
 template <> const float Color4f::ALPHA_OPAQUE = 1.0f;
 
 /// Null value for a nom::Color4 using signed integers
-template <> const Color4u Color4u::null ( -1, -1, -1, Color4u::ALPHA_OPAQUE );
+template <> const Color4i Color4i::null ( -1, -1, -1, Color4i::ALPHA_OPAQUE );
 
 /// Null value for a nom::Color4 using floating point numbers
 template <> const Color4f Color4f::null ( -1, -1, -1, Color4f::ALPHA_OPAQUE );
 
-template <> const Color4u Color4u::Black (0, 0, 0);
-template <> const Color4u Color4u::White (255, 255, 255);
-template <> const Color4u Color4u::Red (255, 0, 0);
-template <> const Color4u Color4u::Green (0, 255, 0);
-template <> const Color4u Color4u::Blue (0, 0, 255);
-template <> const Color4u Color4u::Yellow (255, 255, 255);
-template <> const Color4u Color4u::Magenta (255, 0, 255);
-template <> const Color4u Color4u::Cyan (0, 255, 255);
-template <> const Color4u Color4u::Silver (192,192,192);
-template <> const Color4u Color4u::Purple (128,0,128);
-template <> const Color4u Color4u::Orange (255,165,0);
-template <> const Color4u Color4u::LightGray (99, 99, 99);
-template <> const Color4u Color4u::Gray (67, 67, 67);
-template <> const Color4u Color4u::SkyBlue (110,144,190);
+template <> const Color4i Color4i::Black (0, 0, 0);
+template <> const Color4i Color4i::White (255, 255, 255);
+template <> const Color4i Color4i::Red (255, 0, 0);
+template <> const Color4i Color4i::Green (0, 255, 0);
+template <> const Color4i Color4i::Blue (0, 0, 255);
+template <> const Color4i Color4i::Yellow (255, 255, 255);
+template <> const Color4i Color4i::Magenta (255, 0, 255);
+template <> const Color4i Color4i::Cyan (0, 255, 255);
+template <> const Color4i Color4i::Silver (192,192,192);
+template <> const Color4i Color4i::Purple (128,0,128);
+template <> const Color4i Color4i::Orange (255,165,0);
+template <> const Color4i Color4i::LightGray (99, 99, 99);
+template <> const Color4i Color4i::Gray (67, 67, 67);
+template <> const Color4i Color4i::SkyBlue (110,144,190);
 
 template <> const Color4f Color4f::Black (1.0f, 0.0f, 0.0f);
 template <> const Color4f Color4f::White (1.0f, 1.0f, 1.0f);

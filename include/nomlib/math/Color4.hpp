@@ -275,7 +275,7 @@ inline Color4<T>& operator *= ( Color4<T>& left, const Color4<T>& right )
 }
 
 /// Color4 object defined using signed 16-bit integers
-typedef Color4<int16> Color4u;
+typedef Color4<int16> Color4i;
 
 /// Color4 object defined using floating point numbers
 typedef Color4<float> Color4f;

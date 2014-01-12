@@ -75,7 +75,7 @@ SDL_Point SDL_POINT ( const Point2i& point )
   return p;
 }
 
-SDL_Color SDL_COLOR ( const Color4u& color )
+SDL_Color SDL_COLOR ( const Color4i& color )
 {
   SDL_Color c;
 
@@ -87,50 +87,50 @@ SDL_Color SDL_COLOR ( const Color4u& color )
   return c;
 }
 
-const Color4u pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
+const Color4i pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
 {
   SDL_Color c;
 
   SDL_GetRGB ( pixel, fmt, &c.r, &c.g, &c.b );
 
-  return Color4u ( c.r, c.g, c.b, Color4u::ALPHA_OPAQUE );
+  return Color4i ( c.r, c.g, c.b, Color4i::ALPHA_OPAQUE );
 }
 
-const Color4u alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
+const Color4i alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt )
 {
   SDL_Color c;
 
   SDL_GetRGBA ( pixel, fmt, &c.r, &c.g, &c.b, &c.a );
 
-  return Color4u ( c.r, c.g, c.b, c.a );
+  return Color4i ( c.r, c.g, c.b, c.a );
 }
 
-const Color4u pixel ( uint32 pixel, uint32 fmt )
+const Color4i pixel ( uint32 pixel, uint32 fmt )
 {
   return nom::pixel ( pixel, SDL_AllocFormat(fmt) );
 }
 
-const Color4u alpha_pixel ( uint32 pixel, uint32 fmt )
+const Color4i alpha_pixel ( uint32 pixel, uint32 fmt )
 {
   return nom::alpha_pixel ( pixel, SDL_AllocFormat(fmt) );
 }
 
-uint32 RGB ( const Color4u& color, const SDL_PixelFormat* fmt )
+uint32 RGB ( const Color4i& color, const SDL_PixelFormat* fmt )
 {
   return SDL_MapRGB ( fmt, color.r, color.g, color.b );
 }
 
-uint32 RGB ( const Color4u& color, uint32 fmt )
+uint32 RGB ( const Color4i& color, uint32 fmt )
 {
   return SDL_MapRGB ( SDL_AllocFormat(fmt), color.r, color.g, color.b );
 }
 
-uint32 RGBA ( const Color4u& color, const SDL_PixelFormat* fmt )
+uint32 RGBA ( const Color4i& color, const SDL_PixelFormat* fmt )
 {
   return SDL_MapRGBA ( fmt, color.r, color.g, color.b, color.a );
 }
 
-uint32 RGBA ( const Color4u& color, uint32 fmt )
+uint32 RGBA ( const Color4i& color, uint32 fmt )
 {
   return SDL_MapRGBA ( SDL_AllocFormat(fmt), color.r, color.g, color.b, color.a );
 }

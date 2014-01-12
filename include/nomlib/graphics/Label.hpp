@@ -157,7 +157,7 @@ class Label: public Transformable
     const std::string& text ( void ) const;
 
     /// Get label's text color
-    const Color4u& color ( void ) const;
+    const Color4i& color ( void ) const;
 
     /// Get label's text style
     enum Label::Style style ( void ) const;
@@ -181,7 +181,7 @@ class Label: public Transformable
     void set_text_size ( uint character_size );
 
     /// Set new label text color
-    void set_color ( const Color4u& text_color );
+    void set_color ( const Color4i& text_color );
 
     /// Set new label text style
     void set_style ( enum Label::Style style );
@@ -215,7 +215,7 @@ class Label: public Transformable
     /// Holds contents of text as a string buffer
     std::string text_;
     uint text_size_;
-    Color4u color_;
+    Color4i color_;
     /// Current text effect set
     enum Style style_;
     enum Alignment alignment_;

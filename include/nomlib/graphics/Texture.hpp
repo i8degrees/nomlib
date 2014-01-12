@@ -169,19 +169,19 @@ class Texture
     ///
     /// \return   Returns non-negative nom::Color on success;
     ///           nom::Color::null on failure
-    const Color4u& colorkey ( void ) const;
+    const Color4i& colorkey ( void ) const;
 
     /// \brief Obtain the set color key for this image
     ///
-    /// \returns  Value between Color4u::ALPHA_OPAQUE and
-    ///           Color4u::ALPHA_TRANSPARENT.
+    /// \returns  Value between Color4i::ALPHA_OPAQUE and
+    ///           Color4i::ALPHA_TRANSPARENT.
     const uint8 alpha ( void ) const;
 
     /// \brief  Obtain the additional color value multiplied into render copy
     ///         operations.
     ///
-    /// \returns  nom::Color4u on success; nom::Color4u::null on err
-    const Color4u color_modulation ( void ) const;
+    /// \returns  nom::Color4i on success; nom::Color4i::null on err
+    const Color4i color_modulation ( void ) const;
 
     /// \brief Obtain the largest nom::Texture size allowable by your graphics
     /// hardware.
@@ -308,18 +308,18 @@ class Texture
     /// \todo ERR check on locking call, etc.
     ///
     /// (This method requires locking the texture; use wisely!).
-    bool set_colorkey ( const Color4u& colorkey );
+    bool set_colorkey ( const Color4i& colorkey );
 
     /// Set an additional color value multiplied into render copy operations
     ///
-    /// \param    nom::Color4u  red, green & blue values multiplied into
+    /// \param    nom::Color4i  red, green & blue values multiplied into
     ///                         color operations
     ///
     /// \return   TRUE on success; FALSE on failure
     ///
     /// \remarks  SDL2 color modulation formula:
     ///           srcC = srcC * ( color / 255 )
-    bool set_color_modulation ( const Color4u& color );
+    bool set_color_modulation ( const Color4i& color );
 
   private:
     SDL_TEXTURE::SharedPtr texture_;
@@ -338,7 +338,7 @@ class Texture
     IntRect bounds_;
 
     /// Cached upon use of the set_colorkey method for use by external classes
-    Color4u colorkey_;
+    Color4i colorkey_;
 };
 
 

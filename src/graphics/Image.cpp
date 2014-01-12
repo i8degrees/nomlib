@@ -259,7 +259,7 @@ const uint8 Image::alpha ( void ) const
   if ( SDL_GetSurfaceAlphaMod ( this->image(), &alpha ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return Color4u::ALPHA_OPAQUE;
+    return Color4i::ALPHA_OPAQUE;
   }
 
   return alpha;
@@ -350,11 +350,11 @@ const Point2i Image::size ( void ) const
   return image_pos;
 }
 
-const Color4u Image::colorkey ( void ) const
+const Color4i Image::colorkey ( void ) const
 {
   SDL_Surface* buffer = this->image();
   uint32 transparent_color = 0;
-  Color4u key;
+  Color4i key;
 
   if ( SDL_GetColorKey ( this->image(), &transparent_color ) != 0 )
   {
@@ -383,7 +383,7 @@ const Point2i Image::position ( void ) const
   return this->position_;
 }
 
-bool Image::set_colorkey ( const Color4u& colorkey, bool flag )
+bool Image::set_colorkey ( const Color4i& colorkey, bool flag )
 {
   SDL_Surface* buffer = this->image();
   uint32 transparent_color = RGB ( colorkey, buffer->format );
@@ -457,7 +457,7 @@ uint32 Image::pixel ( int x, int y )
   } // end switch
 }
 
-void Image::set_pixel ( int x, int y, const Color4u& color )
+void Image::set_pixel ( int x, int y, const Color4i& color )
 {
   uint32 c = 0;
 
@@ -542,7 +542,7 @@ void Image::unlock ( void ) const
 
 bool Image::set_alpha ( uint8 opacity )
 {
-  NOM_ASSERT ( ! ( opacity > Color4u::ALPHA_OPAQUE ) || ( opacity < Color4u::ALPHA_TRANSPARENT ) );
+  NOM_ASSERT ( ! ( opacity > Color4i::ALPHA_OPAQUE ) || ( opacity < Color4i::ALPHA_TRANSPARENT ) );
 
   if ( SDL_SetSurfaceAlphaMod ( this->image(), opacity ) != 0 )
   {

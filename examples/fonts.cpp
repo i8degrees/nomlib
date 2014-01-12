@@ -152,7 +152,7 @@ class App: public nom::SDL_App
           this->update.restart();
         } // end refresh cycle
 
-        this->window.fill ( nom::Color4u::SkyBlue );
+        this->window.fill ( nom::Color4i::SkyBlue );
 
         this->label_bfont.draw ( this->window );
         this->label_tfont.draw ( this->window );
@@ -253,8 +253,8 @@ class App: public nom::SDL_App
                                       );
 
       this->label_bfont.set_text ( RESOURCE_FONT_TEXT_STRING );
-      this->label_bfont.set_color ( nom::Color4u::White );
-      //this->label_bfont.set_color ( nom::Color4u(195,209,228) );
+      this->label_bfont.set_color ( nom::Color4i::White );
+      //this->label_bfont.set_color ( nom::Color4i(195,209,228) );
       this->label_bfont.set_text_size ( 24 ); // NO-OP
       this->label_bfont.set_alignment ( nom::Label::Alignment::TopLeft );
 
@@ -271,7 +271,7 @@ class App: public nom::SDL_App
       this->label_tfont.set_font ( this->truetype_font );
 
       this->label_tfont.set_position(24,24);
-      //this->label_tfont.set_color ( nom::Color4u(195,209,228) );
+      //this->label_tfont.set_color ( nom::Color4i(195,209,228) );
       this->label_tfont.set_text ( RESOURCE_FONT_TEXT_STRING );
       //this->label_tfont.set_text_size ( 24 );
       this->label_tfont.set_alignment ( nom::Label::Alignment::TopLeft );

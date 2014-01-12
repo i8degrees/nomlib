@@ -134,7 +134,7 @@ bool BitmapFont::load ( const std::string& filename, bool use_cache )
 
   // Set pixel at coordinates 0, 0 to be color keyed (transparent)
   uint32 key = this->pages_[0].texture->pixel( 0, 0 );
-  Color4u colorkey = nom::pixel ( key, this->pages_[0].texture->pixel_format() );
+  Color4i colorkey = nom::pixel ( key, this->pages_[0].texture->pixel_format() );
 
   if ( this->pages_[0].texture->set_colorkey ( colorkey, true ) == false )
   {

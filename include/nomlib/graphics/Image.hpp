@@ -177,8 +177,8 @@ class Image
 
     /// Obtain the set color key for this image
     ///
-    /// \returns  nom::Color4u on success; nom::Color4u::null on err
-    const Color4u colorkey ( void ) const;
+    /// \returns  nom::Color4i on success; nom::Color4i::null on err
+    const Color4i colorkey ( void ) const;
 
     /// Obtain the blend mode used for blitting
     const SDL_BlendMode blend_mode ( void ) const;
@@ -187,7 +187,7 @@ class Image
     ///
     /// \param colorkey     Pixel color to mark transparent
     /// \param flag         TRUE to enable color key; FALSE to disable color key
-    bool set_colorkey ( const Color4u& colorkey, bool flag );
+    bool set_colorkey ( const Color4i& colorkey, bool flag );
 
     /// Set RLE acceleration for this image
     ///
@@ -223,7 +223,7 @@ class Image
     ///       depths are supported.
     ///
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixel blits
-    void set_pixel ( int x, int y, const Color4u& color );
+    void set_pixel ( int x, int y, const Color4i& color );
 
     /// Set a new blending mode for blitting
     bool set_blend_mode ( const SDL_BlendMode blend );

@@ -73,7 +73,7 @@ class Gradient:
     ///
     /// \DEPRECATED
     Gradient  (
-                Color4u gradient_color[2],
+                Color4i gradient_color[2],
                 const Coords& bounds, int32 x_margin, int32 y_margin,
                 Gradient::FillDirection direction
               );
@@ -83,20 +83,20 @@ class Gradient:
 
     /// Fully initialize this object
     void initialize (
-                      Color4u gradient_color[2],
+                      Color4i gradient_color[2],
                       const Coords& bounds, int32 x_margin, int32 y_margin,
                       Gradient::FillDirection direction
                     );
 
     const Coords position ( void ) const;
     const Coords size ( void ) const;
-    Color4u start_color ( void ) const;
-    Color4u end_color ( void ) const;
+    Color4i start_color ( void ) const;
+    Color4i end_color ( void ) const;
     Gradient::FillDirection fill_direction ( void ) const;
     bool dithering ( void ) const;
 
-    void set_start_color ( const Color4u& starting_color );
-    void set_end_color ( const Color4u& ending_color );
+    void set_start_color ( const Color4i& starting_color );
+    void set_end_color ( const Color4i& ending_color );
     void reverse_colors ( void );
     void set_fill_direction ( Gradient::FillDirection direction );
     void set_position ( int32 x, int32 y );
@@ -126,7 +126,7 @@ class Gradient:
     /// this threshold will also allow us to start thinking about other gradient
     /// types?
     /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
-    Color4u gradient_[2];
+    Color4i gradient_[2];
 
     /// Rendering coordinates (X, Y, width & height)
     Coords coords_;
@@ -165,8 +165,8 @@ class Gradient:
 /// linear.set_margins ( 4, 4 );
 /// linear.set_fill_direction ( nom::Gradient::FillDirection::Top );
 
-/// linear.set_start_color ( nom::Color4u ( 208, 223, 255 ) );
-/// linear.set_end_color ( nom::Color4u ( 50, 59, 114 ) );
+/// linear.set_start_color ( nom::Color4i ( 208, 223, 255 ) );
+/// linear.set_end_color ( nom::Color4i ( 50, 59, 114 ) );
 
 /// linear.set_position ( 96, 16 );
 /// linear.update();

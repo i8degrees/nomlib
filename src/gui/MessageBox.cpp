@@ -101,6 +101,17 @@ MessageBox::MessageBox  (
   this->update();
 }
 
+MessageBox& MessageBox::operator= ( const MessageBox& other )
+{
+  this->drawable = other.drawable;
+  this->labels = other.labels;
+  this->coords = other.coords;
+  this->enabled_ = other.enabled_;
+  this->updated = other.updated;
+
+  return *this;
+}
+
 bool MessageBox::enabled ( void ) const
 {
   if ( this->enabled_ == false ) return false;

@@ -54,6 +54,8 @@ class GrayFrame:
     GrayFrame ( int32 x, int32 y, int32 width, int32 height, int32 padding = 1 );
     ~GrayFrame ( void );
 
+    GrayFrame& operator = ( const GrayFrame& other );
+
     // Re-implemented from IFrame
     void setPosition( int32 x, int32 y );
 

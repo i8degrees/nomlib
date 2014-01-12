@@ -68,6 +68,7 @@ class MessageBox: public IDrawable
                 );
 
     virtual ~MessageBox ( void );
+    MessageBox& operator = ( const MessageBox& other );
 
     bool enabled ( void ) const;
 

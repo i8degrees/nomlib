@@ -34,7 +34,7 @@ namespace nom {
 
 Texture::Texture ( void )  :  texture_ { nullptr, priv::FreeTexture },
     pixels_ ( nullptr ), pitch_ ( 0 ), position_ ( 0, 0 ),
-    bounds_ ( 0, 0, -1, -1 ), colorkey_ { NOM_COLOR4U_BLACK }
+    bounds_ ( 0, 0, -1, -1 ), colorkey_ { Color4u::Black }
 {
   NOM_LOG_TRACE ( NOM );
 }
@@ -267,7 +267,7 @@ const uint8 Texture::alpha ( void ) const
   if ( SDL_GetTextureAlphaMod ( this->texture(), &alpha ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return nom::ALPHA_OPAQUE;
+    return Color4u::ALPHA_OPAQUE;
   }
 
   return alpha;
@@ -280,7 +280,7 @@ const Color4u Texture::color_modulation ( void ) const
   if ( SDL_GetTextureColorMod ( this->texture(), &c.r, &c.g, &c.b ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return NOM_COLOR4U_WHITE;
+    return Color4u::null;
   }
 
   return Color4u ( c.r, c.g, c.b, Color4u::ALPHA_OPAQUE );
@@ -514,7 +514,7 @@ void Texture::draw ( const Window& target, const double degrees ) const
 
 bool Texture::set_alpha ( uint8 opacity )
 {
-NOM_ASSERT ( ! ( opacity > nom::ALPHA_OPAQUE ) || ( opacity < nom::ALPHA_TRANSPARENT ) );
+NOM_ASSERT ( ! ( opacity > Color4u::ALPHA_OPAQUE ) || ( opacity < Color4u::ALPHA_TRANSPARENT ) );
 
   if ( SDL_SetTextureAlphaMod ( this->texture(), opacity ) != 0 )
   {

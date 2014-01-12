@@ -33,7 +33,7 @@ namespace nom {
 Label::Label ( void ) :
   Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_size_ ( 14 ),
-  color_ ( NOM_COLOR4U_WHITE ),
+  color_ ( Color4u::White ),
   style_ ( Label::Style::Regular ),
   alignment_ ( Label::Alignment::TopLeft )
 {
@@ -80,7 +80,7 @@ Label::Label  ( const std::string& text,
   Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_ ( text ),
   text_size_ ( character_size ),
-  color_ ( NOM_COLOR4U_WHITE ),
+  color_ ( Color4u::White ),
   style_ ( Label::Style::Regular )
 {
   NOM_LOG_TRACE(NOM);
@@ -97,7 +97,7 @@ Label::Label  ( const std::string& text,
   Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_ ( text ),
   text_size_ ( character_size ),
-  color_ ( NOM_COLOR4U_WHITE ),
+  color_ ( Color4u::White ),
   style_ ( Label::Style::Regular )
 {
   NOM_LOG_TRACE(NOM);

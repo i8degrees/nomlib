@@ -177,10 +177,7 @@ class Image
 
     /// Obtain the set color key for this image
     ///
-    /// \return nom::Color
-    ///
-    /// \note If a colorkey has not been set for the image, you should have the
-    /// value of nom::Color::Black returned.
+    /// \returns  nom::Color4u on success; nom::Color4u::null on err
     const Color4u colorkey ( void ) const;
 
     /// Obtain the blend mode used for blitting

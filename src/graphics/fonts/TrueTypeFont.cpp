@@ -282,7 +282,7 @@ bool TrueTypeFont::build ( uint32 character_size )
     if ( TTF_GlyphIsProvided ( this->font(), ascii_char ) )
     {
       // We obtain width & height of a glyph from its rendered form
-      glyph_image.initialize ( TTF_RenderGlyph_Solid ( this->font(), ascii_char, SDL_COLOR(NOM_COLOR4U_WHITE) ) );
+      glyph_image.initialize ( TTF_RenderGlyph_Solid ( this->font(), ascii_char, SDL_COLOR(Color4u::White) ) );
 
       if ( glyph_image.valid() == false )
       {
@@ -348,7 +348,7 @@ bool TrueTypeFont::build ( uint32 character_size )
 
   // Turn color key transparency on so we are not left with a black,
   // AKA non-transparent background.
-  page.texture->set_colorkey ( NOM_COLOR4U_BLACK, true );
+  page.texture->set_colorkey ( Color4u::Black, true );
 
   // Export the destination texture -- this should be a texture sheet that we
   // expect to be able to render from within the nom::Label class.
@@ -358,9 +358,9 @@ bool TrueTypeFont::build ( uint32 character_size )
     //
     // You'll may want to leave color keying on if you are interested in using
     // these bitmap glyphs for anything else!
-    page.texture->set_colorkey ( NOM_COLOR4U_BLACK, false );
+    page.texture->set_colorkey ( Color4u::Black, false );
     page.texture->save_png("ttf_dest.png");
-    page.texture->set_colorkey ( NOM_COLOR4U_BLACK, true );
+    page.texture->set_colorkey ( Color4u::Black, true );
   #endif
 
   // Build up our font-wide metrics

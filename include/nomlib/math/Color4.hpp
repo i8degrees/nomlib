@@ -38,12 +38,6 @@ namespace nom {
 /// \brief Delimiter character to use with << operator
 const std::string COLOR_DELIMITER = ", ";
 
-/// 100% transparent alpha channel value
-const int ALPHA_TRANSPARENT = 0;
-
-/// 100% opaque alpha channel value
-const int ALPHA_OPAQUE = 255;
-
 /// \brief RGBA color container
 ///
 /// \todo Implement lesser than, greater than and so on operators?
@@ -136,20 +130,12 @@ struct Color4
     static const Color4 Cyan;
 
     /// Additional colors
-    /// \deprecated
+    static const Color4 Silver;
+    static const Color4 Purple;
+    static const Color4 Orange;
     static const Color4 LightGray;
-
-    /// Additional colors
-    /// \deprecated
     static const Color4 Gray;
-
-    /// Sky blue color key
-    /// \deprecated
-    static const Color4 NomPrimaryColorKey;
-
-    /// Light magenta color key
-    /// \deprecated
-    static const Color4 NomSecondaryColorKey;
+    static const Color4 SkyBlue;
 
     /// Red component
     T r;
@@ -178,6 +164,24 @@ inline std::ostream& operator << ( std::ostream& os, const Color4<T>& color )
   << color.b
   << COLOR_DELIMITER
   << color.a;
+
+  return os;
+}
+
+/// Pretty prints nom::Color4i using the following format string:
+///
+/// <color.r>, <color.g>, <color.b>, <color.a>
+template <typename T>
+inline std::ostream& operator << ( std::ostream& os, const Color4<int16>& color )
+{
+  os
+  << color.r
+  << COLOR_DELIMITER
+  << color.g
+  << COLOR_DELIMITER
+  << color.b
+  << COLOR_DELIMITER
+  << static_cast<uint8> ( color.a );
 
   return os;
 }
@@ -277,54 +281,5 @@ typedef Color4<int16> Color4u;
 typedef Color4<float> Color4f;
 
 } // namespace nom
-
-/// Primary colors
-#define NOM_COLOR4U_BLACK \
-  nom::Color4u ( 0, 0, 0, nom::ALPHA_OPAQUE )
-
-#define NOM_COLOR4U_WHITE \
-  nom::Color4u ( 255, 255, nom::ALPHA_OPAQUE )
-
-#define NOM_COLOR4U_RED \
-  nom::Color4u ( 255, 0, 0, nom::ALPHA_OPAQUE )
-
-#define NOM_COLOR4U_GREEN \
-  nom::Color4u ( 0, 255, 0, nom::ALPHA_OPAQUE )
-
-#define NOM_COLOR4U_BLUE \
-  nom::Color4u ( 0, 0, 255, nom::ALPHA_OPAQUE )
-
-#define NOM_COLOR4U_YELLOW \
-  nom::Color4u ( 255, 255, 255, nom::ALPHA_OPAQUE )
-
-#define NOM_COLOR4U_MAGENTA \
-  nom::Color4u ( 255, 0, 255, nom::ALPHA_OPAQUE )
-
-#define NOM_COLOR4U_CYAN \
-  nom::Color4u ( 0, 255, 255, nom::ALPHA_OPAQUE )
-
-#define NOM_COLOR4U_SILVER \
-  nom::Color4u ( 192, 192, 192, nom::ALPHA_OPAQUE )
-
-#define NOM_COLOR4U_PURPLE \
-  nom::Color4u ( 128, 0, 128, nom::ALPHA_OPAQUE )
-
-#define NOM_COLOR4U_ORANGE \
-  nom::Color4u ( 255, 165, 0, nom::ALPHA_OPAQUE )
-
-/// Additional colors
-#define NOM_COLOR4U_LIGHT_GRAY \
-  nom::Color4u ( 99, 99, 99, nom::ALPHA_OPAQUE )
-
-#define NOM_COLOR4U_GRAY \
-  nom::Color4u ( 67, 67, 67, nom::ALPHA_OPAQUE )
-
-/// Light magenta color key
-#define NOM_COLOR4U_PRIMARY_COLORKEY \
-  nom::Color4u ( 110, 144, 190, nom::ALPHA_OPAQUE )
-
-/// Sky blue color key
-#define NOM_COLOR4U_SECONDARY_COLORKEY \
-  nom::Color4u ( 223, 75, 255, nom::ALPHA_OPAQUE )
 
 #endif // include guard defined

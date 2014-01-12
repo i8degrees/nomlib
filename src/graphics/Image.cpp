@@ -259,7 +259,7 @@ const uint8 Image::alpha ( void ) const
   if ( SDL_GetSurfaceAlphaMod ( this->image(), &alpha ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return 0;
+    return Color4u::ALPHA_OPAQUE;
   }
 
   return alpha;
@@ -359,7 +359,7 @@ const Color4u Image::colorkey ( void ) const
   if ( SDL_GetColorKey ( this->image(), &transparent_color ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return NOM_COLOR4U_BLACK;
+    return key; // NULL (-1)
   }
 
   return nom::pixel ( transparent_color, buffer->format ); // SDL_helper function
@@ -542,7 +542,7 @@ void Image::unlock ( void ) const
 
 bool Image::set_alpha ( uint8 opacity )
 {
-  NOM_ASSERT ( ! ( opacity > nom::ALPHA_OPAQUE ) || ( opacity < nom::ALPHA_TRANSPARENT ) );
+  NOM_ASSERT ( ! ( opacity > Color4u::ALPHA_OPAQUE ) || ( opacity < Color4u::ALPHA_TRANSPARENT ) );
 
   if ( SDL_SetSurfaceAlphaMod ( this->image(), opacity ) != 0 )
   {

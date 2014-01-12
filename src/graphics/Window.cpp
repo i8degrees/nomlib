@@ -89,7 +89,7 @@ NOM_LOG_ERR ( NOM, "Could not create SDL renderer." );
 
   // Try to ensure that we have no leftover artifacts by clearing and filling
   // window with a solid black paint bucket fill.
-  this->fill ( NOM_COLOR4U_BLACK );
+  this->fill ( Color4u::Black );
 
   return true;
 }

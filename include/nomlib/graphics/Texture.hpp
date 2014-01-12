@@ -171,13 +171,16 @@ class Texture
     ///           nom::Color::null on failure
     const Color4u& colorkey ( void ) const;
 
+    /// \brief Obtain the set color key for this image
+    ///
+    /// \returns  Value between Color4u::ALPHA_OPAQUE and
+    ///           Color4u::ALPHA_TRANSPARENT.
     const uint8 alpha ( void ) const;
 
-    /// Obtain the additional color value multiplied into render copy
-    /// operations
+    /// \brief  Obtain the additional color value multiplied into render copy
+    ///         operations.
     ///
-    /// \return nom::Color4u red, green, blue values on success --
-    /// NOM_COLOR4U_WHITE on failure
+    /// \returns  nom::Color4u on success; nom::Color4u::null on err
     const Color4u color_modulation ( void ) const;
 
     /// \brief Obtain the largest nom::Texture size allowable by your graphics

@@ -50,10 +50,12 @@ template <> const Color4u Color4u::Blue ( 0, 0, 255, Color4u::ALPHA_OPAQUE );
 template <> const Color4u Color4u::Yellow ( 255, 255, 255, Color4u::ALPHA_OPAQUE );
 template <> const Color4u Color4u::Magenta ( 255, 0, 255, Color4u::ALPHA_OPAQUE );
 template <> const Color4u Color4u::Cyan ( 0, 255, 255, Color4u::ALPHA_OPAQUE );
-template <> const Color4u Color4u::LightGray ( 99, 99, 99, Color4u::ALPHA_OPAQUE );
-template <> const Color4u Color4u::Gray ( 67, 67, 67, Color4u::ALPHA_OPAQUE );
-template <> const Color4u Color4u::NomPrimaryColorKey ( 110, 144, 190, Color4u::ALPHA_OPAQUE );
-template <> const Color4u Color4u::NomSecondaryColorKey ( 223, 75, 255, Color4u::ALPHA_OPAQUE );
+template <> const Color4u Color4u::Silver (192,192,192);
+template <> const Color4u Color4u::Purple (128,0,128);
+template <> const Color4u Color4u::Orange (255,165,0);
+template <> const Color4u Color4u::LightGray ( 99, 99, 99);
+template <> const Color4u Color4u::Gray (67, 67, 67);
+template <> const Color4u Color4u::SkyBlue (110,144,190);
 
 template <> const Color4f Color4f::Black ( 1.0f, 0.0f, 0.0f, Color4f::ALPHA_OPAQUE );
 template <> const Color4f Color4f::White ( 1.0f, 1.0f, 1.0f, Color4f::ALPHA_OPAQUE );

@@ -55,11 +55,6 @@ Texture::Texture ( const Texture& other ) :
 
 bool Texture::initialize ( SDL_SURFACE::RawPtr source )
 {
-  // We leak memory, or even worse, crash, depending on state at the time, if we
-  // do not ensure that we free existing buffers! Certain rendering methods --
-  // *cough* nom::TrueTypeFont -- need this done because they create new
-  // surfaces (instead of updating what they have) upon every update cycle.
-  //if ( this->valid() ) this->texture_.reset();
   this->texture_.reset ( SDL_CreateTextureFromSurface ( Window::context(), source ), priv::FreeTexture );
 
   if ( this->valid() == false )
@@ -78,7 +73,6 @@ bool Texture::initialize ( SDL_SURFACE::RawPtr source )
 
 bool Texture::initialize ( int32 width, int32 height, uint32 format, uint32 flags )
 {
-  //if ( this->valid() ) this->texture_.reset();
   this->texture_.reset ( SDL_CreateTexture ( Window::context(), format, flags, width, height ), priv::FreeTexture );
 
   if ( this->valid() == false )
@@ -396,9 +390,22 @@ NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
     // Once we unlock the texture, it will be uploaded to the GPU for us!
     this->unlock();
   }
+  else if ( flags & SDL_TEXTUREACCESS_TARGET )  // Initialize renderer target to
+                                                // texture
+  {
+    if ( this->initialize ( image.width(), image.height(), caps.optimal_texture_format(), SDL_TEXTUREACCESS_TARGET ) == false )
+    {
+      NOM_LOG_ERR ( NOM, "Failed to initialize texture to render target." );
+      return false;
+    }
+  }
   else // Assume SDL_TEXTUREACCESS_STATIC
   {
-    this->initialize ( image.image() );
+    if ( this->initialize ( image.image() ) == false )
+    {
+      NOM_LOG_ERR ( NOM, "Failed to initialize static texture." );
+      return false;
+    }
   }
 
   // Set our default blending mode for texture copies

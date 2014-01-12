@@ -2,7 +2,7 @@
 
   nomlib - C++11 cross-platform game engine
 
-Copyright (c) 2013, Jeffrey Carpenter <jeffrey.carp@gmail.com>
+Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ namespace nom {
 ///
 /// \todo Perhaps look at implementing the multi-rectangle variant; SDL_RenderFillRects.
 /// I bet, in terms of efficiency, gains are to be seen!
-/// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
+/// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
 class Rectangle:
                   public IDrawable
 
@@ -74,7 +74,7 @@ class Rectangle:
     /// \todo Measure performance (CPU cycles, ticks/FPS, ...) difference with
     /// using a return / abort on rendering when our line object is up-to-date
     /// and determine if it is worth the implementation VS risk of inconsistency.
-    /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
+    /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
     void update ( void );
 
     /// Draw a 3D four sided cube shape (rectangle) onto the the attached

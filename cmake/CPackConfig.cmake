@@ -21,7 +21,7 @@ set ( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_TEMPLATE_PATH}/LICENSE.html" )
 #set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_TEMPLATE_PATH}/Description.txt" )
 
 set ( CPACK_PACKAGE_VENDOR "org.i8degrees.${PROJECT_NAME}" )
-set ( CPACK_PACKAGE_CONTACT "jeffrey.carp@gmail.com" )
+set ( CPACK_PACKAGE_CONTACT "i8degrees@gmail.com" )
 set ( CPACK_PACKAGE_DESCRIPTION "C++11 cross-platform game engine" )
 set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "nomlib - C++11 cross-platform game engine" )
 

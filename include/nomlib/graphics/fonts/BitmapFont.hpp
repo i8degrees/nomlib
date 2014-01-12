@@ -2,7 +2,7 @@
 
   nomlib - C++11 cross-platform game engine
 
-Copyright (c) 2013, Jeffrey Carpenter <jeffrey.carp@gmail.com>
+Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
 All rights reserved.
 
 Portions Copyright (c) 2004-2013 Lazy Foo' Productions [1]

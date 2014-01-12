@@ -1,6 +1,6 @@
 # Contributing Authors #
 
-Jeffrey Carpenter <jeffrey.carp@gmail.com>
+Jeffrey Carpenter <i8degrees@gmail.com>
 Ivan Rubinson <soryy708@gmail.com>
 
 Thank you!

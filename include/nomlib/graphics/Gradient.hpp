@@ -2,7 +2,7 @@
 
   nomlib - C++11 cross-platform game engine
 
-Copyright (c) 2013, Jeffrey Carpenter <jeffrey.carp@gmail.com>
+Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@ class Gradient:
 
     /// \todo
     /// Rename me -- Direction seems fitting?
-    /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-05
+    /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-05
     enum FillDirection
     {
       Top = 0,    // Top down
@@ -125,7 +125,7 @@ class Gradient:
     /// be able to increase dithering capabilities higher. Perhaps increasing
     /// this threshold will also allow us to start thinking about other gradient
     /// types?
-    /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
+    /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
     Color4u gradient_[2];
 
     /// Rendering coordinates (X, Y, width & height)

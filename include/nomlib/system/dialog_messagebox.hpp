@@ -2,7 +2,7 @@
 
   nomlib - C++11 cross-platform game engine
 
-Copyright (c) 2013, Jeffrey Carpenter <jeffrey.carp@gmail.com>
+Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@ enum MessageBoxType
 ///
 /// \todo
 /// Implement a fall-back mechanism for when video subsystem fails to initialize
-/// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
+/// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
 int32 DialogMessageBox  (
                           const std::string& title, const std::string& message,
                           enum MessageBoxType type = NOM_DIALOG_INFORMATION,

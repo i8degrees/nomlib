@@ -2,7 +2,7 @@
 
   nomlib - C++11 cross-platform game engine
 
-Copyright (c) 2013, Jeffrey Carpenter <jeffrey.carp@gmail.com>
+Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,7 @@ class IDrawable
     /// library conform to the expectations stated above. We need to first
     /// figure out if we wish to stay on this course (of expectation), or
     /// diverge all together. Undecided.
-    /// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-03
+    /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
     virtual void update ( void ) = 0;
 
     /// Render the object onto the primary video buffer -- your visible screen.

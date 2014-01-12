@@ -2,7 +2,7 @@
 
   nomlib - C++11 cross-platform game engine
 
-Copyright (c) 2013, Jeffrey Carpenter <jeffrey.carp@gmail.com>
+Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -80,11 +80,11 @@ static inline uint32 rgb_to_yuv(uint32 c)
 }
 
 /// Possible FIXME
-/// It *may* be possible that a signed integer here is not always large 
+/// It *may* be possible that a signed integer here is not always large
 /// enough to compare colors accurately in all cases. More research /
-/// testing is needed here to determine. 
+/// testing is needed here to determine.
 /// (Original integer types were unsigned integers).
-/// Jeffrey Carpenter <jeffrey.carp@gmail.com> @ 2013-10-01
+/// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-01
 /* Test if there is difference in color */
 static inline int yuv_diff(int yuv1, int yuv2) {
     return (( abs((yuv1 & Ymask) - (yuv2 & Ymask)) > trY ) ||

@@ -45,7 +45,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/Window.hpp"
 
-#define NOM_DEBUG_SDL2_RESIZE
+/// Dump the rescaled Texture as a PNG file
+//#define NOM_DEBUG_SDL2_RESIZE_PNG
 
 namespace nom {
 
@@ -54,8 +55,7 @@ class Texture
   public:
     typedef std::shared_ptr<Texture> SharedPtr;
 
-    /// Available rescaling algorithms
-    /// \todo SDL2 port
+    /// \brief Available pixel rescaling algorithms
     enum ResizeAlgorithm
     {
       None = 0, // No resizing is applied
@@ -64,16 +64,15 @@ class Texture
       scale4x, // Reserved for future implementation
       hq2x,
       hq3x,
-      hq4x,
-      Stretch
+      hq4x
     };
 
-    /// Will be implemented in a future version
-    enum TextureAccess
+    enum Access
     {
       Invalid = 0,
-      Static = SDL_TEXTUREACCESS_STATIC,
-      Streaming = SDL_TEXTUREACCESS_STREAMING
+      Static = SDL_TEXTUREACCESS_STATIC,        // Changes rarely; not lockable
+      Streaming = SDL_TEXTUREACCESS_STREAMING,  // Frequent changes; lockable, RW
+      RenderTexture = SDL_TEXTUREACCESS_TARGET  // Render (texture) to target
     };
 
     /// Default constructor
@@ -113,6 +112,7 @@ class Texture
     Texture& operator = ( const Texture& other );
 
     const Point2i& position ( void ) const;
+    //const Point2i& size ( void ) const;
     const IntRect& bounds ( void ) const;
 
     /// Get the video memory surface of the Texture object
@@ -121,14 +121,10 @@ class Texture
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
 
-    /// Query texture access type
+    /// \brief Query texture access type
     ///
-    /// \return SDL_TextureAccess enum type
-    int access ( void ) const;
-
-    /// Reset the video surface object with another video surface object.
-    /// \todo Relocate me to a surface class
-    ///void setTexture ( const Texture& surface );
+    /// \returns Texture::Access enumeration
+    enum Texture::Access access ( void ) const;
 
     void set_position ( const Point2i& pos );
 
@@ -218,7 +214,7 @@ class Texture
     ///                         valid bitmap / texture
     ///                         (think: supported image file types).
     ///
-    /// \param flags            [...TO BE WRITTEN...]
+    /// \param type             nom::Texture::Access enumeration type
     ///
     /// \param use_cache        Whether or not to use an internal object cache
     ///                         feature of nomlib. Defaults to off.
@@ -227,9 +223,9 @@ class Texture
     /// beautifully with SDL_Surface, is the same true of SDL_Texture?
     ///
     /// \todo merge 'use_cache' in with 'flags'
-    bool load (
-                const std::string& filename, uint32 flags,
-                bool use_cache = false
+    bool load ( const std::string& filename,
+                bool use_cache = false,
+                enum Texture::Access type = Access::Static
               );
 
     /// Upload texture copy with new pixel data
@@ -237,7 +233,7 @@ class Texture
     /// \todo Add IntRect::null type so we can emulate passing nullptr for
     /// the update_area argument (this tells SDL2 to update the whole texture).
     ///
-    /// \remarks  This is intended for use with SDL_TEXTUREACCESS_STATIC
+    /// \remarks  This is intended for use with SDL_TEXTUREACCESS_STREAMING
     /// texture type
     bool update ( const void* pixels, uint16 pitch, const IntRect& update_area );
 
@@ -268,6 +264,11 @@ class Texture
     /// \param  angle   Rotation angle in degrees
     void draw ( const Window& target, const double angle ) const;
 
+    /// \brief  Set an additional alpha value multiplied into render copy
+    ///         operations.
+    ///
+    /// \remarks Upon rendering, the following formula is used for the alpha
+    /// modulation: srcA = srcA * ( alpha / 255 )
     bool set_alpha ( uint8 opacity );
 
     /// \brief Read a RGBA pixel from the video surface
@@ -285,17 +286,19 @@ class Texture
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixel blits
     uint32 pixel ( int x, int y );
 
-    /// Resize the video surface with the chosen rescaling algorithm.
+    /// \brief Rescale the Texture with the chosen rescaling algorithm.
     ///
-    /// See the ResizeAlgorithm enum for available rescaling algorithms
+    /// \note See the ResizeAlgorithm enum for available rescaling algorithms.
     ///
-    /// \todo SDL2 port
+    /// \remarks  This method call requires that the existing Texture is of the
+    ///           Texture::Access::Streaming type. Once resized, the rescaled
+    ///           texture is of the Texture::Access::Static type and therefore
+    ///           cannot be modified again without the complete re-initialization
+    ///           of the original buffer (image file).
     bool resize ( enum ResizeAlgorithm scaling_algorithm );
 
-    /// Return the correct scaling factor of the chosen algorithm
-    ///
-    /// \todo SDL2 port
-    int32 getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm );
+    /// \brief Return the scaling factor of the chosen algorithm
+    int scale_factor ( enum ResizeAlgorithm scaling_algorithm ) const;
 
     /// Set a new blending mode for this texture
     bool set_blend_mode ( const SDL_BlendMode blend );
@@ -310,12 +313,13 @@ class Texture
     /// (This method requires locking the texture; use wisely!).
     bool set_colorkey ( const Color4i& colorkey );
 
-    /// Set an additional color value multiplied into render copy operations
+    /// \brief    Set an additional color value multiplied into render copy
+    ///           operations
     ///
     /// \param    nom::Color4i  red, green & blue values multiplied into
     ///                         color operations
     ///
-    /// \return   TRUE on success; FALSE on failure
+    /// \returns  TRUE on success; FALSE on failure
     ///
     /// \remarks  SDL2 color modulation formula:
     ///           srcC = srcC * ( color / 255 )
@@ -331,11 +335,19 @@ class Texture
     /// Texture's pixel pitch; these are only available when a Texture is locked.
     int pitch_;
 
-    /// Holds surface position (X, Y)
-    Point2i position_;
+    /// Rendering position & size -- X, Y, width & height -- in pixels.
+    ///
+    /// \remarks  Rescaling of the rendered pixels can be done by modifying the
+    ///           width & height members.
+    Point2i position_; // This should probably be an IntRect. (Global bounds).
 
-    /// Holds surface offsets (clipping area: X, Y, width & height)
-    IntRect bounds_;
+    /// Position & size of texture within memory; X, Y, width & height in pixels.
+    ///
+    /// \remarks  These coordinates are generally not used unless we are reading
+    ///           pixels from a larger texture than what is rendered --
+    ///           in other words: these are used for sprite sheets, and are also
+    ///           known as clipping bounds.
+    IntRect bounds_; // Local bounds
 
     /// Cached upon use of the set_colorkey method for use by external classes
     Color4i colorkey_;

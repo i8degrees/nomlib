@@ -84,9 +84,13 @@ void Sprite::set_state ( uint32 state )
   this->state_ = state;
 }
 
-bool Sprite::load ( const std::string& filename, bool use_cache )
+bool Sprite::load (
+                    const std::string& filename,
+                    bool use_cache,
+                    enum Texture::Access type
+                  )
 {
-  this->sprite_.load ( filename, SDL_TEXTUREACCESS_STATIC, use_cache );
+  this->sprite_.load ( filename, use_cache, type );
 
   if ( this->sprite_.valid() == false )
   {
@@ -131,7 +135,7 @@ NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
     return false;
   }
 
-  this->scale_factor = this->sprite_.getResizeScaleFactor ( scaling_algorithm );
+  this->scale_factor = this->sprite_.scale_factor ( scaling_algorithm );
   this->update();
 
   return true;

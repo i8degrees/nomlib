@@ -117,27 +117,21 @@ bool Texture::valid ( void ) const
   return false;
 }
 
-int Texture::access ( void ) const
+enum Texture::Access Texture::access ( void ) const
 {
-  int type;
+  int type = 0;
 
   if ( SDL_QueryTexture ( this->texture(), nullptr, &type, nullptr, nullptr ) != 0 )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return type;
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return Texture::Access::Invalid;
   }
 
-  return type;
-}
+  if ( type == SDL_TEXTUREACCESS_STATIC ) return Texture::Access::Static;
+  if ( type == SDL_TEXTUREACCESS_STREAMING ) return Texture::Access::Streaming;
 
-/* RELOCATE
-void Texture::setTexture ( const Texture& surface )
-{
-  //this->texture_.reset ( SDL_ConvertSurface ( surface.texture_.get(), surface.getTexturePixelsFormat(), surface.getTextureFlags() ), nom::priv::FreeSurface );
-
-  //this->offsets.setSize ( surface.width(), surface.height() );
+  return Texture::Access::Invalid;
 }
-RELOCATE */
 
 const Point2i& Texture::position ( void ) const
 {
@@ -337,9 +331,9 @@ NOM_LOG_INFO ( NOM, "Texture is not locked." );
   this->pitch_ = 0;
 }
 
-bool Texture::load  (
-                      const std::string& filename, uint32 flags,
-                      bool use_cache
+bool Texture::load  ( const std::string& filename,
+                      bool use_cache,
+                      enum Texture::Access type
                     )
 {
   Image image;
@@ -374,7 +368,7 @@ NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
 
   RendererInfo caps = Window::caps( Window::context() );
 
-  if ( flags & SDL_TEXTUREACCESS_STREAMING )
+  if ( type == Access::Streaming )
   {
     if ( this->initialize ( image.width(), image.height(), caps.optimal_texture_format(), SDL_TEXTUREACCESS_STREAMING ) == false )
     {
@@ -390,8 +384,7 @@ NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
     // Once we unlock the texture, it will be uploaded to the GPU for us!
     this->unlock();
   }
-  else if ( flags & SDL_TEXTUREACCESS_TARGET )  // Initialize renderer target to
-                                                // texture
+  else if ( type == Access::RenderTexture )
   {
     if ( this->initialize ( image.width(), image.height(), caps.optimal_texture_format(), SDL_TEXTUREACCESS_TARGET ) == false )
     {
@@ -399,7 +392,7 @@ NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
       return false;
     }
   }
-  else // Assume SDL_TEXTUREACCESS_STATIC
+  else // Assume type == Access::Static
   {
     if ( this->initialize ( image.image() ) == false )
     {
@@ -416,11 +409,22 @@ NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
   return true;
 }
 
-bool Texture::update ( const void* pixels, uint16 pitch, const IntRect& update_area )
+bool Texture::update ( const void* pixels, uint16 pitch, const IntRect& bounds )
 {
-  SDL_Rect clip_area = SDL_RECT(update_area);
+  // Update entire texture
+  if ( bounds == IntRect::null )
+  {
+    if ( SDL_UpdateTexture ( this->texture(), nullptr, pixels, pitch ) != 0 )
+    {
+      NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return false;
+    }
+    return true;
+  }
 
-  if ( SDL_UpdateTexture ( this->texture(), &clip_area, pixels, pitch ) != 0 )
+  // Try to honor requested bounds
+  SDL_Rect clip = SDL_RECT(bounds);
+  if ( SDL_UpdateTexture ( this->texture(), &clip, pixels, pitch ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
@@ -438,6 +442,8 @@ void Texture::draw ( SDL_RENDERER::RawPtr target ) const
   render_coords.y = pos.y;
 
   // Use preset clipping bounds for the width and height of this texture
+  //
+  // These two coordinates can be used for rendering a rescaled texture
   render_coords.w = this->bounds().w;
   render_coords.h = this->bounds().h;
 
@@ -567,256 +573,202 @@ uint32 Texture::pixel ( int32 x, int32 y )
 
 bool Texture::resize ( enum ResizeAlgorithm scaling_algorithm )
 {
-  int bpp = 0; // bits per pixel
-  uint32 red_mask = 0;
-  uint32 green_mask = 0;
-  uint32 blue_mask = 0;
-  uint32 alpha_mask = 0;
+  // Current texture access state; we *MUST* have access to its pixels, so only
+  // SDL_TEXTUREACCESS_STREAMING types will work for us.
+  enum Texture::Access type = this->access();
 
-  // Ensure that our existing video surface is OK first
+  if ( type != Texture::Access::Streaming )
+  {
+    NOM_LOG_ERR ( NOM, "This texture was not created with Texture::Access::Streaming." );
+    return false;
+  }
+
+  Point2i source_size = Point2i ( this->width(), this->height() );
+  Point2i destination_size;
+
+  // Tru to ensure that our existing texture surface is OK first.
   if ( this->valid() == false )
   {
     NOM_LOG_ERR ( NOM, "The existing video surface is not valid." );
     return false;
   }
 
-  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( this->pixel_format(), &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
-  {
-    NOM_LOG_ERR( NOM, SDL_GetError() );
-    return false;
-  }
-
-  // Current video surface flags state -- the destination buffer will be set
-  // with these.
-  //uint32 flags = this->getTextureFlags();
-
-  // This is the target video surface object that is created from the existing
-  // video surface, with the existing width & height recomputed to whatever the
-  // chosen algorithm expects. The target buffer (upon success) becomes the new
-  // video surface of this instance.
-  //Texture destination_buffer;
-  Image destination_buffer;
+  // Temporary memory buffer (pixels surface) that we use to rescale this
+  // Texture to
+  Image destination;
 
   // Pick out the suitable scaling factor for determining the new video surface
   // width and height.
-  int32 scale_factor = getResizeScaleFactor ( scaling_algorithm );
+  int scale = scale_factor ( scaling_algorithm );
 
-  // We must not set an alpha mask value if our existing video surface is color
-  // keyed (or bad things ensue -- like many hours spent reading up on this
-  // surprisingly confusing subject).
-  //uint8 alpha_mask = 0; // no alpha mask is default (works with color keying)
+  destination_size = Point2i  ( source_size.x * scale, source_size.y * scale );
 
-  // If the video surface does *NOT* have color keying set
-  //if ( ! ( flags & SDL_TRUE ) )//SDL_SRCCOLORKEY ) )
-  //{
-  //alpha_mask = this->alpha();
-  //}
+  // Create a memory buffer twice our size, using our existing pixel format
+  destination.create ( destination_size, this->pixel_format() );
 
-  destination_buffer.initialize (
-                                  this->width() * scale_factor,
-                                  this->height() * scale_factor,
-                                  bpp, // bits per pixel
-                                  red_mask,
-                                  green_mask,
-                                  blue_mask,
-                                  alpha_mask
-                                  //true // color key enabled
-                                );
-
-#if defined (NOM_DEBUG_SDL2_RESIZE)
-  NOM_DUMP_VAR((int)this->alpha());
-  NOM_DUMP_VAR(this->width());
-  NOM_DUMP_VAR(this->height());
-  NOM_DUMP_VAR(scale_factor);
-  NOM_DUMP_VAR(bpp);
-  NOM_DUMP_VAR(red_mask);
-  NOM_DUMP_VAR(green_mask);
-  NOM_DUMP_VAR(blue_mask);
-  NOM_DUMP_VAR(alpha_mask);
-  NOM_DUMP_VAR(PIXEL_FORMAT_NAME(this->pixel_format()));
-
-  NOM_DUMP_VAR((int)destination_buffer.alpha());
-  NOM_DUMP_VAR(destination_buffer.pitch());
-#endif
-
-  // Ensure that our new video surface is sane before feeding
-  if ( destination_buffer.valid() == false )
+  if ( destination.valid() == false )
   {
     NOM_LOG_ERR ( NOM, "The destination video surface is not valid." );
     return false;
   }
 
-  // Lock pixels buffer so we can obtain access to its pixels & pitch
+  // Lock our texture so we can access its pixel buffer
   if ( this->lock() == false )
   {
-    NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
+    NOM_LOG_ERR ( NOM, "Could not lock video surface memory for reading." );
     return false;
   }
 
-  // Lock destination memory for writing to
-  if ( destination_buffer.lock() == false )
+  // Lock our destination memory for copying our texture to
+  if ( destination.lock() == false )
   {
-    NOM_LOG_ERR ( NOM, "Could not lock destination video surface." );
+    NOM_LOG_ERR ( NOM, "Could not lock destination video surface for writing." );
     return false;
   }
-
-  // Dump pixels from existing texture onto the destination texture
-  memcpy  ( this->pixels(), destination_buffer.pixels(),
-            destination_buffer.pitch() / destination_buffer.height()
-          );
 
   switch ( scaling_algorithm )
   {
-    default: // Error: insufficient input; no resizing is applied.
+    default: // No rescaling algorithm has been set -- aborting...
     {
-      NOM_LOG_ERR ( NOM, "Invalid resizing algorithm specified." );
+      NOM_LOG_ERR ( NOM, "No rescaling algorithm has been set." );
       this->unlock();
-      destination_buffer.unlock();
+      destination.unlock();
       return false;
     }
 
     case ResizeAlgorithm::scale2x:
     {
       if ( priv::scale2x  (
-                            this->pixels(), // source
-                            destination_buffer.pixels(), // destination
-                            this->width(), // source
-                            this->height(), // source
-                            this->bits_per_pixel(), // source
-                            this->pitch(), // source
-                            destination_buffer.pitch() // destination
+                            this->pixels(),
+                            destination.pixels(),
+                            source_size.x,
+                            source_size.y,
+                            this->bits_per_pixel(),
+                            this->pitch(),
+                            destination.pitch()
                           ) == false )
       {
         NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale2x." );
-        this->unlock(); // Relinquish our write lock
+        this->unlock(); // Relinquish our read lock
+        destination.unlock();
         return false;
       }
       break;
     }
-/*
+
     case ResizeAlgorithm::scale3x:
     {
       if ( priv::scale3x  (
-                            this->getTexturePixels(),
-                            destination_buffer.getTexturePixels(),
-                            this->width(),
-                            this->height(),
-                            this->getTextureColorDepth(),
-                            this->getTexturePitch(),
-                            destination_buffer.getTexturePitch()
+                            this->pixels(),
+                            destination.pixels(),
+                            source_size.x,
+                            source_size.y,
+                            this->bits_per_pixel(),
+                            this->pitch(),
+                            destination.pitch()
                           ) == false )
       {
-NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale3x." );
-        this->unlock(); // Relinquish our write lock
+        NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale3x." );
+        this->unlock(); // Relinquish our read lock
+        destination.unlock();
         return false;
       }
+      break;
     }
-    break;
 
     case ResizeAlgorithm::scale4x:
     {
       if ( priv::scale2x  (
-                            this->getTexturePixels(),
-                            destination_buffer.getTexturePixels(),
-                            this->width(),
-                            this->height(),
-                            this->getTextureColorDepth(),
-                            this->getTexturePitch(),
-                            destination_buffer.getTexturePitch()
+                            this->pixels(),
+                            destination.pixels(),
+                            source_size.x,
+                            source_size.y,
+                            this->bits_per_pixel(),
+                            this->pitch(),
+                            destination.pitch()
                           ) == false )
       {
-NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
-        this->unlock(); // Relinquish our write lock
+        NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
+        this->unlock(); // Relinquish our read lock
+        destination.unlock();
         return false;
       }
+      break;
     }
-    break;
 
     case ResizeAlgorithm::hq2x:
     {
       priv::hqxInit();
-      // Note that we must pass the *source* width and height here
       priv::hq2x_32 (
-                      static_cast<uint32*> ( this->getTexturePixels() ),
-                      static_cast<uint32*> ( destination_buffer.getTexturePixels() ),
-                      this->width(), this->height()
+                      static_cast<uint32*> ( this->pixels() ),
+                      static_cast<uint32*> ( destination.pixels() ),
+                      source_size.x,
+                      source_size.y
                     );
+      break;
     }
-    break;
 
     case ResizeAlgorithm::hq3x:
     {
       priv::hqxInit();
-      // Note that we must pass the *source* width and height here
       priv::hq3x_32 (
-                      static_cast<uint32*> ( this->getTexturePixels() ),
-                      static_cast<uint32*> ( destination_buffer.getTexturePixels() ),
-                      this->width(), this->height()
+                      static_cast<uint32*> ( this->pixels() ),
+                      static_cast<uint32*> ( destination.pixels() ),
+                      source_size.x,
+                      source_size.y
                     );
+      break;
     }
-    break;
 
     case ResizeAlgorithm::hq4x:
     {
       priv::hqxInit();
-      // Note that we must pass the *source* width and height here
       priv::hq4x_32 (
-                      static_cast<uint32*> ( this->getTexturePixels() ),
-                      static_cast<uint32*> ( destination_buffer.getTexturePixels() ),
-                      this->width(), this->height()
+                      static_cast<uint32*> ( this->pixels() ),
+                      static_cast<uint32*> ( destination.pixels() ),
+                      source_size.x,
+                      source_size.y
                     );
+      break;
     }
-    break;
-*/
   } // end switch scaling_algorithm
 
-  // Once we unlock the texture, it will be uploaded to the GPU for us!
-  destination_buffer.unlock();
+  // Unlock destination memory buffer; we are done copying from the texture!
+  destination.unlock();
   this->unlock();
 
-  // Do one more sanity check on our new video surface before do the transfer
-  if ( destination_buffer.valid() == false )
+  // Do one more sanity check on our new video surface before do the final
+  // transfer
+  if ( destination.valid() == false )
   {
     NOM_LOG_ERR ( NOM, "The rescaled video surface is not valid." );
     return false;
   }
 
-  // This appears fine -- something past this is where everything goes south...
-  destination_buffer.save_png("testme.png");
+  // Dump rescaled surface memory as a PNG
+  #if defined (NOM_DEBUG_SDL2_RESIZE_PNG)
+    destination.save_png("rescaled_surface.png");
+  #endif
 
-  if ( this->initialize ( destination_buffer.width(), destination_buffer.height(), SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING ) == false )
-  {
-    NOM_LOG_ERR ( NOM, "The rescaled video surface is not valid." );
-    return false;
-  }
-
-  // Lock pixels buffer so we can obtain access to its pixels & pitch
-  this->lock ( destination_buffer.bounds() );
-
-  // Copy pixels from image into our freshly initialized texture
-  memcpy ( destination_buffer.pixels(), this->pixels(), destination_buffer.pitch() );
-
-  // Once we unlock the texture, it will be uploaded to the GPU for us!
-  this->unlock();
-
-  //this->set_colorkey ( Color4i(0,0,0,0) );
-
-  this->set_bounds ( destination_buffer.bounds() );
-
-  // Reset the video surface object's video memory to the rescaled pixel data.
-  //this->setTexture ( destination_buffer );
+  // Re-initialize our texture with the rescaled pixels from our temporary
+  // software surface. There's no turning back once this is done... we will
+  // need to reload the image file back into the Texture and start this all
+  // over again.
+  this->initialize ( destination.clone() ); // STATIC access type
 
   return true;
 }
 
-int32 Texture::getResizeScaleFactor ( enum ResizeAlgorithm scaling_algorithm )
+int Texture::scale_factor ( enum ResizeAlgorithm scaling_algorithm ) const
 {
   switch ( scaling_algorithm )
   {
-    default: return 1; break;
+    default: // No rescaling algorithm set
+      return 1;
+    break;
 
-    case ResizeAlgorithm::hq2x:
     case ResizeAlgorithm::scale2x:
+    case ResizeAlgorithm::hq2x:
       return 2;
     break;
 

@@ -71,10 +71,19 @@ class Sprite:
     /// Set a new state.
     void set_state ( uint32 state );
 
-    /// Load a new image onto the Sprite.
-    bool load ( const std::string& filename, bool use_cache = false );
+    /// \brief Initialize a Sprite from an image file.
+    ///
+    /// \param type nom::Texture::Access enumeration type
+    ///
+    /// \remarks  In order to use the resize method of this class, you must load
+    ///           the sprite image with nom::Texture::Access::Streaming access.
+    bool load ( const std::string& filename,
+                bool use_cache = false,
+                enum Texture::Access type = Texture::Access::Static
+              );
 
     virtual void update ( void );
+
     void draw ( RenderTarget target ) const;
 
     /// Draw a rotated nom::Sprite on a nom::Window
@@ -84,7 +93,9 @@ class Sprite:
     ///
     void draw ( RenderTarget target, const double angle ) const;
 
-    /// Rescale the font with a chosen resizing algorithm
+    /// \brief Rescale the sprite with the chosen resizing algorithm
+    ///
+    /// \remarks See nom::Texture::resize
     bool resize ( enum Texture::ResizeAlgorithm scaling_algorithm );
 
   protected:
@@ -95,7 +106,7 @@ class Sprite:
     uint32 state_;
 
     /// Scale factor applied if the resize method is called
-    int32 scale_factor;
+    int scale_factor;
 };
 
 

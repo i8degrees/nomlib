@@ -192,7 +192,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
         nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
         return false;
       }
-      // FIXME: this->bitmap_font.resize ( nom::ResizeAlgorithm::scale2x );
+      // FIXME: this->bitmap_font.resize ( nom::Texture::ResizeAlgorithm::scale2x );
 
       if ( this->bitmap_small_font.load ( RESOURCE_BITMAP_SMALL_FONT ) == false )
       {
@@ -209,12 +209,12 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
       // Load a sprite sheet, using the sheet_filename as the base path to load
       // the image file from disk
       this->sprite = nom::SpriteBatch ( RESOURCE_SPRITE );
-      if ( this->sprite.load ( APP_RESOURCES_DIR + p.native() + this->sprite.sheet_filename() ) == false )
+      if ( this->sprite.load ( APP_RESOURCES_DIR + p.native() + this->sprite.sheet_filename(), 0, nom::Texture::Access::Streaming ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load sprite: " + this->sprite.sheet_filename() );
         return false;
       }
-      // FIXME: this->sprite.resize ( nom::ResizeAlgorithm::scale2x );
+      this->sprite.resize ( nom::Texture::ResizeAlgorithm::scale2x );
       this->sprite.set_frame ( 1 ); // Left-pointing cursor hand
 
       // Load the same sprite sheet -- but this time -- used for animation

@@ -62,7 +62,7 @@ std::ostream& operator << ( std::ostream& os, const RendererInfo& info )
   << "Device Capabilities: "
   << std::endl << std::endl;
 
-  if ( info.flags & SDL_RENDERER_TARGETTEXTURE )
+  if ( info.target_texture() )
   {
     os << "SDL_RENDERER_TARGETTEXTURE"
     << std::endl;

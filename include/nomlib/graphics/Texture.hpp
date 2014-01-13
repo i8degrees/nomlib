@@ -84,7 +84,14 @@ class Texture
     ~Texture ( void );
 
     /// Copy constructor
-    Texture ( const Texture& other );
+    Texture ( const Texture& copy );
+
+    /// Copy assignment operator
+    Texture& operator = ( const Texture& other );
+
+    /// Return a std::shared_ptr copy of this instance
+    /// \todo Test me out!
+    Texture::SharedPtr clone ( void ) const;
 
     /// Initialize object with SDL2 video surface
     ///
@@ -103,13 +110,6 @@ class Texture
     /// \param flags    Texture access type; one of the enumerated values in
     ///                 SDL_TextureAccess
     bool initialize ( int32 width, int32 height, uint32 format, uint32 flags );
-
-    /// Return a std::shared_ptr copy of this instance
-    /// \todo Test me out!
-    Texture::SharedPtr clone ( void ) const;
-
-    /// Copy assignment operator
-    Texture& operator = ( const Texture& other );
 
     const Point2i& position ( void ) const;
     //const Point2i& size ( void ) const;

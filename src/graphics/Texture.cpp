@@ -32,9 +32,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Texture::Texture ( void )  :  texture_ { nullptr, priv::FreeTexture },
-    pixels_ ( nullptr ), pitch_ ( 0 ), position_ ( 0, 0 ),
-    bounds_ ( 0, 0, -1, -1 ), colorkey_ { Color4i::Black }
+Texture::Texture ( void ) :
+  texture_ { nullptr, priv::FreeTexture },
+  pixels_ ( nullptr ),
+  pitch_ ( 0 ),
+  position_ ( 0, 0 ),
+  bounds_ ( 0, 0, -1, -1 ),
+  colorkey_ { Color4i::Black }
 {
   NOM_LOG_TRACE ( NOM );
 }
@@ -44,13 +48,31 @@ Texture::~Texture ( void )
   NOM_LOG_TRACE ( NOM );
 }
 
-Texture::Texture ( const Texture& other ) :
-    texture_ { other.texture(), priv::FreeTexture },
-    pixels_ { other.pixels() }, pitch_ { other.pitch() },
-    position_ { other.position() }, bounds_ { other.bounds() },
-    colorkey_ { other.colorkey() }
+Texture::Texture ( const Texture& copy ) :
+  texture_ { copy.texture(), priv::FreeTexture },
+  pixels_ { copy.pixels() },
+  pitch_ { copy.pitch() },
+  position_ { copy.position() },
+  bounds_ { copy.bounds() },
+  colorkey_ { copy.colorkey() }
 {
   NOM_LOG_TRACE ( NOM );
+}
+
+Texture& Texture::operator = ( const Texture& other )
+{
+  this->texture_ = other.texture_;
+  this->pixels_ = other.pixels();
+  this->pitch_ = other.pitch();
+  this->position_ = other.position();
+  this->bounds_ = other.bounds();
+
+  return *this;
+}
+
+Texture::SharedPtr Texture::clone ( void ) const
+{
+  return Texture::SharedPtr ( new Texture ( *this ) );
 }
 
 bool Texture::initialize ( SDL_SURFACE::RawPtr source )
@@ -87,22 +109,6 @@ bool Texture::initialize ( int32 width, int32 height, uint32 format, uint32 flag
   this->set_bounds( IntRect(0, 0, width, height) );
 
   return true;
-}
-
-Texture::SharedPtr Texture::clone ( void ) const
-{
-  return Texture::SharedPtr ( new Texture ( *this ) );
-}
-
-Texture& Texture::operator = ( const Texture& other )
-{
-  this->texture_ = other.texture_;
-  this->pixels_ = other.pixels();
-  this->pitch_ = other.pitch();
-  this->position_ = other.position();
-  this->bounds_ = other.bounds();
-
-  return *this;
 }
 
 SDL_TEXTURE::RawPtr Texture::texture ( void ) const

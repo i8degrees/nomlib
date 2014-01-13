@@ -163,6 +163,10 @@ uint Text::text_width ( const std::string& text_string ) const
     {
       text_width += this->font()->spacing ( this->text_size() );
     }
+    else if ( current_char == '\t' ) // Tab character (we indent two spaces)
+    {
+      text_width += this->font()->spacing ( this->text_size() ) * 2;
+    }
     else // Printable ASCII glyph (33..127)
     {
       // Match the offset calculations done in the text rendering -- hence the
@@ -204,7 +208,7 @@ uint Text::text_height ( const std::string& text_string ) const
   {
     uint32 current_char = text_buffer[pos];
 
-    if ( current_char == '\n' ) // Multi-line case
+    if ( current_char == '\n' || current_char == '\v' ) // Multi-line case
     {
       text_height += this->font()->newline ( this->text_size() );
     }
@@ -430,15 +434,15 @@ void Text::draw ( RenderTarget target ) const
       //Move over
       x_offset += this->font()->spacing ( this->text_size() );
     }
-    else if( current_char == '\n' ) // Newline character
+    else if( current_char == '\n' || current_char == '\v' ) // Vertical chars
     {
       //Move down and back over to the beginning of line
       y_offset += this->font()->newline ( this->text_size() );
       x_offset = this->position().x;
     }
-    else if( current_char == '\t' ) // Tab character
+    else if( current_char == '\t' ) // Tab character (we indent two spaces)
     {
-      x_offset += this->font()->spacing ( this->text_size() );
+      x_offset += this->font()->spacing ( this->text_size() ) * 2;
     }
     else // The time to render is now!
     {

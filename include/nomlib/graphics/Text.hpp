@@ -40,9 +40,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/fonts/IFont.hpp"
 #include "nomlib/graphics/fonts/TrueTypeFont.hpp"
 
-/// Dump each character's glyph data used in width & height calculations
-//#define NOM_DEBUG_TEXT
-
 namespace nom {
 
 /// \todo Implement back-buffer for texture rendering
@@ -137,6 +134,7 @@ class Text: public Transformable
     ///           etc.
     ///
     /// \todo Support multi-line texts (newline character handling)
+    uint text_width ( const std::string& text_string ) const;
     uint width ( void ) const;
 
     /// \brief Obtain the text height in pixels of the set text
@@ -150,7 +148,8 @@ class Text: public Transformable
     ///           etc.
     ///
     /// \todo     We *may* have a better height value to use in our height
-    // computation -- see nom::FontMetrics.
+    /// computation -- see nom::FontMetrics.
+    uint text_height ( const std::string& text_string ) const;
     uint height ( void ) const;
 
     /// Get text string

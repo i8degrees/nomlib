@@ -135,18 +135,23 @@ enum IFont::FontType Text::type ( void ) const
   return IFont::FontType::NotDefined;
 }
 
-uint Text::width ( void ) const
+uint Text::text_width ( const std::string& text_string ) const
 {
   uint text_width = 0;
-  std::string text_buffer = this->text();
+  uint32 previous_char = 0; // Kerning calculation
+  std::string text_buffer = text_string;
 
+  // Ensure that our font pointer is still valid
   if ( this->valid() == false )
   {
-    NOM_LOG_ERR( NOM, "Invalid Text font for width calculation" );
+    NOM_LOG_ERR( NOM, "Invalid font for width calculation" );
     return text_width;
   }
 
-  uint32 previous_char = 0;
+  // Calculate text width up to either: a) end of string; b) newline character.
+  //
+  // We add kerning offsets, the glyph's advance offsets, and spacing onto the
+  // total text_width count.
   for ( uint32 pos = 0; pos < text_buffer.length() && text_buffer[pos] != '\n'; ++pos )
   {
     // Apply kerning offset
@@ -157,44 +162,32 @@ uint Text::width ( void ) const
     if ( current_char == ' ' ) // ASCII space glyph (32)
     {
       text_width += this->font()->spacing ( this->text_size() );
-
-      // Dump each character's table used for calculation
-      #if defined (NOM_DEBUG_TEXT)
-        NOM_DUMP_VAR ( pos );
-        NOM_DUMP_VAR ( static_cast<uchar>(current_char) );
-        NOM_DUMP_VAR ( text_width );
-      #endif
     }
     else // Printable ASCII glyph (33..127)
     {
       // Match the offset calculations done in the text rendering -- hence the
       // plus one (+1) spacing.
       text_width += this->font()->glyph(current_char, this->text_size() ).advance + 1;
-
-      // Dump each character's table used for calculation
-      #if defined (NOM_DEBUG_TEXT)
-        NOM_DUMP_VAR ( pos );
-        NOM_DUMP_VAR ( static_cast<uchar>(current_char) );
-        NOM_DUMP_VAR ( this->font()->glyph(current_char, this->text_size() ).advance + 1 );
-      #endif
     }
   } // end for loop
-
-  #if defined (NOM_DEBUG_TEXT)
-    NOM_DUMP_VAR ( text_width );
-  #endif
 
   return text_width;
 }
 
-uint Text::height ( void ) const
+uint Text::width ( void ) const
+{
+  return this->text_width ( this->text() );
+}
+
+uint Text::text_height ( const std::string& text_string ) const
 {
   uint text_height = 0;
-  std::string text_buffer = this->text();
+  std::string text_buffer = text_string;
 
+  // Ensure that our font pointer is still valid
   if ( this->valid() == false )
   {
-    NOM_LOG_ERR( NOM, "Invalid Text font for height calculation" );
+    NOM_LOG_ERR( NOM, "Invalid font for height calculation" );
     return text_height;
   }
 
@@ -214,21 +207,15 @@ uint Text::height ( void ) const
     if ( current_char == '\n' ) // Multi-line case
     {
       text_height += this->font()->newline ( this->text_size() );
-
-      // Dump each character's table used for calculation
-      #if defined (NOM_DEBUG_TEXT)
-        NOM_DUMP_VAR ( pos );
-        NOM_DUMP_VAR ( static_cast<uchar>(current_char) );
-        NOM_DUMP_VAR ( text_height );
-      #endif
     }
   } // end for loop
 
-  #if defined (NOM_DEBUG_TEXT)
-    NOM_DUMP_VAR ( text_height );
-  #endif
-
   return text_height;
+}
+
+uint Text::height ( void ) const
+{
+  return this->text_height ( this->text() );
 }
 
 const std::string& Text::text ( void ) const

@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Public header file
 
 #include <nomlib/config.hpp>
-#include <nomlib/graphics/Label.hpp>
+#include <nomlib/graphics/Text.hpp>
 #include <nomlib/graphics/RendererInfo.hpp>
 #include <nomlib/graphics/Texture.hpp>
 #include <nomlib/graphics/VideoMode.hpp>

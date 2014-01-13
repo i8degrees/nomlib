@@ -224,8 +224,8 @@ class App: public nom::SDL_App
 
     nom::TrueTypeFont truetype_font;
 
-    nom::Label label_bfont;
-    nom::Label label_tfont;
+    nom::Text label_bfont;
+    nom::Text label_tfont;
 
     bool load_bitmap_font ( void )
     {
@@ -256,7 +256,7 @@ class App: public nom::SDL_App
       this->label_bfont.set_color ( nom::Color4i::White );
       //this->label_bfont.set_color ( nom::Color4i(195,209,228) );
       this->label_bfont.set_text_size ( 24 ); // NO-OP
-      this->label_bfont.set_alignment ( nom::Label::Alignment::TopLeft );
+      this->label_bfont.set_alignment ( nom::Text::Alignment::TopLeft );
 
       return true;
     }
@@ -274,7 +274,7 @@ class App: public nom::SDL_App
       //this->label_tfont.set_color ( nom::Color4i(195,209,228) );
       this->label_tfont.set_text ( RESOURCE_FONT_TEXT_STRING );
       //this->label_tfont.set_text_size ( 24 );
-      this->label_tfont.set_alignment ( nom::Label::Alignment::TopLeft );
+      this->label_tfont.set_alignment ( nom::Text::Alignment::TopLeft );
 
       return true;
     }

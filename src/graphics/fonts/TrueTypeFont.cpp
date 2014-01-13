@@ -351,7 +351,7 @@ bool TrueTypeFont::build ( uint32 character_size )
   page.texture->set_colorkey ( Color4i::Black, true );
 
   // Export the destination texture -- this should be a texture sheet that we
-  // expect to be able to render from within the nom::Label class.
+  // expect to be able to render from within the nom::Text class.
   #if defined(NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS)
     // We intentionally flip color keying off here temporarily so that our eyes
     // have an easier time.

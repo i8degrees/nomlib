@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Coords.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/graphics/Label.hpp"
+#include "nomlib/graphics/Text.hpp"
 #include "nomlib/graphics/Gradient.hpp"
 #include "nomlib/gui/GrayFrame.hpp"
 
@@ -82,8 +82,8 @@ class MessageBox: public IDrawable
     const Point2i size ( void ) const;
     const Point2i position ( void ) const;
 
-    void set_title ( const Label& title );
-    void set_text ( const Label& text );
+    void set_title ( const Text& title );
+    void set_text ( const Text& text );
 
     void draw ( RenderTarget target ) const;
 
@@ -94,7 +94,7 @@ class MessageBox: public IDrawable
     IDrawable::SharedDrawables drawable;
 
     /// Array holding our up to two labels (title and text, respectively)
-    std::array<Label, 2> labels;
+    std::array<Text, 2> labels;
 
     Coords coords;
     bool enabled_;
@@ -125,7 +125,7 @@ class MessageBox: public IDrawable
 /// const nom::int INFO_BOX_ORIGIN_Y = ( WINDOW_HEIGHT - INFO_BOX_HEIGHT ) / 2;
 
 /// // Object declarations
-/// nom::Label label;
+/// nom::Text label;
 /// nom::Gradient linear;
 /// nom::ui::MessageBox info_box;
 
@@ -151,7 +151,7 @@ class MessageBox: public IDrawable
 /// info_box.set_label_font ( &bitmap_font );
 /// info_box.set_label ( "Hello, world!" );
 /// info_box.set_window_title ( "INFO" );
-/// info_box.set_label_text_alignment ( nom::Label::TextAlignment::MiddleCenter );
+/// info_box.set_label_text_alignment ( nom::Text::Alignment::MiddleCenter );
 
 /// info_box.update();
 

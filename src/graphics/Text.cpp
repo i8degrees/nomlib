@@ -26,26 +26,26 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/graphics/Label.hpp"
+#include "nomlib/graphics/Text.hpp"
 
 namespace nom {
 
-Label::Label ( void ) :
+Text::Text ( void ) :
   Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_size_ ( 14 ),
   color_ ( Color4i::White ),
-  style_ ( Label::Style::Regular ),
-  alignment_ ( Label::Alignment::TopLeft )
+  style_ ( Text::Style::Regular ),
+  alignment_ ( Text::Alignment::TopLeft )
 {
   NOM_LOG_TRACE ( NOM );
 }
 
-Label::~Label ( void )
+Text::~Text ( void )
 {
   NOM_LOG_TRACE ( NOM );
 }
 
-Label::Label ( const Label& copy ) :
+Text::Text ( const Text& copy ) :
   Transformable { copy.position() }, // Our inherited class
   font_ { copy.font() },
   texture_ { copy.texture() },
@@ -58,7 +58,7 @@ Label::Label ( const Label& copy ) :
   NOM_LOG_TRACE ( NOM );
 }
 
-Label& Label::operator = ( const Label& other )
+Text& Text::operator = ( const Text& other )
 {
   this->position_ = other.position(); // Our inherited class
   this->font_ = other.font();
@@ -72,16 +72,16 @@ Label& Label::operator = ( const Label& other )
   return *this;
 }
 
-Label::Label  ( const std::string& text,
+Text::Text  ( const std::string& text,
                 const IFont& font,
                 uint character_size,        // Default parameter
-                enum Label::Alignment align // Default parameter
+                enum Text::Alignment align // Default parameter
               )  :
   Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_ ( text ),
   text_size_ ( character_size ),
   color_ ( Color4i::White ),
-  style_ ( Label::Style::Regular )
+  style_ ( Text::Style::Regular )
 {
   NOM_LOG_TRACE(NOM);
 
@@ -89,16 +89,16 @@ Label::Label  ( const std::string& text,
   this->set_alignment ( align );
 }
 
-Label::Label  ( const std::string& text,
+Text::Text  ( const std::string& text,
                 const IFont::SharedPtr& font,
                 uint character_size,        // Default parameter
-                enum Label::Alignment align // Default parameter
+                enum Text::Alignment align // Default parameter
               )  :
   Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_ ( text ),
   text_size_ ( character_size ),
   color_ ( Color4i::White ),
-  style_ ( Label::Style::Regular )
+  style_ ( Text::Style::Regular )
 {
   NOM_LOG_TRACE(NOM);
 
@@ -106,43 +106,43 @@ Label::Label  ( const std::string& text,
   this->set_alignment ( align );
 }
 
-Label::RawPtr Label::get ( void )
+Text::RawPtr Text::get ( void )
 {
   return this;
 }
 
-IFont::SharedPtr Label::font ( void ) const
+IFont::SharedPtr Text::font ( void ) const
 {
   return this->font_;
 }
 
-const Texture& Label::texture ( void ) const
+const Texture& Text::texture ( void ) const
 {
   return this->texture_;
 }
 
-bool Label::valid ( void ) const
+bool Text::valid ( void ) const
 {
   if ( this->font() != nullptr ) return true;
 
   return false;
 }
 
-enum IFont::FontType Label::type ( void ) const
+enum IFont::FontType Text::type ( void ) const
 {
   if ( this->valid() ) return this->font()->type();
 
   return IFont::FontType::NotDefined;
 }
 
-uint Label::width ( void ) const
+uint Text::width ( void ) const
 {
   uint text_width = 0;
   std::string text_buffer = this->text();
 
   if ( this->valid() == false )
   {
-    NOM_LOG_ERR( NOM, "Invalid label font for width calculation" );
+    NOM_LOG_ERR( NOM, "Invalid Text font for width calculation" );
     return text_width;
   }
 
@@ -159,7 +159,7 @@ uint Label::width ( void ) const
       text_width += this->font()->spacing ( this->text_size() );
 
       // Dump each character's table used for calculation
-      #if defined (NOM_DEBUG_LABEL)
+      #if defined (NOM_DEBUG_TEXT)
         NOM_DUMP_VAR ( pos );
         NOM_DUMP_VAR ( static_cast<uchar>(current_char) );
         NOM_DUMP_VAR ( text_width );
@@ -172,7 +172,7 @@ uint Label::width ( void ) const
       text_width += this->font()->glyph(current_char, this->text_size() ).advance + 1;
 
       // Dump each character's table used for calculation
-      #if defined (NOM_DEBUG_LABEL)
+      #if defined (NOM_DEBUG_TEXT)
         NOM_DUMP_VAR ( pos );
         NOM_DUMP_VAR ( static_cast<uchar>(current_char) );
         NOM_DUMP_VAR ( this->font()->glyph(current_char, this->text_size() ).advance + 1 );
@@ -180,21 +180,21 @@ uint Label::width ( void ) const
     }
   } // end for loop
 
-  #if defined (NOM_DEBUG_LABEL)
+  #if defined (NOM_DEBUG_TEXT)
     NOM_DUMP_VAR ( text_width );
   #endif
 
   return text_width;
 }
 
-uint Label::height ( void ) const
+uint Text::height ( void ) const
 {
   uint text_height = 0;
   std::string text_buffer = this->text();
 
   if ( this->valid() == false )
   {
-    NOM_LOG_ERR( NOM, "Invalid label font for height calculation" );
+    NOM_LOG_ERR( NOM, "Invalid Text font for height calculation" );
     return text_height;
   }
 
@@ -216,7 +216,7 @@ uint Label::height ( void ) const
       text_height += this->font()->newline ( this->text_size() );
 
       // Dump each character's table used for calculation
-      #if defined (NOM_DEBUG_LABEL)
+      #if defined (NOM_DEBUG_TEXT)
         NOM_DUMP_VAR ( pos );
         NOM_DUMP_VAR ( static_cast<uchar>(current_char) );
         NOM_DUMP_VAR ( text_height );
@@ -224,51 +224,51 @@ uint Label::height ( void ) const
     }
   } // end for loop
 
-  #if defined (NOM_DEBUG_LABEL)
+  #if defined (NOM_DEBUG_TEXT)
     NOM_DUMP_VAR ( text_height );
   #endif
 
   return text_height;
 }
 
-const std::string& Label::text ( void ) const
+const std::string& Text::text ( void ) const
 {
   return this->text_;
 }
 
-uint Label::text_size ( void ) const
+uint Text::text_size ( void ) const
 {
   return this->text_size_;
 }
 
-const Color4i& Label::color ( void ) const
+const Color4i& Text::color ( void ) const
 {
   return this->color_;
 }
 
-enum Label::Style Label::style ( void ) const
+enum Text::Style Text::style ( void ) const
 {
   return this->style_;
 }
 
 /*
-const Point2i& Label::local_bounds ( void ) const
+const Point2i& Text::local_bounds ( void ) const
 {
 }
 */
 
 /*
-const Point2i& Label::global_bounds ( void ) const
+const Point2i& Text::global_bounds ( void ) const
 {
 }
 */
 
-enum Label::Alignment Label::alignment ( void ) const
+enum Text::Alignment Text::alignment ( void ) const
 {
   return this->alignment_;
 }
 
-void Label::set_font ( const IFont& font )
+void Text::set_font ( const IFont& font )
 {
   //if ( this->font().get() != &font )
   this->font_ = std::shared_ptr<IFont>( font.clone() );
@@ -277,12 +277,12 @@ void Label::set_font ( const IFont& font )
 
   if ( this->valid() == false || this->texture_.initialize ( this->font()->image (this->text_size()) ) == false )
   {
-    NOM_LOG_ERR ( NOM, "Could not initialize label from given IFont" );
+    NOM_LOG_ERR ( NOM, "Could not initialize Text from given IFont" );
     return;
   }
 }
 
-void Label::set_text ( const std::string& text )
+void Text::set_text ( const std::string& text )
 {
   if ( text != this->text() )
   {
@@ -292,7 +292,7 @@ void Label::set_text ( const std::string& text )
   }
 }
 
-void Label::set_text_size ( uint character_size )
+void Text::set_text_size ( uint character_size )
 {
   if ( this->valid() == false ) return;
 
@@ -305,7 +305,7 @@ void Label::set_text_size ( uint character_size )
   }
 }
 
-void Label::set_color ( const Color4i& color )
+void Text::set_color ( const Color4i& color )
 {
   if ( color != this->color() )
   {
@@ -316,7 +316,7 @@ void Label::set_color ( const Color4i& color )
   }
 }
 
-void Label::set_style ( enum Label::Style style )
+void Text::set_style ( enum Text::Style style )
 {
   // We do not have an atlas map to go from -- nothing to set a style on!
   if ( this->texture_.valid() == false ) return;
@@ -330,7 +330,7 @@ void Label::set_style ( enum Label::Style style )
   this->update();
 }
 
-void Label::set_alignment ( enum Label::Alignment align )
+void Text::set_alignment ( enum Text::Alignment align )
 {
   this->alignment_ = align;
 
@@ -340,63 +340,63 @@ void Label::set_alignment ( enum Label::Alignment align )
   switch ( this->alignment() )
   {
     default:
-    case Label::Alignment::TopLeft: // Default case
+    case Text::Alignment::TopLeft: // Default case
     {
       x_offset = this->position().x;
       y_offset = this->position().y;
       break;
     }
 
-    case Label::Alignment::TopCenter:
+    case Text::Alignment::TopCenter:
     {
       x_offset = this->position().x + ( this->size().w - this->width() ) / 2;
       y_offset = this->position().y;
       break;
     }
 
-    case Label::Alignment::TopRight:
+    case Text::Alignment::TopRight:
     {
       x_offset = this->position().x + ( this->size().w - this->width() );
       y_offset = this->position().y;
       break;
     }
 
-    case Label::Alignment::MiddleLeft:
+    case Text::Alignment::MiddleLeft:
     {
       x_offset = this->position().x;
       y_offset = this->position().y + ( this->size().h - this->height() ) / 2;
       break;
     }
 
-    case Label::Alignment::MiddleCenter:
+    case Text::Alignment::MiddleCenter:
     {
       x_offset = this->position().x + ( this->size().w - this->width() ) / 2;
       y_offset = this->position().y + ( this->size().h - this->height() ) / 2;
       break;
     }
 
-    case Label::Alignment::MiddleRight:
+    case Text::Alignment::MiddleRight:
     {
       x_offset = this->position().x + ( this->size().w - this->width() );
       y_offset = this->position().y + ( this->size().h - this->height() ) / 2;
       break;
     }
 
-    case Label::Alignment::BottomLeft:
+    case Text::Alignment::BottomLeft:
     {
       x_offset = this->position().x;
       y_offset = this->position().y + ( this->size().h - this->height() );
       break;
     }
 
-    case Label::Alignment::BottomCenter:
+    case Text::Alignment::BottomCenter:
     {
       x_offset = this->position().x + ( this->size().w - this->width() ) / 2;
       y_offset = this->position().y + ( this->size().h - this->height() );
       break;
     }
 
-    case Label::Alignment::BottomRight:
+    case Text::Alignment::BottomRight:
     {
       x_offset = this->position().x + ( this->size().w - this->width() );
       y_offset = this->position().y + ( this->size().h - this->height() );
@@ -407,7 +407,7 @@ void Label::set_alignment ( enum Label::Alignment align )
   this->set_position ( x_offset, y_offset );
 }
 
-void Label::draw ( RenderTarget target ) const
+void Text::draw ( RenderTarget target ) const
 {
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from
@@ -421,11 +421,11 @@ void Label::draw ( RenderTarget target ) const
   // No font has been loaded -- nothing to draw!
   if ( this->valid() == false )
   {
-    NOM_LOG_ERR( NOM, "Invalid label font" );
+    NOM_LOG_ERR( NOM, "Invalid Text font" );
     return;
   }
 
-  if ( this->style() == Label::Style::Italic )
+  if ( this->style() == Text::Style::Italic )
   {
     angle = 12; // 12 degrees as per SDL2_ttf
   }
@@ -466,7 +466,7 @@ void Label::draw ( RenderTarget target ) const
   } // end for loop
 }
 
-bool Label::resize ( enum Texture::ResizeAlgorithm scaling_algorithm )
+bool Text::resize ( enum Texture::ResizeAlgorithm scaling_algorithm )
 {
   if ( this->valid() == false )
   {
@@ -492,7 +492,7 @@ TODO */
   return true;
 }
 
-void Label::update ( void )
+void Text::update ( void )
 {
   // No font has been loaded -- nothing to draw!
   if ( this->valid() == false ) return;
@@ -500,13 +500,13 @@ void Label::update ( void )
   switch ( style_ )
   {
     default:
-    case Label::Style::Regular: /* Do nothing */ break; // Default
+    case Text::Style::Regular: /* Do nothing */ break; // Default
 
-    case Label::Style::Bold:
+    case Text::Style::Bold:
     {
       if ( this->type() == IFont::FontType::BitmapFont )
       {
-        NOM_LOG_ERR ( NOM, "nom::BitmapFont does not support nom::Label::Style::Bold." );
+        NOM_LOG_ERR ( NOM, "nom::BitmapFont does not support nom::Text::Style::Bold." );
         break;
       }
 
@@ -514,11 +514,11 @@ void Label::update ( void )
       break;
     }
 
-    case Label::Style::Italic:
-     // This style is handled in Label's draw method
+    case Text::Style::Italic:
+     // This style is handled in Text's draw method
     break;
 
-    case Label::Style::Underlined:
+    case Text::Style::Underlined:
     {
       // TODO: Underline logic
       break;

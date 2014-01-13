@@ -85,18 +85,18 @@ class IFont
 /// \ingroup graphics/fonts
 ///
 /// nomlib's built-in font classes all derive from this pure abstract class.
-/// nom::Label focuses solely on text rendering, utilizing this common interface
+/// nom::Text focuses solely on text rendering, utilizing this common interface
 /// defined here.
 ///
 /// In short: a font resource class is responsible for computing available
 /// glyphs (including their bounds, sizes, etc.) and most importantly, a
 /// complete cache of usable glyph bitmaps laid out in a texture atlas (in no
-/// particular packing order). nom::Label uses the font's texture atlas in
+/// particular packing order). nom::Text uses the font's texture atlas in
 /// addition to the font's glyph metrics (the bounds being most critical for
 /// rendering from this atlas to the screen).
 ///
 /// See the source files of nom::BitmapFont for a complete example of how to
-/// write a custom font resource class that is suitable for nom::Label to
+/// write a custom font resource class that is suitable for nom::Text to
 /// render from. Supporting data structures include: nom::FontMetrics,
 /// nom::FontPage, nom::FontRow, nom::Glyph and so on.
 ///

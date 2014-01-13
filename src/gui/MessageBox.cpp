@@ -121,13 +121,13 @@ bool MessageBox::enabled ( void ) const
 
 const std::string MessageBox::title ( void )
 {
-  // nom::Label should be handling all of the necessary validity checks for us
+  // nom::Text should be handling all of the necessary validity checks for us
   return this->labels[0].text();
 }
 
 const std::string MessageBox::text ( void )
 {
-  // nom::Label should be handling all of the necessary validity checks for us
+  // nom::Text should be handling all of the necessary validity checks for us
   return this->labels[1].text();
 }
 
@@ -151,13 +151,13 @@ void MessageBox::enable ( void )
   this->enabled_ = true;
 }
 
-void MessageBox::set_title ( const Label& title )
+void MessageBox::set_title ( const Text& title )
 {
   this->updated = false;
 
   if ( title.valid() == false )
   {
-    NOM_LOG_ERR( NOM, "Label text for nom::MessageBox is invalid" );
+    NOM_LOG_ERR( NOM, "Text for nom::MessageBox is invalid" );
     return;
   }
 
@@ -177,13 +177,13 @@ void MessageBox::set_title ( const Label& title )
   this->update();
 }
 
-void MessageBox::set_text ( const Label& text )
+void MessageBox::set_text ( const Text& text )
 {
   this->updated = false;
 
   if ( text.valid() == false )
   {
-    NOM_LOG_ERR( NOM, "Label text for nom::MessageBox is invalid" );
+    NOM_LOG_ERR( NOM, "Text for nom::MessageBox is invalid" );
     return;
   }
 
@@ -222,8 +222,8 @@ void MessageBox::draw ( RenderTarget target ) const
     obj->draw ( target );
   }
 
-  // nom::Label should be handling all of the necessary validity checks for us;
-  // if a Label object is not valid, the routine should return immediately,
+  // nom::Text should be handling all of the necessary validity checks for us;
+  // if a Text object is not valid, the routine should return immediately,
   // discarding any data prepared within that frame.
   this->labels[0].draw ( target );
   this->labels[1].draw ( target );

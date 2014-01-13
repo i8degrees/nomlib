@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_LABEL_HPP
-#define NOMLIB_LABEL_HPP
+#ifndef NOMLIB_GRAPHICS_TEXT_HPP
+#define NOMLIB_GRAPHICS_TEXT_HPP
 
 #include <iostream>
 #include <string>
@@ -41,16 +41,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/fonts/TrueTypeFont.hpp"
 
 /// Dump each character's glyph data used in width & height calculations
-//#define NOM_DEBUG_LABEL
+//#define NOM_DEBUG_TEXT
 
 namespace nom {
 
 /// \todo Implement back-buffer for texture rendering
-class Label: public Transformable
+class Text: public Transformable
 {
   public:
-    typedef Label* RawPtr;
-    typedef std::shared_ptr<Label> SharedPtr;
+    typedef Text* RawPtr;
+    typedef std::shared_ptr<Text> SharedPtr;
 
     /// Font face style; multiple styles can be combined from bitwise masks
     ///
@@ -88,40 +88,40 @@ class Label: public Transformable
     };
 
     /// Default constructor
-    Label ( void );
+    Text ( void );
 
     /// Destructor
-    virtual ~Label ( void );
+    virtual ~Text ( void );
 
     /// Copy constructor
-    Label ( const Label& copy );
+    Text ( const Text& copy );
 
     /// Copy assignment overload
-    Label& operator = ( const Label& other );
+    Text& operator = ( const Text& other );
 
-    /// Construct a label, initializing it with a text string, an IFont
+    /// Construct a Text, initializing it with a text string, an IFont
     /// reference, character size and text alignment.
-    Label ( const std::string& text,
+    Text ( const std::string& text,
             const IFont& font,
             uint character_size = 14,
-            enum Label::Alignment align = Label::Alignment::TopLeft
+            enum Text::Alignment align = Text::Alignment::TopLeft
           );
 
-    /// Construct a label, initializing it with a text string, an IFont
+    /// Construct a Text, initializing it with a text string, an IFont
     /// pointer, character size and text alignment.
-    Label ( const std::string& text,
+    Text ( const std::string& text,
             const IFont::SharedPtr& font,
             uint character_size = 14,
-            enum Label::Alignment align = Label::Alignment::TopLeft
+            enum Text::Alignment align = Text::Alignment::TopLeft
           );
 
-    Label::RawPtr get ( void );
+    Text::RawPtr get ( void );
 
     IFont::SharedPtr font ( void ) const;
 
     const Texture& texture ( void ) const;
 
-    /// Obtain validity of the label object
+    /// Obtain validity of the Text object
     bool valid ( void ) const;
 
     enum IFont::FontType type ( void ) const;
@@ -153,46 +153,46 @@ class Label: public Transformable
     // computation -- see nom::FontMetrics.
     uint height ( void ) const;
 
-    /// Get label's text string
+    /// Get text string
     const std::string& text ( void ) const;
 
-    /// Get label's text color
+    /// Get text color
     const Color4i& color ( void ) const;
 
-    /// Get label's text style
-    enum Label::Style style ( void ) const;
+    /// Get text style
+    enum Text::Style style ( void ) const;
 
     //const Point2i& local_bounds ( void ) const;
     //const Point2i& global_bounds ( void ) const;
 
-    /// Get label's text alignment
-    enum Label::Alignment alignment ( void ) const;
+    /// Get text alignment
+    enum Text::Alignment alignment ( void ) const;
 
-    /// Get label's text character size (in pixels?)
+    /// Get text character size (in pixels?)
     uint text_size ( void ) const;
 
     /// Set a new font (deriving from IFont).
     void set_font ( const IFont& font );
 
-    /// Set new label text
+    /// Set new text
     void set_text ( const std::string& text );
 
-    /// Set new label text character size
+    /// Set new text character size
     void set_text_size ( uint character_size );
 
-    /// Set new label text color
+    /// Set new text color
     void set_color ( const Color4i& text_color );
 
-    /// Set new label text style
-    void set_style ( enum Label::Style style );
+    /// Set new text style
+    void set_style ( enum Text::Style style );
 
-    /// Set new label text alignment
+    /// Set new text alignment
     ///
     /// \remarks This method modifies the destination positions used in
     /// rendering text.
-    void set_alignment ( enum Label::Alignment align );
+    void set_alignment ( enum Text::Alignment align );
 
-    /// Render label to a target
+    /// Render text to a target
     ///
     /// \todo Test horizontal tabbing '\t'
     void draw ( RenderTarget target ) const;

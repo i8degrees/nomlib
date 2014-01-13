@@ -30,7 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Image::Image ( void ) : image_ ( nullptr, priv::FreeSurface )
+Image::Image ( void ) :
+  image_ ( nullptr, priv::FreeSurface )
 {
   NOM_LOG_TRACE ( NOM );
 }
@@ -42,7 +43,8 @@ Image::~Image ( void )
 
 Image::Image ( const Image& copy )  :
   image_ { copy.image() },
-  position_ { copy.position_ }
+  position_ { copy.position() },
+  bounds_ { copy.bounds_ }
 {
   // ...
 }
@@ -50,7 +52,8 @@ Image::Image ( const Image& copy )  :
 Image& Image::operator = ( const Image& other )
 {
   this->image_ = other.image_;
-  this->position_ = other.position_;
+  this->position_ = other.position();
+  this->bounds_ = other.bounds_;
 
   return *this;
 }
@@ -148,16 +151,27 @@ bool Image::initialize ( SDL_SURFACE::RawPtr source )
 
 bool Image::initialize ( const Point2i& size )
 {
+  RendererInfo caps = Window::caps( Window::context() );
+
+  if ( this->create ( size, caps.optimal_texture_format() ) == false )
+  {
+    NOM_LOG_ERR(NOM,"Could not initialize Image using dimensions & optimal pixel format." );
+    return false;
+  }
+
+  return true;
+}
+
+bool Image::create ( const Point2i& size, uint32 pixel_format )
+{
   int bpp = 0; // bits per pixel
   uint32 red_mask = 0;
   uint32 green_mask = 0;
   uint32 blue_mask = 0;
   uint32 alpha_mask = 0;
-  RendererInfo caps = Window::caps( Window::context() );
 
-  // Find the most optimal pixel format for our new object to be initialized with;
-  // let SDL handle figuring out the correct color masks
-  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( caps.optimal_texture_format(), &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
+  // Find the best surface format based on the requested pixel_format
+  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( pixel_format, &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
   {
     NOM_LOG_ERR( NOM, SDL_GetError() );
     return false;
@@ -165,7 +179,7 @@ bool Image::initialize ( const Point2i& size )
 
   if ( this->initialize ( size.x, size.y, bpp, red_mask, green_mask, blue_mask, alpha_mask ) == false )
   {
-    NOM_LOG_ERR(NOM,"Could not initialize Image from dimensions:" );
+    NOM_LOG_ERR(NOM,"Could not create Image from dimensions & pixel format." );
     return false;
   }
 
@@ -378,6 +392,19 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return blend;
 }
 
+const Color4i Image::color_modulation ( void ) const
+{
+  SDL_Color c;
+
+  if ( SDL_GetSurfaceColorMod ( this->image(), &c.r, &c.g, &c.b ) != 0 )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return Color4i::null;
+  }
+
+  return Color4i ( c.r, c.g, c.b, Color4i::ALPHA_OPAQUE );
+}
+
 const Point2i Image::position ( void ) const
 {
   return this->position_;
@@ -557,6 +584,17 @@ void Image::set_position ( const Point2i& pos )
 {
   this->position_.x = pos.x;
   this->position_.y = pos.y;
+}
+
+bool Image::set_color_modulation ( const Color4i& color )
+{
+  if ( SDL_SetSurfaceColorMod ( this->image(), color.r, color.g, color.b ) != 0 )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  return true;
 }
 
 void Image::draw ( SDL_SURFACE::RawPtr destination, const IntRect& bounds ) const

@@ -92,17 +92,25 @@ class Image
     /// documentation for SDL.
     bool initialize ( int32 width, int32 height, int bits_per_pixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
 
-    /// \brief Initialize a nom::Image from a new video buffer, created with
-    /// specified dimensions
-    ///
-    /// \param size     Width & height specified in pixels
-    /// \param bpp      Bits per pixel -- 8, 16, 24 or 32
-    bool initialize ( const Point2i& size );
-
     /// \brief Initialize a nom::Image from an existing SDL_Surface
     ///
     /// \param source   Existing SDL_Surface structure
     bool initialize ( SDL_SURFACE::RawPtr source );
+
+    /// \brief Create a new memory buffer
+    ///
+    /// \param size         Point2i initialized with the width & height in pixels
+    /// \param pixel_format Pixel format to use for the memory buffer.
+    bool create ( const Point2i& size, uint32 pixel_format );
+
+    /// \brief  Create a new memory buffer using the most optimal pixel format
+    ///         detected for your graphics hardware.
+    ///
+    /// \param  size  Point2i initialized with the width & height in pixels
+    ///
+    /// \remarks  Unless you have specialized needs, this is probably the method
+    ///           call you want.
+    bool initialize ( const Point2i& size );
 
     int32 width ( void ) const;
     int32 height ( void ) const;
@@ -183,6 +191,12 @@ class Image
     /// Obtain the blend mode used for blitting
     const SDL_BlendMode blend_mode ( void ) const;
 
+    /// \brief  Obtain the additional color value multiplied into render copy
+    ///         operations.
+    ///
+    /// \returns  nom::Color4i on success; nom::Color4i::null on err
+    const Color4i color_modulation ( void ) const;
+
     /// Set a new color key on the image loaded into memory.
     ///
     /// \param colorkey     Pixel color to mark transparent
@@ -243,13 +257,28 @@ class Image
     void set_position ( const Point2i& pos );
 
     /// Render a video surface
+    ///
+    /// \todo This method needs to mimic nom::Texture::draw
     void draw ( SDL_SURFACE::RawPtr destination, const IntRect& bounds ) const;
+
+    /// \brief    Set an additional color value multiplied into render copy
+    ///           operations
+    ///
+    /// \param    nom::Color4i  red, green & blue values multiplied into
+    ///                         color operations
+    ///
+    /// \returns  TRUE on success; FALSE on failure
+    ///
+    /// \remarks  SDL2 color modulation formula:
+    ///           srcC = srcC * ( color / 255 )
+    bool set_color_modulation ( const Color4i& color );
 
   private:
     /// Container for our image pixels buffer
     SDL_SURFACE::SharedPtr image_;
 
-    Point2i position_; /// Not currently used
+    Point2i position_;  // Not implemented
+    IntRect bounds_;    // Not implemented
 };
 
 

@@ -39,12 +39,7 @@ TrueTypeFont::TrueTypeFont ( void ) :
 {
   NOM_LOG_TRACE ( NOM );
 
-  // We must initialize SDL2_ttf on every instance in order to shutdown properly
-  // without crashing when ran within nom::GameStates
-  if ( TTF_Init () != 0 )
-  {
-    NOM_LOG_ERR(NOM, TTF_GetError());
-  }
+  // TTF_Init is done in the nom::init_third_party function
 }
 
 TrueTypeFont::~TrueTypeFont ( void )
@@ -53,9 +48,7 @@ TrueTypeFont::~TrueTypeFont ( void )
 
   // Workaround hack to get SDL2_ttf to shutdown properly without crashing when
   // ran within nom::GameStates
-  this->font_.reset();
-
-  //TTF_Quit();
+  //this->font_.reset();
 }
 
 TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy ) :

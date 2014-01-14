@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "SDL.h"
 #include "SDL_image.h"
-//#include "SDL_ttf.h"
+#include "SDL_ttf.h"
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/log.hpp"

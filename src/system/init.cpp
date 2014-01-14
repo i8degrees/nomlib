@@ -43,6 +43,13 @@ bool init_third_party ( uint32 flags )
     NOM_LOG_ERR ( NOM, SDL_GetError() );
   }
 
+  // We must initialize SDL2_ttf on every instance in order to shutdown properly
+  // without crashing when ran within nom::GameStates
+  if ( TTF_Init () != 0 )
+  {
+    NOM_LOG_ERR(NOM, TTF_GetError());
+  }
+
   atexit( SDL_Quit );
 
   return true;
@@ -70,6 +77,7 @@ void quit ( void )
 {
   NOM_LOG_TRACE ( NOM );
 
+  TTF_Quit();
   IMG_Quit();
 }
 

@@ -45,6 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Renderer.hpp"
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
+#include "nomlib/system/Sleep.hpp"
 #include "nomlib/system/File.hpp"
 
 namespace nom {

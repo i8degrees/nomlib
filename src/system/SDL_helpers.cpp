@@ -135,11 +135,6 @@ uint32 RGBA ( const Color4i& color, uint32 fmt )
   return SDL_MapRGBA ( SDL_AllocFormat(fmt), color.r, color.g, color.b, color.a );
 }
 
-uint32 ticks ( void )
-{
-  return SDL_GetTicks();
-}
-
 const std::string hint ( const std::string& name )
 {
   std::string result;

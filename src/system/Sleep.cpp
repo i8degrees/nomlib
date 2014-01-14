@@ -30,10 +30,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+uint32 ticks ( void )
+{
+  return SDL_GetTicks();
+}
+
 void sleep ( uint32 milliseconds )
 {
   SDL_Delay ( std::max ( milliseconds, static_cast<uint32> ( 10 ) ) );
 }
-
 
 } // namespace nom

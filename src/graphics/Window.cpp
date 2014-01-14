@@ -396,7 +396,7 @@ bool Window::save_screenshot ( const std::string& filename ) const
   // TODO: additional err checking -- basename & extension can fail!
   basename = fp.basename(filename);
   prefix = "_";
-  timestamp = std::to_string( nom::ticks() ); // SDL_GetTicks
+  timestamp = std::to_string( ticks() );
   extension = fp.extension(filename);
   file_name = basename + prefix + timestamp + "." + extension;
 

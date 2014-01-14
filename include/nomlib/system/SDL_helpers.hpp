@@ -158,11 +158,6 @@ uint32 RGBA ( const Color4i& color, const SDL_PixelFormat* fmt );
 /// \return RGBA components as an unsigned integer.
 uint32 RGBA ( const Color4i& color, uint32 fmt );
 
-/// SDL helper function
-///
-/// Wrapper for SDL_GetTicks
-uint32 ticks ( void );
-
 /// SDL2 helper function
 ///
 /// Wrapper for SDL_GetHint

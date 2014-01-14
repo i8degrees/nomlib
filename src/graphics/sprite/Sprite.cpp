@@ -90,9 +90,7 @@ bool Sprite::load (
                     enum Texture::Access type
                   )
 {
-  this->sprite_.load ( filename, use_cache, type );
-
-  if ( this->sprite_.valid() == false )
+  if ( this->sprite_.load ( filename, use_cache, type ) == false )
   {
     NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
     return false;

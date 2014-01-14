@@ -73,10 +73,10 @@ Text& Text::operator = ( const Text& other )
 }
 
 Text::Text  ( const std::string& text,
-                const IFont& font,
-                uint character_size,        // Default parameter
-                enum Text::Alignment align // Default parameter
-              )  :
+              const IFont& font,
+              uint character_size,        // Default parameter
+              enum Text::Alignment align // Default parameter
+            )  :
   Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_ ( text ),
   text_size_ ( character_size ),
@@ -90,10 +90,10 @@ Text::Text  ( const std::string& text,
 }
 
 Text::Text  ( const std::string& text,
-                const IFont::SharedPtr& font,
-                uint character_size,        // Default parameter
-                enum Text::Alignment align // Default parameter
-              )  :
+              const IFont::SharedPtr& font,
+              uint character_size,        // Default parameter
+              enum Text::Alignment align // Default parameter
+            )  :
   Transformable { 0, 0, 0, 0 }, // Our inherited class
   text_ ( text ),
   text_size_ ( character_size ),
@@ -261,7 +261,6 @@ enum Text::Alignment Text::alignment ( void ) const
 
 void Text::set_font ( const IFont& font )
 {
-  //if ( this->font().get() != &font )
   this->font_ = std::shared_ptr<IFont>( font.clone() );
 
   this->font()->set_point_size ( this->text_size() );

@@ -98,7 +98,7 @@ class Text: public Transformable
 
     /// Construct a Text, initializing it with a text string, an IFont
     /// reference, character size and text alignment.
-    Text ( const std::string& text,
+    Text (  const std::string& text,
             const IFont& font,
             uint character_size = 14,
             enum Text::Alignment align = Text::Alignment::TopLeft
@@ -106,7 +106,7 @@ class Text: public Transformable
 
     /// Construct a Text, initializing it with a text string, an IFont
     /// pointer, character size and text alignment.
-    Text ( const std::string& text,
+    Text (  const std::string& text,
             const IFont::SharedPtr& font,
             uint character_size = 14,
             enum Text::Alignment align = Text::Alignment::TopLeft

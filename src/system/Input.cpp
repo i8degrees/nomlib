@@ -34,18 +34,18 @@ Input::Input ( void ) :
     joystick_ { Input::JoystickUniquePtr ( nullptr, priv::Free_Joystick ) },
     joystick_id_ ( 0 )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE ( NOM );
 
   if ( SDL_WasInit( SDL_INIT_JOYSTICK ) == false )
   {
     if ( SDL_InitSubSystem ( SDL_INIT_JOYSTICK ) < 0 )
     {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+      NOM_LOG_ERR ( NOM, SDL_GetError() );
       return;
     }
   }
 
-NOM_LOG_INFO ( NOM, std::to_string ( SDL_NumJoysticks() ) + " joysticks were found" );
+  NOM_LOG_INFO ( NOM, std::to_string ( SDL_NumJoysticks() ) + " joysticks were found" );
 
   if ( SDL_NumJoysticks() > 0 )
   {
@@ -55,7 +55,7 @@ NOM_LOG_INFO ( NOM, std::to_string ( SDL_NumJoysticks() ) + " joysticks were fou
     {
       for( int idx = 0; idx < SDL_NumJoysticks(); idx++ )
       {
-NOM_LOG_INFO ( NOM, SDL_JoystickNameForIndex ( idx ) );
+        NOM_LOG_INFO ( NOM, SDL_JoystickNameForIndex ( idx ) );
       }
 
       SDL_JoystickEventState ( SDL_ENABLE );
@@ -67,7 +67,7 @@ NOM_LOG_INFO ( NOM, SDL_JoystickNameForIndex ( idx ) );
 
 Input::~Input ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE ( NOM );
 }
 
 
@@ -486,8 +486,18 @@ void Input::onJoyAxis ( int32 which, int32 axis, uint16 value )
 #endif
 }
 
-void Input::onJoystickAdd ( void ) {}
-void Input::onJoystickRemove ( void ) {}
+void Input::onJoystickAdd ( void )
+{
+  #if defined(NOM_DEBUG_SDL2_JOYSTICK_EVENT)
+    NOM_LOG_TRACE(NOM);
+  #endif
+}
+void Input::onJoystickRemove ( void )
+{
+  #if defined(NOM_DEBUG_SDL2_JOYSTICK_EVENT)
+    NOM_LOG_TRACE(NOM);
+  #endif
+}
 
 void Input::onDragDrop ( const std::string& file_path, uint32 timestamp )
 {
@@ -497,6 +507,5 @@ void Input::onDragDrop ( const std::string& file_path, uint32 timestamp )
   NOM_DUMP_VAR ( timestamp );
 #endif
 }
-
 
 } // namespace nom

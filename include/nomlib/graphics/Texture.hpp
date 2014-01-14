@@ -328,6 +328,14 @@ class Texture
     bool set_color_modulation ( const Color4i& color );
 
     bool copy_pixels ( const void* source, int pitch );
+
+    /// \brief    Set a nom::Texture as the current renderer target.
+    ///
+    /// \remarks  nom::Texture access type must be Texture::Access::RenderTarget
+    ///
+    /// \note     Not all graphics hardware supports this request
+    bool set_render_target ( void );
+
   private:
     SDL_TEXTURE::SharedPtr texture_;
 

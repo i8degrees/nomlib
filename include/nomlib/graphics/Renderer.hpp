@@ -110,13 +110,13 @@ class Renderer
     ///         is probably the API you want to use outside of nomlib.
     static const RendererInfo caps ( SDL_RENDERER::RawPtr target );
 
+    /// \brief Reset the current rendering target
+    ///
+    /// \remarks This is intended to be used with nom::Texture::set_render_target
+    bool reset ( void ) const;
+
     /// Update the renderer surface on the attached window
     void update ( void ) const;
-
-    /// Set an input texture source as the new rendering target.
-    ///
-    /// \param input_texture    The targeted texture
-    bool update ( SDL_TEXTURE::RawPtr input_texture );
 
     /// Clear the whole rendering object; ignoring the viewport.
     ///

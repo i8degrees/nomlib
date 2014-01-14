@@ -167,19 +167,30 @@ const RendererInfo Renderer::caps ( SDL_RENDERER::RawPtr target )
   return renderer_info;
 }
 
+bool Renderer::reset ( void ) const
+{
+  RendererInfo caps = this->caps();
+
+  // Graphics hardware does not support render to texture
+  if ( caps.target_texture() == false )
+  {
+    NOM_LOG_ERR ( NOM, "Video hardware does not support render to texture" );
+    return false;
+  }
+
+  // Honor the request to reset the renderer
+  if ( SDL_SetRenderTarget ( this->renderer(), nullptr ) != 0 )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  return true;
+}
+
 void Renderer::update ( void ) const
 {
   SDL_RenderPresent ( this->renderer() );
-}
-
-bool Renderer::update ( SDL_TEXTURE::RawPtr input_texture )
-{
-  if ( SDL_SetRenderTarget ( this->renderer(), input_texture ) != 0 )
-  {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return false;
-  }
-  return true;
 }
 
 bool Renderer::clear ( void ) const

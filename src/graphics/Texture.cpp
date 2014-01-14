@@ -857,4 +857,26 @@ bool Texture::copy_pixels ( const void* source, int pitch )
 
   return true;
 }
+
+bool Texture::set_render_target ( void )
+{
+  RendererInfo caps = Window::caps( Window::context() );
+
+  // Graphics hardware does not support render to texture
+  if ( caps.target_texture() == false )
+  {
+    NOM_LOG_ERR ( NOM, "Video hardware does not support render to texture" );
+    return false;
+  }
+
+  // Try to honor the request; render to the source texture
+  if ( SDL_SetRenderTarget ( Window::context(), this->texture() ) != 0 )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  return true;
+}
+
 } // namespace nom

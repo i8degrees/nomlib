@@ -106,8 +106,8 @@ class Texture
     /// \remarks Texture::Access::Static type
     bool create ( const Image& source );
 
-    /// \remarks Texture::Access::Streaming or Texture::Access::RenderTarget
-    /// types
+    /// \remarks For creation of textures of access types: Access::Streaming and
+    /// Access::RenderTarget.
     bool create ( const Image& source, uint32 pixel_format, enum Texture::Access type );
 
     const Point2i& position ( void ) const;
@@ -167,7 +167,7 @@ class Texture
     ///
     /// \returns  Value between Color4i::ALPHA_OPAQUE and
     ///           Color4i::ALPHA_TRANSPARENT.
-    const uint8 alpha ( void ) const;
+    uint8 alpha ( void ) const;
 
     /// \brief  Obtain the additional color value multiplied into render copy
     ///         operations.

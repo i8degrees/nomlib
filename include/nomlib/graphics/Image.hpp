@@ -85,9 +85,10 @@ class Image
     ///
     /// \note You maintain ownership of your pixel buffer pointer; don't forget
     /// to clean up after you're done!
-    bool initialize(  void* pixels, int32 width, int32 height,
+    bool initialize ( void* pixels, int32 width, int32 height,
                       int bits_per_pixel, uint16 pitch,
-                      uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+                      uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask
+                    );
 
     /// Constructor variant for creating a fresh, empty video surface. You should
     /// be sure to read over the details gory details scattered throughout the

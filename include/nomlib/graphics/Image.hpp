@@ -125,16 +125,16 @@ class Image
     const SDL_PIXELFORMAT::RawPtr pixel_format ( void ) const;
 
     /// Obtain the video surface's red alpha mask
-    const uint32 red_mask ( void ) const;
+    uint32 red_mask ( void ) const;
 
     /// Obtain the video surface's green alpha mask
-    const uint32 green_mask ( void ) const;
+    uint32 green_mask ( void ) const;
 
     /// Obtain the video surface's blue alpha mask
-    const uint32 blue_mask ( void ) const;
+    uint32 blue_mask ( void ) const;
 
     /// Obtain the video surface's alpha mask
-    const uint32 alpha_mask ( void ) const;
+    uint32 alpha_mask ( void ) const;
 
     const IntRect bounds ( void ) const;
 
@@ -150,7 +150,7 @@ class Image
     bool locked ( void ) const;
 
     /// Obtain the alpha value of this video surface
-    const uint8 alpha ( void ) const;
+    uint8 alpha ( void ) const;
 
     const Point2i position ( void ) const;
 

@@ -228,22 +228,22 @@ const SDL_PIXELFORMAT::RawPtr Image::pixel_format ( void ) const
   return buffer->format;
 }
 
-const uint32 Image::red_mask ( void ) const
+uint32 Image::red_mask ( void ) const
 {
   return this->pixel_format()->Rmask;
 }
 
-const uint32 Image::green_mask ( void ) const
+uint32 Image::green_mask ( void ) const
 {
   return this->pixel_format()->Gmask;
 }
 
-const uint32 Image::blue_mask ( void ) const
+uint32 Image::blue_mask ( void ) const
 {
   return this->pixel_format()->Bmask;
 }
 
-const uint32 Image::alpha_mask ( void ) const
+uint32 Image::alpha_mask ( void ) const
 {
   return this->pixel_format()->Amask;
 }
@@ -271,7 +271,7 @@ bool Image::locked ( void ) const
   return this->image()->locked;
 }
 
-const uint8 Image::alpha ( void ) const
+uint8 Image::alpha ( void ) const
 {
   uint8 alpha;
 

@@ -31,6 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cstdint>
 
+#include "platforms.hpp"
+
 // Portable fixed-size data types derive from stdint.h
 namespace nom {
 
@@ -51,7 +53,7 @@ typedef signed long long int int64;
 typedef unsigned long long int uint64;
 
 // Additional integer type definitions
-#if defined ( NOM_PLATFORM_ARCH_X86_64 )
+#if defined (NOM_PLATFORM_ARCH_X86_64)
   typedef unsigned long ulong;
 #else // Blindly assume 32-bit arch
   typedef long long ulong;
@@ -62,6 +64,14 @@ typedef signed int sint;
 typedef unsigned int uint;
 typedef std::size_t size_t;
 typedef int boolean;
+
+typedef sint* sint_ptr;
+typedef uint* uint_ptr;
+
+typedef int32_t* int32_ptr;
+typedef uint32_t* uint32_ptr;
+
+typedef void* void_ptr;
 
 } // namespace nom
 
@@ -84,6 +94,16 @@ static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
 
 #if defined(NOM_PLATFORM_ARCH_X86_64)
   static_assert ( sizeof ( nom::size_t ) == ( sizeof(nom::uint64) ), "nom::size_t" );
+  static_assert ( sizeof ( nom::int32_ptr ) == ( sizeof(long) ), "nom::int32_ptr" );
+  static_assert ( sizeof ( nom::uint32_ptr ) == ( sizeof(nom::ulong) ), "nom::uint32_ptr" );
+#elif defined(NOM_PLATFORM_ARCH_X86)
+  static_assert ( sizeof ( nom::size_t ) == ( sizeof(nom::uint32) ), "nom::size_t" );
+#else
+  #if defined(NOM_COMPILER_MSVCPP)
+    #pragma message ( "types.hpp: Unknown architecture; defined data types may be wrong." )
+  #else // Assume GCC/llvm-clang
+    #warning types.hpp: Unknown architecture; defined data types may be wrong.
+  #endif
 #endif
 
 static_assert ( sizeof ( nom::boolean ) == ( sizeof(int) ), "nom::boolean" );

@@ -45,20 +45,31 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /// Platform architecture detection; we only check for a 32-bit or 64-bit
 /// environment at the moment as this is all that we can test on.
-#if defined ( __i386__ )
+///
+/// \remarks The second set of arch checks are for when compiling on Windows;
+/// it has only been tested with MSVCPP 2013 RC1.
+#if defined( __i386__ ) || defined( _M_IX86 )
   #define NOM_PLATFORM_ARCH_X86 1
-#elif defined ( __x86_64__ )
+#elif defined( __x86_64__ ) || defined( _M_AMD64 )
   #define NOM_PLATFORM_ARCH_X86_64 1
 #endif
 
+/// \brief Compiler detection
+///
+/// \todo Add conditional if for GNU GCC
+#if defined(_MSC_VER) // Microsoft Visual C++
+  #define NOM_COMPILER_MSVCPP
+#else // Assume llvm-clang
+  #define NOM_COMPILER_CLANG
+#endif
+
 // Function names and preferably also its type signature
-#if defined ( _MSC_VER ) // MSVC++
+#if defined ( NOM_COMPILER_MSVCPP ) // MSVC++
   // TODO: Presumably the same as GNU's __PRETTY_FUNCTION__ ?
   //
   // SOURCE: http://msdn.microsoft.com/en-us/library/b0084kay(v=vs.80).aspx
   #define __func__ __FUNCTION__
 #else // We assume GNU v2+
-
   // The type signature is nice because this shows if the function calling type
   // is a virtual or not and even what arguments the function has
   #define __func__ __PRETTY_FUNCTION__

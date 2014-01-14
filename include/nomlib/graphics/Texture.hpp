@@ -190,21 +190,25 @@ class Texture
     /// creation.
     static const Point2i maximum_size ( void );
 
-    /// Lock a portion of the texture for **write-only** pixel access.
+    /// \brief Lock the entire bounds of the texture for write access to the
+    /// pixel buffer.
     ///
-    /// Texture must be created with SDL_TEXTUREACCESS_STREAMING.
+    /// \remarks Texture must have been created as the Access::Streaming type.
     bool lock ( void );
 
-    /// Lock a portion of this texture for write-only pixel access.
+    /// \brief Lock a portion of the texture for write access to the pixel
+    /// buffer.
     ///
-    /// Texture must be created with SDL_TEXTUREACCESS_STREAMING.
+    /// \param bounds The area encompassing the area to lock; pass IntRect::null
+    /// to lock the entire surface of the texture.
     ///
-    /// \param bounds The area encompassing the area to lock for write
-    ///               access.
+    /// \remarks Texture must have been created as the Access::Streaming type.
+
     bool lock ( const IntRect& bounds );
 
-    /// Unlock this texture, thereby uploading any applicable changes
-    /// to video memory.
+    /// Unlock the texture; signals the OK to upload the pixel buffer to the GPU
+    ///
+    /// \remarks The storage for the pixel buffer will be deleted from memory.
     void unlock ( void );
 
     /// Load an image into memory from a file

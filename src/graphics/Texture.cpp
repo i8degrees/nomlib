@@ -334,31 +334,33 @@ const Point2i Texture::maximum_size ( void )
 
 bool Texture::lock ( void )
 {
-  if ( this->locked() )
-  {
-NOM_LOG_ERR ( NOM, "Texture is already locked." );
-    return false;
-  }
-
-  if ( SDL_LockTexture ( this->texture(), nullptr, &this->pixels_, &this->pitch_ ) != 0 )
-  {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return false;
-  }
+  if ( this->lock( IntRect::null ) == false ) return false;
 
   return true;
 }
 
 bool Texture::lock ( const IntRect& bounds )
 {
-  SDL_Rect clip = SDL_RECT(bounds);
-
   if ( this->locked() )
   {
     NOM_LOG_ERR ( NOM, "Texture is already locked." );
     return false;
   }
 
+  // Lock entire texture
+  if ( bounds == IntRect::null )
+  {
+    if ( SDL_LockTexture ( this->texture(), nullptr, &this->pixels_, &this->pitch_ ) != 0 )
+    {
+      NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return false;
+    }
+
+    return true;
+  }
+
+  // Lock specified area of texture
+  SDL_Rect clip = SDL_RECT(bounds);
   if ( SDL_LockTexture ( this->texture(), &clip, &this->pixels_, &this->pitch_ ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );

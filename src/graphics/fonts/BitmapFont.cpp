@@ -75,9 +75,9 @@ enum IFont::FontType BitmapFont::type ( void ) const
   return this->type_;
 }
 
-SDL_SURFACE::RawPtr BitmapFont::image ( uint32 character_size ) const
+const Image& BitmapFont::image ( uint32 character_size ) const
 {
-  return this->pages_[0].texture->image();
+  return *this->pages_[0].texture.get();
 }
 
 sint BitmapFont::spacing ( uint32 character_size ) const

@@ -94,9 +94,9 @@ TTF_Font* TrueTypeFont::font ( void ) const
   return this->font_.get();
 }
 
-SDL_SURFACE::RawPtr TrueTypeFont::image ( uint32 character_size ) const
+const Image& TrueTypeFont::image ( uint32 character_size ) const
 {
-  return this->pages_[character_size].texture->image();
+  return *this->pages_[character_size].texture.get();
 }
 
 int TrueTypeFont::spacing ( uint32 character_size ) const

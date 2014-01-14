@@ -66,7 +66,7 @@ class IFont
     virtual IFont::SharedPtr clone ( void ) const = 0;
     virtual bool valid ( void ) const = 0;
 
-    virtual SDL_SURFACE::RawPtr image ( uint32 ) const = 0;
+    virtual const Image& image ( uint32 ) const = 0;
     virtual enum IFont::FontType type ( void ) const = 0;
 
     virtual const Glyph& glyph ( uint32, uint32 ) const = 0;

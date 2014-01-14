@@ -85,7 +85,7 @@ class TrueTypeFont: public IFont
 
     TTF_Font* font ( void ) const;
 
-    SDL_SURFACE::RawPtr image ( uint32 character_size ) const;
+    const Image& image ( uint32 character_size ) const;
 
     /// \brief Obtain text character spacing width in pixels
     ///

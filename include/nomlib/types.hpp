@@ -61,6 +61,7 @@ typedef unsigned char uchar;
 typedef signed int sint;
 typedef unsigned int uint;
 typedef std::size_t size_t;
+typedef int boolean;
 
 } // namespace nom
 
@@ -79,12 +80,21 @@ static_assert ( sizeof ( nom::int64 ) == 8, "nom::int64" );
 
 static_assert ( sizeof ( nom::ulong ) == 8, "nom::ulong" );
 
-/// Something is *seriously* wrong if this fails!
 static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
+
+#if defined(NOM_PLATFORM_ARCH_X86_64)
+  static_assert ( sizeof ( nom::size_t ) == ( sizeof(nom::uint64) ), "nom::size_t" );
+#endif
+
+static_assert ( sizeof ( nom::boolean ) == ( sizeof(int) ), "nom::boolean" );
 
 /// Additional type definitions
 
 const nom::sint NOM_EXIT_FAILURE = 1; // EXIT_FAILURE from cstdlib headers
 const nom::sint NOM_EXIT_SUCCESS = 0; // EXIT_SUCCESS from cstdlib headers
 
-#endif // NOMLIB_TYPES_HEADERS defined
+//#if defined(HAVE_SDL2)
+const nom::sint SDL_SUCCESS = 0; // Non-error return value for SDL2 API
+//#endif
+
+#endif // include guard defined

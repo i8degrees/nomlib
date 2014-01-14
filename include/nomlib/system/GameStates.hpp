@@ -44,7 +44,6 @@ namespace nom {
 class GameStates
 {
   public:
-    typedef SDL_Event EventType;
 
     /// State events handling
     static void onEvent ( EventType* );

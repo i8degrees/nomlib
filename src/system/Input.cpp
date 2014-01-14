@@ -71,7 +71,7 @@ Input::~Input ( void )
 }
 
 
-void Input::HandleInput ( Event* event )
+void Input::HandleInput ( EventType* event )
 {
   switch ( event->type )
   {

@@ -216,9 +216,6 @@ class App: public nom::SDL_App
     /// Timer for tracking frames per second
     nom::FPS fps;
 
-    /// Input events
-    Input::Event event;
-
     nom::BitmapFont bitmap_font;
     nom::BitmapFont bitmap_small_font;
 

@@ -590,9 +590,6 @@ NOM_DUMP_VAR(this->sprite.size().y);
     /// Timer for tracking frames per second
     nom::FPS fps[MAXIMUM_WINDOWS];
 
-    /// Input events
-    Input::Event event;
-
     /// Utilize one of nomlib's advanced class object types -- the dialog
     /// message box; this is a part of an interface kit with game interfacing in
     /// mind.

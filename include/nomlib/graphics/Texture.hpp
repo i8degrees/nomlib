@@ -157,9 +157,6 @@ class Texture
     /// Obtain the blending mode used for texture copies
     const SDL_BlendMode blend_mode ( void ) const;
 
-    /// Query memory lock status
-    bool locked ( void ) const;
-
     /// Obtain the set color key for this image
     ///
     /// \return   Returns non-negative nom::Color on success;
@@ -189,6 +186,9 @@ class Texture
     /// words, whichever nom::Window was active at the time of the nom::Texture
     /// creation.
     static const Point2i maximum_size ( void );
+
+    /// \brief Query lock status of texture
+    bool locked ( void ) const;
 
     /// \brief Lock the entire bounds of the texture for write access to the
     /// pixel buffer.

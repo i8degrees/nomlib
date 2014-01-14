@@ -286,13 +286,6 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return blend;
 }
 
-bool Texture::locked ( void ) const
-{
-  if ( this->pixels() != nullptr ) return true;
-
-  return false;
-}
-
 const Color4i& Texture::colorkey ( void ) const
 {
   return this->colorkey_;
@@ -330,6 +323,13 @@ const Point2i Texture::maximum_size ( void )
   info = Window::caps ( Window::context() );
 
   return Point2i ( info.texture_width, info.texture_height );
+}
+
+bool Texture::locked ( void ) const
+{
+  if ( this->pixels() == nullptr ) return false;
+
+  return true;
 }
 
 bool Texture::lock ( void )

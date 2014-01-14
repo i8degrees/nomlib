@@ -298,12 +298,11 @@ const Color4i& Texture::colorkey ( void ) const
 
 uint8 Texture::alpha ( void ) const
 {
-  uint8 alpha;
+  uint8 alpha = Color4i::ALPHA_OPAQUE; // Returned
 
   if ( SDL_GetTextureAlphaMod ( this->texture(), &alpha ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return Color4i::ALPHA_OPAQUE;
   }
 
   return alpha;

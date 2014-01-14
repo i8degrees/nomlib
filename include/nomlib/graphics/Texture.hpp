@@ -167,7 +167,7 @@ class Texture
     ///
     /// \returns  Value between Color4i::ALPHA_OPAQUE and
     ///           Color4i::ALPHA_TRANSPARENT.
-    const uint8 alpha ( void ) const;
+    uint8 alpha ( void ) const;
 
     /// \brief  Obtain the additional color value multiplied into render copy
     ///         operations.

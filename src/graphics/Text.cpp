@@ -265,7 +265,7 @@ void Text::set_font ( const IFont& font )
 
   this->font()->set_point_size ( this->text_size() );
 
-  if ( this->valid() == false || this->texture_.initialize ( this->font()->image (this->text_size()) ) == false )
+  if ( this->valid() == false || this->texture_.create ( this->font()->image (this->text_size()) ) == false )
   {
     NOM_LOG_ERR ( NOM, "Could not initialize Text from given IFont" );
     return;

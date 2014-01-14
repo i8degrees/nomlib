@@ -75,25 +75,7 @@ Texture::SharedPtr Texture::clone ( void ) const
   return Texture::SharedPtr ( new Texture ( *this ) );
 }
 
-bool Texture::initialize ( SDL_SURFACE::RawPtr source )
-{
-  this->texture_.reset ( SDL_CreateTextureFromSurface ( Window::context(), source ), priv::FreeTexture );
-
-  if ( this->valid() == false )
-  {
-    NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return false;
-  }
-
-  // TODO: cache width & height?
-
-  // Cache the size of our new Texture object with the existing surface info
-  this->set_bounds ( IntRect(0, 0, source->w, source->h) );
-
-  return true;
-}
-
-bool Texture::initialize ( int32 width, int32 height, uint32 format, uint32 flags )
+bool Texture::initialize ( uint32 format, uint32 flags, int32 width, int32 height )
 {
   this->texture_.reset ( SDL_CreateTexture ( Window::context(), format, flags, width, height ), priv::FreeTexture );
 
@@ -107,6 +89,68 @@ bool Texture::initialize ( int32 width, int32 height, uint32 format, uint32 flag
 
   // Cache the size of our new Texture object with the existing surface info
   this->set_bounds( IntRect(0, 0, width, height) );
+
+  return true;
+}
+
+bool Texture::create ( const Image& source )
+{
+  // Static access type
+  this->texture_.reset ( source.texture(), priv::FreeTexture );
+
+  if ( this->valid() == false )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+  // TODO: cache width & height?
+
+  // Cache the size of our new Texture object with the existing surface info
+  this->set_bounds ( IntRect(0, 0, source.width(), source.height()) );
+
+  return true;
+}
+
+bool Texture::create ( const Image& source, uint32 pixel_format, enum Texture::Access type )
+{
+  if ( type == Texture::Access::Streaming )
+  {
+    if ( this->initialize ( pixel_format, SDL_TEXTUREACCESS_STREAMING, source.width(), source.height() ) == false )
+    {
+      NOM_LOG_ERR ( NOM, "Failed to initialize streaming texture." );
+      return false;
+    }
+
+    if ( this->lock ( source.bounds() ) == false ) // NOT safe for writing
+    {
+      NOM_LOG_ERR(NOM, "Could not lock Texture for writing");
+      return false;
+    }
+
+    // Copy source pixels to our new Texture
+    if ( this->copy_pixels ( source.pixels(), source.pitch() * source.height() ) == false )
+    {
+      NOM_LOG_ERR(NOM, "Could not copy pixels to initialized Texture." );
+      this->unlock();
+      return false;
+    }
+
+    // Once we unlock the texture, it will be uploaded to the GPU
+    this->unlock();
+  }
+  else if ( type == Texture::Access::RenderTarget )
+  {
+    if ( this->initialize ( pixel_format, SDL_TEXTUREACCESS_TARGET, source.width(), source.height() ) == false )
+    {
+      NOM_LOG_ERR ( NOM, "Failed to initialize texture to render target." );
+      return false;
+    }
+  }
+  else // Invalid Texture::Access type
+  {
+    NOM_LOG_ERR ( NOM, "Failed to initialize texture: invalid enumeration type." );
+    return false;
+  }
 
   return true;
 }
@@ -342,67 +386,25 @@ bool Texture::load  ( const std::string& filename,
                       enum Texture::Access type
                     )
 {
-  Image image;
+  Image source;
 
-/* TODO
-  // By default -- for peace of mind above all else -- we have caching turned
-  // off
-  if ( use_cache )
-  {
-    priv::ObjectCache cache;
-
-    this->texture_ = cache.getObject ( filename );
-
-    if ( this->texture_ == nullptr )
-    {
-      this->texture_ = cache.addObject ( filename, image.load ( filename ) );
-    }
-  }
-  else // Do not use the object cache
-  {
-
-    this->texture_ = image.load ( filename );
-  }
-TODO */
-
-  if ( image.load ( filename ) == false ) return false;
-
-  // We produce a segmentation fault here if we do not have SDL's video
-  // subsystem initialized before making the following calls -- transparency
-  // and display format conversion.
-NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
+  if ( source.load ( filename ) == false ) return false;
 
   RendererInfo caps = Window::caps( Window::context() );
 
-  if ( type == Access::Streaming )
+  if ( type != Texture::Access::Static )
   {
-    if ( this->initialize ( image.width(), image.height(), caps.optimal_texture_format(), SDL_TEXTUREACCESS_STREAMING ) == false )
+    if ( this->create ( source, caps.optimal_texture_format(), type ) == false )
     {
-      NOM_LOG_ERR ( NOM, "Failed to initialize streaming texture." );
-      return false;
-    }
-
-    this->lock ( image.bounds() ); // Safe for writing
-
-    // Copy pixels from image into our freshly initialized texture
-    std::memcpy ( this->pixels(), image.pixels(), image.pitch() * image.height() );
-
-    // Once we unlock the texture, it will be uploaded to the GPU for us!
-    this->unlock();
-  }
-  else if ( type == Access::RenderTexture )
-  {
-    if ( this->initialize ( image.width(), image.height(), caps.optimal_texture_format(), SDL_TEXTUREACCESS_TARGET ) == false )
-    {
-      NOM_LOG_ERR ( NOM, "Failed to initialize texture to render target." );
+      NOM_LOG_ERR ( NOM, "Failed to create Texture with type: " + std::to_string(type) );
       return false;
     }
   }
-  else // Assume type == Access::Static
+  else // Default texture access type: Texture::Access::Static
   {
-    if ( this->initialize ( image.image() ) == false )
+    if ( this->create ( source ) == false )
     {
-      NOM_LOG_ERR ( NOM, "Failed to initialize static texture." );
+      NOM_LOG_ERR ( NOM, "Failed to create Texture with access type: " + std::to_string(type) );
       return false;
     }
   }
@@ -410,7 +412,7 @@ NOM_ASSERT ( SDL_WasInit ( SDL_INIT_VIDEO) );
   // Set our default blending mode for texture copies
   this->set_blend_mode( SDL_BLENDMODE_BLEND );
   // Update our Texture clipping bounds with the new source
-  this->set_bounds ( image.bounds() );
+  this->set_bounds ( source.bounds() );
 
   return true;
 }
@@ -760,7 +762,7 @@ bool Texture::resize ( enum ResizeAlgorithm scaling_algorithm )
   // software surface. There's no turning back once this is done... we will
   // need to reload the image file back into the Texture and start this all
   // over again.
-  this->initialize ( destination.clone() ); // STATIC access type
+  this->create ( destination ); // STATIC access type
 
   return true;
 }
@@ -834,4 +836,25 @@ bool Texture::set_color_modulation ( const Color4i& color )
   return true;
 }
 
+bool Texture::copy_pixels ( const void* source, int pitch )
+{
+  // Did we forget to lock the Texture first???
+  if ( this->pixels() == nullptr )
+  {
+    NOM_LOG_ERR(NOM, "Could not copy the Texture's pixels: buffer was nullptr." );
+    return false;
+  }
+
+  // Nothing to copy from
+  if ( source == nullptr )
+  {
+    NOM_LOG_ERR(NOM, "Could not copy the source's pixels: buffer was nullptr." );
+    return false;
+  }
+
+  // Copy pixels from our source buffer to our Texture's pixel buffer
+  std::memcpy ( this->pixels(), source, pitch );
+
+  return true;
+}
 } // namespace nom

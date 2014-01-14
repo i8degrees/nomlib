@@ -72,7 +72,7 @@ class Texture
       Invalid = 0,
       Static = SDL_TEXTUREACCESS_STATIC,        // Changes rarely; not lockable
       Streaming = SDL_TEXTUREACCESS_STREAMING,  // Frequent changes; lockable, RW
-      RenderTexture = SDL_TEXTUREACCESS_TARGET  // Render (texture) to target
+      RenderTarget = SDL_TEXTUREACCESS_TARGET   // Render (texture) to target
     };
 
     /// Default constructor
@@ -93,23 +93,22 @@ class Texture
     /// \todo Test me out!
     Texture::SharedPtr clone ( void ) const;
 
-    /// Initialize object with SDL2 video surface
-    ///
-    /// \note The new texture created will be of type 'SDL_TEXTUREACCESS_STATIC'
-    bool initialize ( SDL_SURFACE::RawPtr source );
-
     /// Initialize an object with specified parameters
     ///
     /// \param width    Width -- in pixels -- of the new texture
-    ///
     /// \param height   Height -- in pixels -- of the new texture
-    ///
     /// \param format   A pixel format; one of the enumerated values in
     ///                 SDL_PixelFormatEnum
-    ///
     /// \param flags    Texture access type; one of the enumerated values in
     ///                 SDL_TextureAccess
-    bool initialize ( int32 width, int32 height, uint32 format, uint32 flags );
+    bool initialize ( uint32 format, uint32 flags, int width, int height );
+
+    /// \remarks Texture::Access::Static type
+    bool create ( const Image& source );
+
+    /// \remarks Texture::Access::Streaming or Texture::Access::RenderTarget
+    /// types
+    bool create ( const Image& source, uint32 pixel_format, enum Texture::Access type );
 
     const Point2i& position ( void ) const;
     //const Point2i& size ( void ) const;
@@ -200,8 +199,8 @@ class Texture
     ///
     /// Texture must be created with SDL_TEXTUREACCESS_STREAMING.
     ///
-    /// \param lock_coords  The area encompassing the area to lock for write
-    ///                     access.
+    /// \param bounds The area encompassing the area to lock for write
+    ///               access.
     bool lock ( const IntRect& bounds );
 
     /// Unlock this texture, thereby uploading any applicable changes
@@ -228,14 +227,17 @@ class Texture
                 enum Texture::Access type = Access::Static
               );
 
-    /// Upload texture copy with new pixel data
+    /// \brief Upload pixels to texture
     ///
-    /// \todo Add IntRect::null type so we can emulate passing nullptr for
-    /// the update_area argument (this tells SDL2 to update the whole texture).
+    /// \param source   Pixels to upload to the texture
+    /// \param pitch    Pitch of the source pixels
+    /// \param bounds   Rectangle bounds area to update; IntRect::null to update
+    ///                 the entire texture
     ///
-    /// \remarks  This is intended for use with SDL_TEXTUREACCESS_STREAMING
-    /// texture type
-    bool update ( const void* pixels, uint16 pitch, const IntRect& update_area );
+    /// \remarks This is intended for use with Texture::Access::Static texture
+    /// types. When used with Texture::Access::Streaming texture types, you may
+    /// not get the pixels back if you lock the texture afterwards.
+    bool update ( const void* source, uint16 pitch, const IntRect& bounds );
 
     /// Draw a nom::Texture to a SDL_Renderer target
     ///
@@ -325,11 +327,11 @@ class Texture
     ///           srcC = srcC * ( color / 255 )
     bool set_color_modulation ( const Color4i& color );
 
+    bool copy_pixels ( const void* source, int pitch );
   private:
     SDL_TEXTURE::SharedPtr texture_;
 
-    /// Texture's pixels; these are only available when a Texture is locked and
-    /// is intended for writing to.
+    /// Texture's pixels; these are only available when a Texture is locked.
     void* pixels_;
 
     /// Texture's pixel pitch; these are only available when a Texture is locked.

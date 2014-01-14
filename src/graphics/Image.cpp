@@ -222,10 +222,40 @@ uint8 Image::bits_per_pixel ( void ) const
   return buffer->format->BitsPerPixel;
 }
 
+/*
+uint32 Image::pixel_format ( void ) const
+{
+  int bpp = 0; // bits per pixel
+  uint32 red_mask = 0;
+  uint32 green_mask = 0;
+  uint32 blue_mask = 0;
+  uint32 alpha_mask = 0;
+
+  uint32 pixel_format = SDL_PIXELFORMAT_UNKNOWN; // Returned value
+
+  // Find out what SDL1 surface pixel format we are
+  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( this->surface_format(), &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
+  {
+    NOM_LOG_ERR( NOM, SDL_GetError() );
+    return pixel_format;
+  }
+
+  // Find out what SDL2 surface pixel format we are
+  pixel_format = SDL_MasksToPixelFormatEnum ( bpp,
+                                              red_mask,
+                                              green_mask,
+                                              blue_mask,
+                                              alpha_mask
+                                            );
+
+  return pixel_format; // SDL2 pixel format
+}
+*/
+
 const SDL_PIXELFORMAT::RawPtr Image::pixel_format ( void ) const
 {
   SDL_Surface* buffer = this->image();
-  return buffer->format;
+  return buffer->format; // SDL1 pixel format
 }
 
 uint32 Image::red_mask ( void ) const

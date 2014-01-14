@@ -122,6 +122,10 @@ class Image
 
     uint8 bits_per_pixel ( void ) const;
 
+    /// \brief Obtain the SDL2 surface pixel format
+    //uint32 pixel_format ( void ) const;
+
+    /// \brief Obtain the SDL1 surface pixel format
     const SDL_PIXELFORMAT::RawPtr pixel_format ( void ) const;
 
     /// Obtain the video surface's red alpha mask

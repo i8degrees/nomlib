@@ -146,6 +146,23 @@ bool Texture::create ( const Image& source, uint32 pixel_format, enum Texture::A
       return false;
     }
   }
+  else if ( type == Texture::Access::Static )
+  {
+/*
+    if ( source.pixel_format() != pixel_format )
+    {
+      // TODO: conversion of existing pixel format to requested pixel format; is
+      // this even necessary?
+      NOM_LOG_ERR( NOM, "STUB FUNCTION" );
+      return false;
+    }
+*/
+    if ( this->create ( source ) == false )
+    {
+      NOM_LOG_ERR ( NOM, "Failed to create Texture with access type: " + std::to_string(type) );
+      return false;
+    }
+  }
   else // Invalid Texture::Access type
   {
     NOM_LOG_ERR ( NOM, "Failed to initialize texture: invalid enumeration type." );

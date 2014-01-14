@@ -146,6 +146,11 @@ bool Texture::create ( const Image& source, uint32 pixel_format, enum Texture::A
       return false;
     }
   }
+  else if ( type == Texture::Access::Static )
+  {
+    NOM_LOG_ERR ( NOM, "Failed to initialize texture: invalid enumeration type." );
+    return false;
+  }
   else // Invalid Texture::Access type
   {
     NOM_LOG_ERR ( NOM, "Failed to initialize texture: invalid enumeration type." );
@@ -291,7 +296,7 @@ const Color4i& Texture::colorkey ( void ) const
   return this->colorkey_;
 }
 
-const uint8 Texture::alpha ( void ) const
+uint8 Texture::alpha ( void ) const
 {
   uint8 alpha;
 

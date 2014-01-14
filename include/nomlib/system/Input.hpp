@@ -50,6 +50,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// Enable debugging output of every joystick axis event
 //#define NOM_DEBUG_SDL2_JOYSTICK_AXIS_INPUT
 
+/// Enable debugging output of every joystick addition & removal event
+//#define NOM_DEBUG_SDL2_JOYSTICK_EVENT
+
 /// Enable debugging output of every Drag 'N' Drop event
 #define NOM_DEBUG_SDL2_DRAG_DROP_INPUT
 

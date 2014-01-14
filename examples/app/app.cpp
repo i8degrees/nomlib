@@ -331,7 +331,7 @@ NOM_DUMP_VAR(this->sprite.size().y);
         } // end for MAXIMUM_WINDOWS update loop
 
         // Compute rotation angle to pass to renderer
-        this->sprite_angle += 360.0f / this->fps[0].fps_float();
+        this->sprite_angle += 4.0f;
         if ( this->sprite_angle > 360.0f ) this->sprite_angle -= 360.0f;
 
         this->window[0].fill ( nom::Color4i::SkyBlue );

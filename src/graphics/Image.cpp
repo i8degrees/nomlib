@@ -71,6 +71,11 @@ SDL_SURFACE::RawPtr Image::image ( void ) const
   return this->image_.get();
 }
 
+SDL_Texture* Image::texture ( void ) const
+{
+  return SDL_CreateTextureFromSurface ( Window::context(), this->image() );
+}
+
 bool Image::valid ( void ) const
 {
   if ( this->image() != nullptr ) return true;

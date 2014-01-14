@@ -72,6 +72,8 @@ class Image
     /// Obtain the SDL_Surface struct used in this object instance
     SDL_SURFACE::RawPtr image ( void ) const;
 
+    SDL_Texture* texture ( void ) const;
+
     /// Is this object initialized? Valid when *NOT* nullptr
     bool valid ( void ) const;
 

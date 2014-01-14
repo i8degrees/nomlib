@@ -48,8 +48,6 @@ namespace nom {
 class SDL_App: public Input
 {
   public:
-    typedef SDL_Event EventType;
-
     SDL_App ( void );
     virtual ~SDL_App ( void );
 
@@ -75,6 +73,10 @@ class SDL_App: public Input
 
     /// Let the user know if there are pending events
     bool PollEvents ( EventType* );
+
+  protected:
+    /// Input events
+    EventType event;
 
   private:
     /// global app state

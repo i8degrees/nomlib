@@ -32,12 +32,12 @@ namespace nom {
 
 StateMachine::StateMachine ( void )
 {
-  NOM_LOG_TRACE( NOM );
+  //NOM_LOG_TRACE( NOM );
 }
 
 StateMachine::~StateMachine ( void )
 {
-  NOM_LOG_TRACE( NOM );
+  //NOM_LOG_TRACE( NOM );
 }
 
 void StateMachine::set_state ( IState::UniquePtr state, void_ptr data )

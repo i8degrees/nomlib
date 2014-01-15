@@ -34,12 +34,12 @@ MessageBox::MessageBox ( void ) :
   enabled_ ( true ),
   updated ( false )
 {
-  NOM_LOG_TRACE(NOM);
+  //NOM_LOG_TRACE(NOM);
 }
 
 MessageBox::~MessageBox ( void )
 {
-  NOM_LOG_TRACE ( NOM );
+  //NOM_LOG_TRACE ( NOM );
 }
 
 MessageBox::MessageBox  (

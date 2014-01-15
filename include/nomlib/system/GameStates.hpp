@@ -26,48 +26,29 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_GAMESTATES_HEADERS
-#define NOMLIB_SDL2_GAMESTATES_HEADERS
+#ifndef NOMLIB_SYSTEM_GAME_STATES_HPP
+#define NOMLIB_SYSTEM_GAME_STATES_HPP
 
 #include <iostream>
-#include <vector>
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/IState.hpp" // abstract class for our interface
-#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/system/IState.hpp"
 
 namespace nom {
 
-// Rename to FSM, States or similar?
-/// \brief (FSM) States management
-class GameStates
+class GameStates //IStates
 {
   public:
+    GameStates( void ) {}
+    ~GameStates( void ) {}
 
-    /// State events handling
-    static void onEvent ( EventType* );
-
-    /// State logic
-    static void update ( float );
-
-    /// State rendering
-    static void draw ( IDrawable::RenderTarget );
-
-    /// State management
-    static void ChangeState ( std::unique_ptr<IState> state );
-    static void PushState ( std::unique_ptr<IState> state );
-    static void PopState ( void );
-    static void PopStateThenChangeState ( std::unique_ptr<IState> state );
-    static void PopState ( int32 response );
-
-    /// States stack; we hold pointer references to IState inherited classes
-    static std::vector<std::unique_ptr<IState>> states;
-  private:
-    GameStates ( void );
+    virtual IState::UniquePtr state ( uint32 id ) const
+    {
+      return nullptr;
+    }
 };
-
 
 } // namespace nom
 
-#endif // NOMLIB_GAMESTATES_HEADERS defined
+#endif // include guard defined

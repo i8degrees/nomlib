@@ -120,6 +120,14 @@ void StateMachine::update ( float delta )
   // Ensure that we have a state in which we can handle update on
   if ( ! this->states.empty() )
   {
+    // Honor user's request to update the state behind us first.
+    if ( this->states.back()->flags() & IState::StateFlags::BackUpdate )
+    {
+      NOM_ASSERT ( this->states.front() );
+
+      this->states.front()->on_update ( delta );
+    }
+
     // Let the state update the scene with regard to the delta time
     this->states.back()->on_update ( delta );
   }
@@ -132,7 +140,7 @@ void StateMachine::draw ( IDrawable::RenderTarget target )
   {
     // Honor user's request to draw the state behind us first; this allows the
     // current state to use the previous state's rendering as a background.
-    if ( this->states.back()->flags() == IState::StateFlags::BackRender )
+    if ( this->states.back()->flags() & IState::StateFlags::BackRender )
     {
       NOM_ASSERT ( this->states.front() );
 

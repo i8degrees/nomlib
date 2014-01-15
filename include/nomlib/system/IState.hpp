@@ -43,11 +43,18 @@ class IState: public Input
   public:
     typedef std::unique_ptr<IState> UniquePtr;
 
+    /// \brief Specialized control over state management.
+    ///
+    /// \remarks Multiple flags can be combined via bit masks.
     enum StateFlags
     {
-      Null = 0,       // Default
-      BackRender = 1  // Signal to nom::StateMachine to let previous state
-                      // continue rendering.
+      Null = 1,       /// Default; no alterations to the state logic is done.
+
+      BackUpdate = 2, /// Signal to nom::StateMachine to let previous state
+                      /// continue updating.
+
+      BackRender = 4  /// Signal to nom::StateMachine to let previous state
+                      /// continue rendering.
     };
 
     /// \brief Default constructor; initializes class variables to zero.
@@ -113,11 +120,8 @@ class IState: public Input
     /// \remarks Reserved for future implementation
     uint32 timestamp_;
 
-    /// \brief Control state management -- such as requesting for the manager
-    /// to continue rendering the previous state on the stack in addition to the
-    /// current one.
-    ///
-    /// \remarks Reserved for future implementation
+
+    /// \brief Specialized state management
     uint32 flags_;
 };
 

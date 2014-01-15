@@ -74,13 +74,13 @@ class SDLApp: public Input
 
     // State management
 
-    uint32 previous_state ( void ) const;
+    virtual uint32 previous_state ( void ) const;
     virtual void set_state ( uint32 id, void_ptr data = nullptr );
-    void set_state ( IState::UniquePtr state, void_ptr data = nullptr );
+    virtual void set_state ( IState::UniquePtr state, void_ptr data = nullptr );
     // TODO: virtual void set_next_state( IState::UniquePtr state, uint32_ptr data = nullptr );
-    void push_state ( IState::UniquePtr state, void_ptr data = nullptr );
-    void pop_state ( IState::UniquePtr state, void_ptr data = nullptr );
-    void pop_state ( void_ptr data = nullptr );
+    virtual void push_state ( IState::UniquePtr state, void_ptr data = nullptr );
+    virtual void pop_state ( IState::UniquePtr state, void_ptr data = nullptr );
+    virtual void pop_state ( void_ptr data = nullptr );
 
     virtual void on_event ( EventType* ); // TODO: rename to on_event
 

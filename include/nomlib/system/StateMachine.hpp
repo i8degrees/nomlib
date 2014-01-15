@@ -26,99 +26,52 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/SDL_App.hpp"
+#ifndef NOMLIB_SYSTEM_STATE_MACHINE_HPP
+#define NOMLIB_SYSTEM_STATE_MACHINE_HPP
+
+#include <iostream>
+#include <vector>
+#include <memory>
+
+#include "nomlib/config.hpp"
+#include "nomlib/system/IState.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 
-SDL_App::SDL_App ( void )
+/// \brief Finite State Machine manager class
+class StateMachine
 {
-NOM_LOG_TRACE ( NOM );
+  public:
+    typedef std::vector<IState::UniquePtr> StateStack;
 
-  this->app_state = true;
+    /// Default constructor
+    StateMachine ( void );
 
-  this->set_show_fps ( true );
+    /// Destructor
+    ~StateMachine ( void );
 
-  this->appTime.start();
-}
+    /// State management
+    void set_state ( IState::UniquePtr state, void_ptr data );
+    void push_state ( IState::UniquePtr state, void_ptr data );
 
-SDL_App::~SDL_App ( void )
-{
-NOM_LOG_TRACE ( NOM );
+    void pop_state ( IState::UniquePtr state, void_ptr data );
+    void pop_state ( void_ptr data );
 
-  this->appTime.stop();
+    /// State events handling
+    void event ( EventType* event );
 
-  this->app_state = false;
+    /// State logic handling
+    void update ( float delta );
 
-  if ( SDL_WasInit ( SDL_INIT_JOYSTICK ) )
-  {
-    SDL_QuitSubSystem ( SDL_INIT_JOYSTICK );
-  }
-}
+    /// State rendering handling
+    void draw ( IDrawable::RenderTarget );
 
-bool SDL_App::running ( void )
-{
-  if ( this->app_state == true ) return true;
-
-  return false;
-}
-
-bool SDL_App::onInit ( void )
-{
-  return true;
-}
-
-void SDL_App::quit ( void )
-{
-  this->app_state = false;
-}
-
-void SDL_App::onQuit ( void )
-{
-  this->quit();
-}
-
-void SDL_App::onEvent ( EventType* event )
-{
-  Input::HandleInput ( event );
-}
-
-uint32 SDL_App::ticks ( void )
-{
-  return this->appTime.ticks();
-}
-
-bool SDL_App::show_fps ( void ) const
-{
-  return this->show_fps_;
-}
-
-void SDL_App::set_show_fps ( bool toggle )
-{
-  this->show_fps_ = toggle;
-}
-
-bool SDL_App::toggle_fps ( void )
-{
-  if ( this->show_fps() )
-  {
-    this->set_show_fps ( false );
-  }
-  else
-  {
-    this->set_show_fps ( true );
-  }
-
-  return this->show_fps_;
-}
-
-bool SDL_App::PollEvents ( EventType* event )
-{
-  if ( SDL_PollEvent ( event ) )
-  {
-    return true;
-  }
-
-  return false;
-}
+  private:
+    /// Container of our states
+    StateStack states;
+};
 
 } // namespace nom
+
+#endif // include guard defined

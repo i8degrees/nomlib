@@ -62,7 +62,7 @@ const std::string RESOURCE_FONT_TEXT_STRING = "!\"#$%&'()*+,-.\n//0123456789\n:;
 //const std::string RESOURCE_FONT_TEXT_STRING = "I am a Bitmap Font";
 
 /// \brief nom::BitmapFont usage example
-class App: public nom::SDL_App
+class App: public nom::SDLApp
 {
   public:
     App ( nom::int32 argc, char* argv[] )
@@ -85,7 +85,7 @@ class App: public nom::SDL_App
       NOM_LOG_TRACE ( NOM );
     } // ~App
 
-    bool onInit ( void )
+    bool on_init ( void )
     {
       nom::uint32 window_flags = 0; //SDL_WINDOW_RESIZABLE
       if ( nom::set_hint ( SDL_HINT_RENDER_VSYNC, "0" ) == false )
@@ -129,9 +129,9 @@ class App: public nom::SDL_App
       // 3. Render
       while ( this->running() == true )
       {
-        while ( this->PollEvents ( &this->event ) )
+        while ( this->poll_events ( &this->event ) )
         {
-          this->onEvent ( &this->event );
+          this->on_event ( &this->event );
         }
 
         this->window.update();
@@ -156,7 +156,7 @@ class App: public nom::SDL_App
 
         this->label_bfont.draw ( this->window );
         this->label_tfont.draw ( this->window );
-      } // end while SDL_App::running() is true
+      } // end while SDLApp::running() is true
       return NOM_EXIT_SUCCESS;
     } // Run
 
@@ -170,10 +170,10 @@ class App: public nom::SDL_App
       {
         default: break;
 
-        // Use inherited SDL_App::onQuit() method -- you may also provide your own
+        // Use inherited SDLApp::onQuit() method -- you may also provide your own
         // event handler for this.
         case SDLK_ESCAPE:
-        case SDLK_q: this->onQuit(); break;
+        case SDLK_q: this->on_quit(); break;
 
         case SDLK_BACKSLASH:
         {
@@ -281,7 +281,7 @@ nom::int32 main ( nom::int32 argc, char* argv[] )
 {
   App game ( argc, argv );
 
-  if ( game.onInit() == false )
+  if ( game.on_init() == false )
   {
     nom::DialogMessageBox ( APP_NAME, "Could not initialize application." );
     return NOM_EXIT_FAILURE;

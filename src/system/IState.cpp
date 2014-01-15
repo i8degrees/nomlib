@@ -26,60 +26,74 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_EXAMPLES_TEMPLATE_HPP
-#define NOMLIB_EXAMPLES_TEMPLATE_HPP
+#include "nomlib/system/IState.hpp"
 
-#include <iostream>
-#include <string>
-#include <cstdlib>
-#include <cassert>
+namespace nom {
 
-#include <nomlib/math.hpp>
-#include <nomlib/system.hpp>
-#include <nomlib/graphics.hpp>
-
-/// Installation prefix of our application.
-///
-/// Defaults to a null terminated string -- no prefix -- which leaves us in the
-/// file path origin wherever we are executed from.
-const std::string APP_INSTALL_PREFIX = "\0";
-
-/// File path name of the resources directory; this must be a relative file path.
-const std::string APP_RESOURCES_DIR = "Resources";
-
-/// Name of our application.
-const std::string APP_NAME = "nomlib Example";
-
-/// Width, in pixels, of our effective rendering surface.
-const nom::int32 WINDOW_WIDTH = 768;
-
-/// Height, in pixels, of our effective rendering surface.
-const nom::int32 WINDOW_HEIGHT = 448;
-
-/// \brief Usage example
-class App:
-                  public nom::SDLApp
+IState::IState ( void ) :
+  id_ ( 0 ),
+  timestamp_ ( 0 ),
+  flags_ ( IState::StateFlags::Null )
 {
-  public:
-    App ( nom::int32 args_count, char* args[] );
-    ~App ( void );
+  //NOM_LOG_TRACE ( NOM );
+}
 
-    bool onInit ( void );
-    nom::int32 Run ( void );
-  private:
-    void onKeyDown ( nom::int32 key, nom::int32 mod );
+IState::~IState ( void )
+{
+  //NOM_LOG_TRACE ( NOM );
+}
 
-    /// Display handle
-    nom::Display context;
+IState::IState ( uint32 id, uint32 timestamp, uint32 flags )  :
+  id_ ( id ),
+  timestamp_ ( timestamp ),
+  flags_ ( flags )
+{
+  //NOM_LOG_TRACE ( NOM );
+}
 
-    /// Interval at which we refresh the frames per second counter
-    nom::Timer update;
+uint32 IState::id ( void ) const
+{
+  return this->id_;
+}
 
-    /// Timer for tracking frames per second
-    nom::FPS fps;
+uint32 IState::timestamp ( void ) const
+{
+  return this->timestamp_;
+}
 
-    /// Input events
-    SDL_Event event;
-};
+uint32 IState::flags ( void ) const
+{
+  return this->flags_;
+}
 
-#endif // include guard defined
+void IState::on_update ( float )
+{
+  // User-defined virtual
+}
+
+void IState::on_draw ( IDrawable::RenderTarget )
+{
+  // User-defined virtual
+}
+
+void IState::on_init ( void )
+{
+  // User-defined virtual
+}
+
+void IState::on_exit ( void )
+{
+  // User-defined virtual
+}
+
+void IState::on_pause ( void )
+{
+  // User-defined virtual
+}
+
+void IState::on_resume ( void_ptr )
+{
+  // User-defined virtual
+}
+
+} // namespace nom

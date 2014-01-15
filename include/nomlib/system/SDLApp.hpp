@@ -26,37 +26,35 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_APP_HEADERS
-#define NOMLIB_SDL2_APP_HEADERS
+#ifndef NOMLIB_SYSTEM_SDLAPP_HPP
+#define NOMLIB_SYSTEM_SDLAPP_HPP
 
 #include <iostream>
-#include <string>
-#include <vector>
-#include <memory>
-#include <cstdlib>
 
 #include "SDL.h"
-#include "SDL_image.h"
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/Input.hpp"
 #include "nomlib/system/Timer.hpp"
+#include "nomlib/system/StateMachine.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
 
 namespace nom {
 
-// This is an inheritance-only class
-class SDL_App: public Input
+/// \brief Convenience template class for video games
+class SDLApp: public Input
 {
   public:
-    SDL_App ( void );
-    virtual ~SDL_App ( void );
+    typedef SDLApp* RawPtr;
+    typedef std::shared_ptr<SDLApp> SharedPtr;
 
-    virtual bool onInit ( void );
+    SDLApp ( void );
+    virtual ~SDLApp ( void );
+
+    virtual bool on_init ( void );
 
     /// Re-implements nom::Input::onQuit()
-    virtual void onQuit ( void );
-
-    virtual void onEvent ( EventType* );
+    virtual void on_quit ( void );
 
     bool running ( void );
     void quit ( void );
@@ -66,29 +64,48 @@ class SDL_App: public Input
     bool show_fps ( void ) const;
     void set_show_fps ( bool toggle );
 
-    /// Helper method for toggling the state of nom::SDL_App::show_fps
+    /// Helper method for toggling the state of nom::SDLApp::show_fps
     ///
-    /// \return State of nom::SDL_App::show_fps_ after call to nom::SDL_App::set_show_fps
+    /// \return State of nom::SDLApp::show_fps_ after call to nom::SDLApp::set_show_fps
     bool toggle_fps ( void );
 
     /// Let the user know if there are pending events
-    bool PollEvents ( EventType* );
+    virtual bool poll_events ( EventType* );
+
+    /// State management
+    virtual void set_state ( uint32 id, void_ptr data = nullptr );
+    void set_state ( IState::UniquePtr state, void_ptr data = nullptr );
+    // TODO: virtual void set_next_state( IState::UniquePtr state, uint32_ptr data = nullptr );
+    void push_state ( IState::UniquePtr state, void_ptr data = nullptr );
+    void pop_state ( IState::UniquePtr state, void_ptr data = nullptr );
+    void pop_state ( void_ptr data = nullptr );
+
+    virtual void on_event ( EventType* ); // TODO: rename to on_event
+
+    /// State logic
+    virtual void on_update( float );
+
+    /// State rendering
+    virtual void on_draw( IDrawable::RenderTarget );
 
   protected:
     /// Input events
     EventType event;
 
+    /// State machine manager
+    StateMachine states;
+
+    //GameStates* state_factory;
   private:
     /// global app state
-    bool app_state;
+    bool app_state_;
 
     /// fps counter
     bool show_fps_;
 
     /// global app timer
-    Timer appTime;
+    Timer app_timer_;
 };
-
 
 } // namespace nom
 

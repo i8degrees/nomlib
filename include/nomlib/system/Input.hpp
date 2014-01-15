@@ -104,7 +104,7 @@ class Input
   protected:
     virtual void onUserEvent ( uint32 type, int32 code, void* data1, void* data2 );
 
-    virtual void onQuit ( void );
+    virtual void on_quit ( void );
     virtual void onResize ( int32 width, int32 height );
     virtual void onRestore ( void );
     virtual void onMinimize ( void );

@@ -111,6 +111,7 @@ file ( GLOB SYSTEM_OSX_HEADERS "${NOMLIB_HEADERS_DIR}/system/osx/*.hpp" )
 file ( GLOB SYSTEM_UNIX_HEADERS "${NOMLIB_HEADERS_DIR}/system/unix/*.hpp" )
 file ( GLOB SYSTEM_WINDOWS_HEADERS "${NOMLIB_HEADERS_DIR}/system/windows/*.hpp" )
 set ( SYSTEM_SOURCE
+      ${SRC_DIR}/system/IState.cpp
       ${SRC_DIR}/system/log.cpp
       ${SRC_DIR}/system/SDL_helpers.cpp
       ${SRC_DIR}/system/init.cpp
@@ -120,9 +121,9 @@ set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/File.cpp
       ${SRC_DIR}/system/clock.cpp
       ${SRC_DIR}/system/FPS.cpp
-      ${SRC_DIR}/system/GameStates.cpp
+      ${SRC_DIR}/system/StateMachine.cpp
       ${SRC_DIR}/system/ObjectCache.cpp
-      ${SRC_DIR}/system/SDL_App.cpp
+      ${SRC_DIR}/system/SDLApp.cpp
       ${SRC_DIR}/system/Input.cpp
       ${SRC_DIR}/system/AnimationTimer.cpp
       ${SRC_DIR}/system/Timer.cpp

@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_ISTATE_HEADERS
-#define NOMLIB_SDL2_ISTATE_HEADERS
+#ifndef NOMLIB_SYSTEM_ISTATE_HPP
+#define NOMLIB_SYSTEM_ISTATE_HPP
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/Input.hpp"
@@ -35,36 +35,83 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief State pure abstract class
+/// \brief Abstract interface for game states
+///
+/// \remarks See also nom::StateMachine (and optionally, nom::SDLApp)
 class IState: public Input
 {
   public:
-    virtual ~IState ( void )
+    typedef std::unique_ptr<IState> UniquePtr;
+
+    enum StateFlags
     {
-NOM_LOG_TRACE ( NOM );
-    }
+      Null = 0,       // Default
+      BackRender = 1  // Signal to nom::StateMachine to let previous state
+                      // continue rendering
+    };
 
-    /// Required interface
-    virtual void update ( float ) = 0;
+    /// \brief Default constructor; initializes class variables to zero.
+    IState ( void );
 
-    /// Required interface
-    virtual void draw ( IDrawable::RenderTarget ) = 0;
+    /// \brief Destructor; declared virtual for inheritance
+    virtual ~IState ( void );
 
-    /// Optional interface
-    virtual void onInit ( void ) {}
+    /// \brief Constructor for initializing the class variable fields.
+    IState ( uint32 id, uint32 timestamp, uint32 flags );
 
-    /// Optional interface
-    virtual void onExit ( void ) {}
+    /// \brief Obtain the user-defined identifier of the state.
+    uint32 id ( void ) const;
 
-    /// Optional interface
-    virtual void Pause ( void ) {}
+    /// \brief Obtain the user-defined time stamp of the state.
+    uint32 timestamp ( void ) const;
 
-    /// Optional interface
-    virtual void Resume ( int32 response ) {}
-    virtual void Resume ( void ) {}
+    /// \brief Obtain the user-defined flags of the state.
+    uint32 flags ( void ) const;
+
+    /// \brief User-defined implementation of the state's update logic.
+    ///
+    /// \param float User-defined; typically a delta time (change in time).
+    virtual void on_update ( float );
+
+    /// User-defined implementation of the state's rendering logic
+    ///
+    /// \param float User-defined rendering target (nom::Window).
+    virtual void on_draw ( IDrawable::RenderTarget );
+
+    /// \brief User-defined implementation of the state's initialization logic.
+    virtual void on_init ( void );
+
+    /// \brief User-defined implementation of the state's destruction logic.
+    virtual void on_exit ( void );
+
+    /// \brief User-defined implementation of the state's paused state logic.
+    virtual void on_pause ( void );
+
+    /// \brief User-defined implementation of the state's resume from pause
+    /// state logic.
+    ///
+    /// \param void_ptr User-defined data
+    virtual void on_resume ( void_ptr );
+
+  private:
+    /// \brief Unique identifier for the state
+    ///
+    /// \remarks Reserved for future implementation
+    uint32 id_;
+
+    /// \brief Time of state's construction
+    ///
+    /// \remarks Reserved for future implementation
+    uint32 timestamp_;
+
+    /// \brief Control state management -- such as requesting for the manager
+    /// to continue rendering the previous state on the stack in addition to the
+    /// current one.
+    ///
+    /// \remarks Reserved for future implementation
+    uint32 flags_;
 };
-
 
 } // namespace nom
 
-#endif // NOMLIB_ISTATE_HEADERS defined
+#endif // include guard defined

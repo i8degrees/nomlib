@@ -73,7 +73,7 @@ void StateMachine::push_state ( IState::UniquePtr state, void_ptr data )
   NOM_ASSERT( state );
 
   // Pause current state
-  if ( this->states.size() > 1 )
+  if ( ! this->states.empty() )
   {
     this->states.back()->on_pause(data);
   }
@@ -91,6 +91,7 @@ void StateMachine::pop_state ( IState::UniquePtr state, void_ptr data )
   // Cleanup the current state
   if ( ! this->states.empty() )
   {
+    this->states.back()->on_exit(data);
     this->states.pop_back();
   }
 

@@ -32,7 +32,7 @@ namespace nom {
 
 IState::IState ( void ) :
   id_ ( 0 ),
-  timestamp_ ( 0 ),
+  timestamp_ ( nom::ticks() ),
   flags_ ( IState::StateFlags::Null )
 {
   //NOM_LOG_TRACE ( NOM );
@@ -43,9 +43,17 @@ IState::~IState ( void )
   //NOM_LOG_TRACE ( NOM );
 }
 
-IState::IState ( uint32 id, uint32 timestamp, uint32 flags )  :
+IState::IState ( uint32 id )  :
   id_ ( id ),
-  timestamp_ ( timestamp ),
+  timestamp_ ( nom::ticks() ),
+  flags_ ( IState::StateFlags::Null )
+{
+  //NOM_LOG_TRACE ( NOM );
+}
+
+IState::IState ( uint32 id, uint32 flags )  :
+  id_ ( id ),
+  timestamp_ ( nom::ticks() ),
   flags_ ( flags )
 {
   //NOM_LOG_TRACE ( NOM );

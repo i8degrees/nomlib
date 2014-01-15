@@ -72,7 +72,9 @@ class SDLApp: public Input
     /// Let the user know if there are pending events
     virtual bool poll_events ( EventType* );
 
-    /// State management
+    // State management
+
+    uint32 previous_state ( void ) const;
     virtual void set_state ( uint32 id, void_ptr data = nullptr );
     void set_state ( IState::UniquePtr state, void_ptr data = nullptr );
     // TODO: virtual void set_next_state( IState::UniquePtr state, uint32_ptr data = nullptr );

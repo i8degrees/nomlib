@@ -40,6 +40,17 @@ StateMachine::~StateMachine ( void )
   //NOM_LOG_TRACE( NOM );
 }
 
+uint32 StateMachine::previous_state ( void ) const
+{
+  // Verify first that we have a previous state in the list
+  if ( this->states.size() > 1 )
+  {
+    return this->states.front()->id();
+  }
+
+  return this->states.back()->id();
+}
+
 void StateMachine::set_state ( IState::UniquePtr state, void_ptr data )
 {
   NOM_ASSERT( state );

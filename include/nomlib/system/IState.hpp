@@ -63,26 +63,52 @@ class IState: public Input
     /// \brief Destructor; declared virtual for inheritance
     virtual ~IState ( void );
 
-    /// \brief Constructor for initializing the class variable fields.
-    IState ( uint32 id, uint32 timestamp, uint32 flags );
+    /// \brief Constructor for user-defined initialization of the class
+    /// variable fields.
+    ///
+    /// \param id Unique identifier of the state
+    IState ( uint32 id );
+
+    /// \brief Constructor for user-defined initialization of the class
+    /// variable fields.
+    ///
+    /// \param id     Unique identifier of the state
+    /// \param flags  One or more of the nom::IState::StateFlags enumerations.
+    IState ( uint32 id, uint32 flags );
 
     /// \brief Obtain the user-defined identifier of the state.
+    ///
+    /// \returns ID of the state
+    ///
+    /// \remarks It is not required that the state has an identifier set.
     uint32 id ( void ) const;
 
-    /// \brief Obtain the user-defined time stamp of the state.
+    /// \brief Obtain the recorded time stamp of the state.
+    ///
+    /// \returns Number of ticks recorded at the time of construction
+    ///
+    /// \remarks Value recorded is from the return value of nom::ticks
     uint32 timestamp ( void ) const;
 
     /// \brief Obtain the user-defined flags of the state.
+    ///
+    /// \returns Bit masked enumeration of nom::IState::StateFlags.
+    ///
+    /// \remarks It is not required that the state has any flags set.
     uint32 flags ( void ) const;
 
     /// \brief User-defined implementation of the state's update logic.
     ///
     /// \param float User-defined; typically a delta time (change in time).
+    ///
+    /// \remarks When not defined, a do-nothing implementation is provided.
     virtual void on_update ( float );
 
     /// User-defined implementation of the state's rendering logic
     ///
     /// \param IDrawable::RenderTarget Rendering target (nom::Window).
+    ///
+    /// \remarks When not defined, a do-nothing implementation is provided.
     ///
     /// \todo Consider removing RenderTarget argument; I *think* we can get
     /// away with this.
@@ -91,33 +117,37 @@ class IState: public Input
     /// \brief User-defined implementation of the state's initialization logic.
     ///
     /// \param void_ptr A void pointer to user-defined data
+    ///
+    /// \remarks When not defined, a do-nothing implementation is provided.
     virtual void on_init ( void_ptr );
 
     /// \brief User-defined implementation of the state's destruction logic.
     ///
     /// \param void_ptr A void pointer to user-defined data
+    ///
+    /// \remarks When not defined, a do-nothing implementation is provided.
     virtual void on_exit ( void_ptr );
 
     /// \brief User-defined implementation of the state's paused state logic.
     ///
     /// \param void_ptr A void pointer to user-defined data
+    ///
+    /// \remarks When not defined, a do-nothing implementation is provided.
     virtual void on_pause ( void_ptr );
 
     /// \brief User-defined implementation of the state's resume from pause
     /// state logic.
     ///
     /// \param void_ptr A void pointer to user-defined data
+    ///
+    /// \remarks When not defined, a do-nothing implementation is provided.
     virtual void on_resume ( void_ptr );
 
   private:
     /// \brief Unique identifier for the state
-    ///
-    /// \remarks Reserved for future implementation
     uint32 id_;
 
-    /// \brief Time of state's construction
-    ///
-    /// \remarks Reserved for future implementation
+    /// \brief Number of ticks recorded at the time of state's construction
     uint32 timestamp_;
 
 

@@ -51,7 +51,15 @@ class StateMachine
     /// Destructor
     ~StateMachine ( void );
 
-    /// State management
+    // State management
+
+    /// \brief Obtain the previous state's identifier
+    ///
+    /// \returns Identifier of the state on success; identifier number of the
+    /// current state on failure (such as if there is no previous state in list).
+    ///
+    /// \remarks It is not required that the state has an ID.
+    uint32 previous_state ( void ) const;
     void set_state ( IState::UniquePtr state, void_ptr data );
     void push_state ( IState::UniquePtr state, void_ptr data );
 

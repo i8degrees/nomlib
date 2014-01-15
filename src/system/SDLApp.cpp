@@ -110,6 +110,11 @@ bool SDLApp::poll_events ( EventType* event )
   return false;
 }
 
+uint32 SDLApp::previous_state ( void ) const
+{
+  return this->states.previous_state();
+}
+
 void SDLApp::set_state ( uint32 id, void_ptr data )
 {
 /*

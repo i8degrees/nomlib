@@ -37,7 +37,7 @@ namespace nom {
 
 /// \brief Abstract interface for game states
 ///
-/// \remarks See also nom::StateMachine (and optionally, nom::SDLApp)
+/// \remarks See also nom::StateMachine, nom::SDLApp
 class IState: public Input
 {
   public:
@@ -47,7 +47,7 @@ class IState: public Input
     {
       Null = 0,       // Default
       BackRender = 1  // Signal to nom::StateMachine to let previous state
-                      // continue rendering
+                      // continue rendering.
     };
 
     /// \brief Default constructor; initializes class variables to zero.
@@ -75,22 +75,31 @@ class IState: public Input
 
     /// User-defined implementation of the state's rendering logic
     ///
-    /// \param float User-defined rendering target (nom::Window).
+    /// \param IDrawable::RenderTarget Rendering target (nom::Window).
+    ///
+    /// \todo Consider removing RenderTarget argument; I *think* we can get
+    /// away with this.
     virtual void on_draw ( IDrawable::RenderTarget );
 
     /// \brief User-defined implementation of the state's initialization logic.
-    virtual void on_init ( void );
+    ///
+    /// \param void_ptr A void pointer to user-defined data
+    virtual void on_init ( void_ptr );
 
     /// \brief User-defined implementation of the state's destruction logic.
-    virtual void on_exit ( void );
+    ///
+    /// \param void_ptr A void pointer to user-defined data
+    virtual void on_exit ( void_ptr );
 
     /// \brief User-defined implementation of the state's paused state logic.
-    virtual void on_pause ( void );
+    ///
+    /// \param void_ptr A void pointer to user-defined data
+    virtual void on_pause ( void_ptr );
 
     /// \brief User-defined implementation of the state's resume from pause
     /// state logic.
     ///
-    /// \param void_ptr User-defined data
+    /// \param void_ptr A void pointer to user-defined data
     virtual void on_resume ( void_ptr );
 
   private:

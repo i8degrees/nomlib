@@ -76,17 +76,17 @@ void IState::on_draw ( IDrawable::RenderTarget )
   // User-defined virtual
 }
 
-void IState::on_init ( void )
+void IState::on_init ( void_ptr )
 {
   // User-defined virtual
 }
 
-void IState::on_exit ( void )
+void IState::on_exit ( void_ptr )
 {
   // User-defined virtual
 }
 
-void IState::on_pause ( void )
+void IState::on_pause ( void_ptr )
 {
   // User-defined virtual
 }

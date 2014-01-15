@@ -47,14 +47,14 @@ void StateMachine::set_state ( IState::UniquePtr state, void_ptr data )
   // Cleanup the current state
   if ( ! this->states.empty() )
   {
-    this->states.back()->on_exit();
+    this->states.back()->on_exit(data);
     this->states.pop_back();
   }
 
   // Store the new state
   this->states.push_back( std::move( state ) );
 
-  this->states.back()->on_init();
+  this->states.back()->on_init(data);
 }
 
 void StateMachine::push_state ( IState::UniquePtr state, void_ptr data )
@@ -64,13 +64,13 @@ void StateMachine::push_state ( IState::UniquePtr state, void_ptr data )
   // Pause current state
   if ( this->states.size() > 1 )
   {
-    this->states.back()->on_pause();
+    this->states.back()->on_pause(data);
   }
 
   // Store the new state
   this->states.push_back( std::move( state ) );
 
-  this->states.back()->on_init();
+  this->states.back()->on_init(data);
 }
 
 void StateMachine::pop_state ( IState::UniquePtr state, void_ptr data )

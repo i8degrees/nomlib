@@ -86,6 +86,9 @@ class SDLApp: public Input
     virtual void on_update( float );
 
     /// State rendering
+    ///
+    /// \todo Consider removing RenderTarget argument; I *think* we can get
+    /// away with this.
     virtual void on_draw( IDrawable::RenderTarget );
 
   protected:

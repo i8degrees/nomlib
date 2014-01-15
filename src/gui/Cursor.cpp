@@ -112,4 +112,11 @@ int32 Cursor::move_right ( void )
   return -1; // Do nothing virtual implementation
 }
 
+/*
+void Cursor::update ( void )
+{
+  SpriteBatch::update();
+}
+*/
+
 } // namespace nom

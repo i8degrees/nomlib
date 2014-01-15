@@ -463,7 +463,10 @@ void Texture::draw ( SDL_RENDERER::RawPtr target ) const
 
   // Render with set clipping bounds; we are rendering only a portion of a
   // larger Texture; think: sprite sheets.
-  if ( this->bounds().w != -1 && this->bounds().h != -1 )
+  //
+  // NOTE: We have yet to encounter the case where these are not -1; testing of
+  // examples/app & TTcards confirms this.
+  if ( render_coords.w != -1 && render_coords.h != -1 )
   {
     SDL_Rect render_bounds;
     render_bounds.x = this->bounds().x;

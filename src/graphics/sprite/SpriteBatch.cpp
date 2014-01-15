@@ -103,10 +103,14 @@ void SpriteBatch::set_frame ( int32 id )
 {
 //NOM_ASSERT ( id != ( this->frames() - 1 ) );
   this->sheet_id_ = id;
+
+  this->update();
 }
 
 void SpriteBatch::update ( void )
 {
+  Sprite::update(); // Update rendering position
+
   Coords dims = this->sprite_sheet.dimensions ( this->frame() );
 
   this->offsets.x = dims.x * this->scale_factor;
@@ -115,8 +119,6 @@ void SpriteBatch::update ( void )
   this->offsets.h = dims.h * this->scale_factor;
 
   this->sprite_.set_bounds( this->offsets );
-  this->sprite_.set_position ( Point2i ( this->position().x, this->position().y ) );
 }
-
 
 } // namespace nom

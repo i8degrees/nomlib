@@ -76,6 +76,8 @@ class Cursor:
     /// Toggle the lock variable.
     void toggle_lock ( bool toggle );
 
+    //virtual void update ( void );
+
   protected:
     /// The deriving classes must implement this iteration for the 'up' action
     ///

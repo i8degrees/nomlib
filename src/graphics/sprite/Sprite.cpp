@@ -98,6 +98,8 @@ bool Sprite::load (
 
   this->setSize ( this->sprite_.width(), this->sprite_.height() );
 
+  this->update();
+
   return true;
 }
 
@@ -109,14 +111,24 @@ void Sprite::update ( void )
 
 void Sprite::draw ( RenderTarget target ) const
 {
-NOM_ASSERT ( this->sprite_.valid() );
+  NOM_ASSERT ( this->sprite_.valid() );
 
-  this->sprite_.draw ( target.renderer() );
+  if ( this->sprite_.valid() )
+  {
+    // FIXME: this->update();
+    this->sprite_.draw ( target.renderer() );
+  }
 }
 
 void Sprite::draw ( RenderTarget target, const double degrees ) const
 {
-  this->sprite_.draw ( target.renderer(), degrees );
+  NOM_ASSERT ( this->sprite_.valid() );
+
+  if ( this->sprite_.valid() )
+  {
+    // FIXME: this->update();
+    this->sprite_.draw ( target.renderer(), degrees );
+  }
 }
 
 bool Sprite::resize ( enum Texture::ResizeAlgorithm scaling_algorithm )

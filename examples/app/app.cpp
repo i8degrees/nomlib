@@ -285,6 +285,10 @@ NOM_DUMP_VAR(this->sprite.size().x);
  // 16 is correct
 NOM_DUMP_VAR(this->sprite.size().y);
 
+      // FIXME: We need to finish the overhaul on our coordinates & rendering
+      // subsystems in order to not need this statement
+      this->sprite.update();
+
       return true;
     } // onInit
 
@@ -306,7 +310,10 @@ NOM_DUMP_VAR(this->sprite.size().y);
           this->on_event ( &this->event );
         }
 
-        this->sprite.update();
+        //this->sprite.update();
+
+        // FIXME: We need to finish the overhaul on our coordinates & rendering
+        // subsystems in order to not need this statement
         this->ani_sprite.play();
 
         for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )

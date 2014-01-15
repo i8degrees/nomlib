@@ -123,6 +123,7 @@ NOM_LOG_ERR ( NOM, "Could not update animation frame: requested frame value is t
   }
 
   this->current_frame = frame;
+  //SpriteBatch::update();
 }
 
 void AnimatedSprite::setAnimationStyle ( AnimatedSprite::AnimationStyle style )

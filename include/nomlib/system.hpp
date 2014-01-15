@@ -35,12 +35,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/log.hpp>
 #include <nomlib/system/clock.hpp>
 #include <nomlib/system/FPS.hpp>
-#include <nomlib/system/GameStates.hpp>
+#include <nomlib/system/StateMachine.hpp>
 #include <nomlib/system/ObjectCache.hpp>
 #include <nomlib/system/dialog_messagebox.hpp>
 #include <nomlib/system/Path.hpp>
 #include <nomlib/system/File.hpp>
-#include <nomlib/system/SDL_App.hpp>
+#include <nomlib/system/SDLApp.hpp>
 #include <nomlib/system/Input.hpp>
 #include <nomlib/system/Timer.hpp>
 #include <nomlib/system/Sleep.hpp>

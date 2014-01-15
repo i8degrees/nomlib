@@ -77,7 +77,7 @@ void Input::HandleInput ( EventType* event )
   {
     default: /* Ignore unknown events */ break;
 
-    case SDL_QUIT: this->onQuit(); break;
+    case SDL_QUIT: this->on_quit(); break;
 
     case SDL_WINDOWEVENT:
     {
@@ -85,7 +85,7 @@ void Input::HandleInput ( EventType* event )
       {
         default: /* Ignore unknown events */ break;
 
-        case SDL_WINDOWEVENT_CLOSE: this->onQuit(); break;
+        case SDL_WINDOWEVENT_CLOSE: this->on_quit(); break;
 
 /* TODO: SDL2 window events handling
       case SDL_WINDOWEVENT_ENTER: break;
@@ -273,7 +273,7 @@ void Input::onUserEvent ( uint32 type, int32 code, void* data1, void* data2 )
   // virtual implementation
 }
 
-void Input::onQuit ( void )
+void Input::on_quit ( void )
 {
   // virtual implementation
 }

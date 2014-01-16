@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/math/Point2.hpp"
+#include "nomlib/math/Size2.hpp"
 #include "nomlib/graphics/fonts/BitmapFont.hpp"
 #include "nomlib/graphics/fonts/IFont.hpp"
 #include "nomlib/graphics/fonts/TrueTypeFont.hpp"
@@ -134,8 +135,8 @@ class Text: public Transformable
     ///           etc.
     ///
     /// \todo Support multi-line texts (newline character handling)
-    uint text_width ( const std::string& text_string ) const;
-    uint width ( void ) const;
+    sint text_width ( const std::string& text_string ) const;
+    sint width ( void ) const;
 
     /// \brief Obtain the text height in pixels of the set text
     ///
@@ -149,8 +150,8 @@ class Text: public Transformable
     ///
     /// \todo     We *may* have a better height value to use in our height
     /// computation -- see nom::FontMetrics.
-    uint text_height ( const std::string& text_string ) const;
-    uint height ( void ) const;
+    sint text_height ( const std::string& text_string ) const;
+    sint height ( void ) const;
 
     /// Get text string
     const std::string& text ( void ) const;

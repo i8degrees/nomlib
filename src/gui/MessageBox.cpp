@@ -176,7 +176,8 @@ void MessageBox::set_title ( const Text& title )
   // bordering color of GrayFrame, commented as "top1".
   //
   // The original coords.x value was + 8, but I think + 4 looks best.
-  this->labels[0].set_position ( IntRect ( this->coords.x + 4, this->coords.y, this->coords.w, this->coords.h ) );
+  this->labels[0].set_position ( Point2i ( this->coords.x + 4, this->coords.y ) );
+  this->labels[0].set_size ( Size2i ( this->coords.w, this->coords.h ) );
 
   // In order to preserve the text alignment of the original object, we must
   // copy the state of the original alignment *after* we set the positioning
@@ -198,7 +199,8 @@ void MessageBox::set_text ( const Text& text )
   }
 
   this->labels[1] = text;
-  this->labels[1].set_position ( IntRect ( this->coords.x, this->coords.y, this->coords.w, this->coords.h ) );
+  this->labels[1].set_position ( Point2i ( this->coords.x, this->coords.y ) );
+  this->labels[1].set_size ( Size2i ( this->coords.w, this->coords.h ) );
 
   // In order to preserve the text alignment of the original object, we must
   // copy the state of the original alignment *after* we set the positioning

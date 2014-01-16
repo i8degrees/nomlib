@@ -30,7 +30,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Sprite::Sprite ( void ) : state_ ( 0 ), scale_factor ( 1 )
+Sprite::Sprite ( void ) :
+  Transformable { Point2i(0, 0), Size2i(0, 0) },
+  state_ ( 0 ),
+  scale_factor ( 1 )
 {
 NOM_LOG_TRACE ( NOM );
 }
@@ -41,7 +44,8 @@ NOM_LOG_TRACE ( NOM );
 }
 
 Sprite::Sprite ( int32 width, int32 height )  :
-  Transformable { Coords ( 0, 0, width, height ) }, state_ ( 0 ),
+  Transformable { Point2i(0, 0), Size2i(width, height) },
+  state_ ( 0 ),
   scale_factor ( 1 )
 
 {
@@ -51,7 +55,7 @@ NOM_LOG_TRACE ( NOM );
 Sprite& Sprite::operator = ( const Sprite& other )
 {
   this->sprite_ = other.sprite_;
-  this->set_position ( other.position().x, other.position().y );
+  this->set_position ( other.position() );
   this->set_state ( other.state() );
   this->scale_factor = other.scale_factor;
 
@@ -63,15 +67,10 @@ SDL_TEXTURE::RawPtr Sprite::texture ( void ) const
   return this->sprite_.texture();
 }
 
-const Point2i Sprite::size ( void ) const
-{
-  return Point2i ( this->sprite_.width(), this->sprite_.height() );
-}
-
-const Point2i Sprite::position ( void ) const
+const Size2i Sprite::size ( void ) const
 {
   // FIXME
-  return Point2i ( this->position_.x, this->position_.y );
+  return Size2i ( this->sprite_.width(), this->sprite_.height() );
 }
 
 uint32 Sprite::state ( void ) const
@@ -96,7 +95,7 @@ bool Sprite::load (
     return false;
   }
 
-  this->setSize ( this->sprite_.width(), this->sprite_.height() );
+  this->set_size ( Size2i ( this->sprite_.width(), this->sprite_.height() ) );
 
   this->update();
 
@@ -106,7 +105,7 @@ bool Sprite::load (
 void Sprite::update ( void )
 {
   // FIXME
-  this->sprite_.set_position ( Point2i ( this->position_.x, this->position_.y ) );
+  this->sprite_.set_position ( Point2i ( this->position().x, this->position().y ) );
 }
 
 void Sprite::draw ( RenderTarget target ) const

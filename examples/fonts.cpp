@@ -241,12 +241,16 @@ class App: public nom::SDLApp
       }
 */
 
-      this->label_bfont.set_position  ( ( this->window_size.x
+      this->label_bfont.set_position  ( nom::Point2i(
+                                        ( this->window_size.x
                                           -
-                                          this->label_bfont.width() ) / 2,
+                                          this->label_bfont.width()
+                                        ) / 2,
                                         ( this->window_size.y
                                           -
-                                          this->label_bfont.height() ) / 2
+                                          this->label_bfont.height()
+                                        ) / 2
+                                                    )
                                       );
 
       this->label_bfont.set_text ( RESOURCE_FONT_TEXT_STRING );
@@ -267,7 +271,7 @@ class App: public nom::SDLApp
       }
       this->label_tfont.set_font ( this->truetype_font );
 
-      this->label_tfont.set_position(24,24);
+      this->label_tfont.set_position(nom::Point2i(24,24));
       //this->label_tfont.set_color ( nom::Color4i(195,209,228) );
       this->label_tfont.set_text ( RESOURCE_FONT_TEXT_STRING );
       //this->label_tfont.set_text_size ( 24 );

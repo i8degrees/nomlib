@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_TRANSFORMABLE_HEADERS
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Coords.hpp"
+#include "nomlib/math/Size2.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
@@ -41,28 +41,21 @@ class Transformable: public virtual IDrawable
     Transformable ( void );
     virtual ~Transformable ( void );
 
-    Transformable ( int x, int y, int w, int h );
-    Transformable ( const Coords& coords );
+    Transformable ( const Point2i& pos, const Size2i& size );
 
-    const Coords position ( void ) const;
-    const Coords size ( void ) const;
-    void set_position ( int32 x, int32 y );
-    void set_position ( int32 x, int32 y, int32 width, int32 height );
+    const Point2i& position ( void ) const;
+    const Size2i& size ( void ) const;
 
-    /// \deprecated Use nom::Transformable::set_position(const IntRect& coords)
-    void set_position ( const Coords& coords );
+    void set_position ( const Point2i& coords );
+    void set_size ( const Size2i& size );
+    void move ( int x = 0, int y = 0 );
 
-    void set_position ( const IntRect& coords );
+  private:
+    Point2i position_;
 
-    void setSize ( int32 width, int32 height );
-    void setSize ( const Coords& size );
-
-    void move ( uint32 x = 0, uint32 y = 0 );
-    void move ( const Coords& offsets = Coords ( 0, 0 ) );
-
-  protected:
-    /// \deprecated Phasing nom::Coords class out -- use IntRects instead.
-    Coords position_;
+    /// \deprecated This will likely be removed soon -- no replacement;
+    /// re-implement using private variables.
+    Size2i size_;
 };
 
 

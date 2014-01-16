@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 Text::Text ( void ) :
-  Transformable { 0, 0, 0, 0 }, // Our inherited class
+  Transformable { Point2i (0, 0), Size2i (0, 0) }, // Our inherited class
   text_size_ ( 14 ),
   color_ ( Color4i::White ),
   style_ ( Text::Style::Regular ),
@@ -46,7 +46,7 @@ Text::~Text ( void )
 }
 
 Text::Text ( const Text& copy ) :
-  Transformable { copy.position() }, // Our inherited class
+  Transformable { copy.position(), copy.size() }, // Our inherited class
   font_ { copy.font() },
   texture_ { copy.texture() },
   text_ { copy.text() },
@@ -60,7 +60,9 @@ Text::Text ( const Text& copy ) :
 
 Text& Text::operator = ( const Text& other )
 {
-  this->position_ = other.position(); // Our inherited class
+  this->set_position ( other.position() );
+  this->set_size ( other.size() );
+
   this->font_ = other.font();
   this->texture_ = other.texture();
   this->text_ = other.text();
@@ -77,7 +79,7 @@ Text::Text  ( const std::string& text,
               uint character_size,        // Default parameter
               enum Text::Alignment align // Default parameter
             )  :
-  Transformable { 0, 0, 0, 0 }, // Our inherited class
+  Transformable { Point2i(0, 0), Size2i(0, 0) }, // Our inherited class
   text_ ( text ),
   text_size_ ( character_size ),
   color_ ( Color4i::White ),
@@ -94,7 +96,7 @@ Text::Text  ( const std::string& text,
               uint character_size,        // Default parameter
               enum Text::Alignment align // Default parameter
             )  :
-  Transformable { 0, 0, 0, 0 }, // Our inherited class
+  Transformable { Point2i(0, 0), Size2i(0, 0) }, // Our inherited class
   text_ ( text ),
   text_size_ ( character_size ),
   color_ ( Color4i::White ),
@@ -135,9 +137,9 @@ enum IFont::FontType Text::type ( void ) const
   return IFont::FontType::NotDefined;
 }
 
-uint Text::text_width ( const std::string& text_string ) const
+sint Text::text_width ( const std::string& text_string ) const
 {
-  uint text_width = 0;
+  sint text_width = 0;
   uint32 previous_char = 0; // Kerning calculation
   std::string text_buffer = text_string;
 
@@ -178,14 +180,14 @@ uint Text::text_width ( const std::string& text_string ) const
   return text_width;
 }
 
-uint Text::width ( void ) const
+sint Text::width ( void ) const
 {
   return this->text_width ( this->text() );
 }
 
-uint Text::text_height ( const std::string& text_string ) const
+sint Text::text_height ( const std::string& text_string ) const
 {
-  uint text_height = 0;
+  sint text_height = 0;
   std::string text_buffer = text_string;
 
   // Ensure that our font pointer is still valid
@@ -217,7 +219,7 @@ uint Text::text_height ( const std::string& text_string ) const
   return text_height;
 }
 
-uint Text::height ( void ) const
+sint Text::height ( void ) const
 {
   return this->text_height ( this->text() );
 }
@@ -394,7 +396,7 @@ void Text::set_alignment ( enum Text::Alignment align )
     }
   } // end switch
 
-  this->set_position ( x_offset, y_offset );
+  this->set_position (Point2i(x_offset, y_offset) );
 }
 
 void Text::draw ( RenderTarget target ) const

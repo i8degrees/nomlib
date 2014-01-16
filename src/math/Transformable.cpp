@@ -31,78 +31,48 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 Transformable::Transformable ( void )  :
-  position_ ( 0, 0, 0, 0 )
+  position_ ( Point2i::null ),
+  size_ ( Size2i::null )
 {
-  // ...
+  //NOM_LOG_TRACE(NOM);
 }
 
-Transformable::~Transformable ( void ) {}
-
-Transformable::Transformable ( int x, int y, int w, int h ) :
-  position_ { Coords (x, y, w, h) }
+Transformable::~Transformable ( void )
 {
-  // ...
+  //NOM_LOG_TRACE(NOM);
 }
 
-Transformable::Transformable ( const Coords& coords ) :
-  position_ ( coords )
+Transformable::Transformable ( const Point2i& pos, const Size2i& size ) :
+  position_ ( pos ),
+  size_ ( size )
 {
-  // ...
+  //NOM_LOG_TRACE(NOM);
 }
 
-const Coords Transformable::position ( void ) const
+const Point2i& Transformable::position ( void ) const
 {
-  return Coords ( this->position_.x, this->position_.y );
+  return this->position_;
 }
 
-const Coords Transformable::size ( void ) const
+const Size2i& Transformable::size ( void ) const
 {
-  return Coords ( 0, 0, this->position_.w, this->position_.h );
-  //return Coords ( this->position_.w, this->position_.h );
+  return this->size_;
 }
 
-void Transformable::set_position ( int32 x, int32 y )
+void Transformable::set_position ( const Point2i& pos )
 {
-  this->position_.setPosition ( x, y );
+  this->position_ = pos;
 }
 
-void Transformable::set_position ( int32 x, int32 y, int32 width, int32 height )
+void Transformable::set_size ( const Size2i& size )
 {
-  this->position_ = Coords ( x, y, width, height );
+  this->size_ = size;
 }
 
-void Transformable::set_position ( const Coords& coords )
-{
-  this->set_position ( coords.x, coords.y, coords.w, coords.h );
-}
-
-void Transformable::set_position ( const IntRect& coords )
-{
-  this->set_position ( coords.x, coords.y, coords.w, coords.h );
-  //this->set_position ( coords.x, coords.y );
-}
-
-void Transformable::setSize ( int32 width, int32 height )
-{
-  // FIXME
-  this->position_.setSize ( width, height );
-}
-
-void Transformable::setSize ( const Coords& size )
-{
-  this->setSize ( size.w, size.h );
-}
-
-void Transformable::move ( uint32 x, uint32 y )
+void Transformable::move ( int x, int y )
 {
   this->position_.x += x;
   this->position_.y += y;
-}
-
-void Transformable::move ( const Coords& offsets )
-{
-  this->position_.x += offsets.x;
-  this->position_.y += offsets.y;
 }
 
 } // namespace nom

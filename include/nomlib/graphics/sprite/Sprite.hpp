@@ -62,8 +62,7 @@ class Sprite:
 
     SDL_TEXTURE::RawPtr texture ( void ) const;
 
-    const Point2i size ( void ) const;
-    const Point2i position ( void ) const;
+    const Size2i size ( void ) const;
 
     /// Get the object's state.
     uint32 state ( void ) const;

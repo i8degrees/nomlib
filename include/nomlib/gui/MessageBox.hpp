@@ -71,16 +71,34 @@ class MessageBox: public IDrawable
 
     MessageBox& operator = ( const MessageBox& other );
 
-    bool enabled ( void ) const;
+    const std::string& title_string ( void ) const;
+    const std::string& text_string ( void ) const;
 
-    const std::string title ( void );
-    const std::string text ( void );
+    bool enabled ( void ) const;
 
     void disable ( void );
     void enable ( void );
 
     const Point2i size ( void ) const;
     const Point2i position ( void ) const;
+
+    /// \brief Obtain the rectangle bounds of the set title text
+    ///
+    /// \returns IntRect with its x, y, width & height fields filled in
+    ///
+    /// \remarks The bounds are the final rendered coordinates (in pixels),
+    /// which may include alignments done to the Text object after being set
+    /// in this class.
+    const IntRect title_bounds ( void ) const;
+
+    /// \brief Obtain the rectangle bounds of the set text
+    ///
+    /// \returns IntRect with its x, y, width & height fields filled in
+    ///
+    /// \remarks The bounds are the final rendered coordinates (in pixels),
+    /// which may include alignments done to the Text object after being set
+    /// in this class.
+    const IntRect text_bounds ( void ) const;
 
     void set_title ( const Text& title );
     void set_text ( const Text& text );

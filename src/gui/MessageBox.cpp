@@ -119,13 +119,13 @@ bool MessageBox::enabled ( void ) const
   return true;
 }
 
-const std::string MessageBox::title ( void )
+const std::string& MessageBox::title_string ( void ) const
 {
   // nom::Text should be handling all of the necessary validity checks for us
   return this->labels[0].text();
 }
 
-const std::string MessageBox::text ( void )
+const std::string& MessageBox::text_string ( void ) const
 {
   // nom::Text should be handling all of the necessary validity checks for us
   return this->labels[1].text();
@@ -139,6 +139,16 @@ const Point2i MessageBox::size ( void ) const
 const Point2i MessageBox::position ( void ) const
 {
   return Point2i ( this->coords.x, this->coords.y );
+}
+
+const IntRect MessageBox::title_bounds ( void ) const
+{
+  return IntRect ( this->labels[0].position().x, this->labels[0].position().y, this->labels[0].width(), this->labels[0].height() );
+}
+
+const IntRect MessageBox::text_bounds ( void ) const
+{
+  return IntRect ( this->labels[1].position().x, this->labels[1].position().y, this->labels[1].width(), this->labels[1].height() );
 }
 
 void MessageBox::disable ( void )

@@ -275,7 +275,7 @@ bool TrueTypeFont::build ( uint32 character_size )
     if ( TTF_GlyphIsProvided ( this->font(), ascii_char ) )
     {
       // We obtain width & height of a glyph from its rendered form
-      glyph_image.initialize ( TTF_RenderGlyph_Solid ( this->font(), ascii_char, SDL_COLOR(Color4i::White) ) );
+      glyph_image.initialize ( TTF_RenderGlyph_Blended ( this->font(), ascii_char, SDL_COLOR(Color4i::White) ) );
 
       if ( glyph_image.valid() == false )
       {

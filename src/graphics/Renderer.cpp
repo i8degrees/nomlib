@@ -33,13 +33,12 @@ namespace nom {
 Renderer::Renderer ( void ):  renderer_
     { SDL_RENDERER::UniquePtr ( nullptr, priv::FreeRenderTarget ) }
 {
-NOM_LOG_TRACE ( NOM );
-
+  //NOM_LOG_TRACE ( NOM );
 }
 
 Renderer::~Renderer ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  //NOM_LOG_TRACE ( NOM );
 
   // Thanks for all the fish!
 }

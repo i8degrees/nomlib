@@ -39,12 +39,12 @@ Window::Window ( void ) : window_
     window_id_ ( 0 ), window_display_id_ ( -1 ),
     enabled_ ( false ), fullscreen_ ( false )
 {
-NOM_LOG_TRACE ( NOM );
+  //NOM_LOG_TRACE ( NOM );
 }
 
 Window::~Window ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  //NOM_LOG_TRACE ( NOM );
 }
 
 bool Window::create (

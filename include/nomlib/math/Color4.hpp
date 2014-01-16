@@ -280,6 +280,13 @@ typedef Color4<int16> Color4i;
 /// Color4 object defined using floating point numbers
 typedef Color4<float> Color4f;
 
+/// \brief Color4 object defined using signed 8-bit integers
+///
+/// \remarks Color4<T>::null does not work with this Color4 type, nor are there
+/// any predefined colors for the type. It is intended solely for use with
+/// conversions (such as in feeding to SDL2).
+typedef Color4<uint8> Color4u;
+
 } // namespace nom
 
 #endif // include guard defined

@@ -78,11 +78,12 @@ SDL_Point SDL_POINT ( const Point2i& point )
 SDL_Color SDL_COLOR ( const Color4i& color )
 {
   SDL_Color c;
+  Color4u c2 = color; // Convert int16 to uint8 for SDL2 to get rid of warnings
 
-  c.r = color.r;
-  c.g = color.g;
-  c.b = color.b;
-  c.a = color.a;
+  c.r = c2.r;
+  c.g = c2.g;
+  c.b = c2.b;
+  c.a = c2.a;
 
   return c;
 }
@@ -117,22 +118,26 @@ const Color4i alpha_pixel ( uint32 pixel, uint32 fmt )
 
 uint32 RGB ( const Color4i& color, const SDL_PixelFormat* fmt )
 {
-  return SDL_MapRGB ( fmt, color.r, color.g, color.b );
+  Color4u c = color; // Convert int16 to uint8 for SDL2 to get rid of warnings
+  return SDL_MapRGB ( fmt, c.r, c.g, c.b );
 }
 
 uint32 RGB ( const Color4i& color, uint32 fmt )
 {
-  return SDL_MapRGB ( SDL_AllocFormat(fmt), color.r, color.g, color.b );
+  Color4u c = color; // Convert int16 to uint8 for SDL2 to get rid of warnings
+  return SDL_MapRGB ( SDL_AllocFormat(fmt), c.r, c.g, c.b );
 }
 
 uint32 RGBA ( const Color4i& color, const SDL_PixelFormat* fmt )
 {
-  return SDL_MapRGBA ( fmt, color.r, color.g, color.b, color.a );
+  Color4u c = color; // Convert int16 to uint8 for SDL2 to get rid of warnings
+  return SDL_MapRGBA ( fmt, c.r, c.g, c.b, c.a );
 }
 
 uint32 RGBA ( const Color4i& color, uint32 fmt )
 {
-  return SDL_MapRGBA ( SDL_AllocFormat(fmt), color.r, color.g, color.b, color.a );
+  Color4u c = color; // Convert int16 to uint8 for SDL2 to get rid of warnings
+  return SDL_MapRGBA ( SDL_AllocFormat(fmt), c.r, c.g, c.b, c.a );
 }
 
 const std::string hint ( const std::string& name )

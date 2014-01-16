@@ -85,6 +85,10 @@ class TrueTypeFont: public IFont
 
     TTF_Font* font ( void ) const;
 
+    /// Obtain the texture atlas used internally for rendering glyphs from
+    ///
+    /// \remarks It is assumed that the requested character size is already
+    /// loaded into memory (using TrueTypeFont::set_point_size).
     const Image& image ( uint32 character_size ) const;
 
     /// \brief Obtain text character spacing width in pixels

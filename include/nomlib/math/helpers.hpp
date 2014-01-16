@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point2.hpp"
+#include "nomlib/system/sleep.hpp"
 
 namespace nom {
 
@@ -45,7 +46,8 @@ const double PI = 4.0 * atan ( 1.0 );
 /// \return Random number between the specified start and end numbers.
 inline int32 rand ( int32 start, int32 end )
 {
-  auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+  //auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+  auto seed = static_cast<int32> ( ticks() );
   std::default_random_engine rand_generator ( seed );
   std::uniform_int_distribution<int32> distribution ( start, end );
 

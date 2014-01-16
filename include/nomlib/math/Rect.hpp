@@ -79,7 +79,11 @@ struct Rect
     //NOM_LOG_TRACE(NOM);
   }
 
-  /// Copy constructor
+  /// \brief Copy constructor
+  ///
+  /// \remarks The explicit keyword here will result in compile-time errors
+  /// in any instance that it finds incompatible casting occurring, such as if
+  /// you try to down-cast a Rect<int> to a Rect<float>.
   template <typename U>
   explicit Rect ( const Rect<U>& copy ) :
     x { static_cast<T> ( copy.x ) },

@@ -64,7 +64,11 @@ struct Point2
     //NOM_LOG_TRACE(NOM);
   }
 
-  /// Copy constructor
+  /// \brief Copy constructor
+  ///
+  /// \remarks The explicit keyword here will result in compile-time errors
+  /// in any instance that it finds incompatible casting occurring, such as if
+  /// you try to down-cast a Point2<int> to a Point2<float>.
   template <typename U>
   explicit Point2 ( const Point2<U>& copy ) :
     x { static_cast<T> ( copy.x ) },

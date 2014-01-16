@@ -114,7 +114,7 @@ const enum nom::Text::Alignment RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[9] = {
                                                                               nom::Text::Alignment::BottomLeft,
                                                                               nom::Text::Alignment::BottomCenter,
                                                                               nom::Text::Alignment::BottomRight    // 8
-                                                                            };
+                                                                        };
 
 const int MIN_FONT_POINT_SIZE = 9;
 const int MAX_FONT_POINT_SIZE = 41;
@@ -155,16 +155,21 @@ class App: public nom::SDLApp
       nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
       if ( nom::set_hint ( SDL_HINT_RENDER_VSYNC, "0" ) == false )
       {
-NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
+        NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
       }
 
       // Best quality is Nearest rescaling for low resolution artwork, such as
       // our bitmap fonts!
       if ( nom::set_hint ( SDL_HINT_RENDER_SCALE_QUALITY, "Nearest" ) == false )
       {
-NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" ) );
+        NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" ) );
       }
-
+/*
+      if ( nom::set_hint ( SDL_HINT_RENDER_DRIVER, "opengl" ) == false )
+      {
+        NOM_LOG_INFO ( NOM, "Could not set rendering driver to OpenGL" );
+      }
+*/
       for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
       {
         if ( this->window[idx].create ( APP_NAME, WINDOW_WIDTH/2, WINDOW_HEIGHT, window_flags ) == false )
@@ -226,11 +231,14 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
         return false;
       }
 
-      this->window[1].make_current();
-      if ( this->background.load ( RESOURCE_STATIC_IMAGE, 0 ) == false )
+      if ( MAXIMUM_WINDOWS > 1 )
       {
-        nom::DialogMessageBox ( APP_NAME, "Could not load image file: " + RESOURCE_STATIC_IMAGE );
-        return false;
+        this->window[1].make_current();
+        if ( this->background.load ( RESOURCE_STATIC_IMAGE, 0 ) == false )
+        {
+          nom::DialogMessageBox ( APP_NAME, "Could not load image file: " + RESOURCE_STATIC_IMAGE );
+          return false;
+        }
       }
 
       this->window[0].make_current();
@@ -256,7 +264,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
                                                 // about the object afterwards
                                                 // is OK!
                                                 gradient
-                                              );
+                                            );
 
       this->info_box[0].set_title ( nom::Text ( RESOURCE_INFO_BOX_TITLE_STRINGS[0], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] ) );
       this->info_box[0].set_text ( nom::Text ( RESOURCE_INFO_BOX_TEXT_STRINGS[0], this->bitmap_font, 12, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] ) );
@@ -273,7 +281,7 @@ NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" 
                                                 // Use a custom background style
                                                 // object
                                                 gradient
-                                          );
+                                              );
 
       this->info_box[1].set_title ( nom::Text ( RESOURCE_INFO_BOX_TITLE_STRINGS[1], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] ) );
       this->info_box[1].set_text ( nom::Text ( RESOURCE_INFO_BOX_TEXT_STRINGS[1], this->select_font(), this->select_font_size(), this->select_alignment() ) );
@@ -347,10 +355,16 @@ NOM_DUMP_VAR(this->sprite.size().h);
         this->sprite.draw ( this->window[0], this->sprite_angle );
         this->ani_sprite.draw ( this->window[0] );
 
-        this->window[1].fill ( nom::Color4i::Black );
-        this->background.draw ( this->window[1] );
+        if ( MAXIMUM_WINDOWS > 1 )
+        {
+          this->window[1].fill ( nom::Color4i::Black );
+          this->background.draw ( this->window[1] );
+        }
 
-        this->window[2].fill ( nom::Color4i::Magenta );
+        if ( MAXIMUM_WINDOWS > 2 ) // Third window
+        {
+          this->window[2].fill ( nom::Color4i::Magenta );
+        }
 
         // Choose a random color for filling the window with as a backdrop when
         // MAXIMUM_WINDOWS is greater than 3

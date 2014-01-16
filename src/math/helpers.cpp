@@ -26,40 +26,50 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_MATH_HELPERS_HPP
-#define NOMLIB_MATH_HELPERS_HPP
-
-#include <chrono>
-#include <random>
-#include <cmath>
-
-#include "nomlib/config.hpp"
-#include "nomlib/math/Point2.hpp"
-#include "nomlib/system/sleep.hpp"
+#include "nomlib/math/helpers.hpp"
 
 namespace nom {
 
-const double PI = 4.0 * atan ( 1.0 );
+int32 rand ( int32 start, int32 end )
+{
+  //auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+  auto seed = static_cast<int32> ( ticks() );
+  std::default_random_engine rand_generator ( seed );
+  std::uniform_int_distribution<int32> distribution ( start, end );
 
-/// Generate a random number
-///
-/// \return Random number between the specified start and end numbers.
-int32 rand ( int32 start, int32 end );
+  return distribution ( rand_generator );
+}
 
-/// Rotates a given X & Y coordinate point along a given pivot axis
-/// (rotation point) at the given angle (in degrees), clockwise.
-const Point2d rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y );
+const Point2d rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y )
+{
+  Point2d p;
+  double  rotated_x = 0;
+  double rotated_y = 0;
+  float translated_x = 0;
+  float translated_y = 0;
 
-/// Round a fractional value
-///
-/// \param number Number to round up or down
-///
-/// \return Rounded value
-///
-/// \note Round up when number > 0.5; round down when number < 0.5
+  float center_x = pivot_x / 2.0f;
+  float center_y = pivot_y / 2.0f;
+
+  translated_x = x - center_x;
+  translated_y = y - center_y;
+
+  rotated_x = ( translated_x * cos ( -angle * PI / 180 ) - translated_y * sin ( -angle * PI / 180 ) );
+  rotated_y = ( translated_x * sin ( -angle * PI / 180 ) + translated_y * cos ( -angle * PI / 180 ) );
+
+  rotated_x += center_x;
+  rotated_y += center_y;
+
+  p.x = rotated_x;
+  p.y = rotated_y;
+
+  return p;
+}
+
 template <typename T>
-T round ( T number );
+T round ( T number )
+{
+  return number < 0.0 ? ceil ( number - 0.5 ) : floor ( number + 0.5 );
+}
 
 } // namespace nom
-
-#endif // include guard defined

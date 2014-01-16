@@ -26,19 +26,17 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_MATH_HEADERS
-#define NOMLIB_MATH_HEADERS
+#include "nomlib/math/Size2.hpp"
 
-// Public header file
+namespace nom {
 
-#include <nomlib/config.hpp>
-#include <nomlib/math/helpers.hpp>
-#include <nomlib/math/Size2.hpp>
-#include <nomlib/math/Color4.hpp>
-#include <nomlib/math/Coords.hpp>
-#include <nomlib/math/Rect.hpp>
-#include <nomlib/math/Point2.hpp>
-#include <nomlib/math/Point3.hpp>
-#include <nomlib/math/Transformable.hpp>
+/// Null value for a nom::Size using signed integers
+template <> const Size2i Size2i::null ( -1, -1 );
 
-#endif // include guard defined
+/// Null value for a nom::Size using floating point numbers
+template <> const Size2f Size2f::null ( -1, -1 );
+
+/// Null value for a nom::Size using double-precision floating point numbers
+template <> const Size2d Size2d::null ( -1, -1 );
+
+} // namespace nom

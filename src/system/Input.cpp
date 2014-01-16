@@ -260,9 +260,8 @@ TODO */
     {
       char* file = event->drop.file;
       this->onDragDrop ( file, event->drop.timestamp );
-
-      SDL_free ( file );
-      file = nullptr;
+      //SDL_free ( file );
+      //file = nullptr;
       break;
     } // SDL_DROPFILE
   } // end switch event->type

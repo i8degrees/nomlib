@@ -150,10 +150,27 @@ class Input
 
     /// Drag 'N' Drop events
     ///
-    /// \note To enable drag and drop events on Mac OS X, you must add the
-    /// appropriate "Document Types" in your application bundle's Info.plist.
+    /// \remarks To enable drag and drop events on Mac OS X, you must add the
+    /// appropriate keys in your application bundle's Info.plist, like so:
     ///
-    /// (Document Types: public.data to enable all types)
+    /// <key>CFBundleDocumentTypes</key>
+    /// <array>
+    ///   <dict>
+    ///     <key>CFBundleTypeRole</key>
+    ///     <string>Editor</string>
+    ///     <key>CFBundleTypeName</key>
+    ///     <string>TTcards</string>
+    ///     <key>CFBundleTypeExtensions</key>
+    ///     <array>
+    ///         <string>json</string>
+    ///     </array>
+    ///     <key>CFBundleTypeIconFile</key>
+    ///     <string>TTcards</string>
+    ///   </dict>
+    /// </array>
+    ///
+    /// \note The SDL2 documentation stated for CFBundleMIMETypes did not work
+    /// for me.
     virtual void onDragDrop ( const std::string& file_path, uint32 timestamp );
 
   private:

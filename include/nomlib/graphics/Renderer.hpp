@@ -80,7 +80,7 @@ class Renderer
     const IntRect viewport ( void ) const;
 
     /// Obtain the current scale factor
-    const Point2i scale_factor ( void ) const;
+    const Point2f scale_factor ( void ) const;
 
     /// Obtain the blending mode used for drawing
     const SDL_BlendMode blend_mode ( void ) const;

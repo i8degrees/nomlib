@@ -66,19 +66,12 @@ struct Point3
 
   /// Copy constructor
   template <typename U>
-  Point3<T> ( const Point3<U>& copy )
+  explicit Point3<T> ( const Point3<U>& copy )  :
+    x { static_cast<T> ( copy.x ) },
+    y { static_cast<T> ( copy.y ) },
+    z { static_cast<T> ( copy.z ) }
   {
-    this->x = static_cast<T> ( copy.x );
-    this->y = static_cast<T> ( copy.y );
-    this->z = static_cast<T> ( copy.z );
-  }
-
-  /// Copy assignment operator
-  Point3& operator = ( const T& other )
-  {
-    this->x = other.x;
-    this->y = other.y;
-    this->z = other.z;
+    //NOM_LOG_TRACE(NOM);
   }
 
   /// \brief Null value

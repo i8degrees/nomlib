@@ -62,8 +62,10 @@ struct Color4
     }
 
     /// Copy constructor
+    ///
+    /// \fixme We get errors when down-casting from int16 to uint8
     template <typename U>
-    Color4 ( const Color4<U>& copy )
+    /*explicit*/ Color4 ( const Color4<U>& copy )
     {
       this->r = static_cast<T> ( copy.r );
       this->g = static_cast<T> ( copy.g );
@@ -89,17 +91,6 @@ struct Color4
       a ( alpha )
     {
       //NOM_LOG_TRACE(NOM);
-    }
-
-    /// Copy assignment operator
-    inline Color4<T>& operator = ( const Color4<T>& other )
-    {
-      this->r = other.r;
-      this->g = other.g;
-      this->b = other.b;
-      this->a = other.a;
-
-      return *this;
     }
 
     /// Convenience getter for obtaining a copy of this object

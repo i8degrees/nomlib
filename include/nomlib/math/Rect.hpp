@@ -37,7 +37,9 @@ namespace nom {
 /// \brief Delimiter character to use with << operator
 const std::string RECT_DELIMITER = ", ";
 
-/// \brief Rectangle class container
+/// \brief Rectangle shape container
+///
+/// \remarks This class originated from the sf::Rect class of the SFML library.
 template<typename T>
 struct Rect
 {
@@ -79,28 +81,18 @@ struct Rect
 
   /// Copy constructor
   template <typename U>
-  Rect ( const Rect<U>& copy )
+  explicit Rect ( const Rect<U>& copy ) :
+    x { static_cast<T> ( copy.x ) },
+    y { static_cast<T> ( copy.y ) },
+    w { static_cast<T> ( copy.w ) },
+    h { static_cast<T> ( copy.h ) }
   {
-    this->x = static_cast<T> ( copy.x );
-    this->y = static_cast<T> ( copy.y );
-    this->w = static_cast<T> ( copy.w );
-    this->h = static_cast<T> ( copy.h );
-  }
-
-  /// Copy assignment operator
-  inline Rect<T>& operator = ( const Rect<T>& other )
-  {
-    this->x = other.x;
-    this->y = other.y;
-    this->w = other.w;
-    this->h = other.h;
-
-    return *this;
+    //NOM_LOG_TRACE(NOM);
   }
 
   /// Check to see if input coordinates X and Y are within the bounds
   /// of this object (think: colliding)
-  bool contains ( int x, int y ) const
+  bool contains ( T x, T y ) const
   {
     return  (
               ( x >= this->x && x <= this->x + this->w  ) &&

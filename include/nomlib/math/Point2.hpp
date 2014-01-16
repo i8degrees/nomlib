@@ -66,23 +66,12 @@ struct Point2
 
   /// Copy constructor
   template <typename U>
-  Point2 ( const Point2<U>& copy )
+  explicit Point2 ( const Point2<U>& copy ) :
+    x { static_cast<T> ( copy.x ) },
+    y { static_cast<T> ( copy.y ) }
   {
     this->x = static_cast<T> ( copy.x );
     this->y = static_cast<T> ( copy.y );
-  }
-
-  /// Copy assignment operator
-/*
-    template <typename U>
-    Point2<T>& operator = ( const Point2<U>& other )
-*/
-  inline Point2<T>& operator = ( const Point2<T>& other )
-  {
-    this->x = other.x;
-    this->y = other.y;
-
-    return *this;
   }
 
   /// \brief Null value

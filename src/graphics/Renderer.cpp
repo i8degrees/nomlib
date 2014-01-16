@@ -72,7 +72,7 @@ bool Renderer::renderer_valid ( void ) const
   }
 }
 
-const Point2i Renderer::scale_factor ( void ) const
+const Point2f Renderer::scale_factor ( void ) const
 {
   Point2f scale_factor;
 

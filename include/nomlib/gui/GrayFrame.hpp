@@ -35,6 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Transformable.hpp"
+#include "nomlib/math/Point2.hpp"
+#include "nomlib/math/Size2.hpp"
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/graphics/Window.hpp"
 #include "nomlib/graphics/shapes/Line.hpp"
@@ -55,6 +57,8 @@ class GrayFrame: public Transformable
     //GrayFrame& operator = ( const GrayFrame& other );
 
     GrayFrame ( const IntRect& bounds, int pad );
+
+    GrayFrame ( const Point2i& pos, const Size2i& size, int pad );
 
     /*const IntRect&*/int padding ( void ) const;
 

@@ -61,6 +61,14 @@ GrayFrame::GrayFrame ( const IntRect& bounds, int pad ) :
   //NOM_LOG_TRACE ( NOM );
 }
 
+GrayFrame::GrayFrame ( const Point2i& pos, const Size2i& size, int pad ) :
+  Transformable { pos, size },
+  padding_ ( pad ),
+  updated_ ( false )
+{
+  //NOM_LOG_TRACE ( NOM );
+}
+
 int GrayFrame::padding ( void ) const
 {
   return this->padding_;

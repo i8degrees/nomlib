@@ -74,8 +74,13 @@ struct Point2
     x { static_cast<T> ( copy.x ) },
     y { static_cast<T> ( copy.y ) }
   {
-    this->x = static_cast<T> ( copy.x );
-    this->y = static_cast<T> ( copy.y );
+    //NOM_LOG_TRACE(NOM);
+  }
+
+  /// \brief Obtain a reference of the object.
+  inline const Point2<T>& get ( void ) const
+  {
+    return *this;
   }
 
   /// \brief Null value
@@ -108,16 +113,205 @@ inline std::ostream& operator << ( std::ostream& os, const Point2<T>& pos )
   return os;
 }
 
+/// \brief Method overload of binary operator == (equality)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Compare the equality between two objects.
+///
+/// \returns True if left operand is equal to the right operand.
 template <typename T>
 inline bool operator == ( const Point2<T>& lhs, const Point2<T>& rhs )
 {
-  return  ( lhs.x == rhs.x )  &&  ( lhs.y == rhs.y );
+  return  ( lhs.x == rhs.x )
+          &&
+          ( lhs.y == rhs.y );
 }
 
+/// \brief Method overload of binary operator != (not equal)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Compare the inequality between two objects.
+///
+/// \returns True if left operand is not equal to the right operand.
 template <typename T>
 inline bool operator != ( const Point2<T>& lhs, const Point2<T>& rhs )
 {
   return ! ( lhs == rhs );
+}
+
+/// \brief Method overload of binary operator + (Addition)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \returns Addition of both objects.
+template <typename T>
+inline Point2<T> operator + ( const Point2<T>& lhs, const Point2<T>& rhs )
+{
+  return Point2<T>  ( lhs.x + rhs.x,
+                      lhs.y + rhs.y
+                    );
+}
+
+/// \brief Method overload of binary operator ++ (Addition by 1)
+///
+/// \param rhs Right operand.
+///
+/// \returns Addition of the right operand.
+template <typename T>
+inline Point2<T> operator ++ ( Point2<T>& rhs )
+{
+  return Point2<T>  ( ++rhs.x,
+                      ++rhs.y
+                    );
+}
+
+/// \brief Method overload of binary operator - (subtraction)
+///
+/// \param rhs Right operand.
+///
+/// \returns Opposite of the object.
+template <typename T>
+inline Point2<T> operator - ( const Point2<T>& rhs )
+{
+  return Point2<T>  ( -rhs.x,
+                      -rhs.y
+                    );
+}
+
+/// \brief Method overload of binary operator - (subtraction)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \returns Subtraction of both objects.
+template <typename T>
+inline Point2<T> operator - ( const Point2<T>& lhs, const Point2<T>& rhs )
+{
+  return Point2<T>  ( lhs.x - rhs.x,
+                      lhs.y - rhs.y
+                    );
+}
+
+/// \brief Method overload of binary operator -- (subtraction by 1)
+///
+/// \param rhs Right operand.
+///
+/// \returns Subtraction of the right operand.
+template <typename T>
+inline Point2<T> operator -- ( Point2<T>& rhs )
+{
+  return Point2<T>  ( --rhs.x,
+                      --rhs.y
+                    );
+}
+
+/// \brief Method overload of binary operator * (Multiplication)
+///
+/// \param rhs Left operand.
+/// \param rhs Right operand.
+///
+/// \returns Multiplication of the right operand.
+template <typename T>
+inline Point2<T> operator * ( const Point2<T>& lhs, const Point2<T>& rhs )
+{
+  return Point2<T>  ( lhs.x * rhs.x,
+                      lhs.y * rhs.y
+                    );
+}
+
+/// \brief Method overload of binary operator / (Division)
+///
+/// \param rhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Division of both objects; result is assigned to the left operand.
+///
+/// \returns Reference to the left operand.
+template <typename T>
+inline Point2<T> operator / ( const Point2<T>& lhs, const Point2<T>& rhs )
+{
+  return Point2<T>  ( lhs.x / rhs.x,
+                      lhs.y / rhs.y
+                    );
+}
+
+/// \brief Method overload of binary operator += (Addition)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Addition of both objects; result is assigned to the left
+/// operand.
+///
+/// \returns Reference to left operand,
+template <typename T>
+inline Point2<T>& operator += ( Point2<T>& lhs, const Point2<T>& rhs )
+{
+  lhs.x += rhs.x;
+  lhs.y += rhs.y;
+
+  return lhs;
+}
+
+/// \brief Method overload of binary operator -= (Subtraction)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Subtraction of both objects; result is assigned to the left
+/// operand.
+///
+/// \returns Reference to left operand.
+template <typename T>
+inline Point2<T>& operator -= ( Point2<T>& lhs, const Point2<T>& rhs )
+{
+  lhs.x -= rhs.x;
+  lhs.y -= rhs.y;
+
+  return lhs;
+}
+
+/// \brief Method overload of binary operator *= (Multiplication)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Multiplication of both objects; result is assigned to the
+/// left operand.
+///
+/// \returns Reference to left operand.
+///
+/// \fixme See tests/math.cpp at Point2 Unit Test 2, Result[1]
+template <typename T>
+inline Point2<T>& operator *= ( Point2<T>& lhs, const Point2<T>& rhs )
+{
+  lhs.x *= rhs.x;
+  lhs.y *= rhs.y;
+
+  return lhs;
+}
+
+/// \brief Method overload of binary operator /= (Division)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Division of both objects; result is assigned to the
+/// left operand.
+///
+/// \returns Reference to left operand.
+template <typename T>
+inline Point2<T>& operator /= ( Point2<T>& lhs, Point2<T>& rhs )
+{
+  lhs.x /= rhs.x;
+  lhs.y /= rhs.y;
+
+  return lhs;
 }
 
 /// Point2 object defined using signed integers

@@ -78,6 +78,12 @@ struct Point3
     //NOM_LOG_TRACE(NOM);
   }
 
+  /// \brief Obtain a reference of the object.
+  inline const Point3<T>& get ( void ) const
+  {
+    return *this;
+  }
+
   /// \brief Null value
   ///
   /// \remarks  Null value implementation depends on signed (negative) numbers.

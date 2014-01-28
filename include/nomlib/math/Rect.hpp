@@ -94,6 +94,12 @@ struct Rect
     //NOM_LOG_TRACE(NOM);
   }
 
+  /// \brief Obtain a reference of the object.
+  inline const Rect<T>& get ( void ) const
+  {
+    return *this;
+  }
+
   /// Check to see if input coordinates X and Y are within the bounds
   /// of this object (think: colliding)
   bool contains ( T x, T y ) const
@@ -183,6 +189,14 @@ inline std::ostream& operator << ( std::ostream& os, const Rect<T>& rect )
   return os;
 }
 
+/// \brief Method overload of binary operator == (equality)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Compare the equality between two objects.
+///
+/// \returns True if left operand is equal to the right operand.
 template <typename T>
 inline bool operator == ( const Rect<T>& lhs, const Rect<T>& rhs )
 {
@@ -191,10 +205,211 @@ inline bool operator == ( const Rect<T>& lhs, const Rect<T>& rhs )
           ( lhs.y == rhs.y )  &&  ( lhs.h == rhs.h );
 }
 
+/// \brief Method overload of binary operator != (not equal)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Compare the inequality between two objects.
+///
+/// \returns True if left operand is not equal to the right operand.
 template <typename T>
 inline bool operator != ( const Rect<T>& lhs, const Rect<T>& rhs )
 {
   return ! ( lhs == rhs );
+}
+
+/// \brief Method overload of binary operator + (Addition)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \returns Addition of both objects.
+template <typename T>
+inline Rect<T> operator + ( const Rect<T>& lhs, const Rect<T>& rhs )
+{
+  return Rect<T>  ( lhs.x + rhs.x,
+                    lhs.y + rhs.y,
+                    lhs.w + rhs.w,
+                    lhs.h + rhs.h
+                  );
+}
+
+/// \brief Method overload of binary operator ++ (Addition by 1)
+///
+/// \param rhs Right operand.
+///
+/// \returns Addition of the right operand.
+template <typename T>
+inline Rect<T> operator ++ ( Rect<T>& rhs )
+{
+  return Rect<T>  ( ++rhs.x,
+                    ++rhs.y,
+                    ++rhs.w,
+                    ++rhs.h
+                  );
+}
+
+/// \brief Method overload of binary operator - (subtraction)
+///
+/// \param rhs Right operand.
+///
+/// \returns Opposite of the object.
+template <typename T>
+inline Rect<T> operator - ( const Rect<T>& rhs )
+{
+  return Rect<T>  ( -rhs.x,
+                    -rhs.y,
+                    -rhs.w
+                    -rhs.h
+                  );
+}
+
+/// \brief Method overload of binary operator - (subtraction)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \returns Subtraction of both objects.
+template <typename T>
+inline Rect<T> operator - ( const Rect<T>& lhs, const Rect<T>& rhs )
+{
+  return Rect<T>  ( lhs.x - rhs.x,
+                    lhs.y - rhs.y,
+                    lhs.w - rhs.w,
+                    lhs.h - rhs.h
+                  );
+}
+
+/// \brief Method overload of binary operator -- (subtraction by 1)
+///
+/// \param rhs Right operand.
+///
+/// \returns Subtraction of the right operand.
+template <typename T>
+inline Rect<T> operator -- ( Rect<T>& rhs )
+{
+  return Rect<T>  ( --rhs.x,
+                    --rhs.y,
+                    --rhs.w,
+                    --rhs.h
+                  );
+}
+
+/// \brief Method overload of binary operator * (Multiplication)
+///
+/// \param rhs Left operand.
+/// \param rhs Right operand.
+///
+/// \returns Multiplication of the right operand.
+template <typename T>
+inline Rect<T> operator * ( const Rect<T>& lhs, const Rect<T>& rhs )
+{
+  return Rect<T>  ( lhs.x * rhs.x,
+                    lhs.y * rhs.y,
+                    lhs.w * rhs.w,
+                    lhs.h * rhs.h
+                  );
+}
+
+/// \brief Method overload of binary operator / (Division)
+///
+/// \param rhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Division of both objects; result is assigned to the left operand.
+///
+/// \returns Reference to the left operand.
+template <typename T>
+inline Rect<T> operator / ( const Rect<T>& lhs, const Rect<T>& rhs )
+{
+  return Rect<T>  ( lhs.x / rhs.x,
+                    lhs.y / rhs.y,
+                    lhs.w / rhs.w,
+                    lhs.h / rhs.h
+                  );
+}
+
+/// \brief Method overload of binary operator += (Addition)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Addition of both objects; result is assigned to the left
+/// operand.
+///
+/// \returns Reference to left operand,
+template <typename T>
+inline Rect<T>& operator += ( Rect<T>& lhs, const Rect<T>& rhs )
+{
+  lhs.x += rhs.x;
+  lhs.y += rhs.y;
+  lhs.w += rhs.w;
+  lhs.h += rhs.h;
+
+  return lhs;
+}
+
+/// \brief Method overload of binary operator -= (Subtraction)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Subtraction of both objects; result is assigned to the left
+/// operand.
+///
+/// \returns Reference to left operand.
+template <typename T>
+inline Rect<T>& operator -= ( Rect<T>& lhs, const Rect<T>& rhs )
+{
+  lhs.x -= rhs.x;
+  lhs.y -= rhs.y;
+  lhs.w -= rhs.w;
+  lhs.h -= rhs.h;
+
+  return lhs;
+}
+
+/// \brief Method overload of binary operator *= (Multiplication)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Multiplication of both objects; result is assigned to the
+/// left operand.
+///
+/// \returns Reference to left operand.
+///
+/// \fixme See tests/math.cpp at Point2 Unit Test 2, Result[1]
+template <typename T>
+inline Rect<T>& operator *= ( Rect<T>& lhs, const Rect<T>& rhs )
+{
+  lhs.x *= rhs.x;
+  lhs.y *= rhs.y;
+  lhs.w *= rhs.w;
+  lhs.h *= rhs.h;
+
+  return lhs;
+}
+
+/// \brief Method overload of binary operator /= (Division)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Division of both objects; result is assigned to the
+/// left operand.
+///
+/// \returns Reference to left operand.
+template <typename T>
+inline Rect<T>& operator /= ( Rect<T>& lhs, Rect<T>& rhs )
+{
+  lhs.x /= rhs.x;
+  lhs.y /= rhs.y;
+  lhs.w /= rhs.w;
+  lhs.h /= rhs.h;
+
+  return lhs;
 }
 
 /// Rect object defined using signed integers

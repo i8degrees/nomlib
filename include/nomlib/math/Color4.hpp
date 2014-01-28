@@ -67,12 +67,13 @@ struct Color4
     /// in any instance that it finds incompatible casting occurring, such as if
     /// you try to down-cast a Color4<int16> to a Color4<uint8>.
     template <typename U>
-    explicit Color4 ( const Color4<U>& copy )
+    explicit Color4 ( const Color4<U>& copy ) :
+      r { static_cast<T> ( copy.r ) },
+      g { static_cast<T> ( copy.g ) },
+      b { static_cast<T> ( copy.b ) },
+      a { static_cast<T> ( copy.a ) }
     {
-      this->r = static_cast<T> ( copy.r );
-      this->g = static_cast<T> ( copy.g );
-      this->b = static_cast<T> ( copy.b );
-      this->a = static_cast<T> ( copy.a );
+      //NOM_LOG_TRACE(NOM);
     }
 
     /// Constructor variant for setting a color using RGB values

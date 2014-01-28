@@ -150,7 +150,7 @@ class App: public nom::SDLApp
     bool on_init ( void )
     {
       // nom::Gradient utilizes nom::Rectangle
-      nom::Gradient gradient;
+      nom::Gradient gradient[2];
 
       nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
       if ( nom::set_hint ( SDL_HINT_RENDER_VSYNC, "0" ) == false )
@@ -243,11 +243,14 @@ class App: public nom::SDLApp
 
       this->window[0].make_current();
 
-      // Initialize the background to use in our info_box object as a gradient
-      // filled background
-      gradient.set_start_color ( nom::Color4i::Gray );
-      gradient.set_end_color ( nom::Color4i::LightGray );
-      gradient.set_fill_direction ( nom::Gradient::FillDirection::Left );
+      // Initialize the backgrounds to use in our info_box object as a gradient
+      gradient[0].set_start_color ( nom::Color4i::Gray );
+      gradient[0].set_end_color ( nom::Color4i::LightGray );
+      gradient[0].set_fill_direction ( nom::Gradient::FillDirection::Left );
+
+      gradient[1].set_start_color ( nom::Color4i::Gray );
+      gradient[1].set_end_color ( nom::Color4i::LightGray );
+      gradient[1].set_fill_direction ( nom::Gradient::FillDirection::Top );
 
       // Initialize our info_box[0] object
       this->info_box[0] = nom::MessageBox (
@@ -263,7 +266,7 @@ class App: public nom::SDLApp
                                                 // the object, so forgetting
                                                 // about the object afterwards
                                                 // is OK!
-                                                gradient
+                                                gradient[0]
                                             );
 
       this->info_box[0].set_title ( nom::Text ( RESOURCE_INFO_BOX_TITLE_STRINGS[0], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] ) );
@@ -280,7 +283,7 @@ class App: public nom::SDLApp
                                                 nom::MessageBox::Style::Gray,
                                                 // Use a custom background style
                                                 // object
-                                                gradient
+                                                gradient[1]
                                               );
 
       this->info_box[1].set_title ( nom::Text ( RESOURCE_INFO_BOX_TITLE_STRINGS[1], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] ) );

@@ -31,6 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "platforms.hpp"
 
+#define NOM_PTR_CAST(type, expression) \
+  ( std::dynamic_pointer_cast<type>(expression) )
+//#define NOM_STATIC_CAST(type, expression) static_cast<type>(expression)
+//#define NOM_CONST_CAST(type, expression) const_cast<type>(expression)
+
 /*
   TODO: This should be replaced by an actual CMake script -- think:
         compile-time check for the necessary feature support for C++11 style

@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 
 #include "nomlib/config.hpp"
+#include "nomlib/math/Rect.hpp"
 #include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/sprite/Sprite.hpp"
 #include "nomlib/graphics/sprite/SpriteSheet.hpp"
@@ -40,8 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Extended bitmap object rendering -- utilizes sprite sheets
-class SpriteBatch:
-                    public Sprite
+class SpriteBatch: public Sprite
 {
   public:
     /// Default construct for initializing instance variables to their

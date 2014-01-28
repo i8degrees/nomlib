@@ -39,7 +39,7 @@ SpriteBatch::SpriteBatch ( const SpriteSheet& sheet )
 {
 NOM_LOG_TRACE ( NOM );
 
-  Coords dims;
+  IntRect dims;
 
   this->sprite_sheet = sheet;
 
@@ -54,7 +54,7 @@ SpriteBatch::SpriteBatch ( const std::string& filename )
 {
 NOM_LOG_TRACE ( NOM );
 
-  Coords dims;
+  IntRect dims;
 
   this->sprite_sheet.load ( filename );
 
@@ -111,7 +111,7 @@ void SpriteBatch::update ( void )
 {
   Sprite::update(); // Update rendering position
 
-  Coords dims = this->sprite_sheet.dimensions ( this->frame() );
+  IntRect dims = this->sprite_sheet.dimensions ( this->frame() );
 
   this->offsets.x = dims.x * this->scale_factor;
   this->offsets.y = dims.y * this->scale_factor;

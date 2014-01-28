@@ -159,7 +159,7 @@ FIXME */
   this->sheet_height = sheet_height;
 }
 
-const Coords& SpriteSheet::dimensions  ( int32 index ) const
+const IntRect& SpriteSheet::dimensions  ( int32 index ) const
 {
   return this->sheet.at ( index );
 }
@@ -224,8 +224,8 @@ bool SpriteSheet::load ( const std::string& filename )
   nom::JSON::Value object;
 
   // Temporary holding buffers to hold data until we are ready to commit
-  Coords buffer;
-  std::vector<Coords> buffer_sheet;
+  IntRect buffer;
+  std::vector<IntRect> buffer_sheet;
 
   if ( parser.load ( filename, object ) == false )
   {

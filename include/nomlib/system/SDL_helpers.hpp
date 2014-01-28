@@ -37,8 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
-#include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Rect.hpp"
+#include "nomlib/math/Size2.hpp"
 #include "nomlib/math/Point2.hpp"
 
 namespace nom {
@@ -96,15 +96,15 @@ SDL_bool SDL_BOOL ( bool value );
 
 /// SDL data structure wrappers for nomlib
 ///
-/// \return A SDL_Rect structure composed from a nom::Coords object
-SDL_Rect SDL_RECT ( const Coords& rectangle );
-
-/// SDL data structure wrappers for nomlib
-///
 /// \return SDL_Rect structure composed from a nom::IntRect object
-///
-/// \todo Test me out
 SDL_Rect SDL_RECT ( const IntRect& rectangle );
+
+/// \brief Convert nomlib's internal data type(s) to a SDL_Rect struct
+///
+/// \remarks Frequently used in data passing between nomlib's SDL2 API calls.
+///
+/// \return SDL_Rect struct composed from a nom::Point2i & nom::Size2i object.
+SDL_Rect SDL_RECT ( const Point2i& pos, const Size2i& size );
 
 /// SDL2 data structure wrappers for nomlib
 ///

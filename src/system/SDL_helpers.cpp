@@ -42,7 +42,7 @@ SDL_bool SDL_BOOL ( bool value )
   }
 }
 
-SDL_Rect SDL_RECT ( const Coords& rectangle )
+SDL_Rect SDL_RECT ( const IntRect& rectangle )
 {
   SDL_Rect r;
 
@@ -54,14 +54,14 @@ SDL_Rect SDL_RECT ( const Coords& rectangle )
   return r;
 }
 
-SDL_Rect SDL_RECT ( const IntRect& rectangle )
+SDL_Rect SDL_RECT ( const Point2i& pos, const Size2i& size )
 {
   SDL_Rect r;
 
-  r.x = rectangle.x;
-  r.y = rectangle.y;
-  r.w = rectangle.w;
-  r.h = rectangle.h;
+  r.x = pos.x;
+  r.y = pos.y;
+  r.w = size.w;
+  r.h = size.h;
 
   return r;
 }

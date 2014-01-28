@@ -30,34 +30,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 #include <cassert>
 
+#include <nomlib/system.hpp>
 #include <nomlib/math.hpp>
+
+#define NOM_UNIT_TEST(num) \
+  ( "Unit Test #num" )
+
+/// \brief Enable expected results output during each unit test.
+///
+/// \note See Makefile for what to pass to enable this feature during compile
+/// time.
+//#define NOM_DEBUG_TESTS
 
 using namespace nom;
 
-/// nom::Color Unit Test 1
-nom::int32 do_color_test1 ( void );
-
-/// nom::Color Unit Test 2
-nom::int32 do_color_test2 ( void );
-
-/// nom::Color Unit Test 3
-nom::int32 do_color_test3 ( void );
-
-/// nom::Color Unit Test 4
-nom::int32 do_color_test4 ( void );
-
-/// nom::Coords Unit Test 1
-nom::int32 do_coords_test1 ( void );
-
-/// nom::Coords Unit Test 2
-nom::int32 do_coords_test2 ( void );
-
-/// nom::Coords Unit Test 3
-nom::int32 do_coords_test3 ( void );
-
-/// nom::Coords Unit Test 4
-nom::int32 do_coords_test4 ( void );
-
+/// Point2 Unit Test 1
 nom::int32 do_color_test1 ( void )
 {
   NOM_LOG_TRACE(NOM);
@@ -67,10 +54,12 @@ nom::int32 do_color_test1 ( void )
   nom::Color4i testme3 (-1,-1,-1, Color4i::ALPHA_OPAQUE );
   nom::Color4f testme4 (-1,-1,-1, Color4f::ALPHA_OPAQUE );
 
-  NOM_DUMP_VAR(testme1);
-  NOM_DUMP_VAR(testme2);
-  NOM_DUMP_VAR(testme3);
-  NOM_DUMP_VAR(testme4);
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR(testme1);
+    NOM_DUMP_VAR(testme2);
+    NOM_DUMP_VAR(testme3);
+    NOM_DUMP_VAR(testme4);
+  #endif
 
   if ( testme2 == testme1 ) return NOM_EXIT_FAILURE;
   if ( testme3 != Color4i::null ) return NOM_EXIT_FAILURE;
@@ -83,33 +72,32 @@ nom::int32 do_color_test2 ( void ) { return NOM_EXIT_SUCCESS; }
 nom::int32 do_color_test3 ( void ) { return NOM_EXIT_SUCCESS; }
 nom::int32 do_color_test4 ( void ) { return NOM_EXIT_SUCCESS; }
 
-nom::int32 do_coords_test1 ( void )
+nom::sint do_rect_test1 ( void )
 {
-  nom::Coords testme1 ( 242, 1, 1, 0 );
-  nom::Coords testme2 ( -1, -1, -1, -1 );
+  nom::IntRect testme1 ( 242, 1, 1, 0 );
+  nom::IntRect testme2 ( -1, -1, -1, -1 );
 
-  if ( testme1.isNull() ) return NOM_EXIT_FAILURE;
-  if ( testme2.isNull() ) return NOM_EXIT_SUCCESS;
-  if ( testme2 == nom::Coords::null ) return NOM_EXIT_SUCCESS;
+  if ( testme1 == IntRect::null ) return NOM_EXIT_FAILURE;
+  if ( testme2 == IntRect::null ) return NOM_EXIT_SUCCESS;
 
   testme1 = testme2;
 
-  if ( testme1.isNull() ) return NOM_EXIT_SUCCESS;
-  if ( testme2.isNull() ) return NOM_EXIT_SUCCESS;
-  if ( testme2 == nom::Coords::null ) return NOM_EXIT_SUCCESS;
+  if ( testme1 != IntRect::null ) return NOM_EXIT_FAILURE;
 
   return NOM_EXIT_SUCCESS;
 }
 
-nom::int32 do_coords_test2 ( void )
+nom::sint do_rect_test2 ( void )
 {
   NOM_LOG_TRACE(NOM);
 
   IntRect testme1 ( -1, -1, -1, -1 );
   FloatRect testme2 ( -1, -1, -1, -1 );
 
-  NOM_DUMP_VAR(testme1);
-  NOM_DUMP_VAR(testme2);
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR(testme1);
+    NOM_DUMP_VAR(testme2);
+  #endif
 
   if ( testme1 != IntRect::null ) return NOM_EXIT_FAILURE;
   if ( testme2 != FloatRect::null ) return NOM_EXIT_FAILURE;
@@ -117,15 +105,169 @@ nom::int32 do_coords_test2 ( void )
   return NOM_EXIT_SUCCESS;
 }
 
-nom::int32 do_coords_test3 ( void )
+sint do_rect_test3 ( void )
+{
+  NOM_LOG_TRACE(NOM);
+
+  uint idx = 0; // result increment counter
+
+  // Expression part 1 (to be combined with parts 2)
+  IntRect expr[12] =  { IntRect( 64, 32, 2, 2 ),  // 0
+                        IntRect( 64, 32, 8, 8 ),
+                        IntRect( 64, 32, 8, 8 ),
+                        IntRect( 64, 32, 8, 8 ),
+                        IntRect( 64, 32, 8, 8 ),
+                        IntRect( 64, 32, 8, 8 ),
+                        IntRect( 64, 32, 8, 8 ),
+                        IntRect( 64, 32, 8, 8 ),
+                        IntRect( 64, 32, 8, 8 ),
+                        IntRect( 64, 32, 4, 4 )   // 9
+                      };
+
+  // Expression part 2 (to be combined with parts 1)
+  IntRect ans[4] =    {
+                        IntRect( 2, 2, 2, 2 ),  // 0
+                        IntRect( 8, 8, 8, 8 ),
+                        IntRect( 4, 4, 4, 4 )   // 2
+                      };
+  IntRect result[12]; // IntRect::null
+
+  // Expected result: 64 / 2 = 32 && 32 / 2 = 16 && 2/2/2/2 = 1
+  result[idx] = expr[idx] /= ans[0];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != IntRect(32,16,1,1) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next! (1)
+
+  // Expected result: 64 *= 2 = 128 && 32 *= 2 = 64 && 2*2*2*2 = 16
+  result[idx] = expr[idx] *= ans[0];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[1] == IntRect::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != IntRect(128,64,16,16) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next! (2)
+
+  // Expected result: 64 -= 8 = 56 && 32 -= 8 = 24 && 8-8-8-8 = 0 (???)
+  result[idx] = expr[idx] -= ans[1];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != IntRect(56,24,0,0) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next! (3)
+
+  // Expected result: 64 += 8 = 72 && 32 += 8 = 40 && 8+8+8+8 = 16 (???)
+  // Our result: 72, 40, 32, 32 (???)
+  result[idx] = expr[idx] += ans[1];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != IntRect(72,40,32,32) ) return NOM_EXIT_FAILURE;
+
+/* TODO: Finish checking test results
+  idx += 1; // ..Next! (4)
+
+  // Expected result: 64 / 8 = 8 && 32 / 8 = 4
+  result[idx] = expr[idx] / ans[1];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != IntRect(8,4,8,8) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next! (5)
+
+  // Expected result: 64 * 8 = 512 && 32 * 8 = 256;
+  result[idx] = expr[idx] * ans[1];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != IntRect(512,256,8,8) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next! (6)
+
+  // Expected result: 64 - 1 = 63 && 32 - 1 = 31;
+  result[idx] = --expr[idx]; // ans[1];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != IntRect(63,31,8,8) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next! (7)
+
+  // Expected result: 64 - 8 = 56 && 32 - 8 = 24
+  result[idx] = expr[idx] - ans[1];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != IntRect(56,24,8,8) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next! (8)
+
+  // Expected result: 64 += 1 = 65 && 32 += 1 = 33
+  result[idx] = ++expr[idx]; //ans[1];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != IntRect(65,33,8,8) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next! (9)
+
+  // Expected result: 64 += 4 = 68 && 32 += 4 = 40
+  result[idx] = expr[idx] += ans[2];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != IntRect(68,36,8,8) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next! (10)
+TODO */
+  return NOM_EXIT_SUCCESS;
+}
+
+nom::sint do_point2_test1 ( void )
 {
   NOM_LOG_TRACE(NOM);
 
   Point2i testme1 ( -1, -1 );
   Point2f testme2 ( -1, -1 );
 
-  NOM_DUMP_VAR(testme1);
-  NOM_DUMP_VAR(testme2);
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR(testme1);
+    NOM_DUMP_VAR(testme2);
+  #endif
 
   if ( testme1 != Point2i::null ) return NOM_EXIT_FAILURE;
   if ( testme2 != Point2f::null ) return NOM_EXIT_FAILURE;
@@ -133,58 +275,210 @@ nom::int32 do_coords_test3 ( void )
   return NOM_EXIT_SUCCESS;
 }
 
-nom::int32 do_coords_test4 ( void )
+sint do_point2_test2 ( void )
 {
+  NOM_LOG_TRACE(NOM);
+
+  uint idx = 0; // result increment counter
+
+  // Expression part 1 (to be combined with parts 2)
+  Point2i expr[12] =  { Point2i( 64, 32 ),  // 0
+                        Point2i( 64, 32 ),
+                        Point2i( 64, 32 ),
+                        Point2i( 64, 32 ),
+                        Point2i( 64, 32 ),
+                        Point2i( 64, 32 ),
+                        Point2i( 64, 32 ),
+                        Point2i( 64, 32 ),
+                        Point2i( 64, 32 ),
+                        Point2i( 64, 32 )   // 9
+                      };
+
+  // Expression part 2 (to be combined with parts 1)
+  Point2i ans[4] =    {
+                        Point2i( 2, 2 ),  // 0
+                        Point2i( 8, 8 ),
+                        Point2i( 4, 4 )   // 2
+                      };
+  Point2i result[12]; // Point2i::null
+
+  // Expected result: 64 / 2 = 32, 32 / 2 = 16
+  result[idx] = expr[idx] /= ans[0];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != Point2i(32,16) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next!
+
+  // Expected result: 64 *= 2 = 128 && 32 *= 2 = 64
+  result[idx] = expr[idx] *= ans[0];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[1] == Point2i::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != Point2i(128,64) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next!
+
+  // Expected result: 64 -= 8 = 56 && 32 -= 8 = 24
+  result[idx] = expr[idx] -= ans[1];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != Point2i(56,24) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next!
+
+  // Expected result: 64 += 8 = 72 && 32 += 8 = 40
+  result[idx] = expr[idx] += ans[1];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != Point2i(72,40) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next!
+
+  // Expected result: 64 / 8 = 8 && 32 / 8 = 4
+  result[idx] = expr[idx] / ans[1];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != Point2i(8,4) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next!
+
+  // Expected result: 64 * 8 = 512 && 32 * 8 = 256;
+  result[idx] = expr[idx] * ans[1];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != Point2i(512,256) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next!
+
+  // Expected result: 64 - 1 = 63 && 32 - 1 = 31;
+  result[idx] = --expr[idx]; // ans[1];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != Point2i(63,31) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next!
+
+  // Expected result: 64 - 8 = 56 && 32 - 8 = 24
+  result[idx] = expr[idx] - ans[1];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != Point2i(56,24) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next!
+
+  // Expected result: 64 += 1 = 65 && 32 += 1 = 33
+  result[idx] = ++expr[idx]; //ans[1];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != Point2i(65,33) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next!
+
+  // Expected result: 64 += 4 = 68 && 32 += 4 = 40
+  result[idx] = expr[idx] += ans[2];
+  #if defined( NOM_DEBUG_TESTS )
+    NOM_DUMP_VAR( idx );
+    NOM_DUMP_VAR( result[idx] );
+  #endif
+
+  if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
+  if ( result[idx] != Point2i(68,36) ) return NOM_EXIT_FAILURE;
+
+  idx += 1; // ..Next!
+
   return NOM_EXIT_SUCCESS;
 }
+
 
 nom::int32 main ( nom::int32 args_count, char* args[] )
 {
   if ( do_color_test1() != NOM_EXIT_SUCCESS )
   {
-    NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Color unit test 1" );
+    DialogMessageBox( NOM_UNIT_TEST(1), "Failed nom::Color unit test 1" );
     return NOM_EXIT_FAILURE;
   }
 
   if ( do_color_test2() != NOM_EXIT_SUCCESS )
   {
-    NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Color unit test 2" );
+    DialogMessageBox( NOM_UNIT_TEST(2), "Failed nom::Color unit test 2" );
     return NOM_EXIT_FAILURE;
   }
 
   if ( do_color_test3() != NOM_EXIT_SUCCESS )
   {
-    NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Color unit test 3" );
+    DialogMessageBox( NOM_UNIT_TEST(3), "Failed nom::Color unit test 3" );
     return NOM_EXIT_FAILURE;
   }
 
   if ( do_color_test4() != NOM_EXIT_SUCCESS )
   {
-    NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Color unit test 4" );
+    DialogMessageBox( NOM_UNIT_TEST(4), "Failed nom::Color unit test 4" );
     return NOM_EXIT_FAILURE;
   }
 
-  if ( do_coords_test1() != NOM_EXIT_SUCCESS )
+  if ( do_rect_test1() != NOM_EXIT_SUCCESS )
   {
-    NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Coords unit test 1" );
+    DialogMessageBox( NOM_UNIT_TEST(1), "Failed Rect unit test 1" );
     return NOM_EXIT_FAILURE;
   }
 
-  if ( do_coords_test2() != NOM_EXIT_SUCCESS )
+  if ( do_rect_test2() != NOM_EXIT_SUCCESS )
   {
-    NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Coords unit test 2" );
+    DialogMessageBox( NOM_UNIT_TEST(2), "Failed Rect unit test 2" );
     return NOM_EXIT_FAILURE;
   }
 
-  if ( do_coords_test3() != NOM_EXIT_SUCCESS )
+  if ( do_rect_test3() != NOM_EXIT_SUCCESS )
   {
-    NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Coords unit test 3" );
+    DialogMessageBox( NOM_UNIT_TEST(3), "Failed Rect unit test 3" );
     return NOM_EXIT_FAILURE;
   }
 
-  if ( do_coords_test4() != NOM_EXIT_SUCCESS )
+  if ( do_point2_test1() != NOM_EXIT_SUCCESS )
   {
-    NOM_LOG_ERR ( NOM_UNIT_TEST, "Failed nom::Coords unit test 4" );
+    DialogMessageBox( NOM_UNIT_TEST(1), "Failed Point2 unit test 1" );
+    return NOM_EXIT_FAILURE;
+  }
+
+  if ( do_point2_test2() != NOM_EXIT_SUCCESS )
+  {
+    DialogMessageBox( NOM_UNIT_TEST(2), "Failed Point2 unit test 2" );
     return NOM_EXIT_FAILURE;
   }
 

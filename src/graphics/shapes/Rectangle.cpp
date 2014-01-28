@@ -30,8 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Rectangle::Rectangle ( void ) :
-  color_ { Color4i::Black }
+Rectangle::Rectangle ( void )
 {
   //NOM_LOG_TRACE(NOM);
 }
@@ -41,24 +40,11 @@ Rectangle::~Rectangle ( void )
   //NOM_LOG_TRACE(NOM);
 }
 
-Rectangle::Rectangle ( const Rectangle& copy )  :
-  Transformable { copy.position(), copy.size() }, // Our base class
-  color_ { copy.color() }
-{
-  //NOM_LOG_TRACE(NOM);
-}
-
 Rectangle::Rectangle ( const IntRect& rect, const Color4i& color )  :
   // Our base class
-  Transformable { Point2i( rect.x, rect.y ), Size2i( rect.w, rect.h ) },
-  color_ { color }
+  Shape { Point2i( rect.x, rect.y ), Size2i( rect.w, rect.h ), color }
 {
   //NOM_LOG_TRACE(NOM);
-}
-
-const Color4i& Rectangle::color ( void ) const
-{
-  return this->color_;
 }
 
 void Rectangle::update ( void )

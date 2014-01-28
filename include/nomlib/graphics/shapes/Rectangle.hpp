@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Rect.hpp"
-#include "nomlib/math/Transformable.hpp"
+#include "nomlib/graphics/shapes/Shape.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
 namespace nom {
@@ -44,26 +44,21 @@ namespace nom {
 /// \todo Use SDL2's new multi-rectangle API; see SDL_RenderFillRects.
 ///
 /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
-class Rectangle: public Transformable
+class Rectangle: public Shape
 {
   public:
-    /// \brief Default constructor; initialize with rectangle's color set to
-    /// nom::Color4i::Black.
+    /// \brief Default constructor.
     Rectangle ( void );
 
     /// \brief Destructor; should be fine to inherit from.
     virtual ~Rectangle ( void );
 
-    /// \brief Copy constructor
-    Rectangle ( const Rectangle& copy );
-
     /// \brief Construct a Rectangle object from parameters
+    ///
     /// \param rect nom::IntRect coordinates
+    ///
     /// \param color nom::Color4i color.
     Rectangle ( const IntRect& rect, const Color4i& color );
-
-    /// \brief Obtain the color used in rendering.
-    const Color4i& color ( void ) const;
 
     /// Do nothing method; we have it only because it is required by interface
     /// contract with IDrawable (which is fine).
@@ -78,10 +73,6 @@ class Rectangle: public Transformable
     ///
     /// \param target nom::Window object to render to
     void draw ( RenderTarget target ) const;
-
-  private:
-    /// RGBA color used in rendering
-    Color4i color_;
 };
 
 } // namespace nom

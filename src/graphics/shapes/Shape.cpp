@@ -31,7 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 Shape::Shape ( void ) :
-  color_ { Color4i::Black }
+  outline_color_ { Color4i::White },
+  fill_color_ { Color4i::Black }
 {
   //NOM_LOG_TRACE ( NOM );
 }
@@ -43,7 +44,8 @@ Shape::~Shape ( void )
 
 Shape::Shape ( const Shape& copy )  :
   Transformable { copy.position(), copy.size() }, // Our base class
-  color_ { copy.color() }
+  outline_color_ { copy.outline_color() },
+  fill_color_ { copy.fill_color() }
 {
   //NOM_LOG_TRACE(NOM);
 }
@@ -57,16 +59,24 @@ Shape& Shape::operator = ( const Shape& other )
 }
 */
 
-Shape::Shape ( const Point2i& pos, const Size2i& size, const Color4i& color ) :
-  Transformable { pos, size }, // Our base class
-  color_ ( color )
+const Color4i& Shape::outline_color ( void ) const
 {
-  //NOM_LOG_TRACE ( NOM );
+  return this->outline_color_;
 }
 
-const Color4i& Shape::color ( void ) const
+const Color4i& Shape::fill_color ( void ) const
 {
-  return this->color_;
+  return this->fill_color_;
+}
+
+void Shape::set_outline_color ( const Color4i& color )
+{
+  this->outline_color_ = color;
+}
+
+void Shape::set_fill_color ( const Color4i& color )
+{
+  this->fill_color_ = color;
 }
 
 } // namespace nom

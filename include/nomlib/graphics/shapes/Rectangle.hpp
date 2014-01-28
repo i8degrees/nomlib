@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief 3D Rectangle shape
+/// \brief 2D Rectangle shape
 ///
 /// \todo Use SDL2's new multi-rectangle API; see SDL_RenderFillRects.
 ///
@@ -53,12 +53,11 @@ class Rectangle: public Shape
     /// \brief Destructor; should be fine to inherit from.
     virtual ~Rectangle ( void );
 
-    /// \brief Construct a Rectangle object from parameters
+    /// \brief Construct a Rectangle object from parameters.
     ///
-    /// \param rect nom::IntRect coordinates
-    ///
-    /// \param color nom::Color4i color.
-    Rectangle ( const IntRect& rect, const Color4i& color );
+    /// \param rect nom::IntRect object containing the coordinates.
+    /// \param color nom::Color4i color to fill with.
+    Rectangle ( const IntRect& rect, const Color4i& fill );
 
     /// Do nothing method; we have it only because it is required by interface
     /// contract with IDrawable (which is fine).
@@ -69,9 +68,9 @@ class Rectangle: public Shape
     /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
     void update ( void );
 
-    /// \brief Draw a 3D four sided rectangle shape
+    /// \brief Render the rectangle shape.
     ///
-    /// \param target nom::Window object to render to
+    /// \param target nom::Window object to render to.
     void draw ( RenderTarget target ) const;
 };
 

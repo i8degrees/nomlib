@@ -40,11 +40,12 @@ Rectangle::~Rectangle ( void )
   //NOM_LOG_TRACE(NOM);
 }
 
-Rectangle::Rectangle ( const IntRect& rect, const Color4i& color )  :
-  // Our base class
-  Shape { Point2i( rect.x, rect.y ), Size2i( rect.w, rect.h ), color }
+Rectangle::Rectangle ( const IntRect& rect, const Color4i& fill )
 {
   //NOM_LOG_TRACE(NOM);
+  this->set_position ( Point2i( rect.x, rect.y ) );
+  this->set_size ( Size2i( rect.w, rect.h ) );
+  this->set_fill_color ( fill );
 }
 
 void Rectangle::update ( void )
@@ -54,7 +55,7 @@ void Rectangle::update ( void )
 
 void Rectangle::draw ( RenderTarget target ) const
 {
-  if ( SDL_SetRenderDrawColor ( target.renderer(), this->color().r, this->color().g, this->color().b, this->color().a ) != 0 )
+  if ( SDL_SetRenderDrawColor ( target.renderer(), this->fill_color().r, this->fill_color().g, this->fill_color().b, this->fill_color().a ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
     return;

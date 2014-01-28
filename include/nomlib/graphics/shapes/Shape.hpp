@@ -50,19 +50,29 @@ class Shape: public Transformable
     /// \brief Copy assignment operator
     //Shape& operator = ( const Shape& other );
 
-    /// \brief Construct a shape with specific dimensions & color.
-    Shape ( const Point2i& pos, const Size2i& size, const Color4i& color );
+    /// \brief Obtain the outline color used in rendering a shape.
+    const Color4i& outline_color ( void ) const;
 
-    /// \brief Obtain the color used in rendering a shape.
-    const Color4i& color ( void ) const;
+    /// \brief Obtain the inside fill color used in rendering a shape.
+    const Color4i& fill_color ( void ) const;
+
+    /// \brief Set the outline color of the shape to be rendered.
+    void set_outline_color ( const Color4i& color );
+
+    /// \brief Set the inside (fill) color of the shape to be rendered.
+    void set_fill_color ( const Color4i& color );
 
   protected:
-    /// Default constructor; initialize the color member to nom::Color4i::Black
+    /// Default constructor; initialize the outline rendering color to
+    /// nom::Color4i::White & the fill rendering color to nom::Color4i::Black.
     Shape ( void );
 
   private:
-    /// RGBA color used in rendering a shape
-    Color4i color_;
+    /// RGBA color used in rendering the outline of a shape
+    Color4i outline_color_;
+
+    /// RGBA color used in rendering the inside (fill) of a shape
+    Color4i fill_color_;
 };
 
 } // namespace nom

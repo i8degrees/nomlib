@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GRAPHICS_SHAPES_LINE_HPP
 #define NOMLIB_GRAPHICS_SHAPES_LINE_HPP
 
-#include <vector>
+#include <iostream>
 
 #include "SDL.h" // SDL2
 
@@ -37,8 +37,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/graphics/shapes/Shape.hpp"
-#include "nomlib/system/SDL_helpers.hpp"
-#include "nomlib/system/make_unique.hpp"
 
 namespace nom {
 
@@ -56,7 +54,7 @@ class Line: public Shape
     /// \brief Destructor; should be fine to inherit from.
     virtual ~Line ( void );
 
-    /// \brief Construct a Rectangle object from parameters
+    /// \brief Construct a Line object from parameters
     ///
     /// \param bounds nom::IntRect object containing the starting & ending
     /// coordinates.

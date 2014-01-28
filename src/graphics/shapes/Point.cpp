@@ -30,37 +30,41 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Point::Point ( void ) {}
-Point::~Point ( void ) {}
-
-Point::Point ( const Point2i& coords, const Color4i& color )
+Point::Point ( void )
 {
-  this->coords = coords;
-  this->color = color;
+  //NOM_LOG_TRACE(NOM);
 }
 
-Point::Point ( int32 x, int32 y, const Color4i& color )
+Point::~Point ( void )
 {
-  this->coords = Point2i ( x, y );
-  this->color = color;
+  //NOM_LOG_TRACE(NOM);
 }
 
-void Point::update ( void ) { /* NO-OP */ }
+Point::Point ( const Point2i& pos, const Color4i& fill )
+{
+  //NOM_LOG_TRACE(NOM);
+  this->set_position ( pos );
+  this->set_fill_color ( fill );
+}
+
+void Point::update ( void )
+{
+  // Stub (NO-OP)
+}
 
 void Point::draw ( RenderTarget target ) const
 {
-  if ( SDL_SetRenderDrawColor ( target.renderer(), this->color.r, this->color.g, this->color.b, this->color.a ) != 0 )
+  if ( SDL_SetRenderDrawColor ( target.renderer(), this->fill_color().r, this->fill_color().g, this->fill_color().b, this->fill_color().a ) != 0 )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return;
   }
 
-  if ( SDL_RenderDrawPoint ( target.renderer(), this->coords.x, this->coords.y ) != 0 )
+  if ( SDL_RenderDrawPoint ( target.renderer(), this->position().x, this->position().y ) != 0 )
   {
-NOM_LOG_ERR ( NOM, "Could not render 3D SDL point: " + std::string (SDL_GetError()) );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return;
   }
 }
-
 
 } // namespace nom

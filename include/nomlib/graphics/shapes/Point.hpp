@@ -26,34 +26,45 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_POINT_HEADERS
-#define NOMLIB_SDL2_POINT_HEADERS
+#ifndef NOMLIB_GRAPHICS_SHAPES_POINT_HPP
+#define NOMLIB_GRAPHICS_SHAPES_POINT_HPP
+
+#include <iostream>
+
+#include "SDL.h" // SDL2
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Point2.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/graphics/shapes/Shape.hpp"
 
 namespace nom {
 
-class Point:
-              public IDrawable
+/// \brief 2D Point (pixel representation)
+///
+/// \todo Use SDL2's new multi-point API; see SDL_RenderDrawPoints.
+class Point: public Shape
 {
   public:
+    /// \brief Default constructor.
     Point ( void );
+
+    /// \brief Destructor; should be fine to inherit from.
     virtual ~Point ( void );
 
-    Point ( const Point2i& coords, const Color4i& color );
-    Point ( int32 x, int32 y, const Color4i& color );
+    /// \brief Construct a Point from parameters.
+    ///
+    /// \param pos nom::Point2i object containing the coordinates.
+    /// \param fill nom::Color4i color to render the point as.
+    Point ( const Point2i& pos, const Color4i& fill );
 
     void update ( void );
+
+    /// \brief Render the point coordinate.
+    ///
+    /// \param target nom::Window object to render to.
     void draw ( RenderTarget target ) const;
-
-  private:
-    Point2i coords;
-    Color4i color;
 };
-
 
 } // namespace nom
 

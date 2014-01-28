@@ -30,19 +30,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_SDL2_GRAYFRAME_HPP
 
 #include <iostream>
-#include <string>
 
-#include "SDL.h"
+#include "SDL.h" // SDL2
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Coords.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/math/Transformable.hpp"
+#include "nomlib/math/Rect.hpp"
 #include "nomlib/graphics/Window.hpp"
 #include "nomlib/graphics/shapes/Line.hpp"
+//#include "nomlib/graphics/shapes/Shape.hpp"
 
 namespace nom {
 
-class GrayFrame: public IDrawable
+class GrayFrame: public Transformable
 {
   public:
     typedef std::shared_ptr<GrayFrame> SharedPtr;
@@ -52,15 +52,13 @@ class GrayFrame: public IDrawable
     GrayFrame ( void );
     virtual ~GrayFrame ( void );
 
-    GrayFrame ( int32 x, int32 y, int32 width, int32 height, int32 padding = 1 );
+    //GrayFrame& operator = ( const GrayFrame& other );
 
-    GrayFrame& operator = ( const GrayFrame& other );
+    GrayFrame ( const IntRect& bounds, int pad );
 
-    // Re-implemented from IFrame
-    void setPosition( int32 x, int32 y );
+    /*const IntRect&*/int padding ( void ) const;
 
-    // Re-implemented from IFrame
-    void setSize( int32 width, int32 height, int32 padding = 1 );
+    void set_padding ( int pad );
 
     // Re-implemented from IDrawable
     void update ( void );
@@ -70,16 +68,13 @@ class GrayFrame: public IDrawable
 
   private:
     /// Holds our line objects used for rendering the object.
-    IDrawable::UniqueDrawables frame;
+    IDrawable::UniqueDrawables frame_;
 
-    /// Position & Size
-    Coords frame_position;
+    /// Deprecated; this will be removed in a future version?
+    /*IntRect&*/int padding_;
 
     /// Track object logic changes for updating its rendering
-    bool updated;
-
-    /// Deprecated; this will be removed in a future version
-    int32 padding;
+    bool updated_;
 };
 
 } // namespace nom

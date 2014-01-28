@@ -30,75 +30,94 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-GrayFrame::GrayFrame ( void ) : updated ( false ) {}
+GrayFrame::GrayFrame ( void ) :
+  padding_ ( 1 ),
+  updated_ ( false )
+{
+  //NOM_LOG_TRACE ( NOM );
+}
 
-GrayFrame::~GrayFrame ( void ) {}
+GrayFrame::~GrayFrame ( void )
+{
+  //NOM_LOG_TRACE ( NOM );
+}
 
+/*
 GrayFrame& GrayFrame::operator = ( const GrayFrame& other )
 {
   this->frame_position = other.frame_position;
-  this->updated = other.updated;
+  this->updated_ = other.updated_;
   this->padding = other.padding;
 
   return *this;
 }
+*/
 
-GrayFrame::GrayFrame ( int32 x, int32 y, int32 width, int32 height, int32 padding )
+GrayFrame::GrayFrame ( const IntRect& bounds, int pad ) :
+  Transformable { Point2i( bounds.x, bounds.y ), Size2i( bounds.w, bounds.h ) },
+  padding_ ( pad ),
+  updated_ ( false )
 {
-  this->setPosition ( x, y );
-  this->setSize ( width, height, padding );
-
-  this->updated = false;
+  //NOM_LOG_TRACE ( NOM );
 }
 
-void GrayFrame::setPosition ( int32 x, int32 y )
+int GrayFrame::padding ( void ) const
 {
-  this->frame_position.setPosition ( x, y );
-  this->updated = false;
+  return this->padding_;
 }
 
-void GrayFrame::setSize ( int32 width, int32 height, int32 padding )
+void GrayFrame::set_padding ( int pad )
 {
-  frame_position.setSize ( width, height );
-  this->padding = padding;
-  this->updated = false;
+  this->padding_ = pad;
 }
 
 void GrayFrame::update ( void )
 {
-  if ( this->updated == true )
+  if ( this->updated_ == true )
     return;
 
-  int32 x = this->frame_position.x;
-  int32 y = this->frame_position.y;
-  int32 width = this->frame_position.w;
-  int32 height = this->frame_position.h;
+  int x = this->position().x;
+  int y = this->position().y;
+  int width = this->size().w;
+  int height = this->size().h;
 
-  int32 x_offset = x + width;
-  int32 y_offset = y + height;
+  int x_offset = x + width;
+  int y_offset = y + height;
 
-  this->frame.clear();
+  this->frame_.clear();
 
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line( IntRect( x, y, x_offset - padding, y), Color4i( 41, 41, 41 ) ) ) ); // top0
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line( IntRect( x, y + 1, x_offset - padding, y + 1), Color4i( 133, 133, 133 ) ) ) ); // top1
+  Line top0 ( IntRect( x, y, x_offset - this->padding(), y), Color4i( 41, 41, 41 ) );
+  Line top1 ( IntRect( x, y + 1, x_offset - this->padding(), y + 1), Color4i( 133, 133, 133 ) );
 
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line( IntRect( x, y + 1, x, y_offset - padding), Color4i( 41, 41, 41 ) ) ) ); // left0
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line( IntRect( x + 1, y + 2, x + 1, y_offset - padding), Color4i( 133, 133, 133 ) ) ) ); // left1
+  Line left0 ( IntRect( x, y + 1, x, y_offset - this->padding()), Color4i( 41, 41, 41 ) );
+  Line left1 ( IntRect( x + 1, y + 2, x + 1, y_offset - this->padding()), Color4i( 133, 133, 133 ) );
 
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line( IntRect( x_offset, y, x_offset, y_offset - padding), Color4i( 57, 57, 57 ) ) ) ); // right0
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line( IntRect( x_offset, y, x_offset, y_offset - padding), Color4i( 41, 41, 41 ) ) ) ); // right1
+  Line right0 ( IntRect( x_offset, y, x_offset, y_offset - this->padding()), Color4i( 57, 57, 57 ) );
+  Line right1 ( IntRect( x_offset, y, x_offset, y_offset - this->padding()), Color4i( 41, 41, 41 ) );
 
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line( IntRect( x, y_offset - padding, x_offset - padding, y_offset - padding), Color4i( 57, 57, 57 ) ) ) ); //bottom0
-  this->frame.push_back ( IDrawable::UniquePtr ( new Line( IntRect( x, y_offset - padding, x_offset - padding, y_offset - padding), Color4i ( 41, 41, 41 ) ) ) ); // bottom1
+  Line bottom0 ( IntRect( x, y_offset - this->padding(), x_offset - this->padding(), y_offset - this->padding()), Color4i( 57, 57, 57 ) );
+  Line bottom1 ( IntRect( x, y_offset - this->padding(), x_offset - this->padding(), y_offset - this->padding()), Color4i ( 41, 41, 41 ) );
 
-  this->updated = true;
+  this->frame_.push_back ( IDrawable::UniquePtr ( new Line( top0)) );
+  this->frame_.push_back ( IDrawable::UniquePtr ( new Line( top1)) );
+
+  this->frame_.push_back ( IDrawable::UniquePtr ( new Line( left0)) );
+  this->frame_.push_back ( IDrawable::UniquePtr ( new Line( left1)) );
+
+  this->frame_.push_back ( IDrawable::UniquePtr ( new Line( right0)) );
+  this->frame_.push_back ( IDrawable::UniquePtr ( new Line( right1)) );
+
+  this->frame_.push_back ( IDrawable::UniquePtr ( new Line( bottom0)) );
+  this->frame_.push_back ( IDrawable::UniquePtr ( new Line( bottom1)) );
+
+  this->updated_ = true;
 }
 
 void GrayFrame::draw ( RenderTarget target ) const
 {
-  for ( auto idx = 0; idx != this->frame.size(); ++idx )
+  for ( auto idx = 0; idx != this->frame_.size(); ++idx )
   {
-    this->frame[idx]->draw ( target );
+    this->frame_[idx]->draw ( target );
   }
 }
 

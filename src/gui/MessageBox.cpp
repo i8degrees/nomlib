@@ -63,7 +63,7 @@ MessageBox::MessageBox  (
 
   if ( style == MessageBox::Style::Gray )
   {
-    this->drawable.push_back ( GrayFrame::SharedPtr ( new GrayFrame ( x, y, width, height, padding ) ) );
+    this->drawable.push_back ( GrayFrame::SharedPtr ( new GrayFrame ( IntRect(x, y, width, height), padding) ) );
   }
 
   this->update();
@@ -89,13 +89,14 @@ MessageBox::MessageBox  (
 
   if ( style != nullptr )
   {
-    style->setPosition ( x, y );
-    style->setSize ( width, height, padding );
+    style->set_position ( Point2i( x, y ) );
+    style->set_size ( Size2i( width, height ) );
+    style->set_padding ( padding );
     this->drawable.push_back ( style );
   }
   else // default frame style
   {
-    this->drawable.push_back ( GrayFrame::SharedPtr ( new GrayFrame ( x, y, width, height, padding ) ) );
+    this->drawable.push_back ( GrayFrame::SharedPtr ( new GrayFrame ( IntRect( x, y, width, height), padding ) ) );
   }
 
   this->update();

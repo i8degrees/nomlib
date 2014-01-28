@@ -36,7 +36,27 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// Get the current date & time
+/// \brief Buffer input size; used in Windows-dependent time implementation --
+/// see **system/clock.cpp**. Although this is only used in the Windows code,
+/// I expect the buffer size to be the same ( ~1 +/- ) across all supported
+/// platforms.
+const nom::size TIME_STRING_SIZE = 26;
+
+/// \brief Get the current date & time.
+///
+/// \returns On success, a time string with the following formatting:
+///
+/// \code
+/// Wed Jan 02 02:03:55 1980\n\0
+/// \endcode
+///
+/// On error: null-terminated (empty) string.
+///
+/// \remarks  The string is expected to be null-terminated with a newline
+///           carriage.
+///
+/// \todo Move Windows OS supporting code from **system/clock.cpp** to
+/// **system/windows.cpp**.
 const std::string time ( void );
 
 } // namespace nom

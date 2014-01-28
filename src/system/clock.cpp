@@ -32,9 +32,33 @@ namespace nom {
 
 const std::string time ( void )
 {
-  time_t timer = std::time ( nullptr );
+  time_t timer;
 
-  return ctime ( &timer );
+  // Broken: Fix MSVCPP compile warning that suggests using ctime_s; the
+  // "secure" variant of MS time functions.
+  #if defined( NOM_PLATFORM_WINDOWS )
+    char current_time[TIME_STRING_SIZE] = "\0"; // null-terminated
+    errno_t err;
+    timer = std::time ( NULL );
+    err = ctime_s ( current_time, TIME_STRING_SIZE , &timer );
+
+    // Return a null-terminated string on err
+    if ( err != 0 )
+    {
+      // Error is likely due to incomplete implementation --
+      // are we compiling on an unsupported platform?
+      NOM_LOG_ERR( NOM, "Could not obtain current time & date" );
+      return std::string( current_time );
+      //return std::string("\0");
+    }
+    else
+    {
+      return std::string( current_time );
+    }
+  #else // Assume POSIX Unix variant
+    timer = std::time ( NULL );
+    return ctime ( &timer );
+  #endif
 }
 
 } // namespace nom

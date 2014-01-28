@@ -57,7 +57,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #if defined( NOM_COMPILER_FEATURE_NULLPTR )
     #define NULL nullptr
   #else
-    #define NULL __DARWIN_NULL
+    #define NULL 0 //__DARWIN_NULL
   #endif
 #endif // ! NULL
 
@@ -65,7 +65,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #if defined( NOM_COMPILER_FEATURE_NULLPTR )
     #define nil nullptr
   #else
-    #define nil __DARWIN_NULL
+    #define nil 0 //__DARWIN_NULL
   #endif
 #endif // ! nil
 

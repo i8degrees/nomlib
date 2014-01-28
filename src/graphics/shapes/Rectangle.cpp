@@ -30,45 +30,58 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Rectangle::Rectangle ( void ) {}
-Rectangle::~Rectangle ( void ) {}
-
-Rectangle::Rectangle ( const Rectangle& rect )
+Rectangle::Rectangle ( void ) :
+  color_ { Color4i::Black }
 {
-  this->coords = rect.coords;
-  this->color = rect.color;
+  //NOM_LOG_TRACE(NOM);
 }
 
-Rectangle::Rectangle ( const Coords& coords, const Color4i& color )
+Rectangle::~Rectangle ( void )
 {
-  this->coords = coords;
-  this->color = color;
+  //NOM_LOG_TRACE(NOM);
 }
 
-Rectangle::Rectangle ( int32 x, int32 y, int32 width, int32 height, const Color4i& color )
+Rectangle::Rectangle ( const Rectangle& copy )  :
+  Transformable { copy.position(), copy.size() }, // Our base class
+  color_ { copy.color() }
 {
-  this->coords = Coords ( x, y, width, height );
-  this->color = color;
+  //NOM_LOG_TRACE(NOM);
 }
 
-void Rectangle::update ( void ) { /* NO-OP */ }
+Rectangle::Rectangle ( const IntRect& rect, const Color4i& color )  :
+  // Our base class
+  Transformable { Point2i( rect.x, rect.y ), Size2i( rect.w, rect.h ) },
+  color_ { color }
+{
+  //NOM_LOG_TRACE(NOM);
+}
+
+const Color4i& Rectangle::color ( void ) const
+{
+  return this->color_;
+}
+
+void Rectangle::update ( void )
+{
+  // Stub (NO-OP)
+}
 
 void Rectangle::draw ( RenderTarget target ) const
 {
-  if ( SDL_SetRenderDrawColor ( target.renderer(), this->color.r, this->color.g, this->color.b, this->color.a ) != 0 )
+  if ( SDL_SetRenderDrawColor ( target.renderer(), this->color().r, this->color().g, this->color().b, this->color().a ) != 0 )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return;
   }
 
-  SDL_Rect r = SDL_RECT(this->coords); // convert nom::Coords to SDL_Rect
+  // nom::Point2i & nom::Size2i -> SDL_Rect
+  SDL_Rect render_coords = SDL_RECT( this->position(), this->size() );
 
-  if ( SDL_RenderFillRect ( target.renderer(), &r ) != 0 )
+  if ( SDL_RenderFillRect ( target.renderer(), &render_coords ) != 0 )
   {
-NOM_LOG_ERR ( NOM, "Could not render 3D SDL rectangle: " + std::string (SDL_GetError()) );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return;
   }
 }
-
 
 } // namespace nom

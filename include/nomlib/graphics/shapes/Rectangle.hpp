@@ -26,47 +26,44 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_RECTANGLE_HEADERS
-#define NOMLIB_SDL2_RECTANGLE_HEADERS
+#ifndef NOMLIB_GRAPHICS_SHAPES_RECTANGLE_HPP
+#define NOMLIB_GRAPHICS_SHAPES_RECTANGLE_HPP
 
-#include "SDL.h"
+#include "SDL.h" // SDL2
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
-#include "nomlib/math/Coords.hpp"
 #include "nomlib/math/Rect.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/math/Transformable.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
 namespace nom {
 
 /// \brief 3D Rectangle shape
 ///
-/// \todo Perhaps look at implementing the multi-rectangle variant; SDL_RenderFillRects.
-/// I bet, in terms of efficiency, gains are to be seen!
+/// \todo Use SDL2's new multi-rectangle API; see SDL_RenderFillRects.
+///
 /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
-class Rectangle:
-                  public IDrawable
-
+class Rectangle: public Transformable
 {
   public:
-    /// Default constructor; construct component objects with their sane defaults.
+    /// \brief Default constructor; initialize with rectangle's color set to
+    /// nom::Color4i::Black.
     Rectangle ( void );
 
-    /// Lazy destructor with nothing to do. Please inherit me!
+    /// \brief Destructor; should be fine to inherit from.
     virtual ~Rectangle ( void );
 
-    /// Construct a Rectangle object using an existing Rectangle instance.
-    /// (This is a typical copy constructor).
-    Rectangle ( const Rectangle& rect );
+    /// \brief Copy constructor
+    Rectangle ( const Rectangle& copy );
 
-    /// Construct a Rectangle object using a nom::Coords (X, Y, width & height)
-    /// coordinates and a chosen color.
-    Rectangle ( const Coords& coords, const Color4i& color );
+    /// \brief Construct a Rectangle object from parameters
+    /// \param rect nom::IntRect coordinates
+    /// \param color nom::Color4i color.
+    Rectangle ( const IntRect& rect, const Color4i& color );
 
-    /// Construct a Rectangle object using a nom::Coords (X, Y, width & height)
-    /// coordinates and a chosen color.
-    Rectangle ( int32 x1, int32 y1, int32 width, int32 height, const Color4i& color );
+    /// \brief Obtain the color used in rendering.
+    const Color4i& color ( void ) const;
 
     /// Do nothing method; we have it only because it is required by interface
     /// contract with IDrawable (which is fine).
@@ -77,17 +74,15 @@ class Rectangle:
     /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
     void update ( void );
 
-    /// Draw a 3D four sided cube shape (rectangle) onto the the attached
-    /// renderer
+    /// \brief Draw a 3D four sided rectangle shape
+    ///
+    /// \param target nom::Window object to render to
     void draw ( RenderTarget target ) const;
 
   private:
-    /// X, Y signed integer rendering coordinates
-    Coords coords;
-    /// Rendering color (RGBA).
-    Color4i color;
+    /// RGBA color used in rendering
+    Color4i color_;
 };
-
 
 } // namespace nom
 

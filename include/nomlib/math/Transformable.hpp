@@ -51,6 +51,7 @@ class Transformable: public virtual IDrawable
     void move ( int x = 0, int y = 0 );
 
   private:
+    /// \todo Consider using IntRect to store coordinates?
     Point2i position_;
 
     /// \deprecated This will likely be removed soon -- no replacement;

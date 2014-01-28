@@ -97,6 +97,11 @@ bool Gradient::dithering ( void ) const
   return this->enable_dithering_;
 }
 
+const Point2i& Gradient::margins ( void ) const
+{
+  return this->margins_;
+}
+
 /*
 void Gradient::set_size ( const Size2i& size )
 {
@@ -151,19 +156,24 @@ void Gradient::enable_dithering ( bool toggle )
 
 void Gradient::strategy_top_down ( void )
 {
-  uint32 y_offset = ( this->position().y + this->size().h ) - this->margins_.y;
+  uint32 y_offset = ( this->position().y + this->size().h ) - this->margins().y;
 
   float currentR = (float) gradient_[0].r;
   float currentG = (float) gradient_[0].g;
   float currentB = (float) gradient_[0].b;
 
-  float destR = (float) ( gradient_[1].r - gradient_[0].r )      / ( float ) ( this->size().h - this->margins_.y );
-  float destG = (float) ( gradient_[1].g - gradient_[0].g )  / ( float ) ( this->size().h - this->margins_.y );
-  float destB = (float) ( gradient_[1].b - gradient_[0].b )    / ( float ) ( this->size().h - this->margins_.y );
+  float destR = (float) ( gradient_[1].r - gradient_[0].r )      / ( float ) ( this->size().h - this->margins().y );
+  float destG = (float) ( gradient_[1].g - gradient_[0].g )  / ( float ) ( this->size().h - this->margins().y );
+  float destB = (float) ( gradient_[1].b - gradient_[0].b )    / ( float ) ( this->size().h - this->margins().y );
 
-  for ( uint32 rows = this->position().y + this->margins_.y; rows < y_offset; rows++ )
+  for ( uint32 rows = this->position().y + this->margins().y; rows < y_offset; rows++ )
   {
-    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( this->position().x + this->margins_.x, rows, this->size().w - this->margins_.x, 1 ), Color4i ( currentR, currentG, currentB ) ) ) );
+    // Calculate rendering offsets
+    IntRect render_coords = IntRect( this->position().x + this->margins().x, rows, this->size().w - this->margins().x, 1 );
+    Color4i render_color = Color4i( currentR, currentG, currentB );
+
+    // Queue up to render
+    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle( render_coords, render_color ) ) );
 
     if ( this->dithering() )
     {
@@ -176,19 +186,24 @@ void Gradient::strategy_top_down ( void )
 
 void Gradient::strategy_left_right ( void )
 {
-  uint32 x_offset = ( this->position().x + this->size().w ) - this->margins_.x;
+  uint32 x_offset = ( this->position().x + this->size().w ) - this->margins().x;
 
   float currentR = (float) gradient_[0].r;
   float currentG = (float) gradient_[0].g;
   float currentB = (float) gradient_[0].b;
 
-  float destR = (float) ( gradient_[1].r - gradient_[0].r )      / ( float ) ( this->size().w - this->margins_.x );
-  float destG = (float) ( gradient_[1].g - gradient_[0].g )  / ( float ) ( this->size().w - this->margins_.x );
-  float destB = (float) ( gradient_[1].b - gradient_[0].b )    / ( float ) ( this->size().w - this->margins_.x );
+  float destR = (float) ( gradient_[1].r - gradient_[0].r )      / ( float ) ( this->size().w - this->margins().x );
+  float destG = (float) ( gradient_[1].g - gradient_[0].g )  / ( float ) ( this->size().w - this->margins().x );
+  float destB = (float) ( gradient_[1].b - gradient_[0].b )    / ( float ) ( this->size().w - this->margins().x );
 
-  for ( uint32 rows = this->position().x + this->margins_.x; rows < x_offset; rows++ )
+  for ( uint32 rows = this->position().x + this->margins().x; rows < x_offset; rows++ )
   {
-    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle ( Coords ( rows, this->position().y + this->margins_.y, 1, this->size().h - this->margins_.y ), Color4i ( currentR, currentG, currentB ) ) ) );
+    // Calculate rendering offsets
+    IntRect render_coords = IntRect( rows, this->position().y + this->margins().y, 1, this->size().h - this->margins().y );
+    Color4i render_color = Color4i( currentR, currentG, currentB );
+
+    // Queue up to render
+    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle ( render_coords, render_color ) ) );
 
     if ( this->dithering() )
     {

@@ -95,6 +95,7 @@ class Gradient: public Transformable
     Color4i end_color ( void ) const;
     Gradient::FillDirection fill_direction ( void ) const;
     bool dithering ( void ) const;
+    const Point2i& margins ( void ) const;
 
     void set_start_color ( const Color4i& starting_color );
     void set_end_color ( const Color4i& ending_color );

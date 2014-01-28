@@ -26,12 +26,43 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_TYPES_HEADERS
-#define NOMLIB_TYPES_HEADERS
-
-#include <cstdint>
+#ifndef NOMLIB_STDINT_TYPES_HPP
+#define NOMLIB_STDINT_TYPES_HPP
 
 #include "platforms.hpp"
+
+/*
+  TODO: This should be replaced by an actual CMake script -- think:
+        compile-time check for the necessary feature support for C++11 style
+        headers support.
+
+        Look into why GCC doesn't like the inclusion of <cstdint> -- otherwise
+        known as stdint.h. MSVCPP2013 & llvm-clang are fine with it).
+*/
+
+#ifndef NOM_PLATFORM_LINUX  // To be replace with NOM_COMPILER_FEATURE_NULLPTR
+                            // (see above TODO note).
+  #include <cstdint>
+#else
+  #include <sys/types.h>
+#endif
+
+// Borrowed from /usr/include/MacTypes.h && /usr/include/objc/objc.h:
+#ifndef NULL
+  #if defined( NOM_COMPILER_FEATURE_NULLPTR )
+    #define NULL nullptr
+  #else
+    #define NULL __DARWIN_NULL
+  #endif
+#endif // ! NULL
+
+#ifndef nil
+  #if defined( NOM_COMPILER_FEATURE_NULLPTR )
+    #define nil nullptr
+  #else
+    #define nil __DARWIN_NULL
+  #endif
+#endif // ! nil
 
 // Portable fixed-size data types derive from stdint.h
 namespace nom {
@@ -48,9 +79,17 @@ typedef uint16_t uint16;
 typedef int32_t int32;
 typedef uint32_t uint32;
 
-// 64-bit integer types
-typedef signed long long int int64;
-typedef unsigned long long int uint64;
+/// \brief 64-bit integer types
+/// \note As per **/usr/include/MacTypes.h**:
+///
+/// "The MS Visual C/C++ compiler uses __int64 instead of long long".
+#if defined( NOM_COMPILER_MSVCPP ) && defined( NOM_PLATFORM_ARCH_X86 )
+  typedef signed __int64 int64;
+  typedef unsigned __int64 uint64;
+#else // Blindly assume a 64-bit architecture
+  typedef int64_t int64; //typedef signed long long int int64;
+  typedef uint64_t uint64; //typedef unsigned long long int uint64;
+#endif
 
 // Additional integer type definitions
 #if defined (NOM_PLATFORM_ARCH_X86_64)
@@ -62,7 +101,7 @@ typedef unsigned long long int uint64;
 typedef unsigned char uchar;
 typedef signed int sint;
 typedef unsigned int uint;
-typedef std::size_t size_t;
+typedef std::size_t size;
 typedef int boolean;
 
 typedef sint* sint_ptr;
@@ -93,17 +132,13 @@ static_assert ( sizeof ( nom::ulong ) == 8, "nom::ulong" );
 static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
 
 #if defined(NOM_PLATFORM_ARCH_X86_64)
-  static_assert ( sizeof ( nom::size_t ) == ( sizeof(nom::uint64) ), "nom::size_t" );
+  static_assert ( sizeof ( nom::size ) == ( sizeof(nom::uint64) ), "nom::size" );
   static_assert ( sizeof ( nom::int32_ptr ) == ( sizeof(long) ), "nom::int32_ptr" );
   static_assert ( sizeof ( nom::uint32_ptr ) == ( sizeof(nom::ulong) ), "nom::uint32_ptr" );
 #elif defined(NOM_PLATFORM_ARCH_X86)
-  static_assert ( sizeof ( nom::size_t ) == ( sizeof(nom::uint32) ), "nom::size_t" );
+  static_assert ( sizeof ( nom::size ) == ( sizeof(nom::uint32) ), "nom::size" );
 #else
-  #if defined(NOM_COMPILER_MSVCPP)
-    #pragma message ( "types.hpp: Unknown architecture; defined data types may be wrong." )
-  #else // Assume GCC/llvm-clang
-    #warning types.hpp: Unknown architecture; defined data types may be wrong.
-  #endif
+  #pragma message ( "types.hpp: Unknown architecture; defined data types may be wrong." )
 #endif
 
 static_assert ( sizeof ( nom::boolean ) == ( sizeof(int) ), "nom::boolean" );

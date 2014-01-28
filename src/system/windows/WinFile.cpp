@@ -94,7 +94,7 @@ NOM_LOG_ERR ( NOM, "Unknown error on attempt to change working directory to: " +
 
 const std::string WinFile::basename ( const std::string& filename )
 {
-  size_t pos = 0;
+  nom::size pos = 0;
   pos = filename.find_last_of ( ".", PATH_MAX );
 
   // If no matches are found, return the input filename back to the end-user.

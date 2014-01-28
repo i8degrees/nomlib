@@ -30,37 +30,42 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Line::Line ( void ) {}
-Line::~Line ( void ) {}
-
-Line::Line ( const Coords& coords, const Color4i& color )
+Line::Line ( void )
 {
-  this->coords = coords;
-  this->color = color;
+  //NOM_LOG_TRACE(NOM);
 }
 
-Line::Line ( int32 x, int32 y, int32 width, int32 height, const Color4i& color )
+Line::~Line ( void )
 {
-  this->coords = Coords ( x, y, width, height );
-  this->color = color;
+  //NOM_LOG_TRACE(NOM);
 }
 
-void Line::update ( void ) { /* NO-OP */ }
+Line::Line ( const IntRect& bounds, const Color4i& outline )
+{
+  //NOM_LOG_TRACE(NOM);
+  this->set_position ( Point2i( bounds.x, bounds.y ) );
+  this->set_size ( Size2i( bounds.w, bounds.h ) );
+  this->set_outline_color ( outline );
+}
+
+void Line::update ( void )
+{
+  // Stub (NO-OP)
+}
 
 void Line::draw ( RenderTarget target ) const
 {
-  if ( SDL_SetRenderDrawColor ( target.renderer(), this->color.r, this->color.g, this->color.b, this->color.a ) != 0 )
+  if ( SDL_SetRenderDrawColor ( target.renderer(), this->outline_color().r, this->outline_color().g, this->outline_color().b, this->outline_color().a ) != 0 )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return;
   }
 
-  if ( SDL_RenderDrawLine ( target.renderer(), this->coords.x, this->coords.y, this->coords.w, this->coords.h ) != 0 )
+  if ( SDL_RenderDrawLine ( target.renderer(), this->position().x, this->position().y, this->size().w, this->size().h ) != 0 )
   {
-NOM_LOG_ERR ( NOM, "Could not render 3D SDL line: " + std::string (SDL_GetError()) );
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return;
   }
 }
-
 
 } // namespace nom

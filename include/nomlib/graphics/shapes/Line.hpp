@@ -26,42 +26,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_LINE_HEADERS
-#define NOMLIB_SDL2_LINE_HEADERS
+#ifndef NOMLIB_GRAPHICS_SHAPES_LINE_HPP
+#define NOMLIB_GRAPHICS_SHAPES_LINE_HPP
 
-#include <cmath>
 #include <vector>
+
+#include "SDL.h" // SDL2
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
-#include "nomlib/math/Coords.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/math/Rect.hpp"
+#include "nomlib/graphics/shapes/Shape.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/system/make_unique.hpp"
 
 namespace nom {
 
-/// \brief 3D Line segment shape
+/// \brief 2D line segment
 ///
-/// \todo Perhaps look at implementing the multi-line variant; SDL_RenderDrawLines.
-/// I bet, in terms of efficiency, gains are to be seen!
+/// \todo Use SDL2's new multi-line API; see SDL_RenderDrawLines.
+///
 /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
-class Line:
-            public IDrawable
+class Line: public Shape
 {
   public:
-    /// Default constructor; construct component objects with their sane defaults.
+    /// \brief Default constructor.
     Line ( void );
 
-    /// Lazy destructor with nothing to do. Please inherit me!
+    /// \brief Destructor; should be fine to inherit from.
     virtual ~Line ( void );
 
-    /// Construct a Line object using a nom::Coords (X, Y, width & height)
-    /// coordinates and a chosen color.
-    Line ( const Coords& coords, const Color4i& color );
-
-    /// Construct a Line object using X, Y, width and height integers and a
-    /// chosen color.
-    Line ( int32 x, int32 y, int32 width, int32 height, const Color4i& color );
+    /// \brief Construct a Rectangle object from parameters
+    ///
+    /// \param bounds nom::IntRect object containing the starting & ending
+    /// coordinates.
+    /// \param color nom::Color4i color to render.
+    Line ( const IntRect& bounds, const Color4i& outline );
 
     /// Do nothing method; we have it only because it is required by interface
     /// contract with IDrawable (which is fine).
@@ -72,16 +72,11 @@ class Line:
     /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
     void update ( void );
 
-    /// Draw a 3D line segment onto the the attached renderer
+    /// \brief Render the line segments.
+    ///
+    /// \param target nom::Window object to render to.
     void draw ( RenderTarget target ) const;
-
-  private:
-    /// X, Y signed integer rendering coordinates
-    Coords coords;
-    /// Rendering color (RGBA).
-    Color4i color;
 };
-
 
 } // namespace nom
 

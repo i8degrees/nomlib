@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_PLATFORMS_HEADERS
-#define NOMLIB_PLATFORMS_HEADERS
+#ifndef NOMLIB_SUPPORTED_PLATFORMS_HPP
+#define NOMLIB_SUPPORTED_PLATFORMS_HPP
 
 /// \brief Identification the platform (operating system)
 ///
@@ -39,8 +39,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #define NOM_PLATFORM_WINDOWS
 #elif defined ( linux ) || defined ( __linux )
   #define NOM_PLATFORM_LINUX
+  #define NOM_PLATFORM_POSIX // Assume POSIX-compliant Unix
 #elif defined ( __APPLE__ ) || defined ( MACOSX ) || defined ( macintosh ) || defined ( Macintosh )
   #define NOM_PLATFORM_OSX
+  #define NOM_PLATFORM_POSIX // Assume POSIX-compliant Unix
 #endif
 
 /// Platform architecture detection; we only check for a 32-bit or 64-bit
@@ -49,9 +51,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// \remarks The second set of arch checks are for when compiling on Windows;
 /// it has only been tested with MSVCPP 2013 RC1.
 #if defined( __i386__ ) || defined( _M_IX86 )
-  #define NOM_PLATFORM_ARCH_X86 1
+  #define NOM_PLATFORM_ARCH_X86
 #elif defined( __x86_64__ ) || defined( _M_AMD64 )
-  #define NOM_PLATFORM_ARCH_X86_64 1
+  #define NOM_PLATFORM_ARCH_X86_64
 #endif
 
 /// \brief Compiler detection
@@ -59,8 +61,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// \todo Add conditional if for GNU GCC
 #if defined(_MSC_VER) // Microsoft Visual C++
   #define NOM_COMPILER_MSVCPP
+  #define NOM_COMPILER_FEATURE_NULLPTR // See include/nomlib/types.hpp
 #else // Assume llvm-clang
   #define NOM_COMPILER_CLANG
+  #define NOM_COMPILER_FEATURE_NULLPTR // See include/nomlib/types.hpp
 #endif
 
 // Function names and preferably also its type signature

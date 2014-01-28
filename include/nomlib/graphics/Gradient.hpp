@@ -36,7 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <utility>
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Coords.hpp"
+//#include "nomlib/math/Size2.hpp"
+#include "nomlib/math/Transformable.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/shapes/Rectangle.hpp"
@@ -45,8 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Rectangle fill class with dithered, linear gradient colors
-class Gradient:
-                public IDrawable
+class Gradient: public Transformable
 
 {
   public:
@@ -74,7 +74,8 @@ class Gradient:
     /// \DEPRECATED
     Gradient  (
                 Color4i gradient_color[2],
-                const Coords& bounds, int32 x_margin, int32 y_margin,
+                const Point2i& pos, const Size2i& size,
+                const Point2i& margin,
                 Gradient::FillDirection direction
               );
 
@@ -84,12 +85,12 @@ class Gradient:
     /// Fully initialize this object
     void initialize (
                       Color4i gradient_color[2],
-                      const Coords& bounds, int32 x_margin, int32 y_margin,
+                      const Point2i& pos, const Size2i& size,
+                      const Point2i& margin,
                       Gradient::FillDirection direction
                     );
 
-    const Coords position ( void ) const;
-    const Coords size ( void ) const;
+    //const Size2i& size ( void ) const;
     Color4i start_color ( void ) const;
     Color4i end_color ( void ) const;
     Gradient::FillDirection fill_direction ( void ) const;
@@ -99,9 +100,8 @@ class Gradient:
     void set_end_color ( const Color4i& ending_color );
     void reverse_colors ( void );
     void set_fill_direction ( Gradient::FillDirection direction );
-    void set_position ( int32 x, int32 y );
-    void set_size ( int32 width, int32 height );
-    void set_margins ( int32 x, int32 y );
+    //void set_size ( const Size2i& size );
+    void set_margins ( const Point2i& margin );
     void enable_dithering ( bool toggle );
 
     void update ( void );
@@ -128,14 +128,10 @@ class Gradient:
     /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
     Color4i gradient_[2];
 
-    /// Rendering coordinates (X, Y, width & height)
-    Coords coords_;
+    /// X, Y offset coordinates
+    Point2i margins_;
 
-    /// x coordinate offset
-    int32 x_margin_;
-
-    /// y coordinate offset
-    int32 y_margin_;
+    //Size2i size_;
 
     /// Color fill axis -- X or Y increment
     enum Gradient::FillDirection fill_direction_;

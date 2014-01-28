@@ -104,7 +104,6 @@ set ( MATH_SOURCE
       ${SRC_DIR}/math/Point3.cpp
       ${SRC_DIR}/math/Rect.cpp
       ${SRC_DIR}/math/Color4.cpp
-      ${SRC_DIR}/math/Coords.cpp
       ${SRC_DIR}/math/Transformable.cpp
     )
 

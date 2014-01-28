@@ -26,34 +26,45 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_HPP
-#define NOMLIB_GRAPHICS_HPP
+#ifndef NOMLIB_GRAPHICS_SHAPES_SHAPE_HPP
+#define NOMLIB_GRAPHICS_SHAPES_SHAPE_HPP
 
-// Public header file
+#include <iostream>
 
-#include <nomlib/config.hpp>
-#include <nomlib/graphics/Text.hpp>
-#include <nomlib/graphics/RendererInfo.hpp>
-#include <nomlib/graphics/Texture.hpp>
-#include <nomlib/graphics/VideoMode.hpp>
-#include <nomlib/graphics/Window.hpp>
-#include <nomlib/graphics/Renderer.hpp>
-#include <nomlib/graphics/IDrawable.hpp>
-#include <nomlib/graphics/Gradient.hpp>
-#include <nomlib/graphics/Image.hpp>
-#include <nomlib/graphics/fonts/BitmapFont.hpp>
-#include <nomlib/graphics/fonts/FontMetrics.hpp>
-#include <nomlib/graphics/fonts/FontPage.hpp>
-#include <nomlib/graphics/fonts/FontRow.hpp>
-#include <nomlib/graphics/fonts/Glyph.hpp>
-#include <nomlib/graphics/fonts/TrueTypeFont.hpp>
-#include <nomlib/graphics/shapes/Shape.hpp>
-#include <nomlib/graphics/shapes/Point.hpp>
-#include <nomlib/graphics/shapes/Line.hpp>
-#include <nomlib/graphics/shapes/Rectangle.hpp>
-#include <nomlib/graphics/sprite/Sprite.hpp>
-#include <nomlib/graphics/sprite/SpriteBatch.hpp>
-#include <nomlib/graphics/sprite/SpriteSheet.hpp>
-#include <nomlib/graphics/sprite/AnimatedSprite.hpp>
+#include "nomlib/config.hpp"
+#include "nomlib/math/Transformable.hpp"
+#include "nomlib/math/Color4.hpp"
+
+
+namespace nom {
+
+class Shape: public Transformable
+{
+  public:
+    /// Destructor.
+    virtual ~Shape ( void );
+
+    /// \brief Copy constructor
+    Shape ( const Shape& copy );
+
+    /// \brief Copy assignment operator
+    //Shape& operator = ( const Shape& other );
+
+    /// \brief Construct a shape with specific dimensions & color.
+    Shape ( const Point2i& pos, const Size2i& size, const Color4i& color );
+
+    /// \brief Obtain the color used in rendering a shape.
+    const Color4i& color ( void ) const;
+
+  protected:
+    /// Default constructor; initialize the color member to nom::Color4i::Black
+    Shape ( void );
+
+  private:
+    /// RGBA color used in rendering a shape
+    Color4i color_;
+};
+
+} // namespace nom
 
 #endif // include guard defined

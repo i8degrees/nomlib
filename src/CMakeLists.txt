@@ -57,6 +57,7 @@ set ( GRAPHICS_SCALE2X_SOURCE
 # graphics/shapes
 file ( GLOB GRAPHICS_SHAPES_HEADERS "${NOMLIB_HEADERS_DIR}/graphics/shapes/*.hpp" )
 set ( GRAPHICS_SHAPES_SOURCE
+      ${SRC_DIR}/graphics/shapes/Shape.cpp
       ${SRC_DIR}/graphics/shapes/Point.cpp
       ${SRC_DIR}/graphics/shapes/Line.cpp
       ${SRC_DIR}/graphics/shapes/Rectangle.cpp

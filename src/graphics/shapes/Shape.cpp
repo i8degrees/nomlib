@@ -26,34 +26,47 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_HPP
-#define NOMLIB_GRAPHICS_HPP
+#include "nomlib/graphics/shapes/Shape.hpp"
 
-// Public header file
+namespace nom {
 
-#include <nomlib/config.hpp>
-#include <nomlib/graphics/Text.hpp>
-#include <nomlib/graphics/RendererInfo.hpp>
-#include <nomlib/graphics/Texture.hpp>
-#include <nomlib/graphics/VideoMode.hpp>
-#include <nomlib/graphics/Window.hpp>
-#include <nomlib/graphics/Renderer.hpp>
-#include <nomlib/graphics/IDrawable.hpp>
-#include <nomlib/graphics/Gradient.hpp>
-#include <nomlib/graphics/Image.hpp>
-#include <nomlib/graphics/fonts/BitmapFont.hpp>
-#include <nomlib/graphics/fonts/FontMetrics.hpp>
-#include <nomlib/graphics/fonts/FontPage.hpp>
-#include <nomlib/graphics/fonts/FontRow.hpp>
-#include <nomlib/graphics/fonts/Glyph.hpp>
-#include <nomlib/graphics/fonts/TrueTypeFont.hpp>
-#include <nomlib/graphics/shapes/Shape.hpp>
-#include <nomlib/graphics/shapes/Point.hpp>
-#include <nomlib/graphics/shapes/Line.hpp>
-#include <nomlib/graphics/shapes/Rectangle.hpp>
-#include <nomlib/graphics/sprite/Sprite.hpp>
-#include <nomlib/graphics/sprite/SpriteBatch.hpp>
-#include <nomlib/graphics/sprite/SpriteSheet.hpp>
-#include <nomlib/graphics/sprite/AnimatedSprite.hpp>
+Shape::Shape ( void ) :
+  color_ { Color4i::Black }
+{
+  //NOM_LOG_TRACE ( NOM );
+}
 
-#endif // include guard defined
+Shape::~Shape ( void )
+{
+  //NOM_LOG_TRACE ( NOM );
+}
+
+Shape::Shape ( const Shape& copy )  :
+  Transformable { copy.position(), copy.size() }, // Our base class
+  color_ { copy.color() }
+{
+  //NOM_LOG_TRACE(NOM);
+}
+
+/*
+Shape& Shape::operator = ( const Shape& other )
+{
+  this->color_ = other.color();
+
+  return *this;
+}
+*/
+
+Shape::Shape ( const Point2i& pos, const Size2i& size, const Color4i& color ) :
+  Transformable { pos, size }, // Our base class
+  color_ ( color )
+{
+  //NOM_LOG_TRACE ( NOM );
+}
+
+const Color4i& Shape::color ( void ) const
+{
+  return this->color_;
+}
+
+} // namespace nom

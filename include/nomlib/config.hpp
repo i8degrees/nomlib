@@ -106,7 +106,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifndef __cplusplus
-  #warning "nomlib requires a C++11 compiler"
+  #pragma message ( "nomlib requires a C++11 capable compiler." )
 #endif
 
 #endif // include guard defined

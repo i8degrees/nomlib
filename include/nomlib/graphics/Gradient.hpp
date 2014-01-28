@@ -42,6 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/shapes/Rectangle.hpp"
 #include "nomlib/system/make_unique.hpp"
+//#include "nomlib/graphics/shapes/Shape.hpp"
 
 namespace nom {
 

@@ -37,9 +37,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL.h" // SDL2
 
 #include "nomlib/config.hpp"
+#include "nomlib/math/Transformable.hpp"
 #include "nomlib/math/Color4.hpp"
-#include "nomlib/math/Coords.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/math/Point2.hpp"
+#include "nomlib/math/Size2.hpp"
 #include "nomlib/graphics/Text.hpp"
 #include "nomlib/graphics/Gradient.hpp"
 #include "nomlib/gui/GrayFrame.hpp"
@@ -47,7 +48,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Simple UI interface for drawing a styled message box
-class MessageBox: public IDrawable
+class MessageBox: public Transformable
 {
   public:
     enum Style
@@ -60,29 +61,26 @@ class MessageBox: public IDrawable
 
     virtual ~MessageBox ( void );
 
-    MessageBox  (
-                  int32 x, int32 y, int32 width, int32 height,
+    //MessageBox ( const MessageBox& copy );
+
+    //MessageBox& operator = ( const MessageBox& other );
+
+    MessageBox  ( const Point2i& pos, const Size2i& size,
                   enum MessageBox::Style style, const Gradient& background
                 );
 
-    MessageBox  (
-                  int32 x, int32 y, int32 width, int32 height,
+    MessageBox  ( const Point2i& pos, const Size2i& size,
                   GrayFrame::SharedPtr style = nullptr,
                   Gradient::SharedPtr background = nullptr
                 );
 
-    MessageBox& operator = ( const MessageBox& other );
-
-    const std::string& title_string ( void ) const;
-    const std::string& text_string ( void ) const;
+    //const Size2i& size ( void ) const;
+    //const Point2i& position ( void ) const;
 
     bool enabled ( void ) const;
 
-    void disable ( void );
-    void enable ( void );
-
-    const Point2i size ( void ) const;
-    const Point2i position ( void ) const;
+    const std::string& title_string ( void ) const;
+    const std::string& text_string ( void ) const;
 
     /// \brief Obtain the rectangle bounds of the set title text
     ///
@@ -102,6 +100,9 @@ class MessageBox: public IDrawable
     /// in this class.
     const IntRect text_bounds ( void ) const;
 
+    void disable ( void );
+    void enable ( void );
+
     void set_title ( const Text& title );
     void set_text ( const Text& text );
 
@@ -116,10 +117,10 @@ class MessageBox: public IDrawable
     /// Array holding our up to two labels (title and text, respectively)
     std::array<Text, 2> labels;
 
-    Coords coords;
+    //Size2i size_;
     bool enabled_;
 
-    bool updated;
+    bool updated_;
 };
 
 } // namespace nom

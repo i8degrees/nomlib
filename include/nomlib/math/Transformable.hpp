@@ -50,7 +50,7 @@ class Transformable: public virtual IDrawable
     void set_size ( const Size2i& size );
     void move ( int x = 0, int y = 0 );
 
-  private:
+  /*protected*/private:
     /// \todo Consider using IntRect to store coordinates?
     Point2i position_;
 
@@ -58,7 +58,6 @@ class Transformable: public virtual IDrawable
     /// re-implement using private variables.
     Size2i size_;
 };
-
 
 } // namespace nom
 

@@ -32,86 +32,117 @@ namespace nom {
 
 MessageBox::MessageBox ( void ) :
   enabled_ ( true ),
-  updated ( false )
+  updated_ ( false )
 {
   //NOM_LOG_TRACE(NOM);
 }
 
 MessageBox::~MessageBox ( void )
 {
-  //NOM_LOG_TRACE ( NOM );
+  //NOM_LOG_TRACE(NOM);
 }
 
-MessageBox::MessageBox  (
-                          int32 x, int32 y, int32 width, int32 height,
+/*
+MessageBox::MessageBox ( const MessageBox& copy ) :
+  Transformable { copy.position(), copy.size() },
+  drawable ( copy.drawable ),
+  labels ( copy.labels ),
+  enabled_ ( copy.enabled_ ),
+  updated_ ( copy.updated_ )
+{
+  //NOM_LOG_TRACE(NOM);
+}
+*/
+
+/*
+MessageBox& MessageBox::operator = ( const MessageBox& other )
+{
+  this->drawable = other.drawable;
+  this->labels = other.labels;
+  this->position_ = other.position();
+  this->size_ = other.size();
+  this->enabled_ = other.enabled_;
+  this->updated_ = other.updated_;
+
+  return *this;
+}
+*/
+
+MessageBox::MessageBox  ( const Point2i& pos, const Size2i& size,
                           enum MessageBox::Style style,
                           const Gradient& background
                         ) :
   enabled_ ( true ),
-  updated ( false )
+  updated_ ( false )
 {
-  int32 padding = 1;
-
-  // init geometry coords w/ arguments list
-  this->coords = Coords ( x, y, width, height );
+  //NOM_LOG_TRACE(NOM);
+  int padding = 1;
 
   Color4i gradient_color[2];
   gradient_color[0] = background.start_color();
   gradient_color[1] = background.end_color();
 
-  this->drawable.push_back ( Gradient::SharedPtr ( new Gradient ( gradient_color, Point2i( this->coords.x, this->coords.y), Size2i(this->coords.w, this->coords.h), Point2i(0, 0), background.fill_direction() ) ) );
+  this->drawable.push_back ( Gradient::SharedPtr ( new Gradient ( gradient_color, pos, size, Point2i(0, 0), background.fill_direction() ) ) );
 
   if ( style == MessageBox::Style::Gray )
   {
-    this->drawable.push_back ( GrayFrame::SharedPtr ( new GrayFrame ( IntRect(x, y, width, height), padding) ) );
+    this->drawable.push_back ( GrayFrame::SharedPtr ( new GrayFrame ( pos, size, padding) ) );
   }
+
+  // init geometry coords w/ arguments list
+  this->set_position ( pos );
+  this->set_size ( size );
 
   this->update();
 }
 
-MessageBox::MessageBox  (
-                          int32 x, int32 y, int32 width, int32 height,
+MessageBox::MessageBox  ( const Point2i& pos, const Size2i& size,
                           GrayFrame::SharedPtr style,
                           Gradient::SharedPtr background
                         ) :
   enabled_ ( true ),
-  updated ( false )
+  updated_ ( false )
 {
-  int32 padding = 1;
-
-  // init geometry coords w/ arguments list
-  this->coords = Coords ( x, y, width, height );
+  //NOM_LOG_TRACE(NOM);
+  int padding = 1;
 
   Color4i gradient_color[2];
   gradient_color[0] = background->start_color();
   gradient_color[1] = background->end_color();
-  this->drawable.push_back ( Gradient::SharedPtr ( new Gradient ( gradient_color, Point2i( this->coords.x, this->coords.y), Size2i(this->coords.w, this->coords.h), Point2i(0, 0), background->fill_direction() ) ) );
+  this->drawable.push_back ( Gradient::SharedPtr ( new Gradient ( gradient_color, pos, size, Point2i(0, 0), background->fill_direction() ) ) );
 
   if ( style != nullptr )
   {
-    style->set_position ( Point2i( x, y ) );
-    style->set_size ( Size2i( width, height ) );
+    style->set_position ( pos );
+    style->set_size ( size );
     style->set_padding ( padding );
     this->drawable.push_back ( style );
   }
   else // default frame style
   {
-    this->drawable.push_back ( GrayFrame::SharedPtr ( new GrayFrame ( IntRect( x, y, width, height), padding ) ) );
+    this->drawable.push_back ( GrayFrame::SharedPtr ( new GrayFrame ( pos, size, padding ) ) );
   }
+
+  // init geometry coords w/ arguments list
+  this->set_position ( pos );
+  this->set_size ( size );
 
   this->update();
 }
 
-MessageBox& MessageBox::operator= ( const MessageBox& other )
+/*
+const Size2i& MessageBox::size ( void ) const
 {
-  this->drawable = other.drawable;
-  this->labels = other.labels;
-  this->coords = other.coords;
-  this->enabled_ = other.enabled_;
-  this->updated = other.updated;
-
-  return *this;
+  return this->size();
 }
+*/
+
+/*
+const Point2i& MessageBox::position ( void ) const
+{
+  return this->position();
+}
+*/
 
 bool MessageBox::enabled ( void ) const
 {
@@ -130,16 +161,6 @@ const std::string& MessageBox::text_string ( void ) const
 {
   // nom::Text should be handling all of the necessary validity checks for us
   return this->labels[1].text();
-}
-
-const Point2i MessageBox::size ( void ) const
-{
-  return Point2i ( this->coords.w, this->coords.h );
-}
-
-const Point2i MessageBox::position ( void ) const
-{
-  return Point2i ( this->coords.x, this->coords.y );
 }
 
 const IntRect MessageBox::title_bounds ( void ) const
@@ -164,7 +185,7 @@ void MessageBox::enable ( void )
 
 void MessageBox::set_title ( const Text& title )
 {
-  this->updated = false;
+  this->updated_ = false;
 
   if ( title.valid() == false )
   {
@@ -177,8 +198,8 @@ void MessageBox::set_title ( const Text& title )
   // bordering color of GrayFrame, commented as "top1".
   //
   // The original coords.x value was + 8, but I think + 4 looks best.
-  this->labels[0].set_position ( Point2i ( this->coords.x + 4, this->coords.y ) );
-  this->labels[0].set_size ( Size2i ( this->coords.w, this->coords.h ) );
+  this->labels[0].set_position ( Point2i ( this->position().x + 4, this->position().y ) );
+  this->labels[0].set_size ( this->size() );
 
   // In order to preserve the text alignment of the original object, we must
   // copy the state of the original alignment *after* we set the positioning
@@ -191,7 +212,7 @@ void MessageBox::set_title ( const Text& title )
 
 void MessageBox::set_text ( const Text& text )
 {
-  this->updated = false;
+  this->updated_ = false;
 
   if ( text.valid() == false )
   {
@@ -200,8 +221,8 @@ void MessageBox::set_text ( const Text& text )
   }
 
   this->labels[1] = text;
-  this->labels[1].set_position ( Point2i ( this->coords.x, this->coords.y ) );
-  this->labels[1].set_size ( Size2i ( this->coords.w, this->coords.h ) );
+  this->labels[1].set_position ( this->position() );
+  this->labels[1].set_size ( this->size() );
 
   // In order to preserve the text alignment of the original object, we must
   // copy the state of the original alignment *after* we set the positioning
@@ -214,7 +235,7 @@ void MessageBox::set_text ( const Text& text )
 
 void MessageBox::update ( void )
 {
-  if ( this->updated == true ) return;
+  if ( this->updated_ == true ) return;
 
   for ( auto it = this->drawable.begin(); it != this->drawable.end(); ++it )
   {
@@ -222,7 +243,7 @@ void MessageBox::update ( void )
     obj->update();
   }
 
-  this->updated = true;
+  this->updated_ = true;
 }
 
 void MessageBox::draw ( RenderTarget target ) const

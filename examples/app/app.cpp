@@ -59,18 +59,21 @@ const nom::int32 WINDOW_HEIGHT = 448;
 const nom::int32 MAXIMUM_WINDOWS = 3;
 
 /// Position & size declarations for our info_box object
-const nom::sint INFO_BOX_WIDTH[2] = { 200, 300 };
-const nom::sint INFO_BOX_HEIGHT[2] = { 48, 48 };
+const nom::Size2i INFO_BOX_SIZES[2] = {
+                                        nom::Size2i(200, 48),
+                                        nom::Size2i(300,48)
+                                      };
 
-const nom::sint INFO_BOX_ORIGIN_X[2] =  {
-                                          ( WINDOW_WIDTH / 2 - INFO_BOX_WIDTH[0] ) / 2,
-                                          ( (WINDOW_WIDTH/2) - INFO_BOX_WIDTH[1] ) / 2
-                                        };
-
-const nom::sint INFO_BOX_ORIGIN_Y[2] =  {
-                                          ( WINDOW_HEIGHT - INFO_BOX_HEIGHT[0] ) / 2,
-                                          ( WINDOW_HEIGHT - 100 - INFO_BOX_HEIGHT[1] )
-                                        };
+const nom::Point2i INFO_BOX_ORIGINS[2] =  {
+                                            nom::Point2i(
+                                            ( WINDOW_WIDTH/2 - INFO_BOX_SIZES[0].w ) / 2,
+                                            ( WINDOW_HEIGHT - INFO_BOX_SIZES[0].h ) / 2
+                                                        ),
+                                            nom::Point2i(
+                                            ( (WINDOW_WIDTH/2) - INFO_BOX_SIZES[1].w ) / 2,
+                                            ( (WINDOW_HEIGHT - 100) - INFO_BOX_SIZES[1].h )
+                                                        )
+                                          };
 
 /// Relative file path name of our resource example
 const nom::Path p;
@@ -253,11 +256,8 @@ class App: public nom::SDLApp
       gradient[1].set_fill_direction ( nom::Gradient::FillDirection::Top );
 
       // Initialize our info_box[0] object
-      this->info_box[0] = nom::MessageBox (
-                                                INFO_BOX_ORIGIN_X[0],
-                                                INFO_BOX_ORIGIN_Y[0],
-                                                INFO_BOX_WIDTH[0],
-                                                INFO_BOX_HEIGHT[0],
+      this->info_box[0] = nom::MessageBox (     INFO_BOX_ORIGINS[0],
+                                                INFO_BOX_SIZES[0],
                                                 // Use the built-in "gray" frame
                                                 // style
                                                 nom::MessageBox::Style::Gray,
@@ -273,11 +273,8 @@ class App: public nom::SDLApp
       this->info_box[0].set_text ( nom::Text ( RESOURCE_INFO_BOX_TEXT_STRINGS[0], this->bitmap_font, 12, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] ) );
 
       // Initialize our info_box[1] object
-      this->info_box[1] = nom::MessageBox (
-                                                INFO_BOX_ORIGIN_X[1],
-                                                INFO_BOX_ORIGIN_Y[1],
-                                                INFO_BOX_WIDTH[1],
-                                                INFO_BOX_HEIGHT[1],
+      this->info_box[1] = nom::MessageBox (     INFO_BOX_ORIGINS[1],
+                                                INFO_BOX_SIZES[1],
                                                 // Use the built-in "gray" frame
                                                 // style
                                                 nom::MessageBox::Style::Gray,
@@ -292,7 +289,7 @@ class App: public nom::SDLApp
 // FIXME: should be 26 (sprite sheet width), but is 130 (total texture size)
 NOM_DUMP_VAR(this->sprite.size().w);
       this->sprite.set_position ( nom::Point2i(this->info_box[0].position().x - 26, this->info_box[0].position().y) );
-      this->ani_sprite.set_position ( nom::Point2i(this->info_box[0].position().x + this->info_box[0].size().x + 26, this->info_box[0].position().y) );
+      this->ani_sprite.set_position ( nom::Point2i(this->info_box[0].position().x + this->info_box[0].size().w + 26, this->info_box[0].position().y) );
  // 16 is correct
 NOM_DUMP_VAR(this->sprite.size().h);
 

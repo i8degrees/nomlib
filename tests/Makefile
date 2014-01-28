@@ -1,4 +1,6 @@
-CFLAGS=/usr/bin/clang++ -std=c++11 -stdlib=libc++ -DNOM_DEBUG -DNOM_DEBUG_ASSERT -DNOM_DEBUG_TRACE -I../include -F../third-party/osx -F../build -I../include/nomlib/json/jsoncpp/
+EXTRA_FLAGS="-DNOM_DEBUG_TESTS"
+
+CFLAGS=/usr/bin/clang++ -std=c++11 -stdlib=libc++ ${EXTRA_FLAGS} -DNOM_DEBUG -DNOM_DEBUG_ASSERT -DNOM_DEBUG_TRACE -I../include -F../third-party/osx -F../build -I../include/nomlib/json/jsoncpp/
 SDL_CFLAGS=-I../third-party/osx/SDL2.framework/Headers -I../third-party/osx/SDL2_image.framework/Headers -I../third-party/osx/SDL2_ttf.framework/Headers
 LDFLAGS=-framework nomlib -framework SDL2 -framework SDL2_image -framework SDL2_ttf
 
@@ -12,5 +14,8 @@ math:
 
 graphics:
 	${CFLAGS} ${SDL_CFLAGS} ${LDFLAGS} -framework SDL2_image graphics.cpp -o graphics
+
+run:
+	./run.sh
 
 test: system math graphics

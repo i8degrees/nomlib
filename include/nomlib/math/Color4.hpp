@@ -144,38 +144,26 @@ struct Color4
     T a;
 };
 
-/// Pretty prints nom::Color4 using the following format string:
+/// Pretty prints nom::Color4 object
 ///
+/// \remarks Uses the following formatting string:
+/// \code
 /// <color.r>, <color.g>, <color.b>, <color.a>
+/// \endcode
+///
+/// \note The color values are static casted to nom::sint before outputting the
+/// string in case a nom::Color4<uint8> object is used.
 template <typename T>
 inline std::ostream& operator << ( std::ostream& os, const Color4<T>& color )
 {
   os
-  << color.r
+  << static_cast<sint> ( color.r )
   << COLOR_DELIMITER
-  << color.g
+  << static_cast<sint> ( color.g )
   << COLOR_DELIMITER
-  << color.b
+  << static_cast<sint> ( color.b )
   << COLOR_DELIMITER
-  << color.a;
-
-  return os;
-}
-
-/// Pretty prints nom::Color4i using the following format string:
-///
-/// <color.r>, <color.g>, <color.b>, <color.a>
-template <typename T>
-inline std::ostream& operator << ( std::ostream& os, const Color4<int16>& color )
-{
-  os
-  << color.r
-  << COLOR_DELIMITER
-  << color.g
-  << COLOR_DELIMITER
-  << color.b
-  << COLOR_DELIMITER
-  << static_cast<uint8> ( color.a );
+  << static_cast<sint> ( color.a );
 
   return os;
 }

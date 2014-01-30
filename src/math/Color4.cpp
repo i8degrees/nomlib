@@ -30,6 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+template <> const uint8 Color4u::ALPHA_TRANSPARENT = 0;
+template <> const uint8 Color4u::ALPHA_OPAQUE = 255;
+
 template <> const int16 Color4i::ALPHA_TRANSPARENT = 0;
 template <> const int16 Color4i::ALPHA_OPAQUE = 255;
 

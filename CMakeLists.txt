@@ -455,7 +455,6 @@ endif ( PLATFORM_OSX AND FRAMEWORK )
 install ( FILES
           ${PROJECT_SOURCE_DIR}/README.md
           ${PROJECT_SOURCE_DIR}/LICENSE.md
-          ${PROJECT_SOURCE_DIR}/TODO.md
           DESTINATION "${INSTALL_DOCS_PATH}"
         )
 

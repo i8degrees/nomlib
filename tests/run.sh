@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export DYLD_FRAMEWORK_PATH=../third-party/osx
+
 # Full path to make executable
 MAKE_BIN=$(which make)
 

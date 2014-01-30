@@ -200,7 +200,8 @@ class App: public nom::SDLApp
         nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
         return false;
       }
-      // FIXME: this->bitmap_font.resize ( nom::Texture::ResizeAlgorithm::scale2x );
+      // FIXME:
+      //this->bitmap_font.resize ( nom::Image::ResizeAlgorithm::scale2x );
 
       if ( this->bitmap_small_font.load ( RESOURCE_BITMAP_SMALL_FONT ) == false )
       {

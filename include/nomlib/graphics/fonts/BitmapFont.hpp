@@ -112,11 +112,23 @@ class BitmapFont: public IFont
     /// \brief Obtain information about the loaded font
     struct FontMetrics metrics ( void ) const;
 
-  private:
-    /// Trigger a build of the font characteristics gleaned from the image file;
-    /// recalculate the character sizes, coordinate origins, spacing, etc.
+    /// \brief Rescale the text
     ///
-    /// \param character_size   Reserved for future implementation.
+    /// \param scaling_algorithm Rescaling algorithm to use; see
+    /// nom::Texture::ResizeAlgorithm for available implementations.
+    ///
+    /// \todo Implement fall-back in case of error; restore previous Texture.
+    bool resize ( enum Image::ResizeAlgorithm scaling_algorithm );
+
+  private:
+    /// \brief Trigger a build of the font metrics from the loaded font's
+    /// texture atlas.
+    ///
+    /// \param character_size Passed value should always be zero (0). Reserved
+    /// for future implementation.
+    ///
+    /// \remarks This method call recalculate all font metric data, effectively
+    /// re-initializing most of the class.
     bool build ( uint32 character_size );
 
     const GlyphPage& pages ( void ) const;

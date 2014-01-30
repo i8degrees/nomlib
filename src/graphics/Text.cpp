@@ -458,32 +458,6 @@ void Text::draw ( RenderTarget target ) const
   } // end for loop
 }
 
-bool Text::resize ( enum Texture::ResizeAlgorithm scaling_algorithm )
-{
-  if ( this->valid() == false )
-  {
-    NOM_LOG_ERR ( NOM, "Video surface is invalid." );
-    return false;
-  }
-/* TODO: (an implementation in nom::Image)
-  if ( this->bitmap_font.resize ( scaling_algorithm ) == false )
-  {
-NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
-    return false;
-  }
-TODO */
-
-/* TODO (implement in IFont, BitmapFont, TrueTypeFont classes)
-  if ( this->font_->build() == false )
-  {
-    NOM_LOG_ERR ( NOM, "Could not build bitmap font metrics" );
-    return false;
-  }
-TODO */
-
-  return true;
-}
-
 void Text::update ( void )
 {
   // No font has been loaded -- nothing to draw!

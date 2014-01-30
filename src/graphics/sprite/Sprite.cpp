@@ -134,13 +134,13 @@ bool Sprite::resize ( enum Texture::ResizeAlgorithm scaling_algorithm )
 {
   if ( this->sprite_.valid() == false )
   {
-NOM_LOG_ERR ( NOM, "Video surface is invalid." );
+    NOM_LOG_ERR ( NOM, "Video surface is invalid." );
     return false;
   }
 
   if ( this->sprite_.resize ( scaling_algorithm ) == false )
   {
-NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
+    NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
     return false;
   }
 

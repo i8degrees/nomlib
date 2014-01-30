@@ -60,8 +60,8 @@ class Texture
     {
       None = 0, // No resizing is applied
       scale2x,
-      scale3x, // Reserved for future implementation
-      scale4x, // Reserved for future implementation
+      scale3x,  // Reserved for future implementation
+      scale4x,  // Reserved for future implementation
       hq2x,
       hq3x,
       hq4x

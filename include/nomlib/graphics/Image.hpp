@@ -41,7 +41,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Window.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Point2.hpp"
+#include "nomlib/math/Size2.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
+
+/// Dump the rescaled Image as a PNG file
+#define NOM_DEBUG_IMAGE_RESIZE_PNG
 
 namespace nom {
 
@@ -51,6 +55,18 @@ class Image
   public:
     typedef Image* RawPtr;
     typedef std::shared_ptr<Image> SharedPtr;
+
+    /// \brief Available pixel rescaling algorithms
+    enum ResizeAlgorithm
+    {
+      None = 0, // No resizing is applied
+      scale2x,
+      scale3x,  // Reserved for future implementation
+      scale4x,  // Reserved for future implementation
+      hq2x,
+      hq3x,
+      hq4x
+    };
 
     /// Default constructor -- initializes to sane defaults.
     Image ( void );
@@ -93,18 +109,14 @@ class Image
     /// Constructor variant for creating a fresh, empty video surface. You should
     /// be sure to read over the details gory details scattered throughout the
     /// documentation for SDL.
-    bool initialize ( int32 width, int32 height, int bits_per_pixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask );
+    bool initialize ( int width, int height, int bits_per_pixel,
+                      uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask
+                    );
 
     /// \brief Initialize a nom::Image from an existing SDL_Surface
     ///
     /// \param source   Existing SDL_Surface structure
     bool initialize ( SDL_SURFACE::RawPtr source );
-
-    /// \brief Create a new memory buffer
-    ///
-    /// \param size         Point2i initialized with the width & height in pixels
-    /// \param pixel_format Pixel format to use for the memory buffer.
-    bool create ( const Point2i& size, uint32 pixel_format );
 
     /// \brief  Create a new memory buffer using the most optimal pixel format
     ///         detected for your graphics hardware.
@@ -113,7 +125,22 @@ class Image
     ///
     /// \remarks  Unless you have specialized needs, this is probably the method
     ///           call you want.
+    ///
+    /// \todo Replace Point2i with Size2i
     bool initialize ( const Point2i& size );
+
+    /// \brief Create a new memory buffer
+    ///
+    /// \param size         Point2i initialized with the width & height in pixels
+    /// \param pixel_format Pixel format to use for the memory buffer.
+    ///
+    /// \todo Replace Point2i with Size2i
+    bool create ( const Point2i& size, uint32 pixel_format );
+
+    /// \todo Replace Point2i with Size2i
+    bool create ( const Size2i& size, SDL_PIXELFORMAT::RawPtr pixel_format );
+
+    //bool create ( const Image& source );
 
     int32 width ( void ) const;
     int32 height ( void ) const;
@@ -275,6 +302,20 @@ class Image
     /// \remarks  SDL2 color modulation formula:
     ///           srcC = srcC * ( color / 255 )
     bool set_color_modulation ( const Color4i& color );
+
+    /// \brief Rescale the Texture with the chosen rescaling algorithm.
+    ///
+    /// \note See the ResizeAlgorithm enum for available rescaling algorithms.
+    ///
+    /// \remarks  This method call requires that the existing Texture is of the
+    ///           Texture::Access::Streaming type. Once resized, the rescaled
+    ///           texture is of the Texture::Access::Static type and therefore
+    ///           cannot be modified again without the complete re-initialization
+    ///           of the original buffer (image file).
+    bool resize ( enum Image::ResizeAlgorithm scaling_algorithm );
+
+    /// \brief Return the scaling factor of the chosen algorithm
+    sint scale_factor ( enum Image::ResizeAlgorithm scaling_algorithm ) const;
 
   private:
     /// Container for our image pixels buffer

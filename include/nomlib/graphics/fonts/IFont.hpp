@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/fonts/Glyph.hpp"
+#include "nomlib/graphics/Image.hpp"
 
 namespace nom {
 
@@ -75,6 +76,8 @@ class IFont
     virtual sint kerning ( uint32, uint32, uint32 ) /*const*/ = 0;
 
     virtual bool set_point_size ( sint ) = 0;
+
+    virtual bool resize ( enum Image::ResizeAlgorithm scaling_algorithm ) = 0;
 };
 
 } // namespace nom

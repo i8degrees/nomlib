@@ -616,7 +616,7 @@ bool Texture::resize ( enum ResizeAlgorithm scaling_algorithm )
 
   // Pick out the suitable scaling factor for determining the new video surface
   // width and height.
-  int scale = scale_factor ( scaling_algorithm );
+  int scale = this->scale_factor ( scaling_algorithm );
 
   destination_size = Point2i  ( source_size.x * scale, source_size.y * scale );
 

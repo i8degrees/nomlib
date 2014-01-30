@@ -146,11 +146,24 @@ class TrueTypeFont: public IFont
     /// \brief Obtain information about the loaded font
     struct FontMetrics metrics ( void ) const;
 
-  private:
-    /// Trigger a rebuild of the font metrics from the current font; this
-    /// recalculates character sizes, coordinate origins, spacing, etc.
+    /// \brief Rescale the text
     ///
-    /// \param character_size Font's point size, in pixels, to build glyphs for
+    /// \param scaling_algorithm Rescaling algorithm to use; see
+    /// nom::Texture::ResizeAlgorithm for available implementations.
+    ///
+    /// \remarks This method call is unnecessary (as TrueType fonts are scalable)
+    /// and is only provided for the potential of special effects.
+    bool resize ( enum Image::ResizeAlgorithm scaling_algorithm );
+
+  private:
+    /// \brief Trigger a build of the font metrics from the loaded font's
+    /// texture atlas.
+    ///
+    /// \param character_size Font's point size (in pixels) to rasterize glyphs
+    /// for.
+    ///
+    /// \remarks This method call recalculate all font metric data, effectively
+    /// re-initializing most of the class.
     bool build ( uint32 character_size );
 
     const GlyphPage& pages ( void ) const;

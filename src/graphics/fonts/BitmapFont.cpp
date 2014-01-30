@@ -157,6 +157,39 @@ struct FontMetrics BitmapFont::metrics ( void ) const
   return this->metrics_;
 }
 
+bool BitmapFont::resize ( enum Image::ResizeAlgorithm scaling_algorithm )
+{
+  if ( this->valid() == false )
+  {
+    NOM_LOG_ERR ( NOM, "Existing video surface is invalid." );
+    return false;
+  }
+
+  if ( this->pages_[0].texture->resize ( scaling_algorithm ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
+    return false;
+  }
+
+  // Set pixel at coordinates 0, 0 to be color keyed (transparent)
+  uint32 key = this->pages_[0].texture->pixel( 0, 0 );
+  Color4i colorkey = nom::pixel ( key, this->pages_[0].texture->pixel_format() );
+
+  if ( this->pages_[0].texture->set_colorkey ( colorkey, true ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not set color key" );
+    return false;
+  }
+
+  if ( this->build( 0 ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not rebuild font metrics." );
+    return false;
+  }
+
+  return true;
+}
+
 bool BitmapFont::build ( uint32 character_size )
 {
   // The glyph used to base every glyph's height, Y bounds coordinate and

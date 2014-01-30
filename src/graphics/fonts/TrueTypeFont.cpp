@@ -226,6 +226,29 @@ struct FontMetrics TrueTypeFont::metrics ( void ) const
   return this->metrics_;
 }
 
+bool TrueTypeFont::resize ( enum Image::ResizeAlgorithm scaling_algorithm )
+{
+  if ( this->valid() == false )
+  {
+    NOM_LOG_ERR ( NOM, "Existing video surface is invalid." );
+    return false;
+  }
+
+  if ( this->pages_[0].texture->resize ( scaling_algorithm ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
+    return false;
+  }
+
+  if ( this->build( this->point_size() ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not rebuild font metrics." );
+    return false;
+  }
+
+  return true;
+}
+
 bool TrueTypeFont::build ( uint32 character_size )
 {
   int ret = 0;                      // Error code

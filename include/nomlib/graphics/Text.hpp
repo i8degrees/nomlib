@@ -197,11 +197,6 @@ class Text: public Transformable
     /// \todo Test horizontal tabbing '\t'
     void draw ( RenderTarget target ) const;
 
-    /// Rescale the font with a chosen resizing algorithm
-    ///
-    /// \todo SDL2 port
-    bool resize ( enum Texture::ResizeAlgorithm scaling_algorithm );
-
   private:
     /// \brief Apply requested transformations, styles, etc
     ///

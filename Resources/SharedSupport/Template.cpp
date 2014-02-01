@@ -32,12 +32,12 @@ namespace nom {
 
 Template::Template ( void )
 {
-  NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE(NOM);
 }
 
 Template::~Template ( void )
 {
-  NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE(NOM);
 }
 
 } // namespace nom

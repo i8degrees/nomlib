@@ -35,7 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/json/config_json.hpp>
 #include <nomlib/json/FileReader.hpp>
 #include <nomlib/json/FileWriter.hpp>
-//#include <nomlib/json/Object.hpp>
 #include <nomlib/json/Value.hpp>
 
 #endif // include guard defined

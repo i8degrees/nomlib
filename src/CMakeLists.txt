@@ -23,7 +23,6 @@ set ( AUDIO_SOURCE
 # Graphics module
 file ( GLOB GRAPHICS_HEADERS "${NOMLIB_HEADERS_DIR}/graphics/*.hpp" )
 set ( GRAPHICS_SOURCE
-
       ${SRC_DIR}/graphics/Text.cpp
       ${SRC_DIR}/graphics/RendererInfo.cpp
       ${SRC_DIR}/graphics/Texture.cpp
@@ -129,6 +128,9 @@ set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/AnimationTimer.cpp
       ${SRC_DIR}/system/Timer.cpp
       ${SRC_DIR}/system/Sleep.cpp
+file ( GLOB TEMPLATE_HEADERS "${NOMLIB_SHARED_SUPPORT_DIR}/*.hpp" )
+set ( TEMPLATE_SOURCE
+      ${NOMLIB_SHARED_SUPPORT_DIR}/Template.cpp
     )
 
 # Platform-specific source files
@@ -165,6 +167,7 @@ set ( NOMLIB_HEADERS
       ${SYSTEM_OSX_HEADERS}
       ${SYSTEM_UNIX_HEADERS}
       ${SYSTEM_WINDOWS_HEADERS}
+      ${TEMPLATE_HEADERS}
     )
 
 if ( NOM_BUILD_MINI )
@@ -185,6 +188,7 @@ else ( NOT NOM_BUILD_MINI )
         ${JSONCPP_SOURCE}
         ${MATH_SOURCE}
         ${SYSTEM_SOURCE}
+        ${TEMPLATE_SOURCE}
       )
 endif ( NOM_BUILD_MINI )
 

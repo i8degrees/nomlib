@@ -26,24 +26,34 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_TEMPLATE_HPP
-#define NOMLIB_TEMPLATE_HPP
-
-#include <iostream>
-#include <string>
+#ifndef NOMLIB_UNIT_TEMPLATE_HPP
+#define NOMLIB_UNIT_TEMPLATE_HPP
 
 #include "nomlib/config.hpp"
 
 namespace nom {
 
+/// \brief [TODO: Description]
 class Template
 {
   public:
-    Template ( void );
-    ~Template ( void );
+    /// \brief Default constructor
+    Template( void );
+
+    /// \brief Destructor.
+    ~Template( void );
+
+    /// \brief Copy constructor.
+    //Template( const Template& copy );
+
+    /// \brief Copy assignment.
+    //Template& operator =( const Template& other );
+
+    /// \brief Obtain a reference to the object.
+    const Template& get ( void ) const;
 
   private:
-    // ...
+    // Member variables
 };
 
 } // namespace nom

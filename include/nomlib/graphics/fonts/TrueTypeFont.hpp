@@ -43,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/Image.hpp"
-#include "nomlib/graphics/Window.hpp"
+#include "nomlib/graphics/RenderWindow.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
 /// Dump glyph bounding coordinates & save source, destination sheets as PNG

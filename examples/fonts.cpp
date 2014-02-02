@@ -207,7 +207,7 @@ class App: public nom::SDLApp
 
   private:
     /// Window handle
-    nom::Window window;
+    nom::RenderWindow window;
     nom::Point2i window_size;
 
     /// Interval at which we refresh the frames per second counter

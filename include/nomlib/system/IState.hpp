@@ -106,7 +106,7 @@ class IState: public Input
 
     /// User-defined implementation of the state's rendering logic
     ///
-    /// \param IDrawable::RenderTarget Rendering target (nom::Window).
+    /// \param IDrawable::RenderTarget Rendering target (nom::RenderWindow).
     ///
     /// \remarks When not defined, a do-nothing implementation is provided.
     ///

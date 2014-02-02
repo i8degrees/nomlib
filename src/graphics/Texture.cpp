@@ -77,7 +77,7 @@ Texture::SharedPtr Texture::clone ( void ) const
 
 bool Texture::initialize ( uint32 format, uint32 flags, int32 width, int32 height )
 {
-  this->texture_.reset ( SDL_CreateTexture ( Window::context(), format, flags, width, height ), priv::FreeTexture );
+  this->texture_.reset ( SDL_CreateTexture ( RenderWindow::context(), format, flags, width, height ), priv::FreeTexture );
 
   if ( this->valid() == false )
   {
@@ -324,7 +324,7 @@ const Color4i Texture::color_modulation ( void ) const
 const Point2i Texture::maximum_size ( void )
 {
   RendererInfo info;
-  info = Window::caps ( Window::context() );
+  info = RenderWindow::caps ( RenderWindow::context() );
 
   return Point2i ( info.texture_width, info.texture_height );
 }
@@ -396,7 +396,7 @@ bool Texture::load  ( const std::string& filename,
 
   if ( source.load ( filename ) == false ) return false;
 
-  RendererInfo caps = Window::caps( Window::context() );
+  RendererInfo caps = RenderWindow::caps( RenderWindow::context() );
 
   if ( type != Texture::Access::Static )
   {
@@ -489,7 +489,7 @@ void Texture::draw ( SDL_RENDERER::RawPtr target ) const
   }
 }
 
-void Texture::draw ( const Window& target ) const
+void Texture::draw ( const RenderWindow& target ) const
 {
   this->draw ( target.renderer() );
 }
@@ -531,7 +531,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   }
 }
 
-void Texture::draw ( const Window& target, const double degrees ) const
+void Texture::draw ( const RenderWindow& target, const double degrees ) const
 {
   this->draw ( target.renderer(), degrees );
 }
@@ -869,7 +869,7 @@ bool Texture::copy_pixels ( const void* source, int pitch )
 
 bool Texture::set_render_target ( void )
 {
-  RendererInfo caps = Window::caps( Window::context() );
+  RendererInfo caps = RenderWindow::caps( RenderWindow::context() );
 
   // Graphics hardware does not support render to texture
   if ( caps.target_texture() == false )
@@ -879,7 +879,7 @@ bool Texture::set_render_target ( void )
   }
 
   // Try to honor the request; render to the source texture
-  if ( SDL_SetRenderTarget ( Window::context(), this->texture() ) != 0 )
+  if ( SDL_SetRenderTarget ( RenderWindow::context(), this->texture() ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;

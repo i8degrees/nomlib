@@ -34,11 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 #include <memory>
 
-#include "SDL.h"
-#include "SDL_image.h"
+#include "SDL.h" // SDL2
+#include "SDL_image.h" // SDL2_image
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/Window.hpp"
+#include "nomlib/graphics/RenderWindow.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/system/SDL_helpers.hpp"

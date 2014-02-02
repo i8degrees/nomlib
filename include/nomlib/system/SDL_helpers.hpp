@@ -178,7 +178,7 @@ const std::string hint ( const std::string& name );
 /// \param value  New value to set
 ///
 /// Note that it is best to set certain hints -- such as
-/// SDL_RENDERER_PRESENTVSYNC -- before the first call to nom::Window::create.
+/// SDL_RENDERER_PRESENTVSYNC -- before the first call to nom::RenderWindow::create.
 bool set_hint ( const std::string& name, const std::string& value );
 
 const std::string PIXEL_FORMAT_NAME ( uint32 format );

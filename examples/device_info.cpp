@@ -41,7 +41,7 @@ const int WINDOW_HEIGHT = 0;
 
 int main ( int argc, char* argv[] )
 {
-  nom::Window window;
+  nom::RenderWindow window;
   nom::RendererInfo renderer_info;
 
   if ( nom::init ( argc, argv ) == false )

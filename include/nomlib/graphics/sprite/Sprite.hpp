@@ -85,9 +85,9 @@ class Sprite:
 
     void draw ( RenderTarget target ) const;
 
-    /// Draw a rotated nom::Sprite on a nom::Window
+    /// Draw a rotated nom::Sprite on a nom::RenderWindow
     ///
-    /// \param  target  Reference to an active nom::Window
+    /// \param  target  Reference to an active nom::RenderWindow
     /// \param  angle   Rotation angle in degrees
     ///
     void draw ( RenderTarget target, const double angle ) const;

@@ -27,7 +27,7 @@ set ( GRAPHICS_SOURCE
       ${SRC_DIR}/graphics/RendererInfo.cpp
       ${SRC_DIR}/graphics/Texture.cpp
       ${SRC_DIR}/graphics/Image.cpp
-      ${SRC_DIR}/graphics/Window.cpp
+      ${SRC_DIR}/graphics/RenderWindow.cpp
       ${SRC_DIR}/graphics/Renderer.cpp
       ${SRC_DIR}/graphics/VideoMode.cpp
       ${SRC_DIR}/graphics/Gradient.cpp

@@ -601,7 +601,7 @@ NOM_DUMP_VAR(this->sprite.size().h);
     /// Window handles
     ///
     /// \todo Use std::vector
-    nom::Window window[MAXIMUM_WINDOWS];
+    nom::RenderWindow window[MAXIMUM_WINDOWS];
 
     nom::Point2i window_size[MAXIMUM_WINDOWS];
 

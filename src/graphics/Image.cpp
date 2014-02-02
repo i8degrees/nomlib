@@ -61,7 +61,7 @@ Image& Image::operator = ( const Image& other )
 SDL_SURFACE::RawPtr Image::clone ( void ) const
 {
   // Find the optimal pixel format
-  RendererInfo caps = Window::caps( Window::context() );
+  RendererInfo caps = RenderWindow::caps( RenderWindow::context() );
 
   return SDL_ConvertSurfaceFormat ( this->image(), caps.optimal_texture_format(), 0 );
 }
@@ -73,7 +73,7 @@ SDL_SURFACE::RawPtr Image::image ( void ) const
 
 SDL_Texture* Image::texture ( void ) const
 {
-  return SDL_CreateTextureFromSurface ( Window::context(), this->image() );
+  return SDL_CreateTextureFromSurface ( RenderWindow::context(), this->image() );
 }
 
 bool Image::valid ( void ) const
@@ -131,7 +131,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 bool Image::initialize ( SDL_SURFACE::RawPtr source )
 {
   // Discover the optimal pixel format using gathered device capabilities
-  RendererInfo caps = Window::caps( Window::context() );
+  RendererInfo caps = RenderWindow::caps( RenderWindow::context() );
 
   if ( source == nullptr )
   {
@@ -156,7 +156,7 @@ bool Image::initialize ( SDL_SURFACE::RawPtr source )
 
 bool Image::initialize ( const Point2i& size )
 {
-  RendererInfo caps = Window::caps( Window::context() );
+  RendererInfo caps = RenderWindow::caps( RenderWindow::context() );
 
   if ( this->create ( size, caps.optimal_texture_format() ) == false )
   {

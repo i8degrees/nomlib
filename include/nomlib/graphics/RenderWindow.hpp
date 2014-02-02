@@ -26,16 +26,13 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_WINDOW_HPP
-#define NOMLIB_SDL2_WINDOW_HPP
+#ifndef NOMLIB_GRAPHICS_RENDER_WINDOW_HPP
+#define NOMLIB_GRAPHICS_RENDER_WINDOW_HPP
 
-#include <iostream>
-#include <string>
-#include <cstdlib>
 #include <vector>
 #include <memory>
 
-#include "SDL.h"
+#include "SDL.h" // SDL2
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Rect.hpp"
@@ -52,14 +49,13 @@ namespace nom {
 
 //class Renderer;
 
-class Window:
-              public Renderer
+class RenderWindow: public Renderer
 {
   public:
-    typedef Window* RawPtr;
+    typedef RenderWindow* RawPtr;
 
-    Window ( void );
-    ~Window ( void );
+    RenderWindow ( void );
+    ~RenderWindow ( void );
 
     /// Initialize a SDL window and renderer
     ///
@@ -71,7 +67,7 @@ class Window:
                 );
 
     /// Obtain a pointer to this Window object.
-    Window::RawPtr get ( void );
+    RenderWindow::RawPtr get ( void );
 
     /// Returns a raw pointer to the SDL_Window struct in use for this object
     SDL_WINDOW::RawPtr window ( void ) const;
@@ -150,8 +146,8 @@ class Window:
 
     /// \brief Set an icon for this window
     ///
-    /// \remarks  A nom::Window must first be initialized before using this
-    ///           method call; see nom::Window::create
+    /// \remarks  A nom::RenderWindow must first be initialized before using this
+    ///           method call; see nom::RenderWindow::create
     bool set_window_icon ( const std::string& filename );
 
     /// Obtain this window's unique identifier
@@ -269,14 +265,14 @@ class Window:
     ///           rendering context.
     ///
     /// \remarks  Used internally within nomlib for automatically using the
-    ///           active context -- set by nom::Window::make_current.
+    ///           active context -- set by nom::RenderWindow::make_current.
     static SDL_RENDERER::RawPtr context ( void );
 
   private:
-    /// \brief  Set a new nom::Window as the active rendering context; we must
+    /// \brief  Set a new nom::RenderWindow as the active rendering context; we must
     ///         always have a context active at any given time for generating
     ///         resources -- nom::Texture, nom::Image, etc.
-    static void set_context ( Window::RawPtr window );
+    static void set_context ( RenderWindow::RawPtr window );
 
     static SDL_RENDERER::RawPtr context_;
 

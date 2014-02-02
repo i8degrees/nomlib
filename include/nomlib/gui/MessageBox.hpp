@@ -176,7 +176,7 @@ class MessageBox: public Transformable
 
 /// info_box.update();
 
-/// // Render our info_box from a previously initialized nom::Window object
+/// // Render our info_box from a previously initialized nom::RenderWindow object
 /// info_box.draw ( window );
 ///
 /// \endcode

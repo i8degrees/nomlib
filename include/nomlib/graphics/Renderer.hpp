@@ -46,7 +46,7 @@ namespace nom {
 /// \brief Video subsystem responsible for managing high-level graphics display
 /// (think: *very* fancy back-buffer).
 ///
-/// A nom::Window is lifeless without its attached Renderer buddy!
+/// A nom::RenderWindow is lifeless without its attached Renderer buddy!
 class Renderer
 {
   public:
@@ -174,7 +174,7 @@ class Renderer
     void* pixels ( void ) const;
 
   protected:
-    /// This is automatically released after the attached nom::Window has been
+    /// This is automatically released after the attached nom::RenderWindow has been
     /// destroyed.
     SDL_RENDERER::UniquePtr renderer_;
 };

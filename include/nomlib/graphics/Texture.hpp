@@ -43,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //#include "nomlib/system/ObjectCache.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/graphics/Image.hpp"
-#include "nomlib/graphics/Window.hpp"
+#include "nomlib/graphics/RenderWindow.hpp"
 
 /// Dump the rescaled Texture as a PNG file
 //#define NOM_DEBUG_SDL2_RESIZE_PNG
@@ -183,7 +183,7 @@ class Texture
     ///
     /// \note The values obtained here are dependent upon the nom::Renderer
     /// context used at the time of creation of the nom::Texture -- in other
-    /// words, whichever nom::Window was active at the time of the nom::Texture
+    /// words, whichever nom::RenderWindow was active at the time of the nom::Texture
     /// creation.
     static const Point2i maximum_size ( void );
 
@@ -249,12 +249,12 @@ class Texture
     ///
     void draw ( SDL_RENDERER::RawPtr target ) const;
 
-    /// Draw a nom::Texture to a nom::Window target
+    /// Draw a nom::Texture to a nom::RenderWindow target
     ///
-    /// \param  nom::Window
+    /// \param  nom::RenderWindow
     ///
     /// \note This is an alias for nom::Texture::draw ( SDL_Renderer* )
-    void draw ( const Window& target ) const;
+    void draw ( const RenderWindow& target ) const;
 
     /// Draw a rotated nom::Texture to a rendering target
     ///
@@ -264,11 +264,11 @@ class Texture
     /// \todo Implement pivot point & make use of SDL_RendererFlip enum
     void draw ( SDL_RENDERER::RawPtr target, const double angle ) const;
 
-    /// Draw a rotated nom::Texture on a nom::Window
+    /// Draw a rotated nom::Texture on a nom::RenderWindow
     ///
-    /// \param  target  Reference to an active nom::Window
+    /// \param  target  Reference to an active nom::RenderWindow
     /// \param  angle   Rotation angle in degrees
-    void draw ( const Window& target, const double angle ) const;
+    void draw ( const RenderWindow& target, const double angle ) const;
 
     /// \brief  Set an additional alpha value multiplied into render copy
     ///         operations.

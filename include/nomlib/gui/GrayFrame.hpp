@@ -38,9 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
 #include "nomlib/math/Rect.hpp"
-#include "nomlib/graphics/Window.hpp"
+#include "nomlib/graphics/RenderWindow.hpp"
 #include "nomlib/graphics/shapes/Line.hpp"
-//#include "nomlib/graphics/shapes/Shape.hpp"
 
 namespace nom {
 

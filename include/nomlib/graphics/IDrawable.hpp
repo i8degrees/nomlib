@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/Window.hpp"
+#include "nomlib/graphics/RenderWindow.hpp"
 
 namespace nom {
 
@@ -53,7 +53,7 @@ class IDrawable
     /// std::unique_ptr vector container type
     typedef std::vector<std::unique_ptr<IDrawable>> UniqueDrawables;
 
-    typedef const Window& RenderTarget;
+    typedef const RenderWindow& RenderTarget;
 
     /// Do nothing at all default constructor
     IDrawable ( void ) {}

@@ -62,7 +62,7 @@ class Point: public Shape
 
     /// \brief Render the point coordinate.
     ///
-    /// \param target nom::Window object to render to.
+    /// \param target nom::RenderWindow object to render to.
     void draw ( RenderTarget target ) const;
 };
 

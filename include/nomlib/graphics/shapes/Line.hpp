@@ -72,7 +72,7 @@ class Line: public Shape
 
     /// \brief Render the line segments.
     ///
-    /// \param target nom::Window object to render to.
+    /// \param target nom::RenderWindow object to render to.
     void draw ( RenderTarget target ) const;
 };
 

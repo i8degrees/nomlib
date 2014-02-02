@@ -26,15 +26,15 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/graphics/Window.hpp"
+#include "nomlib/graphics/RenderWindow.hpp"
 //#include "nomlib/graphics/Renderer.hpp"
 
 namespace nom {
 
 // static initialization
-SDL_RENDERER::RawPtr Window::context_ = nullptr;
+SDL_RENDERER::RawPtr RenderWindow::context_ = nullptr;
 
-Window::Window ( void ) : window_
+RenderWindow::RenderWindow ( void ) : window_
     { SDL_WINDOW::UniquePtr ( nullptr, priv::FreeWindow ) },
     window_id_ ( 0 ), window_display_id_ ( -1 ),
     enabled_ ( false ), fullscreen_ ( false )
@@ -42,12 +42,12 @@ Window::Window ( void ) : window_
   //NOM_LOG_TRACE ( NOM );
 }
 
-Window::~Window ( void )
+RenderWindow::~RenderWindow ( void )
 {
   //NOM_LOG_TRACE ( NOM );
 }
 
-bool Window::create (
+bool RenderWindow::create (
                       const std::string& window_title, int32 width, int32 height,
                       uint32 window_flags, uint32 context_flags
                     )
@@ -94,29 +94,29 @@ NOM_LOG_ERR ( NOM, "Could not create SDL renderer." );
   return true;
 }
 
-Window::RawPtr Window::get ( void )
+RenderWindow::RawPtr RenderWindow::get ( void )
 {
   return this;
 }
 
-SDL_WINDOW::RawPtr Window::window ( void ) const
+SDL_WINDOW::RawPtr RenderWindow::window ( void ) const
 {
   return this->window_.get();
 }
 
-SDL_SURFACE::RawPtr Window::window_surface ( void ) const
+SDL_SURFACE::RawPtr RenderWindow::window_surface ( void ) const
 {
   return SDL_GetWindowSurface ( this->window() );
 }
 
-bool Window::window_valid ( void ) const
+bool RenderWindow::window_valid ( void ) const
 {
   if ( this->window() != nullptr ) return true;
 
   return false;
 }
 
-Point2i Window::position ( void ) const
+Point2i RenderWindow::position ( void ) const
 {
   Point2i pos;
 
@@ -125,29 +125,29 @@ Point2i Window::position ( void ) const
   return pos;
 }
 
-Point2i Window::size ( void ) const
+Point2i RenderWindow::size ( void ) const
 {
   Point2i size;
   SDL_GetWindowSize ( this->window(), &size.x, &size.y );
   return size;
 }
 
-const uint8 Window::bits_per_pixel ( void ) const
+const uint8 RenderWindow::bits_per_pixel ( void ) const
 {
   return SDL_BITSPERPIXEL ( this->pixel_format() );
 }
 
-uint32 Window::window_flags ( void ) const
+uint32 RenderWindow::window_flags ( void ) const
 {
   return SDL_GetWindowFlags ( this->window() );
 }
 
-uint32 Window::pixel_format ( void ) const
+uint32 RenderWindow::pixel_format ( void ) const
 {
   return SDL_GetWindowPixelFormat ( this->window() );
 }
 
-const IntRect Window::display_bounds ( void ) const
+const IntRect RenderWindow::display_bounds ( void ) const
 {
   SDL_Rect display_bounds;
   IntRect bounds;
@@ -166,7 +166,7 @@ const IntRect Window::display_bounds ( void ) const
   return bounds;
 }
 
-VideoModeList Window::getVideoModes ( void ) const
+VideoModeList RenderWindow::getVideoModes ( void ) const
 {
 /*
   VideoModeList modes;
@@ -198,7 +198,7 @@ NOM_LOG_INFO ( NOM, "No video modes are supported." );
     return VideoModeList();
 }
 
-bool Window::flip ( void ) const
+bool RenderWindow::flip ( void ) const
 {
   if ( SDL_UpdateWindowSurface ( this->window() ) != 0 )
   {
@@ -208,19 +208,19 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Window::fullscreen ( void ) const
+bool RenderWindow::fullscreen ( void ) const
 {
   if ( this->fullscreen_ ) return true;
 
   return false;
 }
 
-void Window::set_fullscreen ( bool state )
+void RenderWindow::set_fullscreen ( bool state )
 {
   this->fullscreen_ = state;
 }
 
-bool Window::toggle_fullscreen ( void )
+bool RenderWindow::toggle_fullscreen ( void )
 {
   if ( this->toggle_fullscreen ( SDL_WINDOW_FULLSCREEN_DESKTOP ) == false )
   {
@@ -230,7 +230,7 @@ bool Window::toggle_fullscreen ( void )
   return true;
 }
 
-bool Window::toggle_fullscreen ( uint32 flags )
+bool RenderWindow::toggle_fullscreen ( uint32 flags )
 {
   if ( this->fullscreen() == true ) // Go back to window state
   {
@@ -257,19 +257,19 @@ bool Window::toggle_fullscreen ( uint32 flags )
   return false; // We should *never* reach this statement
 }
 
-const std::string Window::window_title ( void ) const
+const std::string RenderWindow::window_title ( void ) const
 {
   std::string title = SDL_GetWindowTitle ( this->window() );
 
   return title;
 }
 
-void Window::set_window_title ( const std::string& title )
+void RenderWindow::set_window_title ( const std::string& title )
 {
   SDL_SetWindowTitle ( this->window(), title.c_str() );
 }
 
-bool Window::set_window_icon ( const std::string& filename )
+bool RenderWindow::set_window_icon ( const std::string& filename )
 {
   Image icon;
 
@@ -286,87 +286,87 @@ NOM_LOG_ERR ( NOM, "Could not obtain a valid icon." );
   return true;
 }
 
-void Window::set_size ( int32 width, int32 height )
+void RenderWindow::set_size ( int32 width, int32 height )
 {
   SDL_SetWindowSize ( this->window(), width, height );
 }
 
-void Window::set_position ( int32 x, int32 y )
+void RenderWindow::set_position ( int32 x, int32 y )
 {
   SDL_SetWindowPosition ( this->window(), x, y );
 }
 
-uint32 Window::window_id ( void ) const
+uint32 RenderWindow::window_id ( void ) const
 {
   return this->window_id_;
 }
 
-SDL_Window* Window::window_id ( uint32 id )
+SDL_Window* RenderWindow::window_id ( uint32 id )
 {
   return SDL_GetWindowFromID ( id );
 }
 
-int Window::window_display_id ( void ) const
+int RenderWindow::window_display_id ( void ) const
 {
   return this->window_display_id_;
 }
 
-void Window::disable_screensaver ( void )
+void RenderWindow::disable_screensaver ( void )
 {
   SDL_DisableScreenSaver();
 }
 
-bool Window::screen_saver ( void )
+bool RenderWindow::screen_saver ( void )
 {
   return SDL_IsScreenSaverEnabled();
 }
 
-void Window::maximize_window ( void )
+void RenderWindow::maximize_window ( void )
 {
   SDL_MaximizeWindow ( this->window() );
 }
 
-void Window::minimize_window ( void )
+void RenderWindow::minimize_window ( void )
 {
   SDL_MinimizeWindow ( this->window() );
 }
 
-void Window::raise_window ( void )
+void RenderWindow::raise_window ( void )
 {
   SDL_RaiseWindow ( this->window() );
 }
 
-void Window::restore_window ( void )
+void RenderWindow::restore_window ( void )
 {
   SDL_RestoreWindow ( this->window() );
 }
 
-void Window::show_window ( void )
+void RenderWindow::show_window ( void )
 {
   SDL_ShowWindow ( this->window() );
 }
 
-void Window::hide_window ( void )
+void RenderWindow::hide_window ( void )
 {
   SDL_HideWindow ( this->window() );
 }
 
-void Window::set_window_grab ( bool grab )
+void RenderWindow::set_window_grab ( bool grab )
 {
   SDL_SetWindowGrab ( this->window(), SDL_BOOL(grab) );
 }
 
-void Window::set_minimum_window_size ( int min_width, int min_height )
+void RenderWindow::set_minimum_window_size ( int min_width, int min_height )
 {
   SDL_SetWindowMaximumSize ( this->window(), min_width, min_height );
 }
 
-void Window::set_maximum_window_size ( int max_width, int max_height )
+void RenderWindow::set_maximum_window_size ( int max_width, int max_height )
 {
   SDL_SetWindowMaximumSize ( this->window(), max_width, max_height );
 }
 
-bool Window::save_screenshot ( const std::string& filename ) const
+bool RenderWindow::save_screenshot ( const std::string& filename ) const
 {
   RendererInfo caps = this->caps();
   Image screenshot;
@@ -408,17 +408,17 @@ bool Window::save_screenshot ( const std::string& filename ) const
   return true;
 }
 
-void Window::make_current ( void )
+void RenderWindow::make_current ( void )
 {
   set_context ( this->get() );
 }
 
-SDL_RENDERER::RawPtr Window::context ( void )
+SDL_RENDERER::RawPtr RenderWindow::context ( void )
 {
   return context_;
 }
 
-void Window::set_context ( Window::RawPtr window )
+void RenderWindow::set_context ( RenderWindow::RawPtr window )
 {
   context_ = window->renderer();
 }

@@ -321,7 +321,7 @@ void* Renderer::pixels ( void ) const
   // 1. nom::Renderer::set_logical_size
   // 2. Before changes made in git commit SHA:
   //    155628b8dcc47187bf6f03aa760e5aede728ac09
-  // 3. nom::Window::save_screenshot
+  // 3. nom::RenderWindow::save_screenshot
   clip.x = 0;
   clip.y = 0;
   clip.w = this->size().x;

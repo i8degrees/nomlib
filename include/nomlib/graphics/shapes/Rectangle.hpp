@@ -70,7 +70,7 @@ class Rectangle: public Shape
 
     /// \brief Render the rectangle shape.
     ///
-    /// \param target nom::Window object to render to.
+    /// \param target nom::RenderWindow object to render to.
     void draw ( RenderTarget target ) const;
 };
 

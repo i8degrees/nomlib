@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics/RendererInfo.hpp>
 #include <nomlib/graphics/Texture.hpp>
 #include <nomlib/graphics/VideoMode.hpp>
-#include <nomlib/graphics/Window.hpp>
+#include <nomlib/graphics/RenderWindow.hpp>
 #include <nomlib/graphics/Renderer.hpp>
 #include <nomlib/graphics/IDrawable.hpp>
 #include <nomlib/graphics/Gradient.hpp>

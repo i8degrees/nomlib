@@ -43,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Size2.hpp"
 #include "nomlib/graphics/Text.hpp"
 #include "nomlib/graphics/Gradient.hpp"
-#include "nomlib/gui/GrayFrame.hpp"
+#include "nomlib/gui/GrayWindow.hpp"
 
 namespace nom {
 
@@ -70,7 +70,7 @@ class MessageBox: public Transformable
                 );
 
     MessageBox  ( const Point2i& pos, const Size2i& size,
-                  GrayFrame::SharedPtr style = nullptr,
+                  GrayWindow::SharedPtr style = nullptr,
                   Gradient::SharedPtr background = nullptr
                 );
 

@@ -76,7 +76,7 @@ file ( GLOB GUI_HEADERS "${NOMLIB_HEADERS_DIR}/gui/*.hpp" )
 set ( GUI_SOURCE
       ${SRC_DIR}/gui/Cursor.cpp
       ${SRC_DIR}/gui/MessageBox.cpp
-      ${SRC_DIR}/gui/GrayFrame.cpp
+      ${SRC_DIR}/gui/GrayWindow.cpp
     )
 
 # JSON module

@@ -26,24 +26,24 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/gui/GrayFrame.hpp"
+#include "nomlib/gui/GrayWindow.hpp"
 
 namespace nom {
 
-GrayFrame::GrayFrame ( void ) :
+GrayWindow::GrayWindow ( void ) :
   padding_ ( 1 ),
   updated_ ( false )
 {
   //NOM_LOG_TRACE ( NOM );
 }
 
-GrayFrame::~GrayFrame ( void )
+GrayWindow::~GrayWindow ( void )
 {
   //NOM_LOG_TRACE ( NOM );
 }
 
 /*
-GrayFrame& GrayFrame::operator = ( const GrayFrame& other )
+GrayWindow& GrayWindow::operator = ( const GrayWindow& other )
 {
   this->frame_position = other.frame_position;
   this->updated_ = other.updated_;
@@ -53,7 +53,7 @@ GrayFrame& GrayFrame::operator = ( const GrayFrame& other )
 }
 */
 
-GrayFrame::GrayFrame ( const IntRect& bounds, int pad ) :
+GrayWindow::GrayWindow ( const IntRect& bounds, int pad ) :
   Transformable { Point2i( bounds.x, bounds.y ), Size2i( bounds.w, bounds.h ) },
   padding_ ( pad ),
   updated_ ( false )
@@ -61,7 +61,7 @@ GrayFrame::GrayFrame ( const IntRect& bounds, int pad ) :
   //NOM_LOG_TRACE ( NOM );
 }
 
-GrayFrame::GrayFrame ( const Point2i& pos, const Size2i& size, int pad ) :
+GrayWindow::GrayWindow ( const Point2i& pos, const Size2i& size, int pad ) :
   Transformable { pos, size },
   padding_ ( pad ),
   updated_ ( false )
@@ -69,17 +69,17 @@ GrayFrame::GrayFrame ( const Point2i& pos, const Size2i& size, int pad ) :
   //NOM_LOG_TRACE ( NOM );
 }
 
-int GrayFrame::padding ( void ) const
+int GrayWindow::padding ( void ) const
 {
   return this->padding_;
 }
 
-void GrayFrame::set_padding ( int pad )
+void GrayWindow::set_padding ( int pad )
 {
   this->padding_ = pad;
 }
 
-void GrayFrame::update ( void )
+void GrayWindow::update ( void )
 {
   if ( this->updated_ == true )
     return;
@@ -121,7 +121,7 @@ void GrayFrame::update ( void )
   this->updated_ = true;
 }
 
-void GrayFrame::draw ( RenderTarget target ) const
+void GrayWindow::draw ( RenderTarget target ) const
 {
   for ( auto idx = 0; idx != this->frame_.size(); ++idx )
   {

@@ -86,7 +86,7 @@ MessageBox::MessageBox  ( const Point2i& pos, const Size2i& size,
 
   if ( style == MessageBox::Style::Gray )
   {
-    this->drawable.push_back ( GrayFrame::SharedPtr ( new GrayFrame ( pos, size, padding) ) );
+    this->drawable.push_back ( GrayWindow::SharedPtr ( new GrayWindow ( pos, size, padding) ) );
   }
 
   // init geometry coords w/ arguments list
@@ -97,7 +97,7 @@ MessageBox::MessageBox  ( const Point2i& pos, const Size2i& size,
 }
 
 MessageBox::MessageBox  ( const Point2i& pos, const Size2i& size,
-                          GrayFrame::SharedPtr style,
+                          GrayWindow::SharedPtr style,
                           Gradient::SharedPtr background
                         ) :
   enabled_ ( true ),
@@ -120,7 +120,7 @@ MessageBox::MessageBox  ( const Point2i& pos, const Size2i& size,
   }
   else // default frame style
   {
-    this->drawable.push_back ( GrayFrame::SharedPtr ( new GrayFrame ( pos, size, padding ) ) );
+    this->drawable.push_back ( GrayWindow::SharedPtr ( new GrayWindow ( pos, size, padding ) ) );
   }
 
   // init geometry coords w/ arguments list
@@ -195,7 +195,7 @@ void MessageBox::set_title ( const Text& title )
 
   this->labels[0] = title;
   // This positions the title text of the message box on top of the second "top"
-  // bordering color of GrayFrame, commented as "top1".
+  // bordering color of nom::GrayWindow, commented as "top1".
   //
   // The original coords.x value was + 8, but I think + 4 looks best.
   this->labels[0].set_position ( Point2i ( this->position().x + 4, this->position().y ) );

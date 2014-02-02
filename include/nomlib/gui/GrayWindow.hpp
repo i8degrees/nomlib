@@ -26,10 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_GRAYFRAME_HPP
-#define NOMLIB_SDL2_GRAYFRAME_HPP
-
-#include <iostream>
+#ifndef NOMLIB_GUI_GRAY_WINDOW_HPP
+#define NOMLIB_GUI_GRAY_WINDOW_HPP
 
 #include "SDL.h" // SDL2
 
@@ -43,21 +41,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-class GrayFrame: public Transformable
+class GrayWindow: public Transformable
 {
   public:
-    typedef std::shared_ptr<GrayFrame> SharedPtr;
-    typedef std::unique_ptr<GrayFrame> UniquePtr;
-    typedef GrayFrame* RawPtr;
+    typedef std::shared_ptr<GrayWindow> SharedPtr;
+    typedef std::unique_ptr<GrayWindow> UniquePtr;
+    typedef GrayWindow* RawPtr;
 
-    GrayFrame ( void );
-    virtual ~GrayFrame ( void );
+    GrayWindow ( void );
+    virtual ~GrayWindow ( void );
 
-    //GrayFrame& operator = ( const GrayFrame& other );
+    //GrayWindow& operator = ( const GrayWindow& other );
 
-    GrayFrame ( const IntRect& bounds, int pad );
+    GrayWindow ( const IntRect& bounds, int pad );
 
-    GrayFrame ( const Point2i& pos, const Size2i& size, int pad );
+    GrayWindow ( const Point2i& pos, const Size2i& size, int pad );
 
     /*const IntRect&*/int padding ( void ) const;
 

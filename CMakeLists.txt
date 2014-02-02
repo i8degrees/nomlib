@@ -91,8 +91,11 @@ include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
 # Absolute path from project root to compiled source files
 set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" )
 
-# Relative path from project root containing additional data
+# Relative path from project root containing project assets
 set ( NOMLIB_RESOURCES_DIR "Resources" )
+
+# Relative path from project root containing SharedSupport directory
+set ( NOMLIB_SHARED_SUPPORT_DIR "${NOMLIB_RESOURCES_DIR}/SharedSupport" )
 
 set ( NOMLIB_HEADERS_ROOT "include" )
 

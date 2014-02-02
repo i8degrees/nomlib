@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOM_CCAST(type, expression) const_cast<type>(expression)
 
 #define NOM_ENDL(reserved) ( std::cout << std::endl )
+#define NOM_DASHED_ENDL(reserved) ( std::cout << "---" << std::endl )
 
 #define NOM_TIMESTAMP(reserved) \
   ( std::cout << nom::time() << std::endl )

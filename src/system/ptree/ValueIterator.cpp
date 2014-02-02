@@ -26,14 +26,82 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_JSON_HEADERS
-#define NOMLIB_JSON_HEADERS
+#include "nomlib/system/ptree/ValueIterator.hpp"
 
-// Public header files
+namespace nom {
 
-#include <nomlib/config.hpp>
-#include <nomlib/json/JsonSerializer.hpp>
-#include <nomlib/json/JsonCppSerializer.hpp>
-#include <nomlib/json/JsonCppValue.hpp>
+ValueIterator::ValueIterator( void )
+{
+  //NOM_LOG_TRACE(NOM);
+}
 
-#endif // include guard defined
+ValueIterator::~ValueIterator( void )
+{
+  //NOM_LOG_TRACE(NOM);
+}
+
+ValueIterator::ValueIterator( const ValueIterator& copy )
+{
+  //NOM_LOG_TRACE(NOM);
+  this->copy( copy );
+}
+
+ValueIterator::ValueIterator( const ArrayIterator& itr ) :
+  ValueIteratorBase ( itr )
+{
+  //NOM_LOG_TRACE(NOM);
+}
+
+ValueIterator::ValueIterator( const ObjectIterator& itr ) :
+  ValueIteratorBase ( itr )
+{
+  //NOM_LOG_TRACE(NOM);
+}
+
+ValueIterator::SelfType& ValueIterator::operator =( const SelfType& other )
+{
+  this->copy( other );
+
+  return *this;
+}
+
+ValueIterator::ValueTypeReference ValueIterator::operator *( void ) const
+{
+  return this->dereference();
+}
+
+ValueIterator::ValueTypePointer ValueIterator::operator ->( void ) const
+{
+  return this->pointer();
+}
+
+ValueIterator::SelfType& ValueIterator::operator ++( void )
+{
+   this->increment();
+
+   return *this;
+}
+
+ValueIterator::SelfType ValueIterator::operator ++( sint )
+{
+   SelfType itr( *this );
+   ++*this;
+
+   return itr;
+}
+
+ValueIterator::SelfType& ValueIterator::operator --( void )
+{
+   this->decrement();
+
+   return *this;
+}
+
+ValueIterator::SelfType ValueIterator::operator --( sint )
+{
+   SelfType itr( *this );
+
+   return itr;
+}
+
+} // namespace nom

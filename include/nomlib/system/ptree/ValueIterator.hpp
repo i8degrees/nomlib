@@ -26,43 +26,66 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_JSON_FILEWRITER_HPP
-#define NOMLIB_JSON_FILEWRITER_HPP
-
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
+#ifndef NOMLIB_SYSTEM_PTREE_VALUE_ITERATOR_HPP
+#define NOMLIB_SYSTEM_PTREE_VALUE_ITERATOR_HPP
 
 #include "nomlib/config.hpp"
-#include "nomlib/json/config_json.hpp"
-#include "nomlib/json/Value.hpp"
+#include "nomlib/system/ptree/ptree_config.hpp"
+#include "nomlib/system/ptree/ptree_forwards.hpp"
+#include "nomlib/system/ptree/ValueIteratorBase.hpp"
 
 namespace nom {
-namespace JSON {
 
-/// \brief Wrapper class for JSON output with JSONCPP
-class FileWriter
+class ValueIterator: public ValueIteratorBase
 {
   public:
-    FileWriter ( void );
-    ~FileWriter ( void );
+    typedef ValueIterator SelfType;
+    typedef ValueIteratorBase DerivedType;
 
-    bool save (
-                const std::string& filename, const Value& object,
-                uint32 format = NoFormatting
-              ) const;
+    typedef SelfType* RawPtr;
+    typedef SelfType Iterator;
 
-    const std::string stringify ( Value& object, uint32 format = 0 ) const;
+    /// \brief Default constructor.
+    ValueIterator( void );
+
+    /// \brief Destructor.
+    ~ValueIterator( void );
+
+    /// \brief Copy constructor
+    ValueIterator( const ValueIterator& copy );
+
+    /// \brief Copy constructor
+    ValueIterator( const ArrayIterator& itr );
+
+    /// \brief Copy constructor
+    ValueIterator( const ObjectIterator& itr );
+
+    /// \brief Copy assignment
+    SelfType& operator =( const SelfType& other );
+
+    /// \brief Obtain a reference to the iterator's object.
+    ///
+    /// \returns A reference to the nom::Value object.
+    ValueTypeReference operator *( void ) const;
+
+    /// \brief Obtain a pointer to the iterator's object.
+    ///
+    /// \returns A pointer to the nom::Value object.
+    ValueTypePointer operator ->( void ) const;
+
+    /// \brief Increment the object by one
+    SelfType& operator ++( void );
+
+    /// \brief Increment by specified parameter
+    SelfType operator ++( sint );
+
+    /// \brief Decrement by one
+    SelfType& operator --( void );
+
+    /// \brief Decrement by specified parameter
+    SelfType operator --( sint );
 };
 
-} // namespace JSON
 } // namespace nom
 
 #endif // include guard defined
-
-/// \class nom::JSON::FileWriter
-/// \ingroup json
-///
-///   [TO BE WRITTEN]
-///

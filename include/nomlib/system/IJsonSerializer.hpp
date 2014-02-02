@@ -26,66 +26,45 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_JSON_CONFIG_HPP
-#define NOMLIB_JSON_CONFIG_HPP
-
-#include "nomlib/json/jsoncpp/json.h" // JSONCPP
+#ifndef NOMLIB_SYSTEM_IJSON_SERIALIZER_HPP
+#define NOMLIB_SYSTEM_IJSON_SERIALIZER_HPP
 
 #include "nomlib/config.hpp"
+#include "nomlib/system/ptree/ptree_forwards.hpp"
 
 namespace nom {
-namespace JSON {
 
-/// Platform / library dependent definitions
+/// \brief Abstract interface for JSON serialization with nom::Value objects
 ///
-/// JSONCPP's public API for JSON I/O
-typedef Json::Value ValueType;
-
-/// Platform / library dependent definitions
-///
-/// JSONCPP typedef for an enum defining JSON data type
-typedef Json::ValueType JSONValueType;
-
-/// Platform / library dependent definitions
-///
-/// JSONCPP typedef for std::vector<std::string>
-typedef Json::Value::Members JSONMemberType;
-
-enum
+/// \note Not implemented.
+class IJsonSerializer
 {
-  Null = Json::nullValue,
-  Integer = Json::intValue,
-  UInteger = Json::uintValue,
-  Real = Json::realValue,
-  String = Json::stringValue,
-  Boolean = Json::booleanValue,
-  Array = Json::arrayValue,
-  Object = Json::objectValue
+  public:
+    typedef IJsonSerializer SelfType;
+
+    typedef SelfType* RawPtr;
+    typedef std::unique_ptr<SelfType> UniquePtr;
+
+    IJsonSerializer ( void )
+    {
+      //NOM_LOG_TRACE(NOM);
+    }
+
+    virtual ~IJsonSerializer ( void )
+    {
+      //NOM_LOG_TRACE(NOM);
+    }
+
+    virtual bool serialize( const Value& source, const std::string& output ) const = 0;
+    virtual bool unserialize( const std::string& input, Value& dest ) const = 0;
 };
 
-/// Formatting options (not presently used).
-///
-/// \todo Look into jsoncpp documentation and see if there's an equivalent for
-/// any of these formatting options?
-enum
-{
-  NoFormatting = 0, // no formatting applied
-  PrettyPrint = 1, // json_spirit::pretty_print
-  CompactArrays = 2 // json_spirit::single_line_arrays; implies PrettyPrint
-};
-
-/// Number of spaces to pass to jsoncpp for tab indention
-const std::string indention_spaces = "  "; // two spaces
-
-
-} // namespace JSON
 } // namespace nom
 
 #endif // include guard defined
 
-/// \brief Configuration options for nom::JSON engine
-///
-/// \ingroup json
+/// \class nom::IJsonSerializer
+/// \ingroup system
 ///
 ///   [TO BE WRITTEN]
 ///

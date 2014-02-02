@@ -26,14 +26,50 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_JSON_HEADERS
-#define NOMLIB_JSON_HEADERS
+#ifndef NOMLIB_SYSTEM_PTREE_VSTRING_HPP
+#define NOMLIB_SYSTEM_PTREE_VSTRING_HPP
 
-// Public header files
+// #include <cstring>
+#include <string>
 
-#include <nomlib/config.hpp>
-#include <nomlib/json/JsonSerializer.hpp>
-#include <nomlib/json/JsonCppSerializer.hpp>
-#include <nomlib/json/JsonCppValue.hpp>
+#include "nomlib/config.hpp"
+#include "nomlib/system/ptree/ptree_config.hpp"
+#include "nomlib/system/ptree/ptree_forwards.hpp"
+
+namespace nom {
+
+class VString
+{
+  public:
+    VString( void );
+    ~VString( void );
+
+    VString( int val );
+
+    VString( const char* val );
+
+    VString( const std::string& val );
+
+    /// \NOTE Required implementation for usage inside a std::map template.
+    bool operator <( const VString& other ) const;
+
+    /// \NOTE Required implementation for usage inside a std::map template.
+    bool operator ==( const VString& other ) const;
+
+    /// \NOTE Required implementation for usage inside a std::map template.
+    const std::string& operator[]( int val ) const;
+
+    /// \NOTE Required implementation for usage inside a std::map template.
+    const std::string& operator[]( const std::string& val ) const;
+
+    const std::string& value( void ) const;
+
+  private:
+    // TODO: Implement as const char*
+    std::string value_;
+    // uint index_;
+};
+
+} // namespace nom
 
 #endif // include guard defined

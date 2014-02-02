@@ -92,6 +92,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #define NOM_LOG_ERR(identifier, message)
 #endif
 
+#define NOM_STUBBED(identifier) \
+  ( std::cout << #identifier << "_LOG_STUB at " << nom::time() << "In file " << __FILE__ << ":" << __LINE__ << std::endl << std::endl )
+
 #ifdef NOM_DEBUG_ASSERT
 
   #define NOM_ASSERT(expression) \

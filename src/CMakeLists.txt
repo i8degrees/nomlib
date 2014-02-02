@@ -1,5 +1,7 @@
 # Project header and source files
 
+# TODO: Break nomlib up into separate compilation units
+
 file ( GLOB ROOT_HEADERS "${NOMLIB_HEADERS_DIR}/*.hpp" )
 set ( ROOT_SOURCE
       ${SRC_DIR}/resources.cpp
@@ -27,7 +29,7 @@ set ( GRAPHICS_SOURCE
       ${SRC_DIR}/graphics/RendererInfo.cpp
       ${SRC_DIR}/graphics/Texture.cpp
       ${SRC_DIR}/graphics/Image.cpp
-      ${SRC_DIR}/graphics/RenderWindow.cpp
+      ${SRC_DIR}/graphics/Window.cpp
       ${SRC_DIR}/graphics/Renderer.cpp
       ${SRC_DIR}/graphics/VideoMode.cpp
       ${SRC_DIR}/graphics/Gradient.cpp
@@ -76,15 +78,15 @@ file ( GLOB GUI_HEADERS "${NOMLIB_HEADERS_DIR}/gui/*.hpp" )
 set ( GUI_SOURCE
       ${SRC_DIR}/gui/Cursor.cpp
       ${SRC_DIR}/gui/MessageBox.cpp
-      ${SRC_DIR}/gui/GrayWindow.cpp
+      ${SRC_DIR}/gui/GrayFrame.cpp
     )
 
 # JSON module
 file ( GLOB JSON_HEADERS "${NOMLIB_HEADERS_DIR}/json/*.hpp" )
 set ( JSON_SOURCE
-      ${SRC_DIR}/json/FileReader.cpp
-      ${SRC_DIR}/json/FileWriter.cpp
-      ${SRC_DIR}/json/Value.cpp
+      ${SRC_DIR}/json/JsonSerializer.cpp
+      ${SRC_DIR}/json/JsonCppSerializer.cpp
+      ${SRC_DIR}/json/JsonCppValue.cpp
     )
 
 # third-party jsoncpp library
@@ -131,6 +133,18 @@ set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/events/Action.cpp
       ${SRC_DIR}/system/events/EventCallback.cpp
     )
+
+file ( GLOB PTREE_HEADERS "${NOMLIB_HEADERS_DIR}/system/ptree/*.hpp" )
+set ( PTREE_SOURCE
+      ${SRC_DIR}/system/ptree/Value.cpp
+      #${SRC_DIR}/system/ptree/Array.cpp
+      # ${SRC_DIR}/system/ptree/Object.cpp
+      ${SRC_DIR}/system/ptree/VString.cpp
+      ${SRC_DIR}/system/ptree/ValueIteratorBase.cpp
+      ${SRC_DIR}/system/ptree/ValueIterator.cpp
+      ${SRC_DIR}/system/ptree/ValueConstIterator.cpp
+    )
+
 file ( GLOB TEMPLATE_HEADERS "${NOMLIB_SHARED_SUPPORT_DIR}/*.hpp" )
 set ( TEMPLATE_SOURCE
       ${NOMLIB_SHARED_SUPPORT_DIR}/Template.cpp
@@ -155,11 +169,40 @@ elseif ( PLATFORM_WINDOWS )
   set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/windows/ResourcePath.cpp" )
 endif ( PLATFORM_OSX )
 
+<<<<<<< HEAD
 if( NOM_BUILD_CORE_UNIT )
   set ( NOMLIB_HEADERS
         ${NOMLIB_HEADERS}
         ${ROOT_HEADERS}
       )
+=======
+# Full nomlib project header files (*.hpp; *.h)
+set ( NOMLIB_HEADERS
+      ${ROOT_HEADERS}
+      ${AUDIO_HEADERS}
+      ${GRAPHICS_HEADERS}
+      ${GRAPHICS_HQX_HEADERS}
+      ${GRAPHICS_SCALE2X_HEADERS}
+      ${GRAPHICS_SHAPES_HEADERS}
+      ${GRAPHICS_SPRITE_HEADERS}
+      ${GUI_HEADERS}
+      ${JSON_HEADERS}
+      ${JSONCPP_HEADERS}
+      ${MATH_HEADERS}
+      ${SYSTEM_HEADERS}
+      ${SYSTEM_OSX_HEADERS}
+      ${SYSTEM_UNIX_HEADERS}
+      ${SYSTEM_WINDOWS_HEADERS}
+      ${PTREE_HEADERS}
+      ${TEMPLATE_HEADERS}
+    )
+
+if ( NOM_BUILD_MINI )
+  # Build an absolute minimum nomlib -- for testing new CMake options, etc.
+  set ( NOMLIB_SOURCE ${ROOT_SOURCE} )
+else ( NOT NOM_BUILD_MINI )
+  # Full nomlib project
+>>>>>>> Refactor JSON module
   set ( NOMLIB_SOURCE
         ${NOMLIB_SOURCE}
         ${ROOT_SOURCE}
@@ -251,6 +294,11 @@ if( NOM_BUILD_SYSTEM_UNIT )
   set ( NOMLIB_SOURCE
         ${NOMLIB_SOURCE}
         ${SYSTEM_SOURCE}
+<<<<<<< HEAD
+=======
+        ${PTREE_SOURCE}
+        ${TEMPLATE_SOURCE}
+>>>>>>> Refactor JSON module
       )
 endif( NOM_BUILD_SYSTEM_UNIT )
 

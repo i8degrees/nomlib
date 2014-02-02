@@ -26,14 +26,20 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_JSON_HEADERS
-#define NOMLIB_JSON_HEADERS
+#ifndef NOMLIB_SYSTEM_PTREE_FORWARDS_HPP
+#define NOMLIB_SYSTEM_PTREE_FORWARDS_HPP
 
-// Public header files
+#include "nomlib/config.hpp"
+#include "nomlib/system/ptree/ptree_config.hpp"
 
-#include <nomlib/config.hpp>
-#include <nomlib/json/JsonSerializer.hpp>
-#include <nomlib/json/JsonCppSerializer.hpp>
-#include <nomlib/json/JsonCppValue.hpp>
+namespace nom {
+
+// Forward declarations
+class Value;
+class ValueIteratorBase;
+class ValueConstIterator;
+class ValueIterator;
+
+} // namespace nom
 
 #endif // include guard defined

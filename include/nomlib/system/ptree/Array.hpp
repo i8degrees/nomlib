@@ -26,62 +26,21 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_JSON_FILEREADER_HPP
-#define NOMLIB_JSON_FILEREADER_HPP
+#ifndef NOMLIB_SYSTEM_PTREE_ARRAY_HPP
+#define NOMLIB_SYSTEM_PTREE_ARRAY_HPP
 
-#include <iostream>
-#include <fstream>
-#include <string>
+#include <vector>
 
 #include "nomlib/config.hpp"
-#include "nomlib/json/config_json.hpp"
-#include "nomlib/json/Value.hpp"
+#include "nomlib/system/ptree/ptree_config.hpp"
+#include "nomlib/system/ptree/ptree_forwards.hpp"
 
 namespace nom {
-namespace JSON {
 
-/// \brief Wrapper class for JSON input with JSONCPP
-class FileReader
-{
-  public:
-    FileReader ( void );
-    ~FileReader ( void );
+typedef std::vector<Value> Array;
+typedef std::vector<Value>::const_iterator ArrayConstIterator;
+typedef std::vector<Value>::iterator ArrayIterator;
 
-    /// Load JSON input from a specified file path
-    ///
-    /// \param      filename            Absolute file path
-    ///
-    /// \param      object              nom::JSON::Value object container for
-    ///                                 storing parsed JSON file input
-    ///
-    /// \param      parse_comments      Disabled by default
-    bool load (
-                const std::string& filename,
-                Value& object, bool parse_comments = false
-              );
-
-    /// Debugging aid; helper method for nom::JSON::FileReader::dump
-    void dump_key ( const ValueType& object ) const;
-
-    /// Debugging aid; helper method for nom::JSON::FileReader::dump
-    void dump_value ( const ValueType& key ) const;
-
-    /// A convenient, detailed console output dump of the JSON object, as the
-    /// underlying engine (JSONCPP) sees it.
-    bool dump ( const ValueType& object, int depth = 0 ) const;
-};
-
-} // namespace JSON
 } // namespace nom
 
 #endif // include guard defined
-
-/// \class nom::JSON::FileReader
-/// \ingroup json
-///
-///   [TO BE WRITTEN]
-///
-/// The dump methods originate (with my modifications) from:
-///
-/// http://stackoverflow.com/questions/4800605/jsoncpp-iterate-thru-all-the-objects
-///

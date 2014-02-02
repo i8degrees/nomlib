@@ -1,0 +1,57 @@
+[
+  {
+    "array" : [ null, -1, 666, 1.80, "StringValue!", true, false ],
+    "response" : "Light weight!",
+    "response2" : 1.80,
+    "root" : [ null, -1, 666, 1.80, "StringValue!", true, false ],
+    "string" : "Yeah buddy!",
+    "string2" : "Yeah buddy!"
+  },
+
+  {
+    "StringValue" : 1.6,
+    "null" : 666,
+    "null2" : null,
+    "null3" : -1.456,
+    "a": 1.0
+  },
+
+  {
+    "testme" : "StringValue!",
+    "testme2" : -1
+  },
+
+  null,
+
+  {
+    "root" : [ null, -1, 666, 1.80, "StringValue!", true, false ],
+    "string" : "boooya!",
+    "string2" : "Yeah buddy!"
+  },
+
+  {
+    "boolean": false
+  },
+
+  {
+    "root" : [ null, -1, 666, 1.80, "StringValue!", true, false ]
+  },
+
+  // Sanity test on C++ style comments with JSONCPP
+  {
+    "boolean": true,
+    "m" : [ null, -1, true, false ]
+  },
+
+  /*
+    Mapped JSON objects should *NOT* be parsed; our implementation is incomplete
+  */
+  {
+    "map":
+    [
+      {
+        "cmd": [ "hax" ]
+      }
+    ]
+  }
+]

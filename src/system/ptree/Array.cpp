@@ -26,49 +26,13 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/json/FileWriter.hpp"
+#include "nomlib/system/ptree/Array.hpp"
+
+// Forward declarations
+#include "nomlib/system/ptree/Value.hpp"
 
 namespace nom {
-namespace JSON {
 
-FileWriter::FileWriter ( void ) {}
-FileWriter::~FileWriter ( void ) {}
+// Stubbed file; reserved for future implementation
 
-bool FileWriter::save (
-                        const std::string& filename,
-                        const Value& object,
-                        uint32 format
-                      ) const
-{
-  std::ofstream fp;
-  Json::StyledStreamWriter writer ( indention_spaces );
-
-  fp.open ( filename );
-
-  if ( fp.is_open() == false || fp.good() == false )
-  {
-NOM_LOG_ERR ( NOM, "Unable to save JSON output file: " + filename );
-    fp.close();
-    return false;
-  }
-
-  writer.write ( fp, object.get() );
-
-  fp.close();
-  return true;
-}
-
-const std::string FileWriter::stringify (
-                                          Value& object,
-                                          uint32 format
-                                        ) const
-{
-  std::stringstream os;
-
-  os << object.get();
-
-  return os.str();
-}
-
-} // namespace JSON
 } // namespace nom

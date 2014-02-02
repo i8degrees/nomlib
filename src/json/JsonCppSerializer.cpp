@@ -26,14 +26,75 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_JSON_HEADERS
-#define NOMLIB_JSON_HEADERS
+#include "nomlib/json/JsonCppSerializer.hpp"
 
-// Public header files
+namespace nom {
 
-#include <nomlib/config.hpp>
-#include <nomlib/json/JsonSerializer.hpp>
-#include <nomlib/json/JsonCppSerializer.hpp>
-#include <nomlib/json/JsonCppValue.hpp>
+JsonCppSerializer::JsonCppSerializer( void )
+{
+  //NOM_LOG_TRACE(NOM);
+}
 
-#endif // include guard defined
+JsonCppSerializer::~JsonCppSerializer( void )
+{
+  //NOM_LOG_TRACE(NOM);
+}
+
+bool JsonCppSerializer::serialize(  const JsonCppValue& source,
+                                    const std::string& output ) const
+{
+  std::ofstream fp;
+  Json::StyledStreamWriter writer( JSONCPP_INDENTION_LEVEL );
+
+  fp.open( output );
+
+  if ( ! fp.is_open() || ! fp.good() )
+  {
+    NOM_LOG_ERR ( NOM, "Unable to save JSON output file: " + output );
+    fp.close();
+    return false;
+  }
+
+  writer.write( fp, source.get() );
+
+  fp.close();
+
+  return true;
+}
+
+bool JsonCppSerializer::unserialize(  const std::string& input,
+                                      JsonCppValue& dest ) const
+{
+  std::ifstream fp;
+  Json::Reader parser;
+
+  fp.open( input );
+
+  if ( ! fp.is_open() || ! fp.good() )
+  {
+    NOM_LOG_ERR ( NOM, "Could not open given file: " + input );
+    fp.close();
+    return false;
+  }
+
+  if ( parser.parse( fp, dest.get() ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Unable to parse input JSON file: " + input );
+    fp.close();
+    return false;
+  }
+
+  fp.close();
+  return true;
+}
+
+const std::string JsonCppSerializer::stringify( const JsonCppValue& obj ) const
+{
+  std::stringstream os;
+
+  os << obj.get();
+
+  return os.str();
+}
+
+} // namespace nom

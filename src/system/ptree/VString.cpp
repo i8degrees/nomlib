@@ -26,14 +26,69 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_JSON_HEADERS
-#define NOMLIB_JSON_HEADERS
+#include "nomlib/system/ptree/VString.hpp"
 
-// Public header files
+namespace nom {
 
-#include <nomlib/config.hpp>
-#include <nomlib/json/JsonSerializer.hpp>
-#include <nomlib/json/JsonCppSerializer.hpp>
-#include <nomlib/json/JsonCppValue.hpp>
+VString::VString( void )
+{
+  //NOM_LOG_TRACE(NOM);
+}
 
-#endif // include guard defined
+VString::~VString( void )
+{
+  //NOM_LOG_TRACE(NOM);
+}
+
+VString::VString( int val )
+{
+  //NOM_LOG_TRACE(NOM);
+  this->value_ = std::to_string( val );
+}
+
+VString::VString( const char* val )
+{
+  //NOM_LOG_TRACE(NOM);
+  this->value_ = std::string( val );
+}
+
+VString::VString( const std::string& val )
+{
+  //NOM_LOG_TRACE(NOM);
+  this->value_ = val;
+}
+
+bool VString::operator <( const VString& other ) const
+{
+  // if ( this->valid() )
+  // {
+    // return strcmp( this->value_, other.value_ ) < 0;
+  // }
+  return this->value_ < other.value_;
+}
+
+bool VString::operator ==( const VString& other ) const
+{
+  // if ( this->valid() )
+  // {
+    // return strcmp( this->value_, other.value_ ) == 0;
+  // }
+  return this->value_ == other.value_;
+}
+
+const std::string& VString::operator[]( int val ) const
+{
+  return this->value_;
+}
+
+const std::string& VString::operator[]( const std::string& val ) const
+{
+  return this->value_;
+}
+
+const std::string& VString::value( void ) const
+{
+  return this->value_;
+}
+
+} // namespace nom

@@ -83,14 +83,14 @@ class Sprite:
 
     virtual void update ( void );
 
-    void draw ( RenderTarget target ) const;
+    void draw ( RenderTarget& target ) const;
 
     /// Draw a rotated nom::Sprite on a nom::RenderWindow
     ///
     /// \param  target  Reference to an active nom::RenderWindow
     /// \param  angle   Rotation angle in degrees
     ///
-    void draw ( RenderTarget target, const double angle ) const;
+    void draw ( RenderTarget& target, const double angle ) const;
 
     /// \brief Rescale the sprite with the chosen resizing algorithm
     ///

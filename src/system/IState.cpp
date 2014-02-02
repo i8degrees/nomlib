@@ -79,7 +79,7 @@ void IState::on_update ( float )
   // User-defined virtual
 }
 
-void IState::on_draw ( IDrawable::RenderTarget )
+void IState::on_draw ( IDrawable::RenderTarget& target )
 {
   // User-defined virtual
 }

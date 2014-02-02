@@ -399,7 +399,7 @@ void Text::set_alignment ( enum Text::Alignment align )
   this->set_position (Point2i(x_offset, y_offset) );
 }
 
-void Text::draw ( RenderTarget target ) const
+void Text::draw ( RenderTarget& target ) const
 {
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from

@@ -65,7 +65,7 @@ class GrayWindow: public Transformable
     void update ( void );
 
     // Re-implemented from IDrawable
-    void draw ( RenderTarget target ) const;
+    void draw ( RenderTarget& target ) const;
 
   private:
     /// Holds our line objects used for rendering the object.

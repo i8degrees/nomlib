@@ -73,7 +73,7 @@ class StateMachine
     void update ( float delta );
 
     /// State rendering handling
-    void draw ( IDrawable::RenderTarget );
+    void draw ( IDrawable::RenderTarget& );
 
   private:
     /// Container of our states

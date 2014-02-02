@@ -108,7 +108,7 @@ void Sprite::update ( void )
   this->sprite_.set_position ( Point2i ( this->position().x, this->position().y ) );
 }
 
-void Sprite::draw ( RenderTarget target ) const
+void Sprite::draw ( RenderTarget& target ) const
 {
   NOM_ASSERT ( this->sprite_.valid() );
 
@@ -119,7 +119,7 @@ void Sprite::draw ( RenderTarget target ) const
   }
 }
 
-void Sprite::draw ( RenderTarget target, const double degrees ) const
+void Sprite::draw ( RenderTarget& target, const double degrees ) const
 {
   NOM_ASSERT ( this->sprite_.valid() );
 

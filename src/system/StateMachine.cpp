@@ -145,7 +145,7 @@ void StateMachine::update ( float delta )
   }
 }
 
-void StateMachine::draw ( IDrawable::RenderTarget target )
+void StateMachine::draw ( IDrawable::RenderTarget& target )
 {
   // Ensure that we have a state in which we can handle rendering on
   if ( ! this->states.empty() )

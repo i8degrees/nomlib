@@ -52,7 +52,7 @@ void Point::update ( void )
   // Stub (NO-OP)
 }
 
-void Point::draw ( RenderTarget target ) const
+void Point::draw ( RenderTarget& target ) const
 {
   if ( SDL_SetRenderDrawColor ( target.renderer(), this->fill_color().r, this->fill_color().g, this->fill_color().b, this->fill_color().a ) != 0 )
   {

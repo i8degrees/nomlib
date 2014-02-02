@@ -238,7 +238,7 @@ void Gradient::update ( void )
   }
 }
 
-void Gradient::draw ( RenderTarget target ) const
+void Gradient::draw ( RenderTarget& target ) const
 {
   for ( auto idx = 0; idx != this->rectangles_.size(); ++idx )
   {

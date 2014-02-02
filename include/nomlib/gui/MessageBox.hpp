@@ -106,7 +106,7 @@ class MessageBox: public Transformable
     void set_title ( const Text& title );
     void set_text ( const Text& text );
 
-    void draw ( RenderTarget target ) const;
+    void draw ( RenderTarget& target ) const;
 
   protected:
     void update ( void );

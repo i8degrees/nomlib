@@ -107,7 +107,7 @@ class Gradient: public Transformable
     void enable_dithering ( bool toggle );
 
     void update ( void );
-    void draw ( RenderTarget target ) const;
+    void draw ( RenderTarget& target ) const;
 
   private:
     void strategy_top_down ( void );

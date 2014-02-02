@@ -246,7 +246,7 @@ void MessageBox::update ( void )
   this->updated_ = true;
 }
 
-void MessageBox::draw ( RenderTarget target ) const
+void MessageBox::draw ( RenderTarget& target ) const
 {
   if ( this->enabled() == false ) return;
 

@@ -121,7 +121,7 @@ void GrayWindow::update ( void )
   this->updated_ = true;
 }
 
-void GrayWindow::draw ( RenderTarget target ) const
+void GrayWindow::draw ( RenderTarget& target ) const
 {
   for ( auto idx = 0; idx != this->frame_.size(); ++idx )
   {

@@ -162,7 +162,7 @@ void SDLApp::on_update ( float delta )
   this->states.update( delta );
 }
 
-void SDLApp::on_draw ( IDrawable::RenderTarget target )
+void SDLApp::on_draw ( IDrawable::RenderTarget& target )
 {
   this->states.draw( target );
 }

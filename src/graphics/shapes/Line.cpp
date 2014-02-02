@@ -53,7 +53,7 @@ void Line::update ( void )
   // Stub (NO-OP)
 }
 
-void Line::draw ( RenderTarget target ) const
+void Line::draw ( RenderTarget& target ) const
 {
   if ( SDL_SetRenderDrawColor ( target.renderer(), this->outline_color().r, this->outline_color().g, this->outline_color().b, this->outline_color().a ) != 0 )
   {

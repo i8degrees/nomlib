@@ -53,7 +53,7 @@ class IDrawable
     /// std::unique_ptr vector container type
     typedef std::vector<std::unique_ptr<IDrawable>> UniqueDrawables;
 
-    typedef const RenderWindow& RenderTarget;
+    typedef const RenderWindow RenderTarget;
 
     /// Do nothing at all default constructor
     IDrawable ( void ) {}
@@ -75,7 +75,7 @@ class IDrawable
     virtual void update ( void ) = 0;
 
     /// Render the object onto the primary video buffer -- your visible screen.
-    virtual void draw ( RenderTarget ) const = 0;
+    virtual void draw ( RenderTarget& ) const = 0;
 };
 
 

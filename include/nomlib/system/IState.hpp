@@ -112,7 +112,7 @@ class IState: public Input
     ///
     /// \todo Consider removing RenderTarget argument; I *think* we can get
     /// away with this.
-    virtual void on_draw ( IDrawable::RenderTarget );
+    virtual void on_draw ( IDrawable::RenderTarget& );
 
     /// \brief User-defined implementation of the state's initialization logic.
     ///

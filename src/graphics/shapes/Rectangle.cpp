@@ -53,7 +53,7 @@ void Rectangle::update ( void )
   // Stub (NO-OP)
 }
 
-void Rectangle::draw ( RenderTarget target ) const
+void Rectangle::draw ( RenderTarget& target ) const
 {
   if ( SDL_SetRenderDrawColor ( target.renderer(), this->fill_color().r, this->fill_color().g, this->fill_color().b, this->fill_color().a ) != 0 )
   {

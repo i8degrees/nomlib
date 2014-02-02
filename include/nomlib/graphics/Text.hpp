@@ -195,7 +195,7 @@ class Text: public Transformable
     /// Render text to a target
     ///
     /// \todo Test horizontal tabbing '\t'
-    void draw ( RenderTarget target ) const;
+    void draw ( RenderTarget& target ) const;
 
     /// Rescale the font with a chosen resizing algorithm
     ///

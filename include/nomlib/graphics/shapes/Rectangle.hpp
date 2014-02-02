@@ -71,7 +71,7 @@ class Rectangle: public Shape
     /// \brief Render the rectangle shape.
     ///
     /// \param target nom::RenderWindow object to render to.
-    void draw ( RenderTarget target ) const;
+    void draw ( RenderTarget& target ) const;
 };
 
 } // namespace nom

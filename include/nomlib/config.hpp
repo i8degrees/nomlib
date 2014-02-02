@@ -67,8 +67,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 /// You may mix and match these flags however you wish.
 
-// Pretty print C macros purely for convenience sake
+/// Pretty print C macros purely for convenience sake
+///
+/// \deprecated Use NOM_DUMP
 #define NOM_DUMP_VAR(var) \
+  ( std::cout << #var << ": " << var << std::endl << std::endl )
+
+/// Pretty print C macros purely for convenience sake
+#define NOM_DUMP(var) \
   ( std::cout << #var << ": " << var << std::endl << std::endl )
 
 // nomlib debugging macros

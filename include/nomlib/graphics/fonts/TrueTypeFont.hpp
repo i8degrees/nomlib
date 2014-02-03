@@ -169,6 +169,8 @@ class TrueTypeFont: public IFont
     bool load( const std::string& filename );
 
     /// \brief Obtain information about the loaded font
+    ///
+    /// \remarks Implements IFont::metrics.
     const FontMetrics& metrics( void ) const;
 
   private:

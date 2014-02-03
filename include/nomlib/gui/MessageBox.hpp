@@ -26,61 +26,55 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_MESSAGEBOX_HEADERS
-#define NOMLIB_SDL2_MESSAGEBOX_HEADERS
+#ifndef NOMLIB_GUI_MESSAGEBOX_HPP
+#define NOMLIB_GUI_MESSAGEBOX_HPP
 
 #include <iostream>
 #include <string>
 #include <memory>
-#include <array>
-
-#include "SDL.h" // SDL2
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Transformable.hpp"
-#include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
 #include "nomlib/graphics/Text.hpp"
-#include "nomlib/graphics/Gradient.hpp"
-#include "nomlib/gui/GrayWindow.hpp"
+#include "nomlib/gui/UIWidget.hpp"
 
 namespace nom {
 
 /// \brief Simple UI interface for drawing a styled message box
-class MessageBox: public Transformable
+class MessageBox: public UIWidget
 {
   public:
-    enum Style
-    {
-      None = 0,
-      Gray = 1
-    };
+    typedef MessageBox self_type;
+    typedef UIWidget derived_class;
 
-    MessageBox ( void );
+    typedef self_type* raw_ptr;
+    typedef std::unique_ptr<self_type> unique_ptr;
+    typedef std::shared_ptr<self_type> shared_ptr;
 
-    virtual ~MessageBox ( void );
+    MessageBox( void );
 
-    //MessageBox ( const MessageBox& copy );
+    virtual ~MessageBox( void );
 
-    //MessageBox& operator = ( const MessageBox& other );
+    /// \brief Copy constructor.
+    ///
+    /// \remarks This class is non-copyable.
+    MessageBox( const self_type& rhs ) = delete;
 
-    MessageBox  ( const Point2i& pos, const Size2i& size,
-                  enum MessageBox::Style style, const Gradient& background
+    /// \brief Copy assignment operator.
+    self_type& operator =( const self_type& rhs );
+
+    MessageBox  (
+                  UIWidget* parent,
+                  int64 id,
+                  const Point2i& pos,
+                  const Size2i& size
                 );
 
-    MessageBox  ( const Point2i& pos, const Size2i& size,
-                  GrayWindow::SharedPtr style = nullptr,
-                  Gradient::SharedPtr background = nullptr
-                );
+    bool enabled( void ) const;
 
-    //const Size2i& size ( void ) const;
-    //const Point2i& position ( void ) const;
-
-    bool enabled ( void ) const;
-
-    const std::string& title_string ( void ) const;
-    const std::string& text_string ( void ) const;
+    const std::string& title_text( void ) const;
+    const std::string& message_text( void ) const;
 
     /// \brief Obtain the rectangle bounds of the set title text
     ///
@@ -89,7 +83,7 @@ class MessageBox: public Transformable
     /// \remarks The bounds are the final rendered coordinates (in pixels),
     /// which may include alignments done to the Text object after being set
     /// in this class.
-    const IntRect title_bounds ( void ) const;
+    const IntRect title_bounds( void ) const;
 
     /// \brief Obtain the rectangle bounds of the set text
     ///
@@ -98,48 +92,81 @@ class MessageBox: public Transformable
     /// \remarks The bounds are the final rendered coordinates (in pixels),
     /// which may include alignments done to the Text object after being set
     /// in this class.
-    const IntRect text_bounds ( void ) const;
+    const IntRect message_bounds( void ) const;
 
-    void disable ( void );
-    void enable ( void );
+    void disable( void );
+    void enable( void );
 
-    Text::Alignment title_alignment( void ) const;
-    Text::Alignment text_alignment( void ) const;
+    // Text::Alignment title_alignment( void ) const;
+    // Text::Alignment text_alignment( void ) const;
 
+    /// \brief Set the title label (caption) of the message box.
+    ///
+    /// \remarks This method is potentially expensive and should be used only
+    /// when necessary -- such as when first-time initializing the label --
+    /// or when a new font object needs to be set.
+    ///
     /// \deprecated This will likely be removed when feature/GUI is merged into
     /// the main dev branch.
-    void set_title ( const Text& title );
+    void set_title_label( const Text& title );
 
-    void set_title( const std::string& text, const Font& font, uint point_size = 12, Text::Alignment align = Text::Alignment::TopLeft );
+    /// \brief Set the title label text (caption) of the message box.
+    ///
+    /// \remarks This method is provided for quick updates of the existing label;
+    /// the title label text object should be initialized before
+    void set_title_text( const std::string& text );
 
-    void set_title_label( const std::string& text );
-    void set_title_font( const Font& font );
-    void set_title_font_size( uint point_size );
-    void set_title_alignment( Text::Alignment align );
+    // void set_title( const std::string& text, const Font& font, uint point_size = 12, Text::Alignment align = Text::Alignment::TopLeft );
+    // void set_title_label( const std::string& text );
+    // void set_title_font( const Font& font );
+    // void set_title_font_size( uint point_size );
+    // void set_title_alignment( Text::Alignment align );
 
+    /// \brief Set the message box text label.
+    ///
+    /// \remarks This method is potentially expensive and should be used only
+    /// when necessary -- such as when first-time initializing the label --
+    /// or when a new font object needs to be set.
+    ///
     /// \deprecated This will likely be removed when feature/GUI is merged into
     /// the main dev branch.
-    void set_text ( const Text& text );
+    void set_message_label( const Text& text );
 
-    void set_text( const std::string& text, const Font& font, uint point_size = 12, Text::Alignment align = Text::Alignment::MiddleCenter );
+    /// \brief Set the message box text.
+    ///
+    /// \remarks This method is provided for quick updates of the existing label;
+    /// the title label text object should be initialized before
+    void set_message_text( const std::string& text );
 
-    void set_text_label( const std::string& text );
-    void set_text_font( const Font& font );
-    void set_text_font_size( uint point_size );
-    void set_text_alignment( Text::Alignment align );
+    // void set_text( const std::string& text, const Font& font, uint point_size = 12, Text::Alignment align = Text::Alignment::MiddleCenter );
+    // void set_text_label( const std::string& text );
+    // void set_text_font( const Font& font );
+    // void set_text_font_size( uint point_size );
+    // void set_text_alignment( Text::Alignment align );
 
-    void draw ( RenderTarget& target ) const;
+    /// \brief Implements UIWidget::draw method.
+    void draw( RenderTarget& target ) const;
 
   protected:
-    void update ( void );
+    /// \brief Implements UIWidget::update method.
+    void update( void );
+
+    /// \brief Implements the EventHandler::process_event method.
+    bool process_event( const nom::Event& ev );
 
   private:
-    IDrawable::SharedDrawables drawable;
+    /// \brief Obtain a reference object to the title text label used.
+    const Text& title( void ) const;
 
-    /// Array holding our up to two labels (title and text, respectively)
-    std::array<Text, 2> labels;
+    /// \brief Obtain a reference object to the message text label used.
+    const Text& message( void ) const;
 
-    //Size2i size_;
+    /// Message caption label.
+    Text title_;
+
+    /// \brief Message text label.
+    Text message_;
+
     bool enabled_;
 
     bool updated_;

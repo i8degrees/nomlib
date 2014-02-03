@@ -31,45 +31,63 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 Text::Text( void ) :
-  Transformable { Point2i (0, 0), Size2i (0, 0) }, // Our inherited class
+  Transformable { Point2i::null, Size2i::null }, // Base class
   text_size_ ( 14 ),
   color_ ( Color4i::White ),
   style_ ( Text::Style::Regular ),
   alignment_ ( Text::Alignment::TopLeft )
 {
-  NOM_LOG_TRACE ( NOM );
+  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+    NOM_LOG_TRACE( NOM );
+  #endif
 }
 
 Text::~Text( void )
 {
-  NOM_LOG_TRACE ( NOM );
+  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+    NOM_LOG_TRACE( NOM );
+  #endif
 }
 
-Text::Text ( const Text& copy ) :
+Text::Text ( const self_type& copy ) :
   Transformable { copy.position(), copy.size() }, // Our inherited class
-  font_ { copy.font() },
+  font_{ copy.font() },
   texture_ { copy.texture() },
   text_ { copy.text() },
   text_size_ { copy.text_size() },
   color_ { copy.color() },
   style_ { copy.style() },
-  alignment_ { copy.alignment() }
+  alignment_ { copy.alignment() },
+  features_{ copy.features() }
 {
-  NOM_LOG_TRACE ( NOM );
+  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+    NOM_LOG_TRACE( NOM );
+  #endif
+
+  // Set the overall size of this text label to the width & height of the text,
+  // with consideration to the specific font in use.
+  // this->set_size( Size2i( this->text_width( copy.text() ), this->text_height( copy.text() ) ) );
 }
 
-Text& Text::operator = ( const Text& other )
+Text::self_type& Text::operator = ( const self_type& other )
 {
   this->set_position ( other.position() );
+
   this->set_size ( other.size() );
 
+  // Set the overall size of this text label to the width & height of the text,
+  // with consideration to the specific font in use.
+  // this->set_size( Size2i( this->text_width( other.text() ), this->text_height( other.text() ) ) );
+
   this->font_ = other.font();
+
   this->texture_ = other.texture();
   this->text_ = other.text();
   this->text_size_ = other.text_size();
   this->color_ = other.color();
   this->style_ = other.style();
   this->alignment_ = other.alignment();
+  this->features_ = other.features();
 
   return *this;
 }
@@ -78,17 +96,18 @@ Text::Text  (
               const std::string& text,
               const Font& font,
               uint character_size,        // Default parameter
-              enum Text::Alignment align // Default parameter
+              enum Text::Alignment align, // Default parameter
+              const Color4i& text_color
             )  :
-  Transformable { Point2i(0, 0), Size2i(0, 0) }, // Our inherited class
+  Transformable { Point2i::null, Size2i::null }, // Base class
   text_ ( text ),
-  text_size_ ( character_size ),
-  color_ ( Color4i::White ),
-  style_ ( Text::Style::Regular )
+  text_size_( character_size ),
+  style_( Text::Style::Regular )
 {
   NOM_LOG_TRACE( NOM );
 
   this->set_font( font );
+  this->set_color( text_color );
   this->set_alignment ( align );
 }
 
@@ -104,13 +123,58 @@ Text::Text  (
 //   color_ ( Color4i::White ),
 //   style_ ( Text::Style::Regular )
 // {
-//   NOM_LOG_TRACE( NOM );
+//   #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+//     NOM_LOG_TRACE( NOM );
+//   #endif
+
+//   this->set_font( nullptr );
+//   this->set_color( Color4i::White );
+
+//   // Set the overall size of this text label to the width & height of the text,
+//   // with consideration to the specific font in use.
+//   // this->set_size( Size2i( this->text_width( text ), this->text_height( text ) ) );
+
+//   this->set_alignment ( Text::Alignment::TopLeft );
+// }
+
+// Text::Text  (
+//               const std::string& text,
+//               const IFont::raw_ptr font,
+//               // Default parameters
+//               uint character_size,
+//               enum Text::Alignment align,
+//               const Color4i& text_color
+//             )  :
+//   Transformable { Point2i::null, Size2i::null },  // Base class
+//   text_ ( text ),
+//   text_size_ ( character_size ),
+//   style_ ( Text::Style::Regular )
+// {
+//   #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+//     NOM_LOG_TRACE( NOM );
+//   #endif
 
 //   this->set_font( font );
+
+//   this->set_color( text_color );
+//   // Set the overall size of this text label to the width & height of the text,
+//   // with consideration to the specific font in use.
+//   // this->set_size( Size2i( this->text_width( text ), this->text_height( text ) ) );
+
 //   this->set_alignment ( align );
 // }
 
-Text::RawPtr Text::get ( void )
+IDrawable::raw_ptr Text::clone( void ) const
+{
+  return Text::raw_ptr( new Text( *this ) );
+}
+
+ObjectTypeInfo Text::type( void ) const
+{
+  return NOM_OBJECT_TYPE_INFO( self_type );
+}
+
+Text::raw_ptr Text::get( void )
 {
   return this;
 }
@@ -130,7 +194,7 @@ bool Text::valid ( void ) const
   return this->font().valid();
 }
 
-enum IFont::FontType Text::type ( void ) const
+enum IFont::FontType Text::font_type( void ) const
 {
   if ( this->valid() ) return this->font()->type();
 
@@ -250,15 +314,29 @@ const Point2i& Text::local_bounds ( void ) const
 }
 */
 
-/*
-const Point2i& Text::global_bounds ( void ) const
+IntRect Text::global_bounds( void ) const
 {
+  IntRect bounds;
+
+  // Positioning coordinates as would be rendered on-screen
+  bounds.x = this->position().x;
+  bounds.y = this->position().y;
+
+  // Text width and height, in pixels, with respect to set font
+  bounds.w = this->width();
+  bounds.h = this->height();
+
+  return bounds;
 }
-*/
 
 enum Text::Alignment Text::alignment ( void ) const
 {
   return this->alignment_;
+}
+
+uint32 Text::features( void ) const
+{
+  return this->features_;
 }
 
 void Text::set_font( const Text::font_type& font )
@@ -268,6 +346,17 @@ void Text::set_font( const Text::font_type& font )
   this->set_text_size( this->text_size() );
 }
 
+// void Text::set_font( const IFont::shared_ptr& font )
+// {
+//   #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+//     // NOM_LOG_TRACE( NOM );
+//   #endif
+
+//   this->font_ = font->clone();
+
+//   this->set_text_size( this->text_size() );
+// }
+
 void Text::set_font( Text::font_type* font )
 {
   if( font != nullptr && font->valid() )
@@ -276,7 +365,29 @@ void Text::set_font( Text::font_type* font )
 
     this->set_text_size( this->text_size() );
   }
+
+  // Set the overall size of this text label to the width & height of the text,
+  // with consideration to the specific font in use.
+  // this->set_size( Size2i( this->text_width( this->text() ), this->text_height( this->text() ) ) );
 }
+
+// void Text::set_font( const IFont::raw_ptr font )
+// {
+//   #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+//     // NOM_LOG_TRACE( NOM );
+//   #endif
+
+//   if( font != nullptr )
+//   {
+//     this->font_ = std::shared_ptr<IFont>( font->clone() );
+
+//     this->font()->set_point_size ( this->text_size() );
+
+//     // Set the overall size of this text label to the width & height of the text,
+//     // with consideration to the specific font in use.
+//     // this->set_size( Size2i( this->text_width( this->text() ), this->text_height( this->text() ) ) );
+//   }
+// }
 
 // void Text::set_font( const IFont& font )
 // {
@@ -287,11 +398,21 @@ void Text::set_font( Text::font_type* font )
 
 void Text::set_text ( const std::string& text )
 {
+  if( this->font_ == nullptr || this->font_->valid() == false )
+  {
+    NOM_LOG_ERR( NOM, "Could not set text string; the font resource is invalid." );
+    return;
+  }
+
   if ( text != this->text() )
   {
     this->text_ = text;
 
     // Update logic
+
+    // Set the overall size of this text label to the width & height of the text,
+    // with consideration to the specific font in use.
+    // this->set_size( Size2i( this->text_width( text ), this->text_height( text ) ) );
   }
 }
 
@@ -309,6 +430,10 @@ void Text::set_text_size ( uint character_size )
     NOM_LOG_ERR ( NOM, "Could not initialize Text from given IFont" );
     return;
   }
+
+  // Set the overall size of this text label to the width & height of the text,
+  // with consideration to the specific font in use.
+  // this->set_size( Size2i( this->text_width( this->text() ), this->text_height( this->text() ) ) );
 }
 
 void Text::set_color ( const Color4i& color )
@@ -437,7 +562,7 @@ void Text::draw ( RenderTarget& target ) const
   }
 
   uint32 previous_char = 0;
-  for ( uint32 pos = 0; pos < text_buffer.length(); pos++ )
+  for ( uint32 pos = 0; pos < text_buffer.length(); ++pos )
   {
     // Apply kerning offset
     uint32 current_char = text_buffer[pos];
@@ -468,6 +593,19 @@ void Text::draw ( RenderTarget& target ) const
 
       // Move over the width of the character with one pixel of padding
       x_offset += ( this->font()->glyph(current_char, this->text_size() ).advance ) + 1;
+
+      // Prevent rendering of text that is longer than its contained size;
+      // this generally must be set by the developer.
+      if( this->features() & ExtraRenderingFeatures::CropText &&
+          this->size() != Size2i::null
+        )
+      {
+        // Maximal cropping bounds
+        int bounds = this->position().x + this->size().w;
+
+        if( x_offset >= bounds ) break;
+      }
+
     } // end else
   } // end for loop
 }
@@ -498,19 +636,24 @@ TODO */
   return true;
 }
 
+void Text::set_features( uint32 flags )
+{
+  this->features_ = flags;
+}
+
 void Text::update ( void )
 {
   // No font has been loaded -- nothing to draw!
   if ( this->valid() == false ) return;
 
-  switch ( style_ )
+  switch ( this->style_ )
   {
     default:
     case Text::Style::Regular: /* Do nothing */ break; // Default
 
     case Text::Style::Bold:
     {
-      if ( this->type() == IFont::FontType::BitmapFont )
+      if ( this->font_type() == IFont::FontType::BitmapFont )
       {
         NOM_LOG_ERR ( NOM, "nom::BitmapFont does not support nom::Text::Style::Bold." );
         break;
@@ -530,6 +673,12 @@ void Text::update ( void )
       break;
     }
   } // end switch
+
+  // FIXME: This never gets called..!
+  if( features() & ExtraRenderingFeatures::CropText )
+  {
+    // this->set_alignment( alignment() );
+  }
 }
 
 } // namespace nom

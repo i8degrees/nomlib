@@ -124,9 +124,47 @@ inline std::ostream& operator << ( std::ostream& os, const Point2<T>& pos )
 template <typename T>
 inline bool operator == ( const Point2<T>& lhs, const Point2<T>& rhs )
 {
-  return  ( lhs.x == rhs.x )
-          &&
-          ( lhs.y == rhs.y );
+  return  ( lhs.x == rhs.x )  &&  ( lhs.y == rhs.y );
+}
+
+/// \brief Lesser than comparison operator.
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+template <typename T>
+inline bool operator <( const Point2<T> lhs, const Point2<T>& rhs )
+{
+  return  ( lhs.x < rhs.x ) && ( lhs.y < rhs.y );
+}
+
+/// \brief Greater than or equal to comparison operator.
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+template <typename T>
+inline bool operator >( const Point2<T>& lhs, const Point2<T>& rhs )
+{
+  return  ( rhs.x < lhs.x ) && ( rhs.y < lhs.y );
+}
+
+/// \brief Lesser than or equal to comparison operator.
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+template <typename T>
+inline bool operator <=( const Point2<T>& lhs, const Point2<T>& rhs )
+{
+  return  ( lhs.x <= rhs.x ) && ( lhs.y <= rhs.y );
+}
+
+/// \brief Greater than or equal to comparison operator.
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+template <typename T>
+inline bool operator >=( const Point2<T>& lhs, const Point2<T>& rhs )
+{
+  return  ( rhs.x <= lhs.x ) && ( rhs.y <= lhs.y );
 }
 
 /// \brief Method overload of binary operator != (not equal)

@@ -32,6 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Public header file
 
 #include <nomlib/config.hpp>
+#include <nomlib/system/ObjectTypeInfo.hpp>
+#include <nomlib/system/IObject.hpp>
 #include <nomlib/system/helpers.hpp>
 #include <nomlib/system/log.hpp>
 #include <nomlib/system/clock.hpp>

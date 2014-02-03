@@ -34,9 +34,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/serializers/serializers_config.hpp"
 
+#include "nomlib/serializers/JsonConfigFile.hpp"
 #include "nomlib/serializers/JsonCppSerializer.hpp"
 #include "nomlib/serializers/JsonCppDeserializer.hpp"
-
 #include "nomlib/serializers/RapidXmlSerializer.hpp"
 #include "nomlib/serializers/RapidXmlDeserializer.hpp"
 

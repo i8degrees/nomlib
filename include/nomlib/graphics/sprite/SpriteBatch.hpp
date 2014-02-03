@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
+#include <memory>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Rect.hpp"
@@ -44,6 +45,13 @@ namespace nom {
 class SpriteBatch: public Sprite
 {
   public:
+    typedef SpriteBatch self_type;
+    typedef Sprite derived_class;
+
+    typedef self_type* raw_ptr;
+    typedef std::unique_ptr<self_type> unique_ptr;
+    typedef std::shared_ptr<self_type> shared_ptr;
+
     /// Default construct for initializing instance variables to their
     /// respective defaults.
     SpriteBatch ( void );
@@ -59,7 +67,17 @@ class SpriteBatch: public Sprite
     SpriteBatch ( const std::string& filename );
 
     /// Copy assignment operator.
-    SpriteBatch& operator = ( const SpriteBatch& other );
+    self_type& operator = ( const self_type& other );
+
+    /// \brief Re-implements the IObject::type method.
+    ///
+    /// \remarks This uniquely identifies the object's type.
+    ObjectTypeInfo type( void ) const;
+
+    raw_ptr get( void );
+
+    /// \brief Implements the required IDrawable::clone method.
+    IDrawable::raw_ptr clone( void ) const;
 
     /// Get the object's current sheet_id.
     virtual int32 frame ( void ) const;

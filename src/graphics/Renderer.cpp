@@ -33,19 +33,19 @@ namespace nom {
 Renderer::Renderer ( void ):  renderer_
     { SDL_RENDERER::UniquePtr ( nullptr, priv::FreeRenderTarget ) }
 {
-  //NOM_LOG_TRACE ( NOM );
+  // NOM_LOG_TRACE( NOM );
 }
 
 Renderer::~Renderer ( void )
 {
-  //NOM_LOG_TRACE ( NOM );
+  // NOM_LOG_TRACE( NOM );
 
   // Thanks for all the fish!
 }
 
 bool Renderer::create ( SDL_WINDOW::RawPtr window, int32 rendering_driver, uint32 context_flags )
 {
-NOM_LOG_TRACE ( NOM );
+  // NOM_LOG_TRACE( NOM );
 
   this->renderer_.reset ( SDL_CreateRenderer ( window, rendering_driver, context_flags ) );
 

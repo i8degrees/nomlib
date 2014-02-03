@@ -48,6 +48,13 @@ namespace nom {
 class Line: public Shape
 {
   public:
+    typedef Line self_type;
+    typedef Shape derived_class;
+
+    typedef self_type* raw_ptr;
+    typedef std::unique_ptr<self_type> unique_ptr;
+    typedef std::shared_ptr<self_type> shared_ptr;
+
     /// \brief Default constructor.
     Line ( void );
 
@@ -60,6 +67,14 @@ class Line: public Shape
     /// coordinates.
     /// \param color nom::Color4i color to render.
     Line ( const IntRect& bounds, const Color4i& outline );
+
+    /// \brief Implements the required IDrawable::clone method.
+    IDrawable::raw_ptr clone( void ) const;
+
+    /// \brief Re-implements the IObject::type method.
+    ///
+    /// \remarks This uniquely identifies the object's type.
+    ObjectTypeInfo type( void ) const;
 
     /// Do nothing method; we have it only because it is required by interface
     /// contract with IDrawable (which is fine).

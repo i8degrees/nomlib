@@ -33,12 +33,16 @@ namespace nom {
 Image::Image ( void ) :
   image_ ( nullptr, priv::FreeSurface )
 {
-  NOM_LOG_TRACE ( NOM );
+  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+    NOM_LOG_TRACE( NOM );
+  #endif
 }
 
 Image::~Image ( void )
 {
-  NOM_LOG_TRACE ( NOM );
+  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+    NOM_LOG_TRACE( NOM );
+  #endif
 }
 
 Image::Image ( const Image& copy )  :
@@ -88,7 +92,9 @@ bool Image::initialize( void* pixels, int32 width, int32 height,
                         uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask
                       )
 {
-  NOM_LOG_TRACE ( NOM );
+  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+    NOM_LOG_TRACE( NOM );
+  #endif
 
   this->image_.reset ( SDL_CreateRGBSurfaceFrom ( pixels, width, height, bits_per_pixel, pitch, Rmask, Gmask, Bmask, Amask ), priv::FreeSurface );
   //this->set_bounds ( IntRect( 0, 0, width, height) );
@@ -104,7 +110,10 @@ bool Image::initialize( void* pixels, int32 width, int32 height,
 
 bool Image::initialize ( int32 width, int32 height, int bits_per_pixel, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask )
 {
-  NOM_LOG_TRACE ( NOM );
+  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+    NOM_LOG_TRACE( NOM );
+  #endif
+
   this->image_.reset ( SDL_CreateRGBSurface ( 0, width, height, bits_per_pixel, Rmask, Gmask, Bmask, Amask ), priv::FreeSurface );
   //this->set_bounds ( IntRect( 0, 0, width, height) );
 

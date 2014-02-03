@@ -40,12 +40,16 @@ BitmapFont::BitmapFont ( void ) :
   sheet_width_ ( 16 ),
   sheet_height_ ( 16 )
 {
-  NOM_LOG_TRACE ( NOM );
+  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+    NOM_LOG_TRACE( NOM );
+  #endif
 }
 
 BitmapFont::~BitmapFont ( void )
 {
-  NOM_LOG_TRACE ( NOM );
+  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+    NOM_LOG_TRACE( NOM );
+  #endif
 }
 
 BitmapFont::BitmapFont ( const BitmapFont& copy ) :
@@ -166,6 +170,10 @@ bool BitmapFont::load( const std::string& filename )
     NOM_LOG_ERR ( NOM, "Could not build bitmap font metrics" );
     return false;
   }
+
+  // FIXME (?): Setting the font face name as the filename, for lack of a
+  // better idea at the moment...
+  this->metrics_.name = filename;
 
   return true;
 }

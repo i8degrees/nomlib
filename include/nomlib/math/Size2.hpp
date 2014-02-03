@@ -78,6 +78,28 @@ struct Size2
     this->h = static_cast<T> ( copy.h );
   }
 
+  /// \brief Compare two Size2 objects and return the larger width and height
+  /// of the two objects.
+  template <typename U>
+  Size2 max( const Size2<U>& rhs )
+  {
+    return Size2<T>( std::max( this->w, rhs.w ), std::max( this->h, rhs.h ) );
+  }
+
+  /// \brief Compare two Size2 objects and return the smaller width and height
+  /// of the two objects.
+  template <typename U>
+  Size2 min( const Size2<U>& rhs )
+  {
+    return Size2<T>( std::min( this->w, rhs.w ), std::min( this->h, rhs.h ) );
+  }
+
+  /// \brief Transpose width and height dimensions.
+  void swap( void )
+  {
+    std::swap( this->w, this->h );
+  }
+
   /// \brief Null value
   ///
   /// \remarks  Null value implementation depends on signed (negative) numbers.
@@ -98,7 +120,7 @@ struct Size2
 ///
 ///     128, 144
 template <typename T>
-inline std::ostream& operator << ( std::ostream& os, const Size2<T>& pos )
+inline std::ostream& operator <<( std::ostream& os, const Size2<T>& pos )
 {
   os
   << pos.w
@@ -109,15 +131,173 @@ inline std::ostream& operator << ( std::ostream& os, const Size2<T>& pos )
 }
 
 template <typename T>
-inline bool operator == ( const Size2<T>& lhs, const Size2<T>& rhs )
+inline bool operator ==( const Size2<T>& lhs, const Size2<T>& rhs )
 {
   return  ( lhs.w == rhs.w )  &&  ( lhs.h == rhs.h );
 }
 
 template <typename T>
-inline bool operator != ( const Size2<T>& lhs, const Size2<T>& rhs )
+inline bool operator !=( const Size2<T>& lhs, const Size2<T>& rhs )
 {
   return ! ( lhs == rhs );
+}
+
+/// \brief Method overload of binary operator + (Addition)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \returns Addition of both objects.
+template <typename T>
+inline Size2<T> operator +( const Size2<T>& lhs, const Size2<T>& rhs )
+{
+  return Size2<T> (
+                    lhs.w + rhs.w,
+                    lhs.h + rhs.h
+                  );
+}
+
+/// \brief Method overload of binary operator ++ (Addition by 1)
+///
+/// \param rhs Right operand.
+///
+/// \returns Addition of the right operand.
+template <typename T>
+inline Size2<T> operator ++( const Size2<T>& rhs )
+{
+  return Size2<T> (
+                    ++rhs.w,
+                    ++rhs.h
+                  );
+}
+
+/// \brief Method overload of binary operator - (subtraction)
+///
+/// \param rhs Right operand.
+///
+/// \returns Opposite of the object.
+template <typename T>
+inline Size2<T> operator -( const Size2<T>& rhs )
+{
+  return Size2<T> (
+                    -rhs.w
+                    -rhs.h
+                  );
+}
+
+/// \brief Method overload of binary operator - (subtraction)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \returns Subtraction of both objects.
+template <typename T>
+inline Size2<T> operator -( const Size2<T>& lhs, const Size2<T>& rhs )
+{
+  return Size2<T> (
+                    lhs.w - rhs.w,
+                    lhs.h - rhs.h
+                  );
+}
+
+/// \brief Method overload of binary operator -- (subtraction by 1)
+///
+/// \param rhs Right operand.
+///
+/// \returns Subtraction of the right operand.
+template <typename T>
+inline Size2<T> operator --( const Size2<T>& rhs )
+{
+  return Size2<T> (
+                    --rhs.w,
+                    --rhs.h
+                  );
+}
+
+/// \brief Method overload of binary operator * (Multiplication)
+///
+/// \param rhs Left operand.
+/// \param rhs Right operand.
+///
+/// \returns Multiplication of the right operand.
+template <typename T>
+inline Size2<T> operator *( const Size2<T>& lhs, const Size2<T>& rhs )
+{
+  return Size2<T> ( lhs.w * rhs.w,
+                    lhs.h * rhs.h
+                  );
+}
+
+/// \brief Method overload of binary operator += (Addition)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Addition of both objects; result is assigned to the left
+/// operand.
+///
+/// \returns Reference to left operand,
+template <typename T>
+inline Size2<T>& operator +=( Size2<T>& lhs, const Size2<T>& rhs )
+{
+  lhs.w += rhs.w;
+  lhs.h += rhs.h;
+
+  return lhs;
+}
+
+/// \brief Method overload of binary operator -= (Subtraction)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Subtraction of both objects; result is assigned to the left
+/// operand.
+///
+/// \returns Reference to left operand.
+template <typename T>
+inline Size2<T>& operator -=( Size2<T>& lhs, const Size2<T>& rhs )
+{
+  lhs.w -= rhs.w;
+  lhs.h -= rhs.h;
+
+  return lhs;
+}
+
+/// \brief Method overload of binary operator *= (Multiplication)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Multiplication of both objects; result is assigned to the
+/// left operand.
+///
+/// \returns Reference to left operand.
+template <typename T>
+inline Size2<T>& operator *=( Size2<T>& lhs, const Size2<T>& rhs )
+{
+  lhs.w *= rhs.w;
+  lhs.h *= rhs.h;
+
+  return lhs;
+}
+
+/// \brief Method overload of binary operator /= (Division)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Division of both objects; result is assigned to the
+/// left operand.
+///
+/// \returns Reference to left operand.
+template <typename T>
+inline Size2<T>& operator /=( Size2<T>& lhs, const Size2<T>& rhs )
+{
+  lhs.w /= rhs.w;
+  lhs.h /= rhs.h;
+
+  return lhs;
 }
 
 /// Size2 object defined using signed integers

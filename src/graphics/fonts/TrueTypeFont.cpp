@@ -37,14 +37,18 @@ TrueTypeFont::TrueTypeFont ( void ) :
   point_size_ ( 14 ),   // Terrible Eyesight (TM)
   hinting_( TTF_HINTING_NONE )
 {
-  NOM_LOG_TRACE ( NOM );
+  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+    NOM_LOG_TRACE( NOM );
+  #endif
 
   // TTF_Init is done in the nom::init_third_party function
 }
 
 TrueTypeFont::~TrueTypeFont ( void )
 {
-  NOM_LOG_TRACE ( NOM );
+  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+    NOM_LOG_TRACE( NOM );
+  #endif
 
   // Workaround hack to get SDL2_ttf to shutdown properly without crashing when
   // ran within nom::GameStates

@@ -33,10 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <vector>
 #include <memory>
-#include <utility>
 
 #include "nomlib/config.hpp"
-//#include "nomlib/math/Size2.hpp"
+#include "nomlib/math/Size2.hpp"
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
@@ -46,14 +45,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief Rectangle fill class with dithered, linear gradient colors
+/// \brief Rectangle fill class with dithered, linear gradient colors.
 class Gradient: public Transformable
 
 {
   public:
-    typedef std::shared_ptr<Gradient> SharedPtr;
-    typedef std::unique_ptr<Gradient> UniquePtr;
-    typedef Gradient* RawPtr;
+    typedef Gradient self_type;
+    typedef Transformable derived_class;
+
+    typedef self_type* raw_ptr;
+    typedef std::unique_ptr<self_type> unique_ptr;
+    typedef std::shared_ptr<self_type> shared_ptr;
 
     /// \todo
     /// Rename me -- Direction seems fitting?
@@ -66,52 +68,114 @@ class Gradient: public Transformable
       Right       // Right to left
     };
 
-    /// Default construct for initializing instance variables to their
-    /// respective defaults.
-    Gradient ( void );
-
-    /// Construct an object, fully initializing it.
+    /// \brief Default constructor; initialize the object to an invalid state.
     ///
-    /// \DEPRECATED
+    /// \remarks At the very minimum, you must set the position & size to get a
+    /// rendered object on screen. The default gradient colors is an opaque
+    /// Color4i::Blue set as both the starting and ending color fill to signify
+    /// an invalid object state.
+    Gradient( void );
+
+    /// \brief Construct a complete object state.
+    ///
+    /// \param colors The list of Color4i objects to be used in the gradient.
     Gradient  (
-                Color4i gradient_color[2],
-                const Point2i& pos, const Size2i& size,
+                const Color4iColors& colors,
+                const Point2i& pos,
+                const Size2i& size,
                 const Point2i& margin,
                 Gradient::FillDirection direction
               );
 
-    /// Destructor; OK to inherit me.
-    virtual ~Gradient ( void );
+    /// \brief Destructor.
+    virtual ~Gradient( void );
 
-    /// Fully initialize this object
-    void initialize (
-                      Color4i gradient_color[2],
-                      const Point2i& pos, const Size2i& size,
-                      const Point2i& margin,
-                      Gradient::FillDirection direction
-                    );
+    /// \brief Copy constructor.
+    Gradient( const self_type& copy );
 
-    //const Size2i& size ( void ) const;
-    Color4i start_color ( void ) const;
-    Color4i end_color ( void ) const;
+    /// \brief Copy assignment operator.
+    const self_type& operator =( const self_type& other );
+
+    /// \brief Implements the required IDrawable::clone method.
+    IDrawable::raw_ptr clone( void ) const;
+
+    /// \brief Re-implements the IObject::type method.
+    ///
+    /// \remarks This uniquely identifies the object's type.
+    ObjectTypeInfo type( void ) const;
+
+    /// \brief Obtain a reference to the object.
+    ///
+    /// \returns A reference to the object.
+    const self_type& operator *( void ) const;
+
+    /// \brief Obtain a pointer to the object.
+    ///
+    /// \returns Pointer to the object.
+    Gradient::raw_ptr operator ->( void );
+
+    /// \brief Query the validity of the object
+    ///
+    /// \remarks A valid object must have both the positioning & size bounding
+    /// coordinates be set to a non-null object value. See nom::Point2i::null
+    /// and nom::Size2i::null for their respective values.
+    ///
+    /// \note A default constructed object is in an invalid state.
+    bool valid( void ) const;
+
+    /// \brief Get the first (starting) color used in the gradient fill.
+    const Color4i& start_color( void ) const;
+
+    /// \brief Get the last (ending) color used in the gradient fill.
+    const Color4i& end_color( void ) const;
+
     Gradient::FillDirection fill_direction ( void ) const;
-    bool dithering ( void ) const;
+    bool dithering( void ) const;
     const Point2i& margins ( void ) const;
 
-    void set_start_color ( const Color4i& starting_color );
-    void set_end_color ( const Color4i& ending_color );
-    void reverse_colors ( void );
+    /// \brief Get the gradient colors container.
+    const Color4iColors& colors( void ) const;
+
+    /// \brief Re-implements the Transformable::set_position method.
+    ///
+    /// \remarks Thie method call is necessary in order to ensure the internal
+    /// object state remains consistent.
+    void set_position( const Point2i& coords );
+
+    /// \brief Re-implements the Transformable::set_size method.
+    ///
+    /// \remarks Thie method call is necessary in order to ensure the internal
+    /// object state remains consistent.
+    void set_size( const Size2i& size );
+
+    /// \brief Set the gradient colors used in the rendering of the gradient
+    /// fill.
+    void set_colors( const Color4iColors& colors );
+
+    /// \brief Swap the first and last color used in the gradient fill.
+    void reverse_colors( void );
+
     void set_fill_direction ( Gradient::FillDirection direction );
+
     //void set_size ( const Size2i& size );
     void set_margins ( const Point2i& margin );
-    void enable_dithering ( bool toggle );
+    void set_dithering( bool state );
 
-    void update ( void );
-    void draw ( RenderTarget& target ) const;
+    /// \brief Implements the IDrawable::draw method.
+    void draw( RenderTarget& target ) const;
 
   private:
-    void strategy_top_down ( void );
-    void strategy_left_right ( void );
+    /// \brief Implements the IDrawable::update method.
+    void update( void );
+
+    /// \brief Getter for internal updated status.
+    bool updated( void ) const;
+
+    /// \brief Set the internal updated status.
+    void set_updated( bool state );
+
+    void strategy_top_down( void );
+    void strategy_left_right( void );
 
     /// Drawables vector containing rectangle objects to be blit
     ///
@@ -119,27 +183,29 @@ class Gradient: public Transformable
     /// what are one pixel wide / high line segments in a row single row
     /// iteration. Imaginably, performance would hardly measure a difference,
     /// but nevertheless.
-    IDrawable::UniqueDrawables rectangles_;
+    std::vector<IDrawable::shared_ptr> rectangles_;
 
-    /// The starting & ending colors (nom::Color objects) used in the gradient.
+    /// \brief The starting & ending colors used in the gradient fill.
     ///
-    /// \todo Expand this into a dynamic array -- std::vector -- so we (should)
-    /// be able to increase dithering capabilities higher. Perhaps increasing
-    /// this threshold will also allow us to start thinking about other gradient
-    /// types?
-    /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
-    Color4i gradient_[2];
+    /// \todo Finish implementing vectorized color container support; we only
+    /// use the first and last color of whatever is set in the container at the
+    /// moment.
+    Color4iColors gradient_;
 
-    /// X, Y offset coordinates
+    /// \brief Additional offset coordinates, in pixels.
     Point2i margins_;
 
     //Size2i size_;
 
-    /// Color fill axis -- X or Y increment
+    /// Color fill axis -- X or Y increment.
     enum Gradient::FillDirection fill_direction_;
 
-    /// Toggle automatic dithering of colors
-    bool enable_dithering_;
+    /// \brief Dithering (of gradient colors) state.
+    bool dithering_;
+
+    /// \brief Internal object state; we re-create drawable objects every time
+    /// the internal state changes in order to save as many CPU cycles.
+    bool updated_;
 };
 
 } // namespace nom

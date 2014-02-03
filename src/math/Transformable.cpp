@@ -30,46 +30,80 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Transformable::Transformable ( void )  :
-  position_ ( Point2i::null ),
-  size_ ( Size2i::null )
+Transformable::Transformable( void )  :
+  position_( Point2i::null ),
+  size_( Size2i::null )
 {
   //NOM_LOG_TRACE(NOM);
 }
 
-Transformable::~Transformable ( void )
+Transformable::~Transformable( void )
 {
   //NOM_LOG_TRACE(NOM);
 }
 
-Transformable::Transformable ( const Point2i& pos, const Size2i& size ) :
-  position_ ( pos ),
-  size_ ( size )
+Transformable::Transformable( const Point2i& pos, const Size2i& size ) :
+  position_( pos ),
+  size_( size )
 {
   //NOM_LOG_TRACE(NOM);
 }
 
-const Point2i& Transformable::position ( void ) const
+Transformable::Transformable( const IntRect& bounds ) :
+  position_{ bounds.x, bounds.y },
+  size_{ bounds.w, bounds.h }
+{
+  //NOM_LOG_TRACE(NOM);
+}
+
+ObjectTypeInfo Transformable::type( void ) const
+{
+  return NOM_OBJECT_TYPE_INFO( self_type );
+}
+
+const Point2i& Transformable::position( void ) const
 {
   return this->position_;
 }
 
-const Size2i& Transformable::size ( void ) const
+const Size2i& Transformable::size( void ) const
 {
   return this->size_;
 }
 
-void Transformable::set_position ( const Point2i& pos )
+void Transformable::set_position( const Point2i& pos )
 {
   this->position_ = pos;
 }
 
-void Transformable::set_size ( const Size2i& size )
+void Transformable::set_size( const Size2i& size )
 {
   this->size_ = size;
 }
 
-void Transformable::move ( int x, int y )
+void Transformable::set_bounds( const Point2i& pos, const Size2i& size )
+{
+  this->position_ = pos;
+  this->size_ = size;
+}
+
+void Transformable::set_bounds( const IntRect& bounds )
+{
+  this->position_ = bounds.position();
+  this->size_ = bounds.size();
+}
+
+void Transformable::set_position( int x, int y )
+{
+  this->set_position( Point2i( x, y ) );
+}
+
+void Transformable::set_size( int w, int h )
+{
+  this->set_size( Size2i( w, h ) );
+}
+
+void Transformable::move( int x, int y )
 {
   this->position_.x += x;
   this->position_.y += y;

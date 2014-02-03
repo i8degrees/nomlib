@@ -57,7 +57,7 @@ bool init_third_party ( uint32 flags )
 
 bool init ( int argc, char* argv[] )
 {
-  NOM_LOG_TRACE ( NOM );
+  // NOM_LOG_TRACE( NOM );
 
   nom::File dir;
   std::string pwd = "\0";
@@ -75,7 +75,7 @@ bool init ( int argc, char* argv[] )
 
 void quit ( void )
 {
-  NOM_LOG_TRACE ( NOM );
+  // NOM_LOG_TRACE( NOM );
 
   TTF_Quit();
   IMG_Quit();
@@ -84,6 +84,9 @@ void quit ( void )
   {
     SDL_QuitSubSystem( SDL_INIT_JOYSTICK );
   }
+
+  // NOM_LOG_INFO( NOM, "Total memory allocation (in bytes): " + std::to_string( IObject::total_alloc_bytes ) );
+  // NOM_LOG_INFO( NOM, "Total memory deallocation (in bytes): " + std::to_string( IObject::total_dealloc_bytes ) );
 }
 
 } // namespace nom

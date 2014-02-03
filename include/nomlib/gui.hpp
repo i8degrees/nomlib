@@ -31,9 +31,45 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Public header file
 
+#include <nomlib/gui/gui_config.hpp>
+
 #include <nomlib/config.hpp>
+#include <nomlib/gui/UIEvent.hpp>
+#include <nomlib/gui/UILayoutPolicy.hpp>
+#include <nomlib/gui/UISpacerItem.hpp>
+#include <nomlib/gui/UILayoutItem.hpp>
+#include <nomlib/gui/UILayout.hpp>
+#include <nomlib/gui/Drawables.hpp>
+#include <nomlib/gui/IDecorator.hpp>
+#include <nomlib/gui/Decorator.hpp>
+#include <nomlib/gui/MinimalDecorator.hpp>
+#include <nomlib/gui/FinalFantasyDecorator.hpp>
 #include <nomlib/gui/Cursor.hpp>
 #include <nomlib/gui/MessageBox.hpp>
-#include <nomlib/gui/GrayWindow.hpp>
+#include <nomlib/gui/QuestionDialogBox.hpp>
+// #include <nomlib/gui/YesNoDialogBox.hpp>
+#include <nomlib/gui/UIWidget.hpp>
+#include <nomlib/gui/FinalFantasyFrame.hpp>
+// #include <nomlib/gui/Button.hpp>
+#include <nomlib/gui/BitmapButton.hpp>
+#include <nomlib/gui/ListBox.hpp>
+// #include <nomlib/gui/DataViewItem.hpp>
+#include <nomlib/gui/DataViewItem.hpp>
+#include <nomlib/gui/DataViewListStore.hpp>
+#include <nomlib/gui/DataViewBitmapColumn.hpp>
+#include <nomlib/gui/DataViewColumn.hpp>
+#include <nomlib/gui/DataViewList.hpp>
+#include <nomlib/gui/UIEventCallback.hpp>
+#include <nomlib/gui/UIWidgetEvent.hpp>
+#include <nomlib/gui/UIEventDispatcher.hpp>
+#include <nomlib/gui/UIEventHandler.hpp>
+#include <nomlib/gui/UIItemContainer.hpp>
+#include <nomlib/gui/UIWidgetLayoutItem.hpp>
+#include <nomlib/gui/UIBoxLayout.hpp>
+#include <nomlib/gui/UIVBoxLayout.hpp>
+#include <nomlib/gui/UIHBoxLayout.hpp>
+// #include <nomlib/gui/UIListItem.hpp>
+// #include <nomlib/gui/ButtonLabel.hpp>
+// #include <nomlib/gui/UIChoice.hpp>
 
 #endif // include guard defined

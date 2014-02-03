@@ -1,0 +1,34 @@
+
+{
+  //"comment": "Default configuration values for TTcards"
+  "root" :
+  {
+    "APP_ICON" : "icon.png",
+    "BOARD_BACKGROUND" : "images/board.png",
+    "CARDS_DB" : "cards.json",
+    "CARD_BACKGROUNDS" : "images/backgrounds.png",
+    "CARD_ELEMENTS" : "images/elements.png",
+    "CARD_FACES" : "images/faces.png",
+    "CARD_FLIP" : "audio/card_flip.wav",
+    "CARD_FONTFACE" : "fonts/VIII_cards.png",
+    "CARD_PLACE" : "audio/card_place.wav",
+    "CURSOR_CANCEL" : "audio/cursor_cancel.wav",
+    "CURSOR_MOVE" : "audio/cursor_move.wav",
+    "CURSOR_WRONG" : "audio/cursor_wrong.wav",
+    "GAMEOVER_BACKGROUND" : "images/game-over_background.png",
+    "GAMEOVER_FONTFACE" : "fonts/TimesNewRoman.ttf",
+    "INFO_FONTFACE" : "fonts/VIII.png",
+    "INFO_SMALL_FONTFACE" : "fonts/VIII_small.png",
+    "INTERFACE_CURSOR" : "images/cursors.png",
+    "MENU_ELEMENTS" : "images/menu_elements.png",
+    "MUSIC_TRACK" : "audio/ShuffleOrBoogie.ogg",
+    "MUSIC_WIN_TRACK" : "audio/TheWinner.ogg",
+    "SCALE_ALGORITHM" : "",
+    "SCORE_FONTFACE" : "fonts/TimesNewRoman.ttf",
+    "SFX_LOAD_GAME" : "audio/load_game.wav",
+    "SFX_SAVE_GAME" : "audio/save_game.wav",
+    "USER_BOARD_FILENAME" : "board.json",
+    "USER_PLAYER1_FILENAME" : "player1.json",
+    "USER_PLAYER2_FILENAME" : "player2.json"
+  }
+}

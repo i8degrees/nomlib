@@ -38,6 +38,8 @@ namespace nom {
 class Shape: public Transformable
 {
   public:
+    typedef Shape self_type;
+
     /// Destructor.
     virtual ~Shape ( void );
 
@@ -46,6 +48,11 @@ class Shape: public Transformable
 
     /// \brief Copy assignment operator
     //Shape& operator = ( const Shape& other );
+
+    /// \brief Re-implements the IObject::type method.
+    ///
+    /// \remarks This uniquely identifies the object's type.
+    ObjectTypeInfo type( void ) const;
 
     /// \brief Obtain the outline color used in rendering a shape.
     const Color4i& outline_color ( void ) const;

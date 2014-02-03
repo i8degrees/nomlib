@@ -16,14 +16,15 @@
 # http://stackoverflow.com/questions/6077810/how-to-correctly-add-resources-to-a-project?rq=1
 cmake_minimum_required ( VERSION 2.6 )
 
-set( NOM_BUILD_APP_EXAMPLE on )
-set( NOM_BUILD_AUDIO_EXAMPLE on )
-set( NOM_BUILD_DEVICE_INFO_EXAMPLE on )
-set( NOM_BUILD_EVENTS_EXAMPLE on )
-set( NOM_BUILD_FONTS_EXAMPLE on )
-set( NOM_BUILD_GAMEOFLIFE_EXAMPLE on )
-set( NOM_BUILD_SPRITE_SHEETS_EXAMPLE on )
-set( NOM_BUILD_VALUES_EXAMPLE on )
+set( NOM_BUILD_APP_EXAMPLE off )
+set( NOM_BUILD_AUDIO_EXAMPLE off )
+set( NOM_BUILD_DEVICE_INFO_EXAMPLE off )
+set( NOM_BUILD_EVENTS_EXAMPLE off )
+set( NOM_BUILD_FONTS_EXAMPLE off )
+set( NOM_BUILD_GAMEOFLIFE_EXAMPLE off )
+set( NOM_BUILD_GUI_EXAMPLE on )
+set( NOM_BUILD_SPRITE_SHEETS_EXAMPLE off )
+set( NOM_BUILD_VALUES_EXAMPLE off )
 
 link_libraries ( ${PROJECT_NAME} )
 
@@ -133,11 +134,46 @@ if( NOT NOM_BUILD_MINI_UNIT )
         endif( NOM_BUILD_GAMEOFLIFE_EXAMPLE )
     endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
-  if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_JSON_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+  if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_GUI_UNIT AND NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+      if( NOM_BUILD_GUI_EXAMPLE )
+        add_executable ( gui "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/gui.cpp" )
+
+        install ( DIRECTORY
+                  "${EXAMPLES_SRC_DIR}/app/Resources"
+                  DESTINATION
+                  "${EXAMPLES_INSTALL_PEFIX}"
+                  PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+                )
+
+        install ( DIRECTORY
+                  "${NOM_EXAMPLES_RESOURCES_DIR}/gui"
+                  DESTINATION
+                  "${EXAMPLES_INSTALL_PEFIX}/Resources"
+                  PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+                )
+
+      endif( NOM_BUILD_GUI_EXAMPLE )
+  endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_GUI_UNIT AND NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+
+  if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_JSON_UNIT AND NOM_BUILD_PTREE_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+    if( NOM_BUILD_VALUES_EXAMPLE )
+      add_executable( values "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/ptree/json/values.cpp" )
+
+      # Used by: app, json_reader, sprite_sheets
+      install ( DIRECTORY
+                "${EXAMPLES_SRC_DIR}/json/Resources"
+                DESTINATION
+                "${EXAMPLES_INSTALL_PEFIX}"
+                PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+              )
+    endif( NOM_BUILD_VALUES_EXAMPLE )
+  endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_JSON_UNIT AND NOM_BUILD_PTREE_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+
+  if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_SYSTEM_UNIT )
     if( NOM_BUILD_SPRITE_SHEETS_EXAMPLE )
       add_executable ( sprite_sheets "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/sprites/sprite_sheets.cpp" )
     endif( NOM_BUILD_SPRITE_SHEETS_EXAMPLE )
-  endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_JSON_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+  endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
   # Install library dependencies into binary output directory
   if ( PLATFORM_WINDOWS )
@@ -153,13 +189,4 @@ if( NOT NOM_BUILD_MINI_UNIT )
               FILES_MATCHING PATTERN "*.dll"
             )
   endif ( PLATFORM_WINDOWS )
-
-  # Used by: app, json_reader, sprite_sheets, values
-  install ( DIRECTORY
-            "${EXAMPLES_SRC_DIR}/json/Resources"
-            DESTINATION
-            "${EXAMPLES_INSTALL_PEFIX}"
-            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-          )
-
 endif( NOT NOM_BUILD_MINI_UNIT )

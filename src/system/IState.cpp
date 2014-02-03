@@ -74,6 +74,11 @@ uint32 IState::flags ( void ) const
   return this->flags_;
 }
 
+void IState::on_event( const Event& ev )
+{
+  // User-defined virtual
+}
+
 void IState::on_update ( float )
 {
   // User-defined virtual

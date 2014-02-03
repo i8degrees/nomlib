@@ -26,58 +26,41 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GUI_GRAY_WINDOW_HPP
-#define NOMLIB_GUI_GRAY_WINDOW_HPP
-
-#include "SDL.h" // SDL2
-
-#include "nomlib/config.hpp"
-#include "nomlib/math/Transformable.hpp"
-#include "nomlib/math/Point2.hpp"
-#include "nomlib/math/Size2.hpp"
-#include "nomlib/math/Rect.hpp"
-#include "nomlib/graphics/RenderWindow.hpp"
-#include "nomlib/graphics/shapes/Line.hpp"
+#include "nomlib/gui/DataViewBitmapColumn.hpp"
 
 namespace nom {
 
-class GrayWindow: public Transformable
+DataViewBitmapColumn::DataViewBitmapColumn( void )
 {
-  public:
-    typedef std::shared_ptr<GrayWindow> SharedPtr;
-    typedef std::unique_ptr<GrayWindow> UniquePtr;
-    typedef GrayWindow* RawPtr;
+  // NOM_LOG_TRACE(NOM);
+}
 
-    GrayWindow ( void );
-    virtual ~GrayWindow ( void );
+DataViewBitmapColumn::~DataViewBitmapColumn( void )
+{
+  // NOM_LOG_TRACE(NOM);
+}
 
-    //GrayWindow& operator = ( const GrayWindow& other );
+DataViewBitmapColumn::DataViewBitmapColumn( const Image& img ) :
+  bitmap_( img )
+{
+  // NOM_LOG_TRACE(NOM);
+}
 
-    GrayWindow ( const IntRect& bounds, int pad );
+/*
+DataViewBitmapColumn::DataViewBitmapColumn( const SelfType& copy )
+{
+  // NOM_LOG_TRACE(NOM);
+}
 
-    GrayWindow ( const Point2i& pos, const Size2i& size, int pad );
+DataViewBitmapColumn::SelfType& DataViewBitmapColumn::operator =( const SelfType& other )
+{
+  return *this;
+}
 
-    /*const IntRect&*/int padding ( void ) const;
-
-    void set_padding ( int pad );
-
-    // Re-implemented from IDrawable
-    void update ( void );
-
-    // Re-implemented from IDrawable
-    void draw ( RenderTarget& target ) const;
-
-  private:
-    /// Holds our line objects used for rendering the object.
-    IDrawable::UniqueDrawables frame_;
-
-    /// Deprecated; this will be removed in a future version?
-    /*IntRect&*/int padding_;
-
-    /// Track object logic changes for updating its rendering
-    bool updated_;
-};
+const DataViewBitmapColumn::SelfType& DataViewBitmapColumn::get( void ) const
+{
+  return *this;
+}
+*/
 
 } // namespace nom
-
-#endif // include guard defined

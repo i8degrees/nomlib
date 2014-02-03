@@ -29,6 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_IVALUE_DESERIALIZER_HPP
 #define NOMLIB_SYSTEM_IVALUE_DESERIALIZER_HPP
 
+#include <memory>
+
 #include "nomlib/config.hpp"
 #include "nomlib/serializers/serializers_config.hpp"
 #include "nomlib/ptree/ptree_forwards.hpp"
@@ -39,8 +41,11 @@ namespace nom {
 class IValueDeserializer
 {
   public:
-    typedef IValueDeserializer SelfType;
-    typedef SelfType* RawPtr;
+    typedef IValueDeserializer self_type;
+
+    typedef self_type* raw_ptr;
+    typedef std::unique_ptr<self_type> unique_ptr;
+    typedef std::shared_ptr<self_type> shared_ptr;
 
     IValueDeserializer( void )
     {

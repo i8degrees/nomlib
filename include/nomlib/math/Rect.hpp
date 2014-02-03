@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point2.hpp"
+#include "nomlib/math/Size2.hpp"
 #include "nomlib/ptree/Value.hpp"
 
 namespace nom {
@@ -70,12 +71,12 @@ struct Rect
     //NOM_LOG_TRACE(NOM);
   }
 
-  /// Construct an object from two Point2 containers (position and size)
-  Rect ( const Point2<T>& pos, const Point2<T>& size )  :
+  /// \brief Construct an object from a Point2 and Size2 container types.
+  Rect ( const Point2<T>& pos, const Size2<T>& size )  :
     x ( pos.x ),
     y ( pos.y ),
-    w ( pos.x + size.w ),
-    h ( pos.y + size.h )
+    w ( size.w ),
+    h ( size.h )
   {
     //NOM_LOG_TRACE(NOM);
   }
@@ -163,6 +164,18 @@ struct Rect
     return object;
   }
 
+  /// \returns The positioning coordinates of the rectangle.
+  const Point2i position( void ) const
+  {
+    return Point2i( NOM_SCAST( T, this->x ), NOM_SCAST( T, this->y ) );
+  }
+
+  /// \returns The width and height dimensions of the rectangle.
+  const Size2i size( void ) const
+  {
+    return Size2i( NOM_SCAST( T, this->w ), NOM_SCAST( T, this->h ) );
+  }
+
   /// \brief Null value
   ///
   /// \remarks  Null value implementation depends on signed (negative) numbers.
@@ -194,7 +207,7 @@ struct Rect
 /// std::cout << my_rect << std::endl;
 /// \endcode
 template <typename T>
-inline std::ostream& operator << ( std::ostream& os, const Rect<T>& rect )
+inline std::ostream& operator <<( std::ostream& os, const Rect<T>& rect )
 {
   os
   << rect.x
@@ -259,7 +272,7 @@ inline Rect<T> operator + ( const Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Addition of the right operand.
 template <typename T>
-inline Rect<T> operator ++ ( Rect<T>& rhs )
+inline Rect<T> operator ++ ( const Rect<T>& rhs )
 {
   return Rect<T>  ( ++rhs.x,
                     ++rhs.y,
@@ -274,7 +287,7 @@ inline Rect<T> operator ++ ( Rect<T>& rhs )
 ///
 /// \returns Opposite of the object.
 template <typename T>
-inline Rect<T> operator - ( const Rect<T>& rhs )
+inline Rect<T> operator -( const Rect<T>& rhs )
 {
   return Rect<T>  ( -rhs.x,
                     -rhs.y,
@@ -290,7 +303,7 @@ inline Rect<T> operator - ( const Rect<T>& rhs )
 ///
 /// \returns Subtraction of both objects.
 template <typename T>
-inline Rect<T> operator - ( const Rect<T>& lhs, const Rect<T>& rhs )
+inline Rect<T> operator -( const Rect<T>& lhs, const Rect<T>& rhs )
 {
   return Rect<T>  ( lhs.x - rhs.x,
                     lhs.y - rhs.y,
@@ -305,7 +318,7 @@ inline Rect<T> operator - ( const Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Subtraction of the right operand.
 template <typename T>
-inline Rect<T> operator -- ( Rect<T>& rhs )
+inline Rect<T> operator -- ( const Rect<T>& rhs )
 {
   return Rect<T>  ( --rhs.x,
                     --rhs.y,
@@ -339,7 +352,7 @@ inline Rect<T> operator * ( const Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Reference to the left operand.
 template <typename T>
-inline Rect<T> operator / ( const Rect<T>& lhs, const Rect<T>& rhs )
+inline Rect<T> operator /( const Rect<T>& lhs, const Rect<T>& rhs )
 {
   return Rect<T>  ( lhs.x / rhs.x,
                     lhs.y / rhs.y,
@@ -358,7 +371,7 @@ inline Rect<T> operator / ( const Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Reference to left operand,
 template <typename T>
-inline Rect<T>& operator += ( Rect<T>& lhs, const Rect<T>& rhs )
+inline Rect<T>& operator +=( Rect<T>& lhs, const Rect<T>& rhs )
 {
   lhs.x += rhs.x;
   lhs.y += rhs.y;
@@ -378,7 +391,7 @@ inline Rect<T>& operator += ( Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Reference to left operand.
 template <typename T>
-inline Rect<T>& operator -= ( Rect<T>& lhs, const Rect<T>& rhs )
+inline Rect<T>& operator -=( Rect<T>& lhs, const Rect<T>& rhs )
 {
   lhs.x -= rhs.x;
   lhs.y -= rhs.y;
@@ -400,7 +413,7 @@ inline Rect<T>& operator -= ( Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \todo See tests/math.cpp at Point2 Unit Test 2, Result[1]
 template <typename T>
-inline Rect<T>& operator *= ( Rect<T>& lhs, const Rect<T>& rhs )
+inline Rect<T>& operator *=( Rect<T>& lhs, const Rect<T>& rhs )
 {
   lhs.x *= rhs.x;
   lhs.y *= rhs.y;
@@ -420,7 +433,7 @@ inline Rect<T>& operator *= ( Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Reference to left operand.
 template <typename T>
-inline Rect<T>& operator /= ( Rect<T>& lhs, Rect<T>& rhs )
+inline Rect<T>& operator /=( Rect<T>& lhs, const Rect<T>& rhs )
 {
   lhs.x /= rhs.x;
   lhs.y /= rhs.y;

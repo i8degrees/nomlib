@@ -75,20 +75,58 @@ set ( GRAPHICS_SPRITE_SOURCE
 # User Interface module
 file ( GLOB GUI_HEADERS "${NOMLIB_HEADERS_DIR}/gui/*.hpp" )
 set ( GUI_SOURCE
+      ${SRC_DIR}/gui/UILayoutPolicy.cpp
+      ${SRC_DIR}/gui/UISpacerItem.cpp
+      ${SRC_DIR}/gui/UILayoutItem.cpp
+      ${SRC_DIR}/gui/UILayout.cpp
+      ${SRC_DIR}/gui/Drawables.cpp
+      ${SRC_DIR}/gui/Decorator.cpp
+      ${SRC_DIR}/gui/MinimalDecorator.cpp
+      ${SRC_DIR}/gui/FinalFantasyDecorator.cpp
       ${SRC_DIR}/gui/Cursor.cpp
       ${SRC_DIR}/gui/MessageBox.cpp
-      ${SRC_DIR}/gui/GrayWindow.cpp
+      ${SRC_DIR}/gui/QuestionDialogBox.cpp
+      # ${SRC_DIR}/gui/YesNoDialogBox.cpp
+      ${SRC_DIR}/gui/FinalFantasyFrame.cpp
+      ${SRC_DIR}/gui/UIWidget.cpp
+      ${SRC_DIR}/gui/Button.cpp
+      ${SRC_DIR}/gui/BitmapButton.cpp
+      ${SRC_DIR}/gui/ListBox.cpp
+      # ${SRC_DIR}/gui/DataViewItem.cpp
+      ${SRC_DIR}/gui/DataViewListStore.cpp
+      ${SRC_DIR}/gui/DataViewBitmapColumn.cpp
+      ${SRC_DIR}/gui/DataViewColumn.cpp
+      ${SRC_DIR}/gui/DataViewList.cpp
+      ${SRC_DIR}/gui/UIEventDispatcher.cpp
+      ${SRC_DIR}/gui/UIEventHandler.cpp
+      ${SRC_DIR}/gui/UIEventCallback.cpp
+      ${SRC_DIR}/gui/UIWidgetEvent.cpp
+      ${SRC_DIR}/gui/UIItemContainer.cpp
+      ${SRC_DIR}/gui/UIWidgetLayoutItem.cpp
+      ${SRC_DIR}/gui/UIBoxLayout.cpp
+      ${SRC_DIR}/gui/UIVBoxLayout.cpp
+      ${SRC_DIR}/gui/UIHBoxLayout.cpp
+      # ${SRC_DIR}/gui/UIListItem.cpp
+      # ${SRC_DIR}/gui/UIItemListControl.cpp
+      # ${SRC_DIR}/gui/ButtonLabel.cpp
+      # ${SRC_DIR}/gui/UIChoice.cpp
+      # ${SRC_DIR}/gui/UIEvent.cpp
+    )
+
+# Core serializers module
+file ( GLOB SERIALIZERS_HEADERS "${NOMLIB_HEADERS_DIR}/serializers/*.hpp" )
+set ( SERIALIZERS_SOURCE
+      ${SRC_DIR}/serializers/IConfigFile.cpp
     )
 
 # JSON module
-file ( GLOB JSON_HEADERS "${NOMLIB_HEADERS_DIR}/serializers/*.hpp" )
 set ( JSON_SOURCE
       ${SRC_DIR}/serializers/JsonCppSerializer.cpp
       ${SRC_DIR}/serializers/JsonCppDeserializer.cpp
+      ${SRC_DIR}/serializers/JsonConfigFile.cpp
     )
 
 # XML module
-file ( GLOB XML_HEADERS "${NOMLIB_HEADERS_DIR}/serializers/*.hpp" )
 set ( XML_SOURCE
       ${SRC_DIR}/serializers/RapidXmlSerializer.cpp
       ${SRC_DIR}/serializers/RapidXmlDeserializer.cpp
@@ -115,6 +153,8 @@ file ( GLOB SYSTEM_OSX_HEADERS "${NOMLIB_HEADERS_DIR}/system/osx/*.hpp" )
 file ( GLOB SYSTEM_UNIX_HEADERS "${NOMLIB_HEADERS_DIR}/system/unix/*.hpp" )
 file ( GLOB SYSTEM_WINDOWS_HEADERS "${NOMLIB_HEADERS_DIR}/system/windows/*.hpp" )
 set ( SYSTEM_SOURCE
+      ${SRC_DIR}/system/ObjectTypeInfo.cpp
+      ${SRC_DIR}/system/IObject.cpp
       ${SRC_DIR}/system/helpers.cpp
       ${SRC_DIR}/system/IState.cpp
       ${SRC_DIR}/system/log.cpp
@@ -236,10 +276,20 @@ if( NOM_BUILD_GUI_UNIT )
       )
 endif( NOM_BUILD_GUI_UNIT )
 
+if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_SERIALIZERS_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+  set ( NOMLIB_HEADERS
+        ${NOMLIB_HEADERS}
+        ${SERIALIZERS_HEADERS}
+      )
+  set ( NOMLIB_SOURCE
+        ${NOMLIB_SOURCE}
+        ${SERIALIZERS_SOURCE}
+      )
+endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_SERIALIZERS_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+
 if( NOM_BUILD_JSON_UNIT )
   set ( NOMLIB_HEADERS
         ${NOMLIB_HEADERS}
-        ${JSON_HEADERS}
         ${JSONCPP_INCLUDE_DIR}
         ${SRC_DIR}/graphics/sprite/SpriteSheet.cpp
         ${SRC_DIR}/graphics/sprite/SpriteBatch.cpp
@@ -256,7 +306,6 @@ if( NOM_BUILD_XML_UNIT )
   set ( NOMLIB_HEADERS
         ${NOMLIB_HEADERS}
         ${RAPIDXML_HEADERS}
-        ${XML_HEADERS}
       )
   set ( NOMLIB_SOURCE
         ${NOMLIB_SOURCE}
@@ -301,6 +350,18 @@ if( NOM_BUILD_SYSTEM_UNIT )
 endif( NOM_BUILD_SYSTEM_UNIT )
 
 if( NOM_BUILD_TEMPLATES_UNIT )
+
+    # Template class files
+    set ( NOMLIB_HEADERS
+          ${NOMLIB_HEADERS}
+          ${TEMPLATE_HEADERS}
+        )
+    set ( NOMLIB_SOURCE
+          ${NOMLIB_SOURCE}
+          ${TEMPLATE_SOURCE}
+        )
+
+  # Examples template class files
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
     set ( NOMLIB_HEADERS
           ${NOMLIB_HEADERS}
@@ -312,6 +373,7 @@ if( NOM_BUILD_TEMPLATES_UNIT )
           ${EXAMPLES_TEMPLATE_SOURCE}
         )
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+
 endif( NOM_BUILD_TEMPLATES_UNIT )
 
 # Add header files (*.hpp) and source files (*.cpp) to IDE project list
@@ -324,7 +386,6 @@ source_group ( "include\\graphics\\scale2x" FILES ${GRAPHICS_SCALE2X_HEADERS} )
 source_group ( "include\\graphics\\shapes" FILES ${GRAPHICS_SHAPES_HEADERS} )
 source_group ( "include\\graphics\\sprite" FILES ${GRAPHICS_SPRITE_HEADERS} )
 source_group ( "include\\gui" FILES ${GUI_HEADERS} )
-source_group ( "include\\json" FILES ${JSON_HEADERS} )
 source_group ( "third-party\\common\\jsoncpp" FILES ${JSONCPP_INCLUDE_DIR} )
 source_group ( "third-party\\common\\rapidxml" FILES ${RAPIDXML_INCLUDE_DIR} )
 source_group ( "include\\math" FILES ${MATH_HEADERS} )

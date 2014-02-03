@@ -186,7 +186,7 @@ struct MouseMotionEvent
 
 /// \brief A structure containing information on a mouse button event.
 ///
-/// \remarks SDL_MOUSEBUTTONDOWN or SDL_MOUSEBUTTONUP.
+/// \remarks SDL_MOUSEBUTTONDOWN (1025) or SDL_MOUSEBUTTONUP (1026).
 struct MouseButtonEvent
 {
   /// \brief The mouse instance identifier, or SDL_TOUCH_MOUSEID.

@@ -30,71 +30,116 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Gradient::Gradient ( void )
+Gradient::Gradient( void ) :
+  Transformable( Point2i::null, Size2i::null ),   // Invalid position & size
+  gradient_{ { Color4i::Blue, Color4i::Blue } },  // Opaque color to serve as
+                                                  // warning!
+  updated_( false )
 {
-  Color4i gradient_color[2];
-  gradient_color[0] = Color4i::LightGray;
-  gradient_color[1] = Color4i::Gray;
+  // No margins set.
+  this->set_margins( Point2i( 0, 0 ) );
 
-  this->initialize  (
-                      gradient_color,
-                      Point2i( 0, 0), Size2i(0, 0 ), Point2i(0, 0), Gradient::FillDirection::Left
-                    );
+  // Default direction is left to right.
+  this->set_fill_direction( Gradient::FillDirection::Left );
+
+  this->set_dithering( true );
+
+  // No need to update the object's rendered state because we do not have
+  // sufficient information for rendering to occur -- position & size.
+  // this->update();
 }
 
 Gradient::Gradient  (
-                      Color4i gradient_color[2],
-                      const Point2i& pos, const Size2i& size,
+                      const Color4iColors& colors,
+                      const Point2i& pos,
+                      const Size2i& size,
                       const Point2i& margin,
                       Gradient::FillDirection direction
                     ) :
-  Transformable ( pos, size ),
-  margins_ ( margin ),
-  fill_direction_ ( direction ),
-  enable_dithering_ ( true )
+  Transformable( pos, size ), // Base class
+  gradient_{ colors },
+  updated_( false )
 {
-  this->set_start_color ( gradient_color[0] );
-  this->set_end_color ( gradient_color[1] );
-}
-/* FIXME
-{
-  this->initialize  (
-                      gradient_color,
-                      bounds, x_margin, y_margin, direction
-                    );
-}
-FIXME */
+  this->set_margins( margin );
+  this->set_fill_direction( direction );
+  this->set_dithering( true );
 
-Gradient::~Gradient ( void ) {}
-
-void Gradient::initialize (
-                            Color4i gradient_color[2],
-                            const Point2i& pos, const Size2i& size,
-                            const Point2i& margin,
-                            Gradient::FillDirection direction
-                          )
-{
-  this->set_start_color ( gradient_color[0] );
-  this->set_end_color ( gradient_color[1] );
-  this->set_size ( size );
-  this->set_position ( pos );
-  this->set_margins ( margin );
-  this->set_fill_direction ( direction );
-
-  // Internal option
-  this->enable_dithering ( true );
+  this->update();
 }
 
-/*
-const Size2i& Gradient::size ( void ) const
+Gradient::~Gradient( void )
 {
-  return this->size_;
+  //NOM_LOG_TRACE( NOM );
 }
-*/
 
-bool Gradient::dithering ( void ) const
+Gradient::Gradient( const self_type& copy )  :
+  Transformable { copy.position(), copy.size() }, // Base class
+  rectangles_ { copy.rectangles_ },
+  gradient_{ copy.colors() },
+  margins_ { copy.margins() },
+  fill_direction_ { copy.fill_direction() },
+  dithering_{ copy.dithering() },
+  updated_{ copy.updated() }
 {
-  return this->enable_dithering_;
+  // NOM_LOG_TRACE( NOM );
+
+  this->set_updated( copy.updated() );
+
+  this->update();
+}
+
+const Gradient::self_type& Gradient::operator =( const self_type& other )
+{
+  // NOM_LOG_TRACE( NOM );
+
+  this->set_position( other.position() );
+  this->set_size( other.size() );
+  this->rectangles_ = other.rectangles_;
+  this->gradient_ = other.colors();
+  this->set_margins( other.margins() );
+  this->set_fill_direction( other.fill_direction() );
+  this->set_dithering( other.dithering() );
+  this->updated_ = other.updated();
+
+  this->set_updated( other.updated() );
+  this->update();
+
+  return *this;
+}
+
+IDrawable::raw_ptr Gradient::clone( void ) const
+{
+  return Gradient::raw_ptr( new Gradient( *this ) );
+}
+
+ObjectTypeInfo Gradient::type( void ) const
+{
+  return NOM_OBJECT_TYPE_INFO( self_type );
+}
+
+const Gradient::self_type& Gradient::operator *( void ) const
+{
+  return *this;
+}
+
+Gradient::raw_ptr Gradient::operator ->( void )
+{
+  return this;
+}
+
+bool Gradient::valid( void ) const
+{
+  if ( this->position() != Point2i::null || this->size() != Size2i::null )
+  {
+    return true;
+  }
+
+  return false;
+}
+
+bool Gradient::dithering( void ) const
+{
+  return this->dithering_;
 }
 
 const Point2i& Gradient::margins ( void ) const
@@ -102,36 +147,54 @@ const Point2i& Gradient::margins ( void ) const
   return this->margins_;
 }
 
-/*
-void Gradient::set_size ( const Size2i& size )
+const Color4iColors& Gradient::colors( void ) const
 {
-  this->size_ = size;
-}
-*/
-
-Color4i Gradient::start_color ( void ) const
-{
-  return this->gradient_[0];
+  return this->gradient_;
 }
 
-Color4i Gradient::end_color ( void ) const
+void Gradient::set_position( const Point2i& pos )
 {
-  return this->gradient_[1];
+  this->set_updated( false );
+
+  Transformable::set_position( pos );
+
+  this->update();
 }
 
-void Gradient::set_start_color ( const Color4i& starting_color )
+void Gradient::set_size( const Size2i& size )
 {
-  this->gradient_[0] = starting_color;
+  this->set_updated( false );
+
+  Transformable::set_size( size );
+
+  this->update();
 }
 
-void Gradient::set_end_color ( const Color4i& ending_color )
+const Color4i& Gradient::start_color( void ) const
 {
-  this->gradient_[1] = ending_color;
+  return this->gradient_.front();
 }
 
-void Gradient::reverse_colors ( void )
+const Color4i& Gradient::end_color( void ) const
 {
-  std::swap ( this->gradient_[0], this->gradient_[1] );
+  return this->gradient_.back();
+}
+
+void Gradient::set_colors( const Color4iColors& colors )
+{
+  this->gradient_ = colors;
+
+  // The drawable objects are no longer up-to-date and will be re-created upon
+  // the next call to ::update.
+  this->set_updated( false );
+
+  this->update();
+}
+
+void Gradient::reverse_colors( void )
+{
+  // Front to back and back to front
+  std::swap( this->gradient_.front(), this->gradient_.back() );
 }
 
 Gradient::FillDirection Gradient::fill_direction ( void ) const
@@ -142,80 +205,59 @@ Gradient::FillDirection Gradient::fill_direction ( void ) const
 void Gradient::set_fill_direction ( Gradient::FillDirection direction )
 {
   this->fill_direction_ = direction;
+
+  // The drawable objects are no longer up-to-date and will be re-created upon
+  // the next call to ::update.
+  this->set_updated( false );
+
+  this->update();
 }
 
 void Gradient::set_margins ( const Point2i& margin )
 {
   this->margins_ = margin;
+
+  // The drawable objects are no longer up-to-date and will be re-created upon
+  // the next call to ::update.
+  this->set_updated( false );
+
+  this->update();
 }
 
-void Gradient::enable_dithering ( bool toggle )
+void Gradient::set_dithering( bool state )
 {
-  this->enable_dithering_ = toggle;
+  this->dithering_ = state;
+
+  // The drawable objects are no longer up-to-date and will be re-created upon
+  // the next call to ::update.
+  this->set_updated( false );
+
+  this->update();
 }
 
-void Gradient::strategy_top_down ( void )
+void Gradient::draw( RenderTarget& target ) const
 {
-  uint32 y_offset = ( this->position().y + this->size().h ) - this->margins().y;
-
-  float currentR = (float) gradient_[0].r;
-  float currentG = (float) gradient_[0].g;
-  float currentB = (float) gradient_[0].b;
-
-  float destR = (float) ( gradient_[1].r - gradient_[0].r )      / ( float ) ( this->size().h - this->margins().y );
-  float destG = (float) ( gradient_[1].g - gradient_[0].g )  / ( float ) ( this->size().h - this->margins().y );
-  float destB = (float) ( gradient_[1].b - gradient_[0].b )    / ( float ) ( this->size().h - this->margins().y );
-
-  for ( uint32 rows = this->position().y + this->margins().y; rows < y_offset; rows++ )
+  for ( auto itr = this->rectangles_.begin(); itr != this->rectangles_.end(); ++itr )
   {
-    // Calculate rendering offsets
-    IntRect render_coords = IntRect( this->position().x + this->margins().x, rows, this->size().w - this->margins().x, 1 );
-    Color4i render_color = Color4i( currentR, currentG, currentB );
-
-    // Queue up to render
-    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle( render_coords, render_color ) ) );
-
-    if ( this->dithering() )
-    {
-      currentR += destR;
-      currentG += destG;
-      currentB += destB;
-    }
-  } // end blit loop
+    (*itr)->draw( target );
+  }
 }
 
-void Gradient::strategy_left_right ( void )
+// Private scope
+
+void Gradient::update( void )
 {
-  uint32 x_offset = ( this->position().x + this->size().w ) - this->margins().x;
+  // We have already updated our window -- nothing to draw!
+  if ( this->updated() == true ) return;
 
-  float currentR = (float) gradient_[0].r;
-  float currentG = (float) gradient_[0].g;
-  float currentB = (float) gradient_[0].b;
-
-  float destR = (float) ( gradient_[1].r - gradient_[0].r )      / ( float ) ( this->size().w - this->margins().x );
-  float destG = (float) ( gradient_[1].g - gradient_[0].g )  / ( float ) ( this->size().w - this->margins().x );
-  float destB = (float) ( gradient_[1].b - gradient_[0].b )    / ( float ) ( this->size().w - this->margins().x );
-
-  for ( uint32 rows = this->position().x + this->margins().x; rows < x_offset; rows++ )
+  // Ensure that we do not try to access an empty container -- that would be
+  // undefined behavior; a segmentation fault (crash) if we are lucky!
+  if( this->colors().empty() )
   {
-    // Calculate rendering offsets
-    IntRect render_coords = IntRect( rows, this->position().y + this->margins().y, 1, this->size().h - this->margins().y );
-    Color4i render_color = Color4i( currentR, currentG, currentB );
+    this->set_colors( { Color4i::Blue, Color4i::Blue } );
+  }
 
-    // Queue up to render
-    this->rectangles_.push_back ( IDrawable::UniquePtr ( new Rectangle ( render_coords, render_color ) ) );
-
-    if ( this->dithering() )
-    {
-      currentR += destR;
-      currentG += destG;
-      currentB += destB;
-    }
-  } // end blit loop
-}
-
-void Gradient::update ( void )
-{
+  // Clear the rendered drawables of the previously up-to-date object.
   this->rectangles_.clear();
 
   if ( this->fill_direction() == FillDirection::Top )
@@ -236,14 +278,85 @@ void Gradient::update ( void )
     this->reverse_colors();
     this->strategy_left_right();
   }
+
+  // Drawable objects are now are up-to-date!
+  this->set_updated( true );
 }
 
-void Gradient::draw ( RenderTarget& target ) const
+bool Gradient::updated( void ) const
 {
-  for ( auto idx = 0; idx != this->rectangles_.size(); ++idx )
+  return this->updated_;
+}
+
+void Gradient::set_updated( bool state )
+{
+  this->updated_ = state;
+}
+
+void Gradient::strategy_top_down ( void )
+{
+  uint32 y_offset = ( this->position().y + this->size().h ) - this->margins().y;
+
+  Color4i first_color = this->start_color();
+  Color4i last_color = this->end_color();
+
+  float currentR = (float) first_color.r;
+  float currentG = (float) first_color.g;
+  float currentB = (float) first_color.b;
+
+  float destR = (float) ( last_color.r - first_color.r )      / ( float ) ( this->size().h - this->margins().y );
+  float destG = (float) ( last_color.g - first_color.g )  / ( float ) ( this->size().h - this->margins().y );
+  float destB = (float) ( last_color.b - first_color.b )    / ( float ) ( this->size().h - this->margins().y );
+
+  for ( uint32 rows = this->position().y + this->margins().y; rows < y_offset; rows++ )
   {
-    this->rectangles_[idx]->draw ( target );
-  }
+    // Calculate rendering offsets
+    IntRect render_coords = IntRect( this->position().x + this->margins().x, rows, this->size().w - this->margins().x, 1 );
+    Color4i render_color = Color4i( currentR, currentG, currentB );
+
+    // Queue up to render
+    this->rectangles_.push_back( IDrawable::shared_ptr( new Rectangle( render_coords, render_color ) ) );
+
+    if ( this->dithering() )
+    {
+      currentR += destR;
+      currentG += destG;
+      currentB += destB;
+    }
+  } // end blit loop
+}
+
+void Gradient::strategy_left_right ( void )
+{
+  uint32 x_offset = ( this->position().x + this->size().w ) - this->margins().x;
+
+  Color4i first_color = this->start_color();
+  Color4i last_color = this->end_color();
+
+  float currentR = (float) first_color.r;
+  float currentG = (float) first_color.g;
+  float currentB = (float) first_color.b;
+
+  float destR = (float) ( last_color.r - first_color.r )      / ( float ) ( this->size().w - this->margins().x );
+  float destG = (float) ( last_color.g - first_color.g )  / ( float ) ( this->size().w - this->margins().x );
+  float destB = (float) ( last_color.b - first_color.b )    / ( float ) ( this->size().w - this->margins().x );
+
+  for ( uint32 rows = this->position().x + this->margins().x; rows < x_offset; rows++ )
+  {
+    // Calculate rendering offsets
+    IntRect render_coords = IntRect( rows, this->position().y + this->margins().y, 1, this->size().h - this->margins().y );
+    Color4i render_color = Color4i( currentR, currentG, currentB );
+
+    // Queue up to render
+    this->rectangles_.push_back( IDrawable::shared_ptr( new Rectangle( render_coords, render_color ) ) );
+
+    if ( this->dithering() )
+    {
+      currentR += destR;
+      currentG += destG;
+      currentB += destB;
+    }
+  } // end blit loop
 }
 
 } // namespace nom

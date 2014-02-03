@@ -48,6 +48,16 @@ Line::Line ( const IntRect& bounds, const Color4i& outline )
   this->set_outline_color ( outline );
 }
 
+IDrawable::raw_ptr Line::clone( void ) const
+{
+  return Line::raw_ptr( new Line( *this ) );
+}
+
+ObjectTypeInfo Line::type( void ) const
+{
+  return NOM_OBJECT_TYPE_INFO( self_type );
+}
+
 void Line::update ( void )
 {
   // Stub (NO-OP)

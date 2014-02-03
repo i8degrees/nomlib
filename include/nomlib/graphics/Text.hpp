@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
+#include <memory>
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
@@ -48,8 +49,12 @@ namespace nom {
 class Text: public Transformable
 {
   public:
-    typedef Text* RawPtr;
-    typedef std::shared_ptr<Text> SharedPtr;
+    typedef Text self_type;
+    typedef Transformable derived_class;
+
+    typedef self_type* raw_ptr;
+    typedef std::shared_ptr<self_type> shared_ptr;
+    typedef std::unique_ptr<self_type> unique_ptr;
 
     typedef Font font_type;
 
@@ -75,6 +80,9 @@ class Text: public Transformable
     /// most natural, and thus easier to remember and type out.
     ///
     /// \endinternal
+    ///
+    /// \deprecated Text::Alignment is probably going to be replaced by
+    /// nom::Anchor in the near future.
     enum Alignment: uint32
     {
       TopLeft = 0,  // Default
@@ -88,6 +96,17 @@ class Text: public Transformable
       BottomRight   // 8
     };
 
+    /// \brief Additional rendering features; these are all optional, and are
+    /// turned off by default.
+    ///
+    /// \remarks Bit-mask friendly to pass.
+    enum ExtraRenderingFeatures: uint32
+    {
+      // Prevent rendering of text that goes beyond a user-defined size; the
+      // formula for detecting "out of bounds" is ::position().x + ::size().w.
+      CropText = 1
+    };
+
     /// Default constructor
     Text( void );
 
@@ -95,10 +114,10 @@ class Text: public Transformable
     ~Text( void );
 
     /// Copy constructor
-    Text ( const Text& copy );
+    Text ( const self_type& copy );
 
     /// Copy assignment overload
-    Text& operator = ( const Text& other );
+    self_type& operator = ( const self_type& other );
 
     /// Construct a Text, initializing it with a text string, a Font
     /// object, character size and text alignment.
@@ -106,7 +125,8 @@ class Text: public Transformable
             const std::string& text,
             const font_type& font,
             uint character_size = 14,
-            enum Text::Alignment align = Text::Alignment::TopLeft
+            enum Text::Alignment align = Text::Alignment::TopLeft,
+            const Color4i& text_color
           );
 
     // Construct a Text, initializing it with a text string, an IFont derived
@@ -118,16 +138,40 @@ class Text: public Transformable
     //         enum Text::Alignment align = Text::Alignment::TopLeft
     //       );
 
-    Text::RawPtr get ( void );
+    /// Construct a minimal Text object, initializing it with a text string.
+    ///
+    /// \remarks A text font must be set before any rendering, width/height
+    /// calculations, etc. is used; see also -- ::set_font.
+    Text ( const std::string& text );
+
+    // Construct a Text, initializing it with a text string, an IFont
+    // raw pointer, character size, text color and text alignment.
+    // Text (
+    //         const std::string& text,
+    //         const IFont::raw_ptr font,
+    //         uint character_size = 14,
+    //         enum Text::Alignment align = Text::Alignment::TopLeft,
+    //         const Color4i& text_color = Color4i::White
+    //       );
+
+    /// \brief Implements the required IDrawable::clone method.
+    IDrawable::raw_ptr clone( void ) const;
+
+    /// \brief Re-implements the IObject::type method.
+    ///
+    /// \remarks This uniquely identifies the object's type.
+    ObjectTypeInfo type( void ) const;
 
     font_type& font( void ) const;
+
+    Text::raw_ptr get( void );
 
     const Texture& texture ( void ) const;
 
     /// Obtain validity of the Text object
     bool valid ( void ) const;
 
-    enum IFont::FontType type ( void ) const;
+    enum IFont::FontType font_type( void ) const;
 
     /// \brief Obtain the text width (in pixels) of the set text
     ///
@@ -168,13 +212,23 @@ class Text: public Transformable
     enum Text::Style style ( void ) const;
 
     //const Point2i& local_bounds ( void ) const;
-    //const Point2i& global_bounds ( void ) const;
+
+    /// \brief Obtain the rendered coordinate bounds of the text object.
+    ///
+    /// \remarks This is equivalent to a call made to the methods ::position(),
+    /// ::width and ::height.
+    IntRect global_bounds( void ) const;
 
     /// Get text alignment
     enum Text::Alignment alignment ( void ) const;
 
     /// Get text character size (in pixels?)
     uint text_size ( void ) const;
+
+    /// \brief Obtain the set rendering flags.
+    ///
+    /// \remarks See also: nom::Text::ExtraRenderingFeatures enumeration.
+    uint32 features( void ) const;
 
     /// \brief Set the font from a nom::Font object.
     void set_font( const Text::font_type& font );
@@ -186,6 +240,11 @@ class Text: public Transformable
 
     // \brief Set a new font, deriving from an nom::IFont derived object.
     // void set_font( const IFont& font );
+
+    // \brief Set a new font from an existing pointer deriving from IFont.
+    //
+    // void set_font( const IFont::raw_ptr font );
+    // void set_font( const IFont::shared_ptr& font );
 
     /// Set new text
     void set_text ( const std::string& text );
@@ -210,13 +269,20 @@ class Text: public Transformable
 
     /// Render text to a target
     ///
-    /// \todo Test horizontal tabbing (\t)
+    /// \todo Test horizontal tabbing '\t'
     void draw ( RenderTarget& target ) const;
 
     /// Rescale the font with a chosen resizing algorithm
     ///
     /// \todo SDL2 port
     bool resize ( enum Texture::ResizeAlgorithm scaling_algorithm );
+
+    /// \brief Set additional rendering flags.
+    ///
+    /// \remarks See also: nom::Text::ExtraRenderingFeatures enumeration.
+    ///
+    /// \note Bit-mask friendly.
+    void set_features( uint32 flags );
 
   private:
     /// \brief Apply requested transformations, styles, etc
@@ -228,13 +294,21 @@ class Text: public Transformable
 
     mutable font_type font_; // FIXME?
     mutable Texture texture_; // FIXME
+
     /// Holds contents of text as a string buffer
     std::string text_;
     uint text_size_;
     Color4i color_;
+
     /// Current text effect set
     enum Style style_;
     enum Alignment alignment_;
+
+    /// \brief Set additional rendering flags.
+    ///
+    /// \remarks See also: nom::Text::ExtraRenderingFeatures enumeration.
+    uint32 features_;
+
 /*
     Point2i local_bounds;
     Point2i global_bounds;

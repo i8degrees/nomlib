@@ -33,8 +33,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/platforms.hpp"
 
-#define NOM_PTR_CAST(type, expression) \
-  ( std::dynamic_pointer_cast<type>(expression) )
+// RTTI for library objects.
+#include "nomlib/system/ObjectTypeInfo.hpp"
+
+#define NOM_DYN_SHARED_PTR_CAST(type, expr) \
+  ( std::dynamic_pointer_cast<type>(expr) )
+
+#define NOM_DYN_PTR_CAST(type, expr) \
+  ( dynamic_cast<type>(expr) )
 
 #define NOM_SCAST(type, expression) static_cast<type>(expression)
 #define NOM_CCAST(type, expression) const_cast<type>(expression)
@@ -134,6 +140,16 @@ typedef uint32_t* uint32_ptr;
 typedef void* void_ptr;
 
 typedef unsigned long ulong;
+
+/// \brief An integer indicating that there is no match, an error or NULL.
+static const int npos = -1;
+
+/// \brief Upper limit of exact-width integer types
+#if defined( INT32_MAX )
+
+  /// \note As per /usr/include/stdint.h under OS X v10.9.x "Mavericks".
+  static const int MAX_INT = INT32_MAX;
+#endif
 
 } // namespace nom
 

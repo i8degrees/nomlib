@@ -97,6 +97,13 @@ class IState: public EventHandler
     /// \remarks It is not required that the state has any flags set.
     uint32 flags ( void ) const;
 
+    /// \brief User-defined implementation of the state's event handling logic.
+    ///
+    /// \param ev nom::Event union struct.
+    ///
+    /// \remarks When not defined, a do-nothing implementation is provided.
+    virtual void on_event( const nom::Event& ev );
+
     /// \brief User-defined implementation of the state's update logic.
     ///
     /// \param float User-defined; typically a delta time (change in time).

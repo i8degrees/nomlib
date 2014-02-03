@@ -67,7 +67,7 @@ class StateMachine
     void pop_state ( void_ptr data );
 
     /// State events handling
-    void process_event( const Event& ev );
+    void on_event( const Event& ev );
 
     /// State logic handling
     void update ( float delta );

@@ -40,12 +40,16 @@ Texture::Texture ( void ) :
   bounds_ ( 0, 0, -1, -1 ),
   colorkey_ { Color4i::Black }
 {
-  NOM_LOG_TRACE ( NOM );
+  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+    NOM_LOG_TRACE( NOM );
+  #endif
 }
 
 Texture::~Texture ( void )
 {
-  NOM_LOG_TRACE ( NOM );
+  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+    NOM_LOG_TRACE( NOM );
+  #endif
 }
 
 Texture::Texture ( const Texture& copy ) :
@@ -56,7 +60,9 @@ Texture::Texture ( const Texture& copy ) :
   bounds_ { copy.bounds() },
   colorkey_ { copy.colorkey() }
 {
-  NOM_LOG_TRACE ( NOM );
+  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
+    NOM_LOG_TRACE( NOM );
+  #endif
 }
 
 Texture& Texture::operator = ( const Texture& other )

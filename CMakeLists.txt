@@ -33,9 +33,11 @@ option( NOM_BUILD_TESTS "Build unit tests" off )
 # being built, regardless of whether examples are enabled.
 set( NOM_BUILD_CORE_UNIT on )
 
+# Builds the audio unit
 # Dependencies: OpenAL/OpenALSoft.
-set( NOM_BUILD_AUDIO_UNIT on )
+set( NOM_BUILD_AUDIO_UNIT off )
 
+# Build the graphics unit
 # Dependencies: SDL2, SDL2_image, SDL2_ttf
 set( NOM_BUILD_GRAPHICS_UNIT on )
 
@@ -44,18 +46,28 @@ set( NOM_BUILD_GRAPHICS_UNIT on )
 # Dependencies: Graphics unit
 set( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT on )
 
+# Build the GUI unit.
 # Dependencies: Graphics unit
 set( NOM_BUILD_GUI_UNIT on )
 
+# Build the serializers unit.
+# Dependencies: Core unit, Property Tree unit
+set( NOM_BUILD_SERIALIZERS_UNIT on )
+
+# Build the JSON unit.
 # Dependencies: jsoncpp, Property Tree unit
 set( NOM_BUILD_JSON_UNIT on )
+
+# Build the Property Tree unit.
 set( NOM_BUILD_PTREE_UNIT on )
 
+# Build the XML unit.
 # Dependencies: RapidXml
 set( NOM_BUILD_XML_UNIT on )
 
 set( NOM_BUILD_MATH_UNIT on )
 
+# Build the System unit.
 # Dependencies: SDL2, SDL2_image, SDL2_ttf
 set( NOM_BUILD_SYSTEM_UNIT on )
 
@@ -162,6 +174,9 @@ set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" )
 
 # Resources path for library examples
 set( NOM_EXAMPLES_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/${NOMLIB_RESOURCES_DIR}/examples" )
+
+# Unit testing resources path
+set( NOM_TESTS_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/${NOMLIB_RESOURCES_DIR}/tests" )
 
 # Distributed typographic fonts.
 set ( NOMLIB_FONTS
@@ -488,6 +503,19 @@ if ( PLATFORM_OSX )
               "${NOMLIB_FONTS}"
               # DESTINATION "${INSTALL_ROOT_PATH}/Resources"
               DESTINATION "${FONTS_DEST_PREFIX}/${PROJECT_NAME}.framework/Resources"
+              OPTIONAL
+              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+            )
+
+    # Install nomlib's default fonts
+    #
+    # FIXME: We need to be building the framework bundle locally -- within
+    # cmake's build dir -- and then after *everything* is built, copy said
+    # bundle over to the destination prefix.
+    install ( DIRECTORY
+              ${NOMLIB_FONTS}
+              # DESTINATION "${INSTALL_ROOT_PATH}/Resources"
+              DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Resources"
               OPTIONAL
               PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
             )

@@ -32,12 +32,12 @@ namespace nom {
 
 SpriteBatch::SpriteBatch ( void ) : sheet_id_ ( 0 )
 {
-NOM_LOG_TRACE ( NOM );
+  // NOM_LOG_TRACE ( NOM );
 }
 
 SpriteBatch::SpriteBatch ( const SpriteSheet& sheet )
 {
-NOM_LOG_TRACE ( NOM );
+  // NOM_LOG_TRACE ( NOM );
 
   IntRect dims;
 
@@ -52,7 +52,7 @@ NOM_LOG_TRACE ( NOM );
 
 SpriteBatch::SpriteBatch ( const std::string& filename )
 {
-NOM_LOG_TRACE ( NOM );
+  // NOM_LOG_TRACE ( NOM );
 
   IntRect dims;
 
@@ -65,7 +65,7 @@ NOM_LOG_TRACE ( NOM );
   this->set_frame ( 0 );
 }
 
-SpriteBatch& SpriteBatch::operator = ( const SpriteBatch& other )
+SpriteBatch::self_type& SpriteBatch::operator = ( const self_type& other )
 {
   this->sprite_ = other.sprite_;
   this->set_position ( other.position() );
@@ -80,7 +80,22 @@ SpriteBatch& SpriteBatch::operator = ( const SpriteBatch& other )
 
 SpriteBatch::~SpriteBatch ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  // NOM_LOG_TRACE ( NOM );
+}
+
+ObjectTypeInfo SpriteBatch::type( void ) const
+{
+  return NOM_OBJECT_TYPE_INFO( self_type );
+}
+
+SpriteBatch::raw_ptr SpriteBatch::get( void )
+{
+  return this;
+}
+
+IDrawable::raw_ptr SpriteBatch::clone( void ) const
+{
+  return self_type::raw_ptr( new SpriteBatch( *this ) );
 }
 
 int32 SpriteBatch::frame ( void ) const

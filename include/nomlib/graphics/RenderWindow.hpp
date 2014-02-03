@@ -52,10 +52,21 @@ namespace nom {
 class RenderWindow: public Renderer
 {
   public:
-    typedef RenderWindow* RawPtr;
+    typedef RenderWindow SelfType;
+    typedef SelfType* RawPtr;
 
     RenderWindow ( void );
     ~RenderWindow ( void );
+
+    /// \brief Copy constructor.
+    ///
+    /// \remarks This resource has been marked non-copyable.
+    RenderWindow( const SelfType& copy ) = delete;
+
+    /// \brief Copy assignment operator.
+    ///
+    /// \remarks This resource has been marked non-copyable.
+    SelfType& operator =( const SelfType& other ) = delete;
 
     /// Initialize a SDL window and renderer
     ///

@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_TRANSFORMABLE_HEADERS
-#define NOMLIB_TRANSFORMABLE_HEADERS
+#ifndef NOMLIB_MATH_TRANSFORMABLE_HPP
+#define NOMLIB_MATH_TRANSFORMABLE_HPP
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Size2.hpp"
@@ -38,24 +38,61 @@ namespace nom {
 class Transformable: public virtual IDrawable
 {
   public:
-    Transformable ( void );
-    virtual ~Transformable ( void );
+    Transformable( void );
+    virtual ~Transformable( void );
 
-    Transformable ( const Point2i& pos, const Size2i& size );
+    Transformable( const Point2i& pos, const Size2i& size );
 
-    const Point2i& position ( void ) const;
-    const Size2i& size ( void ) const;
+    /// \brief Construct an object using a complete set of coordinates
+    /// (bounds).
+    Transformable( const IntRect& bounds );
 
-    void set_position ( const Point2i& coords );
-    void set_size ( const Size2i& size );
-    void move ( int x = 0, int y = 0 );
+    /// \brief Re-implements the IObject::type method.
+    ///
+    /// \remarks This uniquely identifies the object's type.
+    ObjectTypeInfo type( void ) const;
 
-  /*protected*/private:
-    /// \todo Consider using IntRect to store coordinates?
+    /// \brief Getter for stored positioning coordinates.
+    const Point2i& position( void ) const;
+
+    /// \brief Getter for stored size dimensions.
+    const Size2i& size( void ) const;
+
+    /// \brief Set the positioning -- X & Y rendering coordinates -- of the
+    /// object.
+    ///
+    /// \remarks You will almost always want to call the base class --
+    /// Transformable::set_position and Transformable::set_size -- when
+    /// overriding any of the class methods. See nom::Gradient and nom::Text
+    /// for examples of why you might need to override the methods here.
+    virtual void set_position( const Point2i& coords );
+
+    /// \brief Set the size dimensions-- width & height rendering coordinates
+    /// of the object.
+    ///
+    /// \remarks You will almost always want to call the base class --
+    /// Transformable::set_position and Transformable::set_size -- when
+    /// overriding any of the class methods. See nom::Gradient and nom::Text
+    /// for examples of why you might need to override the methods here.
+    virtual void set_size( const Size2i& size );
+
+    /// \brief Set the complete bounds of the object -- position (X, Y) and
+    /// size (width and height) dimensions.
+    virtual void set_bounds( const Point2i& pos, const Size2i& size );
+
+    /// \brief Set the complete bounds of the object -- position (X, Y) and
+    /// size (width and height) dimensions.
+    virtual void set_bounds( const IntRect& bounds );
+
+    void set_position( int x, int y );
+    void set_size( int w, int h );
+
+    void move( int x = 0, int y = 0 );
+
+  private:
     Point2i position_;
 
-    /// \deprecated This will likely be removed soon -- no replacement;
-    /// re-implement using private variables.
+    /// \brief The dimensions representing width and height.
     Size2i size_;
 };
 

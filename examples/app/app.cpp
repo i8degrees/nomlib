@@ -265,19 +265,22 @@ class App: public nom::SDLApp
       gradient[1].set_end_color ( nom::Color4i::LightGray );
       gradient[1].set_fill_direction ( nom::Gradient::FillDirection::Top );
 
+
+      gradient[0].set_position(INFO_BOX_ORIGINS[0]);
+      gradient[0].set_size(INFO_BOX_SIZES[0]);
+
       // Initialize our info_box[0] object
-      this->info_box[0] = nom::MessageBox (     INFO_BOX_ORIGINS[0],
-                                                INFO_BOX_SIZES[0],
-                                                // Use the built-in "gray" frame
-                                                // style
-                                                nom::MessageBox::Style::Gray,
-                                                // Use a custom background style
-                                                // object. A copy is made of
-                                                // the object, so forgetting
-                                                // about the object afterwards
-                                                // is OK!
-                                                gradient[0]
-                                            );
+      this->info_box[0] = nom::MessageBox ( INFO_BOX_ORIGINS[0],
+                                            INFO_BOX_SIZES[0],
+                                            // Use the built-in "gray" frame style
+                                            nom::GrayWindow()
+                                            // Use a custom background style
+                                            // object. A copy is made of
+                                            // the object, so forgetting
+                                            // about the object afterwards
+                                            // is OK!
+                                            //gradient[0]
+                                          );
 
       this->info_box[0].set_title( RESOURCE_INFO_BOX_TITLE_STRINGS[0], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] );
       this->info_box[0].set_text( RESOURCE_INFO_BOX_TEXT_STRINGS[0], this->bitmap_font, 12, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] );
@@ -285,12 +288,11 @@ class App: public nom::SDLApp
       // Initialize our info_box[1] object
       this->info_box[1] = nom::MessageBox (     INFO_BOX_ORIGINS[1],
                                                 INFO_BOX_SIZES[1],
-                                                // Use the built-in "gray" frame
-                                                // style
-                                                nom::MessageBox::Style::Gray,
+                                                // Use the built-in "gray" frame style
+                                                nom::GrayWindow()
                                                 // Use a custom background style
                                                 // object
-                                                gradient[1]
+                                                //gradient[1]
                                               );
 
       this->info_box[1].set_title( RESOURCE_INFO_BOX_TITLE_STRINGS[1], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] );

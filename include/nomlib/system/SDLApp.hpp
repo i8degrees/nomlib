@@ -43,6 +43,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Convenience template class for video games
+///
+/// \note http://docs.wxwidgets.org/trunk/classwx_app.html
+/// \note http://doc.qt.digia.com/4.6/qapplication.html
 class SDLApp: public EventHandler
 {
   public:

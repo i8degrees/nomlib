@@ -59,6 +59,11 @@ Shape& Shape::operator = ( const Shape& other )
 }
 */
 
+ObjectTypeInfo Shape::type( void ) const
+{
+  return NOM_OBJECT_TYPE_INFO( self_type );
+}
+
 const Color4i& Shape::outline_color ( void ) const
 {
   return this->outline_color_;

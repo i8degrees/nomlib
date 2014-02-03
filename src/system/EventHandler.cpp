@@ -556,6 +556,8 @@ void EventHandler::on_mouse_wheel( const Event& ev )
 {
   // User implemented
 
+  if( ev.type != SDL_MOUSEWHEEL ) return;
+
   #if defined( NOM_DEBUG_SDL2_MOUSE_INPUT )
     NOM_LOG_TRACE( NOM );
     ev.dump();

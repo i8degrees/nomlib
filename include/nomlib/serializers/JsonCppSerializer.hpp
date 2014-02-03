@@ -93,6 +93,9 @@ class JsonCppSerializer: public IValueSerializer
     /// \param filename Absolute file path to output resulting data to.
     ///
     /// \note Implements ISerializer interface.
+    ///
+    /// \remarks The resulting file's output is written (literally) out as
+    /// the text "null" even if the source Value object's size is null.
     bool save( const Value& source, const std::string& filename );
 
   private:

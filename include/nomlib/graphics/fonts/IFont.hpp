@@ -39,6 +39,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Forward declarations
+struct FontMetrics;
+
 /// \brief Pure abstract interface for a font resource
 class IFont
 {
@@ -47,6 +50,7 @@ class IFont
 
     typedef self_type* raw_ptr;
     typedef std::shared_ptr<self_type> shared_ptr;
+    typedef std::unique_ptr<self_type> unique_ptr;
 
     enum FontType
     {
@@ -55,17 +59,17 @@ class IFont
       TrueTypeFont
     };
 
-    IFont ( void )
+    IFont( void )
     {
       // NOM_LOG_TRACE( NOM );
     }
 
-    virtual ~IFont ( void )
+    virtual ~IFont( void )
     {
       // NOM_LOG_TRACE( NOM );
     }
 
-    virtual IFont::raw_ptr clone( void ) const = 0;
+    virtual IFont::RawPtr clone( void ) const = 0;
     virtual bool valid ( void ) const = 0;
 
     virtual const Image& image ( uint32 ) const = 0;
@@ -83,6 +87,8 @@ class IFont
     virtual bool set_outline( int ) = 0;
 
     virtual bool load( const std::string& filename ) = 0;
+
+    virtual bool set_point_size ( sint ) = 0;
 };
 
 } // namespace nom

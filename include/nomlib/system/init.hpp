@@ -36,13 +36,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL_ttf.h"
 
 #include "nomlib/config.hpp"
+#include "nomlib/system/IObject.hpp"
 #include "nomlib/system/log.hpp"
 #include "nomlib/system/File.hpp"
 #include "nomlib/system/Path.hpp"
 
 namespace nom {
 
-bool init_third_party ( uint32 flags );
+bool init_third_party( uint32 flags );
 
 /// Initialize nomlib
 ///
@@ -50,9 +51,9 @@ bool init_third_party ( uint32 flags );
 /// the location of the binary being executed. This is not guaranteed to succeed.
 ///
 /// \note This should be called before calling any other library methods!
-bool init ( int argc, char* argv[] );
+bool init( int argc, char* argv[] );
 
-void quit ( void );
+void quit( void );
 
 } // namespace nom
 

@@ -48,6 +48,16 @@ Rectangle::Rectangle ( const IntRect& rect, const Color4i& fill )
   this->set_fill_color ( fill );
 }
 
+IDrawable::raw_ptr Rectangle::clone( void ) const
+{
+  return Rectangle::raw_ptr( new Rectangle( *this ) );
+}
+
+ObjectTypeInfo Rectangle::type( void ) const
+{
+  return NOM_OBJECT_TYPE_INFO( self_type );
+}
+
 void Rectangle::update ( void )
 {
   // Stub (NO-OP)
@@ -55,6 +65,8 @@ void Rectangle::update ( void )
 
 void Rectangle::draw ( RenderTarget& target ) const
 {
+  SDL_SetRenderDrawBlendMode( target.renderer(), SDL_BLENDMODE_BLEND );
+
   if ( SDL_SetRenderDrawColor ( target.renderer(), this->fill_color().r, this->fill_color().g, this->fill_color().b, this->fill_color().a ) != 0 )
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );

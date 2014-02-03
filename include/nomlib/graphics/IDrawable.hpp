@@ -26,38 +26,48 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_IDRAWABLE_HPP
-#define NOMLIB_SDL2_IDRAWABLE_HPP
+#ifndef NOMLIB_GRAPHICS_IDRAWABLE_HPP
+#define NOMLIB_GRAPHICS_IDRAWABLE_HPP
 
-#include <vector>
 #include <memory>
 
 #include "nomlib/config.hpp"
+#include "nomlib/system/IObject.hpp"
 #include "nomlib/graphics/RenderWindow.hpp"
 
 namespace nom {
 
 /// \brief Base interface class for grouping objects under a united front
-class IDrawable
+class IDrawable: public IObject
 {
   public:
-    /// std::unique_ptr definition type for your convenience, sir!
-    typedef std::unique_ptr<IDrawable> UniquePtr;
-    /// std::shared_ptr definition type at your leisure, sir!
-    typedef std::shared_ptr<IDrawable> SharedPtr;
-    /// Vector of std::shared_ptr definition type for the brotherhood, sir!
-    typedef std::vector<std::shared_ptr<IDrawable>> SharedDrawables;
+    typedef IDrawable self_type;
 
-    /// std::unique_ptr vector container type
-    typedef std::vector<std::unique_ptr<IDrawable>> UniqueDrawables;
+    /// \brief A type definition for a C pointer -- raw pointer -- to
+    /// an IDrawable object.
+    typedef self_type* raw_ptr;
+
+    /// \brief A type definition for a C++11 std::unique_ptr to an IDrawable
+    /// object.
+    typedef std::unique_ptr<self_type> unique_ptr;
+
+    /// \brief A type definition for a C++11 std::shared_ptr to an IDrawable
+    /// object.
+    typedef std::shared_ptr<self_type> shared_ptr;
 
     typedef const RenderWindow RenderTarget;
 
     /// Do nothing at all default constructor
-    IDrawable ( void ) {}
+    IDrawable( void )
+    {
+      // NOM_LOG_TRACE( NOM );
+    }
 
     /// Do nothing at all destructor
-    virtual ~IDrawable ( void ) {}
+    virtual ~IDrawable( void )
+    {
+      // NOM_LOG_TRACE( NOM );
+    }
 
     /// Intended to be used internally by the class re-implementing this method;
     /// for use in preparing the buffer to be drawn using the draw method call.
@@ -70,10 +80,20 @@ class IDrawable
     /// figure out if we wish to stay on this course (of expectation), or
     /// diverge all together. Undecided.
     /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
-    virtual void update ( void ) = 0;
+    virtual void update( void ) = 0;
 
     /// Render the object onto the primary video buffer -- your visible screen.
-    virtual void draw ( RenderTarget& ) const = 0;
+    virtual void draw( RenderTarget& ) const = 0;
+
+    // virtual IDrawable::raw_ptr clone( void ) const = 0;
+
+    /// \brief Re-implements the IObject::type method.
+    ///
+    /// \remarks This uniquely identifies the object's type.
+    virtual ObjectTypeInfo type( void ) const
+    {
+      return NOM_OBJECT_TYPE_INFO( self_type );
+    }
 };
 
 

@@ -35,12 +35,12 @@ Sprite::Sprite ( void ) :
   state_ ( 0 ),
   scale_factor ( 1 )
 {
-NOM_LOG_TRACE ( NOM );
+// NOM_LOG_TRACE ( NOM );
 }
 
 Sprite::~Sprite ( void )
 {
-NOM_LOG_TRACE ( NOM );
+// NOM_LOG_TRACE ( NOM );
 }
 
 Sprite::Sprite ( int32 width, int32 height )  :
@@ -49,7 +49,7 @@ Sprite::Sprite ( int32 width, int32 height )  :
   scale_factor ( 1 )
 
 {
-NOM_LOG_TRACE ( NOM );
+// NOM_LOG_TRACE ( NOM );
 }
 
 Sprite& Sprite::operator = ( const Sprite& other )
@@ -60,6 +60,16 @@ Sprite& Sprite::operator = ( const Sprite& other )
   this->scale_factor = other.scale_factor;
 
   return *this;
+}
+
+IDrawable::raw_ptr Sprite::clone( void ) const
+{
+  return Sprite::raw_ptr( new Sprite( *this ) );
+}
+
+ObjectTypeInfo Sprite::type( void ) const
+{
+  return NOM_OBJECT_TYPE_INFO( self_type );
 }
 
 SDL_TEXTURE::RawPtr Sprite::texture ( void ) const

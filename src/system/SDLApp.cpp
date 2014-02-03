@@ -88,8 +88,10 @@ void SDLApp::on_event( const Event& ev )
   // First, handle our own events
   EventHandler::process_event( ev );
 
-  // Next, handle the state's events
-  this->states.process_event( ev );
+  // Next, handle the state's manager's list of events
+  //
+  // StateMachine::on_event
+  this->states.on_event( ev );
 }
 
 void SDLApp::on_update ( float delta )

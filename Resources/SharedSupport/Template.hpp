@@ -29,6 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_UNIT_TEMPLATE_HPP
 #define NOMLIB_UNIT_TEMPLATE_HPP
 
+//#include <memory>
+
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -37,6 +39,11 @@ namespace nom {
 class Template
 {
   public:
+    typedef Template SelfType;
+    typedef Template* RawPtr;
+    //typedef std::shared_ptr<Template> SharedPtr;
+    //typedef std::unique_ptr<Template> UniquePtr;
+
     /// \brief Default constructor
     Template( void );
 
@@ -44,13 +51,13 @@ class Template
     ~Template( void );
 
     /// \brief Copy constructor.
-    //Template( const Template& copy );
+    Template( const SelfType& copy );
 
     /// \brief Copy assignment.
-    //Template& operator =( const Template& other );
+    SelfType& operator =( const SelfType& other );
 
     /// \brief Obtain a reference to the object.
-    const Template& get ( void ) const;
+    const SelfType& get ( void ) const;
 
   private:
     // Member variables

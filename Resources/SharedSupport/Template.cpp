@@ -32,27 +32,25 @@ namespace nom {
 
 Template::Template( void )
 {
-  //NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE(NOM);
 }
 
 Template::~Template( void )
 {
-  //NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE(NOM);
 }
 
-/*
-Template::Template( const Template& copy )
+Template::Template( const SelfType& copy )
 {
-  //NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE(NOM);
 }
 
-Template& Template::operator =( const Template& other )
+Template::SelfType& Template::operator =( const SelfType& other )
 {
   return *this;
 }
-*/
 
-const Template& Template::get( void ) const
+const Template::SelfType& Template::get( void ) const
 {
   return *this;
 }

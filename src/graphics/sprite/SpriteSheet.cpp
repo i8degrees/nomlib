@@ -47,9 +47,9 @@ SpriteSheet::SpriteSheet ( const std::string& filename ):
     sheet_spacing ( 0 ), sheet_padding ( 0 ),
     sheet_width ( 0 ), sheet_height ( 0 )
 {
-  if ( this->load ( filename ) == false )
+  if ( this->load( filename ) == false )
   {
-NOM_LOG_ERR ( NOM, "Could not load sprite sheet file at: " + filename );
+    NOM_LOG_ERR ( NOM, "Could not load sprite sheet file at: " + filename );
   }
 }
 
@@ -181,13 +181,15 @@ SpriteSheet::SharedPtr SpriteSheet::clone ( void ) const
 
 bool SpriteSheet::save ( const std::string& filename )
 {
-  nom::JSON::Value object;
-  nom::JSON::FileWriter writer;
+  JsonSerializer writer;
+  Object object; // Buffer object
+  Object objects; // Collection of objects to be serialized (fed to writer)
 
-  std::string sprite_sheet_version = std::to_string ( NOM_SPRITE_SHEET_MAJOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_MINOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_PATCH_VERSION );
+  std::string sprite_sheet_version = std::to_string( NOM_SPRITE_SHEET_MAJOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_MINOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_PATCH_VERSION );
 
   if ( this->sheet.empty() ) return false;
 
+/*
   uint32 id = 0;
   for ( id = 0; id < this->sheet.size(); ++id )
   {
@@ -198,7 +200,60 @@ bool SpriteSheet::save ( const std::string& filename )
     object.insert ( "height", this->sheet[id].h );
     object.endl();
   }
+*/
+  uint32 id = 0;
+  // First, we serialize our sheet variables.
+  for( auto itr = this->sheet.begin(); itr != this->sheet.end(); ++itr )
+  {
+    // object.push_back( Pair( "height", itr->h ) );
+    // object.push_back( Pair( "id", id ) );
+    // object.push_back( Pair( "width", itr->w ) );
+    // object.push_back( Pair( "x", itr->x ) );
+    // object.push_back( Pair( "y", itr->y ) );
+    // objects.push_back( Pair( object ) );
+    // object.clear();
 
+    // Serialize each IntRect held within our sheet object.
+    Object rect = itr->serialize();
+
+    // Additional variables to be serialized in our object.
+    // rect.push_back( Pair( "id", id ) );
+    rect["id"] = id;
+
+    // objects.push_back( Pair( rect ) );
+    objects[id] = rect;
+
+    ++id;
+  }
+
+  NOM_ASSERT( this->sheet.size() == objects.size() );
+
+  // Lastly, serialize the meta-data variables.
+  // object.push_back( Pair("sheet_filename", this->sheet_filename() ) );
+  // object.push_back( Pair("sheet_height", this->sheet_height ) );
+  // object.push_back( Pair("sheet_modified", nom::time() ) );
+  // object.push_back( Pair("sheet_padding", this->sheet_padding ) );
+  // object.push_back( Pair("sheet_spacing", this->sheet_spacing ) );
+  // object.push_back( Pair("sheet_sprites", this->sheet_sprites ) );
+  // object.push_back( Pair("sheet_version", sprite_sheet_version ) );
+  // object.push_back( Pair("sheet_width", this->sheet_width ) );
+  object["sheet_filename"] = this->sheet_filename();
+  object["sheet_height"] = this->sheet_height;
+  object["sheet_modified"] = nom::time();
+  object["sheet_padding"] = this->sheet_padding;
+  object["sheet_spacing"] = this->sheet_spacing;
+  object["sheet_sprites"] = this->sheet_sprites;
+  object["sheet_version"] = sprite_sheet_version;
+  object["sheet_width"] = this->sheet_width;
+
+  // objects.push_back( Pair( object ) );
+  // Append our meta-data onto objects
+  objects["metadata"] = object;
+
+  // Number of file meta-data elements appended onto objects
+  NOM_ASSERT( object.size() == 8 );
+
+/*
   // Push out our file meta-data last
   object.insert ( "sheet_filename", this->sheet_filename() );
   object.insert ( "sheet_sprites", this->sheet_sprites );
@@ -208,10 +263,15 @@ bool SpriteSheet::save ( const std::string& filename )
   object.insert ( "sheet_height", this->sheet_height );
   object.insert ( "sheet_version", sprite_sheet_version );
   object.insert ( "sheet_modified", nom::time() );
+*/
 
-  if ( writer.save ( filename, object ) == false )
+  #if defined( NOM_DEBUG_SPRITE_SHEET_JSON_SAVE )
+    NOM_DUMP( objects );
+  #endif
+
+  if ( writer.serialize( Value( objects ), filename ) == false )
   {
-NOM_LOG_ERR ( NOM, "Unable to save file: " + filename );
+    NOM_LOG_ERR( NOM, "Unable to save file: " + filename );
     return false;
   }
 
@@ -220,19 +280,22 @@ NOM_LOG_ERR ( NOM, "Unable to save file: " + filename );
 
 bool SpriteSheet::load ( const std::string& filename )
 {
-  nom::JSON::FileReader parser;
-  nom::JSON::Value object;
+  JsonSerializer parser;
+  Value object; // Value buffer of resulting un-serialized input.
 
-  // Temporary holding buffers to hold data until we are ready to commit
+  // Temporary holding buffers to hold data until we are ready to commit back
+  // to our class
   IntRect buffer;
   std::vector<IntRect> buffer_sheet;
+  std::string sprite_sheet_version = std::to_string( NOM_SPRITE_SHEET_MAJOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_MINOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_PATCH_VERSION );
 
-  if ( parser.load ( filename, object ) == false )
+  if ( parser.unserialize( filename, object ) == false )
   {
-NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
+    NOM_LOG_ERR( NOM, "Unable to open JSON file at: " + filename );
     return false;
   }
 
+/*
   // Populate our sheet vector while skipping the last JSON object;
   // this should always be file mete-data!
   for ( auto idx = 0; idx < object.size() - 1; ++idx )
@@ -246,39 +309,121 @@ NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
     // Commit contents to our buffer if all goes well
     buffer_sheet.push_back ( buffer );
   }
+*/
+  #if defined( NOM_DEBUG_SPRITE_SHEET_JSON_LOAD )
+    NOM_DUMP( object );
+  #endif
+
+  // Populate our sheet vector and other instance variables with parsed JSON
+  // objects.
+  for( Value::Iterator itr = object.begin(); itr != object.end(); ++itr )
+  {
+    // [ { "key": "value" }, { "key": "value" } ]
+    if( itr->object_type() )
+    {
+      Object objects = itr->object();
+
+      // { "key": "value" }
+      for( Value::Iterator itr = objects.begin(); itr != objects.end(); ++itr )
+      {
+        Value::Iterator member( itr );
+
+        if( member.key( "height" ) )
+        {
+          buffer.h = itr->get_int();
+        }
+        else if( member.key( "id" ) )
+        {
+          // TODO: underlying object does not yet implement this.
+        }
+        else if( member.key( "width" ) )
+        {
+          buffer.w = itr->get_int();
+        }
+        if( member.key( "x" ) )
+        {
+          buffer.x = itr->get_int();
+        }
+        else if( member.key( "y") )
+        {
+          buffer.y = itr->get_int();
+        }
+        else if( member.key( "sheet_filename" ) )
+        {
+          this->sheet_filename_ = itr->get_string();
+        }
+        else if( member.key( "sheet_height" ) )
+        {
+          this->sheet_height = itr->get_int();
+        }
+        else if( member.key( "sheet_modified" ) )
+        {
+          // TODO: underlying object does not yet implement this.
+        }
+        else if( member.key( "sheet_padding" ) )
+        {
+          this->sheet_padding = itr->get_int();
+        }
+        else if( member.key( "sheet_spacing" ) )
+        {
+          this->sheet_spacing = itr->get_int();
+        }
+        else if( member.key( "sheet_sprites" ) )
+        {
+          this->sheet_sprites = itr->get_int();
+        }
+        else if( member.key( "sheet_version" ) )
+        {
+          // TODO: underlying object does not yet implement this.
+        }
+        else if( member.key( "sheet_width" ) )
+        {
+          this->sheet_width = itr->get_int();
+        }
+        else
+        {
+          // TODO: Error handling?
+          // return false;
+        }
+      } // end for objects loop
+
+      // Commit contents to our buffer when all goes well
+      buffer_sheet.push_back( buffer );
+
+    } // end if object type
+    else
+    {
+      // TODO: Error handling?
+      // return false;
+    }
+  } // end for object loop
+
+  // FIXME: This is a temporary workaround in order to not have the next to last object
+  // become a duplicate in our buffered sheet, as what happens currently in the
+  // un-serialization loop above.
+  buffer_sheet.erase( buffer_sheet.end() - 1 );
+
+  // Sanity check; ensure that our buffer sheet object is the same size as
+  // recorded in the serialized data (otherwise something is probably fudged!).
+  //
+  // FIXME: See above FIXME note
+  // NOM_ASSERT( ( buffer_sheet.size() - 1 ) == this->sheet_sprites );
+  NOM_ASSERT( buffer_sheet.size() == this->sheet_sprites );
+
+  // FIXME: This assert was never working to begin with.
+  // NOM_ASSERT( this->sheet[0].width * this->sheet.size() == object.get_int ( "sheet_width" ) );
+
+  // FIXME: This assert was never working to begin with.
+  // NOM_ASSERT( this->sheet[0].height * this->sheet.size() == object.get_int ( "sheet_height" ) );
+
+  #if defined( NOM_DEBUG_SPRITE_SHEET_JSON_LOAD )
+    NOM_DUMP( object );
+  #endif
 
   // If we have gotten this far, we assume all is well, so let's commit the data
   // as valid sprite sheet data!
   this->sheet.clear();
   this->sheet = buffer_sheet;
-
-  // Populate our other instance variables with the last JSON object;
-  // this should always be file mete-data!
-  for ( auto idx = object.size() - 1; idx != object.size(); ++idx )
-  {
-    this->sheet_filename_ = object.get_string ( "sheet_filename" );
-
-NOM_ASSERT ( this->sheet.size() == object.get_int ( "sheet_sprites" ) );
-    this->sheet_sprites = object.get_int ( "sheet_sprites" );
-
-    this->sheet_spacing = object.get_int ( "sheet_spacing" );
-    this->sheet_padding = object.get_int ( "sheet_padding" );
-/* FIXME
-NOM_ASSERT ( this->sheet[0].width * this->sheet.size() == object.get_int ( "sheet_width" ) );
-FIXME */
-    this->sheet_width = object.get_int ( "sheet_width" );
-
-/* FIXME
-NOM_ASSERT ( this->sheet[0].height * this->sheet.size() == object.get_int ( "sheet_height" ) );
-FIXME */
-    this->sheet_height = object.get_int ( "sheet_height" );
-
-    object.endl();
-  }
-
-#if defined ( NOM_DEBUG_SPRITE_SHEET_JSON_LOAD )
-  this->dump();
-#endif
 
   return true;
 }

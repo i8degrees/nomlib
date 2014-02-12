@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point2.hpp"
+#include "nomlib/system/ptree/Value.hpp"
 
 namespace nom {
 
@@ -143,6 +144,28 @@ struct Rect
     if ( leftA >= rightB ) return false; // No collision
 
     return true; // Collision!
+  }
+
+  /// \brief Save an object to a nom::Value object.
+  ///
+  /// \TODO Return an Array instead of object?
+  /// \TODO Rename member key 'width' to 'w'
+  /// \TODO Rename member key 'h' to 'h'
+  const Object serialize( void ) const
+  {
+    Object object;
+
+    // object.push_back( Pair( "x", static_cast<T> ( this->x ) ) );
+    // object.push_back( Pair( "y", static_cast<T> ( this->y ) ) );
+    // object.push_back( Pair( "width", static_cast<T> ( this->w ) ) );
+    // object.push_back( Pair( "height", static_cast<T> ( this->h ) ) );
+
+    object["x"] = this->x;
+    object["y"] = this->y;
+    object["width"] = this->w;
+    object["height"] = this->h;
+
+    return object;
   }
 
   /// \brief Null value

@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
-#include <fstream>
 #include <vector>
 #include <cmath>
 #include <memory>
@@ -39,7 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/version.hpp"
 #include "nomlib/math/Rect.hpp"
-#include "nomlib/json.hpp"
+#include "nomlib/json/JsonSerializer.hpp"
+#include "nomlib/system/ptree/Value.hpp"
 
 namespace nom {
 
@@ -52,7 +52,7 @@ extern const int NOM_SPRITE_SHEET_PATCH_VERSION;
 /// Not implemented; reserved for future usage
 #define NOM_DEBUG_SPRITE_SHEET_JSON_SAVE
 
-//#define NOM_DEBUG_SPRITE_SHEET_JSON_LOAD
+// #define NOM_DEBUG_SPRITE_SHEET_JSON_LOAD
 
 /// \brief Specialized class container for the creation of sprite sheets via
 /// RFC 4627 JSON-compliant file input
@@ -134,7 +134,6 @@ class SpriteSheet
     /// Source sheet_height used is saved with the output (meta-data)
     int32 sheet_height;
 };
-
 
 } // namespace nom
 

@@ -43,7 +43,8 @@ const nom::Path p;
 const std::string APP_RESOURCES_DIR = "Resources";
 const std::string RESOURCE_SPRITE_SHEET = APP_RESOURCES_DIR + p.native() + "cursors.json";
 
-const std::string OUTPUT_SHEET_FILENAME = "faces.json";
+// const std::string OUTPUT_SHEET_FILENAME = "faces.json";
+const std::string OUTPUT_SHEET_FILENAME = "cursors.json";
 
 int main ( int argc, char* argv[] )
 {
@@ -57,30 +58,45 @@ int main ( int argc, char* argv[] )
   atexit(nom::quit);
 
   // Existing sprite sheet
-  nom::SpriteSheet cursors ( RESOURCE_SPRITE_SHEET );
-  cursors.dump();
+  // nom::SpriteSheet cursor ( RESOURCE_SPRITE_SHEET );
+  // cursors.dump();
 
-  if ( cursors.frames() < 1 )
-  {
-    nom::DialogMessageBox ( APP_NAME, "Error: Sprite sheet " + RESOURCE_SPRITE_SHEET + " appears to be empty!" );
-    return NOM_EXIT_FAILURE;
-  }
-
-  // Creating a new sprite sheet!
-  nom::SpriteSheet faces  (
-                            "faces.png",  // meta-data info
-                            2082, 262,    // overall sheet size in pixels
-                            64, 64,       // sprite width & height in pixels
-                            1, 1,         // spacing and padding in pixels
-                            111           // total number of sprite frames,
-                          );              // always counting from zero
+  // Creating a new sprite sheet; "faces.json"
+  // nom::SpriteSheet faces  (
+  //                           "faces.png",  // meta-data info
+  //                           2082, 262,    // overall sheet size in pixels
+  //                           64, 64,       // sprite width & height in pixels
+  //                           1, 1,         // spacing and padding in pixels
+  //                           111           // total number of sprite frames,
+  //                         );              // always counting from zero
 
   // Note that you should always be able to reconstruct the parameters specified
   // above with the resulting output file data, using the header info at the
   // bottom
-  if ( faces.save ( OUTPUT_SHEET_FILENAME ) == false )
+  // if ( faces.save ( OUTPUT_SHEET_FILENAME ) == false )
+  // {
+  //   nom::DialogMessageBox ( APP_NAME, "Could not save sprite sheet file: " + OUTPUT_SHEET_FILENAME );
+  //   return NOM_EXIT_FAILURE;
+  // }
+
+  // Creating a new sprite sheet; "cursors.json"
+  nom::SpriteSheet cursors  (
+                              "cursors.png",  // meta-data info
+                              130, 16,        // overall sheet size in pixels
+                              26, 16,         // sprite width & height in pixels
+                              0, 0,           // spacing and padding in pixels
+                              5               // total number of sprite frames,
+                            );                // always counting from zero
+
+  if ( cursors.save ( OUTPUT_SHEET_FILENAME ) == false )
   {
     nom::DialogMessageBox ( APP_NAME, "Could not save sprite sheet file: " + OUTPUT_SHEET_FILENAME );
+    return NOM_EXIT_FAILURE;
+  }
+
+  if ( cursors.frames() < 1 )
+  {
+    nom::DialogMessageBox ( APP_NAME, "Error: Sprite sheet " + OUTPUT_SHEET_FILENAME + " appears to be empty!" );
     return NOM_EXIT_FAILURE;
   }
 

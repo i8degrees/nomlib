@@ -29,7 +29,7 @@ set ( GRAPHICS_SOURCE
       ${SRC_DIR}/graphics/RendererInfo.cpp
       ${SRC_DIR}/graphics/Texture.cpp
       ${SRC_DIR}/graphics/Image.cpp
-      ${SRC_DIR}/graphics/Window.cpp
+      ${SRC_DIR}/graphics/RenderWindow.cpp
       ${SRC_DIR}/graphics/Renderer.cpp
       ${SRC_DIR}/graphics/VideoMode.cpp
       ${SRC_DIR}/graphics/Gradient.cpp
@@ -78,7 +78,7 @@ file ( GLOB GUI_HEADERS "${NOMLIB_HEADERS_DIR}/gui/*.hpp" )
 set ( GUI_SOURCE
       ${SRC_DIR}/gui/Cursor.cpp
       ${SRC_DIR}/gui/MessageBox.cpp
-      ${SRC_DIR}/gui/GrayFrame.cpp
+      ${SRC_DIR}/gui/GrayWindow.cpp
     )
 
 # JSON module

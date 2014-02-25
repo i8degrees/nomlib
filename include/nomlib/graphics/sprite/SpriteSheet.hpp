@@ -98,6 +98,9 @@ class SpriteSheet
     /// Obtain the number of frames this object contains
     int32 frames ( void ) const;
 
+    /// \brief Obtain whether the sprite sheet is empty or not.
+    bool empty( void ) const;
+
     const std::string& sheet_filename ( void ) const;
 
     /// Save the current sprite sheet data calculations to a file as a series

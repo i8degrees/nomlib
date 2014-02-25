@@ -169,6 +169,13 @@ int32 SpriteSheet::frames ( void ) const
   return this->sheet.size();
 }
 
+bool SpriteSheet::empty( void ) const
+{
+  if( this->frames() < 1 ) return true;
+
+  return false;
+}
+
 const std::string& SpriteSheet::sheet_filename ( void ) const
 {
   return this->sheet_filename_;

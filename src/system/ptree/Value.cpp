@@ -736,6 +736,7 @@ const std::string Value::dump( const Value& object, int depth ) const
       }
 
       os << " subvalue (";
+
       // Dump the member key name of the key/value pair
       if( member.key() != "" )
       {

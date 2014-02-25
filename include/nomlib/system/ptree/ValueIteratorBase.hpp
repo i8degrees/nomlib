@@ -72,11 +72,6 @@ class ValueIteratorBase
     /// Value::ValueType::NullValue is the set type (set during construction).
     bool valid( void ) const;
 
-    /// \brief Obtain the index or member name of the referenced value.
-    ///
-    /// \TODO Handle return of the index of array
-    // ValueType key( void ) const;
-
     /// \brief Obtain the index of the referenced value.
     ///
     /// \returns Returns the index of the referenced array container on success,
@@ -85,10 +80,15 @@ class ValueIteratorBase
     /// \TODO Implement
     int index( void ) const;
 
+    /// \brief Obtain the current index or member key value.
+    ///
     /// \returns Member key of the referenced value on success, null-terminated
     /// string if not an object type or the member key is not found.
     ///
     /// \remarks Member key is optional.
+    ///
+    /// \TODO Try handling the return of the key (string) or index (integer)
+    /// more elegantly? (Presently, we are converting index values to a string).
     const std::string key( void ) const;
 
     /// \brief Query if the member key exists at the current position of the

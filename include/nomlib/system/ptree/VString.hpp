@@ -41,14 +41,22 @@ namespace nom {
 class VString
 {
   public:
+    typedef VString SelfType;
+
     VString( void );
     ~VString( void );
 
-    VString( int val );
+    VString( uint val );
 
     VString( const char* val );
 
     VString( const std::string& val );
+
+    /// \brief Copy constructor.
+    VString( const SelfType& copy );
+
+    /// \brief Copy assignment operator.
+    SelfType& operator =( const SelfType& other );
 
     /// \NOTE Required implementation for usage inside a std::map template.
     bool operator <( const VString& other ) const;
@@ -57,17 +65,19 @@ class VString
     bool operator ==( const VString& other ) const;
 
     /// \NOTE Required implementation for usage inside a std::map template.
-    const std::string& operator[]( int val ) const;
+    uint operator[]( uint val );
 
     /// \NOTE Required implementation for usage inside a std::map template.
-    const std::string& operator[]( const std::string& val ) const;
+    const std::string& operator[]( const std::string& val );
 
-    const std::string& value( void ) const;
+    const std::string value( void ) const; // TODO: rename??
+
+    uint index(void) const;
 
   private:
     // TODO: Implement as const char*
     std::string value_;
-    // uint index_;
+    uint index_;
 };
 
 } // namespace nom

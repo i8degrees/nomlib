@@ -30,7 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-VString::VString( void )
+VString::VString( void )  :
+  index_ ( 0 )
 {
   //NOM_LOG_TRACE(NOM);
 }
@@ -40,55 +41,104 @@ VString::~VString( void )
   //NOM_LOG_TRACE(NOM);
 }
 
-VString::VString( int val )
+VString::VString( uint val ) :
+  index_ ( val )
 {
   //NOM_LOG_TRACE(NOM);
-  this->value_ = std::to_string( val );
 }
 
-VString::VString( const char* val )
+VString::VString( const char* val ) :
+  value_ { std::string( val ) },
+  index_ ( 0 )
 {
   //NOM_LOG_TRACE(NOM);
-  this->value_ = std::string( val );
 }
 
-VString::VString( const std::string& val )
+VString::VString( const std::string& val )  :
+  value_ ( val )
 {
   //NOM_LOG_TRACE(NOM);
-  this->value_ = val;
+}
+
+VString::VString( const SelfType& copy )  :
+  value_ ( copy.value_ ),
+  index_ ( copy.index_ )
+{
+  // NOM_LOG_TRACE(NOM);
+}
+
+VString::SelfType& VString::operator =( const SelfType& other )
+{
+  this->value_ = other.value_;
+  this->index_ = other.index_;
+
+  return *this;
 }
 
 bool VString::operator <( const VString& other ) const
 {
+  if( ! this->value_.empty() ) // Member key
+  {
+    return this->value_ < other.value_;
+  }
+  else // Array or Object index
+  {
+    return this->index_ < other.index_;
+  }
   // if ( this->valid() )
   // {
     // return strcmp( this->value_, other.value_ ) < 0;
   // }
-  return this->value_ < other.value_;
 }
 
 bool VString::operator ==( const VString& other ) const
 {
+  if( ! this->value_.empty() ) // Member key
+  {
+    return this->value_ < other.value_;
+  }
+  else // Array or Object index
+  {
+    return this->index_ < other.index_;
+  }
   // if ( this->valid() )
   // {
     // return strcmp( this->value_, other.value_ ) == 0;
   // }
-  return this->value_ == other.value_;
 }
 
-const std::string& VString::operator[]( int val ) const
+uint VString::operator[]( uint val )
 {
+  this->index_ = val;
+
+  return this->index_;
+}
+
+const std::string& VString::operator[]( const std::string& val )
+{
+  this->value_ = val;
+
   return this->value_;
 }
 
-const std::string& VString::operator[]( const std::string& val ) const
+const std::string VString::value( void ) const
 {
   return this->value_;
+/*
+  if( ! this->value_.empty() ) // Member key
+  {
+    return this->value_;
+  }
+  else // Array/Object index
+  {
+    return std::to_string( this->index_ );
+  }
+*/
 }
 
-const std::string& VString::value( void ) const
+uint VString::index( void ) const
 {
-  return this->value_;
+  return this->index_;
 }
 
 } // namespace nom

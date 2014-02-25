@@ -64,27 +64,6 @@ bool ValueIteratorBase::valid( void ) const
   return false;
 }
 
-/* Implementation not complete
-ValueIteratorBase::ValueType ValueIteratorBase::key( void ) const
-{
-  if( this->type() == Value::ValueType::ArrayValues )
-  {
-    // NOM_STUBBED(NOM);
-    // return Value();
-    return this->index();
-  }
-  else if( this->type() == Value::ValueType::ObjectValues )
-  {
-    // return this->iterator_.object_->value->ref(); // Valid nom::Object key
-    return this->object_->value->ref(); // Valid nom::Object key
-  }
-  else // Value::ValueType::NullValue
-  {
-    return Value();
-  }
-}
-*/
-
 const std::string ValueIteratorBase::key( void ) const
 {
   if( this->type() == IteratorType::ArrayValues )
@@ -96,17 +75,17 @@ const std::string ValueIteratorBase::key( void ) const
     // Handle null-terminated member key -- member key value not found
     // if( this->iterator_.object_->key == "" ) return "\0";
     // if( this->object_->key == "" ) return "\0";
-    auto itr = this->object_->first.value();
 
-    if( itr == "" )
+    if( this->object_->first.value() != "" )
     {
-      return "\0";
+      // Valid nom::Object member key
+      return this->object_->first.value();
+
+      // return this->iterator_.object_->key;
     }
     else
     {
-      // Valid nom::Object member key
-      // return this->iterator_.object_->key;
-      return this->object_->first.value();
+      return std::to_string( this->object_->first.index() );
     }
   }
   else // IteratorType::NullValue ???

@@ -38,6 +38,15 @@ SDLApp::SDLApp ( void ) :
   NOM_LOG_TRACE( NOM );
 
   this->app_timer_.start();
+
+  // Mac OS X "bug" fix for keeping our window from getting minimized upon
+  // losing focus to an application on another display.
+  #if defined( NOM_PLATFORM_OSX )
+    if( nom::set_hint( SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0" ) == false )
+    {
+      NOM_LOG_ERR( NOM, "Could not disable minimizing window on focus loss." );
+    }
+  #endif
 }
 
 SDLApp::~SDLApp ( void )

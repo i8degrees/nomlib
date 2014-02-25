@@ -27,12 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 
-/// \brief nom::SpriteSheet usage example (mostly a stub for now!)
+/// \brief nom::SpriteSheet usage example.
 
 #include <iostream>
 #include <string>
-#include <cstdlib>
-#include <cassert>
 
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
@@ -41,66 +39,77 @@ const std::string APP_NAME = "nom::SpriteSheet";
 
 const nom::Path p;
 const std::string APP_RESOURCES_DIR = "Resources";
-const std::string RESOURCE_SPRITE_SHEET = APP_RESOURCES_DIR + p.native() + "cursors.json";
+// const std::string RESOURCE_SPRITE_SHEET = APP_RESOURCES_DIR + p.native() + "cursors.json";
 
-// const std::string OUTPUT_SHEET_FILENAME = "faces.json";
-const std::string OUTPUT_SHEET_FILENAME = "cursors.json";
+/// \brief Total number of sprite frames to be serialized in resulting output;
+/// see faces.json. The value is also used in unit test validation.
+const nom::sint TOTAL_NUMBER_SPRITES[2] = { 111,  // faces
+                                            5     // cursors
+                                          };
 
-int main ( int argc, char* argv[] )
+/// \brief Resulting output filename.
+const std::string OUTPUT_SHEET_FILENAME[2] =  { "faces.json",
+                                                "cursors.json"
+                                              };
+
+/// \brief Number of unit test values -- see above -- looped through.
+const nom::uint TOTAL_SPRITE_SHEET_TESTS = 2;
+
+nom::sint main ( nom::sint argc, char* argv[] )
 {
   // Fatal error; if we are not able to complete this step, it means that
   // we probably cannot rely on our resource paths!
-  if ( nom::init ( argc, argv ) == false )
+  if ( nom::init( argc, argv ) == false )
   {
-    nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
-    exit ( NOM_EXIT_FAILURE );
+    nom::DialogMessageBox( APP_NAME, "ERROR: Could not initialize nomlib." );
+    exit( NOM_EXIT_FAILURE );
   }
-  atexit(nom::quit);
+  atexit( nom::quit );
 
   // Existing sprite sheet
-  // nom::SpriteSheet cursor ( RESOURCE_SPRITE_SHEET );
+  // nom::SpriteSheet cursor( RESOURCE_SPRITE_SHEET );
   // cursors.dump();
 
-  // Creating a new sprite sheet; "faces.json"
-  // nom::SpriteSheet faces  (
-  //                           "faces.png",  // meta-data info
-  //                           2082, 262,    // overall sheet size in pixels
-  //                           64, 64,       // sprite width & height in pixels
-  //                           1, 1,         // spacing and padding in pixels
-  //                           111           // total number of sprite frames,
-  //                         );              // always counting from zero
+  // Creating new sprite sheets
+  nom::SpriteSheet sheets[2] =  { nom::SpriteSheet( // faces.json (0)
+                                    "faces.png",  // meta-data info
+                                    2082, 262,    // overall sheet size in pixels
+                                    64, 64,       // sprite width & height in pixels
+                                    1, 1,         // spacing and padding in pixels
+                                    // Max number of frames (starting from zero)
+                                    TOTAL_NUMBER_SPRITES[0]
+                                  ),
+                                  nom::SpriteSheet( // cursors.json (1)
+                                    "cursors.png",  // meta-data info
+                                    130, 16,        // overall sheet size in pixels
+                                    26, 16,         // sprite width & height in pixels
+                                    0, 0,           // spacing and padding in pixels
+                                    // Max number of frames (starting from zero)
+                                    TOTAL_NUMBER_SPRITES[1]
+                                  )
+                                };
 
-  // Note that you should always be able to reconstruct the parameters specified
-  // above with the resulting output file data, using the header info at the
-  // bottom
-  // if ( faces.save ( OUTPUT_SHEET_FILENAME ) == false )
-  // {
-  //   nom::DialogMessageBox ( APP_NAME, "Could not save sprite sheet file: " + OUTPUT_SHEET_FILENAME );
-  //   return NOM_EXIT_FAILURE;
-  // }
-
-  // Creating a new sprite sheet; "cursors.json"
-  nom::SpriteSheet cursors  (
-                              "cursors.png",  // meta-data info
-                              130, 16,        // overall sheet size in pixels
-                              26, 16,         // sprite width & height in pixels
-                              0, 0,           // spacing and padding in pixels
-                              5               // total number of sprite frames,
-                            );                // always counting from zero
-
-  if ( cursors.save ( OUTPUT_SHEET_FILENAME ) == false )
+  for( nom::uint idx = 0; idx < TOTAL_SPRITE_SHEET_TESTS; ++idx )
   {
-    nom::DialogMessageBox ( APP_NAME, "Could not save sprite sheet file: " + OUTPUT_SHEET_FILENAME );
-    return NOM_EXIT_FAILURE;
-  }
+    // Note that you should always be able to reconstruct the parameters specified
+    // above with the resulting output file data, using the header info at the
+    // bottom
+    if ( sheets[idx].save( OUTPUT_SHEET_FILENAME[idx] ) == false )
+    {
+      nom::DialogMessageBox( APP_NAME, "ERROR: Could not save sprite sheet file: " + OUTPUT_SHEET_FILENAME[idx] );
+      return NOM_EXIT_FAILURE;
+    }
 
-  if ( cursors.frames() < 1 )
-  {
-    nom::DialogMessageBox ( APP_NAME, "Error: Sprite sheet " + OUTPUT_SHEET_FILENAME + " appears to be empty!" );
-    return NOM_EXIT_FAILURE;
-  }
+    // Err if sheets[idx] is empty, less than or greater than
+    // TOTAL_NUMBER_SPRITES
+    if( sheets[idx].empty() || sheets[idx].frames() < TOTAL_NUMBER_SPRITES[idx] || sheets[idx].frames() > TOTAL_NUMBER_SPRITES[idx] )
+    {
+      nom::DialogMessageBox( APP_NAME, "ERROR: Sprite sheet " + OUTPUT_SHEET_FILENAME[idx] + " is only " + std::to_string( sheets[idx].frames() ) + "/" + std::to_string( TOTAL_NUMBER_SPRITES[idx] ) + " frames!" );
+      return NOM_EXIT_FAILURE;
+    }
+  } // end for loop of TOTAL_SPRITE_SHEET_TESTS
 
-  nom::DialogMessageBox ( APP_NAME, "Sprite sheet saved at: " + OUTPUT_SHEET_FILENAME );
+  // nom::DialogMessageBox ( APP_NAME, "SUCCESS: Sprite sheet saved at: " + OUTPUT_CURSORS_SHEET_FILENAME );
 
   return NOM_EXIT_SUCCESS;
 }

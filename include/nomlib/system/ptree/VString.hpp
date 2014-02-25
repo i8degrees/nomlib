@@ -70,7 +70,7 @@ class VString
     /// \NOTE Required implementation for usage inside a std::map template.
     const std::string& operator[]( const std::string& val );
 
-    const std::string value( void ) const; // TODO: rename??
+    const std::string& c_str( void ) const;
 
     uint index(void) const;
 

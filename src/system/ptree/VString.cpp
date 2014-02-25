@@ -121,7 +121,7 @@ const std::string& VString::operator[]( const std::string& val )
   return this->value_;
 }
 
-const std::string VString::value( void ) const
+const std::string& VString::c_str( void ) const
 {
   return this->value_;
 /*

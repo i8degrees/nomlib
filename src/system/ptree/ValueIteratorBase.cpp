@@ -76,10 +76,10 @@ const std::string ValueIteratorBase::key( void ) const
     // if( this->iterator_.object_->key == "" ) return "\0";
     // if( this->object_->key == "" ) return "\0";
 
-    if( this->object_->first.value() != "" )
+    if( this->object_->first.c_str() != "" )
     {
       // Valid nom::Object member key
-      return this->object_->first.value();
+      return this->object_->first.c_str();
 
       // return this->iterator_.object_->key;
     }
@@ -104,7 +104,7 @@ bool ValueIteratorBase::key( const std::string& member ) const
   }
   else if( this->type() == IteratorType::ObjectValues )
   {
-    auto itr = this->object_->first.value();
+    auto itr = this->object_->first.c_str();
     if( itr != member ) return false;
     // if( this->object_->key != member ) return false;  // Member key not found
     return true;                                      // Member key found

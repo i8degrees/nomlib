@@ -26,58 +26,29 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_STATE_MACHINE_HPP
-#define NOMLIB_SYSTEM_STATE_MACHINE_HPP
+#ifndef NOMLIB_SYSTEM_EVENTS_FINGER_EVENT_HPP
+#define NOMLIB_SYSTEM_EVENTS_FINGER_EVENT_HPP
 
-#include <iostream>
-#include <vector>
-#include <memory>
+#include "SDL.h"
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/IState.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 
-/// \brief Finite State Machine manager class
-class StateMachine
+/// \brief A structure containing information on a finger (touch) event.
+struct FingerEvent
 {
-  public:
-    typedef std::vector<IState::UniquePtr> StateStack;
+  /// \brief The finger index identifier.
+  SDL_FingerID id;
 
-    /// Default constructor
-    StateMachine ( void );
+  /// \brief The X coordinate of the event; normalized 0..1.
+  float x;
 
-    /// Destructor
-    ~StateMachine ( void );
+  /// \brief The Y coordinate of the event; normalized 0..1.
+  float y;
 
-    // State management
-
-    /// \brief Obtain the previous state's identifier
-    ///
-    /// \returns Identifier of the state on success; identifier number of the
-    /// current state on failure (such as if there is no previous state in list).
-    ///
-    /// \remarks It is not required that the state has an ID.
-    uint32 previous_state ( void ) const;
-    void set_state ( IState::UniquePtr state, void_ptr data );
-    void push_state ( IState::UniquePtr state, void_ptr data );
-
-    void pop_state ( IState::UniquePtr state, void_ptr data );
-    void pop_state ( void_ptr data );
-
-    /// State events handling
-    void process_events( Event& ev );
-
-    /// State logic handling
-    void update ( float delta );
-
-    /// State rendering handling
-    void draw ( IDrawable::RenderTarget& );
-
-  private:
-    /// Container of our states
-    StateStack states;
+  /// \brief The quantity of the pressure applied; normalized 0..1.
+  float pressure;
 };
 
 } // namespace nom

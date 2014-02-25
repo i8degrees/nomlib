@@ -39,6 +39,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define NOM_ENDL(reserved) ( std::cout << std::endl )
 
+#define NOM_TIMESTAMP(reserved) \
+  ( std::cout << nom::time() << std::endl )
+
 /*
   TODO: This should be replaced by an actual CMake script -- think:
         compile-time check for the necessary feature support for C++11 style

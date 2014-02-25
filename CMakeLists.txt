@@ -34,7 +34,7 @@ option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
 option( NOM_BUILD_CORE_UNIT "Build the core unit." on )
 
 # Dependencies: OpenAL/OpenALSoft.
-option( NOM_BUILD_AUDIO_UNIT "Build the Audio unit." off )
+option( NOM_BUILD_AUDIO_UNIT "Build the Audio unit." on )
 
 # Dependencies: SDL2, SDL2_image, SDL2_ttf
 option( NOM_BUILD_GRAPHICS_UNIT "Build the Graphics unit." on )
@@ -43,7 +43,7 @@ option( NOM_BUILD_GRAPHICS_UNIT "Build the Graphics unit." on )
 option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Enable scale2x and hqx rescaling algorithms." on )
 
 # Dependencies: Graphics unit
-option( NOM_BUILD_GUI_UNIT "Build the GUI unit." off )
+option( NOM_BUILD_GUI_UNIT "Build the GUI unit." on )
 
 # Dependencies: jsoncpp
 option( NOM_BUILD_JSON_UNIT "Build the JSON unit." on )

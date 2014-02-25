@@ -129,10 +129,7 @@ class App: public nom::SDLApp
       // 3. Render
       while ( this->running() == true )
       {
-        while ( this->poll_events ( &this->event ) )
-        {
-          this->on_event ( &this->event );
-        }
+        this->on_event( this->event );
 
         this->window.update();
         this->fps.update();
@@ -161,19 +158,19 @@ class App: public nom::SDLApp
     } // Run
 
   private:
-    /// Event handler for key down actions
+    /// \brief Event handler for key down actions.
     ///
-    /// Re-implements nom::Input::onKeyDown()
-    void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
+    /// Implements the nom::Input::on_key_down method.
+    void on_key_down( const nom::Event& ev )
     {
-      switch ( key )
+      switch ( ev.key.sym )
       {
         default: break;
 
-        // Use inherited SDLApp::onQuit() method -- you may also provide your own
-        // event handler for this.
+        // Use inherited SDLApp::on_app_quit method -- you may also provide your
+        // own event handler for this.
         case SDLK_ESCAPE:
-        case SDLK_q: this->on_quit(); break;
+        case SDLK_q: this->on_app_quit( ev ); break;
 
         case SDLK_BACKSLASH:
         {

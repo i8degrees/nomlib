@@ -37,28 +37,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 #include <nomlib/gui.hpp>
 
-/// Installation prefix of our application.
-///
-/// Defaults to a null terminated string -- no prefix -- which leaves us in the
-/// file path origin wherever we are executed from.
-const std::string APP_INSTALL_PREFIX = "\0";
-
-/// File path name of the resources directory; this must be a relative file path.
+/// \brief File path name of the resources directory; this must be a relative file path.
 const std::string APP_RESOURCES_DIR = "Resources";
 
-/// Name of our application.
+/// \brief Name of our application.
 const std::string APP_NAME = "nomlib Demo | Multiple Windows";
 
-/// Width, in pixels, of our effective rendering surface.
+/// \brief Width, in pixels, of our effective rendering surface.
 const nom::int32 WINDOW_WIDTH = 768;
 
-/// Height, in pixels, of our effective rendering surface.
+/// \brief Height, in pixels, of our effective rendering surface.
 const nom::int32 WINDOW_HEIGHT = 448;
 
-/// Maximum number of active windows we will attempt to spawn in this example
+/// \brief Maximum number of active windows we will attempt to spawn in this example
 const nom::int32 MAXIMUM_WINDOWS = 3;
 
-/// Position & size declarations for our info_box object
+/// \brief Position & size declarations for our info_box object
 const nom::Size2i INFO_BOX_SIZES[2] = {
                                         nom::Size2i(200, 48),
                                         nom::Size2i(300,48)
@@ -75,7 +69,7 @@ const nom::Point2i INFO_BOX_ORIGINS[2] =  {
                                                         )
                                           };
 
-/// Relative file path name of our resource example
+/// \brief  Relative file path name of our resource example
 const nom::Path p;
 const std::string RESOURCE_ICON = APP_RESOURCES_DIR + p.native() + "icon.png";
 
@@ -92,13 +86,13 @@ const std::string RESOURCE_SPRITE = APP_RESOURCES_DIR + p.native() + "cursors.js
 /// Copyright (c) 2013 Fielding Johnston. All rights reserved.
 const std::string RESOURCE_STATIC_IMAGE = APP_RESOURCES_DIR + p.native() + "boardoutline.png";
 
-/// Relative filename path to saved screen shot example
+/// \brief Relative filename path to saved screen shot example
 ///
 /// Default path should resolve to the same directory as the app example
 /// executable
 const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
 
-/// Text string displayed on our message boxes
+/// \brief Text string displayed on our message boxes
 const std::string RESOURCE_INFO_BOX_TITLE_STRINGS[2] = { "INFO.", "INFO." };
 const std::string RESOURCE_INFO_BOX_TEXT_STRINGS[4] = {
                                                         "I am a Bitmap Font!", // 0
@@ -313,10 +307,7 @@ NOM_DUMP_VAR(this->sprite.size().h);
       // 3. Render
       while ( this->running() == true )
       {
-        while ( this->poll_events ( &this->event ) )
-        {
-          this->on_event ( &this->event );
-        }
+        this->on_event( this->event );
 
         //this->sprite.update();
 
@@ -395,19 +386,19 @@ NOM_DUMP_VAR(this->sprite.size().h);
     } // Run
 
   private:
-    /// Event handler for key down actions
+    /// \brief Event handler for key down actions.
     ///
-    /// Re-implements nom::Input::onKeyDown()
-    void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
+    /// Implements the nom::Input::on_key_down method.
+    void on_key_down( const nom::Event& ev )
     {
-      switch ( key )
+      switch ( ev.key.sym )
       {
         default: break;
 
-        // Use inherited SDLApp::onQuit() method -- you may also provide your own
-        // event handler for this.
+        // Use inherited SDLApp::on_app_quit() method -- you may also provide
+        // your own event handler for this.
         case SDLK_ESCAPE:
-        case SDLK_q: this->on_quit(); break;
+        case SDLK_q: this->on_app_quit( ev ); break;
 
         case SDLK_BACKSLASH:
         {
@@ -443,13 +434,13 @@ NOM_DUMP_VAR(this->sprite.size().h);
 
         case SDLK_0:
         {
-          if ( mod == KMOD_LSHIFT )
+          if( ev.key.mod == KMOD_LSHIFT )
           {
             this->selected_font_size = 14;
             this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
             break;
           }
-          else if ( mod == KMOD_LGUI )
+          else if( ev.key.mod == KMOD_LGUI )
           {
             this->selected_text_string = 0;
             this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
@@ -463,7 +454,7 @@ NOM_DUMP_VAR(this->sprite.size().h);
 
         case SDLK_1:
         {
-          if ( mod == KMOD_LGUI )
+          if( ev.key.mod == KMOD_LGUI )
           {
             this->selected_text_string = 1;
             this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
@@ -477,7 +468,7 @@ NOM_DUMP_VAR(this->sprite.size().h);
 
         case SDLK_2:
         {
-          if ( mod == KMOD_LGUI )
+          if( ev.key.mod == KMOD_LGUI )
           {
             this->selected_text_string = 2;
             this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
@@ -491,7 +482,7 @@ NOM_DUMP_VAR(this->sprite.size().h);
 
         case SDLK_3:
         {
-          if ( mod == KMOD_LGUI )
+          if( ev.key.mod == KMOD_LGUI )
           {
             this->selected_text_string = 3;
             this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
@@ -552,7 +543,7 @@ NOM_DUMP_VAR(this->sprite.size().h);
 
         case SDLK_LEFT:
         {
-          if ( mod == KMOD_LSHIFT )
+          if( ev.key.mod == KMOD_LSHIFT )
           {
             this->selected_font = 0; // nom::TrueTypeFont
             this->selected_font_size = 24;
@@ -564,7 +555,7 @@ NOM_DUMP_VAR(this->sprite.size().h);
 
         case SDLK_RIGHT:
         {
-          if ( mod == KMOD_LSHIFT )
+          if( ev.key.mod == KMOD_LSHIFT )
           {
             this->selected_font = 1; // nom::BitmapFont
           }
@@ -575,9 +566,9 @@ NOM_DUMP_VAR(this->sprite.size().h);
 
         case SDLK_F1:
         {
-          if ( this->window[window_id - 1].window_id() == window_id )
+          if( this->window[ev.key.window_id - 1].window_id() == ev.key.window_id )
           {
-            if ( this->window[window_id - 1].save_screenshot( OUTPUT_SCREENSHOT_FILENAME ) == false )
+            if( this->window[ev.key.window_id - 1].save_screenshot( OUTPUT_SCREENSHOT_FILENAME ) == false )
             {
               nom::DialogMessageBox( APP_NAME, "Could not save screenshot");
               break;
@@ -588,9 +579,9 @@ NOM_DUMP_VAR(this->sprite.size().h);
 
         case SDLK_f:
         {
-          if ( this->window[window_id - 1].window_id() == window_id )
+          if ( this->window[ev.key.window_id - 1].window_id() == ev.key.window_id )
           {
-            this->window[window_id - 1].toggle_fullscreen();
+            this->window[ev.key.window_id - 1].toggle_fullscreen();
           } // end window_id match
           break;
         } // end SDLK_f

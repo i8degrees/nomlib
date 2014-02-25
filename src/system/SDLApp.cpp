@@ -33,7 +33,8 @@ namespace nom {
 SDLApp::SDLApp ( void ) :
   //state_factory { new GameStates() }
   app_state_ ( true ),
-  show_fps_ ( true )
+  show_fps_ ( true ),
+  input_map_ { std::unique_ptr<InputMapping> ( nullptr ) }
 {
   NOM_LOG_TRACE( NOM );
 
@@ -55,7 +56,7 @@ SDLApp::~SDLApp ( void )
 
   this->app_timer_.stop();
 
-  this->app_state_ = false;
+  this->quit();
 
   if ( SDL_WasInit ( SDL_INIT_JOYSTICK ) )
   {
@@ -63,26 +64,73 @@ SDLApp::~SDLApp ( void )
   }
 }
 
-bool SDLApp::running ( void )
+bool SDLApp::on_init( void )
+{
+  // User implemented
+
+  return true;
+}
+
+void SDLApp::on_event( Event& ev )
+{
+  // Active (set) input mappings take priority over traditional events
+  // handling -- virtual inheritance.
+  // if( this->on_map( event ) == true ) return;
+
+  this->on_map( ev );
+
+  // First, handle our events
+  Input::on_input( ev );
+
+  // Next, handle the state's events
+  this->states.process_events( ev );
+}
+
+void SDLApp::on_update ( float delta )
+{
+  this->states.update( delta );
+}
+
+void SDLApp::on_draw ( IDrawable::RenderTarget& target )
+{
+  this->states.draw( target );
+}
+
+void SDLApp::on_window_close( const Event& ev )
+{
+  // A call is made here to the virtual method being re-implemented here in
+  // order to catch debugging output when the applicable define(s) are compiled
+  // in; see also Input.hpp.
+  Input::on_window_close( ev );
+
+  this->on_app_quit( ev );
+}
+
+void SDLApp::on_app_quit( const Event& ev )
+{
+  // A call is made here to the virtual method being re-implemented here in
+  // order to catch debugging output when the applicable define(s) are compiled
+  // in; see also Input.hpp.
+  Input::on_app_quit( ev );
+
+  this->quit();
+}
+
+bool SDLApp::running( void )
 {
   if ( this->app_state_ == true ) return true;
 
   return false;
 }
 
-bool SDLApp::on_init ( void )
-{
-  return true;
-}
-
-void SDLApp::on_quit ( void )
-{
-  this->app_state_ = false;
-}
-
 uint32 SDLApp::ticks ( void )
 {
   return this->app_timer_.ticks();
+}
+
+void SDLApp::quit( void )
+{
+  this->app_state_ = false;
 }
 
 bool SDLApp::show_fps ( void ) const
@@ -107,16 +155,6 @@ bool SDLApp::toggle_fps ( void )
   }
 
   return this->show_fps_;
-}
-
-bool SDLApp::poll_events ( EventType* event )
-{
-  if ( SDL_PollEvent ( event ) )
-  {
-    return true;
-  }
-
-  return false;
 }
 
 uint32 SDLApp::previous_state ( void ) const
@@ -157,23 +195,86 @@ void SDLApp::pop_state ( void_ptr data )
   this->states.pop_state( data );
 }
 
-void SDLApp::on_event ( EventType* event )
+bool SDLApp::add_input_mapping( const std::string& key, const Action& action )
 {
-  // First, handle our events
-  Input::HandleInput( event );
+  // Initialize our input map if this is the first insertion
+  if( ! this->valid_input_map() )
+  {
+    this->input_map_ = std::unique_ptr<InputMapping> ( new InputMapping() );
+  }
 
-  // Next, handle the state's events
-  this->states.event( event );
+  std::pair<std::string, Action> pair( key, action );
+
+  auto res = this->input_map_->insert( pair );
+
+  if( res.second ) return true;
+
+  return false;
 }
 
-void SDLApp::on_update ( float delta )
+bool SDLApp::remove_input_mapping( const std::string& key )
 {
-  this->states.update( delta );
+  if( this->valid_input_map() )
+  {
+    InputMapping::iterator itr = this->input_map_->find( key );
+
+    // No match found
+    if( itr == this->input_map_->end() )
+    {
+      return false;
+    }
+    else // Match found; remove this input mapping
+    {
+      this->input_map_->erase( itr );
+
+      return true;
+    }
+  }
+
+  return false;
 }
 
-void SDLApp::on_draw ( IDrawable::RenderTarget& target )
+bool SDLApp::valid_input_map( void )
 {
-  this->states.draw( target );
+  if( this->input_map_.get() != nullptr ) return true;
+
+  return false;
+}
+
+bool SDLApp::on_map( const Event& ev )
+{
+  if( this->valid_input_map() )
+  {
+    for( InputMapping::const_iterator itr = this->input_map_->begin(); itr != this->input_map_->end(); ++itr )
+    {
+      if(
+          itr->second.type == ev.type  &&
+          itr->second.event == ev.key.sym
+        )
+      {
+        itr->second.callback();
+        return true;
+      }
+      else if (
+                itr->second.type == ev.type &&
+                itr->second.event == ev.mouse.button
+              )
+      {
+        itr->second.callback();
+        return true;
+      }
+      else if (
+                itr->second.type == ev.type  &&
+                itr->second.event == ev.jbutton.button
+              )
+      {
+        itr->second.callback();
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 } // namespace nom

@@ -26,58 +26,43 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_STATE_MACHINE_HPP
-#define NOMLIB_SYSTEM_STATE_MACHINE_HPP
+#ifndef NOMLIB_SYSTEM_EVENTS_CALLBACK_HPP
+#define NOMLIB_SYSTEM_EVENTS_CALLBACK_HPP
 
-#include <iostream>
-#include <vector>
-#include <memory>
+#include <functional>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/IState.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 
-/// \brief Finite State Machine manager class
-class StateMachine
+class EventCallback
 {
   public:
-    typedef std::vector<IState::UniquePtr> StateStack;
+    typedef EventCallback SelfType;
+    typedef std::function<void()> ValueType;
 
-    /// Default constructor
-    StateMachine ( void );
+    /// \brief Default constructor.
+    EventCallback( void );
 
-    /// Destructor
-    ~StateMachine ( void );
+    /// \brief Destructor.
+    ~EventCallback( void );
 
-    // State management
+    EventCallback( const ValueType& callback );
 
-    /// \brief Obtain the previous state's identifier
-    ///
-    /// \returns Identifier of the state on success; identifier number of the
-    /// current state on failure (such as if there is no previous state in list).
-    ///
-    /// \remarks It is not required that the state has an ID.
-    uint32 previous_state ( void ) const;
-    void set_state ( IState::UniquePtr state, void_ptr data );
-    void push_state ( IState::UniquePtr state, void_ptr data );
+    /// \brief Copy constructor.
+    EventCallback( const SelfType& copy );
 
-    void pop_state ( IState::UniquePtr state, void_ptr data );
-    void pop_state ( void_ptr data );
+    /// \brief Copy assignment operator.
+    SelfType& operator =( const SelfType& other );
 
-    /// State events handling
-    void process_events( Event& ev );
+    /// \brief Obtain the assigned callback method.
+    const ValueType& method( void ) const;
 
-    /// State logic handling
-    void update ( float delta );
-
-    /// State rendering handling
-    void draw ( IDrawable::RenderTarget& );
+    /// \brief Functor method; execute the assigned method.
+    void operator() ( void ) const;
 
   private:
-    /// Container of our states
-    StateStack states;
+    ValueType method_;
 };
 
 } // namespace nom

@@ -74,6 +74,16 @@ if( NOT NOM_BUILD_MINI_UNIT )
             )
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_AUDIO_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
+if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+  add_executable ( events "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/events.cpp" )
+  install ( DIRECTORY
+            "${EXAMPLES_SRC_DIR}/events/Resources"
+            DESTINATION
+            "${EXAMPLES_INSTALL_PEFIX}"
+            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+          )
+endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_SYSTEM_UNIT )
     add_executable ( device_info "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/device_info.cpp" )
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_SYSTEM_UNIT )

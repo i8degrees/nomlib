@@ -26,60 +26,28 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_STATE_MACHINE_HPP
-#define NOMLIB_SYSTEM_STATE_MACHINE_HPP
-
-#include <iostream>
-#include <vector>
-#include <memory>
-
-#include "nomlib/config.hpp"
-#include "nomlib/system/IState.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/system/events/Action.hpp"
 
 namespace nom {
 
-/// \brief Finite State Machine manager class
-class StateMachine
+Action::Action( void ) :
+  type ( 0 ),
+  event( 0 )
 {
-  public:
-    typedef std::vector<IState::UniquePtr> StateStack;
+  // NOM_LOG_TRACE( NOM );
+}
 
-    /// Default constructor
-    StateMachine ( void );
+Action::~Action ( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
-    /// Destructor
-    ~StateMachine ( void );
-
-    // State management
-
-    /// \brief Obtain the previous state's identifier
-    ///
-    /// \returns Identifier of the state on success; identifier number of the
-    /// current state on failure (such as if there is no previous state in list).
-    ///
-    /// \remarks It is not required that the state has an ID.
-    uint32 previous_state ( void ) const;
-    void set_state ( IState::UniquePtr state, void_ptr data );
-    void push_state ( IState::UniquePtr state, void_ptr data );
-
-    void pop_state ( IState::UniquePtr state, void_ptr data );
-    void pop_state ( void_ptr data );
-
-    /// State events handling
-    void process_events( Event& ev );
-
-    /// State logic handling
-    void update ( float delta );
-
-    /// State rendering handling
-    void draw ( IDrawable::RenderTarget& );
-
-  private:
-    /// Container of our states
-    StateStack states;
-};
+Action::Action( uint32 type, uint32 event, const EventCallback& method ) :
+  type ( type ),
+  event( event ),
+  callback ( method )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
 } // namespace nom
-
-#endif // include guard defined

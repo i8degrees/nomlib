@@ -118,12 +118,12 @@ void StateMachine::pop_state ( void_ptr data )
   this->states.back()->on_resume( data );
 }
 
-void StateMachine::event( EventType* event )
+void StateMachine::process_events( Event& ev )
 {
   // Ensure that we have a state in which we can handle events on
   if ( ! this->states.empty() )
   {
-    this->states.back()->HandleInput( event );
+    this->states.back()->on_input( ev );
   }
 }
 

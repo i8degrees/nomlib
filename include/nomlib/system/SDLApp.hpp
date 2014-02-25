@@ -30,6 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_SYSTEM_SDLAPP_HPP
 
 #include <iostream>
+#include <string>
+#include <memory>
 
 #include "SDL.h"
 
@@ -38,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/Timer.hpp"
 #include "nomlib/system/StateMachine.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
+#include "nomlib/system/events/Action.hpp" // nom::InputMapping
 
 namespace nom {
 
@@ -51,15 +54,61 @@ class SDLApp: public Input
     SDLApp ( void );
     virtual ~SDLApp ( void );
 
-    virtual bool on_init ( void );
+    virtual bool on_init( void );
 
-    /// Re-implements nom::Input::onQuit()
-    virtual void on_quit ( void );
+    /// \brief The application-level handler for events.
+    ///
+    /// \remarks This method is called once every frame from within the main
+    /// loop.
+    ///
+    /// \NOTE ~~Active (set) input mappings take priority over inherited event
+    /// handlers.~~
+    virtual void on_event( Event& ev );
 
-    bool running ( void );
-    void quit ( void );
+    /// \brief The application-level handler for logic.
+    ///
+    /// \remarks This method is called once every frame from within the main
+    /// loop.
+    virtual void on_update( float );
 
+    /// \brief The application-level handler for rendering.
+    ///
+    /// \remarks This method is called once every frame from within the main
+    /// loop.
+    ///
+    /// \TODO Consider removing RenderTarget argument; I *think* we can get
+    /// away with this!
+    virtual void on_draw( IDrawable::RenderTarget& );
+
+    /// \brief Implements the nom::Input::on_window_close method.
+    ///
+    /// \remarks The default implementation is to let the SDLApp::on_app_quit
+    /// method handle things for us.
+    virtual void on_window_close( const Event& ev );
+
+    /// \brief Implements the nom::Input::on_app_quit method.
+    ///
+    /// \remarks The default implementation is to let the SDLApp::quit method
+    /// handle things for us.
+    virtual void on_app_quit( const Event& ev );
+
+    /// \brief Query status of the application state.
+    ///
+    /// \returns Boolean true or false.
+    ///
+    /// \remarks The default handling of the application state is to end program
+    /// execution upon a false result from this method.
+    virtual bool running( void );
+
+    /// \brief Obtain the current timestamp.
+    ///
+    /// \returns Number of ticks from the start of class construction.
     uint32 ticks ( void );
+
+    /// \brief End program execution.
+    ///
+    /// \NOTE Sets the internal class variable app_state_ to false.
+    virtual void quit( void );
 
     bool show_fps ( void ) const;
     void set_show_fps ( bool toggle );
@@ -68,9 +117,6 @@ class SDLApp: public Input
     ///
     /// \return State of nom::SDLApp::show_fps_ after call to nom::SDLApp::set_show_fps
     bool toggle_fps ( void );
-
-    /// Let the user know if there are pending events
-    virtual bool poll_events ( EventType* );
 
     // State management
 
@@ -82,34 +128,35 @@ class SDLApp: public Input
     virtual void pop_state ( IState::UniquePtr state, void_ptr data = nullptr );
     virtual void pop_state ( void_ptr data = nullptr );
 
-    virtual void on_event ( EventType* ); // TODO: rename to on_event
+    /// \brief Insert an input mapping.
+    bool add_input_mapping( const std::string& key, const Action& action );
 
-    /// State logic
-    virtual void on_update( float );
-
-    /// State rendering
-    ///
-    /// \todo Consider removing RenderTarget argument; I *think* we can get
-    /// away with this.
-    virtual void on_draw( IDrawable::RenderTarget& );
+    /// \brief Remove an input mapping.
+    bool remove_input_mapping( const std::string& key );
 
   protected:
-    /// Input events
-    EventType event;
+    /// \brief Input events.
+    Event event;
 
-    /// State machine manager
+    /// \brief State machine manager.
     StateMachine states;
 
     //GameStates* state_factory;
   private:
-    /// global app state
+    bool valid_input_map( void );
+
+    bool on_map( const Event& ev );
+
+    /// \brief Global application state.
     bool app_state_;
 
-    /// fps counter
+    /// \brief FPS counter.
     bool show_fps_;
 
-    /// global app timer
+    /// \brief Global application timer.
     Timer app_timer_;
+
+    std::unique_ptr<InputMapping> input_map_;
 };
 
 } // namespace nom

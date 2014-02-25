@@ -26,58 +26,48 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_STATE_MACHINE_HPP
-#define NOMLIB_SYSTEM_STATE_MACHINE_HPP
+#ifndef NOMLIB_SYSTEM_EVENTS_FINGER_TOUCH_EVENT_HPP
+#define NOMLIB_SYSTEM_EVENTS_FINGER_TOUCH_EVENT_HPP
 
-#include <iostream>
-#include <vector>
-#include <memory>
+#include "SDL.h"
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/IState.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
+
+#include "nomlib/system/events/FingerEvent.hpp"
 
 namespace nom {
 
-/// \brief Finite State Machine manager class
-class StateMachine
+/// \brief A structure containing information on a finger touch event.
+struct FingerTouchEvent
 {
-  public:
-    typedef std::vector<IState::UniquePtr> StateStack;
+  /// \brief The event type.
+  ///
+  /// \remarks SDL_FINGERMOTION, SDL_FINGERDOWN, or SDL_FINGERUP.
+  uint32 type;
 
-    /// Default constructor
-    StateMachine ( void );
+  /// \brief The touch device index identifier.
+  SDL_TouchID id;
 
-    /// Destructor
-    ~StateMachine ( void );
+  /// \brief The finger index identifier.
+  FingerEvent finger;
 
-    // State management
+  /// \brief The X coordinate of the event; normalized 0..1.
+  float x;
 
-    /// \brief Obtain the previous state's identifier
-    ///
-    /// \returns Identifier of the state on success; identifier number of the
-    /// current state on failure (such as if there is no previous state in list).
-    ///
-    /// \remarks It is not required that the state has an ID.
-    uint32 previous_state ( void ) const;
-    void set_state ( IState::UniquePtr state, void_ptr data );
-    void push_state ( IState::UniquePtr state, void_ptr data );
+  /// \brief The Y coordinate of the event; normalized 0..1.
+  float y;
 
-    void pop_state ( IState::UniquePtr state, void_ptr data );
-    void pop_state ( void_ptr data );
+  /// \brief The distance moved in the X axis; normalized 0..1.
+  float dx;
 
-    /// State events handling
-    void process_events( Event& ev );
+  /// \brief The distance moved in the Y axis; normalized 0..1.
+  float dy;
 
-    /// State logic handling
-    void update ( float delta );
+  /// \brief The quantity of the pressure applied; normalized 0..1.
+  float pressure;
 
-    /// State rendering handling
-    void draw ( IDrawable::RenderTarget& );
-
-  private:
-    /// Container of our states
-    StateStack states;
+  /// \brief The recorded time at the moment of the event.
+  uint32 timestamp;
 };
 
 } // namespace nom

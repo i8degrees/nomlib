@@ -26,60 +26,50 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_STATE_MACHINE_HPP
-#define NOMLIB_SYSTEM_STATE_MACHINE_HPP
-
-#include <iostream>
-#include <vector>
-#include <memory>
-
-#include "nomlib/config.hpp"
-#include "nomlib/system/IState.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/system/events/EventCallback.hpp"
 
 namespace nom {
 
-/// \brief Finite State Machine manager class
-class StateMachine
+EventCallback::EventCallback( void ) :
+  method_ ( nullptr )
 {
-  public:
-    typedef std::vector<IState::UniquePtr> StateStack;
+  // NOM_LOG_TRACE( NOM );
+}
 
-    /// Default constructor
-    StateMachine ( void );
+/// \brief Destructor.
+EventCallback::~EventCallback( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
-    /// Destructor
-    ~StateMachine ( void );
+EventCallback::EventCallback( const ValueType& callback ) :
+  method_ ( callback )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
-    // State management
+/// \brief Copy constructor.
+EventCallback::EventCallback( const SelfType& copy )
+{
+  this->method_ = copy.method();
+}
 
-    /// \brief Obtain the previous state's identifier
-    ///
-    /// \returns Identifier of the state on success; identifier number of the
-    /// current state on failure (such as if there is no previous state in list).
-    ///
-    /// \remarks It is not required that the state has an ID.
-    uint32 previous_state ( void ) const;
-    void set_state ( IState::UniquePtr state, void_ptr data );
-    void push_state ( IState::UniquePtr state, void_ptr data );
+/// \brief Copy assignment operator.
+EventCallback::SelfType& EventCallback::operator =( const SelfType& other )
+{
+  this->method_ = other.method();
 
-    void pop_state ( IState::UniquePtr state, void_ptr data );
-    void pop_state ( void_ptr data );
+  return *this;
+}
 
-    /// State events handling
-    void process_events( Event& ev );
+const EventCallback::ValueType& EventCallback::method( void ) const
+{
+  return this->method_;
+}
 
-    /// State logic handling
-    void update ( float delta );
-
-    /// State rendering handling
-    void draw ( IDrawable::RenderTarget& );
-
-  private:
-    /// Container of our states
-    StateStack states;
-};
+void EventCallback::operator() ( void ) const
+{
+  this->method_();
+}
 
 } // namespace nom
-
-#endif // include guard defined

@@ -26,58 +26,49 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_STATE_MACHINE_HPP
-#define NOMLIB_SYSTEM_STATE_MACHINE_HPP
-
-#include <iostream>
-#include <vector>
-#include <memory>
+#ifndef NOMLIB_SYSTEM_EVENTS_EVENT_HPP
+#define NOMLIB_SYSTEM_EVENTS_EVENT_HPP
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/IState.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
+
+#include "nomlib/system/events/DragDropEvent.hpp"
+#include "nomlib/system/events/JoystickAxisEvent.hpp"
+#include "nomlib/system/events/JoystickButtonEvent.hpp"
+#include "nomlib/system/events/FingerEvent.hpp"
+#include "nomlib/system/events/FingerTouchEvent.hpp"
+#include "nomlib/system/events/GestureEvent.hpp"
+#include "nomlib/system/events/KeyboardEvent.hpp"
+#include "nomlib/system/events/MouseButtonEvent.hpp"
+#include "nomlib/system/events/MouseMotionEvent.hpp"
+#include "nomlib/system/events/QuitEvent.hpp"
+#include "nomlib/system/events/TextEditingEvent.hpp"
+#include "nomlib/system/events/TextInputEvent.hpp"
+#include "nomlib/system/events/WheelEvent.hpp"
+#include "nomlib/system/events/WindowEvent.hpp"
+#include "nomlib/system/events/UserEvent.hpp"
 
 namespace nom {
 
-/// \brief Finite State Machine manager class
-class StateMachine
+/// \brief Event handling types.
+union Event
 {
-  public:
-    typedef std::vector<IState::UniquePtr> StateStack;
+  /// \brief The event type.
+  uint32 type;
 
-    /// Default constructor
-    StateMachine ( void );
-
-    /// Destructor
-    ~StateMachine ( void );
-
-    // State management
-
-    /// \brief Obtain the previous state's identifier
-    ///
-    /// \returns Identifier of the state on success; identifier number of the
-    /// current state on failure (such as if there is no previous state in list).
-    ///
-    /// \remarks It is not required that the state has an ID.
-    uint32 previous_state ( void ) const;
-    void set_state ( IState::UniquePtr state, void_ptr data );
-    void push_state ( IState::UniquePtr state, void_ptr data );
-
-    void pop_state ( IState::UniquePtr state, void_ptr data );
-    void pop_state ( void_ptr data );
-
-    /// State events handling
-    void process_events( Event& ev );
-
-    /// State logic handling
-    void update ( float delta );
-
-    /// State rendering handling
-    void draw ( IDrawable::RenderTarget& );
-
-  private:
-    /// Container of our states
-    StateStack states;
+  QuitEvent quit;
+  WindowEvent window;
+  KeyboardEvent key;
+  MouseMotionEvent m_motion;
+  MouseButtonEvent mouse;
+  WheelEvent wheel;
+  JoystickButtonEvent jbutton;
+  JoystickAxisEvent jaxis;
+  FingerTouchEvent touch;
+  GestureEvent gesture;
+  DragDropEvent drop;
+  TextInputEvent text;
+  TextEditingEvent edit;
+  UserEvent user;
 };
 
 } // namespace nom

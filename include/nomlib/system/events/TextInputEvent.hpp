@@ -26,58 +26,33 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_STATE_MACHINE_HPP
-#define NOMLIB_SYSTEM_STATE_MACHINE_HPP
+#ifndef NOMLIB_SYSTEM_EVENTS_TEXT_INPUT_EVENT_HPP
+#define NOMLIB_SYSTEM_EVENTS_TEXT_INPUT_EVENT_HPP
 
-#include <iostream>
-#include <vector>
-#include <memory>
+// #include "SDL.h"
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/IState.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 
-/// \brief Finite State Machine manager class
-class StateMachine
+const uint8 MAX_TEXT_INPUT_LENGTH = 255;
+
+/// \brief A structure containing information on a text input event.
+struct TextInputEvent
 {
-  public:
-    typedef std::vector<IState::UniquePtr> StateStack;
+  /// \brief The event type.
+  ///
+  /// \remarks SDL_TEXTINPUT.
+  uint32 type;
 
-    /// Default constructor
-    StateMachine ( void );
+  /// \brief The text input.
+  char text[MAX_TEXT_INPUT_LENGTH];
 
-    /// Destructor
-    ~StateMachine ( void );
+  /// \brief The identifier of the window at the moment of the event.
+  uint32 window_id;
 
-    // State management
-
-    /// \brief Obtain the previous state's identifier
-    ///
-    /// \returns Identifier of the state on success; identifier number of the
-    /// current state on failure (such as if there is no previous state in list).
-    ///
-    /// \remarks It is not required that the state has an ID.
-    uint32 previous_state ( void ) const;
-    void set_state ( IState::UniquePtr state, void_ptr data );
-    void push_state ( IState::UniquePtr state, void_ptr data );
-
-    void pop_state ( IState::UniquePtr state, void_ptr data );
-    void pop_state ( void_ptr data );
-
-    /// State events handling
-    void process_events( Event& ev );
-
-    /// State logic handling
-    void update ( float delta );
-
-    /// State rendering handling
-    void draw ( IDrawable::RenderTarget& );
-
-  private:
-    /// Container of our states
-    StateStack states;
+  /// \brief The recorded time at the moment of the event.
+  uint32 timestamp;
 };
 
 } // namespace nom

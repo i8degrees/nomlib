@@ -30,481 +30,1371 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Input::Input ( void ) :
-    joystick_ { Input::JoystickUniquePtr ( nullptr, priv::Free_Joystick ) },
-    joystick_id_ ( 0 )
+Input::Input( void ) :
+  joystick_ { Input::JoystickUniquePtr ( nullptr, priv::Free_Joystick ) },
+  joystick_id_ ( 0 )
 {
-  NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE( NOM );
 
   if ( SDL_WasInit( SDL_INIT_JOYSTICK ) == false )
   {
-    if ( SDL_InitSubSystem ( SDL_INIT_JOYSTICK ) < 0 )
+    if ( SDL_InitSubSystem( SDL_INIT_JOYSTICK ) < 0 )
     {
-      NOM_LOG_ERR ( NOM, SDL_GetError() );
+      NOM_LOG_ERR( NOM, SDL_GetError() );
       return;
     }
   }
 
-  NOM_LOG_INFO ( NOM, std::to_string ( SDL_NumJoysticks() ) + " joysticks were found" );
+  NOM_LOG_INFO( NOM, std::to_string( SDL_NumJoysticks() ) + " joysticks were found" );
 
   if ( SDL_NumJoysticks() > 0 )
   {
-    this->joystick_.reset ( SDL_JoystickOpen ( 0 ) );
+    this->joystick_.reset( SDL_JoystickOpen( 0 ) );
 
     if ( this->joystick_.get() )
     {
       for( int idx = 0; idx < SDL_NumJoysticks(); idx++ )
       {
-        NOM_LOG_INFO ( NOM, SDL_JoystickNameForIndex ( idx ) );
+        NOM_LOG_INFO( NOM, SDL_JoystickNameForIndex( idx ) );
       }
 
-      SDL_JoystickEventState ( SDL_ENABLE );
+      SDL_JoystickEventState( SDL_ENABLE );
 
-      this->joystick_id_ = SDL_JoystickInstanceID ( this->joystick_.get() );
+      this->joystick_id_ = SDL_JoystickInstanceID( this->joystick_.get() );
     }
   }
 }
 
-Input::~Input ( void )
+Input::~Input( void )
 {
-  NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE( NOM );
 }
 
-
-void Input::HandleInput ( EventType* event )
+bool Input::on_input( Event& ev )
 {
-  switch ( event->type )
-  {
-    default: /* Ignore unknown events */ break;
+  SDL_Event event;
 
-    case SDL_QUIT: this->on_quit(); break;
+  // Nothing to do; no pending events!
+  if( this->poll_event( &event ) == false ) return false;
+
+  ev.type = event.type;
+
+  // Create our event structure from the existing SDL_Event information.
+  switch( event.type )
+  {
+    default:
+    {
+      // Ignore unknown events
+      break;
+    }
+
+    case SDL_QUIT:
+    {
+      ev.quit.type = event.quit.type;
+      ev.quit.timestamp = event.quit.timestamp;
+
+      this->on_app_quit( ev );
+      break;
+    }
 
     case SDL_WINDOWEVENT:
     {
-      switch ( event->window.event )
+      switch( event.window.event )
       {
-        default: /* Ignore unknown events */ break;
+        default:
+        {
+          // Ignore unknown events
+          break;
+        }
 
-        case SDL_WINDOWEVENT_CLOSE: this->on_quit(); break;
+        case SDL_WINDOWEVENT_NONE:
+        {
+          // Not implemented as per SDL2 wiki documentation
+          break;
+        }
 
-/* TODO: SDL2 window events handling
-      case SDL_WINDOWEVENT_ENTER: break;
-      case SDL_WINDOWEVENT_EXPOSED: break;
-      case SDL_WINDOWEVENT_FOCUS_GAINED: break;
-      case SDL_WINDOWEVENT_FOCUS_LOST: break;
-      case SDL_WINDOWEVENT_HIDDEN: break;
-      case SDL_WINDOWEVENT_LEAVE: break;
-      case SDL_WINDOWEVENT_MAXIMIZED: break;
-      case SDL_WINDOWEVENT_MINIMIZED: break;
-      case SDL_WINDOWEVENT_MOVED: break;
-      case SDL_WINDOWEVENT_RESIZED: break;
-      case SDL_WINDOWEVENT_RESTORED: break;
-      case SDL_WINDOWEVENT_SHOWN: break;
-TODO */
-    } // end event->window.event switch
-  } // end event->type switch
+        case SDL_WINDOWEVENT_SHOWN:
+        {
+          ev.window.type = event.window.type;
+          ev.window.event = event.window.event;
+          ev.window.data1 = event.window.data1;
+          ev.window.data2 = event.window.data2;
+          ev.window.window_id = event.window.windowID;
+          ev.window.timestamp = event.window.timestamp;
+
+          this->on_window_shown( ev );
+          break;
+        }
+
+        case SDL_WINDOWEVENT_HIDDEN:
+        {
+          ev.window.type = event.window.type;
+          ev.window.event = event.window.event;
+          ev.window.data1 = event.window.data1;
+          ev.window.data2 = event.window.data2;
+          ev.window.window_id = event.window.windowID;
+          ev.window.timestamp = event.window.timestamp;
+
+          this->on_window_hidden( ev );
+          break;
+        }
+
+        case SDL_WINDOWEVENT_EXPOSED:
+        {
+          ev.window.type = event.window.type;
+          ev.window.event = event.window.event;
+          ev.window.data1 = event.window.data1;
+          ev.window.data2 = event.window.data2;
+          ev.window.window_id = event.window.windowID;
+          ev.window.timestamp = event.window.timestamp;
+
+          this->on_window_exposed( ev );
+          break;
+        }
+
+        case SDL_WINDOWEVENT_MOVED:
+        {
+          ev.window.type = event.window.type;
+          ev.window.event = event.window.event;
+          ev.window.data1 = event.window.data1;
+          ev.window.data2 = event.window.data2;
+          ev.window.window_id = event.window.windowID;
+          ev.window.timestamp = event.window.timestamp;
+
+          this->on_window_moved( ev );
+          break;
+        }
+
+        case SDL_WINDOWEVENT_RESIZED:
+        {
+          ev.window.type = event.window.type;
+          ev.window.event = event.window.event;
+          ev.window.data1 = event.window.data1;
+          ev.window.data2 = event.window.data2;
+          ev.window.window_id = event.window.windowID;
+          ev.window.timestamp = event.window.timestamp;
+
+          this->on_window_resized( ev );
+          break;
+        }
+
+        case SDL_WINDOWEVENT_SIZE_CHANGED:
+        {
+          ev.window.type = event.window.type;
+          ev.window.event = event.window.event;
+          ev.window.data1 = event.window.data1;
+          ev.window.data2 = event.window.data2;
+          ev.window.window_id = event.window.windowID;
+          ev.window.timestamp = event.window.timestamp;
+
+          this->on_window_size_changed( ev );
+          break;
+        }
+
+        case SDL_WINDOWEVENT_MINIMIZED:
+        {
+          ev.window.type = event.window.type;
+          ev.window.event = event.window.event;
+          ev.window.data1 = event.window.data1;
+          ev.window.data2 = event.window.data2;
+          ev.window.window_id = event.window.windowID;
+          ev.window.timestamp = event.window.timestamp;
+
+          this->on_window_minimized( ev );
+          break;
+        }
+
+        case SDL_WINDOWEVENT_MAXIMIZED:
+        {
+          ev.window.type = event.window.type;
+          ev.window.event = event.window.event;
+          ev.window.data1 = event.window.data1;
+          ev.window.data2 = event.window.data2;
+          ev.window.window_id = event.window.windowID;
+          ev.window.timestamp = event.window.timestamp;
+
+          this->on_window_maximized( ev );
+          break;
+        }
+
+        case SDL_WINDOWEVENT_RESTORED:
+        {
+          ev.window.type = event.window.type;
+          ev.window.event = event.window.event;
+          ev.window.data1 = event.window.data1;
+          ev.window.data2 = event.window.data2;
+          ev.window.window_id = event.window.windowID;
+          ev.window.timestamp = event.window.timestamp;
+
+          this->on_window_restored( ev );
+          break;
+        }
+
+        case SDL_WINDOWEVENT_ENTER: // Mouse has entered window
+        {
+          ev.window.type = event.window.type;
+          ev.window.event = event.window.event;
+          ev.window.data1 = event.window.data1;
+          ev.window.data2 = event.window.data2;
+          ev.window.window_id = event.window.windowID;
+          ev.window.timestamp = event.window.timestamp;
+
+          this->on_window_mouse_focus( ev );
+          break;
+        }
+
+        case SDL_WINDOWEVENT_LEAVE: // Mouse has left window
+        {
+          ev.window.type = event.window.type;
+          ev.window.event = event.window.event;
+          ev.window.data1 = event.window.data1;
+          ev.window.data2 = event.window.data2;
+          ev.window.window_id = event.window.windowID;
+          ev.window.timestamp = event.window.timestamp;
+
+          this->on_window_mouse_focus_lost( ev );
+          break;
+        }
+
+        case SDL_WINDOWEVENT_FOCUS_GAINED: // Keyboard has focus of window
+        {
+          ev.window.type = event.window.type;
+          ev.window.event = event.window.event;
+          ev.window.data1 = event.window.data1;
+          ev.window.data2 = event.window.data2;
+          ev.window.window_id = event.window.windowID;
+          ev.window.timestamp = event.window.timestamp;
+
+          this->on_window_keyboard_focus( ev );
+          break;
+        }
+
+        case SDL_WINDOWEVENT_FOCUS_LOST: // Keyboard has lost window focus
+        {
+          ev.window.type = event.window.type;
+          ev.window.event = event.window.event;
+          ev.window.data1 = event.window.data1;
+          ev.window.data2 = event.window.data2;
+          ev.window.window_id = event.window.windowID;
+          ev.window.timestamp = event.window.timestamp;
+
+          this->on_window_keyboard_focus_lost( ev );
+          break;
+        }
+
+        case SDL_WINDOWEVENT_CLOSE:
+        {
+          ev.window.type = event.window.type;
+          ev.window.event = event.window.event;
+          ev.window.data1 = event.window.data1;
+          ev.window.data2 = event.window.data2;
+          ev.window.window_id = event.window.windowID;
+          ev.window.timestamp = event.window.timestamp;
+
+          this->on_window_close( ev );
+          break;
+        }
+      } // end event.window.event switch
+    } // end SDL_WINDOWEVENT
 
     case SDL_USEREVENT:
-      this->onUserEvent ( event->user.type, event->user.code, event->user.data1,
-                          event->user.data2
-                        );
-    break;
+    {
+      ev.user.type = event.user.type;
+      ev.user.code = event.user.code;
+      ev.user.data1 = event.user.data1;
+      ev.user.data2 = event.user.data2;
+      ev.user.window_id = event.user.windowID;
+      ev.user.timestamp = event.user.timestamp;
 
-    case SDL_SYSWMEVENT: /* Ignore */ break;
+      this->on_user_event( ev );
+      break;
+    }
+
+    case SDL_SYSWMEVENT:
+    {
+      // Ignored event
+      break;
+    }
 
     case SDL_KEYDOWN:
-      this->onKeyDown ( event->key.keysym.sym, event->key.keysym.mod, event->button.windowID );
-    break;
+    {
+      ev.key.type = event.key.type;
+      ev.key.sym = event.key.keysym.sym;
+      ev.key.mod = event.key.keysym.mod;
+      ev.key.state = event.key.state;
+      ev.key.repeat = event.key.repeat;
+      ev.key.window_id = event.key.windowID;
+      ev.key.timestamp = event.key.timestamp;
+
+      this->on_key_down( ev );
+      break;
+    }
 
     case SDL_KEYUP:
-      this->onKeyUp ( event->key.keysym.sym, event->key.keysym.mod, event->button.windowID );
-    break;
+    {
+      ev.key.type = event.key.type;
+      ev.key.sym = event.key.keysym.sym;
+      ev.key.mod = event.key.keysym.mod;
+      ev.key.state = event.key.state;
+      ev.key.repeat = event.key.repeat;
+      ev.key.window_id = event.key.windowID;
+      ev.key.timestamp = event.key.timestamp;
+
+      this->on_key_up( ev );
+      break;
+    }
 
     case SDL_MOUSEMOTION:
-      this->onMouseMotion ( event->motion.x, event->motion.y, event->motion.windowID );
-    break;
+    {
+      ev.m_motion.type = event.motion.type;
+      ev.m_motion.x = event.motion.x;
+      ev.m_motion.y = event.motion.y;
+      ev.m_motion.x_rel = event.motion.xrel;
+      ev.m_motion.y_rel = event.motion.yrel;
+      ev.m_motion.state = event.motion.state;
+      ev.m_motion.window_id = event.button.windowID;
+      ev.m_motion.timestamp = event.button.timestamp;
+
+      this->on_mouse_motion( ev );
+      break;
+    }
 
     case SDL_MOUSEBUTTONDOWN:
     {
-      switch ( event->button.button )
+      switch ( event.button.button )
       {
         case SDL_BUTTON_LEFT:
-          this->onMouseLeftButtonDown ( event->button.x, event->button.y, event->button.windowID );
-        break;
+        {
+          ev.mouse.type = event.button.type;
+          ev.mouse.id = event.button.which;
+          ev.mouse.x = event.button.x;
+          ev.mouse.y = event.button.y;
+          ev.mouse.button = event.button.button;
+          ev.mouse.state = event.button.state;
+          // ev.mouse.clicks = event.button.clicks;
+          ev.mouse.window_id = event.button.windowID;
+          ev.mouse.timestamp = event.button.timestamp;
+
+          this->on_mouse_left_button_down( ev );
+          break;
+        }
 
         case SDL_BUTTON_MIDDLE:
-          this->onMouseMiddleButtonDown ( event->button.x, event->button.y, event->button.windowID );
-        break;
+        {
+          ev.mouse.type = event.button.type;
+          ev.mouse.id = event.button.which;
+          ev.mouse.x = event.button.x;
+          ev.mouse.y = event.button.y;
+          ev.mouse.button = event.button.button;
+          ev.mouse.state = event.button.state;
+          // ev.mouse.clicks = event.button.clicks;
+          ev.mouse.window_id = event.button.windowID;
+          ev.mouse.timestamp = event.button.timestamp;
+
+          this->on_mouse_middle_button_down( ev );
+          break;
+        }
 
         case SDL_BUTTON_RIGHT:
-          this->onMouseRightButtonDown ( event->button.x, event->button.y, event->button.windowID );
-        break;
+        {
+          ev.mouse.type = event.button.type;
+          ev.mouse.id = event.button.which;
+          ev.mouse.x = event.button.x;
+          ev.mouse.y = event.button.y;
+          ev.mouse.button = event.button.button;
+          ev.mouse.state = event.button.state;
+          // ev.mouse.clicks = event.button.clicks;
+          ev.mouse.window_id = event.button.windowID;
+          ev.mouse.timestamp = event.button.timestamp;
+
+          this->on_mouse_right_button_down( ev );
+          break;
+        }
 
         case SDL_BUTTON_X1:
-          this->onMouseButtonFourDown ( event->button.x, event->button.y, event->button.windowID );
-        break;
+        {
+          ev.mouse.type = event.button.type;
+          ev.mouse.id = event.button.which;
+          ev.mouse.x = event.button.x;
+          ev.mouse.y = event.button.y;
+          ev.mouse.button = event.button.button;
+          ev.mouse.state = event.button.state;
+          // ev.mouse.clicks = event.button.clicks;
+          ev.mouse.window_id = event.button.windowID;
+          ev.mouse.timestamp = event.button.timestamp;
+
+          this->on_mouse_button_four_down( ev );
+          break;
+        }
 
         case SDL_BUTTON_X2:
-          this->onMouseButtonFiveDown ( event->button.x, event->button.y, event->button.windowID );
-        break;
+        {
+          ev.mouse.type = event.button.type;
+          ev.mouse.id = event.button.which;
+          ev.mouse.x = event.button.x;
+          ev.mouse.y = event.button.y;
+          ev.mouse.button = event.button.button;
+          ev.mouse.state = event.button.state;
+          // ev.mouse.clicks = event.button.clicks;
+          ev.mouse.window_id = event.button.windowID;
+          ev.mouse.timestamp = event.button.timestamp;
+
+          this->on_mouse_button_five_down( ev );
+          break;
+        }
       }
       break;
     } // end SDL_MOUSEBUTTONDOWN event
 
     case SDL_MOUSEBUTTONUP:
-      switch ( event->button.button )
+      switch ( event.button.button )
       {
         case SDL_BUTTON_LEFT:
-          this->onMouseLeftButtonUp ( event->button.x, event->button.y, event->button.windowID );
-        break;
+        {
+          ev.mouse.type = event.button.type;
+          ev.mouse.id = event.button.which;
+          ev.mouse.x = event.button.x;
+          ev.mouse.y = event.button.y;
+          ev.mouse.button = event.button.button;
+          ev.mouse.state = event.button.state;
+          // ev.mouse.clicks = event.button.clicks;
+          ev.mouse.window_id = event.button.windowID;
+          ev.mouse.timestamp = event.button.timestamp;
+
+          this->on_mouse_left_button_up( ev );
+          break;
+        }
 
         case SDL_BUTTON_MIDDLE:
-          this->onMouseMiddleButtonUp ( event->button.x, event->button.y, event->button.windowID );
-        break;
+        {
+          ev.mouse.type = event.button.type;
+          ev.mouse.id = event.button.which;
+          ev.mouse.x = event.button.x;
+          ev.mouse.y = event.button.y;
+          ev.mouse.button = event.button.button;
+          ev.mouse.state = event.button.state;
+          // ev.mouse.clicks = event.button.clicks;
+          ev.mouse.window_id = event.button.windowID;
+          ev.mouse.timestamp = event.button.timestamp;
+
+          this->on_mouse_middle_button_up( ev );
+          break;
+        }
 
         case SDL_BUTTON_RIGHT:
-          this->onMouseRightButtonUp ( event->button.x, event->button.y, event->button.windowID );
-        break;
+        {
+          ev.mouse.type = event.button.type;
+          ev.mouse.id = event.button.which;
+          ev.mouse.x = event.button.x;
+          ev.mouse.y = event.button.y;
+          ev.mouse.button = event.button.button;
+          ev.mouse.state = event.button.state;
+          // ev.mouse.clicks = event.button.clicks;
+          ev.mouse.window_id = event.button.windowID;
+          ev.mouse.timestamp = event.button.timestamp;
+
+          this->on_mouse_right_button_up( ev );
+          break;
+        }
 
         case SDL_BUTTON_X1:
-          this->onMouseButtonFourUp ( event->button.x, event->button.y, event->button.windowID );
-        break;
+        {
+          ev.mouse.type = event.button.type;
+          ev.mouse.id = event.button.which;
+          ev.mouse.x = event.button.x;
+          ev.mouse.y = event.button.y;
+          ev.mouse.button = event.button.button;
+          ev.mouse.state = event.button.state;
+          // ev.mouse.clicks = event.button.clicks;
+          ev.mouse.window_id = event.button.windowID;
+          ev.mouse.timestamp = event.button.timestamp;
+
+          this->on_mouse_button_four_up( ev );
+          break;
+        }
 
         case SDL_BUTTON_X2:
-          this->onMouseButtonFiveUp ( event->button.x, event->button.y, event->button.windowID );
-        break;
+        {
+          ev.mouse.type = event.button.type;
+          ev.mouse.id = event.button.which;
+          ev.mouse.x = event.button.x;
+          ev.mouse.y = event.button.y;
+          ev.mouse.button = event.button.button;
+          ev.mouse.state = event.button.state;
+          // ev.mouse.clicks = event.button.clicks;
+          ev.mouse.window_id = event.button.windowID;
+          ev.mouse.timestamp = event.button.timestamp;
+
+          this->on_mouse_button_five_up( ev );
+          break;
+        }
       }
     break;
 
     case SDL_MOUSEWHEEL:
     {
-      this->onMouseWheel ( event->wheel.x, event->wheel.y, event->wheel.windowID );
-    } // end SDL_MOUSEWHEEL event
-    break;
+      ev.wheel.type = event.wheel.type;
+      ev.wheel.id = event.wheel.which;
+      ev.wheel.x = event.wheel.x;
+      ev.wheel.y = event.wheel.y;
+      ev.wheel.window_id = event.wheel.windowID;
+      ev.wheel.timestamp = event.wheel.timestamp;
+
+      this->on_mouse_wheel( ev );
+      break;
+    }
 
     case SDL_JOYBUTTONDOWN:
-      this->onJoyButtonDown ( this->joystick_id_, event->jbutton.button );
-    break;
+    {
+      ev.jbutton.type = event.jbutton.type;
+      ev.jbutton.id = this->joystick_id_;
+      ev.jbutton.button = event.jbutton.button;
+      ev.jbutton.state = event.jbutton.state;
+      // ev.jbutton.window_id = event.jbutton.windowID;
+      ev.jbutton.timestamp = event.jbutton.timestamp;
+
+      this->on_joy_button_down( ev );
+      break;
+    }
 
     case SDL_JOYBUTTONUP:
-      this->onJoyButtonUp ( this->joystick_id_, event->jbutton.button );
-    break;
+    {
+      ev.jbutton.type = event.jbutton.type;
+      ev.jbutton.id = this->joystick_id_;
+      ev.jbutton.button = event.jbutton.button;
+      ev.jbutton.state = event.jbutton.state;
+      // ev.jbutton.window_id = event.jbutton.windowID;
+      ev.jbutton.timestamp = event.jbutton.timestamp;
+
+      this->on_joy_button_up( ev );
+      break;
+    }
 
     case SDL_JOYAXISMOTION:
-      this->onJoyAxis ( this->joystick_id_, event->jaxis.axis, event->jaxis.value );
-    break;
+    {
+      ev.jaxis.type = event.jaxis.type;
+      ev.jaxis.id = this->joystick_id_;
+      ev.jaxis.axis = event.jaxis.axis;
+      ev.jaxis.value = event.jaxis.value;
+      // ev.jaxis.window_id = event.jaxis.windowID;
+      ev.jaxis.timestamp = event.jaxis.timestamp;
+
+      this->on_joy_axis( ev );
+      break;
+    }
 
     case SDL_JOYDEVICEADDED:
     {
-      this->onJoystickAdd();
+      this->on_joystick_add();
       break;
     }
+
     case SDL_JOYDEVICEREMOVED:
     {
-      this->onJoystickRemove();
+      this->on_joystick_remove();
       break;
     }
-/*
+
     case SDL_FINGERMOTION:
     {
-      NOM_DUMP_VAR( event->tfinger.timestamp );
-      NOM_DUMP_VAR( event->tfinger.touchId );
-      NOM_DUMP_VAR( event->tfinger.fingerId );
-      NOM_DUMP_VAR( event->tfinger.x );
-      NOM_DUMP_VAR( event->tfinger.y );
-      NOM_DUMP_VAR( event->tfinger.dx );
-      NOM_DUMP_VAR( event->tfinger.dy );
-      NOM_DUMP_VAR( event->tfinger.pressure );
+      ev.touch.type = event.tfinger.type;
+      ev.touch.id = event.tfinger.touchId;
+      ev.touch.finger.id = event.tfinger.fingerId;
+      ev.touch.x = event.tfinger.x;
+      ev.touch.y = event.tfinger.y;
+      ev.touch.dx = event.tfinger.dx;
+      ev.touch.dy = event.tfinger.dy;
+      ev.touch.pressure = event.tfinger.pressure;
+
+      this->on_touch_motion( ev );
       break;
     }
 
     case SDL_FINGERDOWN:
     {
-      NOM_DUMP_VAR( event->tfinger.timestamp );
-      NOM_DUMP_VAR( event->tfinger.touchId );
-      NOM_DUMP_VAR( event->tfinger.fingerId );
-      NOM_DUMP_VAR( event->tfinger.x );
-      NOM_DUMP_VAR( event->tfinger.y );
-      NOM_DUMP_VAR( event->tfinger.dx );
-      NOM_DUMP_VAR( event->tfinger.dy );
-      NOM_DUMP_VAR( event->tfinger.pressure );
+      ev.touch.type = event.tfinger.type;
+      ev.touch.id = event.tfinger.touchId;
+      ev.touch.finger.id = event.tfinger.fingerId;
+      ev.touch.x = event.tfinger.x;
+      ev.touch.y = event.tfinger.y;
+      ev.touch.dx = event.tfinger.dx;
+      ev.touch.dy = event.tfinger.dy;
+      ev.touch.pressure = event.tfinger.pressure;
+
+      this->on_touch_down( ev );
       break;
     }
 
     case SDL_FINGERUP:
     {
-      NOM_DUMP_VAR( event->tfinger.timestamp );
-      NOM_DUMP_VAR( event->tfinger.touchId );
-      NOM_DUMP_VAR( event->tfinger.fingerId );
-      NOM_DUMP_VAR( event->tfinger.x );
-      NOM_DUMP_VAR( event->tfinger.y );
-      NOM_DUMP_VAR( event->tfinger.dx );
-      NOM_DUMP_VAR( event->tfinger.dy );
-      NOM_DUMP_VAR( event->tfinger.pressure );
+      ev.touch.type = event.tfinger.type;
+      ev.touch.id = event.tfinger.touchId;
+      ev.touch.finger.id = event.tfinger.fingerId;
+      ev.touch.x = event.tfinger.x;
+      ev.touch.y = event.tfinger.y;
+      ev.touch.dx = event.tfinger.dx;
+      ev.touch.dy = event.tfinger.dy;
+      ev.touch.pressure = event.tfinger.pressure;
+
+      this->on_touch_up( ev );
       break;
     }
 
     case SDL_MULTIGESTURE:
     {
-      NOM_DUMP_VAR( event->mgesture.timestamp );
-      NOM_DUMP_VAR( event->mgesture.touchId );
-      NOM_DUMP_VAR( event->mgesture.dTheta );
-      NOM_DUMP_VAR( event->mgesture.dDist );
-      NOM_DUMP_VAR( event->mgesture.x );
-      NOM_DUMP_VAR( event->mgesture.y );
-      NOM_DUMP_VAR( event->mgesture.numFingers );
+      ev.gesture.type = event.mgesture.type;
+      ev.gesture.id = event.mgesture.touchId;
+      ev.gesture.dTheta = event.mgesture.dTheta;
+      ev.gesture.dDist = event.mgesture.dDist;
+      ev.gesture.x = event.mgesture.x;
+      ev.gesture.y = event.mgesture.y;
+      ev.gesture.num_fingers = event.mgesture.numFingers;
+
+      this->on_gesture( ev );
       break;
     }
-*/
+
     case SDL_DROPFILE:
     {
-      char* file = event->drop.file;
-      this->onDragDrop ( file, event->drop.timestamp );
-      //SDL_free ( file );
-      //file = nullptr;
+      ev.drop.file_path = event.drop.file;
+      ev.drop.timestamp = event.drop.timestamp;
+
+      this->on_drag_drop( ev );
       break;
-    } // SDL_DROPFILE
-  } // end switch event->type
+    }
+
+    case SDL_TEXTINPUT:
+    {
+      ev.text.type = event.text.type;
+      strcpy( ev.text.text, event.text.text );
+      ev.text.timestamp = event.text.timestamp;
+      ev.text.window_id = event.text.windowID;
+
+      this->on_text_input( ev );
+      break;
+    }
+
+    case SDL_TEXTEDITING: // FIXME
+    {
+      ev.edit.type = event.edit.type;
+      strcpy( ev.edit.text, event.edit.text );
+      ev.edit.timestamp = event.edit.timestamp;
+      ev.edit.window_id = event.edit.windowID;
+
+      this->on_text_edit( ev );
+      break;
+    }
+  } // end switch event.type
+
+  // Pending events
+  return true;
 }
 
-void Input::onUserEvent ( uint32 type, int32 code, void* data1, void* data2 )
+void Input::on_user_event( const Event& ev )
 {
-  // virtual implementation
-}
+  // User implemented
 
-void Input::on_quit ( void )
-{
-  // virtual implementation
-}
-
-void Input::onResize ( int32 width, int32 height )
-{
-  // virtual implementation
-}
-
-void Input::onRestore ( void )
-{
-  // virtual implementation
-}
-
-void Input::onMinimize ( void )
-{
-  // virtual implementation
-}
-
-void Input::onInputFocus ( void )
-{
-  // virtual implementation
-}
-
-void Input::onInputBlur ( void )
-{
-  // virtual implementation
-}
-
-void Input::onMouseFocus ( void )
-{
-  // virtual implementation
-}
-
-void Input::onMouseBlur ( void )
-{
-  // virtual implementation
-}
-
-void Input::onExpose ( void )
-{
-  // virtual implementation
-}
-
-void Input::onKeyDown ( int32 key, int32 mod, uint32 window_id )
-{
-#if defined ( NOM_DEBUG_SDL2_KEYBOARD_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( key );
-  NOM_DUMP_VAR ( mod );
-  NOM_DUMP_VAR ( window_id );
-#endif
-}
-
-void Input::onKeyUp ( int32 key, int32 mod, uint32 window_id )
-{
-#if defined ( NOM_DEBUG_SDL2_KEYBOARD_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( key );
-  NOM_DUMP_VAR ( mod );
-  NOM_DUMP_VAR ( window_id );
-#endif
-}
-
-void Input::onMouseMotion ( int32 x, int32 y, uint32 window_id )
-{
-#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( x );
-  NOM_DUMP_VAR ( y );
-  NOM_DUMP_VAR ( window_id );
-#endif
-}
-
-void Input::onMouseWheel ( int32 x, int32 y, uint32 window_id )
-{
-#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( x );
-  NOM_DUMP_VAR ( y );
-  NOM_DUMP_VAR ( window_id );
-#endif
-}
-
-void Input::onMouseLeftButtonDown ( int32 x, int32 y, uint32 window_id )
-{
-#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( x );
-  NOM_DUMP_VAR ( y );
-  NOM_DUMP_VAR ( window_id );
-#endif
-}
-
-void Input::onMouseMiddleButtonDown ( int32 x, int32 y, uint32 window_id )
-{
-#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( x );
-  NOM_DUMP_VAR ( y );
-  NOM_DUMP_VAR ( window_id );
-#endif
-}
-
-void Input::onMouseRightButtonDown ( int32 x, int32 y, uint32 window_id )
-{
-#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( x );
-  NOM_DUMP_VAR ( y );
-  NOM_DUMP_VAR ( window_id );
-#endif
-}
-
-void Input::onMouseButtonFourDown ( int32 x, int32 y, uint32 window_id )
-{
-#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( x );
-  NOM_DUMP_VAR ( y );
-  NOM_DUMP_VAR ( window_id );
-#endif
-}
-
-void Input::onMouseButtonFiveDown ( int32 x, int32 y, uint32 window_id )
-{
-#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( x );
-  NOM_DUMP_VAR ( y );
-  NOM_DUMP_VAR ( window_id );
-#endif
-}
-
-void Input::onMouseLeftButtonUp ( int32 x, int32 y, uint32 window_id )
-{
-#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( x );
-  NOM_DUMP_VAR ( y );
-  NOM_DUMP_VAR ( window_id );
-#endif
-}
-
-void Input::onMouseMiddleButtonUp ( int32 x, int32 y, uint32 window_id )
-{
-#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( x );
-  NOM_DUMP_VAR ( y );
-  NOM_DUMP_VAR ( window_id );
-#endif
-}
-
-void Input::onMouseRightButtonUp ( int32 x, int32 y, uint32 window_id )
-{
-#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( x );
-  NOM_DUMP_VAR ( y );
-  NOM_DUMP_VAR ( window_id );
-#endif
-}
-
-void Input::onMouseButtonFourUp ( int32 x, int32 y, uint32 window_id )
-{
-#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( x );
-  NOM_DUMP_VAR ( y );
-  NOM_DUMP_VAR ( window_id );
-#endif
-}
-
-void Input::onMouseButtonFiveUp ( int32 x, int32 y, uint32 window_id )
-{
-#if defined ( NOM_DEBUG_SDL2_MOUSE_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( x );
-  NOM_DUMP_VAR ( y );
-  NOM_DUMP_VAR ( window_id );
-#endif
-}
-
-void Input::onJoyButtonDown ( int32 which, int32 button )
-{
-#if defined ( NOM_DEBUG_SDL2_JOYSTICK_BUTTON_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( which );
-  NOM_DUMP_VAR ( button );
-#endif
-}
-
-void Input::onJoyButtonUp ( int32 which, int32 button )
-{
-#if defined ( NOM_DEBUG_SDL2_JOYSTICK_BUTTON_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( which );
-  NOM_DUMP_VAR ( button );
-#endif
-}
-
-void Input::onJoyAxis ( int32 which, int32 axis, uint16 value )
-{
-#if defined ( NOM_DEBUG_SDL2_JOYSTICK_AXIS_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( which );
-  NOM_DUMP_VAR ( axis );
-  NOM_DUMP_VAR ( value );
-#endif
-}
-
-void Input::onJoystickAdd ( void )
-{
-  #if defined(NOM_DEBUG_SDL2_JOYSTICK_EVENT)
-    NOM_LOG_TRACE(NOM);
-  #endif
-}
-void Input::onJoystickRemove ( void )
-{
-  #if defined(NOM_DEBUG_SDL2_JOYSTICK_EVENT)
-    NOM_LOG_TRACE(NOM);
+  #if defined( NOM_DEBUG_SDL2_USER_EVENT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.user.type );
+    NOM_DUMP( ev.user.code );
+    // NOM_DUMP( ev.user.data1 );
+    // NOM_DUMP( ev.user.data2 );
+    NOM_DUMP( ev.user.window_id );
+    NOM_DUMP( ev.user.timestamp );
   #endif
 }
 
-void Input::onDragDrop ( const std::string& file_path, uint32 timestamp )
+void Input::on_app_quit( const Event& ev )
 {
-#if defined ( NOM_DEBUG_SDL2_DRAG_DROP_INPUT )
-  NOM_LOG_TRACE ( NOM );
-  NOM_DUMP_VAR ( file_path );
-  NOM_DUMP_VAR ( timestamp );
-#endif
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_QUIT_EVENT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.quit.type );
+    NOM_DUMP( ev.quit.timestamp );
+  #endif
+}
+
+void Input::on_window_shown( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_WINDOW_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.window.type );
+    NOM_DUMP( NOM_SCAST( int, ev.window.event ) );
+    NOM_DUMP( ev.window.data1 );
+    NOM_DUMP( ev.window.data2 );
+    NOM_DUMP( ev.window.window_id );
+    NOM_DUMP( ev.window.timestamp );
+  #endif
+}
+
+void Input::on_window_hidden( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_WINDOW_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.window.type );
+    NOM_DUMP( NOM_SCAST( int, ev.window.event ) );
+    NOM_DUMP( ev.window.data1 );
+    NOM_DUMP( ev.window.data2 );
+    NOM_DUMP( ev.window.window_id );
+    NOM_DUMP( ev.window.timestamp );
+  #endif
+}
+
+void Input::on_window_exposed( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_WINDOW_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.window.type );
+    NOM_DUMP( NOM_SCAST( int, ev.window.event ) );
+    NOM_DUMP( ev.window.data1 );
+    NOM_DUMP( ev.window.data2 );
+    NOM_DUMP( ev.window.window_id );
+    NOM_DUMP( ev.window.timestamp );
+  #endif
+}
+
+void Input::on_window_moved( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_WINDOW_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.window.type );
+    NOM_DUMP( NOM_SCAST( int, ev.window.event ) );
+    NOM_DUMP( ev.window.data1 );
+    NOM_DUMP( ev.window.data2 );
+    NOM_DUMP( ev.window.window_id );
+    NOM_DUMP( ev.window.timestamp );
+  #endif
+}
+
+void Input::on_window_resized( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_WINDOW_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.window.type );
+    NOM_DUMP( NOM_SCAST( int, ev.window.event ) );
+    NOM_DUMP( ev.window.data1 );
+    NOM_DUMP( ev.window.data2 );
+    NOM_DUMP( ev.window.window_id );
+    NOM_DUMP( ev.window.timestamp );
+  #endif
+}
+
+void Input::on_window_size_changed( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_WINDOW_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.window.type );
+    NOM_DUMP( NOM_SCAST( int, ev.window.event ) );
+    NOM_DUMP( ev.window.data1 );
+    NOM_DUMP( ev.window.data2 );
+    NOM_DUMP( ev.window.window_id );
+    NOM_DUMP( ev.window.timestamp );
+  #endif
+}
+
+void Input::on_window_minimized( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_WINDOW_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.window.type );
+    NOM_DUMP( NOM_SCAST( int, ev.window.event ) );
+    NOM_DUMP( ev.window.data1 );
+    NOM_DUMP( ev.window.data2 );
+    NOM_DUMP( ev.window.window_id );
+    NOM_DUMP( ev.window.timestamp );
+  #endif
+}
+
+void Input::on_window_maximized( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_WINDOW_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.window.type );
+    NOM_DUMP( NOM_SCAST( int, ev.window.event ) );
+    NOM_DUMP( ev.window.data1 );
+    NOM_DUMP( ev.window.data2 );
+    NOM_DUMP( ev.window.window_id );
+    NOM_DUMP( ev.window.timestamp );
+  #endif
+}
+
+void Input::on_window_restored( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_WINDOW_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.window.type );
+    NOM_DUMP( NOM_SCAST( int, ev.window.event ) );
+    NOM_DUMP( ev.window.data1 );
+    NOM_DUMP( ev.window.data2 );
+    NOM_DUMP( ev.window.window_id );
+    NOM_DUMP( ev.window.timestamp );
+  #endif
+}
+
+void Input::on_window_mouse_focus( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_WINDOW_FOCUS_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.window.type );
+    NOM_DUMP( NOM_SCAST( int, ev.window.event ) );
+    NOM_DUMP( ev.window.data1 );
+    NOM_DUMP( ev.window.data2 );
+    NOM_DUMP( ev.window.window_id );
+    NOM_DUMP( ev.window.timestamp );
+  #endif
+}
+
+void Input::on_window_mouse_focus_lost( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_WINDOW_FOCUS_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.window.type );
+    NOM_DUMP( NOM_SCAST( int, ev.window.event ) );
+    NOM_DUMP( ev.window.data1 );
+    NOM_DUMP( ev.window.data2 );
+    NOM_DUMP( ev.window.window_id );
+    NOM_DUMP( ev.window.timestamp );
+  #endif
+}
+
+void Input::on_window_keyboard_focus( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_WINDOW_FOCUS_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.window.type );
+    NOM_DUMP( NOM_SCAST( int, ev.window.event ) );
+    NOM_DUMP( ev.window.data1 );
+    NOM_DUMP( ev.window.data2 );
+    NOM_DUMP( ev.window.window_id );
+    NOM_DUMP( ev.window.timestamp );
+  #endif
+}
+
+void Input::on_window_keyboard_focus_lost( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_WINDOW_FOCUS_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.window.type );
+    NOM_DUMP( NOM_SCAST( int, ev.window.event ) );
+    NOM_DUMP( ev.window.data1 );
+    NOM_DUMP( ev.window.data2 );
+    NOM_DUMP( ev.window.window_id );
+    NOM_DUMP( ev.window.timestamp );
+  #endif
+}
+
+void Input::on_window_close( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_WINDOW_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.window.type );
+    NOM_DUMP( NOM_SCAST( int, ev.window.event ) );
+    NOM_DUMP( ev.window.data1 );
+    NOM_DUMP( ev.window.data2 );
+    NOM_DUMP( ev.window.window_id );
+    NOM_DUMP( ev.window.timestamp );
+  #endif
+}
+
+void Input::on_key_down( const Event& ev )
+{
+  #if defined( NOM_DEBUG_SDL2_KEYBOARD_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.key.type );
+    NOM_DUMP( ev.key.sym );
+    NOM_DUMP( ev.key.mod );
+    NOM_DUMP( NOM_SCAST( int, ev.key.state ) );
+    NOM_DUMP( NOM_SCAST( int, ev.key.repeat ) );
+    NOM_DUMP( ev.key.window_id );
+    NOM_DUMP( ev.key.timestamp );
+  #endif
+
+  // Mac OS X: Handle the standard Command + W action -- close window.
+  #if defined( NOM_PLATFORM_OSX )
+    if( ev.key.sym == SDLK_w && ev.key.mod == KMOD_LGUI )
+    {
+      this->on_window_close( ev );
+    }
+  #endif
+}
+
+void Input::on_key_up( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_KEYBOARD_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.key.type );
+    NOM_DUMP( ev.key.sym );
+    NOM_DUMP( ev.key.mod );
+    NOM_DUMP( NOM_SCAST( int, ev.key.state ) );
+    NOM_DUMP( NOM_SCAST( int, ev.key.repeat ) );
+    NOM_DUMP( ev.key.window_id );
+    NOM_DUMP( ev.key.timestamp );
+  #endif
+}
+
+void Input::on_mouse_motion( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_MOUSE_MOTION_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.m_motion.type );
+    NOM_DUMP( ev.m_motion.id );
+    NOM_DUMP( ev.m_motion.x );
+    NOM_DUMP( ev.m_motion.y );
+    NOM_DUMP( ev.m_motion.x_rel );
+    NOM_DUMP( ev.m_motion.y_rel );
+    // FIXME: Handle the print out of the possible bit-mask values; see also
+    // remarks in Input.hpp.
+    NOM_DUMP( NOM_SCAST( int, ev.m_motion.state ) );
+    NOM_DUMP( ev.m_motion.window_id );
+    NOM_DUMP( ev.m_motion.timestamp );
+  #endif
+}
+
+void Input::on_mouse_wheel( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_MOUSE_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.wheel.type );
+    NOM_DUMP( ev.wheel.id );
+    NOM_DUMP( ev.wheel.x );
+    NOM_DUMP( ev.wheel.y );
+    NOM_DUMP( ev.wheel.window_id );
+    NOM_DUMP( ev.wheel.timestamp );
+  #endif
+}
+
+void Input::on_mouse_left_button_down( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_MOUSE_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.mouse.type );
+    NOM_DUMP( ev.mouse.id );
+    NOM_DUMP( ev.mouse.x );
+    NOM_DUMP( ev.mouse.y );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.button ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.state ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.clicks ) );
+    NOM_DUMP( ev.mouse.window_id );
+    NOM_DUMP( ev.mouse.timestamp );
+  #endif
+}
+
+void Input::on_mouse_middle_button_down( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_MOUSE_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.mouse.type );
+    NOM_DUMP( ev.mouse.id );
+    NOM_DUMP( ev.mouse.x );
+    NOM_DUMP( ev.mouse.y );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.button ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.state ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.clicks ) );
+    NOM_DUMP( ev.mouse.window_id );
+    NOM_DUMP( ev.mouse.timestamp );
+  #endif
+}
+
+void Input::on_mouse_right_button_down( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_MOUSE_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.mouse.type );
+    NOM_DUMP( ev.mouse.id );
+    NOM_DUMP( ev.mouse.x );
+    NOM_DUMP( ev.mouse.y );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.button ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.state ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.clicks ) );
+    NOM_DUMP( ev.mouse.window_id );
+    NOM_DUMP( ev.mouse.timestamp );
+  #endif
+}
+
+void Input::on_mouse_button_four_down( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_MOUSE_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.mouse.type );
+    NOM_DUMP( ev.mouse.id );
+    NOM_DUMP( ev.mouse.x );
+    NOM_DUMP( ev.mouse.y );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.button ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.state ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.clicks ) );
+    NOM_DUMP( ev.mouse.window_id );
+    NOM_DUMP( ev.mouse.timestamp );
+  #endif
+}
+
+void Input::on_mouse_button_five_down( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_MOUSE_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.mouse.type );
+    NOM_DUMP( ev.mouse.id );
+    NOM_DUMP( ev.mouse.x );
+    NOM_DUMP( ev.mouse.y );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.button ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.state ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.clicks ) );
+    NOM_DUMP( ev.mouse.window_id );
+    NOM_DUMP( ev.mouse.timestamp );
+  #endif
+}
+
+void Input::on_mouse_left_button_up( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_MOUSE_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.mouse.type );
+    NOM_DUMP( ev.mouse.id );
+    NOM_DUMP( ev.mouse.x );
+    NOM_DUMP( ev.mouse.y );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.button ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.state ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.clicks ) );
+    NOM_DUMP( ev.mouse.window_id );
+    NOM_DUMP( ev.mouse.timestamp );
+  #endif
+}
+
+void Input::on_mouse_middle_button_up( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_MOUSE_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.mouse.type );
+    NOM_DUMP( ev.mouse.id );
+    NOM_DUMP( ev.mouse.x );
+    NOM_DUMP( ev.mouse.y );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.button ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.state ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.clicks ) );
+    NOM_DUMP( ev.mouse.window_id );
+    NOM_DUMP( ev.mouse.timestamp );
+  #endif
+}
+
+void Input::on_mouse_right_button_up( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_MOUSE_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.mouse.type );
+    NOM_DUMP( ev.mouse.id );
+    NOM_DUMP( ev.mouse.x );
+    NOM_DUMP( ev.mouse.y );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.button ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.state ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.clicks ) );
+    NOM_DUMP( ev.mouse.window_id );
+    NOM_DUMP( ev.mouse.timestamp );
+  #endif
+}
+
+void Input::on_mouse_button_four_up( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_MOUSE_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.mouse.type );
+    NOM_DUMP( ev.mouse.id );
+    NOM_DUMP( ev.mouse.x );
+    NOM_DUMP( ev.mouse.y );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.button ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.state ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.clicks ) );
+    NOM_DUMP( ev.mouse.window_id );
+    NOM_DUMP( ev.mouse.timestamp );
+  #endif
+}
+
+void Input::on_mouse_button_five_up( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_MOUSE_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.mouse.type );
+    NOM_DUMP( ev.mouse.id );
+    NOM_DUMP( ev.mouse.x );
+    NOM_DUMP( ev.mouse.y );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.button ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.state ) );
+    NOM_DUMP( NOM_SCAST( int, ev.mouse.clicks ) );
+    NOM_DUMP( ev.mouse.window_id );
+    NOM_DUMP( ev.mouse.timestamp );
+  #endif
+}
+
+void Input::on_joy_axis( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_JOYSTICK_AXIS_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.jaxis.type );
+    NOM_DUMP( ev.jaxis.id );
+    NOM_DUMP( NOM_SCAST( int, ev.jaxis.axis ) );
+    NOM_DUMP( ev.jaxis.value );
+    NOM_DUMP( ev.jaxis.timestamp );
+  #endif
+}
+
+void Input::on_joy_button_down( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_JOYSTICK_BUTTON_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.jbutton.type );
+    NOM_DUMP( ev.jbutton.id );
+    NOM_DUMP( NOM_SCAST( int, ev.jbutton.button ) );
+    NOM_DUMP( NOM_SCAST( int, ev.jbutton.state ) );
+    NOM_DUMP( ev.jbutton.timestamp );
+  #endif
+}
+
+void Input::on_joy_button_up( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_JOYSTICK_BUTTON_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.jbutton.type );
+    NOM_DUMP( ev.jbutton.id );
+    NOM_DUMP( NOM_SCAST( int, ev.jbutton.button ) );
+    NOM_DUMP( NOM_SCAST( int, ev.jbutton.state ) );
+    NOM_DUMP( ev.jbutton.timestamp );
+  #endif
+}
+
+void Input::on_joystick_add( void )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_JOYSTICK_EVENT )
+    NOM_LOG_TRACE( NOM );
+  #endif
+}
+void Input::on_joystick_remove( void )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_JOYSTICK_EVENT )
+    NOM_LOG_TRACE( NOM );
+  #endif
+}
+
+void Input::on_touch_motion( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_TOUCH_MOTION_EVENT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.touch.type );
+    NOM_DUMP( ev.touch.id );
+    NOM_DUMP( ev.touch.finger.id );
+    NOM_DUMP( ev.touch.x );
+    NOM_DUMP( ev.touch.y );
+    NOM_DUMP( ev.touch.dx );
+    NOM_DUMP( ev.touch.dy );
+    NOM_DUMP( ev.touch.pressure );
+    NOM_DUMP( ev.touch.timestamp );
+  #endif
+}
+
+void Input::on_touch_down( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_TOUCH_EVENT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.touch.type );
+    NOM_DUMP( ev.touch.id );
+    NOM_DUMP( ev.touch.finger.id );
+    NOM_DUMP( ev.touch.x );
+    NOM_DUMP( ev.touch.y );
+    NOM_DUMP( ev.touch.dx );
+    NOM_DUMP( ev.touch.dy );
+    NOM_DUMP( ev.touch.pressure );
+    NOM_DUMP( ev.touch.timestamp );
+  #endif
+}
+
+void Input::on_touch_up( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_TOUCH_EVENT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.touch.type );
+    NOM_DUMP( ev.touch.id );
+    NOM_DUMP( ev.touch.finger.id );
+    NOM_DUMP( ev.touch.x );
+    NOM_DUMP( ev.touch.y );
+    NOM_DUMP( ev.touch.dx );
+    NOM_DUMP( ev.touch.dy );
+    NOM_DUMP( ev.touch.pressure );
+    NOM_DUMP( ev.touch.timestamp );
+  #endif
+}
+
+void Input::on_gesture( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_GESTURE_EVENT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.gesture.type );
+    NOM_DUMP( ev.gesture.id );
+    NOM_DUMP( ev.gesture.dTheta );
+    NOM_DUMP( ev.gesture.dDist );
+    NOM_DUMP( ev.gesture.x );
+    NOM_DUMP( ev.gesture.y );
+    NOM_DUMP( ev.gesture.num_fingers );
+  #endif
+}
+
+void Input::on_drag_drop( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_DRAG_DROP_INPUT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.drop.file_path );
+    NOM_DUMP( ev.drop.timestamp );
+  #endif
+}
+
+void Input::on_text_input( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_TEXT_INPUT_EVENT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.text.type );
+    NOM_DUMP( ev.text.text );
+    NOM_DUMP( ev.text.window_id );
+    NOM_DUMP( ev.text.timestamp );
+  #endif
+}
+
+void Input::on_text_edit( const Event& ev )
+{
+  // User implemented
+
+  #if defined( NOM_DEBUG_SDL2_TEXT_EDIT_EVENT )
+    NOM_LOG_TRACE( NOM );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.edit.type );
+    NOM_DUMP( ev.edit.text );
+    NOM_DUMP( ev.edit.start );
+    NOM_DUMP( ev.edit.length );
+    NOM_DUMP( ev.edit.window_id );
+    NOM_DUMP( ev.edit.timestamp );
+  #endif
+}
+
+bool Input::poll_event( SDL_Event* ev )
+{
+  if ( SDL_PollEvent( ev ) )
+  {
+    return true;
+  }
+
+  return false;
 }
 
 } // namespace nom

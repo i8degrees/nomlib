@@ -59,9 +59,11 @@ const nom::int32 WINDOW_HEIGHT = 448;
 
 /// \brief Maximum number of active windows we will attempt to spawn in this
 /// example.
-const nom::int32 MAXIMUM_WINDOWS = 3;
+const nom::int32 MAXIMUM_WINDOWS = 2;
 
 /// \brief Usage example
+/// \remarks For unit testing: ensure that library is compiled with
+/// the appropriate defines enabled within Input.hpp.
 class App: public nom::SDLApp
 {
   public:
@@ -87,7 +89,7 @@ class App: public nom::SDLApp
 
     bool on_init( void )
     {
-      nom::uint32 window_flags = 0;
+      nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
 
       for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
       {
@@ -110,8 +112,46 @@ class App: public nom::SDLApp
         // this->window[idx].set_logical_size( this->window_size[idx].x, this->window_size[idx].y );
       }
 
+      // nom::EventCallback s0( [&] { this->shoot1(0); } );
+      nom::EventCallback s1( [&] { this->shoot1(0); } );
+      nom::EventCallback s2( [&] { this->shoot2(0); } );
+      nom::EventCallback s3( [&] { this->shoot1(0); } );
+
+      nom::Action shoot1;
+      shoot1.type = SDL_KEYDOWN;
+      shoot1.event = SDLK_1;
+      shoot1.callback = s1;
+
+      nom::Action shoot2;
+      // shoot2.input_type = SDL_KEYDOWN;
+      shoot2.type = SDL_MOUSEBUTTONDOWN;
+      // shoot2.sym = SDLK_2;
+      shoot2.event = SDL_BUTTON_RIGHT;
+      shoot2.callback = s2;
+
+      // nom::Action shoot3;
+      // shoot3.type = SDL_MOUSEBUTTONDOWN;
+      // shoot3.event = SDL_BUTTON_LEFT;
+      // shoot3.callback = s3;
+
+      this->add_input_mapping( "shoot1", shoot1 );
+      this->add_input_mapping( "shoot2", shoot2 );
+      this->add_input_mapping( "shoot3", nom::Action( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT, s3 ) );
+
+      // this->remove_input_mapping( "shoot1" );
+
       return true;
     } // end on_init
+
+    void shoot1( int idx )
+    {
+      this->window[idx].minimize_window();
+    }
+
+    void shoot2( int idx )
+    {
+      this->window[idx].restore_window();
+    }
 
     nom::sint Run( void )
     {
@@ -162,6 +202,7 @@ class App: public nom::SDLApp
     /// \brief Event handler for key down actions
     ///
     /// \remarks Implements nom::Input::on_key_down
+/*
     void on_key_down( const nom::Event& ev )
     {
       switch( ev.key.sym )
@@ -210,6 +251,7 @@ class App: public nom::SDLApp
         } // end SDLK_f
       } // end switch key
     } // end on_key_down
+*/
 
   private:
     /// \brief Window handles

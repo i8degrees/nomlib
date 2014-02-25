@@ -26,59 +26,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_STATE_MACHINE_HPP
-#define NOMLIB_SYSTEM_STATE_MACHINE_HPP
+#ifndef NOMLIB_SYSTEM_EVENTS_ACTION_HPP
+#define NOMLIB_SYSTEM_EVENTS_ACTION_HPP
 
-#include <iostream>
-#include <vector>
-#include <memory>
+#include <map>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/IState.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/system/events/EventCallback.hpp"
 
 namespace nom {
 
-/// \brief Finite State Machine manager class
-class StateMachine
+struct Action
 {
-  public:
-    typedef std::vector<IState::UniquePtr> StateStack;
+  /// \brief Default constructor.
+  Action( void );
 
-    /// Default constructor
-    StateMachine ( void );
+  /// \brief Destructor.
+  ~Action( void );
 
-    /// Destructor
-    ~StateMachine ( void );
+  /// \brief Construct a full nom::Action event.
+  Action( uint32 type, uint32 event, const EventCallback& method );
 
-    // State management
+  /// \brief The input device; keyboard, mouse, joystick, finger touch and so
+  /// on.
+  ///
+  /// \remarks SDL_KEYDOWN, SDL_MOUSEBUTTONDOWN, ...
+  uint32 type;
 
-    /// \brief Obtain the previous state's identifier
-    ///
-    /// \returns Identifier of the state on success; identifier number of the
-    /// current state on failure (such as if there is no previous state in list).
-    ///
-    /// \remarks It is not required that the state has an ID.
-    uint32 previous_state ( void ) const;
-    void set_state ( IState::UniquePtr state, void_ptr data );
-    void push_state ( IState::UniquePtr state, void_ptr data );
+  /// \brief The type of event; key press, mouse click, joystick button and so
+  /// on.
+  uint32 event;
 
-    void pop_state ( IState::UniquePtr state, void_ptr data );
-    void pop_state ( void_ptr data );
-
-    /// State events handling
-    void process_events( Event& ev );
-
-    /// State logic handling
-    void update ( float delta );
-
-    /// State rendering handling
-    void draw ( IDrawable::RenderTarget& );
-
-  private:
-    /// Container of our states
-    StateStack states;
+  /// \brief The assigned callback to execute for the action.
+  EventCallback callback;
 };
+
+typedef std::map<std::string, Action> InputMapping;
 
 } // namespace nom
 

@@ -128,6 +128,8 @@ set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/AnimationTimer.cpp
       ${SRC_DIR}/system/Timer.cpp
       ${SRC_DIR}/system/Sleep.cpp
+      ${SRC_DIR}/system/events/Action.cpp
+      ${SRC_DIR}/system/events/EventCallback.cpp
     )
 file ( GLOB TEMPLATE_HEADERS "${NOMLIB_SHARED_SUPPORT_DIR}/*.hpp" )
 set ( TEMPLATE_SOURCE

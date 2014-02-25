@@ -43,9 +43,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief The type of event structure nomlib utilizes
-typedef SDL_Event EventType;
-
 /// \brief Convenience definitions for pointer types
 ///
 /// \todo Consider renaming to WINDOW or such

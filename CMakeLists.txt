@@ -23,12 +23,39 @@ option ( DEBUG_TRACE "Build with trace logging of object construction & destruct
 option ( EXAMPLES "Build nomlib usage examples" off )
 option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
 
-# Build a minimal nomlib; useful for testing new CMake builds and such
+# Build a minimal core library. This option is particularly useful for when
+# you wish to test out new CMake functionality and thus must endure many
+# recompiles of the project!.
 #
-# NOTE:
-# Enabling this will disable project examples from building, even when
-# explicitly set!
-set ( NOM_BUILD_MINI off )
+# NOTE: The core unit is a prerequisite for all other unit compilations.
+#
+# NOTE: Enabling this option will explicitly disable project examples from
+# being built, regardless of whether examples are enabled.
+option( NOM_BUILD_CORE_UNIT "Build the core unit." on )
+
+# Dependencies: OpenAL/OpenALSoft.
+option( NOM_BUILD_AUDIO_UNIT "Build the Audio unit." on )
+
+# Dependencies: SDL2, SDL2_image, SDL2_ttf
+option( NOM_BUILD_GRAPHICS_UNIT "Build the Graphics unit." on )
+
+# Dependencies: Graphics unit
+option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Enable scale2x and hqx rescaling algorithms." on )
+
+# Dependencies: Graphics unit
+option( NOM_BUILD_GUI_UNIT "Build the GUI unit." on )
+
+# Dependencies: jsoncpp
+option( NOM_BUILD_JSON_UNIT "Build the JSON unit." on )
+
+option( NOM_BUILD_MATH_UNIT "Build the Math unit." on )
+
+# Dependencies: SDL2, SDL2_image, SDL2_ttf
+option( NOM_BUILD_SYSTEM_UNIT "Build the System unit." on )
+
+# Collection of internal templates used in the creation of new functionality
+# such as classes or examples / tests.
+option( NOM_BUILD_TEMPLATES_UNIT "Build the library templates." on )
 
 project ( nomlib ) # Sets PROJECT_NAME variable for us
 
@@ -483,9 +510,9 @@ if ( PLATFORM_LINUX )
 endif ( PLATFORM_LINUX )
 
 # nomlib examples configuration
-if ( EXAMPLES AND NOT NOM_BUILD_MINI )
-  add_subdirectory ( examples )
-endif ( EXAMPLES AND NOT NOM_BUILD_MINI )
+if( EXAMPLES )
+  add_subdirectory( examples )
+endif( EXAMPLES )
 
 # Auto-generated source file
 configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.cpp.in"

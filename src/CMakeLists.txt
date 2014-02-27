@@ -145,59 +145,126 @@ if ( PLATFORM_OSX OR PLATFORM_LINUX )
 endif ( PLATFORM_OSX OR PLATFORM_LINUX )
 
 if ( PLATFORM_OSX )
-
   set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/osx/ResourcePath.cpp" )
-
 elseif ( PLATFORM_LINUX )
   # nothing to be done
 elseif ( PLATFORM_WINDOWS )
   set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/windows/WinFile.cpp" )
   set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/windows/ResourcePath.cpp" )
-
 endif ( PLATFORM_OSX )
 
-# Full nomlib project header files (*.hpp; *.h)
-set ( NOMLIB_HEADERS
-      ${ROOT_HEADERS}
-      ${AUDIO_HEADERS}
-      ${GRAPHICS_HEADERS}
-      ${GRAPHICS_HQX_HEADERS}
-      ${GRAPHICS_SCALE2X_HEADERS}
-      ${GRAPHICS_SHAPES_HEADERS}
-      ${GRAPHICS_SPRITE_HEADERS}
-      ${GUI_HEADERS}
-      ${JSON_HEADERS}
-      ${JSONCPP_HEADERS}
-      ${MATH_HEADERS}
-      ${SYSTEM_HEADERS}
-      ${SYSTEM_OSX_HEADERS}
-      ${SYSTEM_UNIX_HEADERS}
-      ${SYSTEM_WINDOWS_HEADERS}
-      ${TEMPLATE_HEADERS}
-    )
-
-if ( NOM_BUILD_MINI )
-  # Build an absolute minimum nomlib -- for testing new CMake options, etc.
-  set ( NOMLIB_SOURCE ${ROOT_SOURCE} )
-else ( NOT NOM_BUILD_MINI )
-  # Full nomlib project
+if( NOM_BUILD_CORE_UNIT )
+  set ( NOMLIB_HEADERS
+        ${NOMLIB_HEADERS}
+        ${ROOT_HEADERS}
+      )
   set ( NOMLIB_SOURCE
+        ${NOMLIB_SOURCE}
         ${ROOT_SOURCE}
-        #${AUDIO_SOURCE}
+      )
+endif( NOM_BUILD_CORE_UNIT )
+
+if( NOM_BUILD_AUDIO_UNIT )
+  set ( NOMLIB_HEADERS
+        ${NOMLIB_HEADERS}
+        ${AUDIO_HEADERS}
+      )
+  set ( NOMLIB_SOURCE
+        ${NOMLIB_SOURCE}
+        ${AUDIO_SOURCE}
+      )
+endif( NOM_BUILD_AUDIO_UNIT )
+
+if( NOM_BUILD_GRAPHICS_UNIT )
+  set ( NOMLIB_HEADERS
+        ${NOMLIB_HEADERS}
+        ${GRAPHICS_HEADERS}
+        ${GRAPHICS_SHAPES_HEADERS}
+        ${GRAPHICS_SPRITE_HEADERS}
+      )
+  set ( NOMLIB_SOURCE
+        ${NOMLIB_SOURCE}
         ${GRAPHICS_SOURCE}
+        ${GRAPHICS_SHAPES_SOURCE}
+        ${GRAPHICS_SPRITE_SOURCE}
+      )
+endif( NOM_BUILD_GRAPHICS_UNIT )
+
+if( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
+  set ( NOMLIB_HEADERS
+        ${NOMLIB_HEADERS}
+        ${GRAPHICS_HQX_HEADERS}
+        ${GRAPHICS_SCALE2X_HEADERS}
+      )
+  set ( NOMLIB_SOURCE
+        ${NOMLIB_SOURCE}
         ${GRAPHICS_HQX_SOURCE}
         ${GRAPHICS_SCALE2X_SOURCE}
-        ${GRAPHICS_SHAPES_SOURCE}
-        #${GRAPHICS_SPRITE_SOURCE}
-        #${GUI_SOURCE}
-        #${JSON_SOURCE}
-        #${JSONCPP_SOURCE}
-        ${MATH_SOURCE}
-        ${SYSTEM_SOURCE}
-        ${TEMPLATE_SOURCE}
-        ${EXAMPLES_TEMPLATE_SOURCE}
       )
-endif ( NOM_BUILD_MINI )
+endif( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
+
+if( NOM_BUILD_GUI_UNIT )
+  set ( NOMLIB_HEADERS
+        ${NOMLIB_HEADERS}
+        ${GUI_HEADERS}
+      )
+  set ( NOMLIB_SOURCE
+        ${NOMLIB_SOURCE}
+        ${GUI_SOURCE}
+      )
+endif( NOM_BUILD_GUI_UNIT )
+
+if( NOM_BUILD_JSON_UNIT )
+  set ( NOMLIB_HEADERS
+        ${NOMLIB_HEADERS}
+        ${JSON_HEADERS}
+        ${JSONCPP_HEADERS}
+      )
+  set ( NOMLIB_SOURCE
+        ${NOMLIB_SOURCE}
+        ${JSON_SOURCE}
+        ${JSONCPP_SOURCE}
+      )
+endif( NOM_BUILD_JSON_UNIT )
+
+if( NOM_BUILD_MATH_UNIT )
+  set ( NOMLIB_HEADERS
+        ${NOMLIB_HEADERS}
+        ${MATH_HEADERS}
+      )
+  set ( NOMLIB_SOURCE
+        ${NOMLIB_SOURCE}
+        ${MATH_SOURCE}
+      )
+endif( NOM_BUILD_MATH_UNIT )
+
+if( NOM_BUILD_SYSTEM_UNIT )
+  set ( NOMLIB_HEADERS
+        ${NOMLIB_HEADERS}
+        ${SYSTEM_HEADERS}
+        ${SYSTEM_OSX_HEADERS}
+        ${SYSTEM_UNIX_HEADERS}
+        ${SYSTEM_WINDOWS_HEADERS}
+      )
+  set ( NOMLIB_SOURCE
+        ${NOMLIB_SOURCE}
+        ${SYSTEM_SOURCE}
+      )
+endif( NOM_BUILD_SYSTEM_UNIT )
+
+if( NOM_BUILD_TEMPLATES_UNIT )
+  if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+    set ( NOMLIB_HEADERS
+          ${NOMLIB_HEADERS}
+          ${TEMPLATE_HEADERS}
+        )
+    set ( NOMLIB_SOURCE
+          ${NOMLIB_SOURCE}
+          ${TEMPLATE_SOURCE}
+          ${EXAMPLES_TEMPLATE_SOURCE}
+        )
+  endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+endif( NOM_BUILD_TEMPLATES_UNIT )
 
 # Add header files (*.hpp) and source files (*.cpp) to IDE project list
 # (For those that use Xcode, MSVC++, etc.)

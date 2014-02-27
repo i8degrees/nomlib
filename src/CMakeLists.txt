@@ -134,6 +134,11 @@ set ( TEMPLATE_SOURCE
       ${NOMLIB_SHARED_SUPPORT_DIR}/Template.cpp
     )
 
+file( GLOB EXAMPLES_TEMPLATE_HEADERS "${NOMLIB_SHARED_SUPPORT_DIR}/*.hpp" )
+set(  EXAMPLES_TEMPLATE_SOURCE
+      ${NOMLIB_SHARED_SUPPORT_DIR}/ExamplesTemplate.cpp
+    )
+
 # Platform-specific source files
 if ( PLATFORM_OSX OR PLATFORM_LINUX )
   set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/unix/UnixFile.cpp" )
@@ -178,18 +183,19 @@ else ( NOT NOM_BUILD_MINI )
   # Full nomlib project
   set ( NOMLIB_SOURCE
         ${ROOT_SOURCE}
-        ${AUDIO_SOURCE}
+        #${AUDIO_SOURCE}
         ${GRAPHICS_SOURCE}
         ${GRAPHICS_HQX_SOURCE}
         ${GRAPHICS_SCALE2X_SOURCE}
         ${GRAPHICS_SHAPES_SOURCE}
-        ${GRAPHICS_SPRITE_SOURCE}
-        ${GUI_SOURCE}
-        ${JSON_SOURCE}
-        ${JSONCPP_SOURCE}
+        #${GRAPHICS_SPRITE_SOURCE}
+        #${GUI_SOURCE}
+        #${JSON_SOURCE}
+        #${JSONCPP_SOURCE}
         ${MATH_SOURCE}
         ${SYSTEM_SOURCE}
         ${TEMPLATE_SOURCE}
+        ${EXAMPLES_TEMPLATE_SOURCE}
       )
 endif ( NOM_BUILD_MINI )
 

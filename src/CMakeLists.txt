@@ -169,40 +169,11 @@ elseif ( PLATFORM_WINDOWS )
   set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/windows/ResourcePath.cpp" )
 endif ( PLATFORM_OSX )
 
-<<<<<<< HEAD
 if( NOM_BUILD_CORE_UNIT )
   set ( NOMLIB_HEADERS
         ${NOMLIB_HEADERS}
         ${ROOT_HEADERS}
       )
-=======
-# Full nomlib project header files (*.hpp; *.h)
-set ( NOMLIB_HEADERS
-      ${ROOT_HEADERS}
-      ${AUDIO_HEADERS}
-      ${GRAPHICS_HEADERS}
-      ${GRAPHICS_HQX_HEADERS}
-      ${GRAPHICS_SCALE2X_HEADERS}
-      ${GRAPHICS_SHAPES_HEADERS}
-      ${GRAPHICS_SPRITE_HEADERS}
-      ${GUI_HEADERS}
-      ${JSON_HEADERS}
-      ${JSONCPP_HEADERS}
-      ${MATH_HEADERS}
-      ${SYSTEM_HEADERS}
-      ${SYSTEM_OSX_HEADERS}
-      ${SYSTEM_UNIX_HEADERS}
-      ${SYSTEM_WINDOWS_HEADERS}
-      ${PTREE_HEADERS}
-      ${TEMPLATE_HEADERS}
-    )
-
-if ( NOM_BUILD_MINI )
-  # Build an absolute minimum nomlib -- for testing new CMake options, etc.
-  set ( NOMLIB_SOURCE ${ROOT_SOURCE} )
-else ( NOT NOM_BUILD_MINI )
-  # Full nomlib project
->>>>>>> Refactor JSON module
   set ( NOMLIB_SOURCE
         ${NOMLIB_SOURCE}
         ${ROOT_SOURCE}
@@ -294,11 +265,6 @@ if( NOM_BUILD_SYSTEM_UNIT )
   set ( NOMLIB_SOURCE
         ${NOMLIB_SOURCE}
         ${SYSTEM_SOURCE}
-<<<<<<< HEAD
-=======
-        ${PTREE_SOURCE}
-        ${TEMPLATE_SOURCE}
->>>>>>> Refactor JSON module
       )
 endif( NOM_BUILD_SYSTEM_UNIT )
 

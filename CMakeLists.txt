@@ -45,8 +45,9 @@ option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Enable scale2x and hqx rescaling algo
 # Dependencies: Graphics unit
 option( NOM_BUILD_GUI_UNIT "Build the GUI unit." on )
 
-# Dependencies: jsoncpp
+# Dependencies: jsoncpp, Property Tree unit
 option( NOM_BUILD_JSON_UNIT "Build the JSON unit." on )
+option( NOM_BUILD_PTREE_UNIT "Build the Property Tree unit." on )
 
 option( NOM_BUILD_MATH_UNIT "Build the Math unit." on )
 

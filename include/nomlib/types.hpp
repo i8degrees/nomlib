@@ -33,8 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define NOM_PTR_CAST(type, expression) \
   ( std::dynamic_pointer_cast<type>(expression) )
-//#define NOM_STATIC_CAST(type, expression) static_cast<type>(expression)
-//#define NOM_CONST_CAST(type, expression) const_cast<type>(expression)
+
+#define NOM_SCAST(type, expression) static_cast<type>(expression)
+#define NOM_CCAST(type, expression) const_cast<type>(expression)
 
 #define NOM_ENDL(reserved) ( std::cout << std::endl )
 

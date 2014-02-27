@@ -161,10 +161,10 @@ class App: public nom::SDLApp
   private:
     /// \brief Event handler for key down actions
     ///
-    /// \remarks Implements nom::Input::on_key_down
-    void on_key_down( const nom::Event& ev )
+    /// \remarks Implements nom::Input::onKeyDown
+    void onKeyDown ( nom::int32 key, nom::int32 mod, uint32 window_id )
     {
-      switch( ev.key.sym )
+      switch( key )
       {
         default: break;
 
@@ -188,9 +188,9 @@ class App: public nom::SDLApp
 
         case SDLK_F1:
         {
-          if( this->window[ev.key.window_id - 1].window_id() == ev.key.window_id )
+          if( this->window[window_id - 1].window_id() == window_id )
           {
-            if( this->window[ev.key.window_id - 1].save_screenshot( OUTPUT_SCREENSHOT_FILENAME ) == false )
+            if( this->window[window_id - 1].save_screenshot( OUTPUT_SCREENSHOT_FILENAME ) == false )
             {
               nom::DialogMessageBox( APP_NAME, "ERROR: Could not save screen-shot");
               break;
@@ -202,9 +202,9 @@ class App: public nom::SDLApp
         // Toggle full-screen
         case SDLK_f:
         {
-          if ( this->window[ev.key.window_id - 1].window_id() == ev.key.window_id )
+          if ( this->window[window_id - 1].window_id() == window_id )
           {
-            this->window[ev.key.window_id - 1].toggle_fullscreen();
+            this->window[window_id - 1].toggle_fullscreen();
           } // end window_id match
           break;
         } // end SDLK_f

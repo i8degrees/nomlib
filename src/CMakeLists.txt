@@ -254,6 +254,13 @@ if( NOM_BUILD_MATH_UNIT )
       )
 endif( NOM_BUILD_MATH_UNIT )
 
+if( NOM_BUILD_PTREE_UNIT )
+  set ( NOMLIB_SOURCE
+        ${NOMLIB_SOURCE}
+        ${PTREE_SOURCE}
+      )
+endif( NOM_BUILD_PTREE_UNIT )
+
 if( NOM_BUILD_SYSTEM_UNIT )
   set ( NOMLIB_HEADERS
         ${NOMLIB_HEADERS}

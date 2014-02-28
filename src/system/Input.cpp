@@ -175,6 +175,10 @@ bool Input::on_input( Event& ev )
           ev.window.timestamp = event.window.timestamp;
 
           this->on_window_resized( ev );
+
+          // FIXME: TTcards ends up in an infinite loop with the virtual method
+          // call below.
+          // this->on_window_resized( ev );
           break;
         }
 

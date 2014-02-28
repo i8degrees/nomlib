@@ -71,7 +71,7 @@ bool SDLApp::on_init( void )
   return true;
 }
 
-void SDLApp::on_event( Event& ev )
+void SDLApp::on_event( SDL_Event* ev )
 {
   // Active (set) input mappings take priority over traditional events
   // handling -- virtual inheritance.
@@ -241,31 +241,31 @@ bool SDLApp::valid_input_map( void )
   return false;
 }
 
-bool SDLApp::on_map( const Event& ev )
+bool SDLApp::on_map( const SDL_Event* ev )
 {
   if( this->valid_input_map() )
   {
     for( InputMapping::const_iterator itr = this->input_map_->begin(); itr != this->input_map_->end(); ++itr )
     {
       if(
-          itr->second.type == ev.type  &&
-          itr->second.event == ev.key.sym
+          itr->second.type == ev->type  &&
+          itr->second.event == ev->key.keysym.sym
         )
       {
         itr->second.callback();
         return true;
       }
       else if (
-                itr->second.type == ev.type &&
-                itr->second.event == ev.mouse.button
+                itr->second.type == ev->type &&
+                itr->second.event == ev->button.button
               )
       {
         itr->second.callback();
         return true;
       }
       else if (
-                itr->second.type == ev.type  &&
-                itr->second.event == ev.jbutton.button
+                itr->second.type == ev->type  &&
+                itr->second.event == ev->jbutton.button
               )
       {
         itr->second.callback();

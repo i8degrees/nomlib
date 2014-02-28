@@ -307,7 +307,10 @@ NOM_DUMP_VAR(this->sprite.size().h);
       // 3. Render
       while ( this->running() == true )
       {
-        this->on_event( this->event );
+        while( this->poll_event( &this->event ) )
+        {
+          this->on_event( &this->event );
+        }
 
         //this->sprite.update();
 

@@ -129,7 +129,10 @@ class App: public nom::SDLApp
       // 3. Render
       while ( this->running() == true )
       {
-        this->on_event( this->event );
+        while( this->poll_event( &this->event ) )
+        {
+          this->on_event( &this->event );
+        }
 
         this->window.update();
         this->fps.update();

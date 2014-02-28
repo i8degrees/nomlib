@@ -118,7 +118,7 @@ void StateMachine::pop_state ( void_ptr data )
   this->states.back()->on_resume( data );
 }
 
-void StateMachine::process_events( Event& ev )
+void StateMachine::process_events( SDL_Event* ev )
 {
   // Ensure that we have a state in which we can handle events on
   if ( ! this->states.empty() )

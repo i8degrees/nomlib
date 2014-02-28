@@ -47,7 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // #define NOM_DEBUG_SDL2_USER_EVENT
 
 /// \brief Enable debugging output of window events.
-// #define NOM_DEBUG_SDL2_WINDOW_INPUT
+#define NOM_DEBUG_SDL2_WINDOW_INPUT
 
 /// \brief Enable debugging output of window focus events.
 // #define NOM_DEBUG_SDL2_WINDOW_FOCUS_INPUT
@@ -147,7 +147,7 @@ class Input
     /// when no events are pending.
     ///
     /// \TODO Rename to poll_event?
-    virtual bool on_input( Event& ev );
+    virtual bool on_input( SDL_Event* event );
 
   protected:
     virtual void on_user_event( const Event& ev );

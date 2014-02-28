@@ -63,7 +63,7 @@ class SDLApp: public Input
     ///
     /// \NOTE ~~Active (set) input mappings take priority over inherited event
     /// handlers.~~
-    virtual void on_event( Event& ev );
+    virtual void on_event( SDL_Event* ev );
 
     /// \brief The application-level handler for logic.
     ///
@@ -136,7 +136,7 @@ class SDLApp: public Input
 
   protected:
     /// \brief Input events.
-    Event event;
+    SDL_Event event;
 
     /// \brief State machine manager.
     StateMachine states;
@@ -145,7 +145,7 @@ class SDLApp: public Input
   private:
     bool valid_input_map( void );
 
-    bool on_map( const Event& ev );
+    bool on_map( const SDL_Event* ev );
 
     /// \brief Global application state.
     bool app_state_;

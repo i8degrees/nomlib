@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 Input::Input( void ) :
-  joystick_ { Input::JoystickUniquePtr ( nullptr, priv::Free_Joystick ) },
+  joystick_ { Input::JoystickUniquePtr( nullptr, priv::Free_Joystick ) },
   joystick_id_ ( 0 )
 {
   NOM_LOG_TRACE( NOM );
@@ -70,17 +70,17 @@ Input::~Input( void )
   NOM_LOG_TRACE( NOM );
 }
 
-bool Input::on_input( Event& ev )
+bool Input::on_input( SDL_Event* event )
 {
-  SDL_Event event;
+  Event ev;
 
   // Nothing to do; no pending events!
-  if( this->poll_event( &event ) == false ) return false;
+  // if( this->poll_event( &event ) == false ) return false;
 
-  ev.type = event.type;
+  ev.type = event->type;
 
   // Create our event structure from the existing SDL_Event information.
-  switch( event.type )
+  switch( event->type )
   {
     default:
     {
@@ -90,8 +90,8 @@ bool Input::on_input( Event& ev )
 
     case SDL_QUIT:
     {
-      ev.quit.type = event.quit.type;
-      ev.quit.timestamp = event.quit.timestamp;
+      ev.quit.type = event->quit.type;
+      ev.quit.timestamp = event->quit.timestamp;
 
       this->on_app_quit( ev );
       break;
@@ -99,7 +99,7 @@ bool Input::on_input( Event& ev )
 
     case SDL_WINDOWEVENT:
     {
-      switch( event.window.event )
+      switch( event->window.event )
       {
         default:
         {
@@ -115,12 +115,12 @@ bool Input::on_input( Event& ev )
 
         case SDL_WINDOWEVENT_SHOWN:
         {
-          ev.window.type = event.window.type;
-          ev.window.event = event.window.event;
-          ev.window.data1 = event.window.data1;
-          ev.window.data2 = event.window.data2;
-          ev.window.window_id = event.window.windowID;
-          ev.window.timestamp = event.window.timestamp;
+          ev.window.type = event->window.type;
+          ev.window.event = event->window.event;
+          ev.window.data1 = event->window.data1;
+          ev.window.data2 = event->window.data2;
+          ev.window.window_id = event->window.windowID;
+          ev.window.timestamp = event->window.timestamp;
 
           this->on_window_shown( ev );
           break;
@@ -128,12 +128,12 @@ bool Input::on_input( Event& ev )
 
         case SDL_WINDOWEVENT_HIDDEN:
         {
-          ev.window.type = event.window.type;
-          ev.window.event = event.window.event;
-          ev.window.data1 = event.window.data1;
-          ev.window.data2 = event.window.data2;
-          ev.window.window_id = event.window.windowID;
-          ev.window.timestamp = event.window.timestamp;
+          ev.window.type = event->window.type;
+          ev.window.event = event->window.event;
+          ev.window.data1 = event->window.data1;
+          ev.window.data2 = event->window.data2;
+          ev.window.window_id = event->window.windowID;
+          ev.window.timestamp = event->window.timestamp;
 
           this->on_window_hidden( ev );
           break;
@@ -141,12 +141,12 @@ bool Input::on_input( Event& ev )
 
         case SDL_WINDOWEVENT_EXPOSED:
         {
-          ev.window.type = event.window.type;
-          ev.window.event = event.window.event;
-          ev.window.data1 = event.window.data1;
-          ev.window.data2 = event.window.data2;
-          ev.window.window_id = event.window.windowID;
-          ev.window.timestamp = event.window.timestamp;
+          ev.window.type = event->window.type;
+          ev.window.event = event->window.event;
+          ev.window.data1 = event->window.data1;
+          ev.window.data2 = event->window.data2;
+          ev.window.window_id = event->window.windowID;
+          ev.window.timestamp = event->window.timestamp;
 
           this->on_window_exposed( ev );
           break;
@@ -154,12 +154,12 @@ bool Input::on_input( Event& ev )
 
         case SDL_WINDOWEVENT_MOVED:
         {
-          ev.window.type = event.window.type;
-          ev.window.event = event.window.event;
-          ev.window.data1 = event.window.data1;
-          ev.window.data2 = event.window.data2;
-          ev.window.window_id = event.window.windowID;
-          ev.window.timestamp = event.window.timestamp;
+          ev.window.type = event->window.type;
+          ev.window.event = event->window.event;
+          ev.window.data1 = event->window.data1;
+          ev.window.data2 = event->window.data2;
+          ev.window.window_id = event->window.windowID;
+          ev.window.timestamp = event->window.timestamp;
 
           this->on_window_moved( ev );
           break;
@@ -167,14 +167,12 @@ bool Input::on_input( Event& ev )
 
         case SDL_WINDOWEVENT_RESIZED:
         {
-          ev.window.type = event.window.type;
-          ev.window.event = event.window.event;
-          ev.window.data1 = event.window.data1;
-          ev.window.data2 = event.window.data2;
-          ev.window.window_id = event.window.windowID;
-          ev.window.timestamp = event.window.timestamp;
-
-          this->on_window_resized( ev );
+          ev.window.type = event->window.type;
+          ev.window.event = event->window.event;
+          ev.window.data1 = event->window.data1;
+          ev.window.data2 = event->window.data2;
+          ev.window.window_id = event->window.windowID;
+          ev.window.timestamp = event->window.timestamp;
 
           // FIXME: TTcards ends up in an infinite loop with the virtual method
           // call below.
@@ -184,12 +182,12 @@ bool Input::on_input( Event& ev )
 
         case SDL_WINDOWEVENT_SIZE_CHANGED:
         {
-          ev.window.type = event.window.type;
-          ev.window.event = event.window.event;
-          ev.window.data1 = event.window.data1;
-          ev.window.data2 = event.window.data2;
-          ev.window.window_id = event.window.windowID;
-          ev.window.timestamp = event.window.timestamp;
+          ev.window.type = event->window.type;
+          ev.window.event = event->window.event;
+          ev.window.data1 = event->window.data1;
+          ev.window.data2 = event->window.data2;
+          ev.window.window_id = event->window.windowID;
+          ev.window.timestamp = event->window.timestamp;
 
           this->on_window_size_changed( ev );
           break;
@@ -197,12 +195,12 @@ bool Input::on_input( Event& ev )
 
         case SDL_WINDOWEVENT_MINIMIZED:
         {
-          ev.window.type = event.window.type;
-          ev.window.event = event.window.event;
-          ev.window.data1 = event.window.data1;
-          ev.window.data2 = event.window.data2;
-          ev.window.window_id = event.window.windowID;
-          ev.window.timestamp = event.window.timestamp;
+          ev.window.type = event->window.type;
+          ev.window.event = event->window.event;
+          ev.window.data1 = event->window.data1;
+          ev.window.data2 = event->window.data2;
+          ev.window.window_id = event->window.windowID;
+          ev.window.timestamp = event->window.timestamp;
 
           this->on_window_minimized( ev );
           break;
@@ -210,12 +208,12 @@ bool Input::on_input( Event& ev )
 
         case SDL_WINDOWEVENT_MAXIMIZED:
         {
-          ev.window.type = event.window.type;
-          ev.window.event = event.window.event;
-          ev.window.data1 = event.window.data1;
-          ev.window.data2 = event.window.data2;
-          ev.window.window_id = event.window.windowID;
-          ev.window.timestamp = event.window.timestamp;
+          ev.window.type = event->window.type;
+          ev.window.event = event->window.event;
+          ev.window.data1 = event->window.data1;
+          ev.window.data2 = event->window.data2;
+          ev.window.window_id = event->window.windowID;
+          ev.window.timestamp = event->window.timestamp;
 
           this->on_window_maximized( ev );
           break;
@@ -223,12 +221,12 @@ bool Input::on_input( Event& ev )
 
         case SDL_WINDOWEVENT_RESTORED:
         {
-          ev.window.type = event.window.type;
-          ev.window.event = event.window.event;
-          ev.window.data1 = event.window.data1;
-          ev.window.data2 = event.window.data2;
-          ev.window.window_id = event.window.windowID;
-          ev.window.timestamp = event.window.timestamp;
+          ev.window.type = event->window.type;
+          ev.window.event = event->window.event;
+          ev.window.data1 = event->window.data1;
+          ev.window.data2 = event->window.data2;
+          ev.window.window_id = event->window.windowID;
+          ev.window.timestamp = event->window.timestamp;
 
           this->on_window_restored( ev );
           break;
@@ -236,12 +234,12 @@ bool Input::on_input( Event& ev )
 
         case SDL_WINDOWEVENT_ENTER: // Mouse has entered window
         {
-          ev.window.type = event.window.type;
-          ev.window.event = event.window.event;
-          ev.window.data1 = event.window.data1;
-          ev.window.data2 = event.window.data2;
-          ev.window.window_id = event.window.windowID;
-          ev.window.timestamp = event.window.timestamp;
+          ev.window.type = event->window.type;
+          ev.window.event = event->window.event;
+          ev.window.data1 = event->window.data1;
+          ev.window.data2 = event->window.data2;
+          ev.window.window_id = event->window.windowID;
+          ev.window.timestamp = event->window.timestamp;
 
           this->on_window_mouse_focus( ev );
           break;
@@ -249,12 +247,12 @@ bool Input::on_input( Event& ev )
 
         case SDL_WINDOWEVENT_LEAVE: // Mouse has left window
         {
-          ev.window.type = event.window.type;
-          ev.window.event = event.window.event;
-          ev.window.data1 = event.window.data1;
-          ev.window.data2 = event.window.data2;
-          ev.window.window_id = event.window.windowID;
-          ev.window.timestamp = event.window.timestamp;
+          ev.window.type = event->window.type;
+          ev.window.event = event->window.event;
+          ev.window.data1 = event->window.data1;
+          ev.window.data2 = event->window.data2;
+          ev.window.window_id = event->window.windowID;
+          ev.window.timestamp = event->window.timestamp;
 
           this->on_window_mouse_focus_lost( ev );
           break;
@@ -262,12 +260,12 @@ bool Input::on_input( Event& ev )
 
         case SDL_WINDOWEVENT_FOCUS_GAINED: // Keyboard has focus of window
         {
-          ev.window.type = event.window.type;
-          ev.window.event = event.window.event;
-          ev.window.data1 = event.window.data1;
-          ev.window.data2 = event.window.data2;
-          ev.window.window_id = event.window.windowID;
-          ev.window.timestamp = event.window.timestamp;
+          ev.window.type = event->window.type;
+          ev.window.event = event->window.event;
+          ev.window.data1 = event->window.data1;
+          ev.window.data2 = event->window.data2;
+          ev.window.window_id = event->window.windowID;
+          ev.window.timestamp = event->window.timestamp;
 
           this->on_window_keyboard_focus( ev );
           break;
@@ -275,12 +273,12 @@ bool Input::on_input( Event& ev )
 
         case SDL_WINDOWEVENT_FOCUS_LOST: // Keyboard has lost window focus
         {
-          ev.window.type = event.window.type;
-          ev.window.event = event.window.event;
-          ev.window.data1 = event.window.data1;
-          ev.window.data2 = event.window.data2;
-          ev.window.window_id = event.window.windowID;
-          ev.window.timestamp = event.window.timestamp;
+          ev.window.type = event->window.type;
+          ev.window.event = event->window.event;
+          ev.window.data1 = event->window.data1;
+          ev.window.data2 = event->window.data2;
+          ev.window.window_id = event->window.windowID;
+          ev.window.timestamp = event->window.timestamp;
 
           this->on_window_keyboard_focus_lost( ev );
           break;
@@ -288,27 +286,27 @@ bool Input::on_input( Event& ev )
 
         case SDL_WINDOWEVENT_CLOSE:
         {
-          ev.window.type = event.window.type;
-          ev.window.event = event.window.event;
-          ev.window.data1 = event.window.data1;
-          ev.window.data2 = event.window.data2;
-          ev.window.window_id = event.window.windowID;
-          ev.window.timestamp = event.window.timestamp;
+          ev.window.type = event->window.type;
+          ev.window.event = event->window.event;
+          ev.window.data1 = event->window.data1;
+          ev.window.data2 = event->window.data2;
+          ev.window.window_id = event->window.windowID;
+          ev.window.timestamp = event->window.timestamp;
 
           this->on_window_close( ev );
           break;
         }
-      } // end event.window.event switch
+      } // end event->window.event switch
     } // end SDL_WINDOWEVENT
 
     case SDL_USEREVENT:
     {
-      ev.user.type = event.user.type;
-      ev.user.code = event.user.code;
-      ev.user.data1 = event.user.data1;
-      ev.user.data2 = event.user.data2;
-      ev.user.window_id = event.user.windowID;
-      ev.user.timestamp = event.user.timestamp;
+      ev.user.type = event->user.type;
+      ev.user.code = event->user.code;
+      ev.user.data1 = event->user.data1;
+      ev.user.data2 = event->user.data2;
+      ev.user.window_id = event->user.windowID;
+      ev.user.timestamp = event->user.timestamp;
 
       this->on_user_event( ev );
       break;
@@ -322,13 +320,13 @@ bool Input::on_input( Event& ev )
 
     case SDL_KEYDOWN:
     {
-      ev.key.type = event.key.type;
-      ev.key.sym = event.key.keysym.sym;
-      ev.key.mod = event.key.keysym.mod;
-      ev.key.state = event.key.state;
-      ev.key.repeat = event.key.repeat;
-      ev.key.window_id = event.key.windowID;
-      ev.key.timestamp = event.key.timestamp;
+      ev.key.type = event->key.type;
+      ev.key.sym = event->key.keysym.sym;
+      ev.key.mod = event->key.keysym.mod;
+      ev.key.state = event->key.state;
+      ev.key.repeat = event->key.repeat;
+      ev.key.window_id = event->key.windowID;
+      ev.key.timestamp = event->key.timestamp;
 
       this->on_key_down( ev );
       break;
@@ -336,13 +334,13 @@ bool Input::on_input( Event& ev )
 
     case SDL_KEYUP:
     {
-      ev.key.type = event.key.type;
-      ev.key.sym = event.key.keysym.sym;
-      ev.key.mod = event.key.keysym.mod;
-      ev.key.state = event.key.state;
-      ev.key.repeat = event.key.repeat;
-      ev.key.window_id = event.key.windowID;
-      ev.key.timestamp = event.key.timestamp;
+      ev.key.type = event->key.type;
+      ev.key.sym = event->key.keysym.sym;
+      ev.key.mod = event->key.keysym.mod;
+      ev.key.state = event->key.state;
+      ev.key.repeat = event->key.repeat;
+      ev.key.window_id = event->key.windowID;
+      ev.key.timestamp = event->key.timestamp;
 
       this->on_key_up( ev );
       break;
@@ -350,14 +348,14 @@ bool Input::on_input( Event& ev )
 
     case SDL_MOUSEMOTION:
     {
-      ev.m_motion.type = event.motion.type;
-      ev.m_motion.x = event.motion.x;
-      ev.m_motion.y = event.motion.y;
-      ev.m_motion.x_rel = event.motion.xrel;
-      ev.m_motion.y_rel = event.motion.yrel;
-      ev.m_motion.state = event.motion.state;
-      ev.m_motion.window_id = event.button.windowID;
-      ev.m_motion.timestamp = event.button.timestamp;
+      ev.m_motion.type = event->motion.type;
+      ev.m_motion.x = event->motion.x;
+      ev.m_motion.y = event->motion.y;
+      ev.m_motion.x_rel = event->motion.xrel;
+      ev.m_motion.y_rel = event->motion.yrel;
+      ev.m_motion.state = event->motion.state;
+      ev.m_motion.window_id = event->button.windowID;
+      ev.m_motion.timestamp = event->button.timestamp;
 
       this->on_mouse_motion( ev );
       break;
@@ -365,19 +363,19 @@ bool Input::on_input( Event& ev )
 
     case SDL_MOUSEBUTTONDOWN:
     {
-      switch ( event.button.button )
+      switch ( event->button.button )
       {
         case SDL_BUTTON_LEFT:
         {
-          ev.mouse.type = event.button.type;
-          ev.mouse.id = event.button.which;
-          ev.mouse.x = event.button.x;
-          ev.mouse.y = event.button.y;
-          ev.mouse.button = event.button.button;
-          ev.mouse.state = event.button.state;
-          // ev.mouse.clicks = event.button.clicks;
-          ev.mouse.window_id = event.button.windowID;
-          ev.mouse.timestamp = event.button.timestamp;
+          ev.mouse.type = event->button.type;
+          ev.mouse.id = event->button.which;
+          ev.mouse.x = event->button.x;
+          ev.mouse.y = event->button.y;
+          ev.mouse.button = event->button.button;
+          ev.mouse.state = event->button.state;
+          // ev.mouse.clicks = event->button.clicks;
+          ev.mouse.window_id = event->button.windowID;
+          ev.mouse.timestamp = event->button.timestamp;
 
           this->on_mouse_left_button_down( ev );
           break;
@@ -385,15 +383,15 @@ bool Input::on_input( Event& ev )
 
         case SDL_BUTTON_MIDDLE:
         {
-          ev.mouse.type = event.button.type;
-          ev.mouse.id = event.button.which;
-          ev.mouse.x = event.button.x;
-          ev.mouse.y = event.button.y;
-          ev.mouse.button = event.button.button;
-          ev.mouse.state = event.button.state;
-          // ev.mouse.clicks = event.button.clicks;
-          ev.mouse.window_id = event.button.windowID;
-          ev.mouse.timestamp = event.button.timestamp;
+          ev.mouse.type = event->button.type;
+          ev.mouse.id = event->button.which;
+          ev.mouse.x = event->button.x;
+          ev.mouse.y = event->button.y;
+          ev.mouse.button = event->button.button;
+          ev.mouse.state = event->button.state;
+          // ev.mouse.clicks = event->button.clicks;
+          ev.mouse.window_id = event->button.windowID;
+          ev.mouse.timestamp = event->button.timestamp;
 
           this->on_mouse_middle_button_down( ev );
           break;
@@ -401,15 +399,15 @@ bool Input::on_input( Event& ev )
 
         case SDL_BUTTON_RIGHT:
         {
-          ev.mouse.type = event.button.type;
-          ev.mouse.id = event.button.which;
-          ev.mouse.x = event.button.x;
-          ev.mouse.y = event.button.y;
-          ev.mouse.button = event.button.button;
-          ev.mouse.state = event.button.state;
-          // ev.mouse.clicks = event.button.clicks;
-          ev.mouse.window_id = event.button.windowID;
-          ev.mouse.timestamp = event.button.timestamp;
+          ev.mouse.type = event->button.type;
+          ev.mouse.id = event->button.which;
+          ev.mouse.x = event->button.x;
+          ev.mouse.y = event->button.y;
+          ev.mouse.button = event->button.button;
+          ev.mouse.state = event->button.state;
+          // ev.mouse.clicks = event->button.clicks;
+          ev.mouse.window_id = event->button.windowID;
+          ev.mouse.timestamp = event->button.timestamp;
 
           this->on_mouse_right_button_down( ev );
           break;
@@ -417,15 +415,15 @@ bool Input::on_input( Event& ev )
 
         case SDL_BUTTON_X1:
         {
-          ev.mouse.type = event.button.type;
-          ev.mouse.id = event.button.which;
-          ev.mouse.x = event.button.x;
-          ev.mouse.y = event.button.y;
-          ev.mouse.button = event.button.button;
-          ev.mouse.state = event.button.state;
-          // ev.mouse.clicks = event.button.clicks;
-          ev.mouse.window_id = event.button.windowID;
-          ev.mouse.timestamp = event.button.timestamp;
+          ev.mouse.type = event->button.type;
+          ev.mouse.id = event->button.which;
+          ev.mouse.x = event->button.x;
+          ev.mouse.y = event->button.y;
+          ev.mouse.button = event->button.button;
+          ev.mouse.state = event->button.state;
+          // ev.mouse.clicks = event->button.clicks;
+          ev.mouse.window_id = event->button.windowID;
+          ev.mouse.timestamp = event->button.timestamp;
 
           this->on_mouse_button_four_down( ev );
           break;
@@ -433,15 +431,15 @@ bool Input::on_input( Event& ev )
 
         case SDL_BUTTON_X2:
         {
-          ev.mouse.type = event.button.type;
-          ev.mouse.id = event.button.which;
-          ev.mouse.x = event.button.x;
-          ev.mouse.y = event.button.y;
-          ev.mouse.button = event.button.button;
-          ev.mouse.state = event.button.state;
-          // ev.mouse.clicks = event.button.clicks;
-          ev.mouse.window_id = event.button.windowID;
-          ev.mouse.timestamp = event.button.timestamp;
+          ev.mouse.type = event->button.type;
+          ev.mouse.id = event->button.which;
+          ev.mouse.x = event->button.x;
+          ev.mouse.y = event->button.y;
+          ev.mouse.button = event->button.button;
+          ev.mouse.state = event->button.state;
+          // ev.mouse.clicks = event->button.clicks;
+          ev.mouse.window_id = event->button.windowID;
+          ev.mouse.timestamp = event->button.timestamp;
 
           this->on_mouse_button_five_down( ev );
           break;
@@ -451,19 +449,19 @@ bool Input::on_input( Event& ev )
     } // end SDL_MOUSEBUTTONDOWN event
 
     case SDL_MOUSEBUTTONUP:
-      switch ( event.button.button )
+      switch ( event->button.button )
       {
         case SDL_BUTTON_LEFT:
         {
-          ev.mouse.type = event.button.type;
-          ev.mouse.id = event.button.which;
-          ev.mouse.x = event.button.x;
-          ev.mouse.y = event.button.y;
-          ev.mouse.button = event.button.button;
-          ev.mouse.state = event.button.state;
-          // ev.mouse.clicks = event.button.clicks;
-          ev.mouse.window_id = event.button.windowID;
-          ev.mouse.timestamp = event.button.timestamp;
+          ev.mouse.type = event->button.type;
+          ev.mouse.id = event->button.which;
+          ev.mouse.x = event->button.x;
+          ev.mouse.y = event->button.y;
+          ev.mouse.button = event->button.button;
+          ev.mouse.state = event->button.state;
+          // ev.mouse.clicks = event->button.clicks;
+          ev.mouse.window_id = event->button.windowID;
+          ev.mouse.timestamp = event->button.timestamp;
 
           this->on_mouse_left_button_up( ev );
           break;
@@ -471,15 +469,15 @@ bool Input::on_input( Event& ev )
 
         case SDL_BUTTON_MIDDLE:
         {
-          ev.mouse.type = event.button.type;
-          ev.mouse.id = event.button.which;
-          ev.mouse.x = event.button.x;
-          ev.mouse.y = event.button.y;
-          ev.mouse.button = event.button.button;
-          ev.mouse.state = event.button.state;
-          // ev.mouse.clicks = event.button.clicks;
-          ev.mouse.window_id = event.button.windowID;
-          ev.mouse.timestamp = event.button.timestamp;
+          ev.mouse.type = event->button.type;
+          ev.mouse.id = event->button.which;
+          ev.mouse.x = event->button.x;
+          ev.mouse.y = event->button.y;
+          ev.mouse.button = event->button.button;
+          ev.mouse.state = event->button.state;
+          // ev.mouse.clicks = event->button.clicks;
+          ev.mouse.window_id = event->button.windowID;
+          ev.mouse.timestamp = event->button.timestamp;
 
           this->on_mouse_middle_button_up( ev );
           break;
@@ -487,15 +485,15 @@ bool Input::on_input( Event& ev )
 
         case SDL_BUTTON_RIGHT:
         {
-          ev.mouse.type = event.button.type;
-          ev.mouse.id = event.button.which;
-          ev.mouse.x = event.button.x;
-          ev.mouse.y = event.button.y;
-          ev.mouse.button = event.button.button;
-          ev.mouse.state = event.button.state;
-          // ev.mouse.clicks = event.button.clicks;
-          ev.mouse.window_id = event.button.windowID;
-          ev.mouse.timestamp = event.button.timestamp;
+          ev.mouse.type = event->button.type;
+          ev.mouse.id = event->button.which;
+          ev.mouse.x = event->button.x;
+          ev.mouse.y = event->button.y;
+          ev.mouse.button = event->button.button;
+          ev.mouse.state = event->button.state;
+          // ev.mouse.clicks = event->button.clicks;
+          ev.mouse.window_id = event->button.windowID;
+          ev.mouse.timestamp = event->button.timestamp;
 
           this->on_mouse_right_button_up( ev );
           break;
@@ -503,15 +501,15 @@ bool Input::on_input( Event& ev )
 
         case SDL_BUTTON_X1:
         {
-          ev.mouse.type = event.button.type;
-          ev.mouse.id = event.button.which;
-          ev.mouse.x = event.button.x;
-          ev.mouse.y = event.button.y;
-          ev.mouse.button = event.button.button;
-          ev.mouse.state = event.button.state;
-          // ev.mouse.clicks = event.button.clicks;
-          ev.mouse.window_id = event.button.windowID;
-          ev.mouse.timestamp = event.button.timestamp;
+          ev.mouse.type = event->button.type;
+          ev.mouse.id = event->button.which;
+          ev.mouse.x = event->button.x;
+          ev.mouse.y = event->button.y;
+          ev.mouse.button = event->button.button;
+          ev.mouse.state = event->button.state;
+          // ev.mouse.clicks = event->button.clicks;
+          ev.mouse.window_id = event->button.windowID;
+          ev.mouse.timestamp = event->button.timestamp;
 
           this->on_mouse_button_four_up( ev );
           break;
@@ -519,15 +517,15 @@ bool Input::on_input( Event& ev )
 
         case SDL_BUTTON_X2:
         {
-          ev.mouse.type = event.button.type;
-          ev.mouse.id = event.button.which;
-          ev.mouse.x = event.button.x;
-          ev.mouse.y = event.button.y;
-          ev.mouse.button = event.button.button;
-          ev.mouse.state = event.button.state;
-          // ev.mouse.clicks = event.button.clicks;
-          ev.mouse.window_id = event.button.windowID;
-          ev.mouse.timestamp = event.button.timestamp;
+          ev.mouse.type = event->button.type;
+          ev.mouse.id = event->button.which;
+          ev.mouse.x = event->button.x;
+          ev.mouse.y = event->button.y;
+          ev.mouse.button = event->button.button;
+          ev.mouse.state = event->button.state;
+          // ev.mouse.clicks = event->button.clicks;
+          ev.mouse.window_id = event->button.windowID;
+          ev.mouse.timestamp = event->button.timestamp;
 
           this->on_mouse_button_five_up( ev );
           break;
@@ -537,12 +535,12 @@ bool Input::on_input( Event& ev )
 
     case SDL_MOUSEWHEEL:
     {
-      ev.wheel.type = event.wheel.type;
-      ev.wheel.id = event.wheel.which;
-      ev.wheel.x = event.wheel.x;
-      ev.wheel.y = event.wheel.y;
-      ev.wheel.window_id = event.wheel.windowID;
-      ev.wheel.timestamp = event.wheel.timestamp;
+      ev.wheel.type = event->wheel.type;
+      ev.wheel.id = event->wheel.which;
+      ev.wheel.x = event->wheel.x;
+      ev.wheel.y = event->wheel.y;
+      ev.wheel.window_id = event->wheel.windowID;
+      ev.wheel.timestamp = event->wheel.timestamp;
 
       this->on_mouse_wheel( ev );
       break;
@@ -550,12 +548,12 @@ bool Input::on_input( Event& ev )
 
     case SDL_JOYBUTTONDOWN:
     {
-      ev.jbutton.type = event.jbutton.type;
+      ev.jbutton.type = event->jbutton.type;
       ev.jbutton.id = this->joystick_id_;
-      ev.jbutton.button = event.jbutton.button;
-      ev.jbutton.state = event.jbutton.state;
-      // ev.jbutton.window_id = event.jbutton.windowID;
-      ev.jbutton.timestamp = event.jbutton.timestamp;
+      ev.jbutton.button = event->jbutton.button;
+      ev.jbutton.state = event->jbutton.state;
+      // ev.jbutton.window_id = event->jbutton.windowID;
+      ev.jbutton.timestamp = event->jbutton.timestamp;
 
       this->on_joy_button_down( ev );
       break;
@@ -563,12 +561,12 @@ bool Input::on_input( Event& ev )
 
     case SDL_JOYBUTTONUP:
     {
-      ev.jbutton.type = event.jbutton.type;
+      ev.jbutton.type = event->jbutton.type;
       ev.jbutton.id = this->joystick_id_;
-      ev.jbutton.button = event.jbutton.button;
-      ev.jbutton.state = event.jbutton.state;
-      // ev.jbutton.window_id = event.jbutton.windowID;
-      ev.jbutton.timestamp = event.jbutton.timestamp;
+      ev.jbutton.button = event->jbutton.button;
+      ev.jbutton.state = event->jbutton.state;
+      // ev.jbutton.window_id = event->jbutton.windowID;
+      ev.jbutton.timestamp = event->jbutton.timestamp;
 
       this->on_joy_button_up( ev );
       break;
@@ -576,12 +574,12 @@ bool Input::on_input( Event& ev )
 
     case SDL_JOYAXISMOTION:
     {
-      ev.jaxis.type = event.jaxis.type;
+      ev.jaxis.type = event->jaxis.type;
       ev.jaxis.id = this->joystick_id_;
-      ev.jaxis.axis = event.jaxis.axis;
-      ev.jaxis.value = event.jaxis.value;
-      // ev.jaxis.window_id = event.jaxis.windowID;
-      ev.jaxis.timestamp = event.jaxis.timestamp;
+      ev.jaxis.axis = event->jaxis.axis;
+      ev.jaxis.value = event->jaxis.value;
+      // ev.jaxis.window_id = event->jaxis.windowID;
+      ev.jaxis.timestamp = event->jaxis.timestamp;
 
       this->on_joy_axis( ev );
       break;
@@ -601,14 +599,14 @@ bool Input::on_input( Event& ev )
 
     case SDL_FINGERMOTION:
     {
-      ev.touch.type = event.tfinger.type;
-      ev.touch.id = event.tfinger.touchId;
-      ev.touch.finger.id = event.tfinger.fingerId;
-      ev.touch.x = event.tfinger.x;
-      ev.touch.y = event.tfinger.y;
-      ev.touch.dx = event.tfinger.dx;
-      ev.touch.dy = event.tfinger.dy;
-      ev.touch.pressure = event.tfinger.pressure;
+      ev.touch.type = event->tfinger.type;
+      ev.touch.id = event->tfinger.touchId;
+      ev.touch.finger.id = event->tfinger.fingerId;
+      ev.touch.x = event->tfinger.x;
+      ev.touch.y = event->tfinger.y;
+      ev.touch.dx = event->tfinger.dx;
+      ev.touch.dy = event->tfinger.dy;
+      ev.touch.pressure = event->tfinger.pressure;
 
       this->on_touch_motion( ev );
       break;
@@ -616,14 +614,14 @@ bool Input::on_input( Event& ev )
 
     case SDL_FINGERDOWN:
     {
-      ev.touch.type = event.tfinger.type;
-      ev.touch.id = event.tfinger.touchId;
-      ev.touch.finger.id = event.tfinger.fingerId;
-      ev.touch.x = event.tfinger.x;
-      ev.touch.y = event.tfinger.y;
-      ev.touch.dx = event.tfinger.dx;
-      ev.touch.dy = event.tfinger.dy;
-      ev.touch.pressure = event.tfinger.pressure;
+      ev.touch.type = event->tfinger.type;
+      ev.touch.id = event->tfinger.touchId;
+      ev.touch.finger.id = event->tfinger.fingerId;
+      ev.touch.x = event->tfinger.x;
+      ev.touch.y = event->tfinger.y;
+      ev.touch.dx = event->tfinger.dx;
+      ev.touch.dy = event->tfinger.dy;
+      ev.touch.pressure = event->tfinger.pressure;
 
       this->on_touch_down( ev );
       break;
@@ -631,14 +629,14 @@ bool Input::on_input( Event& ev )
 
     case SDL_FINGERUP:
     {
-      ev.touch.type = event.tfinger.type;
-      ev.touch.id = event.tfinger.touchId;
-      ev.touch.finger.id = event.tfinger.fingerId;
-      ev.touch.x = event.tfinger.x;
-      ev.touch.y = event.tfinger.y;
-      ev.touch.dx = event.tfinger.dx;
-      ev.touch.dy = event.tfinger.dy;
-      ev.touch.pressure = event.tfinger.pressure;
+      ev.touch.type = event->tfinger.type;
+      ev.touch.id = event->tfinger.touchId;
+      ev.touch.finger.id = event->tfinger.fingerId;
+      ev.touch.x = event->tfinger.x;
+      ev.touch.y = event->tfinger.y;
+      ev.touch.dx = event->tfinger.dx;
+      ev.touch.dy = event->tfinger.dy;
+      ev.touch.pressure = event->tfinger.pressure;
 
       this->on_touch_up( ev );
       break;
@@ -646,13 +644,13 @@ bool Input::on_input( Event& ev )
 
     case SDL_MULTIGESTURE:
     {
-      ev.gesture.type = event.mgesture.type;
-      ev.gesture.id = event.mgesture.touchId;
-      ev.gesture.dTheta = event.mgesture.dTheta;
-      ev.gesture.dDist = event.mgesture.dDist;
-      ev.gesture.x = event.mgesture.x;
-      ev.gesture.y = event.mgesture.y;
-      ev.gesture.num_fingers = event.mgesture.numFingers;
+      ev.gesture.type = event->mgesture.type;
+      ev.gesture.id = event->mgesture.touchId;
+      ev.gesture.dTheta = event->mgesture.dTheta;
+      ev.gesture.dDist = event->mgesture.dDist;
+      ev.gesture.x = event->mgesture.x;
+      ev.gesture.y = event->mgesture.y;
+      ev.gesture.num_fingers = event->mgesture.numFingers;
 
       this->on_gesture( ev );
       break;
@@ -660,8 +658,8 @@ bool Input::on_input( Event& ev )
 
     case SDL_DROPFILE:
     {
-      ev.drop.file_path = event.drop.file;
-      ev.drop.timestamp = event.drop.timestamp;
+      ev.drop.file_path = event->drop.file;
+      ev.drop.timestamp = event->drop.timestamp;
 
       this->on_drag_drop( ev );
       break;
@@ -669,10 +667,10 @@ bool Input::on_input( Event& ev )
 
     case SDL_TEXTINPUT:
     {
-      ev.text.type = event.text.type;
-      strcpy( ev.text.text, event.text.text );
-      ev.text.timestamp = event.text.timestamp;
-      ev.text.window_id = event.text.windowID;
+      ev.text.type = event->text.type;
+      strcpy( ev.text.text, event->text.text );
+      ev.text.timestamp = event->text.timestamp;
+      ev.text.window_id = event->text.windowID;
 
       this->on_text_input( ev );
       break;
@@ -680,15 +678,15 @@ bool Input::on_input( Event& ev )
 
     case SDL_TEXTEDITING: // FIXME
     {
-      ev.edit.type = event.edit.type;
-      strcpy( ev.edit.text, event.edit.text );
-      ev.edit.timestamp = event.edit.timestamp;
-      ev.edit.window_id = event.edit.windowID;
+      ev.edit.type = event->edit.type;
+      strcpy( ev.edit.text, event->edit.text );
+      ev.edit.timestamp = event->edit.timestamp;
+      ev.edit.window_id = event->edit.windowID;
 
       this->on_text_edit( ev );
       break;
     }
-  } // end switch event.type
+  } // end switch event->type
 
   // Pending events
   return true;
@@ -1393,7 +1391,7 @@ void Input::on_text_edit( const Event& ev )
 
 bool Input::poll_event( SDL_Event* ev )
 {
-  if ( SDL_PollEvent( ev ) )
+  if ( SDL_PollEvent( ev ) == 1 )
   {
     return true;
   }

@@ -55,6 +55,8 @@ class EventCallback
     /// \brief Copy assignment operator.
     SelfType& operator =( const SelfType& other );
 
+    bool valid( void ) const;
+
     /// \brief Obtain the assigned callback method.
     const ValueType& method( void ) const;
 

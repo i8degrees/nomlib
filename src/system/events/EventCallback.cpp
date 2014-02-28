@@ -62,6 +62,13 @@ EventCallback::SelfType& EventCallback::operator =( const SelfType& other )
   return *this;
 }
 
+bool EventCallback::valid( void ) const
+{
+  if( this->method_ != nullptr ) return true;
+
+  return false;
+}
+
 const EventCallback::ValueType& EventCallback::method( void ) const
 {
   return this->method_;

@@ -197,14 +197,23 @@ void SDLApp::pop_state ( void_ptr data )
 
 bool SDLApp::add_input_mapping( const std::string& key, const Action& action )
 {
-  // Initialize our input map if this is the first insertion
+  // First, we must initialize our input map if this is the first insertion.
   if( ! this->valid_input_map() )
   {
     this->input_map_ = std::unique_ptr<InputMapping> ( new InputMapping() );
   }
 
-  std::pair<std::string, Action> pair( key, action );
+  // Second, if we have an existing input map key, we must remove it, otherwise
+  // we segfault when jumping through game states.
+  auto itr = this->input_map_->find( key );
 
+  if( itr->second.callback.valid() )
+  {
+    this->remove_input_mapping( key );
+  }
+
+  // Finally, we can insert the new input mapping.
+  std::pair<std::string, Action> pair( key, action );
   auto res = this->input_map_->insert( pair );
 
   if( res.second ) return true;

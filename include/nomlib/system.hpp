@@ -52,7 +52,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/events/EventCallback.hpp>
 #include <nomlib/system/events/Action.hpp>
 #include <nomlib/system/events/Event.hpp>
-#include <nomlib/system/events/EventQueue.hpp>
 
 // Property Tree
 

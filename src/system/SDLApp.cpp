@@ -77,13 +77,13 @@ void SDLApp::on_event( SDL_Event* ev )
   // handling -- virtual inheritance.
   // if( this->on_map( event ) == true ) return;
 
-  this->on_map( ev );
-
   // First, handle our events
   Input::on_input( ev );
 
   // Next, handle the state's events
   this->states.process_events( ev );
+
+  this->on_map( ev );
 }
 
 void SDLApp::on_update ( float delta )

@@ -201,59 +201,8 @@ class App: public nom::SDLApp
     } // end Run()
 
   private:
-    /// \brief Event handler for key down actions
+    /// \brief Event handler for user-defined events.
     ///
-    /// \remarks Implements nom::Input::on_key_down
-/*
-    void on_key_down( const nom::Event& ev )
-    {
-      switch( ev.key.sym )
-      {
-        default: break;
-
-        // Use inherited SDLApp::on_app_quit method -- you may also provide your
-        // own event handler for this.
-        case SDLK_ESCAPE:
-        case SDLK_q: this->on_app_quit( ev ); break;
-
-        case SDLK_BACKSLASH:
-        {
-          if ( this->toggle_fps() )
-          {
-            // Stub for doing something cool here
-          }
-          else
-          {
-            // Stub for doing something cool here
-          }
-          break;
-        }
-
-        case SDLK_F1:
-        {
-          if( this->window[ev.key.window_id - 1].window_id() == ev.key.window_id )
-          {
-            if( this->window[ev.key.window_id - 1].save_screenshot( OUTPUT_SCREENSHOT_FILENAME ) == false )
-            {
-              nom::DialogMessageBox( APP_NAME, "ERROR: Could not save screen-shot");
-              break;
-            } // end save_screenshot err check
-          } // end window_id check
-          break;
-        }
-
-        // Toggle full-screen
-        case SDLK_f:
-        {
-          if ( this->window[ev.key.window_id - 1].window_id() == ev.key.window_id )
-          {
-            this->window[ev.key.window_id - 1].toggle_fullscreen();
-          } // end window_id match
-          break;
-        } // end SDLK_f
-      } // end switch key
-    } // end on_key_down
-*/
     /// \remarks Implements nom::EventHandler::on_user_event
     void on_user_event( const nom::UserEvent& ev )
     {

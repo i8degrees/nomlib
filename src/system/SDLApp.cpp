@@ -78,7 +78,7 @@ void SDLApp::on_event( SDL_Event* ev )
   // if( this->on_map( event ) == true ) return;
 
   // First, handle our events
-  Input::on_input( ev );
+  EventHandler::on_input( ev );
 
   // Next, handle the state's events
   this->states.process_events( ev );
@@ -99,9 +99,9 @@ void SDLApp::on_draw ( IDrawable::RenderTarget& target )
 void SDLApp::on_window_close( const Event& ev )
 {
   // A call is made here to the virtual method being re-implemented here in
-  // order to catch debugging output when the applicable define(s) are compiled
-  // in; see also Input.hpp.
-  Input::on_window_close( ev );
+  // order to catch debugging output with debug builds compiled in; see
+  // EventHandler.hpp.
+  EventHandler::on_window_close( ev );
 
   this->on_app_quit( ev );
 }
@@ -109,9 +109,9 @@ void SDLApp::on_window_close( const Event& ev )
 void SDLApp::on_app_quit( const Event& ev )
 {
   // A call is made here to the virtual method being re-implemented here in
-  // order to catch debugging output when the applicable define(s) are compiled
-  // in; see also Input.hpp.
-  Input::on_app_quit( ev );
+  // order to catch debugging output with debug builds compiled in; see
+  // EventHandler.hpp.
+  EventHandler::on_app_quit( ev );
 
   this->quit();
 }

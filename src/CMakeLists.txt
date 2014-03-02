@@ -125,7 +125,7 @@ set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/StateMachine.cpp
       ${SRC_DIR}/system/ObjectCache.cpp
       ${SRC_DIR}/system/SDLApp.cpp
-      ${SRC_DIR}/system/Input.cpp
+      ${SRC_DIR}/system/EventHandler.cpp
       ${SRC_DIR}/system/AnimationTimer.cpp
       ${SRC_DIR}/system/Timer.cpp
       ${SRC_DIR}/system/events/Action.cpp

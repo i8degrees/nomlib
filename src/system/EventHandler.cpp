@@ -26,12 +26,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/Input.hpp"
+#include "nomlib/system/EventHandler.hpp"
 
 namespace nom {
 
-Input::Input( void ) :
-  joystick_ { Input::JoystickUniquePtr( nullptr, priv::Free_Joystick ) },
+EventHandler::EventHandler( void ) :
+  joystick_ { EventHandler::JoystickUniquePtr( nullptr, priv::Free_Joystick ) },
   joystick_id_ ( 0 )
 {
   NOM_LOG_TRACE( NOM );
@@ -65,12 +65,12 @@ Input::Input( void ) :
   }
 }
 
-Input::~Input( void )
+EventHandler::~EventHandler( void )
 {
   NOM_LOG_TRACE( NOM );
 }
 
-bool Input::on_input( SDL_Event* event )
+bool EventHandler::on_input( SDL_Event* event )
 {
   Event ev;
 
@@ -695,7 +695,7 @@ bool Input::on_input( SDL_Event* event )
   return true;
 }
 
-void Input::on_user_event( const UserEvent& ev )
+void EventHandler::on_user_event( const UserEvent& ev )
 {
   // User implemented
 
@@ -709,7 +709,7 @@ void Input::on_user_event( const UserEvent& ev )
   #endif
 }
 
-void Input::on_app_quit( const Event& ev )
+void EventHandler::on_app_quit( const Event& ev )
 {
   // User implemented
 
@@ -721,7 +721,7 @@ void Input::on_app_quit( const Event& ev )
   #endif
 }
 
-void Input::on_window_shown( const Event& ev )
+void EventHandler::on_window_shown( const Event& ev )
 {
   // User implemented
 
@@ -737,7 +737,7 @@ void Input::on_window_shown( const Event& ev )
   #endif
 }
 
-void Input::on_window_hidden( const Event& ev )
+void EventHandler::on_window_hidden( const Event& ev )
 {
   // User implemented
 
@@ -753,7 +753,7 @@ void Input::on_window_hidden( const Event& ev )
   #endif
 }
 
-void Input::on_window_exposed( const Event& ev )
+void EventHandler::on_window_exposed( const Event& ev )
 {
   // User implemented
 
@@ -769,7 +769,7 @@ void Input::on_window_exposed( const Event& ev )
   #endif
 }
 
-void Input::on_window_moved( const Event& ev )
+void EventHandler::on_window_moved( const Event& ev )
 {
   // User implemented
 
@@ -785,7 +785,7 @@ void Input::on_window_moved( const Event& ev )
   #endif
 }
 
-void Input::on_window_resized( const Event& ev )
+void EventHandler::on_window_resized( const Event& ev )
 {
   // User implemented
 
@@ -801,7 +801,7 @@ void Input::on_window_resized( const Event& ev )
   #endif
 }
 
-void Input::on_window_size_changed( const Event& ev )
+void EventHandler::on_window_size_changed( const Event& ev )
 {
   // User implemented
 
@@ -817,7 +817,7 @@ void Input::on_window_size_changed( const Event& ev )
   #endif
 }
 
-void Input::on_window_minimized( const Event& ev )
+void EventHandler::on_window_minimized( const Event& ev )
 {
   // User implemented
 
@@ -833,7 +833,7 @@ void Input::on_window_minimized( const Event& ev )
   #endif
 }
 
-void Input::on_window_maximized( const Event& ev )
+void EventHandler::on_window_maximized( const Event& ev )
 {
   // User implemented
 
@@ -849,7 +849,7 @@ void Input::on_window_maximized( const Event& ev )
   #endif
 }
 
-void Input::on_window_restored( const Event& ev )
+void EventHandler::on_window_restored( const Event& ev )
 {
   // User implemented
 
@@ -865,7 +865,7 @@ void Input::on_window_restored( const Event& ev )
   #endif
 }
 
-void Input::on_window_mouse_focus( const Event& ev )
+void EventHandler::on_window_mouse_focus( const Event& ev )
 {
   // User implemented
 
@@ -881,7 +881,7 @@ void Input::on_window_mouse_focus( const Event& ev )
   #endif
 }
 
-void Input::on_window_mouse_focus_lost( const Event& ev )
+void EventHandler::on_window_mouse_focus_lost( const Event& ev )
 {
   // User implemented
 
@@ -897,7 +897,7 @@ void Input::on_window_mouse_focus_lost( const Event& ev )
   #endif
 }
 
-void Input::on_window_keyboard_focus( const Event& ev )
+void EventHandler::on_window_keyboard_focus( const Event& ev )
 {
   // User implemented
 
@@ -913,7 +913,7 @@ void Input::on_window_keyboard_focus( const Event& ev )
   #endif
 }
 
-void Input::on_window_keyboard_focus_lost( const Event& ev )
+void EventHandler::on_window_keyboard_focus_lost( const Event& ev )
 {
   // User implemented
 
@@ -929,7 +929,7 @@ void Input::on_window_keyboard_focus_lost( const Event& ev )
   #endif
 }
 
-void Input::on_window_close( const Event& ev )
+void EventHandler::on_window_close( const Event& ev )
 {
   // User implemented
 
@@ -945,7 +945,7 @@ void Input::on_window_close( const Event& ev )
   #endif
 }
 
-void Input::on_key_down( const Event& ev )
+void EventHandler::on_key_down( const Event& ev )
 {
   #if defined( NOM_DEBUG_SDL2_KEYBOARD_INPUT )
     NOM_LOG_TRACE( NOM );
@@ -968,7 +968,7 @@ void Input::on_key_down( const Event& ev )
   #endif
 }
 
-void Input::on_key_up( const Event& ev )
+void EventHandler::on_key_up( const Event& ev )
 {
   // User implemented
 
@@ -985,7 +985,7 @@ void Input::on_key_up( const Event& ev )
   #endif
 }
 
-void Input::on_mouse_motion( const Event& ev )
+void EventHandler::on_mouse_motion( const Event& ev )
 {
   // User implemented
 
@@ -999,14 +999,14 @@ void Input::on_mouse_motion( const Event& ev )
     NOM_DUMP( ev.m_motion.x_rel );
     NOM_DUMP( ev.m_motion.y_rel );
     // FIXME: Handle the print out of the possible bit-mask values; see also
-    // remarks in Input.hpp.
+    // remarks in EventHandler.hpp.
     NOM_DUMP( NOM_SCAST( int, ev.m_motion.state ) );
     NOM_DUMP( ev.m_motion.window_id );
     NOM_DUMP( ev.m_motion.timestamp );
   #endif
 }
 
-void Input::on_mouse_wheel( const Event& ev )
+void EventHandler::on_mouse_wheel( const Event& ev )
 {
   // User implemented
 
@@ -1022,7 +1022,7 @@ void Input::on_mouse_wheel( const Event& ev )
   #endif
 }
 
-void Input::on_mouse_left_button_down( const Event& ev )
+void EventHandler::on_mouse_left_button_down( const Event& ev )
 {
   // User implemented
 
@@ -1041,7 +1041,7 @@ void Input::on_mouse_left_button_down( const Event& ev )
   #endif
 }
 
-void Input::on_mouse_middle_button_down( const Event& ev )
+void EventHandler::on_mouse_middle_button_down( const Event& ev )
 {
   // User implemented
 
@@ -1060,7 +1060,7 @@ void Input::on_mouse_middle_button_down( const Event& ev )
   #endif
 }
 
-void Input::on_mouse_right_button_down( const Event& ev )
+void EventHandler::on_mouse_right_button_down( const Event& ev )
 {
   // User implemented
 
@@ -1079,7 +1079,7 @@ void Input::on_mouse_right_button_down( const Event& ev )
   #endif
 }
 
-void Input::on_mouse_button_four_down( const Event& ev )
+void EventHandler::on_mouse_button_four_down( const Event& ev )
 {
   // User implemented
 
@@ -1098,7 +1098,7 @@ void Input::on_mouse_button_four_down( const Event& ev )
   #endif
 }
 
-void Input::on_mouse_button_five_down( const Event& ev )
+void EventHandler::on_mouse_button_five_down( const Event& ev )
 {
   // User implemented
 
@@ -1117,7 +1117,7 @@ void Input::on_mouse_button_five_down( const Event& ev )
   #endif
 }
 
-void Input::on_mouse_left_button_up( const Event& ev )
+void EventHandler::on_mouse_left_button_up( const Event& ev )
 {
   // User implemented
 
@@ -1136,7 +1136,7 @@ void Input::on_mouse_left_button_up( const Event& ev )
   #endif
 }
 
-void Input::on_mouse_middle_button_up( const Event& ev )
+void EventHandler::on_mouse_middle_button_up( const Event& ev )
 {
   // User implemented
 
@@ -1155,7 +1155,7 @@ void Input::on_mouse_middle_button_up( const Event& ev )
   #endif
 }
 
-void Input::on_mouse_right_button_up( const Event& ev )
+void EventHandler::on_mouse_right_button_up( const Event& ev )
 {
   // User implemented
 
@@ -1174,7 +1174,7 @@ void Input::on_mouse_right_button_up( const Event& ev )
   #endif
 }
 
-void Input::on_mouse_button_four_up( const Event& ev )
+void EventHandler::on_mouse_button_four_up( const Event& ev )
 {
   // User implemented
 
@@ -1193,7 +1193,7 @@ void Input::on_mouse_button_four_up( const Event& ev )
   #endif
 }
 
-void Input::on_mouse_button_five_up( const Event& ev )
+void EventHandler::on_mouse_button_five_up( const Event& ev )
 {
   // User implemented
 
@@ -1212,7 +1212,7 @@ void Input::on_mouse_button_five_up( const Event& ev )
   #endif
 }
 
-void Input::on_joy_axis( const Event& ev )
+void EventHandler::on_joy_axis( const Event& ev )
 {
   // User implemented
 
@@ -1227,7 +1227,7 @@ void Input::on_joy_axis( const Event& ev )
   #endif
 }
 
-void Input::on_joy_button_down( const Event& ev )
+void EventHandler::on_joy_button_down( const Event& ev )
 {
   // User implemented
 
@@ -1242,7 +1242,7 @@ void Input::on_joy_button_down( const Event& ev )
   #endif
 }
 
-void Input::on_joy_button_up( const Event& ev )
+void EventHandler::on_joy_button_up( const Event& ev )
 {
   // User implemented
 
@@ -1257,7 +1257,7 @@ void Input::on_joy_button_up( const Event& ev )
   #endif
 }
 
-void Input::on_joystick_add( void )
+void EventHandler::on_joystick_add( void )
 {
   // User implemented
 
@@ -1265,7 +1265,7 @@ void Input::on_joystick_add( void )
     NOM_LOG_TRACE( NOM );
   #endif
 }
-void Input::on_joystick_remove( void )
+void EventHandler::on_joystick_remove( void )
 {
   // User implemented
 
@@ -1274,7 +1274,7 @@ void Input::on_joystick_remove( void )
   #endif
 }
 
-void Input::on_touch_motion( const Event& ev )
+void EventHandler::on_touch_motion( const Event& ev )
 {
   // User implemented
 
@@ -1293,7 +1293,7 @@ void Input::on_touch_motion( const Event& ev )
   #endif
 }
 
-void Input::on_touch_down( const Event& ev )
+void EventHandler::on_touch_down( const Event& ev )
 {
   // User implemented
 
@@ -1312,7 +1312,7 @@ void Input::on_touch_down( const Event& ev )
   #endif
 }
 
-void Input::on_touch_up( const Event& ev )
+void EventHandler::on_touch_up( const Event& ev )
 {
   // User implemented
 
@@ -1331,7 +1331,7 @@ void Input::on_touch_up( const Event& ev )
   #endif
 }
 
-void Input::on_gesture( const Event& ev )
+void EventHandler::on_gesture( const Event& ev )
 {
   // User implemented
 
@@ -1348,7 +1348,7 @@ void Input::on_gesture( const Event& ev )
   #endif
 }
 
-void Input::on_drag_drop( const Event& ev )
+void EventHandler::on_drag_drop( const Event& ev )
 {
   // User implemented
 
@@ -1360,7 +1360,7 @@ void Input::on_drag_drop( const Event& ev )
   #endif
 }
 
-void Input::on_text_input( const Event& ev )
+void EventHandler::on_text_input( const Event& ev )
 {
   // User implemented
 
@@ -1374,7 +1374,7 @@ void Input::on_text_input( const Event& ev )
   #endif
 }
 
-void Input::on_text_edit( const Event& ev )
+void EventHandler::on_text_edit( const Event& ev )
 {
   // User implemented
 
@@ -1390,7 +1390,7 @@ void Input::on_text_edit( const Event& ev )
   #endif
 }
 
-bool Input::poll_event( SDL_Event* ev )
+bool EventHandler::poll_event( SDL_Event* ev )
 {
   if ( SDL_PollEvent( ev ) == 1 )
   {

@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/Input.hpp"
+#include "nomlib/system/EventHandler.hpp"
 #include "nomlib/system/Timer.hpp"
 #include "nomlib/system/StateMachine.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
@@ -45,7 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Convenience template class for video games
-class SDLApp: public Input
+class SDLApp: public EventHandler
 {
   public:
     typedef SDLApp* RawPtr;
@@ -80,13 +80,13 @@ class SDLApp: public Input
     /// away with this!
     virtual void on_draw( IDrawable::RenderTarget& );
 
-    /// \brief Implements the nom::Input::on_window_close method.
+    /// \brief Implements the nom::EventHandler::on_window_close method.
     ///
     /// \remarks The default implementation is to let the SDLApp::on_app_quit
     /// method handle things for us.
     virtual void on_window_close( const Event& ev );
 
-    /// \brief Implements the nom::Input::on_app_quit method.
+    /// \brief Implements the nom::EventHandler::on_app_quit method.
     ///
     /// \remarks The default implementation is to let the SDLApp::quit method
     /// handle things for us.

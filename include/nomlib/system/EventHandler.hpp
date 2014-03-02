@@ -121,10 +121,8 @@ enum PSXBUTTON
   PSBUTTON          = 16
 };
 
-/// \brief High-level events handling
-///
-/// \TODO Rename to EventHandler.
-class Input
+/// \brief High-level events handling.
+class EventHandler
 {
   public:
     typedef std::unique_ptr<SDL_Joystick, void (*)(SDL_Joystick*)> JoystickUniquePtr;
@@ -132,12 +130,12 @@ class Input
     /// \brief Default constructor.
     ///
     /// \remarks The joystick subsystem is initialized here.
-    Input( void );
+    EventHandler( void );
 
     /// \brief Destructor.
     ///
     /// \remarks The joystick subsystem is shutdown within nom::SDLApp.
-    virtual ~Input( void );
+    virtual ~EventHandler( void );
 
     /// \brief The main events handler (think: processor).
     ///

@@ -65,7 +65,7 @@ const nom::int32 USER_EVENT_DEBUG = 0;
 
 /// \brief Usage example
 /// \remarks For unit testing: ensure that library is compiled with
-/// the appropriate defines enabled within Input.hpp.
+/// the appropriate defines enabled within EventHandler.hpp.
 class App: public nom::SDLApp
 {
   public:
@@ -254,14 +254,12 @@ class App: public nom::SDLApp
       } // end switch key
     } // end on_key_down
 */
-
-    /// \brief Event handler for user events.
-    ///
-    /// \remarks Implements nom::Input::on_user_event
+    /// \remarks Implements nom::EventHandler::on_user_event
     void on_user_event( const nom::UserEvent& ev )
     {
-      // Not necessary (only for debug builds with the DEBUG preprocessors;
-      // see Input.hpp).
+      // A call is made here to the virtual method being re-implemented here in
+      // order to catch debugging output with debug builds compiled in; see
+      // EventHandler.hpp.
       // Input::on_user_event( ev );
 
       if( ev.code == USER_EVENT_DEBUG )

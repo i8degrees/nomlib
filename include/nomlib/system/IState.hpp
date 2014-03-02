@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_SYSTEM_ISTATE_HPP
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/Input.hpp"
+#include "nomlib/system/EventHandler.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
@@ -38,7 +38,7 @@ namespace nom {
 /// \brief Abstract interface for game states
 ///
 /// \remarks See also nom::StateMachine, nom::SDLApp
-class IState: public Input
+class IState: public EventHandler
 {
   public:
     typedef std::unique_ptr<IState> UniquePtr;

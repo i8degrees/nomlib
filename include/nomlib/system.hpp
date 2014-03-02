@@ -45,11 +45,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/Timer.hpp>
 #include <nomlib/system/clock.hpp>
 #include <nomlib/system/make_unique.hpp>
-#include <nomlib/system/EventDispatcher.hpp>
 #include <nomlib/system/AnimationTimer.hpp>
 #include <nomlib/system/init.hpp>
 #include <nomlib/system/SDL_helpers.hpp>
 #include <nomlib/system/events/EventCallback.hpp>
+#include <nomlib/system/events/EventDispatcher.hpp>
 #include <nomlib/system/events/Action.hpp>
 #include <nomlib/system/events/Event.hpp>
 

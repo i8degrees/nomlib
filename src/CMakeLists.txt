@@ -118,7 +118,6 @@ set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/SDL_helpers.cpp
       ${SRC_DIR}/system/init.cpp
       ${SRC_DIR}/system/dialog_messagebox.cpp
-      ${SRC_DIR}/system/EventDispatcher.cpp
       ${SRC_DIR}/system/Path.cpp
       ${SRC_DIR}/system/File.cpp
       ${SRC_DIR}/system/clock.cpp
@@ -131,6 +130,7 @@ set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/Timer.cpp
       ${SRC_DIR}/system/events/Action.cpp
       ${SRC_DIR}/system/events/EventCallback.cpp
+      ${SRC_DIR}/system/events/EventDispatcher.cpp
       ${SRC_DIR}/system/events/UserEvent.cpp
     )
 

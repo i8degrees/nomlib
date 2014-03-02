@@ -50,4 +50,11 @@ Action::Action( uint32 type, uint32 event, const EventCallback& method ) :
   // NOM_LOG_TRACE( NOM );
 }
 
+void Action::clear( void )
+{
+  this->type = 0;
+  this->event = 0;
+  this->callback = EventCallback(); // NULL
+}
+
 } // namespace nom

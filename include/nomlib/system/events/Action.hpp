@@ -47,6 +47,9 @@ struct Action
   /// \brief Construct a full nom::Action event.
   Action( uint32 type, uint32 event, const EventCallback& method );
 
+  // \brief Re-initialize the instance with default values.
+  void clear( void );
+
   /// \brief The input device; keyboard, mouse, joystick, finger touch and so
   /// on.
   ///

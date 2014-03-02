@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_EVENT_DISPATCHER_HPP
-#define NOMLIB_SDL2_EVENT_DISPATCHER_HPP
+#ifndef NOMLIB_SDL2_SYSTEM_EVENTS_DISPATCHER_HPP
+#define NOMLIB_SDL2_SYSTEM_EVENTS_DISPATCHER_HPP
 
 #include <iostream>
 #include <string>
@@ -35,42 +35,45 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
+#include "nomlib/system/clock.hpp"
+#include "nomlib/system/events/UserEvent.hpp"
 
 namespace nom {
 
+/// \brief Events dispatcher; a wrapper for SDL2 user events API.
 class EventDispatcher
 {
   public:
-    /// Definition type of the event we are dispatching
-    enum UserEvent: int32
-    {
-      Unknown = 0,
-      AI,
-      Animation,
-      Application,
-      Audio,
-      General,
-      Library,
-      State,
-      UI
-    };
+    /// \brief Default constructor.
+    EventDispatcher( void );
 
-    EventDispatcher ( void );
-    ~EventDispatcher ( void );
+    /// \brief Destructor.
+    ~EventDispatcher( void );
 
-    /// Internal method wrapper for dispatch
+    /// \brief Dispatch an event.
     ///
-    /// \TODO Use SDL2's register event function; as per SDL2 wiki docs for
-    /// SDL_UserEvent.
-    int32 push ( SDL_Event* event, int32 code, void* params );
+    /// \returns Boolean TRUE when a message has successfully been dispatched or
+    /// boolean FALSE on failure, ~~such as when we have hit the allocation cap
+    /// on user-defined events.~~
+    bool dispatch( const UserEvent& ev );
 
-    /// Dispatch an event
+  private:
+    /// \brief Internal method wrapper for dispatch.
+    bool push_event( const UserEvent& ev );
+
+    /// \brief Allocate a set of user-defined events.
     ///
-    /// \TODO Use SDL2's register event function; as per SDL2 wiki docs for
-    /// SDL_UserEvent.
-    int32 dispatch ( enum UserEvent code, void* params = nullptr );
+    /// \param The number of events to be allocated.
+    ///
+    /// \returns ~~The beginning event number for the set of events or (uint32)-1
+    /// if there are not enough user-defined events left.~~
+    ///
+    /// \NOTE This method call is currently not used; there may be a potential
+    /// risk of us running out of room in SDL2's events queue! See
+    /// our class file (EventDispatcher.cpp) for the incomplete, broken code;
+    /// I could not ever get more than one user event dispatched.
+    uint32 register_events( int num_events );
 };
-
 
 } // namespace nom
 

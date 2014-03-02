@@ -30,49 +30,62 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-EventDispatcher::EventDispatcher ( void )
+EventDispatcher::EventDispatcher( void )
 {
-NOM_LOG_TRACE ( NOM );
+  // NOM_LOG_TRACE( NOM );
 }
 
-EventDispatcher::~EventDispatcher ( void )
+EventDispatcher::~EventDispatcher( void )
 {
-NOM_LOG_TRACE ( NOM );
+  // NOM_LOG_TRACE( NOM );
 }
 
-int32 EventDispatcher::push ( SDL_Event* event, int32 code, void* params )
+bool EventDispatcher::dispatch( const UserEvent& ev )
 {
-  SDL_UserEvent user_event;
-
-  user_event.type = SDL_USEREVENT;
-  user_event.code = code;
-  user_event.data1 = params;
-  user_event.data2 = nullptr;
-
-  event->type = SDL_USEREVENT;
-  event->user = user_event;
-
-  if ( SDL_PushEvent ( event ) != 1 )
+  if( this->push_event( ev ) == false )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return -1;
+    NOM_LOG_ERR( NOM, "ERROR: Could not dispatch event." );
+    return false;
   }
 
-  return 0;
+  return true;
 }
 
-int32 EventDispatcher::dispatch ( enum UserEvent code, void* params )
+bool EventDispatcher::push_event( const UserEvent& ev )
 {
+  // uint32 event_type = this->register_events( 1 );
+
+  // if( event_type == ( (uint32) - 1 ) ) // Error
+  // {
+    // NOM_LOG_ERR( NOM, "ERROR: Out of room for user-defined events." );
+    // return false;
+  // }
+
   SDL_Event event;
+  SDL_zero( event ); // Initialize our event structure
 
-  if ( this->push ( &event, static_cast<int32> ( code ), nullptr ) != 0 )
+  // event.type = event_type;
+  // event.user.type = event_type;
+  event.type = SDL_USEREVENT;
+  event.user.type = SDL_USEREVENT;
+  event.user.code = ev.code;
+  event.user.data1 = ev.data1;
+  event.user.data2 = ev.data2;
+  event.user.timestamp = ev.timestamp;
+  event.user.windowID = ev.window_id;
+
+  if( SDL_PushEvent( &event ) != 1 )
   {
-NOM_LOG_ERR ( NOM, "Could not dispatch event." );
-    return -1;
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
   }
 
-  return 0;
+  return true;
 }
 
+uint32 EventDispatcher::register_events( int num_events )
+{
+  return SDL_RegisterEvents( num_events );
+}
 
 } // namespace nom

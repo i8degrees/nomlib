@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/Sleep.hpp"
+#include "nomlib/system/clock.hpp"
 #include "nomlib/audio/AL/OpenAL.hpp"
 #include "nomlib/audio/AL/SoundBuffer.hpp"
 #include "nomlib/audio/AL/SoundSource.hpp"

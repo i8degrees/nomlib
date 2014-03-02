@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-const std::string time ( void )
+const std::string time( void )
 {
   time_t timer;
 
@@ -39,8 +39,8 @@ const std::string time ( void )
   #if defined( NOM_PLATFORM_WINDOWS )
     char current_time[TIME_STRING_SIZE] = "\0"; // null-terminated
     errno_t err;
-    timer = std::time ( NULL );
-    err = ctime_s ( current_time, TIME_STRING_SIZE , &timer );
+    timer = std::time( NULL );
+    err = ctime_s( current_time, TIME_STRING_SIZE , &timer );
 
     // Return a null-terminated string on err
     if ( err != 0 )
@@ -56,9 +56,19 @@ const std::string time ( void )
       return std::string( current_time );
     }
   #else // Assume POSIX Unix variant
-    timer = std::time ( NULL );
-    return ctime ( &timer );
+    timer = std::time( NULL );
+    return ctime( &timer );
   #endif
+}
+
+uint32 ticks( void )
+{
+  return SDL_GetTicks();
+}
+
+void sleep( uint32 milliseconds )
+{
+  SDL_Delay ( std::max ( milliseconds, static_cast<uint32> ( 10 ) ) );
 }
 
 } // namespace nom

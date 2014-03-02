@@ -29,8 +29,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_CLOCK_HPP
 #define NOMLIB_SYSTEM_CLOCK_HPP
 
+#include <iostream>
 #include <string>
 #include <ctime>
+
+#include "SDL.h" // Used for ticks & sleep implementations
 
 #include "nomlib/config.hpp"
 
@@ -57,7 +60,17 @@ const nom::size TIME_STRING_SIZE = 26;
 ///
 /// \todo Move Windows OS supporting code from **system/clock.cpp** to
 /// **system/windows.cpp**.
-const std::string time ( void );
+const std::string time( void );
+
+/// SDL helper function
+///
+/// Wrapper for SDL_GetTicks.
+uint32 ticks( void );
+
+/// SDL_Delay wrapper
+///
+/// Values below 10 milliseconds are clamped to 10
+void sleep( uint32 milliseconds );
 
 } // namespace nom
 

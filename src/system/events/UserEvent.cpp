@@ -26,51 +26,40 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_EVENTS_EVENT_HPP
-#define NOMLIB_SYSTEM_EVENTS_EVENT_HPP
-
-#include "nomlib/config.hpp"
-
-#include "nomlib/system/events/DragDropEvent.hpp"
-#include "nomlib/system/events/JoystickAxisEvent.hpp"
-#include "nomlib/system/events/JoystickButtonEvent.hpp"
-#include "nomlib/system/events/FingerEvent.hpp"
-#include "nomlib/system/events/FingerTouchEvent.hpp"
-#include "nomlib/system/events/GestureEvent.hpp"
-#include "nomlib/system/events/KeyboardEvent.hpp"
-#include "nomlib/system/events/MouseButtonEvent.hpp"
-#include "nomlib/system/events/MouseMotionEvent.hpp"
-#include "nomlib/system/events/QuitEvent.hpp"
-#include "nomlib/system/events/TextEditingEvent.hpp"
-#include "nomlib/system/events/TextInputEvent.hpp"
-#include "nomlib/system/events/WheelEvent.hpp"
-#include "nomlib/system/events/WindowEvent.hpp"
 #include "nomlib/system/events/UserEvent.hpp"
 
 namespace nom {
 
-/// \brief Event handling types.
-union Event
+UserEvent::UserEvent( void ) :
+  type( SDL_USEREVENT ),
+  code( 0 ),
+  data1( nullptr ),
+  data2( nullptr ),
+  window_id( 0 ),
+  timestamp( 0 )
 {
-  /// \brief The event type.
-  uint32 type;
+  // NOM_LOG_TRACE( NOM );
+}
 
-  QuitEvent quit;
-  WindowEvent window;
-  KeyboardEvent key;
-  MouseMotionEvent m_motion;
-  MouseButtonEvent mouse;
-  WheelEvent wheel;
-  JoystickButtonEvent jbutton;
-  JoystickAxisEvent jaxis;
-  FingerTouchEvent touch;
-  GestureEvent gesture;
-  DragDropEvent drop;
-  TextInputEvent text;
-  TextEditingEvent edit;
-  // UserEvent user;
-};
+UserEvent::~UserEvent( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
+
+UserEvent::UserEvent( int32 code, void* data1, void* data2, uint32 window_id ) :
+  type( SDL_USEREVENT ),
+  code( code ),
+  data1( data1 ),
+  data2( data2 ),
+  window_id( window_id ),
+  timestamp{ ticks() }
+{
+  // NOM_LOG_TRACE( NOM );
+}
+
+EventCallback* UserEvent::get_callback( void ) const
+{
+  return NOM_SCAST( EventCallback*, data2 );
+}
 
 } // namespace nom
-
-#endif // include guard defined

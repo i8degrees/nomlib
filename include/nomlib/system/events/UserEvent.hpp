@@ -29,15 +29,35 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_EVENTS_USER_EVENT_HPP
 #define NOMLIB_SYSTEM_EVENTS_USER_EVENT_HPP
 
-// #include "SDL.h"
-
 #include "nomlib/config.hpp"
+#include "nomlib/system/clock.hpp"
 
 namespace nom {
+
+// Forward declarations
+class EventCallback;
 
 /// \brief A structure containing information on an user event.
 struct UserEvent
 {
+  /// \brief Default constructor.
+  UserEvent( void );
+
+  /// \brief Destructor.
+  ~UserEvent( void );
+
+  /// \brief Constructor for initializing all data fields.
+  ///
+  /// \param code       User-defined event code.
+  /// \param data1      User-defined data pointer.
+  /// \param data2      User-defined data pointer.
+  /// \param window_id  The associated window ID, if any.
+  UserEvent( int32 code, void* data1, void* data2, uint32 window_id );
+
+  /// \brief Convenience getter for nom::EventCallback objects stored in the
+  /// data2 field.
+  EventCallback* get_callback( void ) const;
+
   /// \brief The event type.
   ///
   /// \remarks SDL_USEREVENT.

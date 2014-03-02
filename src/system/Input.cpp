@@ -301,14 +301,17 @@ bool Input::on_input( SDL_Event* event )
 
     case SDL_USEREVENT:
     {
-      ev.user.type = event->user.type;
-      ev.user.code = event->user.code;
-      ev.user.data1 = event->user.data1;
-      ev.user.data2 = event->user.data2;
-      ev.user.window_id = event->user.windowID;
-      ev.user.timestamp = event->user.timestamp;
+      UserEvent user_event;
 
-      this->on_user_event( ev );
+      user_event.type = event->type;
+      user_event.type = event->user.type;
+      user_event.code = event->user.code;
+      user_event.data1 = event->user.data1;
+      user_event.data2 = event->user.data2;
+      user_event.window_id = event->user.windowID;
+      user_event.timestamp = event->user.timestamp;
+
+      this->on_user_event( user_event );
       break;
     }
 
@@ -692,19 +695,17 @@ bool Input::on_input( SDL_Event* event )
   return true;
 }
 
-void Input::on_user_event( const Event& ev )
+void Input::on_user_event( const UserEvent& ev )
 {
   // User implemented
 
   #if defined( NOM_DEBUG_SDL2_USER_EVENT )
     NOM_LOG_TRACE( NOM );
     NOM_DUMP( ev.type );
-    NOM_DUMP( ev.user.type );
-    NOM_DUMP( ev.user.code );
-    // NOM_DUMP( ev.user.data1 );
-    // NOM_DUMP( ev.user.data2 );
-    NOM_DUMP( ev.user.window_id );
-    NOM_DUMP( ev.user.timestamp );
+    NOM_DUMP( ev.type );
+    NOM_DUMP( ev.code );
+    NOM_DUMP( ev.window_id );
+    NOM_DUMP( ev.timestamp );
   #endif
 }
 

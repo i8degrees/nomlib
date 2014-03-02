@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_EVENTS_CALLBACK_HPP
-#define NOMLIB_SYSTEM_EVENTS_CALLBACK_HPP
+#ifndef NOMLIB_SYSTEM_EVENTS_EVENT_CALLBACK_HPP
+#define NOMLIB_SYSTEM_EVENTS_EVENT_CALLBACK_HPP
 
 #include <functional>
 
@@ -40,6 +40,7 @@ class EventCallback
   public:
     typedef EventCallback SelfType;
     typedef std::function<void()> ValueType;
+    typedef SelfType* RawPtr;
 
     /// \brief Default constructor.
     EventCallback( void );
@@ -47,6 +48,7 @@ class EventCallback
     /// \brief Destructor.
     ~EventCallback( void );
 
+    /// \brief Construct an object and initialize its callback (object method).
     EventCallback( const ValueType& callback );
 
     /// \brief Copy constructor.
@@ -55,13 +57,21 @@ class EventCallback
     /// \brief Copy assignment operator.
     SelfType& operator =( const SelfType& other );
 
+    /// \brief Obtain a pointer to the object.
+    RawPtr get( void );
+
+    /// \brief Query the validity of the object.
     bool valid( void ) const;
 
-    /// \brief Obtain the assigned callback method.
+    /// \brief Obtain a reference to the assigned callback object method.
     const ValueType& method( void ) const;
 
-    /// \brief Functor method; execute the assigned method.
+    /// \brief C++ functor; execute the assigned object method.
     void operator() ( void ) const;
+
+    /// \brief Convenience method for executing the assigned callback object
+    /// method.
+    void execute( void ) const;
 
   private:
     ValueType method_;

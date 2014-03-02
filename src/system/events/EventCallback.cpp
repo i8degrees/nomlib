@@ -31,35 +31,37 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 EventCallback::EventCallback( void ) :
-  method_ ( nullptr )
+  method_( nullptr )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-/// \brief Destructor.
 EventCallback::~EventCallback( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
 EventCallback::EventCallback( const ValueType& callback ) :
-  method_ ( callback )
+  method_( callback )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-/// \brief Copy constructor.
 EventCallback::EventCallback( const SelfType& copy )
 {
   this->method_ = copy.method();
 }
 
-/// \brief Copy assignment operator.
 EventCallback::SelfType& EventCallback::operator =( const SelfType& other )
 {
   this->method_ = other.method();
 
   return *this;
+}
+
+EventCallback::RawPtr EventCallback::get( void )
+{
+  return this;
 }
 
 bool EventCallback::valid( void ) const
@@ -75,6 +77,11 @@ const EventCallback::ValueType& EventCallback::method( void ) const
 }
 
 void EventCallback::operator() ( void ) const
+{
+  this->method_();
+}
+
+void EventCallback::execute( void ) const
 {
   this->method_();
 }

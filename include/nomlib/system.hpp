@@ -50,7 +50,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/SDL_helpers.hpp>
 #include <nomlib/system/events/EventCallback.hpp>
 #include <nomlib/system/events/EventDispatcher.hpp>
-#include <nomlib/system/events/Action.hpp>
+#include <nomlib/system/events/InputAction.hpp>
 #include <nomlib/system/events/InputContext.hpp>
 #include <nomlib/system/events/InputMapper.hpp>
 #include <nomlib/system/events/Event.hpp>

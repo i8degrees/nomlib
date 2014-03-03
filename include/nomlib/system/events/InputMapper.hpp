@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 // #include "nomlib/system/events/EventCallback.hpp"
-#include "nomlib/system/events/Action.hpp" // nom::InputMapping
+#include "nomlib/system/events/InputAction.hpp" // nom::InputMapping
 
 namespace nom {
 

@@ -128,7 +128,7 @@ set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/EventHandler.cpp
       ${SRC_DIR}/system/AnimationTimer.cpp
       ${SRC_DIR}/system/Timer.cpp
-      ${SRC_DIR}/system/events/Action.cpp
+      ${SRC_DIR}/system/events/InputAction.cpp
       ${SRC_DIR}/system/events/EventCallback.cpp
       ${SRC_DIR}/system/events/EventDispatcher.cpp
       ${SRC_DIR}/system/events/InputContext.cpp

@@ -30,38 +30,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-EventHandler::EventHandler( void ) :
-  joystick_ { EventHandler::JoystickUniquePtr( nullptr, priv::Free_Joystick ) },
-  joystick_id_ ( 0 )
+EventHandler::EventHandler( void )
 {
   NOM_LOG_TRACE( NOM );
 
-  if ( SDL_WasInit( SDL_INIT_JOYSTICK ) == false )
+  if( this->joystick_.initialize() == false )
   {
-    if ( SDL_InitSubSystem( SDL_INIT_JOYSTICK ) < 0 )
-    {
-      NOM_LOG_ERR( NOM, SDL_GetError() );
-      return;
-    }
-  }
-
-  NOM_LOG_INFO( NOM, std::to_string( SDL_NumJoysticks() ) + " joysticks were found" );
-
-  if ( SDL_NumJoysticks() > 0 )
-  {
-    this->joystick_.reset( SDL_JoystickOpen( 0 ) );
-
-    if ( this->joystick_.get() )
-    {
-      for( int idx = 0; idx < SDL_NumJoysticks(); idx++ )
-      {
-        NOM_LOG_INFO( NOM, SDL_JoystickNameForIndex( idx ) );
-      }
-
-      SDL_JoystickEventState( SDL_ENABLE );
-
-      this->joystick_id_ = SDL_JoystickInstanceID( this->joystick_.get() );
-    }
+    // TODO: Handle case
   }
 }
 
@@ -552,7 +527,7 @@ bool EventHandler::on_input( SDL_Event* event )
     case SDL_JOYBUTTONDOWN:
     {
       ev.jbutton.type = event->jbutton.type;
-      ev.jbutton.id = this->joystick_id_;
+      ev.jbutton.id = this->joystick_.id();
       ev.jbutton.button = event->jbutton.button;
       ev.jbutton.state = event->jbutton.state;
       // ev.jbutton.window_id = event->jbutton.windowID;
@@ -565,7 +540,7 @@ bool EventHandler::on_input( SDL_Event* event )
     case SDL_JOYBUTTONUP:
     {
       ev.jbutton.type = event->jbutton.type;
-      ev.jbutton.id = this->joystick_id_;
+      ev.jbutton.id = this->joystick_.id();
       ev.jbutton.button = event->jbutton.button;
       ev.jbutton.state = event->jbutton.state;
       // ev.jbutton.window_id = event->jbutton.windowID;
@@ -578,7 +553,7 @@ bool EventHandler::on_input( SDL_Event* event )
     case SDL_JOYAXISMOTION:
     {
       ev.jaxis.type = event->jaxis.type;
-      ev.jaxis.id = this->joystick_id_;
+      ev.jaxis.id = this->joystick_.id();
       ev.jaxis.axis = event->jaxis.axis;
       ev.jaxis.value = event->jaxis.value;
       // ev.jaxis.window_id = event->jaxis.windowID;

@@ -31,14 +31,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 #include <cstring>
-#include <memory>
-#include <map>
 
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/system/events/Event.hpp"
+#include "nomlib/system/Joystick.hpp"
 
 /// \brief Enable debugging output of quit (end program execution) events.
 // #define NOM_DEBUG_SDL2_QUIT_EVENT
@@ -90,43 +89,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief SDL mapping to individual PS3 axes.
-enum PSXAXES
-{
-  LEFTX = 0,
-  LEFTY = 1,
-  RIGHTX = 2,
-  RIGHTY = 3
-};
-
-/// \brief SDL mapping to individual PS3 controller buttons.
-enum PSXBUTTON
-{
-  SELECT            = 0,
-  JOYCLICKLEFT      = 1,
-  JOYCLICKRIGHT     = 2,
-  START             = 3,
-  UP                = 4,
-  RIGHT             = 5,
-  DOWN              = 6,
-  LEFT              = 7,
-  L2                = 8,
-  R2                = 9,
-  L1                = 10,
-  R1                = 11,
-  TRIANGLE          = 12,
-  CIRCLE            = 13,
-  CROSS             = 14,
-  SQUARE            = 15,
-  PSBUTTON          = 16
-};
-
 /// \brief High-level events handling.
 class EventHandler
 {
   public:
-    typedef std::unique_ptr<SDL_Joystick, void (*)(SDL_Joystick*)> JoystickUniquePtr;
-
     /// \brief Default constructor.
     ///
     /// \remarks The joystick subsystem is initialized here.
@@ -345,15 +311,14 @@ class EventHandler
     virtual void on_drag_drop( const Event& ev );
 
   private:
-    JoystickUniquePtr joystick_;
-    SDL_JoystickID joystick_id_;
+    Joystick joystick_;
 };
 
 } // namespace nom
 
 #endif // include guard defined
 
-/// \class nom::Input
+/// \class nom::EventHandler
 /// \ingroup system
 ///
 ///         [DESCRIPTION STUB]
@@ -368,4 +333,3 @@ class EventHandler
 ///
 /// 1. http://www.sdltutorials.com/sdl-app-states
 ///
-/// \TODO Implement SDL2's GameController API for Joysticks.

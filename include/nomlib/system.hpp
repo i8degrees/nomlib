@@ -42,6 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/File.hpp>
 #include <nomlib/system/SDLApp.hpp>
 #include <nomlib/system/EventHandler.hpp>
+#include <nomlib/system/Joystick.hpp>
 #include <nomlib/system/Timer.hpp>
 #include <nomlib/system/clock.hpp>
 #include <nomlib/system/make_unique.hpp>

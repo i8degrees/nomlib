@@ -40,7 +40,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/Timer.hpp"
 #include "nomlib/system/StateMachine.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
-#include "nomlib/system/events/Action.hpp" // nom::InputMapping
+#include "nomlib/system/events/InputMapper.hpp" // nom::InputMapper
+#include "nomlib/system/events/InputContext.hpp" // nom::InputContext
 
 namespace nom {
 
@@ -128,12 +129,6 @@ class SDLApp: public EventHandler
     virtual void pop_state ( IState::UniquePtr state, void_ptr data = nullptr );
     virtual void pop_state ( void_ptr data = nullptr );
 
-    /// \brief Insert an input mapping.
-    bool add_input_mapping( const std::string& key, const Action& action );
-
-    /// \brief Remove an input mapping.
-    bool remove_input_mapping( const std::string& key );
-
   protected:
     /// \brief Input events.
     SDL_Event event;
@@ -142,11 +137,9 @@ class SDLApp: public EventHandler
     StateMachine states;
 
     //GameStates* state_factory;
+    InputContext input_mapper;
+
   private:
-    bool valid_input_map( void );
-
-    bool on_map( const SDL_Event* ev );
-
     /// \brief Global application state.
     bool app_state_;
 
@@ -155,8 +148,6 @@ class SDLApp: public EventHandler
 
     /// \brief Global application timer.
     Timer app_timer_;
-
-    std::unique_ptr<InputMapping> input_map_;
 };
 
 } // namespace nom

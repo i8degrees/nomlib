@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_EVENTS_ACTION_HPP
-#define NOMLIB_SYSTEM_EVENTS_ACTION_HPP
+#ifndef NOMLIB_SYSTEM_EVENTS_INPUT_CONTEXT_HPP
+#define NOMLIB_SYSTEM_EVENTS_INPUT_CONTEXT_HPP
 
 #include <map>
 
@@ -35,45 +35,58 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/events/EventCallback.hpp"
+#include "nomlib/system/events/Action.hpp" // nom::InputMapping
 
 namespace nom {
 
-/// \brief Input event for mapping input to a state
-///
-/// \remarks See also nom::InputMapper, nom::InputContext, nom::InputState
-struct InputAction
+struct InputState
 {
-  typedef InputAction SelfType;
-  typedef std::pair<std::string, InputAction> Pair;
-
-  /// \brief Default constructor.
-  InputAction( void );
-
-  /// \brief Destructor.
-  ~InputAction( void );
-
-  /// \brief Construct a full nom::Action event.
-  InputAction( uint32 type, uint32 event, const EventCallback& method );
-
-  // \brief Re-initialize the instance with default values.
-  void clear( void );
-
-  /// \brief The input device; keyboard, mouse, joystick, finger touch and so
-  /// on.
-  ///
-  /// \remarks SDL_KEYDOWN, SDL_MOUSEBUTTONDOWN, ...
-  uint32 type;
-
-  /// \brief The type of event; key press, mouse click, joystick button and so
-  /// on.
-  uint32 event;
-
-  /// \brief The assigned callback to execute for the action.
-  EventCallback callback;
+  bool active_;
+  InputMapping actions_;
 };
 
-/// \TODO Relocate to Action?
-typedef std::multimap<std::string, InputAction> InputMapping;
+class InputContext
+{
+  public:
+    typedef InputContext SelfType;
+    // typedef std::pair<std::string, InputMapping> Pair;
+    typedef std::pair<std::string, InputState> Pair;
+    // typedef std::map<std::string, InputMapping> ContextMap;
+    typedef std::map<std::string, InputState> ContextMap;
+
+    /// \brief Default constructor.
+    InputContext( void );
+
+    /// \brief Destructor.
+    ~InputContext( void );
+
+    bool active( const std::string& state ) const;
+
+    /// \brief Insert an input mapping.
+    // bool add_input_mapping( const std::string& key, const Action& action );
+
+    /// \brief Remove an input mapping.
+    // bool remove_input_mapping( const std::string& key );
+
+    /// \brief Add an input mapping to the context map.
+    ///
+    /// \param state The name of the context.
+    bool add_context( const std::string& state, const InputMapping& map );
+
+    /// \brief Remove an input mapping from the context map.
+    ///
+    /// \param state The name of the context.
+    bool remove_context( const std::string& state );
+
+    bool activate_context( const std::string& state );
+    bool disable_context( const std::string& state );
+
+    bool on_input( const SDL_Event* ev );
+
+  private:
+    // InputMapping active_context_;
+    ContextMap contexts_;
+};
 
 } // namespace nom
 

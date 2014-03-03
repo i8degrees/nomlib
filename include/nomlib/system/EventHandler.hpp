@@ -143,6 +143,9 @@ class EventHandler
     /// when no events are pending.
     virtual bool on_input( SDL_Event* event );
 
+    /// \brief Query pending events.
+    virtual bool poll_event( SDL_Event* ev );
+
   protected:
     /// \brief The event handler for user-defined events.
     virtual void on_user_event( const UserEvent& ev );
@@ -340,9 +343,6 @@ class EventHandler
     /// \note The SDL2 documentation stated for CFBundleMIMETypes did not work
     /// for me.
     virtual void on_drag_drop( const Event& ev );
-
-    /// \brief Query pending events.
-    virtual bool poll_event( SDL_Event* ev );
 
   private:
     JoystickUniquePtr joystick_;

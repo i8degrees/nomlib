@@ -62,7 +62,6 @@ const nom::int32 WINDOW_HEIGHT = 448;
 const nom::int32 MAXIMUM_WINDOWS = 2;
 
 const nom::int32 USER_EVENT_DEBUG = 0;
-
 /// \brief Usage example
 /// \remarks For unit testing: ensure that library is compiled with
 /// the appropriate defines enabled within EventHandler.hpp.
@@ -115,28 +114,57 @@ class App: public nom::SDLApp
       }
 
       // Start out execution with both windows minimized.
-      nom::EventDispatcher dispatcher;
-      nom::EventCallback delegate1( [&] { this->minimize(0); } );
-      nom::EventCallback delegate2( [&] { this->minimize(1); } );
+      nom::EventDispatcher sender;
+      // nom::EventCallback delegate1( [&] { this->minimize(0); } );
+      // nom::EventCallback delegate2( [&] { this->minimize(1); } );
+      // sender.dispatch( nom::UserEvent( USER_EVENT_DEBUG, nullptr, NOM_SCAST( nom::EventCallback*, &delegate1 ), 0 ) );
+      // sender.dispatch( nom::UserEvent( USER_EVENT_DEBUG, nullptr, NOM_SCAST( nom::EventCallback*, &delegate2 ), 0 ) );
 
-      dispatcher.dispatch( nom::UserEvent( USER_EVENT_DEBUG, nullptr, NOM_SCAST( nom::EventCallback*, &delegate1 ), 0 ) );
-      dispatcher.dispatch( nom::UserEvent( USER_EVENT_DEBUG, nullptr, NOM_SCAST( nom::EventCallback*, &delegate2 ), 0 ) );
+      nom::InputMapper state0, state1;
 
       // C++ style syntax for adding an input map:
-      this->add_input_mapping ( "minimize_window_0",
-                                nom::Action (
-                                              SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT, nom::EventCallback( [&] { this->minimize(0); } )
-                                            )
-                              );
+      state0.add_input_mapping ( "minimize_window_0",
+                                  nom::InputAction  (
+                                                      SDL_MOUSEBUTTONDOWN,
+                                                      SDL_BUTTON_LEFT,
+                                                      nom::EventCallback( [&] { this->minimize(0); } )
+                                                    )
+                                );
 
       nom::EventCallback restore_callback( [&] { this->restore(0); } );
 
       // C style syntax for adding an input map:
-      nom::Action restore_window_0;
+      nom::InputAction restore_window_0;
       restore_window_0.type = SDL_MOUSEBUTTONDOWN;
       restore_window_0.event = SDL_BUTTON_RIGHT;
       restore_window_0.callback = restore_callback;
-      this->add_input_mapping( "restore_window_0", restore_window_0 );
+      state0.add_input_mapping( "restore_window_0", restore_window_0 );
+
+      state1.add_input_mapping( "minimize_window_0",
+                                nom::InputAction  (
+                                                    SDL_KEYDOWN,
+                                                    SDLK_1,
+                                                    nom::EventCallback( [&] { this->minimize(0); } )
+                                                  )
+                              );
+
+      restore_window_0.clear(); // Just in case!
+      restore_window_0.type = SDL_KEYDOWN;
+      restore_window_0.event = SDLK_2;
+      restore_window_0.callback = restore_callback;
+      // state0.add_input_mapping( "restore_window_0", restore_window_0 );
+      state1.add_input_mapping( "restore_window_0", restore_window_0 );
+
+      this->input_mapper.add_context( "state0", state0.get() );
+      this->input_mapper.add_context( "state1", state1.get() );
+
+      // this->input_mapper.disable_context( "state0" );
+      this->input_mapper.disable_context( "state1" );
+      if( this->input_mapper.active("state1") )
+      {
+        nom::DialogMessageBox( APP_NAME, "ERROR: Input context state1 is active." );
+        // return false;
+      }
 
       return true;
     } // end on_init

@@ -26,35 +26,46 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/events/Action.hpp"
+#ifndef NOMLIB_SYSTEM_EVENTS_INPUT_MAPPER_HPP
+#define NOMLIB_SYSTEM_EVENTS_INPUT_MAPPER_HPP
+
+#include <map>
+
+#include "SDL.h"
+
+#include "nomlib/config.hpp"
+// #include "nomlib/system/events/EventCallback.hpp"
+#include "nomlib/system/events/Action.hpp" // nom::InputMapping
 
 namespace nom {
 
-InputAction::InputAction( void ) :
-  type ( 0 ),
-  event( 0 )
+class InputMapper
 {
-  // NOM_LOG_TRACE( NOM );
-}
+  public:
+    typedef InputMapper SelfType;
 
-InputAction::~InputAction( void )
-{
-  // NOM_LOG_TRACE( NOM );
-}
+    /// \brief Default constructor.
+    InputMapper( void );
 
-InputAction::InputAction( uint32 type, uint32 event, const EventCallback& method ) :
-  type ( type ),
-  event( event ),
-  callback ( method )
-{
-  // NOM_LOG_TRACE( NOM );
-}
+    /// \brief Destructor.
+    ~InputMapper( void );
 
-void InputAction::clear( void )
-{
-  this->type = 0;
-  this->event = 0;
-  this->callback = EventCallback(); // NULL
-}
+    const InputMapping& get( void ) const;
+
+    /// \brief Insert an input mapping.
+    bool add_input_mapping( const std::string& key, const InputAction& action );
+
+    /// \brief Remove an input mapping.
+    bool remove_input_mapping( const std::string& key );
+
+    // bool valid_input_map( void );
+
+    // bool on_input( const SDL_Event* ev );
+
+  private:
+    InputMapping input_map_;
+};
 
 } // namespace nom
+
+#endif // include guard defined

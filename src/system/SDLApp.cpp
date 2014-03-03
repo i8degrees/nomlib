@@ -31,10 +31,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 SDLApp::SDLApp ( void ) :
-  //state_factory { new GameStates() }
-  app_state_ ( true ),
-  show_fps_ ( true ),
-  input_map_ { std::unique_ptr<InputMapping> ( nullptr ) }
+  //state_factory { new GameStates() },
+  // input_mapper { std::unique_ptr<InputMapping> ( nullptr ) },
+  app_state_( true ),
+  show_fps_( true )
 {
   NOM_LOG_TRACE( NOM );
 
@@ -83,7 +83,7 @@ void SDLApp::on_event( SDL_Event* ev )
   // Next, handle the state's events
   this->states.process_events( ev );
 
-  this->on_map( ev );
+  this->input_mapper.on_input( ev );
 }
 
 void SDLApp::on_update ( float delta )
@@ -193,97 +193,6 @@ void SDLApp::pop_state ( IState::UniquePtr state, void_ptr data )
 void SDLApp::pop_state ( void_ptr data )
 {
   this->states.pop_state( data );
-}
-
-bool SDLApp::add_input_mapping( const std::string& key, const Action& action )
-{
-  // First, we must initialize our input map if this is the first insertion.
-  if( ! this->valid_input_map() )
-  {
-    this->input_map_ = std::unique_ptr<InputMapping> ( new InputMapping() );
-  }
-
-  // Second, if we have an existing input map key, we must remove it, otherwise
-  // we segfault when jumping through game states.
-  auto itr = this->input_map_->find( key );
-
-  if( itr->second.callback.valid() )
-  {
-    this->remove_input_mapping( key );
-  }
-
-  // Finally, we can insert the new input mapping.
-  std::pair<std::string, Action> pair( key, action );
-  auto res = this->input_map_->insert( pair );
-
-  if( res.second ) return true;
-
-  return false;
-}
-
-bool SDLApp::remove_input_mapping( const std::string& key )
-{
-  if( this->valid_input_map() )
-  {
-    InputMapping::iterator itr = this->input_map_->find( key );
-
-    // No match found
-    if( itr == this->input_map_->end() )
-    {
-      return false;
-    }
-    else // Match found; remove this input mapping
-    {
-      this->input_map_->erase( itr );
-
-      return true;
-    }
-  }
-
-  return false;
-}
-
-bool SDLApp::valid_input_map( void )
-{
-  if( this->input_map_.get() != nullptr ) return true;
-
-  return false;
-}
-
-bool SDLApp::on_map( const SDL_Event* ev )
-{
-  if( this->valid_input_map() )
-  {
-    for( InputMapping::const_iterator itr = this->input_map_->begin(); itr != this->input_map_->end(); ++itr )
-    {
-      if(
-          itr->second.type == ev->type  &&
-          itr->second.event == ev->key.keysym.sym
-        )
-      {
-        itr->second.callback();
-        return true;
-      }
-      else if (
-                itr->second.type == ev->type &&
-                itr->second.event == ev->button.button
-              )
-      {
-        itr->second.callback();
-        return true;
-      }
-      else if (
-                itr->second.type == ev->type  &&
-                itr->second.event == ev->jbutton.button
-              )
-      {
-        itr->second.callback();
-        return true;
-      }
-    }
-  }
-
-  return false;
 }
 
 } // namespace nom

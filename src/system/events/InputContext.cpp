@@ -69,10 +69,17 @@ bool InputContext::add_context( const std::string& state, const InputMapping& ma
 
   // Second, if we have an existing input map key, we must remove it, otherwise
   // we segfault when jumping through game states.
-  // ContextMap::const_iterator itr = this->contexts_.find( state );
+  ContextMap::const_iterator itr = this->contexts_.find( state );
 
   // Err; no match found!
-  // if( itr == this->contexts_.end() ) return false;
+  if( itr != this->contexts_.end() )
+  {
+    // Match found; remove the entry before adding a new one.
+    // if( itr->second.callback.valid() )
+    // {
+      this->remove_context( state );
+    // }
+  }
 
   // Finally, we can insert the new input mapping.
   InputState input_state;

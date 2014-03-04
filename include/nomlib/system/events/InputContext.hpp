@@ -81,6 +81,9 @@ class InputContext
     bool activate_context( const std::string& state );
     bool disable_context( const std::string& state );
 
+    /// \brief Empty the list of set context(s).
+    void clear( void );
+
     bool on_input( const SDL_Event* ev );
 
   private:

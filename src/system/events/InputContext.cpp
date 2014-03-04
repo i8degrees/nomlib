@@ -155,6 +155,11 @@ bool InputContext::disable_context( const std::string& state )
   return false;
 }
 
+void InputContext::clear( void )
+{
+  this->contexts_.clear();
+}
+
 bool InputContext::on_input( const SDL_Event* ev )
 {
   // if( this->valid_input_map() )

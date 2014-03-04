@@ -66,6 +66,11 @@ uint32 ticks( void )
   return SDL_GetTicks();
 }
 
+const std::string ticks_as_string( void )
+{
+  return std::to_string( SDL_GetTicks() );
+}
+
 void sleep( uint32 milliseconds )
 {
   SDL_Delay ( std::max ( milliseconds, static_cast<uint32> ( 10 ) ) );

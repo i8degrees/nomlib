@@ -66,6 +66,7 @@ const std::string time( void );
 ///
 /// Wrapper for SDL_GetTicks.
 uint32 ticks( void );
+const std::string ticks_as_string( void );
 
 /// SDL_Delay wrapper
 ///

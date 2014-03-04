@@ -196,6 +196,7 @@ class App: public nom::SDLApp
         while( this->poll_event( &this->event ) )
         {
           this->on_event( &this->event );
+          this->input_mapper.on_input( &this->event );
         }
 
         for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
@@ -263,6 +264,8 @@ class App: public nom::SDLApp
 
     /// \brief Timer for tracking frames per second
     nom::FPS fps[MAXIMUM_WINDOWS];
+
+    nom::InputContext input_mapper;
 }; // end class App
 
 nom::sint main( nom::int32 argc, char* argv[] )

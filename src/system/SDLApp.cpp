@@ -73,17 +73,13 @@ bool SDLApp::on_init( void )
 
 void SDLApp::on_event( SDL_Event* ev )
 {
-  // Active (set) input mappings take priority over traditional events
-  // handling -- virtual inheritance.
-  // if( this->on_map( event ) == true ) return;
-
   // First, handle our events
   EventHandler::on_input( ev );
 
   // Next, handle the state's events
   this->states.process_events( ev );
 
-  this->input_mapper.on_input( ev );
+  // this->input_mapper.on_input( ev );
 }
 
 void SDLApp::on_update ( float delta )

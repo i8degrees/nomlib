@@ -137,7 +137,7 @@ class SDLApp: public EventHandler
     StateMachine states;
 
     //GameStates* state_factory;
-    InputContext input_mapper;
+    // InputContext input_mapper;
 
   private:
     /// \brief Global application state.

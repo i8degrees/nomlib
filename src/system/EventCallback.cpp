@@ -26,39 +26,64 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_EVENTS_TEXT_EDITING_EVENT_HPP
-#define NOMLIB_SYSTEM_EVENTS_TEXT_EDITING_EVENT_HPP
-
-#include "SDL.h"
-
-#include "nomlib/config.hpp"
+#include "nomlib/system/EventCallback.hpp"
 
 namespace nom {
 
-/// \brief A structure containing information on a text editing event.
-struct TextEditingEvent
+EventCallback::EventCallback( void ) :
+  delegate_( nullptr )
 {
-  /// \brief The event type.
-  ///
-  /// \remarks SDL_TEXTEDITING.
-  uint32 type;
+  // NOM_LOG_TRACE( NOM );
+}
 
-  /// \brief The text being edited.
-  char text[SDL_TEXTEDITINGEVENT_TEXT_SIZE];
+EventCallback::~EventCallback( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
-  /// \brief The location to begin editing from.
-  int32 start;
+EventCallback::EventCallback( const ValueType& callback ) :
+  delegate_( callback )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
-  /// \brief The number of characters to edit from the start point.
-  int32 length;
+EventCallback::EventCallback( const SelfType& copy )
+{
+  this->delegate_ = copy.delegate();
+}
 
-  /// \brief The identifier of the window at the moment of the event.
-  uint32 window_id;
+EventCallback::SelfType& EventCallback::operator =( const SelfType& other )
+{
+  this->delegate_ = other.delegate();
 
-  /// \brief The recorded time at the moment of the event.
-  uint32 timestamp;
-};
+  return *this;
+}
+
+EventCallback::RawPtr EventCallback::get( void )
+{
+  return this;
+}
+
+bool EventCallback::valid( void ) const
+{
+  if( this->delegate_ != nullptr ) return true;
+
+  return false;
+}
+
+const EventCallback::ValueType& EventCallback::delegate( void ) const
+{
+  return this->delegate_;
+}
+
+void EventCallback::operator() ( void ) const
+{
+  this->delegate_();
+}
+
+void EventCallback::execute( void ) const
+{
+  this->delegate_();
+}
 
 } // namespace nom
-
-#endif // include guard defined

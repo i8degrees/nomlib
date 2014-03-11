@@ -26,29 +26,67 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_EVENTS_FINGER_EVENT_HPP
-#define NOMLIB_SYSTEM_EVENTS_FINGER_EVENT_HPP
-
-#include "SDL.h"
+#ifndef NOMLIB_SYSTEM_INPUT_MAPPER_JOYSTICK_BUTTON_ACTION_HPP
+#define NOMLIB_SYSTEM_INPUT_MAPPER_JOYSTICK_BUTTON_ACTION_HPP
 
 #include "nomlib/config.hpp"
 
 namespace nom {
 
-/// \brief A structure containing information on a finger (touch) event.
-struct FingerEvent
+/// \brief A structure containing information on a joystick button action.
+struct JoystickButtonAction
 {
-  /// \brief The finger index identifier.
-  SDL_FingerID id;
+  /// \brief Default constructor; initializes the object to an invalid action
+  /// state.
+  JoystickButtonAction( void ) :
+    type( 0 ),
+    id( 0 ),
+    button( 0 ),
+    window_id( 0 )
+  {
+    // NOM_LOG_TRACE( NOM );
+  }
 
-  /// \brief The X coordinate of the event; normalized 0..1.
-  float x;
+  /// \brief Destructor.
+  ~JoystickButtonAction( void )
+  {
+    // NOM_LOG_TRACE( NOM );
+  }
 
-  /// \brief The Y coordinate of the event; normalized 0..1.
-  float y;
+  /// \brief Constructor for initializing an object to a valid action state.
+  JoystickButtonAction( SDL_JoystickID id, uint32 type, uint8 button ) :
+    type( type ),
+    id( id ),
+    button( button ),
+    window_id( 0 )
+  {
+    // NOM_LOG_TRACE( NOM );
+  }
 
-  /// \brief The quantity of the pressure applied; normalized 0..1.
-  float pressure;
+  /// \brief Diagnostic output of the object state.
+  void dump( void ) const
+  {
+    NOM_DUMP( type );
+    NOM_DUMP( id );
+    NOM_DUMP( NOM_SCAST( int, button ) );
+    NOM_DUMP( window_id );
+  }
+
+  /// \brief The event type.
+  ///
+  /// \remarks SDL_JOYBUTTONDOWN or SDL_JOYBUTTON_UP.
+  uint32 type;
+
+  /// \brief The index identifier of the joystick device (as recognized by SDL).
+  SDL_JoystickID id;
+
+  /// \brief The index of the button.
+  uint8 button;
+
+  /// \brief The identifier of the window at the moment of the event.
+  ///
+  /// \remarks This field is not used and is reserved for future implementation.
+  uint32 window_id;
 };
 
 } // namespace nom

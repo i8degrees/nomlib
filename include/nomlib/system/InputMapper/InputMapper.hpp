@@ -26,69 +26,41 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_EVENTS_INPUT_CONTEXT_HPP
-#define NOMLIB_SYSTEM_EVENTS_INPUT_CONTEXT_HPP
+#ifndef NOMLIB_SYSTEM_INPUT_MAPPER_INPUT_MAPPER_HPP
+#define NOMLIB_SYSTEM_INPUT_MAPPER_INPUT_MAPPER_HPP
 
 #include <map>
 
-#include "SDL.h"
-
 #include "nomlib/config.hpp"
-#include "nomlib/system/events/EventCallback.hpp"
-#include "nomlib/system/events/InputAction.hpp" // nom::InputMapping
+// #include "nomlib/system/EventCallback.hpp"
+#include "nomlib/system/InputMapper/InputAction.hpp"
 
 namespace nom {
 
-struct InputState
-{
-  bool active_;
-  InputMapping actions_;
-};
-
-class InputContext
+class InputMapper
 {
   public:
-    typedef InputContext SelfType;
-    // typedef std::pair<std::string, InputMapping> Pair;
-    typedef std::pair<std::string, InputState> Pair;
-    // typedef std::map<std::string, InputMapping> ContextMap;
-    typedef std::map<std::string, InputState> ContextMap;
+    typedef InputMapper SelfType;
 
     /// \brief Default constructor.
-    InputContext( void );
+    InputMapper( void );
 
     /// \brief Destructor.
-    ~InputContext( void );
+    ~InputMapper( void );
 
-    bool active( const std::string& state ) const;
+    const InputMapping& get( void ) const;
 
     /// \brief Insert an input mapping.
-    // bool add_input_mapping( const std::string& key, const Action& action );
+    bool add_input_mapping( const std::string& key, const InputAction& action );
 
     /// \brief Remove an input mapping.
-    // bool remove_input_mapping( const std::string& key );
+    bool remove_input_mapping( const std::string& key );
 
-    /// \brief Add an input mapping to the context map.
-    ///
-    /// \param state The name of the context.
-    bool add_context( const std::string& state, const InputMapping& map );
-
-    /// \brief Remove an input mapping from the context map.
-    ///
-    /// \param state The name of the context.
-    bool remove_context( const std::string& state );
-
-    bool activate_context( const std::string& state );
-    bool disable_context( const std::string& state );
-
-    /// \brief Empty the list of set context(s).
-    void clear( void );
-
-    bool on_input( const SDL_Event* ev );
+    void dump( void ) const;
 
   private:
-    // InputMapping active_context_;
-    ContextMap contexts_;
+    // InputMapping = std::multimap<std::string, InputAction>
+    InputMapping input_map_;
 };
 
 } // namespace nom

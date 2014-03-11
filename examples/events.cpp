@@ -33,7 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
-// #include <nomlib/gui.hpp>
 
 /// File path name of the resources directory; this must be a relative file path.
 const std::string APP_RESOURCES_DIR = "Resources";
@@ -42,14 +41,8 @@ const std::string APP_RESOURCES_DIR = "Resources";
 const nom::Path p;
 const std::string RESOURCE_ICON = APP_RESOURCES_DIR + p.native() + "icon.png";
 
-/// \brief Relative filename path to saved screen shot example
-///
-/// Default path should resolve to the same directory as the app example
-/// executable
-const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
-
 /// \brief Name of our application.
-const std::string APP_NAME = "Examples Template App";
+const std::string APP_NAME = "Input Mapping";
 
 /// \brief Width, in pixels, of our effective rendering surface.
 const nom::int32 WINDOW_WIDTH = 768;
@@ -115,69 +108,262 @@ class App: public nom::SDLApp
 
       // Start out execution with both windows minimized.
       nom::EventDispatcher sender;
-      // nom::EventCallback delegate1( [&] { this->minimize(0); } );
-      // nom::EventCallback delegate2( [&] { this->minimize(1); } );
-      // sender.dispatch( nom::UserEvent( USER_EVENT_DEBUG, nullptr, NOM_SCAST( nom::EventCallback*, &delegate1 ), 0 ) );
-      // sender.dispatch( nom::UserEvent( USER_EVENT_DEBUG, nullptr, NOM_SCAST( nom::EventCallback*, &delegate2 ), 0 ) );
+      nom::Event user_event;
 
-      nom::InputMapper state0, state1;
+      nom::EventCallback delegate1( [&] () { this->minimize( this->event ); } );
+      nom::EventCallback delegate2( [&] () { this->restore( this->event ); } );
 
-      // C++ style syntax for adding an input map:
-      state0.add_input_mapping ( "minimize_window_0",
-                                  nom::InputAction  (
-                                                      SDL_MOUSEBUTTONDOWN,
-                                                      SDL_BUTTON_LEFT,
-                                                      nom::EventCallback( [&] { this->minimize(0); } )
-                                                    )
-                                );
+      user_event.type = SDL_USEREVENT;
+      user_event.timestamp = ticks();
+      user_event.user.code = USER_EVENT_DEBUG;
+      user_event.user.data1 = nullptr;
+      user_event.user.data2 = NOM_SCAST( nom::EventCallback*, &delegate1 );
+      user_event.user.window_id = 0;
+      sender.dispatch( user_event );
 
-      nom::EventCallback restore_callback( [&] { this->restore(0); } );
+      user_event.type = SDL_USEREVENT;
+      user_event.timestamp = ticks();
+      user_event.user.code = USER_EVENT_DEBUG;
+      user_event.user.data1 = nullptr;
+      user_event.user.data2 = NOM_SCAST( nom::EventCallback*, &delegate2 );
+      user_event.user.window_id = 0;
+      sender.dispatch( user_event );
 
-      // C style syntax for adding an input map:
-      nom::InputAction restore_window_0;
-      restore_window_0.type = SDL_MOUSEBUTTONDOWN;
-      restore_window_0.event = SDL_BUTTON_RIGHT;
-      restore_window_0.callback = restore_callback;
-      state0.add_input_mapping( "restore_window_0", restore_window_0 );
+      // State 0 is mouse button input mapping
+      // State 1 is keyboard input mapping
+      // State 2 is mouse wheel input mapping
+      // State 3 is joystick button input mapping
+      // State 4 is joystick axis input mapping; note that this implementation
+      // is currently broken (not fully implemented).
+      nom::InputMapper state0, state1, state2, state3, state4;
+
+      state0.add_input_mapping( "minimize_window_0", nom::InputAction( nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT ), nom::EventCallback( [&] () { this->minimize( this->event ); } ) ) );
+      state0.add_input_mapping( "restore_window_0", nom::InputAction( nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_RIGHT ), nom::EventCallback( [&] () { this->restore( this->event ); } ) ) );
 
       state1.add_input_mapping( "minimize_window_0",
                                 nom::InputAction  (
-                                                    SDL_KEYDOWN,
-                                                    SDLK_1,
-                                                    nom::EventCallback( [&] { this->minimize(0); } )
+                                                    nom::KeyboardAction( SDL_KEYDOWN, SDLK_1 ),
+                                                    nom::EventCallback( [&] () { this->minimize( this->event ); } )
                                                   )
                               );
 
-      restore_window_0.clear(); // Just in case!
-      restore_window_0.type = SDL_KEYDOWN;
-      restore_window_0.event = SDLK_2;
-      restore_window_0.callback = restore_callback;
-      // state0.add_input_mapping( "restore_window_0", restore_window_0 );
-      state1.add_input_mapping( "restore_window_0", restore_window_0 );
+      // NOTE: The following keyboard action will have its modifier key reset to
+      // zero (0) as a side-effect of minimizing the window, ergo you will not be
+      // able to continue holding down LCTRL after the first time in order to
+      // re-execute the restoration of said window. This is NOT a bug within the
+      // the input mapper.
+      state1.add_input_mapping( "restore_window_0",
+                                nom::InputAction  (
+                                                    nom::KeyboardAction( SDL_KEYDOWN, SDLK_2, KMOD_LCTRL ),
+                                                    nom::EventCallback( [&] () { this->restore( this->event ); } )
+                                                  )
+                              );
 
+      state1.add_input_mapping( "quit_app",
+                                nom::InputAction  (
+                                                    nom::KeyboardAction( SDL_KEYDOWN, SDLK_1, KMOD_LCTRL ),
+                                                    nom::EventCallback( [&] () { this->on_app_quit( this->event ); } )
+                                                  )
+                              );
+
+      state2.add_input_mapping( "minimize_window_0",
+                                nom::InputAction  (
+                                                    nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::L1 ),
+                                                    nom::EventCallback( [&] () { this->minimize( this->event ); } )
+                                                  )
+                              );
+
+      state2.add_input_mapping( "restore_window_0",
+                                nom::InputAction  (
+                                                    nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::R1 ),
+                                                    nom::EventCallback( [&] () { this->restore( this->event ); } )
+                                                  )
+                              );
+
+      // Wheel is going upward
+      nom::InputAction mouse_wheel( nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::UP ),
+                                    nom::EventCallback( [&] () { this->color_fill( this->event, 0 ); } )
+                                  );
+
+      state3.add_input_mapping( "color_fill_1", mouse_wheel );
+
+      // Wheel is going downward
+      mouse_wheel = nom::InputAction( nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::DOWN ),
+                                      nom::EventCallback( [&] () { this->color_fill( this->event, 1 ); } )
+                                    );
+
+      state3.add_input_mapping( "color_fill_1", mouse_wheel );
+
+      // Wheel is going leftward
+      mouse_wheel = nom::InputAction( nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_X, nom::MouseWheelAction::LEFT ),
+                                      nom::EventCallback( [&] () { this->color_fill( this->event, 2 ); } )
+                                    );
+
+      state3.add_input_mapping( "color_fill_1", mouse_wheel );
+
+      // Wheel is going rightward
+      mouse_wheel = nom::InputAction( nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_X, nom::MouseWheelAction::RIGHT ),
+                                      nom::EventCallback( [&] () { this->color_fill( this->event, 3 ); } )
+                                    );
+
+      state3.add_input_mapping( "color_fill_1", mouse_wheel );
+
+      nom::InputAction jaxis;
+
+      // Joystick axis is going upward
+      jaxis = nom::InputAction( nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 0, -1 ),
+                                nom::EventCallback( [&] () { this->color_fill( this->event, 0 ); } )
+                              );
+
+      state4.add_input_mapping( "color_fill_1", jaxis );
+
+      // Joystick axis is going downward
+      jaxis = nom::InputAction( nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 0, 1 ),
+                                nom::EventCallback( [&] () { this->color_fill( this->event, 1 ); } )
+                              );
+
+      state4.add_input_mapping( "color_fill_1", jaxis );
+
+      // Joystick axis is going leftward
+      jaxis = nom::InputAction( nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 1, -1 ),
+                                nom::EventCallback( [&] () { this->color_fill( this->event, 2 ); } )
+                              );
+
+      state4.add_input_mapping( "color_fill_1", jaxis );
+
+      // Joystick axis is going rightward
+      jaxis = nom::InputAction( nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 1, 1 ),
+                                nom::EventCallback( [&] () { this->color_fill( this->event, 3 ); } )
+                              );
+
+      state4.add_input_mapping( "color_fill_1", jaxis );
+
+      // Mouse button input mapping
       this->input_mapper.add_context( "state0", state0.get() );
+
+      // Keyboard input mapping
       this->input_mapper.add_context( "state1", state1.get() );
 
+      // Mouse wheel input mapping
+      this->input_mapper.add_context( "state2", state2.get() );
+
+      // Joystick Button input mapping
+      this->input_mapper.add_context( "state3", state3.get() );
+
+      // Joystick Axis input mapping
+      this->input_mapper.add_context( "state4", state4.get() );
+
+      // this->input_mapper.clear();
+
       // this->input_mapper.disable_context( "state0" );
-      this->input_mapper.disable_context( "state1" );
+      // this->input_mapper.disable_context( "state1" );
+      // this->input_mapper.disable_context( "state2" );
+      // this->input_mapper.disable_context( "state3" );
+      // this->input_mapper.disable_context( "state4" );
+
       if( this->input_mapper.active("state1") )
       {
-        nom::DialogMessageBox( APP_NAME, "ERROR: Input context state1 is active." );
+        // nom::DialogMessageBox( APP_NAME, "ERROR: Input context state1 is active." );
         // return false;
       }
 
       return true;
     } // end on_init
 
-    void minimize( int idx )
+    void minimize( const nom::Event& ev )
     {
-      this->window[idx].minimize_window();
+      ev.dump();
+
+      if( ev.type == SDL_KEYDOWN )
+      {
+        ev.key.dump();
+      }
+      else if( ev.type == SDL_MOUSEBUTTONDOWN )
+      {
+        ev.mouse.dump();
+      }
+      else if( ev.type == SDL_JOYBUTTONDOWN )
+      {
+        ev.jbutton.dump();
+      }
+
+      NOM_DUMP("MINIMIZE WINDOW 0");
+      this->window[0].minimize_window();
     }
 
-    void restore( int idx )
+    void restore( const nom::Event& ev )
     {
-      this->window[idx].restore_window();
+      ev.dump();
+
+      if( ev.type == SDL_KEYDOWN )
+      {
+        ev.key.dump();
+      }
+      else if( ev.type == SDL_MOUSEBUTTONDOWN )
+      {
+        ev.mouse.dump();
+      }
+      else if( ev.type == SDL_JOYBUTTONDOWN )
+      {
+        ev.jbutton.dump();
+      }
+
+      NOM_DUMP("RESTORE WINDOW 0");
+      this->window[0].restore_window();
     }
+
+    void color_fill( const nom::Event& ev, nom::uint8 dir )
+    {
+      ev.dump();
+
+      if( ev.type == SDL_MOUSEWHEEL )
+      {
+        ev.wheel.dump();
+      }
+      else if( ev.type == SDL_JOYAXISMOTION )
+      {
+        ev.jaxis.dump();
+      }
+
+      NOM_LOG_TRACE( NOM );
+
+      switch( dir )
+      {
+        default:
+        {
+          NOM_DUMP( "INVALID" );
+          break;
+        }
+
+        case 0:
+        {
+          NOM_DUMP( "WHEEL UP" );
+          this->window[1].fill( nom::Color4i::Magenta );
+          break;
+        }
+
+        case 1:
+        {
+          NOM_DUMP( "WHEEL DOWN" );
+          this->window[1].fill( nom::Color4i::Gray );
+          break;
+        }
+
+        case 2:
+        {
+          NOM_DUMP( "WHEEL LEFT" );
+          this->window[1].fill( nom::Color4i::Orange );
+          break;
+        }
+
+        case 3:
+        {
+          NOM_DUMP( "WHEEL RIGHT" );
+          this->window[1].fill( nom::Color4i::Yellow );
+          break;
+        }
+      } // end switch dir
+    } // end color_fill
 
     nom::sint Run( void )
     {
@@ -190,13 +376,12 @@ class App: public nom::SDLApp
       // 1. Events
       // 2. Logic
       // 3. Render
-
-      while( this->running() == true )
+      while ( this->running() == true )
       {
-        while( this->poll_event( &this->event ) )
+        while( this->poll_event( this->event ) )
         {
-          this->on_event( &this->event );
-          this->input_mapper.on_input( &this->event );
+          this->on_event( this->event );
+          this->input_mapper.on_event( this->event );
         }
 
         for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
@@ -233,25 +418,33 @@ class App: public nom::SDLApp
     /// \brief Event handler for user-defined events.
     ///
     /// \remarks Implements nom::EventHandler::on_user_event
-    void on_user_event( const nom::UserEvent& ev )
+    void on_user_event( const nom::Event& ev )
     {
       // A call is made here to the virtual method being re-implemented here in
       // order to catch debugging output with debug builds compiled in; see
       // EventHandler.hpp.
       // Input::on_user_event( ev );
 
-      if( ev.code == USER_EVENT_DEBUG )
+      if( ev.user.code == USER_EVENT_DEBUG )
       {
-        nom::EventCallback* delegate = ev.get_callback();
+        ev.dump();
+        ev.user.dump();
+
+        nom::EventCallback* delegate = ev.user.get_callback();
 
         if( delegate != nullptr )
         {
-          delegate->execute();
+          // FIXME: I get a segfault here when we try to execute the callback.
+          #if ! defined( NOM_PLATFORM_WINDOWS )
+            delegate->operator()();
+          #endif
         }
       }
     }
 
   private:
+    nom::Event event;
+
     /// \brief Window handles
     ///
     /// \TODO Use std::vector?

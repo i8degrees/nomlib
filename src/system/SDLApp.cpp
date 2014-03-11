@@ -32,7 +32,6 @@ namespace nom {
 
 SDLApp::SDLApp ( void ) :
   //state_factory { new GameStates() },
-  // input_mapper { std::unique_ptr<InputMapping> ( nullptr ) },
   app_state_( true ),
   show_fps_( true )
 {
@@ -57,11 +56,6 @@ SDLApp::~SDLApp ( void )
   this->app_timer_.stop();
 
   this->quit();
-
-  if ( SDL_WasInit ( SDL_INIT_JOYSTICK ) )
-  {
-    SDL_QuitSubSystem ( SDL_INIT_JOYSTICK );
-  }
 }
 
 bool SDLApp::on_init( void )
@@ -71,15 +65,13 @@ bool SDLApp::on_init( void )
   return true;
 }
 
-void SDLApp::on_event( SDL_Event* ev )
+void SDLApp::on_event( const Event& ev )
 {
-  // First, handle our events
-  EventHandler::on_input( ev );
+  // First, handle our own events
+  EventHandler::process_event( ev );
 
   // Next, handle the state's events
-  this->states.process_events( ev );
-
-  // this->input_mapper.on_input( ev );
+  this->states.process_event( ev );
 }
 
 void SDLApp::on_update ( float delta )

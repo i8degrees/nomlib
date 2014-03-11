@@ -26,64 +26,78 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/events/EventCallback.hpp"
+#include "nomlib/system/InputMapper/InputAction.hpp"
 
 namespace nom {
 
-EventCallback::EventCallback( void ) :
-  method_( nullptr )
+InputAction::InputAction( void ) :
+  key( nullptr ),
+  mouse( nullptr ),
+  wheel( nullptr ),
+  jbutton( nullptr ),
+  jaxis( nullptr )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-EventCallback::~EventCallback( void )
+InputAction::~InputAction( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-EventCallback::EventCallback( const ValueType& callback ) :
-  method_( callback )
+InputAction::InputAction( const KeyboardAction& ev, const EventCallback& method ) :
+  key( new KeyboardAction( ev ) ),
+  mouse( nullptr ),
+  wheel( nullptr ),
+  jbutton( nullptr ),
+  jaxis( nullptr ),
+  delegate ( method )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-EventCallback::EventCallback( const SelfType& copy )
+InputAction::InputAction( const MouseButtonAction& ev, const EventCallback& method ) :
+  key( nullptr ),
+  mouse( new MouseButtonAction( ev ) ),
+  wheel( nullptr ),
+  jbutton( nullptr ),
+  jaxis( nullptr ),
+  delegate ( method )
 {
-  this->method_ = copy.method();
+  // NOM_LOG_TRACE( NOM );
 }
 
-EventCallback::SelfType& EventCallback::operator =( const SelfType& other )
+InputAction::InputAction( const MouseWheelAction& ev, const EventCallback& method ) :
+  key( nullptr ),
+  mouse( nullptr ),
+  wheel( new MouseWheelAction( ev ) ),
+  jbutton( nullptr ),
+  jaxis( nullptr ),
+  delegate ( method )
 {
-  this->method_ = other.method();
-
-  return *this;
+  // NOM_LOG_TRACE( NOM );
 }
 
-EventCallback::RawPtr EventCallback::get( void )
+InputAction::InputAction( const JoystickButtonAction& ev, const EventCallback& method ) :
+  key( nullptr ),
+  mouse( nullptr ),
+  wheel( nullptr ),
+  jbutton( new JoystickButtonAction( ev ) ),
+  jaxis( nullptr ),
+  delegate ( method )
 {
-  return this;
+  // NOM_LOG_TRACE( NOM );
 }
 
-bool EventCallback::valid( void ) const
+InputAction::InputAction( const JoystickAxisAction& ev, const EventCallback& method ) :
+  key( nullptr ),
+  mouse( nullptr ),
+  wheel( nullptr ),
+  jbutton( nullptr ),
+  jaxis( new JoystickAxisAction( ev ) ),
+  delegate ( method )
 {
-  if( this->method_ != nullptr ) return true;
-
-  return false;
-}
-
-const EventCallback::ValueType& EventCallback::method( void ) const
-{
-  return this->method_;
-}
-
-void EventCallback::operator() ( void ) const
-{
-  this->method_();
-}
-
-void EventCallback::execute( void ) const
-{
-  this->method_();
+  // NOM_LOG_TRACE( NOM );
 }
 
 } // namespace nom

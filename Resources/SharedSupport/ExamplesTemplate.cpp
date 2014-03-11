@@ -126,9 +126,10 @@ class App: public nom::SDLApp
       // 3. Render
       while( this->running() == true )
       {
-        while( this->poll_event( &this->event ) )
+        nom::Event ev;
+        while( this->poll_event( ev ) )
         {
-          this->on_event( &this->event );
+          this->on_event( ev );
         }
 
         for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )

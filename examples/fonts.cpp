@@ -127,11 +127,13 @@ class App: public nom::SDLApp
       // 1. Events
       // 2. Logic
       // 3. Render
+
+      nom::Event ev;
       while ( this->running() == true )
       {
-        while( this->poll_event( &this->event ) )
+        while( this->poll_event( ev ) )
         {
-          this->on_event( &this->event );
+          this->on_event( ev );
         }
 
         this->window.update();

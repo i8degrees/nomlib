@@ -26,35 +26,66 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/events/InputAction.hpp"
+#include "nomlib/system/EventDispatcher.hpp"
 
 namespace nom {
 
-InputAction::InputAction( void ) :
-  type ( 0 ),
-  event( 0 )
+EventDispatcher::EventDispatcher( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-InputAction::~InputAction( void )
+EventDispatcher::~EventDispatcher( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-InputAction::InputAction( uint32 type, uint32 event, const EventCallback& method ) :
-  type ( type ),
-  event( event ),
-  callback ( method )
+bool EventDispatcher::dispatch( const Event& ev )
 {
-  // NOM_LOG_TRACE( NOM );
+  if( this->push_event( ev ) == false )
+  {
+    NOM_LOG_ERR( NOM, "ERROR: Could not dispatch event." );
+    return false;
+  }
+
+  return true;
 }
 
-void InputAction::clear( void )
+bool EventDispatcher::push_event( const Event& ev )
 {
-  this->type = 0;
-  this->event = 0;
-  this->callback = EventCallback(); // NULL
+  // uint32 event_type = this->register_events( 1 );
+
+  // if( event_type == ( (uint32) - 1 ) ) // Error
+  // {
+    // NOM_LOG_ERR( NOM, "ERROR: Out of room for user-defined events." );
+    // return false;
+  // }
+
+  SDL_Event event;
+  SDL_zero( event ); // Initialize our event structure
+
+  // event.type = event_type;
+  // event.user.type = event_type;
+  event.type = SDL_USEREVENT;
+  event.user.type = SDL_USEREVENT;
+  event.user.timestamp = ev.timestamp;
+  event.user.code = ev.user.code;
+  event.user.data1 = ev.user.data1;
+  event.user.data2 = ev.user.data2;
+  event.user.windowID = ev.user.window_id;
+
+  if( SDL_PushEvent( &event ) != 1 )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    return false;
+  }
+
+  return true;
+}
+
+uint32 EventDispatcher::register_events( int num_events )
+{
+  return SDL_RegisterEvents( num_events );
 }
 
 } // namespace nom

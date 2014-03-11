@@ -26,83 +26,75 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_EVENTS_KEYBOARD_EVENT_HPP
-#define NOMLIB_SYSTEM_EVENTS_KEYBOARD_EVENT_HPP
-
-#include "SDL.h"
+#ifndef NOMLIB_SYSTEM_INPUT_MAPPER_JOYSTICK_AXIS_ACTION_HPP
+#define NOMLIB_SYSTEM_INPUT_MAPPER_JOYSTICK_AXIS_ACTION_HPP
 
 #include "nomlib/config.hpp"
 
 namespace nom {
 
-struct KeyboardSymbolCode
+/// \brief A structure containing information on a joystick axis motion action.
+struct JoystickAxisAction
 {
-  // TODO
-};
+  /// \brief Default constructor; initializes the object to an invalid action
+  /// state.
+  JoystickAxisAction( void ) :
+    type( 0 ),
+    id( 0 ),
+    axis( 0 ),
+    value( 0 ),
+    window_id( 0 )
+  {
+    // NOM_LOG_TRACE( NOM );
+  }
 
-struct KeyboardScanCode
-{
-  // TODO
-};
+  /// \brief Destructor.
+  ~JoystickAxisAction( void )
+  {
+    // NOM_LOG_TRACE( NOM );
+  }
 
-/// \brief A structure containing information on a keyboard symbol.
-struct KeyboardSymbolEvent
-{
+  /// \brief Constructor for initializing an object to a valid action state.
+  JoystickAxisAction( SDL_JoystickID id, uint32 type, uint8 axis, int16 value ) :
+    type( type ),
+    id( id ),
+    axis( axis ),
+    value( value ),
+    window_id( 0 )
+  {
+    // NOM_LOG_TRACE( NOM );
+  }
+
+  /// \brief Diagnostic output of the object state.
+  void dump( void ) const
+  {
+    NOM_DUMP( type );
+    NOM_DUMP( id );
+    NOM_DUMP( NOM_SCAST( int, axis ) );
+    NOM_DUMP( value );
+    // NOM_DUMP( window_id );
+  }
+
   /// \brief The event type.
   ///
-  /// \remarks Not used; reserved for future use.
+  /// \remarks SDL_JOYAXISMOTION.
   uint32 type;
 
-  /// \brief The physical key code of the key press event.
-  ///
-  /// \TODO Implement using the KeyboardScanCode structure.
-  SDL_Scancode scan_code;
+  /// \brief The index identifier of the joystick device (as recognized by SDL).
+  SDL_JoystickID id;
 
-  /// \brief Virtual key code of the key press event.
-  ///
-  /// \TODO Implement using the KeyboardSymbolCode structure.
-  SDL_Keycode sym;
+  /// \brief The index of the axis on the joystick device.
+  uint8 axis;
 
-  /// \brief The modifiers of the key press event; CTRL, ALT, ...
-  uint16 mod;
-};
-
-/// \brief A structure containing information on a keyboard event.
-struct KeyboardEvent
-{
-  /// \brief The event type.
+  /// \brief The current position of the axis.
   ///
-  /// \remarks SDL_KEYDOWN or SDL_KEYUP.
-  uint32 type;
-
-  /// \brief Symbol of the key press event.
-  ///
-  /// \TODO Implement using the KeyboardSymbol structure.
-  // SDL_Keysym sym;
-  uint32 sym;
-
-  /// \brief The modifiers of the key press event; CTRL, ALT, ...
-  uint16 mod;
-
-  /// \brief The state of the key press event.
-  ///
-  /// \remarks SDL_PRESSED or SDL_RELEASED.
-  ///
-  /// \TODO Investigate as to why we see no value when
-  /// NOM_DEBUG_SDL2_KEYBOARD_INPUT is enabled.
-  uint8 state;
-
-  /// \brief Non-zero if this is a repeating key press event.
-  ///
-  /// \TODO Investigate as to why we see no value when
-  /// NOM_DEBUG_SDL2_KEYBOARD_INPUT is enabled.
-  uint8 repeat;
+  /// \remarks The range of the axis value is in between -32,768 to 32,767.
+  int16 value;
 
   /// \brief The identifier of the window at the moment of the event.
+  ///
+  /// \remarks This field is not used and is reserved for future implementation.
   uint32 window_id;
-
-  /// \brief The recorded time at the moment of the event.
-  uint32 timestamp;
 };
 
 } // namespace nom

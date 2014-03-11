@@ -126,15 +126,15 @@ set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/ObjectCache.cpp
       ${SRC_DIR}/system/SDLApp.cpp
       ${SRC_DIR}/system/EventHandler.cpp
+      ${SRC_DIR}/system/SDLJoystick.cpp
       ${SRC_DIR}/system/Joystick.cpp
       ${SRC_DIR}/system/AnimationTimer.cpp
       ${SRC_DIR}/system/Timer.cpp
-      ${SRC_DIR}/system/events/InputAction.cpp
-      ${SRC_DIR}/system/events/EventCallback.cpp
-      ${SRC_DIR}/system/events/EventDispatcher.cpp
-      ${SRC_DIR}/system/events/InputContext.cpp
-      ${SRC_DIR}/system/events/InputMapper.cpp
-      ${SRC_DIR}/system/events/UserEvent.cpp
+      ${SRC_DIR}/system/EventDispatcher.cpp
+      ${SRC_DIR}/system/EventCallback.cpp
+      ${SRC_DIR}/system/InputMapper/InputAction.cpp
+      ${SRC_DIR}/system/InputMapper/InputMapper.cpp
+      ${SRC_DIR}/system/InputMapper/InputContext.cpp
     )
 
 file ( GLOB PTREE_HEADERS "${NOMLIB_HEADERS_DIR}/system/ptree/*.hpp" )

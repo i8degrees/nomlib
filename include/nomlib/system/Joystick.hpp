@@ -26,17 +26,18 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_SYSTEM_JOYSTICK_HEADERS
-#define NOMLIB_SDL2_SYSTEM_JOYSTICK_HEADERS
+#ifndef NOMLIB_SDL2_SYSTEM_JOYSTICK_HPP
+#define NOMLIB_SDL2_SYSTEM_JOYSTICK_HPP
 
 #include <string>
 #include <cstring>
 #include <memory>
+#include <vector>
 #include <map>
 
-#include "SDL.h"
-
 #include "nomlib/config.hpp"
+#include "nomlib/system/IJoystick.hpp"
+#include "nomlib/system/SDLJoystick.hpp"
 
 namespace nom {
 
@@ -71,42 +72,57 @@ enum PSXBUTTON
   PSBUTTON          = 16
 };
 
-/// \brief Joystick handling API.
+/// \brief High-level joystick handling API.
 class Joystick
 {
   public:
-    typedef std::unique_ptr<SDL_Joystick, void (*)(SDL_Joystick*)> JoystickUniquePtr;
+    typedef Joystick SelfType;
+    typedef int JoystickID;
+
+    typedef std::pair<JoystickID, std::string> Pair;
+    typedef std::vector<std::string> JoystickNames;
+    typedef std::map<JoystickID, std::string> Joysticks;
 
     /// \brief Default constructor.
     Joystick( void );
 
     /// \brief Destructor.
     ///
-    /// \NOTE The joystick subsystem is shutdown within nom::SDLApp.
+    /// \remarks Close opened joystick devices and shutdown the joystick
+    /// subsystem.
+    ///
+    /// \note ~~The joystick subsystem shutdown is presently handled in the
+    /// destruction of SDLApp~~.
     ~Joystick( void );
 
-    /// \brief Initialize the joystick subsystem.
+    /// \brief Initialize the underlying joystick subsystem.
     bool initialize( void );
 
-    SDL_JoystickID id( void ) const;
+    /// \brief Shutdown the joystick subsystem.
+    void shutdown( void );
 
+    /// \brief Obtain the first joystick device identifier as recognized by the
+    /// underlying implementation.
+    JoystickID first_joystick( void ) const;
+
+    /// \brief Obtain the last joystick device identifier as recognized by the
+    /// underlying implementation.
+    JoystickID last_joystick( void ) const;
+
+    /// \brief Obtain the number of joystick devices as recognized by the
+    /// underlying implementation.
     int num_joysticks( void ) const;
 
-    const std::string name( void ) const;
+    const std::string& name( JoystickID idx );
 
-    bool enumerate_devices( void );
+    const JoystickNames names( void ) const;
+
+    void enumerate_devices( void );
 
   private:
-    JoystickUniquePtr joystick_;
-    SDL_JoystickID joystick_id_;
+    std::unique_ptr<IJoystick> impl_;
+    Joysticks joysticks_;
 };
-
-namespace priv {
-
-/// Custom deleter for SDL_Joystick* structures.
-void Free_Joystick ( SDL_Joystick* );
-
-} // namespace priv
 
 } // namespace nom
 
@@ -117,4 +133,3 @@ void Free_Joystick ( SDL_Joystick* );
 ///
 ///         [DESCRIPTION STUB]
 ///
-/// \TODO Implement SDL2's GameController API for Joysticks.

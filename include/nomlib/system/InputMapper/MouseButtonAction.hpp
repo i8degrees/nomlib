@@ -26,55 +26,74 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_EVENTS_EVENT_CALLBACK_HPP
-#define NOMLIB_SYSTEM_EVENTS_EVENT_CALLBACK_HPP
-
-#include <functional>
+#ifndef NOMLIB_SYSTEM_INPUT_MAPPER_MOUSE_BUTTON_ACTION_HPP
+#define NOMLIB_SYSTEM_INPUT_MAPPER_MOUSE_BUTTON_ACTION_HPP
 
 #include "nomlib/config.hpp"
 
 namespace nom {
 
-class EventCallback
+/// \brief A structure containing information on a mouse button action.
+struct MouseButtonAction
 {
-  public:
-    typedef EventCallback SelfType;
-    typedef std::function<void()> ValueType;
-    typedef SelfType* RawPtr;
+  /// \brief Default constructor; initializes the object to an invalid action
+  /// state.
+  MouseButtonAction( void ) :
+    type( 0 ),
+    x( 0 ),
+    y( 0 ),
+    button( 0 ),
+    window_id( 0 )
+  {
+    // NOM_LOG_TRACE( NOM );
+  }
 
-    /// \brief Default constructor.
-    EventCallback( void );
+  /// \brief Destructor.
+  ~MouseButtonAction( void )
+  {
+    // NOM_LOG_TRACE( NOM );
+  }
 
-    /// \brief Destructor.
-    ~EventCallback( void );
+  /// \brief Constructor for initializing an object to a valid action state.
+  MouseButtonAction( uint32 type, uint8 button ) :
+    type( type ),
+    button( button ),
+    window_id( 0 )
+  {
+    // NOM_LOG_TRACE( NOM );
+  }
 
-    /// \brief Construct an object and initialize its callback (object method).
-    EventCallback( const ValueType& callback );
+  /// \brief Diagnostic output of the object state.
+  void dump( void ) const
+  {
+    NOM_DUMP( type );
+    NOM_DUMP( x );
+    NOM_DUMP( y );
+    NOM_DUMP( NOM_SCAST( int, button ) );
+    // NOM_DUMP( window_id );
+  }
 
-    /// \brief Copy constructor.
-    EventCallback( const SelfType& copy );
+  /// \brief The event type.
+  ///
+  /// \remarks SDL_MOUSEBUTTONDOWN or SDL_MOUSEBUTTONUP.
+  uint32 type;
 
-    /// \brief Copy assignment operator.
-    SelfType& operator =( const SelfType& other );
+  /// \brief The X coordinate, relative to the nom::Window instance.
+  int32 x;
 
-    /// \brief Obtain a pointer to the object.
-    RawPtr get( void );
+  /// \brief The Y coordinate, relative to the nom::Window instance.
+  int32 y;
 
-    /// \brief Query the validity of the object.
-    bool valid( void ) const;
+  /// \brief The button that has changed.
+  ///
+  /// \remarks This field may be one of: SDL_BUTTON_LEFT, SDL_BUTTON_MIDDLE,
+  /// SDL_BUTTON_RIGHT, SDL_BUTTON_X1 or SDL_BUTTON_X2.
+  uint8 button;
 
-    /// \brief Obtain a reference to the assigned callback object method.
-    const ValueType& method( void ) const;
-
-    /// \brief C++ functor; execute the assigned object method.
-    void operator() ( void ) const;
-
-    /// \brief Convenience method for executing the assigned callback object
-    /// method.
-    void execute( void ) const;
-
-  private:
-    ValueType method_;
+  /// \brief The identifier of the window at the moment of the event.
+  ///
+  /// \remarks This field is not used and is reserved for future implementation.
+  uint32 window_id;
 };
 
 } // namespace nom

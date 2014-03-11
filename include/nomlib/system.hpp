@@ -49,12 +49,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/AnimationTimer.hpp>
 #include <nomlib/system/init.hpp>
 #include <nomlib/system/SDL_helpers.hpp>
-#include <nomlib/system/events/EventCallback.hpp>
-#include <nomlib/system/events/EventDispatcher.hpp>
-#include <nomlib/system/events/InputAction.hpp>
-#include <nomlib/system/events/InputContext.hpp>
-#include <nomlib/system/events/InputMapper.hpp>
-#include <nomlib/system/events/Event.hpp>
+#include <nomlib/system/Event.hpp>
+#include <nomlib/system/EventCallback.hpp>
+#include <nomlib/system/EventDispatcher.hpp>
+#include <nomlib/system/InputMapper/InputAction.hpp>
+#include <nomlib/system/InputMapper/InputContext.hpp>
+#include <nomlib/system/InputMapper/InputMapper.hpp>
 
 // Property Tree
 

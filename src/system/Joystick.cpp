@@ -30,97 +30,102 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Joystick::Joystick( void ) :
-  joystick_{ Joystick::JoystickUniquePtr( nullptr, priv::Free_Joystick ) },
-  joystick_id_( 0 )
+Joystick::Joystick( void )
 {
   // NOM_LOG_TRACE( NOM );
+
+  this->impl_ = IJoystick::UniquePtr ( new SDLJoystick() );
 }
 
 Joystick::~Joystick( void )
 {
   // NOM_LOG_TRACE( NOM );
+
+  this->shutdown();
 }
 
 bool Joystick::initialize( void )
 {
-  if ( SDL_WasInit( SDL_INIT_JOYSTICK ) == false )
-  {
-    if ( SDL_InitSubSystem( SDL_INIT_JOYSTICK ) < 0 )
-    {
-      NOM_LOG_ERR( NOM, SDL_GetError() );
-      return false;
-    }
-  }
+  if( this->impl_ && this->impl_->initialize() ) return true;
 
-  std::string num_joysticks = std::to_string( this->num_joysticks() );
-
-  NOM_LOG_INFO( NOM, num_joysticks + " joysticks were found" );
-
-  if( this->enumerate_devices() == false )
-  {
-    return false;
-  }
-
-  return true;
+  return false;
 }
 
-SDL_JoystickID Joystick::id( void ) const
+void Joystick::shutdown( void )
 {
-  return this->joystick_id_;
+  if( this->impl_ ) this->impl_->shutdown();
+}
+
+Joystick::JoystickID Joystick::first_joystick( void ) const
+{
+  auto itr = this->joysticks_.begin();
+
+  return itr->first;
+}
+
+Joystick::JoystickID Joystick::last_joystick( void ) const
+{
+  auto itr = this->joysticks_.end();
+
+  return itr->first;
 }
 
 int Joystick::num_joysticks( void ) const
 {
-  return SDL_NumJoysticks();
-}
-
-const std::string Joystick::name( void ) const
-{
-  NOM_STUBBED( NOM );
-
-  return "\0";
-}
-
-bool Joystick::enumerate_devices( void )
-{
-  if ( this->num_joysticks() > 0 )
+  if( this->impl_ )
   {
-    this->joystick_.reset( SDL_JoystickOpen( 0 ) );
-
-    if ( this->joystick_.get() )
-    {
-      for( int idx = 0; idx < this->num_joysticks(); ++idx )
-      {
-        NOM_LOG_INFO( NOM, SDL_JoystickNameForIndex( idx ) );
-      }
-
-      SDL_JoystickEventState( SDL_ENABLE );
-
-      this->joystick_id_ = SDL_JoystickInstanceID( this->joystick_.get() );
-    }
-
-    return true;
+    return this->impl_->num_joysticks();
   }
 
-  // No devices available!
-  return false;
+  return 0;
 }
 
-namespace priv {
-
-void Free_Joystick ( SDL_Joystick* joy )
+const std::string& Joystick::name( JoystickID idx )
 {
-  if ( joy != nullptr )
+  return this->joysticks_[idx];
+}
+
+const Joystick::JoystickNames Joystick::names( void ) const
+{
+  JoystickNames joysticks;
+
+  for( auto itr = this->joysticks_.begin(); itr != this->joysticks_.end(); ++itr )
   {
-    if ( SDL_JoystickGetAttached( joy ) )
+    joysticks.push_back( itr->second );
+  }
+
+  return joysticks;
+}
+
+void Joystick::enumerate_devices( void )
+{
+  int num_joysticks = 0;
+
+  if( ! impl_ )
+  {
+    NOM_LOG_ERR( NOM, "No joysticks are available: impl_ is NULL." );
+    return;
+  }
+
+  num_joysticks = this->impl_->num_joysticks();
+
+  NOM_LOG_INFO( NOM, std::to_string( num_joysticks ) + " joysticks were found" );
+
+  for( uint idx = 0; idx < num_joysticks; ++idx )
+  {
+    if( this->impl_->open( idx ) )
     {
-      SDL_JoystickClose( joy );
-      joy = nullptr;
+      NOM_LOG_INFO( NOM, this->impl_->name() );
+
+      Joystick::Pair p( this->impl_->id(), this->impl_->name() );
+      this->joysticks_.insert( p );
+
+      // if( res == this->joysticks_.end() )
+      // {
+      //   NOM_LOG_ERR( NOM, "Could not insert joystick into map." );
+      // }
     }
   }
 }
-
-} // namespace priv
 
 } // namespace nom

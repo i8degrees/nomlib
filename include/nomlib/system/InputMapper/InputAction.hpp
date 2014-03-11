@@ -26,58 +26,58 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_EVENTS_USER_EVENT_HPP
-#define NOMLIB_SYSTEM_EVENTS_USER_EVENT_HPP
+#ifndef NOMLIB_SYSTEM_INPUT_MAPPER_INPUT_ACTION_HPP
+#define NOMLIB_SYSTEM_INPUT_MAPPER_INPUT_ACTION_HPP
+
+#include <map> // Remove after relocating std::multimap typedef
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/clock.hpp"
+#include "nomlib/system/EventCallback.hpp"
+#include "nomlib/system/InputMapper/KeyboardAction.hpp"
+#include "nomlib/system/InputMapper/MouseButtonAction.hpp"
+#include "nomlib/system/InputMapper/MouseWheelAction.hpp"
+#include "nomlib/system/InputMapper/JoystickButtonAction.hpp"
+#include "nomlib/system/InputMapper/JoystickAxisAction.hpp"
 
 namespace nom {
 
-// Forward declarations
-class EventCallback;
-
-/// \brief A structure containing information on an user event.
-struct UserEvent
+/// \brief Input event for mapping an action to a state.
+///
+/// \remarks See also nom::InputMapper, nom::InputContext, nom::InputState
+struct InputAction
 {
+  typedef InputAction SelfType;
+  typedef std::pair<std::string, InputAction> Pair;
+
   /// \brief Default constructor.
-  UserEvent( void );
+  InputAction( void );
 
   /// \brief Destructor.
-  ~UserEvent( void );
+  ~InputAction( void );
 
-  /// \brief Constructor for initializing all data fields.
-  ///
-  /// \param code       User-defined event code.
-  /// \param data1      User-defined data pointer.
-  /// \param data2      User-defined data pointer.
-  /// \param window_id  The associated window ID, if any.
-  UserEvent( int32 code, void* data1, void* data2, uint32 window_id );
+  InputAction( const KeyboardAction& ev, const EventCallback& method );
 
-  /// \brief Convenience getter for nom::EventCallback objects stored in the
-  /// data2 field.
-  EventCallback* get_callback( void ) const;
+  InputAction( const MouseButtonAction& ev, const EventCallback& method );
+  InputAction( const MouseWheelAction& ev, const EventCallback& method );
 
-  /// \brief The event type.
-  ///
-  /// \remarks SDL_USEREVENT.
-  uint32 type;
+  InputAction( const JoystickButtonAction& ev, const EventCallback& method );
+  InputAction( const JoystickAxisAction& ev, const EventCallback& method );
 
-  /// \brief User defined event code.
-  int32 code;
+  /// \brief The type of event; key press, mouse click, joystick button and so
+  /// on.
+  KeyboardAction* key;
+  MouseButtonAction* mouse;
+  MouseWheelAction* wheel;
+  JoystickButtonAction* jbutton;
+  JoystickAxisAction* jaxis;
 
-  /// \brief User defined data pointer.
-  void* data1;
-
-  /// \brief User defined data pointer.
-  void* data2;
-
-  /// \brief The identifier of the window at the moment of the event.
-  uint32 window_id;
-
-  /// \brief The recorded time at the moment of the event.
-  uint32 timestamp;
+  /// \brief The assigned delegate to execute for the action event.
+  EventCallback delegate;
 };
+
+/// \remarks Note that we are a multi-map, therefore multiple duplicate action
+/// strings can be held within this container.
+typedef std::multimap<std::string, InputAction> InputMapping;
 
 } // namespace nom
 

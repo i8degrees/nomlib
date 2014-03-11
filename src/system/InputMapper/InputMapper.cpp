@@ -26,50 +26,79 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_EVENTS_FINGER_TOUCH_EVENT_HPP
-#define NOMLIB_SYSTEM_EVENTS_FINGER_TOUCH_EVENT_HPP
-
-#include "SDL.h"
-
-#include "nomlib/config.hpp"
-
-#include "nomlib/system/events/FingerEvent.hpp"
+#include "nomlib/system/InputMapper/InputMapper.hpp"
 
 namespace nom {
 
-/// \brief A structure containing information on a finger touch event.
-struct FingerTouchEvent
+InputMapper::InputMapper( void )
 {
-  /// \brief The event type.
-  ///
-  /// \remarks SDL_FINGERMOTION, SDL_FINGERDOWN, or SDL_FINGERUP.
-  uint32 type;
+  // NOM_LOG_TRACE( NOM );
+}
 
-  /// \brief The touch device index identifier.
-  SDL_TouchID id;
+InputMapper::~InputMapper( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
-  /// \brief The finger index identifier.
-  FingerEvent finger;
+const InputMapping& InputMapper::get( void ) const
+{
+  return this->input_map_;
+}
 
-  /// \brief The X coordinate of the event; normalized 0..1.
-  float x;
+bool InputMapper::add_input_mapping( const std::string& key, const InputAction& action )
+{
+  InputMapping::const_iterator it = this->input_map_.insert( InputAction::Pair( key, action ) );
 
-  /// \brief The Y coordinate of the event; normalized 0..1.
-  float y;
+  // No dice; the insertion failed for some reason!
+  if( it == this->input_map_.end() )
+  {
+    NOM_LOG_ERR( NOM, "ERROR: Could not insert nom::Action with key: " + std::string( key ) );
+    return false;
+  }
 
-  /// \brief The distance moved in the X axis; normalized 0..1.
-  float dx;
+  return true;
+}
 
-  /// \brief The distance moved in the Y axis; normalized 0..1.
-  float dy;
+bool InputMapper::remove_input_mapping( const std::string& key )
+{
+  InputMapping::const_iterator itr = this->input_map_.find( key );
 
-  /// \brief The quantity of the pressure applied; normalized 0..1.
-  float pressure;
+  // No match found
+  if( itr == this->input_map_.end() )
+  {
+    return false;
+  }
+  else // Match found; remove this input mapping
+  {
+    this->input_map_.erase( itr );
 
-  /// \brief The recorded time at the moment of the event.
-  uint32 timestamp;
-};
+    return true;
+  }
+
+  return false;
+}
+
+void InputMapper::dump( void ) const
+{
+  for( InputMapping::const_iterator itr = this->input_map_.begin(); itr != this->input_map_.end(); ++itr )
+  {
+    if( itr->second.key != nullptr )
+    {
+      itr->second.key->dump();
+    }
+    else if ( itr->second.mouse != nullptr )
+    {
+      itr->second.mouse->dump();
+    }
+    else if ( itr->second.jbutton != nullptr )
+    {
+      itr->second.jbutton->dump();
+    }
+    else
+    {
+      NOM_LOG_ERR( NOM, "Invalid input mapping state." );
+    }
+  }
+}
 
 } // namespace nom
-
-#endif // include guard defined

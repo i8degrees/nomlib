@@ -26,41 +26,56 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_EVENTS_JOYSTICK_AXIS_EVENT_HPP
-#define NOMLIB_SYSTEM_EVENTS_JOYSTICK_AXIS_EVENT_HPP
-
-#include "SDL.h"
+#ifndef NOMLIB_SDL2_SYSTEM_IJOYSTICK_HPP
+#define NOMLIB_SDL2_SYSTEM_IJOYSTICK_HPP
 
 #include "nomlib/config.hpp"
 
 namespace nom {
 
-/// \brief A structure containing information on a joystick axis motion event.
-struct JoystickAxisEvent
+/// \brief Abstract interface for joysticks API.
+class IJoystick
 {
-  /// \brief The event type.
-  ///
-  /// \remarks SDL_JOYAXISMOTION.
-  uint32 type;
+  public:
+    typedef IJoystick SelfType;
+    typedef std::unique_ptr<IJoystick> UniquePtr;
 
-  /// \brief Index of the joystick that reported the event.
-  SDL_JoystickID id;
+    /// \brief Default constructor.
+    IJoystick( void )
+    {
+      // NOM_LOG_TRACE( NOM );
+    }
 
-  /// \brief Index of axis of the event.
-  uint8 axis;
+    /// \brief Destructor.
+    virtual ~IJoystick( void )
+    {
+      // NOM_LOG_TRACE( NOM );
+    }
 
-  /// \brief The current position of the axis.
-  ///
-  /// \remarks The range of the axis value is in between -32,768 to 32,767.
-  uint16 value;
+    /// \brief Initialize the joystick subsystem.
+    virtual bool initialize( void ) = 0;
 
-  /// \brief Identifier of the window at the moment of the event.
-  // uint32 window_id;
+    virtual void shutdown( void ) = 0;
 
-  /// \brief The recorded time at the moment of the event.
-  uint32 timestamp;
+    virtual int num_joysticks( void ) const = 0;
+
+    virtual bool attached( void ) const = 0;
+
+    virtual int id( void ) const = 0;
+
+    virtual const std::string name( void ) const = 0;
+
+    virtual bool open( int idx ) = 0;
+
+    virtual void close( void ) = 0;
 };
 
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::IJoystick
+/// \ingroup system
+///
+///         [DESCRIPTION STUB]
+///

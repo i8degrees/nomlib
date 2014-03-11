@@ -40,8 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/Timer.hpp"
 #include "nomlib/system/StateMachine.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
-#include "nomlib/system/events/InputMapper.hpp" // nom::InputMapper
-#include "nomlib/system/events/InputContext.hpp" // nom::InputContext
+#include "nomlib/system/Event.hpp"
 
 namespace nom {
 
@@ -61,10 +60,7 @@ class SDLApp: public EventHandler
     ///
     /// \remarks This method is called once every frame from within the main
     /// loop.
-    ///
-    /// \NOTE ~~Active (set) input mappings take priority over inherited event
-    /// handlers.~~
-    virtual void on_event( SDL_Event* ev );
+    virtual void on_event( const Event& ev );
 
     /// \brief The application-level handler for logic.
     ///
@@ -130,15 +126,10 @@ class SDLApp: public EventHandler
     virtual void pop_state ( void_ptr data = nullptr );
 
   protected:
-    /// \brief Input events.
-    SDL_Event event;
-
     /// \brief State machine manager.
     StateMachine states;
 
     //GameStates* state_factory;
-    // InputContext input_mapper;
-
   private:
     /// \brief Global application state.
     bool app_state_;

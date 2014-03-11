@@ -26,49 +26,54 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_EVENTS_EVENT_HPP
-#define NOMLIB_SYSTEM_EVENTS_EVENT_HPP
+#ifndef NOMLIB_SYSTEM_EVENT_CALLBACK_HPP
+#define NOMLIB_SYSTEM_EVENT_CALLBACK_HPP
+
+#include <functional>
 
 #include "nomlib/config.hpp"
 
-#include "nomlib/system/events/DragDropEvent.hpp"
-#include "nomlib/system/events/JoystickAxisEvent.hpp"
-#include "nomlib/system/events/JoystickButtonEvent.hpp"
-#include "nomlib/system/events/FingerEvent.hpp"
-#include "nomlib/system/events/FingerTouchEvent.hpp"
-#include "nomlib/system/events/GestureEvent.hpp"
-#include "nomlib/system/events/KeyboardEvent.hpp"
-#include "nomlib/system/events/MouseButtonEvent.hpp"
-#include "nomlib/system/events/MouseMotionEvent.hpp"
-#include "nomlib/system/events/QuitEvent.hpp"
-#include "nomlib/system/events/TextEditingEvent.hpp"
-#include "nomlib/system/events/TextInputEvent.hpp"
-#include "nomlib/system/events/WheelEvent.hpp"
-#include "nomlib/system/events/WindowEvent.hpp"
-#include "nomlib/system/events/UserEvent.hpp"
-
 namespace nom {
-
-/// \brief Event handling types.
-union Event
+class EventCallback
 {
-  /// \brief The event type.
-  uint32 type;
+  public:
+    typedef EventCallback SelfType;
+    typedef std::function<void(void)> ValueType;
+    typedef SelfType* RawPtr;
 
-  QuitEvent quit;
-  WindowEvent window;
-  KeyboardEvent key;
-  MouseMotionEvent m_motion;
-  MouseButtonEvent mouse;
-  WheelEvent wheel;
-  JoystickButtonEvent jbutton;
-  JoystickAxisEvent jaxis;
-  FingerTouchEvent touch;
-  GestureEvent gesture;
-  DragDropEvent drop;
-  TextInputEvent text;
-  TextEditingEvent edit;
-  // UserEvent user;
+    /// \brief Default constructor.
+    EventCallback( void );
+
+    /// \brief Destructor.
+    ~EventCallback( void );
+
+    /// \brief Construct an object and initialize its callback (object method).
+    EventCallback( const ValueType& callback );
+
+    /// \brief Copy constructor.
+    EventCallback( const SelfType& copy );
+
+    /// \brief Copy assignment operator.
+    SelfType& operator =( const SelfType& other );
+
+    /// \brief Obtain a pointer to the object.
+    RawPtr get( void );
+
+    /// \brief Query the validity of the object.
+    bool valid( void ) const;
+
+    /// \brief Obtain a reference to the assigned callback object method.
+    const ValueType& delegate( void ) const;
+
+    /// \brief C++ functor; execute the assigned object method.
+    void operator() ( void ) const;
+
+    /// \brief Convenience method for executing the assigned callback object
+    /// method.
+    void execute( void ) const;
+
+  private:
+    ValueType delegate_;
 };
 
 } // namespace nom

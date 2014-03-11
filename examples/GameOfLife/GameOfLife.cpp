@@ -333,7 +333,7 @@ class App: public nom::SDLApp
     {
       // fill the array with random cells
       int rando = 0;
-      srand( NOM_SCAST(uint, time( nullptr ) ) ); // FIXME
+      srand( NOM_SCAST( nom::uint, time( nullptr ) ) ); // FIXME
 
       for ( int x = 0; x < BOARD_SIZE / CELL_SIZE; x++ )
       {
@@ -368,8 +368,8 @@ class App: public nom::SDLApp
     }
 
     // Create a grid based on total board size and each cell size
-    nom::sint grid[BOARD_SIZE / CELL_SIZE][BOARD_SIZE / CELL_SIZE] = {{ 0 }};
-    nom::sint bufferGrid[BOARD_SIZE / CELL_SIZE][BOARD_SIZE / CELL_SIZE] = {{ 0 }};
+    nom::sint grid[BOARD_SIZE / CELL_SIZE][BOARD_SIZE / CELL_SIZE];
+    nom::sint bufferGrid[BOARD_SIZE / CELL_SIZE][BOARD_SIZE / CELL_SIZE];
 
     /// \brief Window handles
     ///

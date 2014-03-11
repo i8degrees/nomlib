@@ -29,8 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_INPUT_MAPPER_INPUT_ACTION_HPP
 #define NOMLIB_SYSTEM_INPUT_MAPPER_INPUT_ACTION_HPP
 
-#include <map> // Remove after relocating std::multimap typedef
-
 #include "nomlib/config.hpp"
 #include "nomlib/system/EventCallback.hpp"
 #include "nomlib/system/InputMapper/KeyboardAction.hpp"
@@ -74,10 +72,6 @@ struct InputAction
   /// \brief The assigned delegate to execute for the action event.
   EventCallback delegate;
 };
-
-/// \remarks Note that we are a multi-map, therefore multiple duplicate action
-/// strings can be held within this container.
-typedef std::multimap<std::string, InputAction> InputMapping;
 
 } // namespace nom
 

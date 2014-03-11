@@ -26,42 +26,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/InputMapper/InputMapper.hpp"
+#include "nomlib/system/InputMapper/InputActionMapper.hpp"
 
 namespace nom {
 
-InputMapper::InputMapper( void )
+InputActionMapper::InputActionMapper( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-InputMapper::~InputMapper( void )
+InputActionMapper::~InputActionMapper( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-const InputMapping& InputMapper::get( void ) const
+const InputActionMapper::ActionMap& InputActionMapper::get( void ) const
 {
   return this->input_map_;
 }
 
-bool InputMapper::add_input_mapping( const std::string& key, const InputAction& action )
+bool InputActionMapper::insert( const std::string& key, const InputAction& action )
 {
-  InputMapping::const_iterator it = this->input_map_.insert( InputAction::Pair( key, action ) );
+  ActionMap::const_iterator it = this->input_map_.insert( InputAction::Pair( key, action ) );
 
   // No dice; the insertion failed for some reason!
   if( it == this->input_map_.end() )
   {
-    NOM_LOG_ERR( NOM, "ERROR: Could not insert nom::Action with key: " + std::string( key ) );
+    NOM_LOG_ERR( NOM, "Could not insert action with key: " + key );
     return false;
   }
 
   return true;
 }
 
-bool InputMapper::remove_input_mapping( const std::string& key )
+bool InputActionMapper::erase( const std::string& key )
 {
-  InputMapping::const_iterator itr = this->input_map_.find( key );
+  ActionMap::const_iterator itr = this->input_map_.find( key );
 
   // No match found
   if( itr == this->input_map_.end() )
@@ -78,9 +78,9 @@ bool InputMapper::remove_input_mapping( const std::string& key )
   return false;
 }
 
-void InputMapper::dump( void ) const
+void InputActionMapper::dump( void ) const
 {
-  for( InputMapping::const_iterator itr = this->input_map_.begin(); itr != this->input_map_.end(); ++itr )
+  for( ActionMap::const_iterator itr = this->input_map_.begin(); itr != this->input_map_.end(); ++itr )
   {
     if( itr->second.key != nullptr )
     {

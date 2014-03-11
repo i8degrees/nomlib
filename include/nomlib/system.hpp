@@ -53,8 +53,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/EventCallback.hpp>
 #include <nomlib/system/EventDispatcher.hpp>
 #include <nomlib/system/InputMapper/InputAction.hpp>
-#include <nomlib/system/InputMapper/InputContext.hpp>
-#include <nomlib/system/InputMapper/InputMapper.hpp>
+#include <nomlib/system/InputMapper/InputStateMapper.hpp>
+#include <nomlib/system/InputMapper/InputActionMapper.hpp>
 
 // Property Tree
 

@@ -80,7 +80,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // #define NOM_DEBUG_SDL2_GESTURE_EVENT
 
 /// \brief Enable debugging output of Drag 'N' Drop events.
-// #define NOM_DEBUG_SDL2_DRAG_DROP_INPUT
+#define NOM_DEBUG_SDL2_DRAG_DROP_INPUT
 
 /// \brief Enable debugging output of text input events.
 // #define NOM_DEBUG_SDL2_TEXT_INPUT_EVENT
@@ -262,14 +262,10 @@ class EventHandler
 
     /// \brief Handler for mouse wheel events.
     ///
-    /// \remark x > 0 = Left
-    /// \remark x < 0 = Right
-    /// \remark y > 0 = Up
-    /// \remark y < 0 = Down
-    ///
-    /// \note Coordinates values X & Y are typically inverted; software -- such
-    /// as the Mouse Preference Pane under OS X v10.7+ -- allow you to reverse
-    /// this while using the Apple Mighty Mouse.
+    /// \remark x < 0 = Left
+    /// \remark x > 0 = Right
+    /// \remark y < 0 = Up
+    /// \remark y > 0 = Down
     virtual void on_mouse_wheel( const Event& ev );
 
     virtual void on_joy_axis( const Event& ev );

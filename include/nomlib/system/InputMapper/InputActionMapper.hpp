@@ -26,41 +26,53 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_INPUT_MAPPER_INPUT_MAPPER_HPP
-#define NOMLIB_SYSTEM_INPUT_MAPPER_INPUT_MAPPER_HPP
+#ifndef NOMLIB_SYSTEM_INPUT_MAPPER_INPUT_ACTION_MAPPER_HPP
+#define NOMLIB_SYSTEM_INPUT_MAPPER_INPUT_ACTION_MAPPER_HPP
 
 #include <map>
 
 #include "nomlib/config.hpp"
-// #include "nomlib/system/EventCallback.hpp"
 #include "nomlib/system/InputMapper/InputAction.hpp"
 
 namespace nom {
 
-class InputMapper
+/// \brief High-level API for associating names with input actions.
+///
+/// \remarks See also, nom::InputAction.
+class InputActionMapper
 {
   public:
-    typedef InputMapper SelfType;
+    friend class InputStateMapper;
+
+    typedef InputActionMapper SelfType;
+    typedef std::multimap<std::string, InputAction> ActionMap;
 
     /// \brief Default constructor.
-    InputMapper( void );
+    InputActionMapper( void );
 
     /// \brief Destructor.
-    ~InputMapper( void );
+    ~InputActionMapper( void );
 
-    const InputMapping& get( void ) const;
+    /// \brief Insert an action mapping.
+    bool insert( const std::string& key, const InputAction& action );
 
-    /// \brief Insert an input mapping.
-    bool add_input_mapping( const std::string& key, const InputAction& action );
+    /// \brief Remove an action mapping.
+    bool erase( const std::string& key );
 
-    /// \brief Remove an input mapping.
-    bool remove_input_mapping( const std::string& key );
-
+    /// \brief Diagnostic output.
     void dump( void ) const;
 
   private:
-    // InputMapping = std::multimap<std::string, InputAction>
-    InputMapping input_map_;
+    /// \brief Obtain the input map's contents.
+    ///
+    /// \remarks Used internally by nom::InputStateMapper.
+    const ActionMap& get( void ) const;
+
+    /// \brief Hash container of input actions, sorted by name.
+    ///
+    /// \remarks Note that we are a multi-map, therefore multiple duplicate
+    /// action keys can be used.
+    ActionMap input_map_;
 };
 
 } // namespace nom

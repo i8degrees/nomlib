@@ -135,45 +135,40 @@ class App: public nom::SDLApp
       // State 3 is joystick button input mapping
       // State 4 is joystick axis input mapping; note that this implementation
       // is currently broken (not fully implemented).
-      nom::InputMapper state0, state1, state2, state3, state4;
+      nom::InputActionMapper state0, state1, state2, state3, state4;
 
-      state0.add_input_mapping( "minimize_window_0", nom::InputAction( nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT ), nom::EventCallback( [&] () { this->minimize( this->event ); } ) ) );
-      state0.add_input_mapping( "restore_window_0", nom::InputAction( nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_RIGHT ), nom::EventCallback( [&] () { this->restore( this->event ); } ) ) );
+      state0.insert( "minimize_window_0", nom::InputAction( nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT ), nom::EventCallback( [&] () { this->minimize( this->event ); } ) ) );
+      state0.insert( "restore_window_0", nom::InputAction( nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_RIGHT ), nom::EventCallback( [&] () { this->restore( this->event ); } ) ) );
 
-      state1.add_input_mapping( "minimize_window_0",
-                                nom::InputAction  (
-                                                    nom::KeyboardAction( SDL_KEYDOWN, SDLK_1 ),
-                                                    nom::EventCallback( [&] () { this->minimize( this->event ); } )
-                                                  )
-                              );
+      state1.insert( "minimize_window_0", nom::InputAction  ( nom::KeyboardAction( SDL_KEYDOWN, SDLK_1 ), nom::EventCallback( [&] () { this->minimize( this->event ); } ) ) );
 
       // NOTE: The following keyboard action will have its modifier key reset to
       // zero (0) as a side-effect of minimizing the window, ergo you will not be
       // able to continue holding down LCTRL after the first time in order to
       // re-execute the restoration of said window. This is NOT a bug within the
       // the input mapper.
-      state1.add_input_mapping( "restore_window_0",
+      state1.insert( "restore_window_0",
                                 nom::InputAction  (
                                                     nom::KeyboardAction( SDL_KEYDOWN, SDLK_2, KMOD_LCTRL ),
                                                     nom::EventCallback( [&] () { this->restore( this->event ); } )
                                                   )
                               );
 
-      state1.add_input_mapping( "quit_app",
+      state1.insert( "quit_app",
                                 nom::InputAction  (
                                                     nom::KeyboardAction( SDL_KEYDOWN, SDLK_1, KMOD_LCTRL ),
                                                     nom::EventCallback( [&] () { this->on_app_quit( this->event ); } )
                                                   )
                               );
 
-      state2.add_input_mapping( "minimize_window_0",
+      state2.insert( "minimize_window_0",
                                 nom::InputAction  (
                                                     nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::L1 ),
                                                     nom::EventCallback( [&] () { this->minimize( this->event ); } )
                                                   )
                               );
 
-      state2.add_input_mapping( "restore_window_0",
+      state2.insert( "restore_window_0",
                                 nom::InputAction  (
                                                     nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::R1 ),
                                                     nom::EventCallback( [&] () { this->restore( this->event ); } )
@@ -185,28 +180,28 @@ class App: public nom::SDLApp
                                     nom::EventCallback( [&] () { this->color_fill( this->event, 0 ); } )
                                   );
 
-      state3.add_input_mapping( "color_fill_1", mouse_wheel );
+      state3.insert( "color_fill_1", mouse_wheel );
 
       // Wheel is going downward
       mouse_wheel = nom::InputAction( nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::DOWN ),
                                       nom::EventCallback( [&] () { this->color_fill( this->event, 1 ); } )
                                     );
 
-      state3.add_input_mapping( "color_fill_1", mouse_wheel );
+      state3.insert( "color_fill_1", mouse_wheel );
 
       // Wheel is going leftward
       mouse_wheel = nom::InputAction( nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_X, nom::MouseWheelAction::LEFT ),
                                       nom::EventCallback( [&] () { this->color_fill( this->event, 2 ); } )
                                     );
 
-      state3.add_input_mapping( "color_fill_1", mouse_wheel );
+      state3.insert( "color_fill_1", mouse_wheel );
 
       // Wheel is going rightward
       mouse_wheel = nom::InputAction( nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_X, nom::MouseWheelAction::RIGHT ),
                                       nom::EventCallback( [&] () { this->color_fill( this->event, 3 ); } )
                                     );
 
-      state3.add_input_mapping( "color_fill_1", mouse_wheel );
+      state3.insert( "color_fill_1", mouse_wheel );
 
       nom::InputAction jaxis;
 
@@ -215,53 +210,55 @@ class App: public nom::SDLApp
                                 nom::EventCallback( [&] () { this->color_fill( this->event, 0 ); } )
                               );
 
-      state4.add_input_mapping( "color_fill_1", jaxis );
+      state4.insert( "color_fill_1", jaxis );
 
       // Joystick axis is going downward
       jaxis = nom::InputAction( nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 0, 1 ),
                                 nom::EventCallback( [&] () { this->color_fill( this->event, 1 ); } )
                               );
 
-      state4.add_input_mapping( "color_fill_1", jaxis );
+      state4.insert( "color_fill_1", jaxis );
 
       // Joystick axis is going leftward
       jaxis = nom::InputAction( nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 1, -1 ),
                                 nom::EventCallback( [&] () { this->color_fill( this->event, 2 ); } )
                               );
 
-      state4.add_input_mapping( "color_fill_1", jaxis );
+      state4.insert( "color_fill_1", jaxis );
 
       // Joystick axis is going rightward
       jaxis = nom::InputAction( nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 1, 1 ),
                                 nom::EventCallback( [&] () { this->color_fill( this->event, 3 ); } )
                               );
 
-      state4.add_input_mapping( "color_fill_1", jaxis );
+      state4.insert( "color_fill_1", jaxis );
 
       // Mouse button input mapping
-      this->input_mapper.add_context( "state0", state0.get() );
+      this->input_mapper.insert( "state0", state0, true );
 
       // Keyboard input mapping
-      this->input_mapper.add_context( "state1", state1.get() );
+      this->input_mapper.insert( "state1", state1, true );
 
       // Mouse wheel input mapping
-      this->input_mapper.add_context( "state2", state2.get() );
+      this->input_mapper.insert( "state2", state2, true );
 
       // Joystick Button input mapping
-      this->input_mapper.add_context( "state3", state3.get() );
+      this->input_mapper.insert( "state3", state3, true );
 
       // Joystick Axis input mapping
-      this->input_mapper.add_context( "state4", state4.get() );
+      this->input_mapper.insert( "state4", state4, true );
 
       // this->input_mapper.clear();
 
-      // this->input_mapper.disable_context( "state0" );
-      // this->input_mapper.disable_context( "state1" );
-      // this->input_mapper.disable_context( "state2" );
-      // this->input_mapper.disable_context( "state3" );
-      // this->input_mapper.disable_context( "state4" );
+      // this->input_mapper.disable( "state0" );
+      // this->input_mapper.disable( "state1" );
+      // this->input_mapper.disable( "state2" );
+      // this->input_mapper.disable( "state3" );
+      // this->input_mapper.disable( "state4" );
 
-      if( this->input_mapper.active("state1") )
+      // this->input_mapper.activate_only( "state3" );
+
+      if( this->input_mapper.active( "state1" ) )
       {
         // nom::DialogMessageBox( APP_NAME, "ERROR: Input context state1 is active." );
         // return false;
@@ -458,7 +455,7 @@ class App: public nom::SDLApp
     /// \brief Timer for tracking frames per second
     nom::FPS fps[MAXIMUM_WINDOWS];
 
-    nom::InputContext input_mapper;
+    nom::InputStateMapper input_mapper;
 }; // end class App
 
 nom::sint main( nom::int32 argc, char* argv[] )

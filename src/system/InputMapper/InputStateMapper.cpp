@@ -26,118 +26,85 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/InputMapper/InputContext.hpp"
+#include "nomlib/system/InputMapper/InputStateMapper.hpp"
 
 namespace nom {
 
-InputContext::InputContext( void )
+InputStateMapper::InputStateMapper( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-InputContext::~InputContext( void )
+InputStateMapper::~InputStateMapper( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-// bool InputContext::add_input_mapping( const std::string& key, const InputAction& action )
-// {
-//   InputMapping::const_iterator it = this->input_map_.insert( InputAction::Pair( key, action ) );
-
-//   // No dice; the insertion failed for some reason!
-//   if( it == this->input_map_.end() )
-//   {
-//     NOM_LOG_ERR( NOM, "ERROR: Could not insert nom::Action with key: " + std::string( key ) );
-//     return false;
-//   }
-
-//   return true;
-// }
-
-// bool InputContext::remove_input_mapping( const std::string& key )
-// {
-//   InputMapping::const_iterator itr = this->input_map_.find( key );
-
-//   // No match found
-//   if( itr == this->input_map_.end() )
-//   {
-//     return false;
-//   }
-//   else // Match found; remove this input mapping
-//   {
-//     this->input_map_.erase( itr );
-
-//     return true;
-//   }
-
-//   return false;
-// }
-
-bool InputContext::active( const std::string& state ) const
+bool InputStateMapper::active( const std::string& key ) const
 {
-  ContextMap::const_iterator itr = this->contexts_.find( state );
+  InputStateMap::const_iterator itr = this->states_.find( key );
 
   // No match found; do nothing.
-  if( itr == this->contexts_.end() )
+  if( itr == this->states_.end() )
   {
-    NOM_LOG_ERR( NOM, "Could not check for active state on the specified key: " + state );
+    NOM_LOG_ERR( NOM, "Could not check for active state on the specified key: " + key );
     return false;
   }
   else
   {
-    return itr->second.active_;
+    return itr->second.active;
   }
 }
 
-bool InputContext::add_context( const std::string& state, const InputMapping& map, bool active )
+bool InputStateMapper::insert( const std::string& key, const InputActionMapper& map, bool active )
 {
-  InputState input_state;
-  input_state.active_ = active;
-  input_state.actions_ = map;
-  auto it = this->contexts_.insert( Pair( state, input_state ) );
+  InputActionState input_state;
+  input_state.active = active;
+  input_state.actions = map.get();
+  auto it = this->states_.insert( Pair( key, input_state ) );
 
   // No dice; the insertion failed for some reason!
   if( it.second == false )
   {
-    NOM_LOG_ERR( NOM, "ERROR: Could not insert nom::InputMapping state: " + std::string( state ) );
+    NOM_LOG_ERR( NOM, "Could not insert state key: " + key );
     return false;
   }
 
   return true;
 }
 
-bool InputContext::remove_context( const std::string& state )
+bool InputStateMapper::erase( const std::string& key )
 {
-  ContextMap::const_iterator itr = this->contexts_.find( state );
+  InputStateMap::const_iterator itr = this->states_.find( key );
 
   // No match found; do nothing.
-  if( itr == this->contexts_.end() )
+  if( itr == this->states_.end() )
   {
-    NOM_LOG_ERR( NOM, "ERROR: Could not remove specified state: " + state );
+    NOM_LOG_ERR( NOM, "Could not remove specified state key: " + key );
     return false;
   }
   else // Match found; remove the context mapping
   {
-    this->contexts_.erase( itr );
+    this->states_.erase( itr );
     return true;
   }
 
   return false;
 }
 
-bool InputContext::activate_context( const std::string& state )
+bool InputStateMapper::activate( const std::string& key )
 {
-  ContextMap::iterator itr = this->contexts_.find( state );
+  InputStateMap::iterator itr = this->states_.find( key );
 
   // No match found; do nothing.
-  if( itr == this->contexts_.end() )
+  if( itr == this->states_.end() )
   {
-    NOM_LOG_ERR( NOM, "ERROR: Could not activate specified state: " + state );
+    NOM_LOG_ERR( NOM, "Could not activate specified state key: " + key );
     return false;
   }
   else // Match found; set the input mapping as the active context.
   {
-    itr->second.active_ = true;
+    itr->second.active = true;
 
     return true;
   }
@@ -145,65 +112,84 @@ bool InputContext::activate_context( const std::string& state )
   return false;
 }
 
-bool InputContext::disable_context( const std::string& state )
+bool InputStateMapper::disable( const std::string& key )
 {
-  ContextMap::iterator itr = this->contexts_.find( state );
+  InputStateMap::iterator itr = this->states_.find( key );
 
   // No match found; do nothing.
-  if( itr == this->contexts_.end() )
+  if( itr == this->states_.end() )
   {
-    NOM_LOG_ERR( NOM, "ERROR: Could not disable specified state: " + state );
+    NOM_LOG_ERR( NOM, "Could not disable specified state key: " + key );
     return false;
   }
   else // Match found; disable the requested state
   {
-    itr->second.active_ = false;
+    itr->second.active = false;
     return true;
   }
 
   return false;
 }
 
-void InputContext::clear( void )
+void InputStateMapper::disable( void )
 {
-  this->contexts_.clear();
+  for( auto itr = this->states_.begin(); itr != this->states_.end(); ++itr )
+  {
+    itr->second.active = false;
+  }
 }
 
-// void InputContext::dump_actions( void ) const
-// {
-//   for( InputMapping::const_iterator itr = this->input_map_.begin(); itr != this->input_map_.end(); ++itr )
-//   {
-//     // FIXME
-//     if( itr->second.key != nullptr )
-//     {
-//       itr->second.key->dump();
-//     }
-//     else if ( itr->second.mouse != nullptr )
-//     {
-//       itr->second.mouse->dump();
-//     }
-//     else if ( itr->second.jbutton != nullptr )
-//     {
-//       itr->second.jbutton->dump();
-//     }
-//     else
-//     {
-//       NOM_LOG_ERR( NOM, "Invalid input mapping state." );
-//     }
-//   }
-// }
-
-void InputContext::dump_states( void )
+bool InputStateMapper::activate_only( const std::string& key )
 {
-  for( auto itr = this->contexts_.begin(); itr != this->contexts_.end(); ++itr )
+  // First, we need to make sure that the requested state even exists before we
+  // flag anything inactive.
+  InputStateMap::iterator it = this->states_.find( key );
+
+  if( it == this->states_.end() )
+  {
+    NOM_LOG_ERR( NOM, "Could not find state key: " + key );
+    return false;
+  }
+
+  // Iterate through all of our action-to-states and flag them inactive.
+  for( InputStateMap::iterator itr = this->states_.begin(); itr != this->states_.end(); ++itr )
+  {
+    itr->second.active = false;
+  }
+
+  it = this->states_.find( key );
+
+  // No match found; do nothing more!
+  if( it == this->states_.end() )
+  {
+    NOM_LOG_ERR( NOM, "Could not activate only state key: " + key );
+    return false;
+  }
+  else // Match found; enable the requested state
+  {
+    it->second.active = true;
+    return true;
+  }
+
+  return false;
+}
+
+void InputStateMapper::clear( void )
+{
+  this->states_.clear();
+}
+
+void InputStateMapper::dump( void )
+{
+  for( auto itr = this->states_.begin(); itr != this->states_.end(); ++itr )
   {
     NOM_DUMP( itr->first );
 
-    if( itr->second.active_ == true )
+    if( itr->second.active == true )
     {
-      InputMapping& input_map = itr->second.actions_;
+      InputActionMapper::ActionMap& input_map = itr->second.actions;
 
-      for( InputMapping::const_iterator itr = input_map.begin(); itr != input_map.end(); ++itr )
+      for( InputActionMapper::ActionMap::const_iterator itr = input_map.begin(); itr != input_map.end(); ++itr )
       {
         NOM_DUMP( itr->first );
 
@@ -232,14 +218,14 @@ void InputContext::dump_states( void )
   }
 }
 
-void InputContext::on_event( const Event& ev )
+void InputStateMapper::on_event( const Event& ev )
 {
-  for( auto itr = this->contexts_.begin(); itr != this->contexts_.end(); ++itr )
+  for( auto itr = this->states_.begin(); itr != this->states_.end(); ++itr )
   {
-    if( itr->second.active_ == true )
+    if( itr->second.active == true )
     {
-      InputMapping input_map = itr->second.actions_;
-      for( InputMapping::const_iterator itr = input_map.begin(); itr != input_map.end(); ++itr )
+      InputActionMapper::ActionMap input_map = itr->second.actions;
+      for( InputActionMapper::ActionMap::const_iterator itr = input_map.begin(); itr != input_map.end(); ++itr )
       {
         if( this->on_key_press( itr->second, ev ) )
         {
@@ -266,11 +252,11 @@ void InputContext::on_event( const Event& ev )
   }
 }
 
-bool InputContext::on_key_press( const InputAction& mapping, const Event& ev )
+bool InputStateMapper::on_key_press( const InputAction& mapping, const Event& ev )
 {
   if( mapping.key == nullptr ) return false;
 
-  if( ev.type != SDL_KEYDOWN && ev.type != SDL_KEYUP ) return false;
+  if( mapping.key->type != ev.type ) return false;
 
   if( mapping.key->mod != KMOD_NONE )
   {
@@ -287,32 +273,25 @@ bool InputContext::on_key_press( const InputAction& mapping, const Event& ev )
   return false;
 }
 
-bool InputContext::on_mouse_button( const InputAction& mapping, const Event& ev )
+bool InputStateMapper::on_mouse_button( const InputAction& mapping, const Event& ev )
 {
   if( mapping.mouse == nullptr ) return false;
 
-  if( ev.type != SDL_MOUSEBUTTONDOWN && ev.type != SDL_MOUSEBUTTONUP )
-  {
-    return false;
-  }
+  if( mapping.mouse->type != ev.type ) return false;
 
   if( mapping.mouse->button == ev.mouse.button ) return true;
 
   return false;
 }
 
-bool InputContext::on_mouse_wheel( const InputAction& mapping, const Event& ev )
+bool InputStateMapper::on_mouse_wheel( const InputAction& mapping, const Event& ev )
 {
   if( mapping.wheel == nullptr ) return false;
 
-  if( ev.type != SDL_MOUSEWHEEL ) return false;
+  if( mapping.wheel->type != ev.type ) return false;
 
   // NOTE: X & Y coordinate values depend on the construction of a WheelAction
   // object.
-  //
-  // Note that all values are inverted here, despite the documentation on the
-  // SDL2 wiki, on my test systems (Windows 7 & Mac OS X v10.9.x with a Logitech
-  // and Apple Mighty Mouse).
   if( mapping.wheel->axis == MouseWheelAction::AXIS_X )
   {
     // Left
@@ -348,11 +327,11 @@ bool InputContext::on_mouse_wheel( const InputAction& mapping, const Event& ev )
   return false;
 }
 
-bool InputContext::on_joystick_button( const InputAction& mapping, const Event& ev )
+bool InputStateMapper::on_joystick_button( const InputAction& mapping, const Event& ev )
 {
   if( mapping.jbutton == nullptr ) return false;
 
-  if( ev.type != SDL_JOYBUTTONDOWN && ev.type != SDL_JOYBUTTONUP ) return false;
+  if( mapping.jbutton->type != ev.type ) return false;
 
   if( mapping.jbutton->id != ev.jbutton.id ) return false;
 
@@ -362,11 +341,11 @@ bool InputContext::on_joystick_button( const InputAction& mapping, const Event& 
 }
 
 // FIXME: Implementation is incomplete!
-bool InputContext::on_joystick_axis( const InputAction& mapping, const Event& ev )
+bool InputStateMapper::on_joystick_axis( const InputAction& mapping, const Event& ev )
 {
   if( mapping.jaxis == nullptr ) return false;
 
-  if( ev.type != SDL_JOYAXISMOTION ) return false;
+  if( mapping.jaxis->type != ev.type ) return false;
 
   if( mapping.jaxis->id != ev.jaxis.id ) return false;
 

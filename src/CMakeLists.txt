@@ -133,8 +133,8 @@ set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/EventDispatcher.cpp
       ${SRC_DIR}/system/EventCallback.cpp
       ${SRC_DIR}/system/InputMapper/InputAction.cpp
-      ${SRC_DIR}/system/InputMapper/InputMapper.cpp
-      ${SRC_DIR}/system/InputMapper/InputContext.cpp
+      ${SRC_DIR}/system/InputMapper/InputActionMapper.cpp
+      ${SRC_DIR}/system/InputMapper/InputStateMapper.cpp
     )
 
 file ( GLOB PTREE_HEADERS "${NOMLIB_HEADERS_DIR}/system/ptree/*.hpp" )

@@ -50,7 +50,7 @@ template <> const Color4i Color4i::White (255, 255, 255);
 template <> const Color4i Color4i::Red (255, 0, 0);
 template <> const Color4i Color4i::Green (0, 255, 0);
 template <> const Color4i Color4i::Blue (0, 0, 255);
-template <> const Color4i Color4i::Yellow (255, 255, 255);
+template <> const Color4i Color4i::Yellow (255, 255, 0);
 template <> const Color4i Color4i::Magenta (255, 0, 255);
 template <> const Color4i Color4i::Cyan (0, 255, 255);
 template <> const Color4i Color4i::Silver (192,192,192);
@@ -65,7 +65,7 @@ template <> const Color4f Color4f::White (1.0f, 1.0f, 1.0f);
 template <> const Color4f Color4f::Red (1.0f, 0.0f, 0.0f);
 template <> const Color4f Color4f::Green (0.0f, 1.0f, 0.0f);
 template <> const Color4f Color4f::Blue (0.0f, 0.0f, 1.0f);
-template <> const Color4f Color4f::Yellow (1.0f, 1.0f, 1.0f);
+template <> const Color4f Color4f::Yellow (1.0f, 1.0f, 0.0f);
 template <> const Color4f Color4f::Magenta (1.0f, 0.0f, 1.0f);
 template <> const Color4f Color4f::Cyan (0.0f, 1.0f, 1.0f);
 

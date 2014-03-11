@@ -47,6 +47,14 @@ SDLApp::SDLApp ( void ) :
       NOM_LOG_ERR( NOM, "Could not disable minimizing window on focus loss." );
     }
   #endif
+
+  // TODO: This should probably be a flag we pass...
+  #if defined( NOM_PLATFORM_OSX )
+    if( nom::set_hint( SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES, "0" ) == false )
+    {
+      NOM_LOG_ERR( NOM, "Could not disable Spaces support." );
+    }
+  #endif
 }
 
 SDLApp::~SDLApp ( void )

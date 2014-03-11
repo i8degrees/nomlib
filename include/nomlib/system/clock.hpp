@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
+#include <algorithm>
 #include <ctime>
 
 #include "SDL.h" // Used for ticks & sleep implementations

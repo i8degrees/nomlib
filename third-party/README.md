@@ -12,12 +12,18 @@ Download the package file for your platform and extract inside the root of your 
 
 Both the 64-bit and 32-bit official development binaries versions of:
 
-* [SDL v2.0.1](http://libsdl.org/)
+* [SDL v2.0.2](http://libsdl.org/)
 * [SDL_image v2.0.0](http://www.libsdl.org/projects/SDL_image/)
 * [SDL_ttf v2.0.12](http://www.libsdl.org/projects/SDL_ttf/)
-  - Packaged only for OS X
-      - [libsndfile v1.0.24](http://www.mega-nerd.com/libsndfile/)
+
+  * Packaged only under Mac OS X
+      * [libsndfile v1.0.24](http://www.mega-nerd.com/libsndfile/)
         * Distributed framework is copied from the [SFML2 master branch](https://github.com/LaurentGomila/SFML/tree/master/) with me moving the distribution's **sndfile.h** file to it under a new Headers directory.
+
+      * [SDL2_image.framework v2.0.0](http://libsdl.org/projects/SDL_image) built with SDL_IMAGE_USE_COMMON_BACKEND (in order to fix critical pixel mismatch issue; see also https://forums.libsdl.org/viewtopic.php?t=10013&highlight=perhaps+again+pixel+bug+mac).
+        * [libpng v1.5.18](https://github.com/Homebrew/homebrew/commits/master/Library/Formula/libpng.rb) from Homebrew's repository with the --universal build flag.
+        * [libtiff v4.0.3](https://github.com/Homebrew/homebrew/commits/master/Library/Formula/libtiff.rb) from Homebrew's repository with the --universal build flag.
+        * [libjpeg 8d](https://github.com/Homebrew/homebrew/commits/master/Library/Formula/jpeg.rb) from Homebrew's repository with the --universal build flag.
 
   - Packaged only for Windows
     * [libsndfile v1.0.25](http://www.mega-nerd.com/libsndfile/)

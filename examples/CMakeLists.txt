@@ -16,6 +16,15 @@
 # http://stackoverflow.com/questions/6077810/how-to-correctly-add-resources-to-a-project?rq=1
 cmake_minimum_required ( VERSION 2.6 )
 
+set( NOM_BUILD_APP_EXAMPLE on )
+set( NOM_BUILD_AUDIO_EXAMPLE on )
+set( NOM_BUILD_DEVICE_INFO_EXAMPLE on )
+set( NOM_BUILD_EVENTS_EXAMPLE on )
+set( NOM_BUILD_FONTS_EXAMPLE on )
+set( NOM_BUILD_GAMEOFLIFE_EXAMPLE on )
+set( NOM_BUILD_SPRITE_SHEETS_EXAMPLE on )
+set( NOM_BUILD_VALUES_EXAMPLE on )
+
 link_libraries ( ${PROJECT_NAME} )
 
 if ( PLATFORM_WINDOWS )
@@ -54,78 +63,94 @@ endif ( PLATFORM_WINDOWS )
 if( NOT NOM_BUILD_MINI_UNIT )
 
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_GUI_UNIT AND NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT AND NOM_BUILD_JSON_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
-    add_executable ( app "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/app/app.cpp" )
+    if( NOM_BUILD_APP_EXAMPLE )
+      add_executable ( app "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/app/app.cpp" )
 
-    install ( DIRECTORY
-              "${EXAMPLES_SRC_DIR}/app/Resources"
-              DESTINATION
-              "${EXAMPLES_INSTALL_PEFIX}"
-              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-            )
+      install ( DIRECTORY
+                "${EXAMPLES_SRC_DIR}/app/Resources"
+                DESTINATION
+                "${EXAMPLES_INSTALL_PEFIX}"
+                PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+              )
+    endif( NOM_BUILD_APP_EXAMPLE )
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_GUI_UNIT AND NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT AND NOM_BUILD_JSON_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_AUDIO_UNIT AND NOM_BUILD_SYSTEM_UNIT )
-    add_executable ( audio "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/audio/audio.cpp" )
-    install ( DIRECTORY
-              "${EXAMPLES_SRC_DIR}/audio/Resources"
-              DESTINATION
-              "${EXAMPLES_INSTALL_PEFIX}"
-              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-            )
+    if( NOM_BUILD_AUDIO_EXAMPLE )
+      add_executable ( audio "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/audio/audio.cpp" )
+
+      install ( DIRECTORY
+                "${EXAMPLES_SRC_DIR}/audio/Resources"
+                DESTINATION
+                "${EXAMPLES_INSTALL_PEFIX}"
+                PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+              )
+      endif( NOM_BUILD_AUDIO_EXAMPLE )
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_AUDIO_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
-    add_executable ( events "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/events.cpp" )
-    install ( DIRECTORY
-              "${EXAMPLES_SRC_DIR}/events/Resources"
-              DESTINATION
-              "${EXAMPLES_INSTALL_PEFIX}"
-              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-            )
+    if( NOM_BUILD_EVENTS_EXAMPLE )
+      add_executable ( events "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/events.cpp" )
+
+      install ( DIRECTORY
+                "${EXAMPLES_SRC_DIR}/events/Resources"
+                DESTINATION
+                "${EXAMPLES_INSTALL_PEFIX}"
+                PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+              )
+    endif( NOM_BUILD_EVENTS_EXAMPLE )
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_SYSTEM_UNIT )
-    add_executable ( device_info "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/device_info.cpp" )
+    if( NOM_BUILD_DEVICE_INFO_EXAMPLE )
+      add_executable ( device_info "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/device_info.cpp" )
+    endif( NOM_BUILD_DEVICE_INFO_EXAMPLE )
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
-    add_executable ( fonts "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/fonts.cpp" )
-    install ( DIRECTORY
-              "${EXAMPLES_SRC_DIR}/fonts/Resources"
-              DESTINATION
-              "${EXAMPLES_INSTALL_PEFIX}"
-              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-            )
+    if( NOM_BUILD_FONTS_EXAMPLE )
+      add_executable ( fonts "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/fonts.cpp" )
+
+      install ( DIRECTORY
+                "${EXAMPLES_SRC_DIR}/fonts/Resources"
+                DESTINATION
+                "${EXAMPLES_INSTALL_PEFIX}"
+                PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+              )
+    endif( NOM_BUILD_FONTS_EXAMPLE )
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
-        add_executable ( GameOfLife "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/GameOfLife/GameOfLife.cpp" )
+        if( NOM_BUILD_GAMEOFLIFE_EXAMPLE )
+          add_executable ( GameOfLife "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/GameOfLife/GameOfLife.cpp" )
 
-        install ( DIRECTORY
-                  "${EXAMPLES_SRC_DIR}/GameOfLife/Resources"
-                  DESTINATION
-                  "${EXAMPLES_INSTALL_PEFIX}"
-                  PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-                )
+          install ( DIRECTORY
+                    "${EXAMPLES_SRC_DIR}/GameOfLife/Resources"
+                    DESTINATION
+                    "${EXAMPLES_INSTALL_PEFIX}"
+                    PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+                  )
+        endif( NOM_BUILD_GAMEOFLIFE_EXAMPLE )
     endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_JSON_UNIT AND NOM_BUILD_PTREE_UNIT AND NOM_BUILD_SYSTEM_UNIT )
-    # TODO (re-write with new nom::JSON API)
-    #add_executable ( json_reader "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/json/json_reader.cpp" )
-    #add_executable ( json_writer "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/json/json_writer.cpp" )
-    add_executable( values "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/ptree/json/values.cpp" )
+    if( NOM_BUILD_VALUES_EXAMPLE )
+      add_executable( values "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/ptree/json/values.cpp" )
 
-    # Used by: app, json_reader, sprite_sheets
-    install ( DIRECTORY
-              "${EXAMPLES_SRC_DIR}/json/Resources"
-              DESTINATION
-              "${EXAMPLES_INSTALL_PEFIX}"
-              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-            )
+      # Used by: app, json_reader, sprite_sheets
+      install ( DIRECTORY
+                "${EXAMPLES_SRC_DIR}/json/Resources"
+                DESTINATION
+                "${EXAMPLES_INSTALL_PEFIX}"
+                PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+              )
+    endif( NOM_BUILD_VALUES_EXAMPLE )
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_JSON_UNIT AND NOM_BUILD_PTREE_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_SYSTEM_UNIT )
-    add_executable ( sprite_sheets "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/sprites/sprite_sheets.cpp" )
+    if( NOM_BUILD_SPRITE_SHEETS_EXAMPLE )
+      add_executable ( sprite_sheets "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/sprites/sprite_sheets.cpp" )
+    endif( NOM_BUILD_SPRITE_SHEETS_EXAMPLE )
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
   # Install library dependencies into binary output directory

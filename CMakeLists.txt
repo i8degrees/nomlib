@@ -56,7 +56,7 @@ option( NOM_BUILD_SYSTEM_UNIT "Build the System unit." on )
 
 # Collection of internal templates used in the creation of new functionality
 # such as classes or examples / tests.
-option( NOM_BUILD_TEMPLATES_UNIT "Build the library templates." on )
+option( NOM_BUILD_TEMPLATES_UNIT "Build the library templates." off )
 
 project ( nomlib ) # Sets PROJECT_NAME variable for us
 

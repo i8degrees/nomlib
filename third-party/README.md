@@ -6,13 +6,13 @@
 
 ## Installation ##
 
-Download the package file for your platform and extract inside the root of your project folder for nomlib. You should now have several libraries populating third-party/**\<EXTRACTED_PLATFORM\>**. No other dependency hell to ensure -- yay!
+Download the package file for your platform and extract inside the third-party folder inside the project root. You should now have several libraries populating third-party/**\<EXTRACTED_PLATFORM\>**. No other dependency hell to ensure -- yay!
 
 ## Packaged Libraries ##
 
 Both the 64-bit and 32-bit official development binaries versions of:
 
-* [SDL v2.0.2](http://libsdl.org/)
+* [SDL v2.0.3](http://libsdl.org/)
 * [SDL_image v2.0.0](http://www.libsdl.org/projects/SDL_image/)
 * [SDL_ttf v2.0.12](http://www.libsdl.org/projects/SDL_ttf/)
 

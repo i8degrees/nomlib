@@ -258,18 +258,45 @@ bool InputStateMapper::on_key_press( const InputAction& mapping, const Event& ev
 
   if( mapping.key->type != ev.type ) return false;
 
+  // Handle keyboard actions with set modifier keys first.
   if( mapping.key->mod != KMOD_NONE )
   {
-    if( mapping.key->sym == ev.key.sym && mapping.key->mod == ev.key.mod )
+    // Handle keyboard actions with set modifiers and repeat fields initialized.
+    if( mapping.key->repeat != 0 )
+    {
+      if( ev.key.repeat != 0 && mapping.key->sym == ev.key.sym && mapping.key->mod == ev.key.mod )
+      {
+        return true;
+      }
+
+      return false;
+    }
+    // Handle keyboard actions with set modifier keys but no repeat field
+    // initialized.
+    else if( mapping.key->sym == ev.key.sym && mapping.key->mod == ev.key.mod )
     {
       return true;
     }
   }
+  // Handle keyboard actions without modifier keys initialized.
   else if( mapping.key->sym == ev.key.sym )
   {
+    // Handle keyboard actions with repeat field initialized (without modifier
+    // keys).
+    if( mapping.key->repeat != 0 )
+    {
+      if( ev.key.repeat != 0 )
+      {
+        return true;
+      }
+
+      return false;
+    }
+
     return true;
   }
 
+  // No match to any mapped action
   return false;
 }
 

@@ -134,8 +134,9 @@ class App: public nom::SDLApp
       // State 2 is mouse wheel input mapping
       // State 3 is joystick button input mapping
       // State 4 is joystick axis input mapping; note that this implementation
+      // State 5 is keyboard input mapping with repeating key active
       // is currently broken (not fully implemented).
-      nom::InputActionMapper state0, state1, state2, state3, state4;
+      nom::InputActionMapper state0, state1, state2, state3, state4, state5;
 
       state0.insert( "minimize_window_0", nom::InputAction( nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT ), nom::EventCallback( [&] () { this->minimize( this->event ); } ) ) );
       state0.insert( "restore_window_0", nom::InputAction( nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_RIGHT ), nom::EventCallback( [&] () { this->restore( this->event ); } ) ) );
@@ -233,6 +234,14 @@ class App: public nom::SDLApp
 
       state4.insert( "color_fill_1", jaxis );
 
+      nom::InputAction kb_repeat;
+
+      // Keyboard action should only trigger when the key symbols 4 and the
+      // Command (OS X) or Windows modifier key is repeating (pressed down for
+      // at least ~0.5s).
+      kb_repeat = nom::InputAction( nom::KeyboardAction( SDL_KEYDOWN, SDLK_3, KMOD_LGUI, 1 ), nom::EventCallback( [&] () { this->color_fill( this->event, 3 ); } ) );
+      state5.insert( "color_fill_1", kb_repeat );
+
       // Mouse button input mapping
       this->input_mapper.insert( "state0", state0, true );
 
@@ -248,6 +257,9 @@ class App: public nom::SDLApp
       // Joystick Axis input mapping
       this->input_mapper.insert( "state4", state4, true );
 
+      // Keyboard repeating press mappings
+      this->input_mapper.insert( "state5", state5, true );
+
       // this->input_mapper.clear();
 
       // this->input_mapper.disable( "state0" );
@@ -255,6 +267,7 @@ class App: public nom::SDLApp
       // this->input_mapper.disable( "state2" );
       // this->input_mapper.disable( "state3" );
       // this->input_mapper.disable( "state4" );
+      // this->input_mapper.disable( "state5" );
 
       // this->input_mapper.activate_only( "state3" );
 
@@ -433,6 +446,8 @@ class App: public nom::SDLApp
         {
           // FIXME: I get a segfault here when we try to execute the callback.
           #if ! defined( NOM_PLATFORM_WINDOWS )
+            // FIXME: We get a segfault under OS X (and presumed Windows, too)
+            // when we add more than one kb_repeat input action. No idea why!
             delegate->operator()();
           #endif
         }

@@ -42,6 +42,7 @@ struct KeyboardAction
     type( 0 ),
     sym( 0 ),
     mod( KMOD_NONE ),
+    repeat( 0 ),
     window_id( 0 )
   {
     // NOM_LOG_TRACE( NOM );
@@ -58,6 +59,7 @@ struct KeyboardAction
     type( type ),
     sym( sym ),
     mod( KMOD_NONE ),
+    repeat( 0 ),
     window_id( 0 )
   {
     // NOM_LOG_TRACE( NOM );
@@ -68,6 +70,18 @@ struct KeyboardAction
     type( type ),
     sym( sym ),
     mod( mod ),
+    repeat( 0 ),
+    window_id( 0 )
+  {
+    // NOM_LOG_TRACE( NOM );
+  }
+
+  /// \brief Constructor for initializing an object to a valid action state.
+  KeyboardAction( uint32 type, int32 sym, uint16 mod, uint8 repeat ) :
+    type( type ),
+    sym( sym ),
+    mod( mod ),
+    repeat( repeat ),
     window_id( 0 )
   {
     // NOM_LOG_TRACE( NOM );
@@ -79,7 +93,8 @@ struct KeyboardAction
     NOM_DUMP( type );
     NOM_DUMP( sym );
     NOM_DUMP( mod );
-    // NOM_DUMP( window_id );
+    NOM_DUMP( NOM_SCAST( int, repeat ) );
+    NOM_DUMP( window_id );
   }
 
   /// \brief The event type.
@@ -98,6 +113,9 @@ struct KeyboardAction
   ///
   /// \remarks Multiple modifier keys can be combined as a bit-mask.
   uint16 mod;
+
+  /// \brief Non-zero when the key press was previously held down.
+  uint8 repeat;
 
   /// \brief The identifier of the window at the moment of the event.
   ///

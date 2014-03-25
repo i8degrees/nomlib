@@ -313,9 +313,6 @@ struct JoystickButtonEvent
   /// \remarks SDL_PRESSED or SDL_RELEASED.
   uint8 state;
 
-  /// \brief Identifier of the window at the moment of the event.
-  // uint32 window_id;
-
   void dump( void ) const
   {
     NOM_DUMP( id );

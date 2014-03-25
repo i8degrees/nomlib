@@ -1129,7 +1129,7 @@ void EventHandler::process_event( const SDL_Event* ev )
           event.mouse.y = ev->button.y;
           event.mouse.button = ev->button.button;
           event.mouse.state = ev->button.state;
-          // event.mouse.clicks = ev->button.clicks;
+          event.mouse.clicks = ev->button.clicks;
           event.mouse.window_id = ev->button.windowID;
           this->push_event( event );
           break;
@@ -1145,7 +1145,7 @@ void EventHandler::process_event( const SDL_Event* ev )
           event.mouse.y = ev->button.y;
           event.mouse.button = ev->button.button;
           event.mouse.state = ev->button.state;
-          // event.mouse.clicks = ev->button.clicks;
+          event.mouse.clicks = ev->button.clicks;
           event.mouse.window_id = ev->button.windowID;
           this->push_event( event );
           break;
@@ -1161,7 +1161,7 @@ void EventHandler::process_event( const SDL_Event* ev )
           event.mouse.y = ev->button.y;
           event.mouse.button = ev->button.button;
           event.mouse.state = ev->button.state;
-          // event.mouse.clicks = ev->button.clicks;
+          event.mouse.clicks = ev->button.clicks;
           event.mouse.window_id = ev->button.windowID;
           this->push_event( event );
           break;
@@ -1177,7 +1177,7 @@ void EventHandler::process_event( const SDL_Event* ev )
           event.mouse.y = ev->button.y;
           event.mouse.button = ev->button.button;
           event.mouse.state = ev->button.state;
-          // event.mouse.clicks = ev->button.clicks;
+          event.mouse.clicks = ev->button.clicks;
           event.mouse.window_id = ev->button.windowID;
           this->push_event( event );
           break;
@@ -1193,7 +1193,7 @@ void EventHandler::process_event( const SDL_Event* ev )
           event.mouse.y = ev->button.y;
           event.mouse.button = ev->button.button;
           event.mouse.state = ev->button.state;
-          // event.mouse.clicks = ev->button.clicks;
+          event.mouse.clicks = ev->button.clicks;
           event.mouse.window_id = ev->button.windowID;
           this->push_event( event );
           break;
@@ -1217,7 +1217,7 @@ void EventHandler::process_event( const SDL_Event* ev )
           event.mouse.y = ev->button.y;
           event.mouse.button = ev->button.button;
           event.mouse.state = ev->button.state;
-          // event.mouse.clicks = ev->button.clicks;
+          event.mouse.clicks = ev->button.clicks;
           event.mouse.window_id = ev->button.windowID;
           this->push_event( event );
           break;
@@ -1233,7 +1233,7 @@ void EventHandler::process_event( const SDL_Event* ev )
           event.mouse.y = ev->button.y;
           event.mouse.button = ev->button.button;
           event.mouse.state = ev->button.state;
-          // event.mouse.clicks = ev->button.clicks;
+          event.mouse.clicks = ev->button.clicks;
           event.mouse.window_id = ev->button.windowID;
           this->push_event( event );
           break;
@@ -1249,7 +1249,7 @@ void EventHandler::process_event( const SDL_Event* ev )
           event.mouse.y = ev->button.y;
           event.mouse.button = ev->button.button;
           event.mouse.state = ev->button.state;
-          // event.mouse.clicks = ev->button.clicks;
+          event.mouse.clicks = ev->button.clicks;
           event.mouse.window_id = ev->button.windowID;
           this->push_event( event );
           break;
@@ -1265,7 +1265,7 @@ void EventHandler::process_event( const SDL_Event* ev )
           event.mouse.y = ev->button.y;
           event.mouse.button = ev->button.button;
           event.mouse.state = ev->button.state;
-          // event.mouse.clicks = ev->button.clicks;
+          event.mouse.clicks = ev->button.clicks;
           event.mouse.window_id = ev->button.windowID;
           this->push_event( event );
           break;
@@ -1281,7 +1281,7 @@ void EventHandler::process_event( const SDL_Event* ev )
           event.mouse.y = ev->button.y;
           event.mouse.button = ev->button.button;
           event.mouse.state = ev->button.state;
-          // event.mouse.clicks = ev->button.clicks;
+          event.mouse.clicks = ev->button.clicks;
           event.mouse.window_id = ev->button.windowID;
           this->push_event( event );
           break;

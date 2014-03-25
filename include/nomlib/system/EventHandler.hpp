@@ -55,7 +55,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// \brief Enable debugging output of key press & release events.
 // #define NOM_DEBUG_SDL2_KEYBOARD_INPUT
 
-/// \brief Enable debugging output of mouse click & release events.
+/// \brief Enable debugging output of mouse button events.
 // #define NOM_DEBUG_SDL2_MOUSE_INPUT
 
 /// \brief Enable debugging output of mouse motion events.

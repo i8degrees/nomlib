@@ -40,6 +40,7 @@ const std::string APP_RESOURCES_DIR = "Resources";
 /// Relative file path name to our resources for this unit test
 const nom::Path p;
 const std::string RESOURCE_SANITY = APP_RESOURCES_DIR + p.native() + "sanity.json";
+const std::string RESOURCE_SANITY2 = APP_RESOURCES_DIR + p.native() + "sanity2.json";
 
 using namespace nom; // TODO: Remove
 
@@ -418,17 +419,40 @@ sint do_unserializer_test_two( void )
   JsonSerializer writer;
   nom::Value values; // I/O buffer
 
-  // Initialize nom::Value from JSON file input; see
-  // examples/json/Resources/sanity.json
+  // Initialize nom::Value from JSON file as input
   reader.unserialize( RESOURCE_SANITY, values );
 
   NOM_DUMP( values );
 
   // NOM_DUMP( writer.stringify( values ) );
 
-  // Serialize values from our input file above; output.json should match it.
-  // Output file is saved under working directory of where we execute from.
+  // Serialize values from our input file above; our input should match the
+  // resulting serialized data.
+  //
+  // Note: output file is saved under working directory of where we execute
+  // from.
   writer.serialize( values, "output.json" );
+
+  return NOM_EXIT_SUCCESS;
+}
+
+sint do_unserializer_test_three( void )
+{
+  JsonSerializer reader;
+  JsonSerializer writer;
+  nom::Value values; // I/O buffer
+
+  // Initialize nom::Value from JSON file as input
+  reader.unserialize( RESOURCE_SANITY2, values );
+
+  NOM_DUMP( values );
+
+  // Serialize values from our input file above; our input should match the
+  // resulting serialized data.
+  //
+  // Note: output file is saved under working directory of where we execute
+  // from.
+  writer.serialize( values, "output2.json" );
 
   return NOM_EXIT_SUCCESS;
 }
@@ -585,6 +609,11 @@ sint main( int argc, char* argv[] )
   if( ret != NOM_EXIT_SUCCESS )
   {
     nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed JSONCPP unit test " + std::to_string(ret) );
+
+  ret = do_unserializer_test_three();
+  if( ret != NOM_EXIT_SUCCESS )
+  {
+    nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
     return NOM_EXIT_FAILURE;
   }
 

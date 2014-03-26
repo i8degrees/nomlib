@@ -109,6 +109,21 @@ nom::sint main ( nom::sint argc, char* argv[] )
     }
   } // end for loop of TOTAL_SPRITE_SHEET_TESTS
 
+  for( nom::uint idx = 0; idx < TOTAL_SPRITE_SHEET_TESTS; ++idx )
+  {
+    if( sheets[idx].load( OUTPUT_SHEET_FILENAME[idx] ) == false )
+    {
+      nom::DialogMessageBox( APP_NAME, "ERROR: Could not load sprite sheet file: " + OUTPUT_SHEET_FILENAME[idx] );
+      return NOM_EXIT_FAILURE;
+    }
+
+    if( sheets[idx].save( "testme.json" ) == false )
+    {
+      nom::DialogMessageBox( APP_NAME, "ERROR: Could not save sprite sheet file: " + OUTPUT_SHEET_FILENAME[idx] );
+      return NOM_EXIT_FAILURE;
+    }
+  }
+
   // nom::DialogMessageBox ( APP_NAME, "SUCCESS: Sprite sheet saved at: " + OUTPUT_CURSORS_SHEET_FILENAME );
 
   return NOM_EXIT_SUCCESS;

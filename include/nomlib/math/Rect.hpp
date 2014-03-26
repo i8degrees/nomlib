@@ -155,11 +155,6 @@ struct Rect
   {
     Object object;
 
-    // object.push_back( Pair( "x", static_cast<T> ( this->x ) ) );
-    // object.push_back( Pair( "y", static_cast<T> ( this->y ) ) );
-    // object.push_back( Pair( "width", static_cast<T> ( this->w ) ) );
-    // object.push_back( Pair( "height", static_cast<T> ( this->h ) ) );
-
     object["x"] = this->x;
     object["y"] = this->y;
     object["width"] = this->w;

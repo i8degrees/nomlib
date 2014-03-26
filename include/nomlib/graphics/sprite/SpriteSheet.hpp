@@ -103,13 +103,20 @@ class SpriteSheet
 
     const std::string& sheet_filename ( void ) const;
 
-    /// Save the current sprite sheet data calculations to a file as a series
-    /// of RFC 4627 compliant JSON objects.
-    bool save ( const std::string& filename );
+    /// \brief Serialize the existing object data to a JSON file.
+    ///
+    /// \param filename The absolute file path to the resulting JSON output.
+    ///
+    /// \remarks The requested file path is created upon success.
+    bool save( const std::string& filename );
 
-    /// Load saved sprite sheet data from a file encoded as an RFC 4627
-    /// compliant JSON object.
-    bool load ( const std::string& filename );
+    /// \brief Un-serialize an existing JSON file.
+    ///
+    /// \param filename The absolute file path to the JSON input.
+    ///
+    /// \returns An object filled with complete data from a file on success, or
+    /// a non-modified object upon failure.
+    bool load( const std::string& filename );
 
     /// Dump the state of this object instance
     void dump ( void ) const;

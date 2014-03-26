@@ -501,6 +501,35 @@ sint do_serialization_test_two( void )
   return NOM_EXIT_SUCCESS;
 }
 
+/// \brief Json::Value sanity tests.
+sint do_jsoncpp_test_one( void )
+{
+  JsonSerializer testme;
+
+  // Mimics examples/json/Resources/sanity2.json for the sake of debugging.
+  Json::Value o0, o1, o2, arr1;
+  arr1[0] = 0;
+  arr1[1] = 2;
+  arr1[2] = 3;
+  arr1[3] = "hax";
+  o1["boolean1"] = false;
+  o1["response1"] = "Yeah buddy!";
+  o1["null"] = Json::Value();
+
+  o2["array2"] = arr1;
+  o2["boolean2"] = true;
+  o2["response2"] = "Light weight!";
+  o2["array2"] = arr1;
+
+  o0["object1"] = o1;
+  o0["object2"] = o2;
+
+  NOM_DUMP( o0 );
+  NOM_DUMP( testme.dump( o0 ) );
+
+  return NOM_EXIT_SUCCESS;
+}
+
 /// \brief nom::JsonCppValue sanity tests.
 sint do_jsoncppvalue_test_one( void )
 {
@@ -515,11 +544,6 @@ sint do_jsoncppvalue_test_one( void )
   JsonCppValue val2;
   // FIXME:
   // val2.insert( "key", "value" );
-  // Json::Value o1, o2;
-  // o2["obj2"]["pair1"] = "value";
-  // o2["obj2"]["pair2"] = "value";
-  // o1["obj"] = o2;
-  // NOM_DUMP(o1);
   // NOM_DUMP( val2 );
 
   // FIXME:
@@ -571,17 +595,24 @@ sint main( int argc, char* argv[] )
   //   return NOM_EXIT_FAILURE;
   // }
 
-  // ret = do_jsoncppvalue_test_one();
+  // ret = do_jsoncpp_test_one();
   // if( ret != NOM_EXIT_SUCCESS )
   // {
   //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed JSONCPP unit test " + std::to_string(ret) );
   //   return NOM_EXIT_FAILURE;
   // }
 
+  // ret = do_jsoncppvalue_test_one();
+  // if( ret != NOM_EXIT_SUCCESS )
+  // {
+  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+  //   return NOM_EXIT_FAILURE;
+  // }
+
   // ret = do_serializer_test_one();
   // if( ret != NOM_EXIT_SUCCESS )
   // {
-  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed JSONCPP unit test " + std::to_string(ret) );
+  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
   //   return NOM_EXIT_FAILURE;
   // }
 
@@ -597,7 +628,7 @@ sint main( int argc, char* argv[] )
   // ret = do_unserializer_test_one();
   // if( ret != NOM_EXIT_SUCCESS )
   // {
-  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed JSONCPP unit test " + std::to_string(ret) );
+  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
   //   return NOM_EXIT_FAILURE;
   // }
 
@@ -606,7 +637,9 @@ sint main( int argc, char* argv[] )
   ret = do_unserializer_test_two();
   if( ret != NOM_EXIT_SUCCESS )
   {
-    nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed JSONCPP unit test " + std::to_string(ret) );
+    nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+    return NOM_EXIT_FAILURE;
+  }
 
   ret = do_unserializer_test_three();
   if( ret != NOM_EXIT_SUCCESS )
@@ -619,7 +652,7 @@ sint main( int argc, char* argv[] )
   // ret = do_serializer_test_two();
   // if( ret != NOM_EXIT_SUCCESS )
   // {
-  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed JSONCPP unit test " + std::to_string(ret) );
+  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
   //   return NOM_EXIT_FAILURE;
   // }
 

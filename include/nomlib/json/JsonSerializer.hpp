@@ -30,17 +30,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_JSON_JSON_SERIALIZER_HPP
 
 #include <sstream>
+#include <fstream>
 
 #include "nomlib/json/jsoncpp/json.h" // JsonCpp library
 
 #include "nomlib/config.hpp"
-#include "nomlib/json/JsonCppSerializer.hpp"
+#include "nomlib/system/IJsonSerializer.hpp"
 #include "nomlib/system/ptree/ptree_forwards.hpp"
 #include "nomlib/system/ptree/Value.hpp"
 #include "nomlib/system/ptree/ValueIterator.hpp"
 #include "nomlib/system/ptree/ValueConstIterator.hpp"
-
-// #include "nomlib/system/IJsonSerializer.hpp"
 
 /// \brief Enable dumping of each key name, value & type pairs as we traverse
 /// each object.
@@ -48,11 +47,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+/// \brief Number of spaces to pass to JsonCpp for indention.
+///
+/// \remarks Two space tabbed indention.
+const std::string JSONCPP_INDENTION_LEVEL = "  ";
+
 /// \brief Serialization of nom::Value objects to JSON
-class JsonSerializer//: public IJsonSerializer
+class JsonSerializer: public IJsonSerializer
 {
   public:
     typedef JsonSerializer SelfType;
+
+    /// \brief Serialization options.
+    ///
+    /// \TODO Implement
+    enum Feature
+    {
+      Compact = 0,  // Default
+      HumanReadable // json_spirit::pretty_print (single line arrays)
+    };
 
     JsonSerializer( void );
     ~JsonSerializer( void );
@@ -80,19 +93,47 @@ class JsonSerializer//: public IJsonSerializer
     /// \returns Serialized object as a std::string.
     const std::string stringify( const Value& obj ) const;
 
+    /// \brief Dump the object's complete value tree.
+    ///
+    /// \remarks This is a useful method for debugging.
+    ///
+    /// \note This method is used by the << overload function for nom::Value
+    /// objects.
+    const std::string dump( const Json::Value& object, int depth = 0 ) const;
+
   private:
+    /// \brief Internal helper method for nom::Value::dump.
+    const std::string dump_key( const Json::Value& key ) const;
+
+    /// \brief Internal helper method for nom::Value::dump.
+    const std::string dump_value( const Json::Value& val ) const;
+
+    /// \brief Internal helper method for nom::Value::dump_key.
+    const std::string print_key( const std::string& type, uint size ) const;
+
+    /// \brief Internal helper method for nom::Value::dump_value.
+    // const std::string print_value( const std::string& val ) const;
+    template <typename T>
+    const std::string print_value( const T& val ) const
+    {
+      std::stringstream os;
+
+      os << val;
+
+      return os.str();
+    }
 
     /// \NOTE Reserved for future implementation.
     ///
     /// \TODO Iterate through nom::Value objects via recursion in order to
     /// support deep hierarchies of arrays.
-    bool serialize_array( const Value& object, JsonCppValue& dest ) const;
+    bool serialize_array( const Value& object, Json::Value& dest ) const;
 
     /// \NOTE Reserved for future implementation.
     ///
     /// \TODO Iterate through nom::Value objects via recursion in order to
     /// support deep hierarchies of objects.
-    bool serialize_object( const Value& object, JsonCppValue& dest ) const;
+    bool serialize_object( const Value& object, Json::Value& dest ) const;
 };
 
 } // namespace nom

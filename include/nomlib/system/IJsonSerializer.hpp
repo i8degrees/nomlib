@@ -34,9 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief Abstract interface for JSON serialization with nom::Value objects
-///
-/// \note Not implemented.
+/// \brief Abstract interface for JSON serialization with nom::Value objects.
 class IJsonSerializer
 {
   public:

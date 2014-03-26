@@ -100,11 +100,22 @@ JsonCppValue::JsonMemberType JsonCppValue::members( int index ) const
   return this->object_[index].getMemberNames();
 }
 
-const std::string JsonCppValue::member( void ) const
+JsonCppValue::JsonMemberType JsonCppValue::members( const std::string& key ) const
 {
-  JsonMemberType member = this->object_[this->pos_].getMemberNames();
+  JsonMemberType members;
 
-  return member[0];
+  members = this->object_[this->pos_][key].getMemberNames();
+
+  return members;
+}
+
+JsonCppValue::JsonMemberType JsonCppValue::members( void ) const
+{
+  JsonMemberType members;
+
+  members = this->object_.getMemberNames();
+
+  return members;
 }
 
 bool JsonCppValue::null_type( const std::string& key ) const
@@ -185,6 +196,11 @@ bool JsonCppValue::object_type( const std::string& key ) const
 bool JsonCppValue::object_type( int index ) const
 {
   return ( this->type( index ) == Json::objectValue );
+}
+
+bool JsonCppValue::object_type( void ) const
+{
+  return ( this->type() == Json::objectValue );
 }
 
 int JsonCppValue::get_int( const std::string& key ) const
@@ -593,6 +609,52 @@ const std::string JsonCppValue::stringify( void ) const
   os << object_;
 
   return os.str();
+}
+
+bool JsonCppValue::serialize( const JsonCppValue& source, const std::string& output ) const
+{
+  std::ofstream fp;
+  Json::StyledStreamWriter writer( JSONCPP_INDENTION_LEVEL );
+
+  // Finally, output our serialized nom::Value object!
+  fp.open( output );
+
+  if ( ! fp.is_open() || ! fp.good() )
+  {
+    NOM_LOG_ERR ( NOM, "Unable to write JSON output in file: " + output );
+    return false;
+  }
+
+  writer.write( fp, source.get() );
+
+  fp.close();
+
+  return true;
+}
+
+bool JsonCppValue::unserialize( const std::string& input, JsonCppValue& dest ) const
+{
+  std::ifstream fp;
+  Json::Reader parser;
+
+  fp.open( input );
+
+  if ( ! fp.is_open() || ! fp.good() )
+  {
+    NOM_LOG_ERR ( NOM, "File access failure on file: " + input );
+    return false;
+  }
+
+  // Attempt to read input file into memory.
+  if ( parser.parse( fp, dest.get() ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Failure to parse JSON input file: " + input );
+    return false;
+  }
+
+  fp.close();
+
+  return true;
 }
 
 std::ostream& operator <<( std::ostream& os, const JsonCppValue& val )

@@ -34,10 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstring>
 #include <vector>
 #include <sstream>
+#include <fstream>
 
-#include "nomlib/json/jsoncpp/json.h" // JsonCpp
+#include "nomlib/json/jsoncpp/json.h" // JsonCpp library
 
 #include "nomlib/config.hpp"
+#include "nomlib/json/JsonSerializer.hpp"
 #include "nomlib/system/ptree/Value.hpp"
 
 namespace nom {
@@ -75,8 +77,15 @@ class JsonCppValue
     JsonValueType type( void ) const;
     JsonValueType type( int index ) const;
     JsonValueType type( const std::string& key ) const;
+
     JsonMemberType members( int index ) const;
-    const std::string member( void ) const;
+
+    /// \brief Obtain the member pairs of an unmapped JSON object (array with
+    /// unmapped objects).
+    JsonMemberType members( const std::string& key ) const;
+
+    /// \brief Obtain the top-level member pairs of a JSON object.
+    JsonMemberType members( void ) const;
 
     /// \brief Query if the value type type stored in the object is NULL.
     bool null_type( const std::string& key ) const;
@@ -127,6 +136,9 @@ class JsonCppValue
     /// given time.
     bool object_type( const std::string& key ) const;
     bool object_type( int index ) const;
+
+    /// \brief Query if the top-level JSON container is an object type.
+    bool object_type( void ) const;
 
     int get_int( const std::string& key ) const;
 
@@ -242,6 +254,26 @@ class JsonCppValue
     /// \returns Serialized object as a std::string.
     const std::string stringify( void ) const;
 
+    /// \brief Save nom::JsonCppValue values to JSON objects.
+    ///
+    /// \param source nom::JsonCppValue container to serialize.
+    /// \param output Absolute file path to save resulting data to.
+    ///
+    /// \deprecated This method exists only for the backwards compatibility with
+    /// TTcards -- we have yet to upgrade its code-base to use
+    /// nom::JsonSerializer and nom::Value.
+    bool serialize( const JsonCppValue& source, const std::string& output ) const;
+
+    /// \brief Load data from a JSON (.json) file to a nom::JsonCppValue object.
+    ///
+    /// \param input  Absolute file path file to un-serialize.
+    /// \param dest   nom::JsonCppValue container to store values in.
+    ///
+    /// \deprecated This method exists only for the backwards compatibility with
+    /// TTcards -- we have yet to upgrade its code-base to use
+    /// nom::JsonSerializer and nom::Value.
+    bool unserialize( const std::string& input, JsonCppValue& dest ) const;
+
   private:
     /// \brief Underlying container for values
     mutable Json::Value object_;
@@ -266,4 +298,7 @@ std::ostream& operator <<( std::ostream& os, const JsonCppValue& obj );
 ///   [TO BE WRITTEN]
 ///
 /// See nom::SpriteSheet source for usage examples!
+///
+/// \deprecated This interface is likely to fade away as nom::Value and
+/// nom::JsonSerializer interfaces slowly replace this wrapper class.
 ///

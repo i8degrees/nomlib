@@ -377,7 +377,7 @@ bool JsonSerializer::serialize( const Value& source, const std::string& output )
     return false;
   }
 
-  writer.write( fp, output );
+  writer.write( fp, value );
 
   fp.close();
 

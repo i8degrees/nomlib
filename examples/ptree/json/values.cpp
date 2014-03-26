@@ -95,7 +95,6 @@ sint do_test_one( void )
 sint do_test_two( void )
 {
   nom::JsonCppValue json;
-// nom::JsonSerializer writer( new JsonCppSerializer() );
 
   nom::Array list;
 
@@ -218,7 +217,6 @@ sint do_test_three( void )
 sint do_test_four( void )
 {
   nom::JsonCppValue json;
-// nom::JsonSerializer writer( new nom::JsonCppSerializer() );
 
   nom::Array list;
   for( auto itr = values.begin(); itr != values.end(); ++itr )

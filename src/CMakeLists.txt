@@ -85,7 +85,6 @@ set ( GUI_SOURCE
 file ( GLOB JSON_HEADERS "${NOMLIB_HEADERS_DIR}/json/*.hpp" )
 set ( JSON_SOURCE
       ${SRC_DIR}/json/JsonSerializer.cpp
-      ${SRC_DIR}/json/JsonCppSerializer.cpp
       ${SRC_DIR}/json/JsonCppValue.cpp
     )
 

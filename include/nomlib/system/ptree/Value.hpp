@@ -341,6 +341,8 @@ class Value
     /// \remarks Value type is not modified.
     void clear( void );
 
+    Value& append( const Value& val );
+
     /// \FIXME
     Value::ConstIterator begin( void ) const;
 
@@ -367,12 +369,6 @@ class Value
     /// or nom::ObjectValue type.
     Value::Iterator end( void );
 
-    /// \brief Internal helper method for nom::Value::dump.
-    const std::string dump_key( const Value& key ) const;
-
-    /// \brief Internal helper method for nom::Value::dump.
-    const std::string dump_value( const Value& val ) const;
-
     /// \brief Dump the object's complete value tree.
     ///
     /// \remarks This is a useful method for debugging.
@@ -381,9 +377,13 @@ class Value
     /// objects.
     const std::string dump( const Value& object, int depth = 0 ) const;
 
-    // void append( const Object& val );
-
   private:
+    /// \brief Internal helper method for nom::Value::dump.
+    const std::string dump_key( const Value& key ) const;
+
+    /// \brief Internal helper method for nom::Value::dump.
+    const std::string dump_value( const Value& val ) const;
+
     /// \brief Internal helper method for nom::Value::dump_key.
     const std::string print_key( const std::string& type, uint size ) const;
 

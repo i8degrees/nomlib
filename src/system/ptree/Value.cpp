@@ -52,6 +52,7 @@ Value::~Value( void )
   {
     // this->value_.array_->clear();
     for( auto itr = this->value_.array_->begin(); itr != this->value_.array_->end(); ++itr )
+    // for( auto itr = this->value_.array_->begin(); itr != this->value_.array_->end(); --itr )
     {
       if( itr->array_valid() )
       {
@@ -61,6 +62,7 @@ Value::~Value( void )
       else if( itr->object_valid() )
       {
         // NOM_DUMP("o");
+        // delete this->value_.object_;
       }
     }
     // delete this->value_.array_;
@@ -69,7 +71,8 @@ Value::~Value( void )
   else if( this->object_valid() )
   {
     // this->value_.object_->clear();
-    for( auto itr = this->value_.object_->end(); itr != this->value_.object_->begin(); --itr )
+    // for( auto itr = this->value_.object_->end(); itr != this->value_.object_->begin(); --itr )
+    for( auto itr = this->value_.object_->begin(); itr != this->value_.object_->end(); ++itr )
     {
       if( itr->second.array_valid() )
       {
@@ -248,8 +251,9 @@ const std::string Value::type_name( void ) const
 {
   switch ( this->type() )
   {
-    default: // Type 0
-    case ValueType::Null: return "Null"; break;
+    default: return "\0"; break;
+
+    case ValueType::Null: return "null"; break; // Type 0
     case ValueType::SignedInteger: return "SignedInteger"; break; // Type 1
     case ValueType::UnsignedInteger: return "UnsignedInteger"; break; // Type 2
     case ValueType::RealNumber: return "RealNumber"; break; // Type 3
@@ -351,7 +355,7 @@ const std::string Value::stringify( void ) const
 
 sint Value::get_int ( void ) const
 {
-  NOM_ASSERT( this->int_type() );
+  // NOM_ASSERT( this->int_type() );
 
   if( this->int_type() ) return this->value_.int_;
 
@@ -404,7 +408,7 @@ const char* Value::get_cstring ( void ) const
 
 const std::string Value::get_string ( void ) const
 {
-  NOM_ASSERT( this->string_type() );
+  // NOM_ASSERT( this->string_type() );
 
   if( this->string_type() )
   {
@@ -455,7 +459,7 @@ bool Value::object_valid( void ) const
 
 const Array Value::array( void ) const
 {
-  NOM_ASSERT( this->array_type() );
+  // NOM_ASSERT( this->array_type() );
 
   if( this->array_valid() )
   {
@@ -546,6 +550,11 @@ void Value::clear( void )
   }
 }
 
+Value& Value::append( const Value& val )
+{
+  return (*this) = val;
+}
+
 Value::ConstIterator Value::begin( void ) const
 {
   if( this->array_valid() ) // ArrayIterator
@@ -624,13 +633,76 @@ Value::Iterator Value::end( void )
   return ValueIterator(); // Not an array or object type
 }
 
+const std::string Value::dump( const Value& object, int depth ) const
+{
+  // uint index = 0;
+  std::string key;
+  std::stringstream os; // Output buffer
+
+  depth += 1; // Recursion
+
+  os << this->dump_key( object );
+
+  // nom::Value object is a tree of key & value pairs.
+  if( object.size() > 0 )
+  {
+    os << std::endl;
+
+    for( Value::ConstIterator itr = object.begin(); itr != object.end(); ++itr )
+    {
+      Value::ConstIterator member( itr );
+
+      key = member.key();
+
+      // Show the current depth.
+      for ( uint tab = 0 ; tab < depth; ++tab )
+      {
+        os << "-";
+      }
+
+      os << " subvalue (";
+
+      // Dump the member name portion of the pair.
+      if( key != "" )
+      {
+        os << key;
+
+        if( ! member->array_type() && ! member->object_type() )
+        {
+          os << ": ";
+        }
+        os << this->dump_value( member->ref() );
+        os << ")";
+      }
+      else
+      {
+        // os << this->dump_value( object[index] );
+        os << this->dump_value( member->ref() );
+        os << ")";
+      }
+
+      // Iterate onwards to the next level of the tree via recursion.
+      os << this->dump( *itr, depth );
+    }
+
+    return os.str();
+  }
+  else
+  {
+    // Move onto the next element of the tree!
+    os << std::endl;
+  }
+
+  return os.str();
+}
+
 const std::string Value::dump_key( const Value& key ) const
 {
   std::stringstream os; // Output buffer
 
   if( key.null_type() )
   {
-    os << this->print_key( key.type_name(), 0 );
+    // This value is void of representation.
   }
   else if( key.int_type() )
   {
@@ -660,7 +732,7 @@ const std::string Value::dump_key( const Value& key ) const
   {
     os << this->print_key( key.type_name(), key.size() );
   }
-  else // Unknown type
+  else // Unknown type???
   {
     os << this->print_key( key.type_name(), 0 );
   }
@@ -674,7 +746,7 @@ const std::string Value::dump_value( const Value& val ) const
 
   if( val.null_type() ) // Type 0
   {
-    os << this->print_value( "null" );
+    // Type is void of representation.
   }
   else if( val.int_type() ) // Type 1
   {
@@ -698,80 +770,15 @@ const std::string Value::dump_value( const Value& val ) const
   }
   else if( val.array_type() ) // Type 6
   {
-    os << this->print_value( "array" );
+    // Type is handled in nom::Value::dump via recursion.
   }
   else if( val.object_type() ) // Type 7
   {
-    os << this->print_value( "object" );
+    // Type is handled in nom::Value::dump via recursion.
   }
   else // Unknown type
   {
     os << "Unknown (" << val.type() << ")";
-  }
-
-  return os.str();
-}
-
-const std::string Value::dump( const Value& object, int depth ) const
-{
-  std::stringstream os; // Output buffer
-
-  depth += 1;
-
-  os << this->dump_key( object );
-
-  // nom::Value object is a tree of key & value pairs.
-  if( object.size() > 0 )
-  {
-    os << std::endl;
-
-    for( Value::ConstIterator itr = object.begin(); itr != object.end(); ++itr )
-    {
-      Value::ConstIterator member( itr );
-
-      // Show the current depth.
-      for ( uint tab = 0 ; tab < depth; ++tab )
-      {
-        os << "-";
-      }
-
-      os << " subvalue (";
-
-      // Dump the member key name of the key/value pair
-      if( member.key() != "" )
-      {
-        os << member.key();
-      }
-      else
-      {
-        os << this->dump_value( member->ref() );
-      }
-
-      // Dump the individual values of each member key/value pair
-      if( ! member->array_type() && ! member->object_type() )
-      {
-        os << ": ";
-        os << this->dump_value( member->ref() );
-        os << ")";
-      }
-      else
-      {
-        os << ") -";
-      }
-
-      // Iterate onwards to the next level of the tree
-      os << this->dump( *itr, depth );
-    }
-
-    return os.str();
-  }
-  else
-  {
-    // os << " ";
-    // os << this->dump_value( object );
-
-    // Move onto the next element of the tree!
-    os << std::endl;
   }
 
   return os.str();
@@ -801,23 +808,6 @@ std::ostream& operator <<( std::ostream& os, const Value& val )
 
   return os;
 }
-
-/* Experimental
-void Value::append( const Object& val )
-{
-  if( ! this->object_valid() )
-  {
-    this->type_ = ValueType::ObjectValues;  // Type 7
-    this->value_.object_ = new Object( val );
-  }
-
-  // this->value_.object_->push_back( Value(val) );
-  for( auto itr = val.begin(); itr != val.end(); ++itr )
-  {
-    this->value_.object_->push_back( Pair( itr->key, itr->value ) );
-  }
-}
-*/
 
 namespace priv {
 

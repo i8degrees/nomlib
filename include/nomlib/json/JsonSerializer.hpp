@@ -41,9 +41,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/ptree/ValueIterator.hpp"
 #include "nomlib/system/ptree/ValueConstIterator.hpp"
 
-/// \brief Enable dumping of each key name, value & type pairs as we traverse
-/// each object.
+/// \brief Enable dumping output of each key, value pair, sizes, etc. as we
+/// traverse the object.
 // #define NOM_DEBUG_JSON_SERIALIZER_VALUES
+
+/// \brief Enable dumping output of each key, value pair, sizes, etc. as we
+/// traverse the object.
+// #define NOM_DEBUG_JSON_UNSERIALIZER_VALUES
 
 namespace nom {
 
@@ -123,17 +127,17 @@ class JsonSerializer: public IJsonSerializer
       return os.str();
     }
 
-    /// \NOTE Reserved for future implementation.
-    ///
-    /// \TODO Iterate through nom::Value objects via recursion in order to
-    /// support deep hierarchies of arrays.
+    /// \brief Internal helper method for serialization of array nodes.
     bool serialize_array( const Value& object, Json::Value& dest ) const;
 
-    /// \NOTE Reserved for future implementation.
-    ///
-    /// \TODO Iterate through nom::Value objects via recursion in order to
-    /// support deep hierarchies of objects.
+    /// \brief Internal helper method for serialization of object nodes.
     bool serialize_object( const Value& object, Json::Value& dest ) const;
+
+    /// \brief Internal helper method for un-serialization of array nodes.
+    bool unserialize_array( const Json::Value& object, Value& dest ) const;
+
+    /// \brief Internal helper method for un-serialization of object nodes.
+    bool unserialize_object( const Json::Value& object, Value& dest ) const;
 };
 
 } // namespace nom
@@ -145,3 +149,5 @@ class JsonSerializer: public IJsonSerializer
 ///
 ///   [TO BE WRITTEN]
 ///
+/// \TODO Iterate through nom::Value objects via recursion in order to
+/// support deep hierarchies of objects.

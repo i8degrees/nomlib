@@ -84,49 +84,16 @@ bool JsonSerializer::serialize( const Value& source, const std::string& output )
             NOM_DUMP( itr->stringify() );
           #endif
 
-          if( itr->null_type() )
+          // if( this->serialize_array( itr->ref(), value[idx][key] ) == false )
+          // {
+          //   NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
+          //   return false;
+          // }
+          // else if
+          if( this->serialize_object( itr->ref(), value[idx][key] ) == false )
           {
-            // value.insert( member.key() );
-            value[idx][key] = Json::Value();
-          }
-          else if( itr->int_type() )
-          {
-            // value.insert( member.key(), itr->get_int() );
-            value[idx][key] = Json::Value( itr->get_int() );
-          }
-          else if( itr->uint_type() )
-          {
-            // value.insert( member.key(), itr->get_uint() );
-            value[idx][key] = Json::Value( itr->get_uint() );
-          }
-          else if( itr->double_type() )
-          {
-            // value.insert( member.key(), itr->get_double() );
-            value[idx][key] = Json::Value( itr->get_double() );
-          }
-          else if( itr->bool_type() )
-          {
-            // value.insert( member.key(), itr->get_bool() );
-            value[idx][key] = Json::Value( itr->get_bool() );
-          }
-          else if( itr->string_type() )
-          {
-            // value.insert( member.key(), itr->get_cstring() );
-            value[idx][key] = Json::Value( itr->get_cstring() );
-          }
-          else
-          {
-            #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
-              NOM_DUMP( itr->type_name() );
-              NOM_DUMP( member.key() );
-              NOM_DUMP( itr->stringify() );
-            #endif
-
-            if( itr->array_type() == false )
-            {
-              NOM_LOG_ERR( NOM, "Could not serialize values; invalid object?" );
-              return false;
-            }
+            NOM_LOG_ERR( NOM, "Could not serialize values; invalid object?" );
+            return false;
           }
 
           // nom::Array within an nom::Object:
@@ -141,70 +108,28 @@ bool JsonSerializer::serialize( const Value& source, const std::string& output )
             nom::Array elements = itr->array();
             for( Value::ConstIterator itr = elements.begin(); itr != elements.end(); ++itr )
             {
-              // New array elements
-              // values.clear();
-
               #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
                 NOM_DUMP( itr->type_name() );
                 NOM_DUMP( member.key() );
                 NOM_DUMP( itr->stringify() );
               #endif
 
-              if( itr->null_type() )
+              if( this->serialize_array( itr->ref(), value[idx][key] ) == false )
               {
-                // [ { "array": [ null ] } ]
-                // values.push_back( Value() );
-                value[idx][key].append (Json::Value() );
-              }
-              else if( itr->int_type() )
-              {
-                // [ { "array": [ -1 ] } ]
-                // values.push_back( itr->get_int() );
-                value[idx][key].append( itr->get_int() );
-              }
-              else if( itr->uint_type() )
-              {
-                // [ { "array": [ 1 ] } ]
-                // values.push_back( itr->get_uint() );
-                value[idx][key].append( itr->get_uint() );
-              }
-              else if( itr->double_type() )
-              {
-                // [ { "array": [ 1.2 ] } ]
-                // values.push_back( itr->get_double() );
-                value[idx][key].append( itr->get_double() );
-              }
-              else if( itr->string_type() )
-              {
-                // [ { "array": [ "string" ] } ]
-                // values.push_back( itr->get_cstring() );
-                value[idx][key].append( itr->get_cstring() );
-              }
-              else if( itr->bool_type() )
-              {
-                // [ { "array": [ true ] } ]
-                // values.push_back( itr->get_bool() );
-                value[idx][key].append( itr->get_bool() );
-              }
-              else
-              {
-                #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
-                  NOM_DUMP( itr->type_name() );
-                  NOM_DUMP( member.key() );
-                  NOM_DUMP( itr->stringify() );
-                #endif
-
                 NOM_LOG_ERR( NOM, "Could not serialize values; invalid array?" );
                 return false;
               }
-
-              // Store array elements
-              // value.insert( member.key(), values );
+              // else if( this->serialize_object( itr->ref(), value[idx][key] ) == false )
+              // {
+              //   NOM_LOG_ERR( NOM, "Could not serialize values; invalid object???" );
+              //   return false;
+              // }
             } // end for array elements loop
           } // end if JSON array
         }
       }
 
+      // EOF JSON Object
       ++idx;
     }
 
@@ -233,48 +158,10 @@ bool JsonSerializer::serialize( const Value& source, const std::string& output )
           NOM_DUMP( itr->stringify() );
         #endif
 
-        if( itr->null_type() )
+        if( this->serialize_object( itr->ref(), value[root_key][key] ) == false )
         {
-          value[root_key][key] = Json::Value();
-        }
-        else if( itr->int_type() )
-        {
-          // value.insert( member.key(), itr->get_int() );
-          value[root_key][key] = Json::Value( itr->get_int() );
-        }
-        else if( itr->uint_type() )
-        {
-          // value.insert( member.key(), itr->get_uint() );
-          value[root_key][key] = Json::Value( itr->get_uint() );
-        }
-        else if( itr->double_type() )
-        {
-          // value.insert( member.key(), itr->get_double() );
-          value[root_key][key] = Json::Value( itr->get_double() );
-        }
-        else if( itr->bool_type() )
-        {
-          // value.insert( member.key(), itr->get_bool() );
-          value[root_key][key] = Json::Value( itr->get_bool() );
-        }
-        else if( itr->string_type() )
-        {
-          // value.insert( member.key(), itr->get_cstring() );
-          value[root_key][key] = Json::Value( itr->get_cstring() );
-        }
-        else
-        {
-          #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
-            NOM_DUMP( itr->type_name() );
-            NOM_DUMP( member.key() );
-            NOM_DUMP( itr->stringify() );
-          #endif
-
-          if( itr->array_type() == false )
-          {
-            NOM_LOG_ERR( NOM, "Could not serialize values; invalid object?" );
-            return false;
-          }
+          NOM_LOG_ERR( NOM, "Could not serialize values; invalid object?" );
+          return false;
         }
 
         // nom::Array within an nom::Object:
@@ -289,71 +176,29 @@ bool JsonSerializer::serialize( const Value& source, const std::string& output )
           nom::Array elements = itr->array();
           for( Value::ConstIterator itr = elements.begin(); itr != elements.end(); ++itr )
           {
-            // New array elements
-            // values.clear();
-
             #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
               NOM_DUMP( itr->type_name() );
               NOM_DUMP( member.key() );
               NOM_DUMP( itr->stringify() );
             #endif
 
-            if( itr->null_type() )
+            if( this->serialize_array( itr->ref(), value[root_key][key] ) == false )
             {
-              // [ { "array": [ null ] } ]
-              // values.push_back( Value() );
-              value[root_key][key].append (Json::Value() );
-            }
-            else if( itr->int_type() )
-            {
-              // [ { "array": [ -1 ] } ]
-              // values.push_back( itr->get_int() );
-              value[root_key][key].append( itr->get_int() );
-            }
-            else if( itr->uint_type() )
-            {
-              // [ { "array": [ 1 ] } ]
-              // values.push_back( itr->get_uint() );
-              value[root_key][key].append( itr->get_uint() );
-            }
-            else if( itr->double_type() )
-            {
-              // [ { "array": [ 1.2 ] } ]
-              // values.push_back( itr->get_double() );
-              value[root_key][key].append( itr->get_double() );
-            }
-            else if( itr->string_type() )
-            {
-              // [ { "array": [ "string" ] } ]
-              // values.push_back( itr->get_cstring() );
-              value[root_key][key].append( itr->get_cstring() );
-            }
-            else if( itr->bool_type() )
-            {
-              // [ { "array": [ true ] } ]
-              // values.push_back( itr->get_bool() );
-              value[root_key][key].append( itr->get_bool() );
-            }
-            else
-            {
-              #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
-                NOM_DUMP( itr->type_name() );
-                NOM_DUMP( member.key() );
-                NOM_DUMP( itr->stringify() );
-              #endif
-
-              NOM_LOG_ERR( NOM, "Could not serialize values; invalid array?" );
+              NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
               return false;
             }
-
-            // Store array elements
-            // value.insert( member.key(), values );
+            // else if( this->serialize_object( itr->ref(), value[root_key][key] ) == false )
+            // {
+            //   NOM_LOG_ERR( NOM, "Could not serialize values; invalid object???" );
+            //   return false;
+            // }
           } // end for array elements loop
         } // end if JSON array
       } // end for objects loop
 
       // EOF JSON Object
       ++idx;
+
     } // end if JSON object
     else // Non-array, non-object nom::Value type
     {
@@ -438,151 +283,21 @@ bool JsonSerializer::unserialize( const std::string& input, Value& dest ) const
           // NOM_DUMP( key );
           // NOM_DUMP( value[idx][key] );
 
-          if( value[idx][key].isNull() )
+          if( this->unserialize_array( value[idx][key], object[key] ) == false )
           {
-            // NOM_DUMP( "null" );
-            object[key] = Value();
+            NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid array???" );
+            return false;
           }
-          else if( value[idx][key].isInt() )
+          else if( this->unserialize_object( value[idx][key], object[key] ) == false )
           {
-            // NOM_DUMP( value[idx][key].asInt() );
-            object[key] = value[idx][key].asInt();
+            NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid object???" );
+            return false;
           }
-          else if( value[idx][key].isUInt() )
-          {
-            // NOM_DUMP( value[idx][key].asUInt() );
-            object[key] = value[idx][key].asUInt();
-          }
-          else if( value[idx][key].isDouble() )
-          {
-            // NOM_DUMP( value[idx][key].asDouble() );
-            object[key] = value[idx][key].asDouble();
-          }
-          else if( value[idx][key].isString() )
-          {
-            // NOM_DUMP( value[idx][key].asString() );
-            object[key] = value[idx][key].asString();
-          }
-          else if( value[idx][key].isBool() )
-          {
-            // NOM_DUMP( value[idx][key].asBool() );
-            object[key] = value[idx][key].asBool();
-          }
-          else if( value[idx][key].isArray() )
-          {
-            Array array;
-            for( auto i = 0; i != value[idx][key].size(); ++i )
-            {
-              // { "cmd" : [ "hax" ] }
-              // NOM_DUMP( value[idx][key][i] );
 
-              if( value[idx][key][i].isNull() )
-              {
-                // NOM_DUMP( "null" );
-                array.push_back( Value() );
-              }
-              else if( value[idx][key][i].isInt() )
-              {
-                // NOM_DUMP( value[idx][key][i].asInt() );
-                array.push_back( value[idx][key][i].asInt() );
-              }
-              else if( value[idx][key][i].isUInt() )
-              {
-                // NOM_DUMP( value[idx][key][i].asUInt() );
-                array.push_back( value[idx][key][i].asUInt() );
-              }
-              else if( value[idx][key][i].isDouble() )
-              {
-                // NOM_DUMP( value[idx][key][i].asDouble() );
-                array.push_back( value[idx][key][i].asDouble() );
-              }
-              else if( value[idx][key][i].isString() )
-              {
-                // NOM_DUMP( value[idx][key][i].asString() );
-                array.push_back( value[idx][key][i].asString() );
-              }
-              else if( value[idx][key][i].isBool() )
-              {
-                // NOM_DUMP( value[idx][key][i].asBool() );
-                array.push_back( value[idx][key][i].asBool() );
-              }
-              else if( value[idx][key][i].isObject() )
-              {
-                // NOM_DUMP( object_members.size() );
-                std::vector<std::string> object_members = value[idx][key][i].getMemberNames();
+        } // end for object member pairs loop
 
-                for( auto pos = 0; pos != object_members.size(); ++pos )
-                {
-                  std::string key = object_members[pos];
-
-                  // { "map" : [ { "cmd" : [...] } ] }
-                  // NOM_DUMP(key);
-
-                  // TODO: Finish "deep-depth" mapped objects.
-                  //
-                  // See also: sanity.json holds a mapped object with the member
-                  // key of "map", of which contains an array that holds one
-                  // object, with the member key "cmd", of which is an array.
-
-                  // Should print the member key "cmd".
-                  // NOM_DUMP( key );
-/* Incomplete prototype
-                  if( value[idx][key][i].isArray() )
-                  {
-                    NOM_DUMP("arr!");
-                    NOM_DUMP( value[idx][key].size() );
-
-                    Array arr;
-                    for( auto i = 0; i != value[idx][key].size(); ++i )
-                    {
-                      if( value[idx][key][i].isNull() )
-                      {
-                        // NOM_DUMP( "null" );
-                        arr.push_back( Value() );
-                      }
-                      else if( value[idx][key][i].isInt() )
-                      {
-                        // NOM_DUMP( value[idx][key][i].asInt() );
-                        arr.push_back( value[idx][key][i].asInt() );
-                      }
-                      else if( value[idx][key][i].isUInt() )
-                      {
-                        // NOM_DUMP( value[idx][key][i].asUInt() );
-                        arr.push_back( value[idx][key][i].asUInt() );
-                      }
-                      else if( value[idx][key][i].isDouble() )
-                      {
-                        // NOM_DUMP( value[idx][key][i].asDouble() );
-                        arr.push_back( value[idx][key][i].asDouble() );
-                      }
-                      else if( value[idx][key][i].isString() )
-                      {
-                        NOM_DUMP( value[idx][key][i].asString() );
-                        arr.push_back( value[idx][key][i].asString() );
-                      }
-                      else if( value[idx][key][i].isBool() )
-                      {
-                        // NOM_DUMP( value[idx][key][i].asBool() );
-                        arr.push_back( value[idx][key][i].asBool() );
-                      }
-                      else
-                      {
-                        // TODO: case handling logic
-                        NOM_LOG_ERR( NOM, "Unknown value type?!" );
-                      }
-                    }
-                  }
-EOF of incomplete prototype */
-                }
-              }
-            }
-
-            object[key] = array;
-          }
-        }
+        array.push_back( object );
       }
-
-      array.push_back( object );
     }
     else if( value.isObject() )
     {
@@ -606,104 +321,23 @@ EOF of incomplete prototype */
 
           // NOM_DUMP( key );
 
-          if( value[root_key][key].isInt() )
+          if( this->unserialize_array( value[root_key][key], object[key] ) == false )
           {
-            // NOM_DUMP( value[root_key][key].asInt() );
-            object[key] = value[root_key][key].asInt();
+            NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid array???" );
+            return false;
           }
-          else if( value[root_key][key].isUInt() )
+          else if( this->unserialize_object( value[root_key][key], object[key] ) == false )
           {
-            // NOM_DUMP( value[root_key][key].asUInt() );
-            object[key] = value[root_key][key].asUInt();
+            NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid object???" );
+            return false;
           }
-          else if( value[root_key][key].isDouble() )
-          {
-            // NOM_DUMP( value[root_key][key].asDouble() );
-            object[key] = value[root_key][key].asDouble();
-          }
-          else if( value[root_key][key].isString() )
-          {
-            // NOM_DUMP( value[root_key][key].asString() );
-            object[key] = value[root_key][key].asString();
-          }
-          else if( value[root_key][key].isBool() )
-          {
-            // NOM_DUMP( value[root_key][key].asBool() );
-            object[key] = value[root_key][key].asBool();
-          }
-          else if( value[root_key][key].isArray() )
-          {
-            // FIXME: Incomplete implementation -- we only handle integers at
-            // the moment.
-
-            Array array;
-            for( auto i = 0; i != value[root_key][key].size(); ++i )
-            {
-              if( value[root_key][key][i].isInt() )
-              {
-                // NOM_DUMP( value[root_key][key][i].asInt() );
-                array.push_back( value[root_key][key][i].asInt() );
-              }
-              else if( value[root_key][key][i].isUInt() )
-              {
-                // NOM_DUMP( value[root_key][key][i].isUInt() );
-                array.push_back( value[root_key][key][i].isUInt() );
-              }
-              else if( value[root_key][key][i].isString() )
-              {
-                // NOM_DUMP( value[root_key][key][i].asString() );
-                array.push_back( value[root_key][key][i].asString() );
-              }
-              else if( value[root_key][key][i].isArray() )
-              {
-                NOM_DUMP( value[root_key][key][i] );
-
-                // TODO
-              }
-              else if( value[root_key][key][i].isObject() )
-              {
-                // TODO
-              }
-              else
-              {
-                // TODO
-              }
-            }
-
-            object[key] = array;
-          }
-          else if( value[root_key][key].isObject() )
-          {
-            NOM_DUMP( key );
-
-            // TODO
-          }
-        }
+        } // end for object member pairs loop
 
         objects[root_key] = object;
-      }
+
+      } // end if container node is an object
     }
   }
-        // FIXME: We do not have mapped object structures implemented due in part
-        // to the missing key portion of our pair.
-        // objects.push_back( Pair( "", object ) );
-
-        // NOTE: Mapped key -- std::map -- must not be blank, so we fudge it with
-        // index. Fudgery here is OK for now, because we do not use this key value
-        // value for anything other than nom::Value object dumps (see << operator
-        // overload). See also the FIXME note above this note.
-        // objects[index] = object;
-        // objects[root_key] = object;
-
-        // EOF JSON object; this will iterate to the next object for us
-        // value.endl();
-
-        // Move onto the next member key
-        // ++index;
-    // } // end if type object
-  // } // end for value.size() loop
-
-  // value.dump( value );
 
   // Copy our built nom::Value object tree to the specified destination object;
   // we must always derive our top-level (parent) nom::Value object from either
@@ -917,16 +551,270 @@ const std::string JsonSerializer::print_value( const std::string& val ) const
 
 bool JsonSerializer::serialize_array( const Value& object, Json::Value& dest ) const
 {
-  NOM_STUBBED(NOM);
+  if( object.null_type() )
+  {
+    // [ { "array": [ null ] } ]
+    dest.append (Json::Value() );
+  }
+  else if( object.int_type() )
+  {
+    // [ { "array": [ -1 ] } ]
+    dest.append( object.get_int() );
+  }
+  else if( object.uint_type() )
+  {
+    // [ { "array": [ 1 ] } ]
+    dest.append( object.get_uint() );
+  }
+  else if( object.double_type() )
+  {
+    // [ { "array": [ 1.2 ] } ]
+    dest.append( object.get_double() );
+  }
+  else if( object.string_type() )
+  {
+    // [ { "array": [ "string" ] } ]
+    dest.append( object.get_cstring() );
+  }
+  else if( object.bool_type() )
+  {
+    // [ { "array": [ true ] } ]
+    dest.append( object.get_bool() );
+  }
+  // else if( object.array_type() )
+  // {
+    // if( this->serialize_array( object, dest ) == false )
+    // {
+    //   NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
+    //   return false;
+    // }
+  // }
+  // else if( object.object_type() )
+  // {
+  //   if( this->serialize_object( object, dest ) == false )
+  //   {
+  //     NOM_LOG_ERR( NOM, "Could not serialize values; invalid object???" );
+  //     return false;
+  //   }
+  // }
+  else
+  {
+    #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+      NOM_DUMP( object.type_name() );
+      // NOM_DUMP( member.key() );
+      NOM_DUMP( object.stringify() );
+    #endif
 
-  return false;
+    // This non-fatal info err is not necessarily anything of concern; we do
+    // yet handle recursing deeper into the node hierarchy -- note that we do
+    // not even bother checking for array or object node types here.
+    NOM_LOG_ERR( NOM, "Potential non-handled case in serialization of array node." );
+  }
+
+  return true;
 }
 
 bool JsonSerializer::serialize_object( const Value& object, Json::Value& dest ) const
 {
-  NOM_STUBBED(NOM);
+  if( object.null_type() )
+  {
+    // [ { "array": [ null ] } ]
+    dest = Json::Value();
+  }
+  else if( object.int_type() )
+  {
+    // [ { "array": [ -1 ] } ]
+    dest = object.get_int();
+  }
+  else if( object.uint_type() )
+  {
+    // [ { "array": [ 1 ] } ]
+    dest = object.get_uint();
+  }
+  else if( object.double_type() )
+  {
+    // [ { "array": [ 1.2 ] } ]
+    dest = object.get_double();
+  }
+  else if( object.string_type() )
+  {
+    // [ { "array": [ "string" ] } ]
+    dest = object.get_cstring();
+  }
+  else if( object.bool_type() )
+  {
+    // [ { "array": [ true ] } ]
+    dest = object.get_bool();
+  }
+  // else if( object.array_type() )
+  // {
+    // if( this->serialize_array( object, dest ) == false )
+    // {
+    //   NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
+    //   return false;
+    // }
+  // }
+  // else if( object.object_type() )
+  // {
+  //   if( this->serialize_object( object, dest ) == false )
+  //   {
+  //     NOM_LOG_ERR( NOM, "Could not serialize values; invalid object???" );
+  //     return false;
+  //   }
+  // }
+  else
+  {
+    #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+      NOM_DUMP( object.type_name() );
+      // NOM_DUMP( member.key() );
+      NOM_DUMP( object.stringify() );
+    #endif
 
-  return false;
+    // This non-fatal info err is not necessarily anything of concern; we do
+    // yet handle recursing deeper into the node hierarchy -- note that we do
+    // not even bother checking for array or object node types here.
+    NOM_LOG_ERR( NOM, "Potential non-handled case in serialization of object node." );
+  }
+
+  return true;
+}
+
+bool JsonSerializer::unserialize_array( const Json::Value& object, Value& dest ) const
+{
+  Array arr;
+
+  // NOM_DUMP( object.size() );
+  for( auto i = 0; i != object.size(); ++i )
+  {
+    if( object[i].isNull() )
+    {
+      // [ { "array": [ null ] } ]
+      arr.push_back( Value() );
+    }
+    else if( object[i].isInt() )
+    {
+      // [ { "array": [ -1 ] } ]
+      arr.push_back( object[i].asInt() );
+    }
+    else if( object[i].isUInt() )
+    {
+      // [ { "array": [ 1 ] } ]
+      arr.push_back( object[i].asUInt() );
+    }
+    else if( object[i].isDouble() )
+    {
+      // [ { "array": [ 1.2 ] } ]
+      arr.push_back( object[i].asDouble() );
+    }
+    else if( object[i].isString() )
+    {
+      // [ { "array": [ "string" ] } ]
+      arr.push_back( object[i].asCString() );
+    }
+    else if( object[i].isBool() )
+    {
+      // [ { "array": [ true ] } ]
+      arr.push_back( object[i].asBool() );
+    }
+    // else if( object[i].isArray() )
+    // {
+      // if( this->serialize_array( arr, object[i] ) == false )
+      // {
+      //   NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
+      //   return false;
+      // }
+    // }
+    // else if( object[i].isObject() )
+    // {
+      // if( this->serialize_object( arr, object[i] ) == false )
+      // {
+      //   NOM_LOG_ERR( NOM, "Could not serialize values; invalid object???" );
+      //   return false;
+      // }
+    // }
+    else
+    {
+      #if defined( NOM_DEBUG_JSON_UNSERIALIZER_VALUES )
+        NOM_DUMP( object[i].type() );
+        // NOM_DUMP( member.key() );
+        NOM_DUMP( object[i] );
+      #endif
+
+      // This non-fatal info err is not necessarily anything of concern; we do
+      // yet handle recursing deeper into the node hierarchy -- note that we do
+      // not even bother checking for array or object node types here.
+      NOM_LOG_ERR( NOM, "Potential non-handled case in un-serialization of array node." );
+    }
+  }
+
+  dest = arr;
+
+  return true;
+}
+
+bool JsonSerializer::unserialize_object( const Json::Value& object, Value& dest ) const
+{
+  if( object.isNull() )
+  {
+    // NOM_DUMP( "null" );
+    dest = Value();
+  }
+  else if( object.isInt() )
+  {
+    // NOM_DUMP( object.asInt() );
+    dest = object.asInt();
+  }
+  else if( object.isUInt() )
+  {
+    // NOM_DUMP( object.asUInt() );
+    dest = object.asUInt();
+  }
+  else if( object.isDouble() )
+  {
+    // NOM_DUMP( object.asDouble() );
+    dest = object.asDouble();
+  }
+  else if( object.isString() )
+  {
+    // NOM_DUMP( object.asString() );
+    dest = object.asCString();
+  }
+  else if( object.isBool() )
+  {
+    // NOM_DUMP( object.asBool() );
+    dest = object.asBool();
+  }
+  // else if( object.isArray() )
+  // {
+    // if( this->unserialize_array( object, dest ) == false )
+    // {
+    //   NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid array???" );
+    //   return false;
+    // }
+  // }
+  // else if( object.isObject() )
+  // {
+    // if( this->unserialize_object( object, dest ) == false )
+    // {
+    //   NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid object???" );
+    //   return false;
+    // }
+  // }
+  else
+  {
+    #if defined( NOM_DEBUG_JSON_UNSERIALIZER_VALUES )
+      NOM_DUMP( object.type() );
+      // NOM_DUMP( member.key() );
+      NOM_DUMP( object );
+    #endif
+
+    // This non-fatal info err is not necessarily anything of concern; we do
+    // yet handle recursing deeper into the node hierarchy -- note that we do
+    // not even bother checking for array or object node types here.
+    NOM_LOG_ERR( NOM, "Potential non-handled case in un-serialization of object node." );
+  }
+
+  return true;
 }
 
 } // namespace nom

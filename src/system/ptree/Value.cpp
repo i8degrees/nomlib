@@ -702,7 +702,7 @@ const std::string Value::dump_key( const Value& key ) const
 
   if( key.null_type() )
   {
-    // This value is void of representation.
+    os << this->print_key( key.type_name(), 0 );
   }
   else if( key.int_type() )
   {
@@ -746,7 +746,7 @@ const std::string Value::dump_value( const Value& val ) const
 
   if( val.null_type() ) // Type 0
   {
-    // Type is void of representation.
+    os << this->print_value( "null" );
   }
   else if( val.int_type() ) // Type 1
   {
@@ -770,11 +770,11 @@ const std::string Value::dump_value( const Value& val ) const
   }
   else if( val.array_type() ) // Type 6
   {
-    // Type is handled in nom::Value::dump via recursion.
+    // Special case -- must be handled inside nom::Value::dump.
   }
   else if( val.object_type() ) // Type 7
   {
-    // Type is handled in nom::Value::dump via recursion.
+    // Special case -- must be handled inside nom::Value::dump.
   }
   else // Unknown type
   {

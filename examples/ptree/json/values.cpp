@@ -641,12 +641,12 @@ sint main( int argc, char* argv[] )
     return NOM_EXIT_FAILURE;
   }
 
-  ret = do_unserializer_test_three();
-  if( ret != NOM_EXIT_SUCCESS )
-  {
-    nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
-    return NOM_EXIT_FAILURE;
-  }
+  // ret = do_unserializer_test_three();
+  // if( ret != NOM_EXIT_SUCCESS )
+  // {
+  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+  //   return NOM_EXIT_FAILURE;
+  // }
 
   // Not implemented
   // ret = do_serializer_test_two();

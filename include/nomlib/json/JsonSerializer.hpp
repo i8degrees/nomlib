@@ -133,6 +133,8 @@ class JsonSerializer: public IJsonSerializer
     /// \brief Internal helper method for serialization of object nodes.
     bool serialize_object( const Value& object, Json::Value& dest ) const;
 
+    bool read_value( const Json::Value& object, Value& dest ) const;
+
     /// \brief Internal helper method for un-serialization of array nodes.
     bool unserialize_array( const Json::Value& object, Value& dest ) const;
 

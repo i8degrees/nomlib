@@ -77,7 +77,7 @@ class Value
     /// \brief Declared value of Null for this object.
     ///
     /// \remarks Value::null is the default constructor's type.
-    // static const Value null;
+    static const Value null;
 
     /// \brief Default constructor; constructs an object with NullValue data
     /// type.

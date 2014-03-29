@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // Static initialization
-// const Value Value::null = Value();
+const Value Value::null = Value();
 
 Value::Value( void )  :
   type_ ( ValueType::Null ) // type 0

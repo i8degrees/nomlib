@@ -50,13 +50,18 @@
     "map":
     [
       {
-        "cmd1": [ "hax" ]
+        "cmd": [ "hax", "gibson" ],
+        "string": "sh",
+        "deep_object": { "w": -4, "h": { "key": "pair", "boolean": false, "null": null } }
       }
     ],
+
     "map2":
     [
       {
-        "cmd2": [ "gibson" ]
+        "cmd": [ "hack the gibson?!" ],
+        "string": "tell",
+        "deep_object": { "array": [ "yeah buddy", -1 ] }
       }
     ]
   }

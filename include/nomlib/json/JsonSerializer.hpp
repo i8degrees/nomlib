@@ -127,18 +127,33 @@ class JsonSerializer: public IJsonSerializer
       return os.str();
     }
 
+    /// \TODO Err handling where used in code
+    bool write_value( const Value& object, Json::Value& dest ) const;
+
+    /// \TODO Err handling where used in code
+    bool write_array_value( const Value& object, Json::Value& dest ) const;
+
     /// \brief Internal helper method for serialization of array nodes.
+    ///
+    /// \TODO Err handling where used in code
     bool serialize_array( const Value& object, Json::Value& dest ) const;
 
     /// \brief Internal helper method for serialization of object nodes.
+    ///
+    /// \TODO Err handling where used in code
     bool serialize_object( const Value& object, Json::Value& dest ) const;
 
+    /// \TODO Err handling where used in code
     bool read_value( const Json::Value& object, Value& dest ) const;
 
     /// \brief Internal helper method for un-serialization of array nodes.
+    ///
+    /// \TODO Err handling where used in code
     bool unserialize_array( const Json::Value& object, Value& dest ) const;
 
     /// \brief Internal helper method for un-serialization of object nodes.
+    ///
+    /// \TODO Err handling where used in code
     bool unserialize_object( const Json::Value& object, Value& dest ) const;
 };
 

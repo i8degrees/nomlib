@@ -16,13 +16,13 @@
 # http://stackoverflow.com/questions/6077810/how-to-correctly-add-resources-to-a-project?rq=1
 cmake_minimum_required ( VERSION 2.6 )
 
-set( NOM_BUILD_APP_EXAMPLE off )
-set( NOM_BUILD_AUDIO_EXAMPLE off )
-set( NOM_BUILD_DEVICE_INFO_EXAMPLE off )
-set( NOM_BUILD_EVENTS_EXAMPLE off )
-set( NOM_BUILD_FONTS_EXAMPLE off )
-set( NOM_BUILD_GAMEOFLIFE_EXAMPLE off )
-set( NOM_BUILD_SPRITE_SHEETS_EXAMPLE off )
+set( NOM_BUILD_APP_EXAMPLE on )
+set( NOM_BUILD_AUDIO_EXAMPLE on )
+set( NOM_BUILD_DEVICE_INFO_EXAMPLE on )
+set( NOM_BUILD_EVENTS_EXAMPLE on )
+set( NOM_BUILD_FONTS_EXAMPLE on )
+set( NOM_BUILD_GAMEOFLIFE_EXAMPLE on )
+set( NOM_BUILD_SPRITE_SHEETS_EXAMPLE on )
 set( NOM_BUILD_VALUES_EXAMPLE on )
 
 link_libraries ( ${PROJECT_NAME} )

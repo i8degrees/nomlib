@@ -34,16 +34,16 @@ option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
 option( NOM_BUILD_CORE_UNIT "Build the core unit." on )
 
 # Dependencies: OpenAL/OpenALSoft.
-option( NOM_BUILD_AUDIO_UNIT "Build the Audio unit." off )
+option( NOM_BUILD_AUDIO_UNIT "Build the Audio unit." on )
 
 # Dependencies: SDL2, SDL2_image, SDL2_ttf
-option( NOM_BUILD_GRAPHICS_UNIT "Build the Graphics unit." off )
+option( NOM_BUILD_GRAPHICS_UNIT "Build the Graphics unit." on )
 
 # Dependencies: Graphics unit
-option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Enable scale2x and hqx rescaling algorithms." off )
+option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Enable scale2x and hqx rescaling algorithms." on )
 
 # Dependencies: Graphics unit
-option( NOM_BUILD_GUI_UNIT "Build the GUI unit." off )
+option( NOM_BUILD_GUI_UNIT "Build the GUI unit." on )
 
 # Dependencies: jsoncpp, Property Tree unit
 option( NOM_BUILD_JSON_UNIT "Build the JSON unit." on )
@@ -56,7 +56,7 @@ option( NOM_BUILD_SYSTEM_UNIT "Build the System unit." on )
 
 # Collection of internal templates used in the creation of new functionality
 # such as classes or examples / tests.
-option( NOM_BUILD_TEMPLATES_UNIT "Build the library templates." off )
+option( NOM_BUILD_TEMPLATES_UNIT "Build the library templates." on )
 
 project ( nomlib ) # Sets PROJECT_NAME variable for us
 

@@ -364,7 +364,7 @@ sint Value::get_int ( void ) const
 
 uint Value::get_uint ( void ) const
 {
-  NOM_ASSERT( this->uint_type() );
+  // NOM_ASSERT( this->uint_type() );
 
   if( this->uint_type() ) return this->value_.uint_;
 
@@ -373,7 +373,7 @@ uint Value::get_uint ( void ) const
 
 double Value::get_double ( void ) const
 {
-  NOM_ASSERT( this->double_type() );
+  // NOM_ASSERT( this->double_type() );
 
   if( this->double_type() ) return this->value_.real_;
 
@@ -382,7 +382,7 @@ double Value::get_double ( void ) const
 
 float Value::get_float ( void ) const
 {
-  NOM_ASSERT( this->double_type() );
+  // NOM_ASSERT( this->double_type() );
 
   if( this->double_type() )
   {
@@ -394,7 +394,7 @@ float Value::get_float ( void ) const
 
 const char* Value::get_cstring ( void ) const
 {
-  NOM_ASSERT( this->string_type() );
+  // NOM_ASSERT( this->string_type() );
 
   if( this->string_type() )
   {
@@ -421,7 +421,7 @@ const std::string Value::get_string ( void ) const
 
 bool Value::get_bool ( void ) const
 {
-  NOM_ASSERT( this->bool_type() );
+  // NOM_ASSERT( this->bool_type() );
 
   if( this->bool_type() )
   {

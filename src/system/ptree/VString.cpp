@@ -41,7 +41,7 @@ VString::~VString( void )
   //NOM_LOG_TRACE(NOM);
 }
 
-VString::VString( uint val ) :
+VString::VString( ArrayIndex val ) :
   index_ ( val )
 {
   //NOM_LOG_TRACE(NOM);
@@ -107,19 +107,19 @@ bool VString::operator ==( const VString& other ) const
   // }
 }
 
-uint VString::operator[]( uint val )
-{
-  this->index_ = val;
+// ArrayIndex VString::operator[]( ArrayIndex val )
+// {
+//   this->index_ = val;
 
-  return this->index_;
-}
+//   return this->index_;
+// }
 
-const std::string& VString::operator[]( const std::string& val )
-{
-  this->value_ = val;
+// const std::string& VString::operator[]( const std::string& val )
+// {
+//   this->value_ = val;
 
-  return this->value_;
-}
+//   return this->value_;
+// }
 
 const std::string& VString::c_str( void ) const
 {
@@ -136,7 +136,7 @@ const std::string& VString::c_str( void ) const
 */
 }
 
-uint VString::index( void ) const
+ArrayIndex VString::index( void ) const
 {
   return this->index_;
 }

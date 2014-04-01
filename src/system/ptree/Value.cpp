@@ -158,12 +158,60 @@ Value::Value( const Value& copy ) :
 
 Value::SelfType& Value::operator =( const SelfType& other )
 {
-  this->value_ = other.value_;
-  // this->array_ = other.array_;
-  // this->value_.array_ = other.value_.array_;
-  // this->object_ = other.object_;
-  // this->value_.object_ = other.value_.object_;
   this->type_ = other.type();
+
+  switch( other.type() )
+  {
+    default:
+    case ValueType::Null:
+    {
+      // Do nothing
+      break;
+    }
+
+    case ValueType::SignedInteger:
+    {
+      this->value_.int_ = other.value_.int_;
+      break;
+    }
+
+    case ValueType::UnsignedInteger:
+    {
+      this->value_.uint_ = other.value_.uint_;
+      break;
+    }
+
+    case ValueType::RealNumber:
+    {
+      this->value_.real_ = other.value_.real_;
+      break;
+    }
+
+    case ValueType::String:
+    {
+      this->value_.string_ = other.value_.string_;
+      break;
+    }
+
+    case ValueType::Boolean:
+    {
+      this->value_.bool_ = other.value_.bool_;
+      break;
+    }
+
+    case ValueType::ArrayValues:
+    {
+      this->value_.array_ = other.value_.array_;
+      break;
+    }
+
+    case ValueType::ObjectValues:
+    {
+      this->value_.object_ = other.value_.object_;
+      break;
+    }
+  }
+
   this->string_allocated_ = other.string_allocated_;
 
   return *this;

@@ -94,6 +94,12 @@ set ( JSONCPP_SOURCE
       ${SRC_DIR}/json/jsoncpp/jsoncpp.cpp
     )
 
+# XML module
+file ( GLOB XML_HEADERS "${NOMLIB_HEADERS_DIR}/xml/*.hpp" )
+set ( XML_SOURCE
+      ${SRC_DIR}/xml/RapidXmlSerializer.cpp
+    )
+
 # Third-party RapidXml headers
 file ( GLOB RAPIDXML_HEADERS "${RAPIDXML_INCLUDE_DIR}/*.hpp" )
 
@@ -252,9 +258,11 @@ if( NOM_BUILD_XML_UNIT )
   set ( NOMLIB_HEADERS
         ${NOMLIB_HEADERS}
         ${RAPIDXML_HEADERS}
+        ${XML_HEADERS}
       )
   set ( NOMLIB_SOURCE
         ${NOMLIB_SOURCE}
+        ${XML_SOURCE}
       )
 endif( NOM_BUILD_XML_UNIT )
 

@@ -29,9 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /// \brief nom::Value usage examples
 
-#include "rapidxml.hpp"
-
 #include <nomlib/json.hpp>
+#include <nomlib/xml.hpp>
 #include <nomlib/system.hpp>
 
 const std::string APP_NAME = "nom::Value";
@@ -279,78 +278,13 @@ sint do_value_test_one( void )
 
 sint do_xml_test_one( void )
 {
-  std::stringstream buffer;
-  std::string xml_doc;
-  std::ifstream fp;
-  rapidxml::xml_document<> doc;
+  Value result;
 
-  fp.open( RESOURCE_XML );
+  ISerializer* serializer = new RapidXmlSerializer();
 
-  if( ! fp.is_open() && ! fp.good() )
+  if( serializer->unserialize( RESOURCE_XML, result ) == false )
   {
-    NOM_LOG_ERR( NOM, "Could not open file: " + RESOURCE_XML );
     return NOM_EXIT_FAILURE;
-  }
-
-  buffer << fp.rdbuf();
-  xml_doc = std::string( buffer.str() );
-// NOM_DUMP(xml_doc);
-  doc.parse<0>(&xml_doc[0]);
-
-  NOM_DUMP( doc.first_node()->name() );
-
-  rapidxml::xml_node<> *root_node = doc.first_node();
-
-  for( rapidxml::xml_node<> *nodes = root_node->first_node(); nodes; nodes = nodes->next_sibling() )
-  {
-    std::string node = nodes->name();
-    NOM_DUMP(node);
-
-    if( nodes->parent() )
-    {
-      for( rapidxml::xml_node<> *children = nodes->first_node(); children; children = children->next_sibling() )
-      {
-        std::string node = children->name();
-        NOM_DUMP(node);
-        NOM_DUMP( children->type() );
-
-        if( children->parent() )
-        {
-          // NOM_DUMP( children->name() );
-          NOM_DUMP( children->type() );
-          for( rapidxml::xml_node<> *childrens = children->first_node(); childrens; childrens = childrens->next_sibling() )
-          {
-            if( childrens->parent() )
-            {
-              NOM_DUMP( childrens->name() );
-              // NOM_DUMP( childrens->value() );
-              NOM_DUMP( childrens->type() );
-
-              for( rapidxml::xml_attribute<> *attr = childrens->first_attribute(); attr; attr = attr->next_attribute() )
-              {
-                NOM_DUMP( attr->name() );
-                NOM_DUMP( attr->value() );
-              }
-
-              for( rapidxml::xml_node<> *childrenss = childrens->first_node(); childrenss; childrenss = childrenss->next_sibling() )
-              {
-                NOM_DUMP( childrenss->name() );
-                NOM_DUMP( childrenss->value() );
-                NOM_DUMP( childrenss->type() );
-
-                /*
-                for( rapidxml::xml_attribute<> *attr = childrenss->first_attribute(); attr; attr = attr->next_attribute() )
-                {
-                  NOM_DUMP( attr->name() );
-                  NOM_DUMP( attr->value() );
-                }
-                */
-              }
-            }
-          }
-        }
-      }
-    }
   }
 
   return NOM_EXIT_SUCCESS;

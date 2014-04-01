@@ -46,150 +46,10 @@ bool JsonSerializer::serialize( const Value& source, const std::string& output )
   Json::StyledStreamWriter writer( JSONCPP_INDENTION_LEVEL );
   Json::Value value;  // JsonCPP library container
 
-  uint idx = 0;
-  std::string root_key, key;
-
-  // Begin iterating through the entire container; values, arrays, objects and
-  // even objects within objects.
-  for( Value::ConstIterator itr = source.begin(); itr != source.end(); ++itr )
+  if( this->write( source, value ) == false )
   {
-    ValueConstIterator member( itr );
-
-    // Top-level array or object member key.
-    root_key = member.key();
-
-    // FIXME: (This handles array JSON serialization)
-    // [ { ... } ]
-    if( root_key == "\0" )
-    {
-      if( itr->object_type() )
-      {
-        #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
-          NOM_DUMP( itr->type_name() );
-          NOM_DUMP( member.key() );
-        #endif
-
-        nom::Object objects = itr->object();
-
-        // Iterate through each object and store every member's key / value pair
-        // we find
-        for( Value::ConstIterator itr = objects.begin(); itr != objects.end(); ++itr )
-        {
-          nom::ValueConstIterator member( itr );
-
-          key = member.key();
-
-          #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
-            NOM_DUMP( itr->type_name() );
-            NOM_DUMP( member.key() );
-            NOM_DUMP( itr->stringify() );
-          #endif
-
-          if( value[idx][key].isArray() )
-          {
-            if( this->serialize_array( itr->ref(), value[idx][key] ) == false )
-            {
-              NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
-              return false;
-            }
-          }
-
-          if( value[idx][key].isObject() )
-          {
-            if( this->serialize_object( itr->ref(), value[idx][key] ) == false )
-            {
-              NOM_LOG_ERR( NOM, "Could not serialize values; invalid object?" );
-              return false;
-            }
-          }
-        } // end for objects loop
-      } // end if object type
-
-      // EOF JSON Object
-      ++idx;
-
-    } // end if root_key == "\0" (JSON array top-level)
-
-    // FIXME: (this now handles JSON serialization as mapped objects)
-    // { "root": { ... } }
-    else if( itr->object_type() )
-    {
-      #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
-        NOM_DUMP( itr->type_name() );
-        NOM_DUMP( member.key() );
-      #endif
-
-      nom::Object objects = itr->object();
-
-      // Iterate through each object and store every member's key / value pair
-      // we find
-      for( Value::ConstIterator itr = objects.begin(); itr != objects.end(); ++itr )
-      {
-        nom::ValueConstIterator member( itr );
-
-        key = member.key();
-
-        #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
-          NOM_DUMP( itr->type_name() );
-          NOM_DUMP( member.key() );
-          NOM_DUMP( itr->stringify() );
-        #endif
-
-        // Array within an object.
-        if( value[root_key][key].isArray() )
-        {
-          if( this->serialize_array( itr->ref(), value[root_key][key] ) == false )
-          {
-            NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
-            return false;
-          }
-        }
-
-        // Object within an object.
-        if( value[root_key][key].isObject() )
-        {
-          if( this->serialize_object( itr->ref(), value[root_key][key] ) == false )
-          {
-            NOM_LOG_ERR( NOM, "Could not serialize values; invalid object?" );
-            return false;
-          }
-        }
-      } // end for objects loop
-
-      // EOF JSON Object
-      ++idx;
-
-    } // end if JSON object
-
-    // { "key": [ ... ] }
-    else if( itr->array_type() )
-    {
-      #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
-        NOM_DUMP( itr->type_name() );
-        NOM_DUMP( member.key() );
-      #endif
-
-      if( this->serialize_array( itr->ref(), value[root_key] ) == false )
-      {
-        // TODO: Err handling
-        NOM_STUBBED( NOM );
-        return false;
-      }
-
-      // EOF JSON Array
-      ++idx;
-    }
-    else // Non-array, non-object nom::Value type
-    {
-      #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
-        NOM_DUMP( itr->type_name() );
-        NOM_DUMP( member.key() );
-        NOM_DUMP( itr->stringify() );
-      #endif
-
-      NOM_LOG_ERR( NOM, "Could not serialize values; not an array or an object?" );
-      // return false;
-    }
+    NOM_LOG_ERR ( NOM, "Failed to serialize data." );
+    return false;
   }
 
   // Finally, output our serialized nom::Value object!
@@ -214,14 +74,6 @@ bool JsonSerializer::unserialize( const std::string& input, Value& dest ) const
   Json::Reader parser;
   Json::Value value;            // JsonCpp interface container for our JSON
                                 // parsing.
-  Json::Value::Members members; // Member keys of each object iteration
-
-
-  // Temporary buffering objects we use to collect input in form of JSON objects;
-  // we append individual objects to the overall container as we iterate through
-  // the entire underlying container.
-  Object object, objects;
-  Array array;
 
   fp.open( input );
 
@@ -240,131 +92,29 @@ bool JsonSerializer::unserialize( const std::string& input, Value& dest ) const
 
   fp.close();
 
-  // Begin iterating through the container's objects to begin transferring to
-  // our nom::Value object.
-  for( auto idx = 0; idx != value.size(); ++idx )
+  if( this->read( value, dest ) == false )
   {
-    if( value.isArray() )
-    {
-      object.clear();
-
-      // [ { ... } ]
-      if( value[idx].isObject() )
-      {
-        // NOM_DUMP( object_members.size() );
-
-        std::vector<std::string> object_members = value[idx].getMemberNames();
-
-        for( auto pos = 0; pos != object_members.size(); ++pos )
-        {
-          std::string key = object_members[pos];
-
-          // NOM_DUMP( key );
-          // NOM_DUMP( value[idx][key] );
-
-          if( this->unserialize_array( value[idx][key], object[key] ) == false )
-          {
-            NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid array???" );
-            return false;
-          }
-          else if( this->unserialize_object( value[idx][key], object[key] ) == false )
-          {
-            NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid object???" );
-            return false;
-          }
-
-        } // end for object member pairs loop
-
-        array.push_back( object );
-      }
-    }
-
-    // { "key": { ... } }
-    else if( value.isObject() )
-    {
-      object.clear();
-
-      std::vector<std::string> root_members = value.getMemberNames();
-
-      // Top-level array or object member key
-      std::string root_key = root_members[idx];
-
-      // { "key": [ ... ] }
-      if( value[root_key].isArray() )
-      {
-        Value val;
-
-        // NOM_DUMP(root_key);
-        // NOM_DUMP(value[root_key]);
-        // NOM_DUMP( value[root_key].size() );
-
-        this->unserialize_array( value[root_key], val );
-
-        objects[root_key] = val;
-      }
-
-      // { "key": { ... } }
-      if( value[root_key].isObject() )
-      {
-        // NOM_DUMP( root_key );
-        // NOM_DUMP( object_members.size() );
-
-        std::vector<std::string> object_members = value[root_key].getMemberNames();
-
-        for( auto pos = 0; pos != object_members.size(); ++pos )
-        {
-          std::string key = object_members[pos];
-
-          // NOM_DUMP( key );
-
-          if( value[root_key][key].isArray() )
-          {
-            if( this->unserialize_array( value[root_key][key], object[key] ) == false )
-            {
-              NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid array???" );
-              return false;
-            }
-          }
-          // else if( value[root_key][key].isObject() )
-          // {
-            if( this->unserialize_object( value[root_key][key], object[key] ) == false )
-            {
-              NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid object???" );
-              return false;
-            }
-          // }
-        } // end for object member pairs loop
-
-        objects[root_key] = object;
-
-      } // end if container node is an object
-    }
-  }
-
-  // Copy our built nom::Value object tree to the specified destination object;
-  // we must always derive our top-level (parent) nom::Value object from either
-  // an array or object node type.
-  //
-  // Note that we use this top-level parent object to decide the type of hier-
-  // archy we need to start out with, either: a) JSON array(s) containing
-  // objects; b) JSON object(s) containing objects.
-  if( array.size() > 0 )
-  {
-    dest = array;
-  }
-  else
-  {
-    dest = objects;
+    // TODO: Err handling
+    NOM_STUBBED( NOM );
+    return false;
   }
 
   return true;
 }
 
-const std::string JsonSerializer::stringify( const Value& obj ) const
+const std::string JsonSerializer::stringify( const Value& input ) const
 {
   std::stringstream os;
+  Json::Value output;
 
-  os << obj;
+  if( this->write( input, output ) == false )
+  {
+    // TODO: Err handling
+    NOM_STUBBED( NOM );
+    return "\0";
+  }
+
+  os << output;
 
   return os.str();
 }
@@ -433,6 +183,287 @@ const std::string JsonSerializer::dump( const Json::Value& object, int depth ) c
   }
 
   return os.str();
+}
+
+bool JsonSerializer::write( const Value& source, Json::Value& dest ) const
+{
+  uint idx = 0;
+  std::string root_key, key;
+
+  // Begin iterating through the entire container; values, arrays, objects and
+  // even objects within objects.
+  for( Value::ConstIterator itr = source.begin(); itr != source.end(); ++itr )
+  {
+    ValueConstIterator member( itr );
+
+    // Top-level array or object member key.
+    root_key = member.key();
+
+    // FIXME: (This handles array JSON serialization)
+    // [ { ... } ]
+    if( root_key == "\0" )
+    {
+      if( itr->object_type() )
+      {
+        #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+          NOM_DUMP( itr->type_name() );
+          NOM_DUMP( member.key() );
+        #endif
+
+        nom::Object objects = itr->object();
+
+        // Iterate through each object and store every member's key / value pair
+        // we find
+        for( Value::ConstIterator itr = objects.begin(); itr != objects.end(); ++itr )
+        {
+          nom::ValueConstIterator member( itr );
+
+          key = member.key();
+
+          #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+            NOM_DUMP( itr->type_name() );
+            NOM_DUMP( member.key() );
+            NOM_DUMP( itr->stringify() );
+          #endif
+
+          if( dest[idx][key].isArray() )
+          {
+            if( this->serialize_array( itr->ref(), dest[idx][key] ) == false )
+            {
+              NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
+              return false;
+            }
+          }
+
+          if( dest[idx][key].isObject() )
+          {
+            if( this->serialize_object( itr->ref(), dest[idx][key] ) == false )
+            {
+              NOM_LOG_ERR( NOM, "Could not serialize values; invalid object?" );
+              return false;
+            }
+          }
+        } // end for objects loop
+      } // end if object type
+
+      // EOF JSON Object
+      ++idx;
+
+    } // end if root_key == "\0" (JSON array top-level)
+
+    // FIXME: (this now handles JSON serialization as mapped objects)
+    // { "root": { ... } }
+    else if( itr->object_type() )
+    {
+      #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+        NOM_DUMP( itr->type_name() );
+        NOM_DUMP( member.key() );
+      #endif
+
+      nom::Object objects = itr->object();
+
+      // Iterate through each object and store every member's key / value pair
+      // we find
+      for( Value::ConstIterator itr = objects.begin(); itr != objects.end(); ++itr )
+      {
+        nom::ValueConstIterator member( itr );
+
+        key = member.key();
+
+        #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+          NOM_DUMP( itr->type_name() );
+          NOM_DUMP( member.key() );
+          NOM_DUMP( itr->stringify() );
+        #endif
+
+        // Array within an object.
+        if( dest[root_key][key].isArray() )
+        {
+          if( this->serialize_array( itr->ref(), dest[root_key][key] ) == false )
+          {
+            NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
+            return false;
+          }
+        }
+
+        // Object within an object.
+        if( dest[root_key][key].isObject() )
+        {
+          if( this->serialize_object( itr->ref(), dest[root_key][key] ) == false )
+          {
+            NOM_LOG_ERR( NOM, "Could not serialize values; invalid object?" );
+            return false;
+          }
+        }
+      } // end for objects loop
+
+      // EOF JSON Object
+      ++idx;
+
+    } // end if JSON object
+
+    // { "key": [ ... ] }
+    else if( itr->array_type() )
+    {
+      #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+        NOM_DUMP( itr->type_name() );
+        NOM_DUMP( member.key() );
+      #endif
+
+      if( this->serialize_array( itr->ref(), dest[root_key] ) == false )
+      {
+        // TODO: Err handling
+        NOM_STUBBED( NOM );
+        return false;
+      }
+
+      // EOF JSON Array
+      ++idx;
+    }
+    else // Non-array, non-object nom::Value type
+    {
+      #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+        NOM_DUMP( itr->type_name() );
+        NOM_DUMP( member.key() );
+        NOM_DUMP( itr->stringify() );
+      #endif
+
+      NOM_LOG_ERR( NOM, "Could not serialize values; not an array or an object?" );
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool JsonSerializer::read( const Json::Value& source, Value& dest ) const
+{
+  Json::Value::Members members; // Member keys of each object iteration
+
+  // Temporary buffering objects we use to collect input in form of JSON objects;
+  // we append individual objects to the overall container as we iterate through
+  // the entire underlying container.
+  Object object, objects;
+  Array array;
+
+  // Begin iterating through the container's objects to begin transferring to
+  // our nom::Value object.
+  for( auto idx = 0; idx != source.size(); ++idx )
+  {
+    if( source.isArray() )
+    {
+      object.clear();
+
+      // [ { ... } ]
+      if( source[idx].isObject() )
+      {
+        // NOM_DUMP( object_members.size() );
+
+        std::vector<std::string> object_members = source[idx].getMemberNames();
+
+        for( auto pos = 0; pos != object_members.size(); ++pos )
+        {
+          std::string key = object_members[pos];
+
+          // NOM_DUMP( key );
+          // NOM_DUMP( value[idx][key] );
+
+          if( this->unserialize_array( source[idx][key], object[key] ) == false )
+          {
+            NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid array???" );
+            return false;
+          }
+          else if( this->unserialize_object( source[idx][key], object[key] ) == false )
+          {
+            NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid object???" );
+            return false;
+          }
+
+        } // end for object member pairs loop
+
+        array.push_back( object );
+      }
+    }
+
+    // { "key": { ... } }
+    else if( source.isObject() )
+    {
+      object.clear();
+
+      std::vector<std::string> root_members = source.getMemberNames();
+
+      // Top-level array or object member key
+      std::string root_key = root_members[idx];
+
+      // { "key": [ ... ] }
+      if( source[root_key].isArray() )
+      {
+        Value val;
+
+        // NOM_DUMP(root_key);
+        // NOM_DUMP(value[root_key]);
+        // NOM_DUMP( value[root_key].size() );
+
+        this->unserialize_array( source[root_key], val );
+
+        objects[root_key] = val;
+      }
+
+      // { "key": { ... } }
+      if( source[root_key].isObject() )
+      {
+        // NOM_DUMP( root_key );
+        // NOM_DUMP( object_members.size() );
+
+        std::vector<std::string> object_members = source[root_key].getMemberNames();
+
+        for( auto pos = 0; pos != object_members.size(); ++pos )
+        {
+          std::string key = object_members[pos];
+
+          // NOM_DUMP( key );
+
+          if( source[root_key][key].isArray() )
+          {
+            if( this->unserialize_array( source[root_key][key], object[key] ) == false )
+            {
+              NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid array???" );
+              return false;
+            }
+          }
+          // else if( source[root_key][key].isObject() )
+          // {
+            if( this->unserialize_object( source[root_key][key], object[key] ) == false )
+            {
+              NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid object???" );
+              return false;
+            }
+          // }
+        } // end for object member pairs loop
+
+        objects[root_key] = object;
+
+      } // end if container node is an object
+    }
+  }
+
+  // Copy our built nom::Value object tree to the specified destination object;
+  // we must always derive our top-level (parent) nom::Value object from either
+  // an array or object node type.
+  //
+  // Note that we use this top-level parent object to decide the type of hier-
+  // archy we need to start out with, either: a) JSON array(s) containing
+  // objects; b) JSON object(s) containing objects.
+  if( array.size() > 0 )
+  {
+    dest = array;
+  }
+  else
+  {
+    dest = objects;
+  }
+
+  return true;
 }
 
 const std::string JsonSerializer::dump_key( const Json::Value& key ) const

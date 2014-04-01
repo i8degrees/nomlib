@@ -95,7 +95,7 @@ class JsonSerializer: public IJsonSerializer
     /// \param obj The nom::Value object to be serialized.
     ///
     /// \returns Serialized object as a std::string.
-    const std::string stringify( const Value& obj ) const;
+    const std::string stringify( const Value& input ) const;
 
     /// \brief Dump the object's complete value tree.
     ///
@@ -106,6 +106,10 @@ class JsonSerializer: public IJsonSerializer
     const std::string dump( const Json::Value& object, int depth = 0 ) const;
 
   private:
+    bool write( const Value& source, Json::Value& dest ) const;
+
+    bool read( const Json::Value& source, Value& dest ) const;
+
     /// \brief Internal helper method for nom::Value::dump.
     const std::string dump_key( const Json::Value& key ) const;
 

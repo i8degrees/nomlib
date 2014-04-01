@@ -137,11 +137,19 @@ if( NOT NOM_BUILD_MINI_UNIT )
     if( NOM_BUILD_VALUES_EXAMPLE )
       add_executable( values "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/ptree/json/values.cpp" )
 
-      # Used by: app, json_reader, sprite_sheets
+      # Used by: app, json_reader, sprite_sheets, values
       install ( DIRECTORY
                 "${EXAMPLES_SRC_DIR}/json/Resources"
                 DESTINATION
                 "${EXAMPLES_INSTALL_PEFIX}"
+                PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+              )
+
+      # Used by: values
+      install ( DIRECTORY
+                "${NOM_EXAMPLES_RESOURCES_DIR}/xml"
+                DESTINATION
+                "${EXAMPLES_INSTALL_PEFIX}/Resources"
                 PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
               )
     endif( NOM_BUILD_VALUES_EXAMPLE )

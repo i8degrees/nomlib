@@ -49,6 +49,9 @@ option( NOM_BUILD_GUI_UNIT "Build the GUI unit." off )
 option( NOM_BUILD_JSON_UNIT "Build the JSON unit." on )
 option( NOM_BUILD_PTREE_UNIT "Build the Property Tree unit." on )
 
+# Dependencies: RapidXml
+option( NOM_BUILD_XML_UNIT "Build the XML unit." on )
+
 option( NOM_BUILD_MATH_UNIT "Build the Math unit." on )
 
 # Dependencies: SDL2, SDL2_image, SDL2_ttf
@@ -141,6 +144,9 @@ set ( EXTERNAL_DEPS_DIR "third-party" )
 
 # Relative path from project root to nomlib demonstration examples
 set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" )
+
+# Resources path for library examples
+set( NOM_EXAMPLES_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/${NOMLIB_RESOURCES_DIR}/examples" )
 
 # Additional flags to pass add_executable -- used when library examples are
 # built
@@ -270,6 +276,10 @@ elseif ( PLATFORM_OSX )
   set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/sndfile.framework" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
+
+  # RapidXml dependency (headers only)
+  set ( RAPIDXML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/rapidxml" )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${RAPIDXML_INCLUDE_DIR} )
 
   find_library ( COCOA_LIBRARY Cocoa )
   mark_as_advanced ( COCOA_LIBRARY )

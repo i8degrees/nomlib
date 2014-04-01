@@ -94,6 +94,9 @@ set ( JSONCPP_SOURCE
       ${SRC_DIR}/json/jsoncpp/jsoncpp.cpp
     )
 
+# Third-party RapidXml headers
+file ( GLOB RAPIDXML_HEADERS "${RAPIDXML_INCLUDE_DIR}/*.hpp" )
+
 # Math module
 file ( GLOB MATH_HEADERS "${NOMLIB_HEADERS_DIR}/math/*.hpp" )
 set ( MATH_SOURCE
@@ -244,6 +247,16 @@ if( NOM_BUILD_JSON_UNIT )
         ${JSONCPP_SOURCE}
       )
 endif( NOM_BUILD_JSON_UNIT )
+
+if( NOM_BUILD_XML_UNIT )
+  set ( NOMLIB_HEADERS
+        ${NOMLIB_HEADERS}
+        ${RAPIDXML_HEADERS}
+      )
+  set ( NOMLIB_SOURCE
+        ${NOMLIB_SOURCE}
+      )
+endif( NOM_BUILD_XML_UNIT )
 
 if( NOM_BUILD_MATH_UNIT )
   set ( NOMLIB_HEADERS

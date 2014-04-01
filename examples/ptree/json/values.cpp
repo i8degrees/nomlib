@@ -29,6 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /// \brief nom::Value usage examples
 
+#include "rapidxml.hpp"
+
 #include <nomlib/json.hpp>
 #include <nomlib/system.hpp>
 
@@ -41,6 +43,7 @@ const std::string APP_RESOURCES_DIR = "Resources";
 const nom::Path p;
 const std::string RESOURCE_SANITY = APP_RESOURCES_DIR + p.native() + "sanity.json";
 const std::string RESOURCE_SANITY2 = APP_RESOURCES_DIR + p.native() + "sanity2.json";
+const std::string RESOURCE_XML = APP_RESOURCES_DIR + p.native() + "xml" + p.native() + "test_one.xml";
 
 using namespace nom; // TODO: Remove
 
@@ -274,6 +277,85 @@ sint do_value_test_one( void )
   return NOM_EXIT_SUCCESS;
 }
 
+sint do_xml_test_one( void )
+{
+  std::stringstream buffer;
+  std::string xml_doc;
+  std::ifstream fp;
+  rapidxml::xml_document<> doc;
+
+  fp.open( RESOURCE_XML );
+
+  if( ! fp.is_open() && ! fp.good() )
+  {
+    NOM_LOG_ERR( NOM, "Could not open file: " + RESOURCE_XML );
+    return NOM_EXIT_FAILURE;
+  }
+
+  buffer << fp.rdbuf();
+  xml_doc = std::string( buffer.str() );
+// NOM_DUMP(xml_doc);
+  doc.parse<0>(&xml_doc[0]);
+
+  NOM_DUMP( doc.first_node()->name() );
+
+  rapidxml::xml_node<> *root_node = doc.first_node();
+
+  for( rapidxml::xml_node<> *nodes = root_node->first_node(); nodes; nodes = nodes->next_sibling() )
+  {
+    std::string node = nodes->name();
+    NOM_DUMP(node);
+
+    if( nodes->parent() )
+    {
+      for( rapidxml::xml_node<> *children = nodes->first_node(); children; children = children->next_sibling() )
+      {
+        std::string node = children->name();
+        NOM_DUMP(node);
+        NOM_DUMP( children->type() );
+
+        if( children->parent() )
+        {
+          // NOM_DUMP( children->name() );
+          NOM_DUMP( children->type() );
+          for( rapidxml::xml_node<> *childrens = children->first_node(); childrens; childrens = childrens->next_sibling() )
+          {
+            if( childrens->parent() )
+            {
+              NOM_DUMP( childrens->name() );
+              // NOM_DUMP( childrens->value() );
+              NOM_DUMP( childrens->type() );
+
+              for( rapidxml::xml_attribute<> *attr = childrens->first_attribute(); attr; attr = attr->next_attribute() )
+              {
+                NOM_DUMP( attr->name() );
+                NOM_DUMP( attr->value() );
+              }
+
+              for( rapidxml::xml_node<> *childrenss = childrens->first_node(); childrenss; childrenss = childrenss->next_sibling() )
+              {
+                NOM_DUMP( childrenss->name() );
+                NOM_DUMP( childrenss->value() );
+                NOM_DUMP( childrenss->type() );
+
+                /*
+                for( rapidxml::xml_attribute<> *attr = childrenss->first_attribute(); attr; attr = attr->next_attribute() )
+                {
+                  NOM_DUMP( attr->name() );
+                  NOM_DUMP( attr->value() );
+                }
+                */
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return NOM_EXIT_SUCCESS;
+}
+
 sint main( int argc, char* argv[] )
 {
   // Return exit code
@@ -325,6 +407,13 @@ sint main( int argc, char* argv[] )
   // Unserialize examples/json/Resources/sanity2.json & serialize it back to
   // output2.json
   ret = do_unserializer_test_three();
+  if( ret != NOM_EXIT_SUCCESS )
+  {
+    nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+    return NOM_EXIT_FAILURE;
+  }
+
+  ret = do_xml_test_one();
   if( ret != NOM_EXIT_SUCCESS )
   {
     nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );

@@ -120,16 +120,7 @@ class JsonSerializer: public IJsonSerializer
     const std::string print_key( const std::string& type, uint size ) const;
 
     /// \brief Internal helper method for nom::Value::dump_value.
-    // const std::string print_value( const std::string& val ) const;
-    template <typename T>
-    const std::string print_value( const T& val ) const
-    {
-      std::stringstream os;
-
-      os << val;
-
-      return os.str();
-    }
+    const std::string print_value( const std::string& value ) const;
 
     /// \TODO Err handling where used in code
     bool write_value( const Value& object, Json::Value& dest ) const;

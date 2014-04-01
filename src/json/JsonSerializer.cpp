@@ -516,19 +516,19 @@ const std::string JsonSerializer::dump_value( const Json::Value& val ) const
 
   if( val.isNull() ) // Type 0
   {
-    // Type is void of representation.
+    os << this->print_value( "null" );
   }
   else if( val.isInt() ) // Type 1
   {
-    os << this->print_value( val.asInt() );
+    os << this->print_value( std::to_string( val.asInt() ) );
   }
   else if( val.isUInt() ) // Type 2
   {
-    os << this->print_value( val.asUInt() );
+    os << this->print_value( std::to_string( val.asUInt() ) );
   }
   else if( val.isDouble() ) // Type 3
   {
-    os << this->print_value( val.asDouble() );
+    os << this->print_value( std::to_string( val.asDouble() ) );
   }
   else if( val.isString() ) // Type 4
   {
@@ -571,16 +571,14 @@ const std::string JsonSerializer::print_key( const std::string& type, uint size 
   return os.str();
 }
 
-/*
-const std::string JsonSerializer::print_value( const std::string& val ) const
+const std::string JsonSerializer::print_value( const std::string& value ) const
 {
   std::stringstream os;
 
-  os << val;
+  os << value;
 
   return os.str();
 }
-*/
 
 bool JsonSerializer::write_value( const Value& object, Json::Value& dest ) const
 {

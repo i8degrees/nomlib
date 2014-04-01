@@ -26,29 +26,30 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_IJSON_SERIALIZER_HPP
-#define NOMLIB_SYSTEM_IJSON_SERIALIZER_HPP
+#ifndef NOMLIB_SYSTEM_ISERIALIZER_HPP
+#define NOMLIB_SYSTEM_ISERIALIZER_HPP
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/ptree/ptree_forwards.hpp"
 
 namespace nom {
 
-/// \brief Abstract interface for JSON serialization with nom::Value objects.
-class IJsonSerializer
+/// \brief Abstract interface for serializing and unserializing nom::Value
+/// objects.
+class ISerializer
 {
   public:
-    typedef IJsonSerializer SelfType;
+    typedef ISerializer SelfType;
 
     typedef SelfType* RawPtr;
     typedef std::unique_ptr<SelfType> UniquePtr;
 
-    IJsonSerializer ( void )
+    ISerializer ( void )
     {
       //NOM_LOG_TRACE(NOM);
     }
 
-    virtual ~IJsonSerializer ( void )
+    virtual ~ISerializer ( void )
     {
       //NOM_LOG_TRACE(NOM);
     }
@@ -61,7 +62,7 @@ class IJsonSerializer
 
 #endif // include guard defined
 
-/// \class nom::IJsonSerializer
+/// \class nom::ISerializer
 /// \ingroup system
 ///
 ///   [TO BE WRITTEN]

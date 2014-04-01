@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/json/jsoncpp/json.h" // JsonCpp library
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/IJsonSerializer.hpp"
+#include "nomlib/system/ISerializer.hpp"
 #include "nomlib/system/ptree/ptree_forwards.hpp"
 #include "nomlib/system/ptree/Value.hpp"
 #include "nomlib/system/ptree/ValueIterator.hpp"
@@ -58,7 +58,7 @@ const std::string JSONCPP_INDENTION_LEVEL = "  ";
 
 /// \brief Serialization of nom::Value objects to and fro JSON using the JsonCpp
 /// interface.
-class JsonCppSerializer: public IJsonSerializer
+class JsonCppSerializer: public ISerializer
 {
   public:
     typedef JsonCppSerializer SelfType;
@@ -161,4 +161,6 @@ class JsonCppSerializer: public IJsonSerializer
 /// \ingroup json
 ///
 ///   [TO BE WRITTEN]
+///
+/// See examples/values.cpp for usage examples.
 ///

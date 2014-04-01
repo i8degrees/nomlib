@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/json/jsoncpp/json.h" // JsonCpp library
 
 #include "nomlib/config.hpp"
-#include "nomlib/json/JsonSerializer.hpp"
+#include "nomlib/json/JsonCppSerializer.hpp"
 #include "nomlib/system/ptree/Value.hpp"
 
 namespace nom {

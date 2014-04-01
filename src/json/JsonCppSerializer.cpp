@@ -26,21 +26,21 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/json/JsonSerializer.hpp"
+#include "nomlib/json/JsonCppSerializer.hpp"
 
 namespace nom {
 
-JsonSerializer::JsonSerializer( void )
+JsonCppSerializer::JsonCppSerializer( void )
 {
   //NOM_LOG_TRACE(NOM);
 }
 
-JsonSerializer::~JsonSerializer( void )
+JsonCppSerializer::~JsonCppSerializer( void )
 {
   //NOM_LOG_TRACE(NOM);
 }
 
-bool JsonSerializer::serialize( const Value& source, const std::string& output ) const
+bool JsonCppSerializer::serialize( const Value& source, const std::string& output ) const
 {
   std::ofstream fp;
   Json::StyledStreamWriter writer( JSONCPP_INDENTION_LEVEL );
@@ -68,7 +68,7 @@ bool JsonSerializer::serialize( const Value& source, const std::string& output )
   return true;
 }
 
-bool JsonSerializer::unserialize( const std::string& input, Value& dest ) const
+bool JsonCppSerializer::unserialize( const std::string& input, Value& dest ) const
 {
   std::ifstream fp;
   Json::Reader parser;
@@ -102,7 +102,7 @@ bool JsonSerializer::unserialize( const std::string& input, Value& dest ) const
   return true;
 }
 
-const std::string JsonSerializer::stringify( const Value& input ) const
+const std::string JsonCppSerializer::stringify( const Value& input ) const
 {
   std::stringstream os;
   Json::Value output;
@@ -119,7 +119,7 @@ const std::string JsonSerializer::stringify( const Value& input ) const
   return os.str();
 }
 
-const std::string JsonSerializer::dump( const Json::Value& object, int depth ) const
+const std::string JsonCppSerializer::dump( const Json::Value& object, int depth ) const
 {
   uint index = 0;
   std::string key;
@@ -185,7 +185,7 @@ const std::string JsonSerializer::dump( const Json::Value& object, int depth ) c
   return os.str();
 }
 
-bool JsonSerializer::write( const Value& source, Json::Value& dest ) const
+bool JsonCppSerializer::write( const Value& source, Json::Value& dest ) const
 {
   uint idx = 0;
   std::string root_key, key;
@@ -205,7 +205,7 @@ bool JsonSerializer::write( const Value& source, Json::Value& dest ) const
     {
       if( itr->object_type() )
       {
-        #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+        #if defined( NOM_DEBUG_JSONCPP_SERIALIZER_VALUES )
           NOM_DUMP( itr->type_name() );
           NOM_DUMP( member.key() );
         #endif
@@ -220,7 +220,7 @@ bool JsonSerializer::write( const Value& source, Json::Value& dest ) const
 
           key = member.key();
 
-          #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+          #if defined( NOM_DEBUG_JSONCPP_SERIALIZER_VALUES )
             NOM_DUMP( itr->type_name() );
             NOM_DUMP( member.key() );
             NOM_DUMP( itr->stringify() );
@@ -255,7 +255,7 @@ bool JsonSerializer::write( const Value& source, Json::Value& dest ) const
     // { "root": { ... } }
     else if( itr->object_type() )
     {
-      #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+      #if defined( NOM_DEBUG_JSONCPP_SERIALIZER_VALUES )
         NOM_DUMP( itr->type_name() );
         NOM_DUMP( member.key() );
       #endif
@@ -270,7 +270,7 @@ bool JsonSerializer::write( const Value& source, Json::Value& dest ) const
 
         key = member.key();
 
-        #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+        #if defined( NOM_DEBUG_JSONCPP_SERIALIZER_VALUES )
           NOM_DUMP( itr->type_name() );
           NOM_DUMP( member.key() );
           NOM_DUMP( itr->stringify() );
@@ -305,7 +305,7 @@ bool JsonSerializer::write( const Value& source, Json::Value& dest ) const
     // { "key": [ ... ] }
     else if( itr->array_type() )
     {
-      #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+      #if defined( NOM_DEBUG_JSONCPP_SERIALIZER_VALUES )
         NOM_DUMP( itr->type_name() );
         NOM_DUMP( member.key() );
       #endif
@@ -322,7 +322,7 @@ bool JsonSerializer::write( const Value& source, Json::Value& dest ) const
     }
     else // Non-array, non-object nom::Value type
     {
-      #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+      #if defined( NOM_DEBUG_JSONCPP_SERIALIZER_VALUES )
         NOM_DUMP( itr->type_name() );
         NOM_DUMP( member.key() );
         NOM_DUMP( itr->stringify() );
@@ -336,7 +336,7 @@ bool JsonSerializer::write( const Value& source, Json::Value& dest ) const
   return true;
 }
 
-bool JsonSerializer::read( const Json::Value& source, Value& dest ) const
+bool JsonCppSerializer::read( const Json::Value& source, Value& dest ) const
 {
   Json::Value::Members members; // Member keys of each object iteration
 
@@ -466,7 +466,7 @@ bool JsonSerializer::read( const Json::Value& source, Value& dest ) const
   return true;
 }
 
-const std::string JsonSerializer::dump_key( const Json::Value& key ) const
+const std::string JsonCppSerializer::dump_key( const Json::Value& key ) const
 {
   std::stringstream os; // Output buffer
 
@@ -510,7 +510,7 @@ const std::string JsonSerializer::dump_key( const Json::Value& key ) const
   return os.str();
 }
 
-const std::string JsonSerializer::dump_value( const Json::Value& val ) const
+const std::string JsonCppSerializer::dump_value( const Json::Value& val ) const
 {
   std::stringstream os; // Output buffer
 
@@ -548,11 +548,11 @@ const std::string JsonSerializer::dump_value( const Json::Value& val ) const
   }
   else if( val.isArray() ) // Type 6
   {
-    // Special case -- must be handled by JsonSerializer::dump.
+    // Special case -- must be handled by JsonCppSerializer::dump.
   }
   else if( val.isObject() ) // Type 7
   {
-    // Special case -- must be handled by JsonSerializer::dump.
+    // Special case -- must be handled by JsonCppSerializer::dump.
   }
   else // Unknown type
   {
@@ -562,7 +562,7 @@ const std::string JsonSerializer::dump_value( const Json::Value& val ) const
   return os.str();
 }
 
-const std::string JsonSerializer::print_key( const std::string& type, uint size ) const
+const std::string JsonCppSerializer::print_key( const std::string& type, uint size ) const
 {
   std::stringstream os;
 
@@ -571,7 +571,7 @@ const std::string JsonSerializer::print_key( const std::string& type, uint size 
   return os.str();
 }
 
-const std::string JsonSerializer::print_value( const std::string& value ) const
+const std::string JsonCppSerializer::print_value( const std::string& value ) const
 {
   std::stringstream os;
 
@@ -580,14 +580,14 @@ const std::string JsonSerializer::print_value( const std::string& value ) const
   return os.str();
 }
 
-bool JsonSerializer::write_value( const Value& object, Json::Value& dest ) const
+bool JsonCppSerializer::write_value( const Value& object, Json::Value& dest ) const
 {
   switch( object.type() )
   {
     // Unknown type
     default:
     {
-      #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+      #if defined( NOM_DEBUG_JSONCPP_SERIALIZER_VALUES )
         NOM_DUMP( object.type() );
         // NOM_DUMP( member.key() );
         NOM_DUMP( object );
@@ -638,13 +638,13 @@ bool JsonSerializer::write_value( const Value& object, Json::Value& dest ) const
 
     case Value::ValueType::ArrayValues:
     {
-      // Special case -- must be handled by JsonSerializer::serialize_array.
+      // Special case -- must be handled by JsonCppSerializer::serialize_array.
       break;
     }
 
     case Value::ValueType::ObjectValues:
     {
-      // Special case -- must be handled by JsonSerializer::serialize_object.
+      // Special case -- must be handled by JsonCppSerializer::serialize_object.
       break;
     }
   }
@@ -652,14 +652,14 @@ bool JsonSerializer::write_value( const Value& object, Json::Value& dest ) const
   return true;
 }
 
-bool JsonSerializer::write_array_value( const Value& object, Json::Value& dest ) const
+bool JsonCppSerializer::write_array_value( const Value& object, Json::Value& dest ) const
 {
   switch( object.type() )
   {
     // Unknown type
     default:
     {
-      #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+      #if defined( NOM_DEBUG_JSONCPP_SERIALIZER_VALUES )
         NOM_DUMP( object.type() );
         // NOM_DUMP( member.key() );
         NOM_DUMP( object );
@@ -709,7 +709,7 @@ bool JsonSerializer::write_array_value( const Value& object, Json::Value& dest )
   return true;
 }
 
-bool JsonSerializer::serialize_array( const Value& object, Json::Value& dest ) const
+bool JsonCppSerializer::serialize_array( const Value& object, Json::Value& dest ) const
 {
   uint index = 0;
   Json::Value arr;
@@ -722,7 +722,7 @@ bool JsonSerializer::serialize_array( const Value& object, Json::Value& dest ) c
     {
       default: // Unknown type -- not handled
       {
-        #if defined( NOM_DEBUG_JSON_UNSERIALIZER_VALUES )
+        #if defined( NOM_DEBUG_JSONCPP_UNSERIALIZER_VALUES )
           NOM_DUMP( object.type() );
           // NOM_DUMP( member.key() );
           NOM_DUMP( object );
@@ -781,13 +781,13 @@ bool JsonSerializer::serialize_array( const Value& object, Json::Value& dest ) c
   return true;
 }
 
-bool JsonSerializer::serialize_object( const Value& object, Json::Value& dest ) const
+bool JsonCppSerializer::serialize_object( const Value& object, Json::Value& dest ) const
 {
   switch( object.type() )
   {
     default: // Unknown type -- not handled.
     {
-      #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+      #if defined( NOM_DEBUG_JSONCPP_SERIALIZER_VALUES )
         NOM_DUMP( object.type() );
         // NOM_DUMP( member.key() );
         NOM_DUMP( object );
@@ -845,7 +845,7 @@ bool JsonSerializer::serialize_object( const Value& object, Json::Value& dest ) 
         {
           default: // Unknown type -- not handled.
           {
-            #if defined( NOM_DEBUG_JSON_SERIALIZER_VALUES )
+            #if defined( NOM_DEBUG_JSONCPP_SERIALIZER_VALUES )
               NOM_DUMP( objects[key].type() );
               // NOM_DUMP( member.key() );
               NOM_DUMP( objects );
@@ -912,7 +912,7 @@ bool JsonSerializer::serialize_object( const Value& object, Json::Value& dest ) 
   return true;
 }
 
-bool JsonSerializer::read_value( const Json::Value& object, Value& dest ) const
+bool JsonCppSerializer::read_value( const Json::Value& object, Value& dest ) const
 {
   if( object.isNull() )
   {
@@ -946,15 +946,15 @@ bool JsonSerializer::read_value( const Json::Value& object, Value& dest ) const
   }
   else if( object.isArray() )
   {
-    // Special case -- must be handled by JsonSerializer::unserialize_array.
+    // Special case -- must be handled by JsonCppSerializer::unserialize_array.
   }
   else if( object.isObject() )
   {
-    // Special case -- must be handled by JsonSerializer::unserialize_object.
+    // Special case -- must be handled by JsonCppSerializer::unserialize_object.
   }
   else // Unknown type -- not handled
   {
-    #if defined( NOM_DEBUG_JSON_UNSERIALIZER_VALUES )
+    #if defined( NOM_DEBUG_JSONCPP_UNSERIALIZER_VALUES )
       NOM_DUMP( object.type() );
       // NOM_DUMP( member.key() );
       NOM_DUMP( object );
@@ -968,7 +968,7 @@ bool JsonSerializer::read_value( const Json::Value& object, Value& dest ) const
   return true;
 }
 
-bool JsonSerializer::unserialize_array( const Json::Value& object, Value& dest ) const
+bool JsonCppSerializer::unserialize_array( const Json::Value& object, Value& dest ) const
 {
   Array arr;
 
@@ -979,7 +979,7 @@ bool JsonSerializer::unserialize_array( const Json::Value& object, Value& dest )
     {
       default: // Unknown type???
       {
-        #if defined( NOM_DEBUG_JSON_UNSERIALIZER_VALUES )
+        #if defined( NOM_DEBUG_JSONCPP_UNSERIALIZER_VALUES )
           NOM_DUMP( object[i].type() );
           // NOM_DUMP( member.key() );
           NOM_DUMP( object[i] );
@@ -1039,13 +1039,13 @@ bool JsonSerializer::unserialize_array( const Json::Value& object, Value& dest )
   return true;
 }
 
-bool JsonSerializer::unserialize_object( const Json::Value& object, Value& dest ) const
+bool JsonCppSerializer::unserialize_object( const Json::Value& object, Value& dest ) const
 {
   switch( object.type() )
   {
     default: // Unknown type???
     {
-      #if defined( NOM_DEBUG_JSON_UNSERIALIZER_VALUES )
+      #if defined( NOM_DEBUG_JSONCPP_UNSERIALIZER_VALUES )
         NOM_DUMP( object.type() );
         // NOM_DUMP( member.key() );
         NOM_DUMP( object );
@@ -1104,7 +1104,7 @@ bool JsonSerializer::unserialize_object( const Json::Value& object, Value& dest 
           {
             default:
             {
-              #if defined( NOM_DEBUG_JSON_UNSERIALIZER_VALUES )
+              #if defined( NOM_DEBUG_JSONCPP_UNSERIALIZER_VALUES )
                 NOM_DUMP( object[key].type() );
                 // NOM_DUMP( member.key() );
                 NOM_DUMP( object );

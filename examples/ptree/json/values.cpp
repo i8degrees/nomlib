@@ -97,8 +97,8 @@ sint do_test_one( void )
 
 sint do_unserializer_test_two( void )
 {
-  JsonSerializer reader;
-  JsonSerializer writer;
+  JsonCppSerializer reader;
+  JsonCppSerializer writer;
   nom::Value values; // I/O buffer
 
   // Initialize nom::Value from JSON file as input
@@ -120,8 +120,8 @@ sint do_unserializer_test_two( void )
 
 sint do_unserializer_test_three( void )
 {
-  JsonSerializer reader;
-  JsonSerializer writer;
+  JsonCppSerializer reader;
+  JsonCppSerializer writer;
   nom::Value values; // I/O buffer
 
   // Initialize nom::Value from JSON file as input
@@ -141,7 +141,7 @@ sint do_unserializer_test_three( void )
 
 sint do_leaks_test_one( void )
 {
-  JsonSerializer reader;
+  JsonCppSerializer reader;
   nom::Value values;
 
   nom::Timer timer;
@@ -171,7 +171,7 @@ sint do_leaks_test_one( void )
 
 sint do_serialization_test_two( void )
 {
-  nom::JsonSerializer writer;
+  nom::JsonCppSerializer writer;
 
   nom::Value val("StringValue");
   NOM_DUMP( val );
@@ -240,7 +240,7 @@ sint do_value_test_one( void )
 
   // NOM_DUMP( sheet );
 
-  JsonSerializer json; // stringify
+  JsonCppSerializer json; // stringify
 
   Value val;
   Object sheet, dims, meta, size, objects;

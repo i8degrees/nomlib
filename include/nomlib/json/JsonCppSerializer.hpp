@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_JSON_JSON_SERIALIZER_HPP
-#define NOMLIB_JSON_JSON_SERIALIZER_HPP
+#ifndef NOMLIB_JSON_JSONCPP_SERIALIZER_HPP
+#define NOMLIB_JSON_JSONCPP_SERIALIZER_HPP
 
 #include <sstream>
 #include <fstream>
@@ -43,11 +43,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /// \brief Enable dumping output of each key, value pair, sizes, etc. as we
 /// traverse the object.
-// #define NOM_DEBUG_JSON_SERIALIZER_VALUES
+// #define NOM_DEBUG_JSONCPP_SERIALIZER_VALUES
 
 /// \brief Enable dumping output of each key, value pair, sizes, etc. as we
 /// traverse the object.
-// #define NOM_DEBUG_JSON_UNSERIALIZER_VALUES
+// #define NOM_DEBUG_JSONCPP_UNSERIALIZER_VALUES
 
 namespace nom {
 
@@ -56,11 +56,12 @@ namespace nom {
 /// \remarks Two space tabbed indention.
 const std::string JSONCPP_INDENTION_LEVEL = "  ";
 
-/// \brief Serialization of nom::Value objects to JSON
-class JsonSerializer: public IJsonSerializer
+/// \brief Serialization of nom::Value objects to and fro JSON using the JsonCpp
+/// interface.
+class JsonCppSerializer: public IJsonSerializer
 {
   public:
-    typedef JsonSerializer SelfType;
+    typedef JsonCppSerializer SelfType;
 
     /// \brief Serialization options.
     ///
@@ -71,8 +72,8 @@ class JsonSerializer: public IJsonSerializer
       HumanReadable // json_spirit::pretty_print (single line arrays)
     };
 
-    JsonSerializer( void );
-    ~JsonSerializer( void );
+    JsonCppSerializer( void );
+    ~JsonCppSerializer( void );
 
     /// \brief Save nom::Value values to JSON objects.
     ///
@@ -156,10 +157,8 @@ class JsonSerializer: public IJsonSerializer
 
 #endif // include guard defined
 
-/// \class nom::JsonSerializer
+/// \class nom::JsonCppSerializer
 /// \ingroup json
 ///
 ///   [TO BE WRITTEN]
 ///
-/// \TODO Iterate through nom::Value objects via recursion in order to
-/// support deep hierarchies of objects.

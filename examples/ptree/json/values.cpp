@@ -70,6 +70,7 @@ std::vector<nom::Value> values =  {
                                   };
 
 #if defined( NOM_UNIT_TEST_ONE )
+
 /// \brief Unit test for nom::Array
 sint do_test_one( void )
 {
@@ -86,326 +87,6 @@ sint do_test_one( void )
     NOM_DUMP( itr->stringify() );
   }
   NOM_DASHED_ENDL();
-
-  return NOM_EXIT_SUCCESS;
-}
-#endif
-
-#if defined( NOM_UNIT_TEST_TWO )
-sint do_test_two( void )
-{
-  nom::JsonCppValue json;
-
-  nom::Array list;
-
-  for( auto itr = values.begin(); itr != values.end(); ++itr )
-  {
-    list.push_back( *itr );
-  }
-
-  nom::Object node;
-  // nom::Value container containing an array within an object.
-  node.push_back( nom::Pair( "root", list ) );
-
-  // nom::Value container not using an array or object -- not JSON compliant,
-  // but valid.
-  // node.push_back( nom::Pair( "root", testme3 ) );
-  node.push_back( nom::Pair( "string", "Yeah buddy!" ) ); // StringValue
-  node.push_back( nom::Pair( "response", "Light weight!" ) ); // StringValue
-  node.push_back( nom::Pair( "response2", values[3] ) ); // RealValue
-
-  node.push_back( nom::Pair( "obj2", node ) ); // ObjectValue w/ key
-  node.push_back( nom::Pair( "", node ) ); // ObjectValue w/o key
-
-  node.push_back( nom::Pair( "", list ) ); // ObjectValue w/ keyless ArrayValues
-
-  for( nom::ValueIterator itr = node.begin(); itr != node.end(); ++itr )
-  {
-    nom::ValueIterator member( itr );
-
-    if ( itr->array_type() )
-    {
-      NOM_DUMP( itr->type_name() );
-      NOM_DUMP( member.key() );
-
-      nom::Array array = itr->array();
-      for( nom::ValueIterator itr = array.begin(); itr != array.end(); ++itr )
-      {
-        std::vector<nom::Value> values;
-        NOM_DUMP( itr->type_name() );
-
-        if( itr->null_type() )
-        {
-          values.push_back( Value() );
-        }
-        else if( itr->int_type() )
-        {
-          values.push_back( itr->get_int() );
-        }
-        else if( itr->uint_type() )
-        {
-          values.push_back( itr->get_uint() );
-        }
-        else if( itr->double_type() )
-        {
-          values.push_back( itr->get_double() );
-        }
-        else if( itr->bool_type() )
-        {
-          values.push_back( itr->get_bool() );
-        }
-        else if( itr->string_type() )
-        {
-          values.push_back( itr->get_string() );
-        }
-        else
-        {
-          values.push_back( itr->stringify() );
-        }
-
-        NOM_DUMP( itr->stringify() );
-
-        json.insert( member.key(), values );
-      }
-    }
-    else if( itr->object_type() )
-    {
-      NOM_DUMP( itr->type_name() );
-      NOM_DUMP( member.key() );
-
-      nom::Object object = itr->object();
-
-      json.endl(); // Terminate existing object & begin a new one!
-      for( nom::ValueIterator itr = object.begin(); itr != object.end(); ++itr )
-      {
-        nom::ValueIterator member( itr );
-        NOM_DUMP( itr->stringify() );
-
-        //&& itr->null_type() == false )
-        if( itr->array_type() == false && itr->object_type() == false )
-        {
-          // json.insert( itr->type_name(), itr->stringify() );
-          json.insert( member.key(), itr->stringify() );
-        }
-      }
-    }
-    else
-    {
-      NOM_DUMP( itr->type_name() );
-      NOM_DUMP( member.key() );
-      NOM_DUMP( itr->stringify() );
-
-      json.insert( member.key(), itr->stringify() );
-    }
-  }
-  NOM_DASHED_ENDL();
-
-// NOM_DUMP(writer.stringify( json ) );
-
-  NOM_DASHED_ENDL();
-
-  return NOM_EXIT_SUCCESS;
-}
-#endif
-
-sint do_test_three( void )
-{
-  return NOM_EXIT_SUCCESS;
-}
-
-#if defined( NOM_UNIT_TEST_FOUR )
-sint do_test_four( void )
-{
-  nom::JsonCppValue json;
-
-  nom::Array list;
-  for( auto itr = values.begin(); itr != values.end(); ++itr )
-  {
-    list.push_back( *itr );
-  }
-
-  nom::Object node;
-  // nom::Value container containing an array within an object.
-  node.push_back( nom::Pair( "root", list ) );
-
-  // Beginning of a typical JSON compliant multi-object (must be within array).
-  nom::Array root;
-  root.push_back( node ); // ObjectValue
-
-  // Several nom::Value container objects within an object.
-  root.push_back( list ); // ArrayValue
-
-  nom::Value a( root ); // Feed to JSONSerializer
-
-  // Non array, object container (not JSON compliant, but valid with us)
-  // nom::Value a( values[4] );
-
-  NOM_DUMP(a.type_name() ); // ArrayValue
-  NOM_DUMP(a.size()); // 2
-
-  for( nom::ValueIterator::Iterator it = a.begin(); it != a.end(); ++it )
-  {
-    // nom::Value container holding an object
-    if( it->object_type() )
-    {
-      NOM_DUMP( it->type_name() );
-      nom::Object object = it->object();
-
-      for( nom::ValueIterator::Iterator it = object.begin(); it != object.end(); ++it )
-      {
-        // Optional key value within object; a named object. Unnamed objects
-        // are OK, too.
-        // nom::ValueIterator keys( it );
-        // if( keys->name() != "" )
-        // {
-        //   NOM_DUMP( keys->name() );
-        // }
-
-        // Do not output invalid values within an object.
-        if( ! it->null_type() && ! it->array_type() && ! it->object_type() )
-        {
-          // nom::Value container holding a non-array, non-object value within
-          // an object.
-          NOM_DUMP( it->type_name() );
-          NOM_DUMP( it->stringify() );
-
-          json.insert( it->type_name(), it->stringify() );
-        }
-
-        // nom::Value container holding an object whose holding an array
-        if ( it->array_type() )
-        {
-          nom::Array array = it->array();
-          for( nom::ValueIterator it = array.begin(); it != array.end(); ++it )
-          {
-            NOM_DUMP( it->type_name() );
-            NOM_DUMP( it->stringify() );
-
-            json.insert( it->type_name(), it->stringify() );
-          }
-
-          // End of object record
-          json.endl();
-        }
-      }
-    }
-
-    // nom:Value container holding an array
-    // else if ( it->type() == Value::ValueType::ArrayValue  ||
-    //           it->type() == Value::ValueType::ObjectValue
-    //         )
-    else if ( it->array_type() )
-    {
-      NOM_DUMP( it->type_name() );
-      nom::Array array = it->array();
-      for( nom::ArrayIterator it = array.begin(); it != array.end(); ++it )
-      {
-        NOM_DUMP( it->type_name() );
-        NOM_DUMP( it->stringify() );
-
-        json.insert( it->type_name(), it->stringify() );
-      }
-    }
-    // nom::Value container without an array or object inside it
-    else
-    {
-      NOM_DUMP( it->type_name() );
-      NOM_DUMP( it->stringify() );
-
-      json.insert( it->type_name(), it->stringify() );
-    }
-  }
-
-// NOM_DUMP_VAR( writer.stringify( json ) ); // nom::Value
-
-  return NOM_EXIT_SUCCESS;
-}
-#endif
-
-#if defined( NOM_SERIALIZER_UNIT_TEST_ONE )
-// FIXME
-sint do_serializer_test_one( void )
-{
-  nom::JsonSerializer writer;
-
-  nom::Array list;
-
-  for( auto itr = values.begin(); itr != values.end(); ++itr )
-  {
-    list.push_back( *itr );
-  }
-
-  nom::Object node;
-  // nom::Value container containing an array within an object.
-  node.push_back( nom::Pair( "root", list ) );
-
-  // nom::Value container not using an array or object -- not JSON compliant,
-  // but valid.
-  // node.push_back( nom::Pair( "root", testme3 ) );
-  node.push_back( nom::Pair( "string", "Yeah buddy!" ) ); // StringValue
-  node.push_back( nom::Pair( "string2", "Yeah buddy!" ) ); // StringValue
-  node.push_back( nom::Pair( "response", "Light weight!" ) ); // StringValue
-  node.push_back( nom::Pair( "response2", values[3] ) ); // RealValue
-  node.push_back( nom::Pair( "array", list ) ); // ObjectValue w/ keyless ArrayValues
-
-  nom::Object obj2;
-  obj2.push_back( nom::Pair( "RealValue", values[3] ) );
-  // FIXME: obj2.push_back( nom::Pair( "null", values[0] ) );
-  obj2.push_back( nom::Pair( "null", values[2] ) );
-
-  nom::Object obj3;
-  obj3.push_back( nom::Pair( "testme", values[4] ) );
-  obj3.push_back( nom::Pair( "testme2", values[1] ) );
-
-  node.push_back( nom::Pair( "obj2", obj2 ) ); // ObjectValue w/ key
-  node.push_back( nom::Pair( "obj3", obj3 ) ); // ObjectValue w/ key
-
-  nom::Value values ( node );
-
-  // Output file is saved under working directory of where we execute from;
-  // build/examples/debug
-  // FIXME:
-  // writer.serialize( "values.json", values );
-
-  return NOM_EXIT_SUCCESS;
-}
-#endif
-
-sint do_serializer_test_two( void )
-{
-  return NOM_EXIT_SUCCESS;
-}
-
-#if defined( NOM_UNSERIALIZER_UNIT_TEST_ONE )
-sint do_unserializer_test_one( void )
-{
-  JsonSerializer reader;
-
-  nom::Array list;
-  for( auto itr = values.begin(); itr != values.end(); ++itr )
-  {
-    list.push_back( *itr );
-  }
-
-  nom::Object node;
-  // nom::Value container containing an array within an object.
-  node.push_back( nom::Pair( "root", list ) );
-
-  // nom::Value container not using an array or object -- not JSON compliant,
-  // but valid.
-  // node.push_back( nom::Pair( "root", testme3 ) );
-  node.push_back( nom::Pair( "string", "Yeah buddy!" ) ); // StringValue
-  node.push_back( nom::Pair( "string2", "Yeah buddy!" ) ); // StringValue
-  node.push_back( nom::Pair( "response", "Light weight!" ) ); // StringValue
-  node.push_back( nom::Pair( "response2", values[3] ) ); // RealValue
-  node.push_back( nom::Pair( "array", list ) ); // ObjectValue w/ keyless ArrayValues
-
-  nom::Object obj2;
-  obj2.push_back( nom::Pair( "obj2", values[3] ) );
-  node.push_back( nom::Pair( "obj3", obj2 ) ); // ObjectValue w/ key
-
-  nom::Value testme( node ); // ObjectValue
-  NOM_DUMP( testme );
 
   return NOM_EXIT_SUCCESS;
 }
@@ -497,35 +178,6 @@ sint do_serialization_test_two( void )
 
   if( val.stringify() != "StringValue" ) return 1;
   if( ret != "StringValue" ) return 2;
-
-  return NOM_EXIT_SUCCESS;
-}
-
-/// \brief Json::Value sanity tests.
-sint do_jsoncpp_test_one( void )
-{
-  JsonSerializer testme;
-
-  // Mimics examples/json/Resources/sanity2.json for the sake of debugging.
-  Json::Value o0, o1, o2, arr1;
-  arr1[0] = 0;
-  arr1[1] = 2;
-  arr1[2] = 3;
-  arr1[3] = "hax";
-  o1["boolean1"] = false;
-  o1["response1"] = "Yeah buddy!";
-  o1["null"] = Json::Value();
-
-  o2["array2"] = arr1;
-  o2["boolean2"] = true;
-  o2["response2"] = "Light weight!";
-  o2["array2"] = arr1;
-
-  o0["object1"] = o1;
-  o0["object2"] = o2;
-
-  NOM_DUMP( o0 );
-  NOM_DUMP( testme.dump( o0 ) );
 
   return NOM_EXIT_SUCCESS;
 }
@@ -639,40 +291,7 @@ sint main( int argc, char* argv[] )
   //   return NOM_EXIT_FAILURE;
   // }
 
-  // if ( do_test_two() != NOM_EXIT_SUCCESS )
-  // {
-  //   nom::DialogMessageBox( NOM_UNIT_TEST(2), "Failed unit test 2." );
-  //   return NOM_EXIT_FAILURE;
-  // }
-
-  // Not implemented
-  // if ( do_test_three() != NOM_EXIT_SUCCESS )
-  // {
-  //   nom::DialogMessageBox( NOM_UNIT_TEST(3), "Failed unit test 3." );
-  //   return NOM_EXIT_FAILURE;
-  // }
-
-  // if ( do_test_four() != NOM_EXIT_SUCCESS )
-  // {
-  //   nom::DialogMessageBox( NOM_UNIT_TEST(4), "Failed unit test 4." );
-  //   return NOM_EXIT_FAILURE;
-  // }
-
-  // ret = do_jsoncpp_test_one();
-  // if( ret != NOM_EXIT_SUCCESS )
-  // {
-  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed JSONCPP unit test " + std::to_string(ret) );
-  //   return NOM_EXIT_FAILURE;
-  // }
-
   // ret = do_jsoncppvalue_test_one();
-  // if( ret != NOM_EXIT_SUCCESS )
-  // {
-  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
-  //   return NOM_EXIT_FAILURE;
-  // }
-
-  // ret = do_serializer_test_one();
   // if( ret != NOM_EXIT_SUCCESS )
   // {
   //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
@@ -687,20 +306,12 @@ sint main( int argc, char* argv[] )
   //   return NOM_EXIT_FAILURE;
   // }
 
-  // Dump tree test
-  // ret = do_unserializer_test_one();
+  // ret = do_value_test_one();
   // if( ret != NOM_EXIT_SUCCESS )
   // {
   //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
   //   return NOM_EXIT_FAILURE;
   // }
-
-  ret = do_value_test_one();
-  if( ret != NOM_EXIT_SUCCESS )
-  {
-    nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
-    return NOM_EXIT_FAILURE;
-  }
 
   // Unserialize examples/json/Resources/sanity.json & serialize it back to
   // output.json
@@ -711,20 +322,14 @@ sint main( int argc, char* argv[] )
     return NOM_EXIT_FAILURE;
   }
 
+  // Unserialize examples/json/Resources/sanity2.json & serialize it back to
+  // output2.json
   ret = do_unserializer_test_three();
   if( ret != NOM_EXIT_SUCCESS )
   {
     nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
     return NOM_EXIT_FAILURE;
   }
-
-  // Not implemented
-  // ret = do_serializer_test_two();
-  // if( ret != NOM_EXIT_SUCCESS )
-  // {
-  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
-  //   return NOM_EXIT_FAILURE;
-  // }
 
   // Memory leaks test
   // if( do_leaks_test_one() != NOM_EXIT_SUCCESS )

@@ -97,21 +97,22 @@ bool RapidXmlSerializer::unserialize( const std::string& input, Value& dest ) co
   return true;
 }
 
-const std::string RapidXmlSerializer::stringify( const Value& input ) const
+const std::string RapidXmlSerializer::stringify( const Value& source ) const
 {
+  // std::string buffer;
   std::stringstream os;
-  // Value val;
+  rapidxml::xml_document<> doc;
 
-  // if( this->write( val, doc ) == false )
-  // {
-  //   // TODO: Err handling
-  //   NOM_STUBBED( NOM );
-  //   return "\0";
-  // }
+  this->append_decl( doc );
 
-  // os << doc;
+  if( this->write( source, doc ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Failed to serialize data stream." );
+    return "\0";
+  }
 
-  os << "\0";
+  os << doc;
+
   return os.str();
 }
 
@@ -182,32 +183,56 @@ bool RapidXmlSerializer::write( const Value& source, rapidxml::xml_document<>& d
   return true;
 }
 
-bool RapidXmlSerializer::read( /*const*/ std::string& input, Value& dest ) const
+bool RapidXmlSerializer::read( const std::string& input, Value& dest ) const
 {
+  int err_count = 0; // C++ exception handling
   rapidxml::xml_document<> doc;
 
-  doc.parse<0>( &input[0] );
+  // Make a copy of the input buffer, just in case!
+  std::vector<char> buffer( input.begin(), input.end() );
+  buffer.push_back('\0');
 
-  Object obj, objects;
-  for( rapidxml::xml_node<> *node = doc.first_node(); node; node = node->next_sibling() )
+  try
   {
-    std::string node_key = node->name();
+    // 'parse_no_data_nodes' prevents RapidXML from using the somewhat surprising
+    // behavior of having both values and data nodes, and having data nodes take
+    // precedence over values when printing.
+    //
+    // Note that this will skip parsing of CDATA nodes
+    //
+    // Source: http://www.setnode.com/blog/quick-notes-on-how-to-use-rapidxml/
+    doc.parse<rapidxml::parse_declaration_node | rapidxml::parse_no_data_nodes>( &buffer[0 ]);
 
-    #if defined( NOM_DEBUG_RAPIDXML_UNSERIALIZER_VALUES )
-      NOM_DUMP( node_key );
-    #endif
-
-    if( this->unserialize_object( node, obj[node_key] ) == false )
+    Object obj, objects;
+    for( rapidxml::xml_node<> *node = doc.first_node(); node; node = node->next_sibling() )
     {
-      // TODO: Err handling
-      NOM_STUBBED( NOM );
-      return false;
+      std::string node_key = node->name();
+
+      #if defined( NOM_DEBUG_RAPIDXML_UNSERIALIZER_VALUES )
+        NOM_DUMP( node_key );
+      #endif
+
+      if( this->unserialize_object( node, obj[node_key] ) == false )
+      {
+        // TODO: Err handling
+        NOM_STUBBED( NOM );
+        return false;
+      }
+
+      objects[node_key] = obj;
     }
 
-    objects[node_key] = obj;
+    dest = obj;
   }
+  catch( rapidxml::parse_error &e)
+  {
+    ++err_count;
 
-  dest = obj;
+    NOM_LOG_ERR( NOM, "Errors counted: " + std::to_string( err_count ) );
+    NOM_LOG_ERR( NOM, e.what() );
+
+    return false;
+  }
 
   return true;
 }
@@ -361,6 +386,15 @@ bool RapidXmlSerializer::serialize_object( const Value& object, rapidxml::xml_do
     case Value::ValueType::String:
     case Value::ValueType::Boolean:
     {
+      if( this->write_value( object, "", doc, parent ) == false )
+      {
+        // TODO: Err handling
+        NOM_STUBBED( NOM );
+        return false;
+      }
+
+      break;
+
       // Error -- not supported (we need a member key!)
 
       // TODO: Err handling
@@ -385,7 +419,7 @@ bool RapidXmlSerializer::serialize_object( const Value& object, rapidxml::xml_do
 
       // TODO: Err handling
       NOM_STUBBED( NOM );
-      return false;
+      // return false;
 
       break;
     }
@@ -398,7 +432,10 @@ bool RapidXmlSerializer::serialize_object( const Value& object, rapidxml::xml_do
         Value value = itr->ref();
 
         std::string object_key = member.key();
-        NOM_DUMP( object_key );
+
+        #if defined( NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES )
+          NOM_DUMP( object_key );
+        #endif
 
         switch( value.type() )
         {
@@ -437,8 +474,6 @@ bool RapidXmlSerializer::serialize_object( const Value& object, rapidxml::xml_do
           // Handle arrays within an object within an object.
           case Value::ValueType::ArrayValues:
           {
-            NOM_DUMP( object.type() );
-
             // FIXME:
             rapidxml::xml_node<>* val = doc.allocate_node( rapidxml::node_element, this->stralloc( object_key, doc ) );
             parent->append_node( val );

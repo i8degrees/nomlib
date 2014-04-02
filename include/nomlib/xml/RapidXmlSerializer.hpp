@@ -33,6 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
+#include <vector>
 
 // RapidXml library
 #include "rapidxml.hpp"
@@ -47,7 +49,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /// \brief Enable dumping output of each key, value pair, sizes, etc. as we
 /// traverse the object.
-#define NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES
+// #define NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES
 
 /// \brief Enable dumping output of each key, value pair, sizes, etc. as we
 /// traverse the object.
@@ -58,6 +60,8 @@ namespace nom {
 /// \brief Number of spaces to pass to JsonCpp for indention.
 ///
 /// \remarks Two space tabbed indention.
+///
+/// \TODO Implement feature
 const std::string RAPIDXML_INDENTION_LEVEL = "  ";
 
 /// \brief Serialization of nom::Value objects to and fro XML using the
@@ -69,11 +73,12 @@ class RapidXmlSerializer: public ISerializer
 
     /// \brief Serialization options.
     ///
-    /// \TODO Implement
-    enum Feature
+    /// \TODO Implement options
+    enum Features
     {
-      Compact = 0,  // Default
-      HumanReadable // json_spirit::pretty_print (single line arrays)
+      HumanReadable = 0,  // Default
+      Compact,            // No indention, whitespace, etc.
+      ParseComments       // Enable parsing of XML comments; <!-- -->
     };
 
     RapidXmlSerializer( void );
@@ -107,17 +112,9 @@ class RapidXmlSerializer: public ISerializer
     const std::string stringify( const Value& input ) const;
 
   private:
-    /// \brief XML Document file contents buffer declared for convenience's
-    /// sake.
-    ///
-    /// \remarks This object should only be used for XML allocations --
-    /// serialization operations that do not depend on any kind of state.
-    // mutable rapidxml::xml_document<> output;
-
     bool write( const Value& source, rapidxml::xml_document<>& dest ) const;
 
-    /// \FIXME The input param should be const
-    bool read( /*const*/ std::string& input, Value& dest ) const;
+    bool read( const std::string& input, Value& dest ) const;
 
     bool write_value( const Value& object, const std::string& key, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const;
 
@@ -172,6 +169,10 @@ class RapidXmlSerializer: public ISerializer
 /// References
 ///
 /// 1. http://sfmlcoder.wordpress.com/2011/05/29/a-lightweight-xml-parser-rapid-xml/
+/// 2. http://www.w3schools.com/xml/xml_attributes.asp
 ///
 /// \TODO Implement XML comments
+///
+/// \TODO Finish implementation of ::serialize_object & related case handling,
+/// err handling, unit tests, etc.
 ///

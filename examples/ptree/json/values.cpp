@@ -42,7 +42,10 @@ const std::string APP_RESOURCES_DIR = "Resources";
 const nom::Path p;
 const std::string RESOURCE_SANITY = APP_RESOURCES_DIR + p.native() + "sanity.json";
 const std::string RESOURCE_SANITY2 = APP_RESOURCES_DIR + p.native() + "sanity2.json";
+
 const std::string RESOURCE_XML = APP_RESOURCES_DIR + p.native() + "xml" + p.native() + "test_one.xml";
+const std::string RESOURCE_JSON_BMFONT_GAMEOVER = APP_RESOURCES_DIR + p.native() + "xml" + p.native() + "gameover.json";
+const std::string RESOURCE_XML_BMFONT_GAMEOVER = APP_RESOURCES_DIR + p.native() + "xml" + p.native() + "gameover.xml";
 
 using namespace nom; // TODO: Remove
 
@@ -323,15 +326,6 @@ sint do_xml_test_two( void )
     NOM_DUMP( result );
   #endif
 
-  // if( serializer->serialize( result, "output1.xml" ) == false )
-  // {
-  //   return NOM_EXIT_FAILURE;
-  // }
-
-  #if defined( NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES )
-    NOM_DUMP( result );
-  #endif
-
   NOM_DUMP( json_out->stringify( result ) );
 
   return NOM_EXIT_SUCCESS;
@@ -339,7 +333,7 @@ sint do_xml_test_two( void )
 
 /// \brief JSON to XML unit tests
 ///
-/// \TODO
+/// \FIXME Errors & crashed caused by xml->unserialize method call.
 sint do_xml_test_three( void )
 {
   nom::Value result;
@@ -347,23 +341,57 @@ sint do_xml_test_three( void )
   ISerializer* json = new JsonCppSerializer();
   ISerializer* xml = new RapidXmlSerializer();
 
-  // TODO: Unit test for RESOURCE_SANITY1 -- this test should FAIL
+  if( json->unserialize( RESOURCE_SANITY, result ) == false )
+  {
+    return NOM_EXIT_FAILURE;
+  }
+
+  NOM_DUMP( xml->stringify( result ) );
 
   if( json->unserialize( RESOURCE_SANITY2, result ) == false )
   {
     return NOM_EXIT_FAILURE;
   }
 
-  NOM_DUMP( result );
+  NOM_DUMP( xml->stringify( result ) );
 
-  // if( xml->unserialize( result, "output1.xml" ) == false )
-  // {
-  //   return NOM_EXIT_FAILURE;
-  // }
+  // This unit test -- XML transformation of RESOURCE_SANITY -- should *FAIL*
+  if( xml->unserialize( RESOURCE_SANITY, result ) == true )
+  {
+    return NOM_EXIT_FAILURE;
+  }
 
   // NOM_DUMP( result );
 
-  // NOM_DUMP( xml->stringify( result ) );
+  NOM_DUMP( xml->stringify( result ) );
+
+  return NOM_EXIT_SUCCESS;
+}
+
+/// \brief Additional JSON & XML conversions for experimentation.
+sint do_xml_test_four( void )
+{
+  nom::Value result;
+
+  ISerializer* json = new JsonCppSerializer();
+  ISerializer* xml = new RapidXmlSerializer();
+
+  if( json->unserialize( RESOURCE_JSON_BMFONT_GAMEOVER, result ) == false )
+  {
+    return NOM_EXIT_FAILURE;
+  }
+
+  // NOM_DUMP( result );
+  NOM_DUMP( json->stringify( result ) );
+
+  if( xml->serialize( result, "gameover.xml" ) == false )
+  {
+    return NOM_EXIT_FAILURE;
+  }
+
+  // NOM_DUMP( result );
+
+  NOM_DUMP( xml->stringify( result ) );
 
   return NOM_EXIT_SUCCESS;
 }
@@ -425,21 +453,28 @@ sint main( int argc, char* argv[] )
   //   return NOM_EXIT_FAILURE;
   // }
 
-  ret = do_xml_test_one();
+  // ret = do_xml_test_one();
+  // if( ret != NOM_EXIT_SUCCESS )
+  // {
+  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+  //   return NOM_EXIT_FAILURE;
+  // }
+
+  // ret = do_xml_test_two();
+  // if( ret != NOM_EXIT_SUCCESS )
+  // {
+  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+  //   return NOM_EXIT_FAILURE;
+  // }
+
+  ret = do_xml_test_three();
   if( ret != NOM_EXIT_SUCCESS )
   {
     nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
     return NOM_EXIT_FAILURE;
   }
 
-  ret = do_xml_test_two();
-  if( ret != NOM_EXIT_SUCCESS )
-  {
-    nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
-    return NOM_EXIT_FAILURE;
-  }
-
-  // ret = do_xml_test_three();
+  // ret = do_xml_test_four();
   // if( ret != NOM_EXIT_SUCCESS )
   // {
   //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );

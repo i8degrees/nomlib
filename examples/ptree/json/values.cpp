@@ -216,69 +216,70 @@ sint do_jsoncppvalue_test_one( void )
 /// \brief nom::Value sanity tests.
 sint do_value_test_one( void )
 {
-  // Json::Value sheet, dims, meta, size;
+  Json::Value sheet, dims, meta, size;
 
-  // dims["dims"][0] = 1;
-  // dims["dims"][1] = 1;
-  // dims["dims"][2] = 64;
-  // dims["dims"][3] = 64;
-  // sheet["cursors.png"][0] = dims;
+  dims["dims"][0] = 1;
+  dims["dims"][1] = 1;
+  dims["dims"][2] = 64;
+  dims["dims"][3] = 64;
+  sheet["cursors.png"][0] = dims;
 
-  // dims["dims"][0] = 65;
-  // dims["dims"][1] = 1;
-  // dims["dims"][2] = 64;
-  // dims["dims"][3] = 64;
-  // sheet["cursors.png"][1] = dims;
+  dims["dims"][0] = 65;
+  dims["dims"][1] = 1;
+  dims["dims"][2] = 64;
+  dims["dims"][3] = 64;
+  sheet["cursors.png"][1] = dims;
 
-  // size[0] = 320;
-  // size[1] = 240;
-  // meta["modified"] = nom::time();
-  // meta["size"] = size;
-
-  // sheet["meta"] = meta;
-
-  // NOM_DUMP( sheet );
-
-  JsonCppSerializer json; // stringify
-
-  Value val;
-  Object sheet, dims, meta, size, objects;
-
-  IntRect rect1( 1, 1, 64, 64 );
-  IntRect rect2( 65, 1, 64, 64 );
-
-  dims["dims"] = rect1.serialize();
-  sheet["ID_0"] = dims;
-
-  objects["cursors.png"] = sheet;
-  val = objects;
-
-  dims["dims"] = rect2.serialize();
-  sheet["ID_1"] = dims;
-
-  meta["last_modified"] = nom::time();
-  meta["version"] = "0.3.0";
-  meta["scale"] = 1u;
-
-  Array arr;
-  arr.push_back( 130 );
-  arr.push_back( 16 );
-  meta["size"] = arr;
+  size[0] = 320;
+  size[1] = 240;
+  meta["modified"] = nom::time();
+  meta["size"] = size;
 
   sheet["meta"] = meta;
 
-  objects["cursors.png"] = sheet;
-  val = objects;
+  NOM_DUMP( sheet );
+  exit(0);
 
-  NOM_DUMP( val );
-  NOM_DUMP( json.stringify( val ) );
+  JsonCppSerializer json; // stringify
+
+  // Value val;
+  // Object sheet, dims, meta, size, objects;
+
+  // IntRect rect1( 1, 1, 64, 64 );
+  // IntRect rect2( 65, 1, 64, 64 );
+
+  // dims["dims"] = rect1.serialize();
+  // sheet["ID_0"] = dims;
+
+  // objects["cursors.png"] = sheet;
+  // val = objects;
+
+  // dims["dims"] = rect2.serialize();
+  // sheet["ID_1"] = dims;
+
+  // meta["last_modified"] = nom::time();
+  // meta["version"] = "0.3.0";
+  // meta["scale"] = 1u;
+
+  // Array arr;
+  // arr.push_back( 130 );
+  // arr.push_back( 16 );
+  // meta["size"] = arr;
+
+  // sheet["meta"] = meta;
+
+  // objects["cursors.png"] = sheet;
+  // val = objects;
+
+  // NOM_DUMP( val );
+  // NOM_DUMP( json.stringify( val ) );
 
   return NOM_EXIT_SUCCESS;
 }
 
 sint do_xml_test_one( void )
 {
-  Value result;
+  nom::Value result;
 
   ISerializer* serializer = new RapidXmlSerializer();
 

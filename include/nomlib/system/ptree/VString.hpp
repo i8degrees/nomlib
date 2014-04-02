@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-typedef uint ArrayIndex;
+typedef int ArrayIndex;
 
 class VString
 {
@@ -67,14 +67,14 @@ class VString
     bool operator ==( const VString& other ) const;
 
     /// \NOTE Required implementation for usage inside a std::map template.
-    // uint operator[]( uint val );
+    // uint operator[]( ArrayIndex val );
 
     /// \NOTE Required implementation for usage inside a std::map template.
-    // const std::string& operator[]( const std::string& val );
+    // const std::string& operator[]( const char* value );
 
     const std::string& c_str( void ) const;
 
-    uint index( void ) const;
+    ArrayIndex index( void ) const;
 
   private:
     // TODO: Implement as const char*

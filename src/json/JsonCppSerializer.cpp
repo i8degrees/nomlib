@@ -119,72 +119,6 @@ const std::string JsonCppSerializer::stringify( const Value& input ) const
   return os.str();
 }
 
-const std::string JsonCppSerializer::dump( const Json::Value& object, int depth ) const
-{
-  uint index = 0;
-  std::string key;
-  std::stringstream os; // Output buffer
-
-  depth += 1; // Recursive method.
-
-  os << this->dump_key( object );
-
-  // nom::Value object is a tree of key & value pairs.
-  if( object.size() > 0 )
-  {
-    os << std::endl;
-
-    for( auto itr = object.begin(); itr != object.end(); ++itr )
-    {
-      // Array index & unmapped objects
-      index = itr.index();
-
-      // The key portion of the pair.
-      key = itr.memberName();
-
-      // Show the current depth.
-      for ( uint tab = 0 ; tab < depth; ++tab )
-      {
-        os << "-";
-      }
-
-      os << " subvalue (";
-
-      // Dump the member key portion of the data object; when we have a non-null
-      // member key name, we need to format it a tad bit differently in order
-      // to not have redundant information output.
-      if( key != "" )
-      {
-        os << key;
-
-        if( ! object[key].isArray() && ! object[key].isObject() )
-        {
-          os << ": ";
-        }
-        os << this->dump_value( object[key] );
-        os << ")";
-      }
-      else
-      {
-        os << this->dump_value( object[index] );
-        os << ")";
-      }
-
-      // Iterate onwards to the next level of the tree via recursion.
-      os << this->dump( *itr, depth );
-    }
-
-    return os.str();
-  }
-  else
-  {
-    // Move onto the next element of the tree!
-    os << std::endl;
-  }
-
-  return os.str();
-}
-
 bool JsonCppSerializer::write( const Value& source, Json::Value& dest ) const
 {
   uint idx = 0;
@@ -466,6 +400,72 @@ bool JsonCppSerializer::read( const Json::Value& source, Value& dest ) const
   return true;
 }
 
+const std::string JsonCppSerializer::dump( const Json::Value& object, int depth ) const
+{
+  uint index = 0;
+  std::string key;
+  std::stringstream os; // Output buffer
+
+  depth += 1; // Recursive method.
+
+  os << this->dump_key( object );
+
+  // nom::Value object is a tree of key & value pairs.
+  if( object.size() > 0 )
+  {
+    os << std::endl;
+
+    for( auto itr = object.begin(); itr != object.end(); ++itr )
+    {
+      // Array index & unmapped objects
+      index = itr.index();
+
+      // The key portion of the pair.
+      key = itr.memberName();
+
+      // Show the current depth.
+      for ( uint tab = 0 ; tab < depth; ++tab )
+      {
+        os << "-";
+      }
+
+      os << " subvalue (";
+
+      // Dump the member key portion of the data object; when we have a non-null
+      // member key name, we need to format it a tad bit differently in order
+      // to not have redundant information output.
+      if( key != "" )
+      {
+        os << key;
+
+        if( ! object[key].isArray() && ! object[key].isObject() )
+        {
+          os << ": ";
+        }
+        os << this->dump_value( object[key] );
+        os << ")";
+      }
+      else
+      {
+        os << this->dump_value( object[index] );
+        os << ")";
+      }
+
+      // Iterate onwards to the next level of the tree via recursion.
+      os << this->dump( *itr, depth );
+    }
+
+    return os.str();
+  }
+  else
+  {
+    // Move onto the next element of the tree!
+    os << std::endl;
+  }
+
+  return os.str();
+}
+
 const std::string JsonCppSerializer::dump_key( const Json::Value& key ) const
 {
   std::stringstream os; // Output buffer
@@ -720,12 +720,11 @@ bool JsonCppSerializer::serialize_array( const Value& object, Json::Value& dest 
   {
     switch( itr->type() )
     {
-      default: // Unknown type -- not handled
+      default: // Unknown type
       {
         #if defined( NOM_DEBUG_JSONCPP_UNSERIALIZER_VALUES )
-          NOM_DUMP( object.type() );
-          // NOM_DUMP( member.key() );
-          NOM_DUMP( object );
+          NOM_DUMP( itr->type() );
+          NOM_DUMP( itr->ref() );
         #endif
 
         // TODO: Err handling
@@ -785,11 +784,10 @@ bool JsonCppSerializer::serialize_object( const Value& object, Json::Value& dest
 {
   switch( object.type() )
   {
-    default: // Unknown type -- not handled.
+    default: // Unknown type
     {
       #if defined( NOM_DEBUG_JSONCPP_SERIALIZER_VALUES )
         NOM_DUMP( object.type() );
-        // NOM_DUMP( member.key() );
         NOM_DUMP( object );
       #endif
 
@@ -843,12 +841,12 @@ bool JsonCppSerializer::serialize_object( const Value& object, Json::Value& dest
 
         switch( value.type() )
         {
-          default: // Unknown type -- not handled.
+          default: // Unknown type
           {
             #if defined( NOM_DEBUG_JSONCPP_SERIALIZER_VALUES )
-              NOM_DUMP( objects[key].type() );
-              // NOM_DUMP( member.key() );
-              NOM_DUMP( objects );
+              NOM_DUMP( value.type() );
+              // NOM_DUMP( key() );
+              NOM_DUMP( value );
             #endif
 
             // TODO: Err handling

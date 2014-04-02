@@ -460,9 +460,10 @@ char* duplicate_string( const char* val, uint length );
 ///   JSON RFC
 ///   json_spirit
 ///   jsoncpp
-///   cijson
+///   cijson (of the Cinder engine)
 ///   Boost::PropertyTree
 ///   Apple's PropertyList (.plist)
 ///
-/// \TODO Implement support for (un)signed 64-bit integers
+/// \TODO Implement support for (un)-signed 64-bit integers
 ///
+/// \TODO Implement support for comments (XML & JSON style)

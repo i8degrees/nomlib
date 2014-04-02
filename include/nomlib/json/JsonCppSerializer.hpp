@@ -56,8 +56,8 @@ namespace nom {
 /// \remarks Two space tabbed indention.
 const std::string JSONCPP_INDENTION_LEVEL = "  ";
 
-/// \brief Serialization of nom::Value objects to and fro JSON using the JsonCpp
-/// interface.
+/// \brief Serialization of nom::Value objects to and fro JSON using the
+/// JsonCpp library.
 class JsonCppSerializer: public ISerializer
 {
   public:
@@ -80,7 +80,7 @@ class JsonCppSerializer: public ISerializer
     /// \param source nom::Value container to serialize.
     /// \param output Absolute file path to save resulting data to.
     ///
-    /// \note ~~Implements IJsonSerializer::serialize interface.~~
+    /// \note Implements IJsonSerializer::serialize interface.
     bool serialize( const Value& source, const std::string& output ) const;
 
     /// \brief Load data from a JSON (.json) file to a nom::Value object.
@@ -88,7 +88,7 @@ class JsonCppSerializer: public ISerializer
     /// \param input  Absolute file path file to un-serialize.
     /// \param dest   nom::Value container to store values in.
     ///
-    /// \note ~~Implements IJsonSerializer::unserialize interface.~~
+    /// \note Implements IJsonSerializer::serialize interface.
     bool unserialize( const std::string& input, Value& dest ) const;
 
     /// \brief Obtain a C++ string of the JSON object(s) stored.
@@ -98,6 +98,11 @@ class JsonCppSerializer: public ISerializer
     /// \returns Serialized object as a std::string.
     const std::string stringify( const Value& input ) const;
 
+  private:
+    bool write( const Value& source, Json::Value& dest ) const;
+
+    bool read( const Json::Value& source, Value& dest ) const;
+
     /// \brief Dump the object's complete value tree.
     ///
     /// \remarks This is a useful method for debugging.
@@ -105,11 +110,6 @@ class JsonCppSerializer: public ISerializer
     /// \note This method is used by the << overload function for nom::Value
     /// objects.
     const std::string dump( const Json::Value& object, int depth = 0 ) const;
-
-  private:
-    bool write( const Value& source, Json::Value& dest ) const;
-
-    bool read( const Json::Value& source, Value& dest ) const;
 
     /// \brief Internal helper method for nom::Value::dump.
     const std::string dump_key( const Json::Value& key ) const;

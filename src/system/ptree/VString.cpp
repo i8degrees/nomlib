@@ -107,19 +107,25 @@ bool VString::operator ==( const VString& other ) const
   // }
 }
 
-// ArrayIndex VString::operator[]( ArrayIndex val )
-// {
-//   this->index_ = val;
+/*
+ArrayIndex VString::operator[]( ArrayIndex val )
+{
+  // this->index_ = val;
 
-//   return this->index_;
-// }
+  // return this->index_;
+  NOM_DUMP(val);
+  return val;
+}
 
-// const std::string& VString::operator[]( const std::string& val )
-// {
-//   this->value_ = val;
+const std::string& VString::operator[]( const char* value )
+{
+  // this->value_ = val;
 
-//   return this->value_;
-// }
+  // return this->value_;
+  NOM_DUMP(value);
+  return value;
+}
+*/
 
 const std::string& VString::c_str( void ) const
 {

@@ -42,20 +42,21 @@ class ISerializer
     typedef ISerializer SelfType;
 
     typedef SelfType* RawPtr;
-    typedef std::unique_ptr<SelfType> UniquePtr;
 
-    ISerializer ( void )
+    ISerializer( void )
     {
       //NOM_LOG_TRACE(NOM);
     }
 
-    virtual ~ISerializer ( void )
+    virtual ~ISerializer( void )
     {
       //NOM_LOG_TRACE(NOM);
     }
 
     virtual bool serialize( const Value& source, const std::string& output ) const = 0;
     virtual bool unserialize( const std::string& input, Value& dest ) const = 0;
+
+    virtual const std::string stringify( const Value& input ) const = 0;
 };
 
 } // namespace nom

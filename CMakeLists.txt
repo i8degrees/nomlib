@@ -286,7 +286,7 @@ elseif ( PLATFORM_LINUX )
 endif ( PLATFORM_WINDOWS )
 
 # RapidXml dependency (platform-independent code)
-set ( RAPIDXML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/rapidxml" )
+set ( RAPIDXML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/common/rapidxml" )
 set ( EXT_HEADERS ${EXT_HEADERS} ${RAPIDXML_INCLUDE_DIR} )
 
 message ( STATUS "SDL2 headers: ${SDL2_INCLUDE_DIR}" )

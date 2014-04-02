@@ -33,6 +33,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/config.hpp>
 #include <nomlib/json/JsonCppSerializer.hpp>
-#include <nomlib/json/JsonCppValue.hpp>
 
 #endif // include guard defined

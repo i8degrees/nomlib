@@ -113,12 +113,29 @@ Value::Value( const Value& copy ) :
   {
     default:
     case ValueType::Null:
+    {
+      // Do nothing
+      break;
+    }
     case ValueType::SignedInteger:
+    {
+      this->value_.int_ = copy.value_.int_;
+      break;
+    }
     case ValueType::UnsignedInteger:
+    {
+      this->value_.uint_ = copy.value_.uint_;
+      break;
+    }
     case ValueType::RealNumber:
+    {
+      this->value_.real_ = copy.value_.real_;
+      break;
+    }
+
     case ValueType::Boolean:
     {
-      this->value_ = copy.value_;
+      this->value_.bool_ = copy.value_.bool_;
       break;
     }
 
@@ -217,6 +234,225 @@ Value::SelfType& Value::operator =( const SelfType& other )
   return *this;
 }
 
+bool Value::operator <( const Value& other ) const
+{
+  int type_delta = this->type() - other.type();
+
+  if( type_delta )
+  {
+    return type_delta < 0 ? true : false;
+  }
+
+  switch( this->type() )
+  {
+    default:
+    case ValueType::Null:
+    {
+      return false;
+      break;
+    }
+
+    case ValueType::SignedInteger:
+    {
+      return this->value_.int_ < other.value_.int_;
+      break;
+    }
+
+    case ValueType::UnsignedInteger:
+    {
+      return this->value_.uint_ < other.value_.uint_;
+      break;
+    }
+
+    case ValueType::RealNumber:
+    {
+      return this->value_.real_ < other.value_.real_;
+      break;
+    }
+
+    case ValueType::Boolean:
+    {
+      return this->value_.bool_ < other.value_.bool_;
+      break;
+    }
+
+    case ValueType::String:
+    {
+      return( this->value_.string_ == 0   && other.value_.string_ )
+              || ( other.value_.string_   &&  this->value_.string_
+                                          && strcmp
+                ( this->value_.string_, other.value_.string_ ) < 0 );
+      break;
+    }
+
+    case ValueType::ArrayValues:
+    {
+      int delta = int ( this->value_.array_->size() - other.value_.array_->size() );
+
+      if( delta ) return delta < 0;
+
+      break;
+
+      return( *this->value_.array_ ) < ( *other.value_.array_ );
+
+      break;
+    }
+
+    case ValueType::ObjectValues:
+    {
+      int delta = int ( this->value_.object_->size() - other.value_.object_->size() );
+
+      if( delta ) return delta < 0;
+
+      break;
+
+      return( *this->value_.object_ ) < ( *other.value_.object_ );
+
+      break;
+    }
+  } // end switch type
+
+  return false; // Err
+}
+
+bool Value::operator <= ( const Value& other ) const
+{
+  return ! ( other < *this );
+}
+
+bool Value::operator >= ( const Value& other ) const
+{
+  return ! ( *this < other );
+}
+
+bool Value::operator > ( const Value& other ) const
+{
+  return ( other < *this );
+}
+
+bool Value::operator == ( const Value& other ) const
+{
+  //if ( type_ != other.type_ )
+  // GCC 2.95.3 says:
+  // attempt to take address of bit-field structure member `Json::Value::type_'
+  // Beats me, but a temp solves the problem.
+  int temp = other.type_;
+
+  if ( this->type() != temp )
+  {
+    return false;
+  }
+
+  switch( type() )
+  {
+    default:
+    case ValueType::Null:
+    {
+      return true;
+      break;
+    }
+
+    case ValueType::SignedInteger:
+    {
+      return this->value_.int_ == other.value_.int_;
+      break;
+    }
+
+    case ValueType::UnsignedInteger:
+    {
+      return this->value_.uint_ == other.value_.uint_;
+      break;
+    }
+
+    case ValueType::RealNumber:
+    {
+      return this->value_.real_ == other.value_.real_;
+      break;
+    }
+
+    case ValueType::Boolean:
+    {
+      return this->value_.bool_ == other.value_.bool_;
+      break;
+    }
+
+    case ValueType::String:
+    {
+      return( this->value_.string_  == other.value_.string_ )
+          || ( other.value_.string_ &&  this->value_.string_
+          && strcmp ( this->value_.string_, other.value_.string_ ) == 0 );
+
+      break;
+    }
+
+    case ValueType::ArrayValues:
+    {
+      return this->value_.array_->size() == other.value_.array_->size()
+      && ( *this->value_.array_ ) == ( *other.value_.array_ );
+
+      break;
+    }
+
+    case ValueType::ObjectValues:
+    {
+      return this->value_.object_->size() == other.value_.object_->size()
+      && ( *this->value_.object_ ) == ( *other.value_.object_ );
+
+      break;
+    }
+  } // end switch type
+
+  return false; // Err
+}
+
+bool Value::operator != ( const Value& other ) const
+{
+  return ! ( *this == other );
+}
+
+bool Value::operator !( void ) const
+{
+  return this->null_type();
+}
+
+Value::Value( enum ValueType type ) :
+  type_ ( type )
+{
+  // NOM_LOG_TRACE( NOM );
+
+  switch( this->type() )
+  {
+    default:
+    case ValueType::Null:
+    case ValueType::SignedInteger:
+    case ValueType::UnsignedInteger:
+    case ValueType::RealNumber:
+    case ValueType::Boolean:
+    {
+      // Do nothing extra
+      break;
+    }
+
+    case ValueType::String:
+    {
+      // TODO: Allocate string (duplicate?)
+      break;
+    }
+
+    case ValueType::ArrayValues:
+    {
+      this->value_.array_ = new Array();
+      break;
+    }
+
+    case ValueType::ObjectValues:
+    {
+      this->value_.object_ = new Object();
+      break;
+    }
+  }
+}
+
 Value::Value( sint val ) :
   type_ ( ValueType::SignedInteger ) // type 1
 {
@@ -278,6 +514,15 @@ Value::Value( const Object& val ) :
   //NOM_LOG_TRACE(NOM);
   this->value_.object_ =  new Object( val );
   // this->object_ = val;
+}
+
+sint Value::compare( const Value& other ) const
+{
+  if ( *this < other ) return -1;
+
+  if ( *this > other ) return 1;
+
+  return 0;
 }
 
 Value::RawPtr Value::get( void )
@@ -394,12 +639,6 @@ const std::string Value::stringify( void ) const
     return "\0";
   }
 }
-
-// TODO
-// const std::string Value::key( void ) const
-// {
-//   return "\0";
-// }
 
 sint Value::get_int ( void ) const
 {
@@ -548,7 +787,6 @@ uint Value::size( void ) const
       if( this->array_valid() )
       {
         return this->value_.array_->size();
-        // return this->array_.size();
       }
       return 0; // Not initialized
 
@@ -559,13 +797,45 @@ uint Value::size( void ) const
       if( this->object_valid() )
       {
         return this->value_.object_->size();
-        // return this->object_.size();
       }
       return 0; // Not initialized
 
       break;
     }
   }
+}
+
+bool Value::empty( void )
+{
+  NOM_ASSERT( this->null_type() || this->array_type() || this->object_type() );
+
+  switch( this->type() )
+  {
+    // Not an array or object type
+    default: /* Do nothing */ break;
+
+    case ValueType::ArrayValues:
+    {
+      if( this->array_valid() )
+      {
+        return this->value_.array_->empty();
+      }
+
+      break;
+    }
+
+    case ValueType::ObjectValues:
+    {
+      if( this->object_valid() )
+      {
+        return this->value_.object_->empty();
+      }
+
+      break;
+    }
+  } // end switch type
+
+  return true;
 }
 
 void Value::clear( void )
@@ -575,32 +845,213 @@ void Value::clear( void )
   switch( this->type() )
   {
     // Not an array or object type
-    default: /* Do nothing */break;
+    default: /* Do nothing */ break;
 
     case ValueType::ArrayValues:
     {
       if( this->array_valid() )
       {
         this->value_.array_->clear();
-        // this->array_.clear();
       }
+
       break;
     }
+
     case ValueType::ObjectValues:
     {
       if( this->object_valid() )
       {
         this->value_.object_->clear();
-        // this->object_.clear();
       }
+
       break;
     }
   }
 }
 
-Value& Value::append( const Value& val )
+// Derives from JsonCpp implementation
+Value& Value::operator[]( ArrayIndex index )
 {
-  return (*this) = val;
+  NOM_DUMP(index);
+  return *this;
+
+  NOM_ASSERT( this->null_type() || this->array_type() );
+
+  if( this->null_type() )
+  {
+    *this = Value( ValueType::ArrayValues );
+  }
+
+  VString key( index );
+
+  // Returns an iterator pointing to the first element in the container whose
+  // key is not considered to go before k -- key_type -- (i.e., either it is
+  // equivalent or goes after).
+  ObjectIterator it = this->value_.object_->lower_bound( key );
+
+  if( it != this->value_.object_->end() && (*it).first == key )
+  {
+    return (*it).second;
+    // return it->second;
+  }
+
+  ObjectPair default_value( key, Value::null );
+
+  it = this->value_.object_->insert( it, default_value );
+
+  return (*it).second;
+  // return it->second;
+}
+
+// Derives from JsonCpp implementation
+Value& Value::operator[]( int index )
+{
+  NOM_DUMP( index );
+  return *this;
+
+  NOM_ASSERT( index >= 0 );
+
+  return (*this)[ ArrayIndex( index ) ];
+}
+
+// Derives from JsonCpp implementation
+const Value& Value::operator[]( ArrayIndex index ) const
+{
+  NOM_DUMP( index );
+  return *this;
+
+  NOM_ASSERT( this->null_type() || this->array_type() );
+
+  if( this->null_type() )
+  {
+    return null;
+  }
+
+  VString key( index );
+  ObjectConstIterator it = this->value_.object_->find( key );
+
+  if( it == this->value_.object_->end() )
+  {
+    return null;
+  }
+
+  return (*it).second;
+}
+
+// Derives from JsonCpp implementation
+const Value& Value::operator[]( int index ) const
+{
+  NOM_DUMP(index);
+  return *this;
+
+  NOM_ASSERT( index >= 0 );
+
+  return (*this)[ ArrayIndex( index ) ];
+}
+
+Value& Value::operator[]( const char* key )
+{
+  // NOM_DUMP(key);
+
+  // An object node container is required for this method call.
+  if( ! this->object_valid() )
+  {
+    this->type_ = ValueType::ObjectValues;
+    this->value_.object_ = new Object();
+  }
+
+  auto res = this->value_.object_->find( key );
+
+  if( res == this->value_.object_->end() ) // No match found!
+  {
+    // NOM_DUMP("no match");
+
+    this->value_.object_->insert( std::pair<VString, Value>( key, Value() ) );
+
+    auto res2 = this->value_.object_->find( key );
+
+    if( res2 != this->value_.object_->end() ) // Match found!
+    {
+      // NOM_DUMP("MATCH!!!!");
+      return res2->second;
+    }
+    else // No match found
+    {
+      return *this;
+    }
+  }
+  else // Match found!
+  {
+    // NOM_DUMP("MATCH!!!!");
+
+    this->value_.object_->insert( std::pair<VString, Value>( key, res->second ) );
+
+    return res->second;
+  }
+
+  return res->second;
+}
+
+Value& Value::operator[]( const std::string& key )
+{
+  return (*this)[ key.c_str() ];
+}
+
+void Value::push_back( const Value& val )
+{
+  if( this->array_type() && val.array_type() )
+  {
+    NOM_LOG_ERR( NOM, "Multi-depth array nodes is not supported; use an object node for this functionality instead." );
+    return;
+  }
+  else
+  {
+    if( ! this->array_valid() )
+    {
+      this->type_ = ValueType::ArrayValues;
+      this->value_.array_ = new Array();
+    }
+  }
+
+  this->value_.array_->push_back( val );
+}
+
+Value Value::erase( const std::string& key )
+{
+  // Sanity check
+  NOM_ASSERT( this->null_type() || this->object_type() );
+
+  auto res = this->value_.object_->find( key );
+
+  if( res == this->value_.object_->end() ) // No match found
+  {
+    return Value::null;
+  }
+  else // Success -- match found!
+  {
+    return res->second;
+  }
+
+  return Value::null;
+}
+
+Value::Members Value::member_names( void ) const
+{
+  Members keys;
+
+  // Sanity check
+  NOM_ASSERT( this->null_type() || this->object_type() );
+
+  if( ! this->object_valid() ) return keys;
+
+  for( auto itr = this->value_.object_->begin(); itr != this->value_.object_->end(); ++itr )
+  {
+    // VString object stores the member key
+
+    keys.push_back( itr->first.c_str() );
+  }
+
+  return keys;
 }
 
 Value::ConstIterator Value::begin( void ) const

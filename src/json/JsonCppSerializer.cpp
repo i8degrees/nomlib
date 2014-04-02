@@ -106,11 +106,17 @@ const std::string JsonCppSerializer::stringify( const Value& input ) const
 {
   std::stringstream os;
   Json::Value output;
+  Value buffer( input );
+
+  if( this->read( output, buffer ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Failed to read data stream in for stringifying." );
+    return "\0";
+  }
 
   if( this->write( input, output ) == false )
   {
-    // TODO: Err handling
-    NOM_STUBBED( NOM );
+    NOM_LOG_ERR ( NOM, "Failed to stringify data stream." );
     return "\0";
   }
 

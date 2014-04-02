@@ -49,7 +49,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /// \brief Enable dumping output of each key, value pair, sizes, etc. as we
 /// traverse the object.
-// #define NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES
+#define NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES
 
 /// \brief Enable dumping output of each key, value pair, sizes, etc. as we
 /// traverse the object.

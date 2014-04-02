@@ -99,15 +99,19 @@ bool RapidXmlSerializer::unserialize( const std::string& input, Value& dest ) co
 
 const std::string RapidXmlSerializer::stringify( const Value& source ) const
 {
-  // std::string buffer;
   std::stringstream os;
   rapidxml::xml_document<> doc;
+  Value buffer = source;
 
-  this->append_decl( doc );
+  if( this->read( os.str(), buffer ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Failed to read data stream in for stringifying." );
+    return "\0";
+  }
 
   if( this->write( source, doc ) == false )
   {
-    NOM_LOG_ERR ( NOM, "Failed to serialize data stream." );
+    NOM_LOG_ERR ( NOM, "Failed to stringify data stream." );
     return "\0";
   }
 

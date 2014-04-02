@@ -53,6 +53,8 @@ class Value
     typedef ValueConstIterator ConstIterator;
     typedef ValueIterator Iterator;
 
+    typedef std::vector<std::string> Members;
+
     /// \brief Supported data types able to be held inside the object.
     ///
     /// \remarks ValueType::ObjectValue type is a singly-list of key / value
@@ -95,6 +97,44 @@ class Value
     ///
     /// \TODO Conditional if like we do in copy constructor for value_.
     Value::SelfType& operator =( const SelfType& other );
+
+    /// \brief ...
+    ///
+    /// \note Borrowed from JsonCpp library -- thanks!
+    bool operator <( const Value& other ) const;
+
+    /// \brief ...
+    ///
+    /// \note Borrowed from JsonCpp library -- thanks!
+    bool operator <=( const Value& other ) const;
+
+    /// \brief ...
+    ///
+    /// \note Borrowed from JsonCpp library -- thanks!
+    bool operator >=( const Value& other ) const;
+
+    /// \brief ...
+    ///
+    /// \note Borrowed from JsonCpp library -- thanks!
+    bool operator >( const Value& other ) const;
+
+    /// \brief ...
+    ///
+    /// \note Borrowed from JsonCpp library -- thanks!
+    bool operator ==( const Value& other ) const;
+
+    /// \brief ...
+    ///
+    /// \note Borrowed from JsonCpp library -- thanks!
+    bool operator !=( const Value& other ) const;
+
+    /// \brief Returns ::null_type.
+    ///
+    /// \note Borrowed from JsonCpp library -- thanks!
+    bool operator!( void ) const;
+
+    /// \brief Construct a Value container node of a specified type.
+    Value( enum ValueType type );
 
     /// \brief Construct an object using a signed integer value.
     Value( sint val ); // type 1
@@ -152,6 +192,12 @@ class Value
     /// \note The constructed object may only contain a single nom::Object
     /// object at a time.
     Value( const Object& val ); // type 7
+
+    /// \brief Internal helper method for comparing array & object node
+    /// containers.
+    ///
+    /// \note Borrowed from JsonCpp library -- thanks!
+    int compare( const Value& other ) const;
 
     /// \brief Obtain a pointer to the object.
     ///
@@ -219,9 +265,6 @@ class Value
     bool object_type( void ) const;
 
     const std::string stringify( void ) const;
-
-    // TODO: Implement
-    // const std::string key( void );
 
     /// \brief Obtain the signed integer value stored within the container.
     ///
@@ -336,12 +379,86 @@ class Value
     /// On err -- when the object is ValueType::NullValue -- zero (0).
     uint size( void ) const;
 
-    /// \brief Remove all array and object members
+    /// \brief Obtain boolean response in regards to container's empty status.
     ///
-    /// \remarks Value type is not modified.
+    /// \remarks The object's type is not modified.
+    ///
+    /// \note This method will fail with an assert if the container type is
+    /// *not* either: null, array or object node type.
+    bool empty( void );
+
+    /// \brief Remove all array and object members.
+    ///
+    /// \remarks The object's value type is unchanged.
+    ///
+    /// \note This method has no effect unless the object's container is one of
+    /// two node types: array or object.
     void clear( void );
 
-    Value& append( const Value& val );
+    /// \brief Obtain a stored element by index number.
+    ///
+    /// \param  val Unsigned integer of the element's index to return.
+    ///
+    /// \remarks It may be necessary to append the 'u' symbol after the number
+    /// in order to have the compiler recognize your request properly. (Signed
+    /// integers are the "default" literal integer type, at least on my
+    /// development system).
+    ///
+    /// \TODO Fix index methods -- VString, ValueBaseIterator & co; this method
+    /// call relies on our half-finished implementation stemming from the
+    /// VString class.
+    Value& operator[]( ArrayIndex index );
+
+    Value& operator[]( int index );
+
+    /// \brief Obtain a stored element by index number.
+    ///
+    /// \param  val Unsigned integer of the element's index to return.
+    ///
+    /// \remarks It may be necessary to append the 'u' symbol after the number
+    /// in order to have the compiler recognize your request properly. (Signed
+    /// integers are the "default" literal integer type, at least on my
+    /// development system).
+    ///
+    /// \TODO Fix index methods -- VString, ValueBaseIterator & co; this method
+    /// call relies on our half-finished implementation stemming from the
+    /// VString class.
+    const Value& operator[]( ArrayIndex index ) const;
+
+    const Value& operator[]( int index ) const;
+
+    /// \brief Access an object node's container.
+    ///
+    /// \remarks This method call requires an object node container type, and
+    /// will immediately initialize one, if one is not found to be valid at the
+    /// time of the call -- existing value(s) in the object will be lost.
+    Value& operator[]( const char* key );
+
+    Value& operator[]( const std::string& key );
+
+    /// \brief Insert array elements.
+    void push_back( const Value& val );
+
+    /// \brief Remove the named member.
+    ///
+    /// \returns Removed member upon success, or Value::null upon failure.
+    ///
+    /// \remarks The object is unchanged if the referenced key does not exist.
+    ///
+    /// \note The object's type is not modified.
+    ///
+    /// \note This method will fail with an assert if the container type is
+    /// *not* either a null or object node type.
+    Value erase( const std::string& key );
+
+    /// \brief Obtain the member names (keys) of each pair in this container.
+    ///
+    /// \returns A vector of strings upon success, or an empty vector upon
+    /// failure.
+    ///
+    /// \note This method will fail with an assert if the container type is
+    /// *not* either a null or object node type.
+    Members member_names( void ) const;
 
     /// \FIXME
     Value::ConstIterator begin( void ) const;

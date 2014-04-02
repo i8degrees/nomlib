@@ -41,6 +41,7 @@ namespace nom {
 typedef std::map<VString, Value> Object;
 typedef std::map<VString, Value>::const_iterator ObjectConstIterator;
 typedef std::map<VString, Value>::iterator ObjectIterator;
+typedef std::pair<VString, Value> ObjectPair;
 
 } // namespace nom
 

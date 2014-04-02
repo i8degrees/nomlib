@@ -57,6 +57,7 @@ using namespace nom; // TODO: Remove
 // #define NOM_UNIT_TEST_FOUR
 // #define NOM_UNSERIALIZER_UNIT_TEST_ONE
 // #define NOM_SERIALIZER_UNIT_TEST_ONE
+// #define NOM_JSONCPP_VALUE_TEST_ONE
 
 /// \brief Enable expected results output during each unit test.
 ///
@@ -143,16 +144,19 @@ sint do_unserializer_test_three( void )
 
 sint do_leaks_test_one( void )
 {
-  JsonCppSerializer reader;
-  nom::Value values;
-
+  std::stringstream os;
   nom::Timer timer;
+  ISerializer* fp = new JsonCppSerializer();
+  nom::Value output;
+
+  // os << fp->stringify( RESOURCE_SANITY, output );
+
   timer.start();
 
   uint32 dt = 0;
   while( timer.ticks() < 10000 ) // 10s
   {
-    if( reader.unserialize( RESOURCE_SANITY, values ) == false )
+    if( fp->unserialize( RESOURCE_SANITY, output ) == false )
     {
       return NOM_EXIT_FAILURE;
     }
@@ -187,6 +191,7 @@ sint do_serialization_test_two( void )
   return NOM_EXIT_SUCCESS;
 }
 
+#if defined( NOM_JSONCPP_VALUE_TEST_ONE )
 /// \brief nom::JsonCppValue sanity tests.
 sint do_jsoncppvalue_test_one( void )
 {
@@ -215,6 +220,7 @@ sint do_jsoncppvalue_test_one( void )
 
   return NOM_EXIT_SUCCESS;
 }
+#endif
 
 /// \brief nom::Value sanity tests.
 sint do_value_test_one( void )
@@ -396,6 +402,122 @@ sint do_xml_test_four( void )
   return NOM_EXIT_SUCCESS;
 }
 
+sint do_value_refactoring_test_one( void )
+{
+// Object obj, obj2;
+// obj[0] = 1;
+// obj[1] = 2;
+// obj[2] = 3;
+// obj[3] = 4;
+
+// obj2["testme"] = obj;
+
+  // NOM_DUMP(obj2);
+// Value val;
+// val.push_back( -1 );
+// val.push_back( obj );
+  // val.push_back( obj2 );
+// NOM_DUMP(val);
+
+  Value value;
+
+  Value obj( Value::ValueType::ObjectValues );
+  obj["ttt"] = 7;
+
+  value["testme"] = "boobies";
+  value["testme2"] = 5u;
+  value["testme3"] = "boobies";
+  value["testme4"] = -666;
+
+  // Error; key already exists! (should never be overwritten unless explicitly
+  // removed by end-user, such as with nom::Value::erase).
+  value["testme4"] = -666;
+
+  NOM_DUMP(value);
+  NOM_DUMP(value["testme4"].get_int());
+  NOM_DUMP(value["testme"].get_int());
+
+  // Array node with the key name of "arr".
+  value["arr"].push_back( 8 );
+  value["arr"].push_back( 2 );
+  value["arr"].push_back( 3 );
+  value["arr"].push_back( 0 );
+  NOM_DUMP(value);
+
+  // Creates an empty object node unless obj is non-null.
+  value["obj"] = obj;
+
+  // Top-level Array node for "obj" object node.
+  value["objA"].push_back( obj );
+
+  value["o"] = Value();
+  value["o"] = true;
+NOM_DUMP(value);
+
+// FIXME: nom::Value begins to have freeing pointer memory issues here when
+// we try deleting the Value::value_.object_ class member.
+
+// Unnamed JSON objects (an array is the top-level node)
+nom::ISerializer* fp = new JsonCppSerializer();
+Value testme( Value::ValueType::ArrayValues );
+testme["root"].push_back( value );
+NOM_DUMP( fp->stringify( testme ) );
+
+// Named ("mapped") JSON objects (an object is the top-level node)
+Value testme2( Value::ValueType::ObjectValues );
+testme2["root"] = value;
+NOM_DUMP( fp->stringify( testme2 ) );
+
+// exit(0);
+
+  value["o"] = 2u;
+NOM_DUMP(value);
+
+  Value arr( nom::Value::ValueType::ArrayValues );
+  value["o"].push_back(arr);
+
+  // This should log an err -- multi-depth array nodes are NOT supported.
+  value["o"].push_back(arr);
+
+NOM_DUMP(value);
+
+// exit(0);
+
+  Value arr2( nom::Value::ValueType::ArrayValues );
+  // arr2[0] = -64;
+  // arr2[1] = 32;
+  // arr2[2] = -666;
+  // arr2[3] = 666;
+  arr2[0].push_back( -64 );
+  arr2[1].push_back( 32 );
+  arr2[2].push_back( -666 );
+  arr2[3].push_back( 666 );
+
+// FIXME: Value is unassigned when trying to use get_int()
+NOM_DUMP(arr2[0].get_int() );
+NOM_DUMP(arr2[3].get_int() );
+NOM_DUMP(arr2);
+
+// exit(0);
+
+  nom::Value::Members members = value.member_names();
+
+  NOM_DUMP( members.size() );
+
+  for( auto itr = members.begin(); itr != members.end(); ++itr )
+  {
+    NOM_DUMP( *itr );
+  }
+
+  // FIXME: This should display the first object of the "cards" array --
+  // see ttcards.git/Resources/cards.json.
+  nom::Value val = value["cards"][1];
+  NOM_DUMP(val);
+
+// exit(0);
+  return NOM_EXIT_SUCCESS;
+}
+
 sint main( int argc, char* argv[] )
 {
   // Return exit code
@@ -453,12 +575,12 @@ sint main( int argc, char* argv[] )
   //   return NOM_EXIT_FAILURE;
   // }
 
-  // ret = do_xml_test_one();
-  // if( ret != NOM_EXIT_SUCCESS )
-  // {
-  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
-  //   return NOM_EXIT_FAILURE;
-  // }
+  ret = do_xml_test_one();
+  if( ret != NOM_EXIT_SUCCESS )
+  {
+    nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+    return NOM_EXIT_FAILURE;
+  }
 
   // ret = do_xml_test_two();
   // if( ret != NOM_EXIT_SUCCESS )
@@ -467,12 +589,12 @@ sint main( int argc, char* argv[] )
   //   return NOM_EXIT_FAILURE;
   // }
 
-  ret = do_xml_test_three();
-  if( ret != NOM_EXIT_SUCCESS )
-  {
-    nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
-    return NOM_EXIT_FAILURE;
-  }
+  // ret = do_xml_test_three();
+  // if( ret != NOM_EXIT_SUCCESS )
+  // {
+  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+  //   return NOM_EXIT_FAILURE;
+  // }
 
   // ret = do_xml_test_four();
   // if( ret != NOM_EXIT_SUCCESS )

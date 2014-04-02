@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_PTREE_VSTRING_HPP
 #define NOMLIB_SYSTEM_PTREE_VSTRING_HPP
 
-// #include <cstring>
+#include <cstring>
 #include <string>
 
 #include "nomlib/config.hpp"
@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-typedef int ArrayIndex;
+typedef uint ArrayIndex;
 
 class VString
 {
@@ -48,11 +48,11 @@ class VString
     VString( void );
     ~VString( void );
 
-    VString( ArrayIndex val );
+    VString( ArrayIndex index );
 
-    VString( const char* val );
+    VString( const char* key );
 
-    VString( const std::string& val );
+    VString( const std::string& key );
 
     /// \brief Copy constructor.
     VString( const SelfType& copy );
@@ -65,12 +65,6 @@ class VString
 
     /// \NOTE Required implementation for usage inside a std::map template.
     bool operator ==( const VString& other ) const;
-
-    /// \NOTE Required implementation for usage inside a std::map template.
-    // uint operator[]( ArrayIndex val );
-
-    /// \NOTE Required implementation for usage inside a std::map template.
-    // const std::string& operator[]( const char* value );
 
     const std::string& c_str( void ) const;
 

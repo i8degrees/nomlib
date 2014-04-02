@@ -1,6 +1,6 @@
 # Third-Party Dependencies #
 
-[nomlib's](http://github.com/i8degrees/nomlib/) third-party dependencies. Pre-packaged libraries are available for the OS X and Windows platforms and may be found listed as nomlib_**\<PLATFORM\>-dependencies** at:
+[nomlib's](http://github.com/i8degrees/nomlib/) third-party dependencies. Pre-packaged libraries are available for the OS X, iOS and Windows platforms and may be found listed as nomlib_**\<PLATFORM\>-dependencies** at:
 
 * [nomlib's sourceforge.net project files](http://sourceforge.net/projects/nomlib/files/)
 

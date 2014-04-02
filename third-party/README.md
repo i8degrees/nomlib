@@ -15,7 +15,7 @@ Both the 64-bit and 32-bit official development binaries versions of:
 * [SDL v2.0.3](http://libsdl.org/)
 * [SDL_image v2.0.0](http://www.libsdl.org/projects/SDL_image/)
 * [SDL_ttf v2.0.12](http://www.libsdl.org/projects/SDL_ttf/)
-* [RapidXml v1.13](https://rapidxml.sourceforge.net)
+* [RapidXML v1.13](https://sourceforge.net/p/rapidxml) with [bug fix #16](https://sourceforge.net/p/rapidxml/bugs/16/) applied to rapidxml_print.hpp.
 
   * Packaged only under Mac OS X
       * [libsndfile v1.0.24](http://www.mega-nerd.com/libsndfile/)

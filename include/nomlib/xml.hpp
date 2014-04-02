@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_XML_HEADERS
 #define NOMLIB_XML_HEADERS
 
-// Public header files
+// Public header files for nomlib's XML build unit
 
 #include <nomlib/config.hpp>
 #include <nomlib/xml/RapidXmlSerializer.hpp>

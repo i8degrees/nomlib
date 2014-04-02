@@ -1,37 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<root>
-  <faces.png>
-    <ID_0>
-      <dims>
-        <y>1</y>
-        <x>1</x>
-        <w>64</w>
-        <h>64</h>
-      </dims>
-    </ID_0>
-    <ID_1>
-      <dims>
-        <y>1</y>
-        <x>66</x>
-        <w>64</w>
-        <h>64</h>
-      </dims>
-    </ID_1>
-    <meta>
-      <scale>1</scale>
-      <creator>nom::SpriteSheet</creator>
-      <format>RGBA8888</format>
-      <spacing>1</spacing>
-      <padding>1</padding>
-      <version>0.3.0</version>
-      <last_modified>Fri Nov  8 01:40:41 2013</last_modified>
-      <frames>110</frames>
-      <size w="2082" h="262"></size>
-      <!-- <size>2082</size> -->
-      <!-- <size>262</size> -->
-      <sha1sum>fbb26a620528a062ba43ccb4bb5e71c714df8e5e</sha1sum>
-    </meta>
-  </faces.png>
+<!-- FIXME: XML Comments -->
+<sheet>
   <cursors.png>
     <ID_0>
       <dims>
@@ -50,6 +19,8 @@
       </dims>
     </ID_1>
     <meta>
+      <!-- FIXME: Array values are not yet implemented -->
+      <array x="320" y="240" w="640" h="480" />
       <scale>1</scale>
       <format>RGBA8888</format>
       <spacing>0</spacing>
@@ -58,8 +29,45 @@
       <last_modified>Thu Mar 13 11:34:35 2014</last_modified>
       <frames>5</frames>
       <sha1sum>fbb26a620528a062ba43ccb4bb5e71c714df8e5e</sha1sum>
-      <size>130</size>
-      <size>16</size>
+      <size>
+        <w>130</w>
+        <h>16</h>
+      </size>
     </meta>
   </cursors.png>
-</root>
+  <faces.png>
+    <ID_0>
+      <dims>
+        <y>1</y>
+        <x>1</x>
+        <w>64</w>
+        <h>64</h>
+      </dims>
+    </ID_0>
+    <ID_1>
+      <dims>
+        <y>1</y>
+        <x>66</x>
+        <w>64</w>
+        <h>64</h>
+      </dims>
+    </ID_1>
+    <meta>
+      <!-- FIXME: Array values are not yet implemented -->
+      <array x="320" y="240" w="640" h="480" />
+      <scale>1</scale>
+      <creator>nomlib</creator>
+      <format>RGBA8888</format>
+      <spacing>1</spacing>
+      <padding>1</padding>
+      <version>0.3.0</version>
+      <last_modified>Fri Nov  8 01:40:41 2013</last_modified>
+      <frames>110</frames>
+      <sha1sum>fbb26a620528a062ba43ccb4bb5e71c714df8e5e</sha1sum>
+      <size>
+        <w>2082</w>
+        <h>262</h>
+      </size>
+    </meta>
+  </faces.png>
+</sheet>

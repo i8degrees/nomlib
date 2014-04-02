@@ -277,10 +277,6 @@ elseif ( PLATFORM_OSX )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 
-  # RapidXml dependency (headers only)
-  set ( RAPIDXML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/rapidxml" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${RAPIDXML_INCLUDE_DIR} )
-
   find_library ( COCOA_LIBRARY Cocoa )
   mark_as_advanced ( COCOA_LIBRARY )
   set ( EXTLIBS ${EXTLIBS} ${COCOA_LIBRARY} )
@@ -288,6 +284,10 @@ elseif ( PLATFORM_OSX )
 elseif ( PLATFORM_LINUX )
   # TODO
 endif ( PLATFORM_WINDOWS )
+
+# RapidXml dependency (platform-independent code)
+set ( RAPIDXML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/rapidxml" )
+set ( EXT_HEADERS ${EXT_HEADERS} ${RAPIDXML_INCLUDE_DIR} )
 
 message ( STATUS "SDL2 headers: ${SDL2_INCLUDE_DIR}" )
 message ( STATUS "SDL2 library: ${SDL2_LIBRARY}" )
@@ -303,6 +303,8 @@ message ( STATUS "OpenAL library: ${OPENAL_LIBRARY}" )
 
 message ( STATUS "libsndfile headers: ${LIBSNDFILE_INCLUDE_DIR}" )
 message ( STATUS "libsndfile library: ${LIBSNDFILE_LIBRARY}" )
+
+message ( STATUS "RapidXml library headers: ${RAPIDXML_INCLUDE_DIR}" )
 
 # External header files inclusion
 include_directories ( ${EXT_HEADERS} )

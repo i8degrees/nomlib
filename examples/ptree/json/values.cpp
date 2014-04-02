@@ -287,6 +287,83 @@ sint do_xml_test_one( void )
     return NOM_EXIT_FAILURE;
   }
 
+  #if defined( NOM_DEBUG_RAPIDXML_UNSERIALIZER_VALUES )
+    NOM_DUMP( result );
+  #endif
+
+  if( serializer->serialize( result, "output1.xml" ) == false )
+  {
+    return NOM_EXIT_FAILURE;
+  }
+
+  #if defined( NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES )
+    NOM_DUMP( result );
+  #endif
+
+  return NOM_EXIT_SUCCESS;
+}
+
+/// \brief XML to JSON unit tests
+sint do_xml_test_two( void )
+{
+  nom::Value result;
+
+  ISerializer* serializer = new RapidXmlSerializer();
+  ISerializer* json_out = new JsonCppSerializer();
+
+  if( serializer->unserialize( RESOURCE_XML, result ) == false )
+  {
+    return NOM_EXIT_FAILURE;
+  }
+
+  NOM_DUMP(serializer->stringify( result ));
+
+  #if defined( NOM_DEBUG_RAPIDXML_UNSERIALIZER_VALUES )
+    NOM_DUMP( result );
+  #endif
+
+  // if( serializer->serialize( result, "output1.xml" ) == false )
+  // {
+  //   return NOM_EXIT_FAILURE;
+  // }
+
+  #if defined( NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES )
+    NOM_DUMP( result );
+  #endif
+
+  NOM_DUMP( json_out->stringify( result ) );
+
+  return NOM_EXIT_SUCCESS;
+}
+
+/// \brief JSON to XML unit tests
+///
+/// \TODO
+sint do_xml_test_three( void )
+{
+  nom::Value result;
+
+  ISerializer* json = new JsonCppSerializer();
+  ISerializer* xml = new RapidXmlSerializer();
+
+  // TODO: Unit test for RESOURCE_SANITY1 -- this test should FAIL
+
+  if( json->unserialize( RESOURCE_SANITY2, result ) == false )
+  {
+    return NOM_EXIT_FAILURE;
+  }
+
+  NOM_DUMP( result );
+
+  // if( xml->unserialize( result, "output1.xml" ) == false )
+  // {
+  //   return NOM_EXIT_FAILURE;
+  // }
+
+  // NOM_DUMP( result );
+
+  // NOM_DUMP( xml->stringify( result ) );
+
   return NOM_EXIT_SUCCESS;
 }
 
@@ -331,21 +408,21 @@ sint main( int argc, char* argv[] )
 
   // Unserialize examples/json/Resources/sanity.json & serialize it back to
   // output.json
-  ret = do_unserializer_test_two();
-  if( ret != NOM_EXIT_SUCCESS )
-  {
-    nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
-    return NOM_EXIT_FAILURE;
-  }
+  // ret = do_unserializer_test_two();
+  // if( ret != NOM_EXIT_SUCCESS )
+  // {
+  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+  //   return NOM_EXIT_FAILURE;
+  // }
 
   // Unserialize examples/json/Resources/sanity2.json & serialize it back to
   // output2.json
-  ret = do_unserializer_test_three();
-  if( ret != NOM_EXIT_SUCCESS )
-  {
-    nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
-    return NOM_EXIT_FAILURE;
-  }
+  // ret = do_unserializer_test_three();
+  // if( ret != NOM_EXIT_SUCCESS )
+  // {
+  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+  //   return NOM_EXIT_FAILURE;
+  // }
 
   ret = do_xml_test_one();
   if( ret != NOM_EXIT_SUCCESS )
@@ -353,6 +430,20 @@ sint main( int argc, char* argv[] )
     nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
     return NOM_EXIT_FAILURE;
   }
+
+  ret = do_xml_test_two();
+  if( ret != NOM_EXIT_SUCCESS )
+  {
+    nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+    return NOM_EXIT_FAILURE;
+  }
+
+  // ret = do_xml_test_three();
+  // if( ret != NOM_EXIT_SUCCESS )
+  // {
+  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+  //   return NOM_EXIT_FAILURE;
+  // }
 
   // Memory leaks test
   // if( do_leaks_test_one() != NOM_EXIT_SUCCESS )

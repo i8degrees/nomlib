@@ -29,10 +29,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_XML_RAPIDXML_SERIALIZER_HPP
 #define NOMLIB_XML_RAPIDXML_SERIALIZER_HPP
 
-#include <sstream>
+#include <iostream>
+#include <string>
 #include <fstream>
+#include <sstream>
 
-#include "rapidxml.hpp" // RapidXml library
+// RapidXml library
+#include "rapidxml.hpp"
+#include "rapidxml_print.hpp"
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/ISerializer.hpp"
@@ -43,7 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /// \brief Enable dumping output of each key, value pair, sizes, etc. as we
 /// traverse the object.
-// #define NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES
+#define NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES
 
 /// \brief Enable dumping output of each key, value pair, sizes, etc. as we
 /// traverse the object.
@@ -56,8 +60,8 @@ namespace nom {
 /// \remarks Two space tabbed indention.
 const std::string RAPIDXML_INDENTION_LEVEL = "  ";
 
-/// \brief Serialization of nom::Value objects to and fro XML using the RapidXml
-/// interface.
+/// \brief Serialization of nom::Value objects to and fro XML using the
+/// RapidXml library.
 class RapidXmlSerializer: public ISerializer
 {
   public:
@@ -80,6 +84,10 @@ class RapidXmlSerializer: public ISerializer
     /// \param source nom::Value container to serialize.
     /// \param output Absolute file path to save resulting data to.
     ///
+    /// \remarks The source input will automatically have the standard XML
+    /// DOCTYPE prepended onto the resulting output. See ::append_decl method
+    /// for details.
+    ///
     /// \note Implements IJsonSerializer::serialize interface.
     bool serialize( const Value& source, const std::string& output ) const;
 
@@ -91,9 +99,64 @@ class RapidXmlSerializer: public ISerializer
     /// \note Implements IJsonSerializer::unserialize interface.
     bool unserialize( const std::string& input, Value& dest ) const;
 
+    /// \brief Obtain a C++ string of the XML objects stored.
+    ///
+    /// \param obj The nom::Value object to be serialized.
+    ///
+    /// \returns Serialized object as a std::string.
+    const std::string stringify( const Value& input ) const;
+
   private:
-    // ...
+    /// \brief XML Document file contents buffer declared for convenience's
+    /// sake.
+    ///
+    /// \remarks This object should only be used for XML allocations --
+    /// serialization operations that do not depend on any kind of state.
+    // mutable rapidxml::xml_document<> output;
+
+    bool write( const Value& source, rapidxml::xml_document<>& dest ) const;
+
+    /// \FIXME The input param should be const
+    bool read( /*const*/ std::string& input, Value& dest ) const;
+
+    bool write_value( const Value& object, const std::string& key, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const;
+
+    /// \brief Internal helper method for serialization of array nodes.
+    bool serialize_array( const Value& object, const std::string& key, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const;
+
+    /// \brief Internal helper method for serialization of object nodes.
+    bool serialize_object( const Value& object, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const;
+
+    bool read_value( const rapidxml::xml_node<>& object, Value& dest ) const;
+
+    /// \brief Internal helper method for un-serialization of array nodes.
+    ///
+    /// \remarks rapidxml::xml_attribute<>
+    bool unserialize_array( const rapidxml::xml_node<>* object, Value& dest ) const;
+
+    /// \brief Internal helper method for un-serialization of object nodes.
+    bool unserialize_object( const rapidxml::xml_node<>* node, Value& dest ) const;
+
+    const char* stralloc( const std::string& buffer, rapidxml::xml_document<>& dest ) const;
+
+    /// \brief Add the top-level XML node declaring the version and encoding
+    /// used (think: DOCTYPE).
+    ///
+    /// \param dest The document to append the declaration onto.
+    ///
+    /// \remarks This is automatically added to all serialized XML output.
+    ///
+    /// \code
+    /// <?xml version="1.0" encoding="utf-8"?>
+    /// \endcode
+    void append_decl( rapidxml::xml_document<>& dest ) const;
 };
+
+/// \brief Output the XML document object.
+///
+/// \remarks Utilizes the public stringify method of this class interface.
+/// \TODO
+// std::ostream& operator <<( std::ostream& os, const Value& val );
 
 } // namespace nom
 
@@ -105,4 +168,10 @@ class RapidXmlSerializer: public ISerializer
 ///   [TO BE WRITTEN]
 ///
 /// See examples/values.cpp for usage examples.
+///
+/// References
+///
+/// 1. http://sfmlcoder.wordpress.com/2011/05/29/a-lightweight-xml-parser-rapid-xml/
+///
+/// \TODO Implement XML comments
 ///

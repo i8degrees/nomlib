@@ -100,7 +100,7 @@ set ( XML_SOURCE
       ${SRC_DIR}/xml/RapidXmlSerializer.cpp
     )
 
-# Third-party RapidXml headers
+# Third-party RapidXml (headers only)
 file ( GLOB RAPIDXML_HEADERS "${RAPIDXML_INCLUDE_DIR}/*.hpp" )
 
 # Math module

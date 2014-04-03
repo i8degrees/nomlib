@@ -89,7 +89,7 @@ class ValueIteratorBase
     ///
     /// \TODO Try handling the return of the key (string) or index (integer)
     /// more elegantly? (Presently, we are converting index values to a string).
-    const std::string key( void ) const;
+    const char* key( void ) const;
 
     /// \brief Query if the member key exists at the current position of the
     /// iterator object.

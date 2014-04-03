@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 
 #include "nomlib/config.hpp"
+#include "nomlib/system/helpers.hpp"
 #include "nomlib/system/ptree/ptree_config.hpp"
 #include "nomlib/system/ptree/Object.hpp" // nom::Object
 #include "nomlib/system/ptree/Array.hpp" // nom::Array
@@ -97,6 +98,15 @@ class Value
     ///
     /// \TODO Conditional if like we do in copy constructor for value_.
     Value::SelfType& operator =( const SelfType& other );
+
+    /// \brief Exchange the contents of the container.
+    ///
+    /// \remarks In particular, one must be careful to keep track of copying our
+    /// char* strings as necessary.
+    ///
+    /// \note This method is used in the implementation of the copy assignment
+    /// operator.
+    void swap( Value& other );
 
     /// \brief ...
     ///
@@ -547,19 +557,6 @@ class Value
 /// \TODO Implement upper limit to value length dump; ideally within ~80
 /// characters or less?
 std::ostream& operator <<( std::ostream& os, const Value& val );
-
-namespace priv {
-
-/// \brief Clone a C style string value.
-///
-/// \param length Size of the string to copy.
-///
-/// \returns Null-terminated string up to MAX_STRING_LENGTH.
-///
-/// \TODO Find a better home for this function?
-char* duplicate_string( const char* val, uint length );
-
-} // namespace priv
 
 } // namespace nom
 

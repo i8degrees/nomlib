@@ -283,8 +283,10 @@ bool JsonCppSerializer::read( const Json::Value& source, Value& dest ) const
   // Temporary buffering objects we use to collect input in form of JSON objects;
   // we append individual objects to the overall container as we iterate through
   // the entire underlying container.
-  Object object, objects;
-  Array array;
+  // Object object, objects;
+  Value object, objects;
+  // Array array;
+  Value array;
 
   // Begin iterating through the container's objects to begin transferring to
   // our nom::Value object.
@@ -396,7 +398,8 @@ bool JsonCppSerializer::read( const Json::Value& source, Value& dest ) const
   // objects; b) JSON object(s) containing objects.
   if( array.size() > 0 )
   {
-    dest = array;
+    // dest = array;
+    dest.push_back( array );
   }
   else
   {
@@ -720,7 +723,8 @@ bool JsonCppSerializer::serialize_array( const Value& object, Json::Value& dest 
   uint index = 0;
   Json::Value arr;
 
-  Array array = object.array();
+  // Array array = object.array();
+  Value array = object.array();
 
   for( auto itr = array.begin(); itr != array.end(); ++itr )
   {
@@ -974,7 +978,8 @@ bool JsonCppSerializer::read_value( const Json::Value& object, Value& dest ) con
 
 bool JsonCppSerializer::unserialize_array( const Json::Value& object, Value& dest ) const
 {
-  Array arr;
+  // Array arr;
+  Value arr;
 
   // NOM_DUMP( object.size() );
   for( auto i = 0; i != object.size(); ++i )
@@ -1038,7 +1043,8 @@ bool JsonCppSerializer::unserialize_array( const Json::Value& object, Value& des
     }
   }
 
-  dest = arr;
+  // dest = arr;
+  dest.push_back( arr );
 
   return true;
 }
@@ -1092,7 +1098,7 @@ bool JsonCppSerializer::unserialize_object( const Json::Value& object, Value& de
 
     case Value::ValueType::ObjectValues:
     {
-      Object obj;
+      Value obj;
 
       for( auto itr = object.begin(); itr != object.end(); ++itr )
       {

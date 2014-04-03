@@ -575,6 +575,13 @@ sint main( int argc, char* argv[] )
   //   return NOM_EXIT_FAILURE;
   // }
 
+  // ret = do_value_refactoring_test_one();
+  // if( ret != NOM_EXIT_SUCCESS )
+  // {
+  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+  //   return NOM_EXIT_FAILURE;
+  // }
+
   ret = do_xml_test_one();
   if( ret != NOM_EXIT_SUCCESS )
   {
@@ -582,12 +589,12 @@ sint main( int argc, char* argv[] )
     return NOM_EXIT_FAILURE;
   }
 
-  // ret = do_xml_test_two();
-  // if( ret != NOM_EXIT_SUCCESS )
-  // {
-  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
-  //   return NOM_EXIT_FAILURE;
-  // }
+  ret = do_xml_test_two();
+  if( ret != NOM_EXIT_SUCCESS )
+  {
+    nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+    return NOM_EXIT_FAILURE;
+  }
 
   // ret = do_xml_test_three();
   // if( ret != NOM_EXIT_SUCCESS )

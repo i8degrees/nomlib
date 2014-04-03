@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 VString::VString( void )  :
+  value_( nullptr ),
   index_ ( 0 )
 {
   //NOM_LOG_TRACE(NOM);
@@ -42,74 +43,99 @@ VString::~VString( void )
 }
 
 VString::VString( ArrayIndex index ) :
-  index_ ( index )
+  value_( nullptr ),
+  index_( index )
 {
   //NOM_LOG_TRACE(NOM);
 }
 
 VString::VString( const char* key ) :
-  value_ { std::string( key ) },
-  index_ ( 0 )
+  index_( 0 )
 {
   //NOM_LOG_TRACE(NOM);
+
+  uint size = strlen( key );
+  this->value_ = priv::duplicate_string( key, size );
 }
 
 VString::VString( const std::string& key )  :
-  value_ ( key )
+  index_(0)
 {
   //NOM_LOG_TRACE(NOM);
+
+  uint size = strlen( key.c_str() );
+  this->value_ = priv::duplicate_string( key.c_str(), size );
 }
 
 VString::VString( const SelfType& copy )  :
-  value_ ( copy.value_ ),
-  index_ ( copy.index_ )
+  index_{ copy.index() }
 {
   // NOM_LOG_TRACE(NOM);
+
+  uint len = strlen( copy.value_ );
+  this->value_ = priv::duplicate_string( copy.value_, len );
 }
 
 VString::SelfType& VString::operator =( const SelfType& other )
 {
-  this->value_ = other.value_;
-  this->index_ = other.index_;
+  VString temp( other );
+  this->swap( temp );
 
   return *this;
 }
 
+void VString::swap( VString& other )
+{
+  std::swap( this->value_, other.value_ );
+  std::swap( this->index_, other.index_ );
+}
+
+bool VString::valid( void ) const
+{
+  if( this->c_str() != nullptr ) return true;
+
+  return false;
+}
+
 bool VString::operator <( const VString& other ) const
 {
-  if( ! this->value_.empty() ) // Member key
+  // Key member
+  if( this->valid() )
   {
-    return this->value_ < other.value_;
+    return strcmp( this->c_str(), other.c_str() ) < 0;
   }
-  else // Array or Object index
+
+  // Array element index
+  else
   {
-    return this->index_ < other.index_;
+    return( this->index() < other.index() );
   }
-  // if ( this->valid() )
-  // {
-    // return strcmp( this->value_, other.value_ ) < 0;
-  // }
+
 }
 
 bool VString::operator ==( const VString& other ) const
 {
-  if( ! this->value_.empty() ) // Member key
+  // Key member
+  if( this->valid() )
   {
-    return this->value_ < other.value_;
+    return strcmp( this->c_str(), other.c_str() ) == 0;
   }
-  else // Array or Object index
+
+  // Array element index
+  else
   {
-    return this->index_ < other.index_;
+    return( this->index() == other.index() );
   }
-  // if ( this->valid() )
-  // {
-    // return strcmp( this->value_, other.value_ ) == 0;
-  // }
 }
 
-const std::string& VString::c_str( void ) const
+const char* VString::c_str( void ) const
 {
   return this->value_;
+}
+
+const std::string VString::get_string( void ) const
+{
+  return std::string( this->c_str() );
 }
 
 ArrayIndex VString::index( void ) const

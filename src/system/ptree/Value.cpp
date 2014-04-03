@@ -175,6 +175,7 @@ Value::Value( const Value& copy ) :
 
 Value::SelfType& Value::operator =( const SelfType& other )
 {
+/*
   this->type_ = other.type();
 
   switch( other.type() )
@@ -232,6 +233,27 @@ Value::SelfType& Value::operator =( const SelfType& other )
   this->string_allocated_ = other.string_allocated_;
 
   return *this;
+*/
+
+  Value temp( other );
+
+  this->swap( temp );
+
+  return *this;
+}
+
+void Value::swap( Value& other )
+{
+   Value::ValueType temp = this->type();
+
+   this->type_ = other.type();
+   other.type_ = temp;
+   std::swap( this->value_, other.value_ );
+
+   int temp2 = this->string_allocated_;
+
+   this->string_allocated_ = other.string_allocated_;
+   other.string_allocated_ = temp2;
 }
 
 bool Value::operator <( const Value& other ) const
@@ -1307,27 +1329,5 @@ std::ostream& operator <<( std::ostream& os, const Value& val )
 
   return os;
 }
-
-namespace priv {
-
-char* duplicate_string( const char* val, uint length )
-{
-  // Buffer overflow protection
-  if( length >= MAX_STRING_LENGTH )
-  {
-    length = priv::MAX_STRING_LENGTH - 1;
-  }
-
-  // Allocate memory for duplicating the C string
-  char* duplicate_string = static_cast<char*> ( malloc( length + 1 ) );
-  std::memcpy( duplicate_string, val, length );
-
-  // Null-terminate
-  duplicate_string[length] = 0;
-
-  return duplicate_string;
-}
-
-} // namespace priv
 
 } // namespace nom

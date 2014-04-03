@@ -64,28 +64,27 @@ bool ValueIteratorBase::valid( void ) const
   return false;
 }
 
-const std::string ValueIteratorBase::key( void ) const
+const char* ValueIteratorBase::key( void ) const
 {
   if( this->type() == IteratorType::ArrayValues )
   {
+    // return( this->object_->first.index() );
     return "\0"; // Not a valid nom::Object
   }
   else if( this->type() == IteratorType::ObjectValues )
   {
     // Handle null-terminated member key -- member key value not found
-    // if( this->iterator_.object_->key == "" ) return "\0";
-    // if( this->object_->key == "" ) return "\0";
-
-    if( this->object_->first.c_str() != "" )
+    if( this->object_->first.c_str() != nullptr )
     {
       // Valid nom::Object member key
       return this->object_->first.c_str();
-
-      // return this->iterator_.object_->key;
     }
     else
     {
-      return std::to_string( this->object_->first.index() );
+      NOM_DUMP("index");
+      std::string index = std::to_string( this->object_->first.index() );
+      NOM_DUMP(index);
+      return index.c_str();
     }
   }
   else // IteratorType::NullValue ???

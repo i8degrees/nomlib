@@ -205,9 +205,18 @@ bool RapidXmlSerializer::read( const std::string& input, Value& dest ) const
     // Note that this will skip parsing of CDATA nodes
     //
     // Source: http://www.setnode.com/blog/quick-notes-on-how-to-use-rapidxml/
-    doc.parse<rapidxml::parse_declaration_node | rapidxml::parse_no_data_nodes>( &buffer[0 ]);
+    //
+    // FIXME:
+    //
+    // Enabling the flag 'rapidxml::parse_declaration_node' messes up our
+    // parsing of the document, due to the non-handling of the node_declaration
+    // node type -- see ::unserialize_object.
+    // doc.parse<rapidxml::parse_declaration_node | rapidxml::parse_no_data_nodes>( &buffer[0 ]);
 
-    Object obj, objects;
+    doc.parse<rapidxml::parse_no_data_nodes>( &buffer[0] );
+
+    // Object obj, objects;
+    Value obj, objects;
     for( rapidxml::xml_node<> *node = doc.first_node(); node; node = node->next_sibling() )
     {
       std::string node_key = node->name();
@@ -216,6 +225,7 @@ bool RapidXmlSerializer::read( const std::string& input, Value& dest ) const
         NOM_DUMP( node_key );
       #endif
 
+      // if( this->unserialize_object( node, obj[node_key] ) == false )
       if( this->unserialize_object( node, obj[node_key] ) == false )
       {
         // TODO: Err handling
@@ -296,9 +306,12 @@ bool RapidXmlSerializer::write_value( const Value& object, const std::string& ke
 
 bool RapidXmlSerializer::serialize_array( const Value& object, const std::string& key, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const
 {
-  Array array;
+  // Array array;
+  Value array;
 
+  // array = object.array();
   array = object.array();
+
   // NOM_DUMP( member_value );
 
   for( auto itr = array.begin(); itr != array.end(); ++itr )
@@ -527,7 +540,8 @@ bool RapidXmlSerializer::unserialize_array( const rapidxml::xml_node<>* object, 
 {
   std::string key;
   std::string value;
-  Array arr;
+  // Array arr;
+  Value arr;
 
   for( rapidxml::xml_attribute<> *attr = object->first_attribute(); attr; attr = attr->next_attribute() )
   {
@@ -551,7 +565,8 @@ bool RapidXmlSerializer::unserialize_object( const rapidxml::xml_node<>* node, V
 {
   std::string key;
   std::string value;
-  Object obj;
+  // Object obj;
+  Value obj;
   Value arr;
 
   switch( node->type() )
@@ -629,9 +644,33 @@ bool RapidXmlSerializer::unserialize_object( const rapidxml::xml_node<>* node, V
       break;
     }
 
+    // TODO: Handle case
     case rapidxml::node_declaration:
     {
-      // TODO: Handle case
+      for( rapidxml::xml_node<> *object = node->first_node(); object; object = object->next_sibling() )
+      {
+         key = object->name();
+         value = object->value();
+
+        if( key != "" )
+        {
+          // #if defined( NOM_DEBUG_RAPIDXML_UNSERIALIZER_VALUES )
+            NOM_DUMP(key);
+          // #endif
+
+          this->unserialize_object( object, obj[key] );
+
+          if( value != "" )
+          {
+            // #if defined( NOM_DEBUG_RAPIDXML_UNSERIALIZER_VALUES )
+               NOM_DUMP( value );
+            // #endif
+
+             // obj[key] = value;
+          }
+        }
+      }
+
       break;
     }
 

@@ -1,3 +1,4 @@
+
 /******************************************************************************
 
   nomlib - C++11 cross-platform game engine
@@ -26,9 +27,28 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_PTREE_CONFIG_HPP
-#define NOMLIB_SYSTEM_PTREE_CONFIG_HPP
+#include "nomlib/system/helpers.hpp"
 
-#include "nomlib/config.hpp"
+namespace nom {
+namespace priv {
 
-#endif // include guard defined
+char* duplicate_string( const char* val, uint length )
+{
+  // Buffer overflow protection
+  if( length >= priv::MAX_STRING_LENGTH )
+  {
+    length = priv::MAX_STRING_LENGTH - 1;
+  }
+
+  // Allocate memory for duplicating the C string
+  char* duplicate_string = static_cast<char*> ( malloc( length + 1 ) );
+  std::memcpy( duplicate_string, val, length );
+
+  // Null-terminate
+  duplicate_string[length] = 0;
+
+  return duplicate_string;
+}
+
+} // namespace priv
+} // namespace nom

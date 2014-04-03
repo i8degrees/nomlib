@@ -65,11 +65,12 @@ class JsonCppSerializer: public ISerializer
 
     /// \brief Serialization options.
     ///
-    /// \TODO Implement
-    enum Feature
+    /// \TODO Implement options
+    enum Features
     {
-      Compact = 0,  // Default
-      HumanReadable // json_spirit::pretty_print (single line arrays)
+      HumanReadable = 0,  // Default
+      Compact,            // No indention, whitespace, etc.
+      ParseComments       // Enable parsing of JSON comments; /* */ && // styles
     };
 
     JsonCppSerializer( void );

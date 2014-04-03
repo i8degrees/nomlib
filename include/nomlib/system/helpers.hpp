@@ -26,72 +26,31 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_PTREE_VSTRING_HPP
-#define NOMLIB_SYSTEM_PTREE_VSTRING_HPP
+#ifndef NOMLIB_SYSTEM_HELPERS_HPP
+#define NOMLIB_SYSTEM_HELPERS_HPP
 
 #include <cstring>
-#include <string>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/helpers.hpp"
-#include "nomlib/system/ptree/ptree_config.hpp"
-#include "nomlib/system/ptree/ptree_forwards.hpp"
 
 namespace nom {
+namespace priv {
 
-typedef uint ArrayIndex;
+/// \brief Maximum size a nom::Value string type may be
+///
+/// \remarks Buffer overflow protection.
+const uint MAX_STRING_LENGTH = 256;
 
-class VString
-{
-  public:
-    typedef VString SelfType;
+/// \brief Clone a C style string value.
+///
+/// \param length Size of the string to copy.
+///
+/// \returns Null-terminated string up to MAX_STRING_LENGTH.
+///
+/// \TODO Find a better home for this function?
+char* duplicate_string( const char* val, uint length );
 
-    /// \brief Default constructor.
-    VString( void );
-
-    /// \brief Destructor.
-    ~VString( void );
-
-    /// \brief Constructor for array element index.
-    VString( ArrayIndex index );
-
-    /// \brief Constructor for key member pair.
-    VString( const char* key );
-
-    /// \brief Constructor for key member pair.
-    VString( const std::string& key );
-
-    /// \brief Copy constructor.
-    VString( const SelfType& copy );
-
-    /// \brief Copy assignment operator.
-    SelfType& operator =( const SelfType& other );
-
-    void swap( VString& other );
-
-    /// \brief Short-hand for checking if class variable value_ is nullptr.
-    bool valid( void ) const;
-
-    /// \NOTE Required implementation for usage inside a std::map template.
-    bool operator <( const VString& other ) const;
-
-    /// \NOTE Required implementation for usage inside a std::map template.
-    bool operator ==( const VString& other ) const;
-
-    /// \brief Getter for the C string (char*) copy of the stored member key.
-    const char* c_str( void ) const;
-
-    // / \brief Getter for std::string copy of the stored member key.
-    const std::string get_string( void ) const;
-
-    /// \brief Getter for the contained array element index.
-    ArrayIndex index( void ) const;
-
-  private:
-    const char* value_;
-    ArrayIndex index_;
-};
-
+} // namespace priv
 } // namespace nom
 
 #endif // include guard defined

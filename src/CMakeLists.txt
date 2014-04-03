@@ -120,6 +120,7 @@ file ( GLOB SYSTEM_OSX_HEADERS "${NOMLIB_HEADERS_DIR}/system/osx/*.hpp" )
 file ( GLOB SYSTEM_UNIX_HEADERS "${NOMLIB_HEADERS_DIR}/system/unix/*.hpp" )
 file ( GLOB SYSTEM_WINDOWS_HEADERS "${NOMLIB_HEADERS_DIR}/system/windows/*.hpp" )
 set ( SYSTEM_SOURCE
+      ${SRC_DIR}/system/helpers.cpp
       ${SRC_DIR}/system/IState.cpp
       ${SRC_DIR}/system/log.cpp
       ${SRC_DIR}/system/SDL_helpers.cpp

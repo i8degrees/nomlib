@@ -72,8 +72,7 @@ VString::VString( const SelfType& copy )  :
 {
   // NOM_LOG_TRACE(NOM);
 
-  uint len = strlen( copy.value_ );
-  this->value_ = priv::duplicate_string( copy.value_, len );
+  this->value_ = copy.value_;
 }
 
 VString::SelfType& VString::operator =( const SelfType& other )

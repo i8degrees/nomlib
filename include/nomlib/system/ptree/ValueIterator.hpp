@@ -55,9 +55,6 @@ class ValueIterator: public ValueIteratorBase
     ValueIterator( const ValueIterator& copy );
 
     /// \brief Copy constructor
-    ValueIterator( const ArrayIterator& itr );
-
-    /// \brief Copy constructor
     ValueIterator( const ObjectIterator& itr );
 
     /// \brief Copy assignment

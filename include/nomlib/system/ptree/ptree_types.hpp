@@ -26,13 +26,23 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/ptree/Array.hpp"
+#ifndef NOMLIB_SYSTEM_PTREE_TYPES_HPP
+#define NOMLIB_SYSTEM_PTREE_TYPES_HPP
 
-// Forward declarations
-#include "nomlib/system/ptree/Value.hpp"
+#include <map>
+
+#include "nomlib/config.hpp"
+#include "nomlib/system/ptree/ptree_config.hpp"
+#include "nomlib/system/ptree/VString.hpp"
+#include "nomlib/system/ptree/ptree_forwards.hpp" // nom::Value
 
 namespace nom {
 
-// Stubbed file; reserved for future implementation
+typedef std::pair<VString, Value> ObjectPair;
+typedef std::map<VString, Value> Object;
+typedef std::map<VString, Value>::const_iterator ObjectConstIterator;
+typedef std::map<VString, Value>::iterator ObjectIterator;
 
 } // namespace nom
+
+#endif // include guard defined

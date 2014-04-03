@@ -41,14 +41,6 @@ ValueIteratorBase::~ValueIteratorBase ( void )
   //NOM_LOG_TRACE(NOM);
 }
 
-ValueIteratorBase::ValueIteratorBase( const ArrayIterator& itr ) :
-  array_ ( itr ),
-  type_ ( IteratorType::ArrayValues )
-{
-  //NOM_LOG_TRACE(NOM);
-  // this->iterator_.array_ = new ArrayIterator( itr );
-}
-
 ValueIteratorBase::ValueIteratorBase( const ObjectIterator& itr ) :
   object_ ( itr ),
   type_ ( IteratorType::ObjectValues )
@@ -81,9 +73,8 @@ const char* ValueIteratorBase::key( void ) const
     }
     else
     {
-      NOM_DUMP("index");
       std::string index = std::to_string( this->object_->first.index() );
-      NOM_DUMP(index);
+
       return index.c_str();
     }
   }
@@ -140,7 +131,7 @@ void ValueIteratorBase::copy( const SelfType& other )
     // this->iterator_.object_ = other.iterator_.object_;
   // }
 
-  this->array_ = other.array_;
+  // this->array_ = other.array_;
   this->object_ = other.object_;
   this->type_ = other.type();
 }
@@ -150,7 +141,8 @@ ValueIteratorBase::ValueTypeReference ValueIteratorBase::dereference( void ) con
   if( this->type() == IteratorType::ArrayValues )
   {
     // return this->iterator_.array_->ref();
-    return this->array_->ref();
+    // return this->object_->ref();
+    return this->object_->second;
   }
   else if( this->type() == IteratorType::ObjectValues )
   {
@@ -171,7 +163,8 @@ ValueIteratorBase::ValueTypePointer ValueIteratorBase::pointer( void ) const
   if( this->type() == IteratorType::ArrayValues )
   {
     // return this->iterator_.array_->get();
-    return this->array_->get();
+    // return this->object_->get();
+    return this->object_->second.get();
   }
   else if( this->type() == IteratorType::ObjectValues )
   {
@@ -191,7 +184,7 @@ bool ValueIteratorBase::operator ==( const SelfType& other ) const
   if( this->type() == IteratorType::ArrayValues )
   {
     // return this->iterator_.array_ == other.iterator_.array_;
-    return this->array_ == other.array_;
+    return this->object_ == other.object_;
   }
   else if( this->type() == IteratorType::ObjectValues )
   {
@@ -209,7 +202,7 @@ bool ValueIteratorBase::operator !=( const SelfType& other ) const
   if( this->type() == IteratorType::ArrayValues )
   {
     // return ! ( this->iterator_.array_ == other.iterator_.array_ );
-    return ! ( this->array_ == other.array_ );
+    return ! ( this->object_ == other.object_ );
   }
   else if( this->type() == IteratorType::ObjectValues )
   {
@@ -232,7 +225,7 @@ void ValueIteratorBase::increment( void )
   if( this->type() == IteratorType::ArrayValues )
   {
     // ++this->iterator_.array_;
-    ++this->array_;
+    ++this->object_;
   }
   else if( this->type() == IteratorType::ObjectValues )
   {
@@ -250,7 +243,7 @@ void ValueIteratorBase::decrement( void )
   if( this->type() == IteratorType::ArrayValues )
   {
     // --this->iterator_.array_;
-    --this->array_;
+    --this->object_;
   }
   else if( this->type() == IteratorType::ObjectValues )
   {
@@ -268,7 +261,7 @@ ValueIteratorBase::DifferenceType ValueIteratorBase::distance( const SelfType& o
   if( this->type() == IteratorType::ArrayValues )
   {
     // return std::distance( this->iterator_.array_, other.iterator_.array_ );
-    return std::distance( this->array_, other.array_ );
+    return std::distance( this->object_, other.object_ );
   }
   else if( this->type() == IteratorType::ObjectValues )
   {

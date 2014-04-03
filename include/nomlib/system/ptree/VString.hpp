@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/helpers.hpp"
+#include "nomlib/system/helpers.hpp" // priv::duplicate_string
 #include "nomlib/system/ptree/ptree_config.hpp"
 #include "nomlib/system/ptree/ptree_forwards.hpp"
 

@@ -61,9 +61,6 @@ class ValueConstIterator: public ValueIteratorBase
     ValueConstIterator( const ValueConstIterator& copy );
 
     /// \brief Copy constructor
-    ValueConstIterator( const ArrayIterator& itr );
-
-    /// \brief Copy constructor
     ValueConstIterator( const ObjectIterator& itr );
 
     SelfType& operator =( const DerivedType& other );

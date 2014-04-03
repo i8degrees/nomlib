@@ -442,6 +442,12 @@ sint do_value_refactoring_test_one( void )
   value["arr"].push_back( 2 );
   value["arr"].push_back( 3 );
   value["arr"].push_back( 0 );
+
+  value["arr"][0] = -8;   // Replaces the element at index
+  value["arr"][1] = 2;    // Replaces the element at index
+  value["arr"][2] = 3;    // Replaces the element at index
+  value["arr"][3] = 0;    // Replaces the element at index
+  value["arr"][4] = -666; // Replaces the element at index
   NOM_DUMP(value);
 
   // Creates an empty object node unless obj is non-null.
@@ -473,25 +479,28 @@ NOM_DUMP( fp->stringify( testme2 ) );
   value["o"] = 2u;
 NOM_DUMP(value);
 
-  Value arr( nom::Value::ValueType::ArrayValues );
-  value["o"].push_back(arr);
+  // This should log an err -- multi-depth array nodes are NOT supported.
+  // Value arr( nom::Value::ValueType::ArrayValues );
+  // value["o"].push_back(arr);
 
   // This should log an err -- multi-depth array nodes are NOT supported.
-  value["o"].push_back(arr);
+  // value["o"].push_back(arr);
 
 NOM_DUMP(value);
 
 // exit(0);
 
   Value arr2( nom::Value::ValueType::ArrayValues );
-  // arr2[0] = -64;
-  // arr2[1] = 32;
-  // arr2[2] = -666;
-  // arr2[3] = 666;
-  arr2[0].push_back( -64 );
-  arr2[1].push_back( 32 );
-  arr2[2].push_back( -666 );
-  arr2[3].push_back( 666 );
+  arr2[0] = -64;
+  arr2[1] = 32;
+  arr2[2] = -666;
+  arr2[3] = 666;
+
+  // Err
+  // arr2[0].push_back( -64 );
+  // arr2[1].push_back( 32 );
+  // arr2[2].push_back( -666 );
+  // arr2[3].push_back( 666 );
 
 // FIXME: Value is unassigned when trying to use get_int()
 NOM_DUMP(arr2[0].get_int() );
@@ -509,12 +518,21 @@ NOM_DUMP(arr2);
     NOM_DUMP( *itr );
   }
 
-  // FIXME: This should display the first object of the "cards" array --
-  // see ttcards.git/Resources/cards.json.
-  nom::Value val = value["cards"][1];
-  NOM_DUMP(val);
+  // Display the first object of the "cards" object -- see also:
+  // ttcards.git/Resources/cards.json
+  Value n;
+  n["id"] = 0;
+  n["element"] = 0;
+  n["type"] = 2;
+  n["level"] = 4;
 
-// exit(0);
+  Value node;
+  node["Geezard"] = n;
+
+  nom::Value root;
+  root["cards"] = node;
+  NOM_DUMP(root);
+
   return NOM_EXIT_SUCCESS;
 }
 
@@ -575,12 +593,12 @@ sint main( int argc, char* argv[] )
   //   return NOM_EXIT_FAILURE;
   // }
 
-  // ret = do_value_refactoring_test_one();
-  // if( ret != NOM_EXIT_SUCCESS )
-  // {
-  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
-  //   return NOM_EXIT_FAILURE;
-  // }
+  ret = do_value_refactoring_test_one();
+  if( ret != NOM_EXIT_SUCCESS )
+  {
+    nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+    return NOM_EXIT_FAILURE;
+  }
 
   ret = do_xml_test_one();
   if( ret != NOM_EXIT_SUCCESS )
@@ -589,12 +607,12 @@ sint main( int argc, char* argv[] )
     return NOM_EXIT_FAILURE;
   }
 
-  ret = do_xml_test_two();
-  if( ret != NOM_EXIT_SUCCESS )
-  {
-    nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
-    return NOM_EXIT_FAILURE;
-  }
+  // ret = do_xml_test_two();
+  // if( ret != NOM_EXIT_SUCCESS )
+  // {
+  //   nom::DialogMessageBox( NOM_UNIT_TEST(ret), "Failed unit test " + std::to_string(ret) );
+  //   return NOM_EXIT_FAILURE;
+  // }
 
   // ret = do_xml_test_three();
   // if( ret != NOM_EXIT_SUCCESS )

@@ -46,12 +46,6 @@ ValueConstIterator::ValueConstIterator( const ValueConstIterator& copy )
   this->copy( copy );
 }
 
-ValueConstIterator::ValueConstIterator( const ArrayIterator& itr ) :
-  ValueIteratorBase ( itr )
-{
-  //NOM_LOG_TRACE(NOM);
-}
-
 ValueConstIterator::ValueConstIterator( const ObjectIterator& itr ) :
   ValueIteratorBase ( itr )
 {

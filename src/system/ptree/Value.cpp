@@ -34,11 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-// Static initialization
+// Static initializations
 const Value Value::null = Value();
 
 Value::Value( void )  :
-  type_ ( ValueType::Null ) // type 0
+  type_ ( ValueType::Null )
 {
   // NOM_LOG_TRACE(NOM);
 }
@@ -47,11 +47,11 @@ Value::Value( void )  :
 Value::~Value( void )
 {
   // NOM_LOG_TRACE(NOM);
-
+/*
   if( this->array_valid() )
   {
     // this->value_.array_->clear();
-    for( auto itr = this->value_.array_->begin(); itr != this->value_.array_->end(); ++itr )
+    for( auto itr = this->value_.object_->begin(); itr != this->value_.object_->end(); ++itr )
     // for( auto itr = this->value_.array_->begin(); itr != this->value_.array_->end(); --itr )
     {
       if( itr->array_valid() )
@@ -68,7 +68,9 @@ Value::~Value( void )
     // delete this->value_.array_;
     // this->value_.array_ = nullptr;
   }
-  else if( this->object_valid() )
+*/
+  // else
+  if( this->object_valid() )
   {
     // this->value_.object_->clear();
     // for( auto itr = this->value_.object_->end(); itr != this->value_.object_->begin(); --itr )
@@ -85,6 +87,7 @@ Value::~Value( void )
         // delete itr->second.value_.object_;
       }
     }
+    // this->value_.object_->clear();
     // delete this->value_.object_;
     // this->value_.object_ = nullptr;
   }
@@ -157,16 +160,8 @@ Value::Value( const Value& copy ) :
     }
 
     case ValueType::ArrayValues:
-    {
-      // this->value_.array_ = new Array( *copy.value_.array_ );
-      // this->array_ = copy.array_;
-      this->value_.array_ = copy.value_.array_;
-      break;
-    }
     case ValueType::ObjectValues:
     {
-      // this->value_.object_ = new Object( *copy.value_.object_ );
-      // this->object_ = copy.object_;
       this->value_.object_ = copy.value_.object_;
       break;
     }
@@ -175,66 +170,6 @@ Value::Value( const Value& copy ) :
 
 Value::SelfType& Value::operator =( const SelfType& other )
 {
-/*
-  this->type_ = other.type();
-
-  switch( other.type() )
-  {
-    default:
-    case ValueType::Null:
-    {
-      // Do nothing
-      break;
-    }
-
-    case ValueType::SignedInteger:
-    {
-      this->value_.int_ = other.value_.int_;
-      break;
-    }
-
-    case ValueType::UnsignedInteger:
-    {
-      this->value_.uint_ = other.value_.uint_;
-      break;
-    }
-
-    case ValueType::RealNumber:
-    {
-      this->value_.real_ = other.value_.real_;
-      break;
-    }
-
-    case ValueType::String:
-    {
-      this->value_.string_ = other.value_.string_;
-      break;
-    }
-
-    case ValueType::Boolean:
-    {
-      this->value_.bool_ = other.value_.bool_;
-      break;
-    }
-
-    case ValueType::ArrayValues:
-    {
-      this->value_.array_ = other.value_.array_;
-      break;
-    }
-
-    case ValueType::ObjectValues:
-    {
-      this->value_.object_ = other.value_.object_;
-      break;
-    }
-  }
-
-  this->string_allocated_ = other.string_allocated_;
-
-  return *this;
-*/
-
   Value temp( other );
 
   this->swap( temp );
@@ -309,13 +244,13 @@ bool Value::operator <( const Value& other ) const
 
     case ValueType::ArrayValues:
     {
-      int delta = int ( this->value_.array_->size() - other.value_.array_->size() );
+      int delta = int ( this->value_.object_->size() - other.value_.object_->size() );
 
       if( delta ) return delta < 0;
 
       break;
 
-      return( *this->value_.array_ ) < ( *other.value_.array_ );
+      return( *this->value_.object_ ) < ( *other.value_.object_ );
 
       break;
     }
@@ -409,8 +344,8 @@ bool Value::operator == ( const Value& other ) const
 
     case ValueType::ArrayValues:
     {
-      return this->value_.array_->size() == other.value_.array_->size()
-      && ( *this->value_.array_ ) == ( *other.value_.array_ );
+      return this->value_.object_->size() == other.value_.object_->size()
+      && ( *this->value_.object_ ) == ( *other.value_.object_ );
 
       break;
     }
@@ -463,7 +398,7 @@ Value::Value( enum ValueType type ) :
 
     case ValueType::ArrayValues:
     {
-      this->value_.array_ = new Array();
+      this->value_.object_ = new Object();
       break;
     }
 
@@ -476,28 +411,28 @@ Value::Value( enum ValueType type ) :
 }
 
 Value::Value( sint val ) :
-  type_ ( ValueType::SignedInteger ) // type 1
+  type_ ( ValueType::SignedInteger )
 {
   //NOM_LOG_TRACE(NOM);
   this->value_.int_ = val;
 }
 
 Value::Value( uint val ) :
-  type_ ( ValueType::UnsignedInteger ) // type 2
+  type_ ( ValueType::UnsignedInteger )
 {
   //NOM_LOG_TRACE(NOM);
   this->value_.uint_ = val;
 }
 
 Value::Value( double val ) :
-  type_ ( ValueType::RealNumber ) // type 3
+  type_ ( ValueType::RealNumber )
 {
   //NOM_LOG_TRACE(NOM);
   this->value_.real_ = val;
 }
 
 Value::Value( const char* val ) :
-  type_ ( ValueType::String ) // type 4
+  type_ ( ValueType::String )
 {
   //NOM_LOG_TRACE(NOM);
   uint size = strlen( val );
@@ -506,7 +441,7 @@ Value::Value( const char* val ) :
 }
 
 Value::Value( const std::string& val ) :
-  type_ ( ValueType::String ) // type 4
+  type_ ( ValueType::String )
 {
   //NOM_LOG_TRACE(NOM);
   uint size = val.length();
@@ -515,23 +450,14 @@ Value::Value( const std::string& val ) :
 }
 
 Value::Value( bool val ) :
-  type_ ( ValueType::Boolean ) // type 5
+  type_ ( ValueType::Boolean )
 {
   //NOM_LOG_TRACE(NOM);
   this->value_.bool_ = val;
 }
 
-Value::Value( const std::vector<SelfType>& val ) :
-  type_ ( ValueType::ArrayValues ) // type 6
-
-{
-  //NOM_LOG_TRACE(NOM);
-  this->value_.array_ = new Array( val );
-  // this->array_ = val;
-}
-
 Value::Value( const Object& val ) :
-  type_ ( ValueType::ObjectValues ) // type 7
+  type_ ( ValueType::ObjectValues )
 {
   //NOM_LOG_TRACE(NOM);
   this->value_.object_ =  new Object( val );
@@ -744,7 +670,7 @@ bool Value::array_valid( void ) const
 {
   if( this->array_type() )
   {
-    if( this->value_.array_ != nullptr )
+    if( this->value_.object_ != nullptr )
     {
       return true;
     }
@@ -766,17 +692,19 @@ bool Value::object_valid( void ) const
   return false;
 }
 
-const Array Value::array( void ) const
+const Object Value::array( void ) const
 {
   // NOM_ASSERT( this->array_type() );
 
-  if( this->array_valid() )
+  if( this->object_valid() )
   {
-    return Array( *this->value_.array_ );
+    // return Array( *this->value_.array_ );
+    return Object( *this->value_.object_ );
   }
 
   // Err; not initialized..!
-  return Array();
+  // return Array();
+  return Object();
 
   // return this->array_;
 }
@@ -808,7 +736,7 @@ uint Value::size( void ) const
     {
       if( this->array_valid() )
       {
-        return this->value_.array_->size();
+        return this->value_.object_->size();
       }
       return 0; // Not initialized
 
@@ -840,7 +768,7 @@ bool Value::empty( void )
     {
       if( this->array_valid() )
       {
-        return this->value_.array_->empty();
+        return this->value_.object_->empty();
       }
 
       break;
@@ -873,7 +801,7 @@ void Value::clear( void )
     {
       if( this->array_valid() )
       {
-        this->value_.array_->clear();
+        this->value_.object_->clear();
       }
 
       break;
@@ -894,8 +822,9 @@ void Value::clear( void )
 // Derives from JsonCpp implementation
 Value& Value::operator[]( ArrayIndex index )
 {
-  NOM_DUMP(index);
-  return *this;
+  // NOM_DUMP("aaa");
+  // NOM_DUMP(index);
+  // return *this;
 
   NOM_ASSERT( this->null_type() || this->array_type() );
 
@@ -919,6 +848,7 @@ Value& Value::operator[]( ArrayIndex index )
 
   ObjectPair default_value( key, Value::null );
 
+  // it = this->value_.object_->insert( it, default_value );
   it = this->value_.object_->insert( it, default_value );
 
   return (*it).second;
@@ -928,8 +858,8 @@ Value& Value::operator[]( ArrayIndex index )
 // Derives from JsonCpp implementation
 Value& Value::operator[]( int index )
 {
-  NOM_DUMP( index );
-  return *this;
+  // NOM_DUMP( index );
+  // return *this;
 
   NOM_ASSERT( index >= 0 );
 
@@ -939,32 +869,35 @@ Value& Value::operator[]( int index )
 // Derives from JsonCpp implementation
 const Value& Value::operator[]( ArrayIndex index ) const
 {
-  NOM_DUMP( index );
-  return *this;
+  // NOM_DUMP( index );
+  // return *this;
 
   NOM_ASSERT( this->null_type() || this->array_type() );
 
   if( this->null_type() )
   {
+    NOM_DUMP("n");
     return null;
   }
 
   VString key( index );
+
   ObjectConstIterator it = this->value_.object_->find( key );
 
   if( it == this->value_.object_->end() )
   {
+    NOM_DUMP('null');
     return null;
   }
-
+NOM_DUMP("ret");
   return (*it).second;
 }
 
 // Derives from JsonCpp implementation
 const Value& Value::operator[]( int index ) const
 {
-  NOM_DUMP(index);
-  return *this;
+  // NOM_DUMP(index);
+  // return *this;
 
   NOM_ASSERT( index >= 0 );
 
@@ -1019,23 +952,31 @@ Value& Value::operator[]( const std::string& key )
   return (*this)[ key.c_str() ];
 }
 
-void Value::push_back( const Value& val )
+Value& Value::push_back( const Value& val )
 {
+  // NOM_ASSERT( this->array_type() && val.array_type() );
+/*
   if( this->array_type() && val.array_type() )
   {
     NOM_LOG_ERR( NOM, "Multi-depth array nodes is not supported; use an object node for this functionality instead." );
     return;
   }
+
   else
   {
     if( ! this->array_valid() )
     {
       this->type_ = ValueType::ArrayValues;
-      this->value_.array_ = new Array();
+      this->value_.object_ = new Object();
     }
   }
+*/
+  // this->type_ = ValueType::ArrayValues;
+  // this->value_.object_->push_back( val );
 
-  this->value_.array_->push_back( val );
+  // return (*this)[ this->size() ] = val;
+
+  return (*this)[ ArrayIndex( this->size() )] = val;
 }
 
 Value Value::erase( const std::string& key )
@@ -1080,7 +1021,7 @@ Value::ConstIterator Value::begin( void ) const
 {
   if( this->array_valid() ) // ArrayIterator
   {
-    Value::ConstIterator itr = this->value_.array_->begin();
+    Value::ConstIterator itr = this->value_.object_->begin();
     // Value::ConstIterator itr = this->array_.begin();
     // Value::ConstIterator itr = this->array_[0].begin();
     return Value::ConstIterator( itr );
@@ -1101,7 +1042,7 @@ Value::ConstIterator Value::end( void ) const
 {
   if( this->array_valid() ) // ArrayIterator
   {
-    Value::ConstIterator itr = this->value_.array_->end();
+    Value::ConstIterator itr = this->value_.object_->end();
     // Value::ConstIterator itr = this->array_.end();
     return Value::ConstIterator( itr );
   }
@@ -1120,7 +1061,7 @@ Value::Iterator Value::begin( void )
 {
   if( this->array_valid() ) // ArrayIterator
   {
-    Value::Iterator itr = this->value_.array_->begin();
+    Value::Iterator itr = this->value_.object_->begin();
     // Value::Iterator itr = this->array_.begin();
     return Value::Iterator( itr );
   }
@@ -1139,7 +1080,7 @@ Value::Iterator Value::end( void )
 {
   if( this->array_valid() ) // ArrayIterator
   {
-    Value::Iterator itr = this->value_.array_->end();
+    Value::Iterator itr = this->value_.object_->end();
     // Value::Iterator itr = this->array_.end();
     return Value::Iterator( itr );
   }

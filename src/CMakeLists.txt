@@ -148,8 +148,6 @@ set ( SYSTEM_SOURCE
 file ( GLOB PTREE_HEADERS "${NOMLIB_HEADERS_DIR}/system/ptree/*.hpp" )
 set ( PTREE_SOURCE
       ${SRC_DIR}/system/ptree/Value.cpp
-      #${SRC_DIR}/system/ptree/Array.cpp
-      # ${SRC_DIR}/system/ptree/Object.cpp
       ${SRC_DIR}/system/ptree/VString.cpp
       ${SRC_DIR}/system/ptree/ValueIteratorBase.cpp
       ${SRC_DIR}/system/ptree/ValueIterator.cpp

@@ -34,10 +34,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/ptree/ptree_config.hpp"
+#include "nomlib/system/ptree/ptree_types.hpp"
 #include "nomlib/system/ptree/ptree_forwards.hpp"
 #include "nomlib/system/ptree/Value.hpp"
-#include "nomlib/system/ptree/Array.hpp" // nom::Array
-#include "nomlib/system/ptree/Object.hpp" // nom::Object
 
 namespace nom {
 
@@ -63,7 +62,6 @@ class ValueIteratorBase
     /// \brief Destructor.
     virtual ~ValueIteratorBase( void );
 
-    ValueIteratorBase( const ArrayIterator& itr );
     ValueIteratorBase( const ObjectIterator& itr );
 
     /// \brief query validity of the object.
@@ -113,16 +111,6 @@ class ValueIteratorBase
 
   private:
     enum IteratorType type( void ) const;
-
-    // FIXME?
-    // union ValueHolder
-    // {
-    //   ArrayIterator* array_;
-    //   ObjectIterator* object_;
-    // } iterator_;
-
-    /// \brief A pointer to the array type iterator
-    ArrayIterator array_;
 
     /// \brief A pointer to the object type iterator
     ObjectIterator object_;

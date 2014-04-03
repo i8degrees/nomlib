@@ -60,10 +60,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Property Tree
 
 #include <nomlib/system/ptree/ptree_config.hpp>
+#include "nomlib/system/ptree/ptree_types.hpp"
 #include <nomlib/system/ptree/ptree_forwards.hpp>
 #include <nomlib/system/ptree/Value.hpp>
-#include <nomlib/system/ptree/Array.hpp>
-#include <nomlib/system/ptree/Object.hpp>
 #include <nomlib/system/ptree/VString.hpp>
 #include <nomlib/system/ptree/ValueIteratorBase.hpp>
 #include <nomlib/system/ptree/ValueIterator.hpp>

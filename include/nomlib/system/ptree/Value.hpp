@@ -36,10 +36,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/helpers.hpp"
+#include "nomlib/system/helpers.hpp" // priv::duplicate_string
 #include "nomlib/system/ptree/ptree_config.hpp"
-#include "nomlib/system/ptree/Object.hpp" // nom::Object
-#include "nomlib/system/ptree/Array.hpp" // nom::Array
+#include "nomlib/system/ptree/ptree_types.hpp"
 
 namespace nom {
 
@@ -94,12 +93,10 @@ class Value
     /// \brief Copy constructor.
     Value( const Value& copy );
 
-    /// \brief Copy assignment overload.
-    ///
-    /// \TODO Conditional if like we do in copy constructor for value_.
+    /// \brief Copy assignment operator.
     Value::SelfType& operator =( const SelfType& other );
 
-    /// \brief Exchange the contents of the container.
+    /// \brief Exchange the contents of the container; copy & swap idiom.
     ///
     /// \remarks In particular, one must be careful to keep track of copying our
     /// char* strings as necessary.
@@ -108,32 +105,32 @@ class Value
     /// operator.
     void swap( Value& other );
 
-    /// \brief ...
+    /// \brief Lesser than comparison operator.
     ///
     /// \note Borrowed from JsonCpp library -- thanks!
     bool operator <( const Value& other ) const;
 
-    /// \brief ...
+    /// \brief Lesser than or equal to comparison operator.
     ///
     /// \note Borrowed from JsonCpp library -- thanks!
     bool operator <=( const Value& other ) const;
 
-    /// \brief ...
+    /// \brief Greater than or equal to comparison operator.
     ///
     /// \note Borrowed from JsonCpp library -- thanks!
     bool operator >=( const Value& other ) const;
 
-    /// \brief ...
+    /// \brief Greater than or equal to comparison operator.
     ///
     /// \note Borrowed from JsonCpp library -- thanks!
     bool operator >( const Value& other ) const;
 
-    /// \brief ...
+    /// \brief Equality comparison operator.
     ///
     /// \note Borrowed from JsonCpp library -- thanks!
     bool operator ==( const Value& other ) const;
 
-    /// \brief ...
+    /// \brief Not equal comparison operator.
     ///
     /// \note Borrowed from JsonCpp library -- thanks!
     bool operator !=( const Value& other ) const;
@@ -147,61 +144,60 @@ class Value
     Value( enum ValueType type );
 
     /// \brief Construct an object using a signed integer value.
-    Value( sint val ); // type 1
+    ///
+    /// \note Type 1
+    Value( sint val );
 
     /// \brief Construct an object using an unsigned (non-negative) integer
     /// value.
     ///
-    /// \FIXME The above constructor for signed integers seems to be overloading
-    /// this one, therefore breaking native support for this type.
-    Value( uint val ); // type 2
+    /// \remarks It may be necessary to append the 'u' symbol after the number
+    /// in order to have the compiler recognize the request and route to the
+    /// correct constructor.
+    ///
+    /// \note Type 2
+    Value( uint val );
 
     /// \brief Construct an object using a double-precision floating point
     /// "real" number value.
-    Value( double val ); // type 3
+    ///
+    /// \note Type 3
+    Value( double val );
 
-    /// \brief Construct an object with a C-style string value.
+    /// \brief Construct an object from a C-style string value.
     ///
     /// \remarks A duplicate copy of the passed C string value is made upon
     /// construction.
     ///
     /// \internal
-    /// \NOTE This constructor makes construction using string literals possible:
+    /// \note This constructor makes construction using string literals
+    /// possible:
     ///
     /// \code
     /// nom::Value( "string" );
     /// \endcode
     ///
-    /// Without this constructor, string literals were being overloaded by the
-    /// boolean constructor.
+    /// \note Without defining this constructor, string literals were being
+    /// overloaded by the boolean constructor.
     /// \endinternal
-    Value( const char* val ); // type 4
+    ///
+    /// \note Type 4
+    Value( const char* val );
 
-    /// \brief Construct an object with a std::string value.
-    Value( const std::string& val ); // type 4
+    /// \brief Construct an object from a C++ string value (std::string).
+    ///
+    /// \note Type 4
+    Value( const std::string& val );
 
     /// \brief Construct an object from a boolean value.
-    Value( bool val ); // type 5
+    ///
+    /// \note Type 5
+    Value( bool val );
 
-    /// \brief Construct an object with nom::Array values.
+    /// \brief Construct an object with either array or object node values.
     ///
-    /// \remarks An array is a simplified version of the nom::Object data
-    /// container; the container for an array holds references to nom::Value
-    /// objects.
-    ///
-    /// \note The constructed object may only contain a single nom::Array object
-    /// at a time.
-    Value( const std::vector<SelfType>& val ); // type 6
-
-    /// \brief Construct an object with nom::Object values.
-    ///
-    /// \remarks Each object holds a pointer to a nom::Value, or in other words,
-    /// a singly-list, and has no restrictions on size other than the free
-    /// memory required to store the values.
-    ///
-    /// \note The constructed object may only contain a single nom::Object
-    /// object at a time.
-    Value( const Object& val ); // type 7
+    /// \note Type 6 or 7
+    Value( const Object& val );
 
     /// \brief Internal helper method for comparing array & object node
     /// containers.
@@ -375,7 +371,7 @@ class Value
     ///
     /// \returns ~~Return-by-value cloned copy of the nom::Array pointer held by
     /// this object.~~
-    const Array array( void ) const;
+    const Object array( void ) const;
 
     /// \brief Obtain the object tree of the object.
     ///
@@ -410,13 +406,8 @@ class Value
     /// \param  val Unsigned integer of the element's index to return.
     ///
     /// \remarks It may be necessary to append the 'u' symbol after the number
-    /// in order to have the compiler recognize your request properly. (Signed
-    /// integers are the "default" literal integer type, at least on my
-    /// development system).
-    ///
-    /// \TODO Fix index methods -- VString, ValueBaseIterator & co; this method
-    /// call relies on our half-finished implementation stemming from the
-    /// VString class.
+    /// in order to have the compiler recognize the request and route to the
+    /// correct constructor.
     Value& operator[]( ArrayIndex index );
 
     Value& operator[]( int index );
@@ -447,7 +438,7 @@ class Value
     Value& operator[]( const std::string& key );
 
     /// \brief Insert array elements.
-    void push_back( const Value& val );
+    Value& push_back( const Value& val );
 
     /// \brief Remove the named member.
     ///
@@ -532,19 +523,9 @@ class Value
       uint uint_;           // Type 2
       double real_;         // Type 3
       bool bool_;           // Type 4
-
-      // FIXME: Memory leak is happening here.
       const char* string_;  // Type 5
-
-      // FIXME: I haven't figured out how to resolve the memory leaks that we
-      // get when these two variables below are pointers.
-      Array* array_;        // Type 6
-      Object* object_;      // Type 7
+      Object* object_;      // Type 6 and 7
     } value_;
-
-    // ValueConstIterator breaks if we try using these
-    // Array array_;           // Type 6
-    // Object object_;         // Type 7
 
     /// The type of value held in object container.
     enum ValueType type_;

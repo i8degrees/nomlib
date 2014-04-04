@@ -32,7 +32,7 @@ namespace nom {
 
 VString::VString( void )  :
   value_( nullptr ),
-  index_ ( 0 )
+  index_( 0 )
 {
   //NOM_LOG_TRACE(NOM);
 }
@@ -59,7 +59,7 @@ VString::VString( const char* key ) :
 }
 
 VString::VString( const std::string& key )  :
-  index_(0)
+  index_( 0 )
 {
   //NOM_LOG_TRACE(NOM);
 
@@ -109,7 +109,6 @@ bool VString::operator <( const VString& other ) const
   {
     return( this->index() < other.index() );
   }
-
 }
 
 bool VString::operator ==( const VString& other ) const

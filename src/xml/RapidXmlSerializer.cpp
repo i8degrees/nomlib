@@ -152,7 +152,7 @@ bool RapidXmlSerializer::write( const Value& source, rapidxml::xml_document<>& d
       rapidxml::xml_node<>* root_node = dest.allocate_node( rapidxml::node_element, this->stralloc( root_key, dest ) );
       dest.append_node( root_node );
 
-      nom::Object objects = itr->object();
+      Object objects = itr->object();
 
       // Iterate through each object and store every member's key / value pair
       // we find
@@ -225,7 +225,6 @@ bool RapidXmlSerializer::read( const std::string& input, Value& dest ) const
         NOM_DUMP( node_key );
       #endif
 
-      // if( this->unserialize_object( node, obj[node_key] ) == false )
       if( this->unserialize_object( node, obj[node_key] ) == false )
       {
         // TODO: Err handling

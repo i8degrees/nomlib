@@ -42,11 +42,10 @@ ValueIteratorBase::~ValueIteratorBase ( void )
 }
 
 ValueIteratorBase::ValueIteratorBase( const ObjectIterator& itr ) :
-  object_ ( itr ),
-  type_ ( IteratorType::ObjectValues )
+  object_( itr ),
+  type_( IteratorType::ObjectValues )
 {
   //NOM_LOG_TRACE(NOM);
-  // this->iterator_.object_ = new ObjectIterator( itr );
 }
 
 bool ValueIteratorBase::valid( void ) const
@@ -122,16 +121,6 @@ int ValueIteratorBase::index( void ) const
 
 void ValueIteratorBase::copy( const SelfType& other )
 {
-  // if( this->type() == IteratorType::ArrayValue )
-  // {
-    // this->iterator_.array_ = other.iterator_.array_;
-  // }
-  // else if( this->type() == IteratorType::ObjectValue )
-  // {
-    // this->iterator_.object_ = other.iterator_.object_;
-  // }
-
-  // this->array_ = other.array_;
   this->object_ = other.object_;
   this->type_ = other.type();
 }
@@ -162,15 +151,10 @@ ValueIteratorBase::ValueTypePointer ValueIteratorBase::pointer( void ) const
 {
   if( this->type() == IteratorType::ArrayValues )
   {
-    // return this->iterator_.array_->get();
-    // return this->object_->get();
     return this->object_->second.get();
   }
   else if( this->type() == IteratorType::ObjectValues )
   {
-    // return this->iterator_.object_->value->get();
-    // return this->object_->value;
-    // return this->object_->value->get();
     return this->object_->second.get();
   }
   else // IteratorType::NulLValue
@@ -183,12 +167,10 @@ bool ValueIteratorBase::operator ==( const SelfType& other ) const
 {
   if( this->type() == IteratorType::ArrayValues )
   {
-    // return this->iterator_.array_ == other.iterator_.array_;
     return this->object_ == other.object_;
   }
   else if( this->type() == IteratorType::ObjectValues )
   {
-    // return this->iterator_.object_ == other.iterator_.object_;
     return this->object_ == other.object_;
   }
   else // IteratorType::NullValue
@@ -201,12 +183,10 @@ bool ValueIteratorBase::operator !=( const SelfType& other ) const
 {
   if( this->type() == IteratorType::ArrayValues )
   {
-    // return ! ( this->iterator_.array_ == other.iterator_.array_ );
     return ! ( this->object_ == other.object_ );
   }
   else if( this->type() == IteratorType::ObjectValues )
   {
-    // return ! ( this->iterator_.object_ == other.iterator_.object_ );
     return ! ( this->object_ == other.object_ );
   }
   else // IteratorType::NullValue
@@ -224,12 +204,10 @@ void ValueIteratorBase::increment( void )
 {
   if( this->type() == IteratorType::ArrayValues )
   {
-    // ++this->iterator_.array_;
     ++this->object_;
   }
   else if( this->type() == IteratorType::ObjectValues )
   {
-    // ++this->iterator_.object_;
     ++this->object_;
   }
   else // IteratorType::NullValue
@@ -242,12 +220,10 @@ void ValueIteratorBase::decrement( void )
 {
   if( this->type() == IteratorType::ArrayValues )
   {
-    // --this->iterator_.array_;
     --this->object_;
   }
   else if( this->type() == IteratorType::ObjectValues )
   {
-    // --this->iterator_.object_;
     --this->object_;
   }
   else // IteratorType::NullValue
@@ -260,12 +236,10 @@ ValueIteratorBase::DifferenceType ValueIteratorBase::distance( const SelfType& o
 {
   if( this->type() == IteratorType::ArrayValues )
   {
-    // return std::distance( this->iterator_.array_, other.iterator_.array_ );
     return std::distance( this->object_, other.object_ );
   }
   else if( this->type() == IteratorType::ObjectValues )
   {
-    // return std::distance( this->iterator_.object_, other.iterator_.object_ );
     return std::distance( this->object_, other.object_ );
   }
   else // IteratorType::NullValue

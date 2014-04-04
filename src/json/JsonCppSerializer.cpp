@@ -150,7 +150,7 @@ bool JsonCppSerializer::write( const Value& source, Json::Value& dest ) const
           NOM_DUMP( member.key() );
         #endif
 
-        nom::Object objects = itr->object();
+        Object objects = itr->object();
 
         // Iterate through each object and store every member's key / value pair
         // we find
@@ -283,9 +283,7 @@ bool JsonCppSerializer::read( const Json::Value& source, Value& dest ) const
   // Temporary buffering objects we use to collect input in form of JSON objects;
   // we append individual objects to the overall container as we iterate through
   // the entire underlying container.
-  // Object object, objects;
   Value object, objects;
-  // Array array;
   Value array;
 
   // Begin iterating through the container's objects to begin transferring to
@@ -721,9 +719,7 @@ bool JsonCppSerializer::write_array_value( const Value& object, Json::Value& des
 bool JsonCppSerializer::serialize_array( const Value& object, Json::Value& dest ) const
 {
   uint index = 0;
-  Json::Value arr;
 
-  // Array array = object.array();
   Value array = object.array();
 
   for( auto itr = array.begin(); itr != array.end(); ++itr )

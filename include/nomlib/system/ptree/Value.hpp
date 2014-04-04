@@ -360,7 +360,7 @@ class Value
       }
       else // Handle unknown cases
       {
-        return -1;
+        return Value::null;
       }
     }
 

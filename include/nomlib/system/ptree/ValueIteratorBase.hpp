@@ -72,16 +72,14 @@ class ValueIteratorBase
 
     /// \brief Obtain the index of the referenced value.
     ///
-    /// \returns Returns the index of the referenced array container on success,
-    /// -1 if this is not an ArrayIterator type.
-    ///
-    /// \TODO Implement
+    /// \returns The array element's index on success, or -1 if the referenced
+    /// value is not an array element.
     int index( void ) const;
 
     /// \brief Obtain the current index or member key value.
     ///
-    /// \returns Member key of the referenced value on success, null-terminated
-    /// string if not an object type or the member key is not found.
+    /// \returns Member key of the referenced value on success, nullptr if not
+    /// not an object type or the member key is not found.
     ///
     /// \remarks Member key is optional.
     ///

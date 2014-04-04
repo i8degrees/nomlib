@@ -698,15 +698,11 @@ const Object Value::array( void ) const
 
   if( this->object_valid() )
   {
-    // return Array( *this->value_.array_ );
     return Object( *this->value_.object_ );
   }
 
   // Err; not initialized..!
-  // return Array();
   return Object();
-
-  // return this->array_;
 }
 
 const Object Value::object( void ) const
@@ -720,8 +716,6 @@ const Object Value::object( void ) const
 
   // Err; not initialized..!
   return Object();
-
-  // return this->object_;
 }
 
 uint Value::size( void ) const
@@ -822,10 +816,6 @@ void Value::clear( void )
 // Derives from JsonCpp implementation
 Value& Value::operator[]( ArrayIndex index )
 {
-  // NOM_DUMP("aaa");
-  // NOM_DUMP(index);
-  // return *this;
-
   NOM_ASSERT( this->null_type() || this->array_type() );
 
   if( this->null_type() )
@@ -843,24 +833,18 @@ Value& Value::operator[]( ArrayIndex index )
   if( it != this->value_.object_->end() && (*it).first == key )
   {
     return (*it).second;
-    // return it->second;
   }
 
   ObjectPair default_value( key, Value::null );
 
-  // it = this->value_.object_->insert( it, default_value );
   it = this->value_.object_->insert( it, default_value );
 
   return (*it).second;
-  // return it->second;
 }
 
 // Derives from JsonCpp implementation
 Value& Value::operator[]( int index )
 {
-  // NOM_DUMP( index );
-  // return *this;
-
   NOM_ASSERT( index >= 0 );
 
   return (*this)[ ArrayIndex( index ) ];
@@ -869,14 +853,10 @@ Value& Value::operator[]( int index )
 // Derives from JsonCpp implementation
 const Value& Value::operator[]( ArrayIndex index ) const
 {
-  // NOM_DUMP( index );
-  // return *this;
-
   NOM_ASSERT( this->null_type() || this->array_type() );
 
   if( this->null_type() )
   {
-    NOM_DUMP("n");
     return null;
   }
 
@@ -886,19 +866,15 @@ const Value& Value::operator[]( ArrayIndex index ) const
 
   if( it == this->value_.object_->end() )
   {
-    NOM_DUMP('null');
     return null;
   }
-NOM_DUMP("ret");
+
   return (*it).second;
 }
 
 // Derives from JsonCpp implementation
 const Value& Value::operator[]( int index ) const
 {
-  // NOM_DUMP(index);
-  // return *this;
-
   NOM_ASSERT( index >= 0 );
 
   return (*this)[ ArrayIndex( index ) ];
@@ -906,8 +882,6 @@ const Value& Value::operator[]( int index ) const
 
 Value& Value::operator[]( const char* key )
 {
-  // NOM_DUMP(key);
-
   // An object node container is required for this method call.
   if( ! this->object_valid() )
   {
@@ -919,15 +893,12 @@ Value& Value::operator[]( const char* key )
 
   if( res == this->value_.object_->end() ) // No match found!
   {
-    // NOM_DUMP("no match");
-
     this->value_.object_->insert( std::pair<VString, Value>( key, Value() ) );
 
     auto res2 = this->value_.object_->find( key );
 
     if( res2 != this->value_.object_->end() ) // Match found!
     {
-      // NOM_DUMP("MATCH!!!!");
       return res2->second;
     }
     else // No match found
@@ -937,8 +908,6 @@ Value& Value::operator[]( const char* key )
   }
   else // Match found!
   {
-    // NOM_DUMP("MATCH!!!!");
-
     this->value_.object_->insert( std::pair<VString, Value>( key, res->second ) );
 
     return res->second;
@@ -1022,15 +991,11 @@ Value::ConstIterator Value::begin( void ) const
   if( this->array_valid() ) // ArrayIterator
   {
     Value::ConstIterator itr = this->value_.object_->begin();
-    // Value::ConstIterator itr = this->array_.begin();
-    // Value::ConstIterator itr = this->array_[0].begin();
     return Value::ConstIterator( itr );
   }
   else if ( this->object_valid() ) // ObjectIterator
   {
     Value::ConstIterator itr = this->value_.object_->begin();
-    // Value::ConstIterator itr = this->object_.begin();
-    // ObjectConstIterator itr = this->object_.begin();
     return Value::ConstIterator( itr );
   }
 
@@ -1043,13 +1008,11 @@ Value::ConstIterator Value::end( void ) const
   if( this->array_valid() ) // ArrayIterator
   {
     Value::ConstIterator itr = this->value_.object_->end();
-    // Value::ConstIterator itr = this->array_.end();
     return Value::ConstIterator( itr );
   }
   else if ( this->object_valid() ) // ObjectIterator
   {
     Value::ConstIterator itr = this->value_.object_->end();
-    // Value::ConstIterator itr = this->object_.end();
     return Value::ConstIterator( itr );
   }
 
@@ -1062,18 +1025,15 @@ Value::Iterator Value::begin( void )
   if( this->array_valid() ) // ArrayIterator
   {
     Value::Iterator itr = this->value_.object_->begin();
-    // Value::Iterator itr = this->array_.begin();
     return Value::Iterator( itr );
   }
   else if ( this->object_valid() ) // ObjectIterator
   {
     Value::Iterator itr = this->value_.object_->begin();
-    // Value::Iterator itr = this->object_.begin();
     return Value::Iterator( itr );
   }
 
-  // Error; returning NullValue object
-  return ValueIterator(); // Not an array or object type
+  return ValueIterator(); // Error: not an array or object type
 }
 
 Value::Iterator Value::end( void )
@@ -1081,23 +1041,19 @@ Value::Iterator Value::end( void )
   if( this->array_valid() ) // ArrayIterator
   {
     Value::Iterator itr = this->value_.object_->end();
-    // Value::Iterator itr = this->array_.end();
     return Value::Iterator( itr );
   }
   else if ( this->object_valid() ) // ObjectIterator
   {
     Value::Iterator itr = this->value_.object_->end();
-    // Value::Iterator itr = this->object_.end();
     return Value::Iterator( itr );
   }
 
-  // Error; returning NullValue object
-  return ValueIterator(); // Not an array or object type
+  return ValueIterator(); // Error: not an array or object type
 }
 
 const std::string Value::dump( const Value& object, int depth ) const
 {
-  // uint index = 0;
   std::string key;
   std::stringstream os; // Output buffer
 
@@ -1133,12 +1089,12 @@ const std::string Value::dump( const Value& object, int depth ) const
         {
           os << ": ";
         }
+
         os << this->dump_value( member->ref() );
         os << ")";
       }
       else
       {
-        // os << this->dump_value( object[index] );
         os << this->dump_value( member->ref() );
         os << ")";
       }

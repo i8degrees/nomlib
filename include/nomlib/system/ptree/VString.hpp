@@ -85,6 +85,8 @@ class VString
     const std::string get_string( void ) const;
 
     /// \brief Getter for the contained array element index.
+    ///
+    /// \returns Index of the element.
     ArrayIndex index( void ) const;
 
   private:

@@ -42,7 +42,7 @@ function usage_info()
 function osx_deps()
 {
   DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}_osx-dependencies.tar.gz"
-  INCLUSION_MASKS="osx/ common/"
+  INCLUSION_MASKS="osx/ common/ README.md"
 
   ${TAR_BIN} ${TAR_ARGS} ${DEPS_FILENAME} --exclude=${EXCLUSION_MASKS} ${INCLUSION_MASKS}
 }
@@ -50,7 +50,7 @@ function osx_deps()
 function ios_deps()
 {
   DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}_ios-dependencies.tar.gz"
-  INCLUSION_MASKS="ios/ common/"
+  INCLUSION_MASKS="ios/ common/ README.md"
 
   ${TAR_BIN} ${TAR_ARGS} ${DEPS_FILENAME} --exclude=${EXCLUSION_MASKS} ${INCLUSION_MASKS}
 }
@@ -58,7 +58,7 @@ function ios_deps()
 function windows_deps()
 {
   DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}_windows-dependencies.zip"
-  INCLUSION_MASKS="windows/ common/"
+  INCLUSION_MASKS="windows/ common/ README.md"
 
   ${ZIP_BIN} ${ZIP_ARGS} ${DEPS_FILENAME} ${INCLUSION_MASKS} -x ${EXCLUSION_MASKS}
 }

@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 #include <fstream>
 
-#include "nomlib/json/jsoncpp/json.h" // JsonCpp library
+#include "jsoncpp/json.h"
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/ISerializer.hpp"

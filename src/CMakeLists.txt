@@ -87,12 +87,6 @@ set ( JSON_SOURCE
       ${SRC_DIR}/json/JsonCppSerializer.cpp
     )
 
-# third-party jsoncpp library
-file ( GLOB JSONCPP_HEADERS "${JSONCPP_HEADERS_DIR}/*.hpp" )
-set ( JSONCPP_SOURCE
-      ${SRC_DIR}/json/jsoncpp/jsoncpp.cpp
-    )
-
 # XML module
 file ( GLOB XML_HEADERS "${NOMLIB_HEADERS_DIR}/xml/*.hpp" )
 set ( XML_SOURCE
@@ -243,7 +237,7 @@ if( NOM_BUILD_JSON_UNIT )
   set ( NOMLIB_HEADERS
         ${NOMLIB_HEADERS}
         ${JSON_HEADERS}
-        ${JSONCPP_HEADERS}
+        ${JSONCPP_INCLUDE_DIR}
       )
   set ( NOMLIB_SOURCE
         ${NOMLIB_SOURCE}
@@ -325,7 +319,7 @@ source_group ( "include\\graphics\\shapes" FILES ${GRAPHICS_SHAPES_HEADERS} )
 source_group ( "include\\graphics\\sprite" FILES ${GRAPHICS_SPRITE_HEADERS} )
 source_group ( "include\\gui" FILES ${GUI_HEADERS} )
 source_group ( "include\\json" FILES ${JSON_HEADERS} )
-source_group ( "include\\json\\jsoncpp" FILES ${JSONCPP_HEADERS} )
+source_group ( "third-party\\common\\jsoncpp" FILES ${JSONCPP_INCLUDE_DIR} )
 source_group ( "include\\math" FILES ${MATH_HEADERS} )
 source_group ( "include\\system" FILES ${SYSTEM_HEADERS} )
 source_group ( "include\\system\\osx" FILES ${SYSTEM_OSX_HEADERS} )
@@ -341,7 +335,7 @@ source_group ( "src\\graphics\\shapes" FILES ${GRAPHICS_SHAPES_SOURCE} )
 source_group ( "src\\graphics\\sprite" FILES ${GRAPHICS_SPRITE_SOURCE} )
 source_group ( "src\\gui" FILES ${GUI_SOURCE} )
 source_group ( "src\\json" FILES ${JSON_SOURCE} )
-source_group ( "src\\json\\jsoncpp" FILES ${JSONCPP_SOURCE} )
+source_group ( "third-party\\common\\jsoncpp" FILES ${JSONCPP_SOURCE} )
 source_group ( "src\\math" FILES ${MATH_SOURCE} )
 source_group ( "src\\system" FILES ${SYSTEM_SOURCE} )
 

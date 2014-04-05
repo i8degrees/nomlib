@@ -40,84 +40,99 @@ RapidXmlSerializer::~RapidXmlSerializer( void )
   //NOM_LOG_TRACE(NOM);
 }
 
-bool RapidXmlSerializer::serialize( const Value& source, const std::string& output ) const
-{
-  std::ofstream fp;
-  rapidxml::xml_document<> doc;
-
-  this->append_decl( doc );
-
-  if( this->write( source, doc ) == false )
-  {
-    NOM_LOG_ERR ( NOM, "Failed to serialize data stream." );
-    return false;
-  }
-
-  fp.open( output );
-
-  if ( ! fp.is_open() || ! fp.good() )
-  {
-    NOM_LOG_ERR ( NOM, "Unable to write XML output in file: " + output );
-    return false;
-  }
-
-  fp << doc;
-
-  fp.close();
-
-  return true;
-}
-
-bool RapidXmlSerializer::unserialize( const std::string& input, Value& dest ) const
-{
-  std::stringstream fp_buffer;
-  std::string xml_document;
-  std::ifstream fp;
-
-  fp.open( input );
-
-  if ( ! fp.is_open() || ! fp.good() )
-  {
-    NOM_LOG_ERR ( NOM, "File access failure on file: " + input );
-    return false;
-  }
-
-  fp_buffer << fp.rdbuf();
-
-  xml_document = std::string( fp_buffer.str() );
-
-  if( this->read( xml_document, dest ) == false )
-  {
-    NOM_LOG_ERR( NOM, "Failure to write XML document in file: " + input );
-    return false;
-  }
-
-  fp.close();
-
-  return true;
-}
-
-const std::string RapidXmlSerializer::stringify( const Value& source ) const
+std::string RapidXmlSerializer::serialize ( const Value& source,
+                                            enum Features options
+                                          )
 {
   std::stringstream os;
-  rapidxml::xml_document<> doc;
-  Value buffer = source;
+  rapidxml::xml_document<> buffer;
 
-  if( this->read( os.str(), buffer ) == false )
+  // Append XML DOCTYPE to very top of document
+  this->append_decl( buffer );
+
+  if( this->write( source, buffer ) == false )
   {
-    NOM_LOG_ERR ( NOM, "Failed to read data stream in for stringifying." );
+    NOM_LOG_ERR ( NOM, "Could not serialize the source object." );
     return "\0";
   }
 
-  if( this->write( source, doc ) == false )
+  if( options == Features::HumanReadable )
   {
-    NOM_LOG_ERR ( NOM, "Failed to stringify data stream." );
-    return "\0";
+    // TODO
+  }
+  else // Features::Compact
+  {
+    // TODO
   }
 
-  os << doc;
+  os << buffer;
 
   return os.str();
+}
+
+Value RapidXmlSerializer::unserialize ( const std::string& source,
+                                        enum Features options
+                                      )
+{
+  Value output;
+
+  // Transform std::string filled with XML document to nom::Value
+  if( this->read( source, output ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not unserialize the input source object." );
+    return Value::null;
+  }
+
+  return output;
+}
+
+bool RapidXmlSerializer::save ( const Value& source,
+                                const std::string& filename,
+                                enum Features options
+                              )
+{
+  std::ofstream fp;
+
+  fp.open( filename );
+
+  if ( ! fp.is_open() || ! fp.good() )
+  {
+    NOM_LOG_ERR ( NOM, "Could not save output to file: " + filename );
+    return false;
+  }
+
+  // nom::Value to file
+  fp << this->serialize( source, options );
+
+  fp.close();
+
+  return true;
+}
+
+bool RapidXmlSerializer::load ( const std::string& filename,
+                                Value& output,
+                                enum Features options
+                              )
+{
+  std::ifstream fp;
+  std::stringstream buffer;
+
+  fp.open( filename );
+
+  if ( ! fp.is_open() || ! fp.good() )
+  {
+    NOM_LOG_ERR ( NOM, "Could not access file: " + filename );
+    return false;
+  }
+
+  buffer << fp.rdbuf();
+
+  // File input to nom::Value
+  output = this->unserialize( buffer.str(), options );
+
+  fp.close();
+
+  return true;
 }
 
 bool RapidXmlSerializer::write( const Value& source, rapidxml::xml_document<>& dest ) const

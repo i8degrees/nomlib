@@ -71,45 +71,64 @@ class RapidXmlSerializer: public ISerializer
   public:
     typedef RapidXmlSerializer SelfType;
 
-    /// \brief Serialization options.
-    ///
-    /// \TODO Implement options
-    enum Features
-    {
-      HumanReadable = 0,  // Default
-      Compact,            // No indention, whitespace, etc.
-      ParseComments       // Enable parsing of XML comments; <!-- -->
-    };
-
     RapidXmlSerializer( void );
     ~RapidXmlSerializer( void );
 
+    /// \brief Output a nom::Value object to a string.
+    ///
+    /// \param source nom::Value container to serialize from.
+    ///
+    /// \returns std::string with XML-conforming output on success, or a null-
+    /// terminated string on err.
+    ///
+    /// \note Implements IJsonSerializer::serialize interface.
+    std::string serialize ( const Value& source,
+                            // enum Features options = HumanReadable
+                           enum Features options = Compact
+                          );
+
+    /// \brief Parse JSON data as a nom::Value object.
+    ///
+    /// \param source std::string containing valid XML.
+    ///
+    /// \returns nom::Value object filled from XML-compliant input on success,
+    /// or nom::Value::null on err.
+    ///
+    /// \note Implements IJsonSerializer::serialize interface.
+    Value unserialize ( const std::string& source,
+                        // enum Features options = HumanReadable
+                        enum Features options = Compact
+                      );
+
     /// \brief Save nom::Value values to XML nodes.
     ///
-    /// \param source nom::Value container to serialize.
-    /// \param output Absolute file path to save resulting data to.
+    /// \param source nom::Value container to serialize from.
+    /// \param filename Absolute file path to output resulting data to.
     ///
     /// \remarks The source input will automatically have the standard XML
     /// DOCTYPE prepended onto the resulting output. See ::append_decl method
     /// for details.
     ///
     /// \note Implements IJsonSerializer::serialize interface.
-    bool serialize( const Value& source, const std::string& output ) const;
+    bool save ( const Value& source,
+                const std::string& filename,
+                // enum Features options = HumanReadable
+                enum Features options = Compact
+              );
 
     /// \brief Load data from a XML (.xml) file to a nom::Value object.
     ///
-    /// \param input  Absolute file path file to un-serialize.
-    /// \param dest   nom::Value container to store values in.
+    /// \param filename Absolute file path to data to unserialize from.
+    /// \param output nom::Value container to store resulting data in.
     ///
-    /// \note Implements IJsonSerializer::unserialize interface.
-    bool unserialize( const std::string& input, Value& dest ) const;
+    /// \note Implements IJsonSerializer::serialize interface.
+    bool load ( const std::string& filename,
+                Value& output,
+                // enum Features options = HumanReadable
+                enum Features options = Compact
+              );
 
-    /// \brief Obtain a C++ string of the XML objects stored.
-    ///
-    /// \param obj The nom::Value object to be serialized.
-    ///
-    /// \returns Serialized object as a std::string.
-    const std::string stringify( const Value& input ) const;
+    // const std::string stringify( const Value& source );
 
   private:
     bool write( const Value& source, rapidxml::xml_document<>& dest ) const;
@@ -122,7 +141,7 @@ class RapidXmlSerializer: public ISerializer
     bool serialize_array( const Value& object, const std::string& key, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const;
 
     /// \brief Internal helper method for serialization of object nodes.
-    bool serialize_object( const Value& object, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const;
+    bool serialize_object( const Value& object, const std::string& key, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const;
 
     bool read_value( const rapidxml::xml_node<>& object, Value& dest ) const;
 

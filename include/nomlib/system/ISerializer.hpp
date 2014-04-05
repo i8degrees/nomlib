@@ -39,8 +39,15 @@ namespace nom {
 class ISerializer
 {
   public:
-    typedef ISerializer SelfType;
+    /// \brief Serialization options.
+    enum Features
+    {
+      HumanReadable = 0,  // Default (indention, new lines, etc.)
+      Compact,            // No formatting applied (not human friendly)
+      ParseComments       // Enable reading of comments
+    };
 
+    typedef ISerializer SelfType;
     typedef SelfType* RawPtr;
 
     ISerializer( void )
@@ -53,10 +60,27 @@ class ISerializer
       //NOM_LOG_TRACE(NOM);
     }
 
-    virtual bool serialize( const Value& source, const std::string& output ) const = 0;
-    virtual bool unserialize( const std::string& input, Value& dest ) const = 0;
+    virtual std::string serialize ( const Value& source,
+                                    // enum Features options = HumanReadable
+                                   enum Features options = Compact
+                                  ) = 0;
 
-    virtual const std::string stringify( const Value& input ) const = 0;
+    virtual Value unserialize ( const std::string& source,
+                                // enum Features options = HumanReadable
+                               enum Features options = Compact
+                              ) = 0;
+
+    virtual bool save ( const Value& source,
+                        const std::string& filename,
+                        // enum Features options = HumanReadable
+                        enum Features options = Compact
+                      ) = 0;
+
+    virtual bool load ( const std::string& filename,
+                        Value& output,
+                        // enum Features options = HumanReadable
+                        enum Features options = Compact
+                      ) = 0;
 };
 
 } // namespace nom

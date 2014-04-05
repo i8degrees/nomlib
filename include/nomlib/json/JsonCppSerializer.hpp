@@ -63,41 +63,60 @@ class JsonCppSerializer: public ISerializer
   public:
     typedef JsonCppSerializer SelfType;
 
-    /// \brief Serialization options.
-    ///
-    /// \TODO Implement options
-    enum Features
-    {
-      HumanReadable = 0,  // Default
-      Compact,            // No indention, whitespace, etc.
-      ParseComments       // Enable parsing of JSON comments; /* */ && // styles
-    };
-
     JsonCppSerializer( void );
     ~JsonCppSerializer( void );
 
-    /// \brief Save nom::Value values to JSON objects.
+    /// \brief Output a nom::Value object to a string.
     ///
-    /// \param source nom::Value container to serialize.
-    /// \param output Absolute file path to save resulting data to.
+    /// \param source nom::Value container to serialize from.
     ///
-    /// \note Implements IJsonSerializer::serialize interface.
-    bool serialize( const Value& source, const std::string& output ) const;
-
-    /// \brief Load data from a JSON (.json) file to a nom::Value object.
-    ///
-    /// \param input  Absolute file path file to un-serialize.
-    /// \param dest   nom::Value container to store values in.
+    /// \returns std::string with JSON-conforming output on success, or a null-
+    /// terminated string on err.
     ///
     /// \note Implements IJsonSerializer::serialize interface.
-    bool unserialize( const std::string& input, Value& dest ) const;
+    std::string serialize ( const Value& source,
+                            // enum Features options = HumanReadable
+                           enum Features options = Compact
+                          );
 
-    /// \brief Obtain a C++ string of the JSON object(s) stored.
+    /// \brief Parse JSON data as a nom::Value object.
     ///
-    /// \param obj The nom::Value object to be serialized.
+    /// \param source std::string containing valid JSON.
     ///
-    /// \returns Serialized object as a std::string.
-    const std::string stringify( const Value& input ) const;
+    /// \returns nom::Value object filled from JSON-compliant input on success,
+    /// or nom::Value::null on err.
+    ///
+    /// \note Implements IJsonSerializer::unserialize interface.
+    Value unserialize ( const std::string& source,
+                        // enum Features options = HumanReadable
+                         enum Features options = Compact
+                      );
+
+    /// \brief Convenience method provided to output JSON-formatted data to a
+    /// file.
+    ///
+    /// \param source nom::Value container to serialize from.
+    /// \param filename Absolute file path to output resulting data to.
+    ///
+    /// \note Implements IJsonSerializer::save interface.
+    bool save ( const Value& source,
+                const std::string& filename,
+                // enum Features options = HumanReadable
+                enum Features options = Compact
+              );
+
+    /// \brief Convenience method provided to store JSON-formatted data from a
+    /// file.
+    ///
+    /// \param filename Absolute file path to data to unserialize from.
+    /// \param output nom::Value container to store resulting data in.
+    ///
+    /// \note Implements IJsonSerializer::load interface.
+    bool load ( const std::string& filename,
+                Value& output,
+                // enum Features options = HumanReadable
+                enum Features options = Compact
+              );
 
   private:
     bool write( const Value& source, Json::Value& dest ) const;
@@ -164,4 +183,6 @@ class JsonCppSerializer: public ISerializer
 ///   [TO BE WRITTEN]
 ///
 /// See examples/values.cpp for usage examples.
+///
+/// \TODO Additional error handling via Json::Reader::getFormattedErrorMessage
 ///

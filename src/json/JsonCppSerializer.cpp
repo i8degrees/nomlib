@@ -40,89 +40,105 @@ JsonCppSerializer::~JsonCppSerializer( void )
   //NOM_LOG_TRACE(NOM);
 }
 
-bool JsonCppSerializer::serialize( const Value& source, const std::string& output ) const
-{
-  std::ofstream fp;
-  Json::StyledStreamWriter writer( JSONCPP_INDENTION_LEVEL );
-  Json::Value value;  // JsonCPP library container
-
-  if( this->write( source, value ) == false )
-  {
-    NOM_LOG_ERR ( NOM, "Failed to serialize data." );
-    return false;
-  }
-
-  // Finally, output our serialized nom::Value object!
-  fp.open( output );
-
-  if ( ! fp.is_open() || ! fp.good() )
-  {
-    NOM_LOG_ERR ( NOM, "Unable to write JSON output in file: " + output );
-    return false;
-  }
-
-  writer.write( fp, value );
-
-  fp.close();
-
-  return true;
-}
-
-bool JsonCppSerializer::unserialize( const std::string& input, Value& dest ) const
-{
-  std::ifstream fp;
-  Json::Reader parser;
-  Json::Value value;            // JsonCpp interface container for our JSON
-                                // parsing.
-
-  fp.open( input );
-
-  if ( ! fp.is_open() || ! fp.good() )
-  {
-    NOM_LOG_ERR ( NOM, "File access failure on file: " + input );
-    return false;
-  }
-
-  // Attempt to read input file into memory.
-  if ( parser.parse( fp, value ) == false )
-  {
-    NOM_LOG_ERR ( NOM, "Failure to parse JSON input file: " + input );
-    return false;
-  }
-
-  fp.close();
-
-  if( this->read( value, dest ) == false )
-  {
-    // TODO: Err handling
-    NOM_STUBBED( NOM );
-    return false;
-  }
-
-  return true;
-}
-
-const std::string JsonCppSerializer::stringify( const Value& input ) const
+std::string JsonCppSerializer::serialize  ( const Value& source,
+                                            enum Features options
+                                          )
 {
   std::stringstream os;
-  Json::Value output;
-  Value buffer( input );
+  Json::Value buffer;
 
-  if( this->read( output, buffer ) == false )
+  if( this->write( source, buffer ) == false )
   {
-    NOM_LOG_ERR ( NOM, "Failed to read data stream in for stringifying." );
+    NOM_LOG_ERR ( NOM, "Could not serialize the source object." );
     return "\0";
   }
 
-  if( this->write( input, output ) == false )
+  if( options == Features::HumanReadable )
   {
-    NOM_LOG_ERR ( NOM, "Failed to stringify data stream." );
-    return "\0";
+    Json::StyledStreamWriter writer( JSONCPP_INDENTION_LEVEL );
+    writer.write( os, buffer );
   }
-
-  os << output;
+  else // Features::Compact
+  {
+    Json::FastWriter writer;
+    os << writer.write( buffer );
+  }
 
   return os.str();
+}
+
+Value JsonCppSerializer::unserialize  ( const std::string& source,
+                                        enum Features options
+                                      )
+{
+  Json::Reader parser;
+  Json::Value buffer;
+  Value output;
+
+  // Attempt to read input file into memory; string to Json::Value
+  if ( parser.parse( source, buffer ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not parse the input source object as JSON." );
+    return Value::null;
+  }
+
+  // Transform Json::Value to nom::Value
+  if( this->read( buffer, output ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not unserialize the input source object." );
+    return Value::null;
+  }
+
+  return output;
+}
+
+bool JsonCppSerializer::save  ( const Value& source,
+                                const std::string& filename,
+                                enum Features options
+                              )
+{
+  std::ofstream fp;
+
+  fp.open( filename );
+
+  if ( ! fp.is_open() || ! fp.good() )
+  {
+    NOM_LOG_ERR ( NOM, "Could not save output to file: " + filename );
+    return false;
+  }
+
+  // nom::Value to file
+  fp << this->serialize( source, options );
+
+  fp.close();
+
+  return true;
+}
+
+bool JsonCppSerializer::load  ( const std::string& filename,
+                                Value& output,
+                                enum Features options
+                              )
+{
+  std::ifstream fp;
+  std::stringstream buffer;
+
+  fp.open( filename );
+
+  if ( ! fp.is_open() || ! fp.good() )
+  {
+    NOM_LOG_ERR ( NOM, "Could not access file: " + filename );
+    return false;
+  }
+
+  buffer << fp.rdbuf();
+
+  // File buffer to nom::Value
+  output = this->unserialize( buffer.str(), options );
+
+  fp.close();
+
+  return true;
 }
 
 bool JsonCppSerializer::write( const Value& source, Json::Value& dest ) const

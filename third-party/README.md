@@ -29,6 +29,7 @@ Both the 64-bit and 32-bit official development binaries versions of:
         * [libjpeg 8d](https://github.com/Homebrew/homebrew/commits/master/Library/Formula/jpeg.rb) from Homebrew's repository with the --universal build flag.
 
   - Packaged only for Windows
+    * [Google Test v1.7.0](https://code.google.com/p/googletest/) built with -DBUILD_SHARED_LIBS=on (DLL export).
     * [libsndfile v1.0.25](http://www.mega-nerd.com/libsndfile/)
     * [OpenAL Soft v1.15.1](http://kcat.strangesoft.net/openal.html)
 

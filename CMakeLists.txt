@@ -22,6 +22,7 @@ option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
 option ( DEBUG_TRACE "Build with trace logging of object construction & destruction" off )
 option ( EXAMPLES "Build nomlib usage examples" off )
 option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
+option( NOM_BUILD_TESTS "Build unit tests" off )
 
 # Build a minimal core library. This option is particularly useful for when
 # you wish to test out new CMake functionality and thus must endure many
@@ -125,6 +126,9 @@ set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" )
 # Relative path from project root containing project assets
 set ( NOMLIB_RESOURCES_DIR "Resources" )
 
+# Unit tests path
+set( NOM_TESTS_DIR "${PROJECT_SOURCE_DIR}/tests" )
+
 # Relative path from project root containing SharedSupport directory
 set ( NOMLIB_SHARED_SUPPORT_DIR "${NOMLIB_RESOURCES_DIR}/SharedSupport" )
 
@@ -173,7 +177,7 @@ set ( INSTALL_GENERATED_DOCS_PATH "${INSTALL_DOCS_PATH}" )
 set ( INSTALL_MAN_PAGES_PATH "share/man" )
 
 # CMAKE_SYSTEM_PREFIX_PATH is searched to find libraries when the find_package
-# command is used
+# command is used.
 message ( STATUS "Library Search Prefix: ${CMAKE_SYSTEM_PREFIX_PATH}" )
 
 # Installation prefix path set for our project
@@ -189,14 +193,16 @@ include ( "${SRC_DIR}/CMakeLists.txt" )
 # Project Header Files
 include_directories ( "${NOMLIB_HEADERS_ROOT}" "${JSONCPP_HEADERS_DIR}" )
 
-# Required Dependencies
+# Third-party dependencies
+#
+# TODO: Use find_package instead of manually setting up the environment
+# TODO: we should be checking for the existence of these directories beforehand!
 #
 # We gather up all of the library & header search paths in two separate
 # variables -- EXT_HEADERS & EXTLIBS -- so we can then make a minimal number
 # of calls to include_directories & linking of libraries.
 #
-# TODO: we should be checking for the existence of these directories beforehand!
-#
+
 if ( PLATFORM_WINDOWS )
   # Header and library paths -- *INCLUDE_DIR and *LIBRARY_DIR, respectively --
   # *MUST* include trailing backslash for this platform!
@@ -243,6 +249,11 @@ if ( PLATFORM_WINDOWS )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 
+  # Google Test dependency; only used if building with NOM_BUILD_TESTS
+  set ( GTEST_ROOT
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/gtest"
+      )
+
   set ( MSVCPP_LIBRARY_REDIST "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/msvcpp2013/${PLATFORM_ARCH}/" )
 
 elseif ( PLATFORM_OSX )
@@ -276,6 +287,11 @@ elseif ( PLATFORM_OSX )
   set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/sndfile.framework" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
+
+  # Google Test dependency; only used if building with NOM_BUILD_TESTS
+  set ( GTEST_ROOT
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/gtest"
+      )
 
   find_library ( COCOA_LIBRARY Cocoa )
   mark_as_advanced ( COCOA_LIBRARY )
@@ -526,6 +542,13 @@ endif ( PLATFORM_LINUX )
 if( EXAMPLES )
   add_subdirectory( examples )
 endif( EXAMPLES )
+
+# NOTE: we *MUST* enable testing from the top-level build script -- that's this
+# file -- or else 'make test' breaks. (Dated 2014-04-05)
+if( NOM_BUILD_TESTS )
+  enable_testing()
+  add_subdirectory( ${NOM_TESTS_DIR} )
+endif( NOM_BUILD_TESTS )
 
 # Auto-generated source file
 configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.cpp.in"

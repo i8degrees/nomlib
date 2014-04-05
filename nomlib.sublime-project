@@ -21,6 +21,12 @@
     },
 
     {
+      "name": "tests",
+      "path": "tests",
+      "file_include_patterns": [ "*.cpp", "*.txt" ]
+    },
+
+    {
       "name": ".",
       "path": ".",
       "file_include_patterns": [ "*.md", "*.css", "*.html", "doxygen.cfg", "*.txt", "*.cmake", ".gitignore", "cmake/*", ".travis.yml", "ExamplesTemplate.cpp", "Template.cpp", "Template.hpp", "*.bat", "*.rb", "*.log", "*.diff", "*.patch", "*.json" ],

@@ -16,6 +16,7 @@ third-party/windows
 third-party/osx
 third-party/ios
 third-party/linux
+third-party/common/*
 tests/graphics
 tests/math
 tests/system

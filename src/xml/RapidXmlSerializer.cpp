@@ -44,11 +44,10 @@ std::string RapidXmlSerializer::serialize ( const Value& source,
                                             enum Features options
                                           )
 {
-  std::stringstream os;
   rapidxml::xml_document<> buffer;
 
   // Append XML DOCTYPE to very top of document
-  this->append_decl( buffer );
+  // this->append_decl( buffer );
 
   if( this->write( source, buffer ) == false )
   {
@@ -58,16 +57,22 @@ std::string RapidXmlSerializer::serialize ( const Value& source,
 
   if( options == Features::HumanReadable )
   {
-    // TODO
+    std::stringstream os;
+
+    os << buffer;
+
+    return os.str();
   }
   else // Features::Compact
   {
-    // TODO
+    std::string os;
+    rapidxml::print ( std::back_inserter( os ),
+                      buffer,
+                      rapidxml::print_no_indenting
+                    );
+
+    return os;
   }
-
-  os << buffer;
-
-  return os.str();
 }
 
 Value RapidXmlSerializer::unserialize ( const std::string& source,
@@ -177,6 +182,8 @@ bool RapidXmlSerializer::write( const Value& source, rapidxml::xml_document<>& d
 
         key = member.key();
 
+        Value object = itr->ref();
+
         #if defined( NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES )
           NOM_DUMP( itr->type_name() );
           NOM_DUMP( key );
@@ -184,7 +191,7 @@ bool RapidXmlSerializer::write( const Value& source, rapidxml::xml_document<>& d
 
         rapidxml::xml_node<>* node = dest.allocate_node( rapidxml::node_element, this->stralloc( key, dest ) );
 
-        if( this->serialize_object( itr->ref(), dest, node ) == false )
+        if( this->serialize_object( itr->ref(), key, dest, node ) == false )
         {
           NOM_LOG_ERR( NOM, "Could not serialize values; invalid object???" );
           return false;
@@ -283,7 +290,14 @@ bool RapidXmlSerializer::write_value( const Value& object, const std::string& ke
       break;
     }
 
+    // Append the node, but without a value.
     case Value::ValueType::Null:
+    {
+      rapidxml::xml_node<>* val = doc.allocate_node( rapidxml::node_element, this->stralloc( "null", doc ) );
+      parent->append_node( val );
+      break;
+    }
+
     case Value::ValueType::SignedInteger:
     case Value::ValueType::UnsignedInteger:
     case Value::ValueType::RealNumber:
@@ -292,6 +306,8 @@ bool RapidXmlSerializer::write_value( const Value& object, const std::string& ke
     {
       #if defined( NOM_DEBUG_JSONCPP_SERIALIZER_VALUES )
         NOM_DUMP( object.type() );
+        NOM_DUMP(key);
+        NOM_DUMP(object.stringify());
       #endif
 
       rapidxml::xml_node<>* val = doc.allocate_node( rapidxml::node_element, this->stralloc( key, doc ), this->stralloc( object.stringify(), doc ) );
@@ -347,6 +363,10 @@ bool RapidXmlSerializer::serialize_array( const Value& object, const std::string
       }
 
       case Value::ValueType::Null:
+      {
+        break;
+      }
+
       case Value::ValueType::SignedInteger:
       case Value::ValueType::UnsignedInteger:
       case Value::ValueType::RealNumber:
@@ -378,7 +398,7 @@ bool RapidXmlSerializer::serialize_array( const Value& object, const std::string
 
       case Value::ValueType::ObjectValues:
       {
-        if( this->serialize_object( itr->ref(), doc, parent ) == false )
+        if( this->serialize_object( itr->ref(), "", doc, parent ) == false )
         {
           NOM_LOG_ERR( NOM, "Could not serialize values; invalid object???" );
           return false;
@@ -391,7 +411,7 @@ bool RapidXmlSerializer::serialize_array( const Value& object, const std::string
 
   return true;
 }
-bool RapidXmlSerializer::serialize_object( const Value& object, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const
+bool RapidXmlSerializer::serialize_object( const Value& object, const std::string& key, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const
 {
   switch( object.type() )
   {
@@ -525,7 +545,7 @@ bool RapidXmlSerializer::serialize_object( const Value& object, rapidxml::xml_do
             rapidxml::xml_node<>* val = doc.allocate_node( rapidxml::node_element, this->stralloc( object_key, doc ) );
             parent->append_node( val );
 
-            if( this->serialize_object( value, doc, val ) == false )
+            if( this->serialize_object( value, key, doc, val ) == false )
             {
               // TODO: Error message
               NOM_STUBBED( NOM );

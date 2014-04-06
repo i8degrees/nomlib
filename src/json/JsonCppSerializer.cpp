@@ -233,7 +233,8 @@ bool JsonCppSerializer::write( const Value& source, Json::Value& dest ) const
         #endif
 
         // Array within an object.
-        if( dest[root_key][key].isArray() )
+        // FIXME: should be if( source[root_key][key].object_type() )
+        if( itr->ref().array_type() )
         {
           if( this->serialize_array( itr->ref(), dest[root_key][key] ) == false )
           {
@@ -243,14 +244,15 @@ bool JsonCppSerializer::write( const Value& source, Json::Value& dest ) const
         }
 
         // Object within an object.
-        if( dest[root_key][key].isObject() )
-        {
+        // Does *NOT* work here: if( itr->ref().object_type() )
+        // FIXME: if( source[root_key][key].object_type() )
+        // {
           if( this->serialize_object( itr->ref(), dest[root_key][key] ) == false )
           {
             NOM_LOG_ERR( NOM, "Could not serialize values; invalid object?" );
             return false;
           }
-        }
+        // }
       } // end for objects loop
 
       // EOF JSON Object
@@ -285,7 +287,7 @@ bool JsonCppSerializer::write( const Value& source, Json::Value& dest ) const
       #endif
 
       NOM_LOG_ERR( NOM, "Could not serialize values; not an array or an object?" );
-      return false;
+      // return false;
     }
   }
 
@@ -324,20 +326,17 @@ bool JsonCppSerializer::read( const Json::Value& source, Value& dest ) const
           // NOM_DUMP( key );
           // NOM_DUMP( value[idx][key] );
 
-          if( this->unserialize_array( source[idx][key], object[key] ) == false )
+          if( this->unserialize_array( source[idx][key], objects[idx][key] ) == false )
           {
             NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid array???" );
             return false;
           }
-          else if( this->unserialize_object( source[idx][key], object[key] ) == false )
+          else if( this->unserialize_object( source[idx][key], objects[idx][key] ) == false )
           {
             NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid object???" );
             return false;
           }
-
         } // end for object member pairs loop
-
-        array.push_back( object );
       }
     }
 
@@ -363,6 +362,7 @@ bool JsonCppSerializer::read( const Json::Value& source, Value& dest ) const
         this->unserialize_array( source[root_key], val );
 
         objects[root_key] = val;
+        // objects[root_key].push_back( val );
       }
 
       // { "key": { ... } }
@@ -381,7 +381,7 @@ bool JsonCppSerializer::read( const Json::Value& source, Value& dest ) const
 
           if( source[root_key][key].isArray() )
           {
-            if( this->unserialize_array( source[root_key][key], object[key] ) == false )
+            if( this->unserialize_array( source[root_key][key], objects[root_key][key] ) == false )
             {
               NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid array???" );
               return false;
@@ -389,7 +389,7 @@ bool JsonCppSerializer::read( const Json::Value& source, Value& dest ) const
           }
           // else if( source[root_key][key].isObject() )
           // {
-            if( this->unserialize_object( source[root_key][key], object[key] ) == false )
+            if( this->unserialize_object( source[root_key][key], objects[root_key][key] ) == false )
             {
               NOM_LOG_ERR( NOM, "Could not un-serialize values; invalid object???" );
               return false;
@@ -397,7 +397,7 @@ bool JsonCppSerializer::read( const Json::Value& source, Value& dest ) const
           // }
         } // end for object member pairs loop
 
-        objects[root_key] = object;
+        // objects[root_key] = object;
 
       } // end if container node is an object
     }
@@ -412,8 +412,7 @@ bool JsonCppSerializer::read( const Json::Value& source, Value& dest ) const
   // objects; b) JSON object(s) containing objects.
   if( array.size() > 0 )
   {
-    // dest = array;
-    dest.push_back( array );
+    dest = objects;
   }
   else
   {
@@ -773,11 +772,17 @@ bool JsonCppSerializer::serialize_array( const Value& object, Json::Value& dest 
         break;
       }
 
-      // Invalid JSON
+      // TODO: verify that this works; (Resources/examples/json/inventory.json)
       case Value::ValueType::ArrayValues:
       {
         NOM_LOG_ERR( NOM, "Could not serialize values; an array cannot exist within another array." );
         return false;
+
+        // if( this->serialize_array( itr->ref(), dest ) == false )
+        // {
+        //   NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
+        //   return false;
+        // }
 
         break;
       }
@@ -841,11 +846,13 @@ bool JsonCppSerializer::serialize_object( const Value& object, Json::Value& dest
     // Handle arrays within an object (top-level).
     case Value::ValueType::ArrayValues:
     {
-      if( this->serialize_array( object, dest ) == false )
-      {
-        NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
-        return false;
-      }
+      // TODO: verify to see if this works; (Resources/examples/json/inventory.json)
+      //
+      // if( this->serialize_array( object, dest ) == false )
+      // {
+      //   NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
+      //   return false;
+      // }
 
       break;
     }
@@ -1033,10 +1040,23 @@ bool JsonCppSerializer::unserialize_array( const Json::Value& object, Value& des
         break;
       }
 
-      case Value::ValueType::ArrayValues: // Invalid JSON
+      // TODO: verify that this works; (Resources/examples/json/inventory.json)
+      case Value::ValueType::ArrayValues:
       {
-        NOM_LOG_ERR( NOM, "Could not unserialize values; an array cannot exist within another array." );
-        return false;
+        // NOM_LOG_ERR( NOM, "Could not unserialize values; an array cannot exist within another array." );
+        // return false;
+
+        Value val;
+
+        if( this->unserialize_array( object[i], val ) == false )
+        {
+          NOM_LOG_ERR( NOM, "Could not unserialize values; invalid array???" );
+          return false;
+        }
+
+        arr.push_back( val );
+
+        break;
       }
 
       case Value::ValueType::ObjectValues: // [ { "key": [ { ... } ] } ]
@@ -1055,8 +1075,8 @@ bool JsonCppSerializer::unserialize_array( const Json::Value& object, Value& des
     }
   }
 
-  // dest = arr;
-  dest.push_back( arr );
+  dest = arr;
+  // dest.push_back( arr );
 
   return true;
 }

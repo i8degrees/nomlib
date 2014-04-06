@@ -188,11 +188,11 @@ SpriteSheet::SharedPtr SpriteSheet::clone ( void ) const
 
 bool SpriteSheet::save( const std::string& filename )
 {
-  JsonCppSerializer writer;
+  ISerializer* serializer = new JsonCppSerializer();
   Object object; // Buffer object
   Object objects; // Collection of objects to be serialized (fed to writer)
 
-  Array array;
+  Value array;
 
   std::string sprite_sheet_version = std::to_string( NOM_SPRITE_SHEET_MAJOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_MINOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_PATCH_VERSION );
 
@@ -205,10 +205,11 @@ bool SpriteSheet::save( const std::string& filename )
     // Serialize each IntRect held within our sheet object.
     object = itr->serialize();
 
-    // Additional variables to be serialized in our object.
+    // Additional variables to be serialized in our object; object's id tag
     object["id"] = id;
 
-    array.push_back( object );
+    // id serves as an element index here
+    array[id] = object;
 
     // Begin a new JSON object
     object.clear();
@@ -237,8 +238,7 @@ bool SpriteSheet::save( const std::string& filename )
     NOM_DUMP( array );
   #endif
 
-  // if ( writer.serialize( Value( objects ), filename ) == false )
-    if ( writer.serialize( Value( array ), filename ) == false )
+  if ( serializer->save( array, filename ) == false )
   {
     NOM_LOG_ERR( NOM, "Unable to save file: " + filename );
     return false;
@@ -249,7 +249,7 @@ bool SpriteSheet::save( const std::string& filename )
 
 bool SpriteSheet::load( const std::string& filename )
 {
-  JsonCppSerializer parser;
+  ISerializer* serializer = new JsonCppSerializer();
   Value object; // Value buffer of resulting un-serialized input.
 
   // Temporary holding buffers to hold data until we are ready to commit back
@@ -258,7 +258,7 @@ bool SpriteSheet::load( const std::string& filename )
   std::vector<IntRect> buffer_sheet;
   std::string sprite_sheet_version = std::to_string( NOM_SPRITE_SHEET_MAJOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_MINOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_PATCH_VERSION );
 
-  if ( parser.unserialize( filename, object ) == false )
+  if ( serializer->load( filename, object ) == false )
   {
     NOM_LOG_ERR( NOM, "Unable to open JSON file at: " + filename );
     return false;

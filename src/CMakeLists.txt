@@ -70,7 +70,7 @@ set ( GRAPHICS_SPRITE_SOURCE
       ${SRC_DIR}/graphics/sprite/Sprite.cpp
       ${SRC_DIR}/graphics/sprite/SpriteBatch.cpp
       ${SRC_DIR}/graphics/sprite/AnimatedSprite.cpp
-      ${SRC_DIR}/graphics/sprite/SpriteSheet.cpp
+      # ${SRC_DIR}/graphics/sprite/SpriteSheet.cpp
     )
 
 # User Interface module
@@ -238,6 +238,7 @@ if( NOM_BUILD_JSON_UNIT )
         ${NOMLIB_HEADERS}
         ${JSON_HEADERS}
         ${JSONCPP_INCLUDE_DIR}
+        ${SRC_DIR}/graphics/sprite/SpriteSheet.cpp
       )
   set ( NOMLIB_SOURCE
         ${NOMLIB_SOURCE}

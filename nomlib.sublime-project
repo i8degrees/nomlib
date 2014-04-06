@@ -23,7 +23,14 @@
     {
       "name": "tests",
       "path": "tests",
-      "file_include_patterns": [ "*.cpp", "*.txt" ]
+      "file_include_patterns": [ "*.cpp", "*.txt", "*.hpp" ]
+    },
+
+    {
+      "name": "third-party",
+      "path": "third-party",
+      "file_include_patterns": [ "*.txt", "*.md", "*.sh", "*.cpp", "*.hpp", "*.h" ],
+      "folder_include_patterns": [ "common", "jsoncpp", "rapidxml" ]
     },
 
     {

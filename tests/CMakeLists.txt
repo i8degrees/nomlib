@@ -1,4 +1,17 @@
 # Unit testing with Google Test
+#
+# NOTE: Ensure that when you use the GTEST_ADD_TESTS macro, that you supply the
+# necessary arguments -- name of test(s) to run -- otherwise you may notice
+# CTest skipping the tests all together!
+#
+# NOTE: You may need to issue a 'make rebuild_cache' after changing test
+# fixture names, in order to get 'make test' to recognize the modified test
+# code.
+#
+
+set( NOM_BUILD_PTREE_TESTS on )
+set( NOM_BUILD_PTREE_JSON_TESTS on )
+set( NOM_BUILD_PTREE_XML_TESTS on )
 
 set ( TESTS_DEPS_INSTALL_PEFIX
       "${CMAKE_CURRENT_BINARY_DIR}/tests/${CMAKE_BUILD_TYPE}"
@@ -9,27 +22,126 @@ find_package( GTest REQUIRED )
 
 include_directories( ${GTEST_INCLUDE_DIRS} )
 
-add_executable  ( ptree
-                  ${NOM_TESTS_DIR}/ptree.cpp
+if( NOM_BUILD_PTREE_TESTS )
+  add_executable  (
+                    ptree
+                    ${NOM_TESTS_DIR}/ptree/ptree.cpp
+                    ${NOM_TESTS_DIR}/ptree/common.cpp
+                  )
+
+  target_link_libraries ( ptree
+                          ${GTEST_BOTH_LIBRARIES}
+                          ${PROJECT_NAME} # nomlib
+                        )
+
+  GTEST_ADD_TESTS (
+                    ptree
+                    "values"
+                    ${NOM_TESTS_DIR}/ptree/ptree.cpp
+                    # ${NOM_TESTS_DIR}/ptree/common.cpp
+                  )
+endif( NOM_BUILD_PTREE_TESTS )
+
+# Header file dependencies
+include_directories( "${NOM_TESTS_DIR}/ptree" )
+
+if( NOM_BUILD_PTREE_JSON_TESTS )
+  add_executable  (
+                    json_serializer
+                    ${NOM_TESTS_DIR}/ptree/json/JsonCppSerializerTest.cpp
+                    ${NOM_TESTS_DIR}/ptree/common.cpp
+                  )
+
+  target_link_libraries ( json_serializer
+                          ${GTEST_BOTH_LIBRARIES}
+                          ${PROJECT_NAME} # nomlib
+                        )
+
+  GTEST_ADD_TESTS (
+                    json_serializer
+                    "JsonCppSerializerTest"
+                    ${NOM_TESTS_DIR}/ptree/json/JsonCppSerializerTest.cpp
+                    # ${NOM_TESTS_DIR}/ptree/common.cpp
+                  )
+
+  add_executable  (
+                    json_deserializer
+                    ${NOM_TESTS_DIR}/ptree/json/JsonCppDeserializerTest.cpp
+                    ${NOM_TESTS_DIR}/ptree/common.cpp
+                  )
+
+
+  target_link_libraries (
+                          json_deserializer
+                          ${GTEST_BOTH_LIBRARIES}
+                          ${PROJECT_NAME} # nomlib
+                        )
+
+  GTEST_ADD_TESTS (
+                    json_deserializer
+                    "JsonCppDeserializerTest"
+                    ${NOM_TESTS_DIR}/ptree/json/JsonCppDeserializerTest.cpp
+                    # ${NOM_TESTS_DIR}/ptree/common.cpp
+                  )
+endif( NOM_BUILD_PTREE_JSON_TESTS )
+
+if( NOM_BUILD_PTREE_XML_TESTS )
+add_executable  (
+                  xml_serializer
+                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlSerializer.cpp
+                  ${NOM_TESTS_DIR}/ptree/common.cpp
                 )
 
-target_link_libraries ( ptree
+target_link_libraries ( xml_serializer
                         ${GTEST_BOTH_LIBRARIES}
-                        # ${EXTLIBS}
                         ${PROJECT_NAME} # nomlib
                       )
 
-GTEST_ADD_TESTS( ptree ptree ${NOM_TESTS_DIR}/ptree.cpp )
+GTEST_ADD_TESTS (
+                  xml_serializer
+                  "RapidXmlSerializer"
+                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlSerializer.cpp
+                  # ${NOM_TESTS_DIR}/ptree/common.cpp
+                )
+
+add_executable  (
+                  xml_deserializer
+                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlDeserializer.cpp
+                  ${NOM_TESTS_DIR}/ptree/common.cpp
+                )
+
+target_link_libraries ( xml_deserializer
+                        ${GTEST_BOTH_LIBRARIES}
+                        ${PROJECT_NAME} # nomlib
+                      )
+
+GTEST_ADD_TESTS (
+                  xml_deserializer
+                  "RapidXmlDeserializer"
+                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlDeserializer.cpp
+                  # ${NOM_TESTS_DIR}/ptree/common.cpp
+                )
+
+endif( NOM_BUILD_PTREE_XML_TESTS )
+
+install ( DIRECTORY
+          "${NOM_EXAMPLES_RESOURCES_DIR}/json"
+          DESTINATION
+          "${CMAKE_CURRENT_BINARY_DIR}/Resources"
+          PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+        )
+
+install ( DIRECTORY
+          "${NOM_EXAMPLES_RESOURCES_DIR}/xml"
+          DESTINATION
+          "${CMAKE_CURRENT_BINARY_DIR}/Resources"
+          PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+        )
 
 # Install library dependencies into tests output directory so we can always
 # execute the binaries with the proper dependency versions.
 if ( PLATFORM_WINDOWS )
   install ( DIRECTORY
-            # "${SDL2_LIBRARY_DIR}"
-            # "${SDL2_IMAGE_LIBRARY_DIR}"
-            # "${SDL2_TTF_LIBRARY_DIR}"
-            # "${OPENAL_LIBRARY_DIR}"
-            # "${LIBSNDFILE_LIBRARY_DIR}"
             ${MSVCPP_LIBRARY_REDIST}
             "${GTEST_ROOT}/lib"
             DESTINATION

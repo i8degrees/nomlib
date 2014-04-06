@@ -433,12 +433,23 @@ class Value
     /// \remarks This method call requires an object node container type, and
     /// will immediately initialize one, if one is not found to be valid at the
     /// time of the call -- existing value(s) in the object will be lost.
-    Value& operator[]( const char* key );
+    /*const*/ Value& operator[]( const char* key ) /*const*/;
 
     Value& operator[]( const std::string& key );
+    // const Value& operator[]( const std::string& key ) const;
 
     /// \brief Insert array elements.
     Value& push_back( const Value& val );
+
+    /// \brief Search the object for an existing member.
+    ///
+    /// \returns The found member key upon success, or Value::null upon failure.
+    ///
+    /// \note The object's type is not modified.
+    ///
+    /// \note This method will fail with an assert if the container type is
+    /// *not* either a null or object node type.
+    Value find( const std::string& key ) const;
 
     /// \brief Remove the named member.
     ///
@@ -461,10 +472,8 @@ class Value
     /// *not* either a null or object node type.
     Members member_names( void ) const;
 
-    /// \FIXME
     Value::ConstIterator begin( void ) const;
 
-    /// \FIXME
     Value::ConstIterator end( void ) const;
 
     /// \brief Iterator access to the beginning of the object's tree.

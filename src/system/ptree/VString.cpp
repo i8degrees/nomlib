@@ -40,6 +40,9 @@ VString::VString( void )  :
 VString::~VString( void )
 {
   //NOM_LOG_TRACE(NOM);
+
+  // free( const_cast<char*> ( this->value_ ) );
+  // this->value_ = nullptr;
 }
 
 VString::VString( ArrayIndex index ) :
@@ -99,7 +102,7 @@ bool VString::valid( void ) const
 bool VString::operator <( const VString& other ) const
 {
   // Key member
-  if( this->valid() )
+  if( this->valid() && other.valid() )
   {
     return strcmp( this->c_str(), other.c_str() ) < 0;
   }
@@ -114,7 +117,7 @@ bool VString::operator <( const VString& other ) const
 bool VString::operator ==( const VString& other ) const
 {
   // Key member
-  if( this->valid() )
+  if( this->valid() && other.valid() )
   {
     return strcmp( this->c_str(), other.c_str() ) == 0;
   }

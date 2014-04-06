@@ -696,7 +696,7 @@ const Object Value::array( void ) const
 {
   // NOM_ASSERT( this->array_type() );
 
-  if( this->object_valid() )
+  if( this->array_valid() )
   {
     return Object( *this->value_.object_ );
   }
@@ -880,7 +880,7 @@ const Value& Value::operator[]( int index ) const
   return (*this)[ ArrayIndex( index ) ];
 }
 
-Value& Value::operator[]( const char* key )
+/*const*/ Value& Value::operator[]( const char* key ) /*const*/
 {
   // An object node container is required for this method call.
   if( ! this->object_valid() )
@@ -889,6 +889,15 @@ Value& Value::operator[]( const char* key )
     this->value_.object_ = new Object();
   }
 
+// TODO: TRY ME OUT
+/*
+  NOM_ASSERT( this->null_type() || this->object_type() );
+
+  if( this->null_type() )
+  {
+    return Value::null;
+  }
+*/
   auto res = this->value_.object_->find( key );
 
   if( res == this->value_.object_->end() ) // No match found!
@@ -921,34 +930,18 @@ Value& Value::operator[]( const std::string& key )
   return (*this)[ key.c_str() ];
 }
 
+// const Value& Value::operator[]( const std::string& key ) const
+// {
+//   return (*this)[ key ];
+// }
+
+// Implementation derives from JsonCpp
 Value& Value::push_back( const Value& val )
 {
-  // NOM_ASSERT( this->array_type() && val.array_type() );
-/*
-  if( this->array_type() && val.array_type() )
-  {
-    NOM_LOG_ERR( NOM, "Multi-depth array nodes is not supported; use an object node for this functionality instead." );
-    return;
-  }
-
-  else
-  {
-    if( ! this->array_valid() )
-    {
-      this->type_ = ValueType::ArrayValues;
-      this->value_.object_ = new Object();
-    }
-  }
-*/
-  // this->type_ = ValueType::ArrayValues;
-  // this->value_.object_->push_back( val );
-
-  // return (*this)[ this->size() ] = val;
-
   return (*this)[ ArrayIndex( this->size() )] = val;
 }
 
-Value Value::erase( const std::string& key )
+Value Value::find( const std::string& key ) const
 {
   // Sanity check
   NOM_ASSERT( this->null_type() || this->object_type() );
@@ -961,6 +954,28 @@ Value Value::erase( const std::string& key )
   }
   else // Success -- match found!
   {
+    return res->second;
+  }
+
+  return Value::null;
+}
+
+Value Value::erase( const std::string& key )
+{
+  // Sanity check
+  NOM_ASSERT( this->null_type() || this->object_type() );
+
+  VString k( key );
+  auto res = this->value_.object_->find( k );
+
+  if( res == this->value_.object_->end() ) // No match found
+  {
+    return Value::null;
+  }
+  else // Success -- match found; erasing found key pair!
+  {
+    this->value_.object_->erase( res );
+
     return res->second;
   }
 
@@ -1060,6 +1075,11 @@ const std::string Value::dump( const Value& object, int depth ) const
   depth += 1; // Recursion
 
   os << this->dump_key( object );
+
+  // Show the numeric depth level we are at
+  os << " (";
+  os << depth;
+  os << ")";
 
   // nom::Value object is a tree of key & value pairs.
   if( object.size() > 0 )

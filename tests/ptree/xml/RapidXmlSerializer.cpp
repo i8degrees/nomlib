@@ -296,8 +296,6 @@ TEST_F( RapidXmlSerializerTest, DISABLED_SerializeArrayValues_ComplexObjectValue
   expected_out( o, "" );
 }
 
-// TODO: What does o["root"] = Value() serialize?
-
 TEST_F( RapidXmlSerializerTest, SerializeObjectValues_NullValue )
 {
   Value o;

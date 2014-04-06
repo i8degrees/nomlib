@@ -191,7 +191,7 @@ bool RapidXmlSerializer::write( const Value& source, rapidxml::xml_document<>& d
 
         rapidxml::xml_node<>* node = dest.allocate_node( rapidxml::node_element, this->stralloc( key, dest ) );
 
-        if( this->serialize_object( itr->ref(), key, dest, node ) == false )
+        if( this->serialize_object( object, key, dest, node ) == false )
         {
           NOM_LOG_ERR( NOM, "Could not serialize values; invalid object???" );
           return false;
@@ -234,8 +234,7 @@ bool RapidXmlSerializer::read( const std::string& input, Value& dest ) const
     // parsing of the document, due to the non-handling of the node_declaration
     // node type -- see ::unserialize_object.
     // doc.parse<rapidxml::parse_declaration_node | rapidxml::parse_no_data_nodes>( &buffer[0 ]);
-
-    doc.parse<rapidxml::parse_no_data_nodes>( &buffer[0] );
+    doc.parse<rapidxml::parse_no_data_nodes>( &buffer[0 ]);
 
     // Object obj, objects;
     Value obj, objects;
@@ -310,9 +309,18 @@ bool RapidXmlSerializer::write_value( const Value& object, const std::string& ke
         NOM_DUMP(object.stringify());
       #endif
 
-      rapidxml::xml_node<>* val = doc.allocate_node( rapidxml::node_element, this->stralloc( key, doc ), this->stralloc( object.stringify(), doc ) );
-      parent->append_node( val );
-
+      // Stupid hack to get things going ... no idea why this works, but nothing
+      // else will. I probably have my node ordering all messed up ...
+      if( key != "" )
+      {
+        rapidxml::xml_node<>* val = doc.allocate_node( rapidxml::node_element, this->stralloc( key, doc ), this->stralloc( object.stringify(), doc ) );
+        parent->append_node( val );
+      }
+      else
+      {
+        rapidxml::xml_node<>* val = doc.allocate_node( rapidxml::node_data, this->stralloc( key, doc ), this->stralloc( object.stringify(), doc ) );
+        parent->append_node( val );
+      }
       break;
     }
 

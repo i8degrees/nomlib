@@ -26,43 +26,20 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
-
-// Public header file
+#ifndef NOMLIB_PTREE_HPP
+#define NOMLIB_PTREE_HPP
 
 #include <nomlib/config.hpp>
-#include <nomlib/system/helpers.hpp>
-#include <nomlib/system/log.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/StateMachine.hpp>
-#include <nomlib/system/ObjectCache.hpp>
-#include <nomlib/system/dialog_messagebox.hpp>
-#include <nomlib/system/Path.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDLApp.hpp>
-#include <nomlib/system/EventHandler.hpp>
-#include <nomlib/system/Joystick.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/make_unique.hpp>
-#include <nomlib/system/AnimationTimer.hpp>
-#include <nomlib/system/init.hpp>
-#include <nomlib/system/SDL_helpers.hpp>
-#include <nomlib/system/Event.hpp>
-#include <nomlib/system/EventCallback.hpp>
-#include <nomlib/system/EventDispatcher.hpp>
-#include <nomlib/system/InputMapper/InputAction.hpp>
-#include <nomlib/system/InputMapper/InputStateMapper.hpp>
-#include <nomlib/system/InputMapper/InputActionMapper.hpp>
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  // Nothing to do
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/ResourcePath.hpp>
-#endif
+// Public header file for Property Tree
+
+#include <nomlib/system/ptree/ptree_config.hpp>
+#include "nomlib/system/ptree/ptree_types.hpp"
+#include <nomlib/system/ptree/ptree_forwards.hpp>
+#include <nomlib/system/ptree/Value.hpp>
+#include <nomlib/system/ptree/VString.hpp>
+#include <nomlib/system/ptree/ValueIteratorBase.hpp>
+#include <nomlib/system/ptree/ValueIterator.hpp>
+#include <nomlib/system/ptree/ValueConstIterator.hpp>
 
 #endif // include guard defined

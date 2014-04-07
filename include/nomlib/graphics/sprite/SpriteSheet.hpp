@@ -38,8 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/version.hpp"
 #include "nomlib/math/Rect.hpp"
-#include "nomlib/json/JsonCppSerializer.hpp"
-#include "nomlib/system/ptree/Value.hpp"
+#include "nomlib/serializers.hpp"
+#include "nomlib/ptree.hpp"
 
 namespace nom {
 

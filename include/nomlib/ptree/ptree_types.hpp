@@ -26,20 +26,23 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_PTREE_HPP
-#define NOMLIB_PTREE_HPP
+#ifndef NOMLIB_SYSTEM_PTREE_TYPES_HPP
+#define NOMLIB_SYSTEM_PTREE_TYPES_HPP
 
-#include <nomlib/config.hpp>
+#include <map>
 
-// Public header file for Property Tree
+#include "nomlib/config.hpp"
+#include "nomlib/ptree/ptree_config.hpp"
+#include "nomlib/ptree/VString.hpp"
+#include "nomlib/ptree/ptree_forwards.hpp" // nom::Value
 
-#include <nomlib/ptree/ptree_config.hpp>
-#include "nomlib/ptree/ptree_types.hpp"
-#include <nomlib/ptree/ptree_forwards.hpp>
-#include <nomlib/ptree/Value.hpp>
-#include <nomlib/ptree/VString.hpp>
-#include <nomlib/ptree/ValueIteratorBase.hpp>
-#include <nomlib/ptree/ValueIterator.hpp>
-#include <nomlib/ptree/ValueConstIterator.hpp>
+namespace nom {
+
+typedef std::pair<VString, Value> ObjectPair;
+typedef std::map<VString, Value> Object;
+typedef std::map<VString, Value>::const_iterator ObjectConstIterator;
+typedef std::map<VString, Value>::iterator ObjectIterator;
+
+} // namespace nom
 
 #endif // include guard defined

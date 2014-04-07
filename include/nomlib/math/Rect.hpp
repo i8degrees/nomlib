@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point2.hpp"
-#include "nomlib/system/ptree/Value.hpp"
+#include "nomlib/ptree/Value.hpp"
 
 namespace nom {
 

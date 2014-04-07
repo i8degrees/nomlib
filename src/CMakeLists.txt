@@ -82,15 +82,17 @@ set ( GUI_SOURCE
     )
 
 # JSON module
-file ( GLOB JSON_HEADERS "${NOMLIB_HEADERS_DIR}/json/*.hpp" )
+file ( GLOB JSON_HEADERS "${NOMLIB_HEADERS_DIR}/serializers/*.hpp" )
 set ( JSON_SOURCE
-      ${SRC_DIR}/json/JsonCppSerializer.cpp
+      ${SRC_DIR}/serializers/JsonCppSerializer.cpp
+      ${SRC_DIR}/serializers/JsonCppDeserializer.cpp
     )
 
 # XML module
-file ( GLOB XML_HEADERS "${NOMLIB_HEADERS_DIR}/xml/*.hpp" )
+file ( GLOB XML_HEADERS "${NOMLIB_HEADERS_DIR}/serializers/*.hpp" )
 set ( XML_SOURCE
-      ${SRC_DIR}/xml/RapidXmlSerializer.cpp
+      ${SRC_DIR}/serializers/RapidXmlSerializer.cpp
+      ${SRC_DIR}/serializers/RapidXmlDeserializer.cpp
     )
 
 # Third-party RapidXml (headers only)
@@ -139,13 +141,13 @@ set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/InputMapper/InputStateMapper.cpp
     )
 
-file ( GLOB PTREE_HEADERS "${NOMLIB_HEADERS_DIR}/system/ptree/*.hpp" )
+file ( GLOB PTREE_HEADERS "${NOMLIB_HEADERS_DIR}/ptree/*.hpp" )
 set ( PTREE_SOURCE
-      ${SRC_DIR}/system/ptree/Value.cpp
-      ${SRC_DIR}/system/ptree/VString.cpp
-      ${SRC_DIR}/system/ptree/ValueIteratorBase.cpp
-      ${SRC_DIR}/system/ptree/ValueIterator.cpp
-      ${SRC_DIR}/system/ptree/ValueConstIterator.cpp
+      ${SRC_DIR}/ptree/Value.cpp
+      ${SRC_DIR}/ptree/VString.cpp
+      ${SRC_DIR}/ptree/ValueIteratorBase.cpp
+      ${SRC_DIR}/ptree/ValueIterator.cpp
+      ${SRC_DIR}/ptree/ValueConstIterator.cpp
     )
 
 file ( GLOB TEMPLATE_HEADERS "${NOMLIB_SHARED_SUPPORT_DIR}/*.hpp" )

@@ -188,7 +188,7 @@ SpriteSheet::SharedPtr SpriteSheet::clone ( void ) const
 
 bool SpriteSheet::save( const std::string& filename )
 {
-  ISerializer* serializer = new JsonCppSerializer();
+  IValueSerializer* serializer = new JsonCppSerializer();
   Object object; // Buffer object
   Object objects; // Collection of objects to be serialized (fed to writer)
 
@@ -249,7 +249,7 @@ bool SpriteSheet::save( const std::string& filename )
 
 bool SpriteSheet::load( const std::string& filename )
 {
-  ISerializer* serializer = new JsonCppSerializer();
+  IValueDeserializer* serializer = new JsonCppDeserializer();
   Value object; // Value buffer of resulting un-serialized input.
 
   // Temporary holding buffers to hold data until we are ready to commit back

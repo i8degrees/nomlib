@@ -26,20 +26,76 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_PTREE_HPP
-#define NOMLIB_PTREE_HPP
+#include "nomlib/ptree/ValueConstIterator.hpp"
 
-#include <nomlib/config.hpp>
+namespace nom {
 
-// Public header file for Property Tree
+ValueConstIterator::ValueConstIterator( void )
+{
+  //NOM_LOG_TRACE(NOM);
+}
 
-#include <nomlib/ptree/ptree_config.hpp>
-#include "nomlib/ptree/ptree_types.hpp"
-#include <nomlib/ptree/ptree_forwards.hpp>
-#include <nomlib/ptree/Value.hpp>
-#include <nomlib/ptree/VString.hpp>
-#include <nomlib/ptree/ValueIteratorBase.hpp>
-#include <nomlib/ptree/ValueIterator.hpp>
-#include <nomlib/ptree/ValueConstIterator.hpp>
+ValueConstIterator::~ValueConstIterator( void )
+{
+  //NOM_LOG_TRACE(NOM);
+}
 
-#endif // include guard defined
+ValueConstIterator::ValueConstIterator( const ValueConstIterator& copy )
+{
+  //NOM_LOG_TRACE(NOM);
+  this->copy( copy );
+}
+
+ValueConstIterator::ValueConstIterator( const ObjectIterator& itr ) :
+  ValueIteratorBase ( itr )
+{
+  //NOM_LOG_TRACE(NOM);
+}
+
+ValueConstIterator::SelfType& ValueConstIterator::operator =( const DerivedType& other )
+{
+  this->copy( other );
+
+  return *this;
+}
+
+ValueConstIterator::ConstReference ValueConstIterator::operator *( void ) const
+{
+  return this->dereference(); // const nom::Value&
+}
+
+const ValueConstIterator::ValueTypePointer ValueConstIterator::operator ->( void ) const
+{
+  return this->pointer();
+}
+
+ValueConstIterator::SelfType& ValueConstIterator::operator ++( void )
+{
+   this->increment();
+
+   return *this;
+}
+
+ValueConstIterator::SelfType ValueConstIterator::operator ++( sint )
+{
+   SelfType itr( *this );
+   ++*this;
+
+   return itr;
+}
+
+ValueConstIterator::SelfType& ValueConstIterator::operator --( void )
+{
+   this->decrement();
+
+   return *this;
+}
+
+ValueConstIterator::SelfType ValueConstIterator::operator --( sint )
+{
+   SelfType itr( *this );
+
+   return itr;
+}
+
+} // namespace nom

@@ -26,20 +26,63 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_PTREE_HPP
-#define NOMLIB_PTREE_HPP
+#ifndef NOMLIB_SYSTEM_PTREE_VALUE_ITERATOR_HPP
+#define NOMLIB_SYSTEM_PTREE_VALUE_ITERATOR_HPP
 
-#include <nomlib/config.hpp>
+#include "nomlib/config.hpp"
+#include "nomlib/ptree/ptree_config.hpp"
+#include "nomlib/ptree/ptree_forwards.hpp"
+#include "nomlib/ptree/ValueIteratorBase.hpp"
 
-// Public header file for Property Tree
+namespace nom {
 
-#include <nomlib/ptree/ptree_config.hpp>
-#include "nomlib/ptree/ptree_types.hpp"
-#include <nomlib/ptree/ptree_forwards.hpp>
-#include <nomlib/ptree/Value.hpp>
-#include <nomlib/ptree/VString.hpp>
-#include <nomlib/ptree/ValueIteratorBase.hpp>
-#include <nomlib/ptree/ValueIterator.hpp>
-#include <nomlib/ptree/ValueConstIterator.hpp>
+class ValueIterator: public ValueIteratorBase
+{
+  public:
+    typedef ValueIterator SelfType;
+    typedef ValueIteratorBase DerivedType;
+
+    typedef SelfType* RawPtr;
+    typedef SelfType Iterator;
+
+    /// \brief Default constructor.
+    ValueIterator( void );
+
+    /// \brief Destructor.
+    ~ValueIterator( void );
+
+    /// \brief Copy constructor
+    ValueIterator( const ValueIterator& copy );
+
+    /// \brief Copy constructor
+    ValueIterator( const ObjectIterator& itr );
+
+    /// \brief Copy assignment
+    SelfType& operator =( const SelfType& other );
+
+    /// \brief Obtain a reference to the iterator's object.
+    ///
+    /// \returns A reference to the nom::Value object.
+    ValueTypeReference operator *( void ) const;
+
+    /// \brief Obtain a pointer to the iterator's object.
+    ///
+    /// \returns A pointer to the nom::Value object.
+    ValueTypePointer operator ->( void ) const;
+
+    /// \brief Increment the object by one
+    SelfType& operator ++( void );
+
+    /// \brief Increment by specified parameter
+    SelfType operator ++( sint );
+
+    /// \brief Decrement by one
+    SelfType& operator --( void );
+
+    /// \brief Decrement by specified parameter
+    SelfType operator --( sint );
+};
+
+} // namespace nom
 
 #endif // include guard defined

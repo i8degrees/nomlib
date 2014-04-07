@@ -23,10 +23,10 @@ find_package( GTest REQUIRED )
 include_directories( ${GTEST_INCLUDE_DIRS} )
 
 if( NOM_BUILD_PTREE_TESTS )
+
   add_executable  (
                     ptree
                     ${NOM_TESTS_DIR}/ptree/ptree.cpp
-                    ${NOM_TESTS_DIR}/ptree/common.cpp
                   )
 
   target_link_libraries ( ptree
@@ -38,18 +38,19 @@ if( NOM_BUILD_PTREE_TESTS )
                     ptree
                     "values"
                     ${NOM_TESTS_DIR}/ptree/ptree.cpp
-                    # ${NOM_TESTS_DIR}/ptree/common.cpp
                   )
+
 endif( NOM_BUILD_PTREE_TESTS )
 
-# Header file dependencies
-include_directories( "${NOM_TESTS_DIR}/ptree" )
+# Additional Header file dependencies
+include_directories( "${NOM_TESTS_DIR}/serializers" )
 
 if( NOM_BUILD_PTREE_JSON_TESTS )
+
   add_executable  (
                     json_serializer
-                    ${NOM_TESTS_DIR}/ptree/json/JsonCppSerializerTest.cpp
-                    ${NOM_TESTS_DIR}/ptree/common.cpp
+                    ${NOM_TESTS_DIR}/serializers/JsonCppSerializerTest.cpp
+                    ${NOM_TESTS_DIR}/serializers/common.cpp
                   )
 
   target_link_libraries ( json_serializer
@@ -60,14 +61,13 @@ if( NOM_BUILD_PTREE_JSON_TESTS )
   GTEST_ADD_TESTS (
                     json_serializer
                     "JsonCppSerializerTest"
-                    ${NOM_TESTS_DIR}/ptree/json/JsonCppSerializerTest.cpp
-                    # ${NOM_TESTS_DIR}/ptree/common.cpp
+                    ${NOM_TESTS_DIR}/serializers/JsonCppSerializerTest.cpp
                   )
 
   add_executable  (
                     json_deserializer
-                    ${NOM_TESTS_DIR}/ptree/json/JsonCppDeserializerTest.cpp
-                    ${NOM_TESTS_DIR}/ptree/common.cpp
+                    ${NOM_TESTS_DIR}/serializers/JsonCppDeserializerTest.cpp
+                    ${NOM_TESTS_DIR}/serializers/common.cpp
                   )
 
 
@@ -80,16 +80,17 @@ if( NOM_BUILD_PTREE_JSON_TESTS )
   GTEST_ADD_TESTS (
                     json_deserializer
                     "JsonCppDeserializerTest"
-                    ${NOM_TESTS_DIR}/ptree/json/JsonCppDeserializerTest.cpp
-                    # ${NOM_TESTS_DIR}/ptree/common.cpp
+                    ${NOM_TESTS_DIR}/serializers/JsonCppDeserializerTest.cpp
                   )
+
 endif( NOM_BUILD_PTREE_JSON_TESTS )
 
 if( NOM_BUILD_PTREE_XML_TESTS )
+
 add_executable  (
                   xml_serializer
-                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlSerializerTest.cpp
-                  ${NOM_TESTS_DIR}/ptree/common.cpp
+                  ${NOM_TESTS_DIR}/serializers/RapidXmlSerializerTest.cpp
+                  ${NOM_TESTS_DIR}/serializers/common.cpp
                 )
 
 target_link_libraries ( xml_serializer
@@ -100,14 +101,13 @@ target_link_libraries ( xml_serializer
 GTEST_ADD_TESTS (
                   xml_serializer
                   "RapidXmlSerializer"
-                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlSerializerTest.cpp
-                  # ${NOM_TESTS_DIR}/ptree/common.cpp
+                  ${NOM_TESTS_DIR}/serializers/RapidXmlSerializerTest.cpp
                 )
 
 add_executable  (
                   xml_deserializer
-                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlDeserializerTest.cpp
-                  ${NOM_TESTS_DIR}/ptree/common.cpp
+                  ${NOM_TESTS_DIR}/serializers/RapidXmlDeserializerTest.cpp
+                  ${NOM_TESTS_DIR}/serializers/common.cpp
                 )
 
 target_link_libraries ( xml_deserializer
@@ -118,8 +118,7 @@ target_link_libraries ( xml_deserializer
 GTEST_ADD_TESTS (
                   xml_deserializer
                   "RapidXmlDeserializer"
-                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlDeserializerTest.cpp
-                  # ${NOM_TESTS_DIR}/ptree/common.cpp
+                  ${NOM_TESTS_DIR}/serializers/RapidXmlDeserializerTest.cpp
                 )
 
 endif( NOM_BUILD_PTREE_XML_TESTS )

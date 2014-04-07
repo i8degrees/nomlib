@@ -26,20 +26,43 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_PTREE_HPP
-#define NOMLIB_PTREE_HPP
+#ifndef NOMLIB_SYSTEM_IVALUE_SERIALIZER_HPP
+#define NOMLIB_SYSTEM_IVALUE_SERIALIZER_HPP
 
-#include <nomlib/config.hpp>
+#include "nomlib/config.hpp"
+#include "nomlib/serializers/serializers_config.hpp"
+#include "nomlib/ptree/ptree_forwards.hpp"
 
-// Public header file for Property Tree
+namespace nom {
 
-#include <nomlib/ptree/ptree_config.hpp>
-#include "nomlib/ptree/ptree_types.hpp"
-#include <nomlib/ptree/ptree_forwards.hpp>
-#include <nomlib/ptree/Value.hpp>
-#include <nomlib/ptree/VString.hpp>
-#include <nomlib/ptree/ValueIteratorBase.hpp>
-#include <nomlib/ptree/ValueIterator.hpp>
-#include <nomlib/ptree/ValueConstIterator.hpp>
+/// \brief Abstract interface for saving nom::Value objects.
+class IValueSerializer
+{
+  public:
+    typedef IValueSerializer SelfType;
+    typedef SelfType* RawPtr;
+
+    IValueSerializer( void )
+    {
+      //NOM_LOG_TRACE(NOM);
+    }
+
+    virtual ~IValueSerializer( void )
+    {
+      //NOM_LOG_TRACE(NOM);
+    }
+
+    virtual std::string serialize ( const Value& source ) = 0;
+
+    virtual bool save ( const Value& source, const std::string& filename ) = 0;
+};
+
+} // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::IValueSerializer
+/// \ingroup system
+///
+///   [TO BE WRITTEN]
+///

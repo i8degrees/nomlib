@@ -88,7 +88,7 @@ endif( NOM_BUILD_PTREE_JSON_TESTS )
 if( NOM_BUILD_PTREE_XML_TESTS )
 add_executable  (
                   xml_serializer
-                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlSerializer.cpp
+                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlSerializerTest.cpp
                   ${NOM_TESTS_DIR}/ptree/common.cpp
                 )
 
@@ -100,13 +100,13 @@ target_link_libraries ( xml_serializer
 GTEST_ADD_TESTS (
                   xml_serializer
                   "RapidXmlSerializer"
-                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlSerializer.cpp
+                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlSerializerTest.cpp
                   # ${NOM_TESTS_DIR}/ptree/common.cpp
                 )
 
 add_executable  (
                   xml_deserializer
-                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlDeserializer.cpp
+                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlDeserializerTest.cpp
                   ${NOM_TESTS_DIR}/ptree/common.cpp
                 )
 
@@ -118,7 +118,7 @@ target_link_libraries ( xml_deserializer
 GTEST_ADD_TESTS (
                   xml_deserializer
                   "RapidXmlDeserializer"
-                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlDeserializer.cpp
+                  ${NOM_TESTS_DIR}/ptree/xml/RapidXmlDeserializerTest.cpp
                   # ${NOM_TESTS_DIR}/ptree/common.cpp
                 )
 

@@ -52,7 +52,6 @@ class ValueIteratorBase
     enum IteratorType
     {
       Null = 0,         // Type 0 (default)
-      ArrayValues,      // Type 6
       ObjectValues      // Type 7
     };
 
@@ -74,14 +73,12 @@ class ValueIteratorBase
     ///
     /// \returns The array element's index on success, or -1 if the referenced
     /// value is not an array element.
-    int index( void ) const;
+    /*ArrayIndex*/int index( void ) const;
 
     /// \brief Obtain the current index or member key value.
     ///
     /// \returns Member key of the referenced value on success, nullptr if not
     /// not an object type or the member key is not found.
-    ///
-    /// \remarks Member key is optional.
     ///
     /// \TODO Try handling the return of the key (string) or index (integer)
     /// more elegantly? (Presently, we are converting index values to a string).
@@ -89,9 +86,9 @@ class ValueIteratorBase
 
     /// \brief Query if the member key exists at the current position of the
     /// iterator object.
-    ///
-    /// \remarks Member key is optional.
     bool key( const std::string& member ) const;
+
+    Value key_v2( void ) const;
 
     bool operator ==( const SelfType& other ) const;
 

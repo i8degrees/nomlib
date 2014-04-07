@@ -57,17 +57,10 @@ bool ValueIteratorBase::valid( void ) const
 
 const char* ValueIteratorBase::key( void ) const
 {
-  if( this->type() == IteratorType::ArrayValues )
+  if( this->type() == IteratorType::ObjectValues )
   {
-    // return( this->object_->first.index() );
-    return "\0"; // Not a valid nom::Object
-  }
-  else if( this->type() == IteratorType::ObjectValues )
-  {
-    // Handle null-terminated member key -- member key value not found
     if( this->object_->first.c_str() != nullptr )
     {
-      // Valid nom::Object member key
       return this->object_->first.c_str();
     }
     else
@@ -86,17 +79,14 @@ const char* ValueIteratorBase::key( void ) const
 
 bool ValueIteratorBase::key( const std::string& member ) const
 {
-  // Not valid; we are not iterating through an nom::Object
-  if( this->type() == IteratorType::ArrayValues )
-  {
-    return false;
-  }
-  else if( this->type() == IteratorType::ObjectValues )
+  if( this->type() == IteratorType::ObjectValues )
   {
     auto itr = this->object_->first.c_str();
+
     if( itr != member ) return false;
-    // if( this->object_->key != member ) return false;  // Member key not found
-    return true;                                      // Member key found
+
+    // Member key found
+    return true;
   }
   else // IteratorType::Null ???
   {
@@ -104,16 +94,17 @@ bool ValueIteratorBase::key( const std::string& member ) const
   }
 }
 
-// TODO: Handle index of array
-int ValueIteratorBase::index( void ) const
+/*ArrayIndex*/int ValueIteratorBase::index( void ) const
 {
-  if( this->type() == IteratorType::ArrayValues )
+  const VString& key = this->object_->first;
+
+  if( key.c_str() == nullptr )
   {
-    NOM_STUBBED(NOM);
-    // return this->distance( this->array_ );
-    return -1;
+    return key.index();
   }
-  else // IteratorType::ObjectValue
+
+  return -1;
+}
   {
     return -1; // Not an array; no index to be returned!
   }
@@ -127,33 +118,12 @@ void ValueIteratorBase::copy( const SelfType& other )
 
 ValueIteratorBase::ValueTypeReference ValueIteratorBase::dereference( void ) const
 {
-  if( this->type() == IteratorType::ArrayValues )
-  {
-    // return this->iterator_.array_->ref();
-    // return this->object_->ref();
-    return this->object_->second;
-  }
-  else if( this->type() == IteratorType::ObjectValues )
-  {
-    // return this->iterator_.object_->value->ref();
-    // return this->object_->value->ref();
-    return this->object_->second;
-  }
-  else // IteratorType::NullValue
-  {
-    // return Value();
-    // return this->object_->value->ref();
-    return this->object_->second;
-  }
+  return this->object_->second;
 }
 
 ValueIteratorBase::ValueTypePointer ValueIteratorBase::pointer( void ) const
 {
-  if( this->type() == IteratorType::ArrayValues )
-  {
-    return this->object_->second.get();
-  }
-  else if( this->type() == IteratorType::ObjectValues )
+  if( this->type() == IteratorType::ObjectValues )
   {
     return this->object_->second.get();
   }
@@ -165,11 +135,7 @@ ValueIteratorBase::ValueTypePointer ValueIteratorBase::pointer( void ) const
 
 bool ValueIteratorBase::operator ==( const SelfType& other ) const
 {
-  if( this->type() == IteratorType::ArrayValues )
-  {
-    return this->object_ == other.object_;
-  }
-  else if( this->type() == IteratorType::ObjectValues )
+  if( this->type() == IteratorType::ObjectValues )
   {
     return this->object_ == other.object_;
   }
@@ -181,11 +147,7 @@ bool ValueIteratorBase::operator ==( const SelfType& other ) const
 
 bool ValueIteratorBase::operator !=( const SelfType& other ) const
 {
-  if( this->type() == IteratorType::ArrayValues )
-  {
-    return ! ( this->object_ == other.object_ );
-  }
-  else if( this->type() == IteratorType::ObjectValues )
+  if( this->type() == IteratorType::ObjectValues )
   {
     return ! ( this->object_ == other.object_ );
   }
@@ -202,11 +164,7 @@ ValueIteratorBase::DifferenceType ValueIteratorBase::operator -( const SelfType&
 
 void ValueIteratorBase::increment( void )
 {
-  if( this->type() == IteratorType::ArrayValues )
-  {
-    ++this->object_;
-  }
-  else if( this->type() == IteratorType::ObjectValues )
+  if( this->type() == IteratorType::ObjectValues )
   {
     ++this->object_;
   }
@@ -218,11 +176,7 @@ void ValueIteratorBase::increment( void )
 
 void ValueIteratorBase::decrement( void )
 {
-  if( this->type() == IteratorType::ArrayValues )
-  {
-    --this->object_;
-  }
-  else if( this->type() == IteratorType::ObjectValues )
+  if( this->type() == IteratorType::ObjectValues )
   {
     --this->object_;
   }
@@ -234,11 +188,7 @@ void ValueIteratorBase::decrement( void )
 
 ValueIteratorBase::DifferenceType ValueIteratorBase::distance( const SelfType& other ) const
 {
-  if( this->type() == IteratorType::ArrayValues )
-  {
-    return std::distance( this->object_, other.object_ );
-  }
-  else if( this->type() == IteratorType::ObjectValues )
+  if( this->type() == IteratorType::ObjectValues )
   {
     return std::distance( this->object_, other.object_ );
   }

@@ -46,6 +46,8 @@ std::string RapidXmlSerializer::serialize ( const Value& source,
 {
   rapidxml::xml_document<> buffer;
 
+  // TODO:
+  //
   // Append XML DOCTYPE to very top of document
   // this->append_decl( buffer );
 
@@ -142,69 +144,42 @@ bool RapidXmlSerializer::load ( const std::string& filename,
 
 bool RapidXmlSerializer::write( const Value& source, rapidxml::xml_document<>& dest ) const
 {
-  uint index = 0;
   std::string root_key, key;
 
-  // Begin iterating through the entire container; values, arrays, objects and
-  // even objects within objects.
+  // Top-level node is an array -- this is not supported.
+  if( source.array_type() )
+  {
+    return false;
+  }
+
+  // Iterate through each object and store every member's key / value pair
+  // we find
   for( Value::ConstIterator itr = source.begin(); itr != source.end(); ++itr )
   {
     ValueConstIterator member( itr );
 
-    root_key = member.key();
+    key = member.key();
 
-    // Top-level node is an array object -- not supported.
-    if( root_key == "\0" )
+    #if defined( NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES )
+      NOM_DUMP( itr->type_name() );
+      NOM_DUMP( key );
+    #endif
+
+    rapidxml::xml_node<>* root_node = dest.allocate_node( rapidxml::node_element, this->stralloc( key, dest ) );
+
+    #if defined( NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES )
+      NOM_DUMP( itr->type_name() );
+      NOM_DUMP( key );
+    #endif
+
+    if( this->serialize_object( itr->ref(), key, dest, root_node ) == false )
     {
-      // TODO: Err handling
-      NOM_STUBBED( NOM );
+      NOM_LOG_ERR( NOM, "Could not serialize values; invalid object???" );
       return false;
-    } // end if root_key == "\0" (Top-level node is an array)
+    }
 
-    // Top-level node is an object.
-    else if( itr->object_type() )
-    {
-      #if defined( NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES )
-        NOM_DUMP( itr->type_name() );
-        NOM_DUMP( root_key );
-      #endif
-
-      rapidxml::xml_node<>* root_node = dest.allocate_node( rapidxml::node_element, this->stralloc( root_key, dest ) );
-      dest.append_node( root_node );
-
-      Object objects = itr->object();
-
-      // Iterate through each object and store every member's key / value pair
-      // we find
-      for( Value::ConstIterator itr = objects.begin(); itr != objects.end(); ++itr )
-      {
-        nom::ValueConstIterator member( itr );
-
-        key = member.key();
-
-        Value object = itr->ref();
-
-        #if defined( NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES )
-          NOM_DUMP( itr->type_name() );
-          NOM_DUMP( key );
-        #endif
-
-        rapidxml::xml_node<>* node = dest.allocate_node( rapidxml::node_element, this->stralloc( key, dest ) );
-
-        if( this->serialize_object( object, key, dest, node ) == false )
-        {
-          NOM_LOG_ERR( NOM, "Could not serialize values; invalid object???" );
-          return false;
-        }
-
-        root_node->append_node( node );
-      } // end for objects loop
-
-      // EOF Object
-      ++index;
-
-    } // end if top-level object node
-  } // end for source root object loop
+    dest.append_node( root_node );
+  } // end for source object loop
 
   return true;
 }
@@ -344,11 +319,7 @@ bool RapidXmlSerializer::write_value( const Value& object, const std::string& ke
 
 bool RapidXmlSerializer::serialize_array( const Value& object, const std::string& key, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const
 {
-  // Array array;
   Value array;
-
-  // array = object.array();
-  array = object.array();
 
   // NOM_DUMP( member_value );
 
@@ -390,8 +361,8 @@ bool RapidXmlSerializer::serialize_array( const Value& object, const std::string
 
         // FIXME:
         //
-        // rapidxml::xml_attribute<>* attrib = doc.allocate_attribute( this->stralloc( key, doc ), this->stralloc( member_value, doc ) );
-        // parent->append_attribute( attrib );
+        rapidxml::xml_attribute<>* attrib = doc.allocate_attribute( this->stralloc( key, doc ), this->stralloc( member_value, doc ) );
+        parent->append_attribute( attrib );
 
         break;
       }
@@ -406,7 +377,7 @@ bool RapidXmlSerializer::serialize_array( const Value& object, const std::string
 
       case Value::ValueType::ObjectValues:
       {
-        if( this->serialize_object( itr->ref(), "", doc, parent ) == false )
+        if( this->serialize_object( itr->ref(), key, doc, parent ) == false )
         {
           NOM_LOG_ERR( NOM, "Could not serialize values; invalid object???" );
           return false;
@@ -451,14 +422,6 @@ bool RapidXmlSerializer::serialize_object( const Value& object, const std::strin
         NOM_STUBBED( NOM );
         return false;
       }
-
-      break;
-
-      // Error -- not supported (we need a member key!)
-
-      // TODO: Err handling
-      NOM_STUBBED( NOM );
-      return false;
 
       break;
     }
@@ -582,7 +545,6 @@ bool RapidXmlSerializer::unserialize_array( const rapidxml::xml_node<>* object, 
 {
   std::string key;
   std::string value;
-  // Array arr;
   Value arr;
 
   for( rapidxml::xml_attribute<> *attr = object->first_attribute(); attr; attr = attr->next_attribute() )
@@ -607,7 +569,6 @@ bool RapidXmlSerializer::unserialize_object( const rapidxml::xml_node<>* node, V
 {
   std::string key;
   std::string value;
-  // Object obj;
   Value obj;
   Value arr;
 
@@ -696,17 +657,17 @@ bool RapidXmlSerializer::unserialize_object( const rapidxml::xml_node<>* node, V
 
         if( key != "" )
         {
-          // #if defined( NOM_DEBUG_RAPIDXML_UNSERIALIZER_VALUES )
+          #if defined( NOM_DEBUG_RAPIDXML_UNSERIALIZER_VALUES )
             NOM_DUMP(key);
-          // #endif
+          #endif
 
           this->unserialize_object( object, obj[key] );
 
           if( value != "" )
           {
-            // #if defined( NOM_DEBUG_RAPIDXML_UNSERIALIZER_VALUES )
+            #if defined( NOM_DEBUG_RAPIDXML_UNSERIALIZER_VALUES )
                NOM_DUMP( value );
-            // #endif
+            #endif
 
              // obj[key] = value;
           }
@@ -747,14 +708,5 @@ const char* RapidXmlSerializer::stralloc( const std::string& buffer, rapidxml::x
 {
   return dest.allocate_string( buffer.c_str() );
 }
-
-// std::ostream& operator <<( std::ostream& os, const Value& val )
-// {
-//   // os << val.dump( val );
-
-//   os << "";
-
-//   return os;
-// }
 
 } // namespace nom

@@ -128,9 +128,9 @@ class RapidXmlSerializer: public ISerializer
                 enum Features options = Compact
               );
 
-    // const std::string stringify( const Value& source );
-
   private:
+    // rapidxml::xml_document<> doc;
+
     bool write( const Value& source, rapidxml::xml_document<>& dest ) const;
 
     bool read( const std::string& input, Value& dest ) const;
@@ -167,12 +167,6 @@ class RapidXmlSerializer: public ISerializer
     /// \endcode
     void append_decl( rapidxml::xml_document<>& dest ) const;
 };
-
-/// \brief Output the XML document object.
-///
-/// \remarks Utilizes the public stringify method of this class interface.
-/// \TODO
-// std::ostream& operator <<( std::ostream& os, const Value& val );
 
 } // namespace nom
 

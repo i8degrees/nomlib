@@ -72,7 +72,7 @@ TEST_F( RapidXmlDeserializerTest, DeserializeInvalidInput )
 {
   o = expected_in( "" );
 
-  EXPECT_EQ( true, o.null_type() );
+  EXPECT_EQ( true, o[0].null_type() );
 }
 
 TEST_F( RapidXmlDeserializerTest, DeserializeArrayValues_NullValue )

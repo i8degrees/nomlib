@@ -15,9 +15,14 @@ namespace nom {
 class RapidXmlDeserializerTest: public ::testing::Test
 {
   public:
+    /// \brief Default constructor; initialize our input/ouput interfaces to a
+    /// sane state, suited for automated testing.
+    ///
+    /// \note Nearly every test fails without compact (no formatting) output.
     RapidXmlDeserializerTest( void ) :
       fp{ new RapidXmlDeserializer() },
-      fp_out{ new RapidXmlSerializer() }
+      fp_out{ new RapidXmlSerializer( nom::SerializerOptions::Compact ) },
+      fp_outs{ new RapidXmlSerializer( nom::SerializerOptions::HumanFriendly ) }
     {
       // ...
     }
@@ -45,6 +50,7 @@ class RapidXmlDeserializerTest: public ::testing::Test
     Value o;
     nom::IValueDeserializer* fp;
     nom::IValueSerializer* fp_out;
+    nom::IValueSerializer* fp_outs;
 
     Value expected_in( const std::string& in )
     {
@@ -53,7 +59,7 @@ class RapidXmlDeserializerTest: public ::testing::Test
 
     std::string pp_out( const Value& in )
     {
-      return fp_out->serialize( in );
+      return fp_outs->serialize( in );
     }
 };
 

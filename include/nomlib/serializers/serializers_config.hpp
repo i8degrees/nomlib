@@ -34,16 +34,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Output features.
-enum SerializerOptions: uint32
+///
+/// \remarks WriteComments is not implemented.
+enum SerializerOptions
 {
-  Compact = 2,        // No formatting applied (not human friendly)
-  StoreComments = 4   // Enable outputting comments
+  HumanFriendly = 0,
+  Compact,            // No formatting applied (inverse of HumanFriendly)
+  WriteComments       // Enable outputting comments; implies HumanFriendly.
 };
 
-/// \brief Restoring features.
+/// \brief Restore features.
+///
+/// \remarks Features are not tested whatsoever.
 enum DeserializerOptions: uint32
 {
-  ParseComments = 2   // Enable storing of comments
+  StrictMode = 0,     // Strict compliance with JSON spec; comments are
+                      // forbidden and the top-level (root) node must be either
+                      // an array or object value.
+  ParseComments       // Enable collection of comments (to be written back by
+                      // the serializer.
 };
 
 } // namespace nom

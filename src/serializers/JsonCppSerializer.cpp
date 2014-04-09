@@ -30,12 +30,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-JsonCppSerializer::JsonCppSerializer( void )
+JsonCppSerializer::JsonCppSerializer( void ) :
+  options_{ SerializerOptions::HumanFriendly }
 {
   //NOM_LOG_TRACE(NOM);
 }
 
 JsonCppSerializer::~JsonCppSerializer( void )
+{
+  //NOM_LOG_TRACE(NOM);
+}
+
+JsonCppSerializer::JsonCppSerializer( enum SerializerOptions options ) :
+  options_{ options }
 {
   //NOM_LOG_TRACE(NOM);
 }
@@ -51,16 +58,16 @@ std::string JsonCppSerializer::serialize  ( const Value& source )
     return "\0";
   }
 
-  // if( options == Features::HumanReadable )
-  // {
-    // Json::StyledStreamWriter writer( JSONCPP_INDENTION_LEVEL );
-    // writer.write( os, buffer );
-  // }
-  // else // Features::Compact
-  // {
+  if( this->options_ == SerializerOptions::Compact )
+  {
     Json::FastWriter writer;
     os << writer.write( buffer );
-  // }
+  }
+  else // SerializerOptions::HumanFriendly or SerializerOptions::WriteComments
+  {
+    Json::StyledStreamWriter writer( JSONCPP_INDENTION_LEVEL );
+    writer.write( os, buffer );
+  }
 
   return os.str();
 }

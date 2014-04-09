@@ -57,8 +57,17 @@ class JsonCppSerializer: public IValueSerializer
   public:
     typedef JsonCppSerializer SelfType;
 
+    /// \brief Default constructor; initialize the writer with human friendly
+    /// output.
+    ///
+    /// \remarks See the SerializerOptions enumeration for more information.
     JsonCppSerializer( void );
+
+    /// \brief Destructor.
     ~JsonCppSerializer( void );
+
+    /// \brief Construct a parser with a feature set enumeration.
+    JsonCppSerializer( enum SerializerOptions options );
 
     /// \brief Output a nom::Value object to a string.
     ///
@@ -80,6 +89,8 @@ class JsonCppSerializer: public IValueSerializer
     bool save ( const Value& source, const std::string& filename );
 
   private:
+    enum SerializerOptions options_;
+
     bool write( const Value& source, Json::Value& dest ) const;
 
     /// \TODO Err handling where used in code

@@ -57,8 +57,19 @@ class RapidXmlDeserializer: public IValueDeserializer
   public:
     typedef RapidXmlDeserializer SelfType;
 
+    /// \brief Default constructor; initialize the parser with no additional
+    /// options.
+    ///
+    /// \remarks No options are currently implemented for the XML parser.
     RapidXmlDeserializer( void );
+
+    /// \brief Destructor.
     ~RapidXmlDeserializer( void );
+
+    /// \brief Construct a parser with a feature set enumeration.
+    ///
+    /// \remarks No options are currently implemented for the XML parser.
+    RapidXmlDeserializer( uint32 options );
 
     /// \brief Parse XML data to a nom::Value object.
     ///
@@ -79,6 +90,8 @@ class RapidXmlDeserializer: public IValueDeserializer
     bool load ( const std::string& filename, Value& output );
 
   private:
+    uint32 options_;
+
     // rapidxml::xml_document<> doc;
 
     bool read( const std::string& input, Value& dest ) const;

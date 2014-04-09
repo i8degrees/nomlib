@@ -64,8 +64,17 @@ class RapidXmlSerializer: public IValueSerializer
   public:
     typedef RapidXmlSerializer SelfType;
 
+    /// \brief Default constructor; initialize the writer with human friendly
+    /// output.
+    ///
+    /// \remarks See the SerializerOptions enumeration for more information.
     RapidXmlSerializer( void );
+
+    /// \brief Destructor.
     ~RapidXmlSerializer( void );
+
+    /// \brief Construct a parser with a feature set enumeration.
+    RapidXmlSerializer( enum SerializerOptions options );
 
     /// \brief Output a nom::Value object to a string.
     ///
@@ -90,6 +99,8 @@ class RapidXmlSerializer: public IValueSerializer
     bool save ( const Value& source, const std::string& filename );
 
   private:
+    enum SerializerOptions options_;
+
     // rapidxml::xml_document<> doc;
 
     bool write( const Value& source, rapidxml::xml_document<>& dest ) const;

@@ -30,12 +30,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-RapidXmlSerializer::RapidXmlSerializer( void )
+RapidXmlSerializer::RapidXmlSerializer( void ) :
+  options_{ SerializerOptions::HumanFriendly }
 {
   //NOM_LOG_TRACE(NOM);
 }
 
 RapidXmlSerializer::~RapidXmlSerializer( void )
+{
+  //NOM_LOG_TRACE(NOM);
+}
+
+RapidXmlSerializer::RapidXmlSerializer( enum SerializerOptions options ) :
+  options_{ options }
 {
   //NOM_LOG_TRACE(NOM);
 }
@@ -49,30 +56,38 @@ std::string RapidXmlSerializer::serialize ( const Value& source )
   // Append XML DOCTYPE to very top of document
   // this->append_decl( buffer );
 
+  // Output the XML document to a buffer for further processing.
   if( this->write( source, buffer ) == false )
   {
     NOM_LOG_ERR ( NOM, "Could not serialize the source object." );
     return "\0";
   }
 
-  // if( options == Features::HumanReadable )
-  // {
-    // std::stringstream os;
-
-    // os << buffer;
-
-    // return os.str();
-  // }
-  // else // Features::Compact
-  // {
+  if( this->options_ == SerializerOptions::Compact )
+  {
     std::string os;
+
     rapidxml::print ( std::back_inserter( os ),
                       buffer,
                       rapidxml::print_no_indenting
                     );
 
     return os;
-  // }
+  }
+  else if( this->options_ == SerializerOptions::WriteComments )
+  {
+    // TODO: Handle comments serialization
+    NOM_STUBBED( NOM );
+    return "\0";
+  }
+  else // SerializerOptions::HumanFriendly
+  {
+    std::stringstream os;
+
+    os << buffer;
+
+    return os.str();
+  }
 }
 
 bool RapidXmlSerializer::save ( const Value& source, const std::string& filename )

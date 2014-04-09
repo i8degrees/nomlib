@@ -30,24 +30,50 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-JsonCppDeserializer::JsonCppDeserializer( void )
+JsonCppDeserializer::JsonCppDeserializer( void ) :
+  options_{ DeserializerOptions::StrictMode }
 {
-  //
+  // NOM_LOG_TRACE( NOM );
 }
 
 JsonCppDeserializer::~JsonCppDeserializer( void )
 {
-  //
+  // NOM_LOG_TRACE( NOM );
+}
+
+JsonCppDeserializer::JsonCppDeserializer( uint32 options ) :
+  options_{ options }
+{
+  // NOM_LOG_TRACE( NOM );
 }
 
 Value JsonCppDeserializer::deserialize  ( const std::string& source )
 {
+  bool collect_comments = false;
   Json::Reader parser;
   Json::Value buffer;
   Value output;
 
+  if( this->options_ & DeserializerOptions::StrictMode )
+  {
+    // Comments are forbidden and top-level node must be an array or object
+    parser = Json::Reader( Json::Features::strictMode() );
+  }
+
+  else if( this->options_ & DeserializerOptions::ParseComments )
+  {
+    // Parsing of comments for the writer to serialize (broken / not implemented).
+    collect_comments = true;
+  }
+  else // Non-strict JSON compliance
+  {
+    Json::Features f;
+    f.strictRoot_ = false;
+    parser = Json::Reader( f );
+  }
+
   // Attempt to read input file into memory; string to Json::Value
-  if ( parser.parse( source, buffer ) == false )
+  if ( parser.parse( source, buffer, collect_comments ) == false )
   {
     NOM_LOG_ERR ( NOM, "Could not parse the input source object as JSON." );
     return Value::null;

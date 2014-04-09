@@ -15,9 +15,14 @@ namespace nom {
 class JsonCppDeserializerTest: public ::testing::Test
 {
   public:
+    /// \brief Default constructor; initialize our input/ouput interfaces to a
+    /// sane state, suited for automated testing.
+    ///
+    /// \note Nearly every test fails without compact (no formatting) output.
     JsonCppDeserializerTest( void ) :
       fp{ new JsonCppDeserializer() },
-      fp_out{ new JsonCppSerializer() }
+      fp_out{ new JsonCppSerializer( nom::SerializerOptions::Compact ) },
+      fp_outs( new JsonCppSerializer( nom::SerializerOptions::HumanFriendly ) )
     {
       // ...
     }
@@ -31,6 +36,7 @@ class JsonCppDeserializerTest: public ::testing::Test
   protected:
     nom::IValueDeserializer* fp;
     nom::IValueSerializer* fp_out;
+    nom::IValueSerializer* fp_outs;
 
     Value expected_in( const std::string& in )
     {
@@ -40,6 +46,11 @@ class JsonCppDeserializerTest: public ::testing::Test
     std::string pp_out( const Value& in )
     {
       return fp_out->serialize( in );
+    }
+
+    std::string pp_outs( const Value& in )
+    {
+      return fp_outs->serialize( in );
     }
 };
 

@@ -50,8 +50,19 @@ namespace nom {
 class JsonCppDeserializer: public IValueDeserializer
 {
   public:
+    /// \brief Default constructor; initialize the parser to strict mode
+    /// compliance.
+    ///
+    /// \remarks See the DeserializerOptions enumeration for more information.
     JsonCppDeserializer( void );
+
+    /// \brief Destructor.
     ~JsonCppDeserializer( void );
+
+    /// \brief Construct a parser with a feature set enumeration.
+    ///
+    /// \remarks Bit-mask friendly.
+    JsonCppDeserializer( uint32 options );
 
     /// \brief Parse JSON data as a nom::Value object.
     ///
@@ -73,6 +84,8 @@ class JsonCppDeserializer: public IValueDeserializer
     bool load ( const std::string& filename, Value& output );
 
   private:
+    uint32 options_;
+
     bool read( const Json::Value& source, Value& dest ) const;
 
     /// \TODO Err handling where used in code

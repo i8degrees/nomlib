@@ -30,7 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-RapidXmlDeserializer::RapidXmlDeserializer( void )
+RapidXmlDeserializer::RapidXmlDeserializer( void ) :
+  options_{ 0 }
 {
   //NOM_LOG_TRACE(NOM);
 }
@@ -40,9 +41,19 @@ RapidXmlDeserializer::~RapidXmlDeserializer( void )
   //NOM_LOG_TRACE(NOM);
 }
 
+RapidXmlDeserializer::RapidXmlDeserializer( uint32 options )
+{
+  //NOM_LOG_TRACE(NOM);
+}
+
 Value RapidXmlDeserializer::deserialize ( const std::string& source )
 {
   Value output;
+
+  if( this->options_ & DeserializerOptions::ParseComments )
+  {
+    NOM_STUBBED( NOM );
+  }
 
   // Transform std::string filled with XML document to nom::Value
   if( this->read( source, output ) == false )

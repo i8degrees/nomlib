@@ -108,6 +108,7 @@ bool JsonCppSerializer::write( const Value& source, Json::Value& dest ) const
 
     // FIXME: (This handles array JSON serialization)
     // [ { ... } ]
+
     if( root_key == "\0" )
     {
       if( itr->object_type() )
@@ -133,29 +134,19 @@ bool JsonCppSerializer::write( const Value& source, Json::Value& dest ) const
             NOM_DUMP( itr->stringify() );
           #endif
 
-          if( dest[idx][key].isArray() )
+          if( this->write_array( itr->ref(), dest[idx][key] ) == false )
           {
-            if( this->write_array( itr->ref(), dest[idx][key] ) == false )
-            {
-              NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
-              return false;
-            }
+            NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
+            return false;
           }
 
-          if( dest[idx][key].isObject() )
+          if( this->write_object( itr->ref(), dest[idx][key] ) == false )
           {
-            if( this->write_object( itr->ref(), dest[idx][key] ) == false )
-            {
-              NOM_LOG_ERR( NOM, "Could not serialize values; invalid object?" );
-              return false;
-            }
+            NOM_LOG_ERR( NOM, "Could not serialize values; invalid object?" );
+            return false;
           }
         } // end for objects loop
       } // end if object type
-
-      // EOF JSON Object
-      ++idx;
-
     } // end if root_key == "\0" (JSON array top-level)
 
     // FIXME: (this now handles JSON serialization as mapped objects)
@@ -184,31 +175,19 @@ bool JsonCppSerializer::write( const Value& source, Json::Value& dest ) const
         #endif
 
         // Array within an object.
-        // FIXME: should be if( source[root_key][key].object_type() )
-        if( itr->ref().array_type() )
+        if( this->write_array( itr->ref(), dest[root_key][key] ) == false )
         {
-          if( this->write_array( itr->ref(), dest[root_key][key] ) == false )
-          {
-            NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
-            return false;
-          }
+          NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
+          return false;
         }
 
         // Object within an object.
-        // Does *NOT* work here: if( itr->ref().object_type() )
-        // FIXME: if( source[root_key][key].object_type() )
-        // {
-          if( this->write_object( itr->ref(), dest[root_key][key] ) == false )
-          {
-            NOM_LOG_ERR( NOM, "Could not serialize values; invalid object?" );
-            return false;
-          }
-        // }
+        if( this->write_object( itr->ref(), dest[root_key][key] ) == false )
+        {
+          NOM_LOG_ERR( NOM, "Could not serialize values; invalid object?" );
+          return false;
+        }
       } // end for objects loop
-
-      // EOF JSON Object
-      ++idx;
-
     } // end if JSON object
 
     // { "key": [ ... ] }
@@ -225,9 +204,6 @@ bool JsonCppSerializer::write( const Value& source, Json::Value& dest ) const
         NOM_STUBBED( NOM );
         return false;
       }
-
-      // EOF JSON Array
-      ++idx;
     }
     else // Non-array, non-object nom::Value type
     {
@@ -240,6 +216,9 @@ bool JsonCppSerializer::write( const Value& source, Json::Value& dest ) const
       NOM_LOG_ERR( NOM, "Could not serialize values; not an array or an object?" );
       // return false;
     }
+
+    // EOF source node iteration
+    ++idx;
   }
 
   return true;

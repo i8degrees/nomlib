@@ -76,18 +76,11 @@ TEST_F( JsonCppSerializerTest, SerializeNullValue )
   expected_out( o, "null\n" );
 }
 
-// NOTE: I *think* JsonCpp has a "strict" option that we could toggle off if it
-// were necessary to be able to create key value pairs that aren't JSON-compliant,
-// AKA not nested under either an array or object node.
-//
-// FIXME: This *might* be an err in our interface!
 TEST_F( JsonCppSerializerTest, SerializeInvalidIntegerValue )
 {
   Value o;
 
   o["key"] = -1;
-
-  // expected_out( "[{\"key\":-1}]\n" );
 
   not_expected_out( o, "" );
 }

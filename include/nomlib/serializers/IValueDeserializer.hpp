@@ -52,9 +52,9 @@ class IValueDeserializer
       //NOM_LOG_TRACE(NOM);
     }
 
-    virtual Value deserialize ( const std::string& source ) = 0;
+    virtual Value deserialize( const std::string& source ) = 0;
 
-    virtual bool load ( const std::string& filename,
+    virtual bool load( const std::string& filename,
                         Value& output
                       ) = 0;
 };

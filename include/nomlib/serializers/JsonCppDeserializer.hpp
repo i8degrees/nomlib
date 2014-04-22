@@ -72,7 +72,7 @@ class JsonCppDeserializer: public IValueDeserializer
     /// or nom::Value::null on err.
     ///
     /// \note Implements IDeserializer interface.
-    Value deserialize ( const std::string& source );
+    Value deserialize( const std::string& source );
 
     /// \brief Convenience method provided to store JSON-formatted data from a
     /// file.
@@ -81,7 +81,7 @@ class JsonCppDeserializer: public IValueDeserializer
     /// \param output nom::Value container to store resulting data in.
     ///
     /// \note Implements IDeserializer interface.
-    bool load ( const std::string& filename, Value& output );
+    bool load( const std::string& filename, Value& output );
 
   private:
     uint32 options_;

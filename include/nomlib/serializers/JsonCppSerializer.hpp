@@ -77,7 +77,7 @@ class JsonCppSerializer: public IValueSerializer
     /// terminated string on err.
     ///
     /// \note Implements ISerializer interface.
-    std::string serialize ( const Value& source );
+    std::string serialize( const Value& source );
 
     /// \brief Convenience method provided to output JSON-formatted data to a
     /// file.
@@ -86,7 +86,7 @@ class JsonCppSerializer: public IValueSerializer
     /// \param filename Absolute file path to output resulting data to.
     ///
     /// \note Implements ISerializer interface.
-    bool save ( const Value& source, const std::string& filename );
+    bool save( const Value& source, const std::string& filename );
 
   private:
     enum SerializerOptions options_;

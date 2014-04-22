@@ -52,9 +52,9 @@ class IValueSerializer
       //NOM_LOG_TRACE(NOM);
     }
 
-    virtual std::string serialize ( const Value& source ) = 0;
+    virtual std::string serialize( const Value& source ) = 0;
 
-    virtual bool save ( const Value& source, const std::string& filename ) = 0;
+    virtual bool save( const Value& source, const std::string& filename ) = 0;
 };
 
 } // namespace nom

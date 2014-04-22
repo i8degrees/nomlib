@@ -137,11 +137,18 @@ set ( NOMLIB_HEADERS_ROOT "include" )
 # Relative path from project root to nomlib's header files root
 set ( NOMLIB_HEADERS_DIR "include/nomlib" )
 
-# Relative path from project root to jsoncpp header files
-set ( JSONCPP_HEADERS_DIR "${NOMLIB_HEADERS_DIR}/json/jsoncpp" )
-
 # Relative path from project root to the external dependencies directory
 set ( EXTERNAL_DEPS_DIR "third-party" )
+
+# Absolute directory path to nomlib's common third-party dependency sources.
+#
+# NOTE: Contents of the path typically include header files and should be
+# suitable for installation in third-party projects; we make a copy of the given
+# path within the OS X Framework we build, for other projects (i.e.: TTcards) to
+# be able to include from, purely for the sake of convenience.
+set ( NOMLIB_THIRD_PARTY_INCLUDE_DIR
+      "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/common"
+    )
 
 # Absolute path to the json_spirit header files
 #set ( HEADERS_JSON_SPIRIT_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_HEADERS_DIR}/json_spirit" )
@@ -295,13 +302,13 @@ elseif ( PLATFORM_LINUX )
   # TODO
 endif ( PLATFORM_WINDOWS )
 
-# RapidXml dependency (only used if building with NOM_BUILD_XML)
-set ( RAPIDXML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/common/rapidxml" )
+# RapidXml dependency; only used when building with the NOM_BUILD_XML option.
+set ( RAPIDXML_INCLUDE_DIR "${NOMLIB_THIRD_PARTY_INCLUDE_DIR}/rapidxml" )
 set ( EXT_HEADERS ${EXT_HEADERS} ${RAPIDXML_INCLUDE_DIR} )
 
-# JsonCpp dependency (only used if building with NOM_BUILD_JSON)
-set ( JSONCPP_SOURCE "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/common/jsoncpp/jsoncpp.cpp" )
-set ( JSONCPP_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/common" )
+# JsonCpp dependency; only used when building with the NOM_BUILD_JSON option.
+set ( JSONCPP_SOURCE "${NOMLIB_THIRD_PARTY_INCLUDE_DIR}/jsoncpp/jsoncpp.cpp" )
+set ( JSONCPP_INCLUDE_DIR "${NOMLIB_THIRD_PARTY_INCLUDE_DIR}/jsoncpp" )
 set ( EXT_HEADERS ${EXT_HEADERS} ${JSONCPP_INCLUDE_DIR} )
 
 message ( STATUS "SDL2 headers: ${SDL2_INCLUDE_DIR}" )
@@ -321,10 +328,10 @@ message ( STATUS "libsndfile library: ${LIBSNDFILE_LIBRARY}" )
 
 message ( STATUS "Found RapidXml: ${RAPIDXML_INCLUDE_DIR}" )
 
-if( EXISTS ${JSONCPP_INCLUDE_DIR} AND EXISTS ${JSON_SOURCE} )
-  message ( STATUS "Found JsonCpp headers: ${JSONCPP_INCLUDE_DIR}" )
-  message ( STATUS "Found JsonCpp source: ${JSONCPP_SOURCE}" )
-endif( EXISTS ${JSONCPP_INCLUDE_DIR} AND EXISTS ${JSON_SOURCE} )
+if( NOT EXISTS ${JSONCPP_INCLUDE_DIR} )
+  message ( FATAL_ERROR "JsonCpp headers *NOT* found: ${JSONCPP_INCLUDE_DIR}" )
+  message ( FATAL_ERROR "JsonCpp source *NOT* found: ${JSONCPP_SOURCE}" )
+endif( NOT EXISTS ${JSONCPP_INCLUDE_DIR} )
 
 # External header files inclusion
 include_directories ( ${EXT_HEADERS} )
@@ -332,8 +339,13 @@ include_directories ( ${EXT_HEADERS} )
 # List of our source code to be compiled
 include ( "${SRC_DIR}/CMakeLists.txt" )
 
-# Project Header Files
-include_directories ( "${NOMLIB_HEADERS_ROOT}" "${JSONCPP_INCLUDE_DIR}" )
+# Project source inclusions (header files).
+include_directories (
+                      # nomlib's internal header files
+                      "${NOMLIB_HEADERS_ROOT}"
+                       # Third-party header files; RapidXml, JsonCpp
+                      "${NOMLIB_THIRD_PARTY_INCLUDE_DIR}"
+                    )
 
 if ( BUILD_SHARED_LIBS )
   add_library ( ${PROJECT_NAME} SHARED ${NOMLIB_SOURCE} ${NOMLIB_HEADERS} )
@@ -449,6 +461,15 @@ if ( PLATFORM_OSX )
       add_rpath ( "${RUNTIME_PATH}" "${INSTALL_BINARY_PATH}" )
       install_name_rpath ( "@rpath/sndfile.framework/Versions/A/sndfile" "${LIBSNDFILE_LIBRARY}/Versions/A/sndfile" )
     endif ( NOT CMAKE_GENERATOR STREQUAL "Xcode" )
+
+
+    # Install nomlib's third-party header files; see also, the note on our set
+    # environmental variable NOMLIB_THIRD_PARTY_INCLUDE_DIR.
+    install ( DIRECTORY
+              ${NOMLIB_THIRD_PARTY_INCLUDE_DIR}
+              DESTINATION "${INSTALL_HEADERS_PATH}/third-party"
+              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+            )
 
   endif ( FRAMEWORK )
 

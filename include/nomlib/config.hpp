@@ -40,9 +40,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Debugging
 #include <iostream>
-#include <cassert>
 #include "nomlib/system/clock.hpp"
 #include "nomlib/system/log.hpp"
+
+// Include SDL2's enhanced assert facility if enabled, otherwise fall-back to
+// standard C assert facility.
+#if defined( NOM_USE_SDL2_ASSERT )  // See cmake/platform.cmake
+  #include "SDL_assert.h"
+#else
+  #include <cassert>
+#endif
 
 /// \brief nomlib Debugging Options
 ///
@@ -95,14 +102,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOM_STUBBED(identifier) \
   ( std::cout << #identifier << "_LOG_STUB at " << nom::time() << "In file " << __FILE__ << ":" << __LINE__ << std::endl << std::endl )
 
-#ifdef NOM_DEBUG_ASSERT
+#ifdef NOM_DEBUG_ASSERT // -D NOM_DEBUG_ASSERT=true
 
-  #define NOM_ASSERT(expression) \
-    ( assert (expression) )
+  // Use SDL2's enhanced assert macro if available, otherwise fall-back to
+  // standard C assert.
+  #if defined( NOM_USE_SDL2_ASSERT )
+    #define NOM_ASSERT(expression) SDL_assert(expression)
+  #else
+    #define NOM_ASSERT(expression) \
+      ( assert (expression) )
+  #endif // defined( NOM_USE_SDL2_ASSERT )
 
 #else // Do not add any overhead
-  #define NOM_ASSERT(expression)
-#endif
+  #define NOM_ASSERT(expression)  // NO-OP.
+#endif // defined( NOM_DEBUG_ASSERT )
 
 #ifdef NOM_DEBUG_TRACE
 

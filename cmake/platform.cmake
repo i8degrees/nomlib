@@ -1,5 +1,10 @@
 # Platform detection script for CMake
 
+# Always use SDL2's enhanced assert facilities.
+#
+# See also: include/nomlib/config.hpp, include/nomlib/version.hpp.in
+set( NOM_USE_SDL2_ASSERT true )
+
 if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
   set ( PLATFORM_OSX true )
 

@@ -579,18 +579,21 @@ if( NOM_BUILD_TESTS )
   add_subdirectory( ${NOM_TESTS_DIR} )
 endif( NOM_BUILD_TESTS )
 
-# Auto-generated source file
-configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.cpp.in"
-                  "${SRC_DIR}/version.cpp"
-                )
-
-# Auto-generated header file
-configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
+# Auto-generated library version C++ header file
+configure_file  (
+                  "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
                   "${PROJECT_SOURCE_DIR}/${NOMLIB_HEADERS_DIR}/version.hpp"
                 )
 
-# Uninstall target support (always available)
-configure_file  ( "${CMAKE_TEMPLATE_PATH}/uninstall.cmake.in"
+# Auto-generated library configuration C++ header file
+configure_file  (
+                  "${CMAKE_TEMPLATE_PATH}/config.hpp.in"
+                  "${PROJECT_SOURCE_DIR}/${NOMLIB_HEADERS_DIR}/config.hpp"
+                )
+
+# Uninstall target support; 'make uninstall'
+configure_file  (
+                  "${CMAKE_TEMPLATE_PATH}/uninstall.cmake.in"
                   "${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake"
                   IMMEDIATE @ONLY
                 )

@@ -29,19 +29,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_CONFIG_HEADERS
 #define NOMLIB_CONFIG_HEADERS
 
-// nomlib version
+// nomlib library version
 #include "nomlib/version.hpp"
 
-// nomlib data types
+// nomlib's standard integer types
 #include "nomlib/types.hpp"
-
-// Platform detection
-#include "nomlib/platforms.hpp"
 
 // Debugging
 #include <iostream>
+
 #include "nomlib/system/clock.hpp"
 #include "nomlib/system/log.hpp"
+
+/// \brief See also: cmake/platform.cmake
+#cmakedefine NOM_USE_SDL2_ASSERT
 
 // Include SDL2's enhanced assert facility if enabled, otherwise fall-back to
 // standard C assert facility.
@@ -114,7 +115,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #endif // defined( NOM_USE_SDL2_ASSERT )
 
 #else // Do not add any overhead
-  #define NOM_ASSERT(expression)  // NO-OP.
+  #define NOM_ASSERT(expression)  // NO-OP
 #endif // defined( NOM_DEBUG_ASSERT )
 
 #ifdef NOM_DEBUG_TRACE

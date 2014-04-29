@@ -1,5 +1,5 @@
 # CMake auto-generated files
-version.cpp
+config.hpp
 version.hpp
 
 .loc.yml

@@ -29,7 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_STDINT_TYPES_HPP
 #define NOMLIB_STDINT_TYPES_HPP
 
-#include "platforms.hpp"
+#include <string> // std::size_t
+
+#include "nomlib/platforms.hpp"
 
 #define NOM_PTR_CAST(type, expression) \
   ( std::dynamic_pointer_cast<type>(expression) )
@@ -105,16 +107,11 @@ typedef uint32_t uint32;
   typedef signed __int64 int64;
   typedef unsigned __int64 uint64;
 #else // Blindly assume a 64-bit architecture
-  typedef int64_t int64; //typedef signed long long int int64;
-  typedef uint64_t uint64; //typedef unsigned long long int uint64;
+  typedef int64_t int64;    //typedef signed long long int int64;
+  typedef uint64_t uint64;  //typedef unsigned long long int uint64;
 #endif
 
 // Additional integer type definitions
-#if defined (NOM_PLATFORM_ARCH_X86_64)
-  typedef unsigned long ulong;
-#else // Blindly assume 32-bit arch
-  typedef long long ulong;
-#endif
 
 /// \brief Unsigned 8-bit character.
 typedef unsigned char uchar;
@@ -136,6 +133,8 @@ typedef uint32_t* uint32_ptr;
 
 typedef void* void_ptr;
 
+typedef unsigned long ulong;
+
 } // namespace nom
 
 /// Ensure our data types have the right sizes using C++11 compile-time asserts.
@@ -151,21 +150,25 @@ static_assert ( sizeof ( nom::int32 ) == 4, "nom::int32" );
 static_assert ( sizeof ( nom::uint64 ) == 8, "nom::uint64" );
 static_assert ( sizeof ( nom::int64 ) == 8, "nom::int64" );
 
-static_assert ( sizeof ( nom::ulong ) == 8, "nom::ulong" );
-
 static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
 
-#if defined(NOM_PLATFORM_ARCH_X86_64)
-  static_assert ( sizeof ( nom::size ) == ( sizeof(nom::uint64) ), "nom::size" );
-  static_assert ( sizeof ( nom::int32_ptr ) == ( sizeof(long) ), "nom::int32_ptr" );
-  static_assert ( sizeof ( nom::uint32_ptr ) == ( sizeof(nom::ulong) ), "nom::uint32_ptr" );
-#elif defined(NOM_PLATFORM_ARCH_X86)
-  static_assert ( sizeof ( nom::size ) == ( sizeof(nom::uint32) ), "nom::size" );
-#else
-  #pragma message ( "types.hpp: Unknown architecture; defined data types may be wrong." )
+// Blindly assumes we are on either a 64-bit or 32-bit platform.
+#if defined( NOM_PLATFORM_ARCH_X86_64 )
+  static_assert( sizeof ( nom::ulong ) == 8, "nom::ulong" );
+#else // #elif defined( NOM_PLATFORM_ARCH_X86_86 )
+  static_assert( sizeof ( nom::ulong ) == 4, "nom::ulong" );
 #endif
 
-static_assert ( sizeof ( nom::boolean ) == ( sizeof(int) ), "nom::boolean" );
+// Blindly assumes we are on either a 64-bit or 32-bit platform.
+#if defined( NOM_PLATFORM_ARCH_X86_64 )
+  static_assert( sizeof ( nom::int32_ptr ) == ( sizeof(long) ), "nom::int32_ptr" );
+  static_assert( sizeof ( nom::uint32_ptr ) == ( sizeof(nom::ulong) ), "nom::uint32_ptr" );
+#else // #elif defined(NOM_PLATFORM_ARCH_X86)
+  static_assert( sizeof( nom::int32_ptr ) == ( sizeof( long ) ), "nom::int32_ptr" );
+  static_assert( sizeof( nom::uint32_ptr ) == ( sizeof( nom::ulong ) ), "nom::uint32_ptr" );
+#endif
+
+static_assert( sizeof ( nom::boolean ) == ( sizeof(int) ), "nom::boolean" );
 
 /// Additional type definitions
 

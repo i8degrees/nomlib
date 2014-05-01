@@ -131,6 +131,28 @@ GTEST_ADD_TESTS (
 
 endif( NOM_BUILD_PTREE_XML_TESTS )
 
+if( NOM_BUILD_TEMPLATES_UNIT )
+
+  # Resources/SharedSupport/UnitTestTemplate.cpp
+
+  add_executable  (
+                    UnitTestTemplate
+                    "${PROJECT_SOURCE_DIR}/Resources/SharedSupport/UnitTestTemplate.cpp"
+                  )
+
+  target_link_libraries ( UnitTestTemplate
+                          ${GTEST_BOTH_LIBRARIES}
+                          ${PROJECT_NAME} # nomlib
+                        )
+
+  GTEST_ADD_TESTS (
+                    Template
+                    "TemplateTestDesc"
+                    "${PROJECT_SOURCE_DIR}/Resources/SharedSupport/UnitTestTemplate.cpp"
+                  )
+
+endif( NOM_BUILD_TEMPLATES_UNIT )
+
 if( NOM_BUILD_JSON_UNIT )
   install ( DIRECTORY
             "${NOM_EXAMPLES_RESOURCES_DIR}/json"

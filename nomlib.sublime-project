@@ -4,7 +4,8 @@
     {
       "name": "inc",
       "path": "include/nomlib",
-      "file_include_patterns": [ "*.hpp", "*.h" ]
+      "file_include_patterns": [ "*.hpp", "*.h" ],
+      "file_exclude_patterns": [ "config.hpp" ]
     },
 
     {

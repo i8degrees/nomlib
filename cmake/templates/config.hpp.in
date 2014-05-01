@@ -86,20 +86,42 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// Pretty print C macros purely for convenience sake
 ///
 /// \deprecated Use NOM_DUMP
-#define NOM_DUMP_VAR(var) \
-  ( std::cout << #var << ": " << var << std::endl << std::endl )
+#define NOM_DUMP_VAR(var) NOM_DUMP(var)
 
-/// Pretty print C macros purely for convenience sake
+/// \brief Macros for quickly dumping a variable.
 #define NOM_DUMP(var) \
-  ( std::cout << #var << ": " << var << std::endl << std::endl )
+  ( std::cout << "In function: " << __func__ << std::endl << #var << ": " << var << std::endl << std::endl )
 
-// nomlib debugging macros
+/// \brief Debugging macros;
+///
+/// \remarks If debugging is turned on, we log all warnings, errors & info.
 #ifdef NOM_DEBUG
 
-  // If debugging is turned on, we log all warnings, errors & info
-  #define NOM_LOG_INFO(identifier, message) \
-    ( std::cout << #identifier << "_LOG_INFO at " << nom::time() << message << std::endl << std::endl )
+  /// \brief Log INFO debug level message.
+  ///
+  /// \remarks The identifier will be set to 'NOM'.
+  ///
+  /// \note This is a macro provided for internal debugging diagnostics.
+  // #define NOM_LOG_INFO(message) \
+    // ( std::cout << "NOM" << "_LOG_INFO at " << nom::time() << message << std::endl << std::endl )
 
+  /// \brief Log INFO debug level message using a custom identifier.
+  ///
+  /// \note This is a macro provided for debugging projects that use nomlib.
+  #define NOM_LOG_INFO(identifier, message) \
+    ( std::cout << #identifier << "_LOG_INFO at " << nom::time() << "In function: " << __func__ << std::endl << message << std::endl << std::endl )
+
+  /// \brief Log ERR debug level message.
+  ///
+  /// \remarks The identifier will be set to 'NOM'.
+  ///
+  /// \note This is a macro provided for internal debugging diagnostics.
+  // #define NOM_LOG_ERR(message) \
+    // ( std::cout << "NOM" << "_LOG_ERR at " << nom::time() << "In file " << __FILE__ << ":" << __LINE__ << std::endl << "Reason: " << message << std::endl << std::endl )
+
+  /// \brief Log ERR debug level message using a custom identifier.
+  ///
+  /// \note This is a macro provided for debugging projects that use nomlib.
   #define NOM_LOG_ERR(identifier, message) \
     ( std::cout << #identifier << "_LOG_ERR at " << nom::time() << "In file " << __FILE__ << ":" << __LINE__ << std::endl << "Reason: " << message << std::endl << std::endl )
 

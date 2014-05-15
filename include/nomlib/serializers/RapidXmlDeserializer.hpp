@@ -44,8 +44,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/serializers/IValueDeserializer.hpp"
 #include "nomlib/ptree.hpp"
 
-/// \brief Enable dumping output of each key, value pair, sizes, etc. as we
-/// traverse the object.
+// Enable dumping output of each key, value pair, sizes, etc. as we traverse
+// the object.
 // #define NOM_DEBUG_RAPIDXML_DESERIALIZER_VALUES
 
 namespace nom {
@@ -121,8 +121,8 @@ class RapidXmlDeserializer: public IValueDeserializer
 /// 1. http://sfmlcoder.wordpress.com/2011/05/29/a-lightweight-xml-parser-rapid-xml/
 /// 2. http://www.w3schools.com/xml/xml_attributes.asp
 ///
-/// \TODO Implement XML comments
+/// \todo Implement XML comments
 ///
-/// \TODO Finish implementation of ::serialize_object & related case handling,
+/// \todo Finish implementation of ::serialize_object & related case handling,
 /// err handling
 ///

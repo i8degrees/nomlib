@@ -73,7 +73,7 @@ class SDLApp: public EventHandler
     /// \remarks This method is called once every frame from within the main
     /// loop.
     ///
-    /// \TODO Consider removing RenderTarget argument; I *think* we can get
+    /// \todo Consider removing RenderTarget argument; I *think* we can get
     /// away with this!
     virtual void on_draw( IDrawable::RenderTarget& );
 
@@ -104,7 +104,7 @@ class SDLApp: public EventHandler
 
     /// \brief End program execution.
     ///
-    /// \NOTE Sets the internal class variable app_state_ to false.
+    /// \note Sets the internal class variable app_state_ to false.
     virtual void quit( void );
 
     bool show_fps ( void ) const;

@@ -68,7 +68,7 @@ const std::string getBundleResourcePath ( const std::string& identifier = "\0" )
 ///
 /// These are standard folders that may be used for saving user data under.
 ///
-/// \fixme FSFindFolder and FSRefMakePath are deprecated in OS X v10.8+
+/// \todo FSFindFolder and FSRefMakePath are deprecated in OS X v10.8+
 const std::string user_documents_path ( void );
 
 /// Obtain the path to the logged in user's Application Support folder
@@ -77,7 +77,7 @@ const std::string user_documents_path ( void );
 ///
 /// These are standard folders that may be used for saving user data under.
 ///
-/// \fixme FSFindFolder and FSRefMakePath are deprecated in OS X v10.8+
+/// \todo FSFindFolder and FSRefMakePath are deprecated in OS X v10.8+
 const std::string user_app_support_path ( void );
 
 } // namespace nom

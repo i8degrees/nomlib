@@ -218,7 +218,7 @@ class App: public nom::SDLApp
   private:
     /// \brief Window handles
     ///
-    /// \TODO Use std::vector?
+    /// \todo Use std::vector?
     nom::RenderWindow window[MAXIMUM_WINDOWS];
 
     nom::Point2i window_size[MAXIMUM_WINDOWS];

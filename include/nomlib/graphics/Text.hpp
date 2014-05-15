@@ -194,7 +194,7 @@ class Text: public Transformable
 
     /// Render text to a target
     ///
-    /// \todo Test horizontal tabbing '\t'
+    /// \todo Test horizontal tabbing (\t)
     void draw ( RenderTarget& target ) const;
 
     /// Rescale the font with a chosen resizing algorithm
@@ -207,11 +207,11 @@ class Text: public Transformable
     ///
     /// \remarks Implements nom::IDrawable::update
     ///
-    /// \fixme Logic for this feature is incomplete!
+    /// \todo Logic for this feature is incomplete!
     void update ( void );
 
     IFont::SharedPtr font_;
-    mutable Texture texture_; /// \FIXME
+    mutable Texture texture_; // FIXME
     /// Holds contents of text as a string buffer
     std::string text_;
     uint text_size_;

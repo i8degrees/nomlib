@@ -170,7 +170,7 @@ class Renderer
 
     /// Obtain pixels buffer of the entire rendering target
     ///
-    /// \fixme Pixels pitch calculation
+    /// \todo Pixels pitch calculation
     void* pixels ( void ) const;
 
   protected:

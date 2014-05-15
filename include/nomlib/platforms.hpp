@@ -83,7 +83,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #undef PATH_MAX
 #endif
 
-/// FIXME: Apparently determining a safe, portable maximum file path is a bit
+/// \todo: Apparently determining a safe, portable maximum file path is a bit
 /// trickier
 /// than meets the eye -- for the time being, I am going to assume the POSIX
 /// standard of 256 bytes is sufficient for my needs.

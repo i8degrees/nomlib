@@ -68,7 +68,7 @@ class EventDispatcher
     /// \returns ~~The beginning event number for the set of events or (uint32)-1
     /// if there are not enough user-defined events left.~~
     ///
-    /// \NOTE This method call is currently not used; there may be a potential
+    /// \note This method call is currently not used; there may be a potential
     /// risk of us running out of room in SDL2's events queue! See
     /// our class file (EventDispatcher.cpp) for the incomplete, broken code;
     /// I could not ever get more than one user event dispatched.

@@ -80,7 +80,7 @@ class ValueIteratorBase
     /// \returns Member key of the referenced value on success, nullptr if not
     /// not an object type or the member key is not found.
     ///
-    /// \TODO Try handling the return of the key (string) or index (integer)
+    /// \todo Try handling the return of the key (string) or index (integer)
     /// more elegantly? (Presently, we are converting index values to a string).
     const char* key( void ) const;
 

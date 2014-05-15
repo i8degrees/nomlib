@@ -104,7 +104,7 @@ struct KeyboardAction
 
   /// \brief Symbol of the key press event.
   ///
-  /// \TODO Implement using the KeyboardSymbol structure.
+  /// \todo Implement using the KeyboardSymbol structure.
   // SDL_Keysym sym;
   int32 sym;
 

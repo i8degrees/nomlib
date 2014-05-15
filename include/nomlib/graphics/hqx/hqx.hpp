@@ -47,7 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// \todo Test the implementation of 8-bit, 16-bit & 24-bit video scaling
 /// functions.
 ///
-/// \todo FIXME; due to some bizarre linking issue resulting in unresolved
+/// \todo due to some bizarre linking issue resulting in unresolved
 /// symbols upon trying to use any of the function calls (such as hqxInit),
 /// so we have had to resort to forking a copy of the original source to get
 /// this working.
@@ -79,7 +79,8 @@ static inline uint32 rgb_to_yuv(uint32 c)
     return RGBtoYUV[MASK_RGB & c];
 }
 
-/// Possible FIXME
+/// \todo Possible FIXME
+///
 /// It *may* be possible that a signed integer here is not always large
 /// enough to compare colors accurately in all cases. More research /
 /// testing is needed here to determine.

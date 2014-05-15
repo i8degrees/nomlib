@@ -44,8 +44,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/serializers/IValueSerializer.hpp"
 #include "nomlib/ptree.hpp"
 
-/// \brief Enable dumping output of each key, value pair, sizes, etc. as we
-/// traverse the object.
+// Enable dumping output of each key, value pair, sizes, etc. as we
+// traverse the object.
 // #define NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES
 
 namespace nom {
@@ -54,7 +54,7 @@ namespace nom {
 ///
 /// \remarks Two space tabbed indention.
 ///
-/// \TODO Implement feature
+/// \todo Implement feature
 // const std::string RAPIDXML_INDENTION_LEVEL = "  ";
 
 /// \brief Saving of nom::Value objects to XML documents using the RapidXml
@@ -142,8 +142,8 @@ class RapidXmlSerializer: public IValueSerializer
 /// 1. http://sfmlcoder.wordpress.com/2011/05/29/a-lightweight-xml-parser-rapid-xml/
 /// 2. http://www.w3schools.com/xml/xml_attributes.asp
 ///
-/// \TODO Implement XML comments
+/// \todo Implement XML comments
 ///
-/// \TODO Finish implementation of ::serialize_object & related case handling,
+/// \todo Finish implementation of ::serialize_object & related case handling,
 /// err handling.
 ///

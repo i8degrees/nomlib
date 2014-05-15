@@ -62,7 +62,7 @@ class Value
     /// many common file formats, such as: JSON, XML, INI & plist.
     ///
     /// \internal
-    /// \NOTE Borrowed over from the wonderful JsonCpp API.
+    /// \note Borrowed over from the wonderful JsonCpp API.
     /// \endinternal
     enum ValueType
     {
@@ -87,7 +87,7 @@ class Value
 
     /// \brief Destructor.
     ///
-    /// \TODO Memory management of our pointers.
+    /// \todo Memory management of our pointers.
     ~Value( void );
 
     /// \brief Copy constructor.
@@ -135,7 +135,7 @@ class Value
     /// \note Borrowed from JsonCpp library -- thanks!
     bool operator !=( const Value& other ) const;
 
-    /// \brief Returns ::null_type.
+    /// \brief Returns Value::null.
     ///
     /// \note Borrowed from JsonCpp library -- thanks!
     bool operator!( void ) const;
@@ -226,7 +226,7 @@ class Value
     /// \remarks The type is defined by the value type(s) set at construction.
     /// See also: Value::ValueType enumeration.
     ///
-    /// \TODO Rename to stringify_type?
+    /// \todo Rename to stringify_type?
     const std::string type_name( void ) const;
 
     /// \brief Query if the value type type stored in the object is NULL.
@@ -421,7 +421,7 @@ class Value
     /// integers are the "default" literal integer type, at least on my
     /// development system).
     ///
-    /// \TODO Fix index methods -- VString, ValueBaseIterator & co; this method
+    /// \todo Fix index methods -- VString, ValueBaseIterator & co; this method
     /// call relies on our half-finished implementation stemming from the
     /// VString class.
     const Value& operator[]( ArrayIndex index ) const;
@@ -521,7 +521,7 @@ class Value
     ///
     /// \internal
     ///
-    /// \NOTE Unionized structure is for conserving memory usage and
+    /// \note Unionized structure is for conserving memory usage and
     /// conveniently so happens to fit our container's enforced one value type
     /// per object pattern.
     ///
@@ -544,7 +544,7 @@ class Value
 
 /// \brief Pretty print the object
 ///
-/// \TODO Implement upper limit to value length dump; ideally within ~80
+/// \todo Implement upper limit to value length dump; ideally within ~80
 /// characters or less?
 std::ostream& operator <<( std::ostream& os, const Value& val );
 
@@ -568,6 +568,6 @@ std::ostream& operator <<( std::ostream& os, const Value& val );
 ///   Boost::PropertyTree
 ///   Apple's PropertyList (.plist)
 ///
-/// \TODO Implement support for (un)-signed 64-bit integers
+/// \todo Implement support for (un)-signed 64-bit integers
 ///
-/// \TODO Implement support for comments (XML & JSON style)
+/// \todo Implement support for comments (XML & JSON style)

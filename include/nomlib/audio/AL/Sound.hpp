@@ -42,6 +42,7 @@ namespace nom {
 // forward declarations
 class SoundBuffer;
 
+/// \brief Audio interface for sound samples
 class Sound: public SoundSource // "is-a relationship"
 {
   public:
@@ -76,6 +77,7 @@ class Sound: public SoundSource // "is-a relationship"
 #endif // NOMLIB_AL_SOUND_HEADERS defined
 
 /// \class nom::Sound
+/// \ingroup Audio
 ///
 /// A sample is the amplitude of the sound signal at a given point of time, and
 /// an array -- 16-bit signed integers -- of samples therefore represents a full

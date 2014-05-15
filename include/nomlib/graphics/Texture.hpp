@@ -45,7 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/RenderWindow.hpp"
 
-/// Dump the rescaled Texture as a PNG file
+// Dump the rescaled Texture as a PNG file
 //#define NOM_DEBUG_SDL2_RESIZE_PNG
 
 namespace nom {

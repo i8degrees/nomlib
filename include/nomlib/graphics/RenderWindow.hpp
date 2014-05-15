@@ -251,7 +251,7 @@ class RenderWindow: public Renderer
     /// \remarks  This method automatically appends a unique ID onto the end of
     ///           the given filename string.
     ///
-    /// \fixme    Pixels pitch calculation (see screenshot.initialize call)
+    /// \todo    Pixels pitch calculation (see screenshot.initialize call)
     bool save_screenshot ( const std::string& filename ) const;
 
     /// Set the current Window as the active rendering context; this must be

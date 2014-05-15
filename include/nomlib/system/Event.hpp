@@ -88,12 +88,12 @@ struct KeyboardSymbolEvent
 
   /// \brief The physical key code of the key press event.
   ///
-  /// \TODO Implement using the KeyboardScanCode structure.
+  /// \todo Implement using the KeyboardScanCode structure.
   SDL_Scancode scan_code;
 
   /// \brief Virtual key code of the key press event.
   ///
-  /// \TODO Implement using the KeyboardSymbolCode structure.
+  /// \todo Implement using the KeyboardSymbolCode structure.
   SDL_Keycode sym;
 
   /// \brief The modifiers of the key press event; CTRL, ALT, ...
@@ -109,7 +109,7 @@ struct KeyboardEvent
 
   /// \brief Symbol of the key press event.
   ///
-  /// \TODO Implement using the KeyboardSymbol structure.
+  /// \todo Implement using the KeyboardSymbol structure.
   // SDL_Keysym sym;
   int32 sym;
 
@@ -195,7 +195,7 @@ struct MouseButtonEvent
   /// a touch input device, and not a real mouse. (You may want to ignore such
   /// events, if your application already handles SDL_TouchFingerEvent).
   ///
-  /// \NOTE ev->button.which
+  /// \note ev->button.which
   uint32 id;
 
   /// \brief The X coordinate, relative to the nom::Window instance.
@@ -219,13 +219,13 @@ struct MouseButtonEvent
   ///
   /// \remarks One (1) for single-click, two (2) for double-click, and so on.
   ///
-  /// \NOTE This field is not yet implemented and reserved for the release of
+  /// \note This field is not yet implemented and reserved for the release of
   /// SDL 2.0.2 (as per SDL2 wiki documentation).
   uint8 clicks;
 
   /// \brief The identifier of the window at the moment of the event.
   ///
-  /// \NOTE ev->button.windowID
+  /// \note ev->button.windowID
   uint32 window_id;
 
   void dump( void ) const
@@ -557,7 +557,7 @@ struct Event
 
   /// \brief The event type.
   ///
-  /// \TODO Change to enumeration type?
+  /// \todo Change to enumeration type?
   uint32 type;
 
   /// \brief The recorded time at the moment of the event.

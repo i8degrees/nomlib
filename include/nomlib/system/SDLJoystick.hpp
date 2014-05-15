@@ -153,5 +153,5 @@ void Free_Joystick( SDL_Joystick* );
 ///
 ///         [DESCRIPTION STUB]
 ///
-/// \TODO Implement SDL2's GameController API for Joysticks.
+/// \todo Implement SDL2's GameController API for Joysticks.
 ///

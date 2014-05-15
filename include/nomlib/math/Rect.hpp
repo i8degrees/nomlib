@@ -148,9 +148,9 @@ struct Rect
 
   /// \brief Save an object to a nom::Value object.
   ///
-  /// \TODO Return an Array instead of object?
-  /// \TODO Rename member key 'width' to 'w'
-  /// \TODO Rename member key 'h' to 'h'
+  /// \todo Return an Array instead of object?
+  /// \todo Rename member key 'width' to 'w'
+  /// \todo Rename member key 'h' to 'h'
   const Object serialize( void ) const
   {
     Object object;
@@ -398,7 +398,7 @@ inline Rect<T>& operator -= ( Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Reference to left operand.
 ///
-/// \fixme See tests/math.cpp at Point2 Unit Test 2, Result[1]
+/// \todo See tests/math.cpp at Point2 Unit Test 2, Result[1]
 template <typename T>
 inline Rect<T>& operator *= ( Rect<T>& lhs, const Rect<T>& rhs )
 {

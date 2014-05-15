@@ -39,8 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/serializers/IValueSerializer.hpp"
 #include "nomlib/ptree.hpp"
 
-/// \brief Enable dumping output of each key, value pair, sizes, etc. as we
-/// traverse the object.
+// Enable dumping output of each key, value pair, sizes, etc. as we
+// traverse the object.
 // #define NOM_DEBUG_JSONCPP_SERIALIZER_VALUES
 
 namespace nom {
@@ -93,20 +93,20 @@ class JsonCppSerializer: public IValueSerializer
 
     bool write( const Value& source, Json::Value& dest ) const;
 
-    /// \TODO Err handling where used in code
+    /// \todo Err handling where used in code
     bool write_value( const Value& object, Json::Value& dest ) const;
 
-    /// \TODO Err handling where used in code
+    /// \todo Err handling where used in code
     bool write_array_value( const Value& object, Json::Value& dest ) const;
 
     /// \brief Internal helper method for serialization of array nodes.
     ///
-    /// \TODO Err handling where used in code
+    /// \todo Err handling where used in code
     bool write_array( const Value& object, Json::Value& dest ) const;
 
     /// \brief Internal helper method for serialization of object nodes.
     ///
-    /// \TODO Err handling where used in code
+    /// \todo Err handling where used in code
     bool write_object( const Value& object, Json::Value& dest ) const;
 };
 

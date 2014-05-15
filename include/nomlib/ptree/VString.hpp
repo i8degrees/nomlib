@@ -72,10 +72,10 @@ class VString
     /// \brief Short-hand for checking if class variable value_ is nullptr.
     bool valid( void ) const;
 
-    /// \NOTE Required implementation for usage inside a std::map template.
+    /// \note Required implementation for usage inside a std::map template.
     bool operator <( const VString& other ) const;
 
-    /// \NOTE Required implementation for usage inside a std::map template.
+    /// \note Required implementation for usage inside a std::map template.
     bool operator ==( const VString& other ) const;
 
     /// \brief Getter for the C string (char*) copy of the stored member key.

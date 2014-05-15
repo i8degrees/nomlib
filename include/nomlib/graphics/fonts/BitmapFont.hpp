@@ -46,7 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
-/// Dump glyph bounding coordinates
+// Dump glyph bounding coordinates
 //#define NOM_DEBUG_SDL2_BITMAP_FONT
 
 namespace nom {

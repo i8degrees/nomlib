@@ -130,7 +130,7 @@ class InputStateMapper
     /// \brief Internal event handler for matching a joystick axis action to
     /// a joystick axis event.
     ///
-    /// \FIXME Do not use; the implementation is incomplete!
+    /// \todo Do not use; the implementation is incomplete!
     bool on_joystick_axis( const InputAction& mapping, const Event& ev );
 
     InputStateMap states_;

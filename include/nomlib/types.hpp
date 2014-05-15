@@ -79,16 +79,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Portable fixed-size data types derive from stdint.h
 namespace nom {
 
-// 8-bit integer types
+/// \brief Signed 8-bit integer.
 typedef int8_t int8;
+
+/// \brief Unsigned 8-bit integer.
 typedef uint8_t uint8;
 
-// 16-bit integer types
+/// \brief Signed 16-bit integer.
 typedef int16_t int16;
+
+/// \brief Unsigned 16-bit integer.
 typedef uint16_t uint16;
 
-// 32-bit integer types
+/// \brief Signed 32-bit integer.
 typedef int32_t int32;
+
+/// \brief Unsigned 16-bit integer.
 typedef uint32_t uint32;
 
 /// \brief 64-bit integer types
@@ -110,9 +116,15 @@ typedef uint32_t uint32;
   typedef long long ulong;
 #endif
 
+/// \brief Unsigned 8-bit character.
 typedef unsigned char uchar;
+
+/// \brief Variable-size (platform-defined) signed integer.
 typedef signed int sint;
+
+/// \brief Variable-size (platform-defined) unsigned integer.
 typedef unsigned int uint;
+
 typedef std::size_t size;
 typedef int boolean;
 

@@ -286,7 +286,7 @@ inline Point2<T>& operator -= ( Point2<T>& lhs, const Point2<T>& rhs )
 ///
 /// \returns Reference to left operand.
 ///
-/// \fixme See tests/math.cpp at Point2 Unit Test 2, Result[1]
+/// \todo See tests/math.cpp at Point2 Unit Test 2, Result[1]
 template <typename T>
 inline Point2<T>& operator *= ( Point2<T>& lhs, const Point2<T>& rhs )
 {

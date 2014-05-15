@@ -47,7 +47,7 @@ const uint MAX_STRING_LENGTH = 256;
 ///
 /// \returns Null-terminated string up to MAX_STRING_LENGTH.
 ///
-/// \TODO Find a better home for this function?
+/// \todo Find a better home for this function?
 char* duplicate_string( const char* val, uint length );
 
 } // namespace priv

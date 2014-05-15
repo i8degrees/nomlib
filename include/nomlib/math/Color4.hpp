@@ -168,6 +168,7 @@ inline std::ostream& operator << ( std::ostream& os, const Color4<T>& color )
   return os;
 }
 
+/// \brief Equality comparison operator.
 template <typename T>
 inline bool operator == ( const Color4<T>& left, const Color4<T>& right )
 {
@@ -177,6 +178,7 @@ inline bool operator == ( const Color4<T>& left, const Color4<T>& right )
          ( left.a == right.a );
 }
 
+/// \brief In-equality comparison operator.
 template <typename T>
 inline bool operator != ( const Color4<T>& left, const Color4<T>& right )
 {

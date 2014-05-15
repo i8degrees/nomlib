@@ -38,7 +38,7 @@ namespace nom {
 
 /// \brief Read-only iteration for nom::Value
 ///
-/// \TODO Finish implementation.
+/// \todo Finish implementation.
 class ValueConstIterator: public ValueIteratorBase
 {
   public:

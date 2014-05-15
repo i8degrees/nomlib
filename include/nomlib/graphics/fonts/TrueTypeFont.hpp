@@ -46,11 +46,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/RenderWindow.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
-/// Dump glyph bounding coordinates & save source, destination sheets as PNG
-/// files
+// Dump glyph bounding coordinates & save source, destination sheets as PNG
+// files
 //#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS
 
-/// Dump the individual glyph bitmaps as PNG files
+// Dump the individual glyph bitmaps as PNG files
 //#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS_PNG
 
 namespace nom {

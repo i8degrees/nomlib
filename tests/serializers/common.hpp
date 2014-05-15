@@ -49,7 +49,7 @@ const std::string RESOURCE_JSON_AUCTIONS = APP_RESOURCES_JSON_DIR + "auctions.js
 /// \brief World of Warcraft inventory dump (JSON)
 const std::string RESOURCE_JSON_INVENTORY = APP_RESOURCES_JSON_DIR + "inventory.json";
 
-/// \FIXME Only this particular file, for whatever reason, refuses to open unless we call Json::Reader::parse directly
+/// \todo Only this particular file, for whatever reason, refuses to open unless we call Json::Reader::parse directly
 const std::string RESOURCE_JSON_GAMEDATA = APP_RESOURCES_JSON_DIR + "omnom.json";
 
 const std::string RESOURCE_XML = APP_RESOURCES_XML_DIR + "test_one.xml";

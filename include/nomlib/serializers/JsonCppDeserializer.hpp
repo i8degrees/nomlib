@@ -39,8 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/serializers/IValueDeserializer.hpp"
 #include "nomlib/ptree.hpp"
 
-/// \brief Enable dumping output of each key, value pair, sizes, etc. as we
-/// traverse the object.
+// Enable dumping output of each key, value pair, sizes, etc. as we
+// traverse the object.
 // #define NOM_DEBUG_JSONCPP_DESERIALIZER_VALUES
 
 namespace nom {
@@ -88,17 +88,17 @@ class JsonCppDeserializer: public IValueDeserializer
 
     bool read( const Json::Value& source, Value& dest ) const;
 
-    /// \TODO Err handling where used in code
+    /// \todo Err handling where used in code
     bool read_value( const Json::Value& object, Value& dest ) const;
 
     /// \brief Internal helper method for un-serialization of array nodes.
     ///
-    /// \TODO Err handling where used in code
+    /// \todo Err handling where used in code
     bool read_array( const Json::Value& object, Value& dest ) const;
 
     /// \brief Internal helper method for un-serialization of object nodes.
     ///
-    /// \TODO Err handling where used in code
+    /// \todo Err handling where used in code
     bool read_object( const Json::Value& object, Value& dest ) const;
 };
 
@@ -111,5 +111,5 @@ class JsonCppDeserializer: public IValueDeserializer
 ///
 ///   [TO BE WRITTEN]
 ///
-/// \TODO Additional error handling via Json::Reader::getFormattedErrorMessage
+/// \todo Additional error handling via Json::Reader::getFormattedErrorMessage
 ///

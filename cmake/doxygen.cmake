@@ -6,6 +6,11 @@
 #   CMAKE_TEMPLATE_PATH
 #   PROJECT_BINARY_DIR
 #
+#   References
+#
+# 1. http://www.bluequartz.net/projects/EIM_Segmentation/SoftwareDocumentation/html/usewithcmakeproject.html
+# 2. http://mementocodex.wordpress.com/2013/01/19/how-to-generate-code-documentation-with-doxygen-and-cmake-a-slightly-improved-approach/
+#
 
 # Control whether or not to see warnings regarding incomplete documentation
 # from doxygen.
@@ -16,28 +21,41 @@ set ( BUILD_DOCS_DEV "YES" )
 # Valid values are "YES" or "NO" with a default value of "NO".
 set ( BUILD_DOCS_QUIET "NO" )
 
-find_package ( Doxygen )
+find_package( Doxygen )
 
-if ( NOT DOXYGEN_FOUND )
-  message ( FATAL_ERROR "Doxygen & graphviz is required to generate the documentation.")
-endif ( NOT DOXYGEN_FOUND )
+# if( NOT DOXYGEN_FOUND )
+#   message ( FATAL_ERROR "Doxygen & graphviz is required to generate the documentation.")
+# endif ( NOT DOXYGEN_FOUND )
 
-set ( DOXYFILE_IN ${CMAKE_TEMPLATE_PATH}/Doxyfile.in )
-set ( DOXYFILE ${PROJECT_BINARY_DIR}/Doxyfile )
-set ( DOXY_HTML_INDEX_FILE ${PROJECT_BINARY_DIR}/docs/html/index.html )
+# Setup Doxygen for documentation build only if we find the tools installed
+if( DOXYGEN_FOUND )
 
-#set ( DOXY_EXTRA_FILES "" )
+  set ( DOXYFILE_IN ${CMAKE_TEMPLATE_PATH}/Doxyfile.in )
+  set ( DOXYFILE ${PROJECT_BINARY_DIR}/Doxyfile )
+  set ( DOXY_HTML_INDEX_FILE ${PROJECT_BINARY_DIR}/docs/html/index.html )
 
-# Template Doxyfile
-configure_file  ( ${DOXYFILE_IN} ${DOXYFILE} @ONLY )
+  #set ( DOXY_EXTRA_FILES "" )
 
-# Generate docs only when dependencies change
-add_custom_command  ( OUTPUT ${DOXY_HTML_INDEX_FILE}
+  # Template Doxyfile
+  configure_file  ( ${DOXYFILE_IN} ${DOXYFILE} @ONLY )
+
+  # Generate docs only when dependencies change
+  # add_custom_command  ( OUTPUT ${DOXY_HTML_INDEX_FILE}
+  #                       COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE}
+  #                       MAIN_DEPENDENCY ${DOXYFILE} ${DOXYFILE_IN}
+  #                       DEPENDS project_targets ${DOXY_EXTRA_FILES}
+  #                       COMMENT "Generating HTML documentation"
+  #                     )
+
+  # Add 'make docs' target
+  # add_custom_target ( docs ALL DEPENDS ${DOXY_HTML_INDEX_FILE} )
+
+  # Build documentation files using 'make docs', or via IDE's 'docs' target.
+  add_custom_target (
+                      docs
                       COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE}
-                      MAIN_DEPENDENCY ${DOXYFILE} ${DOXYFILE_IN}
-                      #DEPENDS project_targets ${DOXY_EXTRA_FILES}
+                      SOURCES ${DOXYFILE_IN}
                       COMMENT "Generating HTML documentation"
                     )
 
-# Add 'make docs' target
-add_custom_target ( docs ALL DEPENDS ${DOXY_HTML_INDEX_FILE} )
+endif( DOXYGEN_FOUND )

@@ -21,7 +21,6 @@ option ( DEBUG "Build with all debugging features" off )
 option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
 option ( DEBUG_TRACE "Build with trace logging of object construction & destruction" off )
 option ( EXAMPLES "Build nomlib usage examples" off )
-option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
 option( NOM_BUILD_TESTS "Build unit tests" off )
 
 # Build a minimal core library. This option is particularly useful for when
@@ -190,9 +189,8 @@ message ( STATUS "Library Search Prefix: ${CMAKE_SYSTEM_PREFIX_PATH}" )
 # Installation prefix path set for our project
 message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
 
-if ( DOCS )
-  include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
-endif ( DOCS )
+# Doxygen configuration
+include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
 
 # Third-party dependencies
 #
@@ -548,22 +546,22 @@ install ( FILES
           DESTINATION "${INSTALL_DOCS_PATH}"
         )
 
-if ( DOCS )
-  # Install generated HTML documentation
-  install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
-            DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
+# Install the optionally generated HTML documentation
+install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
+          DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
+          OPTIONAL
+          PATTERN ".*" EXCLUDE # do not include dotfiles
+        )
+
+# Install the generated man page documentation if we are not building an OS X
+# framework bundle.
+if( NOT FRAMEWORK )
+  install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/man/man3
+            DESTINATION "${INSTALL_MAN_PAGES_PATH}"
+            OPTIONAL
             PATTERN ".*" EXCLUDE # do not include dotfiles
           )
-
-  if ( NOT FRAMEWORK )
-
-      # Install generated man page documentation
-      install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/man/man3
-                DESTINATION "${INSTALL_MAN_PAGES_PATH}"
-                PATTERN ".*" EXCLUDE # do not include dotfiles
-              )
-    endif ( NOT FRAMEWORK )
-endif ( DOCS )
+endif( NOT FRAMEWORK )
 
 if ( PLATFORM_LINUX )
   install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")") # FIXME (prettify)

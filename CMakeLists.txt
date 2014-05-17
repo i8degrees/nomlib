@@ -149,14 +149,16 @@ set ( NOMLIB_THIRD_PARTY_INCLUDE_DIR
       "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/common"
     )
 
-# Absolute path to the json_spirit header files
-#set ( HEADERS_JSON_SPIRIT_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_HEADERS_DIR}/json_spirit" )
-
 # Relative path from project root to nomlib demonstration examples
 set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" )
 
 # Resources path for library examples
 set( NOM_EXAMPLES_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/${NOMLIB_RESOURCES_DIR}/examples" )
+
+# Distributed typographic fonts.
+set ( NOMLIB_FONTS
+      "${PROJECT_SOURCE_DIR}/Resources/fonts"
+    )
 
 # Additional flags to pass add_executable -- used when library examples are
 # built
@@ -466,6 +468,19 @@ if ( PLATFORM_OSX )
     install ( DIRECTORY
               ${NOMLIB_THIRD_PARTY_INCLUDE_DIR}
               DESTINATION "${INSTALL_HEADERS_PATH}/third-party"
+              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+            )
+
+    # Install nomlib's default fonts
+    #
+    # FIXME: We need to be building the framework bundle locally -- within
+    # cmake's build dir -- and then after *everything* is built, copy said
+    # bundle over to the destination prefix.
+    install ( DIRECTORY
+              ${NOMLIB_FONTS}
+              # DESTINATION "${INSTALL_ROOT_PATH}/Resources"
+              DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Resources"
+              OPTIONAL
               PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
             )
 

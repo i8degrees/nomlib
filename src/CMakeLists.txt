@@ -67,8 +67,8 @@ set ( GRAPHICS_SHAPES_SOURCE
 file ( GLOB GRAPHICS_SPRITE_HEADERS "${NOMLIB_HEADERS_DIR}/graphics/sprite/*.hpp" )
 set ( GRAPHICS_SPRITE_SOURCE
       ${SRC_DIR}/graphics/sprite/Sprite.cpp
-      ${SRC_DIR}/graphics/sprite/SpriteBatch.cpp
-      ${SRC_DIR}/graphics/sprite/AnimatedSprite.cpp
+      # ${SRC_DIR}/graphics/sprite/SpriteBatch.cpp
+      # ${SRC_DIR}/graphics/sprite/AnimatedSprite.cpp
       # ${SRC_DIR}/graphics/sprite/SpriteSheet.cpp
     )
 
@@ -240,6 +240,8 @@ if( NOM_BUILD_JSON_UNIT )
         ${JSON_HEADERS}
         ${JSONCPP_INCLUDE_DIR}
         ${SRC_DIR}/graphics/sprite/SpriteSheet.cpp
+        ${SRC_DIR}/graphics/sprite/SpriteBatch.cpp
+        ${SRC_DIR}/graphics/sprite/AnimatedSprite.cpp
       )
   set ( NOMLIB_SOURCE
         ${NOMLIB_SOURCE}

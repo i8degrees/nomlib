@@ -9,9 +9,17 @@
 # code.
 #
 
-set( NOM_BUILD_PTREE_TESTS on )
-set( NOM_BUILD_PTREE_JSON_TESTS on )
-set( NOM_BUILD_PTREE_XML_TESTS on )
+if( NOM_BUILD_PTREE_UNIT )
+  set( NOM_BUILD_PTREE_TESTS on )
+endif( NOM_BUILD_PTREE_UNIT )
+
+if( NOM_BUILD_JSON_UNIT )
+  set( NOM_BUILD_PTREE_JSON_TESTS on )
+endif( NOM_BUILD_JSON_UNIT )
+
+if( NOM_BUILD_XML_UNIT )
+  set( NOM_BUILD_PTREE_XML_TESTS on )
+endif( NOM_BUILD_XML_UNIT )
 
 set ( TESTS_DEPS_INSTALL_PEFIX
       "${CMAKE_CURRENT_BINARY_DIR}/tests/${CMAKE_BUILD_TYPE}"
@@ -123,19 +131,23 @@ GTEST_ADD_TESTS (
 
 endif( NOM_BUILD_PTREE_XML_TESTS )
 
-install ( DIRECTORY
-          "${NOM_EXAMPLES_RESOURCES_DIR}/json"
-          DESTINATION
-          "${CMAKE_CURRENT_BINARY_DIR}/Resources"
-          PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-        )
+if( NOM_BUILD_JSON_UNIT )
+  install ( DIRECTORY
+            "${NOM_EXAMPLES_RESOURCES_DIR}/json"
+            DESTINATION
+            "${CMAKE_CURRENT_BINARY_DIR}/Resources"
+            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+          )
+endif( NOM_BUILD_JSON_UNIT )
 
-install ( DIRECTORY
-          "${NOM_EXAMPLES_RESOURCES_DIR}/xml"
-          DESTINATION
-          "${CMAKE_CURRENT_BINARY_DIR}/Resources"
-          PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-        )
+if( NOM_BUILD_XML_UNIT )
+  install ( DIRECTORY
+            "${NOM_EXAMPLES_RESOURCES_DIR}/xml"
+            DESTINATION
+            "${CMAKE_CURRENT_BINARY_DIR}/Resources"
+            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+          )
+endif( NOM_BUILD_XML_UNIT )
 
 # Install library dependencies into tests output directory so we can always
 # execute the binaries with the proper dependency versions.

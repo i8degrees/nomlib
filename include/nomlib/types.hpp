@@ -122,8 +122,8 @@ typedef signed int sint;
 /// \brief Variable-size (platform-defined) unsigned integer.
 typedef unsigned int uint;
 
+/// \todo Rename or remove..?
 typedef std::size_t size;
-typedef int boolean;
 
 typedef sint* sint_ptr;
 typedef uint* uint_ptr;
@@ -167,8 +167,6 @@ static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
   static_assert( sizeof( nom::int32_ptr ) == ( sizeof( long ) ), "nom::int32_ptr" );
   static_assert( sizeof( nom::uint32_ptr ) == ( sizeof( nom::ulong ) ), "nom::uint32_ptr" );
 #endif
-
-static_assert( sizeof ( nom::boolean ) == ( sizeof(int) ), "nom::boolean" );
 
 /// Additional type definitions
 

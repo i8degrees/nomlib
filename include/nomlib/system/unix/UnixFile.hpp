@@ -32,10 +32,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <vector>
 
 #include <unistd.h>
 #include <libgen.h>
 #include <sys/stat.h>
+#include <dirent.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/resources.hpp"
@@ -50,6 +52,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Platform-specific interface for file based access in Unix
+///
+/// \note http://www.gnu.org/software/libc/manual/html_node/File-System-Interface.html#File-System-Interface
 class UnixFile: public IFile
 {
   public:
@@ -65,6 +69,9 @@ class UnixFile: public IFile
     ///
     /// \remarks See nom::IFile::size
     int32 size ( const std::string& file_path );
+
+    /// \brief Test for the existence of a directory.
+    bool is_dir( const std::string& file_path );
 
     /// Implements nom::IFile::exists
     ///
@@ -90,6 +97,16 @@ class UnixFile: public IFile
     ///
     /// \remarks See nom::IFile::basename
     const std::string basename ( const std::string& filename );
+
+    /// \brief Get a list of file entries within a directory.
+    ///
+    /// \remarks The directory entries '.' and '..' are removed from the file
+    /// listing.
+    ///
+    /// \todo Implement optional directory recursion.
+    ///
+    /// \note Source reference: http://www.gnu.org/software/libc/manual/html_node/Simple-Directory-Lister.html#Simple-Directory-Lister.
+    std::vector<std::string> read_dir( const std::string& dir_path );
 };
 
 

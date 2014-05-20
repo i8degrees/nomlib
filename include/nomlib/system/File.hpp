@@ -62,6 +62,9 @@ class File
     /// Re-implements nom::IFile::size
     int32 size ( const std::string& file_path );
 
+    /// \brief Test for the existence of a directory.
+    bool is_dir( const std::string& file_path );
+
     /// Re-implements nom::IFile::exists
     bool exists ( const std::string& file_path );
 
@@ -77,8 +80,10 @@ class File
     /// Re-implements nom::IFile::basename
     const std::string basename ( const std::string& filename );
 
+    std::vector<std::string> read_dir( const std::string& dir_path );
+
   private:
-    std::shared_ptr<IFile> file;
+    std::unique_ptr<IFile> file;
 };
 
 

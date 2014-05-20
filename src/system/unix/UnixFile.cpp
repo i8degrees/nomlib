@@ -59,6 +59,21 @@ int32 UnixFile::size ( const std::string& file_path )
   return -1;
 }
 
+bool UnixFile::is_dir( const std::string& file_path )
+{
+  struct stat fp;
+
+  if( stat( file_path.c_str(), &fp ) == 0 )
+  {
+    if( fp.st_mode & S_IFDIR )
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 bool UnixFile::exists ( const std::string& file_path )
 {
   struct stat file;
@@ -122,6 +137,54 @@ const std::string UnixFile::basename ( const std::string& filename )
   // Bingo! A match was found -- return everything leading up to --
   // the last '.' character found (excluding the dot).
   return filename.substr ( 0, pos );
+}
+
+std::vector<std::string> UnixFile::read_dir( const std::string& dir_path )
+{
+  DIR *dp = nullptr;
+  dirent *ep = nullptr;
+  bool eof = false;               // Tracks the end of the directory
+  std::string entry;              // A file entry within a directory
+  std::vector<std::string> files; // Files found within directory
+
+  dp = opendir( dir_path.c_str() );
+
+  if( dp != nullptr )
+  {
+    while( eof == false )
+    {
+      ep = readdir( dp );
+
+      if( ep != nullptr )
+      {
+        entry = ep->d_name;
+
+        // TODO: Handle directory case
+        // if( this->is_dir( dir_path + "/" + entry ) == true )
+        // {
+        // }
+
+        // Sanitize the file entries
+        if( entry != "." && entry != ".." )
+        {
+          files.push_back( entry );
+        }
+        NOM_DUMP(entry);
+      }
+      else
+      {
+        eof = true;
+      }
+    }
+
+    closedir( dp );
+  }
+  else
+  {
+    NOM_LOG_ERR( NOM, "Could not read directory path: " + dir_path );
+  }
+
+  return files;
 }
 
 } // namespace nom

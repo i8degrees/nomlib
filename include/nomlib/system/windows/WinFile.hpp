@@ -31,10 +31,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 #include <cstring>
+#include <vector>
 
 #include <stdlib.h>
 #include <errno.h>
 #include <direct.h>
+
+// FIXME:
+// #include <windows.h>
+// #include <tchar.h>
+// #include <strsafe.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/Path.hpp"
@@ -57,12 +63,20 @@ class WinFile: public IFile
     /// Implements nom::IFile::size
     ///
     /// \remarks See nom::IFile::size
-    int32 size ( const std::string& file_path );
+    int32 size( const std::string& file_path );
+
+    /// \brief Test for the existence of a directory.
+    ///
+    /// \todo Verify working functionality.
+    bool is_dir( const std::string& file_path );
 
     /// Implements nom::IFile::exists
     ///
-    /// \remarks See nom::IFile::exists
-    bool exists ( const std::string& file_path );
+    /// \remarks See nom::IFile::exists.
+    ///
+    /// \note http://stackoverflow.com/questions/18320486/how-to-check-if-file-exists-in-c-in-a-portable-way
+    /// \note http://msdn.microsoft.com/en-us/library/windows/desktop/aa365522(v=vs.85).aspx
+    bool exists( const std::string& file_path );
 
     /// Implements nom::IFile::path
     ///
@@ -87,6 +101,16 @@ class WinFile: public IFile
     ///
     /// \remarks See nom::IFile::basename
     const std::string basename ( const std::string& filename );
+
+    /// \brief Get a list of file entries within a directory.
+    ///
+    /// \remarks The directory entries '.' and '..' are removed from the file
+    /// listing.
+    ///
+    /// \todo Implement optional directory recursion.
+    ///
+    /// \note http://msdn.microsoft.com/en-us/library/windows/desktop/aa365200(v=vs.85).aspx
+    std::vector<std::string> read_dir( const std::string& dir_path );
 };
 
 

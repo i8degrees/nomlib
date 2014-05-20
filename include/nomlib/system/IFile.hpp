@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <vector>
 
 #include "nomlib/config.hpp"
 
@@ -53,6 +54,8 @@ class IFile
     ///
     /// \returns -1 on err
     virtual int32 size ( const std::string& file_path ) = 0;
+
+    virtual bool is_dir( const std::string& file_path ) = 0;
 
     /// Uses stat(2) to determine if the input file exists
     virtual bool exists ( const std::string& file_path ) = 0;
@@ -79,6 +82,8 @@ class IFile
     /// \returns          File name path with its file extension removed upon
     ///                   success -- unmodified input filename on failure.
     virtual const std::string basename ( const std::string& filename ) = 0;
+
+    virtual std::vector<std::string> read_dir( const std::string& dir_path ) = 0;
 };
 
 

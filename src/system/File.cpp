@@ -33,9 +33,9 @@ namespace nom {
 File::File ( void )
 {
   #if defined (NOM_PLATFORM_WINDOWS) // Use Windows APIs
-    this->file = std::shared_ptr<IFile> ( new WinFile() );
+    this->file = std::unique_ptr<IFile> ( new WinFile() );
   #else // Assume POSIX compatibility; use POSIX / BSD & GNU APIs
-    this->file = std::shared_ptr<IFile> ( new UnixFile() );
+    this->file = std::unique_ptr<IFile> ( new UnixFile() );
   #endif
 }
 
@@ -51,9 +51,14 @@ int32 File::size ( const std::string& file_path )
   return this->file->size ( file_path );
 }
 
+bool File::is_dir( const std::string& file_path )
+{
+  return this->file->is_dir( file_path );
+}
+
 bool File::exists ( const std::string& file_path )
 {
-  return this->file->exists ( file_path );
+  return this->file->exists( file_path );
 }
 
 const std::string File::path ( const std::string& dir_path )
@@ -74,6 +79,11 @@ bool File::set_path ( const std::string& path )
 const std::string File::basename ( const std::string& filename )
 {
   return this->file->basename(filename);
+}
+
+std::vector<std::string> File::read_dir( const std::string& dir_path )
+{
+  return this->file->read_dir( dir_path );
 }
 
 } // namespace nom

@@ -30,6 +30,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// FIXME (?) We need to keep these two header files out of the public header
+// files, or else all hell breaks lose in the linking stage of example
+// executables!
+#include <windows.h>
+#include <tchar.h>
+#include <strsafe.h>
+
 WinFile::WinFile ( void ) {}
 
 WinFile::~WinFile ( void ) {}
@@ -47,19 +54,42 @@ const std::string WinFile::extension ( const std::string& file )
   return extension;
 }
 
-int32 WinFile::size ( const std::string& file_path )
+int32 WinFile::size( const std::string& file_path )
 {
-  // Stub
+  NOM_STUBBED( NOM );
+
   return 0;
 }
 
-bool WinFile::exists ( const std::string& file_path )
+bool WinFile::is_dir( const std::string& file_path )
 {
-  // Stub
+  DWORD attr = 0;
+
+  attr = GetFileAttributes( file_path.c_str() );
+
+  if( attr == FILE_ATTRIBUTE_DIRECTORY )
+  {
+    return true;
+  }
+
   return false;
 }
 
-const std::string WinFile::path ( const std::string& dir_path )
+bool WinFile::exists( const std::string& file_path )
+{
+  DWORD attr = 0;
+
+  attr = GetFileAttributes( file_path.c_str() );
+
+  if( attr != INVALID_FILE_ATTRIBUTES )
+  {
+    return true;
+  }
+
+  return false;
+}
+
+const std::string WinFile::path( const std::string& dir_path )
 {
   Path p; // Just to be safe, we'll let nom::Path determine our path separator!
 
@@ -77,7 +107,8 @@ const std::string WinFile::path ( const std::string& dir_path )
 
 const std::string WinFile::currentPath ( void )
 {
-  // Stub
+  NOM_STUBBED( NOM );
+
   return "";
 }
 
@@ -104,5 +135,77 @@ const std::string WinFile::basename ( const std::string& filename )
   // the last '.' character found (excluding the dot).
   return filename.substr ( 0, pos );
 }
+
+std::vector<std::string> WinFile::read_dir( const std::string& dir_path )
+{
+  WIN32_FIND_DATA ffd;
+  // LARGE_INTEGER filesize;
+  TCHAR szDir[PATH_MAX];
+  size_t length_of_arg;
+  HANDLE hFind = INVALID_HANDLE_VALUE;
+  DWORD dwError = 0;
+  std::string entry;              // A file entry within a directory
+  std::vector<std::string> files; // Files found within directory
+
+  // Check that the input path plus 3 is not longer than PATH_MAX.
+  // Three characters are for the "\*" plus NULL appended below.
+  StringCchLength( dir_path.c_str(), PATH_MAX, &length_of_arg );
+
+  if( length_of_arg > ( PATH_MAX - 3 ) )
+  {
+    NOM_LOG_ERR( NOM, "Directory path is too long." );
+    return files;
+  }
+
+  // Prepare string for use with FindFile functions.  First, copy the
+  // string to a buffer, then append '\*' to the directory name.
+  StringCchCopy( szDir, PATH_MAX, dir_path.c_str() );
+  StringCchCat( szDir, PATH_MAX, TEXT("\\*") );
+
+  // Find the first file in the directory.
+  hFind = FindFirstFile( szDir, &ffd );
+
+  if( INVALID_HANDLE_VALUE == hFind )
+  {
+    NOM_LOG_ERR( NOM, "Could not read file in directory." );
+    FindClose( hFind );
+    return files;
+  }
+
+  // List all the files in the directory with some info about them.
+  do
+  {
+    if( ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+    {
+      // TODO: Handle directory case
+
+      // files.push_back( std::string( ffd.cFileName ) );
+    }
+    else
+    {
+      // filesize.LowPart = ffd.nFileSizeLow;
+      // filesize.HighPart = ffd.nFileSizeHigh;
+
+      entry = ffd.cFileName;
+
+      if( entry != "." && entry != ".." )
+      {
+        files.push_back( entry );
+      }
+    }
+  }
+
+  while( FindNextFile( hFind, &ffd ) != 0 );
+
+  dwError = GetLastError();
+  if( dwError != ERROR_NO_MORE_FILES )
+  {
+    NOM_LOG_ERR( NOM, "File listing is not EOF." );
+  }
+
+  FindClose( hFind );
+
+  return files;
+};
 
 } // namespace nom

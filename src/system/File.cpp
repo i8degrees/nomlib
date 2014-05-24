@@ -86,4 +86,19 @@ std::vector<std::string> File::read_dir( const std::string& dir_path )
   return this->file->read_dir( dir_path );
 }
 
+const std::string File::resource_path( const std::string& identifier )
+{
+  return this->file->resource_path( identifier );
+}
+
+const std::string File::user_documents_path( void )
+{
+  return this->file->user_documents_path();
+}
+
+const std::string File::user_app_support_path( void )
+{
+  return this->file->user_app_support_path();
+}
+
 } // namespace nom

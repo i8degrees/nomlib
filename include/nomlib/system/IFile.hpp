@@ -73,6 +73,9 @@ class IFile
     virtual const std::string currentPath ( void ) = 0;
 
     /// chdir(2) wrapper
+    ///
+    /// \remarks Setting the path to '.' will change the working directory to
+    /// the directory path of the executable.
     virtual bool set_path ( const std::string& path ) = 0;
 
     /// Return the base file name
@@ -84,6 +87,12 @@ class IFile
     virtual const std::string basename ( const std::string& filename ) = 0;
 
     virtual std::vector<std::string> read_dir( const std::string& dir_path ) = 0;
+
+    virtual const std::string resource_path( const std::string& identifier = "\0" ) = 0;
+
+    virtual const std::string user_documents_path( void ) = 0;
+
+    virtual const std::string user_app_support_path( void ) = 0;
 };
 
 

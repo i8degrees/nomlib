@@ -76,14 +76,14 @@ bool UnixFile::is_dir( const std::string& file_path )
 
 bool UnixFile::exists ( const std::string& file_path )
 {
-  struct stat file;
+  struct stat fp;
 
-  if ( stat ( file_path.c_str(), &file ) != 0 || ! S_ISREG (file.st_mode) )
+  if( stat( file_path.c_str(), &fp ) == 0 && S_ISREG( fp.st_mode ) )
   {
-    return false;
+    return true;
   }
 
-  return true;
+  return false;
 }
 
 const std::string UnixFile::path ( const std::string& dir_path )
@@ -186,5 +186,74 @@ std::vector<std::string> UnixFile::read_dir( const std::string& dir_path )
 
   return files;
 }
+
+const std::string UnixFile::resource_path( const std::string& identifier )
+{
+  char resources_path [ PATH_MAX ]; // file-system path
+  CFBundleRef bundle; // bundle type reference
+
+  // Look for a bundle using its identifier if string passed is not null
+  // terminated
+  if ( identifier != "\0" )
+  {
+    CFStringRef identifier_ref; // Apple's string type
+
+    identifier_ref = CFStringCreateWithCString  ( nullptr, identifier.c_str(),
+                                                  strlen ( identifier.c_str() )
+                                                );
+
+    bundle = CFBundleGetBundleWithIdentifier ( identifier_ref );
+  }
+  else // Assume that we are looking for the top-level bundle's Resources path
+  {
+    bundle = CFBundleGetMainBundle();
+  }
+
+  CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL ( bundle );
+
+  if ( ! CFURLGetFileSystemRepresentation ( resourcesURL, true, ( uint8* ) resources_path, PATH_MAX ) )
+  {
+    NOM_LOG_ERR ( NOM, "Could not obtain the bundle's Resources path." );
+
+    CFRelease ( resourcesURL );
+
+    return "\0";
+  }
+
+  CFRelease ( resourcesURL );
+
+  return resources_path;
+}
+
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
+const std::string UnixFile::user_documents_path( void )
+{
+  FSRef ref;
+  OSType folderType = kDocumentsFolderType;
+  char path[PATH_MAX];
+
+  FSFindFolder ( kUserDomain, folderType, kCreateFolder, &ref );
+
+  FSRefMakePath ( &ref, (uint8*) &path, PATH_MAX );
+
+  return std::string ( path );
+}
+
+const std::string UnixFile::user_app_support_path( void )
+{
+  FSRef ref;
+  OSType folderType = kApplicationSupportFolderType;
+  char path[PATH_MAX];
+
+  FSFindFolder ( kUserDomain, folderType, kCreateFolder, &ref );
+
+  FSRefMakePath ( &ref, (uint8*) &path, PATH_MAX );
+
+  return std::string ( path );
+}
+
+#pragma clang diagnostic pop
 
 } // namespace nom

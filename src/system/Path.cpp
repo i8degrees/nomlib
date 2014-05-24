@@ -30,35 +30,62 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Path::Path ( void ) : pathname ( "\0" )
+Path::Path( void )
 {
-#if defined ( NOM_PLATFORM_WINDOWS )
-  path_separator = "\\";
-#else // Assume POSIX-compliant platform
-  path_separator = "/";
-#endif
+  // NOM_LOG_TRACE( NOM ):
+
+  #if defined( NOM_PLATFORM_WINDOWS )
+    path_separator = "\\";
+  #else // Assume POSIX-compliant platform
+    path_separator = "/";
+  #endif
 }
 
-Path::Path ( const std::string& p ) : pathname ( p ) {}
+Path::Path( const std::string& p ) :
+  pathname( p )
+{
+  // NOM_LOG_TRACE( NOM ):
 
-Path::~Path ( void ) {}
+  #if defined( NOM_PLATFORM_WINDOWS )
+    path_separator = "\\";
+  #else // Assume POSIX-compliant platform
+    path_separator = "/";
+  #endif
+}
 
-const value_type& Path::native ( void ) const
+Path::~Path( void )
+{
+  // NOM_LOG_TRACE( NOM ):
+}
+
+const Path::value_type& Path::native ( void ) const
 {
   return this->path_separator;
 }
 
-const value_type& Path::path ( void ) const
+const std::string& Path::path ( void ) const
 {
   return this->pathname;
 }
 
-const Path& Path::operator= ( const Path& p )
+Path& Path::operator =( const Path& rhs )
 {
-  this->pathname = p.pathname;
+  this->path_separator = rhs.native();
+  this->pathname = rhs.path();
 
   return *this;
 }
 
+std::string Path::prepend( const std::string& path ) const
+{
+  if( this->path().substr( this->path().size() - 1, 1 ) == this->native() )
+  {
+    return this->path() + path;
+  }
+  else
+  {
+    return this->path() + this->native() + path;
+  }
+}
 
 } // namespace nom

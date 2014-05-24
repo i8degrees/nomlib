@@ -28,18 +28,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/windows/WinFile.hpp"
 
-namespace nom {
-
-// FIXME (?) We need to keep these two header files out of the public header
-// files, or else all hell breaks lose in the linking stage of example
-// executables!
+// Private headers
 #include <windows.h>
+#include <shlobj.h>
 #include <tchar.h>
 #include <strsafe.h>
 
-WinFile::WinFile ( void ) {}
+namespace nom {
 
-WinFile::~WinFile ( void ) {}
+WinFile::WinFile( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
+
+WinFile::~WinFile( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
 const std::string WinFile::extension ( const std::string& file )
 {
@@ -107,9 +112,21 @@ const std::string WinFile::path( const std::string& dir_path )
 
 const std::string WinFile::currentPath ( void )
 {
-  NOM_STUBBED( NOM );
+  char* buffer = nullptr;
+  std::string pwd;
 
-  return "";
+  if( (buffer = _getcwd( nullptr, 0 ) ) == nullptr )
+  {
+    NOM_LOG_ERR( NOM, "Could not get the current working directory path." );
+    return pwd; // NULL
+  }
+  else
+  {
+    pwd = buffer;
+    free( buffer );
+  }
+
+  return pwd;
 }
 
 bool WinFile::set_path ( const std::string& path )
@@ -206,6 +223,67 @@ std::vector<std::string> WinFile::read_dir( const std::string& dir_path )
   FindClose( hFind );
 
   return files;
-};
+}
+
+const std::string WinFile::resource_path( const std::string& identifier )
+{
+  Path p; // Platform-agnostic path separator
+  DWORD ret = 0;
+  CHAR szPath[PATH_MAX];
+  std::string pwd( "\0" );
+
+  ret = GetModuleFileName( nullptr, szPath, PATH_MAX );
+
+  // The parent working directory string will include the executable's file
+  // name (including extension).
+  if( ret == ERROR_INSUFFICIENT_BUFFER )
+  {
+    NOM_LOG_ERR( NOM, "Could not return resource path: insufficient PATH_MAX buffer: " + PATH_MAX );
+    return pwd; // NULL
+  }
+
+  // Sanitize the complete file path and return just the directory path portion
+  pwd = this->path( szPath );
+
+  // In case of err, assume / hope that we are in the parent directory leading
+  // to the Resources directory, with a closing slash.
+  if( pwd == "." )
+  {
+    return p.native() + "Resources";
+  }
+
+  // Assumed success!
+  return pwd += p.native() + "Resources";
+}
+
+const std::string WinFile::user_documents_path( void )
+{
+  CHAR path[PATH_MAX];
+
+  HRESULT result =  SHGetFolderPath(  nullptr,
+                                      CSIDL_PERSONAL,
+                                      nullptr,
+                                      SHGFP_TYPE_CURRENT,
+                                      path );
+
+  if ( result != S_OK ) return "\0";
+
+  return path;
+}
+
+const std::string WinFile::user_app_support_path( void )
+{
+  CHAR path[PATH_MAX];
+
+  HRESULT result =  SHGetFolderPath(  nullptr,
+                                      CSIDL_LOCAL_APPDATA,
+                                      nullptr,
+                                      SHGFP_TYPE_CURRENT,
+                                      path );
+
+  if ( result != S_OK ) return "\0";
+
+  return path;
+}
 
 } // namespace nom

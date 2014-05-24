@@ -57,12 +57,4 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/InputMapper/InputStateMapper.hpp>
 #include <nomlib/system/InputMapper/InputActionMapper.hpp>
 
-#if defined ( NOM_PLATFORM_OSX )
-  #include <nomlib/system/osx/ResourcePath.hpp>
-#elif defined ( NOM_PLATFORM_LINUX )
-  // Nothing to do
-#elif defined ( NOM_PLATFORM_WINDOWS )
-  #include <nomlib/system/windows/ResourcePath.hpp>
-#endif
-
 #endif // include guard defined

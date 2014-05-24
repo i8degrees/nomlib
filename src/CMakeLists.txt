@@ -165,12 +165,11 @@ if ( PLATFORM_OSX OR PLATFORM_LINUX )
 endif ( PLATFORM_OSX OR PLATFORM_LINUX )
 
 if ( PLATFORM_OSX )
-  set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/osx/ResourcePath.cpp" )
+  # Stub
 elseif ( PLATFORM_LINUX )
-  # nothing to be done
+  # Stub
 elseif ( PLATFORM_WINDOWS )
   set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/windows/WinFile.cpp" )
-  set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/windows/ResourcePath.cpp" )
 endif ( PLATFORM_OSX )
 
 if( NOM_BUILD_CORE_UNIT )

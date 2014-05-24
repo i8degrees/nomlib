@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_WINDOWS_FILE_HEADERS
-#define NOMLIB_WINDOWS_FILE_HEADERS
+#ifndef NOM_SYSTEM_WINDOWS_WIN_FILE_HPP
+#define NOM_SYSTEM_WINDOWS_WIN_FILE_HPP
 
 #include <string>
 #include <cstring>
@@ -36,11 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdlib.h>
 #include <errno.h>
 #include <direct.h>
-
-// FIXME:
-// #include <windows.h>
-// #include <tchar.h>
-// #include <strsafe.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/Path.hpp"
@@ -74,8 +69,8 @@ class WinFile: public IFile
     ///
     /// \remarks See nom::IFile::exists.
     ///
-    /// \note http://stackoverflow.com/questions/18320486/how-to-check-if-file-exists-in-c-in-a-portable-way
-    /// \note http://msdn.microsoft.com/en-us/library/windows/desktop/aa365522(v=vs.85).aspx
+    /// \see http://stackoverflow.com/questions/18320486/how-to-check-if-file-exists-in-c-in-a-portable-way
+    /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/aa365522(v=vs.85).aspx
     bool exists( const std::string& file_path );
 
     /// Implements nom::IFile::path
@@ -90,6 +85,8 @@ class WinFile: public IFile
     /// Implements nom::IFile::currentPath
     ///
     /// \remarks See nom::IFile::currentPath
+    ///
+    /// \see http://msdn.microsoft.com/ru-ru/library/ms235450.aspx
     const std::string currentPath ( void );
 
     /// Implements nom::IFile::set_path
@@ -109,8 +106,43 @@ class WinFile: public IFile
     ///
     /// \todo Implement optional directory recursion.
     ///
-    /// \note http://msdn.microsoft.com/en-us/library/windows/desktop/aa365200(v=vs.85).aspx
+    /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/aa365200(v=vs.85).aspx
     std::vector<std::string> read_dir( const std::string& dir_path );
+
+    /// \brief Get the path to the Resources folder.
+    ///
+    /// \param identifier Not implemented; reserved for future use.
+    ///
+    /// \returns On success, returns the current working directory of the
+    /// executable with '\Resources" appended onto the end. On failure to: a)
+    /// interpret the path, using ::path, '\Resources' will be returned; b) out
+    /// of buffer space (see platforms.hpp, PATH_MAX preprocessor define), a
+    /// null-terminated string will be returned.
+    ///
+    /// \see http://msdn.microsoft.com/en-us/library/ms683197%28v=vs.85%29.aspx
+    const std::string resource_path( const std::string& identifier = "\0" );
+
+    /// Obtain the path to the logged in user's Documents folder
+    ///
+    ///     $HOME/Documents
+    ///
+    /// \remark This is a standard folder that may be used for saving user data
+    ///
+    /// \note This function requires Windows Vista or above
+    ///
+    /// \todo Support for when the user has changed the default save folder; see http://stackoverflow.com/a/12607759 and http://stackoverflow.com/questions/19553311/windows-8-how-to-read-the-user-documents-folder-path-programmatically-using-c
+    const std::string user_documents_path( void );
+
+    /// Obtain the path to the logged in user's (local) Application Data folder
+    ///
+    ///     $HOME/AppData/Local
+    ///
+    /// \remark This is a standard folder that may be used for saving user data
+    ///
+    /// \note This function requires Windows Vista or above
+    ///
+    /// \todo Support for when the user has changed the default save folder; see http://stackoverflow.com/a/12607759 and http://stackoverflow.com/questions/19553311/windows-8-how-to-read-the-user-documents-folder-path-programmatically-using-c
+    const std::string user_app_support_path( void );
 };
 
 
@@ -119,4 +151,4 @@ class WinFile: public IFile
 #endif // include guard
 
 /// \class nom::WinFile
-///
+/// \ingroup system

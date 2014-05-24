@@ -40,20 +40,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <dirent.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/resources.hpp"
 #include "nomlib/system/IFile.hpp"
 
-/*
-#if defined ( FRAMEWORK ) && defined ( NOM_PLATFORM_OSX )
-  #include "nomlib/system/osx/ResourcePath.hpp"
+#if defined( NOM_PLATFORM_OSX )
+  #include <CoreServices/CoreServices.h>
+  #include <CoreFoundation/CoreFoundation.h>
 #endif
-*/
 
 namespace nom {
 
 /// \brief Platform-specific interface for file based access in Unix
 ///
-/// \note http://www.gnu.org/software/libc/manual/html_node/File-System-Interface.html#File-System-Interface
+/// \see http://www.gnu.org/software/libc/manual/html_node/File-System-Interface.html#File-System-Interface
 class UnixFile: public IFile
 {
   public:
@@ -71,6 +69,8 @@ class UnixFile: public IFile
     int32 size ( const std::string& file_path );
 
     /// \brief Test for the existence of a directory.
+    ///
+    /// \see http://stackoverflow.com/questions/16312872/cannot-distinguish-directory-from-file-with-stat
     bool is_dir( const std::string& file_path );
 
     /// Implements nom::IFile::exists
@@ -107,6 +107,50 @@ class UnixFile: public IFile
     ///
     /// \note Source reference: http://www.gnu.org/software/libc/manual/html_node/Simple-Directory-Lister.html#Simple-Directory-Lister.
     std::vector<std::string> read_dir( const std::string& dir_path );
+
+    /// \brief Get the path to the Resources folder within a bundle.
+    ///
+    /// \remarks If no identifier argument is passed, it is assumed you are
+    /// looking for the main application bundle's Resources path, otherwise the
+    /// identifier is used to locate a particular bundle from within another
+    /// bundle.
+    ///
+    /// The bundle's identifier can be found within the Info.plist file of said
+    /// bundle, and typically is in reverse DNS notation. The string might look
+    /// something like this:
+    ///
+    ///   org.dev.nomlib
+    ///
+    ///   or, as per the official API documentation,
+    ///
+    ///   com.apple.Finder.MyGetInfoPlugIn
+    ///
+    /// The one restriction you have in using this function call is that the bundle
+    /// whose identifier you have passed must already be loaded into the application
+    /// bundle, or else this function call will fail.
+    ///
+    /// \returns A null-terminated string on err.
+    const std::string resource_path( const std::string& identifier = "\0" );
+
+    /// \brief Get the path to the logged in user's Documents folder.
+    ///
+    ///     $HOME/Documents/
+    ///
+    /// \remarks These are standard folders that may be used for saving user
+    /// data under.
+    ///
+    /// \todo FSFindFolder and FSRefMakePath are deprecated in OS X v10.8+.
+    const std::string user_documents_path( void );
+
+    /// \brief Get the path to the logged in user's Application Support folder.
+    ///
+    ///     $HOME/Library/Application\ Support/
+    ///
+    /// \remarks These are standard folders that may be used for saving user
+    /// data under.
+    ///
+    /// \todo FSFindFolder and FSRefMakePath are deprecated in OS X v10.8+.
+    const std::string user_app_support_path( void );
 };
 
 

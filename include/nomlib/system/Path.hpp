@@ -37,15 +37,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// Platform-dependent data typedef used for defining the preferred file
-/// path separator.
-typedef std::string value_type;
-
-/// \brief Platform-independent interface for cross-platform handling of
-/// pathnames
+/// \brief Platform-agnostic handling of file paths
 class Path
 {
   public:
+    /// Platform-dependent data typedef used for defining the preferred file
+    /// path separator.
+    typedef std::string value_type;
+
     /// Default constructor -- pathname is initialized as a null-terminated
     /// string.
     Path ( void );
@@ -62,10 +61,17 @@ class Path
     const value_type& native ( void ) const;
 
     /// Obtain assigned pathname
-    const value_type& path ( void ) const;
+    const std::string& path ( void ) const;
 
     /// Assignment operator
-    const Path& operator= ( const Path& p );
+    Path& operator =( const Path& rhs );
+
+    /// \brief Add the set object's file path to the beginning of a file path.
+    ///
+    /// \returns If the set file path does not end with a backslash character,
+    /// one is appended beforehand, otherwise the object's file path is appended
+    /// to the specified file path.
+    std::string prepend( const std::string& path ) const;
 
   private:
     value_type path_separator;
@@ -78,5 +84,9 @@ class Path
 #endif // include guard
 
 /// \class nom::Path
+/// \ingroup system
 ///
 /// Inspired by Boost::Filesystem
+///
+/// \see http://www.boost.org/doc/libs/1_55_0/libs/filesystem/doc/reference.html#class-path
+///

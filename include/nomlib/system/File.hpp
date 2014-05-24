@@ -82,6 +82,12 @@ class File
 
     std::vector<std::string> read_dir( const std::string& dir_path );
 
+    const std::string resource_path( const std::string& identifier = "\0" );
+
+    const std::string user_documents_path( void );
+
+    const std::string user_app_support_path( void );
+
   private:
     std::unique_ptr<IFile> file;
 };

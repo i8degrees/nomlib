@@ -31,31 +31,33 @@ option( NOM_BUILD_TESTS "Build unit tests" off )
 #
 # NOTE: Enabling this option will explicitly disable project examples from
 # being built, regardless of whether examples are enabled.
-option( NOM_BUILD_CORE_UNIT "Build the core unit." on )
+set( NOM_BUILD_CORE_UNIT on )
 
 # Dependencies: OpenAL/OpenALSoft.
-option( NOM_BUILD_AUDIO_UNIT "Build the Audio unit." on )
+set( NOM_BUILD_AUDIO_UNIT on )
 
 # Dependencies: SDL2, SDL2_image, SDL2_ttf
-option( NOM_BUILD_GRAPHICS_UNIT "Build the Graphics unit." on )
+set( NOM_BUILD_GRAPHICS_UNIT on )
+
+# Toggle use of scale2x and hqx rescaling algorithms.
+#
+# Dependencies: Graphics unit
+set( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT on )
 
 # Dependencies: Graphics unit
-option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Enable scale2x and hqx rescaling algorithms." on )
-
-# Dependencies: Graphics unit
-option( NOM_BUILD_GUI_UNIT "Build the GUI unit." on )
+set( NOM_BUILD_GUI_UNIT on )
 
 # Dependencies: jsoncpp, Property Tree unit
-option( NOM_BUILD_JSON_UNIT "Build the JSON unit." on )
-option( NOM_BUILD_PTREE_UNIT "Build the Property Tree unit." on )
+set( NOM_BUILD_JSON_UNIT on )
+set( NOM_BUILD_PTREE_UNIT on )
 
 # Dependencies: RapidXml
-option( NOM_BUILD_XML_UNIT "Build the XML unit." on )
+set( NOM_BUILD_XML_UNIT on )
 
-option( NOM_BUILD_MATH_UNIT "Build the Math unit." on )
+set( NOM_BUILD_MATH_UNIT on )
 
 # Dependencies: SDL2, SDL2_image, SDL2_ttf
-option( NOM_BUILD_SYSTEM_UNIT "Build the System unit." on )
+set( NOM_BUILD_SYSTEM_UNIT on )
 
 # Collection of internal templates used in the creation of new functionality
 # such as classes or examples / tests.

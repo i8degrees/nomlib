@@ -40,6 +40,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // nomlib library version
 #include "nomlib/version.hpp"
 
+#include "nomlib/platforms.hpp"
+
 // nomlib's standard integer types
 #include "nomlib/types.hpp"
 

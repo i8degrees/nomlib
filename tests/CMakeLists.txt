@@ -21,8 +21,9 @@ if( NOM_BUILD_XML_UNIT )
   set( NOM_BUILD_PTREE_XML_TESTS on )
 endif( NOM_BUILD_XML_UNIT )
 
+# Path under Windows should resolve to: build/tests/Debug
 set ( TESTS_DEPS_INSTALL_PEFIX
-      "${CMAKE_CURRENT_BINARY_DIR}/tests/${CMAKE_BUILD_TYPE}"
+      "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}"
     )
 
 # NOTE: we set GTEST_ROOT in the dependencies section of our build script.
@@ -175,8 +176,13 @@ endif( NOM_BUILD_XML_UNIT )
 # execute the binaries with the proper dependency versions.
 if ( PLATFORM_WINDOWS )
   install ( DIRECTORY
+            "${SDL2_LIBRARY_DIR}"
+            "${SDL2_IMAGE_LIBRARY_DIR}"
+            "${SDL2_TTF_LIBRARY_DIR}"
+            "${OPENAL_LIBRARY_DIR}"
+            "${LIBSNDFILE_LIBRARY_DIR}"
             ${MSVCPP_LIBRARY_REDIST}
-            "${GTEST_ROOT}/lib"
+            "${GTEST_ROOT}/lib/"        # GTest re-dist libs
             DESTINATION
             "${TESTS_DEPS_INSTALL_PEFIX}"
             FILES_MATCHING PATTERN "*.dll"

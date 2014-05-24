@@ -7,15 +7,15 @@ LDFLAGS=-framework nomlib -framework SDL2 -framework SDL2_image -framework SDL2_
 all: test
 
 system:
-	${CFLAGS} ${SDL_CFLAGS} ${LDFLAGS} system.cpp -o system
+	${CFLAGS} ${SDL_CFLAGS} ${LDFLAGS} system-tests.cpp -o system-tests
 
 math:
-	${CFLAGS} ${SDL_CFLAGS} ${LDFLAGS} math.cpp -o math
+	${CFLAGS} ${SDL_CFLAGS} ${LDFLAGS} math-tests.cpp -o math-tests
 
 graphics:
-	${CFLAGS} ${SDL_CFLAGS} ${LDFLAGS} -framework SDL2_image graphics.cpp -o graphics
+	${CFLAGS} ${SDL_CFLAGS} ${LDFLAGS} -framework SDL2_image graphics-tests.cpp -o graphics-tests
 
 run:
 	./run.sh
 
-test: system math graphics
+test: system-tests math-tests graphics-tests

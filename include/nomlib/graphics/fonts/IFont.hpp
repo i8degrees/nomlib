@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/fonts/Glyph.hpp"
+#include "nomlib/graphics/fonts/FontMetrics.hpp"
 
 namespace nom {
 
@@ -42,39 +43,46 @@ namespace nom {
 class IFont
 {
   public:
-    typedef IFont* RawPtr;
-    typedef std::shared_ptr<IFont> SharedPtr;
+    typedef IFont self_type;
+
+    typedef self_type* RawPtr;
+    typedef std::shared_ptr<self_type> SharedPtr;
 
     enum FontType
     {
       NotDefined = 0,
       BitmapFont,
-      TrueTypeFont,
-      UserDefined
+      TrueTypeFont
     };
 
     IFont ( void )
     {
-      //NOM_LOG_TRACE(NOM);
+      // NOM_LOG_TRACE( NOM );
     }
 
     virtual ~IFont ( void )
     {
-      //NOM_LOG_TRACE(NOM);
+      // NOM_LOG_TRACE( NOM );
     }
 
-    virtual IFont::SharedPtr clone ( void ) const = 0;
+    virtual IFont::RawPtr clone( void ) const = 0;
     virtual bool valid ( void ) const = 0;
 
     virtual const Image& image ( uint32 ) const = 0;
     virtual enum IFont::FontType type ( void ) const = 0;
 
     virtual const Glyph& glyph ( uint32, uint32 ) const = 0;
-    virtual sint newline ( uint32 ) /*const*/ = 0;
+    virtual int newline( uint32 ) const = 0;
     virtual sint spacing ( uint32 ) const = 0;
-    virtual sint kerning ( uint32, uint32, uint32 ) /*const*/ = 0;
+    virtual int kerning( uint32, uint32, uint32 ) const = 0;
+    virtual int hinting( void ) const = 0;
+    virtual const FontMetrics& metrics( void ) const = 0;
 
-    virtual bool set_point_size ( sint ) = 0;
+    virtual bool set_point_size( int ) = 0;
+    virtual bool set_hinting( int ) = 0;
+    virtual bool set_outline( int ) = 0;
+
+    virtual bool load( const std::string& filename ) = 0;
 };
 
 } // namespace nom

@@ -121,6 +121,10 @@ class App: public nom::SDLApp
 {
   public:
     App ( nom::int32 argc, char* argv[] ) :
+      // Do not initialize engine fonts (we want to manually use this
+      // functionality in this example). The reasoning for disabling the feature
+      // is solely to cut down on the amount of debug logging.
+      SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES ),
       sprite_angle ( -90.0f ),
       selected_font ( 0 ),        // nom::TrueType font
       selected_alignment ( 4 ),   // nom::Text::Alignment::TopLeft
@@ -208,6 +212,18 @@ class App: public nom::SDLApp
         return false;
       }
 
+      // this->truetype_font.set_sharable( true );
+
+      // Cache the glyphs of the font's point size range that we plan on using;
+      // offloads the cost of re-generating the glyph cache when the end-user
+      // requests an increase or decrease. (An increase in load-time for a
+      // decrease in latency upon rescaling, which is especially noticeable on
+      // older platforms and mobile devices).
+      for( auto idx = 0; idx != MAX_FONT_POINT_SIZE; ++idx )
+      {
+        this->truetype_font.set_point_size( idx + 1 );
+      }
+
       // Load a sprite sheet, using the sheet_filename as the base path to load
       // the image file from disk
       this->sprite = nom::SpriteBatch ( RESOURCE_SPRITE );
@@ -263,8 +279,8 @@ class App: public nom::SDLApp
                                                 gradient[0]
                                             );
 
-      this->info_box[0].set_title ( nom::Text ( RESOURCE_INFO_BOX_TITLE_STRINGS[0], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] ) );
-      this->info_box[0].set_text ( nom::Text ( RESOURCE_INFO_BOX_TEXT_STRINGS[0], this->bitmap_font, 12, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] ) );
+      this->info_box[0].set_title( RESOURCE_INFO_BOX_TITLE_STRINGS[0], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] );
+      this->info_box[0].set_text( RESOURCE_INFO_BOX_TEXT_STRINGS[0], this->bitmap_font, 12, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] );
 
       // Initialize our info_box[1] object
       this->info_box[1] = nom::MessageBox (     INFO_BOX_ORIGINS[1],
@@ -277,8 +293,8 @@ class App: public nom::SDLApp
                                                 gradient[1]
                                               );
 
-      this->info_box[1].set_title ( nom::Text ( RESOURCE_INFO_BOX_TITLE_STRINGS[1], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] ) );
-      this->info_box[1].set_text ( nom::Text ( RESOURCE_INFO_BOX_TEXT_STRINGS[1], this->select_font(), this->select_font_size(), this->select_alignment() ) );
+      this->info_box[1].set_title( RESOURCE_INFO_BOX_TITLE_STRINGS[1], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] );
+      this->info_box[1].set_text( RESOURCE_INFO_BOX_TEXT_STRINGS[1], this->select_font(), this->select_font_size(), this->select_alignment() );
 
 // FIXME: should be 26 (sprite sheet width), but is 130 (total texture size)
 NOM_DUMP_VAR(this->sprite.size().w);
@@ -391,6 +407,25 @@ NOM_DUMP_VAR(this->sprite.size().h);
     } // Run
 
   private:
+    void increase_font_size( nom::uint point_size )
+    {
+      // Cap our maximal font point size (defaults is 41) -- this is done
+      // because this is the maximum size that can fit inside our info box.
+      if( this->selected_font_size < MAX_FONT_POINT_SIZE )
+      {
+        this->info_box[1].set_text_font_size( this->selected_font_size += point_size );
+      }
+    }
+
+    void decrease_font_size( nom::uint point_size )
+    {
+      // Cap our minimal font point size (defaults is 9)
+      if( this->selected_font_size >= MIN_FONT_POINT_SIZE )
+      {
+        this->info_box[1].set_text_font_size( this->selected_font_size -= point_size );
+      }
+    }
+
     /// \brief Event handler for key down actions.
     ///
     /// Implements the nom::Input::on_key_down method.
@@ -420,20 +455,27 @@ NOM_DUMP_VAR(this->sprite.size().h);
 
         case SDLK_EQUALS:
         {
-          // Cap our maximal font point size (defaults is 41) -- this is done
-          // because this is the maximum size that can fit inside our info box.
-          if ( this->selected_font_size < MAX_FONT_POINT_SIZE ) this->selected_font_size += 1;
-
-          this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          if( ev.key.mod == KMOD_ALT )
+          {
+            this->increase_font_size( 4 );
+          }
+          else
+          {
+            this->increase_font_size( 1 );
+          }
           break;
         }
 
         case SDLK_MINUS:
         {
-          // Cap our minimal font point size (defaults is 9)
-          if ( this->selected_font_size > MIN_FONT_POINT_SIZE ) this->selected_font_size -= 1;
-
-          this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          if( ev.key.mod == KMOD_ALT )
+          {
+            this->decrease_font_size( 4 );
+          }
+          else
+          {
+            this->decrease_font_size( 1 );
+          }
           break;
         }
 
@@ -442,95 +484,95 @@ NOM_DUMP_VAR(this->sprite.size().h);
           if( ev.key.mod == KMOD_LSHIFT )
           {
             this->selected_font_size = 14;
-            this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+            this->info_box[1].set_text_font_size( this->select_font_size() );
             break;
           }
-          else if( ev.key.mod == KMOD_LGUI )
+          else if( ev.key.mod == KMOD_LCTRL )
           {
             this->selected_text_string = 0;
-            this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+            this->info_box[1].set_text_label( this->select_text_string() );
             break;
           }
 
           this->selected_alignment = 0;
-          this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text_alignment( this->select_alignment() );
           break;
         }
 
         case SDLK_1:
         {
-          if( ev.key.mod == KMOD_LGUI )
+          if( ev.key.mod == KMOD_LCTRL )
           {
             this->selected_text_string = 1;
-            this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+            this->info_box[1].set_text_label( this->select_text_string() );
             break;
           }
 
           this->selected_alignment = 1;
-          this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text_alignment( this->select_alignment() );
           break;
         }
 
         case SDLK_2:
         {
-          if( ev.key.mod == KMOD_LGUI )
+          if( ev.key.mod == KMOD_LCTRL )
           {
             this->selected_text_string = 2;
-            this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+            this->info_box[1].set_text_label( this->select_text_string() );
             break;
           }
 
           this->selected_alignment = 2;
-          this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text_alignment( this->select_alignment() );
           break;
         }
 
         case SDLK_3:
         {
-          if( ev.key.mod == KMOD_LGUI )
+          if( ev.key.mod == KMOD_LCTRL )
           {
             this->selected_text_string = 3;
-            this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+            this->info_box[1].set_text_label( this->select_text_string() );
             break;
           }
 
           this->selected_alignment = 3;
-          this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text_alignment( this->select_alignment() );
           break;
         }
 
         case SDLK_4:
         {
           this->selected_alignment = 4;
-          this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text_alignment( this->select_alignment() );
           break;
         }
 
         case SDLK_5:
         {
           this->selected_alignment = 5;
-          this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text_alignment( this->select_alignment() );
           break;
         }
 
         case SDLK_6:
         {
           this->selected_alignment = 6;
-          this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text_alignment( this->select_alignment() );
           break;
         }
 
         case SDLK_7:
         {
           this->selected_alignment = 7;
-          this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text_alignment( this->select_alignment() );
           break;
         }
 
         case SDLK_8:
         {
           this->selected_alignment = 8;
-          this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text_alignment( this->select_alignment() );
           break;
         }
 
@@ -553,8 +595,8 @@ NOM_DUMP_VAR(this->sprite.size().h);
             this->selected_font = 0; // nom::TrueTypeFont
             this->selected_font_size = 24;
           }
-
-          this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text_font( this->select_font() );
+          this->info_box[1].set_text_font_size( this->select_font_size() );
           break;
         }
 
@@ -564,8 +606,7 @@ NOM_DUMP_VAR(this->sprite.size().h);
           {
             this->selected_font = 1; // nom::BitmapFont
           }
-
-          this->info_box[1].set_text ( nom::Text ( this->select_text_string(), this->select_font(), this->select_font_size(), this->select_alignment() ) );
+          this->info_box[1].set_text_font( this->select_font() );
           break;
         }
 
@@ -592,6 +633,21 @@ NOM_DUMP_VAR(this->sprite.size().h);
         } // end SDLK_f
       } // end switch key
     } // onKeyDown
+
+    void on_mouse_wheel( const nom::Event& ev )
+    {
+      // Filter out non-wheel events (otherwise we can receive false positives)
+      if( ev.type != SDL_MOUSEWHEEL ) return;
+
+      if( ev.wheel.y > 0 )  // Up
+      {
+        this->increase_font_size( 1 );
+      }
+      else if( ev.wheel.y < 0 ) // Down
+      {
+        this->decrease_font_size( 1 );
+      }
+    }
 
   private:
     /// Window handles
@@ -620,29 +676,29 @@ NOM_DUMP_VAR(this->sprite.size().h);
     double sprite_angle;
     nom::AnimatedSprite ani_sprite;
 
-    /// Our font resources for nom::Text, our text rendering API
-    nom::BitmapFont bitmap_font;
-    nom::BitmapFont bitmap_small_font;
-    nom::TrueTypeFont truetype_font;
+    // Our font resources for nom::Text, the text rendering API
+    nom::Font bitmap_font;
+    nom::Font bitmap_small_font;
+    nom::Font truetype_font;
 
     int selected_font;
     int selected_alignment;
     int selected_font_size;
     nom::sint selected_text_string;
 
-    nom::IFont::SharedPtr select_font ( void )
+    nom::Font& select_font( void )
     {
-      if ( this->selected_font == 0 && this->truetype_font.valid() == true )
+      if( this->selected_font == 0 )
       {
-        return std::shared_ptr<nom::IFont> ( this->truetype_font.clone() );
+        return this->truetype_font;
       }
-      else if ( this->selected_font == 1 && this->bitmap_font.valid() == true )
+      else if( this->selected_font == 1 )
       {
-        return std::shared_ptr<nom::IFont> ( this->bitmap_font.clone() );
+        return this->bitmap_font;
       }
       else
       {
-        return nullptr;
+        return this->truetype_font;
       }
     }
 

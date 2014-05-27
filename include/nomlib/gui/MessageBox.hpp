@@ -103,8 +103,30 @@ class MessageBox: public Transformable
     void disable ( void );
     void enable ( void );
 
+    Text::Alignment title_alignment( void ) const;
+    Text::Alignment text_alignment( void ) const;
+
+    /// \deprecated This will likely be removed when feature/GUI is merged into
+    /// the main dev branch.
     void set_title ( const Text& title );
+
+    void set_title( const std::string& text, const Font& font, uint point_size = 12, Text::Alignment align = Text::Alignment::TopLeft );
+
+    void set_title_label( const std::string& text );
+    void set_title_font( const Font& font );
+    void set_title_font_size( uint point_size );
+    void set_title_alignment( Text::Alignment align );
+
+    /// \deprecated This will likely be removed when feature/GUI is merged into
+    /// the main dev branch.
     void set_text ( const Text& text );
+
+    void set_text( const std::string& text, const Font& font, uint point_size = 12, Text::Alignment align = Text::Alignment::MiddleCenter );
+
+    void set_text_label( const std::string& text );
+    void set_text_font( const Font& font );
+    void set_text_font_size( uint point_size );
+    void set_text_alignment( Text::Alignment align );
 
     void draw ( RenderTarget& target ) const;
 

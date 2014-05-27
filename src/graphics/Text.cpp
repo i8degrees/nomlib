@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Text::Text ( void ) :
+Text::Text( void ) :
   Transformable { Point2i (0, 0), Size2i (0, 0) }, // Our inherited class
   text_size_ ( 14 ),
   color_ ( Color4i::White ),
@@ -40,7 +40,7 @@ Text::Text ( void ) :
   NOM_LOG_TRACE ( NOM );
 }
 
-Text::~Text ( void )
+Text::~Text( void )
 {
   NOM_LOG_TRACE ( NOM );
 }
@@ -74,8 +74,9 @@ Text& Text::operator = ( const Text& other )
   return *this;
 }
 
-Text::Text  ( const std::string& text,
-              const IFont& font,
+Text::Text  (
+              const std::string& text,
+              const Font& font,
               uint character_size,        // Default parameter
               enum Text::Alignment align // Default parameter
             )  :
@@ -85,35 +86,36 @@ Text::Text  ( const std::string& text,
   color_ ( Color4i::White ),
   style_ ( Text::Style::Regular )
 {
-  NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE( NOM );
 
-  this->set_font ( font );
+  this->set_font( font );
   this->set_alignment ( align );
 }
 
-Text::Text  ( const std::string& text,
-              const IFont::SharedPtr& font,
-              uint character_size,        // Default parameter
-              enum Text::Alignment align // Default parameter
-            )  :
-  Transformable { Point2i(0, 0), Size2i(0, 0) }, // Our inherited class
-  text_ ( text ),
-  text_size_ ( character_size ),
-  color_ ( Color4i::White ),
-  style_ ( Text::Style::Regular )
-{
-  NOM_LOG_TRACE(NOM);
+// Text::Text  (
+//               const std::string& text,
+//               const IFont& font,
+//               uint character_size,        // Default parameter
+//               enum Text::Alignment align // Default parameter
+//             )  :
+//   Transformable { Point2i(0, 0), Size2i(0, 0) }, // Our inherited class
+//   text_ ( text ),
+//   text_size_ ( character_size ),
+//   color_ ( Color4i::White ),
+//   style_ ( Text::Style::Regular )
+// {
+//   NOM_LOG_TRACE( NOM );
 
-  this->set_font ( *font.get() );
-  this->set_alignment ( align );
-}
+//   this->set_font( font );
+//   this->set_alignment ( align );
+// }
 
 Text::RawPtr Text::get ( void )
 {
   return this;
 }
 
-IFont::SharedPtr Text::font ( void ) const
+Text::font_type& Text::font( void ) const
 {
   return this->font_;
 }
@@ -125,9 +127,7 @@ const Texture& Text::texture ( void ) const
 
 bool Text::valid ( void ) const
 {
-  if ( this->font() != nullptr ) return true;
-
-  return false;
+  return this->font().valid();
 }
 
 enum IFont::FontType Text::type ( void ) const
@@ -261,18 +261,29 @@ enum Text::Alignment Text::alignment ( void ) const
   return this->alignment_;
 }
 
-void Text::set_font ( const IFont& font )
+void Text::set_font( const Text::font_type& font )
 {
-  this->font_ = std::shared_ptr<IFont>( font.clone() );
+  this->font_ = font;
 
-  this->font()->set_point_size ( this->text_size() );
+  this->set_text_size( this->text_size() );
+}
 
-  if ( this->valid() == false || this->texture_.create ( this->font()->image (this->text_size()) ) == false )
+void Text::set_font( Text::font_type* font )
+{
+  if( font != nullptr && font->valid() )
   {
-    NOM_LOG_ERR ( NOM, "Could not initialize Text from given IFont" );
-    return;
+    this->font_ = font;
+
+    this->set_text_size( this->text_size() );
   }
 }
+
+// void Text::set_font( const IFont& font )
+// {
+//   this->font_ = Font( font );
+
+//   this->set_text_size( this->text_size() );
+// }
 
 void Text::set_text ( const std::string& text )
 {
@@ -288,12 +299,15 @@ void Text::set_text_size ( uint character_size )
 {
   if ( this->valid() == false ) return;
 
-  if ( this->text_size() != character_size )
-  {
-    this->text_size_ = character_size;
+  this->text_size_ = character_size;
 
-    this->set_font ( *this->font().get() );
-    // Update logic
+  // Force a rebuild of the texture atlas at the specified point size
+  this->font()->set_point_size( this->text_size() );
+
+  if ( this->valid() == false || this->texture_.create ( this->font()->image (this->text_size()) ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not initialize Text from given IFont" );
+    return;
   }
 }
 

@@ -183,6 +183,16 @@ void MessageBox::enable ( void )
   this->enabled_ = true;
 }
 
+Text::Alignment MessageBox::title_alignment( void ) const
+{
+  return this->labels[0].alignment();
+}
+
+Text::Alignment MessageBox::text_alignment( void ) const
+{
+  return this->labels[1].alignment();
+}
+
 void MessageBox::set_title ( const Text& title )
 {
   this->updated_ = false;
@@ -210,6 +220,54 @@ void MessageBox::set_title ( const Text& title )
   this->update();
 }
 
+void MessageBox::set_title_label( const std::string& text )
+{
+  this->updated_ = false;
+
+  this->labels[0].set_text( text );
+
+  this->update();
+}
+
+void MessageBox::set_title_font( const Font& font )
+{
+  this->updated_ = false;
+
+  this->labels[0].set_font( font );
+
+  this->update();
+}
+
+void MessageBox::set_title_font_size( uint point_size )
+{
+  this->updated_ = false;
+
+  this->labels[0].set_text_size( point_size );
+
+  this->update();
+}
+
+void MessageBox::set_title_alignment( Text::Alignment align )
+{
+  this->updated_ = false;
+
+  this->labels[0].set_alignment( align );
+
+  this->update();
+}
+
+void MessageBox::set_title( const std::string& text, const Font& font, uint point_size, Text::Alignment align )
+{
+  this->updated_ = false;
+
+  this->set_title_label( text );
+  this->set_title_font( font );
+  this->set_title_font_size( point_size );
+  this->set_title_alignment( align );
+
+  this->update();
+}
+
 void MessageBox::set_text ( const Text& text )
 {
   this->updated_ = false;
@@ -233,9 +291,73 @@ void MessageBox::set_text ( const Text& text )
   this->update();
 }
 
+void MessageBox::set_text( const std::string& text, const Font& font, uint point_size, Text::Alignment align )
+{
+  this->updated_ = false;
+
+  this->set_text_label( text );
+  this->set_text_font( font );
+  this->set_text_font_size( point_size );
+  this->set_text_alignment( align );
+
+  this->update();
+}
+
+void MessageBox::set_text_label( const std::string& text )
+{
+  this->updated_ = false;
+
+  this->labels[1].set_text( text );
+
+  this->update();
+}
+
+void MessageBox::set_text_font( const Font& font )
+{
+  this->updated_ = false;
+
+  this->labels[1].set_font( font );
+
+  this->update();
+}
+
+void MessageBox::set_text_font_size( uint point_size )
+{
+  this->updated_ = false;
+
+  this->labels[1].set_text_size( point_size );
+
+  this->update();
+}
+
+void MessageBox::set_text_alignment( Text::Alignment align )
+{
+  this->updated_ = false;
+
+  this->labels[1].set_alignment( align );
+
+  this->update();
+}
+
 void MessageBox::update ( void )
 {
   if ( this->updated_ == true ) return;
+
+  this->labels[0].set_position( Point2i ( this->position().x + 4, this->position().y ) );
+  this->labels[0].set_size( this->size() );
+
+  // In order to preserve the text alignment of the original object, we must
+  // copy the state of the original alignment *after* we set the positioning
+  // on the new object we create for this class
+  this->labels[0].set_alignment( this->title_alignment() );
+
+  this->labels[1].set_position( this->position() );
+  this->labels[1].set_size( this->size() );
+
+  // In order to preserve the text alignment of the original object, we must
+  // copy the state of the original alignment *after* we set the positioning
+  // on the new object we create for this class
+  this->labels[1].set_alignment( this->text_alignment() );
 
   for ( auto it = this->drawable.begin(); it != this->drawable.end(); ++it )
   {

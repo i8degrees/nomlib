@@ -59,12 +59,13 @@ namespace nom {
 class TrueTypeFont: public IFont
 {
   public:
-    typedef TrueTypeFont* RawPtr;
-    typedef std::shared_ptr<TrueTypeFont> SharedPtr;
+    typedef TrueTypeFont self_type;
+    typedef self_type* RawPtr;
+    typedef std::shared_ptr<self_type> SharedPtr;
 
-    /// \brief Default constructor
+    /// \brief Default constructor; initialize the object to sane defaults.
     ///
-    /// \remarks The SDL2_TTF extension must be initialized; see nom::init
+    /// \remarks The SDL2_TTF extension must first be initialized; see nom::init.
     TrueTypeFont ( void );
 
     /// \brief Destructor
@@ -76,7 +77,7 @@ class TrueTypeFont: public IFont
     TrueTypeFont ( const TrueTypeFont& copy );
 
     /// \brief Construct a clone of the existing instance
-    IFont::SharedPtr clone ( void ) const;
+    IFont::RawPtr clone( void ) const;
 
     /// \brief Validity check
     bool valid ( void ) const;
@@ -97,16 +98,24 @@ class TrueTypeFont: public IFont
     ///           rendered.
     sint spacing ( uint32 character_size ) const;
 
-    sint point_size ( void ) const;
+    int point_size( void ) const;
 
     /// \brief Obtain font's line spacing
     ///
     /// \param character_size Point size in pixels
     ///
     /// \returns  Height offset in pixels
-    sint newline ( uint32 character_size ) /*const*/;
+    int newline( uint32 character_size ) const;
 
-    sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) /*const*/;
+    int kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const;
+
+    /// \brief Get the font's hinting style.
+    ///
+    /// \returns The hinting type, one of: TTF_HINTING_NORMAL, TTF_HINTING_LIGHT,
+    /// TTF_HINTING_MONO or TTF_HINTING_NONE.
+    ///
+    /// \remarks The default hinting is TTF_HINTING_NONE.
+    int hinting( void ) const;
 
     /// \brief Obtain a glyph
     ///
@@ -127,30 +136,46 @@ class TrueTypeFont: public IFont
     ///
     /// \param size Point size in pixels
     ///
-    /// \remarks This is an expensive method call; every glyph must be re-built!
-    bool set_point_size ( sint size );
+    /// \remarks This is a potentially expensive call; if the glyphs for the
+    /// requested point size has not been stored (generated previously), the
+    /// generation of the font's ASCII glyph symbols must be done.
+    ///
+    /// \note For performance critical sections where scaling of the font
+    /// occurs (think: real-time), you may want to take advantage of the glyph
+    /// caching feature by making a call to this method for every used point
+    /// size of the scaling range.
+    bool set_point_size( int point_size );
+
+    /// \brief Set the requested font hinting style.
+    ///
+    /// \remarks The hinting type, one of: TTF_HINTING_NORMAL, TTF_HINTING_LIGHT,
+    /// TTF_HINTING_MONO or TTF_HINTING_NONE.
+    ///
+    /// \note This method call forces a rebuild of the glyph cache if the input
+    /// type does not match the last known hinting.
+    bool set_hinting( int type );
 
     /// \brief Set font's outline size
     ///
     /// \param outline The outline size in pixels
     ///
     /// \remarks This is an expensive method call; every glyph must be re-built!
-    bool set_outline ( int outline );
+    bool set_outline( int outline );
 
     /// \brief Load a new TrueType font from a file.
     ///
     /// \remarks Refer to the SDL_ttf documentation for file formats supported.
     /// TTF and FON file formats are known to be supported as of this writing.
-    bool load ( const std::string& filename, bool use_cache = false );
+    bool load( const std::string& filename );
 
     /// \brief Obtain information about the loaded font
-    struct FontMetrics metrics ( void ) const;
+    const FontMetrics& metrics( void ) const;
 
   private:
-    /// Trigger a rebuild of the font metrics from the current font; this
+    /// \brief Trigger a rebuild of the font metrics from the current font; this
     /// recalculates character sizes, coordinate origins, spacing, etc.
     ///
-    /// \param character_size Font's point size, in pixels, to build glyphs for
+    /// \param character_size Font's point size, in pixels, to build glyphs for.
     bool build ( uint32 character_size );
 
     const GlyphPage& pages ( void ) const;
@@ -188,7 +213,7 @@ class TrueTypeFont: public IFont
     mutable GlyphPage pages_;
 
     /// General font metric data, such as the proper value for newline spacing
-    struct FontMetrics metrics_;
+    FontMetrics metrics_;
 
     /// Store the file path so we can change font sizes on the fly
     ///
@@ -197,11 +222,6 @@ class TrueTypeFont: public IFont
     /// \endinternal
     std::string filename_;
 
-    /// Whether or not to use caching features of nom::ObjectCache
-    ///
-    /// \remarks Not used (reserved for future implementation)
-    bool use_cache_;
-
     /// Font point size (in pixels)
     ///
     /// \internal
@@ -209,6 +229,11 @@ class TrueTypeFont: public IFont
     ///         see FT_Face->size->metrics.x_ppem
     /// \endinternal
     sint point_size_;
+
+    /// \brief The font's applied hinting style.
+    ///
+    /// \remarks The default is TTF_HINTING_NONE.
+    int hinting_;
 };
 
 } // namespace nom
@@ -220,10 +245,29 @@ class TrueTypeFont: public IFont
 ///
 ///   [TO BE WRITTEN]
 ///
-/// ## REFERENCES
+/// \code
 ///
-/// * http://freetype.sourceforge.net/freetype2/docs/tutorial/step2.html
-/// * http://www.libsdl.org/projects/SDL_ttf/docs/SDL_ttf_toc.html#SEC_Contents
-/// * http://chanae.walon.org/pub/ttf/ttf_glyphs.htm
-/// * SFML's sf::Font class
+/// const int MAX_POINT_SIZE = 41;
+///
+/// nom::TrueTypeFont font;
+///
+/// // We must first load the font into memory from a file.
+///
+/// // Cache the glyphs of the font's point size range that we plan on using;
+/// // offloads the cost of re-generating the glyph cache when the end-user
+/// // requests an increase or decrease. (An increase in load-time for a
+/// // decrease in latency upon rescaling, which is especially noticeable on
+/// // older platforms and mobile devices).
+/// for( auto idx = 0; idx != MAX_FONT_POINT_SIZE; ++idx )
+/// {
+///   font.set_point_size( idx + 1 );
+/// }
+///
+/// \endcode
+///
+/// \see http://www.libsdl.org/projects/SDL_ttf/docs/SDL_ttf_toc.html#SEC_Contents
+/// \see http://freetype.sourceforge.net/freetype2/docs/tutorial/step2.html
+/// \see http://chanae.walon.org/pub/ttf/ttf_glyphs.htm
+/// \see http://cboard.cprogramming.com/game-programming/148396-ttf_font-gl-display-list-kerning-issue.html
+/// \see SFML's sf::Font class
 ///

@@ -37,9 +37,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
-#include "nomlib/graphics/fonts/BitmapFont.hpp"
+#include "nomlib/graphics/Texture.hpp"
+
 #include "nomlib/graphics/fonts/IFont.hpp"
-#include "nomlib/graphics/fonts/TrueTypeFont.hpp"
+#include "nomlib/graphics/fonts/Font.hpp"
 
 namespace nom {
 
@@ -49,6 +50,8 @@ class Text: public Transformable
   public:
     typedef Text* RawPtr;
     typedef std::shared_ptr<Text> SharedPtr;
+
+    typedef Font font_type;
 
     /// Font face style; multiple styles can be combined from bitwise masks
     ///
@@ -86,10 +89,10 @@ class Text: public Transformable
     };
 
     /// Default constructor
-    Text ( void );
+    Text( void );
 
     /// Destructor
-    virtual ~Text ( void );
+    ~Text( void );
 
     /// Copy constructor
     Text ( const Text& copy );
@@ -97,25 +100,27 @@ class Text: public Transformable
     /// Copy assignment overload
     Text& operator = ( const Text& other );
 
-    /// Construct a Text, initializing it with a text string, an IFont
-    /// reference, character size and text alignment.
-    Text (  const std::string& text,
-            const IFont& font,
+    /// Construct a Text, initializing it with a text string, a Font
+    /// object, character size and text alignment.
+    Text (
+            const std::string& text,
+            const font_type& font,
             uint character_size = 14,
             enum Text::Alignment align = Text::Alignment::TopLeft
           );
 
-    /// Construct a Text, initializing it with a text string, an IFont
-    /// pointer, character size and text alignment.
-    Text (  const std::string& text,
-            const IFont::SharedPtr& font,
-            uint character_size = 14,
-            enum Text::Alignment align = Text::Alignment::TopLeft
-          );
+    // Construct a Text, initializing it with a text string, an IFont derived
+    // object, character size and text alignment.
+    // Text (
+    //         const std::string& text,
+    //         const IFont& font,
+    //         uint character_size = 14,
+    //         enum Text::Alignment align = Text::Alignment::TopLeft
+    //       );
 
     Text::RawPtr get ( void );
 
-    IFont::SharedPtr font ( void ) const;
+    font_type& font( void ) const;
 
     const Texture& texture ( void ) const;
 
@@ -171,13 +176,24 @@ class Text: public Transformable
     /// Get text character size (in pixels?)
     uint text_size ( void ) const;
 
-    /// Set a new font (deriving from IFont).
-    void set_font ( const IFont& font );
+    /// \brief Set the font from a nom::Font object.
+    void set_font( const Text::font_type& font );
+
+    /// \brief Set a font from a nom::Font object pointer.
+    ///
+    /// \note Used by ResourceCache::load_resource.
+    void set_font( Text::font_type* font );
+
+    // \brief Set a new font, deriving from an nom::IFont derived object.
+    // void set_font( const IFont& font );
 
     /// Set new text
     void set_text ( const std::string& text );
 
-    /// Set new text character size
+    /// Set new text character size.
+    ///
+    /// \remarks This method forces a rebuild of the texture atlas with the
+    /// given size, and may be an expensive operation.
     void set_text_size ( uint character_size );
 
     /// Set new text color
@@ -210,7 +226,7 @@ class Text: public Transformable
     /// \todo Logic for this feature is incomplete!
     void update ( void );
 
-    IFont::SharedPtr font_;
+    mutable font_type font_; // FIXME?
     mutable Texture texture_; // FIXME
     /// Holds contents of text as a string buffer
     std::string text_;
@@ -228,3 +244,40 @@ class Text: public Transformable
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::Text
+/// \ingroup graphics
+///
+///     [TODO: DESCRIPTION]
+///
+/// \code
+///
+/// #include <iostream>
+/// #include <nomlib/graphics.hpp>
+///
+/// // Declarations
+/// std::string file_path = "absolute_path_to_truetype_font.ttf";
+/// bool running = true;
+/// nom::RenderWindow window;
+/// nom::Font font;
+/// nom::Text label;
+///
+/// // Initialization
+/// if( font.load( file_path ) == false )
+/// {
+///   // Handle Err
+/// }
+///
+/// label.set_font( font );
+/// label.set_position( nom::Point2i( 25, 25 );
+/// label.set_text( "Hello, world!" );
+/// label.set_color( nom::Color4i::Orange );
+/// label.set_text_size( 24 );
+///
+/// while( running == true )
+/// {
+///   label.draw( window );
+/// }
+///
+/// \endcode
+///

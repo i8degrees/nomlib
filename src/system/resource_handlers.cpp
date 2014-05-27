@@ -26,62 +26,35 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/ObjectCache.hpp"
+#include "nomlib/system/resource_handlers.hpp"
+
+// Private headers
+#include "nomlib/system/ResourceFile.hpp"
+#include "nomlib/graphics/fonts/Font.hpp"
+#include "nomlib/graphics/fonts/BitmapFont.hpp"
+#include "nomlib/graphics/fonts/TrueTypeFont.hpp"
 
 namespace nom {
-  namespace priv {
 
-// Initialize our cache in global space
-std::map <std::string, std::shared_ptr<SDL_Surface>> ObjectCache::cache;
-
-ObjectCache::ObjectCache ( void )
+void create_font( const ResourceFile& res, Font& font )
 {
-//NOM_LOG_TRACE ( NOM );
-}
-
-ObjectCache::~ObjectCache ( void )
-{
-//NOM_LOG_TRACE ( NOM );
-}
-
-std::shared_ptr<SDL_Surface> ObjectCache::addObject  ( const std::string& key,
-                                                std::shared_ptr<SDL_Surface> object
-                                              )
-{
-  std::map <std::string, std::shared_ptr<SDL_Surface>>::iterator res;
-
-  res = cache.insert( std::pair< std::string, std::shared_ptr<SDL_Surface>> ( key, object ) ).first;
-
-NOM_LOG_INFO ( NOM, "ObjectCache: " + key + " has been added to the cache." );
-
-  return res->second;
-}
-
-bool ObjectCache::removeObject ( const std::string& key )
-{
-  cache.erase ( key );
-
-  return true;
-}
-
-std::shared_ptr<SDL_Surface> ObjectCache::getObject ( const std::string& key )
-{
-  std::map <std::string, std::shared_ptr<SDL_Surface>>::iterator itr;
-
-  itr = cache.find ( key );
-
-  // We have found no entity matching the key if we reach the end of the cache;
-  // otherwise, we return the existing entity from the cache
-  if ( itr == cache.end() )
+  if( res.type() == RESOURCE_TYPE::BITMAP_FONT )
   {
-    return nullptr;
+    font = Font( std::shared_ptr<IFont>( new BitmapFont() ) );
+
+    // Do not make cloned copies of the font; cloning is only necessary for
+    // fonts that do not need to share data, such as point size, which is not
+    // yet implemented.
+    font.set_sharable( false );
   }
-  else
+  else if( res.type() == RESOURCE_TYPE::TRUETYPE_FONT )
   {
-    return itr->second;
+    font = Font( std::shared_ptr<IFont>( new TrueTypeFont() ) );
+
+    // We need clones of the font, because otherwise we'd be sharing point size,
+    // etc. when the same font is used in multiple objects.
+    font.set_sharable( true );
   }
 }
 
-
-  } // namespace priv
 } // namespace nom

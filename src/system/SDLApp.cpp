@@ -28,36 +28,38 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/SDLApp.hpp"
 
+// Private headers (third-party libs)
+// #include "SDL.h"
+
+// Private headers
+#include "nomlib/system/Path.hpp"
+#include "nomlib/system/File.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
+#include "nomlib/system/resource_handlers.hpp"
+
 namespace nom {
 
-SDLApp::SDLApp ( void ) :
-  //state_factory { new GameStates() },
-  app_state_( true ),
-  show_fps_( true )
+SDLApp::SDLApp( void )
+  // state_factory { new GameStates() }
 {
   NOM_LOG_TRACE( NOM );
 
-  this->app_timer_.start();
+  uint32 flags =  OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS |
+                  OSX_DISABLE_FULLSCREEN_SPACES |
+                  INIT_ENGINE_FONTS;
 
-  // Mac OS X "bug" fix for keeping our window from getting minimized upon
-  // losing focus to an application on another display.
-  #if defined( NOM_PLATFORM_OSX )
-    if( nom::set_hint( SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0" ) == false )
-    {
-      NOM_LOG_ERR( NOM, "Could not disable minimizing window on focus loss." );
-    }
-  #endif
-
-  // TODO: This should probably be a flag we pass...
-  #if defined( NOM_PLATFORM_OSX )
-    if( nom::set_hint( SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES, "0" ) == false )
-    {
-      NOM_LOG_ERR( NOM, "Could not disable Spaces support." );
-    }
-  #endif
+  this->initialize( flags );
 }
 
-SDLApp::~SDLApp ( void )
+SDLApp::SDLApp( uint32 flags )
+  // state_factory { new GameStates() }
+{
+  NOM_LOG_TRACE( NOM );
+
+  this->initialize( flags );
+}
+
+SDLApp::~SDLApp( void )
 {
   NOM_LOG_TRACE( NOM );
 
@@ -66,11 +68,19 @@ SDLApp::~SDLApp ( void )
   this->quit();
 }
 
+bool SDLApp::app_state( void ) const
+{
+  return this->app_state_;
+}
+
 bool SDLApp::on_init( void )
 {
-  // User implemented
-
   return true;
+}
+
+sint SDLApp::Run( void )
+{
+  return NOM_EXIT_SUCCESS;
 }
 
 void SDLApp::on_event( const Event& ev )
@@ -114,7 +124,7 @@ void SDLApp::on_app_quit( const Event& ev )
 
 bool SDLApp::running( void )
 {
-  if ( this->app_state_ == true ) return true;
+  if ( this->app_state() == true ) return true;
 
   return false;
 }
@@ -126,7 +136,12 @@ uint32 SDLApp::ticks ( void )
 
 void SDLApp::quit( void )
 {
-  this->app_state_ = false;
+  this->set_app_state( false );
+}
+
+void SDLApp::set_app_state( bool state )
+{
+  this->app_state_ = state;
 }
 
 bool SDLApp::show_fps ( void ) const
@@ -189,6 +204,70 @@ void SDLApp::pop_state ( IState::UniquePtr state, void_ptr data )
 void SDLApp::pop_state ( void_ptr data )
 {
   this->states.pop_state( data );
+}
+
+FontCache& SDLApp::fonts( void )
+{
+  return this->fonts_;
+}
+
+// Private scope
+
+bool SDLApp::initialize( uint32 flags )
+{
+  Path p;
+  File fp;
+
+  this->app_timer_.start();
+  this->set_app_state( true );
+  this->set_show_fps( true );
+
+  if( flags & OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS )
+  {
+    // Mac OS X "bug" fix for keeping our window from getting minimized upon
+    // losing focus to an application on another display.
+    if( nom::set_hint( SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0" ) == false )
+    {
+      NOM_LOG_ERR( NOM, "Could not disable minimizing window on focus loss." );
+      return false;
+    }
+  }
+
+  if( flags & OSX_DISABLE_FULLSCREEN_SPACES )
+  {
+    if( nom::set_hint( SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES, "0" ) == false )
+    {
+      NOM_LOG_ERR( NOM, "Could not disable Spaces support." );
+      return false;
+    }
+  }
+
+  if( flags & INIT_ENGINE_FONTS )
+  {
+    this->fonts().set_resource_handler( [&] ( const ResourceFile& res, Font& font ) { create_font( res, font ); } );
+
+    #if defined( NOM_PLATFORM_OSX )
+      Path sys( "/System/Library/Fonts" );
+      Path lib( "/Library/Fonts" );
+
+      this->fonts().append_resource( ResourceFile( "Arial", lib.prepend("Arial.ttf"), RESOURCE_TYPE::TRUETYPE_FONT ) );
+      this->fonts().append_resource( ResourceFile( "LucidaGrande", sys.prepend("LucidaGrande.ttc"), RESOURCE_TYPE::TRUETYPE_FONT ) );
+      this->fonts().append_resource( ResourceFile( "MinionPro", lib.prepend("MinionPro-Regular.otf"), RESOURCE_TYPE::TRUETYPE_FONT ) );
+    #elif defined( NOM_PLATFORM_WINDOWS )
+      Path sys( "C:/\\Windows/\\Fonts" );
+      this->fonts().append_resource( ResourceFile( "Arial", sys.prepend("Arial.ttf"), RESOURCE_TYPE::TRUETYPE_FONT ) );
+      this->fonts().append_resource( ResourceFile( "TimesNewRoman", sys.prepend("TimesNewRoman.ttf"), RESOURCE_TYPE::TRUETYPE_FONT ) );
+    #endif
+
+    p = Path( fp.resource_path( "org.i8degrees.nomlib" ) + p.native() + "fonts" );
+
+    this->fonts().append_resource( ResourceFile( "LiberationSans-Regular", p.prepend("LiberationSans-Regular.ttf"), RESOURCE_TYPE::TRUETYPE_FONT ) );
+    this->fonts().append_resource( ResourceFile( "LiberationSerif-Regular", p.prepend("LiberationSerif-Regular.ttf"), RESOURCE_TYPE::TRUETYPE_FONT ) );
+    this->fonts().append_resource( ResourceFile( "VIII", p.prepend("VIII.png"), RESOURCE_TYPE::BITMAP_FONT ) );
+    this->fonts().append_resource( ResourceFile( "VIII_small", p.prepend("VIII_small.png"), RESOURCE_TYPE::BITMAP_FONT ) );
+  }
+
+  return true;
 }
 
 } // namespace nom

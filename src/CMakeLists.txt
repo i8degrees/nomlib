@@ -34,6 +34,7 @@ set ( GRAPHICS_SOURCE
       ${SRC_DIR}/graphics/Gradient.cpp
       ${SRC_DIR}/graphics/fonts/BitmapFont.cpp
       ${SRC_DIR}/graphics/fonts/TrueTypeFont.cpp
+      ${SRC_DIR}/graphics/fonts/Font.cpp
       ${SRC_DIR}/graphics/fonts/Glyph.cpp
     )
 
@@ -126,7 +127,6 @@ set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/clock.cpp
       ${SRC_DIR}/system/FPS.cpp
       ${SRC_DIR}/system/StateMachine.cpp
-      ${SRC_DIR}/system/ObjectCache.cpp
       ${SRC_DIR}/system/SDLApp.cpp
       ${SRC_DIR}/system/EventHandler.cpp
       ${SRC_DIR}/system/SDLJoystick.cpp
@@ -138,6 +138,10 @@ set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/InputMapper/InputAction.cpp
       ${SRC_DIR}/system/InputMapper/InputActionMapper.cpp
       ${SRC_DIR}/system/InputMapper/InputStateMapper.cpp
+
+      # Resource management
+      ${SRC_DIR}/system/resource_handlers.cpp
+      ${SRC_DIR}/system/ResourceFile.cpp
     )
 
 file ( GLOB PTREE_HEADERS "${NOMLIB_HEADERS_DIR}/ptree/*.hpp" )

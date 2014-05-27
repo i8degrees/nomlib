@@ -55,6 +55,26 @@ struct FontPage
     //NOM_LOG_TRACE(NOM);
   }
 
+  FontPage( const FontPage& rhs ) :
+    glyphs( rhs.glyphs ),
+    texture( rhs.texture ),
+    next_row( rhs.next_row ),
+    rows( rhs.rows )
+  {
+    // NOM_LOG_TRACE( NOM );
+  }
+
+  /// \brief Validity of the glyph page.
+  bool valid( void ) const
+  {
+    if( this->texture->valid() == true && this->glyphs.empty() == false )
+    {
+      return true;
+    }
+
+    return false;
+  }
+
   GlyphAtlas glyphs;
 
   /// Container for the glyph's pixel buffer

@@ -55,12 +55,12 @@ BitmapFont::BitmapFont ( const BitmapFont& copy ) :
   pages_ { copy.pages() },
   metrics_ { copy.metrics() }
 {
-  //
+  NOM_LOG_TRACE( NOM );
 }
 
-IFont::SharedPtr BitmapFont::clone ( void ) const
+IFont::RawPtr BitmapFont::clone( void ) const
 {
-  return BitmapFont::SharedPtr ( new BitmapFont ( *this ) );
+  return new BitmapFont( *this );
 }
 
 bool BitmapFont::valid ( void ) const
@@ -85,14 +85,19 @@ sint BitmapFont::spacing ( uint32 character_size ) const
   return this->pages_[0].glyphs[65].advance; // 'A' ASCII character
 }
 
-sint BitmapFont::newline ( uint32 character_size ) /*const*/
+int BitmapFont::newline( uint32 character_size ) const
 {
   return this->metrics_.newline;
 }
 
-sint BitmapFont::kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) /*const*/
+int BitmapFont::kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const
 {
   return 0; // TODO
+}
+
+int BitmapFont::hinting( void ) const
+{
+  return 0; // Not implemented
 }
 
 const Glyph& BitmapFont::glyph ( uint32 codepoint, uint32 character_size ) const
@@ -110,13 +115,26 @@ const Glyph& BitmapFont::glyph ( uint32 codepoint, uint32 character_size ) const
   }
 }
 
-bool BitmapFont::set_point_size ( sint size )
+bool BitmapFont::set_point_size( int point_size )
 {
   return false; // TODO
 }
 
-bool BitmapFont::load ( const std::string& filename, bool use_cache )
+bool BitmapFont::set_hinting( int type )
 {
+  return false; // Not implemented
+}
+
+bool BitmapFont::set_outline( int )
+{
+  return false; // Not implemented
+}
+
+bool BitmapFont::load( const std::string& filename )
+{
+  // Set the font's face name as the filename of the bitmap font.
+  this->metrics_.name = filename;
+
   // I don't understand why RGBA8888 is necessary here, but it is the only pixel
   // format that I have found that works when we are initializing a
   // nom::Texture (SDL_Texture) from a nom::Image (SDL_Surface).
@@ -152,7 +170,7 @@ bool BitmapFont::load ( const std::string& filename, bool use_cache )
   return true;
 }
 
-struct FontMetrics BitmapFont::metrics ( void ) const
+const FontMetrics& BitmapFont::metrics( void ) const
 {
   return this->metrics_;
 }

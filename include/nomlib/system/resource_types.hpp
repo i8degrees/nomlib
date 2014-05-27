@@ -26,41 +26,25 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_OBJECT_CACHE_HEADERS
-#define NOMLIB_OBJECT_CACHE_HEADERS
-
-#include <string>
-#include <memory>
-#include <map>
-
-#include "SDL.h"
+#ifndef NOMLIB_SYSTEM_CONFIG_HPP
+#define NOMLIB_SYSTEM_CONFIG_HPP
 
 #include "nomlib/config.hpp"
+#include "nomlib/system/ResourceCache.hpp"
+#include "nomlib/graphics/fonts/Font.hpp"
+#include "nomlib/graphics/Image.hpp"
+#include "nomlib/graphics/Texture.hpp"
 
 namespace nom {
-  namespace priv {
 
-class ObjectCache
-{
-  public:
-    ObjectCache ( void );
-    ~ObjectCache ( void );
+typedef ResourceCache<Font> FontCache;
 
-    std::shared_ptr<SDL_Surface> addObject ( const std::string& key,
-                                      std::shared_ptr<SDL_Surface> object
-                                    );
+/// \note This has not been tested.
+typedef ResourceCache<Image> ImageCache;
 
-    /// \todo TEST ME
-    bool removeObject ( const std::string& key );
+/// \note This has not been tested.
+typedef ResourceCache<Texture> TextureCache;
 
-    std::shared_ptr<SDL_Surface> getObject ( const std::string& key );
-
-  private:
-    static std::map <std::string, std::shared_ptr<SDL_Surface>> cache;
-};
-
-
-  } // namespace priv
 } // namespace nom
 
-#endif // NOMLIB_OBJECT_CACHE_HEADERS defined
+#endif // include guard defined

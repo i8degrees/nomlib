@@ -54,8 +54,9 @@ namespace nom {
 class BitmapFont: public IFont
 {
   public:
-    typedef BitmapFont* RawPtr;
-    typedef std::shared_ptr<BitmapFont> SharedPtr;
+    typedef BitmapFont self_type;
+    typedef self_type* RawPtr;
+    typedef std::shared_ptr<self_type> SharedPtr;
 
     /// \brief Default constructor
     BitmapFont ( void );
@@ -67,7 +68,7 @@ class BitmapFont: public IFont
     BitmapFont ( const BitmapFont& copy );
 
     /// \brief Construct a clone of the existing instance
-    IFont::SharedPtr clone ( void ) const;
+    IFont::RawPtr clone( void ) const;
 
     /// \brief Validity check
     bool valid ( void ) const;
@@ -87,9 +88,16 @@ class BitmapFont: public IFont
     /// \param character_size Point size in pixels
     ///
     /// \returns  Height offset in pixels
-    sint newline ( uint32 character_size ) /*const*/;
+    int newline( uint32 character_size ) const;
 
-    sint kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) /*const*/;
+    int kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const;
+
+    /// \brief Get the font's hinting style.
+    ///
+    /// \remarks This method is not implemented.
+    ///
+    /// \returns Zero.
+    int hinting( void ) const;
 
     /// \brief Obtain a glyph
     ///
@@ -106,11 +114,19 @@ class BitmapFont: public IFont
     /// \remarks Not implemented
     bool set_point_size ( sint size );
 
+    /// \brief Set the requested font hinting style.
+    ///
+    /// \remarks This method is not implemented.
+    bool set_hinting( int type );
+
+    /// \remarks This method is not implemented.
+    bool set_outline( int );
+
     /// \brief Loads a new bitmap font from a file
-    bool load ( const std::string& filename, bool use_cache = false );
+    bool load( const std::string& filename );
 
     /// \brief Obtain information about the loaded font
-    struct FontMetrics metrics ( void ) const;
+    const FontMetrics& metrics( void ) const;
 
   private:
     /// Trigger a build of the font characteristics gleaned from the image file;
@@ -138,7 +154,7 @@ class BitmapFont: public IFont
     mutable GlyphPage pages_;
 
     /// General font metric data, such as the proper value for newline spacing
-    struct FontMetrics metrics_;
+    FontMetrics metrics_;
 };
 
 } // namespace nom

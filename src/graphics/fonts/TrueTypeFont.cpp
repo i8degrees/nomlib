@@ -32,10 +32,10 @@ namespace nom {
 
 TrueTypeFont::TrueTypeFont ( void ) :
   type_ ( IFont::FontType::TrueTypeFont ),
-  sheet_width_ ( 16 ),  // Arbitrary; based on nom::BitmapFont
-  sheet_height_ ( 16 ), // Arbitrary; based on nom::BitmapFont
-  use_cache_ ( false ), // Not used (reserved for future implementation)
-  point_size_ ( 14 )    // Terrible Eyesight (TM)
+  sheet_width_ ( 16 ),
+  sheet_height_ ( 16 ),
+  point_size_ ( 14 ),   // Terrible Eyesight (TM)
+  hinting_( TTF_HINTING_NONE )
 {
   NOM_LOG_TRACE ( NOM );
 
@@ -59,15 +59,15 @@ TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy ) :
   pages_ { copy.pages() },
   metrics_ { copy.metrics() },
   filename_ { copy.filename_ },
-  use_cache_ { copy.use_cache_ },
-  point_size_ { copy.point_size() }
+  point_size_ { copy.point_size() },
+  hinting_{ copy.hinting() }
 {
-  //
+  NOM_LOG_TRACE( NOM );
 }
 
-IFont::SharedPtr TrueTypeFont::clone ( void ) const
+IFont::RawPtr TrueTypeFont::clone( void ) const
 {
-  return TrueTypeFont::SharedPtr ( new TrueTypeFont ( *this ) );
+  return new TrueTypeFont( *this );
 }
 
 bool TrueTypeFont::valid ( void ) const
@@ -102,9 +102,9 @@ sint TrueTypeFont::point_size ( void ) const
   return this->point_size_;
 }
 
-int TrueTypeFont::newline ( uint32 character_size ) /*const*/
+int TrueTypeFont::newline( uint32 character_size ) const
 {
-  if ( this->valid() == true && this->set_point_size ( character_size ) )
+  if ( this->valid() == true )
   {
     return this->metrics_.newline;
   }
@@ -114,12 +114,12 @@ int TrueTypeFont::newline ( uint32 character_size ) /*const*/
   }
 }
 
-sint TrueTypeFont::kerning ( uint32 first_char, uint32 second_char, uint32 character_size ) /*const*/
+int TrueTypeFont::kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const
 {
   // Null character
   if ( first_char == 0 || second_char == 0 ) return 0;
 
-  if ( this->valid() && TTF_GetFontKerning(this->font()) && this->set_point_size(character_size) )
+  if ( this->valid() && TTF_GetFontKerning( this->font() ) )
   {
     return TTF_GetFontKerningSize ( this->font(), first_char, second_char );
   }
@@ -154,37 +154,59 @@ int TrueTypeFont::outline ( /*uint32 character_size*/void ) /*const*/
   return 0;
 }
 
-bool TrueTypeFont::set_point_size ( sint size )
+int TrueTypeFont::hinting( void ) const
+{
+  return TTF_GetFontHinting( this->font() );
+}
+
+bool TrueTypeFont::set_point_size( int point_size )
 {
   // Expensive method call
-  if ( this->point_size() != size )
+  if ( this->point_size() != point_size )
   {
-    sint original_font_size = this->point_size();
+    int original_font_size = this->point_size();
 
-    this->point_size_ = size; // Cached point_size will be used upon reload
+    this->point_size_ = point_size;
 
-    // Reset point size back to the previous if fail to reload
-    if ( this->load ( this->filename_, this->use_cache_ ) == false )
+    if( this->load( this->filename_ ) == false )
     {
-      NOM_LOG_ERR ( NOM, "Could not set new point size." );
+      NOM_LOG_ERR( NOM, "Could not set new point size: " + std::to_string( point_size ) );
+
+      // Restore the original point size if we fail to reload font.
       this->point_size_ = original_font_size;
+
       return false;
     }
-
-    return true;
   }
 
   return true;
 }
 
-bool TrueTypeFont::set_outline ( int outline )
+bool TrueTypeFont::set_hinting( int type )
+{
+  // Expensive function call
+  if( this->hinting_ != type )
+  {
+    TTF_SetFontHinting( this->font(), type );
+
+    if ( this->build( this->point_size() ) == false )
+    {
+      NOM_LOG_ERR ( NOM, "Could not set requested font hinting." );
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool TrueTypeFont::set_outline( int outline )
 {
   // Expensive function call
   if ( this->outline() != outline )
   {
     TTF_SetFontOutline ( this->font(), outline );
 
-    if ( this->build ( this->point_size() ) == false )
+    if ( this->build( this->point_size() ) == false )
     {
       NOM_LOG_ERR ( NOM, "Could not set new point size." );
       return false;
@@ -196,7 +218,7 @@ bool TrueTypeFont::set_outline ( int outline )
   return true;
 }
 
-bool TrueTypeFont::load ( const std::string& filename, bool use_cache )
+bool TrueTypeFont::load( const std::string& filename )
 {
   this->font_ = std::shared_ptr<TTF_Font> ( TTF_OpenFont ( filename.c_str(), this->point_size() ), priv::TTF_FreeFont );
 
@@ -209,7 +231,20 @@ bool TrueTypeFont::load ( const std::string& filename, bool use_cache )
   // Store the filename for future reference; we use this cached filename for
   // when a new font point size is requested.
   this->filename_ = filename;
-  this->use_cache_ = use_cache; // Not used
+
+  // Save global font metrics; these values are dependent upon the font's
+  // current point size, so we need to regenerate them even when the glyph page
+  // for the given point size exists.
+  this->metrics_.height = TTF_FontHeight( this->font() );
+  this->metrics_.newline = TTF_FontLineSkip( this->font() );
+  this->metrics_.ascent = TTF_FontAscent( this->font() );
+  this->metrics_.descent = TTF_FontDescent( this->font() );
+  this->metrics_.family = TTF_FontFaceFamilyName( this->font() );
+
+  // Set the font face style name
+  this->metrics_.name = std::string( TTF_FontFaceFamilyName( this->font() ) );
+
+  this->hinting_ = this->hinting();
 
   // Attempt to build font metrics
   if ( this->build ( this->point_size() ) == false )
@@ -221,7 +256,7 @@ bool TrueTypeFont::load ( const std::string& filename, bool use_cache )
   return true;
 }
 
-struct FontMetrics TrueTypeFont::metrics ( void ) const
+const FontMetrics& TrueTypeFont::metrics( void ) const
 {
   return this->metrics_;
 }
@@ -246,6 +281,7 @@ bool TrueTypeFont::build ( uint32 character_size )
   IntRect blit;                                   // Rendering bounding coords
   FontPage& page = this->pages_[character_size];  // Our font's current glyph
                                                   // page
+  Point2i sheet_size;                             // Texture atlas dimensions
 
   if ( this->valid() == false )
   {
@@ -253,12 +289,30 @@ bool TrueTypeFont::build ( uint32 character_size )
     return false;
   }
 
-  // Our starting sheet size (we will allocate a larger sheet size if needed)
-  const Point2i sheet_size =  Point2i ( sheet_width() * sheet_height(), // 256
-                                        sheet_width() * sheet_height()  // 256
-                                      );
+  // Glyph page has already been calculated, so we can use this cache and spare
+  // many CPU cycles. This resolves the thrashing issue we observed on Windows
+  // OS, when quickly increasing & decreasing the font's point size, such as in
+  // nomlib's app example.
+  //
+  // NOTE: Glyph caching trade memory for performance.
+  if( page.valid() )
+  {
+    // NOM_DUMP("cached");
+    return true;
+  }
+
+  // Our starting sheet size; we will allocate a larger sheet size if needed
+  // during glyph rasterization -- see ::glyph_rect.
+  //
+  // NOTE: The initial size of the texture sheet directly affects loading time.
+  sheet_size = Point2i  (
+                          this->sheet_width() * this->sheet_height(),
+                          this->sheet_width() * this->sheet_height()
+                        );
 
   page.texture->initialize ( sheet_size );
+
+  // this->set_hinting( this->hinting() );
 
   // ASCII 32..127 is the standard glyph set -- 94 printable characters;
   //
@@ -275,7 +329,7 @@ bool TrueTypeFont::build ( uint32 character_size )
     if ( TTF_GlyphIsProvided ( this->font(), ascii_char ) )
     {
       // We obtain width & height of a glyph from its rendered form
-      glyph_image.initialize ( TTF_RenderGlyph_Blended ( this->font(), ascii_char, SDL_COLOR(Color4i::White) ) );
+      glyph_image.initialize ( TTF_RenderGlyph_Solid( this->font(), ascii_char, SDL_COLOR(Color4i::White) ) );
 
       if ( glyph_image.valid() == false )
       {
@@ -363,13 +417,6 @@ bool TrueTypeFont::build ( uint32 character_size )
     return false;
   }
 
-  // Save global font metrics
-  this->metrics_.height = TTF_FontHeight ( this->font() );
-  this->metrics_.newline = TTF_FontLineSkip ( this->font() );
-  this->metrics_.ascent = TTF_FontAscent ( this->font() );
-  this->metrics_.descent = TTF_FontDescent ( this->font() );
-  this->metrics_.family = TTF_FontFaceFamilyName ( this->font() );
-
   return true;
 }
 
@@ -426,7 +473,7 @@ const IntRect TrueTypeFont::glyph_rect ( FontPage& page, int width, int height )
   if ( ! row )
   {
     int row_height = height + height / 10;
-    if ( page.next_row + row_height >= page.texture->height() )
+    while( page.next_row + row_height >= page.texture->height() )
     {
       // Not enough space: resize the texture if possible
       uint texture_width  = page.texture->width();

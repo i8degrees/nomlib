@@ -68,6 +68,9 @@ struct FontMetrics
 
   /// Font family
   std::string family;
+
+  /// \brief The font face style name
+  std::string name;
 };
 
 } // namespace nom

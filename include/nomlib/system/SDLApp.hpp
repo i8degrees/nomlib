@@ -31,16 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
-#include <memory>
-
-#include "SDL.h"
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/EventHandler.hpp"
 #include "nomlib/system/Timer.hpp"
 #include "nomlib/system/StateMachine.hpp"
-#include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/system/Event.hpp"
+#include "nomlib/system/ResourceCache.hpp"
+#include "nomlib/system/resource_types.hpp"
 
 namespace nom {
 
@@ -48,13 +46,42 @@ namespace nom {
 class SDLApp: public EventHandler
 {
   public:
-    typedef SDLApp* RawPtr;
-    typedef std::shared_ptr<SDLApp> SharedPtr;
+    typedef SDLApp self_type;
 
-    SDLApp ( void );
-    virtual ~SDLApp ( void );
+    typedef self_type* raw_ptr;
+    typedef std::shared_ptr<self_type> shared_ptr;
+
+    /// \brief An enumeration of platform or application scope features
+    /// available for explicit request of enabling or disabling.
+    enum Hints
+    {
+      /// SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS
+      OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS = 0x1,
+
+      /// SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES
+      OSX_DISABLE_FULLSCREEN_SPACES = 0x2,
+
+      /// Initialize the cache of font resources available to the engine.
+      INIT_ENGINE_FONTS = 0x4
+    };
+
+    /// \brief Default constructor; initialize with the default set of hints.
+    ///
+    /// \remarks The hints OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS,
+    /// OSX_DISABLE_FULLSCREEN_SPACES and INIT_ENGINE_FONTS are passed.
+    SDLApp( void );
+
+    /// \see SDLApp::Hints enumeration.
+    SDLApp( uint32 flags );
+
+    virtual ~SDLApp( void );
+
+    bool app_state( void ) const;
 
     virtual bool on_init( void );
+
+    /// \todo Rename to exec..?
+    virtual sint Run( void );
 
     /// \brief The application-level handler for events.
     ///
@@ -107,6 +134,8 @@ class SDLApp: public EventHandler
     /// \note Sets the internal class variable app_state_ to false.
     virtual void quit( void );
 
+    void set_app_state( bool state );
+
     bool show_fps ( void ) const;
     void set_show_fps ( bool toggle );
 
@@ -125,12 +154,21 @@ class SDLApp: public EventHandler
     virtual void pop_state ( IState::UniquePtr state, void_ptr data = nullptr );
     virtual void pop_state ( void_ptr data = nullptr );
 
+    /// \brief Get the cache of available fonts.
+    ///
+    /// \remarks The available fonts are determined at run-time within the
+    /// initialization of the class.
+    FontCache& fonts( void );
+
   protected:
     /// \brief State machine manager.
     StateMachine states;
 
     //GameStates* state_factory;
+
   private:
+    bool initialize( uint32 flags );
+
     /// \brief Global application state.
     bool app_state_;
 
@@ -139,6 +177,10 @@ class SDLApp: public EventHandler
 
     /// \brief Global application timer.
     Timer app_timer_;
+
+    /// \note A nom::RenderWindow must be initialized before the resource
+    /// loading method call can be used -- nom::FontCache::load_resource.
+    FontCache fonts_;
 };
 
 } // namespace nom

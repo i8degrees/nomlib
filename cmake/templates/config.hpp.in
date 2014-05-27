@@ -94,6 +94,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOM_DUMP(var) \
   ( std::cout << "In function: " << __func__ << std::endl << #var << ": " << var << std::endl << std::endl )
 
+/// \todo Rename to NOM_DUMP_VAR..?
+#define NOM_DUMP_EXT( name, var ) \
+  ( std::cout << "In function: " << __func__ << std::endl << name << ": " << var << std::endl << std::endl )
+
 /// \brief Debugging macros;
 ///
 /// \remarks If debugging is turned on, we log all warnings, errors & info.

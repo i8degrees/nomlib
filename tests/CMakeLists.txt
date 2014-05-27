@@ -21,6 +21,10 @@ if( NOM_BUILD_XML_UNIT )
   set( NOM_BUILD_PTREE_XML_TESTS on )
 endif( NOM_BUILD_XML_UNIT )
 
+if( NOM_BUILD_SYSTEM_UNIT )
+  set( NOM_BUILD_SYSTEM_TESTS on )
+endif( NOM_BUILD_SYSTEM_UNIT )
+
 # Path under Windows should resolve to: build/tests/Debug
 set ( TESTS_DEPS_INSTALL_PEFIX
       "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}"
@@ -131,6 +135,27 @@ GTEST_ADD_TESTS (
                 )
 
 endif( NOM_BUILD_PTREE_XML_TESTS )
+
+if( NOM_BUILD_SYSTEM_TESTS )
+
+  add_executable  (
+                    font_cache
+                    ${NOM_TESTS_DIR}/system/FontCacheTest.cpp
+                  )
+
+  target_link_libraries (
+                          font_cache
+                          ${GTEST_BOTH_LIBRARIES}
+                          ${PROJECT_NAME} # nomlib
+                        )
+
+  GTEST_ADD_TESTS (
+                    font_cache
+                    "FontCacheTest"
+                    ${NOM_TESTS_DIR}/system/FontCacheTest.cpp
+                  )
+
+endif( NOM_BUILD_SYSTEM_TESTS )
 
 if( NOM_BUILD_TEMPLATES_UNIT )
 

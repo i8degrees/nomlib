@@ -26,13 +26,11 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_JSON_JSONCPP_SERIALIZER_HPP
-#define NOMLIB_JSON_JSONCPP_SERIALIZER_HPP
+#ifndef NOMLIB_SERIALIZERS_JSONCPP_SERIALIZER_HPP
+#define NOMLIB_SERIALIZERS_JSONCPP_SERIALIZER_HPP
 
 #include <sstream>
 #include <fstream>
-
-#include "jsoncpp/json.h"
 
 #include "nomlib/config.hpp"
 #include "nomlib/serializers/serializers_config.hpp"
@@ -42,6 +40,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Enable dumping output of each key, value pair, sizes, etc. as we
 // traverse the object.
 // #define NOM_DEBUG_JSONCPP_SERIALIZER_VALUES
+
+// Forward declarations for third-party libraries used; these allow us to not
+// worry about including third-party header files in outside-project builds,
+// such as is the case with TTcards.
+namespace Json {
+
+class Value;
+
+} // namespace Json
 
 namespace nom {
 

@@ -10,9 +10,6 @@
 # NOMLIB_INCLUDE_DIR              Absolute directory path to public library
 #                                 header files.
 #
-# NOMLIB_THIRD_PARTY_INCLUDE_DIR  Absolute directory path to third-party library
-#                                 dependency header files.
-#
 # Created by Jeffrey Carpenter. This was influenced by the FindOpenAL.cmake module.
 #
 # CMake should search for OSX frameworks first in the following order:
@@ -57,23 +54,6 @@ find_library  ( NOMLIB_LIBRARY
                 #[HKEY_LOCAL_MACHINE\\SOFTWARE\\Creative\ Labs\\OpenAL\ 1.1\ Software\ Development\ Kit\\1.00.0000;InstallDir]
               )
 
-find_path (
-            NOMLIB_THIRD_PARTY_INCLUDE_DIR
-            NAMES
-            third-party/common
-            PATH_SUFFIXES
-            include/third-party/common
-            PATHS
-            ~/Library/Frameworks
-            /Library/Frameworks
-            /usr/local/include # homebrew
-            /sw # Fink
-            /opt/local # DarwinPorts
-            /opt/csw # Blastwave
-            /opt
-            #[HKEY_LOCAL_MACHINE\\SOFTWARE\\Creative\ Labs\\OpenAL\ 1.1\ Software\ Development\ Kit\\1.00.0000;InstallDir]
-          )
-
 # handle the QUIETLY and REQUIRED arguments and set NOMLIB_FOUND to TRUE if
 # all listed variables are TRUE
 include ( FindPackageHandleStandardArgs )
@@ -83,7 +63,6 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS (
                                     DEFAULT_MSG
                                     NOMLIB_LIBRARY
                                     NOMLIB_INCLUDE_DIR
-                                    NOMLIB_THIRD_PARTY_INCLUDE_DIR
                                   )
 
 mark_as_advanced  (

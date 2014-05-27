@@ -26,18 +26,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_XML_RAPIDXML_DESERIALIZER_HPP
-#define NOMLIB_XML_RAPIDXML_DESERIALIZER_HPP
+#ifndef NOMLIB_SERIALIZERS_RAPIDXML_DESERIALIZER_HPP
+#define NOMLIB_SERIALIZERS_RAPIDXML_DESERIALIZER_HPP
 
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
-
-// RapidXml library
-#include "rapidxml/rapidxml.hpp"
-#include "rapidxml/rapidxml_print.hpp"
 
 #include "nomlib/config.hpp"
 #include "nomlib/serializers/serializers_config.hpp"
@@ -47,6 +43,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Enable dumping output of each key, value pair, sizes, etc. as we traverse
 // the object.
 // #define NOM_DEBUG_RAPIDXML_DESERIALIZER_VALUES
+
+// Forward declarations for third-party libraries used; these allow us to not
+// worry about including third-party header files in outside-project builds,
+// such as is the case with TTcards.
+namespace rapidxml {
+
+template<class Ch> class xml_node;
+template<class Ch> class xml_document;
+
+} // namespace rapidxml
 
 namespace nom {
 
@@ -96,15 +102,15 @@ class RapidXmlDeserializer: public IValueDeserializer
 
     bool read( const std::string& input, Value& dest ) const;
 
-    bool read_value( const rapidxml::xml_node<>& object, Value& dest ) const;
+    bool read_value( const rapidxml::xml_node<char>& object, Value& dest ) const;
 
     /// \brief Internal helper method for un-serialization of array nodes.
     ///
     /// \remarks rapidxml::xml_attribute<>
-    bool read_array( const rapidxml::xml_node<>* object, Value& dest ) const;
+    bool read_array( const rapidxml::xml_node<char>* object, Value& dest ) const;
 
     /// \brief Internal helper method for un-serialization of object nodes.
-    bool read_object( const rapidxml::xml_node<>* node, Value& dest ) const;
+    bool read_object( const rapidxml::xml_node<char>* node, Value& dest ) const;
 };
 
 } // namespace nom

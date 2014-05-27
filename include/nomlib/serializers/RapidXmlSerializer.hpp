@@ -26,18 +26,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_XML_RAPIDXML_SERIALIZER_HPP
-#define NOMLIB_XML_RAPIDXML_SERIALIZER_HPP
+#ifndef NOMLIB_SERIALIZERS_RAPIDXML_SERIALIZER_HPP
+#define NOMLIB_SERIALIZERS_RAPIDXML_SERIALIZER_HPP
 
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
-
-// RapidXml library
-#include "rapidxml/rapidxml.hpp"
-#include "rapidxml/rapidxml_print.hpp"
 
 #include "nomlib/config.hpp"
 #include "nomlib/serializers/serializers_config.hpp"
@@ -47,6 +43,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Enable dumping output of each key, value pair, sizes, etc. as we
 // traverse the object.
 // #define NOM_DEBUG_RAPIDXML_SERIALIZER_VALUES
+
+// Forward declarations for third-party libraries used; these allow us to not
+// worry about including third-party header files in outside-project builds,
+// such as is the case with TTcards.
+namespace rapidxml {
+
+template<class Ch> class xml_node;
+template<class Ch> class xml_document;
+
+} // namespace rapidxml
 
 namespace nom {
 
@@ -103,17 +109,17 @@ class RapidXmlSerializer: public IValueSerializer
 
     // rapidxml::xml_document<> doc;
 
-    bool write( const Value& source, rapidxml::xml_document<>& dest ) const;
+    bool write( const Value& source, rapidxml::xml_document<char>& dest ) const;
 
-    bool write_value( const Value& object, const std::string& key, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const;
+    bool write_value( const Value& object, const std::string& key, rapidxml::xml_document<char>& doc, rapidxml::xml_node<char>* parent ) const;
 
     /// \brief Internal helper method for serialization of array nodes.
-    bool write_array( const Value& object, const std::string& key, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const;
+    bool write_array( const Value& object, const std::string& key, rapidxml::xml_document<char>& doc, rapidxml::xml_node<char>* parent ) const;
 
     /// \brief Internal helper method for serialization of object nodes.
-    bool write_object( const Value& object, const std::string& key, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const;
+    bool write_object( const Value& object, const std::string& key, rapidxml::xml_document<char>& doc, rapidxml::xml_node<char>* parent ) const;
 
-    const char* stralloc( const std::string& buffer, rapidxml::xml_document<>& dest ) const;
+    const char* stralloc( const std::string& buffer, rapidxml::xml_document<char>& dest ) const;
 
     /// \brief Add the top-level XML node declaring the version and encoding
     /// used (think: DOCTYPE).
@@ -125,7 +131,7 @@ class RapidXmlSerializer: public IValueSerializer
     /// \code
     /// <?xml version="1.0" encoding="utf-8"?>
     /// \endcode
-    void append_decl( rapidxml::xml_document<>& dest ) const;
+    void append_decl( rapidxml::xml_document<char>& dest ) const;
 };
 
 } // namespace nom

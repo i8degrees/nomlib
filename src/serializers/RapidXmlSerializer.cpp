@@ -28,6 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/serializers/RapidXmlSerializer.hpp"
 
+// Private headers (third-party)
+#include "rapidxml/rapidxml.hpp"
+#include "rapidxml/rapidxml_print.hpp"
+
 namespace nom {
 
 RapidXmlSerializer::RapidXmlSerializer( void ) :
@@ -110,7 +114,7 @@ bool RapidXmlSerializer::save ( const Value& source, const std::string& filename
   return true;
 }
 
-bool RapidXmlSerializer::write( const Value& source, rapidxml::xml_document<>& dest ) const
+bool RapidXmlSerializer::write( const Value& source, rapidxml::xml_document<char>& dest ) const
 {
   std::string root_key, key;
 
@@ -152,7 +156,7 @@ bool RapidXmlSerializer::write( const Value& source, rapidxml::xml_document<>& d
   return true;
 }
 
-bool RapidXmlSerializer::write_value( const Value& object, const std::string& key, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const
+bool RapidXmlSerializer::write_value( const Value& object, const std::string& key, rapidxml::xml_document<char>& doc, rapidxml::xml_node<>* parent ) const
 {
   switch( object.type() )
   {
@@ -223,7 +227,7 @@ bool RapidXmlSerializer::write_value( const Value& object, const std::string& ke
   return true;
 }
 
-bool RapidXmlSerializer::write_array( const Value& object, const std::string& key, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const
+bool RapidXmlSerializer::write_array( const Value& object, const std::string& key, rapidxml::xml_document<char>& doc, rapidxml::xml_node<>* parent ) const
 {
   Value array;
 
@@ -296,7 +300,7 @@ bool RapidXmlSerializer::write_array( const Value& object, const std::string& ke
 
   return true;
 }
-bool RapidXmlSerializer::write_object( const Value& object, const std::string& key, rapidxml::xml_document<>& doc, rapidxml::xml_node<>* parent ) const
+bool RapidXmlSerializer::write_object( const Value& object, const std::string& key, rapidxml::xml_document<char>& doc, rapidxml::xml_node<>* parent ) const
 {
   switch( object.type() )
   {
@@ -440,7 +444,7 @@ bool RapidXmlSerializer::write_object( const Value& object, const std::string& k
   return true;
 }
 
-void RapidXmlSerializer::append_decl( rapidxml::xml_document<>& dest ) const
+void RapidXmlSerializer::append_decl( rapidxml::xml_document<char>& dest ) const
 {
   // Top-level XML DOCTYPE
   rapidxml::xml_node<>* decl = dest.allocate_node( rapidxml::node_declaration );
@@ -449,7 +453,7 @@ void RapidXmlSerializer::append_decl( rapidxml::xml_document<>& dest ) const
   dest.append_node( decl );
 }
 
-const char* RapidXmlSerializer::stralloc( const std::string& buffer, rapidxml::xml_document<>& dest ) const
+const char* RapidXmlSerializer::stralloc( const std::string& buffer, rapidxml::xml_document<char>& dest ) const
 {
   return dest.allocate_string( buffer.c_str() );
 }

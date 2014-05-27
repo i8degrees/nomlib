@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/serializers/JsonCppSerializer.hpp"
 
+// Private headers (third-party)
+#include "jsoncpp/json.h"
+
 namespace nom {
 
 JsonCppSerializer::JsonCppSerializer( void ) :

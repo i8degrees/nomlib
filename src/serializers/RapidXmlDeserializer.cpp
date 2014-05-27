@@ -28,6 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/serializers/RapidXmlDeserializer.hpp"
 
+// Private headers (third-party)
+#include "rapidxml/rapidxml.hpp"
+#include "rapidxml/rapidxml_print.hpp"
+
 namespace nom {
 
 RapidXmlDeserializer::RapidXmlDeserializer( void ) :
@@ -150,14 +154,14 @@ bool RapidXmlDeserializer::read( const std::string& input, Value& dest ) const
   return true;
 }
 
-bool RapidXmlDeserializer::read_value( const rapidxml::xml_node<>& object, Value& dest ) const
+bool RapidXmlDeserializer::read_value( const rapidxml::xml_node<char>& object, Value& dest ) const
 {
   NOM_STUBBED( NOM );
 
   return false;
 }
 
-bool RapidXmlDeserializer::read_array( const rapidxml::xml_node<>* object, Value& dest ) const
+bool RapidXmlDeserializer::read_array( const rapidxml::xml_node<char>* object, Value& dest ) const
 {
   std::string key;
   std::string value;
@@ -181,7 +185,7 @@ bool RapidXmlDeserializer::read_array( const rapidxml::xml_node<>* object, Value
   return true;
 }
 
-bool RapidXmlDeserializer::read_object( const rapidxml::xml_node<>* node, Value& dest ) const
+bool RapidXmlDeserializer::read_object( const rapidxml::xml_node<char>* node, Value& dest ) const
 {
   std::string key;
   std::string value;

@@ -470,15 +470,6 @@ if ( PLATFORM_OSX )
       install_name_rpath ( "@rpath/sndfile.framework/Versions/A/sndfile" "${LIBSNDFILE_LIBRARY}/Versions/A/sndfile" )
     endif ( NOT CMAKE_GENERATOR STREQUAL "Xcode" )
 
-
-    # Install nomlib's third-party header files; see also, the note on our set
-    # environmental variable NOMLIB_THIRD_PARTY_INCLUDE_DIR.
-    install ( DIRECTORY
-              ${NOMLIB_THIRD_PARTY_INCLUDE_DIR}
-              DESTINATION "${INSTALL_HEADERS_PATH}/third-party"
-              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-            )
-
     # Install nomlib's default fonts
     #
     # FIXME: We need to be building the framework bundle locally -- within

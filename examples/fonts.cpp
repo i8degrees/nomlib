@@ -120,6 +120,8 @@ class App: public nom::SDLApp
       this->load_truetype_font2();
 
       nom::Font* font = this->fonts().load_resource("VIII");
+
+      NOM_ASSERT( font != nullptr );
       NOM_ASSERT( font->valid() == true );
 
       nom::Font label_font0 = this->label_tfont.font();

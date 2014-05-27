@@ -171,7 +171,7 @@ int UIWidget::padding ( void ) const
   return this->padding_;
 }
 
-std::shared_ptr<IFont> UIWidget::font( void ) const
+const Font& UIWidget::font( void ) const
 {
   return this->font_;
 }
@@ -389,7 +389,32 @@ void UIWidget::set_padding ( int pad )
   this->padding_ = pad;
 }
 
-void UIWidget::set_font( const IFont* font )
+// void UIWidget::set_font( const IFont* font )
+// {
+//   UIWidget::Children children = this->children();
+
+//   if( children.size() > 0 )
+//   {
+//     for( auto itr = children.begin(); itr != children.end(); ++itr )
+//     {
+//       // NOM_DUMP( (*itr)->name() );
+//       (*itr)->set_font( font->clone() );
+
+//       // FIXME: This method call yields nothing on widgets that require updated_
+//       // to be false.
+//       (*itr)->update();
+//     }
+//   }
+
+//   // Now that our children are fed, take care of ourselves, the top-level parent
+//   // AKA widget / window.
+//   // else
+//   // {
+//     this->font_ = font->clone();
+//   // }
+// }
+
+void UIWidget::set_font( const Font& font )
 {
   UIWidget::Children children = this->children();
 
@@ -398,7 +423,7 @@ void UIWidget::set_font( const IFont* font )
     for( auto itr = children.begin(); itr != children.end(); ++itr )
     {
       // NOM_DUMP( (*itr)->name() );
-      (*itr)->set_font( font->clone() );
+      (*itr)->set_font( font );
 
       // FIXME: This method call yields nothing on widgets that require updated_
       // to be false.
@@ -410,7 +435,7 @@ void UIWidget::set_font( const IFont* font )
   // AKA widget / window.
   // else
   // {
-    this->font_ = font->clone();
+    this->font_ = font;
   // }
 }
 
@@ -503,7 +528,7 @@ void UIWidget::set_decorator( const IDecorator::raw_ptr object )
 
 void UIWidget::set_title( const std::string& title )
 {
-  if( this->font() == nullptr )
+  if( this->font().valid() == false )
   {
     NOM_LOG_ERR( NOM, "Could not set window title: font is NULL." );
     return;
@@ -511,7 +536,7 @@ void UIWidget::set_title( const std::string& title )
 
   // this->set_updated( false );
 
-  this->title_.reset( new Text( title, this->font().get() ) );
+  this->title_.reset( new Text( title, this->font() ) );
 
   this->title_->set_position( this->position() );
 
@@ -991,11 +1016,6 @@ bool UIWidget::focus_next_child( void )
 int64 UIWidget::generate_id( void ) const
 {
   return ( ++next_window_id_ );
-}
-
-void UIWidget::set_font( const IFont::shared_ptr& font )
-{
-  this->font_ = font;
 }
 
 /*

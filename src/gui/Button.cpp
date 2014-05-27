@@ -90,7 +90,7 @@ const Size2i Button::size_hint( void ) const
 
   // We do not have any text labels stored, so assume a widget with a height
   // large enough for one item.
-  if( this->font() != nullptr )
+  if( this->font().valid() == true )
   {
 // NOM_DUMP( this->font()->newline( point_size ) );
 
@@ -140,7 +140,7 @@ void Button::update( void )
 
   if( this->updated() ) return;
 
-  this->label_ = Text( this->text_, this->font().get(), this->point_size_, this->alignment_, this->text_color_ );
+  this->label_ = Text( this->text_, this->font(), this->point_size_, this->alignment_, this->text_color_ );
   this->label_.set_position( this->position() );
   this->label_.set_size( this->size() );
   this->label_.set_alignment( this->alignment_ );

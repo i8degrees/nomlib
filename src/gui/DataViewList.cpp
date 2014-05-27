@@ -163,7 +163,7 @@ void DataViewList::update_columns( void )
   {
     DataViewColumn column = this->store_->column( cols );
 
-    header = Text::unique_ptr( new Text( column.title(), this->font().get() ) );
+    header = Text::unique_ptr( new Text( column.title(), this->font() ) );
 
     width = header->width();
 
@@ -237,7 +237,7 @@ void DataViewList::update_items( void )
       {
         Text* text = dynamic_cast<Text*>( row.data() );
 
-        Text::unique_ptr item = Text::unique_ptr( new Text( text->text(), text->font().get() ) );
+        Text::unique_ptr item = Text::unique_ptr( new Text( text->text(), text->font() ) );
 
         width = item->width();
         height = item->height();
@@ -347,7 +347,7 @@ void DataViewList::update( void )
   UIWidget::update();
 
   // Sanity check; we'd crash in ::update otherwise!
-  if( this->font() == nullptr )
+  if( this->font().valid() == false )
   {
     NOM_LOG_ERR( NOM, "DataViewList's font is NULL -- skipping update of object!" );
     return;

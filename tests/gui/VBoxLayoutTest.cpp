@@ -170,7 +170,7 @@ class VBoxLayoutTest: public ::testing::Test
 
       // FIXME: We explicitly need our top-level window to *not* have a font
       // initialized for our unit tests to give proper results.
-      // this->gui_window[0]->set_font( &truetype_font[0] );
+      // this->gui_window[0]->set_font( truetype_font[0] );
       // this->gui_window[0]->set_title( this->gui_window[0]->name() );
 
       // Layout managed coordinates; size coordinates become set as
@@ -273,8 +273,8 @@ class VBoxLayoutTest: public ::testing::Test
 
     // Font resources
 
-    BitmapFont bitmap_font[BITMAP_FONTS];
-    TrueTypeFont truetype_font[TRUETYPE_FONTS];
+    Font bitmap_font[BITMAP_FONTS];
+    Font truetype_font[TRUETYPE_FONTS];
 
     // GUI resources
 
@@ -300,11 +300,11 @@ TEST_F( VBoxLayoutTest, CoreAPI )
 {
   // Ensure that we do not have any active fonts -- these could throw off the
   // test results...
-  ASSERT_FALSE( this->gui_window[0]->font().get() );
-  ASSERT_FALSE( this->listbox0->font().get() );
-  ASSERT_FALSE( this->listbox1->font().get() );
-  ASSERT_FALSE( this->listbox2->font().get() );
-  ASSERT_FALSE( this->listbox3->font().get() );
+  ASSERT_FALSE( this->gui_window[0]->font().valid() );
+  ASSERT_FALSE( this->listbox0->font().valid() );
+  ASSERT_FALSE( this->listbox1->font().valid() );
+  ASSERT_FALSE( this->listbox2->font().valid() );
+  ASSERT_FALSE( this->listbox3->font().valid() );
 
   nom::UIVBoxLayout* layout = new nom::UIVBoxLayout();
 
@@ -387,11 +387,11 @@ TEST_F( VBoxLayoutTest, CoreLayoutAPI )
 {
   // Ensure that we do not have any active fonts -- these could throw off the
   // test results...
-  ASSERT_FALSE( this->gui_window[0]->font() );
-  ASSERT_FALSE( this->listbox0->font().get() );
-  ASSERT_FALSE( this->listbox1->font().get() );
-  ASSERT_FALSE( this->listbox2->font().get() );
-  ASSERT_FALSE( this->listbox3->font().get() );
+  ASSERT_FALSE( this->gui_window[0]->font().valid() );
+  ASSERT_FALSE( this->listbox0->font().valid() );
+  ASSERT_FALSE( this->listbox1->font().valid() );
+  ASSERT_FALSE( this->listbox2->font().valid() );
+  ASSERT_FALSE( this->listbox3->font().valid() );
 
   nom::UIVBoxLayout* layout = new nom::UIVBoxLayout();
 
@@ -444,13 +444,13 @@ TEST_F( VBoxLayoutTest, CoreLayoutAPI )
 /// \remarks Uses the bitmap font resource: VIII.png.
 TEST_F( VBoxLayoutTest, LayoutAPIUsingBitmapFont )
 {
-  this->gui_window[0]->set_font( &this->bitmap_font[0] );
+  this->gui_window[0]->set_font( this->bitmap_font[0] );
 
-  ASSERT_TRUE( this->gui_window[0]->font().get() );
-  ASSERT_TRUE( this->listbox0->font().get() );
-  ASSERT_TRUE( this->listbox1->font().get() );
-  ASSERT_TRUE( this->listbox2->font().get() );
-  ASSERT_TRUE( this->listbox3->font().get() );
+  ASSERT_TRUE( this->gui_window[0]->font().valid() );
+  ASSERT_TRUE( this->listbox0->font().valid() );
+  ASSERT_TRUE( this->listbox1->font().valid() );
+  ASSERT_TRUE( this->listbox2->font().valid() );
+  ASSERT_TRUE( this->listbox3->font().valid() );
 
   nom::UIItemContainer storage0 = nom::UIItemContainer();
   storage0.append( this->choice_selection[0] );
@@ -522,13 +522,13 @@ TEST_F( VBoxLayoutTest, LayoutAPIUsingBitmapFont )
 TEST_F( VBoxLayoutTest, LayoutAPIUsingArialFont )
 {
   // FIXME: ListBox has a hard-coded 12 point size for the font.
-  this->gui_window[0]->set_font( &this->truetype_font[0] ); // 14 pt size
+  this->gui_window[0]->set_font( this->truetype_font[0] ); // 14 pt size
 
-  ASSERT_TRUE( this->gui_window[0]->font().get() );
-  ASSERT_TRUE( this->listbox0->font().get() );
-  ASSERT_TRUE( this->listbox1->font().get() );
-  ASSERT_TRUE( this->listbox2->font().get() );
-  ASSERT_TRUE( this->listbox3->font().get() );
+  ASSERT_TRUE( this->gui_window[0]->font().valid() );
+  ASSERT_TRUE( this->listbox0->font().valid() );
+  ASSERT_TRUE( this->listbox1->font().valid() );
+  ASSERT_TRUE( this->listbox2->font().valid() );
+  ASSERT_TRUE( this->listbox3->font().valid() );
 
   nom::UIItemContainer storage0 = nom::UIItemContainer();
   storage0.append( this->choice_selection[0] );

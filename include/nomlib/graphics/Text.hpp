@@ -126,7 +126,7 @@ class Text: public Transformable
             const font_type& font,
             uint character_size = 14,
             enum Text::Alignment align = Text::Alignment::TopLeft,
-            const Color4i& text_color
+            const Color4i& text_color = Color4i::White
           );
 
     // Construct a Text, initializing it with a text string, an IFont derived
@@ -171,7 +171,7 @@ class Text: public Transformable
     /// Obtain validity of the Text object
     bool valid ( void ) const;
 
-    enum IFont::FontType font_type( void ) const;
+    // enum IFont::FontType font_type( void ) const;
 
     /// \brief Obtain the text width (in pixels) of the set text
     ///

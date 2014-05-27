@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/system/Event.hpp"
 #include "nomlib/graphics/shapes/Rectangle.hpp" // tool tip
-#include "nomlib/graphics/fonts/IFont.hpp"
+#include "nomlib/graphics/fonts/Font.hpp"
 #include "nomlib/graphics/Text.hpp"
 #include "nomlib/gui/UIEventHandler.hpp"
 #include "nomlib/gui/IDecorator.hpp"
@@ -99,7 +99,7 @@ class UIWidget: public UIEventHandler
     /// \brief Reserved for future use
     /*const IntRect&*/int padding( void ) const;
 
-    std::shared_ptr<IFont> font( void ) const;
+    const Font& font( void ) const;
 
     /// \brief Obtain the internal unique identifier for the object.
     uint32 id( void ) const;
@@ -200,12 +200,9 @@ class UIWidget: public UIEventHandler
     /// \note You'll want to call this method from a widget that is *not* a top-
     /// level window.
     ///
-    /// \todo The recursive functionality should perhaps be implemented in the
-    /// set_font( shared_ptr ) method helper?
-    ///
     /// \todo Provide some way of requesting that fonts do *NOT* propagate to
     /// children..?
-    void set_font( const IFont* font );
+    void set_font( const Font& font );
 
     // The default parameter 'inherit' is intended only as a
     // temporary workaround:
@@ -383,8 +380,6 @@ class UIWidget: public UIEventHandler
     /// \brief Ensure a unique identifier is created for the object instance.
     int64 generate_id( void ) const;
 
-    void set_font( const IFont::shared_ptr& font );
-
     /// \brief Ensure that the dimensions of the object are in a valid state.
     ///
     /// \param object IDrawable object that inherits from nom::Transformable.
@@ -414,7 +409,7 @@ class UIWidget: public UIEventHandler
     /*IntRect*/int padding_;
 
     /// \brief The font used by children of the widget object.
-    std::shared_ptr<IFont> font_;
+    Font font_;
 
     /// \brief The owning object member.
     UIWidget::unique_ptr parent_;

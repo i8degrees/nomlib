@@ -40,7 +40,7 @@ void create_font( const ResourceFile& res, Font& font )
 {
   if( res.type() == ResourceFile::Type::BitmapFont )
   {
-    font = Font( std::shared_ptr<IFont>( new BitmapFont() ) );
+    font = Font( IFont::shared_ptr( new BitmapFont() ) );
 
     // Do not make cloned copies of the font; cloning is only necessary for
     // fonts that do not need to share data, such as point size, which is not
@@ -49,7 +49,7 @@ void create_font( const ResourceFile& res, Font& font )
   }
   else if( res.type() == ResourceFile::Type::TrueTypeFont )
   {
-    font = Font( std::shared_ptr<IFont>( new TrueTypeFont() ) );
+    font = Font( IFont::shared_ptr( new TrueTypeFont() ) );
 
     // We need clones of the font, because otherwise we'd be sharing point size,
     // etc. when the same font is used in multiple objects.

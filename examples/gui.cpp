@@ -289,7 +289,7 @@ class App: public nom::SDLApp
 
       // TODO: consider leaving all font management to nom::Text class, AKA pass
       // nom::Text objects instead of strings.
-      this->gui_window[0]->set_font( &this->bitmap_font );
+      this->gui_window[0]->set_font( this->bitmap_font );
 
       this->gui_window[0]->set_title( this->gui_window[0]->name() );
 
@@ -300,7 +300,7 @@ class App: public nom::SDLApp
 
       // TODO: consider leaving all font management to nom::Text class, AKA pass
       // nom::Text objects instead of strings.
-      this->gui_window[1]->set_font( &this->truetype_font );
+      this->gui_window[1]->set_font( this->truetype_font );
 
       // Using the auto-generated name for the second window object.
       this->gui_window[1]->set_title( this->gui_window[1]->name() );
@@ -318,7 +318,7 @@ class App: public nom::SDLApp
 
       // TODO: consider leaving all font management to nom::Text class, AKA pass
       // nom::Text objects instead of strings.
-      this->gui_window[2]->set_font( &this->bitmap_small_font );
+      this->gui_window[2]->set_font( this->bitmap_small_font );
 
       // this->gui_window[2]->set_title( this->gui_window[2]->name() );
 
@@ -335,7 +335,7 @@ class App: public nom::SDLApp
 
       // TODO: consider leaving all font management to nom::Text class, AKA pass
       // nom::Text objects instead of strings.
-      this->gui_window[3]->set_font( &this->bitmap_small_font );
+      this->gui_window[3]->set_font( this->bitmap_small_font );
 
       // this->gui_window[3]->set_title( this->gui_window[3]->name() );
 
@@ -352,7 +352,7 @@ class App: public nom::SDLApp
 
       // TODO: consider leaving all font management to nom::Text class, AKA pass
       // nom::Text objects instead of strings.
-      this->gui_window[4]->set_font( &this->bitmap_small_font );
+      this->gui_window[4]->set_font( this->bitmap_small_font );
 
       // this->gui_window[4]->set_title( this->gui_window[4]->name() );
 
@@ -360,7 +360,7 @@ class App: public nom::SDLApp
       // going
       this->gui_window[5] = new nom::UIWidget( nullptr, -1, nom::Point2i( 175, 41 ), nom::Size2i( 350, 322 ) );
       this->gui_window[5]->set_name( "gui_window[5]" );
-      this->gui_window[5]->set_font( &truetype_font );
+      this->gui_window[5]->set_font( this->truetype_font );
       this->gui_window[5]->set_decorator( new nom::MinimalDecorator() );
 
       this->gui_window[5]->insert_child( this->create_button_ex0() );
@@ -500,7 +500,7 @@ class App: public nom::SDLApp
       this->button_ex0 = nullptr;
 
       this->button_ex0 = new nom::Button( this->gui_window[5], -1, pos, size );
-      this->button_ex0->set_font( &this->bitmap_font );
+      this->button_ex0->set_font( this->bitmap_font );
       this->button_ex0->set_name( "button_ex0 widget" );
       this->button_ex0->set_decorator( new nom::FinalFantasyDecorator() );
       // this->button_ex0->set_decorator( new nom::MinimalDecorator() );
@@ -533,7 +533,7 @@ class App: public nom::SDLApp
       this->button_ex1 = nullptr;
 
       this->button_ex1 = new nom::Button( this->gui_window[5], -1, pos, size );
-      this->button_ex1->set_font( &this->truetype_font );
+      this->button_ex1->set_font( this->truetype_font );
       this->button_ex1->set_name( "button_ex1 widget" );
 
       this->button_ex1->set_decorator( new nom::MinimalDecorator() );
@@ -579,7 +579,7 @@ class App: public nom::SDLApp
       // button = new nom::BitmapButton( this->gui_window[0], -1, pos, size, &this->button_bg[0] );
 
       this->button_ex2 = new nom::BitmapButton( this->gui_window[5], -1, pos, size, &this->button_bg[2] );
-      this->button_ex2->set_font( &this->truetype_font2 );
+      this->button_ex2->set_font( this->truetype_font2 );
 
       // Use the auto-generated name for this widget.
 
@@ -634,7 +634,7 @@ class App: public nom::SDLApp
 
       this->listbox_ex0 = new nom::ListBox( this->gui_window[0], -1, pos, size, storage );
       this->listbox_ex0->set_name( "listbox_ex0" );
-      // this->listbox_ex0->set_font( &this->truetype_font );
+      // this->listbox_ex0->set_font( this->truetype_font );
       this->listbox_ex0->set_decorator( new nom::MinimalDecorator() );
       this->listbox_ex0->set_selected_text_color( nom::Color4i::Gray );
 
@@ -672,7 +672,7 @@ class App: public nom::SDLApp
 
       // TODO: consider leaving all font management to nom::Text class, AKA pass
       // nom::Text objects instead of strings.
-      // window->set_font( &this->truetype_font );
+      // window->set_font( this->truetype_font );
 
       nom::ItemStrings choice_selection = { std::string( "item_0" ), std::string( "item_1" ), std::string( "item_2" ) };
 
@@ -723,7 +723,7 @@ class App: public nom::SDLApp
 
       // TODO: consider leaving all font management to nom::Text class, AKA pass
       // nom::Text objects instead of strings.
-      // window->set_font( &this->truetype_font );
+      // window->set_font( this->truetype_font );
 
       nom::ItemStrings choice_selection = { std::string( "item_0" ), std::string( "item_1" ), std::string( "item_2" ), std::string( "item_3" ) };
 
@@ -733,7 +733,7 @@ class App: public nom::SDLApp
       storage->set_selection( 1 );
 
       this->listbox_ex2 = new nom::ListBox( this->gui_window[0], 99, pos, size, storage );
-      this->listbox_ex2->set_font( &this->truetype_font );
+      this->listbox_ex2->set_font( this->truetype_font );
       this->listbox_ex2->set_name( "listbox_ex2" );
       this->listbox_ex2->set_decorator( new nom::MinimalDecorator() );
 
@@ -786,8 +786,8 @@ class App: public nom::SDLApp
       info_box->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
       info_box->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->item_on_selection( ev ); } ) );
 
-      info_box->set_title_label( nom::Text ( RESOURCE_INFO_BOX_TITLE_STRINGS[0], &this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] ) );
-      info_box->set_message_label( nom::Text ( RESOURCE_INFO_BOX_TEXT_STRINGS[0], &this->bitmap_font, 12, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] ) );
+      info_box->set_title_label( nom::Text ( RESOURCE_INFO_BOX_TITLE_STRINGS[0], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] ) );
+      info_box->set_message_label( nom::Text ( RESOURCE_INFO_BOX_TEXT_STRINGS[0], this->bitmap_font, 12, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] ) );
 
       // NOM_ASSERT( info_box->position() == pos );
       NOM_ASSERT( info_box->parent()->position() == this->gui_window[1]->position() );
@@ -818,8 +818,8 @@ class App: public nom::SDLApp
       info_box->set_decorator( new nom::FinalFantasyDecorator() );
       info_box->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
 
-      info_box->set_title_label( nom::Text ( RESOURCE_INFO_BOX_TITLE_STRINGS[1], &this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] ) );
-      info_box->set_message_label( nom::Text ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], &this->bitmap_font, 14, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] ) );
+      info_box->set_title_label( nom::Text ( RESOURCE_INFO_BOX_TITLE_STRINGS[1], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] ) );
+      info_box->set_message_label( nom::Text ( RESOURCE_INFO_BOX_TEXT_STRINGS[2], this->bitmap_font, 14, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] ) );
 
       // NOM_ASSERT( info_box->position() == pos );
       NOM_ASSERT( info_box->parent()->position() == this->gui_window[1]->position() );
@@ -877,16 +877,16 @@ class App: public nom::SDLApp
       // this->qbox_ex0->register_event_listener( nom::UIEvent::MOUSE_WHEEL, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->qbox_ex0_wheel_selection( ev ); } ) );
       // this->qbox_ex0->register_event_listener( nom::UIEvent::KEY_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->qbox_ex0_key_selection( ev ); } ) );
 
-      this->qbox_ex0->set_title_label( nom::Text( RESOURCE_INFO_BOX_TITLE_STRINGS[2], &this->bitmap_small_font, -1, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] ) );
-      this->qbox_ex0->set_message_label( nom::Text( RESOURCE_INFO_BOX_TEXT_STRINGS[1], &this->bitmap_font, -1, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[1] ) );
+      this->qbox_ex0->set_title_label( nom::Text( RESOURCE_INFO_BOX_TITLE_STRINGS[2], this->bitmap_small_font, -1, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] ) );
+      this->qbox_ex0->set_message_label( nom::Text( RESOURCE_INFO_BOX_TEXT_STRINGS[1], this->bitmap_font, -1, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[1] ) );
 
-      nom::Text yes_label( nom::Text( "Yes", &this->bitmap_font, -1, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] ) );
+      nom::Text yes_label( nom::Text( "Yes", this->bitmap_font, -1, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] ) );
 
       // FIXME (?):
       //
       // Appending a single space character onto "No" text label so that it
       // lines up with our "Yes" text label.
-      nom::Text no_label( nom::Text( "No ", &this->bitmap_font, -1, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] ) );
+      nom::Text no_label( nom::Text( "No ", this->bitmap_font, -1, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] ) );
 
       this->qbox_ex0->append_choice( yes_label );
       this->qbox_ex0->append_choice( no_label );
@@ -930,23 +930,23 @@ class App: public nom::SDLApp
 
       // Column 0 values
       std::vector<nom::DataViewItem<nom::IDrawable::raw_ptr>> values_0;
-      values_0.push_back( new nom::Text( "TEST_0", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "TEST_1", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "TEST_2", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "TEST_x", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "TEST_xx", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "VALUE_0", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "VALUE_1", &this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "TEST_0", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "TEST_1", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "TEST_2", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "TEST_x", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "TEST_xx", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "VALUE_0", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "VALUE_1", this->bitmap_font ) );
 
       // Column 1 values
       std::vector<nom::DataViewItem<nom::IDrawable::raw_ptr>> values_1;
-      values_1.push_back( new nom::Text( "Test_3", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "Test_4", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "Test_5", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "TEST_6", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "TEST_XXX", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "VALUE_2", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "value_3", &this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "Test_3", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "Test_4", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "Test_5", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "TEST_6", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "TEST_XXX", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "VALUE_2", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "value_3", this->bitmap_font ) );
 
       // FIXME:
       // dview->append_item( values_0 );
@@ -1009,35 +1009,35 @@ class App: public nom::SDLApp
 
       // Column 0 values
       std::vector<nom::DataViewItem<nom::IDrawable::raw_ptr>> values_0;
-      values_0.push_back( new nom::Text( "TEST_0", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "TEST_1", &this->truetype_font ) );
-      values_0.push_back( new nom::Text( "TEST_2", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "TEST_X", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "TEST_XX", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "VALUE_0", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "VALUE_1", &this->truetype_font ) );
+      values_0.push_back( new nom::Text( "TEST_0", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "TEST_1", this->truetype_font ) );
+      values_0.push_back( new nom::Text( "TEST_2", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "TEST_X", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "TEST_XX", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "VALUE_0", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "VALUE_1", this->truetype_font ) );
 
       // Column 1 values
       std::vector<nom::DataViewItem<nom::IDrawable::raw_ptr>> values_1;
-      values_1.push_back( new nom::Text( "TEST_3", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "TEST_4", &this->truetype_font ) );
-      values_1.push_back( new nom::Text( "TEST_5", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "TEST_6", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "TEST_XXX", &this->truetype_font ) );
-      values_1.push_back( new nom::Text( "VALUE_1", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "VALUE_2", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "VALUE_3", &this->truetype_font ) );
-      values_1.push_back( new nom::Text( "VALUE_4", &this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "TEST_3", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "TEST_4", this->truetype_font ) );
+      values_1.push_back( new nom::Text( "TEST_5", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "TEST_6", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "TEST_XXX", this->truetype_font ) );
+      values_1.push_back( new nom::Text( "VALUE_1", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "VALUE_2", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "VALUE_3", this->truetype_font ) );
+      values_1.push_back( new nom::Text( "VALUE_4", this->bitmap_font ) );
 
       // Column 2 values
       std::vector<nom::DataViewItem<nom::IDrawable::raw_ptr>> values_2;
-      values_2.push_back( new nom::Text( "1", &this->truetype_font ) );
-      values_2.push_back( new nom::Text( "1", &this->bitmap_font ) );
-      values_2.push_back( new nom::Text( "6", &this->bitmap_font ) );
-      values_2.push_back( new nom::Text( "3", &this->bitmap_font ) );
-      values_2.push_back( new nom::Text( "1", &this->bitmap_font ) );
-      values_2.push_back( new nom::Text( "4", &this->bitmap_font ) );
-      values_2.push_back( new nom::Text( "6", &this->truetype_font ) );
+      values_2.push_back( new nom::Text( "1", this->truetype_font ) );
+      values_2.push_back( new nom::Text( "1", this->bitmap_font ) );
+      values_2.push_back( new nom::Text( "6", this->bitmap_font ) );
+      values_2.push_back( new nom::Text( "3", this->bitmap_font ) );
+      values_2.push_back( new nom::Text( "1", this->bitmap_font ) );
+      values_2.push_back( new nom::Text( "4", this->bitmap_font ) );
+      values_2.push_back( new nom::Text( "6", this->truetype_font ) );
 
       dview = new nom::DataViewList( this->gui_window[3], -1, pos, size );
 
@@ -1117,23 +1117,23 @@ class App: public nom::SDLApp
 
       // Column 0 values
       std::vector<nom::DataViewItem<nom::IDrawable::raw_ptr>> values_0;
-      values_0.push_back( new nom::Text( "Test_0", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "Test_1", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "Test_2", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "Test_X", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "Test_XX", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "Value_0", &this->bitmap_font ) );
-      values_0.push_back( new nom::Text( "Value_1", &this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "Test_0", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "Test_1", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "Test_2", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "Test_X", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "Test_XX", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "Value_0", this->bitmap_font ) );
+      values_0.push_back( new nom::Text( "Value_1", this->bitmap_font ) );
 
       // Column 1 values
       std::vector<nom::DataViewItem<nom::IDrawable::raw_ptr>> values_1;
-      values_1.push_back( new nom::Text( "Test_10", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "Test_11", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "Test_12", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "Test_13", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "Test_14", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "Value_15", &this->bitmap_font ) );
-      values_1.push_back( new nom::Text( "VALUE_16", &this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "Test_10", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "Test_11", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "Test_12", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "Test_13", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "Test_14", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "Value_15", this->bitmap_font ) );
+      values_1.push_back( new nom::Text( "VALUE_16", this->bitmap_font ) );
 
       // Column 2 values
       std::vector<nom::DataViewItem<nom::IDrawable::raw_ptr>> values_2;
@@ -1193,8 +1193,8 @@ class App: public nom::SDLApp
       // within the update_items method.
       //
       // FIXME:
-      // dview->insert_item( 0, 0, new nom::Text( "VALUE_HAXXEDDDDDDD", &this->bitmap_font ) );
-      // dview->insert_item( 1, 5, new nom::Text( "VALUE_HAXXED", &this->bitmap_font ) );
+      // dview->insert_item( 0, 0, new nom::Text( "VALUE_HAXXEDDDDDDD", this->bitmap_font ) );
+      // dview->insert_item( 1, 5, new nom::Text( "VALUE_HAXXED", this->bitmap_font ) );
 
       // NOM_ASSERT( dview->position() == pos );
       NOM_ASSERT( dview->parent()->position() == this->gui_window[4]->position() );
@@ -1366,7 +1366,7 @@ class App: public nom::SDLApp
       // nom::Text label;
 
       // TODO:
-      // label = nom::Text( "bitmap_button", &this->bitmap_font, 14, nom::Text::Alignment::MiddleCenter );
+      // label = nom::Text( "bitmap_button", this->bitmap_font, 14, nom::Text::Alignment::MiddleCenter );
       // label.set_color( nom::Color4i::Red );
       // button->set_label( label );
     }
@@ -1384,7 +1384,7 @@ class App: public nom::SDLApp
       // NOM_DUMP( ev.text() );
 
       // TODO:
-      // label = nom::Text( "bitmap_button", &this->bitmap_font, 14, nom::Text::Alignment::MiddleCenter );
+      // label = nom::Text( "bitmap_button", this->bitmap_font, 14, nom::Text::Alignment::MiddleCenter );
       // label.set_color( nom::Color4i::White );
       // button->set_label( label );
     }
@@ -1546,10 +1546,10 @@ class App: public nom::SDLApp
     nom::Texture button_bg[3];
 
     // Our resources for our UI widgets
-    nom::BitmapFont bitmap_font;
-    nom::BitmapFont bitmap_small_font;
-    nom::TrueTypeFont truetype_font;
-    nom::TrueTypeFont truetype_font2;
+    nom::Font bitmap_font;
+    nom::Font bitmap_small_font;
+    nom::Font truetype_font;
+    nom::Font truetype_font2;
     nom::SpriteBatch menu_elements;
 
     nom::Point2i gui_window_pos[GUI_WINDOWS];

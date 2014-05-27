@@ -194,12 +194,12 @@ bool Text::valid ( void ) const
   return this->font().valid();
 }
 
-enum IFont::FontType Text::font_type( void ) const
-{
-  if ( this->valid() ) return this->font()->type();
+// enum IFont::FontType Text::font_type( void ) const
+// {
+//   if ( this->valid() ) return this->font()->type();
 
-  return IFont::FontType::NotDefined;
-}
+//   return IFont::FontType::NotDefined;
+// }
 
 sint Text::text_width ( const std::string& text_string ) const
 {
@@ -398,7 +398,7 @@ void Text::set_font( Text::font_type* font )
 
 void Text::set_text ( const std::string& text )
 {
-  if( this->font_ == nullptr || this->font_->valid() == false )
+  if( this->font_.valid() == false )
   {
     NOM_LOG_ERR( NOM, "Could not set text string; the font resource is invalid." );
     return;
@@ -653,7 +653,7 @@ void Text::update ( void )
 
     case Text::Style::Bold:
     {
-      if ( this->font_type() == IFont::FontType::BitmapFont )
+      if ( this->font()->type() == IFont::FontType::BitmapFont )
       {
         NOM_LOG_ERR ( NOM, "nom::BitmapFont does not support nom::Text::Style::Bold." );
         break;

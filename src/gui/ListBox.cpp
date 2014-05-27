@@ -131,7 +131,7 @@ const Size2i ListBox::size_hint( void ) const
 
   // We do not have any text labels stored, so assume a widget with a height
   // large enough for one item.
-  if( this->font() != nullptr )
+  if( this->font().valid() == true )
   {
 // NOM_DUMP( this->font()->newline( point_size ) );
 
@@ -615,7 +615,7 @@ void ListBox::update( void )
   // FIXME:
   //
   // Sanity check; we'd crash here otherwise!
-  if( this->font() == nullptr )
+  if( this->font().valid() == false )
   {
     // NOM_LOG_ERR( NOM, "Font resource is NULL -- skipping update of object!" );
     return;
@@ -628,7 +628,7 @@ void ListBox::update( void )
 
   for( auto itr = labels.begin(); itr != labels.end(); ++itr )
   {
-    label = Text::raw_ptr( new Text( *itr, this->font().get() ) );
+    label = Text::raw_ptr( new Text( *itr, this->font() ) );
 
     // FIXME: Automate the calculation of the text label size.
     //

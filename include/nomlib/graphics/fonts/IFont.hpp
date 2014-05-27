@@ -69,7 +69,7 @@ class IFont
       // NOM_LOG_TRACE( NOM );
     }
 
-    virtual IFont::RawPtr clone( void ) const = 0;
+    virtual IFont::raw_ptr clone( void ) const = 0;
     virtual bool valid ( void ) const = 0;
 
     virtual const Image& image ( uint32 ) const = 0;
@@ -87,8 +87,6 @@ class IFont
     virtual bool set_outline( int ) = 0;
 
     virtual bool load( const std::string& filename ) = 0;
-
-    virtual bool set_point_size ( sint ) = 0;
 };
 
 } // namespace nom

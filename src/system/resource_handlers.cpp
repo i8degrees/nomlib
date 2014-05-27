@@ -38,7 +38,7 @@ namespace nom {
 
 void create_font( const ResourceFile& res, Font& font )
 {
-  if( res.type() == RESOURCE_TYPE::BITMAP_FONT )
+  if( res.type() == ResourceFile::Type::BitmapFont )
   {
     font = Font( std::shared_ptr<IFont>( new BitmapFont() ) );
 
@@ -47,7 +47,7 @@ void create_font( const ResourceFile& res, Font& font )
     // yet implemented.
     font.set_sharable( false );
   }
-  else if( res.type() == RESOURCE_TYPE::TRUETYPE_FONT )
+  else if( res.type() == ResourceFile::Type::TrueTypeFont )
   {
     font = Font( std::shared_ptr<IFont>( new TrueTypeFont() ) );
 

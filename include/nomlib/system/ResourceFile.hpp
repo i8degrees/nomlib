@@ -35,18 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 
-
 namespace nom {
-
-enum RESOURCE_TYPE
-{
-  INVALID = 0,
-  GRAPHIC,
-  MOVIE,
-  AUDIO,
-  TRUETYPE_FONT,
-  BITMAP_FONT
-};
 
 /// \brief Descriptor of a file-based resource
 ///
@@ -57,6 +46,16 @@ class ResourceFile
     typedef ResourceFile self_type;
 
     static const ResourceFile null;
+
+    enum Type
+    {
+      Invalid = 0,
+      Graphic,
+      Movie,
+      Audio,
+      TrueTypeFont,
+      BitmapFont
+    };
 
     /// \brief Default constructor; initialize resource to an invalid state.
     ResourceFile( void );
@@ -74,7 +73,7 @@ class ResourceFile
     ResourceFile( const std::string& name, const std::string& file_path );
 
     /// \brief Construct a complete resource.
-    ResourceFile( const std::string& name, const std::string& file_path, RESOURCE_TYPE type );
+    ResourceFile( const std::string& name, const std::string& file_path, ResourceFile::Type type );
 
     /// \brief Lesser-than comparison method overload.
     ///
@@ -102,7 +101,7 @@ class ResourceFile
     /// \brief Get the resource's type.
     ///
     /// \see nom::RESOURCE_TYPE enumeration.
-    RESOURCE_TYPE type( void ) const;
+    ResourceFile::Type type( void ) const;
 
     bool loaded( void ) const;
 
@@ -113,7 +112,7 @@ class ResourceFile
     void set_path( const std::string& file_path );
 
     /// \brief Set the resource's type.
-    void set_type( RESOURCE_TYPE type );
+    void set_type( ResourceFile::Type type );
 
     void set_loaded( bool state );
 
@@ -125,7 +124,7 @@ class ResourceFile
     std::string path_;
 
     /// \brief The description of the resource.
-    RESOURCE_TYPE type_;
+    ResourceFile::Type type_;
 
   public:
     /// \brief Initialized resource object state.

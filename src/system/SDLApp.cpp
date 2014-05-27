@@ -250,21 +250,21 @@ bool SDLApp::initialize( uint32 flags )
       Path sys( "/System/Library/Fonts" );
       Path lib( "/Library/Fonts" );
 
-      this->fonts().append_resource( ResourceFile( "Arial", lib.prepend("Arial.ttf"), RESOURCE_TYPE::TRUETYPE_FONT ) );
-      this->fonts().append_resource( ResourceFile( "LucidaGrande", sys.prepend("LucidaGrande.ttc"), RESOURCE_TYPE::TRUETYPE_FONT ) );
-      this->fonts().append_resource( ResourceFile( "MinionPro", lib.prepend("MinionPro-Regular.otf"), RESOURCE_TYPE::TRUETYPE_FONT ) );
+      this->fonts().append_resource( ResourceFile( "Arial", lib.prepend("Arial.ttf"), ResourceFile::Type::TrueTypeFont ) );
+      this->fonts().append_resource( ResourceFile( "LucidaGrande", sys.prepend("LucidaGrande.ttc"), ResourceFile::Type::TrueTypeFont ) );
+      this->fonts().append_resource( ResourceFile( "MinionPro", lib.prepend("MinionPro-Regular.otf"), ResourceFile::Type::TrueTypeFont ) );
     #elif defined( NOM_PLATFORM_WINDOWS )
       Path sys( "C:/\\Windows/\\Fonts" );
-      this->fonts().append_resource( ResourceFile( "Arial", sys.prepend("Arial.ttf"), RESOURCE_TYPE::TRUETYPE_FONT ) );
-      this->fonts().append_resource( ResourceFile( "TimesNewRoman", sys.prepend("TimesNewRoman.ttf"), RESOURCE_TYPE::TRUETYPE_FONT ) );
+      this->fonts().append_resource( ResourceFile( "Arial", sys.prepend("Arial.ttf"), ResourceFile::Type::TrueTypeFont ) );
+      this->fonts().append_resource( ResourceFile( "TimesNewRoman", sys.prepend("TimesNewRoman.ttf"), ResourceFile::Type::TrueTypeFont ) );
     #endif
 
     p = Path( fp.resource_path( "org.i8degrees.nomlib" ) + p.native() + "fonts" );
 
-    this->fonts().append_resource( ResourceFile( "LiberationSans-Regular", p.prepend("LiberationSans-Regular.ttf"), RESOURCE_TYPE::TRUETYPE_FONT ) );
-    this->fonts().append_resource( ResourceFile( "LiberationSerif-Regular", p.prepend("LiberationSerif-Regular.ttf"), RESOURCE_TYPE::TRUETYPE_FONT ) );
-    this->fonts().append_resource( ResourceFile( "VIII", p.prepend("VIII.png"), RESOURCE_TYPE::BITMAP_FONT ) );
-    this->fonts().append_resource( ResourceFile( "VIII_small", p.prepend("VIII_small.png"), RESOURCE_TYPE::BITMAP_FONT ) );
+    this->fonts().append_resource( ResourceFile( "LiberationSans-Regular", p.prepend("LiberationSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
+    this->fonts().append_resource( ResourceFile( "LiberationSerif-Regular", p.prepend("LiberationSerif-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
+    this->fonts().append_resource( ResourceFile( "VIII", p.prepend("VIII.png"), ResourceFile::Type::BitmapFont ) );
+    this->fonts().append_resource( ResourceFile( "VIII_small", p.prepend("VIII_small.png"), ResourceFile::Type::BitmapFont ) );
   }
 
   return true;

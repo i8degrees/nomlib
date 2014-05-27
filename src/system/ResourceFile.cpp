@@ -40,7 +40,7 @@ ResourceFile::ResourceFile( void )
 {
   // NOM_LOG_TRACE( NOM );
 
-  this->set_type( RESOURCE_TYPE::INVALID );
+  this->set_type( ResourceFile::Type::Invalid );
   this->set_loaded( false );
 }
 
@@ -54,7 +54,7 @@ ResourceFile::ResourceFile( const std::string& name )
   Path p;
 
   this->set_name( name );
-  this->set_type( RESOURCE_TYPE::INVALID );
+  this->set_type( ResourceFile::Type::Invalid );
   this->set_loaded( false );
 }
 
@@ -62,11 +62,11 @@ ResourceFile::ResourceFile( const std::string& name, const std::string& file_pat
 {
   this->set_name( name );
   this->set_path( file_path );
-  this->set_type( RESOURCE_TYPE::INVALID );
+  this->set_type( ResourceFile::Type::Invalid );
   this->set_loaded( false );
 }
 
-ResourceFile::ResourceFile( const std::string& name, const std::string& file_path, RESOURCE_TYPE type )
+ResourceFile::ResourceFile( const std::string& name, const std::string& file_path, ResourceFile::Type type )
 {
   this->set_name( name );
   this->set_path( file_path );
@@ -110,7 +110,7 @@ const std::string& ResourceFile::path( void ) const
   return this->path_;
 }
 
-RESOURCE_TYPE ResourceFile::type( void ) const
+ResourceFile::Type ResourceFile::type( void ) const
 {
   return this->type_;
 }
@@ -130,7 +130,7 @@ void ResourceFile::set_path( const std::string& file_path )
   this->path_ = file_path;
 }
 
-void ResourceFile::set_type( RESOURCE_TYPE type )
+void ResourceFile::set_type( ResourceFile::Type type )
 {
   this->type_ = type;
 }

@@ -37,16 +37,12 @@ Text::Text( void ) :
   style_ ( Text::Style::Regular ),
   alignment_ ( Text::Alignment::TopLeft )
 {
-  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
-    NOM_LOG_TRACE( NOM );
-  #endif
+  // NOM_LOG_TRACE( NOM );
 }
 
 Text::~Text( void )
 {
-  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
-    NOM_LOG_TRACE( NOM );
-  #endif
+  // NOM_LOG_TRACE( NOM );
 }
 
 Text::Text ( const self_type& copy ) :
@@ -60,9 +56,7 @@ Text::Text ( const self_type& copy ) :
   alignment_ { copy.alignment() },
   features_{ copy.features() }
 {
-  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
-    NOM_LOG_TRACE( NOM );
-  #endif
+  // NOM_LOG_TRACE( NOM );
 
   // Set the overall size of this text label to the width & height of the text,
   // with consideration to the specific font in use.
@@ -104,7 +98,7 @@ Text::Text  (
   text_size_( character_size ),
   style_( Text::Style::Regular )
 {
-  NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE( NOM );
 
   this->set_font( font );
   this->set_color( text_color );
@@ -123,9 +117,7 @@ Text::Text  (
 //   color_ ( Color4i::White ),
 //   style_ ( Text::Style::Regular )
 // {
-//   #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
-//     NOM_LOG_TRACE( NOM );
-//   #endif
+//   NOM_LOG_TRACE( NOM );
 
 //   this->set_font( nullptr );
 //   this->set_color( Color4i::White );
@@ -150,9 +142,7 @@ Text::Text  (
 //   text_size_ ( character_size ),
 //   style_ ( Text::Style::Regular )
 // {
-//   #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
-//     NOM_LOG_TRACE( NOM );
-//   #endif
+     // NOM_LOG_TRACE( NOM );
 
 //   this->set_font( font );
 
@@ -348,10 +338,6 @@ void Text::set_font( const Text::font_type& font )
 
 // void Text::set_font( const IFont::shared_ptr& font )
 // {
-//   #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
-//     // NOM_LOG_TRACE( NOM );
-//   #endif
-
 //   this->font_ = font->clone();
 
 //   this->set_text_size( this->text_size() );
@@ -359,6 +345,8 @@ void Text::set_font( const Text::font_type& font )
 
 void Text::set_font( Text::font_type* font )
 {
+  // NOM_LOG_TRACE( NOM );
+
   if( font != nullptr && font->valid() )
   {
     this->font_ = font;
@@ -373,9 +361,7 @@ void Text::set_font( Text::font_type* font )
 
 // void Text::set_font( const IFont::raw_ptr font )
 // {
-//   #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
 //     // NOM_LOG_TRACE( NOM );
-//   #endif
 
 //   if( font != nullptr )
 //   {

@@ -37,18 +37,14 @@ TrueTypeFont::TrueTypeFont ( void ) :
   point_size_ ( 14 ),   // Terrible Eyesight (TM)
   hinting_( TTF_HINTING_NONE )
 {
-  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
-    NOM_LOG_TRACE( NOM );
-  #endif
+  // NOM_LOG_TRACE( NOM );
 
   // TTF_Init is done in the nom::init_third_party function
 }
 
 TrueTypeFont::~TrueTypeFont ( void )
 {
-  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
-    NOM_LOG_TRACE( NOM );
-  #endif
+  // NOM_LOG_TRACE( NOM );
 
   // Workaround hack to get SDL2_ttf to shutdown properly without crashing when
   // ran within nom::GameStates
@@ -66,7 +62,7 @@ TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy ) :
   point_size_ { copy.point_size() },
   hinting_{ copy.hinting() }
 {
-  NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE( NOM );
 }
 
 IFont::raw_ptr TrueTypeFont::clone( void ) const

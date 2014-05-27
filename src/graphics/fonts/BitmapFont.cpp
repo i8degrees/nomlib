@@ -40,16 +40,12 @@ BitmapFont::BitmapFont ( void ) :
   sheet_width_ ( 16 ),
   sheet_height_ ( 16 )
 {
-  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
-    NOM_LOG_TRACE( NOM );
-  #endif
+  // NOM_LOG_TRACE( NOM );
 }
 
 BitmapFont::~BitmapFont ( void )
 {
-  #if ! defined( NOM_DISABLE_GFX_LOG_TRACE )
-    NOM_LOG_TRACE( NOM );
-  #endif
+  // NOM_LOG_TRACE( NOM );
 }
 
 BitmapFont::BitmapFont ( const BitmapFont& copy ) :
@@ -59,7 +55,7 @@ BitmapFont::BitmapFont ( const BitmapFont& copy ) :
   pages_ { copy.pages() },
   metrics_ { copy.metrics() }
 {
-  NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE( NOM );
 }
 
 IFont::raw_ptr BitmapFont::clone( void ) const

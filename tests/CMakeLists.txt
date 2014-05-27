@@ -162,18 +162,18 @@ if( NOM_BUILD_TEMPLATES_UNIT )
   # Resources/SharedSupport/UnitTestTemplate.cpp
 
   add_executable  (
-                    UnitTestTemplate
+                    Template
                     "${PROJECT_SOURCE_DIR}/Resources/SharedSupport/UnitTestTemplate.cpp"
                   )
 
-  target_link_libraries ( UnitTestTemplate
+  target_link_libraries ( Template
                           ${GTEST_BOTH_LIBRARIES}
                           ${PROJECT_NAME} # nomlib
                         )
 
   GTEST_ADD_TESTS (
                     Template
-                    "TemplateTestDesc"
+                    "Template"
                     "${PROJECT_SOURCE_DIR}/Resources/SharedSupport/UnitTestTemplate.cpp"
                   )
 

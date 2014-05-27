@@ -212,4 +212,18 @@ if ( PLATFORM_WINDOWS )
             "${TESTS_DEPS_INSTALL_PEFIX}"
             FILES_MATCHING PATTERN "*.dll"
           )
+
+  if( NOM_BUILD_SYSTEM_TESTS )
+
+    # FontCacheTest unit test
+    install (
+              DIRECTORY
+              "${NOMLIB_FONTS}" # Resources/fonts
+              DESTINATION
+              "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
+              PATTERN ".*" EXCLUDE # Just say no to dotfiles
+            )
+
+  endif( NOM_BUILD_SYSTEM_TESTS )
+
 endif ( PLATFORM_WINDOWS )

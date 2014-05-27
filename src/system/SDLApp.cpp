@@ -254,9 +254,9 @@ bool SDLApp::initialize( uint32 flags )
       this->fonts().append_resource( ResourceFile( "LucidaGrande", sys.prepend("LucidaGrande.ttc"), ResourceFile::Type::TrueTypeFont ) );
       this->fonts().append_resource( ResourceFile( "MinionPro", lib.prepend("MinionPro-Regular.otf"), ResourceFile::Type::TrueTypeFont ) );
     #elif defined( NOM_PLATFORM_WINDOWS )
-      Path sys( "C:/\\Windows/\\Fonts" );
+      Path sys( "C:\\Windows\\Fonts" );
       this->fonts().append_resource( ResourceFile( "Arial", sys.prepend("Arial.ttf"), ResourceFile::Type::TrueTypeFont ) );
-      this->fonts().append_resource( ResourceFile( "TimesNewRoman", sys.prepend("TimesNewRoman.ttf"), ResourceFile::Type::TrueTypeFont ) );
+      this->fonts().append_resource( ResourceFile( "TimesNewRoman", sys.prepend("times.ttf"), ResourceFile::Type::TrueTypeFont ) );
     #endif
 
     p = Path( fp.resource_path( "org.i8degrees.nomlib" ) + p.native() + "fonts" );

@@ -65,7 +65,7 @@ TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy ) :
   NOM_LOG_TRACE( NOM );
 }
 
-IFont::RawPtr TrueTypeFont::clone( void ) const
+IFont::raw_ptr TrueTypeFont::clone( void ) const
 {
   return new TrueTypeFont( *this );
 }

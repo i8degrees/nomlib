@@ -58,7 +58,7 @@ BitmapFont::BitmapFont ( const BitmapFont& copy ) :
   NOM_LOG_TRACE( NOM );
 }
 
-IFont::RawPtr BitmapFont::clone( void ) const
+IFont::raw_ptr BitmapFont::clone( void ) const
 {
   return new BitmapFont( *this );
 }

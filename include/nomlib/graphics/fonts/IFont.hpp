@@ -45,8 +45,8 @@ class IFont
   public:
     typedef IFont self_type;
 
-    typedef self_type* RawPtr;
-    typedef std::shared_ptr<self_type> SharedPtr;
+    typedef self_type* raw_ptr;
+    typedef std::shared_ptr<self_type> shared_ptr;
 
     enum FontType
     {
@@ -65,7 +65,7 @@ class IFont
       // NOM_LOG_TRACE( NOM );
     }
 
-    virtual IFont::RawPtr clone( void ) const = 0;
+    virtual IFont::raw_ptr clone( void ) const = 0;
     virtual bool valid ( void ) const = 0;
 
     virtual const Image& image ( uint32 ) const = 0;

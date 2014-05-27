@@ -68,7 +68,7 @@ class BitmapFont: public IFont
     BitmapFont ( const BitmapFont& copy );
 
     /// \brief Construct a clone of the existing instance
-    IFont::RawPtr clone( void ) const;
+    IFont::raw_ptr clone( void ) const;
 
     /// \brief Validity check
     bool valid ( void ) const;

@@ -77,7 +77,7 @@ class TrueTypeFont: public IFont
     TrueTypeFont ( const TrueTypeFont& copy );
 
     /// \brief Construct a clone of the existing instance
-    IFont::RawPtr clone( void ) const;
+    IFont::raw_ptr clone( void ) const;
 
     /// \brief Validity check
     bool valid ( void ) const;

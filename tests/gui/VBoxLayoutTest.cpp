@@ -375,7 +375,7 @@ TEST_F( VBoxLayoutTest, CoreAPI )
   EXPECT_EQ( -1, layout->find_widget( this->listbox0 ) );
 
   // Default spacing between items
-  EXPECT_EQ( 10, layout->spacing() );
+  EXPECT_EQ( 1, layout->spacing() );
 
   // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 
@@ -423,7 +423,7 @@ TEST_F( VBoxLayoutTest, CoreLayoutAPI )
   // Widget dimensions + ( layout items count * layout spacing )
   EXPECT_EQ( Size2i( 50, 88 ), layout->minimum_size() );
 
-  EXPECT_EQ( 10, layout->spacing() );
+  EXPECT_EQ( 1, layout->spacing() );
 
   layout->set_alignment( Anchor::TopLeft );
   EXPECT_EQ( Anchor::TopLeft, layout->alignment() );
@@ -438,7 +438,7 @@ TEST_F( VBoxLayoutTest, CoreLayoutAPI )
     EXPECT_EQ( Anchor::TopLeft, i->alignment() );
   }
 
-  EXPECT_EQ( 10, layout->spacing() );
+  EXPECT_EQ( 1, layout->spacing() );
 
   // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -501,7 +501,7 @@ TEST_F( VBoxLayoutTest, LayoutAPIUsingBitmapFont )
   // Widget dimensions + ( layout items count * layout spacing )
   EXPECT_EQ( Size2i( 50, 88 ), layout->minimum_size() );
 
-  EXPECT_EQ( 10, layout->spacing() );
+  EXPECT_EQ( 1, layout->spacing() );
 
   layout->set_alignment( Anchor::TopLeft );
   EXPECT_EQ( Anchor::TopLeft, layout->alignment() );
@@ -516,7 +516,7 @@ TEST_F( VBoxLayoutTest, LayoutAPIUsingBitmapFont )
     EXPECT_EQ( Anchor::TopLeft, i->alignment() );
   }
 
-  EXPECT_EQ( 10, layout->spacing() );
+  EXPECT_EQ( 1, layout->spacing() );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -579,7 +579,7 @@ TEST_F( VBoxLayoutTest, LayoutAPIUsingArialFont )
   // Widget dimensions + ( layout items count * layout spacing )
   EXPECT_EQ( Size2i( 50, 88 ), layout->minimum_size() );
 
-  EXPECT_EQ( 10, layout->spacing() );
+  EXPECT_EQ( 1, layout->spacing() );
 
   layout->set_alignment( Anchor::TopLeft );
   EXPECT_EQ( Anchor::TopLeft, layout->alignment() );
@@ -594,7 +594,7 @@ TEST_F( VBoxLayoutTest, LayoutAPIUsingArialFont )
     EXPECT_EQ( Anchor::TopLeft, i->alignment() );
   }
 
-  EXPECT_EQ( 10, layout->spacing() );
+  EXPECT_EQ( 1, layout->spacing() );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }

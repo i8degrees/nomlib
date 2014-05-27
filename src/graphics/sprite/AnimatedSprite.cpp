@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/sprite/AnimatedSprite.hpp"
 
+// Private headers (third-party libs)
+#include "SDL.h"
+
 namespace nom {
 
 void AnimatedSprite::initialize ( void )

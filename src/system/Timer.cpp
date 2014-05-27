@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/Timer.hpp"
 
+// Private headers (third-party libs)
+#include "SDL.h"
+
 namespace nom {
 
 Timer::Timer ( void )
@@ -131,6 +134,5 @@ uint32 Timer::seconds ( float milliseconds ) const
 {
   return static_cast<uint32> ( milliseconds * 1000.f );
 }
-
 
 } // namespace nom

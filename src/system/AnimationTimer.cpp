@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/AnimationTimer.hpp"
 
+// Private headers (third-party libs)
+#include "SDL.h"
+
 namespace nom {
 
 AnimationTimer::AnimationTimer ( void )
@@ -107,6 +110,5 @@ void AnimationTimer::setFrameRate ( uint32 rate )
 {
   this->frame_rate = rate;
 }
-
 
 } // namespace nom

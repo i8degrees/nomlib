@@ -30,6 +30,8 @@ const std::string RESOURCE_TRUETYPE_FONT[4] = {
 
 /// \note The resources and variables used derived from examples/gui.cpp,
 /// App::create_listbox_ex0.
+///
+/// \fixme This test is failing on WindowsOS (invalid renderer?).
 class VBoxLayoutTest: public ::testing::Test
 {
   public:

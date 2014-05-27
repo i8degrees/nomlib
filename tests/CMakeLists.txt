@@ -32,7 +32,6 @@ set( NOM_BUILD_GUI_UI_EVENT_DISPATCHER_TESTS off )
 set( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS on )
 set( NOM_BUILD_GUI_CUSTOM_UI_LAYOUT_TESTS off )
 
-
 # Path under Windows should resolve to: build/tests/Debug
 set ( TESTS_DEPS_INSTALL_PEFIX
       "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}"
@@ -356,17 +355,16 @@ if ( PLATFORM_WINDOWS )
             FILES_MATCHING PATTERN "*.dll"
           )
 
-  if( NOM_BUILD_SYSTEM_TESTS )
+  if( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS )
 
-    # FontCacheTest unit test
-    install (
-              DIRECTORY
-              "${NOMLIB_FONTS}" # Resources/fonts
+    # VBoxLayoutTest
+    install ( DIRECTORY
+              "${NOM_TESTS_RESOURCES_DIR}/gui"
               DESTINATION
               "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
-              PATTERN ".*" EXCLUDE # Just say no to dotfiles
+              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
             )
 
-  endif( NOM_BUILD_SYSTEM_TESTS )
+  endif( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS )
 
 endif ( PLATFORM_WINDOWS )

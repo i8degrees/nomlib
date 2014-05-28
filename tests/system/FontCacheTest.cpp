@@ -26,7 +26,9 @@ class FontCacheTest: public ::testing::Test
   protected:
     Path p;
     File fp;
-    ResourceCache<IFont::shared_ptr> fonts_;
+
+    // ResourceCache<IFont::shared_ptr> fonts_;
+    ResourceCache<Font> fonts_;
 };
 
 /// \fixme This test is failing on WindowsOS (Unknown file error: SEH exception).

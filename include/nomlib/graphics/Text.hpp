@@ -219,14 +219,6 @@ class Text: public Transformable
     /// \note Used for ResourceCache::load_resource.
     void set_font( Text::font_type* font );
 
-    // \brief Set a new font, deriving from an nom::IFont derived object.
-    // void set_font( const IFont& font );
-
-    // \brief Set a new font from an existing pointer deriving from IFont.
-    //
-    // void set_font( const IFont::raw_ptr font );
-    // void set_font( const IFont::shared_ptr& font );
-
     /// Set new text
     void set_text ( const std::string& text );
 

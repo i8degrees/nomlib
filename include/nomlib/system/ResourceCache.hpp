@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <map>
 #include <memory>
+#include <functional>
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/File.hpp"
@@ -59,10 +60,13 @@ class ResourceCache
       // NOM_LOG_TRACE( NOM );
     }
 
-    /// \brief Destructor.
+    /// \brief Destructor -- free all of the stored resources.
     ~ResourceCache( void )
     {
       // NOM_LOG_TRACE( NOM );
+
+      // Goodbye cruel world!
+      this->resources_.clear();
     }
 
     /// \brief Get the total number of stored resources.
@@ -112,7 +116,7 @@ class ResourceCache
       // Duplicate resource entry; reject
       if( itr != this->resources_.end() )
       {
-        NOM_LOG_ERR( NOM, "Could not add resource: " + res.name() + " already exists." );
+        // NOM_LOG_ERR( NOM, "Could not add resource: " + res.name() + " already exists." );
         return false;
       }
 

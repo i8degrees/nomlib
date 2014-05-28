@@ -37,8 +37,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/Timer.hpp"
 #include "nomlib/system/StateMachine.hpp"
 #include "nomlib/system/Event.hpp"
-#include "nomlib/system/ResourceCache.hpp"
-#include "nomlib/system/resource_types.hpp"
 
 namespace nom {
 
@@ -157,12 +155,6 @@ class SDLApp: public EventHandler
     virtual void pop_state ( IState::UniquePtr state, void_ptr data = nullptr );
     virtual void pop_state ( void_ptr data = nullptr );
 
-    /// \brief Get the cache of available fonts.
-    ///
-    /// \remarks The available fonts are determined at run-time within the
-    /// initialization of the class.
-    FontCache& fonts( void );
-
   protected:
     /// \brief State machine manager.
     StateMachine states;
@@ -180,10 +172,6 @@ class SDLApp: public EventHandler
 
     /// \brief Global application timer.
     Timer app_timer_;
-
-    /// \note A nom::RenderWindow must be initialized before the resource
-    /// loading method call can be used -- nom::FontCache::load_resource.
-    FontCache fonts_;
 };
 
 } // namespace nom

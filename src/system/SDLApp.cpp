@@ -32,10 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // #include "SDL.h"
 
 // Private headers
-#include "nomlib/system/Path.hpp"
-#include "nomlib/system/File.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
-#include "nomlib/system/resource_handlers.hpp"
+#include "nomlib/system/PlatformSettings.hpp" // System fonts initialization
 
 namespace nom {
 
@@ -208,18 +206,10 @@ void SDLApp::pop_state ( void_ptr data )
   this->states.pop_state( data );
 }
 
-FontCache& SDLApp::fonts( void )
-{
-  return this->fonts_;
-}
-
 // Private scope
 
 bool SDLApp::initialize( uint32 flags )
 {
-  Path p;
-  File fp;
-
   this->app_timer_.start();
   this->set_app_state( true );
   this->set_show_fps( true );
@@ -246,27 +236,13 @@ bool SDLApp::initialize( uint32 flags )
 
   if( flags & INIT_ENGINE_FONTS )
   {
-    this->fonts().set_resource_handler( [&] ( const ResourceFile& res, Font& font ) { create_font( res, font ); } );
+    // Create a resource cache for letting either SDLApp or the end-user add
+    // fonts for ease of access.
+    SystemFonts::initialize();
 
-    #if defined( NOM_PLATFORM_OSX )
-      Path sys( "/System/Library/Fonts" );
-      Path lib( "/Library/Fonts" );
-
-      this->fonts().append_resource( ResourceFile( "Arial", lib.prepend("Arial.ttf"), ResourceFile::Type::TrueTypeFont ) );
-      this->fonts().append_resource( ResourceFile( "LucidaGrande", sys.prepend("LucidaGrande.ttc"), ResourceFile::Type::TrueTypeFont ) );
-      this->fonts().append_resource( ResourceFile( "MinionPro", lib.prepend("MinionPro-Regular.otf"), ResourceFile::Type::TrueTypeFont ) );
-    #elif defined( NOM_PLATFORM_WINDOWS )
-      Path sys( "C:\\Windows\\Fonts" );
-      this->fonts().append_resource( ResourceFile( "Arial", sys.prepend("Arial.ttf"), ResourceFile::Type::TrueTypeFont ) );
-      this->fonts().append_resource( ResourceFile( "TimesNewRoman", sys.prepend("times.ttf"), ResourceFile::Type::TrueTypeFont ) );
-    #endif
-
-    p = Path( fp.resource_path( "org.i8degrees.nomlib" ) + p.native() + "fonts" );
-
-    this->fonts().append_resource( ResourceFile( "LiberationSans-Regular", p.prepend("LiberationSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
-    this->fonts().append_resource( ResourceFile( "LiberationSerif-Regular", p.prepend("LiberationSerif-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
-    this->fonts().append_resource( ResourceFile( "VIII", p.prepend("VIII.png"), ResourceFile::Type::BitmapFont ) );
-    this->fonts().append_resource( ResourceFile( "VIII_small", p.prepend("VIII_small.png"), ResourceFile::Type::BitmapFont ) );
+    // Platform specific initialization of fonts (system, user, engine) that are
+    // available to the engine for access.
+    PlatformSettings::initialize();
   }
 
   return true;

@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/UIWidget.hpp"
 
+// Private headers
+#include "nomlib/system/PlatformSettings.hpp"
+
 namespace nom {
 
 // Static initializations

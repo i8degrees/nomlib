@@ -28,7 +28,55 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/init.hpp"
 
+// Private headers (third-party)
+#include "SDL.h"
+#include "SDL_image.h"
+#include "SDL_ttf.h"
+
+// Private headers
+#include "nomlib/system/IObject.hpp"
+#include "nomlib/system/File.hpp"
+
 namespace nom {
+
+// Static initialization
+std::shared_ptr<FontCache> SystemFonts::cache_ = std::shared_ptr<FontCache>( nullptr );
+bool SystemFonts::initialized_ = false;
+
+bool SystemFonts::initialized( void )
+{
+  return SystemFonts::initialized_;
+}
+
+void SystemFonts::initialize( void )
+{
+  // Ensure one-time only initialization
+  if( SystemFonts::initialized() == false )
+  {
+    SystemFonts::cache_ = std::make_shared<FontCache>( FontCache() );
+    SystemFonts::initialized_ = true;
+  }
+}
+
+FontCache& SystemFonts::cache( void )
+{
+  if( SystemFonts::initialized() == false )
+  {
+    NOM_LOG_ERR( NOM, "System fonts cache was not yet initialized. Initializing..." );
+    SystemFonts::initialize();
+  }
+
+  return *SystemFonts::cache_;
+}
+
+void SystemFonts::shutdown( void )
+{
+  // Clear the global fonts cache; note how this is very similar to how we use
+  // to have to deal with nom::TrueTypeFont destruction.
+  SystemFonts::cache_.reset();  // NULL
+
+  SystemFonts::initialized_ = false;
+}
 
 bool init_third_party ( uint32 flags )
 {
@@ -50,14 +98,12 @@ bool init_third_party ( uint32 flags )
     NOM_LOG_ERR(NOM, TTF_GetError());
   }
 
-  atexit( SDL_Quit );
-
   return true;
 }
 
 bool init ( int argc, char* argv[] )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM );
 
   nom::File dir;
   std::string pwd = "\0";
@@ -70,12 +116,29 @@ bool init ( int argc, char* argv[] )
 
   if ( init_third_party(0) == false ) return false;
 
+  // Create a resource cache for letting either SDLApp or the end-user add
+  // fonts for ease of access.
+  // SystemFonts::initialize();
+
   return true;
 }
 
-void quit ( void )
+void quit( void )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM );
+
+  // FontCache* fonts = SystemFonts::cache();
+
+  // We must clear the cache of nom::Font objects before shutting down SDL2_ttf,
+  // because otherwise we'll be freeing memory that we do not own (FreeType
+  // engine within is the rightful owner).
+  SystemFonts::shutdown();
+
+  // if( fonts != nullptr )
+  // {
+    // delete fonts;
+    // fonts = nullptr;
+  // }
 
   TTF_Quit();
   IMG_Quit();
@@ -84,6 +147,8 @@ void quit ( void )
   {
     SDL_QuitSubSystem( SDL_INIT_JOYSTICK );
   }
+
+  SDL_Quit();
 
   // NOM_LOG_INFO( NOM, "Total memory allocation (in bytes): " + std::to_string( IObject::total_alloc_bytes ) );
   // NOM_LOG_INFO( NOM, "Total memory deallocation (in bytes): " + std::to_string( IObject::total_dealloc_bytes ) );

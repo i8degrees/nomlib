@@ -49,7 +49,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/clock.hpp>
 #include <nomlib/system/make_unique.hpp>
 #include <nomlib/system/AnimationTimer.hpp>
+
+// Engine initialization & shutdown
 #include <nomlib/system/init.hpp>
+#include <nomlib/system/PlatformSettings.hpp>
+
 #include <nomlib/system/SDL_helpers.hpp>
 #include <nomlib/system/Event.hpp>
 #include <nomlib/system/EventCallback.hpp>

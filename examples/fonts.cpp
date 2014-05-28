@@ -119,7 +119,7 @@ class App: public nom::SDLApp
       this->load_truetype_font();
       this->load_truetype_font2();
 
-      nom::Font* font = this->fonts().load_resource("VIII");
+      nom::Font* font = nom::SystemFonts::cache().load_resource("VIII");
 
       NOM_ASSERT( font != nullptr );
       NOM_ASSERT( font->valid() == true );
@@ -287,7 +287,7 @@ class App: public nom::SDLApp
 
       // this->label_bfont.set_font( this->bitmap_font );
 
-      this->label_bfont.set_font( this->fonts().load_resource( "VIII" ) );
+      this->label_bfont.set_font( nom::SystemFonts::cache().load_resource( "VIII" ) );
 
       this->label_bfont.set_position  ( nom::Point2i(
                                         ( this->window_size.x
@@ -320,7 +320,7 @@ class App: public nom::SDLApp
 
       // this->label_tfont.set_font( this->truetype_font );
 
-      this->label_tfont.set_font( this->fonts().load_resource( "Arial" ) );
+      this->label_tfont.set_font( nom::SystemFonts::cache().load_resource( "Arial" ) );
 
       this->label_tfont.set_position(nom::Point2i(24,24));
       //this->label_tfont.set_color( nom::Color4i(195,209,228) );
@@ -338,7 +338,7 @@ class App: public nom::SDLApp
       // A copy has to be made (handled internally by nom::Font), otherwise the
       // font's point size for label_tfont would be modified when we make the
       // call to set the text size on label_tfont2.
-      this->label_tfont2.set_font( this->fonts().load_resource("Arial") );
+      this->label_tfont2.set_font( nom::SystemFonts::cache().load_resource("Arial") );
 
       this->label_tfont2.set_text_size( 24 );
       this->label_tfont2.set_position( nom::Point2i( WINDOW_WIDTH / 2, 24 ) );

@@ -203,16 +203,34 @@ set(  EXAMPLES_TEMPLATE_SOURCE
     )
 
 # Platform-specific source files
-if ( PLATFORM_OSX OR PLATFORM_LINUX )
-  set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/unix/UnixFile.cpp" )
-endif ( PLATFORM_OSX OR PLATFORM_LINUX )
 
 if ( PLATFORM_OSX )
-  # Stub
+
+  set (
+        SYSTEM_SOURCE
+        ${SYSTEM_SOURCE}
+        "${SRC_DIR}/system/osx/PlatformSettings.cpp"
+        "${SRC_DIR}/system/unix/UnixFile.cpp"
+      )
+
 elseif ( PLATFORM_LINUX )
-  # Stub
+
+  set (
+        SYSTEM_SOURCE
+        ${SYSTEM_SOURCE}
+        # "${SRC_DIR}/system/unix/PlatformSettings.cpp"
+        "${SRC_DIR}/system/unix/UnixFile.cpp"
+      )
+
 elseif ( PLATFORM_WINDOWS )
-  set ( SYSTEM_SOURCE ${SYSTEM_SOURCE} "${SRC_DIR}/system/windows/WinFile.cpp" )
+
+  set (
+        SYSTEM_SOURCE
+        ${SYSTEM_SOURCE}
+        "${SRC_DIR}/system/windows/PlatformSettings.cpp"
+        "${SRC_DIR}/system/windows/WinFile.cpp"
+      )
+
 endif ( PLATFORM_OSX )
 
 if( NOM_BUILD_CORE_UNIT )

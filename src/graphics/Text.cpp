@@ -105,55 +105,6 @@ Text::Text  (
   this->set_alignment ( align );
 }
 
-// Text::Text  (
-//               const std::string& text,
-//               const IFont& font,
-//               uint character_size,        // Default parameter
-//               enum Text::Alignment align // Default parameter
-//             )  :
-//   Transformable { Point2i(0, 0), Size2i(0, 0) }, // Our inherited class
-//   text_ ( text ),
-//   text_size_ ( character_size ),
-//   color_ ( Color4i::White ),
-//   style_ ( Text::Style::Regular )
-// {
-//   NOM_LOG_TRACE( NOM );
-
-//   this->set_font( nullptr );
-//   this->set_color( Color4i::White );
-
-//   // Set the overall size of this text label to the width & height of the text,
-//   // with consideration to the specific font in use.
-//   // this->set_size( Size2i( this->text_width( text ), this->text_height( text ) ) );
-
-//   this->set_alignment ( Text::Alignment::TopLeft );
-// }
-
-// Text::Text  (
-//               const std::string& text,
-//               const IFont::raw_ptr font,
-//               // Default parameters
-//               uint character_size,
-//               enum Text::Alignment align,
-//               const Color4i& text_color
-//             )  :
-//   Transformable { Point2i::null, Size2i::null },  // Base class
-//   text_ ( text ),
-//   text_size_ ( character_size ),
-//   style_ ( Text::Style::Regular )
-// {
-     // NOM_LOG_TRACE( NOM );
-
-//   this->set_font( font );
-
-//   this->set_color( text_color );
-//   // Set the overall size of this text label to the width & height of the text,
-//   // with consideration to the specific font in use.
-//   // this->set_size( Size2i( this->text_width( text ), this->text_height( text ) ) );
-
-//   this->set_alignment ( align );
-// }
-
 IDrawable::raw_ptr Text::clone( void ) const
 {
   return Text::raw_ptr( new Text( *this ) );
@@ -336,13 +287,6 @@ void Text::set_font( const Text::font_type& font )
   this->set_text_size( this->text_size() );
 }
 
-// void Text::set_font( const IFont::shared_ptr& font )
-// {
-//   this->font_ = font->clone();
-
-//   this->set_text_size( this->text_size() );
-// }
-
 void Text::set_font( Text::font_type* font )
 {
   this->font_ = font;
@@ -353,29 +297,6 @@ void Text::set_font( Text::font_type* font )
   // with consideration to the specific font in use.
   // this->set_size( Size2i( this->text_width( this->text() ), this->text_height( this->text() ) ) );
 }
-
-// void Text::set_font( const IFont::raw_ptr font )
-// {
-//     // NOM_LOG_TRACE( NOM );
-
-//   if( font != nullptr )
-//   {
-//     this->font_ = std::shared_ptr<IFont>( font->clone() );
-
-//     this->font()->set_point_size ( this->text_size() );
-
-//     // Set the overall size of this text label to the width & height of the text,
-//     // with consideration to the specific font in use.
-//     // this->set_size( Size2i( this->text_width( this->text() ), this->text_height( this->text() ) ) );
-//   }
-// }
-
-// void Text::set_font( const IFont& font )
-// {
-//   this->font_ = Font( font );
-
-//   this->set_text_size( this->text_size() );
-// }
 
 void Text::set_text ( const std::string& text )
 {

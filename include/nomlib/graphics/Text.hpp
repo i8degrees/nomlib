@@ -129,30 +129,11 @@ class Text: public Transformable
             const Color4i& text_color = Color4i::White
           );
 
-    // Construct a Text, initializing it with a text string, an IFont derived
-    // object, character size and text alignment.
-    // Text (
-    //         const std::string& text,
-    //         const IFont& font,
-    //         uint character_size = 14,
-    //         enum Text::Alignment align = Text::Alignment::TopLeft
-    //       );
-
     /// Construct a minimal Text object, initializing it with a text string.
     ///
     /// \remarks A text font must be set before any rendering, width/height
     /// calculations, etc. is used; see also -- ::set_font.
     Text ( const std::string& text );
-
-    // Construct a Text, initializing it with a text string, an IFont
-    // raw pointer, character size, text color and text alignment.
-    // Text (
-    //         const std::string& text,
-    //         const IFont::raw_ptr font,
-    //         uint character_size = 14,
-    //         enum Text::Alignment align = Text::Alignment::TopLeft,
-    //         const Color4i& text_color = Color4i::White
-    //       );
 
     /// \brief Implements the required IDrawable::clone method.
     IDrawable::raw_ptr clone( void ) const;

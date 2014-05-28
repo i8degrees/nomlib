@@ -400,31 +400,6 @@ void UIWidget::set_padding ( int pad )
   this->padding_ = pad;
 }
 
-// void UIWidget::set_font( const IFont* font )
-// {
-//   UIWidget::Children children = this->children();
-
-//   if( children.size() > 0 )
-//   {
-//     for( auto itr = children.begin(); itr != children.end(); ++itr )
-//     {
-//       // NOM_DUMP( (*itr)->name() );
-//       (*itr)->set_font( font->clone() );
-
-//       // FIXME: This method call yields nothing on widgets that require updated_
-//       // to be false.
-//       (*itr)->update();
-//     }
-//   }
-
-//   // Now that our children are fed, take care of ourselves, the top-level parent
-//   // AKA widget / window.
-//   // else
-//   // {
-//     this->font_ = font->clone();
-//   // }
-// }
-
 void UIWidget::set_font( const Font& font )
 {
   UIWidget::Children children = this->children();

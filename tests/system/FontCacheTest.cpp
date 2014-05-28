@@ -82,6 +82,37 @@ TEST_F( FontCacheTest, CoreAPI )
   EXPECT_EQ( 0, this->fonts_.size() );
 }
 
+/// \fixme Resources are not initializing?
+TEST_F( FontCacheTest, StaticInterfaceAPI )
+{
+  nom::uint32 window_flags = SDL_WINDOW_HIDDEN;
+  nom::RenderWindow window;
+
+  nom::SystemFonts::initialize();
+  nom::PlatformSettings::initialize();
+
+  // Necessary for loading font resources
+  if( window.create( "FontCacheTest::StaticInterfaceAPI", 0, 0, window_flags ) == false )
+  {
+    FAIL();
+  }
+
+  // FIXME:
+  // nom::Font* font1 = PlatformSettings::get_system_font( SystemFontType::VariableTrueType );
+  // nom::Font* font2 = PlatformSettings::get_system_font( SystemFontType::FixedTrueType );
+
+  // ASSERT_FALSE( font1 == nullptr );
+  // ASSERT_FALSE( font2 == nullptr );
+
+  // ASSERT_TRUE( font1 != font2 );
+
+  nom::FontCache cache = nom::SystemFonts::cache();
+
+  nom::Font bfont = *cache.load_resource( "VIII" );
+
+  ASSERT_TRUE( bfont.valid() == true );
+}
+
 } // namespace nom
 
 int main( int argc, char** argv )

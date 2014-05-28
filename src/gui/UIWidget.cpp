@@ -176,6 +176,14 @@ int UIWidget::padding ( void ) const
 
 const Font& UIWidget::font( void ) const
 {
+  if( this->font_.valid() == false )
+  {
+    NOM_DUMP("invalid widget font");
+
+    // return *fonts()->load_resource("LucidaGrande");
+    return *PlatformSettings::get_system_font( SystemFontType::VariableTrueType );
+  }
+
   return this->font_;
 }
 
@@ -436,10 +444,38 @@ void UIWidget::set_font( const Font& font )
 
   // Now that our children are fed, take care of ourselves, the top-level parent
   // AKA widget / window.
-  // else
-  // {
+  if( font != this->font() )
+  {
     this->font_ = font;
-  // }
+  }
+}
+
+void UIWidget::set_font( const Font* font )
+{
+  UIWidget::Children children = this->children();
+
+  if( children.size() > 0 )
+  {
+    for( auto itr = children.begin(); itr != children.end(); ++itr )
+    {
+      if( *font != (*itr)->font() )
+      {
+        // NOM_DUMP( (*itr)->name() );
+        (*itr)->set_font( font );
+      }
+
+      // FIXME: This method call yields nothing on widgets that require updated_
+      // to be false.
+      (*itr)->update();
+    }
+  }
+
+  // Now that our children are fed, take care of ourselves, the top-level parent
+  // AKA widget / window.
+  if( *font != this->font() )
+  {
+    this->font_ = font;
+  }
 }
 
 /*

@@ -36,9 +36,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/fonts/BitmapFont.hpp"
 #include "nomlib/graphics/fonts/TrueTypeFont.hpp"
 
-#define NOM_DEBUG_FONT_SHARING
+// #define NOM_DEBUG_FONT_SHARING
 
 namespace nom {
+
+static const int DEFAULT_FONT_SIZE = 12;
 
 /// \brief Font interface wrapper for nom::IFont derived objects.
 ///

@@ -34,12 +34,12 @@ Font::Font( void ) :
   font_{ nullptr },
   sharable_{ false }
 {
-  NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE( NOM );
 }
 
 Font::~Font( void )
 {
-  NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE( NOM );
 }
 
 // Font::Font( const font_type& font ) :
@@ -53,7 +53,7 @@ Font::Font( const value_type& font ) :
   font_{ font },
   sharable_{ false }
 {
-  NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE( NOM );
 }
 
 // Font::Font( font_type* font ) :

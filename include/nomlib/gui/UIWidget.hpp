@@ -203,6 +203,7 @@ class UIWidget: public UIEventHandler
     /// \todo Provide some way of requesting that fonts do *NOT* propagate to
     /// children..?
     void set_font( const Font& font );
+    void set_font( const Font* font );
 
     // The default parameter 'inherit' is intended only as a
     // temporary workaround:

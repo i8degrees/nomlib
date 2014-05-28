@@ -345,14 +345,9 @@ void Text::set_font( const Text::font_type& font )
 
 void Text::set_font( Text::font_type* font )
 {
-  // NOM_LOG_TRACE( NOM );
+  this->font_ = font;
 
-  if( font != nullptr && font->valid() )
-  {
-    this->font_ = font;
-
-    this->set_text_size( this->text_size() );
-  }
+  this->set_text_size( this->text_size() );
 
   // Set the overall size of this text label to the width & height of the text,
   // with consideration to the specific font in use.

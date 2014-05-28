@@ -449,7 +449,7 @@ void UIWidget::set_font( const Font* font )
   // AKA widget / window.
   if( *font != this->font() )
   {
-    this->font_ = font;
+    this->font_ = *font;
   }
 }
 

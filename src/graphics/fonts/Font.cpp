@@ -62,13 +62,13 @@ Font::Font( const value_type& font ) :
 //   NOM_LOG_TRACE( NOM );
 // }
 
-Font::self_type& Font::operator =( const self_type* rhs )
-{
-  this->font_ = rhs->font_;
-  this->set_sharable( rhs->sharable() );
+// Font::self_type& Font::operator =( const self_type* rhs )
+// {
+//   this->font_ = rhs->font_;
+//   this->set_sharable( rhs->sharable() );
 
-  return *this;
-}
+//   return *this;
+// }
 
 // const Font::font_type& Font::operator *( void ) const
 // {
@@ -136,15 +136,19 @@ IFont::FontType Font::type( const std::string& filename ) const
   {
     return IFont::FontType::BitmapFont;
   }
-  else if( fp.extension( filename ) == "ttf" )
+  else if( fp.extension( filename ) == "ttf" )  // TrueType
   {
     return IFont::FontType::TrueTypeFont;
   }
-  else if( fp.extension( filename ) == "ttc" )
+  else if( fp.extension( filename ) == "ttc" )  // TrueType Collection
   {
     return IFont::FontType::TrueTypeFont;
   }
-  else if( fp.extension( filename ) == "otf" )
+  else if( fp.extension( filename ) == "otf" )  // OpenType
+  {
+    return IFont::FontType::TrueTypeFont;
+  }
+  else if( fp.extension( filename ) == "dfont" )  // Data Fork Suitcase
   {
     return IFont::FontType::TrueTypeFont;
   }

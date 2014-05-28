@@ -216,7 +216,7 @@ class Text: public Transformable
 
     /// \brief Set a font from a nom::Font object pointer.
     ///
-    /// \note Used by ResourceCache::load_resource.
+    /// \note Used for ResourceCache::load_resource.
     void set_font( Text::font_type* font );
 
     // \brief Set a new font, deriving from an nom::IFont derived object.

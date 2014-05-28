@@ -289,7 +289,7 @@ void Text::set_font( const Text::font_type& font )
 
 void Text::set_font( Text::font_type* font )
 {
-  this->font_ = font;
+  this->font_ = *font;
 
   this->set_text_size( this->text_size() );
 

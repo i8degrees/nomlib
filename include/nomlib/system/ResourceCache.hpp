@@ -126,19 +126,17 @@ class ResourceCache
         return false;
       }
 
-      // Use the load handler callback, if it has been set.
+      // Create the resource before insertion
+      ResourceType res_type;
+
+      // Use the load handler callback helper for resource initialization, if
+      // it has been set.
       if( this->callback_ != nullptr )
       {
-        ResourceType res_type;
         this->callback_( res, res_type );
+      }
 
-        this->resources_.insert( { res, std::make_shared<ResourceType>( ResourceType( res_type ) ) } );
-      }
-      else
-      {
-        ResourceType res_type;
-        this->resources_.insert( { res, std::make_shared<ResourceType>( ResourceType( res_type ) ) } );
-      }
+      this->resources_.insert( { res, std::make_shared<ResourceType>( ResourceType( res_type ) ) } );
 
       return true;
     }
@@ -194,6 +192,14 @@ class ResourceCache
     void clear( void )
     {
       this->resources_.clear();
+    }
+
+    /// \brief Destroy a resource.
+    ///
+    /// \param key The resource descriptor (name) to be destroyed.
+    void erase( const std::string& key )
+    {
+      this->resources_.erase( key );
     }
 
     /// \brief Output the stored resource name and file paths.

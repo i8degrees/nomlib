@@ -52,6 +52,9 @@ class Font
     typedef IFont font_type;
     typedef std::shared_ptr<font_type> value_type;
 
+    typedef self_type* raw_ptr;
+    typedef std::shared_ptr<self_type> shared_ptr;
+
     /// \brief Default constructor; initialize the font to NULL and the
     /// sharable state to false.
     Font( void );
@@ -73,14 +76,14 @@ class Font
     // \note Used by Text::set_font( font_type* font ).
     // Font( font_type* font );
 
-    /// \brief Copy assignment operator for Font object pointers.
-    ///
-    /// \note Used by Text::set_font.
-    self_type& operator =( const self_type* rhs );
+    // \brief Copy assignment operator for Font object pointers.
+    //
+    // \note Used by Text::set_font.
+    // self_type& operator =( const self_type* rhs );
 
     // const font_type& operator *( void ) const;
 
-    /// \remarks Font::share is called beforehand.
+    // \remarks Font::share is called beforehand.
     // font_type& operator *( void );
 
     /// \brief Read-only pointer operator overload.

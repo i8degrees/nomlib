@@ -40,8 +40,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-static const int DEFAULT_FONT_SIZE = 12;
-
 /// \brief Font interface wrapper for nom::IFont derived objects.
 ///
 /// \see nom::IFont, nom::BitmapFont, nom::TrueTypeFont

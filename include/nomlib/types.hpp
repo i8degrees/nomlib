@@ -144,6 +144,11 @@ typedef unsigned long ulong;
 /// \brief An integer indicating that there is no match, an error or NULL.
 static const int npos = -1;
 
+/// \brief The default standard point size for fonts.
+///
+/// \remarks Used in default initialization of nom::Text, nom::UIWidget, etc.
+static const int DEFAULT_FONT_SIZE = 12;
+
 /// \brief Upper limit of exact-width integer types
 #if defined( INT32_MAX )
 

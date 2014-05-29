@@ -223,11 +223,15 @@ class App: public nom::SDLApp
         return false;
       }
 
-      if( this->truetype_font2.load ( RESOURCE_TRUETYPE_FONT[3] ) == false )
-      {
-        nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT[3] );
-        return false;
-      }
+      // this->truetype_font.set_sharable( true );
+
+      // if( this->truetype_font2.load ( RESOURCE_TRUETYPE_FONT[3] ) == false )
+      // {
+      //   nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT[3] );
+      //   return false;
+      // }
+
+      // this->truetype_font2.set_sharable( true );
 
       if ( this->button_bg[0].load( RESOURCE_BUTTON_IMAGE, 0 ) == false )
       {
@@ -287,9 +291,7 @@ class App: public nom::SDLApp
       // FIXME: Temporarily disabled (to cease debugging output):
       // this->gui_window[0]->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
 
-      // TODO: consider leaving all font management to nom::Text class, AKA pass
-      // nom::Text objects instead of strings.
-      this->gui_window[0]->set_font( this->bitmap_font );
+// this->gui_window[0]->set_font( this->bitmap_font );
 
       this->gui_window[0]->set_title( this->gui_window[0]->name() );
 
@@ -298,9 +300,7 @@ class App: public nom::SDLApp
       this->gui_window[1] = new nom::UIWidget( nullptr, -1, this->gui_window_pos[1], this->gui_window_size[1] );
       this->gui_window[1]->set_decorator( new nom::MinimalDecorator() );
 
-      // TODO: consider leaving all font management to nom::Text class, AKA pass
-      // nom::Text objects instead of strings.
-      this->gui_window[1]->set_font( this->truetype_font );
+// this->gui_window[1]->set_font( this->truetype_font );
 
       // Using the auto-generated name for the second window object.
       this->gui_window[1]->set_title( this->gui_window[1]->name() );
@@ -316,9 +316,7 @@ class App: public nom::SDLApp
 
       this->gui_window[2]->set_decorator( new nom::FinalFantasyDecorator() );
 
-      // TODO: consider leaving all font management to nom::Text class, AKA pass
-      // nom::Text objects instead of strings.
-      this->gui_window[2]->set_font( this->bitmap_small_font );
+this->gui_window[2]->set_font( this->bitmap_small_font );
 
       // this->gui_window[2]->set_title( this->gui_window[2]->name() );
 
@@ -333,8 +331,6 @@ class App: public nom::SDLApp
 
       this->gui_window[3]->set_decorator( new nom::FinalFantasyDecorator() );
 
-      // TODO: consider leaving all font management to nom::Text class, AKA pass
-      // nom::Text objects instead of strings.
       this->gui_window[3]->set_font( this->bitmap_small_font );
 
       // this->gui_window[3]->set_title( this->gui_window[3]->name() );
@@ -349,9 +345,6 @@ class App: public nom::SDLApp
       this->gui_window[4]->set_name( "GUI_WINDOW[4]" );
 
       this->gui_window[4]->set_decorator( new nom::FinalFantasyDecorator() );
-
-      // TODO: consider leaving all font management to nom::Text class, AKA pass
-      // nom::Text objects instead of strings.
       this->gui_window[4]->set_font( this->bitmap_small_font );
 
       // this->gui_window[4]->set_title( this->gui_window[4]->name() );
@@ -360,7 +353,7 @@ class App: public nom::SDLApp
       // going
       this->gui_window[5] = new nom::UIWidget( nullptr, -1, nom::Point2i( 175, 41 ), nom::Size2i( 350, 322 ) );
       this->gui_window[5]->set_name( "gui_window[5]" );
-      this->gui_window[5]->set_font( this->truetype_font );
+// this->gui_window[5]->set_font( this->truetype_font );
       this->gui_window[5]->set_decorator( new nom::MinimalDecorator() );
 
       this->gui_window[5]->insert_child( this->create_button_ex0() );
@@ -500,14 +493,17 @@ class App: public nom::SDLApp
       this->button_ex0 = nullptr;
 
       this->button_ex0 = new nom::Button( this->gui_window[5], -1, pos, size );
-      this->button_ex0->set_font( this->bitmap_font );
+
+      // Custom font for the text label
+      this->button_ex0->set_font( nom::SystemFonts::cache().load_resource( "VIII" ) );
+
       this->button_ex0->set_name( "button_ex0 widget" );
       this->button_ex0->set_decorator( new nom::FinalFantasyDecorator() );
       // this->button_ex0->set_decorator( new nom::MinimalDecorator() );
 
       // Label text events
       this->button_ex0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_on_click( ev ); } ) );
-      this->button_ex0->set_label( "button_ex0", 14, nom::Text::Alignment::MiddleCenter );
+      this->button_ex0->set_label( "button_ex0" );
 
       NOM_ASSERT( this->button_ex0->name() == "button_ex0 widget" );
       // NOM_ASSERT( this->button_ex0->position() == pos );
@@ -533,7 +529,7 @@ class App: public nom::SDLApp
       this->button_ex1 = nullptr;
 
       this->button_ex1 = new nom::Button( this->gui_window[5], -1, pos, size );
-      this->button_ex1->set_font( this->truetype_font );
+// this->button_ex1->set_font( this->truetype_font );
       this->button_ex1->set_name( "button_ex1 widget" );
 
       this->button_ex1->set_decorator( new nom::MinimalDecorator() );
@@ -541,7 +537,7 @@ class App: public nom::SDLApp
       // Label text events
       this->button_ex1->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_on_click( ev ); } ) );
 
-      this->button_ex1->set_label( "button_ex1", 14, nom::Text::Alignment::MiddleCenter );
+      this->button_ex1->set_label( "button_ex1" );
 
       NOM_ASSERT( this->button_ex1->name() == "button_ex1 widget" );
       // NOM_ASSERT( this->button_ex1->position() == pos );
@@ -579,7 +575,7 @@ class App: public nom::SDLApp
       // button = new nom::BitmapButton( this->gui_window[0], -1, pos, size, &this->button_bg[0] );
 
       this->button_ex2 = new nom::BitmapButton( this->gui_window[5], -1, pos, size, &this->button_bg[2] );
-      this->button_ex2->set_font( this->truetype_font2 );
+// this->button_ex2->set_font( this->truetype_font2 );
 
       // Use the auto-generated name for this widget.
 
@@ -596,7 +592,7 @@ class App: public nom::SDLApp
       // Label text events
       this->button_ex2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_on_click( ev ); } ) );
 
-      this->button_ex2->set_label( "Hello!", 13, nom::Text::Alignment::MiddleCenter, nom::Color4i::Black );
+      this->button_ex2->set_label( "Hello!" );
 
       NOM_ASSERT( this->button_ex2->name() == "bitmap_button" );
       // NOM_ASSERT( button->position() == pos );
@@ -634,7 +630,7 @@ class App: public nom::SDLApp
 
       this->listbox_ex0 = new nom::ListBox( this->gui_window[0], -1, pos, size, storage );
       this->listbox_ex0->set_name( "listbox_ex0" );
-      // this->listbox_ex0->set_font( this->truetype_font );
+// this->listbox_ex0->set_font( this->truetype_font );
       this->listbox_ex0->set_decorator( new nom::MinimalDecorator() );
       this->listbox_ex0->set_selected_text_color( nom::Color4i::Gray );
 
@@ -669,10 +665,6 @@ class App: public nom::SDLApp
 
       nom::Size2i size( 50, 24 );
       this->listbox_ex1 = nullptr;
-
-      // TODO: consider leaving all font management to nom::Text class, AKA pass
-      // nom::Text objects instead of strings.
-      // window->set_font( this->truetype_font );
 
       nom::ItemStrings choice_selection = { std::string( "item_0" ), std::string( "item_1" ), std::string( "item_2" ) };
 
@@ -720,10 +712,6 @@ class App: public nom::SDLApp
 
       nom::Size2i size( 50, 24 );
       this->listbox_ex2 = nullptr;
-
-      // TODO: consider leaving all font management to nom::Text class, AKA pass
-      // nom::Text objects instead of strings.
-      // window->set_font( this->truetype_font );
 
       nom::ItemStrings choice_selection = { std::string( "item_0" ), std::string( "item_1" ), std::string( "item_2" ), std::string( "item_3" ) };
 

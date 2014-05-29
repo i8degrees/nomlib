@@ -129,6 +129,14 @@ UIWidget::UIWidget  (
     this->set_name( "window" );
   }
 
+  // Ensure that a valid font resource is available.
+  if( this->font().valid() == false )
+  {
+    NOM_DUMP( "invalid widget font" );
+
+    this->set_font( PlatformSettings::get_system_font( SystemFontType::VariableTrueType ) );
+  }
+
   // Initialize the default event listeners for a top-level widget.
   // NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
 }
@@ -176,14 +184,6 @@ int UIWidget::padding ( void ) const
 
 const Font& UIWidget::font( void ) const
 {
-  if( this->font_.valid() == false )
-  {
-    NOM_DUMP("invalid widget font");
-
-    // return *fonts()->load_resource("LucidaGrande");
-    return *PlatformSettings::get_system_font( SystemFontType::VariableTrueType );
-  }
-
   return this->font_;
 }
 

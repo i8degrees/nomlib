@@ -45,7 +45,7 @@ TrueTypeFont::TrueTypeFont ( void ) :
   type_ ( IFont::FontType::TrueTypeFont ),
   sheet_width_ ( 16 ),
   sheet_height_ ( 16 ),
-  point_size_ ( 14 ),   // Terrible Eyesight (TM)
+  point_size_ ( nom::DEFAULT_FONT_SIZE ),   // Terrible Eyesight (TM)
   hinting_( TTF_HINTING_NONE )
 {
   // NOM_LOG_TRACE( NOM );

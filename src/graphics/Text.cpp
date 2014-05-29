@@ -32,7 +32,7 @@ namespace nom {
 
 Text::Text( void ) :
   Transformable { Point2i::null, Size2i::null }, // Base class
-  text_size_ ( 14 ),
+  text_size_ ( nom::DEFAULT_FONT_SIZE ),
   color_ ( Color4i::White ),
   style_ ( Text::Style::Regular ),
   alignment_ ( Text::Alignment::TopLeft )

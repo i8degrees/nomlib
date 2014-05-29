@@ -124,7 +124,7 @@ class Text: public Transformable
     Text (
             const std::string& text,
             const font_type& font,
-            uint character_size = 14,
+            uint character_size = nom::DEFAULT_FONT_SIZE,
             enum Text::Alignment align = Text::Alignment::TopLeft,
             const Color4i& text_color = Color4i::White
           );

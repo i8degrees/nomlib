@@ -349,18 +349,49 @@ void Text::set_color ( const Color4i& color )
   }
 }
 
-void Text::set_style ( enum Text::Style style )
+void Text::set_style( enum Text::Style style )
 {
   // We do not have an atlas map to go from -- nothing to set a style on!
-  if ( this->texture_.valid() == false ) return;
-
-  // Style being set is already set -- nothing to do!
-  if ( style == this->style() ) return;
+  if( this->texture_.valid() == false ) return;
 
   // Set new style if sanity checks pass
   this->style_ = style;
 
-  this->update();
+  switch ( this->style_ )
+  {
+    default:
+    case Text::Style::Regular:
+    {
+      this->font()->set_font_style( TTF_STYLE_NORMAL );
+      break;
+    }
+
+    case Text::Style::Bold:
+    {
+      this->font()->set_font_style( TTF_STYLE_BOLD );
+      break;
+    }
+
+    case Text::Style::Italic:
+    {
+      this->font()->set_font_style( TTF_STYLE_ITALIC );
+      break;
+    }
+
+    case Text::Style::Underlined:
+    {
+      this->font()->set_font_style( TTF_STYLE_UNDERLINE );
+      break;
+    }
+  } // end switch style
+
+  if( this->valid() == false || this->texture_.create( this->font()->image( this->text_size() ) ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not initialize Text from given IFont" );
+    return;
+  }
+
+  // this->update();
 }
 
 void Text::set_alignment ( enum Text::Alignment align )
@@ -547,34 +578,6 @@ void Text::update ( void )
 {
   // No font has been loaded -- nothing to draw!
   if ( this->valid() == false ) return;
-
-  switch ( this->style_ )
-  {
-    default:
-    case Text::Style::Regular: /* Do nothing */ break; // Default
-
-    case Text::Style::Bold:
-    {
-      if ( this->font()->type() == IFont::FontType::BitmapFont )
-      {
-        NOM_LOG_ERR ( NOM, "nom::BitmapFont does not support nom::Text::Style::Bold." );
-        break;
-      }
-
-      // TODO: Bold logic
-      break;
-    }
-
-    case Text::Style::Italic:
-     // This style is handled in Text's draw method
-    break;
-
-    case Text::Style::Underlined:
-    {
-      // TODO: Underline logic
-      break;
-    }
-  } // end switch
 
   // FIXME: This never gets called..!
   if( features() & ExtraRenderingFeatures::CropText )

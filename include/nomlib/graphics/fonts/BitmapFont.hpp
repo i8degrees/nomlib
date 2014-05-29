@@ -99,6 +99,11 @@ class BitmapFont: public IFont
     /// \returns Zero.
     int hinting( void ) const;
 
+    /// \brief Get the rendering style of the font.
+    ///
+    /// \remarks This method is not implemented.
+    uint32 font_style( void ) const;
+
     /// \brief Obtain a glyph
     ///
     /// \param    codepoint        ASCII character to lookup
@@ -121,6 +126,11 @@ class BitmapFont: public IFont
 
     /// \remarks This method is not implemented.
     bool set_outline( int );
+
+    /// \brief Set the rendering style of the font.
+    ///
+    /// \remarks This method is not implemented.
+    void set_font_style( uint32 style );
 
     /// \brief Loads a new bitmap font from a file
     bool load( const std::string& filename );

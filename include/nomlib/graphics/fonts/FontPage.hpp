@@ -41,27 +41,18 @@ namespace nom {
 /// \brief Container structure for font data
 struct FontPage
 {
-  /// Default constructor
-  FontPage ( void ) :
-    texture { new Image() },
-    next_row ( 0 )
+  /// \brief Default constructor; initialize the font page to its empty state.
+  FontPage( void )
   {
     //NOM_LOG_TRACE(NOM);
+
+    this->invalidate();
   }
 
-  /// Destructor
-  ~FontPage ( void )
+  /// \brief Destructor.
+  ~FontPage( void )
   {
     //NOM_LOG_TRACE(NOM);
-  }
-
-  FontPage( const FontPage& rhs ) :
-    glyphs( rhs.glyphs ),
-    texture( rhs.texture ),
-    next_row( rhs.next_row ),
-    rows( rhs.rows )
-  {
-    // NOM_LOG_TRACE( NOM );
   }
 
   /// \brief Validity of the glyph page.
@@ -73,6 +64,15 @@ struct FontPage
     }
 
     return false;
+  }
+
+  /// \brief Re-initialize the page to its defaults.
+  void invalidate( void )
+  {
+    this->texture.reset( new Image() );
+    this->next_row = 0;
+    this->glyphs.clear();
+    this->rows.clear();
   }
 
   GlyphAtlas glyphs;

@@ -79,11 +79,13 @@ class IFont
     virtual sint spacing ( uint32 ) const = 0;
     virtual int kerning( uint32, uint32, uint32 ) const = 0;
     virtual int hinting( void ) const = 0;
+    virtual uint32 font_style( void ) const = 0;
     virtual const FontMetrics& metrics( void ) const = 0;
 
     virtual bool set_point_size( int ) = 0;
     virtual bool set_hinting( int ) = 0;
     virtual bool set_outline( int ) = 0;
+    virtual void set_font_style( uint32 style ) = 0;
 
     virtual bool load( const std::string& filename ) = 0;
 };

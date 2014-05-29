@@ -231,8 +231,10 @@ class Text: public Transformable
     /// Set new text color
     void set_color ( const Color4i& text_color );
 
-    /// Set new text style
-    void set_style ( enum Text::Style style );
+    /// Set text font style.
+    ///
+    /// \todo Verify working functionality of ::Style::Italic, ::Style::Underline.
+    void set_style( enum Text::Style style );
 
     /// Set new text alignment
     ///
@@ -257,7 +259,6 @@ class Text: public Transformable
     /// \note Bit-mask friendly.
     void set_features( uint32 flags );
 
-  private:
     /// \brief Apply requested transformations, styles, etc
     ///
     /// \remarks Implements nom::IDrawable::update
@@ -265,6 +266,7 @@ class Text: public Transformable
     /// \todo Logic for this feature is incomplete!
     void update ( void );
 
+  private:
     mutable font_type font_; // FIXME?
     mutable Texture texture_; // FIXME
 

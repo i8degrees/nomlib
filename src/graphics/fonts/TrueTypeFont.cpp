@@ -170,6 +170,11 @@ int TrueTypeFont::hinting( void ) const
   return TTF_GetFontHinting( this->font() );
 }
 
+uint32 TrueTypeFont::font_style( void ) const
+{
+  return TTF_GetFontStyle( this->font() );
+}
+
 bool TrueTypeFont::set_point_size( int point_size )
 {
   // Expensive method call
@@ -227,6 +232,30 @@ bool TrueTypeFont::set_outline( int outline )
   }
 
   return true;
+}
+
+void TrueTypeFont::set_font_style( uint32 style )
+{
+  // NOM_LOG_TRACE( NOM );
+
+  // FIXME: The conditional if statement for ensuring that we don't waste time
+  // rebuilding glyph metrics for the same font style breaks when used with GUI
+  // widgets.
+
+  // if( style != this->font_style() )
+  // {
+    TTF_SetFontStyle( this->font(), style );
+
+    int point_size = this->point_size();
+
+    // Force a rebuild of the font page by clearing / invalidating it.
+    this->pages_[point_size].invalidate();
+
+    if( this->build( point_size ) == false )
+    {
+      NOM_LOG_ERR( NOM, "Could not rebuild glyph metrics." );
+    }
+  // }
 }
 
 bool TrueTypeFont::load( const std::string& filename )
@@ -324,6 +353,7 @@ bool TrueTypeFont::build ( uint32 character_size )
   page.texture->initialize ( sheet_size );
 
   // this->set_hinting( this->hinting() );
+  // this->set_font_style( this->font_style() );
 
   // ASCII 32..127 is the standard glyph set -- 94 printable characters;
   //

@@ -127,6 +127,13 @@ class TrueTypeFont: public IFont
     /// \returns Outline size in pixels
     int outline ( /*uint32 character_size*/void ) /*const*/;
 
+    /// \brief Get the rendering style of the font.
+    ///
+    /// \returns style A bit-mask composed of one or more of the following
+    /// styles: TTF_STYLE_BOLD, TTF_STYLE_ITALIC, TTF_STYLE_UNDERLINE,
+    /// TTF_STYLE_STRIKETHROUGH.
+    uint32 font_style( void ) const;
+
     /// \brief Set a new font point size
     ///
     /// \param size Point size in pixels
@@ -156,6 +163,15 @@ class TrueTypeFont: public IFont
     ///
     /// \remarks This is an expensive method call; every glyph must be re-built!
     bool set_outline( int outline );
+
+    /// \brief Set the rendering style of the font.
+    ///
+    /// \param style A bit-mask composed of one or more of the following styles:
+    /// TTF_STYLE_BOLD, TTF_STYLE_ITALIC, TTF_STYLE_UNDERLINE,
+    /// TTF_STYLE_STRIKETHROUGH.
+    ///
+    /// \fixme This method must be called *after* ::set_font_size.
+    void set_font_style( uint32 style );
 
     /// \brief Load a new TrueType font from a file.
     ///

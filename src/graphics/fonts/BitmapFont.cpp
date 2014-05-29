@@ -108,6 +108,11 @@ int BitmapFont::hinting( void ) const
   return 0; // Not implemented
 }
 
+uint32 BitmapFont::font_style( void ) const
+{
+  return 0; // Not implemented
+}
+
 const Glyph& BitmapFont::glyph ( uint32 codepoint, uint32 character_size ) const
 {
   GlyphAtlas& glyphs = this->pages_[0].glyphs;
@@ -136,6 +141,11 @@ bool BitmapFont::set_hinting( int type )
 bool BitmapFont::set_outline( int )
 {
   return false; // Not implemented
+}
+
+void BitmapFont::set_font_style( uint32 style )
+{
+  // Not implemented
 }
 
 bool BitmapFont::load( const std::string& filename )
@@ -174,10 +184,6 @@ bool BitmapFont::load( const std::string& filename )
     NOM_LOG_ERR ( NOM, "Could not build bitmap font metrics" );
     return false;
   }
-
-  // FIXME (?): Setting the font face name as the filename, for lack of a
-  // better idea at the moment...
-  this->metrics_.name = filename;
 
   return true;
 }

@@ -28,6 +28,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/fonts/TrueTypeFont.hpp"
 
+// Third-party headers
+#include <SDL_ttf.h>
+
+// Private headers
+#include "nomlib/math/Rect.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
+#include "nomlib/graphics/Texture.hpp"
+
+// Forward declarations
+#include "nomlib/graphics/Image.hpp"
+
 namespace nom {
 
 TrueTypeFont::TrueTypeFont ( void ) :

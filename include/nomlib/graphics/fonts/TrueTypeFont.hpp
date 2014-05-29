@@ -33,18 +33,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <memory>
 
-#include <SDL_ttf.h>
-
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/fonts/IFont.hpp"
 #include "nomlib/graphics/fonts/FontMetrics.hpp"
 #include "nomlib/graphics/fonts/FontPage.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/math/Rect.hpp"
-#include "nomlib/graphics/Texture.hpp"
-#include "nomlib/graphics/Image.hpp"
-#include "nomlib/graphics/RenderWindow.hpp"
-#include "nomlib/system/SDL_helpers.hpp"
 
 // Dump glyph bounding coordinates & save source, destination sheets as PNG
 // files
@@ -54,6 +46,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS_PNG
 
 namespace nom {
+
+// Forward declarations
+class Image;
 
 /// \brief TrueType fonts renderer
 class TrueTypeFont: public IFont

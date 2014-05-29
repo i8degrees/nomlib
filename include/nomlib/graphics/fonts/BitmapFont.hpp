@@ -42,14 +42,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/fonts/IFont.hpp"
 #include "nomlib/graphics/fonts/FontMetrics.hpp"
 #include "nomlib/graphics/fonts/FontPage.hpp"
-#include "nomlib/math/Rect.hpp"
-#include "nomlib/graphics/Image.hpp"
-#include "nomlib/system/SDL_helpers.hpp"
 
 // Dump glyph bounding coordinates
 //#define NOM_DEBUG_SDL2_BITMAP_FONT
 
 namespace nom {
+
+// Forward declarations
+class Image;
 
 class BitmapFont: public IFont
 {

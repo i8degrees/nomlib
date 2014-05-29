@@ -26,20 +26,19 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_IFONT_HPP
-#define NOMLIB_SDL2_IFONT_HPP
+#ifndef NOMLIB_GRAPHICS_FONTS_IFONT_HPP
+#define NOMLIB_GRAPHICS_FONTS_IFONT_HPP
 
 #include <iostream>
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/graphics/fonts/Glyph.hpp"
-#include "nomlib/graphics/fonts/FontMetrics.hpp"
 
 namespace nom {
 
 // Forward declarations
+class Image;
+struct Glyph;
 struct FontMetrics;
 
 /// \brief Pure abstract interface for a font resource

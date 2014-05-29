@@ -33,6 +33,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/fonts/BitmapFont.hpp"
 
+// Private headers
+#include "nomlib/math/Rect.hpp"
+#include "nomlib/system/File.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
+
+// Forward declarations
+#include "nomlib/graphics/Image.hpp"
+
 namespace nom {
 
 BitmapFont::BitmapFont ( void ) :

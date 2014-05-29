@@ -92,11 +92,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /// \brief Macros for quickly dumping a variable.
 #define NOM_DUMP(var) \
-  ( std::cout << "In function: " << __func__ << std::endl << #var << ": " << var << std::endl << std::endl )
+  ( std::cout << "In function: " << __func__ << " at " << nom::time() << #var << ": " << var << std::endl << std::endl )
 
 /// \todo Rename to NOM_DUMP_VAR..?
 #define NOM_DUMP_EXT( name, var ) \
-  ( std::cout << "In function: " << __func__ << std::endl << name << ": " << var << std::endl << std::endl )
+  ( std::cout << "In function: " << __func__ << " at " << nom::time() << name << ": " << var << std::endl << std::endl )
 
 /// \brief Debugging macros;
 ///

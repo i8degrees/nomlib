@@ -63,7 +63,7 @@ set( NOM_BUILD_PTREE_UNIT on )
 
 # Build the XML unit.
 # Dependencies: RapidXml
-set( NOM_BUILD_XML_UNIT on )
+set( NOM_BUILD_XML_UNIT off )
 
 set( NOM_BUILD_MATH_UNIT on )
 

@@ -53,6 +53,24 @@ void PlatformSettings::initialize( void )
   PlatformSettings::initialized_ = true;
 }
 
+Color4i PlatformSettings::get_system_color( SystemColorType index )
+{
+  switch( index )
+  {
+    default:
+    {
+      return Color4i::White;
+      break;
+    }
+
+    case ButtonLabelText:
+    {
+      return Color4i::Black;
+      break;
+    }
+  } // end switch index
+}
+
 Font* PlatformSettings::get_system_font( SystemFontType index )
 {
   if( PlatformSettings::initialized() == false )

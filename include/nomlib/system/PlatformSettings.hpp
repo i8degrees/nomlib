@@ -33,11 +33,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/init.hpp"
+#include "nomlib/math/Color4.hpp"
 
 namespace nom {
 
 // Forward declarations
 class Font;
+
+enum SystemColorType
+{
+  ButtonLabelText
+};
 
 enum SystemFontType
 {
@@ -77,6 +83,7 @@ class PlatformSettings
     /// \note nom::enumerate_fonts is called within this method.
     static void initialize( void );
 
+    static Color4i get_system_color( SystemColorType index );
     static Font* get_system_font( SystemFontType index );
     static Font* find_system_font( const std::string& key );
 

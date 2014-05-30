@@ -208,6 +208,12 @@ void Button::set_label( const std::string& text )
 
 // Protected scope
 
+void Button::update_bounds( void )
+{
+  this->label_.set_position( this->position() );
+  this->label_.set_size( this->size() );
+}
+
 void Button::on_size_changed( const UIWidgetEvent& ev )
 {
   Event evt = ev.event();

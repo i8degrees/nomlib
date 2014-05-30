@@ -81,12 +81,9 @@ const Size2i BitmapButton::size_hint( void ) const
     return( Size2i( this->bitmap_->bounds().w, this->bitmap_->bounds().h ) );
   }
 
-  // If all else fails ... use the preset size of the widget as the preferred
-  // size.
-  //
-  // Should we be using minimum_size here instead?
-  return Button::size_hint();
-  // return this->minimum_size();
+  // If the bitmap has not been set yet, use the minimum size of the widget
+  // (explicitly set by you, the end-user).
+  return this->minimum_size();
 }
 
 void BitmapButton::update( void )
@@ -127,14 +124,13 @@ bool BitmapButton::process_event( const nom::Event& ev )
   // Registered action for selection click event
   if( ev.type == SDL_MOUSEBUTTONUP )
   {
-    IntRect bitmap_bounds( this->bitmap_->position().x, this->bitmap_->position().y, this->bitmap_->width(), this->bitmap_->height() );
+    IntRect bitmap_bounds( this->position().x, this->position().y, this->bitmap_->width(), this->bitmap_->height() );
 
     if( bitmap_bounds.contains( mouse_coords ) )
     {
       // Send the index and string text of the label that was selected during
       // the time of this event.
-      UIWidgetEvent item_ev( 0, this->label_text(), ev );
-      item_ev.set_id( this->id() );
+      UIWidgetEvent item_ev( 0, this->label_text(), ev, this->id() );
 
       // Send the UI event object to the registered callback; public event slot.
       this->dispatcher()->emit( UIEvent::MOUSE_UP, item_ev );
@@ -216,6 +212,10 @@ void BitmapButton::on_size_changed( const UIWidgetEvent& ev )
 
   // Ensure that the label coordinates & dimensions are updated.
   Button::on_size_changed( ev );
+
+  // FIXME? This corrects the alignment of the Button's text label when used
+  // within this class.
+  Button::update_bounds();
 
   this->update();
 }

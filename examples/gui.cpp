@@ -593,13 +593,13 @@ class App: public nom::SDLApp
       // Label text events
       this->button_ex2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_on_click( ev ); } ) );
 
-      this->button_ex2->set_label( "Hello!" );
+      this->button_ex2->set_label( "Hello" );
 
       NOM_ASSERT( this->button_ex2->name() == "bitmap_button" );
       // NOM_ASSERT( button->position() == pos );
       // NOM_ASSERT( this->button_ex2->parent()->position() == this->gui_window[0]->position() );
       NOM_ASSERT( this->button_ex2->size() == size );
-      NOM_ASSERT( this->button_ex2->label_text() == "Hello!" );
+      NOM_ASSERT( this->button_ex2->label_text() == "Hello" );
 
       return this->button_ex2;
     }

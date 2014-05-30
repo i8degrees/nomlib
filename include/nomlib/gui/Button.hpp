@@ -94,6 +94,8 @@ class Button: public UIWidget
     void set_label( const std::string& text );
 
   protected:
+    virtual void update_bounds( void );
+
     /// \brief Re-implements UIWidget::on_size_changed.
     virtual void on_size_changed( const UIWidgetEvent& ev );
 

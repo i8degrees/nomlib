@@ -373,11 +373,18 @@ class App: public nom::SDLApp
       // this->listbox_layout->set_spacing( 4 );
       // this->listbox_layout->set_spacing( 20 );
 
-      this->listbox_ex0->set_size_policy( nom::UILayoutPolicy::Policy::Minimum, nom::UILayoutPolicy::Policy::Minimum );
+      if( this->listbox_ex0 != nullptr )
+      {
+        this->listbox_ex0->set_size_policy( nom::UILayoutPolicy::Policy::Minimum, nom::UILayoutPolicy::Policy::Minimum );
+      }
 
       this->listbox_layout->append_widget( this->listbox_ex0 );
+
+      // FIXME:
       this->listbox_layout->append_spacer( 5 );
       this->listbox_layout->append_widget( this->listbox_ex1 );
+
+      // FIXME:
       this->listbox_layout->append_spacer( 5 );
       this->listbox_layout->append_widget( this->listbox_ex2 );
 
@@ -397,7 +404,9 @@ class App: public nom::SDLApp
       // this->button_ex1->set_size_policy( nom::UILayoutPolicy::Policy::Minimum, nom::UILayoutPolicy::Policy::Minimum );
 
       this->button_layout->append_widget( this->button_ex0 );
-      // this->button_layout->append_spacer( 5 );
+
+      // FIXME:
+      // this->button_layout->append_spacer( 1 );
       this->button_layout->append_widget( this->button_ex1 );
       this->button_layout->append_widget( this->button_ex2 );
 

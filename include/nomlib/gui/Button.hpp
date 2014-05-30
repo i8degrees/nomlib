@@ -89,9 +89,6 @@ class Button: public UIWidget
     /// \returns One of the enumeration types.
     Button::State button_state( void ) const;
 
-    /// \brief Implements the EventHandler::process_event method.
-    bool process_event( const nom::Event& ev );
-
     const std::string& label_text( void ) const;
 
     void set_label( const std::string& text );
@@ -105,10 +102,11 @@ class Button: public UIWidget
     /// \brief Re-implements UIWidget::on_size_changed.
     virtual void on_size_changed( const UIWidgetEvent& ev );
 
-    // virtual void on_mouse_down( const UIWidgetEvent& ev );
-    // virtual void on_mouse_up( const UIWidgetEvent& ev );
-    // virtual void on_mouse_enter( const UIWidgetEvent& ev );
-    // virtual void on_mouse_leave( const UIWidgetEvent& ev );
+    virtual void on_mouse_down( const UIWidgetEvent& ev );
+    virtual void on_mouse_up( const UIWidgetEvent& ev );
+
+    virtual void on_mouse_enter( const UIWidgetEvent& ev );
+    virtual void on_mouse_leave( const UIWidgetEvent& ev );
 
   private:
     /// \brief Implements IDrawable::update.

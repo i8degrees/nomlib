@@ -52,13 +52,7 @@ class ListBox: public UIWidget
     typedef std::unique_ptr<self_type> unique_ptr;
     typedef std::shared_ptr<self_type> shared_ptr;
 
-    /// \brief Default constructor; initialize the current selection to the
-    /// non-selected state (negative value).
-    ListBox( void );
-
-    /// \brief Destructor; resource clean up is automatic.
-    virtual ~ListBox( void );
-
+    /// \brief Default constructor.
     ListBox (
               UIWidget* parent,
               int64 id,
@@ -66,6 +60,9 @@ class ListBox: public UIWidget
               const Size2i& size,
               const UIItemContainer::raw_ptr store
             );
+
+    /// \brief Destructor; resource clean up is automatic.
+    virtual ~ListBox( void );
 
     /// \brief Re-implements the IObject::type method.
     ///
@@ -104,12 +101,6 @@ class ListBox: public UIWidget
     /// \brief Implements the nom::UIWidget::draw method.
     void draw( RenderTarget& target ) const;
 
-    /// \brief Implements the EventHandler::process_event method.
-    ///
-    /// \note Emitted UIWidgetEvent objects reflects the state of the widget
-    /// data *before* the callback(s) are executed.
-    bool process_event( const nom::Event& ev );
-
     /// \brief Set the internal storage container for the object to manage.
     void set_item_store( const UIItemContainer::raw_ptr store );
 
@@ -121,6 +112,9 @@ class ListBox: public UIWidget
     int hit_test( const Point2i& pt );
 
   protected:
+    /// \brief Re-implements UIWidget::on_size_changed.
+    virtual void on_size_changed( const UIWidgetEvent& ev );
+
     /// \brief Default event listener for handling key press events.
     ///
     /// \remarks This method handles the updating the current selection text
@@ -135,6 +129,8 @@ class ListBox: public UIWidget
     /// in comparison to the method logic in on_key_down and on_mouse_down.
     virtual void on_mouse_down( const UIWidgetEvent& ev );
 
+    virtual void on_mouse_enter( const UIWidgetEvent& ev );
+
     /// \brief Default event listener for handling mouse wheel events.
     ///
     /// \remarks This method handles the updating the current selection text
@@ -142,9 +138,6 @@ class ListBox: public UIWidget
     /// allows -- amongst other things -- the ability to update the text color
     /// to the selection text.
     virtual void on_mouse_wheel( const UIWidgetEvent& ev );
-
-    /// \brief Re-implements UIWidget::on_size_changed.
-    virtual void on_size_changed( const UIWidgetEvent& ev );
 
     /// \brief Re-implements UIWidget::set_focused.
     void set_focused( bool state );

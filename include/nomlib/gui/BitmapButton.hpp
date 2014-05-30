@@ -105,9 +105,6 @@ class BitmapButton: public Button
     /// image has not been set.
     const Texture& disabled_bitmap( void ) const;
 
-    /// \brief Implements EventHandler::process_event method.
-    bool process_event( const nom::Event& ev );
-
     /// \brief Set the default bitmap image to be rendered.
     ///
     /// \param image A nom::Texture object reference that has been initialized

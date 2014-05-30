@@ -55,12 +55,8 @@ BitmapButton::BitmapButton  (
   // Default state
   this->set_button_state( Button::State::Default );
 
+  // Initialize the default event listeners for the widget.
   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
-
-  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_DOWN, this->on_mouse_down );
-  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_UP, this->on_mouse_up );
-  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_MOTION_ENTER, this->on_mouse_enter );
-  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_MOTION_LEAVE, this->on_mouse_leave );
 
   this->update();
 }
@@ -159,11 +155,6 @@ const Texture& BitmapButton::focused_bitmap( void ) const
 const Texture& BitmapButton::disabled_bitmap( void ) const
 {
   return this->disabled_bitmap_;
-}
-
-bool BitmapButton::process_event( const nom::Event& ev )
-{
-  return Button::process_event( ev );
 }
 
 void BitmapButton::set_default_bitmap( const Texture& image )

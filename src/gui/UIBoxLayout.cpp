@@ -97,11 +97,13 @@ Size2i UIBoxLayout::size_hint( void ) const
     if( item->spacer_item() != nullptr )
     {
       hint += item->spacer_item()->size_hint();
+      // hint = item->spacer_item()->size_hint();
     }
     else
     {
       // Use the larger of the two objects compared.
       hint = hint.max( item->size_hint() );
+      // hint = item->size_hint();
     }
   }
 
@@ -140,11 +142,13 @@ Size2i UIBoxLayout::minimum_size( void ) const
     if( item->spacer_item() != nullptr )
     {
       msize += item->spacer_item()->minimum_size();
+      // msize = item->spacer_item()->minimum_size();
     }
     else
     {
       // Use the larger of the two objects compared.
       msize = msize.max( item->minimum_size() );
+      // msize = item->minimum_size();
 
       UIWidget* widget = item->widget();
 

@@ -330,7 +330,10 @@ class UIWidget: public UIEventHandler
     virtual void draw( RenderTarget& target ) const;
 
     /// \brief Re-implements EventHandler::process_event.
-    bool process_event( const nom::Event& ev );
+    ///
+    /// \note Emitted UIWidgetEvent objects reflects the state of the widget
+    /// data *before* the callback(s) are executed.
+    virtual bool process_event( const nom::Event& ev );
 
     /// \brief Getter for internal updated status.
     bool updated( void ) const;
@@ -361,6 +364,17 @@ class UIWidget: public UIEventHandler
 
   protected:
     virtual void on_size_changed( const UIWidgetEvent& ev );
+
+    virtual void on_mouse_down( const UIWidgetEvent& ev );
+    virtual void on_mouse_up( const UIWidgetEvent& ev );
+
+    virtual void on_mouse_enter( const UIWidgetEvent& ev );
+    virtual void on_mouse_leave( const UIWidgetEvent& ev );
+
+    virtual void on_mouse_wheel( const UIWidgetEvent& ev );
+
+    virtual void on_key_down( const UIWidgetEvent& ev );
+    virtual void on_key_up( const UIWidgetEvent& ev );
 
     /// \brief Find a new widget to give keyboard focus to.
     ///

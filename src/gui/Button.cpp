@@ -46,12 +46,11 @@ Button::Button  (
   // Auto-generate a name tag for our widget.
   this->set_name( "button" );
 
-  NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
+  // Default state
+  this->set_button_state( Button::State::Default );
 
-  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_DOWN, this->on_mouse_down );
-  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_UP, this->on_mouse_up );
-  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_MOTION_ENTER, this->on_mouse_enter );
-  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_MOTION_LEAVE, this->on_mouse_leave );
+  // Initialize the default event listeners for the widget.
+  NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
 }
 
 Button::~Button( void )
@@ -134,94 +133,6 @@ Button::State Button::button_state( void ) const
   return this->button_state_;
 }
 
-bool Button::process_event( const nom::Event& ev )
-{
-  IntRect widget_bounds( this->position(), this->size() );
-  Point2i mouse_coords( ev.mouse.x, ev.mouse.y );
-
-  // Registered action for button click event
-  if( ev.type == SDL_MOUSEBUTTONDOWN )
-  {
-    if( widget_bounds.contains( mouse_coords ) )
-    {
-      this->set_button_state( State::Pressed );
-
-      // Send the button state and text string of the set label at the time of
-      // the event.
-      UIWidgetEvent evt( this->button_state(), this->label_text(), ev, this->id() );
-
-      // Send the UI event object to the registered private event callback.
-      // this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, evt );
-
-      // Send the UI event object to the registered public event callback.
-      this->dispatcher()->emit( UIEvent::MOUSE_DOWN, evt );
-
-      return true;
-    } // end if mouse coordinates are within bitmap dimensions
-  }
-
-  // Registered action for button release click event
-  else if( ev.type == SDL_MOUSEBUTTONUP )
-  {
-    if( widget_bounds.contains( mouse_coords ) )
-    {
-      this->set_button_state( State::Default );
-
-      // Send the button state and text string of the set label at the time of
-      // the event.
-      UIWidgetEvent evt( this->button_state(), this->label_text(), ev, this->id() );
-
-      // Send the UI event object to the registered private event callback.
-      // this->dispatcher()->emit( UIEvent::ON_MOUSE_UP, evt );
-
-      // Send the UI event object to the registered public event callback.
-      this->dispatcher()->emit( UIEvent::MOUSE_UP, evt );
-
-      return true;
-    } // end if mouse coordinates are within bitmap dimensions
-  } // end if ev.type == SDL_MOUSEBUTTONUP
-
-  // Registered event action for mouse hover
-  if( ev.type == SDL_MOUSEMOTION )
-  {
-    if( widget_bounds.contains( mouse_coords ) )
-    {
-      // this->set_button_state( State::Pressed );
-
-      // Send the button state and text string of the set label at the time of
-      // the event.
-      UIWidgetEvent evt( this->button_state(), this->label_text(), ev, this->id() );
-
-      // Send the UI event object to the registered private event callback.
-      // this->dispatcher()->emit( UIEvent::ON_MOUSE_MOTION_ENTER, evt );
-
-      // Send the UI event object to the registered public event callback.
-      this->dispatcher()->emit( UIEvent::MOUSE_MOTION_ENTER, evt );
-
-      return true;
-    }
-    else  // Bitmap bounds does not intersect the mouse coordinates
-    {
-      // this->set_button_state( State::Default );
-
-      // Send the button state and text string of the set label at the time of
-      // the event.
-      UIWidgetEvent evt( this->button_state(), this->label_text(), ev, this->id() );
-
-      // Send the UI event object to the registered private event callback.
-      // this->dispatcher()->emit( UIEvent::ON_MOUSE_MOTION_LEAVE, evt );
-
-      // Send the UI event object to the registered public event callback.
-      this->dispatcher()->emit( UIEvent::MOUSE_MOTION_LEAVE, evt );
-
-      return true;
-    } // end if widget_bounds does not contain mouse_coords
-  } // end if event type is SDL_MOUSEMOTION
-
-  // No processed events
-  return false;
-}
-
 const std::string& Button::label_text( void ) const
 {
   return this->label_.text();
@@ -287,25 +198,61 @@ void Button::on_size_changed( const UIWidgetEvent& ev )
   this->update();
 }
 
-// void Button::on_mouse_down( const UIWidgetEvent& ev )
-// {
-//   // this->set_button_state( Button::State::Pressed );
-// }
+void Button::on_mouse_down( const UIWidgetEvent& ev )
+{
+  this->set_button_state( Button::State::Pressed );
 
-// void Button::on_mouse_up( const UIWidgetEvent& ev )
-// {
-//   // this->set_button_state( Button::State::Default );
-// }
+  UIWidgetEvent evt( this->button_state(), this->name(), ev.event(), this->id() );
 
-// void Button::on_mouse_enter( const UIWidgetEvent& ev )
-// {
-//   // this->set_button_state( Button::State::Pressed );
-// }
+  // Send the UI event object to the registered private event callback.
+  this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, evt );
 
-// void Button::on_mouse_leave( const UIWidgetEvent& ev )
-// {
-//   // this->set_button_state( Button::State::Default );
-// }
+  // Send the UI event object to the registered public event callback.
+  this->dispatcher()->emit( UIEvent::MOUSE_DOWN, evt );
+}
+
+void Button::on_mouse_up( const UIWidgetEvent& ev )
+{
+  this->set_button_state( Button::State::Default );
+
+  UIWidgetEvent evt( this->button_state(), this->name(), ev.event(), this->id() );
+
+  // Send the UI event object to the registered private event callback.
+  this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, evt );
+
+  // Send the UI event object to the registered public event callback.
+  this->dispatcher()->emit( UIEvent::MOUSE_DOWN, evt );
+}
+
+void Button::on_mouse_enter( const UIWidgetEvent& ev )
+{
+  // this->set_button_state( Button::State::Pressed );
+
+  // Send the button state and text string of the set label at the time of
+  // the event.
+  UIWidgetEvent evt( this->button_state(), this->label_text(), ev.event(), this->id() );
+
+  // Send the UI event object to the registered private event callback.
+  this->dispatcher()->emit( UIEvent::ON_MOUSE_MOTION_ENTER, evt );
+
+  // Send the UI event object to the registered public event callback.
+  this->dispatcher()->emit( UIEvent::MOUSE_MOTION_ENTER, evt );
+}
+
+void Button::on_mouse_leave( const UIWidgetEvent& ev )
+{
+  // this->set_button_state( Button::State::Default );
+
+  // Send the button state and text string of the set label at the time of
+  // the event.
+  UIWidgetEvent evt( this->button_state(), this->label_text(), ev.event(), this->id() );
+
+  // Send the UI event object to the registered private event callback.
+  this->dispatcher()->emit( UIEvent::ON_MOUSE_MOTION_LEAVE, evt );
+
+  // Send the UI event object to the registered public event callback.
+  this->dispatcher()->emit( UIEvent::MOUSE_MOTION_LEAVE, evt );
+}
 
 // Private scope
 

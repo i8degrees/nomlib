@@ -849,7 +849,60 @@ bool UIWidget::process_event( const nom::Event& ev )
         return false;
       }
 
-      (*it)->process_event( ev );
+      // return (*it)->process_event( ev );
+
+      IntRect widget_bounds( (*it)->position(), (*it)->size() );
+      Point2i mouse_coords( ev.mouse.x, ev.mouse.y );
+
+      if( ev.type == SDL_MOUSEMOTION )
+      {
+        Point2i ev_mouse( ev.motion.x, ev.motion.y );
+
+        if( this->contains( *it, ev_mouse ) == true )
+        {
+          // NOM_DUMP( (*it)->name() );
+          // NOM_DUMP("motion");
+          (*it)->on_mouse_enter( ev );
+
+          // return true;
+        }
+        else  // Widget bounds do not intersect mouse coordinates
+        {
+          (*it)->on_mouse_leave( ev );
+
+          // return true;
+        }
+      }
+      else if( ev.type == SDL_MOUSEBUTTONDOWN )
+      {
+        if( widget_bounds.contains( mouse_coords ) )
+        {
+          (*it)->on_mouse_down( ev );
+
+          return true;
+        }
+      }
+      else if( ev.type == SDL_MOUSEBUTTONUP )
+      {
+        if( widget_bounds.contains( mouse_coords ) )
+        {
+          (*it)->on_mouse_up( ev );
+
+          return true;
+        }
+      }
+      else if( ev.type == SDL_MOUSEWHEEL )
+      {
+        (*it)->on_mouse_wheel( ev );
+      }
+      else if( ev.type == SDL_KEYDOWN )
+      {
+        (*it)->on_key_down( ev );
+      }
+      else if( ev.type == SDL_KEYUP )
+      {
+        (*it)->on_key_up( ev );
+      }
     }
   }
 
@@ -1041,6 +1094,41 @@ void UIWidget::on_size_changed( const UIWidgetEvent& ev )
 
   // this->set_updated( false );
   // this->update();
+}
+
+void UIWidget::on_mouse_down( const UIWidgetEvent& ev )
+{
+  // Do nothing
+}
+
+void UIWidget::on_mouse_up( const UIWidgetEvent& ev )
+{
+  // Do nothing
+}
+
+void UIWidget::on_mouse_enter( const UIWidgetEvent& ev )
+{
+  // Do nothing
+}
+
+void UIWidget::on_mouse_leave( const UIWidgetEvent& ev )
+{
+  // Do nothing
+}
+
+void UIWidget::on_mouse_wheel( const UIWidgetEvent& ev )
+{
+  // Do nothing
+}
+
+void UIWidget::on_key_down( const UIWidgetEvent& ev )
+{
+  // Do nothing
+}
+
+void UIWidget::on_key_up( const UIWidgetEvent& ev )
+{
+  // Do nothing
 }
 
 bool UIWidget::focus_previous_child( void )

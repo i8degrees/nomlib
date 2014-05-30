@@ -30,26 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-ListBox::ListBox( void )
-{
-  // NOM_LOG_TRACE( NOM );
-
-  this->set_item_store( new UIItemContainer() );
-
-  this->set_selected_text_color( Color4i::Red );
-
-  this->set_updated( false );
-
-  // We cannot update the widget just yet; we need a parent window object in
-  // order to know what to set the font to when we render the text label
-  // objects.
-}
-
-ListBox::~ListBox( void )
-{
-  // NOM_LOG_TRACE( NOM );
-}
-
 ListBox::ListBox(
                   UIWidget* parent,
                   int64 id,
@@ -75,10 +55,6 @@ ListBox::ListBox(
   this->set_selected_text_color( Color4i::Red );
 
   // Initialize the default event listeners for the widget.
-  NOM_CONNECT_UIEVENT( this, UIEvent::ON_KEY_DOWN, this->on_key_down );
-  NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_DOWN, this->on_mouse_down );
-  NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_WHEEL, this->on_mouse_wheel );
-
   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
 
   // Widget accepts all focus types.
@@ -88,6 +64,11 @@ ListBox::ListBox(
   this->set_focus_policy( FocusPolicy::WheelFocus );
 
   // this->update();
+}
+
+ListBox::~ListBox( void )
+{
+  // NOM_LOG_TRACE( NOM );
 }
 
 ObjectTypeInfo ListBox::type( void ) const
@@ -182,247 +163,6 @@ void ListBox::draw( RenderTarget& target ) const
   // UIWidget::draw( target );
 }
 
-bool ListBox::process_event( const nom::Event& ev )
-{
-  // Positioning counter for elapsed array elements in our storage container
-  int index = 0;
-  Point2i ev_mouse( ev.mouse.x, ev.mouse.y );
-  UIWidgetEvent item;
-
-  // UIWidget::process_event( ev );
-
-  // FIXME (?):
-  //
-  // if( UIWidget::process_event( ev ) ) return true;
-
-  // Registered action for mouse button event
-  if( ev.type == SDL_MOUSEBUTTONDOWN )
-  {
-    // Counter for the position of each element; must start at zero.
-    // int index = 0;
-
-    // for( auto it = this->labels_.begin(); it != this->labels_.end(); ++it )
-    // {
-    //   if( NOM_ISA( Text*, it->get() ) != true )
-    //   {
-    //     NOM_LOG_ERR( NOM, "Could not up-cast nom::IDrawable to nom::Text.");
-    //     return false;
-    //   }
-
-    //   Text* label = NOM_DYN_PTR_CAST( Text*, it->get() );
-
-      // IntRect label_bounds( label->position().x, label->position().y, label->width(), label->height() );
-      // if( label_bounds.contains( ev_mouse ) == true )
-
-      // if( this->hit_test( label, ev_mouse ) == true )
-      index = this->hit_test( ev_mouse );
-      if( index != npos )
-      {
-        // UIWidget::Children children = this->find_children( this );
-
-        // for( auto itr = children.begin(); itr != children.end(); ++itr )
-        // {
-        //   // Defocus all other ListBox widget types that do not match the
-        //   // widget instance that we are executing from.
-        //   // if( this->type() == (*itr)->type() && *itr != this )
-        //   if( (*itr) != this )
-        //   {
-        //     (*itr)->set_focused( false );
-        //   }
-        //   else  // Our widget gains the focus
-        //   {
-        //     this->set_focused( true );
-        //   }
-        // }
-        this->set_focused( true );
-
-        // Send the array index in our event; this signifies which choice was
-        // selected.
-        item.set_index( index );
-
-        // Send the text of the selection.
-        // item.set_text( label->text() );
-        item.set_text( this->store()->item_label( index ) );
-
-        // Set the current index position to the selected text label -- this
-        // has the side effect of updating the text color; see also: ::update.
-        this->store()->set_selection( index );
-
-        // Set the associated nom::Event object for this UI event.
-        item.set_event( ev );
-
-        item.set_id( this->id() );
-
-        // Send the UI event object to the registered callback; this is the
-        // "private" interface -- reserved for internal class implementations.
-        this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, item );
-
-        // Send the UI event object to the registered callback; this is the
-        // event that gets heard by any end-user listening in, unlike the
-        // private message above.
-        this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
-
-        // Processed events
-        return true;
-      } // end if label text bounds intersect mouse coordinates
-
-      // Increment element position
-      // ++index;
-
-    // } // end for labels_ loop
-
-  } // end if event.type == SDL_MOUSEBUTTONDOWN
-
-  else if( ev.type == SDL_MOUSEMOTION )
-  {
-    ev_mouse = Point2i( ev.motion.x, ev.motion.y );
-
-    if( this->contains( this, ev_mouse ) == true )
-    {
-      // UIWidget::Children children = this->find_children( this );
-
-      // for( auto itr = children.begin(); itr != children.end(); ++itr )
-      // {
-      //   // Defocus all other ListBox widget types that do not match the
-      //   // widget instance that we are executing from.
-      //   // if( this->type() == (*itr)->type() && *itr != this )
-      //   if( (*itr) != this )
-      //   {
-      //     (*itr)->set_focused( false );
-      //   }
-      //   else  // Our widget gains the focus
-      //   {
-      //     this->set_focused( true );
-      //   }
-      // }
-
-      this->set_focused( true );
-
-      // this->dispatcher()->emit( UIEvent::ON_MOUSE_MOTION, item );
-      // this->dispatcher()->emit( UIEvent::MOUSE_MOTION, item );
-
-    } // end if mouse coordinates intersects widget_bounds
-
-    return true;
-  }
-
-  else if( ev.type == SDL_MOUSEWHEEL )
-  {
-    if( this->focused() == false ) return false;
-
-    // Counter for the position of each element; must start at current
-    // selection.
-    int index = this->store()->selection();
-
-    // Send the array index in our event; this signifies which choice was
-    // selected.
-    item.set_index( index );
-
-    // Set the current index position to the selected text label -- this
-    // has the side effect of updating the text color; see also: ::update.
-    this->store()->set_selection( index );
-
-    // Send the text of the selection if there is a selection set. Note that
-    // this needs to be set *after* the selection has been set.
-    if( index != npos )
-    {
-      // item.set_text( this->labels_.at( index )->text() );
-
-      // IDrawable::shared_ptr obj = this->labels_.at( index );
-      // if( NOM_ISA( Text*, obj.get() ) == false )
-      // {
-        // TODO: Err handling
-        // return false;
-      // }
-
-      // Text* label = NOM_DYN_PTR_CAST( Text*, obj.get() );
-
-      // item.set_text( label->text() );
-      item.set_text( this->store()->item_label( index ) );
-    }
-    else
-    {
-      item.set_text( "\0" );
-    }
-
-    // Set the associated nom::Event object for this UI event.
-    item.set_event( ev );
-
-    item.set_id( this->id() );
-
-    // Send the UI event object to the registered callback; this is the private
-    // event interface.
-    this->dispatcher()->emit( UIEvent::ON_MOUSE_WHEEL, item );
-
-    // Send the UI event object to the registered callback; this is the public
-    // event interface.
-    this->dispatcher()->emit( UIEvent::MOUSE_WHEEL, item );
-
-    // Processed events
-    return true;
-  }
-
-  // Registered action for key press event
-  else if( ev.type == SDL_KEYDOWN )
-  {
-    if( this->focused() == false ) return false;
-
-    // Position of each item
-    int index = this->store()->selection();
-
-    // Send the array index in our event; this signifies which choice was
-    // selected.
-    item.set_index( index );
-
-    // Set the current index position to the selected text label -- this
-    // has the side effect of updating the text color; see also: ::update.
-    this->store()->set_selection( index );
-
-    // Send the text of the selection if there is a selection set. Note that
-    // this needs to be set *after* the selection has been set.
-    if( index != npos )
-    {
-      // item.set_text( this->labels_.at( index )->text() );
-
-      // IDrawable::shared_ptr obj = this->labels_.at( index );
-      // if( NOM_ISA( Text*, obj.get() ) == false )
-      // {
-        // TODO: Err handling
-        // return false;
-      // }
-
-      // Text* label = NOM_DYN_PTR_CAST( Text*, obj.get() );
-
-      // item.set_text( label->text() );
-      item.set_text( this->store()->item_label( index) );
-    }
-    else
-    {
-      item.set_text( "\0" );
-    }
-
-    // Set the associated nom::Event object for this UI event.
-    item.set_event( ev );
-
-    item.set_id( this->id() );
-
-    // Send the UI event object to the registered callback; this is the private
-    // event interface.
-    this->dispatcher()->emit( UIEvent::ON_KEY_DOWN, item );
-
-    // Send the UI event object to the registered callback; this is the public
-    // event interface.
-    this->dispatcher()->emit( UIEvent::KEY_DOWN, item );
-
-    // Processed events
-    return true;
-
-  } // end if event.type == SDL_KEYDOWN
-
-  // No events processed.
-  return false;
-}
-
 void ListBox::set_item_store( const UIItemContainer::raw_ptr store )
 {
   this->set_updated( false );
@@ -478,6 +218,51 @@ int ListBox::hit_test( const Point2i& pt )
 void ListBox::on_key_down( const UIWidgetEvent& ev )
 {
   nom::Event event = ev.event();
+  UIWidgetEvent item;
+
+  // Registered action for key press event
+  if( event.type == SDL_KEYDOWN )
+  {
+    if( this->focused() == false )
+    {
+      return;
+    }
+
+    // Position of each item
+    int index = this->store()->selection();
+
+    // Send the array index in our event; this signifies which choice was
+    // selected.
+    item.set_index( index );
+
+    // Set the current index position to the selected text label -- this
+    // has the side effect of updating the text color; see also: ::update.
+    this->store()->set_selection( index );
+
+    // Send the text of the selection if there is a selection set. Note that
+    // this needs to be set *after* the selection has been set.
+    if( index != npos )
+    {
+      item.set_text( this->store()->item_label( index) );
+    }
+    else
+    {
+      item.set_text( "\0" );
+    }
+
+    // Set the associated nom::Event object for this UI event.
+    item.set_event( event );
+
+    item.set_id( this->id() );
+
+    // Send the UI event object to the registered callback; this is the private
+    // event interface.
+    this->dispatcher()->emit( UIEvent::ON_KEY_DOWN, item );
+
+    // Send the UI event object to the registered callback; this is the public
+    // event interface.
+    this->dispatcher()->emit( UIEvent::KEY_DOWN, item );
+  }
 
   this->set_updated( false );
 
@@ -485,7 +270,8 @@ void ListBox::on_key_down( const UIWidgetEvent& ev )
   {
     // Our internal storage container could also be used to obtain the
     // selection index.
-    int selected = ev.index();
+    // int selected = ev.index();
+    int selected = item.index();
 
     if( event.key.sym == SDLK_UP && selected > 0 )
     {
@@ -515,12 +301,102 @@ void ListBox::on_key_down( const UIWidgetEvent& ev )
 
 void ListBox::on_mouse_down( const UIWidgetEvent& ev )
 {
-  this->set_selected_text_color( this->selected_text_color() );
+  int index = 0;
+  UIWidgetEvent item;
+  Event evt = ev.event();
+
+  // Registered action for mouse button event
+  if( evt.type == SDL_MOUSEBUTTONDOWN )
+  {
+    Point2i ev_mouse( evt.mouse.x, evt.mouse.y );
+    index = this->hit_test( ev_mouse );
+    if( index != npos )
+    {
+      this->set_focused( true );
+
+      // Send the array index in our event; this signifies which choice was
+      // selected.
+      item.set_index( index );
+
+      // Send the text of the selection.
+      item.set_text( this->store()->item_label( index ) );
+
+      // Set the current index position to the selected text label -- this
+      // has the side effect of updating the text color; see also: ::update.
+      this->store()->set_selection( index );
+
+      // Set the associated nom::Event object for this UI event.
+      item.set_event( evt );
+
+      item.set_id( this->id() );
+
+      // Send the UI event object to the registered callback; this is the
+      // "private" interface -- reserved for internal class implementations.
+      this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, item );
+
+      // Send the UI event object to the registered callback; this is the
+      // event that gets heard by any end-user listening in, unlike the
+      // private message above.
+      this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
+
+      this->set_selected_text_color( this->selected_text_color() );
+    }
+  }
+}
+
+void ListBox::on_mouse_enter( const UIWidgetEvent& ev )
+{
+  // this->set_focused( true );
 }
 
 void ListBox::on_mouse_wheel( const UIWidgetEvent& ev )
 {
   nom::Event event = ev.event();
+  UIWidgetEvent item;
+
+  if( event.type == SDL_MOUSEWHEEL )
+  {
+    if( this->focused() == false )
+    {
+      return;
+    }
+
+    // Counter for the position of each element; must start at current
+    // selection.
+    int index = this->store()->selection();
+
+    // Send the array index in our event; this signifies which choice was
+    // selected.
+    item.set_index( index );
+
+    // Set the current index position to the selected text label -- this
+    // has the side effect of updating the text color; see also: ::update.
+    this->store()->set_selection( index );
+
+    // Send the text of the selection if there is a selection set. Note that
+    // this needs to be set *after* the selection has been set.
+    if( index != npos )
+    {
+      item.set_text( this->store()->item_label( index ) );
+    }
+    else
+    {
+      item.set_text( "\0" );
+    }
+
+    // Set the associated nom::Event object for this UI event.
+    item.set_event( event );
+
+    item.set_id( this->id() );
+
+    // Send the UI event object to the registered callback; this is the private
+    // event interface.
+    this->dispatcher()->emit( UIEvent::ON_MOUSE_WHEEL, item );
+
+    // Send the UI event object to the registered callback; this is the public
+    // event interface.
+    this->dispatcher()->emit( UIEvent::MOUSE_WHEEL, item );
+  }
 
   this->set_updated( false );
 
@@ -528,7 +404,8 @@ void ListBox::on_mouse_wheel( const UIWidgetEvent& ev )
   {
     // Our internal storage container could also be used to obtain the
     // selection index.
-    int selected = ev.index();
+    // int selected = ev.index();
+    int selected = item.index();
 
     // Up
     if( event.wheel.y > 0 && selected > 0 )

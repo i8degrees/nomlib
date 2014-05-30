@@ -322,6 +322,12 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
 
 void UIBoxLayout::add_item( UILayoutItem* item )
 {
+  if( item == nullptr )
+  {
+    NOM_LOG_ERR( NOM, "Could not add layout item: item was NULL." );
+    return;
+  }
+
   this->insert_item( this->count(), item );
 }
 
@@ -339,17 +345,35 @@ void UIBoxLayout::erase( int pos )
 
 void UIBoxLayout::insert_item( int pos, UILayoutItem* item )
 {
+  if( item == nullptr )
+  {
+    NOM_LOG_ERR( NOM, "Could not insert layout item: item was NULL." );
+    return;
+  }
+
   this->items_.insert( this->items_.begin() + pos, item );
 }
 
 void UIBoxLayout::append_item( UILayoutItem* item )
 {
+  if( item == nullptr )
+  {
+    NOM_LOG_ERR( NOM, "Could not append layout item: item was NULL." );
+    return;
+  }
+
   this->insert_item( this->count(), item );
 }
 
 void UIBoxLayout::insert_widget( int pos, UIWidget* widget )
 {
   Point2i pos_offset;
+
+  if( widget == nullptr )
+  {
+    NOM_LOG_ERR( NOM, "Could not insert widget: widget was NULL." );
+    return;
+  }
 
   this->items_.insert( this->items_.begin() + pos, new UIWidgetLayoutItem( widget ) );
 
@@ -381,6 +405,12 @@ void UIBoxLayout::insert_widget( int pos, UIWidget* widget, uint32 align )
 {
   Point2i pos_offset;
 
+  if( widget == nullptr )
+  {
+    NOM_LOG_ERR( NOM, "Could not insert widget: widget was NULL." );
+    return;
+  }
+
   this->insert_widget( pos, widget );
 
   NOM_STUBBED( NOM );
@@ -390,19 +420,34 @@ void UIBoxLayout::insert_widget( int pos, UIWidget* widget, uint32 align )
 
 void UIBoxLayout::append_widget( UIWidget* widget )
 {
-  if( widget != nullptr )
+  if( widget == nullptr )
   {
-    this->insert_widget( this->count(), widget );
+    NOM_LOG_ERR( NOM, "Could not append widget: widget was NULL." );
+    return;
   }
+
+  this->insert_widget( this->count(), widget );
 }
 
 void UIBoxLayout::append_widget( UIWidget* widget, uint32 align )
 {
+  if( widget == nullptr )
+  {
+    NOM_LOG_ERR( NOM, "Could not append widget: widget was NULL." );
+    return;
+  }
+
   this->insert_widget( this->count(), widget, align );
 }
 
 void UIBoxLayout::insert_spacer( int pos, UISpacerItem* item )
 {
+  if( item == nullptr )
+  {
+    NOM_LOG_ERR( NOM, "Could not insert spacer item: item was NULL." );
+    return;
+  }
+
   this->items_.insert( this->items_.begin() + pos, item );
 
   this->set_bounds( item->bounds() );
@@ -415,6 +460,12 @@ void UIBoxLayout::insert_spacer( int pos, int height )
 
   UISpacerItem* sp = new UISpacerItem( spacer_height, flags, flags );
 
+  if( sp == nullptr )
+  {
+    NOM_LOG_ERR( NOM, "Could not insert spacer item: item was NULL." );
+    return;
+  }
+
   this->items_.insert( this->items_.begin() + pos, sp );
 
   this->set_bounds( sp->bounds() );
@@ -422,6 +473,12 @@ void UIBoxLayout::insert_spacer( int pos, int height )
 
 void UIBoxLayout::append_spacer( UISpacerItem* item )
 {
+  if( item == nullptr )
+  {
+    NOM_LOG_ERR( NOM, "Could not append spacer item: item was NULL." );
+    return;
+  }
+
   this->insert_spacer( this->count(), item );
 }
 

@@ -230,6 +230,11 @@ bool UILayout::set_alignment( UIWidget* widget, enum Anchor align )
   {
     item = this->at( pos );
 
+    if( item == nullptr )
+    {
+      return false;
+    }
+
     if( item->widget() == widget )
     {
       item->set_alignment( align );

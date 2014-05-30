@@ -296,12 +296,12 @@ void RenderWindow::set_position ( int32 x, int32 y )
   SDL_SetWindowPosition ( this->window(), x, y );
 }
 
-uint32 RenderWindow::window_id ( void ) const
+uint32 RenderWindow::window_id( void ) const
 {
   return this->window_id_;
 }
 
-SDL_Window* RenderWindow::window_id ( uint32 id )
+SDL_Window* RenderWindow::window_id( uint32 id )
 {
   return SDL_GetWindowFromID ( id );
 }

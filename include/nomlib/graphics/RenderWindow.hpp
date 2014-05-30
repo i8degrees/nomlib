@@ -164,7 +164,7 @@ class RenderWindow: public Renderer
     /// Obtain this window's unique identifier
     ///
     /// \return This window's unique identifier
-    uint32 window_id ( void ) const;
+    uint32 window_id( void ) const;
 
     /// Obtain a pointer to a SDL_Window struct by ID.
     ///
@@ -173,7 +173,9 @@ class RenderWindow: public Renderer
     /// \return SDL_Window pointer if exists; NULL if no Window exists
     ///
     /// \todo Is there a reason why this is a static method???
-    static SDL_WINDOW::RawPtr window_id ( uint32 id );
+    ///
+    /// \todo Rename to window_from_id?
+    static SDL_WINDOW::RawPtr window_id( uint32 id );
 
     /// Obtain this window's display index
     ///

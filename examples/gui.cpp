@@ -313,9 +313,6 @@ class App: public nom::SDLApp
       // with objects. Be sure to not forget about re-enabling the set_title
       // for this window!
       this->gui_window[2]->set_name( "GUI_WINDOW[2]" );
-
-      this->gui_window[2]->set_decorator( new nom::FinalFantasyDecorator() );
-
       this->gui_window[2]->set_font( this->bitmap_small_font );
 
       // this->gui_window[2]->set_title( this->gui_window[2]->name() );
@@ -328,9 +325,6 @@ class App: public nom::SDLApp
       // with objects. Be sure to not forget about re-enabling the set_title
       // for this window!
       this->gui_window[3]->set_name( "GUI_WINDOW[3]" );
-
-      this->gui_window[3]->set_decorator( new nom::FinalFantasyDecorator() );
-
       this->gui_window[3]->set_font( this->bitmap_small_font );
 
       // this->gui_window[3]->set_title( this->gui_window[3]->name() );
@@ -343,8 +337,6 @@ class App: public nom::SDLApp
       // with objects. Be sure to not forget about re-enabling the set_title
       // for this window!
       this->gui_window[4]->set_name( "GUI_WINDOW[4]" );
-
-      this->gui_window[4]->set_decorator( new nom::FinalFantasyDecorator() );
       this->gui_window[4]->set_font( this->bitmap_small_font );
 
       // this->gui_window[4]->set_title( this->gui_window[4]->name() );
@@ -915,7 +907,7 @@ class App: public nom::SDLApp
       nom::DataViewList* dview = nullptr;
 
       dview = new nom::DataViewList( this->gui_window[2], -1, pos, size );
-
+      dview->set_decorator( new nom::FinalFantasyDecorator() );
       // TODO:
       // dview->register_event_listener( 1, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->dview_on_selection( ev ); } ) );
 
@@ -1037,6 +1029,7 @@ class App: public nom::SDLApp
       values_2.push_back( new nom::Text( "6", this->truetype_font ) );
 
       dview = new nom::DataViewList( this->gui_window[3], -1, pos, size );
+      dview->set_decorator( new nom::FinalFantasyDecorator() );
 
       // TODO:
       // dview->register_event_listener( 1, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->dview_on_selection( ev ); } ) );
@@ -1172,6 +1165,7 @@ class App: public nom::SDLApp
       values_2.push_back( this->menu_elements.clone() );
 
       dview = new nom::DataViewList( this->gui_window[4], -1, pos, size );
+      dview->set_decorator( new nom::FinalFantasyDecorator() );
       dview->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->dview_on_selection( ev ); } ) );
 
       nom::DataViewColumn col_0( 0, "CARDS  PG. 1", 55, nom::IDataViewColumn::Alignment::Left );
@@ -1484,7 +1478,7 @@ class App: public nom::SDLApp
 
         case SDLK_f:
         {
-          if ( this->window[ev.key.window_id - 1].window_id() == ev.key.window_id )
+          if( this->window[ev.key.window_id - 1].window_id() == ev.key.window_id )
           {
             this->window[ev.key.window_id - 1].toggle_fullscreen();
           } // end window_id match

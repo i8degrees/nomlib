@@ -30,20 +30,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-BitmapButton::~BitmapButton( void )
-{
-  // NOM_LOG_TRACE( NOM );
-}
-
 BitmapButton::BitmapButton  (
                               UIWidget* parent,
                               int64 id,
                               const Point2i& pos,
                               const Size2i& size,
-                              Texture* bitmap
+                              const Texture& image
                             ) :
-  Button( parent, id, pos, size ),   // Base class
-  bitmap_( bitmap )
+  Button( parent, id, pos, size ) // Base class
 {
   // NOM_LOG_TRACE( NOM );
 
@@ -53,9 +47,27 @@ BitmapButton::BitmapButton  (
   // Auto-generate a name tag for our widget.
   this->set_name( "bitmap_button" );
 
+  this->set_default_bitmap( image );
+  this->set_pressed_bitmap( image );
+  this->set_focused_bitmap( image );
+  this->set_disabled_bitmap( image );
+
+  // Default state
+  this->set_button_state( Button::State::Default );
+
   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
 
+  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_DOWN, this->on_mouse_down );
+  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_UP, this->on_mouse_up );
+  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_MOTION_ENTER, this->on_mouse_enter );
+  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_MOTION_LEAVE, this->on_mouse_leave );
+
   this->update();
+}
+
+BitmapButton::~BitmapButton( void )
+{
+  // NOM_LOG_TRACE( NOM );
 }
 
 ObjectTypeInfo BitmapButton::type( void ) const
@@ -63,22 +75,11 @@ ObjectTypeInfo BitmapButton::type( void ) const
   return NOM_OBJECT_TYPE_INFO( self_type );
 }
 
-BitmapButton::SelfType& BitmapButton::operator =( const SelfType& rhs )
-{
-  this->bitmap_ = rhs.bitmap_;
-
-  NOM_ASSERT( this->bitmap_ ); // nullptr check
-
-  // this->update();
-
-  return *this;
-}
-
 const Size2i BitmapButton::size_hint( void ) const
 {
-  if( this->bitmap_ != nullptr )
+  if( this->default_bitmap_.valid() )
   {
-    return( Size2i( this->bitmap_->bounds().w, this->bitmap_->bounds().h ) );
+    return( Size2i( this->default_bitmap_.bounds().w, this->default_bitmap_.bounds().h ) );
   }
 
   // If the bitmap has not been set yet, use the minimum size of the widget
@@ -86,108 +87,143 @@ const Size2i BitmapButton::size_hint( void ) const
   return this->minimum_size();
 }
 
-void BitmapButton::update( void )
-{
-  if( this->bitmap_ == nullptr )
-  {
-    NOM_LOG_ERR( NOM, "Could not update button: bitmap is NULL." );
-    return;
-  }
-
-  this->bitmap_->set_position( this->position() );
-
-  this->set_bounds( IntRect( this->position().x, this->position().y, this->bitmap_->bounds().w, this->bitmap_->bounds().h ) );
-
-  Button::update();
-}
-
 void BitmapButton::draw( RenderTarget& target ) const
 {
-  if( this->bitmap_ == nullptr ) return;
+  switch( this->button_state() )
+  {
+    default:
+    case Button::State::Default:
+    {
+      if( this->default_bitmap_.valid() == false )
+      {
+        break;
+      }
 
-  this->bitmap_->draw( target );
+      this->default_bitmap_.draw( target );
+      break;
+    }
+
+    case Button::State::Pressed:
+    {
+      if( this->pressed_bitmap_.valid() == false )
+      {
+        break;
+      }
+
+      this->pressed_bitmap_.draw( target );
+      break;
+    }
+
+    case Button::State::Focused:
+    {
+      if( this->focused_bitmap_.valid() == false )
+      {
+        break;
+      }
+
+      this->focused_bitmap_.draw( target );
+      break;
+    }
+
+    case Button::State::Disabled:
+    {
+      if( this->disabled_bitmap_.valid() == false )
+      {
+        break;
+      }
+
+      this->disabled_bitmap_.draw( target );
+      break;
+    }
+  }
 
   // Draw button's label text on top of the bitmap overlay.
   Button::draw( target );
 }
 
+const Texture& BitmapButton::default_bitmap( void ) const
+{
+  return this->default_bitmap_;
+}
+
+const Texture& BitmapButton::pressed_bitmap( void ) const
+{
+  return this->pressed_bitmap_;
+}
+
+const Texture& BitmapButton::focused_bitmap( void ) const
+{
+  return this->focused_bitmap_;
+}
+
+const Texture& BitmapButton::disabled_bitmap( void ) const
+{
+  return this->disabled_bitmap_;
+}
+
 bool BitmapButton::process_event( const nom::Event& ev )
 {
-  Point2i mouse_coords( ev.mouse.x, ev.mouse.y );
+  return Button::process_event( ev );
+}
 
-  // Button::process_event( ev );
+void BitmapButton::set_default_bitmap( const Texture& image )
+{
+  this->default_bitmap_ = image;
 
-  // FIXME (?):
-  //
-  // if( Button::process_event( ev ) ) return true;
+  this->update_bounds();
+}
 
-  // Registered action for selection click event
-  if( ev.type == SDL_MOUSEBUTTONUP )
+void BitmapButton::set_pressed_bitmap( const Texture& image )
+{
+  this->pressed_bitmap_ = image;
+
+  this->update_bounds();
+}
+
+void BitmapButton::set_focused_bitmap( const Texture& image )
+{
+  this->focused_bitmap_ = image;
+
+  this->update_bounds();
+}
+
+void BitmapButton::set_disabled_bitmap( const Texture& image )
+{
+  this->disabled_bitmap_ = image;
+
+  this->update_bounds();
+}
+
+// Protected scope
+
+void BitmapButton::update_bounds( void )
+{
+  if( this->default_bitmap_.valid() == false )
   {
-    IntRect bitmap_bounds( this->position().x, this->position().y, this->bitmap_->width(), this->bitmap_->height() );
-
-    if( bitmap_bounds.contains( mouse_coords ) )
-    {
-      // Send the index and string text of the label that was selected during
-      // the time of this event.
-      UIWidgetEvent item_ev( 0, this->label_text(), ev, this->id() );
-
-      // Send the UI event object to the registered callback; public event slot.
-      this->dispatcher()->emit( UIEvent::MOUSE_UP, item_ev );
-
-      return true;
-    } // end if mouse coordinates are within bitmap dimensions
-  } // end if ev.type == SDL_MOUSEBUTTONUP
-
-/* TODO
-  // Registered event action for on mouse hover (enter)
-  else if( itr->first == 2 && ev.type == SDL_MOUSEMOTION )
-  {
-    IntRect bitmap_bounds( this->bitmap_->position().x, this->bitmap_->position().y, this->bitmap_->width(), this->bitmap_->height() );
-
-    if( bitmap_bounds.contains( mouse_coords ) )
-    {
-      UIWidgetEvent ev;
-
-      // Send the array index in our event; this signifies which choice was
-      // selected.
-      ev.set_index( 0 );
-
-      // Send the text of the selection.
-      ev.set_text( this->label_text() );
-
-      // Send the event to the registered callback for this event.
-      itr->second( ev );
-
-      return true;
-    }
+    NOM_LOG_ERR( NOM, "Could not update button: the bitmap is invalid." );
+    return;
   }
 
-  // Registered event action for on mouse hover (leave)
-  else if( itr->first == 3 && ev.type == SDL_MOUSEMOTION )
-  {
-    IntRect bitmap_bounds( this->bitmap_->position().x, this->bitmap_->position().y, this->bitmap_->width(), this->bitmap_->height() );
+  // Set the rendering position of the default bitmap to the widget's
+  // coordinates.
+  this->default_bitmap_.set_position( this->position() );
 
-    if( ! bitmap_bounds.contains( mouse_coords ) )
-    {
-      UIWidgetEvent ev;
+  // Set the rendering position of the pressed bitmap to the widget's
+  // coordinates.
+  this->pressed_bitmap_.set_position( this->position() );
 
-      // Send the array index in our event; this signifies which choice was
-      // selected.
-      ev.set_index( 0 );
+  // Set the rendering position of the pressed bitmap to the widget's
+  // coordinates.
+  this->focused_bitmap_.set_position( this->position() );
 
-      // Send the text of the selection.
-      ev.set_text( this->label_text() );
+  // Set the rendering position of the disabled bitmap to the widget's
+  // coordinates.
+  this->disabled_bitmap_.set_position( this->position() );
 
-      // Send the event to the registered callback for this event.
-      itr->second( ev );
+  // Set the size of the widget to match the default bitmap button.
+  this->set_size( this->default_bitmap_.bounds().w, this->default_bitmap_.bounds().h );
 
-      return true;
-    }
-  }
-TODO */
-
-  return false;
+  Button::update_bounds();
 }
 
 void BitmapButton::on_size_changed( const UIWidgetEvent& ev )
@@ -198,8 +234,6 @@ void BitmapButton::on_size_changed( const UIWidgetEvent& ev )
   {
     return;
   }
-
-  // this->set_updated( false );
 
   if( this->decorator() )
   {
@@ -217,7 +251,36 @@ void BitmapButton::on_size_changed( const UIWidgetEvent& ev )
   // within this class.
   Button::update_bounds();
 
+  this->update_bounds();
+
   this->update();
+}
+
+// void BitmapButton::on_mouse_down( const UIWidgetEvent& ev )
+// {
+//   // this->set_button_state( Button::State::Pressed );
+// }
+
+// void BitmapButton::on_mouse_up( const UIWidgetEvent& ev )
+// {
+//   // this->set_button_state( Button::State::Default );
+// }
+
+// void BitmapButton::on_mouse_enter( const UIWidgetEvent& ev )
+// {
+//   // this->set_button_state( Button::State::Pressed );
+// }
+
+// void BitmapButton::on_mouse_leave( const UIWidgetEvent& ev )
+// {
+//   // this->set_button_state( Button::State::Default );
+// }
+
+// Private scope
+
+void BitmapButton::update( void )
+{
+  // Nothing to do
 }
 
 } // namespace nom

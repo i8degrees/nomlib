@@ -47,6 +47,11 @@ Button::Button  (
   this->set_name( "button" );
 
   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
+
+  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_DOWN, this->on_mouse_down );
+  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_UP, this->on_mouse_up );
+  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_MOTION_ENTER, this->on_mouse_enter );
+  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_MOUSE_MOTION_LEAVE, this->on_mouse_leave );
 }
 
 Button::~Button( void )
@@ -114,30 +119,6 @@ ObjectTypeInfo Button::type( void ) const
   return NOM_OBJECT_TYPE_INFO( self_type );
 }
 
-// bool Button::valid( void ) const
-// {
-//   if ( this->position() != Point2i::null || this->size() != Size2i::null )
-//   {
-//     return true;
-//   }
-
-//   return false;
-// }
-
-void Button::update( void )
-{
-  // UIWidget::update();
-
-  // if( this->updated() == true )
-  // {
-  //   return;
-  // }
-
-  // NOM_DUMP("updating: " + this->name() );
-
-  // this->set_updated( true );
-}
-
 void Button::draw( RenderTarget& target ) const
 {
   // UIWidget::draw( target );
@@ -148,34 +129,94 @@ void Button::draw( RenderTarget& target ) const
   }
 }
 
+Button::State Button::button_state( void ) const
+{
+  return this->button_state_;
+}
+
 bool Button::process_event( const nom::Event& ev )
 {
+  IntRect widget_bounds( this->position(), this->size() );
   Point2i mouse_coords( ev.mouse.x, ev.mouse.y );
 
-  // UIWidget::process_event( ev );
-
-  // FIXME (?):
-  //
-  // if( UIWidget::process_event( ev ) ) return true;
-
-  // Registered action for mouse button events
-  if( ev.type == SDL_MOUSEBUTTONUP )
+  // Registered action for button click event
+  if( ev.type == SDL_MOUSEBUTTONDOWN )
   {
-    IntRect label_bounds( this->label_.global_bounds() );
-
-    if( label_bounds.contains( mouse_coords ) )
+    if( widget_bounds.contains( mouse_coords ) )
     {
-      // Send the index and string text of the label that was selected during
-      // the time of this event.
-      UIWidgetEvent item_ev( 0, this->label_.text(), ev, this->id() );
+      this->set_button_state( State::Pressed );
 
-      // Send the UI event object to the registered callback.
-      this->dispatcher()->emit( UIEvent::MOUSE_UP, item_ev );
+      // Send the button state and text string of the set label at the time of
+      // the event.
+      UIWidgetEvent evt( this->button_state(), this->label_text(), ev, this->id() );
 
-      // Successfully processed events
+      // Send the UI event object to the registered private event callback.
+      // this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, evt );
+
+      // Send the UI event object to the registered public event callback.
+      this->dispatcher()->emit( UIEvent::MOUSE_DOWN, evt );
+
       return true;
-    } // end if label text are within the bounds of mouse coordinates
-  } // end if event type == SDL_MOUSE_BUTTONUP
+    } // end if mouse coordinates are within bitmap dimensions
+  }
+
+  // Registered action for button release click event
+  else if( ev.type == SDL_MOUSEBUTTONUP )
+  {
+    if( widget_bounds.contains( mouse_coords ) )
+    {
+      this->set_button_state( State::Default );
+
+      // Send the button state and text string of the set label at the time of
+      // the event.
+      UIWidgetEvent evt( this->button_state(), this->label_text(), ev, this->id() );
+
+      // Send the UI event object to the registered private event callback.
+      // this->dispatcher()->emit( UIEvent::ON_MOUSE_UP, evt );
+
+      // Send the UI event object to the registered public event callback.
+      this->dispatcher()->emit( UIEvent::MOUSE_UP, evt );
+
+      return true;
+    } // end if mouse coordinates are within bitmap dimensions
+  } // end if ev.type == SDL_MOUSEBUTTONUP
+
+  // Registered event action for mouse hover
+  if( ev.type == SDL_MOUSEMOTION )
+  {
+    if( widget_bounds.contains( mouse_coords ) )
+    {
+      // this->set_button_state( State::Pressed );
+
+      // Send the button state and text string of the set label at the time of
+      // the event.
+      UIWidgetEvent evt( this->button_state(), this->label_text(), ev, this->id() );
+
+      // Send the UI event object to the registered private event callback.
+      // this->dispatcher()->emit( UIEvent::ON_MOUSE_MOTION_ENTER, evt );
+
+      // Send the UI event object to the registered public event callback.
+      this->dispatcher()->emit( UIEvent::MOUSE_MOTION_ENTER, evt );
+
+      return true;
+    }
+    else  // Bitmap bounds does not intersect the mouse coordinates
+    {
+      // this->set_button_state( State::Default );
+
+      // Send the button state and text string of the set label at the time of
+      // the event.
+      UIWidgetEvent evt( this->button_state(), this->label_text(), ev, this->id() );
+
+      // Send the UI event object to the registered private event callback.
+      // this->dispatcher()->emit( UIEvent::ON_MOUSE_MOTION_LEAVE, evt );
+
+      // Send the UI event object to the registered public event callback.
+      this->dispatcher()->emit( UIEvent::MOUSE_MOTION_LEAVE, evt );
+
+      return true;
+    } // end if widget_bounds does not contain mouse_coords
+  } // end if event type is SDL_MOUSEMOTION
 
   // No processed events
   return false;
@@ -201,9 +242,13 @@ void Button::set_label( const std::string& text )
   this->label_.set_style( this->style()->font_style() );
   this->label_.set_color( this->style()->font_color() );
 
-  // this->set_updated( false );
-
+  this->update_bounds();
   this->update();
+}
+
+void Button::set_button_state( Button::State state )
+{
+  this->button_state_ = state;
 }
 
 // Protected scope
@@ -223,8 +268,6 @@ void Button::on_size_changed( const UIWidgetEvent& ev )
     return;
   }
 
-  // this->set_updated( false );
-
   if( this->decorator() )
   {
     // Update the attached decorator (border & possibly a background)
@@ -239,7 +282,36 @@ void Button::on_size_changed( const UIWidgetEvent& ev )
   this->label_.set_position( this->position() );
   this->label_.set_size( this->size() );
 
+  this->update_bounds();
+
   this->update();
+}
+
+// void Button::on_mouse_down( const UIWidgetEvent& ev )
+// {
+//   // this->set_button_state( Button::State::Pressed );
+// }
+
+// void Button::on_mouse_up( const UIWidgetEvent& ev )
+// {
+//   // this->set_button_state( Button::State::Default );
+// }
+
+// void Button::on_mouse_enter( const UIWidgetEvent& ev )
+// {
+//   // this->set_button_state( Button::State::Pressed );
+// }
+
+// void Button::on_mouse_leave( const UIWidgetEvent& ev )
+// {
+//   // this->set_button_state( Button::State::Default );
+// }
+
+// Private scope
+
+void Button::update( void )
+{
+  // Nothing to do
 }
 
 } // namespace nom

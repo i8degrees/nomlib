@@ -47,6 +47,14 @@ class Button: public UIWidget
     typedef self_type* raw_ptr;
     typedef std::shared_ptr<self_type> shared_ptr;
 
+    enum State
+    {
+      Default = 0,
+      Pressed,
+      Focused,
+      Disabled    // Reserved for future implementation
+    };
+
     /// \brief Default constructor.
     Button  (
               UIWidget* parent,
@@ -73,18 +81,13 @@ class Button: public UIWidget
     /// \note Re-implements UIWidget::size_hint.
     virtual const Size2i size_hint( void ) const;
 
-    // \brief Query the validity of the object
-    //
-    // \remarks A valid object must have both the positioning & size bounding
-    // coordinates be set to a non-null object value. See nom::Point2i::null
-    // and nom::Size2i::null for their respective values.
-    // virtual bool valid( void ) const;
-
-    /// \brief Re-implements IDrawable::update.
-    virtual void update( void );
-
     /// \brief Re-implements IDrawable::draw.
     virtual void draw( RenderTarget& target ) const;
+
+    /// \brief Get the state of the button.
+    ///
+    /// \returns One of the enumeration types.
+    Button::State button_state( void ) const;
 
     /// \brief Implements the EventHandler::process_event method.
     bool process_event( const nom::Event& ev );
@@ -93,15 +96,28 @@ class Button: public UIWidget
 
     void set_label( const std::string& text );
 
+    /// \see The Button::State enumeration.
+    void set_button_state( Button::State state );
+
   protected:
     virtual void update_bounds( void );
 
     /// \brief Re-implements UIWidget::on_size_changed.
     virtual void on_size_changed( const UIWidgetEvent& ev );
 
+    // virtual void on_mouse_down( const UIWidgetEvent& ev );
+    // virtual void on_mouse_up( const UIWidgetEvent& ev );
+    // virtual void on_mouse_enter( const UIWidgetEvent& ev );
+    // virtual void on_mouse_leave( const UIWidgetEvent& ev );
+
   private:
+    /// \brief Implements IDrawable::update.
+    void update( void );
+
     std::string text_;
     Text label_;
+
+    Button::State button_state_;
 };
 
 } // namespace nom

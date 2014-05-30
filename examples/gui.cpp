@@ -360,9 +360,9 @@ class App: public nom::SDLApp
       this->gui_window[1]->insert_child( this->create_messagebox_ex1() );
       // this->gui_window[1]->insert_child( this->create_question_dialogbox_ex0() );
 
-      this->gui_window[2]->insert_child( this->create_dataviewlist_ex0() );
-      this->gui_window[3]->insert_child( this->create_dataviewlist_ex1() );
-      this->gui_window[4]->insert_child( this->create_dataviewlist_ex2() );
+      // this->gui_window[2]->insert_child( this->create_dataviewlist_ex0() );
+      // this->gui_window[3]->insert_child( this->create_dataviewlist_ex1() );
+      // this->gui_window[4]->insert_child( this->create_dataviewlist_ex2() );
 
       // FIXME: Widgets must not be added to the layout until *after* a) font
       // initialization (widget's size hint); b) item store initialization
@@ -452,7 +452,7 @@ class App: public nom::SDLApp
 
       // listbox_ex2
       widget = this->gui_window[0]->find_child( 99 );
-      NOM_ASSERT( widget != nullptr );
+      // NOM_ASSERT( widget != nullptr );
 
       if( widget != nullptr )
       {
@@ -493,15 +493,21 @@ class App: public nom::SDLApp
       this->button_ex0->set_decorator( new nom::FinalFantasyDecorator() );
       // this->button_ex0->set_decorator( new nom::MinimalDecorator() );
 
-      // Label text events
-      this->button_ex0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_on_click( ev ); } ) );
-      this->button_ex0->set_label( "button_ex0" );
+      this->button_ex0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_ex0_on_click( ev ); } ) );
+      this->button_ex0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_ex0_on_click( ev ); } ) );
+      // this->button_ex0->register_event_listener( nom::UIEvent::MOUSE_MOTION_ENTER, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_ex0_on_click( ev ); } ) );
+      // this->button_ex0->register_event_listener( nom::UIEvent::MOUSE_MOTION_LEAVE, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_ex0_on_click( ev ); } ) );
+
+      this->button_ex0->set_label( "Click me!" );
 
       NOM_ASSERT( this->button_ex0->name() == "button_ex0 widget" );
       // NOM_ASSERT( this->button_ex0->position() == pos );
       // NOM_ASSERT( this->button_ex0->parent()->position() == this->gui_window[0]->position() );
       NOM_ASSERT( this->button_ex0->size() == size );
-      NOM_ASSERT( this->button_ex0->label_text() == "button_ex0" );
+      NOM_ASSERT( this->button_ex0->label_text() == "Click me!" );
+
+      // Save the original text string used so we can restore it upon callback.
+      this->button_ex0_original_text = this->button_ex0->label_text();
 
       return this->button_ex0;
     }
@@ -526,8 +532,10 @@ class App: public nom::SDLApp
 
       this->button_ex1->set_decorator( new nom::MinimalDecorator() );
 
-      // Label text events
-      this->button_ex1->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_on_click( ev ); } ) );
+      this->button_ex1->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+      this->button_ex1->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+      // this->button_ex1->register_event_listener( nom::UIEvent::MOUSE_MOTION_ENTER, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+      // this->button_ex1->register_event_listener( nom::UIEvent::MOUSE_MOTION_LEAVE, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
       this->button_ex1->set_label( "button_ex1" );
 
@@ -566,8 +574,8 @@ class App: public nom::SDLApp
       // button = new nom::BitmapButton( this->gui_window[0], -1, pos, size, &this->button_bg[0] );
       // button = new nom::BitmapButton( this->gui_window[0], -1, pos, size, &this->button_bg[0] );
 
-      this->button_ex2 = new nom::BitmapButton( this->gui_window[5], -1, pos, size, &this->button_bg[2] );
-// this->button_ex2->set_font( this->truetype_font2 );
+      this->button_ex2 = new nom::BitmapButton( this->gui_window[5], -1, pos, size, this->button_bg[1] );
+      this->button_ex2->set_pressed_bitmap( this->button_bg[2] );
 
       nom::UIStyle::shared_ptr custom_style = nullptr;
       custom_style.reset( new nom::UIStyle() );
@@ -580,18 +588,10 @@ class App: public nom::SDLApp
 
       // Use the auto-generated name for this widget.
 
-      // Button action for on mouse hover event (enter)
-      //
-      // FIXME:
-      // button->register_event_listener( 2, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_on_hover_enter( ev ); } ) );
-
-      // Button action for on mouse hover event (leave)
-      //
-      // FIXME:
-      // button->register_event_listener( 3, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_on_hover_leave( ev ); } ) );
-
-      // Label text events
-      this->button_ex2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_on_click( ev ); } ) );
+      this->button_ex2->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+      this->button_ex2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+      // this->button_ex2->register_event_listener( nom::UIEvent::MOUSE_MOTION_ENTER, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+      // this->button_ex2->register_event_listener( nom::UIEvent::MOUSE_MOTION_LEAVE, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
       this->button_ex2->set_label( "Hello" );
 
@@ -860,7 +860,7 @@ class App: public nom::SDLApp
       // result in an error due to an empty callback table. This is because
       // QuestionDialogBox's derived class is *not* Window, as is commonly seen,
       // but instead inherits from MessageBox, whom then inherits from UIWidget.
-      this->qbox_ex0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_on_click( ev ); } ) );
+      this->qbox_ex0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
       // FIXME: Temporarily disabled (to cease debugging output):
       // this->qbox_ex0->register_event_listener( nom::UIEvent::MOUSE_WHEEL, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->qbox_ex0_wheel_selection( ev ); } ) );
@@ -909,7 +909,7 @@ class App: public nom::SDLApp
       dview = new nom::DataViewList( this->gui_window[2], -1, pos, size );
       dview->set_decorator( new nom::FinalFantasyDecorator() );
       // TODO:
-      // dview->register_event_listener( 1, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->dview_on_selection( ev ); } ) );
+      // dview->register_event_listener( 1, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
       nom::DataViewColumn col_0( 0, "CARDS  PG. 1", 75, nom::IDataViewColumn::Alignment::Left );
       nom::DataViewColumn col_1( 1, "NUM.", 75, nom::IDataViewColumn::Alignment::Right );
@@ -1032,7 +1032,7 @@ class App: public nom::SDLApp
       dview->set_decorator( new nom::FinalFantasyDecorator() );
 
       // TODO:
-      // dview->register_event_listener( 1, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->dview_on_selection( ev ); } ) );
+      // dview->register_event_listener( 1, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
       nom::DataViewColumn col_0( 0, "CARDS  PG. 1", 55, nom::IDataViewColumn::Alignment::Left );
       nom::DataViewColumn col_1( 1, "TCOL.", 75, nom::IDataViewColumn::Alignment::Center );
@@ -1166,7 +1166,7 @@ class App: public nom::SDLApp
 
       dview = new nom::DataViewList( this->gui_window[4], -1, pos, size );
       dview->set_decorator( new nom::FinalFantasyDecorator() );
-      dview->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->dview_on_selection( ev ); } ) );
+      dview->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
       nom::DataViewColumn col_0( 0, "CARDS  PG. 1", 55, nom::IDataViewColumn::Alignment::Left );
       nom::DataViewColumn col_1( 1, "TCOL.", 75, nom::IDataViewColumn::Alignment::Center );
@@ -1340,51 +1340,29 @@ class App: public nom::SDLApp
       }
     }
 
-    void button_on_click( const nom::UIWidgetEvent& ev ) const
+    void on_click( const nom::UIWidgetEvent& ev ) const
     {
       NOM_DUMP( ev.id() );
       NOM_DUMP( ev.index() );
       NOM_DUMP( ev.text() );
     }
 
-    /// \todo Implement logic -- called in bitmap_button_ex0.
-    void button_on_hover_enter( const nom::UIWidgetEvent& ev ) const
+    void button_ex0_on_click( const nom::UIWidgetEvent& ev ) const
     {
       NOM_DUMP( ev.id() );
       NOM_DUMP( ev.index() );
       NOM_DUMP( ev.text() );
 
-      // nom::Text label;
+      NOM_ASSERT( this->button_ex0 != nullptr );
 
-      // TODO:
-      // label = nom::Text( "bitmap_button", this->bitmap_font, 14, nom::Text::Alignment::MiddleCenter );
-      // label.set_color( nom::Color4i::Red );
-      // button->set_label( label );
-    }
-
-    /// \todo Implement logic -- called in bitmap_button_ex0.
-    void button_on_hover_leave( const nom::UIWidgetEvent& ev ) const
-    {
-      NOM_DUMP( ev.id() );
-      NOM_DUMP( ev.index() );
-      NOM_DUMP( ev.text() );
-
-      // nom::Text label;
-
-      // NOM_DUMP( ev.index() );
-      // NOM_DUMP( ev.text() );
-
-      // TODO:
-      // label = nom::Text( "bitmap_button", this->bitmap_font, 14, nom::Text::Alignment::MiddleCenter );
-      // label.set_color( nom::Color4i::White );
-      // button->set_label( label );
-    }
-
-    void dview_on_selection( const nom::UIWidgetEvent& ev ) const
-    {
-      NOM_DUMP( ev.id() );
-      NOM_DUMP( ev.index() );
-      NOM_DUMP( ev.text() );
+      if( ev.index() == 0 ) // MOUSE_DOWN
+      {
+        this->button_ex0->set_label( this->button_ex0_original_text );
+      }
+      else if( ev.index() == 1 ) // MOUSE_UP
+      {
+        this->button_ex0->set_label( "Release me!" );
+      }
     }
 
     nom::int32 Run ( void )
@@ -1550,6 +1528,8 @@ class App: public nom::SDLApp
     nom::Button* button_ex0;
     nom::Button* button_ex1;
     nom::BitmapButton* button_ex2;
+
+    std::string button_ex0_original_text;
 
     nom::ListBox* listbox_ex0;
     nom::ListBox* listbox_ex1;

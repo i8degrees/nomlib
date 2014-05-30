@@ -41,10 +41,20 @@ namespace nom {
 class BitmapButton: public Button
 {
   public:
-    typedef BitmapButton SelfType;
-    typedef std::unique_ptr<SelfType> UniquePtr;
-    typedef std::shared_ptr<SelfType> SharedPtr;
-    typedef SelfType* RawPtr;
+    typedef BitmapButton self_type;
+
+    typedef self_type* raw_ptr;
+    typedef std::shared_ptr<self_type> shared_ptr;
+
+    /// \param image A bitmap image that is initialized -- pixel data loaded
+    /// from file or memory.
+    BitmapButton  (
+                    UIWidget* parent,
+                    int64 id,
+                    const Point2i& pos,
+                    const Size2i& size,
+                    const Texture& image
+                  );
 
     /// \brief Destructor.
     virtual ~BitmapButton( void );
@@ -52,20 +62,7 @@ class BitmapButton: public Button
     /// \brief Copy constructor.
     ///
     /// \remarks This class is non-copyable.
-    BitmapButton( const SelfType& copy ) = delete;
-
-    /// \brief Copy assignment operator.
-    SelfType& operator =( const SelfType& rhs );
-
-    /// \todo Use Initialize bitmap_ with a nom::Image object, so we can
-    /// further process the bitmap if need be, such as setting a color key.
-    BitmapButton  (
-                    UIWidget* parent,
-                    int64 id,
-                    const Point2i& pos,
-                    const Size2i& size,
-                    Texture* bitmap
-                  );
+    BitmapButton( const self_type& copy ) = delete;
 
     /// \brief Re-implements the IObject::type method.
     ///
@@ -77,25 +74,98 @@ class BitmapButton: public Button
     /// \note Re-implements UIWidget::size_hint.
     virtual const Size2i size_hint( void ) const;
 
-    /// \brief Implements IDrawable::update
-    ///
-    /// \todo Make private?
-    virtual void update( void );
-
     /// \brief Implements IDrawable::draw
     virtual void draw( RenderTarget& target ) const;
 
-    /// \brief Implements the EventHandler::process_event method.
+    /// \brief Get the default bitmap image.
     ///
-    /// \todo FInish implementing events logic.
+    /// \returns A valid (pixels loaded from file or memory) nom::Texture on
+    /// success. An invalid (missing pixel data) on failure, such as when the
+    /// image has not been set.
+    const Texture& default_bitmap( void ) const;
+
+    /// \brief Get the pressed bitmap image.
+    ///
+    /// \returns A valid (pixels loaded from file or memory) nom::Texture on
+    /// success. An invalid (missing pixel data) on failure, such as when the
+    /// image has not been set.
+    const Texture& pressed_bitmap( void ) const;
+
+    /// \brief Get the focused bitmap image.
+    ///
+    /// \returns A valid (pixels loaded from file or memory) nom::Texture on
+    /// success. An invalid (missing pixel data) on failure, such as when the
+    /// image has not been set.
+    const Texture& focused_bitmap( void ) const;
+
+    /// \brief Get the disabled bitmap image.
+    ///
+    /// \returns A valid (pixels loaded from file or memory) nom::Texture on
+    /// success. An invalid (missing pixel data) on failure, such as when the
+    /// image has not been set.
+    const Texture& disabled_bitmap( void ) const;
+
+    /// \brief Implements EventHandler::process_event method.
     bool process_event( const nom::Event& ev );
 
+    /// \brief Set the default bitmap image to be rendered.
+    ///
+    /// \param image A nom::Texture object reference that has been initialized
+    /// (valid pixel data initialized from a file or memory).
+    ///
+    /// \see Button::State::Default.
+    void set_default_bitmap( const Texture& image );
+
+    /// \brief Set the pressed bitmap image to be rendered.
+    ///
+    /// \param image A nom::Texture object reference that has been initialized
+    /// (valid pixel data initialized from a file or memory).
+    ///
+    /// \see Button::State::Pressed.
+    void set_pressed_bitmap( const Texture& image );
+
+    /// \brief Set the focused bitmap image to be rendered.
+    ///
+    /// \param image A nom::Texture object reference that has been initialized
+    /// (valid pixel data initialized from a file or memory).
+    ///
+    /// \see Button::State::Focused.
+    void set_focused_bitmap( const Texture& image );
+
+    /// \brief Set the disabled bitmap image to be rendered.
+    ///
+    /// \param image A nom::Texture object reference that has been initialized
+    /// (valid pixel data initialized from a file or memory).
+    ///
+    /// \see Button::State::Disabled.
+    void set_disabled_bitmap( const Texture& image );
+
   protected:
+    virtual void update_bounds( void );
+
     /// \brief Re-implements UIWidget::on_size_changed.
     virtual void on_size_changed( const UIWidgetEvent& ev );
 
-  protected:
-    Texture* bitmap_;
+    // virtual void on_mouse_down( const UIWidgetEvent& ev );
+    // virtual void on_mouse_up( const UIWidgetEvent& ev );
+    // virtual void on_mouse_enter( const UIWidgetEvent& ev );
+    // virtual void on_mouse_leave( const UIWidgetEvent& ev );
+
+  private:
+    /// \brief Implements IDrawable::update.
+    void update( void );
+
+    /// \brief The image data for Button::State::Default (0)
+    Texture default_bitmap_;
+
+    /// \brief The image data for Button::State::Pressed (1)
+    Texture pressed_bitmap_;
+
+    /// \brief The image data for Button::State::Focused (2)
+    Texture focused_bitmap_;
+
+    /// \brief The image data for Button::State::Disabled (3)
+    Texture disabled_bitmap_;
 };
 
 } // namespace nom

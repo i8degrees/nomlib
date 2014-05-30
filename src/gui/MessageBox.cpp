@@ -375,7 +375,7 @@ void MessageBox::draw( RenderTarget& target ) const
 {
   if ( this->enabled() == false ) return;
 
-  UIWidget::draw( target );
+  // UIWidget::draw( target );
 
   // NOTE: Validity is checked before attempting to render.
   this->title_.draw ( target );
@@ -388,7 +388,7 @@ void MessageBox::update( void )
 {
   if ( this->updated_ == true ) return;
 
-  UIWidget::update();
+  // UIWidget::update();
 
   this->updated_ = true;
 }
@@ -398,7 +398,7 @@ bool MessageBox::process_event( const nom::Event& ev )
   Point2i mouse_coords( ev.mouse.x, ev.mouse.y );
 
   // Base class
-  UIWidget::process_event( ev );
+  // UIWidget::process_event( ev );
 
   // FIXME (?):
   //

@@ -179,7 +179,7 @@ void ListBox::draw( RenderTarget& target ) const
     (*itr)->draw( target );
   }
 
-  UIWidget::draw( target );
+  // UIWidget::draw( target );
 }
 
 bool ListBox::process_event( const nom::Event& ev )
@@ -189,7 +189,7 @@ bool ListBox::process_event( const nom::Event& ev )
   Point2i ev_mouse( ev.mouse.x, ev.mouse.y );
   UIWidgetEvent item;
 
-  UIWidget::process_event( ev );
+  // UIWidget::process_event( ev );
 
   // FIXME (?):
   //
@@ -607,7 +607,7 @@ void ListBox::update( void )
   Text::raw_ptr label = nullptr;  // Temporary text label; created from string objects
                                   // objects.
 
-  UIWidget::update();
+  // UIWidget::update();
 
   // Conserve CPU cycles if our object is already rendered (up-to-date).
   if( this->updated() ) return;

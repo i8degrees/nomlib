@@ -97,15 +97,7 @@ void BitmapButton::update( void )
     return;
   }
 
-  Point2i pos( this->position() );
-  IntRect bounds  (
-                    this->position().x,
-                    this->position().y,
-                    this->size().w,
-                    this->size().h
-                  );
-
-  this->bitmap_->set_position( pos );
+  this->bitmap_->set_position( this->position() );
 
   this->set_bounds( IntRect( this->position().x, this->position().y, this->bitmap_->bounds().w, this->bitmap_->bounds().h ) );
 
@@ -211,7 +203,7 @@ void BitmapButton::on_size_changed( const UIWidgetEvent& ev )
     return;
   }
 
-  this->set_updated( false );
+  // this->set_updated( false );
 
   if( this->decorator() )
   {

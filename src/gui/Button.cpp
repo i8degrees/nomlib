@@ -128,14 +128,14 @@ void Button::update( void )
 {
   // UIWidget::update();
 
-  if( this->updated() == true )
-  {
-    return;
-  }
+  // if( this->updated() == true )
+  // {
+  //   return;
+  // }
 
-  NOM_DUMP("updating: " + this->name() );
+  // NOM_DUMP("updating: " + this->name() );
 
-  this->set_updated( true );
+  // this->set_updated( true );
 }
 
 void Button::draw( RenderTarget& target ) const
@@ -201,7 +201,7 @@ void Button::set_label( const std::string& text )
   this->label_.set_style( this->style()->font_style() );
   this->label_.set_color( this->style()->font_color() );
 
-  this->set_updated( false );
+  // this->set_updated( false );
 
   this->update();
 }
@@ -217,7 +217,7 @@ void Button::on_size_changed( const UIWidgetEvent& ev )
     return;
   }
 
-  this->set_updated( false );
+  // this->set_updated( false );
 
   if( this->decorator() )
   {

@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
+#include "nomlib/graphics/Text.hpp"
 
 namespace nom {
 
@@ -57,9 +58,12 @@ class UIStyle
 
     uint32 font_style( void ) const;
 
+    Text::Alignment text_alignment( void ) const;
+
     void set_font_size( int point_size );
     void set_font_color( const Color4i& color );
     void set_font_style( uint32 style );
+    void set_text_alignment( Text::Alignment align );
 
   private:
     /// \brief The font's height (font point size).
@@ -70,6 +74,9 @@ class UIStyle
 
     /// \brief The rendering style used for the font.
     uint32 font_style_;
+
+    /// \brief The text's alignment.
+    Text::Alignment text_alignment_;
 };
 
 } // namespace nom

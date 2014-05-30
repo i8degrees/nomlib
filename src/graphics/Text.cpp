@@ -34,7 +34,7 @@ Text::Text( void ) :
   Transformable { Point2i::null, Size2i::null }, // Base class
   text_size_ ( nom::DEFAULT_FONT_SIZE ),
   color_ ( Color4i::White ),
-  style_ ( Text::Style::Regular ),
+  style_ ( Text::Style::Normal ),
   alignment_ ( Text::Alignment::TopLeft )
 {
   // NOM_LOG_TRACE( NOM );
@@ -96,7 +96,7 @@ Text::Text  (
   Transformable { Point2i::null, Size2i::null }, // Base class
   text_ ( text ),
   text_size_( character_size ),
-  style_( Text::Style::Regular )
+  style_( Text::Style::Normal )
 {
   // NOM_LOG_TRACE( NOM );
 
@@ -244,7 +244,7 @@ const Color4i& Text::color ( void ) const
   return this->color_;
 }
 
-enum Text::Style Text::style ( void ) const
+uint32 Text::style( void ) const
 {
   return this->style_;
 }
@@ -349,41 +349,41 @@ void Text::set_color ( const Color4i& color )
   }
 }
 
-void Text::set_style( enum Text::Style style )
+void Text::set_style( uint32 style )
 {
   // We do not have an atlas map to go from -- nothing to set a style on!
   if( this->texture_.valid() == false ) return;
 
+  // FIXME: The conditional if statement for ensuring that we don't waste time
+  // rebuilding glyph metrics for the same font style breaks when used with GUI
+  // widgets.
+  // if( this->style() == style )
+  // {
+  //   return;
+  // }
+
   // Set new style if sanity checks pass
   this->style_ = style;
 
-  switch ( this->style_ )
+  if( style & Text::Style::Normal )
   {
-    default:
-    case Text::Style::Regular:
-    {
-      this->font()->set_font_style( TTF_STYLE_NORMAL );
-      break;
-    }
+    this->font()->set_font_style( TTF_STYLE_NORMAL );
+  }
 
-    case Text::Style::Bold:
-    {
-      this->font()->set_font_style( TTF_STYLE_BOLD );
-      break;
-    }
+  if( style & Text::Style::Bold )
+  {
+    this->font()->set_font_style( TTF_STYLE_BOLD );
+  }
 
-    case Text::Style::Italic:
-    {
-      this->font()->set_font_style( TTF_STYLE_ITALIC );
-      break;
-    }
+  if( style & Text::Style::Italic )
+  {
+    this->font()->set_font_style( TTF_STYLE_ITALIC );
+  }
 
-    case Text::Style::Underlined:
-    {
-      this->font()->set_font_style( TTF_STYLE_UNDERLINE );
-      break;
-    }
-  } // end switch style
+  if( style & Text::Style::Underlined )
+  {
+    this->font()->set_font_style( TTF_STYLE_UNDERLINE );
+  }
 
   if( this->valid() == false || this->texture_.create( this->font()->image( this->text_size() ) ) == false )
   {

@@ -64,7 +64,7 @@ class Text: public Transformable
     // result from using this style with a bitmap font.
     enum Style: uint32
     {
-      Regular = 1,        /// Default
+      Normal = 1,         /// Default
       Bold = 2,           /// Not implemented
       Italic = 4,
       Underlined = 8,     /// Not implemented
@@ -190,7 +190,7 @@ class Text: public Transformable
     const Color4i& color ( void ) const;
 
     /// Get text style
-    enum Text::Style style ( void ) const;
+    uint32 style( void ) const;
 
     //const Point2i& local_bounds ( void ) const;
 
@@ -234,7 +234,7 @@ class Text: public Transformable
     /// Set text font style.
     ///
     /// \todo Verify working functionality of ::Style::Italic, ::Style::Underline.
-    void set_style( enum Text::Style style );
+    void set_style( uint32 style );
 
     /// Set new text alignment
     ///
@@ -276,7 +276,7 @@ class Text: public Transformable
     Color4i color_;
 
     /// Current text effect set
-    enum Style style_;
+    uint32 style_;
     enum Alignment alignment_;
 
     /// \brief Set additional rendering flags.

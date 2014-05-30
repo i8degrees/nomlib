@@ -155,12 +155,12 @@ void MessageBox::set_title_label( const Text& title )
 
   this->title_.set_size( this->size() );
 
-  // FIXME:
-  //
-  // In order to preserve the text alignment of the original object, we must
-  // copy the state of the original alignment *after* we set the positioning
-  // on the new object we create for this class
-  this->title_.set_alignment ( title.alignment() );
+  // Calling set_alignment twice can result in duplicating the rendering
+  // positioning of the text, giving us the wrong result.
+  if( title.alignment() != this->title_.alignment() )
+  {
+    this->title_.set_alignment( title.alignment() );
+  }
 
   // Prevent rendering of text that is longer in length than its container's
   // set size parameters (see above).
@@ -184,13 +184,6 @@ void MessageBox::set_title_text( const std::string& text )
   this->title_.set_text( text );
   this->title_.set_position( this->position() );
   this->title_.set_size( this->size() );
-
-  // FIXME (?):
-  //
-  // In order to preserve the text alignment of the original object, we must
-  // copy the state of the original alignment *after* we set the positioning
-  // on the new object we create for this class
-  this->title_.set_alignment( this->title_.alignment() );
 
   // Prevent rendering of text that is longer in length than its container's
   // set size parameters (see above).
@@ -285,10 +278,12 @@ void MessageBox::set_message_label( const Text& text )
 
   this->message_.set_size( this->size() );
 
-  // In order to preserve the text alignment of the original object, we must
-  // copy the state of the original alignment *after* we set the positioning
-  // on the new object we create for this class
-  this->message_.set_alignment( text.alignment() );
+  // Calling set_alignment twice can result in duplicating the rendering
+  // positioning of the text, giving us the wrong result.
+  if( text.alignment() != this->message_.alignment() )
+  {
+    this->message_.set_alignment( text.alignment() );
+  }
 
   // Prevent rendering of text that is longer in length than its container's
   // set size parameters (see above).

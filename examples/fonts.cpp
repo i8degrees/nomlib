@@ -338,12 +338,12 @@ class App: public nom::SDLApp
       // A copy has to be made (handled internally by nom::Font), otherwise the
       // font's point size for label_tfont would be modified when we make the
       // call to set the text size on label_tfont2.
+      this->label_tfont2.set_text( RESOURCE_FONT_TEXT_STRING );
+      this->label_tfont2.set_style( nom::Text::Style::Bold );
       this->label_tfont2.set_font( nom::SystemFonts::cache().load_resource("Arial") );
       this->label_tfont2.set_text_size( 24 );
-      this->label_tfont2.set_style( nom::Text::Style::Bold );
       this->label_tfont2.set_position( nom::Point2i( WINDOW_WIDTH / 2, 24 ) );
       this->label_tfont2.set_color( nom::Color4i( 195,209,228 ) );
-      this->label_tfont2.set_text( RESOURCE_FONT_TEXT_STRING );
       // this->label_tfont2.set_alignment( nom::Text::Alignment::TopLeft );
 
       return true;

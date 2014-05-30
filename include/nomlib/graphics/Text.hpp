@@ -118,9 +118,6 @@ class Text: public Transformable
     /// Copy constructor
     Text ( const self_type& copy );
 
-    /// Copy assignment overload
-    self_type& operator = ( const self_type& other );
-
     /// Construct a Text, initializing it with a text string, a Font
     /// object, character size and text alignment.
     Text (
@@ -130,12 +127,6 @@ class Text: public Transformable
             enum Text::Alignment align = Text::Alignment::TopLeft,
             const Color4i& text_color = Color4i::White
           );
-
-    /// Construct a minimal Text object, initializing it with a text string.
-    ///
-    /// \remarks A text font must be set before any rendering, width/height
-    /// calculations, etc. is used; see also -- ::set_font.
-    Text ( const std::string& text );
 
     /// \brief Implements the required IDrawable::clone method.
     IDrawable::raw_ptr clone( void ) const;
@@ -230,28 +221,34 @@ class Text: public Transformable
     void set_font( Text::font_type* font );
 
     /// \brief Set the text string to be rendered.
-    ///
-    /// \remarks The text's font should be set before calling this method.
     void set_text( const std::string& text );
 
-    /// Set new text character size.
+    /// \brief Set the text's font point size.
     ///
-    /// \remarks This method forces a rebuild of the texture atlas with the
-    /// given size, and may be an expensive operation.
+    /// \remarks This method rebuilds the texture atlas when the point size
+    /// differs from the current set point size, and may be an expensive
+    /// operation.
+    ///
+    /// \note The text's font must be set for this method call to succeed.
     void set_text_size ( uint character_size );
 
-    /// Set new text color
+    /// \brief Set text's font color.
     void set_color( const Color4i& text_color );
 
-    /// Set text font style.
+    /// \brief Set the text's rendering style for the font.
     ///
     /// \see The nom::Text::Style enumeration.
     void set_style( uint32 style );
 
-    /// Set new text alignment
+    /// \brief Set the text's alignment.
     ///
-    /// \remarks This method modifies the destination positions used in
-    /// rendering text.
+    /// \see The nom::Text::Alignment enumeration.
+    ///
+    /// \remarks This method depends on the size dimensions and the text's font
+    /// being in a valid state.
+    ///
+    /// \note Every call to this method modifies the destination positions used
+    /// in the rendered text.
     void set_alignment( enum Text::Alignment align );
 
     /// Render text to a target
@@ -271,14 +268,16 @@ class Text: public Transformable
     /// \note Bit-mask friendly.
     void set_features( uint32 flags );
 
+  private:
     /// \brief Apply requested transformations, styles, etc
     ///
-    /// \remarks Implements nom::IDrawable::update
+    /// \remarks This internal method takes care of updating the properties of
+    /// the font in the correct order, so that the end-user (developer) does not
+    /// need to worry about using the API in a particular order.
     ///
-    /// \todo Logic for this feature is incomplete!
-    void update ( void );
+    /// \note Implements nom::IDrawable::update.
+    void update( void );
 
-  private:
     mutable font_type font_; // FIXME?
     mutable Texture texture_; // FIXME
 

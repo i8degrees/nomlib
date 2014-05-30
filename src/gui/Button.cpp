@@ -192,8 +192,6 @@ void Button::set_label( const std::string& text )
 
   NOM_ASSERT( this->style() != nullptr );
 
-  // FIXME: Ordering of the method calls matter here, due to the internals of
-  // nom::Text.
   this->label_.set_font( this->font() );
   this->label_.set_text_size( this->style()->font_size() );
   this->label_.set_text( this->text_ );

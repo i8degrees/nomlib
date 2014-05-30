@@ -66,29 +66,6 @@ Text::Text ( const self_type& copy ) :
   // this->set_size( Size2i( this->text_width( copy.text() ), this->text_height( copy.text() ) ) );
 }
 
-Text::self_type& Text::operator = ( const self_type& other )
-{
-  this->set_position ( other.position() );
-
-  this->set_size ( other.size() );
-
-  // Set the overall size of this text label to the width & height of the text,
-  // with consideration to the specific font in use.
-  // this->set_size( Size2i( this->text_width( other.text() ), this->text_height( other.text() ) ) );
-
-  this->font_ = other.font();
-
-  this->texture_ = other.texture();
-  this->text_ = other.text();
-  this->text_size_ = other.text_size();
-  this->color_ = other.color();
-  this->style_ = other.style();
-  this->alignment_ = other.alignment();
-  this->features_ = other.features();
-
-  return *this;
-}
-
 Text::Text  (
               const std::string& text,
               const Font& font,
@@ -105,7 +82,7 @@ Text::Text  (
 
   this->set_font( font );
   this->set_color( text_color );
-  this->set_alignment ( align );
+  this->set_alignment( align );
 }
 
 IDrawable::raw_ptr Text::clone( void ) const
@@ -310,38 +287,34 @@ void Text::set_font( Text::font_type* font )
 
 void Text::set_text( const std::string& text )
 {
-  if( this->font_.valid() == false )
+  if ( text == this->text() )
   {
-    NOM_LOG_ERR( NOM, "Could not set text string; the font resource is invalid." );
     return;
   }
 
-  if ( text != this->text() )
-  {
-    this->text_ = text;
+  this->text_ = text;
 
-    // Update logic
+  this->update();
 
-    // Set the overall size of this text label to the width & height of the text,
-    // with consideration to the specific font in use.
-    // this->set_size( Size2i( this->text_width( text ), this->text_height( text ) ) );
-  }
+  // Set the overall size of this text label to the width & height of the text,
+  // with consideration to the specific font in use.
+  // this->set_size( Size2i( this->text_width( text ), this->text_height( text ) ) );
 }
 
 void Text::set_text_size ( uint character_size )
 {
-  if ( this->valid() == false ) return;
+  if ( this->valid() == false )
+  {
+    NOM_LOG_ERR( NOM, "Could not set text size: the font is invalid." );
+    return;
+  }
 
   this->text_size_ = character_size;
 
   // Force a rebuild of the texture atlas at the specified point size
   this->font()->set_point_size( this->text_size() );
 
-  if ( this->valid() == false || this->texture_.create ( this->font()->image (this->text_size()) ) == false )
-  {
-    NOM_LOG_ERR ( NOM, "Could not initialize Text from given IFont" );
-    return;
-  }
+  this->update();
 
   // Set the overall size of this text label to the width & height of the text,
   // with consideration to the specific font in use.
@@ -350,67 +323,39 @@ void Text::set_text_size ( uint character_size )
 
 void Text::set_color( const Color4i& color )
 {
-  if( color != this->color() )
+  if( color == this->color() )
   {
-    this->color_ = color;
-    this->texture_.set_color_modulation( color );
+    return;
   }
+
+  this->color_ = color;
+
+  this->update();
 }
 
 void Text::set_style( uint32 style )
 {
-  // We do not have an atlas map to go from -- nothing to set a style on!
-  if( this->texture_.valid() == false ) return;
-
   if( this->style() == style )
   {
-    // NOM_DUMP("style: " + std::to_string( style ) );
     return;
   }
 
   // Set new style if sanity checks pass
   this->style_ = style;
 
-  if( style & Text::Style::Normal )
-  {
-    this->font()->set_font_style( TTF_STYLE_NORMAL );
-  }
-
-  if( style & Text::Style::Bold )
-  {
-    this->font()->set_font_style( TTF_STYLE_BOLD );
-  }
-
-  if( style & Text::Style::Italic )
-  {
-    this->font()->set_font_style( TTF_STYLE_ITALIC );
-  }
-
-  if( style & Text::Style::Underlined )
-  {
-    this->font()->set_font_style( TTF_STYLE_UNDERLINE );
-  }
-
-  if( style & Text::Style::Strikethrough )
-  {
-    this->font()->set_font_style( TTF_STYLE_STRIKETHROUGH );
-  }
-
-  if( this->valid() == false || this->texture_.create( this->font()->image( this->text_size() ) ) == false )
-  {
-    NOM_LOG_ERR ( NOM, "Could not initialize Text from given IFont" );
-    return;
-  }
-
-  // this->update();
+  this->update();
 }
 
 void Text::set_alignment( enum Text::Alignment align )
 {
-  this->alignment_ = align;
-
   int x_offset = 0;
   int y_offset = 0;
+
+  this->alignment_ = align;
+
+  if( this->valid() == false ) return;
+  if( this->position() == Point2i::null ) return;
+  if( this->size() == Size2i::null ) return;
 
   switch ( this->alignment() )
   {
@@ -583,15 +528,58 @@ TODO */
 void Text::set_features( uint32 flags )
 {
   this->features_ = flags;
+
+  this->update();
 }
 
-void Text::update ( void )
+void Text::update( void )
 {
-  // No font has been loaded -- nothing to draw!
-  if ( this->valid() == false ) return;
+  uint32 style = this->style();
 
-  // FIXME: This never gets called..!
-  if( features() & ExtraRenderingFeatures::CropText )
+  // No font has been loaded -- nothing to draw!
+  if ( this->valid() == false )
+  {
+    return;
+  }
+
+  if( style & Text::Style::Normal )
+  {
+    this->font()->set_font_style( TTF_STYLE_NORMAL );
+  }
+
+  if( style & Text::Style::Bold )
+  {
+    this->font()->set_font_style( TTF_STYLE_BOLD );
+  }
+
+  if( style & Text::Style::Italic )
+  {
+    this->font()->set_font_style( TTF_STYLE_ITALIC );
+  }
+
+  if( style & Text::Style::Underlined )
+  {
+    this->font()->set_font_style( TTF_STYLE_UNDERLINE );
+  }
+
+  if( style & Text::Style::Strikethrough )
+  {
+    this->font()->set_font_style( TTF_STYLE_STRIKETHROUGH );
+  }
+
+  // Update the texture atlas; this is necessary anytime we rebuild the font's
+  // glyphs cache, such as when we change the text's font point size or rendering
+  // style.
+  if( this->texture_.create( this->font()->image( this->text_size() ) ) == false )
+  {
+    NOM_LOG_ERR ( NOM, "Could not create texture at point size: " + std::to_string( this->text_size() ) );
+    return;
+  }
+
+  // Update the font's text color.
+  this->texture_.set_color_modulation( this->color() );
+
+  if( this->features() & ExtraRenderingFeatures::CropText )
   {
     // this->set_alignment( alignment() );
   }

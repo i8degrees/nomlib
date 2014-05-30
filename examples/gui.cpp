@@ -316,7 +316,7 @@ class App: public nom::SDLApp
 
       this->gui_window[2]->set_decorator( new nom::FinalFantasyDecorator() );
 
-this->gui_window[2]->set_font( this->bitmap_small_font );
+      this->gui_window[2]->set_font( this->bitmap_small_font );
 
       // this->gui_window[2]->set_title( this->gui_window[2]->name() );
 
@@ -576,6 +576,15 @@ this->gui_window[2]->set_font( this->bitmap_small_font );
 
       this->button_ex2 = new nom::BitmapButton( this->gui_window[5], -1, pos, size, &this->button_bg[2] );
 // this->button_ex2->set_font( this->truetype_font2 );
+
+      nom::UIStyle::shared_ptr custom_style = nullptr;
+      custom_style.reset( new nom::UIStyle() );
+
+      custom_style->set_font_color( nom::Color4i::Black );
+      custom_style->set_font_size( 13 );
+      custom_style->set_font_style( nom::Text::Style::Bold );
+
+      this->button_ex2->set_style( custom_style );
 
       // Use the auto-generated name for this widget.
 

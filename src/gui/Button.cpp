@@ -30,16 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Button::Button( void )
-{
-  // NOM_LOG_TRACE( NOM );
-}
-
-Button::~Button( void )
-{
-  // NOM_LOG_TRACE( NOM );
-}
-
 Button::Button  (
                   UIWidget* parent,
                   int64 id,
@@ -59,22 +49,35 @@ Button::Button  (
   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
 }
 
+Button::~Button( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
+
 const Size2i Button::size_hint( void ) const
 {
+  // Sanity check for widget's UIStyle pointer
+  // NOM_ASSERT( this->style() != nullptr );
+
   // Total text height requirements for stored items
   sint total_text_height = 0;
 
   // Default point size of font
-  uint point_size = 12;
+  uint point_size = nom::DEFAULT_FONT_SIZE;
 
   // Calculate the total text height requirements for the widget.
   FontMetrics face = this->label_.font()->metrics();
 
-// NOM_DUMP( this->label_.text() );
+// NOM_DUMP( this->name() );
 // NOM_DUMP( face.name );
 
   // Use the point size of font used instead of initialized default
-  point_size = this->label_.text_size();
+  // point_size = this->label_.text_size();
+
+  if( this->style() != nullptr )
+  {
+    point_size = this->style()->font_size();
+  }
 
   // Maximum pixel height of the font's glyph
   total_text_height += this->label_.font()->newline( point_size );
@@ -111,56 +114,45 @@ ObjectTypeInfo Button::type( void ) const
   return NOM_OBJECT_TYPE_INFO( self_type );
 }
 
-Button::SelfType& Button::operator =( const SelfType& rhs )
-{
-  this->label_ = rhs.label_;
-  this->text_ = rhs.text_;
-  this->point_size_ = rhs.point_size_;
-  this->alignment_ = rhs.alignment_;
-  this->text_color_ = rhs.text_color_;
+// bool Button::valid( void ) const
+// {
+//   if ( this->position() != Point2i::null || this->size() != Size2i::null )
+//   {
+//     return true;
+//   }
 
-  // this->update();
-
-  return *this;
-}
-
-bool Button::valid( void ) const
-{
-  if ( this->position() != Point2i::null || this->size() != Size2i::null )
-  {
-    return true;
-  }
-
-  return false;
-}
+//   return false;
+// }
 
 void Button::update( void )
 {
-  UIWidget::update();
+  // UIWidget::update();
 
-  if( this->updated() ) return;
+  if( this->updated() == true )
+  {
+    return;
+  }
 
-  this->label_ = Text( this->text_, this->font(), this->point_size_, this->alignment_, this->text_color_ );
-  this->label_.set_position( this->position() );
-  this->label_.set_size( this->size() );
-  this->label_.set_alignment( this->alignment_ );
+  NOM_DUMP("updating: " + this->name() );
 
   this->set_updated( true );
 }
 
 void Button::draw( RenderTarget& target ) const
 {
-  UIWidget::draw( target );
+  // UIWidget::draw( target );
 
-  // NOTE: Validity is checked before attempting to render.
-  this->label_.draw( target );
+  if( this->label_.valid() == true )
+  {
+    this->label_.draw( target );
+  }
 }
 
 bool Button::process_event( const nom::Event& ev )
 {
   Point2i mouse_coords( ev.mouse.x, ev.mouse.y );
 
-  UIWidget::process_event( ev );
+  // UIWidget::process_event( ev );
 
   // FIXME (?):
   //
@@ -175,9 +167,7 @@ bool Button::process_event( const nom::Event& ev )
     {
       // Send the index and string text of the label that was selected during
       // the time of this event.
-      UIWidgetEvent item_ev( 0, this->label_.text(), ev );
-
-      item_ev.set_id( this->id() );
+      UIWidgetEvent item_ev( 0, this->label_.text(), ev, this->id() );
 
       // Send the UI event object to the registered callback.
       this->dispatcher()->emit( UIEvent::MOUSE_UP, item_ev );
@@ -196,12 +186,22 @@ const std::string& Button::label_text( void ) const
   return this->label_.text();
 }
 
-void Button::set_label( const std::string& text, uint point_size, enum Text::Alignment align, const Color4i& color )
+void Button::set_label( const std::string& text )
 {
   this->text_ = text;
-  this->point_size_ = point_size;
-  this->alignment_ = align;
-  this->text_color_ = color;
+
+  NOM_ASSERT( this->style() != nullptr );
+
+  // FIXME: Ordering of the method calls matter here, due to the internals of
+  // nom::Text.
+  this->label_.set_font( this->font() );
+  this->label_.set_text_size( this->style()->font_size() );
+  this->label_.set_text( this->text_ );
+  this->label_.set_position( this->position() );
+  this->label_.set_size( this->size() );
+  this->label_.set_alignment( Text::Alignment::MiddleCenter );
+  this->label_.set_style( this->style()->font_style() );
+  this->label_.set_color( this->style()->font_color() );
 
   this->set_updated( false );
 
@@ -219,16 +219,21 @@ void Button::on_size_changed( const UIWidgetEvent& ev )
     return;
   }
 
+  this->set_updated( false );
+
   if( this->decorator() )
   {
-    this->set_updated( false );
-
     // Update the attached decorator (border & possibly a background)
     this->decorator()->set_bounds( ev.resized_bounds_ );
   }
 
   // Update ourselves with the new rendering coordinates
   this->set_bounds( ev.resized_bounds_ );
+
+  // Updating the text label's coordinates and dimensions also ensures that its
+  // alignment is recalculated.
+  this->label_.set_position( this->position() );
+  this->label_.set_size( this->size() );
 
   this->update();
 }

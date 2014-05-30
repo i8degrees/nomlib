@@ -40,7 +40,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Size2.hpp"
 #include "nomlib/graphics/Texture.hpp"
 
-#include "nomlib/graphics/fonts/IFont.hpp"
 #include "nomlib/graphics/fonts/Font.hpp"
 
 namespace nom {
@@ -58,17 +57,20 @@ class Text: public Transformable
 
     typedef Font font_type;
 
-    /// Font face style; multiple styles can be combined from bitwise masks
+    /// \brief Font face style; multiple styles can be combined from bitwise
+    /// masks.
     ///
-    /// \remarks Bold is only available with TrueType fonts. No action will
-    // result from using this style with a bitmap font.
+    /// \remarks Styles are only available with TrueType fonts. No action will
+    /// result from using these styles with a bitmap font.
+    ///
+    /// \fixme Implement styles for BitmapFont objects.
     enum Style: uint32
     {
       Normal = 1,         /// Default
-      Bold = 2,           /// Not implemented
-      Italic = 4,
-      Underlined = 8,     /// Not implemented
-      Strikethrough = 16  /// Not implemented
+      Bold = 2,
+      Italic = 4,         /// Verify working functionality
+      Underlined = 8,     /// Verify working functionality
+      Strikethrough = 16  /// Verify working functionality
     };
 
     /// Text alignment choices (pick one).
@@ -187,7 +189,7 @@ class Text: public Transformable
     const std::string& text ( void ) const;
 
     /// Get text color
-    const Color4i& color ( void ) const;
+    const Color4i& color( void ) const;
 
     /// Get text style
     uint32 style( void ) const;
@@ -201,7 +203,7 @@ class Text: public Transformable
     IntRect global_bounds( void ) const;
 
     /// Get text alignment
-    enum Text::Alignment alignment ( void ) const;
+    enum Text::Alignment alignment( void ) const;
 
     /// Get text character size (in pixels?)
     uint text_size ( void ) const;
@@ -211,6 +213,14 @@ class Text: public Transformable
     /// \remarks See also: nom::Text::ExtraRenderingFeatures enumeration.
     uint32 features( void ) const;
 
+    /// \brief Set the overall dimension bounds (width & height) of the text
+    /// object.
+    ///
+    /// \remarks This method ensures that the text's alignment is recalculated.
+    ///
+    /// \note Re-implements Transformable::set_size.
+    void set_size( const Size2i& size );
+
     /// \brief Set the font from a nom::Font object.
     void set_font( const Text::font_type& font );
 
@@ -219,8 +229,10 @@ class Text: public Transformable
     /// \note Used for ResourceCache::load_resource.
     void set_font( Text::font_type* font );
 
-    /// Set new text
-    void set_text ( const std::string& text );
+    /// \brief Set the text string to be rendered.
+    ///
+    /// \remarks The text's font should be set before calling this method.
+    void set_text( const std::string& text );
 
     /// Set new text character size.
     ///
@@ -229,18 +241,18 @@ class Text: public Transformable
     void set_text_size ( uint character_size );
 
     /// Set new text color
-    void set_color ( const Color4i& text_color );
+    void set_color( const Color4i& text_color );
 
     /// Set text font style.
     ///
-    /// \todo Verify working functionality of ::Style::Italic, ::Style::Underline.
+    /// \see The nom::Text::Style enumeration.
     void set_style( uint32 style );
 
     /// Set new text alignment
     ///
     /// \remarks This method modifies the destination positions used in
     /// rendering text.
-    void set_alignment ( enum Text::Alignment align );
+    void set_alignment( enum Text::Alignment align );
 
     /// Render text to a target
     ///

@@ -46,9 +46,6 @@ class BitmapButton: public Button
     typedef std::shared_ptr<SelfType> SharedPtr;
     typedef SelfType* RawPtr;
 
-    /// \brief Default constructor.
-    BitmapButton( void );
-
     /// \brief Destructor.
     virtual ~BitmapButton( void );
 

@@ -42,13 +42,18 @@ namespace nom {
 class Button: public UIWidget
 {
   public:
-    typedef Button SelfType;
-    typedef std::unique_ptr<Button> UniquePtr;
-    typedef std::shared_ptr<Button> SharedPtr;
-    typedef Button* RawPtr;
+    typedef Button self_type;
+
+    typedef self_type* raw_ptr;
+    typedef std::shared_ptr<self_type> shared_ptr;
 
     /// \brief Default constructor.
-    Button( void );
+    Button  (
+              UIWidget* parent,
+              int64 id,
+              const Point2i& pos,
+              const Size2i& size
+            );
 
     /// \brief Destructor.
     virtual ~Button( void );
@@ -56,17 +61,7 @@ class Button: public UIWidget
     /// \brief Copy constructor.
     ///
     /// \remarks This class is non-copyable.
-    Button( const SelfType& copy ) = delete;
-
-    /// \brief Copy assignment operator.
-    SelfType& operator =( const SelfType& rhs );
-
-    Button  (
-              UIWidget* parent,
-              int64 id,
-              const Point2i& pos,
-              const Size2i& size
-            );
+    Button( const self_type& copy ) = delete;
 
     /// \brief Re-implements the IObject::type method.
     ///
@@ -78,19 +73,17 @@ class Button: public UIWidget
     /// \note Re-implements UIWidget::size_hint.
     virtual const Size2i size_hint( void ) const;
 
-    /// \brief Query the validity of the object
-    ///
-    /// \remarks A valid object must have both the positioning & size bounding
-    /// coordinates be set to a non-null object value. See nom::Point2i::null
-    /// and nom::Size2i::null for their respective values.
-    virtual bool valid( void ) const;
+    // \brief Query the validity of the object
+    //
+    // \remarks A valid object must have both the positioning & size bounding
+    // coordinates be set to a non-null object value. See nom::Point2i::null
+    // and nom::Size2i::null for their respective values.
+    // virtual bool valid( void ) const;
 
-    /// \brief Implements IDrawable::update
-    ///
-    /// \todo Make private?
+    /// \brief Re-implements IDrawable::update.
     virtual void update( void );
 
-    /// \brief Implements IDrawable::draw
+    /// \brief Re-implements IDrawable::draw.
     virtual void draw( RenderTarget& target ) const;
 
     /// \brief Implements the EventHandler::process_event method.
@@ -98,19 +91,15 @@ class Button: public UIWidget
 
     const std::string& label_text( void ) const;
 
-    void set_label( const std::string& text, uint point_size = 14, enum Text::Alignment align = Text::MiddleCenter, const Color4i& color = Color4i::White );
+    void set_label( const std::string& text );
 
   protected:
     /// \brief Re-implements UIWidget::on_size_changed.
     virtual void on_size_changed( const UIWidgetEvent& ev );
 
   private:
-    Text label_;
-    // FIXME:
     std::string text_;
-    uint point_size_;
-    Text::Alignment alignment_;
-    Color4i text_color_;
+    Text label_;
 };
 
 } // namespace nom

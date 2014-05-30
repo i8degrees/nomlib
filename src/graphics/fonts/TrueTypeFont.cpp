@@ -236,14 +236,8 @@ bool TrueTypeFont::set_outline( int outline )
 
 void TrueTypeFont::set_font_style( uint32 style )
 {
-  // NOM_LOG_TRACE( NOM );
-
-  // FIXME: The conditional if statement for ensuring that we don't waste time
-  // rebuilding glyph metrics for the same font style breaks when used with GUI
-  // widgets.
-
-  // if( style != this->font_style() )
-  // {
+  if( style != this->font_style() )
+  {
     TTF_SetFontStyle( this->font(), style );
 
     int point_size = this->point_size();
@@ -255,7 +249,7 @@ void TrueTypeFont::set_font_style( uint32 style )
     {
       NOM_LOG_ERR( NOM, "Could not rebuild glyph metrics." );
     }
-  // }
+  }
 }
 
 bool TrueTypeFont::load( const std::string& filename )
@@ -353,7 +347,6 @@ bool TrueTypeFont::build ( uint32 character_size )
   page.texture->initialize ( sheet_size );
 
   // this->set_hinting( this->hinting() );
-  // this->set_font_style( this->font_style() );
 
   // ASCII 32..127 is the standard glyph set -- 94 printable characters;
   //

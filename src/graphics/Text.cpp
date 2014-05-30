@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/Text.hpp"
 
+// Private headers (third-party)
+#include "SDL.h"
+
 namespace nom {
 
 Text::Text( void ) :
@@ -239,7 +242,7 @@ uint Text::text_size ( void ) const
   return this->text_size_;
 }
 
-const Color4i& Text::color ( void ) const
+const Color4i& Text::color( void ) const
 {
   return this->color_;
 }
@@ -270,7 +273,7 @@ IntRect Text::global_bounds( void ) const
   return bounds;
 }
 
-enum Text::Alignment Text::alignment ( void ) const
+enum Text::Alignment Text::alignment( void ) const
 {
   return this->alignment_;
 }
@@ -278,6 +281,13 @@ enum Text::Alignment Text::alignment ( void ) const
 uint32 Text::features( void ) const
 {
   return this->features_;
+}
+
+void Text::set_size( const Size2i& size )
+{
+  Transformable::set_size( size );
+
+  this->set_alignment( this->alignment() );
 }
 
 void Text::set_font( const Text::font_type& font )
@@ -298,7 +308,7 @@ void Text::set_font( Text::font_type* font )
   // this->set_size( Size2i( this->text_width( this->text() ), this->text_height( this->text() ) ) );
 }
 
-void Text::set_text ( const std::string& text )
+void Text::set_text( const std::string& text )
 {
   if( this->font_.valid() == false )
   {
@@ -338,14 +348,12 @@ void Text::set_text_size ( uint character_size )
   // this->set_size( Size2i( this->text_width( this->text() ), this->text_height( this->text() ) ) );
 }
 
-void Text::set_color ( const Color4i& color )
+void Text::set_color( const Color4i& color )
 {
-  if ( color != this->color() )
+  if( color != this->color() )
   {
     this->color_ = color;
-    this->texture_.set_color_modulation ( color );
-
-    // Update logic
+    this->texture_.set_color_modulation( color );
   }
 }
 
@@ -354,13 +362,11 @@ void Text::set_style( uint32 style )
   // We do not have an atlas map to go from -- nothing to set a style on!
   if( this->texture_.valid() == false ) return;
 
-  // FIXME: The conditional if statement for ensuring that we don't waste time
-  // rebuilding glyph metrics for the same font style breaks when used with GUI
-  // widgets.
-  // if( this->style() == style )
-  // {
-  //   return;
-  // }
+  if( this->style() == style )
+  {
+    // NOM_DUMP("style: " + std::to_string( style ) );
+    return;
+  }
 
   // Set new style if sanity checks pass
   this->style_ = style;
@@ -385,6 +391,11 @@ void Text::set_style( uint32 style )
     this->font()->set_font_style( TTF_STYLE_UNDERLINE );
   }
 
+  if( style & Text::Style::Strikethrough )
+  {
+    this->font()->set_font_style( TTF_STYLE_STRIKETHROUGH );
+  }
+
   if( this->valid() == false || this->texture_.create( this->font()->image( this->text_size() ) ) == false )
   {
     NOM_LOG_ERR ( NOM, "Could not initialize Text from given IFont" );
@@ -394,7 +405,7 @@ void Text::set_style( uint32 style )
   // this->update();
 }
 
-void Text::set_alignment ( enum Text::Alignment align )
+void Text::set_alignment( enum Text::Alignment align )
 {
   this->alignment_ = align;
 
@@ -468,7 +479,7 @@ void Text::set_alignment ( enum Text::Alignment align )
     }
   } // end switch
 
-  this->set_position (Point2i(x_offset, y_offset) );
+  this->set_position( Point2i( x_offset, y_offset ) );
 }
 
 void Text::draw ( RenderTarget& target ) const

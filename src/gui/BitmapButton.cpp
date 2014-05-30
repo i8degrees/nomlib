@@ -30,13 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-BitmapButton::BitmapButton( void ) :
-  Button{ nullptr, 0, Point2i::null, Size2i::null },
-  bitmap_( nullptr )
-{
-  // NOM_LOG_TRACE( NOM );
-}
-
 BitmapButton::~BitmapButton( void )
 {
   // NOM_LOG_TRACE( NOM );
@@ -93,22 +86,16 @@ const Size2i BitmapButton::size_hint( void ) const
   //
   // Should we be using minimum_size here instead?
   return Button::size_hint();
+  // return this->minimum_size();
 }
 
 void BitmapButton::update( void )
 {
-  if( this->bitmap_ == nullptr ) return;
-
-  NOM_ASSERT( this->bitmap_ ); // nullptr check
-
-  // Point2i pos( this->position().x + 2, this->position().y + 2 );
-
-  // IntRect bounds  (
-  //                   this->position().x + 1,
-  //                   this->position().y + 2,
-  //                   this->size().w - 3,
-  //                   this->size().h - 4
-  //                 );
+  if( this->bitmap_ == nullptr )
+  {
+    NOM_LOG_ERR( NOM, "Could not update button: bitmap is NULL." );
+    return;
+  }
 
   Point2i pos( this->position() );
   IntRect bounds  (
@@ -120,8 +107,7 @@ void BitmapButton::update( void )
 
   this->bitmap_->set_position( pos );
 
-  // FIXME:
-  // this->bitmap_->set_bounds( bounds );
+  this->set_bounds( IntRect( this->position().x, this->position().y, this->bitmap_->bounds().w, this->bitmap_->bounds().h ) );
 
   Button::update();
 }
@@ -140,7 +126,7 @@ bool BitmapButton::process_event( const nom::Event& ev )
 {
   Point2i mouse_coords( ev.mouse.x, ev.mouse.y );
 
-  Button::process_event( ev );
+  // Button::process_event( ev );
 
   // FIXME (?):
   //
@@ -235,6 +221,9 @@ void BitmapButton::on_size_changed( const UIWidgetEvent& ev )
 
   // Update ourselves with the new rendering coordinates
   this->set_bounds( ev.resized_bounds_ );
+
+  // Ensure that the label coordinates & dimensions are updated.
+  Button::on_size_changed( ev );
 
   this->update();
 }

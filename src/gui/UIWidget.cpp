@@ -31,6 +31,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Private headers
 #include "nomlib/system/PlatformSettings.hpp"
 
+// Forward declarations
+// #include "nomlib/gui/UIStyle.hpp"
+
 namespace nom {
 
 // Static initializations
@@ -136,6 +139,11 @@ UIWidget::UIWidget  (
 
     this->set_font( PlatformSettings::get_system_font( SystemFontType::VariableTrueType ) );
   }
+
+  // Set the widget's style (font color, font size, etc.) to the defaults given
+  // by the default construction of UIStyle. These defaults can be customized by
+  // using ::set_style with your own UIStyle object.
+  this->set_style( UIStyle::shared_ptr( new UIStyle() ) );
 
   // Initialize the default event listeners for a top-level widget.
   // NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
@@ -395,6 +403,11 @@ UILayout* UIWidget::layout( void ) const
   return this->layout_.get();
 }
 
+std::shared_ptr<UIStyle> UIWidget::style( void ) const
+{
+  return this->style_;
+}
+
 void UIWidget::set_padding ( int pad )
 {
   this->padding_ = pad;
@@ -526,6 +539,9 @@ void UIWidget::set_focus_policy( uint32 flags )
 void UIWidget::set_parent( const UIWidget::raw_ptr parent )
 {
   this->parent_.reset( parent );
+
+  // this->set_updated( false );
+  // this->update();
 }
 
 void UIWidget::set_decorator( const IDecorator::raw_ptr object )
@@ -536,7 +552,6 @@ void UIWidget::set_decorator( const IDecorator::raw_ptr object )
   this->decorator_->set_bounds( this->global_bounds() );
 
   // this->set_updated( false );
-
   this->update();
 }
 
@@ -573,6 +588,7 @@ void UIWidget::set_title( const std::string& title )
   // set size parameters (see above).
   this->title_->set_features( Text::ExtraRenderingFeatures::CropText );
 
+  // this->set_updated( false );
   // this->update();
 }
 
@@ -580,6 +596,11 @@ void UIWidget::set_size_policy( uint32 horiz, uint32 vert )
 {
   this->policy_.set_horizontal_policy( horiz );
   this->policy_.set_vertical_policy( vert );
+}
+
+void UIWidget::set_style( const std::shared_ptr<UIStyle> style )
+{
+  this->style_ = style;
 }
 
 void UIWidget::insert_child( const UIWidget::raw_ptr child )
@@ -728,6 +749,11 @@ void UIWidget::clear_children( void )
 
 void UIWidget::update( void )
 {
+  // if( this->updated() == true )
+  // {
+  //   return;
+  // }
+
   // Parent window
   if( this->decorator_ != nullptr )
   {
@@ -764,6 +790,8 @@ void UIWidget::update( void )
   {
     (*itr)->update();
   }
+
+  // this->set_updated( true );
 }
 
 void UIWidget::draw( RenderTarget& target ) const
@@ -995,6 +1023,7 @@ NOM_DUMP( this->size() );
 
   // this->emit( UIEvent::ON_WINDOW_SIZE_CHANGED, evt );
 
+  // this->set_updated( false );
   this->update();
 }
 
@@ -1009,6 +1038,9 @@ void UIWidget::on_size_changed( const UIWidgetEvent& ev )
   // Event evt = ev.event();
 
   // evt.dump();
+
+  // this->set_updated( false );
+  // this->update();
 }
 
 bool UIWidget::focus_previous_child( void )

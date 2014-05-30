@@ -247,6 +247,9 @@ void UIWidgetLayoutItem::set_bounds( const IntRect& rect )
 // NOM_DUMP( x_offset );
 // NOM_DUMP( y_offset );
 
+  // FIXME: Do we really need this here? I *think* it may be required for
+  // alignments? It would cut down on updates considerably if we could remove
+  // this.
   widget->set_updated( false );
   widget->update();
 }

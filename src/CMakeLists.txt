@@ -111,6 +111,7 @@ set ( GUI_SOURCE
       # ${SRC_DIR}/gui/ButtonLabel.cpp
       # ${SRC_DIR}/gui/UIChoice.cpp
       # ${SRC_DIR}/gui/UIEvent.cpp
+      ${SRC_DIR}/gui/UIStyle.cpp
     )
 
 # Core serializers module

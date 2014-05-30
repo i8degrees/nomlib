@@ -42,8 +42,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/gui/Drawables.hpp"
 #include "nomlib/gui/UILayout.hpp"
 #include "nomlib/gui/UILayoutPolicy.hpp"
+#include "nomlib/gui/UIStyle.hpp"
 
 namespace nom {
+
+// Forward declarations
+// class UIStyle;
 
 /// \brief GUI window object container
 class UIWidget: public UIEventHandler
@@ -187,6 +191,8 @@ class UIWidget: public UIEventHandler
     /// for the widget has not been set.
     UILayout* layout( void ) const;
 
+    std::shared_ptr<UIStyle> style( void ) const;
+
     /// \brief Reserved for future use
     void set_padding( int pad );
 
@@ -261,6 +267,8 @@ class UIWidget: public UIEventHandler
     /// policy specified by that layout is used. If there is no such layout,
     /// the result of this method call is used to set said layout.
     void set_size_policy( uint32 horiz, uint32 vert );
+
+    void set_style( const std::shared_ptr<UIStyle> style );
 
     void insert_child( const UIWidget::raw_ptr child );
 
@@ -473,6 +481,8 @@ NOM_IGNORED_ENDL();
     uint32 focus_policy_;
 
     UILayoutPolicy policy_;
+
+    std::shared_ptr<UIStyle> style_;
 };
 
 } // namespace nom

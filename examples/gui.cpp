@@ -358,11 +358,11 @@ class App: public nom::SDLApp
 
       this->gui_window[1]->insert_child( this->create_messagebox_ex0() );
       this->gui_window[1]->insert_child( this->create_messagebox_ex1() );
-      // this->gui_window[1]->insert_child( this->create_question_dialogbox_ex0() );
+      this->gui_window[1]->insert_child( this->create_question_dialogbox_ex0() );
 
-      // this->gui_window[2]->insert_child( this->create_dataviewlist_ex0() );
-      // this->gui_window[3]->insert_child( this->create_dataviewlist_ex1() );
-      // this->gui_window[4]->insert_child( this->create_dataviewlist_ex2() );
+      this->gui_window[2]->insert_child( this->create_dataviewlist_ex0() );
+      this->gui_window[3]->insert_child( this->create_dataviewlist_ex1() );
+      this->gui_window[4]->insert_child( this->create_dataviewlist_ex2() );
 
       // FIXME: Widgets must not be added to the layout until *after* a) font
       // initialization (widget's size hint); b) item store initialization
@@ -422,9 +422,9 @@ class App: public nom::SDLApp
       // Auto-generated name
       // NOM_ASSERT( this->gui_window[5]->find_child( "bitmap_button" ) != nullptr );
 
-      NOM_ASSERT( this->gui_window[0]->find_child( "listbox_ex0" ) != nullptr );
-      NOM_ASSERT( this->gui_window[0]->find_child( "listbox_ex1" ) != nullptr );
-      NOM_ASSERT( this->gui_window[0]->find_child( "listbox_ex2" ) != nullptr );
+      // NOM_ASSERT( this->gui_window[0]->find_child( "listbox_ex0" ) != nullptr );
+      // NOM_ASSERT( this->gui_window[0]->find_child( "listbox_ex1" ) != nullptr );
+      // NOM_ASSERT( this->gui_window[0]->find_child( "listbox_ex2" ) != nullptr );
 
       NOM_ASSERT( this->gui_window[0]->id() == 1 );
       NOM_ASSERT( this->gui_window[0]->name() == "gui_window[0]" );

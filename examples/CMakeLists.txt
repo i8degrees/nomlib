@@ -22,7 +22,13 @@ set( NOM_BUILD_DEVICE_INFO_EXAMPLE off )
 set( NOM_BUILD_EVENTS_EXAMPLE off )
 set( NOM_BUILD_FONTS_EXAMPLE on )
 set( NOM_BUILD_GAMEOFLIFE_EXAMPLE off )
-set( NOM_BUILD_GUI_EXAMPLE on )
+
+set( NOM_BUILD_GUI_EXAMPLES on )
+set( NOM_BUILD_GUI_BUTTON_EXAMPLE on )
+set( NOM_BUILD_GUI_LISTBOX_EXAMPLE on )
+set( NOM_BUILD_GUI_MESSAGEBOX_EXAMPLE on )
+set( NOM_BUILD_GUI_DATAVIEWLIST_EXAMPLE on )
+
 set( NOM_BUILD_SPRITE_SHEETS_EXAMPLE off )
 set( NOM_BUILD_VALUES_EXAMPLE off )
 
@@ -135,24 +141,43 @@ if( NOT NOM_BUILD_MINI_UNIT )
     endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_GUI_UNIT AND NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
-      if( NOM_BUILD_GUI_EXAMPLE )
-        add_executable ( gui "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/gui.cpp" )
 
-        install ( DIRECTORY
-                  "${EXAMPLES_SRC_DIR}/app/Resources"
-                  DESTINATION
-                  "${EXAMPLES_INSTALL_PEFIX}"
-                  PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-                )
+    if( NOM_BUILD_GUI_EXAMPLES )
+      # add_executable( gui "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/gui.cpp" )
 
-        install ( DIRECTORY
-                  "${NOM_EXAMPLES_RESOURCES_DIR}/gui"
-                  DESTINATION
-                  "${EXAMPLES_INSTALL_PEFIX}/Resources"
-                  PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-                )
+      install ( DIRECTORY
+                "${EXAMPLES_SRC_DIR}/app/Resources"
+                DESTINATION
+                "${EXAMPLES_INSTALL_PEFIX}"
+                PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+              )
 
-      endif( NOM_BUILD_GUI_EXAMPLE )
+      install ( DIRECTORY
+                "${NOM_EXAMPLES_RESOURCES_DIR}/gui"
+                DESTINATION
+                "${EXAMPLES_INSTALL_PEFIX}/Resources"
+                PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+              )
+
+      if( NOM_BUILD_GUI_BUTTON_EXAMPLE )
+        add_executable( gui_button "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/gui/gui_button.cpp" )
+      endif( NOM_BUILD_GUI_BUTTON_EXAMPLE )
+
+      if( NOM_BUILD_GUI_LISTBOX_EXAMPLE )
+        add_executable( gui_listbox "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/gui/gui_listbox.cpp" )
+      endif( NOM_BUILD_GUI_LISTBOX_EXAMPLE )
+
+      if( NOM_BUILD_GUI_MESSAGEBOX_EXAMPLE )
+        add_executable( gui_messagebox "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/gui/gui_messagebox.cpp" )
+      endif( NOM_BUILD_GUI_MESSAGEBOX_EXAMPLE )
+
+      if( NOM_BUILD_GUI_DATAVIEWLIST_EXAMPLE )
+        # TODO: Needs to be split from examples/gui.cpp:
+        # add_executable( gui_dataviewlist "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/gui/gui_dataviewlist.cpp" )
+      endif( NOM_BUILD_GUI_DATAVIEWLIST_EXAMPLE )
+
+    endif( NOM_BUILD_GUI_EXAMPLES )
+
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_GUI_UNIT AND NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_JSON_UNIT AND NOM_BUILD_PTREE_UNIT AND NOM_BUILD_SYSTEM_UNIT )

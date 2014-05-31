@@ -115,11 +115,8 @@ class Text: public Transformable
     /// Destructor
     ~Text( void );
 
-    /// Copy constructor
-    Text ( const self_type& copy );
-
-    /// Construct a Text, initializing it with a text string, a Font
-    /// object, character size and text alignment.
+    /// \brief Construct a Text, initializing it with a text string, a nom::Font
+    /// object reference, character size and text alignment.
     Text (
             const std::string& text,
             const font_type& font,
@@ -127,6 +124,19 @@ class Text: public Transformable
             enum Text::Alignment align = Text::Alignment::TopLeft,
             const Color4i& text_color = Color4i::White
           );
+
+    /// \brief Construct a Text, initializing it with a text string, a nom::Font
+    /// object pointer, character size and text alignment.
+    Text (
+            const std::string& text,
+            const font_type::raw_ptr font,
+            uint character_size = nom::DEFAULT_FONT_SIZE,
+            enum Text::Alignment align = Text::Alignment::TopLeft,
+            const Color4i& text_color = Color4i::White
+          );
+
+    /// \brief Copy constructor.
+    Text ( const self_type& copy );
 
     /// \brief Implements the required IDrawable::clone method.
     IDrawable::raw_ptr clone( void ) const;

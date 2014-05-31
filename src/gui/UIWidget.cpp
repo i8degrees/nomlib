@@ -129,13 +129,13 @@ UIWidget::UIWidget  (
   // Auto-generate our name tag only if it is empty.
   if( this->name().empty() )
   {
-    this->set_name( "window" );
+    this->set_name( "parent_window" );
   }
 
   // Ensure that a valid font resource is available.
   if( this->font().valid() == false )
   {
-    NOM_DUMP( "invalid widget font" );
+    // NOM_DUMP( "invalid widget font" );
 
     this->set_font( PlatformSettings::get_system_font( SystemFontType::VariableTrueType ) );
   }
@@ -609,7 +609,10 @@ void UIWidget::insert_child( const UIWidget::raw_ptr child )
   // NOM_DUMP( child->id() );
   // NOM_DUMP( child->name() );
 
-  this->children_.push_back( child );
+  if( child != nullptr )
+  {
+    this->children_.push_back( child );
+  }
 }
 
 UIWidget::raw_ptr UIWidget::find_child( int64 id )
@@ -960,25 +963,25 @@ bool UIWidget::process_event( const nom::Event& ev )
   // l_x = ev.motion.x;
   // l_y = ev.motion.y;
 */
-  else if( ev.type == SDL_MOUSEBUTTONDOWN )
-  {
-    Point2i ev_mouse( ev.mouse.x, ev.mouse.y );
+  // else if( ev.type == SDL_MOUSEBUTTONDOWN )
+  // {
+  //   Point2i ev_mouse( ev.mouse.x, ev.mouse.y );
 
-    if( this->contains( this, ev_mouse ) == true )
-    {
-      // Associate the Event object along with the window object's instance
-      // identifiers.
-      UIWidgetEvent evt( ev.mouse.window_id, this->name(), ev, this->id() );
+  //   if( this->contains( this, ev_mouse ) == true )
+  //   {
+  //     // Associate the Event object along with the window object's instance
+  //     // identifiers.
+  //     UIWidgetEvent evt( ev.mouse.window_id, this->name(), ev, this->id() );
 
-      // Send a public UI event object to the registered callback; public event
-      // slot.
-      this->dispatcher()->emit( UIEvent::WINDOW_MOUSE_DOWN, evt );
+  //     // Send a public UI event object to the registered callback; public event
+  //     // slot.
+  //     this->dispatcher()->emit( UIEvent::WINDOW_MOUSE_DOWN, evt );
 
-      // Successfully processed events
-      return true;
+  //     // Successfully processed events
+  //     return true;
 
-    } // end if window contains mouse coords
-  } // end if SDL_MOUSEBUTTONDOWN
+  //   } // end if window contains mouse coords
+  // } // end if SDL_MOUSEBUTTONDOWN
 
   // No events to process
   return false;

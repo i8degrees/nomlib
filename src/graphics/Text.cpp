@@ -48,6 +48,44 @@ Text::~Text( void )
   // NOM_LOG_TRACE( NOM );
 }
 
+Text::Text  (
+              const std::string& text,
+              const Font& font,
+              uint character_size,        // Default parameter
+              enum Text::Alignment align, // Default parameter
+              const Color4i& text_color   // Default parameter
+            )  :
+  Transformable { Point2i::null, Size2i::null }, // Base class
+  text_ ( text ),
+  text_size_( character_size ),
+  style_( Text::Style::Normal )
+{
+  // NOM_LOG_TRACE( NOM );
+
+  this->set_font( font );
+  this->set_color( text_color );
+  this->set_alignment( align );
+}
+
+Text::Text  (
+              const std::string& text,
+              const Font::raw_ptr font,
+              uint character_size,        // Default parameter
+              enum Text::Alignment align, // Default parameter
+              const Color4i& text_color   // Default parameter
+            )  :
+  Transformable { Point2i::null, Size2i::null }, // Base class
+  text_ ( text ),
+  text_size_( character_size ),
+  style_( Text::Style::Normal )
+{
+  // NOM_LOG_TRACE( NOM );
+
+  this->set_font( font );
+  this->set_color( text_color );
+  this->set_alignment( align );
+}
+
 Text::Text ( const self_type& copy ) :
   Transformable { copy.position(), copy.size() }, // Our inherited class
   font_{ copy.font() },
@@ -64,25 +102,6 @@ Text::Text ( const self_type& copy ) :
   // Set the overall size of this text label to the width & height of the text,
   // with consideration to the specific font in use.
   // this->set_size( Size2i( this->text_width( copy.text() ), this->text_height( copy.text() ) ) );
-}
-
-Text::Text  (
-              const std::string& text,
-              const Font& font,
-              uint character_size,        // Default parameter
-              enum Text::Alignment align, // Default parameter
-              const Color4i& text_color
-            )  :
-  Transformable { Point2i::null, Size2i::null }, // Base class
-  text_ ( text ),
-  text_size_( character_size ),
-  style_( Text::Style::Normal )
-{
-  // NOM_LOG_TRACE( NOM );
-
-  this->set_font( font );
-  this->set_color( text_color );
-  this->set_alignment( align );
 }
 
 IDrawable::raw_ptr Text::clone( void ) const

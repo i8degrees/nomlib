@@ -111,7 +111,7 @@ bool Font::unique( void ) const
 
 bool Font::valid( void ) const
 {
-  if( this->font_.get() != nullptr )
+  if( this->font_ != nullptr )
   {
     return true;
   }

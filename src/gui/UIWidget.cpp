@@ -780,7 +780,7 @@ void UIWidget::update( void )
         (*it)->decorator()->update();
       }
 
-      (*it)->update();
+      // (*it)->update();
     }
   }
 

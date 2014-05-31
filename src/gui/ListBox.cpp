@@ -179,7 +179,7 @@ void ListBox::set_selected_text_color( const Color4i& color )
 
   this->selected_text_color_ = color;
 
-  // this->update();
+  this->update();
 }
 
 int ListBox::hit_test( const Point2i& pt )

@@ -49,26 +49,11 @@ class QuestionDialogBox: public MessageBox
     typedef MessageBox derived_class;
 
     typedef self_type* raw_ptr;
-    typedef std::unique_ptr<self_type> unique_ptr;
     typedef std::shared_ptr<self_type> shared_ptr;
 
     typedef std::vector<std::string> ItemStrings;
-    typedef std::vector<Text::unique_ptr> ItemLabels;
 
-    // typedef std::vector<IDrawable::unique_ptr> ChoiceLabels;
-    typedef std::vector<Text::unique_ptr> ChoiceLabels;
-
-    QuestionDialogBox( void );
-
-    virtual ~QuestionDialogBox( void );
-
-    /// \brief Copy constructor.
-    ///
-    /// \remarks This class is non-copyable.
-    QuestionDialogBox( const self_type& rhs ) = delete;
-
-    /// \brief Copy assignment operator.
-    self_type& operator =( const self_type& rhs );
+    typedef std::vector<Text> ChoiceLabels;
 
     QuestionDialogBox (
                         UIWidget* parent,
@@ -77,13 +62,18 @@ class QuestionDialogBox: public MessageBox
                         const Size2i& size
                       );
 
-    // IDrawable::raw_ptr clone( void ) const;
+    virtual ~QuestionDialogBox( void );
+
+    /// \brief Copy constructor.
+    ///
+    /// \remarks This class is non-copyable.
+    QuestionDialogBox( const self_type& rhs ) = delete;
+
+    /// \brief Perform a bounds coordinates collision test.
+    int hit_test( const Point2i& pt );
 
     /// \brief Implements MessageBox::draw method.
     void draw( RenderTarget& target ) const;
-
-    /// \brief Implements the MessageBox::process_event method.
-    bool process_event( const nom::Event& ev );
 
     /// \brief Obtain the current selected index identifier (position) of the
     /// item labels group.
@@ -95,21 +85,48 @@ class QuestionDialogBox: public MessageBox
     /// \todo Rename method?
     uint items_size( void ) const;
 
+    /// \todo Rename to items?
     ItemStrings choices( void ) const;
 
-    void append_choice( const Text& label );
+    /// \todo Rename to item?
+    std::string choice( int pos ) const;
+
+    const Color4i& selected_text_color( void ) const;
+
+    /// \todo Rename to append_item?
+    void append_choice( const std::string& label );
+
+    /// \brief Set the text color used to highlight the current selection
+    /// item.
+    void set_selected_text_color( const Color4i& color );
 
     /// \brief Set the current selection index (position) of the item labels
     /// group.
     void set_selection( int pos );
 
   protected:
-    // void copy( const self_type& rhs );
+    /// \brief Re-implements UIWidget::on_size_changed.
+    virtual void on_size_changed( const UIWidgetEvent& ev );
 
+    /// \brief Re-implements UIWidget::on_mouse_down.
+    virtual void on_mouse_down( const UIWidgetEvent& ev );
+
+    /// \brief Re-implements UIWidget::on_mouse_up.
+    virtual void on_mouse_up( const UIWidgetEvent& ev );
+
+    /// \brief Re-implements UIWidget::on_mouse_wheel.
+    virtual void on_mouse_wheel( const UIWidgetEvent& ev );
+
+    /// \brief Re-implements UIWidget::on_key_down.
+    virtual void on_key_down( const UIWidgetEvent& ev );
+
+    /// \brief Re-implements UIWidget::on_key_up.
+    virtual void on_key_up( const UIWidgetEvent& ev );
+
+  private:
     /// \brief Implements MessageBox::update method.
     void update( void );
 
-  private:
     ChoiceLabels choices_;
 
     /// \brief Selected item, identified by its index (position) from labels_
@@ -118,7 +135,8 @@ class QuestionDialogBox: public MessageBox
     /// \remarks The default state is to be non-selected (negative value).
     int selection_;
 
-    // bool enabled_;
+    /// \brief The text color used to highlight the selection text label.
+    Color4i selected_text_color_;
 };
 
 } // namespace nom

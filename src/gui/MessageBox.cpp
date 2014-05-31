@@ -30,30 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-MessageBox::MessageBox( void ) :
-  enabled_ ( false ),
-  updated_ ( false )
-{
-  // NOM_LOG_TRACE( NOM );
-
-  this->update();
-}
-
-MessageBox::~MessageBox( void )
-{
-  // NOM_LOG_TRACE( NOM );
-}
-
-MessageBox::self_type& MessageBox::operator =( const self_type& rhs )
-{
-  this->title_ = rhs.title();
-  this->message_ = rhs.message();
-  this->enabled_ = rhs.enabled_;
-  this->updated_ = rhs.updated_;
-
-  return *this;
-}
-
 MessageBox::MessageBox  (
                           UIWidget* parent,
                           int64 id,
@@ -66,10 +42,21 @@ MessageBox::MessageBox  (
 {
   // NOM_LOG_TRACE( NOM );
 
+  // Use explicitly set coordinates for our minimum widget size
+  this->set_minimum_size( size );
+
   // Auto-generate a name tag for our widget.
   this->set_name( "message_box" );
 
-  this->update();
+  // Initialize the default event listeners for the widget.
+  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
+
+  // this->update();
+}
+
+MessageBox::~MessageBox( void )
+{
+  // NOM_LOG_TRACE( NOM );
 }
 
 bool MessageBox::enabled( void ) const
@@ -99,6 +86,16 @@ const IntRect MessageBox::message_bounds( void ) const
   return IntRect( this->message_.global_bounds() );
 }
 
+Text::Alignment MessageBox::title_alignment( void ) const
+{
+  return this->title_.alignment();
+}
+
+Text::Alignment MessageBox::message_alignment( void ) const
+{
+  return this->message_.alignment();
+}
+
 void MessageBox::disable( void )
 {
   this->enabled_ = false;
@@ -109,32 +106,137 @@ void MessageBox::enable( void )
   this->enabled_ = true;
 }
 
-// Text::Alignment MessageBox::title_alignment( void ) const
-// {
-//   return this->labels[0].alignment();
-// }
-
-// Text::Alignment MessageBox::text_alignment( void ) const
-// {
-//   return this->labels[1].alignment();
-// }
-
-void MessageBox::set_title_label( const Text& title )
+void MessageBox::set_title_label( const std::string& text, const Font& font, uint point_size )
 {
   this->updated_ = false;
 
-  // Sanity check
-  if ( title.valid() == false )
+  this->set_title_text( text );
+  this->set_title_font( font );
+  this->set_title_font_size( point_size );
+  this->set_title_alignment( Text::Alignment::TopLeft );
+
+  this->update();
+}
+
+void MessageBox::set_title_text( const std::string& text )
+{
+  this->updated_ = false;
+
+  this->title_.set_text( text );
+
+  // Update our message box -- we have new objects in the rendering pipeline!
+  this->update();
+}
+
+void MessageBox::set_title_font( const Font& font )
+{
+  this->updated_ = false;
+
+  this->title_.set_font( font );
+
+  this->update();
+}
+
+void MessageBox::set_title_font_size( uint point_size )
+{
+  this->updated_ = false;
+
+  this->title_.set_text_size( point_size );
+
+  this->update();
+}
+
+void MessageBox::set_title_alignment( Text::Alignment align )
+{
+  this->updated_ = false;
+
+  this->title_.set_alignment( align );
+
+  this->update();
+}
+
+void MessageBox::set_message_label( const std::string& text, const Font& font, uint point_size )
+{
+  this->updated_ = false;
+
+  this->set_message_text( text );
+  this->set_message_font( font );
+  this->set_message_font_size( point_size );
+  this->set_message_alignment( Text::Alignment::MiddleCenter );
+
+  this->update();
+}
+
+void MessageBox::set_message_text( const std::string& text )
+{
+  this->updated_ = false;
+
+  this->message_.set_text( text );
+
+  this->update();
+}
+
+void MessageBox::set_message_font( const Font& font )
+{
+  this->updated_ = false;
+
+  this->message_.set_font( font );
+
+  this->update();
+}
+
+void MessageBox::set_message_font_size( uint point_size )
+{
+  this->updated_ = false;
+
+  this->message_.set_text_size( point_size );
+
+  this->update();
+}
+
+void MessageBox::set_message_alignment( Text::Alignment align )
+{
+  this->updated_ = false;
+
+  this->message_.set_alignment( align );
+
+  this->update();
+}
+
+void MessageBox::draw( RenderTarget& target ) const
+{
+  if ( this->enabled() == false ) return;
+
+  if( this->title_.valid() )
   {
-    NOM_LOG_ERR( NOM, "Title Text object in nom::MessageBox is invalid" );
-    return;
+    this->title_.draw ( target );
   }
 
-  this->title_ = title;
+  if( this->message_.valid() )
+  {
+    this->message_.draw ( target );
+  }
+}
+
+// Protected scope
+
+void MessageBox::update( void )
+{
+  // if ( this->updated_ == true ) return;
+
+  if( this->title_.font().valid() == false )
+  {
+    this->title_.set_font( this->font() );
+  }
+
+  if( this->message_.font().valid() == false )
+  {
+    this->message_.set_font( this->font() );
+  }
 
   // We must handle certain text alignments in a particular way, otherwise we
   // potentially end up with text that overlaps.
-  switch( this->title_.alignment() )
+  switch( this->title_alignment() )
   {
     default:
     {
@@ -155,108 +257,18 @@ void MessageBox::set_title_label( const Text& title )
 
   this->title_.set_size( this->size() );
 
-  // Calling set_alignment twice can result in duplicating the rendering
-  // positioning of the text, giving us the wrong result.
-  if( title.alignment() != this->title_.alignment() )
-  {
-    this->title_.set_alignment( title.alignment() );
-  }
+  // if( this->title_.alignment() != this->title_alignment() )
+  // {
+    // this->title_.set_alignment( this->title_alignment() );
+  // }
 
   // Prevent rendering of text that is longer in length than its container's
   // set size parameters (see above).
   this->title_.set_features( Text::ExtraRenderingFeatures::CropText );
-
-  // Update our message box -- we have new objects in the rendering pipeline!
-  this->update();
-}
-
-void MessageBox::set_title_text( const std::string& text )
-{
-  this->updated_ = false;
-
-  // Sanity check
-  if ( this->title_.valid() == false )
-  {
-    NOM_LOG_ERR( NOM, "Title Text object in nom::MessageBox is invalid" );
-    return;
-  }
-
-  this->title_.set_text( text );
-  this->title_.set_position( this->position() );
-  this->title_.set_size( this->size() );
-
-  // Prevent rendering of text that is longer in length than its container's
-  // set size parameters (see above).
-  this->title_.set_features( Text::ExtraRenderingFeatures::CropText );
-
-  // Update our message box -- we have new objects in the rendering pipeline!
-  this->update();
-}
-
-// void MessageBox::set_title_label( const std::string& text )
-// {
-//   this->updated_ = false;
-
-//   this->labels[0].set_text( text );
-
-//   this->update();
-// }
-
-// void MessageBox::set_title_font( const Font& font )
-// {
-//   this->updated_ = false;
-
-//   this->labels[0].set_font( font );
-
-//   this->update();
-// }
-
-// void MessageBox::set_title_font_size( uint point_size )
-// {
-//   this->updated_ = false;
-
-//   this->labels[0].set_text_size( point_size );
-
-//   this->update();
-// }
-
-// void MessageBox::set_title_alignment( Text::Alignment align )
-// {
-//   this->updated_ = false;
-
-//   this->labels[0].set_alignment( align );
-
-//   this->update();
-// }
-
-// void MessageBox::set_title( const std::string& text, const Font& font, uint point_size, Text::Alignment align )
-// {
-//   this->updated_ = false;
-
-//   this->set_title_label( text );
-//   this->set_title_font( font );
-//   this->set_title_font_size( point_size );
-//   this->set_title_alignment( align );
-
-//   this->update();
-// }
-
-void MessageBox::set_message_label( const Text& text )
-{
-  this->updated_ = false;
-
-  // Sanity check
-  if ( text.valid() == false )
-  {
-    NOM_LOG_ERR( NOM, "Message Text object in nom::MessageBox is invalid" );
-    return;
-  }
-
-  this->message_ = text;
 
   // We must handle certain text alignments in a particular way, otherwise we
   // potentially end up with text that overlaps.
-  switch( this->message_.alignment() )
+  switch( this->message_alignment() )
   {
     default:
     {
@@ -271,238 +283,68 @@ void MessageBox::set_message_label( const Text& text )
     case Text::Alignment::TopRight:
     {
       // this->message_.set_position( Point2i( this->position().x, this->position().y + text.height() / 2 ) );
-      this->message_.set_position( Point2i( this->position().x, this->position().y + text.height() ) );
+      this->message_.set_position( Point2i( this->position().x, this->position().y + this->message_bounds().h ) );
       break;
     }
   }
 
   this->message_.set_size( this->size() );
 
-  // Calling set_alignment twice can result in duplicating the rendering
-  // positioning of the text, giving us the wrong result.
-  if( text.alignment() != this->message_.alignment() )
-  {
-    this->message_.set_alignment( text.alignment() );
-  }
+  // if( this->message_.alignment() != this->message_alignment() )
+  // {
+    // this->message_.set_alignment( this->message_alignment() );
+  // }
 
   // Prevent rendering of text that is longer in length than its container's
   // set size parameters (see above).
   this->message_.set_features( Text::ExtraRenderingFeatures::CropText );
-
-  // Update our message box -- we have new objects in the rendering pipeline!
-  this->update();
-}
-
-// void MessageBox::set_text( const std::string& text, const Font& font, uint point_size, Text::Alignment align )
-// {
-//   this->updated_ = false;
-
-//   this->set_text_label( text );
-//   this->set_text_font( font );
-//   this->set_text_font_size( point_size );
-//   this->set_text_alignment( align );
-
-//   this->update();
-// }
-
-// void MessageBox::set_text_label( const std::string& text )
-// {
-//   this->updated_ = false;
-
-//   this->labels[1].set_text( text );
-
-//   this->update();
-// }
-
-// void MessageBox::set_text_font( const Font& font )
-// {
-//   this->updated_ = false;
-
-//   this->labels[1].set_font( font );
-
-//   this->update();
-// }
-
-// void MessageBox::set_text_font_size( uint point_size )
-// {
-//   this->updated_ = false;
-
-//   this->labels[1].set_text_size( point_size );
-
-//   this->update();
-// }
-
-// void MessageBox::set_text_alignment( Text::Alignment align )
-// {
-//   this->updated_ = false;
-
-//   this->labels[1].set_alignment( align );
-
-//   this->update();
-// }
-
-void MessageBox::set_message_text( const std::string& text )
-{
-  this->updated_ = false;
-
-  // Sanity check
-  if ( this->message_.valid() == false )
-  {
-    NOM_LOG_ERR( NOM, "Message Text object in nom::MessageBox is invalid" );
-    return;
-  }
-
-  this->message_.set_text( text );
-  this->message_.set_position( this->position() );
-  this->message_.set_size( this->size() );
-
-  // FIXME (?):
-  //
-  // In order to preserve the text alignment of the original object, we must
-  // copy the state of the original alignment *after* we set the positioning
-  // on the new object we create for this class
-  this->message_.set_alignment ( this->message_.alignment() );
-
-  // Prevent rendering of text that is longer in length than its container's
-  // set size parameters (see above).
-  this->message_.set_features( Text::ExtraRenderingFeatures::CropText );
-
-  // Update our message box -- we have new objects in the rendering pipeline!
-  this->update();
-}
-
-void MessageBox::draw( RenderTarget& target ) const
-{
-  if ( this->enabled() == false ) return;
-
-  // UIWidget::draw( target );
-
-  // NOTE: Validity is checked before attempting to render.
-  this->title_.draw ( target );
-  this->message_.draw ( target );
-}
-
-// Protected scope
-
-void MessageBox::update( void )
-{
-  if ( this->updated_ == true ) return;
-
-  // UIWidget::update();
 
   this->updated_ = true;
 }
 
-bool MessageBox::process_event( const nom::Event& ev )
+void MessageBox::on_size_changed( const UIWidgetEvent& ev )
 {
-  Point2i mouse_coords( ev.mouse.x, ev.mouse.y );
+  NOM_STUBBED( NOM );
+}
 
-  // Base class
-  // UIWidget::process_event( ev );
+void MessageBox::on_mouse_down( const UIWidgetEvent& ev )
+{
+  Event evt = ev.event();
 
-  // FIXME (?):
-  //
-  // if( UIWidget::process_event( ev ) ) return true;
-
-  // Execute the registered action for a single mouse click event
-  if( ev.type == SDL_MOUSEBUTTONDOWN )
+  if( evt.type == SDL_MOUSEBUTTONDOWN )
   {
-    IntRect window( this->global_bounds() );
+    UIWidgetEvent wev;
+    Point2i mouse( evt.mouse.x, evt.mouse.y );
 
-    // Execute the registered action for a single mouse click on the bounds of a
-    // caption or message event.
-    if( this->title_bounds().contains( mouse_coords ) )
+    IntRect title_bounds = this->title_bounds();
+    IntRect message_bounds = this->message_bounds();
+
+    if( title_bounds.contains( mouse ) )
     {
-      UIWidgetEvent item;
+      wev = UIWidgetEvent( 0, this->title_text(), evt, this->id() );
 
-      // Send the array index in our event; this signifies which choice was
-      // selected -- the caption text label.
-      item.set_index( 0 );
+      // Send the UI event object to the registered private event callback.
+      this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, wev );
 
-      // Send the text of the selection.
-      item.set_text( this->title_.text() );
-
-      // Set the associated nom::Event object for this UI event.
-      item.set_event( ev );
-
-      // Associate the widget's unique identifier for this widget's event
-      // object.
-      item.set_id( this->id() );
-
-      // Send the UI event object to the registered callback; public event slot.
-      this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
-
-      // Processed events
-      return true;
+      // Send the UI event object to the registered public event callback.
+      this->dispatcher()->emit( UIEvent::MOUSE_DOWN, wev );
     }
-
-    else if( this->message_bounds().contains( mouse_coords ) )
+    else if( message_bounds.contains( mouse ) )
     {
-      UIWidgetEvent item;
+      wev = UIWidgetEvent( 1, this->message_text(), evt, this->id() );
 
-      // Send the array index in our event; this signifies which choice was
-      // selected -- the message text label.
-      item.set_index( 1 );
+      // Send the UI event object to the registered private event callback.
+      this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, wev );
 
-      // Send the text of the selection.
-      item.set_text( this->message_.text() );
-
-      // Set the associated nom::Event object for this UI event.
-      item.set_event( ev );
-
-      // Associate the widget's unique identifier for this widget's event
-      // object.
-      item.set_id( this->id() );
-
-      // Send the UI event object to the registered callback; public event slot.
-      this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
-
-      // Processed events
-      return true;
+      // Send the UI event object to the registered public event callback.
+      this->dispatcher()->emit( UIEvent::MOUSE_DOWN, wev );
     }
-
-    // FIXME: This method is duplicating what UIWidget::process_event covers..?
-    else if( window.contains( mouse_coords ) )
-    {
-      UIWidgetEvent item;
-
-      // Send an invalid index state to signify that no text labels, groups,
-      // or similar are selected.
-      item.set_index( -1 );
-
-      // Send the window object instance's name identifier.
-      item.set_text( this->name() );
-
-      // Set the associated nom::Event object for this UI event.
-      item.set_event( ev );
-
-      // Associate the widget's unique identifier for this widget's event
-      // object.
-      item.set_id( this->id() );
-
-      // Send the UI event object to the registered callback; public event slot.
-      this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
-
-      // Processed events.
-      return true;
-    }
-
-  } // end if ev.type == SDL_MOUSEBUTTONDOWN
-
-  // No processed events
-  return false;
+  } // end if evt.type is SDL_MOUSEBUTTONDOWN
 }
 
-// Private scope
-
-const Text& MessageBox::title( void ) const
+void MessageBox::on_mouse_up( const UIWidgetEvent& ev )
 {
-  return this->title_;
-}
-
-const Text& MessageBox::message( void ) const
-{
-  return this->message_;
+  //
 }
 
 } // namespace nom

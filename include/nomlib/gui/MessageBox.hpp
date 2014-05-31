@@ -49,20 +49,7 @@ class MessageBox: public UIWidget
     typedef UIWidget derived_class;
 
     typedef self_type* raw_ptr;
-    typedef std::unique_ptr<self_type> unique_ptr;
     typedef std::shared_ptr<self_type> shared_ptr;
-
-    MessageBox( void );
-
-    virtual ~MessageBox( void );
-
-    /// \brief Copy constructor.
-    ///
-    /// \remarks This class is non-copyable.
-    MessageBox( const self_type& rhs ) = delete;
-
-    /// \brief Copy assignment operator.
-    self_type& operator =( const self_type& rhs );
 
     MessageBox  (
                   UIWidget* parent,
@@ -70,6 +57,13 @@ class MessageBox: public UIWidget
                   const Point2i& pos,
                   const Size2i& size
                 );
+
+    virtual ~MessageBox( void );
+
+    /// \brief Copy constructor.
+    ///
+    /// \remarks This class is non-copyable.
+    MessageBox( const self_type& rhs ) = delete;
 
     bool enabled( void ) const;
 
@@ -94,77 +88,70 @@ class MessageBox: public UIWidget
     /// in this class.
     const IntRect message_bounds( void ) const;
 
+    Text::Alignment title_alignment( void ) const;
+    Text::Alignment message_alignment( void ) const;
+
     void disable( void );
     void enable( void );
 
-    // Text::Alignment title_alignment( void ) const;
-    // Text::Alignment text_alignment( void ) const;
+    /// \brief Set the title (caption) text of the message box.
+    ///
+    /// \remarks The title text's alignment is set to Text::Alignment::TopLeft.
+    void set_title_label( const std::string& text, const Font& font, uint point_size );
 
-    /// \brief Set the title label (caption) of the message box.
-    ///
-    /// \remarks This method is potentially expensive and should be used only
-    /// when necessary -- such as when first-time initializing the label --
-    /// or when a new font object needs to be set.
-    ///
-    /// \deprecated This will likely be removed when feature/GUI is merged into
-    /// the main dev branch.
-    void set_title_label( const Text& title );
-
-    /// \brief Set the title label text (caption) of the message box.
-    ///
-    /// \remarks This method is provided for quick updates of the existing label;
-    /// the title label text object should be initialized before
+    /// \brief Set the title (caption) text of the message box.
     void set_title_text( const std::string& text );
 
-    // void set_title( const std::string& text, const Font& font, uint point_size = 12, Text::Alignment align = Text::Alignment::TopLeft );
-    // void set_title_label( const std::string& text );
-    // void set_title_font( const Font& font );
-    // void set_title_font_size( uint point_size );
-    // void set_title_alignment( Text::Alignment align );
+    /// \brief Set the title (caption) text's font.
+    void set_title_font( const Font& font );
 
-    /// \brief Set the message box text label.
-    ///
-    /// \remarks This method is potentially expensive and should be used only
-    /// when necessary -- such as when first-time initializing the label --
-    /// or when a new font object needs to be set.
-    ///
-    /// \deprecated This will likely be removed when feature/GUI is merged into
-    /// the main dev branch.
-    void set_message_label( const Text& text );
+    /// \brief Set the title (caption) text's font size.
+    void set_title_font_size( uint point_size );
 
-    /// \brief Set the message box text.
+    /// \brief Set the title (caption) text's alignment.
+    void set_title_alignment( Text::Alignment align );
+
+    /// \brief Set the message text label.
     ///
-    /// \remarks This method is provided for quick updates of the existing label;
-    /// the title label text object should be initialized before
+    /// \remarks The message label text's alignment is set to
+    /// Text::Alignment::MiddleCenter.
+    void set_message_label( const std::string& text, const Font& font, uint point_size );
+
+    /// \brief Set the message text label.
     void set_message_text( const std::string& text );
 
-    // void set_text( const std::string& text, const Font& font, uint point_size = 12, Text::Alignment align = Text::Alignment::MiddleCenter );
-    // void set_text_label( const std::string& text );
-    // void set_text_font( const Font& font );
-    // void set_text_font_size( uint point_size );
-    // void set_text_alignment( Text::Alignment align );
+    /// \brief Set the message text's font.
+    void set_message_font( const Font& font );
+
+    /// \brief Set the message text's font size.
+    void set_message_font_size( uint point_size );
+
+    /// \brief Set the message text's alignment.
+    void set_message_alignment( Text::Alignment align );
 
     /// \brief Implements UIWidget::draw method.
     void draw( RenderTarget& target ) const;
 
   protected:
     /// \brief Implements UIWidget::update method.
+    ///
+    /// \todo Move to private scope.
     void update( void );
 
-    /// \brief Implements the EventHandler::process_event method.
-    bool process_event( const nom::Event& ev );
+    // TODO:
+    // void update_bounds( void );
+
+    /// \brief Re-implements UIWidget::on_size_changed.
+    virtual void on_size_changed( const UIWidgetEvent& ev );
+
+    virtual void on_mouse_down( const UIWidgetEvent& ev );
+    virtual void on_mouse_up( const UIWidgetEvent& ev );
 
   private:
-    /// \brief Obtain a reference object to the title text label used.
-    const Text& title( void ) const;
-
-    /// \brief Obtain a reference object to the message text label used.
-    const Text& message( void ) const;
-
-    /// Message caption label.
+    /// \brief Title (caption) text label.
     Text title_;
 
-    /// \brief Message text label.
+    /// \brief Message contents text label.
     Text message_;
 
     bool enabled_;

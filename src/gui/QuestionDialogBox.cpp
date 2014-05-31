@@ -30,29 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-QuestionDialogBox::QuestionDialogBox( void ) :
-  selection_{ -1 }
-{
-  // NOM_LOG_TRACE( NOM );
-
-  this->set_updated( false );
-
-  this->update();
-}
-
-QuestionDialogBox::~QuestionDialogBox( void )
-{
-  // NOM_LOG_TRACE( NOM );
-}
-
-QuestionDialogBox::self_type& QuestionDialogBox::operator =( const self_type& rhs )
-{
-  // this->choices_ = rhs.choices_;
-  this->selection_ = rhs.selection_;
-
-  return *this;
-}
-
 QuestionDialogBox::QuestionDialogBox  (
                                         UIWidget* parent,
                                         int64 id,
@@ -60,44 +37,87 @@ QuestionDialogBox::QuestionDialogBox  (
                                         const Size2i& size
                                       ) :
   MessageBox( parent, id, pos, size ),
-  selection_{ -1 }
+  // selection_{ -1 },
+  selection_{ 0 }
 {
   // NOM_LOG_TRACE( NOM );
 
-  this->set_updated( false );
+  // Use explicitly set coordinates for our minimum widget size
+  this->set_minimum_size( size );
 
   // Auto-generate a name tag for our widget.
-  this->set_name( "question_dialog_box" );
+  this->set_name( "question_box" );
 
-  this->update();
+  // Default highlighted item text color.
+  this->set_selected_text_color( Color4i::Red );
+
+  // Initialize the default event listeners for the widget.
+  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
+
+  // this->update();
 }
 
-// IDrawable::raw_ptr QuestionDialogBox::clone( void ) const
-// {
-//   return QuestionDialogBox::raw_ptr( new QuestionDialogBox( *this ) );
-// }
+QuestionDialogBox::~QuestionDialogBox( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
+
+int QuestionDialogBox::hit_test( const Point2i& pt )
+{
+  // Counter for the position of each element; must start at zero and count our
+  // way up to the last element to figure out where we are in the array.
+  int index = 0;
+
+  for( auto itr = this->choices_.begin(); itr != this->choices_.end(); ++itr )
+  {
+    if( this->contains( itr->get(), pt ) == true )
+    {
+      // Found our array / element position within the internal storage
+      // container!
+      return index;
+    }
+
+    // Increment element position
+    ++index;
+  }
+
+  // No position found
+  return npos;
+}
 
 void QuestionDialogBox::draw( RenderTarget& target ) const
 {
-  // if ( this->enabled() == false ) return;
-
   // First, render our base class
   MessageBox::draw( target );
 
   for( auto itr = this->choices_.begin(); itr != this->choices_.end(); ++itr )
   {
-    (*itr)->draw( target );
+    if( (*itr).valid() == true )
+    {
+      (*itr).draw( target );
+    }
   }
 }
 
-void QuestionDialogBox::append_choice( const Text& label )
+void QuestionDialogBox::append_choice( const std::string& label )
 {
-  this->set_updated( false );
+  Text choice;
 
-  Text::unique_ptr choice = Text::unique_ptr( new Text( label ) );
+  choice.set_font( this->font() );
+  choice.set_text_size( nom::DEFAULT_FONT_SIZE );
+  choice.set_text( label );
+  choice.set_position( this->position() );
+  choice.set_size( this->size() );
+  choice.set_alignment( Text::Alignment::MiddleCenter );
 
-  this->choices_.push_back( std::move( choice ) );
-  // this->set_shape( std::move( choice ) );
+  this->choices_.push_back( choice );
+
+  this->update();
+}
+
+void QuestionDialogBox::set_selected_text_color( const Color4i& color )
+{
+  this->selected_text_color_ = color;
 
   this->update();
 }
@@ -109,201 +129,286 @@ void QuestionDialogBox::update( void )
   // Elapsed element position counter
   int index = 0;
 
-  // Point2i pos( this->position().x, this->message_bounds().y - this->message_bounds().h );
   Point2i pos( this->position().x, this->position().y );
 
-  if ( this->updated() == true ) return;
+  if( this->choices_.empty() ) return;
 
-  // First, update our base class
+  // FIXME: This call is necessary for updating the geometries of the base
+  // class.
   MessageBox::update();
-
-  // FIXME:
-  //
-  // Empty the rendered drawables list before we attempt to update.
-  // this->choices_.clear();
 
   for( auto itr = this->choices_.begin(); itr != this->choices_.end(); ++itr )
   {
-    (*itr)->set_position( pos );
-    (*itr)->set_size( Size2i( this->size() ) );
+    (*itr).set_font( this->font() );
+
+    (*itr).set_position( pos );
+    (*itr).set_size( Size2i( this->size() ) );
 
     pos.x = pos.x;
-    pos.y += (*itr)->height();
-
-// NOM_DUMP( pos.x );
-// NOM_DUMP( pos.y );
-// NOM_DUMP( (*itr)->alignment() );
-// NOM_DUMP( this->size() );
-
-    (*itr)->set_alignment( (*itr)->alignment() );
-
-    // this->set_shape( std::move( *itr ) );
+    pos.y += (*itr).height();
 
     // Make the current item label selection stand out by marking it a different
     // color.
     if( this->selection() == index )
     {
-      // FIXME: Color is a stub.
-      (*itr)->set_color( Color4i::Red );
+      (*itr).set_color( this->selected_text_color() );
+    }
+    else
+    {
+      (*itr).set_color( Color4i::White );
     }
 
     // ...Next element position!
     ++index;
   }
-
-  // FIXME: The setting of the text label's color breaks if we set allow
-  // updated to be set to true below.
-  // this->set_updated( true );
 }
 
-bool QuestionDialogBox::process_event( const nom::Event& ev )
+void QuestionDialogBox::on_size_changed( const UIWidgetEvent& ev )
 {
-  Point2i mouse_coords( ev.mouse.x, ev.mouse.y );
+  NOM_STUBBED( NOM );
+}
 
-  // Base class
-  MessageBox::process_event( ev );
+void QuestionDialogBox::on_mouse_down( const UIWidgetEvent& ev )
+{
+  int index = 0;
+  Event event = ev.event();
 
-  // FIXME (?):
+  // Let our base class handle its share of the events -- the title caption &
+  // message text bounds.
   //
-  // if( MessageBox::process_event( ev ) ) return true;
+  // The choice text labels are ours to handle and should not overlap whatsoever
+  // with MessageBox.
+  MessageBox::on_mouse_down( ev );
 
-  // Registered action for single mouse click event
-  if( ev.type == SDL_MOUSEBUTTONDOWN )
+  // Registered action for mouse button event
+  if( event.type == SDL_MOUSEBUTTONDOWN )
   {
-    // Counter for the position of each element; must start at zero.
-    int index = 0;
+    UIEvent evcode[2];
+    UIWidgetEvent wev;
+    Point2i mouse( event.mouse.x, event.mouse.y );
+    index = this->hit_test( mouse );
 
-    for ( auto it = this->choices_.begin(); it != this->choices_.end(); ++it )
+    if( index != npos )
     {
-      IntRect label_bounds( (*it)->global_bounds() );
+      // TODO:
+      // this->set_focused( true );
 
-      if ( label_bounds.contains( mouse_coords ) )
+      // Send the array index in our event; this signifies which choice was
+      // selected.
+      wev.set_index( index );
+
+      // FIXME:
+      // Send the text of the selection.
+      wev.set_text( this->choice( index ) );
+
+      // Set the current index position to the selected text label -- this
+      // has the side effect of updating the text color; see also: ::update.
+      this->set_selection( index );
+
+      // Set the associated nom::Event object for this UI event.
+      wev.set_event( event );
+
+      wev.set_id( this->id() );
+
+      // Single mouse click event
+      if( event.mouse.clicks < 2 )
       {
-        UIWidgetEvent item;
-
-        // Send the array index in our event; this signifies which choice was
-        // selected.
-        item.set_index( index );
-
-        // Send the text of the selection.
-        item.set_text( (*it)->text() );
-
-        // Set the associated nom::Event object for this UI event.
-        item.set_event( ev );
-
-        // Associate the widget's unique identifier for this widget's event
-        // object.
-        item.set_id( this->id() );
-
-        // Single mouse click event
-        if( ev.mouse.clicks < 2 )
-        {
-          // Send the UI event object to the registered callback; public event
-          // slot.
-          this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
-        }
-        else // Double mouse click event
-        {
-          // Send the UI event object to the registered callback; public event
-          // slot.
-          this->dispatcher()->emit( UIEvent::MOUSE_DCLICK, item );
-        }
-
-        // Processed events.
-        return true;
+        evcode[0] = UIEvent::ON_MOUSE_DOWN;   // Private event
+        evcode[1] = UIEvent::MOUSE_DOWN;      // Public event
+      }
+      // Double mouse click event
+      else
+      {
+        evcode[0] = UIEvent::ON_MOUSE_DCLICK;   // Private event
+        evcode[1] = UIEvent::MOUSE_DCLICK;      // Public event
       }
 
-      // ...next element position!
-      ++index;
+      // Send the UI event object to the registered callback; this is the
+      // "private" interface -- reserved for internal class implementations.
+      this->dispatcher()->emit( evcode[0], wev );
 
-    } // end if text label bounds intersect mouse coordinates
-  } // end if ev.type == SDL_MOUSEBUTTONDOWN
+      // Send the UI event object to the registered callback; this is the
+      // event that gets heard by any end-user listening in, unlike the
+      // private message above.
+      this->dispatcher()->emit( evcode[1], wev );
 
-  // Registered action for wheel events
-  else if( ev.type == SDL_MOUSEWHEEL )
-  {
-    int index = this->selection();
-
-    for( auto it = this->choices_.begin(); it != this->choices_.end(); ++it )
-    {
-      // index = this->selection();
-
-      // Ensure that we are not touching an invalid (negative) value.
-      // if( index < 0 ) index = 0;
-
-      UIWidgetEvent item;
-
-      // Send the array index in our event; this signifies which choice was
-      // selected.
-      item.set_index( index );
-
-      // Set the current index position to the selected text label -- this
-      // has the side effect of updating the text color; see also: ::update.
-      this->set_selection( index );
-
-      // Send the text of the selection; this needs to be set *after* the
-      // selection has been set.
-      item.set_text( this->choices_.at( index )->text() );
-
-      // Set the associated nom::Event object for this UI event.
-      item.set_event( ev );
-
-      // Associate the widget's unique identifier for this widget's event
-      // object.
-      item.set_id( this->id() );
-
-      // Send the UI event object to the registered callback; public event slot.
-      this->dispatcher()->emit( UIEvent::MOUSE_WHEEL, item );
-
-      // Processed events
-      return true;
+      this->set_selected_text_color( this->selected_text_color() );
     }
-  }
+  } // end if event type == SDL_MOUSEBUTTONDOWN
+}
+
+void QuestionDialogBox::on_mouse_up( const UIWidgetEvent& ev )
+{
+  // Stub
+}
+
+void QuestionDialogBox::on_mouse_wheel( const UIWidgetEvent& ev )
+{
+  int index = 0;
+  Event event = ev.event();
+
+  // Registered action for mouse button event
+  if( event.type == SDL_MOUSEWHEEL )
+  {
+    UIWidgetEvent wev;
+
+    // TODO:
+    if( this->focused() == false )
+    {
+      // return;
+    }
+
+    // Counter for the position of each element; must start at current
+    // selection.
+    index = this->selection();
+
+    // Send the array index in our event; this signifies which choice was
+    // selected.
+    wev.set_index( index );
+
+    // Set the current index position to the selected text label -- this
+    // has the side effect of updating the text color; see also: ::update.
+    this->set_selection( index );
+
+    // Send the text of the selection if there is a selection set. Note that
+    // this needs to be set *after* the selection has been set.
+    if( index != npos )
+    {
+      wev.set_text( this->choice( index ) );
+    }
+    else
+    {
+      wev.set_text( "\0" );
+    }
+
+    // Set the associated nom::Event object for this UI event.
+    wev.set_event( event );
+
+    wev.set_id( this->id() );
+
+    // Send the UI event object to the registered callback; this is the private
+    // event interface.
+    this->dispatcher()->emit( UIEvent::ON_MOUSE_WHEEL, wev );
+
+    // Send the UI event object to the registered callback; this is the public
+    // event interface.
+    this->dispatcher()->emit( UIEvent::MOUSE_WHEEL, wev );
+
+    // Default internal reaction to the event action (SDL_MOUSEWHEEL):
+
+    // Our internal storage container could also be used to obtain the
+    // selection index.
+    int selected = this->selection();
+
+    // Up
+    if( event.wheel.y > 0 && selected > 0 )
+    {
+      --selected;
+      this->set_selection( selected );
+      // NOM_DUMP(this->selection() );
+    }
+
+    // Down
+    else if( event.wheel.y < 0 && selected < this->choices_.size() - 1 )
+    {
+      ++selected;
+      this->set_selection( selected );
+      // NOM_DUMP(this->selection() );
+    }
+
+    // NOM_DUMP(ev.index() );
+    // NOM_DUMP(ev.text() );
+
+    this->update();
+  } // end if event type == SDL_MOUSEWHEEL
+}
+
+void QuestionDialogBox::on_key_down( const UIWidgetEvent& ev )
+{
+  int index = 0;
+  nom::Event event = ev.event();
+  UIWidgetEvent wev;
 
   // Registered action for key press event
-  else if( ev.type == SDL_KEYDOWN )
+  if( event.type == SDL_KEYDOWN )
   {
-    // Position of each item
-    int index = this->selection();
-
-    // Ensure that we are not touching an invalid (negative) value.
-    // if( index < 0 ) index = 0;
-
-    for( auto it = this->choices_.begin(); it != this->choices_.end(); ++it )
+    // TODO:
+    if( this->focused() == false )
     {
-      UIWidgetEvent item;
+      // return;
+    }
 
-      // Send the array index in our event; this signifies which choice was
-      // selected.
-      item.set_index( index );
+    // Position of each item
+    index = this->selection();
 
-      // Set the current index position to the selected text label -- this
-      // has the side effect of updating the text color; see also: ::update.
-      this->set_selection( index );
+    // Send the array index in our event; this signifies which choice was
+    // selected.
+    wev.set_index( index );
 
-      // Send the text of the selection; this needs to be set *after* the
-      // selection has been set.
-      item.set_text( this->choices_[index]->text() );
+    // Set the current index position to the selected text label -- this
+    // has the side effect of updating the text color; see also: ::update.
+    this->set_selection( index );
 
-      // Set the associated nom::Event object for this UI event.
-      item.set_event( ev );
+    // Send the text of the selection if there is a selection set. Note that
+    // this needs to be set *after* the selection has been set.
+    if( index != npos )
+    {
+      wev.set_text( this->choice( index ) );
+    }
+    else
+    {
+      wev.set_text( "\0" );
+    }
 
-      // Associate the widget's unique identifier for this widget's event
-      // object.
-      item.set_id( this->id() );
+    // Set the associated nom::Event object for this UI event.
+    wev.set_event( event );
 
-      // Send the UI event object to the registered callback; public event slot.
-      this->dispatcher()->emit( UIEvent::KEY_DOWN, item );
+    wev.set_id( this->id() );
 
-      // Processed events
-      return true;
+    // Send the UI event object to the registered callback; this is the private
+    // event interface.
+    this->dispatcher()->emit( UIEvent::ON_KEY_DOWN, wev );
 
-    } // end for labels_ loop
+    // Send the UI event object to the registered callback; this is the public
+    // event interface.
+    this->dispatcher()->emit( UIEvent::KEY_DOWN, wev );
 
-  } // end if event.type == SDL_KEYDOWN
+    // Default internal reaction to the event action (SDL_KEYDOWN):
 
-  // No processed events.
-  return false;
+    // Our internal storage container could also be used to obtain the
+    // selection index.
+    int selected = this->selection();
+
+    if( event.key.sym == SDLK_UP && selected > 0 )
+    {
+      --selected;
+
+      this->set_selection( selected );
+      // NOM_DUMP(this->selection() );
+    }
+    else if( event.key.sym == SDLK_DOWN && ( selected < this->choices_.size() - 1 ) )
+    {
+      ++selected;
+
+      this->set_selection( selected );
+      // NOM_DUMP(this->selection() );
+    }
+    else
+    {
+      // NOM_DUMP( selected );
+    }
+
+    // NOM_DUMP(ev.index());
+    // NOM_DUMP(ev.text());
+
+    this->update();
+
+  } // end if event type == SDL_KEYDOWN
+}
+
+void QuestionDialogBox::on_key_up( const UIWidgetEvent& ev )
+{
+  // Stub
 }
 
 int QuestionDialogBox::selection( void ) const
@@ -322,17 +427,38 @@ QuestionDialogBox::ItemStrings QuestionDialogBox::choices( void ) const
 
   for( auto itr = this->choices_.begin(); itr != this->choices_.end(); ++itr )
   {
-    label_texts.push_back( (*itr)->text() );
+    label_texts.push_back( (*itr).text() );
   }
 
   return label_texts;
+}
+
+std::string QuestionDialogBox::choice( int pos ) const
+{
+  int idx = 0;
+  for( auto itr = this->choices_.begin(); itr != this->choices_.end(); ++itr )
+  {
+    if( pos == idx )
+    {
+      return itr->text();
+    }
+
+    ++idx;
+  }
+
+  return "\0";
+}
+
+const Color4i& QuestionDialogBox::selected_text_color( void ) const
+{
+  return this->selected_text_color_;
 }
 
 void QuestionDialogBox::set_selection( int pos )
 {
   this->selection_ = pos;
 
-  this->update();
+  // this->update();
 }
 
 } // namespace nom

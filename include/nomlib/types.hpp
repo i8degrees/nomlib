@@ -36,21 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // RTTI for library objects.
 #include "nomlib/system/ObjectTypeInfo.hpp"
 
-#define NOM_DYN_SHARED_PTR_CAST(type, expr) \
-  ( std::dynamic_pointer_cast<type>(expr) )
-
-#define NOM_DYN_PTR_CAST(type, expr) \
-  ( dynamic_cast<type>(expr) )
-
-#define NOM_SCAST(type, expression) static_cast<type>(expression)
-#define NOM_CCAST(type, expression) const_cast<type>(expression)
-
-#define NOM_ENDL(reserved) ( std::cout << std::endl )
-#define NOM_DASHED_ENDL(reserved) ( std::cout << "---" << std::endl )
-
-#define NOM_TIMESTAMP(reserved) \
-  ( std::cout << nom::time() << std::endl )
-
 /*
   TODO: This should be replaced by an actual CMake script -- think:
         compile-time check for the necessary feature support for C++11 style

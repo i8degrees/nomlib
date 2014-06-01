@@ -45,6 +45,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // nomlib's standard integer types
 #include "nomlib/types.hpp"
 
+// General-purpose macros
+#include "nomlib/macros.hpp"
+
 // Debugging
 #include <iostream>
 

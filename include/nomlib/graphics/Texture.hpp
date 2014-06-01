@@ -74,13 +74,24 @@ class Texture
       RenderTarget = SDL_TEXTUREACCESS_TARGET   // Render (texture) to target
     };
 
-    /// Default constructor
-    Texture ( void );
+    /// \brief Default constructor.
+    ///
+    /// \fixme position_ should be initialized to Point2i::null.
+    /// \fixme bounds_ should be initialized to IntRect::null.
+    /// \fixme colorkey_ should be initialized to Color4i::null.
+    Texture( void );
 
-    /// Destructor.
+    /// \brief Destructor.
     ///
     /// \remarks Frees any pixel data associated with the Texture
-    ~Texture ( void );
+    ~Texture( void );
+
+    /// \brief Destroy the texture.
+    ///
+    /// \remarks The pixel data and pitch value associated with the Texture is
+    /// freed as well. The other attributes, such as position and color key are
+    /// *not* reset to their respective defaults.
+    void free_texture( void );
 
     /// Copy constructor
     Texture ( const Texture& copy );
@@ -109,9 +120,18 @@ class Texture
     /// Access::RenderTarget.
     bool create ( const Image& source, uint32 pixel_format, enum Texture::Access type );
 
-    const Point2i& position ( void ) const;
-    //const Point2i& size ( void ) const;
-    const IntRect& bounds ( void ) const;
+    const Point2i& position( void ) const;
+
+    /// \brief Get the width & height dimensions of the texture.
+    ///
+    /// \remarks This method return invalid results if the bounds has not
+    /// been set.
+    ///
+    /// \fixme We need to decide if we ought to return the dimensions as per
+    /// what SDL has on record, or if we should use cached values.
+    const Size2i size( void ) const;
+
+    const IntRect& bounds( void ) const;
 
     /// Get the video memory surface of the Texture object
     SDL_TEXTURE::RawPtr texture ( void ) const;
@@ -124,10 +144,13 @@ class Texture
     /// \returns Texture::Access enumeration
     enum Texture::Access access ( void ) const;
 
-    void set_position ( const Point2i& pos );
+    void set_position( const Point2i& pos );
+
+    /// \brief Set the width & height dimensions of the texture.
+    void set_size( const Size2i& size );
 
     /// Set bounding coordinates of the Texture
-    void set_bounds ( const IntRect& bounds );
+    void set_bounds( const IntRect& bounds );
 
     /// Obtain width, in pixels, of texture
     ///
@@ -246,7 +269,7 @@ class Texture
     ///
     /// \param  SDL_Renderer
     ///
-    void draw ( SDL_RENDERER::RawPtr target ) const;
+    void draw ( SDL_Renderer* target ) const;
 
     /// Draw a nom::Texture to a nom::RenderWindow target
     ///
@@ -261,7 +284,7 @@ class Texture
     /// \param  angle   Rotation angle in degrees
     ///
     /// \todo Implement pivot point & make use of SDL_RendererFlip enum
-    void draw ( SDL_RENDERER::RawPtr target, const double angle ) const;
+    void draw ( SDL_Renderer* target, const double angle ) const;
 
     /// Draw a rotated nom::Texture on a nom::RenderWindow
     ///

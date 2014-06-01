@@ -45,7 +45,7 @@ namespace nom {
 
 /// \brief Convenience definitions for pointer types
 ///
-/// \todo Consider renaming to WINDOW or such
+/// \todo Remove.
 namespace SDL_WINDOW
 {
   typedef std::unique_ptr<SDL_Window, void (*)(SDL_Window*)> UniquePtr;
@@ -53,15 +53,8 @@ namespace SDL_WINDOW
 }
 
 /// \brief Convenience definitions for pointer types
-namespace SDL_RENDERER
-{
-  typedef std::unique_ptr<SDL_Renderer, void(*)(SDL_Renderer*)> UniquePtr;
-  typedef SDL_Renderer* RawPtr;
-}
-
-/// \brief Convenience definitions for pointer types
 ///
-/// \todo Consider renaming to PIXEL_FORMAT or such
+/// \todo Remove.
 namespace SDL_PIXELFORMAT
 {
   typedef SDL_PixelFormat* RawPtr;
@@ -69,7 +62,7 @@ namespace SDL_PIXELFORMAT
 
 /// \brief Convenience definitions for pointer types
 ///
-/// \todo Consider renaming to SURFACE, BITMAP or such
+/// \todo Remove.
 namespace SDL_SURFACE
 {
   typedef std::unique_ptr<SDL_Surface, void(*) (SDL_Surface*)> UniquePtr;
@@ -79,7 +72,7 @@ namespace SDL_SURFACE
 
 /// \brief Convenience definitions for pointer types
 ///
-/// \todo Consider renaming to TEXTURE or such
+/// \todo Remove.
 namespace SDL_TEXTURE
 {
   typedef std::shared_ptr<SDL_Texture> SharedPtr;

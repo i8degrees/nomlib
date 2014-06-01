@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // static initialization
-SDL_RENDERER::RawPtr RenderWindow::context_ = nullptr;
+SDL_Renderer* RenderWindow::context_ = nullptr;
 
 RenderWindow::RenderWindow ( void ) : window_
     { SDL_WINDOW::UniquePtr ( nullptr, priv::FreeWindow ) },
@@ -413,7 +413,7 @@ void RenderWindow::make_current ( void )
   set_context ( this->get() );
 }
 
-SDL_RENDERER::RawPtr RenderWindow::context ( void )
+SDL_Renderer* RenderWindow::context( void )
 {
   return context_;
 }

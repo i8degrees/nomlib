@@ -32,9 +32,8 @@ namespace nom {
 
 Gradient::Gradient( void ) :
   Transformable( Point2i::null, Size2i::null ),   // Invalid position & size
-  gradient_{ { Color4i::Blue, Color4i::Blue } },  // Opaque color to serve as
+  gradient_{ { Color4i::Blue, Color4i::Blue } }   // Opaque color to serve as
                                                   // warning!
-  updated_( false )
 {
   // No margins set.
   this->set_margins( Point2i( 0, 0 ) );
@@ -46,7 +45,6 @@ Gradient::Gradient( void ) :
 
   // No need to update the object's rendered state because we do not have
   // sufficient information for rendering to occur -- position & size.
-  // this->update();
 }
 
 Gradient::Gradient  (
@@ -57,8 +55,7 @@ Gradient::Gradient  (
                       Gradient::FillDirection direction
                     ) :
   Transformable( pos, size ), // Base class
-  gradient_{ colors },
-  updated_( false )
+  gradient_{ colors }
 {
   this->set_margins( margin );
   this->set_fill_direction( direction );
@@ -78,33 +75,11 @@ Gradient::Gradient( const self_type& copy )  :
   gradient_{ copy.colors() },
   margins_ { copy.margins() },
   fill_direction_ { copy.fill_direction() },
-  dithering_{ copy.dithering() },
-  updated_{ copy.updated() }
+  dithering_{ copy.dithering() }
 {
   // NOM_LOG_TRACE( NOM );
 
-  this->set_updated( copy.updated() );
-
   this->update();
-}
-
-const Gradient::self_type& Gradient::operator =( const self_type& other )
-{
-  // NOM_LOG_TRACE( NOM );
-
-  this->set_position( other.position() );
-  this->set_size( other.size() );
-  this->rectangles_ = other.rectangles_;
-  this->gradient_ = other.colors();
-  this->set_margins( other.margins() );
-  this->set_fill_direction( other.fill_direction() );
-  this->set_dithering( other.dithering() );
-  this->updated_ = other.updated();
-
-  this->set_updated( other.updated() );
-  this->update();
-
-  return *this;
 }
 
 IDrawable::raw_ptr Gradient::clone( void ) const
@@ -117,19 +92,9 @@ ObjectTypeInfo Gradient::type( void ) const
   return NOM_OBJECT_TYPE_INFO( self_type );
 }
 
-const Gradient::self_type& Gradient::operator *( void ) const
-{
-  return *this;
-}
-
-Gradient::raw_ptr Gradient::operator ->( void )
-{
-  return this;
-}
-
 bool Gradient::valid( void ) const
 {
-  if ( this->position() != Point2i::null || this->size() != Size2i::null )
+  if ( this->position() != Point2i::null && this->size() != Size2i::null )
   {
     return true;
   }
@@ -154,8 +119,6 @@ const Color4iColors& Gradient::colors( void ) const
 
 void Gradient::set_position( const Point2i& pos )
 {
-  this->set_updated( false );
-
   Transformable::set_position( pos );
 
   this->update();
@@ -163,8 +126,6 @@ void Gradient::set_position( const Point2i& pos )
 
 void Gradient::set_size( const Size2i& size )
 {
-  this->set_updated( false );
-
   Transformable::set_size( size );
 
   this->update();
@@ -184,10 +145,6 @@ void Gradient::set_colors( const Color4iColors& colors )
 {
   this->gradient_ = colors;
 
-  // The drawable objects are no longer up-to-date and will be re-created upon
-  // the next call to ::update.
-  this->set_updated( false );
-
   this->update();
 }
 
@@ -206,10 +163,6 @@ void Gradient::set_fill_direction ( Gradient::FillDirection direction )
 {
   this->fill_direction_ = direction;
 
-  // The drawable objects are no longer up-to-date and will be re-created upon
-  // the next call to ::update.
-  this->set_updated( false );
-
   this->update();
 }
 
@@ -217,20 +170,12 @@ void Gradient::set_margins ( const Point2i& margin )
 {
   this->margins_ = margin;
 
-  // The drawable objects are no longer up-to-date and will be re-created upon
-  // the next call to ::update.
-  this->set_updated( false );
-
   this->update();
 }
 
 void Gradient::set_dithering( bool state )
 {
   this->dithering_ = state;
-
-  // The drawable objects are no longer up-to-date and will be re-created upon
-  // the next call to ::update.
-  this->set_updated( false );
 
   this->update();
 }
@@ -247,15 +192,14 @@ void Gradient::draw( RenderTarget& target ) const
 
 void Gradient::update( void )
 {
-  // We have already updated our window -- nothing to draw!
-  if ( this->updated() == true ) return;
-
   // Ensure that we do not try to access an empty container -- that would be
   // undefined behavior; a segmentation fault (crash) if we are lucky!
   if( this->colors().empty() )
   {
     this->set_colors( { Color4i::Blue, Color4i::Blue } );
   }
+
+  if( this->valid() == false ) return;
 
   // Clear the rendered drawables of the previously up-to-date object.
   this->rectangles_.clear();
@@ -278,19 +222,6 @@ void Gradient::update( void )
     this->reverse_colors();
     this->strategy_left_right();
   }
-
-  // Drawable objects are now are up-to-date!
-  this->set_updated( true );
-}
-
-bool Gradient::updated( void ) const
-{
-  return this->updated_;
-}
-
-void Gradient::set_updated( bool state )
-{
-  this->updated_ = state;
 }
 
 void Gradient::strategy_top_down ( void )
@@ -315,7 +246,7 @@ void Gradient::strategy_top_down ( void )
     Color4i render_color = Color4i( currentR, currentG, currentB );
 
     // Queue up to render
-    this->rectangles_.push_back( IDrawable::shared_ptr( new Rectangle( render_coords, render_color ) ) );
+    this->rectangles_.push_back( Rectangle::shared_ptr( new Rectangle( render_coords, render_color ) ) );
 
     if ( this->dithering() )
     {
@@ -348,7 +279,7 @@ void Gradient::strategy_left_right ( void )
     Color4i render_color = Color4i( currentR, currentG, currentB );
 
     // Queue up to render
-    this->rectangles_.push_back( IDrawable::shared_ptr( new Rectangle( render_coords, render_color ) ) );
+    this->rectangles_.push_back( Rectangle::shared_ptr( new Rectangle( render_coords, render_color ) ) );
 
     if ( this->dithering() )
     {

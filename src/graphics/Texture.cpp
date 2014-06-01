@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Texture::Texture ( void ) :
+Texture::Texture( void ) :
   texture_ { nullptr, priv::FreeTexture },
   pixels_ ( nullptr ),
   pitch_ ( 0 ),
@@ -43,9 +43,28 @@ Texture::Texture ( void ) :
   // NOM_LOG_TRACE( NOM );
 }
 
-Texture::~Texture ( void )
+Texture::~Texture( void )
 {
   // NOM_LOG_TRACE( NOM );
+}
+
+void Texture::free_texture( void )
+{
+  NOM_DELETE_SMART_PTR( this->texture_ );
+
+  // Reset to default initialization, in case we re-initialize the texture from
+  // the old object
+  this->pixels_ = nullptr;
+  this->pitch_ = 0;
+
+  // FIXME: This should be Point2i::null
+  // this->position_ = Point2i( 0, 0 );
+
+  // FIXME: This should be IntRect::null
+  // this->bounds_ = IntRect( 0, 0, -1, -1 );
+
+  // FIXME: This should be Color4i::null
+  // this->colorkey_ = Color4i::Black;
 }
 
 Texture::Texture ( const Texture& copy ) :
@@ -188,23 +207,34 @@ enum Texture::Access Texture::access ( void ) const
   return Texture::Access::Invalid;
 }
 
-const Point2i& Texture::position ( void ) const
+const Point2i& Texture::position( void ) const
 {
   return this->position_;
 }
 
-const IntRect& Texture::bounds ( void ) const
+const Size2i Texture::size( void ) const
+{
+  return Size2i( this->bounds_.w, this->bounds_.h );
+}
+
+const IntRect& Texture::bounds( void ) const
 {
   return this->bounds_;
 }
 
-void Texture::set_position ( const Point2i& pos )
+void Texture::set_position( const Point2i& pos )
 {
   this->position_.x = pos.x;
   this->position_.y = pos.y;
 }
 
-void Texture::set_bounds ( const IntRect& bounds )
+void Texture::set_size( const Size2i& size )
+{
+  this->bounds_.w = size.w;
+  this->bounds_.h = size.h;
+}
+
+void Texture::set_bounds( const IntRect& bounds )
 {
   this->bounds_ = bounds;
 }
@@ -447,7 +477,7 @@ bool Texture::update ( const void* pixels, uint16 pitch, const IntRect& bounds )
   return true;
 }
 
-void Texture::draw ( SDL_RENDERER::RawPtr target ) const
+void Texture::draw ( SDL_Renderer* target ) const
 {
   Point2i pos = this->position();
   SDL_Rect render_coords;
@@ -494,7 +524,7 @@ void Texture::draw ( const RenderWindow& target ) const
   this->draw ( target.renderer() );
 }
 
-void Texture::draw ( SDL_RENDERER::RawPtr target, const double angle ) const
+void Texture::draw ( SDL_Renderer* target, const double angle ) const
 {
   Point2i pos = this->position();
   SDL_Rect render_coords;

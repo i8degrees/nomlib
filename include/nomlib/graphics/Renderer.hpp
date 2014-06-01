@@ -64,7 +64,7 @@ class Renderer
     bool create ( SDL_WINDOW::RawPtr window, int32 rendering_driver = -1, uint32 context_flags = SDL_RENDERER_ACCELERATED );
 
     /// Get a raw pointer to the SDL_Renderer in use
-    SDL_RENDERER::RawPtr renderer ( void ) const;
+    SDL_Renderer* renderer ( void ) const;
 
     /// Is this object initialized? Valid when *NOT* nullptr
     bool renderer_valid ( void ) const;
@@ -108,7 +108,7 @@ class Renderer
     ///
     /// \note   This method is used internally by nomlib -- nom::Renderer::caps()
     ///         is probably the API you want to use outside of nomlib.
-    static const RendererInfo caps ( SDL_RENDERER::RawPtr target );
+    static const RendererInfo caps ( SDL_Renderer* target );
 
     /// \brief Reset the current rendering target
     ///
@@ -176,7 +176,7 @@ class Renderer
   protected:
     /// This is automatically released after the attached nom::RenderWindow has been
     /// destroyed.
-    SDL_RENDERER::UniquePtr renderer_;
+    std::unique_ptr<SDL_Renderer, void(*)(SDL_Renderer*)> renderer_;
 };
 
 

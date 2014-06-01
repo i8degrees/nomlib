@@ -279,7 +279,7 @@ class RenderWindow: public Renderer
     ///
     /// \remarks  Used internally within nomlib for automatically using the
     ///           active context -- set by nom::RenderWindow::make_current.
-    static SDL_RENDERER::RawPtr context ( void );
+    static SDL_Renderer* context( void );
 
   private:
     /// \brief  Set a new nom::RenderWindow as the active rendering context; we must
@@ -287,7 +287,7 @@ class RenderWindow: public Renderer
     ///         resources -- nom::Texture, nom::Image, etc.
     static void set_context ( RenderWindow::RawPtr window );
 
-    static SDL_RENDERER::RawPtr context_;
+    static SDL_Renderer* context_;
 
     SDL_WINDOW::UniquePtr window_;
 

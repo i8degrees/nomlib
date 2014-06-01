@@ -30,8 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Renderer::Renderer ( void ):  renderer_
-    { SDL_RENDERER::UniquePtr ( nullptr, priv::FreeRenderTarget ) }
+Renderer::Renderer ( void ) :
+  renderer_{ std::unique_ptr<SDL_Renderer, void(*)(SDL_Renderer*)> ( nullptr, priv::FreeRenderTarget ) }
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -54,7 +54,7 @@ bool Renderer::create ( SDL_WINDOW::RawPtr window, int32 rendering_driver, uint3
   return true;
 }
 
-SDL_RENDERER::RawPtr Renderer::renderer ( void ) const
+SDL_Renderer* Renderer::renderer ( void ) const
 {
   return this->renderer_.get();
 }
@@ -139,7 +139,7 @@ const RendererInfo Renderer::caps ( void ) const
   return this->caps ( this->renderer() );
 }
 
-const RendererInfo Renderer::caps ( SDL_RENDERER::RawPtr target )
+const RendererInfo Renderer::caps ( SDL_Renderer* target )
 {
   RendererInfo renderer_info;
   SDL_RendererInfo info;

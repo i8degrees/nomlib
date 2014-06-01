@@ -41,7 +41,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/shapes/Rectangle.hpp"
 #include "nomlib/system/make_unique.hpp"
-//#include "nomlib/graphics/shapes/Shape.hpp"
 
 namespace nom {
 
@@ -93,9 +92,6 @@ class Gradient: public Transformable
     /// \brief Copy constructor.
     Gradient( const self_type& copy );
 
-    /// \brief Copy assignment operator.
-    const self_type& operator =( const self_type& other );
-
     /// \brief Implements the required IDrawable::clone method.
     IDrawable::raw_ptr clone( void ) const;
 
@@ -103,16 +99,6 @@ class Gradient: public Transformable
     ///
     /// \remarks This uniquely identifies the object's type.
     ObjectTypeInfo type( void ) const;
-
-    /// \brief Obtain a reference to the object.
-    ///
-    /// \returns A reference to the object.
-    const self_type& operator *( void ) const;
-
-    /// \brief Obtain a pointer to the object.
-    ///
-    /// \returns Pointer to the object.
-    Gradient::raw_ptr operator ->( void );
 
     /// \brief Query the validity of the object
     ///
@@ -168,12 +154,6 @@ class Gradient: public Transformable
     /// \brief Implements the IDrawable::update method.
     void update( void );
 
-    /// \brief Getter for internal updated status.
-    bool updated( void ) const;
-
-    /// \brief Set the internal updated status.
-    void set_updated( bool state );
-
     void strategy_top_down( void );
     void strategy_left_right( void );
 
@@ -183,7 +163,7 @@ class Gradient: public Transformable
     /// what are one pixel wide / high line segments in a row single row
     /// iteration. Imaginably, performance would hardly measure a difference,
     /// but nevertheless.
-    std::vector<IDrawable::shared_ptr> rectangles_;
+    std::vector<Rectangle::shared_ptr> rectangles_;
 
     /// \brief The starting & ending colors used in the gradient fill.
     ///
@@ -202,10 +182,6 @@ class Gradient: public Transformable
 
     /// \brief Dithering (of gradient colors) state.
     bool dithering_;
-
-    /// \brief Internal object state; we re-create drawable objects every time
-    /// the internal state changes in order to save as many CPU cycles.
-    bool updated_;
 };
 
 } // namespace nom
@@ -233,7 +209,6 @@ class Gradient: public Transformable
 /// linear.set_end_color ( nom::Color4i ( 50, 59, 114 ) );
 
 /// linear.set_position ( 96, 16 );
-/// linear.update();
 /// linear.draw ( window );
 ///
 /// \endcode

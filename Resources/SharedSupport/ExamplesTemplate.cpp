@@ -26,221 +26,187 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include <iostream>
-#include <string>
-
-// Pubic nomlib interface headers
+#include <nomlib/config.hpp>
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
-// #include <nomlib/gui.hpp>
+#include <nomlib/gui.hpp>
 
-/// File path name of the resources directory; this must be a relative file path.
-const std::string APP_RESOURCES_DIR = "Resources";
+// using namespace nom;
 
-/// \brief  Relative file path name of our resource example
 const nom::Path p;
-const std::string RESOURCE_ICON = APP_RESOURCES_DIR + p.native() + "icon.png";
 
-/// \brief Relative filename path to saved screen shot example
-///
-/// Default path should resolve to the same directory as the app example
-/// executable
-const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
+/// \brief File path name of the resources directory; this must be a relative file path.
+const std::string APP_RESOURCES_DIR = "Resources" + p.native();
 
 /// \brief Name of our application.
-const std::string APP_NAME = "Examples Template App";
+const std::string APP_NAME = "nomlib's [DESC]";
 
 /// \brief Width, in pixels, of our effective rendering surface.
-const nom::int32 WINDOW_WIDTH = 768;
+const nom::int32 WINDOW_WIDTH = 640;
 
 /// \brief Height, in pixels, of our effective rendering surface.
-const nom::int32 WINDOW_HEIGHT = 448;
+const nom::int32 WINDOW_HEIGHT = 480;
 
-/// \brief Maximum number of active windows we will attempt to spawn in this
-/// example.
-const nom::int32 MAXIMUM_WINDOWS = 3;
+const std::string RESOURCE_ICON = APP_RESOURCES_DIR + "icon.png";
 
-/// \brief Usage example
+/// \brief Relative filename path to saved screen shots.
+///
+/// Default path should resolve to the same directory as the output binary.
+const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
+
 class App: public nom::SDLApp
 {
   public:
-    App( nom::int32 argc, char* argv[] )
+    App( nom::int32 argc, char* argv[] ) //:
+      // SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES )
     {
-      NOM_LOG_TRACE( NOM );
+      NOM_LOG_TRACE ( NOM );
 
       // Fatal error; if we are not able to complete this step, it means that
       // we probably cannot rely on our resource paths!
       if( nom::init( argc, argv ) == false )
       {
-        nom::DialogMessageBox( APP_NAME, "ERROR: Could not initialize nomlib." );
+        nom::DialogMessageBox( APP_NAME, "Could not initialize nomlib." );
         exit( NOM_EXIT_FAILURE );
       }
 
-      atexit( nom::quit );
-    } // end App
+      atexit(nom::quit);
+    }
 
     ~App( void )
     {
-      NOM_LOG_TRACE( NOM );
-    } // end ~App
+      NOM_LOG_TRACE ( NOM );
+    }
 
     bool on_init( void )
     {
-      nom::uint32 window_flags = 0;
+      nom::uint32 window_flags = SDL_WINDOW_SHOWN;
 
-      for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
+      if( nom::set_hint( SDL_HINT_RENDER_VSYNC, "0" ) == false )
       {
-        if ( this->window[idx].create( APP_NAME, ( WINDOW_WIDTH / 2 ), WINDOW_HEIGHT, window_flags ) == false )
-        {
-          return false;
-        }
-
-        this->window[idx].set_position( 0 + ( WINDOW_WIDTH / 2 ) * idx, ( WINDOW_HEIGHT / 2 ) );
-
-        if( this->window[idx].set_window_icon( RESOURCE_ICON ) == false )
-        {
-          nom::DialogMessageBox( APP_NAME, "ERROR: Could not load window icon: " + RESOURCE_ICON );
-          return false;
-        }
-
-        this->window_size[idx] = this->window[idx].size();
-
-        // Scale window contents up by the new width & height
-        // this->window[idx].set_logical_size( this->window_size[idx].x, this->window_size[idx].y );
+        NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
       }
+
+      if( this->window.create( APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, window_flags ) == false )
+      {
+        return false;
+      }
+
+      if( this->window.set_window_icon( RESOURCE_ICON ) == false )
+      {
+        nom::DialogMessageBox( APP_NAME, "Could not load window icon: " + RESOURCE_ICON );
+        // return false;
+      }
+
+      this->window_size = this->window.size();
+
+      // Scale window contents up by the new width & height
+      this->window.set_logical_size( this->window_size.x, this->window_size.y );
 
       return true;
-    } // end on_init
+    }
 
-    nom::sint Run( void )
+    nom::int32 Run( void )
     {
-      for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
-      {
-        this->update[idx].start();
-        this->fps[idx].start();
-      }
+      this->update.start();
+      this->fps.start();
 
       // 1. Events
       // 2. Logic
       // 3. Render
-      while( this->running() == true )
+      while ( this->running() == true )
       {
-        nom::Event ev;
-        while( this->poll_event( ev ) )
+        while( this->poll_event( this->event ) )
         {
-          this->on_event( ev );
+          this->on_event( this->event );
         }
 
-        for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
-        {
-          this->window[idx].update();
-          this->fps[idx].update();
+        this->window.update();
+        this->fps.update();
 
-          // Refresh the frames per second at 1 second intervals
-          if ( this->update[idx].ticks() > 1000 )
+        // Refresh the frames per second at 1 second intervals
+        if( this->update.ticks() > 1000 )
+        {
+          if( this->show_fps() == true )
           {
-            if ( this->show_fps() == true )
-            {
-              this->window[idx].set_window_title( APP_NAME + " - " + this->fps[idx].asString() + ' ' + "fps" );
-            }
-            else
-            {
-              this->window[idx].set_window_title( APP_NAME + " [" + std::to_string(this->window[idx].window_id()) + "]" + " - " + "Display" + ' ' + std::to_string ( this->window[idx].window_display_id() ) );
-            }
-
-            this->update[idx].restart();
-          } // end refresh cycle
-        } // end for MAXIMUM_WINDOWS update loop
-
-        for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
-        {
-          this->window[idx].fill( nom::Color4i::SkyBlue );
-        }
-      } // end while SDLApp::running() is true
-
-      return NOM_EXIT_SUCCESS;
-    } // end Run()
-
-  private:
-    /// \brief Event handler for key down actions
-    ///
-    /// \remarks Implements nom::Input::on_key_down
-    void on_key_down( const nom::Event& ev )
-    {
-      switch( ev.key.sym )
-      {
-        default: break;
-
-        // Use inherited SDLApp::on_app_quit method -- you may also provide your
-        // own event handler for this.
-        case SDLK_ESCAPE:
-        case SDLK_q: this->on_app_quit( ev ); break;
-
-        case SDLK_BACKSLASH:
-        {
-          if ( this->toggle_fps() )
-          {
-            // Stub for doing something cool here
+            this->window.set_window_title( APP_NAME + " - " + this->fps.asString() + ' ' + "fps" );
           }
           else
           {
-            // Stub for doing something cool here
+            this->window.set_window_title( APP_NAME + " [" + std::to_string(this->window.window_id()) + "]" + " - " + "Display" + ' ' + std::to_string ( this->window.window_display_id() ) );
           }
-          break;
-        }
+
+          this->update.restart();
+        } // end refresh cycle
+
+        this->window.fill( nom::Color4i::SkyBlue );
+
+      } // while app_state is true (running)
+
+      return NOM_EXIT_SUCCESS;
+    }
+
+  private:
+    /// \brief Event handler for key down actions.
+    ///
+    /// Implements the nom::Input::on_key_down method.
+    void on_key_down( const nom::Event& ev )
+    {
+      switch ( ev.key.sym )
+      {
+        default: break;
+
+        // Use inherited SDLApp::on_app_quit() method -- you may also provide
+        // your own event handler for this.
+        case SDLK_ESCAPE:
+        case SDLK_q: this->on_app_quit( ev ); break;
 
         case SDLK_F1:
         {
-          if( this->window[ev.key.window_id - 1].window_id() == ev.key.window_id )
+          if( this->window.save_screenshot( OUTPUT_SCREENSHOT_FILENAME ) == false )
           {
-            if( this->window[ev.key.window_id - 1].save_screenshot( OUTPUT_SCREENSHOT_FILENAME ) == false )
-            {
-              nom::DialogMessageBox( APP_NAME, "ERROR: Could not save screen-shot");
-              break;
-            } // end save_screenshot err check
-          } // end window_id check
+            nom::DialogMessageBox( APP_NAME, "Could not save screenshot");
+          } // end save_screenshot err check
+
           break;
         }
 
-        // Toggle full-screen
         case SDLK_f:
         {
-          if ( this->window[ev.key.window_id - 1].window_id() == ev.key.window_id )
-          {
-            this->window[ev.key.window_id - 1].toggle_fullscreen();
-          } // end window_id match
+          this->window.toggle_fullscreen();
           break;
         } // end SDLK_f
+
       } // end switch key
-    } // end on_key_down
+    } // on_key_down
 
   private:
-    /// \brief Window handles
-    ///
-    /// \todo Use std::vector?
-    nom::RenderWindow window[MAXIMUM_WINDOWS];
+    nom::Event event;
 
-    nom::Point2i window_size[MAXIMUM_WINDOWS];
+    /// Window handles
+    nom::RenderWindow window;
 
-    /// \brief Interval at which we refresh the frames per second counter
-    nom::Timer update[MAXIMUM_WINDOWS];
+    nom::Point2i window_size;
 
-    /// \brief Timer for tracking frames per second
-    nom::FPS fps[MAXIMUM_WINDOWS];
-}; // end class App
+    /// Interval at which we refresh the frames per second counter
+    nom::Timer update;
 
-nom::sint main( nom::int32 argc, char* argv[] )
+    /// Timer for tracking frames per second
+    nom::FPS fps;
+};
+
+nom::int32 main( nom::int32 argc, char* argv[] )
 {
-  App app ( argc, argv );
+  App app( argc, argv );
 
-  if ( app.on_init() == false )
+  if( app.on_init() == false )
   {
-    nom::DialogMessageBox( APP_NAME, "ERROR: Could not initialize application." );
+    nom::DialogMessageBox( APP_NAME, "Could not initialize application." );
     return NOM_EXIT_FAILURE;
   }
 
   return app.Run();
 
-  // ...Goodbye cruel world!
+  // ...Goodbye cruel world..!
 }

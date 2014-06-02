@@ -838,7 +838,7 @@ void UIWidget::draw( RenderTarget& target ) const
   }
 }
 
-bool UIWidget::process_event( const nom::Event& ev )
+bool UIWidget::process_event( const Event& ev )
 {
   // Widgets
   for( auto it = this->children_.begin(); it != this->children_.end(); ++it )

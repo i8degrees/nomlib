@@ -56,7 +56,7 @@ set( NOM_BUILD_SERIALIZERS_UNIT on )
 
 # Build the JSON unit.
 # Dependencies: jsoncpp, Property Tree unit
-set( NOM_BUILD_JSON_UNIT on )
+set( NOM_BUILD_JSON_UNIT off )
 
 # Build the Property Tree unit.
 set( NOM_BUILD_PTREE_UNIT on )
@@ -79,7 +79,7 @@ set( NOM_BUILD_SYSTEM_UNIT on )
 # Resources/SharedSupport/Template.cpp
 # Resources/SharedSupport/Template.hpp
 # Resources/SharedSupport/UnitTestTemplate.cpp
-set( NOM_BUILD_TEMPLATES_UNIT on )
+set( NOM_BUILD_TEMPLATES_UNIT off )
 
 project ( nomlib ) # Sets PROJECT_NAME variable for us
 

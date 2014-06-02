@@ -51,6 +51,9 @@ Button::Button  (
 
   // Initialize the default event listeners for the widget.
   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
+
+  // Widget's focus type.
+  this->set_focus_policy( FocusPolicy::StrongFocus );
 }
 
 Button::~Button( void )

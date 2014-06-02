@@ -339,7 +339,7 @@ class UIWidget: public UIEventHandler
     ///
     /// \note Emitted UIWidgetEvent objects reflects the state of the widget
     /// data *before* the callback(s) are executed.
-    virtual bool process_event( const nom::Event& ev );
+    virtual bool process_event( const Event& ev );
 
     /// \brief Getter for internal updated status.
     bool updated( void ) const;

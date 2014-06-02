@@ -55,6 +55,7 @@ class UIStyle
     int font_size( void ) const;
 
     const Color4i& font_color( void ) const;
+    const Color4i& font_selected_color( void ) const;
 
     uint32 font_style( void ) const;
 
@@ -62,6 +63,7 @@ class UIStyle
 
     void set_font_size( int point_size );
     void set_font_color( const Color4i& color );
+    void set_font_selected_color( const Color4i& color );
     void set_font_style( uint32 style );
     void set_text_alignment( Text::Alignment align );
 
@@ -69,8 +71,11 @@ class UIStyle
     /// \brief The font's height (font point size).
     int font_size_;
 
-    /// \brief The color used for the font.
+    /// \brief The default color used for the font's text.
     Color4i font_color_;
+
+    /// \brief The selection color used for the font's text.
+    Color4i selected_font_color_;
 
     /// \brief The rendering style used for the font.
     uint32 font_style_;

@@ -47,12 +47,12 @@ void free_cursor( SDL_Cursor* c )
 Cursor::Cursor( void ) //:
   // cursor_{ nullptr, priv::free_cursor }
 {
-  NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE( NOM );
 }
 
 Cursor::~Cursor( void )
 {
-  NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE( NOM );
 }
 
 SDL_Cursor* Cursor::cursor( void ) const
@@ -65,7 +65,7 @@ SDL_Cursor* Cursor::default_cursor( void ) const
   return SDL_GetDefaultCursor();
 }
 
-MouseState Cursor::mouse_state( void ) const
+MouseState Cursor::mouse_state( void )
 {
   int x = 0;
   int y = 0;

@@ -37,6 +37,7 @@ namespace nom {
 UIStyle::UIStyle( void ) :
   font_size_{ nom::DEFAULT_FONT_SIZE },
   font_color_{ Color4i::White },
+  selected_font_color_{ Color4i::Red },
   font_style_{ Text::Style::Normal },
   text_alignment_{ Text::Alignment::MiddleCenter }
 {
@@ -58,6 +59,11 @@ const Color4i& UIStyle::font_color( void ) const
   return this->font_color_;
 }
 
+const Color4i& UIStyle::font_selected_color( void ) const
+{
+  return this->selected_font_color_;
+}
+
 uint32 UIStyle::font_style( void ) const
 {
   return this->font_style_;
@@ -76,6 +82,11 @@ void UIStyle::set_font_size( int point_size )
 void UIStyle::set_font_color( const Color4i& color )
 {
   this->font_color_ = color;
+}
+
+void UIStyle::set_font_selected_color( const Color4i& color )
+{
+  this->selected_font_color_ = color;
 }
 
 void UIStyle::set_font_style( uint32 style )

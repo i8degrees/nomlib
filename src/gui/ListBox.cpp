@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/ListBox.hpp"
 
+// Private heaaders
+#include "nomlib/graphics/Cursor.hpp"
+
 namespace nom {
 
 ListBox::ListBox(
@@ -52,7 +55,10 @@ ListBox::ListBox(
   this->set_item_store( store );
 
   // Default highlighted item text color.
-  this->set_selected_text_color( Color4i::Red );
+  if( this->style() != nullptr )
+  {
+    this->set_selected_text_color( this->style()->font_selected_color() );
+  }
 
   // Initialize the default event listeners for the widget.
   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
@@ -317,46 +323,52 @@ void ListBox::on_key_down( const UIWidgetEvent& ev )
 void ListBox::on_mouse_down( const UIWidgetEvent& ev )
 {
   int index = 0;
+  uint32 p = this->focus_policy();
   UIWidgetEvent item;
   Event evt = ev.event();
 
   // Registered action for mouse button event
   if( evt.type == SDL_MOUSEBUTTONDOWN )
   {
-    Point2i ev_mouse( evt.mouse.x, evt.mouse.y );
-    index = this->hit_test( ev_mouse );
-    if( index != npos )
+    if( p & FocusPolicy::ClickFocus )
     {
-      this->set_focused( true );
+      Point2i ev_mouse( evt.mouse.x, evt.mouse.y );
 
-      // Send the array index in our event; this signifies which choice was
-      // selected.
-      item.set_index( index );
+      index = this->hit_test( ev_mouse );
 
-      // Send the text of the selection.
-      item.set_text( this->store()->item_label( index ) );
+      if( index != npos )
+      {
+        this->set_focused( true );
+      }
+    } // end if FocusPolicy::ClickFocus
 
-      // Set the current index position to the selected text label -- this
-      // has the side effect of updating the text color; see also: ::update.
-      this->store()->set_selection( index );
+    // Send the array index in our event; this signifies which choice was
+    // selected.
+    item.set_index( index );
 
-      // Set the associated nom::Event object for this UI event.
-      item.set_event( evt );
+    // Send the text of the selection.
+    item.set_text( this->store()->item_label( index ) );
 
-      item.set_id( this->id() );
+    // Set the current index position to the selected text label -- this
+    // has the side effect of updating the text color; see also: ::update.
+    this->store()->set_selection( index );
 
-      // Send the UI event object to the registered callback; this is the
-      // "private" interface -- reserved for internal class implementations.
-      this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, item );
+    // Set the associated nom::Event object for this UI event.
+    item.set_event( evt );
 
-      // Send the UI event object to the registered callback; this is the
-      // event that gets heard by any end-user listening in, unlike the
-      // private message above.
-      this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
+    item.set_id( this->id() );
 
-      this->set_selected_text_color( this->selected_text_color() );
-    }
-  }
+    // Send the UI event object to the registered callback; this is the
+    // "private" interface -- reserved for internal class implementations.
+    this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, item );
+
+    // Send the UI event object to the registered callback; this is the
+    // event that gets heard by any end-user listening in, unlike the
+    // private message above.
+    this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
+
+    this->set_selected_text_color( this->selected_text_color() );
+  } // end if event type == SDL_MOUSEBUTTONDOWN
 }
 
 void ListBox::on_mouse_enter( const UIWidgetEvent& ev )
@@ -366,11 +378,31 @@ void ListBox::on_mouse_enter( const UIWidgetEvent& ev )
 
 void ListBox::on_mouse_wheel( const UIWidgetEvent& ev )
 {
-  nom::Event event = ev.event();
+  uint32 p = this->focus_policy();
+  int index = 0;
+  Event event = ev.event();
   UIWidgetEvent item;
 
   if( event.type == SDL_MOUSEWHEEL )
   {
+    if( p & FocusPolicy::WheelFocus )
+    {
+      MouseState mstate = Cursor::mouse_state();
+
+      Point2i mouse( mstate.pos.x, mstate.pos.y );
+
+      index = this->hit_test( mouse );
+
+      if( index != nom::npos )
+      {
+        this->set_focused( true );
+      }
+      else
+      {
+        this->set_focused( false );
+      }
+    } // end if FocusPolicy::WheelFocus
+
     if( this->focused() == false )
     {
       return;
@@ -378,7 +410,7 @@ void ListBox::on_mouse_wheel( const UIWidgetEvent& ev )
 
     // Counter for the position of each element; must start at current
     // selection.
-    int index = this->store()->selection();
+    index = this->store()->selection();
 
     // Send the array index in our event; this signifies which choice was
     // selected.

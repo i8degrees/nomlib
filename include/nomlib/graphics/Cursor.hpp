@@ -110,7 +110,7 @@ class Cursor
     /// \brief Retrieve the current state of the mouse.
     ///
     /// \see https://wiki.libsdl.org/SDL_GetMouseState?highlight=%28%5CbCategoryMouse%5Cb%29%7C%28CategoryEnum%29%7C%28CategoryStruct%29
-    MouseState mouse_state( void ) const;
+    static MouseState mouse_state( void );
 
     Type system_cursor( void ) const;
 

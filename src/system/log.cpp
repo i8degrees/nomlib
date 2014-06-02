@@ -28,7 +28,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/log.hpp"
 
+// Private headers (third-party libs)
+#include "SDL.h"
+
 namespace nom {
+
+// void log ( void* userdata, int category, SDL_LogPriority prio, const char* message );
+// void log_err ( const std::string& identifier, const std::string& message );
+// void log_trace ( const std::string& identifier );
 
 void log ( void* userdata, int category, SDL_LogPriority prio, const char* message )
 {

@@ -232,19 +232,19 @@ void Font::share( void )
       if( this->font_->type() == IFont::FontType::BitmapFont )
       {
         #if defined( NOM_DEBUG_FONT_SHARING )
-          NOM_DUMP_EXT("Font::font_face", this->font_->metrics().name + " (BitmapFont)" );
+          NOM_DUMP("font_face: ", this->font_->metrics().name + " (BitmapFont)" );
         #endif
       }
       else if( this->font_->type() == IFont::FontType::TrueTypeFont )
       {
         #if defined( NOM_DEBUG_FONT_SHARING )
-          NOM_DUMP_EXT("Font::font_face", this->font_->metrics().name + " (TrueTypeFont)" );
+          NOM_DUMP_EXT("font_face: ", this->font_->metrics().name + " (TrueTypeFont)" );
         #endif
       }
       else
       {
         #if defined( NOM_DEBUG_FONT_SHARING )
-          NOM_DUMP_EXT("Font::font_face", this->font_->metrics().name + " (Undefined)" );
+          NOM_DUMP_EXT("font_face: ", this->font_->metrics().name + " (Undefined)" );
         #endif
       }
     } // end if sharable

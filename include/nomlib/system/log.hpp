@@ -26,22 +26,63 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_LOG_HPP
-#define NOMLIB_SYSTEM_LOG_HPP
+#ifndef NOMLIB_SYSTEM_LOGGER_HPP
+#define NOMLIB_SYSTEM_LOGGER_HPP
 
 #include <iostream>
-#include <string>
+#include <type_traits>
 
-#include "SDL.h"
+// #include "nomlib/platforms.hpp"
+// #include "nomlib/system/clock.hpp"
 
-#include "nomlib/config.hpp"
-#include "nomlib/system/clock.hpp"
+// Source: http://mortoray.com/2013/11/01/bridging-__va_args__-to-c-variadic-templates/
 
 namespace nom {
 
-void log ( void* userdata, int category, SDL_LogPriority prio, const char* message );
-void log_err ( const std::string& identifier, const std::string& message );
-void log_trace ( const std::string& identifier );
+template<typename Type>
+void write_debug_output( std::ostream& out, const Type& f )
+{
+  out << f;
+}
+
+struct Logger
+{
+  std::ostream& out;
+
+  Logger( std::ostream& out, const char* file, int line )
+    : out( out )
+  {
+    out << file << ":" << line << ": ";
+  }
+
+  ~Logger( void )
+  {
+    out << std::endl << std::endl;
+  }
+
+  template<typename Type, typename ... Args>
+  void write( const Type& f, const Args& ... rest )
+  {
+    write_debug_output( out, f );
+
+    out << " ";
+
+    write( rest... );
+  }
+
+  template<typename Type>
+  void write( const Type& f )
+  {
+    write_debug_output( out, f );
+  }
+
+  void write( void )
+  {
+    // Nothing to output when there are no arguments passed
+  }
+};
+
+// #define TRACE(...) tracer( std::cout, __FILE__, __LINE__ ).write( __VA_ARGS__ )
 
 } // namespace nom
 

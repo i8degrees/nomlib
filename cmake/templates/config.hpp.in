@@ -34,25 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Any modifications made to this file will be replaced upon a project
 // rebuild -- anytime CMake re-generates our project files.
 
-#ifndef NOMLIB_CONFIG_HEADERS
-#define NOMLIB_CONFIG_HEADERS
-
-// nomlib library version
-#include "nomlib/version.hpp"
-
-#include "nomlib/platforms.hpp"
-
-// nomlib's standard integer types
-#include "nomlib/types.hpp"
-
-// General-purpose macros
-#include "nomlib/macros.hpp"
+#ifndef NOMLIB_CORE_CONFIG_HPP
+#define NOMLIB_CORE_CONFIG_HPP
 
 // Debugging
 #include <iostream>
-
-#include "nomlib/system/clock.hpp"
-#include "nomlib/system/log.hpp"
 
 /// \brief See also: cmake/platform.cmake
 #cmakedefine NOM_USE_SDL2_ASSERT
@@ -64,6 +50,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
   #include <cassert>
 #endif
+
+// nomlib's library version
+#include "nomlib/version.hpp"
+
+// nomlib's platform detection
+#include "nomlib/platforms.hpp"
+
+// nomlib's standard integer types
+#include "nomlib/types.hpp"
+
+// nomlib's general-purpose macros
+#include "nomlib/macros.hpp"
+
+#include "nomlib/system/clock.hpp"
+#include "nomlib/system/log.hpp"
 
 /// \brief nomlib Debugging Options
 ///
@@ -90,52 +91,36 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /// \brief Macros for quickly dumping a variable.
 #define NOM_DUMP(var) \
-  ( std::cout << "In function: " << __func__ << " at " << nom::time() << #var << ": " << var << std::endl << std::endl )
+  ( std::cout << "In function: " << __func__ << " at " << nom::time() << "\n" << #var << ": " << var << std::endl << std::endl )
 
-/// \todo Rename to NOM_DUMP_VAR..?
-#define NOM_DUMP_EXT( name, var ) \
-  ( std::cout << "In function: " << __func__ << " at " << nom::time() << name << ": " << var << std::endl << std::endl )
+/// \brief Macros for quickly dumping one or more variables.
+#define NOM_DUMP_VAR(...) \
+  nom::Logger( std::cout << "In function: " << __func__ << " at " << nom::time() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
 
 /// \brief Debugging macros;
 ///
 /// \remarks If debugging is turned on, we log all warnings, errors & info.
 #ifdef NOM_DEBUG
 
-  /// \brief Log INFO debug level message.
-  ///
-  /// \remarks The identifier will be set to 'NOM'.
-  ///
-  /// \note This is a macro provided for internal debugging diagnostics.
-  // #define NOM_LOG_INFO(message) \
-    // ( std::cout << "NOM" << "_LOG_INFO at " << nom::time() << message << std::endl << std::endl )
-
   /// \brief Log INFO debug level message using a custom identifier.
   ///
-  /// \note This is a macro provided for debugging projects that use nomlib.
-  #define NOM_LOG_INFO(identifier, message) \
-    ( std::cout << #identifier << "_LOG_INFO at " << nom::time() << "In function: " << __func__ << std::endl << message << std::endl << std::endl )
-
-  /// \brief Log ERR debug level message.
-  ///
-  /// \remarks The identifier will be set to 'NOM'.
-  ///
   /// \note This is a macro provided for internal debugging diagnostics.
-  // #define NOM_LOG_ERR(message) \
-    // ( std::cout << "NOM" << "_LOG_ERR at " << nom::time() << "In file " << __FILE__ << ":" << __LINE__ << std::endl << "Reason: " << message << std::endl << std::endl )
+  #define NOM_LOG_INFO(identifier, ...) \
+    nom::Logger( std::cout << #identifier << "_LOG_INFO at " << nom::time() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
 
   /// \brief Log ERR debug level message using a custom identifier.
   ///
-  /// \note This is a macro provided for debugging projects that use nomlib.
-  #define NOM_LOG_ERR(identifier, message) \
-    ( std::cout << #identifier << "_LOG_ERR at " << nom::time() << "In file " << __FILE__ << ":" << __LINE__ << std::endl << "Reason: " << message << std::endl << std::endl )
+  /// \note This is a macro provided for internal debugging diagnostics.
+  #define NOM_LOG_ERR(identifier, ...) \
+    nom::Logger( std::cout << #identifier << "_LOG_ERR at " << nom::time() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
 
 #else // Do not add any overhead
-  #define NOM_LOG_INFO(identifier, message)
-  #define NOM_LOG_ERR(identifier, message)
+  #define NOM_LOG_INFO(identifier, ...)
+  #define NOM_LOG_ERR(identifier, ...)
 #endif
 
-#define NOM_STUBBED(identifier) \
-  ( std::cout << #identifier << "_LOG_STUB at " << nom::time() << "In file " << __FILE__ << ":" << __LINE__ << std::endl << std::endl )
+#define NOM_STUBBED(identifier, ...) \
+  nom::Logger( std::cout << #identifier << "_LOG_ERR at " << nom::time() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
 
 #ifdef NOM_DEBUG_ASSERT // -D NOM_DEBUG_ASSERT=true
 
@@ -156,10 +141,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   // If trace debugging is turned on, we show class construction and destruction
   #define NOM_LOG_TRACE(identifier) \
-    ( std::cout << #identifier << "_LOG_TRACE at " << nom::time() << __func__ << std::endl << std::endl )
+    nom::Logger( std::cout << #identifier << "_LOG_TRACE at " << nom::time() << "\n", __FILE__, __LINE__ ).write( __func__ )
 
 #else // Do not add any overhead
-  #define NOM_LOG_TRACE(identifier)
+  #define NOM_LOG_TRACE(identifier, ...)
 #endif
 
 #ifndef __cplusplus

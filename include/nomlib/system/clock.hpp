@@ -30,37 +30,30 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_SYSTEM_CLOCK_HPP
 
 #include <iostream>
-#include <string>
-#include <algorithm>
 #include <ctime>
+// #include <locale>
 
-#include "SDL.h" // Used for ticks & sleep implementations
+#include <algorithm>  // std::max
 
 #include "nomlib/config.hpp"
 
 namespace nom {
 
-/// \brief Buffer input size; used in Windows-dependent time implementation --
-/// see **system/clock.cpp**. Although this is only used in the Windows code,
-/// I expect the buffer size to be the same ( ~1 +/- ) across all supported
-/// platforms.
 const nom::size TIME_STRING_SIZE = 26;
 
 /// \brief Get the current date & time.
 ///
-/// \returns On success, a time string with the following formatting:
+/// \returns A std::string containing the ISO 8601 date and time stamp on
+/// success, or a null-terminated string on err.
 ///
 /// \code
-/// Wed Jan 02 02:03:55 1980\n\0
+/// 2014/06/02 02:52:42
 /// \endcode
-///
-/// On error: null-terminated (empty) string.
-///
-/// \remarks  The string is expected to be null-terminated with a newline
-///           carriage.
 ///
 /// \todo Move Windows OS supporting code from **system/clock.cpp** to
 /// **system/windows.cpp**.
+///
+/// \see http://en.cppreference.com/w/cpp/chrono/c/strftime
 const std::string time( void );
 
 /// SDL helper function

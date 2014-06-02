@@ -37,6 +37,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/IObject.hpp"
 #include "nomlib/system/File.hpp"
 
+// Private headers (SystemColors)
+#include "nomlib/system/make_unique.hpp"
+
+// Forward declarations (SystemColors)
+#include "nomlib/system/ColorDatabase.hpp"
+
 namespace nom {
 
 // Static initialization
@@ -76,6 +82,81 @@ void SystemFonts::shutdown( void )
   SystemFonts::cache_.reset();  // NULL
 
   SystemFonts::initialized_ = false;
+}
+
+// Static initialization
+std::unique_ptr<ColorDatabase> SystemColors::colors_ = std::unique_ptr<ColorDatabase>( nullptr );
+bool SystemColors::initialized_ = false;
+
+bool SystemColors::initialized( void )
+{
+  return SystemColors::initialized_;
+}
+
+void SystemColors::initialize( void )
+{
+  // Ensure one-time only initialization
+  if( SystemColors::initialized() == false )
+  {
+    SystemColors::colors_ = nom::make_unique<ColorDatabase>( ColorDatabase() );
+
+    SystemColors::colors_->append_color( "Black", Color4i( 0, 0, 0, 255 ) );
+    SystemColors::colors_->append_color( "White", Color4i( 255, 255, 255, 255 ) );
+    SystemColors::colors_->append_color( "Red", Color4i( 255, 0, 0, 255 ) );
+    SystemColors::colors_->append_color( "Green", Color4i( 0, 255, 0, 255 ) );
+    SystemColors::colors_->append_color( "Blue", Color4i( 0, 0, 255, 255 ) );
+    SystemColors::colors_->append_color( "Yellow", Color4i( 255, 255, 0, 255 ) );
+    SystemColors::colors_->append_color( "Magenta", Color4i( 255, 0, 255, 255 ) );
+    SystemColors::colors_->append_color( "Cyan", Color4i( 0, 255, 255, 255 ) );
+    SystemColors::colors_->append_color( "Silver", Color4i( 192, 192, 192, 255 ) );
+    SystemColors::colors_->append_color( "Purple", Color4i( 128, 0, 128, 255 ) );
+    SystemColors::colors_->append_color( "Orange", Color4i( 255, 165, 0, 255 ) );
+    SystemColors::colors_->append_color( "LightGray", Color4i( 99, 99, 99, 255 ) );
+    SystemColors::colors_->append_color( "Gray", Color4i( 67, 67, 67, 255 ) );
+    SystemColors::colors_->append_color( "SkyBlue", Color4i( 110, 144, 190, 255 ) );
+
+    // The default wxWidgets theme colors used on Mac OS X
+    SystemColors::colors_->append_color( "WindowBackground", Color4i( 237, 237, 237, 255 ) );
+    SystemColors::colors_->append_color( "FocusedWindowTitleBackground", Color4i( 213, 213, 213, 255 ) );
+
+    SystemColors::colors_->append_color( "Tooltip", Color4i( 245, 245, 195, 255 ) );
+    SystemColors::colors_->append_color( "TooltipBorder", Color4i( 202, 202, 202, 255 ) );
+
+    SystemColors::colors_->append_color( "ListControlBackground", Color4i( 255, 255, 255, 255 ) );
+    SystemColors::colors_->append_color( "ListControlTextSelection", Color4i( 212, 212, 212, 255 ) );
+    SystemColors::colors_->append_color( "ListControlRowBackground", Color4i( 255, 255, 255, 255 ) );
+    SystemColors::colors_->append_color( "ListControlRowAlternativeBackground", Color4i( 243, 245, 250, 255 ) );
+
+    SystemColors::colors_->append_color( "ScrollBarBackground", Color4i( 194, 194, 194, 255 ) );
+
+    // OS X Aqua color scheme
+    SystemColors::colors_->append_color( "WidgetFocusForeground", Color4i( 128, 189, 245, 255 ) );
+    SystemColors::colors_->append_color( "WidgetFocusBackground", Color4i( 88, 94, 175, 255 ) );
+
+    // Final Fantasy VIII "TTcards" theme style
+    SystemColors::colors_->append_color( "FinalFantasyOuterBorder", Color4i( 41, 41, 41, 255 ) );
+    SystemColors::colors_->append_color( "FinalFantasyInnerBorder", Color4i( 133, 133, 133, 255 ) );
+
+    SystemColors::initialized_ = true;
+  }
+}
+
+ColorDatabase& SystemColors::colors( void )
+{
+  if( SystemColors::initialized() == false )
+  {
+    NOM_LOG_ERR( NOM, "Color database was not yet initialized. Initializing..." );
+    SystemColors::initialize();
+  }
+
+  return *SystemColors::colors_;
+}
+
+void SystemColors::shutdown( void )
+{
+  SystemColors::colors_.reset();  // NULL
+
+  SystemColors::initialized_ = false;
 }
 
 bool init_third_party ( uint32 flags )

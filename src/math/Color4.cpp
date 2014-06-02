@@ -60,26 +60,7 @@ template <> const Color4i Color4i::LightGray (99, 99, 99);
 template <> const Color4i Color4i::Gray (67, 67, 67);
 template <> const Color4i Color4i::SkyBlue (110,144,190);
 
-template <> const Color4i Color4i::WindowBackground( 237, 237, 237, 255 );
-template <> const Color4i Color4i::FocusedWindowTitleBackground( 213, 213, 213, 255 );
-
-template <> const Color4i Color4i::Tooltip( 245, 245, 195, 255 );
-template <> const Color4i Color4i::TooltipBorder( 202, 202, 202, 255 );
-
 // template <> const Color4iColors Color4iColors::ButtonGradient{ Color4i( 201, 222, 241, 255 ), Color4i( 136, 183, 237, 255 ) };
-
-template <> const Color4i Color4i::ListControlBackground( Color4i::White );
-template <> const Color4i Color4i::ListControlTextSelection( 212, 212, 212, 255 );
-template <> const Color4i Color4i::ListControlRowBackground( Color4i::White );
-template <> const Color4i Color4i::ListControlRowAlternativeBackground( 243, 246, 250, 255 );
-
-template <> const Color4i Color4i::ScrollBarBackground( 194, 194, 194, 255 );
-
-template <> const Color4i Color4i::WidgetFocusForeground( 128, 189, 245, 255 );
-template <> const Color4i Color4i::WidgetFocusBackground( 88, 94, 175, 255 );
-
-template <> const Color4i Color4i::FinalFantasyOuterBorder( 41, 41, 41, 255 );
-template <> const Color4i Color4i::FinalFantasyInnerBorder( 133, 133, 133, 255 );
 
 template <> const Color4f Color4f::Black (1.0f, 0.0f, 0.0f);
 template <> const Color4f Color4f::White (1.0f, 1.0f, 1.0f);

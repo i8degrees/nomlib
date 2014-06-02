@@ -133,34 +133,7 @@ struct Color4
     static const Color4 Gray;
     static const Color4 SkyBlue;
 
-    // GUI widget colors; these derive from the default wxWidgets theme under
-    // Mac OS X.
-    static const Color4 WindowBackground;
-    static const Color4 FocusedWindowTitleBackground;
-
-    static const Color4 Tooltip;
-    static const Color4 TooltipBorder;
-
     // static const Color4 ButtonGradient;
-
-    static const Color4 ListControlBackground;
-    static const Color4 ListControlTextSelection;
-    static const Color4 ListControlRowBackground;
-    static const Color4 ListControlRowAlternativeBackground;
-
-    static const Color4 ScrollBarBackground;
-
-    /// \note OS X Aqua color scheme
-    static const Color4 WidgetFocusForeground;
-
-    /// \note OS X Aqua color scheme
-    static const Color4 WidgetFocusBackground;
-
-    /// \note Final Fantasy VIII "TTcards" theme style
-    static const Color4 FinalFantasyOuterBorder;
-
-    /// \note Final Fantasy VIII "TTcards" theme style
-    static const Color4 FinalFantasyInnerBorder;
 
     /// Red component
     T r;

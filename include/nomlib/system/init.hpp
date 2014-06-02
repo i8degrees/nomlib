@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief Class interface for accessing global font resources
+  /// \brief Class interface for accessing global font resources
 ///
 /// \note A nom::RenderWindow must be initialized before the resource
 /// loading method call can be used -- nom::FontCache::load_resource.
@@ -71,6 +71,40 @@ class SystemFonts
     /// \brief The global list of available fonts for use by the engine and
     /// end-user.
     static std::shared_ptr<FontCache> cache_;
+
+    /// \brief Track object's state in order to ensure one-time initialization.
+    static bool initialized_;
+};
+
+// Forward declarations
+class ColorDatabase;
+
+/// \brief Class interface for accessing global color resources
+///
+/// \see nom::PlatformSettings, nom::ColorDatabase.
+class SystemColors
+{
+  public:
+    /// \brief Get the status of the global color database.
+    static bool initialized( void );
+
+    /// \brief Create the global color database.
+    static void initialize( void );
+
+    /// \brief Get an object reference to the global color database.
+    ///
+    /// \returns The object reference to the global color database.
+    ///
+    /// \remarks This method call will automatically initialize the color
+    /// database if it is not yet initialized.
+    static ColorDatabase& colors( void );
+
+    /// \brief Destructor.
+    static void shutdown( void );
+
+  private:
+    /// \brief The global color database for use by the engine and end-user.
+    static std::unique_ptr<ColorDatabase> colors_;
 
     /// \brief Track object's state in order to ensure one-time initialization.
     static bool initialized_;

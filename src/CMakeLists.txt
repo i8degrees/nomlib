@@ -183,6 +183,8 @@ set ( SYSTEM_SOURCE
       # Resource management
       ${SRC_DIR}/system/resource_handlers.cpp
       ${SRC_DIR}/system/ResourceFile.cpp
+
+      ${SRC_DIR}/system/ColorDatabase.cpp
     )
 
 file ( GLOB PTREE_HEADERS "${NOMLIB_HEADERS_DIR}/ptree/*.hpp" )

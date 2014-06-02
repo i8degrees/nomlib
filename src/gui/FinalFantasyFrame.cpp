@@ -28,6 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/FinalFantasyFrame.hpp"
 
+// Private headers
+#include "nomlib/system/init.hpp"           // SystemColors
+#include "nomlib/system/ColorDatabase.hpp"  // ColorDatabase
+
 namespace nom {
 
 FinalFantasyFrame::FinalFantasyFrame( void )
@@ -119,23 +123,26 @@ void FinalFantasyFrame::update( void )
   int x_offset = x + width - 1;
   int y_offset = y + height - 1;
 
+  Color4i inner_border = SystemColors::colors().find_color( "FinalFantasyInnerBorder" );
+  Color4i outer_border = SystemColors::colors().find_color( "FinalFantasyOuterBorder" );
+
   // Outer border frame -- top0
-  this->drawables_.push_back( new Line( IntRect( x, y, x_offset, y), Color4i::FinalFantasyOuterBorder ) );
+  this->drawables_.push_back( new Line( IntRect( x, y, x_offset, y), outer_border ) );
 
   // Inner border frame -- top1
-  this->drawables_.push_back( new Line( IntRect( x, y + 1, x_offset, y + 1), Color4i::FinalFantasyInnerBorder ) );
+  this->drawables_.push_back( new Line( IntRect( x, y + 1, x_offset, y + 1), inner_border ) );
 
   // Outer border frame -- left0
-  this->drawables_.push_back( new Line( IntRect( x, y + 1, x, y_offset), Color4i::FinalFantasyOuterBorder ) );
+  this->drawables_.push_back( new Line( IntRect( x, y + 1, x, y_offset), outer_border ) );
 
   // Inner border frame -- left1
-  this->drawables_.push_back( new Line( IntRect( x + 1, y + 2, x + 1, y_offset), Color4i::FinalFantasyInnerBorder ) );
+  this->drawables_.push_back( new Line( IntRect( x + 1, y + 2, x + 1, y_offset), inner_border ) );
 
   // Outer border frame -- right0
-  this->drawables_.push_back( new Line( IntRect( x_offset, y, x_offset, y_offset), Color4i::FinalFantasyOuterBorder ) );
+  this->drawables_.push_back( new Line( IntRect( x_offset, y, x_offset, y_offset), outer_border ) );
 
   // Outer border frame -- bottom0
-  this->drawables_.push_back( new Line( IntRect( x, y_offset, x_offset, y_offset), Color4i::FinalFantasyOuterBorder ) );
+  this->drawables_.push_back( new Line( IntRect( x, y_offset, x_offset, y_offset), outer_border ) );
 
   // Calculate our border boundary; this is a convenience to other interfaces
   // that have to deal with such visual details, such as nom::UIWidget and

@@ -26,47 +26,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#ifndef NOMLIB_SYSTEM_COLOR_DB_HPP
+#define NOMLIB_SYSTEM_COLOR_DB_HPP
 
-// Public header file
+#include <string>
+#include <map>
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/ObjectTypeInfo.hpp>
-#include <nomlib/system/IObject.hpp>
-#include <nomlib/system/helpers.hpp>
-#include <nomlib/system/log.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/StateMachine.hpp>
-#include <nomlib/system/dialog_messagebox.hpp>
-#include <nomlib/system/Path.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDLApp.hpp>
-#include <nomlib/system/EventHandler.hpp>
-#include <nomlib/system/Joystick.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/make_unique.hpp>
-#include <nomlib/system/AnimationTimer.hpp>
+#include "nomlib/config.hpp"
+#include "nomlib/math/Color4.hpp"
 
-// Engine initialization & shutdown
-#include <nomlib/system/init.hpp>
-#include <nomlib/system/PlatformSettings.hpp>
+namespace nom {
 
-#include <nomlib/system/SDL_helpers.hpp>
-#include <nomlib/system/Event.hpp>
-#include <nomlib/system/EventCallback.hpp>
-#include <nomlib/system/EventDispatcher.hpp>
-#include <nomlib/system/InputMapper/InputAction.hpp>
-#include <nomlib/system/InputMapper/InputStateMapper.hpp>
-#include <nomlib/system/InputMapper/InputActionMapper.hpp>
+/// \brief Container for accessing colors by name (string)
+class ColorDatabase
+{
+  public:
+    typedef ColorDatabase self_type;
 
-// Resource management
-#include <nomlib/system/resource_types.hpp>
-#include <nomlib/system/ResourceFile.hpp>
-#include <nomlib/system/ResourceCache.hpp>
+    typedef std::pair<std::string, Color4i> pair;
+    typedef std::map<std::string, Color4i> value_type;
 
-#include <nomlib/system/ColorDatabase.hpp>
+    /// \brief Default constructor.
+    ColorDatabase( void );
+
+    /// \brief Destructor.
+    ~ColorDatabase( void );
+
+    const Color4i& find_color( const std::string& key );
+
+    bool append_color( const std::string& key, const Color4i& c );
+
+    void erase_color( const std::string& key );
+
+  private:
+    value_type colors_;
+};
+
+} // namespace nom
 
 #endif // include guard defined

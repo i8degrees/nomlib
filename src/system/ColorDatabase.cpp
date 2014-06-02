@@ -26,47 +26,53 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#include "nomlib/system/ColorDatabase.hpp"
 
-// Public header file
+namespace nom {
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/ObjectTypeInfo.hpp>
-#include <nomlib/system/IObject.hpp>
-#include <nomlib/system/helpers.hpp>
-#include <nomlib/system/log.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/StateMachine.hpp>
-#include <nomlib/system/dialog_messagebox.hpp>
-#include <nomlib/system/Path.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDLApp.hpp>
-#include <nomlib/system/EventHandler.hpp>
-#include <nomlib/system/Joystick.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/make_unique.hpp>
-#include <nomlib/system/AnimationTimer.hpp>
+ColorDatabase::ColorDatabase( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
-// Engine initialization & shutdown
-#include <nomlib/system/init.hpp>
-#include <nomlib/system/PlatformSettings.hpp>
+ColorDatabase::~ColorDatabase( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
-#include <nomlib/system/SDL_helpers.hpp>
-#include <nomlib/system/Event.hpp>
-#include <nomlib/system/EventCallback.hpp>
-#include <nomlib/system/EventDispatcher.hpp>
-#include <nomlib/system/InputMapper/InputAction.hpp>
-#include <nomlib/system/InputMapper/InputStateMapper.hpp>
-#include <nomlib/system/InputMapper/InputActionMapper.hpp>
+const Color4i& ColorDatabase::find_color( const std::string& key )
+{
+  auto res = this->colors_.find( key );
 
-// Resource management
-#include <nomlib/system/resource_types.hpp>
-#include <nomlib/system/ResourceFile.hpp>
-#include <nomlib/system/ResourceCache.hpp>
+  if( res != this->colors_.end() )
+  {
+    return res->second;
+  }
 
-#include <nomlib/system/ColorDatabase.hpp>
+  return Color4i::null;
+}
 
-#endif // include guard defined
+bool ColorDatabase::append_color( const std::string& key, const Color4i& c )
+{
+  pair member( key, c );
+
+  auto res = this->colors_.find( key );
+
+  // Err if duplicate member
+  if( res != this->colors_.end() )
+  {
+    NOM_LOG_ERR( NOM, "Could not insert color: the color already exists." );
+    return false;
+  }
+
+  this->colors_.insert( member );
+
+  return true;
+}
+
+void ColorDatabase::erase_color( const std::string& key )
+{
+  this->colors_.erase( key );
+}
+
+} // namespace nom

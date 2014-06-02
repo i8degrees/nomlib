@@ -33,6 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers
 #include "nomlib/system/SDL_helpers.hpp"
+#include "nomlib/system/init.hpp"
+#include "nomlib/system/ColorDatabase.hpp"
 #include "nomlib/system/PlatformSettings.hpp" // System fonts initialization
 
 namespace nom {
@@ -244,6 +246,9 @@ bool SDLApp::initialize( uint32 flags )
     // available to the engine for access.
     PlatformSettings::initialize();
   }
+
+  // The color database is allocated and immediately populated
+  SystemColors::initialize();
 
   return true;
 }

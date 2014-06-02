@@ -79,6 +79,11 @@ class ListBox: public UIWidget
     /// newline (assumed at 12 pt); c) The widget's size as set at construction.
     ///
     /// \note Re-implements UIWidget::size_hint.
+    ///
+    /// \remarks This value is used when managed by a layout, when the size
+    /// policy is set to SizePolicy::Preferred.
+    ///
+    /// \todo Add the decorator's frame (if any) to the size calculations?
     virtual const Size2i size_hint( void ) const;
 
     /// \brief Query the validity of the object

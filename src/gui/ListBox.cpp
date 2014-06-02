@@ -78,11 +78,14 @@ ObjectTypeInfo ListBox::type( void ) const
 
 const Size2i ListBox::size_hint( void ) const
 {
-  // Total text height requirements for stored items
-  sint total_text_height = 0;
+  // Maximum text width requirements for stored items
+  // int max_text_width = 0;
+
+  // Maximum text height requirements for stored items
+  int max_text_height = 0;
 
   // Default point size of font
-  uint point_size = 12;
+  uint point_size = nom::DEFAULT_FONT_SIZE;
 
   // Calculate the total text height requirements for the widget's items
   for( auto itr = this->labels_.begin(); itr != this->labels_.end(); ++itr )
@@ -91,34 +94,46 @@ const Size2i ListBox::size_hint( void ) const
 
     FontMetrics face = label->font()->metrics();
 
-// NOM_DUMP( label->text() );
-// NOM_DUMP( face.name );
+    // NOM_DUMP( this->name() );
+    // NOM_DUMP( face.name );
+    // NOM_DUMP( label->text() );
 
-    // Use the point size of font used instead of initialized default
-    point_size = label->text_size();
+    // Use the point size of the widget's style, if one has been set:
+    if( this->style() != nullptr )
+    {
+      point_size = this->style()->font_size();
+    }
+
+    // Text label's width, with respect to rendered font
+    // max_text_width = std::max( label->width(), max_text_width );
 
     // Maximum pixel height of the font's glyph
-    total_text_height += label->font()->newline( point_size );
-  }
+    max_text_height += label->font()->newline( point_size );
+  } // end for labels loop
 
-// NOM_DUMP( total_text_height );
+  // NOM_DUMP( max_text_height );
 
   // If we have calculated a total text height requirement, we can stop here,
   // using the total text height for our preferred height field.
-  if( total_text_height > 0 )
+  if( max_text_height > 0 )
   {
-    return Size2i( this->size().w, total_text_height );
+    // FIXME:
+    return Size2i( this->size().w, max_text_height );
+
+    // Text label's width & height (with respect to rendered font):
+    // return Size2i( max_text_width, max_text_height );
   }
 
   // We do not have any text labels stored, so assume a widget with a height
   // large enough for one item.
   if( this->font().valid() == true )
   {
-// NOM_DUMP( this->font()->newline( point_size ) );
+    // NOM_DUMP( this->font()->newline( point_size ) );
 
-    // FIXME: Determine what our default font point size, if any, should be;
-    // Assuming a default of 12 pt for the time being...
     return Size2i( this->size().w, this->font()->newline( point_size ) );
+
+    // Text label's width & height (with respect to rendered font):
+    // return Size2i( max_text_width, this->font()->newline( point_size ) );
   }
 
   // If all else fails ... use the preset size of the widget as the preferred
@@ -512,10 +527,14 @@ void ListBox::update( void )
     // NOTE: Variable text size is only applicable when using TrueType fonts;
     // we must make do with whatever the existing text size is when dealing with
     // Bitmap fonts.
-    // label->set_text_size( label->text_size() );
-    label->set_text_size( 12 );
-
-    label->set_alignment( Text::Alignment::TopLeft );
+    if( this->style() != nullptr )
+    {
+      label->set_text_size( this->style()->font_size() );
+    }
+    else
+    {
+      label->set_text_size( nom::DEFAULT_FONT_SIZE );
+    }
 
     label->set_position( Point2i( pos.x + 4, pos.y ) );
 
@@ -526,8 +545,19 @@ void ListBox::update( void )
     // Note that the label size is only used as reference for the optional
     // cropping feature in nom::Text -- Text::ExtraRenderingFeatures::Crop.
     label->set_size( Size2i( this->size().w - 8, this->size().h ) );
+    // label->set_size( Size2i( label->width()+8, label->height() ) );
 
     label->set_features( Text::ExtraRenderingFeatures::CropText );
+
+    if( this->style() != nullptr )
+    {
+      // label->set_alignment( this->style()->text_alignment() );
+      label->set_alignment( Text::Alignment::TopLeft );
+    }
+    else
+    {
+      label->set_alignment( Text::Alignment::TopLeft );
+    }
 
     // Vertical Spacing in between each text
     pos.y += label->height();

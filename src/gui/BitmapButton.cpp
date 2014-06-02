@@ -78,8 +78,7 @@ const Size2i BitmapButton::size_hint( void ) const
     return( Size2i( this->default_bitmap_.bounds().w, this->default_bitmap_.bounds().h ) );
   }
 
-  // If the bitmap has not been set yet, use the minimum size of the widget
-  // (explicitly set by you, the end-user).
+  // Explicitly set by the end-user (developer):
   return this->minimum_size();
 }
 

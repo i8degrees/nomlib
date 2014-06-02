@@ -60,9 +60,6 @@ Button::~Button( void )
 
 const Size2i Button::size_hint( void ) const
 {
-  // Sanity check for widget's UIStyle pointer
-  // NOM_ASSERT( this->style() != nullptr );
-
   // Total text height requirements for stored items
   sint total_text_height = 0;
 
@@ -72,12 +69,11 @@ const Size2i Button::size_hint( void ) const
   // Calculate the total text height requirements for the widget.
   FontMetrics face = this->label_.font()->metrics();
 
-// NOM_DUMP( this->name() );
-// NOM_DUMP( face.name );
+  // NOM_DUMP( this->name() );
+  // NOM_DUMP( face.name );
+  // NOM_DUMP( this->label_->text() );
 
-  // Use the point size of font used instead of initialized default
-  // point_size = this->label_.text_size();
-
+  // Use the point size of the widget's style, if one has been set:
   if( this->style() != nullptr )
   {
     point_size = this->style()->font_size();
@@ -86,31 +82,30 @@ const Size2i Button::size_hint( void ) const
   // Maximum pixel height of the font's glyph
   total_text_height += this->label_.font()->newline( point_size );
 
-// NOM_DUMP( total_text_height );
+  // NOM_DUMP( this->name() );
+  // NOM_DUMP( total_text_height );
 
   // If we have calculated a total text height requirement, we can stop here,
   // using the total text height for our preferred height field.
   if( total_text_height > 0 )
   {
-    return Size2i( this->size().w, total_text_height );
+    // Text label's width & height (with respect to rendered font):
+    return Size2i( this->label_.width(), total_text_height );
   }
 
   // We do not have any text labels stored, so assume a widget with a height
   // large enough for one item.
   if( this->font().valid() == true )
   {
-// NOM_DUMP( this->font()->newline( point_size ) );
+    // NOM_DUMP( this->name() );
+    // NOM_DUMP( this->font()->newline( point_size ) );
 
-    // FIXME: Determine what our default font point size, if any, should be;
-    // Assuming a default of 12 pt for the time being...
-    return Size2i( this->size().w, this->font()->newline( point_size ) );
+    // Text label's width & height (with respect to rendered font):
+    return Size2i( this->label_.width(), this->font()->newline( point_size ) );
   }
 
-  // If all else fails ... use the preset size of the widget as the preferred
-  // size.
-  //
-  // Should we be using minimum_size here instead?
-  return Size2i( this->size() );
+  // Explicitly set by the end-user (developer):
+  return Size2i( this->minimum_size() );
 }
 
 ObjectTypeInfo Button::type( void ) const

@@ -46,17 +46,6 @@ namespace nom {
 /// \note http://doc.qt.digia.com/4.6/layout.html
 /// \note http://doc.qt.digia.com/4.6/qboxlayout.html
 /// \note http://doc.qt.digia.com/4.6/layouts-borderlayout.html
-///
-/// \note You should choose to allow for spacing between layout items either
-/// by setting the internal spacing via ::set_spacing or by adding spacer items
-/// to the layout via ::insert_spacer and ::append_spacer, but never both within
-/// the same layout (object) instance. The use of both features within the same
-/// instance has the tendency to create rendering bugs with the widget's
-/// decorator, and possibly even calculation errors in the boundary layout
-/// methods. In other words, it is not intended to be supported functionality.
-/// In the case that you choose to set internal spacing, beware that you should
-/// always use a non-negative *and* non-zero value, due to multiplication that
-/// used internally for calculations.
 class UIBoxLayout: public UILayout
 {
   public:
@@ -91,12 +80,18 @@ class UIBoxLayout: public UILayout
 
     /// \brief The sum of every layout item's preferred size dimension.
     ///
-    /// \remarks Re-implements UILayoutItem::size_hint.
+    /// \note Re-implements UILayoutItem::size_hint.
+    ///
+    /// \note The layout object's preferred size will be the largest element's
+    /// preferred size dimensions.
     virtual Size2i size_hint( void ) const;
 
     /// \brief The sum of every layout item's minimum size requirements.
     ///
     /// \brief Re-implements UILayout::minimum_size.
+    ///
+    /// \note The layout object's preferred size will be the largest element's
+    /// preferred size dimensions.
     virtual Size2i minimum_size( void ) const;
 
     /// \brief Implements UILayout::count.

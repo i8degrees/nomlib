@@ -34,11 +34,9 @@ UIBoxLayout::UIBoxLayout( void )
 {
   // NOM_LOG_TRACE( NOM );
 
-  // FIXME: Note that we need to be careful on not initializing this variable to zero
-  // or negative one (-1), because we use the variable in calculations that
-  // involve multiplication.
-
-  this->set_spacing( 1 ); // Default spacing between each layout item
+  // Default spacing between each layout item; this is applied equally to every
+  // layout item, except for the first item.
+  this->set_spacing( 1 );
 
   this->set_direction( LeftRight );
 }
@@ -53,11 +51,9 @@ UIBoxLayout::UIBoxLayout( enum Direction dir, UIWidget* parent ) :
 {
   // NOM_LOG_TRACE( NOM );
 
-  // FIXME: Note that we need to be careful on not initializing this variable to zero
-  // or negative one (-1), because we use the variable in calculations that
-  // involve multiplication.
-
-  this->set_spacing( 1 ); // Default spacing between each layout item
+  // Default spacing between each layout item; this is applied equally to every
+  // layout item, except for the first item.
+  this->set_spacing( 1 );
 
   this->set_direction( dir );
 }
@@ -94,23 +90,27 @@ Size2i UIBoxLayout::size_hint( void ) const
     }
 
     // TODO: Verify if we even need this
+    /*
     if( item->spacer_item() != nullptr )
     {
-      hint += item->spacer_item()->size_hint();
-      // hint = item->spacer_item()->size_hint();
+      // hint += item->spacer_item()->size_hint();
+      hint = item->spacer_item()->size_hint();
     }
-    else
+    */
+    // else
     {
-      // Use the larger of the two objects compared.
-      hint = hint.max( item->size_hint() );
-      // hint = item->size_hint();
+
+      if( ! item->spacer_item() )
+      {
+        // Use the larger of the two objects compared.
+        hint = hint.max( item->size_hint() );
+      }
     }
   }
 
 // NOM_DUMP( hint );
 
-  // return Size2i( hint.w, hint.h + this->spacing() );
-  return Size2i( hint.w + this->spacing(), hint.h + this->spacing() );
+  return Size2i( hint.w , hint.h );
 }
 
 Size2i UIBoxLayout::minimum_size( void ) const
@@ -139,16 +139,22 @@ Size2i UIBoxLayout::minimum_size( void ) const
     }
 
     // TODO: Verify if we even need this
+/*
     if( item->spacer_item() != nullptr )
     {
-      msize += item->spacer_item()->minimum_size();
-      // msize = item->spacer_item()->minimum_size();
+      // msize += msize.max( item->spacer_item()->minimum_size() );
+      msize = item->spacer_item()->minimum_size();
     }
-    else
+*/
+    // else
     {
-      // Use the larger of the two objects compared.
-      msize = msize.max( item->minimum_size() );
-      // msize = item->minimum_size();
+
+      if( ! item->spacer_item() )
+      {
+        // Use the larger of the two objects compared.
+        // msize = item->minimum_size();
+        msize = msize.max( item->minimum_size() );
+      }
 
       UIWidget* widget = item->widget();
 
@@ -176,8 +182,7 @@ Size2i UIBoxLayout::minimum_size( void ) const
 
 // NOM_DUMP( msize );
 
-  // return Size2i( msize.w, msize.h + this->spacing() );
-  return Size2i( msize.w + this->spacing(), msize.h + this->spacing() );
+  return Size2i( msize.w , msize.h );
 }
 
 int UIBoxLayout::count( void ) const
@@ -208,7 +213,7 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
   // Items container size
   int count = this->count();
 
-  // Per layout item size requirements
+  // Layout item size requirements; dependent upon the item's size policy
   Size2i item_size;
 
   // Relative coordinates (to parent widget)
@@ -219,7 +224,12 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
 
   // Total sum of item's boundaries; this *should* result in the overall
   // layout's boundaries.
-  IntRect total_bounds;
+  // IntRect total_bounds;
+
+  int w_x = 0;          // Widget X offset
+  int w_y = 0;          // Widget Y offset
+  int widget_count = 0; // Number of widget items in layout
+  int spacer = 0;       // UISpacerItem
 
   // FIXME (?): Set the overall layout bounds
   //
@@ -233,93 +243,132 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
     return;
   }
 
-  // Default initializations for a layout item; these would only remain the
-  // as-is if our layout container was empty.
-  item_size.w = this->size_hint().w + this->spacing();
-  item_size.h = this->size_hint().h + this->spacing();
-
   for( auto idx = 0; idx < count; ++idx )
   {
-    // Widget or layout pointer
+    // Widget or layout item pointer
     UILayoutItem* item = this->at( idx );
 
+    // Log err and continue onwards to the next item
     if( item == nullptr )
     {
-      NOM_LOG_ERR( NOM, "Could not set bounds: item was NULL." );
+      NOM_LOG_ERR( NOM, "Could not set layout item's bounds: the item was NULL." );
       continue;
+    }
+
+    // FIXME: Clean up logic; ideally, we'd like to handle all layout item
+    // types?
+    UISpacerItem* sp = item->spacer_item();
+    if( sp != nullptr )
+    {
+      NOM_DUMP("sp");
+      NOM_DUMP( item->minimum_size() );
+      NOM_DUMP( item->size_hint() );
+      NOM_DUMP( item->bounds() );
+
+      if( this->horiz() )
+      {
+        spacer = sp->size_hint().w;
+      }
+      else
+      {
+        spacer = sp->size_hint().h;
+      }
     }
 
     UIWidget* widget = item->widget();
 
     if( widget != nullptr )
     {
+      ++widget_count;
+
       NOM_DUMP( widget->name() );
-
-      UILayoutPolicy p = widget->size_policy();
-
-      if( p.vertical_policy() == UILayoutPolicy::Policy::Minimum )
-      {
-        item_size.w = this->minimum_size().w + this->spacing();
-        item_size.h = this->minimum_size().h + this->spacing();
-      }
-      else
-      {
-        item_size.w = this->size_hint().w + this->spacing();
-        item_size.h = this->size_hint().h + this->spacing();
-      }
 
       // Setup our layout positioning coordinates to be relative to the parent
       // widget (top-level window).
       if( widget->parent() != nullptr )
       {
-        // Need to add offset position onto the item's position coordinate now.
+        // The offset will eventually be added onto the layout item's bounds
         offset = widget->parent()->position();
       }
 
+      UILayoutPolicy p = widget->size_policy();
+
+      // FIXME: Include horizontal policy
       if( p.vertical_policy() == UILayoutPolicy::Policy::Minimum )
       {
-        // Increase X coordinate axis using the minimum size's width
-        if( this->horiz() )
-        {
-          geom = IntRect( rect.x + offset.x + this->minimum_size().w * idx, rect.y + offset.y, item_size.w, item_size.h );
-        }
-
-        // Increase Y coordinate axis using the preferred size's height
-        else
-        {
-          geom = IntRect( rect.x + offset.x, rect.y + offset.y + this->minimum_size().h * idx, item_size.w, item_size.h );
-        }
+        item_size.w = this->minimum_size().w;
+        item_size.h = this->minimum_size().h;
       }
-
-      // Layout item is not using minimum size policy
       else
       {
-        // Increase X coordinate axis using the preferred size's width
-        if( this->horiz() )
-        {
-          geom = IntRect( rect.x + offset.x + this->size_hint().w * idx, rect.y + offset.y, item_size.w, item_size.h );
-        }
-
-        // Increase Y coordinate axis using the preferred size's height
-        else
-        {
-          geom = IntRect( rect.x + offset.x, rect.y + offset.y + this->size_hint().h * idx, item_size.w, item_size.h );
-        }
+        item_size.w = this->size_hint().w;
+        item_size.h = this->size_hint().h;
       }
-    }
 
-    // Set each item's boundaries as per calculated layout requirements; this
-    // method call takes care of internal item updates that will need to occur
-    // shortly thereafter (think: resize / move).
-    item->set_bounds( geom );
+      // Horizontal layout using preferred size height
+      if( this->horiz() )
+      {
+        // The item's spacing as per UISpacerItem size (see above)
+        w_x += spacer;
 
-    total_bounds += item->bounds();
+        // w_y = rect.y + offset.y;
+        w_y += 0;
 
-// NOM_DUMP( item_size );
-// NOM_DUMP( item->bounds() );
-// NOM_DUMP( item->minimum_size() );
-// NOM_DUMP( item->size_hint() );
-  }
+        // Only apply internal layout spacing if it is not the first widget.
+        if( widget_count > 1 )
+        {
+          // The item's size is dependent upon the size policy type (see above)
+          w_x += item_size.w;
+
+          if( this->spacing() > 0 )
+          {
+            w_x += this->spacing();
+          }
+        } // end if widget_count > 1
+
+      } // end if horizontal layout
+
+      // Vertical layout using preferred size height
+      else
+      {
+        // w_x = rect.x + offset.x;
+        w_x += 0;
+        // The item's spacing as per UISpacerItem size (see above)
+        w_y += spacer;
+
+        // Only apply internal layout spacing if it is not the first widget.
+        if( widget_count > 1 )
+        {
+          // The item's size is dependent upon the size policy type (see above)
+          w_y += item_size.h;
+
+          if( this->spacing() > 0 )
+          {
+            w_y += this->spacing();
+          }
+        } // end if widget_count > 1
+
+      } // end if vertical layout
+
+      // Widget layout item stats
+      NOM_DUMP( item->minimum_size() );
+      NOM_DUMP( item->size_hint() );
+      NOM_DUMP( item->bounds() );
+
+      geom = IntRect( w_x + rect.x + offset.x, w_y + rect.y + offset.y, item_size.w, item_size.h );
+
+      // TODO: Verify this comment??? (Do not think it is doing what I say it is!)
+      //
+      // Set each item's boundaries as per calculated layout requirements; this
+      // method call takes care of internal item updates that will need to occur
+      // shortly thereafter (think: resize / move).
+      item->set_bounds( geom );
+
+    } // end if widget != nullptr
+
+    // total_bounds += item->bounds();
+
+  } // end for layout items loop
 
 // NOM_DUMP( total_bounds );
 }
@@ -379,7 +428,7 @@ void UIBoxLayout::insert_widget( int pos, UIWidget* widget )
     return;
   }
 
-  this->items_.insert( this->items_.begin() + pos, new UIWidgetLayoutItem( widget ) );
+  this->insert_item( pos, new UIWidgetLayoutItem( widget ) );
 
 // NOM_DUMP( widget->name() );
 
@@ -403,6 +452,7 @@ void UIBoxLayout::insert_widget( int pos, UIWidget* widget )
 
   // Calculate the layout's requirements for the addition
   this->set_bounds( IntRect( pos_offset, widget->size() ) );
+  // this->set_bounds( IntRect( pos_offset, widget->size_hint() ) );
 }
 
 void UIBoxLayout::insert_widget( int pos, UIWidget* widget, uint32 align )
@@ -452,15 +502,18 @@ void UIBoxLayout::insert_spacer( int pos, UISpacerItem* item )
     return;
   }
 
-  this->items_.insert( this->items_.begin() + pos, item );
+  // this->items_.insert( this->items_.begin() + pos, item );
+  this->insert_item( pos, item );
 
   this->set_bounds( item->bounds() );
 }
 
 void UIBoxLayout::insert_spacer( int pos, int height )
 {
-  uint32 flags = nom::UILayoutPolicy::Policy::Minimum;
-  Size2i spacer_height = Size2i( 0, height );
+  uint32 flags = nom::UILayoutPolicy::Policy::Fixed;
+
+  // FIXME:
+  Size2i spacer_height = Size2i( height, height );
 
   UISpacerItem* sp = new UISpacerItem( spacer_height, flags, flags );
 
@@ -470,7 +523,7 @@ void UIBoxLayout::insert_spacer( int pos, int height )
     return;
   }
 
-  this->items_.insert( this->items_.begin() + pos, sp );
+  this->insert_spacer( pos, sp );
 
   this->set_bounds( sp->bounds() );
 }

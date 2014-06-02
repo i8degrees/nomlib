@@ -167,11 +167,17 @@ class UIWidget: public UIEventHandler
     const Size2i maximum_size( void ) const;
 
     /// \brief Get the minimum size of the widget.
+    ///
+    /// \remarks This value is used when managed by a layout, when the size
+    /// policy is set to SizePolicy::Minimum.
     const Size2i minimum_size( void ) const;
 
     /// \brief Get the preferred size of the widget.
     ///
     /// \remarks If the preferred size is invalid (NULL), ...
+    ///
+    /// \remarks This value is used when managed by a layout, when the size
+    /// policy is set to SizePolicy::Preferred.
     virtual const Size2i size_hint( void ) const;
 
     /// \brief Obtain the widget's local positioning coordinates.

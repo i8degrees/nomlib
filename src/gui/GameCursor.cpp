@@ -26,33 +26,33 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/gui/Cursor.hpp"
+#include "nomlib/gui/GameCursor.hpp"
 
 namespace nom {
 
-Cursor::Cursor ( void ):  locked_ ( false )
+GameCursor::GameCursor ( void ):  locked_ ( false )
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-Cursor::Cursor ( const SpriteSheet& sheet ):  AnimatedSprite ( sheet ),
+GameCursor::GameCursor ( const SpriteSheet& sheet ):  AnimatedSprite ( sheet ),
     locked_ ( false )
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-Cursor::Cursor ( const std::string& filename ):  AnimatedSprite ( filename ),
+GameCursor::GameCursor ( const std::string& filename ):  AnimatedSprite ( filename ),
     locked_ ( false )
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-Cursor::~Cursor ( void )
+GameCursor::~GameCursor ( void )
 {
 NOM_LOG_TRACE ( NOM );
 }
 
-Cursor& Cursor::operator = ( const Cursor& other )
+GameCursor& GameCursor::operator = ( const GameCursor& other )
 {
   this->sprite_ = other.sprite_;
   this->set_position ( other.position() );
@@ -72,48 +72,48 @@ Cursor& Cursor::operator = ( const Cursor& other )
   return *this;
 }
 
-int32 Cursor::x ( void ) const
+int32 GameCursor::x ( void ) const
 {
   return this->position().x;
 }
 
-int32 Cursor::y ( void ) const
+int32 GameCursor::y ( void ) const
 {
   return this->position().y;
 }
 
-bool Cursor::locked ( void ) const
+bool GameCursor::locked ( void ) const
 {
   return this->locked_;
 }
 
-void Cursor::toggle_lock ( bool toggle )
+void GameCursor::toggle_lock ( bool toggle )
 {
   this->locked_ = toggle;
 }
 
-int32 Cursor::move_up ( void )
+int32 GameCursor::move_up ( void )
 {
   return -1; // Do nothing virtual implementation
 }
 
-int32 Cursor::move_down ( void )
+int32 GameCursor::move_down ( void )
 {
   return -1; // Do nothing virtual implementation
 }
 
-int32 Cursor::move_left ( void )
+int32 GameCursor::move_left ( void )
 {
   return -1; // Do nothing virtual implementation
 }
 
-int32 Cursor::move_right ( void )
+int32 GameCursor::move_right ( void )
 {
   return -1; // Do nothing virtual implementation
 }
 
 /*
-void Cursor::update ( void )
+void GameCursor::update ( void )
 {
   SpriteBatch::update();
 }

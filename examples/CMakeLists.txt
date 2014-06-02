@@ -16,15 +16,14 @@
 # http://stackoverflow.com/questions/6077810/how-to-correctly-add-resources-to-a-project?rq=1
 cmake_minimum_required ( VERSION 2.6 )
 
-set( NOM_BUILD_MACROS_EXAMPLE on )
 set( NOM_BUILD_APP_EXAMPLE off )
 set( NOM_BUILD_AUDIO_EXAMPLE off )
 set( NOM_BUILD_DEVICE_INFO_EXAMPLE off )
 set( NOM_BUILD_EVENTS_EXAMPLE off )
-set( NOM_BUILD_FONTS_EXAMPLE on )
+set( NOM_BUILD_FONTS_EXAMPLE off )
 set( NOM_BUILD_GAMEOFLIFE_EXAMPLE off )
 
-set( NOM_BUILD_GUI_EXAMPLES on )
+set( NOM_BUILD_GUI_EXAMPLES off )
 set( NOM_BUILD_GUI_BUTTON_EXAMPLE on )
 set( NOM_BUILD_GUI_LISTBOX_EXAMPLE on )
 set( NOM_BUILD_GUI_MESSAGEBOX_EXAMPLE on )
@@ -32,6 +31,9 @@ set( NOM_BUILD_GUI_DATAVIEWLIST_EXAMPLE on )
 
 set( NOM_BUILD_SPRITE_SHEETS_EXAMPLE off )
 set( NOM_BUILD_VALUES_EXAMPLE off )
+
+set( NOM_BUILD_MOUSE_CURSORS_EXAMPLE on )
+set( NOM_BUILD_MACROS_EXAMPLE off )
 
 link_libraries ( ${PROJECT_NAME} )
 
@@ -69,12 +71,6 @@ endif ( PLATFORM_WINDOWS )
 
 # Install example resources
 if( NOT NOM_BUILD_MINI_UNIT )
-
-  if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_MATH_UNIT )
-    if( NOM_BUILD_MACROS_EXAMPLE )
-      add_executable ( macros "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/macros.cpp" )
-    endif( NOM_BUILD_MACROS_EXAMPLE )
-  endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_MATH_UNIT )
 
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_GUI_UNIT AND NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT AND NOM_BUILD_JSON_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
     if( NOM_BUILD_APP_EXAMPLE )
@@ -206,6 +202,26 @@ if( NOT NOM_BUILD_MINI_UNIT )
       add_executable ( sprite_sheets "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/sprites/sprite_sheets.cpp" )
     endif( NOM_BUILD_SPRITE_SHEETS_EXAMPLE )
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+
+  if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT AND NOM_BUILD_GRAPHICS_UNIT )
+    if( NOM_BUILD_MOUSE_CURSORS_EXAMPLE )
+      add_executable( cursors "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/cursors.cpp" )
+
+      # install ( DIRECTORY
+      #           "${EXAMPLES_SRC_DIR}/app/Resources"
+      #           DESTINATION
+      #           "${EXAMPLES_INSTALL_PEFIX}"
+      #           PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+      #         )
+
+    endif( NOM_BUILD_MOUSE_CURSORS_EXAMPLE )
+  endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT AND NOM_BUILD_GRAPHICS_UNIT )
+
+  if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_MATH_UNIT )
+    if( NOM_BUILD_MACROS_EXAMPLE )
+      add_executable ( macros "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/macros.cpp" )
+    endif( NOM_BUILD_MACROS_EXAMPLE )
+  endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_MATH_UNIT )
 
   # Install library dependencies into binary output directory
   if ( PLATFORM_WINDOWS )

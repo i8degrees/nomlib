@@ -306,6 +306,11 @@ SDL_Window* RenderWindow::window_id( uint32 id )
   return SDL_GetWindowFromID ( id );
 }
 
+SDL_Window* RenderWindow::mouse_focus( void ) const
+{
+  return SDL_GetMouseFocus();
+}
+
 int RenderWindow::window_display_id ( void ) const
 {
   return this->window_display_id_;

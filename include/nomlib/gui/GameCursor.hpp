@@ -39,25 +39,28 @@ namespace nom {
 
 /// \brief Helper class for loading, positioning and keeping track of a cursor
 /// controlled by an user-defined input.
-class Cursor:
+///
+/// \deprecated This class interface will likely be removed when the feature/GUI
+/// branch is merged into the dev branch.
+class GameCursor:
               public AnimatedSprite
 {
   public:
     /// Default construct for initializing instance variables to their
     /// respective defaults.
-    Cursor ( void );
+    GameCursor ( void );
 
     /// Destructor
-    virtual ~Cursor ( void );
+    virtual ~GameCursor ( void );
 
     /// Construct a new Cursor object, initializing with a SpriteSheet object.
-    Cursor ( const SpriteSheet& sheet );
+    GameCursor ( const SpriteSheet& sheet );
 
     /// Construct a Cursor from an existing sprite sheet filename.
-    Cursor ( const std::string& filename );
+    GameCursor ( const std::string& filename );
 
     /// Copy assignment operator
-    Cursor& operator = ( const Cursor& other );
+    GameCursor& operator = ( const GameCursor& other );
 
     /// X axis position
     ///

@@ -182,6 +182,11 @@ class RenderWindow: public Renderer
     /// \return This window's display index
     int window_display_id ( void ) const;
 
+    /// \brief Get the window which currently has mouse focus.
+    ///
+    /// \returns The window with mouse focus.
+    SDL_Window* mouse_focus( void ) const;
+
     /// Allow the screen to be blanked by a screen saver.
     ///
     /// \todo Test me

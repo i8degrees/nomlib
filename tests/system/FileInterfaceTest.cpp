@@ -122,6 +122,41 @@ TEST_F( FileInterfaceTest, ExecutableWorkingDirectoryPath )
   ASSERT_FALSE( pwd == "." );
 }
 
+TEST_F( FileInterfaceTest, FileExtensions )
+{
+  Path p;
+  std::string file( "times.ttf" );
+  std::string file_ext;
+
+  file_ext = fp.extension( file );
+
+  #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
+    // NOM_DUMP( p.path() );
+    NOM_DUMP( file );
+    NOM_DUMP( file_ext ); // ttf
+  #endif
+
+  ASSERT_FALSE( file_ext == "" );
+  ASSERT_TRUE( file_ext == "ttf" );
+
+  p = nom::Path( "Resources/gui" );
+
+  // Path should resolve to: Resources/gui/VIII.png
+  file = p.prepend( "VIII.png" );
+  file_ext = "\0";
+
+  file_ext = fp.extension( file );
+
+  #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
+    NOM_DUMP( p.path() ); // Resources/gui/
+    NOM_DUMP( file );
+    NOM_DUMP( file_ext ); // png
+  #endif
+
+  ASSERT_FALSE( file_ext == "" );
+  ASSERT_TRUE( file_ext == "png" );
+}
+
 } // namespace nom
 
 int main( int argc, char** argv )

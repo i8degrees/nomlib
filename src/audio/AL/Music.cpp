@@ -95,7 +95,7 @@ void Music::fadeOut ( float seconds )
     {
       std::cout << "\nFading out\n";
       this->setVolume ( current_volume );
-NOM_DUMP_VAR ( current_volume );
+      NOM_DUMP( current_volume );
     }
     else
     {

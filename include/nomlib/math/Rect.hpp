@@ -200,7 +200,7 @@ struct Rect
 ///
 /// \code
 ///
-/// NOM_DUMP_VAR ( my_rect );
+/// NOM_DUMP( my_rect );
 ///
 /// # ...or...
 ///

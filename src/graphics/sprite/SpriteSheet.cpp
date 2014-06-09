@@ -115,7 +115,7 @@ SpriteSheet::SpriteSheet  (
     }
 
 #if defined (NOM_DEBUG_SPRITE_SHEET)
-  NOM_DUMP_VAR(cols);
+  NOM_DUMP(cols);
 #endif
 
     // Apply proper spacing calculations
@@ -134,11 +134,11 @@ SpriteSheet::SpriteSheet  (
     this->sheet[id].h = sprite_height;
 
 #if defined (NOM_DEBUG_SPRITE_SHEET)
-  NOM_DUMP_VAR ( id );
-  NOM_DUMP_VAR ( this->sheet[id].x );
-  NOM_DUMP_VAR ( this->sheet[id].y );
-  NOM_DUMP_VAR ( this->sheet[id].w );
-  NOM_DUMP_VAR ( this->sheet[id].h );
+  NOM_DUMP( id );
+  NOM_DUMP( this->sheet[id].x );
+  NOM_DUMP( this->sheet[id].y );
+  NOM_DUMP( this->sheet[id].w );
+  NOM_DUMP( this->sheet[id].h );
 #endif
 
     rows++;
@@ -342,19 +342,19 @@ void SpriteSheet::dump ( void ) const
   // Sheet vector state
   for ( auto itr = this->sheet.begin(); itr != this->sheet.end(); ++itr )
   {
-    NOM_DUMP_VAR(itr->x);
-    NOM_DUMP_VAR(itr->y);
-    NOM_DUMP_VAR(itr->w);
-    NOM_DUMP_VAR(itr->h);
+    NOM_DUMP(itr->x);
+    NOM_DUMP(itr->y);
+    NOM_DUMP(itr->w);
+    NOM_DUMP(itr->h);
   }
 
   // Sheet's meta-data
-  NOM_DUMP_VAR(this->sheet_filename());
-  NOM_DUMP_VAR(this->sheet_sprites);
-  NOM_DUMP_VAR(this->sheet_spacing);
-  NOM_DUMP_VAR(this->sheet_padding);
-  NOM_DUMP_VAR(this->sheet_width);
-  NOM_DUMP_VAR(this->sheet_height);
+  NOM_DUMP(this->sheet_filename());
+  NOM_DUMP(this->sheet_sprites);
+  NOM_DUMP(this->sheet_spacing);
+  NOM_DUMP(this->sheet_padding);
+  NOM_DUMP(this->sheet_width);
+  NOM_DUMP(this->sheet_height);
 }
 
 

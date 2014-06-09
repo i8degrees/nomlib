@@ -175,13 +175,13 @@ void AnimatedSprite::update_animation ( void )
     {
 
 #if defined ( NOM_DEBUG_ANIMATED_SPRITE )
-  NOM_DUMP_VAR( this->frame() );
+  NOM_DUMP( this->frame() );
 #endif
 
       this->set_frame ( this->frame() - 2 );
 
 #if defined ( NOM_DEBUG_ANIMATED_SPRITE )
-  NOM_DUMP_VAR( this->frame() );
+  NOM_DUMP( this->frame() );
 #endif
 
     }

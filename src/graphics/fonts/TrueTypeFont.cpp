@@ -399,10 +399,10 @@ bool TrueTypeFont::build ( uint32 character_size )
       page.glyphs[glyph].bounds = this->glyph_rect ( page, glyph_width + spacing * padding, glyph_height + spacing * padding );
 
       #if defined(NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS)
-        NOM_DUMP_VAR(glyph); // integer position
-        NOM_DUMP_VAR(static_cast<uchar>(glyph)); // printable
-        NOM_DUMP_VAR(this->glyph(glyph).bounds); // bounding box
-        NOM_DUMP_VAR(advance); // spacing
+        NOM_DUMP(glyph); // integer position
+        NOM_DUMP(static_cast<uchar>(glyph)); // printable
+        NOM_DUMP(this->glyph(glyph).bounds); // bounding box
+        NOM_DUMP(advance); // spacing
       #endif
 
       // Prepare the coordinates for rendering a glyph onto our texture sheet

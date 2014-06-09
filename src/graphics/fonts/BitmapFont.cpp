@@ -356,15 +356,15 @@ bool BitmapFont::build ( uint32 character_size )
 
   // Dump table of calculated bitmap character positions
   #if defined (NOM_DEBUG_SDL2_BITMAP_FONT)
-    NOM_DUMP_VAR(this->spacing());
-    NOM_DUMP_VAR(this->newline());
+    NOM_DUMP(this->spacing());
+    NOM_DUMP(this->newline());
     for ( uint32 glyph = 0; glyph < current_char; ++glyph )
     {
-      NOM_DUMP_VAR ( glyph );
-      NOM_DUMP_VAR ( page.glyphs[glyph].bounds.x );
-      NOM_DUMP_VAR ( page.glyphs[glyph].bounds.y );
-      NOM_DUMP_VAR ( page.glyphs[glyph].bounds.w );
-      NOM_DUMP_VAR ( page.glyphs[glyph].bounds.h );
+      NOM_DUMP( glyph );
+      NOM_DUMP( page.glyphs[glyph].bounds.x );
+      NOM_DUMP( page.glyphs[glyph].bounds.y );
+      NOM_DUMP( page.glyphs[glyph].bounds.w );
+      NOM_DUMP( page.glyphs[glyph].bounds.h );
     }
   #endif
 

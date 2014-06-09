@@ -55,10 +55,10 @@ nom::int32 do_color_test1 ( void )
   nom::Color4f testme4 (-1,-1,-1, Color4f::ALPHA_OPAQUE );
 
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR(testme1);
-    NOM_DUMP_VAR(testme2);
-    NOM_DUMP_VAR(testme3);
-    NOM_DUMP_VAR(testme4);
+    NOM_DUMP(testme1);
+    NOM_DUMP(testme2);
+    NOM_DUMP(testme3);
+    NOM_DUMP(testme4);
   #endif
 
   if ( testme2 == testme1 ) return NOM_EXIT_FAILURE;
@@ -95,8 +95,8 @@ nom::sint do_rect_test2 ( void )
   FloatRect testme2 ( -1, -1, -1, -1 );
 
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR(testme1);
-    NOM_DUMP_VAR(testme2);
+    NOM_DUMP(testme1);
+    NOM_DUMP(testme2);
   #endif
 
   if ( testme1 != IntRect::null ) return NOM_EXIT_FAILURE;
@@ -135,8 +135,8 @@ sint do_rect_test3 ( void )
   // Expected result: 64 / 2 = 32 && 32 / 2 = 16 && 2/2/2/2 = 1
   result[idx] = expr[idx] /= ans[0];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
@@ -147,8 +147,8 @@ sint do_rect_test3 ( void )
   // Expected result: 64 *= 2 = 128 && 32 *= 2 = 64 && 2*2*2*2 = 16
   result[idx] = expr[idx] *= ans[0];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[1] == IntRect::null ) return NOM_EXIT_FAILURE;
@@ -159,8 +159,8 @@ sint do_rect_test3 ( void )
   // Expected result: 64 -= 8 = 56 && 32 -= 8 = 24 && 8-8-8-8 = 0 (???)
   result[idx] = expr[idx] -= ans[1];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
@@ -172,8 +172,8 @@ sint do_rect_test3 ( void )
   // Our result: 72, 40, 32, 32 (???)
   result[idx] = expr[idx] += ans[1];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
@@ -185,8 +185,8 @@ sint do_rect_test3 ( void )
   // Expected result: 64 / 8 = 8 && 32 / 8 = 4
   result[idx] = expr[idx] / ans[1];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
@@ -197,8 +197,8 @@ sint do_rect_test3 ( void )
   // Expected result: 64 * 8 = 512 && 32 * 8 = 256;
   result[idx] = expr[idx] * ans[1];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
@@ -209,8 +209,8 @@ sint do_rect_test3 ( void )
   // Expected result: 64 - 1 = 63 && 32 - 1 = 31;
   result[idx] = --expr[idx]; // ans[1];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
@@ -221,8 +221,8 @@ sint do_rect_test3 ( void )
   // Expected result: 64 - 8 = 56 && 32 - 8 = 24
   result[idx] = expr[idx] - ans[1];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
@@ -233,8 +233,8 @@ sint do_rect_test3 ( void )
   // Expected result: 64 += 1 = 65 && 32 += 1 = 33
   result[idx] = ++expr[idx]; //ans[1];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
@@ -245,8 +245,8 @@ sint do_rect_test3 ( void )
   // Expected result: 64 += 4 = 68 && 32 += 4 = 40
   result[idx] = expr[idx] += ans[2];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == IntRect::null ) return NOM_EXIT_FAILURE;
@@ -265,8 +265,8 @@ nom::sint do_point2_test1 ( void )
   Point2f testme2 ( -1, -1 );
 
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR(testme1);
-    NOM_DUMP_VAR(testme2);
+    NOM_DUMP(testme1);
+    NOM_DUMP(testme2);
   #endif
 
   if ( testme1 != Point2i::null ) return NOM_EXIT_FAILURE;
@@ -305,8 +305,8 @@ sint do_point2_test2 ( void )
   // Expected result: 64 / 2 = 32, 32 / 2 = 16
   result[idx] = expr[idx] /= ans[0];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
@@ -317,8 +317,8 @@ sint do_point2_test2 ( void )
   // Expected result: 64 *= 2 = 128 && 32 *= 2 = 64
   result[idx] = expr[idx] *= ans[0];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[1] == Point2i::null ) return NOM_EXIT_FAILURE;
@@ -329,8 +329,8 @@ sint do_point2_test2 ( void )
   // Expected result: 64 -= 8 = 56 && 32 -= 8 = 24
   result[idx] = expr[idx] -= ans[1];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
@@ -341,8 +341,8 @@ sint do_point2_test2 ( void )
   // Expected result: 64 += 8 = 72 && 32 += 8 = 40
   result[idx] = expr[idx] += ans[1];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
@@ -353,8 +353,8 @@ sint do_point2_test2 ( void )
   // Expected result: 64 / 8 = 8 && 32 / 8 = 4
   result[idx] = expr[idx] / ans[1];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
@@ -365,8 +365,8 @@ sint do_point2_test2 ( void )
   // Expected result: 64 * 8 = 512 && 32 * 8 = 256;
   result[idx] = expr[idx] * ans[1];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
@@ -377,8 +377,8 @@ sint do_point2_test2 ( void )
   // Expected result: 64 - 1 = 63 && 32 - 1 = 31;
   result[idx] = --expr[idx]; // ans[1];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
@@ -389,8 +389,8 @@ sint do_point2_test2 ( void )
   // Expected result: 64 - 8 = 56 && 32 - 8 = 24
   result[idx] = expr[idx] - ans[1];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
@@ -401,8 +401,8 @@ sint do_point2_test2 ( void )
   // Expected result: 64 += 1 = 65 && 32 += 1 = 33
   result[idx] = ++expr[idx]; //ans[1];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;
@@ -413,8 +413,8 @@ sint do_point2_test2 ( void )
   // Expected result: 64 += 4 = 68 && 32 += 4 = 40
   result[idx] = expr[idx] += ans[2];
   #if defined( NOM_DEBUG_TESTS )
-    NOM_DUMP_VAR( idx );
-    NOM_DUMP_VAR( result[idx] );
+    NOM_DUMP( idx );
+    NOM_DUMP( result[idx] );
   #endif
 
   if ( result[idx] == Point2i::null ) return NOM_EXIT_FAILURE;

@@ -137,7 +137,7 @@ int main ( int argc, char* argv[] )
   //std::cout << testme.get_int("World") << "\n";
   //std::cout << val.get_int("b00bs") << "\n";
 
-  //NOM_DUMP_VAR(testme.size());
+  //NOM_DUMP(testme.size());
   //for ( nom::uint idx = 0; idx < testme.size(); ++idx )
   //{
 /*
@@ -150,7 +150,7 @@ int main ( int argc, char* argv[] )
 
 /*
   Json::Value::Members members;
-  NOM_DUMP_VAR(root.size());
+  NOM_DUMP(root.size());
   std::vector<std::string> keys;
   for ( nom::uint idx = 0; idx < root.size(); ++idx )
   {

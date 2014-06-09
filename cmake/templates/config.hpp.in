@@ -88,11 +88,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 /// You may mix and match these flags however you wish.
 
-/// Pretty print C macros purely for convenience sake
-///
-/// \deprecated Use NOM_DUMP
-#define NOM_DUMP_VAR(var) NOM_DUMP(var)
-
 /// \brief Macros for quickly dumping a variable.
 #define NOM_DUMP(var) \
   ( std::cout << "In function: " << __func__ << " at " << nom::time() << #var << ": " << var << std::endl << std::endl )

@@ -66,7 +66,7 @@ int main ( int argc, char* argv[] )
   }
   atexit(nom::quit);
 
-  NOM_DUMP_VAR ( dev.getDeviceName() );
+  NOM_DUMP( dev.getDeviceName() );
 
   listener.setVolume ( MAX_VOLUME );
   bool ret = false;
@@ -98,7 +98,7 @@ int main ( int argc, char* argv[] )
 
   nom::uint32 duration = buffer.getDuration();
   float duration_seconds = duration / 1000.0f;
-NOM_DUMP_VAR ( duration_seconds );
+  NOM_DUMP( duration_seconds );
 
   loops.start();
 
@@ -132,7 +132,7 @@ NOM_DUMP_VAR ( duration_seconds );
   }
 
   loops.stop();
-NOM_DUMP_VAR ( loops.ticks() );
+  NOM_DUMP( loops.ticks() );
 
   //std::cout << "Sample Count: " << snd.getSampleCount() << std::endl;
   //std::cout << "Channel Count: " << snd.getChannelCount() << std::endl;

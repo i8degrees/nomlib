@@ -299,11 +299,11 @@ class App: public nom::SDLApp
       this->info_box[1].set_text( RESOURCE_INFO_BOX_TEXT_STRINGS[1], this->select_font(), this->select_font_size(), this->select_alignment() );
 
 // FIXME: should be 26 (sprite sheet width), but is 130 (total texture size)
-NOM_DUMP_VAR(this->sprite.size().w);
+NOM_DUMP(this->sprite.size().w);
       this->sprite.set_position ( nom::Point2i(this->info_box[0].position().x - 26, this->info_box[0].position().y) );
       this->ani_sprite.set_position ( nom::Point2i(this->info_box[0].position().x + this->info_box[0].size().w + 26, this->info_box[0].position().y) );
  // 16 is correct
-NOM_DUMP_VAR(this->sprite.size().h);
+NOM_DUMP(this->sprite.size().h);
 
       // FIXME: We need to finish the overhaul on our coordinates & rendering
       // subsystems in order to not need this statement

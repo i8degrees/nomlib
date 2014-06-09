@@ -48,7 +48,7 @@ set( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT on )
 
 # Build the GUI unit.
 # Dependencies: Graphics unit
-set( NOM_BUILD_GUI_UNIT off )
+set( NOM_BUILD_GUI_UNIT on )
 
 # Build the serializers unit.
 # Dependencies: Core unit, Property Tree unit

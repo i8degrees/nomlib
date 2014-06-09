@@ -26,9 +26,12 @@ set( NOM_BUILD_GAMEOFLIFE_EXAMPLE off )
 # DEPRECATED: this example should be removed by the time the branch feature/GUI
 # has been merged into the dev branch.
 set( NOM_BUILD_GUI_EXAMPLE off )
-set( NOM_BUILD_GUI_BUTTON_EXAMPLE off )
-set( NOM_BUILD_GUI_LISTBOX_EXAMPLE off )
-set( NOM_BUILD_GUI_MESSAGEBOX_EXAMPLE off )
+
+set( NOM_BUILD_GUI_BUTTON_EXAMPLE on )
+set( NOM_BUILD_GUI_LISTBOX_EXAMPLE on )
+set( NOM_BUILD_GUI_MESSAGEBOX_EXAMPLE on )
+
+# TODO: Needs to be split from examples/gui.cpp:
 set( NOM_BUILD_GUI_DATAVIEWLIST_EXAMPLE off )
 
 set( NOM_BUILD_SPRITE_SHEETS_EXAMPLE off )
@@ -165,8 +168,7 @@ if( NOT NOM_BUILD_MINI_UNIT )
     endif( NOM_BUILD_GUI_MESSAGEBOX_EXAMPLE )
 
     if( NOM_BUILD_GUI_DATAVIEWLIST_EXAMPLE )
-      # TODO: Needs to be split from examples/gui.cpp:
-      # add_executable( gui_dataviewlist "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/gui/gui_dataviewlist.cpp" )
+      add_executable( gui_dataviewlist "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/gui/gui_dataviewlist.cpp" )
     endif( NOM_BUILD_GUI_DATAVIEWLIST_EXAMPLE )
 
     # Copy GUI resources for examples

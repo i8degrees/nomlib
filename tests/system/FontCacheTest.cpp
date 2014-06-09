@@ -1,6 +1,3 @@
-#include <iostream>
-#include <string>
-
 #include "gtest/gtest.h"
 
 #include <nomlib/graphics.hpp>
@@ -8,8 +5,6 @@
 
 namespace nom {
 
-/// \note These unit tests target the non-typical usage of the FontCache class --
-/// the non-static variant.
 class FontCacheTest: public ::testing::Test
 {
   public:
@@ -24,17 +19,16 @@ class FontCacheTest: public ::testing::Test
     }
 
   protected:
-    Path p;
-    File fp;
-
-    // ResourceCache<IFont::shared_ptr> fonts_;
     ResourceCache<Font> fonts_;
 };
 
-/// \fixme This test is failing on WindowsOS (Unknown file error: SEH exception).
+/// \brief Non-static usage of fonts resource cache
 TEST_F( FontCacheTest, CoreAPI )
 {
-  p = Path( fp.resource_path( "org.i8degrees.nomlib" ) + p.native() + "fonts" );
+  File fp;
+  Path p;
+
+  p = fp.resource_path( "org.i8degrees.nomlib" ) + p.native() + "fonts";
 
   #if defined( NOM_PLATFORM_OSX )
     Path sys( "/System/Library/Fonts" );
@@ -43,7 +37,6 @@ TEST_F( FontCacheTest, CoreAPI )
   #elif defined( NOM_PLATFORM_WINDOWS )
     Path sys( "C:\\Windows\\Fonts" );
     ASSERT_TRUE( this->fonts_.append_resource( ResourceFile( "Arial", sys.prepend("Arial.ttf"), ResourceFile::Type::TrueTypeFont ) ) );
-    ASSERT_TRUE( this->fonts_.append_resource( ResourceFile( "TimesNewRoman", sys.prepend("times.ttf"), ResourceFile::Type::TrueTypeFont ) ) );
   #endif
 
   ASSERT_TRUE( this->fonts_.append_resource( ResourceFile( "LiberationSans-Regular", p.prepend("LiberationSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) ) );
@@ -75,6 +68,16 @@ TEST_F( FontCacheTest, CoreAPI )
   ASSERT_FALSE( res.exists() );
   EXPECT_EQ( "", res.name() );
 
+  // NOTE: WindowsOS-specific error "unknown file : error : SEH exception with
+  // code 0xc0000005 thrown in the test body." occurs here if the font cache
+  // size does not match the expected value precisely.
+  //
+  // References:
+  //
+  // 1. https://www.assembla.com/spaces/OpenSurgSim/tickets/13#/activity/ticket:
+  // 2. http://msdn.microsoft.com/library/vstudio/swezty51
+  // 3. See also: tests/CMakeLists.txt FIXME note regarding err when using 'test'
+  // target under Windows from the command line.
   EXPECT_EQ( 5, this->fonts_.size() );
 
   this->fonts_.clear();
@@ -82,7 +85,7 @@ TEST_F( FontCacheTest, CoreAPI )
   EXPECT_EQ( 0, this->fonts_.size() );
 }
 
-/// \fixme Resources are not initializing?
+/// \brief Global (static) usage of fonts resource cache
 TEST_F( FontCacheTest, StaticInterfaceAPI )
 {
   nom::uint32 window_flags = SDL_WINDOW_HIDDEN;

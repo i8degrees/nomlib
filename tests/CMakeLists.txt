@@ -8,6 +8,31 @@
 # fixture names, in order to get 'make test' to recognize the modified test
 # code.
 #
+# NOTE: To display a unit test's full debugging output (NOM_LOG_ERR, NOM_DUMP
+# and friends), run the test's executable directly. This debugging output will
+# not be shown when using the 'test' target -- i.e.: make target.
+#
+# FIXME: Under WindowsOS, I get strange errors anytime a unit test fails only
+# when running 'msbuild /t:build build\RUN_TESTS.vcxproj' from the command line:
+#
+# C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppCommon.targets(132,5): error MSB3073: The command "setlocal\r [C:\Users\jeff\Projects\nomlib.git\build\RUN_TESTS.vcxproj]
+# C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppCommon.targets(132,5): error MSB3073: "C:\Program Files (x86)\CMake 2.8\bin\ctest.exe" --force-new-ctest-process -C Debug\r [C:\Users\jeff\Projects\nomlib.git\build\RUN_TESTS.vcxproj]
+# C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppCommon.targets(132,5): error MSB3073: if %errorlevel% neq 0 goto :cmEnd\r [C:\Users\jeff\Projects\nomlib.git\build\RUN_TESTS.vcxproj]
+# C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppCommon.targets(132,5): error MSB3073: :cmEnd\r [C:\Users\jeff\Projects\nomlib.git\build\RUN_TESTS.vcxproj]
+# C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppCommon.targets(132,5): error MSB3073: endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone\r [C:\Users\jeff\Projects\nomlib.git\build\RUN_TESTS.vcxproj]
+# C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppCommon.targets(132,5): error MSB3073: :cmErrorLevel\r [C:\Users\jeff\Projects\nomlib.git\build\RUN_TESTS.vcxproj]
+# C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppCommon.targets(132,5): error MSB3073: exit /b %1\r [C:\Users\jeff\Projects\nomlib.git\build\RUN_TESTS.vcxproj]
+# C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppCommon.targets(132,5): error MSB3073: :cmDone\r [C:\Users\jeff\Projects\nomlib.git\build\RUN_TESTS.vcxproj]
+# C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppCommon.targets(132,5): error MSB3073: if %errorlevel% neq 0 goto :VCEnd\r [C:\Users\jeff\Projects\nomlib.git\build\RUN_TESTS.vcxproj]
+# C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppCommon.targets(132,5): error MSB3073: :VCEnd" exited with code 8. [C:\Users\jeff\Projects\nomlib.git\build\RUN_TESTS.vcxproj]
+#
+# It appears to work as expected when RUN_TESTS.vcxproj is built from within
+# MS Visual Studio Express.
+#
+# The current "workaround" is to execute the test's executable directly.
+#
+# References:
+# 1. https://code.google.com/p/urho3d/issues/detail?id=30
 
 if( NOM_BUILD_PTREE_UNIT )
   set( NOM_BUILD_PTREE_TESTS off )

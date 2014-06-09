@@ -81,7 +81,7 @@ class ResourceCache
     ///
     /// \returns The ResourceFile object reference on success, or
     /// ResourceFile::null on failure.
-    const ResourceFile& find_resource( const std::string& key )
+    const ResourceFile& find_resource( const std::string& key ) const
     {
       auto res = this->resources_.find( ResourceFile( key ) );
 

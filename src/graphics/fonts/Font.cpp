@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/fonts/Font.hpp"
 
+// #define NOM_DEBUG_OUTPUT_FONT_FACE_ON_SHARE
+
 namespace nom {
 
 Font::Font( void ) :
@@ -231,20 +233,20 @@ void Font::share( void )
       // Debugging aids
       if( this->font_->type() == IFont::FontType::BitmapFont )
       {
-        #if defined( NOM_DEBUG_FONT_SHARING )
-          NOM_DUMP("font_face: ", this->font_->metrics().name + " (BitmapFont)" );
+        #if defined( NOM_DEBUG_OUTPUT_FONT_FACE_ON_SHARE )
+          NOM_DUMP_VAR("font_face: ", this->font_->metrics().name + " (BitmapFont)" );
         #endif
       }
       else if( this->font_->type() == IFont::FontType::TrueTypeFont )
       {
-        #if defined( NOM_DEBUG_FONT_SHARING )
-          NOM_DUMP_EXT("font_face: ", this->font_->metrics().name + " (TrueTypeFont)" );
+        #if defined( NOM_DEBUG_OUTPUT_FONT_FACE_ON_SHARE )
+          NOM_DUMP_VAR("font_face: ", this->font_->metrics().name + " (TrueTypeFont)" );
         #endif
       }
       else
       {
-        #if defined( NOM_DEBUG_FONT_SHARING )
-          NOM_DUMP_EXT("font_face: ", this->font_->metrics().name + " (Undefined)" );
+        #if defined( NOM_DEBUG_OUTPUT_FONT_FACE_ON_SHARE )
+          NOM_DUMP_VAR("font_face: ", this->font_->metrics().name + " (Undefined)" );
         #endif
       }
     } // end if sharable

@@ -36,8 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/fonts/BitmapFont.hpp"
 #include "nomlib/graphics/fonts/TrueTypeFont.hpp"
 
-// #define NOM_DEBUG_FONT_SHARING
-
 namespace nom {
 
 /// \brief Font interface wrapper for nom::IFont derived objects.

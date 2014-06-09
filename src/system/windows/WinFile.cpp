@@ -28,11 +28,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/windows/WinFile.hpp"
 
-// Private headers
+// Private headers (third-party libs)
 #include <windows.h>
 #include <shlobj.h>
 #include <tchar.h>
 #include <strsafe.h>
+
+// Private headers
+#include "nomlib/system/Path.hpp"
 
 namespace nom {
 
@@ -98,16 +101,16 @@ const std::string WinFile::path( const std::string& dir_path )
 {
   Path p; // Just to be safe, we'll let nom::Path determine our path separator!
 
-  uint32 pos = dir_path.find_last_of ( p.native(), PATH_MAX );
+  int32 pos = dir_path.find_last_of( p.native(), PATH_MAX );
 
   // If no matches are found, this means the file path given is actually a base
   // file name path, without any directory path at all.
   // See also 'man 3 basename'
-  if ( pos == std::string::npos ) return ".";
+  if( pos == std::string::npos ) return ".";
 
   // A match was found -- return only the directory path leading up to the
   // file name path, without a a trailing path separator.
-  return dir_path.substr ( 0, pos );
+  return dir_path.substr( 0, pos );
 }
 
 const std::string WinFile::currentPath ( void )

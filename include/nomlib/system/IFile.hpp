@@ -60,12 +60,10 @@ class IFile
     /// Uses stat(2) to determine if the input file exists
     virtual bool exists ( const std::string& file_path ) = 0;
 
-    /// dirname(3) wrapper
+    /// \brief Extract the directory portion of a pathname.
     ///
-    /// Extract the directory portion of a pathname
-    ///
-    /// \remarks dir_path is arbitrarily limited to 1024 characters.
-    virtual const std::string path ( const std::string& dir_path ) = 0;
+    /// \see nom::UnixFile::path, nom::WinFile::path.
+    virtual const std::string path( const std::string& dir_path ) = 0;
 
     /// getcwd(3) wrapper
     ///

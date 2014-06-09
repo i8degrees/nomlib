@@ -42,11 +42,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/system/IFile.hpp"
 
-#if defined( NOM_PLATFORM_OSX )
-  #include <CoreServices/CoreServices.h>
-  #include <CoreFoundation/CoreFoundation.h>
-#endif
-
 namespace nom {
 
 /// \brief Platform-specific interface for file based access in Unix
@@ -78,10 +73,16 @@ class UnixFile: public IFile
     /// \remarks See nom::IFile::exists
     bool exists ( const std::string& file_path );
 
-    /// Implements nom::IFile::path
+    /// \brief Extract the directory portion of a pathname.
     ///
-    /// \remarks See nom::IFile::path
-    const std::string path ( const std::string& dir_path );
+    /// \remarks Emulates POSIX dirname() function; see man (3) dirname.
+    ///
+    /// \todo Rename method to dirname?
+    ///
+    /// \note dir_path is arbitrarily limited to 1024 characters.
+    ///
+    /// Implements nom::IFile::path.
+    const std::string path( const std::string& dir_path );
 
     /// Implements nom::IFile::currentPath
     ///
@@ -159,4 +160,5 @@ class UnixFile: public IFile
 #endif // include guard
 
 /// \class nom::UnixFile
+/// \ingroup system
 ///

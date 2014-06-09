@@ -68,8 +68,10 @@ class File
     /// Re-implements nom::IFile::exists
     bool exists ( const std::string& file_path );
 
-    /// Re-implements nom::IFile::path
-    const std::string path ( const std::string& dir_path );
+    /// \brief Platform-specific implementation of IFile::path.
+    ///
+    /// \see UnixFile::path, WinFile::path.
+    const std::string path( const std::string& dir_path );
 
     /// Re-implements nom::IFile::currentPath
     const std::string currentPath ( void );

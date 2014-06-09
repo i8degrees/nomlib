@@ -38,7 +38,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <direct.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/Path.hpp"
 #include "nomlib/system/IFile.hpp"
 
 namespace nom {
@@ -73,14 +72,16 @@ class WinFile: public IFile
     /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/aa365522(v=vs.85).aspx
     bool exists( const std::string& file_path );
 
-    /// Implements nom::IFile::path
+    /// \brief Extract the directory portion of a pathname.
     ///
-    /// Emulates POSIX dirname() function; see man (3) dirname.
+    /// \remarks Emulates POSIX dirname() function; see man (3) dirname.
     ///
-    /// \todo This should probably be renamed to dirname?
+    /// \todo Rename method to dirname?
     ///
-    /// Implements nom::IFile::path
-    const std::string path ( const std::string& dir_path );
+    /// \note dir_path is arbitrarily limited to 1024 characters.
+    ///
+    /// Implements nom::IFile::path.
+    const std::string path( const std::string& dir_path );
 
     /// Implements nom::IFile::currentPath
     ///

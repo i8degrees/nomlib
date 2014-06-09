@@ -61,7 +61,7 @@ bool File::exists ( const std::string& file_path )
   return this->file->exists( file_path );
 }
 
-const std::string File::path ( const std::string& dir_path )
+const std::string File::path( const std::string& dir_path )
 {
   return this->file->path ( dir_path );
 }

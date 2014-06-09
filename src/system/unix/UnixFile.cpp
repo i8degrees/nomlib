@@ -28,11 +28,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/unix/UnixFile.hpp"
 
+// Private headers (third-party libs)
+#if defined( NOM_PLATFORM_OSX )
+  #include <CoreServices/CoreServices.h>
+  #include <CoreFoundation/CoreFoundation.h>
+#endif
+
+// Private headers
+#include "nomlib/system/Path.hpp"
+
 namespace nom {
 
-UnixFile::UnixFile ( void ) {}
+UnixFile::UnixFile( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
-UnixFile::~UnixFile ( void ) {}
+UnixFile::~UnixFile( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
 const std::string UnixFile::extension ( const std::string& file )
 {
@@ -86,18 +101,34 @@ bool UnixFile::exists ( const std::string& file_path )
   return false;
 }
 
+// const std::string UnixFile::path ( const std::string& dir_path )
+// {
+//   // We must do this string conversion -- from a std::string to a char
+//   // pointer -- because the c_str method returns a const char pointer, which
+//   // cannot be used for the dirname function, as this call modifies the contents
+//   // of the passed variable.
+
+//   char path[PATH_MAX];
+
+//   std::strcpy ( path, dir_path.c_str() );
+
+//   return dirname ( path );
+// }
+
 const std::string UnixFile::path ( const std::string& dir_path )
 {
-  // We must do this string conversion -- from a std::string to a char
-  // pointer -- because the c_str method returns a const char pointer, which
-  // cannot be used for the dirname function, as this call modifies the contents
-  // of the passed variable.
+  Path p; // Just to be safe, we'll let nom::Path determine our path separator!
 
-  char path[PATH_MAX];
+  int32 pos = dir_path.find_last_of( p.native(), PATH_MAX );
 
-  std::strcpy ( path, dir_path.c_str() );
+  // If no matches are found, this means the file path given is actually a base
+  // file name path, without any directory path at all.
+  // See also 'man 3 basename'
+  if( pos == std::string::npos ) return ".";
 
-  return dirname ( path );
+  // A match was found -- return only the directory path leading up to the
+  // file name path, without a a trailing path separator.
+  return dir_path.substr( 0, pos );
 }
 
 const std::string UnixFile::currentPath ( void )

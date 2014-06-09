@@ -189,7 +189,13 @@ bool init ( int argc, char* argv[] )
   nom::File dir;
   std::string pwd = "\0";
 
-  pwd = dir.path ( argv[0] );
+  pwd = dir.path( argv[0] );
+
+  // We might want to consider using the following instead, so that we may not
+  // need to depend on program arguments, which is a major platform-specific
+  // implementation detail.
+  //
+  // pwd = dir.currentPath();
 
   if ( pwd.length() < 1 ) return false;
 

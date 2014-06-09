@@ -274,10 +274,10 @@ inline Rect<T> operator + ( const Rect<T>& lhs, const Rect<T>& rhs )
 template <typename T>
 inline Rect<T> operator ++ ( const Rect<T>& rhs )
 {
-  return Rect<T>  ( ++rhs.x,
-                    ++rhs.y,
-                    ++rhs.w,
-                    ++rhs.h
+  return Rect<T>  ( rhs.x + 1,
+                    rhs.y + 1,
+                    rhs.w + 1,
+                    rhs.h + 1
                   );
 }
 
@@ -320,10 +320,10 @@ inline Rect<T> operator -( const Rect<T>& lhs, const Rect<T>& rhs )
 template <typename T>
 inline Rect<T> operator -- ( const Rect<T>& rhs )
 {
-  return Rect<T>  ( --rhs.x,
-                    --rhs.y,
-                    --rhs.w,
-                    --rhs.h
+  return Rect<T>  ( rhs.x - 1,
+                    rhs.y - 1,
+                    rhs.w - 1,
+                    rhs.h - 1
                   );
 }
 

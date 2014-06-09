@@ -575,6 +575,8 @@ TEST_F( JsonCppSerializerTest, FileIO )
   ASSERT_TRUE( in == o ) << in;
 }
 
+/// \fixme Unit test fails if we do not execute from the path of the program
+/// executable (where icon.png is expected to be found).
 TEST_F( JsonCppSerializerTest, ExtraIO )
 {
   Value in;

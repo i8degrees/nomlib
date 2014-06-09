@@ -34,34 +34,39 @@
 # References:
 # 1. https://code.google.com/p/urho3d/issues/detail?id=30
 
-if( NOM_BUILD_PTREE_UNIT )
-  set( NOM_BUILD_PTREE_TESTS off )
-endif( NOM_BUILD_PTREE_UNIT )
+set( NOM_BUILD_PTREE_TESTS off )
+set( NOM_BUILD_PTREE_JSON_TESTS off )
+set( NOM_BUILD_PTREE_XML_TESTS off )
 
-if( NOM_BUILD_JSON_UNIT )
-  set( NOM_BUILD_PTREE_JSON_TESTS off )
-endif( NOM_BUILD_JSON_UNIT )
+set( NOM_BUILD_RENDERWINDOW_TESTS on )
+set( NOM_BUILD_MATH_TESTS on )
+set( NOM_BUILD_FILE_TESTS on )
 
-if( NOM_BUILD_XML_UNIT )
-  set( NOM_BUILD_PTREE_XML_TESTS off )
-endif( NOM_BUILD_XML_UNIT )
+set( NOM_BUILD_FONT_CACHE_TESTS on )
+set( NOM_BUILD_COLOR_DB_TESTS on )
 
-if( NOM_BUILD_SYSTEM_UNIT )
-  set( NOM_BUILD_FONT_CACHE_TESTS on )
-  set( NOM_BUILD_COLOR_DB_TESTS on )
-endif( NOM_BUILD_SYSTEM_UNIT )
-
-set( NOM_BUILD_JSON_CONFIG_FILE_TESTS off )
-
-set( NOM_BUILD_GUI_UI_ITEM_CONTAINER_TESTS on )
-set( NOM_BUILD_GUI_UI_EVENT_DISPATCHER_TESTS on )
+set( NOM_BUILD_GUI_UI_ITEM_CONTAINER_TESTS off )
+set( NOM_BUILD_GUI_UI_EVENT_DISPATCHER_TESTS off )
 set( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS off )
 set( NOM_BUILD_GUI_CUSTOM_UI_LAYOUT_TESTS off )
 
-# Path under Windows should resolve to: build/tests/Debug
-set ( TESTS_DEPS_INSTALL_PEFIX
-      "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}"
-    )
+set( NOM_BUILD_JSON_CONFIG_FILE_TESTS on )
+
+if( PLATFORM_WINDOWS )
+
+  # Path under Windows should resolve to: build/tests/Debug
+  set ( TESTS_DEPS_INSTALL_PEFIX
+        "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}"
+      )
+
+else( NOT PLATFORM_WINDOWS )
+
+  # Path should resolve to a directory: build/tests
+  set ( TESTS_DEPS_INSTALL_PEFIX
+        "${CMAKE_CURRENT_BINARY_DIR}"
+      )
+
+endif( PLATFORM_WINDOWS )
 
 # NOTE: we set GTEST_ROOT in the dependencies section of our build script.
 find_package( GTest REQUIRED )
@@ -169,8 +174,31 @@ if( NOM_BUILD_PTREE_XML_TESTS )
 
 endif( NOM_BUILD_PTREE_XML_TESTS )
 
-if( NOM_BUILD_SYSTEM_FONT_CACHE_TESTS )
+# Copy JSON resources for unit tests only if necessary (built).
+if( NOM_BUILD_PTREE_JSON_TESTS )
+  install ( DIRECTORY
+            "${NOM_EXAMPLES_RESOURCES_DIR}/json"
+            DESTINATION
+            # "${CMAKE_CURRENT_BINARY_DIR}/Resources"
+            "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
+            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+          )
+endif( NOM_BUILD_PTREE_JSON_TESTS )
+
+# Copy XML resources for unit tests only if necessary (built).
+if( NOM_BUILD_PTREE_XML_TESTS )
+  install ( DIRECTORY
+            "${NOM_EXAMPLES_RESOURCES_DIR}/xml"
+            DESTINATION
+            # "${CMAKE_CURRENT_BINARY_DIR}/Resources"
+            "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
+            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+          )
+endif( NOM_BUILD_PTREE_XML_TESTS )
+
+if( NOM_BUILD_FONT_CACHE_TESTS )
   if( NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+
     add_executable  (
                       font_cache
                       ${NOM_TESTS_DIR}/system/FontCacheTest.cpp
@@ -187,31 +215,63 @@ if( NOM_BUILD_SYSTEM_FONT_CACHE_TESTS )
                       "FontCacheTest"
                       ${NOM_TESTS_DIR}/system/FontCacheTest.cpp
                       )
+
+    # FIXME:
+    if( PLATFORM_WINDOWS )
+      install (
+                DIRECTORY
+                "${NOMLIB_FONTS}" # Resources/fonts
+                DESTINATION
+                "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
+                PATTERN ".*" EXCLUDE # Just say no to dotfiles
+              )
+    endif( PLATFORM_WINDOWS )
+
   endif( NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
-endif( NOM_BUILD_SYSTEM_FONT_CACHE_TESTS )
+endif( NOM_BUILD_FONT_CACHE_TESTS )
 
-if( NOM_BUILD_SYSTEM_COLOR_DB_TESTS )
+if( NOM_BUILD_COLOR_DB_TESTS )
+  if( NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+    add_executable  (
+                      color_database
+                      ${NOM_TESTS_DIR}/system/ColorDatabaseTest.cpp
+                    )
 
-if( NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
-  add_executable  (
-                    color_database
-                    ${NOM_TESTS_DIR}/system/ColorDatabaseTest.cpp
-                  )
+    target_link_libraries (
+                            color_database
+                            ${GTEST_BOTH_LIBRARIES}
+                            ${PROJECT_NAME} # nomlib
+                          )
 
-  target_link_libraries (
-                          color_database
-                          ${GTEST_BOTH_LIBRARIES}
-                          ${PROJECT_NAME} # nomlib
-                        )
+    GTEST_ADD_TESTS (
+                      color_database
+                      "ColorDatabaseTest"
+                      ${NOM_TESTS_DIR}/system/ColorDatabaseTest.cpp
+                    )
+  endif( NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+endif( NOM_BUILD_COLOR_DB_TESTS )
 
-  GTEST_ADD_TESTS (
-                    color_database
-                    "ColorDatabaseTest"
-                    ${NOM_TESTS_DIR}/system/ColorDatabaseTest.cpp
-                  )
-endif( NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+if( NOM_BUILD_FILE_TESTS )
+  if( NOM_BUILD_SYSTEM_UNIT )
 
-endif( NOM_BUILD_SYSTEM_COLOR_DB_TESTS )
+    add_executable  (
+                      file_interface
+                      ${NOM_TESTS_DIR}/system/FileInterfaceTest.cpp
+                    )
+
+    target_link_libraries (
+                            file_interface
+                            ${GTEST_BOTH_LIBRARIES}
+                            ${PROJECT_NAME} # nomlib
+                          )
+
+    GTEST_ADD_TESTS (
+                      file_interface
+                      "FileInterfaceTest"
+                      ${NOM_TESTS_DIR}/system/FileInterfaceTest.cpp
+                    )
+  endif( NOM_BUILD_SYSTEM_UNIT )
+endif( NOM_BUILD_FILE_TESTS )
 
 if( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
 
@@ -300,6 +360,13 @@ if( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS )
                     ${NOM_TESTS_DIR}/gui/VBoxLayoutTest.cpp
                   )
 
+  # install ( DIRECTORY
+  #           "${NOM_TESTS_RESOURCES_DIR}/gui"
+  #           DESTINATION
+  #           "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
+  #           PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+  #         )
+
 endif( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS )
 
 if( NOM_BUILD_GUI_CUSTOM_UI_LAYOUT_TESTS )
@@ -348,45 +415,71 @@ if( NOM_BUILD_TEMPLATES_UNIT )
 
 endif( NOM_BUILD_TEMPLATES_UNIT )
 
-if( NOM_BUILD_JSON_UNIT )
-  install ( DIRECTORY
-            "${NOM_EXAMPLES_RESOURCES_DIR}/json"
-            DESTINATION
-            "${CMAKE_CURRENT_BINARY_DIR}/Resources"
-            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-          )
-endif( NOM_BUILD_JSON_UNIT )
-
-if( NOM_BUILD_XML_UNIT )
-  install ( DIRECTORY
-            "${NOM_EXAMPLES_RESOURCES_DIR}/xml"
-            DESTINATION
-            "${CMAKE_CURRENT_BINARY_DIR}/Resources"
-            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-          )
-endif( NOM_BUILD_XML_UNIT )
-
 # JsonConfigFileTest
 
 if( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
   install ( DIRECTORY
             "${NOM_TESTS_RESOURCES_DIR}/json"
             DESTINATION
-            "${CMAKE_CURRENT_BINARY_DIR}/Resources"
+            # "${CMAKE_CURRENT_BINARY_DIR}/Resources"
+            "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
             PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
           )
 endif( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
 
-# VBoxLayoutTest
+if( NOM_BUILD_RENDERWINDOW_TESTS )
 
-if( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS )
-  install ( DIRECTORY
-            "${NOM_TESTS_RESOURCES_DIR}/gui"
-            DESTINATION
-            "${CMAKE_CURRENT_BINARY_DIR}/Resources"
-            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-          )
-endif( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS )
+  if( NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+    add_executable  (
+                      render_window
+                      ${NOM_TESTS_DIR}/graphics/RenderWindowTest.cpp
+                    )
+
+    target_link_libraries (
+                            render_window
+                            ${GTEST_BOTH_LIBRARIES}
+                            ${PROJECT_NAME} # nomlib
+                          )
+
+    GTEST_ADD_TESTS (
+                      render_window
+                      "RenderWindowTest"
+                      ${NOM_TESTS_DIR}/graphics/RenderWindowTest.cpp
+                    )
+
+    # Copy nomlib's window icon resource.
+    install ( FILES
+              "${PROJECT_SOURCE_DIR}/${NOMLIB_RESOURCES_DIR}/icon.png"
+              DESTINATION
+              "${TESTS_DEPS_INSTALL_PEFIX}"
+            )
+
+  endif( NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+
+endif( NOM_BUILD_RENDERWINDOW_TESTS )
+
+if( NOM_BUILD_MATH_TESTS )
+
+  if( NOM_BUILD_MATH_UNIT )
+    add_executable  (
+                      math
+                      ${NOM_TESTS_DIR}/math/MathTest.cpp
+                    )
+
+    target_link_libraries (
+                            math
+                            ${GTEST_BOTH_LIBRARIES}
+                            ${PROJECT_NAME} # nomlib
+                          )
+
+    GTEST_ADD_TESTS (
+                      math
+                      "MathTest"
+                      ${NOM_TESTS_DIR}/math/MathTest.cpp
+                    )
+  endif( NOM_BUILD_MATH_UNIT )
+
+endif( NOM_BUILD_MATH_TESTS )
 
 # Install library dependencies into tests output directory so we can always
 # execute the binaries with the proper dependency versions.
@@ -397,36 +490,10 @@ if ( PLATFORM_WINDOWS )
             "${SDL2_TTF_LIBRARY_DIR}"
             "${OPENAL_LIBRARY_DIR}"
             "${LIBSNDFILE_LIBRARY_DIR}"
-            ${MSVCPP_LIBRARY_REDIST}
+            "${MSVCPP_LIBRARY_REDIST}"
             "${GTEST_ROOT}/lib/"        # GTest re-dist libs
             DESTINATION
             "${TESTS_DEPS_INSTALL_PEFIX}"
             FILES_MATCHING PATTERN "*.dll"
           )
-
-  if( NOM_BUILD_FONT_CACHE_TESTS )
-
-    # FontCacheTest unit test
-    install (
-              DIRECTORY
-              "${NOMLIB_FONTS}" # Resources/fonts
-              DESTINATION
-              "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
-              PATTERN ".*" EXCLUDE # Just say no to dotfiles
-            )
-
-  endif( NOM_BUILD_FONT_CACHE_TESTS )
-
-  if( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS )
-
-    # VBoxLayoutTest
-    install ( DIRECTORY
-              "${NOM_TESTS_RESOURCES_DIR}/gui"
-              DESTINATION
-              "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
-              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-            )
-
-  endif( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS )
-
 endif ( PLATFORM_WINDOWS )

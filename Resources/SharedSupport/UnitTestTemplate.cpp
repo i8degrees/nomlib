@@ -40,12 +40,22 @@ class Template: public ::testing::Test
   public:
     Template( void )
     {
-      // ...
+      //
     }
 
     ~Template( void )
     {
-      // ...
+      //
+    }
+
+    virtual void SetUp( void )
+    {
+      //
+    }
+
+    virtual void TearDown( void )
+    {
+      //
     }
 
   protected:

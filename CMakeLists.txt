@@ -23,6 +23,11 @@ option ( DEBUG_TRACE "Build with trace logging of object construction & destruct
 option ( EXAMPLES "Build nomlib usage examples" off )
 option( NOM_BUILD_TESTS "Build unit tests" off )
 
+# Copy the generated documentation to the final distribution image; the logic
+# differs depending on the type of "image" we are building (OS X framework
+# bundle, source tar-ball and so forth).
+set( NOM_INSTALL_GENERATED_DOCS off )
+
 # Build a minimal core library. This option is particularly useful for when
 # you wish to test out new CMake functionality and thus must endure many
 # recompiles of the project!.
@@ -597,22 +602,31 @@ install ( FILES
           DESTINATION "${INSTALL_DOCS_PATH}"
         )
 
-# Install the optionally generated HTML documentation
-install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
-          DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
-          OPTIONAL
-          PATTERN ".*" EXCLUDE # do not include dotfiles
-        )
+# Copy the generated documentation to the final distribution image
+if( NOM_INSTALL_GENERATED_DOCS )
 
-# Install the generated man page documentation if we are not building an OS X
-# framework bundle.
-if( NOT FRAMEWORK )
-  install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/man/man3
-            DESTINATION "${INSTALL_MAN_PAGES_PATH}"
+  # Install the optionally generated HTML documentation
+  install (
+            DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
+            # Should resolve alike: nomlib.framework/Resources/Documentation
+            DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
             OPTIONAL
             PATTERN ".*" EXCLUDE # do not include dotfiles
           )
-endif( NOT FRAMEWORK )
+
+  # Install the generated man page documentation if we are not building an OS X
+  # framework bundle (POSIX friendly).
+  if( NOT FRAMEWORK )
+
+    install (
+              DIRECTORY ${PROJECT_BINARY_DIR}/docs/man/man3
+              DESTINATION "${INSTALL_MAN_PAGES_PATH}"
+              OPTIONAL
+              PATTERN ".*" EXCLUDE # do not include dotfiles
+            )
+
+  endif( NOT FRAMEWORK )
+endif( NOM_INSTALL_GENERATED_DOCS )
 
 if ( PLATFORM_LINUX )
   install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")") # FIXME (prettify)

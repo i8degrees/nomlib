@@ -244,3 +244,4 @@ class Font
 /// \see http://archive.today/20121222041326/cdumez.blogspot.tw/2011/03/implicit-explicit-data-sharing-with-qt.html
 /// \see http://www.gotw.ca/publications/optimizations.htm
 /// \see http://seanmiddleditch.com/journal/2014/01/dangers-of-stdshared_ptr/
+/// \see Inspired by http://docs.wxwidgets.org/trunk/classwx_font_list.html

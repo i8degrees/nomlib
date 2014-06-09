@@ -38,6 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Container for accessing colors by name (string)
+///
+/// \see Inspired by http://docs.wxwidgets.org/trunk/classwx_colour_database.html
 class ColorDatabase
 {
   public:

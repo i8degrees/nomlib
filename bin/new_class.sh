@@ -5,6 +5,19 @@
 # NOTE: This script should be ran from the project's root directory, i.e.:
 #       ~/Projects/nomlib.git/
 #
+#   Usage example:
+#
+# $ cd ~/Projects/nomlib.git
+#
+# $ # Valid syntax:
+# $ bin/new_class.sh gui NewFancyDangledWidgetContainer
+#
+# $ # This is also valid:
+# $ bin/new_class.sh graphics/fonts NewFancyDangledFontType
+#
+# $ # Not valid syntax:
+# $ bin/new_class.sh system2 NewFancyDangledBuildUnit
+#
 
 # PROJECT_SOURCE_DIR/include/nomlib
 HEADER_INSTALL_PREFIX="include/nomlib/"
@@ -18,9 +31,9 @@ HEADER_TEMPLATE_PATH="Resources/SharedSupport/Template.hpp"
 # PROJECT_SOURCE_DIR/Resources/SharedSupport/Template.cpp
 SOURCE_TEMPLATE_PATH="Resources/SharedSupport/Template.cpp"
 
-# cp executable path to use
-CP_BIN=$(which cp)  # /usr/local/bin/cp
-CP_ARGS="-av"       # GNU CP
+# Helper script / executable to use
+CP_BIN=$(which cp)  # /bin/cp (BSD cp)
+CP_ARGS="-av"
 
 # Destination filing directory.
 DEST_GROUP=$1

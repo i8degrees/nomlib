@@ -67,11 +67,12 @@ enum SystemFontType
 /// \remarks This class interface depends on initialization of the font cache --
 /// see the nom::enumerate_fonts function.
 ///
-/// \note Inspired by wxSystemSettings.
-///
 /// \note SystemFonts::initialize and nom::enumerate_fonts *must* have been
 /// called before using this interface. Normally, this is done for us, through
 /// nom::init or SDLApp::initialize.
+///
+/// \see Inspired by [wxSystemSettings](http://docs.wxwidgets.org/trunk/classwx_system_settings.html),
+/// [wxSystemSettings enumerations](http://docs.wxwidgets.org/trunk/settings_8h.html)
 class PlatformSettings
 {
   public:

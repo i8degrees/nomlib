@@ -36,12 +36,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-  /// \brief Class interface for accessing global font resources
+/// \brief Class interface for accessing global font resources
 ///
 /// \note A nom::RenderWindow must be initialized before the resource
 /// loading method call can be used -- nom::FontCache::load_resource.
 ///
 /// \see nom::PlatformSettings, nom::ResourceCache.
+///
+/// \see Inspired by [wxSystemSettings](http://docs.wxwidgets.org/trunk/classwx_system_settings.html),
+/// [wxFontList](http://docs.wxwidgets.org/trunk/classwx_font_list.html)
 class SystemFonts
 {
   public:
@@ -82,6 +85,7 @@ class ColorDatabase;
 /// \brief Class interface for accessing global color resources
 ///
 /// \see nom::PlatformSettings, nom::ColorDatabase.
+/// \see Inspired by http://docs.wxwidgets.org/trunk/classwx_system_settings.html
 class SystemColors
 {
   public:

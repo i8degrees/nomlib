@@ -258,7 +258,8 @@ bool TrueTypeFont::load( const std::string& filename )
 
   if ( this->valid() == false )
   {
-    NOM_LOG_ERR ( NOM, "Could not load TTF file: " + filename );
+    NOM_LOG_ERR( NOM, "Could not load TTF file: " + filename );
+    NOM_LOG_ERR( NOM, TTF_GetError() );
     return false;
   }
 

@@ -152,7 +152,7 @@ class App: public nom::SDLApp
         {
           this->cursor.set_system_cursor( NOM_SCAST( nom::Cursor::Type, this->system_cursor_ ) );
 
-          NOM_DUMP( "system_cursor_id: ", this->cursor.system_cursor() );
+          NOM_DUMP_VAR( "system_cursor_id: ", this->cursor.system_cursor() );
 
           this->update_system_cursor_ = false;
         }
@@ -161,8 +161,8 @@ class App: public nom::SDLApp
         {
           mouse = this->cursor.mouse_state();
 
-          NOM_DUMP( "pos.x: ", mouse.pos.x );
-          NOM_DUMP( "pos.y: ", mouse.pos.y );
+          NOM_DUMP_VAR( "pos.x: ", mouse.pos.x );
+          NOM_DUMP_VAR( "pos.y: ", mouse.pos.y );
         }
 
       } // while app_state is true (running)

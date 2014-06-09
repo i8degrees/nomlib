@@ -35,9 +35,10 @@ nom::int32 main( nom::int32 argc, char* argv[] )
   pos.x = 25;
   pos.y = 25;
 
-  NOM_DUMP();
   NOM_DUMP( pos );
-  NOM_DUMP( "pos: ", pos );
+
+  NOM_DUMP_VAR();
+  NOM_DUMP_VAR( "pos: ", pos );
 
   NOM_LOG_TRACE( NOM );
   // NOM_LOG_TRACE( NOM, "func");

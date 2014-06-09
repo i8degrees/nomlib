@@ -55,8 +55,17 @@ class RenderWindow: public Renderer
     typedef RenderWindow SelfType;
     typedef SelfType* RawPtr;
 
-    RenderWindow ( void );
-    ~RenderWindow ( void );
+    /// \brief Default constructor; initialize an object to sane, but invalid
+    /// defaults
+    RenderWindow( void );
+
+    /// \brief Destructor; the current rendering context for the object is
+    /// freed at this time.
+    ///
+    /// \remarks The rendering context becomes invalid when the owning window
+    /// object is freed. Note that any and all resources that were created using
+    /// this context will also become invalid at this point.
+    ~RenderWindow( void );
 
     /// \brief Copy constructor.
     ///

@@ -34,7 +34,7 @@ namespace nom {
 // static initialization
 SDL_Renderer* RenderWindow::context_ = nullptr;
 
-RenderWindow::RenderWindow ( void ) : window_
+RenderWindow::RenderWindow( void ) : window_
     { SDL_WINDOW::UniquePtr ( nullptr, priv::FreeWindow ) },
     window_id_ ( 0 ), window_display_id_ ( -1 ),
     enabled_ ( false ), fullscreen_ ( false )
@@ -42,9 +42,11 @@ RenderWindow::RenderWindow ( void ) : window_
   // NOM_LOG_TRACE( NOM );
 }
 
-RenderWindow::~RenderWindow ( void )
+RenderWindow::~RenderWindow( void )
 {
   // NOM_LOG_TRACE( NOM );
+
+  priv::FreeRenderTarget( context_ );
 }
 
 bool RenderWindow::create (
@@ -80,12 +82,16 @@ NOM_LOG_ERR ( NOM, "Could not create SDL renderer." );
   this->window_display_id_ = SDL_GetWindowDisplayIndex ( this->window() );
   this->enabled_ = true;
 
-  // We must always have an active rendering context before we do any rendering
-  // calls; this includes even creating SDL textures!
-  if ( context_ == nullptr )
-  {
-    this->make_current();
-  }
+  // You must *always* have an active, valid rendering context. An invalid
+  // rendering context will break the vast majority of graphics operations!
+  //
+  // By default, we use the rendering context that is created at the
+  // initialization of this window object (see above).
+  //
+  // Note that the same rendering context that was used during the creation of
+  // a resource *must* stay around for as long as the resource(s) are using
+  // said rendering context.
+  this->make_current();
 
   // Try to ensure that we have no leftover artifacts by clearing and filling
   // window with a solid black paint bucket fill.

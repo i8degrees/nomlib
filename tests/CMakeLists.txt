@@ -22,7 +22,8 @@ if( NOM_BUILD_XML_UNIT )
 endif( NOM_BUILD_XML_UNIT )
 
 if( NOM_BUILD_SYSTEM_UNIT )
-  set( NOM_BUILD_SYSTEM_TESTS on )
+  set( NOM_BUILD_FONT_CACHE_TESTS on )
+  set( NOM_BUILD_COLOR_DB_TESTS on )
 endif( NOM_BUILD_SYSTEM_UNIT )
 
 set( NOM_BUILD_JSON_CONFIG_FILE_TESTS off )
@@ -143,13 +144,12 @@ if( NOM_BUILD_PTREE_XML_TESTS )
 
 endif( NOM_BUILD_PTREE_XML_TESTS )
 
-if( NOM_BUILD_SYSTEM_TESTS )
-
+if( NOM_BUILD_SYSTEM_FONT_CACHE_TESTS )
   if( NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
     add_executable  (
                       font_cache
                       ${NOM_TESTS_DIR}/system/FontCacheTest.cpp
-                    )
+                      )
 
     target_link_libraries (
                             font_cache
@@ -161,31 +161,32 @@ if( NOM_BUILD_SYSTEM_TESTS )
                       font_cache
                       "FontCacheTest"
                       ${NOM_TESTS_DIR}/system/FontCacheTest.cpp
-                    )
+                      )
   endif( NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+endif( NOM_BUILD_SYSTEM_FONT_CACHE_TESTS )
 
-  # ColorDatabaseTest unit test
+if( NOM_BUILD_SYSTEM_COLOR_DB_TESTS )
 
-  if( NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
-    add_executable  (
-                      color_database
-                      ${NOM_TESTS_DIR}/system/ColorDatabaseTest.cpp
-                    )
+if( NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+  add_executable  (
+                    color_database
+                    ${NOM_TESTS_DIR}/system/ColorDatabaseTest.cpp
+                  )
 
-    target_link_libraries (
-                            color_database
-                            ${GTEST_BOTH_LIBRARIES}
-                            ${PROJECT_NAME} # nomlib
-                          )
+  target_link_libraries (
+                          color_database
+                          ${GTEST_BOTH_LIBRARIES}
+                          ${PROJECT_NAME} # nomlib
+                        )
 
-    GTEST_ADD_TESTS (
-                      color_database
-                      "ColorDatabaseTest"
-                      ${NOM_TESTS_DIR}/system/ColorDatabaseTest.cpp
-                    )
-  endif( NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+  GTEST_ADD_TESTS (
+                    color_database
+                    "ColorDatabaseTest"
+                    ${NOM_TESTS_DIR}/system/ColorDatabaseTest.cpp
+                  )
+endif( NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
-endif( NOM_BUILD_SYSTEM_TESTS )
+endif( NOM_BUILD_SYSTEM_COLOR_DB_TESTS )
 
 if( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
 
@@ -378,7 +379,7 @@ if ( PLATFORM_WINDOWS )
             FILES_MATCHING PATTERN "*.dll"
           )
 
-  if( NOM_BUILD_SYSTEM_TESTS )
+  if( NOM_BUILD_FONT_CACHE_TESTS )
 
     # FontCacheTest unit test
     install (
@@ -389,7 +390,7 @@ if ( PLATFORM_WINDOWS )
               PATTERN ".*" EXCLUDE # Just say no to dotfiles
             )
 
-  endif( NOM_BUILD_SYSTEM_TESTS )
+  endif( NOM_BUILD_FONT_CACHE_TESTS )
 
   if( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS )
 

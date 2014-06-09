@@ -87,6 +87,15 @@ if( NOT NOM_BUILD_MINI_UNIT )
                 "${EXAMPLES_INSTALL_PEFIX}"
                 PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
               )
+
+      # JSON Dependency Resources
+      install ( DIRECTORY
+                "${EXAMPLES_SRC_DIR}/json/Resources"
+                DESTINATION
+                "${EXAMPLES_INSTALL_PEFIX}"
+                PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+              )
+
     endif( NOM_BUILD_APP_EXAMPLE )
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_GUI_UNIT AND NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT AND NOM_BUILD_JSON_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 

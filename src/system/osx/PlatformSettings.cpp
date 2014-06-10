@@ -97,6 +97,13 @@ void PlatformSettings::enumerate_fonts( void )
   Path lib( "/Library/Fonts" );
 
   SystemFonts::cache().append_resource( ResourceFile( "Arial", lib.prepend("Arial.ttf"), ResourceFile::Type::TrueTypeFont ) );
+  SystemFonts::cache().append_resource( ResourceFile( "TimesNewRoman", sys.prepend("Times.dfont"), ResourceFile::Type::TrueTypeFont ) );
+
+  // TODO: Verify if this is "Courier" or "Courier New"
+  SystemFonts::cache().append_resource( ResourceFile( "Courier", sys.prepend("Courier.dfont"), ResourceFile::Type::TrueTypeFont ) );
+
+  SystemFonts::cache().append_resource( ResourceFile( "Helvetica", sys.prepend("Helvetica.dfont"), ResourceFile::Type::TrueTypeFont ) );
+  SystemFonts::cache().append_resource( ResourceFile( "HelveticaNeue", sys.prepend("HelveticaNeue.dfont"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "LucidaGrande", sys.prepend("LucidaGrande.ttc"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "MinionPro", lib.prepend("MinionPro-Regular.otf"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "Monaco", sys.prepend("Monaco.dfont"), ResourceFile::Type::TrueTypeFont ) );

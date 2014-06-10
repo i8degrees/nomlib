@@ -67,7 +67,7 @@ Font* PlatformSettings::get_system_font( SystemFontType index )
 
     case FixedTrueType:
     {
-      return SystemFonts::cache().load_resource( "CourierNew" );
+      return SystemFonts::cache().load_resource( "Courier" );
 
       break;
     }
@@ -96,7 +96,9 @@ void PlatformSettings::enumerate_fonts( void )
   Path sys( "C:\\Windows\\Fonts" );
   SystemFonts::cache().append_resource( ResourceFile( "Arial", sys.prepend("Arial.ttf"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "TimesNewRoman", sys.prepend("times.ttf"), ResourceFile::Type::TrueTypeFont ) );
-  SystemFonts::cache().append_resource( ResourceFile( "CourierNew", sys.prepend("cour.ttf"), ResourceFile::Type::TrueTypeFont ) );
+
+  // TODO: Verify if this is "Courier" or "Courier New"
+  SystemFonts::cache().append_resource( ResourceFile( "Courier", sys.prepend("cour.ttf"), ResourceFile::Type::TrueTypeFont ) );
 
   p = Path( fp.resource_path( "org.i8degrees.nomlib" ) + p.native() + "fonts" );
 

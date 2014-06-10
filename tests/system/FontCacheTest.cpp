@@ -19,52 +19,55 @@ class FontCacheTest: public ::testing::Test
     }
 
   protected:
-    ResourceCache<Font> fonts_;
+    // ...
 };
 
 /// \brief Non-static usage of fonts resource cache
 TEST_F( FontCacheTest, CoreAPI )
 {
+  ResourceCache<Font> fonts_;
   File fp;
   Path p;
 
+  // Internally, nom::PlatformSettings::enumerate_fonts does very much the same
+  // thing as shown below (the appending of resources from known file paths):
   p = fp.resource_path( "org.i8degrees.nomlib" ) + p.native() + "fonts";
 
   #if defined( NOM_PLATFORM_OSX )
     Path sys( "/System/Library/Fonts" );
     Path lib( "/Library/Fonts" );
-    ASSERT_TRUE( this->fonts_.append_resource( ResourceFile( "LucidaGrande", sys.prepend("LucidaGrande.ttc"), ResourceFile::Type::TrueTypeFont ) ) );
+    ASSERT_TRUE( fonts_.append_resource( ResourceFile( "LucidaGrande", sys.prepend("LucidaGrande.ttc"), ResourceFile::Type::TrueTypeFont ) ) );
   #elif defined( NOM_PLATFORM_WINDOWS )
     Path sys( "C:\\Windows\\Fonts" );
-    ASSERT_TRUE( this->fonts_.append_resource( ResourceFile( "Arial", sys.prepend("Arial.ttf"), ResourceFile::Type::TrueTypeFont ) ) );
+    ASSERT_TRUE( fonts_.append_resource( ResourceFile( "Arial", sys.prepend("Arial.ttf"), ResourceFile::Type::TrueTypeFont ) ) );
   #endif
 
-  ASSERT_TRUE( this->fonts_.append_resource( ResourceFile( "LiberationSans-Regular", p.prepend("LiberationSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) ) );
-  ASSERT_TRUE( this->fonts_.append_resource( ResourceFile( "LiberationSerif-Regular", p.prepend("LiberationSerif-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) ) );
-  ASSERT_TRUE( this->fonts_.append_resource( ResourceFile( "VIII", p.prepend("VIII.png"), ResourceFile::Type::BitmapFont ) ) );
-  ASSERT_TRUE( this->fonts_.append_resource( ResourceFile( "VIII_small", p.prepend("VIII_small.png"), ResourceFile::Type::BitmapFont ) ) );
+  ASSERT_TRUE( fonts_.append_resource( ResourceFile( "LiberationSans-Regular", p.prepend("LiberationSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) ) );
+  ASSERT_TRUE( fonts_.append_resource( ResourceFile( "LiberationSerif-Regular", p.prepend("LiberationSerif-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) ) );
+  ASSERT_TRUE( fonts_.append_resource( ResourceFile( "VIII", p.prepend("VIII.png"), ResourceFile::Type::BitmapFont ) ) );
+  ASSERT_TRUE( fonts_.append_resource( ResourceFile( "VIII_small", p.prepend("VIII_small.png"), ResourceFile::Type::BitmapFont ) ) );
 
   // Should not exist
-  ASSERT_FALSE( this->fonts_.append_resource( ResourceFile( "IX", p.prepend("IX.png") ) ) );
+  ASSERT_FALSE( fonts_.append_resource( ResourceFile( "IX", p.prepend("IX.png") ) ) );
 
   // Should already exist.
-  ASSERT_FALSE( this->fonts_.append_resource( ResourceFile( "VIII", p.prepend("VIII.png") ) ) );
+  ASSERT_FALSE( fonts_.append_resource( ResourceFile( "VIII", p.prepend("VIII.png") ) ) );
 
   ResourceFile res;
 
   ASSERT_TRUE( res == ResourceFile::null );
   ASSERT_FALSE( res.exists() );
 
-  res = this->fonts_.find_resource( "VIII" );
+  res = fonts_.find_resource( "VIII" );
   ASSERT_TRUE( res.exists() );
   EXPECT_EQ( "VIII", res.name() );
 
-  res = this->fonts_.find_resource( "VIII_small" );
+  res = fonts_.find_resource( "VIII_small" );
   ASSERT_TRUE( res.exists() );
   EXPECT_EQ( "VIII_small", res.name() );
 
   // Should not exist
-  res = this->fonts_.find_resource( "IX" );
+  res = fonts_.find_resource( "IX" );
   ASSERT_FALSE( res.exists() );
   EXPECT_EQ( "", res.name() );
 
@@ -78,42 +81,137 @@ TEST_F( FontCacheTest, CoreAPI )
   // 2. http://msdn.microsoft.com/library/vstudio/swezty51
   // 3. See also: tests/CMakeLists.txt FIXME note regarding err when using 'test'
   // target under Windows from the command line.
-  EXPECT_EQ( 5, this->fonts_.size() );
+  EXPECT_EQ( 5, fonts_.size() );
 
-  this->fonts_.clear();
+  fonts_.clear();
 
-  EXPECT_EQ( 0, this->fonts_.size() );
+  EXPECT_EQ( 0, fonts_.size() );
 }
 
-/// \brief Global (static) usage of fonts resource cache
-TEST_F( FontCacheTest, StaticInterfaceAPI )
+/// \brief Global (static) usage of fonts resource cache via the
+/// nom::SystemFonts interface.
+TEST_F( FontCacheTest, GlobalSystemFontsInterface )
 {
-  nom::uint32 window_flags = SDL_WINDOW_HIDDEN;
+  Path p;
+  File fp;
   nom::RenderWindow window;
+  nom::FontCache cache;
 
-  nom::SystemFonts::initialize();
-  nom::PlatformSettings::initialize();
+  // We first need to ensure that the SDL2_ttf extension is initialized,
+  // otherwise we will receive err messages upon trying to load TrueType fonts.
+  // nom::init_third_party( 0 );
+
+  // (This should be done for us automatically):
+  // nom::SystemFonts::initialize();
+
+  p = fp.resource_path( "org.i8degrees.nomlib" ) + p.native() + "fonts";
 
   // Necessary for loading font resources
-  if( window.create( "FontCacheTest::StaticInterfaceAPI", 0, 0, window_flags ) == false )
-  {
-    FAIL();
-  }
+  ASSERT_TRUE( window.create( "FontCacheTest::GlobalSystemFontsInterface", 0, 0, SDL_WINDOW_HIDDEN ) == true );
 
-  // FIXME:
-  // nom::Font* font1 = PlatformSettings::get_system_font( SystemFontType::VariableTrueType );
-  // nom::Font* font2 = PlatformSettings::get_system_font( SystemFontType::FixedTrueType );
+  cache = nom::SystemFonts::cache();
 
-  // ASSERT_FALSE( font1 == nullptr );
-  // ASSERT_FALSE( font2 == nullptr );
+  // Note that without the nom::PlatformSettings interface, we must add the font
+  // resources before the cache can be used:
+  cache.set_resource_handler( [&] ( const ResourceFile& res, Font& font ) { nom::create_font( res, font ); } );
 
-  // ASSERT_TRUE( font1 != font2 );
+  // Add two (2) bitmap fonts to the cache for testing use:
+  ASSERT_TRUE( cache.append_resource( ResourceFile( "VIII", p.prepend("VIII.png"), ResourceFile::Type::BitmapFont ) ) );
+  ASSERT_TRUE( cache.append_resource( ResourceFile( "VIII_small", p.prepend("VIII_small.png"), ResourceFile::Type::BitmapFont ) ) );
 
-  nom::FontCache cache = nom::SystemFonts::cache();
+  // Add two (2) TrueType fonts to the cache for testing use:
+  ASSERT_TRUE( cache.append_resource( ResourceFile( "LiberationSans", p.prepend("LiberationSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont )  ) );
+  ASSERT_TRUE( cache.append_resource( ResourceFile( "LiberationSerif", p.prepend("LiberationSerif-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) ) );
 
-  nom::Font bfont = *cache.load_resource( "VIII" );
+  // Bitmap font tests:
+  nom::Font bfont1 = *cache.load_resource( "VIII" );
+  nom::Font bfont2 = *cache.load_resource( "VIII_small" );
+  nom::Font bfont3 = *cache.load_resource( "VIII" );
 
-  ASSERT_TRUE( bfont.valid() == true );
+  ASSERT_TRUE( bfont1.valid() == true );
+  ASSERT_TRUE( bfont2.valid() == true );
+  ASSERT_TRUE( bfont3.valid() == true );
+
+  // NOTE: BitmapFont is never set sharable, as an optimization I chose to try,
+  // arising out of the fact that we do not (yet!) have any variables that
+  // ought to stay unique when passing around to multiple objects.
+  //
+  // See also: nom::create_font -- src/system/resource_handlers.cpp; this is
+  // where the actual "sharing" logic is implemented.
+  ASSERT_TRUE( bfont1 == bfont3 );
+
+  // Ensure that nom::Font's copy-on-write functionality is working as
+  // intended; the two resource instances should never be unique (cloned
+  // copies).
+  //
+  // See above note on why; this is simply another way of testing the
+  // above assertion.
+  nom::Text label1;
+  nom::Text label2;
+  label1.set_font( bfont1 );
+  label2.set_font( bfont3 );
+  ASSERT_TRUE( label1.font() == label2.font() );
+
+  // TrueType font tests:
+  nom::Font bfont4 = *cache.load_resource( "LiberationSans" );
+  nom::Font bfont5 = *cache.load_resource( "LiberationSans" );
+
+  ASSERT_TRUE( bfont4.valid() == true );
+  ASSERT_TRUE( bfont5.valid() == true );
+
+  // Ensure that nom::Font's copy-on-write functionality is working as
+  // intended; the two resource instances should not *yet* be unique (cloned
+  // copies):
+  ASSERT_TRUE( bfont4 == bfont5 );
+
+  // Ensure that nom::Font's copy-on-write functionality is working as
+  // intended; the two resource instances should always be unique (cloned
+  // copies):
+  nom::Text label3;
+  nom::Text label4;
+  label3.set_font( bfont4 );
+  label4.set_font( bfont5 );
+  ASSERT_FALSE( label3.font() == label4.font() );
+}
+
+/// \brief Global (static) usage of fonts resource cache via the
+/// nom::PlatformSettings interface.
+TEST_F( FontCacheTest, GlobalPlatformSettingsInterface )
+{
+  Path p;
+  File fp;
+  nom::RenderWindow window;
+
+  // We first need to ensure that the SDL2_ttf extension is initialized,
+  // otherwise we will receive err messages upon trying to load TrueType fonts.
+  // nom::init_third_party( 0 );
+
+  // (This should be done for us automatically):
+  // nom::PlatformSettings::initialize();
+
+  // Necessary for loading font resources
+  ASSERT_TRUE( window.create( "FontCacheTest::GlobalPlatformSettingsInterface", 0, 0, SDL_WINDOW_HIDDEN ) == true );
+
+  // Note that we do *not* own these pointers!
+  nom::Font* font1 = PlatformSettings::get_system_font( SystemFontType::VariableTrueType );
+  nom::Font* font2 = PlatformSettings::get_system_font( SystemFontType::FixedTrueType );
+  nom::Font* font3 = PlatformSettings::get_system_font( SystemFontType::FixedTrueType );
+
+  ASSERT_FALSE( font1 == nullptr );
+  ASSERT_FALSE( font2 == nullptr );
+  ASSERT_FALSE( font3 == nullptr );
+
+  // The variable TrueType font chosen for the platform should never be the same
+  // as the fixed TrueType font.
+  ASSERT_FALSE( font1 == font2 );
+
+  // Ensure that nom::Font's copy-on-write functionality works; the two
+  // resource instances should always be unique (cloned copies), except when
+  // Font::sharable is explicitly set to false.
+  ASSERT_FALSE( font1 == font3 );
+
+  // TODO: Unit tests for nom::Font's sharable implementation -- copy-on-write
+  // with reference counting. See also: FontCacheTest::GlobalSystemFontsInterface.
 }
 
 } // namespace nom

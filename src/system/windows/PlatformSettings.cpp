@@ -93,7 +93,12 @@ void PlatformSettings::enumerate_fonts( void )
 
   SystemFonts::cache().set_resource_handler( [&] ( const ResourceFile& res, Font& font ) { create_font( res, font ); } );
 
-  Path sys( "C:\\Windows\\Fonts" );
+  // System fonts; these are pre-installed for us at the time of OS
+  // installation / upgrades.
+  // Path sys( "C:\\Windows\\Fonts" );
+  // Path s = fp.system_path() + p.native() + "Fonts";
+  Path s = fp.system_path() + p.native();
+  Path sys( s.prepend( "Fonts" ) );
   SystemFonts::cache().append_resource( ResourceFile( "Arial", sys.prepend("Arial.ttf"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "TimesNewRoman", sys.prepend("times.ttf"), ResourceFile::Type::TrueTypeFont ) );
 

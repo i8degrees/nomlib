@@ -285,6 +285,46 @@ const std::string UnixFile::user_app_support_path( void )
   return std::string ( path );
 }
 
+const std::string UnixFile::user_home_path( void )
+{
+  char path[PATH_MAX];
+  FSRef ref;
+  OSType folderType = kCurrentUserFolderType;
+
+  FSFindFolder( kUserDomain, folderType, kCreateFolder, &ref );
+
+  FSRefMakePath( &ref, ( uint8* ) &path, PATH_MAX );
+
+  return path;
+}
+
+const std::string UnixFile::system_path( void )
+{
+  char path[PATH_MAX];
+  FSRef ref;
+  OSType folderType = kSystemFolderType;
+
+  FSFindFolder( kUserDomain, folderType, kCreateFolder, &ref );
+
+  FSRefMakePath( &ref, ( uint8* ) &path, PATH_MAX );
+
+  return path;
+}
+
+// const std::string UnixFile::system_library_path( void )
+// {
+//   Path p( this->system_path() );
+
+//   return p.prepend( "Library" );
+// }
+
+// const std::string UnixFile::system_fonts_path( void )
+// {
+//   Path p( this->system_library_path() );
+
+//   return p.prepend( "Fonts" );
+// }
+
 #pragma clang diagnostic pop
 
 } // namespace nom

@@ -90,6 +90,10 @@ class File
 
     const std::string user_app_support_path( void );
 
+    const std::string user_home_path( void );
+
+    const std::string system_path( void );
+
   private:
     std::unique_ptr<IFile> file;
 };

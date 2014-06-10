@@ -132,6 +132,9 @@ class WinFile: public IFile
     /// \note This function requires Windows Vista or above
     ///
     /// \todo Support for when the user has changed the default save folder; see http://stackoverflow.com/a/12607759 and http://stackoverflow.com/questions/19553311/windows-8-how-to-read-the-user-documents-folder-path-programmatically-using-c
+    ///
+    /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/bb762181.aspx
+    /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/bb762494.aspx
     const std::string user_documents_path( void );
 
     /// Obtain the path to the logged in user's (local) Application Data folder
@@ -143,7 +146,28 @@ class WinFile: public IFile
     /// \note This function requires Windows Vista or above
     ///
     /// \todo Support for when the user has changed the default save folder; see http://stackoverflow.com/a/12607759 and http://stackoverflow.com/questions/19553311/windows-8-how-to-read-the-user-documents-folder-path-programmatically-using-c
+    ///
+    /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/bb762181.aspx
+    /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/bb762494.aspx
     const std::string user_app_support_path( void );
+
+    /// \brief Get the current user's home directory path.
+    ///
+    /// \returns An absolute directory path. (Possibly in the form of:
+    /// "<drive>:\Users\<user>").
+    ///
+    /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/bb762181.aspx
+    /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/bb762494.aspx
+    const std::string user_home_path( void );
+
+    /// \brief Get the platform-defined system path.
+    ///
+    /// \returns An absolute directory path. (Possibly in the form of:
+    /// "<drive>:\Windows").
+    ///
+    /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/bb762181.aspx
+    /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/bb762494.aspx
+    const std::string system_path( void );
 };
 
 

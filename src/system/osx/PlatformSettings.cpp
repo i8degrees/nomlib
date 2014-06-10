@@ -93,8 +93,19 @@ void PlatformSettings::enumerate_fonts( void )
 
   SystemFonts::cache().set_resource_handler( [&] ( const ResourceFile& res, Font& font ) { create_font( res, font ); } );
 
-  Path sys( "/System/Library/Fonts" );
-  Path lib( "/Library/Fonts" );
+  // System fonts; these are pre-installed for us at the time of OS
+  // installation / upgrades.
+  //
+  // Note that by default, we do not have write permissions for this path.
+  Path s = fp.system_path() + p.native() + "Library";
+  Path sys( s.prepend( "Fonts" ) );
+
+  // Library fonts; these are installed via third-party software, such as MS
+  // Office.
+  //
+  // Note that by default, we do not have write permissions for this path.
+  Path l = p.native() + "Library";
+  Path lib( l.prepend( "Fonts" ) );
 
   SystemFonts::cache().append_resource( ResourceFile( "Arial", lib.prepend("Arial.ttf"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "TimesNewRoman", sys.prepend("Times.dfont"), ResourceFile::Type::TrueTypeFont ) );
@@ -105,9 +116,9 @@ void PlatformSettings::enumerate_fonts( void )
   SystemFonts::cache().append_resource( ResourceFile( "Helvetica", sys.prepend("Helvetica.dfont"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "HelveticaNeue", sys.prepend("HelveticaNeue.dfont"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "LucidaGrande", sys.prepend("LucidaGrande.ttc"), ResourceFile::Type::TrueTypeFont ) );
-  SystemFonts::cache().append_resource( ResourceFile( "MinionPro", lib.prepend("MinionPro-Regular.otf"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "Monaco", sys.prepend("Monaco.dfont"), ResourceFile::Type::TrueTypeFont ) );
 
+  SystemFonts::cache().append_resource( ResourceFile( "MinionPro", lib.prepend("MinionPro-Regular.otf"), ResourceFile::Type::TrueTypeFont ) );
   p = Path( fp.resource_path( "org.i8degrees.nomlib" ) + p.native() + "fonts" );
 
   SystemFonts::cache().append_resource( ResourceFile( "LiberationSans-Regular", p.prepend("LiberationSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );

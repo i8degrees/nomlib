@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/system.hpp>
 
-// #define NOM_DEBUG_FILE_TEST_OUTPUT
+#define NOM_DEBUG_FILE_TEST_OUTPUT
 
 namespace nom {
 
@@ -155,6 +155,28 @@ TEST_F( FileInterfaceTest, FileExtensions )
 
   ASSERT_FALSE( file_ext == "" );
   ASSERT_TRUE( file_ext == "png" );
+}
+
+TEST_F( FileInterfaceTest, PlatformPaths )
+{
+  Path p;
+
+  Path u = fp.user_home_path() + p.native() + "Library";
+  Path user( u.prepend( "Fonts" ) );
+
+  ASSERT_FALSE( u.path() == "" );
+  ASSERT_FALSE( fp.user_home_path() == "" );
+  ASSERT_FALSE( u.path() == "" );
+  ASSERT_FALSE( user.path() == "" );
+  ASSERT_FALSE( fp.system_path() == "" );
+
+  #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
+    NOM_DUMP_VAR( "native_path_delimiter: ", p.native() );
+    NOM_DUMP_VAR( "user_home_path: ", fp.user_home_path() );
+    NOM_DUMP_VAR( "user_library_path: ", u.path() );
+    NOM_DUMP_VAR( "user_fonts_path: ", user.path() );
+    NOM_DUMP_VAR( "system_path: ", fp.system_path() );
+  #endif
 }
 
 } // namespace nom

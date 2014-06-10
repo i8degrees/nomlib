@@ -141,6 +141,8 @@ class UnixFile: public IFile
     /// data under.
     ///
     /// \todo FSFindFolder and FSRefMakePath are deprecated in OS X v10.8+.
+    ///
+    /// \see http://stackoverflow.com/questions/19404239/locating-mac-os-x-folders-using-urlfordirectory-instead-of-fsfindfolder
     const std::string user_documents_path( void );
 
     /// \brief Get the path to the logged in user's Application Support folder.
@@ -151,7 +153,42 @@ class UnixFile: public IFile
     /// data under.
     ///
     /// \todo FSFindFolder and FSRefMakePath are deprecated in OS X v10.8+.
+    ///
+    ///
+    /// \see http://stackoverflow.com/questions/19404239/locating-mac-os-x-folders-using-urlfordirectory-instead-of-fsfindfolder
     const std::string user_app_support_path( void );
+
+    /// \brief Get the current user's home directory path.
+    ///
+    /// \returns Under Mac OS X: a directory path in the format of:
+    /// "/Users/<user>". Under POSIX-compliant Unix: either "/home" (Linux) or
+    /// "/usr/home" (BSD).
+    ///
+    /// \see http://stackoverflow.com/questions/19404239/locating-mac-os-x-folders-using-urlfordirectory-instead-of-fsfindfolder
+    const std::string user_home_path( void );
+
+    /// \brief Get the platform-defined system path.
+    ///
+    /// \returns Under Mac OS X: a directory path in the format of:
+    /// "/System". Under POSIX-compliant Unix (not verified):
+    /// "/bin" (Linux/BSD).
+    ///
+    /// \see http://stackoverflow.com/questions/19404239/locating-mac-os-x-folders-using-urlfordirectory-instead-of-fsfindfolder
+    const std::string system_path( void );
+
+    // \brief Get the platform-defined system path.
+    //
+    // \returns Under Mac OS X: a directory path in the format of:
+    // "/System/Library". Under POSIX-compliant Unix (not verified):
+    // "/bin" (Linux/BSD). Under Windows: "<drive>:\Windows".
+    // const std::string system_library_path( void );
+
+    // \brief Get the platform-defined system fonts path.
+    //
+    // \returns Under Mac OS X: a directory path in the format of:
+    // "/System/Library/Fonts". Under POSIX-compliant Unix (not verified):
+    // "/usr/share/fonts" (Linux/BSD). Under Windows: "<drive>:\Windows\Fonts".
+    // const std::string system_fonts_path( void );
 };
 
 

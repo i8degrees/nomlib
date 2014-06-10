@@ -91,6 +91,9 @@ class IFile
     virtual const std::string user_documents_path( void ) = 0;
 
     virtual const std::string user_app_support_path( void ) = 0;
+
+    virtual const std::string user_home_path( void ) = 0;
+    virtual const std::string system_path( void ) = 0;
 };
 
 

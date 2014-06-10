@@ -289,4 +289,48 @@ const std::string WinFile::user_app_support_path( void )
   return path;
 }
 
+const std::string WinFile::user_home_path( void )
+{
+  CHAR path[PATH_MAX];
+
+  HRESULT result =  SHGetFolderPath (
+                                      nullptr,
+                                      CSIDL_PROFILE,
+                                      nullptr,
+                                      SHGFP_TYPE_CURRENT,
+                                      path
+                                    );
+
+  if( result != S_OK )
+  {
+    // Err
+    return "\0";
+  }
+
+  // Success!
+  return path;
+}
+
+const std::string WinFile::system_path( void )
+{
+  CHAR path[PATH_MAX];
+
+  HRESULT result =  SHGetFolderPath (
+                                      nullptr,
+                                      CSIDL_WINDOWS,
+                                      nullptr,
+                                      SHGFP_TYPE_CURRENT,
+                                      path
+                                    );
+
+  if( result != S_OK )
+  {
+    // Err
+    return "\0";
+  }
+
+  // Success!
+  return path;
+}
+
 } // namespace nom

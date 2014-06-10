@@ -101,4 +101,14 @@ const std::string File::user_app_support_path( void )
   return this->file->user_app_support_path();
 }
 
+const std::string File::user_home_path( void )
+{
+  return this->file->user_home_path();
+}
+
+const std::string File::system_path( void )
+{
+  return this->file->system_path();
+}
+
 } // namespace nom

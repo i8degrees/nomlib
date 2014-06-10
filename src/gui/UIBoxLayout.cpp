@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/UIBoxLayout.hpp"
 
+// #define NOM_DEBUG_OUTPUT_LAYOUT_DATA
+
 namespace nom {
 
 UIBoxLayout::UIBoxLayout( void )
@@ -260,10 +262,12 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
     UISpacerItem* sp = item->spacer_item();
     if( sp != nullptr )
     {
-      NOM_DUMP("sp");
-      NOM_DUMP( item->minimum_size() );
-      NOM_DUMP( item->size_hint() );
-      NOM_DUMP( item->bounds() );
+      #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
+        NOM_DUMP("sp");
+        NOM_DUMP( item->minimum_size() );
+        NOM_DUMP( item->size_hint() );
+        NOM_DUMP( item->bounds() );
+      #endif
 
       if( this->horiz() )
       {
@@ -281,7 +285,9 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
     {
       ++widget_count;
 
-      NOM_DUMP( widget->name() );
+      #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
+        NOM_DUMP( widget->name() );
+      #endif
 
       // Setup our layout positioning coordinates to be relative to the parent
       // widget (top-level window).
@@ -351,9 +357,11 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
       } // end if vertical layout
 
       // Widget layout item stats
-      NOM_DUMP( item->minimum_size() );
-      NOM_DUMP( item->size_hint() );
-      NOM_DUMP( item->bounds() );
+      #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
+        NOM_DUMP( item->minimum_size() );
+        NOM_DUMP( item->size_hint() );
+        NOM_DUMP( item->bounds() );
+      #endif
 
       geom = IntRect( w_x + rect.x + offset.x, w_y + rect.y + offset.y, item_size.w, item_size.h );
 

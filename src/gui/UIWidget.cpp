@@ -34,6 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Forward declarations
 // #include "nomlib/gui/UIStyle.hpp"
 
+// #define NOM_DEBUG_OUTPUT_LAYOUT_DATA
+
 namespace nom {
 
 // Static initializations
@@ -1029,7 +1031,9 @@ void UIWidget::set_size_hint( const Size2i& size )
 
 void UIWidget::set_layout( UILayout* layout )
 {
-NOM_DUMP( this->name() );
+  #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
+    NOM_DUMP( this->name() );
+  #endif
 
   this->layout_.reset( layout );
 
@@ -1037,30 +1041,38 @@ NOM_DUMP( this->name() );
 
   if( this->parent() == nullptr ) // We are the top-level widget (window)
   {
-    NOM_DUMP( this->layout_->bounds().position() );
-    NOM_DUMP( this->position() );
+    #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
+      NOM_DUMP( this->layout_->bounds().position() );
+      NOM_DUMP( this->position() );
+    #endif
 
     // this->layout_->set_bounds( IntRect( this->layout_->bounds().position() + this->position(), this->size() ) );
 
-    NOM_DUMP( this->layout_->bounds().size() );
-    NOM_DUMP( this->size() );
+    #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
+      NOM_DUMP( this->layout_->bounds().size() );
+      NOM_DUMP( this->size() );
+    #endif
   }
 
   // Not sure if we still need to set anything here
   else
   {
-    NOM_DUMP( this->layout_->bounds().position() );
-    NOM_DUMP( this->parent()->position() );
+    #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
+      NOM_DUMP( this->layout_->bounds().position() );
+      NOM_DUMP( this->parent()->position() );
+    #endif
 
     // this->layout_->set_bounds( IntRect( this->layout_->bounds().position() + this->parent()->position(), this->size() ) );
-
-    NOM_DUMP( this->layout_->bounds().size() );
-    NOM_DUMP( this->parent()->size() );
+    #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
+      NOM_DUMP( this->layout_->bounds().size() );
+      NOM_DUMP( this->parent()->size() );
+    #endif
   }
-
-NOM_DUMP( this->name() );
-NOM_DUMP( this->position() );
-NOM_DUMP( this->size() );
+  #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
+    NOM_DUMP( this->name() );
+    NOM_DUMP( this->position() );
+    NOM_DUMP( this->size() );
+  #endif
 
   // Associate the widget's unique identifiers with the sent event.
   // UIWidgetEvent evt;

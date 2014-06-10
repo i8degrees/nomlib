@@ -44,20 +44,6 @@ namespace nom {
 /// Default path should resolve to the same directory as the output binary.
 const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
 
-const nom::Path p;
-
-const std::string RESOURCE_BITMAP_FONT[2] = {
-                                              "Resources" + p.native() + "gui" + p.native() + "VIII.png",
-                                              "Resources" + p.native() + "gui" + p.native() + "VIII_small.png"
-                                            };
-
-const std::string RESOURCE_TRUETYPE_FONT[4] = {
-                                                "Resources" + p.native() + "gui" + p.native() + "arial.ttf",
-                                                "Resources" + p.native() + "gui" + p.native() + "TimesNewRoman.ttf",
-                                                "Resources" + p.native() + "gui" + p.native() + "LucidaGrande.ttf",
-                                                "Resources" + p.native() + "gui" + p.native() + "LucidaGrande-Bold.ttf"
-                                              };
-
 /// \note The resources and variables used derived from examples/gui.cpp,
 /// App::create_listbox_ex0.
 class VBoxLayoutTest: public ::testing::Test
@@ -134,10 +120,6 @@ class VBoxLayoutTest: public ::testing::Test
       // Scale window contents up by the new width & height
       this->window.set_logical_size( WINDOW_WIDTH, WINDOW_HEIGHT );
 
-      ASSERT_TRUE( this->bitmap_font[0].load( RESOURCE_BITMAP_FONT[0] ) == true );
-      ASSERT_TRUE( this->bitmap_font[1].load( RESOURCE_BITMAP_FONT[1] ) == true );
-      ASSERT_TRUE( this->truetype_font[0].load( RESOURCE_TRUETYPE_FONT[0] ) == true );
-
       this->choice_selection[0] = {
                                     std::string( "item_0" ),
                                     std::string( "item_1" ),
@@ -171,11 +153,6 @@ class VBoxLayoutTest: public ::testing::Test
 
       // Debugging aid
       this->gui_window[0]->set_name( "VBoxLayout" );
-
-      // FIXME: We explicitly need our top-level window to *not* have a font
-      // initialized for our unit tests to give proper results.
-      // this->gui_window[0]->set_font( truetype_font[0] );
-      // this->gui_window[0]->set_title( this->gui_window[0]->name() );
 
       // Layout managed coordinates; size coordinates become set as
       // widget's minimum_size requirements.
@@ -273,8 +250,6 @@ class VBoxLayoutTest: public ::testing::Test
     const nom::int32 WINDOW_WIDTH = 1024;
     const nom::int32 WINDOW_HEIGHT = 768;
 
-    static const nom::sint BITMAP_FONTS = 2;
-    static const nom::sint TRUETYPE_FONTS = 1;
     static const nom::sint GUI_WINDOWS = 5;
 
     // Game loop support
@@ -284,11 +259,6 @@ class VBoxLayoutTest: public ::testing::Test
 
     EventHandler evt;
     InputStateMapper input_mapper;
-
-    // Font resources
-
-    Font bitmap_font[BITMAP_FONTS];
-    Font truetype_font[TRUETYPE_FONTS];
 
     // GUI resources
 
@@ -426,6 +396,10 @@ TEST_F( VBoxLayoutTest, CoreLayoutAPI )
 
   // FIXME: dimensions are different for reasons unknown (guessing it may be
   // differences in font metrics?)
+  //
+  // See also: FIXME note regarding ListBox point size within the unit test
+  // 'LayoutAPIUsingArialFont'. (This could possibly be related to the problem,
+  // too!)
   #if defined( NOM_PLATFORM_OSX )
     EXPECT_EQ( Size2i( 50, 30 ), layout->size_hint() );
   #elif defined( NOM_PLATFORM_WINDOWS )
@@ -459,7 +433,7 @@ TEST_F( VBoxLayoutTest, CoreLayoutAPI )
 /// \remarks Uses the bitmap font resource: VIII.png.
 TEST_F( VBoxLayoutTest, LayoutAPIUsingBitmapFont )
 {
-  this->gui_window[0]->set_font( this->bitmap_font[0] );
+  this->gui_window[0]->set_font( SystemFonts::cache().load_resource( "VIII" ) );
 
   // Ensure that we do hold valid font resources; an invalid font resource
   // would certainly skew the test results considerably!
@@ -536,7 +510,8 @@ TEST_F( VBoxLayoutTest, LayoutAPIUsingBitmapFont )
 TEST_F( VBoxLayoutTest, LayoutAPIUsingArialFont )
 {
   // FIXME: ListBox has a hard-coded 12 point size for the font.
-  this->gui_window[0]->set_font( this->truetype_font[0] ); // 14 pt size
+  // this->gui_window[0]->set_font( this->truetype_font[0] ); // 14 pt size
+  this->gui_window[0]->set_font( SystemFonts::cache().load_resource( "Arial" ) );
 
   // Ensure that we do hold valid font resources; an invalid font resource
   // would certainly skew the test results considerably!

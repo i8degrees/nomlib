@@ -59,9 +59,9 @@ class App: public nom::SDLApp
 {
   public:
     App( nom::int32 argc, char* argv[] ) :
-      listbox_ex0{ nullptr },
-      listbox_ex1{ nullptr },
-      listbox_ex2{ nullptr }
+      listbox0{ nullptr },
+      listbox1{ nullptr },
+      listbox2{ nullptr }
     {
       NOM_LOG_TRACE ( NOM );
 
@@ -148,22 +148,22 @@ class App: public nom::SDLApp
       labels_ex2.push_back( "item_3" );
 
       // Our widgets to be used in the layout.
-      this->listbox_ex0 = this->create_listbox( this->gui_window[1], Point2i::null, Size2i(50,24), "listbox_ex0", labels_ex0 );
-      this->listbox_ex0->set_font( SystemFonts::cache().load_resource("VIII") );
-      this->listbox_ex0->set_decorator( new nom::MinimalDecorator() );
-      this->listbox_ex0->set_selected_text_color( nom::Color4i::Gray );
-  // this->listbox_ex0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
-  // this->listbox_ex0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+      this->listbox0 = this->create_listbox( this->gui_window[1], Point2i::null, Size2i(50,24), "listbox0", labels_ex0 );
+      this->listbox0->set_font( SystemFonts::cache().load_resource("VIII") );
+      this->listbox0->set_decorator( new nom::MinimalDecorator() );
+      this->listbox0->set_selected_text_color( nom::Color4i::Gray );
+  // this->listbox0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+  // this->listbox0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
-      this->listbox_ex1 = this->create_listbox( this->gui_window[1], Point2i::null, Size2i(50,24), "listbox_ex1", labels_ex1, 1 );
-      this->listbox_ex1->set_decorator( new nom::MinimalDecorator() );
-  // this->listbox_ex1->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
-  // this->listbox_ex1->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+      this->listbox1 = this->create_listbox( this->gui_window[1], Point2i::null, Size2i(50,24), "listbox1", labels_ex1, 1 );
+      this->listbox1->set_decorator( new nom::MinimalDecorator() );
+  // this->listbox1->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+  // this->listbox1->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
-      this->listbox_ex2 = this->create_listbox( this->gui_window[1], Point2i::null, Size2i(50,24), "listbox_ex2", labels_ex2, 2 );
-      this->listbox_ex2->set_decorator( new nom::MinimalDecorator() );
-  // this->listbox_ex2->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
-  // this->listbox_ex2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+      this->listbox2 = this->create_listbox( this->gui_window[1], Point2i::null, Size2i(50,24), "listbox2", labels_ex2, 2 );
+      this->listbox2->set_decorator( new nom::MinimalDecorator() );
+  // this->listbox2->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+  // this->listbox2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
       // nom::UIStyle::shared_ptr custom_style = nullptr;
       // custom_style.reset( new nom::UIStyle() );
@@ -174,9 +174,9 @@ class App: public nom::SDLApp
 
 // this->gui_window[0]->insert_child( this->create_listbox( this->gui_window[0], Point2i(102,400), Size2i(50,48), "expliclt_listbox_button", labels_ex2, 3 ) );
 
-      this->gui_window[1]->insert_child( this->listbox_ex0 );
-      this->gui_window[1]->insert_child( this->listbox_ex1 );
-      this->gui_window[1]->insert_child( this->listbox_ex2 );
+      this->gui_window[1]->insert_child( this->listbox0 );
+      this->gui_window[1]->insert_child( this->listbox1 );
+      this->gui_window[1]->insert_child( this->listbox2 );
 
       // Listbox layout
 
@@ -185,25 +185,25 @@ class App: public nom::SDLApp
       // (internal update is necessary within ListBox::set_item_store).
       this->layout = new nom::UIVBoxLayout( this->gui_window[1] );
 
-      if( this->listbox_ex0 != nullptr )
+      if( this->listbox0 != nullptr )
       {
-        // this->listbox_ex0->set_size_policy( nom::UILayoutPolicy::Policy::Minimum, nom::UILayoutPolicy::Policy::Minimum );
+        // this->listbox0->set_size_policy( nom::UILayoutPolicy::Policy::Minimum, nom::UILayoutPolicy::Policy::Minimum );
       }
 
       this->layout->append_spacer( 8 );
-      this->layout->append_widget( this->listbox_ex0 );
+      this->layout->append_widget( this->listbox0 );
       this->layout->append_spacer( 8 );
-      this->layout->append_widget( this->listbox_ex1 );
+      this->layout->append_widget( this->listbox1 );
       this->layout->append_spacer( 40 );
-      this->layout->append_widget( this->listbox_ex2 );
+      this->layout->append_widget( this->listbox2 );
 
       // Relative to parent widget
       this->layout->set_position( nom::Point2i( 12, 25 ) );
 
       // Auto-generated name
-      if( this->listbox_ex2 != nullptr )
+      if( this->listbox2 != nullptr )
       {
-        NOM_ASSERT( this->gui_window[1]->find_child( "listbox_ex2" ) != nullptr );
+        NOM_ASSERT( this->gui_window[1]->find_child( "listbox2" ) != nullptr );
       }
 
       NOM_ASSERT( this->gui_window[0]->id() == 1 );
@@ -223,7 +223,7 @@ class App: public nom::SDLApp
       if( widget != nullptr )
       {
         NOM_ASSERT( widget->is_window() == false );
-        NOM_ASSERT( widget->name() == "listbox_ex0" );
+        NOM_ASSERT( widget->name() == "listbox0" );
       }
 
       NOM_ASSERT( this->gui_window[0]->is_window() == true );
@@ -354,9 +354,9 @@ class App: public nom::SDLApp
 
     nom::UIWidget::raw_ptr gui_window[2];
 
-    nom::ListBox* listbox_ex0;
-    nom::ListBox* listbox_ex1;
-    nom::ListBox* listbox_ex2;
+    nom::ListBox* listbox0;
+    nom::ListBox* listbox1;
+    nom::ListBox* listbox2;
 
     nom::UIBoxLayout* layout;
 };

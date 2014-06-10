@@ -63,9 +63,9 @@ class App: public nom::SDLApp
 {
   public:
     App( nom::int32 argc, char* argv[] ) :
-      button_ex0{ nullptr },
-      button_ex1{ nullptr },
-      button_ex2{ nullptr }
+      button0{ nullptr },
+      button1{ nullptr },
+      button2{ nullptr }
     {
       NOM_LOG_TRACE ( NOM );
 
@@ -162,22 +162,22 @@ class App: public nom::SDLApp
       // management, the size dimensions will be calculated for us automatically
       // (meaning that the size dimensions used will be from the widget's
       // size_hint method, when the size policy is set to Preferred).
-      this->button_ex0 = this->create_button( this->gui_window[1], Point2i::null, Size2i(50,25), "button_ex0", "Click me!" );
-      this->button_ex0->set_font( SystemFonts::cache().load_resource("VIII") );
+      this->button0 = this->create_button( this->gui_window[1], Point2i::null, Size2i(50,25), "button0", "Click me!" );
+      this->button0->set_font( SystemFonts::cache().load_resource("VIII") );
 
       // FIXME: Setting the button's font after construction doesn't update the
       // text label's font, so this is a workaround until I get around to fixing
       // it.
-      this->button_ex0->set_label( "Click me!" );
+      this->button0->set_label( "Click me!" );
 
-      this->button_ex0->set_decorator( new nom::FinalFantasyDecorator() );
-      this->button_ex0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_ex0_on_click( ev ); } ) );
-      this->button_ex0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_ex0_on_click( ev ); } ) );
+      this->button0->set_decorator( new nom::FinalFantasyDecorator() );
+      this->button0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );
+      this->button0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );
 
-      this->button_ex1 = this->create_button( this->gui_window[1], Point2i::null, Size2i(50,25), "button_ex1", "button_ex1" );
-      this->button_ex1->set_decorator( new nom::MinimalDecorator() );
-      this->button_ex1->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_ex1_on_click( ev ); } ) );
-      this->button_ex1->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_ex1_on_click( ev ); } ) );
+      this->button1 = this->create_button( this->gui_window[1], Point2i::null, Size2i(50,25), "button1", "button1" );
+      this->button1->set_decorator( new nom::MinimalDecorator() );
+      this->button1->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button1_on_click( ev ); } ) );
+      this->button1->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button1_on_click( ev ); } ) );
 
       nom::UIStyle::shared_ptr custom_style = nullptr;
       custom_style.reset( new nom::UIStyle() );
@@ -186,32 +186,32 @@ class App: public nom::SDLApp
       custom_style->set_font_size( 13 );
       custom_style->set_font_style( nom::Text::Style::Bold );
 
-      this->button_ex2 = this->create_bitmap_button( this->gui_window[1], Point2i::null, Size2i(102,25), "bitmap_button", "Hello", this->button_bg[1], custom_style );
-      this->button_ex2->set_pressed_bitmap( this->button_bg[2] );
-      this->button_ex2->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
-      this->button_ex2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+      this->button2 = this->create_bitmap_button( this->gui_window[1], Point2i::null, Size2i(102,25), "bitmap_button", "Hello", this->button_bg[1], custom_style );
+      this->button2->set_pressed_bitmap( this->button_bg[2] );
+      this->button2->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+      this->button2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
       // Explicitly positioned:
 // this->gui_window[0]->insert_child( this->create_bitmap_button( this->gui_window[0], Point2i(102,400), Size2i(102,25), "expliclt_bitmap_button", "HelloB", this->button_bg[1], custom_style ) );
 
-      this->gui_window[1]->insert_child( this->button_ex0 );
-      this->gui_window[1]->insert_child( this->button_ex1 );
-      this->gui_window[1]->insert_child( this->button_ex2 );
+      this->gui_window[1]->insert_child( this->button0 );
+      this->gui_window[1]->insert_child( this->button1 );
+      this->gui_window[1]->insert_child( this->button2 );
 
       // Button layout
       this->layout = new nom::UIHBoxLayout();
 
-      if( this->button_ex0 != nullptr )
+      if( this->button0 != nullptr )
       {
-        // this->button_ex0->set_size_policy( nom::UILayoutPolicy::Policy::Minimum, nom::UILayoutPolicy::Policy::Minimum );
+        // this->button0->set_size_policy( nom::UILayoutPolicy::Policy::Minimum, nom::UILayoutPolicy::Policy::Minimum );
       }
 
       this->layout->append_spacer( 8 );
-      this->layout->append_widget( this->button_ex0 );
+      this->layout->append_widget( this->button0 );
       this->layout->append_spacer( 8 );
-      this->layout->append_widget( this->button_ex1 );
+      this->layout->append_widget( this->button1 );
       this->layout->append_spacer( 40 );
-      this->layout->append_widget( this->button_ex2 );
+      this->layout->append_widget( this->button2 );
 
       this->gui_window[1]->set_layout( this->layout );
 
@@ -232,13 +232,13 @@ class App: public nom::SDLApp
 
       nom::UIWidget* widget = nullptr;
 
-      // button_ex0
+      // button0
       widget = this->gui_window[1]->find_child( 6 );
 
       if( widget != nullptr )
       {
         NOM_ASSERT( widget->is_window() == false );
-        // NOM_ASSERT( widget->name() == "button_ex0" );
+        // NOM_ASSERT( widget->name() == "button0" );
       }
 
       NOM_ASSERT( this->gui_window[0]->is_window() == true );
@@ -298,39 +298,39 @@ class App: public nom::SDLApp
       NOM_DUMP( ev.text() );
     }
 
-    void button_ex0_on_click( const nom::UIWidgetEvent& ev ) const
+    void button0_on_click( const nom::UIWidgetEvent& ev ) const
     {
       NOM_DUMP( ev.id() );
       NOM_DUMP( ev.index() );
       NOM_DUMP( ev.text() );
 
-      NOM_ASSERT( this->button_ex0 != nullptr );
+      NOM_ASSERT( this->button0 != nullptr );
 
       if( ev.index() == 0 ) // MOUSE_DOWN
       {
-        this->button_ex0->set_label( "Click me!" );
+        this->button0->set_label( "Click me!" );
       }
       else if( ev.index() == 1 ) // MOUSE_UP
       {
-        this->button_ex0->set_label( "Release me!" );
+        this->button0->set_label( "Release me!" );
       }
     }
 
-    void button_ex1_on_click( const nom::UIWidgetEvent& ev ) const
+    void button1_on_click( const nom::UIWidgetEvent& ev ) const
     {
       NOM_DUMP( ev.id() );
       NOM_DUMP( ev.index() );
       NOM_DUMP( ev.text() );
 
-      NOM_ASSERT( this->button_ex1 != nullptr );
+      NOM_ASSERT( this->button1 != nullptr );
 
       if( ev.index() == 0 ) // MOUSE_DOWN
       {
-        this->button_ex1->set_label( "button_ex1" );
+        this->button1->set_label( "button1" );
       }
       else if( ev.index() == 1 ) // MOUSE_UP
       {
-        this->button_ex1->set_label( "Yeah buddy!" );
+        this->button1->set_label( "Yeah buddy!" );
       }
     }
 
@@ -434,9 +434,9 @@ class App: public nom::SDLApp
 
     nom::UIWidget::raw_ptr gui_window[2];
 
-    nom::Button* button_ex0;
-    nom::Button* button_ex1;
-    nom::BitmapButton* button_ex2;
+    nom::Button* button0;
+    nom::Button* button1;
+    nom::BitmapButton* button2;
 
     nom::UIBoxLayout* layout;
 };

@@ -32,13 +32,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Public header file
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/init.hpp"
+#include "nomlib/graphics/fonts/Font.hpp"
 #include "nomlib/math/Color4.hpp"
+#include "nomlib/system/File.hpp"
+#include "nomlib/system/Path.hpp"
+#include "nomlib/system/resource_handlers.hpp"
+#include "nomlib/system/init.hpp"
 
 namespace nom {
-
-// Forward declarations
-class Font;
 
 enum SystemColorType
 {
@@ -76,17 +77,31 @@ enum SystemFontType
 class PlatformSettings
 {
   public:
-    /// \brief Get the status of fonts cache.
-    static bool initialized( void );
-
     /// \brief Create the settings for the platform.
     ///
     /// \note nom::enumerate_fonts is called within this method.
     static void initialize( void );
 
-    static Color4i get_system_color( SystemColorType index );
-    static Font* get_system_font( SystemFontType index );
+    /// \brief Get a font resource by the resource key name.
     static Font* find_system_font( const std::string& key );
+
+    /// \brief Get a system color by enumerated index.
+    ///
+    /// \remarks This method is implemented in src/system/<platform>/PlatformSettings.cpp.
+    static Color4i get_system_color( SystemColorType index );
+
+    /// \brief Get a system font by enumerated index.
+    ///
+    /// \remarks This method is implemented in src/system/<platform>/PlatformSettings.cpp.
+    static Font* get_system_font( SystemFontType index );
+
+  private:
+    /// \brief Get the status of fonts cache.
+    static bool initialized( void );
+
+    /// \brief Track object's state in order to ensure enumeration of fonts has
+    /// been done.
+    static bool initialized_;
 
     /// \brief Initialization of available font resources for both internal and
     /// end-user (developer) access. Note that the function implementation is
@@ -96,11 +111,6 @@ class PlatformSettings
     /// known engine resource paths), and if found, appended onto the global (static)
     /// resource cache for fonts.
     static void enumerate_fonts( void );
-
-  private:
-    /// \brief Track object's state in order to ensure enumeration of fonts has
-    /// been done.
-    static bool initialized_;
 };
 
 } // namespace nom

@@ -28,36 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/PlatformSettings.hpp"
 
-// Private headers
-#include "nomlib/system/File.hpp"
-#include "nomlib/system/Path.hpp"
-#include "nomlib/system/resource_handlers.hpp"
-
-// Forward declarations
-#include "nomlib/graphics/fonts/Font.hpp"
+// Windows implementation of PlatformSettings
 
 namespace nom {
-
-// Static initialization
-bool PlatformSettings::initialized_ = false;
-
-bool PlatformSettings::initialized( void )
-{
-  return PlatformSettings::initialized_;
-}
-
-void PlatformSettings::initialize( void )
-{
-  if( PlatformSettings::initialized() == false )
-  {
-    NOM_LOG_INFO( NOM, "PlatformSettings interface was not yet initialized. Initializing..." );
-
-    nom::init_third_party( InitHints::SDL2_IMAGE | InitHints::SDL2 | InitHints::SDL2_TTF );
-
-    PlatformSettings::enumerate_fonts();
-    PlatformSettings::initialized_ = true;
-  }
-}
 
 Color4i PlatformSettings::get_system_color( SystemColorType index )
 {
@@ -109,14 +82,6 @@ Font* PlatformSettings::get_system_font( SystemFontType index )
   }
 
   return nullptr;
-}
-
-Font* PlatformSettings::find_system_font( const std::string& key )
-{
-  // Ensure that we are initialized before using
-  PlatformSettings::initialize();
-
-  return SystemFonts::cache().load_resource( key );
 }
 
 // Private scope

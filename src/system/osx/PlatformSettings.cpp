@@ -107,6 +107,14 @@ void PlatformSettings::enumerate_fonts( void )
   Path l = p.native() + "Library";
   Path lib( l.prepend( "Fonts" ) );
 
+  // User fonts; these are installed by the end-user, and is the preferred
+  // location for us to install our own fonts.
+  //
+  // Note that by default, we probably will have read & write permissions for
+  // this path, if the program is being executed under the same user name.
+  Path u = fp.user_home_path() + p.native() + "Library";
+  Path user( u.prepend( "Fonts" ) );
+
   SystemFonts::cache().append_resource( ResourceFile( "Arial", lib.prepend("Arial.ttf"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "TimesNewRoman", sys.prepend("Times.dfont"), ResourceFile::Type::TrueTypeFont ) );
 
@@ -118,11 +126,15 @@ void PlatformSettings::enumerate_fonts( void )
   SystemFonts::cache().append_resource( ResourceFile( "LucidaGrande", sys.prepend("LucidaGrande.ttc"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "Monaco", sys.prepend("Monaco.dfont"), ResourceFile::Type::TrueTypeFont ) );
 
+  SystemFonts::cache().append_resource( ResourceFile( "DroidSans", user.prepend("DroidSans.ttf"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "MinionPro", lib.prepend("MinionPro-Regular.otf"), ResourceFile::Type::TrueTypeFont ) );
+  SystemFonts::cache().append_resource( ResourceFile( "LiberationSans-Regular", user.prepend("LiberationSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
+  SystemFonts::cache().append_resource( ResourceFile( "LiberationSerif-Regular", user.prepend("LiberationSerif-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
+
   p = Path( fp.resource_path( "org.i8degrees.nomlib" ) + p.native() + "fonts" );
 
-  SystemFonts::cache().append_resource( ResourceFile( "LiberationSans-Regular", p.prepend("LiberationSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
-  SystemFonts::cache().append_resource( ResourceFile( "LiberationSerif-Regular", p.prepend("LiberationSerif-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
+  // SystemFonts::cache().append_resource( ResourceFile( "LiberationSans-Regular", p.prepend("LiberationSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
+  // SystemFonts::cache().append_resource( ResourceFile( "LiberationSerif-Regular", p.prepend("LiberationSerif-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "VIII", p.prepend("VIII.png"), ResourceFile::Type::BitmapFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "VIII_small", p.prepend("VIII_small.png"), ResourceFile::Type::BitmapFont ) );
 }

@@ -95,8 +95,6 @@ void PlatformSettings::enumerate_fonts( void )
 
   // System fonts; these are pre-installed for us at the time of OS
   // installation / upgrades.
-  // Path sys( "C:\\Windows\\Fonts" );
-  // Path s = fp.system_path() + p.native() + "Fonts";
   Path s = fp.system_path() + p.native();
   Path sys( s.prepend( "Fonts" ) );
   SystemFonts::cache().append_resource( ResourceFile( "Arial", sys.prepend("Arial.ttf"), ResourceFile::Type::TrueTypeFont ) );
@@ -104,6 +102,14 @@ void PlatformSettings::enumerate_fonts( void )
 
   // TODO: Verify if this is "Courier" or "Courier New"
   SystemFonts::cache().append_resource( ResourceFile( "Courier", sys.prepend("cour.ttf"), ResourceFile::Type::TrueTypeFont ) );
+
+  // User fonts; these are installed by the end-user, and is the preferred
+  // location for us to install our own fonts.
+  //
+  // Note that by default, we probably will have read & write permissions for
+  // this path, if the program is being executed under the same user name.
+  Path u = fp.user_home_path();
+  Path user( u.prepend( "Fonts" ) );
 
   p = Path( fp.resource_path( "org.i8degrees.nomlib" ) + p.native() + "fonts" );
 

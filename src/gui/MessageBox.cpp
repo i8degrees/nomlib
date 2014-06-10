@@ -106,7 +106,7 @@ void MessageBox::enable( void )
   this->enabled_ = true;
 }
 
-void MessageBox::set_title_label( const std::string& text, const Font& font, uint point_size )
+void MessageBox::set_title( const std::string& text, const Font& font, uint point_size )
 {
   this->updated_ = false;
 
@@ -155,7 +155,7 @@ void MessageBox::set_title_alignment( Text::Alignment align )
   this->update();
 }
 
-void MessageBox::set_message_label( const std::string& text, const Font& font, uint point_size )
+void MessageBox::set_message( const std::string& text, const Font& font, uint point_size )
 {
   this->updated_ = false;
 
@@ -205,6 +205,17 @@ void MessageBox::set_message_alignment( Text::Alignment align )
 
 void MessageBox::draw( RenderTarget& target ) const
 {
+  // Enabling this fixes the rendering of any set decorators, when running in
+  // circumstances where we (essentially) wish to use this object as an
+  // intermediate GUI object (rather than the retained mode that we officially
+  // support), such as in the case of examples/app.cpp.
+  //
+  // TODO: Carefully consider the possible performance ramifications of calling
+  // the base widget by default. (As an absolute *last resort*, perhaps an
+  // alternative could be an internal flagging of state? I think, probably not...)
+  //
+  // UIWidget::draw( target );
+
   if ( this->enabled() == false ) return;
 
   if( this->title_.valid() )
@@ -223,6 +234,17 @@ void MessageBox::draw( RenderTarget& target ) const
 void MessageBox::update( void )
 {
   // if ( this->updated_ == true ) return;
+
+  // Enabling this fixes the updating of any set decorators, when running in
+  // circumstances where we (essentially) wish to use this object as an
+  // intermediate GUI object (rather than the retained mode that we officially
+  // support), such as in the case of examples/app.cpp.
+  //
+  // TODO: Carefully consider the possible performance ramifications of calling
+  // the base widget by default. (As an absolute *last resort*, perhaps an
+  // alternative could be an internal flagging of state? I think, probably not...)
+  //
+  // UIWidget::update();
 
   if( this->title_.font().valid() == false )
   {

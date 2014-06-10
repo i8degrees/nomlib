@@ -195,8 +195,8 @@ class App: public nom::SDLApp
       // messagebox->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
       messagebox->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
-      messagebox->set_title_label( "INFO.", *font2, nom::DEFAULT_FONT_SIZE );
-      messagebox->set_message_label( "Hello, world!", *font1, nom::DEFAULT_FONT_SIZE );
+      messagebox->set_title( "INFO.", *font2, nom::DEFAULT_FONT_SIZE );
+      messagebox->set_message( "Hello, world!", *font1, nom::DEFAULT_FONT_SIZE );
 
       NOM_ASSERT( messagebox->parent()->position() == window->position() );
       NOM_ASSERT( messagebox->size() == size );
@@ -225,8 +225,8 @@ class App: public nom::SDLApp
       messagebox->register_event_listener( nom::UIEvent::MOUSE_DCLICK, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
       messagebox->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
-      messagebox->set_title_label( "CHOICE", *font2, nom::DEFAULT_FONT_SIZE );
-      messagebox->set_message_label( "Are you sure?", *font1, nom::DEFAULT_FONT_SIZE );
+      messagebox->set_title( "CHOICE", *font2, nom::DEFAULT_FONT_SIZE );
+      messagebox->set_message( "Are you sure?", *font1, nom::DEFAULT_FONT_SIZE );
       messagebox->set_message_alignment( Text::Alignment::TopCenter );
 
       // nom::Text yes_label( nom::Text( "Yes", font1, nom::DEFAULT_FONT_SIZE, Text::Alignment::MiddleCenter ) );

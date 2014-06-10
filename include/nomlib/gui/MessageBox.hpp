@@ -97,7 +97,7 @@ class MessageBox: public UIWidget
     /// \brief Set the title (caption) text of the message box.
     ///
     /// \remarks The title text's alignment is set to Text::Alignment::TopLeft.
-    void set_title_label( const std::string& text, const Font& font, uint point_size );
+    void set_title( const std::string& text, const Font& font, uint point_size );
 
     /// \brief Set the title (caption) text of the message box.
     void set_title_text( const std::string& text );
@@ -115,7 +115,7 @@ class MessageBox: public UIWidget
     ///
     /// \remarks The message label text's alignment is set to
     /// Text::Alignment::MiddleCenter.
-    void set_message_label( const std::string& text, const Font& font, uint point_size );
+    void set_message( const std::string& text, const Font& font, uint point_size );
 
     /// \brief Set the message text label.
     void set_message_text( const std::string& text );

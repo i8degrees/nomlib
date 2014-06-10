@@ -150,9 +150,6 @@ class App: public nom::SDLApp
 
     bool on_init ( void )
     {
-      // nom::Gradient utilizes nom::Rectangle
-      nom::Gradient gradient[2];
-
       nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
       if ( nom::set_hint ( SDL_HINT_RENDER_VSYNC, "0" ) == false )
       {
@@ -219,7 +216,7 @@ class App: public nom::SDLApp
       // requests an increase or decrease. (An increase in load-time for a
       // decrease in latency upon rescaling, which is especially noticeable on
       // older platforms and mobile devices).
-      for( auto idx = 0; idx != MAX_FONT_POINT_SIZE; ++idx )
+      for( auto idx = MIN_FONT_POINT_SIZE - 1; idx != MAX_FONT_POINT_SIZE; ++idx )
       {
         this->truetype_font.set_point_size( idx + 1 );
       }
@@ -255,53 +252,46 @@ class App: public nom::SDLApp
       }
 
       this->window[0].make_current();
+      nom::MessageBox::raw_ptr mbox = nullptr;
 
-      // Initialize the backgrounds to use in our info_box object as a gradient
-      gradient[0].set_start_color ( nom::Color4i::Gray );
-      gradient[0].set_end_color ( nom::Color4i::LightGray );
-      gradient[0].set_fill_direction ( nom::Gradient::FillDirection::Left );
-
-      gradient[1].set_start_color ( nom::Color4i::Gray );
-      gradient[1].set_end_color ( nom::Color4i::LightGray );
-      gradient[1].set_fill_direction ( nom::Gradient::FillDirection::Top );
-
-
-      gradient[0].set_position(INFO_BOX_ORIGINS[0]);
-      gradient[0].set_size(INFO_BOX_SIZES[0]);
+      mbox = new nom::MessageBox  (
+                                    nullptr,
+                                    nom::AUTO_ID,
+                                    INFO_BOX_ORIGINS[0],
+                                    INFO_BOX_SIZES[0]
+                                  );
 
       // Initialize our info_box[0] object
-      this->info_box[0] = nom::MessageBox ( INFO_BOX_ORIGINS[0],
-                                            INFO_BOX_SIZES[0],
-                                            // Use the built-in "gray" frame style
-                                            nom::GrayWindow()
-                                            // Use a custom background style
-                                            // object. A copy is made of
-                                            // the object, so forgetting
-                                            // about the object afterwards
-                                            // is OK!
-                                            //gradient[0]
-                                          );
+      this->info_box[0].reset ( mbox );
 
-      this->info_box[0].set_title( RESOURCE_INFO_BOX_TITLE_STRINGS[0], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] );
-      this->info_box[0].set_text( RESOURCE_INFO_BOX_TEXT_STRINGS[0], this->bitmap_font, 12, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4] );
+      this->info_box[0]->set_title( RESOURCE_INFO_BOX_TITLE_STRINGS[0], this->bitmap_small_font, 8 );
+      this->info_box[0]->set_message( RESOURCE_INFO_BOX_TEXT_STRINGS[0], this->bitmap_font, 12 );
+
+      // FIXME: See notes within MessageBox::update && MessageBox::draw for how
+      // to go about resolving.
+      this->info_box[0]->set_decorator( new nom::FinalFantasyDecorator() );
+
+      mbox = new nom::MessageBox  (
+                                    nullptr,
+                                    nom::AUTO_ID,
+                                    INFO_BOX_ORIGINS[1],
+                                    INFO_BOX_SIZES[1]
+                                  );
 
       // Initialize our info_box[1] object
-      this->info_box[1] = nom::MessageBox (     INFO_BOX_ORIGINS[1],
-                                                INFO_BOX_SIZES[1],
-                                                // Use the built-in "gray" frame style
-                                                nom::GrayWindow()
-                                                // Use a custom background style
-                                                // object
-                                                //gradient[1]
-                                              );
+      this->info_box[1].reset( mbox );
 
-      this->info_box[1].set_title( RESOURCE_INFO_BOX_TITLE_STRINGS[1], this->bitmap_small_font, 8, RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0] );
-      this->info_box[1].set_text( RESOURCE_INFO_BOX_TEXT_STRINGS[1], this->select_font(), this->select_font_size(), this->select_alignment() );
+      this->info_box[1]->set_title( RESOURCE_INFO_BOX_TITLE_STRINGS[1], this->bitmap_small_font, 8 );
+      this->info_box[1]->set_message( RESOURCE_INFO_BOX_TEXT_STRINGS[1], this->select_font(), this->select_font_size() );
+
+      // FIXME: See notes within MessageBox::update && MessageBox::draw for how
+      // to go about resolving.
+      this->info_box[1]->set_decorator( new nom::FinalFantasyDecorator() );
 
 // FIXME: should be 26 (sprite sheet width), but is 130 (total texture size)
 NOM_DUMP(this->sprite.size().w);
-      this->sprite.set_position ( nom::Point2i(this->info_box[0].position().x - 26, this->info_box[0].position().y) );
-      this->ani_sprite.set_position ( nom::Point2i(this->info_box[0].position().x + this->info_box[0].size().w + 26, this->info_box[0].position().y) );
+      this->sprite.set_position ( nom::Point2i(this->info_box[0]->position().x - 26, this->info_box[0]->position().y) );
+      this->ani_sprite.set_position ( nom::Point2i(this->info_box[0]->position().x + this->info_box[0]->size().w + 26, this->info_box[0]->position().y) );
  // 16 is correct
 NOM_DUMP(this->sprite.size().h);
 
@@ -364,8 +354,8 @@ NOM_DUMP(this->sprite.size().h);
         if ( this->sprite_angle > 360.0f ) this->sprite_angle -= 360.0f;
 
         this->window[0].fill ( nom::Color4i::SkyBlue );
-        this->info_box[0].draw ( this->window[0] );
-        this->info_box[1].draw ( this->window[0] );
+        this->info_box[0]->draw ( this->window[0] );
+        this->info_box[1]->draw ( this->window[0] );
         this->sprite.draw ( this->window[0], this->sprite_angle );
         this->ani_sprite.draw ( this->window[0] );
 
@@ -415,7 +405,7 @@ NOM_DUMP(this->sprite.size().h);
       // because this is the maximum size that can fit inside our info box.
       if( this->selected_font_size < MAX_FONT_POINT_SIZE )
       {
-        this->info_box[1].set_text_font_size( this->selected_font_size += point_size );
+        this->info_box[1]->set_message_font_size( this->selected_font_size += point_size );
       }
     }
 
@@ -424,7 +414,7 @@ NOM_DUMP(this->sprite.size().h);
       // Cap our minimal font point size (defaults is 9)
       if( this->selected_font_size >= MIN_FONT_POINT_SIZE )
       {
-        this->info_box[1].set_text_font_size( this->selected_font_size -= point_size );
+        this->info_box[1]->set_message_font_size( this->selected_font_size -= point_size );
       }
     }
 
@@ -486,18 +476,18 @@ NOM_DUMP(this->sprite.size().h);
           if( ev.key.mod == KMOD_LSHIFT )
           {
             this->selected_font_size = 14;
-            this->info_box[1].set_text_font_size( this->select_font_size() );
+            this->info_box[1]->set_message_font_size( this->select_font_size() );
             break;
           }
           else if( ev.key.mod == KMOD_LCTRL )
           {
             this->selected_text_string = 0;
-            this->info_box[1].set_text_label( this->select_text_string() );
+            this->info_box[1]->set_message_text( this->select_text_string() );
             break;
           }
 
           this->selected_alignment = 0;
-          this->info_box[1].set_text_alignment( this->select_alignment() );
+          this->info_box[1]->set_message_alignment( this->select_alignment() );
           break;
         }
 
@@ -506,12 +496,12 @@ NOM_DUMP(this->sprite.size().h);
           if( ev.key.mod == KMOD_LCTRL )
           {
             this->selected_text_string = 1;
-            this->info_box[1].set_text_label( this->select_text_string() );
+            this->info_box[1]->set_message_text( this->select_text_string() );
             break;
           }
 
           this->selected_alignment = 1;
-          this->info_box[1].set_text_alignment( this->select_alignment() );
+          this->info_box[1]->set_message_alignment( this->select_alignment() );
           break;
         }
 
@@ -520,12 +510,12 @@ NOM_DUMP(this->sprite.size().h);
           if( ev.key.mod == KMOD_LCTRL )
           {
             this->selected_text_string = 2;
-            this->info_box[1].set_text_label( this->select_text_string() );
+            this->info_box[1]->set_message_text( this->select_text_string() );
             break;
           }
 
           this->selected_alignment = 2;
-          this->info_box[1].set_text_alignment( this->select_alignment() );
+          this->info_box[1]->set_message_alignment( this->select_alignment() );
           break;
         }
 
@@ -534,47 +524,47 @@ NOM_DUMP(this->sprite.size().h);
           if( ev.key.mod == KMOD_LCTRL )
           {
             this->selected_text_string = 3;
-            this->info_box[1].set_text_label( this->select_text_string() );
+            this->info_box[1]->set_message_text( this->select_text_string() );
             break;
           }
 
           this->selected_alignment = 3;
-          this->info_box[1].set_text_alignment( this->select_alignment() );
+          this->info_box[1]->set_message_alignment( this->select_alignment() );
           break;
         }
 
         case SDLK_4:
         {
           this->selected_alignment = 4;
-          this->info_box[1].set_text_alignment( this->select_alignment() );
+          this->info_box[1]->set_message_alignment( this->select_alignment() );
           break;
         }
 
         case SDLK_5:
         {
           this->selected_alignment = 5;
-          this->info_box[1].set_text_alignment( this->select_alignment() );
+          this->info_box[1]->set_message_alignment( this->select_alignment() );
           break;
         }
 
         case SDLK_6:
         {
           this->selected_alignment = 6;
-          this->info_box[1].set_text_alignment( this->select_alignment() );
+          this->info_box[1]->set_message_alignment( this->select_alignment() );
           break;
         }
 
         case SDLK_7:
         {
           this->selected_alignment = 7;
-          this->info_box[1].set_text_alignment( this->select_alignment() );
+          this->info_box[1]->set_message_alignment( this->select_alignment() );
           break;
         }
 
         case SDLK_8:
         {
           this->selected_alignment = 8;
-          this->info_box[1].set_text_alignment( this->select_alignment() );
+          this->info_box[1]->set_message_alignment( this->select_alignment() );
           break;
         }
 
@@ -597,8 +587,8 @@ NOM_DUMP(this->sprite.size().h);
             this->selected_font = 0; // nom::TrueTypeFont
             this->selected_font_size = 24;
           }
-          this->info_box[1].set_text_font( this->select_font() );
-          this->info_box[1].set_text_font_size( this->select_font_size() );
+          this->info_box[1]->set_message_font( this->select_font() );
+          this->info_box[1]->set_message_font_size( this->select_font_size() );
           break;
         }
 
@@ -608,7 +598,7 @@ NOM_DUMP(this->sprite.size().h);
           {
             this->selected_font = 1; // nom::BitmapFont
           }
-          this->info_box[1].set_text_font( this->select_font() );
+          this->info_box[1]->set_message_font( this->select_font() );
           break;
         }
 
@@ -668,7 +658,7 @@ NOM_DUMP(this->sprite.size().h);
     /// Utilize one of nomlib's advanced class object types -- the dialog
     /// message box; this is a part of an interface kit with game interfacing in
     /// mind.
-    nom::MessageBox info_box[2];
+    nom::MessageBox::shared_ptr info_box[2];
 
     /// Texture used as a static background image
     nom::Texture background;

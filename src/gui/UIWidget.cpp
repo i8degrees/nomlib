@@ -170,23 +170,14 @@ UIWidget::UIWidget  (
 
 UIWidget::self_type& UIWidget::operator =( const self_type& rhs )
 {
-  // UIWidget temp( rhs );
-  // std::swap( *this, temp );
-
-  this->set_id( rhs.id() );
-  this->set_name( rhs.name() );
-
-  // UIEventHandler derives from Transformable (which it does not particularly
-  // need, but we do!
-  this->set_position( rhs.position() );
-  this->set_size( rhs.size() );
-
-  this->set_decorator( rhs.decorator() );
-  this->set_padding( rhs.padding() );
-  this->font_ = rhs.font_;
-  this->set_updated( rhs.updated() );
+  this->swap( &rhs );
 
   return *this;
+}
+
+UIWidget::UIWidget( const self_type* rhs )
+{
+  this->swap( rhs );
 }
 
 ObjectTypeInfo UIWidget::type( void ) const
@@ -548,7 +539,18 @@ void UIWidget::set_focus_policy( uint32 flags )
 
 void UIWidget::set_parent( const UIWidget::raw_ptr parent )
 {
-  this->parent_.reset( parent );
+  if( parent != nullptr )
+  {
+    this->parent_.reset( parent );
+
+    // this->set_updated( false );
+    // this->update();
+  }
+}
+
+void UIWidget::set_children( const UIWidget::Children& children )
+{
+  this->children_ = children;
 
   // this->set_updated( false );
   // this->update();
@@ -556,13 +558,16 @@ void UIWidget::set_parent( const UIWidget::raw_ptr parent )
 
 void UIWidget::set_decorator( const IDecorator::raw_ptr object )
 {
-  this->decorator_.reset( object );
+  if( object != nullptr )
+  {
+    this->decorator_.reset( object );
 
-  // Initialize the decorator object with safe
-  this->decorator_->set_bounds( this->global_bounds() );
+    // Initialize the decorator object with safe
+    this->decorator_->set_bounds( this->global_bounds() );
 
-  // this->set_updated( false );
-  this->update();
+    // this->set_updated( false );
+    this->update();
+  }
 }
 
 void UIWidget::set_title( const std::string& title )
@@ -1166,6 +1171,30 @@ bool UIWidget::focus_next_child( void )
   NOM_STUBBED( NOM );
 
   return false;
+}
+
+void UIWidget::swap( const self_type* rhs )
+{
+  this->set_position( rhs->position() );
+  this->set_size( rhs->size() );
+
+  this->set_id( rhs->id() );
+  this->set_name( rhs->name() );
+  this->set_padding( rhs->padding() );
+  this->set_font( rhs->font() );
+  this->set_parent( rhs->parent() );
+  this->set_children( rhs->children() );
+  this->set_focused( rhs->focused() );
+  this->set_visibility( rhs->visible() );
+  this->set_updated( rhs->updated() );
+  this->set_decorator( rhs->decorator() );
+  this->set_title( rhs->title() );
+  this->set_maximum_size( rhs->maximum_size() );
+  this->set_minimum_size( rhs->minimum_size() );
+  this->set_size_hint( rhs->size_hint() );
+  this->set_layout( rhs->layout() );
+  this->set_focus_policy( rhs->focus_policy() );
+  this->set_style( rhs->style() );
 }
 
 // Private scope

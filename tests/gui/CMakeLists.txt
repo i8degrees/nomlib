@@ -1,5 +1,7 @@
-set( NOM_BUILD_GUI_UI_ITEM_CONTAINER_TESTS on )
-set( NOM_BUILD_GUI_UI_EVENT_DISPATCHER_TESTS on )
+set( NOM_BUILD_GUI_UI_ITEM_CONTAINER_TESTS off )
+set( NOM_BUILD_GUI_UI_EVENT_DISPATCHER_TESTS off )
+
+set( NOM_BUILD_GUI_UI_WIDGET_TESTS on )
 
 # TODO: Remove
 set( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS off )
@@ -50,6 +52,27 @@ if( NOM_BUILD_GUI_UI_EVENT_DISPATCHER_TESTS )
                     )
 
 endif( NOM_BUILD_GUI_UI_EVENT_DISPATCHER_TESTS )
+
+if( NOM_BUILD_GUI_UI_WIDGET_TESTS )
+
+  add_executable  (
+                    UIWidgetTest
+                    ${NOM_TESTS_DIR}/gui/UIWidgetTest.cpp
+                  )
+
+  target_link_libraries (
+                          UIWidgetTest
+                          ${GTEST_BOTH_LIBRARIES}
+                          ${PROJECT_NAME} # nomlib
+                        )
+
+    GTEST_ADD_TESTS (
+                      UIWidgetTest
+                      "UIWidgetTest"
+                      ${NOM_TESTS_DIR}/gui/UIWidgetTest.cpp
+                    )
+
+endif( NOM_BUILD_GUI_UI_WIDGET_TESTS )
 
 # TODO: Remove
 # if( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS )

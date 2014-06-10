@@ -27,9 +27,9 @@ set( NOM_BUILD_GAMEOFLIFE_EXAMPLE off )
 # has been merged into the dev branch.
 set( NOM_BUILD_GUI_EXAMPLE off )
 
-set( NOM_BUILD_GUI_BUTTON_EXAMPLE on )
-set( NOM_BUILD_GUI_LISTBOX_EXAMPLE on )
-set( NOM_BUILD_GUI_MESSAGEBOX_EXAMPLE on )
+set( NOM_BUILD_GUI_BUTTON_EXAMPLE off )
+set( NOM_BUILD_GUI_LISTBOX_EXAMPLE off )
+set( NOM_BUILD_GUI_MESSAGEBOX_EXAMPLE off )
 
 # TODO: Needs to be split from examples/gui.cpp:
 set( NOM_BUILD_GUI_DATAVIEWLIST_EXAMPLE off )

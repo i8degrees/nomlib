@@ -127,6 +127,7 @@ class ButtonLayoutTest: public ::testing::Test
       // (meaning that the size dimensions used will be from the widget's
       // size_hint method, when the size policy is set to Preferred).
       this->button0 = this->create_button( this->main_window, Point2i::null, Size2i(50,25), "button0", "Click me!" );
+
       this->button0->set_font( SystemFonts::cache().load_resource("VIII") );
       this->button0->set_decorator( new nom::FinalFantasyDecorator() );
       this->button0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );

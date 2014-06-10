@@ -109,6 +109,9 @@ class UIWidget: public UIEventHandler
     /// \brief Copy assignment operator.
     self_type& operator =( const self_type& rhs );
 
+    /// \brief Construct a widget object from a UIWidget object pointer.
+    UIWidget( const self_type* rhs );
+
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
@@ -272,6 +275,8 @@ class UIWidget: public UIEventHandler
 
     void set_parent( const UIWidget::raw_ptr parent );
 
+    void set_children( const UIWidget::Children& children );
+
     /// \brief Attach a decorator to the widget.
     ///
     /// \remarks Passing an object with an invalid (null) position or size will
@@ -426,6 +431,8 @@ class UIWidget: public UIEventHandler
     /// top-level window object that is active, so that we are able to iterate
     /// through the complete widget tree.
     bool focus_next_child( void );
+
+    void swap( const self_type* rhs );
 
   private:
     /// \brief The unique identifier for a nom::UIWidget object instance.

@@ -456,13 +456,13 @@ TEST_F( ListBoxLayoutTest, LayoutAPIUsingBitmapFont )
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F( ListBoxLayoutTest, LayoutAPIUsingArialFont )
+TEST_F( ListBoxLayoutTest, VerticalLayoutUsingArialFont )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
   this->gui_window[1]->set_font( SystemFonts::cache().load_resource( "Arial" ) );
 
-  layout = this->create_layout( this->gui_window[1], Point2i(12,25), Size2i(50,-1), "LayoutAPIUsingTrueTypeFont", Orientations::Vertical );
+  layout = this->create_layout( this->gui_window[1], Point2i(12,25), Size2i(50,-1), "VerticalLayoutUsingTrueTypeFont", Orientations::Vertical );
 
   // Total number of items (including spacers) in our layout
   EXPECT_EQ( 8, layout->count() );
@@ -533,6 +533,93 @@ TEST_F( ListBoxLayoutTest, LayoutAPIUsingArialFont )
     // Should include both UISpacerItem spacing & internal layout spacing
     EXPECT_EQ( 37, item->widget()->position().x );
     EXPECT_EQ( 277, item->widget()->position().y );
+
+    // Should be the size as calculated by the layout (dependent upon size
+    // policy).
+    EXPECT_EQ( 50, item->widget()->size().w );
+    EXPECT_EQ( 56, item->widget()->size().h );
+  }
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F( ListBoxLayoutTest, HorizontalLayoutUsingArialFont )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  this->gui_window[1]->set_font( SystemFonts::cache().load_resource( "Arial" ) );
+
+  layout = this->create_layout( this->gui_window[1], Point2i(12,25), Size2i(50,-1), "HorizontalLayoutUsingTrueTypeFont", Orientations::Horizontal );
+
+  // Total number of items (including spacers) in our layout
+  EXPECT_EQ( 8, layout->count() );
+  EXPECT_EQ( Size2i( 50, 56 ), layout->size_hint() );
+  EXPECT_EQ( Size2i( 62, 36 ), layout->minimum_size() );
+
+  EXPECT_EQ( 1, layout->spacing() );
+
+  UILayoutItem* item = nullptr;
+
+  item = layout->at( 0 );
+
+  ASSERT_FALSE( item->spacer_item() == nullptr );
+
+  if( item->spacer_item() != nullptr )
+  {
+    // NOM_DUMP( item->spacer_item()->bounds().x );
+    // NOM_DUMP( item->spacer_item()->bounds().y );
+    // NOM_DUMP( item->spacer_item()->size().w );
+    // NOM_DUMP( item->spacer_item()->size().h );
+
+    EXPECT_EQ( -1, item->spacer_item()->bounds().x );
+    EXPECT_EQ( -1, item->spacer_item()->bounds().y );
+
+    // Should be the size as calculated by the layout (dependent upon size
+    // policy).
+    EXPECT_EQ( 8, item->spacer_item()->size().w );
+    EXPECT_EQ( 8, item->spacer_item()->size().h );
+  }
+
+  // listbox0
+  item = layout->at( 1 );
+
+  ASSERT_FALSE( item->widget() == nullptr );
+
+  if( item->widget() != nullptr )
+  {
+    // NOM_DUMP_VAR( "listbox0_pos.x: ", item->widget()->position().x );
+    // NOM_DUMP_VAR( "listbox0_pos.y: ", item->widget()->position().y );
+    // NOM_DUMP_VAR( "listbox0_size.w: ", item->widget()->size().w );
+    // NOM_DUMP_VAR( "listbox0_size.h: ", item->widget()->size().h );
+
+    // Absolute (global screen) coordinates
+    // Should include both UISpacerItem spacing, but not internal layout
+    // spacing (because it is the first item).
+    EXPECT_EQ( 45, item->widget()->position().x );
+    EXPECT_EQ( 50, item->widget()->position().y );
+
+    // Should be the size as calculated by the layout (dependent upon size
+    // policy).
+    EXPECT_EQ( 50, item->widget()->size().w );
+    EXPECT_EQ( 56, item->widget()->size().h );
+  }
+
+  // Skip to the end of the layout -- listbox3
+  item = layout->at( layout->count() - 1 );
+
+  ASSERT_FALSE( item->widget() == nullptr );
+
+  if( item->widget() != nullptr )
+  {
+    // NOM_DUMP_VAR( "listbox3_pos.x: ", item->widget()->position().x );
+    // NOM_DUMP_VAR( "listbox3_pos.y: ", item->widget()->position().y );
+    // NOM_DUMP_VAR( "listbox3_size.w: ", item->widget()->size().w );
+    // NOM_DUMP_VAR( "listbox3_size.h: ", item->widget()->size().h );
+
+    // Absolute (global screen) coordinates
+    // Should include both UISpacerItem spacing & internal layout spacing
+    EXPECT_EQ( 246, item->widget()->position().x );
+    EXPECT_EQ( 50, item->widget()->position().y );
 
     // Should be the size as calculated by the layout (dependent upon size
     // policy).

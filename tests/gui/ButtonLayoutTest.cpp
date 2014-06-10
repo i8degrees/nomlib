@@ -429,7 +429,7 @@ class ButtonLayoutTest: public ::testing::Test
     nom::BitmapButton::raw_ptr button2;
 };
 
-TEST_F( ButtonLayoutTest, LayoutAPI )
+TEST_F( ButtonLayoutTest, HorizontalLayout )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
@@ -506,6 +506,93 @@ TEST_F( ButtonLayoutTest, LayoutAPI )
     // Should include both UISpacerItem spacing & internal layout spacing
     EXPECT_EQ( 299, item->widget()->position().x );
     EXPECT_EQ( 50, item->widget()->position().y );
+
+    // Should be the size as calculated by the layout (dependent upon size
+    // policy).
+    EXPECT_EQ( 102, item->widget()->size().w );
+    EXPECT_EQ( 25, item->widget()->size().h );
+  }
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F( ButtonLayoutTest, VerticalLayout )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  layout = this->create_layout( this->gui_window[1], Point2i(12,25), Size2i(50,-1), "LayoutAPI", Orientations::Vertical );
+
+  // Total number of items (including spacers) in our layout
+  EXPECT_EQ( 6, layout->count() );
+
+  EXPECT_EQ( Size2i( 102, 25 ), layout->size_hint() );
+  EXPECT_EQ( Size2i( 102, 31 ), layout->minimum_size() );
+
+  EXPECT_EQ( 1, layout->spacing() );
+
+  UILayoutItem* item = nullptr;
+
+  // UISpacerItem
+  item = layout->at( 0 );
+
+  ASSERT_FALSE( item->spacer_item() == nullptr );
+
+  if( item->spacer_item() != nullptr )
+  {
+    // NOM_DUMP( item->spacer_item()->bounds().x );
+    // NOM_DUMP( item->spacer_item()->bounds().y );
+    // NOM_DUMP( item->spacer_item()->size().w );
+    // NOM_DUMP( item->spacer_item()->size().h );
+
+    EXPECT_EQ( -1, item->spacer_item()->bounds().x );
+    EXPECT_EQ( -1, item->spacer_item()->bounds().y );
+
+    // Should be the size as calculated by the layout (dependent upon size
+    // policy).
+    EXPECT_EQ( 8, item->spacer_item()->size().w );
+    EXPECT_EQ( 8, item->spacer_item()->size().h );
+  }
+
+  // button0
+  item = layout->at( 1 );
+
+  ASSERT_FALSE( item->widget() == nullptr );
+
+  if( item->widget() != nullptr )
+  {
+    // NOM_DUMP_VAR( "button0_pos.x: ", item->widget()->position().x );
+    // NOM_DUMP_VAR( "button0_pos.y: ", item->widget()->position().y );
+    // NOM_DUMP_VAR( "button0_size.w: ", item->widget()->size().w );
+    // NOM_DUMP_VAR( "button0_size.h: ", item->widget()->size().h );
+
+    // Absolute (global screen) coordinates
+    // Should include both UISpacerItem spacing, but not internal layout
+    // spacing (because it is the first item).
+    EXPECT_EQ( 37, item->widget()->position().x );
+    EXPECT_EQ( 58, item->widget()->position().y );
+
+    // Should be the size as calculated by the layout (dependent upon size
+    // policy).
+    EXPECT_EQ( 102, item->widget()->size().w );
+    EXPECT_EQ( 25, item->widget()->size().h );
+  }
+
+  // Skip to the end of the layout -- button2
+  item = layout->at( layout->count() - 1 );
+
+  ASSERT_FALSE( item->widget() == nullptr );
+
+  if( item->widget() != nullptr )
+  {
+    // NOM_DUMP_VAR( "button2_pos.x: ", item->widget()->position().x );
+    // NOM_DUMP_VAR( "button2_pos.y: ", item->widget()->position().y );
+    // NOM_DUMP_VAR( "button2_size.w: ", item->widget()->size().w );
+    // NOM_DUMP_VAR( "button2_size.h: ", item->widget()->size().h );
+
+    // Absolute (global screen) coordinates
+    // Should include both UISpacerItem spacing & internal layout spacing
+    EXPECT_EQ( 37, item->widget()->position().x );
+    EXPECT_EQ( 158, item->widget()->position().y );
 
     // Should be the size as calculated by the layout (dependent upon size
     // policy).

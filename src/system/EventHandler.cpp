@@ -32,7 +32,7 @@ namespace nom {
 
 EventHandler::EventHandler( void )
 {
-  NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE( NOM );
 
   // TODO: Err handling?
   this->joystick.initialize();
@@ -40,7 +40,7 @@ EventHandler::EventHandler( void )
 
 EventHandler::~EventHandler( void )
 {
-  NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE( NOM );
 }
 
 void EventHandler::process_event( const Event& ev )

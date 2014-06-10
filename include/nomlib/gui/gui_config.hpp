@@ -36,6 +36,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+/// \brief A integer indicating to the constructor of UIWidget to auto-generate
+/// the internal identifier of the object.
+static const int AUTO_ID = -1;
+
 /// \note Borrowed from Qt 4.6
 enum Orientations: uint32
 {

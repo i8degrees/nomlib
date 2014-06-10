@@ -41,16 +41,11 @@ namespace nom {
 // Static initializations
 int64 UIWidget::next_window_id_ = 0;
 
-UIWidget::UIWidget( void )  :
-  id_{ generate_id() },
-  name_{ typeid( this ).name() },
-  padding_ ( 0 ),
-  focused_{ false },
-  visible_{ false },
-  updated_{ false },
-  focus_policy_{ FocusPolicy::NoFocus }
+UIWidget::UIWidget( void )
 {
   // NOM_LOG_TRACE( NOM );
+
+  this->initialize( nullptr, nom::AUTO_ID, Point2i::null, Size2i::null, typeid( this ).name() );
 }
 
 UIWidget::~UIWidget( void )
@@ -58,19 +53,20 @@ UIWidget::~UIWidget( void )
   // NOM_LOG_TRACE( NOM );
 }
 
-UIWidget::UIWidget  (
-                      UIWidget* parent,
-                      int64 id,
-                      const Point2i& pos,
-                      const Size2i& size
-                    ) :
-  padding_( 0 ),
-  focused_{ false },
-  visible_{ true },
-  updated_{ false },
-  focus_policy_{ FocusPolicy::NoFocus }
+void UIWidget::initialize (
+                            UIWidget* parent,
+                            int64 id,
+                            const Point2i& pos,
+                            const Size2i& size,
+                            const std::string& name
+                          )
 {
-  // NOM_LOG_TRACE( NOM );
+  // Sane defaults
+  this->set_padding( 0 );
+  this->set_focused( false );
+  this->set_visibility( true );
+  this->set_updated( false );
+  this->set_focus_policy( FocusPolicy::NoFocus );
 
   // Top-level widget (parent).
   this->set_position( pos );
@@ -78,7 +74,7 @@ UIWidget::UIWidget  (
 
   // Generate a uniquely identifying integer when requested, otherwise honor
   // the number given, even if it may be a duplicate.
-  if( id == -1 )
+  if( id == nom::AUTO_ID )
   {
     this->set_id( this->generate_id() );
   }
@@ -123,22 +119,21 @@ UIWidget::UIWidget  (
     // Top-level window (owner).
     this->set_parent( parent );
     this->set_font( parent->font() );
-
-    // TODO:
-    // this->update();
   }
 
-  // Auto-generate our name tag only if it is empty.
-  if( this->name().empty() )
+  // Auto-generate our name tag if it is empty.
+  if( name.empty() )
   {
     this->set_name( "parent_window" );
+  }
+  else
+  {
+    this->set_name( name );
   }
 
   // Ensure that a valid font resource is available.
   if( this->font().valid() == false )
   {
-    // NOM_DUMP( "invalid widget font" );
-
     this->set_font( PlatformSettings::get_system_font( SystemFontType::VariableTrueType ) );
   }
 
@@ -149,6 +144,28 @@ UIWidget::UIWidget  (
 
   // Initialize the default event listeners for a top-level widget.
   // NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
+}
+
+UIWidget::UIWidget  (
+                      const Point2i& pos,
+                      const Size2i& size
+                    )
+{
+  // NOM_LOG_TRACE( NOM );
+
+  this->initialize( nullptr, nom::AUTO_ID, pos, size, "\0" );
+}
+
+UIWidget::UIWidget  (
+                      UIWidget* parent,
+                      int64 id,
+                      const Point2i& pos,
+                      const Size2i& size
+                    )
+{
+  // NOM_LOG_TRACE( NOM );
+
+  this->initialize( parent, id, pos, size, "\0" );
 }
 
 UIWidget::self_type& UIWidget::operator =( const self_type& rhs )

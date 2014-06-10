@@ -67,13 +67,26 @@ class UIWidget: public UIEventHandler
     /// \brief Destructor.
     virtual ~UIWidget( void );
 
-    /// \brief Copy constructor.
-    ///
-    /// \remarks This class is non-copyable.
-    UIWidget( const self_type& copy ) = delete;
+    void initialize (
+                      UIWidget* parent,
+                      int64 id,
+                      const Point2i& pos,
+                      const Size2i& size,
+                      const std::string& name
+                    );
 
-    /// \brief Copy assignment operator.
-    self_type& operator =( const self_type& rhs );
+    /// \brief Construct a top-level (parent) widget.
+    ///
+    /// \remarks The internal identifier & name will be auto-generated.
+    ///
+    /// \param pos The positioning coordinates of the widget; must be relative
+    /// to the positioning coordinates of the top-level window.
+    ///
+    /// \param size The size of the widget to construct.
+    UIWidget  (
+                const Point2i& pos,
+                const Size2i& size
+              );
 
     /// \brief Construct a widget.
     ///
@@ -87,6 +100,14 @@ class UIWidget: public UIEventHandler
                 const Point2i& pos,
                 const Size2i& size
               );
+
+    /// \brief Copy constructor.
+    ///
+    /// \remarks This class is non-copyable.
+    UIWidget( const self_type& copy ) = delete;
+
+    /// \brief Copy assignment operator.
+    self_type& operator =( const self_type& rhs );
 
     /// \brief Re-implements the IObject::type method.
     ///

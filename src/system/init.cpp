@@ -68,7 +68,7 @@ FontCache& SystemFonts::cache( void )
 {
   if( SystemFonts::initialized() == false )
   {
-    NOM_LOG_ERR( NOM, "System fonts cache was not yet initialized. Initializing..." );
+    NOM_LOG_INFO( NOM, "System fonts cache was not yet initialized. Initializing..." );
     SystemFonts::initialize();
   }
 
@@ -145,7 +145,7 @@ ColorDatabase& SystemColors::colors( void )
 {
   if( SystemColors::initialized() == false )
   {
-    NOM_LOG_ERR( NOM, "Color database was not yet initialized. Initializing..." );
+    NOM_LOG_INFO( NOM, "Color database was not yet initialized. Initializing..." );
     SystemColors::initialize();
   }
 
@@ -197,15 +197,23 @@ bool init ( int argc, char* argv[] )
   //
   // pwd = dir.currentPath();
 
-  if ( pwd.length() < 1 ) return false;
+  if( pwd.length() < 1 )
+  {
+    NOM_LOG_ERR( NOM, "Could not get program's executable working path (pwd is NULL)." );
+    return false;
+  }
 
-  if ( dir.set_path ( pwd ) == false ) return false;
+  if( dir.set_path ( pwd ) == false )
+  {
+    NOM_LOG_ERR( NOM, "Could not set working directory path to: " + pwd );
+    return false;
+  }
 
-  if ( init_third_party(0) == false ) return false;
-
-  // Create a resource cache for letting either SDLApp or the end-user add
-  // fonts for ease of access.
-  // SystemFonts::initialize();
+  if( init_third_party( 0 ) == false )
+  {
+    NOM_LOG_ERR( NOM, "Could not initialize third party libraries." );
+    return false;
+  }
 
   return true;
 }

@@ -49,6 +49,7 @@ bool PlatformSettings::initialized( void )
 void PlatformSettings::initialize( void )
 {
   PlatformSettings::enumerate_fonts();
+    NOM_LOG_INFO( NOM, "PlatformSettings interface was not yet initialized. Initializing..." );
 
   PlatformSettings::initialized_ = true;
 }

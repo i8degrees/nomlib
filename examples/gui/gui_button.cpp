@@ -164,12 +164,6 @@ class App: public nom::SDLApp
       // size_hint method, when the size policy is set to Preferred).
       this->button0 = this->create_button( this->gui_window[1], Point2i::null, Size2i(50,25), "button0", "Click me!" );
       this->button0->set_font( SystemFonts::cache().load_resource("VIII") );
-
-      // FIXME: Setting the button's font after construction doesn't update the
-      // text label's font, so this is a workaround until I get around to fixing
-      // it.
-      this->button0->set_label( "Click me!" );
-
       this->button0->set_decorator( new nom::FinalFantasyDecorator() );
       this->button0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );
       this->button0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );

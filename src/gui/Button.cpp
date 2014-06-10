@@ -52,6 +52,8 @@ Button::Button  (
   // Initialize the default event listeners for the widget.
   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
 
+  NOM_CONNECT_UIEVENT( this, UIEvent::ON_WIDGET_UPDATE, this->on_update );
+
   // Widget's focus type.
   this->set_focus_policy( FocusPolicy::StrongFocus );
 }
@@ -166,6 +168,23 @@ void Button::update_bounds( void )
 {
   this->label_.set_position( this->position() );
   this->label_.set_size( this->size() );
+}
+
+void Button::on_update( const UIWidgetEvent& ev )
+{
+  // NOM_LOG_TRACE( NOM );
+
+  Event evt = ev.event();
+
+  if( evt.type != UIEvent::ON_WIDGET_UPDATE )
+  {
+    return;
+  }
+
+  this->label_.set_font( this->font() );
+
+  this->update_bounds();
+  this->update();
 }
 
 void Button::on_size_changed( const UIWidgetEvent& ev )

@@ -57,14 +57,14 @@ set( NOM_BUILD_GUI_UNIT on )
 
 # Build the serializers unit.
 # Dependencies: Core unit, Property Tree unit
-set( NOM_BUILD_SERIALIZERS_UNIT on )
+set( NOM_BUILD_SERIALIZERS_UNIT off )
 
 # Build the JSON unit.
 # Dependencies: jsoncpp, Property Tree unit
-set( NOM_BUILD_JSON_UNIT on )
+set( NOM_BUILD_JSON_UNIT off )
 
 # Build the Property Tree unit.
-set( NOM_BUILD_PTREE_UNIT on )
+set( NOM_BUILD_PTREE_UNIT off )
 
 # Build the XML unit.
 # Dependencies: RapidXml

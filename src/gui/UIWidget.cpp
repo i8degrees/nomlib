@@ -455,34 +455,25 @@ void UIWidget::set_font( const Font& font )
   {
     this->font_ = font;
   }
+
+  // Associate the widget's unique identifiers with the event notification.
+  UIWidgetEvent evt;
+  evt.set_index( this->id() );
+  evt.set_text( this->name() );
+  evt.set_id( this->id() );
+
+  Event ev;
+  ev.type = UIEvent::ON_WIDGET_UPDATE;
+  ev.timestamp = nom::ticks();
+  evt.set_event( ev );
+
+  // Private event notification
+  this->emit( UIEvent::ON_WIDGET_UPDATE, evt );
 }
 
 void UIWidget::set_font( const Font* font )
 {
-  UIWidget::Children children = this->children();
-
-  if( children.size() > 0 )
-  {
-    for( auto itr = children.begin(); itr != children.end(); ++itr )
-    {
-      if( *font != (*itr)->font() )
-      {
-        // NOM_DUMP( (*itr)->name() );
-        (*itr)->set_font( font );
-      }
-
-      // FIXME: This method call yields nothing on widgets that require updated_
-      // to be false.
-      (*itr)->update();
-    }
-  }
-
-  // Now that our children are fed, take care of ourselves, the top-level parent
-  // AKA widget / window.
-  if( *font != this->font() )
-  {
-    this->font_ = *font;
-  }
+  this->set_font( *font );
 }
 
 /*

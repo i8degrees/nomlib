@@ -98,6 +98,8 @@ enum UIEvent
   /// window be closed.
   ON_WINDOW_CLOSE,
 
+  ON_WIDGET_UPDATE,
+
   // Public event slots
 
   KEY_DOWN,
@@ -129,6 +131,8 @@ enum UIEvent
   WINDOW_RESIZED,
   WINDOW_SIZE_CHANGED,
   WINDOW_CLOSE,
+
+  WIDGET_UPDATE,
 
   MOUSE_DCLICK,
   MOUSE_LEFT_UP,

@@ -107,6 +107,8 @@ class Button: public UIWidget
     /// \brief Re-implements UIWidget::on_size_changed.
     virtual void on_size_changed( const UIWidgetEvent& ev );
 
+    virtual void on_update( const UIWidgetEvent& ev );
+
     virtual void on_mouse_down( const UIWidgetEvent& ev );
     virtual void on_mouse_up( const UIWidgetEvent& ev );
 

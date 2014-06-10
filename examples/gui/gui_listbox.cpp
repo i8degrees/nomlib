@@ -43,10 +43,10 @@ const std::string APP_RESOURCES_DIR = "Resources" + p.native();
 const std::string APP_NAME = "nomlib's GUI | ListBox Widgets";
 
 /// \brief Width, in pixels, of our effective rendering surface.
-const nom::int32 WINDOW_WIDTH = 800;
+const nom::int32 WINDOW_WIDTH = 640;
 
 /// \brief Height, in pixels, of our effective rendering surface.
-const nom::int32 WINDOW_HEIGHT = 600;
+const nom::int32 WINDOW_HEIGHT = 480;
 
 const std::string RESOURCE_ICON = APP_RESOURCES_DIR + "icon.png";
 
@@ -89,7 +89,7 @@ class App: public nom::SDLApp
 
     bool on_init( void )
     {
-      nom::uint32 window_flags = SDL_WINDOW_SHOWN;
+      nom::uint32 window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
 
       if ( nom::set_hint ( SDL_HINT_RENDER_VSYNC, "0" ) == false )
       {
@@ -107,18 +107,11 @@ class App: public nom::SDLApp
         return false;
       }
 
-      this->window_size = this->window.size();
-
       // Scale window contents up by the new width & height
-      this->window.set_logical_size ( this->window_size.x, this->window_size.y );
+      this->window.set_logical_size ( WINDOW_WIDTH, WINDOW_HEIGHT );
 
-      // Top-level (root) window initialization:
-
-      // Top-level window (relative to global "screen" coordinates)
-      this->gui_window_pos[0] = nom::Point2i( 2, 2 );
-      this->gui_window_size[0] = nom::Size2i( WINDOW_WIDTH - 4, WINDOW_HEIGHT - 4 );
-
-      this->gui_window[0] = new nom::UIWidget( nullptr, -1, this->gui_window_pos[0], this->gui_window_size[0] );
+      // Top-level window (relative to global "screen" coordinates):
+      this->gui_window[0] = new nom::UIWidget( nullptr, -1, nom::Point2i( 2, 2 ), nom::Size2i( WINDOW_WIDTH - 4, WINDOW_HEIGHT - 4 ) );
       this->gui_window[0]->set_name( "Root" );
       this->gui_window[0]->set_title( this->gui_window[0]->name() );
 
@@ -131,11 +124,7 @@ class App: public nom::SDLApp
       // this->gui_window[0]->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
 
       // Layout container initialization:
-
-      this->gui_window_pos[1] = Point2i( 25, 25 );
-      this->gui_window_size[1] = Size2i( WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 );
-
-      this->gui_window[1] = new nom::UIWidget( nullptr, -1, this->gui_window_pos[1], this->gui_window_size[1] );
+      this->gui_window[1] = new nom::UIWidget( nullptr, -1, Point2i( 25, 25 ), Size2i( WINDOW_WIDTH / 2, WINDOW_HEIGHT - 100 ) );
       this->gui_window[1]->set_name( "Layout" );
       this->gui_window[1]->set_title( this->gui_window[1]->name() );
 
@@ -194,214 +183,22 @@ class App: public nom::SDLApp
       // FIXME: Widgets must not be added to the layout until *after* a) font
       // initialization (widget's size hint); b) item store initialization
       // (internal update is necessary within ListBox::set_item_store).
-      this->listbox_layout = new nom::UIVBoxLayout( this->gui_window[1] );
+      this->layout = new nom::UIVBoxLayout( this->gui_window[1] );
 
-      // TODO: Add unit tests for each variation
       if( this->listbox_ex0 != nullptr )
       {
-        // FIXME:
         // this->listbox_ex0->set_size_policy( nom::UILayoutPolicy::Policy::Minimum, nom::UILayoutPolicy::Policy::Minimum );
       }
 
-      UILayoutItem* item = nullptr;
-
-      // TODO: Add unit tests for this
-      // this->listbox_layout->set_spacing( 1 );
-
-      this->listbox_layout->append_spacer( 8 );
-      this->listbox_layout->append_widget( this->listbox_ex0 );
-      this->listbox_layout->append_spacer( 8 );
-      this->listbox_layout->append_widget( this->listbox_ex1 );
-      this->listbox_layout->append_spacer( 40 );
-      this->listbox_layout->append_widget( this->listbox_ex2 );
-
-      // FIXME:
-      // this->listbox_layout->set_alignment( this->listbox_ex1, nom::Anchor::Center );
-      // this->listbox_layout->set_alignment( this->listbox_ex2, nom::Anchor::Center );
+      this->layout->append_spacer( 8 );
+      this->layout->append_widget( this->listbox_ex0 );
+      this->layout->append_spacer( 8 );
+      this->layout->append_widget( this->listbox_ex1 );
+      this->layout->append_spacer( 40 );
+      this->layout->append_widget( this->listbox_ex2 );
 
       // Relative to parent widget
-      this->listbox_layout->set_position( nom::Point2i( 12, 25 ) );
-
-      // Test0:
-      // TODO: Add unit tests for this
-      // this->button_layout->set_position( nom::Point2i( 0, 0 ) );
-
-      item = this->listbox_layout->at( 0 );
-
-      NOM_ASSERT( item->spacer_item() != nullptr );
-
-      if( item->spacer_item() != nullptr )
-      {
-        NOM_ASSERT( item->spacer_item()->bounds().x == -1 );
-        NOM_ASSERT( item->spacer_item()->bounds().y == -1 );
-
-        // Should be the size as calculated by the layout (dependent upon size
-        // policy).
-        NOM_ASSERT( item->spacer_item()->size().w == 8 );
-        NOM_ASSERT( item->spacer_item()->size().h == 8 );
-
-        // NOM_DUMP( item->spacer_item()->bounds().x );
-        // NOM_DUMP( item->spacer_item()->bounds().y );
-        // NOM_DUMP( item->spacer_item()->size().w );
-        // NOM_DUMP( item->spacer_item()->size().h );
-      }
-
-      // listbox_ex0
-      item = this->listbox_layout->at( 1 );
-
-      NOM_ASSERT( item->widget() != nullptr );
-
-      if( item->widget() != nullptr )
-      {
-        // Absolute (global screen) coordinates
-        // Should include both UISpacerItem spacing, but not internal layout
-        // spacing (because it is the first item).
-        NOM_ASSERT( item->widget()->position().x == 37 );
-        NOM_ASSERT( item->widget()->position().y == 58 );
-
-        // Should be the size as calculated by the layout (dependent upon size
-        // policy).
-        NOM_ASSERT( item->widget()->size().w == 50 );
-
-        // FIXME:
-        #if defined( NOM_PLATFORM_WINDOWS )
-          NOM_ASSERT( item->widget()->size().h == 56 );
-        #else
-          NOM_ASSERT( item->widget()->size().h == 60 );
-        #endif
-
-        // NOM_DUMP( item->widget()->position().x );
-        // NOM_DUMP( item->widget()->position().y );
-        // NOM_DUMP( item->widget()->size().w );
-        // NOM_DUMP( "listbox_ex0->size.h: ", item->widget()->size().h );
-      }
-
-      item = this->listbox_layout->at( 2 );
-
-      NOM_ASSERT( item->spacer_item() != nullptr );
-
-      if( item->spacer_item() != nullptr )
-      {
-        NOM_ASSERT( item->spacer_item()->bounds().x == -1 );
-        NOM_ASSERT( item->spacer_item()->bounds().y == -1 );
-
-        // Should be the size as calculated by the layout (dependent upon size
-        // policy).
-        NOM_ASSERT( item->spacer_item()->size().w == 8 );
-        NOM_ASSERT( item->spacer_item()->size().h == 8 );
-
-        // NOM_DUMP( item->spacer_item()->bounds().x );
-        // NOM_DUMP( item->spacer_item()->bounds().y );
-        // NOM_DUMP( item->spacer_item()->size().w );
-        // NOM_DUMP( item->spacer_item()->size().h );
-      }
-
-      // listbox_ex1
-      item = this->listbox_layout->at( 3 );
-
-      NOM_ASSERT( item->widget() != nullptr );
-
-      if( item->widget() != nullptr )
-      {
-        // Absolute (global screen) coordinates
-        // Should include both UISpacerItem spacing & internal layout spacing
-        NOM_ASSERT( item->widget()->position().x == 37 );
-
-        // FIXME:
-        #if defined( NOM_PLATFORM_WINDOWS )
-          NOM_ASSERT( item->widget()->position().y == 123 );
-        #else
-          NOM_ASSERT( item->widget()->position().y == 127 );
-        #endif
-
-        // Should be the size as calculated by the layout (dependent upon size
-        // policy).
-        NOM_ASSERT( item->widget()->size().w == 50 );
-
-        // FIXME:
-        #if defined( NOM_PLATFORM_WINDOWS )
-          NOM_ASSERT( item->widget()->size().h == 56 );
-        #else
-          NOM_ASSERT( item->widget()->size().h == 60 );
-        #endif
-
-        // NOM_DUMP( item->widget()->position().x );
-        // NOM_DUMP( "listbox_ex1->pos.y: ", item->widget()->position().y );
-        // NOM_DUMP( item->widget()->size().w );
-        // NOM_DUMP( "listbox_ex1->size.h: ", item->widget()->size().h );
-      }
-
-      // UISpacerItem
-      item = this->listbox_layout->at( 4 );
-
-      NOM_ASSERT( item->spacer_item() != nullptr );
-
-      if( item->spacer_item() != nullptr )
-      {
-        NOM_ASSERT( item->spacer_item()->bounds().x == -1 );
-        NOM_ASSERT( item->spacer_item()->bounds().y == -1 );
-
-        // Should be the size as calculated by the layout (dependent upon size
-        // policy).
-        NOM_ASSERT( item->spacer_item()->size().w == 40 );
-        NOM_ASSERT( item->spacer_item()->size().h == 40 );
-
-        // NOM_DUMP( item->spacer_item()->bounds().x );
-        // NOM_DUMP( item->spacer_item()->bounds().y );
-        // NOM_DUMP( item->spacer_item()->size().w );
-        // NOM_DUMP( item->spacer_item()->size().h );
-      }
-
-      // listbox_ex2
-      item = this->listbox_layout->at( 5 );
-
-      NOM_ASSERT( item->widget() != nullptr );
-
-      if( item->widget() != nullptr )
-      {
-        // Absolute (global screen) coordinates
-        // Should include both UISpacerItem spacing & internal layout spacing
-        NOM_ASSERT( item->widget()->position().x == 37 );
-
-        // FIXME:
-        #if defined( NOM_PLATFORM_WINDOWS )
-          NOM_ASSERT( item->widget()->position().y == 220 );
-        #else
-          NOM_ASSERT( item->widget()->position().y == 228 );
-        #endif
-
-        // Should be the size as calculated by the layout (dependent upon size
-        // policy).
-        NOM_ASSERT( item->widget()->size().w == 50 );
-
-        // FIXME:
-        #if defined( NOM_PLATFORM_WINDOWS )
-          NOM_ASSERT( item->widget()->size().h == 56 );
-        #else
-          NOM_ASSERT( item->widget()->size().h == 60 );
-        #endif
-
-        // NOM_DUMP( item->widget()->position().x );
-        // NOM_DUMP( "listbox_ex2->pos.y: ", item->widget()->position().y );
-        // NOM_DUMP( item->widget()->size().w );
-        // NOM_DUMP( "listbox_ex2->size.h: ", item->widget()->size().h );
-      }
-
-      // Sanity check
-      NOM_ASSERT( this->gui_window[1]->layout() == this->listbox_layout );
-
-      // These coordinates should be relative to the parent window that the
-      // layout is attached to.
-      NOM_ASSERT( this->listbox_layout->bounds().x == 12 );
-      NOM_ASSERT( this->listbox_layout->bounds().y == 25 );
-
-      // TODO: Unit test for button_layout size dimensions
-
-      // FIXME:
-      // NOM_DUMP( this->button_layout->bounds() );
-
-      NOM_ASSERT( this->gui_window[1]->position().x == 25 );
-      NOM_ASSERT( this->gui_window[1]->position().y == 25 );
+      this->layout->set_position( nom::Point2i( 12, 25 ) );
 
       // Auto-generated name
       if( this->listbox_ex2 != nullptr )
@@ -449,10 +246,6 @@ class App: public nom::SDLApp
       nom::ListBox::raw_ptr listbox = new nom::ListBox( window, -1, pos, size, storage );
 
       listbox->set_name( name );
-      NOM_ASSERT( listbox->name() == name );
-
-      NOM_ASSERT( listbox->parent()->position() == window->position() );
-      NOM_ASSERT( listbox->size() == size );
 
       return listbox;
     }
@@ -553,23 +346,19 @@ class App: public nom::SDLApp
     /// Window handles
     nom::RenderWindow window;
 
-    nom::Point2i window_size;
-
     /// Interval at which we refresh the frames per second counter
     nom::Timer update;
 
     /// Timer for tracking frames per second
     nom::FPS fps;
 
-    nom::Point2i gui_window_pos[2];
-    nom::Size2i gui_window_size[2];
     nom::UIWidget::raw_ptr gui_window[2];
 
     nom::ListBox* listbox_ex0;
     nom::ListBox* listbox_ex1;
     nom::ListBox* listbox_ex2;
 
-    nom::UIBoxLayout* listbox_layout;
+    nom::UIBoxLayout* layout;
 };
 
 nom::int32 main( nom::int32 argc, char* argv[] )

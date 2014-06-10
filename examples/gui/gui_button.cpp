@@ -43,20 +43,19 @@ const std::string APP_RESOURCES_DIR = "Resources" + p.native();
 const std::string APP_NAME = "nomlib's GUI | Button Widgets";
 
 /// \brief Width, in pixels, of our effective rendering surface.
-const nom::int32 WINDOW_WIDTH = 800;
+const nom::int32 WINDOW_WIDTH = 640;
 
 /// \brief Height, in pixels, of our effective rendering surface.
-const nom::int32 WINDOW_HEIGHT = 600;
+const nom::int32 WINDOW_HEIGHT = 480;
 
 const std::string RESOURCE_ICON = APP_RESOURCES_DIR + "icon.png";
-
-const std::string RESOURCE_BUTTON_IMAGE = APP_RESOURCES_DIR + p.native() + "gui" + p.native() + "button.png";
 
 /// \brief Relative filename path to saved screen shots.
 ///
 /// Default path should resolve to the same directory as the output binary.
 const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
 
+const std::string RESOURCE_BUTTON_IMAGE = APP_RESOURCES_DIR + p.native() + "gui" + p.native() + "button.png";
 const std::string RESOURCE_AQUA_BUTTON_IMAGE_0 = APP_RESOURCES_DIR + p.native() + "gui" + p.native() + "aqua-button_0.png";
 const std::string RESOURCE_AQUA_BUTTON_IMAGE_1 = APP_RESOURCES_DIR + p.native() + "gui" + p.native() + "aqua-button_1.png";
 
@@ -94,7 +93,7 @@ class App: public nom::SDLApp
 
     bool on_init( void )
     {
-      nom::uint32 window_flags = SDL_WINDOW_SHOWN;
+      nom::uint32 window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
 
       if ( nom::set_hint ( SDL_HINT_RENDER_VSYNC, "0" ) == false )
       {
@@ -112,10 +111,8 @@ class App: public nom::SDLApp
         return false;
       }
 
-      this->window_size = this->window.size();
-
       // Scale window contents up by the new width & height
-      this->window.set_logical_size ( this->window_size.x, this->window_size.y );
+      this->window.set_logical_size ( WINDOW_WIDTH, WINDOW_HEIGHT );
 
       if ( this->button_bg[0].load( RESOURCE_BUTTON_IMAGE, 0 ) == false )
       {
@@ -135,13 +132,8 @@ class App: public nom::SDLApp
         return false;
       }
 
-      // Top-level (root) window initialization:
-
-      // Top-level window (relative to global "screen" coordinates)
-      this->gui_window_pos[0] = nom::Point2i( 2, 2 );
-      this->gui_window_size[0] = nom::Size2i( WINDOW_WIDTH - 4, WINDOW_HEIGHT - 4 );
-
-      this->gui_window[0] = new nom::UIWidget( nullptr, -1, this->gui_window_pos[0], this->gui_window_size[0] );
+      // Top-level window (relative to global "screen" coordinates):
+      this->gui_window[0] = new nom::UIWidget( nullptr, -1, nom::Point2i( 2, 2 ), nom::Size2i( WINDOW_WIDTH - 4, WINDOW_HEIGHT - 4 ) );
       this->gui_window[0]->set_name( "Root" );
       this->gui_window[0]->set_title( this->gui_window[0]->name() );
 
@@ -155,10 +147,7 @@ class App: public nom::SDLApp
 
       // Layout container initialization:
 
-      this->gui_window_pos[1] = Point2i( 25, 25 );
-      this->gui_window_size[1] = Size2i( WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 );
-
-      this->gui_window[1] = new nom::UIWidget( nullptr, -1, this->gui_window_pos[1], this->gui_window_size[1] );
+      this->gui_window[1] = new nom::UIWidget( nullptr, -1, Point2i( 25, 25 ), Size2i( WINDOW_WIDTH - 100, WINDOW_HEIGHT / 2 ) );
       this->gui_window[1]->set_name( "Layout" );
       this->gui_window[1]->set_title( this->gui_window[1]->name() );
 
@@ -175,6 +164,12 @@ class App: public nom::SDLApp
       // size_hint method, when the size policy is set to Preferred).
       this->button_ex0 = this->create_button( this->gui_window[1], Point2i::null, Size2i(50,25), "button_ex0", "Click me!" );
       this->button_ex0->set_font( SystemFonts::cache().load_resource("VIII") );
+
+      // FIXME: Setting the button's font after construction doesn't update the
+      // text label's font, so this is a workaround until I get around to fixing
+      // it.
+      this->button_ex0->set_label( "Click me!" );
+
       this->button_ex0->set_decorator( new nom::FinalFantasyDecorator() );
       this->button_ex0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_ex0_on_click( ev ); } ) );
       this->button_ex0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button_ex0_on_click( ev ); } ) );
@@ -204,190 +199,27 @@ class App: public nom::SDLApp
       this->gui_window[1]->insert_child( this->button_ex2 );
 
       // Button layout
-      this->button_layout = new nom::UIHBoxLayout();
+      this->layout = new nom::UIHBoxLayout();
 
-      // TODO: Add unit tests for each variation
       if( this->button_ex0 != nullptr )
       {
-        // FIXME:
         // this->button_ex0->set_size_policy( nom::UILayoutPolicy::Policy::Minimum, nom::UILayoutPolicy::Policy::Minimum );
       }
 
-      UILayoutItem* item = nullptr;
+      this->layout->append_spacer( 8 );
+      this->layout->append_widget( this->button_ex0 );
+      this->layout->append_spacer( 8 );
+      this->layout->append_widget( this->button_ex1 );
+      this->layout->append_spacer( 40 );
+      this->layout->append_widget( this->button_ex2 );
 
-      // TODO: Add unit tests for this
-      // button_layout->set_spacing( 1 );
-
-      this->button_layout->append_spacer( 8 );
-      this->button_layout->append_widget( this->button_ex0 );
-      this->button_layout->append_spacer( 8 );
-      this->button_layout->append_widget( this->button_ex1 );
-      this->button_layout->append_spacer( 40 );
-      this->button_layout->append_widget( this->button_ex2 );
-
-      // FIXME:
-      // this->button_layout->set_alignment( this->button_ex0, nom::Anchor::Center );
-
-      this->gui_window[1]->set_layout( this->button_layout );
+      this->gui_window[1]->set_layout( this->layout );
 
       // Relative to parent widget
-      this->button_layout->set_position( nom::Point2i( 12, 25 ) );
-
-      // Test0:
-      // TODO: Add unit tests for this
-      // this->button_layout->set_position( nom::Point2i( 0, 0 ) );
-
-      // UISpacerItem
-      item = this->button_layout->at( 0 );
-
-      NOM_ASSERT( item->spacer_item() != nullptr );
-
-      if( item->spacer_item() != nullptr )
-      {
-        NOM_ASSERT( item->spacer_item()->bounds().x == -1 );
-        NOM_ASSERT( item->spacer_item()->bounds().y == -1 );
-
-        // Should be the size as calculated by the layout (dependent upon size
-        // policy).
-        NOM_ASSERT( item->spacer_item()->size().w == 8 );
-        NOM_ASSERT( item->spacer_item()->size().h == 8 );
-
-        // NOM_DUMP( item->spacer_item()->bounds().x );
-        // NOM_DUMP( item->spacer_item()->bounds().y );
-        // NOM_DUMP( item->spacer_item()->size().w );
-        // NOM_DUMP( item->spacer_item()->size().h );
-      }
-
-      // button_ex0
-      item = this->button_layout->at( 1 );
-
-      NOM_ASSERT( item->widget() != nullptr );
-
-      if( item->widget() != nullptr )
-      {
-        // Absolute (global screen) coordinates
-        // Should include both UISpacerItem spacing, but not internal layout
-        // spacing (because it is the first item).
-        NOM_ASSERT( item->widget()->position().x == 45 );
-        NOM_ASSERT( item->widget()->position().y == 50 );
-
-        // Should be the size as calculated by the layout (dependent upon size
-        // policy).
-        NOM_ASSERT( item->widget()->size().w == 102 );
-        NOM_ASSERT( item->widget()->size().h == 25 );
-
-        // NOM_DUMP( item->widget()->position().x );
-        // NOM_DUMP( item->widget()->position().y );
-        // NOM_DUMP( item->widget()->size().w );
-        // NOM_DUMP( item->widget()->size().h );
-      }
-
-      // UISpacerItem
-      item = this->button_layout->at( 2 );
-
-      NOM_ASSERT( item->spacer_item() != nullptr );
-
-      if( item->spacer_item() != nullptr )
-      {
-        NOM_ASSERT( item->spacer_item()->bounds().x == -1 );
-        NOM_ASSERT( item->spacer_item()->bounds().y == -1 );
-
-        // Should be the size as calculated by the layout (dependent upon size
-        // policy).
-        NOM_ASSERT( item->spacer_item()->size().w == 8 );
-        NOM_ASSERT( item->spacer_item()->size().h == 8 );
-
-        // NOM_DUMP( item->spacer_item()->bounds().x );
-        // NOM_DUMP( item->spacer_item()->bounds().y );
-        // NOM_DUMP( item->spacer_item()->size().w );
-        // NOM_DUMP( item->spacer_item()->size().h );
-      }
-
-      // button_ex1
-      item = this->button_layout->at( 3 );
-
-      NOM_ASSERT( item->widget() != nullptr );
-
-      if( item->widget() != nullptr )
-      {
-        // Absolute (global screen) coordinates
-        // Should include both UISpacerItem spacing & internal layout spacing
-        NOM_ASSERT( item->widget()->position().x == 156 );
-        NOM_ASSERT( item->widget()->position().y == 50 );
-
-        // Should be the size as calculated by the layout (dependent upon size
-        // policy).
-        NOM_ASSERT( item->widget()->size().w == 102 );
-        NOM_ASSERT( item->widget()->size().h == 25 );
-
-        // NOM_DUMP( item->widget()->position().x );
-        // NOM_DUMP( item->widget()->position().y );
-        // NOM_DUMP( item->widget()->size().w );
-        // NOM_DUMP( item->widget()->size().h );
-      }
-
-      // UISpacerItem
-      item = this->button_layout->at( 4 );
-
-      NOM_ASSERT( item->spacer_item() != nullptr );
-
-      if( item->spacer_item() != nullptr )
-      {
-        NOM_ASSERT( item->spacer_item()->bounds().x == -1 );
-        NOM_ASSERT( item->spacer_item()->bounds().y == -1 );
-
-        // Should be the size as calculated by the layout (dependent upon size
-        // policy).
-        NOM_ASSERT( item->spacer_item()->size().w == 40 );
-        NOM_ASSERT( item->spacer_item()->size().h == 40 );
-
-        // NOM_DUMP( item->spacer_item()->bounds().x );
-        // NOM_DUMP( item->spacer_item()->bounds().y );
-        // NOM_DUMP( item->spacer_item()->size().w );
-        // NOM_DUMP( item->spacer_item()->size().h );
-      }
-
-      // button_ex2
-      item = this->button_layout->at( 5 );
-
-      NOM_ASSERT( item->widget() != nullptr );
-
-      if( item->widget() != nullptr )
-      {
-        // Absolute (global screen) coordinates
-        // Should include both UISpacerItem spacing & internal layout spacing
-        NOM_ASSERT( item->widget()->position().x == 299 );
-        NOM_ASSERT( item->widget()->position().y == 50 );
-
-        // Should be the size as calculated by the layout (dependent upon size
-        // policy).
-        NOM_ASSERT( item->widget()->size().w == 102 );
-        NOM_ASSERT( item->widget()->size().h == 25 );
-
-        // NOM_DUMP( item->widget()->position().x );
-        // NOM_DUMP( item->widget()->position().y );
-        // NOM_DUMP( item->widget()->size().w );
-        // NOM_DUMP( item->widget()->size().h );
-      }
-
-      // Sanity check
-      NOM_ASSERT( this->gui_window[1]->layout() == this->button_layout );
-
-      // These coordinates should be relative to the parent window that the
-      // layout is attached to.
-      NOM_ASSERT( this->button_layout->bounds().x == 12 );
-      NOM_ASSERT( this->button_layout->bounds().y == 25 );
-
-      // TODO: Unit test for button_layout size dimensions
-
-      // FIXME:
-      // NOM_DUMP( this->button_layout->bounds() );
-
-      NOM_ASSERT( this->gui_window[1]->position().x == 25 );
-      NOM_ASSERT( this->gui_window[1]->position().y == 25 );
+      this->layout->set_position( nom::Point2i( 12, 25 ) );
 
       // Auto-generated name
-// NOM_ASSERT( this->gui_window[1]->find_child( "bitmap_button" ) != nullptr );
+      // NOM_ASSERT( this->gui_window[1]->find_child( "bitmap_button" ) != nullptr );
 
       NOM_ASSERT( this->gui_window[0]->id() == 1 );
       NOM_ASSERT( this->gui_window[0]->name() == "Root" );
@@ -591,8 +423,6 @@ class App: public nom::SDLApp
     /// Window handles
     nom::RenderWindow window;
 
-    nom::Point2i window_size;
-
     /// Interval at which we refresh the frames per second counter
     nom::Timer update;
 
@@ -602,18 +432,13 @@ class App: public nom::SDLApp
     /// \brief Image resource for our button widget.
     nom::Texture button_bg[3];
 
-    nom::Point2i gui_window_pos[2];
-    nom::Size2i gui_window_size[2];
     nom::UIWidget::raw_ptr gui_window[2];
 
     nom::Button* button_ex0;
     nom::Button* button_ex1;
     nom::BitmapButton* button_ex2;
 
-    std::string button_ex0_original_text;
-    std::string button_ex1_original_text;
-
-    nom::UIBoxLayout* button_layout;
+    nom::UIBoxLayout* layout;
 };
 
 nom::int32 main( nom::int32 argc, char* argv[] )

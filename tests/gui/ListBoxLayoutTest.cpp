@@ -52,8 +52,6 @@ class ListBoxLayoutTest: public ::testing::Test
     ListBoxLayoutTest( void ) :
       app_state{ true }
     {
-      this->gui_window[0] = nullptr;
-
       nom::init_third_party( InitHints::DefaultInit );
 
       if( nom::set_hint( SDL_HINT_RENDER_VSYNC, "0" ) == false )
@@ -87,24 +85,7 @@ class ListBoxLayoutTest: public ::testing::Test
 
     virtual ~ListBoxLayoutTest( void )
     {
-      // NOM_LOG_TRACE( NOM );
-
-      // FIXME:
-      // delete this->listbox0;
-      // delete this->listbox1;
-      // delete this->listbox2;
-      // delete this->listbox3;
-
-      this->listbox0 = nullptr;
-      this->listbox1 = nullptr;
-      this->listbox2 = nullptr;
-      this->listbox3 = nullptr;
-
-      delete this->gui_window[0];
-      // delete this->gui_window[1];
-
-      this->gui_window[0] = nullptr;
-      // this->gui_window[1] = nullptr;
+      // Nothing to clean up!
     }
 
     /// \remarks This method is called at the start of each unit test.
@@ -118,30 +99,18 @@ class ListBoxLayoutTest: public ::testing::Test
       // Scale window contents up by the new width & height
       this->window.set_logical_size( WINDOW_WIDTH, WINDOW_HEIGHT );
 
-      // Top-level (root) window initialization:
-
-      // Top-level window (relative to global "screen" coordinates):
-      this->gui_window[0] = new nom::UIWidget( nullptr, -1, nom::Point2i( 2, 2 ), nom::Size2i( WINDOW_WIDTH - 4, WINDOW_HEIGHT - 4 ) );
-      this->gui_window[0]->set_name( "Root" );
-      this->gui_window[0]->set_title( this->gui_window[0]->name() );
-
-      // Draw a frame so that we can visually see the maximal bounds of the
-      // top-level window
-      this->gui_window[0]->set_decorator( new nom::MinimalDecorator() );
-
       // Window-scope mouse button click events
       // FIXME: Temporarily disabled (to cease debugging output):
-      // this->gui_window[0]->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
+      // this->main_window->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
 
-      // Layout container initialization:
-
-      this->gui_window[1] = new nom::UIWidget( nullptr, -1, Point2i( 25, 25 ), Size2i( WINDOW_WIDTH / 2, WINDOW_HEIGHT - 100 ) );
-      this->gui_window[1]->set_name( "Layout" );
-      this->gui_window[1]->set_title( this->gui_window[1]->name() );
+      // Top-level (parent) window (relative to global "screen" coordinates):
+      this->main_window = new nom::UIWidget( Point2i( 25, 25 ), Size2i( WINDOW_WIDTH / 2, WINDOW_HEIGHT - 100 ) );
+      this->main_window->set_name( "Layout" );
+      this->main_window->set_title( this->main_window->name() );
 
       // Draw a frame so that we can visually see the maximal bounds of the
       // layout
-      this->gui_window[1]->set_decorator( new nom::MinimalDecorator() );
+      this->main_window->set_decorator( new nom::MinimalDecorator() );
 
       labels[0].push_back( "item_0" );
       labels[0].push_back( "item_1" );
@@ -160,52 +129,42 @@ class ListBoxLayoutTest: public ::testing::Test
       labels[3].push_back( "item_2" );
 
       // Our widgets to be used in the layout:
-      this->listbox0 = this->create_listbox( this->gui_window[1], Point2i::null, Size2i(50,24), "listbox0", labels[0] );
+      this->listbox0 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,24), "listbox0", labels[0] );
       // this->listbox0->set_font( SystemFonts::cache().load_resource("VIII") );
       this->listbox0->set_decorator( new nom::MinimalDecorator() );
       this->listbox0->set_selected_text_color( nom::Color4i::Gray );
       // this->listbox0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
       // this->listbox0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
-      this->listbox1 = this->create_listbox( this->gui_window[1], Point2i::null, Size2i(50,24), "listbox1", labels[1] );
+      this->listbox1 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,24), "listbox1", labels[1] );
       this->listbox1->set_decorator( new nom::MinimalDecorator() );
       // this->listbox1->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
       // this->listbox1->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
-      this->listbox2 = this->create_listbox( this->gui_window[1], Point2i::null, Size2i(50,24), "listbox1", labels[2] );
+      this->listbox2 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,24), "listbox1", labels[2] );
       this->listbox2->set_decorator( new nom::MinimalDecorator() );
       // this->listbox2->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
       // this->listbox2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
-      this->listbox3 = this->create_listbox( this->gui_window[1], Point2i::null, Size2i(50,24), "listbox1", labels[3] );
+      this->listbox3 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,24), "listbox1", labels[3] );
       this->listbox3->set_decorator( new nom::MinimalDecorator() );
       // this->listbox3->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
       // this->listbox3->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
-      this->gui_window[1]->insert_child( listbox0 );
-      this->gui_window[1]->insert_child( listbox1 );
-      this->gui_window[1]->insert_child( listbox2 );
-      this->gui_window[1]->insert_child( listbox3 );
+      this->main_window->insert_child( listbox0 );
+      this->main_window->insert_child( listbox1 );
+      this->main_window->insert_child( listbox2 );
+      this->main_window->insert_child( listbox3 );
     }
 
     /// \remarks This method is called at the end of each unit test.
     virtual void TearDown( void )
     {
-      // FIXME:
-      // delete this->listbox0;
-      // delete this->listbox1;
-      // delete this->listbox2;
-      // delete this->listbox3;
-
-      this->listbox0 = nullptr;
-      this->listbox1 = nullptr;
-      this->listbox2 = nullptr;
-      this->listbox3 = nullptr;
-
-      // FIXME:
-      // delete this->gui_window[0];
-
-      this->gui_window[0] = nullptr;
+      // Note that the top-level (parent) UIWidget is the owner of its children,
+      // thus it relieves us from the responsibility of freeing them --
+      // listbox0, listbox1, listbox2, listbox3.
+      delete this->main_window;
+      this->main_window = nullptr;
     }
 
     sint on_run( void )
@@ -218,19 +177,16 @@ class ListBoxLayoutTest: public ::testing::Test
 
           this->input_mapper.on_event( this->ev );
 
-          this->gui_window[0]->process_event( this->ev );
-          this->gui_window[1]->process_event( this->ev );
+          this->main_window->process_event( this->ev );
         }
 
         this->window.update();
-        this->gui_window[0]->update();
-        this->gui_window[1]->update();
+        this->main_window->update();
 
         // Background color fill
         this->window.fill( nom::Color4i::SkyBlue );
 
-        this->gui_window[0]->draw( this->window );
-        this->gui_window[1]->draw( this->window );
+        this->main_window->draw( this->window );
       }
 
       return NOM_EXIT_SUCCESS;
@@ -353,7 +309,7 @@ class ListBoxLayoutTest: public ::testing::Test
 
     // GUI resources
 
-    nom::UIWidget::raw_ptr gui_window[2];
+    nom::UIWidget::raw_ptr main_window;
 
     /// \brief Item strings for our ListBox widgets.
     nom::ItemStrings labels[4];
@@ -368,9 +324,9 @@ TEST_F( ListBoxLayoutTest, LayoutAPIUsingBitmapFont )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
-  this->gui_window[1]->set_font( SystemFonts::cache().load_resource( "VIII" ) );
+  this->main_window->set_font( SystemFonts::cache().load_resource( "VIII" ) );
 
-  layout = this->create_layout( this->gui_window[1], Point2i(12,25), Size2i(50,-1), "LayoutAPIUsingBitmapFont", Orientations::Vertical );
+  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i(50,-1), "LayoutAPIUsingBitmapFont", Orientations::Vertical );
 
   // Total number of items (including spacers) in our layout
   EXPECT_EQ( 8, layout->count() );
@@ -460,9 +416,9 @@ TEST_F( ListBoxLayoutTest, VerticalLayoutUsingArialFont )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
-  this->gui_window[1]->set_font( SystemFonts::cache().load_resource( "Arial" ) );
+  this->main_window->set_font( SystemFonts::cache().load_resource( "Arial" ) );
 
-  layout = this->create_layout( this->gui_window[1], Point2i(12,25), Size2i(50,-1), "VerticalLayoutUsingTrueTypeFont", Orientations::Vertical );
+  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i(50,-1), "VerticalLayoutUsingTrueTypeFont", Orientations::Vertical );
 
   // Total number of items (including spacers) in our layout
   EXPECT_EQ( 8, layout->count() );
@@ -547,9 +503,9 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutUsingArialFont )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
-  this->gui_window[1]->set_font( SystemFonts::cache().load_resource( "Arial" ) );
+  this->main_window->set_font( SystemFonts::cache().load_resource( "Arial" ) );
 
-  layout = this->create_layout( this->gui_window[1], Point2i(12,25), Size2i(50,-1), "HorizontalLayoutUsingTrueTypeFont", Orientations::Horizontal );
+  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i(50,-1), "HorizontalLayoutUsingTrueTypeFont", Orientations::Horizontal );
 
   // Total number of items (including spacers) in our layout
   EXPECT_EQ( 8, layout->count() );

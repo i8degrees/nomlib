@@ -52,7 +52,7 @@ class ButtonLayoutTest: public ::testing::Test
     ButtonLayoutTest( void ) :
       app_state{ true }
     {
-      this->gui_window[0] = nullptr;
+      this->main_window = nullptr;
 
       nom::init_third_party( InitHints::DefaultInit );
 
@@ -87,22 +87,7 @@ class ButtonLayoutTest: public ::testing::Test
 
     virtual ~ButtonLayoutTest( void )
     {
-      // NOM_LOG_TRACE( NOM );
-
-      // FIXME:
-      // delete this->button0;
-      // delete this->button1;
-      // delete this->button2;
-
-      this->button0 = nullptr;
-      this->button1 = nullptr;
-      this->button2 = nullptr;
-
-      delete this->gui_window[0];
-      // delete this->gui_window[1];
-
-      this->gui_window[0] = nullptr;
-      // this->gui_window[1] = nullptr;
+      // Nothing to clean up
     }
 
     /// \remarks This method is called at the start of each unit test.
@@ -121,30 +106,18 @@ class ButtonLayoutTest: public ::testing::Test
       ASSERT_TRUE( this->button_bg[1].load( RESOURCE_AQUA_BUTTON_IMAGE_0, 0 ) == true );
       ASSERT_TRUE( this->button_bg[2].load( RESOURCE_AQUA_BUTTON_IMAGE_1, 0 ) == true );
 
-      // Top-level (root) window initialization:
-
-      // Top-level window (relative to global "screen" coordinates):
-      this->gui_window[0] = new nom::UIWidget( nullptr, -1, nom::Point2i( 2, 2 ), nom::Size2i( WINDOW_WIDTH - 4, WINDOW_HEIGHT - 4 ) );
-      this->gui_window[0]->set_name( "Root" );
-      this->gui_window[0]->set_title( this->gui_window[0]->name() );
-
-      // Draw a frame so that we can visually see the maximal bounds of the
-      // top-level window
-      this->gui_window[0]->set_decorator( new nom::MinimalDecorator() );
-
       // Window-scope mouse button click events
       // FIXME: Temporarily disabled (to cease debugging output):
-      // this->gui_window[0]->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
+      // this->main_window->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
 
-      // Layout container initialization:
-
-      this->gui_window[1] = new nom::UIWidget( nullptr, -1, Point2i( 25, 25 ), Size2i( WINDOW_WIDTH - 100, WINDOW_HEIGHT / 2 ) );
-      this->gui_window[1]->set_name( "Layout" );
-      this->gui_window[1]->set_title( this->gui_window[1]->name() );
+      // Top-level (parent) window (relative to global "screen" coordinates):
+      this->main_window = new nom::UIWidget( Point2i( 25, 25 ), Size2i( WINDOW_WIDTH - 100, WINDOW_HEIGHT / 2 ) );
+      this->main_window->set_name( "Layout" );
+      this->main_window->set_title( this->main_window->name() );
 
       // Draw a frame so that we can visually see the maximal bounds of the
       // layout
-      this->gui_window[1]->set_decorator( new nom::MinimalDecorator() );
+      this->main_window->set_decorator( new nom::MinimalDecorator() );
 
       // Our widgets to be used in the layout:
 
@@ -153,13 +126,13 @@ class ButtonLayoutTest: public ::testing::Test
       // management, the size dimensions will be calculated for us automatically
       // (meaning that the size dimensions used will be from the widget's
       // size_hint method, when the size policy is set to Preferred).
-      this->button0 = this->create_button( this->gui_window[1], Point2i::null, Size2i(50,25), "button0", "Click me!" );
+      this->button0 = this->create_button( this->main_window, Point2i::null, Size2i(50,25), "button0", "Click me!" );
       this->button0->set_font( SystemFonts::cache().load_resource("VIII") );
       this->button0->set_decorator( new nom::FinalFantasyDecorator() );
       this->button0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );
       this->button0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );
 
-      this->button1 = this->create_button( this->gui_window[1], Point2i::null, Size2i(50,25), "button1", "button1" );
+      this->button1 = this->create_button( this->main_window, Point2i::null, Size2i(50,25), "button1", "button1" );
       this->button1->set_decorator( new nom::MinimalDecorator() );
       this->button1->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button1_on_click( ev ); } ) );
       this->button1->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button1_on_click( ev ); } ) );
@@ -172,32 +145,24 @@ class ButtonLayoutTest: public ::testing::Test
       custom_style->set_font_size( 13 );
       custom_style->set_font_style( nom::Text::Style::Bold );
 
-      this->button2 = this->create_bitmap_button( this->gui_window[1], Point2i::null, Size2i(102,25), "bitmap_button", "Hello", this->button_bg[1], custom_style );
+      this->button2 = this->create_bitmap_button( this->main_window, Point2i::null, Size2i(102,25), "bitmap_button", "Hello", this->button_bg[1], custom_style );
       this->button2->set_pressed_bitmap( this->button_bg[2] );
       this->button2->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
       this->button2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
-      this->gui_window[1]->insert_child( button0 );
-      this->gui_window[1]->insert_child( button1 );
-      this->gui_window[1]->insert_child( button2 );
+      this->main_window->insert_child( button0 );
+      this->main_window->insert_child( button1 );
+      this->main_window->insert_child( button2 );
     }
 
     /// \remarks This method is called at the end of each unit test.
     virtual void TearDown( void )
     {
-      // FIXME:
-      // delete this->button0;
-      // delete this->button1;
-      // delete this->button2;
-
-      this->button0 = nullptr;
-      this->button1 = nullptr;
-      this->button2 = nullptr;
-
-      // FIXME:
-      // delete this->gui_window[0];
-
-      this->gui_window[0] = nullptr;
+      // Note that the top-level (parent) UIWidget is the owner of its children,
+      // thus it relieves us from the responsibility of freeing them --
+      // button0, button1, button2.
+      delete this->main_window;
+      this->main_window = nullptr;
     }
 
     sint on_run( void )
@@ -209,20 +174,16 @@ class ButtonLayoutTest: public ::testing::Test
           // this->evt.process_event( this->ev );
 
           this->input_mapper.on_event( this->ev );
-
-          this->gui_window[0]->process_event( this->ev );
-          this->gui_window[1]->process_event( this->ev );
+          this->main_window->process_event( this->ev );
         }
 
         this->window.update();
-        this->gui_window[0]->update();
-        this->gui_window[1]->update();
+        this->main_window->update();
 
         // Background color fill
         this->window.fill( nom::Color4i::SkyBlue );
 
-        this->gui_window[0]->draw( this->window );
-        this->gui_window[1]->draw( this->window );
+        this->main_window->draw( this->window );
       }
 
       return NOM_EXIT_SUCCESS;
@@ -252,8 +213,8 @@ class ButtonLayoutTest: public ::testing::Test
     {
       // TODO: Create separate examples (including a nullptr test):
       // button = new nom::BitmapButton( window, pos, size, nullptr );
-      // button = new nom::BitmapButton( this->gui_window[0], -1, pos, size, &this->button_bg[0] );
-      // button = new nom::BitmapButton( this->gui_window[0], -1, pos, size, &this->button_bg[0] );
+      // button = new nom::BitmapButton( this->main_window, -1, pos, size, &this->button_bg[0] );
+      // button = new nom::BitmapButton( this->main_window, -1, pos, size, &this->button_bg[0] );
 
       nom::BitmapButton::raw_ptr button = new nom::BitmapButton( window, -1, pos, size, tex );
 
@@ -412,11 +373,10 @@ class ButtonLayoutTest: public ::testing::Test
     InputStateMapper input_mapper;
 
     // GUI resources
+    nom::UIWidget::raw_ptr main_window;
 
     /// \brief Image resource for our button widget.
     nom::Texture button_bg[3];
-
-    nom::UIWidget::raw_ptr gui_window[2];
 
     nom::Button::raw_ptr button0;
     nom::Button::raw_ptr button1;
@@ -427,7 +387,7 @@ TEST_F( ButtonLayoutTest, HorizontalLayout )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
-  layout = this->create_layout( this->gui_window[1], Point2i(12,25), Size2i(50,-1), "LayoutAPI", Orientations::Horizontal );
+  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i(50,-1), "LayoutAPI", Orientations::Horizontal );
 
   // Total number of items (including spacers) in our layout
   EXPECT_EQ( 6, layout->count() );
@@ -514,7 +474,7 @@ TEST_F( ButtonLayoutTest, VerticalLayout )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
-  layout = this->create_layout( this->gui_window[1], Point2i(12,25), Size2i(50,-1), "LayoutAPI", Orientations::Vertical );
+  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i(50,-1), "LayoutAPI", Orientations::Vertical );
 
   // Total number of items (including spacers) in our layout
   EXPECT_EQ( 6, layout->count() );

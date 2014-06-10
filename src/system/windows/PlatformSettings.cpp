@@ -48,10 +48,15 @@ bool PlatformSettings::initialized( void )
 
 void PlatformSettings::initialize( void )
 {
-  PlatformSettings::enumerate_fonts();
+  if( PlatformSettings::initialized() == false )
+  {
     NOM_LOG_INFO( NOM, "PlatformSettings interface was not yet initialized. Initializing..." );
 
-  PlatformSettings::initialized_ = true;
+    nom::init_third_party( InitHints::SDL2_IMAGE | InitHints::SDL2 | InitHints::SDL2_TTF );
+
+    PlatformSettings::enumerate_fonts();
+    PlatformSettings::initialized_ = true;
+  }
 }
 
 Color4i PlatformSettings::get_system_color( SystemColorType index )
@@ -74,10 +79,8 @@ Color4i PlatformSettings::get_system_color( SystemColorType index )
 
 Font* PlatformSettings::get_system_font( SystemFontType index )
 {
-  if( PlatformSettings::initialized() == false )
-  {
-    PlatformSettings::enumerate_fonts();
-  }
+  // Ensure that we are initialized before using
+  PlatformSettings::initialize();
 
   switch( index )
   {
@@ -110,10 +113,8 @@ Font* PlatformSettings::get_system_font( SystemFontType index )
 
 Font* PlatformSettings::find_system_font( const std::string& key )
 {
-  if( PlatformSettings::initialized() == false )
-  {
-    PlatformSettings::enumerate_fonts();
-  }
+  // Ensure that we are initialized before using
+  PlatformSettings::initialize();
 
   return SystemFonts::cache().load_resource( key );
 }
@@ -124,10 +125,6 @@ void PlatformSettings::enumerate_fonts( void )
 {
   Path p;
   File fp;
-
-  // This should have been called in nom::init and SDLApp::initialize (if the
-  // class interface was used), but just in case...(no performance hit, so!)
-  SystemFonts::initialize();
 
   SystemFonts::cache().set_resource_handler( [&] ( const ResourceFile& res, Font& font ) { create_font( res, font ); } );
 
@@ -142,8 +139,6 @@ void PlatformSettings::enumerate_fonts( void )
   SystemFonts::cache().append_resource( ResourceFile( "LiberationSerif-Regular", p.prepend("LiberationSerif-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "VIII", p.prepend("VIII.png"), ResourceFile::Type::BitmapFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "VIII_small", p.prepend("VIII_small.png"), ResourceFile::Type::BitmapFont ) );
-
-  // return true;
 }
 
 } // namespace nom

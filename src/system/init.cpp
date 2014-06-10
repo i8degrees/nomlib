@@ -59,6 +59,8 @@ void SystemFonts::initialize( void )
   // Ensure one-time only initialization
   if( SystemFonts::initialized() == false )
   {
+    nom::init_third_party( InitHints::SDL2_IMAGE | InitHints::SDL2 | InitHints::SDL2_TTF );
+
     SystemFonts::cache_ = std::make_shared<FontCache>( FontCache() );
     SystemFonts::initialized_ = true;
   }
@@ -159,24 +161,40 @@ void SystemColors::shutdown( void )
   SystemColors::initialized_ = false;
 }
 
-bool init_third_party ( uint32 flags )
+bool init_third_party( uint32 flags )
 {
-  if ( IMG_Init ( IMG_INIT_PNG ) != IMG_INIT_PNG )
+  if( flags == InitHints::DefaultInit )
   {
-    NOM_LOG_ERR ( NOM, IMG_GetError() );
-    return false;
+    flags = InitHints::SDL2_IMAGE | InitHints::SDL2 | InitHints::SDL2_TTF;
   }
 
-  if ( SDL_Init ( SDL_INIT_VIDEO ) != 0 )
+  if( flags & InitHints::SDL2_IMAGE )
   {
-    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    if ( IMG_Init ( IMG_INIT_PNG ) != IMG_INIT_PNG )
+    {
+      NOM_LOG_ERR ( NOM, IMG_GetError() );
+      return false;
+    }
   }
 
-  // We must initialize SDL2_ttf on every instance in order to shutdown properly
-  // without crashing when ran within nom::GameStates
-  if ( TTF_Init () != 0 )
+  if( flags & InitHints::SDL2 )
   {
-    NOM_LOG_ERR(NOM, TTF_GetError());
+    if ( SDL_Init ( SDL_INIT_VIDEO ) != 0 )
+    {
+      NOM_LOG_ERR ( NOM, SDL_GetError() );
+      return false;
+    }
+  }
+
+  if( flags & InitHints::SDL2_TTF )
+  {
+    // We must initialize SDL2_ttf on every instance in order to shutdown properly
+    // without crashing when ran within nom::GameStates
+    if ( TTF_Init () != 0 )
+    {
+      NOM_LOG_ERR(NOM, TTF_GetError());
+      return false;
+    }
   }
 
   return true;
@@ -222,18 +240,10 @@ void quit( void )
 {
   NOM_LOG_TRACE( NOM );
 
-  // FontCache* fonts = SystemFonts::cache();
-
   // We must clear the cache of nom::Font objects before shutting down SDL2_ttf,
   // because otherwise we'll be freeing memory that we do not own (FreeType
   // engine within is the rightful owner).
   SystemFonts::shutdown();
-
-  // if( fonts != nullptr )
-  // {
-    // delete fonts;
-    // fonts = nullptr;
-  // }
 
   TTF_Quit();
   IMG_Quit();

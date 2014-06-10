@@ -114,6 +114,29 @@ class SystemColors
     static bool initialized_;
 };
 
+/// \brief An enumeration of initialization options for explicitly specifying
+/// which subsystems to start upon a call to nom::init or
+/// nom::init_third_party(flags).
+enum InitHints
+{
+  SDL2 = 0x1,
+  SDL2_IMAGE = 0x2,
+  SDL2_TTF = 0x4,
+
+  /// \brief Initialize all third-party libraries: SDL2_IMAGE, SDL2, SDL2_TTF
+  DefaultInit = 0
+};
+
+/// \brief Initialize third party libraries.
+///
+/// \remarks This method is called within nom::init with the value of
+/// nom::InitHints::DefaultInit.
+///
+/// \note The order in which the SDL libraries are initialized is, as-follows:
+/// SDL2_IMAGE, SDL2, SDL2_TTF. Failure of any one of these libraries will halt
+/// the execution.
+///
+/// \todo Rename method to nom_init_third_party?
 bool init_third_party( uint32 flags );
 
 /// Initialize the engine.

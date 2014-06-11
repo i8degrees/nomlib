@@ -100,7 +100,7 @@ Size2i UIWidgetLayoutItem::maximum_size( void ) const
     return this->widget()->maximum_size();
   }
 
-  return Size2i( 0, 0 );
+  return Size2i( nom::WIDGET_MAX_SIZE, nom::WIDGET_MAX_SIZE );
 }
 
 Size2i UIWidgetLayoutItem::minimum_size( void ) const

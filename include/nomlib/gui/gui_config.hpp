@@ -40,6 +40,11 @@ namespace nom {
 /// the internal identifier of the object.
 static const int AUTO_ID = -1;
 
+/// \brief The maximum size a widget may be.
+///
+/// \note The value is borrowed from the Qt v4.6 docs.
+static const int WIDGET_MAX_SIZE = 16777215;
+
 /// \note Borrowed from Qt 4.6
 enum Orientations: uint32
 {

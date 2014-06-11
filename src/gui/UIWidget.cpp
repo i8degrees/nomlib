@@ -66,6 +66,11 @@ void UIWidget::initialize (
   this->set_focused( false );
   this->set_visibility( true );
   this->set_updated( false );
+
+  // Initialize widget's default size policy (for use with layouts):
+  this->set_size_policy( UILayoutPolicy::Policy::Preferred );
+
+  // Initialize widget's default focus policy:
   this->set_focus_policy( FocusPolicy::NoFocus );
 
   // Top-level widget (parent).
@@ -357,9 +362,13 @@ bool UIWidget::visible( void ) const
 
 const Size2i UIWidget::maximum_size( void ) const
 {
-  // return Size2i( 0, 0 );
+  if( this->max_size_ != Size2i::null )
+  {
+    return this->max_size_;
 
-  return this->max_size_;
+  }
+
+  return Size2i( nom::WIDGET_MAX_SIZE, nom::WIDGET_MAX_SIZE );
 }
 
 const Size2i UIWidget::minimum_size( void ) const
@@ -368,25 +377,19 @@ const Size2i UIWidget::minimum_size( void ) const
   {
     return this->min_size_;
   }
-  else
-  {
-    // Should not be drawn
-    return Size2i( 0, 0 );
-  }
+
+  return Size2i( 0, 0 );
 }
 
 const Size2i UIWidget::size_hint( void ) const
 {
-  // return Size2i( 0, 0 );
-
-  if( this->size_hint_ != Size2i::null )
+  if( this->layout() == nullptr )
   {
-    return this->size_hint_;
+    return Size2i( 0,0 );
   }
-  else
+  else // if( this->layout() != nullptr )
   {
-    // return Size2i( -1, -1 );
-    return Size2i( 0, 0 );
+    return this->layout()->size_hint();
   }
 }
 
@@ -611,6 +614,12 @@ void UIWidget::set_size_policy( uint32 horiz, uint32 vert )
 {
   this->policy_.set_horizontal_policy( horiz );
   this->policy_.set_vertical_policy( vert );
+}
+
+void UIWidget::set_size_policy( uint32 flags )
+{
+  this->policy_.set_horizontal_policy( flags );
+  this->policy_.set_vertical_policy( flags );
 }
 
 void UIWidget::set_style( const std::shared_ptr<UIStyle> style )

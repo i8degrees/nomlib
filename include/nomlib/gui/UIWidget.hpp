@@ -154,6 +154,9 @@ class UIWidget: public UIEventHandler
     /// \brief Get the title of the top-level window.
     const std::string title( void ) const;
 
+    /// \brief Get the size policy specified for this widget.
+    ///
+    /// \remarks Used by layout management.
     const UILayoutPolicy& size_policy( void ) const;
 
     /// \brief Perform a bounds coordinates collision test.
@@ -188,20 +191,35 @@ class UIWidget: public UIEventHandler
     bool visible( void ) const;
 
     /// \brief Get the maximum size of the widget.
+    ///
+    /// \remarks The widget cannot be resized to a larger size than the
+    /// resulting value from this method.
+    ///
+    /// \note By default, this property contains a size initialized to the
+    /// value of nom::WIDGET_MAX_SIZE.
     const Size2i maximum_size( void ) const;
 
-    /// \brief Get the minimum size of the widget.
+    /// \brief Get the widget's minimum size.
     ///
-    /// \remarks This value is used when managed by a layout, when the size
-    /// policy is set to SizePolicy::Minimum.
+    /// \remarks The widget cannot be resized to a smaller size than the
+    /// resulting value from this method. The widget's size is forced to the
+    /// minimum size if the current size is smaller.
+    ///
+    /// ~~The minimum size set by this function will override the minimum size
+    /// defined by nom::UILayout. In order to unset the minimum size, use a
+    /// value of Size2i(0,0).~~
+    ///
+    /// \note By default, this property contains a size with zero width and
+    /// height.
     const Size2i minimum_size( void ) const;
 
-    /// \brief Get the preferred size of the widget.
+    /// \brief Get the recommended (preferred) size for the widget.
     ///
-    /// \remarks If the preferred size is invalid (NULL), ...
+    /// \returns The default implementation of this method returns a size with
+    /// a width and height of zero if there is no layout set for this widget.
+    /// When a layout has been set, the layout's preferred size is returned.
     ///
-    /// \remarks This value is used when managed by a layout, when the size
-    /// policy is set to SizePolicy::Preferred.
+    /// \note Most widgets should re-implement this method.
     virtual const Size2i size_hint( void ) const;
 
     /// \brief Obtain the widget's local positioning coordinates.
@@ -293,12 +311,28 @@ class UIWidget: public UIEventHandler
     /// \note The window's title is not set by default.
     void set_title( const std::string& title );
 
+    /// \brief Set the default behavior of layouts for the widget.
+    ///
+    /// \remarks ~~If there is a UILayout that manages this widget's children,
+    /// the size policy specified by that layout is used. If there is no set
+    /// UILayout object, the result of this function is used. (See below for
+    /// details regarding this).~~
+    ///
+    /// The default policy is UILayoutPolicy::Policy::Preferred, meaning that
+    /// the widget can be freely resized, but prefers to be the size that
+    /// ::size_hint returns. Button-like widgets set the size policy to specify
+    /// that they may stretch horizontally, but are fixed vertically. The same
+    /// applies to line edit widgets -- nom::UILineEdit -- and other
+    /// horizontally oriented widgets (such as nom::UIProgressBar).
+    void set_size_policy( uint32 horiz, uint32 vert );
+
     /// \brief Set the default layout behavior of the widget.
     ///
-    /// \remarks If there is a UILayout that is managing children, the size
-    /// policy specified by that layout is used. If there is no such layout,
-    /// the result of this method call is used to set said layout.
-    void set_size_policy( uint32 horiz, uint32 vert );
+    /// \remarks This method sets both the horizontal and vertical size policy
+    /// to the flags specified.
+    ///
+    /// \see UIWidget::set_size_policy.
+    void set_size_policy( uint32 flags );
 
     void set_style( const std::shared_ptr<UIStyle> style );
 

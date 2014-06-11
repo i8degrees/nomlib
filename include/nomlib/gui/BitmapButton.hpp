@@ -46,8 +46,12 @@ class BitmapButton: public Button
     typedef self_type* raw_ptr;
     typedef std::shared_ptr<self_type> shared_ptr;
 
+    /// \brief Default constructor.
+    ///
     /// \param image A bitmap image that is initialized -- pixel data loaded
     /// from file or memory.
+    ///
+    /// \deprecated
     BitmapButton  (
                     UIWidget* parent,
                     int64 id,
@@ -55,6 +59,12 @@ class BitmapButton: public Button
                     const Size2i& size,
                     const Texture& image
                   );
+
+    /// \brief Construct a nom::BitmapButton from a parent widget.
+    ///
+    /// \remarks This object instance inherits the properties of the parent,
+    // /such as (but not limited to) position, size, name, id and font.
+    // BitmapButton( UIWidget* parent, const Texture& image );
 
     /// \brief Destructor.
     virtual ~BitmapButton( void );

@@ -194,6 +194,7 @@ class ButtonLayoutTest: public ::testing::Test
     nom::Button::raw_ptr create_button( const UIWidget::raw_ptr window, const Point2i& pos, const Size2i& size, const std::string& name, const std::string& label )
     {
       nom::Button::raw_ptr button = new nom::Button( window, -1, pos, size );
+      // nom::Button::raw_ptr button = new nom::Button( window );
 
       button->set_name( name );
       NOM_ASSERT( button->name() == name );
@@ -218,6 +219,7 @@ class ButtonLayoutTest: public ::testing::Test
       // button = new nom::BitmapButton( this->main_window, -1, pos, size, &this->button_bg[0] );
 
       nom::BitmapButton::raw_ptr button = new nom::BitmapButton( window, -1, pos, size, tex );
+      // nom::BitmapButton::raw_ptr button = new nom::BitmapButton( window, tex );
 
       button->set_name( name );
       NOM_ASSERT( button->name() == name );

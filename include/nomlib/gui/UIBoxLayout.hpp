@@ -145,6 +145,8 @@ class UIBoxLayout: public UILayout
     ///
     /// \remarks This is a convenience method provided so we do not have to call
     /// ::set_bounds with a copy of its size fields.
+    ///
+    /// \todo Consider implementing this in the common interface, nom::UILayout?
     void set_position( const Point2i& pos );
 
     void set_direction( enum Direction dir );

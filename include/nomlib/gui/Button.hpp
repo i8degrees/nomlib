@@ -56,12 +56,20 @@ class Button: public UIWidget
     };
 
     /// \brief Default constructor.
+    ///
+    /// \deprecated
     Button  (
               UIWidget* parent,
               int64 id,
               const Point2i& pos,
               const Size2i& size
             );
+
+    /// \brief Construct a nom::Button from a parent widget.
+    ///
+    /// \remarks This object instance inherits the properties of the parent,
+    // /such as (but not limited to) position, size, name, id and font.
+    // Button( UIWidget* parent );
 
     /// \brief Destructor.
     virtual ~Button( void );

@@ -61,6 +61,31 @@ BitmapButton::BitmapButton  (
   this->update();
 }
 
+// BitmapButton::BitmapButton( UIWidget* parent, const Texture& image ) :
+//   Button( parent, parent->id(), parent->position(), parent->size() ) // Base class
+// {
+//   // NOM_LOG_TRACE( NOM );
+
+//   // Use explicitly set coordinates for our minimum widget size
+//   this->set_minimum_size( parent->size() );
+
+//   // Auto-generate a name tag for our widget.
+//   this->set_name( "bitmap_button" );
+
+//   this->set_default_bitmap( image );
+//   this->set_pressed_bitmap( image );
+//   this->set_focused_bitmap( image );
+//   this->set_disabled_bitmap( image );
+
+//   // Default state
+//   this->set_button_state( Button::State::Default );
+
+//   // Initialize the default event listeners for the widget.
+//   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
+
+//   this->update();
+// }
+
 BitmapButton::~BitmapButton( void )
 {
   // NOM_LOG_TRACE( NOM );

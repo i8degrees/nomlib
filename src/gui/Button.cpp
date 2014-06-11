@@ -58,6 +58,29 @@ Button::Button  (
   this->set_focus_policy( FocusPolicy::StrongFocus );
 }
 
+// Button::Button( UIWidget* parent ) :
+//   UIWidget( parent, parent->id(), parent->position(), parent->size() ) // Base class
+// {
+//   // NOM_LOG_TRACE( NOM );
+
+//   // Use explicitly set coordinates for our minimum widget size
+//   this->set_minimum_size( parent->size() );
+
+//   // Auto-generate a name tag for our widget.
+//   this->set_name( "button" );
+
+//   // Default state
+//   this->set_button_state( Button::State::Default );
+
+//   // Initialize the default event listeners for the widget.
+//   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
+
+//   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WIDGET_UPDATE, this->on_update );
+
+//   // Widget's focus type.
+//   this->set_focus_policy( FocusPolicy::StrongFocus );
+// }
+
 Button::~Button( void )
 {
   // NOM_LOG_TRACE( NOM );

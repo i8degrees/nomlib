@@ -157,29 +157,8 @@ Size2i UIBoxLayout::minimum_size( void ) const
         // msize = item->minimum_size();
         msize = msize.max( item->minimum_size() );
       }
-
-      UIWidget* widget = item->widget();
-
-      if( widget != nullptr )
-      {
-        IDecorator* decorator = item->widget()->decorator();
-
-        if( decorator != nullptr )
-        {
-          frame_bounds = decorator->frame_bounds();
-          frame_size = decorator->size();
-
-          if( frame_bounds != IntRect::null && frame_size != Size2i::null )
-          {
-            offset.w = frame_size.w - frame_bounds.w;
-            offset.h = frame_size.h - frame_bounds.h;
-
-            // Append the extra dimensions onto our minimum_size calculation
-            msize += offset;
-          }
-        }
-      } // end if widget != nullptr
     }
+
   } // end for items loop
 
 // NOM_DUMP( msize );
@@ -227,6 +206,10 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
   // Total sum of item's boundaries; this *should* result in the overall
   // layout's boundaries.
   // IntRect total_bounds;
+
+  IntRect frame_bounds;
+  Size2i frame_size;
+  Size2i frame_offset;
 
   int w_x = 0;          // Widget X offset
   int w_y = 0;          // Widget Y offset
@@ -362,6 +345,23 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
         NOM_DUMP( item->size_hint() );
         NOM_DUMP( item->bounds() );
       #endif
+
+      // Calculate the item's size requirements with respect to the decorator's
+      // bounds
+      if( widget->decorator() != nullptr )
+      {
+        frame_bounds = widget->decorator()->frame_bounds();
+        frame_size = widget->decorator()->size();
+
+        if( frame_bounds != IntRect::null && frame_size != Size2i::null )
+        {
+          frame_offset.w = frame_size.w - frame_bounds.w;
+          frame_offset.h = frame_size.h - frame_bounds.h;
+
+          // Append the extra dimensions onto our minimum_size calculation
+          item_size += frame_offset;
+        }
+      } // end if decorator is not null
 
       geom = IntRect( w_x + rect.x + offset.x, w_y + rect.y + offset.y, item_size.w, item_size.h );
 

@@ -41,9 +41,6 @@ BitmapButton::BitmapButton  (
 {
   // NOM_LOG_TRACE( NOM );
 
-  // Use explicitly set coordinates for our minimum widget size
-  this->set_minimum_size( size );
-
   // Auto-generate a name tag for our widget.
   this->set_name( "bitmap_button" );
 
@@ -65,9 +62,6 @@ BitmapButton::BitmapButton  (
 //   Button( parent, parent->id(), parent->position(), parent->size() ) // Base class
 // {
 //   // NOM_LOG_TRACE( NOM );
-
-//   // Use explicitly set coordinates for our minimum widget size
-//   this->set_minimum_size( parent->size() );
 
 //   // Auto-generate a name tag for our widget.
 //   this->set_name( "bitmap_button" );
@@ -96,6 +90,11 @@ ObjectTypeInfo BitmapButton::type( void ) const
   return NOM_OBJECT_TYPE_INFO( self_type );
 }
 
+const Size2i BitmapButton::minimum_size( void ) const
+{
+  return this->size_hint();
+}
+
 const Size2i BitmapButton::size_hint( void ) const
 {
   if( this->default_bitmap_.valid() )
@@ -103,8 +102,7 @@ const Size2i BitmapButton::size_hint( void ) const
     return( Size2i( this->default_bitmap_.bounds().w, this->default_bitmap_.bounds().h ) );
   }
 
-  // Explicitly set by the end-user (developer):
-  return this->minimum_size();
+  return Button::size_hint();
 }
 
 void BitmapButton::draw( RenderTarget& target ) const

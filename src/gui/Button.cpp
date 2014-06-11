@@ -41,7 +41,15 @@ Button::Button  (
   // NOM_LOG_TRACE( NOM );
 
   // Use explicitly set coordinates for our minimum widget size
+  //
+  // Note that if size is invalid (NULL), the minimum size returned will be
+  // Size2i(0,0)
   this->set_minimum_size( size );
+
+  this->set_size_policy( UILayoutPolicy::Policy::Preferred, UILayoutPolicy::Policy::Fixed );
+
+  // Widget's focus type.
+  this->set_focus_policy( FocusPolicy::StrongFocus );
 
   // Auto-generate a name tag for our widget.
   this->set_name( "button" );
@@ -53,9 +61,6 @@ Button::Button  (
   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
 
   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WIDGET_UPDATE, this->on_update );
-
-  // Widget's focus type.
-  this->set_focus_policy( FocusPolicy::StrongFocus );
 }
 
 // Button::Button( UIWidget* parent ) :
@@ -65,6 +70,8 @@ Button::Button  (
 
 //   // Use explicitly set coordinates for our minimum widget size
 //   this->set_minimum_size( parent->size() );
+
+//   this->set_size_policy( UILayoutPolicy::Policy::Preferred, UILayoutPolicy::Policy::Fixed );
 
 //   // Auto-generate a name tag for our widget.
 //   this->set_name( "button" );
@@ -86,15 +93,33 @@ Button::~Button( void )
   // NOM_LOG_TRACE( NOM );
 }
 
+const Size2i Button::minimum_size( void ) const
+{
+  // Our preferred size will always be two times what is actually required
+  return Size2i( this->size_hint().w / 2, this->size_hint().h / 2 );
+}
+
 const Size2i Button::size_hint( void ) const
 {
-  // Total text height requirements for stored items
+  // Maximum text width requirements for the label (with respect to font).
+  //
+  // We dedicate two times the width required in order to: a) help account for
+  // dynamic length text labels that are set after initialization of the
+  // layout -- the layout manager *should* catch this early enough, but just
+  // in case; b) Simple, minimal approach to getting the look of the button
+  // to *feel* right in terms of size dimensions (in comparison to standard GUI
+  // elements).
+  int total_text_width = this->label_.width() * 2;
+
+  // Total text height requirements for the label (with respect to font).
+  //
+  // Note that this variable will be scaled up by a factor of two as well; see
+  // the above note regarding total_text_width for my reasoning logic on
+  // requesting this.
   sint total_text_height = 0;
 
-  // Default point size of font
   uint point_size = nom::DEFAULT_FONT_SIZE;
 
-  // Calculate the total text height requirements for the widget.
   FontMetrics face = this->label_.font()->metrics();
 
   // NOM_DUMP( this->name() );
@@ -107,33 +132,16 @@ const Size2i Button::size_hint( void ) const
     point_size = this->style()->font_size();
   }
 
-  // Maximum pixel height of the font's glyph
-  total_text_height += this->label_.font()->newline( point_size );
+  total_text_height += this->label_.font()->newline( point_size ) * 2;
 
-  // NOM_DUMP( this->name() );
-  // NOM_DUMP( total_text_height );
-
-  // If we have calculated a total text height requirement, we can stop here,
-  // using the total text height for our preferred height field.
+  // If we have calculated a total text height requirement, we can stop here...
   if( total_text_height > 0 )
   {
-    // Text label's width & height (with respect to rendered font):
-    return Size2i( this->label_.width(), total_text_height );
+    return Size2i( total_text_width, total_text_height );
   }
 
-  // We do not have any text labels stored, so assume a widget with a height
-  // large enough for one item.
-  if( this->font().valid() == true )
-  {
-    // NOM_DUMP( this->name() );
-    // NOM_DUMP( this->font()->newline( point_size ) );
-
-    // Text label's width & height (with respect to rendered font):
-    return Size2i( this->label_.width(), this->font()->newline( point_size ) );
-  }
-
-  // Explicitly set by the end-user (developer):
-  return Size2i( this->minimum_size() );
+  // Err
+  return Size2i( 0, 0 );
 }
 
 ObjectTypeInfo Button::type( void ) const

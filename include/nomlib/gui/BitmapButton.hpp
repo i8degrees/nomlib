@@ -79,14 +79,17 @@ class BitmapButton: public Button
     /// \remarks This uniquely identifies the object's type.
     ObjectTypeInfo type( void ) const;
 
+    /// \brief Get the minimum size of the widget.
+    ///
+    /// \note Re-implements UIWidget::minimum_size.
+    virtual const Size2i minimum_size( void ) const;
+
     /// \brief Get the preferred size of the widget.
     ///
     /// \note Re-implements UIWidget::size_hint.
     ///
     /// \remarks This value is used when managed by a layout, when the size
     /// policy is set to SizePolicy::Preferred.
-    ///
-    /// \todo Add the decorator's frame (if any) to the size calculations?
     virtual const Size2i size_hint( void ) const;
 
     /// \brief Implements IDrawable::draw

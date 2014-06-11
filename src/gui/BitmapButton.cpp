@@ -105,6 +105,16 @@ const Size2i BitmapButton::size_hint( void ) const
   return Button::size_hint();
 }
 
+Size2i BitmapButton::bitmap_size( void ) const
+{
+  if( this->default_bitmap_.valid() )
+  {
+    return this->default_bitmap_.size();
+  }
+
+  return Size2i::null;
+}
+
 void BitmapButton::draw( RenderTarget& target ) const
 {
   switch( this->button_state() )

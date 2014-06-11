@@ -40,13 +40,33 @@ Button::Button  (
 {
   // NOM_LOG_TRACE( NOM );
 
-  // Use explicitly set coordinates for our minimum widget size
+  // Use explicitly set coordinates as the widget's minimum size requirements.
   //
   // Note that if size is invalid (NULL), the minimum size returned will be
   // Size2i(0,0)
+  //
+  // Note that the size policy is only used when the widget is used inside a
+  // layout.
   this->set_minimum_size( size );
 
-  this->set_size_policy( UILayoutPolicy::Policy::Preferred, UILayoutPolicy::Policy::Fixed );
+  // Set the size policy of the widget to use explicitly set size dimensions.
+  //
+  // Note that the size policy is only used when the widget is used inside a
+  // layout.
+  if( size != Size2i::null )
+  {
+    this->set_size_policy( UILayoutPolicy::Policy::Minimum, UILayoutPolicy::Policy::Fixed );
+  }
+
+  // Set the size policy of the widget to use dimensions that are calculated
+  // with respect to the text label string, font, point size, etc.
+  //
+  // Note that the size policy is only used when the widget is used inside a
+  // layout.
+  else
+  {
+    this->set_size_policy( UILayoutPolicy::Policy::Preferred, UILayoutPolicy::Policy::Fixed );
+  }
 
   // Widget's focus type.
   this->set_focus_policy( FocusPolicy::StrongFocus );

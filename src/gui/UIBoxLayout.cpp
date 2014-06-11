@@ -120,12 +120,6 @@ Size2i UIBoxLayout::minimum_size( void ) const
   // Items container size
   int count = this->count();
 
-  // Frame bounds used for calculating a more accurate minimum size; only
-  // filled if the item has an initialized decorator.
-  IntRect frame_bounds;
-  Size2i frame_size;
-  Size2i offset;
-
   // Default minimum size; only used if nothing better comes along!
   Size2i msize( 0, 0 );
 
@@ -280,20 +274,6 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
         offset = widget->parent()->position();
       }
 
-      UILayoutPolicy p = widget->size_policy();
-
-      // FIXME: Include horizontal policy
-      if( p.vertical_policy() == UILayoutPolicy::Policy::Minimum )
-      {
-        item_size.w = this->minimum_size().w;
-        item_size.h = this->minimum_size().h;
-      }
-      else
-      {
-        item_size.w = this->size_hint().w;
-        item_size.h = this->size_hint().h;
-      }
-
       // Horizontal layout using preferred size height
       if( this->horiz() )
       {
@@ -338,6 +318,32 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
         } // end if widget_count > 1
 
       } // end if vertical layout
+
+      UILayoutPolicy p = widget->size_policy();
+
+      if( p.horizontal_policy() == UILayoutPolicy::Policy::Minimum )
+      {
+        item_size.w = this->minimum_size().w;
+        item_size.h = this->minimum_size().h;
+      }
+
+      if( p.vertical_policy() == UILayoutPolicy::Policy::Minimum )
+      {
+        item_size.w = this->minimum_size().w;
+        item_size.h = this->minimum_size().h;
+      }
+
+      if( p.horizontal_policy() == UILayoutPolicy::Policy::Preferred )
+      {
+        item_size.w = this->size_hint().w;
+        item_size.h = this->size_hint().h;
+      }
+
+      if( p.vertical_policy() == UILayoutPolicy::Policy::Preferred )
+      {
+        item_size.w = this->size_hint().w;
+        item_size.h = this->size_hint().h;
+      }
 
       // Widget layout item stats
       #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
@@ -460,7 +466,6 @@ void UIBoxLayout::insert_widget( int pos, UIWidget* widget )
 
   // Calculate the layout's requirements for the addition
   this->set_bounds( IntRect( pos_offset, widget->size() ) );
-  // this->set_bounds( IntRect( pos_offset, widget->size_hint() ) );
 }
 
 void UIBoxLayout::insert_widget( int pos, UIWidget* widget, uint32 align )

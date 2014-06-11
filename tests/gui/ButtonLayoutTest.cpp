@@ -106,8 +106,7 @@ class ButtonLayoutTest: public ::testing::Test
       ASSERT_TRUE( this->button_bg[1].load( RESOURCE_AQUA_BUTTON_IMAGE_0, 0 ) == true );
       ASSERT_TRUE( this->button_bg[2].load( RESOURCE_AQUA_BUTTON_IMAGE_1, 0 ) == true );
 
-      // Window-scope mouse button click events
-      // FIXME: Temporarily disabled (to cease debugging output):
+      // FIXME: The underlying event code in UIWidget is commented out.
       // this->main_window->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
 
       // Top-level (parent) window (relative to global "screen" coordinates):
@@ -126,14 +125,21 @@ class ButtonLayoutTest: public ::testing::Test
       // management, the size dimensions will be calculated for us automatically
       // (meaning that the size dimensions used will be from the widget's
       // size_hint method, when the size policy is set to Preferred).
-      this->button0 = this->create_button( this->main_window, Point2i::null, Size2i(50,25), "button0", "Click me!" );
+
+      // this->button0 = this->create_button( this->main_window, Point2i::null, Size2i(50,16), "button0", "Click me!" );
+      this->button0 = this->create_button( this->main_window, Point2i::null, Size2i::null, "button0", "Click me!" );
 
       this->button0->set_font( SystemFonts::cache().load_resource("VIII") );
       this->button0->set_decorator( new nom::FinalFantasyDecorator() );
       this->button0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );
       this->button0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );
 
-      this->button1 = this->create_button( this->main_window, Point2i::null, Size2i(50,25), "button1", "button1" );
+      // this->button1 = this->create_button( this->main_window, Point2i::null, Size2i::null, "button1", "button1" );
+
+      // Create a button using explicit size dimensions; this internally sets
+      // the size policy to use these dimensions within a layout.
+      this->button1 = this->create_button( this->main_window, Point2i::null, Size2i(56,16), "button1", "button1" );
+
       this->button1->set_decorator( new nom::MinimalDecorator() );
       this->button1->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button1_on_click( ev ); } ) );
       this->button1->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button1_on_click( ev ); } ) );
@@ -146,14 +152,20 @@ class ButtonLayoutTest: public ::testing::Test
       custom_style->set_font_size( 13 );
       custom_style->set_font_style( nom::Text::Style::Bold );
 
-      this->button2 = this->create_bitmap_button( this->main_window, Point2i::null, Size2i(102,25), "bitmap_button", "Hello", this->button_bg[1], custom_style );
+      // this->button2 = this->create_bitmap_button( this->main_window, Point2i::null, Size2i(50,16), "bitmap_button", "Hello", this->button_bg[1], custom_style );
+      this->button2 = this->create_bitmap_button( this->main_window, Point2i::null, Size2i::null, "bitmap_button", "Hello", this->button_bg[1], custom_style );
+
       this->button2->set_pressed_bitmap( this->button_bg[2] );
       this->button2->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
       this->button2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
-      this->main_window->insert_child( button0 );
-      this->main_window->insert_child( button1 );
-      this->main_window->insert_child( button2 );
+      // this->button3 = this->create_button( this->main_window, Point2i::null, Size2i::null, "button3", "button3" );
+      this->button3 = this->create_button( this->main_window, Point2i::null, Size2i(56,16), "button3", "button3" );
+
+      this->main_window->insert_child( this->button0 );
+      this->main_window->insert_child( this->button1 );
+      this->main_window->insert_child( this->button2 );
+      this->main_window->insert_child( this->button3 );
     }
 
     /// \remarks This method is called at the end of each unit test.
@@ -203,6 +215,11 @@ class ButtonLayoutTest: public ::testing::Test
       NOM_ASSERT( button->label_text() == label );
 
       NOM_ASSERT( button->parent()->position() == window->position() );
+
+      NOM_DUMP( button->name() );
+      NOM_DUMP( size );           // layout dims (?)
+      NOM_DUMP( button->size() ); // ::size_hint dims (correct)
+
       NOM_ASSERT( button->size() == size );
 
       NOM_ASSERT( button->font().valid() );
@@ -233,7 +250,12 @@ class ButtonLayoutTest: public ::testing::Test
       NOM_ASSERT( button->label_text() == label );
 
       NOM_ASSERT( button->parent()->position() == window->position() );
-      NOM_ASSERT( button->size() == size );
+
+      // NOM_DUMP( button->name() );
+      // NOM_DUMP(size);           // layout dims (?)
+      // NOM_DUMP(button->size()); // ::size_hint dims (correct)
+
+      NOM_ASSERT( button->size() == button->bitmap_size() );
 
       NOM_ASSERT( button->font().valid() );
 
@@ -256,13 +278,6 @@ class ButtonLayoutTest: public ::testing::Test
         layout = new nom::UIVBoxLayout( window );
       }
 
-      // TODO: Add unit tests for each size policy variation
-      // if( this->button0 != nullptr )
-      // {
-        // FIXME:
-        // this->button0->set_size_policy( nom::UILayoutPolicy::Policy::Minimum, nom::UILayoutPolicy::Policy::Minimum );
-      // }
-
       // TODO: Add unit tests for this
       // layout->set_spacing( 1 );
 
@@ -272,15 +287,70 @@ class ButtonLayoutTest: public ::testing::Test
       layout->add_widget( this->button1 );
       layout->append_spacer( 40 );
       layout->add_widget( this->button2 );
+      layout->append_spacer( 2 );
+      layout->add_widget( this->button3 );
 
-      // FIXME (?): Our widget items must fit within these bounds.
-      // IntRect layout_bounds( pos, size );
-      // layout->set_bounds( layout_bounds );
+      // Relative positioning coordinate
+      if( pos != Point2i::null && size != Size2i::null )
+      {
+        IntRect layout_bounds( pos, size );
+        layout->set_bounds( layout_bounds );
 
-      // Relative to parent widget
-      layout->set_position( pos );
+        EXPECT_EQ( pos.x, layout->bounds().x );
+        EXPECT_EQ( pos.y, layout->bounds().y );
+        EXPECT_EQ( size.w, layout->bounds().w );
+        EXPECT_EQ( size.h, layout->bounds().h );
+      }
 
-      // TODO: Add unit tests for this
+      // Absolute positioning coordinates(?):
+      // I don't *think* that this should ever be necessary.
+      // else if( window != nullptr && window->parent() != nullptr )
+      // {
+            // TODO: This functionality needs to be tested.
+
+      //   IntRect layout_bounds( window->parent()->position(), window->parent()->size() );
+      //   layout->set_bounds( layout_bounds );
+
+      //   EXPECT_EQ( window->parent()->position().x, layout->bounds().x );
+      //   EXPECT_EQ( window->parent()->position().y, layout->bounds().y );
+      //   EXPECT_EQ( window->parent()->size().w, layout->bounds().w );
+      //   EXPECT_EQ( window->parent()->size().h, layout->bounds().h );
+      // }
+
+      // Relative positioning coordinate
+      else if( window != nullptr )
+      {
+        if( pos != Point2i::null )
+        {
+          IntRect layout_bounds( pos , window->size() );
+          layout->set_bounds( layout_bounds );
+
+          // These coordinates should be relative to the parent window that the
+          // layout is attached to:
+          EXPECT_EQ( pos.x, layout->bounds().x );
+          EXPECT_EQ( pos.y, layout->bounds().y );
+          EXPECT_EQ( window->size().w, layout->bounds().w );
+          EXPECT_EQ( window->size().h, layout->bounds().h );
+        }
+
+        // Use whatever existing coordinates we can access and pray that they
+        // are set properly.
+        else
+        {
+          // TODO: This functionality needs to be tested.
+
+          // Relative positioning coordinates (or so we hope!):
+          IntRect layout_bounds( window->position(), window->size() );
+          layout->set_bounds( layout_bounds );
+
+          EXPECT_EQ( window->position().x, layout->bounds().x );
+          EXPECT_EQ( window->position().y, layout->bounds().y );
+          EXPECT_EQ( window->size().w, layout->bounds().w );
+          EXPECT_EQ( window->size().h, layout->bounds().h );
+        }
+      }
+
+      // TODO: Add unit tests for this?
       // this->button_layout->set_position( nom::Point2i( 0, 0 ) );
 
       // FIXME:
@@ -298,13 +368,6 @@ class ButtonLayoutTest: public ::testing::Test
       // }
 
       NOM_ASSERT( window->layout() == layout );
-
-      // These coordinates should be relative to the parent window that the
-      // layout is attached to.
-      EXPECT_EQ( 12, layout->bounds().x );
-      EXPECT_EQ( 25, layout->bounds().y );
-
-      // TODO: Unit test for layout size dimensions
 
       return layout;
     }
@@ -355,6 +418,113 @@ class ButtonLayoutTest: public ::testing::Test
       }
     }
 
+    /// \brief Helper method for verifying expected output across tests (to
+    /// minimize redundancy).
+    void expected_layout_spacer_output( const UILayout::raw_ptr layout, int spacing, const Size2i& dims )
+    {
+      ASSERT_TRUE( layout != nullptr );
+
+      EXPECT_EQ( spacing, layout->spacing() );
+
+      UILayoutItem::raw_ptr item = layout->at( 0 );
+
+      if( item->spacer_item() != nullptr )
+      {
+        // NOM_DUMP( item->spacer_item()->bounds().x );
+        // NOM_DUMP( item->spacer_item()->bounds().y );
+        // NOM_DUMP( item->spacer_item()->size().w );
+        // NOM_DUMP( item->spacer_item()->size().h );
+
+        // FIXME:
+        EXPECT_EQ( -1, item->spacer_item()->bounds().x );
+        EXPECT_EQ( -1, item->spacer_item()->bounds().y );
+
+        // Should be the size as calculated by the layout (dependent upon size
+        // policy).
+        EXPECT_EQ( dims.w, item->spacer_item()->size().w );
+        EXPECT_EQ( dims.h, item->spacer_item()->size().h );
+      } // end spacer item
+
+    }
+
+    /// \brief Helper method for verifying expected output across tests (to
+    /// minimize redundancy).
+    void expected_layout_widget_output( const UILayout::raw_ptr layout, int idx, const Point2i& pos, const Size2i& dims )
+    {
+      ASSERT_TRUE( layout != nullptr );
+
+      UILayoutItem::raw_ptr item = nullptr;
+
+      item = layout->at( idx );
+
+      if( item->widget() != nullptr )
+      {
+        // NOM_DUMP( item->widget()->name() );
+        // NOM_DUMP( item->widget()->bounds().x );
+        // NOM_DUMP( item->widget()->bounds().y );
+        // NOM_DUMP( item->widget()->size().w );
+        // NOM_DUMP( item->widget()->size().h );
+
+        // Absolute (global screen) coordinates
+        // Should include both UISpacerItem spacing, but not internal layout
+        // spacing (because it is the first item).
+        EXPECT_EQ( pos.x, item->widget()->position().x );
+        EXPECT_EQ( pos.y, item->widget()->position().y );
+
+        // Should be the size as calculated by the layout (dependent upon size
+        // policy).
+        EXPECT_EQ( dims.w, item->widget()->size().w );
+        EXPECT_EQ( dims.h, item->widget()->size().h );
+      } // end widget item
+
+    }
+
+    /// \brief Helper method for verifying expected output across tests (to
+    /// minimize redundancy).
+    void expected_horizontal_layout_output( const UILayout::raw_ptr layout )
+    {
+      int idx = 0;
+      Point2i pos;
+      Size2i dims;
+
+      this->expected_layout_spacer_output( layout, 1, Size2i(8,8) );
+
+      // button0
+      idx = 1;
+      pos = Point2i( 45, 50 );
+      dims = Size2i( 115, 33 );
+      this->expected_layout_widget_output( layout, idx, pos, dims );
+
+      // button3
+      idx = layout->count() - 1;
+      pos = Point2i( 384, 50 );
+      dims = Size2i( 56, 16 );
+      this->expected_layout_widget_output( layout, idx, pos, dims );
+    }
+
+    /// \brief Helper method for verifying expected output across tests (to
+    /// minimize redundancy).
+    void expected_vertical_layout_output( const UILayout::raw_ptr layout )
+    {
+      int idx = 0;
+      Point2i pos;
+      Size2i dims;
+
+      this->expected_layout_spacer_output( layout, 1, Size2i(8,8) );
+
+      // button0
+      idx = 1;
+      pos = Point2i( 37, 58 );
+      dims = Size2i( 115, 33 );
+      this->expected_layout_widget_output( layout, idx, pos, dims );
+
+      // button3
+      idx = layout->count() - 1;
+      pos = Point2i( 37, 193 );
+      dims = Size2i( 56, 16 );
+      this->expected_layout_widget_output( layout, idx, pos, dims );
+    }
+
   protected:
     const nom::Path p;
 
@@ -384,91 +554,30 @@ class ButtonLayoutTest: public ::testing::Test
     nom::Button::raw_ptr button0;
     nom::Button::raw_ptr button1;
     nom::BitmapButton::raw_ptr button2;
+    nom::Button::raw_ptr button3;
 };
 
 TEST_F( ButtonLayoutTest, HorizontalLayout )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
-  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i(50,-1), "LayoutAPI", Orientations::Horizontal );
+  // Use custom, absolute dimensions that we provide, with relative positioning
+  // of the layout from the parent widget's coordinates.
+  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i( WINDOW_WIDTH - 100, WINDOW_HEIGHT / 2 ), "HorizontalLayout", Orientations::Horizontal );
 
-  // Total number of items (including spacers) in our layout
-  EXPECT_EQ( 6, layout->count() );
+  // This may provide us a bit more flexibility in swapping widgets in and out
+  // of the layout during development of these unit tests.
+  //
+  // The parent widget used is always expected to hold the children that are
+  // used within the layout, and thus should remain constant. The last addition
+  // is the total number of other UILayoutItem objects that you have added
+  // to the layout -- nom::UISpacerItem is the only other object type as of this
+  // time that it may be.
+  EXPECT_EQ( this->main_window->children().size() + 4, layout->count() );
 
-  EXPECT_EQ( Size2i( 102, 25 ), layout->size_hint() );
-  EXPECT_EQ( Size2i( 102, 31 ), layout->minimum_size() );
+  EXPECT_EQ( Size2i( 56, 16 ), layout->minimum_size() );
 
-  EXPECT_EQ( 1, layout->spacing() );
-
-  UILayoutItem* item = nullptr;
-
-  // UISpacerItem
-  item = layout->at( 0 );
-
-  ASSERT_FALSE( item->spacer_item() == nullptr );
-
-  if( item->spacer_item() != nullptr )
-  {
-    // NOM_DUMP( item->spacer_item()->bounds().x );
-    // NOM_DUMP( item->spacer_item()->bounds().y );
-    // NOM_DUMP( item->spacer_item()->size().w );
-    // NOM_DUMP( item->spacer_item()->size().h );
-
-    EXPECT_EQ( -1, item->spacer_item()->bounds().x );
-    EXPECT_EQ( -1, item->spacer_item()->bounds().y );
-
-    // Should be the size as calculated by the layout (dependent upon size
-    // policy).
-    EXPECT_EQ( 8, item->spacer_item()->size().w );
-    EXPECT_EQ( 8, item->spacer_item()->size().h );
-  }
-
-  // button0
-  item = layout->at( 1 );
-
-  ASSERT_FALSE( item->widget() == nullptr );
-
-  if( item->widget() != nullptr )
-  {
-    // NOM_DUMP_VAR( "button0_pos.x: ", item->widget()->position().x );
-    // NOM_DUMP_VAR( "button0_pos.y: ", item->widget()->position().y );
-    // NOM_DUMP_VAR( "button0_size.w: ", item->widget()->size().w );
-    // NOM_DUMP_VAR( "button0_size.h: ", item->widget()->size().h );
-
-    // Absolute (global screen) coordinates
-    // Should include both UISpacerItem spacing, but not internal layout
-    // spacing (because it is the first item).
-    EXPECT_EQ( 45, item->widget()->position().x );
-    EXPECT_EQ( 50, item->widget()->position().y );
-
-    // Should be the size as calculated by the layout (dependent upon size
-    // policy).
-    EXPECT_EQ( 102, item->widget()->size().w );
-    EXPECT_EQ( 25, item->widget()->size().h );
-  }
-
-  // Skip to the end of the layout -- button2
-  item = layout->at( layout->count() - 1 );
-
-  ASSERT_FALSE( item->widget() == nullptr );
-
-  if( item->widget() != nullptr )
-  {
-    // NOM_DUMP_VAR( "button2_pos.x: ", item->widget()->position().x );
-    // NOM_DUMP_VAR( "button2_pos.y: ", item->widget()->position().y );
-    // NOM_DUMP_VAR( "button2_size.w: ", item->widget()->size().w );
-    // NOM_DUMP_VAR( "button2_size.h: ", item->widget()->size().h );
-
-    // Absolute (global screen) coordinates
-    // Should include both UISpacerItem spacing & internal layout spacing
-    EXPECT_EQ( 299, item->widget()->position().x );
-    EXPECT_EQ( 50, item->widget()->position().y );
-
-    // Should be the size as calculated by the layout (dependent upon size
-    // policy).
-    EXPECT_EQ( 102, item->widget()->size().w );
-    EXPECT_EQ( 25, item->widget()->size().h );
-  }
+  this->expected_horizontal_layout_output( layout );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -477,87 +586,79 @@ TEST_F( ButtonLayoutTest, VerticalLayout )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
-  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i(50,-1), "LayoutAPI", Orientations::Vertical );
+  // Use custom, absolute dimensions that we provide, with relative positioning
+  // of the layout from the parent widget's coordinates.
+  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i( WINDOW_WIDTH - 100, WINDOW_HEIGHT / 2 ), "VerticalLayout", Orientations::Vertical );
 
-  // Total number of items (including spacers) in our layout
-  EXPECT_EQ( 6, layout->count() );
+  // The parent widget used is always expected to hold the children that are
+  // used within the layout, and thus should remain constant. The last addition
+  // is the total number of other UILayoutItem objects that you have added
+  // to the layout -- nom::UISpacerItem is the only other object type as of this
+  // time that it may be.
+  //
+  // This will hopefully be more flexible (in swapping items around during dev)
+  // than counting on a hard coded number of layout items.
+  EXPECT_EQ( this->main_window->children().size() + 4, layout->count() );
 
-  EXPECT_EQ( Size2i( 102, 25 ), layout->size_hint() );
-  EXPECT_EQ( Size2i( 102, 31 ), layout->minimum_size() );
+  EXPECT_EQ( Size2i( 56, 16 ), layout->minimum_size() );
 
-  EXPECT_EQ( 1, layout->spacing() );
-
-  UILayoutItem* item = nullptr;
-
-  // UISpacerItem
-  item = layout->at( 0 );
-
-  ASSERT_FALSE( item->spacer_item() == nullptr );
-
-  if( item->spacer_item() != nullptr )
-  {
-    // NOM_DUMP( item->spacer_item()->bounds().x );
-    // NOM_DUMP( item->spacer_item()->bounds().y );
-    // NOM_DUMP( item->spacer_item()->size().w );
-    // NOM_DUMP( item->spacer_item()->size().h );
-
-    EXPECT_EQ( -1, item->spacer_item()->bounds().x );
-    EXPECT_EQ( -1, item->spacer_item()->bounds().y );
-
-    // Should be the size as calculated by the layout (dependent upon size
-    // policy).
-    EXPECT_EQ( 8, item->spacer_item()->size().w );
-    EXPECT_EQ( 8, item->spacer_item()->size().h );
-  }
-
-  // button0
-  item = layout->at( 1 );
-
-  ASSERT_FALSE( item->widget() == nullptr );
-
-  if( item->widget() != nullptr )
-  {
-    // NOM_DUMP_VAR( "button0_pos.x: ", item->widget()->position().x );
-    // NOM_DUMP_VAR( "button0_pos.y: ", item->widget()->position().y );
-    // NOM_DUMP_VAR( "button0_size.w: ", item->widget()->size().w );
-    // NOM_DUMP_VAR( "button0_size.h: ", item->widget()->size().h );
-
-    // Absolute (global screen) coordinates
-    // Should include both UISpacerItem spacing, but not internal layout
-    // spacing (because it is the first item).
-    EXPECT_EQ( 37, item->widget()->position().x );
-    EXPECT_EQ( 58, item->widget()->position().y );
-
-    // Should be the size as calculated by the layout (dependent upon size
-    // policy).
-    EXPECT_EQ( 102, item->widget()->size().w );
-    EXPECT_EQ( 25, item->widget()->size().h );
-  }
-
-  // Skip to the end of the layout -- button2
-  item = layout->at( layout->count() - 1 );
-
-  ASSERT_FALSE( item->widget() == nullptr );
-
-  if( item->widget() != nullptr )
-  {
-    // NOM_DUMP_VAR( "button2_pos.x: ", item->widget()->position().x );
-    // NOM_DUMP_VAR( "button2_pos.y: ", item->widget()->position().y );
-    // NOM_DUMP_VAR( "button2_size.w: ", item->widget()->size().w );
-    // NOM_DUMP_VAR( "button2_size.h: ", item->widget()->size().h );
-
-    // Absolute (global screen) coordinates
-    // Should include both UISpacerItem spacing & internal layout spacing
-    EXPECT_EQ( 37, item->widget()->position().x );
-    EXPECT_EQ( 158, item->widget()->position().y );
-
-    // Should be the size as calculated by the layout (dependent upon size
-    // policy).
-    EXPECT_EQ( 102, item->widget()->size().w );
-    EXPECT_EQ( 25, item->widget()->size().h );
-  }
+  this->expected_vertical_layout_output( layout );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+/// \remarks This unit test is intended to be non-interactive. To enable
+/// interactive running of the test, uncomment the last line of the unit test.
+TEST_F( ButtonLayoutTest, NullSizeHorizontalLayout )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  // Use the dimensions that the parent widget provides, with relative
+  // positioning of the layout from the parent widget's coordinates.
+  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i::null, "NullSizeHorizontalLayout", Orientations::Horizontal );
+
+  // The parent widget used is always expected to hold the children that are
+  // used within the layout, and thus should remain constant. The last addition
+  // is the total number of other UILayoutItem objects that you have added
+  // to the layout -- nom::UISpacerItem is the only other object type as of this
+  // time that it may be.
+  //
+  // This will hopefully be more flexible (in swapping items around during dev)
+  // than counting on a hard coded number of layout items.
+  EXPECT_EQ( this->main_window->children().size() + 4, layout->count() );
+
+  EXPECT_EQ( Size2i( 56, 16 ), layout->minimum_size() );
+
+  this->expected_horizontal_layout_output( layout );
+
+  // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+/// \remarks This unit test is intended to be non-interactive. To enable
+/// interactive running of the test, uncomment the last line of the unit test.
+TEST_F( ButtonLayoutTest, NullSizeVerticalLayout )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  // Use the dimensions that the parent widget provides, with relative
+  // positioning of the layout from the parent widget's coordinates.
+  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i::null, "NullSizeVerticalLayout", Orientations::Vertical );
+
+  // The parent widget used is always expected to hold the children that are
+  // used within the layout, and thus should remain constant. The last addition
+  // is the total number of other UILayoutItem objects that you have added
+  // to the layout -- nom::UISpacerItem is the only other object type as of this
+  // time that it may be.
+  //
+  // This will hopefully be more flexible (in swapping items around during dev)
+  // than counting on a hard coded number of layout items.
+  EXPECT_EQ( this->main_window->children().size() + 4, layout->count() );
+
+  EXPECT_EQ( Size2i( 56, 16 ), layout->minimum_size() );
+
+  this->expected_vertical_layout_output( layout );
+
+  // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
 } // namespace nom

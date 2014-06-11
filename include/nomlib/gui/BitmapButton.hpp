@@ -95,6 +95,13 @@ class BitmapButton: public Button
     /// \brief Implements IDrawable::draw
     virtual void draw( RenderTarget& target ) const;
 
+    /// \brief Get the size dimensions of the default bitmap image.
+    ///
+    /// \returns The size dimensions of the bitmap image on success. On err,
+    /// such as If the default bitmap image is not valid (not initialized),
+    /// Size2i::null is returned.
+    Size2i bitmap_size( void ) const;
+
     /// \brief Get the default bitmap image.
     ///
     /// \returns A valid (pixels loaded from file or memory) nom::Texture on
@@ -186,3 +193,10 @@ class BitmapButton: public Button
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::BitmapButton
+/// \ingroup gui
+///
+/// The size dimensions of the pressed, focused and disabled bitmaps *must*
+/// match the size dimensions of the default bitmap image.
+///

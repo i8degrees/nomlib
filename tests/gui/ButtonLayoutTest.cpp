@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
+#include "nomlib/tests/common.hpp"  // nom::UnitTest
 #include "gui/common.hpp"           // nom::priv helpers
 
 #include <nomlib/math.hpp>
@@ -95,7 +96,16 @@ class ButtonLayoutTest: public ::testing::Test
     /// \remarks This method is called at the start of each unit test.
     virtual void SetUp( void )
     {
-      nom::uint32 window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN;
+      nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
+
+      // if( nom::UnitTest::interactive() )
+      // {
+      //   window_flags |= SDL_WINDOW_SHOWN;
+      // }
+      // else
+      // {
+      //   window_flags |= SDL_WINDOW_HIDDEN;
+      // }
 
       // Necessary for loading font resources
       ASSERT_TRUE( this->window.create( "ButtonLayoutTest", WINDOW_WIDTH, WINDOW_HEIGHT, window_flags ) );
@@ -386,7 +396,10 @@ TEST_F( ButtonLayoutTest, HorizontalLayout )
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, this->pos, this->dims );
 
-  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  if( nom::UnitTest::interactive() )
+  {
+    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
 }
 
 TEST_F( ButtonLayoutTest, VerticalLayout )
@@ -410,7 +423,10 @@ TEST_F( ButtonLayoutTest, VerticalLayout )
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, this->pos, this->dims );
 
-  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  if( nom::UnitTest::interactive() )
+  {
+    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
 }
 
 /// \remarks This unit test is intended to be non-interactive. To enable
@@ -436,7 +452,10 @@ TEST_F( ButtonLayoutTest, NullSizeHorizontalLayout )
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, pos, dims );
 
-  // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  if( nom::UnitTest::interactive() )
+  {
+    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
 }
 
 /// \remarks This unit test is intended to be non-interactive. To enable
@@ -462,7 +481,10 @@ TEST_F( ButtonLayoutTest, NullSizeVerticalLayout )
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, this->pos, this->dims );
 
-  // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  if( nom::UnitTest::interactive() )
+  {
+    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
 }
 
 } // namespace nom
@@ -476,6 +498,8 @@ int main( int argc, char** argv )
   atexit( nom::quit );
 
   ::testing::InitGoogleTest( &argc, argv );
+
+  nom::UnitTest::init( argc, argv );
 
   return RUN_ALL_TESTS();
 }

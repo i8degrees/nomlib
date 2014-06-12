@@ -207,6 +207,12 @@ set(  EXAMPLES_TEMPLATE_SOURCE
       ${NOMLIB_SHARED_SUPPORT_DIR}/ExamplesTemplate.cpp
     )
 
+file ( GLOB TESTS_HEADERS "${NOMLIB_HEADERS_DIR}/tests/*.hpp" )
+set (
+      TESTS_SOURCE
+      ${SRC_DIR}/tests/common.cpp
+    )
+
 # Platform-specific source files
 
 if ( PLATFORM_OSX )
@@ -398,6 +404,17 @@ if( NOM_BUILD_TEMPLATES_UNIT )
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
 endif( NOM_BUILD_TEMPLATES_UNIT )
+
+if( NOM_BUILD_TESTS )
+  set ( NOMLIB_HEADERS
+        ${NOMLIB_HEADERS}
+        ${TESTS_HEADERS}
+      )
+  set ( NOMLIB_SOURCE
+        ${NOMLIB_SOURCE}
+        ${TESTS_SOURCE}
+      )
+endif( NOM_BUILD_TESTS )
 
 # Add header files (*.hpp) and source files (*.cpp) to IDE project list
 # (For those that use Xcode, MSVC++, etc.)

@@ -114,7 +114,10 @@ if ( DEBUG )
     # TTcards up and going; this is only needed here because we are building
     # statically at the moment -- we must match compile flags when linking with
     # TTcards.
-    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D_ITERATOR_DEBUG_LEVEL=0" )
+    #
+    # FIXME: Unit tests do not execute properly under Windows with iterator
+    # assertions disabled. See also: tests/CMakeLists.txt.
+    # set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D_ITERATOR_DEBUG_LEVEL=0" )
   endif( NOT PLATFORM_WINDOWS )
 
   message ( STATUS "Building ${PROJECT_NAME} with debugging." )

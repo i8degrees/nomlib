@@ -240,15 +240,11 @@ bool SDLApp::initialize( uint32 flags )
   {
     // Create a resource cache for letting either SDLApp or the end-user add
     // fonts for ease of access.
-    //
-    // (This should be done automatically for us now):
-    // SystemFonts::initialize();
+    SystemFonts::initialize();
 
     // Platform specific initialization of fonts (system, user, engine) that are
     // available to the engine for access.
-    //
-    // (This should be done automatically for us now):
-    // PlatformSettings::initialize();
+    PlatformSettings::initialize();
   }
 
   // The color database is allocated and immediately populated

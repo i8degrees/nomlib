@@ -96,12 +96,12 @@ class PlatformSettings
     static Font* get_system_font( SystemFontType index );
 
   private:
-    /// \brief Get the status of fonts cache.
-    static bool initialized( void );
-
     /// \brief Track object's state in order to ensure enumeration of fonts has
     /// been done.
     static bool initialized_;
+
+    /// \brief Get the status of fonts cache.
+    static bool initialized( void );
 
     /// \brief Initialization of available font resources for both internal and
     /// end-user (developer) access. Note that the function implementation is

@@ -12,6 +12,9 @@ set( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS on )
 # TODO: Remove? (Probably!)
 set( NOM_BUILD_GUI_CUSTOM_UI_LAYOUT_TESTS off )
 
+# Additional Header file dependencies
+include_directories( "${NOM_TESTS_DIR}/gui" )
+
 if( NOM_BUILD_GUI_UI_ITEM_CONTAINER_TESTS )
 
   add_executable  (
@@ -101,6 +104,7 @@ if( NOM_BUILD_GUI_LISTBOX_LAYOUT_TESTS )
   add_executable  (
                     listbox_layout_test
                     ${NOM_TESTS_DIR}/gui/ListBoxLayoutTest.cpp
+                    ${NOM_TESTS_DIR}/gui/common.cpp
                   )
 
   target_link_libraries (
@@ -113,6 +117,7 @@ if( NOM_BUILD_GUI_LISTBOX_LAYOUT_TESTS )
                     listbox_layout_test
                     "ListBoxLayoutTest"
                     ${NOM_TESTS_DIR}/gui/ListBoxLayoutTest.cpp
+                    ${NOM_TESTS_DIR}/gui/common.cpp
                   )
 
 endif( NOM_BUILD_GUI_LISTBOX_LAYOUT_TESTS )
@@ -122,6 +127,7 @@ if( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS )
   add_executable  (
                     button_layout_test
                     ${NOM_TESTS_DIR}/gui/ButtonLayoutTest.cpp
+                    ${NOM_TESTS_DIR}/gui/common.cpp
                   )
 
   target_link_libraries (
@@ -134,6 +140,7 @@ if( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS )
                     button_layout_test
                     "ButtonLayoutTest"
                     ${NOM_TESTS_DIR}/gui/ButtonLayoutTest.cpp
+                    ${NOM_TESTS_DIR}/gui/common.cpp
                   )
 
   install (

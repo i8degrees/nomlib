@@ -39,7 +39,7 @@ void PlatformSettings::initialize( void )
 {
   if( PlatformSettings::initialized() == false )
   {
-    NOM_LOG_INFO( NOM, "PlatformSettings interface was not yet initialized. Initializing..." );
+    // NOM_LOG_INFO( NOM, "PlatformSettings interface was not yet initialized. Initializing..." );
 
     nom::init_third_party( InitHints::SDL2_IMAGE | InitHints::SDL2 | InitHints::SDL2_TTF );
 

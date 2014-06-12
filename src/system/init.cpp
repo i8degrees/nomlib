@@ -70,7 +70,7 @@ FontCache& SystemFonts::cache( void )
 {
   if( SystemFonts::initialized() == false )
   {
-    NOM_LOG_INFO( NOM, "System fonts cache was not yet initialized. Initializing..." );
+    // NOM_LOG_INFO( NOM, "System fonts cache was not yet initialized. Initializing..." );
     SystemFonts::initialize();
   }
 
@@ -147,7 +147,7 @@ ColorDatabase& SystemColors::colors( void )
 {
   if( SystemColors::initialized() == false )
   {
-    NOM_LOG_INFO( NOM, "Color database was not yet initialized. Initializing..." );
+    // NOM_LOG_INFO( NOM, "Color database was not yet initialized. Initializing..." );
     SystemColors::initialize();
   }
 
@@ -202,7 +202,7 @@ bool init_third_party( uint32 flags )
 
 bool init ( int argc, char* argv[] )
 {
-  NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE( NOM );
 
   nom::File dir;
   std::string pwd = "\0";
@@ -238,7 +238,7 @@ bool init ( int argc, char* argv[] )
 
 void quit( void )
 {
-  NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE( NOM );
 
   // We must clear the cache of nom::Font objects before shutting down SDL2_ttf,
   // because otherwise we'll be freeing memory that we do not own (FreeType

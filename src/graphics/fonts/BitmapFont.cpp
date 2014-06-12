@@ -100,7 +100,7 @@ int BitmapFont::newline( uint32 character_size ) const
 
 int BitmapFont::kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const
 {
-  return 0; // TODO
+  return -1;
 }
 
 int BitmapFont::hinting( void ) const
@@ -130,22 +130,37 @@ const Glyph& BitmapFont::glyph ( uint32 codepoint, uint32 character_size ) const
 
 bool BitmapFont::set_point_size( int point_size )
 {
-  return false; // TODO
+  // NOM_STUBBED( NOM );
+
+  return false;
 }
 
 bool BitmapFont::set_hinting( int type )
 {
-  return false; // Not implemented
+  // NOM_STUBBED( NOM );
+
+  return false;
 }
 
 bool BitmapFont::set_outline( int )
 {
-  return false; // Not implemented
+  // NOM_STUBBED( NOM );
+
+  return false;
 }
 
 void BitmapFont::set_font_style( uint32 style )
 {
   // Not implemented
+
+  // NOM_STUBBED( NOM );
+}
+
+void BitmapFont::set_font_kerning( bool state )
+{
+  // Not implemented
+
+  // NOM_STUBBED( NOM );
 }
 
 bool BitmapFont::load( const std::string& filename )

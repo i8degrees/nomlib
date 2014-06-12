@@ -31,6 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Private headers (third-party)
 #include "SDL.h"
 
+// #define NOM_DEBUG_OUTPUT_KERNING_VALUES
+
 namespace nom {
 
 Text::Text( void ) :
@@ -145,6 +147,7 @@ sint Text::text_width ( const std::string& text_string ) const
 {
   sint text_width = 0;
   uint32 previous_char = 0; // Kerning calculation
+  int kerning_value = -1;
   std::string text_buffer = text_string;
 
   // Ensure that our font pointer is still valid
@@ -162,7 +165,14 @@ sint Text::text_width ( const std::string& text_string ) const
   {
     // Apply kerning offset
     uint32 current_char = text_buffer[pos];
-    text_width += this->font()->kerning ( previous_char, current_char, this->text_size() );
+
+    kerning_value = this->font()->kerning( previous_char, current_char, this->text_size() );
+
+    if( kerning_value != -1 )
+    {
+      text_width += kerning_value;
+    }
+
     previous_char = current_char;
 
     if ( current_char == ' ' ) // ASCII space glyph (32)
@@ -448,6 +458,11 @@ void Text::set_alignment( enum Text::Alignment align )
 
 void Text::draw ( RenderTarget& target ) const
 {
+  // Font kerning
+  int kerning_value = -1;
+  uint32 previous_char = 0;
+  uint32 current_char = 0;
+
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from
   int x_offset = this->position().x;
@@ -469,12 +484,24 @@ void Text::draw ( RenderTarget& target ) const
     angle = 12; // 12 degrees as per SDL2_ttf
   }
 
-  uint32 previous_char = 0;
   for ( uint32 pos = 0; pos < text_buffer.length(); ++pos )
   {
     // Apply kerning offset
-    uint32 current_char = text_buffer[pos];
-    x_offset += this->font()->kerning ( previous_char, current_char, this->text_size() );
+    current_char = text_buffer[pos];
+    kerning_value = this->font()->kerning( previous_char, current_char, this->text_size() );
+
+    if( kerning_value != -1 )
+    {
+      #if defined( NOM_DEBUG_OUTPUT_KERNING_VALUES )
+        if( kerning_value != 0 )
+        {
+          NOM_LOG_INFO( NOM, "kerning_value: ", kerning_value );
+        }
+      #endif
+
+      x_offset += kerning_value;
+    }
+
     previous_char = current_char;
 
     if ( current_char == ' ' ) // Space character

@@ -102,6 +102,13 @@ class TrueTypeFont: public IFont
     /// \returns  Height offset in pixels
     int newline( uint32 character_size ) const;
 
+    /// \returns A non-negative value on success, or negative one (-1) on
+    /// failure.
+    ///
+    /// \note The font's point size affects the results.
+    ///
+    /// \todo Rename to kerning_size so we can create kerning getter for
+    /// kerning_ class variable.
     int kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const;
 
     /// \brief Get the font's hinting style.
@@ -172,6 +179,9 @@ class TrueTypeFont: public IFont
     ///
     /// \fixme This method must be called *after* ::set_font_size.
     void set_font_style( uint32 style );
+
+    /// \brief Set the use of kerning for the font.
+    void set_font_kerning( bool state );
 
     /// \brief Load a new TrueType font from a file.
     ///
@@ -247,6 +257,11 @@ class TrueTypeFont: public IFont
     ///
     /// \remarks The default is TTF_HINTING_NONE.
     int hinting_;
+
+    /// \brief Whether or not to use font kerning.
+    ///
+    /// \remarks Default is true.
+    bool kerning_;
 };
 
 } // namespace nom

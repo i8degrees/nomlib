@@ -90,6 +90,10 @@ class BitmapFont: public IFont
     /// \returns  Height offset in pixels
     int newline( uint32 character_size ) const;
 
+    /// \returns A non-negative value on success, or negative one (-1) on
+    /// failure.
+    ///
+    /// \remarks This method is not implemented.
     int kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const;
 
     /// \brief Get the font's hinting style.
@@ -131,6 +135,11 @@ class BitmapFont: public IFont
     ///
     /// \remarks This method is not implemented.
     void set_font_style( uint32 style );
+
+    /// \brief Set the use of kerning for the font.
+    ///
+    /// \remarks This method is not implemented.
+    void set_font_kerning( bool state );
 
     /// \brief Loads a new bitmap font from a file
     bool load( const std::string& filename );

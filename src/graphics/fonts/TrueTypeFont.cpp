@@ -46,7 +46,8 @@ TrueTypeFont::TrueTypeFont ( void ) :
   sheet_width_ ( 16 ),
   sheet_height_ ( 16 ),
   point_size_ ( nom::DEFAULT_FONT_SIZE ),   // Terrible Eyesight (TM)
-  hinting_( TTF_HINTING_NONE )
+  hinting_( TTF_HINTING_NONE ),
+  kerning_( true )
 {
   // NOM_LOG_TRACE( NOM );
 
@@ -71,7 +72,8 @@ TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy ) :
   metrics_ { copy.metrics() },
   filename_ { copy.filename_ },
   point_size_ { copy.point_size() },
-  hinting_{ copy.hinting() }
+  hinting_{ copy.hinting() },
+  kerning_{ copy.kerning_ }
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -128,16 +130,21 @@ int TrueTypeFont::newline( uint32 character_size ) const
 int TrueTypeFont::kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const
 {
   // Null character
-  if ( first_char == 0 || second_char == 0 ) return 0;
+  if ( first_char == 0 || second_char == 0 )
+  {
+    return -1;
+  }
 
-  if ( this->valid() && TTF_GetFontKerning( this->font() ) )
+  if( this->valid() && this->kerning_ == true )
   {
-    return TTF_GetFontKerningSize ( this->font(), first_char, second_char );
+    // NOM_LOG_INFO( NOM, "sdl2_ttf kerning: ", TTF_GetFontKerning( this->font() ) );
+
+    NOM_ASSERT( TTF_GetFontKerning( this->font() ) == this->kerning_ );
+
+    return TTF_GetFontKerningSize( this->font(), first_char, second_char );
   }
-  else
-  {
-    return 0;
-  }
+
+  return -1;
 }
 
 const Glyph& TrueTypeFont::glyph ( uint32 codepoint, uint32 character_size ) const
@@ -249,6 +256,20 @@ void TrueTypeFont::set_font_style( uint32 style )
     {
       NOM_LOG_ERR( NOM, "Could not rebuild glyph metrics." );
     }
+  }
+}
+
+void TrueTypeFont::set_font_kerning( bool state )
+{
+  if( state == true )
+  {
+    TTF_SetFontKerning( this->font(), 1 );
+    this->kerning_ = true;
+  }
+  else
+  {
+    TTF_SetFontKerning( this->font(), 0 );
+    this->kerning_ = false;
   }
 }
 

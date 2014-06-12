@@ -320,11 +320,23 @@ class App: public nom::SDLApp
 
       // this->label_tfont.set_font( this->truetype_font );
 
-      this->label_tfont.set_font( nom::SystemFonts::cache().load_resource( "Arial" ) );
+      nom::Font font = *nom::SystemFonts::cache().load_resource( "Arial" );
+
+      // Font kerning defaults to true.
+      //
+      // Note that if you disable kerning, be sure to update the text with
+      // a text string that is known to have kerning applied, such as "WAV".
+      //
+      // font->set_font_kerning( false );
+
+      this->label_tfont.set_font( font );
 
       this->label_tfont.set_position(nom::Point2i(24,24));
       //this->label_tfont.set_color( nom::Color4i(195,209,228) );
+
       this->label_tfont.set_text( RESOURCE_FONT_TEXT_STRING );
+      // this->label_tfont.set_text( "WAV" );
+
       // this->label_tfont.set_alignment( nom::Text::Alignment::TopLeft );
 
       return true;

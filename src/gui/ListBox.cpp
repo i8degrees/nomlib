@@ -199,7 +199,6 @@ void ListBox::set_item_store( const UIItemContainer::raw_ptr store )
 
   this->store_.reset( store );
 
-  // FIXME: VBoxLayoutTest unit tests break if we do not update here.
   this->update();
 }
 

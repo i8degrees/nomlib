@@ -3,14 +3,9 @@ set( NOM_BUILD_GUI_UI_EVENT_DISPATCHER_TESTS off )
 
 set( NOM_BUILD_GUI_UI_WIDGET_TESTS on )
 
-# TODO: Remove
-set( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS off )
-
 set( NOM_BUILD_GUI_LISTBOX_LAYOUT_TESTS on )
 set( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS on )
 
-# TODO: Remove? (Probably!)
-set( NOM_BUILD_GUI_CUSTOM_UI_LAYOUT_TESTS off )
 
 # Additional Header file dependencies
 include_directories( "${NOM_TESTS_DIR}/gui" )
@@ -77,28 +72,6 @@ if( NOM_BUILD_GUI_UI_WIDGET_TESTS )
 
 endif( NOM_BUILD_GUI_UI_WIDGET_TESTS )
 
-# TODO: Remove
-# if( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS )
-
-#   add_executable  (
-#                     VBoxLayoutTest
-#                     ${NOM_TESTS_DIR}/gui/VBoxLayoutTest.cpp
-#                   )
-
-#   target_link_libraries (
-#                           VBoxLayoutTest
-#                           ${GTEST_BOTH_LIBRARIES}
-#                           ${PROJECT_NAME} # nomlib
-#                         )
-
-#   GTEST_ADD_TESTS (
-#                     VBoxLayoutTest
-#                     "VBoxLayoutTest"
-#                     ${NOM_TESTS_DIR}/gui/VBoxLayoutTest.cpp
-#                   )
-
-# endif( NOM_BUILD_GUI_VBOX_LAYOUT_TESTS )
-
 if( NOM_BUILD_GUI_LISTBOX_LAYOUT_TESTS )
 
   add_executable  (
@@ -152,26 +125,3 @@ if( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS )
           )
 
 endif( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS )
-
-if( NOM_BUILD_GUI_CUSTOM_UI_LAYOUT_TESTS )
-
-  add_executable  (
-                    CustomUILayoutTest
-                    ${NOM_TESTS_DIR}/gui/CustomUILayout.cpp
-                    ${NOM_TESTS_DIR}/gui/CustomUILayoutTest.cpp
-                  )
-
-  target_link_libraries (
-                          CustomUILayoutTest
-                          ${GTEST_BOTH_LIBRARIES}
-                          ${PROJECT_NAME} # nomlib
-                        )
-
-  GTEST_ADD_TESTS (
-                    CustomUILayoutTest
-                    "CustomUILayoutTest"
-                    ${NOM_TESTS_DIR}/gui/CustomUILayout.cpp
-                    ${NOM_TESTS_DIR}/gui/CustomUILayoutTest.cpp
-                  )
-
-endif( NOM_BUILD_GUI_CUSTOM_UI_LAYOUT_TESTS )

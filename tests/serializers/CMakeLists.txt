@@ -2,9 +2,6 @@ set( NOM_BUILD_SERIALIZERS_JSON_TESTS off )
 set( NOM_BUILD_SERIALIZERS_XML_TESTS off )
 set( NOM_BUILD_JSON_CONFIG_FILE_TESTS off )
 
-# Additional Header file dependencies
-include_directories( "${NOM_TESTS_DIR}/serializers" )
-
 if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
 
   add_executable  (

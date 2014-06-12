@@ -36,6 +36,7 @@ endif( PLATFORM_WINDOWS )
 find_package( GTest REQUIRED )
 
 include_directories( ${GTEST_INCLUDE_DIRS} )
+include_directories( "${NOM_TESTS_DIR}" )
 
 include( "${NOM_TESTS_DIR}/graphics/CMakeLists.txt" )
 include( "${NOM_TESTS_DIR}/math/CMakeLists.txt" )

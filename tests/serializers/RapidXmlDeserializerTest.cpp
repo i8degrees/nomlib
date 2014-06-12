@@ -6,7 +6,7 @@
 #include <nomlib/serializers.hpp>
 #include <nomlib/ptree.hpp> // Property Tree (nom::Value)
 
-#include "common.hpp"
+#include "serializers/common.hpp"
 
 namespace nom {
 

@@ -6,10 +6,6 @@ set( NOM_BUILD_GUI_UI_WIDGET_TESTS on )
 set( NOM_BUILD_GUI_LISTBOX_LAYOUT_TESTS on )
 set( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS on )
 
-
-# Additional Header file dependencies
-include_directories( "${NOM_TESTS_DIR}/gui" )
-
 if( NOM_BUILD_GUI_UI_ITEM_CONTAINER_TESTS )
 
   add_executable  (

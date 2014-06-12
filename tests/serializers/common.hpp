@@ -26,8 +26,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include <nomlib/ptree.hpp>   // Property Tree (nom::Value)
-#include <nomlib/system.hpp>
+#include "nomlib/system/Path.hpp"
+#include "nomlib/system/File.hpp"
+
+#include "nomlib/ptree.hpp" // Property Tree (nom::Value)
 
 namespace nom {
 

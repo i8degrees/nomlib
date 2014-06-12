@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#include "common.hpp"
+#include "gui/common.hpp"           // nom::priv helpers
 
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>

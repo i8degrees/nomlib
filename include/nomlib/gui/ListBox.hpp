@@ -69,21 +69,14 @@ class ListBox: public UIWidget
     /// \remarks This uniquely identifies the object's type.
     ObjectTypeInfo type( void ) const;
 
+    /// \brief Get the minimum size of the widget.
+    ///
+    /// \note Re-implements UIWidget::minimum_size.
+    virtual const Size2i minimum_size( void ) const;
+
     /// \brief Get the preferred size of the widget.
     ///
-    /// \returns The calculated size is determined using one of the following,
-    /// dependent upon conditions: a) return the calculated total
-    /// text height necessary for the stored text labels for the height field,
-    /// and the widget's width for the width field; b) return the widget's
-    /// width, and the widget's height as the value of the widget's set font
-    /// newline (assumed at 12 pt); c) The widget's size as set at construction.
-    ///
     /// \note Re-implements UIWidget::size_hint.
-    ///
-    /// \remarks This value is used when managed by a layout, when the size
-    /// policy is set to SizePolicy::Preferred.
-    ///
-    /// \todo Add the decorator's frame (if any) to the size calculations?
     virtual const Size2i size_hint( void ) const;
 
     /// \brief Query the validity of the object

@@ -106,17 +106,23 @@ class ButtonLayoutTest: public ::testing::Test
       ASSERT_TRUE( this->button_bg[1].load( RESOURCE_AQUA_BUTTON_IMAGE_0, 0 ) == true );
       ASSERT_TRUE( this->button_bg[2].load( RESOURCE_AQUA_BUTTON_IMAGE_1, 0 ) == true );
 
-      // FIXME: The underlying event code in UIWidget is commented out.
-      // this->main_window->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
-
       // Top-level (parent) window (relative to global "screen" coordinates):
       this->main_window = new nom::UIWidget( Point2i( 25, 25 ), Size2i( WINDOW_WIDTH - 100, WINDOW_HEIGHT / 2 ) );
+
+      // TODO:
+      // this->main_window = new nom::UIWidget( Point2i( 25, 25 ), Size2i( WINDOW_WIDTH - 100, 80 ) );
+
       this->main_window->set_name( "Layout" );
       this->main_window->set_title( this->main_window->name() );
 
       // Draw a frame so that we can visually see the maximal bounds of the
       // layout
       this->main_window->set_decorator( new nom::MinimalDecorator() );
+
+      // FIXME: R-enable the underlying event code in UIWidget for the
+      // WINDOW_MOUSE_DOWN event.
+      //
+      // this->main_window->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
 
       // Our widgets to be used in the layout:
 
@@ -161,6 +167,7 @@ class ButtonLayoutTest: public ::testing::Test
 
       // this->button3 = this->create_button( this->main_window, Point2i::null, Size2i::null, "button3", "button3" );
       this->button3 = this->create_button( this->main_window, Point2i::null, Size2i(56,16), "button3", "button3" );
+      this->button3->set_decorator( new nom::MinimalDecorator() );
 
       this->main_window->insert_child( this->button0 );
       this->main_window->insert_child( this->button1 );
@@ -216,9 +223,9 @@ class ButtonLayoutTest: public ::testing::Test
 
       NOM_ASSERT( button->parent()->position() == window->position() );
 
-      NOM_DUMP( button->name() );
-      NOM_DUMP( size );           // layout dims (?)
-      NOM_DUMP( button->size() ); // ::size_hint dims (correct)
+      // NOM_DUMP( button->name() );
+      // NOM_DUMP( size );           // layout dims (?)
+      // NOM_DUMP( button->size() ); // ::size_hint dims (correct)
 
       NOM_ASSERT( button->size() == size );
 
@@ -489,13 +496,13 @@ class ButtonLayoutTest: public ::testing::Test
 
       this->expected_layout_spacer_output( layout, 1, Size2i(8,8) );
 
-      // button0
+      // First widget item
       idx = 1;
       pos = Point2i( 45, 50 );
-      dims = Size2i( 115, 33 );
+      dims = Size2i( 115, 30 );
       this->expected_layout_widget_output( layout, idx, pos, dims );
 
-      // button3
+      // Last First widget item
       idx = layout->count() - 1;
       pos = Point2i( 384, 50 );
       dims = Size2i( 56, 16 );
@@ -512,13 +519,13 @@ class ButtonLayoutTest: public ::testing::Test
 
       this->expected_layout_spacer_output( layout, 1, Size2i(8,8) );
 
-      // button0
+      // First First widget item
       idx = 1;
       pos = Point2i( 37, 58 );
-      dims = Size2i( 115, 33 );
+      dims = Size2i( 112, 33 );
       this->expected_layout_widget_output( layout, idx, pos, dims );
 
-      // button3
+      // Last First widget item
       idx = layout->count() - 1;
       pos = Point2i( 37, 193 );
       dims = Size2i( 56, 16 );
@@ -563,6 +570,7 @@ TEST_F( ButtonLayoutTest, HorizontalLayout )
 
   // Use custom, absolute dimensions that we provide, with relative positioning
   // of the layout from the parent widget's coordinates.
+
   layout = this->create_layout( this->main_window, Point2i(12,25), Size2i( WINDOW_WIDTH - 100, WINDOW_HEIGHT / 2 ), "HorizontalLayout", Orientations::Horizontal );
 
   // This may provide us a bit more flexibility in swapping widgets in and out

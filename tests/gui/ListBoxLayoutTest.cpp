@@ -129,24 +129,33 @@ class ListBoxLayoutTest: public ::testing::Test
       labels[3].push_back( "item_2" );
 
       // Our widgets to be used in the layout:
-      this->listbox0 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,24), "listbox0", labels[0] );
+
+      // this->listbox0 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,24), "listbox0", labels[0] );
+      this->listbox0 = this->create_listbox( this->main_window, Point2i::null, Size2i::null, "listbox0", labels[0] );
+
       // this->listbox0->set_font( SystemFonts::cache().load_resource("VIII") );
       this->listbox0->set_decorator( new nom::MinimalDecorator() );
       this->listbox0->set_selected_text_color( nom::Color4i::Gray );
       // this->listbox0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
       // this->listbox0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
-      this->listbox1 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,24), "listbox1", labels[1] );
+      // this->listbox1 = this->create_listbox( this->main_window, Point2i::null, Size2i::null, "listbox1", labels[1] );
+      this->listbox1 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,32), "listbox1", labels[1] );
+
       this->listbox1->set_decorator( new nom::MinimalDecorator() );
       // this->listbox1->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
       // this->listbox1->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
-      this->listbox2 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,24), "listbox1", labels[2] );
+      // this->listbox2 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,24), "listbox2", labels[2] );
+      this->listbox2 = this->create_listbox( this->main_window, Point2i::null, Size2i::null, "listbox2", labels[2] );
+
       this->listbox2->set_decorator( new nom::MinimalDecorator() );
       // this->listbox2->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
       // this->listbox2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
 
-      this->listbox3 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,24), "listbox1", labels[3] );
+      // this->listbox3 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,24), "listbox3", labels[3] );
+      this->listbox3 = this->create_listbox( this->main_window, Point2i::null, Size2i::null, "listbox3", labels[3] );
+
       this->listbox3->set_decorator( new nom::MinimalDecorator() );
       // this->listbox3->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
       // this->listbox3->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
@@ -232,13 +241,6 @@ class ListBoxLayoutTest: public ::testing::Test
         layout = new nom::UIVBoxLayout( window );
       }
 
-      // TODO: Add unit tests for each size policy variation
-      // if( this->listbox0 != nullptr )
-      // {
-        // FIXME:
-        // this->listbox0->set_size_policy( nom::UILayoutPolicy::Policy::Minimum, nom::UILayoutPolicy::Policy::Minimum );
-      // }
-
       // TODO: Add unit tests for this
       // layout->set_spacing( 1 );
 
@@ -248,15 +250,71 @@ class ListBoxLayoutTest: public ::testing::Test
       layout->add_widget( this->listbox1 );
       layout->append_spacer( 40 );
       layout->add_widget( this->listbox2 );
-      layout->append_spacer( 0 );
+      layout->append_spacer( 2 );
       layout->add_widget( this->listbox3 );
 
-      // FIXME (?): Our widget items must fit within these bounds.
-      // IntRect layout_bounds( pos, size );
-      // layout->set_bounds( layout_bounds );
+      // Relative positioning coordinate
+      if( pos != Point2i::null && size != Size2i::null )
+      {
+        IntRect layout_bounds( pos, size );
+        layout->set_bounds( layout_bounds );
 
-      // Relative to parent widget
-      layout->set_position( pos );
+        EXPECT_EQ( pos.x, layout->bounds().x );
+        EXPECT_EQ( pos.y, layout->bounds().y );
+        EXPECT_EQ( size.w, layout->bounds().w );
+        EXPECT_EQ( size.h, layout->bounds().h );
+      }
+
+      // Absolute positioning coordinates(?):
+      // I don't *think* that this should ever be necessary.
+      // else if( window != nullptr && window->parent() != nullptr )
+      // {
+            // TODO: This functionality needs to be tested.
+
+      //   IntRect layout_bounds( window->parent()->position(), window->parent()->size() );
+      //   layout->set_bounds( layout_bounds );
+
+      //   EXPECT_EQ( window->parent()->position().x, layout->bounds().x );
+      //   EXPECT_EQ( window->parent()->position().y, layout->bounds().y );
+      //   EXPECT_EQ( window->parent()->size().w, layout->bounds().w );
+      //   EXPECT_EQ( window->parent()->size().h, layout->bounds().h );
+      // }
+
+      // Relative positioning coordinate
+      else if( window != nullptr )
+      {
+        if( pos != Point2i::null )
+        {
+          IntRect layout_bounds( pos , window->size() );
+          layout->set_bounds( layout_bounds );
+
+          // These coordinates should be relative to the parent window that the
+          // layout is attached to:
+          EXPECT_EQ( pos.x, layout->bounds().x );
+          EXPECT_EQ( pos.y, layout->bounds().y );
+          EXPECT_EQ( window->size().w, layout->bounds().w );
+          EXPECT_EQ( window->size().h, layout->bounds().h );
+        }
+
+        // TODO: Add unit tests for this?
+        // this->button_layout->set_position( nom::Point2i( 0, 0 ) );
+
+        // Use whatever existing coordinates we can access and pray that they
+        // are set properly.
+        else
+        {
+          // TODO: This functionality needs to be tested.
+
+          // Relative positioning coordinates (or so we hope!):
+          IntRect layout_bounds( window->position(), window->size() );
+          layout->set_bounds( layout_bounds );
+
+          EXPECT_EQ( window->position().x, layout->bounds().x );
+          EXPECT_EQ( window->position().y, layout->bounds().y );
+          EXPECT_EQ( window->size().w, layout->bounds().w );
+          EXPECT_EQ( window->size().h, layout->bounds().h );
+        }
+      }
 
       // TODO: Add unit tests for this
       // this->button_layout->set_position( nom::Point2i( 0, 0 ) );
@@ -277,13 +335,6 @@ class ListBoxLayoutTest: public ::testing::Test
 
       NOM_ASSERT( window->layout() == layout );
 
-      // These coordinates should be relative to the parent window that the
-      // layout is attached to.
-      EXPECT_EQ( 12, layout->bounds().x );
-      EXPECT_EQ( 25, layout->bounds().y );
-
-      // TODO: Unit test for layout size dimensions
-
       return layout;
     }
 
@@ -293,6 +344,138 @@ class ListBoxLayoutTest: public ::testing::Test
       NOM_DUMP( ev.id() );
       NOM_DUMP( ev.index() );
       NOM_DUMP( ev.text() );
+    }
+
+    /// \brief Helper method for verifying expected output across tests (to
+    /// minimize redundancy).
+    void expected_layout_spacer_output( const UILayout::raw_ptr layout, int spacing, const Size2i& dims )
+    {
+      ASSERT_TRUE( layout != nullptr );
+
+      EXPECT_EQ( spacing, layout->spacing() );
+
+      UILayoutItem::raw_ptr item = layout->at( 0 );
+
+      if( item->spacer_item() != nullptr )
+      {
+        // NOM_DUMP( item->spacer_item()->bounds().x );
+        // NOM_DUMP( item->spacer_item()->bounds().y );
+        // NOM_DUMP( item->spacer_item()->size().w );
+        // NOM_DUMP( item->spacer_item()->size().h );
+
+        // FIXME:
+        EXPECT_EQ( -1, item->spacer_item()->bounds().x );
+        EXPECT_EQ( -1, item->spacer_item()->bounds().y );
+
+        // Should be the size as calculated by the layout (dependent upon size
+        // policy).
+        EXPECT_EQ( dims.w, item->spacer_item()->size().w );
+        EXPECT_EQ( dims.h, item->spacer_item()->size().h );
+      } // end spacer item
+
+    }
+
+    /// \brief Helper method for verifying expected output across tests (to
+    /// minimize redundancy).
+    void expected_layout_widget_output( const UILayout::raw_ptr layout, int idx, const Point2i& pos, const Size2i& dims )
+    {
+      ASSERT_TRUE( layout != nullptr );
+
+      UILayoutItem::raw_ptr item = nullptr;
+
+      item = layout->at( idx );
+
+      if( item->widget() != nullptr )
+      {
+        // NOM_DUMP( item->widget()->name() );
+        // NOM_DUMP( item->widget()->bounds().x );
+        // NOM_DUMP( item->widget()->bounds().y );
+        // NOM_DUMP( item->widget()->size().w );
+        // NOM_DUMP( item->widget()->size().h );
+
+        // Absolute (global screen) coordinates
+        // Should include both UISpacerItem spacing, but not internal layout
+        // spacing (because it is the first item).
+        EXPECT_EQ( pos.x, item->widget()->position().x );
+        EXPECT_EQ( pos.y, item->widget()->position().y );
+
+        // Should be the size as calculated by the layout (dependent upon size
+        // policy).
+        EXPECT_EQ( dims.w, item->widget()->size().w );
+        EXPECT_EQ( dims.h, item->widget()->size().h );
+      } // end widget item
+    }
+
+    /// \brief Helper method for verifying expected output across tests (to
+    /// minimize redundancy).
+    void expected_horizontal_layout_output( const UILayout::raw_ptr layout, IFont::FontType font_type )
+    {
+      int idx = 0;
+      Point2i pos;
+      Size2i dims;
+
+      this->expected_layout_spacer_output( layout, 1, Size2i(8,8) );
+
+      if( font_type == IFont::FontType::TrueTypeFont )
+      {
+        // First First widget item
+        idx = 1;
+        pos = Point2i( 45, 50 );
+        dims = Size2i( 58, 63 );
+        this->expected_layout_widget_output( layout, idx, pos, dims );
+
+        // Last First widget item
+        idx = layout->count() - 1;
+        pos = Point2i( 267, 50 );
+        dims = Size2i( 55, 63 );
+        this->expected_layout_widget_output( layout, idx, pos, dims );
+      }
+      else if( font_type == IFont::FontType::BitmapFont )
+      {
+        // TODO
+
+        NOM_STUBBED( NOM );
+      }
+    }
+
+    /// \brief Helper method for verifying expected output across tests (to
+    /// minimize redundancy).
+    void expected_vertical_layout_output( const UILayout::raw_ptr layout, IFont::FontType font_type )
+    {
+      int idx = 0;
+      Point2i pos;
+      Size2i dims;
+
+      this->expected_layout_spacer_output( layout, 1, Size2i(8,8) );
+
+      if( font_type == IFont::FontType::TrueTypeFont )
+      {
+        // First First widget item
+        idx = 1;
+        pos = Point2i( 37, 58 );
+        dims = Size2i( 55, 66 );
+        this->expected_layout_widget_output( layout, idx, pos, dims );
+
+        // Last First widget item
+        idx = layout->count() - 1;
+        pos = Point2i( 37, 278 );
+        dims = Size2i( 55, 63 );
+        this->expected_layout_widget_output( layout, idx, pos, dims );
+      }
+      else if( font_type == IFont::FontType::BitmapFont )
+      {
+        // First First widget item
+        idx = 1;
+        pos = Point2i( 37, 58 );
+        dims = Size2i( 56, 61 );
+        this->expected_layout_widget_output( layout, idx, pos, dims );
+
+        // Last First widget item
+        idx = layout->count() - 1;
+        pos = Point2i( 37, 268 );
+        dims = Size2i( 56, 58 );
+        this->expected_layout_widget_output( layout, idx, pos, dims );
+      }
     }
 
   protected:
@@ -320,268 +503,77 @@ class ListBoxLayoutTest: public ::testing::Test
     nom::ListBox::raw_ptr listbox3;
 };
 
-TEST_F( ListBoxLayoutTest, LayoutAPIUsingBitmapFont )
+TEST_F( ListBoxLayoutTest, HorizontalLayoutUsingTrueTypeFont )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  this->main_window->set_font( SystemFonts::cache().load_resource( "Arial" ) );
+
+  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i::null, "HorizontalLayoutUsingTrueTypeFont", Orientations::Horizontal );
+
+  // The parent widget used is always expected to hold the children that are
+  // used within the layout, and thus should remain constant. The last addition
+  // is the total number of other UILayoutItem objects that you have added
+  // to the layout -- nom::UISpacerItem is the only other object type as of this
+  // time that it may be.
+  //
+  // This will hopefully be more flexible (in swapping items around during dev)
+  // than counting on a hard coded number of layout items.
+  EXPECT_EQ( this->main_window->children().size() + 4, layout->count() );
+
+  EXPECT_EQ( Size2i( 50, 32 ), layout->minimum_size() );
+
+  this->expected_horizontal_layout_output( layout, IFont::FontType::TrueTypeFont );
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F( ListBoxLayoutTest, VerticalLayoutUsingBitmapFont )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
   this->main_window->set_font( SystemFonts::cache().load_resource( "VIII" ) );
 
-  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i(50,-1), "LayoutAPIUsingBitmapFont", Orientations::Vertical );
+  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i::null, "VerticalLayoutUsingBitmapFont", Orientations::Vertical );
 
-  // Total number of items (including spacers) in our layout
-  EXPECT_EQ( 8, layout->count() );
+  // The parent widget used is always expected to hold the children that are
+  // used within the layout, and thus should remain constant. The last addition
+  // is the total number of other UILayoutItem objects that you have added
+  // to the layout -- nom::UISpacerItem is the only other object type as of this
+  // time that it may be.
+  //
+  // This will hopefully be more flexible (in swapping items around during dev)
+  // than counting on a hard coded number of layout items.
+  EXPECT_EQ( this->main_window->children().size() + 4, layout->count() );
 
-  EXPECT_EQ( Size2i( 50, 52 ), layout->size_hint() );
+  EXPECT_EQ( Size2i( 50, 32 ), layout->minimum_size() );
 
-  // Should be the absolute dimensions specified in the initialization of unit
-  // tests.
-  EXPECT_EQ( Size2i( 62, 36 ), layout->minimum_size() );
-
-  EXPECT_EQ( 1, layout->spacing() );
-
-  UILayoutItem* item = nullptr;
-
-  item = layout->at( 0 );
-
-  ASSERT_FALSE( item->spacer_item() == nullptr );
-
-  if( item->spacer_item() != nullptr )
-  {
-    // NOM_DUMP( item->spacer_item()->bounds().x );
-    // NOM_DUMP( item->spacer_item()->bounds().y );
-    // NOM_DUMP( item->spacer_item()->size().w );
-    // NOM_DUMP( item->spacer_item()->size().h );
-
-    EXPECT_EQ( -1, item->spacer_item()->bounds().x );
-    EXPECT_EQ( -1, item->spacer_item()->bounds().y );
-
-    // Should be the size as calculated by the layout (dependent upon size
-    // policy).
-    EXPECT_EQ( 8, item->spacer_item()->size().w );
-    EXPECT_EQ( 8, item->spacer_item()->size().h );
-  }
-
-  // listbox0
-  item = layout->at( 1 );
-
-  ASSERT_FALSE( item->widget() == nullptr );
-
-  if( item->widget() != nullptr )
-  {
-    // NOM_DUMP_VAR( "listbox0_pos.x: ", item->widget()->position().x );
-    // NOM_DUMP_VAR( "listbox0_pos.y: ", item->widget()->position().y );
-    // NOM_DUMP_VAR( "listbox0_size.w: ", item->widget()->size().w );
-    // NOM_DUMP_VAR( "listbox0_size.h: ", item->widget()->size().h );
-
-    // Absolute (global screen) coordinates
-    // Should include both UISpacerItem spacing, but not internal layout
-    // spacing (because it is the first item).
-    EXPECT_EQ( 37, item->widget()->position().x );
-    EXPECT_EQ( 58, item->widget()->position().y );
-
-    // Should be the size as calculated by the layout (dependent upon size
-    // policy).
-    EXPECT_EQ( 50, item->widget()->size().w );
-    EXPECT_EQ( 52, item->widget()->size().h );
-  }
-
-  // Skip to the end of the layout -- listbox3
-  item = layout->at( layout->count() - 1 );
-
-  ASSERT_FALSE( item->widget() == nullptr );
-
-  if( item->widget() != nullptr )
-  {
-    // NOM_DUMP_VAR( "listbox3_pos.x: ", item->widget()->position().x );
-    // NOM_DUMP_VAR( "listbox3_pos.y: ", item->widget()->position().y );
-    // NOM_DUMP_VAR( "listbox3_size.w: ", item->widget()->size().w );
-    // NOM_DUMP_VAR( "listbox3_size.h: ", item->widget()->size().h );
-
-    // Absolute (global screen) coordinates
-    // Should include both UISpacerItem spacing & internal layout spacing
-    EXPECT_EQ( 37, item->widget()->position().x );
-
-    EXPECT_EQ( 265, item->widget()->position().y );
-
-    // Should be the size as calculated by the layout (dependent upon size
-    // policy).
-    EXPECT_EQ( 50, item->widget()->size().w );
-    EXPECT_EQ( 52, item->widget()->size().h );
-  }
+  this->expected_vertical_layout_output( layout, IFont::FontType::BitmapFont );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F( ListBoxLayoutTest, VerticalLayoutUsingArialFont )
+TEST_F( ListBoxLayoutTest, VerticalLayoutUsingTrueTypeFont )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
   this->main_window->set_font( SystemFonts::cache().load_resource( "Arial" ) );
 
-  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i(50,-1), "VerticalLayoutUsingTrueTypeFont", Orientations::Vertical );
+  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i::null, "VerticalLayoutUsingTrueTypeFont", Orientations::Vertical );
 
-  // Total number of items (including spacers) in our layout
-  EXPECT_EQ( 8, layout->count() );
-  EXPECT_EQ( Size2i( 50, 56 ), layout->size_hint() );
-  EXPECT_EQ( Size2i( 62, 36 ), layout->minimum_size() );
+  // The parent widget used is always expected to hold the children that are
+  // used within the layout, and thus should remain constant. The last addition
+  // is the total number of other UILayoutItem objects that you have added
+  // to the layout -- nom::UISpacerItem is the only other object type as of this
+  // time that it may be.
+  //
+  // This will hopefully be more flexible (in swapping items around during dev)
+  // than counting on a hard coded number of layout items.
+  EXPECT_EQ( this->main_window->children().size() + 4, layout->count() );
 
-  EXPECT_EQ( 1, layout->spacing() );
+  EXPECT_EQ( Size2i( 50, 32 ), layout->minimum_size() );
 
-  UILayoutItem* item = nullptr;
-
-  item = layout->at( 0 );
-
-  ASSERT_FALSE( item->spacer_item() == nullptr );
-
-  if( item->spacer_item() != nullptr )
-  {
-    // NOM_DUMP( item->spacer_item()->bounds().x );
-    // NOM_DUMP( item->spacer_item()->bounds().y );
-    // NOM_DUMP( item->spacer_item()->size().w );
-    // NOM_DUMP( item->spacer_item()->size().h );
-
-    EXPECT_EQ( -1, item->spacer_item()->bounds().x );
-    EXPECT_EQ( -1, item->spacer_item()->bounds().y );
-
-    // Should be the size as calculated by the layout (dependent upon size
-    // policy).
-    EXPECT_EQ( 8, item->spacer_item()->size().w );
-    EXPECT_EQ( 8, item->spacer_item()->size().h );
-  }
-
-  // listbox0
-  item = layout->at( 1 );
-
-  ASSERT_FALSE( item->widget() == nullptr );
-
-  if( item->widget() != nullptr )
-  {
-    // NOM_DUMP_VAR( "listbox0_pos.x: ", item->widget()->position().x );
-    // NOM_DUMP_VAR( "listbox0_pos.y: ", item->widget()->position().y );
-    // NOM_DUMP_VAR( "listbox0_size.w: ", item->widget()->size().w );
-    // NOM_DUMP_VAR( "listbox0_size.h: ", item->widget()->size().h );
-
-    // Absolute (global screen) coordinates
-    // Should include both UISpacerItem spacing, but not internal layout
-    // spacing (because it is the first item).
-    EXPECT_EQ( 37, item->widget()->position().x );
-    EXPECT_EQ( 58, item->widget()->position().y );
-
-    // Should be the size as calculated by the layout (dependent upon size
-    // policy).
-    EXPECT_EQ( 50, item->widget()->size().w );
-    EXPECT_EQ( 56, item->widget()->size().h );
-  }
-
-  // Skip to the end of the layout -- listbox3
-  item = layout->at( layout->count() - 1 );
-
-  ASSERT_FALSE( item->widget() == nullptr );
-
-  if( item->widget() != nullptr )
-  {
-    // NOM_DUMP_VAR( "listbox3_pos.x: ", item->widget()->position().x );
-    // NOM_DUMP_VAR( "listbox3_pos.y: ", item->widget()->position().y );
-    // NOM_DUMP_VAR( "listbox3_size.w: ", item->widget()->size().w );
-    // NOM_DUMP_VAR( "listbox3_size.h: ", item->widget()->size().h );
-
-    // Absolute (global screen) coordinates
-    // Should include both UISpacerItem spacing & internal layout spacing
-    EXPECT_EQ( 37, item->widget()->position().x );
-    EXPECT_EQ( 277, item->widget()->position().y );
-
-    // Should be the size as calculated by the layout (dependent upon size
-    // policy).
-    EXPECT_EQ( 50, item->widget()->size().w );
-    EXPECT_EQ( 56, item->widget()->size().h );
-  }
-
-  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-}
-
-TEST_F( ListBoxLayoutTest, HorizontalLayoutUsingArialFont )
-{
-  nom::UIBoxLayout::raw_ptr layout = nullptr;
-
-  this->main_window->set_font( SystemFonts::cache().load_resource( "Arial" ) );
-
-  layout = this->create_layout( this->main_window, Point2i(12,25), Size2i(50,-1), "HorizontalLayoutUsingTrueTypeFont", Orientations::Horizontal );
-
-  // Total number of items (including spacers) in our layout
-  EXPECT_EQ( 8, layout->count() );
-  EXPECT_EQ( Size2i( 50, 56 ), layout->size_hint() );
-  EXPECT_EQ( Size2i( 62, 36 ), layout->minimum_size() );
-
-  EXPECT_EQ( 1, layout->spacing() );
-
-  UILayoutItem* item = nullptr;
-
-  item = layout->at( 0 );
-
-  ASSERT_FALSE( item->spacer_item() == nullptr );
-
-  if( item->spacer_item() != nullptr )
-  {
-    // NOM_DUMP( item->spacer_item()->bounds().x );
-    // NOM_DUMP( item->spacer_item()->bounds().y );
-    // NOM_DUMP( item->spacer_item()->size().w );
-    // NOM_DUMP( item->spacer_item()->size().h );
-
-    EXPECT_EQ( -1, item->spacer_item()->bounds().x );
-    EXPECT_EQ( -1, item->spacer_item()->bounds().y );
-
-    // Should be the size as calculated by the layout (dependent upon size
-    // policy).
-    EXPECT_EQ( 8, item->spacer_item()->size().w );
-    EXPECT_EQ( 8, item->spacer_item()->size().h );
-  }
-
-  // listbox0
-  item = layout->at( 1 );
-
-  ASSERT_FALSE( item->widget() == nullptr );
-
-  if( item->widget() != nullptr )
-  {
-    // NOM_DUMP_VAR( "listbox0_pos.x: ", item->widget()->position().x );
-    // NOM_DUMP_VAR( "listbox0_pos.y: ", item->widget()->position().y );
-    // NOM_DUMP_VAR( "listbox0_size.w: ", item->widget()->size().w );
-    // NOM_DUMP_VAR( "listbox0_size.h: ", item->widget()->size().h );
-
-    // Absolute (global screen) coordinates
-    // Should include both UISpacerItem spacing, but not internal layout
-    // spacing (because it is the first item).
-    EXPECT_EQ( 45, item->widget()->position().x );
-    EXPECT_EQ( 50, item->widget()->position().y );
-
-    // Should be the size as calculated by the layout (dependent upon size
-    // policy).
-    EXPECT_EQ( 50, item->widget()->size().w );
-    EXPECT_EQ( 56, item->widget()->size().h );
-  }
-
-  // Skip to the end of the layout -- listbox3
-  item = layout->at( layout->count() - 1 );
-
-  ASSERT_FALSE( item->widget() == nullptr );
-
-  if( item->widget() != nullptr )
-  {
-    // NOM_DUMP_VAR( "listbox3_pos.x: ", item->widget()->position().x );
-    // NOM_DUMP_VAR( "listbox3_pos.y: ", item->widget()->position().y );
-    // NOM_DUMP_VAR( "listbox3_size.w: ", item->widget()->size().w );
-    // NOM_DUMP_VAR( "listbox3_size.h: ", item->widget()->size().h );
-
-    // Absolute (global screen) coordinates
-    // Should include both UISpacerItem spacing & internal layout spacing
-    EXPECT_EQ( 246, item->widget()->position().x );
-    EXPECT_EQ( 50, item->widget()->position().y );
-
-    // Should be the size as calculated by the layout (dependent upon size
-    // policy).
-    EXPECT_EQ( 50, item->widget()->size().w );
-    EXPECT_EQ( 56, item->widget()->size().h );
-  }
+  this->expected_vertical_layout_output( layout, IFont::FontType::TrueTypeFont );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }

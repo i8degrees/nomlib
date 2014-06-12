@@ -364,8 +364,17 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
           frame_offset.w = frame_size.w - frame_bounds.w;
           frame_offset.h = frame_size.h - frame_bounds.h;
 
-          // Append the extra dimensions onto our minimum_size calculation
-          item_size += frame_offset;
+          if( this->horiz() )
+          {
+            // Append the extra dimensions onto our minimum_size calculation
+            item_size.w += frame_offset.w;
+          }
+          else  // Vertical
+          {
+            // Append the extra dimensions onto our minimum_size calculation
+            item_size.h += frame_offset.h;
+          }
+
         }
       } // end if decorator is not null
 

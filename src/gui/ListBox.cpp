@@ -44,8 +44,39 @@ ListBox::ListBox(
 {
   // NOM_LOG_TRACE( NOM );
 
-  // Use explicitly set coordinates for our minimum widget size
+  // Use explicitly set coordinates as the widget's minimum size requirements.
+  //
+  // Note that if size is invalid (NULL), the minimum size returned will be
+  // Size2i(0,0)
+  //
+  // Note that the size policy is only used when the widget is used inside a
+  // layout.
   this->set_minimum_size( size );
+
+  // Set the size policy of the widget to use explicitly set size dimensions.
+  //
+  // Note that the size policy is only used when the widget is used inside a
+  // layout.
+  if( size != Size2i::null )
+  {
+    this->set_size_policy( UILayoutPolicy::Policy::Minimum, UILayoutPolicy::Policy::Fixed );
+  }
+
+  // Set the size policy of the widget to use dimensions that are calculated
+  // with respect to the text label string, font, point size, etc.
+  //
+  // Note that the size policy is only used when the widget is used inside a
+  // layout.
+  else
+  {
+    this->set_size_policy( UILayoutPolicy::Policy::Preferred, UILayoutPolicy::Policy::Preferred );
+  }
+
+  // Widget accepts all focus types.
+  //
+  // TODO: Implement FinalFantasy theme style with a trigger to downgrade this
+  // this focus policy.
+  this->set_focus_policy( FocusPolicy::WheelFocus );
 
   // Auto-generate a name tag for our widget.
   this->set_name( "listbox" );
@@ -63,12 +94,6 @@ ListBox::ListBox(
   // Initialize the default event listeners for the widget.
   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
 
-  // Widget accepts all focus types.
-  //
-  // TODO: Implement FinalFantasy theme style with a trigger to downgrade this
-  // this focus policy.
-  this->set_focus_policy( FocusPolicy::WheelFocus );
-
   // this->update();
 }
 
@@ -82,13 +107,21 @@ ObjectTypeInfo ListBox::type( void ) const
   return NOM_OBJECT_TYPE_INFO( self_type );
 }
 
+const Size2i ListBox::minimum_size( void ) const
+{
+  return this->size_hint();
+}
+
 const Size2i ListBox::size_hint( void ) const
 {
-  // Maximum text width requirements for stored items
-  // int max_text_width = 0;
+  // Maximum text width requirements for the stored items
+  int max_text_width = 0;
 
-  // Maximum text height requirements for stored items
+  // Maximum text height requirements for the stored items
   int max_text_height = 0;
+
+  // The maximum pixel height for the given font
+  int newline = 0;
 
   // Default point size of font
   uint point_size = nom::DEFAULT_FONT_SIZE;
@@ -98,10 +131,9 @@ const Size2i ListBox::size_hint( void ) const
   {
     Text* label = NOM_DYN_PTR_CAST( Text*, itr->get() );
 
-    FontMetrics face = label->font()->metrics();
-
     // NOM_DUMP( this->name() );
-    // NOM_DUMP( face.name );
+    // NOM_DUMP( label->font()->metrics().name );
+    // NOM_DUMP( label->font()->newline( point_size ) );
     // NOM_DUMP( label->text() );
 
     // Use the point size of the widget's style, if one has been set:
@@ -111,42 +143,19 @@ const Size2i ListBox::size_hint( void ) const
     }
 
     // Text label's width, with respect to rendered font
-    // max_text_width = std::max( label->width(), max_text_width );
+    max_text_width = std::max( label->width(), max_text_width );
+
+    newline = label->font()->newline( point_size );
 
     // Maximum pixel height of the font's glyph
-    max_text_height += label->font()->newline( point_size );
+    max_text_height += newline;
+
   } // end for labels loop
 
-  // NOM_DUMP( max_text_height );
-
-  // If we have calculated a total text height requirement, we can stop here,
-  // using the total text height for our preferred height field.
-  if( max_text_height > 0 )
-  {
-    // FIXME:
-    return Size2i( this->size().w, max_text_height );
-
-    // Text label's width & height (with respect to rendered font):
-    // return Size2i( max_text_width, max_text_height );
-  }
-
-  // We do not have any text labels stored, so assume a widget with a height
-  // large enough for one item.
-  if( this->font().valid() == true )
-  {
-    // NOM_DUMP( this->font()->newline( point_size ) );
-
-    return Size2i( this->size().w, this->font()->newline( point_size ) );
-
-    // Text label's width & height (with respect to rendered font):
-    // return Size2i( max_text_width, this->font()->newline( point_size ) );
-  }
-
-  // If all else fails ... use the preset size of the widget as the preferred
-  // size.
+  // Text label's width & height (with respect to rendered font):
   //
-  // Should we be using minimum_size here instead?
-  return Size2i( this->size() );
+  // TODO: Figure out best way of implementing the padding with the text width
+  return Size2i( max_text_width + 8, max_text_height + newline / 2 );
 }
 
 bool ListBox::valid( void ) const
@@ -568,7 +577,8 @@ void ListBox::update( void )
       label->set_text_size( nom::DEFAULT_FONT_SIZE );
     }
 
-    label->set_position( Point2i( pos.x + 4, pos.y ) );
+    // label->set_position( Point2i( pos.x + 4, pos.y ) );
+    label->set_position( Point2i( pos.x + 4, pos.y + 4 ) );
 
     // Set the resulting label text width offset to make up for what we added
     // above, in addition to an extra four (4) pixels, just for a nice padding
@@ -576,10 +586,12 @@ void ListBox::update( void )
     //
     // Note that the label size is only used as reference for the optional
     // cropping feature in nom::Text -- Text::ExtraRenderingFeatures::Crop.
-    label->set_size( Size2i( this->size().w - 8, this->size().h ) );
+    //
+    // label->set_size( Size2i( this->size().w - 8, this->size().h ) );
     // label->set_size( Size2i( label->width()+8, label->height() ) );
+    label->set_size( Size2i( this->size().w, this->size().h ) );
 
-    label->set_features( Text::ExtraRenderingFeatures::CropText );
+    // label->set_features( Text::ExtraRenderingFeatures::CropText );
 
     if( this->style() != nullptr )
     {
@@ -592,7 +604,8 @@ void ListBox::update( void )
     }
 
     // Vertical Spacing in between each text
-    pos.y += label->height();
+    // pos.y += label->height();
+    pos.y += label->font()->newline( label->text_size() );
 
     // The element index (position) we are at is the current active selection,
     // so we visually indicate so by highlighting the text label with a color.

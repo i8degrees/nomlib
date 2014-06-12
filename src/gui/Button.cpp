@@ -154,11 +154,7 @@ const Size2i Button::size_hint( void ) const
 
   total_text_height += this->label_.font()->newline( point_size ) * 2;
 
-  // If we have calculated a total text height requirement, we can stop here...
-  if( total_text_height > 0 )
-  {
-    return Size2i( total_text_width, total_text_height );
-  }
+  return Size2i( total_text_width, total_text_height );
 
   // Err
   return Size2i( 0, 0 );

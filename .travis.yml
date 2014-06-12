@@ -1,26 +1,43 @@
-language: cpp
+os:
+  # - linux
+  - osx
+
+# language: cpp
+language: objective-c
+
 compiler:
   - clang
-  - gcc
+  # - gcc
+
 before_install:
 # nomlib dependencies (SDL, OpenAL, libsndfile, libmagic, GTK)
-  - echo "y" | sudo add-apt-repository ppa:zoogie/sdl2-snapshots
-  - sudo apt-get update
-  - sudo apt-get install -qq libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libopenal-dev # doxygen graphviz
+  # - echo "y" | sudo add-apt-repository ppa:zoogie/sdl2-snapshots
+  # - sudo apt-get update
+  # - sudo apt-get install -qq libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libopenal-dev # doxygen graphviz
+  # - brew update
+  - brew install cmake
+  # FIXME:
+  - brew install gnu-tar
+  - wget -O /tmp/deps.tar.gz "http://downloads.sourceforge.net/project/nomlib/2014-06-12_nomlib_osx-dependencies.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fnomlib%2Ffiles%2F&ts=1402551334&use_mirror=superb-dca3"
 before_script:
+  - du -csh /tmp/deps.tar.gz
+  # FIXME:
+  - gtar -xzvf /tmp/deps.tar.gz -C third-party
   - mkdir -p build && cd build
-  - cmake -D CMAKE_VERBOSE_MAKEFILE=on -D EXAMPLES=on -D CMAKE_INSTALL_PREFIX=/usr/local ..
+  - cmake -GXcode -DDEBUG=on -DDEBUG_ASSERT=on -DDEBUG_TRACE=on -DEXAMPLES=off -DNOM_BUILD_TESTS=on -DCMAKE_INSTALL_PREFIX=~/Library/Frameworks ..
 script:
-  - make -j4
-  - sudo make install
-  - du -csh /usr/local/lib/libnomlib.*
-  - du -csh /usr/local/share/nomlib/
-  - du -csh /usr/local/share/doc/nomlib/
-  - sudo make uninstall
-  - make clean
+  - xcodebuild build
+  - xcodebuild -target install
+  - ls -lasR ~/Library/Frameworks/nomlib.framework
+
 # whitelist
 branches:
   only:
-    - feature/travis/jeff
-    #- dev
-    #- master
+    - feature/travis-ci
+    - feature/GUI
+    - dev
+    - master
+
+matrix:
+  allow_failures:
+    - os: linux

@@ -18,6 +18,8 @@ Next, you should visit the dependencies section for your platform. After these m
 
 ### OS X ###
 
+[![Build Status](https://travis-ci.org/i8degrees/nomlib.png?branch=dev,master)](https://travis-ci.org/i8degrees/nomlib)
+
 After you have the dependencies taken care of, execute the following commands at your terminal prompt:
 
 ```

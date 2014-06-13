@@ -50,12 +50,6 @@ class UIWidgetEvent
     /// \brief Destructor.
     ~UIWidgetEvent( void );
 
-    /// \brief Copy constructor.
-    UIWidgetEvent( const self_type& copy );
-
-    /// \brief Copy assignment operator.
-    self_type& operator =( const self_type& other );
-
     /// \brief Construct a minimally valid object.
     ///
     /// \param ev The nom::Event associated with the widget event.

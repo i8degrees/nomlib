@@ -42,24 +42,6 @@ UIWidgetEvent::~UIWidgetEvent( void )
   // NOM_LOG_TRACE( NOM );
 }
 
-UIWidgetEvent::UIWidgetEvent( const self_type& copy )
-{
-  // NOM_LOG_TRACE( NOM );
-
-  this->set_index( copy.index() );
-  this->set_text( copy.text() );
-  this->set_id( copy.id() );
-}
-
-UIWidgetEvent::self_type& UIWidgetEvent::operator =( const self_type& other )
-{
-  this->set_index( other.index() );
-  this->set_text( other.text() );
-  this->set_id( other.id() );
-
-  return *this;
-}
-
 UIWidgetEvent::UIWidgetEvent( const Event& ev )
 {
   // NOM_LOG_TRACE( NOM );

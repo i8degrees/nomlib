@@ -144,12 +144,12 @@ class UILayout: public UILayoutItem
     /// \brief The active state of the layout.
     bool enabled( void ) const;
 
-    /// \returns The parent widget of this layout on success, or NULL if this
-    /// layout is not installed in any widget.
-    ///
-    /// \todo If this layout is a sub-layout, the parent widget of the parent
-    /// layout is returned.
-    UIWidget* parent( void ) const;
+    // \returns The parent widget of this layout on success, or NULL if this
+    // layout is not installed in any widget.
+    //
+    // \todo If this layout is a sub-layout, the parent widget of the parent
+    // layout is returned.
+    // UIWidget* parent( void ) const;
 
     // bool top_layout( void ) const;
 
@@ -191,11 +191,11 @@ class UILayout: public UILayoutItem
     /// widget was removed.
     int erase_widget( UIWidget* widget );
 
-    void set_alignment( enum Anchor align );
+    void set_alignment( uint32 align );
 
-    bool set_alignment( UIWidget* widget, enum Anchor align );
+    bool set_alignment( UIWidget* widget, uint32 align );
 
-    bool set_alignment( const UILayout::raw_ptr layout, enum Anchor align );
+    bool set_alignment( const UILayout::raw_ptr layout, uint32 align );
 
     void set_margins( const IntRect& margins );
 

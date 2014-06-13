@@ -70,7 +70,7 @@ class UILayoutItem
     virtual ~UILayoutItem( void );
 
     /// \brief Construct an object with an alignment.
-    UILayoutItem( enum Anchor align );
+    UILayoutItem( uint32 align );
 
     /// \note QLayoutItem::expandingDirections.
     virtual Orientations directions( void ) const = 0;
@@ -99,10 +99,10 @@ class UILayoutItem
     virtual void invalidate( void );
 
     /// \note QLayoutItem::alignment.
-    enum Anchor alignment( void ) const;
+    uint32 alignment( void ) const;
 
     /// \note QLayoutItem::setAlignment.
-    void set_alignment( enum Anchor align );
+    void set_alignment( uint32 align );
 
     /// \remarks This function provides type-safe casting.
     ///
@@ -128,7 +128,7 @@ class UILayoutItem
     // QSizePolicy::ControlTypes controlTypes() const;
 
   private:
-    enum Anchor alignment_;
+    uint32 alignment_;
 };
 
 } // namespace nom

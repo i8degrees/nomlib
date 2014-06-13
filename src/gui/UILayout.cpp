@@ -141,33 +141,6 @@ bool UILayout::enabled( void ) const
   return this->enabled_;
 }
 
-UIWidget* UILayout::parent( void ) const
-{
-  UIWidget* window = nullptr;
-
-  UILayoutItem* item = nullptr;
-
-  int pos = 0;
-  while( pos < this->count() )
-  {
-    item = this->at( pos );
-
-    window = item->widget()->parent();
-
-    if( item->widget() == window )
-    {
-// NOM_DUMP( item->widget()->name() );
-// NOM_DUMP( window->name() );
-      return window;
-    }
-
-    ++pos;
-  }
-
-  // NULL
-  return window;
-}
-
 int UILayout::erase_item( UILayoutItem* layout )
 {
   UILayoutItem* item = nullptr;
@@ -216,12 +189,12 @@ int UILayout::erase_widget( UIWidget* widget )
   return npos;
 }
 
-void UILayout::set_alignment( enum Anchor align )
+void UILayout::set_alignment( uint32 align )
 {
   UILayoutItem::set_alignment( align );
 }
 
-bool UILayout::set_alignment( UIWidget* widget, enum Anchor align )
+bool UILayout::set_alignment( UIWidget* widget, uint32 align )
 {
   UILayoutItem* item = nullptr;
 
@@ -249,7 +222,7 @@ bool UILayout::set_alignment( UIWidget* widget, enum Anchor align )
   return false;
 }
 
-bool UILayout::set_alignment( const UILayout::raw_ptr layout, enum Anchor align )
+bool UILayout::set_alignment( const UILayout::raw_ptr layout, uint32 align )
 {
   UILayoutItem* item = nullptr;
 

@@ -77,9 +77,9 @@ enum Alignment: uint32
 /// \note Borrowed from [maelstrom's screenlib](https://hg.libsdl.org/Maelstrom/)
 enum Anchor: uint32
 {
-  TopLeft = Y_TOP | X_LEFT,
+  TopLeft = Y_TOP | X_LEFT,   // Hex: 0x11, Dec: 17
   Top = Y_TOP | X_CENTER,
-  TopRight = Y_TOP | X_RIGHT,
+  TopRight = Y_TOP | X_RIGHT, // Hex: 0x14, Dec: 20
 
   Left = Y_CENTER | X_LEFT,
   Center = Y_CENTER | X_CENTER,

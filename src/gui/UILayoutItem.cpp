@@ -43,7 +43,7 @@ UILayoutItem::~UILayoutItem( void )
   // NOM_LOG_TRACE( NOM );
 }
 
-UILayoutItem::UILayoutItem( enum Anchor align ) :
+UILayoutItem::UILayoutItem( uint32 align ) :
   alignment_{ align }
 {
   // NOM_LOG_TRACE( NOM );
@@ -54,7 +54,7 @@ void UILayoutItem::invalidate( void )
   NOM_STUBBED( NOM );
 }
 
-enum Anchor UILayoutItem::alignment( void ) const
+uint32 UILayoutItem::alignment( void ) const
 {
   return this->alignment_;
 }
@@ -64,7 +64,7 @@ UILayout* UILayoutItem::layout( void )
   return nullptr;
 }
 
-void UILayoutItem::set_alignment( enum Anchor align )
+void UILayoutItem::set_alignment( uint32 align )
 {
   this->alignment_ = align;
 }

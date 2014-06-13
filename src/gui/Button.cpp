@@ -282,10 +282,10 @@ void Button::on_mouse_up( const UIWidgetEvent& ev )
   UIWidgetEvent evt( this->button_state(), this->name(), ev.event(), this->id() );
 
   // Send the UI event object to the registered private event callback.
-  this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, evt );
+  this->dispatcher()->emit( UIEvent::ON_MOUSE_UP, evt );
 
   // Send the UI event object to the registered public event callback.
-  this->dispatcher()->emit( UIEvent::MOUSE_DOWN, evt );
+  this->dispatcher()->emit( UIEvent::MOUSE_UP, evt );
 }
 
 void Button::on_mouse_enter( const UIWidgetEvent& ev )

@@ -77,17 +77,17 @@ enum Alignment: uint32
 /// \note Borrowed from [maelstrom's screenlib](https://hg.libsdl.org/Maelstrom/)
 enum Anchor: uint32
 {
-  TopLeft = Y_TOP | X_LEFT,   // Hex: 0x11, Dec: 17
-  Top = Y_TOP | X_CENTER,
-  TopRight = Y_TOP | X_RIGHT, // Hex: 0x14, Dec: 20
+  TopLeft = Y_TOP | X_LEFT,             // Hex: 0x11, Dec: 17
+  TopCenter = Y_TOP | X_CENTER,         // Hex: 0x12, Dec: 18
+  TopRight = Y_TOP | X_RIGHT,           // Hex: 0x14, Dec: 20
 
-  Left = Y_CENTER | X_LEFT,
-  Center = Y_CENTER | X_CENTER,
-  Right = Y_CENTER | X_RIGHT,
+  MiddleLeft = Y_CENTER | X_LEFT,       // Hex: 0x21, Dec: 33
+  MiddleCenter = Y_CENTER | X_CENTER,   // Hex: 0x22, Dec: 34
+  MiddleRight = Y_CENTER | X_RIGHT,     // Hex: 0x24, Dec: 36
 
-  BottomLeft = Y_BOTTOM | X_LEFT,
-  Bottom = Y_BOTTOM | X_CENTER,
-  BottomRight = Y_BOTTOM | X_RIGHT
+  BottomLeft = Y_BOTTOM | X_LEFT,       // Hex: 0x41, Dec: 65
+  BottomCenter = Y_BOTTOM | X_CENTER,   // Hex: 0x42, Dec: 66
+  BottomRight = Y_BOTTOM | X_RIGHT      // Hex: 0x44, Dec: 68
 };
 
 /// \note Borrowed from Qt 4.6

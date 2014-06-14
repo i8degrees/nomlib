@@ -91,26 +91,25 @@ Size2i UIBoxLayout::size_hint( void ) const
       continue;
     }
 
-    // TODO: Verify if we even need this
-    /*
-    if( item->spacer_item() != nullptr )
+    // If we were to let spacer items count, we end up messing up the widget
+    // height
+    if( item->spacer_item() == nullptr )
     {
-      // hint += item->spacer_item()->size_hint();
-      hint = item->spacer_item()->size_hint();
+      // Use the larger of the two objects compared.
+      hint = hint.max( item->size_hint() );
     }
-    */
-    // else
-    {
 
-      if( ! item->spacer_item() )
-      {
-        // Use the larger of the two objects compared.
-        hint = hint.max( item->size_hint() );
-      }
+    if( item->widget() )
+    {
+      // NOM_DUMP( item->widget()->name() );
+      // NOM_DUMP( hint );
+    }
+    else if( item->spacer_item() )
+    {
+      // NOM_DUMP( "sp" );
+      // NOM_DUMP( hint );
     }
   }
-
-// NOM_DUMP( hint );
 
   return Size2i( hint.w , hint.h );
 }
@@ -134,28 +133,26 @@ Size2i UIBoxLayout::minimum_size( void ) const
       continue;
     }
 
-    // TODO: Verify if we even need this
-/*
-    if( item->spacer_item() != nullptr )
+    // If we were to let spacer items count, we end up messing up the widget
+    // height
+    if( item->spacer_item() == nullptr )
     {
-      // msize += msize.max( item->spacer_item()->minimum_size() );
-      msize = item->spacer_item()->minimum_size();
+      // Use the larger of the two objects compared.
+      msize = msize.max( item->minimum_size() );
     }
-*/
-    // else
-    {
 
-      if( ! item->spacer_item() )
-      {
-        // Use the larger of the two objects compared.
-        // msize = item->minimum_size();
-        msize = msize.max( item->minimum_size() );
-      }
-    }
+    // if( item->widget() )
+    // {
+    //   NOM_DUMP( item->widget()->name() );
+    //   NOM_DUMP( msize );
+    // }
+    // else if( item->spacer_item() )
+    // {
+    //   // NOM_DUMP( "sp" );
+    //   // NOM_DUMP( msize );
+    // }
 
   } // end for items loop
-
-// NOM_DUMP( msize );
 
   return Size2i( msize.w , msize.h );
 }
@@ -380,8 +377,6 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
 
       geom = IntRect( w_x + rect.x + offset.x, w_y + rect.y + offset.y, item_size.w, item_size.h );
 
-      // TODO: Verify this comment??? (Do not think it is doing what I say it is!)
-      //
       // Set each item's boundaries as per calculated layout requirements; this
       // method call takes care of internal item updates that will need to occur
       // shortly thereafter (think: resize / move).
@@ -456,19 +451,21 @@ void UIBoxLayout::insert_widget( int pos, UIWidget* widget )
 
 void UIBoxLayout::insert_widget( int pos, UIWidget* widget, uint32 align )
 {
-  Point2i pos_offset;
-
   if( widget == nullptr )
   {
     NOM_LOG_ERR( NOM, "Could not insert widget: widget was NULL." );
     return;
   }
 
-  this->insert_widget( pos, widget );
+  UIWidgetLayoutItem* item = new UIWidgetLayoutItem( widget );
+  item->set_alignment( align );
 
-  NOM_STUBBED( NOM );
+  this->insert_item( pos, item );
 
-  // TODO: Alignment of widget item
+  NOM_STUBBED( NOM, "TODO: Alignment logic" );
+
+  // Calculate the layout's requirements for the addition
+  // this->set_bounds( IntRect( Point2i( widget->position().x, widget->position().y ), widget->size() ) );
 }
 
 void UIBoxLayout::append_widget( UIWidget* widget )
@@ -501,7 +498,6 @@ void UIBoxLayout::insert_spacer( int pos, UISpacerItem* item )
     return;
   }
 
-  // this->items_.insert( this->items_.begin() + pos, item );
   this->insert_item( pos, item );
 
   this->set_bounds( item->bounds() );
@@ -523,8 +519,6 @@ void UIBoxLayout::insert_spacer( int pos, int height )
   }
 
   this->insert_spacer( pos, sp );
-
-  this->set_bounds( sp->bounds() );
 }
 
 void UIBoxLayout::append_spacer( UISpacerItem* item )

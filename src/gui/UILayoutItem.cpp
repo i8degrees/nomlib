@@ -33,7 +33,7 @@ namespace nom {
 const Size2i UILayoutItem::layout_max_ = Size2i( 16777215, 16777215 );
 
 UILayoutItem::UILayoutItem( void ) :
-  alignment_{ Anchor::TopLeft }
+  alignment_{ 0 } // No alignment
 {
   // NOM_LOG_TRACE( NOM );
 }

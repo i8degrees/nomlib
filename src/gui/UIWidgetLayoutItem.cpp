@@ -125,39 +125,39 @@ void UIWidgetLayoutItem::set_bounds( const IntRect& rect )
   }
 
   // Size2i extra = this->bounds().size() - rect.size();
-// NOM_DUMP(extra);
+  // NOM_DUMP(extra);
 
   // int x = rect.x;
   // int y = rect.y;
 
-  uint32 align = this->alignment();
-  Size2i bsize = rect.size();
+  // uint32 align = this->alignment();
+  // Size2i bsize = rect.size();
 
-  bsize.max( this->maximum_size() );
+  // bsize.max( this->maximum_size() );
 
-  // Horizontal or vertical alignments
-  if( align & ( Alignment::X_MASK | Alignment::Y_MASK ) )
-  {
-    Size2i hint( this->size_hint() );
+  // // Horizontal or vertical alignments
+  // if( align & ( Alignment::X_MASK | Alignment::Y_MASK ) )
+  // {
+  //   Size2i hint( this->size_hint() );
 
-    // TODO: Size policy handling -- see QWidgetItem::setGeomtry.
+  //   // TODO: Size policy handling -- see QWidgetItem::setGeomtry.
 
-    // Special horizontal alignment handling
-    if( align & Alignment::X_MASK )
-    {
-      bsize.w = std::min( bsize.w, hint.w );
-// NOM_DUMP(bsize.w);
-    }
+  //   // Special horizontal alignment handling
+  //   if( align & Alignment::X_MASK )
+  //   {
+  //     bsize.w = std::min( bsize.w, hint.w );
+  //     // NOM_DUMP(bsize.w);
+  //   }
 
-    // Special vertical alignment handling
-    if( align & Alignment::Y_MASK )
-    {
-      bsize.h = std::min( bsize.h, hint.h );
-// NOM_DUMP(bsize.h);
-    }
-  }
+  //   // Special vertical alignment handling
+  //   if( align & Alignment::Y_MASK )
+  //   {
+  //     bsize.h = std::min( bsize.h, hint.h );
+  //     // NOM_DUMP(bsize.h);
+  //   }
+  // }
 
-// NOM_DUMP( bsize );
+  // NOM_DUMP( bsize );
 
   // TODO: Alignment directions -- see QWidgetItem::setGeomtry.
 
@@ -171,6 +171,68 @@ void UIWidgetLayoutItem::set_bounds( const IntRect& rect )
     NOM_LOG_ERR( NOM, "Could not set bounds for layout item: widget is NULL." );
     return;
   }
+
+  // TODO: Clean up alignment logic
+  //
+  // Alignment probably really shouldn't be happening here at all.
+  //
+  // Also note how we are playing a dangerous logic game (read: confusing) by
+  // sending a size change event right before updating the boundary of a layout
+  // item! At the very least, it is a waste of resources -- calling the widget's
+  // update twice in one method!
+
+  // Alignment bounding for the layout item
+  // int x_offset = 0;
+  // int y_offset = 0;
+
+  // // Anchor::TopLeft, Anchor::Left, Anchor::BottomLeft
+  // if( align & Alignment::X_LEFT )
+  // {
+  //   x_offset = rect.x;
+  // }
+
+  // // Anchor::Top, Anchor::Center, Anchor::Bottom
+  // if( align & Alignment::X_CENTER )
+  // {
+  //   // x_offset = rect.position().x + ( rect.size().w - bsize.w ) / 2;
+  //   x_offset = rect.position().x + ( rect.size().w ) / 2;
+  // }
+
+  // // Anchor::TopRight, Anchor::Right, Anchor::BottomRight
+  // if( align & Alignment::X_RIGHT )
+  // {
+  //   // x_offset = rect.position().x + ( rect.size().w - bsize.w );
+  //   x_offset = rect.position().x + ( rect.size().w );
+  // }
+
+  // // Anchor::TopLeft, Anchor::Top, Anchor::TopRight
+  // if( align & Alignment::Y_TOP )
+  // {
+  //   y_offset = rect.position().y;
+  // }
+
+  // // Anchor::Left, Anchor::Center, Anchor::Right
+  // if( align & Alignment::Y_CENTER )
+  // {
+  //   // y_offset = rect.position().y + ( rect.size().h - bsize.h ) / 2;
+  //   y_offset = rect.position().y + ( rect.size().h ) / 2;
+  // }
+
+  // // Anchor::BottomLeft, Anchor::Bottom, Anchor::BottomRight
+  // if( align & Alignment::Y_BOTTOM )
+  // {
+  //   // y_offset = rect.position().y + ( rect.size().h - bsize.h );
+  //   y_offset = rect.position().y + ( rect.size().h );
+  // }
+
+  // if( widget->name() == "button0" )
+  // {
+  //   NOM_DUMP( widget->name() );
+  //   NOM_DUMP( x_offset );
+  //   NOM_DUMP( y_offset );
+  //   NOM_DUMP( rect.size() );
+  //   NOM_DUMP( this->alignment() );
+  // }
 
   // Notify the widget via private event listener that we have a boundary
   // change, so that it can take care of updating itself properly.
@@ -187,65 +249,15 @@ void UIWidgetLayoutItem::set_bounds( const IntRect& rect )
   ev.window.data2 = rect.size().h;
   ev.window.window_id = widget->id();
   evt.resized_bounds_ = rect;
+  // evt.resized_bounds_ = IntRect( Point2i( rect.x + x_offset, rect.y + y_offset ), rect.size() );
   evt.set_event( ev );
 
   widget->emit( UIEvent::ON_WINDOW_SIZE_CHANGED, evt );
 
-  // TODO: Clean up alignment logic
-  //
-  // Alignment probably really shouldn't be happening here at all.
-  //
-  // Also note how we are playing a dangerous logic game (read: confusing) by
-  // sending a size change event right before updating the boundary of a layout
-  // item! At the very least, it is a waste of resources -- calling the widget's
-  // update twice in one method!
+  widget->set_bounds( IntRect( Point2i( rect.position() ), rect.size() ) );
 
-  // Alignment bounding for the layout item
-  int x_offset = 0;
-  int y_offset = 0;
-
-  // Anchor::TopLeft, Anchor::Left, Anchor::BottomLeft
-  if( align & Alignment::X_LEFT )
-  {
-    x_offset = rect.position().x;
-  }
-
-  // Anchor::Top, Anchor::Center, Anchor::Bottom
-  if( align & Alignment::X_CENTER )
-  {
-    x_offset = rect.position().x + ( rect.size().w - bsize.w ) / 2;
-  }
-
-  // Anchor::TopRight, Anchor::Right, Anchor::BottomRight
-  if( align & Alignment::X_RIGHT )
-  {
-    x_offset = rect.position().x + ( rect.size().w - bsize.w );
-  }
-
-  // Anchor::TopLeft, Anchor::Top, Anchor::TopRight
-  if( align & Alignment::Y_TOP )
-  {
-    y_offset = rect.position().y;
-  }
-
-  // Anchor::Left, Anchor::Center, Anchor::Right
-  if( align & Alignment::Y_CENTER )
-  {
-    y_offset = rect.position().y + ( rect.size().h - bsize.h ) / 2;
-  }
-
-  // Anchor::BottomLeft, Anchor::Bottom, Anchor::BottomRight
-  if( align & Alignment::Y_BOTTOM )
-  {
-    y_offset = rect.position().y + ( rect.size().h - bsize.h );
-  }
-
-  widget->set_bounds( IntRect( Point2i( x_offset, y_offset ), rect.size() ) );
-
-// NOM_DUMP( rect.position() );
-// NOM_DUMP( rect.size() );
-// NOM_DUMP( x_offset );
-// NOM_DUMP( y_offset );
+  // Uncomment this line to re-enable the broken alignment code:
+  // widget->set_bounds( IntRect( Point2i( x_offset, y_offset ), rect.size() ) );
 
   // FIXME: Do we really need this here? I *think* it may be required for
   // alignments? It would cut down on updates considerably if we could remove

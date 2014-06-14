@@ -113,6 +113,8 @@ class ListBox: public UIWidget
     /// \brief Re-implements UIWidget::on_size_changed.
     virtual void on_size_changed( const UIWidgetEvent& ev );
 
+    virtual void on_update( const UIWidgetEvent& ev );
+
     /// \brief Default event listener for handling key press events.
     ///
     /// \remarks This method handles the updating the current selection text

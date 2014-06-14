@@ -93,6 +93,7 @@ ListBox::ListBox(
 
   // Initialize the default event listeners for the widget.
   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
+  NOM_CONNECT_UIEVENT( this, UIEvent::ON_WIDGET_UPDATE, this->on_update );
 
   // this->update();
 }
@@ -505,6 +506,20 @@ void ListBox::on_size_changed( const UIWidgetEvent& ev )
   // Update ourselves with the new rendering coordinates
   this->set_bounds( ev.resized_bounds_ );
 
+  this->update();
+}
+
+void ListBox::on_update( const UIWidgetEvent& ev )
+{
+  Event evt = ev.event();
+
+  if( evt.type != UIEvent::ON_WIDGET_UPDATE )
+  {
+    return;
+  }
+
+  // this->update_bounds();
+  this->set_updated( false );
   this->update();
 }
 

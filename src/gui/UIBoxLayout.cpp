@@ -452,29 +452,6 @@ void UIBoxLayout::insert_widget( int pos, UIWidget* widget )
   }
 
   this->insert_item( pos, new UIWidgetLayoutItem( widget ) );
-
-// NOM_DUMP( widget->name() );
-
-  if( widget->position() == Point2i::null )
-  {
-    if( widget->parent() != nullptr )
-    {
-// NOM_DUMP( widget->parent()->position() );
-
-      pos_offset = widget->parent()->position();
-    }
-    else
-    {
-// NOM_DUMP( widget->position() );
-
-      // TODO (?): Handle NULL widget positioning coordinates -- calculate 'em
-      // off ... something else!
-      pos_offset = widget->position();
-    }
-  }
-
-  // Calculate the layout's requirements for the addition
-  this->set_bounds( IntRect( pos_offset, widget->size() ) );
 }
 
 void UIBoxLayout::insert_widget( int pos, UIWidget* widget, uint32 align )

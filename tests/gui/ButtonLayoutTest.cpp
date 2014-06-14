@@ -391,7 +391,7 @@ TEST_F( ButtonLayoutTest, HorizontalLayout )
   this->dims.push_back( Size2i( 115, 30 ) );
 
   this->pos.push_back( Point2i( 384, 50 ) );
-  this->dims.push_back( Size2i( 59, 16 ) );
+  this->dims.push_back( Size2i( 56, 16 ) );
 
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, this->pos, this->dims );
@@ -418,7 +418,7 @@ TEST_F( ButtonLayoutTest, VerticalLayout )
   this->dims.push_back( Size2i( 112, 33 ) );
 
   this->pos.push_back( Point2i( 37, 193 ) );
-  this->dims.push_back( Size2i( 56, 19 ) );
+  this->dims.push_back( Size2i( 56, 16 ) );
 
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, this->pos, this->dims );
@@ -447,7 +447,7 @@ TEST_F( ButtonLayoutTest, NullSizeHorizontalLayout )
   this->dims.push_back( Size2i( 115, 30 ) );
 
   this->pos.push_back( Point2i( 384, 50 ) );
-  this->dims.push_back( Size2i( 59, 16 ) );
+  this->dims.push_back( Size2i( 56, 16 ) );
 
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, pos, dims );
@@ -476,7 +476,7 @@ TEST_F( ButtonLayoutTest, NullSizeVerticalLayout )
   this->dims.push_back( Size2i( 112, 33 ) );
 
   this->pos.push_back( Point2i( 37, 193 ) );
-  this->dims.push_back( Size2i( 56, 19 ) );
+  this->dims.push_back( Size2i( 56, 16 ) );
 
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, this->pos, this->dims );

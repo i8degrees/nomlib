@@ -300,7 +300,7 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutUsingTrueTypeFont )
   this->dims.push_back( Size2i( 58, 63 ) );
 
   this->pos.push_back( Point2i( 267, 50 ) );
-  this->dims.push_back( Size2i( 58, 63 ) );
+  this->dims.push_back( Size2i( 55, 63 ) );
 
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, this->pos, this->dims );
@@ -327,7 +327,7 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutUsingBitmapFont )
   this->dims.push_back( Size2i( 59, 58 ) );
 
   this->pos.push_back( Point2i( 269, 50 ) );
-  this->dims.push_back( Size2i( 59, 58 ) );
+  this->dims.push_back( Size2i( 56, 58 ) );
 
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, this->pos, this->dims );
@@ -354,7 +354,7 @@ TEST_F( ListBoxLayoutTest, VerticalLayoutUsingTrueTypeFont )
   this->dims.push_back( Size2i( 55, 66 ) );
 
   this->pos.push_back( Point2i( 37, 278 ) );
-  this->dims.push_back( Size2i( 55, 66 ) );
+  this->dims.push_back( Size2i( 55, 63 ) );
 
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, this->pos, this->dims );
@@ -381,7 +381,7 @@ TEST_F( ListBoxLayoutTest, VerticalLayoutUsingBitmapFont )
   this->dims.push_back( Size2i( 56, 61 ) );
 
   this->pos.push_back( Point2i( 37, 268 ) );
-  this->dims.push_back( Size2i( 56, 61 ) );
+  this->dims.push_back( Size2i( 56, 58 ) );
 
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, this->pos, this->dims );

@@ -119,22 +119,29 @@ class ButtonLayoutTest: public ::testing::Test
       ASSERT_TRUE( this->button_bg[2].load( RESOURCE_AQUA_BUTTON_IMAGE_1, 0 ) == true );
 
       // Top-level (parent) window (relative to global "screen" coordinates):
-      this->main_window = new nom::UIWidget( Point2i( 25, 25 ), Size2i( WINDOW_WIDTH - 100, WINDOW_HEIGHT / 2 ) );
-
-      // TODO:
-      // this->main_window = new nom::UIWidget( Point2i( 25, 25 ), Size2i( WINDOW_WIDTH - 100, 80 ) );
-
-      this->main_window->set_name( "Layout" );
-      this->main_window->set_title( this->main_window->name() );
+      this->main_window = new nom::UIWidget( Point2i( 25, 25 ), Size2i( WINDOW_WIDTH - 30, WINDOW_HEIGHT - 30 ) );
+      this->main_window->set_title();
 
       // Draw a frame so that we can visually see the maximal bounds of the
       // layout
       this->main_window->set_decorator( new nom::MinimalDecorator() );
 
-      // FIXME: R-enable the underlying event code in UIWidget for the
+      // Draw a frame so that we can visually see the maximal bounds of the
+      // parent window
+      this->main_window->set_decorator( new nom::MinimalDecorator() );
+
+      // FIXME: Re-enable the underlying event code in UIWidget for the
       // WINDOW_MOUSE_DOWN event.
       //
       // this->main_window->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
+
+      this->layout_widget = new nom::UIWidget( this->main_window );
+      this->layout_widget->set_geometry( 12, 25, 400, 50 );
+      // this->layout_widget->set_title();
+
+      // Draw a frame so that we can visually see the maximal bounds of the
+      // layout
+      this->layout_widget->set_decorator( new nom::MinimalDecorator() );
 
       // Our widgets to be used in the layout:
 
@@ -145,18 +152,18 @@ class ButtonLayoutTest: public ::testing::Test
       // size_hint method, when the size policy is set to Preferred).
 
       // this->button0 = this->create_button( this->main_window, Point2i::null, Size2i(50,16), "button0", "Click me!" );
-      this->button0 = this->create_button( this->main_window, Point2i::null, Size2i::null, "button0", "Click me!" );
+      this->button0 = this->create_button( this->layout_widget, Point2i::null, Size2i::null, "button0", "Click me!" );
 
       this->button0->set_font( SystemFonts::cache().load_resource("VIII") );
       this->button0->set_decorator( new nom::FinalFantasyDecorator() );
       this->button0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );
       this->button0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );
 
-      // this->button1 = this->create_button( this->main_window, Point2i::null, Size2i::null, "button1", "button1" );
+      // this->button1 = this->create_button( this->layout_widget, Point2i::null, Size2i::null, "button1", "button1" );
 
       // Create a button using explicit size dimensions; this internally sets
       // the size policy to use these dimensions within a layout.
-      this->button1 = this->create_button( this->main_window, Point2i::null, Size2i(56,16), "button1", "button1" );
+      this->button1 = this->create_button( this->layout_widget, Point2i::null, Size2i(56,16), "button1", "button1" );
 
       this->button1->set_decorator( new nom::MinimalDecorator() );
       this->button1->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button1_on_click( ev ); } ) );
@@ -170,21 +177,16 @@ class ButtonLayoutTest: public ::testing::Test
       custom_style->set_font_size( 13 );
       custom_style->set_font_style( nom::Text::Style::Bold );
 
-      // this->button2 = this->create_bitmap_button( this->main_window, Point2i::null, Size2i(50,16), "bitmap_button", "Hello", this->button_bg[1], custom_style );
-      this->button2 = this->create_bitmap_button( this->main_window, Point2i::null, Size2i::null, "bitmap_button", "Hello", this->button_bg[1], custom_style );
+      // this->button2 = this->create_bitmap_button( this->layout_widget, Point2i::null, Size2i(50,16), "bitmap_button", "Hello", this->button_bg[1], custom_style );
+      this->button2 = this->create_bitmap_button( this->layout_widget, Point2i::null, Size2i::null, "bitmap_button", "Hello", this->button_bg[1], custom_style );
 
       this->button2->set_pressed_bitmap( this->button_bg[2] );
       // this->button2->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
       this->button2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
 
-      // this->button3 = this->create_button( this->main_window, Point2i::null, Size2i::null, "button3", "button3" );
-      this->button3 = this->create_button( this->main_window, Point2i::null, Size2i(56,16), "button3", "button3" );
+      // this->button3 = this->create_button( this->layout_widget, Point2i::null, Size2i::null, "button3", "button3" );
+      this->button3 = this->create_button( this->layout_widget, Point2i::null, Size2i(56,16), "button3", "button3" );
       this->button3->set_decorator( new nom::MinimalDecorator() );
-
-      this->main_window->insert_child( this->button0 );
-      this->main_window->insert_child( this->button1 );
-      this->main_window->insert_child( this->button2 );
-      this->main_window->insert_child( this->button3 );
 
       this->spacers.push_back( 8 );
       this->items.push_back( this->button0 );
@@ -192,7 +194,6 @@ class ButtonLayoutTest: public ::testing::Test
       this->items.push_back( this->button1 );
       this->spacers.push_back( 40 );
       this->items.push_back( this->button2 );
-      this->spacers.push_back( 2 );
       this->items.push_back( this->button3 );
     }
 
@@ -216,15 +217,18 @@ class ButtonLayoutTest: public ::testing::Test
 
           this->input_mapper.on_event( this->ev );
           this->main_window->process_event( this->ev );
+          this->layout_widget->process_event( this->ev );
         }
 
         this->window.update();
         this->main_window->update();
+        this->layout_widget->update();
 
         // Background color fill
         this->window.fill( nom::Color4i::SkyBlue );
 
         this->main_window->draw( this->window );
+        this->layout_widget->draw( this->window );
       }
 
       return NOM_EXIT_SUCCESS;
@@ -350,6 +354,7 @@ class ButtonLayoutTest: public ::testing::Test
 
     // GUI resources
     nom::UIWidget::raw_ptr main_window;
+    nom::UIWidget::raw_ptr layout_widget;
 
     /// \brief Image resource for our button widget.
     nom::Texture button_bg[3];
@@ -381,16 +386,20 @@ TEST_F( ButtonLayoutTest, HorizontalLayout )
 
   // Use custom, absolute dimensions that we provide, with relative positioning
   // of the layout from the parent widget's coordinates.
-  layout = priv::create_layout( this->main_window, this->items, this->spacers, Point2i(12,25), Size2i( WINDOW_WIDTH - 100, WINDOW_HEIGHT / 2 ), "HorizontalLayout", Orientations::Horizontal );
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayout", Orientations::Horizontal );
+
+  // this->layout_widget->set_font( SystemFonts::cache().load_resource( "VIII" ) );
 
   EXPECT_EQ( this->items.size() + this->spacers.size(), layout->count() );
 
   EXPECT_EQ( Size2i( 56, 16 ), layout->minimum_size() );
 
+  // First widget
   this->pos.push_back( Point2i( 45, 50 ) );
-  this->dims.push_back( Size2i( 115, 30 ) );
+  this->dims.push_back( Size2i( 112, 30 ) );
 
-  this->pos.push_back( Point2i( 384, 50 ) );
+  // Last widget
+  this->pos.push_back( Point2i( 376, 50 ) );
   this->dims.push_back( Size2i( 56, 16 ) );
 
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
@@ -406,18 +415,20 @@ TEST_F( ButtonLayoutTest, VerticalLayout )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
-  // Use custom, absolute dimensions that we provide, with relative positioning
-  // of the layout from the parent widget's coordinates.
-  layout = priv::create_layout( this->main_window, this->items, this->spacers, Point2i(12,25), Size2i( WINDOW_WIDTH - 100, WINDOW_HEIGHT / 2 ), "VerticalLayout", Orientations::Vertical );
+  this->layout_widget->resize( Size2i( 150, 200 ) );
+
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "VerticalLayout", Orientations::Vertical );
 
   EXPECT_EQ( this->items.size() + this->spacers.size(), layout->count() );
 
   EXPECT_EQ( Size2i( 56, 16 ), layout->minimum_size() );
 
+  // First widget
   this->pos.push_back( Point2i( 37, 58 ) );
   this->dims.push_back( Size2i( 112, 33 ) );
 
-  this->pos.push_back( Point2i( 37, 193 ) );
+  // Last widget
+  this->pos.push_back( Point2i( 37, 191 ) );
   this->dims.push_back( Size2i( 56, 16 ) );
 
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
@@ -426,64 +437,6 @@ TEST_F( ButtonLayoutTest, VerticalLayout )
   if( nom::UnitTest::interactive() )
   {
     EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
-}
-
-/// \remarks This unit test is intended to be non-interactive. To enable
-/// interactive running of the test, uncomment the last line of the unit test.
-TEST_F( ButtonLayoutTest, NullSizeHorizontalLayout )
-{
-  nom::UIBoxLayout::raw_ptr layout = nullptr;
-
-  // Use the dimensions that the parent widget provides, with relative
-  // positioning of the layout from the parent widget's coordinates.
-  layout = priv::create_layout( this->main_window, this->items, this->spacers, Point2i(12,25), Size2i::null, "NullSizeHorizontalLayout", Orientations::Horizontal );
-
-  EXPECT_EQ( this->items.size() + this->spacers.size(), layout->count() );
-
-  EXPECT_EQ( Size2i( 56, 16 ), layout->minimum_size() );
-
-  this->pos.push_back( Point2i( 45, 50 ) );
-  this->dims.push_back( Size2i( 115, 30 ) );
-
-  this->pos.push_back( Point2i( 384, 50 ) );
-  this->dims.push_back( Size2i( 56, 16 ) );
-
-  priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
-  priv::expected_layout_output( layout, pos, dims );
-
-  if( nom::UnitTest::interactive() )
-  {
-    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
-}
-
-/// \remarks This unit test is intended to be non-interactive. To enable
-/// interactive running of the test, uncomment the last line of the unit test.
-TEST_F( ButtonLayoutTest, NullSizeVerticalLayout )
-{
-  nom::UIBoxLayout::raw_ptr layout = nullptr;
-
-  // Use the dimensions that the parent widget provides, with relative
-  // positioning of the layout from the parent widget's coordinates.
-  layout = priv::create_layout( this->main_window, this->items, this->spacers, Point2i(12,25), Size2i::null, "NullSizeVerticalLayout", Orientations::Vertical );
-
-  EXPECT_EQ( this->items.size() + this->spacers.size(), layout->count() );
-
-  EXPECT_EQ( Size2i( 56, 16 ), layout->minimum_size() );
-
-  this->pos.push_back( Point2i( 37, 58 ) );
-  this->dims.push_back( Size2i( 112, 33 ) );
-
-  this->pos.push_back( Point2i( 37, 193 ) );
-  this->dims.push_back( Size2i( 56, 16 ) );
-
-  priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
-  priv::expected_layout_output( layout, this->pos, this->dims );
-
-  if( nom::UnitTest::interactive() )
-  {
-    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   }
 }
 
@@ -499,6 +452,7 @@ int main( int argc, char** argv )
 
   ::testing::InitGoogleTest( &argc, argv );
 
+  // Allows us to toggle interactive test runs
   nom::UnitTest::init( argc, argv );
 
   return RUN_ALL_TESTS();

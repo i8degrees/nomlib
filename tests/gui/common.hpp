@@ -84,9 +84,10 @@ void expected_layout_output( const UILayout* layout, const std::vector<Point2i>&
 
 /// \brief Helper method for creating a layout and verifying results across
 /// tests in a consistent manner.
-///
-/// \remarks The number of items and spacers must be the same.
-UIBoxLayout* create_layout( UIWidget* window, const std::vector<UIWidget*>& items, const std::vector<int>& spacers, const Point2i& pos, const Size2i& size, const std::string& name, Orientations dir, int spacing = 1 );
+UIBoxLayout* create_layout( UIWidget* window, const std::vector<UIWidget*>& items, const std::vector<int>& spacers, const std::string& name, Orientations dir, int spacing = 1 );
+
+void set_layout_alignment( UILayout* layout, uint32 align );
+void set_widget_alignment( UILayout* layout, const UIWidget* window, uint32 align );
 
 } // namespace priv
 

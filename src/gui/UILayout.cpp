@@ -115,7 +115,7 @@ void UILayout::add_widget( UIWidget* widget )
   this->add_item( new UIWidgetLayoutItem( widget ) );
 }
 
-int UILayout::find_widget( UIWidget* widget ) const
+int UILayout::find_widget( const UIWidget* widget ) const
 {
   UILayoutItem* item = nullptr;
 
@@ -194,7 +194,7 @@ void UILayout::set_alignment( uint32 align )
   UILayoutItem::set_alignment( align );
 }
 
-bool UILayout::set_alignment( UIWidget* widget, uint32 align )
+bool UILayout::set_alignment( const UIWidget* widget, uint32 align )
 {
   UILayoutItem* item = nullptr;
 

@@ -112,7 +112,7 @@ void UIWidget::initialize (
 
       {
         // FIXME: Not sure how we ought to handle this case yet?
-        this->set_position( Point2i::null );
+        // this->set_position( Point2i::null );
         // this->set_visibility( false );
       }
     }
@@ -129,7 +129,7 @@ void UIWidget::initialize (
   // Auto-generate our name tag if it is empty.
   if( name.empty() )
   {
-    this->set_name( "parent_window" );
+    this->set_name( "Window" );
   }
   else
   {
@@ -148,7 +148,7 @@ void UIWidget::initialize (
   this->set_style( UIStyle::shared_ptr( new UIStyle() ) );
 
   // Initialize the default event listeners for a top-level widget.
-  // NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
+  NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
 }
 
 UIWidget::UIWidget  (
@@ -182,7 +182,8 @@ UIWidget::self_type& UIWidget::operator =( const self_type& rhs )
 
 UIWidget::UIWidget( const self_type* rhs )
 {
-  this->swap( rhs );
+  this->initialize( rhs->parent(), -1, rhs->position(), rhs->size(), "\0" );
+  // this->swap( rhs );
 }
 
 ObjectTypeInfo UIWidget::type( void ) const
@@ -250,9 +251,9 @@ const UIWidget::Children& UIWidget::children( void ) const
   return this->children_;
 }
 
-IDecorator::raw_ptr UIWidget::decorator( void ) const
+IDecorator::shared_ptr UIWidget::decorator( void ) const
 {
-  return this->decorator_.get();
+  return this->decorator_;
 }
 
 const std::string UIWidget::title( void ) const
@@ -561,10 +562,10 @@ void UIWidget::set_children( const UIWidget::Children& children )
 
 void UIWidget::set_decorator( const IDecorator::raw_ptr object )
 {
-  if( object != nullptr )
-  {
-    this->decorator_.reset( object );
+  this->decorator_.reset( object );
 
+  if( this->decorator_ != nullptr )
+  {
     // Initialize the decorator object with safe
     this->decorator_->set_bounds( this->global_bounds() );
 
@@ -608,6 +609,11 @@ void UIWidget::set_title( const std::string& title )
 
   // this->set_updated( false );
   // this->update();
+}
+
+void UIWidget::set_title( void )
+{
+  this->set_title( this->name() );
 }
 
 void UIWidget::set_size_policy( uint32 horiz, uint32 vert )
@@ -1051,6 +1057,17 @@ void UIWidget::set_size_hint( const Size2i& size )
 //   this->bounds_ = bounds;
 // }
 
+void UIWidget::set_geometry( const IntRect& bounds )
+{
+  this->set_position( bounds.position() + this->position() );
+  this->set_size( bounds.size() );
+}
+
+void UIWidget::set_geometry( int x, int y, int w, int h )
+{
+  this->set_geometry( IntRect( x, y, w, h ) );
+}
+
 void UIWidget::set_layout( UILayout* layout )
 {
   #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
@@ -1117,19 +1134,58 @@ void UIWidget::set_layout( UILayout* layout )
   this->update();
 }
 
+void UIWidget::resize( const Size2i& size )
+{
+  this->set_size( size );
+
+  // Associate the widget's unique identifiers with the sent event.
+  UIWidgetEvent evt;
+  evt.set_index( this->id() );
+  evt.set_text( this->name() );
+  evt.set_id( this->id() );
+  evt.resized_bounds_ = IntRect( this->position(), Size2i( size.w, size.h ) );
+  // NOM_DUMP(evt.resized_bounds_);
+
+  Event ev;
+  ev.type = SDL_WINDOWEVENT_SIZE_CHANGED;
+  ev.timestamp = ticks();
+  ev.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
+  ev.window.data1 = size.w;
+  ev.window.data2 = size.h;
+  ev.window.window_id = this->id();
+  evt.set_event( ev );
+
+  this->emit( UIEvent::ON_WINDOW_SIZE_CHANGED, evt );
+  this->emit( UIEvent::WINDOW_SIZE_CHANGED, evt );
+
+  // this->update();
+}
+
 // Protected scope
 
 void UIWidget::on_size_changed( const UIWidgetEvent& ev )
 {
-  // NOM_DUMP( ev.id() );
-  NOM_DUMP( ev.text() );
-  // NOM_DUMP( ev.index() );
+  Event evt = ev.event();
 
-  // Event evt = ev.event();
+  if( evt.type != SDL_WINDOWEVENT_SIZE_CHANGED )
+  {
+    return;
+  }
 
-  // evt.dump();
+  this->set_updated( false );
 
-  // this->set_updated( false );
+  if( this->decorator() != nullptr )
+  {
+    // Update the attached decorator (border & possibly a background)
+    this->decorator()->set_bounds( ev.resized_bounds_ );
+  }
+
+  // Update ourselves with the new rendering coordinates
+  this->set_bounds( ev.resized_bounds_ );
+
+  // NOM_DUMP(this->position());
+  // NOM_DUMP(this->size());
+
   // this->update();
 }
 
@@ -1184,6 +1240,7 @@ bool UIWidget::focus_next_child( void )
 
 void UIWidget::swap( const self_type* rhs )
 {
+  // this->set_dispatcher( rhs->dispatcher() );
   this->set_position( rhs->position() );
   this->set_size( rhs->size() );
 
@@ -1196,7 +1253,7 @@ void UIWidget::swap( const self_type* rhs )
   this->set_focused( rhs->focused() );
   this->set_visibility( rhs->visible() );
   this->set_updated( rhs->updated() );
-  this->set_decorator( rhs->decorator() );
+  this->decorator_ = rhs->decorator();
   this->set_title( rhs->title() );
   this->set_maximum_size( rhs->maximum_size() );
   this->set_minimum_size( rhs->minimum_size() );

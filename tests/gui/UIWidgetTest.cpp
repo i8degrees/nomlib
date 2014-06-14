@@ -143,6 +143,14 @@ class UIWidgetTest: public ::testing::Test
       NOM_DUMP( ev.text() );
     }
 
+    void expected_window_output( const nom::UIWidget* window, const Point2i& pos, const Size2i& size, const std::string& name = "Window" )
+    {
+      EXPECT_EQ( pos, window->position() );
+      EXPECT_EQ( size, window->size() );
+
+      EXPECT_EQ( name, window->name() );
+    }
+
   protected:
     const int WINDOW_WIDTH = 640;
     const int WINDOW_HEIGHT = 480;
@@ -161,33 +169,85 @@ class UIWidgetTest: public ::testing::Test
 
 TEST_F( UIWidgetTest, CoreAPI )
 {
-  // Top-level (parent) window (relative to global "screen" coordinates):
-  this->main_window = new nom::UIWidget( Point2i( 25, 25 ), Size2i( WINDOW_WIDTH - 100, WINDOW_HEIGHT / 2 ) );
-  this->main_window->set_name( "MainWindow" );
-  this->main_window->set_title( this->main_window->name() );
+  Point2i pos;
+  Size2i size;
 
-  // Draw a frame so that we can visually see the maximal bounds of the
-  // layout
+  pos.x = 25;
+  pos.y = 25;
+  size.w = WINDOW_WIDTH - 100;
+  size.h = WINDOW_HEIGHT / 2;
+
+  // Top-level (parent) widget (relative to global "screen" coordinates):
+  this->main_window = new nom::UIWidget( pos, size );
+  this->main_window->set_name( "Parent" );
+  this->main_window->set_decorator( new nom::MinimalDecorator() );
+  this->expected_window_output( this->main_window, pos, size, "Parent" );
+  EXPECT_NE( nullptr, this->main_window->decorator() );
+
+  // Test UIWidget construction with object pointers:
+  nom::UIWidget::raw_ptr w0 = nullptr;
+  nom::UIWidget::raw_ptr w1 = nullptr;
+
+  // Absolute coordinates
+  pos.x = 25;
+  pos.y = 25;
+  size.w = 200;
+  size.h = 200;
+
+  w0 = new nom::UIWidget( pos, size );
+  w1 = new nom::UIWidget( w0 );
+
+  this->expected_window_output( w0, pos, size );
+  this->expected_window_output( w1, pos, size );
+  EXPECT_EQ( true, w0->visible() );
+  EXPECT_EQ( true, w1->visible() );
+  EXPECT_EQ( nullptr, w0->decorator() );
+  EXPECT_EQ( nullptr, w1->decorator() );
+
+  this->main_window = new nom::UIWidget( Point2i::null, Size2i::null );
+
+  // Absolute coordinates
+  pos.x = 50;
+  pos.y = 50;
+  size.w = 350;
+  size.h = 100;
+  this->main_window->set_position( pos );
+  this->main_window->set_size( size );
+
+  this->expected_window_output( this->main_window, pos, size );
+  EXPECT_EQ( nullptr, this->main_window->decorator() );
+
+  // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F( UIWidgetTest, Layouts )
+{
+  UIWidget* layout_widget = nullptr;
+
+  Point2i pos( 25, 25 );
+  Size2i size( WINDOW_WIDTH - 100, WINDOW_HEIGHT / 2 );
+
+  // Top-level parent widget (relative to global "screen" coordinates):
+  this->main_window = new nom::UIWidget( pos, size );
   this->main_window->set_decorator( new nom::MinimalDecorator() );
 
-  // FIXME:
-  // this->main_window->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+  this->expected_window_output( this->main_window, pos, size );
+  EXPECT_NE( nullptr, this->main_window->decorator() );
 
-  // Test UIWidget construction with object pointers.
-  nom::UIWidget::raw_ptr w0 = new nom::UIWidget( Point2i(25,25),Size2i(200,200));
-  nom::UIWidget::raw_ptr w1 = new nom::UIWidget( w0 );
-  EXPECT_EQ( Point2i(25,25), w0->position() );
-  EXPECT_EQ( Size2i(200,200), w0->size() );
-  EXPECT_EQ( true, w0->visible() );
+  layout_widget = new nom::UIWidget( this->main_window );
 
-  EXPECT_EQ( Point2i(25,25), w1->position() );
-  EXPECT_EQ( Size2i(200,200), w1->size() );
-  EXPECT_EQ( true, w1->visible() );
+  // Relative coordinates (to parent widget):
+  Point2i rpos( 12, 25 );
+  Size2i lsize;
+  lsize.w = 350;
+  lsize.h = 100;
+  layout_widget->set_geometry( IntRect( rpos, lsize ) );
 
-  w1->set_size( 50, 20 );
-  EXPECT_EQ( Point2i(25,25), w1->position() );
-  EXPECT_EQ( Size2i(50,20), w1->size() );
-  EXPECT_EQ( true, w1->visible() );
+  this->expected_window_output( layout_widget, pos + rpos, lsize );
+  ASSERT_FALSE( layout_widget->decorator() != nullptr );
+
+  // Absolute coordinates
+  this->expected_window_output( this->main_window, pos, size );
 
   // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -203,6 +263,9 @@ int main( int argc, char** argv )
   atexit( nom::quit );
 
   ::testing::InitGoogleTest( &argc, argv );
+
+  // Allows us to toggle interactive test runs
+  nom::UnitTest::init( argc, argv );
 
   return RUN_ALL_TESTS();
 }

@@ -111,18 +111,26 @@ class ListBoxLayoutTest: public ::testing::Test
       // Scale window contents up by the new width & height
       this->window.set_logical_size( WINDOW_WIDTH, WINDOW_HEIGHT );
 
-      // Window-scope mouse button click events
-      // FIXME: Temporarily disabled (to cease debugging output):
+      // Top-level (parent) window (relative to global "screen" coordinates):
+      this->main_window = new nom::UIWidget( Point2i( 25, 25 ), Size2i( WINDOW_WIDTH - 30, WINDOW_HEIGHT - 30 ) );
+      this->main_window->set_title();
+
+      // Draw a frame so that we can visually see the maximal bounds of the
+      // parent window
+      this->main_window->set_decorator( new nom::MinimalDecorator() );
+
+      // FIXME: Re-enable the underlying event code in UIWidget for the
+      // WINDOW_MOUSE_DOWN event.
+      //
       // this->main_window->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
 
-      // Top-level (parent) window (relative to global "screen" coordinates):
-      this->main_window = new nom::UIWidget( Point2i( 25, 25 ), Size2i( WINDOW_WIDTH / 2, WINDOW_HEIGHT - 100 ) );
-      this->main_window->set_name( "Layout" );
-      this->main_window->set_title( this->main_window->name() );
+      this->layout_widget = new nom::UIWidget( this->main_window );
+      this->layout_widget->set_geometry( 12, 25, 350, 100 );
+      // this->layout_widget->set_title();
 
       // Draw a frame so that we can visually see the maximal bounds of the
       // layout
-      this->main_window->set_decorator( new nom::MinimalDecorator() );
+      this->layout_widget->set_decorator( new nom::MinimalDecorator() );
 
       labels[0].push_back( "item_0" );
       labels[0].push_back( "item_1" );
@@ -143,7 +151,7 @@ class ListBoxLayoutTest: public ::testing::Test
       // Our widgets to be used in the layout:
 
       // this->listbox0 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,24), "listbox0", labels[0] );
-      this->listbox0 = this->create_listbox( this->main_window, Point2i::null, Size2i::null, "listbox0", labels[0] );
+      this->listbox0 = this->create_listbox( this->layout_widget, Point2i::null, Size2i::null, "listbox0", labels[0] );
 
       // this->listbox0->set_font( SystemFonts::cache().load_resource("VIII") );
       this->listbox0->set_decorator( new nom::MinimalDecorator() );
@@ -151,31 +159,26 @@ class ListBoxLayoutTest: public ::testing::Test
       // this->listbox0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
       // this->listbox0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
 
-      // this->listbox1 = this->create_listbox( this->main_window, Point2i::null, Size2i::null, "listbox1", labels[1] );
-      this->listbox1 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,32), "listbox1", labels[1] );
+      // this->listbox1 = this->create_listbox( this->layout_widget, Point2i::null, Size2i::null, "listbox1", labels[1] );
+      this->listbox1 = this->create_listbox( this->layout_widget, Point2i::null, Size2i(50,32), "listbox1", labels[1] );
 
       this->listbox1->set_decorator( new nom::MinimalDecorator() );
       // this->listbox1->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
       // this->listbox1->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
 
-      // this->listbox2 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,24), "listbox2", labels[2] );
-      this->listbox2 = this->create_listbox( this->main_window, Point2i::null, Size2i::null, "listbox2", labels[2] );
+      // this->listbox2 = this->create_listbox( this->layout_widget, Point2i::null, Size2i(50,24), "listbox2", labels[2] );
+      this->listbox2 = this->create_listbox( this->layout_widget, Point2i::null, Size2i::null, "listbox2", labels[2] );
 
       this->listbox2->set_decorator( new nom::MinimalDecorator() );
       // this->listbox2->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
       // this->listbox2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
 
-      // this->listbox3 = this->create_listbox( this->main_window, Point2i::null, Size2i(50,24), "listbox3", labels[3] );
-      this->listbox3 = this->create_listbox( this->main_window, Point2i::null, Size2i::null, "listbox3", labels[3] );
+      // this->listbox3 = this->create_listbox( this->layout_widget, Point2i::null, Size2i(50,24), "listbox3", labels[3] );
+      this->listbox3 = this->create_listbox( this->layout_widget, Point2i::null, Size2i::null, "listbox3", labels[3] );
 
       this->listbox3->set_decorator( new nom::MinimalDecorator() );
       // this->listbox3->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
       // this->listbox3->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
-
-      this->main_window->insert_child( listbox0 );
-      this->main_window->insert_child( listbox1 );
-      this->main_window->insert_child( listbox2 );
-      this->main_window->insert_child( listbox3 );
 
       this->spacers.push_back( 8 );
       this->items.push_back( this->listbox0 );
@@ -183,7 +186,6 @@ class ListBoxLayoutTest: public ::testing::Test
       this->items.push_back( this->listbox1 );
       this->spacers.push_back( 40 );
       this->items.push_back( this->listbox2 );
-      this->spacers.push_back( 2 );
       this->items.push_back( this->listbox3 );
     }
 
@@ -208,15 +210,18 @@ class ListBoxLayoutTest: public ::testing::Test
           this->input_mapper.on_event( this->ev );
 
           this->main_window->process_event( this->ev );
+          this->layout_widget->process_event( this->ev );
         }
 
         this->window.update();
         this->main_window->update();
+        this->layout_widget->update();
 
         // Background color fill
         this->window.fill( nom::Color4i::SkyBlue );
 
         this->main_window->draw( this->window );
+        this->layout_widget->draw( this->window );
       }
 
       return NOM_EXIT_SUCCESS;
@@ -261,6 +266,7 @@ class ListBoxLayoutTest: public ::testing::Test
     // GUI resources
 
     nom::UIWidget::raw_ptr main_window;
+    nom::UIWidget::raw_ptr layout_widget;
 
     /// \brief Item strings for our ListBox widgets.
     nom::ItemStrings labels[4];
@@ -288,19 +294,21 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutUsingTrueTypeFont )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
-  this->main_window->set_font( SystemFonts::cache().load_resource( "Arial" ) );
+  this->layout_widget->set_font( SystemFonts::cache().load_resource( "Arial" ) );
 
-  layout = priv::create_layout( this->main_window, this->items, this->spacers, Point2i(12,25), Size2i::null, "HorizontalLayoutUsingTrueTypeFont", Orientations::Horizontal );
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayoutUsingTrueTypeFont", Orientations::Horizontal );
 
   EXPECT_EQ( this->items.size() + this->spacers.size(), layout->count() );
 
   EXPECT_EQ( Size2i( 50, 32 ), layout->minimum_size() );
 
+  // First widget
   this->pos.push_back( Point2i( 45, 50 ) );
-  this->dims.push_back( Size2i( 58, 63 ) );
+  this->dims.push_back( Size2i( 56, 67 ) );
 
-  this->pos.push_back( Point2i( 267, 50 ) );
-  this->dims.push_back( Size2i( 55, 63 ) );
+  // Last widget
+  this->pos.push_back( Point2i( 258, 50 ) );
+  this->dims.push_back( Size2i( 56, 67 ) );
 
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, this->pos, this->dims );
@@ -315,19 +323,21 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutUsingBitmapFont )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
-  this->main_window->set_font( SystemFonts::cache().load_resource( "VIII" ) );
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayoutUsingBitmapFont", Orientations::Horizontal );
 
-  layout = priv::create_layout( this->main_window, this->items, this->spacers, Point2i(12,25), Size2i::null, "HorizontalLayoutUsingBitmapFont", Orientations::Horizontal );
+  this->layout_widget->set_font( SystemFonts::cache().load_resource( "VIII" ) );
 
   EXPECT_EQ( this->items.size() + this->spacers.size(), layout->count() );
 
   EXPECT_EQ( Size2i( 50, 32 ), layout->minimum_size() );
 
+  // First widget
   this->pos.push_back( Point2i( 45, 50 ) );
-  this->dims.push_back( Size2i( 59, 58 ) );
+  this->dims.push_back( Size2i( 56, 67 ) );
 
-  this->pos.push_back( Point2i( 269, 50 ) );
-  this->dims.push_back( Size2i( 56, 58 ) );
+  // Last widget
+  this->pos.push_back( Point2i( 258, 50 ) );
+  this->dims.push_back( Size2i( 56, 67 ) );
 
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, this->pos, this->dims );
@@ -342,19 +352,23 @@ TEST_F( ListBoxLayoutTest, VerticalLayoutUsingTrueTypeFont )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
-  this->main_window->set_font( SystemFonts::cache().load_resource( "Arial" ) );
+  this->layout_widget->set_font( SystemFonts::cache().load_resource( "Arial" ) );
 
-  layout = priv::create_layout( this->main_window, this->items, this->spacers, Point2i(12,25), Size2i::null, "VerticalLayoutUsingTrueTypeFont", Orientations::Vertical );
+  this->layout_widget->resize( Size2i( 100, 350 ) );
+
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "VerticalLayoutUsingTrueTypeFont", Orientations::Vertical );
 
   EXPECT_EQ( this->items.size() + this->spacers.size(), layout->count() );
 
   EXPECT_EQ( Size2i( 50, 32 ), layout->minimum_size() );
 
+  // First widget
   this->pos.push_back( Point2i( 37, 58 ) );
-  this->dims.push_back( Size2i( 55, 66 ) );
+  this->dims.push_back( Size2i( 56, 67 ) );
 
+  // Last widget
   this->pos.push_back( Point2i( 37, 278 ) );
-  this->dims.push_back( Size2i( 55, 63 ) );
+  this->dims.push_back( Size2i( 56, 67 ) );
 
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, this->pos, this->dims );
@@ -369,19 +383,23 @@ TEST_F( ListBoxLayoutTest, VerticalLayoutUsingBitmapFont )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
-  this->main_window->set_font( SystemFonts::cache().load_resource( "VIII" ) );
+  this->layout_widget->resize( Size2i( 100, 350 ) );
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "VerticalLayoutUsingBitmapFont", Orientations::Vertical );
 
-  layout = priv::create_layout( this->main_window, this->items, this->spacers, Point2i(12,25), Size2i::null, "VerticalLayoutUsingBitmapFont", Orientations::Vertical );
+  // FIXME: This currently has to be set after the creation of the layout.
+  this->layout_widget->set_font( SystemFonts::cache().load_resource( "VIII" ) );
 
   EXPECT_EQ( this->items.size() + this->spacers.size(), layout->count() );
 
   EXPECT_EQ( Size2i( 50, 32 ), layout->minimum_size() );
 
+  // First widget
   this->pos.push_back( Point2i( 37, 58 ) );
-  this->dims.push_back( Size2i( 56, 61 ) );
+  this->dims.push_back( Size2i( 56, 67 ) );
 
-  this->pos.push_back( Point2i( 37, 268 ) );
-  this->dims.push_back( Size2i( 56, 58 ) );
+  // Last widget
+  this->pos.push_back( Point2i( 37, 278 ) );
+  this->dims.push_back( Size2i( 56, 67 ) );
 
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
   priv::expected_layout_output( layout, this->pos, this->dims );
@@ -404,6 +422,7 @@ int main( int argc, char** argv )
 
   ::testing::InitGoogleTest( &argc, argv );
 
+  // Allows us to toggle interactive test runs
   nom::UnitTest::init( argc, argv );
 
   return RUN_ALL_TESTS();

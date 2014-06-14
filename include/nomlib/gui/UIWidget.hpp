@@ -149,7 +149,7 @@ class UIWidget: public UIEventHandler
     const Children& children( void ) const;
 
     /// \returns Ownership of the object pointer is not transferred.
-    IDecorator::raw_ptr decorator( void ) const;
+    IDecorator::shared_ptr decorator( void ) const;
 
     /// \brief Get the title of the top-level window.
     const std::string title( void ) const;
@@ -311,6 +311,12 @@ class UIWidget: public UIEventHandler
     /// \note The window's title is not set by default.
     void set_title( const std::string& title );
 
+    /// \brief Set the window's caption (title) text to the auto-generated name
+    /// tag.
+    ///
+    /// \remarks This method call will fail if a valid font has not been set.
+    void set_title( void );
+
     /// \brief Set the default behavior of layouts for the widget.
     ///
     /// \remarks ~~If there is a UILayout that manages this widget's children,
@@ -425,8 +431,14 @@ class UIWidget: public UIEventHandler
     /// \brief Set the global (screen) coordinates of the widget.
     // void set_global_bounds( const IntRect& bounds );
 
+    /// \brief Set the widget's bounds, relative to its parent widget.
+    void set_geometry( const IntRect& bounds );
+    void set_geometry( int x, int y, int w, int h );
+
     /// \brief Set the layout of the widget.
     void set_layout( UILayout* layout );
+
+    void resize( const Size2i& size );
 
   protected:
     virtual void on_size_changed( const UIWidgetEvent& ev );
@@ -532,7 +544,7 @@ NOM_IGNORED_ENDL();
     /// \brief The decorator object for the widget
     ///
     /// \remarks Control over the border and background of the widget.
-    IDecorator::unique_ptr decorator_;
+    IDecorator::shared_ptr decorator_;
 
     /// \brief The title of the top-level window.
     Text::unique_ptr title_;

@@ -263,14 +263,6 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
         NOM_DUMP( widget->name() );
       #endif
 
-      // Setup our layout positioning coordinates to be relative to the parent
-      // widget (top-level window).
-      if( widget->parent() != nullptr )
-      {
-        // The offset will eventually be added onto the layout item's bounds
-        offset = widget->parent()->position();
-      }
-
       // Horizontal layout using preferred size height
       if( this->horiz() )
       {
@@ -363,25 +355,34 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
 
           if( this->horiz() )
           {
-            // Append the extra dimensions onto our minimum_size calculation
-            item_size.w += frame_offset.w;
+            if( ! p.horizontal_policy() & UILayoutPolicy::Policy::Minimum )
+            {
+              // Append the extra dimensions onto our minimum_size calculation
+              item_size.w += frame_offset.w;
+            }
           }
           else  // Vertical
           {
-            // Append the extra dimensions onto our minimum_size calculation
-            item_size.h += frame_offset.h;
+            if( ! p.vertical_policy() & UILayoutPolicy::Policy::Minimum )
+            {
+              // Append the extra dimensions onto our minimum_size calculation
+              item_size.h += frame_offset.h;
+            }
           }
 
         }
       } // end if decorator is not null
 
-      geom = IntRect( w_x + rect.x + offset.x, w_y + rect.y + offset.y, item_size.w, item_size.h );
+      geom = IntRect( w_x + rect.x, w_y + rect.y, item_size.w, item_size.h );
 
       // Set each item's boundaries as per calculated layout requirements; this
       // method call takes care of internal item updates that will need to occur
       // shortly thereafter (think: resize / move).
       item->set_bounds( geom );
 
+      // Reset UISpacerItem spacing value so that if the next item is NULL, we
+      // don't assign it onto the next widget item...
+      spacer = 0;
     } // end if widget != nullptr
 
     // total_bounds += item->bounds();

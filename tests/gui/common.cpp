@@ -171,11 +171,16 @@ void expected_layout_output( const UILayout* layout, const std::vector<Point2i>&
   priv::expected_layout_widget_dims( layout, idx, dims.at(1) );
 }
 
-UIBoxLayout* create_layout( UIWidget* window, const std::vector<UIWidget*>& items, const std::vector<int>& spacers, const Point2i& pos, const Size2i& size, const std::string& name, Orientations dir, int spacing )
+UIBoxLayout* create_layout( UIWidget* window, const std::vector<UIWidget*>& items, const std::vector<int>& spacers, const std::string& name, Orientations dir, int spacing )
 {
   NOM_ASSERT( window != nullptr );
 
   nom::UIBoxLayout* layout = nullptr;
+
+  for( auto itr = items.begin(); itr != items.end(); ++itr )
+  {
+    window->insert_child( *itr );
+  }
 
   if( dir == Orientations::Horizontal )
   {
@@ -189,94 +194,63 @@ UIBoxLayout* create_layout( UIWidget* window, const std::vector<UIWidget*>& item
   layout->set_spacing( spacing );
   EXPECT_EQ( spacing, layout->spacing() );
 
-  NOM_ASSERT( items.size() == spacers.size() );
-
   int idx = 0;
   for( auto itr = items.begin(); itr != items.end(); ++itr )
   {
-    layout->append_spacer( spacers.at( idx ) );
+    if( idx < spacers.size() )
+    {
+      layout->append_spacer( spacers.at( idx ) );
+    }
+
     layout->append_widget( *itr );
 
     ++idx;
   }
 
-  // Relative positioning coordinate
-  if( pos != Point2i::null && size != Size2i::null )
-  {
-    IntRect layout_bounds( pos, size );
-    layout->set_bounds( layout_bounds );
+  IntRect layout_bounds( window->position(), window->size() );
+  layout->set_bounds( layout_bounds );
 
-    EXPECT_EQ( pos.x, layout->bounds().x );
-    EXPECT_EQ( pos.y, layout->bounds().y );
-    EXPECT_EQ( size.w, layout->bounds().w );
-    EXPECT_EQ( size.h, layout->bounds().h );
-  }
-
-  // Absolute positioning coordinates(?):
-  // I don't *think* that this should ever be necessary.
-  // else if( window != nullptr && window->parent() != nullptr )
-  // {
-        // TODO: This functionality needs to be tested.
-
-  //   IntRect layout_bounds( window->parent()->position(), window->parent()->size() );
-  //   layout->set_bounds( layout_bounds );
-
-  //   EXPECT_EQ( window->parent()->position().x, layout->bounds().x );
-  //   EXPECT_EQ( window->parent()->position().y, layout->bounds().y );
-  //   EXPECT_EQ( window->parent()->size().w, layout->bounds().w );
-  //   EXPECT_EQ( window->parent()->size().h, layout->bounds().h );
-  // }
-
-  // Relative positioning coordinate
-  else if( window != nullptr )
-  {
-    if( pos != Point2i::null )
-    {
-      IntRect layout_bounds( pos , window->size() );
-      layout->set_bounds( layout_bounds );
-
-      // These coordinates should be relative to the parent window that the
-      // layout is attached to:
-      EXPECT_EQ( pos.x, layout->bounds().x );
-      EXPECT_EQ( pos.y, layout->bounds().y );
-      EXPECT_EQ( window->size().w, layout->bounds().w );
-      EXPECT_EQ( window->size().h, layout->bounds().h );
-    }
-
-    // Use whatever existing coordinates we can access and pray that they
-    // are set properly.
-    else
-    {
-      // TODO: This functionality needs to be tested.
-
-      // Relative positioning coordinates (or so we hope!):
-      IntRect layout_bounds( window->position(), window->size() );
-      layout->set_bounds( layout_bounds );
-
-      EXPECT_EQ( window->position().x, layout->bounds().x );
-      EXPECT_EQ( window->position().y, layout->bounds().y );
-      EXPECT_EQ( window->size().w, layout->bounds().w );
-      EXPECT_EQ( window->size().h, layout->bounds().h );
-    }
-  }
-
-  // FIXME:
-  // layout->set_alignment( Anchor::TopLeft );
-  // EXPECT_EQ( Anchor::TopLeft, layout->alignment() );
-
-  // layout->set_alignment( layout, Anchor::TopLeft );
-  // EXPECT_EQ( Anchor::TopLeft, layout->alignment() );
-
-  // layout->set_alignment( this->listbox0, Anchor::TopLeft );
-  // UILayoutItem* i = layout->at( 0 );
-  // if( i != nullptr )
-  // {
-  //   EXPECT_EQ( Anchor::TopLeft, i->alignment() );
-  // }
+  EXPECT_EQ( layout->bounds().x, window->position().x );
+  EXPECT_EQ( layout->bounds().y, window->position().y );
+  EXPECT_EQ( layout->bounds().w, window->size().w );
+  EXPECT_EQ( layout->bounds().h, window->size().h );
 
   NOM_ASSERT( window->layout() == layout );
 
   return layout;
+}
+
+void set_layout_alignment( UILayout* layout, uint32 align )
+{
+  ASSERT_FALSE( layout == nullptr );
+
+  layout->set_alignment( align );
+  EXPECT_EQ( align, layout->alignment() );
+}
+
+void set_widget_alignment( UILayout* layout, const UIWidget* window, uint32 align )
+{
+  int pos = -1;
+  UILayoutItem* item = nullptr;
+
+  ASSERT_FALSE( layout == nullptr );
+
+  EXPECT_EQ( true, layout->set_alignment( window, align ) );
+
+  ASSERT_FALSE( window == nullptr );
+
+  pos = layout->find_widget( window );
+
+  EXPECT_NE( -1, pos );
+
+  item = layout->at( pos );
+
+  ASSERT_FALSE( item == nullptr );
+
+  if( item != nullptr )
+  {
+    EXPECT_EQ( align, item->alignment() );
+  }
 }
 
 } // namespace priv

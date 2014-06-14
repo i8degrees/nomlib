@@ -177,7 +177,7 @@ class UILayout: public UILayoutItem
     void add_widget( UIWidget* widget );
 
     /// \note QLayout::indexOf
-    virtual int find_widget( UIWidget* widget ) const;
+    virtual int find_widget( const UIWidget* widget ) const;
 
     /// \brief Destroy a layout item from the layout.
     ///
@@ -193,7 +193,7 @@ class UILayout: public UILayoutItem
 
     void set_alignment( uint32 align );
 
-    bool set_alignment( UIWidget* widget, uint32 align );
+    bool set_alignment( const UIWidget* widget, uint32 align );
 
     bool set_alignment( const UILayout::raw_ptr layout, uint32 align );
 

@@ -28,6 +28,8 @@ Both the 64-bit and 32-bit official development binaries versions of:
         * [libtiff v4.0.3](https://github.com/Homebrew/homebrew/commits/master/Library/Formula/libtiff.rb) from Homebrew's repository with the --universal build flag.
         * [libjpeg 8d](https://github.com/Homebrew/homebrew/commits/master/Library/Formula/jpeg.rb) from Homebrew's repository with the --universal build flag.
 
+      * [SDL2_ttf.framework v2.0.12](http://libsdl.org/projects/SDL_ttf) built with a [font kerning size patch](https://bugzilla.libsdl.org/show_bug.cgi?id=2572).
+
   - Packaged only for Windows
     * [Google Test v1.7.0](https://code.google.com/p/googletest/) built with -DBUILD_SHARED_LIBS=on (DLL export).
     * [libsndfile v1.0.25](http://www.mega-nerd.com/libsndfile/)

@@ -11,7 +11,7 @@ if( NOM_BUILD_MATH_TESTS )
 
     target_link_libraries (
                             math
-                            ${GTEST_BOTH_LIBRARIES}
+                            ${GTEST_LIBRARY}
                             ${PROJECT_NAME} # nomlib
                           )
 

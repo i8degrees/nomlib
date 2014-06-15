@@ -11,7 +11,7 @@ if( NOM_BUILD_RENDERWINDOW_TESTS )
 
     target_link_libraries (
                             render_window
-                            ${GTEST_BOTH_LIBRARIES}
+                            ${GTEST_LIBRARY}
                             ${PROJECT_NAME} # nomlib
                           )
 

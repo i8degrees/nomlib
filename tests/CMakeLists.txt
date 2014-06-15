@@ -15,6 +15,12 @@
 # NOTE: Compiling nomlib under Windows without iterator asserts --
 # /D_ITERATOR_DBUG_LEVEL=0 -- will cause GTest to throw SEH exception errors
 # before it is able to display actual & expected results when a unit test fails.
+#
+# NOTE: The custom command line processing used by nom::UnitTest for interactive
+# interactive test runs breaks under Windows when building with the target
+# library ${GTEST_BOTH_LIBRARIES}, due to GTest's main library overwriting our
+# unit test's main functions. In summary, only the library target
+# ${GTEST_LIBRARY} should be used, to ensure cross-platform support.
 
 if( PLATFORM_WINDOWS )
 
@@ -71,7 +77,7 @@ if( NOM_BUILD_TEMPLATES_UNIT )
                   )
 
   target_link_libraries ( Template
-                          ${GTEST_BOTH_LIBRARIES}
+                          ${GTEST_LIBRARY}
                           ${PROJECT_NAME} # nomlib
                         )
 

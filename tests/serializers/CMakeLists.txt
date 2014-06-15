@@ -12,7 +12,7 @@ if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
 
   target_link_libraries (
                           json_serializer
-                          ${GTEST_BOTH_LIBRARIES}
+                          ${GTEST_LIBRARY}
                           ${PROJECT_NAME} # nomlib
                         )
 
@@ -31,7 +31,7 @@ if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
 
   target_link_libraries (
                           json_deserializer
-                          ${GTEST_BOTH_LIBRARIES}
+                          ${GTEST_LIBRARY}
                           ${PROJECT_NAME} # nomlib
                         )
 
@@ -53,7 +53,7 @@ if( NOM_BUILD_SERIALIZERS_XML_TESTS )
 
   target_link_libraries (
                           xml_serializer
-                          ${GTEST_BOTH_LIBRARIES}
+                          ${GTEST_LIBRARY}
                           ${PROJECT_NAME} # nomlib
                         )
 
@@ -71,7 +71,7 @@ if( NOM_BUILD_SERIALIZERS_XML_TESTS )
 
   target_link_libraries (
                           xml_deserializer
-                          ${GTEST_BOTH_LIBRARIES}
+                          ${GTEST_LIBRARY}
                           ${PROJECT_NAME} # nomlib
                         )
 
@@ -119,7 +119,7 @@ if( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
 
   target_link_libraries (
                           json_config_file
-                          ${GTEST_BOTH_LIBRARIES}
+                          ${GTEST_LIBRARY}
                           ${PROJECT_NAME} # nomlib
                         )
 

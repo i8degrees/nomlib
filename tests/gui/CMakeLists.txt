@@ -14,7 +14,7 @@ if( NOM_BUILD_GUI_UI_ITEM_CONTAINER_TESTS )
                   )
 
   target_link_libraries ( UIItemContainerTest
-                          ${GTEST_BOTH_LIBRARIES}
+                          ${GTEST_LIBRARY}
                           ${PROJECT_NAME} # nomlib
                         )
 
@@ -35,7 +35,7 @@ if( NOM_BUILD_GUI_UI_EVENT_DISPATCHER_TESTS )
 
   target_link_libraries (
                           UIEventDispatcherTest
-                          ${GTEST_BOTH_LIBRARIES}
+                          ${GTEST_LIBRARY}
                           ${PROJECT_NAME} # nomlib
                         )
 
@@ -56,7 +56,7 @@ if( NOM_BUILD_GUI_UI_WIDGET_TESTS )
 
   target_link_libraries (
                           UIWidgetTest
-                          ${GTEST_BOTH_LIBRARIES}
+                          ${GTEST_LIBRARY}
                           ${PROJECT_NAME} # nomlib
                         )
 
@@ -78,7 +78,7 @@ if( NOM_BUILD_GUI_LISTBOX_LAYOUT_TESTS )
 
   target_link_libraries (
                           listbox_layout_test
-                          ${GTEST_BOTH_LIBRARIES}
+                          ${GTEST_LIBRARY}
                           ${PROJECT_NAME} # nomlib
                         )
 
@@ -101,7 +101,7 @@ if( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS )
 
   target_link_libraries (
                           button_layout_test
-                          ${GTEST_BOTH_LIBRARIES}
+                          ${GTEST_LIBRARY}
                           ${PROJECT_NAME} # nomlib
                         )
 

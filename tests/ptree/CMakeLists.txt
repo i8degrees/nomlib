@@ -9,7 +9,7 @@ if( NOM_BUILD_PTREE_TESTS )
 
   target_link_libraries (
                           ptree
-                          ${GTEST_BOTH_LIBRARIES}
+                          ${GTEST_LIBRARY}
                           ${PROJECT_NAME} # nomlib
                         )
 

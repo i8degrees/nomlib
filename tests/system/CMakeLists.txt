@@ -14,7 +14,7 @@ if( NOM_BUILD_FONT_CACHE_TESTS )
 
     target_link_libraries (
                             font_cache
-                            ${GTEST_BOTH_LIBRARIES}
+                            ${GTEST_LIBRARY}
                             ${PROJECT_NAME} # nomlib
                           )
 
@@ -50,7 +50,7 @@ if( NOM_BUILD_COLOR_DB_TESTS )
 
     target_link_libraries (
                             color_database
-                            ${GTEST_BOTH_LIBRARIES}
+                            ${GTEST_LIBRARY}
                             ${PROJECT_NAME} # nomlib
                           )
 
@@ -75,7 +75,7 @@ if( NOM_BUILD_FILE_TESTS )
 
     target_link_libraries (
                             file_interface
-                            ${GTEST_BOTH_LIBRARIES}
+                            ${GTEST_LIBRARY}
                             ${PROJECT_NAME} # nomlib
                           )
 

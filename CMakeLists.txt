@@ -470,6 +470,14 @@ if ( PLATFORM_OSX )
       install_name_rpath ( "@rpath/sndfile.framework/Versions/A/sndfile" "${LIBSNDFILE_LIBRARY}/Versions/A/sndfile" )
     endif ( NOT CMAKE_GENERATOR STREQUAL "Xcode" )
 
+    # FIXME: This is a really lazy workaround to get things up and running for
+    # travis-ci builds.
+    if( CMAKE_GENERATOR STREQUAL "Xcode" )
+      set( FONTS_DEST_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}" )
+    else( CMAKE_GENERATOR NOT STREQUAL "Xcode" )
+      set( FONTS_DEST_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" )
+    endif( CMAKE_GENERATOR STREQUAL "Xcode" )
+
     # Install nomlib's default fonts
     #
     # FIXME: We need to be building the framework bundle locally -- within

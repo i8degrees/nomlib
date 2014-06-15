@@ -475,10 +475,11 @@ if ( PLATFORM_OSX )
     # FIXME: We need to be building the framework bundle locally -- within
     # cmake's build dir -- and then after *everything* is built, copy said
     # bundle over to the destination prefix.
-    install ( DIRECTORY
-              ${NOMLIB_FONTS}
+    install (
+              DIRECTORY
+              "${NOMLIB_FONTS}"
               # DESTINATION "${INSTALL_ROOT_PATH}/Resources"
-              DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.framework/Resources"
+              DESTINATION "${FONTS_DEST_PREFIX}/${PROJECT_NAME}.framework/Resources"
               OPTIONAL
               PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
             )

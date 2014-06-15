@@ -28,7 +28,9 @@ before_script:
 script:
   - xcodebuild build
   - xcodebuild -target install
-  - ls -lasR ~/Library/Frameworks/nomlib.framework
+  - xcodebuild -target RUN_TESTS
+  - xcodebuild -target uninstall
+  # - ls -lasR ~/Library/Frameworks/nomlib.framework
 
 # whitelist
 branches:

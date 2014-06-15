@@ -44,22 +44,23 @@ ListBox::ListBox(
 {
   // NOM_LOG_TRACE( NOM );
 
-  // Use explicitly set coordinates as the widget's minimum size requirements.
-  //
-  // Note that if size is invalid (NULL), the minimum size returned will be
-  // Size2i(0,0)
-  //
-  // Note that the size policy is only used when the widget is used inside a
-  // layout.
-  this->set_minimum_size( size );
-
   // Set the size policy of the widget to use explicitly set size dimensions.
   //
   // Note that the size policy is only used when the widget is used inside a
   // layout.
   if( size != Size2i::null )
   {
-    this->set_size_policy( UILayoutPolicy::Policy::Minimum, UILayoutPolicy::Policy::Fixed );
+    // Use explicitly set coordinates as the widget's minimum size requirements.
+    //
+    // Note that if size is invalid (NULL), the minimum size returned will be
+    // Size2i(0,0)
+    //
+    // Note that the size policy is only used when the widget is used inside a
+    // layout.
+    this->set_minimum_size( size );
+
+    // this->set_size_policy( UILayoutPolicy::Policy::Minimum, UILayoutPolicy::Policy::Fixed );
+    this->set_size_policy( UILayoutPolicy::Policy::Minimum, UILayoutPolicy::Policy::Minimum );
   }
 
   // Set the size policy of the widget to use dimensions that are calculated
@@ -110,7 +111,22 @@ ObjectTypeInfo ListBox::type( void ) const
 
 const Size2i ListBox::minimum_size( void ) const
 {
-  return this->size_hint();
+  Size2i msize = UIWidget::minimum_size();
+  Size2i min;
+
+  if( msize > Size2i( 0, 0 ) )
+  {
+     min = msize;
+  }
+  else
+  {
+    min = this->size_hint();
+  }
+
+  NOM_DUMP( this->name() );
+  NOM_DUMP( min );
+
+  return min;
 }
 
 const Size2i ListBox::size_hint( void ) const
@@ -156,7 +172,7 @@ const Size2i ListBox::size_hint( void ) const
   // Text label's width & height (with respect to rendered font):
   //
   // TODO: Figure out best way of implementing the padding with the text width
-  return Size2i( max_text_width + 8, max_text_height + newline / 2 );
+  return Size2i( max_text_width + 8, max_text_height + ( newline / 2 ) );
 }
 
 bool ListBox::valid( void ) const

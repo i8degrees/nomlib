@@ -40,22 +40,23 @@ Button::Button  (
 {
   // NOM_LOG_TRACE( NOM );
 
-  // Use explicitly set coordinates as the widget's minimum size requirements.
-  //
-  // Note that if size is invalid (NULL), the minimum size returned will be
-  // Size2i(0,0)
-  //
-  // Note that the size policy is only used when the widget is used inside a
-  // layout.
-  this->set_minimum_size( size );
-
   // Set the size policy of the widget to use explicitly set size dimensions.
   //
   // Note that the size policy is only used when the widget is used inside a
   // layout.
   if( size != Size2i::null )
   {
-    this->set_size_policy( UILayoutPolicy::Policy::Minimum, UILayoutPolicy::Policy::Fixed );
+    // Use explicitly set coordinates as the widget's minimum size requirements.
+    //
+    // Note that if size is invalid (NULL), the minimum size returned will be
+    // Size2i(0,0)
+    //
+    // Note that the size policy is only used when the widget is used inside a
+    // layout.
+    this->set_minimum_size( size );
+
+    // this->set_size_policy( UILayoutPolicy::Policy::Minimum, UILayoutPolicy::Policy::Fixed );
+    this->set_size_policy( UILayoutPolicy::Policy::Minimum, UILayoutPolicy::Policy::Minimum );
   }
 
   // Set the size policy of the widget to use dimensions that are calculated
@@ -115,8 +116,22 @@ Button::~Button( void )
 
 const Size2i Button::minimum_size( void ) const
 {
-  // Our preferred size will always be two times what is actually required
-  return Size2i( this->size_hint().w / 2, this->size_hint().h / 2 );
+  Size2i msize = UIWidget::minimum_size();
+  Size2i min;
+
+  if( msize > Size2i( 0, 0 ) )
+  {
+     min = msize;
+  }
+  else
+  {
+    min = this->size_hint();
+  }
+
+  NOM_DUMP( this->name() );
+  NOM_DUMP( min );
+
+  return min;
 }
 
 const Size2i Button::size_hint( void ) const
@@ -152,12 +167,9 @@ const Size2i Button::size_hint( void ) const
     point_size = this->style()->font_size();
   }
 
-  total_text_height += this->label_.font()->newline( point_size ) * 2;
+  total_text_height = this->label_.font()->newline( point_size ) * 2;
 
   return Size2i( total_text_width, total_text_height );
-
-  // Err
-  return Size2i( 0, 0 );
 }
 
 ObjectTypeInfo Button::type( void ) const

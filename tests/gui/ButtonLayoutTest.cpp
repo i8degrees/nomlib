@@ -136,7 +136,10 @@ class ButtonLayoutTest: public ::testing::Test
       // this->main_window->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
 
       this->layout_widget = new nom::UIWidget( this->main_window );
-      this->layout_widget->set_geometry( 12, 25, 400, 50 );
+
+      // The initial width and height of the layout does not matter; it is
+      //resized per test.
+      this->layout_widget->set_geometry( 12, 25, 100, 100 );
       // this->layout_widget->set_title();
 
       // Draw a frame so that we can visually see the maximal bounds of the
@@ -163,7 +166,7 @@ class ButtonLayoutTest: public ::testing::Test
 
       // Create a button using explicit size dimensions; this internally sets
       // the size policy to use these dimensions within a layout.
-      this->button1 = this->create_button( this->layout_widget, Point2i::null, Size2i(56,16), "button1", "button1" );
+      this->button1 = this->create_button( this->layout_widget, Point2i::null, Size2i(100,16), "button1", "button1" );
 
       this->button1->set_decorator( new nom::MinimalDecorator() );
       this->button1->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button1_on_click( ev ); } ) );
@@ -364,12 +367,6 @@ class ButtonLayoutTest: public ::testing::Test
     nom::BitmapButton::raw_ptr button2;
     nom::Button::raw_ptr button3;
 
-    /// \brief Expected position results (per test).
-    std::vector<Point2i> pos;
-
-    /// \brief Expected with and height results (per test).
-    std::vector<Size2i> dims;
-
     /// \brief The widget items to test in a layout (per test).
     ///
     /// \remarks The stored pointers are not owned by us; do *not* free them!
@@ -384,6 +381,8 @@ TEST_F( ButtonLayoutTest, HorizontalLayout )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
+  this->layout_widget->resize( Size2i( 525, 75 ) );
+
   // Use custom, absolute dimensions that we provide, with relative positioning
   // of the layout from the parent widget's coordinates.
   layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayout", Orientations::Horizontal );
@@ -392,18 +391,39 @@ TEST_F( ButtonLayoutTest, HorizontalLayout )
 
   EXPECT_EQ( this->items.size() + this->spacers.size(), layout->count() );
 
-  EXPECT_EQ( Size2i( 56, 16 ), layout->minimum_size() );
+  // Should include the minimum size requirements of the layout (dependent upon
+  // its items).
+  // EXPECT_EQ( Size2i( 314, 40 ), layout->total_minimum_size() );
+  EXPECT_EQ( Size2i( 426, 40 ), layout->total_minimum_size() );
 
-  // First widget
-  this->pos.push_back( Point2i( 45, 50 ) );
-  this->dims.push_back( Size2i( 112, 30 ) );
+  // Should include the recommended size of the layout (dependent upon its
+  // items). Note that this is not necessarily the rendered dimensions, but is
+  // what would be considered mathematically "optimal".
+  EXPECT_EQ( Size2i( 478, 40 ), layout->total_size_hint() );
 
-  // Last widget
-  this->pos.push_back( Point2i( 376, 50 ) );
-  this->dims.push_back( Size2i( 56, 16 ) );
-
+  // Spacer item
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
-  priv::expected_layout_output( layout, this->pos, this->dims );
+
+  // Widget item (button0)
+  // priv::expected_layout_widget_pos( layout, 1, Point2i( 45, 50 ) );
+  // priv::expected_layout_widget_dims( layout, 1, Size2i( 112, 26 ) );
+  priv::expected_layout_widget_dims( layout, 1, Size2i( 112, 40 ) );
+
+  // Spacer item
+  priv::expected_layout_spacer_output( layout, 2, Point2i(-1,-1), Size2i(8,8) );
+
+  // Widget item (button1)
+  priv::expected_layout_widget_dims( layout, 3, Size2i( 100, 16 ) );
+
+  // Spacer item
+  priv::expected_layout_spacer_output( layout, 4, Point2i(-1,-1), Size2i(40,40) );
+
+  // Widget item (button2)
+  priv::expected_layout_widget_dims( layout, 5, Size2i( 102, 25 ) );
+
+  // Widget item (button3)
+  // priv::expected_layout_widget_pos( layout, 6, Point2i( 410, 50 ) );
+  priv::expected_layout_widget_dims( layout, 6, Size2i( 56, 16 ) );
 
   if( nom::UnitTest::interactive() )
   {
@@ -421,18 +441,41 @@ TEST_F( ButtonLayoutTest, VerticalLayout )
 
   EXPECT_EQ( this->items.size() + this->spacers.size(), layout->count() );
 
-  EXPECT_EQ( Size2i( 56, 16 ), layout->minimum_size() );
+  // Should include the minimum size requirements of the layout (dependent upon
+  // its items).
+  // EXPECT_EQ( Size2i( 102, 113 ), layout->total_minimum_size() );
+  EXPECT_EQ( Size2i( 112, 139 ), layout->total_minimum_size() );
 
-  // First widget
-  this->pos.push_back( Point2i( 37, 58 ) );
-  this->dims.push_back( Size2i( 112, 33 ) );
 
-  // Last widget
-  this->pos.push_back( Point2i( 37, 191 ) );
-  this->dims.push_back( Size2i( 56, 16 ) );
+  // Should include the recommended size of the layout (dependent upon its
+  // items). Note that this is not necessarily the rendered dimensions, but is
+  // what would be considered mathematically "optimal".
+  EXPECT_EQ( Size2i( 112, 167 ), layout->total_size_hint() );
 
+  // Spacer item
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
-  priv::expected_layout_output( layout, this->pos, this->dims );
+
+  // Widget item (button0)
+  // priv::expected_layout_widget_pos( layout, 1, Point2i( 37, 58 ) );
+  // priv::expected_layout_widget_dims( layout, 1, Size2i( 112, 29 ) );
+  priv::expected_layout_widget_dims( layout, 1, Size2i( 112, 43 ) );
+
+  // Spacer item
+  priv::expected_layout_spacer_output( layout, 2, Point2i(-1,-1), Size2i(8,8) );
+
+  // Widget item (button1)
+  // priv::expected_layout_widget_dims( layout, 3, Size2i( 100, 19 ) );
+  priv::expected_layout_widget_dims( layout, 3, Size2i( 100, 16 ) );
+
+  // Spacer item
+  priv::expected_layout_spacer_output( layout, 4, Point2i(-1,-1), Size2i(40,40) );
+
+  // Widget item (button2)
+  priv::expected_layout_widget_dims( layout, 5, Size2i( 102, 25 ) );
+
+  // Widget item (button3)
+  // priv::expected_layout_widget_pos( layout, 6, Point2i( 37, 182 ) );
+  priv::expected_layout_widget_dims( layout, 6, Size2i( 56, 16 ) );
 
   if( nom::UnitTest::interactive() )
   {

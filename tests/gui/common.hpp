@@ -71,17 +71,6 @@ void expected_layout_widget_dims( const UILayout* layout, int idx, const Size2i&
 /// \brief Helper method for verifying expected output across tests.
 void expected_layout_widget_output( const UILayout* layout, int idx, const Point2i& pos, const Size2i& dims );
 
-/// \brief Helper method for verifying expected output across tests.
-///
-/// \param pos A vector containing two Point2i objects that describe the
-/// position of the first widget item in the layout and the last widget in the
-/// layout (order matters).
-///
-/// \param dims A vector containing two Size2i objects that describe the
-/// dimensions of the first widget item in the layout and the last widget in the
-/// layout (order matters).
-void expected_layout_output( const UILayout* layout, const std::vector<Point2i>& pos, const std::vector<Size2i>& dims );
-
 /// \brief Helper method for creating a layout and verifying results across
 /// tests in a consistent manner.
 UIBoxLayout* create_layout( UIWidget* window, const std::vector<UIWidget*>& items, const std::vector<int>& spacers, const std::string& name, Orientations dir, int spacing = 1 );

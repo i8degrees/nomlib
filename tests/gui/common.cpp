@@ -49,7 +49,6 @@ void expected_layout_spacer_pos( const UILayout* layout, int idx, const Point2i&
   UILayoutItem::raw_ptr item = layout->at( idx );
 
   ASSERT_TRUE( item != nullptr );
-  ASSERT_TRUE( item->spacer_item() != nullptr );
 
   if( item->spacer_item() != nullptr )
   {
@@ -59,6 +58,10 @@ void expected_layout_spacer_pos( const UILayout* layout, int idx, const Point2i&
     EXPECT_EQ( pos.x, item->spacer_item()->bounds().x );
     EXPECT_EQ( pos.y, item->spacer_item()->bounds().y );
   } // end spacer item
+  else
+  {
+    FAIL();
+  }
 }
 
 void expected_layout_spacer_dims( const UILayout* layout, int idx, const Size2i& dims )
@@ -68,7 +71,6 @@ void expected_layout_spacer_dims( const UILayout* layout, int idx, const Size2i&
   UILayoutItem::raw_ptr item = layout->at( idx );
 
   ASSERT_TRUE( item != nullptr );
-  ASSERT_TRUE( item->spacer_item() != nullptr );
 
   if( item->spacer_item() != nullptr )
   {
@@ -80,6 +82,10 @@ void expected_layout_spacer_dims( const UILayout* layout, int idx, const Size2i&
     EXPECT_EQ( dims.w, item->spacer_item()->size().w );
     EXPECT_EQ( dims.h, item->spacer_item()->size().h );
   } // end spacer item
+  else
+  {
+    FAIL();
+  }
 }
 
 void expected_layout_spacer_output( const UILayout* layout, int idx, const Point2i& pos, const Size2i& dims )
@@ -97,7 +103,6 @@ void expected_layout_widget_pos( const UILayout* layout, int idx, const Point2i&
   item = layout->at( idx );
 
   ASSERT_TRUE( item != nullptr );
-  ASSERT_TRUE( item->widget() != nullptr );
 
   if( item->widget() != nullptr )
   {
@@ -111,6 +116,10 @@ void expected_layout_widget_pos( const UILayout* layout, int idx, const Point2i&
     EXPECT_EQ( pos.x, item->widget()->position().x );
     EXPECT_EQ( pos.y, item->widget()->position().y );
   } // end widget item
+  else
+  {
+    FAIL();
+  }
 }
 
 void expected_layout_widget_dims( const UILayout* layout, int idx, const Size2i& dims )
@@ -122,7 +131,6 @@ void expected_layout_widget_dims( const UILayout* layout, int idx, const Size2i&
   item = layout->at( idx );
 
   ASSERT_TRUE( item != nullptr );
-  ASSERT_TRUE( item->widget() != nullptr );
 
   if( item->widget() != nullptr )
   {
@@ -135,6 +143,10 @@ void expected_layout_widget_dims( const UILayout* layout, int idx, const Size2i&
     EXPECT_EQ( dims.w, item->widget()->size().w );
     EXPECT_EQ( dims.h, item->widget()->size().h );
   } // end widget item
+  else
+  {
+    FAIL();
+  }
 }
 
 void expected_layout_widget_output( const UILayout* layout, int idx, const Point2i& pos, const Size2i& dims )
@@ -146,29 +158,16 @@ void expected_layout_widget_output( const UILayout* layout, int idx, const Point
   item = layout->at( idx );
 
   ASSERT_TRUE( item != nullptr );
-  ASSERT_TRUE( item->widget() != nullptr );
 
   if( item->widget() != nullptr )
   {
     priv::expected_layout_widget_pos( layout, idx, pos );
     priv::expected_layout_widget_dims( layout, idx, dims );
   } // end widget item
-}
-
-void expected_layout_output( const UILayout* layout, const std::vector<Point2i>& pos, const std::vector<Size2i>& dims )
-{
-  // Element position within layout
-  int idx = 0;
-
-  // First widget item
-  idx = 1;
-  priv::expected_layout_widget_pos( layout, idx, pos.at(0) );
-  priv::expected_layout_widget_dims( layout, idx, dims.at(0) );
-
-  // Last widget item
-  idx = layout->count() - 1;
-  priv::expected_layout_widget_pos( layout, idx, pos.at(1) );
-  priv::expected_layout_widget_dims( layout, idx, dims.at(1) );
+  else
+  {
+    FAIL();
+  }
 }
 
 UIBoxLayout* create_layout( UIWidget* window, const std::vector<UIWidget*>& items, const std::vector<int>& spacers, const std::string& name, Orientations dir, int spacing )

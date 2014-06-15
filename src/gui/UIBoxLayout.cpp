@@ -29,6 +29,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/gui/UIBoxLayout.hpp"
 
 // #define NOM_DEBUG_OUTPUT_LAYOUT_DATA
+// #define NOM_DEBUG_OUTPUT_LAYOUT_ITEM_SIZE_HINTS
+// #define NOM_DEBUG_OUTPUT_LAYOUT_ITEM_MINIMUM_SIZE
+
+// #define NOM_DEBUG_OUTPUT_LAYOUT_TOTAL_SIZE_HINT
+// #define NOM_DEBUG_OUTPUT_LAYOUT_TOTAL_MINIMUM_SIZE
 
 namespace nom {
 
@@ -76,6 +81,7 @@ Size2i UIBoxLayout::size_hint( void ) const
 {
   // Items container size
   int count = this->count();
+  UILayoutItem* item = nullptr;
 
   // Default preferred size; only used if nothing better comes along!
   Size2i hint( 0, 0 );
@@ -83,7 +89,7 @@ Size2i UIBoxLayout::size_hint( void ) const
   for( auto idx = 0; idx < count; ++idx )
   {
     // Widget or layout pointer
-    UILayoutItem* item = this->at( idx );
+    item = this->at( idx );
 
     if( item == nullptr )
     {
@@ -91,25 +97,92 @@ Size2i UIBoxLayout::size_hint( void ) const
       continue;
     }
 
-    // If we were to let spacer items count, we end up messing up the widget
-    // height
-    if( item->spacer_item() == nullptr )
+    if( this->horiz() )
     {
-      // Use the larger of the two objects compared.
-      hint = hint.max( item->size_hint() );
+      // hint.w += item->size_hint().w;
+
+      // Use the preferred size of the largest widget's height in the layout
+      // hint.h = std::max( hint.h, item->size_hint().h );
+    }
+    else  // Vertical layout
+    {
+      // hint.h += item->size_hint().h;
+
+      // Use the preferred size of the largest widget's width in the layout
+      // hint.w = std::max( hint.w, item->size_hint().w );
     }
 
-    if( item->widget() )
+    // hint = hint.max( item->size_hint() );
+    hint.w = std::max( hint.w, item->size_hint().w );
+    hint.h = std::max( hint.h, item->size_hint().h );
+
+    #if defined( NOM_DEBUG_OUTPUT_LAYOUT_ITEM_SIZE_HINTS )
+      if( item->widget() )
+      {
+        NOM_DUMP( item->widget()->name() );
+        NOM_DUMP( item->widget()->size_hint() );
+      }
+      else if( item->spacer_item() )
+      {
+        NOM_DUMP( "sp" );
+        NOM_DUMP( item->spacer_item()->size_hint() );
+      }
+    #endif
+
+  } // end for items loop
+
+  return Size2i( hint.w , hint.h );
+}
+
+Size2i UIBoxLayout::total_size_hint( void ) const
+{
+  // Items container size
+  int count = this->count();
+  UILayoutItem* item = nullptr;
+
+  // Default preferred size; only used if nothing better comes along!
+  Size2i hint( 0, 0 );
+
+  for( auto idx = 0; idx < count; ++idx )
+  {
+    // Widget or layout pointer
+    item = this->at( idx );
+
+    if( item == nullptr )
     {
-      // NOM_DUMP( item->widget()->name() );
-      // NOM_DUMP( hint );
+      NOM_LOG_ERR( NOM, "Could not calculate size_hint: item was NULL." );
+      continue;
     }
-    else if( item->spacer_item() )
+
+    if( this->horiz() )
     {
-      // NOM_DUMP( "sp" );
-      // NOM_DUMP( hint );
+      hint.w += item->size_hint().w;
+
+      // Use the preferred size of the largest widget's height in the layout
+      hint.h = std::max( hint.h, item->size_hint().h );
     }
-  }
+    else  // Vertical layout
+    {
+      hint.h += item->size_hint().h;
+
+      // Use the preferred size of the largest widget's width in the layout
+      hint.w = std::max( hint.w, item->size_hint().w );
+    }
+
+    #if defined( NOM_DEBUG_OUTPUT_LAYOUT_TOTAL_SIZE_HINT )
+      if( item->widget() )
+      {
+        NOM_DUMP( item->widget()->name() );
+        NOM_DUMP( item->widget()->size_hint() );
+      }
+      else if( item->spacer_item() )
+      {
+        NOM_DUMP( "sp" );
+        NOM_DUMP( item->spacer_item()->size_hint() );
+      }
+    #endif
+
+  } // end for items loop
 
   return Size2i( hint.w , hint.h );
 }
@@ -118,6 +191,7 @@ Size2i UIBoxLayout::minimum_size( void ) const
 {
   // Items container size
   int count = this->count();
+  UILayoutItem* item = nullptr;
 
   // Default minimum size; only used if nothing better comes along!
   Size2i msize( 0, 0 );
@@ -125,7 +199,7 @@ Size2i UIBoxLayout::minimum_size( void ) const
   for( auto idx = 0; idx < count; ++idx )
   {
     // Widget or layout pointer
-    UILayoutItem* item = this->at( idx );
+    item = this->at( idx );
 
     if( item == nullptr )
     {
@@ -133,24 +207,90 @@ Size2i UIBoxLayout::minimum_size( void ) const
       continue;
     }
 
-    // If we were to let spacer items count, we end up messing up the widget
-    // height
-    if( item->spacer_item() == nullptr )
+    if( this->horiz() )
     {
-      // Use the larger of the two objects compared.
-      msize = msize.max( item->minimum_size() );
+      // msize.w += item->minimum_size().w;
+
+      // Use the minimum size of the largest widget's height in the layout
+      // msize.h = std::max( msize.h, item->minimum_size().h );
+    }
+    else  // Vertical layout
+    {
+      // msize.h += item->minimum_size().h;
+
+      // Use the minimum size of the largest widget's width in the layout
+      // msize.w = std::max( msize.w, item->minimum_size().w );
     }
 
-    // if( item->widget() )
-    // {
-    //   NOM_DUMP( item->widget()->name() );
-    //   NOM_DUMP( msize );
-    // }
-    // else if( item->spacer_item() )
-    // {
-    //   // NOM_DUMP( "sp" );
-    //   // NOM_DUMP( msize );
-    // }
+    // msize = msize.max( item->minimum_size() );
+    msize.w = std::max( msize.w, item->minimum_size().w );
+    msize.h = std::max( msize.h, item->minimum_size().h );
+
+    #if defined( NOM_DEBUG_OUTPUT_LAYOUT_ITEM_MINIMUM_SIZE )
+      if( item->widget() )
+      {
+        NOM_DUMP( item->widget()->name() );
+        NOM_DUMP( item->widget()->minimum_size() );
+      }
+      else if( item->spacer_item() )
+      {
+        NOM_DUMP( "sp" );
+        NOM_DUMP( item->spacer_item()->minimum_size() );
+      }
+    #endif
+
+  } // end for items loop
+
+  return Size2i( msize.w , msize.h );
+}
+
+Size2i UIBoxLayout::total_minimum_size( void ) const
+{
+  // Items container size
+  int count = this->count();
+  UILayoutItem* item = nullptr;
+
+  // Default minimum size; only used if nothing better comes along!
+  Size2i msize( 0, 0 );
+
+  for( auto idx = 0; idx < count; ++idx )
+  {
+    // Widget or layout pointer
+    item = this->at( idx );
+
+    if( item == nullptr )
+    {
+      NOM_LOG_ERR( NOM, "Could not calculate minimum_size: item was NULL." );
+      continue;
+    }
+
+    if( this->horiz() )
+    {
+      msize.w += item->minimum_size().w;
+
+      // Use the minimum size of the largest widget's height in the layout
+      msize.h = std::max( msize.h, item->minimum_size().h );
+    }
+    else  // Vertical layout
+    {
+      msize.h += item->minimum_size().h;
+
+      // Use the minimum size of the largest widget's width in the layout
+      msize.w = std::max( msize.w, item->minimum_size().w );
+    }
+
+    #if defined( NOM_DEBUG_OUTPUT_LAYOUT_TOTAL_MINIMUM_SIZE )
+      if( item->widget() )
+      {
+        NOM_DUMP( item->widget()->name() );
+        NOM_DUMP( item->widget()->minimum_size() );
+      }
+      else if( item->spacer_item() )
+      {
+        NOM_DUMP( "sp" );
+        NOM_DUMP( item->spacer_item()->minimum_size() );
+      }
+    #endif
 
   } // end for items loop
 
@@ -194,10 +334,6 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
   // Overall layout boundary calculation
   IntRect geom;
 
-  // Total sum of item's boundaries; this *should* result in the overall
-  // layout's boundaries.
-  // IntRect total_bounds;
-
   IntRect frame_bounds;
   Size2i frame_size;
   Size2i frame_offset;
@@ -207,10 +343,6 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
   int widget_count = 0; // Number of widget items in layout
   int spacer = 0;       // UISpacerItem
 
-  // FIXME (?): Set the overall layout bounds
-  //
-  // We are setting the layout dimensions to the individual item sizes, *not*
-  // the overall, accumulative dimensions of the layout.
   UILayout::set_bounds( rect );
 
   // Conserve CPU cycles
@@ -308,30 +440,60 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
 
       } // end if vertical layout
 
-      UILayoutPolicy p = widget->size_policy();
+      uint32 horiz_policy = widget->size_policy().horizontal_policy();
+      uint32 vert_policy = widget->size_policy().vertical_policy();
 
-      if( p.horizontal_policy() == UILayoutPolicy::Policy::Minimum )
+      if( horiz_policy == UILayoutPolicy::Policy::Minimum )
       {
-        item_size.w = this->minimum_size().w;
-        item_size.h = this->minimum_size().h;
+        // NOM_DUMP( widget->name() );
+
+        // EXPERIMENTAL: Use the width of the item:
+        // item_size = item->minimum_size();
+        item_size.w = item->minimum_size().w;
+
+        // (Qt default) Use the width of the largest widget:
+        // item_size = item_size.max( item->minimum_size() );
       }
 
-      if( p.vertical_policy() == UILayoutPolicy::Policy::Minimum )
+      if( vert_policy == UILayoutPolicy::Policy::Minimum )
       {
-        item_size.w = this->minimum_size().w;
-        item_size.h = this->minimum_size().h;
+        // NOM_DUMP( widget->name() );
+
+        // EXPERIMENTAL: Use the height of the item:
+        // item_size = item->minimum_size();
+        item_size.h = item->minimum_size().h;
+
+        // (Qt default) Use the height of the largest widget:
+        // item_size = item_size.max( item->minimum_size() );
       }
 
-      if( p.horizontal_policy() == UILayoutPolicy::Policy::Preferred )
+      if( horiz_policy == UILayoutPolicy::Policy::Preferred )
       {
-        item_size.w = this->size_hint().w;
-        item_size.h = this->size_hint().h;
+        // NOM_DUMP( widget->name() );
+
+        // EXPERIMENTAL: Use the width of the item:
+        // item_size = item->size_hint();
+
+        // (Qt default) Use the width of the largest widget:
+        // item_size = item_size.max( item->size_hint() );
+
+        // item_size.w = std::max( item_size.w, item->size_hint().w );
+        // item_size = item_size.max( item->size_hint() );
+        item_size = this->size_hint();
       }
 
-      if( p.vertical_policy() == UILayoutPolicy::Policy::Preferred )
+      if( vert_policy == UILayoutPolicy::Policy::Preferred )
       {
-        item_size.w = this->size_hint().w;
-        item_size.h = this->size_hint().h;
+        // NOM_DUMP( widget->name() );
+
+        // EXPERIMENTAL: Use the height of the item:
+        // item_size = item->size_hint();
+
+        // (Qt default) Use the height of the largest widget:
+        // item_size = item_size.max( item->size_hint() );
+
+        // item_size.h = std::max( item_size.h, item->size_hint().h );
+        item_size = this->size_hint();
       }
 
       // Widget layout item stats
@@ -355,7 +517,7 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
 
           if( this->horiz() )
           {
-            if( ! p.horizontal_policy() & UILayoutPolicy::Policy::Minimum )
+            if( ! horiz_policy & UILayoutPolicy::Policy::Minimum )
             {
               // Append the extra dimensions onto our minimum_size calculation
               item_size.w += frame_offset.w;
@@ -363,7 +525,7 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
           }
           else  // Vertical
           {
-            if( ! p.vertical_policy() & UILayoutPolicy::Policy::Minimum )
+            if( ! vert_policy & UILayoutPolicy::Policy::Minimum )
             {
               // Append the extra dimensions onto our minimum_size calculation
               item_size.h += frame_offset.h;
@@ -385,11 +547,7 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
       spacer = 0;
     } // end if widget != nullptr
 
-    // total_bounds += item->bounds();
-
   } // end for layout items loop
-
-// NOM_DUMP( total_bounds );
 }
 
 void UIBoxLayout::add_item( UILayoutItem* item )

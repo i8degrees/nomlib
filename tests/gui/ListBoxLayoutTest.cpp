@@ -125,7 +125,10 @@ class ListBoxLayoutTest: public ::testing::Test
       // this->main_window->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
 
       this->layout_widget = new nom::UIWidget( this->main_window );
-      this->layout_widget->set_geometry( 12, 25, 350, 100 );
+
+      // The initial width and height of the layout does not matter; it is
+      //resized per test.
+      this->layout_widget->set_geometry( 12, 25, 100, 100 );
       // this->layout_widget->set_title();
 
       // Draw a frame so that we can visually see the maximal bounds of the
@@ -159,8 +162,7 @@ class ListBoxLayoutTest: public ::testing::Test
       // this->listbox0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
       // this->listbox0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
 
-      // this->listbox1 = this->create_listbox( this->layout_widget, Point2i::null, Size2i::null, "listbox1", labels[1] );
-      this->listbox1 = this->create_listbox( this->layout_widget, Point2i::null, Size2i(50,32), "listbox1", labels[1] );
+      this->listbox1 = this->create_listbox( this->layout_widget, Point2i::null, Size2i(60, 36), "listbox1", labels[1] );
 
       this->listbox1->set_decorator( new nom::MinimalDecorator() );
       // this->listbox1->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
@@ -294,24 +296,50 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutUsingTrueTypeFont )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
+  this->layout_widget->resize( Size2i( 350, 100 ) );
+
   this->layout_widget->set_font( SystemFonts::cache().load_resource( "Arial" ) );
 
   layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayoutUsingTrueTypeFont", Orientations::Horizontal );
 
   EXPECT_EQ( this->items.size() + this->spacers.size(), layout->count() );
 
-  EXPECT_EQ( Size2i( 50, 32 ), layout->minimum_size() );
+  // Should include the minimum size requirements of the layout (dependent upon
+  // its items).
+  // EXPECT_EQ( Size2i( 116, 40 ), layout->total_minimum_size() );
+  EXPECT_EQ( Size2i( 275, 67 ), layout->total_minimum_size() );
 
-  // First widget
-  this->pos.push_back( Point2i( 45, 50 ) );
-  this->dims.push_back( Size2i( 56, 67 ) );
+  // Should include the recommended size of the layout (dependent upon its
+  // items). Note that this is not necessarily the rendered dimensions, but is
+  // what would be considered mathematically "optimal".
+  EXPECT_EQ( Size2i( 271, 67 ), layout->total_size_hint() );
 
-  // Last widget
-  this->pos.push_back( Point2i( 258, 50 ) );
-  this->dims.push_back( Size2i( 56, 67 ) );
-
+  // Spacer item
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
-  priv::expected_layout_output( layout, this->pos, this->dims );
+
+  // Widget item (listbox0)
+  // priv::expected_layout_widget_pos( layout, 1, Point2i( 45, 50 ) );
+  // priv::expected_layout_widget_dims( layout, 1, Size2i( 53, 52 ) );
+  priv::expected_layout_widget_dims( layout, 1, Size2i( 56, 67 ) );
+
+  // Spacer item
+  priv::expected_layout_spacer_output( layout, 2, Point2i(-1,-1), Size2i(8,8) );
+
+  // Widget item (listbox1)
+  priv::expected_layout_widget_dims( layout, 3, Size2i( 60, 36 ) );
+
+  // Spacer item
+  priv::expected_layout_spacer_output( layout, 4, Point2i(-1,-1), Size2i(40,40) );
+
+  // Widget item (listbox2)
+  // priv::expected_layout_widget_dims( layout, 5, Size2i( 53, 67 ) );
+  priv::expected_layout_widget_dims( layout, 5, Size2i( 56, 67 ) );
+
+  // Widget item (listbox3)
+  // priv::expected_layout_widget_pos( layout, 6, Point2i( 252, 50 ) );
+  // priv::expected_layout_widget_dims( layout, 6, Size2i( 53, 52 ) );
+  // priv::expected_layout_widget_dims( layout, 6, Size2i( 53, 67 ) );
+  priv::expected_layout_widget_dims( layout, 6, Size2i( 56, 67 ) );
 
   if( nom::UnitTest::interactive() )
   {
@@ -323,24 +351,23 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutUsingBitmapFont )
 {
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
+  this->layout_widget->resize( Size2i( 350, 100 ) );
+
   layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayoutUsingBitmapFont", Orientations::Horizontal );
 
   this->layout_widget->set_font( SystemFonts::cache().load_resource( "VIII" ) );
 
   EXPECT_EQ( this->items.size() + this->spacers.size(), layout->count() );
 
-  EXPECT_EQ( Size2i( 50, 32 ), layout->minimum_size() );
+  // Should include the minimum size requirements of the layout (dependent upon
+  // its items).
+  // EXPECT_EQ( Size2i( 116, 40 ), layout->total_minimum_size() );
+  EXPECT_EQ( Size2i( 266, 58 ), layout->total_minimum_size() );
 
-  // First widget
-  this->pos.push_back( Point2i( 45, 50 ) );
-  this->dims.push_back( Size2i( 56, 67 ) );
-
-  // Last widget
-  this->pos.push_back( Point2i( 258, 50 ) );
-  this->dims.push_back( Size2i( 56, 67 ) );
-
-  priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
-  priv::expected_layout_output( layout, this->pos, this->dims );
+  // Should include the recommended size of the layout (dependent upon its
+  // items). Note that this is not necessarily the rendered dimensions, but is
+  // what would be considered mathematically "optimal".
+  EXPECT_EQ( Size2i( 262, 58 ), layout->total_size_hint() );
 
   if( nom::UnitTest::interactive() )
   {
@@ -360,18 +387,41 @@ TEST_F( ListBoxLayoutTest, VerticalLayoutUsingTrueTypeFont )
 
   EXPECT_EQ( this->items.size() + this->spacers.size(), layout->count() );
 
-  EXPECT_EQ( Size2i( 50, 32 ), layout->minimum_size() );
+  // Should include the minimum size requirements of the layout (dependent upon
+  // its items).
+  // EXPECT_EQ( Size2i( 60, 92 ), layout->total_minimum_size() );
+  EXPECT_EQ( Size2i( 60, 263 ), layout->total_minimum_size() );
 
-  // First widget
-  this->pos.push_back( Point2i( 37, 58 ) );
-  this->dims.push_back( Size2i( 56, 67 ) );
+  // Should include the recommended size of the layout (dependent upon its
+  // items). Note that this is not necessarily the rendered dimensions, but is
+  // what would be considered mathematically "optimal".
+  EXPECT_EQ( Size2i( 56, 264 ), layout->total_size_hint() );
 
-  // Last widget
-  this->pos.push_back( Point2i( 37, 278 ) );
-  this->dims.push_back( Size2i( 56, 67 ) );
-
+  // Spacer item
   priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
-  priv::expected_layout_output( layout, this->pos, this->dims );
+
+  // Widget item (listbox0)
+  // priv::expected_layout_widget_pos( layout, 1, Point2i( 37, 58 ) );
+  // priv::expected_layout_widget_dims( layout, 1, Size2i( 53, 52 ) );
+  priv::expected_layout_widget_dims( layout, 1, Size2i( 56, 67 ) );
+
+  // Spacer item
+  priv::expected_layout_spacer_output( layout, 2, Point2i(-1,-1), Size2i(8,8) );
+
+  // Widget item (listbox1)
+  priv::expected_layout_widget_dims( layout, 3, Size2i( 60, 36 ) );
+
+  // Spacer item
+  priv::expected_layout_spacer_output( layout, 4, Point2i(-1,-1), Size2i(40,40) );
+
+  // Widget item (listbox2)
+  // priv::expected_layout_widget_dims( layout, 5, Size2i( 53, 67 ) );
+  priv::expected_layout_widget_dims( layout, 5, Size2i( 56, 67 ) );
+
+  // Widget item (listbox3)
+  // priv::expected_layout_widget_pos( layout, 6, Point2i( 37, 261 ) );
+  // priv::expected_layout_widget_dims( layout, 6, Size2i( 53, 52 ) );
+  priv::expected_layout_widget_dims( layout, 6, Size2i( 56, 67 ) );
 
   if( nom::UnitTest::interactive() )
   {
@@ -391,18 +441,15 @@ TEST_F( ListBoxLayoutTest, VerticalLayoutUsingBitmapFont )
 
   EXPECT_EQ( this->items.size() + this->spacers.size(), layout->count() );
 
-  EXPECT_EQ( Size2i( 50, 32 ), layout->minimum_size() );
+  // Should include the minimum size requirements of the layout (dependent upon
+  // its items).
+  // EXPECT_EQ( Size2i( 60, 92 ), layout->total_minimum_size() );
+  EXPECT_EQ( Size2i( 60, 240 ), layout->total_minimum_size() );
 
-  // First widget
-  this->pos.push_back( Point2i( 37, 58 ) );
-  this->dims.push_back( Size2i( 56, 67 ) );
-
-  // Last widget
-  this->pos.push_back( Point2i( 37, 278 ) );
-  this->dims.push_back( Size2i( 56, 67 ) );
-
-  priv::expected_layout_spacer_output( layout, 0, Point2i(-1,-1), Size2i(8,8) );
-  priv::expected_layout_output( layout, this->pos, this->dims );
+  // Should include the recommended size of the layout (dependent upon its
+  // items). Note that this is not necessarily the rendered dimensions, but is
+  // what would be considered mathematically "optimal".
+  EXPECT_EQ( Size2i( 56, 236 ), layout->total_size_hint() );
 
   if( nom::UnitTest::interactive() )
   {

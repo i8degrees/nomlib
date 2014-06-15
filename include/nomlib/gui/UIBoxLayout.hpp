@@ -78,7 +78,7 @@ class UIBoxLayout: public UILayout
     /// \remarks Re-implements UILayoutItem::directions.
     virtual Orientations directions( void ) const;
 
-    /// \brief The sum of every layout item's preferred size dimension.
+    /// \brief The layout item's preferred size.
     ///
     /// \note Re-implements UILayoutItem::size_hint.
     ///
@@ -86,13 +86,19 @@ class UIBoxLayout: public UILayout
     /// preferred size dimensions.
     virtual Size2i size_hint( void ) const;
 
-    /// \brief The sum of every layout item's minimum size requirements.
+    /// \brief The accumulate total of every layout item's preferred size.
+    Size2i total_size_hint( void ) const;
+
+    /// \brief The layout item's minimum size requirements.
     ///
     /// \brief Re-implements UILayout::minimum_size.
     ///
     /// \note The layout object's preferred size will be the largest element's
-    /// preferred size dimensions.
+    /// minimum size dimensions.
     virtual Size2i minimum_size( void ) const;
+
+    /// \brief The accumulate total of every layout item's minimum size.
+    Size2i total_minimum_size( void ) const;
 
     /// \brief Implements UILayout::count.
     virtual int count( void ) const;

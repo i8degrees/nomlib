@@ -31,8 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 UILayoutPolicy::UILayoutPolicy( void ) :
-  h_policy_{ Policy::Preferred },
-  v_policy_{ Policy::Preferred }
+  h_policy_{ 0 },
+  v_policy_{ 0 }
 {
   // NOM_LOG_TRACE( NOM );
 }

@@ -197,7 +197,7 @@ class UIWidget: public UIEventHandler
     ///
     /// \note By default, this property contains a size initialized to the
     /// value of nom::WIDGET_MAX_SIZE.
-    const Size2i maximum_size( void ) const;
+    virtual const Size2i maximum_size( void ) const;
 
     /// \brief Get the widget's minimum size.
     ///
@@ -211,7 +211,7 @@ class UIWidget: public UIEventHandler
     ///
     /// \note By default, this property contains a size with zero width and
     /// height.
-    const Size2i minimum_size( void ) const;
+    virtual const Size2i minimum_size( void ) const;
 
     /// \brief Get the recommended (preferred) size for the widget.
     ///

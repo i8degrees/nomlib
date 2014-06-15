@@ -75,26 +75,38 @@ class UILayoutPolicy
     enum Policy: uint32
     {
       /// The preferred size is the only acceptable alternative; the widget can
-      /// never grow or shrink.
+      /// never grow or shrink; i.e.: the vertical direction of a nom::UIButton.
       Fixed = 0x0,
 
       /// The preferred size is minimal, and sufficient; the widget can be
       /// expanded, but there is no advantage to it being larger. It cannot be
-      /// smaller than the size provided by ::size_hint.
+      /// smaller than the size provided by the object's size_hint method.
       Minimum = GrowFlag,
 
-      /// The widget can be shrunk any amount without detriment if other
-      /// widgets need the space. It cannot be larger than the size provided by
-      /// ::size_hint.
+      /// The preferred size is a maximum. The widget can be shrunk any amount
+      /// without detriment if other widgets need the space. It cannot be larger
+      /// than the size provided by the object's size_hint method.
       Maximum = ShrinkFlag,
 
-      /// The widget prefers its own size. but it can still be shrunk and be
+      /// The widget's preferred size is best, but it can still be shrunk and be
       /// useful.The widget can be expanded, but there is no advantage to it
-      /// being larger than ::size_hint -- the default UIWidget size policy.
+      /// being larger than the object's size_hint method -- the default
+      /// nom::UIWidget size policy.
       Preferred = GrowFlag | ShrinkFlag,
 
-      /// The preferred size is ignored; the widget is space hungry and will get
-      /// as much space as possible.
+      /// The widget's preferred size is sensible, but the widget can be shrunk
+      /// and still be useful. The widget can make use of extra space, so it
+      /// should get as much space as possible (i.e.: the horizontal direction
+      /// of a slider).
+      Expanding = GrowFlag | ShrinkFlag | ExpandFlag,
+
+      /// The widget's preferred size is minimal, and sufficient. The widget
+      /// can make use of extra space, so it should get as much space as
+      /// possible (i.e.: horizontal layout spacer).
+      MinimumExpanding = GrowFlag | ExpandFlag,
+
+      /// The preferred size is ignored; the widget hungry for space and will
+      /// get as much space as possible.
       Ignored = ShrinkFlag | GrowFlag | IgnoreFlag
     };
 

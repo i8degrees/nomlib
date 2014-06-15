@@ -300,6 +300,46 @@ inline Size2<T>& operator /=( Size2<T>& lhs, const Size2<T>& rhs )
   return lhs;
 }
 
+/// \brief Lesser than comparison operator.
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+template <typename T>
+inline bool operator <( const Size2<T> lhs, const Size2<T>& rhs )
+{
+  return  ( lhs.w < rhs.w ) && ( lhs.h < rhs.h );
+}
+
+/// \brief Greater than or equal to comparison operator.
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+template <typename T>
+inline bool operator >( const Size2<T>& lhs, const Size2<T>& rhs )
+{
+  return  ( rhs.w < lhs.w ) && ( rhs.h < lhs.h );
+}
+
+/// \brief Lesser than or equal to comparison operator.
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+template <typename T>
+inline bool operator <=( const Size2<T>& lhs, const Size2<T>& rhs )
+{
+  return  ( lhs.w <= rhs.w ) && ( lhs.h <= rhs.h );
+}
+
+/// \brief Greater than or equal to comparison operator.
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+template <typename T>
+inline bool operator >=( const Size2<T>& lhs, const Size2<T>& rhs )
+{
+  return  ( rhs.w <= lhs.w ) && ( rhs.h <= lhs.h );
+}
+
 /// Size2 object defined using signed integers
 typedef Size2<int> Size2i;
 

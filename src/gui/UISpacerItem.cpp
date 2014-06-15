@@ -71,7 +71,9 @@ Size2i UISpacerItem::minimum_size( void ) const
 {
   // TODO: Size policy logic
 
-  return Size2i( 0, 0 );
+  // return Size2i( 0, 0 );
+
+  return this->size_;
 }
 
 void UISpacerItem::set_bounds( const IntRect& rect )
@@ -81,7 +83,7 @@ void UISpacerItem::set_bounds( const IntRect& rect )
 
 Size2i UISpacerItem::size_hint( void ) const
 {
-  return size_;
+  return this->size_;
 }
 
 UISpacerItem::raw_ptr UISpacerItem::spacer_item( void )

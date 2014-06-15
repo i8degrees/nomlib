@@ -408,23 +408,41 @@ TEST_F( MathTest, RectExtendedAPI )
   idx += 1; // ..Next! (10)
 }
 
-// TEST_F( MathTest, RectEqualityAPI )
-// {
-//   nom::IntRect lhs( 25, 25, 4, 4 );
-//   nom::IntRect rhs( 50, 50, 8, 8 );
+TEST_F( MathTest, RectOperators )
+{
+  nom::IntRect lhs( 25, 25, 4, 4 );
+  nom::IntRect rhs( 50, 50, 8, 8 );
 
-//   nom::IntRect lhse( 2, 2, 4, 4 );
-//   nom::IntRect rhse( 2, 2, 8, 8 );
+  nom::IntRect lhse( 2, 2, 4, 4 );
+  nom::IntRect rhse( 2, 2, 8, 8 );
 
-//   ASSERT_TRUE( lhs < rhs );
-//   ASSERT_TRUE( rhs > lhs );
-//   ASSERT_TRUE( lhse <= rhse );
-//   ASSERT_TRUE( lhse >= rhse );
-//   ASSERT_TRUE( lhs <= rhs );
-//   ASSERT_TRUE( rhs >= lhs );
-//   ASSERT_TRUE( lhs == lhs );
-//   ASSERT_FALSE( lhs == rhs );
-// }
+  EXPECT_EQ( true, lhs < rhs );
+  EXPECT_EQ( true, rhs > lhs );
+  EXPECT_EQ( true, lhse <= rhse );
+  EXPECT_EQ( false, lhse >= rhse );
+  EXPECT_EQ( true, lhs <= rhs );
+  EXPECT_EQ( true, rhs >= lhs );
+  EXPECT_EQ( true, lhs == lhs );
+  EXPECT_EQ( false, lhs == rhs );
+}
+
+TEST_F( MathTest, Size2Operators )
+{
+  nom::Size2i lhs( 25, 25 );
+  nom::Size2i rhs( 50, 50 );
+
+  nom::Size2i lhse( 2, 2 );
+  nom::Size2i rhse( 4, 4 );
+
+  EXPECT_EQ( true, lhs < rhs );
+  EXPECT_EQ( true, rhs > lhs );
+  EXPECT_EQ( true, lhse <= rhse );
+  EXPECT_EQ( false, lhse >= rhse );
+  EXPECT_EQ( true, lhs <= rhs );
+  EXPECT_EQ( true, rhs >= lhs );
+  EXPECT_EQ( true, lhs == lhs );
+  EXPECT_EQ( false, lhs == rhs );
+}
 
 } // namespace nom
 

@@ -443,6 +443,54 @@ inline Rect<T>& operator /=( Rect<T>& lhs, const Rect<T>& rhs )
   return lhs;
 }
 
+/// \brief Lesser than comparison operator.
+///
+/// \param lhs Left operand.
+// / \param rhs Right operand.
+template <typename T>
+inline bool operator <( const Rect<T> lhs, const Rect<T>& rhs )
+{
+  return  ( lhs.x < rhs.x ) &&  ( lhs.y < rhs.y )
+                            &&
+          ( lhs.w < rhs.w ) &&  ( lhs.h < rhs.h );
+}
+
+/// \brief Greater than or equal to comparison operator.
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+template <typename T>
+inline bool operator >( const Rect<T>& lhs, const Rect<T>& rhs )
+{
+  return  ( rhs.x < lhs.x )   &&  ( rhs.y < lhs.y )
+                              &&
+          ( rhs.w < lhs.w )   &&  ( rhs.h < lhs.h );
+}
+
+/// \brief Lesser than or equal to comparison operator.
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+template <typename T>
+inline bool operator <=( const Rect<T>& lhs, const Rect<T>& rhs )
+{
+  return  ( lhs.x <= rhs.x )  &&  ( lhs.y <= rhs.y )
+                              &&
+          ( lhs.w <= rhs.w )  &&  ( lhs.h <= rhs.h );
+}
+
+/// \brief Greater than or equal to comparison operator.
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+template <typename T>
+inline bool operator >=( const Rect<T>& lhs, const Rect<T>& rhs )
+{
+  return  ( rhs.x <= lhs.x )  &&  ( rhs.y <= lhs.y )
+                              &&
+          ( rhs.w <= lhs.w )  &&  ( rhs.h <= lhs.h );
+}
+
 /// Rect object defined using signed integers
 typedef Rect<int> IntRect;
 

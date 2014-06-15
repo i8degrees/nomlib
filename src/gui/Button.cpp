@@ -201,16 +201,25 @@ void Button::set_label( const std::string& text )
 {
   this->text_ = text;
 
-  NOM_ASSERT( this->style() != nullptr );
-
   this->label_.set_font( this->font() );
-  this->label_.set_text_size( this->style()->font_size() );
+
+  // Custom style
+  if( this->style() != nullptr )
+  {
+    this->label_.set_text_size( this->style()->font_size() );
+    this->label_.set_alignment( this->style()->text_alignment() );
+    this->label_.set_style( this->style()->font_style() );
+    this->label_.set_color( this->style()->font_color() );
+  }
+  else  // Default style
+  {
+    this->label_.set_alignment( Text::Alignment::MiddleCenter );
+  }
+
   this->label_.set_text( this->text_ );
   this->label_.set_position( this->position() );
   this->label_.set_size( this->size() );
-  this->label_.set_alignment( this->style()->text_alignment() );
-  this->label_.set_style( this->style()->font_style() );
-  this->label_.set_color( this->style()->font_color() );
+
 
   this->update_bounds();
   this->update();

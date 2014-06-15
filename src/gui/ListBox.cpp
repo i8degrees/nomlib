@@ -86,10 +86,14 @@ ListBox::ListBox(
 
   this->set_item_store( store );
 
-  // Default highlighted item text color.
+  // Custom style for highlighted item text color.
   if( this->style() != nullptr )
   {
     this->set_selected_text_color( this->style()->font_selected_color() );
+  }
+  else  // Default style
+  {
+    this->set_selected_text_color( Color4i::Red );
   }
 
   // Initialize the default event listeners for the widget.
@@ -607,8 +611,8 @@ void ListBox::update( void )
       label->set_text_size( nom::DEFAULT_FONT_SIZE );
     }
 
-    // label->set_position( Point2i( pos.x + 4, pos.y ) );
-    label->set_position( Point2i( pos.x + 4, pos.y + 4 ) );
+    // FIXME:
+    label->set_position( Point2i( pos.x, pos.y + 4 ) );
 
     // Set the resulting label text width offset to make up for what we added
     // above, in addition to an extra four (4) pixels, just for a nice padding
@@ -617,20 +621,17 @@ void ListBox::update( void )
     // Note that the label size is only used as reference for the optional
     // cropping feature in nom::Text -- Text::ExtraRenderingFeatures::Crop.
     //
-    // label->set_size( Size2i( this->size().w - 8, this->size().h ) );
-    // label->set_size( Size2i( label->width()+8, label->height() ) );
     label->set_size( Size2i( this->size().w, this->size().h ) );
 
     // label->set_features( Text::ExtraRenderingFeatures::CropText );
 
     if( this->style() != nullptr )
     {
-      // label->set_alignment( this->style()->text_alignment() );
-      label->set_alignment( Text::Alignment::TopLeft );
+      label->set_alignment( this->style()->text_alignment() );
     }
     else
     {
-      label->set_alignment( Text::Alignment::TopLeft );
+      label->set_alignment( Text::Alignment::TopCenter );
     }
 
     // Vertical Spacing in between each text

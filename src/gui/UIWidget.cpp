@@ -142,11 +142,6 @@ void UIWidget::initialize (
     this->set_font( PlatformSettings::get_system_font( SystemFontType::VariableTrueType ) );
   }
 
-  // Set the widget's style (font color, font size, etc.) to the defaults given
-  // by the default construction of UIStyle. These defaults can be customized by
-  // using ::set_style with your own UIStyle object.
-  this->set_style( UIStyle::shared_ptr( new UIStyle() ) );
-
   // Initialize the default event listeners for a top-level widget.
   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
 }

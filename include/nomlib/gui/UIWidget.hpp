@@ -574,6 +574,7 @@ NOM_IGNORED_ENDL();
     /// \remarks See also, nom::FocusPolicy.
     uint32 focus_policy_;
 
+    /// \todo Rename to size_policy_.
     UILayoutPolicy policy_;
 
     std::shared_ptr<UIStyle> style_;

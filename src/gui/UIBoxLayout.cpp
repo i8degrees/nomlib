@@ -322,6 +322,10 @@ enum UIBoxLayout::Direction UIBoxLayout::direction( void ) const
 
 void UIBoxLayout::set_bounds( const IntRect& rect )
 {
+  UILayoutItem* item = nullptr;
+  UISpacerItem* sp = nullptr;
+  UIWidget* widget = nullptr;
+
   // Items container size
   int count = this->count();
 
@@ -338,10 +342,12 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
   Size2i frame_size;
   Size2i frame_offset;
 
-  int w_x = 0;          // Widget X offset
-  int w_y = 0;          // Widget Y offset
-  int widget_count = 0; // Number of widget items in layout
-  int spacer = 0;       // UISpacerItem
+  uint32 horiz_policy = 0;
+  uint32 vert_policy = 0;
+  int w_x = 0;            // Widget X offset
+  int w_y = 0;            // Widget Y offset
+  int widget_count = 0;   // Number of widget items in layout
+  int spacer = 0;         // UISpacerItem
 
   UILayout::set_bounds( rect );
 
@@ -354,7 +360,7 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
   for( auto idx = 0; idx < count; ++idx )
   {
     // Widget or layout item pointer
-    UILayoutItem* item = this->at( idx );
+    item = this->at( idx );
 
     // Log err and continue onwards to the next item
     if( item == nullptr )
@@ -365,7 +371,7 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
 
     // FIXME: Clean up logic; ideally, we'd like to handle all layout item
     // types?
-    UISpacerItem* sp = item->spacer_item();
+    sp = item->spacer_item();
     if( sp != nullptr )
     {
       #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
@@ -385,10 +391,13 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
       }
     }
 
-    UIWidget* widget = item->widget();
+    widget = item->widget();
 
     if( widget != nullptr )
     {
+      horiz_policy = widget->size_policy().horizontal_policy();
+      vert_policy = widget->size_policy().vertical_policy();
+
       ++widget_count;
 
       #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
@@ -440,12 +449,28 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
 
       } // end if vertical layout
 
-      uint32 horiz_policy = widget->size_policy().horizontal_policy();
-      uint32 vert_policy = widget->size_policy().vertical_policy();
+      if( horiz_policy == UILayoutPolicy::Policy::Fixed )
+      {
+        // NOM_DUMP( widget->name() );
+        // NOM_DUMP( "HPolicy::Fixed" );
+
+        // Use the width of the item:
+        item_size.w = item->minimum_size().w;
+      }
+
+      if( vert_policy == UILayoutPolicy::Policy::Fixed )
+      {
+        // NOM_DUMP( widget->name() );
+        // NOM_DUMP( "VPolicy::Fixed" );
+
+        // Use the width of the item:
+        item_size.h = item->minimum_size().h;
+      }
 
       if( horiz_policy == UILayoutPolicy::Policy::Minimum )
       {
         // NOM_DUMP( widget->name() );
+        // NOM_DUMP( "HPolicy::Minimum" );
 
         // EXPERIMENTAL: Use the width of the item:
         // item_size = item->minimum_size();
@@ -458,6 +483,7 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
       if( vert_policy == UILayoutPolicy::Policy::Minimum )
       {
         // NOM_DUMP( widget->name() );
+        // NOM_DUMP( "VPolicy::Minimum" );
 
         // EXPERIMENTAL: Use the height of the item:
         // item_size = item->minimum_size();
@@ -470,6 +496,7 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
       if( horiz_policy == UILayoutPolicy::Policy::Preferred )
       {
         // NOM_DUMP( widget->name() );
+        // NOM_DUMP( "HPolicy::Preferred" );
 
         // EXPERIMENTAL: Use the width of the item:
         // item_size = item->size_hint();
@@ -479,12 +506,13 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
 
         // item_size.w = std::max( item_size.w, item->size_hint().w );
         // item_size = item_size.max( item->size_hint() );
-        item_size = this->size_hint();
+        item_size.w = this->size_hint().w;
       }
 
       if( vert_policy == UILayoutPolicy::Policy::Preferred )
       {
         // NOM_DUMP( widget->name() );
+        // NOM_DUMP( "VPolicy::Preferred" );
 
         // EXPERIMENTAL: Use the height of the item:
         // item_size = item->size_hint();
@@ -493,7 +521,7 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
         // item_size = item_size.max( item->size_hint() );
 
         // item_size.h = std::max( item_size.h, item->size_hint().h );
-        item_size = this->size_hint();
+        item_size.h = this->size_hint().h;
       }
 
       // Widget layout item stats
@@ -517,7 +545,7 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
 
           if( this->horiz() )
           {
-            if( ! horiz_policy & UILayoutPolicy::Policy::Minimum )
+            if( ! horiz_policy & UILayoutPolicy::Policy::Minimum && ! horiz_policy & UILayoutPolicy::Policy::Fixed )
             {
               // Append the extra dimensions onto our minimum_size calculation
               item_size.w += frame_offset.w;
@@ -525,7 +553,7 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
           }
           else  // Vertical
           {
-            if( ! vert_policy & UILayoutPolicy::Policy::Minimum )
+            if( ! vert_policy & UILayoutPolicy::Policy::Minimum && ! vert_policy & UILayoutPolicy::Policy::Fixed )
             {
               // Append the extra dimensions onto our minimum_size calculation
               item_size.h += frame_offset.h;

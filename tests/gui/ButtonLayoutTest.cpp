@@ -407,7 +407,7 @@ TEST_F( ButtonLayoutTest, HorizontalLayout )
   // Widget item (button0)
   // priv::expected_layout_widget_pos( layout, 1, Point2i( 45, 50 ) );
   // priv::expected_layout_widget_dims( layout, 1, Size2i( 112, 26 ) );
-  priv::expected_layout_widget_dims( layout, 1, Size2i( 112, 40 ) );
+  priv::expected_layout_widget_dims( layout, 1, Size2i( 112, 26 ) );
 
   // Spacer item
   priv::expected_layout_spacer_output( layout, 2, Point2i(-1,-1), Size2i(8,8) );
@@ -458,7 +458,7 @@ TEST_F( ButtonLayoutTest, VerticalLayout )
   // Widget item (button0)
   // priv::expected_layout_widget_pos( layout, 1, Point2i( 37, 58 ) );
   // priv::expected_layout_widget_dims( layout, 1, Size2i( 112, 29 ) );
-  priv::expected_layout_widget_dims( layout, 1, Size2i( 112, 43 ) );
+  priv::expected_layout_widget_dims( layout, 1, Size2i( 112, 26 ) );
 
   // Spacer item
   priv::expected_layout_spacer_output( layout, 2, Point2i(-1,-1), Size2i(8,8) );

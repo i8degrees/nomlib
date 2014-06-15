@@ -60,7 +60,7 @@ ListBox::ListBox(
     this->set_minimum_size( size );
 
     // this->set_size_policy( UILayoutPolicy::Policy::Minimum, UILayoutPolicy::Policy::Fixed );
-    this->set_size_policy( UILayoutPolicy::Policy::Minimum, UILayoutPolicy::Policy::Minimum );
+    this->set_size_policy( UILayoutPolicy::Policy::Fixed, UILayoutPolicy::Policy::Fixed );
   }
 
   // Set the size policy of the widget to use dimensions that are calculated
@@ -127,8 +127,8 @@ const Size2i ListBox::minimum_size( void ) const
     min = this->size_hint();
   }
 
-  NOM_DUMP( this->name() );
-  NOM_DUMP( min );
+  // NOM_DUMP( this->name() );
+  // NOM_DUMP( min );
 
   return min;
 }

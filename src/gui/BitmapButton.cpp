@@ -52,7 +52,7 @@ BitmapButton::BitmapButton  (
   // Default state
   this->set_button_state( Button::State::Default );
 
-  this->set_size_policy( UILayoutPolicy::Policy::Minimum, UILayoutPolicy::Policy::Minimum );
+  this->set_size_policy( UILayoutPolicy::Policy::Fixed, UILayoutPolicy::Policy::Fixed );
 
   // Initialize the default event listeners for the widget.
   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );

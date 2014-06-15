@@ -1255,6 +1255,7 @@ void UIWidget::swap( const self_type* rhs )
   this->set_size_hint( rhs->size_hint() );
   this->set_layout( rhs->layout() );
   this->set_focus_policy( rhs->focus_policy() );
+  this->policy_ = rhs->policy_;
   this->set_style( rhs->style() );
 }
 

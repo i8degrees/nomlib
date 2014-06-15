@@ -14,6 +14,19 @@ before_install:
   # - echo "y" | sudo add-apt-repository ppa:zoogie/sdl2-snapshots
   # - sudo apt-get update
   # - sudo apt-get install -qq libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libopenal-dev # doxygen graphviz
+
+  # Virtual X11 framebuffer:
+  #
+  # See also: http://afitnerd.com/2011/09/06/headless-browser-testing-on-mac/
+  - export DISPLAY=:99.0
+  # - ls /usr/X11/bin/Xvfb
+  - sudo Xvfb :99 -ac -screen 0 1024x768x24 -extension GLX &
+  # - sh -e /etc/init.d/xvfb start
+  # - sh -e /etc/init.d/xvfb.sh start
+  # - /usr/bin/Xvfb :99 -ac -screen 0 1024x768x32
+  # - xvfb-run -- :99 -ac -screen 0 1024x768x32
+  # - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1024x768x32
+
   # - brew update
   - brew install cmake
   # FIXME:
@@ -29,9 +42,12 @@ script:
   - xcodebuild build
   - xcodebuild -target install
   - xcodebuild -target RUN_TESTS
-  - xcodebuild -target uninstall
+  - tests/Debug/font_cache
+  - pwd
+  - ls -lasR .
   # - ls -lasR ~/Library/Frameworks/nomlib.framework
 
+  # - xcodebuild -target uninstall
 # whitelist
 branches:
   only:

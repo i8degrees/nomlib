@@ -66,10 +66,4 @@ const Point2d rotate_points ( float angle, float x, float y, float pivot_x, floa
   return p;
 }
 
-template <typename T>
-T round ( T number )
-{
-  return number < 0.0 ? ceil ( number - 0.5 ) : floor ( number + 0.5 );
-}
-
 } // namespace nom

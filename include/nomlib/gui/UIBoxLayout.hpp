@@ -147,14 +147,6 @@ class UIBoxLayout: public UILayout
     /// \brief Insert a spacer layout item into the layout.
     void append_spacer( int height );
 
-    /// \brief Set the global (rendering) positioning coordinates.
-    ///
-    /// \remarks This is a convenience method provided so we do not have to call
-    /// ::set_bounds with a copy of its size fields.
-    ///
-    /// \todo Consider implementing this in the common interface, nom::UILayout?
-    void set_position( const Point2i& pos );
-
     void set_direction( enum Direction dir );
 
   private:

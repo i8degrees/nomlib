@@ -76,7 +76,7 @@ bool UIWidgetLayoutItem::empty( void ) const
   return false;
 }
 
-enum Orientations UIWidgetLayoutItem::directions( void ) const
+Orientations UIWidgetLayoutItem::directions( void ) const
 {
   return this->directions_;
 }

@@ -58,7 +58,10 @@ const Point2d rotate_points ( float angle, float x, float y, float pivot_x, floa
 ///
 /// \note Round up when number > 0.5; round down when number < 0.5
 template <typename T>
-T round ( T number );
+T round ( T number )
+{
+  return number < 0.0 ? ceil ( number - 0.5 ) : floor ( number + 0.5 );
+}
 
 } // namespace nom
 

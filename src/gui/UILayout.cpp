@@ -28,8 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/UILayout.hpp"
 
-// Private forward declarations
+// Forward declarations
 #include "nomlib/gui/UIWidget.hpp"
+#include "nomlib/gui/UISpacerItem.hpp"
 
 namespace nom {
 
@@ -53,10 +54,12 @@ UILayout::UILayout( UIWidget* parent ) :
 {
   // NOM_LOG_TRACE( NOM );
 
+  this->parent_ = parent;
+
   this->add_child_widget( parent );
 }
 
-enum Orientations UILayout::directions( void ) const
+Orientations UILayout::directions( void ) const
 {
   return this->directions_;
 }
@@ -86,6 +89,11 @@ bool UILayout::empty( void ) const
 UILayout::raw_ptr UILayout::layout( void )
 {
   return this;
+}
+
+UIWidget* UILayout::parent( void ) const
+{
+  return this->parent_;
 }
 
 Size2i UILayout::maximum_size( void ) const
@@ -191,33 +199,286 @@ int UILayout::erase_widget( UIWidget* widget )
 
 void UILayout::set_alignment( uint32 align )
 {
+  IntRect parent_bounds;
+  int layout_x = this->bounds().x;
+  int layout_y = this->bounds().y;
+  int layout_width = this->bounds().w;
+  int layout_height = this->bounds().h;
+  UIWidget* widget = nullptr;
+
+  // Alignment offsets
+  int x_offset = 0;
+  int y_offset = 0;
+  IntRect offset_bounds;
+
+  if( this->parent() != nullptr )
+  {
+    widget = this->parent();
+    parent_bounds = widget->parent_bounds();
+
+    // NOM_DUMP( widget->name() );
+    // NOM_DUMP( widget->parent_bounds() );
+  }
+
+  if( parent_bounds == IntRect::null )
+  {
+    NOM_LOG_ERR( NOM, "Could not set layout's alignment: parent dimensions are invalid." );
+    return;
+  }
+
+  layout_x = nom::round( parent_bounds.x + layout_x / layout_width );
+  layout_y = nom::round( parent_bounds.y + layout_y / layout_height );
+
   UILayoutItem::set_alignment( align );
+
+  // Anchor::TopLeft, Anchor::Left, Anchor::BottomLeft
+  if( align & Alignment::X_LEFT )
+  {
+    x_offset = layout_x;
+  }
+
+  // Anchor::TopCenter, Anchor::MiddleCenter, Anchor::BottomCenter
+  if( align & Alignment::X_CENTER )
+  {
+    x_offset = layout_x + ( parent_bounds.w - layout_width ) / 2;
+  }
+
+  // Anchor::TopRight, Anchor::Right, Anchor::BottomRight
+  if( align & Alignment::X_RIGHT )
+  {
+    x_offset = layout_x + ( parent_bounds.w - layout_width );
+  }
+
+  // Anchor::TopLeft, Anchor::TopCenter, Anchor::TopRight
+  if( align & Alignment::Y_TOP )
+  {
+    y_offset = layout_y;
+  }
+
+  // Anchor::MiddleLeft, Anchor::MiddleCenter, Anchor::MiddleRight
+  if( align & Alignment::Y_CENTER )
+  {
+    y_offset = layout_y + ( parent_bounds.h - layout_height ) / 2;
+  }
+
+  // Anchor::BottomLeft, Anchor::BottomCenter, Anchor::BottomRight
+  if( align & Alignment::Y_BOTTOM )
+  {
+    y_offset = layout_y + ( parent_bounds.h - layout_height );
+  }
+
+  NOM_DUMP( x_offset );
+  NOM_DUMP( y_offset );
+  NOM_DUMP( layout_width );
+  NOM_DUMP( layout_height );
+
+  offset_bounds = IntRect( Point2i( x_offset, y_offset ), Size2i( layout_width, layout_height ) );
+
+  this->set_bounds( offset_bounds );
+
+  NOM_ASSERT( widget != nullptr );
+
+  if( widget != nullptr )
+  {
+    UIWidgetEvent evt( widget->id(), widget->name(), widget->id() );
+
+    // Notify the parent widget that we have a boundary change, so that it can
+    // take care of updating itself properly (decorator & friends)
+    Event ev;
+    ev.type = SDL_WINDOWEVENT_SIZE_CHANGED;
+    ev.timestamp = ticks();
+    ev.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
+    ev.window.data1 = layout_width;
+    ev.window.data2 = layout_height;
+    // ev.window.window_id = widget->id();
+
+    evt.resized_bounds_ = offset_bounds;
+    evt.set_event( ev );
+
+    widget->emit( nom::UIEvent::ON_WINDOW_SIZE_CHANGED, evt );
+  }
 }
 
 bool UILayout::set_alignment( const UIWidget* widget, uint32 align )
 {
+  UILayout* layout = nullptr;
   UILayoutItem* item = nullptr;
+  UISpacerItem* sp = nullptr;
+  UIWidget* widget_item = nullptr;
+  // int c = this->count()-3;
+  // int c = this->count();
 
-  int pos = 0;
-  while( pos < this->count() )
+  int spacer = 0;                   // UISpacerItem
+
+  for( auto pos = 0; pos != this->count(); ++pos )
   {
     item = this->at( pos );
 
     if( item == nullptr )
     {
-      return false;
+      continue;
     }
+
+    // FIXME: Clean up logic; ideally, we'd like to handle all layout item
+    // types?
+    sp = item->spacer_item();
+    if( sp != nullptr )
+    {
+      #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
+        NOM_DUMP("sp");
+        NOM_DUMP( item->minimum_size() );
+        NOM_DUMP( item->size_hint() );
+        NOM_DUMP( item->bounds() );
+      #endif
+
+      if( this->horiz() )
+      {
+        spacer = sp->size_hint().w;
+      }
+      else
+      {
+        spacer = sp->size_hint().h;
+      }
+    }
+
+    NOM_DUMP_VAR( "sp: ", spacer );
 
     if( item->widget() == widget )
     {
+      NOM_DUMP( item->widget()->name() );
+
       item->set_alignment( align );
-      this->invalidate();
+      // this->invalidate();
+
+      layout = widget->parent()->layout();
+      widget_item = item->widget();
+
+      NOM_ASSERT( widget );
+      NOM_ASSERT( layout );
+
+      int widget_x = widget->global_bounds().x;
+      int widget_y = widget->global_bounds().y;
+      // int widget_width = widget->size_hint().w;
+      // int widget_height = widget->size_hint().h;
+
+      int widget_width = widget->size().w;
+      int widget_height = widget->size().h;
+
+NOM_DUMP(widget_width);
+NOM_DUMP(widget_height);
+
+NOM_IGNORED_VARS();
+      int layout_x = layout->bounds().x;
+      int layout_y = layout->bounds().y;
+      int layout_width = layout->bounds().w;
+      int layout_height = layout->bounds().h;
+NOM_IGNORED_ENDL();
+      // Alignment offsets
+      int x_offset = 0;
+      int y_offset = 0;
+
+      // NOM_DUMP( widget->name() );
+      // NOM_DUMP( widget->global_bounds() );
+      // NOM_DUMP( widget->parent()->layout()->bounds() );
+      // NOM_DUMP( item->alignment() );  // Destination alignment
+
+      // if( widget->name() == "button0" )
+      {
+        if( spacer > 0 )
+        {
+          // widget_x -= spacer + this->spacing();
+          // widget_y += spacer + this->spacing();
+          // widget_x -= spacer;
+        }
+      }
+
+// item->widget()->parent()->layout()->bounds()
+// w_offset = item->widget()->parent()->layout()->bounds().x + x_offset;
+// h_offset = item->widget()->parent()->layout()->bounds().y + h_offset;
+// 32 [w.x] - 12 [l.x] = 20
+// 50 [w.y] - 25 [l.y] = 25
+
+      // Anchor::TopLeft, Anchor::Left, Anchor::BottomLeft
+      if( align & Alignment::X_LEFT )
+      {
+        x_offset = widget_x;
+      }
+
+      // Anchor::TopCenter, Anchor::MiddleCenter, Anchor::BottomCenter
+      if( align & Alignment::X_CENTER )
+      {
+        // x_offset = widget_x + ( layout_width / 4 - item->size_hint().w ) / 2;
+
+        if( this->horiz() )
+        {
+          x_offset = widget_x + ( layout_width / 4 - widget_width ) / 2;
+        }
+        else
+        {
+          x_offset = widget_x + ( layout_width - widget_width ) / 2;
+        }
+      }
+
+      // Anchor::TopRight, Anchor::Right, Anchor::BottomRight
+      if( align & Alignment::X_RIGHT )
+      {
+        // x_offset = widget_x + ( layout_width / 4 - item->size_hint().w );
+
+        if( this->horiz() )
+        {
+          x_offset = widget_x + ( layout_width / 4 - widget_width );
+        }
+        else
+        {
+          x_offset = widget_x + ( layout_width - widget_width );
+        }
+      }
+
+      // Anchor::TopLeft, Anchor::TopCenter, Anchor::TopRight
+      if( align & Alignment::Y_TOP )
+      {
+        y_offset = widget_y;
+      }
+
+      // Anchor::MiddleLeft, Anchor::MiddleCenter, Anchor::MiddleRight
+      if( align & Alignment::Y_CENTER )
+      {
+        // y_offset = widget_y + ( layout_height - item->size_hint().h ) / 2;
+
+        if( this->horiz() )
+        {
+          y_offset = widget_y + ( layout_height - widget_height ) / 2;
+        }
+        else
+        {
+          y_offset = widget_y + ( layout_height / 4 - widget_height ) / 2;
+        }
+      }
+
+      // Anchor::BottomLeft, Anchor::BottomCenter, Anchor::BottomRight
+      if( align & Alignment::Y_BOTTOM )
+      {
+        // y_offset = widget_y + ( layout_height - item->size_hint().h );
+
+        if( this->horiz() )
+        {
+          y_offset = widget_y + ( layout_height - widget_height );
+        }
+        else
+        {
+          y_offset = widget_y + ( layout_height / pos - widget_height );
+        }
+      }
+
+      // if( align != Alignment::None )
+      {
+        item->set_bounds( IntRect( Point2i( x_offset, y_offset ), Size2i( widget_width, widget_height ) ) );
+      }
 
       return true;
-    }
+    } // end if item is widget
 
-    ++pos;
-  }
+  } // end for loop
 
   return false;
 }
@@ -226,8 +487,7 @@ bool UILayout::set_alignment( const UILayout::raw_ptr layout, uint32 align )
 {
   UILayoutItem* item = nullptr;
 
-  int pos = 0;
-  while( pos < this->count() )
+  for( auto pos = 0; pos != this->count(); ++pos )
   {
     item = this->at( pos );
 
@@ -238,8 +498,6 @@ bool UILayout::set_alignment( const UILayout::raw_ptr layout, uint32 align )
 
       return true;
     }
-
-    ++pos;
   }
 
   return false;
@@ -285,6 +543,19 @@ void UILayout::update( void )
 void UILayout::add_child_widget( UIWidget* widget )
 {
   widget->set_layout( this );
+}
+
+bool UILayout::horiz( void ) const
+{
+  // TODO: Should we treat this field as a bit-mask??? (Should we support
+  // layouts that can go in both directions?)
+  if( this->directions() == Orientations::Horizontal )
+  {
+    return true;
+  }
+
+  // Vertical layout
+  return false;
 }
 
 } // namespace nom

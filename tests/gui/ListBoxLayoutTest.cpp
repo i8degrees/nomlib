@@ -457,6 +457,216 @@ TEST_F( ListBoxLayoutTest, VerticalLayoutUsingBitmapFont )
   }
 }
 
+TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsTopLeft )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  Point2i expected_pos( 25, 25 );
+  Size2i expected_size( 350, 100 );
+  uint32 align = Anchor::TopLeft;
+
+  this->layout_widget->resize( expected_size );
+
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayoutAlignmentsTopLeft", Orientations::Horizontal );
+  layout->set_alignment( align );
+
+  priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
+
+  if( nom::UnitTest::interactive() )
+  {
+    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
+}
+
+TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsTopCenter )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  Point2i expected_pos( 155, 25 );
+  Size2i expected_size( 350, 100 );
+  uint32 align = Anchor::TopCenter;
+
+  this->layout_widget->resize( expected_size );
+
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayoutAlignmentsTopCenter", Orientations::Horizontal );
+  layout->set_alignment( align );
+
+  priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
+
+  if( nom::UnitTest::interactive() )
+  {
+    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
+}
+
+TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsTopRight )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  Point2i expected_pos( 285, 25 );
+  Size2i expected_size( 350, 100 );
+  uint32 align = Anchor::TopRight;
+
+  this->layout_widget->resize( expected_size );
+
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayoutTopRightAlignment", Orientations::Horizontal );
+  layout->set_alignment( align );
+
+  priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
+
+  if( nom::UnitTest::interactive() )
+  {
+    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
+}
+
+TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsMiddleLeft )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  Point2i expected_pos( 25, 200 );
+  Size2i expected_size( 350, 100 );
+  uint32 align = Anchor::MiddleLeft;
+
+  this->layout_widget->resize( expected_size );
+
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayoutAlignmentsMiddleLeft", Orientations::Horizontal );
+  layout->set_alignment( align );
+
+  priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
+
+  if( nom::UnitTest::interactive() )
+  {
+    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
+}
+
+TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsMiddleCenter )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  Point2i expected_pos( 155, 200 );
+  Size2i expected_size( 350, 100 );
+  uint32 align = Anchor::MiddleCenter;
+
+  this->layout_widget->resize( expected_size );
+
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayoutAlignmentsMiddleCenter", Orientations::Horizontal );
+  layout->set_alignment( align );
+
+  priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
+
+  if( nom::UnitTest::interactive() )
+  {
+    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
+}
+
+TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsMiddleRight )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  Point2i expected_pos( 285, 200 );
+  Size2i expected_size( 350, 100 );
+  uint32 align = Anchor::MiddleRight;
+
+  this->layout_widget->resize( expected_size );
+
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayoutAlignmentsMiddleRight", Orientations::Horizontal );
+  layout->set_alignment( align );
+
+  priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
+
+  if( nom::UnitTest::interactive() )
+  {
+    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
+}
+
+TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsBottomLeft )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  Point2i expected_pos( 25, 375 );
+  Size2i expected_size( 350, 100 );
+  uint32 align = Anchor::BottomLeft;
+
+  this->layout_widget->resize( expected_size );
+
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayoutAlignmentsBottomLeft", Orientations::Horizontal );
+  layout->set_alignment( align );
+
+  priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
+
+  if( nom::UnitTest::interactive() )
+  {
+    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
+}
+
+TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsBottomCenter )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  Point2i expected_pos( 155, 375 );
+  Size2i expected_size( 350, 100 );
+  uint32 align = Anchor::BottomCenter;
+
+  this->layout_widget->resize( expected_size );
+
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayoutAlignmentsBottomCenter", Orientations::Horizontal );
+  layout->set_alignment( align );
+
+  priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
+
+  if( nom::UnitTest::interactive() )
+  {
+    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
+}
+
+TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsBottomRight )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  Point2i expected_pos( 285, 375 );
+  Size2i expected_size( 350, 100 );
+  uint32 align = Anchor::BottomRight;
+
+  this->layout_widget->resize( expected_size );
+
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayoutAlignmentsBottomRight", Orientations::Horizontal );
+  layout->set_alignment( align );
+
+  priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
+
+  if( nom::UnitTest::interactive() )
+  {
+    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
+}
+
+TEST_F( ListBoxLayoutTest, VerticalLayoutAlignmentsMiddleCenter )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  Point2i expected_pos( 280, 75 );
+  Size2i expected_size( 100, 350 );
+  uint32 align = Anchor::MiddleCenter;
+
+  this->layout_widget->resize( expected_size );
+
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "VerticalLayoutAlignmentsMiddleCenter", Orientations::Vertical );
+  layout->set_alignment( align );
+
+  priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
+
+  if( nom::UnitTest::interactive() )
+  {
+    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
+}
+
 } // namespace nom
 
 int main( int argc, char** argv )

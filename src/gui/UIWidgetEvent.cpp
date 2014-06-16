@@ -51,14 +51,13 @@ UIWidgetEvent::UIWidgetEvent( const Event& ev )
   this->set_id( -1 );
 }
 
-UIWidgetEvent::UIWidgetEvent( sint index, const std::string& text, const Event& ev )
+UIWidgetEvent::UIWidgetEvent( sint index, const std::string& text, int64 id )
 {
   // NOM_LOG_TRACE( NOM );
 
   this->set_index( index );
   this->set_text( text );
-  this->set_event( ev );
-  this->set_id( -1 );
+  this->set_id( id );
 }
 
 UIWidgetEvent::UIWidgetEvent  (

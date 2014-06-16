@@ -75,7 +75,7 @@ void expected_layout_widget_output( const UILayout* layout, int idx, const Point
 /// tests in a consistent manner.
 UIBoxLayout* create_layout( UIWidget* window, const std::vector<UIWidget*>& items, const std::vector<int>& spacers, const std::string& name, Orientations dir, int spacing = 1 );
 
-void set_layout_alignment( UILayout* layout, uint32 align );
+void test_layout_alignment( UILayout* layout, UIWidget* widget, uint32 align, const Point2i& pos, const Size2i& size );
 void set_widget_alignment( UILayout* layout, const UIWidget* window, uint32 align );
 
 } // namespace priv

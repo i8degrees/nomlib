@@ -44,6 +44,7 @@ namespace nom {
 
 // Forward declarations
 class UIWidget;
+// class UISpacerItem;
 
 /// \brief Abstract class interface for Layout management
 ///
@@ -80,7 +81,7 @@ class UILayout: public UILayoutItem
     /// \remarks The default implementation returns Horizontal or Vertical.
     ///
     /// \note Re-implements UILayoutItem::directions.
-    virtual enum Orientations directions( void ) const;
+    virtual Orientations directions( void ) const;
 
     /// \brief Return the number of items in the layout.
     ///
@@ -114,6 +115,13 @@ class UILayout: public UILayoutItem
     /// \remarks This function provides type-safe casting.
     virtual UILayout::raw_ptr layout( void );
 
+    // \returns The parent widget of this layout on success, or NULL if this
+    // layout is not installed in any widget.
+    //
+    // \todo If this layout is a sub-layout, the parent widget of the parent
+    // layout is returned.
+    UIWidget* parent( void ) const;
+
     /// \brief Re-implements UILayoutItem::maximum_size.
     ///
     /// \returns The maximum size of the layout. This is the maximum size that
@@ -143,13 +151,6 @@ class UILayout: public UILayoutItem
 
     /// \brief The active state of the layout.
     bool enabled( void ) const;
-
-    // \returns The parent widget of this layout on success, or NULL if this
-    // layout is not installed in any widget.
-    //
-    // \todo If this layout is a sub-layout, the parent widget of the parent
-    // layout is returned.
-    // UIWidget* parent( void ) const;
 
     // bool top_layout( void ) const;
 
@@ -217,6 +218,10 @@ class UILayout: public UILayoutItem
     void add_child_widget( UIWidget* widget );
 
   private:
+    /// \brief Helper method for quickly determining if we are in an object
+    // instance that is horizontal -- assumption is vertical otherwise.
+    bool horiz( void ) const;
+
     IntRect bounds_;
     IntRect margins_;
 
@@ -227,8 +232,13 @@ class UILayout: public UILayoutItem
 
     enum SizeConstraint contraints_;
 
-    /// \brief Not implemented; reserved for future usage.
-    enum Orientations directions_;
+    /// \brief The direction of this layout -- horizontal or vertical.
+    Orientations directions_;
+
+    /// \brief The parent widget that has the layout installed (managed).
+    ///
+    /// \remarks The pointer is not owned by us; do *not* free this.
+    UIWidget* parent_;
 };
 
 } // namespace nom

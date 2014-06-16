@@ -72,6 +72,8 @@ class UILayoutItem
     /// \brief Construct an object with an alignment.
     UILayoutItem( uint32 align );
 
+    /// \remarks Implements UILayoutItem::directions.
+    ///
     /// \note QLayoutItem::expandingDirections.
     virtual Orientations directions( void ) const = 0;
 

@@ -483,6 +483,48 @@ TEST_F( ButtonLayoutTest, VerticalLayout )
   }
 }
 
+TEST_F( ButtonLayoutTest, HorizontalLayoutAlignmentsMiddleCenter )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  Point2i expected_pos( 67, 212 );
+  Size2i expected_size( 525, 75 );
+  uint32 align = Anchor::MiddleCenter;
+
+  this->layout_widget->resize( expected_size );
+
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayoutAlignmentsMiddleCenter", Orientations::Horizontal );
+  layout->set_alignment( align );
+
+  priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
+
+  if( nom::UnitTest::interactive() )
+  {
+    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
+}
+
+TEST_F( ButtonLayoutTest, VerticalLayoutAlignmentsMiddleCenter )
+{
+  nom::UIBoxLayout::raw_ptr layout = nullptr;
+
+  Point2i expected_pos( 255, 150 );
+  Size2i expected_size( 150, 200 );
+  uint32 align = Anchor::MiddleCenter;
+
+  this->layout_widget->resize( expected_size );
+
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "VerticalLayoutAlignmentsMiddleCenter", Orientations::Vertical );
+  layout->set_alignment( align );
+
+  priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
+
+  if( nom::UnitTest::interactive() )
+  {
+    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  }
+}
+
 } // namespace nom
 
 int main( int argc, char** argv )

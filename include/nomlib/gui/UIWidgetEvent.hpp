@@ -64,10 +64,10 @@ class UIWidgetEvent
     ///               event.
     /// \param text   The widget-defined string associated with the widget
     ///               event.
-    /// \param ev     The nom::Event associated with the widget event.
+    /// \param id     The widget's unique identifier associated with the event.
     ///
     /// \remarks The id field will be initialized to negative one (-1).
-    UIWidgetEvent( sint index, const std::string& text, const Event& ev );
+    UIWidgetEvent( sint index, const std::string& text, int64 id );
 
     /// \brief Construct a complete object.
     ///
@@ -76,8 +76,7 @@ class UIWidgetEvent
     /// \param text   The widget-defined string associated with the widget
     ///               event.
     /// \param ev     The nom::Event associated with the widget event.
-    /// \param id     The widget's unique identifier associated with the widget
-    ///               event.
+    /// \param id     The widget's unique identifier associated with the event.
     UIWidgetEvent (
                     sint index,
                     const std::string& text,

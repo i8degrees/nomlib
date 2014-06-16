@@ -178,7 +178,11 @@ UIWidget::self_type& UIWidget::operator =( const self_type& rhs )
 UIWidget::UIWidget( const self_type* rhs )
 {
   this->initialize( rhs->parent(), -1, rhs->position(), rhs->size(), "\0" );
-  // this->swap( rhs );
+
+  if( rhs->is_window() == true )
+  {
+    this->set_parent_bounds( rhs->global_bounds() );
+  }
 }
 
 ObjectTypeInfo UIWidget::type( void ) const
@@ -415,6 +419,11 @@ UILayout* UIWidget::layout( void ) const
 std::shared_ptr<UIStyle> UIWidget::style( void ) const
 {
   return this->style_;
+}
+
+const IntRect& UIWidget::parent_bounds( void ) const
+{
+  return this->parent_bounds_;
 }
 
 void UIWidget::set_padding ( int pad )
@@ -1257,6 +1266,7 @@ void UIWidget::swap( const self_type* rhs )
   this->set_focus_policy( rhs->focus_policy() );
   this->policy_ = rhs->policy_;
   this->set_style( rhs->style() );
+  this->set_parent_bounds( rhs->parent_bounds() );
 }
 
 // Private scope
@@ -1264,6 +1274,11 @@ void UIWidget::swap( const self_type* rhs )
 int64 UIWidget::generate_id( void ) const
 {
   return ( ++next_window_id_ );
+}
+
+void UIWidget::set_parent_bounds( const IntRect& bounds )
+{
+  this->parent_bounds_ = bounds;
 }
 
 /*

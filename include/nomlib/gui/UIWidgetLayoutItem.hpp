@@ -74,7 +74,7 @@ class UIWidgetLayoutItem: public UILayoutItem
     virtual bool empty( void ) const;
 
     /// \brief Re-implements UILayoutItem::directions.
-    virtual enum Orientations directions( void ) const;
+    virtual Orientations directions( void ) const;
 
     /// \brief Re-implements UILayoutItem::bounds.
     virtual IntRect bounds( void ) const;
@@ -109,7 +109,7 @@ class UIWidgetLayoutItem: public UILayoutItem
     std::unique_ptr<UIWidget> widget_;
 
     /// \brief Not implemented; reserved for future usage.
-    enum Orientations directions_;
+    Orientations directions_;
 };
 
 } // namespace nom

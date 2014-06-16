@@ -219,14 +219,6 @@ UIBoxLayout* create_layout( UIWidget* window, const std::vector<UIWidget*>& item
   return layout;
 }
 
-void set_layout_alignment( UILayout* layout, uint32 align )
-{
-  ASSERT_FALSE( layout == nullptr );
-
-  layout->set_alignment( align );
-  EXPECT_EQ( align, layout->alignment() );
-}
-
 void set_widget_alignment( UILayout* layout, const UIWidget* window, uint32 align )
 {
   int pos = -1;
@@ -250,6 +242,16 @@ void set_widget_alignment( UILayout* layout, const UIWidget* window, uint32 alig
   {
     EXPECT_EQ( align, item->alignment() );
   }
+}
+
+void test_layout_alignment( UILayout* layout, UIWidget* widget, uint32 align, const Point2i& pos, const Size2i& size )
+{
+  EXPECT_EQ( align, layout->alignment() );
+
+  EXPECT_EQ( pos, layout->bounds().position() );
+  EXPECT_EQ( pos, widget->global_bounds().position() );
+  EXPECT_EQ( size, layout->bounds().size() );
+  EXPECT_EQ( size, widget->global_bounds().size() );
 }
 
 } // namespace priv

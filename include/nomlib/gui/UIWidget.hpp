@@ -241,6 +241,8 @@ class UIWidget: public UIEventHandler
 
     std::shared_ptr<UIStyle> style( void ) const;
 
+    const IntRect& parent_bounds( void ) const;
+
     /// \brief Reserved for future use
     void set_padding( int pad );
 
@@ -487,6 +489,8 @@ class UIWidget: public UIEventHandler
     /// \brief Ensure a unique identifier is created for the object instance.
     int64 generate_id( void ) const;
 
+    void set_parent_bounds( const IntRect& bounds );
+
     /// \brief Ensure that the dimensions of the object are in a valid state.
     ///
     /// \param object IDrawable object that inherits from nom::Transformable.
@@ -578,6 +582,8 @@ NOM_IGNORED_ENDL();
     UILayoutPolicy policy_;
 
     std::shared_ptr<UIStyle> style_;
+
+    IntRect parent_bounds_;
 };
 
 } // namespace nom

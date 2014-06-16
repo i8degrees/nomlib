@@ -724,19 +724,16 @@ void UIBoxLayout::append_spacer( int height )
   this->insert_spacer( this->count(), height );
 }
 
-void UIBoxLayout::set_position( const Point2i& pos )
-{
-  this->set_bounds( IntRect( pos, this->bounds().size() ) );
-}
-
 void UIBoxLayout::set_direction( enum Direction dir )
 {
   this->direction_ = dir;
 }
 
+// Private scope
+
 bool UIBoxLayout::horiz( void ) const
 {
-  if( this->direction_ == Direction::LeftRight || this->direction_ == Direction::RightLeft )
+  if( this->direction() == Direction::LeftRight || this->direction() == Direction::RightLeft )
   {
     return true;
   }

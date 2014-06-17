@@ -267,10 +267,10 @@ void UILayout::set_alignment( uint32 align )
     y_offset = layout_y + ( parent_bounds.h - layout_height );
   }
 
-  NOM_DUMP( x_offset );
-  NOM_DUMP( y_offset );
-  NOM_DUMP( layout_width );
-  NOM_DUMP( layout_height );
+// NOM_DUMP( x_offset );
+// NOM_DUMP( y_offset );
+// NOM_DUMP( layout_width );
+// NOM_DUMP( layout_height );
 
   offset_bounds = IntRect( Point2i( x_offset, y_offset ), Size2i( layout_width, layout_height ) );
 
@@ -303,183 +303,171 @@ bool UILayout::set_alignment( const UIWidget* widget, uint32 align )
 {
   UILayout* layout = nullptr;
   UILayoutItem* item = nullptr;
-  UISpacerItem* sp = nullptr;
+  // UISpacerItem* sp = nullptr;
   UIWidget* widget_item = nullptr;
-  // int c = this->count()-3;
-  // int c = this->count();
 
-  int spacer = 0;                   // UISpacerItem
+  // int spacer = 0;                   // UISpacerItem
+  int pos = 0;
 
-  for( auto pos = 0; pos != this->count(); ++pos )
+  // Alignment offsets
+  int x_offset = 0;
+  int y_offset = 0;
+
+  int widget_x = 0;
+  int widget_y = 0;
+  int widget_width = 0;
+  int widget_height = 0;
+
+  int layout_width = 0;
+  int layout_height = 0;
+
+  pos = find_widget( widget );
+
+  if( pos == nom::npos )
   {
-    item = this->at( pos );
+    // Did you forget to insert the widget into the layout?
+    NOM_LOG_ERR( NOM, "Could not set alignment for widget: widget was not found in the layout." );
+    return false;
+  }
 
-    if( item == nullptr )
+  item = this->at( pos );
+
+  NOM_ASSERT( item != nullptr );
+
+  // FIXME: Clean up logic; ideally, we'd like to handle all layout item
+  // types?
+  // sp = item->spacer_item();
+  // if( sp != nullptr )
+  // {
+    // #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
+      // NOM_DUMP("sp");
+      // NOM_DUMP( item->minimum_size() );
+      // NOM_DUMP( item->size_hint() );
+      // NOM_DUMP( item->bounds() );
+    // #endif
+
+    // if( this->horiz() )
+    // {
+      // spacer = sp->size_hint().w;
+    // }
+    // else
+    // {
+      // spacer = sp->size_hint().h;
+    // }
+  // }
+
+  // NOM_DUMP_VAR( "sp: ", spacer );
+
+  if( item->widget() == widget )
+  {
+    item->set_alignment( align );
+    // this->invalidate();
+
+    layout = widget->parent()->layout();
+    widget_item = item->widget();
+
+    NOM_ASSERT( widget != nullptr );
+    NOM_ASSERT( layout != nullptr );
+
+    widget_x = widget->global_bounds().x;
+    widget_y = widget->global_bounds().y;
+    widget_width = widget->size().w;
+    widget_height = widget->size().h;
+
+    layout_width = layout->bounds().w;
+    layout_height = layout->bounds().h;
+
+    // NOM_DUMP( widget->name() );
+    // NOM_DUMP( widget_x );
+    // NOM_DUMP( widget_y );
+    // NOM_DUMP( widget_width );
+    // NOM_DUMP( widget_height );
+    // // NOM_DUMP( layout_x );
+    // // NOM_DUMP( layout_y );
+    // NOM_DUMP( layout_width );
+    // NOM_DUMP( layout_height );
+    // NOM_DUMP( item->alignment() );  // Destination alignment
+
+    // if( widget->name() == "button0" )
     {
-      continue;
+      // if( spacer > 0 )
+      {
+        // widget_x -= spacer + this->spacing();
+        // widget_y += spacer + this->spacing();
+        // widget_x -= spacer;
+      }
     }
 
-    // FIXME: Clean up logic; ideally, we'd like to handle all layout item
-    // types?
-    sp = item->spacer_item();
-    if( sp != nullptr )
+    // Anchor::TopLeft, Anchor::Left, Anchor::BottomLeft
+    if( align & Alignment::X_LEFT )
     {
-      #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
-        NOM_DUMP("sp");
-        NOM_DUMP( item->minimum_size() );
-        NOM_DUMP( item->size_hint() );
-        NOM_DUMP( item->bounds() );
-      #endif
+      x_offset = widget_x;
+    }
 
+    // Anchor::TopCenter, Anchor::MiddleCenter, Anchor::BottomCenter
+    if( align & Alignment::X_CENTER )
+    {
       if( this->horiz() )
       {
-        spacer = sp->size_hint().w;
+        x_offset = widget_x + ( layout_width / 4 - widget_width ) / 2;
       }
       else
       {
-        spacer = sp->size_hint().h;
+        x_offset = widget_x + ( layout_width - widget_width ) / 2;
       }
     }
 
-    NOM_DUMP_VAR( "sp: ", spacer );
-
-    if( item->widget() == widget )
+    // Anchor::TopRight, Anchor::Right, Anchor::BottomRight
+    if( align & Alignment::X_RIGHT )
     {
-      NOM_DUMP( item->widget()->name() );
-
-      item->set_alignment( align );
-      // this->invalidate();
-
-      layout = widget->parent()->layout();
-      widget_item = item->widget();
-
-      NOM_ASSERT( widget );
-      NOM_ASSERT( layout );
-
-      int widget_x = widget->global_bounds().x;
-      int widget_y = widget->global_bounds().y;
-      // int widget_width = widget->size_hint().w;
-      // int widget_height = widget->size_hint().h;
-
-      int widget_width = widget->size().w;
-      int widget_height = widget->size().h;
-
-NOM_DUMP(widget_width);
-NOM_DUMP(widget_height);
-
-NOM_IGNORED_VARS();
-      int layout_x = layout->bounds().x;
-      int layout_y = layout->bounds().y;
-      int layout_width = layout->bounds().w;
-      int layout_height = layout->bounds().h;
-NOM_IGNORED_ENDL();
-      // Alignment offsets
-      int x_offset = 0;
-      int y_offset = 0;
-
-      // NOM_DUMP( widget->name() );
-      // NOM_DUMP( widget->global_bounds() );
-      // NOM_DUMP( widget->parent()->layout()->bounds() );
-      // NOM_DUMP( item->alignment() );  // Destination alignment
-
-      // if( widget->name() == "button0" )
+      if( this->horiz() )
       {
-        if( spacer > 0 )
-        {
-          // widget_x -= spacer + this->spacing();
-          // widget_y += spacer + this->spacing();
-          // widget_x -= spacer;
-        }
+        x_offset = widget_x + ( layout_width / 4 - widget_width );
       }
-
-// item->widget()->parent()->layout()->bounds()
-// w_offset = item->widget()->parent()->layout()->bounds().x + x_offset;
-// h_offset = item->widget()->parent()->layout()->bounds().y + h_offset;
-// 32 [w.x] - 12 [l.x] = 20
-// 50 [w.y] - 25 [l.y] = 25
-
-      // Anchor::TopLeft, Anchor::Left, Anchor::BottomLeft
-      if( align & Alignment::X_LEFT )
+      else
       {
-        x_offset = widget_x;
+        x_offset = widget_x + ( layout_width - widget_width );
       }
+    }
 
-      // Anchor::TopCenter, Anchor::MiddleCenter, Anchor::BottomCenter
-      if( align & Alignment::X_CENTER )
+    // Anchor::TopLeft, Anchor::TopCenter, Anchor::TopRight
+    if( align & Alignment::Y_TOP )
+    {
+      y_offset = widget_y;
+    }
+
+    // Anchor::MiddleLeft, Anchor::MiddleCenter, Anchor::MiddleRight
+    if( align & Alignment::Y_CENTER )
+    {
+      if( this->horiz() )
       {
-        // x_offset = widget_x + ( layout_width / 4 - item->size_hint().w ) / 2;
-
-        if( this->horiz() )
-        {
-          x_offset = widget_x + ( layout_width / 4 - widget_width ) / 2;
-        }
-        else
-        {
-          x_offset = widget_x + ( layout_width - widget_width ) / 2;
-        }
+        y_offset = widget_y + ( layout_height - widget_height ) / 2;
       }
-
-      // Anchor::TopRight, Anchor::Right, Anchor::BottomRight
-      if( align & Alignment::X_RIGHT )
+      else
       {
-        // x_offset = widget_x + ( layout_width / 4 - item->size_hint().w );
-
-        if( this->horiz() )
-        {
-          x_offset = widget_x + ( layout_width / 4 - widget_width );
-        }
-        else
-        {
-          x_offset = widget_x + ( layout_width - widget_width );
-        }
+        y_offset = widget_y + ( layout_height / 4 - widget_height ) / 2;
       }
+    }
 
-      // Anchor::TopLeft, Anchor::TopCenter, Anchor::TopRight
-      if( align & Alignment::Y_TOP )
+    // Anchor::BottomLeft, Anchor::BottomCenter, Anchor::BottomRight
+    if( align & Alignment::Y_BOTTOM )
+    {
+      if( this->horiz() )
       {
-        y_offset = widget_y;
+        y_offset = widget_y + ( layout_height - widget_height );
       }
-
-      // Anchor::MiddleLeft, Anchor::MiddleCenter, Anchor::MiddleRight
-      if( align & Alignment::Y_CENTER )
+      else
       {
-        // y_offset = widget_y + ( layout_height - item->size_hint().h ) / 2;
-
-        if( this->horiz() )
-        {
-          y_offset = widget_y + ( layout_height - widget_height ) / 2;
-        }
-        else
-        {
-          y_offset = widget_y + ( layout_height / 4 - widget_height ) / 2;
-        }
+        y_offset = widget_y + ( layout_height / pos - widget_height );
       }
+    }
 
-      // Anchor::BottomLeft, Anchor::BottomCenter, Anchor::BottomRight
-      if( align & Alignment::Y_BOTTOM )
-      {
-        // y_offset = widget_y + ( layout_height - item->size_hint().h );
+    item->set_bounds( IntRect( Point2i( x_offset, y_offset ), Size2i( widget_width, widget_height ) ) );
 
-        if( this->horiz() )
-        {
-          y_offset = widget_y + ( layout_height - widget_height );
-        }
-        else
-        {
-          y_offset = widget_y + ( layout_height / pos - widget_height );
-        }
-      }
+    return true;
+  } // end if item is widget
 
-      // if( align != Alignment::None )
-      {
-        item->set_bounds( IntRect( Point2i( x_offset, y_offset ), Size2i( widget_width, widget_height ) ) );
-      }
-
-      return true;
-    } // end if item is widget
-
-  } // end for loop
-
+  // Err: Item found in layout was not the same as the one passed?
   return false;
 }
 

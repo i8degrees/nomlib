@@ -100,7 +100,7 @@ class UILayout: public UILayoutItem
 
     virtual void add_item( UILayoutItem::raw_ptr item ) = 0;
 
-    /// \brief Re-implements UILayoutItem::bounds.
+    /// \brief Implements UILayoutItem::bounds.
     virtual IntRect bounds( void ) const;
 
     /// \brief Re-implements UILayoutItem::invalidate.

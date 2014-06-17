@@ -581,8 +581,12 @@ NOM_IGNORED_ENDL();
     /// \todo Rename to size_policy_.
     UILayoutPolicy policy_;
 
+    /// \brief Customizable widget themes; this is intended to be set by the
+    /// end-user. Widgets must *not* depend on a style being available.
     std::shared_ptr<UIStyle> style_;
 
+    /// \brief The bounds of the top-level widget (window). This is required
+    /// for layout functionality, such as alignment.
     IntRect parent_bounds_;
 };
 

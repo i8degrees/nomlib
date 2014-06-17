@@ -87,7 +87,7 @@ class Decorator: public IDecorator
     /// for others to render on.
     ///
     /// \note This information is provided as a convenience for visual
-    /// interfaces that require such detial about their environment, such as
+    /// interfaces that require such detail about their environment, such as
     /// a GUI engine -- nom::UIWidget and friends.
     virtual void set_frame_bounds( const IntRect& bounds );
 

@@ -207,10 +207,11 @@ set(  EXAMPLES_TEMPLATE_SOURCE
       ${NOMLIB_SHARED_SUPPORT_DIR}/ExamplesTemplate.cpp
     )
 
-file ( GLOB TESTS_HEADERS "${NOMLIB_HEADERS_DIR}/tests/*.hpp" )
+file ( GLOB TESTS_HEADERS ${TESTS_HEADERS} "${NOMLIB_HEADERS_DIR}/tests.hpp" )
+file ( GLOB TESTS_HEADERS ${TESTS_HEADERS} "${NOMLIB_HEADERS_DIR}/tests/*.hpp" )
 set (
       TESTS_SOURCE
-      ${SRC_DIR}/tests/common.cpp
+      ${SRC_DIR}/tests/UnitTest.cpp
     )
 
 # Platform-specific source files

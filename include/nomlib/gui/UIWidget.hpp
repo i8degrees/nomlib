@@ -124,9 +124,6 @@ class UIWidget: public UIEventHandler
     /// and nom::Size2i::null for their respective values.
     bool valid( void ) const;
 
-    /// \brief Reserved for future use
-    /*const IntRect&*/int padding( void ) const;
-
     const Font& font( void ) const;
 
     /// \brief Obtain the internal unique identifier for the object.
@@ -242,9 +239,6 @@ class UIWidget: public UIEventHandler
     std::shared_ptr<UIStyle> style( void ) const;
 
     const IntRect& parent_bounds( void ) const;
-
-    /// \brief Reserved for future use
-    void set_padding( int pad );
 
     /// \brief Set the font resource of the widget.
     ///
@@ -515,9 +509,6 @@ class UIWidget: public UIEventHandler
 
     /// \brief Renderable objects.
     // Drawables drawables_;
-
-    /// Reserved for future use
-    /*IntRect*/int padding_;
 
     /// \brief The font used by children of the widget object.
     Font font_;

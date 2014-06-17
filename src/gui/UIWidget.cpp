@@ -62,7 +62,6 @@ void UIWidget::initialize (
                           )
 {
   // Sane defaults
-  this->set_padding( 0 );
   this->set_focused( false );
   this->set_visibility( true );
   this->set_updated( false );
@@ -198,11 +197,6 @@ bool UIWidget::valid( void ) const
   }
 
   return false;
-}
-
-int UIWidget::padding ( void ) const
-{
-  return this->padding_;
 }
 
 const Font& UIWidget::font( void ) const
@@ -424,11 +418,6 @@ std::shared_ptr<UIStyle> UIWidget::style( void ) const
 const IntRect& UIWidget::parent_bounds( void ) const
 {
   return this->parent_bounds_;
-}
-
-void UIWidget::set_padding ( int pad )
-{
-  this->padding_ = pad;
 }
 
 void UIWidget::set_font( const Font& font )
@@ -1250,7 +1239,6 @@ void UIWidget::swap( const self_type* rhs )
 
   this->set_id( rhs->id() );
   this->set_name( rhs->name() );
-  this->set_padding( rhs->padding() );
   this->set_font( rhs->font() );
   this->set_parent( rhs->parent() );
   this->set_children( rhs->children() );

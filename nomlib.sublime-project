@@ -47,11 +47,11 @@
   "settings":
   {
     "tab_size": 2,
-    "translate_tabs_to_spaces": true//,
+    "translate_tabs_to_spaces": true,
     //"sublimegdb_workingdir": "${folder:${project_path:build}}",
     //"sublimegdb_workingdir": "${folder:${project_path:build/TTcards.app/Contents/MacOS/ttcards}}",
     //"sublimegdb_commandline": "gdb --interpreter=mi ./your_executable_name"
-    //"ctags_command":  "/usr/local/bin/ctags -R -f .tags src/ include/"
+    "ctags_command": "/usr/local/bin/ctags -R -f .tags src/ include/"
 
   },
 

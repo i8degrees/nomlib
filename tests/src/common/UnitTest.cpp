@@ -26,10 +26,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/UnitTest.hpp"
-
-// Private headers
-// #include "gtest/gtest.h"
+#include "nomlib/tests/common/UnitTest.hpp"
 
 namespace nom {
 

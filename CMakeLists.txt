@@ -153,8 +153,14 @@ set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" )
 # Relative path from project root containing project assets
 set ( NOMLIB_RESOURCES_DIR "Resources" )
 
-# Unit tests path
+# Unit tests root (absolute path)
 set( NOM_TESTS_DIR "${PROJECT_SOURCE_DIR}/tests" )
+
+# Unit tests source files root (absolute path)
+set( NOM_TESTS_SOURCE_DIR "${NOM_TESTS_DIR}/src" )
+
+# Unit tests header files root (absolute path)
+set( NOM_TESTS_HEADERS_DIR "${NOM_TESTS_DIR}/include" )
 
 # Relative path from project root containing SharedSupport directory
 set ( NOMLIB_SHARED_SUPPORT_DIR "${NOMLIB_RESOURCES_DIR}/SharedSupport" )

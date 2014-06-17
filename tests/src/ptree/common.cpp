@@ -1,7 +1,6 @@
-#include "serializers/common.hpp"
-
-// Private headers
 #include "gtest/gtest.h"
+
+#include "nomlib/tests/ptree/common.hpp"
 
 namespace nom {
 

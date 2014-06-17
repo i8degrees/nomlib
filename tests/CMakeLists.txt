@@ -22,6 +22,32 @@
 # unit test's main functions. In summary, only the library target
 # ${GTEST_LIBRARY} should be used, to ensure cross-platform support.
 
+# Graphics tests
+set( NOM_BUILD_RENDERWINDOW_TESTS off )
+
+# GUI tests
+set( NOM_BUILD_GUI_UI_ITEM_CONTAINER_TESTS off )
+set( NOM_BUILD_GUI_UI_EVENT_DISPATCHER_TESTS off )
+set( NOM_BUILD_GUI_UI_WIDGET_TESTS on )
+set( NOM_BUILD_GUI_LISTBOX_LAYOUT_TESTS on )
+set( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS on )
+
+# Math tests
+set( NOM_BUILD_MATH_TESTS off )
+
+# Property Tree tests
+set( NOM_BUILD_PTREE_TESTS off )
+
+# Serializer tests
+set( NOM_BUILD_SERIALIZERS_JSON_TESTS off )
+set( NOM_BUILD_SERIALIZERS_XML_TESTS off )
+set( NOM_BUILD_JSON_CONFIG_FILE_TESTS off )
+
+# System tests
+set( NOM_BUILD_FILE_TESTS on )
+set( NOM_BUILD_FONT_CACHE_TESTS on )
+set( NOM_BUILD_COLOR_DB_TESTS on )
+
 if( PLATFORM_WINDOWS OR CMAKE_GENERATOR STREQUAL "Xcode" )
 
   # Path under Windows should resolve to: build/tests/Debug
@@ -38,19 +64,39 @@ else( NOT PLATFORM_WINDOWS )
 
 endif( PLATFORM_WINDOWS OR CMAKE_GENERATOR STREQUAL "Xcode" )
 
-# NOTE: we set GTEST_ROOT in the dependencies section of our build script.
+# NOTE: we set GTEST_ROOT in the dependencies section of our project's
+# root build script.
 find_package( GTest REQUIRED )
 
 include_directories( ${GTEST_INCLUDE_DIRS} )
-include_directories( "${NOM_TESTS_DIR}" )
 
-include( "${NOM_TESTS_DIR}/graphics/CMakeLists.txt" )
-include( "${NOM_TESTS_DIR}/math/CMakeLists.txt" )
-include( "${NOM_TESTS_DIR}/system/CMakeLists.txt" )
-include( "${NOM_TESTS_DIR}/gui/CMakeLists.txt" )
+# TODO: Header file list is used for adding to project files (IDE)
+#
+# See also: src/CMakeLists.txt, source_group command
+file ( GLOB NOM_TESTS_COMMON_HEADERS ${NOM_TESTS_COMMON_HEADERS} "${NOM_TESTS_HEADERS_DIR}/${PROJECT_NAME}/tests/common/*.hpp" )
 
-include( "${NOM_TESTS_DIR}/serializers/CMakeLists.txt" )
-include( "${NOM_TESTS_DIR}/ptree/CMakeLists.txt" )
+set (
+      NOM_TESTS_COMMON_SOURCE
+      ${NOM_TESTS_SOURCE_DIR}/common/UnitTest.cpp
+    )
+
+if( NOM_BUILD_TESTS )
+  set ( NOM_TESTS_COMMON_HEADERS
+        ${NOM_TESTS_COMMON_HEADERS}
+      )
+  set ( NOM_TESTS_COMMON_SOURCE
+        ${NOM_TESTS_COMMON_SOURCE}
+      )
+endif( NOM_BUILD_TESTS )
+
+include_directories( "${NOM_TESTS_HEADERS_DIR}" )
+
+include( "${NOM_TESTS_SOURCE_DIR}/graphics/CMakeLists.txt" )
+include( "${NOM_TESTS_SOURCE_DIR}/gui/CMakeLists.txt" )
+include( "${NOM_TESTS_SOURCE_DIR}/math/CMakeLists.txt" )
+include( "${NOM_TESTS_SOURCE_DIR}/ptree/CMakeLists.txt" )
+include( "${NOM_TESTS_SOURCE_DIR}/system/CMakeLists.txt" )
+include( "${NOM_TESTS_SOURCE_DIR}/serializers/CMakeLists.txt" )
 
 # Install library dependencies into tests output directory so we can always
 # execute the binaries with the proper dependency versions.

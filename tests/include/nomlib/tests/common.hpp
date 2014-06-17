@@ -26,12 +26,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_TESTS_HPP
-#define NOMLIB_TESTS_HPP
+#ifndef NOMLIB_TESTS_COMMON_HPP
+#define NOMLIB_TESTS_COMMON_HPP
 
 // Public header file
 
-#include <nomlib/config.hpp>
-#include <nomlib/tests/UnitTest.hpp>
+#include "nomlib/config.hpp"
+#include "nomlib/tests/common/UnitTest.hpp"
 
 #endif // include guard defined

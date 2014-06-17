@@ -1,10 +1,8 @@
-set( NOM_BUILD_PTREE_TESTS off )
-
 if( NOM_BUILD_PTREE_TESTS )
 
   add_executable  (
                     ptree
-                    ${NOM_TESTS_DIR}/ptree/ptree.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/ptree/ptree.cpp
                   )
 
   target_link_libraries (
@@ -16,7 +14,7 @@ if( NOM_BUILD_PTREE_TESTS )
   GTEST_ADD_TESTS (
                     ptree
                     "values"
-                    ${NOM_TESTS_DIR}/ptree/ptree.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/ptree/ptree.cpp
                   )
 
 endif( NOM_BUILD_PTREE_TESTS )

@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/ptree.hpp> // Property Tree (nom::Value)
 
-#include "common.hpp"
+#include "nomlib/tests/ptree/common.hpp"
 
 namespace nom {
 

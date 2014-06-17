@@ -1,12 +1,10 @@
-set( NOM_BUILD_MATH_TESTS off )
-
 if( NOM_BUILD_MATH_TESTS )
 
   if( NOM_BUILD_MATH_UNIT )
 
     add_executable  (
                       math
-                      ${NOM_TESTS_DIR}/math/MathTest.cpp
+                      ${NOM_TESTS_SOURCE_DIR}/math/MathTest.cpp
                     )
 
     target_link_libraries (
@@ -18,7 +16,7 @@ if( NOM_BUILD_MATH_TESTS )
     GTEST_ADD_TESTS (
                       math
                       "MathTest"
-                      ${NOM_TESTS_DIR}/math/MathTest.cpp
+                      ${NOM_TESTS_SOURCE_DIR}/math/MathTest.cpp
                     )
 
   endif( NOM_BUILD_MATH_UNIT )

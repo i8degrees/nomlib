@@ -1,13 +1,9 @@
-set( NOM_BUILD_SERIALIZERS_JSON_TESTS off )
-set( NOM_BUILD_SERIALIZERS_XML_TESTS off )
-set( NOM_BUILD_JSON_CONFIG_FILE_TESTS off )
-
 if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
 
   add_executable  (
                     json_serializer
-                    ${NOM_TESTS_DIR}/serializers/JsonCppSerializerTest.cpp
-                    ${NOM_TESTS_DIR}/serializers/common.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/JsonCppSerializerTest.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
   target_link_libraries (
@@ -19,13 +15,13 @@ if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
   GTEST_ADD_TESTS (
                     json_serializer
                     "JsonCppSerializerTest"
-                    ${NOM_TESTS_DIR}/serializers/JsonCppSerializerTest.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/JsonCppSerializerTest.cpp
                   )
 
   add_executable  (
                     json_deserializer
-                    ${NOM_TESTS_DIR}/serializers/JsonCppDeserializerTest.cpp
-                    ${NOM_TESTS_DIR}/serializers/common.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/JsonCppDeserializerTest.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
 
@@ -38,7 +34,7 @@ if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
   GTEST_ADD_TESTS (
                     json_deserializer
                     "JsonCppDeserializerTest"
-                    ${NOM_TESTS_DIR}/serializers/JsonCppDeserializerTest.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/JsonCppDeserializerTest.cpp
                   )
 
 endif( NOM_BUILD_SERIALIZERS_JSON_TESTS )
@@ -47,8 +43,8 @@ if( NOM_BUILD_SERIALIZERS_XML_TESTS )
 
   add_executable  (
                     xml_serializer
-                    ${NOM_TESTS_DIR}/serializers/RapidXmlSerializerTest.cpp
-                    ${NOM_TESTS_DIR}/serializers/common.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/RapidXmlSerializerTest.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
   target_link_libraries (
@@ -60,13 +56,13 @@ if( NOM_BUILD_SERIALIZERS_XML_TESTS )
   GTEST_ADD_TESTS (
                     xml_serializer
                     "RapidXmlSerializer"
-                    ${NOM_TESTS_DIR}/serializers/RapidXmlSerializerTest.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/RapidXmlSerializerTest.cpp
                   )
 
   add_executable  (
                     xml_deserializer
-                    ${NOM_TESTS_DIR}/serializers/RapidXmlDeserializerTest.cpp
-                    ${NOM_TESTS_DIR}/serializers/common.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/RapidXmlDeserializerTest.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
   target_link_libraries (
@@ -78,7 +74,7 @@ if( NOM_BUILD_SERIALIZERS_XML_TESTS )
   GTEST_ADD_TESTS (
                     xml_deserializer
                     "RapidXmlDeserializer"
-                    ${NOM_TESTS_DIR}/serializers/RapidXmlDeserializerTest.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/RapidXmlDeserializerTest.cpp
                   )
 
 endif( NOM_BUILD_SERIALIZERS_XML_TESTS )
@@ -113,8 +109,8 @@ if( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
 
   add_executable  (
                     json_config_file
-                    ${NOM_TESTS_DIR}/serializers/JsonConfigFileTest.cpp
-                    # ${NOM_TESTS_DIR}/serializers/common.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/JsonConfigFileTest.cpp
+                    # ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
   target_link_libraries (
@@ -126,7 +122,7 @@ if( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
   GTEST_ADD_TESTS (
                     json_config_file
                     "JsonConfigFileTest"
-                    ${NOM_TESTS_DIR}/serializers/JsonConfigFileTest.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/JsonConfigFileTest.cpp
                   )
 
   install (

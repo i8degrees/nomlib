@@ -1,7 +1,3 @@
-set( NOM_BUILD_FILE_TESTS on )
-
-set( NOM_BUILD_FONT_CACHE_TESTS on )
-set( NOM_BUILD_COLOR_DB_TESTS on )
 
 if( NOM_BUILD_FONT_CACHE_TESTS )
 
@@ -9,7 +5,7 @@ if( NOM_BUILD_FONT_CACHE_TESTS )
 
     add_executable  (
                       font_cache
-                      ${NOM_TESTS_DIR}/system/FontCacheTest.cpp
+                      ${NOM_TESTS_SOURCE_DIR}/system/FontCacheTest.cpp
                       )
 
     target_link_libraries (
@@ -21,7 +17,7 @@ if( NOM_BUILD_FONT_CACHE_TESTS )
     GTEST_ADD_TESTS (
                       font_cache
                       "FontCacheTest"
-                      ${NOM_TESTS_DIR}/system/FontCacheTest.cpp
+                      ${NOM_TESTS_SOURCE_DIR}/system/FontCacheTest.cpp
                       )
 
     # FIXME:
@@ -45,7 +41,7 @@ if( NOM_BUILD_COLOR_DB_TESTS )
 
     add_executable  (
                       color_database
-                      ${NOM_TESTS_DIR}/system/ColorDatabaseTest.cpp
+                      ${NOM_TESTS_SOURCE_DIR}/system/ColorDatabaseTest.cpp
                     )
 
     target_link_libraries (
@@ -57,7 +53,7 @@ if( NOM_BUILD_COLOR_DB_TESTS )
     GTEST_ADD_TESTS (
                       color_database
                       "ColorDatabaseTest"
-                      ${NOM_TESTS_DIR}/system/ColorDatabaseTest.cpp
+                      ${NOM_TESTS_SOURCE_DIR}/system/ColorDatabaseTest.cpp
                     )
 
   endif( NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
@@ -70,7 +66,7 @@ if( NOM_BUILD_FILE_TESTS )
 
     add_executable  (
                       file_interface
-                      ${NOM_TESTS_DIR}/system/FileInterfaceTest.cpp
+                      ${NOM_TESTS_SOURCE_DIR}/system/FileInterfaceTest.cpp
                     )
 
     target_link_libraries (
@@ -82,7 +78,7 @@ if( NOM_BUILD_FILE_TESTS )
     GTEST_ADD_TESTS (
                       file_interface
                       "FileInterfaceTest"
-                      ${NOM_TESTS_DIR}/system/FileInterfaceTest.cpp
+                      ${NOM_TESTS_SOURCE_DIR}/system/FileInterfaceTest.cpp
                     )
 
   endif( NOM_BUILD_SYSTEM_UNIT )

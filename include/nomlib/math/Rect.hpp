@@ -45,7 +45,7 @@ const std::string RECT_DELIMITER = ", ";
 template<typename T>
 struct Rect
 {
-  /// Default constructor; initialize values to Rect<T>::null
+  /// \brief Default constructor; initialize values to Rect<T>::null
   Rect ( void ) :
     x ( -1 ),
     y ( -1 ),
@@ -55,18 +55,18 @@ struct Rect
     //NOM_LOG_TRACE(NOM);
   }
 
-  /// Destructor.
+  /// \brief Destructor.
   ~Rect ( void )
   {
     //NOM_LOG_TRACE(NOM);
   }
 
-  /// Construct a Rectangle from coordinates
-  Rect ( T left, T top, T w, T h ) :
+  /// \brief Construct a Rectangle from coordinates
+  Rect ( T left, T top, T right, T bottom ) :
     x ( left ),
     y ( top ),
-    w ( w ),
-    h ( h )
+    w ( right ),
+    h ( bottom )
   {
     //NOM_LOG_TRACE(NOM);
   }
@@ -94,12 +94,6 @@ struct Rect
     h { static_cast<T> ( copy.h ) }
   {
     //NOM_LOG_TRACE(NOM);
-  }
-
-  /// \brief Obtain a reference of the object.
-  inline const Rect<T>& get ( void ) const
-  {
-    return *this;
   }
 
   /// Check to see if input coordinates X and Y are within the bounds
@@ -176,17 +170,43 @@ struct Rect
     return Size2i( NOM_SCAST( T, this->w ), NOM_SCAST( T, this->h ) );
   }
 
+  const T& left( void ) const
+  {
+    return this->x;
+  }
+
+  const T& top( void ) const
+  {
+    return this->y;
+  }
+
+  const T& right( void ) const
+  {
+    return this->w;
+  }
+
+  const T& bottom( void ) const
+  {
+    return this->h;
+  }
+
   /// \brief Null value
   ///
   /// \remarks  Null value implementation depends on signed (negative) numbers.
   static const Rect null;
 
+  /// \brief Zeroed values.
+  static const Rect zero;
+
   /// Left coordinate of the rectangle (X coordinate of Rectangle)
   T x;
   /// Top coordinate of the rectangle (Y coordinate of Rectangle)
+
   T y;
   /// Width of the rectangle (right side of Rectangle)
+
   T w;
+
   /// Height of the rectangle (bottom side of Rectangle)
   T h;
 };

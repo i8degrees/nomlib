@@ -39,4 +39,13 @@ template <> const FloatRect FloatRect::null ( -1, -1, -1, -1 );
 /// Null value for a nom::Rect using double precision floating point numbers
 template <> const DoubleRect DoubleRect::null ( -1, -1, -1, -1 );
 
+/// Zero value for a nom::Rect using signed integers
+template <> const IntRect IntRect::zero ( 0, 0, 0, 0 );
+
+/// Zero value for a nom::Rect using floating point numbers
+template <> const FloatRect FloatRect::zero( 0, 0, 0, 0 );
+
+/// Zero value for a nom::Rect using double precision floating point numbers
+template <> const DoubleRect DoubleRect::zero ( 0, 0, 0, 0 );
+
 } // namespace nom

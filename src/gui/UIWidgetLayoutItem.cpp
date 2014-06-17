@@ -89,7 +89,7 @@ IntRect UIWidgetLayoutItem::bounds( void ) const
     return this->widget()->global_bounds();
   }
 
-  return IntRect( 0, 0, 0, 0 );
+  return IntRect::zero;
 }
 
 Size2i UIWidgetLayoutItem::maximum_size( void ) const

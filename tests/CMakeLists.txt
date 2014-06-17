@@ -22,7 +22,7 @@
 # unit test's main functions. In summary, only the library target
 # ${GTEST_LIBRARY} should be used, to ensure cross-platform support.
 
-if( PLATFORM_WINDOWS )
+if( PLATFORM_WINDOWS OR CMAKE_GENERATOR STREQUAL "Xcode" )
 
   # Path under Windows should resolve to: build/tests/Debug
   set ( TESTS_DEPS_INSTALL_PEFIX
@@ -36,7 +36,7 @@ else( NOT PLATFORM_WINDOWS )
         "${CMAKE_CURRENT_BINARY_DIR}"
       )
 
-endif( PLATFORM_WINDOWS )
+endif( PLATFORM_WINDOWS OR CMAKE_GENERATOR STREQUAL "Xcode" )
 
 # NOTE: we set GTEST_ROOT in the dependencies section of our build script.
 find_package( GTest REQUIRED )

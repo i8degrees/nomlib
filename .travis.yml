@@ -18,9 +18,9 @@ before_install:
   # Virtual X11 framebuffer:
   #
   # See also: http://afitnerd.com/2011/09/06/headless-browser-testing-on-mac/
-  - export DISPLAY=:99.0
+  # - export DISPLAY=:99.0
   # - ls /usr/X11/bin/Xvfb
-  - sudo Xvfb :99 -ac -screen 0 1024x768x24 -extension GLX &
+  # - sudo Xvfb :99 -ac -screen 0 1024x768x24 -extension GLX &
   # - sh -e /etc/init.d/xvfb start
   # - sh -e /etc/init.d/xvfb.sh start
   # - /usr/bin/Xvfb :99 -ac -screen 0 1024x768x32
@@ -29,22 +29,21 @@ before_install:
 
   # - brew update
   - brew install cmake
-  # FIXME:
-  - brew install gnu-tar
-  - wget -O /tmp/deps.tar.gz "http://downloads.sourceforge.net/project/nomlib/2014-06-12_nomlib_osx-dependencies.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fnomlib%2Ffiles%2F&ts=1402551334&use_mirror=superb-dca3"
+  - wget -O /tmp/deps.tar.gz 'http://downloads.sourceforge.net/project/nomlib/2014-06-12_nomlib_osx-dependencies.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fnomlib%2Ffiles%2F&ts=1402551334&use_mirror=superb-dca3'
+  - wget -O /tmp/osx10.7.sdk.tar.gz 'https://www.dropbox.com/s/hk2590g8snkjwe4/MacOSX10.7.sdk.tar.gz'
 before_script:
-  - du -csh /tmp/deps.tar.gz
-  # FIXME:
-  - gtar -xzvf /tmp/deps.tar.gz -C third-party
+  - tar -xzvf /tmp/deps.tar.gz -C third-party
+  - mkdir -p '/Applications/Developer/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs'
+  - sudo tar -xzvf /tmp/osx10.7.sdk.tar.gz -C /Applications/Developer/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
   - mkdir -p build && cd build
   - cmake -GXcode -DDEBUG=on -DDEBUG_ASSERT=on -DDEBUG_TRACE=on -DEXAMPLES=off -DNOM_BUILD_TESTS=on -DCMAKE_INSTALL_PREFIX=~/Library/Frameworks ..
 script:
-  - xcodebuild build
+  - xcodebuild -sdk macosx10.7 build
   - xcodebuild -target install
   - xcodebuild -target RUN_TESTS
   - tests/Debug/font_cache
-  - pwd
-  - ls -lasR .
+  # - pwd
+  # - ls -lasR .
   # - ls -lasR ~/Library/Frameworks/nomlib.framework
 
   # - xcodebuild -target uninstall

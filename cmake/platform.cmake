@@ -16,13 +16,13 @@ if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
   set ( DEVROOT "/Applications/Developer/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer" )
   set ( SDKROOT "${DEVROOT}/SDKs/MacOSX${SDKVER}.sdk" )
 
-  if ( EXISTS ${SDKROOT} )
-    set ( CMAKE_OSX_SYSROOT "${SDKROOT}" )
-    set ( CMAKE_OSX_DEPLOYMENT_TARGET "${SDKVER}" )
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=${SDKVER}" )
-  else () # Mac OS X v10.5 SDK not found -- that's OK
-    message ( WARNING "Warning, Mac OS X ${SDKVER} SDK path not found: ${SDKROOT}" )
-  endif ( EXISTS ${SDKROOT} )
+  if( EXISTS ${SDKROOT} )
+    set( CMAKE_OSX_SYSROOT "${SDKROOT}" )
+    set( CMAKE_OSX_DEPLOYMENT_TARGET "${SDKVER}" )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=${SDKVER}" )
+  else( NOT EXISTS ${SDKROOT} ) # Mac OS X v10.7 SDK not found
+    message ( WARNING "WARNING: Mac OS X ${SDKVER} SDK path not found: ${SDKROOT}" )
+  endif( EXISTS ${SDKROOT} )
 
   # libc++ requires OSX v10.7+
   set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )

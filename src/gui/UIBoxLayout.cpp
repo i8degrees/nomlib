@@ -333,7 +333,7 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
   Size2i item_size;
 
   // Relative coordinates (to parent widget)
-  Point2i offset( 0, 0 );
+  // Point2i offset( 0, 0 );
 
   // Overall layout boundary calculation
   IntRect geom;
@@ -349,13 +349,22 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
   int widget_count = 0;   // Number of widget items in layout
   int spacer = 0;         // UISpacerItem
 
-  UILayout::set_bounds( rect );
-
   // Conserve CPU cycles
   if( count < 1 )
   {
+    // NOM_LOG_INFO( NOM, "Not calculating geometries: there are no layout items." );
     return;
   }
+
+  // Conserve CPU cycles
+  if( this->bounds() == rect )
+  {
+    // TODO: Look into why the layout bounds are start off at -1, -1, -1, -1 ??
+    // NOM_LOG_INFO( NOM, "Not calculating geometries: layout bounds are identical to ", rect );
+    return;
+  }
+
+  UILayout::set_bounds( rect );
 
   for( auto idx = 0; idx < count; ++idx )
   {
@@ -531,6 +540,8 @@ void UIBoxLayout::set_bounds( const IntRect& rect )
         NOM_DUMP( item->bounds() );
       #endif
 
+      // FIXME: Margins are never being set.
+      //
       // Calculate the item's size requirements with respect to the decorator's
       // bounds
       if( widget->decorator() != nullptr )

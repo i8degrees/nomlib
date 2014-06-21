@@ -56,7 +56,12 @@ bool File::is_dir( const std::string& file_path )
   return this->file->is_dir( file_path );
 }
 
-bool File::exists ( const std::string& file_path )
+bool File::is_file( const std::string& file_path )
+{
+  return this->file->is_file( file_path );
+}
+
+bool File::exists( const std::string& file_path )
 {
   return this->file->exists( file_path );
 }
@@ -66,7 +71,7 @@ const std::string File::path( const std::string& dir_path )
   return this->file->path ( dir_path );
 }
 
-const std::string File::currentPath ( void )
+const std::string File::currentPath( void ) const
 {
   return this->file->currentPath();
 }
@@ -109,6 +114,26 @@ const std::string File::user_home_path( void )
 const std::string File::system_path( void )
 {
   return this->file->system_path();
+}
+
+bool File::mkdir( const std::string& path )
+{
+  return this->file->mkdir( path );
+}
+
+bool File::recursive_mkdir( const std::string& path )
+{
+  return this->file->recursive_mkdir( path );
+}
+
+bool File::rmdir( const std::string& path )
+{
+  return this->file->rmdir( path );
+}
+
+bool File::mkfile( const std::string& path )
+{
+  return this->file->mkfile( path );
 }
 
 } // namespace nom

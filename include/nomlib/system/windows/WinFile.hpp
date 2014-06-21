@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <cstring>
 #include <vector>
+#include <fstream>
 
 #include <stdlib.h>
 #include <errno.h>
@@ -63,6 +64,8 @@ class WinFile: public IFile
     ///
     /// \todo Verify working functionality.
     bool is_dir( const std::string& file_path );
+
+    bool is_file( const std::string& file_path );
 
     /// Implements nom::IFile::exists
     ///
@@ -168,6 +171,30 @@ class WinFile: public IFile
     /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/bb762181.aspx
     /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/bb762494.aspx
     const std::string system_path( void );
+
+    /// \brief Create a directory entry.
+    ///
+    /// \param path The absolute path to create the directory file at.
+    ///
+    /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/aa363855%28v=vs.85%29.aspx
+    /// \see http://msdn.microsoft.com/en-us/library/2fkk4dzw%28v=vs.80%29.aspx
+    bool mkdir( const std::string& path );
+
+    /// \brief Create directories recursively.
+    ///
+    /// \param path The absolute path to create directory entries from.
+    ///
+    /// \remarks The directory must not be terminated with a path separator.
+    bool recursive_mkdir( const std::string& path );
+
+    /// \brief Remove a directory entry.
+    ///
+    /// \param path The absolute path to remove the directory file from.
+    ///
+    /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/aa365488(v=vs.85).aspx
+    bool rmdir( const std::string& path );
+
+    bool mkfile( const std::string& path );
 };
 
 

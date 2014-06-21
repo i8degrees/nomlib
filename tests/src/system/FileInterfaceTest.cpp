@@ -58,13 +58,12 @@ class FileInterfaceTest: public ::testing::Test
     }
 
   protected:
+    Path p;
     File fp;
 };
 
 TEST_F( FileInterfaceTest, PathDelimiter )
 {
-  Path p;
-
   #if defined( NOM_PLATFORM_POSIX )
     EXPECT_EQ( "/", p.native() );
   #elif defined ( NOM_PLATFORM_WINDOWS )
@@ -116,7 +115,6 @@ TEST_F( FileInterfaceTest, ExecutableWorkingDirectoryPath )
 
 TEST_F( FileInterfaceTest, FileExtensions )
 {
-  Path p;
   std::string file( "times.ttf" );
   std::string file_ext;
 
@@ -151,8 +149,6 @@ TEST_F( FileInterfaceTest, FileExtensions )
 
 TEST_F( FileInterfaceTest, PlatformPaths )
 {
-  Path p;
-
   Path u = fp.user_home_path() + p.native() + "Library";
   Path user( u.prepend( "Fonts" ) );
 
@@ -169,6 +165,88 @@ TEST_F( FileInterfaceTest, PlatformPaths )
     NOM_DUMP_VAR( "user_fonts_path: ", user.path() );
     NOM_DUMP_VAR( "system_path: ", fp.system_path() );
   #endif
+}
+
+TEST_F( FileInterfaceTest, CreateRemoveDirectory )
+{
+  File fp;
+
+  // OSX: /Users/jeff/Documents/nomlib
+  // Windows: C:\Users\jeff\Documents\nomlib
+  // Unix: /home/jeff/Documents/nomlib
+  Path user( fp.user_documents_path() );
+  Path nom( user.prepend( "nomlib" ) );
+
+  #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
+    NOM_DUMP_VAR("user_documents_path: ", nom.path() );
+  #endif
+
+  EXPECT_EQ( false, fp.exists( nom.path() ) )
+  << "Path should not exist yet: " << nom.path();
+
+  EXPECT_EQ( true, fp.mkdir( nom.path() ) )
+  << "Could not create directory path: " << nom.path();
+
+  EXPECT_EQ( true, fp.is_dir( nom.path() ) )
+  << "Path created should be a directory entry: " << nom.path();
+
+  EXPECT_EQ( false, fp.is_file( nom.path() ) )
+  << "Path created should NOT be be a file entry: " << nom.path();
+
+  EXPECT_EQ( true, fp.exists( nom.path() ) )
+  << "Path created does not exist: " << nom.path();
+
+  EXPECT_EQ( true, fp.rmdir( nom.path() ) )
+  << "Could not delete directory path: " << nom.path();
+
+  EXPECT_EQ( false, fp.exists( nom.path() ) )
+  << "Path still exists after deletion: " << nom.path();
+}
+
+TEST_F( FileInterfaceTest, CreateRecursiveDirectory )
+{
+  File fp;
+
+  // OSX: /Users/jeff/Documents/nomlib
+  // Windows: C:\Users\jeff\Documents\nomlib
+  // Unix: /home/jeff/Documents/nomlib
+  Path user( fp.user_documents_path() );
+  Path nom( user.prepend( "nomlib" ) );
+  Path recursive( nom.path() + p.native() + "tests" + p.native() + "v2" + p.native() + "v3" );
+
+  #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
+    NOM_DUMP_VAR("user_documents_path: ", recursive.path() );
+  #endif
+
+  EXPECT_EQ( false, fp.exists( recursive.path() ) )
+  << "Path should not exist yet: " << recursive.path();
+
+  EXPECT_EQ( true, fp.recursive_mkdir( recursive.path() ) )
+  << "Could not create directory path: " << recursive.path();
+
+  EXPECT_EQ( true, fp.is_dir( recursive.path() ) )
+  << "Path created should be a directory entry: " << recursive.path();
+
+  EXPECT_EQ( false, fp.is_file( recursive.path() ) )
+  << "Path created should NOT be be a file entry: " << recursive.path();
+
+  EXPECT_EQ( true, fp.exists( recursive.path() ) )
+  << "Path created does not exist: " << recursive.path();
+
+  // EXPECT_EQ( true, fp.rmdir( recursive.path() ) )
+  // << "Could not delete directory path: " << recursive.path();
+
+  // EXPECT_EQ( false, fp.exists( recursive.path() ) )
+  // << "Path still exists after deletion: " << recursive.path();
+}
+
+TEST_F( FileInterfaceTest, MakeFile )
+{
+  File fp;
+
+  EXPECT_TRUE( fp.mkfile( "nom_file" ) );
+
+  EXPECT_TRUE( fp.is_file( "nom_file" ) );
 }
 
 } // namespace nom

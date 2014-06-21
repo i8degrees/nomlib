@@ -65,8 +65,10 @@ class File
     /// \brief Test for the existence of a directory.
     bool is_dir( const std::string& file_path );
 
+    bool is_file( const std::string& file_path );
+
     /// Re-implements nom::IFile::exists
-    bool exists ( const std::string& file_path );
+    bool exists( const std::string& file_path );
 
     /// \brief Platform-specific implementation of IFile::path.
     ///
@@ -74,7 +76,7 @@ class File
     const std::string path( const std::string& dir_path );
 
     /// Re-implements nom::IFile::currentPath
-    const std::string currentPath ( void );
+    const std::string currentPath ( void ) const;
 
     /// Re-implements nom::IFile::set_path
     bool set_path ( const std::string& path );
@@ -93,6 +95,18 @@ class File
     const std::string user_home_path( void );
 
     const std::string system_path( void );
+
+    /// \see UnixFile::mkdir, WinFile::mkdir.
+    bool mkdir( const std::string& path );
+
+    /// \see UnixFile::recursive_mkdir, WinFile::recursive_mkdir.
+    bool recursive_mkdir( const std::string& path );
+
+    /// \see UnixFile::rmdir, WinFile::rmdir.
+    bool rmdir( const std::string& path );
+
+    /// \see UnixFile::mkfile, WinFile::mkfile.
+    bool mkfile( const std::string& path );
 
   private:
     std::unique_ptr<IFile> file;

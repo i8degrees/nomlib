@@ -31,13 +31,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <cstring>
 #include <vector>
+#include <fstream>
 
 #include <unistd.h>
 #include <libgen.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <sys/types.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/IFile.hpp"
@@ -68,10 +71,12 @@ class UnixFile: public IFile
     /// \see http://stackoverflow.com/questions/16312872/cannot-distinguish-directory-from-file-with-stat
     bool is_dir( const std::string& file_path );
 
+    bool is_file( const std::string& file_path );
+
     /// Implements nom::IFile::exists
     ///
     /// \remarks See nom::IFile::exists
-    bool exists ( const std::string& file_path );
+    bool exists( const std::string& file_path );
 
     /// \brief Extract the directory portion of a pathname.
     ///
@@ -189,6 +194,28 @@ class UnixFile: public IFile
     // "/System/Library/Fonts". Under POSIX-compliant Unix (not verified):
     // "/usr/share/fonts" (Linux/BSD). Under Windows: "<drive>:\Windows\Fonts".
     // const std::string system_fonts_path( void );
+
+    /// \brief Create a directory entry.
+    ///
+    /// \param path The absolute path to create the directory file at.
+    bool mkdir( const std::string& path );
+
+    /// \brief Create directories recursively.
+    ///
+    /// \param path The absolute path to create directory entries from.
+    ///
+    /// \remarks The directory must not be terminated with a path separator.
+    bool recursive_mkdir( const std::string& path );
+
+    /// \brief Remove a directory entry.
+    ///
+    /// \param path The absolute path to remove the directory file from.
+    bool rmdir( const std::string& path );
+
+    /// \brief Create a file (zero bytes).
+    ///
+    /// \see man 8 mkfile
+    bool mkfile( const std::string& path );
 };
 
 

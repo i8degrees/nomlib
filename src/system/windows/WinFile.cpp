@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <shlobj.h>
 #include <tchar.h>
 #include <strsafe.h>
+#include <FileAPI.h>
 
 // Private headers
 #include "nomlib/system/Path.hpp"
@@ -83,18 +84,23 @@ bool WinFile::is_dir( const std::string& file_path )
   return false;
 }
 
-bool WinFile::exists( const std::string& file_path )
+bool WinFile::is_file( const std::string& file_path )
 {
   DWORD attr = 0;
 
   attr = GetFileAttributes( file_path.c_str() );
 
-  if( attr != INVALID_FILE_ATTRIBUTES )
+  if( attr != INVALID_FILE_ATTRIBUTES && this->is_dir( file_path ) == false )
   {
     return true;
   }
 
   return false;
+}
+
+bool WinFile::exists( const std::string& file_path )
+{
+  return( this->is_dir( file_path ) || this->is_file( file_path ) );
 }
 
 const std::string WinFile::path( const std::string& dir_path )
@@ -331,6 +337,95 @@ const std::string WinFile::system_path( void )
 
   // Success!
   return path;
+}
+
+bool WinFile::mkdir( const std::string& path )
+{
+  bool ret = false;
+  DWORD err = 0;
+
+  ret = CreateDirectory( path.c_str(), nullptr );
+
+  if( ret == true )
+  {
+    return true;
+  }
+
+  err = GetLastError();
+
+  NOM_LOG_ERR( NOM, "Could not create directory entry: unknown return value of: ", err );
+
+  // Err (path not found or path exists?)
+  return false;
+}
+
+bool WinFile::recursive_mkdir( const std::string& path )
+{
+  bool ret = false;
+  std::size_t pos = std::string::npos;
+
+  Path p;
+  std::string delimiter = p.native();
+
+  if( this->exists( path ) == false )
+  {
+    pos = path.find_last_of( p.native() );
+
+    if( pos != std::string::npos )
+    {
+      this->recursive_mkdir( path.substr( 0, pos ) );
+    }
+
+    if( this->mkdir( path.c_str() ) == true )
+    {
+      return true;
+    }
+  }
+  else if( this->exists( path ) == true )
+  {
+    return false;
+  }
+
+  // Unknown err
+  return false;
+}
+
+
+bool WinFile::rmdir( const std::string& path )
+{
+  bool ret = false;
+  DWORD err = 0;
+
+  ret = RemoveDirectory( path.c_str() );
+
+  if( ret == true )
+  {
+    // Successful directory removal
+    return true;
+  }
+
+  err = GetLastError();
+
+  NOM_LOG_ERR( NOM, "Could not remove directory entry: unknown return value of: ", err );
+
+  // Err (path not found or access denied at existing path?)
+  return false;
+}
+
+bool WinFile::mkfile( const std::string& path )
+{
+  std::ofstream fp;
+
+  fp.open( path );
+
+  if( fp.is_open() && fp.good() )
+  {
+    fp << "";
+
+    return true;
+  }
+
+  return false;
 }
 
 } // namespace nom

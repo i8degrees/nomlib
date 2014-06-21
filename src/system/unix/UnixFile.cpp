@@ -89,16 +89,21 @@ bool UnixFile::is_dir( const std::string& file_path )
   return false;
 }
 
-bool UnixFile::exists ( const std::string& file_path )
+bool UnixFile::is_file( const std::string& file_path )
 {
   struct stat fp;
 
-  if( stat( file_path.c_str(), &fp ) == 0 && S_ISREG( fp.st_mode ) )
+  if( stat( file_path.c_str(), &fp ) == 0 && ( S_ISREG( fp.st_mode ) ) )
   {
     return true;
   }
 
   return false;
+}
+
+bool UnixFile::exists( const std::string& file_path )
+{
+  return( this->is_dir( file_path ) || this->is_file( file_path ) );
 }
 
 // const std::string UnixFile::path ( const std::string& dir_path )
@@ -200,7 +205,7 @@ std::vector<std::string> UnixFile::read_dir( const std::string& dir_path )
         {
           files.push_back( entry );
         }
-        NOM_DUMP(entry);
+        // NOM_DUMP(entry);
       }
       else
       {
@@ -326,5 +331,94 @@ const std::string UnixFile::system_path( void )
 // }
 
 #pragma clang diagnostic pop
+
+bool UnixFile::mkdir( const std::string& path )
+{
+  int ret = 0;
+  mode_t perms = 0755;
+
+  if( this->exists( path ) == false )
+  {
+    ret = ::mkdir( path.c_str(), perms );
+
+    if( ret == 0 )
+    {
+      // Success!
+      return true;
+    }
+  }
+  else if( this->exists( path ) == true )
+  {
+    NOM_LOG_ERR( NOM, "Could not create directory -- file or directory path exists: ", path );
+    return false;
+  }
+
+  // Unknown err
+  return false;
+}
+
+bool UnixFile::recursive_mkdir( const std::string& path )
+{
+  std::size_t pos = std::string::npos;
+
+  Path p;
+  std::string delimiter = p.native();
+
+  if( this->exists( path ) == false )
+  {
+    pos = path.find_last_of( p.native() );
+
+    if( pos != std::string::npos )
+    {
+      this->recursive_mkdir( path.substr( 0, pos ) );
+    }
+
+    if( this->mkdir( path.c_str() ) == true )
+    {
+      return true;
+    }
+  }
+  else if( this->exists( path ) == true )
+  {
+    return false;
+  }
+
+  // Unknown err
+  return false;
+}
+
+bool UnixFile::rmdir( const std::string& path )
+{
+  int ret = 0;
+
+  ret = ::rmdir( path.c_str() );
+
+  if( ret == 0 )
+  {
+    // Successful directory removal
+    return true;
+  }
+
+  // Err (path not found or access denied at existing path?)
+  return false;
+}
+
+bool UnixFile::mkfile( const std::string& path )
+{
+  std::ofstream fp;
+
+  fp.open( path );
+
+  if( fp.is_open() && fp.good() )
+  {
+    fp << "";
+
+    // Success!
+    return true;
+  }
+
+  // Err (not defined)
+  return false;
+}
 
 } // namespace nom

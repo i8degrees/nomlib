@@ -33,49 +33,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-const std::string time( void )
+const std::string time( const std::string& format )
 {
   char timestamp[TIME_STRING_SIZE];
-  time_t timer;
+  time_t timer = std::time( nullptr );
 
-  // Broken: Fix MSVCPP compile warning that suggests using ctime_s; the
-  // "secure" variant of MS time functions.
-  #if defined( NOM_PLATFORM_WINDOWS )
-    errno_t err;
-    timer = std::time( nullptr );
-    err = ctime_s( timestamp, nom::TIME_STRING_SIZE , &timer );
-
-    // Return a null-terminated string on err
-    if( err != 0 )
-    {
-      // Error is likely due to incomplete implementation --
-      // are we compiling on an unsupported platform?
-      NOM_LOG_ERR( NOM, "Could not obtain current time & date." );
-
-      // Err
-      return "\0";
-    }
-
+  size_t ret = std::strftime( timestamp, sizeof( timestamp ), format.c_str(), std::localtime( &timer ) );
+  if( ret != 0 )
+  {
     // Success
     return timestamp;
+  }
 
-  #else // Assume POSIX Unix variant
+  // Err
+  return "\0";
+}
 
-    timer = std::time( nullptr );
+const std::string time( void )
+{
+  // The date format used is ISO 8601, but with the use of backslash instead
+  // of a dash for the delimiter. The time format is the standard ISO 8601.
+  return nom::time( "%Y/%m/%d %H:%M:%S" );
+}
 
-    // The date format used is ISO 8601, but with the use of backslash instead
-    // of a dash for the delimiter. The time format is the standard ISO 8601.
-    size_t ret = std::strftime( timestamp, sizeof( timestamp ), "%Y/%m/%d %T", std::localtime( &timer ) );
-    if( ret != 0 )
-    {
-      // Success
-      return timestamp;
-    }
-
-    // Err
-    return "\0";
-
-  #endif // NOM_PLATFORM_WINDOWS
+std::string timestamp( void )
+{
+  // The date format used is ISO 8601, but with the use of backslash instead
+  // of a dash for the delimiter. The time format is the standard ISO 8601.
+  return nom::time( "%Y_%m_%d_%H-%M-%S" );
 }
 
 uint32 ticks( void )

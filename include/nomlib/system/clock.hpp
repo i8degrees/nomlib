@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <ctime>
-// #include <locale>
+#include <locale>
 
 #include <algorithm>  // std::max
 
@@ -43,18 +43,36 @@ const nom::size TIME_STRING_SIZE = 26;
 
 /// \brief Get the current date & time.
 ///
-/// \returns A std::string containing the ISO 8601 date and time stamp on
+/// \returns A std::string containing the formatted date and time stamp on
 /// success, or a null-terminated string on err.
+///
+/// \param format Conversion specifiers that are compatible with std::strftime.
+///
+/// \note This method is platform-specific.
+///
+/// \see http://en.cppreference.com/w/cpp/chrono/c/strftime
+/// \see http://msdn.microsoft.com/en-us/library/fe06s4ak(v=vs.71).aspx
+const std::string time( const std::string& format );
+
+/// \brief Get the current date & time (logger friendly).
+///
+/// \returns A std::string containing the ISO 8601 date and time on success, or
+/// a null-terminated string on err.
 ///
 /// \code
 /// 2014/06/02 02:52:42
 /// \endcode
-///
-/// \todo Move Windows OS supporting code from **system/clock.cpp** to
-/// **system/windows.cpp**.
-///
-/// \see http://en.cppreference.com/w/cpp/chrono/c/strftime
 const std::string time( void );
+
+/// \brief Get the current date and time (file name friendly).
+///
+/// \returns A std::string containing the ISO 8601 date and time on success, or
+/// a null-terminated string on err.
+///
+/// \code
+/// 2014-06-19_13-25-21
+/// \endcode
+std::string timestamp( void );
 
 /// SDL helper function
 ///

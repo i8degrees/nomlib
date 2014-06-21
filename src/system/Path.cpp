@@ -35,7 +35,7 @@ Path::Path( void )
   // NOM_LOG_TRACE( NOM ):
 
   #if defined( NOM_PLATFORM_WINDOWS )
-    path_separator = "\\";
+    path_separator = "\/";
   #else // Assume POSIX-compliant platform
     path_separator = "/";
   #endif

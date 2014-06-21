@@ -71,6 +71,8 @@ class Path
     /// \returns If the set file path does not end with a backslash character,
     /// one is appended beforehand, otherwise the object's file path is appended
     /// to the specified file path.
+    ///
+    /// \todo Rename to append.
     std::string prepend( const std::string& path ) const;
 
   private:

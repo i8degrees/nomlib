@@ -68,7 +68,7 @@ TEST_F( FileInterfaceTest, PathDelimiter )
   #if defined( NOM_PLATFORM_POSIX )
     EXPECT_EQ( "/", p.native() );
   #elif defined ( NOM_PLATFORM_WINDOWS )
-    EXPECT_EQ( "\\", p.native() );
+    EXPECT_EQ( "\/", p.native() );
   #else // Unsupported platform?
     FAIL() << std::endl << "Unknown (unsupported) platform??" << std::endl;
   #endif
@@ -78,11 +78,7 @@ TEST_F( FileInterfaceTest, DirPath )
 {
   std::string pwd = "\0";
 
-  #if defined( NOM_PLATFORM_POSIX )
-    pwd = fp.path( "Resources/fonts/executable.exe" );
-  #else // Assumes MS Windows platform
-    pwd = fp.path( "Resources\\fonts\\executable.exe" );
-  #endif
+  pwd = fp.path( "Resources" + p.native() + "fonts" + p.native() + "executable.exe" );
 
   #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
     NOM_DUMP(pwd);
@@ -91,11 +87,7 @@ TEST_F( FileInterfaceTest, DirPath )
   ASSERT_FALSE( pwd == "" );
   ASSERT_FALSE( pwd == "." );
 
-  #if defined( NOM_PLATFORM_POSIX )
-    pwd = fp.path( "Resources/fonts/executable" );
-  #else // Assumes MS Windows platform
-    pwd = fp.path( "Resources\\fonts\\executable" );
-  #endif
+  pwd = fp.path( "Resources" + p.native() + "fonts" + p.native() + "executable" );
 
   #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
     NOM_DUMP(pwd);

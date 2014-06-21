@@ -180,7 +180,7 @@ std::vector<std::string> WinFile::read_dir( const std::string& dir_path )
   // Prepare string for use with FindFile functions.  First, copy the
   // string to a buffer, then append '\*' to the directory name.
   StringCchCopy( szDir, PATH_MAX, dir_path.c_str() );
-  StringCchCat( szDir, PATH_MAX, TEXT("\\*") );
+  StringCchCat( szDir, PATH_MAX, TEXT("\/*") );
 
   // Find the first file in the directory.
   hFind = FindFirstFile( szDir, &ffd );

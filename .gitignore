@@ -1,6 +1,7 @@
 # CMake auto-generated files
 config.hpp
 version.hpp
+revision.cpp
 
 .loc.yml
 install_options

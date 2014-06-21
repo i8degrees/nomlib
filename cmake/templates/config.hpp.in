@@ -60,11 +60,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // nomlib's standard integer types
 #include "nomlib/types.hpp"
 
-// nomlib's general-purpose macros
-#include "nomlib/macros.hpp"
-
 #include "nomlib/system/clock.hpp"
 #include "nomlib/system/log.hpp"
+
+// nomlib's general-purpose macros
+#include "nomlib/macros.hpp"
 
 /// \brief nomlib Debugging Options
 ///

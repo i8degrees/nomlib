@@ -652,6 +652,18 @@ configure_file  (
                   "${PROJECT_SOURCE_DIR}/${NOMLIB_HEADERS_DIR}/config.hpp"
                 )
 
+# Make a version file containing the current version from git
+#
+# Source: http://brianmilco.blogspot.com/2012/11/cmake-automatically-use-git-tags-as.html
+include( GetGitRevisionDescription )
+git_describe( GIT_REVISION )
+string( REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.[0-9]+(.*)" "\\1" VERSION_SHA1 "${GIT_REVISION}" )
+
+configure_file  (
+                  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates/revision.cpp.in
+                  ${SRC_DIR}/revision.cpp
+                )
+
 # Uninstall target support; 'make uninstall'
 configure_file  (
                   "${CMAKE_TEMPLATE_PATH}/uninstall.cmake.in"

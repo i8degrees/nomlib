@@ -81,7 +81,19 @@ class RenderWindow: public Renderer
     ///
     /// \todo Rename to initialize
     bool create (
-                  const std::string& window_title, int32 width, int32 height,
+                  const std::string& window_title,
+                  int32 width,
+                  int32 height,
+                  uint32 window_flags,
+                  uint32 context_flags = SDL_RENDERER_ACCELERATED
+                );
+
+    /// Initialize a SDL window and renderer.
+    ///
+    /// \see nom::RenderWindow::create.
+    bool create (
+                  const std::string& window_title,
+                  const Size2i& res,
                   uint32 window_flags,
                   uint32 context_flags = SDL_RENDERER_ACCELERATED
                 );
@@ -95,8 +107,11 @@ class RenderWindow: public Renderer
     /// Obtain a SDL_Surface pointer from this Window.
     SDL_SURFACE::RawPtr window_surface ( void ) const;
 
+    /// \brief Get validity of the window and rendering context.
+    bool valid( void ) const;
+
     /// Is this object initialized -- not nullptr?
-    bool window_valid ( void ) const;
+    bool window_valid( void ) const;
 
     /// Obtain this Window's position.
     Point2i position ( void ) const;
@@ -268,6 +283,15 @@ class RenderWindow: public Renderer
     /// \todo Test me
     void set_maximum_window_size ( int max_width, int max_height );
 
+    /// \brief Output a screen-shot of the window as a PNG file.
+    ///
+    /// \param    filename  Absolute or relative file path.
+    ///
+    /// \todo Restructure code shared with ::save_screenshot.
+    ///
+    /// \see RenderWindow::save_screenshot, Image::save_png.
+    bool save_png_file( const std::string& filename ) const;
+
     /// Save a screen shot of the window as a PNG file
     ///
     /// \param    filename  Absolute or relative file path
@@ -279,7 +303,9 @@ class RenderWindow: public Renderer
     ///           the given filename string.
     ///
     /// \todo    Pixels pitch calculation (see screenshot.initialize call)
-    bool save_screenshot ( const std::string& filename ) const;
+    ///
+    /// \see RenderWindow::save_png_file, Image::save_png.
+    bool save_screenshot( const std::string& filename ) const;
 
     /// Set the current Window as the active rendering context; this must be
     /// called before doing any drawing (this includes creation of textures)

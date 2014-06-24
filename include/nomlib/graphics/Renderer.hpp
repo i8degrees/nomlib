@@ -137,7 +137,10 @@ class Renderer
     ///
     /// Sets both a new view port and any necessary rescaling to fit within a
     /// fixed, logical resolution for rendering.
-    bool set_logical_size ( int width, int height );
+    bool set_logical_size( int width, int height );
+
+    /// \see ::set_logical_size.
+    bool set_logical_size( const Size2i& size );
 
     /// Set a new drawing area for rendering
     ///

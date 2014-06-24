@@ -50,9 +50,12 @@ RenderWindow::~RenderWindow( void )
 }
 
 bool RenderWindow::create (
-                      const std::string& window_title, int32 width, int32 height,
-                      uint32 window_flags, uint32 context_flags
-                    )
+                            const std::string& window_title,
+                            int32 width,
+                            int32 height,
+                            uint32 window_flags,
+                            uint32 context_flags
+                          )
 {
   this->window_.reset ( SDL_CreateWindow  (
                                             window_title.c_str(),
@@ -100,6 +103,16 @@ NOM_LOG_ERR ( NOM, "Could not create SDL renderer." );
   return true;
 }
 
+bool RenderWindow::create (
+                            const std::string& window_title,
+                            const Size2i& res,
+                            uint32 window_flags,
+                            uint32 context_flags
+                          )
+{
+  return this->create( window_title, res.w, res.h, window_flags, context_flags );
+}
+
 RenderWindow::RawPtr RenderWindow::get ( void )
 {
   return this;
@@ -115,9 +128,22 @@ SDL_SURFACE::RawPtr RenderWindow::window_surface ( void ) const
   return SDL_GetWindowSurface ( this->window() );
 }
 
-bool RenderWindow::window_valid ( void ) const
+bool RenderWindow::valid( void ) const
 {
-  if ( this->window() != nullptr ) return true;
+  if( this->window() != nullptr && this->renderer_valid() == true )
+  {
+    return true;
+  }
+
+  return false;
+}
+
+bool RenderWindow::window_valid( void ) const
+{
+  if ( this->window() != nullptr )
+  {
+    return true;
+  }
 
   return false;
 }
@@ -377,6 +403,39 @@ void RenderWindow::set_maximum_window_size ( int max_width, int max_height )
   SDL_SetWindowMaximumSize ( this->window(), max_width, max_height );
 }
 
+bool RenderWindow::save_png_file( const std::string& filename ) const
+{
+  int bpp = 0; // bits per pixel
+  uint32 red_mask = 0;
+  uint32 green_mask = 0;
+  uint32 blue_mask = 0;
+  uint32 alpha_mask = 0;
+
+  RendererInfo caps = this->caps(); // Pixel format
+  Image screenshot;                 // Surface
+
+  // Width & height of target in pixels
+  Point2i renderer_size = Renderer::size();
+
+  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( caps.optimal_texture_format(), &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
+  {
+    NOM_LOG_ERR( NOM, SDL_GetError() );
+    return false;
+  }
+
+  screenshot.initialize( Renderer::pixels(), renderer_size.x, renderer_size.y, bpp, (renderer_size.x * 4), red_mask, green_mask, blue_mask, alpha_mask );
+
+  if( screenshot.save_png( filename ) == false )
+  {
+    return false;
+  }
+
+  // Success!
+  // NOM_LOG_INFO( NOM, "The screen-shot file is saved at: ", filename );
+
+  return true;
+}
+
 bool RenderWindow::save_screenshot ( const std::string& filename ) const
 {
   RendererInfo caps = this->caps();
@@ -388,7 +447,6 @@ bool RenderWindow::save_screenshot ( const std::string& filename ) const
   std::string file_name, basename, prefix, timestamp, extension;
 
   Point2i renderer_size = Renderer::size(); // Width & height of target in pixels
-  SDL_SURFACE::UniquePtr buffer ( nullptr, priv::FreeSurface );
 
   int bpp = 0; // bits per pixel
   uint32 red_mask = 0;
@@ -414,7 +472,7 @@ bool RenderWindow::save_screenshot ( const std::string& filename ) const
   if ( screenshot.save_png( file_name ) == false ) return false;
 
   // Success!
-  NOM_LOG_INFO( NOM, "The screenshot file is saved at: " + file_name );
+  // NOM_LOG_INFO( NOM, "The screenshot file is saved at: " + file_name );
 
   return true;
 }

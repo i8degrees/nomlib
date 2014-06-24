@@ -77,8 +77,8 @@ class Image
     /// Is this object initialized? Valid when *NOT* nullptr
     bool valid ( void ) const;
 
-    /// Initialize an image surface using the data from an existing pixel buffer
-    /// source.
+    /// Initialize an image surface using the data from an existing pixel
+    /// buffer (from a SDL_Surface).
     ///
     /// \param pixels           Typically a void pointer cast to nom::uint16 or nom::uint32
     /// \param bits_per_pixel   Bits per pixel
@@ -104,7 +104,10 @@ class Image
     ///
     /// \param size         Point2i initialized with the width & height in pixels
     /// \param pixel_format Pixel format to use for the memory buffer.
-    bool create ( const Point2i& size, uint32 pixel_format );
+    ///
+    /// \deprecated
+    bool create( const Point2i& size, uint32 pixel_format );
+    bool create( const Size2i& size, uint32 pixel_format );
 
     /// \brief  Create a new memory buffer using the most optimal pixel format
     ///         detected for your graphics hardware.
@@ -215,7 +218,7 @@ class Image
     /// \param      TRUE to enable RLE acceleration; FALSE to disable
     bool RLE ( bool flag );
 
-    /// \brief Read a RGBA pixel from the video surface
+    /// \brief Read a RGBA pixel from the video surface.
     ///
     /// \returns  A 32-bit encoded color value, dependent upon the pixel format.
     ///
@@ -228,7 +231,17 @@ class Image
     ///       is assumed 32-bit.
     ///
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixel blits
-    uint32 pixel ( int x, int y );
+    uint32 pixel( int x, int y ) const;
+
+    /// \brief Read a RGBA pixel from the video surface.
+    ///
+    /// \see Image::pixel.
+    Color4i color4i_pixel( int x, int y ) const;
+
+    /// \brief Read a RGBA pixel from the video surface.
+    ///
+    /// \see Image::color4i_pixel, Image::pixel.
+    Color4i pixel( const Point2i& pos ) const;
 
     /// \brief Blit a RGBA pixel onto the video surface
     ///
@@ -240,7 +253,7 @@ class Image
     ///       depths are supported.
     ///
     /// \todo Test 8-bit, 15/16-bit & 24-bit pixel blits
-    void set_pixel ( int x, int y, const Color4i& color );
+    void set_pixel( int x, int y, const Color4i& color );
 
     /// Set a new blending mode for blitting
     bool set_blend_mode ( const SDL_BlendMode blend );

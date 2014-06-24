@@ -168,7 +168,7 @@ bool Image::initialize ( const Point2i& size )
   return true;
 }
 
-bool Image::create ( const Point2i& size, uint32 pixel_format )
+bool Image::create( const Point2i& size, uint32 pixel_format )
 {
   int bpp = 0; // bits per pixel
   uint32 red_mask = 0;
@@ -190,6 +190,11 @@ bool Image::create ( const Point2i& size, uint32 pixel_format )
   }
 
   return true;
+}
+
+bool Image::create( const Size2i& size, uint32 pixel_format )
+{
+  return this->create( Point2i( size.w, size.h ), pixel_format );
 }
 
 int32 Image::width ( void ) const
@@ -448,7 +453,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-uint32 Image::pixel ( int x, int y )
+uint32 Image::pixel( int x, int y ) const
 {
   switch ( this->bits_per_pixel() )
   {
@@ -490,7 +495,25 @@ uint32 Image::pixel ( int x, int y )
   } // end switch
 }
 
-void Image::set_pixel ( int x, int y, const Color4i& color )
+Color4i Image::color4i_pixel( int x, int y ) const
+{
+  uint32 c = 0;
+
+  c = this->pixel( x, y );
+
+  return nom::pixel( c, this->pixel_format() );
+}
+
+Color4i Image::pixel( const Point2i& pos ) const
+{
+  uint32 c = 0;
+
+  c = this->pixel( pos.x, pos.y );
+
+  return nom::pixel( c, this->pixel_format() );
+}
+
+void Image::set_pixel( int x, int y, const Color4i& color )
 {
   uint32 c = 0;
 

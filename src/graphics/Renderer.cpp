@@ -218,7 +218,7 @@ bool Renderer::fill ( const Color4i& color )
   return true;
 }
 
-bool Renderer::set_logical_size ( int width, int height )
+bool Renderer::set_logical_size( int width, int height )
 {
   if ( SDL_RenderSetLogicalSize ( this->renderer(), width, height ) != 0 )
   {
@@ -226,6 +226,11 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
   return true;
+}
+
+bool Renderer::set_logical_size( const Size2i& size )
+{
+  return this->set_logical_size( size.w, size.h );
 }
 
 bool Renderer::set_viewport ( const IntRect& bounds )

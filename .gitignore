@@ -18,9 +18,6 @@ third-party/osx
 third-party/ios
 third-party/linux
 third-party/common/*
-tests/graphics-tests
-tests/math-tests
-tests/system-tests
 
 # nomlib's github wiki
 wiki

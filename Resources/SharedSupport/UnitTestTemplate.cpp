@@ -38,24 +38,42 @@ namespace nom {
 class Template: public ::testing::Test
 {
   public:
+    /// \remarks This method is called at the start of each unit test.
     Template( void )
     {
-      //
+      // NOM_LOG_TRACE( NOM );
     }
 
-    ~Template( void )
+    /// \remarks This method is called at the end of each unit test.
+    virtual ~Template( void )
     {
-      //
+      // NOM_LOG_TRACE( NOM );
     }
 
+    /// \remarks This method is called after construction, at the start of each
+    /// unit test.
     virtual void SetUp( void )
     {
-      //
+      // NOM_LOG_TRACE( NOM );
     }
 
+    /// \remarks This method is called before destruction, at the end of each
+    /// unit test.
     virtual void TearDown( void )
     {
-      //
+      // NOM_LOG_TRACE( NOM );
+    }
+
+    /// \remarks This method is called at the start of each test case.
+    static void SetUpTestCase( void )
+    {
+      // NOM_LOG_TRACE( NOM );
+    }
+
+    /// \remarks This method is called at the end of each test case.
+    static void TearDownTestCase( void )
+    {
+      // NOM_LOG_TRACE( NOM );
     }
 
   protected:

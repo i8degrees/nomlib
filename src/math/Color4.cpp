@@ -62,7 +62,7 @@ template <> const Color4i Color4i::SkyBlue (110,144,190);
 
 // template <> const Color4iColors Color4iColors::ButtonGradient{ Color4i( 201, 222, 241, 255 ), Color4i( 136, 183, 237, 255 ) };
 
-template <> const Color4f Color4f::Black (1.0f, 0.0f, 0.0f);
+template <> const Color4f Color4f::Black (0.0f, 0.0f, 0.0f);
 template <> const Color4f Color4f::White (1.0f, 1.0f, 1.0f);
 template <> const Color4f Color4f::Red (1.0f, 0.0f, 0.0f);
 template <> const Color4f Color4f::Green (0.0f, 1.0f, 0.0f);

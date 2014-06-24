@@ -63,17 +63,31 @@ struct Color4
       //NOM_LOG_TRACE(NOM);
     }
 
-    /// \brief Copy constructor
+    /// \brief Copy constructor.
     ///
     /// \remarks The explicit keyword here will result in compile-time errors
     /// in any instance that it finds incompatible casting occurring, such as if
     /// you try to down-cast a Color4<int16> to a Color4<uint8>.
     template <typename U>
-    explicit Color4 ( const Color4<U>& copy ) :
-      r { static_cast<T> ( copy.r ) },
-      g { static_cast<T> ( copy.g ) },
-      b { static_cast<T> ( copy.b ) },
-      a { static_cast<T> ( copy.a ) }
+    Color4( const Color4<U>& rhs ) :
+      r{ static_cast<T> ( rhs.r ) },
+      g{ static_cast<T> ( rhs.g ) },
+      b{ static_cast<T> ( rhs.b ) },
+      a{ static_cast<T> ( rhs.a ) }
+    {
+      //NOM_LOG_TRACE(NOM);
+    }
+
+    /// \brief Copy constructor.
+    ///
+    /// \remarks The explicit keyword here will result in compile-time errors
+    /// in any instance that it finds incompatible casting occurring, such as if
+    /// you try to down-cast a Color4<int16> to a Color4<uint8>.
+    explicit Color4( const Color4<float>& rhs ) :
+      r{ static_cast<float> ( rhs.r ) },
+      g{ static_cast<float> ( rhs.g ) },
+      b{ static_cast<float> ( rhs.b ) },
+      a{ static_cast<float> ( rhs.a ) }
     {
       //NOM_LOG_TRACE(NOM);
     }
@@ -98,11 +112,30 @@ struct Color4
       //NOM_LOG_TRACE(NOM);
     }
 
-    /// Convenience getter for obtaining a copy of this object
-    inline const Color4<T>& get ( void ) const
-    {
-      return *this;
-    }
+    // \brief Method overload of binary operator / (Division)
+    //
+    // \param rhs Left operand.
+    // \param rhs Right operand.
+    //
+    // \remarks Division of both objects; result is assigned to the left operand.
+    //
+    // \returns Reference to the left operand.
+    //
+    // \note Borrowed from Ogre::ColourValue.
+    // inline Color4<float> operator / ( const float factor ) const
+    // {
+    //   NOM_ASSERT( factor != 0 );
+
+    //   Color4<float> div;
+    //   T inv = 1.0f / factor;
+
+    //   div.r = ( r / 255 ) * inv;
+    //   div.g = ( g / 255 ) * inv;
+    //   div.b = ( b / 255 ) * inv;
+    //   div.a = ( a / 255 ) * inv;
+
+    //   return div;
+    // }
 
     /// \brief 100% transparent alpha channel value
     static const T ALPHA_TRANSPARENT;
@@ -148,6 +181,20 @@ struct Color4
     T a;
 };
 
+/// \brief Get the difference color blend of two colors.
+///
+/// \remarks Implements the color blending of the "Difference" layer mode.
+template <typename T>
+inline Color4<T> difference_color_blend( const Color4<T>& lhs, const Color4<T>& rhs )
+{
+  Color4<T> c;
+  c.r = abs( lhs.r - rhs.r );
+  c.g = abs( lhs.g - rhs.g );
+  c.b = abs( lhs.b - rhs.b );
+
+  return c;
+}
+
 /// Pretty prints nom::Color4 object
 ///
 /// \remarks Uses the following formatting string:
@@ -168,6 +215,26 @@ inline std::ostream& operator << ( std::ostream& os, const Color4<T>& color )
   << static_cast<sint> ( color.b )
   << COLOR_DELIMITER
   << static_cast<sint> ( color.a );
+
+  return os;
+}
+
+/// Pretty prints nom::Color4 object
+///
+/// \remarks Uses the following formatting string:
+/// \code
+/// <color.r>, <color.g>, <color.b>, <color.a>
+/// \endcode
+inline std::ostream& operator <<( std::ostream& os, const Color4<float>& color )
+{
+  os
+  << static_cast<float> ( color.r )
+  << COLOR_DELIMITER
+  << static_cast<float> ( color.g )
+  << COLOR_DELIMITER
+  << static_cast<float> ( color.b )
+  << COLOR_DELIMITER
+  << static_cast<float> ( color.a );
 
   return os;
 }
@@ -201,6 +268,17 @@ inline Color4<T> operator + ( const Color4<T>& left, const Color4<T>& right )
 }
 
 /// Values that exceed 255 are clamped to 255
+inline Color4<float> operator +( const Color4<float>& lhs, const Color4<float>& rhs )
+{
+  return Color4<float>  (
+                          NOM_SCAST( float, std::min( ( lhs.r + rhs.r / 255 ), 1.0f ) ),
+                          NOM_SCAST( float, std::min( ( lhs.g + rhs.g / 255 ), 1.0f ) ),
+                          NOM_SCAST( float, std::min( ( lhs.b + rhs.b / 255 ), 1.0f ) ),
+                          NOM_SCAST( float, std::min( ( lhs.a + rhs.a / 255 ), 1.0f ) )
+                        );
+}
+
+/// Values that exceed 255 are clamped to 255
 template <typename T>
 inline Color4<T> operator ++ ( Color4<T>& left )
 {
@@ -211,15 +289,27 @@ inline Color4<T> operator ++ ( Color4<T>& left )
                 );
 }
 
-/// Values that exceed 255 are clamped to 255
 template <typename T>
-inline Color4<T> operator - ( const Color4<int16>& left, const Color4<int16>& right )
+/// Values that exceed 255 are clamped to 255
+inline Color4<T> operator - ( const Color4<T>& left, const Color4<T>& right )
 {
-  return Color4<T> (  static_cast<T> ( std::min ( left.r - right.r, 255 ) ),
-                    static_cast<T> ( std::min ( left.g - right.g, 255 ) ),
-                    static_cast<T> ( std::min ( left.b - right.b, 255 ) ),
-                    static_cast<T> ( std::min ( left.a - right.a, 255 ) )
-                  );
+  return Color4<T>  (
+                      static_cast<T> ( std::min( left.r - right.r, 255 ) ),
+                      static_cast<T> ( std::min( left.g - right.g, 255 ) ),
+                      static_cast<T> ( std::min( left.b - right.b, 255 ) ),
+                      static_cast<T> ( std::min( left.a - right.a, 255 ) )
+                    );
+}
+
+/// Values that exceed 255 are clamped to 255
+inline Color4<float> operator -( const Color4<float>& lhs, const Color4<float>& rhs )
+{
+  return Color4<float>  (
+                          NOM_SCAST( float, std::min( ( lhs.r - rhs.r ) / 255, 1.0f ) ),
+                          NOM_SCAST( float, std::min( ( lhs.g - rhs.g ) / 255, 1.0f ) ),
+                          NOM_SCAST( float, std::min( ( lhs.b - rhs.b ) / 255, 1.0f ) ),
+                          NOM_SCAST( float, std::min( ( lhs.a - rhs.a ) / 255, 1.0f ) )
+                        );
 }
 
 /// Values that exceed 255 are clamped to 255
@@ -235,13 +325,14 @@ inline Color4<T> operator -- ( Color4<T>& left )
 
 /// Values that exceed 255 are clamped to 255
 template <typename T>
-inline Color4<T> operator * ( const Color4<int16>& left, const Color4<int16>& right )
+inline Color4<T> operator * ( const Color4<T>& left, const Color4<T>& right )
 {
-  return Color4<T> ( static_cast<T> ( left.r * right.r / 255 ),
-                    static_cast<T> ( left.g * right.g / 255 ),
-                    static_cast<T> ( left.b * right.b / 255 ),
-                    static_cast<T> ( left.a * right.a / 255 )
-                  );
+  return Color4<T>  (
+                      static_cast<T> ( left.r * right.r / 255 ),
+                      static_cast<T> ( left.g * right.g / 255 ),
+                      static_cast<T> ( left.b * right.b / 255 ),
+                      static_cast<T> ( left.a * right.a / 255 )
+                    );
 }
 
 template <typename T>

@@ -348,6 +348,10 @@ set ( JSONCPP_SOURCE "${NOMLIB_THIRD_PARTY_INCLUDE_DIR}/jsoncpp/jsoncpp.cpp" )
 set ( JSONCPP_INCLUDE_DIR "${NOMLIB_THIRD_PARTY_INCLUDE_DIR}/jsoncpp" )
 set ( EXT_HEADERS ${EXT_HEADERS} ${JSONCPP_INCLUDE_DIR} )
 
+# TCLAP dependency (headers only)
+set( TCLAP_INCLUDE_DIR "${NOMLIB_THIRD_PARTY_INCLUDE_DIR}/tclap" )
+set( EXT_HEADERS ${EXT_HEADERS} ${TCLAP_INCLUDE_DIR} )
+
 message ( STATUS "SDL2 headers: ${SDL2_INCLUDE_DIR}" )
 message ( STATUS "SDL2 library: ${SDL2_LIBRARY}" )
 
@@ -369,6 +373,12 @@ if( NOT EXISTS ${JSONCPP_INCLUDE_DIR} )
   message ( FATAL_ERROR "JsonCpp headers *NOT* found: ${JSONCPP_INCLUDE_DIR}" )
   message ( FATAL_ERROR "JsonCpp source *NOT* found: ${JSONCPP_SOURCE}" )
 endif( NOT EXISTS ${JSONCPP_INCLUDE_DIR} )
+
+if( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
+  message( FATAL_ERROR "TCLAP headers not found: ${TCLAP_INCLUDE_DIR}" )
+else( EXISTS ${TCLAP_INCLUDE_DIR} )
+  message( STATUS "TCLAP headers found: ${TCLAP_INCLUDE_DIR}" )
+endif( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
 
 # External header files inclusion
 include_directories ( ${EXT_HEADERS} )

@@ -26,20 +26,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SERIALIZERS_HPP
-#define NOMLIB_SERIALIZERS_HPP
+#include "nomlib/tests/common/MinimalTestResultWriter.hpp"
 
-// Public header file
+// Forward declarations
+#include "nomlib/tests/common/VisualTestSet.hpp"
 
-#include "nomlib/config.hpp"
-#include "nomlib/serializers/serializers_config.hpp"
+namespace nom {
 
-#include "nomlib/serializers/JsonConfigFile.hpp"
-#include "nomlib/serializers/JsonCppSerializer.hpp"
-#include "nomlib/serializers/JsonCppDeserializer.hpp"
-#include "nomlib/serializers/RapidXmlSerializer.hpp"
-#include "nomlib/serializers/RapidXmlDeserializer.hpp"
+MinimalTestResultWriter::MinimalTestResultWriter  (
+                                                    const VisualTestSet& set1,
+                                                    const VisualTestSet& set2,
+                                                    const ImageDiffResultBatch&
+                                                    results
+                                                  ) :
+  TestResultWriter( set1, set2, results )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
-#include "nomlib/serializers/MiniHTML.hpp"
+MinimalTestResultWriter::~MinimalTestResultWriter( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
-#endif // include guard defined
+std::string MinimalTestResultWriter::output( void )
+{
+  std::stringstream os;
+
+  for( auto i = 0; i < this->results_.size(); ++i )
+  {
+    os  <<  this->results_[i].test_name
+        <<  "="
+        << ( this->results_[i].passed ? "Passed" : "Failed" )
+        << "\n";
+  }
+
+  return os.str();
+}
+
+} // namespace nom

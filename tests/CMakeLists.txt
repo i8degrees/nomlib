@@ -22,15 +22,18 @@
 # unit test's main functions. In summary, only the library target
 # ${GTEST_LIBRARY} should be used, to ensure cross-platform support.
 
+# UnitTest framework tests
+set( NOM_BUILD_COMMON_TESTS on )
+
 # Graphics tests
 set( NOM_BUILD_RENDERWINDOW_TESTS off )
 
 # GUI tests
 set( NOM_BUILD_GUI_UI_ITEM_CONTAINER_TESTS off )
 set( NOM_BUILD_GUI_UI_EVENT_DISPATCHER_TESTS off )
-set( NOM_BUILD_GUI_UI_WIDGET_TESTS on )
-set( NOM_BUILD_GUI_LISTBOX_LAYOUT_TESTS on )
-set( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS on )
+set( NOM_BUILD_GUI_UI_WIDGET_TESTS off )
+set( NOM_BUILD_GUI_LISTBOX_LAYOUT_TESTS off )
+set( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS off )
 
 # Math tests
 set( NOM_BUILD_MATH_TESTS off )
@@ -42,6 +45,7 @@ set( NOM_BUILD_PTREE_TESTS off )
 set( NOM_BUILD_SERIALIZERS_JSON_TESTS off )
 set( NOM_BUILD_SERIALIZERS_XML_TESTS off )
 set( NOM_BUILD_JSON_CONFIG_FILE_TESTS off )
+set( NOM_BUILD_SERIALIZERS_HTML_TESTS off )
 
 # System tests
 set( NOM_BUILD_FILE_TESTS on )
@@ -78,6 +82,14 @@ file ( GLOB NOM_TESTS_COMMON_HEADERS ${NOM_TESTS_COMMON_HEADERS} "${NOM_TESTS_HE
 set (
       NOM_TESTS_COMMON_SOURCE
       ${NOM_TESTS_SOURCE_DIR}/common/UnitTest.cpp
+      ${NOM_TESTS_SOURCE_DIR}/common/VisualTestSet.cpp
+      ${NOM_TESTS_SOURCE_DIR}/common/VisualUnitTest.cpp
+      ${NOM_TESTS_SOURCE_DIR}/common/ImageDiff.cpp
+      ${NOM_TESTS_SOURCE_DIR}/common/TestResultWriter.cpp
+      ${NOM_TESTS_SOURCE_DIR}/common/VisualUnitTestResultWriter.cpp
+      ${NOM_TESTS_SOURCE_DIR}/common/HTMLTestResultWriter.cpp
+      ${NOM_TESTS_SOURCE_DIR}/common/MinimalTestResultWriter.cpp
+
     )
 
 if( NOM_BUILD_TESTS )
@@ -91,6 +103,7 @@ endif( NOM_BUILD_TESTS )
 
 include_directories( "${NOM_TESTS_HEADERS_DIR}" )
 
+include( "${NOM_TESTS_SOURCE_DIR}/common/CMakeLists.txt" )
 include( "${NOM_TESTS_SOURCE_DIR}/graphics/CMakeLists.txt" )
 include( "${NOM_TESTS_SOURCE_DIR}/gui/CMakeLists.txt" )
 include( "${NOM_TESTS_SOURCE_DIR}/math/CMakeLists.txt" )

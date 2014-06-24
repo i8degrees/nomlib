@@ -121,6 +121,7 @@ set ( GUI_SOURCE
 file ( GLOB SERIALIZERS_HEADERS "${NOMLIB_HEADERS_DIR}/serializers/*.hpp" )
 set ( SERIALIZERS_SOURCE
       ${SRC_DIR}/serializers/IConfigFile.cpp
+      ${SRC_DIR}/serializers/MiniHTML.cpp
     )
 
 # JSON module

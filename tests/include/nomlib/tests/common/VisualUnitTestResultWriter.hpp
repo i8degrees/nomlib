@@ -26,20 +26,50 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SERIALIZERS_HPP
-#define NOMLIB_SERIALIZERS_HPP
+#ifndef NOMLIB_TESTS_COMMON_VISUAL_UNIT_TEST_RESULT_WRITER_HPP
+#define NOMLIB_TESTS_COMMON_VISUAL_UNIT_TEST_RESULT_WRITER_HPP
 
-// Public header file
+#include <iostream>
+#include <string>
+
+#include "gtest/gtest.h"
 
 #include "nomlib/config.hpp"
-#include "nomlib/serializers/serializers_config.hpp"
+#include "nomlib/tests/common/UnitTest.hpp"
 
-#include "nomlib/serializers/JsonConfigFile.hpp"
-#include "nomlib/serializers/JsonCppSerializer.hpp"
-#include "nomlib/serializers/JsonCppDeserializer.hpp"
-#include "nomlib/serializers/RapidXmlSerializer.hpp"
-#include "nomlib/serializers/RapidXmlDeserializer.hpp"
+namespace nom {
 
-#include "nomlib/serializers/MiniHTML.hpp"
+class VisualUnitTestResultWriter: public ::testing::EmptyTestEventListener
+{
+  public:
+    static void initialize  (
+                              const std::string& ref_path,
+                              const std::string& output_path
+                            );
+
+  private:
+    /// \brief Ensure one-time initialization of the input & output directories.
+    ///
+    /// \remarks Ensure that the directory paths stay in sync across unit test
+    /// runs.
+    static bool initialized_;
+
+    static std::string ref_dir_;
+    static std::string output_dir_;
+
+    /// \remarks This method is called after the test case ends.
+    virtual void OnTestCaseEnd( const ::testing::TestCase& test_info );
+};
+
+} // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::VisualUnitTestResultWriter
+/// \ingroup tests
+///
+/// HTML test result output for nom::VisualUnitTest using Google Test's
+/// event listener framework.
+///
+/// \see Adapted from the implementation for [Ogre3D](http://www.ogre3d.org/tikiwiki/Visual+Unit+Testing+Framework) by Riley Adams <praetor57@gmail.com>.
+///

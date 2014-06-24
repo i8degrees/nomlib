@@ -135,3 +135,24 @@ if( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
           )
 
 endif( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
+
+if( NOM_BUILD_SERIALIZERS_HTML_TESTS )
+
+  add_executable  (
+                    MiniHTMLTest
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/MiniHTMLTest.cpp
+                  )
+
+  target_link_libraries (
+                          MiniHTMLTest
+                          ${GTEST_LIBRARY}
+                          ${PROJECT_NAME} # nomlib
+                        )
+
+  GTEST_ADD_TESTS (
+                    MiniHTMLTest
+                    "MiniHTMLTest"
+                    ${NOM_TESTS_SOURCE_DIR}/serializers/MiniHTMLTest.cpp
+                  )
+
+endif( NOM_BUILD_SERIALIZERS_HTML_TESTS )

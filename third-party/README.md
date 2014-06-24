@@ -18,6 +18,7 @@ Both the 64-bit and 32-bit official development binaries versions of:
 * [RapidXML v1.13](https://sourceforge.net/p/rapidxml) with [bug fix #16](https://sourceforge.net/p/rapidxml/bugs/16/) applied to rapidxml_print.hpp.
 * [Google Test v1.7.0](https://code.google.com/p/googletest/)
 * [JsonCpp v0.6.0-rc2](https://sf.net/p/jsoncpp) built with its distributed amalgamate.py script.
+* [TCLAP headers on branch master, commit 12cee3](https://sourceforge.net/p/tclap/code/ci/master/tree/)
 
   * Packaged only under Mac OS X
       * [libsndfile v1.0.24](http://www.mega-nerd.com/libsndfile/)

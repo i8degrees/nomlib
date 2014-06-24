@@ -29,9 +29,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_TESTS_COMMON_HPP
 #define NOMLIB_TESTS_COMMON_HPP
 
-// Public header file
+#include "gtest/gtest.h"  // Google Test framework
 
 #include "nomlib/config.hpp"
 #include "nomlib/tests/common/UnitTest.hpp"
+#include "nomlib/tests/common/VisualUnitTest.hpp"
+#include "nomlib/tests/common/VisualTestSet.hpp"
+#include "nomlib/tests/common/ImageDiff.hpp"
 
 #endif // include guard defined

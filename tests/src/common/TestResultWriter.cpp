@@ -26,20 +26,47 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SERIALIZERS_HPP
-#define NOMLIB_SERIALIZERS_HPP
+#include "nomlib/tests/common/TestResultWriter.hpp"
 
-// Public header file
+// Forward declarations
+#include "nomlib/tests/common/VisualTestSet.hpp"
 
-#include "nomlib/config.hpp"
-#include "nomlib/serializers/serializers_config.hpp"
+namespace nom {
 
-#include "nomlib/serializers/JsonConfigFile.hpp"
-#include "nomlib/serializers/JsonCppSerializer.hpp"
-#include "nomlib/serializers/JsonCppDeserializer.hpp"
-#include "nomlib/serializers/RapidXmlSerializer.hpp"
-#include "nomlib/serializers/RapidXmlDeserializer.hpp"
+TestResultWriter::TestResultWriter  (
+                                      const VisualTestSet& set1,
+                                      const VisualTestSet& set2,
+                                      const ImageDiffResultBatch& results
+                                    ) :
+  set1_{ set1 },
+  set2_{ set2 },
+  results_{ results }
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
-#include "nomlib/serializers/MiniHTML.hpp"
+TestResultWriter::~TestResultWriter( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
-#endif // include guard defined
+void TestResultWriter::save_file( const std::string& filename )
+{
+  std::ofstream fp;
+
+  fp.open( filename );
+
+  if( fp.is_open() )
+  {
+    fp << output();
+
+    fp.close();
+  }
+}
+
+std::string TestResultWriter::output( void )
+{
+  return "\0";
+}
+
+} // namespace nom

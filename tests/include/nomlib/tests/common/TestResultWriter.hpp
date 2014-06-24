@@ -26,20 +26,49 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SERIALIZERS_HPP
-#define NOMLIB_SERIALIZERS_HPP
+#ifndef NOMLIB_TESTS_COMMON_TEST_RESULT_WRITER_HPP
+#define NOMLIB_TESTS_COMMON_TEST_RESULT_WRITER_HPP
 
-// Public header file
+#include <fstream>
+#include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/serializers/serializers_config.hpp"
+#include "nomlib/tests/common/ImageDiffResult.hpp"
 
-#include "nomlib/serializers/JsonConfigFile.hpp"
-#include "nomlib/serializers/JsonCppSerializer.hpp"
-#include "nomlib/serializers/JsonCppDeserializer.hpp"
-#include "nomlib/serializers/RapidXmlSerializer.hpp"
-#include "nomlib/serializers/RapidXmlDeserializer.hpp"
+namespace nom {
 
-#include "nomlib/serializers/MiniHTML.hpp"
+// Forward declarations
+class VisualTestSet;
+
+/// \brief Abstract class for outputting test results
+class TestResultWriter
+{
+  public:
+    TestResultWriter  (
+                        const VisualTestSet& set1,
+                        const VisualTestSet& set2,
+                        const ImageDiffResultBatch& results
+                      );
+
+    virtual ~TestResultWriter( void );
+
+    virtual void save_file( const std::string& filename );
+
+    virtual std::string output( void );
+
+  protected:
+    const VisualTestSet& set1_;
+    const VisualTestSet& set2_;
+
+    ImageDiffResultBatch results_;
+};
+
+} // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::TestResultWriter
+/// \ingroup tests
+///
+/// \see Adapted from the implementation for [Ogre3D](http://www.ogre3d.org/tikiwiki/Visual+Unit+Testing+Framework) by Riley Adams <praetor57@gmail.com>.
+///

@@ -29,10 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 
-#include "gtest/gtest.h"
-
-#include "nomlib/tests/common.hpp"      // nom::UnitTest
-#include "nomlib/tests/gui/common.hpp"  // nom::priv helpers
+#include "nomlib/tests/common.hpp"      // nom::UnitTest framework
+#include "nomlib/tests/gui/common.hpp"  // GUI helpers
 
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
@@ -41,77 +39,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief Relative filename path to saved screen shots.
-///
-/// Default path should resolve to the same directory as the output binary.
-const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
-
 /// \note The resources and variables used derived from examples/gui_button.cpp
 /// and tests/gui/ListBoxLayoutTest.cpp.
-class ButtonLayoutTest: public ::testing::Test
+class ButtonLayoutTest: public VisualUnitTest
 {
   public:
-    /// \remarks Initialization of resources.
     ButtonLayoutTest( void ) :
-      app_state{ true }
+      // Use default resolution provided by VisualUnitTest
+      WINDOW_WIDTH{ resolution().w },
+      WINDOW_HEIGHT{ resolution().h }
     {
-      this->main_window = nullptr;
+      // NOM_LOG_TRACE( NOM );
 
-      nom::init_third_party( InitHints::DefaultInit );
-
-      if( nom::set_hint( SDL_HINT_RENDER_VSYNC, "0" ) == false )
-      {
-        NOM_LOG_INFO( NOM, "Could not disable vertical refresh." );
-      }
-
-      // this->input_mapper.clear();
-
-      InputActionMapper state;
-      KeyboardAction action;
-
-      EventCallback ev_quit( [&] () { this->app_state = false; } );
-      EventCallback ev_screenshot( [&] () { this->window.save_screenshot( OUTPUT_SCREENSHOT_FILENAME ); } );
-      EventCallback ev_fullscreen( [&] () { this->window.toggle_fullscreen(); } );
-
-      action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE );
-      state.insert( "ev_quit", nom::InputAction( action, ev_quit ) );
-
-      action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_q );
-      state.insert( "ev_quit", nom::InputAction( action, ev_quit ) );
-
-      action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_F1 );
-      state.insert( "ev_screenshot", nom::InputAction( action, ev_screenshot ) );
-
-      action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_f );
-      state.insert( "ev_fullscreen", nom::InputAction( action, ev_fullscreen ) );
-
-      this->input_mapper.insert( "ButtonLayoutTest", state, true );
+      // The frame image to compare against the reference image set
+      this->append_screenshot_frame( 0 );
     }
 
     virtual ~ButtonLayoutTest( void )
     {
-      // Nothing to clean up
+      // NOM_LOG_TRACE( NOM );
     }
 
     /// \remarks This method is called at the start of each unit test.
     virtual void SetUp( void )
     {
-      nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
+      // Use default initializations provided by VisualUnitTest
+      VisualUnitTest::SetUp();
 
-      // if( nom::UnitTest::interactive() )
-      // {
-      //   window_flags |= SDL_WINDOW_SHOWN;
-      // }
-      // else
-      // {
-      //   window_flags |= SDL_WINDOW_HIDDEN;
-      // }
-
-      // Necessary for loading font resources
-      ASSERT_TRUE( this->window.create( "ButtonLayoutTest", WINDOW_WIDTH, WINDOW_HEIGHT, window_flags ) );
-
-      // Scale window contents up by the new width & height
-      this->window.set_logical_size( WINDOW_WIDTH, WINDOW_HEIGHT );
+      this->main_window = nullptr;
 
       // BitmapButton (button2) resources
       ASSERT_TRUE( this->button_bg[0].load( RESOURCE_BUTTON_IMAGE, 0 ) == true );
@@ -198,6 +153,18 @@ class ButtonLayoutTest: public ::testing::Test
       this->spacers.push_back( 40 );
       this->items.push_back( this->button2 );
       this->items.push_back( this->button3 );
+
+      // Register GUI event listeners onto our main loop (::on_run).
+      this->append_event_callback( [&] ( Event ev ) { this->main_window->process_event( ev ); } );
+      this->append_event_callback( [&] ( Event ev ) { this->layout_widget->process_event( ev ); } );
+
+      // Register GUI updates onto our main loop (::on_run).
+      this->append_update_callback( [&] ( float delta ) { this->main_window->update(); } );
+      this->append_update_callback( [&] ( float delta ) { this->layout_widget->update(); } );
+
+      // Register GUI rendering onto our main loop (::on_run).
+      this->append_render_callback( [&] ( const RenderWindow& win ) { this->main_window->draw( this->render_window() ); } );
+      this->append_render_callback( [&] ( const RenderWindow& win ) { this->layout_widget->draw( this->render_window() ); } );
     }
 
     /// \remarks This method is called at the end of each unit test.
@@ -208,33 +175,6 @@ class ButtonLayoutTest: public ::testing::Test
       // button0, button1, button2.
       delete this->main_window;
       this->main_window = nullptr;
-    }
-
-    sint on_run( void )
-    {
-      while( this->app_state == true )
-      {
-        while( this->evt.poll_event( this->ev ) )
-        {
-          // this->evt.process_event( this->ev );
-
-          this->input_mapper.on_event( this->ev );
-          this->main_window->process_event( this->ev );
-          this->layout_widget->process_event( this->ev );
-        }
-
-        this->window.update();
-        this->main_window->update();
-        this->layout_widget->update();
-
-        // Background color fill
-        this->window.fill( nom::Color4i::SkyBlue );
-
-        this->main_window->draw( this->window );
-        this->layout_widget->draw( this->window );
-      }
-
-      return NOM_EXIT_SUCCESS;
     }
 
     /// \brief Helper method for creating button widgets.
@@ -336,24 +276,15 @@ class ButtonLayoutTest: public ::testing::Test
     }
 
   protected:
-    const nom::Path p;
+    const int WINDOW_WIDTH;
+    const int WINDOW_HEIGHT;
 
     /// \brief File path name of the resources directory; this must be a relative file path.
+    const Path p;
     const std::string APP_RESOURCES_DIR = "Resources" + p.native();
     const std::string RESOURCE_BUTTON_IMAGE = APP_RESOURCES_DIR + p.native() + "gui" + p.native() + "button.png";
     const std::string RESOURCE_AQUA_BUTTON_IMAGE_0 = APP_RESOURCES_DIR + p.native() + "gui" + p.native() + "aqua-button_0.png";
     const std::string RESOURCE_AQUA_BUTTON_IMAGE_1 = APP_RESOURCES_DIR + p.native() + "gui" + p.native() + "aqua-button_1.png";
-
-    const int WINDOW_WIDTH = 640;
-    const int WINDOW_HEIGHT = 480;
-
-    // Game loop support
-    bool app_state;
-    RenderWindow window;
-    Event ev;
-
-    EventHandler evt;
-    InputStateMapper input_mapper;
 
     // GUI resources
     nom::UIWidget::raw_ptr main_window;
@@ -382,10 +313,11 @@ TEST_F( ButtonLayoutTest, HorizontalLayout )
   nom::UIBoxLayout::raw_ptr layout = nullptr;
 
   this->layout_widget->resize( Size2i( 525, 75 ) );
+  // this->layout_widget->resize( Size2i( 300, 75 ) );
 
   // Use custom, absolute dimensions that we provide, with relative positioning
   // of the layout from the parent widget's coordinates.
-  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayout", Orientations::Horizontal );
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, this->test_name(), Orientations::Horizontal );
 
   // this->layout_widget->set_font( SystemFonts::cache().load_resource( "VIII" ) );
 
@@ -425,10 +357,8 @@ TEST_F( ButtonLayoutTest, HorizontalLayout )
   // priv::expected_layout_widget_pos( layout, 6, Point2i( 410, 50 ) );
   priv::expected_layout_widget_dims( layout, 6, Size2i( 56, 16 ) );
 
-  if( nom::UnitTest::interactive() )
-  {
-    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ButtonLayoutTest, VerticalLayout )
@@ -437,7 +367,7 @@ TEST_F( ButtonLayoutTest, VerticalLayout )
 
   this->layout_widget->resize( Size2i( 150, 200 ) );
 
-  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "VerticalLayout", Orientations::Vertical );
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, this->test_name(), Orientations::Vertical );
 
   EXPECT_EQ( this->items.size() + this->spacers.size(), layout->count() );
 
@@ -477,10 +407,8 @@ TEST_F( ButtonLayoutTest, VerticalLayout )
   // priv::expected_layout_widget_pos( layout, 6, Point2i( 37, 182 ) );
   priv::expected_layout_widget_dims( layout, 6, Size2i( 56, 16 ) );
 
-  if( nom::UnitTest::interactive() )
-  {
-    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ButtonLayoutTest, HorizontalLayoutAlignmentsMiddleCenter )
@@ -493,15 +421,13 @@ TEST_F( ButtonLayoutTest, HorizontalLayoutAlignmentsMiddleCenter )
 
   this->layout_widget->resize( expected_size );
 
-  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "HorizontalLayoutAlignmentsMiddleCenter", Orientations::Horizontal );
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, this->test_name(), Orientations::Horizontal );
   layout->set_alignment( align );
 
   priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
 
-  if( nom::UnitTest::interactive() )
-  {
-    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ButtonLayoutTest, VerticalLayoutAlignmentsMiddleCenter )
@@ -514,31 +440,29 @@ TEST_F( ButtonLayoutTest, VerticalLayoutAlignmentsMiddleCenter )
 
   this->layout_widget->resize( expected_size );
 
-  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, "VerticalLayoutAlignmentsMiddleCenter", Orientations::Vertical );
+  layout = priv::create_layout( this->layout_widget, this->items, this->spacers, this->test_name(), Orientations::Vertical );
   layout->set_alignment( align );
 
   priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
 
-  if( nom::UnitTest::interactive() )
-  {
-    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 } // namespace nom
 
 int main( int argc, char** argv )
 {
+  ::testing::InitGoogleTest( &argc, argv );
+
   // Only used for setting the working directory path to that of the executable,
   // so we can quickly get to saved screen-shots.
   NOM_ASSERT( nom::init( argc, argv ) == true );
 
   atexit( nom::quit );
 
-  ::testing::InitGoogleTest( &argc, argv );
-
-  // Allows us to toggle interactive test runs
-  nom::UnitTest::init( argc, argv );
+  // nom::UnitTest framework integration
+  nom::init_test( argc, argv );
 
   return RUN_ALL_TESTS();
 }

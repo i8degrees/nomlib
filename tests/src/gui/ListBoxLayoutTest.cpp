@@ -31,8 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#include "nomlib/tests/common.hpp"      // nom::UnitTest
-#include "nomlib/tests/gui/common.hpp"  // nom::priv helpers
+#include "nomlib/tests/common.hpp"      // nom::UnitTest framework
+#include "nomlib/tests/gui/common.hpp"  // GUI helpers
 
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
@@ -41,75 +41,32 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief Relative filename path to saved screen shots.
-///
-/// Default path should resolve to the same directory as the output binary.
-const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
-
 /// \note The resources and variables used derived from examples/gui_listbox.cpp
 /// and tests/gui/VBoxLayoutTest.cpp.
-class ListBoxLayoutTest: public ::testing::Test
+class ListBoxLayoutTest: public VisualUnitTest
 {
   public:
-    /// \remarks Initialization of resources.
     ListBoxLayoutTest( void ) :
-      app_state{ true }
+      // Use default resolution provided by VisualUnitTest
+      WINDOW_WIDTH{ resolution().w },
+      WINDOW_HEIGHT{ resolution().h }
     {
-      nom::init_third_party( InitHints::DefaultInit );
+      // NOM_LOG_TRACE( NOM );
 
-      if( nom::set_hint( SDL_HINT_RENDER_VSYNC, "0" ) == false )
-      {
-        NOM_LOG_INFO( NOM, "Could not disable vertical refresh." );
-      }
-
-      // this->input_mapper.clear();
-
-      InputActionMapper state;
-      KeyboardAction action;
-
-      EventCallback ev_quit( [&] () { this->app_state = false; } );
-      EventCallback ev_screenshot( [&] () { this->window.save_screenshot( OUTPUT_SCREENSHOT_FILENAME ); } );
-      EventCallback ev_fullscreen( [&] () { this->window.toggle_fullscreen(); } );
-
-      action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE );
-      state.insert( "ev_quit", nom::InputAction( action, ev_quit ) );
-
-      action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_q );
-      state.insert( "ev_quit", nom::InputAction( action, ev_quit ) );
-
-      action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_F1 );
-      state.insert( "ev_screenshot", nom::InputAction( action, ev_screenshot ) );
-
-      action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_f );
-      state.insert( "ev_fullscreen", nom::InputAction( action, ev_fullscreen ) );
-
-      this->input_mapper.insert( "ListBoxLayoutTest", state, true );
+      // The frame image to compare against the reference image set
+      this->append_screenshot_frame( 0 );
     }
 
     virtual ~ListBoxLayoutTest( void )
     {
-      // Nothing to clean up!
+      // NOM_LOG_TRACE( NOM );
     }
 
     /// \remarks This method is called at the start of each unit test.
     virtual void SetUp( void )
     {
-      nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
-
-      // if( nom::UnitTest::interactive() )
-      // {
-      //   window_flags |= SDL_WINDOW_SHOWN;
-      // }
-      // else
-      // {
-      //   window_flags |= SDL_WINDOW_HIDDEN;
-      // }
-
-      // Necessary for loading font resources
-      ASSERT_TRUE( this->window.create( "ListBoxLayoutTest", WINDOW_WIDTH, WINDOW_HEIGHT, window_flags ) );
-
-      // Scale window contents up by the new width & height
-      this->window.set_logical_size( WINDOW_WIDTH, WINDOW_HEIGHT );
+      // Use default initializations provided by VisualUnitTest
+      VisualUnitTest::SetUp();
 
       // Top-level (parent) window (relative to global "screen" coordinates):
       this->main_window = new nom::UIWidget( Point2i( 25, 25 ), Size2i( WINDOW_WIDTH - 30, WINDOW_HEIGHT - 30 ) );
@@ -189,6 +146,18 @@ class ListBoxLayoutTest: public ::testing::Test
       this->spacers.push_back( 40 );
       this->items.push_back( this->listbox2 );
       this->items.push_back( this->listbox3 );
+
+      // Register GUI event listeners onto our main loop (::on_run).
+      this->append_event_callback( [&] ( Event ev ) { this->main_window->process_event( ev ); } );
+      this->append_event_callback( [&] ( Event ev ) { this->layout_widget->process_event( ev ); } );
+
+      // Register GUI updates onto our main loop (::on_run).
+      this->append_update_callback( [&] ( float delta ) { this->main_window->update(); } );
+      this->append_update_callback( [&] ( float delta ) { this->layout_widget->update(); } );
+
+      // Register GUI rendering onto our main loop (::on_run).
+      this->append_render_callback( [&] ( const RenderWindow& win ) { this->main_window->draw( this->render_window() ); } );
+      this->append_render_callback( [&] ( const RenderWindow& win ) { this->layout_widget->draw( this->render_window() ); } );
     }
 
     /// \remarks This method is called at the end of each unit test.
@@ -199,34 +168,6 @@ class ListBoxLayoutTest: public ::testing::Test
       // listbox0, listbox1, listbox2, listbox3.
       delete this->main_window;
       this->main_window = nullptr;
-    }
-
-    sint on_run( void )
-    {
-      while( this->app_state == true )
-      {
-        while( this->evt.poll_event( this->ev ) )
-        {
-          // this->evt.process_event( this->ev );
-
-          this->input_mapper.on_event( this->ev );
-
-          this->main_window->process_event( this->ev );
-          this->layout_widget->process_event( this->ev );
-        }
-
-        this->window.update();
-        this->main_window->update();
-        this->layout_widget->update();
-
-        // Background color fill
-        this->window.fill( nom::Color4i::SkyBlue );
-
-        this->main_window->draw( this->window );
-        this->layout_widget->draw( this->window );
-      }
-
-      return NOM_EXIT_SUCCESS;
     }
 
     /// \brief Test the creation of a button widget.
@@ -254,8 +195,8 @@ class ListBoxLayoutTest: public ::testing::Test
     }
 
   protected:
-    const nom::int32 WINDOW_WIDTH = 640;
-    const nom::int32 WINDOW_HEIGHT = 480;
+    const int WINDOW_WIDTH;
+    const int WINDOW_HEIGHT;
 
     // Game loop support
     bool app_state;
@@ -341,10 +282,8 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutUsingTrueTypeFont )
   // priv::expected_layout_widget_dims( layout, 6, Size2i( 53, 67 ) );
   priv::expected_layout_widget_dims( layout, 6, Size2i( 56, 67 ) );
 
-  if( nom::UnitTest::interactive() )
-  {
-    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ListBoxLayoutTest, HorizontalLayoutUsingBitmapFont )
@@ -369,10 +308,8 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutUsingBitmapFont )
   // what would be considered mathematically "optimal".
   EXPECT_EQ( Size2i( 262, 58 ), layout->total_size_hint() );
 
-  if( nom::UnitTest::interactive() )
-  {
-    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ListBoxLayoutTest, VerticalLayoutUsingTrueTypeFont )
@@ -423,10 +360,8 @@ TEST_F( ListBoxLayoutTest, VerticalLayoutUsingTrueTypeFont )
   // priv::expected_layout_widget_dims( layout, 6, Size2i( 53, 52 ) );
   priv::expected_layout_widget_dims( layout, 6, Size2i( 56, 67 ) );
 
-  if( nom::UnitTest::interactive() )
-  {
-    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ListBoxLayoutTest, VerticalLayoutUsingBitmapFont )
@@ -451,10 +386,8 @@ TEST_F( ListBoxLayoutTest, VerticalLayoutUsingBitmapFont )
   // what would be considered mathematically "optimal".
   EXPECT_EQ( Size2i( 56, 236 ), layout->total_size_hint() );
 
-  if( nom::UnitTest::interactive() )
-  {
-    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsTopLeft )
@@ -472,10 +405,8 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsTopLeft )
 
   priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
 
-  if( nom::UnitTest::interactive() )
-  {
-    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsTopCenter )
@@ -493,10 +424,8 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsTopCenter )
 
   priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
 
-  if( nom::UnitTest::interactive() )
-  {
-    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsTopRight )
@@ -514,10 +443,8 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsTopRight )
 
   priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
 
-  if( nom::UnitTest::interactive() )
-  {
-    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsMiddleLeft )
@@ -535,10 +462,8 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsMiddleLeft )
 
   priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
 
-  if( nom::UnitTest::interactive() )
-  {
-    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsMiddleCenter )
@@ -556,10 +481,8 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsMiddleCenter )
 
   priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
 
-  if( nom::UnitTest::interactive() )
-  {
-    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsMiddleRight )
@@ -577,10 +500,8 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsMiddleRight )
 
   priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
 
-  if( nom::UnitTest::interactive() )
-  {
-    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsBottomLeft )
@@ -598,10 +519,8 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsBottomLeft )
 
   priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
 
-  if( nom::UnitTest::interactive() )
-  {
-    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsBottomCenter )
@@ -619,10 +538,8 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsBottomCenter )
 
   priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
 
-  if( nom::UnitTest::interactive() )
-  {
-    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsBottomRight )
@@ -640,10 +557,8 @@ TEST_F( ListBoxLayoutTest, HorizontalLayoutAlignmentsBottomRight )
 
   priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
 
-  if( nom::UnitTest::interactive() )
-  {
-    // EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( ListBoxLayoutTest, VerticalLayoutAlignmentsMiddleCenter )
@@ -661,26 +576,24 @@ TEST_F( ListBoxLayoutTest, VerticalLayoutAlignmentsMiddleCenter )
 
   priv::test_layout_alignment( layout, this->layout_widget, align, expected_pos, expected_size );
 
-  if( nom::UnitTest::interactive() )
-  {
-    EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  }
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 } // namespace nom
 
 int main( int argc, char** argv )
 {
+  ::testing::InitGoogleTest( &argc, argv );
+
   // Only used for setting the working directory path to that of the executable,
   // so we can quickly get to saved screen-shots.
   NOM_ASSERT( nom::init( argc, argv ) == true );
 
   atexit( nom::quit );
 
-  ::testing::InitGoogleTest( &argc, argv );
-
-  // Allows us to toggle interactive test runs
-  nom::UnitTest::init( argc, argv );
+  // nom::UnitTest framework integration
+  nom::init_test( argc, argv );
 
   return RUN_ALL_TESTS();
 }

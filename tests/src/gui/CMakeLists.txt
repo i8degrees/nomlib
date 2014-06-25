@@ -59,7 +59,8 @@ if( NOM_BUILD_GUI_UI_WIDGET_TESTS )
 
     GTEST_ADD_TESTS (
                       UIWidgetTest
-                      "UIWidgetTest"
+                      # Disable visual image comparison feature
+                      "-d"
                       ${NOM_TESTS_COMMON_SOURCE}
                       ${NOM_TESTS_SOURCE_DIR}/gui/UIWidgetTest.cpp
                     )
@@ -83,7 +84,8 @@ if( NOM_BUILD_GUI_LISTBOX_LAYOUT_TESTS )
 
   GTEST_ADD_TESTS (
                     listbox_layout_test
-                    "ListBoxLayoutTest"
+                    # Disable visual image comparison feature
+                    "-d"
                     ${NOM_TESTS_COMMON_SOURCE}
                     ${NOM_TESTS_SOURCE_DIR}/gui/ListBoxLayoutTest.cpp
                     ${NOM_TESTS_SOURCE_DIR}/gui/common.cpp
@@ -108,7 +110,8 @@ if( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS )
 
   GTEST_ADD_TESTS (
                     button_layout_test
-                    "ButtonLayoutTest"
+                    # Disable visual image comparison feature
+                    "-d"
                     ${NOM_TESTS_COMMON_SOURCE}
                     ${NOM_TESTS_SOURCE_DIR}/gui/ButtonLayoutTest.cpp
                     ${NOM_TESTS_SOURCE_DIR}/gui/common.cpp

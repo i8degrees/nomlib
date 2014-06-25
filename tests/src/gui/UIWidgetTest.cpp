@@ -31,7 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#include "nomlib/tests/common.hpp"  // nom::UnitTest
+#include "nomlib/tests/common.hpp"      // nom::UnitTest framework
+// #include "nomlib/tests/gui/common.hpp"  // GUI helpers
 
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
@@ -40,51 +41,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief Relative filename path to saved screen shots.
-///
-/// Default path should resolve to the same directory as the output binary.
-const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
-
 /// \note The resources and variables used derived from examples/gui_button.cpp
 /// and tests/gui/ListBoxLayoutTest.cpp.
-class UIWidgetTest: public ::testing::Test
+class UIWidgetTest: public VisualUnitTest
 {
   public:
-    /// \remarks Initialization of resources.
     UIWidgetTest( void ) :
-      app_state{ true }
+      // Use default resolution provided by VisualUnitTest
+      WINDOW_WIDTH{ resolution().w },
+      WINDOW_HEIGHT{ resolution().h }
     {
-      this->main_window = nullptr;
+      // NOM_LOG_TRACE( NOM );
 
-      nom::init_third_party( InitHints::DefaultInit );
+      // The frame image to compare against the reference image set
+      // this->append_screenshot_frame( 0 );
 
-      if( nom::set_hint( SDL_HINT_RENDER_VSYNC, "0" ) == false )
-      {
-        NOM_LOG_INFO( NOM, "Could not disable vertical refresh." );
-      }
-
-      // this->input_mapper.clear();
-
-      InputActionMapper state;
-      KeyboardAction action;
-
-      EventCallback ev_quit( [&] () { this->app_state = false; } );
-      EventCallback ev_screenshot( [&] () { this->window.save_screenshot( OUTPUT_SCREENSHOT_FILENAME ); } );
-      EventCallback ev_fullscreen( [&] () { this->window.toggle_fullscreen(); } );
-
-      action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE );
-      state.insert( "ev_quit", nom::InputAction( action, ev_quit ) );
-
-      action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_q );
-      state.insert( "ev_quit", nom::InputAction( action, ev_quit ) );
-
-      action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_F1 );
-      state.insert( "ev_screenshot", nom::InputAction( action, ev_screenshot ) );
-
-      action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_f );
-      state.insert( "ev_fullscreen", nom::InputAction( action, ev_fullscreen ) );
-
-      this->input_mapper.insert( "ButtonLayoutTest", state, true );
+      NOM_TEST_FLAG(disable_comparison) = true;
     }
 
     virtual ~UIWidgetTest( void )
@@ -95,13 +67,17 @@ class UIWidgetTest: public ::testing::Test
     /// \remarks This method is called at the start of each unit test.
     virtual void SetUp( void )
     {
-      nom::uint32 window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN;
+      // Use default initializations provided by VisualUnitTest
+      VisualUnitTest::SetUp();
 
-      // Necessary for loading font resources
-      ASSERT_TRUE( this->window.create( "UIWidgetTest", WINDOW_WIDTH, WINDOW_HEIGHT, window_flags ) );
+      // Register GUI event listeners onto our main loop (::on_run).
+      this->append_event_callback( [&] ( Event ev ) { this->main_window->process_event( ev ); } );
 
-      // Scale window contents up by the new width & height
-      this->window.set_logical_size( WINDOW_WIDTH, WINDOW_HEIGHT );
+      // Register GUI updates onto our main loop (::on_run).
+      this->append_update_callback( [&] ( float delta ) { this->main_window->update(); } );
+
+      // Register GUI rendering onto our main loop (::on_run).
+      this->append_render_callback( [&] ( const RenderWindow& win ) { this->main_window->draw( this->render_window() ); } );
     }
 
     /// \remarks This method is called at the end of each unit test.
@@ -111,30 +87,6 @@ class UIWidgetTest: public ::testing::Test
       // thus it relieves us from the responsibility of freeing them as well.
       delete this->main_window;
       this->main_window = nullptr;
-    }
-
-    sint on_run( void )
-    {
-      while( this->app_state == true )
-      {
-        while( this->evt.poll_event( this->ev ) )
-        {
-          // this->evt.process_event( this->ev );
-
-          this->input_mapper.on_event( this->ev );
-          this->main_window->process_event( this->ev );
-        }
-
-        this->window.update();
-        this->main_window->update();
-
-        // Background color fill
-        this->window.fill( nom::Color4i::SkyBlue );
-
-        this->main_window->draw( this->window );
-      }
-
-      return NOM_EXIT_SUCCESS;
     }
 
     /// \brief Default callback method used in registering event listeners.
@@ -154,16 +106,8 @@ class UIWidgetTest: public ::testing::Test
     }
 
   protected:
-    const int WINDOW_WIDTH = 640;
-    const int WINDOW_HEIGHT = 480;
-
-    // Game loop support
-    bool app_state;
-    RenderWindow window;
-    Event ev;
-
-    EventHandler evt;
-    InputStateMapper input_mapper;
+    const int WINDOW_WIDTH;
+    const int WINDOW_HEIGHT;
 
     // GUI resources
     nom::UIWidget::raw_ptr main_window;
@@ -258,16 +202,16 @@ TEST_F( UIWidgetTest, Layouts )
 
 int main( int argc, char** argv )
 {
+  ::testing::InitGoogleTest( &argc, argv );
+
   // Only used for setting the working directory path to that of the executable,
   // so we can quickly get to saved screen-shots.
   NOM_ASSERT( nom::init( argc, argv ) == true );
 
   atexit( nom::quit );
 
-  ::testing::InitGoogleTest( &argc, argv );
-
   // Allows us to toggle interactive test runs
-  nom::UnitTest::init( argc, argv );
+  nom::init_test( argc, argv );
 
   return RUN_ALL_TESTS();
 }

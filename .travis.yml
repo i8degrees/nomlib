@@ -29,7 +29,7 @@ before_install:
 
   # - brew update
   - brew install cmake
-  - wget -O /tmp/deps.tar.gz 'http://downloads.sourceforge.net/project/nomlib/2014-06-12_nomlib_osx-dependencies.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fnomlib%2Ffiles%2F&ts=1402551334&use_mirror=superb-dca3'
+  - wget -O /tmp/deps.tar.gz 'http://downloads.sourceforge.net/project/nomlib/2014-06-24_nomlib_osx-dependencies.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fnomlib%2Ffiles%2F&ts=1402551334&use_mirror=superb-dca3'
   - wget -O /tmp/osx10.7.sdk.tar.gz 'https://www.dropbox.com/s/hk2590g8snkjwe4/MacOSX10.7.sdk.tar.gz'
 before_script:
   - tar -xzf /tmp/deps.tar.gz -C third-party

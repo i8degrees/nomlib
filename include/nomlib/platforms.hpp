@@ -34,6 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// I have platform detection separated from nomlib/config.hpp specifically so
 /// that one may include this header file for use in an external project without
 /// worry of polluting the namespace with any unnecessary definitions.
+///
+/// \todo Rename NOM_PLATFORM_POSIX to NOM_PLATFORM_UNIX..?
 
 #if defined ( _WIN32) || defined ( __WIN32__ )
   #define NOM_PLATFORM_WINDOWS

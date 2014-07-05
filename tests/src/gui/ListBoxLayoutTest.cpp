@@ -586,8 +586,8 @@ int main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
 
-  // Only used for setting the working directory path to that of the executable,
-  // so we can quickly get to saved screen-shots.
+  // Set the current working directory path to the path leading to this
+  // executable file; used for unit tests that require file-system I/O.
   NOM_ASSERT( nom::init( argc, argv ) == true );
 
   atexit( nom::quit );

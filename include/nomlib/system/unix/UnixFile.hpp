@@ -181,6 +181,10 @@ class UnixFile: public IFile
     /// \see http://stackoverflow.com/questions/19404239/locating-mac-os-x-folders-using-urlfordirectory-instead-of-fsfindfolder
     const std::string system_path( void );
 
+    // TODO: Implement getter method for platform's system temporary files path;
+    // (/tmp on POSIX and C:\Windows\Temp on Windows).
+    // const std::string system_temp_path( void );
+
     // \brief Get the platform-defined system path.
     //
     // \returns Under Mac OS X: a directory path in the format of:
@@ -198,18 +202,39 @@ class UnixFile: public IFile
     /// \brief Create a directory entry.
     ///
     /// \param path The absolute path to create the directory file at.
+    ///
+    /// \returns Boolean TRUE if the directory path does not exist and is able
+    /// to be created, and boolean FALSE if the directory path already exists.
+    ///
+    /// \fixme Look into possibly revising our err handling; providing the
+    /// actual reason for failure is helpful in determining the course of action
+    /// to take in the application's program flow?
     bool mkdir( const std::string& path );
 
     /// \brief Create directories recursively.
     ///
     /// \param path The absolute path to create directory entries from.
     ///
+    /// \returns Boolean TRUE if the directory path does not exist and is able
+    /// to be created, and boolean FALSE if the directory path already exists.
+    ///
     /// \remarks The directory must not be terminated with a path separator.
+    ///
+    /// \fixme Look into possibly revising our err handling; providing the
+    /// actual reason for failure is helpful in determining the course of action
+    /// to take in the application's program flow?
     bool recursive_mkdir( const std::string& path );
 
     /// \brief Remove a directory entry.
     ///
     /// \param path The absolute path to remove the directory file from.
+    ///
+    /// \returns Boolean TRUE if the directory path does not exist and is able
+    /// to be created, and boolean FALSE if the directory path already exists.
+    ///
+    /// \fixme Look into possibly revising our err handling; providing the
+    /// actual reason for failure is helpful in determining the course of action
+    /// to take in the application's program flow?
     bool rmdir( const std::string& path );
 
     /// \brief Create a file (zero bytes).

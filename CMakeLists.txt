@@ -104,6 +104,7 @@ if ( DEBUG )
   set ( CMAKE_VERBOSE_MAKEFILE ON )
   set ( CMAKE_BUILD_TYPE "Debug" )
 
+  # TODO: Consider using the standard NDEBUG macro instead of NOM_DEBUG.
   if ( NOT PLATFORM_WINDOWS )
     # TODO: Enable -Wextra
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused -O0" ) #-D_GLIBCXX_DEBUG

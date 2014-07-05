@@ -153,8 +153,6 @@ TEST_F( FileInterfaceTest, DirPath )
   ASSERT_FALSE( pwd == "." );
 }
 
-/// \fixme Look into why "." is not valid under Windows for pwd;
-/// see also: ::path, ::currentPath?
 TEST_F( FileInterfaceTest, ExecutableWorkingDirectoryPath )
 {
   std::string cwd = fp.currentPath();
@@ -169,9 +167,6 @@ TEST_F( FileInterfaceTest, ExecutableWorkingDirectoryPath )
   #endif
 
   ASSERT_FALSE( pwd == "" );
-
-  // FIXME: Why does this fail only under Windows? My guess is that perhaps "."
-  // isn't recognized / valid under Windows...
   ASSERT_FALSE( pwd == "." );
 }
 

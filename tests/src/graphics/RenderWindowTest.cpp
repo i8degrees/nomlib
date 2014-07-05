@@ -70,16 +70,14 @@ TEST_F( RenderWindowTest, CreateWindow )
   // The render window is created during ::SetUp at the start of each test
 }
 
-/// \fixme Unit test fails if we do not execute from the path of the program
-/// executable (where icon.png is expected to be found).
 TEST_F( RenderWindowTest, SetIcon )
 {
   Path p;
   File fp;
-  std::string icon_path = fp.currentPath() + p.native() + "icon.png";
 
   NOM_DUMP_VAR("current directory path:",fp.currentPath() );
 
+  std::string icon_path = fp.currentPath() + p.native() + "icon.png";
   // p = fp.resource_path( "org.i8degrees.nomlib" );
   // std::string icon_path = p.prepend("icon.png");
 

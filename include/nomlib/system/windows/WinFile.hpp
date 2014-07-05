@@ -172,26 +172,52 @@ class WinFile: public IFile
     /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/bb762494.aspx
     const std::string system_path( void );
 
+    // TODO: Implement getter method for platform's system temporary files path;
+    // (/tmp on POSIX and C:\Windows\Temp on Windows).
+    // const std::string system_temp_path( void );
+
     /// \brief Create a directory entry.
     ///
     /// \param path The absolute path to create the directory file at.
     ///
+    /// \returns Boolean TRUE if the directory path does not exist and is able
+    /// to be created, and boolean FALSE if the directory path already exists.
+    ///
     /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/aa363855%28v=vs.85%29.aspx
     /// \see http://msdn.microsoft.com/en-us/library/2fkk4dzw%28v=vs.80%29.aspx
+    ///
+    /// \fixme Look into possibly revising our err handling; providing the
+    /// actual reason for failure is helpful in determining the course of action
+    /// to take in the application's program flow?
     bool mkdir( const std::string& path );
 
     /// \brief Create directories recursively.
     ///
     /// \param path The absolute path to create directory entries from.
     ///
+    /// \returns Boolean TRUE if the directory path does not exist and is able
+    /// to be created, and boolean FALSE if the directory path already exists.
+    ///
     /// \remarks The directory must not be terminated with a path separator.
+    ///
+    /// \fixme Look into possibly revising our err handling; providing the
+    /// actual reason for failure is helpful in determining the course of action
+    /// to take in the application's program flow?
     bool recursive_mkdir( const std::string& path );
 
     /// \brief Remove a directory entry.
     ///
     /// \param path The absolute path to remove the directory file from.
     ///
+    /// \returns Boolean TRUE if the directory path does not exist and is able
+    /// to be created, and boolean FALSE if the directory path already exists.
+    ///
     /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/aa365488(v=vs.85).aspx
+    /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/bb762164(v=vs.85).aspx
+    ///
+    /// \fixme Look into possibly revising our err handling; providing the
+    /// actual reason for failure is helpful in determining the course of action
+    /// to take in the application's program flow?
     bool rmdir( const std::string& path );
 
     bool mkfile( const std::string& path );

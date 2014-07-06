@@ -341,27 +341,36 @@ const std::string WinFile::system_path( void )
 
 bool WinFile::mkdir( const std::string& path )
 {
-  bool ret = false;
   DWORD err = 0;
 
-  ret = CreateDirectory( path.c_str(), nullptr );
-
-  if( ret == true )
+  if( CreateDirectory( path.c_str(), nullptr ) != 0 )
   {
+    // Successful directory creation
     return true;
   }
+  else // Err
+  {
+    err = GetLastError();
+    if( err == ERROR_ALREADY_EXISTS )
+    {
+      NOM_LOG_ERR( NOM, "Could not create directory path: given path already exists at", path );
+      return false;
+    }
+    else if( err == ERROR_PATH_NOT_FOUND )
+    {
+      NOM_LOG_ERR( NOM, "Could not create directory path: given path does not exist at", path );
+      return false;
+    }
 
-  err = GetLastError();
+    NOM_LOG_ERR( NOM, "Could not create directory path: unknown err return value of", err );
 
-  NOM_LOG_ERR( NOM, "Could not create directory entry: unknown return value of: ", err );
-
-  // Err (path not found or path exists?)
-  return false;
+    // Unknown err code
+    return false;
+  }
 }
 
 bool WinFile::recursive_mkdir( const std::string& path )
 {
-  bool ret = false;
   std::size_t pos = std::string::npos;
 
   Path p;
@@ -386,30 +395,34 @@ bool WinFile::recursive_mkdir( const std::string& path )
     return false;
   }
 
-  // Unknown err
+  // Unknown err code
   return false;
 }
 
 
 bool WinFile::rmdir( const std::string& path )
 {
-  bool ret = false;
   DWORD err = 0;
 
-  ret = RemoveDirectory( path.c_str() );
-
-  if( ret == true )
+  if( RemoveDirectory( path.c_str() ) != 0 )
   {
     // Successful directory removal
     return true;
   }
+  else // Err
+  {
+    err = GetLastError();
+    if( err == ERROR_PATH_NOT_FOUND )
+    {
+      NOM_LOG_ERR( NOM, "Could not remove directory path: given path does not exist at", path );
+      return false;
+    }
 
-  err = GetLastError();
+    NOM_LOG_ERR( NOM, "Could not remove directory path: unknown err return value of", err );
 
-  NOM_LOG_ERR( NOM, "Could not remove directory entry: unknown return value of: ", err );
-
-  // Err (path not found or access denied at existing path?)
-  return false;
+    // Unknown err
+    return false;
+  }
 }
 
 bool WinFile::mkfile( const std::string& path )

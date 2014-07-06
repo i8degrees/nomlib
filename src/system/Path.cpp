@@ -30,15 +30,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+void Path::init( void )
+{
+  #if defined( NOM_PLATFORM_WINDOWS )
+    path_separator = "\\";
+  #elif defined( NOM_PLATFORM_POSIX )
+    path_separator = "/";
+  #else // Hope that we are running on a POSIX-compliant platform!
+    path_separator = "/";
+    #pragma message ( "nomlib cannot detect the platform it is being compiled on; assuming POSIX-compliant path delimiters..." )
+  #endif
+}
+
 Path::Path( void )
 {
   // NOM_LOG_TRACE( NOM ):
 
-  #if defined( NOM_PLATFORM_WINDOWS )
-    path_separator = "\/";
-  #else // Assume POSIX-compliant platform
-    path_separator = "/";
-  #endif
+  this->init();
+}
+
+Path::~Path( void )
+{
+  // NOM_LOG_TRACE( NOM ):
 }
 
 Path::Path( const std::string& p ) :
@@ -46,16 +59,7 @@ Path::Path( const std::string& p ) :
 {
   // NOM_LOG_TRACE( NOM ):
 
-  #if defined( NOM_PLATFORM_WINDOWS )
-    path_separator = "\\";
-  #else // Assume POSIX-compliant platform
-    path_separator = "/";
-  #endif
-}
-
-Path::~Path( void )
-{
-  // NOM_LOG_TRACE( NOM ):
+  this->init();
 }
 
 const Path::value_type& Path::native ( void ) const

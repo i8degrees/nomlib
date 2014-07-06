@@ -37,23 +37,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief Platform-agnostic handling of file paths
+/// \brief Platform-agnostic handling of directory paths
 class Path
 {
   public:
     /// Platform-dependent data typedef used for defining the preferred file
     /// path separator.
+    ///
+    /// \see ::init.
     typedef std::string value_type;
 
-    /// Default constructor -- pathname is initialized as a null-terminated
-    /// string.
+    /// \brief Initialize the platform's native path delimiter.
+    void init( void );
+
+    /// \brief Default constructor; initialize the native path delimiter.
     Path ( void );
 
-    /// Initialize instance with an existing pathname
-    Path ( const std::string& p );
-
-    /// Default destructor
+    /// \brief Destructor; nothing to clean up (automatic clean up).
     ~Path ( void );
+
+    /// \brief Construct a complete object.
+    ///
+    /// \param p The relative or absolute path to a file or directory.
+    Path ( const std::string& p );
 
     /// Obtain native path (directory) separator; the value returned is
     /// dependent upon the platform and is determined at compile-time, not

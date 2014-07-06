@@ -37,29 +37,86 @@ namespace nom {
 class FileInterfaceTest: public ::testing::Test
 {
   public:
+    /// \brief Default constructor; initialize the directory paths that can be
+    /// used for tests.
+    ///
+    /// \remarks This method is called at the start of each unit test.
     FileInterfaceTest( void )
     {
-      //
+      // TODO: this->fp.system_temp_path();
+
+      #if defined( NOM_PLATFORM_POSIX )
+        this->sys_temp = Path( "/tmp" );
+      #elif defined( NOM_PLATFORM_WINDOWS )
+        this->sys_temp = Path( "C:\\Windows\\Temp" );
+      #endif
+
+      this->nom_dir = Path( this->sys_temp.prepend( "nomlib" ) );
+      this->nom_rdir = Path( this->nom_dir.prepend( "nom_rdir" ) );
     }
 
-    ~FileInterfaceTest( void )
+    /// \remarks This method is called at the end of each unit test.
+    virtual ~FileInterfaceTest( void )
     {
-      //
+      // Nothing to be done...
     }
 
+    /// \remarks This method is called after construction, at the start of each
+    /// unit test.
     virtual void SetUp( void )
     {
-      //
+      // Nothing to be done...
     }
 
+    /// \brief Sanitize (remove) the directory paths that could have been used
+    /// during the tests.
+    ///
+    /// \remarks This method is called before destruction, at the end of each
+    /// unit test.
+    ///
+    /// \note The directory creation & removal tests depend on proper clean up
+    /// of the directory paths used for running the tests multiple times.
     virtual void TearDown( void )
     {
-      //
+      // Note that the order of removal is reverse order (of creation).
+      if( this->fp.exists( this->nom_rdir.path() ) == true )
+      {
+        EXPECT_EQ( true, this->fp.rmdir( this->nom_rdir.path() ) )
+        << "Could not sanitize directory paths in between tests: " << std::endl
+        << this->nom_rdir.path() << std::endl
+        << "Please try deleting the directory path before re-running the tests.";
+
+        EXPECT_EQ( false, this->fp.exists( this->nom_rdir.path() ) )
+        << "Directory path still exists after deletion: " << this->nom_rdir.path()
+        << std::endl << "Please delete the directory path before re-running tests.";
+      }
+
+      if( this->fp.exists( this->nom_dir.path() ) == true )
+      {
+        EXPECT_EQ( true, this->fp.rmdir( this->nom_dir.path() ) )
+        << "Could not sanitize directory paths in between tests: " << std::endl
+        << this->nom_dir.path() << std::endl
+        << "Please try deleting the directory path before re-running the tests.";
+
+        EXPECT_EQ( false, this->fp.exists( this->nom_dir.path() ) )
+        << "Directory path still exists after deletion: " << this->nom_dir.path()
+        << std::endl << "Please delete the directory path before re-running tests.";
+      }
     }
 
   protected:
     Path p;
     File fp;
+
+    /// \brief The platform-defined system temporary files directory path.
+    Path sys_temp;
+
+    /// \brief The directory path to try creating in the appropriate tests.
+    Path nom_dir;
+
+    /// \brief The recursive directory path to try creating in the appropriate
+    /// tests.
+    Path nom_rdir;
 };
 
 TEST_F( FileInterfaceTest, PathDelimiter )
@@ -67,9 +124,9 @@ TEST_F( FileInterfaceTest, PathDelimiter )
   #if defined( NOM_PLATFORM_POSIX )
     EXPECT_EQ( "/", p.native() );
   #elif defined ( NOM_PLATFORM_WINDOWS )
-    EXPECT_EQ( "\/", p.native() );
-  #else // Unsupported platform?
-    FAIL() << std::endl << "Unknown (unsupported) platform??" << std::endl;
+    EXPECT_EQ( "\\", p.native() );
+  #else // Err
+    FAIL() << std::endl << "Unknown / possibly unsupported platform" << std::endl;
   #endif
 }
 
@@ -96,6 +153,8 @@ TEST_F( FileInterfaceTest, DirPath )
   ASSERT_FALSE( pwd == "." );
 }
 
+/// \fixme Look into why "." is not valid under Windows for pwd;
+/// see also: ::path, ::currentPath?
 TEST_F( FileInterfaceTest, ExecutableWorkingDirectoryPath )
 {
   std::string cwd = fp.currentPath();
@@ -110,6 +169,9 @@ TEST_F( FileInterfaceTest, ExecutableWorkingDirectoryPath )
   #endif
 
   ASSERT_FALSE( pwd == "" );
+
+  // FIXME: Why does this fail only under Windows? My guess is that perhaps "."
+  // isn't recognized / valid under Windows...
   ASSERT_FALSE( pwd == "." );
 }
 
@@ -169,75 +231,46 @@ TEST_F( FileInterfaceTest, PlatformPaths )
 
 TEST_F( FileInterfaceTest, CreateRemoveDirectory )
 {
-  File fp;
-
-  // OSX: /Users/jeff/Documents/nomlib
-  // Windows: C:\Users\jeff\Documents\nomlib
-  // Unix: /home/jeff/Documents/nomlib
-  Path user( fp.user_documents_path() );
-  Path nom( user.prepend( "nomlib" ) );
-
   #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
-    NOM_DUMP_VAR("user_documents_path: ", nom.path() );
+    // NOM_DUMP_VAR("system temp path: ", this->sys_temp.path() );
+    NOM_DUMP_VAR("nomlib temp path: ", this->nom_dir.path() );
   #endif
 
-  EXPECT_EQ( false, fp.exists( nom.path() ) )
-  << "Path should not exist yet: " << nom.path();
+  EXPECT_EQ( true, this->fp.mkdir( this->nom_dir.path() ) )
+  << "Could not create directory path: " << this->nom_dir.path();
 
-  EXPECT_EQ( true, fp.mkdir( nom.path() ) )
-  << "Could not create directory path: " << nom.path();
+  EXPECT_EQ( true, this->fp.is_dir( this->nom_dir.path() ) )
+  << "Path created should be a directory entry: " << this->nom_dir.path();
 
-  EXPECT_EQ( true, fp.is_dir( nom.path() ) )
-  << "Path created should be a directory entry: " << nom.path();
+  EXPECT_EQ( false, this->fp.is_file( this->nom_dir.path() ) )
+  << "Path created should NOT be be a file entry: " << this->nom_dir.path();
 
-  EXPECT_EQ( false, fp.is_file( nom.path() ) )
-  << "Path created should NOT be be a file entry: " << nom.path();
-
-  EXPECT_EQ( true, fp.exists( nom.path() ) )
-  << "Path created does not exist: " << nom.path();
-
-  EXPECT_EQ( true, fp.rmdir( nom.path() ) )
-  << "Could not delete directory path: " << nom.path();
-
-  EXPECT_EQ( false, fp.exists( nom.path() ) )
-  << "Path still exists after deletion: " << nom.path();
+  // Perhaps file security access issue, or flawed internal logic of our
+  // functions occurred if this assertion fails?
+  EXPECT_EQ( true, this->fp.exists( this->nom_dir.path() ) )
+  << "Path created does not exist: " << this->nom_dir.path();
 }
 
-TEST_F( FileInterfaceTest, CreateRecursiveDirectory )
+TEST_F( FileInterfaceTest, CreateRemoveRecursiveDirectory )
 {
-  File fp;
-
-  // OSX: /Users/jeff/Documents/nomlib
-  // Windows: C:\Users\jeff\Documents\nomlib
-  // Unix: /home/jeff/Documents/nomlib
-  Path user( fp.user_documents_path() );
-  Path nom( user.prepend( "nomlib" ) );
-  Path recursive( nom.path() + p.native() + "tests" + p.native() + "v2" + p.native() + "v3" );
-
   #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
-    NOM_DUMP_VAR("user_documents_path: ", recursive.path() );
+    // NOM_DUMP_VAR("system temp path: ", this->sys_temp.path() );
+    NOM_DUMP_VAR("nomlib recursive directory path: ", this->nom_rdir.path() );
   #endif
 
-  EXPECT_EQ( false, fp.exists( recursive.path() ) )
-  << "Path should not exist yet: " << recursive.path();
+  EXPECT_EQ( true, this->fp.recursive_mkdir( this->nom_rdir.path() ) )
+  << "Could not create directory path: " << this->nom_rdir.path();
 
-  EXPECT_EQ( true, fp.recursive_mkdir( recursive.path() ) )
-  << "Could not create directory path: " << recursive.path();
+  EXPECT_EQ( true, this->fp.is_dir( this->nom_rdir.path() ) )
+  << "Path created should be a directory entry: " << this->nom_rdir.path();
 
-  EXPECT_EQ( true, fp.is_dir( recursive.path() ) )
-  << "Path created should be a directory entry: " << recursive.path();
+  EXPECT_EQ( false, this->fp.is_file( this->nom_rdir.path() ) )
+  << "Path created should NOT be be a file entry: " << this->nom_rdir.path();
 
-  EXPECT_EQ( false, fp.is_file( recursive.path() ) )
-  << "Path created should NOT be be a file entry: " << recursive.path();
-
-  EXPECT_EQ( true, fp.exists( recursive.path() ) )
-  << "Path created does not exist: " << recursive.path();
-
-  // EXPECT_EQ( true, fp.rmdir( recursive.path() ) )
-  // << "Could not delete directory path: " << recursive.path();
-
-  // EXPECT_EQ( false, fp.exists( recursive.path() ) )
-  // << "Path still exists after deletion: " << recursive.path();
+  // Perhaps file security access issue, or flawed internal logic of our
+  // functions occurred if this assertion fails?
+  EXPECT_EQ( true, this->fp.exists( this->nom_rdir.path() ) )
+  << "Path created does not exist: " << this->nom_rdir.path();
 }
 
 TEST_F( FileInterfaceTest, MakeFile )

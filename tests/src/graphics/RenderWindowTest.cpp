@@ -38,12 +38,12 @@ class RenderWindowTest: public ::testing::Test
   public:
     RenderWindowTest( void )
     {
-      // ...
+      // Nothing to initialize
     }
 
-    ~RenderWindowTest( void )
+    virtual ~RenderWindowTest( void )
     {
-      // ...
+      // Nothing to clean up
     }
 
     virtual void SetUp( void )
@@ -58,7 +58,7 @@ class RenderWindowTest: public ::testing::Test
 
     virtual void TearDown( void )
     {
-      // Nothing to manually destruct
+      // Nothing to clean up
     }
 
   protected:
@@ -67,7 +67,7 @@ class RenderWindowTest: public ::testing::Test
 
 TEST_F( RenderWindowTest, CreateWindow )
 {
-  // Only requirement is that we pass ::SetUp.
+  // The render window is created during ::SetUp at the start of each test
 }
 
 /// \fixme Unit test fails if we do not execute from the path of the program
@@ -77,6 +77,8 @@ TEST_F( RenderWindowTest, SetIcon )
   Path p;
   File fp;
   std::string icon_path = fp.currentPath() + p.native() + "icon.png";
+
+  NOM_DUMP_VAR("current directory path:",fp.currentPath() );
 
   // p = fp.resource_path( "org.i8degrees.nomlib" );
   // std::string icon_path = p.prepend("icon.png");
@@ -95,6 +97,12 @@ TEST_F( RenderWindowTest, SetWindowTitle )
 int main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
+
+  // Set the current working directory path to the path leading to this
+  // executable file; used for unit tests that require file-system I/O.
+  NOM_ASSERT( nom::init( argc, argv ) == true );
+
+  atexit( nom::quit );
 
   return RUN_ALL_TESTS();
 }

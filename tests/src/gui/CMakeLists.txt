@@ -82,14 +82,32 @@ if( NOM_BUILD_GUI_LISTBOX_LAYOUT_TESTS )
                           ${PROJECT_NAME} # nomlib
                         )
 
-  GTEST_ADD_TESTS (
-                    listbox_layout_test
-                    # Disable visual image comparison feature
-                    "-d"
-                    ${NOM_TESTS_COMMON_SOURCE}
-                    ${NOM_TESTS_SOURCE_DIR}/gui/ListBoxLayoutTest.cpp
-                    ${NOM_TESTS_SOURCE_DIR}/gui/common.cpp
-                  )
+  add_test  (
+              # test name
+              listbox_layout_test_gen_ref_images
+              # executable name
+              listbox_layout_test
+              # args
+              "-r"
+            )
+
+  add_test  (
+              # test name
+              listbox_layout_test_compare_images
+              # executable name
+              listbox_layout_test
+              # args
+              ""
+            )
+
+  # GTEST_ADD_TESTS (
+  #                   listbox_layout_test
+  #                   # Disable visual image comparison feature
+  #                   "-d"
+  #                   ${NOM_TESTS_COMMON_SOURCE}
+  #                   ${NOM_TESTS_SOURCE_DIR}/gui/ListBoxLayoutTest.cpp
+  #                   ${NOM_TESTS_SOURCE_DIR}/gui/common.cpp
+  #                 )
 
 endif( NOM_BUILD_GUI_LISTBOX_LAYOUT_TESTS )
 
@@ -108,14 +126,32 @@ if( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS )
                           ${PROJECT_NAME} # nomlib
                         )
 
-  GTEST_ADD_TESTS (
-                    button_layout_test
-                    # Disable visual image comparison feature
-                    "-d"
-                    ${NOM_TESTS_COMMON_SOURCE}
-                    ${NOM_TESTS_SOURCE_DIR}/gui/ButtonLayoutTest.cpp
-                    ${NOM_TESTS_SOURCE_DIR}/gui/common.cpp
-                  )
+  add_test  (
+              # test name
+              button_layout_test_gen_ref_images
+              # executable name
+              button_layout_test
+              # args
+              "-r"
+            )
+
+  add_test  (
+              # test name
+              button_layout_test_compare_images
+              # executable name
+              button_layout_test
+              # args
+              ""
+            )
+
+  # GTEST_ADD_TESTS (
+  #                   button_layout_test
+  #                   # Disable visual image comparison feature
+  #                   "-d"
+  #                   ${NOM_TESTS_COMMON_SOURCE}
+  #                   ${NOM_TESTS_SOURCE_DIR}/gui/ButtonLayoutTest.cpp
+  #                   ${NOM_TESTS_SOURCE_DIR}/gui/common.cpp
+  #                 )
 
   install (
             DIRECTORY

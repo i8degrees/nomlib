@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/clock.hpp"  // nom::time
+#include "nomlib/system/clock.hpp"  // nom::timestamp
 
 // Note that the following are just the general-purpose (engine-wide) macros.
 // Other major sources of macro definitions: nomlib/config.hpp, nomlib/types.hpp,
@@ -51,7 +51,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOM_DASHED_ENDL(reserved) ( std::cout << "---" << std::endl )
 
 #define NOM_TIMESTAMP(reserved) \
-  ( std::cout << nom::time() << std::endl )
+  ( std::cout << nom::timestamp() << std::endl )
 
 #define NOM_DELETE_PTR(var) \
   if( var != nullptr ) delete var; var = nullptr;

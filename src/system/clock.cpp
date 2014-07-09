@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-const std::string time( const std::string& format )
+std::string time( const std::string& format )
 {
   char timestamp[TIME_STRING_SIZE];
   time_t timer = std::time( nullptr );
@@ -49,18 +49,17 @@ const std::string time( const std::string& format )
   return "\0";
 }
 
-const std::string time( void )
-{
-  // The date format used is ISO 8601, but with the use of backslash instead
-  // of a dash for the delimiter. The time format is the standard ISO 8601.
-  return nom::time( "%Y/%m/%d %H:%M:%S" );
-}
-
 std::string timestamp( void )
 {
-  // The date format used is ISO 8601, but with the use of backslash instead
-  // of a dash for the delimiter. The time format is the standard ISO 8601.
-  return nom::time( "%Y_%m_%d_%H-%M-%S" );
+  // Standard ISO 8601 date & time stamp
+  return nom::time( "%Y-%m-%d %H:%M:%S" );
+}
+
+std::string file_timestamp( void )
+{
+
+  // Use ISO 8601 time-stamp without space characters (file name friendly)
+  return nom::time( "%Y-%m-%d_%H-%M-%S" );
 }
 
 uint32 ticks( void )
@@ -68,7 +67,7 @@ uint32 ticks( void )
   return SDL_GetTicks();
 }
 
-const std::string ticks_as_string( void )
+std::string ticks_as_string( void )
 {
   return std::to_string( SDL_GetTicks() );
 }

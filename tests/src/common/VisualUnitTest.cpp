@@ -58,7 +58,9 @@ void VisualUnitTest::initialize( const Size2i& res )
   // set.
   if( VisualUnitTest::timestamp_initialized_ == false )
   {
-    VisualUnitTest::timestamp_ = nom::timestamp();
+    // Use underscore char instead of a space char (filename friendly)
+    VisualUnitTest::timestamp_ = nom::file_timestamp();
+
     VisualUnitTest::timestamp_initialized_ = true;
   }
 

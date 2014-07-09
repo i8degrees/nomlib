@@ -42,7 +42,7 @@ void log ( void* userdata, int category, SDL_LogPriority prio, const char* messa
 /*
   std::cout
   << "NOM_LOG at "
-  << nom::time()
+  << nom::timestamp()
   << std::endl
   << "Reason: "
   << std::string(message)
@@ -58,7 +58,7 @@ void log ( void* userdata, int category, SDL_LogPriority prio, const char* messa
   std::cout
   << identifier
   << "_LOG_ERR at "
-  << nom::time(),
+  << nom::timestamp(),
   << "In file "
   << __FILE__
   << ":"
@@ -82,7 +82,7 @@ void log_trace ( const std::string& identifier )
   std::cout
   << identifier
   << "_LOG_TRACE at "
-  << nom::time(),
+  << nom::timestamp(),
   << __func__
   << std::endl
   << std::endl;

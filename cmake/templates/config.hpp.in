@@ -91,11 +91,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /// \brief Macros for quickly dumping a variable.
 #define NOM_DUMP(var) \
-  ( std::cout << "In function: " << __func__ << " at " << nom::time() << "\n" << #var << ": " << var << std::endl << std::endl )
+  ( std::cout << "In function: " << __func__ << " at " << nom::timestamp() << "\n" << #var << ": " << var << std::endl << std::endl )
 
 /// \brief Macros for quickly dumping one or more variables.
 #define NOM_DUMP_VAR(...) \
-  nom::Logger( std::cout << "In function: " << __func__ << " at " << nom::time() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
+  nom::Logger( std::cout << "In function: " << __func__ << " at " << nom::timestamp() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
 
 /// \brief Debugging macros;
 ///
@@ -106,13 +106,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   ///
   /// \note This is a macro provided for internal debugging diagnostics.
   #define NOM_LOG_INFO(identifier, ...) \
-    nom::Logger( std::cout << #identifier << "_LOG_INFO at " << nom::time() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
+    nom::Logger( std::cout << #identifier << "_LOG_INFO at " << nom::timestamp() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
 
   /// \brief Log ERR debug level message using a custom identifier.
   ///
   /// \note This is a macro provided for internal debugging diagnostics.
   #define NOM_LOG_ERR(identifier, ...) \
-    nom::Logger( std::cout << #identifier << "_LOG_ERR at " << nom::time() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
+    nom::Logger( std::cout << #identifier << "_LOG_ERR at " << nom::timestamp() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
 
 #else // Do not add any overhead
   #define NOM_LOG_INFO(identifier, ...)
@@ -120,7 +120,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #define NOM_STUBBED(identifier, ...) \
-  nom::Logger( std::cout << #identifier << "_LOG_ERR at " << nom::time() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
+  nom::Logger( std::cout << #identifier << "_LOG_ERR at " << nom::timestamp() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
 
 #ifdef NOM_DEBUG_ASSERT // -D NOM_DEBUG_ASSERT=true
 
@@ -141,7 +141,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   // If trace debugging is turned on, we show class construction and destruction
   #define NOM_LOG_TRACE(identifier) \
-    nom::Logger( std::cout << #identifier << "_LOG_TRACE at " << nom::time() << "\n", __FILE__, __LINE__ ).write( __func__ )
+    nom::Logger( std::cout << #identifier << "_LOG_TRACE at " << nom::timestamp() << "\n", __FILE__, __LINE__ ).write( __func__ )
 
 #else // Do not add any overhead
   #define NOM_LOG_TRACE(identifier, ...)

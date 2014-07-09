@@ -221,7 +221,7 @@ bool SpriteSheet::save( const std::string& filename )
   // Lastly, serialize the meta-data variables.
   object["sheet_filename"] = this->sheet_filename();
   object["sheet_height"] = this->sheet_height;
-  object["sheet_modified"] = nom::time();
+  object["sheet_modified"] = nom::timestamp();
   object["sheet_padding"] = this->sheet_padding;
   object["sheet_spacing"] = this->sheet_spacing;
   object["sheet_sprites"] = this->sheet_sprites;

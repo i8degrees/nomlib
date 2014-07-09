@@ -72,7 +72,7 @@ TEST( VisualTestSetTest, InitializeConstructor )
 {
   File fp;
   Size2i resolution( 640, 480 );
-  std::string ts = nom::timestamp();
+  std::string ts = nom::file_timestamp();
 
   VisualTestSet obj (
                       "VisualTestSetTest",
@@ -111,7 +111,7 @@ TEST( VisualTestSetTest, EqualityComparison )
 {
   File fp;
   Size2i resolution( 640, 480 );
-  std::string ts = nom::timestamp();
+  std::string ts = nom::file_timestamp();
 
   VisualTestSet eq1  (
                         "VisualTestSetTest",
@@ -214,7 +214,7 @@ TEST( VisualTestSetTest, EqualityComparison )
 
 TEST( VisualTestSetTest, TimestampComparison )
 {
-  std::string ts = nom::timestamp();
+  std::string ts = nom::file_timestamp();
   VisualTestSet ts1;
   ts1.set_timestamp( ts );
 
@@ -224,7 +224,7 @@ TEST( VisualTestSetTest, TimestampComparison )
   // Note that these tests should fail if we delay less than 1,000ms (1s)
   nom::sleep( 1000 );
 
-  ts = nom::timestamp();
+  ts = nom::file_timestamp();
   VisualTestSet ts3;
   ts3.set_timestamp( ts );
 
@@ -251,7 +251,7 @@ TEST( VisualTestSetTest, SaveFile )
 {
   Path p;
   File fp;
-  std::string ts = nom::timestamp();
+  std::string ts = nom::file_timestamp();
   IValueSerializer* serializer = new JsonCppSerializer();
   Size2i resolution( 640, 480 );
 
@@ -278,7 +278,7 @@ TEST( VisualTestSetTest, LoadFile )
 {
   Path p;
   File fp;
-  std::string ts = nom::timestamp();
+  std::string ts = nom::file_timestamp();
   IValueDeserializer* serializer = new JsonCppDeserializer();
   Size2i resolution( 640, 480 );
 

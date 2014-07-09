@@ -52,33 +52,38 @@ const nom::size TIME_STRING_SIZE = 26;
 ///
 /// \see http://en.cppreference.com/w/cpp/chrono/c/strftime
 /// \see http://msdn.microsoft.com/en-us/library/fe06s4ak(v=vs.71).aspx
-const std::string time( const std::string& format );
+std::string time( const std::string& format );
 
-/// \brief Get the current date & time (logger friendly).
+/// \brief Get the current date and time.
 ///
 /// \returns A std::string containing the ISO 8601 date and time on success, or
 /// a null-terminated string on err.
+///
+/// Sample output:
 ///
 /// \code
-/// 2014/06/02 02:52:42
+/// 2014-06-02 02:52:42
 /// \endcode
-const std::string time( void );
+std::string timestamp( void );
 
-/// \brief Get the current date and time (file name friendly).
+/// \brief Get the current date and time, made friendly towards use in a file
+/// name.
 ///
-/// \returns A std::string containing the ISO 8601 date and time on success, or
-/// a null-terminated string on err.
+/// \returns A std::string containing the ISO 8601 date and time stamp on
+/// success, or a null-terminated string on err.
+///
+/// Sample output:
 ///
 /// \code
 /// 2014-06-19_13-25-21
 /// \endcode
-std::string timestamp( void );
+std::string file_timestamp( void );
 
 /// SDL helper function
 ///
 /// Wrapper for SDL_GetTicks.
 uint32 ticks( void );
-const std::string ticks_as_string( void );
+std::string ticks_as_string( void );
 
 /// SDL_Delay wrapper
 ///

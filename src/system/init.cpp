@@ -192,10 +192,35 @@ bool init_third_party( uint32 flags )
     // without crashing when ran within nom::GameStates
     if ( TTF_Init () != 0 )
     {
-      NOM_LOG_ERR(NOM, TTF_GetError());
+      NOM_LOG_ERR(NOM, TTF_GetError() );
       return false;
     }
   }
+
+  #if defined( NOM_DEBUG )
+
+    // FIXME (???): This appears to correct a bug that prevents the first log
+    // message from being output.
+    NOM_LOG_VERBOSE( NOM, "" );
+
+    // Log all messages from the engine's default NOM category
+    SDL2Logger::set_logging_priority( NOM, SDL_LOG_PRIORITY_VERBOSE );
+
+    // Disable all function call traces by default
+    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE, SDL_LOG_PRIORITY_CRITICAL );
+    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_AUDIO, SDL_LOG_PRIORITY_CRITICAL );
+    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_GRAPHICS, SDL_LOG_PRIORITY_CRITICAL );
+    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_FONTS, SDL_LOG_PRIORITY_CRITICAL );
+    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_CRITICAL );
+    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_EVENTS, SDL_LOG_PRIORITY_CRITICAL );
+    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_MATH, SDL_LOG_PRIORITY_CRITICAL );
+
+  #else // Assume the build to be release
+
+    // Log only critical messages (all categories)
+    SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_CRITICAL );
+
+  #endif
 
   return true;
 }

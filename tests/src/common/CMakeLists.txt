@@ -2,7 +2,8 @@ if( NOM_BUILD_COMMON_TESTS )
 
     add_executable  (
                       UnitTestFrameworkTest
-                      ${NOM_TESTS_COMMON_SOURCE}
+                      # ${NOM_TESTS_COMMON_SOURCE}  # nom::UnitTest
+                      ${NOM_TESTS_VTEST_SOURCE}   # nom::VisualUnitTest
                       ${NOM_TESTS_SOURCE_DIR}/common/UnitTestFrameworkTest.cpp
                     )
 
@@ -15,13 +16,14 @@ if( NOM_BUILD_COMMON_TESTS )
     GTEST_ADD_TESTS (
                       UnitTestFrameworkTest
                       "UnitTestFrameworkTest"
-                      ${NOM_TESTS_COMMON_SOURCE}
+                      # ${NOM_TESTS_COMMON_SOURCE}  # nom::UnitTest
+                      ${NOM_TESTS_VTEST_SOURCE}   # nom::VisualUnitTest
                       ${NOM_TESTS_SOURCE_DIR}/common/UnitTestFrameworkTest.cpp
                     )
 
     add_executable  (
                       VisualUnitTestFrameworkTest
-                      ${NOM_TESTS_VTEST_SOURCE}
+                      ${NOM_TESTS_VTEST_SOURCE}   # nom::VisualUnitTest
                       ${NOM_TESTS_SOURCE_DIR}/common/VisualUnitTestFrameworkTest.cpp
                     )
 

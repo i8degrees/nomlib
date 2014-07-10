@@ -162,7 +162,7 @@ set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/IObject.cpp
       ${SRC_DIR}/system/helpers.cpp
       ${SRC_DIR}/system/IState.cpp
-      # ${SRC_DIR}/system/log.cpp
+      ${SRC_DIR}/system/log.cpp
       ${SRC_DIR}/system/SDL_helpers.cpp
       ${SRC_DIR}/system/init.cpp
       ${SRC_DIR}/system/dialog_messagebox.cpp

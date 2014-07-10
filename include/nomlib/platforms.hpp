@@ -69,16 +69,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #define NOM_COMPILER_FEATURE_NULLPTR // See include/nomlib/types.hpp
 #endif
 
-// Function names and preferably also its type signature
+/// \brief Function names and preferably also its type signature
 #if defined ( NOM_COMPILER_MSVCPP ) // MSVC++
-  // TODO: Presumably the same as GNU's __PRETTY_FUNCTION__ ?
-  //
-  // SOURCE: http://msdn.microsoft.com/en-us/library/b0084kay(v=vs.80).aspx
-  #define __func__ __FUNCTION__
-#else // We assume GNU v2+
-  // The type signature is nice because this shows if the function calling type
-  // is a virtual or not and even what arguments the function has
-  #define __func__ __PRETTY_FUNCTION__
+  /// \see http://msdn.microsoft.com/en-us/library/b0084kay(v=vs.80).aspx
+  #define NOM_FUNC __FUNCTION__
+#else // We assume clang or GNU v2+
+  #define NOM_FUNC __PRETTY_FUNCTION__
 #endif
 
 #ifdef PATH_MAX

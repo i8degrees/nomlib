@@ -28,65 +28,80 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/log.hpp"
 
-// Private headers (third-party libs)
-#include "SDL.h"
-
 namespace nom {
 
-// void log ( void* userdata, int category, SDL_LogPriority prio, const char* message );
-// void log_err ( const std::string& identifier, const std::string& message );
-// void log_trace ( const std::string& identifier );
-
-void log ( void* userdata, int category, SDL_LogPriority prio, const char* message )
-{
-/*
-  std::cout
-  << "NOM_LOG at "
-  << nom::timestamp()
-  << std::endl
-  << "Reason: "
-  << std::string(message)
-  << std::endl
-  << "Priority: "
-  << prio
-  << std::endl
-  << "Category: "
-  << category
-  << std::endl;
-*/
-  /*
-  std::cout
-  << identifier
-  << "_LOG_ERR at "
-  << nom::timestamp(),
-  << "In file "
-  << __FILE__
-  << ":"
-  << __LINE__
-  << std::endl
-  << "Reason: "
-  << message
-  << std::endl
-  << std::endl;
-  */
-}
-
-void log_err ( const std::string& identifier, const std::string& message )
+SDL2Logger::SDL2Logger( void ) :
+  category_{ NOM },
+  priority_{ SDL_LOG_PRIORITY_INFO }
 {
   //
 }
 
-void log_trace ( const std::string& identifier )
+SDL2Logger::SDL2Logger  (
+                          int cat,
+                          SDL_LogPriority prio
+                        ) :
+  category_{ cat },
+  priority_{ prio }
 {
-  /*
-  std::cout
-  << identifier
-  << "_LOG_TRACE at "
-  << nom::timestamp(),
-  << __func__
-  << std::endl
-  << std::endl;
-  */
+  // ...
+}
+
+SDL2Logger::~SDL2Logger( void )
+{
+  this->write( "\n" );
+
+  SDL_LogMessage( this->category(), this->priority(), "%s", this->output_cstring() );
+}
+
+void SDL2Logger::write( void )
+{
+  // Do not output anything when there are void arguments
+}
+
+int SDL2Logger::category( void ) const
+{
+  return this->category_;
+}
+
+SDL_LogPriority SDL2Logger::priority( void ) const
+{
+  return this->priority_;
+}
+
+std::ostringstream& SDL2Logger::output_stream( void )
+{
+  return this->os_;
+}
+
+std::string SDL2Logger::output_string( void ) const
+{
+  return this->os_.str();
+}
+
+const char* SDL2Logger::output_cstring( void )
+{
+  return this->output_string().c_str();
+}
+
+// void SDL2Logger::set_category( int cat )
+// {
+//   this->category_ = cat;
+// }
+
+// void SDL2Logger::set_priority( SDL_LogPriority p )
+// {
+//   this->priority_ = p;
+// }
+
+void SDL2Logger::set_logging_priorities( SDL_LogPriority prio )
+{
+  SDL_LogSetAllPriority( prio );
+}
+
+void SDL2Logger::set_logging_priority( int cat, SDL_LogPriority prio )
+{
+  SDL_LogSetPriority( cat, prio );
 }
 
 } // namespace nom

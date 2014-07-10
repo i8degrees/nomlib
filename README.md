@@ -78,7 +78,7 @@ cmake -D CMAKE_INSTALL_PREFIX=~/Library/Frameworks ..
     * Defaults to **OFF**
     * When built (**ON**), the resulting binaries will reside in a new directory named **examples**
 
-  - Debugging: -D DEBUG=**\<BOOLEAN\>** -D DEBUG_ASSERT=**\<BOOLEAN\>** -D DEBUG_TRACE=**\<BOOLEAN\>**
+  - Debugging: -D DEBUG=**\<BOOLEAN\>** -D DEBUG_ASSERT=**\<BOOLEAN\>**
     * Defaults to **OFF**
 
   - Universal binary: -D UNIVERSAL=**\<BOOLEAN\>**

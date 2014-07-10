@@ -84,3 +84,24 @@ if( NOM_BUILD_FILE_TESTS )
   endif( NOM_BUILD_SYSTEM_UNIT )
 
 endif( NOM_BUILD_FILE_TESTS )
+
+if( NOM_BUILD_SDL2_LOGGER_TESTS )
+
+    add_executable  (
+                      SDL2LoggerTest
+                      ${NOM_TESTS_SOURCE_DIR}/system/SDL2LoggerTest.cpp
+                    )
+
+    target_link_libraries (
+                            SDL2LoggerTest
+                            ${GTEST_LIBRARY}
+                            ${PROJECT_NAME} # nomlib
+                          )
+
+    GTEST_ADD_TESTS (
+                      SDL2LoggerTest
+                      ""
+                      ${NOM_TESTS_SOURCE_DIR}/system/SDL2LoggerTest.cpp
+                    )
+
+endif( NOM_BUILD_SDL2_LOGGER_TESTS )

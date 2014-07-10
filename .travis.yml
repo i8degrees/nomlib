@@ -36,7 +36,7 @@ before_script:
   - mkdir -p '/Applications/Developer/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs'
   - sudo tar -xzf /tmp/osx10.7.sdk.tar.gz -C /Applications/Developer/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
   - mkdir -p build && cd build
-  - cmake -GXcode -DDEBUG=on -DDEBUG_ASSERT=on -DDEBUG_TRACE=on -DEXAMPLES=off -DNOM_BUILD_TESTS=on -DCMAKE_INSTALL_PREFIX=~/Library/Frameworks ..
+  - cmake -GXcode -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=off -DNOM_BUILD_TESTS=on -DCMAKE_INSTALL_PREFIX=~/Library/Frameworks ..
 script:
   - xcodebuild -sdk macosx10.7 build
   - xcodebuild -target install

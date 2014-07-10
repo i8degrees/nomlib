@@ -19,7 +19,6 @@ set ( PROJECT_VERSION_PATCH 1 )
 # Project Options
 option ( DEBUG "Build with all debugging features" off )
 option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
-option ( DEBUG_TRACE "Build with trace logging of object construction & destruction" off )
 option ( EXAMPLES "Build nomlib usage examples" off )
 option( NOM_BUILD_TESTS "Build unit tests" off )
 
@@ -110,7 +109,7 @@ if ( DEBUG )
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused -O0" ) #-D_GLIBCXX_DEBUG
   else ( PLATFORM_WINDOWS )
     # TODO: split these options up like we have for other platforms
-    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D NOM_DEBUG /D NOM_DEBUG_ASSERT /D NOM_DEBUG_TRACE" )
+    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D NOM_DEBUG /D NOM_DEBUG_ASSERT" )
 
     # FIXME: _ITERATOR_DEBUG_LEVEL is intended as a *temporary* patch to get
     # TTcards up and going; this is only needed here because we are building
@@ -137,14 +136,6 @@ else ( NOT DEBUG_ASSERT )
   add_definitions ( "-DNDEBUG" ) # Disable NOM_ASSERT macros
   message ( STATUS "Run-time assertions are OFF." )
 endif ( DEBUG_ASSERT )
-
-if ( DEBUG_TRACE )
-  # We intentionally do not set CMAKE_BUILD_TYPE to "Debug" or "Release" here so
-  # we can enable this feature in either target mode to maximize debugging
-  # capabilities.
-  add_definitions ( "-DNOM_DEBUG_TRACE" )
-  message ( STATUS "Building ${PROJECT_NAME} with class object call tracing." )
-endif ( DEBUG_TRACE )
 
 # Utility macro helpers
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )

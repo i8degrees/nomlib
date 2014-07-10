@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include <nomlib/config.hpp>
-#include <nomlib/math.hpp>
+#include "nomlib/system.hpp"
+#include "nomlib/math.hpp"
 
 nom::int32 main( nom::int32 argc, char* argv[] )
 {
@@ -35,22 +35,34 @@ nom::int32 main( nom::int32 argc, char* argv[] )
   pos.x = 25;
   pos.y = 25;
 
+  NOM_ASSERT( nom::init( argc, argv ) == true );
+
   NOM_DUMP( pos );
 
-  NOM_DUMP_VAR();
-  NOM_DUMP_VAR( "pos: ", pos );
+  // NOM_DUMP_VAR();
+  NOM_DUMP_VAR( "pos:", pos );
 
   NOM_LOG_TRACE( NOM );
-  // NOM_LOG_TRACE( NOM, "func");
 
   NOM_STUBBED( NOM );
-  NOM_STUBBED( NOM, "testme");
+
+  NOM_LOG_VERBOSE( NOM );
+  NOM_LOG_VERBOSE( NOM, "Verbose message" );
+
+  NOM_LOG_DEBUG( NOM );
+  NOM_LOG_DEBUG( NOM, "Debug message" );
 
   NOM_LOG_INFO( NOM );
-  NOM_LOG_INFO( NOM, "Could not initialize application." );
+  NOM_LOG_INFO( NOM, "Could not initialize something totally not important.");
+
+  NOM_LOG_WARN( NOM );
+  NOM_LOG_WARN( NOM, "Could not initialize image resource." );
 
   NOM_LOG_ERR( NOM );
-  NOM_LOG_ERR( NOM, "Could not initialize application." );
+  NOM_LOG_ERR( NOM, "Could not initialize image resource." );
+
+  NOM_LOG_CRIT( NOM );
+  NOM_LOG_CRIT( NOM, "Could not initialize application. Exiting..." );
 
   return NOM_EXIT_SUCCESS;
 }

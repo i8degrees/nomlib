@@ -60,7 +60,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // nomlib's standard integer types
 #include "nomlib/types.hpp"
 
-#include "nomlib/system/clock.hpp"
 #include "nomlib/system/log.hpp"
 
 // nomlib's general-purpose macros
@@ -76,51 +75,79 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///     DEBUG_ASSERT
 /// Activate run-time assert checks scattered throughout the code-base.
 ///
-///     DEBUG_TRACE
-/// Special debug level for activating output of each class object construction
-/// and destruction that occurs. Unless you are an active developer of nomlib,
-/// or perhaps suspect that an error in your software could be caused by nomlib,
-/// you are unlikely to be interested in this debug level -- this option
-/// generates a hefty amount of output text!
-///
 /// These definitions are passed at build time for activation like so:
 ///
 ///     cd build && cmake -DDEBUG=on ..
 ///
 /// You may mix and match these flags however you wish.
 
-/// \brief Macros for quickly dumping a variable.
-#define NOM_DUMP(var) \
-  ( std::cout << "In function: " << __func__ << " at " << nom::timestamp() << "\n" << #var << ": " << var << std::endl << std::endl )
-
-/// \brief Macros for quickly dumping one or more variables.
-#define NOM_DUMP_VAR(...) \
-  nom::Logger( std::cout << "In function: " << __func__ << " at " << nom::timestamp() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
-
 /// \brief Debugging macros;
 ///
 /// \remarks If debugging is turned on, we log all warnings, errors & info.
+///
+/// \todo Consider checking for the standard NDEBUG macro instead of NOM_DEBUG?
 #ifdef NOM_DEBUG
+
+  /// \brief Log a message using SDL2's logging facilities.
+  ///
+  /// \remarks This is a helper macro for use with log specialization
+  /// definitions.
+  #define NOM_LOG_MESSAGE( cat, prio, ... ) \
+    { nom::SDL2Logger( cat, prio ).write( __VA_ARGS__ ); }
+
+  /// \brief Macros for quickly dumping a variable.
+  #define NOM_DUMP( var ) \
+    NOM_LOG_MESSAGE( NOM, SDL_LOG_PRIORITY_DEBUG, "[", __FILE__, ":", __LINE__, "]", #var, ":", var );
+
+  /// \brief Macros for quickly dumping one or more variables.
+  #define NOM_DUMP_VAR( ... ) \
+    NOM_LOG_MESSAGE( NOM, SDL_LOG_PRIORITY_DEBUG, "[", __FILE__, ":", __LINE__, "]", __VA_ARGS__ );
+
+  /// \brief Show class construction and destruction
+  #define NOM_LOG_TRACE( cat ) \
+    NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_DEBUG, NOM_FUNC );
+
+  #define NOM_STUBBED( cat ) \
+    NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_INFO, "Stubbed function", NOM_FUNC, "was called" );
+
+  #define NOM_LOG_VERBOSE( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_VERBOSE, __VA_ARGS__ );
+
+  #define NOM_LOG_DEBUG( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_DEBUG, __VA_ARGS__ );
 
   /// \brief Log INFO debug level message using a custom identifier.
   ///
   /// \note This is a macro provided for internal debugging diagnostics.
-  #define NOM_LOG_INFO(identifier, ...) \
-    nom::Logger( std::cout << #identifier << "_LOG_INFO at " << nom::timestamp() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
+  #define NOM_LOG_INFO( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_INFO, __VA_ARGS__ );
+
+  #define NOM_LOG_WARN( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_WARN, __VA_ARGS__ );
 
   /// \brief Log ERR debug level message using a custom identifier.
   ///
   /// \note This is a macro provided for internal debugging diagnostics.
-  #define NOM_LOG_ERR(identifier, ...) \
-    nom::Logger( std::cout << #identifier << "_LOG_ERR at " << nom::timestamp() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
+  #define NOM_LOG_ERR( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_ERROR, __VA_ARGS__ );
 
-#else // Do not add any overhead
-  #define NOM_LOG_INFO(identifier, ...)
-  #define NOM_LOG_ERR(identifier, ...)
+  #define NOM_LOG_CRIT( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_CRITICAL, __VA_ARGS__ );
+
+#else
+
+  // NO-OP
+  #define NOM_DUMP( var )
+  #define NOM_DUMP_VAR( var, ... )
+  #define NOM_LOG_TRACE( cat )
+  #define NOM_STUBBED( cat )
+  #define NOM_LOG_VERBOSE( cat, ... )
+  #define NOM_LOG_DEBUG( cat, ... )
+  #define NOM_LOG_INFO( cat, ... )
+  #define NOM_LOG_WARN( cat, ... )
+  #define NOM_LOG_ERR( cat, ... )
+  #define NOM_LOG_CRIT( cat, ... )
 #endif
-
-#define NOM_STUBBED(identifier, ...) \
-  nom::Logger( std::cout << #identifier << "_LOG_ERR at " << nom::timestamp() << "\n", __FILE__, __LINE__ ).write( __VA_ARGS__ )
 
 #ifdef NOM_DEBUG_ASSERT // -D NOM_DEBUG_ASSERT=true
 
@@ -136,16 +163,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else // Do not add any overhead
   #define NOM_ASSERT(expression)  // NO-OP
 #endif // defined( NOM_DEBUG_ASSERT )
-
-#ifdef NOM_DEBUG_TRACE
-
-  // If trace debugging is turned on, we show class construction and destruction
-  #define NOM_LOG_TRACE(identifier) \
-    nom::Logger( std::cout << #identifier << "_LOG_TRACE at " << nom::timestamp() << "\n", __FILE__, __LINE__ ).write( __func__ )
-
-#else // Do not add any overhead
-  #define NOM_LOG_TRACE(identifier, ...)
-#endif
 
 #ifndef __cplusplus
   #pragma message ( "nomlib requires a C++11 capable compiler." )

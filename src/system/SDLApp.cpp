@@ -42,7 +42,7 @@ namespace nom {
 SDLApp::SDLApp( void )
   // state_factory { new GameStates() }
 {
-  NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_SYSTEM );
 
   uint32 flags =  OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS |
                   OSX_DISABLE_FULLSCREEN_SPACES |
@@ -54,14 +54,14 @@ SDLApp::SDLApp( void )
 SDLApp::SDLApp( uint32 flags )
   // state_factory { new GameStates() }
 {
-  NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_SYSTEM );
 
   this->initialize( flags );
 }
 
 SDLApp::~SDLApp( void )
 {
-  NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_SYSTEM );
 
   this->app_timer_.stop();
 

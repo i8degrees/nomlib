@@ -33,7 +33,7 @@ namespace nom {
 
 Listener::Listener ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 
   // Defaults as per OpenAL/al.h
   ALfloat position[] = { 0.0, 0.0, 0.0 };
@@ -53,7 +53,7 @@ AL_CHECK_ERR ( alListenerfv ( AL_ORIENTATION, direction ) );
 
 Listener::~Listener ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 
   // Clean up instance variables
 }

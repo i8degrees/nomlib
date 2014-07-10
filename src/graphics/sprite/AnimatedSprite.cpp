@@ -45,7 +45,7 @@ void AnimatedSprite::initialize ( void )
 
 AnimatedSprite::AnimatedSprite ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_RENDER );
 
   this->initialize();
 }
@@ -53,7 +53,7 @@ NOM_LOG_TRACE ( NOM );
 AnimatedSprite::AnimatedSprite ( const SpriteSheet& sheet ) :
   SpriteBatch ( sheet )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_RENDER );
 
   this->initialize();
 
@@ -64,7 +64,7 @@ NOM_LOG_TRACE ( NOM );
 AnimatedSprite::AnimatedSprite ( const std::string& filename ) :
   SpriteBatch ( filename )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_RENDER );
 
   this->initialize();
 
@@ -74,7 +74,7 @@ NOM_LOG_TRACE ( NOM );
 
 AnimatedSprite::~AnimatedSprite ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_RENDER );
 }
 
 int32 AnimatedSprite::total_frames ( void ) const

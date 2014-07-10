@@ -33,7 +33,7 @@ namespace nom {
 
 SoundFile::SoundFile ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 
   this->fp.reset();
 
@@ -42,7 +42,7 @@ NOM_LOG_TRACE ( NOM );
 
 SoundFile::~SoundFile ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
   // Clean up instance variables
 }
 

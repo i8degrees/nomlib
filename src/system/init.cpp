@@ -206,15 +206,6 @@ bool init_third_party( uint32 flags )
     // Log all messages from the engine's default NOM category
     SDL2Logger::set_logging_priority( NOM, SDL_LOG_PRIORITY_VERBOSE );
 
-    // Disable all function call traces by default
-    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE, SDL_LOG_PRIORITY_CRITICAL );
-    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_AUDIO, SDL_LOG_PRIORITY_CRITICAL );
-    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_GRAPHICS, SDL_LOG_PRIORITY_CRITICAL );
-    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_FONTS, SDL_LOG_PRIORITY_CRITICAL );
-    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_CRITICAL );
-    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_EVENTS, SDL_LOG_PRIORITY_CRITICAL );
-    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_MATH, SDL_LOG_PRIORITY_CRITICAL );
-
   #else // Assume the build to be release
 
     // Log only critical messages (all categories)

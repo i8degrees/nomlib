@@ -244,14 +244,14 @@ TEST( SDL2LoggerTest, LogFunctionTraceNomCategory )
 
 TEST( SDL2LoggerTest, LogFunctionTraceDisabledCategory )
 {
-  int cat = NOM_LOG_CATEGORY_TRACE_GRAPHICS;
+  int cat = NOM_LOG_CATEGORY_TRACE_RENDER;
   SDL_LogPriority p = SDL_LOG_PRIORITY_DEBUG;
 
   // Disable category logging except for critical
   SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE, SDL_LOG_PRIORITY_CRITICAL );
 
   // Enable category logging of function call traces
-  SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_GRAPHICS, SDL_LOG_PRIORITY_DEBUG );
+  SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_RENDER, SDL_LOG_PRIORITY_DEBUG );
 
   // Should see this function trace logged
   FunctionTraceTest t1( cat, p );

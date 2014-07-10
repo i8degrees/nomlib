@@ -65,14 +65,23 @@ enum
   NOM_LOG_CATEGORY_TEST,
   NOM_LOG_CATEGORY_GUI,
 
-  /// \brief Function call trace -- entry and exit points
   NOM_LOG_CATEGORY_TRACE,
   NOM_LOG_CATEGORY_TRACE_AUDIO,
-  NOM_LOG_CATEGORY_TRACE_GRAPHICS,
   NOM_LOG_CATEGORY_TRACE_FONTS,
+  NOM_LOG_CATEGORY_TRACE_VIDEO,
+  NOM_LOG_CATEGORY_TRACE_RENDER,
   NOM_LOG_CATEGORY_TRACE_GUI,
   NOM_LOG_CATEGORY_TRACE_EVENTS,
-  NOM_LOG_CATEGORY_TRACE_MATH,
+  NOM_LOG_CATEGORY_TRACE_STATES,
+  NOM_LOG_CATEGORY_TRACE_SYSTEM,
+
+  /// \brief Custom logging category to use from within applications
+  ///
+  /// \remarks This should be the first assignment to application-level category
+  /// definitions. Mimics how SDL2 allows us to define our categories here.
+  ///
+  /// \todo Improve explanation of this enumeration.
+  NOM_LOG_CATEGORY_CUSTOM
 };
 
 namespace nom {

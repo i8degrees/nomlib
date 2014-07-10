@@ -33,7 +33,7 @@ namespace nom {
 
 SoundSource::SoundSource ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 
 AL_CHECK_ERR ( alGenSources ( 1, &source_id ) );
 AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, 0 ) );
@@ -41,7 +41,7 @@ AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, 0 ) );
 
 SoundSource::~SoundSource ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 
 AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, 0 ) );
 AL_CHECK_ERR ( alDeleteSources ( 1, &source_id ) );

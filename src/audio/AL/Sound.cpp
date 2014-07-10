@@ -33,7 +33,7 @@ namespace nom {
 
 Sound::Sound ( void ) : buffer ( nullptr )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 }
 
 Sound::Sound ( const SoundBuffer& copy )  : buffer ( nullptr )
@@ -43,7 +43,7 @@ Sound::Sound ( const SoundBuffer& copy )  : buffer ( nullptr )
 
 Sound::~Sound ( void )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 
   this->Stop();
 
@@ -53,7 +53,7 @@ NOM_LOG_TRACE ( NOM );
 
 void Sound::setBuffer ( const SoundBuffer& copy )
 {
-NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 
   // First, detach previous buffer
   if ( this->buffer )

@@ -323,8 +323,6 @@ void Text::set_text( const std::string& text )
 
   this->text_ = text;
 
-  this->update();
-
   // Set the overall size of this text label to the width & height of the text,
   // with consideration to the specific font in use.
   // this->set_size( Size2i( this->text_width( text ), this->text_height( text ) ) );

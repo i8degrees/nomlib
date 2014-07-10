@@ -58,3 +58,6 @@ branches:
 matrix:
   allow_failures:
     - os: linux
+
+notifications:
+  email: false

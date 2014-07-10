@@ -119,20 +119,21 @@ const std::string WinFile::path( const std::string& dir_path )
   return dir_path.substr( 0, pos );
 }
 
-const std::string WinFile::currentPath ( void )
+std::string WinFile::currentPath( void )
 {
   char* buffer = nullptr;
-  std::string pwd;
+  char* path = nullptr;
+  std::string pwd( ".\\" );
 
-  if( (buffer = _getcwd( nullptr, 0 ) ) == nullptr )
+  path = _getcwd( buffer, PATH_MAX );
+
+  if( path != nullptr )
   {
-    NOM_LOG_ERR( NOM, "Could not get the current working directory path." );
-    return pwd; // NULL
+    pwd = path;
   }
   else
   {
-    pwd = buffer;
-    free( buffer );
+    NOM_LOG_ERR( NOM, "Could not get the current working directory path." );
   }
 
   return pwd;
@@ -186,7 +187,7 @@ std::vector<std::string> WinFile::read_dir( const std::string& dir_path )
   // Prepare string for use with FindFile functions.  First, copy the
   // string to a buffer, then append '\*' to the directory name.
   StringCchCopy( szDir, PATH_MAX, dir_path.c_str() );
-  StringCchCat( szDir, PATH_MAX, TEXT("\/*") );
+  StringCchCat( szDir, PATH_MAX, TEXT("\\*") );
 
   // Find the first file in the directory.
   hFind = FindFirstFile( szDir, &ffd );

@@ -76,7 +76,7 @@ class File
     const std::string path( const std::string& dir_path );
 
     /// Re-implements nom::IFile::currentPath
-    const std::string currentPath ( void ) const;
+    std::string currentPath( void ) const;
 
     /// Re-implements nom::IFile::set_path
     bool set_path ( const std::string& path );

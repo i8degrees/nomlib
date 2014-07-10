@@ -71,7 +71,7 @@ const std::string File::path( const std::string& dir_path )
   return this->file->path ( dir_path );
 }
 
-const std::string File::currentPath( void ) const
+std::string File::currentPath( void ) const
 {
   return this->file->currentPath();
 }

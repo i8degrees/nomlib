@@ -92,7 +92,7 @@ class UnixFile: public IFile
     /// Implements nom::IFile::currentPath
     ///
     /// \remarks See nom::IFile::currentPath
-    const std::string currentPath ( void );
+    std::string currentPath( void );
 
     /// Implements nom::IFile::set_path
     ///

@@ -91,7 +91,8 @@ class WinFile: public IFile
     /// \remarks See nom::IFile::currentPath
     ///
     /// \see http://msdn.microsoft.com/ru-ru/library/ms235450.aspx
-    const std::string currentPath ( void );
+    /// \see http://stackoverflow.com/questions/4699301/getcurrentdirectory-for-startup-app-c
+    std::string currentPath( void );
 
     /// Implements nom::IFile::set_path
     ///

@@ -70,7 +70,7 @@ class IFile
     /// getcwd(3) wrapper
     ///
     /// \remarks Returned path is arbitrarily limited to 1024 characters.
-    virtual const std::string currentPath ( void ) = 0;
+    virtual std::string currentPath( void ) = 0;
 
     /// chdir(2) wrapper
     ///

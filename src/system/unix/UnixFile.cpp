@@ -136,13 +136,13 @@ const std::string UnixFile::path ( const std::string& dir_path )
   return dir_path.substr( 0, pos );
 }
 
-const std::string UnixFile::currentPath ( void )
+std::string UnixFile::currentPath( void )
 {
   char path[PATH_MAX];
 
   if ( getcwd ( path, PATH_MAX ) == nullptr )
   {
-NOM_LOG_ERR ( NOM, "Unknown error on attempt to obtain current working directory." );
+    NOM_LOG_ERR ( NOM, "Unknown error on attempt to obtain current working directory." );
     return "\0";
   }
 

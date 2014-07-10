@@ -60,7 +60,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // nomlib's standard integer types
 #include "nomlib/types.hpp"
 
-#include "nomlib/system/log.hpp"
+#include "nomlib/system/SDL2Logger.hpp"
 
 // nomlib's general-purpose macros
 #include "nomlib/macros.hpp"

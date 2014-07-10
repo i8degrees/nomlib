@@ -86,7 +86,6 @@ set ( GUI_SOURCE
       ${SRC_DIR}/gui/Decorator.cpp
       ${SRC_DIR}/gui/MinimalDecorator.cpp
       ${SRC_DIR}/gui/FinalFantasyDecorator.cpp
-      # ${SRC_DIR}/gui/GameCursor.cpp
       ${SRC_DIR}/gui/MessageBox.cpp
       ${SRC_DIR}/gui/QuestionDialogBox.cpp
       # ${SRC_DIR}/gui/YesNoDialogBox.cpp

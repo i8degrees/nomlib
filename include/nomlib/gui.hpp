@@ -44,7 +44,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/gui/Decorator.hpp>
 #include <nomlib/gui/MinimalDecorator.hpp>
 #include <nomlib/gui/FinalFantasyDecorator.hpp>
-#include <nomlib/gui/GameCursor.hpp>
 #include <nomlib/gui/MessageBox.hpp>
 #include <nomlib/gui/QuestionDialogBox.hpp>
 // #include <nomlib/gui/YesNoDialogBox.hpp>

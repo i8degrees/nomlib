@@ -660,7 +660,8 @@ void UIBoxLayout::insert_widget( int pos, UIWidget* widget, uint32 align )
 
   this->insert_item( pos, item );
 
-  NOM_STUBBED( NOM, "TODO: Alignment logic" );
+  // TODO: Alignment logic
+  NOM_STUBBED( NOM );
 
   // Calculate the layout's requirements for the addition
   // this->set_bounds( IntRect( Point2i( widget->position().x, widget->position().y ), widget->size() ) );

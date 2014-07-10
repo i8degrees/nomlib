@@ -79,9 +79,16 @@ include_directories( ${GTEST_INCLUDE_DIRS} )
 # See also: src/CMakeLists.txt, source_group command
 file ( GLOB NOM_TESTS_COMMON_HEADERS ${NOM_TESTS_COMMON_HEADERS} "${NOM_TESTS_HEADERS_DIR}/${PROJECT_NAME}/tests/common/*.hpp" )
 
+# FIXME: VisualUnitTestResultWriter prevents us from separating nom::UnitTest
+# from nom::VisualUnitTest
 set (
       NOM_TESTS_COMMON_SOURCE
       ${NOM_TESTS_SOURCE_DIR}/common/UnitTest.cpp
+    )
+
+set (
+      NOM_TESTS_VTEST_SOURCE
+      ${NOM_TESTS_COMMON_SOURCE}
       ${NOM_TESTS_SOURCE_DIR}/common/VisualTestSet.cpp
       ${NOM_TESTS_SOURCE_DIR}/common/VisualUnitTest.cpp
       ${NOM_TESTS_SOURCE_DIR}/common/ImageDiff.cpp
@@ -89,17 +96,7 @@ set (
       ${NOM_TESTS_SOURCE_DIR}/common/VisualUnitTestResultWriter.cpp
       ${NOM_TESTS_SOURCE_DIR}/common/HTMLTestResultWriter.cpp
       ${NOM_TESTS_SOURCE_DIR}/common/MinimalTestResultWriter.cpp
-
     )
-
-if( NOM_BUILD_TESTS )
-  set ( NOM_TESTS_COMMON_HEADERS
-        ${NOM_TESTS_COMMON_HEADERS}
-      )
-  set ( NOM_TESTS_COMMON_SOURCE
-        ${NOM_TESTS_COMMON_SOURCE}
-      )
-endif( NOM_BUILD_TESTS )
 
 include_directories( "${NOM_TESTS_HEADERS_DIR}" )
 

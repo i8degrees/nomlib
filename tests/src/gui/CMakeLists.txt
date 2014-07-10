@@ -2,7 +2,7 @@ if( NOM_BUILD_GUI_UI_ITEM_CONTAINER_TESTS )
 
   add_executable  (
                     UIItemContainerTest
-                    ${NOM_TESTS_COMMON_SOURCE}
+                    ${NOM_TESTS_VTEST_SOURCE}
                     ${NOM_TESTS_SOURCE_DIR}/gui/UIItemContainerTest.cpp
                   )
 
@@ -14,7 +14,7 @@ if( NOM_BUILD_GUI_UI_ITEM_CONTAINER_TESTS )
     GTEST_ADD_TESTS (
                       UIItemContainerTest
                       "UIItemContainerTest"
-                      ${NOM_TESTS_COMMON_SOURCE}
+                      ${NOM_TESTS_VTEST_SOURCE}
                       ${NOM_TESTS_SOURCE_DIR}/gui/UIItemContainerTest.cpp
                     )
 
@@ -24,7 +24,7 @@ if( NOM_BUILD_GUI_UI_EVENT_DISPATCHER_TESTS )
 
   add_executable  (
                     UIEventDispatcherTest
-                    ${NOM_TESTS_COMMON_SOURCE}
+                    ${NOM_TESTS_VTEST_SOURCE}
                     ${NOM_TESTS_SOURCE_DIR}/gui/UIEventDispatcherTest.cpp
                   )
 
@@ -37,7 +37,7 @@ if( NOM_BUILD_GUI_UI_EVENT_DISPATCHER_TESTS )
     GTEST_ADD_TESTS (
                       UIEventDispatcherTest
                       "UIEventDispatcherTest"
-                      ${NOM_TESTS_COMMON_SOURCE}
+                      ${NOM_TESTS_VTEST_SOURCE}
                       ${NOM_TESTS_SOURCE_DIR}/gui/UIEventDispatcherTest.cpp
                     )
 
@@ -47,7 +47,7 @@ if( NOM_BUILD_GUI_UI_WIDGET_TESTS )
 
   add_executable  (
                     UIWidgetTest
-                    ${NOM_TESTS_COMMON_SOURCE}
+                    ${NOM_TESTS_VTEST_SOURCE}
                     ${NOM_TESTS_SOURCE_DIR}/gui/UIWidgetTest.cpp
                   )
 
@@ -61,7 +61,7 @@ if( NOM_BUILD_GUI_UI_WIDGET_TESTS )
                       UIWidgetTest
                       # Disable visual image comparison feature
                       "-d"
-                      ${NOM_TESTS_COMMON_SOURCE}
+                      ${NOM_TESTS_VTEST_SOURCE}
                       ${NOM_TESTS_SOURCE_DIR}/gui/UIWidgetTest.cpp
                     )
 
@@ -71,7 +71,7 @@ if( NOM_BUILD_GUI_LISTBOX_LAYOUT_TESTS )
 
   add_executable  (
                     listbox_layout_test
-                    ${NOM_TESTS_COMMON_SOURCE}
+                    ${NOM_TESTS_VTEST_SOURCE}
                     ${NOM_TESTS_SOURCE_DIR}/gui/ListBoxLayoutTest.cpp
                     ${NOM_TESTS_SOURCE_DIR}/gui/common.cpp
                   )
@@ -104,7 +104,7 @@ if( NOM_BUILD_GUI_LISTBOX_LAYOUT_TESTS )
   #                   listbox_layout_test
   #                   # Disable visual image comparison feature
   #                   "-d"
-  #                   ${NOM_TESTS_COMMON_SOURCE}
+  #                   ${NOM_TESTS_VTEST_SOURCE}
   #                   ${NOM_TESTS_SOURCE_DIR}/gui/ListBoxLayoutTest.cpp
   #                   ${NOM_TESTS_SOURCE_DIR}/gui/common.cpp
   #                 )
@@ -115,7 +115,7 @@ if( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS )
 
   add_executable  (
                     button_layout_test
-                    ${NOM_TESTS_COMMON_SOURCE}
+                    ${NOM_TESTS_VTEST_SOURCE}
                     ${NOM_TESTS_SOURCE_DIR}/gui/ButtonLayoutTest.cpp
                     ${NOM_TESTS_SOURCE_DIR}/gui/common.cpp
                   )
@@ -148,7 +148,7 @@ if( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS )
   #                   button_layout_test
   #                   # Disable visual image comparison feature
   #                   "-d"
-  #                   ${NOM_TESTS_COMMON_SOURCE}
+  #                   ${NOM_TESTS_VTEST_SOURCE}
   #                   ${NOM_TESTS_SOURCE_DIR}/gui/ButtonLayoutTest.cpp
   #                   ${NOM_TESTS_SOURCE_DIR}/gui/common.cpp
   #                 )

@@ -21,7 +21,7 @@ if( NOM_BUILD_COMMON_TESTS )
 
     add_executable  (
                       VisualUnitTestFrameworkTest
-                      ${NOM_TESTS_COMMON_SOURCE}
+                      ${NOM_TESTS_VTEST_SOURCE}
                       ${NOM_TESTS_SOURCE_DIR}/common/VisualUnitTestFrameworkTest.cpp
                     )
 
@@ -51,7 +51,7 @@ if( NOM_BUILD_COMMON_TESTS )
 
     add_executable  (
                       VisualUnitTestFrameworkNonDefaultCtorTest
-                      ${NOM_TESTS_COMMON_SOURCE}
+                      ${NOM_TESTS_VTEST_SOURCE}
                       ${NOM_TESTS_SOURCE_DIR}/common/VisualUnitTestFrameworkNonDefaultCtorTest.cpp
                     )
 
@@ -81,7 +81,7 @@ if( NOM_BUILD_COMMON_TESTS )
 
     add_executable  (
                       VisualSetTest
-                      ${NOM_TESTS_COMMON_SOURCE}
+                      ${NOM_TESTS_VTEST_SOURCE}
                       ${NOM_TESTS_SOURCE_DIR}/common/VisualTestSetTest.cpp
                     )
 
@@ -94,13 +94,13 @@ if( NOM_BUILD_COMMON_TESTS )
     GTEST_ADD_TESTS (
                       VisualSetTest
                       "VisualSetTest"
-                      ${NOM_TESTS_COMMON_SOURCE}
+                      ${NOM_TESTS_VTEST_SOURCE}
                       ${NOM_TESTS_SOURCE_DIR}/common/VisualTestSetTest.cpp
                     )
 
     add_executable  (
                       ImageDiffTest
-                      ${NOM_TESTS_COMMON_SOURCE}
+                      ${NOM_TESTS_VTEST_SOURCE}
                       ${NOM_TESTS_SOURCE_DIR}/common/ImageDiffTest.cpp
                     )
 
@@ -113,7 +113,7 @@ if( NOM_BUILD_COMMON_TESTS )
     GTEST_ADD_TESTS (
                       ImageDiffTest
                       "ImageDiffTest"
-                      ${NOM_TESTS_COMMON_SOURCE}
+                      ${NOM_TESTS_VTEST_SOURCE}
                       ${NOM_TESTS_SOURCE_DIR}/common/ImageDiffTest.cpp
                     )
 

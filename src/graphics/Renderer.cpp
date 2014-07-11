@@ -47,9 +47,12 @@ bool Renderer::create ( SDL_WINDOW::RawPtr window, int32 rendering_driver, uint3
 {
   // NOM_LOG_TRACE( NOM );
 
-  this->renderer_.reset ( SDL_CreateRenderer ( window, rendering_driver, context_flags ) );
+  this->renderer_.reset( SDL_CreateRenderer( window, rendering_driver, context_flags ) );
 
-  if ( this->renderer_valid() == false ) return false;
+  if( this->renderer_valid() == false )
+  {
+    return false;
+  }
 
   return true;
 }

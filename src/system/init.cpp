@@ -70,7 +70,7 @@ FontCache& SystemFonts::cache( void )
 {
   if( SystemFonts::initialized() == false )
   {
-    // NOM_LOG_INFO( NOM, "System fonts cache was not yet initialized. Initializing..." );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_SYSTEM, "System fonts cache was not yet initialized. Initializing..." );
     SystemFonts::initialize();
   }
 
@@ -147,7 +147,7 @@ ColorDatabase& SystemColors::colors( void )
 {
   if( SystemColors::initialized() == false )
   {
-    // NOM_LOG_INFO( NOM, "Color database was not yet initialized. Initializing..." );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_SYSTEM, "Color database was not yet initialized. Initializing..." );
     SystemColors::initialize();
   }
 
@@ -163,6 +163,8 @@ void SystemColors::shutdown( void )
 
 bool init_third_party( uint32 flags )
 {
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_SYSTEM );
+
   if( flags == InitHints::DefaultInit )
   {
     flags = InitHints::SDL2_IMAGE | InitHints::SDL2 | InitHints::SDL2_TTF;
@@ -197,28 +199,12 @@ bool init_third_party( uint32 flags )
     }
   }
 
-  #if defined( NOM_DEBUG )
-
-    // FIXME (???): This appears to correct a bug that prevents the first log
-    // message from being output.
-    NOM_LOG_VERBOSE( NOM, "" );
-
-    // Log all messages from the engine's default NOM category
-    SDL2Logger::set_logging_priority( NOM, SDL_LOG_PRIORITY_VERBOSE );
-
-  #else // Assume the build to be release
-
-    // Log only critical messages (all categories)
-    SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_CRITICAL );
-
-  #endif
-
   return true;
 }
 
 bool init ( int argc, char* argv[] )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_SYSTEM );
 
   nom::File dir;
   std::string pwd = "\0";
@@ -254,7 +240,7 @@ bool init ( int argc, char* argv[] )
 
 void quit( void )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_SYSTEM );
 
   // We must clear the cache of nom::Font objects before shutting down SDL2_ttf,
   // because otherwise we'll be freeing memory that we do not own (FreeType

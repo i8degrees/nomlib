@@ -356,7 +356,7 @@ bool UILayout::set_alignment( const UIWidget* widget, uint32 align )
     // }
   // }
 
-  // NOM_DUMP_VAR( "sp: ", spacer );
+  // NOM_DUMP_VAR( NOM_LOG_CATEGORY_VIDEO, "sp: ", spacer );
 
   if( item->widget() == widget )
   {

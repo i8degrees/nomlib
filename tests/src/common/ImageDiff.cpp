@@ -93,7 +93,7 @@ ImageDiffResult ImageDiff::compare_files  (
   Image img2;
   ImageDiffResult results;
 
-  // NOM_DUMP_VAR("image 1 diff path: ", img1_path);
+  // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "image 1 diff path: ", img1_path);
   // NOM_DUMP("image 2 diff path: ", img2_path);
 
   if( img1.load( image1_path ) == false || img2.load( image2_path ) == false )

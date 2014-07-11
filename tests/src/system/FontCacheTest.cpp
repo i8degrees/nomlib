@@ -10,7 +10,11 @@ class FontCacheTest: public ::testing::Test
   public:
     FontCacheTest( void )
     {
-      // ...
+      // Enable function call tracing of engine initialization
+      nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_SYSTEM, SDL_LOG_PRIORITY_VERBOSE );
+
+      // Enable initialization status logging
+      nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_SYSTEM, SDL_LOG_PRIORITY_INFO );
     }
 
     ~FontCacheTest( void )

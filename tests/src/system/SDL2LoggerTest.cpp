@@ -36,6 +36,58 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+/// \remarks Customized log output function for SDL_LogMessage
+void log_message( void* ptr, int cat, SDL_LogPriority prio, const char* msg )
+{
+  switch( prio )
+  {
+    default:
+    {
+      std::cout << " ";
+      break;
+    }
+
+    case SDL_LOG_PRIORITY_VERBOSE:
+    {
+      std::cout << "VERBOSE: ";
+      break;
+    }
+
+    case SDL_LOG_PRIORITY_DEBUG:
+    {
+      std::cout << "DEBUG: ";
+      break;
+    }
+
+    case SDL_LOG_PRIORITY_INFO:
+    {
+      std::cout << "INFO: ";
+      break;
+    }
+
+    case SDL_LOG_PRIORITY_WARN:
+    {
+      std::cout << "WARN: ";
+      break;
+    }
+
+    case SDL_LOG_PRIORITY_ERROR:
+    {
+      std::cout << "ERROR: ";
+      break;
+    }
+
+    case SDL_LOG_PRIORITY_CRITICAL:
+    {
+      std::cout << "CRITICAL: ";
+      break;
+    }
+  }
+
+  std::cout << msg << std::endl;
+}
+
+/// \remarks For use with NOM_LOG_TRACE functionality testing
 struct FunctionTraceTest
 {
   FunctionTraceTest( int cat, SDL_LogPriority prio ) :
@@ -54,6 +106,7 @@ struct FunctionTraceTest
   SDL_LogPriority priority_;
 };
 
+/// \remarks Helper method for verifying test conditions
 void expected_logger_state( int cat, SDL_LogPriority prio, const std::string& msg, bool log_output_state )
 {
   nom::SDL2Logger logger( cat, prio );
@@ -227,8 +280,8 @@ TEST( SDL2LoggerTest, LogVariable )
 
   expected_logger_state( cat, prio, out, false );
 
-  NOM_DUMP_VAR( cat );
-  NOM_DUMP_VAR( "pos:", pos );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, cat );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "pos:", pos );
 }
 
 TEST( SDL2LoggerTest, LogFunctionTraceNomCategory )
@@ -273,13 +326,30 @@ TEST( SDL2LoggerTest, LogStubbedFunction )
   NOM_STUBBED( NOM );
 }
 
+TEST( SDL2LoggerTest, CustomLogOutputFunction )
+{
+  int cat = NOM;
+  SDL_LogPriority prio = SDL_LOG_PRIORITY_CRITICAL;
+  std::string out = "\t\tCould not initialize application. Exiting...";
+  void ( *cb )( void*, int, SDL_LogPriority, const char* ) = log_message;
+
+  SDL_LogSetOutputFunction( cb, nullptr );
+
+  SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_CRITICAL );
+
+  // Should see this logged message
+  SDL2Logger::set_logging_priorities( prio );
+
+  expected_logger_state( cat, prio, out, true );
+}
+
 } // namespace nom
 
 int main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
 
-  // Initialize dependencies...
+  // Initialize minimal required dependencies...
   NOM_ASSERT( nom::init_third_party( nom::InitHints::SDL2 ) == true );
 
   return RUN_ALL_TESTS();

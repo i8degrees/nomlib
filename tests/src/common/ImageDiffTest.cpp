@@ -87,12 +87,12 @@ const std::string COMPLEX_INEQUALITY_RESOURCES_PATH[2] =  {
 
 void dump_result( const ImageDiffResult& r )
 {
-  NOM_DUMP_VAR( "incorrect_pixels: ", r.incorrect_pixels );
-  NOM_DUMP_VAR( "mse_channels: ", r.mse );
-  NOM_DUMP_VAR( "mse_channels: ", r.mse_channels );
-  NOM_DUMP_VAR( "psnr_channels: ", r.psnr );
-  NOM_DUMP_VAR( "psnr_channels: ", r.psnr_channels );
-  NOM_DUMP_VAR( "ssim: ", r.ssim );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "incorrect_pixels: ", r.incorrect_pixels );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "mse_channels: ", r.mse );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "mse_channels: ", r.mse_channels );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "psnr_channels: ", r.psnr );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "psnr_channels: ", r.psnr_channels );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "ssim: ", r.ssim );
 }
 
 TEST( ImageDiffTest, InitializeConstructor )

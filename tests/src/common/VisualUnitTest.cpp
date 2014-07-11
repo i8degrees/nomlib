@@ -86,9 +86,9 @@ void VisualUnitTest::initialize( const Size2i& res )
 
   this->set_resolution( res );
 
-  // NOM_DUMP_VAR( "VisualUnitTest test_name: ", this->test_name() );
-  // NOM_DUMP_VAR( "VisualUnitTest test_set: ", this->test_set() );
-  // NOM_DUMP_VAR( "VisualUnitTest path: ", this->output_directory() );
+  // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "VisualUnitTest test_name: ", this->test_name() );
+  // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "VisualUnitTest test_set: ", this->test_set() );
+  // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "VisualUnitTest path: ", this->output_directory() );
 
   // Initialize the visual test set batch
   VisualUnitTest::visual_test_.set_test_set( this->test_set() );
@@ -332,7 +332,7 @@ bool VisualUnitTest::on_frame_end( uint elapsed_frames )
   // frames
   else if( elapsed_frames == *( this->screenshot_frames_.begin() ) && NOM_TEST_FLAG( disable_comparison) == false )
   {
-    // NOM_DUMP_VAR( "elapsed_frames: ", elapsed_frames );
+    // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "elapsed_frames: ", elapsed_frames );
 
     this->set_output_filename (
                                 this->test_name() +

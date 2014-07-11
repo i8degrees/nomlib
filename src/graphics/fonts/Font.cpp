@@ -28,8 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/fonts/Font.hpp"
 
-// #define NOM_DEBUG_OUTPUT_FONT_FACE_ON_SHARE
-
 namespace nom {
 
 Font::Font( void ) :
@@ -233,21 +231,15 @@ void Font::share( void )
       // Debugging aids
       if( this->font_->type() == IFont::FontType::BitmapFont )
       {
-        #if defined( NOM_DEBUG_OUTPUT_FONT_FACE_ON_SHARE )
-          NOM_DUMP_VAR("font_face: ", this->font_->metrics().name + " (BitmapFont)" );
-        #endif
+        NOM_DUMP_VAR( NOM_LOG_CATEGORY_VIDEO, "font_face: ", this->font_->metrics().name + " (BitmapFont)" );
       }
       else if( this->font_->type() == IFont::FontType::TrueTypeFont )
       {
-        #if defined( NOM_DEBUG_OUTPUT_FONT_FACE_ON_SHARE )
-          NOM_DUMP_VAR("font_face: ", this->font_->metrics().name + " (TrueTypeFont)" );
-        #endif
+        NOM_DUMP_VAR( NOM_LOG_CATEGORY_VIDEO, "font_face: ", this->font_->metrics().name + " (TrueTypeFont)" );
       }
       else
       {
-        #if defined( NOM_DEBUG_OUTPUT_FONT_FACE_ON_SHARE )
-          NOM_DUMP_VAR("font_face: ", this->font_->metrics().name + " (Undefined)" );
-        #endif
+        NOM_DUMP_VAR( NOM_LOG_CATEGORY_VIDEO, "font_face: ", this->font_->metrics().name + " (Undefined)" );
       }
     } // end if sharable
   } // end if the font is NOT unique

@@ -28,13 +28,43 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/SDL2Logger.hpp"
 
+// Private headers
+// #include "nomlib/system/init.hpp"
+
 namespace nom {
+
+// Static initializations
+bool SDL2Logger::initialized_ = false;
+
+bool SDL2Logger::initialized( void )
+{
+  return SDL2Logger::initialized_;
+}
+
+void SDL2Logger::initialize( void )
+{
+  if( SDL2Logger::initialized() == false )
+  {
+    // nom::init_third_party( InitHints::SDL2 );
+
+    // Mimic the default logging category priorities as per SDL2 logging
+    // categories
+    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO );
+    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_ASSERT, SDL_LOG_PRIORITY_WARN );
+    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TEST, SDL_LOG_PRIORITY_VERBOSE );
+
+    // Log all messages from the engine's default NOM category
+    SDL2Logger::set_logging_priority( NOM, SDL_LOG_PRIORITY_VERBOSE );
+
+    SDL2Logger::initialized_ = true;
+  }
+}
 
 SDL2Logger::SDL2Logger( void ) :
   category_{ NOM },
   priority_{ SDL_LOG_PRIORITY_INFO }
 {
-  //
+  SDL2Logger::initialize();
 }
 
 SDL2Logger::SDL2Logger  (
@@ -44,7 +74,7 @@ SDL2Logger::SDL2Logger  (
   category_{ cat },
   priority_{ prio }
 {
-  // ...
+  SDL2Logger::initialize();
 }
 
 SDL2Logger::~SDL2Logger( void )
@@ -96,11 +126,15 @@ const char* SDL2Logger::output_cstring( void )
 
 void SDL2Logger::set_logging_priorities( SDL_LogPriority prio )
 {
+  // SDL2Logger::initialize();
+
   SDL_LogSetAllPriority( prio );
 }
 
 void SDL2Logger::set_logging_priority( int cat, SDL_LogPriority prio )
 {
+  // SDL2Logger::initialize();
+
   SDL_LogSetPriority( cat, prio );
 }
 

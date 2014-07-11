@@ -32,12 +32,12 @@ namespace nom {
 
 ColorDatabase::ColorDatabase( void )
 {
-  // NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_SYSTEM );
 }
 
 ColorDatabase::~ColorDatabase( void )
 {
-  // NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_SYSTEM );
 }
 
 const Color4i& ColorDatabase::find_color( const std::string& key )

@@ -69,14 +69,15 @@ bool RenderWindow::create (
 
   if ( this->window_valid() == false )
   {
-NOM_LOG_ERR ( NOM, "Could not create SDL window." );
+    NOM_LOG_ERR( NOM, SDL_GetError() );
     return false;
   }
 
   Renderer::create ( this->window(), -1, context_flags );
-  if ( this->renderer_valid() == false )
+
+  if( this->renderer_valid() == false )
   {
-NOM_LOG_ERR ( NOM, "Could not create SDL renderer." );
+    NOM_LOG_ERR( NOM, SDL_GetError() );
     return false;
   }
 

@@ -73,6 +73,9 @@ class App: public nom::SDLApp
       }
 
       atexit(nom::quit);
+
+      // Enable logging of variable states app execution
+      nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_VIDEO, SDL_LOG_PRIORITY_DEBUG );
     }
 
     ~App( void )
@@ -152,7 +155,7 @@ class App: public nom::SDLApp
         {
           this->cursor.set_system_cursor( NOM_SCAST( nom::Cursor::Type, this->system_cursor_ ) );
 
-          NOM_DUMP_VAR( "system_cursor_id: ", this->cursor.system_cursor() );
+          NOM_DUMP_VAR( NOM_LOG_CATEGORY_VIDEO, "system_cursor_id: ", this->cursor.system_cursor() );
 
           this->update_system_cursor_ = false;
         }
@@ -161,8 +164,8 @@ class App: public nom::SDLApp
         {
           mouse = this->cursor.mouse_state();
 
-          NOM_DUMP_VAR( "pos.x: ", mouse.pos.x );
-          NOM_DUMP_VAR( "pos.y: ", mouse.pos.y );
+          NOM_DUMP_VAR( NOM_LOG_CATEGORY_VIDEO, "pos.x: ", mouse.pos.x );
+          NOM_DUMP_VAR( NOM_LOG_CATEGORY_VIDEO, "pos.y: ", mouse.pos.y );
         }
 
       } // while app_state is true (running)

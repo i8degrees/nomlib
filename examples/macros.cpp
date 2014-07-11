@@ -40,7 +40,7 @@ nom::int32 main( nom::int32 argc, char* argv[] )
   NOM_DUMP( pos );
 
   // NOM_DUMP_VAR();
-  NOM_DUMP_VAR( "pos:", pos );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "pos:", pos );
 
   NOM_LOG_TRACE( NOM );
 

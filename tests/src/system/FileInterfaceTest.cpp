@@ -30,8 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/system.hpp>
 
-#define NOM_DEBUG_FILE_TEST_OUTPUT
-
 namespace nom {
 
 class FileInterfaceTest: public ::testing::Test
@@ -136,18 +134,14 @@ TEST_F( FileInterfaceTest, DirPath )
 
   pwd = fp.path( "Resources" + p.native() + "fonts" + p.native() + "executable.exe" );
 
-  #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
-    NOM_DUMP(pwd);
-  #endif
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, pwd );
 
   ASSERT_FALSE( pwd == "" );
   ASSERT_FALSE( pwd == "." );
 
   pwd = fp.path( "Resources" + p.native() + "fonts" + p.native() + "executable" );
 
-  #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
-    NOM_DUMP(pwd);
-  #endif
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, pwd );
 
   ASSERT_FALSE( pwd == "" );
   ASSERT_FALSE( pwd == "." );
@@ -160,11 +154,9 @@ TEST_F( FileInterfaceTest, ExecutableWorkingDirectoryPath )
 
   pwd = fp.path( cwd );
 
-  #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
-    NOM_DUMP( fp.currentPath() );
-    NOM_DUMP( pwd );
-    NOM_DUMP( cwd );
-  #endif
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, fp.currentPath() );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, pwd );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, cwd );
 
   ASSERT_FALSE( pwd == "" );
   ASSERT_FALSE( pwd == "." );
@@ -177,11 +169,9 @@ TEST_F( FileInterfaceTest, FileExtensions )
 
   file_ext = fp.extension( file );
 
-  #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
-    // NOM_DUMP( p.path() );
-    NOM_DUMP( file );
-    NOM_DUMP( file_ext ); // ttf
-  #endif
+  // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, p.path() );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, file );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, file_ext ); // ttf
 
   ASSERT_FALSE( file_ext == "" );
   ASSERT_TRUE( file_ext == "ttf" );
@@ -194,11 +184,9 @@ TEST_F( FileInterfaceTest, FileExtensions )
 
   file_ext = fp.extension( file );
 
-  #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
-    NOM_DUMP( p.path() ); // Resources/gui/
-    NOM_DUMP( file );
-    NOM_DUMP( file_ext ); // png
-  #endif
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, p.path() ); // Resources/gui/
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, file );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, file_ext ); // png
 
   ASSERT_FALSE( file_ext == "" );
   ASSERT_TRUE( file_ext == "png" );
@@ -215,21 +203,17 @@ TEST_F( FileInterfaceTest, PlatformPaths )
   ASSERT_FALSE( user.path() == "" );
   ASSERT_FALSE( fp.system_path() == "" );
 
-  #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
-    NOM_DUMP_VAR( "native_path_delimiter: ", p.native() );
-    NOM_DUMP_VAR( "user_home_path: ", fp.user_home_path() );
-    NOM_DUMP_VAR( "user_library_path: ", u.path() );
-    NOM_DUMP_VAR( "user_fonts_path: ", user.path() );
-    NOM_DUMP_VAR( "system_path: ", fp.system_path() );
-  #endif
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "native_path_delimiter: ", p.native() );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "user_home_path: ", fp.user_home_path() );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "user_library_path: ", u.path() );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "user_fonts_path: ", user.path() );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "system_path: ", fp.system_path() );
 }
 
 TEST_F( FileInterfaceTest, CreateRemoveDirectory )
 {
-  #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
-    // NOM_DUMP_VAR("system temp path: ", this->sys_temp.path() );
-    NOM_DUMP_VAR("nomlib temp path: ", this->nom_dir.path() );
-  #endif
+  // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "system temp path: ", this->sys_temp.path() );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "nomlib temp path: ", this->nom_dir.path() );
 
   EXPECT_EQ( true, this->fp.mkdir( this->nom_dir.path() ) )
   << "Could not create directory path: " << this->nom_dir.path();
@@ -248,10 +232,8 @@ TEST_F( FileInterfaceTest, CreateRemoveDirectory )
 
 TEST_F( FileInterfaceTest, CreateRemoveRecursiveDirectory )
 {
-  #if defined( NOM_DEBUG_FILE_TEST_OUTPUT )
-    // NOM_DUMP_VAR("system temp path: ", this->sys_temp.path() );
-    NOM_DUMP_VAR("nomlib recursive directory path: ", this->nom_rdir.path() );
-  #endif
+  // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "system temp path: ", this->sys_temp.path() );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "nomlib recursive directory path: ", this->nom_rdir.path() );
 
   EXPECT_EQ( true, this->fp.recursive_mkdir( this->nom_rdir.path() ) )
   << "Could not create directory path: " << this->nom_rdir.path();

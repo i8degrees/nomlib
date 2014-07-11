@@ -81,7 +81,8 @@ SDL2Logger::~SDL2Logger( void )
 {
   this->write( "\n" );
 
-  SDL_LogMessage( this->category(), this->priority(), "%s", this->output_cstring() );
+  std::string out( this->output_stream().str() );
+  SDL_LogMessage( this->category(), this->priority(), "%s", out.c_str() );
 }
 
 void SDL2Logger::write( void )
@@ -102,16 +103,6 @@ SDL_LogPriority SDL2Logger::priority( void ) const
 std::ostringstream& SDL2Logger::output_stream( void )
 {
   return this->os_;
-}
-
-std::string SDL2Logger::output_string( void ) const
-{
-  return this->os_.str();
-}
-
-const char* SDL2Logger::output_cstring( void )
-{
-  return this->output_string().c_str();
 }
 
 // void SDL2Logger::set_category( int cat )

@@ -112,7 +112,7 @@ void expected_logger_state( int cat, SDL_LogPriority prio, const std::string& ms
   nom::SDL2Logger logger( cat, prio );
   logger.write( msg );
 
-  EXPECT_EQ( msg, logger.output_string() );
+  EXPECT_EQ( msg, logger.output_stream().str() );
   EXPECT_EQ( cat, logger.category() );
   EXPECT_EQ( prio, logger.priority() );
 

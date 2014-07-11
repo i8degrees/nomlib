@@ -202,17 +202,6 @@ class SDL2Logger
     /// \returns A reference to the logger's C++ output stream.
     std::ostringstream& output_stream( void );
 
-    /// \brief Get the buffered output as a C++ string (std::string).
-    ///
-    /// \returns The message to be logged.
-    std::string output_string( void ) const;
-
-    /// \brief Get the buffered output as a C-style string.
-    ///
-    /// \remarks This is a compatibility method for using with C library APIs,
-    /// such as SDL2.
-    const char* output_cstring( void );
-
     // void set_category( int cat );
 
     // void set_priority( SDL_LogPriority p );

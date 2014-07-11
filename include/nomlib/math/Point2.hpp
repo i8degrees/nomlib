@@ -88,6 +88,9 @@ struct Point2
   /// \remarks  Null value implementation depends on signed (negative) numbers.
   static const Point2 null;
 
+  /// \brief Zero value constant.
+  static const Point2 zero;
+
   /// Represents the X-axis coordinate point
   T x;
 

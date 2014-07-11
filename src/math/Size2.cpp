@@ -39,4 +39,14 @@ template <> const Size2f Size2f::null ( -1, -1 );
 /// Null value for a nom::Size using double-precision floating point numbers
 template <> const Size2d Size2d::null ( -1, -1 );
 
+/// \brief Zero value for a nom::Size2 using signed integers
+template <> const Size2i Size2i::zero( 0, 0 );
+
+/// \brief Zero value for a nom::Size2 using floating point numbers.
+template <> const Size2f Size2f::zero( 0, 0 );
+
+/// \brief Zero value for a nom::Size2 using double precision floating point
+/// numbers.
+template <> const Size2d Size2d::zero( 0, 0 );
+
 } // namespace nom

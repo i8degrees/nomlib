@@ -158,10 +158,12 @@ Point2i RenderWindow::position ( void ) const
   return pos;
 }
 
-Point2i RenderWindow::size ( void ) const
+Size2i RenderWindow::size( void ) const
 {
-  Point2i size;
-  SDL_GetWindowSize ( this->window(), &size.x, &size.y );
+  Size2i size;
+
+  SDL_GetWindowSize( this->window(), &size.w, &size.h );
+
   return size;
 }
 
@@ -416,7 +418,7 @@ bool RenderWindow::save_png_file( const std::string& filename ) const
   Image screenshot;                 // Surface
 
   // Width & height of target in pixels
-  Point2i renderer_size = Renderer::size();
+  Size2i renderer_size = Renderer::output_size();
 
   if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( caps.optimal_texture_format(), &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
   {
@@ -424,7 +426,7 @@ bool RenderWindow::save_png_file( const std::string& filename ) const
     return false;
   }
 
-  screenshot.initialize( Renderer::pixels(), renderer_size.x, renderer_size.y, bpp, (renderer_size.x * 4), red_mask, green_mask, blue_mask, alpha_mask );
+  screenshot.initialize( Renderer::pixels(), renderer_size.w, renderer_size.h, bpp, (renderer_size.w * 4), red_mask, green_mask, blue_mask, alpha_mask );
 
   if( screenshot.save_png( filename ) == false )
   {
@@ -437,7 +439,7 @@ bool RenderWindow::save_png_file( const std::string& filename ) const
   return true;
 }
 
-bool RenderWindow::save_screenshot ( const std::string& filename ) const
+bool RenderWindow::save_screenshot( const std::string& filename ) const
 {
   RendererInfo caps = this->caps();
   Image screenshot;
@@ -447,7 +449,8 @@ bool RenderWindow::save_screenshot ( const std::string& filename ) const
   // appending a unique identifier onto the end of the given filename string.
   std::string file_name, basename, prefix, timestamp, extension;
 
-  Point2i renderer_size = Renderer::size(); // Width & height of target in pixels
+  // Width & height of target in pixels
+  Size2i renderer_size = Renderer::output_size();
 
   int bpp = 0; // bits per pixel
   uint32 red_mask = 0;
@@ -461,7 +464,7 @@ bool RenderWindow::save_screenshot ( const std::string& filename ) const
     return false;
   }
 
-  screenshot.initialize( Renderer::pixels(), renderer_size.x, renderer_size.y, bpp, (renderer_size.x * 4), red_mask, green_mask, blue_mask, alpha_mask );
+  screenshot.initialize( Renderer::pixels(), renderer_size.w, renderer_size.h, bpp, (renderer_size.w * 4), red_mask, green_mask, blue_mask, alpha_mask );
 
   // TODO: additional err checking -- basename & extension can fail!
   basename = fp.basename(filename);

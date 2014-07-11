@@ -85,12 +85,10 @@ class Renderer
     /// Obtain the blending mode used for drawing
     const SDL_BlendMode blend_mode ( void ) const;
 
-    /// \brief    Obtain the renderer's output size (width & height) in pixels
+    /// \brief Get the renderer's output size dimensions.
     ///
-    /// \returns  nom::Point2i object filled in with determined output values
-    ///           (x = width, y = height; pixels) on success; nom::Point2i::null
-    ///           on err.
-    const Point2i size ( void ) const;
+    /// \returns Size2i object filled with the width and height fields.
+    Size2i output_size( void ) const;
 
     /// Obtain the renderer's clipping rectangle bounds (X, Y, width & height)
     /// in pixels

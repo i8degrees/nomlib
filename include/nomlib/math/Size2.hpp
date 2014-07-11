@@ -105,6 +105,9 @@ struct Size2
   /// \remarks  Null value implementation depends on signed (negative) numbers.
   static const Size2 null;
 
+  /// \brief Zero value constant.
+  static const Size2 zero;
+
   /// Represents the width coordinate point
   T w;
 

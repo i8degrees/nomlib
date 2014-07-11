@@ -116,10 +116,10 @@ class RenderWindow: public Renderer
     /// Obtain this Window's position.
     Point2i position ( void ) const;
 
-    /// Get this window's size in pixels
+    /// \brief Get this window's size dimensions.
     ///
-    /// \return Point2i object containing the width (x) and height (y)
-    Point2i size ( void ) const;
+    /// \returns Size2i object filled with the width and height fields.
+    Size2i size( void ) const;
 
     /// Obtain the BPP (bits per pixel) of this window
     const uint8 bits_per_pixel ( void ) const;

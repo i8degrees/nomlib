@@ -115,14 +115,14 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return blend;
 }
 
-const Point2i Renderer::size ( void ) const
+Size2i Renderer::output_size( void ) const
 {
-  Point2i size; // width & height in pixels
+  Size2i size; // width & height in pixels
 
-  if ( SDL_GetRendererOutputSize ( this->renderer(), &size.x, &size.y ) != 0 )
+  if( SDL_GetRendererOutputSize ( this->renderer(), &size.w, &size.h ) != 0 )
   {
-    NOM_LOG_ERR ( NOM, SDL_GetError() );
-    return Point2i::null;
+    NOM_LOG_ERR( NOM, SDL_GetError() );
+    return Size2i::null;
   }
 
   return size;
@@ -308,7 +308,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
 void* Renderer::pixels ( void ) const
 {
   SDL_Rect clip;
-  void* pixels = static_cast<uint32*> ( malloc (this->size().x * this->size().y * 4) );
+  void* pixels = nullptr;
 
   // In order to accurately capture our window, with respect to aspect ratio,
   // such as the case of us using device independent scaling [1], we must
@@ -332,8 +332,10 @@ void* Renderer::pixels ( void ) const
   // 3. nom::RenderWindow::save_screenshot
   clip.x = 0;
   clip.y = 0;
-  clip.w = this->size().x;
-  clip.h = this->size().y;
+  clip.w = this->output_size().w;
+  clip.h = this->output_size().h;
+
+  pixels = static_cast<uint32*> ( malloc( clip.w * clip.h * 4 ) );
 
   if ( SDL_RenderReadPixels(  this->renderer(),
                               // Use calculated bounding dimensions;
@@ -348,7 +350,7 @@ void* Renderer::pixels ( void ) const
                               // from render target
                               pixels,
                               // Pitch of our pixels pointer
-                              this->size().x * 4 ) != 0 )
+                              clip.w * 4 ) != 0 )
   {
     NOM_LOG_ERR( NOM, SDL_GetError() );
     return nullptr;

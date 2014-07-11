@@ -182,10 +182,9 @@ class App: public nom::SDLApp
           nom::DialogMessageBox ( APP_NAME, "Could not load window icon: " + RESOURCE_ICON );
           return false;
         }
-        this->window_size[idx] = this->window[idx].size();
 
         // Scale window contents up by the new width & height
-        this->window[idx].set_logical_size ( this->window_size[idx].x, this->window_size[idx].y );
+        this->window[idx].set_logical_size( this->window[idx].size() );
       }
 
       this->window[0].make_current();
@@ -646,8 +645,6 @@ NOM_DUMP(this->sprite.size().h);
     ///
     /// \todo Use std::vector
     nom::RenderWindow window[MAXIMUM_WINDOWS];
-
-    nom::Point2i window_size[MAXIMUM_WINDOWS];
 
     /// Interval at which we refresh the frames per second counter
     nom::Timer update[MAXIMUM_WINDOWS];

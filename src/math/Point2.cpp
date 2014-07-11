@@ -39,4 +39,14 @@ template <> const Point2f Point2f::null ( -1, -1 );
 /// Null value for a nom::Point2 using double precision floating point numbers
 template <> const Point2d Point2d::null ( -1, -1 );
 
+/// \brief Zero value for a nom::Point2 using signed integers
+template <> const Point2i Point2i::zero( 0, 0 );
+
+/// \brief Zero value for a nom::Point2 using floating point numbers.
+template <> const Point2f Point2f::zero( 0, 0 );
+
+/// \brief Zero value for a nom::Point2 using double precision floating point
+/// numbers.
+template <> const Point2d Point2d::zero( 0, 0 );
+
 } // namespace nom

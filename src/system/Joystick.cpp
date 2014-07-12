@@ -32,14 +32,14 @@ namespace nom {
 
 Joystick::Joystick( void )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_EVENT );
 
   this->impl_ = IJoystick::UniquePtr ( new SDLJoystick() );
 }
 
 Joystick::~Joystick( void )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_EVENT );
 
   this->shutdown();
 }
@@ -109,13 +109,13 @@ void Joystick::enumerate_devices( void )
 
   num_joysticks = this->impl_->num_joysticks();
 
-  NOM_LOG_INFO( NOM, std::to_string( num_joysticks ) + " joysticks were found" );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_EVENT, num_joysticks, "joysticks were found" );
 
   for( uint idx = 0; idx < num_joysticks; ++idx )
   {
     if( this->impl_->open( idx ) )
     {
-      NOM_LOG_INFO( NOM, this->impl_->name() );
+      NOM_LOG_INFO( NOM_LOG_CATEGORY_EVENT, this->impl_->name() );
 
       Joystick::Pair p( this->impl_->id(), this->impl_->name() );
       this->joysticks_.insert( p );

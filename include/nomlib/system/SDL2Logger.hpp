@@ -77,8 +77,8 @@ enum
   /// \brief Rendering subsystem logging category
   NOM_LOG_CATEGORY_RENDER,
 
-  /// \brief User inputs logging category
-  NOM_LOG_CATEGORY_INPUT,
+  /// \brief Events logging category
+  NOM_LOG_CATEGORY_EVENT,
 
   /// \brief Test logging category
   NOM_LOG_CATEGORY_TEST,
@@ -88,12 +88,18 @@ enum
 
   NOM_LOG_CATEGORY_TRACE,
   NOM_LOG_CATEGORY_TRACE_AUDIO,
+
+  /// \todo Rename to NOM_LOG_CATEGORY_TRACE_FONT
   NOM_LOG_CATEGORY_TRACE_FONTS,
+
   NOM_LOG_CATEGORY_TRACE_VIDEO,
   NOM_LOG_CATEGORY_TRACE_RENDER,
   NOM_LOG_CATEGORY_TRACE_GUI,
-  NOM_LOG_CATEGORY_TRACE_EVENTS,
+  NOM_LOG_CATEGORY_TRACE_EVENT,
+
+  /// \todo Rename to NOM_LOG_CATEGORY_TRACE_STATE
   NOM_LOG_CATEGORY_TRACE_STATES,
+
   NOM_LOG_CATEGORY_TRACE_SYSTEM,
 
   /// \brief Custom logging category that is reserved for application-level use.
@@ -278,4 +284,6 @@ class SDL2Logger
 /// and by a [SDL2 C++ wrapper](https://gist.github.com/aggsol/6339637).
 ///
 /// \see Convenience logging macros -- NOM_LOG_* -- for the primary usage API.
+///
+/// \todo Research the integration of [shell colors](http://misc.flogisoft.com/bash/tip_colors_and_formatting)
 ///

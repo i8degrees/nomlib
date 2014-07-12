@@ -37,9 +37,9 @@ namespace priv {
 
 void on_click( const nom::UIWidgetEvent& ev )
 {
-  NOM_DUMP( ev.id() );
-  NOM_DUMP( ev.index() );
-  NOM_DUMP( ev.text() );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.id() );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.index() );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.text() );
 }
 
 void expected_layout_spacer_pos( const UILayout* layout, int idx, const Point2i& pos )

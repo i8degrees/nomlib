@@ -32,17 +32,17 @@ namespace nom {
 
 DataViewColumn::DataViewColumn( void )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 }
 
 DataViewColumn::~DataViewColumn( void )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 }
 
 DataViewColumn::DataViewColumn( uint id, const std::string& name, int width, enum IDataViewColumn::Alignment align )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 
   this->id_ = id;
   this->title_ = name;

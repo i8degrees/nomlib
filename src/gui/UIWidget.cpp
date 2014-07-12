@@ -43,14 +43,14 @@ int64 UIWidget::next_window_id_ = 0;
 
 UIWidget::UIWidget( void )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_GUI );
 
   this->initialize( nullptr, nom::AUTO_ID, Point2i::null, Size2i::null, typeid( this ).name() );
 }
 
 UIWidget::~UIWidget( void )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_GUI );
 }
 
 void UIWidget::initialize (
@@ -150,7 +150,7 @@ UIWidget::UIWidget  (
                       const Size2i& size
                     )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_GUI );
 
   this->initialize( nullptr, nom::AUTO_ID, pos, size, "\0" );
 }
@@ -162,7 +162,7 @@ UIWidget::UIWidget  (
                       const Size2i& size
                     )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_GUI );
 
   this->initialize( parent, id, pos, size, "\0" );
 }
@@ -270,7 +270,7 @@ bool UIWidget::contains( const IDrawable::raw_ptr obj, const Point2i& pt )
 
   if( NOM_ISA( Transformable*, obj ) != true )
   {
-    NOM_LOG_ERR( NOM, "Could not perform hit test: object does not derive from Transformable." );
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not perform hit test: object does not derive from Transformable." );
     return false;
   }
 
@@ -282,12 +282,12 @@ bool UIWidget::contains( const IDrawable::raw_ptr obj, const Point2i& pt )
 
   if( object->position() == Point2i::null )
   {
-    NOM_LOG_INFO( NOM, "Object's position is NULL; hit test is likely to fail." );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Object's position is NULL; hit test is likely to fail." );
   }
 
   if( object->size() == Size2i::null )
   {
-    NOM_LOG_INFO( NOM, "Object's size is NULL; hit test is likely to fail." );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Object's size is NULL; hit test is likely to fail." );
   }
 
   if( bounds.contains( pt ) )
@@ -306,7 +306,7 @@ bool UIWidget::contains( const Text::raw_ptr obj, const Point2i& pt )
 
   if( NOM_ISA( Text*, obj ) != true )
   {
-    NOM_LOG_ERR( NOM, "Could not perform hit test: object does not derive from Text." );
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not perform hit test: object does not derive from Text." );
     return false;
   }
 
@@ -321,12 +321,12 @@ bool UIWidget::contains( const Text::raw_ptr obj, const Point2i& pt )
 
   if( object->position() == Point2i::null )
   {
-    NOM_LOG_INFO( NOM, "Object's position is NULL; hit test is likely to fail." );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Object's position is NULL; hit test is likely to fail." );
   }
 
   if( object->size() == Size2i::null )
   {
-    NOM_LOG_INFO( NOM, "Object's size is NULL; hit test is likely to fail." );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Object's size is NULL; hit test is likely to fail." );
   }
 
   if( bounds.contains( pt ) )
@@ -571,7 +571,7 @@ void UIWidget::set_title( const std::string& title )
 {
   if( this->font().valid() == false )
   {
-    NOM_LOG_ERR( NOM, "Could not set window title: font is NULL." );
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not set window title: font is NULL." );
     return;
   }
 
@@ -871,7 +871,7 @@ bool UIWidget::process_event( const Event& ev )
       // Sanity check; nothing to do if callback table is empty.
       if( (*it)->dispatcher()->size() < 1 )
       {
-        // NOM_LOG_ERR( NOM, "Callback table is empty; skipping ::process_event." );
+        // NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Callback table is empty; skipping ::process_event." );
         return false;
       }
 
@@ -935,7 +935,7 @@ bool UIWidget::process_event( const Event& ev )
   // Sanity check; nothing to do if callback table is empty.
   if( this->dispatcher()->size() < 1 )
   {
-    // NOM_LOG_ERR( NOM, "Callback table is empty; skipping ::process_event." );
+    // NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Callback table is empty; skipping ::process_event." );
     return false;
   }
 /*

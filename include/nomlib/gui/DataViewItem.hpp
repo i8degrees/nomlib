@@ -47,22 +47,24 @@ class DataViewItem
 
     DataViewItem( void )
     {
-      // NOM_LOG_TRACE( NOM );
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
     }
 
     virtual ~DataViewItem( void )
     {
-      // NOM_LOG_TRACE( NOM );
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
     }
 
     DataViewItem( const SelfType& copy ) :
       data_{ copy.data() }
     {
-      // NOM_LOG_TRACE( NOM );
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
     }
 
     DataViewItem( const T& data )
     {
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+
       this->data_ = data;
     }
 

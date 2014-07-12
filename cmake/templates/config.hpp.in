@@ -155,9 +155,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOM_DUMP_VAR( cat, ... ) \
   NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_DEBUG, "[", __FILE__, ":", __LINE__, "]", __VA_ARGS__ );
 
-/// \brief Show class construction and destruction
+/// \brief Log class construction and destruction
+///
+/// \param cat The category the output is logged under; see also:
+/// NOM_LOG_CATEGORY_* enumeration.
 #define NOM_LOG_TRACE( cat ) \
   NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_DEBUG, NOM_FUNC );
+
+/// \brief Log class construction and destruction
+///
+/// \param cat The category the output is logged under; see also:
+/// NOM_LOG_CATEGORY_* enumeration.
+///
+/// \param prio The logging priority level; see also: SDL_LogPriority
+/// enumeration.
+#define NOM_LOG_TRACE_PRIO( cat, prio ) \
+  NOM_LOG_MESSAGE( cat, prio, NOM_FUNC );
 
 #define NOM_STUBBED( cat ) \
   NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_INFO, "Stubbed function", NOM_FUNC, "was called" );

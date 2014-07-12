@@ -33,12 +33,12 @@ namespace nom {
 DataViewList::DataViewList( void ) :
   updated_( false )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_GUI );
 }
 
 DataViewList::~DataViewList( void )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_GUI );
 }
 
 DataViewList::DataViewList  (
@@ -51,7 +51,7 @@ DataViewList::DataViewList  (
   store_{ DataViewListStore::UniquePtr( new DataViewListStore() ) },
   updated_( false )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_GUI );
 
   // Auto-generate a name tag for our widget.
   this->set_name( "data_view_list" );
@@ -351,7 +351,7 @@ void DataViewList::update( void )
   // Sanity check; we'd crash in ::update otherwise!
   if( this->font().valid() == false )
   {
-    NOM_LOG_ERR( NOM, "DataViewList's font is NULL -- skipping update of object!" );
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "DataViewList's font is NULL -- skipping update of object!" );
     return;
   }
 
@@ -477,7 +477,7 @@ bool DataViewList::process_event( const nom::Event& ev )
           if( obj == nullptr )
           {
             // TODO: Err handling
-            NOM_LOG_ERR( NOM, "Could not send UIWidgetEvent for SpriteBatch drawable_item: NULL." );
+            NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not send UIWidgetEvent for SpriteBatch drawable_item: NULL." );
           }
 
           IntRect sprite_bounds( obj->position().x, obj->position().y, obj->size().w, obj->size().h );

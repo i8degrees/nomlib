@@ -49,10 +49,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // #include <nomlib/gui/YesNoDialogBox.hpp>
 #include <nomlib/gui/UIWidget.hpp>
 #include <nomlib/gui/FinalFantasyFrame.hpp>
-// #include <nomlib/gui/Button.hpp>
+#include <nomlib/gui/Button.hpp>
 #include <nomlib/gui/BitmapButton.hpp>
 #include <nomlib/gui/ListBox.hpp>
-// #include <nomlib/gui/DataViewItem.hpp>
 #include <nomlib/gui/DataViewItem.hpp>
 #include <nomlib/gui/DataViewListStore.hpp>
 #include <nomlib/gui/DataViewBitmapColumn.hpp>

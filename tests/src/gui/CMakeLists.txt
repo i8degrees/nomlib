@@ -162,3 +162,38 @@ if( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS )
           )
 
 endif( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS )
+
+if( NOM_BUILD_GUI_DATAVIEWLIST_TESTS )
+
+  add_executable  (
+                    DataViewListTest
+                    ${NOM_TESTS_VTEST_SOURCE}
+                    ${NOM_TESTS_SOURCE_DIR}/gui/common.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/gui/DataViewListTest.cpp
+                  )
+
+  target_link_libraries (
+                          DataViewListTest
+                          ${GTEST_LIBRARY}
+                          ${PROJECT_NAME} # nomlib
+                        )
+
+  add_test  (
+              # test name
+              dataviewlist_test_gen_ref_images
+              # executable name
+              DataViewListTest
+              # args
+              "-r"
+            )
+
+  add_test  (
+              # test name
+              dataviewlist_test_compare_images
+              # executable name
+              DataViewListTest
+              # args
+              ""
+            )
+
+endif( NOM_BUILD_GUI_DATAVIEWLIST_TESTS )

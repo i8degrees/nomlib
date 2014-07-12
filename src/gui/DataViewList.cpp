@@ -164,6 +164,8 @@ void DataViewList::update_columns( void )
     DataViewColumn column = this->store_->column( cols );
 
     header = Text::unique_ptr( new Text( column.title(), this->font() ) );
+    // TODO:
+    // header = Text::unique_ptr( new Text( column.title(), column.font() ) );
 
     width = header->width();
 

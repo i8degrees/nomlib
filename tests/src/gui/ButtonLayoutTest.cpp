@@ -376,7 +376,6 @@ TEST_F( ButtonLayoutTest, VerticalLayout )
   // EXPECT_EQ( Size2i( 102, 113 ), layout->total_minimum_size() );
   EXPECT_EQ( Size2i( 112, 139 ), layout->total_minimum_size() );
 
-
   // Should include the recommended size of the layout (dependent upon its
   // items). Note that this is not necessarily the rendered dimensions, but is
   // what would be considered mathematically "optimal".

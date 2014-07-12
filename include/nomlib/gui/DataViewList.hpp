@@ -45,7 +45,7 @@ class DataViewList: public UIWidget
 {
   public:
     typedef DataViewList SelfType;
-    typedef SelfType* RawPtr;
+    typedef SelfType* raw_ptr;
     typedef std::unique_ptr<SelfType> UniquePtr;
     typedef std::shared_ptr<SelfType> SharedPtr;
 

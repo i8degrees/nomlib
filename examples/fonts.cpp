@@ -104,10 +104,9 @@ class App: public nom::SDLApp
       {
         return false;
       }
-      this->window_size = this->window.size();
 
       // Scale window contents up by the new width & height
-      this->window.set_logical_size ( window_size.x, window_size.y );
+      this->window.set_logical_size ( this->window.size() );
 
       if ( this->window.set_window_icon ( RESOURCE_ICON ) == false )
       {
@@ -262,7 +261,6 @@ class App: public nom::SDLApp
   private:
     /// Window handle
     nom::RenderWindow window;
-    nom::Point2i window_size;
 
     /// Interval at which we refresh the frames per second counter
     nom::Timer update;
@@ -290,11 +288,11 @@ class App: public nom::SDLApp
       this->label_bfont.set_font( nom::SystemFonts::cache().load_resource( "VIII" ) );
 
       this->label_bfont.set_position  ( nom::Point2i(
-                                        ( this->window_size.x
+                                        ( this->window.size().w
                                           -
                                           this->label_bfont.width()
                                         ) / 2,
-                                        ( this->window_size.y
+                                        ( this->window.size().h
                                           -
                                           this->label_bfont.height()
                                         ) / 2

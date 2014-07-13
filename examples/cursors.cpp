@@ -103,10 +103,8 @@ class App: public nom::SDLApp
         return false;
       }
 
-      this->window_size = this->window.size();
-
       // Scale window contents up by the new width & height
-      this->window.set_logical_size( this->window_size.x, this->window_size.y );
+      this->window.set_logical_size( this->window.size() );
 
       return true;
     }
@@ -236,8 +234,6 @@ class App: public nom::SDLApp
 
     /// Window handles
     nom::RenderWindow window;
-
-    nom::Point2i window_size;
 
     /// Interval at which we refresh the frames per second counter
     nom::Timer update;

@@ -120,12 +120,24 @@ class DataViewListTest: public VisualUnitTest
       dview->set_decorator( new nom::FinalFantasyDecorator() );
 
       // FIXME:
-      dview->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
+      dview->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { on_click( ev ); } ) );
 
       return dview;
     }
 
   protected:
+
+    void on_click( const nom::UIWidgetEvent& ev )
+    {
+      Event evt = ev.event();
+
+      if( evt.type != SDL_MOUSEBUTTONDOWN ) return;
+
+      // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.id() );
+      NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.text() );
+      NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.index() );
+    }
+
     const int WINDOW_WIDTH;
     const int WINDOW_HEIGHT;
 

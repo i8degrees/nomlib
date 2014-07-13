@@ -285,5 +285,3 @@ class SDL2Logger
 ///
 /// \see Convenience logging macros -- NOM_LOG_* -- for the primary usage API.
 ///
-/// \todo Research the integration of [shell colors](http://misc.flogisoft.com/bash/tip_colors_and_formatting)
-///

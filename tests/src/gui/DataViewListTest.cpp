@@ -234,7 +234,8 @@ TEST_F( DataViewListTest, DataViewListWidgetAPI )
 TEST_F( DataViewListTest, DataViewListWidgetEx0 )
 {
   Point2i widget_pos( 25, 25 );
-  Size2i widget_size( 204, 160 );
+  // Size2i widget_size( 204, 160 );
+  Size2i widget_size( 204, 185 );
   const std::string widget_name = this->test_name();
 
   DataViewColumn col0;
@@ -297,7 +298,8 @@ TEST_F( DataViewListTest, DataViewListWidgetEx0 )
 TEST_F( DataViewListTest, DataViewListWidgetEx1 )
 {
   Point2i widget_pos( 25, 25 );
-  Size2i widget_size( 344, 190 );
+  // Size2i widget_size( 344, 190 );
+  Size2i widget_size( 344, 250 );
   const std::string widget_name = this->test_name();
 
   DataViewColumn col0;
@@ -383,7 +385,8 @@ TEST_F( DataViewListTest, DataViewListWidgetEx1 )
 TEST_F( DataViewListTest, DataViewListWidgetEx2 )
 {
   Point2i widget_pos( 25, 25 );
-  Size2i widget_size( 304, 190 );
+  // Size2i widget_size( 304, 190 );
+  Size2i widget_size( 344, 250 );
   const std::string widget_name = this->test_name();
 
   DataViewColumn col0;
@@ -399,7 +402,7 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
   col0 = DataViewColumn (
                           0,
                           "CARDS  PG. 1",
-                          55, // TODO: Match value of Ex0 test (75)..?
+                          75,
                           IDataViewColumn::Alignment::Left
                         );
 

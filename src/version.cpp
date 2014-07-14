@@ -26,15 +26,21 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-
 #include "nomlib/version.hpp"
-#include "nomlib/revision.hpp"
 
 namespace nom {
 
 std::string version( void )
 {
-  return std::to_string( major_version() + minor_version() + patch_version() );
+  std::ostringstream os;
+
+  os  << major_version()
+      << "."
+      << minor_version()
+      << "."
+      << patch_version();
+
+  return os.str();
 }
 
 std::string revision( void )

@@ -31,11 +31,36 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // See also: CMakeLists.txt.
 
 #include <string>
+#include <sstream>
+
+#include "nomlib/revision.hpp"
 
 // \brief Track version info from project's CMake build script
 #define NOMLIB_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
 #define NOMLIB_VERSION_MINOR @PROJECT_VERSION_MINOR@
 #define NOMLIB_VERSION_PATCH @PROJECT_VERSION_PATCH@
+
+/// \brief Get the full version release number of nomlib
+///
+/// \returns A C++ std::string with the version string filled in.
+///
+/// \remarks Sample output: "1.2.3" (excluding double quotes).
+///
+/// \see nom::major_version, nom::minor_version and nom::patch_version for
+/// creating your own custom version strings.
+#define NOM_VERSION \
+  { version(); }
+
+/// \brief Get a source repository revision number of nomlib
+///
+/// \returns A C++ std::string with the git tag & revision number string filled
+/// in.
+///
+/// \remarks Sample output: "v0.10.0-688-geaccfff" (excluding double quotes).
+///
+/// \see https://github.com/i8degrees/nomlib
+#define NOM_REVISION \
+  { revision(); }
 
 namespace nom {
 

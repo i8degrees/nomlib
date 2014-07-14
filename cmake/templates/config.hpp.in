@@ -225,6 +225,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif  // defined( NOM_DEBUG ) && defined( NOM_COMPILER_CLANG )
 
+// Image loader
+#cmakedefine NOM_USE_SDL2_IMAGE @NOM_USE_SDL2_IMAGE@
+
+// Font loader
+#cmakedefine NOM_USE_SDL2_TTF @NOM_USE_SDL2_TTF@
+
+// Audio
+#cmakedefine NOM_USE_OPENAL @NOM_USE_OPENAL@
+#cmakedefine NOM_USE_LIBSNDFILE @NOM_USE_LIBSNDFILE@
+
 // High-quality rescaling algorithms for low-resolution sprites
 // (i.e.: pixel art)
 #cmakedefine NOM_USE_SCALEX @NOM_USE_SCALEX@

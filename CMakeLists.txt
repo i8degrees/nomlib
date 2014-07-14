@@ -27,54 +27,34 @@ option( NOM_BUILD_TESTS "Build unit tests" off )
 # bundle, source tar-ball and so forth).
 set( NOM_INSTALL_GENERATED_DOCS off )
 
-# Build a minimal core library. This option is particularly useful for when
-# you wish to test out new CMake functionality and thus must endure many
-# recompiles of the project!.
-#
-# NOTE: The core unit is a prerequisite for all other unit compilations.
-#
-# NOTE: Enabling this option will explicitly disable project examples from
-# being built, regardless of whether examples are enabled.
-set( NOM_BUILD_CORE_UNIT on )
+option( NOM_BUILD_CORE_UNIT "Engine core" TRUE )
 
-# Builds the audio unit
-# Dependencies: OpenAL/OpenALSoft.
-set( NOM_BUILD_AUDIO_UNIT off )
+# TODO: Consider moving math unit into core?
+option( NOM_BUILD_MATH_UNIT "Math utilities" TRUE )
 
-# Build the graphics unit
-# Dependencies: SDL2, SDL2_image, SDL2_ttf
-set( NOM_BUILD_GRAPHICS_UNIT on )
+# Dependencies: OpenAL
+option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" FALSE )
 
-# Toggle use of scale2x and hqx rescaling algorithms.
-#
-# Dependencies: Graphics unit
-set( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT on )
+# Dependencies: SDL2, SDL2_IMAGE, SDL2_TTF
+option( NOM_BUILD_GRAPHICS_UNIT "Graphics core" TRUE )
 
-# Build the GUI unit.
-# Dependencies: Graphics unit
-set( NOM_BUILD_GUI_UNIT on )
-option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Build with scale2x & hqx algorithms" FALSE )
+# TODO: Shorten this build var
+# Dependencies: scale2x & hq2x (included in source tree)
+option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Include scale2x & hqx algorithms" FALSE )
 
-# Build the serializers unit.
-# Dependencies: Core unit, Property Tree unit
-set( NOM_BUILD_SERIALIZERS_UNIT on )
+# TODO: Break unit up further
+option( NOM_BUILD_SYSTEM_UNIT "System unit" TRUE )
 
-# Build the JSON unit.
-# Dependencies: jsoncpp, Property Tree unit
-set( NOM_BUILD_JSON_UNIT on )
+option( NOM_BUILD_PTREE_UNIT "Generic container for serialization" TRUE )
+option( NOM_BUILD_SERIALIZERS_UNIT "Serialization core for JSON, XML, HTML" TRUE )
 
-# Build the Property Tree unit.
-set( NOM_BUILD_PTREE_UNIT on )
+# Dependencies: jsoncpp (included in source tree)
+option( NOM_BUILD_JSON_UNIT "JSON I/O" TRUE )
 
-# Build the XML unit.
-# Dependencies: RapidXml
-set( NOM_BUILD_XML_UNIT off )
+# Dependencies: RapidXml (included in source tree)
+option( NOM_BUILD_XML_UNIT "XML I/O" FALSE )
 
-set( NOM_BUILD_MATH_UNIT on )
-
-# Build the System unit.
-# Dependencies: SDL2, SDL2_image, SDL2_ttf
-set( NOM_BUILD_SYSTEM_UNIT on )
+option( NOM_BUILD_GUI_UNIT "GUI subsystem" TRUE )
 
 # Collection of internal templates used in the creation of new functionality
 # such as classes or examples / tests.
@@ -84,23 +64,16 @@ set( NOM_BUILD_SYSTEM_UNIT on )
 # Resources/SharedSupport/Template.cpp
 # Resources/SharedSupport/Template.hpp
 # Resources/SharedSupport/UnitTestTemplate.cpp
-set( NOM_BUILD_TEMPLATES_UNIT off )
+option( NOM_BUILD_TEMPLATES_UNIT off )
 
-if( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
-  set( NOM_BUILD_CORE_UNIT TRUE )
-  set( NOM_BUILD_MATH_UNIT TRUE )
-  set( NOM_BUILD_GRAPHICS_UNIT TRUE )
-endif( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
-
-if( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
-  set( NOM_USE_SCALEX TRUE )
-  set( NOM_USE_HQX TRUE )
-endif( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
-
-project ( nomlib ) # Sets PROJECT_NAME variable for us
+project( nomlib ) # Sets PROJECT_NAME variable for us
 
 # Platform detection
 include ( "${CMAKE_SOURCE_DIR}/cmake/platform.cmake" )
+
+# Determine the required build unit dependencies based on the end-user's
+# choice of the given CMake options
+include( "${PROJECT_SOURCE_DIR}/cmake/BuildTreeDeps.cmake" )
 
 if ( PLATFORM_WINDOWS )
   # Building nomlib on Windows is only supported as a static library for the

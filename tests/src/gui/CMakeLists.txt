@@ -153,14 +153,6 @@ if( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS )
   #                   ${NOM_TESTS_SOURCE_DIR}/gui/common.cpp
   #                 )
 
-  install (
-            DIRECTORY
-            "${NOM_EXAMPLES_RESOURCES_DIR}/gui"
-            DESTINATION
-            "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
-            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-          )
-
 endif( NOM_BUILD_GUI_BUTTON_LAYOUT_TESTS )
 
 if( NOM_BUILD_GUI_DATAVIEWLIST_TESTS )
@@ -197,3 +189,16 @@ if( NOM_BUILD_GUI_DATAVIEWLIST_TESTS )
             )
 
 endif( NOM_BUILD_GUI_DATAVIEWLIST_TESTS )
+
+# Resource dependencies
+if( NOM_BUILD_GUI_UNIT )
+
+  install (
+            DIRECTORY
+            "${NOM_EXAMPLES_RESOURCES_DIR}/gui"
+            DESTINATION
+            "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
+            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+          )
+
+endif( NOM_BUILD_GUI_UNIT )

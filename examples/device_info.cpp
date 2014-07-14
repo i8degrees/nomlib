@@ -26,40 +26,245 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
+#include "SDL.h"
+#include "SDL_revision.h"
 
-/// \brief Dump information on rendering capabilities of a device
+// Must be included before NOM_USE_* preprocessor definitions are checked
+#include "nomlib/config.hpp"
 
-#include <iostream>
+#if defined( NOM_USE_SDL2_IMAGE )
+  #include "SDL_image.h"
+#endif
 
-#include <nomlib/graphics.hpp>
-#include <nomlib/system.hpp>
+#if defined( NOM_USE_SDL2_TTF )
+  #include "SDL_ttf.h"
+#endif
 
-const std::string APP_NAME = "device_info";
+#if defined( NOM_USE_OPENAL )
+  #include "nomlib/audio/AL/OpenAL.hpp"
+#endif
 
-const int WINDOW_WIDTH = 0;
-const int WINDOW_HEIGHT = 0;
+#if defined( NOM_USE_LIBSNDFILE )
+  #include "sndfile.h"
+#endif
+
+#include "nomlib/version.hpp"
+#include "nomlib/revision.hpp"
+#include "nomlib/graphics.hpp"
+#include "nomlib/system.hpp"
+
+void nomlib_version_info( void )
+{
+  NOM_LOG_INFO  (
+                  NOM_LOG_CATEGORY_APPLICATION,
+                  "nomlib version: ",
+                  nom::version()
+                );
+
+  NOM_LOG_INFO  (
+                  NOM_LOG_CATEGORY_APPLICATION,
+                  "nomlib source revision: ",
+                  nom::revision()
+                );
+}
+
+void SDL2_version_info( void )
+{
+  SDL_version compiled_ver;
+  SDL_version linked_ver;
+  SDL_GetVersion( &compiled_ver );
+
+  NOM_LOG_INFO  (
+                  NOM_LOG_CATEGORY_APPLICATION,
+                  "SDL2 compiled against version: ",
+                  NOM_SCAST( int, compiled_ver.major ),
+                  ".",
+                  NOM_SCAST( int, compiled_ver.minor ),
+                  ".",
+                  NOM_SCAST( int, compiled_ver.patch )
+                );
+
+  NOM_LOG_INFO  (
+                  NOM_LOG_CATEGORY_APPLICATION,
+                  "SDL2 linked against version: ",
+                  NOM_SCAST( int, linked_ver.major ),
+                  ".",
+                  NOM_SCAST( int, linked_ver.minor ),
+                  ".",
+                  NOM_SCAST( int, linked_ver.patch )
+                );
+
+  NOM_LOG_INFO  (
+                  NOM_LOG_CATEGORY_APPLICATION,
+                  "SDL2 source revision: ",
+                  SDL_GetRevision()
+                );
+}
+
+void SDL2_image_version_info( void )
+{
+  #if defined( NOM_USE_SDL2_IMAGE )
+
+    SDL_version compiled_ver;
+    const SDL_version *linked_ver = IMG_Linked_Version();
+    SDL_IMAGE_VERSION( &compiled_ver );
+
+    NOM_LOG_INFO  (
+                    NOM_LOG_CATEGORY_APPLICATION,
+                    "SDL2_image compiled version: ",
+                    NOM_SCAST( int, compiled_ver.major ),
+                    ".",
+                    NOM_SCAST( int, compiled_ver.minor ),
+                    ".",
+                    NOM_SCAST( int, compiled_ver.patch )
+                  );
+
+    NOM_LOG_INFO  (
+                    NOM_LOG_CATEGORY_APPLICATION,
+                    "SDL2_image linked version: ",
+                    NOM_SCAST( int, linked_ver->major ),
+                    ".",
+                    NOM_SCAST( int, linked_ver->minor ),
+                    ".",
+                    NOM_SCAST( int, linked_ver->patch )
+                  );
+  #endif
+}
+
+void SDL2_ttf_version_info( void )
+{
+  #if defined( NOM_USE_SDL2_TTF )
+
+    SDL_version compiled_ver;
+    const SDL_version *linked_ver = TTF_Linked_Version();
+    SDL_TTF_VERSION( &compiled_ver );
+
+    NOM_LOG_INFO  (
+                    NOM_LOG_CATEGORY_APPLICATION,
+                    "SDL2_ttf compiled version: ",
+                    NOM_SCAST( int, compiled_ver.major ),
+                    ".",
+                    NOM_SCAST( int, compiled_ver.minor ),
+                    ".",
+                    NOM_SCAST( int, compiled_ver.patch )
+                  );
+
+    NOM_LOG_INFO  (
+                    NOM_LOG_CATEGORY_APPLICATION,
+                    "SDL2_ttf linked version: ",
+                    NOM_SCAST( int, linked_ver->major ),
+                    ".",
+                    NOM_SCAST( int, linked_ver->minor ),
+                    ".",
+                    NOM_SCAST( int, linked_ver->patch )
+                  );
+  #endif
+}
+
+void OpenAL_version_info( void )
+{
+  #if defined( NOM_USE_OPENAL )
+
+    struct OpenALVersionInfo
+    {
+      std::string version;
+      std::string renderer;
+      std::string vendor;
+      std::string extensions;
+    };
+
+    OpenALVersionInfo info;
+
+    AL_CHECK_ERR( info.version = alGetString( AL_VERSION ) );
+    AL_CHECK_ERR( info.renderer = alGetString( AL_RENDERER ) );
+    AL_CHECK_ERR( info.vendor = alGetString( AL_VENDOR ) );
+    AL_CHECK_ERR( info.extensions = alGetString( AL_EXTENSIONS ) );
+
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL version: ", info.version );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL renderer: ", info.renderer );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL vendor: ", info.vendor );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL extensions: ", info.extensions );
+  #endif
+}
+
+void libsndfile_version_info( void )
+{
+  #if defined( NOM_USE_LIBSNDFILE )
+
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "libsndfile version: ", sf_version_string() );
+  #endif
+}
+
+void libs_version_info( void )
+{
+  std::cout << std::endl;
+  nomlib_version_info();
+  std::cout << std::endl;
+  SDL2_version_info();
+  std::cout << std::endl;
+  SDL2_image_version_info();
+  std::cout << std::endl;
+  SDL2_ttf_version_info();
+  std::cout << std::endl;
+  OpenAL_version_info();
+  std::cout << std::endl;
+  libsndfile_version_info();
+  std::cout << std::endl;
+}
 
 int main ( int argc, char* argv[] )
 {
   nom::RenderWindow window;
+  nom::Size2i window_size( nom::Size2i::zero );
   nom::RendererInfo renderer_info;
 
-  if ( nom::init ( argc, argv ) == false )
+  // We need SDL2 video initialization so we can obtain the available rendering
+  // caps
+  if( nom::init ( argc, argv ) == false )
   {
-    NOM_LOG_ERR ( APP_NAME, "Could not initialize nomlib." );
-    exit ( NOM_EXIT_FAILURE );
+    NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not initialize nomlib." );
+    exit( NOM_EXIT_FAILURE );
   }
-  atexit(nom::quit);
 
-  nom::uint32 window_flags = SDL_WINDOW_HIDDEN;
-  if ( window.create ( APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, window_flags ) == false )
+  atexit( nom::quit );
+
+  #if defined( NOM_PLATFORM_OSX )
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Platform: Mac OS X" );
+  #elif defined( NOM_PLATFORM_LINUX )
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Platform: GNU/Linux" );
+  #elif defined( NOM_PLATFORM_POSIX )
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Platform: POSIX Unix" );
+  #elif defined( NOM_PLATFORM_WINDOWS )
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Platform: MS Windows" );
+  #else
+    NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Platform: Unknown" );
+  #endif
+
+  // Output the versions used of nomlib and its dependencies.
+  libs_version_info();
+
+  if( window.create( "device_info", window_size, SDL_WINDOW_HIDDEN ) == false )
   {
-    NOM_LOG_ERR ( APP_NAME, "Could not create a window." );
-    exit ( NOM_EXIT_FAILURE );
+    NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not create a window." );
+    exit( NOM_EXIT_FAILURE );
   }
 
   renderer_info = window.caps();
-  std::cout << renderer_info << std::endl;
+
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Renderer: ", renderer_info.name );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "SDL_RENDERER_TARGETTEXTURE: ", renderer_info.flags & SDL_RENDERER_TARGETTEXTURE ? "YES" : "NO" );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "SDL_RENDERER_ACCELERATED: ", renderer_info.flags & SDL_RENDERER_ACCELERATED ? "YES" : "NO" );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "SDL_RENDERER_PRESENTVSYNC: ", renderer_info.flags & SDL_RENDERER_PRESENTVSYNC ? "YES" : "NO" );
+
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Maximum texture width: ", renderer_info.texture_width );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Maximum texture height: ", renderer_info.texture_height );
+
+  uint index = 0;
+  for( auto itr = renderer_info.texture_formats.begin(); itr != renderer_info.texture_formats.end(); ++itr )
+  {
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, nom::PIXEL_FORMAT_NAME( *itr ), index == 0 ? " (optimal)" : "" );
+    ++index;
+  }
 
   return NOM_EXIT_SUCCESS;
 }

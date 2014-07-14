@@ -337,7 +337,14 @@ void EventHandler::process_event( const Event& ev )
 
 bool EventHandler::poll_event( Event& ev )
 {
-  return this->pop_event( ev );
+  // We have pending events in the queue!
+  if( this->pop_event( ev ) )
+  {
+    return true;
+  }
+
+  // No pending events in queue
+  return false;
 }
 
 // bool EventHandler::poll_event( SDL_Event* ev )
@@ -1477,19 +1484,12 @@ void EventHandler::process_event( const SDL_Event* ev )
 
 void EventHandler::process_events( void )
 {
-  int num_events = 0;
   SDL_Event ev;
 
   // Enumerate events from all available input devices
   SDL_PumpEvents();
 
-  num_events = SDL_PeepEvents( &ev, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT );
-
-  if( num_events < 0 )
-  {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
-  }
-  else
+  while( SDL_PeepEvents( &ev, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT ) )
   {
     this->process_event( &ev );
   }

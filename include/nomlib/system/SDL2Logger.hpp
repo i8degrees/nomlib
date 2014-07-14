@@ -86,6 +86,12 @@ enum
   /// \brief GUI subsystem logging category
   NOM_LOG_CATEGORY_GUI,
 
+  /// \brief Memory allocation & deallocations
+  NOM_LOG_CATEGORY_MEMORY,
+
+  /// \brief Totals (user-defined) of memory allocation & deallocations
+  NOM_LOG_CATEGORY_MEMORY_TOTALS,
+
   NOM_LOG_CATEGORY_TRACE,
   NOM_LOG_CATEGORY_TRACE_AUDIO,
 
@@ -147,13 +153,16 @@ class SDL2Logger
 
     /// \brief Construct a logging object.
     ///
-    /// \param cat The logging category to assign.
+    /// \param cat        The logging category to assign.
     ///
-    /// \param prio A SDL_LogPriority enumeration value to use as the logging
-    /// priority.
+    /// \param prio       A SDL_LogPriority enumeration value to use as the
+    /// logging priority.
+    ///
+    /// \param auto_space Boolean TRUE to automatically insert a space after
+    /// each log message (applicable when using varadic arguments).
     ///
     /// \see ::write.
-    SDL2Logger( int cat, SDL_LogPriority prio );
+    SDL2Logger( int cat, SDL_LogPriority prio, bool auto_space );
 
     /// \brief Destructor; the logging category, logging priority level and
     /// output stream is sent to the underlying implementation at this time.
@@ -172,7 +181,10 @@ class SDL2Logger
     {
       nom::write_debug_output( this->output_stream(), f );
 
-      this->write( " " );
+      if( this->auto_space() )
+      {
+        this->write( " " );
+      }
 
       this->write( rest... );
     }
@@ -239,6 +251,8 @@ class SDL2Logger
     /// std::ostringstream.
     self_type& operator =( const self_type& rhs ) = delete;
 
+    bool auto_space( void ) const;
+
     /// \brief The logging category of the log message.
     int category_;
 
@@ -253,6 +267,8 @@ class SDL2Logger
     ///
     /// \see NOM_LOG_CATEGORY_* enumeration.
     static bool initialized_;
+
+    bool auto_space_;
 };
 
 } // namespace nom

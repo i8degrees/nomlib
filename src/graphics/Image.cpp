@@ -33,12 +33,12 @@ namespace nom {
 Image::Image ( void ) :
   image_ ( nullptr, priv::FreeSurface )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, SDL_LOG_PRIORITY_VERBOSE );
 }
 
 Image::~Image ( void )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, SDL_LOG_PRIORITY_VERBOSE );
 }
 
 Image::Image ( const Image& copy )  :

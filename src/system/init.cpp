@@ -257,8 +257,8 @@ void quit( void )
 
   SDL_Quit();
 
-  // NOM_LOG_INFO( NOM, "Total memory allocation (in bytes): " + std::to_string( IObject::total_alloc_bytes ) );
-  // NOM_LOG_INFO( NOM, "Total memory deallocation (in bytes): " + std::to_string( IObject::total_dealloc_bytes ) );
+  NOM_LOG_DEBUG( NOM_LOG_CATEGORY_MEMORY_TOTALS, "Total memory allocation (in bytes): ", IObject::total_alloc_bytes );
+  NOM_LOG_DEBUG( NOM_LOG_CATEGORY_MEMORY_TOTALS, "Total memory deallocation (in bytes): ", IObject::total_dealloc_bytes );
 }
 
 } // namespace nom

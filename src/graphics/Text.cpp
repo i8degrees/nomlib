@@ -31,6 +31,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Private headers (third-party)
 #include "SDL.h"
 
+// Private headers
+#include "nomlib/graphics/fonts/Glyph.hpp"
+
 // #define NOM_DEBUG_OUTPUT_KERNING_VALUES
 
 namespace nom {

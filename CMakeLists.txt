@@ -53,6 +53,7 @@ set( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT on )
 # Build the GUI unit.
 # Dependencies: Graphics unit
 set( NOM_BUILD_GUI_UNIT on )
+option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Build with scale2x & hqx algorithms" FALSE )
 
 # Build the serializers unit.
 # Dependencies: Core unit, Property Tree unit
@@ -85,6 +86,17 @@ set( NOM_BUILD_SYSTEM_UNIT on )
 # Resources/SharedSupport/UnitTestTemplate.cpp
 set( NOM_BUILD_TEMPLATES_UNIT off )
 
+if( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
+  set( NOM_BUILD_CORE_UNIT TRUE )
+  set( NOM_BUILD_MATH_UNIT TRUE )
+  set( NOM_BUILD_GRAPHICS_UNIT TRUE )
+endif( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
+
+if( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
+  set( NOM_USE_SCALEX TRUE )
+  set( NOM_USE_HQX TRUE )
+endif( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
+
 project ( nomlib ) # Sets PROJECT_NAME variable for us
 
 # Platform detection
@@ -107,6 +119,10 @@ if ( DEBUG )
   if ( NOT PLATFORM_WINDOWS )
     # TODO: Enable -Wextra
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused -O0" ) #-D_GLIBCXX_DEBUG
+
+    # Measure the time it takes per source file to build, so we can try
+    # speeding up slow builds!
+    # set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ftime-report" )
   else ( PLATFORM_WINDOWS )
     # TODO: split these options up like we have for other platforms
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D NOM_DEBUG /D NOM_DEBUG_ASSERT" )

@@ -36,8 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/Path.hpp"
 #include "nomlib/system/File.hpp"
 
-#include "nomlib/tests/common/VisualUnitTestResultWriter.hpp"
-
 namespace nom {
 
 namespace priv {
@@ -235,15 +233,6 @@ void init_test( int argc, char** argv )
     // Windows: C:\Users\jeff\Documents\nomlib\tests
     // POSIX: /home/jeff/Documents/nomlib/tests
     nom::test_output_directory = nomlib_tests_path.path();
-  }
-
-  if( NOM_TEST_FLAG( no_html_output ) == false )
-  {
-    // Register tests start & end event listener (used for HTML results output)
-    ::testing::TestEventListeners& listeners =
-        ::testing::UnitTest::GetInstance()->listeners();
-
-    listeners.Append( new VisualUnitTestResultWriter() );
   }
 }
 

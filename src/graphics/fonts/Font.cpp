@@ -28,6 +28,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/fonts/Font.hpp"
 
+// Private headers
+// #include "nomlib/system/Path.hpp"
+#include "nomlib/system/File.hpp"
+#include "nomlib/graphics/fonts/BitmapFont.hpp"
+#include "nomlib/graphics/fonts/TrueTypeFont.hpp"
+
 namespace nom {
 
 Font::Font( void ) :

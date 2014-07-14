@@ -33,21 +33,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/Event.hpp"
-#include "nomlib/graphics/shapes/Rectangle.hpp" // tool tip
 #include "nomlib/graphics/fonts/Font.hpp"
-#include "nomlib/graphics/Text.hpp"
 #include "nomlib/gui/UIEventHandler.hpp"
-#include "nomlib/gui/IDecorator.hpp"
 #include "nomlib/gui/Drawables.hpp"
-#include "nomlib/gui/UILayout.hpp"
 #include "nomlib/gui/UILayoutPolicy.hpp"
-#include "nomlib/gui/UIStyle.hpp"
 
 namespace nom {
 
 // Forward declarations
-// class UIStyle;
+class Rectangle;
+class Text;
+struct Event;
+class IDecorator;
+class UILayout;
+class UIStyle;
 
 /// \brief GUI window object container
 class UIWidget: public UIEventHandler
@@ -146,7 +145,7 @@ class UIWidget: public UIEventHandler
     const Children& children( void ) const;
 
     /// \returns Ownership of the object pointer is not transferred.
-    IDecorator::shared_ptr decorator( void ) const;
+    std::shared_ptr<IDecorator> decorator( void ) const;
 
     /// \brief Get the title of the top-level window.
     const std::string title( void ) const;
@@ -157,7 +156,7 @@ class UIWidget: public UIEventHandler
     const UILayoutPolicy& size_policy( void ) const;
 
     /// \brief Perform a bounds coordinates collision test.
-    bool contains( const IDrawable::raw_ptr obj, const Point2i& pt );
+    bool contains( IDrawable* obj, const Point2i& pt ) const;
 
     /// \brief Perform a bounds coordinates collision test.
     ///
@@ -172,7 +171,7 @@ class UIWidget: public UIEventHandler
     /// first necessary to up-cast the pointer to nom::Text before you can
     /// rely on the hit test results; the un-casted object will take the
     /// generic method signature otherwise, and much confusion will ensure!
-    bool contains( const Text::raw_ptr obj, const Point2i& pt );
+    bool contains_label( Text* obj, const Point2i& pt );
 
     /// \brief Query if this is a top-level widget.
     ///
@@ -298,7 +297,7 @@ class UIWidget: public UIEventHandler
     /// dimensions. This is a provided for the convenience of not needing to
     /// explicitly initialize the object with the dimensions of the parent
     /// widget.
-    void set_decorator( const IDecorator::raw_ptr object );
+    void set_decorator( IDecorator* object );
 
     /// \brief Set the window's caption (title) text.
     ///
@@ -539,10 +538,10 @@ NOM_IGNORED_ENDL();
     /// \brief The decorator object for the widget
     ///
     /// \remarks Control over the border and background of the widget.
-    IDecorator::shared_ptr decorator_;
+    std::shared_ptr<IDecorator> decorator_;
 
     /// \brief The title of the top-level window.
-    Text::unique_ptr title_;
+    std::unique_ptr<Text> title_;
 
     /// \brief Maximum size of widget.
     Size2i max_size_;

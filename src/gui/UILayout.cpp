@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/UILayout.hpp"
 
+// Private headers
+#include "nomlib/math/helpers.hpp"
+
 // Forward declarations
 #include "nomlib/gui/UIWidget.hpp"
 #include "nomlib/gui/UISpacerItem.hpp"

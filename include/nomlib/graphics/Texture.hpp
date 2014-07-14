@@ -36,18 +36,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/SDL_helpers.hpp"
-#include "nomlib/math/helpers.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Point2.hpp"
-#include "nomlib/system/SDL_helpers.hpp"
-#include "nomlib/graphics/Image.hpp"
-#include "nomlib/graphics/RenderWindow.hpp"
+#include "nomlib/math/Size2.hpp"
+#include "nomlib/math/Rect.hpp"
 
 // Dump the rescaled Texture as a PNG file
 //#define NOM_DEBUG_SDL2_RESIZE_PNG
 
 namespace nom {
+
+// Forward declarations
+class Image;
+class RenderWindow;
 
 class Texture
 {
@@ -121,7 +122,7 @@ class Texture
 
     /// \remarks For creation of textures of access types: Access::Streaming and
     /// Access::RenderTarget.
-    bool create ( const Image& source, uint32 pixel_format, enum Texture::Access type );
+    bool create( const Image& source, uint32 pixel_format, enum Texture::Access type );
 
     const Point2i& position( void ) const;
 
@@ -137,7 +138,7 @@ class Texture
     const IntRect& bounds( void ) const;
 
     /// Get the video memory surface of the Texture object
-    SDL_TEXTURE::RawPtr texture ( void ) const;
+    SDL_Texture* texture( void ) const;
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;
@@ -326,10 +327,15 @@ class Texture
     ///           texture is of the Texture::Access::Static type and therefore
     ///           cannot be modified again without the complete re-initialization
     ///           of the original buffer (image file).
-    bool resize ( enum ResizeAlgorithm scaling_algorithm );
+    ///
+    /// \todo Improve err handling of this method when ScaleX & HQX algorithms
+    /// are not built. (Perhaps log a message warning the user that since the
+    /// algorithms are not built in, that SDL2's bilinear rescaling will be used
+    /// instead???)
+    bool resize( enum ResizeAlgorithm scaling_algorithm );
 
     /// \brief Return the scaling factor of the chosen algorithm
-    int scale_factor ( enum ResizeAlgorithm scaling_algorithm ) const;
+    int scale_factor( enum ResizeAlgorithm scaling_algorithm ) const;
 
     /// Set a new blending mode for this texture
     bool set_blend_mode ( const SDL_BlendMode blend );
@@ -366,7 +372,7 @@ class Texture
     bool set_render_target ( void );
 
   private:
-    SDL_TEXTURE::SharedPtr texture_;
+    std::shared_ptr<SDL_Texture> texture_;
 
     /// Texture's pixels; these are only available when a Texture is locked.
     void* pixels_;

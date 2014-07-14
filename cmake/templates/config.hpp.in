@@ -225,4 +225,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif  // defined( NOM_DEBUG ) && defined( NOM_COMPILER_CLANG )
 
+// High-quality rescaling algorithms for low-resolution sprites
+// (i.e.: pixel art)
+#cmakedefine NOM_USE_SCALEX @NOM_USE_SCALEX@
+#cmakedefine NOM_USE_HQX @NOM_USE_HQX@
+
 #endif // include guard defined

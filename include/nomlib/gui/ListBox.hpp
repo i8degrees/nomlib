@@ -33,13 +33,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/Text.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/gui/UIWidget.hpp"
 #include "nomlib/gui/Drawables.hpp"
-#include "nomlib/gui/UIItemContainer.hpp"
 
 namespace nom {
+
+// Forward declarations
+class Text;
+class UIItemContainer;
+class IDecorator;
+class UIStyle;
 
 /// \brief GUI list box widget.
 class ListBox: public UIWidget
@@ -58,7 +62,7 @@ class ListBox: public UIWidget
               int64 id,
               const Point2i& pos,
               const Size2i& size,
-              const UIItemContainer::raw_ptr store
+              UIItemContainer* store
             );
 
     /// \brief Destructor; resource clean up is automatic.
@@ -91,7 +95,7 @@ class ListBox: public UIWidget
     ///
     /// \remarks An assert will be triggered upon detecting a null store
     /// object pointer.
-    UIItemContainer::raw_ptr store( void ) const;
+    UIItemContainer* store( void ) const;
 
     /// \brief Obtian the color used for the rendering of highlighted text.
     const Color4i& selected_text_color( void ) const;
@@ -100,7 +104,7 @@ class ListBox: public UIWidget
     void draw( RenderTarget& target ) const;
 
     /// \brief Set the internal storage container for the object to manage.
-    void set_item_store( const UIItemContainer::raw_ptr store );
+    void set_item_store( UIItemContainer* store );
 
     /// \brief Set the text color used to highlight the current selection
     /// item.
@@ -154,7 +158,7 @@ class ListBox: public UIWidget
     void update( void );
 
     /// \brief Internal storage container for holding items.
-    UIItemContainer::unique_ptr store_;
+    std::unique_ptr<UIItemContainer> store_;
 
     /// \brief Rendered text items.
     ///

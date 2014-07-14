@@ -33,8 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/fonts/IFont.hpp"
-#include "nomlib/graphics/fonts/BitmapFont.hpp"
-#include "nomlib/graphics/fonts/TrueTypeFont.hpp"
 
 namespace nom {
 

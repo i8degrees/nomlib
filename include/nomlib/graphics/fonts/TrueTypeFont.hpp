@@ -45,6 +45,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Dump the individual glyph bitmaps as PNG files
 //#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS_PNG
 
+// Forward declarations (Third-party)
+typedef struct _TTF_Font TTF_Font;
+
 namespace nom {
 
 // Forward declarations

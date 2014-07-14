@@ -32,8 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/Text.hpp"
-#include "nomlib/graphics/sprite/SpriteBatch.hpp"
 #include "nomlib/gui/UIWidget.hpp"
 #include "nomlib/gui/DataViewColumn.hpp"
 #include "nomlib/gui/DataViewListStore.hpp"
@@ -50,7 +48,7 @@ class DataViewList: public UIWidget
     typedef std::shared_ptr<SelfType> SharedPtr;
 
     /// \brief Internal rendering list for column headers
-    typedef std::vector<Text::unique_ptr> HeaderLabels;
+    typedef std::vector<std::unique_ptr<Text>> HeaderLabels;
 
     /// \brief Internal rendering list for items
     typedef std::vector<IDrawable::shared_ptr> ItemDrawables;

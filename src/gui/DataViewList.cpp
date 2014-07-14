@@ -28,6 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/DataViewList.hpp"
 
+// Private headers
+#include "nomlib/graphics/Text.hpp"
+#include "nomlib/graphics/sprite/SpriteBatch.hpp"
+
 namespace nom {
 
 DataViewList::DataViewList( void ) :

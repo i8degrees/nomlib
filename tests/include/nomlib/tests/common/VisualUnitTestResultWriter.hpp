@@ -29,13 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_TESTS_COMMON_VISUAL_UNIT_TEST_RESULT_WRITER_HPP
 #define NOMLIB_TESTS_COMMON_VISUAL_UNIT_TEST_RESULT_WRITER_HPP
 
-#include <iostream>
 #include <string>
 
 #include "gtest/gtest.h"
-
-#include "nomlib/config.hpp"
-#include "nomlib/tests/common/UnitTest.hpp"
 
 namespace nom {
 

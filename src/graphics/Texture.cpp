@@ -27,8 +27,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 #include "nomlib/graphics/Texture.hpp"
-#include "nomlib/graphics/scale2x/scale2x.hpp"
-#include "nomlib/graphics/hqx/hqx.hpp"
+
+// Private headers
+#include "nomlib/math/helpers.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
+
+#if defined( NOM_USE_SCALEX )
+  #include "nomlib/graphics/scale2x/scale2x.hpp"
+#endif
+
+#if defined( NOM_USE_HQX )
+  #include "nomlib/graphics/hqx/hqx.hpp"
+#endif
+
+// Forward declarations
+#include "nomlib/graphics/Image.hpp"
+#include "nomlib/graphics/RenderWindow.hpp"
 
 namespace nom {
 
@@ -125,7 +139,7 @@ bool Texture::initialize ( uint32 format, uint32 flags, int32 width, int32 heigh
   return true;
 }
 
-bool Texture::create ( const Image& source )
+bool Texture::create( const Image& source )
 {
   // Static access type
   this->texture_.reset ( source.texture(), priv::FreeTexture );
@@ -192,7 +206,7 @@ bool Texture::create ( const Image& source, uint32 pixel_format, enum Texture::A
   return true;
 }
 
-SDL_TEXTURE::RawPtr Texture::texture ( void ) const
+SDL_Texture* Texture::texture( void ) const
 {
   return this->texture_.get();
 }
@@ -631,8 +645,10 @@ uint32 Texture::pixel ( int32 x, int32 y )
   } // end switch
 }
 
-bool Texture::resize ( enum ResizeAlgorithm scaling_algorithm )
+bool Texture::resize( enum ResizeAlgorithm scaling_algorithm )
 {
+  int factor = 1;
+
   // Current texture access state; we *MUST* have access to its pixels, so only
   // SDL_TEXTUREACCESS_STREAMING types will work for us.
   enum Texture::Access type = this->access();
@@ -659,9 +675,9 @@ bool Texture::resize ( enum ResizeAlgorithm scaling_algorithm )
 
   // Pick out the suitable scaling factor for determining the new video surface
   // width and height.
-  int scale = scale_factor ( scaling_algorithm );
+  factor = scale_factor( scaling_algorithm );
 
-  destination_size = Point2i  ( source_size.x * scale, source_size.y * scale );
+  destination_size = Point2i  ( source_size.x * factor, source_size.y * factor );
 
   // Create a memory buffer twice our size, using our existing pixel format
   destination.create ( destination_size, this->pixel_format() );
@@ -698,7 +714,8 @@ bool Texture::resize ( enum ResizeAlgorithm scaling_algorithm )
 
     case ResizeAlgorithm::scale2x:
     {
-      if ( priv::scale2x  (
+      #if defined( NOM_USE_SCALEX )
+        if( priv::scale2x (
                             this->pixels(),
                             destination.pixels(),
                             source_size.x,
@@ -707,88 +724,123 @@ bool Texture::resize ( enum ResizeAlgorithm scaling_algorithm )
                             this->pitch(),
                             destination.pitch()
                           ) == false )
-      {
-        NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale2x." );
-        this->unlock(); // Relinquish our read lock
-        destination.unlock();
+        {
+          NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale2x." );
+          this->unlock(); // Relinquish our read lock
+          destination.unlock();
+          return false;
+        }
+      #else
+        NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Unable to resize surface: engine was not built with the ScaleX algorithm." );
         return false;
-      }
+      #endif
+
       break;
     }
 
     case ResizeAlgorithm::scale3x:
     {
-      if ( priv::scale3x  (
-                            this->pixels(),
-                            destination.pixels(),
-                            source_size.x,
-                            source_size.y,
-                            this->bits_per_pixel(),
-                            this->pitch(),
-                            destination.pitch()
-                          ) == false )
-      {
-        NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale3x." );
-        this->unlock(); // Relinquish our read lock
-        destination.unlock();
+      #if defined( NOM_USE_SCALEX )
+        if ( priv::scale3x  (
+                              this->pixels(),
+                              destination.pixels(),
+                              source_size.x,
+                              source_size.y,
+                              this->bits_per_pixel(),
+                              this->pitch(),
+                              destination.pitch()
+                            ) == false )
+        {
+          NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale3x." );
+          this->unlock(); // Relinquish our read lock
+          destination.unlock();
+          return false;
+        }
+      #else
+        NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Unable to resize surface: engine was not built with the ScaleX algorithm." );
         return false;
-      }
+      #endif
+
       break;
     }
 
     case ResizeAlgorithm::scale4x:
     {
-      if ( priv::scale2x  (
-                            this->pixels(),
-                            destination.pixels(),
-                            source_size.x,
-                            source_size.y,
-                            this->bits_per_pixel(),
-                            this->pitch(),
-                            destination.pitch()
-                          ) == false )
-      {
-        NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
-        this->unlock(); // Relinquish our read lock
-        destination.unlock();
+      #if defined( NOM_USE_SCALEX )
+        if ( priv::scale2x  (
+                              this->pixels(),
+                              destination.pixels(),
+                              source_size.x,
+                              source_size.y,
+                              this->bits_per_pixel(),
+                              this->pitch(),
+                              destination.pitch()
+                            ) == false )
+        {
+          NOM_LOG_ERR ( NOM, "Failed to resize video surface with scale4x." );
+          this->unlock(); // Relinquish our read lock
+          destination.unlock();
+          return false;
+        }
+      #else
+        NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Unable to resize surface: engine was not built with the ScaleX algorithm." );
         return false;
-      }
+      #endif
+
       break;
     }
 
     case ResizeAlgorithm::hq2x:
     {
-      priv::hqxInit();
-      priv::hq2x_32 (
-                      static_cast<uint32*> ( this->pixels() ),
-                      static_cast<uint32*> ( destination.pixels() ),
-                      source_size.x,
-                      source_size.y
-                    );
+      #if defined( NOM_USE_HQX )
+        priv::hqxInit();
+        priv::hq2x_32 (
+                        static_cast<uint32*> ( this->pixels() ),
+                        static_cast<uint32*> ( destination.pixels() ),
+                        source_size.x,
+                        source_size.y
+                      );
+      #else
+        NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Unable to resize surface: engine was not built with the HQX algorithm." );
+        return false;
+      #endif
+
       break;
     }
 
     case ResizeAlgorithm::hq3x:
     {
-      priv::hqxInit();
-      priv::hq3x_32 (
-                      static_cast<uint32*> ( this->pixels() ),
-                      static_cast<uint32*> ( destination.pixels() ),
-                      source_size.x,
-                      source_size.y
-                    );
+      #if defined( NOM_USE_HQX )
+        priv::hqxInit();
+        priv::hq3x_32 (
+                        static_cast<uint32*> ( this->pixels() ),
+                        static_cast<uint32*> ( destination.pixels() ),
+                        source_size.x,
+                        source_size.y
+                      );
+      #else
+        NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Unable to resize surface: engine was not built with the HQX algorithm." );
+        return false;
+      #endif
+
       break;
     }
 
     case ResizeAlgorithm::hq4x:
     {
-      priv::hqxInit();
-      priv::hq4x_32 (
-                      static_cast<uint32*> ( this->pixels() ),
-                      static_cast<uint32*> ( destination.pixels() ),
-                      source_size.x,
-                      source_size.y
-                    );
+      #if defined( NOM_USE_HQX )
+        priv::hqxInit();
+        priv::hq4x_32 (
+                        static_cast<uint32*> ( this->pixels() ),
+                        static_cast<uint32*> ( destination.pixels() ),
+                        source_size.x,
+                        source_size.y
+                      );
+      #else
+        NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Unable to resize surface: engine was not built with the HQX algorithm." );
+        return false;
+      #endif
+
       break;
     }
   } // end switch scaling_algorithm
@@ -801,7 +853,7 @@ bool Texture::resize ( enum ResizeAlgorithm scaling_algorithm )
   // transfer
   if ( destination.valid() == false )
   {
-    NOM_LOG_ERR ( NOM, "The rescaled video surface is not valid." );
+    NOM_LOG_ERR( NOM, "The rescaled video surface is not valid." );
     return false;
   }
 
@@ -814,33 +866,74 @@ bool Texture::resize ( enum ResizeAlgorithm scaling_algorithm )
   // software surface. There's no turning back once this is done... we will
   // need to reload the image file back into the Texture and start this all
   // over again.
-  this->create ( destination ); // STATIC access type
+  this->create( destination ); // STATIC access type
 
   return true;
 }
 
-int Texture::scale_factor ( enum ResizeAlgorithm scaling_algorithm ) const
+int Texture::scale_factor( enum ResizeAlgorithm scaling_algorithm ) const
 {
-  switch ( scaling_algorithm )
+  switch( scaling_algorithm )
   {
     default: // No rescaling algorithm set
+    {
       return 1;
-    break;
+      break;
+    }
 
     case ResizeAlgorithm::scale2x:
-    case ResizeAlgorithm::hq2x:
-      return 2;
-    break;
+    {
+      #if defined( NOM_USE_SCALEX )
+        return 2;
+      #else
+        return 1;
+      #endif
+    }
 
     case ResizeAlgorithm::scale3x:
-    case ResizeAlgorithm::hq3x:
-      return 3;
-    break;
+    {
+      #if defined( NOM_USE_SCALEX )
+        return 3;
+      #else
+        return 1;
+      #endif
+    }
 
     case ResizeAlgorithm::scale4x:
+    {
+      #if defined( NOM_USE_SCALEX )
+        return 4;
+      #else
+        return 1;
+      #endif
+    }
+
+    case ResizeAlgorithm::hq2x:
+    {
+      #if defined( NOM_USE_HQX )
+        return 2;
+      #else
+        return 1;
+      #endif
+    }
+
+    case ResizeAlgorithm::hq3x:
+    {
+      #if defined( NOM_USE_HQX )
+        return 3;
+      #else
+        return 1;
+      #endif
+    }
+
     case ResizeAlgorithm::hq4x:
-      return 4;
-    break;
+    {
+      #if defined( NOM_USE_HQX )
+        return 4;
+      #else
+        return 1;
+      #endif
+    }
   }
 }
 

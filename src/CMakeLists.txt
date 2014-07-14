@@ -40,7 +40,7 @@ set ( GRAPHICS_SOURCE
       ${SRC_DIR}/graphics/Cursor.cpp
     )
 
-# third-party hqx algorithm
+# hqx algorithm (third-party)
 file ( GLOB GRAPHICS_HQX_HEADERS "${NOMLIB_HEADERS_DIR}/graphics/hqx/*.hpp" )
 set ( GRAPHICS_HQX_SOURCE
       ${SRC_DIR}/graphics/hqx/hqx.cpp
@@ -49,7 +49,7 @@ set ( GRAPHICS_HQX_SOURCE
       ${SRC_DIR}/graphics/hqx/hq4x.cpp
     )
 
-# third-party scale2x algorithm
+# scale2x algorithm (third-party)
 file ( GLOB GRAPHICS_SCALE2X_HEADERS "${NOMLIB_HEADERS_DIR}/graphics/scale2x/*.hpp" )
 set ( GRAPHICS_SCALE2X_SOURCE
       ${SRC_DIR}/graphics/scale2x/scale2x.cpp

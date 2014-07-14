@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/fonts/TrueTypeFont.hpp"
 
 // Third-party headers
-#include <SDL_ttf.h>
+#include "SDL_ttf.h"
 
 // Private headers
 #include "nomlib/math/Rect.hpp"

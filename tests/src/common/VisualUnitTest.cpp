@@ -97,6 +97,15 @@ void VisualUnitTest::initialize( const Size2i& res )
   VisualUnitTest::visual_test_.set_comment( NOM_TEST_FLAG(test_comment) );
   VisualUnitTest::visual_test_.set_resolution( res );
   VisualUnitTest::visual_test_.set_directory( this->output_directory() );
+
+  if( NOM_TEST_FLAG( no_html_output ) == false )
+  {
+    // Register tests start & end event listener (used for HTML results output)
+    ::testing::TestEventListeners& listeners =
+        ::testing::UnitTest::GetInstance()->listeners();
+
+    listeners.Append( new VisualUnitTestResultWriter() );
+  }
 }
 
 VisualUnitTest::VisualUnitTest( void )

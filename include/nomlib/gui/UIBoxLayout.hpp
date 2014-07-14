@@ -41,6 +41,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Forward declaration
+class IDecorator;
+
 /// \brief Abstract class interface for Layout management
 ///
 /// \note http://doc.qt.digia.com/4.6/layout.html

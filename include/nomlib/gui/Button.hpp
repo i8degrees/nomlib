@@ -32,11 +32,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/Texture.hpp"
+
 #include "nomlib/graphics/Text.hpp"
 #include "nomlib/gui/UIWidget.hpp"
 
 namespace nom {
+
+// Forward declarations
+class Texture;
 
 /// \brief Basic GUI button container widget.
 class Button: public UIWidget

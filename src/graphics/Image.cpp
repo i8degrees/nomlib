@@ -28,6 +28,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/Image.hpp"
 
+// Private headers (third-party)
+#include "SDL_image.h"
+
+// Private headers
+#include "nomlib/graphics/RenderWindow.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
+
 namespace nom {
 
 Image::Image ( void ) :
@@ -67,7 +74,7 @@ Image& Image::operator = ( const Image& other )
   return *this;
 }
 
-SDL_SURFACE::RawPtr Image::clone ( void ) const
+SDL_Surface* Image::clone ( void ) const
 {
   // Find the optimal pixel format
   RendererInfo caps = RenderWindow::caps( RenderWindow::context() );
@@ -75,7 +82,7 @@ SDL_SURFACE::RawPtr Image::clone ( void ) const
   return SDL_ConvertSurfaceFormat ( this->image(), caps.optimal_texture_format(), 0 );
 }
 
-SDL_SURFACE::RawPtr Image::image ( void ) const
+SDL_Surface* Image::image ( void ) const
 {
   return this->image_.get();
 }
@@ -138,7 +145,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Image::initialize ( SDL_SURFACE::RawPtr source )
+bool Image::initialize ( SDL_Surface* source )
 {
   // Discover the optimal pixel format using gathered device capabilities
   RendererInfo caps = RenderWindow::caps( RenderWindow::context() );
@@ -237,7 +244,7 @@ uint8 Image::bits_per_pixel ( void ) const
   return buffer->format->BitsPerPixel;
 }
 
-const SDL_PIXELFORMAT::RawPtr Image::pixel_format ( void ) const
+const SDL_PixelFormat* Image::pixel_format ( void ) const
 {
   SDL_Surface* buffer = this->image();
   return buffer->format;
@@ -642,7 +649,7 @@ bool Image::set_color_modulation ( const Color4i& color )
   return true;
 }
 
-void Image::draw ( SDL_SURFACE::RawPtr destination, const IntRect& bounds ) const
+void Image::draw ( SDL_Surface* destination, const IntRect& bounds ) const
 {
   SDL_Rect blit_coords = SDL_RECT ( bounds );
   SDL_Rect blit_offsets = SDL_RECT ( bounds );

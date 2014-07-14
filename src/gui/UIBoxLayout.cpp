@@ -35,6 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // #define NOM_DEBUG_OUTPUT_LAYOUT_TOTAL_SIZE_HINT
 // #define NOM_DEBUG_OUTPUT_LAYOUT_TOTAL_MINIMUM_SIZE
 
+#include "nomlib/gui/Decorator.hpp"
+
 namespace nom {
 
 UIBoxLayout::UIBoxLayout( void )

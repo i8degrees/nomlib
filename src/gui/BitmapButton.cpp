@@ -28,6 +28,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/BitmapButton.hpp"
 
+// Private headers
+// #include "nomlib/graphics/fonts/FontMetrics.hpp"
+#include "nomlib/gui/IDecorator.hpp"
+
+// Forward declarations
+#include "nomlib/graphics/Text.hpp"
+
 namespace nom {
 
 BitmapButton::BitmapButton  (

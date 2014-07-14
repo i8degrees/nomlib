@@ -107,7 +107,7 @@ class DataViewListTest: public VisualUnitTest
                           const Point2i& pos,
                           const Size2i& size,
                           const std::string& name,
-                          const UIStyle::shared_ptr style // Not used; reserved
+                          const std::shared_ptr<UIStyle> style // Not used; reserved
                         )
     {
       nom::DataViewList::raw_ptr dview = nullptr;

@@ -29,19 +29,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SDL2_IMAGE_HEADERS
 #define NOMLIB_SDL2_IMAGE_HEADERS
 
-#include <iostream>
 #include <string>
-#include <cstdlib>
 #include <memory>
 
 #include "SDL.h" // SDL2
-#include "SDL_image.h" // SDL2_image
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/RenderWindow.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Point2.hpp"
-#include "nomlib/system/SDL_helpers.hpp"
+#include "nomlib/math/Size2.hpp"
+#include "nomlib/math/Rect.hpp"
 
 namespace nom {
 
@@ -70,10 +67,10 @@ class Image
     /// \brief Make a copy of the existing surface
     ///
     /// \returns Pointer to a new SDL_Surface structure
-    SDL_SURFACE::RawPtr clone ( void ) const;
+    SDL_Surface* clone ( void ) const;
 
     /// Obtain the SDL_Surface struct used in this object instance
-    SDL_SURFACE::RawPtr image ( void ) const;
+    SDL_Surface* image ( void ) const;
 
     SDL_Texture* texture ( void ) const;
 
@@ -101,7 +98,7 @@ class Image
     /// \brief Initialize a nom::Image from an existing SDL_Surface
     ///
     /// \param source   Existing SDL_Surface structure
-    bool initialize ( SDL_SURFACE::RawPtr source );
+    bool initialize ( SDL_Surface* source );
 
     /// \brief Create a new memory buffer
     ///
@@ -128,7 +125,7 @@ class Image
 
     uint8 bits_per_pixel ( void ) const;
 
-    const SDL_PIXELFORMAT::RawPtr pixel_format ( void ) const;
+    const SDL_PixelFormat* pixel_format ( void ) const;
 
     /// Obtain the video surface's red alpha mask
     uint32 red_mask ( void ) const;
@@ -144,7 +141,7 @@ class Image
 
     const IntRect bounds ( void ) const;
 
-    /// Check to see if the video surfacea needs locking
+    /// Check to see if the video surface needs locking
     bool must_lock ( void ) const;
 
     /// Obtain the locked status of the video surface memory
@@ -153,7 +150,7 @@ class Image
     /// SDL_Surface structure.
     ///
     /// \todo Verify if the SDL_MUSTLOCK macro does the same thing here
-    bool locked ( void ) const;
+    bool locked( void ) const;
 
     /// Obtain the alpha value of this video surface
     uint8 alpha ( void ) const;
@@ -278,7 +275,7 @@ class Image
     /// Render a video surface
     ///
     /// \todo This method needs to mimic nom::Texture::draw
-    void draw ( SDL_SURFACE::RawPtr destination, const IntRect& bounds ) const;
+    void draw ( SDL_Surface* destination, const IntRect& bounds ) const;
 
     /// \brief    Set an additional color value multiplied into render copy
     ///           operations
@@ -294,7 +291,7 @@ class Image
 
   private:
     /// Container for our image pixels buffer
-    SDL_SURFACE::SharedPtr image_;
+    std::shared_ptr<SDL_Surface> image_;
 
     Point2i position_;  // Not implemented
     IntRect bounds_;    // Not implemented

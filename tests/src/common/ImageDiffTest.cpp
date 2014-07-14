@@ -33,8 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/tests/common/ImageDiff.hpp"
 
-#include <nomlib/math.hpp>
-#include <nomlib/system.hpp>
+#include "nomlib/math.hpp"
+#include "nomlib/system.hpp"
 
 namespace nom {
 

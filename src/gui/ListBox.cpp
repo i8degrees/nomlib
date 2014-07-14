@@ -31,6 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Private heaaders
 #include "nomlib/graphics/Cursor.hpp"
 
+// Forward declarations
+#include "nomlib/graphics/Text.hpp"
+#include "nomlib/gui/UIItemContainer.hpp"
+#include "nomlib/gui/IDecorator.hpp"
+#include "nomlib/gui/UIStyle.hpp"
+
 namespace nom {
 
 ListBox::ListBox(
@@ -38,7 +44,7 @@ ListBox::ListBox(
                   int64 id,
                   const Point2i& pos,
                   const Size2i& size,
-                  const UIItemContainer::raw_ptr store
+                  UIItemContainer* store
                 ) :
   UIWidget( parent, id, pos, size )   // Base class
 {
@@ -192,7 +198,7 @@ bool ListBox::valid( void ) const
   return false;
 }
 
-UIItemContainer::raw_ptr ListBox::store( void ) const
+UIItemContainer* ListBox::store( void ) const
 {
   NOM_ASSERT( this->store_.get() != nullptr );
 
@@ -214,7 +220,7 @@ void ListBox::draw( RenderTarget& target ) const
   // UIWidget::draw( target );
 }
 
-void ListBox::set_item_store( const UIItemContainer::raw_ptr store )
+void ListBox::set_item_store( UIItemContainer* store )
 {
   this->set_updated( false );
 

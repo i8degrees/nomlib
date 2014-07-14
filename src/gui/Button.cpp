@@ -28,6 +28,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/Button.hpp"
 
+// Private headers
+#include "nomlib/graphics/fonts/FontMetrics.hpp"
+
+// Forward declarations
+#include "nomlib/graphics/Texture.hpp"
+#include "nomlib/graphics/Text.hpp"
+#include "nomlib/gui/IDecorator.hpp"
+#include "nomlib/gui/UIStyle.hpp"
+
 namespace nom {
 
 Button::Button  (

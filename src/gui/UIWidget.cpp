@@ -32,7 +32,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/PlatformSettings.hpp"
 
 // Forward declarations
-// #include "nomlib/gui/UIStyle.hpp"
+#include "nomlib/graphics/shapes/Rectangle.hpp" // tool tip
+#include "nomlib/graphics/Text.hpp"
+#include "nomlib/system/Event.hpp"
+#include "nomlib/gui/IDecorator.hpp"
+#include "nomlib/gui/UILayout.hpp"
+#include "nomlib/gui/UIStyle.hpp"
 
 // #define NOM_DEBUG_OUTPUT_LAYOUT_DATA
 
@@ -244,7 +249,7 @@ const UIWidget::Children& UIWidget::children( void ) const
   return this->children_;
 }
 
-IDecorator::shared_ptr UIWidget::decorator( void ) const
+std::shared_ptr<IDecorator> UIWidget::decorator( void ) const
 {
   return this->decorator_;
 }
@@ -264,7 +269,7 @@ const UILayoutPolicy& UIWidget::size_policy( void ) const
   return this->policy_;
 }
 
-bool UIWidget::contains( const IDrawable::raw_ptr obj, const Point2i& pt )
+bool UIWidget::contains( IDrawable* obj, const Point2i& pt ) const
 {
   IntRect bounds;
 
@@ -300,7 +305,7 @@ bool UIWidget::contains( const IDrawable::raw_ptr obj, const Point2i& pt )
   return false;
 }
 
-bool UIWidget::contains( const Text::raw_ptr obj, const Point2i& pt )
+bool UIWidget::contains_label( Text* obj, const Point2i& pt )
 {
   IntRect bounds;
 
@@ -553,7 +558,7 @@ void UIWidget::set_children( const UIWidget::Children& children )
   // this->update();
 }
 
-void UIWidget::set_decorator( const IDecorator::raw_ptr object )
+void UIWidget::set_decorator( IDecorator* object )
 {
   this->decorator_.reset( object );
 

@@ -2,7 +2,7 @@ if( NOM_BUILD_GUI_UI_ITEM_CONTAINER_TESTS )
 
   add_executable  (
                     UIItemContainerTest
-                    ${NOM_TESTS_VTEST_SOURCE}
+                    ${NOM_TESTS_COMMON_SOURCE}
                     ${NOM_TESTS_SOURCE_DIR}/gui/UIItemContainerTest.cpp
                   )
 
@@ -14,7 +14,7 @@ if( NOM_BUILD_GUI_UI_ITEM_CONTAINER_TESTS )
     GTEST_ADD_TESTS (
                       UIItemContainerTest
                       "UIItemContainerTest"
-                      ${NOM_TESTS_VTEST_SOURCE}
+                      ${NOM_TESTS_COMMON_SOURCE}
                       ${NOM_TESTS_SOURCE_DIR}/gui/UIItemContainerTest.cpp
                     )
 
@@ -24,7 +24,7 @@ if( NOM_BUILD_GUI_UI_EVENT_DISPATCHER_TESTS )
 
   add_executable  (
                     UIEventDispatcherTest
-                    ${NOM_TESTS_VTEST_SOURCE}
+                    ${NOM_TESTS_COMMON_SOURCE}
                     ${NOM_TESTS_SOURCE_DIR}/gui/UIEventDispatcherTest.cpp
                   )
 
@@ -37,7 +37,7 @@ if( NOM_BUILD_GUI_UI_EVENT_DISPATCHER_TESTS )
     GTEST_ADD_TESTS (
                       UIEventDispatcherTest
                       "UIEventDispatcherTest"
-                      ${NOM_TESTS_VTEST_SOURCE}
+                      ${NOM_TESTS_COMMON_SOURCE}
                       ${NOM_TESTS_SOURCE_DIR}/gui/UIEventDispatcherTest.cpp
                     )
 

@@ -62,20 +62,17 @@ void SDL2Logger::initialize( void )
 
 SDL2Logger::SDL2Logger( void ) :
   category_{ NOM },
-  priority_{ SDL_LOG_PRIORITY_INFO },
-  auto_space_{ true }
+  priority_{ SDL_LOG_PRIORITY_INFO }
 {
   SDL2Logger::initialize();
 }
 
 SDL2Logger::SDL2Logger  (
                           int cat,
-                          SDL_LogPriority prio,
-                          bool auto_spacing
+                          SDL_LogPriority prio
                         ) :
   category_{ cat },
-  priority_{ prio },
-  auto_space_{ auto_spacing }
+  priority_{ prio }
 {
   SDL2Logger::initialize();
 }
@@ -130,13 +127,6 @@ void SDL2Logger::set_logging_priority( int cat, SDL_LogPriority prio )
   // SDL2Logger::initialize();
 
   SDL_LogSetPriority( cat, prio );
-}
-
-// Private scope
-
-bool SDL2Logger::auto_space( void ) const
-{
-  return this->auto_space_;
 }
 
 } // namespace nom

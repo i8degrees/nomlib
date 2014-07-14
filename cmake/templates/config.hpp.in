@@ -79,7 +79,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 /// \see nom::SDL2Logger
 #define NOM_LOG_MESSAGE( cat, prio, ... ) \
-  { nom::SDL2Logger( cat, prio, false ).write( __VA_ARGS__ ); }
+  { nom::SDL2Logger( cat, prio ).write( __VA_ARGS__ ); }
 
 /// \brief Log a verbose priority level message.
 ///

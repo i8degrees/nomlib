@@ -36,9 +36,18 @@ Image::Image ( void ) :
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, SDL_LOG_PRIORITY_VERBOSE );
 }
 
-Image::~Image ( void )
+Image::~Image( void )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, SDL_LOG_PRIORITY_VERBOSE );
+
+  // Ensure that the lock on the video memory is freed before destruction;
+  // this is done so I can have a bit more peace of mind that I don't forget to
+  // clean something up properly when bailing out of a method on err
+  // (i.e.: Texture::resize).
+  if( this->locked() )
+  {
+    this->unlock();
+  }
 }
 
 Image::Image ( const Image& copy )  :
@@ -272,9 +281,16 @@ bool Image::must_lock ( void ) const
   return false;
 }
 
-bool Image::locked ( void ) const
+bool Image::locked( void ) const
 {
-  return this->image()->locked;
+  if( this->image() != nullptr )
+  {
+    return this->image()->locked;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 uint8 Image::alpha ( void ) const

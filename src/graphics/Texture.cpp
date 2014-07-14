@@ -46,15 +46,28 @@ Texture::Texture( void ) :
 Texture::~Texture( void )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, SDL_LOG_PRIORITY_VERBOSE );
+
+  this->free_texture();
 }
 
 void Texture::free_texture( void )
 {
+  // Ensure that the lock on the video memory is freed before destruction;
+  // this is done so I can have a bit more peace of mind that I don't forget to
+  // clean something up properly when bailing out of a method on err
+  // (i.e.: Texture::resize).
+  if( this->locked() )
+  {
+    this->unlock();
+  }
+
+  // Free any saved pixels we may have stored in memory
+  NOM_DELETE_VOID_PTR( this->pixels_ );
+
+  // ...Goodbye cruel world!
   NOM_DELETE_SMART_PTR( this->texture_ );
 
-  // Reset to default initialization, in case we re-initialize the texture from
-  // the old object
-  this->pixels_ = nullptr;
+  // Reset default initializations, in case we re-initialize the same texture:
   this->pitch_ = 0;
 
   // FIXME: This should be Point2i::null

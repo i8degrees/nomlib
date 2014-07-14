@@ -84,6 +84,9 @@ class Texture
     /// \brief Destructor.
     ///
     /// \remarks Frees any pixel data associated with the Texture
+    ///
+    /// \remarks The video surface -- if locked -- will be unlocked at this
+    /// time before freeing its memory.
     ~Texture( void );
 
     /// \brief Destroy the texture.

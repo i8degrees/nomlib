@@ -55,8 +55,11 @@ class Image
     /// Default constructor -- initializes to sane defaults.
     Image ( void );
 
-    /// Destructor.
-    ~Image ( void );
+    /// \brief Destructor.
+    ///
+    /// \remarks The video surface -- if locked -- will be unlocked at this
+    /// time before freeing its memory.
+    ~Image( void );
 
     /// Copy constructor
     Image ( const Image& copy );

@@ -59,4 +59,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOM_DELETE_SMART_PTR(var) \
   if( var != nullptr ) var.reset();
 
+#define NOM_DELETE_VOID_PTR(var) \
+  if( var != nullptr ) free(var); var = nullptr;
+
 #endif // include guard defined

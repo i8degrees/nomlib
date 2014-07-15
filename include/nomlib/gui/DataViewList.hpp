@@ -34,9 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/gui/UIWidget.hpp"
 #include "nomlib/gui/DataViewColumn.hpp"
-#include "nomlib/gui/DataViewListStore.hpp"
 
 namespace nom {
+
+// Forward declarations
+class DataViewListStore;
+class UIItemContainer;
 
 /// \brief GUI data tree container widget
 class DataViewList: public UIWidget
@@ -73,33 +76,18 @@ class DataViewList: public UIWidget
     /// and nom::Size2i::null for their respective values.
     bool valid( void ) const;
 
-    /// \brief Obtain a reference to the object.
-    const DataViewColumn& column( uint cols_id ) const;
-    const DataViewListStore::ValueType item( uint cols_id, uint row_id  ) const;
+    /// \brief Obtain a pointer to the internal storage object in use.
+    DataViewListStore* store( void ) const;
 
-    uint columns_size( void ) const;
-    uint items_size( uint cols_id ) const;
-
-    /// \Obtain the column names from the store.
-    const DataViewListStore::ColumnNames column_names( void ) const;
-
-    bool insert_column( uint cols_id, const DataViewColumn& col );
-
-    bool append_column( const DataViewColumn& col );
-
-    bool insert_item( uint cols_id, const DataViewListStore::ValueTypeContainer& labels );
-    bool insert_item( uint cols_id, uint row, const DataViewListStore::ValueType& label );
-
-    // FIXME:
-    // bool append_item( const DataViewListStore::ValueTypeContainer& label );
-
-    virtual void update_columns( void );
-    virtual void update_items( void );
+    void set_item_store( DataViewListStore* store );
 
     /// \brief Implements IDrawable::draw
     void draw( RenderTarget& target ) const;
 
   private:
+    virtual void update_columns( void );
+    virtual void update_items( void );
+
     /// \remarks Implements IDrawable::update
     virtual void update( void );
 
@@ -113,7 +101,7 @@ class DataViewList: public UIWidget
     ItemDrawables drawable_items_;
 
     /// \brief Internal container for columns, rows.
-    DataViewListStore::UniquePtr store_;
+    std::unique_ptr<DataViewListStore> store_;
 
     bool updated_;
 };

@@ -32,6 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Text.hpp"
 #include "nomlib/graphics/sprite/SpriteBatch.hpp"
 
+// Forward declarations
+#include "nomlib/gui/DataViewListStore.hpp"
+
 namespace nom {
 
 DataViewList::DataViewList( void ) :
@@ -52,7 +55,6 @@ DataViewList::DataViewList  (
                               const Size2i& size
                             ) :
   UIWidget( parent, id, pos, size ),  // Base class
-  store_{ DataViewListStore::UniquePtr( new DataViewListStore() ) },
   updated_( false )
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_GUI );
@@ -60,12 +62,16 @@ DataViewList::DataViewList  (
   // Auto-generate a name tag for our widget.
   this->set_name( "data_view_list" );
 
-  this->update();
+  // Declare a default item store instance so that we do not crash if the
+  // developer forgets to setup items.
+  this->set_item_store( new DataViewListStore() );
 }
 
 bool DataViewList::valid( void ) const
 {
-  if ( this->position() != Point2i::null || this->size() != Size2i::null )
+  if( this->store() != nullptr && this->position() != Point2i::null &&
+      this->size() != Size2i::null
+    )
   {
     return true;
   }
@@ -73,94 +79,20 @@ bool DataViewList::valid( void ) const
   return false;
 }
 
-const DataViewColumn& DataViewList::column( uint cols_id ) const
+DataViewListStore* DataViewList::store( void ) const
 {
-  return this->store_->column( cols_id );
+  NOM_ASSERT( this->store_ != nullptr );
+
+  return this->store_.get();
 }
 
-const DataViewListStore::ValueType DataViewList::item( uint cols_id, uint row_id ) const
+void DataViewList::set_item_store( DataViewListStore* store )
 {
-  return this->store_->item( cols_id, row_id );
-}
-
-uint DataViewList::columns_size( void ) const
-{
-  return this->store_->columns_size();
-}
-
-uint DataViewList::items_size( uint cols_id ) const
-{
-  return this->store_->items_size( cols_id );
-}
-
-const DataViewListStore::ColumnNames DataViewList::column_names( void ) const
-{
-  return this->store_->column_names();
-}
-
-// void DataViewList::set_item_store( UIItemContainer* store )
-// {
-//   this->store_.reset( store );
-
-//   this->update_items();
-// }
-
-bool DataViewList::insert_column( uint cols_id, const DataViewColumn& col )
-{
-  this->store_->insert_column( cols_id, col );
-
-  // TODO: validation / err checks
+  this->store_.reset( store );
 
   this->update_columns();
-
-  return true;
-}
-
-bool DataViewList::append_column( const DataViewColumn& col )
-{
-  this->store_->append_column( col );
-
-  // TODO: validation / err checks
-
-  this->update_columns();
-
-  return true;
-}
-
-bool DataViewList::insert_item( uint cols_id, const DataViewListStore::ValueTypeContainer& labels )
-{
-  this->store_->insert_item( cols_id, labels );
-
-  // TODO: validation / err checks
-
   this->update_items();
-
-  return true;
 }
-
-bool DataViewList::insert_item( uint cols_id, uint row, const DataViewListStore::ValueType& label )
-{
-  this->store_->insert_item( cols_id, row, label );
-
-  // TODO: validation / err checks
-
-  this->update_items();
-
-  return true;
-}
-
-/* FIXME
-bool DataViewList::append_item( const DataViewListStore::ValueTypeContainer& label )
-{
-  this->store_->append_item( label );
-
-  // TODO: validation / err checks
-
-  this->update_items();
-
-  return true;
-}
-*/
 
 void DataViewList::update_columns( void )
 {
@@ -168,11 +100,11 @@ void DataViewList::update_columns( void )
   Text::unique_ptr header;
   Point2i pos = this->position();
 
-  if( this->store_->columns_size() < 1 ) return;
+  if( this->store()->columns_size() < 1 ) return;
 
-  for( auto cols = 0; cols != this->store_->columns_size(); ++cols )
+  for( auto cols = 0; cols != this->store()->columns_size(); ++cols )
   {
-    DataViewColumn column = this->store_->column( cols );
+    DataViewColumn column = this->store()->column( cols );
 
     header = Text::unique_ptr( new Text( column.title(), this->font() ) );
 
@@ -235,17 +167,17 @@ void DataViewList::update_items( void )
 
   Point2i pos = this->position();
 
-  if( this->store_->items_size() < 1 ) return;
+  if( this->store()->items_size() < 1 ) return;
 
   this->drawable_items_.clear();
 
-  for( auto cols = 0; cols != this->store_->columns_size(); ++cols )
+  for( auto cols = 0; cols != this->store()->columns_size(); ++cols )
   {
-    DataViewColumn column = this->store_->column( cols );
+    DataViewColumn column = this->store()->column( cols );
 
-    for( auto rows = 0; rows != this->store_->items_size( cols ); ++rows )
+    for( auto rows = 0; rows != this->store()->items_size( cols ); ++rows )
     {
-      DataViewItem<IDrawable::raw_ptr> row = this->store_->item( cols, rows );
+      DataViewItem<IDrawable::raw_ptr> row = this->store()->item( cols, rows );
 
       if( NOM_ISA( Text*, row.data() ) == true )
       {
@@ -288,7 +220,7 @@ void DataViewList::update_items( void )
           }
         }
 
-        if( rows >= this->store_->items_size( cols ) - 1 )
+        if( rows >= this->store()->items_size( cols ) - 1 )
         {
           // FIXME: this calculation is fudged in.
           pos.x += ( width * 2 );
@@ -331,7 +263,7 @@ void DataViewList::update_items( void )
         // rendered text.
         // item->set_size( Size2i( column.width(), height ) );
 
-        if( rows >= this->store_->items_size( cols ) - 1 )
+        if( rows >= this->store()->items_size( cols ) - 1 )
         {
           // FIXME: this calculation is fudged in.
           pos.x += ( width * 2 );

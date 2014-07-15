@@ -79,6 +79,7 @@ class DataViewListStore
 
     uint items_size( void ) const;
 
+    /// \Obtain the column names from the store.
     const ColumnNames column_names( void ) const;
 
     bool insert_column( uint cols, const DataViewColumn& col );

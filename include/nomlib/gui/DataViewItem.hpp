@@ -39,10 +39,16 @@ template <typename T>
 class DataViewItem
 {
   public:
+    /// \todo Rename to self_type.
     typedef DataViewItem SelfType;
 
+    /// \todo Rename to raw_ptr.
     typedef SelfType* RawPtr;
+
+    /// \todo Rename to unique_ptr.
     typedef std::unique_ptr<SelfType> UniquePtr;
+
+    /// \todo Rename to shared_ptr.
     typedef std::shared_ptr<SelfType> SharedPtr;
 
     DataViewItem( void )
@@ -73,10 +79,37 @@ class DataViewItem
       return this->data_;
     }
 
+    /// \brief Get the style for the item.
+    ///
+    /// \returns A non-NULL UIStyle object if the end-user has set one, or NULL
+    /// if it has not been set.
+    ///
+    /// \see ::set_style
+    std::shared_ptr<UIStyle> style( void ) const
+    {
+      return this->style_;
+    }
+
+    /// \brief Set the style for the item.
+    ///
+    /// \remarks This is optional, and must be set the end-user.
+    void set_style( std::shared_ptr<UIStyle> style )
+    {
+      this->style_ = style;
+    }
+
   private:
     T data_;
+
+    /// \brief Customizable column theme; this is intended to be set by the
+    /// end-user. This must *not* depend on being available.
+    std::shared_ptr<UIStyle> style_;
 };
 
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::DataViewItem
+/// \ingroup gui
+///

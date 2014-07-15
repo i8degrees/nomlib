@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Forward declarations
 #include "nomlib/gui/DataViewListStore.hpp"
+#include "nomlib/gui/UIStyle.hpp"
 
 namespace nom {
 
@@ -106,10 +107,16 @@ void DataViewList::update_columns( void )
   {
     DataViewColumn column = this->store()->column( cols );
 
-    header = Text::unique_ptr( new Text( column.title(), this->font() ) );
-
-    // TODO:
-    // header = Text::unique_ptr( new Text( column.title(), column.font() ) );
+    // Use the column's style object if available. If not, use the default font
+    // given to us by our parent UIWidget.
+    if( column.style() != nullptr && column.style()->font()->valid() )
+    {
+      header = Text::unique_ptr( new Text( column.title(), column.style()->font() ) );
+    }
+    else
+    {
+      header = Text::unique_ptr( new Text( column.title(), this->font() ) );
+    }
 
     width = header->width();
 
@@ -166,6 +173,7 @@ void DataViewList::update_items( void )
   uint height = 0;
 
   Point2i pos = this->position();
+  Text::unique_ptr item;
 
   if( this->store()->items_size() < 1 ) return;
 
@@ -183,7 +191,16 @@ void DataViewList::update_items( void )
       {
         Text* text = dynamic_cast<Text*>( row.data() );
 
-        Text::unique_ptr item = Text::unique_ptr( new Text( text->text(), text->font() ) );
+        // Use the item's style object if available. If not, use the default
+        // font given to us by our parent UIWidget.
+        if( row.style() != nullptr && row.style()->font()->valid() )
+        {
+          item = Text::unique_ptr( new Text( text->text(), row.style()->font() ) );
+        }
+        else
+        {
+          item = Text::unique_ptr( new Text( text->text(), text->font() ) );
+        }
 
         width = item->width();
         height = item->height();

@@ -30,11 +30,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers
 #include "nomlib/system/PlatformSettings.hpp"
-#include "nomlib/graphics/Text.hpp"
 
 namespace nom {
 
 UIStyle::UIStyle( void ) :
+  font_{ nullptr },
   font_size_{ nom::DEFAULT_FONT_SIZE },
   font_color_{ Color4i::White },
   selected_font_color_{ Color4i::Red },
@@ -47,6 +47,11 @@ UIStyle::UIStyle( void ) :
 UIStyle::~UIStyle( void )
 {
   // NOM_LOG_TRACE( NOM );
+}
+
+const Font& UIStyle::font( void ) const
+{
+  return this->font_;
 }
 
 int UIStyle::font_size( void ) const
@@ -72,6 +77,11 @@ uint32 UIStyle::font_style( void ) const
 Text::Alignment UIStyle::text_alignment( void ) const
 {
   return this->text_alignment_;
+}
+
+void UIStyle::set_font( const Font& font )
+{
+  this->font_ = font;
 }
 
 void UIStyle::set_font_size( int point_size )

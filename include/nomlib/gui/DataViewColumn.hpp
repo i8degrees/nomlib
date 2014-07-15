@@ -34,6 +34,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Forward declarations
+class UIStyle;
+
 /// \brief Data column container for DataViewList
 class DataViewColumn: public IDataViewColumn
 {
@@ -61,7 +64,18 @@ class DataViewColumn: public IDataViewColumn
 
     bool hidden( void ) const;
 
-    const IFont::shared_ptr& font( void ) const;
+    /// \brief Get the style for the column.
+    ///
+    /// \returns A non-NULL UIStyle object if the end-user has set one, or NULL
+    /// if it has not been set.
+    ///
+    /// \see ::set_style
+    std::shared_ptr<UIStyle> style( void ) const;
+
+    /// \brief Set the style for the column.
+    ///
+    /// \note This is optional, and must be set the end-user.
+    void set_style( std::shared_ptr<UIStyle> style );
 
   private:
     /// \brief Column identifier; zero-based index.
@@ -89,12 +103,15 @@ class DataViewColumn: public IDataViewColumn
     /// \brief Toggle column data to be shown or hidden.
     bool visibility_;
 
-    /// \brief An optional, user-defined font resource.
-    ///
-    /// \remarks Not used; reserved for future implementation.
-    IFont::shared_ptr font_;
+    /// \brief Customizable column theme; this is intended to be set by the
+    /// end-user. This must *not* depend on being available.
+    std::shared_ptr<UIStyle> style_;
 };
 
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::DataViewColumn
+/// \ingroup gui
+///

@@ -109,3 +109,10 @@ class DataViewList: public UIWidget
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::DataViewList
+/// \ingroup gui
+///
+/// \todo Describe what fields from the UIStyle object (when set) are used, and
+/// what is used instead when not set.
+///

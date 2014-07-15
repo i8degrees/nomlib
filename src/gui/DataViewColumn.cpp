@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/DataViewColumn.hpp"
 
+// Forward declarations
+#include "nomlib/gui/UIStyle.hpp"
+
 namespace nom {
 
 DataViewColumn::DataViewColumn( void )
@@ -81,9 +84,14 @@ bool DataViewColumn::hidden( void ) const
   return this->visibility_;
 }
 
-const IFont::shared_ptr& DataViewColumn::font( void ) const
+std::shared_ptr<UIStyle> DataViewColumn::style( void ) const
 {
-  return this->font_;
+  return this->style_;
+}
+
+void DataViewColumn::set_style( std::shared_ptr<UIStyle> style )
+{
+  this->style_ = style;
 }
 
 } // namespace nom

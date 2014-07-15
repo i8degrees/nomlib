@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/fonts/IFont.hpp"
+// #include "nomlib/graphics/fonts/Font.hpp"
 
 namespace nom {
 
@@ -77,8 +77,6 @@ class IDataViewColumn
     virtual bool sortable( void ) const = 0;
 
     virtual bool hidden( void ) const = 0;
-
-    virtual const IFont::shared_ptr& font( void ) const = 0;
 
     // TODO: setters
 };

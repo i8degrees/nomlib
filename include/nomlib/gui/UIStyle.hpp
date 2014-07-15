@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/graphics/Text.hpp"
+#include "nomlib/graphics/fonts/Font.hpp"
 
 namespace nom {
 
@@ -52,6 +53,12 @@ class UIStyle
     /// \brief Destructor.
     ~UIStyle( void );
 
+    /// \brief Get the set font.
+    ///
+    /// \remarks The returned font should be validated before using it.
+    /// \see Font::valid.
+    const Font& font( void ) const;
+
     int font_size( void ) const;
 
     const Color4i& font_color( void ) const;
@@ -61,6 +68,9 @@ class UIStyle
 
     Text::Alignment text_alignment( void ) const;
 
+    /// \brief Set the font to use.
+    void set_font( const Font& font );
+
     void set_font_size( int point_size );
     void set_font_color( const Color4i& color );
     void set_font_selected_color( const Color4i& color );
@@ -68,6 +78,9 @@ class UIStyle
     void set_text_alignment( Text::Alignment align );
 
   private:
+    /// \brief The font to use.
+    Font font_;
+
     /// \brief The font's height (font point size).
     int font_size_;
 

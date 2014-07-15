@@ -48,7 +48,9 @@ class DataViewListTest: public VisualUnitTest
       WINDOW_WIDTH{ resolution().w },
       WINDOW_HEIGHT{ resolution().h },
       gui_window{ nullptr },
-      widget{ nullptr }
+      widget{ nullptr },
+      col_style{ new UIStyle() },
+      item_style{ new UIStyle() }
     {
       // The frame image to compare against the reference image set
       this->append_screenshot_frame( 0 );
@@ -106,17 +108,12 @@ class DataViewListTest: public VisualUnitTest
                           const UIWidget::raw_ptr window,
                           const Point2i& pos,
                           const Size2i& size,
-                          const std::string& name,
-                          const std::shared_ptr<UIStyle> style // Not used; reserved
+                          const std::string& name
                         )
     {
       nom::DataViewList::raw_ptr dview = nullptr;
 
-      // FIXME:
-      nom::Font title_font = *nom::SystemFonts::cache().load_resource("VIII_small");
-
       dview = new nom::DataViewList( window, -1, pos, size );
-      dview->set_font( title_font );
       dview->set_decorator( new nom::FinalFantasyDecorator() );
 
       dview->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { on_click( ev ); } ) );
@@ -150,6 +147,16 @@ class DataViewListTest: public VisualUnitTest
     // GUI resources
     nom::UIWidget::raw_ptr gui_window;
     nom::DataViewList::raw_ptr widget;
+
+    DataViewColumn col0;
+    DataViewColumn col1;
+    DataViewColumn col2;
+    std::vector<DataViewItem<IDrawable::raw_ptr>> col0_items;
+    std::vector<DataViewItem<IDrawable::raw_ptr>> col1_items;
+    std::vector<DataViewItem<IDrawable::raw_ptr>> col2_items;
+    DataViewListStore* store;
+    UIStyle::shared_ptr col_style;
+    UIStyle::shared_ptr item_style;
 };
 
 TEST_F( DataViewListTest, DataViewListWidgetAPI )
@@ -158,12 +165,7 @@ TEST_F( DataViewListTest, DataViewListWidgetAPI )
   Size2i widget_size( Size2i::zero );
   const std::string widget_name = this->test_name();
 
-  DataViewColumn col0;
-  DataViewColumn col1;
-  std::vector<DataViewItem<IDrawable::raw_ptr>> col0_items;
-  std::vector<DataViewItem<IDrawable::raw_ptr>> col1_items;
   DataViewListStore::ColumnNames cols;
-  DataViewListStore* store = nullptr;
 
   // FIXME:
   Font item_font = *nom::PlatformSettings::get_system_font( SystemFontType::FixedBitmap );
@@ -199,8 +201,7 @@ TEST_F( DataViewListTest, DataViewListWidgetAPI )
                                   this->gui_window,
                                   widget_pos,
                                   widget_size,
-                                  widget_name,
-                                  nullptr     // Placeholder
+                                  widget_name
                                 );
 
   widget->set_item_store( store );
@@ -242,11 +243,7 @@ TEST_F( DataViewListTest, DataViewListWidgetEx0 )
   Size2i widget_size( 204, 185 );
   const std::string widget_name = this->test_name();
 
-  DataViewColumn col0;
-  DataViewColumn col1;
-  std::vector<DataViewItem<IDrawable::raw_ptr>> col0_items;
-  std::vector<DataViewItem<IDrawable::raw_ptr>> col1_items;
-  DataViewListStore* store = nullptr;
+  Font title_font = *nom::PlatformSettings::find_system_font( "VIII_small" );
 
   // FIXME:
   Font bitmap_font = *nom::PlatformSettings::get_system_font( SystemFontType::FixedBitmap );
@@ -265,8 +262,10 @@ TEST_F( DataViewListTest, DataViewListWidgetEx0 )
                           IDataViewColumn::Alignment::Right
                         );
 
-  // col0.set_font( bitmap_font );
-  // col1.set_font( bitmap_font );
+  // Setup custom style for columns
+  this->col_style->set_font( title_font );
+  this->col0.set_style( this->col_style );
+  this->col1.set_style( this->col_style );
 
   col0_items.push_back( new nom::Text( "TEST_0", bitmap_font ) );
   col0_items.push_back( new nom::Text( "TEST_1", bitmap_font ) );
@@ -295,8 +294,7 @@ TEST_F( DataViewListTest, DataViewListWidgetEx0 )
                                   this->gui_window,
                                   widget_pos,
                                   widget_size,
-                                  widget_name,
-                                  nullptr     // Placeholder
+                                  widget_name
                                 );
 
   widget->set_item_store( store );
@@ -314,16 +312,9 @@ TEST_F( DataViewListTest, DataViewListWidgetEx1 )
   Size2i widget_size( 344, 250 );
   const std::string widget_name = this->test_name();
 
-  DataViewColumn col0;
-  DataViewColumn col1;
-  DataViewColumn col2;
-  std::vector<DataViewItem<IDrawable::raw_ptr>> col0_items;
-  std::vector<DataViewItem<IDrawable::raw_ptr>> col1_items;
-  std::vector<DataViewItem<IDrawable::raw_ptr>> col2_items;
-  DataViewListStore* store = nullptr;
+  Font title_font = *nom::PlatformSettings::find_system_font( "VIII_small" );
 
   // FIXME:
-  // Font bitmap_font = *nom::SystemFonts::cache().load_resource("VIII");
   Font bitmap_font = *nom::PlatformSettings::get_system_font( SystemFontType::FixedBitmap );
   Font truetype_font = *nom::PlatformSettings::get_system_font( SystemFontType::VariableTrueType );
 
@@ -347,6 +338,12 @@ TEST_F( DataViewListTest, DataViewListWidgetEx1 )
                           75,
                           IDataViewColumn::Alignment::Right
                         );
+
+  // Setup custom style for columns
+  this->col_style->set_font( title_font );
+  this->col0.set_style( this->col_style );
+  // this->col1.set_style( this->col_style );
+  this->col2.set_style( this->col_style );
 
   col0_items.push_back( new nom::Text( "TEST_0", bitmap_font ) );
   col0_items.push_back( new nom::Text( "TEST_1", truetype_font ) );
@@ -387,8 +384,7 @@ TEST_F( DataViewListTest, DataViewListWidgetEx1 )
                                   this->gui_window,
                                   widget_pos,
                                   widget_size,
-                                  widget_name,
-                                  nullptr     // Placeholder
+                                  widget_name
                                 );
 
   widget->set_item_store( store );
@@ -406,13 +402,7 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
   Size2i widget_size( 344, 250 );
   const std::string widget_name = this->test_name();
 
-  DataViewColumn col0;
-  DataViewColumn col1;
-  DataViewColumn col2;
-  std::vector<DataViewItem<IDrawable::raw_ptr>> col0_items;
-  std::vector<DataViewItem<IDrawable::raw_ptr>> col1_items;
-  std::vector<DataViewItem<IDrawable::raw_ptr>> col2_items;
-  DataViewListStore* store = nullptr;
+  Font title_font = *nom::PlatformSettings::find_system_font( "VIII_small" );
 
   // FIXME:
   Font bitmap_font = *nom::PlatformSettings::get_system_font( SystemFontType::FixedBitmap );
@@ -438,8 +428,25 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
                           IDataViewColumn::Alignment::Right
                         );
 
-  col0_items.push_back( new nom::Text( "Test_0", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "Test_1", bitmap_font ) );
+  // Setup custom style for columns
+  this->col_style->set_font( title_font );
+  this->col0.set_style( this->col_style );
+  // this->col1.set_style( this->col_style );
+  this->col2.set_style( this->col_style );
+
+  // Use custom style for tree items
+  this->item_style->set_font( bitmap_font );
+
+  DataViewItem<IDrawable::raw_ptr> col0_item = new nom::Text( "TEST_0", bitmap_font );
+  col0_item.set_style( this->item_style );
+  DataViewItem<IDrawable::raw_ptr> col1_item = new nom::Text( "Test_1", bitmap_font );
+  col1_item.set_style( this->item_style );
+
+  col0_items.push_back( col0_item );
+  col0_items.push_back( col1_item );
+  // col0_items.push_back( new nom::Text( "Test_0", bitmap_font ) );
+  // col0_items.push_back( new nom::Text( "Test_1", bitmap_font ) );
+
   col0_items.push_back( new nom::Text( "Test_2", bitmap_font ) );
   col0_items.push_back( new nom::Text( "Test_X", bitmap_font ) );
   col0_items.push_back( new nom::Text( "Test_XX", bitmap_font ) );
@@ -488,8 +495,7 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
                                   this->gui_window,
                                   widget_pos,
                                   widget_size,
-                                  widget_name,
-                                  nullptr     // Placeholder
+                                  widget_name
                                 );
 
   widget->set_item_store( store );

@@ -31,9 +31,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#include <nomlib/config.hpp>
+#include "nomlib/config.hpp"
 
-namespace nom {
+using namespace nom;
 
 class Template: public ::testing::Test
 {

@@ -119,7 +119,6 @@ class DataViewListTest: public VisualUnitTest
       dview->set_font( title_font );
       dview->set_decorator( new nom::FinalFantasyDecorator() );
 
-      // FIXME:
       dview->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { on_click( ev ); } ) );
 
       return dview;

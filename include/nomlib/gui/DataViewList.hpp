@@ -99,12 +99,12 @@ class DataViewList: public UIWidget
     /// \brief Implements IDrawable::draw
     void draw( RenderTarget& target ) const;
 
-    /// \brief Implements the EventHandler::process_event method.
-    bool process_event( const nom::Event& ev );
-
   private:
     /// \remarks Implements IDrawable::update
     virtual void update( void );
+
+    /// \brief Re-implements UIWidget::on_mouse_down method.
+    virtual void on_mouse_down( const UIWidgetEvent& ev );
 
     /// \brief Rendered column headers
     HeaderLabels drawable_headers_;

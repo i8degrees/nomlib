@@ -98,6 +98,13 @@ const DataViewListStore::ColumnNames DataViewList::column_names( void ) const
   return this->store_->column_names();
 }
 
+// void DataViewList::set_item_store( UIItemContainer* store )
+// {
+//   this->store_.reset( store );
+
+//   this->update_items();
+// }
+
 bool DataViewList::insert_column( uint cols_id, const DataViewColumn& col )
 {
   this->store_->insert_column( cols_id, col );
@@ -168,6 +175,7 @@ void DataViewList::update_columns( void )
     DataViewColumn column = this->store_->column( cols );
 
     header = Text::unique_ptr( new Text( column.title(), this->font() ) );
+
     // TODO:
     // header = Text::unique_ptr( new Text( column.title(), column.font() ) );
 
@@ -348,27 +356,8 @@ void DataViewList::update_items( void )
   this->updated_ = true;
 }
 
-void DataViewList::update( void )
-{
-  UIWidget::update();
-
-  // Sanity check; we'd crash in ::update otherwise!
-  if( this->font().valid() == false )
-  {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "DataViewList's font is NULL -- skipping update of object!" );
-    return;
-  }
-
-  if( this->updated_ ) return;
-
-  this->update_columns();
-  this->update_items();
-}
-
 void DataViewList::draw( RenderTarget& target ) const
 {
-  UIWidget::draw( target );
-
   // Column headers
   for( auto itr = this->drawable_headers_.begin(); itr != this->drawable_headers_.end(); ++itr )
   {
@@ -383,20 +372,25 @@ void DataViewList::draw( RenderTarget& target ) const
   }
 }
 
+// Protected scope
 
-bool DataViewList::process_event( const nom::Event& ev )
+void DataViewList::update( void )
 {
-  Point2i mouse_coords( ev.mouse.x, ev.mouse.y );
+  if( this->updated_ ) return;
 
-  UIWidget::process_event( ev );
+  this->update_columns();
+  this->update_items();
+}
 
-  // FIXME (?):
-  //
-  // if( UIWidget::process_event( ev ) ) return true;
+void DataViewList::on_mouse_down( const UIWidgetEvent& ev )
+{
+  Event evt = ev.event();
 
   // Registered event for selection on_click
-  if( ev.type == SDL_MOUSEBUTTONDOWN )
+  if( evt.type == SDL_MOUSEBUTTONDOWN )
   {
+    Point2i mouse_coords( evt.mouse.x, evt.mouse.y );
+
     // Counter for array index of each element
     uint index = 0;
     for( auto it = this->drawable_headers_.begin(); it != this->drawable_headers_.end(); ++it )
@@ -421,7 +415,7 @@ bool DataViewList::process_event( const nom::Event& ev )
         item.set_text( (*it)->text() );
 
         // Set the associated nom::Event object for this UI event.
-        item.set_event( ev );
+        item.set_event( evt );
 
         // Associate the widget's unique identifier for this widget's event
         // object.
@@ -432,7 +426,8 @@ bool DataViewList::process_event( const nom::Event& ev )
         this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
 
         // Processed events.
-        return true;
+        // return true;
+        return;
       }
 
       for( auto it = this->drawable_items_.begin(); it != this->drawable_items_.end(); ++it )
@@ -444,6 +439,7 @@ bool DataViewList::process_event( const nom::Event& ev )
           if( obj == nullptr )
           {
             // TODO: Err handling
+            NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not send UIWidgetEvent for nom::Text drawable_item: NULL." );
           }
 
           IntRect label_bounds( obj->position().x, obj->position().y, obj->width(), obj->height() );
@@ -460,7 +456,7 @@ bool DataViewList::process_event( const nom::Event& ev )
             item.set_text( obj->text() );
 
             // Set the associated nom::Event object for this UI event.
-            item.set_event( ev );
+            item.set_event( evt );
 
             // Associate the widget's unique identifier for this widget's event
             // object.
@@ -471,7 +467,8 @@ bool DataViewList::process_event( const nom::Event& ev )
             this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
 
             // Processed events.
-            return true;
+            // return true;
+            return;
           }
         }
         else if( NOM_ISA( SpriteBatch*, it->get() ) == true )
@@ -499,7 +496,7 @@ bool DataViewList::process_event( const nom::Event& ev )
             item.set_text( obj->sheet_filename() );
 
             // Set the associated nom::Event object for this UI event.
-            item.set_event( ev );
+            item.set_event( evt );
 
             // Associate the widget's unique identifier for this widget's event
             // object.
@@ -510,7 +507,8 @@ bool DataViewList::process_event( const nom::Event& ev )
             this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
 
             // Processed events.
-            return true;
+            // return true;
+            return;
           }
         }
       }
@@ -520,7 +518,7 @@ bool DataViewList::process_event( const nom::Event& ev )
   }
 
   // No processed events
-  return false;
+  // return false;
 }
 
 } // namespace nom

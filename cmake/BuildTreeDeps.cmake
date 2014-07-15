@@ -1,5 +1,3 @@
-cmake_minimum_required( VERSION 2.6 )
-
 # Set the required build unit dependencies based on the chosen CMake options
 
 if( NOM_BUILD_MATH_UNIT )

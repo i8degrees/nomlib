@@ -151,9 +151,9 @@ class DataViewListTest: public VisualUnitTest
     DataViewColumn col0;
     DataViewColumn col1;
     DataViewColumn col2;
-    std::vector<DataViewItem<IDrawable::raw_ptr>> col0_items;
-    std::vector<DataViewItem<IDrawable::raw_ptr>> col1_items;
-    std::vector<DataViewItem<IDrawable::raw_ptr>> col2_items;
+    std::vector<IDataViewItem*> col0_items;
+    std::vector<IDataViewItem*> col1_items;
+    std::vector<IDataViewItem*> col2_items;
     DataViewListStore* store;
     UIStyle::shared_ptr col_style;
     UIStyle::shared_ptr item_style;
@@ -166,9 +166,6 @@ TEST_F( DataViewListTest, DataViewListWidgetAPI )
   const std::string widget_name = this->test_name();
 
   DataViewListStore::ColumnNames cols;
-
-  // FIXME:
-  Font item_font = *nom::PlatformSettings::get_system_font( SystemFontType::FixedBitmap );
 
   col0 = DataViewColumn (
                           0,
@@ -184,11 +181,11 @@ TEST_F( DataViewListTest, DataViewListWidgetAPI )
                           IDataViewColumn::Alignment::Right
                         );
 
-  col0_items.push_back( new nom::Text( "Geezard", item_font ) );
-  col0_items.push_back( new nom::Text( "Bite Bug", item_font ) );
+  col0_items.push_back( new DataViewTextItem( "Geezard" ) );
+  col0_items.push_back( new DataViewTextItem( "Bite Bug") );
 
-  col1_items.push_back( new nom::Text( "1", item_font ) );
-  col1_items.push_back( new nom::Text( "1", item_font ) );
+  col1_items.push_back( new DataViewTextItem( "1" ) );
+  col1_items.push_back( new DataViewTextItem( "1" ) );
 
   store = new DataViewListStore();
 
@@ -244,9 +241,13 @@ TEST_F( DataViewListTest, DataViewListWidgetEx0 )
   const std::string widget_name = this->test_name();
 
   Font title_font = *nom::PlatformSettings::find_system_font( "VIII_small" );
-
-  // FIXME:
   Font bitmap_font = *nom::PlatformSettings::get_system_font( SystemFontType::FixedBitmap );
+
+  // Setup custom style for columns
+  this->col_style->set_font( title_font );
+
+  // Use custom style for tree items
+  this->item_style->set_font( bitmap_font );
 
   col0 = DataViewColumn (
                           0,
@@ -262,26 +263,24 @@ TEST_F( DataViewListTest, DataViewListWidgetEx0 )
                           IDataViewColumn::Alignment::Right
                         );
 
-  // Setup custom style for columns
-  this->col_style->set_font( title_font );
   this->col0.set_style( this->col_style );
   this->col1.set_style( this->col_style );
 
-  col0_items.push_back( new nom::Text( "TEST_0", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "TEST_1", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "TEST_2", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "TEST_x", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "TEST_xx", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "VALUE_0", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "VALUE_1", bitmap_font ) );
+  col0_items.push_back( new DataViewTextItem( "TEST_0" ) );
+  col0_items.push_back( new DataViewTextItem( "TEST_1" ) );
+  col0_items.push_back( new DataViewTextItem( "TEST_2" ) );
+  col0_items.push_back( new DataViewTextItem( "TEST_x" ) );
+  col0_items.push_back( new DataViewTextItem( "TEST_xx" ) );
+  col0_items.push_back( new DataViewTextItem( "VALUE_0" ) );
+  col0_items.push_back( new DataViewTextItem( "VALUE_1" ) );
 
-  col1_items.push_back( new nom::Text( "Test_3", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "Test_4", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "Test_5", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "TEST_6", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "TEST_XXX", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "VALUE_2", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "value_3", bitmap_font ) );
+  col1_items.push_back( new DataViewTextItem( "Test_3" ) );
+  col1_items.push_back( new DataViewTextItem( "Test_4" ) );
+  col1_items.push_back( new DataViewTextItem( "Test_5" ) );
+  col1_items.push_back( new DataViewTextItem( "Test_6" ) );
+  col1_items.push_back( new DataViewTextItem( "TEST_XXX" ) );
+  col1_items.push_back( new DataViewTextItem( "VALUE_2" ) );
+  col1_items.push_back( new DataViewTextItem( "value_3" ) );
 
   store = new DataViewListStore();
 
@@ -289,6 +288,12 @@ TEST_F( DataViewListTest, DataViewListWidgetEx0 )
   store->append_column( col1 );
   store->insert_item( 0, col0_items );
   store->insert_item( 1, col1_items );
+
+EXPECT_TRUE( store->append_item( 1, new DataViewTextItem( "Testme") ) );
+
+  // Set custom style (font)
+  store->set_item_style( 0, this->item_style );
+  store->set_item_style( 1, this->item_style );
 
   widget = create_dataviewlist  (
                                   this->gui_window,
@@ -314,9 +319,14 @@ TEST_F( DataViewListTest, DataViewListWidgetEx1 )
 
   Font title_font = *nom::PlatformSettings::find_system_font( "VIII_small" );
 
-  // FIXME:
   Font bitmap_font = *nom::PlatformSettings::get_system_font( SystemFontType::FixedBitmap );
   Font truetype_font = *nom::PlatformSettings::get_system_font( SystemFontType::VariableTrueType );
+
+  // Setup custom style for columns
+  this->col_style->set_font( title_font );
+
+  // Setup custom style for tree items
+  this->item_style->set_font( bitmap_font );
 
   col0 = DataViewColumn (
                           0,
@@ -339,37 +349,38 @@ TEST_F( DataViewListTest, DataViewListWidgetEx1 )
                           IDataViewColumn::Alignment::Right
                         );
 
-  // Setup custom style for columns
-  this->col_style->set_font( title_font );
+  // Set custom styles (font)
   this->col0.set_style( this->col_style );
-  // this->col1.set_style( this->col_style );
+  // Use UIWidget defaults for col1
   this->col2.set_style( this->col_style );
 
-  col0_items.push_back( new nom::Text( "TEST_0", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "TEST_1", truetype_font ) );
-  col0_items.push_back( new nom::Text( "TEST_2", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "TEST_X", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "TEST_XX", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "VALUE_0", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "VALUE_1", truetype_font ) );
+  // 7 items
+  col0_items.push_back( new DataViewTextItem( "TEST_0" ) );
+  col0_items.push_back( new DataViewTextItem( "TEST_1" ) );
+  col0_items.push_back( new DataViewTextItem( "TEST_2" ) );
+  col0_items.push_back( new DataViewTextItem( "TEST_X" ) );
+  col0_items.push_back( new DataViewTextItem( "TEST_XX" ) );
+  col0_items.push_back( new DataViewTextItem( "VALUE_0" ) );
+  col0_items.push_back( new DataViewTextItem( "VALUE_1" ) );
 
-  col1_items.push_back( new nom::Text( "TEST_3", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "TEST_4", truetype_font ) );
-  col1_items.push_back( new nom::Text( "TEST_5", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "TEST_6", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "TEST_XXX", truetype_font ) );
-  col1_items.push_back( new nom::Text( "VALUE_1", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "VALUE_2", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "VALUE_3", truetype_font ) );
-  col1_items.push_back( new nom::Text( "VALUE_4", bitmap_font ) );
+  // 8 items
+  col1_items.push_back( new DataViewTextItem( "TEST_3" ) );
+  col1_items.push_back( new DataViewTextItem( "TEST_4" ) );
+  col1_items.push_back( new DataViewTextItem( "TEST_5" ) );
+  col1_items.push_back( new DataViewTextItem( "TEST_6" ) );
+  col1_items.push_back( new DataViewTextItem( "TEST_XXX" ) );
+  col1_items.push_back( new DataViewTextItem( "VALUE_1" ) );
+  col1_items.push_back( new DataViewTextItem( "VALUE_2" ) );
+  col1_items.push_back( new DataViewTextItem( "VALUE_3" ) );
 
-  col2_items.push_back( new nom::Text( "1", truetype_font ) );
-  col2_items.push_back( new nom::Text( "1", bitmap_font ) );
-  col2_items.push_back( new nom::Text( "6", bitmap_font ) );
-  col2_items.push_back( new nom::Text( "3", bitmap_font ) );
-  col2_items.push_back( new nom::Text( "1", bitmap_font ) );
-  col2_items.push_back( new nom::Text( "4", bitmap_font ) );
-  col2_items.push_back( new nom::Text( "6", truetype_font ) );
+  // 7 items
+  col2_items.push_back( new DataViewTextItem( "1" ) );
+  col2_items.push_back( new DataViewTextItem( "1" ) );
+  col2_items.push_back( new DataViewTextItem( "6" ) );
+  col2_items.push_back( new DataViewTextItem( "3" ) );
+  col2_items.push_back( new DataViewTextItem( "1" ) );
+  col2_items.push_back( new DataViewTextItem( "4" ) );
+  col2_items.push_back( new DataViewTextItem( "6" ) );
 
   store = new DataViewListStore();
 
@@ -379,6 +390,11 @@ TEST_F( DataViewListTest, DataViewListWidgetEx1 )
   store->insert_item( 0, col0_items );
   store->insert_item( 1, col1_items );
   store->insert_item( 2, col2_items );
+
+  // Set custom styles (font)
+  store->set_item_style( 0, this->item_style );
+  // Use UIWidget defaults for col1 items
+  store->set_item_style( 2, this->item_style );
 
   widget = create_dataviewlist  (
                                   this->gui_window,
@@ -403,9 +419,13 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
   const std::string widget_name = this->test_name();
 
   Font title_font = *nom::PlatformSettings::find_system_font( "VIII_small" );
-
-  // FIXME:
   Font bitmap_font = *nom::PlatformSettings::get_system_font( SystemFontType::FixedBitmap );
+
+  // Setup custom style (font) for columns
+  this->col_style->set_font( title_font );
+
+  // Setup custom style (font) for tree items
+  this->item_style->set_font( bitmap_font );
 
   col0 = DataViewColumn (
                           0,
@@ -428,59 +448,49 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
                           IDataViewColumn::Alignment::Right
                         );
 
-  // Setup custom style for columns
-  this->col_style->set_font( title_font );
+  // Set custom styles (font)
   this->col0.set_style( this->col_style );
-  // this->col1.set_style( this->col_style );
+  this->col1.set_style( this->col_style );
   this->col2.set_style( this->col_style );
 
-  // Use custom style for tree items
-  this->item_style->set_font( bitmap_font );
+  // 7 items
+  col0_items.push_back( new DataViewTextItem( "TEST_0" ) );
+  col0_items.push_back( new DataViewTextItem( "Test_1" ) );
+  col0_items.push_back( new DataViewTextItem( "Test_2" ) );
+  col0_items.push_back( new DataViewTextItem( "Test_X" ) );
+  col0_items.push_back( new DataViewTextItem( "Test_XX" ) );
+  col0_items.push_back( new DataViewTextItem( "Value_0" ) );
+  col0_items.push_back( new DataViewTextItem( "Value_1" ) );
 
-  DataViewItem<IDrawable::raw_ptr> col0_item = new nom::Text( "TEST_0", bitmap_font );
-  col0_item.set_style( this->item_style );
-  DataViewItem<IDrawable::raw_ptr> col1_item = new nom::Text( "Test_1", bitmap_font );
-  col1_item.set_style( this->item_style );
-
-  col0_items.push_back( col0_item );
-  col0_items.push_back( col1_item );
-  // col0_items.push_back( new nom::Text( "Test_0", bitmap_font ) );
-  // col0_items.push_back( new nom::Text( "Test_1", bitmap_font ) );
-
-  col0_items.push_back( new nom::Text( "Test_2", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "Test_X", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "Test_XX", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "Value_0", bitmap_font ) );
-  col0_items.push_back( new nom::Text( "Value_1", bitmap_font ) );
-
-  col1_items.push_back( new nom::Text( "Test_10", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "Test_11", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "Test_12", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "Test_13", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "Test_14", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "Value_15", bitmap_font ) );
-  col1_items.push_back( new nom::Text( "VALUE_16", bitmap_font ) );
+  // 7 items
+  col1_items.push_back( new DataViewTextItem( "Test_10" ) );
+  col1_items.push_back( new DataViewTextItem( "Test_11" ) );
+  col1_items.push_back( new DataViewTextItem( "Test_12" ) );
+  col1_items.push_back( new DataViewTextItem( "Test_13" ) );
+  col1_items.push_back( new DataViewTextItem( "Test_14" ) );
+  col1_items.push_back( new DataViewTextItem( "Value_15" ) );
+  col1_items.push_back( new DataViewTextItem( "VALUE_16" ) );
 
   this->menu_elements.set_frame( 0 ); // "Enabled" sprite frame
 
   // FIXME: Optimize the sprite cloning process below -- very similar in
   // concept to IFont copying; see notes in Text.hpp regarding ::set_font.
-  col2_items.push_back( this->menu_elements.clone() );
-  col2_items.push_back( this->menu_elements.clone() );
+  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
+  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
 
   this->menu_elements.set_frame( 1 ); // "Disabled" sprite frame
-  col2_items.push_back( this->menu_elements.clone() );
-  col2_items.push_back( this->menu_elements.clone() );
+  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
+  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
 
   this->menu_elements.set_frame( 0 ); // "Enabled" sprite frame
-  col2_items.push_back( this->menu_elements.clone() );
-  col2_items.push_back( this->menu_elements.clone() );
+  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
+  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
 
   this->menu_elements.set_frame( 1 ); // "Disabled" sprite frame
-  col2_items.push_back( this->menu_elements.clone() );
+  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
 
   this->menu_elements.set_frame( 3 ); // "Right page" sprite frame
-  col2_items.push_back( this->menu_elements.clone() );
+  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) ) ;
 
   store = new DataViewListStore();
 
@@ -490,6 +500,10 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
   store->insert_item( 0, col0_items );
   store->insert_item( 1, col1_items );
   store->insert_item( 2, col2_items );
+
+  // Set custom styles (font)
+  store->set_item_style( 0, this->item_style );
+  store->set_item_style( 1, this->item_style );
 
   widget = create_dataviewlist  (
                                   this->gui_window,

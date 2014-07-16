@@ -32,52 +32,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
+#include "nomlib/gui/String.hpp"
+#include "nomlib/system/IObject.hpp"
 
 namespace nom {
 
-template <typename T>
-class DataViewItem
+class IDataViewItem: public IObject
 {
   public:
-    /// \todo Rename to self_type.
-    typedef DataViewItem SelfType;
-
-    /// \todo Rename to raw_ptr.
-    typedef SelfType* RawPtr;
-
-    /// \todo Rename to unique_ptr.
-    typedef std::unique_ptr<SelfType> UniquePtr;
-
-    /// \todo Rename to shared_ptr.
-    typedef std::shared_ptr<SelfType> SharedPtr;
-
-    DataViewItem( void )
+    IDataViewItem( void )
     {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, SDL_LOG_PRIORITY_VERBOSE );
     }
 
-    virtual ~DataViewItem( void )
+    virtual ~IDataViewItem( void )
     {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, SDL_LOG_PRIORITY_VERBOSE );
     }
 
-    DataViewItem( const SelfType& copy ) :
-      data_{ copy.data() }
-    {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
-    }
-
-    DataViewItem( const T& data )
-    {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
-
-      this->data_ = data;
-    }
-
-    const T& data( void ) const
-    {
-      return this->data_;
-    }
+    virtual ObjectTypeInfo type( void ) const = 0;
+    virtual IObject* data( void ) const = 0;
 
     /// \brief Get the style for the item.
     ///
@@ -99,11 +73,87 @@ class DataViewItem
     }
 
   private:
-    T data_;
-
     /// \brief Customizable column theme; this is intended to be set by the
     /// end-user. This must *not* depend on being available.
     std::shared_ptr<UIStyle> style_;
+};
+
+class DataViewItem: public IDataViewItem
+{
+  public:
+    typedef DataViewItem self_type;
+
+    DataViewItem( void )
+    {
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+    }
+
+    virtual ~DataViewItem( void )
+    {
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+    }
+
+    DataViewItem( IObject* data )
+    {
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+
+      this->data_ = data;
+    }
+
+    /// \brief Re-implements the IObject::type method.
+    ///
+    /// \remarks This uniquely identifies the object's type.
+    ObjectTypeInfo type( void ) const
+    {
+      return NOM_OBJECT_TYPE_INFO( self_type );
+    }
+
+    IObject* data( void ) const
+    {
+      return this->data_;
+    }
+
+  private:
+    IObject* data_;
+};
+
+class DataViewTextItem: public IDataViewItem
+{
+  public:
+    typedef DataViewTextItem self_type;
+
+    DataViewTextItem( void )
+    {
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+    }
+
+    virtual ~DataViewTextItem( void )
+    {
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+    }
+
+    DataViewTextItem( const std::string& data )
+    {
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+
+      this->data_ = new String( data );
+    }
+
+    /// \brief Re-implements the IObject::type method.
+    ///
+    /// \remarks This uniquely identifies the object's type.
+    ObjectTypeInfo type( void ) const
+    {
+      return NOM_OBJECT_TYPE_INFO( self_type );
+    }
+
+    IObject* data( void ) const
+    {
+      return this->data_;
+    }
+
+  private:
+    String* data_;
 };
 
 } // namespace nom

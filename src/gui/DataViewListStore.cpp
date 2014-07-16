@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/DataViewListStore.hpp"
 
+// Forward declarations
+#include "nomlib/gui/UIStyle.hpp"
+
 namespace nom {
 
 DataViewListStore::DataViewListStore( void )
@@ -45,7 +48,7 @@ const DataViewColumn& DataViewListStore::column( uint cols_id ) const
   return *this->cols_.at( cols_id );
 }
 
-const DataViewListStore::ValueType DataViewListStore::item( uint cols_id, uint row_id ) const
+DataViewListStore::ValueType* DataViewListStore::item( uint cols_id, uint row_id ) const
 {
   auto res = this->items_.find( cols_id );
 
@@ -56,8 +59,7 @@ const DataViewListStore::ValueType DataViewListStore::item( uint cols_id, uint r
     return res->second.at( row_id );
   }
 
-  // return Value::null;
-  return res->second.at(0); // FIXME
+  return nullptr;
 }
 
 uint DataViewListStore::columns_size( void ) const
@@ -134,18 +136,53 @@ bool DataViewListStore::insert_item( uint cols_id, const ValueTypeContainer& val
   return true;
 }
 
-bool DataViewListStore::insert_item( uint cols_id, uint row_id, const ValueType& value )
+bool DataViewListStore::insert_item( uint cols_id, uint row_id, ValueType* value )
 {
   auto res = this->items_.find( cols_id );
 
   if( res != this->items_.end() )
   {
     res->second.at( row_id ) = value;
+
+    return true;
   }
 
   // TODO: validity / err checks
 
-  return true;
+  return false;
+}
+
+bool DataViewListStore::append_item( uint col, ValueType* value )
+{
+  auto res = this->items_.find( col );
+
+  if( res != this->items_.end() )
+  {
+    res->second.push_back( value );
+
+    return true;
+  }
+
+  // TODO: validity / err checks
+
+  return false;
+}
+
+bool DataViewListStore::set_item_style( uint col, std::shared_ptr<UIStyle> style )
+{
+  auto res = this->items_.find( col );
+
+  if( res != this->items_.end() )
+  {
+    for( auto itr = res->second.begin(); itr != res->second.end(); ++itr )
+    {
+      (*itr)->set_style( style );
+    }
+
+    return true;
+  }
+
+  return false;
 }
 
 // bool DataViewListStore::insert_item( uint cols_id, const DrawablesContainer& values )

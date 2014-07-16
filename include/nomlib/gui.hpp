@@ -70,5 +70,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // #include <nomlib/gui/ButtonLabel.hpp>
 // #include <nomlib/gui/UIChoice.hpp>
 #include <nomlib/gui/UIStyle.hpp>
+#include <nomlib/gui/String.hpp>
 
 #endif // include guard defined

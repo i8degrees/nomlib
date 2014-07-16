@@ -40,6 +40,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Forward declarations
+class UIStyle;
+
 /// \brief Data container for DataViewList
 class DataViewListStore
 {
@@ -55,8 +58,9 @@ class DataViewListStore
 
     /// \brief Item container; one-to-one relationship with a column;
     /// indexed by column ID.
-    typedef DataViewItem<IDrawable::raw_ptr> ValueType;
-    typedef std::vector<ValueType> ValueTypeContainer;
+    // typedef DataViewItem<IObject::raw_ptr> ValueType;
+    typedef IDataViewItem ValueType;
+    typedef std::vector<ValueType*> ValueTypeContainer;
 
     typedef std::map<uint, ValueTypeContainer> Items;
     typedef std::pair<uint, ValueTypeContainer> ItemPair;
@@ -72,7 +76,7 @@ class DataViewListStore
 
     /// \brief Obtain a reference to the object.
     const DataViewColumn& column( uint cols_id ) const;
-    const ValueType item( uint cols_id, uint row_id  ) const;
+    ValueType* item( uint cols_id, uint row_id  ) const;
 
     uint columns_size( void ) const;
     uint items_size( uint cols_id ) const;
@@ -88,13 +92,25 @@ class DataViewListStore
 
     bool insert_item( uint cols_id, const ValueTypeContainer& value );
 
-    bool insert_item( uint cols_id, uint row_id, const ValueType& value );
+    bool insert_item( uint cols_id, uint row_id, ValueType* value );
 
     // bool insert_item( uint cols_id, const DrawablesContainer& values );
     // bool insert_item( uint cols_id, uint row_id, const IDrawable& value );
 
     /// \todo Fix implementation
     bool append_item( const ValueTypeContainer& value );
+
+    /// \brief Add an item onto the end of a column.
+    ///
+    /// \param col The column identifier.
+    /// \param value An IDataViewItem compatible object to insert.
+    bool append_item( uint col, ValueType* value );
+
+    /// \brief Apply a custom style for every item within the column.
+    ///
+    /// \param col The column identifier.
+    /// \param style The UIStyle object to apply.
+    bool set_item_style( uint col, std::shared_ptr<UIStyle> style );
 
   private:
     /// \brief Internal columns objects; this is used to render from.

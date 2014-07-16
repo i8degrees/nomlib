@@ -173,7 +173,8 @@ void DataViewList::update_items( void )
   uint height = 0;
 
   Point2i pos = this->position();
-  Text::unique_ptr item;
+  Text::unique_ptr header_item;
+  std::shared_ptr<Transformable> item;
 
   if( this->store()->items_size() < 1 ) return;
 
@@ -185,33 +186,33 @@ void DataViewList::update_items( void )
 
     for( auto rows = 0; rows != this->store()->items_size( cols ); ++rows )
     {
-      DataViewItem<IDrawable::raw_ptr> row = this->store()->item( cols, rows );
+      IDataViewItem* row = this->store()->item( cols, rows );
 
-      if( NOM_ISA( Text*, row.data() ) == true )
+      if( NOM_ISA( String*, row->data() ) == true )
       {
-        Text* text = dynamic_cast<Text*>( row.data() );
+        String* text = dynamic_cast<String*>( row->data() );
 
         // Use the item's style object if available. If not, use the default
         // font given to us by our parent UIWidget.
-        if( row.style() != nullptr && row.style()->font()->valid() )
+        if( row->style() != nullptr && row->style()->font()->valid() )
         {
-          item = Text::unique_ptr( new Text( text->text(), row.style()->font() ) );
+          header_item = Text::unique_ptr( new Text( text->str(), row->style()->font() ) );
         }
         else
         {
-          item = Text::unique_ptr( new Text( text->text(), text->font() ) );
+          header_item = Text::unique_ptr( new Text( text->str(), this->font() ) );
         }
 
-        width = item->width();
-        height = item->height();
+        width = header_item->width();
+        height = header_item->height();
 
         // Origin coordinates of item text
-        item->set_position( Point2i( pos.x + 4, pos.y + 10 ) );
+        header_item->set_position( Point2i( pos.x + 4, pos.y + 10 ) );
 
         // Set the size of each label to be the width of the column container, and
         // the height of each label to the height of the text, with respect to the
         // rendered text.
-        item->set_size( Size2i( column.width(), height ) );
+        header_item->set_size( Size2i( column.width(), height ) );
 
         // Convert our far more simplistic IDataViewColumn::Alignment enumeration
         // to nom::Text's native type.
@@ -220,19 +221,19 @@ void DataViewList::update_items( void )
           case nom::IDataViewColumn::Left:
           default:
           {
-            item->set_alignment( Text::Alignment::TopLeft );
+            header_item->set_alignment( Text::Alignment::TopLeft );
             break;
           }
 
           case nom::IDataViewColumn::Center:
           {
-            item->set_alignment( Text::Alignment::TopCenter );
+            header_item->set_alignment( Text::Alignment::TopCenter );
             break;
           }
 
           case nom::IDataViewColumn::Right:
           {
-            item->set_alignment( Text::Alignment::TopRight );
+            header_item->set_alignment( Text::Alignment::TopRight );
             break;
           }
         }
@@ -249,25 +250,23 @@ void DataViewList::update_items( void )
           pos.y += height * 2;
         }
 
-        // FIXME: re-enable me once we fix the cropping rendered text bug that
-        // has been noted in our project files.
-        //
-        // Prevent rendering of text that is longer in length than its container's
-        // set size parameters; see set_size method call above.
-        item->set_features( Text::ExtraRenderingFeatures::CropText );
+        // // FIXME: re-enable me once we fix the cropping rendered text bug that
+        // // has been noted in our project files.
+        // //
+        // // Prevent rendering of text that is longer in length than its container's
+        // // set size parameters; see set_size method call above.
+        header_item->set_features( Text::ExtraRenderingFeatures::CropText );
 
-        this->drawable_items_.push_back( std::move( item ) );
+        this->drawable_items_.push_back( std::move( header_item ) );
       }
-      else if( NOM_ISA( SpriteBatch*, row.data() ) == true )
+      else if( NOM_ISA( Transformable*, row->data() ) == true )
       {
-        SpriteBatch::raw_ptr sprite = dynamic_cast<SpriteBatch::raw_ptr>( row.data() );
+        item.reset( dynamic_cast<Transformable*>( row->data() ) );
 
-        if( sprite == nullptr )
+        if( item == nullptr )
         {
           // TODO: Err handling
         }
-
-        SpriteBatch::shared_ptr item = SpriteBatch::shared_ptr( dynamic_cast<SpriteBatch::raw_ptr>( sprite->clone() ) );
 
         width = item->size().w;
         height = item->size().h;
@@ -291,9 +290,6 @@ void DataViewList::update_items( void )
           // FIXME: this calculation is fudged in.
           pos.y += height * 2;
         }
-
-        // FIXME:
-        // item->set_frame( sprite->frame() );
 
         item->update();
 

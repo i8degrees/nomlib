@@ -98,6 +98,27 @@ const DataViewListStore::ColumnNames DataViewListStore::column_names( void ) con
   return col_names;
 }
 
+void DataViewListStore::clear( void )
+{
+  this->items_.clear();
+}
+
+// bool DataViewListStore::erase_item( uint col, IDataViewItem* item )
+// {
+//   auto res = this->items_.find( col );
+
+//   if( res != this->items_.end() )
+//   {
+//     this->items_.erase( item );
+
+//     // NOM_DELETE_PTR( res->second.at( row ) );
+
+//     return true;
+//   }
+
+//   return false;
+// }
+
 bool DataViewListStore::insert_column( uint cols, const DataViewColumn& col )
 {
   this->cols_.at( cols ) = std::unique_ptr<DataViewColumn>( new DataViewColumn( col ) );

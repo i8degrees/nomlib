@@ -58,7 +58,7 @@ class DataViewListTest: public VisualUnitTest
 
     virtual ~DataViewListTest( void )
     {
-      NOM_DELETE_PTR( this->gui_window );
+      //
     }
 
     /// \remarks This method is called at the start of each unit test.
@@ -101,6 +101,7 @@ class DataViewListTest: public VisualUnitTest
       // Note that the top-level (parent) UIWidget is the owner of its children,
       // thus it relieves us from the responsibility of freeing them --
       NOM_DELETE_PTR( this->gui_window );
+      NOM_DELETE_PTR( this->store );
     }
 
     nom::DataViewList::raw_ptr
@@ -254,12 +255,15 @@ TEST_F( DataViewListTest, DataViewListWidgetEx0 )
                           "CARDS  PG. 1",
                           75,
                           IDataViewColumn::Alignment::Left
+                          // IDataViewColumn::Alignment::Center
                         );
 
   col1 = DataViewColumn (
                           1,
                           "NUM.",
                           75,
+                          // FIXME:
+                          // IDataViewColumn::Alignment::Left
                           IDataViewColumn::Alignment::Right
                         );
 
@@ -289,7 +293,10 @@ TEST_F( DataViewListTest, DataViewListWidgetEx0 )
   store->insert_item( 0, col0_items );
   store->insert_item( 1, col1_items );
 
-EXPECT_TRUE( store->append_item( 1, new DataViewTextItem( "Testme") ) );
+  // TODO: Relocate
+  // EXPECT_TRUE( store->append_item( 1, new DataViewTextItem( "Testme") ) );
+  // EXPECT_TRUE( store->erase_item( 1, store->items_size() ) );
+  // store->clear();
 
   // Set custom style (font)
   store->set_item_style( 0, this->item_style );
@@ -339,14 +346,18 @@ TEST_F( DataViewListTest, DataViewListWidgetEx1 )
                           1,
                           "TCOL.",
                           75,
-                          IDataViewColumn::Alignment::Center
+                          IDataViewColumn::Alignment::Left
+                          // FIXME:
+                          // IDataViewColumn::Alignment::Center
                         );
 
   col2 = DataViewColumn (
                           2,
                           "NUM.",
                           75,
-                          IDataViewColumn::Alignment::Right
+                          IDataViewColumn::Alignment::Left
+                          // FIXME:
+                          // IDataViewColumn::Alignment::Right
                         );
 
   // Set custom styles (font)
@@ -414,8 +425,12 @@ TEST_F( DataViewListTest, DataViewListWidgetEx1 )
 TEST_F( DataViewListTest, DataViewListWidgetEx2 )
 {
   Point2i widget_pos( 25, 25 );
-  // Size2i widget_size( 304, 190 );
-  Size2i widget_size( 344, 250 );
+
+  // Minimum size requirements
+  Size2i widget_size( 168, 200 );
+
+  // Size2i widget_size( 200, 200 );
+  // Size2i widget_size( 300, 200 );
   const std::string widget_name = this->test_name();
 
   Font title_font = *nom::PlatformSettings::find_system_font( "VIII_small" );
@@ -429,22 +444,30 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
 
   col0 = DataViewColumn (
                           0,
-                          "CARDS  PG. 1",
-                          75,
+                          "",
+                          32,
+                          // 0,
+                          // 75,
                           IDataViewColumn::Alignment::Left
                         );
 
   col1 = DataViewColumn (
                           1,
-                          "TCOL.",
-                          75,
-                          IDataViewColumn::Alignment::Center
+                          "CARDS  P. 1 ",
+                          // 50,
+                          50,
+                          IDataViewColumn::Alignment::Left
+                          // IDataViewColumn::Alignment::Center
+                          // IDataViewColumn::Alignment::Right
                         );
 
   col2 = DataViewColumn (
                           2,
                           "NUM.",
-                          75,
+                          // 0,
+                          25,
+                          // 75,
+                          // IDataViewColumn::Alignment::Left
                           IDataViewColumn::Alignment::Right
                         );
 
@@ -453,44 +476,64 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
   this->col1.set_style( this->col_style );
   this->col2.set_style( this->col_style );
 
-  // 7 items
-  col0_items.push_back( new DataViewTextItem( "TEST_0" ) );
-  col0_items.push_back( new DataViewTextItem( "Test_1" ) );
-  col0_items.push_back( new DataViewTextItem( "Test_2" ) );
-  col0_items.push_back( new DataViewTextItem( "Test_X" ) );
-  col0_items.push_back( new DataViewTextItem( "Test_XX" ) );
-  col0_items.push_back( new DataViewTextItem( "Value_0" ) );
-  col0_items.push_back( new DataViewTextItem( "Value_1" ) );
-
-  // 7 items
-  col1_items.push_back( new DataViewTextItem( "Test_10" ) );
-  col1_items.push_back( new DataViewTextItem( "Test_11" ) );
-  col1_items.push_back( new DataViewTextItem( "Test_12" ) );
-  col1_items.push_back( new DataViewTextItem( "Test_13" ) );
-  col1_items.push_back( new DataViewTextItem( "Test_14" ) );
-  col1_items.push_back( new DataViewTextItem( "Value_15" ) );
-  col1_items.push_back( new DataViewTextItem( "VALUE_16" ) );
-
   this->menu_elements.set_frame( 0 ); // "Enabled" sprite frame
 
-  // FIXME: Optimize the sprite cloning process below -- very similar in
-  // concept to IFont copying; see notes in Text.hpp regarding ::set_font.
-  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
-  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
+  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
+  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
 
   this->menu_elements.set_frame( 1 ); // "Disabled" sprite frame
-  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
-  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
+  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
+  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
 
   this->menu_elements.set_frame( 0 ); // "Enabled" sprite frame
-  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
-  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
+  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
+  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
+  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
 
   this->menu_elements.set_frame( 1 ); // "Disabled" sprite frame
-  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
+  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
 
-  this->menu_elements.set_frame( 3 ); // "Right page" sprite frame
-  col2_items.push_back( new DataViewItem( this->menu_elements.clone() ) ) ;
+  this->menu_elements.set_frame( 0 ); // "Enabled" sprite frame
+  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
+  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
+  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
+
+  // 11 items
+  col1_items.push_back( new DataViewTextItem( "Geezard" ) );
+  col1_items.push_back( new DataViewTextItem( "Fungar" ) );
+  col1_items.push_back( new DataViewTextItem( "Bite Bug" ) );
+  col1_items.push_back( new DataViewTextItem( "Red Bat" ) );
+  col1_items.push_back( new DataViewTextItem( "Blobra" ) );
+  col1_items.push_back( new DataViewTextItem( "Gayla" ) );
+  col1_items.push_back( new DataViewTextItem( "Gesper" ) );
+  col1_items.push_back( new DataViewTextItem( "Fastitocalon-F" ) );
+  col1_items.push_back( new DataViewTextItem( "Blood Soul" ) );
+  col1_items.push_back( new DataViewTextItem( "Caterchipillar" ) );
+  col1_items.push_back( new DataViewTextItem( "Cockatrice" ) );
+
+  // 11 items
+  uint idx = 0;
+  IDataViewItem* col0_item = nullptr;
+  SpriteBatch* icon = nullptr;
+  for( auto itr = col1_items.begin(); itr != col1_items.end(); ++itr )
+  {
+    if( idx < col0_items.size() )
+    {
+      IDataViewItem* col0_item = col0_items.at( idx );
+      icon = dynamic_cast<SpriteBatch*>( col0_item->data() );
+
+      if( icon->frame() == 0 )
+      {
+        col2_items.push_back( new DataViewTextItem( "1" ) );
+      }
+      else
+      {
+        col2_items.push_back( new DataViewTextItem( "0" ) );
+      }
+    }
+
+    ++idx;
+  }
 
   store = new DataViewListStore();
 
@@ -502,8 +545,8 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
   store->insert_item( 2, col2_items );
 
   // Set custom styles (font)
-  store->set_item_style( 0, this->item_style );
   store->set_item_style( 1, this->item_style );
+  store->set_item_style( 2, this->item_style );
 
   widget = create_dataviewlist  (
                                   this->gui_window,
@@ -518,6 +561,9 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
+
+  NOM_DELETE_PTR( col0_item );
+  NOM_DELETE_PTR( icon );
 }
 
 int main( int argc, char** argv )

@@ -30,7 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers
 #include "nomlib/graphics/Text.hpp"
-#include "nomlib/graphics/sprite/SpriteBatch.hpp"
+// #include "nomlib/graphics/sprite/SpriteBatch.hpp"
+#include <nomlib/gui/String.hpp>
 
 // Forward declarations
 #include "nomlib/gui/DataViewListStore.hpp"
@@ -97,13 +98,22 @@ void DataViewList::set_item_store( DataViewListStore* store )
 
 void DataViewList::update_columns( void )
 {
+  uint col_count = 0;
   uint width = 0; // Label's text width
+  uint height = 0; // Label's text height
+
+  // Alignment offsets
+  int x_offset = 0;
+  int y_offset = 0;
+
   Text::unique_ptr header;
   Point2i pos = this->position();
 
-  if( this->store()->columns_size() < 1 ) return;
+  col_count = this->store()->columns_size();
 
-  for( auto cols = 0; cols != this->store()->columns_size(); ++cols )
+  if( col_count < 1 ) return;
+
+  for( auto cols = 0; cols != col_count; ++cols )
   {
     DataViewColumn column = this->store()->column( cols );
 
@@ -118,15 +128,19 @@ void DataViewList::update_columns( void )
       header = Text::unique_ptr( new Text( column.title(), this->font() ) );
     }
 
+    // Text dimensions with respect to font
     width = header->width();
+    height = header->height();
 
-    header->set_position( Point2i( pos.x + 4, pos.y ) );
+    // header->set_position( Point2i( pos.x + 4, pos.y ) );
+    header->set_position( Point2i( ( this->position().x + 4 + ( ( this->size().w - width ) / col_count ) * cols ), this->position().y ) );
+    // header->set_position( Point2i( ( this->position().x + column.width()/col_count ) * cols, this->position().y ) );
 
     // Set the size of each label to be the width of the overall container --
     // DataViewList -- minus the label's text width, divided by two.
     //
     // Fudged in as a "stub" for the time being.
-    header->set_size( Size2i( this->size().w - ( width / 2 ), this->size().h ) );
+    header->set_size( Size2i( width, height ) );
 
     // Convert our far more simplistic IDataViewColumn::Alignment enumeration
     // to nom::Text's native type.
@@ -135,19 +149,27 @@ void DataViewList::update_columns( void )
       case nom::IDataViewColumn::Left:
       default:
       {
-        header->set_alignment( Text::Alignment::TopLeft );
+        // header->set_alignment( Text::Alignment::TopLeft );
         break;
       }
 
       case nom::IDataViewColumn::Center:
       {
-        header->set_alignment( Text::Alignment::TopCenter );
+        // header->set_alignment( Text::Alignment::TopCenter );
+        // x_offset = header->position().x + ( this->size().w / col_count - header->size().w ) / 2;
+        x_offset = header->position().x + ( ( ( this->size().w - header->size().w ) / col_count ) * cols ) / 2;
+        y_offset = header->position().y;
+        header->set_position( Point2i( x_offset, y_offset ) );
         break;
       }
 
       case nom::IDataViewColumn::Right:
       {
-        header->set_alignment( Text::Alignment::TopRight );
+        // header->set_alignment( Text::Alignment::TopRight );
+        // x_offset = header->position().x + ( this->size().w / col_count - header->size().w );
+        x_offset = header->position().x + ( this->size().w - header->size().w - 10 ) / col_count;
+        y_offset = header->position().y;
+        header->set_position( Point2i( x_offset, y_offset ) );
         break;
       }
     }
@@ -157,7 +179,7 @@ void DataViewList::update_columns( void )
     //
     // Prevent rendering of text that is longer in length than its container's
     // set size parameters; see set_size method call above.
-    header->set_features( Text::ExtraRenderingFeatures::CropText );
+    // header->set_features( Text::ExtraRenderingFeatures::CropText );
 
     this->drawable_headers_.push_back( std::move( header ) );
   }
@@ -172,9 +194,16 @@ void DataViewList::update_items( void )
   uint width = 0;
   uint height = 0;
 
+  // Alignment offsets
+  int x_offset = 0;
+  int y_offset = 0;
+
   Point2i pos = this->position();
-  Text::unique_ptr header_item;
-  std::shared_ptr<Transformable> item;
+  Text::unique_ptr text_item;
+  std::shared_ptr<Transformable> sprite_item;
+
+  Point2i col_pos;
+  Size2i col_size;
 
   if( this->store()->items_size() < 1 ) return;
 
@@ -183,6 +212,12 @@ void DataViewList::update_items( void )
   for( auto cols = 0; cols != this->store()->columns_size(); ++cols )
   {
     DataViewColumn column = this->store()->column( cols );
+
+    col_pos = this->drawable_headers_.at( cols )->position();
+    col_size = this->drawable_headers_.at( cols )->size();
+
+    NOM_DUMP(col_pos);
+    NOM_DUMP(col_size);
 
     for( auto rows = 0; rows != this->store()->items_size( cols ); ++rows )
     {
@@ -196,23 +231,25 @@ void DataViewList::update_items( void )
         // font given to us by our parent UIWidget.
         if( row->style() != nullptr && row->style()->font()->valid() )
         {
-          header_item = Text::unique_ptr( new Text( text->str(), row->style()->font() ) );
+          text_item = Text::unique_ptr( new Text( text->str(), row->style()->font() ) );
         }
         else
         {
-          header_item = Text::unique_ptr( new Text( text->str(), this->font() ) );
+          text_item = Text::unique_ptr( new Text( text->str(), this->font() ) );
         }
 
-        width = header_item->width();
-        height = header_item->height();
+        width = text_item->width();
+        height = text_item->height();
 
         // Origin coordinates of item text
-        header_item->set_position( Point2i( pos.x + 4, pos.y + 10 ) );
+        // header_item->set_position( Point2i( pos.x + 4, pos.y + 10 ) );
+        text_item->set_position( Point2i( col_pos.x + 4, pos.y + 10 ) );
 
         // Set the size of each label to be the width of the column container, and
         // the height of each label to the height of the text, with respect to the
         // rendered text.
-        header_item->set_size( Size2i( column.width(), height ) );
+        // text_item->set_size( Size2i( column.width(), height ) );
+        text_item->set_size( Size2i( width, height ) );
 
         // Convert our far more simplistic IDataViewColumn::Alignment enumeration
         // to nom::Text's native type.
@@ -221,33 +258,54 @@ void DataViewList::update_items( void )
           case nom::IDataViewColumn::Left:
           default:
           {
-            header_item->set_alignment( Text::Alignment::TopLeft );
+            // text_item->set_alignment( Text::Alignment::MiddleLeft );
+            x_offset = text_item->position().x;
+            y_offset = text_item->position().y;
+            text_item->set_position( Point2i( x_offset, y_offset ) );
             break;
           }
 
           case nom::IDataViewColumn::Center:
           {
-            header_item->set_alignment( Text::Alignment::TopCenter );
+            // text_item->set_alignment( Text::Alignment::MiddleCenter );
+            x_offset = text_item->position().x + ( ( this->size().w - text_item->size().w ) / this->store()->items_size( cols ) ) / 2;
+            y_offset = text_item->position().y;
+            text_item->set_position( Point2i( x_offset, y_offset ) );
             break;
           }
 
           case nom::IDataViewColumn::Right:
           {
-            header_item->set_alignment( Text::Alignment::TopRight );
+            // text_item->set_alignment( Text::Alignment::MiddleRight );
+            x_offset = text_item->position().x + ( this->size().w / this->store()->items_size( cols ) - text_item->size().w );
+            // x_offset = text_item->position().x + ( this->size().w - text_item->size().w );// / this->store()->items_size( cols );
+            y_offset = text_item->position().y;
+            text_item->set_position( Point2i( x_offset, y_offset ) );
             break;
           }
         }
 
         if( rows >= this->store()->items_size( cols ) - 1 )
         {
-          // FIXME: this calculation is fudged in.
-          pos.x += ( width * 2 );
-          pos.y = position().y;
+          pos.y = this->position().y;
         }
         else
         {
-          // FIXME: this calculation is fudged in.
-          pos.y += height * 2;
+          // Use the height dimension of the first column to horizontally align
+          // the rows.
+          IDataViewItem* col0_height = this->store()->item( 0, rows );
+          if( col0_height != nullptr )
+          {
+            Transformable* icon_item = dynamic_cast<Transformable*>( col0_height->data() );
+            if( icon_item != nullptr )
+            {
+              pos.y += icon_item->size().h;
+            }
+            else
+            {
+              pos.y += height;
+            }
+          }
         }
 
         // // FIXME: re-enable me once we fix the cropping rendered text bug that
@@ -255,45 +313,41 @@ void DataViewList::update_items( void )
         // //
         // // Prevent rendering of text that is longer in length than its container's
         // // set size parameters; see set_size method call above.
-        header_item->set_features( Text::ExtraRenderingFeatures::CropText );
+        // text_item->set_features( Text::ExtraRenderingFeatures::CropText );
 
-        this->drawable_items_.push_back( std::move( header_item ) );
+        this->drawable_items_.push_back( std::move( text_item ) );
       }
       else if( NOM_ISA( Transformable*, row->data() ) == true )
       {
-        item.reset( dynamic_cast<Transformable*>( row->data() ) );
+        sprite_item.reset( dynamic_cast<Transformable*>( row->data() ) );
 
-        if( item == nullptr )
+        if( sprite_item == nullptr )
         {
           // TODO: Err handling
         }
 
-        width = item->size().w;
-        height = item->size().h;
+        width = sprite_item->size().w;
+        height = sprite_item->size().h;
+
+        // NOM_DUMP(width);
+        // NOM_DUMP(height);
 
         // Origin coordinates of item
-        item->set_position( Point2i( pos.x + 4, pos.y + 10 ) );
-
-        // Set the size of each label to be the width of the column container, and
-        // the height of each label to the height of the text, with respect to the
-        // rendered text.
-        // item->set_size( Size2i( column.width(), height ) );
+        // sprite_item->set_position( Point2i( pos.x + 4, pos.y + 10 ) );
+        sprite_item->set_position( Point2i( col_pos.x, pos.y + 10 ) );
 
         if( rows >= this->store()->items_size( cols ) - 1 )
         {
-          // FIXME: this calculation is fudged in.
-          pos.x += ( width * 2 );
-          pos.y = position().y;
+          pos.y = this->position().y;
         }
         else
         {
-          // FIXME: this calculation is fudged in.
-          pos.y += height * 2;
+          pos.y += height;
         }
 
-        item->update();
+        sprite_item->update();
 
-        this->drawable_items_.push_back( item );
+        this->drawable_items_.push_back( sprite_item );
       }
     }
   }
@@ -377,68 +431,68 @@ void DataViewList::on_mouse_down( const UIWidgetEvent& ev )
 
       for( auto it = this->drawable_items_.begin(); it != this->drawable_items_.end(); ++it )
       {
-        if( NOM_ISA( Text*, it->get() ) == true )
+        // if( NOM_ISA( Text*, it->get() ) == true )
+        // {
+        //   Text* obj = dynamic_cast<Text*>( it->get() );
+
+        //   if( obj == nullptr )
+        //   {
+        //     // TODO: Err handling
+        //     NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not send UIWidgetEvent for nom::Text drawable_item: NULL." );
+        //   }
+
+        //   IntRect label_bounds( obj->position().x, obj->position().y, obj->width(), obj->height() );
+
+        //   if( label_bounds.contains( mouse_coords ) )
+        //   {
+        //     UIWidgetEvent item;
+
+        //     // Send the array index in our event; this signifies which choice was
+        //     // selected.
+        //     item.set_index( index );
+
+        //     // Send the text of the selection.
+        //     item.set_text( obj->text() );
+
+        //     // Set the associated nom::Event object for this UI event.
+        //     item.set_event( evt );
+
+        //     // Associate the widget's unique identifier for this widget's event
+        //     // object.
+        //     item.set_id( this->id() );
+
+        //     // Send the UI event object to the registered callback; public event
+        //     // slot.
+        //     this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
+
+        //     // Processed events.
+        //     // return true;
+        //     return;
+        //   }
+        // }
+        if( NOM_ISA( Transformable*, it->get() ) == true )
         {
-          Text* obj = dynamic_cast<Text*>( it->get() );
+          Transformable* obj = dynamic_cast<Transformable*>( it->get() );
 
           if( obj == nullptr )
           {
             // TODO: Err handling
-            NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not send UIWidgetEvent for nom::Text drawable_item: NULL." );
+            NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not send UIWidgetEvent for Transformable item: NULL." );
           }
 
-          IntRect label_bounds( obj->position().x, obj->position().y, obj->width(), obj->height() );
+          IntRect object( obj->position().x, obj->position().y, obj->size().w, obj->size().h );
 
-          if( label_bounds.contains( mouse_coords ) )
-          {
-            UIWidgetEvent item;
-
-            // Send the array index in our event; this signifies which choice was
-            // selected.
-            item.set_index( index );
-
-            // Send the text of the selection.
-            item.set_text( obj->text() );
-
-            // Set the associated nom::Event object for this UI event.
-            item.set_event( evt );
-
-            // Associate the widget's unique identifier for this widget's event
-            // object.
-            item.set_id( this->id() );
-
-            // Send the UI event object to the registered callback; public event
-            // slot.
-            this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
-
-            // Processed events.
-            // return true;
-            return;
-          }
-        }
-        else if( NOM_ISA( SpriteBatch*, it->get() ) == true )
-        {
-          SpriteBatch* obj = dynamic_cast<SpriteBatch*>( it->get() );
-
-          if( obj == nullptr )
-          {
-            // TODO: Err handling
-            NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not send UIWidgetEvent for SpriteBatch drawable_item: NULL." );
-          }
-
-          IntRect sprite_bounds( obj->position().x, obj->position().y, obj->size().w, obj->size().h );
-
-          if( sprite_bounds.contains( mouse_coords ) )
+          if( object.contains( mouse_coords ) )
           {
             UIWidgetEvent item;
 
             // Send the current frame identifier used for rendering of the
             // sprite sheet.
-            item.set_index( obj->frame() );
+            item.set_index( index );
 
             // Send the text of the selection; the sprite sheet's filename
             // attribute.
-            item.set_text( obj->sheet_filename() );
+            item.set_text( ObjectTypeInfo( obj->type() ).name() );
 
             // Set the associated nom::Event object for this UI event.
             item.set_event( evt );

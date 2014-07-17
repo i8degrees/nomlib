@@ -58,7 +58,6 @@ class DataViewListStore
 
     /// \brief Item container; one-to-one relationship with a column;
     /// indexed by column ID.
-    // typedef DataViewItem<IObject::raw_ptr> ValueType;
     typedef IDataViewItem ValueType;
     typedef std::vector<ValueType*> ValueTypeContainer;
 
@@ -85,6 +84,10 @@ class DataViewListStore
 
     /// \Obtain the column names from the store.
     const ColumnNames column_names( void ) const;
+
+    void clear( void );
+
+    // bool erase_item( uint col, IDataViewItem* item );
 
     bool insert_column( uint cols, const DataViewColumn& col );
 

@@ -32,23 +32,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/gui/String.hpp"
+
 #include "nomlib/system/IObject.hpp"
 
 namespace nom {
 
+// Forward declarations
+class UIStyle;
+class String;
+
 class IDataViewItem: public IObject
 {
   public:
-    IDataViewItem( void )
-    {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, SDL_LOG_PRIORITY_VERBOSE );
-    }
+    IDataViewItem( void );
 
-    virtual ~IDataViewItem( void )
-    {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, SDL_LOG_PRIORITY_VERBOSE );
-    }
+    virtual ~IDataViewItem( void );
 
     virtual ObjectTypeInfo type( void ) const = 0;
     virtual IObject* data( void ) const = 0;
@@ -59,18 +57,12 @@ class IDataViewItem: public IObject
     /// if it has not been set.
     ///
     /// \see ::set_style
-    std::shared_ptr<UIStyle> style( void ) const
-    {
-      return this->style_;
-    }
+    std::shared_ptr<UIStyle> style( void ) const;
 
     /// \brief Set the style for the item.
     ///
     /// \remarks This is optional, and must be set the end-user.
-    void set_style( std::shared_ptr<UIStyle> style )
-    {
-      this->style_ = style;
-    }
+    void set_style( std::shared_ptr<UIStyle> style );
 
   private:
     /// \brief Customizable column theme; this is intended to be set by the
@@ -78,82 +70,42 @@ class IDataViewItem: public IObject
     std::shared_ptr<UIStyle> style_;
 };
 
-class DataViewItem: public IDataViewItem
-{
-  public:
-    typedef DataViewItem self_type;
-
-    DataViewItem( void )
-    {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
-    }
-
-    virtual ~DataViewItem( void )
-    {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
-    }
-
-    DataViewItem( IObject* data )
-    {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
-
-      this->data_ = data;
-    }
-
-    /// \brief Re-implements the IObject::type method.
-    ///
-    /// \remarks This uniquely identifies the object's type.
-    ObjectTypeInfo type( void ) const
-    {
-      return NOM_OBJECT_TYPE_INFO( self_type );
-    }
-
-    IObject* data( void ) const
-    {
-      return this->data_;
-    }
-
-  private:
-    IObject* data_;
-};
-
 class DataViewTextItem: public IDataViewItem
 {
   public:
     typedef DataViewTextItem self_type;
 
-    DataViewTextItem( void )
-    {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
-    }
+    DataViewTextItem( void );
 
-    virtual ~DataViewTextItem( void )
-    {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
-    }
+    virtual ~DataViewTextItem( void );
 
-    DataViewTextItem( const std::string& data )
-    {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+    DataViewTextItem( const std::string& data );
 
-      this->data_ = new String( data );
-    }
+    ObjectTypeInfo type( void ) const;
 
-    /// \brief Re-implements the IObject::type method.
-    ///
-    /// \remarks This uniquely identifies the object's type.
-    ObjectTypeInfo type( void ) const
-    {
-      return NOM_OBJECT_TYPE_INFO( self_type );
-    }
-
-    IObject* data( void ) const
-    {
-      return this->data_;
-    }
+    IObject* data( void ) const;
 
   private:
     String* data_;
+};
+
+class DataViewItem: public IDataViewItem
+{
+  public:
+    typedef DataViewItem self_type;
+
+    DataViewItem( void );
+
+    virtual ~DataViewItem( void );
+
+    DataViewItem( IObject* data );
+
+    ObjectTypeInfo type( void ) const;
+
+    IObject* data( void ) const;
+
+  private:
+    IObject* data_;
 };
 
 } // namespace nom

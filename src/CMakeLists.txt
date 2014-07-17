@@ -98,6 +98,7 @@ set ( GUI_SOURCE
       ${SRC_DIR}/gui/DataViewBitmapColumn.cpp
       ${SRC_DIR}/gui/DataViewColumn.cpp
       ${SRC_DIR}/gui/DataViewList.cpp
+      ${SRC_DIR}/gui/DataViewItem.cpp
       ${SRC_DIR}/gui/UIEventDispatcher.cpp
       ${SRC_DIR}/gui/UIEventHandler.cpp
       ${SRC_DIR}/gui/UIEventCallback.cpp

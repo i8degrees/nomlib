@@ -265,9 +265,6 @@ class App: public nom::SDLApp
 
       this->info_box[0]->set_title( RESOURCE_INFO_BOX_TITLE_STRINGS[0], this->bitmap_small_font, 8 );
       this->info_box[0]->set_message( RESOURCE_INFO_BOX_TEXT_STRINGS[0], this->bitmap_font, 12 );
-
-      // FIXME: See notes within MessageBox::update && MessageBox::draw for how
-      // to go about resolving.
       this->info_box[0]->set_decorator( new nom::FinalFantasyDecorator() );
 
       mbox = new nom::MessageBox  (
@@ -282,9 +279,6 @@ class App: public nom::SDLApp
 
       this->info_box[1]->set_title( RESOURCE_INFO_BOX_TITLE_STRINGS[1], this->bitmap_small_font, 8 );
       this->info_box[1]->set_message( RESOURCE_INFO_BOX_TEXT_STRINGS[1], this->select_font(), this->select_font_size() );
-
-      // FIXME: See notes within MessageBox::update && MessageBox::draw for how
-      // to go about resolving.
       this->info_box[1]->set_decorator( new nom::FinalFantasyDecorator() );
 
       this->sprite.set_position( nom::Point2i(this->info_box[0]->position().x - this->sprite.size().w, this->info_box[0]->position().y) );

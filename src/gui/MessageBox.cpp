@@ -214,7 +214,12 @@ void MessageBox::draw( RenderTarget& target ) const
   // the base widget by default. (As an absolute *last resort*, perhaps an
   // alternative could be an internal flagging of state? I think, probably not...)
   //
-  // UIWidget::draw( target );
+  // NOTE: This is a temporary patch for fixing the lack of rendered decorators
+  // for the message boxes used in examples/app.cpp.
+  if( this->parent() == nullptr )
+  {
+    UIWidget::draw( target );
+  }
 
   if ( this->enabled() == false ) return;
 
@@ -244,7 +249,12 @@ void MessageBox::update( void )
   // the base widget by default. (As an absolute *last resort*, perhaps an
   // alternative could be an internal flagging of state? I think, probably not...)
   //
-  // UIWidget::update();
+  // NOTE: This is a temporary patch for fixing the lack of rendered decorators
+  // for the message boxes used in examples/app.cpp.
+  if( this->parent() == nullptr )
+  {
+    UIWidget::update();
+  }
 
   if( this->title_.font().valid() == false )
   {

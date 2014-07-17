@@ -63,8 +63,14 @@ class Sprite: public Transformable
     /// Construct a Sprite object, initializing the width & height coordinates.
     Sprite ( int32 width, int32 height );
 
-    /// Copy assignment operator.
-    Sprite& operator = ( const Sprite& other );
+    /// \brief Re-implements Transformable::set_position.
+    ///
+    /// \remarks This method updates the internal positioning coordinates of
+    /// this object; freeing us from needing to call ::update manually.
+    virtual void set_position( const Point2i& pos );
+
+    // TODO (?):
+    // virtual void set_size( const Size2i& pos );
 
     /// \brief Implements the required IDrawable::clone method.
     IDrawable::raw_ptr clone( void ) const;
@@ -75,8 +81,6 @@ class Sprite: public Transformable
     ObjectTypeInfo type( void ) const;
 
     SDL_TEXTURE::RawPtr texture ( void ) const;
-
-    const Size2i size ( void ) const;
 
     /// Get the object's state.
     uint32 state ( void ) const;
@@ -95,8 +99,6 @@ class Sprite: public Transformable
                 enum Texture::Access type = Texture::Access::Static
               );
 
-    virtual void update ( void );
-
     void draw ( RenderTarget& target ) const;
 
     /// Draw a rotated nom::Sprite on a nom::RenderWindow
@@ -112,6 +114,8 @@ class Sprite: public Transformable
     bool resize ( enum Texture::ResizeAlgorithm scaling_algorithm );
 
   protected:
+    virtual void update( void );
+
     /// Object that holds our sprite image
     Texture sprite_;
 

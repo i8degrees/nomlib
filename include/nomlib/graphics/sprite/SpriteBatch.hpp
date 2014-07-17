@@ -66,9 +66,6 @@ class SpriteBatch: public Sprite
     /// Construct a SpriteBatch object from an existing sprite sheet filename.
     SpriteBatch ( const std::string& filename );
 
-    /// Copy assignment operator.
-    self_type& operator = ( const self_type& other );
-
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
@@ -90,9 +87,9 @@ class SpriteBatch: public Sprite
     /// Set a new frame ID to render
     void set_frame ( int32 id );
 
-    /// Update the sprite for rendering with regard to positioning coordinates
-    /// and target frame ID.
-    /*virtual*/ void update ( void );
+    /// \brief Update the sprite for rendering with regard to positioning
+    /// coordinates and target frame ID.
+    virtual void update( void );
 
   protected:
     /// Source (input) coordinates -- used for sprite sheet positioning

@@ -65,19 +65,6 @@ SpriteBatch::SpriteBatch ( const std::string& filename )
   this->set_frame ( 0 );
 }
 
-SpriteBatch::self_type& SpriteBatch::operator = ( const self_type& other )
-{
-  this->sprite_ = other.sprite_;
-  this->set_position ( other.position() );
-  this->offsets = other.offsets;
-  this->set_state ( other.state() );
-  this->sprite_sheet = other.sprite_sheet;
-  this->set_frame ( other.frame() );
-  this->scale_factor = other.scale_factor;
-
-  return *this;
-}
-
 SpriteBatch::~SpriteBatch ( void )
 {
   // NOM_LOG_TRACE ( NOM );
@@ -122,7 +109,7 @@ void SpriteBatch::set_frame ( int32 id )
   this->update();
 }
 
-void SpriteBatch::update ( void )
+void SpriteBatch::update( void )
 {
   Sprite::update(); // Update rendering position
 
@@ -133,6 +120,7 @@ void SpriteBatch::update ( void )
   this->offsets.w = dims.w * this->scale_factor;
   this->offsets.h = dims.h * this->scale_factor;
 
+  this->set_size( offsets.w, offsets.h );
   this->sprite_.set_bounds( this->offsets );
 }
 

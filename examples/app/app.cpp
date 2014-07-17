@@ -287,16 +287,8 @@ class App: public nom::SDLApp
       // to go about resolving.
       this->info_box[1]->set_decorator( new nom::FinalFantasyDecorator() );
 
-// FIXME: should be 26 (sprite sheet width), but is 130 (total texture size)
-NOM_DUMP(this->sprite.size().w);
-      this->sprite.set_position ( nom::Point2i(this->info_box[0]->position().x - 26, this->info_box[0]->position().y) );
-      this->ani_sprite.set_position ( nom::Point2i(this->info_box[0]->position().x + this->info_box[0]->size().w + 26, this->info_box[0]->position().y) );
- // 16 is correct
-NOM_DUMP(this->sprite.size().h);
-
-      // FIXME: We need to finish the overhaul on our coordinates & rendering
-      // subsystems in order to not need this statement
-      this->sprite.update();
+      this->sprite.set_position( nom::Point2i(this->info_box[0]->position().x - this->sprite.size().w, this->info_box[0]->position().y) );
+      this->ani_sprite.set_position( nom::Point2i(this->info_box[0]->position().x + this->info_box[0]->size().w + this->sprite.size().w, this->info_box[0]->position().y) );
 
       return true;
     } // onInit
@@ -321,10 +313,6 @@ NOM_DUMP(this->sprite.size().h);
           this->on_event( ev );
         }
 
-        //this->sprite.update();
-
-        // FIXME: We need to finish the overhaul on our coordinates & rendering
-        // subsystems in order to not need this statement
         this->ani_sprite.play();
 
         for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )

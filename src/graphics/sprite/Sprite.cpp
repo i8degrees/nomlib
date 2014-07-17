@@ -52,14 +52,11 @@ Sprite::Sprite ( int32 width, int32 height )  :
 // NOM_LOG_TRACE ( NOM );
 }
 
-Sprite& Sprite::operator = ( const Sprite& other )
+void Sprite::set_position( const Point2i& pos )
 {
-  this->sprite_ = other.sprite_;
-  this->set_position ( other.position() );
-  this->set_state ( other.state() );
-  this->scale_factor = other.scale_factor;
+  Transformable::set_position( pos );
 
-  return *this;
+  Sprite::update();
 }
 
 IDrawable::raw_ptr Sprite::clone( void ) const
@@ -75,12 +72,6 @@ ObjectTypeInfo Sprite::type( void ) const
 SDL_TEXTURE::RawPtr Sprite::texture ( void ) const
 {
   return this->sprite_.texture();
-}
-
-const Size2i Sprite::size ( void ) const
-{
-  // FIXME
-  return Size2i ( this->sprite_.width(), this->sprite_.height() );
 }
 
 uint32 Sprite::state ( void ) const
@@ -105,17 +96,11 @@ bool Sprite::load (
     return false;
   }
 
-  this->set_size ( Size2i ( this->sprite_.width(), this->sprite_.height() ) );
+  this->set_size( Size2i( this->sprite_.width(), this->sprite_.height() ) );
 
   this->update();
 
   return true;
-}
-
-void Sprite::update ( void )
-{
-  // FIXME
-  this->sprite_.set_position ( Point2i ( this->position().x, this->position().y ) );
 }
 
 void Sprite::draw ( RenderTarget& target ) const
@@ -124,7 +109,6 @@ void Sprite::draw ( RenderTarget& target ) const
 
   if ( this->sprite_.valid() )
   {
-    // FIXME: this->update();
     this->sprite_.draw ( target.renderer() );
   }
 }
@@ -135,7 +119,6 @@ void Sprite::draw ( RenderTarget& target, const double degrees ) const
 
   if ( this->sprite_.valid() )
   {
-    // FIXME: this->update();
     this->sprite_.draw ( target.renderer(), degrees );
   }
 }
@@ -158,6 +141,13 @@ NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
   this->update();
 
   return true;
+}
+
+// Protected scope
+
+void Sprite::update( void )
+{
+  this->sprite_.set_position( Point2i( this->position().x, this->position().y ) );
 }
 
 } // namespace nom

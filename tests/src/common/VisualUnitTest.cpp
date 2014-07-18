@@ -326,17 +326,26 @@ bool VisualUnitTest::on_frame_end( uint elapsed_frames )
   bool ret = false;
   Path p;
 
-  if( NOM_TEST_FLAG(interactive) == true )
-  {
-    // Do not terminate loop
-    return false;
-  }
+  // if( NOM_TEST_FLAG(interactive) == true )
+  // {
+  //   // Do not terminate loop
+  //   return false;
+  // }
 
   if( this->screenshot_frames_.empty() )
   {
-    // Terminate loop
-    return true;
+    if( NOM_TEST_FLAG(interactive) == true )
+    {
+      // Continue looping
+      return false;
+    }
+    else
+    {
+      // Terminate loop
+      return true;
+    }
   }
+
   // Do not terminate the loop until we have captured all of the requested
   // frames
   else if( elapsed_frames == *( this->screenshot_frames_.begin() ) && NOM_TEST_FLAG( disable_comparison) == false )
@@ -366,8 +375,16 @@ bool VisualUnitTest::on_frame_end( uint elapsed_frames )
 
     if( this->screenshot_frames_.empty() == true )
     {
-      // Terminate loop (end of test)
-      return true;
+      if( NOM_TEST_FLAG(interactive) == true )
+      {
+        // Continue looping
+        return false;
+      }
+      else
+      {
+        // Terminate loop
+        return true;
+      }
     }
   }
 

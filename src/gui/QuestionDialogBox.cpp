@@ -28,6 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/QuestionDialogBox.hpp"
 
+// Forward declarations
+#include "nomlib/gui/UIEventDispatcher.hpp"
+#include "nomlib/gui/UIWidgetEvent.hpp"
+
 namespace nom {
 
 QuestionDialogBox::QuestionDialogBox  (

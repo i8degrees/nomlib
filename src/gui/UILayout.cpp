@@ -34,6 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Forward declarations
 #include "nomlib/gui/UIWidget.hpp"
 #include "nomlib/gui/UISpacerItem.hpp"
+#include "nomlib/gui/UIWidgetEvent.hpp"
+#include "nomlib/gui/UIEventDispatcher.hpp"
 
 namespace nom {
 
@@ -298,7 +300,7 @@ void UILayout::set_alignment( uint32 align )
     evt.resized_bounds_ = offset_bounds;
     evt.set_event( ev );
 
-    widget->emit( nom::UIEvent::ON_WINDOW_SIZE_CHANGED, evt );
+    widget->dispatcher()->emit( nom::UIEvent::ON_WINDOW_SIZE_CHANGED, evt );
   }
 }
 

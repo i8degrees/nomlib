@@ -44,6 +44,8 @@ class Text;
 class UIItemContainer;
 class IDecorator;
 class UIStyle;
+class UIEventDispatcher;
+class UIWidgetEvent;
 
 /// \brief GUI list box widget.
 class ListBox: public UIWidget

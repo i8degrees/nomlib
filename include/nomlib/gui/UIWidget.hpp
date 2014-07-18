@@ -34,9 +34,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/fonts/Font.hpp"
-#include "nomlib/gui/UIEventHandler.hpp"
 #include "nomlib/gui/Drawables.hpp"
 #include "nomlib/gui/UILayoutPolicy.hpp"
+#include "nomlib/math/Transformable.hpp"
 
 namespace nom {
 
@@ -47,9 +47,11 @@ struct Event;
 class IDecorator;
 class UILayout;
 class UIStyle;
+class UIEventDispatcher;
+class UIWidgetEvent;
 
 /// \brief GUI window object container
-class UIWidget: public UIEventHandler
+class UIWidget: public Transformable
 {
   public:
     typedef UIWidget self_type;
@@ -435,6 +437,12 @@ class UIWidget: public UIEventHandler
 
     void resize( const Size2i& size );
 
+    /// \brief Obtain a pointer to the event dispatching object in use.
+    ///
+    /// \remarks An assert will be triggered upon detecting a null dispatcher
+    /// object.
+    UIEventDispatcher* dispatcher( void ) const;
+
   protected:
     virtual void on_size_changed( const UIWidgetEvent& ev );
 
@@ -483,6 +491,9 @@ class UIWidget: public UIEventHandler
     int64 generate_id( void ) const;
 
     void set_parent_bounds( const IntRect& bounds );
+
+    /// \brief Set the event dispatcher to use.
+    void set_event_dispatcher( UIEventDispatcher* dispatcher );
 
     /// \brief Ensure that the dimensions of the object are in a valid state.
     ///
@@ -578,6 +589,9 @@ NOM_IGNORED_ENDL();
     /// \brief The bounds of the top-level widget (window). This is required
     /// for layout functionality, such as alignment.
     IntRect parent_bounds_;
+
+    /// \brief A pointer to our events managing object.
+    std::unique_ptr<UIEventDispatcher> dispatcher_;
 };
 
 } // namespace nom

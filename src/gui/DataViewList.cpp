@@ -31,11 +31,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Private headers
 #include "nomlib/graphics/Text.hpp"
 // #include "nomlib/graphics/sprite/SpriteBatch.hpp"
-#include <nomlib/gui/String.hpp>
+#include "nomlib/gui/String.hpp"
 
 // Forward declarations
 #include "nomlib/gui/DataViewListStore.hpp"
 #include "nomlib/gui/UIStyle.hpp"
+#include "nomlib/gui/UIEventDispatcher.hpp"
+#include "nomlib/gui/UIWidgetEvent.hpp"
 
 namespace nom {
 

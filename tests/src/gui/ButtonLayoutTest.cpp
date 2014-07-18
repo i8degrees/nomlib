@@ -88,7 +88,7 @@ class ButtonLayoutTest: public VisualUnitTest
       // FIXME: Re-enable the underlying event code in UIWidget for the
       // WINDOW_MOUSE_DOWN event.
       //
-      // this->main_window->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
+      // this->main_window->dispatcher()->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->window_on_click( ev ); } ) );
 
       this->layout_widget = new nom::UIWidget( this->main_window );
 
@@ -114,8 +114,8 @@ class ButtonLayoutTest: public VisualUnitTest
 
       this->button0->set_font( SystemFonts::cache().load_resource("VIII") );
       this->button0->set_decorator( new nom::FinalFantasyDecorator() );
-      this->button0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );
-      this->button0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );
+      this->button0->dispatcher()->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );
+      this->button0->dispatcher()->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );
 
       // this->button1 = this->create_button( this->layout_widget, Point2i::null, Size2i::null, "button1", "button1" );
 
@@ -124,8 +124,8 @@ class ButtonLayoutTest: public VisualUnitTest
       this->button1 = this->create_button( this->layout_widget, Point2i::null, Size2i(100,16), "button1", "button1" );
 
       this->button1->set_decorator( new nom::MinimalDecorator() );
-      this->button1->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button1_on_click( ev ); } ) );
-      this->button1->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button1_on_click( ev ); } ) );
+      this->button1->dispatcher()->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button1_on_click( ev ); } ) );
+      this->button1->dispatcher()->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button1_on_click( ev ); } ) );
 
       // Style is used for button2
       nom::UIStyle::shared_ptr custom_style = nullptr;
@@ -139,8 +139,8 @@ class ButtonLayoutTest: public VisualUnitTest
       this->button2 = this->create_bitmap_button( this->layout_widget, Point2i::null, Size2i::null, "bitmap_button", "Hello", this->button_bg[1], custom_style );
 
       this->button2->set_pressed_bitmap( this->button_bg[2] );
-      // this->button2->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
-      this->button2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
+      // this->button2->dispatcher()->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
+      this->button2->dispatcher()->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
 
       // this->button3 = this->create_button( this->layout_widget, Point2i::null, Size2i::null, "button3", "button3" );
       this->button3 = this->create_button( this->layout_widget, Point2i::null, Size2i(56,16), "button3", "button3" );

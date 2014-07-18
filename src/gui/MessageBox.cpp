@@ -28,6 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/MessageBox.hpp"
 
+// Forward declarations
+#include "nomlib/gui/UIWidgetEvent.hpp"
+#include "nomlib/gui/UIEventDispatcher.hpp"
+
 namespace nom {
 
 MessageBox::MessageBox  (

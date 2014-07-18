@@ -60,7 +60,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/gui/UIEventCallback.hpp>
 #include <nomlib/gui/UIWidgetEvent.hpp>
 #include <nomlib/gui/UIEventDispatcher.hpp>
-#include <nomlib/gui/UIEventHandler.hpp>
 #include <nomlib/gui/UIItemContainer.hpp>
 #include <nomlib/gui/UIWidgetLayoutItem.hpp>
 #include <nomlib/gui/UIBoxLayout.hpp>

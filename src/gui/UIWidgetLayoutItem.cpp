@@ -28,7 +28,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/UIWidgetLayoutItem.hpp"
 
-// Private forward declarations
+// Private headers
+#include "nomlib/gui/UIEventDispatcher.hpp"
+#include "nomlib/gui/UIWidgetEvent.hpp"
+
+// Forward declarations
 #include "nomlib/gui/UIWidget.hpp"
 
 namespace nom {
@@ -252,7 +256,7 @@ void UIWidgetLayoutItem::set_bounds( const IntRect& rect )
   // evt.resized_bounds_ = IntRect( Point2i( rect.x + x_offset, rect.y + y_offset ), rect.size() );
   evt.set_event( ev );
 
-  widget->emit( UIEvent::ON_WINDOW_SIZE_CHANGED, evt );
+  widget->dispatcher()->emit( UIEvent::ON_WINDOW_SIZE_CHANGED, evt );
 
   widget->set_bounds( IntRect( Point2i( rect.position() ), rect.size() ) );
 

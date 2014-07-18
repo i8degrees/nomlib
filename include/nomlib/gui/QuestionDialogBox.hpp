@@ -41,6 +41,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Forward declarations
+class UIWidgetEvent;
+
 /// \brief Question dialog box widget
 class QuestionDialogBox: public MessageBox
 {

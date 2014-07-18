@@ -41,6 +41,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Forward declarations
+class UIWidgetEvent;
+
 /// \brief Simple UI interface for drawing a styled message box
 class MessageBox: public UIWidget
 {

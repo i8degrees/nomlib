@@ -33,9 +33,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Forward declarations
 #include "nomlib/graphics/Text.hpp"
+
 #include "nomlib/gui/UIItemContainer.hpp"
 #include "nomlib/gui/IDecorator.hpp"
 #include "nomlib/gui/UIStyle.hpp"
+#include "nomlib/gui/UIEventDispatcher.hpp"
+#include "nomlib/gui/UIWidgetEvent.hpp"
 
 namespace nom {
 

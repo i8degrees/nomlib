@@ -176,7 +176,7 @@ class UIEventDispatcher
 ///
 /// \remarks See also: nom::UIEvent, nom::UIWidgetEvent.
 #define NOM_CONNECT_UIEVENT( obj, evt, func ) \
-  ( obj->register_event_listener( evt, nom::UIEventCallback( [&] ( const nom::UIWidgetEvent& ev ) { func( ev ); } ) ) )
+  ( obj->dispatcher()->register_event_listener( evt, nom::UIEventCallback( [&] ( const nom::UIWidgetEvent& ev ) { func( ev ); } ) ) )
 
 #endif // include guard defined
 

@@ -40,6 +40,7 @@ namespace nom {
 
 // Forward declarations
 class Texture;
+class UIWidgetEvent;
 
 /// \brief Basic GUI button container widget.
 class Button: public UIWidget

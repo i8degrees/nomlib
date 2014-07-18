@@ -37,6 +37,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Forward declarations
+class UIWidgetEvent;
+
 /// \brief GUI button with a custom bitmap background container widget.
 class BitmapButton: public Button
 {

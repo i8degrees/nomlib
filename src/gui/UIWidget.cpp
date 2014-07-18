@@ -35,9 +35,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/shapes/Rectangle.hpp" // tool tip
 #include "nomlib/graphics/Text.hpp"
 #include "nomlib/system/Event.hpp"
+
 #include "nomlib/gui/IDecorator.hpp"
 #include "nomlib/gui/UILayout.hpp"
 #include "nomlib/gui/UIStyle.hpp"
+#include "nomlib/gui/UIEventDispatcher.hpp"
+#include "nomlib/gui/UIWidgetEvent.hpp"
 
 // #define NOM_DEBUG_OUTPUT_LAYOUT_DATA
 
@@ -67,6 +70,7 @@ void UIWidget::initialize (
                           )
 {
   // Sane defaults
+  this->set_event_dispatcher( new UIEventDispatcher() );
   this->set_focused( false );
   this->set_visibility( true );
   this->set_updated( false );
@@ -196,7 +200,7 @@ ObjectTypeInfo UIWidget::type( void ) const
 
 bool UIWidget::valid( void ) const
 {
-  if ( this->position() != Point2i::null || this->size() != Size2i::null )
+  if( this->dispatcher() != nullptr && this->position() != Point2i::null && this->size() != Size2i::null )
   {
     return true;
   }
@@ -461,7 +465,7 @@ void UIWidget::set_font( const Font& font )
   evt.set_event( ev );
 
   // Private event notification
-  this->emit( UIEvent::ON_WIDGET_UPDATE, evt );
+  this->dispatcher()->emit( UIEvent::ON_WIDGET_UPDATE, evt );
 }
 
 void UIWidget::set_font( const Font* font )
@@ -1153,10 +1157,18 @@ void UIWidget::resize( const Size2i& size )
   ev.window.window_id = this->id();
   evt.set_event( ev );
 
-  this->emit( UIEvent::ON_WINDOW_SIZE_CHANGED, evt );
-  this->emit( UIEvent::WINDOW_SIZE_CHANGED, evt );
+  this->dispatcher()->emit( UIEvent::ON_WINDOW_SIZE_CHANGED, evt );
+  this->dispatcher()->emit( UIEvent::WINDOW_SIZE_CHANGED, evt );
 
   // this->update();
+}
+
+UIEventDispatcher* UIWidget::dispatcher( void ) const
+{
+  // Sanity check; ensure that we are not an invalid object state (NULL).
+  NOM_ASSERT( this->dispatcher_.get() != nullptr );
+
+  return this->dispatcher_.get();
 }
 
 // Protected scope
@@ -1238,7 +1250,6 @@ bool UIWidget::focus_next_child( void )
 
 void UIWidget::swap( const self_type* rhs )
 {
-  // this->set_dispatcher( rhs->dispatcher() );
   this->set_position( rhs->position() );
   this->set_size( rhs->size() );
 
@@ -1260,6 +1271,7 @@ void UIWidget::swap( const self_type* rhs )
   this->policy_ = rhs->policy_;
   this->set_style( rhs->style() );
   this->set_parent_bounds( rhs->parent_bounds() );
+  this->set_event_dispatcher( rhs->dispatcher() );
 }
 
 // Private scope
@@ -1272,6 +1284,11 @@ int64 UIWidget::generate_id( void ) const
 void UIWidget::set_parent_bounds( const IntRect& bounds )
 {
   this->parent_bounds_ = bounds;
+}
+
+void UIWidget::set_event_dispatcher( UIEventDispatcher* dispatcher )
+{
+  this->dispatcher_.reset( dispatcher );
 }
 
 /*

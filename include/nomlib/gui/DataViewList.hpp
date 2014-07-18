@@ -40,6 +40,7 @@ namespace nom {
 // Forward declarations
 class DataViewListStore;
 class UIItemContainer;
+class UIWidgetEvent;
 
 /// \brief GUI data tree container widget
 class DataViewList: public UIWidget

@@ -117,7 +117,7 @@ class DataViewListTest: public VisualUnitTest
       dview = new nom::DataViewList( window, -1, pos, size );
       dview->set_decorator( new nom::FinalFantasyDecorator() );
 
-      dview->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { on_click( ev ); } ) );
+      dview->dispatcher()->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { on_click( ev ); } ) );
 
       return dview;
     }

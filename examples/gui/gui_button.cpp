@@ -210,7 +210,7 @@ class App: public nom::SDLApp
       this->gui_window[1]->set_layout( this->layout );
 
       // Relative to parent widget
-      this->layout->set_position( nom::Point2i( 12, 25 ) );
+      this->layout->set_bounds( nom::IntRect( nom::Point2i( 12, 25 ), this->gui_window[1]->size() ) );
 
       // Auto-generated name
       // NOM_ASSERT( this->gui_window[1]->find_child( "bitmap_button" ) != nullptr );

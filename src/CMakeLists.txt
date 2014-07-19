@@ -10,8 +10,20 @@ set ( ROOT_SOURCE
     )
 
 # Audio module
-file ( GLOB AUDIO_HEADERS "${NOMLIB_HEADERS_DIR}/audio/AL/*.hpp" )
+file ( GLOB AUDIO_HEADERS "${NOMLIB_HEADERS_DIR}/audio/*.hpp" )
 set ( AUDIO_SOURCE
+      ${SRC_DIR}/audio/NullAudioDevice.cpp
+      ${SRC_DIR}/audio/NullListener.cpp
+      ${SRC_DIR}/audio/AudioDeviceLocator.cpp
+      ${SRC_DIR}/audio/NullMusic.cpp
+      ${SRC_DIR}/audio/NullSound.cpp
+      ${SRC_DIR}/audio/NullSoundBuffer.cpp
+      ${SRC_DIR}/audio/NullSoundSource.cpp
+    )
+
+# OpenAL Audio module
+file ( GLOB OPENAL_AUDIO_HEADERS "${NOMLIB_HEADERS_DIR}/audio/AL/*.hpp" )
+set ( OPENAL_AUDIO_SOURCE
       ${SRC_DIR}/audio/AL/AudioDevice.cpp
       ${SRC_DIR}/audio/AL/Listener.cpp
       ${SRC_DIR}/audio/AL/Music.cpp
@@ -251,15 +263,29 @@ if( NOM_BUILD_CORE_UNIT )
 endif( NOM_BUILD_CORE_UNIT )
 
 if( NOM_BUILD_AUDIO_UNIT )
-  set ( NOMLIB_HEADERS
-        ${NOMLIB_HEADERS}
-        ${AUDIO_HEADERS}
-      )
-  set ( NOMLIB_SOURCE
-        ${NOMLIB_SOURCE}
-        ${AUDIO_SOURCE}
-      )
+
+  if( NOM_USE_OPENAL )
+    set ( NOMLIB_HEADERS
+          ${NOMLIB_HEADERS}
+          ${OPENAL_AUDIO_SOURCE}
+        )
+    set ( NOMLIB_SOURCE
+          ${NOMLIB_SOURCE}
+          ${OPENAL_AUDIO_SOURCE}
+        )
+  endif( NOM_USE_OPENAL )
+
 endif( NOM_BUILD_AUDIO_UNIT )
+
+# NullAudio
+set ( NOMLIB_HEADERS
+      ${NOMLIB_HEADERS}
+      ${AUDIO_HEADERS}
+    )
+set ( NOMLIB_SOURCE
+      ${NOMLIB_SOURCE}
+      ${AUDIO_SOURCE}
+    )
 
 if( NOM_BUILD_GRAPHICS_UNIT )
   set ( NOMLIB_HEADERS
@@ -404,6 +430,7 @@ endif( NOM_BUILD_TEMPLATES_UNIT )
 # (For those that use Xcode, MSVC++, etc.)
 source_group ( "include" FILES ${ROOT_HEADERS} )
 source_group ( "include\\audio" FILES ${AUDIO_HEADERS} )
+source_group ( "include\\audio\\AL" FILES ${OPENAL_AUDIO_HEADERS} )
 source_group ( "include\\graphics" FILES ${GRAPHICS_HEADERS} )
 source_group ( "include\\graphics\\hqx" FILES ${GRAPHICS_HQX_HEADERS} )
 source_group ( "include\\graphics\\scale2x" FILES ${GRAPHICS_SCALE2X_HEADERS} )
@@ -420,6 +447,7 @@ source_group ( "include\\system\\windows" FILES ${SYSTEM_WINDOWS_HEADERS} )
 
 source_group ( "src" FILES ${ROOT_SOURCE} )
 source_group ( "src\\audio" FILES ${AUDIO_SOURCE} )
+source_group ( "src\\audio\\AL" FILES ${OPENAL_AUDIO_SOURCE} )
 source_group ( "src\\graphics" FILES ${GRAPHICS_SOURCE} )
 source_group ( "src\\graphics\\hqx" FILES ${GRAPHICS_HQX_SOURCE} )
 source_group ( "src\\graphics\\scale2x" FILES ${GRAPHICS_SCALE2X_SOURCE} )

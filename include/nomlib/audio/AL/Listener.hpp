@@ -33,18 +33,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/audio/AL/OpenAL.hpp"
 #include "nomlib/math/Point3.hpp"
-#include "nomlib/audio/AL/AudioDevice.hpp"
+#include "nomlib/audio/IListener.hpp"
 
 namespace nom {
-  namespace OpenAL {
 
-class Listener
+/// \brief Global volume control
+///
+/// \remarks The use of this class is optional; the OpenAL API provides one by
+/// default.
+class Listener: public IListener
 {
   public:
     Listener ( void );
-    ~Listener ( void );
+    virtual ~Listener( void );
 
     /// Obtain master gain (volume)
     ///
@@ -82,8 +84,6 @@ class Listener
     void setVolume ( float gain );
 };
 
-
-  } // namespace OpenAL
 } // namespace nom
 
 #endif // NOMLIB_AL_LISTENER_HEADERS defined

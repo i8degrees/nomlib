@@ -26,33 +26,46 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_AUDIO_HEADERS
-#define NOMLIB_AUDIO_HEADERS
-
-// Public header file
-
-#include <nomlib/config.hpp>
-
-#include "nomlib/audio/IAudioDevice.hpp"
-#include "nomlib/audio/IListener.hpp"
-#include "nomlib/audio/ISoundBuffer.hpp"
-#include "nomlib/audio/ISoundSource.hpp"
-#include "nomlib/audio/NullAudioDevice.hpp"
-#include "nomlib/audio/NullListener.hpp"
-#include "nomlib/audio/NullSoundBuffer.hpp"
-#include "nomlib/audio/NullSoundSource.hpp"
-#include "nomlib/audio/NullSound.hpp"
-#include "nomlib/audio/NullMusic.hpp"
 #include "nomlib/audio/AudioDeviceLocator.hpp"
 
-#if defined( NOM_USE_OPENAL )
-  #include "nomlib/audio/AL/AudioDevice.hpp"
-  #include "nomlib/audio/AL/Listener.hpp"
-  #include "nomlib/audio/AL/Music.hpp"
-  #include "nomlib/audio/AL/Sound.hpp"
-  #include "nomlib/audio/AL/SoundBuffer.hpp"
-  #include "nomlib/audio/AL/SoundFile.hpp"
-  #include "nomlib/audio/AL/SoundSource.hpp"
-#endif
+namespace nom {
 
-#endif // include guard defined
+// Static initializations
+IAudioDevice* AudioDeviceLocator::audio_ = nullptr;
+NullAudioDevice AudioDeviceLocator::null_audio_;
+
+AudioDeviceLocator::~AudioDeviceLocator( void )
+{
+  NOM_DELETE_PTR( AudioDeviceLocator::audio_ );
+}
+
+void AudioDeviceLocator::initialize( void )
+{
+  AudioDeviceLocator::audio_ = &AudioDeviceLocator::null_audio_;
+}
+
+IAudioDevice& AudioDeviceLocator::audio_device( void )
+{
+  // if( AudioDeviceLocator::audio_ == nullptr )
+  // {
+    // NOM_LOG_INFO( NOM_LOG_CATEGORY_AUDIO, "AudioDevice was not yet initialized. Initializing..." );
+    // AudioDeviceLocator::initialize();
+  // }
+
+  return *AudioDeviceLocator::audio_;
+}
+
+void AudioDeviceLocator::set_provider( IAudioDevice* service )
+{
+  if( service == nullptr )
+  {
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Audio Service given was NULL; initializing NullAudioDevice..." );
+    AudioDeviceLocator::initialize();
+  }
+  else
+  {
+    AudioDeviceLocator::audio_ = service;
+  }
+}
+
+} // namespace nom

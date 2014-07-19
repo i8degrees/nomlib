@@ -26,33 +26,30 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_AUDIO_HEADERS
-#define NOMLIB_AUDIO_HEADERS
+#ifndef NOMLIB_AUDIO_NULL_MUSIC_HPP
+#define NOMLIB_AUDIO_NULL_MUSIC_HPP
 
-// Public header file
-
-#include <nomlib/config.hpp>
-
-#include "nomlib/audio/IAudioDevice.hpp"
-#include "nomlib/audio/IListener.hpp"
-#include "nomlib/audio/ISoundBuffer.hpp"
-#include "nomlib/audio/ISoundSource.hpp"
-#include "nomlib/audio/NullAudioDevice.hpp"
-#include "nomlib/audio/NullListener.hpp"
-#include "nomlib/audio/NullSoundBuffer.hpp"
+#include "nomlib/config.hpp"
 #include "nomlib/audio/NullSoundSource.hpp"
-#include "nomlib/audio/NullSound.hpp"
-#include "nomlib/audio/NullMusic.hpp"
-#include "nomlib/audio/AudioDeviceLocator.hpp"
 
-#if defined( NOM_USE_OPENAL )
-  #include "nomlib/audio/AL/AudioDevice.hpp"
-  #include "nomlib/audio/AL/Listener.hpp"
-  #include "nomlib/audio/AL/Music.hpp"
-  #include "nomlib/audio/AL/Sound.hpp"
-  #include "nomlib/audio/AL/SoundBuffer.hpp"
-  #include "nomlib/audio/AL/SoundFile.hpp"
-  #include "nomlib/audio/AL/SoundSource.hpp"
-#endif
+namespace nom {
+
+class NullMusic: public NullSoundSource
+{
+  public:
+    NullMusic( void );
+    virtual ~NullMusic( void );
+
+    void setBuffer( const ISoundBuffer& copy );
+
+    void Play( void );
+    void Stop( void );
+    void Pause( void );
+    void togglePause( void );
+
+    void fadeOut( float seconds );
+};
+
+} // namespace nom
 
 #endif // include guard defined

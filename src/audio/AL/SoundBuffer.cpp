@@ -28,8 +28,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/audio/AL/SoundBuffer.hpp"
 
+// Private headers
+#include "nomlib/audio/AL/OpenAL.hpp"
+#include "nomlib/audio/AL/Sound.hpp"
+#include "nomlib/audio/AL/SoundFile.hpp"
+
 namespace nom {
-  namespace OpenAL {
 
 SoundBuffer::SoundBuffer ( void ) : buffer ( 0 )
 {
@@ -38,7 +42,7 @@ SoundBuffer::SoundBuffer ( void ) : buffer ( 0 )
 AL_CHECK_ERR ( alGenBuffers ( 1, &this->buffer ) );
 }
 
-SoundBuffer::~SoundBuffer ( void )
+SoundBuffer::~SoundBuffer( void )
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 
@@ -60,7 +64,7 @@ uint32 SoundBuffer::get ( void ) const
   return this->buffer;
 }
 
-sf_count_t SoundBuffer::getDuration ( void ) const
+int64 SoundBuffer::getDuration( void ) const
 {
   return this->buffer_duration;
 }
@@ -102,6 +106,4 @@ void SoundBuffer::detach ( Sound* sound ) const
   sounds.erase ( sound );
 }
 
-
-  } // namespace OpenAL
 } // namespace nom

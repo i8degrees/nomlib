@@ -40,7 +40,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/AL/OpenAL.hpp"
 
 namespace nom {
-  namespace OpenAL {
 
 class SoundFile
 {
@@ -82,8 +81,6 @@ class SoundFile
     int32 channel_format;
 };
 
-
-  } // namespace OpenAL
 } // namespace nom
 
 #endif // NOMLIB_AL_SOUNDFILE_HEADERS defined

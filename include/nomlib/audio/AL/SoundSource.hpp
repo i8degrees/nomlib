@@ -33,26 +33,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <algorithm>
 
 #include "nomlib/config.hpp"
-#include "nomlib/audio/AL/OpenAL.hpp"
 #include "nomlib/math/Point3.hpp"
+#include "nomlib/audio/ISoundSource.hpp"
 
 namespace nom {
 
-/// Sound source is one of the three states: stopped, paused or playing
-enum SoundStatus
-{
-  Stopped = 0,
-  Paused = 1,
-  Playing = 2
-};
-
-  namespace OpenAL {
-
-// This is an inheritance-only class
-class SoundSource
+/// \brief Base class for audio inputs
+class SoundSource: public ISoundSource
 {
   public:
-    virtual ~SoundSource ( void );
+    virtual ~SoundSource( void );
 
     /// Get source volume level
     ///
@@ -102,16 +92,17 @@ class SoundSource
     /// Set playback position of source in seconds
     void setPlayPosition ( float seconds );
 
+    virtual void togglePause( void );
+    virtual void fadeOut( float seconds );
+
   protected:
     /// Constructor can only be called from deriving classes
-    SoundSource ( void );
+    SoundSource( void );
 
     /// Source identification; used by OpenAL
     uint32 source_id;
 };
 
-
-  } // namespace OpenAL
 } // namespace nom
 
 #endif // NOMLIB_AL_SOUNDSOURCE_HEADERS defined

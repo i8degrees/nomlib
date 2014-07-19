@@ -29,10 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_AL_AUDIO_DEVICE_HEADERS
 #define NOMLIB_AL_AUDIO_DEVICE_HEADERS
 
-#include <iostream>
 #include <memory>
 
 #include "nomlib/config.hpp"
+#include "nomlib/audio/IAudioDevice.hpp"
 #include "nomlib/audio/AL/OpenAL.hpp"
 
 namespace nom {
@@ -49,9 +49,8 @@ void AL_FreeAudioContext ( ALCcontext* );
 
 
 namespace nom {
-  namespace OpenAL {
 
-class AudioDevice
+class AudioDevice: public IAudioDevice
 {
   public:
     /// Default constructor for initializing the default audio device
@@ -60,10 +59,10 @@ class AudioDevice
     /// Constructor variant for initializing a specific audio device
     AudioDevice ( const std::string& device_name );
 
-    ~AudioDevice ( void );
+    virtual ~AudioDevice( void );
 
     /// Obtain the initialized OpenAL audio device
-    std::shared_ptr<ALCdevice> getAudioDevice ( void ) const;
+    // std::shared_ptr<ALCdevice> getAudioDevice ( void ) const;
 
     /// Obtain the initialized audio device name
     const std::string getDeviceName ( void ) const;
@@ -90,8 +89,6 @@ class AudioDevice
     const ALCchar *device_name;
 };
 
-
-  } // namespace OpenAL
 } // namespace nom
 
 #endif // NOMLIB_AL_AUDIO_DEVICE_HEADERS defined

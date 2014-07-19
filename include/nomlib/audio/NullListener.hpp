@@ -26,33 +26,34 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_AUDIO_HEADERS
-#define NOMLIB_AUDIO_HEADERS
+#ifndef NOMLIB_AUDIO_NULL_LISTENER_HPP
+#define NOMLIB_AUDIO_NULL_LISTENER_HPP
 
-// Public header file
-
-#include <nomlib/config.hpp>
-
-#include "nomlib/audio/IAudioDevice.hpp"
+#include "nomlib/config.hpp"
+#include "nomlib/math/Point3.hpp"
 #include "nomlib/audio/IListener.hpp"
-#include "nomlib/audio/ISoundBuffer.hpp"
-#include "nomlib/audio/ISoundSource.hpp"
-#include "nomlib/audio/NullAudioDevice.hpp"
-#include "nomlib/audio/NullListener.hpp"
-#include "nomlib/audio/NullSoundBuffer.hpp"
-#include "nomlib/audio/NullSoundSource.hpp"
-#include "nomlib/audio/NullSound.hpp"
-#include "nomlib/audio/NullMusic.hpp"
-#include "nomlib/audio/AudioDeviceLocator.hpp"
 
-#if defined( NOM_USE_OPENAL )
-  #include "nomlib/audio/AL/AudioDevice.hpp"
-  #include "nomlib/audio/AL/Listener.hpp"
-  #include "nomlib/audio/AL/Music.hpp"
-  #include "nomlib/audio/AL/Sound.hpp"
-  #include "nomlib/audio/AL/SoundBuffer.hpp"
-  #include "nomlib/audio/AL/SoundFile.hpp"
-  #include "nomlib/audio/AL/SoundSource.hpp"
-#endif
+namespace nom {
+
+class NullListener: public IListener
+{
+  public:
+    NullListener( void );
+    virtual ~NullListener( void );
+
+    float getVolume ( void ) const;
+    const Point3f getPosition ( void ) const;
+    const Point3f getVelocity ( void ) const;
+    const Point3f getDirection ( void ) const;
+    void setPosition ( float x, float y, float z );
+    void setPosition ( const Point3f& position );
+    void setVelocity ( float x, float y, float z );
+    void setVelocity ( const Point3f& velocity );
+    void setDirection ( float x, float y, float z );
+    void setDirection ( const Point3f& direction );
+    void setVolume ( float gain );
+};
+
+} // namespace nom
 
 #endif // include guard defined

@@ -26,33 +26,39 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_AUDIO_HEADERS
-#define NOMLIB_AUDIO_HEADERS
+#ifndef NOMLIB_AUDIO_AUDIO_DEVICE_LOCATOR_HPP
+#define NOMLIB_AUDIO_AUDIO_DEVICE_LOCATOR_HPP
 
-// Public header file
-
-#include <nomlib/config.hpp>
-
-#include "nomlib/audio/IAudioDevice.hpp"
-#include "nomlib/audio/IListener.hpp"
-#include "nomlib/audio/ISoundBuffer.hpp"
-#include "nomlib/audio/ISoundSource.hpp"
+#include "nomlib/config.hpp"
 #include "nomlib/audio/NullAudioDevice.hpp"
-#include "nomlib/audio/NullListener.hpp"
-#include "nomlib/audio/NullSoundBuffer.hpp"
-#include "nomlib/audio/NullSoundSource.hpp"
-#include "nomlib/audio/NullSound.hpp"
-#include "nomlib/audio/NullMusic.hpp"
-#include "nomlib/audio/AudioDeviceLocator.hpp"
 
-#if defined( NOM_USE_OPENAL )
-  #include "nomlib/audio/AL/AudioDevice.hpp"
-  #include "nomlib/audio/AL/Listener.hpp"
-  #include "nomlib/audio/AL/Music.hpp"
-  #include "nomlib/audio/AL/Sound.hpp"
-  #include "nomlib/audio/AL/SoundBuffer.hpp"
-  #include "nomlib/audio/AL/SoundFile.hpp"
-  #include "nomlib/audio/AL/SoundSource.hpp"
-#endif
+namespace nom {
+
+// Forward declarations
+class IAudioDevice;
+
+class AudioDeviceLocator
+{
+  public:
+    ~AudioDeviceLocator( void );
+
+    static void initialize( void );
+    static IAudioDevice& audio_device( void );
+    static void set_provider( IAudioDevice* service );
+
+  private:
+    static IAudioDevice* audio_;
+    static NullAudioDevice null_audio_;
+};
+
+} // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::AudioDeviceLocator
+/// \ingroup audio
+///
+/// Experimental interface (incomplete).
+///
+/// \see http://gameprogrammingpatterns.com/service-locator.html
+///

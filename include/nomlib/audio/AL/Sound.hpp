@@ -32,25 +32,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 
 #include "nomlib/config.hpp"
-#include "nomlib/audio/AL/OpenAL.hpp"
-#include "nomlib/audio/AL/SoundBuffer.hpp"
 #include "nomlib/audio/AL/SoundSource.hpp"
 
 namespace nom {
-  namespace OpenAL {
 
 // forward declarations
-class SoundBuffer;
+class ISoundBuffer;
 
 /// \brief Audio interface for sound samples
-class Sound: public SoundSource // "is-a relationship"
+class Sound: public SoundSource
 {
   public:
-    Sound ( void );
-    Sound ( const SoundBuffer& copy );
-    ~Sound ( void );
+    /// \brief SoundBuffer needs access to Sound::reset.
+    friend class SoundBuffer;
 
-    void setBuffer ( const SoundBuffer& copy );
+    Sound ( void );
+    Sound ( const ISoundBuffer& copy );
+    virtual ~Sound( void );
+
+    void setBuffer ( const ISoundBuffer& copy );
 
     void Play ( void );
     void Stop ( void );
@@ -61,17 +61,15 @@ class Sound: public SoundSource // "is-a relationship"
 
     /// Set playback position of source in seconds
     //void setPlayPosition ( float seconds );
-
+  private:
     /// Internally used by SoundBuffer class for properly freeing a sound from
     /// its attached buffer
-    void reset ( void );
-  private:
+    void reset( void );
+
     /// Buffer that this sound is attached to
-    const SoundBuffer* buffer;
+    const ISoundBuffer* buffer;
 };
 
-
-  } // namespace OpenAL
 } // namespace nom
 
 #endif // NOMLIB_AL_SOUND_HEADERS defined

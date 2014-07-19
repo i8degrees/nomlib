@@ -71,8 +71,6 @@ set( NOM_USE_SDL2_IMAGE TRUE )
 # examples/device_info.cpp.
 set( NOM_USE_SDL2_TTF TRUE )
 
-# Stub option; not yet implemented ... experimental use has been implemented in
-# examples/device_info.cpp.
 if( NOM_BUILD_AUDIO_UNIT )
   set( NOM_USE_OPENAL TRUE )
   set( NOM_USE_LIBSNDFILE TRUE )

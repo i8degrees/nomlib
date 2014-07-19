@@ -28,8 +28,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/audio/AL/Music.hpp"
 
+// Private headers
+#include "nomlib/audio/AL/OpenAL.hpp"
+
+// Forward declarations
+#include "nomlib/audio/ISoundBuffer.hpp"
+
 namespace nom {
-  namespace OpenAL {
 
 Music::Music ( void )
 {
@@ -38,7 +43,7 @@ Music::Music ( void )
   // Initialize here
 }
 
-Music::Music ( const SoundBuffer& copy )
+Music::Music ( const ISoundBuffer& copy )
 {
   this->setBuffer ( copy );
 }
@@ -50,7 +55,7 @@ Music::~Music ( void )
   this->Stop();
 }
 
-void Music::setBuffer ( const SoundBuffer& copy )
+void Music::setBuffer ( const ISoundBuffer& copy )
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 
@@ -72,43 +77,4 @@ void Music::Pause ( void )
 AL_CHECK_ERR ( alSourcePause ( source_id ) );
 }
 
-void Music::togglePause ( void )
-{
-  if ( this->getStatus() == SoundStatus::Paused )
-  {
-    this->Play();
-  }
-  else if ( this->getStatus() == SoundStatus::Playing )
-  {
-    this->Pause();
-  }
-}
-
-void Music::fadeOut ( float seconds )
-{
-  float current_volume = this->getVolume();
-  float fade_step = current_volume / seconds;
-
-  while ( this->getStatus() != SoundStatus::Paused && this->getStatus() != SoundStatus::Stopped )
-  {
-    if ( current_volume > 0.0 )
-    {
-      std::cout << "\nFading out\n";
-      this->setVolume ( current_volume );
-      NOM_DUMP( current_volume );
-    }
-    else
-    {
-      std::cout << "\nStopped\n";
-      this->Pause();
-    }
-
-    current_volume = current_volume - fade_step;
-    sleep ( 1000 ); // FIXME
-
-  } // while getStatus loop
-}
-
-
-  } // namespace OpenAL
 } // namespace nom

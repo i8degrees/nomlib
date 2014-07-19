@@ -28,15 +28,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/audio/AL/Sound.hpp"
 
+// Private headers
+#include "nomlib/audio/AL/OpenAL.hpp"
+
+// Forward declarations
+#include "nomlib/audio/ISoundBuffer.hpp"
+
 namespace nom {
-  namespace OpenAL {
 
 Sound::Sound ( void ) : buffer ( nullptr )
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 }
 
-Sound::Sound ( const SoundBuffer& copy )  : buffer ( nullptr )
+Sound::Sound ( const ISoundBuffer& copy )  : buffer ( nullptr )
 {
   this->setBuffer ( copy );
 }
@@ -51,7 +56,7 @@ Sound::~Sound ( void )
     this->buffer->detach ( this );
 }
 
-void Sound::setBuffer ( const SoundBuffer& copy )
+void Sound::setBuffer ( const ISoundBuffer& copy )
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 
@@ -101,14 +106,13 @@ void Sound::setPlayPosition ( float seconds )
 }
 */
 
-void Sound::reset ( void )
+void Sound::reset( void )
 {
   this->Stop();
 
-AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, 0 ) );
+  AL_CHECK_ERR( alSourcei( source_id, AL_BUFFER, 0 ) );
 
   buffer = nullptr;
 }
 
-  } // namespace OpenAL
 } // namespace nom

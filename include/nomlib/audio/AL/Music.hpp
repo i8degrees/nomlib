@@ -33,36 +33,27 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/clock.hpp"
-#include "nomlib/audio/AL/OpenAL.hpp"
-#include "nomlib/audio/AL/SoundBuffer.hpp"
 #include "nomlib/audio/AL/SoundSource.hpp"
 
 namespace nom {
-  namespace OpenAL {
 
-class Music: public SoundSource // "is-a relationship"
+class Music: public SoundSource
 {
   public:
     Music ( void );
-    Music ( const SoundBuffer& copy );
-    ~Music ( void );
+    Music ( const ISoundBuffer& copy );
+    virtual ~Music( void );
 
-    void setBuffer ( const SoundBuffer& copy );
+    void setBuffer ( const ISoundBuffer& copy );
 
     void Play ( void );
     void Stop ( void );
     void Pause ( void );
-    void togglePause ( void );
-
-    void fadeOut ( float seconds );
 
   private:
     //SoundFile *fp;
 };
 
-
-  } // namespace OpenAL
 } // namespace nom
 
 #endif // NOMLIB_AL_MUSIC_HEADERS defined

@@ -25,6 +25,9 @@
 # UnitTest framework tests
 set( NOM_BUILD_COMMON_TESTS off )
 
+# Audio subsystem tests
+set( NOM_BUILD_OPENAL_AUDIO_TESTS off )
+
 # Graphics tests
 set( NOM_BUILD_RENDERWINDOW_TESTS off )
 
@@ -100,6 +103,7 @@ set (
 include_directories( "${NOM_TESTS_HEADERS_DIR}" )
 
 include( "${NOM_TESTS_SOURCE_DIR}/common/CMakeLists.txt" )
+include( "${NOM_TESTS_SOURCE_DIR}/audio/CMakeLists.txt" )
 include( "${NOM_TESTS_SOURCE_DIR}/graphics/CMakeLists.txt" )
 include( "${NOM_TESTS_SOURCE_DIR}/gui/CMakeLists.txt" )
 include( "${NOM_TESTS_SOURCE_DIR}/math/CMakeLists.txt" )

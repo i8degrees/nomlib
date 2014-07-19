@@ -26,33 +26,33 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_AUDIO_HEADERS
-#define NOMLIB_AUDIO_HEADERS
-
-// Public header file
-
-#include <nomlib/config.hpp>
-
-#include "nomlib/audio/IAudioDevice.hpp"
-#include "nomlib/audio/IListener.hpp"
-#include "nomlib/audio/ISoundBuffer.hpp"
-#include "nomlib/audio/ISoundSource.hpp"
 #include "nomlib/audio/NullAudioDevice.hpp"
-#include "nomlib/audio/NullListener.hpp"
-#include "nomlib/audio/NullSoundBuffer.hpp"
-#include "nomlib/audio/NullSoundSource.hpp"
-#include "nomlib/audio/NullSound.hpp"
-#include "nomlib/audio/NullMusic.hpp"
-#include "nomlib/audio/AudioDeviceLocator.hpp"
 
-#if defined( NOM_USE_OPENAL )
-  #include "nomlib/audio/AL/AudioDevice.hpp"
-  #include "nomlib/audio/AL/Listener.hpp"
-  #include "nomlib/audio/AL/Music.hpp"
-  #include "nomlib/audio/AL/Sound.hpp"
-  #include "nomlib/audio/AL/SoundBuffer.hpp"
-  #include "nomlib/audio/AL/SoundFile.hpp"
-  #include "nomlib/audio/AL/SoundSource.hpp"
-#endif
+namespace nom {
 
-#endif // include guard defined
+NullAudioDevice::NullAudioDevice( void )
+{
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
+}
+
+NullAudioDevice::~NullAudioDevice( void )
+{
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
+}
+
+// std::shared_ptr<ALCdevice> NullAudioDevice::getAudioDevice( void ) const
+// {
+//   return nullptr;
+// }
+
+const std::string NullAudioDevice::getDeviceName( void ) const
+{
+  return "NullAudioDevice";
+}
+
+bool NullAudioDevice::isExtensionSupported( const std::string& extension ) const
+{
+  return false;
+}
+
+} // namespace nom

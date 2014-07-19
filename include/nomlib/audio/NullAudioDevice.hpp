@@ -26,33 +26,28 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_AUDIO_HEADERS
-#define NOMLIB_AUDIO_HEADERS
+#ifndef NOMLIB_AUDIO_NULL_AUDIO_DEVICE_HPP
+#define NOMLIB_AUDIO_NULL_AUDIO_DEVICE_HPP
 
-// Public header file
+#include <string>
+#include <memory>
 
-#include <nomlib/config.hpp>
-
+#include "nomlib/config.hpp"
 #include "nomlib/audio/IAudioDevice.hpp"
-#include "nomlib/audio/IListener.hpp"
-#include "nomlib/audio/ISoundBuffer.hpp"
-#include "nomlib/audio/ISoundSource.hpp"
-#include "nomlib/audio/NullAudioDevice.hpp"
-#include "nomlib/audio/NullListener.hpp"
-#include "nomlib/audio/NullSoundBuffer.hpp"
-#include "nomlib/audio/NullSoundSource.hpp"
-#include "nomlib/audio/NullSound.hpp"
-#include "nomlib/audio/NullMusic.hpp"
-#include "nomlib/audio/AudioDeviceLocator.hpp"
 
-#if defined( NOM_USE_OPENAL )
-  #include "nomlib/audio/AL/AudioDevice.hpp"
-  #include "nomlib/audio/AL/Listener.hpp"
-  #include "nomlib/audio/AL/Music.hpp"
-  #include "nomlib/audio/AL/Sound.hpp"
-  #include "nomlib/audio/AL/SoundBuffer.hpp"
-  #include "nomlib/audio/AL/SoundFile.hpp"
-  #include "nomlib/audio/AL/SoundSource.hpp"
-#endif
+namespace nom {
+
+class NullAudioDevice: public IAudioDevice
+{
+  public:
+    NullAudioDevice( void );
+    virtual ~NullAudioDevice( void );
+
+    // std::shared_ptr<ALCdevice> getAudioDevice( void ) const;
+    const std::string getDeviceName( void ) const;
+    bool isExtensionSupported( const std::string& extension ) const;
+};
+
+} // namespace nom
 
 #endif // include guard defined

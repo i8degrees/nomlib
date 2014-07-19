@@ -29,7 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/AL/SoundFile.hpp"
 
 namespace nom {
-  namespace OpenAL {
 
 SoundFile::SoundFile ( void )
 {
@@ -116,6 +115,4 @@ bool SoundFile::read ( std::vector<int16>& data )
   return true;
 }
 
-
-  } // namespace OpenAL
 } // namespace nom

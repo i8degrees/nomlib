@@ -68,3 +68,8 @@ void al_err ( const std::string& file, uint32 line );
 
 
 #endif // NOMLIB_OPENAL_HEADERS defined
+
+/// \class nom::OpenAL
+/// \ingroup audio
+///
+/// \see http://ffainelli.github.io/openal-example/

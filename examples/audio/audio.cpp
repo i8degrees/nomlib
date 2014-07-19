@@ -52,9 +52,9 @@ const std::string RESOURCE_AUDIO_SOUND = APP_RESOURCES_DIR + p.native() + "curso
 
 int main ( int argc, char* argv[] )
 {
-  nom::OpenAL::AudioDevice dev; // this must be declared first
-  nom::OpenAL::Listener listener; // Global audio volume control
-  nom::OpenAL::SoundBuffer buffer;
+  nom::IAudioDevice* dev = nullptr; // this must be declared first
+  nom::IListener* listener = nullptr; // Global audio volume control
+  nom::ISoundBuffer* buffer = nullptr;
   nom::Timer loops;
 
   // Fatal error; if we are not able to complete this step, it means that
@@ -66,37 +66,64 @@ int main ( int argc, char* argv[] )
   }
   atexit(nom::quit);
 
-  NOM_DUMP( dev.getDeviceName() );
+  // Quick and dirty method of testing the use of nomlib's audio subsystem
+  // #undef NOM_USE_OPENAL
 
-  listener.setVolume ( MAX_VOLUME );
-  bool ret = false;
+  // Initialize audio subsystem...
+  #if defined( NOM_USE_OPENAL )
+    dev = new nom::AudioDevice();
+    listener = new nom::Listener();
+    buffer = new nom::SoundBuffer();
+  #else
+    dev = new nom::NullAudioDevice();
+    listener = new nom::NullListener();
+    buffer = new nom::NullSoundBuffer();
+  #endif // defined NOM_USE_OPENAL
+
+  NOM_DUMP( dev->getDeviceName() );
+
+  listener->setVolume( 100.0f );
+
   if ( argv[1] != nullptr )
   {
-    ret = buffer.load ( argv[1] );
+    if( buffer->load( argv[1] ) == false )
+    {
+      NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not load audio file:", argv[1] );
+      return NOM_EXIT_FAILURE;
+    }
   }
   else
   {
-    ret = buffer.load ( RESOURCE_AUDIO_SOUND );
+    if( buffer->load( RESOURCE_AUDIO_SOUND ) == false )
+    {
+      NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not load audio file: ", RESOURCE_AUDIO_SOUND );
+      return NOM_EXIT_FAILURE;
+    }
   }
 
-  if ( ! ret )
-  {
-    NOM_LOG_ERR ( NOM, "Buffer loading err" );
-    return NOM_EXIT_FAILURE;
-  }
+  #if defined( NOM_USE_OPENAL )
+    // nom::ISoundSource* snd = new nom::Sound();
+  #else
+    // nom::ISoundSource* snd = new nom::NullSound();
+  #endif // defined NOM_USE_OPENAL
 
-  //nom::OpenAL::Sound snd ( buffer );
-  nom::OpenAL::Music snd ( buffer );
+  #if defined( NOM_USE_OPENAL )
+    nom::ISoundSource* snd = new nom::Music();
+  #else
+    nom::ISoundSource* snd = new nom::NullMusic();
+  #endif // defined NOM_USE_OPENAL
 
-  snd.setPitch ( 1.0 );
-  snd.setVolume ( MAX_VOLUME );
-  snd.setPosition ( nom::Point3f ( 0.0, 0.0, 0.0 ) );
-  snd.setVelocity ( nom::Point3f ( 0.0, 0.0, 0.0 ) );
-  snd.setLooping ( true );
+  snd->setBuffer( *buffer );
 
-  if ( snd.getStatus() != nom::SoundStatus::Playing ) snd.Play();
+  snd->setPitch ( 1.0 );
+  snd->setVolume ( 100.0f );
+  snd->setPosition ( nom::Point3f ( 0.0, 0.0, 0.0 ) );
+  snd->setVelocity ( nom::Point3f ( 0.0, 0.0, 0.0 ) );
+  snd->setLooping ( true );
 
-  nom::uint32 duration = buffer.getDuration();
+  if ( snd->getStatus() != nom::SoundStatus::Playing ) snd->Play();
+
+  nom::uint32 duration = buffer->getDuration();
   float duration_seconds = duration / 1000.0f;
   NOM_DUMP( duration_seconds );
 
@@ -105,14 +132,14 @@ int main ( int argc, char* argv[] )
   //float step = 1.0;
   // volume / seconds = step
 
-  //float step = snd.getVolume();
+  //float step = snd->getVolume();
   //float step_by = step / 4; // 4s or 4000ms
 
-  float pos = snd.getPlayPosition();
+  float pos = snd->getPlayPosition();
 
-    snd.fadeOut ( 4 );
+  snd->fadeOut( 4 );
 
-  while ( ( loops.ticks() <= duration * 2 ) && ( snd.getStatus() != nom::SoundStatus::Paused && snd.getStatus() != nom::SoundStatus::Stopped ) )
+  while ( ( loops.ticks() <= duration * 2 ) && ( snd->getStatus() != nom::SoundStatus::Paused && snd->getStatus() != nom::SoundStatus::Stopped ) )
   {
     // 0.455*2/4
     // ( duration * total_loops ) / milliseconds*2 where seconds is desired fade
@@ -120,12 +147,12 @@ int main ( int argc, char* argv[] )
     // duration / milliseconds*2 where milliseconds is desired fade out
     // ( over time)
 
-    if ( snd.getPlayPosition() >= 1.0 )
+    if ( snd->getPlayPosition() >= 1.0 )
     {
       // ...
     }
 
-    if ( snd.getPlayPosition() >= ( pos + 2.5 ) )
+    if ( snd->getPlayPosition() >= ( pos + 2.5 ) )
     {
       // ...
     }
@@ -134,9 +161,12 @@ int main ( int argc, char* argv[] )
   loops.stop();
   NOM_DUMP( loops.ticks() );
 
-  //std::cout << "Sample Count: " << snd.getSampleCount() << std::endl;
-  //std::cout << "Channel Count: " << snd.getChannelCount() << std::endl;
-  //std::cout << "Sample Rate: " << snd.getSampleRate() << std::endl;
+  //std::cout << "Sample Count: " << snd->getSampleCount() << std::endl;
+  //std::cout << "Channel Count: " << snd->getChannelCount() << std::endl;
+  //std::cout << "Sample Rate: " << snd->getSampleRate() << std::endl;
+
+  NOM_DELETE_PTR( dev );
+  NOM_DELETE_PTR( listener );
 
   return NOM_EXIT_SUCCESS;
 }

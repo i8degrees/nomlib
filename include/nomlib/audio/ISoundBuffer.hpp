@@ -26,33 +26,36 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_AUDIO_HEADERS
-#define NOMLIB_AUDIO_HEADERS
+#ifndef NOMLIB_AUDIO_ISOUND_BUFFER_HPP
+#define NOMLIB_AUDIO_ISOUND_BUFFER_HPP
 
-// Public header file
+#include <string>
 
-#include <nomlib/config.hpp>
+#include "nomlib/config.hpp"
 
-#include "nomlib/audio/IAudioDevice.hpp"
-#include "nomlib/audio/IListener.hpp"
-#include "nomlib/audio/ISoundBuffer.hpp"
-#include "nomlib/audio/ISoundSource.hpp"
-#include "nomlib/audio/NullAudioDevice.hpp"
-#include "nomlib/audio/NullListener.hpp"
-#include "nomlib/audio/NullSoundBuffer.hpp"
-#include "nomlib/audio/NullSoundSource.hpp"
-#include "nomlib/audio/NullSound.hpp"
-#include "nomlib/audio/NullMusic.hpp"
-#include "nomlib/audio/AudioDeviceLocator.hpp"
+namespace nom {
 
-#if defined( NOM_USE_OPENAL )
-  #include "nomlib/audio/AL/AudioDevice.hpp"
-  #include "nomlib/audio/AL/Listener.hpp"
-  #include "nomlib/audio/AL/Music.hpp"
-  #include "nomlib/audio/AL/Sound.hpp"
-  #include "nomlib/audio/AL/SoundBuffer.hpp"
-  #include "nomlib/audio/AL/SoundFile.hpp"
-  #include "nomlib/audio/AL/SoundSource.hpp"
-#endif
+// Forward declarations
+class Sound;
+
+/// \brief Abstract audio buffer interface
+class ISoundBuffer
+{
+  public:
+    virtual ~ISoundBuffer( void )
+    {
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_AUDIO, SDL_LOG_PRIORITY_VERBOSE );
+    }
+
+    virtual uint32 get( void ) const = 0;
+    virtual int64 getDuration( void ) const = 0;
+    virtual bool load( const std::string& filename ) = 0;
+
+  // protected:
+    virtual void attach( Sound* sound ) const = 0;
+    virtual void detach( Sound* sound ) const = 0;
+};
+
+} // namespace nom
 
 #endif // include guard defined

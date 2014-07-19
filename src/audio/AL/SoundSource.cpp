@@ -28,8 +28,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/audio/AL/SoundSource.hpp"
 
+// Private headers
+#include "nomlib/audio/AL/OpenAL.hpp"
+#include "nomlib/system/clock.hpp"
+
 namespace nom {
-  namespace OpenAL {
 
 SoundSource::SoundSource ( void )
 {
@@ -247,6 +250,41 @@ void SoundSource::setPlayPosition ( float seconds )
 AL_CHECK_ERR ( alSourcef ( source_id, AL_SEC_OFFSET, seconds ) );
 }
 
+void SoundSource::togglePause( void )
+{
+  if ( this->getStatus() == SoundStatus::Paused )
+  {
+    this->Play();
+  }
+  else if ( this->getStatus() == SoundStatus::Playing )
+  {
+    this->Pause();
+  }
+}
 
-  } // namespace OpenAL
+void SoundSource::fadeOut( float seconds )
+{
+  float current_volume = this->getVolume();
+  float fade_step = current_volume / seconds;
+
+  while ( this->getStatus() != SoundStatus::Paused && this->getStatus() != SoundStatus::Stopped )
+  {
+    if ( current_volume > 0.0 )
+    {
+      std::cout << "\nFading out\n";
+      this->setVolume ( current_volume );
+      NOM_DUMP( current_volume );
+    }
+    else
+    {
+      std::cout << "\nStopped\n";
+      this->Pause();
+    }
+
+    current_volume = current_volume - fade_step;
+    sleep ( 1000 ); // FIXME
+
+  } // while getStatus loop
+}
+
 } // namespace nom

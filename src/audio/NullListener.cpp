@@ -26,33 +26,73 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_AUDIO_HEADERS
-#define NOMLIB_AUDIO_HEADERS
-
-// Public header file
-
-#include <nomlib/config.hpp>
-
-#include "nomlib/audio/IAudioDevice.hpp"
-#include "nomlib/audio/IListener.hpp"
-#include "nomlib/audio/ISoundBuffer.hpp"
-#include "nomlib/audio/ISoundSource.hpp"
-#include "nomlib/audio/NullAudioDevice.hpp"
 #include "nomlib/audio/NullListener.hpp"
-#include "nomlib/audio/NullSoundBuffer.hpp"
-#include "nomlib/audio/NullSoundSource.hpp"
-#include "nomlib/audio/NullSound.hpp"
-#include "nomlib/audio/NullMusic.hpp"
-#include "nomlib/audio/AudioDeviceLocator.hpp"
 
-#if defined( NOM_USE_OPENAL )
-  #include "nomlib/audio/AL/AudioDevice.hpp"
-  #include "nomlib/audio/AL/Listener.hpp"
-  #include "nomlib/audio/AL/Music.hpp"
-  #include "nomlib/audio/AL/Sound.hpp"
-  #include "nomlib/audio/AL/SoundBuffer.hpp"
-  #include "nomlib/audio/AL/SoundFile.hpp"
-  #include "nomlib/audio/AL/SoundSource.hpp"
-#endif
+namespace nom {
 
-#endif // include guard defined
+NullListener::NullListener( void )
+{
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
+}
+
+NullListener::~NullListener( void )
+{
+  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
+}
+
+float NullListener::getVolume ( void ) const
+{
+  return 0.0f;
+}
+
+const Point3f NullListener::getPosition ( void ) const
+{
+  return Point3f( 0.0f, 0.0f, 0.0f );
+}
+
+const Point3f NullListener::getVelocity ( void ) const
+{
+  return Point3f( 0.0f, 0.0f, 0.0f );
+}
+
+const Point3f NullListener::getDirection ( void ) const
+{
+  return Point3f( 0.0f, 0.0f, -1.0f );
+}
+
+void NullListener::setPosition ( float x, float y, float z )
+{
+  // Do nothing
+}
+
+void NullListener::setPosition ( const Point3f& position )
+{
+  // Do nothing
+}
+
+void NullListener::setVelocity ( float x, float y, float z )
+{
+  // Do nothing
+}
+
+void NullListener::setVelocity ( const Point3f& velocity )
+{
+  // Do nothing
+}
+
+void NullListener::setDirection ( float x, float y, float z )
+{
+  // Do nothing
+}
+
+void NullListener::setDirection ( const Point3f& direction )
+{
+  // Do nothing
+}
+
+void NullListener::setVolume ( float gain )
+{
+  // Do nothing
+}
+
+} // namespace nom

@@ -29,26 +29,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_AL_SOUNDBUFFER_HEADERS
 #define NOMLIB_AL_SOUNDBUFFER_HEADERS
 
-#include <memory>
 #include <set>
+#include <vector>
 
 #include "nomlib/config.hpp"
-#include "nomlib/audio/AL/OpenAL.hpp"
-#include "nomlib/audio/AL/AudioDevice.hpp"
-#include "nomlib/audio/AL/SoundFile.hpp"
-#include "nomlib/audio/AL/Sound.hpp"
+#include "nomlib/audio/ISoundBuffer.hpp"
 
 namespace nom {
-  namespace OpenAL {
 
-// forward declarations
-class Sound;
-
-class SoundBuffer
+class SoundBuffer: public ISoundBuffer
 {
   public:
     SoundBuffer ( void );
-    ~SoundBuffer ( void );
+    virtual ~SoundBuffer( void );
 
     /// Obtain buffer data
     uint32 get ( void ) const;
@@ -56,7 +49,7 @@ class SoundBuffer
     /// Obtain buffer duration in milliseconds
     ///
     /// Default: zero (0)
-    sf_count_t getDuration ( void ) const;
+    int64 getDuration( void ) const;
 
     // getSampleRate
     // getChannelCount
@@ -85,11 +78,9 @@ class SoundBuffer
     /// Duration of sound buffer
     ///
     /// Default: zero (0)
-    sf_count_t buffer_duration;
+    int64 buffer_duration;
 };
 
-
-  } // namespace OpenAL
 } // namespace nom
 
 #endif // NOMLIB_AL_SOUNDBUFFER_HEADERS defined

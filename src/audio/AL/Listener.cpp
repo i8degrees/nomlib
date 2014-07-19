@@ -28,8 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/audio/AL/Listener.hpp"
 
+// Private headers
+#include "nomlib/audio/AL/OpenAL.hpp"
+
 namespace nom {
-  namespace OpenAL {
 
 Listener::Listener ( void )
 {
@@ -51,7 +53,7 @@ AL_CHECK_ERR ( alListenerfv ( AL_VELOCITY, velocity ) );
 AL_CHECK_ERR ( alListenerfv ( AL_ORIENTATION, direction ) );
 }
 
-Listener::~Listener ( void )
+Listener::~Listener( void )
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 
@@ -129,6 +131,4 @@ void Listener::setVolume ( float gain )
 AL_CHECK_ERR ( alListenerf ( AL_GAIN, gain * 0.01f ) );
 }
 
-
-  } // namespace OpenAL
 } // namespace nom

@@ -26,33 +26,66 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_AUDIO_HEADERS
-#define NOMLIB_AUDIO_HEADERS
+#ifndef NOMLIB_AUDIO_NULL_SOUND_SOURCE_HPP
+#define NOMLIB_AUDIO_NULL_SOUND_SOURCE_HPP
 
-// Public header file
+#include <memory>
 
-#include <nomlib/config.hpp>
-
-#include "nomlib/audio/IAudioDevice.hpp"
-#include "nomlib/audio/IListener.hpp"
-#include "nomlib/audio/ISoundBuffer.hpp"
+#include "nomlib/config.hpp"
+#include "nomlib/math/Point3.hpp"
 #include "nomlib/audio/ISoundSource.hpp"
-#include "nomlib/audio/NullAudioDevice.hpp"
-#include "nomlib/audio/NullListener.hpp"
-#include "nomlib/audio/NullSoundBuffer.hpp"
-#include "nomlib/audio/NullSoundSource.hpp"
-#include "nomlib/audio/NullSound.hpp"
-#include "nomlib/audio/NullMusic.hpp"
-#include "nomlib/audio/AudioDeviceLocator.hpp"
 
-#if defined( NOM_USE_OPENAL )
-  #include "nomlib/audio/AL/AudioDevice.hpp"
-  #include "nomlib/audio/AL/Listener.hpp"
-  #include "nomlib/audio/AL/Music.hpp"
-  #include "nomlib/audio/AL/Sound.hpp"
-  #include "nomlib/audio/AL/SoundBuffer.hpp"
-  #include "nomlib/audio/AL/SoundFile.hpp"
-  #include "nomlib/audio/AL/SoundSource.hpp"
-#endif
+namespace nom {
+
+class NullSoundSource: public ISoundSource
+{
+  public:
+    virtual ~NullSoundSource( void );
+
+    float getVolume ( void ) const;
+    float getMinVolume ( void ) const;
+    float getMaxVolume ( void ) const;
+    float getPitch ( void ) const;
+    bool getLooping ( void ) const;
+
+    Point3f getPosition ( void ) const;
+    Point3f getVelocity ( void ) const;
+
+    bool getPositionRelativeToListener ( void ) const;
+    float getMinDistance ( void ) const;
+    float getAttenuation ( void ) const;
+
+    int32 getBufferID ( void ) const;
+
+    float getPlayPosition ( void ) const;
+
+    SoundStatus getStatus ( void ) const;
+
+    void setVolume ( float gain );
+    void setMinVolume ( float gain );
+    void setMaxVolume ( float gain );
+    void setPitch ( float pitch );
+    void setLooping ( bool loops );
+
+    void setPosition ( float x, float y, float z );
+    void setPosition ( const Point3f& position );
+
+    void setVelocity ( float x, float y, float z );
+    void setVelocity ( const Point3f& velocity );
+
+    void setPositionRelativeToListener ( bool position );
+    void setMinDistance ( float distance );
+    void setAttenuation ( float attenuation );
+    void setPlayPosition ( float seconds );
+
+    void togglePause( void );
+    void fadeOut( float seconds );
+
+  protected:
+    /// Constructor can only be called from deriving classes
+    NullSoundSource( void );
+};
+
+} // namespace nom
 
 #endif // include guard defined

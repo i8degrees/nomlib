@@ -26,33 +26,36 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_AUDIO_HEADERS
-#define NOMLIB_AUDIO_HEADERS
+#ifndef NOMLIB_AUDIO_LISTENER_HPP
+#define NOMLIB_AUDIO_LISTENER_HPP
 
-// Public header file
+#include "nomlib/config.hpp"
+#include "nomlib/math/Point3.hpp"
 
-#include <nomlib/config.hpp>
+namespace nom {
 
-#include "nomlib/audio/IAudioDevice.hpp"
-#include "nomlib/audio/IListener.hpp"
-#include "nomlib/audio/ISoundBuffer.hpp"
-#include "nomlib/audio/ISoundSource.hpp"
-#include "nomlib/audio/NullAudioDevice.hpp"
-#include "nomlib/audio/NullListener.hpp"
-#include "nomlib/audio/NullSoundBuffer.hpp"
-#include "nomlib/audio/NullSoundSource.hpp"
-#include "nomlib/audio/NullSound.hpp"
-#include "nomlib/audio/NullMusic.hpp"
-#include "nomlib/audio/AudioDeviceLocator.hpp"
+/// \brief Abstract audio volume interface
+class IListener
+{
+  public:
+    virtual ~IListener( void )
+    {
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_AUDIO, SDL_LOG_PRIORITY_VERBOSE );
+    }
 
-#if defined( NOM_USE_OPENAL )
-  #include "nomlib/audio/AL/AudioDevice.hpp"
-  #include "nomlib/audio/AL/Listener.hpp"
-  #include "nomlib/audio/AL/Music.hpp"
-  #include "nomlib/audio/AL/Sound.hpp"
-  #include "nomlib/audio/AL/SoundBuffer.hpp"
-  #include "nomlib/audio/AL/SoundFile.hpp"
-  #include "nomlib/audio/AL/SoundSource.hpp"
-#endif
+    virtual float getVolume ( void ) const = 0;
+    virtual const Point3f getPosition ( void ) const = 0;
+    virtual const Point3f getVelocity ( void ) const = 0;
+    virtual const Point3f getDirection ( void ) const = 0;
+    virtual void setPosition ( float x, float y, float z ) = 0;
+    virtual void setPosition ( const Point3f& position ) = 0;
+    virtual void setVelocity ( float x, float y, float z ) = 0;
+    virtual void setVelocity ( const Point3f& velocity ) = 0;
+    virtual void setDirection ( float x, float y, float z ) = 0;
+    virtual void setDirection ( const Point3f& direction ) = 0;
+    virtual void setVolume ( float gain ) = 0;
+};
+
+} // namespace nom
 
 #endif // include guard defined

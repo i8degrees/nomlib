@@ -60,8 +60,8 @@ void AL_FreeAudioContext ( ALCcontext* ctx )
 } // namespace nom
 
 namespace nom {
-  namespace OpenAL {
 
+// Static initializations
 bool AudioDevice::audio_initialized = false;
 
 AudioDevice::AudioDevice ( void )
@@ -76,7 +76,7 @@ AudioDevice::AudioDevice ( const std::string& device_name )
     initialize ( device_name.c_str() );
 }
 
-AudioDevice::~AudioDevice ( void )
+AudioDevice::~AudioDevice( void )
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 }
@@ -122,16 +122,16 @@ NOM_LOG_ERR ( NOM, "Failed to open the audio device." );
 
 bool AudioDevice::initialized ( void ) const
 {
-  if ( this->audio_initialized )
-    return true;
-  else
+  // if ( this->audio_initialized )
+    // return true;
+  // else
     return false;
 }
 
-std::shared_ptr<ALCdevice> AudioDevice::getAudioDevice ( void ) const
-{
-  return this->audio_device;
-}
+// std::shared_ptr<ALCdevice> AudioDevice::getAudioDevice ( void ) const
+// {
+//   return this->audio_device;
+// }
 
 const std::string AudioDevice::getDeviceName ( void ) const
 {
@@ -154,6 +154,4 @@ bool AudioDevice::isExtensionSupported ( const std::string& extension ) const
   return false;
 }
 
-
-  } // namespace OpenAL
 } // namespace nom

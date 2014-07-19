@@ -74,7 +74,7 @@ int QuestionDialogBox::hit_test( const Point2i& pt )
 
   for( auto itr = this->choices_.begin(); itr != this->choices_.end(); ++itr )
   {
-    if( this->contains( itr->get(), pt ) == true )
+    if( this->contains_label( itr->get(), pt ) == true )
     {
       // Found our array / element position within the internal storage
       // container!

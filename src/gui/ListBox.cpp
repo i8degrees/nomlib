@@ -257,7 +257,7 @@ int ListBox::hit_test( const Point2i& pt )
 
     Text* label = NOM_DYN_PTR_CAST( Text*, itr->get() );
 
-    if( this->contains( label, pt ) == true )
+    if( this->contains_label( label, pt ) == true )
     {
       // Found our array / element position within the internal storage
       // container!

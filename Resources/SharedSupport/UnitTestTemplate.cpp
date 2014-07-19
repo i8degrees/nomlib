@@ -86,8 +86,6 @@ TEST_F( Template, TemplateTestDesc )
   ASSERT_TRUE( true );
 }
 
-} // namespace nom
-
 int main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );

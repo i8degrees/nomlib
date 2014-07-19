@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/gui/MessageBox.hpp"
 
 // Forward declarations
+#include "nomlib/gui/UIEvent.hpp"
 #include "nomlib/gui/UIWidgetEvent.hpp"
 #include "nomlib/gui/UIEventDispatcher.hpp"
 
@@ -338,14 +339,18 @@ void MessageBox::update( void )
   this->updated_ = true;
 }
 
-void MessageBox::on_size_changed( const UIWidgetEvent& ev )
+void MessageBox::on_size_changed( UIEvent* ev )
 {
   NOM_STUBBED( NOM );
 }
 
-void MessageBox::on_mouse_down( const UIWidgetEvent& ev )
+void MessageBox::on_mouse_down( UIEvent* ev )
 {
-  Event evt = ev.event();
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
+  Event evt = event->event();
 
   if( evt.type == SDL_MOUSEBUTTONDOWN )
   {
@@ -378,7 +383,7 @@ void MessageBox::on_mouse_down( const UIWidgetEvent& ev )
   } // end if evt.type is SDL_MOUSEBUTTONDOWN
 }
 
-void MessageBox::on_mouse_up( const UIWidgetEvent& ev )
+void MessageBox::on_mouse_up( UIEvent* ev )
 {
   //
 }

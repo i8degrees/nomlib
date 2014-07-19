@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Forward declarations
 #include "nomlib/gui/UIEventDispatcher.hpp"
+#include "nomlib/gui/UIEvent.hpp"
 #include "nomlib/gui/UIWidgetEvent.hpp"
 
 namespace nom {
@@ -167,15 +168,19 @@ void QuestionDialogBox::update( void )
   }
 }
 
-void QuestionDialogBox::on_size_changed( const UIWidgetEvent& ev )
+void QuestionDialogBox::on_size_changed( UIEvent* ev )
 {
   NOM_STUBBED( NOM );
 }
 
-void QuestionDialogBox::on_mouse_down( const UIWidgetEvent& ev )
+void QuestionDialogBox::on_mouse_down( UIEvent* ev )
 {
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
   int index = 0;
-  Event event = ev.event();
+  Event evt = event->event();
 
   // Let our base class handle its share of the events -- the title caption &
   // message text bounds.
@@ -185,11 +190,11 @@ void QuestionDialogBox::on_mouse_down( const UIWidgetEvent& ev )
   MessageBox::on_mouse_down( ev );
 
   // Registered action for mouse button event
-  if( event.type == SDL_MOUSEBUTTONDOWN )
+  if( evt.type == SDL_MOUSEBUTTONDOWN )
   {
     UIEvent evcode[2];
     UIWidgetEvent wev;
-    Point2i mouse( event.mouse.x, event.mouse.y );
+    Point2i mouse( evt.mouse.x, evt.mouse.y );
     index = this->hit_test( mouse );
 
     if( index != npos )
@@ -210,12 +215,12 @@ void QuestionDialogBox::on_mouse_down( const UIWidgetEvent& ev )
       this->set_selection( index );
 
       // Set the associated nom::Event object for this UI event.
-      wev.set_event( event );
+      wev.set_event( evt );
 
       wev.set_id( this->id() );
 
       // Single mouse click event
-      if( event.mouse.clicks < 2 )
+      if( evt.mouse.clicks < 2 )
       {
         evcode[0] = UIEvent::ON_MOUSE_DOWN;   // Private event
         evcode[1] = UIEvent::MOUSE_DOWN;      // Public event
@@ -241,18 +246,22 @@ void QuestionDialogBox::on_mouse_down( const UIWidgetEvent& ev )
   } // end if event type == SDL_MOUSEBUTTONDOWN
 }
 
-void QuestionDialogBox::on_mouse_up( const UIWidgetEvent& ev )
+void QuestionDialogBox::on_mouse_up( UIEvent* ev )
 {
   // Stub
 }
 
-void QuestionDialogBox::on_mouse_wheel( const UIWidgetEvent& ev )
+void QuestionDialogBox::on_mouse_wheel( UIEvent* ev )
 {
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
   int index = 0;
-  Event event = ev.event();
+  Event evt = event->event();
 
   // Registered action for mouse button event
-  if( event.type == SDL_MOUSEWHEEL )
+  if( evt.type == SDL_MOUSEWHEEL )
   {
     UIWidgetEvent wev;
 
@@ -286,7 +295,7 @@ void QuestionDialogBox::on_mouse_wheel( const UIWidgetEvent& ev )
     }
 
     // Set the associated nom::Event object for this UI event.
-    wev.set_event( event );
+    wev.set_event( evt );
 
     wev.set_id( this->id() );
 
@@ -305,7 +314,7 @@ void QuestionDialogBox::on_mouse_wheel( const UIWidgetEvent& ev )
     int selected = this->selection();
 
     // Up
-    if( event.wheel.y > 0 && selected > 0 )
+    if( evt.wheel.y > 0 && selected > 0 )
     {
       --selected;
       this->set_selection( selected );
@@ -313,7 +322,7 @@ void QuestionDialogBox::on_mouse_wheel( const UIWidgetEvent& ev )
     }
 
     // Down
-    else if( event.wheel.y < 0 && selected < this->choices_.size() - 1 )
+    else if( evt.wheel.y < 0 && selected < this->choices_.size() - 1 )
     {
       ++selected;
       this->set_selection( selected );
@@ -327,14 +336,18 @@ void QuestionDialogBox::on_mouse_wheel( const UIWidgetEvent& ev )
   } // end if event type == SDL_MOUSEWHEEL
 }
 
-void QuestionDialogBox::on_key_down( const UIWidgetEvent& ev )
+void QuestionDialogBox::on_key_down( UIEvent* ev )
 {
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
   int index = 0;
-  nom::Event event = ev.event();
+  nom::Event evt = event->event();
   UIWidgetEvent wev;
 
   // Registered action for key press event
-  if( event.type == SDL_KEYDOWN )
+  if( evt.type == SDL_KEYDOWN )
   {
     // TODO:
     if( this->focused() == false )
@@ -365,7 +378,7 @@ void QuestionDialogBox::on_key_down( const UIWidgetEvent& ev )
     }
 
     // Set the associated nom::Event object for this UI event.
-    wev.set_event( event );
+    wev.set_event( evt );
 
     wev.set_id( this->id() );
 
@@ -383,14 +396,14 @@ void QuestionDialogBox::on_key_down( const UIWidgetEvent& ev )
     // selection index.
     int selected = this->selection();
 
-    if( event.key.sym == SDLK_UP && selected > 0 )
+    if( evt.key.sym == SDLK_UP && selected > 0 )
     {
       --selected;
 
       this->set_selection( selected );
       // NOM_DUMP(this->selection() );
     }
-    else if( event.key.sym == SDLK_DOWN && ( selected < this->choices_.size() - 1 ) )
+    else if( evt.key.sym == SDLK_DOWN && ( selected < this->choices_.size() - 1 ) )
     {
       ++selected;
 
@@ -410,7 +423,7 @@ void QuestionDialogBox::on_key_down( const UIWidgetEvent& ev )
   } // end if event type == SDL_KEYDOWN
 }
 
-void QuestionDialogBox::on_key_up( const UIWidgetEvent& ev )
+void QuestionDialogBox::on_key_up( UIEvent* ev )
 {
   // Stub
 }

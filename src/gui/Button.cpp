@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/gui/IDecorator.hpp"
 #include "nomlib/gui/UIStyle.hpp"
 #include "nomlib/gui/UIEventDispatcher.hpp"
+#include "nomlib/gui/UIEvent.hpp"
 #include "nomlib/gui/UIWidgetEvent.hpp"
 
 namespace nom {
@@ -250,11 +251,15 @@ void Button::update_bounds( void )
   this->label_.set_size( this->size() );
 }
 
-void Button::on_update( const UIWidgetEvent& ev )
+void Button::on_update( UIEvent* ev )
 {
   // NOM_LOG_TRACE( NOM );
 
-  Event evt = ev.event();
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
+  Event evt = event->event();
 
   if( evt.type != UIEvent::ON_WIDGET_UPDATE )
   {
@@ -267,9 +272,13 @@ void Button::on_update( const UIWidgetEvent& ev )
   this->update();
 }
 
-void Button::on_size_changed( const UIWidgetEvent& ev )
+void Button::on_size_changed( UIEvent* ev )
 {
-  Event evt = ev.event();
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
+  Event evt = event->event();
 
   if( evt.type != SDL_WINDOWEVENT_SIZE_CHANGED )
   {
@@ -279,11 +288,11 @@ void Button::on_size_changed( const UIWidgetEvent& ev )
   if( this->decorator() )
   {
     // Update the attached decorator (border & possibly a background)
-    this->decorator()->set_bounds( ev.resized_bounds_ );
+    this->decorator()->set_bounds( event->resized_bounds_ );
   }
 
   // Update ourselves with the new rendering coordinates
-  this->set_bounds( ev.resized_bounds_ );
+  this->set_bounds( event->resized_bounds_ );
 
   // Updating the text label's coordinates and dimensions also ensures that its
   // alignment is recalculated.
@@ -295,11 +304,15 @@ void Button::on_size_changed( const UIWidgetEvent& ev )
   this->update();
 }
 
-void Button::on_mouse_down( const UIWidgetEvent& ev )
+void Button::on_mouse_down( UIEvent* ev )
 {
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
   this->set_button_state( Button::State::Pressed );
 
-  UIWidgetEvent evt( this->button_state(), this->name(), ev.event(), this->id() );
+  UIWidgetEvent evt( this->button_state(), this->name(), event->event(), this->id() );
 
   // Send the UI event object to the registered private event callback.
   this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, evt );
@@ -308,11 +321,15 @@ void Button::on_mouse_down( const UIWidgetEvent& ev )
   this->dispatcher()->emit( UIEvent::MOUSE_DOWN, evt );
 }
 
-void Button::on_mouse_up( const UIWidgetEvent& ev )
+void Button::on_mouse_up( UIEvent* ev )
 {
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
   this->set_button_state( Button::State::Default );
 
-  UIWidgetEvent evt( this->button_state(), this->name(), ev.event(), this->id() );
+  UIWidgetEvent evt( this->button_state(), this->name(), event->event(), this->id() );
 
   // Send the UI event object to the registered private event callback.
   this->dispatcher()->emit( UIEvent::ON_MOUSE_UP, evt );
@@ -321,13 +338,17 @@ void Button::on_mouse_up( const UIWidgetEvent& ev )
   this->dispatcher()->emit( UIEvent::MOUSE_UP, evt );
 }
 
-void Button::on_mouse_enter( const UIWidgetEvent& ev )
+void Button::on_mouse_enter( UIEvent* ev )
 {
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
   // this->set_button_state( Button::State::Pressed );
 
   // Send the button state and text string of the set label at the time of
   // the event.
-  UIWidgetEvent evt( this->button_state(), this->label_text(), ev.event(), this->id() );
+  UIWidgetEvent evt( this->button_state(), this->label_text(), event->event(), this->id() );
 
   // Send the UI event object to the registered private event callback.
   this->dispatcher()->emit( UIEvent::ON_MOUSE_MOTION_ENTER, evt );
@@ -336,13 +357,17 @@ void Button::on_mouse_enter( const UIWidgetEvent& ev )
   this->dispatcher()->emit( UIEvent::MOUSE_MOTION_ENTER, evt );
 }
 
-void Button::on_mouse_leave( const UIWidgetEvent& ev )
+void Button::on_mouse_leave( UIEvent* ev )
 {
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
   // this->set_button_state( Button::State::Default );
 
   // Send the button state and text string of the set label at the time of
   // the event.
-  UIWidgetEvent evt( this->button_state(), this->label_text(), ev.event(), this->id() );
+  UIWidgetEvent evt( this->button_state(), this->label_text(), event->event(), this->id() );
 
   // Send the UI event object to the registered private event callback.
   this->dispatcher()->emit( UIEvent::ON_MOUSE_MOTION_LEAVE, evt );

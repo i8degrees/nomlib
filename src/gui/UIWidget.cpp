@@ -40,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/gui/UILayout.hpp"
 #include "nomlib/gui/UIStyle.hpp"
 #include "nomlib/gui/UIEventDispatcher.hpp"
+#include "nomlib/gui/UIEvent.hpp"
 #include "nomlib/gui/UIWidgetEvent.hpp"
 
 // #define NOM_DEBUG_OUTPUT_LAYOUT_DATA
@@ -69,8 +70,13 @@ void UIWidget::initialize (
                             const std::string& name
                           )
 {
+
+  if( this->dispatcher() == nullptr )
+  {
+    this->set_event_dispatcher( new UIEventDispatcher() );
+  }
+
   // Sane defaults
-  this->set_event_dispatcher( new UIEventDispatcher() );
   this->set_focused( false );
   this->set_visibility( true );
   this->set_updated( false );
@@ -897,13 +903,13 @@ bool UIWidget::process_event( const Event& ev )
         {
           // NOM_DUMP( (*it)->name() );
           // NOM_DUMP("motion");
-          (*it)->on_mouse_enter( ev );
+          (*it)->on_mouse_enter( new UIWidgetEvent( ev ) );
 
           // return true;
         }
         else  // Widget bounds do not intersect mouse coordinates
         {
-          (*it)->on_mouse_leave( ev );
+          (*it)->on_mouse_leave( new UIWidgetEvent( ev ) );
 
           // return true;
         }
@@ -912,31 +918,32 @@ bool UIWidget::process_event( const Event& ev )
       {
         if( widget_bounds.contains( mouse_coords ) )
         {
-          (*it)->on_mouse_down( ev );
+          (*it)->on_mouse_down( new UIWidgetEvent( ev ) );
 
           return true;
         }
       }
       else if( ev.type == SDL_MOUSEBUTTONUP )
       {
+
         if( widget_bounds.contains( mouse_coords ) )
         {
-          (*it)->on_mouse_up( ev );
+          (*it)->on_mouse_up( new UIWidgetEvent( ev ) );
 
           return true;
         }
       }
       else if( ev.type == SDL_MOUSEWHEEL )
       {
-        (*it)->on_mouse_wheel( ev );
+        (*it)->on_mouse_wheel( new UIWidgetEvent( ev ) );
       }
       else if( ev.type == SDL_KEYDOWN )
       {
-        (*it)->on_key_down( ev );
+        (*it)->on_key_down( new UIWidgetEvent( ev ) );
       }
       else if( ev.type == SDL_KEYUP )
       {
-        (*it)->on_key_up( ev );
+        (*it)->on_key_up( new UIWidgetEvent( ev ) );
       }
     }
   }
@@ -1163,19 +1170,23 @@ void UIWidget::resize( const Size2i& size )
   // this->update();
 }
 
-UIEventDispatcher* UIWidget::dispatcher( void ) const
+IUIEventDispatcher* UIWidget::dispatcher( void ) const
 {
   // Sanity check; ensure that we are not an invalid object state (NULL).
-  NOM_ASSERT( this->dispatcher_.get() != nullptr );
+  // NOM_ASSERT( this->dispatcher_.get() != nullptr );
 
   return this->dispatcher_.get();
 }
 
 // Protected scope
 
-void UIWidget::on_size_changed( const UIWidgetEvent& ev )
+void UIWidget::on_size_changed( UIEvent* ev )
 {
-  Event evt = ev.event();
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
+  Event evt = event->event();
 
   if( evt.type != SDL_WINDOWEVENT_SIZE_CHANGED )
   {
@@ -1187,11 +1198,11 @@ void UIWidget::on_size_changed( const UIWidgetEvent& ev )
   if( this->decorator() != nullptr )
   {
     // Update the attached decorator (border & possibly a background)
-    this->decorator()->set_bounds( ev.resized_bounds_ );
+    this->decorator()->set_bounds( event->resized_bounds_ );
   }
 
   // Update ourselves with the new rendering coordinates
-  this->set_bounds( ev.resized_bounds_ );
+  this->set_bounds( event->resized_bounds_ );
 
   // NOM_DUMP(this->position());
   // NOM_DUMP(this->size());
@@ -1199,37 +1210,37 @@ void UIWidget::on_size_changed( const UIWidgetEvent& ev )
   // this->update();
 }
 
-void UIWidget::on_mouse_down( const UIWidgetEvent& ev )
+void UIWidget::on_mouse_down( UIEvent* ev )
 {
   // Do nothing
 }
 
-void UIWidget::on_mouse_up( const UIWidgetEvent& ev )
+void UIWidget::on_mouse_up( UIEvent* ev )
 {
   // Do nothing
 }
 
-void UIWidget::on_mouse_enter( const UIWidgetEvent& ev )
+void UIWidget::on_mouse_enter( UIEvent* ev )
 {
   // Do nothing
 }
 
-void UIWidget::on_mouse_leave( const UIWidgetEvent& ev )
+void UIWidget::on_mouse_leave( UIEvent* ev )
 {
   // Do nothing
 }
 
-void UIWidget::on_mouse_wheel( const UIWidgetEvent& ev )
+void UIWidget::on_mouse_wheel( UIEvent* ev )
 {
   // Do nothing
 }
 
-void UIWidget::on_key_down( const UIWidgetEvent& ev )
+void UIWidget::on_key_down( UIEvent* ev )
 {
   // Do nothing
 }
 
-void UIWidget::on_key_up( const UIWidgetEvent& ev )
+void UIWidget::on_key_up( UIEvent* ev )
 {
   // Do nothing
 }
@@ -1286,7 +1297,7 @@ void UIWidget::set_parent_bounds( const IntRect& bounds )
   this->parent_bounds_ = bounds;
 }
 
-void UIWidget::set_event_dispatcher( UIEventDispatcher* dispatcher )
+void UIWidget::set_event_dispatcher( IUIEventDispatcher* dispatcher )
 {
   this->dispatcher_.reset( dispatcher );
 }

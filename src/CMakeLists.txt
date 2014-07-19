@@ -100,8 +100,8 @@ set ( GUI_SOURCE
       ${SRC_DIR}/gui/DataViewList.cpp
       ${SRC_DIR}/gui/DataViewItem.cpp
       ${SRC_DIR}/gui/UIEventDispatcher.cpp
-      ${SRC_DIR}/gui/UIEventCallback.cpp
       ${SRC_DIR}/gui/UIWidgetEvent.cpp
+      ${SRC_DIR}/gui/UIEvent.cpp
       ${SRC_DIR}/gui/UIItemContainer.cpp
       ${SRC_DIR}/gui/UIWidgetLayoutItem.cpp
       ${SRC_DIR}/gui/UIBoxLayout.cpp
@@ -111,7 +111,6 @@ set ( GUI_SOURCE
       # ${SRC_DIR}/gui/UIItemListControl.cpp
       # ${SRC_DIR}/gui/ButtonLabel.cpp
       # ${SRC_DIR}/gui/UIChoice.cpp
-      # ${SRC_DIR}/gui/UIEvent.cpp
       ${SRC_DIR}/gui/UIStyle.cpp
       ${SRC_DIR}/gui/String.cpp
     )

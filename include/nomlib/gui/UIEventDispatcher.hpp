@@ -37,47 +37,77 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/gui/UIEvent.hpp"
 #include "nomlib/gui/UIWidgetEvent.hpp"
-#include "nomlib/gui/UIEventCallback.hpp"
 
 namespace nom {
 
-/*
-struct EventType
+/// \brief Pure abstract interface for an event listener.
+///
+/// \note Observer pattern
+///
+/// \see UIEventDispatcher
+class IUIEventListener
 {
   public:
-    EventType( void ) {}
-    ~EventType( void ) {}
+    typedef IUIEventListener self_type;
 
-    EventType( enum UIEvent type )
+    typedef UIEvent event_type;
+
+    virtual ~IUIEventListener( void )
     {
-      this->type_ = type;
-      this->id_ = -1;
+      // NOM_LOG_TRACE( NOM );
     }
 
-    EventType( enum UIEvent type, int64 id )
+    virtual void operator() ( event_type& ev ) const = 0;
+};
+
+/// \brief Widget event listener
+///
+/// \note Observer pattern
+///
+/// \see UIEventDispatcher
+class UIWidgetListener: public IUIEventListener
+{
+  public:
+    typedef UIWidgetListener self_type;
+
+    typedef UIEvent event_type;
+    typedef std::function<void(event_type*)> callback_type;
+
+    UIWidgetListener( const callback_type& observer )
     {
-      this->type_ = type;
-      this->id_ = id;
+      this->cb_ = observer;
     }
 
-    bool operator <( const EventType& rhs ) const
+    virtual ~UIWidgetListener( void )
     {
-      // return( this->type_ < rhs.type_ );
-      return( this->type_ < rhs.type_ );
+      // NOM_LOG_TRACE( NOM );
     }
 
-    bool operator ==( const EventType& rhs ) const
+    void operator() ( event_type& ev ) const
     {
-      // return( this->type_ == rhs.type_ );
-      return( this->id_ == rhs.id_ );
+      this->cb_( &ev );
     }
 
   private:
-    int64 id_;
-    enum UIEvent type_;
-    // UIEventCallback* delegate_;
+    std::function<void(event_type*)> cb_;
 };
-*/
+
+class IUIEventDispatcher
+{
+  public:
+    typedef IUIEventDispatcher self_type;
+
+    typedef UIEvent event_type;
+    typedef IUIEventListener callback_type;
+
+    virtual ~IUIEventDispatcher( void );
+
+    virtual bool register_event_listener( const event_type& ev, std::shared_ptr<callback_type> observer ) = 0;
+    virtual bool remove_event_listener( const event_type& key ) = 0;
+    virtual bool emit( const event_type& ev, UIEvent& ) const = 0;
+    virtual uint32 size( void ) const = 0;
+    virtual bool find( const event_type& key ) const = 0;
+};
 
 /// \brief Events manager
 ///
@@ -86,15 +116,11 @@ struct EventType
 ///
 /// \note This method is modeled after the Observer pattern's Subject class
 /// interface.
-class UIEventDispatcher
+class UIEventDispatcher: public IUIEventDispatcher
 {
    public:
     /// \brief The object's class name.
     typedef UIEventDispatcher self_type;
-
-    /// \brief A raw pointer to the object's instance.
-    typedef self_type* raw_ptr;
-    typedef std::unique_ptr<self_type> unique_ptr;
 
     /// \brief A raw pointer to the object's instance.
     typedef UIEvent event_type;
@@ -102,23 +128,17 @@ class UIEventDispatcher
     /// \brief The data container type of the callback.
     ///
     /// \remarks Delegate execution is done via C++'s object operator method.
-    typedef UIEventCallback callback_type;
+    typedef IUIEventListener callback_type;
 
     /// \brief The data container type that holds a one-to-one mapping of
     /// registered event observers to its event identifier object.
-    typedef std::map<event_type, std::vector<callback_type>> CallbackTable;
+    typedef std::map<event_type, std::vector<std::shared_ptr<callback_type>>> event_table;
 
     /// \brief Default constructor.
     UIEventDispatcher( void );
 
     /// \brief Destructor.
-    ~UIEventDispatcher( void );
-
-    /// \brief Copy constructor.
-    UIEventDispatcher( const self_type& rhs );
-
-    /// \brief Copy assignment operator.
-    self_type& operator =( const self_type& rhs );
+    virtual ~UIEventDispatcher( void );
 
     /// \brief Add an event observer (listener).
     ///
@@ -128,7 +148,7 @@ class UIEventDispatcher
     ///
     /// \returns Boolean TRUE upon a successful registration; boolean FALSE
     /// upon failure to register the event listener.
-    bool register_event_listener( const event_type& ev, const callback_type& observer );
+    bool register_event_listener( const event_type& ev, std::shared_ptr<callback_type> observer );
 
     /// \brief Remove an event listener.
     ///
@@ -144,7 +164,7 @@ class UIEventDispatcher
 
     /// \note This method is modeled after the Observer pattern's notify or
     /// update method.
-    bool emit( const event_type& ev, UIWidgetEvent& data ) const;
+    bool emit( const event_type& ev, UIEvent& data ) const;
 
     /// \brief Search the list of registered observers for a particular event
     /// type.
@@ -158,25 +178,40 @@ class UIEventDispatcher
 
   private:
     /// \brief Internal getter helper for observers.
-    const CallbackTable& observers( void ) const;
+    const event_table& observers( void ) const;
 
     /// \brief Internal setter helper for observers.
-    void set_observers( const CallbackTable& ev_table );
+    void set_observers( const event_table& ev_table );
 
-    CallbackTable observers_;
+    event_table observers_;
 };
 
 } // namespace nom
 
-/// \brief Convenience macro for binding UI widget events.
+/// \brief Convenience macro for registering private UI widget events.
 ///
 /// \param obj  The nom::UIWidget deriving object that is calling from.
 /// \param evt  The nom::UIEvent type to register.
 /// \param func The callback method to be executed.
 ///
-/// \remarks See also: nom::UIEvent, nom::UIWidgetEvent.
+/// \remarks This macro is intended to be used within a class deriving from
+/// nom::UIWidget.
+///
+/// \see See also: nom::UIEvent, nom::UIWidgetEvent.
 #define NOM_CONNECT_UIEVENT( obj, evt, func ) \
-  ( obj->dispatcher()->register_event_listener( evt, nom::UIEventCallback( [&] ( const nom::UIWidgetEvent& ev ) { func( ev ); } ) ) )
+  ( obj->dispatcher()->register_event_listener( evt, std::make_shared<UIWidgetListener>( [&] ( UIEvent* ev ) { func( ev ); } ) ) )
+
+/// \brief Convenience macro for registering public UI widget events.
+///
+/// \param obj  The nom::UIWidget deriving object that is calling from.
+/// \param evt  The nom::UIEvent type to register.
+/// \param func The callback method to be executed.
+///
+/// \remarks This macro is intended to be used within application-level code.
+///
+/// \see See also: nom::UIWidget, nom::UIEvent.
+#define NOM_CONNECT_UIWIDGET_EVENT( obj, evt, func ) \
+  ( obj->dispatcher()->register_event_listener( evt, std::make_shared<UIWidgetListener>( [&] ( UIEvent* ev ) { func; } ) ) )
 
 #endif // include guard defined
 

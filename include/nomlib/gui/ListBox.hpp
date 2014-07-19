@@ -45,7 +45,7 @@ class UIItemContainer;
 class IDecorator;
 class UIStyle;
 class UIEventDispatcher;
-class UIWidgetEvent;
+class UIEvent;
 
 /// \brief GUI list box widget.
 class ListBox: public UIWidget
@@ -117,9 +117,9 @@ class ListBox: public UIWidget
 
   protected:
     /// \brief Re-implements UIWidget::on_size_changed.
-    virtual void on_size_changed( const UIWidgetEvent& ev );
+    virtual void on_size_changed( UIEvent* ev );
 
-    virtual void on_update( const UIWidgetEvent& ev );
+    virtual void on_update( UIEvent* ev );
 
     /// \brief Default event listener for handling key press events.
     ///
@@ -127,15 +127,15 @@ class ListBox: public UIWidget
     /// label, which in turn, also updates the widget. The call to update
     /// allows -- amongst other things -- the ability to update the text color
     /// to the selection text.
-    virtual void on_key_down( const UIWidgetEvent& ev );
+    virtual void on_key_down( UIEvent* ev );
 
     /// \brief Default event listener for handling mouse down events.
     ///
     /// \todo Explain the contrast in why this method call is vastly simplified
     /// in comparison to the method logic in on_key_down and on_mouse_down.
-    virtual void on_mouse_down( const UIWidgetEvent& ev );
+    virtual void on_mouse_down( UIEvent* ev );
 
-    virtual void on_mouse_enter( const UIWidgetEvent& ev );
+    virtual void on_mouse_enter( UIEvent* ev );
 
     /// \brief Default event listener for handling mouse wheel events.
     ///
@@ -143,7 +143,7 @@ class ListBox: public UIWidget
     /// label, which in turn, also updates the widget. The call to update
     /// allows -- amongst other things -- the ability to update the text color
     /// to the selection text.
-    virtual void on_mouse_wheel( const UIWidgetEvent& ev );
+    virtual void on_mouse_wheel( UIEvent* ev );
 
     /// \brief Re-implements UIWidget::set_focused.
     void set_focused( bool state );

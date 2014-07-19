@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/gui/DataViewListStore.hpp"
 #include "nomlib/gui/UIStyle.hpp"
 #include "nomlib/gui/UIEventDispatcher.hpp"
+#include "nomlib/gui/UIEvent.hpp"
 #include "nomlib/gui/UIWidgetEvent.hpp"
 
 namespace nom {
@@ -383,9 +384,13 @@ void DataViewList::update( void )
   this->update_items();
 }
 
-void DataViewList::on_mouse_down( const UIWidgetEvent& ev )
+void DataViewList::on_mouse_down( UIEvent* ev )
 {
-  Event evt = ev.event();
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
+  Event evt = event->event();
 
   // Registered event for selection on_click
   if( evt.type == SDL_MOUSEBUTTONDOWN )
@@ -406,7 +411,7 @@ void DataViewList::on_mouse_down( const UIWidgetEvent& ev )
 
       if( label_bounds.contains( mouse_coords ) )
       {
-        UIWidgetEvent item;
+        UIWidgetTreeEvent item;
 
         // Send the array index in our event; this signifies which choice was
         // selected.
@@ -486,7 +491,7 @@ void DataViewList::on_mouse_down( const UIWidgetEvent& ev )
 
           if( object.contains( mouse_coords ) )
           {
-            UIWidgetEvent item;
+            UIWidgetTreeEvent item;
 
             // Send the current frame identifier used for rendering of the
             // sprite sheet.
@@ -502,6 +507,12 @@ void DataViewList::on_mouse_down( const UIWidgetEvent& ev )
             // Associate the widget's unique identifier for this widget's event
             // object.
             item.set_id( this->id() );
+
+            Text* textual_item = NOM_DYN_PTR_CAST( Text*, it->get() );
+            if( textual_item )
+            {
+              item.set_data( new String( textual_item->text() ) );
+            }
 
             // Send the UI event object to the registered callback; public event
             // slot.

@@ -34,10 +34,16 @@ class UIEventDispatcherTest: public ::testing::Test
       NOM_DUMP( x );
     }
 
-    void foo2( const nom::UIWidgetEvent& ev )
+    void foo2( UIEvent* ev )
     {
-      NOM_DUMP( ev.index() );
-      NOM_DUMP( ev.text() );
+      NOM_ASSERT( ev != nullptr );
+      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+      NOM_ASSERT( event != nullptr );
+
+      // Event evt = event->event();
+
+      NOM_DUMP( event->index() );
+      NOM_DUMP( event->text() );
     }
 };
 
@@ -47,12 +53,12 @@ TEST_F( UIEventDispatcherTest, UIEventDispatcherTest_0 )
   nom::UIWidgetEvent ev;
 
   nom::UIEventDispatcher e;
-  e.register_event_listener( nom::UIEvent::KEY_DOWN, UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->foo( 2 ); } ) );
-  e.register_event_listener( nom::UIEvent::MOUSE_LEFT_UP, UIEventCallback( std::bind( bar ) ) );
-  e.register_event_listener( nom::UIEvent::MOUSE_WHEEL, UIEventCallback( [&] ( nom::UIWidgetEvent& event ) { this->foo2( event ); } ) );
+  e.register_event_listener( nom::UIEvent::KEY_DOWN, std::make_shared<UIWidgetListener>( [&] ( UIEvent* ev ) { this->foo( 2 ); } ) );
+  e.register_event_listener( nom::UIEvent::MOUSE_LEFT_UP, std::make_shared<UIWidgetListener>( std::bind( bar ) ) );
+  e.register_event_listener( nom::UIEvent::MOUSE_WHEEL, std::make_shared<UIWidgetListener>( [&] ( UIEvent* ev ) { this->foo2( ev ); } ) );
 
   // Should never emit; never found.
-  e.register_event_listener( nom::UIEvent::DROP_FILE, UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->foo2( ev ); } ) );
+  e.register_event_listener( nom::UIEvent::DROP_FILE, std::make_shared<UIWidgetListener>( [&] ( UIEvent* ev ) { this->foo2( ev ); } ) );
   ASSERT_TRUE( e.remove_event_listener( nom::UIEvent::DROP_FILE ) == true );
 
   // Should emit

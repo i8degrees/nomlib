@@ -42,7 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // Forward declarations
-class UIWidgetEvent;
+class UIEvent;
 
 /// \brief Simple UI interface for drawing a styled message box
 class MessageBox: public UIWidget
@@ -145,10 +145,10 @@ class MessageBox: public UIWidget
     // void update_bounds( void );
 
     /// \brief Re-implements UIWidget::on_size_changed.
-    virtual void on_size_changed( const UIWidgetEvent& ev );
+    virtual void on_size_changed( UIEvent* ev );
 
-    virtual void on_mouse_down( const UIWidgetEvent& ev );
-    virtual void on_mouse_up( const UIWidgetEvent& ev );
+    virtual void on_mouse_down( UIEvent* ev );
+    virtual void on_mouse_up( UIEvent* ev );
 
   private:
     /// \brief Title (caption) text label.

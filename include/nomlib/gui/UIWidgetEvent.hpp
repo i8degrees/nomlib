@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_GUI_UI_WIDGET_EVENT_HPP
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/Event.hpp"
+#include "nomlib/gui/UIEvent.hpp"
 
 // Temporary: remove me when resized_bounds_ goes away
 #include "nomlib/math/Rect.hpp"
@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Container class for user interface events generated from widgets.
-class UIWidgetEvent
+class UIWidgetEvent: public UIEvent
 {
   public:
     typedef UIWidgetEvent self_type;
@@ -84,26 +84,14 @@ class UIWidgetEvent
                     int64 id
                   );
 
-    /// \brief Obtain a pointer to the object.
-    RawPtr get( void );
-
-    /// \brief Query the validity of the object.
-    bool valid( void ) const;
-
     sint index( void ) const;
     const std::string& text( void ) const;
-
-    /// \brief Obtain the associated nom::Event object.
-    const Event& event( void ) const;
 
     /// \brief Get the unique identifier associated with the widget.
     int64 id( void ) const;
 
     void set_index( int idx );
     void set_text( const std::string& text );
-
-    /// \brief Set the nom::Event object associated with this UI event.
-    void set_event( const Event& ev );
 
     /// \brief Set the source event's widget identifier.
     void set_id( int64 id );
@@ -112,9 +100,6 @@ class UIWidgetEvent
     sint index_;
     std::string text_;
 
-    /// \brief The nom::Event object associated with the UI event.
-    Event event_;
-
     /// \brief Unique identifier of the callback object, identified by its
     /// nom::UIWidget id.
     int64 id_;
@@ -122,6 +107,36 @@ class UIWidgetEvent
   // Temporary: until we get around to refactoring events subsystem
   public:
     IntRect resized_bounds_;
+};
+
+// Forward declarations
+class IObject;
+
+class UIWidgetTreeEvent: public UIWidgetEvent
+{
+  public:
+    UIWidgetTreeEvent( void ) :
+      obj_{ nullptr }
+    {
+      // NOM_LOG_TRACE( NOM );
+    }
+    virtual ~UIWidgetTreeEvent( void )
+    {
+      // NOM_LOG_TRACE( NOM );
+    }
+
+    IObject* data( void ) const
+    {
+      return this->obj_;
+    }
+
+    void set_data( IObject* obj )
+    {
+      this->obj_ = obj;
+    }
+
+  private:
+    IObject* obj_;
 };
 
 } // namespace nom

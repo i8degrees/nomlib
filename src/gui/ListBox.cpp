@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/gui/IDecorator.hpp"
 #include "nomlib/gui/UIStyle.hpp"
 #include "nomlib/gui/UIEventDispatcher.hpp"
+#include "nomlib/gui/UIEvent.hpp"
 #include "nomlib/gui/UIWidgetEvent.hpp"
 
 namespace nom {
@@ -274,13 +275,17 @@ int ListBox::hit_test( const Point2i& pt )
 
 // Protected scope
 
-void ListBox::on_key_down( const UIWidgetEvent& ev )
+void ListBox::on_key_down( UIEvent* ev )
 {
-  nom::Event event = ev.event();
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
+  nom::Event evt = event->event();
   UIWidgetEvent item;
 
   // Registered action for key press event
-  if( event.type == SDL_KEYDOWN )
+  if( evt.type == SDL_KEYDOWN )
   {
     if( this->focused() == false )
     {
@@ -310,7 +315,7 @@ void ListBox::on_key_down( const UIWidgetEvent& ev )
     }
 
     // Set the associated nom::Event object for this UI event.
-    item.set_event( event );
+    item.set_event( evt );
 
     item.set_id( this->id() );
 
@@ -325,21 +330,21 @@ void ListBox::on_key_down( const UIWidgetEvent& ev )
 
   this->set_updated( false );
 
-  if( event.type == SDL_KEYDOWN )
+  if( evt.type == SDL_KEYDOWN )
   {
     // Our internal storage container could also be used to obtain the
     // selection index.
     // int selected = ev.index();
     int selected = item.index();
 
-    if( event.key.sym == SDLK_UP && selected > 0 )
+    if( evt.key.sym == SDLK_UP && selected > 0 )
     {
       --selected;
 
       this->store()->set_selection( selected );
       // NOM_DUMP(this->store()->selection());
     }
-    else if( event.key.sym == SDLK_DOWN && ( selected < this->store()->size() - 1 ) )
+    else if( evt.key.sym == SDLK_DOWN && ( selected < this->store()->size() - 1 ) )
     {
       ++selected;
 
@@ -358,12 +363,16 @@ void ListBox::on_key_down( const UIWidgetEvent& ev )
   this->update();
 }
 
-void ListBox::on_mouse_down( const UIWidgetEvent& ev )
+void ListBox::on_mouse_down( UIEvent* ev )
 {
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
   int index = 0;
   uint32 p = this->focus_policy();
   UIWidgetEvent item;
-  Event evt = ev.event();
+  Event evt = event->event();
 
   // Registered action for mouse button event
   if( evt.type == SDL_MOUSEBUTTONDOWN )
@@ -409,19 +418,23 @@ void ListBox::on_mouse_down( const UIWidgetEvent& ev )
   } // end if event type == SDL_MOUSEBUTTONDOWN
 }
 
-void ListBox::on_mouse_enter( const UIWidgetEvent& ev )
+void ListBox::on_mouse_enter( UIEvent* ev )
 {
   // this->set_focused( true );
 }
 
-void ListBox::on_mouse_wheel( const UIWidgetEvent& ev )
+void ListBox::on_mouse_wheel( UIEvent* ev )
 {
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
   uint32 p = this->focus_policy();
   int index = 0;
-  Event event = ev.event();
+  Event evt = event->event();
   UIWidgetEvent item;
 
-  if( event.type == SDL_MOUSEWHEEL )
+  if( evt.type == SDL_MOUSEWHEEL )
   {
     if( p & FocusPolicy::WheelFocus )
     {
@@ -470,7 +483,7 @@ void ListBox::on_mouse_wheel( const UIWidgetEvent& ev )
     }
 
     // Set the associated nom::Event object for this UI event.
-    item.set_event( event );
+    item.set_event( evt );
 
     item.set_id( this->id() );
 
@@ -485,7 +498,7 @@ void ListBox::on_mouse_wheel( const UIWidgetEvent& ev )
 
   this->set_updated( false );
 
-  if( event.type == SDL_MOUSEWHEEL )
+  if( evt.type == SDL_MOUSEWHEEL )
   {
     // Our internal storage container could also be used to obtain the
     // selection index.
@@ -493,7 +506,7 @@ void ListBox::on_mouse_wheel( const UIWidgetEvent& ev )
     int selected = item.index();
 
     // Up
-    if( event.wheel.y > 0 && selected > 0 )
+    if( evt.wheel.y > 0 && selected > 0 )
     {
       --selected;
       this->store()->set_selection( selected );
@@ -501,7 +514,7 @@ void ListBox::on_mouse_wheel( const UIWidgetEvent& ev )
     }
 
     // Down
-    else if( event.wheel.y < 0 && selected < this->store()->size() - 1 )
+    else if( evt.wheel.y < 0 && selected < this->store()->size() - 1 )
     {
       ++selected;
       this->store()->set_selection( selected );
@@ -515,9 +528,13 @@ void ListBox::on_mouse_wheel( const UIWidgetEvent& ev )
   this->update();
 }
 
-void ListBox::on_size_changed( const UIWidgetEvent& ev )
+void ListBox::on_size_changed( UIEvent* ev )
 {
-  Event evt = ev.event();
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
+  Event evt = event->event();
 
   if( evt.type != SDL_WINDOWEVENT_SIZE_CHANGED )
   {
@@ -529,18 +546,22 @@ void ListBox::on_size_changed( const UIWidgetEvent& ev )
   if( this->decorator() )
   {
     // Update the attached decorator (border & possibly a background)
-    this->decorator()->set_bounds( ev.resized_bounds_ );
+    this->decorator()->set_bounds( event->resized_bounds_ );
   }
 
   // Update ourselves with the new rendering coordinates
-  this->set_bounds( ev.resized_bounds_ );
+  this->set_bounds( event->resized_bounds_ );
 
   this->update();
 }
 
-void ListBox::on_update( const UIWidgetEvent& ev )
+void ListBox::on_update( UIEvent* ev )
 {
-  Event evt = ev.event();
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
+  Event evt = event->event();
 
   if( evt.type != UIEvent::ON_WIDGET_UPDATE )
   {

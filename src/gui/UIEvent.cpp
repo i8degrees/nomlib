@@ -30,6 +30,61 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-// Reserved for future implementation
+UIEvent::UIEvent( void ) :
+  type_{ 0 }
+{
+  // NOM_LOG_TRACE( NOM );
+}
+
+UIEvent::~UIEvent( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
+
+UIEvent::UIEvent( uint32 type ) :
+  type_{ type }
+{
+  // NOM_LOG_TRACE( NOM );
+}
+
+UIEvent* UIEvent::clone( void ) const
+{
+  return new UIEvent( *this );
+}
+
+UIEvent* UIEvent::etype( void )
+{
+  return this;
+}
+
+uint32 UIEvent::type( void ) const
+{
+  return this->type_;
+}
+
+const Event& UIEvent::event( void ) const
+{
+  return this->event_;
+}
+
+void UIEvent::set_type( uint32 type )
+{
+  this->type_ = type;
+}
+
+void UIEvent::set_event( const Event& ev )
+{
+  this->event_ = ev;
+}
+
+bool UIEvent::operator <( const self_type& rhs ) const
+{
+  return( this->type() < rhs.type() );
+}
+
+bool UIEvent::operator ==( const self_type& rhs ) const
+{
+  return( this->type() == rhs.type() );
+}
 
 } // namespace nom

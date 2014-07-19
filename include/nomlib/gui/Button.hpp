@@ -40,7 +40,7 @@ namespace nom {
 
 // Forward declarations
 class Texture;
-class UIWidgetEvent;
+class UIEvent;
 
 /// \brief Basic GUI button container widget.
 class Button: public UIWidget
@@ -117,15 +117,15 @@ class Button: public UIWidget
     virtual void update_bounds( void );
 
     /// \brief Re-implements UIWidget::on_size_changed.
-    virtual void on_size_changed( const UIWidgetEvent& ev );
+    virtual void on_size_changed( UIEvent* ev );
 
-    virtual void on_update( const UIWidgetEvent& ev );
+    virtual void on_update( UIEvent* ev );
 
-    virtual void on_mouse_down( const UIWidgetEvent& ev );
-    virtual void on_mouse_up( const UIWidgetEvent& ev );
+    virtual void on_mouse_down( UIEvent* ev );
+    virtual void on_mouse_up( UIEvent* ev );
 
-    virtual void on_mouse_enter( const UIWidgetEvent& ev );
-    virtual void on_mouse_leave( const UIWidgetEvent& ev );
+    virtual void on_mouse_enter( UIEvent* ev );
+    virtual void on_mouse_leave( UIEvent* ev );
 
   private:
     /// \brief Implements IDrawable::update.

@@ -117,22 +117,32 @@ class DataViewListTest: public VisualUnitTest
       dview = new nom::DataViewList( window, -1, pos, size );
       dview->set_decorator( new nom::FinalFantasyDecorator() );
 
-      dview->dispatcher()->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { on_click( ev ); } ) );
+      NOM_CONNECT_UIWIDGET_EVENT( dview, nom::UIEvent::MOUSE_DOWN, this->on_click( ev ) );
 
       return dview;
     }
 
   protected:
 
-    void on_click( const nom::UIWidgetEvent& ev )
+    void on_click( UIEvent* ev )
     {
-      Event evt = ev.event();
+      NOM_ASSERT( ev != nullptr );
+      UIWidgetTreeEvent* event = NOM_DYN_PTR_CAST( UIWidgetTreeEvent*, ev->etype() );
+      NOM_ASSERT( event != nullptr );
+
+      Event evt = event->event();
 
       if( evt.type != SDL_MOUSEBUTTONDOWN ) return;
 
-      // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.id() );
-      NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.text() );
-      NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.index() );
+      // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, event->id() );
+      NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, event->text() );
+      NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, event->index() );
+
+      String* str = NOM_DYN_PTR_CAST( String*, event->data() );
+      if( str )
+      {
+        NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, str->str() );
+      }
     }
 
     const int WINDOW_WIDTH;

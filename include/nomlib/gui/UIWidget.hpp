@@ -47,8 +47,9 @@ struct Event;
 class IDecorator;
 class UILayout;
 class UIStyle;
-class UIEventDispatcher;
+class IUIEventDispatcher;
 class UIWidgetEvent;
+class UIEvent;
 
 /// \brief GUI window object container
 class UIWidget: public Transformable
@@ -441,21 +442,21 @@ class UIWidget: public Transformable
     ///
     /// \remarks An assert will be triggered upon detecting a null dispatcher
     /// object.
-    UIEventDispatcher* dispatcher( void ) const;
+    IUIEventDispatcher* dispatcher( void ) const;
 
   protected:
-    virtual void on_size_changed( const UIWidgetEvent& ev );
+    virtual void on_size_changed( UIEvent* ev );
 
-    virtual void on_mouse_down( const UIWidgetEvent& ev );
-    virtual void on_mouse_up( const UIWidgetEvent& ev );
+    virtual void on_mouse_down( UIEvent* ev );
+    virtual void on_mouse_up( UIEvent* ev );
 
-    virtual void on_mouse_enter( const UIWidgetEvent& ev );
-    virtual void on_mouse_leave( const UIWidgetEvent& ev );
+    virtual void on_mouse_enter( UIEvent* ev );
+    virtual void on_mouse_leave( UIEvent* ev );
 
-    virtual void on_mouse_wheel( const UIWidgetEvent& ev );
+    virtual void on_mouse_wheel( UIEvent* ev );
 
-    virtual void on_key_down( const UIWidgetEvent& ev );
-    virtual void on_key_up( const UIWidgetEvent& ev );
+    virtual void on_key_down( UIEvent* ev );
+    virtual void on_key_up( UIEvent* ev );
 
     /// \brief Find a new widget to give keyboard focus to.
     ///
@@ -493,7 +494,7 @@ class UIWidget: public Transformable
     void set_parent_bounds( const IntRect& bounds );
 
     /// \brief Set the event dispatcher to use.
-    void set_event_dispatcher( UIEventDispatcher* dispatcher );
+    void set_event_dispatcher( IUIEventDispatcher* dispatcher );
 
     /// \brief Ensure that the dimensions of the object are in a valid state.
     ///
@@ -591,7 +592,7 @@ NOM_IGNORED_ENDL();
     IntRect parent_bounds_;
 
     /// \brief A pointer to our events managing object.
-    std::unique_ptr<UIEventDispatcher> dispatcher_;
+    std::unique_ptr<IUIEventDispatcher> dispatcher_;
 };
 
 } // namespace nom

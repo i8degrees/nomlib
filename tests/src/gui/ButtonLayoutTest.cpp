@@ -114,8 +114,8 @@ class ButtonLayoutTest: public VisualUnitTest
 
       this->button0->set_font( SystemFonts::cache().load_resource("VIII") );
       this->button0->set_decorator( new nom::FinalFantasyDecorator() );
-      this->button0->dispatcher()->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );
-      this->button0->dispatcher()->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button0_on_click( ev ); } ) );
+      NOM_CONNECT_UIWIDGET_EVENT( this->button0, nom::UIEvent::MOUSE_DOWN, this->button0_on_click( ev ) );
+      NOM_CONNECT_UIWIDGET_EVENT( this->button0, nom::UIEvent::MOUSE_UP, this->button0_on_click( ev ) );
 
       // this->button1 = this->create_button( this->layout_widget, Point2i::null, Size2i::null, "button1", "button1" );
 
@@ -124,8 +124,9 @@ class ButtonLayoutTest: public VisualUnitTest
       this->button1 = this->create_button( this->layout_widget, Point2i::null, Size2i(100,16), "button1", "button1" );
 
       this->button1->set_decorator( new nom::MinimalDecorator() );
-      this->button1->dispatcher()->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button1_on_click( ev ); } ) );
-      this->button1->dispatcher()->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->button1_on_click( ev ); } ) );
+
+      NOM_CONNECT_UIWIDGET_EVENT( this->button1, nom::UIEvent::MOUSE_DOWN, this->button1_on_click( ev ) );
+      NOM_CONNECT_UIWIDGET_EVENT( this->button1, nom::UIEvent::MOUSE_UP, this->button1_on_click( ev ) );
 
       // Style is used for button2
       nom::UIStyle::shared_ptr custom_style = nullptr;
@@ -139,8 +140,8 @@ class ButtonLayoutTest: public VisualUnitTest
       this->button2 = this->create_bitmap_button( this->layout_widget, Point2i::null, Size2i::null, "bitmap_button", "Hello", this->button_bg[1], custom_style );
 
       this->button2->set_pressed_bitmap( this->button_bg[2] );
-      // this->button2->dispatcher()->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
-      this->button2->dispatcher()->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
+
+      NOM_CONNECT_UIWIDGET_EVENT( this->button2, nom::UIEvent::MOUSE_UP, priv::on_click( ev ) );
 
       // this->button3 = this->create_button( this->layout_widget, Point2i::null, Size2i::null, "button3", "button3" );
       this->button3 = this->create_button( this->layout_widget, Point2i::null, Size2i(56,16), "button3", "button3" );
@@ -238,38 +239,46 @@ class ButtonLayoutTest: public VisualUnitTest
     }
 
     /// \brief Alternative callback method used in registering event listeners.
-    void button0_on_click( const nom::UIWidgetEvent& ev ) const
+    void button0_on_click( UIEvent* ev ) const
     {
-      NOM_DUMP( ev.id() );
-      NOM_DUMP( ev.index() );
-      NOM_DUMP( ev.text() );
+      NOM_ASSERT( ev != nullptr );
+      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+      NOM_ASSERT( event != nullptr );
+
+      NOM_DUMP( event->id() );
+      NOM_DUMP( event->index() );
+      NOM_DUMP( event->text() );
 
       NOM_ASSERT( this->button0 != nullptr );
 
-      if( ev.index() == 0 ) // MOUSE_DOWN
+      if( event->index() == 0 ) // MOUSE_DOWN
       {
         this->button0->set_label( "Click me!" );
       }
-      else if( ev.index() == 1 ) // MOUSE_UP
+      else if( event->index() == 1 ) // MOUSE_UP
       {
         this->button0->set_label( "Release me!" );
       }
     }
 
     /// \brief Alternative callback method used in registering event listeners.
-    void button1_on_click( const nom::UIWidgetEvent& ev ) const
+    void button1_on_click( UIEvent* ev ) const
     {
-      NOM_DUMP( ev.id() );
-      NOM_DUMP( ev.index() );
-      NOM_DUMP( ev.text() );
+      NOM_ASSERT( ev != nullptr );
+      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+      NOM_ASSERT( event != nullptr );
+
+      NOM_DUMP( event->id() );
+      NOM_DUMP( event->index() );
+      NOM_DUMP( event->text() );
 
       NOM_ASSERT( this->button1 != nullptr );
 
-      if( ev.index() == 0 ) // MOUSE_DOWN
+      if( event->index() == 0 ) // MOUSE_DOWN
       {
         this->button1->set_label( "button1" );
       }
-      else if( ev.index() == 1 ) // MOUSE_UP
+      else if( event->index() == 1 ) // MOUSE_UP
       {
         this->button1->set_label( "Yeah buddy!" );
       }

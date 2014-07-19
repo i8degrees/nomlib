@@ -30,6 +30,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// IUIEventDispatcher (abstract interface)
+
+IUIEventDispatcher::~IUIEventDispatcher( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
+
+// UIEventDispatcher (concrete implementation)
+
 UIEventDispatcher::UIEventDispatcher( void )
 {
   // NOM_LOG_TRACE( NOM );
@@ -40,23 +49,7 @@ UIEventDispatcher::~UIEventDispatcher( void )
   // NOM_LOG_TRACE( NOM );
 }
 
-UIEventDispatcher::UIEventDispatcher( const self_type& rhs )
-{
-  // NOM_LOG_TRACE( NOM );
-
-  this->set_observers( rhs.observers() );
-}
-
-UIEventDispatcher::self_type& UIEventDispatcher::operator =( const self_type& rhs )
-{
-  // NOM_LOG_TRACE( NOM );
-
-  this->set_observers( rhs.observers() );
-
-  return *this;
-}
-
-bool UIEventDispatcher::register_event_listener( const event_type& ev, const callback_type& observer )
+bool UIEventDispatcher::register_event_listener( const event_type& ev, std::shared_ptr<callback_type> observer )
 {
   this->observers_[ev].push_back( observer );
 
@@ -87,7 +80,7 @@ uint32 UIEventDispatcher::size( void ) const
 {
   return this->observers_.size();
 }
-bool UIEventDispatcher::emit( const event_type& ev, UIWidgetEvent& data ) const
+bool UIEventDispatcher::emit( const event_type& ev, UIEvent& data ) const
 {
   auto res = this->observers_.find( ev );
 
@@ -98,7 +91,7 @@ bool UIEventDispatcher::emit( const event_type& ev, UIWidgetEvent& data ) const
     for( auto itr = obs.begin(); itr != obs.end(); ++itr )
     {
       // Match found; execute callback.
-      itr->operator()( data );
+      (*itr)->operator()( data );
 
       // Log matched event after the callback execution (dump of a value).
       //
@@ -144,12 +137,12 @@ bool UIEventDispatcher::find( const event_type& key ) const
 
 // Private scope
 
-const UIEventDispatcher::CallbackTable& UIEventDispatcher::observers( void ) const
+const UIEventDispatcher::event_table& UIEventDispatcher::observers( void ) const
 {
   return this->observers_;
 }
 
-void UIEventDispatcher::set_observers( const CallbackTable& ev_table )
+void UIEventDispatcher::set_observers( const event_table& ev_table )
 {
   this->observers_ = ev_table;
 }

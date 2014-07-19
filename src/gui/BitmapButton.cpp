@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Text.hpp"
 
 #include "nomlib/gui/UIEventDispatcher.hpp"
+#include "nomlib/gui/UIEvent.hpp"
 #include "nomlib/gui/UIWidgetEvent.hpp"
 
 namespace nom {
@@ -266,9 +267,13 @@ void BitmapButton::update_bounds( void )
   Button::update_bounds();
 }
 
-void BitmapButton::on_size_changed( const UIWidgetEvent& ev )
+void BitmapButton::on_size_changed( UIEvent* ev )
 {
-  Event evt = ev.event();
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  NOM_ASSERT( event != nullptr );
+
+  Event evt = event->event();
 
   if( evt.type != SDL_WINDOWEVENT_SIZE_CHANGED )
   {
@@ -278,14 +283,14 @@ void BitmapButton::on_size_changed( const UIWidgetEvent& ev )
   if( this->decorator() )
   {
     // Update the attached decorator (border & possibly a background)
-    this->decorator()->set_bounds( ev.resized_bounds_ );
+    this->decorator()->set_bounds( event->resized_bounds_ );
   }
 
   // Update ourselves with the new rendering coordinates
-  this->set_bounds( ev.resized_bounds_ );
+  this->set_bounds( event->resized_bounds_ );
 
   // Ensure that the label coordinates & dimensions are updated.
-  Button::on_size_changed( ev );
+  Button::on_size_changed( event );
 
   // FIXME? This corrects the alignment of the Button's text label when used
   // within this class.
@@ -296,22 +301,22 @@ void BitmapButton::on_size_changed( const UIWidgetEvent& ev )
   this->update();
 }
 
-// void BitmapButton::on_mouse_down( const UIWidgetEvent& ev )
+// void BitmapButton::on_mouse_down( UIEvent* ev )
 // {
 //   // this->set_button_state( Button::State::Pressed );
 // }
 
-// void BitmapButton::on_mouse_up( const UIWidgetEvent& ev )
+// void BitmapButton::on_mouse_up( UIEvent* ev )
 // {
 //   // this->set_button_state( Button::State::Default );
 // }
 
-// void BitmapButton::on_mouse_enter( const UIWidgetEvent& ev )
+// void BitmapButton::on_mouse_enter( UIEvent* ev )
 // {
 //   // this->set_button_state( Button::State::Pressed );
 // }
 
-// void BitmapButton::on_mouse_leave( const UIWidgetEvent& ev )
+// void BitmapButton::on_mouse_leave( UIEvent* ev )
 // {
 //   // this->set_button_state( Button::State::Default );
 // }

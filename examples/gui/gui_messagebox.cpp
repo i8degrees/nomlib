@@ -191,7 +191,7 @@ class App: public nom::SDLApp
       messagebox = new nom::MessageBox( window, -1, pos, size );
 
       // messagebox->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
-      messagebox->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+      NOM_CONNECT_UIWIDGET_EVENT( messagebox, nom::UIEvent::MOUSE_DOWN, this->on_click( ev ) );
 
       messagebox->set_title( "INFO.", *font2, nom::DEFAULT_FONT_SIZE );
       messagebox->set_message( "Hello, world!", *font1, nom::DEFAULT_FONT_SIZE );
@@ -219,9 +219,9 @@ class App: public nom::SDLApp
         messagebox->set_font( font1 );
       }
 
-      messagebox->register_event_listener( nom::UIEvent::WINDOW_MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
-      messagebox->register_event_listener( nom::UIEvent::MOUSE_DCLICK, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
-      messagebox->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_click( ev ); } ) );
+      NOM_CONNECT_UIWIDGET_EVENT( messagebox, nom::UIEvent::WINDOW_MOUSE_DOWN, this->on_click( ev ) );
+      NOM_CONNECT_UIWIDGET_EVENT( messagebox, nom::UIEvent::MOUSE_DCLICK, this->on_click( ev ) );
+      NOM_CONNECT_UIWIDGET_EVENT( messagebox, nom::UIEvent::MOUSE_DOWN, this->on_click( ev ) );
 
       messagebox->set_title( "CHOICE", *font2, nom::DEFAULT_FONT_SIZE );
       messagebox->set_message( "Are you sure?", *font1, nom::DEFAULT_FONT_SIZE );
@@ -247,11 +247,17 @@ class App: public nom::SDLApp
       return messagebox;
     }
 
-    void on_click( const nom::UIWidgetEvent& ev ) const
+    void on_click( UIEvent* ev ) const
     {
-      NOM_DUMP( ev.id() );
-      NOM_DUMP( ev.index() );
-      NOM_DUMP( ev.text() );
+      NOM_ASSERT( ev != nullptr );
+      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+      NOM_ASSERT( event != nullptr );
+
+      // Event evt = event->event();
+
+      NOM_DUMP( event->id() );
+      NOM_DUMP( event->index() );
+      NOM_DUMP( event->text() );
     }
 
     nom::int32 Run( void )

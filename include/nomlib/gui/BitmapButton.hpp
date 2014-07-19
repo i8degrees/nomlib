@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // Forward declarations
-class UIWidgetEvent;
+class UIEvent;
 
 /// \brief GUI button with a custom bitmap background container widget.
 class BitmapButton: public Button
@@ -169,12 +169,12 @@ class BitmapButton: public Button
     virtual void update_bounds( void );
 
     /// \brief Re-implements UIWidget::on_size_changed.
-    virtual void on_size_changed( const UIWidgetEvent& ev );
+    virtual void on_size_changed( UIEvent* ev );
 
-    // virtual void on_mouse_down( const UIWidgetEvent& ev );
-    // virtual void on_mouse_up( const UIWidgetEvent& ev );
-    // virtual void on_mouse_enter( const UIWidgetEvent& ev );
-    // virtual void on_mouse_leave( const UIWidgetEvent& ev );
+    // virtual void on_mouse_down( UIEvent* ev );
+    // virtual void on_mouse_up( UIEvent* ev );
+    // virtual void on_mouse_enter( UIEvent* ev );
+    // virtual void on_mouse_leave( UIEvent* ev );
 
   private:
     /// \brief Implements IDrawable::update.

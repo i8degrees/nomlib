@@ -40,7 +40,7 @@ namespace nom {
 // Forward declarations
 class DataViewListStore;
 class UIItemContainer;
-class UIWidgetEvent;
+class UIEvent;
 
 /// \brief GUI data tree container widget
 class DataViewList: public UIWidget
@@ -93,7 +93,7 @@ class DataViewList: public UIWidget
     virtual void update( void );
 
     /// \brief Re-implements UIWidget::on_mouse_down method.
-    virtual void on_mouse_down( const UIWidgetEvent& ev );
+    virtual void on_mouse_down( UIEvent* ev );
 
     /// \brief Rendered column headers
     HeaderLabels drawable_headers_;

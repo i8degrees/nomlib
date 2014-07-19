@@ -75,18 +75,6 @@ UIWidgetEvent::UIWidgetEvent  (
   this->set_id( id );
 }
 
-UIWidgetEvent::RawPtr UIWidgetEvent::get( void )
-{
-  return this;
-}
-
-bool UIWidgetEvent::valid( void ) const
-{
-  NOM_STUBBED( NOM );
-
-  return false;
-}
-
 sint UIWidgetEvent::index( void ) const
 {
   return this->index_;
@@ -95,11 +83,6 @@ sint UIWidgetEvent::index( void ) const
 const std::string& UIWidgetEvent::text( void ) const
 {
   return this->text_;
-}
-
-const Event& UIWidgetEvent::event( void ) const
-{
-  return this->event_;
 }
 
 int64 UIWidgetEvent::id( void ) const
@@ -115,11 +98,6 @@ void UIWidgetEvent::set_index( int idx )
 void UIWidgetEvent::set_text( const std::string& text )
 {
   this->text_ = text;
-}
-
-void UIWidgetEvent::set_event( const Event& ev )
-{
-  this->event_ = ev;
 }
 
 void UIWidgetEvent::set_id( int64 id )

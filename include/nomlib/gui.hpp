@@ -57,7 +57,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/gui/DataViewBitmapColumn.hpp>
 #include <nomlib/gui/DataViewColumn.hpp>
 #include <nomlib/gui/DataViewList.hpp>
-#include <nomlib/gui/UIEventCallback.hpp>
 #include <nomlib/gui/UIWidgetEvent.hpp>
 #include <nomlib/gui/UIEventDispatcher.hpp>
 #include <nomlib/gui/UIItemContainer.hpp>

@@ -384,14 +384,8 @@ void DataViewList::update( void )
   this->update_items();
 }
 
-void DataViewList::on_mouse_down( UIEvent* ev )
+void DataViewList::on_mouse_down( const Event& evt )
 {
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-  NOM_ASSERT( event != nullptr );
-
-  Event evt = event->event();
-
   // Registered event for selection on_click
   if( evt.type == SDL_MOUSEBUTTONDOWN )
   {

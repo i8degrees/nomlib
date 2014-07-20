@@ -339,19 +339,8 @@ void MessageBox::update( void )
   this->updated_ = true;
 }
 
-void MessageBox::on_size_changed( UIEvent* ev )
+void MessageBox::on_mouse_down( const Event& evt )
 {
-  NOM_STUBBED( NOM );
-}
-
-void MessageBox::on_mouse_down( UIEvent* ev )
-{
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-  NOM_ASSERT( event != nullptr );
-
-  Event evt = event->event();
-
   if( evt.type == SDL_MOUSEBUTTONDOWN )
   {
     UIWidgetEvent wev;
@@ -381,11 +370,6 @@ void MessageBox::on_mouse_down( UIEvent* ev )
       this->dispatcher()->emit( UIEvent::MOUSE_DOWN, wev );
     }
   } // end if evt.type is SDL_MOUSEBUTTONDOWN
-}
-
-void MessageBox::on_mouse_up( UIEvent* ev )
-{
-  //
 }
 
 } // namespace nom

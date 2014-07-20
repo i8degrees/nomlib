@@ -234,22 +234,22 @@ void BitmapButton::set_disabled_bitmap( const Texture& image )
 
 // Protected scope
 
-// void BitmapButton::on_mouse_down( UIEvent* ev )
+// void BitmapButton::on_mouse_down( const Event& evt )
 // {
 //   // this->set_button_state( Button::State::Pressed );
 // }
 
-// void BitmapButton::on_mouse_up( UIEvent* ev )
+// void BitmapButton::on_mouse_up( const Event& evt )
 // {
 //   // this->set_button_state( Button::State::Default );
 // }
 
-// void BitmapButton::on_mouse_enter( UIEvent* ev )
+// void BitmapButton::on_mouse_enter( const Event& evt )
 // {
 //   // this->set_button_state( Button::State::Pressed );
 // }
 
-// void BitmapButton::on_mouse_leave( UIEvent* ev )
+// void BitmapButton::on_mouse_leave( const Event& evt )
 // {
 //   // this->set_button_state( Button::State::Default );
 // }

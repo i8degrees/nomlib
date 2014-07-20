@@ -168,26 +168,16 @@ void QuestionDialogBox::update( void )
   }
 }
 
-void QuestionDialogBox::on_size_changed( UIEvent* ev )
+void QuestionDialogBox::on_mouse_down( const Event& evt )
 {
-  NOM_STUBBED( NOM );
-}
-
-void QuestionDialogBox::on_mouse_down( UIEvent* ev )
-{
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-  NOM_ASSERT( event != nullptr );
-
   int index = 0;
-  Event evt = event->event();
 
   // Let our base class handle its share of the events -- the title caption &
   // message text bounds.
   //
   // The choice text labels are ours to handle and should not overlap whatsoever
   // with MessageBox.
-  MessageBox::on_mouse_down( ev );
+  MessageBox::on_mouse_down( evt );
 
   // Registered action for mouse button event
   if( evt.type == SDL_MOUSEBUTTONDOWN )
@@ -246,19 +236,9 @@ void QuestionDialogBox::on_mouse_down( UIEvent* ev )
   } // end if event type == SDL_MOUSEBUTTONDOWN
 }
 
-void QuestionDialogBox::on_mouse_up( UIEvent* ev )
+void QuestionDialogBox::on_mouse_wheel( const Event& evt )
 {
-  // Stub
-}
-
-void QuestionDialogBox::on_mouse_wheel( UIEvent* ev )
-{
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-  NOM_ASSERT( event != nullptr );
-
   int index = 0;
-  Event evt = event->event();
 
   // Registered action for mouse button event
   if( evt.type == SDL_MOUSEWHEEL )
@@ -336,14 +316,9 @@ void QuestionDialogBox::on_mouse_wheel( UIEvent* ev )
   } // end if event type == SDL_MOUSEWHEEL
 }
 
-void QuestionDialogBox::on_key_down( UIEvent* ev )
+void QuestionDialogBox::on_key_down( const Event& evt )
 {
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-  NOM_ASSERT( event != nullptr );
-
   int index = 0;
-  nom::Event evt = event->event();
   UIWidgetEvent wev;
 
   // Registered action for key press event
@@ -421,11 +396,6 @@ void QuestionDialogBox::on_key_down( UIEvent* ev )
     this->update();
 
   } // end if event type == SDL_KEYDOWN
-}
-
-void QuestionDialogBox::on_key_up( UIEvent* ev )
-{
-  // Stub
 }
 
 int QuestionDialogBox::selection( void ) const

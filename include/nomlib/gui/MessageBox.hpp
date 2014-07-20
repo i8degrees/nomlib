@@ -137,18 +137,9 @@ class MessageBox: public UIWidget
 
   protected:
     /// \brief Implements UIWidget::update method.
-    ///
-    /// \todo Move to private scope.
     void update( void );
 
-    // TODO:
-    // void update_bounds( void );
-
-    /// \brief Re-implements UIWidget::on_size_changed.
-    virtual void on_size_changed( UIEvent* ev );
-
-    virtual void on_mouse_down( UIEvent* ev );
-    virtual void on_mouse_up( UIEvent* ev );
+    virtual void on_mouse_down( const Event& evt );
 
   private:
     /// \brief Title (caption) text label.

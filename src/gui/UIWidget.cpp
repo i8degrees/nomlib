@@ -904,13 +904,13 @@ bool UIWidget::process_event( const Event& ev )
         {
           // NOM_DUMP( (*it)->name() );
           // NOM_DUMP("motion");
-          (*it)->on_mouse_enter( new UIWidgetEvent( ev ) );
+          (*it)->on_mouse_enter( ev );
 
           // return true;
         }
         else  // Widget bounds do not intersect mouse coordinates
         {
-          (*it)->on_mouse_leave( new UIWidgetEvent( ev ) );
+          (*it)->on_mouse_leave( ev );
 
           // return true;
         }
@@ -919,7 +919,7 @@ bool UIWidget::process_event( const Event& ev )
       {
         if( widget_bounds.contains( mouse_coords ) )
         {
-          (*it)->on_mouse_down( new UIWidgetEvent( ev ) );
+          (*it)->on_mouse_down( ev );
 
           return true;
         }
@@ -929,22 +929,22 @@ bool UIWidget::process_event( const Event& ev )
 
         if( widget_bounds.contains( mouse_coords ) )
         {
-          (*it)->on_mouse_up( new UIWidgetEvent( ev ) );
+          (*it)->on_mouse_up( ev );
 
           return true;
         }
       }
       else if( ev.type == SDL_MOUSEWHEEL )
       {
-        (*it)->on_mouse_wheel( new UIWidgetEvent( ev ) );
+        (*it)->on_mouse_wheel( ev );
       }
       else if( ev.type == SDL_KEYDOWN )
       {
-        (*it)->on_key_down( new UIWidgetEvent( ev ) );
+        (*it)->on_key_down( ev );
       }
       else if( ev.type == SDL_KEYUP )
       {
-        (*it)->on_key_up( new UIWidgetEvent( ev ) );
+        (*it)->on_key_up( ev );
       }
     }
   }
@@ -1235,37 +1235,37 @@ void UIWidget::on_size_changed( UIEvent* ev )
   // this->update();
 }
 
-void UIWidget::on_mouse_down( UIEvent* ev )
+void UIWidget::on_mouse_down( const Event& evt )
 {
   // Do nothing
 }
 
-void UIWidget::on_mouse_up( UIEvent* ev )
+void UIWidget::on_mouse_up( const Event& evt )
 {
   // Do nothing
 }
 
-void UIWidget::on_mouse_enter( UIEvent* ev )
+void UIWidget::on_mouse_enter( const Event& evt )
 {
   // Do nothing
 }
 
-void UIWidget::on_mouse_leave( UIEvent* ev )
+void UIWidget::on_mouse_leave( const Event& evt )
 {
   // Do nothing
 }
 
-void UIWidget::on_mouse_wheel( UIEvent* ev )
+void UIWidget::on_mouse_wheel( const Event& evt )
 {
   // Do nothing
 }
 
-void UIWidget::on_key_down( UIEvent* ev )
+void UIWidget::on_key_down( const Event& evt )
 {
   // Do nothing
 }
 
-void UIWidget::on_key_up( UIEvent* ev )
+void UIWidget::on_key_up( const Event& evt )
 {
   // Do nothing
 }

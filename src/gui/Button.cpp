@@ -244,76 +244,60 @@ void Button::set_button_state( Button::State state )
 
 // Protected scope
 
-void Button::on_mouse_down( UIEvent* ev )
+void Button::on_mouse_down( const Event& evt )
 {
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-  NOM_ASSERT( event != nullptr );
-
   this->set_button_state( Button::State::Pressed );
 
-  UIWidgetEvent evt( this->button_state(), this->name(), event->event(), this->id() );
+  UIWidgetEvent ev( this->button_state(), this->name(), evt, this->id() );
 
   // Send the UI event object to the registered private event callback.
-  this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, evt );
+  this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, ev );
 
   // Send the UI event object to the registered public event callback.
-  this->dispatcher()->emit( UIEvent::MOUSE_DOWN, evt );
+  this->dispatcher()->emit( UIEvent::MOUSE_DOWN, ev );
 }
 
-void Button::on_mouse_up( UIEvent* ev )
+void Button::on_mouse_up( const Event& evt )
 {
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-  NOM_ASSERT( event != nullptr );
-
   this->set_button_state( Button::State::Default );
 
-  UIWidgetEvent evt( this->button_state(), this->name(), event->event(), this->id() );
+  UIWidgetEvent ev( this->button_state(), this->name(), evt, this->id() );
 
   // Send the UI event object to the registered private event callback.
-  this->dispatcher()->emit( UIEvent::ON_MOUSE_UP, evt );
+  this->dispatcher()->emit( UIEvent::ON_MOUSE_UP, ev );
 
   // Send the UI event object to the registered public event callback.
-  this->dispatcher()->emit( UIEvent::MOUSE_UP, evt );
+  this->dispatcher()->emit( UIEvent::MOUSE_UP, ev );
 }
 
-void Button::on_mouse_enter( UIEvent* ev )
+void Button::on_mouse_enter( const Event& evt )
 {
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-  NOM_ASSERT( event != nullptr );
-
   // this->set_button_state( Button::State::Pressed );
 
   // Send the button state and text string of the set label at the time of
   // the event.
-  UIWidgetEvent evt( this->button_state(), this->label_text(), event->event(), this->id() );
+  UIWidgetEvent ev( this->button_state(), this->label_text(), evt, this->id() );
 
   // Send the UI event object to the registered private event callback.
-  this->dispatcher()->emit( UIEvent::ON_MOUSE_MOTION_ENTER, evt );
+  this->dispatcher()->emit( UIEvent::ON_MOUSE_MOTION_ENTER, ev );
 
   // Send the UI event object to the registered public event callback.
-  this->dispatcher()->emit( UIEvent::MOUSE_MOTION_ENTER, evt );
+  this->dispatcher()->emit( UIEvent::MOUSE_MOTION_ENTER, ev );
 }
 
-void Button::on_mouse_leave( UIEvent* ev )
+void Button::on_mouse_leave( const Event& evt )
 {
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-  NOM_ASSERT( event != nullptr );
-
   // this->set_button_state( Button::State::Default );
 
   // Send the button state and text string of the set label at the time of
   // the event.
-  UIWidgetEvent evt( this->button_state(), this->label_text(), event->event(), this->id() );
+  UIWidgetEvent ev( this->button_state(), this->label_text(), evt, this->id() );
 
   // Send the UI event object to the registered private event callback.
-  this->dispatcher()->emit( UIEvent::ON_MOUSE_MOTION_LEAVE, evt );
+  this->dispatcher()->emit( UIEvent::ON_MOUSE_MOTION_LEAVE, ev );
 
   // Send the UI event object to the registered public event callback.
-  this->dispatcher()->emit( UIEvent::MOUSE_MOTION_LEAVE, evt );
+  this->dispatcher()->emit( UIEvent::MOUSE_MOTION_LEAVE, ev );
 }
 
 void Button::update( void )

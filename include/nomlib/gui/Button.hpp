@@ -116,11 +116,11 @@ class Button: public UIWidget
 
   protected:
 
-    virtual void on_mouse_down( UIEvent* ev );
-    virtual void on_mouse_up( UIEvent* ev );
+    virtual void on_mouse_down( const Event& evt );
+    virtual void on_mouse_up( const Event& evt );
 
-    virtual void on_mouse_enter( UIEvent* ev );
-    virtual void on_mouse_leave( UIEvent* ev );
+    virtual void on_mouse_enter( const Event& evt );
+    virtual void on_mouse_leave( const Event& evt );
 
     /// \brief Implements IDrawable::update.
     /*virtual*/ void update( void );

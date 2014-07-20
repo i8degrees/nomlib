@@ -108,23 +108,14 @@ class QuestionDialogBox: public MessageBox
     void set_selection( int pos );
 
   protected:
-    /// \brief Re-implements UIWidget::on_size_changed.
-    virtual void on_size_changed( UIEvent* ev );
-
     /// \brief Re-implements UIWidget::on_mouse_down.
-    virtual void on_mouse_down( UIEvent* ev );
-
-    /// \brief Re-implements UIWidget::on_mouse_up.
-    virtual void on_mouse_up( UIEvent* ev );
+    virtual void on_mouse_down( const Event& evt );
 
     /// \brief Re-implements UIWidget::on_mouse_wheel.
-    virtual void on_mouse_wheel( UIEvent* ev );
+    virtual void on_mouse_wheel( const Event& evt );
 
     /// \brief Re-implements UIWidget::on_key_down.
-    virtual void on_key_down( UIEvent* ev );
-
-    /// \brief Re-implements UIWidget::on_key_up.
-    virtual void on_key_up( UIEvent* ev );
+    virtual void on_key_down( const Event& evt );
 
   private:
     /// \brief Implements MessageBox::update method.

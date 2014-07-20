@@ -85,15 +85,17 @@ class DataViewList: public UIWidget
     /// \brief Implements IDrawable::draw
     void draw( RenderTarget& target ) const;
 
-  private:
-    virtual void update_columns( void );
-    virtual void update_items( void );
+  protected:
 
     /// \remarks Implements IDrawable::update
     virtual void update( void );
 
     /// \brief Re-implements UIWidget::on_mouse_down method.
-    virtual void on_mouse_down( UIEvent* ev );
+    virtual void on_mouse_down( const Event& evt );
+
+  private:
+    virtual void update_columns( void );
+    virtual void update_items( void );
 
     /// \brief Rendered column headers
     HeaderLabels drawable_headers_;

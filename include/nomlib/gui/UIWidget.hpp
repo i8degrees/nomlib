@@ -452,9 +452,7 @@ class UIWidget: public Transformable
     /// \brief Update (sync) logic called by the widget when used in a layout.
     ///
     /// \remarks This is the default callback method implementation used for
-    /// UIEvent::ON_WIDGET_UPDATE events.
-    ///
-    /// \note This method is preceded by UIWidget::on_size_changed.
+    /// UIEvent::ON_WIDGET_UPDATE signal.
     ///
     /// \see UIWidget::initialize
     virtual void on_update( UIEvent* ev );
@@ -462,23 +460,23 @@ class UIWidget: public Transformable
     /// \brief Size modification logic called by the widget when used in a layout.
     ///
     /// \remarks This is the default callback method implementation for
-    /// UIEvent::ON_WINDOW_SIZE_CHANGED events.
+    /// UIEvent::ON_WINDOW_SIZE_CHANGED signal.
     ///
-    /// \note This method emits a UIEvent::ON_WIDGET_UPDATE event.
+    /// \note This method emits a UIEvent::ON_WIDGET_UPDATE signal.
     ///
     /// \see UIWidget::initialize
     virtual void on_size_changed( UIEvent* ev );
 
-    virtual void on_mouse_down( UIEvent* ev );
-    virtual void on_mouse_up( UIEvent* ev );
+    virtual void on_mouse_down( const Event& evt );
+    virtual void on_mouse_up( const Event& evt );
 
-    virtual void on_mouse_enter( UIEvent* ev );
-    virtual void on_mouse_leave( UIEvent* ev );
+    virtual void on_mouse_enter( const Event& evt );
+    virtual void on_mouse_leave( const Event& evt );
 
-    virtual void on_mouse_wheel( UIEvent* ev );
+    virtual void on_mouse_wheel( const Event& evt );
 
-    virtual void on_key_down( UIEvent* ev );
-    virtual void on_key_up( UIEvent* ev );
+    virtual void on_key_down( const Event& evt );
+    virtual void on_key_up( const Event& evt );
 
     /// \brief Find a new widget to give keyboard focus to.
     ///

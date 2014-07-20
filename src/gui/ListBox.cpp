@@ -275,13 +275,8 @@ int ListBox::hit_test( const Point2i& pt )
 
 // Protected scope
 
-void ListBox::on_key_down( UIEvent* ev )
+void ListBox::on_key_down( const Event& evt )
 {
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-  NOM_ASSERT( event != nullptr );
-
-  nom::Event evt = event->event();
   UIWidgetEvent item;
 
   // Registered action for key press event
@@ -363,16 +358,11 @@ void ListBox::on_key_down( UIEvent* ev )
   this->update();
 }
 
-void ListBox::on_mouse_down( UIEvent* ev )
+void ListBox::on_mouse_down( const Event& evt )
 {
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-  NOM_ASSERT( event != nullptr );
-
   int index = 0;
   uint32 p = this->focus_policy();
   UIWidgetEvent item;
-  Event evt = event->event();
 
   // Registered action for mouse button event
   if( evt.type == SDL_MOUSEBUTTONDOWN )
@@ -418,20 +408,15 @@ void ListBox::on_mouse_down( UIEvent* ev )
   } // end if event type == SDL_MOUSEBUTTONDOWN
 }
 
-void ListBox::on_mouse_enter( UIEvent* ev )
+void ListBox::on_mouse_enter( const Event& evt )
 {
   // this->set_focused( true );
 }
 
-void ListBox::on_mouse_wheel( UIEvent* ev )
+void ListBox::on_mouse_wheel( const Event& evt )
 {
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-  NOM_ASSERT( event != nullptr );
-
   uint32 p = this->focus_policy();
   int index = 0;
-  Event evt = event->event();
   UIWidgetEvent item;
 
   if( evt.type == SDL_MOUSEWHEEL )

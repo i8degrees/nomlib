@@ -32,8 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/gui/UIEvent.hpp"
 
-// Temporary: remove me when resized_bounds_ goes away
-#include "nomlib/math/Rect.hpp"
+#include "nomlib/math/Rect.hpp" // nom::UIWidgetResizeEvent
 
 namespace nom {
 
@@ -48,7 +47,7 @@ class UIWidgetEvent: public UIEvent
     UIWidgetEvent( void );
 
     /// \brief Destructor.
-    ~UIWidgetEvent( void );
+    virtual ~UIWidgetEvent( void );
 
     /// \brief Construct a minimally valid object.
     ///
@@ -87,26 +86,12 @@ class UIWidgetEvent: public UIEvent
     sint index( void ) const;
     const std::string& text( void ) const;
 
-    /// \brief Get the unique identifier associated with the widget.
-    int64 id( void ) const;
-
     void set_index( int idx );
     void set_text( const std::string& text );
-
-    /// \brief Set the source event's widget identifier.
-    void set_id( int64 id );
 
   private:
     sint index_;
     std::string text_;
-
-    /// \brief Unique identifier of the callback object, identified by its
-    /// nom::UIWidget id.
-    int64 id_;
-
-  // Temporary: until we get around to refactoring events subsystem
-  public:
-    IntRect resized_bounds_;
 };
 
 // Forward declarations
@@ -137,6 +122,22 @@ class UIWidgetTreeEvent: public UIWidgetEvent
 
   private:
     IObject* obj_;
+};
+
+// class UIWidgetResizeEvent: public UIEvent
+class UIWidgetResizeEvent: public UIWidgetEvent
+{
+  public:
+    UIWidgetResizeEvent( void );
+
+    virtual ~UIWidgetResizeEvent( void );
+
+    const IntRect& bounds( void ) const;
+
+    void set_bounds( const IntRect& bounds );
+
+  private:
+    IntRect bounds_;
 };
 
 } // namespace nom

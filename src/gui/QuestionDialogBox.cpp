@@ -176,7 +176,7 @@ void QuestionDialogBox::on_size_changed( UIEvent* ev )
 void QuestionDialogBox::on_mouse_down( UIEvent* ev )
 {
   NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
   NOM_ASSERT( event != nullptr );
 
   int index = 0;
@@ -254,7 +254,7 @@ void QuestionDialogBox::on_mouse_up( UIEvent* ev )
 void QuestionDialogBox::on_mouse_wheel( UIEvent* ev )
 {
   NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
   NOM_ASSERT( event != nullptr );
 
   int index = 0;
@@ -339,7 +339,7 @@ void QuestionDialogBox::on_mouse_wheel( UIEvent* ev )
 void QuestionDialogBox::on_key_down( UIEvent* ev )
 {
   NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
   NOM_ASSERT( event != nullptr );
 
   int index = 0;

@@ -106,11 +106,11 @@ ListBox::ListBox(
     this->set_selected_text_color( Color4i::Red );
   }
 
-  // Initialize the default event listeners for the widget.
-  NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
-  NOM_CONNECT_UIEVENT( this, UIEvent::ON_WIDGET_UPDATE, this->on_update );
+  // Use UIWidget's default event listener for UIEvent::ON_WINDOW_SIZE_CHANGED;
+  // calls UIWidget::on_size_changed. This is necessary for use within a layout.
 
-  // this->update();
+  // Use UIWidget's default event listener for UIEvent::ON_WIDGET_UPDATE; calls
+  // UIWidget::on_update. This is necessary for use within a layout.
 }
 
 ListBox::~ListBox( void )
@@ -278,7 +278,7 @@ int ListBox::hit_test( const Point2i& pt )
 void ListBox::on_key_down( UIEvent* ev )
 {
   NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
   NOM_ASSERT( event != nullptr );
 
   nom::Event evt = event->event();
@@ -366,7 +366,7 @@ void ListBox::on_key_down( UIEvent* ev )
 void ListBox::on_mouse_down( UIEvent* ev )
 {
   NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
   NOM_ASSERT( event != nullptr );
 
   int index = 0;
@@ -426,7 +426,7 @@ void ListBox::on_mouse_enter( UIEvent* ev )
 void ListBox::on_mouse_wheel( UIEvent* ev )
 {
   NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
   NOM_ASSERT( event != nullptr );
 
   uint32 p = this->focus_policy();
@@ -528,51 +528,6 @@ void ListBox::on_mouse_wheel( UIEvent* ev )
   this->update();
 }
 
-void ListBox::on_size_changed( UIEvent* ev )
-{
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
-  NOM_ASSERT( event != nullptr );
-
-  Event evt = event->event();
-
-  if( evt.type != SDL_WINDOWEVENT_SIZE_CHANGED )
-  {
-    return;
-  }
-
-  this->set_updated( false );
-
-  if( this->decorator() )
-  {
-    // Update the attached decorator (border & possibly a background)
-    this->decorator()->set_bounds( event->resized_bounds_ );
-  }
-
-  // Update ourselves with the new rendering coordinates
-  this->set_bounds( event->resized_bounds_ );
-
-  this->update();
-}
-
-void ListBox::on_update( UIEvent* ev )
-{
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
-  NOM_ASSERT( event != nullptr );
-
-  Event evt = event->event();
-
-  if( evt.type != UIEvent::ON_WIDGET_UPDATE )
-  {
-    return;
-  }
-
-  // this->update_bounds();
-  this->set_updated( false );
-  this->update();
-}
-
 void ListBox::set_focused( bool state )
 {
   UIWidget::Children children = this->find_children( this );
@@ -593,8 +548,6 @@ void ListBox::set_focused( bool state )
     }
   }
 }
-
-// Private scope
 
 void ListBox::update( void )
 {

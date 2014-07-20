@@ -30,23 +30,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-// IUIEventDispatcher (abstract interface)
+// UIWidgetListener (concrete implementation of IUIEventListener)
 
-IUIEventDispatcher::~IUIEventDispatcher( void )
+UIWidgetListener::UIWidgetListener( const callback_type& observer )
 {
-  // NOM_LOG_TRACE( NOM );
+  this->cb_ = observer;
 }
 
-// UIEventDispatcher (concrete implementation)
+UIWidgetListener::~UIWidgetListener( void )
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+}
+
+void UIWidgetListener::operator() ( event_type& ev ) const
+{
+  this->cb_( &ev );
+}
+
+// UIEventDispatcher (concrete implementation of IUIEventDispatcher)
 
 UIEventDispatcher::UIEventDispatcher( void )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 }
 
 UIEventDispatcher::~UIEventDispatcher( void )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 }
 
 bool UIEventDispatcher::register_event_listener( const event_type& ev, std::shared_ptr<callback_type> observer )

@@ -166,20 +166,18 @@ class BitmapButton: public Button
     void set_disabled_bitmap( const Texture& image );
 
   protected:
-    virtual void update_bounds( void );
-
-    /// \brief Re-implements UIWidget::on_size_changed.
-    virtual void on_size_changed( UIEvent* ev );
-
     // virtual void on_mouse_down( UIEvent* ev );
     // virtual void on_mouse_up( UIEvent* ev );
     // virtual void on_mouse_enter( UIEvent* ev );
     // virtual void on_mouse_leave( UIEvent* ev );
 
-  private:
     /// \brief Implements IDrawable::update.
-    void update( void );
+    ///
+    /// \remarks The base class update method is called at the end of the
+    /// method in order to ensure sync.
+    /*virtual*/ void update( void );
 
+  private:
     /// \brief The image data for Button::State::Default (0)
     Texture default_bitmap_;
 

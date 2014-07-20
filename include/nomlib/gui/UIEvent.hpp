@@ -46,11 +46,13 @@ class UIEvent
     /// (developer) has access to, whereas the "private" events are those that are
     /// either  already in use by class instances, or reserved  for future (private)
     /// implementation.
+    ///
+    /// \todo Rename to Signal?
     enum
     {
       INVALID = 0,        // Default
 
-      // Private event slots
+      // Private event signals
 
       ON_KEY_DOWN,
       ON_KEY_UP,
@@ -107,7 +109,7 @@ class UIEvent
 
       ON_WIDGET_UPDATE,
 
-      // Public event slots
+      // Public event signals
 
       KEY_DOWN,
       KEY_UP,
@@ -147,41 +149,95 @@ class UIEvent
       WINDOW_FOCUS
     };
 
+    /// \brief Default constructor.
+    ///
+    /// \remarks The event is initialized to invalid parameters.
+    ///
+    /// \see UIEvent::set_type, UIEvent::set_id.
     UIEvent( void );
 
+    /// \brief Destructor.
     virtual ~UIEvent( void );
 
+    /// \brief Construct an event from a defined type.
+    ///
+    /// \internal
+    ///
+    /// \note This constructor is required for usage with UIEventDispatcher
+    /// (including its macros).
+    ///
+    /// \endinternal
     UIEvent( uint32 type );
 
+    /// \brief Create a unique copy of the object.
     virtual UIEvent* clone( void ) const;
 
-    virtual UIEvent* etype( void );
-
+    /// \brief Get the type of event for the object.
     uint32 type( void ) const;
 
     /// \brief Obtain the associated nom::Event object.
     ///
+    /// \see nom::EventHandler, nom::Event
+    ///
     /// \todo Rename method to sys_event?
     const Event& event( void ) const;
 
+    /// \brief Get the unique identifier associated with the widget.
+    int64 id( void ) const;
+
+    /// \brief Set the type of event of the object.
     void set_type( uint32 type );
 
-    /// \brief Set the nom::Event object associated with this UI event.
+    /// \brief Set the underlying nom::Event object associated with this event.
     ///
     /// \todo Rename method to set_sys_event?
     void set_event( const Event& ev );
 
+    /// \brief Set the source event's widget identifier.
+    void set_id( int64 id );
+
+    /// \brief Less than comparison operator.
+    ///
+    /// \remarks This is required for implementation inside a std::map.
+    ///
+    /// \see nom::UIEventDispatcher
     bool operator <( const self_type& rhs ) const;
 
+    /// \brief Equality comparison operator.
+    ///
+    /// \remarks This is required for implementation inside a std::map.
+    ///
+    /// \see nom::UIEventDispatcher
     bool operator ==( const self_type& rhs ) const;
 
   private:
+    /// \brief Event type.
+    ///
+    /// \see UIEvent anonymous enum.
     uint32 type_;
 
-    /// \brief The nom::Event object associated with the UI event.
+    /// \brief The underlying nom::Event object associated with the event.
     Event event_;
+
+    /// \brief Unique identifier of the callback object, identified by its
+    /// nom::UIWidget id.
+    int64 id_;
 };
 
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::UIEvent
+/// \ingroup gui
+///
+/// \code
+/// void YourWidget::process_event( UIEvent* ev )
+/// {
+///   UIWidgetEvent* event = dynamic_cast( UIWidgetEvent*, ev );
+///   if( event != nullptr )
+///   {
+///     // Do event logic
+///   }
+/// }
+/// \endcode

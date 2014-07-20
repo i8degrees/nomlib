@@ -38,7 +38,7 @@ namespace priv {
 void on_click( UIEvent* ev )
 {
   NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
   NOM_ASSERT( event != nullptr );
 
   NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, event->id() );

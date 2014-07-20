@@ -156,8 +156,9 @@ void UIWidget::initialize (
     this->set_font( PlatformSettings::get_system_font( SystemFontType::VariableTrueType ) );
   }
 
-  // Initialize the default event listeners for a top-level widget.
+  // Initialize the default event listener implementations for the widget
   NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
+  NOM_CONNECT_UIEVENT( this, UIEvent::ON_WIDGET_UPDATE, this->on_update );
 }
 
 UIWidget::UIWidget  (
@@ -1148,12 +1149,13 @@ void UIWidget::resize( const Size2i& size )
   this->set_size( size );
 
   // Associate the widget's unique identifiers with the sent event.
-  UIWidgetEvent evt;
-  evt.set_index( this->id() );
-  evt.set_text( this->name() );
+  // UIWidgetEvent evt;
+  UIWidgetResizeEvent evt;
+  // evt.set_index( this->id() );
+  // evt.set_text( this->name() );
   evt.set_id( this->id() );
-  evt.resized_bounds_ = IntRect( this->position(), Size2i( size.w, size.h ) );
-  // NOM_DUMP(evt.resized_bounds_);
+  evt.set_bounds( IntRect( this->position(), Size2i( size.w, size.h ) ) );
+  // NOM_DUMP(evt.bounds() );
 
   Event ev;
   ev.type = SDL_WINDOWEVENT_SIZE_CHANGED;
@@ -1180,14 +1182,36 @@ IUIEventDispatcher* UIWidget::dispatcher( void ) const
 
 // Protected scope
 
-void UIWidget::on_size_changed( UIEvent* ev )
+void UIWidget::on_update( UIEvent* ev )
 {
+  NOM_LOG_TRACE( NOM );
+
   NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
   NOM_ASSERT( event != nullptr );
 
   Event evt = event->event();
 
+  if( evt.type != UIEvent::ON_WIDGET_UPDATE )
+  {
+    return;
+  }
+
+  // Required for the ListBox widget
+  this->set_updated( false );
+
+  this->update();
+}
+
+void UIWidget::on_size_changed( UIEvent* ev )
+{
+  NOM_ASSERT( ev != nullptr );
+  UIWidgetResizeEvent* event = NOM_DYN_PTR_CAST( UIWidgetResizeEvent*, ev );
+  NOM_ASSERT( event != nullptr );
+
+  Event evt = event->event();
+
+  // FIXME: UIEvent::ON_WINDOW_SIZE_CHANGED ..? (YES)
   if( evt.type != SDL_WINDOWEVENT_SIZE_CHANGED )
   {
     return;
@@ -1198,14 +1222,15 @@ void UIWidget::on_size_changed( UIEvent* ev )
   if( this->decorator() != nullptr )
   {
     // Update the attached decorator (border & possibly a background)
-    this->decorator()->set_bounds( event->resized_bounds_ );
+    this->decorator()->set_bounds( event->bounds() );
   }
 
   // Update ourselves with the new rendering coordinates
-  this->set_bounds( event->resized_bounds_ );
+  this->set_bounds( event->bounds() );
 
-  // NOM_DUMP(this->position());
-  // NOM_DUMP(this->size());
+  UIWidgetEvent info;
+  info.set_id( this->id() );
+  this->dispatcher()->emit( UIEvent::ON_WIDGET_UPDATE, info );
 
   // this->update();
 }

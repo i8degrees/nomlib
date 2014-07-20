@@ -65,10 +65,7 @@ BitmapButton::BitmapButton  (
 
   this->set_size_policy( UILayoutPolicy::Policy::Fixed, UILayoutPolicy::Policy::Fixed );
 
-  // Initialize the default event listeners for the widget.
-  NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
-
-  this->update();
+  // Let our base class deal with any necessary event listener registrations
 }
 
 // BitmapButton::BitmapButton( UIWidget* parent, const Texture& image ) :
@@ -211,33 +208,53 @@ void BitmapButton::set_default_bitmap( const Texture& image )
 {
   this->default_bitmap_ = image;
 
-  this->update_bounds();
+  this->update();
 }
 
 void BitmapButton::set_pressed_bitmap( const Texture& image )
 {
   this->pressed_bitmap_ = image;
 
-  this->update_bounds();
+  this->update();
 }
 
 void BitmapButton::set_focused_bitmap( const Texture& image )
 {
   this->focused_bitmap_ = image;
 
-  this->update_bounds();
+  this->update();
 }
 
 void BitmapButton::set_disabled_bitmap( const Texture& image )
 {
   this->disabled_bitmap_ = image;
 
-  this->update_bounds();
+  this->update();
 }
 
 // Protected scope
 
-void BitmapButton::update_bounds( void )
+// void BitmapButton::on_mouse_down( UIEvent* ev )
+// {
+//   // this->set_button_state( Button::State::Pressed );
+// }
+
+// void BitmapButton::on_mouse_up( UIEvent* ev )
+// {
+//   // this->set_button_state( Button::State::Default );
+// }
+
+// void BitmapButton::on_mouse_enter( UIEvent* ev )
+// {
+//   // this->set_button_state( Button::State::Pressed );
+// }
+
+// void BitmapButton::on_mouse_leave( UIEvent* ev )
+// {
+//   // this->set_button_state( Button::State::Default );
+// }
+
+void BitmapButton::update( void )
 {
   if( this->default_bitmap_.valid() == false )
   {
@@ -264,68 +281,8 @@ void BitmapButton::update_bounds( void )
   // Set the size of the widget to match the default bitmap button.
   this->set_size( this->default_bitmap_.bounds().w, this->default_bitmap_.bounds().h );
 
-  Button::update_bounds();
-}
-
-void BitmapButton::on_size_changed( UIEvent* ev )
-{
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
-  NOM_ASSERT( event != nullptr );
-
-  Event evt = event->event();
-
-  if( evt.type != SDL_WINDOWEVENT_SIZE_CHANGED )
-  {
-    return;
-  }
-
-  if( this->decorator() )
-  {
-    // Update the attached decorator (border & possibly a background)
-    this->decorator()->set_bounds( event->resized_bounds_ );
-  }
-
-  // Update ourselves with the new rendering coordinates
-  this->set_bounds( event->resized_bounds_ );
-
-  // Ensure that the label coordinates & dimensions are updated.
-  Button::on_size_changed( event );
-
-  // FIXME? This corrects the alignment of the Button's text label when used
-  // within this class.
-  Button::update_bounds();
-
-  this->update_bounds();
-
-  this->update();
-}
-
-// void BitmapButton::on_mouse_down( UIEvent* ev )
-// {
-//   // this->set_button_state( Button::State::Pressed );
-// }
-
-// void BitmapButton::on_mouse_up( UIEvent* ev )
-// {
-//   // this->set_button_state( Button::State::Default );
-// }
-
-// void BitmapButton::on_mouse_enter( UIEvent* ev )
-// {
-//   // this->set_button_state( Button::State::Pressed );
-// }
-
-// void BitmapButton::on_mouse_leave( UIEvent* ev )
-// {
-//   // this->set_button_state( Button::State::Default );
-// }
-
-// Private scope
-
-void BitmapButton::update( void )
-{
-  // Nothing to do
+  // Update base class (sync the text label)
+  Button::update();
 }
 
 } // namespace nom

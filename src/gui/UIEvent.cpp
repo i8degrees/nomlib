@@ -31,7 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 UIEvent::UIEvent( void ) :
-  type_{ 0 }
+  type_{ 0 },
+  id_{ -1 }
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -52,11 +53,6 @@ UIEvent* UIEvent::clone( void ) const
   return new UIEvent( *this );
 }
 
-UIEvent* UIEvent::etype( void )
-{
-  return this;
-}
-
 uint32 UIEvent::type( void ) const
 {
   return this->type_;
@@ -67,6 +63,11 @@ const Event& UIEvent::event( void ) const
   return this->event_;
 }
 
+int64 UIEvent::id( void ) const
+{
+  return this->id_;
+}
+
 void UIEvent::set_type( uint32 type )
 {
   this->type_ = type;
@@ -75,6 +76,11 @@ void UIEvent::set_type( uint32 type )
 void UIEvent::set_event( const Event& ev )
 {
   this->event_ = ev;
+}
+
+void UIEvent::set_id( int64 id )
+{
+  this->id_ = id;
 }
 
 bool UIEvent::operator <( const self_type& rhs ) const

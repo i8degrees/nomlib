@@ -37,7 +37,7 @@ class UIEventDispatcherTest: public ::testing::Test
     void foo2( UIEvent* ev )
     {
       NOM_ASSERT( ev != nullptr );
-      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
       NOM_ASSERT( event != nullptr );
 
       // Event evt = event->event();

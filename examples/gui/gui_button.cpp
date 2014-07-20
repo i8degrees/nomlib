@@ -288,7 +288,7 @@ class App: public nom::SDLApp
     void on_click( UIEvent* ev ) const
     {
       NOM_ASSERT( ev != nullptr );
-      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
       NOM_ASSERT( event != nullptr );
 
       // Event evt = event->event();
@@ -301,7 +301,7 @@ class App: public nom::SDLApp
     void button0_on_click( UIEvent* ev ) const
     {
       NOM_ASSERT( ev != nullptr );
-      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
       NOM_ASSERT( event != nullptr );
 
       // Event evt = event->event();
@@ -325,7 +325,7 @@ class App: public nom::SDLApp
     void button1_on_click( UIEvent* ev ) const
     {
       NOM_ASSERT( ev != nullptr );
-      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
       NOM_ASSERT( event != nullptr );
 
       // Event evt = event->event();

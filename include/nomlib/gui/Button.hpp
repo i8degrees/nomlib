@@ -108,18 +108,13 @@ class Button: public UIWidget
 
     const std::string& label_text( void ) const;
 
+    /// \todo Rename to set_text?
     void set_label( const std::string& text );
 
     /// \see The Button::State enumeration.
     void set_button_state( Button::State state );
 
   protected:
-    virtual void update_bounds( void );
-
-    /// \brief Re-implements UIWidget::on_size_changed.
-    virtual void on_size_changed( UIEvent* ev );
-
-    virtual void on_update( UIEvent* ev );
 
     virtual void on_mouse_down( UIEvent* ev );
     virtual void on_mouse_up( UIEvent* ev );
@@ -127,10 +122,10 @@ class Button: public UIWidget
     virtual void on_mouse_enter( UIEvent* ev );
     virtual void on_mouse_leave( UIEvent* ev );
 
-  private:
     /// \brief Implements IDrawable::update.
-    void update( void );
+    /*virtual*/ void update( void );
 
+  private:
     std::string text_;
     Text label_;
 

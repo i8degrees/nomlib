@@ -240,7 +240,8 @@ void UIWidgetLayoutItem::set_bounds( const IntRect& rect )
 
   // Notify the widget via private event listener that we have a boundary
   // change, so that it can take care of updating itself properly.
-  UIWidgetEvent evt;
+  // UIWidgetEvent evt;
+  UIWidgetResizeEvent evt;
   evt.set_index( widget->id() );
   evt.set_text( widget->name() );
   evt.set_id( widget->id() );
@@ -252,8 +253,8 @@ void UIWidgetLayoutItem::set_bounds( const IntRect& rect )
   ev.window.data1 = rect.size().w;
   ev.window.data2 = rect.size().h;
   ev.window.window_id = widget->id();
-  evt.resized_bounds_ = rect;
-  // evt.resized_bounds_ = IntRect( Point2i( rect.x + x_offset, rect.y + y_offset ), rect.size() );
+  evt.set_bounds( rect );
+  // evt.set_bounds( IntRect( Point2i( rect.x + x_offset, rect.y + y_offset ), rect.size() ) );
   evt.set_event( ev );
 
   widget->dispatcher()->emit( UIEvent::ON_WINDOW_SIZE_CHANGED, evt );

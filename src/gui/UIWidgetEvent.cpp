@@ -31,20 +31,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 UIWidgetEvent::UIWidgetEvent( void ) :
-  index_{ -1 },
-  id_{ -1 }
+  index_{ -1 }
 {
-  // NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  this->set_id( -1 );
 }
 
 UIWidgetEvent::~UIWidgetEvent( void )
 {
-  // NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 }
 
 UIWidgetEvent::UIWidgetEvent( const Event& ev )
 {
-  // NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 
   this->set_event( ev );
   this->set_index( -1 );
@@ -53,7 +53,7 @@ UIWidgetEvent::UIWidgetEvent( const Event& ev )
 
 UIWidgetEvent::UIWidgetEvent( sint index, const std::string& text, int64 id )
 {
-  // NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 
   this->set_index( index );
   this->set_text( text );
@@ -85,11 +85,6 @@ const std::string& UIWidgetEvent::text( void ) const
   return this->text_;
 }
 
-int64 UIWidgetEvent::id( void ) const
-{
-  return this->id_;
-}
-
 void UIWidgetEvent::set_index( int idx )
 {
   this->index_ = idx;
@@ -100,9 +95,28 @@ void UIWidgetEvent::set_text( const std::string& text )
   this->text_ = text;
 }
 
-void UIWidgetEvent::set_id( int64 id )
+// UIWidgetResizeEvent
+
+UIWidgetResizeEvent::UIWidgetResizeEvent( void ) //:
+  // UIEvent( ON_WINDOW_SIZE_CHANGED )
 {
-  this->id_ = id;
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  // this->set_type( UIEvent::ON_WINDOW_SIZE_CHANGED );
+}
+
+UIWidgetResizeEvent::~UIWidgetResizeEvent( void )
+{
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+}
+
+const IntRect& UIWidgetResizeEvent::bounds( void ) const
+{
+  return this->bounds_;
+}
+
+void UIWidgetResizeEvent::set_bounds( const IntRect& bounds )
+{
+  this->bounds_ = bounds;
 }
 
 } // namespace nom

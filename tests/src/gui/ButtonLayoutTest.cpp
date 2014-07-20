@@ -242,7 +242,7 @@ class ButtonLayoutTest: public VisualUnitTest
     void button0_on_click( UIEvent* ev ) const
     {
       NOM_ASSERT( ev != nullptr );
-      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
       NOM_ASSERT( event != nullptr );
 
       NOM_DUMP( event->id() );
@@ -265,7 +265,7 @@ class ButtonLayoutTest: public VisualUnitTest
     void button1_on_click( UIEvent* ev ) const
     {
       NOM_ASSERT( ev != nullptr );
-      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
       NOM_ASSERT( event != nullptr );
 
       NOM_DUMP( event->id() );

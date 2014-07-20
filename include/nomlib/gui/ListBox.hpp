@@ -59,6 +59,8 @@ class ListBox: public UIWidget
     typedef std::shared_ptr<self_type> shared_ptr;
 
     /// \brief Default constructor.
+    ///
+    /// \todo Remove store argument.
     ListBox (
               UIWidget* parent,
               int64 id,
@@ -116,11 +118,6 @@ class ListBox: public UIWidget
     int hit_test( const Point2i& pt );
 
   protected:
-    /// \brief Re-implements UIWidget::on_size_changed.
-    virtual void on_size_changed( UIEvent* ev );
-
-    virtual void on_update( UIEvent* ev );
-
     /// \brief Default event listener for handling key press events.
     ///
     /// \remarks This method handles the updating the current selection text
@@ -148,7 +145,6 @@ class ListBox: public UIWidget
     /// \brief Re-implements UIWidget::set_focused.
     void set_focused( bool state );
 
-  private:
     /// \brief Implements the nom::UIWidget::update method.
     ///
     /// \todo Provide logic for customizing positioning and alignment of the
@@ -157,8 +153,9 @@ class ListBox: public UIWidget
     /// \todo Automatic best fit calculations with consideration to the
     /// text dimensions (font size, text dimensions, ...), number of elements
     /// and so on.
-    void update( void );
+    /*virtual*/ void update( void );
 
+  private:
     /// \brief Internal storage container for holding items.
     std::unique_ptr<UIItemContainer> store_;
 

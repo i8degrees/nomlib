@@ -52,10 +52,7 @@ class IUIEventListener
 
     typedef UIEvent event_type;
 
-    virtual ~IUIEventListener( void )
-    {
-      // NOM_LOG_TRACE( NOM );
-    }
+    virtual ~IUIEventListener( void ) {}
 
     virtual void operator() ( event_type& ev ) const = 0;
 };
@@ -73,20 +70,11 @@ class UIWidgetListener: public IUIEventListener
     typedef UIEvent event_type;
     typedef std::function<void(event_type*)> callback_type;
 
-    UIWidgetListener( const callback_type& observer )
-    {
-      this->cb_ = observer;
-    }
+    UIWidgetListener( const callback_type& observer );
 
-    virtual ~UIWidgetListener( void )
-    {
-      // NOM_LOG_TRACE( NOM );
-    }
+    virtual ~UIWidgetListener( void );
 
-    void operator() ( event_type& ev ) const
-    {
-      this->cb_( &ev );
-    }
+    void operator() ( event_type& ev ) const;
 
   private:
     std::function<void(event_type*)> cb_;
@@ -100,7 +88,7 @@ class IUIEventDispatcher
     typedef UIEvent event_type;
     typedef IUIEventListener callback_type;
 
-    virtual ~IUIEventDispatcher( void );
+    virtual ~IUIEventDispatcher( void ) {}
 
     virtual bool register_event_listener( const event_type& ev, std::shared_ptr<callback_type> observer ) = 0;
     virtual bool remove_event_listener( const event_type& key ) = 0;
@@ -226,4 +214,5 @@ class UIEventDispatcher: public IUIEventDispatcher
 /// 2. http://sourcemaking.com/design_patterns/observer/cpp/1
 /// 3. http://docs.wxwidgets.org/trunk/classwx_command_event.html
 /// 4. http://librocket.com/wiki/documentation/tutorials/Dragging
+/// 5. http://stackoverflow.com/questions/14633808/the-observer-pattern-further-considerations-and-generalised-c-implementation
 ///

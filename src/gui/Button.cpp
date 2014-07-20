@@ -91,10 +91,11 @@ Button::Button  (
   // Default state
   this->set_button_state( Button::State::Default );
 
-  // Initialize the default event listeners for the widget.
-  NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
+  // Use UIWidget's default event listener for UIEvent::ON_WINDOW_SIZE_CHANGED;
+  // calls UIWidget::on_size_changed. This is necessary for use within a layout.
 
-  NOM_CONNECT_UIEVENT( this, UIEvent::ON_WIDGET_UPDATE, this->on_update );
+  // Use UIWidget's default event listener for UIEvent::ON_WIDGET_UPDATE; calls
+  // UIWidget::on_update. This is necessary for use within a layout.
 }
 
 // Button::Button( UIWidget* parent ) :
@@ -233,8 +234,6 @@ void Button::set_label( const std::string& text )
   this->label_.set_position( this->position() );
   this->label_.set_size( this->size() );
 
-
-  this->update_bounds();
   this->update();
 }
 
@@ -245,69 +244,10 @@ void Button::set_button_state( Button::State state )
 
 // Protected scope
 
-void Button::update_bounds( void )
-{
-  this->label_.set_position( this->position() );
-  this->label_.set_size( this->size() );
-}
-
-void Button::on_update( UIEvent* ev )
-{
-  // NOM_LOG_TRACE( NOM );
-
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
-  NOM_ASSERT( event != nullptr );
-
-  Event evt = event->event();
-
-  if( evt.type != UIEvent::ON_WIDGET_UPDATE )
-  {
-    return;
-  }
-
-  this->label_.set_font( this->font() );
-
-  this->update_bounds();
-  this->update();
-}
-
-void Button::on_size_changed( UIEvent* ev )
-{
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
-  NOM_ASSERT( event != nullptr );
-
-  Event evt = event->event();
-
-  if( evt.type != SDL_WINDOWEVENT_SIZE_CHANGED )
-  {
-    return;
-  }
-
-  if( this->decorator() )
-  {
-    // Update the attached decorator (border & possibly a background)
-    this->decorator()->set_bounds( event->resized_bounds_ );
-  }
-
-  // Update ourselves with the new rendering coordinates
-  this->set_bounds( event->resized_bounds_ );
-
-  // Updating the text label's coordinates and dimensions also ensures that its
-  // alignment is recalculated.
-  this->label_.set_position( this->position() );
-  this->label_.set_size( this->size() );
-
-  this->update_bounds();
-
-  this->update();
-}
-
 void Button::on_mouse_down( UIEvent* ev )
 {
   NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
   NOM_ASSERT( event != nullptr );
 
   this->set_button_state( Button::State::Pressed );
@@ -324,7 +264,7 @@ void Button::on_mouse_down( UIEvent* ev )
 void Button::on_mouse_up( UIEvent* ev )
 {
   NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
   NOM_ASSERT( event != nullptr );
 
   this->set_button_state( Button::State::Default );
@@ -341,7 +281,7 @@ void Button::on_mouse_up( UIEvent* ev )
 void Button::on_mouse_enter( UIEvent* ev )
 {
   NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
   NOM_ASSERT( event != nullptr );
 
   // this->set_button_state( Button::State::Pressed );
@@ -360,7 +300,7 @@ void Button::on_mouse_enter( UIEvent* ev )
 void Button::on_mouse_leave( UIEvent* ev )
 {
   NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev->etype() );
+  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
   NOM_ASSERT( event != nullptr );
 
   // this->set_button_state( Button::State::Default );
@@ -376,11 +316,17 @@ void Button::on_mouse_leave( UIEvent* ev )
   this->dispatcher()->emit( UIEvent::MOUSE_MOTION_LEAVE, evt );
 }
 
-// Private scope
-
 void Button::update( void )
 {
-  // Nothing to do
+  this->label_.set_position( this->position() );
+  this->label_.set_size( this->size() );
+
+  // Sync the text label's font; this is necessary when the font is changed
+  // after the text has been set (using Button::set_label).
+  if( this->label_.font() != this->font() )
+  {
+    this->label_.set_font( this->font() );
+  }
 }
 
 } // namespace nom

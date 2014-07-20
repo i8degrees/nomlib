@@ -69,6 +69,10 @@ class UIWidget: public Transformable
     /// \brief Destructor.
     virtual ~UIWidget( void );
 
+    /// \remarks Event listeners for the event types
+    /// UIEvent::ON_WINDOW_SIZE_CHANGED and UIEvent::ON_WIDGET_UPDATE are
+    /// registered using the default callback methods UIWidget::on_update and
+    /// UIWidget::on_size_changed.
     void initialize (
                       UIWidget* parent,
                       int64 id,
@@ -445,6 +449,24 @@ class UIWidget: public Transformable
     IUIEventDispatcher* dispatcher( void ) const;
 
   protected:
+    /// \brief Update (sync) logic called by the widget when used in a layout.
+    ///
+    /// \remarks This is the default callback method implementation used for
+    /// UIEvent::ON_WIDGET_UPDATE events.
+    ///
+    /// \note This method is preceded by UIWidget::on_size_changed.
+    ///
+    /// \see UIWidget::initialize
+    virtual void on_update( UIEvent* ev );
+
+    /// \brief Size modification logic called by the widget when used in a layout.
+    ///
+    /// \remarks This is the default callback method implementation for
+    /// UIEvent::ON_WINDOW_SIZE_CHANGED events.
+    ///
+    /// \note This method emits a UIEvent::ON_WIDGET_UPDATE event.
+    ///
+    /// \see UIWidget::initialize
     virtual void on_size_changed( UIEvent* ev );
 
     virtual void on_mouse_down( UIEvent* ev );

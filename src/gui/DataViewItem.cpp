@@ -34,59 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-// IDataViewItem
-
-IDataViewItem::IDataViewItem( void )
-{
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, SDL_LOG_PRIORITY_VERBOSE );
-}
-
-IDataViewItem::~IDataViewItem( void )
-{
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, SDL_LOG_PRIORITY_VERBOSE );
-}
-
-std::shared_ptr<UIStyle> IDataViewItem::style( void ) const
-{
-  return this->style_;
-}
-
-void IDataViewItem::set_style( std::shared_ptr<UIStyle> style )
-{
-  this->style_ = style;
-}
-
-// DataViewTextItem
-
-DataViewTextItem::DataViewTextItem( void )
-{
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
-}
-
-DataViewTextItem::~DataViewTextItem( void )
-{
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
-}
-
-DataViewTextItem::DataViewTextItem( const std::string& data )
-{
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
-
-  this->data_ = new String( data );
-}
-
-ObjectTypeInfo DataViewTextItem::type( void ) const
-{
-  return NOM_OBJECT_TYPE_INFO( self_type );
-}
-
-IObject* DataViewTextItem::data( void ) const
-{
-  return this->data_;
-}
-
-// DataViewItem
-
 DataViewItem::DataViewItem( void )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
@@ -112,6 +59,39 @@ ObjectTypeInfo DataViewItem::type( void ) const
 IObject* DataViewItem::data( void ) const
 {
   return this->data_;
+}
+
+std::shared_ptr<UIStyle> DataViewItem::style( void ) const
+{
+  return this->style_;
+}
+
+void DataViewItem::set_style( std::shared_ptr<UIStyle> style )
+{
+  this->style_ = style;
+}
+
+// DataViewTextItem
+
+DataViewTextItem::DataViewTextItem( void )
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+}
+
+DataViewTextItem::~DataViewTextItem( void )
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+}
+
+DataViewTextItem::DataViewTextItem( const std::string& data ) :
+  DataViewItem{ new String( data ) }
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+}
+
+ObjectTypeInfo DataViewTextItem::type( void ) const
+{
+  return NOM_OBJECT_TYPE_INFO( self_type );
 }
 
 } // namespace nom

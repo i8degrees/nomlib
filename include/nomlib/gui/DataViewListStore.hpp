@@ -58,7 +58,7 @@ class DataViewListStore
 
     /// \brief Item container; one-to-one relationship with a column;
     /// indexed by column ID.
-    typedef IDataViewItem ValueType;
+    typedef DataViewItem ValueType;
     typedef std::vector<ValueType*> ValueTypeContainer;
 
     typedef std::map<uint, ValueTypeContainer> Items;
@@ -87,7 +87,7 @@ class DataViewListStore
 
     void clear( void );
 
-    // bool erase_item( uint col, IDataViewItem* item );
+    // bool erase_item( uint col, DataViewItem* item );
 
     bool insert_column( uint cols, const DataViewColumn& col );
 
@@ -106,7 +106,7 @@ class DataViewListStore
     /// \brief Add an item onto the end of a column.
     ///
     /// \param col The column identifier.
-    /// \param value An IDataViewItem compatible object to insert.
+    /// \param value An DataViewItem compatible object to insert.
     bool append_item( uint col, ValueType* value );
 
     /// \brief Apply a custom style for every item within the column.

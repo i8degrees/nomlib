@@ -41,15 +41,18 @@ namespace nom {
 class UIStyle;
 class String;
 
-class IDataViewItem: public IObject
+/// \brief Base class
+class DataViewItem: public IObject
 {
   public:
-    IDataViewItem( void );
+    DataViewItem( void );
 
-    virtual ~IDataViewItem( void );
+    virtual ~DataViewItem( void );
 
-    virtual ObjectTypeInfo type( void ) const = 0;
-    virtual IObject* data( void ) const = 0;
+    DataViewItem( IObject* data );
+
+    virtual ObjectTypeInfo type( void ) const;
+    virtual IObject* data( void ) const;
 
     /// \brief Get the style for the item.
     ///
@@ -65,12 +68,14 @@ class IDataViewItem: public IObject
     void set_style( std::shared_ptr<UIStyle> style );
 
   private:
+    IObject* data_;
+
     /// \brief Customizable column theme; this is intended to be set by the
     /// end-user. This must *not* depend on being available.
     std::shared_ptr<UIStyle> style_;
 };
 
-class DataViewTextItem: public IDataViewItem
+class DataViewTextItem: public DataViewItem
 {
   public:
     typedef DataViewTextItem self_type;
@@ -82,30 +87,6 @@ class DataViewTextItem: public IDataViewItem
     DataViewTextItem( const std::string& data );
 
     ObjectTypeInfo type( void ) const;
-
-    IObject* data( void ) const;
-
-  private:
-    String* data_;
-};
-
-class DataViewItem: public IDataViewItem
-{
-  public:
-    typedef DataViewItem self_type;
-
-    DataViewItem( void );
-
-    virtual ~DataViewItem( void );
-
-    DataViewItem( IObject* data );
-
-    ObjectTypeInfo type( void ) const;
-
-    IObject* data( void ) const;
-
-  private:
-    IObject* data_;
 };
 
 } // namespace nom

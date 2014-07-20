@@ -224,7 +224,7 @@ void DataViewList::update_items( void )
 
     for( auto rows = 0; rows != this->store()->items_size( cols ); ++rows )
     {
-      IDataViewItem* row = this->store()->item( cols, rows );
+      DataViewItem* row = this->store()->item( cols, rows );
 
       if( NOM_ISA( String*, row->data() ) == true )
       {
@@ -296,7 +296,7 @@ void DataViewList::update_items( void )
         {
           // Use the height dimension of the first column to horizontally align
           // the rows.
-          IDataViewItem* col0_height = this->store()->item( 0, rows );
+          DataViewItem* col0_height = this->store()->item( 0, rows );
           if( col0_height != nullptr )
           {
             Transformable* icon_item = dynamic_cast<Transformable*>( col0_height->data() );
@@ -401,24 +401,19 @@ void DataViewList::on_mouse_down( const Event& evt )
         break;
       }
 
-      IntRect label_bounds( (*it)->position().x, (*it)->position().y, (*it)->width(), (*it)->height() );
-
-      if( label_bounds.contains( mouse_coords ) )
+      if( this->contains_label( it->get(), mouse_coords ) )
       {
         UIWidgetTreeEvent item;
 
-        // Send the array index in our event; this signifies which choice was
-        // selected.
-        item.set_index( index );
+        // Set the associated column for the signal.
+        item.set_column( index );
 
-        // Send the text of the selection.
-        item.set_text( (*it)->text() );
+        item.set_data( it->get() );
 
-        // Set the associated nom::Event object for this UI event.
+        // Set the associated nom::Event object for this signal.
         item.set_event( evt );
 
-        // Associate the widget's unique identifier for this widget's event
-        // object.
+        // Associate the widget's unique identifier for this signal.
         item.set_id( this->id() );
 
         // Send the UI event object to the registered callback; public event
@@ -426,51 +421,11 @@ void DataViewList::on_mouse_down( const Event& evt )
         this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
 
         // Processed events.
-        // return true;
         return;
       }
 
       for( auto it = this->drawable_items_.begin(); it != this->drawable_items_.end(); ++it )
       {
-        // if( NOM_ISA( Text*, it->get() ) == true )
-        // {
-        //   Text* obj = dynamic_cast<Text*>( it->get() );
-
-        //   if( obj == nullptr )
-        //   {
-        //     // TODO: Err handling
-        //     NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not send UIWidgetEvent for nom::Text drawable_item: NULL." );
-        //   }
-
-        //   IntRect label_bounds( obj->position().x, obj->position().y, obj->width(), obj->height() );
-
-        //   if( label_bounds.contains( mouse_coords ) )
-        //   {
-        //     UIWidgetEvent item;
-
-        //     // Send the array index in our event; this signifies which choice was
-        //     // selected.
-        //     item.set_index( index );
-
-        //     // Send the text of the selection.
-        //     item.set_text( obj->text() );
-
-        //     // Set the associated nom::Event object for this UI event.
-        //     item.set_event( evt );
-
-        //     // Associate the widget's unique identifier for this widget's event
-        //     // object.
-        //     item.set_id( this->id() );
-
-        //     // Send the UI event object to the registered callback; public event
-        //     // slot.
-        //     this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
-
-        //     // Processed events.
-        //     // return true;
-        //     return;
-        //   }
-        // }
         if( NOM_ISA( Transformable*, it->get() ) == true )
         {
           Transformable* obj = dynamic_cast<Transformable*>( it->get() );
@@ -487,33 +442,23 @@ void DataViewList::on_mouse_down( const Event& evt )
           {
             UIWidgetTreeEvent item;
 
-            // Send the current frame identifier used for rendering of the
-            // sprite sheet.
-            item.set_index( index );
+            // FIXME: Index is wrong (needs to be computed somehow).
+            item.set_column( index );
 
-            // Send the text of the selection; the sprite sheet's filename
-            // attribute.
-            item.set_text( ObjectTypeInfo( obj->type() ).name() );
-
-            // Set the associated nom::Event object for this UI event.
+            // Set the associated nom::Event object for this signal.
             item.set_event( evt );
 
-            // Associate the widget's unique identifier for this widget's event
-            // object.
+            // Associate the widget's unique identifier for this signal.
             item.set_id( this->id() );
 
-            Text* textual_item = NOM_DYN_PTR_CAST( Text*, it->get() );
-            if( textual_item )
-            {
-              item.set_data( new String( textual_item->text() ) );
-            }
+            // Associate widget's tree item data with emitted signal
+            item.set_data( obj );
 
             // Send the UI event object to the registered callback; public event
             // slot.
             this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
 
             // Processed events.
-            // return true;
             return;
           }
         }
@@ -522,9 +467,6 @@ void DataViewList::on_mouse_down( const Event& evt )
       ++index;
     }
   }
-
-  // No processed events
-  // return false;
 }
 
 } // namespace nom

@@ -103,7 +103,7 @@ void DataViewListStore::clear( void )
   this->items_.clear();
 }
 
-// bool DataViewListStore::erase_item( uint col, IDataViewItem* item )
+// bool DataViewListStore::erase_item( uint col, DataViewItem* item )
 // {
 //   auto res = this->items_.find( col );
 

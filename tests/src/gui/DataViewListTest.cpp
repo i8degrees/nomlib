@@ -123,25 +123,25 @@ class DataViewListTest: public VisualUnitTest
     }
 
   protected:
-
-    void on_click( UIEvent* ev )
+    void on_click( const UIWidgetTreeEvent& ev )
     {
-      NOM_ASSERT( ev != nullptr );
-      UIWidgetTreeEvent* event = NOM_DYN_PTR_CAST( UIWidgetTreeEvent*, ev );
-      NOM_ASSERT( event != nullptr );
+      // Event evt = ev.event();
 
-      Event evt = event->event();
+      // // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.id() );
+      // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.text() );
+      NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.column() );
 
-      if( evt.type != SDL_MOUSEBUTTONDOWN ) return;
+      Text* str = NOM_DYN_PTR_CAST( Text*, ev.data() );
+      SpriteBatch* icon = NOM_DYN_PTR_CAST( SpriteBatch*, ev.data() );
 
-      // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, event->id() );
-      NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, event->text() );
-      NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, event->index() );
-
-      String* str = NOM_DYN_PTR_CAST( String*, event->data() );
       if( str )
       {
-        NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, str->str() );
+        NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, str->text() );
+      }
+      else if( icon )
+      {
+        NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, icon->sheet_filename() );
+        NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, icon->frame() );
       }
     }
 
@@ -162,9 +162,9 @@ class DataViewListTest: public VisualUnitTest
     DataViewColumn col0;
     DataViewColumn col1;
     DataViewColumn col2;
-    std::vector<IDataViewItem*> col0_items;
-    std::vector<IDataViewItem*> col1_items;
-    std::vector<IDataViewItem*> col2_items;
+    std::vector<DataViewItem*> col0_items;
+    std::vector<DataViewItem*> col1_items;
+    std::vector<DataViewItem*> col2_items;
     DataViewListStore* store;
     UIStyle::shared_ptr col_style;
     UIStyle::shared_ptr item_style;
@@ -523,13 +523,13 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
 
   // 11 items
   uint idx = 0;
-  IDataViewItem* col0_item = nullptr;
+  DataViewItem* col0_item = nullptr;
   SpriteBatch* icon = nullptr;
   for( auto itr = col1_items.begin(); itr != col1_items.end(); ++itr )
   {
     if( idx < col0_items.size() )
     {
-      IDataViewItem* col0_item = col0_items.at( idx );
+      DataViewItem* col0_item = col0_items.at( idx );
       icon = dynamic_cast<SpriteBatch*>( col0_item->data() );
 
       if( icon->frame() == 0 )

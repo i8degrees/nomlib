@@ -97,7 +97,7 @@ class UIWidgetEvent: public UIEvent
 // Forward declarations
 class IObject;
 
-class UIWidgetTreeEvent: public UIWidgetEvent
+class UIWidgetTreeEvent: public UIEvent
 {
   public:
     UIWidgetTreeEvent( void ) :
@@ -110,9 +110,19 @@ class UIWidgetTreeEvent: public UIWidgetEvent
       // NOM_LOG_TRACE( NOM );
     }
 
+    int column( void ) const
+    {
+      return this->column_;
+    }
+
     IObject* data( void ) const
     {
       return this->obj_;
+    }
+
+    void set_column( int col )
+    {
+      this->column_ = col;
     }
 
     void set_data( IObject* obj )
@@ -121,6 +131,7 @@ class UIWidgetTreeEvent: public UIWidgetEvent
     }
 
   private:
+    int column_;
     IObject* obj_;
 };
 

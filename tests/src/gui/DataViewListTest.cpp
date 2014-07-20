@@ -117,15 +117,7 @@ class DataViewListTest: public VisualUnitTest
       dview = new nom::DataViewList( window, -1, pos, size );
       dview->set_decorator( new nom::FinalFantasyDecorator() );
 
-      // NOM_CONNECT_UIWIDGET_EVENT( dview, nom::UIEvent::MOUSE_DOWN, this->on_click( ev ) );
-
-      // NOM_CONNECT_UIWIDGET_EVENT( dview, nom::UIEvent(), this->on_click( ev ) );
-      NOM_CONNECT_UIWIDGET_EVENT( dview, nom::UIEvent(UIEvent::MOUSE_DOWN), this->on_click( ev ) );
-
-      // Event evt;
-      // evt.type = SDL_MOUSEBUTTONDOWN;
-      // evt.mouse.button = SDL_BUTTON_LEFT;
-      // NOM_CONNECT_UIWIDGET_EVENT( dview, nom::UIWidgetEvent(evt), this->on_click( ev ) );
+      NOM_CONNECT_UIWIDGET_TREE_EVENT( dview, UIEvent::MOUSE_DOWN, this->on_click );
 
       return dview;
     }

@@ -39,7 +39,7 @@ namespace nom {
 namespace priv {
 
 /// \brief Default callback method used in registering event listeners.
-void on_click( UIEvent* ev );
+void on_click( const UIWidgetEvent& ev );
 
 /// \brief Internal helper method for verifying expected output across tests.
 ///

@@ -165,13 +165,13 @@ class App: public nom::SDLApp
       this->button0 = this->create_button( this->gui_window[1], Point2i::null, Size2i(50,25), "button0", "Click me!" );
       this->button0->set_font( SystemFonts::cache().load_resource("VIII") );
       this->button0->set_decorator( new nom::FinalFantasyDecorator() );
-      NOM_CONNECT_UIWIDGET_EVENT( this->button0, nom::UIEvent::MOUSE_DOWN, this->button0_on_click( ev ) );
-      NOM_CONNECT_UIWIDGET_EVENT( this->button0, nom::UIEvent::MOUSE_UP, this->button0_on_click( ev ) );
+      NOM_CONNECT_UIWIDGET_EVENT( this->button0, nom::UIEvent::MOUSE_DOWN, this->button0_on_click );
+      NOM_CONNECT_UIWIDGET_EVENT( this->button0, nom::UIEvent::MOUSE_UP, this->button0_on_click );
 
       this->button1 = this->create_button( this->gui_window[1], Point2i::null, Size2i(50,25), "button1", "button1" );
       this->button1->set_decorator( new nom::MinimalDecorator() );
-      NOM_CONNECT_UIWIDGET_EVENT( this->button1, nom::UIEvent::MOUSE_DOWN, this->button1_on_click( ev ) );
-      NOM_CONNECT_UIWIDGET_EVENT( this->button1, nom::UIEvent::MOUSE_UP, this->button1_on_click( ev ) );
+      NOM_CONNECT_UIWIDGET_EVENT( this->button1, nom::UIEvent::MOUSE_DOWN, this->button1_on_click );
+      NOM_CONNECT_UIWIDGET_EVENT( this->button1, nom::UIEvent::MOUSE_UP, this->button1_on_click );
 
       nom::UIStyle::shared_ptr custom_style = nullptr;
       custom_style.reset( new nom::UIStyle() );
@@ -182,8 +182,8 @@ class App: public nom::SDLApp
 
       this->button2 = this->create_bitmap_button( this->gui_window[1], Point2i::null, Size2i(102,25), "bitmap_button", "Hello", this->button_bg[1], custom_style );
       this->button2->set_pressed_bitmap( this->button_bg[2] );
-      NOM_CONNECT_UIWIDGET_EVENT( this->button2, nom::UIEvent::MOUSE_DOWN, this->on_click( ev ) );
-      NOM_CONNECT_UIWIDGET_EVENT( this->button2, nom::UIEvent::MOUSE_UP, this->on_click( ev ) );
+      NOM_CONNECT_UIWIDGET_EVENT( this->button2, nom::UIEvent::MOUSE_DOWN, this->on_click );
+      NOM_CONNECT_UIWIDGET_EVENT( this->button2, nom::UIEvent::MOUSE_UP, this->on_click );
 
       // Explicitly positioned:
 // this->gui_window[0]->insert_child( this->create_bitmap_button( this->gui_window[0], Point2i(102,400), Size2i(102,25), "expliclt_bitmap_button", "HelloB", this->button_bg[1], custom_style ) );
@@ -285,62 +285,50 @@ class App: public nom::SDLApp
       return button;
     }
 
-    void on_click( UIEvent* ev ) const
+    void on_click( const UIWidgetEvent& ev ) const
     {
-      NOM_ASSERT( ev != nullptr );
-      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-      NOM_ASSERT( event != nullptr );
+      // Event evt = ev.event();
 
-      // Event evt = event->event();
-
-      NOM_DUMP( event->id() );
-      NOM_DUMP( event->index() );
-      NOM_DUMP( event->text() );
+      NOM_DUMP( ev.id() );
+      NOM_DUMP( ev.index() );
+      NOM_DUMP( ev.text() );
     }
 
-    void button0_on_click( UIEvent* ev ) const
+    void button0_on_click( const UIWidgetEvent& ev ) const
     {
-      NOM_ASSERT( ev != nullptr );
-      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-      NOM_ASSERT( event != nullptr );
+      // Event evt = ev.event();
 
-      // Event evt = event->event();
-
-      NOM_DUMP( event->id() );
-      NOM_DUMP( event->index() );
-      NOM_DUMP( event->text() );
+      NOM_DUMP( ev.id() );
+      NOM_DUMP( ev.index() );
+      NOM_DUMP( ev.text() );
 
       NOM_ASSERT( this->button0 != nullptr );
 
-      if( event->index() == 0 ) // MOUSE_DOWN
+      if( ev.index() == 0 ) // MOUSE_DOWN
       {
         this->button0->set_label( "Click me!" );
       }
-      else if( event->index() == 1 ) // MOUSE_UP
+      else if( ev.index() == 1 ) // MOUSE_UP
       {
         this->button0->set_label( "Release me!" );
       }
     }
 
-    void button1_on_click( UIEvent* ev ) const
+    void button1_on_click( const UIWidgetEvent& ev ) const
     {
-      NOM_ASSERT( ev != nullptr );
-      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-      NOM_ASSERT( event != nullptr );
+      // Event evt = ev.event();
 
-      // Event evt = event->event();
-
-      NOM_DUMP( event->id() );
-      NOM_DUMP( event->index() );
-      NOM_DUMP( event->text() );
+      NOM_DUMP( ev.id() );
+      NOM_DUMP( ev.index() );
+      NOM_DUMP( ev.text() );
 
       NOM_ASSERT( this->button1 != nullptr );
 
-      if( event->index() == 0 ) // MOUSE_DOWN
+      if( ev.index() == 0 ) // MOUSE_DOWN
       {
         this->button1->set_label( "button1" );
       }
-      else if( event->index() == 1 ) // MOUSE_UP
+      else if( ev.index() == 1 ) // MOUSE_UP
       {
         this->button1->set_label( "Yeah buddy!" );
       }

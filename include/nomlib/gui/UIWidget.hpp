@@ -49,7 +49,7 @@ class UILayout;
 class UIStyle;
 class IUIEventDispatcher;
 class UIWidgetEvent;
-class UIEvent;
+class UIWidgetResizeEvent;
 
 /// \brief GUI window object container
 class UIWidget: public Transformable
@@ -455,7 +455,7 @@ class UIWidget: public Transformable
     /// UIEvent::ON_WIDGET_UPDATE signal.
     ///
     /// \see UIWidget::initialize
-    virtual void on_update( UIEvent* ev );
+    virtual void on_update( const UIWidgetEvent& ev );
 
     /// \brief Size modification logic called by the widget when used in a layout.
     ///
@@ -465,7 +465,7 @@ class UIWidget: public Transformable
     /// \note This method emits a UIEvent::ON_WIDGET_UPDATE signal.
     ///
     /// \see UIWidget::initialize
-    virtual void on_size_changed( UIEvent* ev );
+    virtual void on_size_changed( const UIWidgetResizeEvent& ev );
 
     virtual void on_mouse_down( const Event& evt );
     virtual void on_mouse_up( const Event& evt );

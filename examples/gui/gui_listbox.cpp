@@ -250,17 +250,13 @@ class App: public nom::SDLApp
       return listbox;
     }
 
-    void on_click( UIEvent* ev ) const
+    void on_click( const UIWidgetEvent& ev ) const
     {
-      NOM_ASSERT( ev != nullptr );
-      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-      NOM_ASSERT( event != nullptr );
-
       // Event evt = event->event();
 
-      NOM_DUMP( event->id() );
-      NOM_DUMP( event->index() );
-      NOM_DUMP( event->text() );
+      NOM_DUMP( ev.id() );
+      NOM_DUMP( ev.index() );
+      NOM_DUMP( ev.text() );
     }
 
     nom::int32 Run( void )

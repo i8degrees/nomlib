@@ -35,15 +35,14 @@ namespace nom {
 
 namespace priv {
 
-void on_click( UIEvent* ev )
+void on_click( const UIWidgetEvent& ev )
 {
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-  NOM_ASSERT( event != nullptr );
+  // Only dump event info upon mouse click release
+  if( ev.event().type != SDL_MOUSEBUTTONUP ) return;
 
-  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, event->id() );
-  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, event->index() );
-  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, event->text() );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.id() );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.index() );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.text() );
 }
 
 void expected_layout_spacer_pos( const UILayout* layout, int idx, const Point2i& pos )

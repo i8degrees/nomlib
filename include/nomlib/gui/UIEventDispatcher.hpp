@@ -176,30 +176,38 @@ class UIEventDispatcher: public IUIEventDispatcher
 
 } // namespace nom
 
-/// \brief Convenience macro for registering private UI widget events.
+/// \brief Convenience macro for registering an event listener for emitted
+/// nom::UIWidgetEvent signals.
 ///
 /// \param obj  The nom::UIWidget deriving object that is calling from.
-/// \param evt  The nom::UIEvent type to register.
+/// \param evt  The nom::UIEvent signal to listen for.
 /// \param func The callback method to be executed.
-///
-/// \remarks This macro is intended to be used within a class deriving from
-/// nom::UIWidget.
 ///
 /// \see See also: nom::UIEvent, nom::UIWidgetEvent.
-#define NOM_CONNECT_UIEVENT( obj, evt, func ) \
-  ( obj->dispatcher()->register_event_listener( evt, std::make_shared<UIWidgetListener>( [&] ( UIEvent* ev ) { func( ev ); } ) ) )
+#define NOM_CONNECT_UIWIDGET_EVENT( obj, evt, func ) \
+  ( obj->dispatcher()->register_event_listener( evt, std::make_shared<nom::UIWidgetListener>( [&] ( nom::UIEvent* ev ) { func( *static_cast<nom::UIWidgetEvent*>( ev ) ); } ) ) )
 
-/// \brief Convenience macro for registering public UI widget events.
+/// \brief Convenience macro for registering an event listener for emitted
+/// nom::UIWidgetResizeEvent signals.
 ///
 /// \param obj  The nom::UIWidget deriving object that is calling from.
-/// \param evt  The nom::UIEvent type to register.
+/// \param evt  The nom::UIEvent signal to listen for.
 /// \param func The callback method to be executed.
 ///
-/// \remarks This macro is intended to be used within application-level code.
+/// \see See also: nom::UIEvent, nom::UIWidgetResizeEvent.
+#define NOM_CONNECT_RESIZE_EVENT( obj, evt, func ) \
+  ( obj->dispatcher()->register_event_listener( evt, std::make_shared<UIWidgetListener>( [&] ( UIEvent* ev ) { func( *static_cast<nom::UIWidgetResizeEvent*>( ev ) ); } ) ) )
+
+/// \brief Convenience macro for registering an event listener for emitted
+/// nom::UIWidgetTreeEvent signals.
 ///
-/// \see See also: nom::UIWidget, nom::UIEvent.
-#define NOM_CONNECT_UIWIDGET_EVENT( obj, evt, func ) \
-  ( obj->dispatcher()->register_event_listener( evt, std::make_shared<UIWidgetListener>( [&] ( UIEvent* ev ) { func; } ) ) )
+/// \param obj  The nom::UIWidget deriving object that is calling from.
+/// \param evt  The nom::UIEvent signal to listen for.
+/// \param func The callback method to be executed.
+///
+/// \see See also: nom::UIEvent, nom::UIWidgetTreeEvent.
+#define NOM_CONNECT_UIWIDGET_TREE_EVENT( obj, evt, func ) \
+  ( obj->dispatcher()->register_event_listener( evt, std::make_shared<nom::UIWidgetListener>( [&] ( nom::UIEvent* ev ) { func( *static_cast<nom::UIWidgetTreeEvent*>( ev ) ); } ) ) )
 
 #endif // include guard defined
 

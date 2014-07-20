@@ -114,8 +114,9 @@ class ButtonLayoutTest: public VisualUnitTest
 
       this->button0->set_font( SystemFonts::cache().load_resource("VIII") );
       this->button0->set_decorator( new nom::FinalFantasyDecorator() );
-      NOM_CONNECT_UIWIDGET_EVENT( this->button0, nom::UIEvent::MOUSE_DOWN, this->button0_on_click( ev ) );
-      NOM_CONNECT_UIWIDGET_EVENT( this->button0, nom::UIEvent::MOUSE_UP, this->button0_on_click( ev ) );
+
+      NOM_CONNECT_UIWIDGET_EVENT( this->button0, nom::UIEvent::MOUSE_DOWN, this->button0_on_click );
+      NOM_CONNECT_UIWIDGET_EVENT( this->button0, nom::UIEvent::MOUSE_UP, this->button0_on_click );
 
       // this->button1 = this->create_button( this->layout_widget, Point2i::null, Size2i::null, "button1", "button1" );
 
@@ -125,8 +126,8 @@ class ButtonLayoutTest: public VisualUnitTest
 
       this->button1->set_decorator( new nom::MinimalDecorator() );
 
-      NOM_CONNECT_UIWIDGET_EVENT( this->button1, nom::UIEvent::MOUSE_DOWN, this->button1_on_click( ev ) );
-      NOM_CONNECT_UIWIDGET_EVENT( this->button1, nom::UIEvent::MOUSE_UP, this->button1_on_click( ev ) );
+      NOM_CONNECT_UIWIDGET_EVENT( this->button1, nom::UIEvent::MOUSE_DOWN, this->button1_on_click );
+      NOM_CONNECT_UIWIDGET_EVENT( this->button1, nom::UIEvent::MOUSE_UP, this->button1_on_click );
 
       // Style is used for button2
       nom::UIStyle::shared_ptr custom_style = nullptr;
@@ -141,7 +142,7 @@ class ButtonLayoutTest: public VisualUnitTest
 
       this->button2->set_pressed_bitmap( this->button_bg[2] );
 
-      NOM_CONNECT_UIWIDGET_EVENT( this->button2, nom::UIEvent::MOUSE_UP, priv::on_click( ev ) );
+      NOM_CONNECT_UIWIDGET_EVENT( this->button2, nom::UIEvent::MOUSE_UP, priv::on_click );
 
       // this->button3 = this->create_button( this->layout_widget, Point2i::null, Size2i::null, "button3", "button3" );
       this->button3 = this->create_button( this->layout_widget, Point2i::null, Size2i(56,16), "button3", "button3" );
@@ -239,49 +240,51 @@ class ButtonLayoutTest: public VisualUnitTest
     }
 
     /// \brief Alternative callback method used in registering event listeners.
-    void button0_on_click( UIEvent* ev ) const
+    void button0_on_click( const UIWidgetEvent& ev ) const
     {
-      NOM_ASSERT( ev != nullptr );
-      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-      NOM_ASSERT( event != nullptr );
-
-      NOM_DUMP( event->id() );
-      NOM_DUMP( event->index() );
-      NOM_DUMP( event->text() );
+      Event evt = ev.event();
 
       NOM_ASSERT( this->button0 != nullptr );
 
-      if( event->index() == 0 ) // MOUSE_DOWN
+      if( ev.index() == 0 ) // MOUSE_DOWN
       {
         this->button0->set_label( "Click me!" );
       }
-      else if( event->index() == 1 ) // MOUSE_UP
+      else if( ev.index() == 1 ) // MOUSE_UP
       {
         this->button0->set_label( "Release me!" );
       }
+
+      // Only dump event info upon mouse click release
+      if( evt.type != SDL_MOUSEBUTTONUP ) return;
+
+      NOM_DUMP( ev.id() );
+      NOM_DUMP( ev.index() );
+      NOM_DUMP( ev.text() );
     }
 
     /// \brief Alternative callback method used in registering event listeners.
-    void button1_on_click( UIEvent* ev ) const
+    void button1_on_click( const UIWidgetEvent& ev ) const
     {
-      NOM_ASSERT( ev != nullptr );
-      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-      NOM_ASSERT( event != nullptr );
-
-      NOM_DUMP( event->id() );
-      NOM_DUMP( event->index() );
-      NOM_DUMP( event->text() );
+      Event evt = ev.event();
 
       NOM_ASSERT( this->button1 != nullptr );
 
-      if( event->index() == 0 ) // MOUSE_DOWN
+      if( ev.index() == 0 ) // MOUSE_DOWN
       {
         this->button1->set_label( "button1" );
       }
-      else if( event->index() == 1 ) // MOUSE_UP
+      else if( ev.index() == 1 ) // MOUSE_UP
       {
         this->button1->set_label( "Yeah buddy!" );
       }
+
+      // Only dump event info upon mouse click release
+      if( evt.type != SDL_MOUSEBUTTONUP ) return;
+
+      NOM_DUMP( ev.id() );
+      NOM_DUMP( ev.index() );
+      NOM_DUMP( ev.text() );
     }
 
   protected:

@@ -40,7 +40,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/gui/UILayout.hpp"
 #include "nomlib/gui/UIStyle.hpp"
 #include "nomlib/gui/UIEventDispatcher.hpp"
-#include "nomlib/gui/UIEvent.hpp"
 #include "nomlib/gui/UIWidgetEvent.hpp"
 
 // #define NOM_DEBUG_OUTPUT_LAYOUT_DATA
@@ -157,8 +156,8 @@ void UIWidget::initialize (
   }
 
   // Initialize the default event listener implementations for the widget
-  NOM_CONNECT_UIEVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
-  NOM_CONNECT_UIEVENT( this, UIEvent::ON_WIDGET_UPDATE, this->on_update );
+  NOM_CONNECT_RESIZE_EVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
+  NOM_CONNECT_UIWIDGET_EVENT( this, UIEvent::ON_WIDGET_UPDATE, this->on_update );
 }
 
 UIWidget::UIWidget  (
@@ -1182,15 +1181,11 @@ IUIEventDispatcher* UIWidget::dispatcher( void ) const
 
 // Protected scope
 
-void UIWidget::on_update( UIEvent* ev )
+void UIWidget::on_update( const UIWidgetEvent& ev )
 {
-  NOM_LOG_TRACE( NOM );
+  // NOM_LOG_TRACE( NOM );
 
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-  NOM_ASSERT( event != nullptr );
-
-  Event evt = event->event();
+  Event evt = ev.event();
 
   if( evt.type != UIEvent::ON_WIDGET_UPDATE )
   {
@@ -1203,13 +1198,9 @@ void UIWidget::on_update( UIEvent* ev )
   this->update();
 }
 
-void UIWidget::on_size_changed( UIEvent* ev )
+void UIWidget::on_size_changed( const UIWidgetResizeEvent& ev )
 {
-  NOM_ASSERT( ev != nullptr );
-  UIWidgetResizeEvent* event = NOM_DYN_PTR_CAST( UIWidgetResizeEvent*, ev );
-  NOM_ASSERT( event != nullptr );
-
-  Event evt = event->event();
+  Event evt = ev.event();
 
   // FIXME: UIEvent::ON_WINDOW_SIZE_CHANGED ..? (YES)
   if( evt.type != SDL_WINDOWEVENT_SIZE_CHANGED )
@@ -1222,11 +1213,11 @@ void UIWidget::on_size_changed( UIEvent* ev )
   if( this->decorator() != nullptr )
   {
     // Update the attached decorator (border & possibly a background)
-    this->decorator()->set_bounds( event->bounds() );
+    this->decorator()->set_bounds( ev.bounds() );
   }
 
   // Update ourselves with the new rendering coordinates
-  this->set_bounds( event->bounds() );
+  this->set_bounds( ev.bounds() );
 
   UIWidgetEvent info;
   info.set_id( this->id() );

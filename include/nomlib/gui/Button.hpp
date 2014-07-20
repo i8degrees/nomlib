@@ -115,7 +115,6 @@ class Button: public UIWidget
     void set_button_state( Button::State state );
 
   protected:
-
     virtual void on_mouse_down( const Event& evt );
     virtual void on_mouse_up( const Event& evt );
 

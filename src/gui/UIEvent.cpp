@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 UIEvent::UIEvent( void ) :
-  type_{ 0 },
+  type_{ UIEvent::UIEVENT },
   id_{ -1 }
 {
   // NOM_LOG_TRACE( NOM );

@@ -241,7 +241,7 @@ void UIWidgetLayoutItem::set_bounds( const IntRect& rect )
   // Notify the widget via private event listener that we have a boundary
   // change, so that it can take care of updating itself properly.
   UIWidgetResizeEvent evt;
-  evt.set_type( UIEvent::ON_WINDOW_SIZE_CHANGED );
+  evt.set_type( UIEvent::WINDOW_SIZE_CHANGED );
   evt.set_id( widget->id() );
   evt.set_bounds( rect );
   // evt.set_bounds( IntRect( Point2i( rect.x + x_offset, rect.y + y_offset ), rect.size() ) );

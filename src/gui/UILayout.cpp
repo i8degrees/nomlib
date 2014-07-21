@@ -288,7 +288,7 @@ void UILayout::set_alignment( uint32 align )
   if( widget != nullptr )
   {
     UIWidgetResizeEvent evt;
-    evt.set_type( UIEvent::ON_WINDOW_SIZE_CHANGED );
+    evt.set_type( UIEvent::WINDOW_SIZE_CHANGED );
     evt.set_id( widget->id() );
     evt.set_bounds( offset_bounds );
 

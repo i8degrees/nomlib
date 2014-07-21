@@ -40,76 +40,12 @@ class UIEvent
     typedef UIEvent self_type;
     typedef self_type* raw_ptr;
 
-    /// \brief One and only one event instance of each unique enumeration may be
-    /// in use (listening / observed) at a time, thus the division that I have
-    /// given them; "public" event types refer to those that the end-user
-    /// (developer) has access to, whereas the "private" events are those that are
-    /// either  already in use by class instances, or reserved  for future (private)
-    /// implementation.
-    ///
     /// \todo Rename to Signal?
     enum
     {
-      INVALID = 0,        // Default
+      UIEVENT = 0,
 
-      // Private event signals
-
-      ON_KEY_DOWN,
-      ON_KEY_UP,
-      ON_MOUSE_MOTION_ENTER,
-      ON_MOUSE_MOTION_LEAVE,
-      ON_MOUSE_DOWN,
-      ON_MOUSE_UP,
-      ON_MOUSE_DCLICK,
-      ON_MOUSE_WHEEL,
-      ON_JOY_DOWN,
-      ON_JOY_UP,
-      ON_JOY_AXIS,
-      ON_TOUCH_DOWN,
-
-      ON_WINDOW_KEY_DOWN,
-      ON_WINDOW_KEY_UP,
-      ON_WINDOW_MOUSE_MOTION,
-      ON_WINDOW_MOUSE_DOWN,
-      ON_WINDOW_MOUSE_UP,
-      ON_WINDOW_MOUSE_WHEEL,
-      ON_WINDOW_JOY_DOWN,
-      ON_WINDOW_JOY_UP,
-      ON_WINDOW_JOY_AXIS,
-      ON_WINDOW_TOUCH_DOWN,
-      ON_WINDOW_TOUCH_UP,
-
-      /// The event emitted when the widget's position has been modified.
-      ///
-      /// This event type models SDL_WINDOWEVENT_MOVED for the sake of consistency.
-      ON_WINDOW_MOVED,
-
-      /// The event emitted when the widget's size has been modified.
-      ///
-      /// This event is always preceded by ON_WINDOW_SIZE_CHANGED.
-      //
-      /// This event type models SDL_WINDOWEVENT_RESIZED for the sake of consistency.
-      ON_WINDOW_RESIZED,
-
-      /// The emitted event when the widget's size fields has been modified, either
-      /// as the result of the underlying system (us, i.e.: layout update) or by the
-      /// end-user.
-      ///
-      /// This event is followed by ON_WINDOW_RESIZED when the size was modified by
-      /// an external event, i.e.: end-user or the underlying system (us, i.e.:
-      /// layout).
-      ///
-      /// This event type models SDL_WINDOWEVENT_SIZE_CHANGED for the sake of
-      /// consistency.
-      ON_WINDOW_SIZE_CHANGED,
-
-      /// The event emitted when the underlying system (us) requests that the widget's
-      /// window be closed.
-      ON_WINDOW_CLOSE,
-
-      ON_WIDGET_UPDATE,
-
-      // Public event signals
+      // Widget event signals
 
       KEY_DOWN,
       KEY_UP,
@@ -136,9 +72,34 @@ class UIEvent
       WINDOW_TOUCH_DOWN,
       WINDOW_TOUCH_UP,
 
+      /// The event emitted when the widget's position has been modified.
+      ///
+      /// This event type models SDL_WINDOWEVENT_MOVED for the sake of
+      /// consistency.
       WINDOW_MOVED,
+
+      /// The event emitted when the widget's size has been modified.
+      ///
+      /// ~~This event is always preceded by WINDOW_SIZE_CHANGED.~~
+      ///
+      /// ~~This event type models SDL_WINDOWEVENT_RESIZED for the sake of
+      /// consistency.~~
       WINDOW_RESIZED,
+
+      /// The emitted event when the widget's size fields has been modified,
+      /// either as the result of the underlying system (us, i.e.: layout update)
+      /// or by the end-user.
+      ///
+      /// ~~This event is followed by WINDOW_RESIZED when the size was modified
+      /// by an external event, i.e.: end-user or the underlying system (us,
+      /// i.e.: layout).~~
+      ///
+      /// ~~This event type models SDL_WINDOWEVENT_SIZE_CHANGED for the sake of
+      /// consistency.~~
       WINDOW_SIZE_CHANGED,
+
+      /// The event emitted when the underlying system (us) requests that the
+      /// widget's window be closed.
       WINDOW_CLOSE,
 
       WIDGET_UPDATE,

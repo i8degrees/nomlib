@@ -156,8 +156,8 @@ void UIWidget::initialize (
   }
 
   // Initialize the default event listener implementations for the widget
-  NOM_CONNECT_RESIZE_EVENT( this, UIEvent::ON_WINDOW_SIZE_CHANGED, this->on_size_changed );
-  NOM_CONNECT_UIWIDGET_EVENT( this, UIEvent::ON_WIDGET_UPDATE, this->on_update );
+  NOM_CONNECT_RESIZE_EVENT( this, UIEvent::WINDOW_SIZE_CHANGED, this->on_size_changed );
+  NOM_CONNECT_UIWIDGET_EVENT( this, UIEvent::WIDGET_UPDATE, this->on_update );
 }
 
 UIWidget::UIWidget  (
@@ -461,7 +461,7 @@ void UIWidget::set_font( const Font& font )
 
   // Associate the widget's unique identifiers with the event notification.
   UIWidgetEvent evt;
-  evt.set_type( UIEvent::ON_WIDGET_UPDATE );
+  evt.set_type( UIEvent::WIDGET_UPDATE );
   evt.set_id( this->id() );
 
   this->dispatcher()->emit( evt );
@@ -1115,23 +1115,6 @@ void UIWidget::set_layout( UILayout* layout )
     NOM_DUMP( this->size() );
   #endif
 
-  // Associate the widget's unique identifiers with the sent event.
-  // UIWidgetEvent evt;
-  // evt.set_index( this->id() );
-  // evt.set_text( this->name() );
-  // evt.set_id( this->id() );
-
-  // Event ev;
-  // ev.type = SDL_WINDOWEVENT_SIZE_CHANGED;
-  // ev.timestamp = ticks();
-  // ev.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
-  // ev.window.data1 = this->size().w;
-  // ev.window.data2 = this->size().h;
-  // ev.window.window_id = this->id();
-  // evt.set_event( ev );
-
-  // this->emit( UIEvent::ON_WINDOW_SIZE_CHANGED, evt );
-
   // this->set_updated( false );
   this->update();
 }
@@ -1143,7 +1126,7 @@ void UIWidget::resize( const Size2i& size )
   // Associate the widget's unique identifiers with the sent event.
   UIWidgetResizeEvent evt;
   evt.set_id( this->id() );
-  evt.set_type( UIEvent::ON_WINDOW_SIZE_CHANGED );
+  evt.set_type( UIEvent::WINDOW_SIZE_CHANGED );
   evt.set_bounds( IntRect( this->position(), Size2i( size.w, size.h ) ) );
   // NOM_DUMP(evt.bounds() );
 
@@ -1184,7 +1167,7 @@ void UIWidget::on_size_changed( const UIWidgetResizeEvent& ev )
   this->set_bounds( ev.bounds() );
 
   UIWidgetEvent info;
-  info.set_type( UIEvent::ON_WIDGET_UPDATE );
+  info.set_type( UIEvent::WIDGET_UPDATE );
   info.set_id( this->id() );
 
   this->dispatcher()->emit( info );

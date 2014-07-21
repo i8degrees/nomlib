@@ -405,20 +405,20 @@ void DataViewList::on_mouse_down( const Event& evt )
       {
         UIWidgetTreeEvent item;
 
-        // Set the associated column for the signal.
-        item.set_column( index );
+        // Signal type
+        item.set_type( UIEvent::MOUSE_DOWN );
 
+        // Item's column
+        item.set_column( index );
         item.set_data( it->get() );
 
-        // Set the associated nom::Event object for this signal.
+         // Underlying event
         item.set_event( evt );
 
-        // Associate the widget's unique identifier for this signal.
+        // Widget's unique identifier
         item.set_id( this->id() );
 
-        // Send the UI event object to the registered callback; public event
-        // slot.
-        this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
+        this->dispatcher()->emit( item );
 
         // Processed events.
         return;
@@ -442,21 +442,22 @@ void DataViewList::on_mouse_down( const Event& evt )
           {
             UIWidgetTreeEvent item;
 
+            // Signal type
+            item.set_type( UIEvent::MOUSE_DOWN );
+
             // FIXME: Index is wrong (needs to be computed somehow).
             item.set_column( index );
 
-            // Set the associated nom::Event object for this signal.
+            // Underlying event
             item.set_event( evt );
 
-            // Associate the widget's unique identifier for this signal.
+            // Widget's unique identifier
             item.set_id( this->id() );
 
-            // Associate widget's tree item data with emitted signal
+            // Widget's tree item data with emitted signal
             item.set_data( obj );
 
-            // Send the UI event object to the registered callback; public event
-            // slot.
-            this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
+            this->dispatcher()->emit( item );
 
             // Processed events.
             return;

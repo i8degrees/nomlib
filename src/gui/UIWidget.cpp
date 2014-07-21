@@ -461,17 +461,10 @@ void UIWidget::set_font( const Font& font )
 
   // Associate the widget's unique identifiers with the event notification.
   UIWidgetEvent evt;
-  evt.set_index( this->id() );
-  evt.set_text( this->name() );
+  evt.set_type( UIEvent::ON_WIDGET_UPDATE );
   evt.set_id( this->id() );
 
-  Event ev;
-  ev.type = UIEvent::ON_WIDGET_UPDATE;
-  ev.timestamp = nom::ticks();
-  evt.set_event( ev );
-
-  // Private event notification
-  this->dispatcher()->emit( UIEvent::ON_WIDGET_UPDATE, evt );
+  this->dispatcher()->emit( evt );
 }
 
 void UIWidget::set_font( const Font* font )
@@ -1148,27 +1141,13 @@ void UIWidget::resize( const Size2i& size )
   this->set_size( size );
 
   // Associate the widget's unique identifiers with the sent event.
-  // UIWidgetEvent evt;
   UIWidgetResizeEvent evt;
-  // evt.set_index( this->id() );
-  // evt.set_text( this->name() );
   evt.set_id( this->id() );
+  evt.set_type( UIEvent::ON_WINDOW_SIZE_CHANGED );
   evt.set_bounds( IntRect( this->position(), Size2i( size.w, size.h ) ) );
   // NOM_DUMP(evt.bounds() );
 
-  Event ev;
-  ev.type = SDL_WINDOWEVENT_SIZE_CHANGED;
-  ev.timestamp = ticks();
-  ev.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
-  ev.window.data1 = size.w;
-  ev.window.data2 = size.h;
-  ev.window.window_id = this->id();
-  evt.set_event( ev );
-
-  this->dispatcher()->emit( UIEvent::ON_WINDOW_SIZE_CHANGED, evt );
-  this->dispatcher()->emit( UIEvent::WINDOW_SIZE_CHANGED, evt );
-
-  // this->update();
+  this->dispatcher()->emit( evt );
 }
 
 IUIEventDispatcher* UIWidget::dispatcher( void ) const
@@ -1185,13 +1164,6 @@ void UIWidget::on_update( const UIWidgetEvent& ev )
 {
   // NOM_LOG_TRACE( NOM );
 
-  Event evt = ev.event();
-
-  if( evt.type != UIEvent::ON_WIDGET_UPDATE )
-  {
-    return;
-  }
-
   // Required for the ListBox widget
   this->set_updated( false );
 
@@ -1200,14 +1172,6 @@ void UIWidget::on_update( const UIWidgetEvent& ev )
 
 void UIWidget::on_size_changed( const UIWidgetResizeEvent& ev )
 {
-  Event evt = ev.event();
-
-  // FIXME: UIEvent::ON_WINDOW_SIZE_CHANGED ..? (YES)
-  if( evt.type != SDL_WINDOWEVENT_SIZE_CHANGED )
-  {
-    return;
-  }
-
   this->set_updated( false );
 
   if( this->decorator() != nullptr )
@@ -1220,10 +1184,10 @@ void UIWidget::on_size_changed( const UIWidgetResizeEvent& ev )
   this->set_bounds( ev.bounds() );
 
   UIWidgetEvent info;
+  info.set_type( UIEvent::ON_WIDGET_UPDATE );
   info.set_id( this->id() );
-  this->dispatcher()->emit( UIEvent::ON_WIDGET_UPDATE, info );
 
-  // this->update();
+  this->dispatcher()->emit( info );
 }
 
 void UIWidget::on_mouse_down( const Event& evt )

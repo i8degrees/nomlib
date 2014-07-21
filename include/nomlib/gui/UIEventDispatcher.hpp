@@ -54,7 +54,7 @@ class IUIEventListener
 
     virtual ~IUIEventListener( void ) {}
 
-    virtual void operator() ( event_type& ev ) const = 0;
+    virtual void operator() ( const event_type& ev ) const = 0;
 };
 
 /// \brief Widget event listener
@@ -74,7 +74,7 @@ class UIWidgetListener: public IUIEventListener
 
     virtual ~UIWidgetListener( void );
 
-    void operator() ( event_type& ev ) const;
+    void operator() ( const event_type& ev ) const;
 
   private:
     std::function<void(event_type*)> cb_;
@@ -92,7 +92,7 @@ class IUIEventDispatcher
 
     virtual bool register_event_listener( const event_type& ev, std::shared_ptr<callback_type> observer ) = 0;
     virtual bool remove_event_listener( const event_type& key ) = 0;
-    virtual bool emit( const event_type& ev, UIEvent& ) const = 0;
+    virtual bool emit( const event_type& ev ) const = 0;
     virtual uint32 size( void ) const = 0;
     virtual bool find( const event_type& key ) const = 0;
 };
@@ -152,7 +152,7 @@ class UIEventDispatcher: public IUIEventDispatcher
 
     /// \note This method is modeled after the Observer pattern's notify or
     /// update method.
-    bool emit( const event_type& ev, UIEvent& data ) const;
+    bool emit( const event_type& ev ) const;
 
     /// \brief Search the list of registered observers for a particular event
     /// type.

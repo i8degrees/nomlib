@@ -25,7 +25,7 @@ set( NOM_BUILD_GAMEOFLIFE_EXAMPLE off )
 
 set( NOM_BUILD_GUI_BUTTON_EXAMPLE off )
 set( NOM_BUILD_GUI_LISTBOX_EXAMPLE off )
-set( NOM_BUILD_GUI_MESSAGEBOX_EXAMPLE off )
+set( NOM_BUILD_GUI_MESSAGEBOX_EXAMPLE on )
 
 # TODO: Add example for the widget at examples/gui/gui_dataviewlist.cpp
 set( NOM_BUILD_GUI_DATAVIEWLIST_EXAMPLE off )

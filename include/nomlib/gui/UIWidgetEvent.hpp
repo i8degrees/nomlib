@@ -49,40 +49,6 @@ class UIWidgetEvent: public UIEvent
     /// \brief Destructor.
     virtual ~UIWidgetEvent( void );
 
-    /// \brief Construct a minimally valid object.
-    ///
-    /// \param ev The nom::Event associated with the widget event.
-    ///
-    /// \remarks The index and id fields will be initialized to negative one
-    /// (-1).
-    UIWidgetEvent( const Event& ev );
-
-    /// \brief Construct a valid object.
-    ///
-    /// \param index  The widget-defined index associated with the widget
-    ///               event.
-    /// \param text   The widget-defined string associated with the widget
-    ///               event.
-    /// \param id     The widget's unique identifier associated with the event.
-    ///
-    /// \remarks The id field will be initialized to negative one (-1).
-    UIWidgetEvent( sint index, const std::string& text, int64 id );
-
-    /// \brief Construct a complete object.
-    ///
-    /// \param index  The widget-defined index associated with the widget
-    ///               event.
-    /// \param text   The widget-defined string associated with the widget
-    ///               event.
-    /// \param ev     The nom::Event associated with the widget event.
-    /// \param id     The widget's unique identifier associated with the event.
-    UIWidgetEvent (
-                    sint index,
-                    const std::string& text,
-                    const Event& ev,
-                    int64 id
-                  );
-
     sint index( void ) const;
     const std::string& text( void ) const;
 
@@ -101,10 +67,12 @@ class UIWidgetTreeEvent: public UIEvent
 {
   public:
     UIWidgetTreeEvent( void ) :
+      column_{ -1 },
       obj_{ nullptr }
     {
       // NOM_LOG_TRACE( NOM );
     }
+
     virtual ~UIWidgetTreeEvent( void )
     {
       // NOM_LOG_TRACE( NOM );
@@ -135,8 +103,7 @@ class UIWidgetTreeEvent: public UIEvent
     IObject* obj_;
 };
 
-// class UIWidgetResizeEvent: public UIEvent
-class UIWidgetResizeEvent: public UIWidgetEvent
+class UIWidgetResizeEvent: public UIEvent
 {
   public:
     UIWidgetResizeEvent( void );

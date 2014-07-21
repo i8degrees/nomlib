@@ -42,9 +42,12 @@ UIWidgetListener::~UIWidgetListener( void )
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 }
 
-void UIWidgetListener::operator() ( event_type& ev ) const
+void UIWidgetListener::operator() ( const event_type& ev ) const
 {
-  this->cb_( &ev );
+  // The const cast is necessary in order to up-cast objects deriving from
+  // UIEvent while maintaining const keyword (otherwise we cannot pass temporary
+  // objects through emit)
+  this->cb_( NOM_CCAST( UIEvent*, &ev ) );
 }
 
 // UIEventDispatcher (concrete implementation of IUIEventDispatcher)
@@ -90,7 +93,7 @@ uint32 UIEventDispatcher::size( void ) const
 {
   return this->observers_.size();
 }
-bool UIEventDispatcher::emit( const event_type& ev, UIEvent& data ) const
+bool UIEventDispatcher::emit( const event_type& ev ) const
 {
   auto res = this->observers_.find( ev );
 
@@ -101,7 +104,7 @@ bool UIEventDispatcher::emit( const event_type& ev, UIEvent& data ) const
     for( auto itr = obs.begin(); itr != obs.end(); ++itr )
     {
       // Match found; execute callback.
-      (*itr)->operator()( data );
+      (*itr)->operator()( ev );
 
       // Log matched event after the callback execution (dump of a value).
       //

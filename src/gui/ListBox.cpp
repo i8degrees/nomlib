@@ -290,6 +290,8 @@ void ListBox::on_key_down( const Event& evt )
     // Position of each item
     int index = this->store()->selection();
 
+    item.set_type( UIEvent::KEY_DOWN );
+
     // Send the array index in our event; this signifies which choice was
     // selected.
     item.set_index( index );
@@ -314,13 +316,7 @@ void ListBox::on_key_down( const Event& evt )
 
     item.set_id( this->id() );
 
-    // Send the UI event object to the registered callback; this is the private
-    // event interface.
-    this->dispatcher()->emit( UIEvent::ON_KEY_DOWN, item );
-
-    // Send the UI event object to the registered callback; this is the public
-    // event interface.
-    this->dispatcher()->emit( UIEvent::KEY_DOWN, item );
+    this->dispatcher()->emit( item );
   }
 
   this->set_updated( false );
@@ -379,6 +375,11 @@ void ListBox::on_mouse_down( const Event& evt )
       }
     } // end if FocusPolicy::ClickFocus
 
+    item.set_type( UIEvent::MOUSE_DOWN );
+
+    // Set the associated nom::Event object for this UI event.
+    item.set_event( evt );
+
     // Send the array index in our event; this signifies which choice was
     // selected.
     item.set_index( index );
@@ -390,19 +391,9 @@ void ListBox::on_mouse_down( const Event& evt )
     // has the side effect of updating the text color; see also: ::update.
     this->store()->set_selection( index );
 
-    // Set the associated nom::Event object for this UI event.
-    item.set_event( evt );
-
     item.set_id( this->id() );
 
-    // Send the UI event object to the registered callback; this is the
-    // "private" interface -- reserved for internal class implementations.
-    this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, item );
-
-    // Send the UI event object to the registered callback; this is the
-    // event that gets heard by any end-user listening in, unlike the
-    // private message above.
-    this->dispatcher()->emit( UIEvent::MOUSE_DOWN, item );
+    this->dispatcher()->emit( item );
 
     this->set_selected_text_color( this->selected_text_color() );
   } // end if event type == SDL_MOUSEBUTTONDOWN
@@ -444,6 +435,11 @@ void ListBox::on_mouse_wheel( const Event& evt )
       return;
     }
 
+    item.set_type( UIEvent::MOUSE_WHEEL );
+
+    // Set the associated nom::Event object for this UI event.
+    item.set_event( evt );
+
     // Counter for the position of each element; must start at current
     // selection.
     index = this->store()->selection();
@@ -467,18 +463,9 @@ void ListBox::on_mouse_wheel( const Event& evt )
       item.set_text( "\0" );
     }
 
-    // Set the associated nom::Event object for this UI event.
-    item.set_event( evt );
-
     item.set_id( this->id() );
 
-    // Send the UI event object to the registered callback; this is the private
-    // event interface.
-    this->dispatcher()->emit( UIEvent::ON_MOUSE_WHEEL, item );
-
-    // Send the UI event object to the registered callback; this is the public
-    // event interface.
-    this->dispatcher()->emit( UIEvent::MOUSE_WHEEL, item );
+    this->dispatcher()->emit( item );
   }
 
   this->set_updated( false );

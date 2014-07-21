@@ -343,7 +343,7 @@ void MessageBox::on_mouse_down( const Event& evt )
 {
   if( evt.type == SDL_MOUSEBUTTONDOWN )
   {
-    UIWidgetEvent wev;
+    UIWidgetEvent item;
     Point2i mouse( evt.mouse.x, evt.mouse.y );
 
     IntRect title_bounds = this->title_bounds();
@@ -351,23 +351,23 @@ void MessageBox::on_mouse_down( const Event& evt )
 
     if( title_bounds.contains( mouse ) )
     {
-      wev = UIWidgetEvent( 0, this->title_text(), evt, this->id() );
+      item.set_type( UIEvent::MOUSE_DOWN );
+      item.set_event( evt );
+      item.set_id( this->id() );
+      item.set_index( 0 );
+      item.set_text( this->title_text() );
 
-      // Send the UI event object to the registered private event callback.
-      this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, wev );
-
-      // Send the UI event object to the registered public event callback.
-      this->dispatcher()->emit( UIEvent::MOUSE_DOWN, wev );
+      this->dispatcher()->emit( item );
     }
     else if( message_bounds.contains( mouse ) )
     {
-      wev = UIWidgetEvent( 1, this->message_text(), evt, this->id() );
+      item.set_type( UIEvent::MOUSE_DOWN );
+      item.set_event( evt );
+      item.set_id( this->id() );
+      item.set_index( 1 );
+      item.set_text( this->message_text() );
 
-      // Send the UI event object to the registered private event callback.
-      this->dispatcher()->emit( UIEvent::ON_MOUSE_DOWN, wev );
-
-      // Send the UI event object to the registered public event callback.
-      this->dispatcher()->emit( UIEvent::MOUSE_DOWN, wev );
+      this->dispatcher()->emit( item );
     }
   } // end if evt.type is SDL_MOUSEBUTTONDOWN
 }

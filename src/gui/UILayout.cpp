@@ -283,25 +283,16 @@ void UILayout::set_alignment( uint32 align )
 
   NOM_ASSERT( widget != nullptr );
 
+  // Notify the widget that we have a boundary change, so that it can take care
+  // of updating itself properly (decorator & friends)
   if( widget != nullptr )
   {
-    // UIWidgetEvent evt( widget->id(), widget->name(), widget->id() );
     UIWidgetResizeEvent evt;
+    evt.set_type( UIEvent::ON_WINDOW_SIZE_CHANGED );
     evt.set_id( widget->id() );
-
-    // Notify the parent widget that we have a boundary change, so that it can
-    // take care of updating itself properly (decorator & friends)
-    Event ev;
-    ev.type = SDL_WINDOWEVENT_SIZE_CHANGED;
-    ev.timestamp = ticks();
-    ev.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
-    ev.window.data1 = layout_width;
-    ev.window.data2 = layout_height;
     evt.set_bounds( offset_bounds );
 
-    evt.set_event( ev );
-
-    widget->dispatcher()->emit( nom::UIEvent::ON_WINDOW_SIZE_CHANGED, evt );
+    widget->dispatcher()->emit( evt );
   }
 }
 

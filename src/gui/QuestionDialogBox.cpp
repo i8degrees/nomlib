@@ -182,8 +182,7 @@ void QuestionDialogBox::on_mouse_down( const Event& evt )
   // Registered action for mouse button event
   if( evt.type == SDL_MOUSEBUTTONDOWN )
   {
-    UIEvent evcode[2];
-    UIWidgetEvent wev;
+    UIWidgetEvent item;
     Point2i mouse( evt.mouse.x, evt.mouse.y );
     index = this->hit_test( mouse );
 
@@ -194,42 +193,33 @@ void QuestionDialogBox::on_mouse_down( const Event& evt )
 
       // Send the array index in our event; this signifies which choice was
       // selected.
-      wev.set_index( index );
+      item.set_index( index );
 
       // FIXME:
       // Send the text of the selection.
-      wev.set_text( this->choice( index ) );
+      item.set_text( this->choice( index ) );
 
       // Set the current index position to the selected text label -- this
       // has the side effect of updating the text color; see also: ::update.
       this->set_selection( index );
 
       // Set the associated nom::Event object for this UI event.
-      wev.set_event( evt );
+      item.set_event( evt );
 
-      wev.set_id( this->id() );
+      item.set_id( this->id() );
 
       // Single mouse click event
       if( evt.mouse.clicks < 2 )
       {
-        evcode[0] = UIEvent::ON_MOUSE_DOWN;   // Private event
-        evcode[1] = UIEvent::MOUSE_DOWN;      // Public event
+        item.set_type( UIEvent::MOUSE_DOWN );
       }
       // Double mouse click event
       else
       {
-        evcode[0] = UIEvent::ON_MOUSE_DCLICK;   // Private event
-        evcode[1] = UIEvent::MOUSE_DCLICK;      // Public event
+        item.set_type( UIEvent::MOUSE_DCLICK );
       }
 
-      // Send the UI event object to the registered callback; this is the
-      // "private" interface -- reserved for internal class implementations.
-      this->dispatcher()->emit( evcode[0], wev );
-
-      // Send the UI event object to the registered callback; this is the
-      // event that gets heard by any end-user listening in, unlike the
-      // private message above.
-      this->dispatcher()->emit( evcode[1], wev );
+      this->dispatcher()->emit( item );
 
       this->set_selected_text_color( this->selected_text_color() );
     }
@@ -243,7 +233,7 @@ void QuestionDialogBox::on_mouse_wheel( const Event& evt )
   // Registered action for mouse button event
   if( evt.type == SDL_MOUSEWHEEL )
   {
-    UIWidgetEvent wev;
+    UIWidgetEvent item;
 
     // TODO:
     if( this->focused() == false )
@@ -255,9 +245,11 @@ void QuestionDialogBox::on_mouse_wheel( const Event& evt )
     // selection.
     index = this->selection();
 
+    item.set_type( UIEvent::MOUSE_WHEEL );
+
     // Send the array index in our event; this signifies which choice was
     // selected.
-    wev.set_index( index );
+    item.set_index( index );
 
     // Set the current index position to the selected text label -- this
     // has the side effect of updating the text color; see also: ::update.
@@ -267,25 +259,19 @@ void QuestionDialogBox::on_mouse_wheel( const Event& evt )
     // this needs to be set *after* the selection has been set.
     if( index != npos )
     {
-      wev.set_text( this->choice( index ) );
+      item.set_text( this->choice( index ) );
     }
     else
     {
-      wev.set_text( "\0" );
+      item.set_text( "\0" );
     }
 
     // Set the associated nom::Event object for this UI event.
-    wev.set_event( evt );
+    item.set_event( evt );
 
-    wev.set_id( this->id() );
+    item.set_id( this->id() );
 
-    // Send the UI event object to the registered callback; this is the private
-    // event interface.
-    this->dispatcher()->emit( UIEvent::ON_MOUSE_WHEEL, wev );
-
-    // Send the UI event object to the registered callback; this is the public
-    // event interface.
-    this->dispatcher()->emit( UIEvent::MOUSE_WHEEL, wev );
+    this->dispatcher()->emit( item );
 
     // Default internal reaction to the event action (SDL_MOUSEWHEEL):
 
@@ -319,7 +305,7 @@ void QuestionDialogBox::on_mouse_wheel( const Event& evt )
 void QuestionDialogBox::on_key_down( const Event& evt )
 {
   int index = 0;
-  UIWidgetEvent wev;
+  UIWidgetEvent item;
 
   // Registered action for key press event
   if( evt.type == SDL_KEYDOWN )
@@ -333,9 +319,11 @@ void QuestionDialogBox::on_key_down( const Event& evt )
     // Position of each item
     index = this->selection();
 
+    item.set_type( UIEvent::KEY_DOWN );
+
     // Send the array index in our event; this signifies which choice was
     // selected.
-    wev.set_index( index );
+    item.set_index( index );
 
     // Set the current index position to the selected text label -- this
     // has the side effect of updating the text color; see also: ::update.
@@ -345,25 +333,19 @@ void QuestionDialogBox::on_key_down( const Event& evt )
     // this needs to be set *after* the selection has been set.
     if( index != npos )
     {
-      wev.set_text( this->choice( index ) );
+      item.set_text( this->choice( index ) );
     }
     else
     {
-      wev.set_text( "\0" );
+      item.set_text( "\0" );
     }
 
     // Set the associated nom::Event object for this UI event.
-    wev.set_event( evt );
+    item.set_event( evt );
 
-    wev.set_id( this->id() );
+    item.set_id( this->id() );
 
-    // Send the UI event object to the registered callback; this is the private
-    // event interface.
-    this->dispatcher()->emit( UIEvent::ON_KEY_DOWN, wev );
-
-    // Send the UI event object to the registered callback; this is the public
-    // event interface.
-    this->dispatcher()->emit( UIEvent::KEY_DOWN, wev );
+    this->dispatcher()->emit( item );
 
     // Default internal reaction to the event action (SDL_KEYDOWN):
 

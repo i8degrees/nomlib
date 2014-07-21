@@ -42,39 +42,6 @@ UIWidgetEvent::~UIWidgetEvent( void )
   // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 }
 
-UIWidgetEvent::UIWidgetEvent( const Event& ev )
-{
-  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
-
-  this->set_event( ev );
-  this->set_index( -1 );
-  this->set_id( -1 );
-}
-
-UIWidgetEvent::UIWidgetEvent( sint index, const std::string& text, int64 id )
-{
-  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
-
-  this->set_index( index );
-  this->set_text( text );
-  this->set_id( id );
-}
-
-UIWidgetEvent::UIWidgetEvent  (
-                                sint index,
-                                const std::string& text,
-                                const Event& ev,
-                                int64 id
-                              )
-{
-  // NOM_LOG_TRACE( NOM );
-
-  this->set_index( index );
-  this->set_text( text );
-  this->set_event( ev );
-  this->set_id( id );
-}
-
 sint UIWidgetEvent::index( void ) const
 {
   return this->index_;
@@ -97,11 +64,9 @@ void UIWidgetEvent::set_text( const std::string& text )
 
 // UIWidgetResizeEvent
 
-UIWidgetResizeEvent::UIWidgetResizeEvent( void ) //:
-  // UIEvent( ON_WINDOW_SIZE_CHANGED )
+UIWidgetResizeEvent::UIWidgetResizeEvent( void )
 {
   // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
-  // this->set_type( UIEvent::ON_WINDOW_SIZE_CHANGED );
 }
 
 UIWidgetResizeEvent::~UIWidgetResizeEvent( void )

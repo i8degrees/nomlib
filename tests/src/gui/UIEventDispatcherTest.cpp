@@ -34,45 +34,35 @@ class UIEventDispatcherTest: public ::testing::Test
       NOM_DUMP( x );
     }
 
-    void foo2( UIEvent* ev )
+    void foo2( const UIWidgetEvent& evt )
     {
-      NOM_ASSERT( ev != nullptr );
-      UIWidgetEvent* event = NOM_DYN_PTR_CAST( UIWidgetEvent*, ev );
-      NOM_ASSERT( event != nullptr );
-
-      // Event evt = event->event();
-
-      NOM_DUMP( event->index() );
-      NOM_DUMP( event->text() );
+      NOM_DUMP( evt.type() );
     }
 };
 
 TEST_F( UIEventDispatcherTest, UIEventDispatcherTest_0 )
 {
-  // Not tested; just used to get things compiling
-  nom::UIWidgetEvent ev;
-
   nom::UIEventDispatcher e;
   e.register_event_listener( nom::UIEvent::KEY_DOWN, std::make_shared<UIWidgetListener>( [&] ( UIEvent* ev ) { this->foo( 2 ); } ) );
   e.register_event_listener( nom::UIEvent::MOUSE_LEFT_UP, std::make_shared<UIWidgetListener>( std::bind( bar ) ) );
-  e.register_event_listener( nom::UIEvent::MOUSE_WHEEL, std::make_shared<UIWidgetListener>( [&] ( UIEvent* ev ) { this->foo2( ev ); } ) );
+  e.register_event_listener( nom::UIEvent::MOUSE_WHEEL, std::make_shared<UIWidgetListener>( [&] ( UIEvent* ev ) { this->foo2( *static_cast<UIWidgetEvent*>( ev ) ); } ) );
 
   // Should never emit; never found.
-  e.register_event_listener( nom::UIEvent::DROP_FILE, std::make_shared<UIWidgetListener>( [&] ( UIEvent* ev ) { this->foo2( ev ); } ) );
+  e.register_event_listener( nom::UIEvent::DROP_FILE, std::make_shared<UIWidgetListener>( [&] ( UIEvent* ev ) { this->foo2( *static_cast<UIWidgetEvent*>( ev ) ); } ) );
   ASSERT_TRUE( e.remove_event_listener( nom::UIEvent::DROP_FILE ) == true );
 
   // Should emit
-  ASSERT_TRUE( e.emit( nom::UIEvent::KEY_DOWN, ev ) );
-  ASSERT_TRUE( e.emit( nom::UIEvent::MOUSE_LEFT_UP, ev  ) );
+  ASSERT_TRUE( e.emit( nom::UIEvent::KEY_DOWN ) );
+  ASSERT_TRUE( e.emit( nom::UIEvent::MOUSE_LEFT_UP ) );
 
   // Should not emit; removed.
-  ASSERT_TRUE( e.emit( nom::UIEvent::DROP_FILE, ev ) == false );
+  ASSERT_TRUE( e.emit( nom::UIEvent::DROP_FILE ) == false );
 
   // Should emit
-  ASSERT_TRUE( e.emit( nom::UIEvent::MOUSE_WHEEL, ev ) );
+  ASSERT_TRUE( e.emit( nom::UIEvent::MOUSE_WHEEL ) );
 
   // Should not emit; should not ever be found.
-  ASSERT_TRUE( e.emit( nom::UIEvent::WINDOW_FOCUS, ev ) == false );
+  ASSERT_TRUE( e.emit( nom::UIEvent::WINDOW_FOCUS ) == false );
 }
 
 } // namespace nom

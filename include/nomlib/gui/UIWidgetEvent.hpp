@@ -66,41 +66,23 @@ class IObject;
 class UIWidgetTreeEvent: public UIEvent
 {
   public:
-    UIWidgetTreeEvent( void ) :
-      column_{ -1 },
-      obj_{ nullptr }
-    {
-      // NOM_LOG_TRACE( NOM );
-    }
+    UIWidgetTreeEvent( void );
 
-    virtual ~UIWidgetTreeEvent( void )
-    {
-      // NOM_LOG_TRACE( NOM );
-    }
+    virtual ~UIWidgetTreeEvent( void );
 
-    int column( void ) const
-    {
-      return this->column_;
-    }
+    int column( void ) const;
 
-    IObject* data( void ) const
-    {
-      return this->obj_;
-    }
+    IObject* data( void ) const;
 
-    void set_column( int col )
-    {
-      this->column_ = col;
-    }
+    void set_column( int col );
 
-    void set_data( IObject* obj )
-    {
-      this->obj_ = obj;
-    }
+    void set_data( IObject* obj );
 
   private:
     int column_;
-    IObject* obj_;
+
+    /// \remarks This pointer is not owned by this class.
+    IObject* data_;
 };
 
 class UIWidgetResizeEvent: public UIEvent

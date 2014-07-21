@@ -138,6 +138,10 @@ class UIEvent
 
     /// \brief Obtain the associated nom::Event object.
     ///
+    /// \remarks The UIEvent is not required to set this field. You should
+    /// always ensure that the type field of the nom::Event struct is valid
+    /// before using data from it.
+    ///
     /// \see nom::EventHandler, nom::Event
     ///
     /// \todo Rename method to sys_event?

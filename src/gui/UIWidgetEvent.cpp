@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/UIWidgetEvent.hpp"
 
+// Forward declarations
+#include "nomlib/system/IObject.hpp"
+
 namespace nom {
 
 UIWidgetEvent::UIWidgetEvent( void ) :
@@ -60,6 +63,40 @@ void UIWidgetEvent::set_index( int idx )
 void UIWidgetEvent::set_text( const std::string& text )
 {
   this->text_ = text;
+}
+
+// UIWidgetTreeEvent
+
+UIWidgetTreeEvent::UIWidgetTreeEvent( void ) :
+  column_{ -1 },
+  data_{ nullptr }
+{
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+}
+
+UIWidgetTreeEvent::~UIWidgetTreeEvent( void )
+{
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+}
+
+int UIWidgetTreeEvent::column( void ) const
+{
+  return this->column_;
+}
+
+IObject* UIWidgetTreeEvent::data( void ) const
+{
+  return this->data_;
+}
+
+void UIWidgetTreeEvent::set_column( int col )
+{
+  this->column_ = col;
+}
+
+void UIWidgetTreeEvent::set_data( IObject* obj )
+{
+  this->data_ = obj;
 }
 
 // UIWidgetResizeEvent

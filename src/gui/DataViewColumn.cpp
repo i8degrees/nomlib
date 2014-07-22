@@ -47,12 +47,12 @@ DataViewColumn::DataViewColumn( uint id ) :
   id_{ id },
   min_width_{ 0 },
   width_{ 0 },
-  alignment_{ IDataViewColumn::Alignment::Left }
+  alignment_{ DataViewColumn::Alignment::Left }
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 }
 
-DataViewColumn::DataViewColumn( uint id, const std::string& name, int width, enum IDataViewColumn::Alignment align )
+DataViewColumn::DataViewColumn( uint id, const std::string& name, int width, uint32 align )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 
@@ -88,7 +88,7 @@ int DataViewColumn::width( void ) const
   return this->width_;
 }
 
-IDataViewColumn::Alignment DataViewColumn::alignment( void ) const
+uint32 DataViewColumn::alignment( void ) const
 {
   return this->alignment_;
 }

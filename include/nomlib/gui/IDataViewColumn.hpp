@@ -45,16 +45,6 @@ class IDataViewColumn
     typedef std::unique_ptr<self_type> unique_ptr;
     typedef std::shared_ptr<self_type> shared_ptr;
 
-    /// Column text alignment options.
-    ///
-    /// \TODO Relocate me to a common area!
-    enum Alignment
-    {
-      Left = 0,  // Default
-      Center,
-      Right
-    };
-
     IDataViewColumn( void )
     {
       // NOM_LOG_TRACE( NOM );
@@ -71,7 +61,7 @@ class IDataViewColumn
 
     virtual int width( void ) const = 0;
 
-    virtual IDataViewColumn::Alignment alignment( void ) const = 0;
+    virtual uint32 alignment( void ) const = 0;
 
     virtual bool sortable( void ) const = 0;
 

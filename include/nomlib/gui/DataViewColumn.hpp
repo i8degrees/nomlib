@@ -47,12 +47,20 @@ class DataViewColumn: public IDataViewColumn
     typedef std::unique_ptr<self_type> unique_ptr;
     typedef std::shared_ptr<self_type> shared_ptr;
 
+    /// \brief Column alignment options.
+    enum Alignment: uint32
+    {
+      Left = Anchor::TopLeft,
+      Center = Anchor::TopCenter,
+      Right = Anchor::TopRight
+    };
+
     DataViewColumn( void );
     virtual ~DataViewColumn( void );
 
     DataViewColumn( uint id );
 
-    DataViewColumn( uint id, const std::string& name, int width, enum IDataViewColumn::Alignment align );
+    DataViewColumn( uint id, const std::string& name, int width, uint32 align );
 
     /// \brief Less than comparison operator.
     ///
@@ -74,7 +82,7 @@ class DataViewColumn: public IDataViewColumn
 
     int width( void ) const;
 
-    IDataViewColumn::Alignment alignment( void ) const;
+    uint32 alignment( void ) const;
 
     bool sortable( void ) const;
 
@@ -109,7 +117,9 @@ class DataViewColumn: public IDataViewColumn
     int width_;
 
     /// \brief Column alignment.
-    enum IDataViewColumn::Alignment alignment_;
+    ///
+    /// \see DataViewColumn::Alignment enum.
+    uint32 alignment_;
 
     /// \brief Sortable data flag.
     ///

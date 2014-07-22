@@ -154,18 +154,17 @@ void DataViewList::update_columns( void )
     // Fudged in as a "stub" for the time being.
     header->set_size( Size2i( width, height ) );
 
-    // Convert our far more simplistic IDataViewColumn::Alignment enumeration
-    // to nom::Text's native type.
+    // Do alignment calculations for the column...
     switch( column.alignment() )
     {
-      case nom::IDataViewColumn::Left:
+      case nom::DataViewColumn::Alignment::Left:
       default:
       {
         // header->set_alignment( Anchor::TopLeft );
         break;
       }
 
-      case nom::IDataViewColumn::Center:
+      case nom::DataViewColumn::Alignment::Center:
       {
         // header->set_alignment( Anchor::TopCenter );
         // x_offset = header->position().x + ( this->size().w / col_count - header->size().w ) / 2;
@@ -175,7 +174,7 @@ void DataViewList::update_columns( void )
         break;
       }
 
-      case nom::IDataViewColumn::Right:
+      case nom::DataViewColumn::Alignment::Right:
       {
         // header->set_alignment( Anchor::TopRight );
         // x_offset = header->position().x + ( this->size().w / col_count - header->size().w );
@@ -263,11 +262,10 @@ void DataViewList::update_items( void )
         // rendered text.
         text_item->set_size( Size2i( width, height ) );
 
-        // Convert our far more simplistic IDataViewColumn::Alignment enumeration
-        // to nom::Text's native type.
+        // Do alignment calculations for the column...
         switch( column.alignment() )
         {
-          case nom::IDataViewColumn::Left:
+          case nom::DataViewColumn::Alignment::Left:
           default:
           {
             // text_item->set_alignment( Anchor::MiddleLeft );
@@ -277,7 +275,7 @@ void DataViewList::update_items( void )
             break;
           }
 
-          case nom::IDataViewColumn::Center:
+          case nom::DataViewColumn::Alignment::Center:
           {
             // text_item->set_alignment( Anchor::MiddleCenter );
             x_offset = text_item->position().x + ( ( this->size().w - text_item->size().w ) / this->store()->items_size( cols ) ) / 2;
@@ -286,7 +284,7 @@ void DataViewList::update_items( void )
             break;
           }
 
-          case nom::IDataViewColumn::Right:
+          case nom::DataViewColumn::Alignment::Right:
           {
             // text_item->set_alignment( Anchor::MiddleRight );
             x_offset = text_item->position().x + ( this->size().w / this->store()->items_size( cols ) - text_item->size().w );

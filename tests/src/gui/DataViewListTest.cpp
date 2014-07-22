@@ -231,14 +231,14 @@ TEST_F( DataViewListTest, DataViewListStoreAPI )
                           0,
                           "CARDS  PG. 1",
                           75,
-                          IDataViewColumn::Alignment::Left
+                          DataViewColumn::Alignment::Left
                         );
 
   col1 = DataViewColumn (
                           1,
                           "NUM.",
                           75,
-                          IDataViewColumn::Alignment::Right
+                          DataViewColumn::Alignment::Right
                         );
 
   col0_items.push_back( std::make_shared<DataViewTextItem>( "Geezard" ) );
@@ -339,8 +339,8 @@ TEST_F( DataViewListTest, DataViewListWidgetEx0 )
                           0,
                           "CARDS  PG. 1",
                           75,
-                          IDataViewColumn::Alignment::Left
-                          // IDataViewColumn::Alignment::Center
+                          DataViewColumn::Alignment::Left
+                          // DataViewColumn::Alignment::Center
                         );
 
   col1 = DataViewColumn (
@@ -348,8 +348,8 @@ TEST_F( DataViewListTest, DataViewListWidgetEx0 )
                           "NUM.",
                           75,
                           // FIXME:
-                          // IDataViewColumn::Alignment::Left
-                          IDataViewColumn::Alignment::Right
+                          // DataViewColumn::Alignment::Left
+                          DataViewColumn::Alignment::Right
                         );
 
   this->col0.set_style( this->col_style );
@@ -419,25 +419,25 @@ TEST_F( DataViewListTest, DataViewListWidgetEx1 )
                           0,
                           "CARDS  PG. 1",
                           75,
-                          IDataViewColumn::Alignment::Left
+                          DataViewColumn::Alignment::Left
                         );
 
   col1 = DataViewColumn (
                           1,
                           "TCOL.",
                           75,
-                          IDataViewColumn::Alignment::Left
+                          DataViewColumn::Alignment::Left
                           // FIXME:
-                          // IDataViewColumn::Alignment::Center
+                          // DataViewColumn::Alignment::Center
                         );
 
   col2 = DataViewColumn (
                           2,
                           "NUM.",
                           75,
-                          IDataViewColumn::Alignment::Left
+                          DataViewColumn::Alignment::Left
                           // FIXME:
-                          // IDataViewColumn::Alignment::Right
+                          // DataViewColumn::Alignment::Right
                         );
 
   // Set custom styles (font)
@@ -528,7 +528,7 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
                           48,
                           // 0,
                           // 75,
-                          IDataViewColumn::Alignment::Left
+                          DataViewColumn::Alignment::Left
                         );
 
   col1 = DataViewColumn (
@@ -536,9 +536,9 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
                           "CARDS  P. 1 ",
                           // 50,
                           50,
-                          IDataViewColumn::Alignment::Left
-                          // IDataViewColumn::Alignment::Center
-                          // IDataViewColumn::Alignment::Right
+                          DataViewColumn::Alignment::Left
+                          // DataViewColumn::Alignment::Center
+                          // DataViewColumn::Alignment::Right
                         );
 
   col2 = DataViewColumn (
@@ -547,8 +547,8 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
                           // 0,
                           25,
                           // 75,
-                          // IDataViewColumn::Alignment::Left
-                          IDataViewColumn::Alignment::Right
+                          // DataViewColumn::Alignment::Left
+                          DataViewColumn::Alignment::Right
                         );
 
   // Set custom styles (font)

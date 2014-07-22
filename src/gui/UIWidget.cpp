@@ -602,7 +602,7 @@ void UIWidget::set_title( const std::string& title )
   // In order to preserve the text alignment of the original object, we must
   // copy the state of the original alignment *after* we set the positioning
   // on the new object we create for this class
-  this->title_->set_alignment( Text::Alignment::TopLeft );
+  this->title_->set_alignment( Anchor::TopLeft );
 
   // Prevent rendering of text that is longer in length than its container's
   // set size parameters (see above).
@@ -963,7 +963,7 @@ bool UIWidget::process_event( const Event& ev )
           Text::raw_ptr tip = new Text( "boobies!", this->font().get() );
           tip->set_position( this->position() );
           tip->set_size( tip->size().w, tip->size().h );
-          // tip->set_alignment( Text::Alignment::MiddleCenter );
+          // tip->set_alignment( Anchor::MiddleCenter );
           tip->set_color( Color4i::Black );
           Rectangle::raw_ptr background = new Rectangle( IntRect( Point2i( this->position().x, this->position().y ), Size2i( tip->width(), tip->height() ) ), Color4i::ToolTip );
 

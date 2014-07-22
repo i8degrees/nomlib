@@ -91,15 +91,15 @@ class MessageBox: public UIWidget
     /// in this class.
     const IntRect message_bounds( void ) const;
 
-    Text::Alignment title_alignment( void ) const;
-    Text::Alignment message_alignment( void ) const;
+    uint32 title_alignment( void ) const;
+    uint32 message_alignment( void ) const;
 
     void disable( void );
     void enable( void );
 
     /// \brief Set the title (caption) text of the message box.
     ///
-    /// \remarks The title text's alignment is set to Text::Alignment::TopLeft.
+    /// \remarks The title text's alignment is set to Anchor::TopLeft.
     void set_title( const std::string& text, const Font& font, uint point_size );
 
     /// \brief Set the title (caption) text of the message box.
@@ -112,12 +112,12 @@ class MessageBox: public UIWidget
     void set_title_font_size( uint point_size );
 
     /// \brief Set the title (caption) text's alignment.
-    void set_title_alignment( Text::Alignment align );
+    void set_title_alignment( uint32 align );
 
     /// \brief Set the message text label.
     ///
     /// \remarks The message label text's alignment is set to
-    /// Text::Alignment::MiddleCenter.
+    /// Anchor::MiddleCenter.
     void set_message( const std::string& text, const Font& font, uint point_size );
 
     /// \brief Set the message text label.
@@ -130,7 +130,7 @@ class MessageBox: public UIWidget
     void set_message_font_size( uint point_size );
 
     /// \brief Set the message text's alignment.
-    void set_message_alignment( Text::Alignment align );
+    void set_message_alignment( uint32 align );
 
     /// \brief Implements UIWidget::draw method.
     void draw( RenderTarget& target ) const;
@@ -202,7 +202,7 @@ class MessageBox: public UIWidget
 /// info_box.set_label_font ( &bitmap_font );
 /// info_box.set_label ( "Hello, world!" );
 /// info_box.set_window_title ( "INFO" );
-/// info_box.set_label_text_alignment ( nom::Text::Alignment::MiddleCenter );
+/// info_box.set_label_text_alignment ( nom::Anchor::MiddleCenter );
 
 /// info_box.update();
 

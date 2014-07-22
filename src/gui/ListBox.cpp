@@ -586,7 +586,7 @@ void ListBox::update( void )
     }
     else
     {
-      label->set_alignment( Text::Alignment::TopCenter );
+      label->set_alignment( Anchor::TopCenter );
     }
 
     // Vertical Spacing in between each text

@@ -303,7 +303,7 @@ class App: public nom::SDLApp
       this->label_bfont.set_color ( nom::Color4i::White );
       //this->label_bfont.set_color ( nom::Color4i(195,209,228) );
       this->label_bfont.set_text_size ( 24 ); // NO-OP
-      this->label_bfont.set_alignment ( nom::Text::Alignment::TopLeft );
+      this->label_bfont.set_alignment ( nom::Anchor::TopLeft );
 
       return true;
     }
@@ -335,7 +335,7 @@ class App: public nom::SDLApp
       this->label_tfont.set_text( RESOURCE_FONT_TEXT_STRING );
       // this->label_tfont.set_text( "WAV" );
 
-      // this->label_tfont.set_alignment( nom::Text::Alignment::TopLeft );
+      // this->label_tfont.set_alignment( nom::Anchor::TopLeft );
 
       return true;
     }
@@ -354,7 +354,7 @@ class App: public nom::SDLApp
       this->label_tfont2.set_text_size( 24 );
       this->label_tfont2.set_position( nom::Point2i( WINDOW_WIDTH / 2, 24 ) );
       this->label_tfont2.set_color( nom::Color4i( 195,209,228 ) );
-      // this->label_tfont2.set_alignment( nom::Text::Alignment::TopLeft );
+      // this->label_tfont2.set_alignment( nom::Anchor::TopLeft );
 
       return true;
     }

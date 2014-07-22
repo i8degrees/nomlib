@@ -227,7 +227,7 @@ void Button::set_label( const std::string& text )
   }
   else  // Default style
   {
-    this->label_.set_alignment( Text::Alignment::MiddleCenter );
+    this->label_.set_alignment( Anchor::MiddleCenter );
   }
 
   this->label_.set_text( this->text_ );

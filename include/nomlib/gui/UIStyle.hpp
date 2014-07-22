@@ -66,7 +66,7 @@ class UIStyle
 
     uint32 font_style( void ) const;
 
-    Text::Alignment text_alignment( void ) const;
+    uint32 text_alignment( void ) const;
 
     /// \brief Set the font to use.
     void set_font( const Font& font );
@@ -75,7 +75,7 @@ class UIStyle
     void set_font_color( const Color4i& color );
     void set_font_selected_color( const Color4i& color );
     void set_font_style( uint32 style );
-    void set_text_alignment( Text::Alignment align );
+    void set_text_alignment( uint32 align );
 
   private:
     /// \brief The font to use.
@@ -94,7 +94,7 @@ class UIStyle
     uint32 font_style_;
 
     /// \brief The text's alignment.
-    Text::Alignment text_alignment_;
+    uint32 text_alignment_;
 };
 
 } // namespace nom

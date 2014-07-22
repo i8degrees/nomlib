@@ -43,7 +43,7 @@ Text::Text( void ) :
   text_size_ ( nom::DEFAULT_FONT_SIZE ),
   color_ ( Color4i::White ),
   style_ ( Text::Style::Normal ),
-  alignment_ ( Text::Alignment::TopLeft )
+  alignment_{ Anchor::TopLeft }
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -57,7 +57,7 @@ Text::Text  (
               const std::string& text,
               const Font& font,
               uint character_size,        // Default parameter
-              enum Text::Alignment align, // Default parameter
+              uint32 align,               // Default parameter
               const Color4i& text_color   // Default parameter
             )  :
   Transformable { Point2i::null, Size2i::null }, // Base class
@@ -76,7 +76,7 @@ Text::Text  (
               const std::string& text,
               const Font::raw_ptr font,
               uint character_size,        // Default parameter
-              enum Text::Alignment align, // Default parameter
+              uint32 align,               // Default parameter
               const Color4i& text_color   // Default parameter
             )  :
   Transformable { Point2i::null, Size2i::null }, // Base class
@@ -98,24 +98,6 @@ Text::Text( const std::string& text ) :
   style_{ Text::Style::Normal }
 {
   // NOM_LOG_TRACE( NOM );
-}
-
-Text::Text ( const self_type& copy ) :
-  Transformable { copy.position(), copy.size() }, // Our inherited class
-  font_{ copy.font() },
-  texture_ { copy.texture() },
-  text_ { copy.text() },
-  text_size_ { copy.text_size() },
-  color_ { copy.color() },
-  style_ { copy.style() },
-  alignment_ { copy.alignment() },
-  features_{ copy.features() }
-{
-  // NOM_LOG_TRACE( NOM );
-
-  // Set the overall size of this text label to the width & height of the text,
-  // with consideration to the specific font in use.
-  // this->set_size( Size2i( this->text_width( copy.text() ), this->text_height( copy.text() ) ) );
 }
 
 IDrawable::raw_ptr Text::clone( void ) const
@@ -291,7 +273,7 @@ IntRect Text::global_bounds( void ) const
   return bounds;
 }
 
-enum Text::Alignment Text::alignment( void ) const
+uint32 Text::alignment( void ) const
 {
   return this->alignment_;
 }
@@ -385,10 +367,9 @@ void Text::set_style( uint32 style )
   this->update();
 }
 
-void Text::set_alignment( enum Text::Alignment align )
+void Text::set_alignment( uint32 align )
 {
-  int x_offset = 0;
-  int y_offset = 0;
+  Point2i offset( this->position() );
 
   this->alignment_ = align;
 
@@ -396,74 +377,43 @@ void Text::set_alignment( enum Text::Alignment align )
   if( this->position() == Point2i::null ) return;
   if( this->size() == Size2i::null ) return;
 
-  switch ( this->alignment() )
+  // Anchor::TopLeft, Anchor::Left, Anchor::BottomLeft
+  if( align & Alignment::X_LEFT )
   {
-    default:
-    case Text::Alignment::TopLeft: // Default case
-    {
-      x_offset = this->position().x;
-      y_offset = this->position().y;
-      break;
-    }
+    offset.x = this->position().x;
+  }
 
-    case Text::Alignment::TopCenter:
-    {
-      x_offset = this->position().x + ( this->size().w - this->width() ) / 2;
-      y_offset = this->position().y;
-      break;
-    }
+  // Anchor::TopCenter, Anchor::MiddleCenter, Anchor::BottomCenter
+  if( align & Alignment::X_CENTER )
+  {
+    offset.x = this->position().x + ( this->size().w - this->width() ) / 2;
+  }
 
-    case Text::Alignment::TopRight:
-    {
-      x_offset = this->position().x + ( this->size().w - this->width() );
-      y_offset = this->position().y;
-      break;
-    }
+  // Anchor::TopRight, Anchor::MiddleRight, Anchor::BottomRight
+  if( align & Alignment::X_RIGHT )
+  {
+    offset.x = this->position().x + ( this->size().w - this->width() );
+  }
 
-    case Text::Alignment::MiddleLeft:
-    {
-      x_offset = this->position().x;
-      y_offset = this->position().y + ( this->size().h - this->height() ) / 2;
-      break;
-    }
+  // Anchor::TopLeft, Anchor::TopCenter, Anchor::TopRight
+  if( align & Alignment::Y_TOP )
+  {
+    offset.y = this->position().y;
+  }
 
-    case Text::Alignment::MiddleCenter:
-    {
-      x_offset = this->position().x + ( this->size().w - this->width() ) / 2;
-      y_offset = this->position().y + ( this->size().h - this->height() ) / 2;
-      break;
-    }
+  // Anchor::MiddleLeft, Anchor::MiddleCenter, Anchor::MiddleRight
+  if( align & Alignment::Y_CENTER )
+  {
+    offset.y = this->position().y + ( this->size().h - this->height() ) / 2;
+  }
 
-    case Text::Alignment::MiddleRight:
-    {
-      x_offset = this->position().x + ( this->size().w - this->width() );
-      y_offset = this->position().y + ( this->size().h - this->height() ) / 2;
-      break;
-    }
+  // Anchor::BottomLeft, Anchor::BottomCenter, Anchor::BottomRight
+  if( align & Alignment::Y_BOTTOM )
+  {
+    offset.y = this->position().y + ( this->size().h - this->height() );
+  }
 
-    case Text::Alignment::BottomLeft:
-    {
-      x_offset = this->position().x;
-      y_offset = this->position().y + ( this->size().h - this->height() );
-      break;
-    }
-
-    case Text::Alignment::BottomCenter:
-    {
-      x_offset = this->position().x + ( this->size().w - this->width() ) / 2;
-      y_offset = this->position().y + ( this->size().h - this->height() );
-      break;
-    }
-
-    case Text::Alignment::BottomRight:
-    {
-      x_offset = this->position().x + ( this->size().w - this->width() );
-      y_offset = this->position().y + ( this->size().h - this->height() );
-      break;
-    }
-  } // end switch
-
-  this->set_position( Point2i( x_offset, y_offset ) );
+  this->set_position( offset );
 }
 
 void Text::draw ( RenderTarget& target ) const

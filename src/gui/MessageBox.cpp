@@ -91,12 +91,12 @@ const IntRect MessageBox::message_bounds( void ) const
   return IntRect( this->message_.global_bounds() );
 }
 
-Text::Alignment MessageBox::title_alignment( void ) const
+uint32 MessageBox::title_alignment( void ) const
 {
   return this->title_.alignment();
 }
 
-Text::Alignment MessageBox::message_alignment( void ) const
+uint32 MessageBox::message_alignment( void ) const
 {
   return this->message_.alignment();
 }
@@ -118,7 +118,7 @@ void MessageBox::set_title( const std::string& text, const Font& font, uint poin
   this->set_title_text( text );
   this->set_title_font( font );
   this->set_title_font_size( point_size );
-  this->set_title_alignment( Text::Alignment::TopLeft );
+  this->set_title_alignment( Anchor::TopLeft );
 
   this->update();
 }
@@ -151,7 +151,7 @@ void MessageBox::set_title_font_size( uint point_size )
   this->update();
 }
 
-void MessageBox::set_title_alignment( Text::Alignment align )
+void MessageBox::set_title_alignment( uint32 align )
 {
   this->updated_ = false;
 
@@ -167,7 +167,7 @@ void MessageBox::set_message( const std::string& text, const Font& font, uint po
   this->set_message_text( text );
   this->set_message_font( font );
   this->set_message_font_size( point_size );
-  this->set_message_alignment( Text::Alignment::MiddleCenter );
+  this->set_message_alignment( Anchor::MiddleCenter );
 
   this->update();
 }
@@ -199,7 +199,7 @@ void MessageBox::set_message_font_size( uint point_size )
   this->update();
 }
 
-void MessageBox::set_message_alignment( Text::Alignment align )
+void MessageBox::set_message_alignment( uint32 align )
 {
   this->updated_ = false;
 
@@ -281,7 +281,7 @@ void MessageBox::update( void )
       break;
     }
 
-    case Text::Alignment::TopLeft:
+    case Anchor::TopLeft:
     {
       // This positions the title text of the message box on top of the second "top"
       // bordering color of nom::GrayFrame, commented as "top1".
@@ -304,7 +304,8 @@ void MessageBox::update( void )
   this->title_.set_features( Text::ExtraRenderingFeatures::CropText );
 
   // We must handle certain text alignments in a particular way, otherwise we
-  // potentially end up with text that overlaps.
+  // potentially end up with text that overlaps. This is a poor man's margins
+  // adjustment code.
   switch( this->message_alignment() )
   {
     default:
@@ -314,12 +315,16 @@ void MessageBox::update( void )
     }
 
     // Ensure that there is enough spacing between the title (caption) label
-    // text and the message label text.
-    case Text::Alignment::TopLeft:
-    case Text::Alignment::TopCenter:
-    case Text::Alignment::TopRight:
+    // text and the message label text (think: margins)
+    case Anchor::TopLeft:
+    case Anchor::TopCenter:
+    case Anchor::TopRight:
     {
-      // this->message_.set_position( Point2i( this->position().x, this->position().y + text.height() / 2 ) );
+      // FIXME: The title bounds height is probably the more proper variable to
+      // use here, not message_bounds. Using message_bounds makes the
+      // QuestionDialogBox widget message text appear as I want, whereas using
+      // title_bounds makes the dynamic alignments in examples/app.cpp look
+      // better.
       this->message_.set_position( Point2i( this->position().x, this->position().y + this->message_bounds().h ) );
       break;
     }

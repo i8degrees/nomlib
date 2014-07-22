@@ -52,44 +52,6 @@ enum Orientations: uint32
   Vertical = 0x2
 };
 
-/// \brief Alignment types.
-///
-/// \remarks See also, nom::Anchor enumeration.
-///
-/// \note Borrowed from [maelstrom's screenlib](https://hg.libsdl.org/Maelstrom/)
-enum Alignment: uint32
-{
-  X_LEFT = 0x01,
-  X_CENTER = 0x02,
-  X_RIGHT = 0x4,
-
-  /// \remarks Horizontal
-  X_MASK = ( X_LEFT | X_CENTER | X_RIGHT ),
-
-  Y_TOP = 0x10,
-  Y_CENTER = 0x20,
-  Y_BOTTOM = 0x40,
-
-  /// \remarks Vertical
-  Y_MASK = ( Y_TOP | Y_CENTER | Y_BOTTOM )
-};
-
-/// \note Borrowed from [maelstrom's screenlib](https://hg.libsdl.org/Maelstrom/)
-enum Anchor: uint32
-{
-  TopLeft = Y_TOP | X_LEFT,             // Hex: 0x11, Dec: 17
-  TopCenter = Y_TOP | X_CENTER,         // Hex: 0x12, Dec: 18
-  TopRight = Y_TOP | X_RIGHT,           // Hex: 0x14, Dec: 20
-
-  MiddleLeft = Y_CENTER | X_LEFT,       // Hex: 0x21, Dec: 33
-  MiddleCenter = Y_CENTER | X_CENTER,   // Hex: 0x22, Dec: 34
-  MiddleRight = Y_CENTER | X_RIGHT,     // Hex: 0x24, Dec: 36
-
-  BottomLeft = Y_BOTTOM | X_LEFT,       // Hex: 0x41, Dec: 65
-  BottomCenter = Y_BOTTOM | X_CENTER,   // Hex: 0x42, Dec: 66
-  BottomRight = Y_BOTTOM | X_RIGHT      // Hex: 0x44, Dec: 68
-};
-
 /// \note Borrowed from Qt 4.6
 enum FocusPolicy: uint32
 {

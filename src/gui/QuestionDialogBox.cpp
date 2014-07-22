@@ -113,7 +113,7 @@ void QuestionDialogBox::append_choice( const std::string& label )
   choice.set_text( label );
   choice.set_position( this->position() );
   choice.set_size( this->size() );
-  choice.set_alignment( Text::Alignment::MiddleCenter );
+  choice.set_alignment( Anchor::MiddleCenter );
 
   this->choices_.push_back( choice );
 

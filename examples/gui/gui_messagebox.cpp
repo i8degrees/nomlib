@@ -225,15 +225,15 @@ class App: public nom::SDLApp
 
       messagebox->set_title( "CHOICE", *font2, nom::DEFAULT_FONT_SIZE );
       messagebox->set_message( "Are you sure?", *font1, nom::DEFAULT_FONT_SIZE );
-      messagebox->set_message_alignment( Text::Alignment::TopCenter );
+      messagebox->set_message_alignment( Anchor::TopCenter );
 
-      // nom::Text yes_label( nom::Text( "Yes", font1, nom::DEFAULT_FONT_SIZE, Text::Alignment::MiddleCenter ) );
+      // nom::Text yes_label( nom::Text( "Yes", font1, nom::DEFAULT_FONT_SIZE, Anchor::MiddleCenter ) );
 
       // FIXME (?):
       //
       // Appending a single space character onto "No" text label so that it
       // lines up with our "Yes" text label.
-      // nom::Text no_label( nom::Text( "No ", font1, nom::DEFAULT_FONT_SIZE, Text::Alignment::MiddleCenter ) );
+      // nom::Text no_label( nom::Text( "No ", font1, nom::DEFAULT_FONT_SIZE, Anchor::MiddleCenter ) );
 
       // messagebox->append_choice( yes_label );
       // messagebox->append_choice( no_label );

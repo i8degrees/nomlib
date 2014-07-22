@@ -414,7 +414,7 @@ bool UILayout::set_alignment( const UIWidget* widget, uint32 align )
       }
     }
 
-    // Anchor::TopRight, Anchor::Right, Anchor::BottomRight
+    // Anchor::TopRight, Anchor::MiddleRight, Anchor::BottomRight
     if( align & Alignment::X_RIGHT )
     {
       if( this->horiz() )

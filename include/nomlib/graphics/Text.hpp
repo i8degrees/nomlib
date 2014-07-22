@@ -72,31 +72,6 @@ class Text: public Transformable
       Strikethrough = 16  /// Verify working functionality
     };
 
-    /// Text alignment choices (pick one).
-    ///
-    /// \internal
-    ///
-    /// \note Bitwise masks were intentionally not chosen here, in order to
-    /// allow my preferred naming scheme. I think the scheme chosen feels
-    /// most natural, and thus easier to remember and type out.
-    ///
-    /// \endinternal
-    ///
-    /// \deprecated Text::Alignment is probably going to be replaced by
-    /// nom::Anchor in the near future.
-    enum Alignment: uint32
-    {
-      TopLeft = 0,  // Default
-      TopCenter,    // 1
-      TopRight,     // 2
-      MiddleLeft,   // 3
-      MiddleCenter, // 4
-      MiddleRight,  // 5
-      BottomLeft,   // 6
-      BottomCenter, // 7
-      BottomRight   // 8
-    };
-
     /// \brief Additional rendering features; these are all optional, and are
     /// turned off by default.
     ///
@@ -120,7 +95,7 @@ class Text: public Transformable
             const std::string& text,
             const font_type& font,
             uint character_size = nom::DEFAULT_FONT_SIZE,
-            enum Text::Alignment align = Text::Alignment::TopLeft,
+            uint32 align = Anchor::TopLeft,
             const Color4i& text_color = Color4i::White
           );
 
@@ -130,15 +105,12 @@ class Text: public Transformable
             const std::string& text,
             const font_type::raw_ptr font,
             uint character_size = nom::DEFAULT_FONT_SIZE,
-            enum Text::Alignment align = Text::Alignment::TopLeft,
+            uint32 align = Anchor::TopLeft,
             const Color4i& text_color = Color4i::White
           );
 
     /// \see nom::DataViewTextItem
     Text( const std::string& text );
-
-    /// \brief Copy constructor.
-    Text ( const self_type& copy );
 
     /// \brief Implements the required IDrawable::clone method.
     IDrawable::raw_ptr clone( void ) const;
@@ -205,8 +177,8 @@ class Text: public Transformable
     /// ::width and ::height.
     IntRect global_bounds( void ) const;
 
-    /// Get text alignment
-    enum Text::Alignment alignment( void ) const;
+    /// \brief Get the text alignment.
+    uint32 alignment( void ) const;
 
     /// Get text character size (in pixels?)
     uint text_size ( void ) const;
@@ -254,14 +226,14 @@ class Text: public Transformable
 
     /// \brief Set the text's alignment.
     ///
-    /// \see The nom::Text::Alignment enumeration.
+    /// \see The nom::Anchor enumeration.
     ///
     /// \remarks This method depends on the size dimensions and the text's font
     /// being in a valid state.
     ///
     /// \note Every call to this method modifies the destination positions used
     /// in the rendered text.
-    void set_alignment( enum Text::Alignment align );
+    void set_alignment( uint32 align );
 
     /// Render text to a target
     ///
@@ -300,7 +272,7 @@ class Text: public Transformable
 
     /// Current text effect set
     uint32 style_;
-    enum Alignment alignment_;
+    uint32 alignment_;
 
     /// \brief Set additional rendering flags.
     ///

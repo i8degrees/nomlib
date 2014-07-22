@@ -161,13 +161,13 @@ void DataViewList::update_columns( void )
       case nom::IDataViewColumn::Left:
       default:
       {
-        // header->set_alignment( Text::Alignment::TopLeft );
+        // header->set_alignment( Anchor::TopLeft );
         break;
       }
 
       case nom::IDataViewColumn::Center:
       {
-        // header->set_alignment( Text::Alignment::TopCenter );
+        // header->set_alignment( Anchor::TopCenter );
         // x_offset = header->position().x + ( this->size().w / col_count - header->size().w ) / 2;
         x_offset = header->position().x + ( ( ( this->size().w - header->size().w ) / col_count ) * cols ) / 2;
         y_offset = header->position().y;
@@ -177,7 +177,7 @@ void DataViewList::update_columns( void )
 
       case nom::IDataViewColumn::Right:
       {
-        // header->set_alignment( Text::Alignment::TopRight );
+        // header->set_alignment( Anchor::TopRight );
         // x_offset = header->position().x + ( this->size().w / col_count - header->size().w );
         x_offset = header->position().x + ( this->size().w - header->size().w - 10 ) / col_count;
         y_offset = header->position().y;
@@ -270,7 +270,7 @@ void DataViewList::update_items( void )
           case nom::IDataViewColumn::Left:
           default:
           {
-            // text_item->set_alignment( Text::Alignment::MiddleLeft );
+            // text_item->set_alignment( Anchor::MiddleLeft );
             x_offset = text_item->position().x;
             y_offset = text_item->position().y;
             text_item->set_position( Point2i( x_offset, y_offset ) );
@@ -279,7 +279,7 @@ void DataViewList::update_items( void )
 
           case nom::IDataViewColumn::Center:
           {
-            // text_item->set_alignment( Text::Alignment::MiddleCenter );
+            // text_item->set_alignment( Anchor::MiddleCenter );
             x_offset = text_item->position().x + ( ( this->size().w - text_item->size().w ) / this->store()->items_size( cols ) ) / 2;
             y_offset = text_item->position().y;
             text_item->set_position( Point2i( x_offset, y_offset ) );
@@ -288,7 +288,7 @@ void DataViewList::update_items( void )
 
           case nom::IDataViewColumn::Right:
           {
-            // text_item->set_alignment( Text::Alignment::MiddleRight );
+            // text_item->set_alignment( Anchor::MiddleRight );
             x_offset = text_item->position().x + ( this->size().w / this->store()->items_size( cols ) - text_item->size().w );
             // x_offset = text_item->position().x + ( this->size().w - text_item->size().w );// / this->store()->items_size( cols );
             y_offset = text_item->position().y;

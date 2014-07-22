@@ -39,7 +39,7 @@ UIStyle::UIStyle( void ) :
   font_color_{ Color4i::White },
   selected_font_color_{ Color4i::Red },
   font_style_{ Text::Style::Normal },
-  text_alignment_{ Text::Alignment::MiddleCenter }
+  text_alignment_{ Anchor::MiddleCenter }
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -74,7 +74,7 @@ uint32 UIStyle::font_style( void ) const
   return this->font_style_;
 }
 
-Text::Alignment UIStyle::text_alignment( void ) const
+uint32 UIStyle::text_alignment( void ) const
 {
   return this->text_alignment_;
 }
@@ -104,7 +104,7 @@ void UIStyle::set_font_style( uint32 style )
   this->font_style_ = style;
 }
 
-void UIStyle::set_text_alignment( Text::Alignment align )
+void UIStyle::set_text_alignment( uint32 align )
 {
   this->text_alignment_ = align;
 }

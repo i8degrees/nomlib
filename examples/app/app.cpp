@@ -101,17 +101,17 @@ const std::string RESOURCE_INFO_BOX_TEXT_STRINGS[4] = {
                                                         "...Light weight!" // 3
                                                       };
 
-const enum nom::Text::Alignment RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[9] = {
-                                                                              nom::Text::Alignment::TopLeft,       // 0
-                                                                              nom::Text::Alignment::TopCenter,
-                                                                              nom::Text::Alignment::TopRight,
-                                                                              nom::Text::Alignment::MiddleLeft,
-                                                                              nom::Text::Alignment::MiddleCenter,  // 4
-                                                                              nom::Text::Alignment::MiddleRight,
-                                                                              nom::Text::Alignment::BottomLeft,
-                                                                              nom::Text::Alignment::BottomCenter,
-                                                                              nom::Text::Alignment::BottomRight    // 8
-                                                                        };
+const nom::uint32 RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[9] =  {
+                                                            nom::Anchor::TopLeft,       // 0
+                                                            nom::Anchor::TopCenter,
+                                                            nom::Anchor::TopRight,
+                                                            nom::Anchor::MiddleLeft,
+                                                            nom::Anchor::MiddleCenter,
+                                                            nom::Anchor::MiddleRight,
+                                                            nom::Anchor::BottomLeft,
+                                                            nom::Anchor::BottomCenter,
+                                                            nom::Anchor::BottomRight    // 8
+                                                          };
 
 const int MIN_FONT_POINT_SIZE = 9;
 const int MAX_FONT_POINT_SIZE = 41;
@@ -127,7 +127,7 @@ class App: public nom::SDLApp
       SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES ),
       sprite_angle ( -90.0f ),
       selected_font ( 0 ),        // nom::TrueType font
-      selected_alignment ( 4 ),   // nom::Text::Alignment::TopLeft
+      selected_alignment ( 4 ),   // nom::Anchor::TopLeft
       selected_font_size ( 14 ),  // Font's size (in pixels)
       selected_text_string ( 2 )  // "Yeah Buddy!!!"
     {
@@ -673,7 +673,7 @@ class App: public nom::SDLApp
       }
     }
 
-    enum nom::Text::Alignment select_alignment ( void )
+    nom::uint32 select_alignment ( void )
     {
       switch ( this->selected_alignment )
       {

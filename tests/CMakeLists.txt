@@ -91,7 +91,7 @@ set (
 set (
       NOM_TESTS_VTEST_SOURCE
       ${NOM_TESTS_COMMON_SOURCE}
-      ${NOM_TESTS_SOURCE_DIR}/common/VisualTestSet.cpp
+      ${NOM_TESTS_SOURCE_DIR}/common/ImageTestSet.cpp
       ${NOM_TESTS_SOURCE_DIR}/common/VisualUnitTest.cpp
       ${NOM_TESTS_SOURCE_DIR}/common/ImageDiff.cpp
       ${NOM_TESTS_SOURCE_DIR}/common/TestResultWriter.cpp

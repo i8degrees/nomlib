@@ -32,13 +32,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/serializers/MiniHTML.hpp"
 
 // Forward declarations
-#include "nomlib/tests/common/VisualTestSet.hpp"
+#include "nomlib/tests/common/ImageTestSet.hpp"
 
 namespace nom {
 
 HTMLTestResultWriter::HTMLTestResultWriter  (
-                                              const VisualTestSet& set1,
-                                              const VisualTestSet& set2,
+                                              const ImageTestSet& set1,
+                                              const ImageTestSet& set2,
                                               const ImageDiffResultBatch& results
                                             ) :
   TestResultWriter( set1, set2, results )
@@ -174,8 +174,8 @@ std::string HTMLTestResultWriter::output( void )
 HTMLElement*
 HTMLTestResultWriter::summarize_single_result (
                                                 const ImageDiffResult& result,
-                                                const VisualTestSet& set1,
-                                                const VisualTestSet& set2
+                                                const ImageTestSet& set1,
+                                                const ImageTestSet& set2
                                               )
 {
   // container and header
@@ -265,7 +265,7 @@ HTMLTestResultWriter::summarize_single_result (
 
 HTMLElement*
 HTMLTestResultWriter::output_info_table (
-                                          const VisualTestSet& set,
+                                          const ImageTestSet& set,
                                           const std::string& name
                                         )
 {

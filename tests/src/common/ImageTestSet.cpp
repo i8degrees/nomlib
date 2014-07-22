@@ -26,7 +26,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/common/VisualTestSet.hpp"
+#include "nomlib/tests/common/ImageTestSet.hpp"
 
 // Forward declarations
 #include "nomlib/ptree/Value.hpp"
@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-VisualTestSet::VisualTestSet( void )
+ImageTestSet::ImageTestSet( void )
 {
   // NOM_LOG_TRACE( NOM );
 
@@ -50,12 +50,12 @@ VisualTestSet::VisualTestSet( void )
   // this->set_timestamp( nom::timestamp() );
 }
 
-VisualTestSet::~VisualTestSet( void )
+ImageTestSet::~ImageTestSet( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-VisualTestSet::VisualTestSet  (
+ImageTestSet::ImageTestSet  (
                                 const std::string& set,
                                 const std::string& name,
                                 const std::string& ts,
@@ -75,7 +75,7 @@ VisualTestSet::VisualTestSet  (
   this->set_version( nom::revision() );
 }
 
-bool VisualTestSet::operator ==( const self_type& rhs )
+bool ImageTestSet::operator ==( const self_type& rhs )
 {
   if( this->resolution() != rhs.resolution() )
   {
@@ -93,109 +93,109 @@ bool VisualTestSet::operator ==( const self_type& rhs )
   return true;
 }
 
-bool VisualTestSet::operator !=( const self_type& rhs )
+bool ImageTestSet::operator !=( const self_type& rhs )
 {
   return ! ( *this == rhs );
 }
 
-bool VisualTestSet::operator >( const self_type& rhs )
+bool ImageTestSet::operator >( const self_type& rhs )
 {
   return( this->timestamp() > rhs.timestamp() );
 }
 
-bool VisualTestSet::operator <( const self_type& rhs )
+bool ImageTestSet::operator <( const self_type& rhs )
 {
   return( rhs.timestamp() > this->timestamp() );
 }
 
-const std::vector<std::string>& VisualTestSet::images( void ) const
+const std::vector<std::string>& ImageTestSet::images( void ) const
 {
   return this->images_;
 }
 
-std::string VisualTestSet::image( int pos ) const
+std::string ImageTestSet::image( int pos ) const
 {
   NOM_ASSERT( pos < this->images().size() );
 
   return this->images()[ pos ];
 }
 
-const std::string& VisualTestSet::test_set( void ) const
+const std::string& ImageTestSet::test_set( void ) const
 {
   return this->test_set_;
 }
 
-const std::string& VisualTestSet::test_name( void ) const
+const std::string& ImageTestSet::test_name( void ) const
 {
   return this->test_name_;
 }
 
-const std::string& VisualTestSet::version( void ) const
+const std::string& ImageTestSet::version( void ) const
 {
   return this->version_;
 }
 
-const std::string& VisualTestSet::timestamp( void ) const
+const std::string& ImageTestSet::timestamp( void ) const
 {
   return this->timestamp_;
 }
 
-const std::string& VisualTestSet::comment( void ) const
+const std::string& ImageTestSet::comment( void ) const
 {
   return this->comment_;
 }
 
-const Size2i& VisualTestSet::resolution( void ) const
+const Size2i& ImageTestSet::resolution( void ) const
 {
   return this->resolution_;
 }
 
-const std::string& VisualTestSet::directory( void ) const
+const std::string& ImageTestSet::directory( void ) const
 {
   return this->directory_;
 }
 
-void VisualTestSet::set_test_set( const std::string& set )
+void ImageTestSet::set_test_set( const std::string& set )
 {
   this->test_set_ = set;
 }
 
-void VisualTestSet::set_test_name( const std::string& name )
+void ImageTestSet::set_test_name( const std::string& name )
 {
   this->test_name_ = name;
 }
 
-void VisualTestSet::set_version( const std::string& ver )
+void ImageTestSet::set_version( const std::string& ver )
 {
   this->version_ = ver;
 }
 
-void VisualTestSet::set_timestamp( const std::string& ts )
+void ImageTestSet::set_timestamp( const std::string& ts )
 {
   this->timestamp_ = ts;
 }
 
-void VisualTestSet::set_comment( const std::string& comment )
+void ImageTestSet::set_comment( const std::string& comment )
 {
   this->comment_ = comment;
 }
 
-void VisualTestSet::set_resolution( const Size2i& res )
+void ImageTestSet::set_resolution( const Size2i& res )
 {
   this->resolution_ = res;
 }
 
-void VisualTestSet::set_directory( const std::string& path )
+void ImageTestSet::set_directory( const std::string& path )
 {
   this->directory_ = path;
 }
 
-void VisualTestSet::append_image( const std::string& filename )
+void ImageTestSet::append_image( const std::string& filename )
 {
   this->images_.push_back( filename );
 }
 
-bool VisualTestSet::save_file( IValueSerializer* cfg )
+bool ImageTestSet::save_file( IValueSerializer* cfg )
 {
   Path p;
   Value os;
@@ -216,7 +216,7 @@ bool VisualTestSet::save_file( IValueSerializer* cfg )
   return cfg->save( os, this->directory() + p.native() + "info.json" );
 }
 
-bool VisualTestSet::load_file( IValueDeserializer* cfg )
+bool ImageTestSet::load_file( IValueDeserializer* cfg )
 {
   Path p;
   Value info;

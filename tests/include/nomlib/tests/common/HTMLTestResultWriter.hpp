@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // Forward declarations
-class VisualTestSet;
+class ImageTestSet;
 class HTMLElement;
 
 /// \brief HTML test result writer.
@@ -56,8 +56,8 @@ class HTMLTestResultWriter: public TestResultWriter
 
     /// \brief Default constructor.
     HTMLTestResultWriter  (
-                            const VisualTestSet& set1,
-                            const VisualTestSet& set2,
+                            const ImageTestSet& set1,
+                            const ImageTestSet& set2,
                             const ImageDiffResultBatch& results
                           );
 
@@ -72,8 +72,8 @@ class HTMLTestResultWriter: public TestResultWriter
     /// \returns Returns an html div with summary markup
     HTMLElement* summarize_single_result  (
                                             const ImageDiffResult& result,
-                                            const VisualTestSet& set1,
-                                            const VisualTestSet& set2
+                                            const ImageTestSet& set1,
+                                            const ImageTestSet& set2
                                           );
 
     /// \brief Output a HTML table with information associated with a
@@ -82,7 +82,7 @@ class HTMLTestResultWriter: public TestResultWriter
     /// \param set  The result set to use.
     /// \param name The string to use in the header above the table.
     HTMLElement* output_info_table  (
-                                      const VisualTestSet& set,
+                                      const ImageTestSet& set,
                                       const std::string& name
                                     );
 

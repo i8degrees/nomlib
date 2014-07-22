@@ -48,8 +48,8 @@ class MinimalTestResultWriter: public TestResultWriter
   public:
     /// \brief Default constructor.
     MinimalTestResultWriter (
-                              const VisualTestSet& set1,
-                              const VisualTestSet& set2,
+                              const ImageTestSet& set1,
+                              const ImageTestSet& set2,
                               const ImageDiffResultBatch& results
                             );
 

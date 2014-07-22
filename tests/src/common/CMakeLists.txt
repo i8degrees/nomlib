@@ -80,22 +80,22 @@ if( NOM_BUILD_COMMON_TESTS )
               )
 
     add_executable  (
-                      VisualSetTest
+                      ImageTestSetTest
                       ${NOM_TESTS_VTEST_SOURCE}
-                      ${NOM_TESTS_SOURCE_DIR}/common/VisualTestSetTest.cpp
+                      ${NOM_TESTS_SOURCE_DIR}/common/ImageTestSetTest.cpp
                     )
 
     target_link_libraries (
-                            VisualSetTest
+                            ImageTestSetTest
                             ${GTEST_LIBRARY}
                             ${PROJECT_NAME} # nomlib
                           )
 
     GTEST_ADD_TESTS (
-                      VisualSetTest
-                      "VisualSetTest"
+                      ImageTestSetTest
+                      "ImageTestSetTest"
                       ${NOM_TESTS_VTEST_SOURCE}
-                      ${NOM_TESTS_SOURCE_DIR}/common/VisualTestSetTest.cpp
+                      ${NOM_TESTS_SOURCE_DIR}/common/ImageTestSetTest.cpp
                     )
 
     add_executable  (

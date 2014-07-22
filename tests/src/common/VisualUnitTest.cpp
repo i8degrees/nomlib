@@ -43,7 +43,7 @@ namespace nom {
 // Static initializations
 std::string VisualUnitTest::timestamp_ = "\0";
 bool VisualUnitTest::timestamp_initialized_ = false;
-VisualTestSet VisualUnitTest::visual_test_;
+ImageTestSet VisualUnitTest::visual_test_;
 ImageDiffResultBatch VisualUnitTest::results_;
 
 void VisualUnitTest::initialize( const Size2i& res )

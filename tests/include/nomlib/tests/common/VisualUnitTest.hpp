@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/tests/common/UnitTest.hpp"
-#include "nomlib/tests/common/VisualTestSet.hpp"
+#include "nomlib/tests/common/ImageTestSet.hpp"
 #include "nomlib/tests/common/ImageDiff.hpp"
 #include "nomlib/graphics/RenderWindow.hpp"
 #include "nomlib/system/Timer.hpp"
@@ -191,7 +191,7 @@ class VisualUnitTest: public UnitTest
     /// \brief The registered input bindings.
     InputStateMapper input_mapper_;
 
-    static VisualTestSet visual_test_;
+    static ImageTestSet visual_test_;
 
   private:
     /// \brief Create the necessary directory tree for screen-shot dumps.

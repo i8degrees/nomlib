@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/serializers/JsonCppDeserializer.hpp"
 
 #include "nomlib/tests/common/VisualUnitTest.hpp"
-#include "nomlib/tests/common/VisualTestSet.hpp"
+#include "nomlib/tests/common/ImageTestSet.hpp"
 #include "nomlib/tests/common/ImageDiffResult.hpp"
 // #include "nomlib/tests/common/MinimalTestResultWriter.hpp"
 #include "nomlib/tests/common/HTMLTestResultWriter.hpp"
@@ -67,8 +67,8 @@ void VisualUnitTestResultWriter::OnTestCaseEnd( const ::testing::TestCase& test_
 {
   Path p;
   File fp;
-  VisualTestSet set1;
-  VisualTestSet set2;
+  ImageTestSet set1;
+  ImageTestSet set2;
   IValueDeserializer* in = nullptr;
   TestResultWriter* os = nullptr;
 

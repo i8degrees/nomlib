@@ -69,14 +69,14 @@ struct UnitTestFlags
   ///
   /// \remarks This string is used in HTML results output.
   ///
-  /// \see VIsualTestSet
+  /// \see ImageTestSet
   std::string test_comment;
 
   /// \brief The image set used for comparison.
   ///
   /// \remarks This is not implemented; reserved for future use.
   ///
-  /// \see VisualTestSet
+  /// \see ImageTestSet
   std::string comparison_dir;
 
   /// \brief Whether or not to output HTML test results.

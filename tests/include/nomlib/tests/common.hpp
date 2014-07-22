@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/tests/common/UnitTest.hpp"
 #include "nomlib/tests/common/VisualUnitTest.hpp"
-#include "nomlib/tests/common/VisualTestSet.hpp"
+#include "nomlib/tests/common/ImageTestSet.hpp"
 #include "nomlib/tests/common/ImageDiff.hpp"
 
 #endif // include guard defined

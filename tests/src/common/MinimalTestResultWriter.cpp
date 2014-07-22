@@ -29,13 +29,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/tests/common/MinimalTestResultWriter.hpp"
 
 // Forward declarations
-#include "nomlib/tests/common/VisualTestSet.hpp"
+#include "nomlib/tests/common/ImageTestSet.hpp"
 
 namespace nom {
 
 MinimalTestResultWriter::MinimalTestResultWriter  (
-                                                    const VisualTestSet& set1,
-                                                    const VisualTestSet& set2,
+                                                    const ImageTestSet& set1,
+                                                    const ImageTestSet& set2,
                                                     const ImageDiffResultBatch&
                                                     results
                                                   ) :

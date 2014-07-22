@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#include "nomlib/tests/common/VisualTestSet.hpp"
+#include "nomlib/tests/common/ImageTestSet.hpp"
 
 #include "nomlib/math.hpp"
 #include "nomlib/system.hpp"
@@ -39,9 +39,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-TEST( VisualTestSetTest, DefaultConstructor )
+TEST( ImageTestSetTest, DefaultConstructor )
 {
-  VisualTestSet obj;
+  ImageTestSet obj;
 
   EXPECT_EQ( "", obj.test_set() )
   << "Test set name should be a null-terminated string";
@@ -68,21 +68,21 @@ TEST( VisualTestSetTest, DefaultConstructor )
   << "Image file directory should be a null-terminated string";
 }
 
-TEST( VisualTestSetTest, InitializeConstructor )
+TEST( ImageTestSetTest, InitializeConstructor )
 {
   File fp;
   Size2i resolution( 640, 480 );
   std::string ts = nom::file_timestamp();
 
-  VisualTestSet obj (
-                      "VisualTestSetTest",
+  ImageTestSet obj (
+                      "ImageTestSetTest",
                       "InitializeTestSetConstructor",
                       ts,
                       resolution,
                       fp.currentPath()
                     );
 
-  EXPECT_EQ( "VisualTestSetTest", obj.test_set() )
+  EXPECT_EQ( "ImageTestSetTest", obj.test_set() )
   << "Test set name should match";
 
   EXPECT_EQ( "InitializeTestSetConstructor", obj.test_name() )
@@ -107,29 +107,29 @@ TEST( VisualTestSetTest, InitializeConstructor )
   << "Image file directory should be the current path";
 }
 
-TEST( VisualTestSetTest, EqualityComparison )
+TEST( ImageTestSetTest, EqualityComparison )
 {
   File fp;
   Size2i resolution( 640, 480 );
   std::string ts = nom::file_timestamp();
 
-  VisualTestSet eq1  (
-                        "VisualTestSetTest",
+  ImageTestSet eq1  (
+                        "ImageTestSetTest",
                         "InitializeTestSetConstructor",
                         ts,
                         resolution,
                         fp.currentPath()
                       );
 
-  VisualTestSet eq2 (
-                        "VisualTestSetTest",
+  ImageTestSet eq2 (
+                        "ImageTestSetTest",
                         "InitializeTestSetConstructor",
                         ts,
                         resolution,
                         fp.currentPath()
                       );
 
-  VisualTestSet eq3 (
+  ImageTestSet eq3 (
                         "",
                         "",
                         ts,
@@ -137,7 +137,7 @@ TEST( VisualTestSetTest, EqualityComparison )
                         ""
                       );
 
-  VisualTestSet ineq1 (
+  ImageTestSet ineq1 (
                         "",
                         "",
                         ts,
@@ -150,7 +150,7 @@ TEST( VisualTestSetTest, EqualityComparison )
   ineq1.append_image( "Image2.png" );
   ineq1.append_image( "Image3.png" );
 
-  VisualTestSet ineq2 (
+  ImageTestSet ineq2 (
                         "",
                         "",
                         ts,
@@ -163,7 +163,7 @@ TEST( VisualTestSetTest, EqualityComparison )
   ineq2.append_image( "Image2.png" );
   ineq2.append_image( "Image3.png" );
 
-  VisualTestSet ineq3 (
+  ImageTestSet ineq3 (
                         "",
                         "",
                         ts,
@@ -212,20 +212,20 @@ TEST( VisualTestSetTest, EqualityComparison )
   << "Object's resolution and image list should not match";
 }
 
-TEST( VisualTestSetTest, TimestampComparison )
+TEST( ImageTestSetTest, TimestampComparison )
 {
   std::string ts = nom::file_timestamp();
-  VisualTestSet ts1;
+  ImageTestSet ts1;
   ts1.set_timestamp( ts );
 
-  VisualTestSet ts2;
+  ImageTestSet ts2;
   ts2.set_timestamp( ts );
 
   // Note that these tests should fail if we delay less than 1,000ms (1s)
   nom::sleep( 1000 );
 
   ts = nom::file_timestamp();
-  VisualTestSet ts3;
+  ImageTestSet ts3;
   ts3.set_timestamp( ts );
 
   EXPECT_FALSE( ts1 > ts2 )
@@ -247,7 +247,7 @@ TEST( VisualTestSetTest, TimestampComparison )
   << "Timestamps should NOT match to the accuracy of a second";
 }
 
-TEST( VisualTestSetTest, SaveFile )
+TEST( ImageTestSetTest, SaveFile )
 {
   Path p;
   File fp;
@@ -255,9 +255,9 @@ TEST( VisualTestSetTest, SaveFile )
   IValueSerializer* serializer = new JsonCppSerializer();
   Size2i resolution( 640, 480 );
 
-  VisualTestSet obj (
-                      "VisualTestSetTest",
-                      "SaveVisualTestSet",
+  ImageTestSet obj (
+                      "ImageTestSetTest",
+                      "SaveImageTestSet",
                       ts,
                       resolution,
                       fp.currentPath()
@@ -274,7 +274,7 @@ TEST( VisualTestSetTest, SaveFile )
 }
 
 /// \note This test depends on SaveFile
-TEST( VisualTestSetTest, LoadFile )
+TEST( ImageTestSetTest, LoadFile )
 {
   Path p;
   File fp;
@@ -282,14 +282,14 @@ TEST( VisualTestSetTest, LoadFile )
   IValueDeserializer* serializer = new JsonCppDeserializer();
   Size2i resolution( 640, 480 );
 
-  VisualTestSet obj;
+  ImageTestSet obj;
   obj.set_directory( fp.currentPath() );
   EXPECT_TRUE( obj.load_file( serializer ) );
 
-  EXPECT_EQ( "VisualTestSetTest", obj.test_set() )
+  EXPECT_EQ( "ImageTestSetTest", obj.test_set() )
   << "Test set name should match";
 
-  EXPECT_EQ( "SaveVisualTestSet", obj.test_name() )
+  EXPECT_EQ( "SaveImageTestSet", obj.test_name() )
   << "Test name should match";
 
   EXPECT_EQ( nom::revision(), obj.version() )

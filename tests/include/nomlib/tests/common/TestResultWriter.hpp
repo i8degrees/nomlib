@@ -38,15 +38,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // Forward declarations
-class VisualTestSet;
+class ImageTestSet;
 
 /// \brief Abstract class for outputting test results
 class TestResultWriter
 {
   public:
     TestResultWriter  (
-                        const VisualTestSet& set1,
-                        const VisualTestSet& set2,
+                        const ImageTestSet& set1,
+                        const ImageTestSet& set2,
                         const ImageDiffResultBatch& results
                       );
 
@@ -57,8 +57,8 @@ class TestResultWriter
     virtual std::string output( void );
 
   protected:
-    const VisualTestSet& set1_;
-    const VisualTestSet& set2_;
+    const ImageTestSet& set1_;
+    const ImageTestSet& set2_;
 
     ImageDiffResultBatch results_;
 };

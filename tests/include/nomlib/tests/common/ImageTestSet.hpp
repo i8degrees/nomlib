@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_TESTS_COMMON_VISUAL_TEST_SET_HPP
-#define NOMLIB_TESTS_COMMON_VISUAL_TEST_SET_HPP
+#ifndef NOMLIB_TESTS_COMMON_IMAGE_TEST_SET_HPP
+#define NOMLIB_TESTS_COMMON_IMAGE_TEST_SET_HPP
 
 #include <iostream>
 #include <string>
@@ -44,10 +44,10 @@ class IValueDeserializer;
 class IValueSerializer;
 
 /// \brief An object representing screen-shots from a test case
-class VisualTestSet
+class ImageTestSet
 {
   public:
-    typedef VisualTestSet self_type;
+    typedef ImageTestSet self_type;
 
     typedef self_type* raw_ptr;
     typedef std::shared_ptr<self_type> shared_ptr;
@@ -55,10 +55,10 @@ class VisualTestSet
 
     /// \brief Default constructor; the version and timestamp are initialized
     /// to sane defaults.
-    VisualTestSet( void );
+    ImageTestSet( void );
 
     /// \brief Destructor.
-    ~VisualTestSet( void );
+    ~ImageTestSet( void );
 
     /// \brief Construct a complete object.
     ///
@@ -76,7 +76,7 @@ class VisualTestSet
     /// HTML test results are created.
     ///
     /// \remarks The engine version used is automatically initialized.
-    VisualTestSet (
+    ImageTestSet  (
                     const std::string& set,
                     const std::string& name,
                     const std::string& ts,
@@ -217,13 +217,13 @@ class VisualTestSet
     std::string directory_;
 };
 
-typedef std::vector<VisualTestSet> VisualTestSetBatch;
+typedef std::vector<ImageTestSet> ImageTestSetBatch;
 
 } // namespace nom
 
 #endif // include guard defined
 
-/// \class nom::VisualTestSet
+/// \class nom::ImageTestSet
 /// \ingroup tests
 ///
 /// \see Adapted from the implementation for [Ogre3D](http://www.ogre3d.org/tikiwiki/Visual+Unit+Testing+Framework) by Riley Adams <praetor57@gmail.com>.

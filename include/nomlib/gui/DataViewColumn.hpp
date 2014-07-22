@@ -41,16 +41,32 @@ class UIStyle;
 class DataViewColumn: public IDataViewColumn
 {
   public:
-    typedef DataViewColumn SelfType;
+    typedef DataViewColumn self_type;
 
-    typedef SelfType* RawPtr;
-    typedef std::unique_ptr<SelfType> UniquePtr;
-    typedef std::shared_ptr<SelfType> SharedPtr;
+    typedef self_type* raw_ptr;
+    typedef std::unique_ptr<self_type> unique_ptr;
+    typedef std::shared_ptr<self_type> shared_ptr;
 
     DataViewColumn( void );
     virtual ~DataViewColumn( void );
 
+    DataViewColumn( uint id );
+
     DataViewColumn( uint id, const std::string& name, int width, enum IDataViewColumn::Alignment align );
+
+    /// \brief Less than comparison operator.
+    ///
+    /// \remarks This is required for implementation inside a std::map.
+    ///
+    /// \see nom::DataViewListStore
+    bool operator <( const self_type& rhs ) const;
+
+    /// \brief Equality comparison operator.
+    ///
+    /// \remarks This is required for implementation inside a std::map.
+    ///
+    /// \see nom::DataViewListStore
+    bool operator ==( const self_type& rhs ) const;
 
     uint id( void ) const;
 
@@ -107,6 +123,54 @@ class DataViewColumn: public IDataViewColumn
     /// end-user. This must *not* depend on being available.
     std::shared_ptr<UIStyle> style_;
 };
+
+// class DataViewPage
+// {
+//   public:
+//     typedef DataViewPage self_type;
+
+//     DataViewPage( void );
+
+//     virtual ~DataViewPage( void );
+
+//     /// \remarks This is required for implementation inside a std::map.
+//     ///
+//     /// \see nom::DataViewListStore
+//     DataViewPage( int pg );
+
+//     /// \brief Less than comparison operator.
+//     ///
+//     /// \remarks This is required for implementation inside a std::map.
+//     ///
+//     /// \see nom::DataViewListStore
+//     bool operator <( const self_type& rhs ) const;
+
+//     /// \brief Equality comparison operator.
+//     ///
+//     /// \remarks This is required for implementation inside a std::map.
+//     ///
+//     /// \see nom::DataViewListStore
+//     bool operator ==( const self_type& rhs ) const;
+
+//     int page( void ) const;
+//     // int total_pages( void ) const;
+//     // int selected( void ) const;
+
+//     const DataViewColumn& column( void ) const;
+
+//     void set_page_column( const DataViewColumn& col );
+
+//   private:
+//     DataViewColumn column_;
+
+//     /// \brief The page number
+//     int page_;
+
+//     // int total_pages_;
+
+//     /// \brief Current row selection
+//     // int selected_;
+// };
 
 } // namespace nom
 

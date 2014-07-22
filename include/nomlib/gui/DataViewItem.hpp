@@ -39,12 +39,15 @@ namespace nom {
 
 // Forward declarations
 class UIStyle;
-class String;
+// class String;
+class IDrawable;
 
 /// \brief Base class
 class DataViewItem: public IObject
 {
   public:
+    typedef DataViewItem self_type;
+
     DataViewItem( void );
 
     virtual ~DataViewItem( void );
@@ -53,6 +56,11 @@ class DataViewItem: public IObject
 
     virtual ObjectTypeInfo type( void ) const;
     virtual IObject* data( void ) const;
+
+    /// \brief Obtain the selection (selected) item.
+    ///
+    /// \returns The item's stored index on success, or nom::npos on failure.
+    bool selection( void ) const;
 
     /// \brief Get the style for the item.
     ///
@@ -67,12 +75,20 @@ class DataViewItem: public IObject
     /// \remarks This is optional, and must be set the end-user.
     void set_style( std::shared_ptr<UIStyle> style );
 
+    /// \brief Sets the selection to the given index.
+    ///
+    /// \remarks The selection (selected) state will be removed if the given
+    /// index is not found (does not exist).
+    void set_selection( bool state );
+
   private:
     IObject* data_;
 
     /// \brief Customizable column theme; this is intended to be set by the
     /// end-user. This must *not* depend on being available.
     std::shared_ptr<UIStyle> style_;
+
+    bool selection_;
 };
 
 class DataViewTextItem: public DataViewItem
@@ -86,7 +102,29 @@ class DataViewTextItem: public DataViewItem
 
     DataViewTextItem( const std::string& data );
 
+    /// \remarks Constructor for supporting string literals
+    DataViewTextItem( const char* data );
+
     ObjectTypeInfo type( void ) const;
+};
+
+class DataViewDrawableItem: public DataViewItem
+{
+  public:
+    typedef DataViewDrawableItem self_type;
+
+    DataViewDrawableItem( void );
+
+    virtual ~DataViewDrawableItem( void );
+
+    DataViewDrawableItem( IDrawable* data );
+
+    ObjectTypeInfo type( void ) const;
+
+    IObject* data( void ) const;
+
+  private:
+    IDrawable* data_;
 };
 
 } // namespace nom

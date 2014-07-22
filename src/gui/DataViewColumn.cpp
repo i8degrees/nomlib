@@ -43,6 +43,15 @@ DataViewColumn::~DataViewColumn( void )
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 }
 
+DataViewColumn::DataViewColumn( uint id ) :
+  id_{ id },
+  min_width_{ 0 },
+  width_{ 0 },
+  alignment_{ IDataViewColumn::Alignment::Left }
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+}
+
 DataViewColumn::DataViewColumn( uint id, const std::string& name, int width, enum IDataViewColumn::Alignment align )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
@@ -52,6 +61,16 @@ DataViewColumn::DataViewColumn( uint id, const std::string& name, int width, enu
   this->min_width_ = -1; // Not used; reserved
   this->width_ = width;
   this->alignment_ = align;
+}
+
+bool DataViewColumn::operator <( const self_type& rhs ) const
+{
+  return( this->id() < rhs.id() );
+}
+
+bool DataViewColumn::operator ==( const self_type& rhs ) const
+{
+  return( this->id() == rhs.id() );
 }
 
 uint DataViewColumn::id( void ) const
@@ -93,5 +112,57 @@ void DataViewColumn::set_style( std::shared_ptr<UIStyle> style )
 {
   this->style_ = style;
 }
+
+// DataViewPage::DataViewPage( void ) :
+//   page_{ 0 }
+// {
+//   //
+// }
+
+// DataViewPage::~DataViewPage( void )
+// {
+//   //
+// }
+
+// DataViewPage::DataViewPage( int pg ) :
+//   page_{ pg }
+// {
+//   // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+// }
+
+// bool DataViewPage::operator <( const self_type& rhs ) const
+// {
+//   return( this->page() < rhs.page() );
+// }
+
+// bool DataViewPage::operator ==( const self_type& rhs ) const
+// {
+//   return( this->page() == rhs.page() );
+// }
+
+// int DataViewPage::page( void ) const
+// {
+//   return this->page_;
+// }
+
+// // int DataViewPage::total_pages( void ) const
+// // {
+// //   return this->total_pages_;
+// // }
+
+// // int DataViewPage::selected( void ) const
+// // {
+// //   return this->selected_;
+// // }
+
+// const DataViewColumn& DataViewPage::column( void ) const
+// {
+//   return this->column_;
+// }
+
+// void DataViewPage::set_page_column( const DataViewColumn& col )
+// {
+//   this->column_ = col;
+// }
 
 } // namespace nom

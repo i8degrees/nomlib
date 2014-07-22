@@ -32,7 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-// #include "nomlib/graphics/fonts/Font.hpp"
 
 namespace nom {
 
@@ -40,11 +39,11 @@ namespace nom {
 class IDataViewColumn
 {
   public:
-    typedef IDataViewColumn SelfType;
+    typedef IDataViewColumn self_type;
 
-    typedef SelfType* RawPtr;
-    typedef std::unique_ptr<SelfType> UniquePtr;
-    typedef std::shared_ptr<SelfType> SharedPtr;
+    typedef self_type* raw_ptr;
+    typedef std::unique_ptr<self_type> unique_ptr;
+    typedef std::shared_ptr<self_type> shared_ptr;
 
     /// Column text alignment options.
     ///

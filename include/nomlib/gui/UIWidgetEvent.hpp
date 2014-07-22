@@ -71,15 +71,21 @@ class UIWidgetTreeEvent: public UIEvent
     virtual ~UIWidgetTreeEvent( void );
 
     int column( void ) const;
+    int row( void ) const;
+    bool selection( void ) const;
 
     IObject* data( void ) const;
 
     void set_column( int col );
+    void set_row( int row );
+    void set_selection( bool toggle );
 
     void set_data( IObject* obj );
 
   private:
     int column_;
+    int row_;
+    bool selection_;
 
     /// \remarks This pointer is not owned by this class.
     IObject* data_;

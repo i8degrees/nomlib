@@ -29,40 +29,39 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GUI_DATAVIEW_LIST_STORE_HPP
 #define NOMLIB_GUI_DATAVIEW_LIST_STORE_HPP
 
+#include <vector>
 #include <map>
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/ptree.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/gui/DataViewColumn.hpp"
-#include "nomlib/gui/DataViewItem.hpp"
 
 namespace nom {
 
 // Forward declarations
 class UIStyle;
+class DataViewColumn;
+class DataViewItem;
+class DataViewTextItem;
+class DataViewDrawableItem;
+
+// class IDrawable;
+class Text;
+class SpriteBatch;
 
 /// \brief Data container for DataViewList
 class DataViewListStore
 {
   public:
-    typedef DataViewListStore SelfType;
-    typedef SelfType* RawPtr;
-
-    typedef std::unique_ptr<SelfType> UniquePtr;
-    typedef std::shared_ptr<SelfType> SharedPtr;
-
-    /// \brief Internal column object store
-    typedef std::vector<DataViewColumn::UniquePtr> Columns;
+    typedef DataViewListStore self_type;
+    typedef std::unique_ptr<DataViewListStore> unique_ptr;
+    typedef std::unique_ptr<DataViewListStore> shared_ptr;
 
     /// \brief Item container; one-to-one relationship with a column;
     /// indexed by column ID.
-    typedef DataViewItem ValueType;
-    typedef std::vector<ValueType*> ValueTypeContainer;
+    typedef std::vector<std::shared_ptr<DataViewItem>> ValueTypeContainer;
 
-    typedef std::map<uint, ValueTypeContainer> Items;
-    typedef std::pair<uint, ValueTypeContainer> ItemPair;
+    typedef std::map<DataViewColumn, ValueTypeContainer> Items;
+    typedef std::pair<DataViewColumn, ValueTypeContainer> ItemPair;
 
     /// \brief Return type for column name getter(s).
     typedef std::vector<std::string> ColumnNames;
@@ -73,53 +72,72 @@ class DataViewListStore
     /// \brief Destructor.
     virtual ~DataViewListStore( void );
 
-    /// \brief Obtain a reference to the object.
-    const DataViewColumn& column( uint cols_id ) const;
-    ValueType* item( uint cols_id, uint row_id  ) const;
+    /// \brief Get an object pointer to the column.
+    ///
+    /// \returns A non-owned object pointer to the column.
+    const DataViewColumn& column( uint col ) const;
+
+    /// \brief Get an object pointer to the item.
+    ///
+    /// \returns A non-owned object pointer to the item.
+    DataViewItem* item( uint col, uint pos ) const;
+    Text* item_text( uint col, uint pos ) const;
+    SpriteBatch* item_sprite( uint col, uint pos ) const;
 
     uint columns_size( void ) const;
     uint items_size( uint cols_id ) const;
 
-    uint items_size( void ) const;
-
     /// \Obtain the column names from the store.
     const ColumnNames column_names( void ) const;
 
-    void clear( void );
+    /// \brief Erase stored columns.
+    void clear_columns( void );
 
-    // bool erase_item( uint col, DataViewItem* item );
+    /// \brief Erase all the columns from the store.
+    void clear_items( uint col );
 
-    bool insert_column( uint cols, const DataViewColumn& col );
+    /// \brief Erase an item from the store.
+    bool erase_item( uint col, uint pos );
 
-    bool append_column( const DataViewColumn& col );
+    /// \fixme
+    void insert_column( uint cols, const DataViewColumn& col );
 
-    bool insert_item( uint cols_id, const ValueTypeContainer& value );
+    void append_column( const DataViewColumn& col );
 
-    bool insert_item( uint cols_id, uint row_id, ValueType* value );
+    bool insert_text_item( uint col, uint pos, const DataViewTextItem& item );
+    bool append_text_item( uint col, const DataViewTextItem& item );
 
-    // bool insert_item( uint cols_id, const DrawablesContainer& values );
-    // bool insert_item( uint cols_id, uint row_id, const IDrawable& value );
+    bool insert_bitmap_item( uint col, uint pos, const DataViewDrawableItem& item );
+    bool append_bitmap_item( uint col, const DataViewDrawableItem& item );
 
-    /// \todo Fix implementation
-    bool append_item( const ValueTypeContainer& value );
+    bool insert_item( uint col, uint pos, DataViewItem* value );
 
     /// \brief Add an item onto the end of a column.
     ///
-    /// \param col The column identifier.
-    /// \param value An DataViewItem compatible object to insert.
-    bool append_item( uint col, ValueType* value );
+    /// \param col    The column identifier.
+    /// \param value  An DataViewItem compatible object to insert.
+    bool append_item( uint col, DataViewItem* value );
 
-    /// \brief Apply a custom style for every item within the column.
+    /// \todo Consider removing method?
+    void insert_items( uint col, const ValueTypeContainer& value );
+
+    /// \brief Apply a custom style for an item within a column.
     ///
-    /// \param col The column identifier.
-    /// \param style The UIStyle object to apply.
-    bool set_item_style( uint col, std::shared_ptr<UIStyle> style );
+    /// \param col    The column identifier.
+    /// \param pos    The pos identifier.
+    /// \param style  The UIStyle object to apply.
+    bool set_item_style( uint col, uint pos, std::shared_ptr<UIStyle> style );
+
+    /// \brief Apply a custom style for every item within a column.
+    ///
+    /// \param col    The column identifier.
+    /// \param style  The UIStyle object to apply.
+    bool set_items_style( uint col, std::shared_ptr<UIStyle> style );
+
+    // void set_items_selection( uint col, int value );
 
   private:
-    /// \brief Internal columns objects; this is used to render from.
-    Columns cols_;
-
-    /// \brief Internal item objects; this is used to render from.
+    /// \brief Storage items; one column to many items relationship
     Items items_;
 };
 

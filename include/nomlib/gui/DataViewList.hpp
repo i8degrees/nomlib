@@ -33,29 +33,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/gui/UIWidget.hpp"
-#include "nomlib/gui/DataViewColumn.hpp"
 
 namespace nom {
 
 // Forward declarations
 class DataViewListStore;
-class UIItemContainer;
-class UIEvent;
+class DataViewItem;
 
 /// \brief GUI data tree container widget
 class DataViewList: public UIWidget
 {
   public:
-    typedef DataViewList SelfType;
-    typedef SelfType* raw_ptr;
-    typedef std::unique_ptr<SelfType> UniquePtr;
-    typedef std::shared_ptr<SelfType> SharedPtr;
+    typedef DataViewList self_type;
+    typedef self_type* raw_ptr;
+    typedef std::unique_ptr<self_type> unique_ptr;
+    typedef std::shared_ptr<self_type> shared_ptr;
 
     /// \brief Internal rendering list for column headers
     typedef std::vector<std::unique_ptr<Text>> HeaderLabels;
-
-    /// \brief Internal rendering list for items
-    typedef std::vector<IDrawable::shared_ptr> ItemDrawables;
 
     /// \brief Default constructor.
     DataViewList( void );
@@ -85,13 +80,18 @@ class DataViewList: public UIWidget
     /// \brief Implements IDrawable::draw
     void draw( RenderTarget& target ) const;
 
+    void set_selection_item( uint col, uint row );
+
   protected:
 
     /// \remarks Implements IDrawable::update
     virtual void update( void );
 
-    /// \brief Re-implements UIWidget::on_mouse_down method.
-    virtual void on_mouse_down( const Event& evt );
+    /// \fixme
+    virtual void on_key_down( const Event& evt );
+
+    /// \brief Re-implements UIWidget::on_mouse_up method.
+    virtual void on_mouse_up( const Event& evt );
 
   private:
     virtual void update_columns( void );
@@ -99,9 +99,6 @@ class DataViewList: public UIWidget
 
     /// \brief Rendered column headers
     HeaderLabels drawable_headers_;
-
-    /// \brief Rendered items
-    ItemDrawables drawable_items_;
 
     /// \brief Internal container for columns, rows.
     std::unique_ptr<DataViewListStore> store_;

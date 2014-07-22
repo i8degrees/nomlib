@@ -69,6 +69,7 @@ void UIWidgetEvent::set_text( const std::string& text )
 
 UIWidgetTreeEvent::UIWidgetTreeEvent( void ) :
   column_{ -1 },
+  row_{ -1 },
   data_{ nullptr }
 {
   // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
@@ -84,6 +85,16 @@ int UIWidgetTreeEvent::column( void ) const
   return this->column_;
 }
 
+int UIWidgetTreeEvent::row( void ) const
+{
+  return this->row_;
+}
+
+bool UIWidgetTreeEvent::selection( void ) const
+{
+  return this->selection_;
+}
+
 IObject* UIWidgetTreeEvent::data( void ) const
 {
   return this->data_;
@@ -92,6 +103,16 @@ IObject* UIWidgetTreeEvent::data( void ) const
 void UIWidgetTreeEvent::set_column( int col )
 {
   this->column_ = col;
+}
+
+void UIWidgetTreeEvent::set_row( int row )
+{
+  this->row_ = row;
+}
+
+void UIWidgetTreeEvent::set_selection( bool state )
+{
+  this->selection_ = state;
 }
 
 void UIWidgetTreeEvent::set_data( IObject* obj )

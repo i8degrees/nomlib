@@ -30,11 +30,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers
 #include "nomlib/graphics/Text.hpp"
-// #include "nomlib/graphics/sprite/SpriteBatch.hpp"
 #include "nomlib/gui/String.hpp"
 
 // Forward declarations
 #include "nomlib/gui/DataViewListStore.hpp"
+#include "nomlib/gui/DataViewItem.hpp"
+#include "nomlib/gui/DataViewColumn.hpp"
 #include "nomlib/gui/UIStyle.hpp"
 #include "nomlib/gui/UIEventDispatcher.hpp"
 #include "nomlib/gui/UIEvent.hpp"
@@ -136,7 +137,15 @@ void DataViewList::update_columns( void )
     height = header->height();
 
     // header->set_position( Point2i( pos.x + 4, pos.y ) );
-    header->set_position( Point2i( ( this->position().x + 4 + ( ( this->size().w - width ) / col_count ) * cols ), this->position().y ) );
+    // if( column.id() == 1 )
+    // {
+      // Size2i widget_size( 300, 200 );
+      // header->set_position( Point2i( ( this->position().x + 4 + ( ( this->size().w - width ) / col_count - this->store()->column( cols-1 ).width() ) * cols ), this->position().y ) );
+    // }
+    // else
+    {
+      header->set_position( Point2i( ( this->position().x + 4 + ( ( this->size().w - width ) / col_count ) * cols ), this->position().y ) );
+    }
     // header->set_position( Point2i( ( this->position().x + column.width()/col_count ) * cols, this->position().y ) );
 
     // Set the size of each label to be the width of the overall container --
@@ -202,15 +211,13 @@ void DataViewList::update_items( void )
   int y_offset = 0;
 
   Point2i pos = this->position();
-  Text::unique_ptr text_item;
-  std::shared_ptr<Transformable> sprite_item;
+
+  // Non-owned pointers
+  Text* text_item = nullptr;
+  Transformable* sprite_item;
 
   Point2i col_pos;
   Size2i col_size;
-
-  if( this->store()->items_size() < 1 ) return;
-
-  this->drawable_items_.clear();
 
   for( auto cols = 0; cols != this->store()->columns_size(); ++cols )
   {
@@ -226,32 +233,34 @@ void DataViewList::update_items( void )
     {
       DataViewItem* row = this->store()->item( cols, rows );
 
-      if( NOM_ISA( String*, row->data() ) == true )
+      // if( NOM_ISA( String*, row->data() ) == true )
+      if( NOM_ISA( Text*, row->data() ) == true )
       {
-        String* text = dynamic_cast<String*>( row->data() );
+        // String* text = dynamic_cast<String*>( row->data() );
+        text_item = dynamic_cast<Text*>( row->data() );
 
         // Use the item's style object if available. If not, use the default
         // font given to us by our parent UIWidget.
         if( row->style() != nullptr && row->style()->font()->valid() )
         {
-          text_item = Text::unique_ptr( new Text( text->str(), row->style()->font() ) );
+          // text_item = Text::unique_ptr( new Text( text->text(), row->style()->font() ) );
+          text_item->set_font( row->style()->font() );
         }
         else
         {
-          text_item = Text::unique_ptr( new Text( text->str(), this->font() ) );
+          // text_item = Text::unique_ptr( new Text( text->text(), this->font() ) );
+          text_item->set_font( this->font() );
         }
 
         width = text_item->width();
         height = text_item->height();
 
         // Origin coordinates of item text
-        // header_item->set_position( Point2i( pos.x + 4, pos.y + 10 ) );
         text_item->set_position( Point2i( col_pos.x + 4, pos.y + 10 ) );
 
         // Set the size of each label to be the width of the column container, and
         // the height of each label to the height of the text, with respect to the
         // rendered text.
-        // text_item->set_size( Size2i( column.width(), height ) );
         text_item->set_size( Size2i( width, height ) );
 
         // Convert our far more simplistic IDataViewColumn::Alignment enumeration
@@ -296,10 +305,10 @@ void DataViewList::update_items( void )
         {
           // Use the height dimension of the first column to horizontally align
           // the rows.
-          DataViewItem* col0_height = this->store()->item( 0, rows );
-          if( col0_height != nullptr )
+          DataViewItem* col0_item_height = this->store()->item( 0, rows );
+          if( col0_item_height != nullptr )
           {
-            Transformable* icon_item = dynamic_cast<Transformable*>( col0_height->data() );
+            Transformable* icon_item = dynamic_cast<Transformable*>( col0_item_height->data() );
             if( icon_item != nullptr )
             {
               pos.y += icon_item->size().h;
@@ -317,16 +326,15 @@ void DataViewList::update_items( void )
         // // Prevent rendering of text that is longer in length than its container's
         // // set size parameters; see set_size method call above.
         // text_item->set_features( Text::ExtraRenderingFeatures::CropText );
-
-        this->drawable_items_.push_back( std::move( text_item ) );
       }
       else if( NOM_ISA( Transformable*, row->data() ) == true )
       {
-        sprite_item.reset( dynamic_cast<Transformable*>( row->data() ) );
+        sprite_item = dynamic_cast<Transformable*>( row->data() );
 
         if( sprite_item == nullptr )
         {
           // TODO: Err handling
+          break;
         }
 
         width = sprite_item->size().w;
@@ -348,9 +356,9 @@ void DataViewList::update_items( void )
           pos.y += height;
         }
 
-        sprite_item->update();
-
-        this->drawable_items_.push_back( sprite_item );
+        // Only necessary with engine classes that have not been converted to
+        // auto-update themselves
+        // sprite_item->update();
       }
     }
   }
@@ -360,17 +368,26 @@ void DataViewList::update_items( void )
 
 void DataViewList::draw( RenderTarget& target ) const
 {
-  // Column headers
+  uint col = 0;
   for( auto itr = this->drawable_headers_.begin(); itr != this->drawable_headers_.end(); ++itr )
   {
     (*itr)->draw( target );
-  }
 
-  // Items
-  for( auto itr = this->drawable_items_.begin(); itr != this->drawable_items_.end(); ++itr )
-  {
-    IDrawable::shared_ptr obj = *itr;
-    obj->draw( target );
+    for( auto pos = 0; pos != this->store()->items_size( col ); ++pos )
+    {
+      DataViewItem* item = this->store()->item( col, pos );
+
+      if( NOM_ISA( IDrawable*, item->data() ) == true )
+      {
+        IDrawable* obj = static_cast<IDrawable*>( item->data() );
+        if( obj )
+        {
+          obj->draw( target );
+        }
+      }
+    }
+
+    ++col;
   }
 }
 
@@ -384,10 +401,25 @@ void DataViewList::update( void )
   this->update_items();
 }
 
-void DataViewList::on_mouse_down( const Event& evt )
+void DataViewList::set_selection_item( uint col, uint row )
+{
+  DataViewItem* item = this->store()->item( col, row );
+  Text* text_item = this->store()->item_text( col, row );
+
+  if( text_item && item && item->selection() == true )
+  {
+    // text_item->set_color( Color4i::Red );
+  }
+  else if( text_item && item && item->selection() == false )
+  {
+    // text_item->set_color( Color4i::White );
+  }
+}
+
+void DataViewList::on_mouse_up( const Event& evt )
 {
   // Registered event for selection on_click
-  if( evt.type == SDL_MOUSEBUTTONDOWN )
+  if( evt.type == SDL_MOUSEBUTTONUP )
   {
     Point2i mouse_coords( evt.mouse.x, evt.mouse.y );
 
@@ -403,69 +435,127 @@ void DataViewList::on_mouse_down( const Event& evt )
 
       if( this->contains_label( it->get(), mouse_coords ) )
       {
-        UIWidgetTreeEvent item;
+        UIWidgetTreeEvent ev;
 
         // Signal type
-        item.set_type( UIEvent::MOUSE_DOWN );
+        ev.set_type( UIEvent::MOUSE_UP );
 
         // Item's column
-        item.set_column( index );
-        item.set_data( it->get() );
+        ev.set_column( index );
+        ev.set_row( 0 );
+        ev.set_data( it->get() );
 
          // Underlying event
-        item.set_event( evt );
+        ev.set_event( evt );
 
         // Widget's unique identifier
-        item.set_id( this->id() );
+        ev.set_id( this->id() );
 
-        this->dispatcher()->emit( item );
+        this->dispatcher()->emit( ev );
 
-        // Processed events.
-        return;
+        break;
       }
 
-      for( auto it = this->drawable_items_.begin(); it != this->drawable_items_.end(); ++it )
+      for( auto row = 0; row != this->store()->items_size( index ); ++row )
       {
-        if( NOM_ISA( Transformable*, it->get() ) == true )
+        DataViewItem* item = this->store()->item( index, row );
+
+        if( NOM_ISA( Transformable*, item->data() ) == true )
         {
-          Transformable* obj = dynamic_cast<Transformable*>( it->get() );
+          Transformable* obj = dynamic_cast<Transformable*>( item->data() );
 
           if( obj == nullptr )
           {
             // TODO: Err handling
             NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not send UIWidgetEvent for Transformable item: NULL." );
+            break;
           }
 
           IntRect object( obj->position().x, obj->position().y, obj->size().w, obj->size().h );
 
           if( object.contains( mouse_coords ) )
           {
-            UIWidgetTreeEvent item;
+            UIWidgetTreeEvent ev;
 
             // Signal type
-            item.set_type( UIEvent::MOUSE_DOWN );
+            ev.set_type( UIEvent::MOUSE_UP );
 
-            // FIXME: Index is wrong (needs to be computed somehow).
-            item.set_column( index );
+            ev.set_column( index );
+            ev.set_row( row );
 
             // Underlying event
-            item.set_event( evt );
+            ev.set_event( evt );
 
             // Widget's unique identifier
-            item.set_id( this->id() );
+            ev.set_id( this->id() );
+
+            if( item->selection() == true )
+            {
+              ev.set_selection( false );
+              item->set_selection( false );
+            }
+            else
+            {
+              ev.set_selection( true );
+              item->set_selection( true );
+            }
+
+            this->set_selection_item( index, row );
 
             // Widget's tree item data with emitted signal
-            item.set_data( obj );
+            ev.set_data( obj );
 
-            this->dispatcher()->emit( item );
+            this->dispatcher()->emit( ev );
 
-            // Processed events.
-            return;
+            break;
           }
         }
       }
 
       ++index;
+    }
+  }
+}
+
+void DataViewList::on_key_down( const Event& evt )
+{
+  // Registered event for selection on_click
+  if( evt.type == SDL_KEYDOWN )
+  {
+    uint col = 1;
+    for( auto row = 0; row != this->store()->items_size( col ); ++row )
+    {
+      DataViewItem* item = this->store()->item( col, row );
+
+      if( NOM_ISA( Transformable*, item->data() ) == true )
+      {
+        Transformable* obj = dynamic_cast<Transformable*>( item->data() );
+
+        if( obj == nullptr )
+        {
+          // TODO: Err handling
+          NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not send UIWidgetEvent for Transformable item: NULL." );
+          break;
+        }
+
+        if( item->selection() == true )
+        {
+          if( evt.key.sym == SDLK_UP && this->store()->items_size( col ) > row-1 )
+          {
+            // NOM_DUMP("U");
+            item->set_selection( false );
+            DataViewItem* prev_item = this->store()->item( col, --row );
+            prev_item->set_selection( true );
+          }
+          else if( evt.key.sym == SDLK_DOWN && ( row < this->store()->items_size( col ) - 1 ) )
+          {
+            // NOM_DUMP("D");
+            item->set_selection( false );
+            DataViewItem* next_item = this->store()->item( col, ++row );
+            next_item->set_selection( true );
+          }
+        }
+      }
     }
   }
 }

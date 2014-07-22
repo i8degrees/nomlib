@@ -134,6 +134,9 @@ class Text: public Transformable
             const Color4i& text_color = Color4i::White
           );
 
+    /// \see nom::DataViewTextItem
+    Text( const std::string& text );
+
     /// \brief Copy constructor.
     Text ( const self_type& copy );
 

@@ -30,7 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Forward declarations
 #include "nomlib/gui/UIStyle.hpp"
-#include "nomlib/gui/String.hpp"
+// #include "nomlib/gui/String.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 
@@ -61,6 +62,11 @@ IObject* DataViewItem::data( void ) const
   return this->data_;
 }
 
+bool DataViewItem::selection( void ) const
+{
+  return this->selection_;
+}
+
 std::shared_ptr<UIStyle> DataViewItem::style( void ) const
 {
   return this->style_;
@@ -69,6 +75,11 @@ std::shared_ptr<UIStyle> DataViewItem::style( void ) const
 void DataViewItem::set_style( std::shared_ptr<UIStyle> style )
 {
   this->style_ = style;
+}
+
+void DataViewItem::set_selection( bool state )
+{
+  this->selection_ = state;
 }
 
 // DataViewTextItem
@@ -84,7 +95,13 @@ DataViewTextItem::~DataViewTextItem( void )
 }
 
 DataViewTextItem::DataViewTextItem( const std::string& data ) :
-  DataViewItem{ new String( data ) }
+  DataViewItem{ new Text( data ) }
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+}
+
+DataViewTextItem::DataViewTextItem( const char* data ) :
+  DataViewItem{ new Text( data ) }
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 }
@@ -92,6 +109,36 @@ DataViewTextItem::DataViewTextItem( const std::string& data ) :
 ObjectTypeInfo DataViewTextItem::type( void ) const
 {
   return NOM_OBJECT_TYPE_INFO( self_type );
+}
+
+// DataViewDrawableItem
+
+DataViewDrawableItem::DataViewDrawableItem( void ) :
+  data_{ nullptr }
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+}
+
+DataViewDrawableItem::~DataViewDrawableItem( void )
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+}
+
+DataViewDrawableItem::DataViewDrawableItem( IDrawable* data ) :
+  // data_{ data->clone() }
+  data_{ data }
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+}
+
+ObjectTypeInfo DataViewDrawableItem::type( void ) const
+{
+  return NOM_OBJECT_TYPE_INFO( self_type );
+}
+
+IObject* DataViewDrawableItem::data( void ) const
+{
+  return this->data_;
 }
 
 } // namespace nom

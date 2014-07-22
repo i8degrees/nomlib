@@ -91,6 +91,15 @@ Text::Text  (
   this->set_alignment( align );
 }
 
+Text::Text( const std::string& text ) :
+  Transformable{ Point2i::null, Size2i::null }, // Base class
+  text_{ text },
+  text_size_{ nom::DEFAULT_FONT_SIZE },
+  style_{ Text::Style::Normal }
+{
+  // NOM_LOG_TRACE( NOM );
+}
+
 Text::Text ( const self_type& copy ) :
   Transformable { copy.position(), copy.size() }, // Our inherited class
   font_{ copy.font() },

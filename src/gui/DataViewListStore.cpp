@@ -28,43 +28,66 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/DataViewListStore.hpp"
 
+// Private headers
+#include "nomlib/system/make_unique.hpp"
+
 // Forward declarations
 #include "nomlib/gui/UIStyle.hpp"
+#include "nomlib/gui/DataViewColumn.hpp"
+#include "nomlib/gui/DataViewItem.hpp"
+
+#include "nomlib/graphics/Text.hpp"
+#include "nomlib/graphics/sprite/SpriteBatch.hpp"
 
 namespace nom {
 
 DataViewListStore::DataViewListStore( void )
 {
-  // NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 }
 
 DataViewListStore::~DataViewListStore( void )
 {
-  // NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
 }
 
-const DataViewColumn& DataViewListStore::column( uint cols_id ) const
+const DataViewColumn& DataViewListStore::column( uint col ) const
 {
-  return *this->cols_.at( cols_id );
+  auto res = this->items_.find( col );
+
+  NOM_ASSERT( res != this->items_.end() );
+
+  return res->first;
 }
 
-DataViewListStore::ValueType* DataViewListStore::item( uint cols_id, uint row_id ) const
+DataViewItem* DataViewListStore::item( uint col, uint pos ) const
 {
-  auto res = this->items_.find( cols_id );
+  auto res = this->items_.find( col );
 
   if( res != this->items_.end() )
   {
-    // TODO: validity / err checks
-
-    return res->second.at( row_id );
+    if( pos < this->items_.at( col ).size() )
+    {
+      return res->second.at( pos ).get();
+    }
   }
 
   return nullptr;
 }
 
+Text* DataViewListStore::item_text( uint col, uint pos ) const
+{
+  return dynamic_cast<Text*>( this->item( col, pos )->data() );
+}
+
+SpriteBatch* DataViewListStore::item_sprite( uint col, uint pos ) const
+{
+  return dynamic_cast<SpriteBatch*>( this->item( col, pos )->data() );
+}
+
 uint DataViewListStore::columns_size( void ) const
 {
-  return this->cols_.size();
+  return this->items_.size();
 }
 
 uint DataViewListStore::items_size( uint cols_id ) const
@@ -73,123 +96,134 @@ uint DataViewListStore::items_size( uint cols_id ) const
 
   if( res != this->items_.end() )
   {
-    // TODO: validity / err checks
-
     return res->second.size();
   }
 
   return 0;
 }
 
-uint DataViewListStore::items_size( void ) const
-{
-  return this->items_.size();
-}
-
 const DataViewListStore::ColumnNames DataViewListStore::column_names( void ) const
 {
   std::vector<std::string> col_names;
 
-  for( auto itr = this->cols_.begin(); itr != this->cols_.end(); ++itr )
+  for( auto itr = this->items_.begin(); itr != this->items_.end(); ++itr )
   {
-    col_names.push_back( (*itr)->title() );
+    col_names.push_back( (itr)->first.title() );
   }
 
   return col_names;
 }
 
-void DataViewListStore::clear( void )
+void DataViewListStore::clear_columns( void )
 {
   this->items_.clear();
 }
 
-// bool DataViewListStore::erase_item( uint col, DataViewItem* item )
-// {
-//   auto res = this->items_.find( col );
-
-//   if( res != this->items_.end() )
-//   {
-//     this->items_.erase( item );
-
-//     // NOM_DELETE_PTR( res->second.at( row ) );
-
-//     return true;
-//   }
-
-//   return false;
-// }
-
-bool DataViewListStore::insert_column( uint cols, const DataViewColumn& col )
+void DataViewListStore::clear_items( uint col )
 {
-  this->cols_.at( cols ) = std::unique_ptr<DataViewColumn>( new DataViewColumn( col ) );
-
-  // TODO: validity / err checks
-
-  return true;
+  this->items_.at( col ).clear();
 }
 
-bool DataViewListStore::append_column( const DataViewColumn& col )
-{
-  this->cols_.push_back( std::unique_ptr<DataViewColumn>( new DataViewColumn( col ) ) );
-
-  // TODO: validity / err checks
-
-  return true;
-}
-
-bool DataViewListStore::append_item( const ValueTypeContainer& value )
-{
-  ItemPair p( this->cols_.size(), value );
-  this->items_.insert( p );
-
-  // TODO: validity / err checks
-
-  return true;
-}
-
-bool DataViewListStore::insert_item( uint cols_id, const ValueTypeContainer& value )
-{
-  ItemPair p( cols_id, value );
-  this->items_.insert( p );
-
-  // TODO: validity / err checks
-
-  return true;
-}
-
-bool DataViewListStore::insert_item( uint cols_id, uint row_id, ValueType* value )
-{
-  auto res = this->items_.find( cols_id );
-
-  if( res != this->items_.end() )
-  {
-    res->second.at( row_id ) = value;
-
-    return true;
-  }
-
-  // TODO: validity / err checks
-
-  return false;
-}
-
-bool DataViewListStore::append_item( uint col, ValueType* value )
+bool DataViewListStore::erase_item( uint col, uint pos )
 {
   auto res = this->items_.find( col );
 
   if( res != this->items_.end() )
   {
-    res->second.push_back( value );
+    NOM_ASSERT( pos <= res->second.size() );
+
+    this->items_.at( col ).erase( res->second.begin() + pos );
 
     return true;
   }
 
-  // TODO: validity / err checks
+  return false;
+}
+
+void DataViewListStore::insert_column( uint cols, const DataViewColumn& col )
+{
+  ItemPair p( col, {} );
+
+  this->items_.insert( p );
+  // auto res = this->items_.find( cols );
+
+  // if( res != this->items_.end() )
+  // {
+    // this->items_.emplace_hint( this->items_.cbegin(), p );
+  // }
+}
+
+void DataViewListStore::append_column( const DataViewColumn& col )
+{
+  return this->insert_column( this->columns_size(), col );
+}
+
+bool DataViewListStore::insert_text_item( uint col, uint pos, const DataViewTextItem& item )
+{
+  return this->insert_item( col, pos, new DataViewTextItem( item ) );
+}
+
+bool DataViewListStore::append_text_item( uint col, const DataViewTextItem& item )
+{
+  return this->insert_item( col, this->items_size( col ), new DataViewTextItem( item ) );
+}
+
+bool DataViewListStore::insert_bitmap_item( uint col, uint pos, const DataViewDrawableItem& item )
+{
+  return this->insert_item( col, pos, new DataViewDrawableItem( item ) );
+}
+
+bool DataViewListStore::append_bitmap_item( uint col, const DataViewDrawableItem& item )
+{
+  return this->insert_item( col, this->items_size( col ), new DataViewDrawableItem( item ) );
+}
+
+bool DataViewListStore::insert_item( uint col, uint pos, DataViewItem* value )
+{
+  auto res = this->items_.find( col );
+
+  if( res != this->items_.end() )
+  {
+    NOM_ASSERT( pos <= res->second.size() );
+
+    res->second.insert( res->second.begin() + pos, std::shared_ptr<DataViewItem>( value ) );
+
+    return true;
+  }
 
   return false;
 }
 
-bool DataViewListStore::set_item_style( uint col, std::shared_ptr<UIStyle> style )
+bool DataViewListStore::append_item( uint col, DataViewItem* value )
+{
+  return this->insert_item( col, this->items_size( col ), value );
+}
+
+void DataViewListStore::insert_items( uint col, const ValueTypeContainer& value )
+{
+  auto res = this->items_.find( col );
+
+  if( res != this->items_.end() )
+  {
+    this->items_.at( col ) = value;
+  }
+}
+
+bool DataViewListStore::set_item_style( uint col, uint pos, std::shared_ptr<UIStyle> style )
+{
+  auto res = this->items_.find( col );
+
+  if( res != this->items_.end() )
+  {
+    res->second.at( pos )->set_style( style );
+
+    return true;
+  }
+
+  return false;
+}
+
+bool DataViewListStore::set_items_style( uint col, std::shared_ptr<UIStyle> style )
 {
   auto res = this->items_.find( col );
 
@@ -206,22 +240,17 @@ bool DataViewListStore::set_item_style( uint col, std::shared_ptr<UIStyle> style
   return false;
 }
 
-// bool DataViewListStore::insert_item( uint cols_id, const DrawablesContainer& values )
+// void DataViewListStore::set_items_selection( uint col, int value )
 // {
-//   this->drawables_.push_back( values );
+//   auto res = this->items_.find( col );
 
-//   // TODO: validity / err checks
-
-//   return true;
-// }
-
-// bool DataViewListStore::insert_item( uint cols_id, uint row_id, const IDrawable& value )
-// {
-//   this->drawables_.push_back( value );
-
-//   // TODO: validity / err checks
-
-//   return true;
+//   if( res != this->items_.end() )
+//   {
+//     for( auto itr = res->second.begin(); itr != res->second.end(); ++itr )
+//     {
+//       (*itr)->set_selection( value );
+//     }
+//   }
 // }
 
 } // namespace nom

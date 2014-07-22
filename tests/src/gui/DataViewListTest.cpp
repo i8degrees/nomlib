@@ -117,7 +117,7 @@ class DataViewListTest: public VisualUnitTest
       dview = new nom::DataViewList( window, -1, pos, size );
       dview->set_decorator( new nom::FinalFantasyDecorator() );
 
-      NOM_CONNECT_UIWIDGET_TREE_EVENT( dview, UIEvent::MOUSE_DOWN, this->on_click );
+      NOM_CONNECT_UIWIDGET_TREE_EVENT( dview, UIEvent::MOUSE_UP, this->on_click );
 
       return dview;
     }
@@ -129,19 +129,68 @@ class DataViewListTest: public VisualUnitTest
 
       // // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.id() );
       // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.text() );
-      NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.column() );
+      NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "selection: ", ev.selection() );
+      NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "column: ", ev.column() );
+      NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "row: ", ev.row() );
 
       Text* str = NOM_DYN_PTR_CAST( Text*, ev.data() );
       SpriteBatch* icon = NOM_DYN_PTR_CAST( SpriteBatch*, ev.data() );
 
       if( str )
       {
-        NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, str->text() );
+        NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "text: ", str->text() );
+
+        if( ev.selection() == true && ev.column() == 1 )
+        {
+          str->set_color( Color4i(195, 209, 228, 255) );
+
+          // DataViewItem* item = this->store->item( 0, ev.row() );
+          // SpriteBatch* sp_icon = dynamic_cast<SpriteBatch*>( item->data() );
+          SpriteBatch* sp_icon = this->store->item_sprite( 0, ev.row() );
+
+          if( sp_icon )
+          {
+            // Disabled frame
+            sp_icon->set_frame( 1 );
+          }
+
+          // item = this->store->item( 2, ev.row() );
+          // Text* num_text = dynamic_cast<Text*>( item->data() );
+          Text* num_text = this->store->item_text( 2, ev.row() );
+
+          if( num_text )
+          {
+            num_text->set_text( "0" );
+          }
+        }
+        else if( ev.selection() == false && ev.column() == 1 )
+        {
+          str->set_color( Color4i::White );
+
+          // DataViewItem* item = this->store->item( 0, ev.row() );
+          // SpriteBatch* sp_icon = dynamic_cast<SpriteBatch*>( item->data() );
+          SpriteBatch* sp_icon = this->store->item_sprite( 0, ev.row() );
+
+          if( sp_icon )
+          {
+            // Enabled frame
+            sp_icon->set_frame( 0 );
+          }
+
+          // DataViewTextItem* item = this->store->item_text( 2, ev.row() );
+          // Text* num_text = dynamic_cast<Text*>( item->data() );
+          Text* num_text = this->store->item_text( 2, ev.row() );
+
+          if( num_text )
+          {
+            num_text->set_text( "1" );
+          }
+        }
       }
       else if( icon )
       {
-        NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, icon->sheet_filename() );
-        NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, icon->frame() );
+        NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "sprite_sheet: ", icon->sheet_filename() );
+        NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "frame: ", icon->frame() );
       }
     }
 
@@ -162,15 +211,15 @@ class DataViewListTest: public VisualUnitTest
     DataViewColumn col0;
     DataViewColumn col1;
     DataViewColumn col2;
-    std::vector<DataViewItem*> col0_items;
-    std::vector<DataViewItem*> col1_items;
-    std::vector<DataViewItem*> col2_items;
+    std::vector<std::shared_ptr<DataViewItem>> col0_items;
+    std::vector<std::shared_ptr<DataViewItem>> col1_items;
+    std::vector<std::shared_ptr<DataViewItem>> col2_items;
     DataViewListStore* store;
     UIStyle::shared_ptr col_style;
     UIStyle::shared_ptr item_style;
 };
 
-TEST_F( DataViewListTest, DataViewListWidgetAPI )
+TEST_F( DataViewListTest, DataViewListStoreAPI )
 {
   Point2i widget_pos( Point2i::zero );
   Size2i widget_size( Size2i::zero );
@@ -192,46 +241,72 @@ TEST_F( DataViewListTest, DataViewListWidgetAPI )
                           IDataViewColumn::Alignment::Right
                         );
 
-  col0_items.push_back( new DataViewTextItem( "Geezard" ) );
-  col0_items.push_back( new DataViewTextItem( "Bite Bug") );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "Geezard" ) );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "Bite Bug") );
 
-  col1_items.push_back( new DataViewTextItem( "1" ) );
-  col1_items.push_back( new DataViewTextItem( "1" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "1" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "1" ) );
 
   store = new DataViewListStore();
 
   store->append_column( col0 );
   store->append_column( col1 );
-  store->insert_item( 0, col0_items );
-  store->insert_item( 1, col1_items );
+  store->insert_items( 0, col0_items );
+  store->insert_items( 1, col1_items );
 
-  widget = create_dataviewlist  (
-                                  this->gui_window,
-                                  widget_pos,
-                                  widget_size,
-                                  widget_name
-                                );
+  // Number of columns in store
+  EXPECT_EQ( 2, store->columns_size() );
 
-  widget->set_item_store( store );
+  // Items in store per column
+  EXPECT_EQ( 2, store->items_size( 0 ) );
+  EXPECT_EQ( 2, store->items_size( 1 ) );
 
-  // Coordinate system sanity
-  EXPECT_TRUE( widget->parent()->position() == this->gui_window->position() );
-  EXPECT_TRUE( widget->size() == widget_size );
-
-  // Total number of columns
-  EXPECT_TRUE( store->columns_size() == 2 );
-
-  // Column items total
-  EXPECT_TRUE( store->items_size( 0 ) == 2 );
-  EXPECT_TRUE( store->items_size( 1 ) == 2 );
-
-  EXPECT_TRUE( col0.title() == "CARDS  PG. 1" );
-  EXPECT_TRUE( col1.title() == "NUM." );
+  EXPECT_EQ( "CARDS  PG. 1", col0.title() );
+  EXPECT_EQ( "NUM.", col1.title() );
 
   cols = store->column_names();
 
-  EXPECT_TRUE( cols[0] == "CARDS  PG. 1" );
-  EXPECT_TRUE( cols[1] == "NUM." );
+  EXPECT_EQ( "CARDS  PG. 1", cols[0] );
+  EXPECT_EQ( "NUM.", cols[1] );
+
+  EXPECT_TRUE( store->erase_item( 0, 0 ) )
+  << "Column zero (0) should exist";
+
+  EXPECT_TRUE( store->erase_item( 1, 0 ) )
+  << "Column one (1) should exist";
+
+  EXPECT_FALSE( store->erase_item( 2, 0 ) )
+  << "Column two (2) should not exist";
+
+  EXPECT_EQ( 1, store->items_size( 0 ) );
+  EXPECT_EQ( 1, store->items_size( 1 ) );
+
+  store->clear_items( 0 );
+  store->clear_items( 1 );
+
+  EXPECT_EQ( 0, store->items_size( 0 ) )
+  << "All stored items from all columns should be cleared";
+  EXPECT_EQ( 0, store->items_size( 1 ) )
+  << "All stored items from all columns should be cleared";
+
+  store->clear_columns();
+
+  EXPECT_EQ( 0, store->columns_size() )
+  << "All stored columns should be cleared";
+
+  EXPECT_FALSE( store->insert_item( 0, 0, new DataViewTextItem( "Hello" ) ) )
+  << "Row zero (0) at column zero (0) should not exist";
+
+  store->append_column( this->col0 );
+
+  EXPECT_EQ( 1, store->columns_size() );
+
+  cols = store->column_names();
+
+  EXPECT_EQ( "CARDS  PG. 1", cols[0] );
+
+  EXPECT_TRUE( store->append_item( 0, new DataViewTextItem( "Hello" ) ) );
+  EXPECT_TRUE( store->insert_item( 0, 1, new DataViewTextItem( "Hello" ) ) );
 
   // These should work as long as we ensure that drawable_items_ is cleared
   // within the update_items method.
@@ -280,37 +355,32 @@ TEST_F( DataViewListTest, DataViewListWidgetEx0 )
   this->col0.set_style( this->col_style );
   this->col1.set_style( this->col_style );
 
-  col0_items.push_back( new DataViewTextItem( "TEST_0" ) );
-  col0_items.push_back( new DataViewTextItem( "TEST_1" ) );
-  col0_items.push_back( new DataViewTextItem( "TEST_2" ) );
-  col0_items.push_back( new DataViewTextItem( "TEST_x" ) );
-  col0_items.push_back( new DataViewTextItem( "TEST_xx" ) );
-  col0_items.push_back( new DataViewTextItem( "VALUE_0" ) );
-  col0_items.push_back( new DataViewTextItem( "VALUE_1" ) );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "TEST_0" ) );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "TEST_1" ) );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "TEST_2" ) );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "TEST_x" ) );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "TEST_xx" ) );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "VALUE_0" ) );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "VALUE_1" ) );
 
-  col1_items.push_back( new DataViewTextItem( "Test_3" ) );
-  col1_items.push_back( new DataViewTextItem( "Test_4" ) );
-  col1_items.push_back( new DataViewTextItem( "Test_5" ) );
-  col1_items.push_back( new DataViewTextItem( "Test_6" ) );
-  col1_items.push_back( new DataViewTextItem( "TEST_XXX" ) );
-  col1_items.push_back( new DataViewTextItem( "VALUE_2" ) );
-  col1_items.push_back( new DataViewTextItem( "value_3" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "Test_3" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "Test_4" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "Test_5" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "Test_6" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "TEST_XXX" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "VALUE_2" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "value_3" ) );
 
   store = new DataViewListStore();
 
   store->append_column( col0 );
   store->append_column( col1 );
-  store->insert_item( 0, col0_items );
-  store->insert_item( 1, col1_items );
-
-  // TODO: Relocate
-  // EXPECT_TRUE( store->append_item( 1, new DataViewTextItem( "Testme") ) );
-  // EXPECT_TRUE( store->erase_item( 1, store->items_size() ) );
-  // store->clear();
+  store->insert_items( 0, col0_items );
+  store->insert_items( 1, col1_items );
 
   // Set custom style (font)
-  store->set_item_style( 0, this->item_style );
-  store->set_item_style( 1, this->item_style );
+  store->set_items_style( 0, this->item_style );
+  store->set_items_style( 1, this->item_style );
 
   widget = create_dataviewlist  (
                                   this->gui_window,
@@ -376,46 +446,46 @@ TEST_F( DataViewListTest, DataViewListWidgetEx1 )
   this->col2.set_style( this->col_style );
 
   // 7 items
-  col0_items.push_back( new DataViewTextItem( "TEST_0" ) );
-  col0_items.push_back( new DataViewTextItem( "TEST_1" ) );
-  col0_items.push_back( new DataViewTextItem( "TEST_2" ) );
-  col0_items.push_back( new DataViewTextItem( "TEST_X" ) );
-  col0_items.push_back( new DataViewTextItem( "TEST_XX" ) );
-  col0_items.push_back( new DataViewTextItem( "VALUE_0" ) );
-  col0_items.push_back( new DataViewTextItem( "VALUE_1" ) );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "TEST_0" ) );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "TEST_1" ) );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "TEST_2" ) );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "TEST_X" ) );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "TEST_XX" ) );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "VALUE_0" ) );
+  col0_items.push_back( std::make_shared<DataViewTextItem>( "VALUE_1" ) );
 
   // 8 items
-  col1_items.push_back( new DataViewTextItem( "TEST_3" ) );
-  col1_items.push_back( new DataViewTextItem( "TEST_4" ) );
-  col1_items.push_back( new DataViewTextItem( "TEST_5" ) );
-  col1_items.push_back( new DataViewTextItem( "TEST_6" ) );
-  col1_items.push_back( new DataViewTextItem( "TEST_XXX" ) );
-  col1_items.push_back( new DataViewTextItem( "VALUE_1" ) );
-  col1_items.push_back( new DataViewTextItem( "VALUE_2" ) );
-  col1_items.push_back( new DataViewTextItem( "VALUE_3" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "TEST_3" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "TEST_4" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "TEST_5" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "TEST_6" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "TEST_XXX" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "VALUE_1" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "VALUE_2" ) );
+  col1_items.push_back( std::make_shared<DataViewTextItem>( "VALUE_3" ) );
 
   // 7 items
-  col2_items.push_back( new DataViewTextItem( "1" ) );
-  col2_items.push_back( new DataViewTextItem( "1" ) );
-  col2_items.push_back( new DataViewTextItem( "6" ) );
-  col2_items.push_back( new DataViewTextItem( "3" ) );
-  col2_items.push_back( new DataViewTextItem( "1" ) );
-  col2_items.push_back( new DataViewTextItem( "4" ) );
-  col2_items.push_back( new DataViewTextItem( "6" ) );
+  col2_items.push_back( std::make_shared<DataViewTextItem>( "1" ) );
+  col2_items.push_back( std::make_shared<DataViewTextItem>( "1" ) );
+  col2_items.push_back( std::make_shared<DataViewTextItem>( "6" ) );
+  col2_items.push_back( std::make_shared<DataViewTextItem>( "3" ) );
+  col2_items.push_back( std::make_shared<DataViewTextItem>( "1" ) );
+  col2_items.push_back( std::make_shared<DataViewTextItem>( "4" ) );
+  col2_items.push_back( std::make_shared<DataViewTextItem>( "6" ) );
 
   store = new DataViewListStore();
 
   store->append_column( col0 );
   store->append_column( col1 );
   store->append_column( col2 );
-  store->insert_item( 0, col0_items );
-  store->insert_item( 1, col1_items );
-  store->insert_item( 2, col2_items );
+  store->insert_items( 0, col0_items );
+  store->insert_items( 1, col1_items );
+  store->insert_items( 2, col2_items );
 
   // Set custom styles (font)
-  store->set_item_style( 0, this->item_style );
+  store->set_items_style( 0, this->item_style );
   // Use UIWidget defaults for col1 items
-  store->set_item_style( 2, this->item_style );
+  store->set_items_style( 2, this->item_style );
 
   widget = create_dataviewlist  (
                                   this->gui_window,
@@ -455,7 +525,7 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
   col0 = DataViewColumn (
                           0,
                           "",
-                          32,
+                          48,
                           // 0,
                           // 75,
                           IDataViewColumn::Alignment::Left
@@ -486,77 +556,88 @@ TEST_F( DataViewListTest, DataViewListWidgetEx2 )
   this->col1.set_style( this->col_style );
   this->col2.set_style( this->col_style );
 
-  this->menu_elements.set_frame( 0 ); // "Enabled" sprite frame
-
-  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
-  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
-
-  this->menu_elements.set_frame( 1 ); // "Disabled" sprite frame
-  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
-  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
-
-  this->menu_elements.set_frame( 0 ); // "Enabled" sprite frame
-  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
-  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
-  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
-
-  this->menu_elements.set_frame( 1 ); // "Disabled" sprite frame
-  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
-
-  this->menu_elements.set_frame( 0 ); // "Enabled" sprite frame
-  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
-  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
-  col0_items.push_back( new DataViewItem( this->menu_elements.clone() ) );
-
-  // 11 items
-  col1_items.push_back( new DataViewTextItem( "Geezard" ) );
-  col1_items.push_back( new DataViewTextItem( "Fungar" ) );
-  col1_items.push_back( new DataViewTextItem( "Bite Bug" ) );
-  col1_items.push_back( new DataViewTextItem( "Red Bat" ) );
-  col1_items.push_back( new DataViewTextItem( "Blobra" ) );
-  col1_items.push_back( new DataViewTextItem( "Gayla" ) );
-  col1_items.push_back( new DataViewTextItem( "Gesper" ) );
-  col1_items.push_back( new DataViewTextItem( "Fastitocalon-F" ) );
-  col1_items.push_back( new DataViewTextItem( "Blood Soul" ) );
-  col1_items.push_back( new DataViewTextItem( "Caterchipillar" ) );
-  col1_items.push_back( new DataViewTextItem( "Cockatrice" ) );
-
-  // 11 items
-  uint idx = 0;
-  DataViewItem* col0_item = nullptr;
-  SpriteBatch* icon = nullptr;
-  for( auto itr = col1_items.begin(); itr != col1_items.end(); ++itr )
-  {
-    if( idx < col0_items.size() )
-    {
-      DataViewItem* col0_item = col0_items.at( idx );
-      icon = dynamic_cast<SpriteBatch*>( col0_item->data() );
-
-      if( icon->frame() == 0 )
-      {
-        col2_items.push_back( new DataViewTextItem( "1" ) );
-      }
-      else
-      {
-        col2_items.push_back( new DataViewTextItem( "0" ) );
-      }
-    }
-
-    ++idx;
-  }
-
   store = new DataViewListStore();
 
   store->append_column( col0 );
   store->append_column( col1 );
   store->append_column( col2 );
-  store->insert_item( 0, col0_items );
-  store->insert_item( 1, col1_items );
-  store->insert_item( 2, col2_items );
+
+  this->menu_elements.set_frame( 0 ); // "Enabled" sprite frame
+
+  store->append_bitmap_item( 0, this->menu_elements.clone() );
+  store->append_bitmap_item( 0, this->menu_elements.clone() );
+
+  this->menu_elements.set_frame( 1 ); // "Disabled" sprite frame
+  store->append_bitmap_item( 0, this->menu_elements.clone() );
+  store->append_bitmap_item( 0, this->menu_elements.clone() );
+
+  this->menu_elements.set_frame( 0 ); // "Enabled" sprite frame
+  store->append_bitmap_item( 0, this->menu_elements.clone() );
+  store->append_bitmap_item( 0, this->menu_elements.clone() );
+  store->append_bitmap_item( 0, this->menu_elements.clone() );
+
+  this->menu_elements.set_frame( 1 ); // "Disabled" sprite frame
+  store->append_bitmap_item( 0, this->menu_elements.clone() );
+
+  this->menu_elements.set_frame( 0 ); // "Enabled" sprite frame
+  store->append_bitmap_item( 0, this->menu_elements.clone() );
+  store->append_bitmap_item( 0, this->menu_elements.clone() );
+  store->append_bitmap_item( 0, this->menu_elements.clone() );
+
+  EXPECT_EQ( 11, store->items_size( 0 ) );
+
+  // 11 items
+  store->append_text_item( 1, "Geezard" );
+  store->append_text_item( 1, "Fungar" );
+  store->append_text_item( 1, "Bite Bug" );
+  store->append_text_item( 1, "Red Bat" );
+  store->append_text_item( 1, "Blobra" );
+  store->append_text_item( 1, "Gayla" ) ;
+  store->append_text_item( 1, "Gesper" );
+  store->append_text_item( 1, "Fastitocalon-F" );
+  store->append_text_item( 1, "Blood Soul" );
+  store->append_text_item( 1, "Caterchipillar" );
+  store->append_text_item( 1, "Cockatrice" );
+
+  EXPECT_EQ( 11, store->items_size( 1 ) );
+
+  DataViewItem* col0_item = nullptr;
+  SpriteBatch* icon = nullptr;
+  uint col1_size = store->items_size( 1 );
+
+  for( auto idx = 0; idx != col1_size; ++idx )
+  {
+    if( idx < col1_size )
+    {
+      DataViewItem* col0_item = store->item( 0, idx );
+      icon = dynamic_cast<SpriteBatch*>( col0_item->data() );
+
+      if( icon && icon->frame() == 0 )
+      {
+        store->append_text_item( 2, "1" );
+      }
+      else if( icon && icon->frame() == 1 )
+      {
+        store->append_text_item( 2, "0" );
+      }
+    }
+  }
+
+  EXPECT_EQ( 11, store->items_size( 2 ) );
+
+  EXPECT_TRUE( store->erase_item( 2, 10 ) );
+
+// Relocate:
+// EXPECT_TRUE( store->insert_item( 2, 10, new DataViewTextItem("2") ) );
+// EXPECT_TRUE( store->insert_item( 2, new DataViewTextItem("666") ) );
+
+  EXPECT_TRUE( store->insert_text_item( 2, 10, "2" ) );
+  EXPECT_TRUE( store->append_text_item( 2, "666" ) );
+  EXPECT_TRUE( store->insert_bitmap_item( 1, 11, this->menu_elements.clone() ) );
 
   // Set custom styles (font)
-  store->set_item_style( 1, this->item_style );
-  store->set_item_style( 2, this->item_style );
+  store->set_items_style( 1, this->item_style );
+  store->set_items_style( 2, this->item_style );
 
   widget = create_dataviewlist  (
                                   this->gui_window,

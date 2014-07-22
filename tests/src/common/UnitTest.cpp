@@ -87,7 +87,7 @@ void init_test( int argc, char** argv )
                                     // Long option form; --interactive
                                     "interactive",
                                     // Option description
-                                    "Run the test interactively",
+                                    "Run test interactively; do not auto-terminate main loop",
                                     cmd,
                                     // Option default
                                     NOM_TEST_FLAG(interactive)
@@ -129,7 +129,7 @@ void init_test( int argc, char** argv )
     TCLAP::ValueArg<std::string> comparison_dir (
                                                    // Option short form; -c
                                                   "c",
-                                                  // Option short form; --compare
+                                                  // Option long form; --compare
                                                   "compare",
                                                   // Option description
                                                   "Select which image set you wish to compare against this test run",
@@ -145,7 +145,7 @@ void init_test( int argc, char** argv )
     TCLAP::ValueArg<std::string> test_comment (
                                                 // Option short form; -m
                                                 "m",
-                                                // Option short form; --message
+                                                // Option long form; --message
                                                 "message",
                                                 // Option description
                                                 "Add an optional comment to be associated with the generated image set",

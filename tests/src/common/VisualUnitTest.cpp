@@ -244,6 +244,7 @@ VisualUnitTest::~VisualUnitTest( void )
 
   IValueSerializer* fp = new JsonCppSerializer();
 
+  // Save info file only if we have one or more images successfully captured
   if( fp != nullptr && VisualUnitTest::visual_test_.images().size() > 0 )
   {
     VisualUnitTest::visual_test_.save_file( fp );
@@ -308,11 +309,13 @@ int VisualUnitTest::on_run( void )
       itr->operator()( this->render_window() );
     }
 
+    // Check to see if termination conditions for the main loop are met
     if( this->on_frame_end( elapsed_frames ) == true )
     {
-      // Terminate the loop (end of test) once the conditional requirements
-      // within the method are met
-      this->quit();
+      if( NOM_TEST_FLAG(interactive) == false )
+      {
+        this->quit();
+      }
     }
 
     ++elapsed_frames;
@@ -327,24 +330,9 @@ bool VisualUnitTest::on_frame_end( uint elapsed_frames )
   Path p;
   File fp;
 
-  // if( NOM_TEST_FLAG(interactive) == true )
-  // {
-  //   // Do not terminate loop
-  //   return false;
-  // }
-
   if( this->screenshot_frames_.empty() )
   {
-    if( NOM_TEST_FLAG(interactive) == true )
-    {
-      // Continue looping
-      return false;
-    }
-    else
-    {
-      // Terminate loop
-      return true;
-    }
+    return true;
   }
 
   // Do not terminate the loop until we have captured all of the requested
@@ -391,20 +379,12 @@ bool VisualUnitTest::on_frame_end( uint elapsed_frames )
 
     if( this->screenshot_frames_.empty() == true )
     {
-      if( NOM_TEST_FLAG(interactive) == true )
-      {
-        // Continue looping
-        return false;
-      }
-      else
-      {
-        // Terminate loop
-        return true;
-      }
+      // Potentially terminates main loop
+      return true;
     }
   }
 
-  // Do not terminate loop
+  // Not ready to terminate loop yet
   return false;
 }
 

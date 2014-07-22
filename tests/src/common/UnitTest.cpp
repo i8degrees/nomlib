@@ -63,6 +63,7 @@ void init_test( int argc, char** argv )
   NOM_TEST_FLAG(test_comment) = "\0";
   NOM_TEST_FLAG(comparison_dir) = "Reference";
   NOM_TEST_FLAG(no_html_output) = false;
+  NOM_TEST_FLAG(force_overwrite) = false;
 
   if( argc < 0 )
   {
@@ -157,6 +158,18 @@ void init_test( int argc, char** argv )
                                                 cmd
                                               );
 
+    TCLAP::SwitchArg force_overwrite  (
+                                        // Option short form; -f
+                                        "f",
+                                        // Option long form; --force
+                                        "force",
+                                        // Option description
+                                        "Overwrite existing reference image set",
+                                        cmd,
+                                        // Option default
+                                        NOM_TEST_FLAG(force_overwrite)
+                                      );
+
     cmd.parse( argc, argv );
 
     if( interactive.getValue() == true )
@@ -198,6 +211,15 @@ void init_test( int argc, char** argv )
     else
     {
       NOM_TEST_FLAG( no_html_output ) = false;
+    }
+
+    if( force_overwrite.getValue() == true )
+    {
+      NOM_TEST_FLAG( force_overwrite ) = true;
+    }
+    else
+    {
+      NOM_TEST_FLAG( force_overwrite ) = false;
     }
   }
   catch( TCLAP::ArgException &e )

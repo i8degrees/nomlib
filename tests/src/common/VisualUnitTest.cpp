@@ -325,6 +325,7 @@ bool VisualUnitTest::on_frame_end( uint elapsed_frames )
 {
   bool ret = false;
   Path p;
+  File fp;
 
   // if( NOM_TEST_FLAG(interactive) == true )
   // {
@@ -359,12 +360,27 @@ bool VisualUnitTest::on_frame_end( uint elapsed_frames )
                                 ".png"
                               );
 
+    std::string absolute_file_path = this->output_directory() +
+      p.native() + this->output_filename();
 
-    ret = this->render_window().save_png_file (
-                                                this->output_directory() +
-                                                p.native() +
-                                                this->output_filename()
-                                              );
+    // Ensure that we do not overwrite image sets (in particular, reference
+    // image sets!)
+    if( fp.exists( absolute_file_path ) == true )
+    {
+      if( NOM_TEST_FLAG( force_overwrite ) == true )  // --force command option
+      {
+        ret = this->render_window().save_png_file( absolute_file_path );
+      }
+      else
+      {
+        NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "File path for output image exists (not overwriting): ", absolute_file_path );
+        ret = false;  // Assignment for peace of mind
+      }
+    }
+    else  // All is well -- file output path does not exist
+    {
+      ret = this->render_window().save_png_file( absolute_file_path );
+    }
 
     if( ret )
     {

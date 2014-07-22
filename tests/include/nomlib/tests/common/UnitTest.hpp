@@ -83,6 +83,12 @@ struct UnitTestFlags
   ///
   /// \see UnitTestResultsWriter
   bool no_html_output;
+
+  /// \brief Toggle the control logic of overwriting existing reference image
+  /// sets.
+  ///
+  /// \see UnitTestResultsWriter
+  bool force_overwrite;
 };
 
 /// \brief Global state control flags

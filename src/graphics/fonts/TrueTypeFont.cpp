@@ -529,7 +529,7 @@ const IntRect TrueTypeFont::glyph_rect ( FontPage& page, int width, int height )
   if ( ! row )
   {
     int row_height = height + height / 10;
-    while( page.next_row + row_height >= page.texture->height() )
+    while( page.next_row + row_height >= page.texture->height() || ( width >= page.texture->width() ) )
     {
       // Not enough space: resize the texture if possible
       uint texture_width  = page.texture->width();

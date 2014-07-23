@@ -123,14 +123,11 @@ void StateMachine::on_event( const Event& ev )
   // Ensure that we have a state in which we can handle events on
   if ( ! this->states.empty() )
   {
-    // EventHandler::process_event -- necessary to run through this method
-    // first.
-    //
-    // All game state derived bindings (IState) will break without this call!
-    this->states.back()->process_event( ev );
-
     // Optional IState::on_event implementation.
     this->states.back()->on_event( ev );
+
+    // All game state derived bindings (IState) will break without this call!
+    this->states.back()->process_event( ev );
   }
 }
 

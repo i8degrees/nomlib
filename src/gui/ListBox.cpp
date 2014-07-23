@@ -277,81 +277,72 @@ int ListBox::hit_test( const Point2i& pt )
 
 void ListBox::on_key_down( const Event& evt )
 {
+  // Current position index
+  int selected = 0;
   UIWidgetEvent item;
 
-  // Registered action for key press event
-  if( evt.type == SDL_KEYDOWN )
+  if( evt.type != SDL_KEYDOWN ) return;
+
+  if( this->focused() == false )
   {
-    if( this->focused() == false )
-    {
-      return;
-    }
-
-    // Position of each item
-    int index = this->store()->selection();
-
-    item.set_type( UIEvent::KEY_DOWN );
-
-    // Send the array index in our event; this signifies which choice was
-    // selected.
-    item.set_index( index );
-
-    // Set the current index position to the selected text label -- this
-    // has the side effect of updating the text color; see also: ::update.
-    this->store()->set_selection( index );
-
-    // Send the text of the selection if there is a selection set. Note that
-    // this needs to be set *after* the selection has been set.
-    if( index != npos )
-    {
-      item.set_text( this->store()->item_label( index) );
-    }
-    else
-    {
-      item.set_text( "\0" );
-    }
-
-    // Set the associated nom::Event object for this UI event.
-    item.set_event( evt );
-
-    item.set_id( this->id() );
-
-    this->dispatcher()->emit( item );
+    return;
   }
 
-  this->set_updated( false );
+  selected = this->store()->selection();
 
-  if( evt.type == SDL_KEYDOWN )
+  if( evt.key.sym == SDLK_UP && selected > 0 )
   {
-    // Our internal storage container could also be used to obtain the
-    // selection index.
-    // int selected = ev.index();
-    int selected = item.index();
+    --selected;
 
-    if( evt.key.sym == SDLK_UP && selected > 0 )
-    {
-      --selected;
+    this->store()->set_selection( selected );
+    // NOM_DUMP(this->store()->selection());
+  }
+  else if( evt.key.sym == SDLK_DOWN && ( selected < this->store()->size() - 1 ) )
+  {
+    ++selected;
 
-      this->store()->set_selection( selected );
-      // NOM_DUMP(this->store()->selection());
-    }
-    else if( evt.key.sym == SDLK_DOWN && ( selected < this->store()->size() - 1 ) )
-    {
-      ++selected;
-
-      this->store()->set_selection( selected );
-      // NOM_DUMP(this->store()->selection());
-    }
-    else
-    {
-      // NOM_DUMP( selected );
-    }
+    this->store()->set_selection( selected );
+    // NOM_DUMP(this->store()->selection());
+  }
+  else
+  {
+    // NOM_DUMP( selected );
   }
 
   // NOM_DUMP(ev.index());
   // NOM_DUMP(ev.text());
 
-  this->update();
+  item.set_type( UIEvent::KEY_DOWN );
+
+  // Send the array index in our event; this signifies which choice was
+  // selected.
+  item.set_index( selected );
+
+  // Set the current index position to the selected text label -- this
+  // has the side effect of updating the text color; see also: ::update.
+  this->store()->set_selection( selected );
+
+  // Send the text of the selection if there is a selection set. Note that
+  // this needs to be set *after* the selection has been set.
+  if( selected != npos )
+  {
+    item.set_text( this->store()->item_label( selected ) );
+  }
+  else
+  {
+    item.set_text( "\0" );
+  }
+
+  // Set the associated nom::Event object for this UI event.
+  item.set_event( evt );
+
+  item.set_id( this->id() );
+
+  this->dispatcher()->emit( item );
+
+  // Do the update logic last, so to minimize the delay between input and
+  // the rendering of the action
+  this->set_selected_text_color( this->selected_text_color() );
 }
 
 void ListBox::on_mouse_down( const Event& evt )
@@ -360,43 +351,43 @@ void ListBox::on_mouse_down( const Event& evt )
   uint32 p = this->focus_policy();
   UIWidgetEvent item;
 
-  // Registered action for mouse button event
-  if( evt.type == SDL_MOUSEBUTTONDOWN )
+  if( evt.type != SDL_MOUSEBUTTONDOWN ) return;
+
+  if( p & FocusPolicy::ClickFocus )
   {
-    if( p & FocusPolicy::ClickFocus )
+    Point2i ev_mouse( evt.mouse.x, evt.mouse.y );
+
+    index = this->hit_test( ev_mouse );
+
+    if( index != npos )
     {
-      Point2i ev_mouse( evt.mouse.x, evt.mouse.y );
+      this->set_focused( true );
+    }
+  } // end if FocusPolicy::ClickFocus
 
-      index = this->hit_test( ev_mouse );
+  item.set_type( UIEvent::MOUSE_DOWN );
 
-      if( index != npos )
-      {
-        this->set_focused( true );
-      }
-    } // end if FocusPolicy::ClickFocus
+  // Set the associated nom::Event object for this UI event.
+  item.set_event( evt );
 
-    item.set_type( UIEvent::MOUSE_DOWN );
+  // Send the array index in our event; this signifies which choice was
+  // selected.
+  item.set_index( index );
 
-    // Set the associated nom::Event object for this UI event.
-    item.set_event( evt );
+  // Send the text of the selection.
+  item.set_text( this->store()->item_label( index ) );
 
-    // Send the array index in our event; this signifies which choice was
-    // selected.
-    item.set_index( index );
+  // Set the current index position to the selected text label -- this
+  // has the side effect of updating the text color; see also: ::update.
+  this->store()->set_selection( index );
 
-    // Send the text of the selection.
-    item.set_text( this->store()->item_label( index ) );
+  item.set_id( this->id() );
 
-    // Set the current index position to the selected text label -- this
-    // has the side effect of updating the text color; see also: ::update.
-    this->store()->set_selection( index );
+  this->dispatcher()->emit( item );
 
-    item.set_id( this->id() );
-
-    this->dispatcher()->emit( item );
-
-    this->set_selected_text_color( this->selected_text_color() );
-  } // end if event type == SDL_MOUSEBUTTONDOWN
+  // Do the update logic last, so to minimize the delay between input and
+  // the rendering of the action
+  this->set_selected_text_color( this->selected_text_color() );
 }
 
 void ListBox::on_mouse_enter( const Event& evt )
@@ -408,96 +399,92 @@ void ListBox::on_mouse_wheel( const Event& evt )
 {
   uint32 p = this->focus_policy();
   int index = 0;
+  // Our current position index
+  int selected = 0;
   UIWidgetEvent item;
 
-  if( evt.type == SDL_MOUSEWHEEL )
+  if( evt.type != SDL_MOUSEWHEEL ) return;
+
+  if( p & FocusPolicy::WheelFocus )
   {
-    if( p & FocusPolicy::WheelFocus )
+    MouseState mstate = Cursor::mouse_state();
+
+    Point2i mouse( mstate.pos.x, mstate.pos.y );
+
+    index = this->hit_test( mouse );
+
+    if( index != nom::npos )
     {
-      MouseState mstate = Cursor::mouse_state();
-
-      Point2i mouse( mstate.pos.x, mstate.pos.y );
-
-      index = this->hit_test( mouse );
-
-      if( index != nom::npos )
-      {
-        this->set_focused( true );
-      }
-      else
-      {
-        this->set_focused( false );
-      }
-    } // end if FocusPolicy::WheelFocus
-
-    if( this->focused() == false )
-    {
-      return;
-    }
-
-    item.set_type( UIEvent::MOUSE_WHEEL );
-
-    // Set the associated nom::Event object for this UI event.
-    item.set_event( evt );
-
-    // Counter for the position of each element; must start at current
-    // selection.
-    index = this->store()->selection();
-
-    // Send the array index in our event; this signifies which choice was
-    // selected.
-    item.set_index( index );
-
-    // Set the current index position to the selected text label -- this
-    // has the side effect of updating the text color; see also: ::update.
-    this->store()->set_selection( index );
-
-    // Send the text of the selection if there is a selection set. Note that
-    // this needs to be set *after* the selection has been set.
-    if( index != npos )
-    {
-      item.set_text( this->store()->item_label( index ) );
+      this->set_focused( true );
     }
     else
     {
-      item.set_text( "\0" );
+      this->set_focused( false );
     }
+  } // end if FocusPolicy::WheelFocus
 
-    item.set_id( this->id() );
-
-    this->dispatcher()->emit( item );
+  if( this->focused() == false )
+  {
+    return;
   }
 
-  this->set_updated( false );
+  // Our current position index
+  selected = this->store()->selection();
 
-  if( evt.type == SDL_MOUSEWHEEL )
+  // Up
+  if( evt.wheel.y > 0 && selected > 0 )
   {
-    // Our internal storage container could also be used to obtain the
-    // selection index.
-    // int selected = ev.index();
-    int selected = item.index();
+    --selected;
+    this->store()->set_selection( selected );
+    // NOM_DUMP(this->store()->selection());
+  }
 
-    // Up
-    if( evt.wheel.y > 0 && selected > 0 )
-    {
-      --selected;
-      this->store()->set_selection( selected );
-      // NOM_DUMP(this->store()->selection());
-    }
-
-    // Down
-    else if( evt.wheel.y < 0 && selected < this->store()->size() - 1 )
-    {
-      ++selected;
-      this->store()->set_selection( selected );
-      // NOM_DUMP(this->store()->selection());
-    }
+  // Down
+  else if( evt.wheel.y < 0 && selected < this->store()->size() - 1 )
+  {
+    ++selected;
+    this->store()->set_selection( selected );
+    // NOM_DUMP(this->store()->selection());
   }
 
   // NOM_DUMP(ev.index());
   // NOM_DUMP(ev.text());
 
-  this->update();
+  item.set_type( UIEvent::MOUSE_WHEEL );
+
+  // Set the associated nom::Event object for this UI event.
+  item.set_event( evt );
+
+  // Counter for the position of each element; must start at current
+  // selection.
+  selected = this->store()->selection();
+
+  // Send the array index in our event; this signifies which choice was
+  // selected.
+  item.set_index( selected );
+
+  // Set the current index position to the selected text label -- this
+  // has the side effect of updating the text color; see also: ::update.
+  this->store()->set_selection( selected );
+
+  // Send the text of the selection if there is a selection set. Note that
+  // this needs to be set *after* the selection has been set.
+  if( selected != npos )
+  {
+    item.set_text( this->store()->item_label( selected ) );
+  }
+  else
+  {
+    item.set_text( "\0" );
+  }
+
+  item.set_id( this->id() );
+
+  this->dispatcher()->emit( item );
+
+  // Do the update logic last, so to minimize the delay between input and
+  // the rendering of the action
+  this->set_selected_text_color( this->selected_text_color() );
 }
 
 void ListBox::set_focused( bool state )

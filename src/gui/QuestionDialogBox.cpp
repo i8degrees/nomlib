@@ -177,7 +177,9 @@ void QuestionDialogBox::on_mouse_down( const Event& evt )
   //
   // The choice text labels are ours to handle and should not overlap whatsoever
   // with MessageBox.
-  MessageBox::on_mouse_down( evt );
+  // FIXME: This interferes with TTcards because of the index values from
+  // MessageBox matching the expected response in this class.
+  // MessageBox::on_mouse_down( evt );
 
   // Registered action for mouse button event
   if( evt.type == SDL_MOUSEBUTTONDOWN )
@@ -199,10 +201,6 @@ void QuestionDialogBox::on_mouse_down( const Event& evt )
       // Send the text of the selection.
       item.set_text( this->choice( index ) );
 
-      // Set the current index position to the selected text label -- this
-      // has the side effect of updating the text color; see also: ::update.
-      this->set_selection( index );
-
       // Set the associated nom::Event object for this UI event.
       item.set_event( evt );
 
@@ -221,7 +219,9 @@ void QuestionDialogBox::on_mouse_down( const Event& evt )
 
       this->dispatcher()->emit( item );
 
-      this->set_selected_text_color( this->selected_text_color() );
+      // Do the update logic last, so to minimize the delay between input and
+      // the rendering of the action
+      this->set_selection( index );
     }
   } // end if event type == SDL_MOUSEBUTTONDOWN
 }
@@ -240,6 +240,31 @@ void QuestionDialogBox::on_mouse_wheel( const Event& evt )
     {
       // return;
     }
+
+    // Default internal reaction to the event action (SDL_MOUSEWHEEL):
+
+    // Our internal storage container could also be used to obtain the
+    // selection index.
+    int selected = this->selection();
+
+    // Up
+    if( evt.wheel.y > 0 && selected > 0 )
+    {
+      --selected;
+      this->set_selection( selected );
+      // NOM_DUMP(this->selection() );
+    }
+
+    // Down
+    else if( evt.wheel.y < 0 && selected < this->choices_.size() - 1 )
+    {
+      ++selected;
+      this->set_selection( selected );
+      // NOM_DUMP(this->selection() );
+    }
+
+    // NOM_DUMP(ev.index() );
+    // NOM_DUMP(ev.text() );
 
     // Counter for the position of each element; must start at current
     // selection.
@@ -272,33 +297,6 @@ void QuestionDialogBox::on_mouse_wheel( const Event& evt )
     item.set_id( this->id() );
 
     this->dispatcher()->emit( item );
-
-    // Default internal reaction to the event action (SDL_MOUSEWHEEL):
-
-    // Our internal storage container could also be used to obtain the
-    // selection index.
-    int selected = this->selection();
-
-    // Up
-    if( evt.wheel.y > 0 && selected > 0 )
-    {
-      --selected;
-      this->set_selection( selected );
-      // NOM_DUMP(this->selection() );
-    }
-
-    // Down
-    else if( evt.wheel.y < 0 && selected < this->choices_.size() - 1 )
-    {
-      ++selected;
-      this->set_selection( selected );
-      // NOM_DUMP(this->selection() );
-    }
-
-    // NOM_DUMP(ev.index() );
-    // NOM_DUMP(ev.text() );
-
-    this->update();
   } // end if event type == SDL_MOUSEWHEEL
 }
 
@@ -315,37 +313,6 @@ void QuestionDialogBox::on_key_down( const Event& evt )
     {
       // return;
     }
-
-    // Position of each item
-    index = this->selection();
-
-    item.set_type( UIEvent::KEY_DOWN );
-
-    // Send the array index in our event; this signifies which choice was
-    // selected.
-    item.set_index( index );
-
-    // Set the current index position to the selected text label -- this
-    // has the side effect of updating the text color; see also: ::update.
-    this->set_selection( index );
-
-    // Send the text of the selection if there is a selection set. Note that
-    // this needs to be set *after* the selection has been set.
-    if( index != npos )
-    {
-      item.set_text( this->choice( index ) );
-    }
-    else
-    {
-      item.set_text( "\0" );
-    }
-
-    // Set the associated nom::Event object for this UI event.
-    item.set_event( evt );
-
-    item.set_id( this->id() );
-
-    this->dispatcher()->emit( item );
 
     // Default internal reaction to the event action (SDL_KEYDOWN):
 
@@ -375,7 +342,36 @@ void QuestionDialogBox::on_key_down( const Event& evt )
     // NOM_DUMP(ev.index());
     // NOM_DUMP(ev.text());
 
-    this->update();
+    // Position of each item
+    index = this->selection();
+
+    item.set_type( UIEvent::KEY_DOWN );
+
+    // Send the array index in our event; this signifies which choice was
+    // selected.
+    item.set_index( index );
+
+    // Send the text of the selection if there is a selection set. Note that
+    // this needs to be set *after* the selection has been set.
+    if( index != npos )
+    {
+      item.set_text( this->choice( index ) );
+    }
+    else
+    {
+      item.set_text( "\0" );
+    }
+
+    // Set the associated nom::Event object for this UI event.
+    item.set_event( evt );
+
+    item.set_id( this->id() );
+
+    this->dispatcher()->emit( item );
+
+    // Do the update logic last, so to minimize the delay between input and
+    // the rendering of the action
+    this->set_selection( index );
 
   } // end if event type == SDL_KEYDOWN
 }
@@ -427,7 +423,7 @@ void QuestionDialogBox::set_selection( int pos )
 {
   this->selection_ = pos;
 
-  // this->update();
+  this->update();
 }
 
 } // namespace nom

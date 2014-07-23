@@ -116,28 +116,36 @@ class ListBoxLayoutTest: public VisualUnitTest
       // this->listbox0->set_font( SystemFonts::cache().load_resource("VIII") );
       this->listbox0->set_decorator( new nom::MinimalDecorator() );
       this->listbox0->set_selected_text_color( nom::Color4i::Gray );
-      // this->listbox0->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
-      // this->listbox0->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
+      NOM_CONNECT_UIWIDGET_EVENT( this->listbox0, nom::UIEvent::MOUSE_DOWN, priv::on_click );
+      // NOM_CONNECT_UIWIDGET_EVENT( this->listbox0, nom::UIEvent::MOUSE_UP, priv::on_click );
+      NOM_CONNECT_UIWIDGET_EVENT( this->listbox0, nom::UIEvent::KEY_DOWN, priv::on_click );
+      NOM_CONNECT_UIWIDGET_EVENT( this->listbox0, nom::UIEvent::MOUSE_WHEEL, priv::on_click );
 
       this->listbox1 = this->create_listbox( this->layout_widget, Point2i::null, Size2i(60, 36), "listbox1", labels[1] );
 
       this->listbox1->set_decorator( new nom::MinimalDecorator() );
-      // this->listbox1->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
-      // this->listbox1->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
+      NOM_CONNECT_UIWIDGET_EVENT( this->listbox1, nom::UIEvent::MOUSE_DOWN, priv::on_click );
+      // NOM_CONNECT_UIWIDGET_EVENT( this->listbox1, nom::UIEvent::MOUSE_UP, priv::on_click );
+      NOM_CONNECT_UIWIDGET_EVENT( this->listbox1, nom::UIEvent::KEY_DOWN, priv::on_click );
+      NOM_CONNECT_UIWIDGET_EVENT( this->listbox1, nom::UIEvent::MOUSE_WHEEL, priv::on_click );
 
       // this->listbox2 = this->create_listbox( this->layout_widget, Point2i::null, Size2i(50,24), "listbox2", labels[2] );
       this->listbox2 = this->create_listbox( this->layout_widget, Point2i::null, Size2i::null, "listbox2", labels[2] );
 
       this->listbox2->set_decorator( new nom::MinimalDecorator() );
-      // this->listbox2->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
-      // this->listbox2->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
+      NOM_CONNECT_UIWIDGET_EVENT( this->listbox2, nom::UIEvent::MOUSE_DOWN, priv::on_click );
+      // NOM_CONNECT_UIWIDGET_EVENT( this->listbox2, nom::UIEvent::MOUSE_UP, priv::on_click );
+      NOM_CONNECT_UIWIDGET_EVENT( this->listbox2, nom::UIEvent::KEY_DOWN, priv::on_click );
+      NOM_CONNECT_UIWIDGET_EVENT( this->listbox2, nom::UIEvent::MOUSE_WHEEL, priv::on_click );
 
       // this->listbox3 = this->create_listbox( this->layout_widget, Point2i::null, Size2i(50,24), "listbox3", labels[3] );
       this->listbox3 = this->create_listbox( this->layout_widget, Point2i::null, Size2i::null, "listbox3", labels[3] );
 
       this->listbox3->set_decorator( new nom::MinimalDecorator() );
-      // this->listbox3->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
-      // this->listbox3->register_event_listener( nom::UIEvent::MOUSE_UP, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { priv::on_click( ev ); } ) );
+      NOM_CONNECT_UIWIDGET_EVENT( this->listbox3, nom::UIEvent::MOUSE_DOWN, priv::on_click );
+      // NOM_CONNECT_UIWIDGET_EVENT( this->listbox3, nom::UIEvent::MOUSE_UP, priv::on_click );
+      NOM_CONNECT_UIWIDGET_EVENT( this->listbox3, nom::UIEvent::KEY_DOWN, priv::on_click );
+      NOM_CONNECT_UIWIDGET_EVENT( this->listbox3, nom::UIEvent::MOUSE_WHEEL, priv::on_click );
 
       this->spacers.push_back( 8 );
       this->items.push_back( this->listbox0 );

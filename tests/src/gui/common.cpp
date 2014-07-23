@@ -37,8 +37,11 @@ namespace priv {
 
 void on_click( const UIWidgetEvent& ev )
 {
-  // Only dump event info upon mouse click release
-  if( ev.event().type != SDL_MOUSEBUTTONUP ) return;
+  // TODO: Create functions for mouse_down, key_down, etc. so we can check for
+  // event types properly. By disabling the code below, we get double logs...
+
+  // Only dump event info upon mouse click
+  // if( ev.event().type != SDL_MOUSEBUTTONUP ) return;
 
   NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.id() );
   NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, ev.index() );

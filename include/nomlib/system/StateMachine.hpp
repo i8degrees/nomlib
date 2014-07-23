@@ -63,8 +63,8 @@ class StateMachine
     void set_state ( IState::UniquePtr state, void_ptr data );
     void push_state ( IState::UniquePtr state, void_ptr data );
 
-    void pop_state ( IState::UniquePtr state, void_ptr data );
-    void pop_state ( void_ptr data );
+    void pop_state( IState::UniquePtr state, void_ptr data );
+    void pop_state_resume( void_ptr data );
 
     /// State events handling
     void on_event( const Event& ev );

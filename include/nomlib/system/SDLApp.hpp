@@ -152,11 +152,13 @@ class SDLApp: public EventHandler
     virtual void set_state ( IState::UniquePtr state, void_ptr data = nullptr );
     // TODO: virtual void set_next_state( IState::UniquePtr state, uint32_ptr data = nullptr );
     virtual void push_state ( IState::UniquePtr state, void_ptr data = nullptr );
-    virtual void pop_state ( IState::UniquePtr state, void_ptr data = nullptr );
-    virtual void pop_state ( void_ptr data = nullptr );
+    virtual void pop_state( IState::UniquePtr state, void_ptr data = nullptr );
+    virtual void pop_state_resume( void_ptr data = nullptr );
 
   protected:
     /// \brief State machine manager.
+    ///
+    /// \todo Use object pointer & remove state management methods
     StateMachine states;
 
     //GameStates* state_factory;

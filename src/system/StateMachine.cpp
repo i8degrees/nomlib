@@ -84,7 +84,7 @@ void StateMachine::push_state ( IState::UniquePtr state, void_ptr data )
   this->states.back()->on_init(data);
 }
 
-void StateMachine::pop_state ( IState::UniquePtr state, void_ptr data )
+void StateMachine::pop_state( IState::UniquePtr state, void_ptr data )
 {
   NOM_ASSERT( state );
 
@@ -98,7 +98,7 @@ void StateMachine::pop_state ( IState::UniquePtr state, void_ptr data )
   this->set_state( std::move( state ), data );
 }
 
-void StateMachine::pop_state ( void_ptr data )
+void StateMachine::pop_state_resume( void_ptr data )
 {
   // Cleanup the current state only if our state stack holds more than one;
   // otherwise we are left in a stateless machine.

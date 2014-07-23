@@ -198,14 +198,14 @@ void SDLApp::push_state ( IState::UniquePtr state, void_ptr data )
   this->states.push_state( std::move(state), data );
 }
 
-void SDLApp::pop_state ( IState::UniquePtr state, void_ptr data )
+void SDLApp::pop_state( IState::UniquePtr state, void_ptr data )
 {
   this->states.pop_state( std::move(state), data );
 }
 
-void SDLApp::pop_state ( void_ptr data )
+void SDLApp::pop_state_resume( void_ptr data )
 {
-  this->states.pop_state( data );
+  this->states.pop_state_resume( data );
 }
 
 // Private scope

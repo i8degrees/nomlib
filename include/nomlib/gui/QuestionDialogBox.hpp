@@ -108,6 +108,7 @@ class QuestionDialogBox: public MessageBox
     void set_selection( int pos );
 
   protected:
+
     /// \brief Re-implements UIWidget::on_mouse_down.
     virtual void on_mouse_down( const Event& evt );
 

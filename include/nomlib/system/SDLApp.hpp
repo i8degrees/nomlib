@@ -29,16 +29,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_SDLAPP_HPP
 #define NOMLIB_SYSTEM_SDLAPP_HPP
 
-#include <iostream>
 #include <string>
+#include <memory>
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/EventHandler.hpp"
 #include "nomlib/system/Timer.hpp"
-#include "nomlib/system/StateMachine.hpp"
-#include "nomlib/system/Event.hpp"
 
 namespace nom {
+
+// Forward declarations
+struct Event;
+class RenderWindow;
+class IState;
+class StateMachine;
 
 /// \brief Convenience template class for video games
 ///
@@ -103,7 +107,7 @@ class SDLApp: public EventHandler
     ///
     /// \todo Consider removing RenderTarget argument; I *think* we can get
     /// away with this!
-    virtual void on_draw( IDrawable::RenderTarget& );
+    virtual void on_draw( RenderWindow& );
 
     /// \brief Implements the nom::EventHandler::on_window_close method.
     ///
@@ -145,25 +149,22 @@ class SDLApp: public EventHandler
     /// \return State of nom::SDLApp::show_fps_ after call to nom::SDLApp::set_show_fps
     bool toggle_fps ( void );
 
-    // State management
+    StateMachine* state( void ) const;
 
-    virtual uint32 previous_state ( void ) const;
-    virtual void set_state ( uint32 id, void_ptr data = nullptr );
-    virtual void set_state ( IState::UniquePtr state, void_ptr data = nullptr );
-    // TODO: virtual void set_next_state( IState::UniquePtr state, uint32_ptr data = nullptr );
-    virtual void push_state ( IState::UniquePtr state, void_ptr data = nullptr );
-    virtual void pop_state( IState::UniquePtr state, void_ptr data = nullptr );
-    virtual void pop_state_resume( void_ptr data = nullptr );
+    void set_state_machine( StateMachine* mech );
 
   protected:
-    /// \brief State machine manager.
-    ///
-    /// \todo Use object pointer & remove state management methods
-    StateMachine states;
 
     //GameStates* state_factory;
 
   private:
+    /// \brief State machine manager.
+    ///
+    /// \remarks This object pointer must be initialized prior to use.
+    ///
+    /// \see SDLApp::set_state_machine
+    std::unique_ptr<StateMachine> state_;
+
     bool initialize( uint32 flags );
 
     /// \brief Global application state.

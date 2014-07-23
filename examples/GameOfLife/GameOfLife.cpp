@@ -190,7 +190,7 @@ class App: public nom::SDLApp
       }
     }
 
-    void on_draw( nom::IDrawable::RenderTarget& target )
+    void on_draw( nom::RenderWindow& target )
     {
       for ( int x = 0; x < BOARD_SIZE / CELL_SIZE; x++ )
       {

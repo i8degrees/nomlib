@@ -37,6 +37,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/ColorDatabase.hpp"
 #include "nomlib/system/PlatformSettings.hpp" // System fonts initialization
 
+// Forward declarations
+#include "nomlib/system/Event.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
+#include "nomlib/system/StateMachine.hpp"
+
 namespace nom {
 
 SDLApp::SDLApp( void )
@@ -91,17 +96,26 @@ void SDLApp::on_event( const Event& ev )
   // Next, handle the state's manager's list of events
   //
   // StateMachine::on_event
-  this->states.on_event( ev );
+  if( this->state_ != nullptr )
+  {
+    this->state()->on_event( ev );
+  }
 }
 
-void SDLApp::on_update ( float delta )
+void SDLApp::on_update( float delta )
 {
-  this->states.update( delta );
+  if( this->state_ != nullptr )
+  {
+    this->state()->update( delta );
+  }
 }
 
-void SDLApp::on_draw ( IDrawable::RenderTarget& target )
+void SDLApp::on_draw( RenderWindow& target )
 {
-  this->states.draw( target );
+  if( this->state() != nullptr )
+  {
+    this->state()->draw( target );
+  }
 }
 
 void SDLApp::on_window_close( const Event& ev )
@@ -170,42 +184,16 @@ bool SDLApp::toggle_fps ( void )
   return this->show_fps_;
 }
 
-uint32 SDLApp::previous_state ( void ) const
+StateMachine* SDLApp::state( void ) const
 {
-  return this->states.previous_state();
+  NOM_ASSERT( this->state_ != nullptr );
+
+  return this->state_.get();
 }
 
-void SDLApp::set_state ( uint32 id, void_ptr data )
+void SDLApp::set_state_machine( StateMachine* mech )
 {
-/*
-  IState::UniquePtr state = this->state_factory->state( id );
-
-  this->states.set_state( std::move(state), data );
-  if ( state != nullptr )
-  {
-    this->states.set_state( std::move(state), data );
-  }
-*/
-}
-
-void SDLApp::set_state ( IState::UniquePtr state, void_ptr data )
-{
-  this->states.set_state( std::move(state), data );
-}
-
-void SDLApp::push_state ( IState::UniquePtr state, void_ptr data )
-{
-  this->states.push_state( std::move(state), data );
-}
-
-void SDLApp::pop_state( IState::UniquePtr state, void_ptr data )
-{
-  this->states.pop_state( std::move(state), data );
-}
-
-void SDLApp::pop_state_resume( void_ptr data )
-{
-  this->states.pop_state_resume( data );
+  this->state_.reset( mech );
 }
 
 // Private scope

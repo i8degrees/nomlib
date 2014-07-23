@@ -53,27 +53,30 @@ class StateMachine
 
     // State management
 
+    // virtual void set_state ( uint32 id, void_ptr data = nullptr );
+    // virtual void set_next_state( IState::UniquePtr state, uint32_ptr data = nullptr );
+
     /// \brief Obtain the previous state's identifier
     ///
     /// \returns Identifier of the state on success; identifier number of the
     /// current state on failure (such as if there is no previous state in list).
     ///
     /// \remarks It is not required that the state has an ID.
-    uint32 previous_state ( void ) const;
-    void set_state ( IState::UniquePtr state, void_ptr data );
-    void push_state ( IState::UniquePtr state, void_ptr data );
+    uint32 previous_state( void ) const;
+    void set_state( IState::UniquePtr state, void_ptr data = nullptr );
+    void push_state( IState::UniquePtr state, void_ptr data = nullptr );
 
-    void pop_state( IState::UniquePtr state, void_ptr data );
-    void pop_state_resume( void_ptr data );
+    void pop_state( IState::UniquePtr state, void_ptr data = nullptr );
+    void pop_state_resume( void_ptr data = nullptr );
 
     /// State events handling
     void on_event( const Event& ev );
 
     /// State logic handling
-    void update ( float delta );
+    void update( float delta );
 
     /// State rendering handling
-    void draw ( IDrawable::RenderTarget& );
+    void draw( IDrawable::RenderTarget& );
 
   private:
     /// Container of our states

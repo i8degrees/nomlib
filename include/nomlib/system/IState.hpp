@@ -31,9 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/EventHandler.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
+
+// Forward declarations
+class RenderWindow;
 
 /// \brief Abstract interface for game states
 ///
@@ -41,40 +43,52 @@ namespace nom {
 class IState: public EventHandler
 {
   public:
-    typedef std::unique_ptr<IState> UniquePtr;
+    typedef std::unique_ptr<IState> unique_ptr;
 
     /// \brief Specialized control over state management.
     ///
     /// \remarks Multiple flags can be combined via bit masks.
-    enum StateFlags
+    enum Flags
     {
-      Null = 1,       /// Default; no alterations to the state logic is done.
+      /// Request to nom::StateMachine to let previous state continue updating
+      /// itself.
+      BackUpdate = 0x2,
 
-      BackUpdate = 2, /// Signal to nom::StateMachine to let previous state
-                      /// continue updating.
+      /// Request to nom::StateMachine to let previous state continue rendering
+      /// itself.
+      BackRender = 0x4
+    };
 
-      BackRender = 4  /// Signal to nom::StateMachine to let previous state
-                      /// continue rendering.
+    /// \brief State type enumeration.
+    ///
+    /// \remarks The type of state defines the placement of it on the stack.
+    enum Type
+    {
+      /// \brief Top-level / top-most placement on the stack.
+      Parent = 0,
+      Child
     };
 
     /// \brief Default constructor; initializes class variables to zero.
-    IState ( void );
+    IState( void );
 
     /// \brief Destructor; declared virtual for inheritance
-    virtual ~IState ( void );
+    virtual ~IState( void );
 
     /// \brief Constructor for user-defined initialization of the class
     /// variable fields.
     ///
     /// \param id Unique identifier of the state
-    IState ( uint32 id );
+    IState( uint32 id );
 
     /// \brief Constructor for user-defined initialization of the class
     /// variable fields.
     ///
     /// \param id     Unique identifier of the state
     /// \param flags  One or more of the nom::IState::StateFlags enumerations.
-    IState ( uint32 id, uint32 flags );
+    /// \param type   The type of state; one of the IState::Type enumeration
+    /// values.
+    IState( uint32 id, uint32 flags, IState::Type type );
 
     /// \brief Obtain the user-defined identifier of the state.
     ///
@@ -96,6 +110,11 @@ class IState: public EventHandler
     ///
     /// \remarks It is not required that the state has any flags set.
     uint32 flags ( void ) const;
+
+    /// \brief Get the type of state.
+    ///
+    /// \returns One of the IState::Type enumeration values.
+    IState::Type type( void ) const;
 
     /// \brief User-defined implementation of the state's event handling logic.
     ///
@@ -119,7 +138,7 @@ class IState: public EventHandler
     ///
     /// \todo Consider removing RenderTarget argument; I *think* we can get
     /// away with this.
-    virtual void on_draw ( IDrawable::RenderTarget& );
+    virtual void on_draw ( RenderWindow& );
 
     /// \brief User-defined implementation of the state's initialization logic.
     ///
@@ -157,9 +176,11 @@ class IState: public EventHandler
     /// \brief Number of ticks recorded at the time of state's construction
     uint32 timestamp_;
 
-
     /// \brief Specialized state management
     uint32 flags_;
+
+    /// \brief The type of state.
+    Type type_;
 };
 
 } // namespace nom

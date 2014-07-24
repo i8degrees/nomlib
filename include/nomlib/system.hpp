@@ -39,6 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/clock.hpp>
 #include <nomlib/system/FPS.hpp>
 #include <nomlib/system/StateMachine.hpp>
+#include <nomlib/system/IState.hpp>
 #include <nomlib/system/dialog_messagebox.hpp>
 #include <nomlib/system/Path.hpp>
 #include <nomlib/system/File.hpp>

@@ -28,33 +28,39 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/IState.hpp"
 
+// Forward declarations
+#include "nomlib/graphics/RenderWindow.hpp"
+
 namespace nom {
 
-IState::IState ( void ) :
-  id_ ( 0 ),
-  timestamp_ ( nom::ticks() ),
-  flags_ ( IState::StateFlags::Null )
+IState::IState( void ) :
+  id_{ 0 },
+  timestamp_{ nom::ticks() },
+  flags_{ 0 },
+  type_{ IState::Type::Parent }
 {
   //NOM_LOG_TRACE ( NOM );
 }
 
-IState::~IState ( void )
+IState::~IState( void )
 {
   //NOM_LOG_TRACE ( NOM );
 }
 
-IState::IState ( uint32 id )  :
-  id_ ( id ),
-  timestamp_ ( nom::ticks() ),
-  flags_ ( IState::StateFlags::Null )
+IState::IState( uint32 id ) :
+  id_{ id },
+  timestamp_{ nom::ticks() },
+  flags_{ 0 },
+  type_{ IState::Type::Parent }
 {
   //NOM_LOG_TRACE ( NOM );
 }
 
-IState::IState ( uint32 id, uint32 flags )  :
-  id_ ( id ),
-  timestamp_ ( nom::ticks() ),
-  flags_ ( flags )
+IState::IState( uint32 id, uint32 flags, IState::Type type ) :
+  id_{ id },
+  timestamp_{ nom::ticks() },
+  flags_{ flags },
+  type_{ type }
 {
   //NOM_LOG_TRACE ( NOM );
 }
@@ -74,6 +80,11 @@ uint32 IState::flags ( void ) const
   return this->flags_;
 }
 
+IState::Type IState::type( void ) const
+{
+  return this->type_;
+}
+
 void IState::on_event( const Event& ev )
 {
   // User-defined virtual
@@ -84,7 +95,7 @@ void IState::on_update ( float )
   // User-defined virtual
 }
 
-void IState::on_draw ( IDrawable::RenderTarget& target )
+void IState::on_draw( RenderWindow& target )
 {
   // User-defined virtual
 }

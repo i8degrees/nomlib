@@ -29,58 +29,103 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_STATE_MACHINE_HPP
 #define NOMLIB_SYSTEM_STATE_MACHINE_HPP
 
-#include <iostream>
-#include <vector>
 #include <memory>
+#include <vector>
+#include <queue>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/IState.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
+
+// Forward declarations
+struct Event;
+class IState;
+class RenderWindow;
 
 /// \brief Finite State Machine manager class
 class StateMachine
 {
   public:
-    typedef std::vector<IState::UniquePtr> StateStack;
-
     /// Default constructor
-    StateMachine ( void );
+    StateMachine( void );
 
     /// Destructor
-    ~StateMachine ( void );
-
-    // State management
+    ~StateMachine( void );
 
     // virtual void set_state ( uint32 id, void_ptr data = nullptr );
-    // virtual void set_next_state( IState::UniquePtr state, uint32_ptr data = nullptr );
 
     /// \brief Obtain the previous state's identifier
     ///
-    /// \returns Identifier of the state on success; identifier number of the
-    /// current state on failure (such as if there is no previous state in list).
+    /// \returns The identifier of the previous state, or an assertion on
+    /// failure, such as if the the states stack is empty.
     ///
-    /// \remarks It is not required that the state has an ID.
+    /// \remarks The state identifier is user-defined.
     uint32 previous_state( void ) const;
-    void set_state( IState::UniquePtr state, void_ptr data = nullptr );
-    void push_state( IState::UniquePtr state, void_ptr data = nullptr );
 
-    void pop_state( IState::UniquePtr state, void_ptr data = nullptr );
-    void pop_state_resume( void_ptr data = nullptr );
+    /// \brief Obtain the next state's identifier
+    ///
+    /// \returns The identifier of the next state (in the stack), or an
+    /// assertion on failure, such as if the the states stack is empty.
+    ///
+    /// \remarks The state identifier is user-defined.
+    uint32 next_state( void ) const;
+
+    /// \param state  The nom::IState deriving object to be set as the current
+    /// state.
+    /// \param data   User-defined data; used for passing data in between
+    /// states.
+    ///
+    /// \see StateMachine::set_deferred_state
+    void set_state( std::unique_ptr<IState> state, void_ptr data );
+
+    /// \param state  The nom::IState deriving object to be set as the current
+    /// state.
+    /// \param data   User-defined data; used for passing data in between
+    /// states.
+    ///
+    /// \see StateMachine::set_deferred_state
+    void pop_state( void_ptr data );
 
     /// State events handling
     void on_event( const Event& ev );
 
-    /// State logic handling
+    /// \brief State logic handling
+    ///
+    /// \remarks Deferred state transition logic is handled here.
     void update( float delta );
 
     /// State rendering handling
-    void draw( IDrawable::RenderTarget& );
+    void draw( RenderWindow& );
 
   private:
-    /// Container of our states
-    StateStack states;
+    /// \brief Set the next state.
+    ///
+    /// \param state  The state to be put onto the stack. If NULL is passed,
+    /// the current state exits and the next one after that is resumed.
+    ///
+    /// \note Where on the stack the state is put is dependent upon the type of
+    /// state defined (see also: nom::IState::Type enumeration).
+    ///
+    /// \remarks The transition of the state must be deferred until the next
+    /// frame update in order for engine callback systems, i.e.:
+    /// nom::InputMapper and nom::UIWidget, to be used within application-level
+    /// code that expects to be able to change its state from within said
+    /// callback system. If not deferred, the result is invalid memory access
+    /// (a crash if you are lucky!) due to the deletion of the state before the
+    /// callback is completed.
+    void set_deferred_state( std::unique_ptr<IState> state, void_ptr data );
+
+    struct DeferredState
+    {
+      std::unique_ptr<IState> state;
+      void* data = nullptr;
+    };
+
+    /// \brief Pending state to be set on the next frame update
+    std::queue<DeferredState> deferred_state_;
+
+    /// \brief Stack of states
+    std::vector<std::unique_ptr<IState>> states;
 };
 
 } // namespace nom

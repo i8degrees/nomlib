@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_INPUT_MAPPER_INPUT_ACTION_MAPPER_HPP
 #define NOMLIB_SYSTEM_INPUT_MAPPER_INPUT_ACTION_MAPPER_HPP
 
+#include <memory>
 #include <map>
 
 #include "nomlib/config.hpp"
@@ -45,7 +46,8 @@ class InputActionMapper
     friend class InputStateMapper;
 
     typedef InputActionMapper SelfType;
-    typedef std::multimap<std::string, InputAction> ActionMap;
+    typedef std::multimap<std::string, std::shared_ptr<InputAction>> ActionMap;
+    typedef std::pair<std::string, std::shared_ptr<InputAction>> ActionPair;
 
     /// \brief Default constructor.
     InputActionMapper( void );
@@ -54,12 +56,14 @@ class InputActionMapper
     ~InputActionMapper( void );
 
     /// \brief Insert an action mapping.
-    bool insert( const std::string& key, const InputAction& action );
+    bool insert( const std::string& key, const InputAction& action, const EventCallback& callback );
 
     /// \brief Remove an action mapping.
     bool erase( const std::string& key );
 
     /// \brief Diagnostic output.
+    ///
+    /// remarks Dumps only the active states.
     void dump( void ) const;
 
   private:
@@ -74,6 +78,9 @@ class InputActionMapper
     /// action keys can be used.
     ActionMap input_map_;
 };
+
+#define NOM_CONNECT_INPUT_MAPPING( obj, key, action, func, ... ) \
+  ( obj.insert( key, action, nom::EventCallback( [&] ( const nom::Event& evt ) { func( __VA_ARGS__ ); } ) ) )
 
 } // namespace nom
 

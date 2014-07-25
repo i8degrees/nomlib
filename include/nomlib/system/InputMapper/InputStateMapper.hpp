@@ -103,6 +103,8 @@ class InputStateMapper
     void clear( void );
 
     /// \brief Diagnostic output.
+    ///
+    /// remarks Dumps only the active states.
     void dump( void );
 
     /// \brief Event handler for triggering mapped action states.

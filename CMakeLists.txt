@@ -27,34 +27,34 @@ option( NOM_BUILD_TESTS "Build unit tests" off )
 # bundle, source tar-ball and so forth).
 set( NOM_INSTALL_GENERATED_DOCS off )
 
-option( NOM_BUILD_CORE_UNIT "Engine core" TRUE )
+option( NOM_BUILD_CORE_UNIT "Engine core" on )
 
 # TODO: Consider moving math unit into core?
-option( NOM_BUILD_MATH_UNIT "Math utilities" TRUE )
+option( NOM_BUILD_MATH_UNIT "Math utilities" on )
 
 # Dependencies: OpenAL
 option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" off )
 
 # Dependencies: SDL2, SDL2_IMAGE, SDL2_TTF
-option( NOM_BUILD_GRAPHICS_UNIT "Graphics core" TRUE )
+option( NOM_BUILD_GRAPHICS_UNIT "Graphics core" on )
 
 # TODO: Shorten this build var
 # Dependencies: scale2x & hq2x (included in source tree)
 option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Include scale2x & hqx algorithms" off )
 
 # TODO: Break unit up further
-option( NOM_BUILD_SYSTEM_UNIT "System unit" TRUE )
+option( NOM_BUILD_SYSTEM_UNIT "System unit" on )
 
-option( NOM_BUILD_PTREE_UNIT "Generic container for serialization" TRUE )
-option( NOM_BUILD_SERIALIZERS_UNIT "Serialization core for JSON, XML, HTML" TRUE )
+option( NOM_BUILD_PTREE_UNIT "Generic container for serialization" on )
+option( NOM_BUILD_SERIALIZERS_UNIT "Serialization core for JSON, XML, HTML" on )
 
 # Dependencies: jsoncpp (included in source tree)
-option( NOM_BUILD_JSON_UNIT "JSON I/O" TRUE )
+option( NOM_BUILD_JSON_UNIT "JSON I/O" on )
 
 # Dependencies: RapidXml (included in source tree)
 option( NOM_BUILD_XML_UNIT "XML I/O" off )
 
-option( NOM_BUILD_GUI_UNIT "GUI subsystem" TRUE )
+option( NOM_BUILD_GUI_UNIT "GUI subsystem" on )
 
 # Collection of internal templates used in the creation of new functionality
 # such as classes or examples / tests.

@@ -34,12 +34,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 
 namespace nom {
+
+// Forward declarations
+struct Event;
+
 class EventCallback
 {
   public:
-    typedef EventCallback SelfType;
-    typedef std::function<void(void)> ValueType;
-    typedef SelfType* RawPtr;
+    typedef EventCallback self_type;
+    typedef std::function<void(const Event&)> callback_type;
 
     /// \brief Default constructor.
     EventCallback( void );
@@ -47,33 +50,17 @@ class EventCallback
     /// \brief Destructor.
     ~EventCallback( void );
 
-    /// \brief Construct an object and initialize its callback (object method).
-    EventCallback( const ValueType& callback );
-
-    /// \brief Copy constructor.
-    EventCallback( const SelfType& copy );
-
-    /// \brief Copy assignment operator.
-    SelfType& operator =( const SelfType& other );
-
-    /// \brief Obtain a pointer to the object.
-    RawPtr get( void );
-
-    /// \brief Query the validity of the object.
-    bool valid( void ) const;
-
-    /// \brief Obtain a reference to the assigned callback object method.
-    const ValueType& delegate( void ) const;
+    /// \brief Construct an object and initialize its callback function.
+    EventCallback( const callback_type& callback );
 
     /// \brief C++ functor; execute the assigned object method.
-    void operator() ( void ) const;
+    void operator() ( const Event& evt ) const;
 
-    /// \brief Convenience method for executing the assigned callback object
-    /// method.
-    void execute( void ) const;
+    /// \brief C-style method for executing the assigned callback function.
+    void execute( const Event& evt ) const;
 
   private:
-    ValueType delegate_;
+    callback_type delegate_;
 };
 
 } // namespace nom

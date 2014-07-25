@@ -31,46 +31,144 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/EventCallback.hpp"
-#include "nomlib/system/InputMapper/KeyboardAction.hpp"
-#include "nomlib/system/InputMapper/MouseButtonAction.hpp"
-#include "nomlib/system/InputMapper/MouseWheelAction.hpp"
-#include "nomlib/system/InputMapper/JoystickButtonAction.hpp"
-#include "nomlib/system/InputMapper/JoystickAxisAction.hpp"
+#include "nomlib/system/Event.hpp"
 
 namespace nom {
 
-/// \brief Input event for mapping an action to a state.
+/// \brief Base class for mapping an action to an input device
 ///
 /// \remarks See also nom::InputMapper, nom::InputContext, nom::InputState
-struct InputAction
+class InputAction
 {
-  typedef InputAction SelfType;
-  typedef std::pair<std::string, InputAction> Pair;
+  public:
+    /// \brief Destructor.
+    virtual ~InputAction( void );
 
-  /// \brief Default constructor.
-  InputAction( void );
+    /// \brief Get the underlying event associated with the input action.
+    ///
+    /// \remarks The event returned is "fake" -- it is used as the action's data
+    /// fields for matching against the real user input.
+    virtual const Event& event( void ) const;
+
+    /// \brief Get the callback assigned to the input action.
+    const EventCallback& callback( void ) const;
+
+    void set_callback( const EventCallback& delegate );
+
+    /// \brief C++ functor; execute the callback assigned for the input action.
+    void operator() ( const Event& evt ) const;
+
+    /// \brief Diagnostic output of the object state.
+    virtual void dump( void ) const;
+
+  protected:
+    /// \brief The event type and relevant input data; the criteria is used to
+    /// match against user input.
+    Event event_;
+
+  private:
+    /// \brief The delegate to call upon a successful action to event match.
+    EventCallback callback_;
+};
+
+/// \brief A structure containing information on a keyboard action.
+struct KeyboardAction: public InputAction
+{
+  /// \brief Destructor.
+  virtual ~KeyboardAction( void );
+
+  /// \brief Constructor for initializing an object to a valid action state.
+  KeyboardAction( uint32 type, int32 sym );
+
+  /// \brief Constructor for initializing an object to a valid action state.
+  KeyboardAction( uint32 type, int32 sym, uint16 mod );
+
+  /// \brief Constructor for initializing an object to a valid action state.
+  KeyboardAction( uint32 type, int32 sym, uint16 mod, uint8 repeat );
+
+  /// \brief Diagnostic output of the object state.
+  void dump( void ) const;
+};
+
+/// \brief A structure containing information on a mouse button action.
+struct MouseButtonAction: public InputAction
+{
+  /// \brief Destructor.
+  virtual ~MouseButtonAction( void );
+
+  /// \brief Constructor for initializing an object to a valid action state.
+  MouseButtonAction( uint32 type, uint8 button );
+
+  /// \brief Diagnostic output of the object state.
+  void dump( void ) const;
+};
+
+/// \brief A structure containing information on a mouse wheel action.
+struct MouseWheelAction: public InputAction
+{
+  /// \brief Left-right and up-down axis.
+  ///
+  /// \remarks Conceptually, a wheel action event has been modeled similarly to a
+  /// joystick axis -- note the axis field -- with the left-right axis being zero
+  /// (0) and the up-down axis being one (1).
+  enum: int
+  {
+    INVALID = -1,
+    AXIS_X = 0,
+    AXIS_Y = 1
+  };
+
+  /// \brief Sensitivity ranges to action mapping.
+  enum: int
+  {
+    UP = 1,
+    DOWN = -1,
+    RIGHT = -1,
+    LEFT = 1
+  };
+
+  /// \brief An enumeration of the invalid state(s).
+  enum: int
+  {
+    null = 0
+  };
 
   /// \brief Destructor.
-  ~InputAction( void );
+  virtual ~MouseWheelAction( void );
 
-  InputAction( const KeyboardAction& ev, const EventCallback& method );
+  /// \brief Constructor for initializing an object to a valid action state.
+  MouseWheelAction( uint32 type, uint8 axis, int32 value );
 
-  InputAction( const MouseButtonAction& ev, const EventCallback& method );
-  InputAction( const MouseWheelAction& ev, const EventCallback& method );
+  /// \brief Diagnostic output of the object state.
+  void dump( void ) const;
+};
 
-  InputAction( const JoystickButtonAction& ev, const EventCallback& method );
-  InputAction( const JoystickAxisAction& ev, const EventCallback& method );
+/// \brief A structure containing information on a joystick button action.
+///
+/// \todo Implement button state (SDL_PRESSED or SDL_RELEASED).
+struct JoystickButtonAction: public InputAction
+{
+  /// \brief Destructor.
+  virtual ~JoystickButtonAction( void );
 
-  /// \brief The type of event; key press, mouse click, joystick button and so
-  /// on.
-  KeyboardAction* key;
-  MouseButtonAction* mouse;
-  MouseWheelAction* wheel;
-  JoystickButtonAction* jbutton;
-  JoystickAxisAction* jaxis;
+  /// \brief Constructor for initializing an object to a valid action state.
+  JoystickButtonAction( SDL_JoystickID id, uint32 type, uint8 button );
 
-  /// \brief The assigned delegate to execute for the action event.
-  EventCallback delegate;
+  /// \brief Diagnostic output of the object state.
+  void dump( void ) const;
+};
+
+/// \brief A structure containing information on a joystick axis motion action.
+struct JoystickAxisAction: public InputAction
+{
+  /// \brief Destructor.
+  virtual ~JoystickAxisAction( void );
+
+  /// \brief Constructor for initializing an object to a valid action state.
+  JoystickAxisAction( SDL_JoystickID id, uint32 type, uint8 axis, int16 value );
+
+  /// \brief Diagnostic output of the object state.
+  void dump( void ) const;
 };
 
 } // namespace nom

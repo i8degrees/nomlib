@@ -61,7 +61,10 @@ bool InputStateMapper::insert( const std::string& key, const InputActionMapper& 
   InputActionState input_state;
   input_state.active = active;
   input_state.actions = map.get();
-  auto it = this->states_.insert( Pair( key, input_state ) );
+
+  InputStateMapper::Pair p( key, input_state );
+
+  auto it = this->states_.insert( p );
 
   // No dice; the insertion failed for some reason!
   if( it.second == false )
@@ -183,8 +186,6 @@ void InputStateMapper::dump( void )
 {
   for( auto itr = this->states_.begin(); itr != this->states_.end(); ++itr )
   {
-    NOM_DUMP( itr->first );
-
     if( itr->second.active == true )
     {
       InputActionMapper::ActionMap& input_map = itr->second.actions;
@@ -193,27 +194,15 @@ void InputStateMapper::dump( void )
       {
         NOM_DUMP( itr->first );
 
-        if( itr->second.key != nullptr )
+        if ( itr->second != nullptr )
         {
-          itr->second.key->dump();
-        }
-        else if ( itr->second.mouse != nullptr )
-        {
-          itr->second.mouse->dump();
-        }
-        else if ( itr->second.jbutton != nullptr )
-        {
-          itr->second.jbutton->dump();
+          itr->second->dump();
         }
         else
         {
           NOM_LOG_ERR( NOM, "Invalid input mapping state." );
         }
       }
-    }
-    else
-    {
-      NOM_LOG_ERR( NOM, "Input action is inactive." );
     }
   }
 }
@@ -227,25 +216,40 @@ void InputStateMapper::on_event( const Event& ev )
       InputActionMapper::ActionMap input_map = itr->second.actions;
       for( InputActionMapper::ActionMap::const_iterator itr = input_map.begin(); itr != input_map.end(); ++itr )
       {
-        if( this->on_key_press( itr->second, ev ) )
+        if( ev.type == SDL_KEYDOWN || ev.type == SDL_KEYUP )
         {
-          itr->second.delegate();
+          if( this->on_key_press( *itr->second, ev ) )
+          {
+            itr->second->operator()( ev );
+          }
         }
-        else if( this->on_mouse_button( itr->second, ev ) )
+        else if( ev.type == SDL_MOUSEBUTTONDOWN || ev.type == SDL_MOUSEBUTTONUP )
         {
-          itr->second.delegate();
+          if( this->on_mouse_button( *itr->second, ev ) )
+          {
+            itr->second->operator()( ev );
+          }
         }
-        else if( this->on_mouse_wheel( itr->second, ev ) )
+        else if( ev.type == SDL_MOUSEWHEEL || ev.type == SDL_MOUSEWHEEL )
         {
-          itr->second.delegate();
+          if( this->on_mouse_wheel( *itr->second, ev ) )
+          {
+            itr->second->operator()( ev );
+          }
         }
-        else if( this->on_joystick_button( itr->second, ev ) )
+        else if( ev.type == SDL_JOYBUTTONDOWN || ev.type == SDL_JOYBUTTONUP )
         {
-          itr->second.delegate();
+          if( this->on_joystick_button( *itr->second, ev ) )
+          {
+            itr->second->operator()( ev );
+          }
         }
-        else if( this->on_joystick_axis( itr->second, ev ) )
+        else if( ev.type == SDL_JOYAXISMOTION )
         {
-          itr->second.delegate();
+          if( this->on_joystick_axis( *itr->second, ev ) )
+          {
+            itr->second->operator()( ev );
+          }
         }
       } // end input_map iteration
     } // end conditional active input state
@@ -254,17 +258,19 @@ void InputStateMapper::on_event( const Event& ev )
 
 bool InputStateMapper::on_key_press( const InputAction& mapping, const Event& ev )
 {
-  if( mapping.key == nullptr ) return false;
+  Event evt = mapping.event();
 
-  if( mapping.key->type != ev.type ) return false;
+  // if( mapping.key == nullptr ) return false;
+
+  if( evt.type != ev.type ) return false;
 
   // Handle keyboard actions with set modifier keys first.
-  if( mapping.key->mod != KMOD_NONE )
+  if( evt.key.mod != KMOD_NONE )
   {
     // Handle keyboard actions with set modifiers and repeat fields initialized.
-    if( mapping.key->repeat != 0 )
+    if( evt.key.repeat != 0 )
     {
-      if( ev.key.repeat != 0 && mapping.key->sym == ev.key.sym && mapping.key->mod == ev.key.mod )
+      if( ev.key.repeat != 0 && evt.key.sym == ev.key.sym && evt.key.mod == ev.key.mod )
       {
         return true;
       }
@@ -273,17 +279,17 @@ bool InputStateMapper::on_key_press( const InputAction& mapping, const Event& ev
     }
     // Handle keyboard actions with set modifier keys but no repeat field
     // initialized.
-    else if( mapping.key->sym == ev.key.sym && mapping.key->mod == ev.key.mod )
+    else if( evt.key.sym == ev.key.sym && evt.key.mod == ev.key.mod )
     {
       return true;
     }
   }
   // Handle keyboard actions without modifier keys initialized.
-  else if( mapping.key->sym == ev.key.sym )
+  else if( evt.key.sym == ev.key.sym )
   {
     // Handle keyboard actions with repeat field initialized (without modifier
     // keys).
-    if( mapping.key->repeat != 0 )
+    if( evt.key.repeat != 0 )
     {
       if( ev.key.repeat != 0 )
       {
@@ -302,67 +308,75 @@ bool InputStateMapper::on_key_press( const InputAction& mapping, const Event& ev
 
 bool InputStateMapper::on_mouse_button( const InputAction& mapping, const Event& ev )
 {
-  if( mapping.mouse == nullptr ) return false;
+  Event evt = mapping.event();
 
-  if( mapping.mouse->type != ev.type ) return false;
+  // if( mapping.mouse == nullptr ) return false;
 
-  if( mapping.mouse->button == ev.mouse.button ) return true;
+  if( evt.type != ev.type ) return false;
+
+  if( evt.mouse.button == ev.mouse.button ) return true;
 
   return false;
 }
 
 bool InputStateMapper::on_mouse_wheel( const InputAction& mapping, const Event& ev )
 {
-  if( mapping.wheel == nullptr ) return false;
+  Event evt = mapping.event();
 
-  if( mapping.wheel->type != ev.type ) return false;
+  // if( mapping.wheel == nullptr ) return false;
+
+  if( evt.type != ev.type ) return false;
 
   // NOTE: X & Y coordinate values depend on the construction of a WheelAction
   // object.
-  if( mapping.wheel->axis == MouseWheelAction::AXIS_X )
+  // if( evt.wheel.axis == MouseWheelAction::AXIS_X )
+  if( evt.wheel.x != MouseWheelAction::null )
   {
     // Left
-    if( mapping.wheel->x >= MouseWheelAction::LEFT && ev.wheel.x >= MouseWheelAction::LEFT )
+    if( evt.wheel.x >= MouseWheelAction::LEFT && ev.wheel.x >= MouseWheelAction::LEFT )
     {
       return true;
     }
 
     // Right
-    if( mapping.wheel->x <= MouseWheelAction::RIGHT && ev.wheel.x <= MouseWheelAction::RIGHT )
+    if( evt.wheel.x <= MouseWheelAction::RIGHT && ev.wheel.x <= MouseWheelAction::RIGHT )
     {
       return true;
     }
   }
-  else if( mapping.wheel->axis == MouseWheelAction::AXIS_Y )
+  // else if( evt.wheel.axis == MouseWheelAction::AXIS_Y )
+  else if( evt.wheel.y != MouseWheelAction::null )
   {
     // Up
-    if( mapping.wheel->y >= MouseWheelAction::UP && ev.wheel.y >= MouseWheelAction::UP )
+    if( evt.wheel.y >= MouseWheelAction::UP && ev.wheel.y >= MouseWheelAction::UP )
     {
       return true;
     }
 
     // Down
-    if( mapping.wheel->y <= MouseWheelAction::DOWN && ev.wheel.y <= MouseWheelAction::DOWN )
+    if( evt.wheel.y <= MouseWheelAction::DOWN && ev.wheel.y <= MouseWheelAction::DOWN )
     {
       return true;
     }
   }
 
   // Initialized to an invalid state!
-  NOM_ASSERT( mapping.wheel->x == 0 || mapping.wheel->y == 0 );
+  NOM_ASSERT( evt.wheel.x == 0 || evt.wheel.y == 0 );
 
   return false;
 }
 
 bool InputStateMapper::on_joystick_button( const InputAction& mapping, const Event& ev )
 {
-  if( mapping.jbutton == nullptr ) return false;
+  Event evt = mapping.event();
 
-  if( mapping.jbutton->type != ev.type ) return false;
+  // if( mapping.jbutton == nullptr ) return false;
 
-  if( mapping.jbutton->id != ev.jbutton.id ) return false;
+  if( evt.type != ev.type ) return false;
 
-  if( mapping.jbutton->button == ev.jbutton.button ) return true;
+  if( evt.jbutton.id != ev.jbutton.id ) return false;
+
+  if( evt.jbutton.button == ev.jbutton.button ) return true;
 
   return false;
 }
@@ -370,35 +384,37 @@ bool InputStateMapper::on_joystick_button( const InputAction& mapping, const Eve
 // FIXME: Implementation is incomplete!
 bool InputStateMapper::on_joystick_axis( const InputAction& mapping, const Event& ev )
 {
-  if( mapping.jaxis == nullptr ) return false;
+  Event evt = mapping.event();
 
-  if( mapping.jaxis->type != ev.type ) return false;
+  // if( mapping.jaxis == nullptr ) return false;
 
-  if( mapping.jaxis->id != ev.jaxis.id ) return false;
+  if( evt.type != ev.type ) return false;
 
-  if( mapping.jaxis->axis != ev.jaxis.axis ) return false;
+  if( evt.jaxis.id != ev.jaxis.id ) return false;
+
+  if( evt.jaxis.axis != ev.jaxis.axis ) return false;
 
   // Within dead-zone tolerance
   if( ( ev.jaxis.value < -3200 ) || ( ev.jaxis.value > 3200 ) )
   {
     // Up-down axis (Sony PS3 game controller)
-    if( mapping.jaxis->axis == 0 )
+    if( evt.jaxis.axis == 0 )
     {
       // Up
-      if( mapping.jaxis->value < 0 ) return true;
+      if( evt.jaxis.value < 0 ) return true;
 
       // Down
-      if( mapping.jaxis->value > 0 ) return true;
+      if( evt.jaxis.value > 0 ) return true;
     }
 
     // Left-right axis (Sony PS3 game controller)
-    if( mapping.jaxis->axis == 1 )
+    if( evt.jaxis.axis == 1 )
     {
       // Left
-      if( mapping.jaxis->value < 0 ) return true;
+      if( evt.jaxis.value < 0 ) return true;
 
       // Right
-      if( mapping.jaxis->value > 0 ) return true;
+      if( evt.jaxis.value > 0 ) return true;
     }
   }
 

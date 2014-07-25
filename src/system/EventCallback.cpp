@@ -28,10 +28,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/EventCallback.hpp"
 
+// Forward declarations
+#include "nomlib/system/Event.hpp"
+
 namespace nom {
 
-EventCallback::EventCallback( void ) :
-  delegate_( nullptr )
+EventCallback::EventCallback( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -41,49 +43,20 @@ EventCallback::~EventCallback( void )
   // NOM_LOG_TRACE( NOM );
 }
 
-EventCallback::EventCallback( const ValueType& callback ) :
-  delegate_( callback )
+EventCallback::EventCallback( const callback_type& callback ) :
+  delegate_{ callback }
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-EventCallback::EventCallback( const SelfType& copy )
+void EventCallback::operator() ( const Event& evt ) const
 {
-  this->delegate_ = copy.delegate();
+  this->delegate_( evt );
 }
 
-EventCallback::SelfType& EventCallback::operator =( const SelfType& other )
+void EventCallback::execute( const Event& evt ) const
 {
-  this->delegate_ = other.delegate();
-
-  return *this;
-}
-
-EventCallback::RawPtr EventCallback::get( void )
-{
-  return this;
-}
-
-bool EventCallback::valid( void ) const
-{
-  if( this->delegate_ != nullptr ) return true;
-
-  return false;
-}
-
-const EventCallback::ValueType& EventCallback::delegate( void ) const
-{
-  return this->delegate_;
-}
-
-void EventCallback::operator() ( void ) const
-{
-  this->delegate_();
-}
-
-void EventCallback::execute( void ) const
-{
-  this->delegate_();
+  this->delegate_( evt );
 }
 
 } // namespace nom

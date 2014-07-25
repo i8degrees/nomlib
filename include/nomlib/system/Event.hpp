@@ -116,6 +116,8 @@ struct KeyboardEvent
   int32 sym;
 
   /// \brief The modifiers of the key press event; CTRL, ALT, ...
+  ///
+  /// \remarks Multiple modifier keys can be combined as a bit-mask.
   uint16 mod;
 
   /// \brief The state of the key press event.
@@ -254,11 +256,21 @@ struct MouseWheelEvent
   /// events, if your application already handles SDL_TouchFingerEvent).
   uint32 id;
 
-  /// \brief ...
+  /// \brief X axis value; relative to the direction of the wheel.
   int32 x;
 
-  /// \brief ...
+  /// \brief Y axis value, relative to the direction of the wheel.
   int32 y;
+
+  // /// \brief The direction of the wheel.
+  // ///
+  // /// \remarks The axis of the wheel event; zero (0) for X-axis and one (1)
+  // /// for Y-axis.
+  // ///
+  // /// \note This is implemented & supported by nom::InputMapper only.
+  // ///
+  // /// \see nom::MouseWheelAction
+  // uint8 axis;
 
   /// \brief The identifier of the window at the moment of event.
   uint32 window_id;
@@ -280,7 +292,7 @@ struct JoystickAxisEvent
   /// \brief Index of the joystick that reported the event.
   SDL_JoystickID id;
 
-  /// \brief Index of axis of the event.
+  /// \brief Index of the axis on the device.
   uint8 axis;
 
   /// \brief The current position of the axis.
@@ -307,7 +319,7 @@ struct JoystickButtonEvent
   /// \brief Index of the joystick that reported the event.
   SDL_JoystickID id;
 
-  /// \brief The index of the button event.
+  /// \brief The index of the button.
   uint8 button;
 
   /// \brief The state of the button.

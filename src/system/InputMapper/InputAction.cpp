@@ -30,74 +30,203 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-InputAction::InputAction( void ) :
-  key( nullptr ),
-  mouse( nullptr ),
-  wheel( nullptr ),
-  jbutton( nullptr ),
-  jaxis( nullptr )
-{
-  // NOM_LOG_TRACE( NOM );
-}
+// InputAction (base class)
 
 InputAction::~InputAction( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-InputAction::InputAction( const KeyboardAction& ev, const EventCallback& method ) :
-  key( new KeyboardAction( ev ) ),
-  mouse( nullptr ),
-  wheel( nullptr ),
-  jbutton( nullptr ),
-  jaxis( nullptr ),
-  delegate ( method )
+const Event& InputAction::event( void ) const
+{
+  return this->event_;
+}
+
+const EventCallback& InputAction::callback( void ) const
+{
+  return this->callback_;
+}
+
+void InputAction::set_callback( const EventCallback& delegate )
+{
+  this->callback_ = delegate;
+}
+
+void InputAction::operator() ( const Event& evt ) const
+{
+  this->callback_( evt );
+}
+
+void InputAction::dump( void ) const
+{
+  // Event type and timestamp info
+  this->event_.dump();
+}
+
+// KeyboardAction
+
+KeyboardAction::~KeyboardAction( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-InputAction::InputAction( const MouseButtonAction& ev, const EventCallback& method ) :
-  key( nullptr ),
-  mouse( new MouseButtonAction( ev ) ),
-  wheel( nullptr ),
-  jbutton( nullptr ),
-  jaxis( nullptr ),
-  delegate ( method )
+KeyboardAction::KeyboardAction( uint32 type, int32 sym )
+{
+  // NOM_LOG_TRACE( NOM );
+
+  this->event_.type = type;
+  this->event_.key.sym = sym;
+  this->event_.key.mod = KMOD_NONE;
+  this->event_.key.repeat = 0;
+  this->event_.key.window_id = 0;
+}
+
+KeyboardAction::KeyboardAction( uint32 type, int32 sym, uint16 mod )
+{
+  // NOM_LOG_TRACE( NOM );
+
+  this->event_.type = type;
+  this->event_.key.sym = sym;
+  this->event_.key.mod = mod;
+  this->event_.key.repeat = 0;
+  this->event_.key.window_id = 0;
+}
+
+KeyboardAction::KeyboardAction( uint32 type, int32 sym, uint16 mod, uint8 repeat )
+{
+  // NOM_LOG_TRACE( NOM );
+
+  this->event_.type = type;
+  this->event_.key.sym = sym;
+  this->event_.key.mod = mod;
+  this->event_.key.repeat = repeat;
+  this->event_.key.window_id = 0;
+}
+
+void KeyboardAction::dump( void ) const
+{
+  // Event type & timestamp info
+  InputAction::dump();
+
+  this->event_.key.dump();
+}
+
+// MouseButtonAction
+
+MouseButtonAction::~MouseButtonAction( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-InputAction::InputAction( const MouseWheelAction& ev, const EventCallback& method ) :
-  key( nullptr ),
-  mouse( nullptr ),
-  wheel( new MouseWheelAction( ev ) ),
-  jbutton( nullptr ),
-  jaxis( nullptr ),
-  delegate ( method )
+MouseButtonAction::MouseButtonAction( uint32 type, uint8 button )
+{
+  // NOM_LOG_TRACE( NOM );
+  this->event_.type = type;
+  this->event_.mouse.x = 0;
+  this->event_.mouse.y = 0;
+  this->event_.mouse.button = button;
+  this->event_.mouse.window_id = 0;
+}
+
+void MouseButtonAction::dump( void ) const
+{
+  // Event type & timestamp info
+  InputAction::dump();
+
+  this->event_.mouse.dump();
+}
+
+// MouseWheelAction
+
+MouseWheelAction::~MouseWheelAction( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-InputAction::InputAction( const JoystickButtonAction& ev, const EventCallback& method ) :
-  key( nullptr ),
-  mouse( nullptr ),
-  wheel( nullptr ),
-  jbutton( new JoystickButtonAction( ev ) ),
-  jaxis( nullptr ),
-  delegate ( method )
+MouseWheelAction::MouseWheelAction( uint32 type, uint8 axis, int32 value )
+{
+  // NOM_LOG_TRACE( NOM );
+
+  this->event_.type = type;
+  // this->event_.wheel.axis = axis;
+  this->event_.wheel.window_id = 0;
+
+  // Wheel direction is left or right
+  // if( this->event_.wheel.axis == AXIS_X )
+  if( axis == AXIS_X )
+  {
+    this->event_.wheel.x = value;
+    this->event_.wheel.y = MouseWheelAction::null;
+  }
+  // Wheel direction is up or down
+  // else if( this->event_.wheel.axis == AXIS_Y )
+  else if( axis == AXIS_Y )
+  {
+    this->event_.wheel.y = value;
+    this->event_.wheel.x = MouseWheelAction::null;
+  }
+  else // Invalid state
+  {
+    this->event_.wheel.x = MouseWheelAction::null;
+    this->event_.wheel.y = MouseWheelAction::null;
+  }
+}
+
+void MouseWheelAction::dump( void ) const
+{
+  // Event type & timestamp info
+  InputAction::dump();
+
+  this->event_.wheel.dump();
+}
+
+// JoystickButtonAction
+
+JoystickButtonAction::~JoystickButtonAction( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-InputAction::InputAction( const JoystickAxisAction& ev, const EventCallback& method ) :
-  key( nullptr ),
-  mouse( nullptr ),
-  wheel( nullptr ),
-  jbutton( nullptr ),
-  jaxis( new JoystickAxisAction( ev ) ),
-  delegate ( method )
+JoystickButtonAction::JoystickButtonAction( SDL_JoystickID id, uint32 type, uint8 button )
 {
   // NOM_LOG_TRACE( NOM );
+
+  this->event_.type = type;
+  this->event_.jbutton.id = id;
+  this->event_.jbutton.button = button;
+}
+
+void JoystickButtonAction::dump( void ) const
+{
+  // Event type & timestamp info
+  InputAction::dump();
+
+  this->event_.jbutton.dump();
+}
+
+// JoystickAxisAction
+
+JoystickAxisAction::~JoystickAxisAction( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
+
+JoystickAxisAction::JoystickAxisAction( SDL_JoystickID id, uint32 type, uint8 axis, int16 value )
+{
+  // NOM_LOG_TRACE( NOM );
+
+  this->event_.type = type;
+  this->event_.jaxis.id = id;
+  this->event_.jaxis.axis = axis;
+  this->event_.jaxis.value = value;
+}
+
+void JoystickAxisAction::dump( void ) const
+{
+  // Event type & timestamp info
+  InputAction::dump();
+
+  this->event_.jaxis.dump();
 }
 
 } // namespace nom

@@ -45,9 +45,12 @@ const InputActionMapper::ActionMap& InputActionMapper::get( void ) const
   return this->input_map_;
 }
 
-bool InputActionMapper::insert( const std::string& key, const InputAction& action )
+bool InputActionMapper::insert( const std::string& key, const InputAction& action, const EventCallback& callback )
 {
-  ActionMap::const_iterator it = this->input_map_.insert( InputAction::Pair( key, action ) );
+  ActionPair p( key, std::make_shared<InputAction>( action ) );
+  p.second->set_callback( callback );
+
+  auto it = this->input_map_.insert( p );
 
   // No dice; the insertion failed for some reason!
   if( it == this->input_map_.end() )
@@ -82,21 +85,13 @@ void InputActionMapper::dump( void ) const
 {
   for( ActionMap::const_iterator itr = this->input_map_.begin(); itr != this->input_map_.end(); ++itr )
   {
-    if( itr->second.key != nullptr )
+    if( itr->second != nullptr )
     {
-      itr->second.key->dump();
-    }
-    else if ( itr->second.mouse != nullptr )
-    {
-      itr->second.mouse->dump();
-    }
-    else if ( itr->second.jbutton != nullptr )
-    {
-      itr->second.jbutton->dump();
+      itr->second->dump();
     }
     else
     {
-      NOM_LOG_ERR( NOM, "Invalid input mapping state." );
+      NOM_LOG_ERR( NOM, "Invalid input action." );
     }
   }
 }

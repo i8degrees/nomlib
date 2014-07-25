@@ -108,8 +108,8 @@ class App: public nom::SDLApp
       nom::EventDispatcher sender;
       nom::Event user_event;
 
-      nom::EventCallback delegate1( [&] () { this->minimize( this->event ); } );
-      nom::EventCallback delegate2( [&] () { this->restore( this->event ); } );
+      nom::EventCallback delegate1( [&] ( const nom::Event& evt ) { this->minimize( evt ); } );
+      nom::EventCallback delegate2( [&] ( const nom::Event& evt ) { this->restore( evt ); } );
 
       user_event.type = SDL_USEREVENT;
       user_event.timestamp = ticks();
@@ -117,7 +117,7 @@ class App: public nom::SDLApp
       user_event.user.data1 = nullptr;
       user_event.user.data2 = NOM_SCAST( nom::EventCallback*, &delegate1 );
       user_event.user.window_id = 0;
-      sender.dispatch( user_event );
+      // sender.dispatch( user_event );
 
       user_event.type = SDL_USEREVENT;
       user_event.timestamp = ticks();
@@ -125,120 +125,116 @@ class App: public nom::SDLApp
       user_event.user.data1 = nullptr;
       user_event.user.data2 = NOM_SCAST( nom::EventCallback*, &delegate2 );
       user_event.user.window_id = 0;
-      sender.dispatch( user_event );
+      // sender.dispatch( user_event );
 
       // State 0 is mouse button input mapping
       // State 1 is keyboard input mapping
-      // State 2 is mouse wheel input mapping
-      // State 3 is joystick button input mapping
+      // State 2 is joystick button input mapping
+      // State 3 is mouse wheel input mapping
       // State 4 is joystick axis input mapping; note that this implementation
+      // is broken (not fully implemented).
       // State 5 is keyboard input mapping with repeating key active
-      // is currently broken (not fully implemented).
       nom::InputActionMapper state0, state1, state2, state3, state4, state5;
 
-      state0.insert( "minimize_window_0", nom::InputAction( nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT ), nom::EventCallback( [&] () { this->minimize( this->event ); } ) ) );
-      state0.insert( "restore_window_0", nom::InputAction( nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_RIGHT ), nom::EventCallback( [&] () { this->restore( this->event ); } ) ) );
+      state0.insert( "minimize_window_0", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT ), nom::EventCallback( [&] ( const nom::Event& evt ) { this->minimize( evt ); } ) );
+      state0.insert( "restore_window_0", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_RIGHT ), nom::EventCallback( [&] ( const nom::Event& evt ) { this->restore( evt ); } ) );
 
-      state1.insert( "minimize_window_0", nom::InputAction  ( nom::KeyboardAction( SDL_KEYDOWN, SDLK_1 ), nom::EventCallback( [&] () { this->minimize( this->event ); } ) ) );
+      NOM_CONNECT_INPUT_MAPPING( state1, "minimize_window_0", nom::KeyboardAction( SDL_KEYDOWN, SDLK_1 ), minimize, evt );
 
       // NOTE: The following keyboard action will have its modifier key reset to
       // zero (0) as a side-effect of minimizing the window, ergo you will not be
       // able to continue holding down LCTRL after the first time in order to
       // re-execute the restoration of said window. This is NOT a bug within the
       // the input mapper.
-      state1.insert( "restore_window_0",
-                                nom::InputAction  (
-                                                    nom::KeyboardAction( SDL_KEYDOWN, SDLK_2, KMOD_LCTRL ),
-                                                    nom::EventCallback( [&] () { this->restore( this->event ); } )
-                                                  )
-                              );
+      NOM_CONNECT_INPUT_MAPPING( state1, "restore_window_0", nom::KeyboardAction( SDL_KEYDOWN, SDLK_2, KMOD_LCTRL ), restore, evt );
 
       state1.insert( "quit_app",
-                                nom::InputAction  (
-                                                    nom::KeyboardAction( SDL_KEYDOWN, SDLK_1, KMOD_LCTRL ),
-                                                    nom::EventCallback( [&] () { this->on_app_quit( this->event ); } )
-                                                  )
-                              );
+                            nom::KeyboardAction ( SDL_KEYDOWN, SDLK_1, KMOD_LCTRL ),
+                                                      nom::EventCallback( [&] ( const nom::Event& evt ) { this->on_app_quit( evt ); }
+                                                    )
+                                );
 
-      state2.insert( "minimize_window_0",
-                                nom::InputAction  (
-                                                    nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::L1 ),
-                                                    nom::EventCallback( [&] () { this->minimize( this->event ); } )
-                                                  )
-                              );
+      // Joystick button mappings
 
-      state2.insert( "restore_window_0",
-                                nom::InputAction  (
-                                                    nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::R1 ),
-                                                    nom::EventCallback( [&] () { this->restore( this->event ); } )
-                                                  )
-                              );
+      state2.insert (
+                      "minimize_window_0",
+                      nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::L1 ),
+                      nom::EventCallback( [&] ( const nom::Event& evt ) { this->minimize( evt ); } )
+                     );
+
+      state2.insert (
+                      "restore_window_0",
+                      nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::R1 ),
+                      nom::EventCallback( [&] ( const nom::Event& evt ) { this->restore( evt ); } )
+                    );
+
+      // Mouse wheel mappings
 
       // Wheel is going upward
-      nom::InputAction mouse_wheel( nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::UP ),
-                                    nom::EventCallback( [&] () { this->color_fill( this->event, 0 ); } )
-                                  );
+      nom::MouseWheelAction mouse_wheel (
+                                          SDL_MOUSEWHEEL,
+                                          nom::MouseWheelAction::AXIS_Y,
+                                          nom::MouseWheelAction::UP
+                                        );
 
-      state3.insert( "color_fill_1", mouse_wheel );
+      state3.insert( "color_fill_1", mouse_wheel, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 0 ); } ) );
 
       // Wheel is going downward
-      mouse_wheel = nom::InputAction( nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::DOWN ),
-                                      nom::EventCallback( [&] () { this->color_fill( this->event, 1 ); } )
-                                    );
+      mouse_wheel = nom::MouseWheelAction (
+                                            SDL_MOUSEWHEEL,
+                                            nom::MouseWheelAction::AXIS_Y,
+                                            nom::MouseWheelAction::DOWN
+                                          );
 
-      state3.insert( "color_fill_1", mouse_wheel );
+      state3.insert( "color_fill_1", mouse_wheel, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 1 ); } ) );
 
       // Wheel is going leftward
-      mouse_wheel = nom::InputAction( nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_X, nom::MouseWheelAction::LEFT ),
-                                      nom::EventCallback( [&] () { this->color_fill( this->event, 2 ); } )
-                                    );
+      mouse_wheel = nom::MouseWheelAction (
+                                            SDL_MOUSEWHEEL,
+                                            nom::MouseWheelAction::AXIS_X,
+                                            nom::MouseWheelAction::LEFT
+                                          );
 
-      state3.insert( "color_fill_1", mouse_wheel );
+      state3.insert( "color_fill_1", mouse_wheel, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 2 ); } ) );
 
       // Wheel is going rightward
-      mouse_wheel = nom::InputAction( nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_X, nom::MouseWheelAction::RIGHT ),
-                                      nom::EventCallback( [&] () { this->color_fill( this->event, 3 ); } )
-                                    );
+      mouse_wheel = nom::MouseWheelAction (
+                                            SDL_MOUSEWHEEL,
+                                            nom::MouseWheelAction::AXIS_X,
+                                            nom::MouseWheelAction::RIGHT
+                                          );
 
-      state3.insert( "color_fill_1", mouse_wheel );
+      state3.insert( "color_fill_1", mouse_wheel, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 3 ); } ) );
 
       nom::InputAction jaxis;
 
       // Joystick axis is going upward
-      jaxis = nom::InputAction( nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 0, -1 ),
-                                nom::EventCallback( [&] () { this->color_fill( this->event, 0 ); } )
-                              );
+      jaxis = nom::JoystickAxisAction ( 0, SDL_JOYAXISMOTION, 0, -1 );
 
-      state4.insert( "color_fill_1", jaxis );
+      state4.insert( "color_fill_1", jaxis, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 0 ); } ) );
 
       // Joystick axis is going downward
-      jaxis = nom::InputAction( nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 0, 1 ),
-                                nom::EventCallback( [&] () { this->color_fill( this->event, 1 ); } )
-                              );
+      jaxis = nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 0, 1 );
 
-      state4.insert( "color_fill_1", jaxis );
+      state4.insert( "color_fill_1", jaxis, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 1 ); } ) );
 
       // Joystick axis is going leftward
-      jaxis = nom::InputAction( nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 1, -1 ),
-                                nom::EventCallback( [&] () { this->color_fill( this->event, 2 ); } )
-                              );
+      jaxis = nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 1, -1 );
 
-      state4.insert( "color_fill_1", jaxis );
+      state4.insert( "color_fill_1", jaxis, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 2 ); } ) );
 
       // Joystick axis is going rightward
-      jaxis = nom::InputAction( nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 1, 1 ),
-                                nom::EventCallback( [&] () { this->color_fill( this->event, 3 ); } )
-                              );
+      jaxis = nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 1, 1 );
 
-      state4.insert( "color_fill_1", jaxis );
+      state4.insert( "color_fill_1", jaxis, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 3 ); } ) );
 
       nom::InputAction kb_repeat;
 
       // Keyboard action should only trigger when the key symbols 4 and the
       // Command (OS X) or Windows modifier key is repeating (pressed down for
       // at least ~0.5s).
-      kb_repeat = nom::InputAction( nom::KeyboardAction( SDL_KEYDOWN, SDLK_3, KMOD_LGUI, 1 ), nom::EventCallback( [&] () { this->color_fill( this->event, 3 ); } ) );
-      state5.insert( "color_fill_1", kb_repeat );
+      kb_repeat = nom::KeyboardAction( SDL_KEYDOWN, SDLK_3, KMOD_LGUI, 1 );
+      state5.insert( "color_fill_1", kb_repeat, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 3 ); } ) );
 
       // Mouse button input mapping
       this->input_mapper.insert( "state0", state0, true );
@@ -246,10 +242,10 @@ class App: public nom::SDLApp
       // Keyboard input mapping
       this->input_mapper.insert( "state1", state1, true );
 
-      // Mouse wheel input mapping
+      // Joystick Button input mapping
       this->input_mapper.insert( "state2", state2, true );
 
-      // Joystick Button input mapping
+      // Mouse wheel input mapping
       this->input_mapper.insert( "state3", state3, true );
 
       // Joystick Axis input mapping
@@ -274,6 +270,9 @@ class App: public nom::SDLApp
         // nom::DialogMessageBox( APP_NAME, "ERROR: Input context state1 is active." );
         // return false;
       }
+
+      // this->input_mapper.activate_only( "state1" );
+      // this->input_mapper.dump();
 
       return true;
     } // end on_init
@@ -333,7 +332,7 @@ class App: public nom::SDLApp
         ev.jaxis.dump();
       }
 
-      NOM_LOG_TRACE( NOM );
+      // NOM_LOG_TRACE( NOM );
 
       switch( dir )
       {
@@ -347,6 +346,7 @@ class App: public nom::SDLApp
         {
           NOM_DUMP( "WHEEL UP" );
           this->window[1].fill( nom::Color4i::Magenta );
+          this->window[1].update();
           break;
         }
 
@@ -354,6 +354,7 @@ class App: public nom::SDLApp
         {
           NOM_DUMP( "WHEEL DOWN" );
           this->window[1].fill( nom::Color4i::Gray );
+          this->window[1].update();
           break;
         }
 
@@ -361,6 +362,7 @@ class App: public nom::SDLApp
         {
           NOM_DUMP( "WHEEL LEFT" );
           this->window[1].fill( nom::Color4i::Orange );
+          this->window[1].update();
           break;
         }
 
@@ -368,6 +370,7 @@ class App: public nom::SDLApp
         {
           NOM_DUMP( "WHEEL RIGHT" );
           this->window[1].fill( nom::Color4i::Yellow );
+          this->window[1].update();
           break;
         }
       } // end switch dir
@@ -379,6 +382,13 @@ class App: public nom::SDLApp
       {
         this->update[idx].start();
         this->fps[idx].start();
+      }
+
+      // Paint the window(s) only once ... let event callbacks do the rest!
+      for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
+      {
+        this->window[idx].fill( nom::Color4i::SkyBlue );
+        this->window[idx].update();
       }
 
       // 1. Events
@@ -394,7 +404,7 @@ class App: public nom::SDLApp
 
         for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
         {
-          this->window[idx].update();
+          // this->window[idx].update();
           this->fps[idx].update();
 
           // Refresh the frames per second at 1 second intervals
@@ -412,11 +422,6 @@ class App: public nom::SDLApp
             this->update[idx].restart();
           } // end refresh cycle
         } // end for MAXIMUM_WINDOWS update loop
-
-        for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
-        {
-          this->window[idx].fill( nom::Color4i::SkyBlue );
-        }
       } // end while SDLApp::running() is true
 
       return NOM_EXIT_SUCCESS;
@@ -446,7 +451,7 @@ class App: public nom::SDLApp
           #if ! defined( NOM_PLATFORM_WINDOWS )
             // FIXME: We get a segfault under OS X (and presumed Windows, too)
             // when we add more than one kb_repeat input action. No idea why!
-            delegate->operator()();
+            // delegate->operator()( ev );
           #endif
         }
       }

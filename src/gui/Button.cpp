@@ -244,7 +244,7 @@ void Button::set_button_state( Button::State state )
 
 // Protected scope
 
-void Button::on_mouse_down( const Event& evt )
+bool Button::on_mouse_down( const Event& evt )
 {
   this->set_button_state( Button::State::Pressed );
 
@@ -256,9 +256,11 @@ void Button::on_mouse_down( const Event& evt )
   ev.set_text( this->label_text() );
 
   this->dispatcher()->emit( ev );
+
+  return true;
 }
 
-void Button::on_mouse_up( const Event& evt )
+bool Button::on_mouse_up( const Event& evt )
 {
   this->set_button_state( Button::State::Default );
 
@@ -270,9 +272,11 @@ void Button::on_mouse_up( const Event& evt )
   ev.set_text( this->label_text() );
 
   this->dispatcher()->emit( ev );
+
+  return true;
 }
 
-void Button::on_mouse_enter( const Event& evt )
+bool Button::on_mouse_enter( const Event& evt )
 {
   // this->set_button_state( Button::State::Pressed );
 
@@ -286,9 +290,11 @@ void Button::on_mouse_enter( const Event& evt )
   ev.set_text( this->label_text() );
 
   this->dispatcher()->emit( ev );
+
+  return true;
 }
 
-void Button::on_mouse_leave( const Event& evt )
+bool Button::on_mouse_leave( const Event& evt )
 {
   // this->set_button_state( Button::State::Default );
 
@@ -302,6 +308,8 @@ void Button::on_mouse_leave( const Event& evt )
   ev.set_text( this->label_text() );
 
   this->dispatcher()->emit( ev );
+
+  return true;
 }
 
 void Button::update( void )

@@ -344,37 +344,45 @@ void MessageBox::update( void )
   this->updated_ = true;
 }
 
-void MessageBox::on_mouse_down( const Event& evt )
+bool MessageBox::on_mouse_down( const Event& evt )
 {
-  if( evt.type == SDL_MOUSEBUTTONDOWN )
+  UIWidgetEvent item;
+
+  // This is likely to be invalid if the event type does not match (see below).
+  Point2i mouse( evt.mouse.x, evt.mouse.y );
+
+  IntRect title_bounds = this->title_bounds();
+  IntRect message_bounds = this->message_bounds();
+
+  // Incorrect event type
+  if( evt.type != SDL_MOUSEBUTTONDOWN ) return false;
+
+  if( title_bounds.contains( mouse ) )
   {
-    UIWidgetEvent item;
-    Point2i mouse( evt.mouse.x, evt.mouse.y );
+    item.set_type( UIEvent::MOUSE_DOWN );
+    item.set_event( evt );
+    item.set_id( this->id() );
+    item.set_index( 0 );
+    item.set_text( this->title_text() );
 
-    IntRect title_bounds = this->title_bounds();
-    IntRect message_bounds = this->message_bounds();
+    this->dispatcher()->emit( item );
 
-    if( title_bounds.contains( mouse ) )
-    {
-      item.set_type( UIEvent::MOUSE_DOWN );
-      item.set_event( evt );
-      item.set_id( this->id() );
-      item.set_index( 0 );
-      item.set_text( this->title_text() );
+    return true;
+  }
+  else if( message_bounds.contains( mouse ) )
+  {
+    item.set_type( UIEvent::MOUSE_DOWN );
+    item.set_event( evt );
+    item.set_id( this->id() );
+    item.set_index( 1 );
+    item.set_text( this->message_text() );
 
-      this->dispatcher()->emit( item );
-    }
-    else if( message_bounds.contains( mouse ) )
-    {
-      item.set_type( UIEvent::MOUSE_DOWN );
-      item.set_event( evt );
-      item.set_id( this->id() );
-      item.set_index( 1 );
-      item.set_text( this->message_text() );
+    this->dispatcher()->emit( item );
 
-      this->dispatcher()->emit( item );
-    }
-  } // end if evt.type is SDL_MOUSEBUTTONDOWN
+    return true;
+  }
+
+  return false;
 }
 
 } // namespace nom

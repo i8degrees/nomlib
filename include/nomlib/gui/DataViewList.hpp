@@ -88,10 +88,10 @@ class DataViewList: public UIWidget
     virtual void update( void );
 
     /// \fixme
-    virtual void on_key_down( const Event& evt );
+    virtual bool on_key_down( const Event& evt );
 
     /// \brief Re-implements UIWidget::on_mouse_up method.
-    virtual void on_mouse_up( const Event& evt );
+    virtual bool on_mouse_up( const Event& evt );
 
   private:
     virtual void update_columns( void );

@@ -414,116 +414,51 @@ void DataViewList::set_selection_item( uint col, uint row )
   }
 }
 
-void DataViewList::on_mouse_up( const Event& evt )
+bool DataViewList::on_mouse_up( const Event& evt )
 {
-  // Registered event for selection on_click
-  if( evt.type == SDL_MOUSEBUTTONUP )
+  // Incorrect event type
+  if( evt.type != SDL_MOUSEBUTTONUP ) return false;
+
+  Point2i mouse_coords( evt.mouse.x, evt.mouse.y );
+
+  // Counter for array index of each element
+  uint index = 0;
+  for( auto it = this->drawable_headers_.begin(); it != this->drawable_headers_.end(); ++it )
   {
-    Point2i mouse_coords( evt.mouse.x, evt.mouse.y );
-
-    // Counter for array index of each element
-    uint index = 0;
-    for( auto it = this->drawable_headers_.begin(); it != this->drawable_headers_.end(); ++it )
+    if( (*it) == nullptr )
     {
-      if( (*it) == nullptr )
-      {
-        // TODO: Err handling
-        break;
-      }
-
-      if( this->contains_label( it->get(), mouse_coords ) )
-      {
-        UIWidgetTreeEvent ev;
-
-        // Signal type
-        ev.set_type( UIEvent::MOUSE_UP );
-
-        // Item's column
-        ev.set_column( index );
-        ev.set_row( 0 );
-        ev.set_data( it->get() );
-
-         // Underlying event
-        ev.set_event( evt );
-
-        // Widget's unique identifier
-        ev.set_id( this->id() );
-
-        this->dispatcher()->emit( ev );
-
-        break;
-      }
-
-      for( auto row = 0; row != this->store()->items_size( index ); ++row )
-      {
-        DataViewItem* item = this->store()->item( index, row );
-
-        if( NOM_ISA( Transformable*, item->data() ) == true )
-        {
-          Transformable* obj = dynamic_cast<Transformable*>( item->data() );
-
-          if( obj == nullptr )
-          {
-            // TODO: Err handling
-            NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not send UIWidgetEvent for Transformable item: NULL." );
-            break;
-          }
-
-          IntRect object( obj->position().x, obj->position().y, obj->size().w, obj->size().h );
-
-          if( object.contains( mouse_coords ) )
-          {
-            UIWidgetTreeEvent ev;
-
-            // Signal type
-            ev.set_type( UIEvent::MOUSE_UP );
-
-            ev.set_column( index );
-            ev.set_row( row );
-
-            // Underlying event
-            ev.set_event( evt );
-
-            // Widget's unique identifier
-            ev.set_id( this->id() );
-
-            if( item->selection() == true )
-            {
-              ev.set_selection( false );
-              item->set_selection( false );
-            }
-            else
-            {
-              ev.set_selection( true );
-              item->set_selection( true );
-            }
-
-            this->set_selection_item( index, row );
-
-            // Widget's tree item data with emitted signal
-            ev.set_data( obj );
-
-            this->dispatcher()->emit( ev );
-
-            break;
-          }
-        }
-      }
-
-      ++index;
+      // TODO: Err handling
+      // break;
+      return false;
     }
-  }
-}
 
-void DataViewList::on_key_down( const Event& evt )
-{
-  // Registered event for selection on_click
-  if( evt.type == SDL_KEYDOWN )
-  {
-    uint col = 1;
-    for( auto row = 0; row != this->store()->items_size( col ); ++row )
+    if( this->contains_label( it->get(), mouse_coords ) )
     {
-      DataViewItem* item = this->store()->item( col, row );
+      UIWidgetTreeEvent ev;
+
+      // Signal type
+      ev.set_type( UIEvent::MOUSE_UP );
+
+      // Item's column
+      ev.set_column( index );
+      ev.set_row( 0 );
+      ev.set_data( it->get() );
+
+       // Underlying event
+      ev.set_event( evt );
+
+      // Widget's unique identifier
+      ev.set_id( this->id() );
+
+      this->dispatcher()->emit( ev );
+
+      // break;
+      return true;
+    }
+
+    for( auto row = 0; row != this->store()->items_size( index ); ++row )
+    {
+      DataViewItem* item = this->store()->item( index, row );
 
       if( NOM_ISA( Transformable*, item->data() ) == true )
       {
@@ -533,29 +468,115 @@ void DataViewList::on_key_down( const Event& evt )
         {
           // TODO: Err handling
           NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not send UIWidgetEvent for Transformable item: NULL." );
-          break;
+          // break;
+          return false;
         }
 
-        if( item->selection() == true )
+        IntRect object( obj->position().x, obj->position().y, obj->size().w, obj->size().h );
+
+        if( object.contains( mouse_coords ) )
         {
-          if( evt.key.sym == SDLK_UP && this->store()->items_size( col ) > row-1 )
+          UIWidgetTreeEvent ev;
+
+          // Signal type
+          ev.set_type( UIEvent::MOUSE_UP );
+
+          ev.set_column( index );
+          ev.set_row( row );
+
+          // Underlying event
+          ev.set_event( evt );
+
+          // Widget's unique identifier
+          ev.set_id( this->id() );
+
+          if( item->selection() == true )
           {
-            // NOM_DUMP("U");
+            ev.set_selection( false );
             item->set_selection( false );
-            DataViewItem* prev_item = this->store()->item( col, --row );
-            prev_item->set_selection( true );
           }
-          else if( evt.key.sym == SDLK_DOWN && ( row < this->store()->items_size( col ) - 1 ) )
+          else
           {
-            // NOM_DUMP("D");
-            item->set_selection( false );
-            DataViewItem* next_item = this->store()->item( col, ++row );
-            next_item->set_selection( true );
+            ev.set_selection( true );
+            item->set_selection( true );
           }
+
+          this->set_selection_item( index, row );
+
+          // Widget's tree item data with emitted signal
+          ev.set_data( obj );
+
+          this->dispatcher()->emit( ev );
+
+          // break;
+          return true;
         }
       }
     }
+
+    ++index;
   }
+
+  // No event
+  return false;
+}
+
+bool DataViewList::on_key_down( const Event& evt )
+{
+  // Registered event for selection on_click
+  if( evt.type != SDL_KEYDOWN ) return false;
+
+  // TODO: Implement widget focus
+  if( this->focused() == false )
+  {
+    // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, this->name(), "focused:", "FALSE" );
+    // return false;
+  }
+  else
+  {
+    // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, this->name(), "focused:", "TRUE" );
+  }
+
+  uint col = 1;
+  for( auto row = 0; row != this->store()->items_size( col ); ++row )
+  {
+    DataViewItem* item = this->store()->item( col, row );
+
+    if( NOM_ISA( Transformable*, item->data() ) == true )
+    {
+      Transformable* obj = dynamic_cast<Transformable*>( item->data() );
+
+      if( obj == nullptr )
+      {
+        // TODO: Err handling
+        NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not send UIWidgetEvent for Transformable item: NULL." );
+        break;
+      }
+
+      if( item->selection() == true )
+      {
+        if( evt.key.sym == SDLK_UP && this->store()->items_size( col ) > row-1 )
+        {
+          // NOM_DUMP("U");
+          item->set_selection( false );
+          DataViewItem* prev_item = this->store()->item( col, --row );
+          prev_item->set_selection( true );
+        }
+        else if( evt.key.sym == SDLK_DOWN && ( row < this->store()->items_size( col ) - 1 ) )
+        {
+          // NOM_DUMP("D");
+          item->set_selection( false );
+          DataViewItem* next_item = this->store()->item( col, ++row );
+          next_item->set_selection( true );
+        }
+
+        return true;
+      } // end if item is selected
+    }
+  }
+
+  // No event
+  return false;
 }
 
 } // namespace nom

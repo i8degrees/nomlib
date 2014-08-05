@@ -115,11 +115,11 @@ class Button: public UIWidget
     void set_button_state( Button::State state );
 
   protected:
-    virtual void on_mouse_down( const Event& evt );
-    virtual void on_mouse_up( const Event& evt );
+    virtual bool on_mouse_down( const Event& evt );
+    virtual bool on_mouse_up( const Event& evt );
 
-    virtual void on_mouse_enter( const Event& evt );
-    virtual void on_mouse_leave( const Event& evt );
+    virtual bool on_mouse_enter( const Event& evt );
+    virtual bool on_mouse_leave( const Event& evt );
 
     /// \brief Implements IDrawable::update.
     /*virtual*/ void update( void );

@@ -405,8 +405,10 @@ class UIWidget: public Transformable
 
     /// \brief Re-implements EventHandler::process_event.
     ///
-    /// \note Emitted UIWidgetEvent objects reflects the state of the widget
-    /// data *before* the callback(s) are executed.
+    /// \returns Boolean TRUE when the event is consumed; a widget was
+    /// interested and thus reacted to it in some way -- ...see protected event
+    /// handlers. Boolean FALSE when the event is not consumed; no body was
+    /// interested.
     virtual bool process_event( const Event& ev );
 
     /// \brief Getter for internal updated status.
@@ -467,16 +469,40 @@ class UIWidget: public Transformable
     /// \see UIWidget::initialize
     virtual void on_size_changed( const UIWidgetResizeEvent& ev );
 
-    virtual void on_mouse_down( const Event& evt );
-    virtual void on_mouse_up( const Event& evt );
+    /// \returns The default implementation returns boolean FALSE.
+    ///
+    /// \see nom::UIWidget::process_event
+    virtual bool on_mouse_down( const Event& evt );
 
-    virtual void on_mouse_enter( const Event& evt );
-    virtual void on_mouse_leave( const Event& evt );
+    /// \returns The default implementation returns boolean FALSE.
+    ///
+    /// \see nom::UIWidget::process_event
+    virtual bool on_mouse_up( const Event& evt );
 
-    virtual void on_mouse_wheel( const Event& evt );
+    /// \returns The default implementation returns boolean FALSE.
+    ///
+    /// \see nom::UIWidget::process_event
+    virtual bool on_mouse_enter( const Event& evt );
 
-    virtual void on_key_down( const Event& evt );
-    virtual void on_key_up( const Event& evt );
+    /// \returns The default implementation returns boolean FALSE.
+    ///
+    /// \see nom::UIWidget::process_event
+    virtual bool on_mouse_leave( const Event& evt );
+
+    /// \returns The default implementation returns boolean FALSE.
+    ///
+    /// \see nom::UIWidget::process_event
+    virtual bool on_mouse_wheel( const Event& evt );
+
+    /// \returns The default implementation returns boolean FALSE.
+    ///
+    /// \see nom::UIWidget::process_event
+    virtual bool on_key_down( const Event& evt );
+
+    /// \returns The default implementation returns boolean FALSE.
+    ///
+    /// \see nom::UIWidget::process_event
+    virtual bool on_key_up( const Event& evt );
 
     /// \brief Find a new widget to give keyboard focus to.
     ///

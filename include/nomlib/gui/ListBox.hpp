@@ -124,15 +124,15 @@ class ListBox: public UIWidget
     /// label, which in turn, also updates the widget. The call to update
     /// allows -- amongst other things -- the ability to update the text color
     /// to the selection text.
-    virtual void on_key_down( const Event& evt );
+    virtual bool on_key_down( const Event& evt );
 
     /// \brief Default event listener for handling mouse down events.
     ///
     /// \todo Explain the contrast in why this method call is vastly simplified
     /// in comparison to the method logic in on_key_down and on_mouse_down.
-    virtual void on_mouse_down( const Event& evt );
+    virtual bool on_mouse_down( const Event& evt );
 
-    virtual void on_mouse_enter( const Event& evt );
+    // virtual bool on_mouse_enter( const Event& evt );
 
     /// \brief Default event listener for handling mouse wheel events.
     ///
@@ -140,7 +140,7 @@ class ListBox: public UIWidget
     /// label, which in turn, also updates the widget. The call to update
     /// allows -- amongst other things -- the ability to update the text color
     /// to the selection text.
-    virtual void on_mouse_wheel( const Event& evt );
+    virtual bool on_mouse_wheel( const Event& evt );
 
     /// \brief Re-implements UIWidget::set_focused.
     void set_focused( bool state );

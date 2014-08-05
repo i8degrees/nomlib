@@ -93,9 +93,7 @@ void SDLApp::on_event( const Event& ev )
   // First, handle our own events
   EventHandler::process_event( ev );
 
-  // Next, handle the state's manager's list of events
-  //
-  // StateMachine::on_event
+  // Next, handle the state machine's event loop:
   if( this->state_ != nullptr )
   {
     this->state()->on_event( ev );

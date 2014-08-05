@@ -871,7 +871,12 @@ void UIWidget::draw( RenderTarget& target ) const
 
 bool UIWidget::process_event( const Event& ev )
 {
-  // Widgets
+  // Invalid coordinates
+  Point2i mouse_coords( Point2i::null );
+  Point2i ev_mouse( Point2i::null );
+
+  // Propagate the event to every (child) widget until either: a) a widget
+  // consumes said event; b) end of widget tree is reached.
   for( auto it = this->children_.begin(); it != this->children_.end(); ++it )
   {
     if( *it != nullptr )
@@ -886,57 +891,97 @@ bool UIWidget::process_event( const Event& ev )
       // return (*it)->process_event( ev );
 
       IntRect widget_bounds( (*it)->position(), (*it)->size() );
-      Point2i mouse_coords( ev.mouse.x, ev.mouse.y );
 
       if( ev.type == SDL_MOUSEMOTION )
       {
-        Point2i ev_mouse( ev.motion.x, ev.motion.y );
+        ev_mouse = Point2i( ev.motion.x, ev.motion.y );
 
         if( this->contains( *it, ev_mouse ) == true )
         {
-          // NOM_DUMP( (*it)->name() );
-          // NOM_DUMP("motion");
-          (*it)->on_mouse_enter( ev );
+          if( (*it)->on_mouse_enter( ev ) == false )
+          {
+            // Widget isn't interested ... so, onwards!
+            continue;
+          }
 
-          // return true;
+          // Consumed event
+          return true;
         }
         else  // Widget bounds do not intersect mouse coordinates
         {
-          (*it)->on_mouse_leave( ev );
+          if( (*it)->on_mouse_leave( ev ) == false )
+          {
+            // Widget isn't interested ... so, onwards!
+            continue;
+          }
 
-          // return true;
+          // Consumed event
+          return true;
         }
       }
       else if( ev.type == SDL_MOUSEBUTTONDOWN )
       {
+        mouse_coords = Point2i( ev.mouse.x, ev.mouse.y );
+
         if( widget_bounds.contains( mouse_coords ) )
         {
-          (*it)->on_mouse_down( ev );
+          if( (*it)->on_mouse_down( ev ) == false )
+          {
+            // Widget isn't interested ... so, onwards!
+            continue;
+          }
 
+          // Consumed event
           return true;
         }
       }
       else if( ev.type == SDL_MOUSEBUTTONUP )
       {
+        mouse_coords = Point2i( ev.mouse.x, ev.mouse.y );
 
         if( widget_bounds.contains( mouse_coords ) )
         {
-          (*it)->on_mouse_up( ev );
+          if( (*it)->on_mouse_up( ev ) == false )
+          {
+            // Widget isn't interested ... so, onwards!
+            continue;
+          }
 
+          // Consumed event
           return true;
         }
       }
       else if( ev.type == SDL_MOUSEWHEEL )
       {
-        (*it)->on_mouse_wheel( ev );
+        if( (*it)->on_mouse_wheel( ev ) == false )
+        {
+          continue;
+        }
+
+        // Consumed event
+        return true;
       }
       else if( ev.type == SDL_KEYDOWN )
       {
-        (*it)->on_key_down( ev );
+        if( (*it)->on_key_down( ev ) == false )
+        {
+          // Widget isn't interested ... so, onwards!
+          continue;
+        }
+
+        // Consumed event
+        return true;
       }
       else if( ev.type == SDL_KEYUP )
       {
-        (*it)->on_key_up( ev );
+        if( (*it)->on_key_up( ev ) == false )
+        {
+          // Widget isn't interested ... so, onwards!
+          continue;
+        }
+
+        // Consumed event
+        return true;
       }
     }
   }
@@ -1015,7 +1060,7 @@ bool UIWidget::process_event( const Event& ev )
   //   } // end if window contains mouse coords
   // } // end if SDL_MOUSEBUTTONDOWN
 
-  // No events to process
+  // Event not consumed (nobody was interested)
   return false;
 }
 
@@ -1173,39 +1218,53 @@ void UIWidget::on_size_changed( const UIWidgetResizeEvent& ev )
   this->dispatcher()->emit( info );
 }
 
-void UIWidget::on_mouse_down( const Event& evt )
+bool UIWidget::on_mouse_down( const Event& evt )
 {
   // Do nothing
+
+  return false;
 }
 
-void UIWidget::on_mouse_up( const Event& evt )
+bool UIWidget::on_mouse_up( const Event& evt )
 {
   // Do nothing
+
+  return false;
 }
 
-void UIWidget::on_mouse_enter( const Event& evt )
+bool UIWidget::on_mouse_enter( const Event& evt )
 {
   // Do nothing
+
+  return false;
 }
 
-void UIWidget::on_mouse_leave( const Event& evt )
+bool UIWidget::on_mouse_leave( const Event& evt )
 {
   // Do nothing
+
+  return false;
 }
 
-void UIWidget::on_mouse_wheel( const Event& evt )
+bool UIWidget::on_mouse_wheel( const Event& evt )
 {
   // Do nothing
+
+  return false;
 }
 
-void UIWidget::on_key_down( const Event& evt )
+bool UIWidget::on_key_down( const Event& evt )
 {
   // Do nothing
+
+  return false;
 }
 
-void UIWidget::on_key_up( const Event& evt )
+bool UIWidget::on_key_up( const Event& evt )
 {
   // Do nothing
+
+  return false;
 }
 
 bool UIWidget::focus_previous_child( void )

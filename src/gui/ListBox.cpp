@@ -275,17 +275,22 @@ int ListBox::hit_test( const Point2i& pt )
 
 // Protected scope
 
-void ListBox::on_key_down( const Event& evt )
+bool ListBox::on_key_down( const Event& evt )
 {
   // Current position index
   int selected = 0;
   UIWidgetEvent item;
 
-  if( evt.type != SDL_KEYDOWN ) return;
+  if( evt.type != SDL_KEYDOWN ) return false;
 
   if( this->focused() == false )
   {
-    return;
+    // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, this->name(), "focused:", "FALSE" );
+    return false;
+  }
+  else
+  {
+    // NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, this->name(), "focused:", "TRUE" );
   }
 
   selected = this->store()->selection();
@@ -343,18 +348,22 @@ void ListBox::on_key_down( const Event& evt )
   // Do the update logic last, so to minimize the delay between input and
   // the rendering of the action
   this->set_selected_text_color( this->selected_text_color() );
+
+  return true;
 }
 
-void ListBox::on_mouse_down( const Event& evt )
+bool ListBox::on_mouse_down( const Event& evt )
 {
   int index = 0;
   uint32 p = this->focus_policy();
   UIWidgetEvent item;
 
-  if( evt.type != SDL_MOUSEBUTTONDOWN ) return;
+  // Incorrect event type
+  if( evt.type != SDL_MOUSEBUTTONDOWN ) return false;
 
   if( p & FocusPolicy::ClickFocus )
   {
+    // This is likely to be invalid if the event type does not match (see below).
     Point2i ev_mouse( evt.mouse.x, evt.mouse.y );
 
     index = this->hit_test( ev_mouse );
@@ -388,14 +397,18 @@ void ListBox::on_mouse_down( const Event& evt )
   // Do the update logic last, so to minimize the delay between input and
   // the rendering of the action
   this->set_selected_text_color( this->selected_text_color() );
+
+  return true;
 }
 
-void ListBox::on_mouse_enter( const Event& evt )
-{
-  // this->set_focused( true );
-}
+// bool ListBox::on_mouse_enter( const Event& evt )
+// {
+//   // this->set_focused( true );
 
-void ListBox::on_mouse_wheel( const Event& evt )
+//   return false;
+// }
+
+bool ListBox::on_mouse_wheel( const Event& evt )
 {
   uint32 p = this->focus_policy();
   int index = 0;
@@ -403,12 +416,14 @@ void ListBox::on_mouse_wheel( const Event& evt )
   int selected = 0;
   UIWidgetEvent item;
 
-  if( evt.type != SDL_MOUSEWHEEL ) return;
+  // Incorrect event type
+  if( evt.type != SDL_MOUSEWHEEL ) return false;
 
   if( p & FocusPolicy::WheelFocus )
   {
+    // Potentially expensive method call; the event queue is pumped (polled)
+    // on *every* frame.
     MouseState mstate = Cursor::mouse_state();
-
     Point2i mouse( mstate.pos.x, mstate.pos.y );
 
     index = this->hit_test( mouse );
@@ -425,7 +440,8 @@ void ListBox::on_mouse_wheel( const Event& evt )
 
   if( this->focused() == false )
   {
-    return;
+    // Not the widget's event
+    return false;
   }
 
   // Our current position index
@@ -485,6 +501,8 @@ void ListBox::on_mouse_wheel( const Event& evt )
   // Do the update logic last, so to minimize the delay between input and
   // the rendering of the action
   this->set_selected_text_color( this->selected_text_color() );
+
+  return true;
 }
 
 void ListBox::set_focused( bool state )

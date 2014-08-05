@@ -139,7 +139,7 @@ class MessageBox: public UIWidget
     /// \brief Implements UIWidget::update method.
     void update( void );
 
-    virtual void on_mouse_down( const Event& evt );
+    virtual bool on_mouse_down( const Event& evt );
 
   private:
     /// \brief Title (caption) text label.

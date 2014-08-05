@@ -85,9 +85,11 @@ IState::Type IState::type( void ) const
   return this->type_;
 }
 
-void IState::on_event( const Event& ev )
+bool IState::on_event( const Event& ev )
 {
   // User-defined virtual
+
+  return false;
 }
 
 void IState::on_update ( float )

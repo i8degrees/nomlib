@@ -118,10 +118,21 @@ class IState: public EventHandler
 
     /// \brief User-defined implementation of the state's event handling logic.
     ///
-    /// \param ev nom::Event union struct.
+    /// \param ev The passed nom::Event object.
     ///
-    /// \remarks When not defined, a do-nothing implementation is provided.
-    virtual void on_event( const nom::Event& ev );
+    /// \remarks This method provides a means of control for event propagation
+    /// flow.
+    ///
+    /// \fixme This is currently required for GUI events processing in TTcards,
+    /// and probably can be handled better...
+    ///
+    /// \returns This method should return Boolean TRUE when the nom::Event
+    /// object has been processed (think: consumed) by the user-implemented
+    /// method, and boolean FALSE when the nom::Event object has not been
+    /// processed (think: consumed). The default implementation returns false.
+    ///
+    /// \see StateMachine::on_event
+    virtual bool on_event( const nom::Event& ev );
 
     /// \brief User-defined implementation of the state's update logic.
     ///

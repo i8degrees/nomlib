@@ -110,13 +110,13 @@ class QuestionDialogBox: public MessageBox
   protected:
 
     /// \brief Re-implements UIWidget::on_mouse_down.
-    virtual void on_mouse_down( const Event& evt );
+    virtual bool on_mouse_down( const Event& evt );
 
     /// \brief Re-implements UIWidget::on_mouse_wheel.
-    virtual void on_mouse_wheel( const Event& evt );
+    virtual bool on_mouse_wheel( const Event& evt );
 
     /// \brief Re-implements UIWidget::on_key_down.
-    virtual void on_key_down( const Event& evt );
+    virtual bool on_key_down( const Event& evt );
 
   private:
     /// \brief Implements MessageBox::update method.

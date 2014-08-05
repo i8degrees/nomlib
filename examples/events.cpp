@@ -136,8 +136,21 @@ class App: public nom::SDLApp
       // State 5 is keyboard input mapping with repeating key active
       nom::InputActionMapper state0, state1, state2, state3, state4, state5;
 
+      nom::EventCallback quit_app( [&] ( const nom::Event& evt )
+        {
+            this->on_app_quit( evt );
+        }
+      );
+
+      // Mouse button mappings
+
       state0.insert( "minimize_window_0", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT ), nom::EventCallback( [&] ( const nom::Event& evt ) { this->minimize( evt ); } ) );
       state0.insert( "restore_window_0", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_RIGHT ), nom::EventCallback( [&] ( const nom::Event& evt ) { this->restore( evt ); } ) );
+      state0.insert (
+                      "quit_app",
+                      nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT, 3 ),
+                      quit_app
+                    );
 
       NOM_CONNECT_INPUT_MAPPING( state1, "minimize_window_0", nom::KeyboardAction( SDL_KEYDOWN, SDLK_1 ), minimize, evt );
 
@@ -148,11 +161,11 @@ class App: public nom::SDLApp
       // the input mapper.
       NOM_CONNECT_INPUT_MAPPING( state1, "restore_window_0", nom::KeyboardAction( SDL_KEYDOWN, SDLK_2, KMOD_LCTRL ), restore, evt );
 
-      state1.insert( "quit_app",
-                            nom::KeyboardAction ( SDL_KEYDOWN, SDLK_1, KMOD_LCTRL ),
-                                                      nom::EventCallback( [&] ( const nom::Event& evt ) { this->on_app_quit( evt ); }
-                                                    )
-                                );
+      state1.insert (
+                      "quit_app",
+                      nom::KeyboardAction( SDL_KEYDOWN, SDLK_1, KMOD_LCTRL ),
+                      quit_app
+                    );
 
       // Joystick button mappings
 
@@ -391,6 +404,15 @@ class App: public nom::SDLApp
         this->window[idx].update();
       }
 
+      // Test the simulation of an input event
+      nom::Event key_ev;
+      key_ev.type = SDL_KEYDOWN;
+      key_ev.timestamp = nom::ticks();
+      key_ev.key.sym = SDLK_1;
+      key_ev.key.mod = KMOD_NONE;
+      key_ev.key.repeat = 0;
+      this->push_event( key_ev );
+
       // 1. Events
       // 2. Logic
       // 3. Render
@@ -399,6 +421,7 @@ class App: public nom::SDLApp
         while( this->poll_event( this->event ) )
         {
           this->on_event( this->event );
+
           this->input_mapper.on_event( this->event );
         }
 

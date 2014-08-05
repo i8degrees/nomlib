@@ -324,6 +324,9 @@ class EventHandler
     bool pop_event( Event& ev );
 
     /// \brief Insert an event into the high-level events queue.
+    ///
+    /// \remarks This can be used to simulate input events; i.e.: key press,
+    /// mouse click, ...
     void push_event( const Event& ev );
 
   private:

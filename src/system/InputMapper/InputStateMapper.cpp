@@ -260,45 +260,15 @@ bool InputStateMapper::on_key_press( const InputAction& mapping, const Event& ev
 {
   Event evt = mapping.event();
 
-  // if( mapping.key == nullptr ) return false;
-
   if( evt.type != ev.type ) return false;
 
-  // Handle keyboard actions with set modifier keys first.
-  if( evt.key.mod != KMOD_NONE )
+  // Handle matching the set keyboard actions to the user's input
+  if( evt.key.sym == ev.key.sym && evt.key.mod == ev.key.mod
+                                &&
+      evt.key.repeat == ev.key.repeat
+    )
   {
-    // Handle keyboard actions with set modifiers and repeat fields initialized.
-    if( evt.key.repeat != 0 )
-    {
-      if( ev.key.repeat != 0 && evt.key.sym == ev.key.sym && evt.key.mod == ev.key.mod )
-      {
-        return true;
-      }
-
-      return false;
-    }
-    // Handle keyboard actions with set modifier keys but no repeat field
-    // initialized.
-    else if( evt.key.sym == ev.key.sym && evt.key.mod == ev.key.mod )
-    {
-      return true;
-    }
-  }
-  // Handle keyboard actions without modifier keys initialized.
-  else if( evt.key.sym == ev.key.sym )
-  {
-    // Handle keyboard actions with repeat field initialized (without modifier
-    // keys).
-    if( evt.key.repeat != 0 )
-    {
-      if( ev.key.repeat != 0 )
-      {
-        return true;
-      }
-
-      return false;
-    }
-
+    // Matched
     return true;
   }
 
@@ -310,12 +280,17 @@ bool InputStateMapper::on_mouse_button( const InputAction& mapping, const Event&
 {
   Event evt = mapping.event();
 
-  // if( mapping.mouse == nullptr ) return false;
-
   if( evt.type != ev.type ) return false;
 
-  if( evt.mouse.button == ev.mouse.button ) return true;
+  // Successful match is a mouse click that matches both the button used
+  // (left, middle, right, ...) and its number of clicks (single, double, ...)
+  if( evt.mouse.clicks == ev.mouse.clicks && evt.mouse.button == ev.mouse.button )
+  {
+    // Match
+    return true;
+  }
 
+  // No match; number of clicks mismatch
   return false;
 }
 

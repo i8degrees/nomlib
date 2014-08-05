@@ -98,7 +98,8 @@ struct KeyboardSymbolEvent
   /// \todo Implement using the KeyboardSymbolCode structure.
   SDL_Keycode sym;
 
-  /// \brief The modifiers of the key press event; CTRL, ALT, ...
+  /// \brief An enumeration of key modifier masks; see also: the SDL2 wiki
+  /// documentation page for [SDL_Keymod](https://wiki.libsdl.org/SDL_Keymod).
   uint16 mod;
 };
 
@@ -115,9 +116,8 @@ struct KeyboardEvent
   // SDL_Keysym sym;
   int32 sym;
 
-  /// \brief The modifiers of the key press event; CTRL, ALT, ...
-  ///
-  /// \remarks Multiple modifier keys can be combined as a bit-mask.
+  /// \brief An enumeration of key modifier masks; see also: the SDL2 wiki
+  /// documentation page for [SDL_Keymod](https://wiki.libsdl.org/SDL_Keymod).
   uint16 mod;
 
   /// \brief The state of the key press event.
@@ -222,9 +222,6 @@ struct MouseButtonEvent
   /// \brief Value containing how many mouse buttons were clicked.
   ///
   /// \remarks One (1) for single-click, two (2) for double-click, and so on.
-  ///
-  /// \note This field is not yet implemented and reserved for the release of
-  /// SDL 2.0.2 (as per SDL2 wiki documentation).
   uint8 clicks;
 
   /// \brief The identifier of the window at the moment of the event.
@@ -267,7 +264,8 @@ struct MouseWheelEvent
   // /// \remarks The axis of the wheel event; zero (0) for X-axis and one (1)
   // /// for Y-axis.
   // ///
-  // /// \note This is implemented & supported by nom::InputMapper only.
+  // /// \note This is only implemented for internal usage within
+  // /// nom::InputMapper.
   // ///
   // /// \see nom::MouseWheelAction
   // uint8 axis;

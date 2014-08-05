@@ -139,24 +139,79 @@ void VisualUnitTest::SetUp( void )
 
   // Register default input bindings
   InputActionMapper state;
-  KeyboardAction action;
 
-  EventCallback ev_quit( [&] () { this->quit(); } );
+  EventCallback ev_quit( [&] ( const Event& evt ) { this->quit(); } );
 
-  EventCallback ev_screenshot( [&] () { this->render_window().save_screenshot( this->test_name() + ".png" ); } );
-  EventCallback ev_fullscreen( [&] () { this->render_window().toggle_fullscreen(); } );
+  EventCallback ev_screenshot( [&] ( const Event& evt )
+    {
+      this->render_window().save_screenshot( this->test_name() + ".png" );
+    }
+  );
 
-  action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE );
-  state.insert( "ev_quit", nom::InputAction( action, ev_quit ) );
+  EventCallback ev_fullscreen( [&] ( const Event& evt )
+    {
+      this->render_window().toggle_fullscreen();
+    }
+  );
 
-  action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_q );
-  state.insert( "ev_quit", nom::InputAction( action, ev_quit ) );
+  // A convenient key binding for *quickly* terminating all unit tests and test
+  // cases within the executable immediately.
+  //
+  // NOTE: The returned exit code relies on the underlying testing framework's
+  // failure totals. It is intended that this termination does not conflict
+  // with said framework; try not to manipulate previously collected test
+  // results or otherwise.
+  //
+  // NOTE: This key binding (along with any other registered binding) is not
+  // available during non-interactive test executions.
+  EventCallback term_tests( [&] ( const Event& evt )
+    {
+      std::exit( this->failed_test_count() );
+    }
+  );
 
-  action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_F1 );
-  state.insert( "ev_screenshot", nom::InputAction( action, ev_screenshot ) );
+  state.insert  (
+                  "ev_quit",
+                  nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE ),
+                  ev_quit
+                );
 
-  action = nom::KeyboardAction( SDL_KEYDOWN, SDLK_f );
-  state.insert( "ev_fullscreen", nom::InputAction( action, ev_fullscreen ) );
+  state.insert  (
+                  "ev_quit",
+                  nom::KeyboardAction( SDL_KEYDOWN, SDLK_q ),
+                  ev_quit
+                );
+
+  state.insert  (
+                  "ev_screenshot",
+                  nom::KeyboardAction( SDL_KEYDOWN, SDLK_F1 ),
+                  ev_screenshot
+                );
+
+  state.insert  (
+                  "ev_fullscreen",
+                  nom::KeyboardAction( SDL_KEYDOWN, SDLK_f ),
+                  ev_fullscreen
+                );
+
+  state.insert  (
+                  "term_tests",
+
+                  // Try to use native platform key modifiers
+                  #if defined( NOM_PLATFORM_OSX ) // Use CMD key modifier
+                    nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE, KMOD_LGUI ),
+                  #else
+                    // Use SHIFT key modifier; KMOD_GUI is probably going
+                    // to be the Windows logo key...
+                    //
+                    // FIXME: Find a better key modifier to use here...?
+                    // On Win7, ALT+ESCAPE switches windows and CTRL+ESCAPE
+                    // brings up the Start menu.
+                    nom::KeyboardAction( SDL_KEYDOWN, SDLK_BACKQUOTE, KMOD_LCTRL ),
+                  #endif // defined NOM_PLATFORM_OSX
+
+                  term_tests
+                );
 
   this->input_mapper_.insert( this->test_set(), state, true );
 

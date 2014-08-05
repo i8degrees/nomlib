@@ -113,7 +113,7 @@ void KeyboardAction::dump( void ) const
 
 // MouseButtonAction
 
-MouseButtonAction::~MouseButtonAction( void )
+MouseButtonAction::~MouseButtonAction()
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -121,10 +121,24 @@ MouseButtonAction::~MouseButtonAction( void )
 MouseButtonAction::MouseButtonAction( uint32 type, uint8 button )
 {
   // NOM_LOG_TRACE( NOM );
+
   this->event_.type = type;
   this->event_.mouse.x = 0;
   this->event_.mouse.y = 0;
   this->event_.mouse.button = button;
+  this->event_.mouse.clicks = 1;
+  this->event_.mouse.window_id = 0;
+}
+
+MouseButtonAction::MouseButtonAction( uint32 type, uint8 button, uint8 clicks )
+{
+  // NOM_LOG_TRACE( NOM );
+
+  this->event_.type = type;
+  this->event_.mouse.x = 0;
+  this->event_.mouse.y = 0;
+  this->event_.mouse.button = button;
+  this->event_.mouse.clicks = clicks;
   this->event_.mouse.window_id = 0;
 }
 

@@ -35,12 +35,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-StateMachine::StateMachine( void )
+StateMachine::StateMachine()
 {
   //NOM_LOG_TRACE( NOM );
 }
 
-StateMachine::~StateMachine( void )
+StateMachine::~StateMachine()
 {
   //NOM_LOG_TRACE( NOM );
 }
@@ -58,18 +58,23 @@ StateMachine::~StateMachine( void )
 // */
 // }
 
-uint32 StateMachine::previous_state( void ) const
+uint32 StateMachine::count() const
 {
-  NOM_ASSERT( this->states.empty() == false );
-
-  return this->states.back()->id();
+  return this->states_.size();
 }
 
-uint32 StateMachine::next_state( void ) const
+uint32 StateMachine::current_state_id( void ) const
 {
-  NOM_ASSERT( this->states.empty() == false );
+  NOM_ASSERT( this->states_.empty() == false );
 
-  return this->states.front()->id();
+  return this->states_.back()->id();
+}
+
+uint32 StateMachine::next_state_id( void ) const
+{
+  NOM_ASSERT( this->states_.empty() == false );
+
+  return this->states_.front()->id();
 }
 
 void StateMachine::set_state( std::unique_ptr<IState> state, void_ptr data )
@@ -77,15 +82,15 @@ void StateMachine::set_state( std::unique_ptr<IState> state, void_ptr data )
   NOM_ASSERT( state );
 
   // Cleanup the current state
-  if ( ! this->states.empty() )
+  // if ( ! this->states_.empty() )
   {
-    // this->states.back()->on_exit(data);
-    // this->states.pop_back();
+    // this->states_.back()->on_exit(data);
+    // this->states_.pop_back();
   }
 
   // Store the new state
-  // this->states.push_back( std::move( state ) );
-  // this->states.back()->on_init(data);
+  // this->states_.push_back( std::move( state ) );
+  // this->states_.back()->on_init(data);
 
   this->set_deferred_state( std::move( state ), data );
 }
@@ -95,26 +100,26 @@ void StateMachine::set_state( std::unique_ptr<IState> state, void_ptr data )
 //   NOM_ASSERT( state );
 
 //   // Pause current state
-//   if ( ! this->states.empty() )
+//   if ( ! this->states_.empty() )
 //   {
-//     // this->states.back()->on_pause(data);
+//     // this->states_.back()->on_pause(data);
 //   }
 
 //   this->set_deferred_state( std::move( state ), data );
 
 //   // Store the new state
-//   // this->states.push_back( std::move( state ) );
-//   // this->states.back()->on_init(data);
+//   // this->states_.push_back( std::move( state ) );
+//   // this->states_.back()->on_init(data);
 // }
 
 void StateMachine::pop_state( void_ptr data )
 {
   // Cleanup the current state only if our state stack holds more than one;
   // otherwise we are left in a stateless machine.
-  if( this->states.size() > 1 )
+  if( this->states_.size() > 1 )
   {
-    // this->states.back()->on_exit(data);
-    // this->states.pop_back();
+    // this->states_.back()->on_exit(data);
+    // this->states_.pop_back();
 
     this->set_deferred_state( nullptr, data );
   }
@@ -124,109 +129,116 @@ void StateMachine::pop_state( void_ptr data )
     return;
   }
 
-  // NOM_ASSERT( this->states.back() );
+  // NOM_ASSERT( this->states_.back() );
 
   // Resume previous state
-  // this->states.back()->on_resume( data );
+  // this->states_.back()->on_resume( data );
 }
 
 void StateMachine::on_event( const Event& ev )
 {
   // Ensure that we have a state in which we can handle events on
-  if ( ! this->states.empty() )
+  if ( ! this->states_.empty() )
   {
     // Optional IState::on_event implementation.
-    this->states.back()->on_event( ev );
+    this->states_.back()->on_event( ev );
 
     // All game state derived bindings (IState) will break without this call!
-    this->states.back()->process_event( ev );
+    this->states_.back()->process_event( ev );
   }
 }
 
 void StateMachine::update( float delta )
 {
   // Ensure that we have a state in which we can handle update on
-  if ( ! this->states.empty() )
+  if ( ! this->states_.empty() )
   {
     // Honor user's request to update the state behind us first.
-    if ( this->states.back()->flags() & IState::Flags::BackUpdate )
+    if ( this->states_.back()->flags() & IState::Flags::BackUpdate )
     {
-      NOM_ASSERT ( this->states.front() );
+      NOM_ASSERT ( this->states_.front() );
 
-      this->states.front()->on_update ( delta );
+      this->states_.front()->on_update ( delta );
     }
 
     // Let the state update the scene with regard to the delta time
-    this->states.back()->on_update ( delta );
+    this->states_.back()->on_update ( delta );
   }
 
   // Set next state, if one is in the queue. We must handle the state transition
   // in a particular way, due to the fact that we allow more than one state to
   // be active within the loop.
-  if( this->deferred_state_.empty() == false )
+  if( this->next_state_.deferred == true )
   {
-    // Normal state transition
-    if( this->deferred_state_.back().state && this->deferred_state_.back().state->type() == IState::Type::Parent )
+    if( this->next_state_.state != nullptr )
     {
-      NOM_LOG_DEBUG( NOM_LOG_CATEGORY_SYSTEM, "Parent state" );
-
-      if( ! this->states.empty() )
+      // Normal state transition
+      if( this->next_state_.state->type() == IState::Type::Parent )
       {
-        this->states.back()->on_exit( this->deferred_state_.back().data );
-        this->states.pop_back();
+        NOM_LOG_DEBUG( NOM_LOG_CATEGORY_SYSTEM, "Parent state" );
+
+        if( ! this->states_.empty() )
+        {
+          this->states_.back()->on_exit( this->next_state_.data );
+          this->states_.pop_back();
+        }
+
+        this->states_.push_back( std::move( this->next_state_.state ) );
+        this->states_.back()->on_init( this->next_state_.data );
       }
-
-      this->states.push_back( std::move( this->deferred_state_.back().state ) );
-      this->states.back()->on_init( this->deferred_state_.back().data );
-    }
-    // Special needs state transition case #1
-    else if( this->deferred_state_.back().state && this->deferred_state_.back().state->type() == IState::Type::Child )
-    {
-      NOM_LOG_DEBUG( NOM_LOG_CATEGORY_SYSTEM, "Child state" );
-
-      if( ! this->states.empty() )
+      // Special needs state transition case #1
+      else if( this->next_state_.state && this->next_state_.state->type() == IState::Type::Child )
       {
-        this->states.back()->on_pause( this->deferred_state_.back().data );
-      }
+        NOM_LOG_DEBUG( NOM_LOG_CATEGORY_SYSTEM, "Child state" );
 
-      this->states.push_back( std::move( this->deferred_state_.back().state ) );
-      this->states.back()->on_init( this->deferred_state_.back().data );
-    }
+        if( ! this->states_.empty() )
+        {
+          this->states_.back()->on_pause( this->next_state_.data );
+        }
+
+        this->states_.push_back( std::move( this->next_state_.state ) );
+        this->states_.back()->on_init( this->next_state_.data );
+      }
+    } // end if next_state is not NULL
+
     // Special needs state transition case #2 (resume previous state)
-    else if( ! this->deferred_state_.back().state )
+    else // if next state is NULL
     {
       NOM_LOG_DEBUG( NOM_LOG_CATEGORY_SYSTEM, "Resume previous (parent or child) state" );
 
-      if( this->states.size() > 1 )
+      if( this->states_.size() > 1 )
       {
-        this->states.back()->on_exit( this->deferred_state_.back().data );
-        this->states.pop_back();
+        this->states_.back()->on_exit( this->next_state_.data );
+        this->states_.pop_back();
       }
 
-      this->states.back()->on_resume( this->deferred_state_.back().data );
+      this->states_.back()->on_resume( this->next_state_.data );
     }
 
-    // Clear the pending state queue
-    this->deferred_state_.pop();
-  }
+    // Clear the pending state (regardless of conditional case)
+    this->next_state_.deferred = false;
+    this->next_state_.state.reset( nullptr );
+    this->next_state_.data = nullptr;
+
+  } // end if next_state is deferred
 }
 
 void StateMachine::draw( RenderWindow& target )
 {
   // Ensure that we have a state in which we can handle rendering on
-  if ( ! this->states.empty() )
+  if ( ! this->states_.empty() )
   {
     // Honor user's request to draw the state behind us first; this allows the
     // current state to use the previous state's rendering as a background.
-    if ( this->states.back()->flags() & IState::Flags::BackRender )
+    if ( this->states_.back()->flags() & IState::Flags::BackRender )
     {
-      NOM_ASSERT ( this->states.front() );
+      NOM_ASSERT ( this->states_.front() );
 
-      this->states.front()->on_draw ( target );
+      this->states_.front()->on_draw ( target );
     }
 
     // Let the state draw the scene onto the display
-    this->states.back()->on_draw ( target );
+    this->states_.back()->on_draw ( target );
   }
 }
 
@@ -237,12 +249,16 @@ void StateMachine::set_deferred_state (
                                         void_ptr data
                                       )
 {
-  DeferredState s;
+  priv::DeferredState s;
 
+  s.deferred = true;
   s.state = std::move( state );
   s.data = data;
 
-  this->deferred_state_.push( std::move( s ) );
+  // if( s.state != nullptr )
+  {
+    this->next_state_ = std::move( s );
+  }
 }
 
 } // namespace nom

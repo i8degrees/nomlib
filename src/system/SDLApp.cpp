@@ -186,13 +186,15 @@ bool SDLApp::toggle_fps ( void )
 
 StateMachine* SDLApp::state( void ) const
 {
-  NOM_ASSERT( this->state_ != nullptr );
+  // NOM_ASSERT( this->state_ != nullptr );
 
   return this->state_.get();
 }
 
 void SDLApp::set_state_machine( StateMachine* mech )
 {
+  NOM_ASSERT( mech != nullptr );
+
   this->state_.reset( mech );
 }
 

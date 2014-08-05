@@ -42,25 +42,44 @@ struct Event;
 class IState;
 class RenderWindow;
 
+namespace priv {
+
+/// \internal
+/// \see nom::StateMachine::set_deferred_state
+/// \endinternal
+struct DeferredState
+{
+  bool deferred;
+  std::unique_ptr<IState> state;
+  void* data;
+};
+
+} // namespace priv
+
 /// \brief Finite State Machine manager class
 class StateMachine
 {
   public:
     /// Default constructor
-    StateMachine( void );
+    StateMachine();
 
     /// Destructor
-    ~StateMachine( void );
+    ~StateMachine();
 
     // virtual void set_state ( uint32 id, void_ptr data = nullptr );
 
-    /// \brief Obtain the previous state's identifier
+    /// \brief Get the number of active states.
     ///
-    /// \returns The identifier of the previous state, or an assertion on
+    /// \returns Total number of states in the stack.
+    uint32 count() const;
+
+    /// \brief Obtain the current state's identifier
+    ///
+    /// \returns The identifier of the state, or an assertion on
     /// failure, such as if the the states stack is empty.
     ///
     /// \remarks The state identifier is user-defined.
-    uint32 previous_state( void ) const;
+    uint32 current_state_id( void ) const;
 
     /// \brief Obtain the next state's identifier
     ///
@@ -68,7 +87,7 @@ class StateMachine
     /// assertion on failure, such as if the the states stack is empty.
     ///
     /// \remarks The state identifier is user-defined.
-    uint32 next_state( void ) const;
+    uint32 next_state_id( void ) const;
 
     /// \param state  The nom::IState deriving object to be set as the current
     /// state.
@@ -115,17 +134,11 @@ class StateMachine
     /// callback is completed.
     void set_deferred_state( std::unique_ptr<IState> state, void_ptr data );
 
-    struct DeferredState
-    {
-      std::unique_ptr<IState> state;
-      void* data = nullptr;
-    };
-
-    /// \brief Pending state to be set on the next frame update
-    std::queue<DeferredState> deferred_state_;
+    /// \brief The pending state to be set on the next frame update
+    priv::DeferredState next_state_;
 
     /// \brief Stack of states
-    std::vector<std::unique_ptr<IState>> states;
+    std::vector<std::unique_ptr<IState>> states_;
 };
 
 } // namespace nom

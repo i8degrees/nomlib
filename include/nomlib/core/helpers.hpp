@@ -26,62 +26,49 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/IObject.hpp"
+#ifndef NOMLIB_CORE_HELPERS_HPP
+#define NOMLIB_CORE_HELPERS_HPP
+
+#include <cstring>
+
+#include "nomlib/config.hpp"
 
 namespace nom {
 
-uint64 IObject::total_alloc_bytes = 0;
-uint64 IObject::total_dealloc_bytes = 0;
+namespace priv {
 
-IObject::IObject( void )
+/// \brief Maximum size a nom::Value string type may be
+///
+/// \remarks Buffer overflow protection.
+const uint MAX_STRING_LENGTH = 256;
+
+/// \brief Clone a C style string value.
+///
+/// \param length Size of the string to copy.
+///
+/// \returns Null-terminated string up to MAX_STRING_LENGTH.
+///
+/// \todo Find a better home for this function?
+char* duplicate_string( const char* val, uint length );
+
+} // namespace priv
+
+/// Convenience helper for providing a version of std::make_unique for
+/// std::unique_ptr -- C++11 forgot to provide one like they did for
+/// std::shared_ptr!
+///
+/// This version only works for non-array types. Custom deleter support also has
+/// not been added.
+///
+///   References
+///
+/// 1. http://stackoverflow.com/questions/7038357/make-unique-and-perfect-forwarding
+template<typename T, typename... Args>
+std::unique_ptr<T> make_unique(Args&&... args)
 {
-  // NOM_LOG_TRACE( NOM );
-}
-
-IObject::~IObject( void )
-{
-  // NOM_LOG_TRACE( NOM );
-}
-
-ObjectTypeInfo IObject::type( void ) const
-{
-  return NOM_OBJECT_TYPE_INFO( self_type );
-}
-
-bool IObject::is_type( const ObjectTypeInfo& rhs ) const
-{
-  // Object is of the same type -- name and hash code meta-data should always
-  // match.
-  if( this->type() == rhs )
-  {
-    return true;
-  }
-
-  return false;
-}
-
-void* IObject::operator new( size_t mem )
-{
-  // std::stringstream os;
-
-  // os << "Memory allocation of: " << mem << " bytes.";
-  // NOM_LOG_INFO( NOM, os.str() );
-
-  IObject::total_alloc_bytes = IObject::total_alloc_bytes + mem;
-
-  return std::malloc( mem );
-}
-
-void IObject::operator delete( void* ptr )
-{
-  // std::stringstream os;
-
-  // os << "Memory deallocation of: " << sizeof( ptr ) << " bytes.";
-  // NOM_LOG_INFO( NOM, os.str() );
-
-  IObject::total_dealloc_bytes = IObject::total_dealloc_bytes + sizeof( ptr );
-
-  std::free( ptr );
+  return std::unique_ptr<T>( new T( std::forward<Args>( args ) ... ) );
 }
 
 } // namespace nom
+
+#endif // include guard defined

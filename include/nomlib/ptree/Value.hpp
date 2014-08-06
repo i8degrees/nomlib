@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/helpers.hpp" // priv::duplicate_string
+#include "nomlib/core/helpers.hpp" // priv::duplicate_string
 #include "nomlib/ptree/ptree_config.hpp"
 #include "nomlib/ptree/ptree_types.hpp"
 

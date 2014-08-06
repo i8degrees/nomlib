@@ -32,11 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Public header file
 
 #include <nomlib/config.hpp>
-#include <nomlib/system/ObjectTypeInfo.hpp>
-#include <nomlib/system/IObject.hpp>
-#include <nomlib/system/helpers.hpp>
-#include <nomlib/system/SDL2Logger.hpp>
-#include <nomlib/system/clock.hpp>
 #include <nomlib/system/FPS.hpp>
 #include <nomlib/system/StateMachine.hpp>
 #include <nomlib/system/IState.hpp>
@@ -47,8 +42,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/EventHandler.hpp>
 #include <nomlib/system/Joystick.hpp>
 #include <nomlib/system/Timer.hpp>
-#include <nomlib/system/clock.hpp>
-#include <nomlib/system/make_unique.hpp>
 #include <nomlib/system/AnimationTimer.hpp>
 
 // Engine initialization & shutdown

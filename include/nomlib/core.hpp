@@ -31,12 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Public header file
 
-// TODO: Relocate source & header files to core folder
-// #include "nomlib/system/clock.hpp"
-// #include "nomlib/system/SDL2Logger.hpp"
-// #include "nomlib/system/ObjectTypeInfo.hpp"
-// #include "nomlib/system/IObject.hpp"
-
+#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/clock.hpp"
+#include "nomlib/core/ObjectTypeInfo.hpp"
+#include "nomlib/core/IObject.hpp"
+#include "nomlib/core/SDL2Logger.hpp"
 #include "nomlib/core/ConsoleOutput.hpp"
+
 
 #endif // include guard defined

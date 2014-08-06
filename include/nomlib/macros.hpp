@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/clock.hpp"  // nom::timestamp
+#include "nomlib/core/clock.hpp"  // nom::timestamp
 
 // Note that the following are just the general-purpose (engine-wide) macros.
 // Other major sources of macro definitions: nomlib/config.hpp, nomlib/types.hpp,

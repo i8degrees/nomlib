@@ -1,3 +1,4 @@
+
 /******************************************************************************
 
   nomlib - C++11 cross-platform game engine
@@ -26,70 +27,30 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/ObjectTypeInfo.hpp"
+#include "nomlib/core/helpers.hpp"
 
 namespace nom {
 
-ObjectTypeInfo::ObjectTypeInfo( void ) :
-  type_{ typeid( this ) }
+namespace priv {
+
+char* duplicate_string( const char* val, uint length )
 {
-  // NOM_LOG_TRACE( NOM );
+  // Buffer overflow protection
+  if( length >= priv::MAX_STRING_LENGTH )
+  {
+    length = priv::MAX_STRING_LENGTH - 1;
+  }
+
+  // Allocate memory for duplicating the C string
+  char* duplicate_string = static_cast<char*> ( malloc( length + 1 ) );
+  std::memcpy( duplicate_string, val, length );
+
+  // Null-terminate
+  duplicate_string[length] = 0;
+
+  return duplicate_string;
 }
 
-ObjectTypeInfo::~ObjectTypeInfo( void )
-{
-  // NOM_LOG_TRACE( NOM );
-}
-
-ObjectTypeInfo::ObjectTypeInfo( const ObjectTypeInfo::self_type& rhs ) :
-  type_{ rhs.type() }
-{
-  // NOM_LOG_TRACE( NOM );
-}
-
-ObjectTypeInfo::self_type& ObjectTypeInfo::operator =( const ObjectTypeInfo::self_type& rhs )
-{
-  this->set_type( rhs.type() );
-
-  return *this;
-}
-
-ObjectTypeInfo::ObjectTypeInfo( const ObjectTypeInfo::value_type& object ) :
-  type_{ object }
-{
-  // NOM_LOG_TRACE( NOM );
-}
-
-const std::string ObjectTypeInfo::name( void ) const
-{
-  return this->type().name();
-}
-
-size_t ObjectTypeInfo::hash_code( void ) const
-{
-  return this->type().hash_code();
-}
-
-void ObjectTypeInfo::set_type( const ObjectTypeInfo::value_type& object )
-{
-  this->type_ = object;
-}
-
-bool ObjectTypeInfo::operator ==( const self_type& rhs ) const
-{
-  return( this->type() == rhs.type() );
-}
-
-bool ObjectTypeInfo::operator !=( const self_type& rhs ) const
-{
-  return( this->type() != rhs.type() );
-}
-
-// Private scope
-
-const ObjectTypeInfo::value_type& ObjectTypeInfo::type( void ) const
-{
-  return this->type_;
-}
+} // namespace priv
 
 } // namespace nom

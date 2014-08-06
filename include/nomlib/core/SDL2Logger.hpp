@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_SDL2_LOGGER_HPP
-#define NOMLIB_SYSTEM_SDL2_LOGGER_HPP
+#ifndef NOMLIB_CORE_SDL2_LOGGER_HPP
+#define NOMLIB_CORE_SDL2_LOGGER_HPP
 
 #include <iostream>
 #include <sstream>
@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "SDL.h"
 
-#include "nomlib/system/clock.hpp"
+#include "nomlib/core/clock.hpp"
 
 /// \brief The predefined logging categories.
 ///

@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/IObject.hpp"
+#include "nomlib/core/IObject.hpp"
 #include "nomlib/graphics/RenderWindow.hpp"
 
 namespace nom {

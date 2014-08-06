@@ -34,11 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL_ttf.h"
 
 // Private headers
-#include "nomlib/system/IObject.hpp"
+#include "nomlib/core/IObject.hpp"
 #include "nomlib/system/File.hpp"
 
 // Private headers (SystemColors)
-#include "nomlib/system/make_unique.hpp"
+#include "nomlib/core/helpers.hpp"
 
 // Forward declarations (SystemColors)
 #include "nomlib/system/ColorDatabase.hpp"

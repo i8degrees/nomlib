@@ -26,31 +26,70 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HELPERS_HPP
-#define NOMLIB_SYSTEM_HELPERS_HPP
+#ifndef NOMLIB_CORE_CLOCK_HPP
+#define NOMLIB_CORE_CLOCK_HPP
 
-#include <cstring>
+#include <iostream>
+#include <ctime>
+#include <locale>
+
+#include <algorithm>  // std::max
 
 #include "nomlib/config.hpp"
 
 namespace nom {
-namespace priv {
 
-/// \brief Maximum size a nom::Value string type may be
-///
-/// \remarks Buffer overflow protection.
-const uint MAX_STRING_LENGTH = 256;
+const nom::size TIME_STRING_SIZE = 26;
 
-/// \brief Clone a C style string value.
+/// \brief Get the current date & time.
 ///
-/// \param length Size of the string to copy.
+/// \returns A std::string containing the formatted date and time stamp on
+/// success, or a null-terminated string on err.
 ///
-/// \returns Null-terminated string up to MAX_STRING_LENGTH.
+/// \param format Conversion specifiers that are compatible with std::strftime.
 ///
-/// \todo Find a better home for this function?
-char* duplicate_string( const char* val, uint length );
+/// \note This method is platform-specific.
+///
+/// \see http://en.cppreference.com/w/cpp/chrono/c/strftime
+/// \see http://msdn.microsoft.com/en-us/library/fe06s4ak(v=vs.71).aspx
+std::string time( const std::string& format );
 
-} // namespace priv
+/// \brief Get the current date and time.
+///
+/// \returns A std::string containing the ISO 8601 date and time on success, or
+/// a null-terminated string on err.
+///
+/// Sample output:
+///
+/// \code
+/// 2014-06-02 02:52:42
+/// \endcode
+std::string timestamp( void );
+
+/// \brief Get the current date and time, made friendly towards use in a file
+/// name.
+///
+/// \returns A std::string containing the ISO 8601 date and time stamp on
+/// success, or a null-terminated string on err.
+///
+/// Sample output:
+///
+/// \code
+/// 2014-06-19_13-25-21
+/// \endcode
+std::string file_timestamp( void );
+
+/// SDL helper function
+///
+/// Wrapper for SDL_GetTicks.
+uint32 ticks( void );
+std::string ticks_as_string( void );
+
+/// SDL_Delay wrapper
+///
+/// Values below 10 milliseconds are clamped to 10
+void sleep( uint32 milliseconds );
+
 } // namespace nom
 
 #endif // include guard defined

@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SDL.h"
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/clock.hpp"
+#include "nomlib/core/clock.hpp"
 #include "nomlib/system/Event.hpp"
 
 namespace nom {

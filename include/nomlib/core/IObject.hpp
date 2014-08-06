@@ -26,14 +26,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_IOBJECT_HPP
-#define NOMLIB_SYSTEM_IOBJECT_HPP
+#ifndef NOMLIB_CORE_IOBJECT_HPP
+#define NOMLIB_CORE_IOBJECT_HPP
 
 #include <sstream>
 #include <new>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/ObjectTypeInfo.hpp"
+#include "nomlib/core/ObjectTypeInfo.hpp"
 
 namespace nom {
 
@@ -134,7 +134,7 @@ inline bool operator !=( const IObject& lhs, const IObject& rhs )
 #endif // include guard defined
 
 /// \class nom::IObject
-/// \ingroup system
+/// \ingroup core
 ///
 /// References (class design, ideas, inspiration):
 ///

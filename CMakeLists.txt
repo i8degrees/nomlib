@@ -27,34 +27,34 @@ option( NOM_BUILD_TESTS "Build unit tests" off )
 # bundle, source tar-ball and so forth).
 set( NOM_INSTALL_GENERATED_DOCS off )
 
-option( NOM_BUILD_CORE_UNIT "Engine core" on )
+option( NOM_BUILD_CORE_UNIT "Engine core" true )
 
 # TODO: Consider moving math unit into core?
-option( NOM_BUILD_MATH_UNIT "Math utilities" on )
+option( NOM_BUILD_MATH_UNIT "Math utilities" true )
 
 # Dependencies: OpenAL
-option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" off )
+option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" true )
 
 # Dependencies: SDL2, SDL2_IMAGE, SDL2_TTF
-option( NOM_BUILD_GRAPHICS_UNIT "Graphics core" on )
+option( NOM_BUILD_GRAPHICS_UNIT "Graphics core" true )
 
 # TODO: Shorten this build var
 # Dependencies: scale2x & hq2x (included in source tree)
-option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Include scale2x & hqx algorithms" off )
+option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Include scale2x & hqx algorithms" true )
 
 # TODO: Break unit up further
-option( NOM_BUILD_SYSTEM_UNIT "System unit" on )
+option( NOM_BUILD_SYSTEM_UNIT "System unit" true )
 
-option( NOM_BUILD_PTREE_UNIT "Generic container for serialization" on )
-option( NOM_BUILD_SERIALIZERS_UNIT "Serialization core for JSON, XML, HTML" on )
+option( NOM_BUILD_PTREE_UNIT "Generic container for serialization" true )
+option( NOM_BUILD_SERIALIZERS_UNIT "Serialization core for JSON, XML, HTML" true )
 
 # Dependencies: jsoncpp (included in source tree)
-option( NOM_BUILD_JSON_UNIT "JSON I/O" on )
+option( NOM_BUILD_JSON_UNIT "JSON I/O" true )
 
 # Dependencies: RapidXml (included in source tree)
-option( NOM_BUILD_XML_UNIT "XML I/O" off )
+option( NOM_BUILD_XML_UNIT "XML I/O" true )
 
-option( NOM_BUILD_GUI_UNIT "GUI subsystem" on )
+option( NOM_BUILD_GUI_UNIT "GUI subsystem" true )
 
 # Collection of internal templates used in the creation of new functionality
 # such as classes or examples / tests.
@@ -64,7 +64,7 @@ option( NOM_BUILD_GUI_UNIT "GUI subsystem" on )
 # Resources/SharedSupport/Template.cpp
 # Resources/SharedSupport/Template.hpp
 # Resources/SharedSupport/UnitTestTemplate.cpp
-option( NOM_BUILD_TEMPLATES_UNIT off )
+option( NOM_BUILD_TEMPLATES_UNIT true )
 
 project( nomlib ) # Sets PROJECT_NAME variable for us
 

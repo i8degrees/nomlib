@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 
-#include "nomlib/system/IObject.hpp"
+#include "nomlib/core/IObject.hpp"
 
 namespace nom {
 

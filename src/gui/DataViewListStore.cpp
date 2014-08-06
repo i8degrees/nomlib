@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/gui/DataViewListStore.hpp"
 
 // Private headers
-#include "nomlib/system/make_unique.hpp"
+#include "nomlib/core/helpers.hpp"
 
 // Forward declarations
 #include "nomlib/gui/UIStyle.hpp"

@@ -26,55 +26,70 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/clock.hpp"
-
-// Private headers (third-party libs)
-#include "SDL.h" // Used for ticks & sleep implementations
+#include "nomlib/core/ObjectTypeInfo.hpp"
 
 namespace nom {
 
-std::string time( const std::string& format )
+ObjectTypeInfo::ObjectTypeInfo( void ) :
+  type_{ typeid( this ) }
 {
-  char timestamp[TIME_STRING_SIZE];
-  time_t timer = std::time( nullptr );
-
-  size_t ret = std::strftime( timestamp, sizeof( timestamp ), format.c_str(), std::localtime( &timer ) );
-  if( ret != 0 )
-  {
-    // Success
-    return timestamp;
-  }
-
-  // Err
-  return "\0";
+  // NOM_LOG_TRACE( NOM );
 }
 
-std::string timestamp( void )
+ObjectTypeInfo::~ObjectTypeInfo( void )
 {
-  // Standard ISO 8601 date & time stamp
-  return nom::time( "%Y-%m-%d %H:%M:%S" );
+  // NOM_LOG_TRACE( NOM );
 }
 
-std::string file_timestamp( void )
+ObjectTypeInfo::ObjectTypeInfo( const ObjectTypeInfo::self_type& rhs ) :
+  type_{ rhs.type() }
 {
-
-  // Use ISO 8601 time-stamp without space characters (file name friendly)
-  return nom::time( "%Y-%m-%d_%H-%M-%S" );
+  // NOM_LOG_TRACE( NOM );
 }
 
-uint32 ticks( void )
+ObjectTypeInfo::self_type& ObjectTypeInfo::operator =( const ObjectTypeInfo::self_type& rhs )
 {
-  return SDL_GetTicks();
+  this->set_type( rhs.type() );
+
+  return *this;
 }
 
-std::string ticks_as_string( void )
+ObjectTypeInfo::ObjectTypeInfo( const ObjectTypeInfo::value_type& object ) :
+  type_{ object }
 {
-  return std::to_string( SDL_GetTicks() );
+  // NOM_LOG_TRACE( NOM );
 }
 
-void sleep( uint32 milliseconds )
+const std::string ObjectTypeInfo::name( void ) const
 {
-  SDL_Delay ( std::max ( milliseconds, static_cast<uint32> ( 10 ) ) );
+  return this->type().name();
+}
+
+size_t ObjectTypeInfo::hash_code( void ) const
+{
+  return this->type().hash_code();
+}
+
+void ObjectTypeInfo::set_type( const ObjectTypeInfo::value_type& object )
+{
+  this->type_ = object;
+}
+
+bool ObjectTypeInfo::operator ==( const self_type& rhs ) const
+{
+  return( this->type() == rhs.type() );
+}
+
+bool ObjectTypeInfo::operator !=( const self_type& rhs ) const
+{
+  return( this->type() != rhs.type() );
+}
+
+// Private scope
+
+const ObjectTypeInfo::value_type& ObjectTypeInfo::type( void ) const
+{
+  return this->type_;
 }
 
 } // namespace nom

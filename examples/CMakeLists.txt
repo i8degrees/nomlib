@@ -16,24 +16,24 @@
 # http://stackoverflow.com/questions/6077810/how-to-correctly-add-resources-to-a-project?rq=1
 cmake_minimum_required ( VERSION 2.6 )
 
-set( NOM_BUILD_APP_EXAMPLE off )
-set( NOM_BUILD_AUDIO_EXAMPLE off )
-set( NOM_BUILD_DEVICE_INFO_EXAMPLE off )
-set( NOM_BUILD_EVENTS_EXAMPLE off )
-set( NOM_BUILD_FONTS_EXAMPLE off )
-set( NOM_BUILD_GAMEOFLIFE_EXAMPLE off )
+set( NOM_BUILD_APP_EXAMPLE true )
+set( NOM_BUILD_AUDIO_EXAMPLE true )
+set( NOM_BUILD_DEVICE_INFO_EXAMPLE true )
+set( NOM_BUILD_EVENTS_EXAMPLE true )
+set( NOM_BUILD_FONTS_EXAMPLE true )
+set( NOM_BUILD_GAMEOFLIFE_EXAMPLE true )
 
-set( NOM_BUILD_GUI_BUTTON_EXAMPLE off )
-set( NOM_BUILD_GUI_LISTBOX_EXAMPLE off )
-set( NOM_BUILD_GUI_MESSAGEBOX_EXAMPLE off )
+set( NOM_BUILD_GUI_BUTTON_EXAMPLE true )
+set( NOM_BUILD_GUI_LISTBOX_EXAMPLE true )
+set( NOM_BUILD_GUI_MESSAGEBOX_EXAMPLE true )
 
 # TODO: Add example for the widget at examples/gui/gui_dataviewlist.cpp
 set( NOM_BUILD_GUI_DATAVIEWLIST_EXAMPLE off )
 
-set( NOM_BUILD_SPRITE_SHEETS_EXAMPLE off )
+set( NOM_BUILD_SPRITE_SHEETS_EXAMPLE true )
 
-set( NOM_BUILD_MOUSE_CURSORS_EXAMPLE off )
-set( NOM_BUILD_MACROS_EXAMPLE on )
+set( NOM_BUILD_MOUSE_CURSORS_EXAMPLE true )
+set( NOM_BUILD_MACROS_EXAMPLE true )
 
 link_libraries ( ${PROJECT_NAME} )
 

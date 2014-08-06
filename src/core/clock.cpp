@@ -26,70 +26,55 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_CLOCK_HPP
-#define NOMLIB_SYSTEM_CLOCK_HPP
+#include "nomlib/core/clock.hpp"
 
-#include <iostream>
-#include <ctime>
-#include <locale>
-
-#include <algorithm>  // std::max
-
-#include "nomlib/config.hpp"
+// Private headers (third-party libs)
+#include "SDL.h" // Used for ticks & sleep implementations
 
 namespace nom {
 
-const nom::size TIME_STRING_SIZE = 26;
+std::string time( const std::string& format )
+{
+  char timestamp[TIME_STRING_SIZE];
+  time_t timer = std::time( nullptr );
 
-/// \brief Get the current date & time.
-///
-/// \returns A std::string containing the formatted date and time stamp on
-/// success, or a null-terminated string on err.
-///
-/// \param format Conversion specifiers that are compatible with std::strftime.
-///
-/// \note This method is platform-specific.
-///
-/// \see http://en.cppreference.com/w/cpp/chrono/c/strftime
-/// \see http://msdn.microsoft.com/en-us/library/fe06s4ak(v=vs.71).aspx
-std::string time( const std::string& format );
+  size_t ret = std::strftime( timestamp, sizeof( timestamp ), format.c_str(), std::localtime( &timer ) );
+  if( ret != 0 )
+  {
+    // Success
+    return timestamp;
+  }
 
-/// \brief Get the current date and time.
-///
-/// \returns A std::string containing the ISO 8601 date and time on success, or
-/// a null-terminated string on err.
-///
-/// Sample output:
-///
-/// \code
-/// 2014-06-02 02:52:42
-/// \endcode
-std::string timestamp( void );
+  // Err
+  return "\0";
+}
 
-/// \brief Get the current date and time, made friendly towards use in a file
-/// name.
-///
-/// \returns A std::string containing the ISO 8601 date and time stamp on
-/// success, or a null-terminated string on err.
-///
-/// Sample output:
-///
-/// \code
-/// 2014-06-19_13-25-21
-/// \endcode
-std::string file_timestamp( void );
+std::string timestamp( void )
+{
+  // Standard ISO 8601 date & time stamp
+  return nom::time( "%Y-%m-%d %H:%M:%S" );
+}
 
-/// SDL helper function
-///
-/// Wrapper for SDL_GetTicks.
-uint32 ticks( void );
-std::string ticks_as_string( void );
+std::string file_timestamp( void )
+{
 
-/// SDL_Delay wrapper
-///
-/// Values below 10 milliseconds are clamped to 10
-void sleep( uint32 milliseconds );
+  // Use ISO 8601 time-stamp without space characters (file name friendly)
+  return nom::time( "%Y-%m-%d_%H-%M-%S" );
+}
+
+uint32 ticks( void )
+{
+  return SDL_GetTicks();
+}
+
+std::string ticks_as_string( void )
+{
+  return std::to_string( SDL_GetTicks() );
+}
+
+void sleep( uint32 milliseconds )
+{
+  SDL_Delay ( std::max ( milliseconds, static_cast<uint32> ( 10 ) ) );
+}
 
 } // namespace nom
-
-#endif // include guard defined

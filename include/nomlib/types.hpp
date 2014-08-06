@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/platforms.hpp"
 
 // RTTI for library objects.
-#include "nomlib/system/ObjectTypeInfo.hpp"
+#include "nomlib/core/ObjectTypeInfo.hpp"
 
 /*
   TODO: This should be replaced by an actual CMake script -- think:

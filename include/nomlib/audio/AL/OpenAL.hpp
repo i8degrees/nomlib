@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ctime>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/clock.hpp"
+#include "nomlib/core/clock.hpp"
 
 #if defined NOM_PLATFORM_OSX
   #include <OpenAL/al.h>

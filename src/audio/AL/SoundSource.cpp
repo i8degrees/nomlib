@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers
 #include "nomlib/audio/AL/OpenAL.hpp"
-#include "nomlib/system/clock.hpp"
+#include "nomlib/core/clock.hpp"
 
 namespace nom {
 

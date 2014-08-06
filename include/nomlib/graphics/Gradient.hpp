@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/shapes/Rectangle.hpp"
-#include "nomlib/system/make_unique.hpp"
+#include "nomlib/core/helpers.hpp"
 
 namespace nom {
 

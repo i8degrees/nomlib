@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point2.hpp"
-#include "nomlib/system/clock.hpp"
+#include "nomlib/core/clock.hpp"
 
 namespace nom {
 

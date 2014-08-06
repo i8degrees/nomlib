@@ -26,8 +26,9 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/SDL2Logger.hpp"
+#include "nomlib/core/SDL2Logger.hpp"
 
+// Private headers
 #include "nomlib/core/ConsoleOutput.hpp"
 
 namespace nom {

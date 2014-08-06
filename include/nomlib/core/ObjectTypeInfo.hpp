@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_OBJECT_TYPE_INFO_HPP
-#define NOMLIB_SYSTEM_OBJECT_TYPE_INFO_HPP
+#ifndef NOMLIB_CORE_OBJECT_TYPE_INFO_HPP
+#define NOMLIB_CORE_OBJECT_TYPE_INFO_HPP
 
 #include <typeinfo>   // std::type_info (typeid)
 #include <typeindex>  // std::type_index
@@ -105,7 +105,7 @@ class ObjectTypeInfo
 };
 
 /// \class nom::ObjectTypeInfo
-/// \ingroup system
+/// \ingroup core
 ///
 /// This utility class implementation is done primarily to help encapsulate
 /// implementation details that are subject to availability -- not all platforms

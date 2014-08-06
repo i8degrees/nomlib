@@ -225,8 +225,8 @@ void DataViewList::update_items( void )
     col_pos = this->drawable_headers_.at( cols )->position();
     col_size = this->drawable_headers_.at( cols )->size();
 
-    NOM_DUMP(col_pos);
-    NOM_DUMP(col_size);
+    NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "col_pos:", col_pos);
+    NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "col_size:", col_size );
 
     for( auto rows = 0; rows != this->store()->items_size( cols ); ++rows )
     {

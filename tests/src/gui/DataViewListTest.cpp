@@ -54,6 +54,8 @@ class DataViewListTest: public VisualUnitTest
     {
       // The frame image to compare against the reference image set
       this->append_screenshot_frame( 0 );
+
+      nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TEST, SDL_LOG_PRIORITY_INFO );
     }
 
     virtual ~DataViewListTest( void )

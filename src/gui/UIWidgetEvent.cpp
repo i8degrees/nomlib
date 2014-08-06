@@ -36,13 +36,13 @@ namespace nom {
 UIWidgetEvent::UIWidgetEvent( void ) :
   index_{ -1 }
 {
-  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, LogPriority::NOM_LOG_PRIORITY_VERBOSE );
   this->set_id( -1 );
 }
 
 UIWidgetEvent::~UIWidgetEvent( void )
 {
-  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 sint UIWidgetEvent::index( void ) const
@@ -72,12 +72,12 @@ UIWidgetTreeEvent::UIWidgetTreeEvent( void ) :
   row_{ -1 },
   data_{ nullptr }
 {
-  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 UIWidgetTreeEvent::~UIWidgetTreeEvent( void )
 {
-  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 int UIWidgetTreeEvent::column( void ) const
@@ -124,12 +124,12 @@ void UIWidgetTreeEvent::set_data( IObject* obj )
 
 UIWidgetResizeEvent::UIWidgetResizeEvent( void )
 {
-  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 UIWidgetResizeEvent::~UIWidgetResizeEvent( void )
 {
-  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 const IntRect& UIWidgetResizeEvent::bounds( void ) const

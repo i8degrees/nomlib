@@ -34,54 +34,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math.hpp"
 #include "nomlib/system.hpp"
 
-namespace nom {
+using namespace nom;
 
 /// \remarks Customized log output function for SDL_LogMessage
 void log_message( void* ptr, int cat, SDL_LogPriority prio, const char* msg )
 {
-  switch( prio )
+  if( prio < NOM_NUM_LOG_PRIORITIES && prio > 0 )
   {
-    default:
-    {
-      std::cout << " ";
-      break;
-    }
-
-    case SDL_LOG_PRIORITY_VERBOSE:
-    {
-      std::cout << "VERBOSE: ";
-      break;
-    }
-
-    case SDL_LOG_PRIORITY_DEBUG:
-    {
-      std::cout << "DEBUG: ";
-      break;
-    }
-
-    case SDL_LOG_PRIORITY_INFO:
-    {
-      std::cout << "INFO: ";
-      break;
-    }
-
-    case SDL_LOG_PRIORITY_WARN:
-    {
-      std::cout << "WARN: ";
-      break;
-    }
-
-    case SDL_LOG_PRIORITY_ERROR:
-    {
-      std::cout << "ERROR: ";
-      break;
-    }
-
-    case SDL_LOG_PRIORITY_CRITICAL:
-    {
-      std::cout << "CRITICAL: ";
-      break;
-    }
+    std::cout << nom::SDL2Logger::priority_prefixes_[prio] << ": ";
   }
 
   std::cout << msg << std::endl;
@@ -90,7 +50,7 @@ void log_message( void* ptr, int cat, SDL_LogPriority prio, const char* msg )
 /// \remarks For use with NOM_LOG_TRACE functionality testing
 struct FunctionTraceTest
 {
-  FunctionTraceTest( int cat, SDL_LogPriority prio ) :
+  FunctionTraceTest( int cat, nom::LogPriority prio ) :
     cat_{ cat },
     priority_{ prio }
   {
@@ -103,11 +63,11 @@ struct FunctionTraceTest
   }
 
   int cat_;
-  SDL_LogPriority priority_;
+  nom::LogPriority priority_;
 };
 
 /// \remarks Helper method for verifying test conditions
-void expected_logger_state( int cat, SDL_LogPriority prio, const std::string& msg, bool log_output_state )
+void expected_logger_state( int cat, nom::LogPriority prio, const std::string& msg, bool log_output_state )
 {
   nom::SDL2Logger logger( cat, prio );
   logger.write( msg );
@@ -136,122 +96,122 @@ void expected_logger_state( int cat, SDL_LogPriority prio, const std::string& ms
 TEST( SDL2LoggerTest, LogVerbose )
 {
   int cat = NOM;
-  SDL_LogPriority prio = SDL_LOG_PRIORITY_VERBOSE;
+  nom::LogPriority prio = NOM_LOG_PRIORITY_VERBOSE;
   std::string out = "Verbose message";
 
   // Should see this logged message
-  SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_VERBOSE );
+  SDL2Logger::set_logging_priorities( LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
   expected_logger_state( cat, prio, out, true );
 
   // Should not see this logged message
-  SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_CRITICAL );
+  SDL2Logger::set_logging_priorities( LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
   expected_logger_state( cat, prio, out, false );
 
   NOM_LOG_VERBOSE( cat );
   NOM_LOG_VERBOSE( cat, out );
 
-  SDL2Logger::set_logging_priority( cat, SDL_LOG_PRIORITY_CRITICAL );
+  SDL2Logger::set_logging_priority( cat, LogPriority::NOM_LOG_PRIORITY_CRITICAL );
   expected_logger_state( cat, prio, out, false );
 }
 
 TEST( SDL2LoggerTest, LogDebug )
 {
   int cat = NOM;
-  SDL_LogPriority prio = SDL_LOG_PRIORITY_DEBUG;
+  nom::LogPriority prio = NOM_LOG_PRIORITY_DEBUG;
   std::string out = "Debug message";
 
   // Should see this logged message
-  SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_VERBOSE );
+  SDL2Logger::set_logging_priorities( nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
   expected_logger_state( cat, prio, out, true );
 
   // Should not see this logged message
-  SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_CRITICAL );
+  SDL2Logger::set_logging_priorities( nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
   expected_logger_state( cat, prio, out, false );
 
   NOM_LOG_DEBUG( cat );
   NOM_LOG_DEBUG( cat, out );
 
-  SDL2Logger::set_logging_priority( cat, SDL_LOG_PRIORITY_CRITICAL );
+  SDL2Logger::set_logging_priority( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
   expected_logger_state( cat, prio, out, false );
 }
 
 TEST( SDL2LoggerTest, LogInfo )
 {
   int cat = NOM;
-  SDL_LogPriority prio = SDL_LOG_PRIORITY_INFO;
+  nom::LogPriority prio = NOM_LOG_PRIORITY_INFO;
   std::string out = "Could not initialize something totally not important.";
 
   // Should see this logged message
-  SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_VERBOSE );
+  SDL2Logger::set_logging_priorities( LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
   expected_logger_state( cat, prio, out, true );
 
   // Should not see this logged message
-  SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_CRITICAL );
+  SDL2Logger::set_logging_priorities( LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
   expected_logger_state( cat, prio, out, false );
 
   NOM_LOG_INFO( cat );
   NOM_LOG_INFO( cat, out );
 
-  SDL2Logger::set_logging_priority( cat, SDL_LOG_PRIORITY_CRITICAL );
+  SDL2Logger::set_logging_priority( cat, LogPriority::NOM_LOG_PRIORITY_CRITICAL );
   expected_logger_state( cat, prio, out, false );
 }
 
 TEST( SDL2LoggerTest, LogWarn )
 {
   int cat = NOM;
-  SDL_LogPriority prio = SDL_LOG_PRIORITY_WARN;
+  nom::LogPriority prio = NOM_LOG_PRIORITY_WARN;
   std::string out = "Font cache was not initialized. Initializing...";
 
   // Should see this logged message
-  SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_VERBOSE );
+  SDL2Logger::set_logging_priorities( nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
   expected_logger_state( cat, prio, out, true );
 
   // Should not see this logged message
-  SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_CRITICAL );
+  SDL2Logger::set_logging_priorities( nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
   expected_logger_state( cat, prio, out, false );
 
   NOM_LOG_WARN( cat );
   NOM_LOG_WARN( cat, out );
 
-  SDL2Logger::set_logging_priority( cat, SDL_LOG_PRIORITY_CRITICAL );
+  SDL2Logger::set_logging_priority( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
   expected_logger_state( cat, prio, out, false );
 }
 
 TEST( SDL2LoggerTest, LogError )
 {
   int cat = NOM;
-  SDL_LogPriority prio = SDL_LOG_PRIORITY_ERROR;
+  nom::LogPriority prio = nom::LogPriority::NOM_LOG_PRIORITY_ERROR;
   std::string out = "Could not load image resources.";
 
   // Should see this logged message
-  SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_VERBOSE );
+  SDL2Logger::set_logging_priorities( nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
   expected_logger_state( cat, prio, out, true );
 
   // Should not see this logged message
-  SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_CRITICAL );
+  SDL2Logger::set_logging_priorities( nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
   expected_logger_state( cat, prio, out, false );
 
   NOM_LOG_ERR( NOM );
   NOM_LOG_ERR( NOM, out );
 
-  SDL2Logger::set_logging_priority( cat, SDL_LOG_PRIORITY_CRITICAL );
+  SDL2Logger::set_logging_priority( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
   expected_logger_state( cat, prio, out, false );
 }
 
 TEST( SDL2LoggerTest, LogCritical )
 {
   int cat = NOM;
-  SDL_LogPriority prio = SDL_LOG_PRIORITY_CRITICAL;
+  nom::LogPriority prio = nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL;
   std::string out = "Could not initialize application. Exiting...";
 
   // Should see this logged message
@@ -259,24 +219,24 @@ TEST( SDL2LoggerTest, LogCritical )
 
   expected_logger_state( cat, prio, out, true );
 
-  // SDL2Logger::set_logging_priority( cat, SDL_LOG_PRIORITY_CRITICAL );
+  // SDL2Logger::set_logging_priority( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
   // expected_logger_state( cat, prio, out, true );
 }
 
 TEST( SDL2LoggerTest, LogVariable )
 {
   int cat = NOM;
-  SDL_LogPriority prio = SDL_LOG_PRIORITY_DEBUG;
+  nom::LogPriority prio = nom::LogPriority::NOM_LOG_PRIORITY_DEBUG;
   std::string out = "pos: 25, 25";
   Point2i pos(25,25);
 
   // Should see this logged message
-  SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_VERBOSE );
+  SDL2Logger::set_logging_priorities( nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
   expected_logger_state( cat, prio, out, true );
 
   // Should not see this logged message
-  SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_CRITICAL );
+  SDL2Logger::set_logging_priorities( nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
   expected_logger_state( cat, prio, out, false );
 
@@ -287,7 +247,7 @@ TEST( SDL2LoggerTest, LogVariable )
 TEST( SDL2LoggerTest, LogFunctionTraceNomCategory )
 {
   int cat = NOM;
-  SDL_LogPriority p = SDL_LOG_PRIORITY_DEBUG;
+  nom::LogPriority p = nom::LogPriority::NOM_LOG_PRIORITY_DEBUG;
 
   SDL2Logger::set_logging_priorities( p );
 
@@ -298,13 +258,13 @@ TEST( SDL2LoggerTest, LogFunctionTraceNomCategory )
 TEST( SDL2LoggerTest, LogFunctionTraceDisabledCategory )
 {
   int cat = NOM_LOG_CATEGORY_TRACE_RENDER;
-  SDL_LogPriority p = SDL_LOG_PRIORITY_DEBUG;
+  nom::LogPriority p = nom::LogPriority::NOM_LOG_PRIORITY_DEBUG;
 
   // Disable category logging except for critical
-  SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE, SDL_LOG_PRIORITY_CRITICAL );
+  SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
   // Enable category logging of function call traces
-  SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_RENDER, SDL_LOG_PRIORITY_DEBUG );
+  SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE_RENDER, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
   // Should see this function trace logged
   FunctionTraceTest t1( cat, p );
@@ -329,28 +289,26 @@ TEST( SDL2LoggerTest, LogStubbedFunction )
 TEST( SDL2LoggerTest, CustomLogOutputFunction )
 {
   int cat = NOM;
-  SDL_LogPriority prio = SDL_LOG_PRIORITY_CRITICAL;
-  std::string out = "\t\tCould not initialize application. Exiting...";
+  SDL_LogPriority prio = nom::SDL2Logger::SDL_priority( nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
+  std::string out = "Could not initialize application. Exiting...";
   void ( *cb )( void*, int, SDL_LogPriority, const char* ) = log_message;
 
   SDL_LogSetOutputFunction( cb, nullptr );
 
-  SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_CRITICAL );
+  SDL2Logger::set_logging_priorities( nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
   // Should see this logged message
-  SDL2Logger::set_logging_priorities( prio );
+  SDL2Logger::set_logging_priorities( nom::SDL2Logger::priority( prio ) );
 
-  expected_logger_state( cat, prio, out, true );
+  expected_logger_state( cat, nom::SDL2Logger::priority( prio ), out, true );
 }
-
-} // namespace nom
 
 int main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
 
-  // Initialize minimal required dependencies...
-  NOM_ASSERT( nom::init_third_party( nom::InitHints::SDL2 ) == true );
+  // Note that SDL2 does not need to be initialized before using the logging
+  // facilities!
 
   return RUN_ALL_TESTS();
 }

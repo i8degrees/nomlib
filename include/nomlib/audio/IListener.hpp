@@ -40,7 +40,7 @@ class IListener
   public:
     virtual ~IListener( void )
     {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_AUDIO, SDL_LOG_PRIORITY_VERBOSE );
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_AUDIO, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
     }
 
     virtual float getVolume ( void ) const = 0;

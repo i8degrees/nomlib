@@ -88,7 +88,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 /// \param ... Variable list of std::ostringstream compatible arguments.
 #define NOM_LOG_VERBOSE( cat, ... ) \
-  NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_VERBOSE, __VA_ARGS__ );
+  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE, __VA_ARGS__ );
 
 /// \brief Log a debug priority level message.
 ///
@@ -97,7 +97,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 /// \param ... Variable list of std::ostringstream compatible arguments.
 #define NOM_LOG_DEBUG( cat, ... ) \
-  NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_DEBUG, __VA_ARGS__ );
+  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG, __VA_ARGS__ );
 
 /// \brief Log a info priority level message.
 ///
@@ -106,7 +106,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 /// \param ... Variable list of std::ostringstream compatible arguments.
 #define NOM_LOG_INFO( cat, ... ) \
-  NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_INFO, __VA_ARGS__ );
+  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_INFO, __VA_ARGS__ );
 
 /// \brief Log a warning priority level message.
 ///
@@ -115,7 +115,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 /// \param ... Variable list of std::ostringstream compatible arguments.
 #define NOM_LOG_WARN( cat, ... ) \
-  NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_WARN, __VA_ARGS__ );
+  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_WARN, __VA_ARGS__ );
 
 /// \brief Log an error priority level message.
 ///
@@ -124,7 +124,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 /// \param ... Variable list of std::ostringstream compatible arguments.
 #define NOM_LOG_ERR( cat, ... ) \
-  NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_ERROR, __VA_ARGS__ );
+  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_ERROR, __VA_ARGS__ );
 
 /// \brief Log a critical priority level message.
 ///
@@ -133,7 +133,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 /// \param ... Variable list of std::ostringstream compatible arguments.
 #define NOM_LOG_CRIT( cat, ... ) \
-  NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_CRITICAL, __VA_ARGS__ );
+  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL, __VA_ARGS__ );
 
 /// \brief Macros for logging a variable.
 ///
@@ -142,7 +142,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// especially avoid using this, as it forces one to enable NOM logging
 /// category logging -- cluttering logs with both engine & app-level output.
 #define NOM_DUMP( var ) \
-  NOM_LOG_MESSAGE( NOM, SDL_LOG_PRIORITY_DEBUG, "[", __FILE__, ":", __LINE__, "]", #var, ":", var );
+  NOM_LOG_MESSAGE( NOM, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG, "[", __FILE__, ":", __LINE__, "]", #var, ":", var );
 
 /// \brief Log one or more variables.
 ///
@@ -153,14 +153,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 /// \remarks The message is logged under the debug priority.
 #define NOM_DUMP_VAR( cat, ... ) \
-  NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_DEBUG, "[", __FILE__, ":", __LINE__, "]", __VA_ARGS__ );
+  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG, "[", __FILE__, ":", __LINE__, "]", __VA_ARGS__ );
 
 /// \brief Log class construction and destruction
 ///
 /// \param cat The category the output is logged under; see also:
 /// NOM_LOG_CATEGORY_* enumeration.
 #define NOM_LOG_TRACE( cat ) \
-  NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_DEBUG, NOM_FUNC );
+  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG, NOM_FUNC );
 
 /// \brief Log class construction and destruction
 ///
@@ -173,7 +173,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   NOM_LOG_MESSAGE( cat, prio, NOM_FUNC );
 
 #define NOM_STUBBED( cat ) \
-  NOM_LOG_MESSAGE( cat, SDL_LOG_PRIORITY_INFO, "Stubbed function", NOM_FUNC, "was called" );
+  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_INFO, "Stubbed function", NOM_FUNC, "was called" );
 
 #ifdef NOM_DEBUG_ASSERT // -D NOM_DEBUG_ASSERT=on
 

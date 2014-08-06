@@ -39,7 +39,7 @@ UIWidgetListener::UIWidgetListener( const callback_type& observer )
 
 UIWidgetListener::~UIWidgetListener( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 void UIWidgetListener::operator() ( const event_type& ev ) const
@@ -54,12 +54,12 @@ void UIWidgetListener::operator() ( const event_type& ev ) const
 
 UIEventDispatcher::UIEventDispatcher( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 UIEventDispatcher::~UIEventDispatcher( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 bool UIEventDispatcher::register_event_listener( const event_type& ev, std::shared_ptr<callback_type> observer )

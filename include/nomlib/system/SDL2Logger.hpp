@@ -40,10 +40,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// \brief The predefined logging categories.
 ///
 /// \remarks By default: NOM_LOG_CATEGORY_APPLICATION is enabled at the
-/// SDL_LOG_PRIORITY_INFO priority level; SDL_LOG_CATEGORY_ASSERT is enabled at
-/// the SDL_LOG_PRIORITY_WARN priority level, SDL_LOG_CATEGORY_TEST is enabled
-/// at the SDL_LOG_PRIORITY_VERBOSE priority level and everything else is
-/// SDL_LOG_PRIORITY_CRITICAL priority level.
+/// LogPriority::NOM_LOG_PRIORITY_INFO priority level;
+/// LogPriority::NOM_LOG_CATEGORY_ASSERT is enabled at the
+/// LogPriority::NOM_LOG_PRIORITY_WARN priority level,
+/// LogPriority::NOM_LOG_CATEGORY_TEST is enabled
+/// at the LogPriority::NOM_LOG_PRIORITY_VERBOSE priority level and everything
+/// else is LogPriority::NOM_LOG_PRIORITY_CRITICAL priority level. These
+/// priority levels intend to mimic the defaults provided by SDL2's logging
+/// subsystem.
 ///
 /// \note This enumeration declaration is intentionally outside of the nom
 /// namespace, for the sake of both preserving legacy code and for convenience.
@@ -125,6 +129,23 @@ enum
 
 namespace nom {
 
+/// \brief Standard logging priorities
+///
+/// \remarks This enumeration exists to provide an abstraction for future
+/// implementation of logging subsystems that derive from a common interface.
+///
+/// \see The SDL_LOG_PRIORITY enumeration.
+enum LogPriority
+{
+  NOM_LOG_PRIORITY_VERBOSE = SDL_LOG_PRIORITY_VERBOSE,
+  NOM_LOG_PRIORITY_DEBUG = SDL_LOG_PRIORITY_DEBUG,
+  NOM_LOG_PRIORITY_INFO = SDL_LOG_PRIORITY_INFO,
+  NOM_LOG_PRIORITY_WARN = SDL_LOG_PRIORITY_WARN,
+  NOM_LOG_PRIORITY_ERROR = SDL_LOG_PRIORITY_ERROR,
+  NOM_LOG_PRIORITY_CRITICAL = SDL_LOG_PRIORITY_CRITICAL,
+  NOM_NUM_LOG_PRIORITIES = SDL_NUM_LOG_PRIORITIES
+};
+
 /// \brief Helper method for nom::SDL2Logger.
 template<typename Type>
 void write_debug_output( std::ostream& out, const Type& f )
@@ -138,28 +159,31 @@ class SDL2Logger
   public:
     typedef SDL2Logger self_type;
 
+    /// \brief Human-friendly descriptions of the logging priorities.
+    static const std::string priority_prefixes_[NOM_NUM_LOG_PRIORITIES];
+
     /// \brief Get initialization status of the default logging category
     /// priorities.
     static bool initialized( void );
 
     /// \brief Set the default logging category priority levels.
     ///
-    /// \see NOM_LOG_CATEGORY_* enumeration.
+    /// \see NOM_LOG_CATEGORY enumeration.
     static void initialize( void );
 
     /// \brief Default constructor; initialize the log category to NOM and
-    /// the log priority to SDL_LOG_PRIORITY_INFO.
-    SDL2Logger( void );
+    /// the log priority to LogPriority::NOM_LOG_PRIORITY_INFO.
+    SDL2Logger();
 
     /// \brief Construct a logging object.
     ///
     /// \param cat        The logging category to assign.
     ///
-    /// \param prio       A SDL_LogPriority enumeration value to use as the
+    /// \param prio       A nom::LogPriority enumeration value to use as the
     /// logging priority.
     ///
     /// \see ::write.
-    SDL2Logger( int cat, SDL_LogPriority prio );
+    SDL2Logger( int cat, nom::LogPriority prio );
 
     /// \brief Destructor; the logging category, logging priority level and
     /// output stream is sent to the underlying implementation at this time.
@@ -168,7 +192,7 @@ class SDL2Logger
     ///
     /// If you wish to set a custom log output function for logging, you should
     /// do so before destruction occurs.
-    ~SDL2Logger( void );
+    ~SDL2Logger();
 
     /// \brief Write one or more log messages to the output stream.
     ///
@@ -201,32 +225,37 @@ class SDL2Logger
     /// not write anything.
     ///
     /// \see ::write( const Type&, const Args& )
-    void write( void );
+    void write();
 
     /// \brief Get the logging category.
-    int category( void ) const;
+    int category() const;
 
     /// \brief Get the logging priority level.
-    SDL_LogPriority priority( void ) const;
+    LogPriority priority() const;
 
     /// \brief Get the log message.
     ///
     /// \returns A reference to the logger's C++ output stream.
-    std::ostringstream& output_stream( void );
+    std::ostringstream& output_stream();
 
-    // void set_category( int cat );
+    /// \brief Convert an underlying implementation's logging priority level.
+    ///
+    /// \returns The equivalent nom::LogPriority enumeration type.
+    static LogPriority priority( SDL_LogPriority prio );
 
-    // void set_priority( SDL_LogPriority p );
+    /// \brief Convert the logging priority level to the underlying
+    /// implementation's type.
+    static SDL_LogPriority SDL_priority( LogPriority prio );
 
     /// \brief Set the logging priority for all logging categories.
     ///
     /// \remarks This is a wrapper for SDL_SetAllPriority.
-    static void set_logging_priorities( SDL_LogPriority prio );
+    static void set_logging_priorities( LogPriority prio );
 
     /// \brief Set the logging priority for a log category.
     ///
     /// \remarks This is a wrapper for SDL_SetPriority.
-    static void set_logging_priority( int cat, SDL_LogPriority prio );
+    static void set_logging_priority( int cat, LogPriority prio );
 
   private:
     /// \brief Copy constructor.
@@ -249,7 +278,7 @@ class SDL2Logger
     int category_;
 
     /// \brief The logging priority of the log message.
-    SDL_LogPriority priority_;
+    nom::LogPriority priority_;
 
     /// \brief The log message stream.
     std::ostringstream os_;
@@ -273,12 +302,8 @@ class SDL2Logger
 /// If you are debugging nomlib, you might want to call:
 ///
 /// \code
-/// nom::SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_WARN );
+/// nom::SDL2Logger::set_logging_priorities( nom::LogPriority::NOM_LOG_PRIORITY_WARN );
 /// \endcode
-///
-/// \remarks It is a good idea to ensure that SDL2 has been initialized before
-/// using any functionality from this API; the first logged message not being
-/// has been observed when SDL2 has not been yet been initialized.
 ///
 /// \note This implementation is a C++ wrapper for SDL2's logging facilities,
 /// and is intended to be fully compatible & consistent with except where

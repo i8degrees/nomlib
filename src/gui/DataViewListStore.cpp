@@ -43,12 +43,12 @@ namespace nom {
 
 DataViewListStore::DataViewListStore( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 DataViewListStore::~DataViewListStore( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 const DataViewColumn& DataViewListStore::column( uint col ) const

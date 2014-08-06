@@ -37,17 +37,17 @@ namespace nom {
 
 DataViewItem::DataViewItem( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 DataViewItem::~DataViewItem( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 DataViewItem::DataViewItem( IObject* data )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
   this->data_ = data;
 }
@@ -86,24 +86,24 @@ void DataViewItem::set_selection( bool state )
 
 DataViewTextItem::DataViewTextItem( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 DataViewTextItem::~DataViewTextItem( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 DataViewTextItem::DataViewTextItem( const std::string& data ) :
   DataViewItem{ new Text( data ) }
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 DataViewTextItem::DataViewTextItem( const char* data ) :
   DataViewItem{ new Text( data ) }
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 ObjectTypeInfo DataViewTextItem::type( void ) const
@@ -116,19 +116,19 @@ ObjectTypeInfo DataViewTextItem::type( void ) const
 DataViewDrawableItem::DataViewDrawableItem( void ) :
   data_{ nullptr }
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 DataViewDrawableItem::~DataViewDrawableItem( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 DataViewDrawableItem::DataViewDrawableItem( IDrawable* data ) :
   // data_{ data->clone() }
   data_{ data }
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 ObjectTypeInfo DataViewDrawableItem::type( void ) const

@@ -32,7 +32,7 @@ namespace nom {
 
 EventHandler::EventHandler( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_EVENT, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_EVENT, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
   // TODO: Err handling?
   this->joystick.initialize();
@@ -40,7 +40,7 @@ EventHandler::EventHandler( void )
 
 EventHandler::~EventHandler( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_EVENT, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_EVENT, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 void EventHandler::process_event( const Event& ev )

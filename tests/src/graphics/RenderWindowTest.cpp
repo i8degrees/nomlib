@@ -42,7 +42,7 @@ class RenderWindowTest: public ::testing::Test
       // its logging.
       // This could possibly be the cause of the issue that causes test failures
       // under WindowsOS within RenderWindowTest::SetIcon?
-      // nom::SDL2Logger::set_logging_priorities( SDL_LOG_PRIORITY_DEBUG );
+      // nom::SDL2Logger::set_logging_priorities( nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
     }
 
     virtual ~RenderWindowTest( void )

@@ -40,12 +40,12 @@ namespace nom {
 Image::Image ( void ) :
   image_ ( nullptr, priv::FreeSurface )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 Image::~Image( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
   // Ensure that the lock on the video memory is freed before destruction;
   // this is done so I can have a bit more peace of mind that I don't forget to

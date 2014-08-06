@@ -54,12 +54,12 @@ Texture::Texture( void ) :
   bounds_ ( 0, 0, -1, -1 ),
   colorkey_ { Color4i::Black }
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 Texture::~Texture( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
   this->free_texture();
 }

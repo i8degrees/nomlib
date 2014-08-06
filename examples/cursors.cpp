@@ -75,7 +75,7 @@ class App: public nom::SDLApp
       atexit(nom::quit);
 
       // Enable logging of variable states app execution
-      nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_VIDEO, SDL_LOG_PRIORITY_DEBUG );
+      nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_VIDEO, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
     }
 
     ~App( void )

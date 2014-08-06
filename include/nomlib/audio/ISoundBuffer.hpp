@@ -44,7 +44,7 @@ class ISoundBuffer
   public:
     virtual ~ISoundBuffer( void )
     {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_AUDIO, SDL_LOG_PRIORITY_VERBOSE );
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_AUDIO, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
     }
 
     virtual uint32 get( void ) const = 0;

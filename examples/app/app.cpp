@@ -131,7 +131,7 @@ class App: public nom::SDLApp
       selected_font_size ( 14 ),  // Font's size (in pixels)
       selected_text_string ( 2 )  // "Yeah Buddy!!!"
     {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, SDL_LOG_PRIORITY_INFO );
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
 
       // Fatal error; if we are not able to complete this step, it means that
       // we probably cannot rely on our resource paths!
@@ -145,7 +145,7 @@ class App: public nom::SDLApp
 
     ~App ( void )
     {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, SDL_LOG_PRIORITY_INFO );
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
     } // ~App
 
     bool on_init ( void )

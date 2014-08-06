@@ -28,48 +28,55 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/SDL2Logger.hpp"
 
-// Private headers
-// #include "nomlib/system/init.hpp"
-
 namespace nom {
 
 // Static initializations
 bool SDL2Logger::initialized_ = false;
+const std::string SDL2Logger::priority_prefixes_[NOM_NUM_LOG_PRIORITIES] =
+{
+  "NULL",
+  "VERBOSE",
+  "DEBUG",
+  "INFO",
+  "WARN",
+  "ERROR",
+  "CRITICAL"
+};
 
+// Static
 bool SDL2Logger::initialized( void )
 {
   return SDL2Logger::initialized_;
 }
 
+// Static
 void SDL2Logger::initialize( void )
 {
   if( SDL2Logger::initialized() == false )
   {
-    // nom::init_third_party( InitHints::SDL2 );
-
     // Mimic the default logging category priorities as per SDL2 logging
     // categories
-    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO );
-    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_ASSERT, SDL_LOG_PRIORITY_WARN );
-    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TEST, SDL_LOG_PRIORITY_VERBOSE );
+    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_APPLICATION, LogPriority::NOM_LOG_PRIORITY_INFO );
+    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_ASSERT, LogPriority::NOM_LOG_PRIORITY_WARN );
+    SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TEST, LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
     // Log all messages from the engine's default NOM category
-    SDL2Logger::set_logging_priority( NOM, SDL_LOG_PRIORITY_VERBOSE );
+    SDL2Logger::set_logging_priority( NOM, LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
     SDL2Logger::initialized_ = true;
   }
 }
 
-SDL2Logger::SDL2Logger( void ) :
+SDL2Logger::SDL2Logger() :
   category_{ NOM },
-  priority_{ SDL_LOG_PRIORITY_INFO }
+  priority_{ LogPriority::NOM_LOG_PRIORITY_INFO }
 {
   SDL2Logger::initialize();
 }
 
 SDL2Logger::SDL2Logger  (
                           int cat,
-                          SDL_LogPriority prio
+                          nom::LogPriority prio
                         ) :
   category_{ cat },
   priority_{ prio }
@@ -77,56 +84,60 @@ SDL2Logger::SDL2Logger  (
   SDL2Logger::initialize();
 }
 
-SDL2Logger::~SDL2Logger( void )
+SDL2Logger::~SDL2Logger()
 {
   this->write( "\n" );
 
   std::string out( this->output_stream().str() );
-  SDL_LogMessage( this->category(), this->priority(), "%s", out.c_str() );
+  SDL_LogMessage( this->category(), SDL2Logger::SDL_priority( this->priority() ), "%s", out.c_str() );
 }
 
-void SDL2Logger::write( void )
+void SDL2Logger::write()
 {
   // Do not output anything when there are void arguments
 }
 
-int SDL2Logger::category( void ) const
+int SDL2Logger::category() const
 {
   return this->category_;
 }
 
-SDL_LogPriority SDL2Logger::priority( void ) const
+LogPriority SDL2Logger::priority() const
 {
   return this->priority_;
 }
 
-std::ostringstream& SDL2Logger::output_stream( void )
+std::ostringstream& SDL2Logger::output_stream()
 {
   return this->os_;
 }
 
-// void SDL2Logger::set_category( int cat )
-// {
-//   this->category_ = cat;
-// }
-
-// void SDL2Logger::set_priority( SDL_LogPriority p )
-// {
-//   this->priority_ = p;
-// }
-
-void SDL2Logger::set_logging_priorities( SDL_LogPriority prio )
+// Static
+LogPriority SDL2Logger::priority( SDL_LogPriority prio )
 {
-  // SDL2Logger::initialize();
-
-  SDL_LogSetAllPriority( prio );
+  return NOM_SCAST( LogPriority, prio );
 }
 
-void SDL2Logger::set_logging_priority( int cat, SDL_LogPriority prio )
+// Static
+SDL_LogPriority SDL2Logger::SDL_priority( LogPriority prio )
+{
+  return NOM_SCAST( SDL_LogPriority, prio );
+}
+
+// Static
+void SDL2Logger::set_logging_priorities( LogPriority prio )
 {
   // SDL2Logger::initialize();
 
-  SDL_LogSetPriority( cat, prio );
+  SDL_LogSetAllPriority( NOM_SCAST( SDL_LogPriority, prio ) );
+}
+
+// Static
+void SDL2Logger::set_logging_priority( int cat, nom::LogPriority prio )
+{
+  // SDL2Logger::initialize();
+
+  SDL_LogSetPriority( cat, NOM_SCAST( SDL_LogPriority, prio ) );
 }
 
 } // namespace nom

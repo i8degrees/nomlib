@@ -35,12 +35,12 @@ namespace nom {
 
 DataViewColumn::DataViewColumn( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 DataViewColumn::~DataViewColumn( void )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 DataViewColumn::DataViewColumn( uint id ) :
@@ -49,12 +49,12 @@ DataViewColumn::DataViewColumn( uint id ) :
   width_{ 0 },
   alignment_{ DataViewColumn::Alignment::Left }
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 DataViewColumn::DataViewColumn( uint id, const std::string& name, int width, uint32 align )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
   this->id_ = id;
   this->title_ = name;
@@ -127,7 +127,7 @@ void DataViewColumn::set_style( std::shared_ptr<UIStyle> style )
 // DataViewPage::DataViewPage( int pg ) :
 //   page_{ pg }
 // {
-//   // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, SDL_LOG_PRIORITY_VERBOSE );
+//   // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_GUI, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 // }
 
 // bool DataViewPage::operator <( const self_type& rhs ) const

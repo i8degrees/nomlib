@@ -6,7 +6,9 @@
 set( NOM_USE_SDL2_ASSERT true )
 
 if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
-  set ( PLATFORM_OSX true )
+  # TODO: Rename to NOM_PLATFORM_OSX
+  set( PLATFORM_OSX true )
+  set( NOM_PLATFORM_POSIX true )
 
   option ( FRAMEWORK "Build OSX Framework instead of dylib" on )
   option ( UNIVERSAL "Build as an OSX Universal Library" off )
@@ -34,7 +36,9 @@ if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
 
   message ( STATUS "Platform: Darwin (Mac OS X)" )
 elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" ) # Tested on Ubuntu v12.04-LTS
-  set ( PLATFORM_LINUX true )
+  # TODO: Rename to NOM_PLATFORM_LINUX
+  set( PLATFORM_LINUX true )
+  set( NOM_PLATFORM_POSIX true )
 
   # Clang is not supported on Linux due to libc++ not being distributed by
   # default yet
@@ -47,7 +51,8 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" ) # Tested on Ubuntu v12.04-LTS
 
   message ( STATUS "Platform: Linux" )
 elseif ( CMAKE_SYSTEM_NAME STREQUAL "Windows" )
-  set ( PLATFORM_WINDOWS true )
+  # TODO: Rename to NOM_PLATFORM_WINDOWS
+  set( PLATFORM_WINDOWS true )
 
   set ( CMAKE_CONFIGURATION_TYPES "${CMAKE_BUILD_TYPE}" )
 

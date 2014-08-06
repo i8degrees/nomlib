@@ -26,44 +26,17 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system.hpp"
-#include "nomlib/math.hpp"
+#ifndef NOMLIB_CORE_HPP
+#define NOMLIB_CORE_HPP
 
-nom::int32 main( nom::int32 argc, char* argv[] )
-{
-  nom::Point2i pos;
-  pos.x = 25;
-  pos.y = 25;
+// Public header file
 
-  // Note that SDL2 does not need to be initialized before using the logging
-  // facilities!
+// TODO: Relocate source & header files to core folder
+// #include "nomlib/system/clock.hpp"
+// #include "nomlib/system/SDL2Logger.hpp"
+// #include "nomlib/system/ObjectTypeInfo.hpp"
+// #include "nomlib/system/IObject.hpp"
 
-  NOM_DUMP( pos );
+#include "nomlib/core/ConsoleOutput.hpp"
 
-  // NOM_DUMP_VAR();
-  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "pos:", pos );
-
-  NOM_LOG_TRACE( NOM );
-
-  NOM_STUBBED( NOM );
-
-  NOM_LOG_VERBOSE( NOM );
-  NOM_LOG_VERBOSE( NOM, "Verbose message" );
-
-  NOM_LOG_DEBUG( NOM );
-  NOM_LOG_DEBUG( NOM, "Debug message" );
-
-  NOM_LOG_INFO( NOM );
-  NOM_LOG_INFO( NOM, "Could not initialize something totally not important.");
-
-  NOM_LOG_WARN( NOM );
-  NOM_LOG_WARN( NOM, "Could not initialize image resource." );
-
-  NOM_LOG_ERR( NOM );
-  NOM_LOG_ERR( NOM, "Could not initialize image resource." );
-
-  NOM_LOG_CRIT( NOM );
-  NOM_LOG_CRIT( NOM, "Could not initialize application. Exiting..." );
-
-  return NOM_EXIT_SUCCESS;
-}
+#endif // include guard defined

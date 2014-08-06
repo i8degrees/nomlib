@@ -146,6 +146,16 @@ enum LogPriority
   NOM_NUM_LOG_PRIORITIES = SDL_NUM_LOG_PRIORITIES
 };
 
+namespace priv {
+
+/// \brief Customized log output function for SDL_LogMessage
+///
+/// \remarks This output function supports color output for UNIX (POSIX) and
+/// Windows platforms.
+void log_message( void* ptr, int cat, SDL_LogPriority prio, const char* msg );
+
+} // namespace priv
+
 /// \brief Helper method for nom::SDL2Logger.
 template<typename Type>
 void write_debug_output( std::ostream& out, const Type& f )

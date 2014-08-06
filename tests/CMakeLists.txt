@@ -25,6 +25,9 @@
 # UnitTest framework tests
 set( NOM_BUILD_COMMON_TESTS off )
 
+# Core engine tests
+set( NOM_BUILD_SDL2_LOGGER_TESTS on )
+
 # Audio subsystem tests
 set( NOM_BUILD_OPENAL_AUDIO_TESTS off )
 
@@ -55,7 +58,6 @@ set( NOM_BUILD_SERIALIZERS_HTML_TESTS off )
 set( NOM_BUILD_FILE_TESTS off )
 set( NOM_BUILD_FONT_CACHE_TESTS off )
 set( NOM_BUILD_COLOR_DB_TESTS off )
-set( NOM_BUILD_SDL2_LOGGER_TESTS on )
 
 if( PLATFORM_WINDOWS OR CMAKE_GENERATOR STREQUAL "Xcode" )
 
@@ -104,6 +106,7 @@ set (
 include_directories( "${NOM_TESTS_HEADERS_DIR}" )
 
 include( "${NOM_TESTS_SOURCE_DIR}/common/CMakeLists.txt" )
+include( "${NOM_TESTS_SOURCE_DIR}/core/CMakeLists.txt" )
 include( "${NOM_TESTS_SOURCE_DIR}/audio/CMakeLists.txt" )
 include( "${NOM_TESTS_SOURCE_DIR}/graphics/CMakeLists.txt" )
 include( "${NOM_TESTS_SOURCE_DIR}/gui/CMakeLists.txt" )

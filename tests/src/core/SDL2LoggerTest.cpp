@@ -26,13 +26,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include <iostream>
-#include <string>
-
 #include "gtest/gtest.h"
 
+#include "nomlib/core.hpp"
 #include "nomlib/math.hpp"
-#include "nomlib/system.hpp"
 
 using namespace nom;
 

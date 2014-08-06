@@ -17,6 +17,13 @@ set ( ROOT_SOURCE
       ${SRC_DIR}/system/SDL2Logger.cpp
     )
 
+# Core module; this is considered a part of root (see above)
+file ( GLOB CORE_HEADERS "${NOMLIB_HEADERS_DIR}/core/*.hpp" )
+set (
+      CORE_SOURCE
+      ${SRC_DIR}/core/ConsoleOutput.cpp
+    )
+
 # Audio module
 file ( GLOB AUDIO_HEADERS "${NOMLIB_HEADERS_DIR}/audio/*.hpp" )
 set ( AUDIO_SOURCE
@@ -226,43 +233,61 @@ set(  EXAMPLES_TEMPLATE_SOURCE
 
 # Platform-specific source files
 
-if ( PLATFORM_OSX )
-
+if( NOM_PLATFORM_POSIX )
+  set (
+        ROOT_SOURCE
+        ${ROOT_SOURCE}
+        ${SRC_DIR}/core/UnixConsoleOutput.cpp
+      )
   set (
         SYSTEM_SOURCE
         ${SYSTEM_SOURCE}
-        "${SRC_DIR}/system/osx/PlatformSettings.cpp"
-        "${SRC_DIR}/system/unix/UnixFile.cpp"
+        ${SRC_DIR}/core/UnixConsoleOutput.cpp
+        ${SRC_DIR}/system/unix/UnixFile.cpp
       )
+endif( NOM_PLATFORM_POSIX )
 
-elseif ( PLATFORM_LINUX )
-
+if( PLATFORM_OSX )
   set (
         SYSTEM_SOURCE
         ${SYSTEM_SOURCE}
-        # "${SRC_DIR}/system/unix/PlatformSettings.cpp"
-        "${SRC_DIR}/system/unix/UnixFile.cpp"
+        ${SRC_DIR}/system/osx/PlatformSettings.cpp
       )
+endif( PLATFORM_OSX )
 
-elseif ( PLATFORM_WINDOWS )
-
+if( PLATFORM_LINUX )
   set (
         SYSTEM_SOURCE
         ${SYSTEM_SOURCE}
-        "${SRC_DIR}/system/windows/PlatformSettings.cpp"
-        "${SRC_DIR}/system/windows/WinFile.cpp"
+        # TODO:
+        # ${SRC_DIR}/system/unix/PlatformSettings.cpp
       )
+endif( PLATFORM_LINUX )
 
-endif ( PLATFORM_OSX )
+if( PLATFORM_WINDOWS )
+  set (
+        CORE_SOURCE
+        ${CORE_SOURCE}
+        ${SRC_DIR}/core/WindowsConsoleOutput.cpp
+      )
+  set (
+        SYSTEM_SOURCE
+        ${SYSTEM_SOURCE}
+        ${SRC_DIR}/system/windows/PlatformSettings.cpp
+        ${SRC_DIR}/system/windows/WinFile.cpp
+      )
+endif( PLATFORM_WINDOWS )
 
 if( NOM_BUILD_CORE_UNIT )
   set ( NOMLIB_HEADERS
         ${NOMLIB_HEADERS}
         ${ROOT_HEADERS}
+        ${CORE_HEADERS}
       )
   set ( NOMLIB_SOURCE
         ${NOMLIB_SOURCE}
         ${ROOT_SOURCE}
+        ${CORE_SOURCE}
       )
 endif( NOM_BUILD_CORE_UNIT )
 
@@ -433,6 +458,7 @@ endif( NOM_BUILD_TEMPLATES_UNIT )
 # Add header files (*.hpp) and source files (*.cpp) to IDE project list
 # (For those that use Xcode, MSVC++, etc.)
 source_group ( "include" FILES ${ROOT_HEADERS} )
+source_group ( "include\\core" FILES ${CORE_HEADERS} )
 source_group ( "include\\audio" FILES ${AUDIO_HEADERS} )
 source_group ( "include\\audio\\AL" FILES ${OPENAL_AUDIO_HEADERS} )
 source_group ( "include\\graphics" FILES ${GRAPHICS_HEADERS} )
@@ -450,6 +476,7 @@ source_group ( "include\\system\\unix" FILES ${SYSTEM_UNIX_HEADERS} )
 source_group ( "include\\system\\windows" FILES ${SYSTEM_WINDOWS_HEADERS} )
 
 source_group ( "src" FILES ${ROOT_SOURCE} )
+source_group ( "src\\core" FILES ${CORE_SOURCE} )
 source_group ( "src\\audio" FILES ${AUDIO_SOURCE} )
 source_group ( "src\\audio\\AL" FILES ${OPENAL_AUDIO_SOURCE} )
 source_group ( "src\\graphics" FILES ${GRAPHICS_SOURCE} )

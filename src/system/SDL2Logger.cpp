@@ -28,7 +28,64 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/SDL2Logger.hpp"
 
+#include "nomlib/core/ConsoleOutput.hpp"
+
 namespace nom {
+
+namespace priv {
+
+void log_message( void* ptr, int cat, SDL_LogPriority prio, const char* msg )
+{
+  nom::ConsoleOutput os( std::cout );
+
+  if( prio < NOM_NUM_LOG_PRIORITIES && prio > 0 )
+  {
+    if( prio < SDL_LOG_PRIORITY_INFO )
+    {
+      os.set_color( ConsoleOutput::Color::FG_YELLOW );
+    }
+    else if( prio == SDL_LOG_PRIORITY_INFO )
+    {
+      os.set_color( ConsoleOutput::Color::FG_BLUE );
+    }
+    else if( prio == SDL_LOG_PRIORITY_WARN )
+    {
+      os.set_color( ConsoleOutput::Color::FG_MAGENTA );
+    }
+    else if( prio >= SDL_LOG_PRIORITY_ERROR )
+    {
+      os.set_color( ConsoleOutput::Color::FG_RED );
+      os.set_style( ConsoleOutput::STYLE_BOLD | ConsoleOutput::STYLE_UNDERLINED );
+    }
+  }
+
+  std::cout << nom::SDL2Logger::priority_prefixes_[prio] << ":";
+
+  os.endl();
+
+  std::cout << " ";
+
+  if( os.color() == ConsoleOutput::Color::FG_RED )
+  {
+    os.set_color( ConsoleOutput::Color::FG_PURPLE );
+  }
+  else if( os.color() == ConsoleOutput::Color::FG_BLUE )
+  {
+    os.set_color( ConsoleOutput::Color::FG_GREEN );
+  }
+  else if( os.color() == ConsoleOutput::Color::FG_MAGENTA )
+  {
+    os.set_color( ConsoleOutput::Color::FG_YELLOW );
+  }
+  else if( os.color() == ConsoleOutput::Color::FG_YELLOW )
+  {
+    os.set_color( ConsoleOutput::Color::FG_BLUE );
+  }
+
+  std::cout << msg << std::endl;
+}
+
+} // namespace priv
 
 // Static initializations
 bool SDL2Logger::initialized_ = false;
@@ -63,6 +120,10 @@ void SDL2Logger::initialize( void )
     // Log all messages from the engine's default NOM category
     SDL2Logger::set_logging_priority( NOM, LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
+    // Register custom log outpt function for optional colored message support
+    void ( *log_output_function )( void*, int, SDL_LogPriority, const char* ) = priv::log_message;
+    SDL_LogSetOutputFunction( log_output_function, nullptr );
+
     SDL2Logger::initialized_ = true;
   }
 }
@@ -89,6 +150,7 @@ SDL2Logger::~SDL2Logger()
   this->write( "\n" );
 
   std::string out( this->output_stream().str() );
+
   SDL_LogMessage( this->category(), SDL2Logger::SDL_priority( this->priority() ), "%s", out.c_str() );
 }
 

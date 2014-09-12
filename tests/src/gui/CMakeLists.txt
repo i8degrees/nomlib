@@ -172,6 +172,30 @@ if( NOM_BUILD_GUI_DATAVIEWLIST_TESTS )
 
 endif( NOM_BUILD_GUI_DATAVIEWLIST_TESTS )
 
+# TODO: Move to tests/librocket
+if( NOM_BUILD_GUI_LIBROCKET_TESTS )
+
+  add_executable  (
+                    libRocketTest
+                    ${NOM_TESTS_COMMON_SOURCE}
+                    ${NOM_TESTS_SOURCE_DIR}/gui/libRocketTest.cpp
+                  )
+
+  target_link_libraries (
+                          libRocketTest
+                          ${GTEST_LIBRARY}
+                          ${PROJECT_NAME} # nomlib
+                        )
+
+    GTEST_ADD_TESTS (
+                      libRocketTest
+                      "libRocketTest"
+                      ${NOM_TESTS_COMMON_SOURCE}
+                      ${NOM_TESTS_SOURCE_DIR}/gui/libRocketTest.cpp
+                    )
+
+endif( NOM_BUILD_GUI_LIBROCKET_TESTS )
+
 # Resource dependencies
 if( NOM_BUILD_GUI_UNIT )
 
@@ -184,3 +208,17 @@ if( NOM_BUILD_GUI_UNIT )
           )
 
 endif( NOM_BUILD_GUI_UNIT )
+
+# TODO: Move to tests/librocket
+if( NOM_BUILD_LIBROCKET_UNIT )
+
+  install (
+            DIRECTORY
+            "${NOM_TESTS_RESOURCES_DIR}/gui/librocket"
+            DESTINATION
+            "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
+            PATTERN ".*" EXCLUDE # no dotfiles
+          )
+
+endif( NOM_BUILD_LIBROCKET_UNIT )
+

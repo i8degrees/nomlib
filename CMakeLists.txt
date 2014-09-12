@@ -40,14 +40,14 @@ option( NOM_BUILD_CORE_UNIT "Engine core" true )
 option( NOM_BUILD_MATH_UNIT "Math utilities" true )
 
 # Dependencies: OpenAL
-option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" true )
+option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" false )
 
 # Dependencies: SDL2, SDL2_IMAGE, SDL2_TTF
 option( NOM_BUILD_GRAPHICS_UNIT "Graphics core" true )
 
 # TODO: Shorten this build var
 # Dependencies: scale2x & hq2x (included in source tree)
-option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Include scale2x & hqx algorithms" true )
+option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Include scale2x & hqx algorithms" false )
 
 # TODO: Break unit up further
 option( NOM_BUILD_SYSTEM_UNIT "System unit" true )
@@ -61,7 +61,9 @@ option( NOM_BUILD_JSON_UNIT "JSON I/O" true )
 # Dependencies: RapidXml (included in source tree)
 option( NOM_BUILD_XML_UNIT "XML I/O" true )
 
-option( NOM_BUILD_GUI_UNIT "GUI subsystem" true )
+option( NOM_BUILD_GUI_UNIT "GUI subsystem" false )
+
+option( NOM_BUILD_LIBROCKET_UNIT "GUI subsystem" true )
 
 # Collection of internal templates used in the creation of new functionality
 # such as classes or examples / tests.
@@ -320,6 +322,18 @@ elseif ( PLATFORM_OSX )
         "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/gtest"
       )
 
+  # libRocket dependency
+  find_package( OpenGL )
+  if( OPENGL_FOUND )
+    set ( EXT_HEADERS ${EXT_HEADERS} ${OPENGL_INCLUDE_DIR} )
+    set ( EXTLIBS ${EXTLIBS} ${OPENGL_LIBRARY} )
+  endif( OPENGL_FOUND )
+
+  set ( LIBROCKET_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/include" )
+  set ( LIBROCKET_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControls.dylib" "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCore.dylib" "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketDebugger.dylib" )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBROCKET_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${LIBROCKET_LIBRARY} )
+
   find_library ( COCOA_LIBRARY Cocoa )
   mark_as_advanced ( COCOA_LIBRARY )
   set ( EXTLIBS ${EXTLIBS} ${COCOA_LIBRARY} )
@@ -356,6 +370,15 @@ message ( STATUS "OpenAL library: ${OPENAL_LIBRARY}" )
 
 message ( STATUS "libsndfile headers: ${LIBSNDFILE_INCLUDE_DIR}" )
 message ( STATUS "libsndfile library: ${LIBSNDFILE_LIBRARY}" )
+
+if( NOT EXISTS ${LIBROCKET_INCLUDE_DIR} )
+  message ( FATAL_ERROR "libRocket headers *NOT* found: ${LIBROCKET_INCLUDE_DIR}" )
+else( EXISTS ${LIBROCKET_INCLUDE_DIR} )
+  message ( STATUS "libRocket headers: ${LIBROCKET_INCLUDE_DIR}" )
+  # message ( STATUS "libRocket library: ${LIBROCKET_LIBRARY}" )
+endif( NOT EXISTS ${LIBROCKET_INCLUDE_DIR} )
+
+# TODO: Check for existence of #{LIBROCKET_LIBRARY} (multiple dylib files)
 
 message ( STATUS "Found RapidXml: ${RAPIDXML_INCLUDE_DIR}" )
 
@@ -481,6 +504,17 @@ if ( PLATFORM_OSX )
               "${LIBSNDFILE_LIBRARY}" # sndfile.framework
               DESTINATION "${INSTALL_EXT_FRAMEWORKS_PATH}"
               PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
+            )
+
+    # Bundle dynamic libraries we depend on
+    #
+    # TODO: libRocket needs to be recompiled with proper RPATH
+    #
+    # FIXME: This should be copying the symbolic linked files themselves, not
+    # the symbolic link.
+    install ( FILES
+              ${LIBROCKET_LIBRARY}
+              DESTINATION "${INSTALL_EXT_FRAMEWORKS_PATH}"
             )
 
     # Add all the necessary runtime search paths for locating the installed

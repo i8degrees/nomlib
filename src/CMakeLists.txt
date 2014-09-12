@@ -233,6 +233,14 @@ set(  EXAMPLES_TEMPLATE_SOURCE
       ${NOMLIB_SHARED_SUPPORT_DIR}/ExamplesTemplate.cpp
     )
 
+# User Interface module
+file ( GLOB LIBROCKET_HEADERS "${NOMLIB_HEADERS_DIR}/librocket/*.hpp" )
+set ( LIBROCKET_SOURCE
+      ${SRC_DIR}/librocket/RocketSDL2Renderer.cpp
+      ${SRC_DIR}/librocket/RocketSDL2SystemInterface.cpp
+      ${SRC_DIR}/librocket/ShellFileInterface.cpp
+    )
+
 # Platform-specific source files
 
 if( NOM_PLATFORM_POSIX )
@@ -456,6 +464,20 @@ if( NOM_BUILD_TEMPLATES_UNIT )
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
 endif( NOM_BUILD_TEMPLATES_UNIT )
+
+if( NOM_BUILD_LIBROCKET_UNIT )
+
+  set ( NOMLIB_HEADERS
+        ${NOMLIB_HEADERS}
+        ${LIBROCKET_HEADERS}
+      )
+
+  set ( NOMLIB_SOURCE
+        ${NOMLIB_SOURCE}
+        ${LIBROCKET_SOURCE}
+      )
+
+endif( NOM_BUILD_LIBROCKET_UNIT )
 
 # Add header files (*.hpp) and source files (*.cpp) to IDE project list
 # (For those that use Xcode, MSVC++, etc.)

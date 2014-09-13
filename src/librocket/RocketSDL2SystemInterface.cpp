@@ -36,7 +36,6 @@ Rocket::Core::Input::KeyIdentifier RocketSDL2SystemInterface::TranslateKey(SDL_K
 {
     using namespace Rocket::Core::Input;
 
-
     switch(sdlkey) {
         case SDLK_UNKNOWN:
             return KI_UNKNOWN;
@@ -389,6 +388,20 @@ int RocketSDL2SystemInterface::TranslateMouseButton(Uint8 button)
     }
 }
 
+int RocketSDL2SystemInterface::TranslateMouseWheel( uint8 axis )
+{
+  // Rocket treats a negative delta as up movement (away from the user),
+  // positive as down.
+  if( axis > 0 )  // Up
+  {
+    return -1;
+  }
+  else if( axis < 0 ) // Down
+  {
+    return 1;
+  }
+}
+
 int RocketSDL2SystemInterface::GetKeyModifiers()
 {
     SDL_Keymod sdlMods = SDL_GetModState();
@@ -414,33 +427,49 @@ float RocketSDL2SystemInterface::GetElapsedTime()
 
 bool RocketSDL2SystemInterface::LogMessage(Rocket::Core::Log::Type type, const Rocket::Core::String& message)
 {
-  std::string Type;
-
-  switch(type)
+  switch( type )
   {
-  case Rocket::Core::Log::LT_ALWAYS:
-    Type = "[Always]";
-    break;
-  case Rocket::Core::Log::LT_ERROR:
-    Type = "[Error]";
-    break;
-  case Rocket::Core::Log::LT_ASSERT:
-    Type = "[Assert]";
-    break;
-  case Rocket::Core::Log::LT_WARNING:
-    Type = "[Warning]";
-    break;
-  case Rocket::Core::Log::LT_INFO:
-    Type = "[Info]";
-    break;
-  case Rocket::Core::Log::LT_DEBUG:
-    Type = "[Debug]";
-    break;
-    case Rocket::Core::Log::LT_MAX:
-        break;
-  };
+    case Rocket::Core::Log::LT_ALWAYS:
+    {
+      NOM_LOG_DEBUG( NOM, message.CString() );
+      break;
+    }
 
-  printf("%s - %s\n", Type.c_str(), message.CString());
+    case Rocket::Core::Log::LT_ERROR:
+    {
+      NOM_LOG_ERR( NOM_LOG_CATEGORY_GUI, message.CString() );
+      break;
+    }
+
+    case Rocket::Core::Log::LT_ASSERT:
+    {
+      NOM_LOG_DEBUG( NOM_LOG_CATEGORY_ASSERT, message.CString() );
+      break;
+    }
+
+    case Rocket::Core::Log::LT_WARNING:
+    {
+      NOM_LOG_WARN( NOM_LOG_CATEGORY_GUI, message.CString() );
+      break;
+    }
+
+    case Rocket::Core::Log::LT_INFO:
+    {
+      NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, message.CString() );
+      break;
+    }
+
+    case Rocket::Core::Log::LT_DEBUG:
+    {
+      NOM_LOG_DEBUG( NOM_LOG_CATEGORY_GUI, message.CString() );
+      break;
+    }
+
+    case Rocket::Core::Log::LT_MAX:
+    {
+      break;
+    }
+  }
 
   return true;
 }

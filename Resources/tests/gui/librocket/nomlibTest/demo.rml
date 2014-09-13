@@ -1,6 +1,6 @@
 <rml>
 	<head>
-		<title>Demo</title>
+		<title>INFO.</title>
 		<link type="text/template" href="window.rml" />
 		<style>
 			body
@@ -18,7 +18,8 @@
 
 			div#content
 			{
-				text-align: left;
+				padding-top: 12%;
+				padding-bottom: 12%;
 			}
 		</style>
 	</head>

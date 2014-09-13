@@ -5,17 +5,21 @@
 </head>
 <body class="window">
 	<div id="window">
+
 		<div id="title_bar">
 			<handle move_target="#document">
 				<div id="icon"></div>
-				<span id="title">Title</span>
-			</handle>
+					<span id="title">INFO.</span>
+				</handle>
 		</div>
+
 		<div id="content">
 		</div>
-	</div>
-	<div id="document">
-		<handle size_target="#document" style="position: absolute; width: 16px; height: 16px; bottom: 0px; right: 0px;"></handle>
+
+		<div id="document">
+			<handle size_target="#document" style="position: absolute; width: 16px; height: 16px; bottom: 0px; right: 0px;"></handle>
+		</div>
+
 	</div>
 </body>
 </template>

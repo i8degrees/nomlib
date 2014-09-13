@@ -252,8 +252,8 @@ TEST( libRocketTest, nomlibSamplesTest )
     // NOM_DUMP( doc->GetReferenceCount() );
     NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", doc->GetSourceURL().CString(), "is loaded." );
 
-    EXPECT_STREQ( "Demo", doc->GetTitle().CString() )
-    << "Demo title should be the text of the title element -- 'Demo'.";
+    EXPECT_STREQ( "INFO.", doc->GetTitle().CString() )
+    << "Document title should be the text of the title element: 'INFO.'";
   }
   else
   {
@@ -261,6 +261,10 @@ TEST( libRocketTest, nomlibSamplesTest )
     FAIL();
   }
 
+  // Set the title of the window to that of the title element's text
+  doc->GetElementById( "title" )->SetInnerRML( doc->GetTitle() );
+
+  // Load the default in-window cursor
   Rocket::Core::ElementDocument* cursor = context->LoadMouseCursor( "./cursor.rml" );
 
   if( cursor )
@@ -270,7 +274,7 @@ TEST( libRocketTest, nomlibSamplesTest )
     NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Cursor", cursor->GetSourceURL().CString(), "is loaded." );
 
     EXPECT_STREQ( "default", cursor->GetTitle().CString() )
-    << "Cursor title should be the text of the title element -- 'default'.";
+    << "Document title should be the text of the title element: 'default'";
   }
   else
   {

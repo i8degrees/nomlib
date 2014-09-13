@@ -1,3 +1,9 @@
+div#document:hover
+{
+	border-width: 1px;
+	border-color: red;
+}
+
 body
 {
 	font-family: Delicious;
@@ -10,7 +16,11 @@ body
 body.window
 {
 	padding-top: 43px;
-	padding-bottom: 20px;
+
+	/*padding-bottom: 20px;*/
+	/* Accounting for the title bar; this keeps the resize handle at bottom-right
+	end of the window */
+	padding-bottom: 30px;
 
 	min-width: 250px;
 	max-width: 800px;
@@ -19,16 +29,14 @@ body.window
 	max-height: 700px;
 }
 
-
-
 div#title_bar
 {
 	z-index: 1;
 
-	/*position: absolute;*/
+	position: absolute;
 
-	top: 0px;
-	left: 0px;
+	/*top: 0px;*/
+	/*left: 0px;*/
 
 	margin-left: -10px;
 	margin-top: -15px;
@@ -99,6 +107,9 @@ div#content
 	overflow: hidden auto;
 
 	text-align: center;
+
+	/* Accounting for the title bar */
+	margin-top: 10px;
 }
 
 

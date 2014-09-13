@@ -162,6 +162,9 @@ TEST( libRocketTest, DISABLED_SDL2SamplesTest )
 /// \brief nomlib integration test.
 TEST( libRocketTest, nomlibSamplesTest )
 {
+  // Wrapper for SDL Cursor
+  nom::Cursor cursor_mgr;
+
   // Wrapper for SDL Window
   nom::RenderWindow window;
   window.create( "LibRocket SDL2 test", 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE );
@@ -218,6 +221,9 @@ TEST( libRocketTest, nomlibSamplesTest )
     FAIL();
   }
 
+  // Necessary for form elements
+  Rocket::Controls::Initialise();
+
   Rocket::Core::Context* context = Rocket::Core::CreateContext("default",
     Rocket::Core::Vector2i( window.size().w, window.size().h ));
 
@@ -226,9 +232,6 @@ TEST( libRocketTest, nomlibSamplesTest )
   {
     FAIL();
   }
-
-  // Necessary for form elements
-  Rocket::Controls::Initialise();
 
   Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Bold.otf" );
   Rocket::Core::FontDatabase::LoadFontFace( "Delicious-BoldItalic.otf" );
@@ -247,13 +250,36 @@ TEST( libRocketTest, nomlibSamplesTest )
     // NOM_DUMP( doc->GetReferenceCount() );
     doc->RemoveReference();
     // NOM_DUMP( doc->GetReferenceCount() );
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document is loaded" );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", doc->GetSourceURL().CString(), "is loaded." );
+
+    EXPECT_STREQ( "Demo", doc->GetTitle().CString() )
+    << "Demo title should be the text of the title element -- 'Demo'.";
   }
   else
   {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document was NULL." );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", doc->GetSourceURL().CString(), "was NULL." );
     FAIL();
   }
+
+  Rocket::Core::ElementDocument* cursor = context->LoadMouseCursor( "./cursor.rml" );
+
+  if( cursor )
+  {
+    cursor->Show();
+    cursor->RemoveReference();
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Cursor", cursor->GetSourceURL().CString(), "is loaded." );
+
+    EXPECT_STREQ( "default", cursor->GetTitle().CString() )
+    << "Cursor title should be the text of the title element -- 'default'.";
+  }
+  else
+  {
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Cursor", cursor->GetSourceURL().CString(), "was NULL." );
+    FAIL();
+  }
+
+  // Let libRocket handle the rendering of the in-window cursor
+  cursor_mgr.show_cursor( false );
 
   bool done = false;
 
@@ -344,9 +370,19 @@ TEST( libRocketTest, nomlibSamplesTest )
                 Rocket::Core::Factory::ClearTemplateCache();
                 doc = context->LoadDocument( "./demo.rml" );
 
-                doc->Show();
-                doc->RemoveReference();
-                // NOM_DUMP( doc->GetReferenceCount() );
+                if( doc != nullptr )
+                {
+                  doc->Show();
+                  doc->RemoveReference();
+                  // NOM_DUMP( doc->GetReferenceCount() );
+                  NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", doc->GetSourceURL().CString(), "reloaded." );
+                }
+                else
+                {
+                  FAIL()
+                  << "Document " << doc->GetSourceURL().CString()
+                  << " was NULL.";
+                }
               }
               break;
             }

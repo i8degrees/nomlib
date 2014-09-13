@@ -12,6 +12,7 @@
 #include <Rocket/Core.h>
 #include <Rocket/Core/Input.h>
 #include <Rocket/Debugger/Debugger.h>
+#include <Rocket/Controls.h>
 
 #include "nomlib/librocket/ShellFileInterface.hpp"
 #include "nomlib/librocket/RocketSDL2Renderer.hpp"
@@ -22,7 +23,7 @@
 /// \remarks Verbatim copied source, less and except where noted.
 ///
 /// \see https://github.com/libRocket/libRocket/tree/master/Samples/basic/sdl2/src
-TEST( libRocketTest, SDL2SamplesTest )
+TEST( libRocketTest, DISABLED_SDL2SamplesTest )
 {
   SDL_Init( SDL_INIT_VIDEO );
   SDL_Window * screen = SDL_CreateWindow("LibRocket SDL2 test", 20, 20, 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
@@ -149,7 +150,10 @@ TEST( libRocketTest, SDL2SamplesTest )
 
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(screen);
-  SDL_Quit();
+
+  // We must not shutdown SDL just yet, otherwise we lose logging facilities
+  // in the next test... nom::quit will take care of this for us (see main).
+  // SDL_Quit();
 
   // return 0
   SUCCEED();  // We are inside a unit test
@@ -198,7 +202,12 @@ TEST( libRocketTest, nomlibSamplesTest )
 
   // nom::init sets the working directory to this executable's directory path;
   // i.e.: build/tests
-  nom::ShellFileInterface FileInterface( "./Resources/librocket/nomlibTest/" );
+  //
+  // FIXME: File organization needs to be dealt with somehow, for document
+  // reloading feature... Copying file resources is not ideal during development
+  // (only for release).
+  // nom::ShellFileInterface FileInterface( "./Resources/librocket/nomlibTest/" );
+  nom::ShellFileInterface FileInterface( "../../Resources/tests/gui/librocket/nomlibTest/" );
 
   Rocket::Core::SetFileInterface( &FileInterface );
   Rocket::Core::SetRenderInterface( &Renderer );
@@ -212,27 +221,32 @@ TEST( libRocketTest, nomlibSamplesTest )
   Rocket::Core::Context* context = Rocket::Core::CreateContext("default",
     Rocket::Core::Vector2i( window.size().w, window.size().h ));
 
+  // Initialize Debugger as early as possible, so we can visually see logging.
   if( Rocket::Debugger::Initialise( context ) == false )
   {
     FAIL();
   }
+
+  // Necessary for form elements
+  Rocket::Controls::Initialise();
 
   Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Bold.otf" );
   Rocket::Core::FontDatabase::LoadFontFace( "Delicious-BoldItalic.otf" );
   Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Italic.otf" );
   Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Roman.otf" );
 
+  // Assumes base directory path of FileInterface (see above)
   Rocket::Core::ElementDocument* doc = context->LoadDocument( "./demo.rml" );
 
   // Test visual debugger logs
-  Rocket::Core::Log::Message( Rocket::Core::Log::LT_INFO, "hi" );
+  Rocket::Core::Log::Message( Rocket::Core::Log::LT_INFO, "Hello, world!" );
 
   if( doc )
   {
     doc->Show();
     // NOM_DUMP( doc->GetReferenceCount() );
     doc->RemoveReference();
-    NOM_DUMP( doc->GetReferenceCount() );
+    // NOM_DUMP( doc->GetReferenceCount() );
     NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document is loaded" );
   }
   else
@@ -332,9 +346,7 @@ TEST( libRocketTest, nomlibSamplesTest )
 
                 doc->Show();
                 doc->RemoveReference();
-                NOM_DUMP( doc->GetReferenceCount() );
-                // doc->RemoveReference();
-                // context->ReleaseUnloadedDocuments();
+                // NOM_DUMP( doc->GetReferenceCount() );
               }
               break;
             }
@@ -374,6 +386,7 @@ int main( int argc, char** argv )
 
   atexit( nom::quit );
 
+  // Log all messages
   nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE );
 
   return RUN_ALL_TESTS();

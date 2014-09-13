@@ -388,7 +388,7 @@ int RocketSDL2SystemInterface::TranslateMouseButton(Uint8 button)
     }
 }
 
-int RocketSDL2SystemInterface::TranslateMouseWheel( uint8 axis )
+int RocketSDL2SystemInterface::TranslateMouseWheel( int32 axis )
 {
   // Rocket treats a negative delta as up movement (away from the user),
   // positive as down.

@@ -18,7 +18,7 @@ cmake_minimum_required ( VERSION 2.6 )
 
 set( NOM_BUILD_APP_EXAMPLE false )
 set( NOM_BUILD_AUDIO_EXAMPLE false )
-set( NOM_BUILD_DEVICE_INFO_EXAMPLE true )
+set( NOM_BUILD_DEVICE_INFO_EXAMPLE false )
 set( NOM_BUILD_EVENTS_EXAMPLE false )
 set( NOM_BUILD_FONTS_EXAMPLE false )
 set( NOM_BUILD_GAMEOFLIFE_EXAMPLE false )

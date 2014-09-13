@@ -17,8 +17,146 @@
 #include "nomlib/librocket/RocketSDL2Renderer.hpp"
 #include "nomlib/librocket/RocketSDL2SystemInterface.hpp"
 
+/// \brief Base engine sanity test
+///
+/// \remarks Verbatim copied source, less and except where noted.
+///
 /// \see https://github.com/libRocket/libRocket/tree/master/Samples/basic/sdl2/src
 TEST( libRocketTest, SDL2SamplesTest )
+{
+  SDL_Init( SDL_INIT_VIDEO );
+  SDL_Window * screen = SDL_CreateWindow("LibRocket SDL2 test", 20, 20, 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+  // SDL_GLContext glcontext = SDL_GL_CreateContext(screen);
+  int oglIdx = -1;
+  int nRD = SDL_GetNumRenderDrivers();
+  for(int i=0; i<nRD; i++)
+  {
+      SDL_RendererInfo info;
+      if(!SDL_GetRenderDriverInfo(i, &info))
+      {
+          if(!strcmp(info.name, "opengl"))
+          {
+              oglIdx = i;
+          }
+      }
+  }
+  SDL_Renderer * renderer = SDL_CreateRenderer(screen, oglIdx, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+  // GLEW doesn't compile on my system (Mac OS X v10.9.3), but fortunately, we
+  // don't need it, anyway -- just the system distributed OpenGL header files.
+
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  glMatrixMode(GL_PROJECTION|GL_MODELVIEW);
+  glLoadIdentity();
+  glOrtho(0, 640, 480, 0, 0, 1);
+
+  nom::RocketSDL2Renderer Renderer(renderer, screen);
+  nom::RocketSDL2SystemInterface SystemInterface;
+
+  // nom::init sets the working directory to this executable's directory path;
+  // i.e.: build/tests/
+  nom::ShellFileInterface FileInterface( "./Resources/librocket/SDL2SamplesTest/" );
+
+  Rocket::Core::SetFileInterface( &FileInterface );
+  Rocket::Core::SetRenderInterface( &Renderer );
+  Rocket::Core::SetSystemInterface( &SystemInterface );
+
+  if( ! Rocket::Core::Initialise() )
+  {
+    // return 1;
+    FAIL(); // We are inside a unit test.
+  }
+
+  // Moved font resource loading to after Debugger initialization so we can
+  // visually see the errors using said Debugger.
+
+  Rocket::Core::Context *Context = Rocket::Core::CreateContext("default",
+    Rocket::Core::Vector2i(640, 480));
+
+  if( Rocket::Debugger::Initialise( Context ) == false )
+  {
+    FAIL(); // We are inside a unit test.
+  }
+
+  Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Bold.otf" );
+  Rocket::Core::FontDatabase::LoadFontFace( "Delicious-BoldItalic.otf" );
+  Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Italic.otf" );
+  Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Roman.otf" );
+
+  Rocket::Core::ElementDocument *Document = Context->LoadDocument("./demo.rml");
+
+  if(Document)
+  {
+    Document->Show();
+    Document->RemoveReference();
+    fprintf(stdout, "\nDocument loaded\n");
+  }
+  else
+  {
+    fprintf(stdout, "\nDocument is NULL\n");
+    FAIL(); // We are inside a unit test.
+  }
+
+    bool done = false;
+
+  while(!done)
+  {
+    SDL_Event event;
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+    SDL_RenderClear(renderer);
+
+    Context->Render();
+    SDL_RenderPresent(renderer);
+
+    while(SDL_PollEvent(&event))
+    {
+        switch(event.type)
+        {
+            case SDL_QUIT:
+                done = true;
+                break;
+
+            case SDL_MOUSEMOTION:
+                Context->ProcessMouseMove(event.motion.x, event.motion.y, SystemInterface.GetKeyModifiers());
+                break;
+
+            case SDL_MOUSEBUTTONDOWN:
+                Context->ProcessMouseButtonDown(SystemInterface.TranslateMouseButton(event.button.button), SystemInterface.GetKeyModifiers());
+                break;
+
+            case SDL_MOUSEBUTTONUP:
+                Context->ProcessMouseButtonUp(SystemInterface.TranslateMouseButton(event.button.button), SystemInterface.GetKeyModifiers());
+                break;
+
+            case SDL_MOUSEWHEEL:
+                Context->ProcessMouseWheel(event.wheel.y, SystemInterface.GetKeyModifiers());
+                break;
+
+            case SDL_KEYDOWN:
+                Context->ProcessKeyDown(SystemInterface.TranslateKey(event.key.keysym.sym), SystemInterface.GetKeyModifiers());
+                break;
+            default:
+                break;
+        }
+    }
+
+    Context->Update();
+  }
+
+  Context->RemoveReference();
+  Rocket::Core::Shutdown();
+
+  SDL_DestroyRenderer(renderer);
+  SDL_DestroyWindow(screen);
+  SDL_Quit();
+
+  // return 0
+  SUCCEED();  // We are inside a unit test
+}
+
+/// \brief nomlib integration test.
+TEST( libRocketTest, nomlibSamplesTest )
 {
   // Wrapper for SDL Window
   nom::RenderWindow window;
@@ -58,8 +196,9 @@ TEST( libRocketTest, SDL2SamplesTest )
   nom::RocketSDL2Renderer Renderer( window.renderer(), window.window() );
   nom::RocketSDL2SystemInterface SystemInterface;
 
-  // nom::init sets the working directory to this executable's directory path
-  nom::ShellFileInterface FileInterface( "./Resources/librocket/" );
+  // nom::init sets the working directory to this executable's directory path;
+  // i.e.: build/tests
+  nom::ShellFileInterface FileInterface( "./Resources/librocket/nomlibTest/" );
 
   Rocket::Core::SetFileInterface( &FileInterface );
   Rocket::Core::SetRenderInterface( &Renderer );
@@ -83,14 +222,17 @@ TEST( libRocketTest, SDL2SamplesTest )
   Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Italic.otf" );
   Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Roman.otf" );
 
-  Rocket::Core::ElementDocument* Document = context->LoadDocument( "demo.rml" );
+  Rocket::Core::ElementDocument* doc = context->LoadDocument( "./demo.rml" );
 
+  // Test visual debugger logs
   Rocket::Core::Log::Message( Rocket::Core::Log::LT_INFO, "hi" );
 
-  if( Document )
+  if( doc )
   {
-    Document->Show();
-    Document->RemoveReference();
+    doc->Show();
+    // NOM_DUMP( doc->GetReferenceCount() );
+    doc->RemoveReference();
+    NOM_DUMP( doc->GetReferenceCount() );
     NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document is loaded" );
   }
   else
@@ -143,7 +285,13 @@ TEST( libRocketTest, SDL2SamplesTest )
           // Check for a shift-~ to toggle the debugger.
           switch( event.key.keysym.sym )
           {
-            // Note that the key is consumed
+            // Quit loop
+            case SDLK_q:
+            {
+              done = true;
+              break;
+            }
+
             case SDLK_BACKQUOTE:
             {
               if( event.key.keysym.mod == KMOD_LSHIFT || event.key.keysym.mod == KMOD_RSHIFT )
@@ -151,6 +299,44 @@ TEST( libRocketTest, SDL2SamplesTest )
                 Rocket::Debugger::SetVisible( ! Rocket::Debugger::IsVisible() );
                 break;
               }
+            }
+
+            // Test showing and hiding documents
+            case SDLK_h:
+            {
+              if( doc != nullptr )
+              {
+                if( doc->IsVisible() == true )
+                {
+                  doc->Hide();
+                }
+                else
+                {
+                  doc->Show();
+                }
+              }
+              break;
+            }
+
+            // Reload document, and its dependencies (i.e.: templates and style
+            // sheets) during run-time.
+            case SDLK_r:
+            {
+              if( doc != nullptr )
+              {
+                doc->Close();
+                // context->UnloadDocument( doc );
+                Rocket::Core::Factory::ClearStyleSheetCache();
+                Rocket::Core::Factory::ClearTemplateCache();
+                doc = context->LoadDocument( "./demo.rml" );
+
+                doc->Show();
+                doc->RemoveReference();
+                NOM_DUMP( doc->GetReferenceCount() );
+                // doc->RemoveReference();
+                // context->ReleaseUnloadedDocuments();
+              }
+              break;
             }
           }
 

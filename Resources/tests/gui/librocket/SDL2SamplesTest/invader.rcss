@@ -11,10 +11,10 @@ body.window
 {
 	padding-top: 43px;
 	padding-bottom: 20px;
-
+	
 	min-width: 250px;
 	max-width: 800px;
-
+	
 	min-height: 135px;
 	max-height: 700px;
 }
@@ -26,10 +26,9 @@ div#title_bar
 	z-index: 1;
 
 	position: absolute;
-
 	top: 0px;
 	left: 0px;
-
+	
 	text-align: left;
 }
 
@@ -38,10 +37,10 @@ div#title_bar div#icon
 	position: absolute;
 	left: 20px;
 	top: 2px;
-
+	
 	width: 51px;
 	height: 39px;
-
+	
 	icon-decorator: image;
 	icon-image-src: invader.tga;
 }
@@ -157,7 +156,7 @@ button:focus,
 input.submit:focus
 {
     font-weight: bold;
-
+    
     shadow-font-effect: shadow;
     shadow-offset: 1px 1px;
     shadow-color: black;
@@ -207,7 +206,7 @@ datagrid input.text
 	background-color: white;
 
 	font-size: 15;
-
+	
 	background-decorator: none;
 }
 
@@ -225,7 +224,7 @@ dataselect selectvalue
 {
 	width: auto;
 	margin-right: 30px;
-
+	
 	height: 28px;
 	padding: 9px 10px 0px 10px;
 
@@ -244,7 +243,7 @@ dataselect selectarrow
 {
 	width: 30px;
 	height: 37px;
-
+	
 	icon-decorator: image;
 	icon-image: invader.tga 307px 192px 337px 229px;
 }
@@ -412,11 +411,11 @@ datagrid datagridbody
 datagridexpand
 {
 	display: block;
-
+	
 	margin: 1px 0px 1px 5px;
 	height: 17px;
 	width: 17px;
-
+	
 	icon-decorator: image;
 	icon-image: invader.tga 3px 232px 20px 249px;
 }
@@ -484,7 +483,7 @@ scrollbarvertical sliderarrowdec
 {
 	width: 27px;
 	height: 24px;
-
+	
 	icon-decorator: image;
 	icon-image: invader.tga 0px 152px 27px 176px;
 }
@@ -505,7 +504,7 @@ scrollbarvertical sliderarrowinc
 {
 	width: 27px;
 	height: 24px;
-
+	
 	icon-decorator: image;
 	icon-image: invader.tga 28px 152px 55px 176px;
 }

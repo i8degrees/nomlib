@@ -214,9 +214,17 @@ if( NOM_BUILD_LIBROCKET_UNIT )
 
   install (
             DIRECTORY
-            "${NOM_TESTS_RESOURCES_DIR}/gui/librocket"
+            "${NOM_TESTS_RESOURCES_DIR}/gui/librocket/SDL2SamplesTest"
             DESTINATION
-            "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
+            "${TESTS_DEPS_INSTALL_PEFIX}/Resources/librocket"
+            PATTERN ".*" EXCLUDE # no dotfiles
+          )
+
+  install (
+            DIRECTORY
+            "${NOM_TESTS_RESOURCES_DIR}/gui/librocket/nomlibTest"
+            DESTINATION
+            "${TESTS_DEPS_INSTALL_PEFIX}/Resources/librocket"
             PATTERN ".*" EXCLUDE # no dotfiles
           )
 

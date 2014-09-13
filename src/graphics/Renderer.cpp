@@ -153,8 +153,8 @@ const RendererInfo Renderer::caps ( SDL_Renderer* target )
     return renderer_info;
   }
 
-  renderer_info.name = info.name;
-  renderer_info.flags = info.flags;
+  renderer_info.name_ = info.name;
+  renderer_info.flags_ = info.flags;
 
   NOM_ASSERT ( info.num_texture_formats > 1 );
 
@@ -163,8 +163,8 @@ const RendererInfo Renderer::caps ( SDL_Renderer* target )
     renderer_info.texture_formats.push_back ( info.texture_formats[idx] );
   }
 
-  renderer_info.texture_width = info.max_texture_width;
-  renderer_info.texture_height = info.max_texture_height;
+  renderer_info.texture_width_ = info.max_texture_width;
+  renderer_info.texture_height_ = info.max_texture_height;
 
   return renderer_info;
 }

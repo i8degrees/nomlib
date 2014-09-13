@@ -31,9 +31,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 RendererInfo::RendererInfo ( void ) :
-  flags ( 0 ),
-  texture_width ( 0 ),
-  texture_height ( 0 )
+  flags_( 0 ),
+  texture_width_( 0 ),
+  texture_height_( 0 )
 {
   //NOM_LOG_TRACE(NOM);
 }
@@ -43,6 +43,11 @@ RendererInfo::~RendererInfo ( void )
   //NOM_LOG_TRACE(NOM);
 }
 
+const std::string& RendererInfo::name( void ) const
+{
+  return this->name_;
+}
+
 uint32 RendererInfo::optimal_texture_format ( void ) const
 {
   return this->texture_formats.front();
@@ -50,14 +55,38 @@ uint32 RendererInfo::optimal_texture_format ( void ) const
 
 bool RendererInfo::target_texture ( void ) const
 {
-  if ( this->flags & SDL_RENDERER_TARGETTEXTURE ) return true;
+  if ( this->flags_ & SDL_RENDERER_TARGETTEXTURE ) return true;
 
   return false;
 }
 
+bool RendererInfo::accelerated( void ) const
+{
+  if ( this->flags_ & SDL_RENDERER_ACCELERATED ) return true;
+
+  return false;
+}
+
+bool RendererInfo::vsync( void ) const
+{
+  if ( this->flags_ & SDL_RENDERER_PRESENTVSYNC ) return true;
+
+  return false;
+}
+
+int RendererInfo::texture_width( void ) const
+{
+  return this->texture_width_;
+}
+
+int RendererInfo::texture_height( void ) const
+{
+  return this->texture_height_;
+}
+
 std::ostream& operator << ( std::ostream& os, const RendererInfo& info )
 {
-  os << "Renderer Name: " << info.name
+  os << "Renderer Name: " << info.name()
   << std::endl << std::endl
   << "Device Capabilities: "
   << std::endl << std::endl;
@@ -68,13 +97,13 @@ std::ostream& operator << ( std::ostream& os, const RendererInfo& info )
     << std::endl;
   }
 
-  if ( info.flags & SDL_RENDERER_ACCELERATED )
+  if( info.accelerated() )
   {
     os << "SDL_RENDERER_ACCELERATED"
     << std::endl;
   }
 
-  if ( info.flags & SDL_RENDERER_PRESENTVSYNC )
+  if( info.vsync() )
   {
     os << "SDL_RENDERER_PRESENTVSYNC"
     << std::endl;
@@ -88,9 +117,9 @@ std::ostream& operator << ( std::ostream& os, const RendererInfo& info )
     os << PIXEL_FORMAT_NAME( info.texture_formats[idx] )
     << std::endl;
   }
-  os << "Texture Width: " << info.texture_width
+  os << "Texture Width: " << info.texture_width()
   << std::endl;
-  os << "Texture Height: " << info.texture_height
+  os << "Texture Height: " << info.texture_height()
   << std::endl;
 
   return os;

@@ -53,6 +53,9 @@ struct RendererInfo
     /// Destructor
     ~RendererInfo ( void );
 
+    /// \brief Query driver's name.
+    const std::string& name( void ) const;
+
     /// \brief    Obtain the most optimal texture format available.
     ///
     /// \remarks  Value returned is graphics hardware dependent.
@@ -62,11 +65,23 @@ struct RendererInfo
     ///           nom::Renderer target.
     bool target_texture ( void ) const;
 
+    /// \brief Query driver's support of hardware video acceleration.
+    bool accelerated( void ) const;
+
+    /// \brief Query driver's support of VSYNC.
+    bool vsync( void ) const;
+
+    /// \brief Get the maximum texture width supported by the driver.
+    int texture_width( void ) const;
+
+    /// \brief Get the maximum texture height supported by the driver.
+    int texture_height( void ) const;
+
     /// Renderer designation
-    std::string name;
+    std::string name_;
 
     /// Mask of supported renderer flags
-    uint32 flags;
+    uint32 flags_;
 
     /// Available texture (pixel) formats
     ///
@@ -74,10 +89,10 @@ struct RendererInfo
     std::vector<uint32> texture_formats;
 
     /// Maximum texture width (in pixels) supported
-    int texture_width;
+    int texture_width_;
 
     /// Maximum texture height (in pixels) supported
-    int texture_height;
+    int texture_height_;
 };
 
 /// Pretty print the available device capabilities

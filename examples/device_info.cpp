@@ -251,13 +251,13 @@ int main ( int argc, char* argv[] )
 
   renderer_info = window.caps();
 
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Renderer: ", renderer_info.name );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "SDL_RENDERER_TARGETTEXTURE: ", renderer_info.flags & SDL_RENDERER_TARGETTEXTURE ? "YES" : "NO" );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "SDL_RENDERER_ACCELERATED: ", renderer_info.flags & SDL_RENDERER_ACCELERATED ? "YES" : "NO" );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "SDL_RENDERER_PRESENTVSYNC: ", renderer_info.flags & SDL_RENDERER_PRESENTVSYNC ? "YES" : "NO" );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Renderer: ", renderer_info.name() );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "SDL_RENDERER_TARGETTEXTURE: ", renderer_info.target_texture() ? "YES" : "NO" );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "SDL_RENDERER_ACCELERATED: ", renderer_info.accelerated() ? "YES" : "NO" );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "SDL_RENDERER_PRESENTVSYNC: ", renderer_info.vsync() ? "YES" : "NO" );
 
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Maximum texture width: ", renderer_info.texture_width );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Maximum texture height: ", renderer_info.texture_height );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Maximum texture width: ", renderer_info.texture_width() );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Maximum texture height: ", renderer_info.texture_height() );
 
   nom::uint index = 0;
   for( auto itr = renderer_info.texture_formats.begin(); itr != renderer_info.texture_formats.end(); ++itr )

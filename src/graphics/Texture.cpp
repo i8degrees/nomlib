@@ -383,7 +383,7 @@ const Point2i Texture::maximum_size ( void )
   RendererInfo info;
   info = RenderWindow::caps ( RenderWindow::context() );
 
-  return Point2i ( info.texture_width, info.texture_height );
+  return Point2i ( info.texture_width(), info.texture_height() );
 }
 
 bool Texture::locked ( void ) const

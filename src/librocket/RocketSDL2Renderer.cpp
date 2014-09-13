@@ -36,15 +36,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     #error "Only the opengl sdl backend is supported. To add support for others, see http://mdqinc.com/blog/2013/01/integrating-librocket-with-sdl-2/"
 #endif
 
+// Forward declarations
+#include "nomlib/graphics/RenderWindow.hpp"
+
 namespace nom {
 
-RocketSDL2Renderer::RocketSDL2Renderer(SDL_Renderer* renderer, SDL_Window* screen)
+RocketSDL2Renderer::RocketSDL2Renderer(SDL_Renderer* renderer, SDL_Window* screen, RenderWindow* window )
 {
     mRenderer = renderer;
     mScreen = screen;
+    this->window_ = window;
 }
 
-// Called by Rocket when it wants to render geometry that it does not wish to optimise.
 void RocketSDL2Renderer::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, const Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation)
 {
     // SDL uses shaders that we need to disable here
@@ -99,10 +102,19 @@ void RocketSDL2Renderer::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
     glDisable(GL_BLEND);
     SDL_SetRenderDrawBlendMode(mRenderer, SDL_BLENDMODE_NONE);
     SDL_RenderDrawPoint(mRenderer, -1, -1);
+
+  // Reset the renderer's drawing color; this is necessary because otherwise
+  // the GL color call above this statement overwrites any drawing colors set
+  // by nomlib's SDL2 rendering subsystem.
+  //
+  // I don't really know what I'm doing here! I just know that it appears to
+  // work in the instance I'm working in (custom libRocket decorator)...
+  if( this->window_->set_color( Color4i::Blue ) == false )
+  {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
+  }
 }
 
-
-// Called by Rocket when it wants to enable or disable scissoring to clip content.
 void RocketSDL2Renderer::EnableScissorRegion(bool enable)
 {
     if (enable)
@@ -111,7 +123,6 @@ void RocketSDL2Renderer::EnableScissorRegion(bool enable)
         glDisable(GL_SCISSOR_TEST);
 }
 
-// Called by Rocket when it wants to change the scissor region.
 void RocketSDL2Renderer::SetScissorRegion(int x, int y, int width, int height)
 {
     int w_width, w_height;
@@ -119,7 +130,6 @@ void RocketSDL2Renderer::SetScissorRegion(int x, int y, int width, int height)
     glScissor(x, w_height - (y + height), width, height);
 }
 
-// Called by Rocket when a texture is required by the library.
 bool RocketSDL2Renderer::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source)
 {
 
@@ -166,7 +176,6 @@ bool RocketSDL2Renderer::LoadTexture(Rocket::Core::TextureHandle& texture_handle
     return false;
 }
 
-// Called by Rocket when a texture is required to be built from an internally-generated sequence of pixels.
 bool RocketSDL2Renderer::GenerateTexture(Rocket::Core::TextureHandle& texture_handle, const Rocket::Core::byte* source, const Rocket::Core::Vector2i& source_dimensions)
 {
     #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -189,10 +198,156 @@ bool RocketSDL2Renderer::GenerateTexture(Rocket::Core::TextureHandle& texture_ha
     return true;
 }
 
-// Called by Rocket when a loaded texture is no longer required.
 void RocketSDL2Renderer::ReleaseTexture(Rocket::Core::TextureHandle texture_handle)
 {
     SDL_DestroyTexture((SDL_Texture*) texture_handle);
+}
+
+} // namespace nom
+
+// #include "DecoratorFinalFantasyFrame.h"
+#include <Rocket/Core/Math.h>
+#include <Rocket/Core/Element.h>
+#include <Rocket/Core/Texture.h>
+
+#include "nomlib/gui/IDecorator.hpp"
+#include "nomlib/gui/FinalFantasyDecorator.hpp"
+
+namespace nom {
+
+DecoratorFinalFantasyFrame::DecoratorFinalFantasyFrame()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
+
+  this->decorator_.reset( new FinalFantasyDecorator() );
+}
+
+DecoratorFinalFantasyFrame::~DecoratorFinalFantasyFrame()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
+}
+
+// bool DecoratorFinalFantasyFrame::Initialise(const Rocket::Core::String& image_source, const Rocket::Core::String& image_path)
+bool DecoratorFinalFantasyFrame::Initialise()
+{
+  // image_index = LoadTexture(image_source, image_path);
+  // if (image_index == -1)
+  // {
+  //     return false;
+  // }
+
+  return true;
+}
+
+Rocket::Core::DecoratorDataHandle DecoratorFinalFantasyFrame::GenerateElementData(Rocket::Core::Element* ROCKET_UNUSED_PARAMETER(element))
+{
+  ROCKET_UNUSED(element);
+
+  return Rocket::Core::Decorator::INVALID_DECORATORDATAHANDLE;
+}
+
+void DecoratorFinalFantasyFrame::ReleaseElementData(Rocket::Core::DecoratorDataHandle ROCKET_UNUSED_PARAMETER(element_data))
+{
+  ROCKET_UNUSED(element_data);
+}
+
+void DecoratorFinalFantasyFrame::RenderElement(Rocket::Core::Element* element, Rocket::Core::DecoratorDataHandle ROCKET_UNUSED_PARAMETER(element_data))
+{
+  ROCKET_UNUSED(element_data);
+
+  Rocket::Core::Vector2f position = element->GetAbsoluteOffset(Rocket::Core::Box::PADDING);
+  Rocket::Core::Vector2f size = element->GetBox().GetSize(Rocket::Core::Box::PADDING);
+
+  // NOM_DUMP_VAR( NOM_LOG_CATEGORY_GUI, "position:", position.x, position.y);
+  // NOM_DUMP_VAR( NOM_LOG_CATEGORY_GUI, "size:", size.x, size.y);
+
+  // TODO: Optimization (?); determine render state; dirty means we need to
+  // update our decorator, such as when the element is resized or moved...
+  //  For starters: a) ensure float math interface functions for Point2f &&
+  // Size2f; b) translation from GL coordinates to pixel.
+  //
+  // ...or...
+  //
+  // Probably more productive to just optimize our gradient rendering class and
+  // call it quits!
+
+  nom::RocketSDL2Renderer* p = NOM_DYN_PTR_CAST( nom::RocketSDL2Renderer*, Rocket::Core::GetRenderInterface() );
+
+  if( p )
+  {
+    RenderWindow* target = p->window_;
+
+    Point2i pos( position.x, position.y );
+    Size2i dims( size.x, size.y );
+
+    decorator_->set_bounds( pos, dims );
+
+    // FIXME: We shouldn't need to do this -- ::set_bounds ought to take care
+    // of internal updating...
+    // decorator_->update();
+
+    decorator_->invalidate();
+
+    decorator_->draw( *target );
+  }
+}
+
+} // namespace nom
+
+// #include "DecoratorInstancerFinalFantasyFrame.hpp"
+#include <Rocket/Core/Math.h>
+#include <Rocket/Core/String.h>
+// #include "DecoratorFinalFantasyFrame.hpp"
+
+namespace nom {
+
+DecoratorInstancerFinalFantasyFrame::DecoratorInstancerFinalFantasyFrame()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
+
+  // RegisterProperty( "image-src", "" ).AddParser("string");
+
+  // TODO: nom::Gradient instantiation
+  // RegisterProperty("start-color", "").AddParser("colour");
+  // RegisterProperty("end-color", "").AddParser("colour");
+  // FinalFantasyFrame instantiation: outer-border, inner-border
+}
+
+DecoratorInstancerFinalFantasyFrame::~DecoratorInstancerFinalFantasyFrame()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
+}
+
+Rocket::Core::Decorator* DecoratorInstancerFinalFantasyFrame::InstanceDecorator(const Rocket::Core::String& ROCKET_UNUSED_PARAMETER(name), const Rocket::Core::PropertyDictionary& ROCKET_UNUSED_PARAMETER(properties) )
+{
+  ROCKET_UNUSED(name);
+  ROCKET_UNUSED(properties);
+
+  // const Rocket::Core::Property* scolor_prop = properties.GetProperty("start-color");
+  // Rocket::Core::Colour<byte,255> color = scolor_prop->Get< Rocket::Core::Colour >();
+  // NOM_DUMP( color.red, color.g, color.b, color.a );
+
+  DecoratorFinalFantasyFrame* decorator = new DecoratorFinalFantasyFrame();
+  // if( decorator->Initialise( scolor_prop, scolor_prop->source ) )
+  if( decorator->Initialise() )
+  {
+    return decorator;
+  }
+
+  decorator->RemoveReference();
+  ReleaseDecorator(decorator);
+
+  return nullptr;
+}
+
+void DecoratorInstancerFinalFantasyFrame::ReleaseDecorator(Rocket::Core::Decorator* decorator)
+{
+  delete decorator;
+}
+
+void DecoratorInstancerFinalFantasyFrame::Release()
+{
+  delete this;
 }
 
 } // namespace nom

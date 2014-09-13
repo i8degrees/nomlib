@@ -62,6 +62,12 @@ set ( GRAPHICS_SOURCE
       ${SRC_DIR}/graphics/fonts/Font.cpp
       ${SRC_DIR}/graphics/fonts/Glyph.cpp
       ${SRC_DIR}/graphics/Cursor.cpp
+      # TODO: Move from gui to graphics?
+      ${SRC_DIR}/gui/FinalFantasyFrame.cpp
+      ${SRC_DIR}/gui/Drawables.cpp
+      ${SRC_DIR}/gui/Decorator.cpp
+      ${SRC_DIR}/gui/MinimalDecorator.cpp
+      ${SRC_DIR}/gui/FinalFantasyDecorator.cpp
     )
 
 # hqx algorithm (third-party)
@@ -106,14 +112,14 @@ set ( GUI_SOURCE
       ${SRC_DIR}/gui/UISpacerItem.cpp
       ${SRC_DIR}/gui/UILayoutItem.cpp
       ${SRC_DIR}/gui/UILayout.cpp
-      ${SRC_DIR}/gui/Drawables.cpp
-      ${SRC_DIR}/gui/Decorator.cpp
-      ${SRC_DIR}/gui/MinimalDecorator.cpp
-      ${SRC_DIR}/gui/FinalFantasyDecorator.cpp
+      # ${SRC_DIR}/gui/Drawables.cpp
+      # ${SRC_DIR}/gui/Decorator.cpp
+      # ${SRC_DIR}/gui/MinimalDecorator.cpp
+      # ${SRC_DIR}/gui/FinalFantasyDecorator.cpp
       ${SRC_DIR}/gui/MessageBox.cpp
       ${SRC_DIR}/gui/QuestionDialogBox.cpp
       # ${SRC_DIR}/gui/YesNoDialogBox.cpp
-      ${SRC_DIR}/gui/FinalFantasyFrame.cpp
+      # ${SRC_DIR}/gui/FinalFantasyFrame.cpp
       ${SRC_DIR}/gui/UIWidget.cpp
       ${SRC_DIR}/gui/Button.cpp
       ${SRC_DIR}/gui/BitmapButton.cpp

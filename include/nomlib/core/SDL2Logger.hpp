@@ -319,6 +319,10 @@ class SDL2Logger
 /// and is intended to be fully compatible & consistent with except where
 /// explicitly stated otherwise.
 ///
+/// \fixme Research why the logging facilities are not re-initialized after a
+/// call to SDL_Quit, followed by re-initialization of SDL, is made. Evidence
+/// of this can be found within the project's libRocketTest source.
+///
 /// \see [SDL2 Logging API](https://wiki.libsdl.org/CategoryLog)
 ///
 /// \see This implementation was inspired by a [Q&A blog](http://mortoray.com/2013/11/01/bridging-__va_args__-to-c-variadic-templates/)

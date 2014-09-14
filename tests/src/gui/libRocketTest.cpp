@@ -19,13 +19,13 @@
 #include "nomlib/librocket/RocketSDL2Renderer.hpp"
 #include "nomlib/librocket/RocketSDL2SystemInterface.hpp"
 
+#include "nomlib/librocket/DecoratorInstancerFinalFantasyFrame.hpp"
+#include "nomlib/librocket/DecoratorFinalFantasyFrame.hpp"
 #include "nomlib/librocket/DecoratorPhotograph.hpp"
 
 namespace nom {
 
 /// \brief Helper method for automating the creation of a document window
-// Rocket::Core::ElementDocument* load_window( Rocket::Core::Context* ctx, const std::string& filename, const Point2i& pos );
-
 Rocket::Core::ElementDocument* load_window( Rocket::Core::Context* ctx, const std::string& filename, const nom::Point2i& pos )
 {
   Rocket::Core::ElementDocument* doc = nullptr;
@@ -60,6 +60,7 @@ Rocket::Core::ElementDocument* load_window( Rocket::Core::Context* ctx, const st
   return doc;
 }
 
+/// \brief Helper method for automating the creation of a mouse cursor
 Rocket::Core::ElementDocument* load_cursor( Rocket::Core::Context* ctx, const std::string& filename )
 {
   Rocket::Core::ElementDocument* cursor = ctx->LoadMouseCursor( filename.c_str() );

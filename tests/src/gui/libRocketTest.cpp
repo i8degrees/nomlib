@@ -11,9 +11,11 @@
 #include <SDL.h>
 
 #include <Rocket/Core.h>
+#include <Rocket/Core/Types.h>
 #include <Rocket/Core/Input.h>
 #include <Rocket/Debugger/Debugger.h>
 #include <Rocket/Controls.h>
+#include <Rocket/Controls/DataSource.h>
 
 #include "nomlib/librocket/ShellFileInterface.hpp"
 #include "nomlib/librocket/RocketSDL2Renderer.hpp"
@@ -24,6 +26,120 @@
 #include "nomlib/librocket/DecoratorPhotograph.hpp"
 
 namespace nom {
+
+// 11 per page for 10 pages for a grand total of 110 cards
+const int NUM_CARDS = 11;
+
+/// \see http://librocket.com/wiki/documentation/tutorials/Datagrid
+class CardsMenu: public Rocket::Controls::DataSource
+{
+  public:
+    CardsMenu() :
+      Rocket::Controls::DataSource("cards_db")
+    {
+      for( auto i = 0; i != NUM_CARDS; ++i )
+      {
+        this->cards[i].id = -1;
+      }
+
+      this->LoadCards();
+    }
+
+    virtual ~CardsMenu()
+    {
+      // NOM_LOG_TRACE( NOM );
+    }
+
+    void GetRow(Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index, const Rocket::Core::StringList& columns)
+    {
+      if( table == "cards" )
+      {
+        for( auto i = 0; i != columns.size(); ++i )
+        {
+          if( columns[i] == "name" )
+          {
+            row.push_back( cards[row_index].name.c_str() );
+          }
+          else if( columns[i] == "num" )
+          {
+            row.push_back( cards[row_index].num.c_str() );
+          }
+        } // end for cols loop
+      }
+    } // end GetRow func
+
+    int GetNumRows(const Rocket::Core::String& table)
+    {
+      if( table == "cards" )
+      {
+        for( auto i = 0; i != NUM_CARDS; ++i )
+        {
+          if( cards[i].id == -1 )
+          {
+            // Default value (not counted)
+            return i;
+          }
+        } // end for cards loop
+
+        return NUM_CARDS;
+      }
+
+      return 0;
+    } // end GetNumRows func
+
+    void dump()
+    {
+      for( auto i = 0; i != NUM_CARDS; ++i )
+      {
+        NOM_DUMP(this->cards[i].id);
+        NOM_DUMP(this->cards[i].name);
+        NOM_DUMP(this->cards[i].num);
+      }
+    }
+
+  private:
+    void SubmitCard( int idx, int id, const std::string& name, int num )
+    {
+      this->cards[idx] = Card(id, name, num);
+
+      NotifyRowAdd( "cards", idx, 1 );
+    }
+
+    void LoadCards()
+    {
+      SubmitCard(0,0,"Geezard",1);
+      SubmitCard(1,1,"Fungar",1);
+      SubmitCard(2,2,"Bite Bug",0);
+      SubmitCard(3,3,"Red Bat",4);
+      SubmitCard(4,4,"Blobra",2);
+      SubmitCard(5,5,"Gayla",1);
+      SubmitCard(6,6,"Gesper",3);
+      SubmitCard(7,7,"Fastitocalon-F",0);
+      SubmitCard(8,8,"Blood Soul",1);
+      SubmitCard(9,9,"Caterchipillar",2);
+      SubmitCard(10,10,"Cockatrice",3);
+    }
+
+    // Mock cards store
+    struct Card
+    {
+      Card() {}
+
+      Card( int id, const std::string& name, int num ) :
+        id( id ),
+        name( name ),
+        num{ std::to_string( num ) }
+      {
+        // ...
+      }
+
+      int id = -1;
+      std::string name = "\0";
+      std::string num = "1";
+    };
+
+    Card cards[NUM_CARDS];
+};
 
 /// \brief Helper method for automating the creation of a document window
 Rocket::Core::ElementDocument* load_window( Rocket::Core::Context* ctx, const std::string& filename, const nom::Point2i& pos )
@@ -518,7 +634,13 @@ class libRocketTest: public ::testing::Test
     /// UI Windows; 'widgets' containers
     std::map<std::string, Rocket::Core::ElementDocument*> docs;
 
+    /// \remarks This object must be global, otherwise crashes will often
+    /// result.
     nom::UIEventListener evt;
+
+    /// \remarks This object must be global, otherwise crashes will often
+    /// result (UIEventListener related?).
+    CardsMenu store;
 };
 
 /// \brief nomlib & libRocket (using SDL2 back-end) interface sanity tests.
@@ -658,6 +780,34 @@ TEST_F( libRocketTest, EventListenerTest )
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 
   // content_div->RemoveEventListener( "mouseup", &evt );
+}
+
+/// \remarks Models the Cards Menu state of TTcards
+TEST_F( libRocketTest, DataGridStore )
+{
+  // As per the positioning units used for nom::DataViewListTest (ex2) in
+  // tests/src/gui/DataViewListTest.cpp.
+  Point2i pos( 25, 25 );
+  std::string doc_file = "./dataview.rml";
+
+  store.dump();
+
+  Rocket::Core::ElementDocument* doc = load_window( this->context, doc_file, pos );
+
+  if( doc )
+  {
+    EXPECT_STREQ( "CARDS.", doc->GetTitle().CString() )
+    << "Document title should be the text of the title element: 'CARDS.'";
+  }
+  else
+  {
+    FAIL()
+    << "Document should not be NULL";
+  }
+
+  this->docs[doc_file] = doc;
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
 } // namespace nom

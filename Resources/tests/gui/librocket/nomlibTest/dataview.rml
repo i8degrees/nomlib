@@ -1,0 +1,79 @@
+<rml>
+  <head>
+    <title>CARDS.</title>
+    <link type="text/template" href="window.rml" />
+    <style>
+
+      body
+      {
+        /*width: 168px;
+        height: 200px;*/
+
+        /* TTcards at x2 resolution*/
+        width: 328px;
+        height: 392px;
+
+        /*margin: auto;*/
+      }
+
+      body.window
+      {
+        /*min-width: 168px;*/
+        /*min-height: 200px;*/
+        max-width: 400px;
+        max-height: 400px;
+      }
+
+      div#window
+      {
+        width: auto;
+        padding: 0;
+        padding-left: 5px;
+      }
+
+      div#title_bar
+      {
+        display:none;
+      }
+
+      div#content
+      {
+        /*padding-top: 2%;*/
+        padding-bottom: 2%;
+        /*overflow: hidden;*/
+      }
+
+      datagridbody
+      {
+        text-align: left;
+        /*margin-left: 4px;*/
+        /*margin-right: 3px;*/
+        /*padding: 0px 4px 4px 4px;*/
+        padding: 0px 4px 4px 25px;
+      }
+
+      datagridheader
+      {
+        font-family: Delicious;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        outline-font-effect: outline;
+        outline-width: 1px;
+        outline-color: black;
+
+        padding: 5px 0px 0px 0px;
+        margin-top: -8px;
+        /*padding: 5px 10px 0px 10px;*/
+      }
+
+    </style>
+  </head>
+  <body template="window">
+    <datagrid source="cards_db.cards">
+      <!-- <col fields="id" width="10%">.</col> -->
+      <col fields="name" width="75%">CARDS.</col>
+      <col fields="num" width="10%">NUM.</col>
+    </datagrid>
+  </body>
+</rml>

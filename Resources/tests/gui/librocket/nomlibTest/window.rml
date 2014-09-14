@@ -8,7 +8,6 @@
 
 		<div id="title_bar">
 			<handle move_target="#document">
-				<div id="icon"></div>
 				<span id="title">INFO.</span>
 			</handle>
 		</div>

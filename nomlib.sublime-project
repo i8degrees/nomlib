@@ -41,6 +41,13 @@
       "folder_exclude_patterns": [ "build", "tmp", "docs/public", "docs/man", "src", "include" ]
     },
 
+    {
+      "name": "Resources",
+      "path": "Resources",
+      "file_include_patterns": [ "*.*"]
+      // "folder_exclude_patterns": [ "" ]
+    },
+
     {} // placeholder
   ],
 

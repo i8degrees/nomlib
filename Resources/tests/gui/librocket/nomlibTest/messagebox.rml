@@ -1,8 +1,8 @@
 <rml>
-	<head>
-		<title>INFO.</title>
-		<link type="text/template" href="window.rml" />
-		<style>
+  <head>
+    <title>INFO.</title>
+    <link type="text/template" href="window.rml" />
+    <style>
 
       body
       {
@@ -20,15 +20,16 @@
         max-height: 48px;
       }
 
-			div#content
-			{
-				padding-top: 2%;
-				padding-bottom: 2%;
-			}
+      div#content
+      {
+        text-align: center;
+        padding-top: 2%;
+        padding-bottom: 2%;
+      }
 
-		</style>
-	</head>
-	<body template="window">
-		<p>Hello, world!</p>
-	</body>
+    </style>
+  </head>
+  <body template="window">
+    <p>Hello, world!</p>
+  </body>
 </rml>

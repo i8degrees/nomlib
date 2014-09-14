@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-class RocketSDL2SystemInterface : public Rocket::Core::SystemInterface
+class RocketSDL2SystemInterface: public Rocket::Core::SystemInterface
 {
   public:
     Rocket::Core::Input::KeyIdentifier TranslateKey(SDL_Keycode sdlkey);

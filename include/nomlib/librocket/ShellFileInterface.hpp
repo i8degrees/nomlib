@@ -65,7 +65,7 @@ namespace nom {
   @author Lloyd Weehuizen
  */
 
-class ShellFileInterface : public Rocket::Core::FileInterface
+class ShellFileInterface: public Rocket::Core::FileInterface
 {
   public:
     ShellFileInterface(const Rocket::Core::String& root);

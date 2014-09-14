@@ -48,7 +48,7 @@ namespace nom {
 // Forward declarations
 class RenderWindow;
 
-class RocketSDL2Renderer : public Rocket::Core::RenderInterface
+class RocketSDL2Renderer: public Rocket::Core::RenderInterface
 {
   public:
     RocketSDL2Renderer(SDL_Renderer* renderer, SDL_Window* screen, RenderWindow* window );

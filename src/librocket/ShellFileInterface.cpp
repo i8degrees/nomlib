@@ -51,6 +51,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/librocket/ShellFileInterface.hpp"
 
+// Private headers
 #include <stdio.h>
 
 namespace nom {

@@ -178,6 +178,7 @@ if( NOM_BUILD_GUI_LIBROCKET_TESTS )
   add_executable  (
                     libRocketTest
                     ${NOM_TESTS_COMMON_SOURCE}
+                    ${NOM_TESTS_VTEST_SOURCE}
                     ${NOM_TESTS_SOURCE_DIR}/gui/libRocketTest.cpp
                   )
 
@@ -191,6 +192,7 @@ if( NOM_BUILD_GUI_LIBROCKET_TESTS )
                       libRocketTest
                       "libRocketTest"
                       ${NOM_TESTS_COMMON_SOURCE}
+                      ${NOM_TESTS_VTEST_SOURCE}
                       ${NOM_TESTS_SOURCE_DIR}/gui/libRocketTest.cpp
                     )
 

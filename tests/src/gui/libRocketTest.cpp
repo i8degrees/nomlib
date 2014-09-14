@@ -4,6 +4,9 @@
 
 #include "gtest/gtest.h"
 
+// nom::UnitTest framework
+#include "nomlib/tests/common.hpp"
+
 #include <nomlib/config.hpp>
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
@@ -195,7 +198,7 @@ Rocket::Core::ElementDocument* load_cursor( Rocket::Core::Context* ctx, const st
   return cursor;
 }
 
-class libRocketTest: public ::testing::Test
+class libRocketTest: public nom::VisualUnitTest
 {
   public:
     /// \remarks This method is called at the start of each unit test.
@@ -211,6 +214,9 @@ class libRocketTest: public ::testing::Test
       // Platform specific initialization of fonts (system, user, engine) that
       // are available to us at run-time.
       PlatformSettings::initialize();
+
+      // The frame image to compare against the reference image set
+      this->append_screenshot_frame( 0 );
     }
 
     /// \remarks This method is called at the end of each unit test.
@@ -219,12 +225,11 @@ class libRocketTest: public ::testing::Test
       // NOM_LOG_TRACE( NOM );
     }
 
-    /// \remarks This method is called after construction, at the start of each
-    /// unit test.
-    virtual void SetUp()
+    /// \remarks Initialization callback for VisualUnitTest to act on, instead
+    /// of its default rendering setup. A bit of additional setup is
+    /// required for plumbing in libRocket into our setup.
+    void init_rendering()
     {
-      // NOM_LOG_TRACE( NOM );
-
       // Required interface as per libRocket SDL2 implementation
       if( nom::set_hint( SDL_HINT_RENDER_DRIVER, "opengl" ) == false )
       {
@@ -257,7 +262,8 @@ class libRocketTest: public ::testing::Test
         }
       }
 
-      this->window_.create( "nomlib & LibRocket integration tests", 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE, oglIdx, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
+      // Use default resolution, provided by nom::VisualUnitTest
+      this->window_.create( "nomlib & LibRocket integration tests", this->resolution().w, this->resolution().h, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE, oglIdx, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
 
       // Not used
       // SDL_GLContext glcontext = SDL_GL_CreateContext( this->window_.window() );
@@ -270,6 +276,19 @@ class libRocketTest: public ::testing::Test
       {
         FAIL() << "Could not create SDL2 Renderer for libRocket.";
       }
+    }
+
+    /// \remarks This method is called after construction, at the start of each
+    /// unit test.
+    virtual void SetUp()
+    {
+      // NOM_LOG_TRACE( NOM );
+
+      // We must set the rendering init callback before calling ::SetUp()
+      this->set_init_rendering_callback( [&] () { this->init_rendering(); } );
+
+      // VisualUnitTest environment init...
+      VisualUnitTest::SetUp();
 
       // nom::init sets the working directory to this executable's directory path;
       // i.e.: build/tests. Now all the documents (including their dependencies)
@@ -360,6 +379,15 @@ class libRocketTest: public ::testing::Test
 
       // int pos_x = this->doc0->GetProperty<int>( "left" );
       // int pos_y = this->doc0->GetProperty<int>( "top" );
+
+      /// Put our event polling within the main event's loop
+      this->append_event_callback( [&] ( Event ev ) { this->on_event( ev ); } );
+
+      // Register GUI updates onto our main loop (::on_run).
+      this->append_update_callback( [&] ( float delta ) { this->context->Update(); } );
+
+      // Register GUI rendering onto our main loop (::on_run).
+      this->append_render_callback( [&] ( const RenderWindow& win ) { this->context->Render(); } );
     }
 
     /// \remarks This method is called before destruction, at the end of each
@@ -384,14 +412,14 @@ class libRocketTest: public ::testing::Test
       // NOM_LOG_TRACE( NOM );
     }
 
-    /// \brief Main loop
-    virtual int on_run()
+    /// \brief Event loop
+    virtual int on_event( Event& event )
     {
-      nom::Event event;
-      while( this->running )
-      {
-        while( this->event_.poll_event( event ) )
-        {
+      // nom::Event event;
+      // while( this->running )
+      // {
+        // while( this->event_.poll_event( event ) )
+        // {
           switch( event.type )
           {
             case SDL_QUIT:
@@ -512,16 +540,15 @@ class libRocketTest: public ::testing::Test
               break;
             }
           }
-        }
+        // }
 
-        this->window_.update();
-        this->context->Update();
+        // this->window_.update();
+        // this->context->Update();
 
-        this->window_.fill( nom::Color4i::SkyBlue );
-        this->context->Render();
-      }
+        // this->window_.fill( nom::Color4i::SkyBlue );
+        // this->context->Render();
+      // }
 
-      // SUCCEED();
       return NOM_EXIT_SUCCESS;
     }
 
@@ -619,7 +646,7 @@ class libRocketTest: public ::testing::Test
     nom::Cursor cursor_mgr;
 
     /// Wrapper for SDL Window && SDL Renderer
-    nom::RenderWindow window_;
+    // nom::RenderWindow window_;
 
     /// \brief nomlib's event interface
     nom::EventHandler event_;
@@ -678,6 +705,7 @@ TEST_F( libRocketTest, BaseIntegrationTest )
   this->docs[doc_file] = doc;
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( libRocketTest, RenderTwoDocumentWindows )
@@ -721,6 +749,7 @@ TEST_F( libRocketTest, RenderTwoDocumentWindows )
   this->docs[doc_file1] = doc1;
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F( libRocketTest, EventListenerTest )
@@ -783,6 +812,7 @@ TEST_F( libRocketTest, EventListenerTest )
   // content_div->DispatchEvent("mousedown", params);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 
   // content_div->RemoveEventListener( "mouseup", &evt );
 }
@@ -813,6 +843,7 @@ TEST_F( libRocketTest, DataGridStore )
   this->docs[doc_file] = doc;
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
 }
 
 } // namespace nom
@@ -826,6 +857,9 @@ int main( int argc, char** argv )
   NOM_ASSERT( nom::init( argc, argv ) == true );
 
   atexit( nom::quit );
+
+  // nom::UnitTest framework integration
+  nom::init_test( argc, argv );
 
   // Log all messages
   nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE );

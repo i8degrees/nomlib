@@ -57,6 +57,7 @@ class VisualUnitTest: public UnitTest
     /// and VisualUnitTest::timestamp_ (file & directory sync).
     friend class VisualUnitTestResultWriter;
 
+    typedef std::function<void()> init_rendering_callback_type;
     typedef std::function<void( Event )> event_callback_type;
     typedef std::function<void( float )> update_callback_type;
     typedef std::function<void( const RenderWindow& )> render_callback_type;
@@ -168,8 +169,22 @@ class VisualUnitTest: public UnitTest
 
     // void save_screenshot( const std::string& file_path );
 
+    /// \brief User-defined initialization callback
+    ///
+    /// \remarks The default is NULL (no user-defined callback). This instructs
+    /// VisualUnitTest to assume defaults that are known to be good for native
+    /// nomlib apps.
+    ///
+    /// \returns Always returns a value of one (1).
+    int set_init_rendering_callback( const init_rendering_callback_type& func );
+
+    /// \returns The number of registered event callbacks (after insertion).
     int append_event_callback( const std::function<void( Event )>& func );
+
+    /// \returns The number of registered event callbacks (after insertion).
     int append_update_callback( const std::function<void( float )>& func );
+
+    /// \returns The number of registered event callbacks (after insertion).
     int append_render_callback( const std::function<void( const RenderWindow& )>& func );
 
   protected:
@@ -243,6 +258,9 @@ class VisualUnitTest: public UnitTest
     std::string test_reference_directory_;
 
     std::string output_filename_;
+
+    /// \brief User-defined initialization callback
+    init_rendering_callback_type init_rendering_callback_;
 
     std::vector<event_callback_type> event_callbacks_;
     std::vector<update_callback_type> update_callbacks_;

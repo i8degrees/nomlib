@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <OpenGL/glu.h>
 
 #if !(SDL_VIDEO_RENDER_OGL)
-    #error "Only the opengl sdl backend is supported. To add support for others, see http://mdqinc.com/blog/2013/01/integrating-librocket-with-sdl-2/"
+  #error "Only the opengl sdl backend is supported. To add support for others, see http://mdqinc.com/blog/2013/01/integrating-librocket-with-sdl-2/"
 #endif
 
 namespace nom {
@@ -69,14 +69,15 @@ class RocketSDL2Renderer: public Rocket::Core::RenderInterface
     /// Called by Rocket when a loaded texture is no longer required.
     virtual void ReleaseTexture(Rocket::Core::TextureHandle texture_handle);
 
-  // FIXME:
-  // private:
+  private:
     /// \todo Rename to renderer_
     SDL_Renderer* mRenderer;
 
     /// \todo Rename to screen_
     SDL_Window* mScreen;
 
+  // FIXME:
+  public:
     RenderWindow* window_;
 };
 

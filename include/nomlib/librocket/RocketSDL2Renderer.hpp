@@ -49,6 +49,7 @@ namespace nom {
 // Forward declarations
 class RenderWindow;
 
+/// \see https://wiki.libsdl.org/SDL_GL_BindTexture
 class RocketSDL2Renderer: public Rocket::Core::RenderInterface
 {
   public:

@@ -76,11 +76,11 @@ void RocketSDL2Renderer::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
     SDL_GL_BindTexture(sdl_texture, &texw, &texh);
   }
 
-  for(int  i = 0; i < num_vertices; i++)
+  for( int i = 0; i < num_vertices; i++ )
   {
     Positions[i] = vertices[i].position;
     Colors[i] = vertices[i].colour;
-    if (sdl_texture)
+    if( sdl_texture )
     {
       TexCoords[i].x = vertices[i].tex_coord.x * texw;
       TexCoords[i].y = vertices[i].tex_coord.y * texh;
@@ -89,7 +89,7 @@ void RocketSDL2Renderer::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
     {
       TexCoords[i] = vertices[i].tex_coord;
     }
-  };  // ...does this semicolon at the end here affect this loop???
+  }
 
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);

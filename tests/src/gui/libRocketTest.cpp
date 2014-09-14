@@ -19,7 +19,7 @@
 #include "nomlib/librocket/RocketSDL2Renderer.hpp"
 #include "nomlib/librocket/RocketSDL2SystemInterface.hpp"
 
-// #include "nomlib/librocket/DecoratorPhotograph.hpp"
+#include "nomlib/librocket/DecoratorPhotograph.hpp"
 
 namespace nom {
 
@@ -72,6 +72,10 @@ class libRocketTest: public ::testing::Test
       context( nullptr )
     {
       // NOM_LOG_TRACE( NOM );
+
+      // Platform specific initialization of fonts (system, user, engine) that
+      // are available to us at run-time.
+      PlatformSettings::initialize();
     }
 
     /// \remarks This method is called at the end of each unit test.
@@ -186,6 +190,11 @@ class libRocketTest: public ::testing::Test
       Rocket::Core::FontDatabase::LoadFontFace( "Delicious-BoldItalic.otf" );
       Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Italic.otf" );
       Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Roman.otf" );
+
+      // Additional fonts
+      Rocket::Core::FontDatabase::LoadFontFace( nom::SystemFonts::cache().find_resource( "Arial" ).path().c_str() );
+      Rocket::Core::FontDatabase::LoadFontFace( nom::SystemFonts::cache().find_resource( "OpenSans" ).path().c_str() );
+      Rocket::Core::FontDatabase::LoadFontFace( nom::SystemFonts::cache().find_resource( "OpenSans-Bold" ).path().c_str() );
 
       // Load custom decorators for nomlib
       Rocket::Core::DecoratorInstancer* decorator0 = new nom::DecoratorInstancerFinalFantasyFrame();
@@ -456,8 +465,8 @@ TEST_F( libRocketTest, RenderTwoDocumentWindows )
 
   if( doc1 )
   {
-    EXPECT_STREQ( "INFO.", doc1->GetTitle().CString() )
-    << "Document title should be the text of the title element: 'INFO.'";
+    EXPECT_STREQ( "CHOICE", doc1->GetTitle().CString() )
+    << "Document title should be the text of the title element: 'CHOICE'";
   }
   else
   {
@@ -486,8 +495,8 @@ TEST_F( libRocketTest, EventListenerTest )
 
   if( doc )
   {
-    EXPECT_STREQ( "INFO.", doc->GetTitle().CString() )
-    << "Document title should be the text of the title element: 'INFO.'";
+    EXPECT_STREQ( "CHOICE", doc->GetTitle().CString() )
+    << "Document title should be the text of the title element: 'CHOICE'";
   }
   else
   {

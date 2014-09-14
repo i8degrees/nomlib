@@ -3,28 +3,33 @@
 		<title>INFO.</title>
 		<link type="text/template" href="window.rml" />
 		<style>
-			body
-			{
-				width: 300px;
-				height: 225px;
 
-				margin: auto;
-			}
+      body
+      {
+        width: 200px;
+        height: 48px;
 
-			div#title_bar div#icon
-			{
-				display: none;
-			}
+        margin: auto;
+      }
+
+      body.window
+      {
+        /*min-width: 200px;*/
+        /*min-height: 48px;*/
+        max-width: 300px;
+        max-height: 48px;
+      }
 
 			div#content
 			{
-				padding-top: 12%;
-				padding-bottom: 12%;
+				padding-top: 2%;
+				padding-bottom: 2%;
 			}
 
 		</style>
 	</head>
 	<body template="window">
-		<p>This is a nomlib sample (SDL2 back-end).</p>
+		<!-- <p>This is a nomlib sample (SDL2 back-end).</p> -->
+		<p>Hello, world!</p>
 	</body>
 </rml>

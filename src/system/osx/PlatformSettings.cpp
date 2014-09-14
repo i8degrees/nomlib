@@ -131,12 +131,18 @@ void PlatformSettings::enumerate_fonts( void )
   SystemFonts::cache().append_resource( ResourceFile( "LiberationSans-Regular", user.prepend("LiberationSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "LiberationSerif-Regular", user.prepend("LiberationSerif-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
 
+  SystemFonts::cache().append_resource( ResourceFile( "OpenSans", user.prepend("OpenSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
+  SystemFonts::cache().append_resource( ResourceFile( "OpenSans-Bold", user.prepend("OpenSans-Bold.ttf"), ResourceFile::Type::TrueTypeFont ) );
+
   p = Path( fp.resource_path( "org.i8degrees.nomlib" ) + p.native() + "fonts" );
 
   // SystemFonts::cache().append_resource( ResourceFile( "LiberationSans-Regular", p.prepend("LiberationSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
   // SystemFonts::cache().append_resource( ResourceFile( "LiberationSerif-Regular", p.prepend("LiberationSerif-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "VIII", p.prepend("VIII.png"), ResourceFile::Type::BitmapFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "VIII_small", p.prepend("VIII_small.png"), ResourceFile::Type::BitmapFont ) );
+
+
+
 }
 
 } // namespace nom

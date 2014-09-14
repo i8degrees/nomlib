@@ -44,8 +44,11 @@
     </style>
   </head>
   <body template="window">
+
     <p>Are you sure?</p>
+
     <span class='choice'>Yes</span>
     <span class='choice'>No</span>
+
   </body>
 </rml>

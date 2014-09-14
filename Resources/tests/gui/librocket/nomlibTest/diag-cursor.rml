@@ -1,0 +1,20 @@
+<!-- Diagonal Resize 1 Cursor -->
+<rml>
+  <head>
+    <title>diag-resize</title>
+    <style>
+      body
+      {
+        width: 21px;
+        height: 21px;
+
+        <!-- Add a simple image decorator onto the body element. -->
+        cursor-decorator: image;
+        /* FIXME: Only half the cursor is showing up... */
+        cursor-image: cursors.png 19px 13px 40px 34px;
+      }
+    </style>
+  </head>
+  <body>
+  </body>
+</rml>

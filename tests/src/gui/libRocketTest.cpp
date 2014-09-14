@@ -60,6 +60,24 @@ Rocket::Core::ElementDocument* load_window( Rocket::Core::Context* ctx, const st
   return doc;
 }
 
+Rocket::Core::ElementDocument* load_cursor( Rocket::Core::Context* ctx, const std::string& filename )
+{
+  Rocket::Core::ElementDocument* cursor = ctx->LoadMouseCursor( filename.c_str() );
+
+  if( cursor )
+  {
+    cursor->Show();
+    cursor->RemoveReference();
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Cursor", cursor->GetSourceURL().CString(), "is loaded." );
+  }
+  else
+  {
+    return nullptr;
+  }
+
+  return cursor;
+}
+
 class libRocketTest: public ::testing::Test
 {
   public:
@@ -202,25 +220,33 @@ class libRocketTest: public ::testing::Test
       decorator0->RemoveReference();
 
       // Load the default in-window cursor
-      Rocket::Core::ElementDocument* cursor = this->context->LoadMouseCursor( "./cursor.rml" );
+      Rocket::Core::ElementDocument* cur = load_cursor( this->context, "./arrow-cursor.rml" );
 
-      if( cursor )
+      if( cur )
       {
-        cursor->Show();
-        cursor->RemoveReference();
-        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Cursor", cursor->GetSourceURL().CString(), "is loaded." );
-
-        EXPECT_STREQ( "default", cursor->GetTitle().CString() )
-        << "Document title should be the text of the title element: 'default'";
+        EXPECT_STREQ( "arrow", cur->GetTitle().CString() )
+        << "Document title should be the text of the title element: 'arrow'";
       }
       else
       {
-        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Cursor", cursor->GetSourceURL().CString(), "was NULL." );
-        FAIL();
+        FAIL() << "Cursor" << cur->GetSourceURL().CString() << "was NULL.";
+      }
+
+      // Resize window cursor
+      cur = load_cursor( this->context, "./diag-cursor.rml" );
+
+      if( cur )
+      {
+        EXPECT_STREQ( "diag-resize", cur->GetTitle().CString() )
+        << "Document title should be the text of the title element: 'diag-resize'";
+      }
+      else
+      {
+        FAIL() << "Cursor" << cur->GetSourceURL().CString() << "was NULL.";
       }
 
       // Let libRocket handle the rendering of the in-window cursor
-      cursor_mgr.show_cursor( false );
+      this->cursor_mgr.show_cursor( false );
 
       // int pos_x = this->doc0->GetProperty<int>( "left" );
       // int pos_y = this->doc0->GetProperty<int>( "top" );
@@ -413,7 +439,7 @@ TEST_F( libRocketTest, BaseIntegrationTest )
   // As per the positioning units used for nom::MessageBox ex0 in
   // examples/gui_messagebox.cpp
   Point2i pos( 38, 25 );
-  std::string doc_file = "./demo.rml";
+  std::string doc_file = "./messagebox.rml";
 
   // Assumes base directory path of FileInterface (see above)
   Rocket::Core::ElementDocument* doc = nom::load_window( this->context, doc_file, pos );
@@ -440,7 +466,7 @@ TEST_F( libRocketTest, BaseIntegrationTest )
 TEST_F( libRocketTest, RenderTwoDocumentWindows )
 {
   Point2i pos0( 38, 25 );
-  std::string doc_file0 = "./demo.rml";
+  std::string doc_file0 = "./messagebox.rml";
 
   // As per the positioning units used for nom::QuestionDialogBox (ex2) in
   // examples/gui_messagebox.cpp

@@ -68,10 +68,7 @@ div#content
 }
 
 /* FIXME */
-/*
 div#document:hover
 {
-	border-width: 1px;
-	border-color: red;
+	cursor: diag-resize;
 }
-*/

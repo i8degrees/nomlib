@@ -1,7 +1,7 @@
 <template name="window" content="content">
 <head>
-	<link type="text/rcss" href="rkt.rcss"/>
-	<link type="text/rcss" href="invader.rcss"/>
+	<link type="text/rcss" href="reset.rcss"/>
+	<link type="text/rcss" href="ttcards.rcss"/>
 </head>
 <body class="window">
 	<div id="window">

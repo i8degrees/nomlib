@@ -29,7 +29,6 @@
 		</style>
 	</head>
 	<body template="window">
-		<!-- <p>This is a nomlib sample (SDL2 back-end).</p> -->
 		<p>Hello, world!</p>
 	</body>
 </rml>

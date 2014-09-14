@@ -1,8 +1,7 @@
 <!-- Default Cursor -->
-<!-- Derives from Ogre3D example for libRocket -->
 <rml>
 	<head>
-		<title>default</title>
+		<title>arrow</title>
 		<style>
 			body
 			{
@@ -11,7 +10,7 @@
 
 				<!-- Add a simple image decorator onto the body element. -->
 				cursor-decorator: image;
-				cursor-image: invader.tga 56px 212px 68px 231px;
+				cursor-image: cursors.png 3px 3px 15px 22px;
 			}
 		</style>
 	</head>

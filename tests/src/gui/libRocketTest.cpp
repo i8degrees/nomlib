@@ -407,6 +407,93 @@ class libRocketTest: public ::testing::Test
       return NOM_EXIT_SUCCESS;
     }
 
+    void on_click( Rocket::Core::Event& event )
+    {
+      if( event == "mouseup" )
+      {
+        Rocket::Core::Input::KeyIdentifier button = (Rocket::Core::Input::KeyIdentifier) event.GetParameter<int>("button", 3);
+        // Rocket::Core::Input::KeyIdentifier button_x = (Rocket::Core::Input::KeyIdentifier) event.GetParameter<int>("mouse_x", -1);
+        // Rocket::Core::Input::KeyIdentifier button_y = (Rocket::Core::Input::KeyIdentifier) event.GetParameter<int>("mouse_y", -1);
+
+        Rocket::Core::Element* dest = event.GetTargetElement();
+
+        if( button == 0 )
+        {
+          // NOM_DUMP_VAR(NOM, "left button_x:", button_x);
+          // NOM_DUMP_VAR(NOM, "left button_y:", button_y);
+
+          if( dest->GetClassNames() == "choice" )
+          {
+            NOM_DUMP( "bingo!" );
+
+             // Rocket::Core::String text_color = dest->GetProperty<Rocket::Core::String>( "color" );
+
+            dest->SetClass( "selected", true );
+            // dest->SetAttribute( "style", "color: red;" );
+
+            std::string c = dest->GetClassNames().CString();
+            NOM_DUMP(c);
+
+            if( c.find( "choice selected" ) == nom::npos )
+            {
+              dest->SetClass( "choice selected", true );
+            }
+            else
+            {
+              dest->SetClass( "choice selected", false );
+            }
+
+            // Execute callback
+          }
+        }
+        else if( button == 1 )
+        {
+          if( dest )
+          {
+            // ...
+          }
+
+          // NOM_DUMP_VAR(NOM, "right button_x:", button_x);
+          // NOM_DUMP_VAR(NOM, "right button_y:", button_y);
+        }
+        else if( button == 2 )
+        {
+          // NOM_DUMP_VAR(NOM, "middle button_x:", button_x);
+          // NOM_DUMP_VAR(NOM, "middle button_y:", button_y);
+        }
+        else if( button == 3 )  // Undefined
+        {
+          NOM_DUMP_VAR(NOM, "Undefined button");
+        }
+
+        if( dest )
+        {
+          // dest->RemoveReference();
+        }
+      }
+    } // end on_click func
+
+    void on_wheel( Rocket::Core::Event& event )
+    {
+      if( event == "mousescroll" )
+      {
+        // Rocket::Core::Input::KeyIdentifier button = (Rocket::Core::Input::KeyIdentifier) event.GetParameter<int>("button", 3);
+        int wheel_delta = event.GetParameter<int>( "wheel_delta", 0 );
+
+        NOM_DUMP( wheel_delta );
+      }
+    } // end on_wheel func
+
+    void on_keydown( Rocket::Core::Event& event )
+    {
+      if( event == "keydown" )
+      {
+        Rocket::Core::Input::KeyIdentifier key = NOM_SCAST(Rocket::Core::Input::KeyIdentifier, event.GetParameter<int>("key_identifier", 0) );
+
+        NOM_DUMP( key );
+      }
+    } // end on_wheel func
+
   protected:
     bool running;
 
@@ -430,6 +517,8 @@ class libRocketTest: public ::testing::Test
 
     /// UI Windows; 'widgets' containers
     std::map<std::string, Rocket::Core::ElementDocument*> docs;
+
+    nom::UIEventListener evt;
 };
 
 /// \brief nomlib & libRocket (using SDL2 back-end) interface sanity tests.
@@ -509,8 +598,6 @@ TEST_F( libRocketTest, RenderTwoDocumentWindows )
 
 TEST_F( libRocketTest, EventListenerTest )
 {
-  // nom::MouseButtonEventListener evt;
-
   // As per the positioning units used for nom::QuestionDialogBox (ex2) in
   // examples/gui_messagebox.cpp
   nom::Point2i pos = nom::Point2i(38,141);
@@ -553,8 +640,10 @@ TEST_F( libRocketTest, EventListenerTest )
   {
     NOM_DUMP( (*itr)->GetTagName().CString() );
 
-    // evt.RegisterEvent( *itr );
-    nom::MouseButtonEventListener::RegisterEvent( *itr );
+    // FIXME: Only one event type can be listened to at a time
+    // evt.register_event_listener( *itr, "keydown", [&] ( Rocket::Core::Event& ev ) { this->on_keydown( ev ); } );
+    // evt.register_event_listener( *itr, "mouseup", [&] ( Rocket::Core::Event& ev ) { this->on_click( ev ); } );
+    evt.register_event_listener( *itr, "mousescroll", [&] ( Rocket::Core::Event& ev ) { this->on_wheel( ev ); } );
   }
 
   this->docs[doc_file] = doc;

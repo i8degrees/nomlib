@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_LIBROCKET_SDL2_SYSTEM_INTERFACE_HPP
 #define NOMLIB_LIBROCKET_SDL2_SYSTEM_INTERFACE_HPP
 
-//#include <memory>
+#include <functional>
 
 #include "nomlib/config.hpp"
 
@@ -58,19 +58,40 @@ class RocketSDL2SystemInterface: public Rocket::Core::SystemInterface
 
 namespace nom {
 
-class MouseButtonEventListener: public Rocket::Core::EventListener
+/// \see http://librocket.com/wiki/documentation/RML/Events
+/// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Events
+/// \see http://www.librocket.com/wiki/documentation/PythonManual/AttachingToEvents
+class UIEventListener: public Rocket::Core::EventListener
 {
   public:
-    virtual ~MouseButtonEventListener();
+    typedef UIEventListener self_type;
 
-    /// \brief Registers an elemenet for the on mouse button click action event.
-    static void RegisterEvent(Rocket::Core::Element* element);
+    typedef Rocket::Core::Event event_type;
+    typedef std::function<void(event_type&)> callback_type;
 
-    virtual void OnAttach(Rocket::Core::Element* ROCKET_UNUSED_PARAMETER(element) );
+    virtual ~UIEventListener();
+
+    /// \brief Register an event listener for an element.
+    ///
+    /// \param event_type The event to listen for, i.e.: 'mouseup'.
+    /// \param observer   The callback to execute inside ::ProcessEvent.
+    void register_event_listener(
+                                  Rocket::Core::Element* element,
+                                  const std::string& event_type,
+                                  const callback_type& observer
+                                );
+
+    // virtual void OnAttach(Rocket::Core::Element* ROCKET_UNUSED_PARAMETER(element) );
+    // virtual void OnDetach( Rocket::Core::Element* ROCKET_UNUSED_PARAMETER(element) );
 
   protected:
-    /// \brief Event action logic
-    virtual void ProcessEvent(Rocket::Core::Event& ev);
+    /// \brief Callback execution.
+    ///
+    /// \remarks The event's logic is done here.
+    virtual void ProcessEvent( event_type& event );
+
+  private:
+    callback_type cb_;
 };
 
 } // namespace nom

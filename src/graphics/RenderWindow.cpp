@@ -54,6 +54,7 @@ bool RenderWindow::create (
                             int32 width,
                             int32 height,
                             uint32 window_flags,
+                            int32 rendering_driver,
                             uint32 context_flags
                           )
 {
@@ -73,7 +74,7 @@ bool RenderWindow::create (
     return false;
   }
 
-  Renderer::create ( this->window(), -1, context_flags );
+  Renderer::create ( this->window(), rendering_driver, context_flags );
 
   if( this->renderer_valid() == false )
   {
@@ -108,10 +109,11 @@ bool RenderWindow::create (
                             const std::string& window_title,
                             const Size2i& res,
                             uint32 window_flags,
+                            int32 rendering_driver,
                             uint32 context_flags
                           )
 {
-  return this->create( window_title, res.w, res.h, window_flags, context_flags );
+  return this->create( window_title, res.w, res.h, window_flags, rendering_driver, context_flags );
 }
 
 RenderWindow::RawPtr RenderWindow::get ( void )

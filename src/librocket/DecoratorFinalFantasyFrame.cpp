@@ -95,7 +95,7 @@ void DecoratorFinalFantasyFrame::RenderElement(Rocket::Core::Element* element, R
 
   if( p )
   {
-    RenderWindow* target = p->window_;
+    const RenderWindow* target = p->window_;
 
     Point2i pos( position.x, position.y );
     Size2i dims( size.x, size.y );

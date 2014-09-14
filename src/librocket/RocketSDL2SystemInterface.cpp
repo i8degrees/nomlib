@@ -32,6 +32,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+void RocketSDL2SystemInterface::ActivateKeyboard()
+{
+  SDL_StartTextInput();
+}
+
+void RocketSDL2SystemInterface::DeactivateKeyboard()
+{
+  SDL_StopTextInput();
+}
+
 Rocket::Core::Input::KeyIdentifier RocketSDL2SystemInterface::TranslateKey(SDL_Keycode sdlkey)
 {
   using namespace Rocket::Core::Input;

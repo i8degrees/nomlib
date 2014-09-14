@@ -40,10 +40,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-RocketSDL2Renderer::RocketSDL2Renderer(SDL_Renderer* renderer, SDL_Window* screen, RenderWindow* window )
+bool RocketSDL2Renderer::gl_init( int width, int height )
 {
-  mRenderer = renderer;
-  mScreen = screen;
+  // Initialize OpenGL for SDL2 + libRocket play along
+  SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+  glMatrixMode( GL_PROJECTION | GL_MODELVIEW );
+  glLoadIdentity();
+  glOrtho( 0, width, height, 0, 0, 1 );
+
+  return true;
+}
+
+RocketSDL2Renderer::RocketSDL2Renderer(RenderWindow* window )
+{
   this->window_ = window;
 }
 
@@ -80,7 +89,7 @@ void RocketSDL2Renderer::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
     {
       TexCoords[i] = vertices[i].tex_coord;
     }
-  };
+  };  // ...does this semicolon at the end here affect this loop???
 
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
@@ -106,8 +115,8 @@ void RocketSDL2Renderer::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 
   /* Reset blending and draw a fake point just outside the screen to let SDL know that it needs to reset its state in case it wants to render a texture */
   glDisable(GL_BLEND);
-  SDL_SetRenderDrawBlendMode(mRenderer, SDL_BLENDMODE_NONE);
-  SDL_RenderDrawPoint(mRenderer, -1, -1);
+  SDL_SetRenderDrawBlendMode(this->window_->renderer(), SDL_BLENDMODE_NONE);
+  SDL_RenderDrawPoint(this->window_->renderer(), -1, -1);
 
   // Reset the renderer's drawing color; this is necessary because otherwise
   // the GL color call above this statement overwrites any drawing colors set
@@ -136,7 +145,7 @@ void RocketSDL2Renderer::EnableScissorRegion(bool enable)
 void RocketSDL2Renderer::SetScissorRegion(int x, int y, int width, int height)
 {
     int w_width, w_height;
-    SDL_GetWindowSize(mScreen, &w_width, &w_height);
+    SDL_GetWindowSize(this->window_->window(), &w_width, &w_height);
     glScissor(x, w_height - (y + height), width, height);
 }
 
@@ -174,7 +183,7 @@ bool RocketSDL2Renderer::LoadTexture(Rocket::Core::TextureHandle& texture_handle
 
   if(surface)
   {
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(mRenderer, surface);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(this->window_->renderer(), surface);
 
     if(texture)
     {
@@ -208,7 +217,7 @@ bool RocketSDL2Renderer::GenerateTexture(Rocket::Core::TextureHandle& texture_ha
   #endif
 
   SDL_Surface *surface = SDL_CreateRGBSurfaceFrom ((void*) source, source_dimensions.x, source_dimensions.y, 32, source_dimensions.x*4, rmask, gmask, bmask, amask);
-  SDL_Texture *texture = SDL_CreateTextureFromSurface(mRenderer, surface);
+  SDL_Texture *texture = SDL_CreateTextureFromSurface(this->window_->renderer(), surface);
 
   SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
   SDL_FreeSurface(surface);

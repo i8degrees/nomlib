@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_LIBROCKET_SDL2_RENDERER_INTERFACE_HPP
 #define NOMLIB_LIBROCKET_SDL2_RENDERER_INTERFACE_HPP
 
-#include <memory>
+// #include <memory>
 
 #include "nomlib/config.hpp"
 
@@ -52,7 +52,24 @@ class RenderWindow;
 class RocketSDL2Renderer: public Rocket::Core::RenderInterface
 {
   public:
-    RocketSDL2Renderer(SDL_Renderer* renderer, SDL_Window* screen, RenderWindow* window );
+    /// \brief Initialize OpenGL with the necessary settings for libRocket and
+    /// SDL2 to be all friendly.
+    ///
+    /// \returns Always boolean TRUE; the return value is not used at this time.
+    ///
+    /// \param width  The width of the clipping plane (orthographic matrix).
+    /// \param height The height of the clipping plane (orthographic matrix).
+    ///
+    /// \note This method should be called before any rendering is done.
+    ///
+    /// \remarks This is not part of the "official" interface, and is provided
+    /// purely as a convenience method.
+    ///
+    /// \todo Consider making a call to htis method upon construction? (Probably
+    /// not a wise idea...)
+    static bool gl_init( int width, int height );
+
+    RocketSDL2Renderer( RenderWindow* window );
 
     /// Called by Rocket when it wants to render geometry that it does not wish to optimise.
     virtual void RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation);
@@ -69,15 +86,9 @@ class RocketSDL2Renderer: public Rocket::Core::RenderInterface
     /// Called by Rocket when a loaded texture is no longer required.
     virtual void ReleaseTexture(Rocket::Core::TextureHandle texture_handle);
 
-  private:
-    /// \todo Rename to renderer_
-    SDL_Renderer* mRenderer;
-
-    /// \todo Rename to screen_
-    SDL_Window* mScreen;
-
-  // FIXME:
-  public:
+    /// \brief nomlib interface bridge between SDL2 and libRocket
+    ///
+    /// \remarks The interface does **not** own the pointer.
     RenderWindow* window_;
 };
 

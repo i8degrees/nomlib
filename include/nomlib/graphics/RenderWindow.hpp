@@ -78,13 +78,12 @@ class RenderWindow: public Renderer
     SelfType& operator =( const SelfType& other ) = delete;
 
     /// Initialize a SDL window and renderer
-    ///
-    /// \todo Rename to initialize
     bool create (
                   const std::string& window_title,
                   int32 width,
                   int32 height,
                   uint32 window_flags,
+                  int32 rendering_driver = -1,
                   uint32 context_flags = SDL_RENDERER_ACCELERATED
                 );
 
@@ -95,6 +94,7 @@ class RenderWindow: public Renderer
                   const std::string& window_title,
                   const Size2i& res,
                   uint32 window_flags,
+                  int32 rendering_driver = -1,
                   uint32 context_flags = SDL_RENDERER_ACCELERATED
                 );
 

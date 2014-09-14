@@ -43,6 +43,12 @@ namespace nom {
 class RocketSDL2SystemInterface: public Rocket::Core::SystemInterface
 {
   public:
+    /// \brief Begin text input mode (brings up virtual keyboard on mobile hardware)
+    void ActivateKeyboard();
+
+    /// \brief End text input mode (brings up virtual keyboard on mobile hardware)
+    void DeactivateKeyboard();
+
     Rocket::Core::Input::KeyIdentifier TranslateKey(SDL_Keycode sdlkey);
     int TranslateMouseButton(Uint8 button);
     int TranslateMouseWheel( int32 axis );

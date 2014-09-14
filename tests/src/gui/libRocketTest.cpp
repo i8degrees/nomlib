@@ -233,7 +233,7 @@ class libRocketTest: public ::testing::Test
 
       if( nom::set_hint( SDL_HINT_RENDER_VSYNC, "0" ) == false )
       {
-        NOM_LOG_INFO ( NOM, "Could not enable vertical refresh." );
+        NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
       }
 
       if( nom::set_hint( SDL_HINT_RENDER_SCALE_QUALITY, "nearest" ) == false )
@@ -241,37 +241,30 @@ class libRocketTest: public ::testing::Test
         NOM_LOG_INFO( NOM, "Could not set scale quality to", "nearest" );
       }
 
-      this->window.create( "nomlib & LibRocket integration tests", 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE );
+      // Try to force the use of the OpenGL rendering driver; this is required
+      // as per the SDL2 implementation for libRocket.
+      int oglIdx = -1;
+      int nRD = SDL_GetNumRenderDrivers();
+      for( auto i = 0; i < nRD; ++i )
+      {
+        SDL_RendererInfo info;
+        if( ! SDL_GetRenderDriverInfo( i, &info ) )
+        {
+          if( ! strcmp( info.name, "opengl" ) )
+          {
+            oglIdx = i;
+          }
+        }
+      }
+
+      this->window_.create( "nomlib & LibRocket integration tests", 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE, oglIdx, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
 
       // Not used
-      // SDL_GLContext glcontext = SDL_GL_CreateContext( this->window.window() );
+      // SDL_GLContext glcontext = SDL_GL_CreateContext( this->window_.window() );
 
-      // TODO:
-      // int oglIdx = -1;
-      // int nRD = SDL_GetNumRenderDrivers();
-      // for( auto i = 0; i < nRD; ++i )
-      // {
-      //   SDL_RendererInfo info;
-      //   if( ! SDL_GetRenderDriverInfo( i, &info ) )
-      //   {
-      //     if( ! strcmp( info.name, "opengl" ) )
-      //     {
-      //       oglIdx = i;
-      //     }
-      //   }
-      // }
+      nom::RocketSDL2Renderer::gl_init( this->window_.size().w, this->window_.size().h );
 
-      // TODO: Wrapper for SDL Renderer?
-      // nom::Renderer renderer;
-      // this->renderer.create( oglIdx, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
-
-      // Initialize OpenGL for libRocket engine
-      SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-      glMatrixMode( GL_PROJECTION | GL_MODELVIEW );
-      glLoadIdentity();
-      glOrtho( 0, this->window.size().w, this->window.size().h, 0, 0, 1 );
-
-      this->renderer = new nom::RocketSDL2Renderer( this->window.renderer(), this->window.window(), &this->window );
+      this->renderer = new nom::RocketSDL2Renderer( &this->window_ );
 
       if( this->renderer == nullptr )
       {
@@ -313,7 +306,7 @@ class libRocketTest: public ::testing::Test
       Rocket::Controls::Initialise();
 
       this->context = Rocket::Core::CreateContext("default",
-        Rocket::Core::Vector2i( window.size().w, window.size().h ));
+        Rocket::Core::Vector2i( window_.size().w, window_.size().h ));
 
       // Initialize Debugger as early as possible, so we can visually see logging.
       if( Rocket::Debugger::Initialise( this->context ) == false )
@@ -394,10 +387,10 @@ class libRocketTest: public ::testing::Test
     /// \brief Main loop
     virtual int on_run()
     {
+      nom::Event event;
       while( this->running )
       {
-        SDL_Event event;
-        while( SDL_PollEvent( &event ) )
+        while( this->event_.poll_event( event ) )
         {
           switch( event.type )
           {
@@ -415,13 +408,13 @@ class libRocketTest: public ::testing::Test
 
             case SDL_MOUSEBUTTONDOWN:
             {
-              this->context->ProcessMouseButtonDown( this->sys->TranslateMouseButton( event.button.button ), this->sys->GetKeyModifiers() );
+              this->context->ProcessMouseButtonDown( this->sys->TranslateMouseButton( event.mouse.button ), this->sys->GetKeyModifiers() );
             }
             break;
 
             case SDL_MOUSEBUTTONUP:
             {
-              context->ProcessMouseButtonUp( this->sys->TranslateMouseButton( event.button.button ), this->sys->GetKeyModifiers() );
+              context->ProcessMouseButtonUp( this->sys->TranslateMouseButton( event.mouse.button ), this->sys->GetKeyModifiers() );
             }
             break;
 
@@ -434,7 +427,7 @@ class libRocketTest: public ::testing::Test
             case SDL_KEYDOWN:
             {
               // Check for a shift-~ to toggle the debugger.
-              switch( event.key.keysym.sym )
+              switch( event.key.sym )
               {
                 // Quit loop
                 case SDLK_q:
@@ -445,7 +438,7 @@ class libRocketTest: public ::testing::Test
 
                 case SDLK_BACKQUOTE:
                 {
-                  if( event.key.keysym.mod == KMOD_LSHIFT || event.key.keysym.mod == KMOD_RSHIFT )
+                  if( event.key.mod == KMOD_LSHIFT || event.key.mod == KMOD_RSHIFT )
                   {
                     Rocket::Debugger::SetVisible( ! Rocket::Debugger::IsVisible() );
                     break;
@@ -501,7 +494,16 @@ class libRocketTest: public ::testing::Test
                 }
               }
 
-              this->context->ProcessKeyDown( this->sys->TranslateKey( event.key.keysym.sym ), this->sys->GetKeyModifiers() );
+              this->context->ProcessKeyDown( this->sys->TranslateKey( event.key.sym ), this->sys->GetKeyModifiers() );
+              break;
+            }
+
+            // TODO: Support Unicode text input with SDL_StartTextInput and
+            // SDL_StopTextInput; on mobile platforms, this will bring up the
+            // virtual keyboard for the end-user.
+            case SDL_TEXTINPUT:
+            {
+              this->context->ProcessTextInput( event.text.text );
               break;
             }
 
@@ -512,10 +514,10 @@ class libRocketTest: public ::testing::Test
           }
         }
 
-        this->window.update();
+        this->window_.update();
         this->context->Update();
 
-        this->window.fill( nom::Color4i::SkyBlue );
+        this->window_.fill( nom::Color4i::SkyBlue );
         this->context->Render();
       }
 
@@ -617,7 +619,10 @@ class libRocketTest: public ::testing::Test
     nom::Cursor cursor_mgr;
 
     /// Wrapper for SDL Window && SDL Renderer
-    nom::RenderWindow window;
+    nom::RenderWindow window_;
+
+    /// \brief nomlib's event interface
+    nom::EventHandler event_;
 
     /// Rendering bridge between libRocket & nomlib
     nom::RocketSDL2Renderer* renderer;

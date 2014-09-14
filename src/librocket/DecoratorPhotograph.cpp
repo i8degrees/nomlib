@@ -130,7 +130,7 @@ void DecoratorPhotograph::RenderElement(Rocket::Core::Element* element, Rocket::
 
   if( p )
   {
-    RenderWindow* target = p->window_;
+    const RenderWindow* target = p->window_;
 
     this->image_.set_position( Point2i( pos.x, pos.y ) );
     // this->image_.set_position( Point2i( 0, 0 ) );

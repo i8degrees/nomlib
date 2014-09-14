@@ -26,11 +26,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include <Rocket/Core/Core.h>
-
-#include <SDL_image.h>
-
 #include "nomlib/librocket/RocketSDL2Renderer.hpp"
+
+// Private headers
+#include <SDL_image.h>
 
 #if !(SDL_VIDEO_RENDER_OGL)
     #error "Only the opengl sdl backend is supported. To add support for others, see http://mdqinc.com/blog/2013/01/integrating-librocket-with-sdl-2/"
@@ -132,11 +131,13 @@ void RocketSDL2Renderer::SetScissorRegion(int x, int y, int width, int height)
 
 bool RocketSDL2Renderer::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source)
 {
-
     Rocket::Core::FileInterface* file_interface = Rocket::Core::GetFileInterface();
     Rocket::Core::FileHandle file_handle = file_interface->Open(source);
     if (!file_handle)
-        return false;
+    {
+      NOM_LOG_ERR( NOM_LOG_CATEGORY_GUI, "Could not obtain file handle for source:", source.CString() );
+      return false;
+    }
 
     file_interface->Seek(file_handle, 0, SEEK_END);
     size_t buffer_size = file_interface->Tell(file_handle);

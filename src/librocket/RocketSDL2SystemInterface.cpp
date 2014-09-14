@@ -396,9 +396,9 @@ int RocketSDL2SystemInterface::TranslateMouseWheel( int32 axis )
   {
     return -1;
   }
-  else if( axis < 0 ) // Down
+  else  // if (axis < 0 )
   {
-    return 1;
+    return 1; // Down
   }
 }
 
@@ -472,6 +472,98 @@ bool RocketSDL2SystemInterface::LogMessage(Rocket::Core::Log::Type type, const R
   }
 
   return true;
+}
+
+} // namespace nom
+
+// #include "MouseButtonEventListener.h"
+#include <Rocket/Core/Element.h>
+
+namespace nom {
+
+static MouseButtonEventListener mouseup_listener;
+
+MouseButtonEventListener::~MouseButtonEventListener()
+{
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
+}
+
+void MouseButtonEventListener::RegisterEvent(Rocket::Core::Element* element)
+{
+  element->AddEventListener("mouseup", &mouseup_listener, false);
+}
+
+void MouseButtonEventListener::OnAttach(Rocket::Core::Element* ROCKET_UNUSED_PARAMETER(element) )
+{
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
+}
+
+void MouseButtonEventListener::ProcessEvent(Rocket::Core::Event& event)
+{
+  // NOM_DUMP_VAR( NOM_LOG_CATEGORY_GUI, "event:", event.GetType().CString() );
+
+  if( event == "mouseup" )
+  {
+    Rocket::Core::Input::KeyIdentifier button = (Rocket::Core::Input::KeyIdentifier) event.GetParameter<int>("button", 3);
+    // Rocket::Core::Input::KeyIdentifier button_x = (Rocket::Core::Input::KeyIdentifier) event.GetParameter<int>("mouse_x", -1);
+    // Rocket::Core::Input::KeyIdentifier button_y = (Rocket::Core::Input::KeyIdentifier) event.GetParameter<int>("mouse_y", -1);
+
+    Rocket::Core::Element* dest = event.GetTargetElement();
+
+    if( button == 0 )
+    {
+      // NOM_DUMP_VAR(NOM, "left button_x:", button_x);
+      // NOM_DUMP_VAR(NOM, "left button_y:", button_y);
+
+      if( dest->GetClassNames() == "choice" )
+      {
+        NOM_DUMP( "bingo!" );
+
+         // Rocket::Core::String text_color = dest->GetProperty<Rocket::Core::String>( "color" );
+
+        dest->SetClass( "selected", true );
+        // dest->SetAttribute( "style", "color: red;" );
+
+        std::string c = dest->GetClassNames().CString();
+        NOM_DUMP(c);
+
+        if( c.find( "choice selected" ) == nom::npos )
+        {
+          dest->SetClass( "choice selected", true );
+        }
+        else
+        {
+          dest->SetClass( "choice selected", false );
+        }
+
+        // Execute callback
+      }
+    }
+    else if( button == 1 )
+    {
+      if( dest )
+      {
+
+      }
+
+      // NOM_DUMP_VAR(NOM, "right button_x:", button_x);
+      // NOM_DUMP_VAR(NOM, "right button_y:", button_y);
+    }
+    else if( button == 2 )
+    {
+      // NOM_DUMP_VAR(NOM, "middle button_x:", button_x);
+      // NOM_DUMP_VAR(NOM, "middle button_y:", button_y);
+    }
+    else if( button == 3 )  // Undefined
+    {
+      NOM_DUMP_VAR(NOM, "Undefined button");
+    }
+
+    if( dest )
+    {
+      // dest->RemoveReference();
+    }
+  }
 }
 
 } // namespace nom

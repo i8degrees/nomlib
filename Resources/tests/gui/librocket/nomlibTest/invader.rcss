@@ -9,13 +9,13 @@ body
 	font-family: Delicious;
 	font-weight: normal;
 	font-style: normal;
-	font-size: 15;
+	font-size: 14;
 	color: white;
 }
 
 body.window
 {
-	padding-top: 43px;
+	/*padding-top: 43px;*/
 
 	/*padding-bottom: 20px;*/
 	/* Accounting for the title bar; this keeps the resize handle at bottom-right
@@ -27,6 +27,10 @@ body.window
 
 	min-height: 135px;
 	max-height: 700px;
+
+	/* QuestionBox */
+	/*min-width: 100px;*/
+	/*min-height: 100px;*/
 }
 
 div#title_bar
@@ -111,8 +115,8 @@ div#content
 
 p
 {
-	text-align: left;
-	margin-bottom: 1em;
+	/*text-align: left;*/
+	/*margin-bottom: 1em;*/
 }
 
 h1

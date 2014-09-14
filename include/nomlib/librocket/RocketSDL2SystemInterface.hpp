@@ -53,4 +53,26 @@ class RocketSDL2SystemInterface: public Rocket::Core::SystemInterface
 
 } // namespace nom
 
+#include <Rocket/Core/EventListener.h>
+#include <Rocket/Core/Types.h>
+
+namespace nom {
+
+class MouseButtonEventListener: public Rocket::Core::EventListener
+{
+  public:
+    virtual ~MouseButtonEventListener();
+
+    /// \brief Registers an elemenet for the on mouse button click action event.
+    static void RegisterEvent(Rocket::Core::Element* element);
+
+    virtual void OnAttach(Rocket::Core::Element* ROCKET_UNUSED_PARAMETER(element) );
+
+  protected:
+    /// \brief Event action logic
+    virtual void ProcessEvent(Rocket::Core::Event& ev);
+};
+
+} // namespace nom
+
 #endif // include guard defined

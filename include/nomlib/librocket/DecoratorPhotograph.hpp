@@ -26,82 +26,24 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_LIBROCKET_SDL2_RENDERER_INTERFACE_HPP
-#define NOMLIB_LIBROCKET_SDL2_RENDERER_INTERFACE_HPP
-
-// #include <memory>
-
-#include "nomlib/config.hpp"
-
-#include <Rocket/Core/Core.h>
-#include <Rocket/Core/RenderInterface.h>
-
-#include <SDL.h>
-
-#include <OpenGL/glu.h>
-
-#if !(SDL_VIDEO_RENDER_OGL)
-    #error "Only the opengl sdl backend is supported. To add support for others, see http://mdqinc.com/blog/2013/01/integrating-librocket-with-sdl-2/"
-#endif
-
-namespace nom {
-
-// Forward declarations
-class RenderWindow;
-
-class RocketSDL2Renderer: public Rocket::Core::RenderInterface
-{
-  public:
-    RocketSDL2Renderer(SDL_Renderer* renderer, SDL_Window* screen, RenderWindow* window );
-
-    /// Called by Rocket when it wants to render geometry that it does not wish to optimise.
-    virtual void RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation);
-
-    /// Called by Rocket when it wants to enable or disable scissoring to clip content.
-    virtual void EnableScissorRegion(bool enable);
-    /// Called by Rocket when it wants to change the scissor region.
-    virtual void SetScissorRegion(int x, int y, int width, int height);
-
-    /// Called by Rocket when a texture is required by the library.
-    virtual bool LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source);
-    /// Called by Rocket when a texture is required to be built from an internally-generated sequence of pixels.
-    virtual bool GenerateTexture(Rocket::Core::TextureHandle& texture_handle, const Rocket::Core::byte* source, const Rocket::Core::Vector2i& source_dimensions);
-    /// Called by Rocket when a loaded texture is no longer required.
-    virtual void ReleaseTexture(Rocket::Core::TextureHandle texture_handle);
-
-  // FIXME:
-  // private:
-    /// \todo Rename to renderer_
-    SDL_Renderer* mRenderer;
-
-    /// \todo Rename to screen_
-    SDL_Window* mScreen;
-
-    RenderWindow* window_;
-};
-
-} // namespace nom
+#ifndef NOMLIB_LIBROCKET_DECORATOR_PHOTOGRAPH_HPP
+#define NOMLIB_LIBROCKET_DECORATOR_PHOTOGRAPH_HPP
 
 #include <Rocket/Core/Decorator.h>
 
-#include "nomlib/math/Point2.hpp"
-#include "nomlib/math/Size2.hpp"
+#include "nomlib/graphics/Texture.hpp"
 
 namespace nom {
 
-// Forward declarations
-class IDecorator;
-
+/// \todo Rename class
 /// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Decorators
 /// \see http://librocket.com/wiki/documentation/RCSS/Decorators
-class DecoratorFinalFantasyFrame : public Rocket::Core::Decorator
+class DecoratorPhotograph : public Rocket::Core::Decorator
 {
   public:
-    DecoratorFinalFantasyFrame();
-    virtual ~DecoratorFinalFantasyFrame();
+    virtual ~DecoratorPhotograph();
 
-    // bool Initialise(const Rocket::Core::String& image_source, const Rocket::Core::String& image_path);
-    bool Initialise();
+    bool Initialise(const Rocket::Core::String& image_source, const Rocket::Core::String& image_path);
 
     /// Called on a decorator to generate any required per-element data for a newly decorated element.
     /// @param element[in] The newly decorated element.
@@ -118,7 +60,10 @@ class DecoratorFinalFantasyFrame : public Rocket::Core::Decorator
     virtual void RenderElement(Rocket::Core::Element* element, Rocket::Core::DecoratorDataHandle element_data);
 
   private:
-    std::unique_ptr<IDecorator> decorator_;
+    /// \todo Rename
+    Texture image_;
+
+    // int image_idx;
     // Point2i pos_;
     // Size2i dims_;
     // bool dirty_ = true;
@@ -133,11 +78,11 @@ namespace nom {
 
 /// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Decorators
 /// \see http://librocket.com/wiki/documentation/RCSS/Decorators
-class DecoratorInstancerFinalFantasyFrame: public Rocket::Core::DecoratorInstancer
+class DecoratorInstancerPhotograph : public Rocket::Core::DecoratorInstancer
 {
   public:
-    DecoratorInstancerFinalFantasyFrame();
-    virtual ~DecoratorInstancerFinalFantasyFrame();
+    DecoratorInstancerPhotograph();
+    virtual ~DecoratorInstancerPhotograph();
 
     /// Instances a decorator given the property tag and attributes from the RCSS file.
     /// @param name The type of decorator desired. For example, "background-decorator: simple;" is declared as type "simple".
@@ -155,4 +100,4 @@ class DecoratorInstancerFinalFantasyFrame: public Rocket::Core::DecoratorInstanc
 
 } // namespace nom
 
-#endif // include guard defined
+#endif // include guard

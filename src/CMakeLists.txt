@@ -245,6 +245,7 @@ set ( LIBROCKET_SOURCE
       ${SRC_DIR}/librocket/RocketSDL2Renderer.cpp
       ${SRC_DIR}/librocket/RocketSDL2SystemInterface.cpp
       ${SRC_DIR}/librocket/ShellFileInterface.cpp
+      ${SRC_DIR}/librocket/DecoratorPhotograph.cpp
     )
 
 # Platform-specific source files

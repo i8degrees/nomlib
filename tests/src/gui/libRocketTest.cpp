@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <map>
 
 #include "gtest/gtest.h"
 
@@ -18,6 +19,47 @@
 #include "nomlib/librocket/RocketSDL2Renderer.hpp"
 #include "nomlib/librocket/RocketSDL2SystemInterface.hpp"
 
+// #include "nomlib/librocket/DecoratorPhotograph.hpp"
+
+namespace nom {
+
+/// \brief Helper method for automating the creation of a document window
+// Rocket::Core::ElementDocument* load_window( Rocket::Core::Context* ctx, const std::string& filename, const Point2i& pos );
+
+Rocket::Core::ElementDocument* load_window( Rocket::Core::Context* ctx, const std::string& filename, const nom::Point2i& pos )
+{
+  Rocket::Core::ElementDocument* doc = nullptr;
+
+  doc = ctx->LoadDocument( filename.c_str() );
+
+  if( doc )
+  {
+    doc->Show();
+    // NOM_DUMP( doc->GetReferenceCount() );
+    doc->RemoveReference();
+    // NOM_DUMP( doc->GetReferenceCount() );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", doc->GetSourceURL().CString(), "is loaded." );
+  }
+  else
+  {
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", doc->GetSourceURL().CString(), "was NULL." );
+    return nullptr;
+  }
+
+  // Absolute positioning of the window in global-space -- relative to the
+  // rendering back-end (SDL2)
+  if( pos != nom::Point2i::null )
+  {
+    doc->SetProperty( "left", Rocket::Core::Property( pos.x, Rocket::Core::Property::ABSOLUTE_UNIT ) );
+    doc->SetProperty( "top", Rocket::Core::Property( pos.y, Rocket::Core::Property::ABSOLUTE_UNIT ) );
+  }
+
+  // Set the title of the window to that of the title element's text
+  doc->GetElementById( "title" )->SetInnerRML( doc->GetTitle() );
+
+  return doc;
+}
+
 class libRocketTest: public ::testing::Test
 {
   public:
@@ -27,8 +69,7 @@ class libRocketTest: public ::testing::Test
       renderer( nullptr ),
       sys( nullptr ),
       filesystem( nullptr ),
-      context( nullptr ),
-      doc( nullptr )
+      context( nullptr )
     {
       // NOM_LOG_TRACE( NOM );
     }
@@ -99,7 +140,8 @@ class libRocketTest: public ::testing::Test
       }
 
       // nom::init sets the working directory to this executable's directory path;
-      // i.e.: build/tests
+      // i.e.: build/tests. Now all the documents (including their dependencies)
+      // that are loaded in all use the same root source path.
       //
       // FIXME: File organization needs to be dealt with somehow, for document
       // reloading feature... Copying file resources is not ideal during development
@@ -145,35 +187,10 @@ class libRocketTest: public ::testing::Test
       Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Italic.otf" );
       Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Roman.otf" );
 
-      Rocket::Core::DecoratorInstancer* instancer = new nom::DecoratorInstancerFinalFantasyFrame();
-      Rocket::Core::Factory::RegisterDecoratorInstancer("final-fantasy-theme", instancer);
-      instancer->RemoveReference();
-
-      // Assumes base directory path of FileInterface (see above)
-      this->doc = this->context->LoadDocument( "./demo.rml" );
-
-      // Test visual debugger logs
-      Rocket::Core::Log::Message( Rocket::Core::Log::LT_INFO, "Hello, world!" );
-
-      if( doc )
-      {
-        this->doc->Show();
-        // NOM_DUMP( this->doc->GetReferenceCount() );
-        this->doc->RemoveReference();
-        // NOM_DUMP( this->doc->GetReferenceCount() );
-        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", this->doc->GetSourceURL().CString(), "is loaded." );
-
-        EXPECT_STREQ( "INFO.", this->doc->GetTitle().CString() )
-        << "Document title should be the text of the title element: 'INFO.'";
-      }
-      else
-      {
-        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", this->doc->GetSourceURL().CString(), "was NULL." );
-        FAIL();
-      }
-
-      // Set the title of the window to that of the title element's text
-      this->doc->GetElementById( "title" )->SetInnerRML( this->doc->GetTitle() );
+      // Load custom decorators for nomlib
+      Rocket::Core::DecoratorInstancer* decorator0 = new nom::DecoratorInstancerFinalFantasyFrame();
+      Rocket::Core::Factory::RegisterDecoratorInstancer("final-fantasy-theme", decorator0 );
+      decorator0->RemoveReference();
 
       // Load the default in-window cursor
       Rocket::Core::ElementDocument* cursor = this->context->LoadMouseCursor( "./cursor.rml" );
@@ -195,6 +212,9 @@ class libRocketTest: public ::testing::Test
 
       // Let libRocket handle the rendering of the in-window cursor
       cursor_mgr.show_cursor( false );
+
+      // int pos_x = this->doc0->GetProperty<int>( "left" );
+      // int pos_y = this->doc0->GetProperty<int>( "top" );
     }
 
     /// \remarks This method is called before destruction, at the end of each
@@ -281,50 +301,50 @@ class libRocketTest: public ::testing::Test
                 }
 
                 // Test showing and hiding documents
-                case SDLK_h:
-                {
-                  if( doc != nullptr )
-                  {
-                    if( this->doc->IsVisible() == true )
-                    {
-                      this->doc->Hide();
-                    }
-                    else
-                    {
-                      this->doc->Show();
-                    }
-                  }
-                  break;
-                }
+                // case SDLK_h:
+                // {
+                //   if( doc0 != nullptr )
+                //   {
+                //     if( this->doc0->IsVisible() == true )
+                //     {
+                //       this->doc0->Hide();
+                //     }
+                //     else
+                //     {
+                //       this->doc0->Show();
+                //     }
+                //   }
+                //   break;
+                // }
 
                 // Reload document, and its dependencies (i.e.: templates and style
                 // sheets) during run-time.
                 case SDLK_r:
                 {
-                  if( doc != nullptr )
+                  for( auto itr = this->docs.begin(); itr != this->docs.end(); ++itr )
                   {
-                    this->doc->Close();
-                    // this->context->UnloadDocument( doc );
-                    Rocket::Core::Factory::ClearStyleSheetCache();
-                    Rocket::Core::Factory::ClearTemplateCache();
-                    doc = this->context->LoadDocument( "./demo.rml" );
+                    if( (*itr).second != nullptr )
+                    {
+                      (*itr).second->Close();
+                      Rocket::Core::Factory::ClearStyleSheetCache();
+                      Rocket::Core::Factory::ClearTemplateCache();
+                      this->docs[ (*itr).first ] = this->context->LoadDocument( (*itr).first.c_str() );
 
-                    if( doc != nullptr )
-                    {
-                      this->doc->Show();
-                      this->doc->RemoveReference();
-                      // NOM_DUMP( this->doc->GetReferenceCount() );
-                      NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", this->doc->GetSourceURL().CString(), "reloaded." );
-                    }
-                    else
-                    {
-                      // FAIL()
-                      // << "Document " << this->doc->GetSourceURL().CString()
-                      // << " was NULL.";
-                      NOM_LOG_CRIT(NOM_LOG_CATEGORY_GUI, "Document", this->doc->GetSourceURL().CString(), "was NULL.");
-                      return NOM_EXIT_FAILURE;
+                      if( (*itr).second != nullptr )
+                      {
+                        (*itr).second->Show();
+                        (*itr).second->RemoveReference();
+                        // NOM_DUMP( this->doc0->GetReferenceCount() );
+                        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", (*itr).second->GetSourceURL().CString(), "reloaded." );
+                      }
+                      else
+                      {
+                        NOM_LOG_CRIT(NOM_LOG_CATEGORY_GUI, "Document", (*itr).second->GetSourceURL().CString(), "was NULL.");
+                        return NOM_EXIT_FAILURE;
+                      }
                     }
                   }
+
                   break;
                 }
               }
@@ -369,11 +389,11 @@ class libRocketTest: public ::testing::Test
     /// Filesystem bridge between libRocket & nomlib
     nom::ShellFileInterface* filesystem;
 
-    /// UI Desktop (one or more 'windows' container)
+    /// UI Desktop ('windows' container)
     Rocket::Core::Context* context;
 
-    /// UI Window (one or more 'widgets' container)
-    Rocket::Core::ElementDocument* doc;
+    /// UI Windows; 'widgets' containers
+    std::map<std::string, Rocket::Core::ElementDocument*> docs;
 };
 
 /// \brief nomlib & libRocket (using SDL2 back-end) interface sanity tests.
@@ -381,8 +401,141 @@ class libRocketTest: public ::testing::Test
 /// \see Derived from https://github.com/libRocket/libRocket/tree/master/Samples/basic/sdl2/src
 TEST_F( libRocketTest, BaseIntegrationTest )
 {
+  // As per the positioning units used for nom::MessageBox ex0 in
+  // examples/gui_messagebox.cpp
+  Point2i pos( 38, 25 );
+  std::string doc_file = "./demo.rml";
+
+  // Assumes base directory path of FileInterface (see above)
+  Rocket::Core::ElementDocument* doc = nom::load_window( this->context, doc_file, pos );
+
+  // Test visual debugger logs
+  Rocket::Core::Log::Message( Rocket::Core::Log::LT_INFO, "Hello, world!" );
+
+  if( doc )
+  {
+    EXPECT_STREQ( "INFO.", doc->GetTitle().CString() )
+    << "Document title should be the text of the title element: 'INFO.'";
+  }
+  else
+  {
+    FAIL()
+    << "Document should not be NULL";
+  }
+
+  this->docs[doc_file] = doc;
+
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
+
+TEST_F( libRocketTest, RenderTwoDocumentWindows )
+{
+  Point2i pos0( 38, 25 );
+  std::string doc_file0 = "./demo.rml";
+
+  // As per the positioning units used for nom::QuestionDialogBox (ex2) in
+  // examples/gui_messagebox.cpp
+  nom::Point2i pos1 = nom::Point2i(38,141);
+
+  std::string doc_file1 = "./questionbox.rml";
+
+  Rocket::Core::ElementDocument* doc0 = load_window( this->context, doc_file0, pos0 );
+
+  if( doc0 )
+  {
+    EXPECT_STREQ( "INFO.", doc0->GetTitle().CString() )
+    << "Document title should be the text of the title element: 'INFO.'";
+  }
+  else
+  {
+    FAIL()
+    << "Document should not be NULL";
+  }
+
+  Rocket::Core::ElementDocument* doc1 = load_window( this->context, doc_file1, pos1 );
+
+  if( doc1 )
+  {
+    EXPECT_STREQ( "INFO.", doc1->GetTitle().CString() )
+    << "Document title should be the text of the title element: 'INFO.'";
+  }
+  else
+  {
+    FAIL()
+    << "Document should not be NULL";
+  }
+
+  this->docs[doc_file0] = doc0;
+  this->docs[doc_file1] = doc1;
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F( libRocketTest, EventListenerTest )
+{
+  // nom::MouseButtonEventListener evt;
+
+  // As per the positioning units used for nom::QuestionDialogBox (ex2) in
+  // examples/gui_messagebox.cpp
+  nom::Point2i pos = nom::Point2i(38,141);
+  std::string doc_file = "./questionbox.rml";
+
+  Rocket::Core::Element* content_div = nullptr;
+
+  Rocket::Core::ElementDocument* doc = load_window( this->context, doc_file, pos );
+
+  if( doc )
+  {
+    EXPECT_STREQ( "INFO.", doc->GetTitle().CString() )
+    << "Document title should be the text of the title element: 'INFO.'";
+  }
+  else
+  {
+    FAIL()
+    << "Document should not be NULL";
+  }
+
+  // Resulting elements matching query
+  Rocket::Core::ElementList tags;
+
+  content_div = doc->GetElementById("content");
+  if( content_div )
+  {
+    Rocket::Core::ElementUtilities::GetElementsByClassName( tags, content_div, "choice" );
+  }
+  else
+  {
+    FAIL()
+    << "Could not find content element within "
+    << doc->GetSourceURL().CString();
+  }
+
+  EXPECT_EQ( 2, tags.size() )
+  << "I expected a total sum of two choices (YES and NO)!";
+
+  for( auto itr = tags.begin(); itr != tags.end(); ++itr )
+  {
+    NOM_DUMP( (*itr)->GetTagName().CString() );
+
+    // evt.RegisterEvent( *itr );
+    nom::MouseButtonEventListener::RegisterEvent( *itr );
+  }
+
+  this->docs[doc_file] = doc;
+
+  // Two different ways of simulating events:
+  // content_div->Click();
+  // Rocket::Core::Dictionary params;
+
+  // params.Set("button","1");
+  // content_div->DispatchEvent("mousedown", params);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+
+  // content_div->RemoveEventListener( "mouseup", &evt );
+}
+
+} // namespace nom
 
 int main( int argc, char** argv )
 {

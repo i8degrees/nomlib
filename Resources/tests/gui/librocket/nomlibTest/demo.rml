@@ -21,9 +21,10 @@
 				padding-top: 12%;
 				padding-bottom: 12%;
 			}
+
 		</style>
 	</head>
 	<body template="window">
-		This is a nomlib sample (SDL2 back-end).
+		<p>This is a nomlib sample (SDL2 back-end).</p>
 	</body>
 </rml>

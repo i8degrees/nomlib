@@ -421,4 +421,18 @@ bool UnixFile::mkfile( const std::string& path )
   return false;
 }
 
+std::string UnixFile::env( const std::string& var ) const
+{
+  char* ret = nullptr;
+  ret = getenv( var.c_str() );
+
+  if( ret )
+  {
+    return ret;
+  }
+
+  // Err
+  return "\0";
+}
+
 } // namespace nom

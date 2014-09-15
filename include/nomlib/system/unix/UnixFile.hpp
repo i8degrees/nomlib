@@ -241,6 +241,12 @@ class UnixFile: public IFile
     ///
     /// \see man 8 mkfile
     bool mkfile( const std::string& path );
+
+    /// \brief Get the value of an environment variable.
+    ///
+    /// \returns A null-terminated string (zero length) upon err, such as an
+    /// non-existent environment variable.
+    std::string env( const std::string& var ) const;
 };
 
 

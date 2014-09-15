@@ -59,6 +59,13 @@ ConsoleOutput::ConsoleOutput( std::ostream& os ) :
 
   #if defined( NOM_PLATFORM_POSIX )
     this->impl_.reset( new UnixConsoleOutput() );
+
+    // This is not yet implemented for Windows
+    if( this->use_color() == false )
+    {
+      // Effectively disables color output
+      this->impl_.reset(nullptr);
+    }
   #elif defined( NOM_PLATFORM_WINDOWS )
     this->impl_.reset( new WindowsConsoleOutput() );
   #else
@@ -74,6 +81,18 @@ ConsoleOutput::~ConsoleOutput()
 ConsoleOutput::Color ConsoleOutput::color() const
 {
   return this->lcolor_;
+}
+
+bool ConsoleOutput::use_color() const
+{
+  std::string val = this->shell.env("NOM_COLOR");
+
+  if( val == "TRUE" || val == "true" )
+  {
+    return true;
+  }
+
+  return false;
 }
 
 void ConsoleOutput::set_color( ConsoleOutput::Color color )

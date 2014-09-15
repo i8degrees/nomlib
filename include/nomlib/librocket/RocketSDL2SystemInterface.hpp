@@ -83,7 +83,7 @@ class UIEventListener: public Rocket::Core::EventListener
     /// \param observer   The callback to execute inside ::ProcessEvent.
     void register_event_listener(
                                   Rocket::Core::Element* element,
-                                  const std::string& event_type,
+                                  const std::string& event_name,
                                   const callback_type& observer
                                 );
 
@@ -97,7 +97,11 @@ class UIEventListener: public Rocket::Core::EventListener
     virtual void ProcessEvent( event_type& event );
 
   private:
-    callback_type cb_;
+    /// \brief The data container type that holds a one-to-one mapping of
+    /// registered event observers to its event identifier object.
+    typedef std::map<std::string, std::vector<callback_type>> event_table;
+
+    event_table observers_;
 };
 
 } // namespace nom

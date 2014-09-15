@@ -796,9 +796,8 @@ TEST_F( libRocketTest, EventListenerTest )
   {
     NOM_DUMP( (*itr)->GetTagName().CString() );
 
-    // FIXME: Only one event type can be listened to at a time
-    // evt.register_event_listener( *itr, "keydown", [&] ( Rocket::Core::Event& ev ) { this->on_keydown( ev ); } );
-    // evt.register_event_listener( *itr, "mouseup", [&] ( Rocket::Core::Event& ev ) { this->on_click( ev ); } );
+    evt.register_event_listener( *itr, "keydown", [&] ( Rocket::Core::Event& ev ) { this->on_keydown( ev ); } );
+    evt.register_event_listener( *itr, "mouseup", [&] ( Rocket::Core::Event& ev ) { this->on_click( ev ); } );
     evt.register_event_listener( *itr, "mousescroll", [&] ( Rocket::Core::Event& ev ) { this->on_wheel( ev ); } );
   }
 

@@ -246,7 +246,7 @@ class UnixFile: public IFile
     ///
     /// \returns A null-terminated string (zero length) upon err, such as an
     /// non-existent environment variable.
-    std::string env( const std::string& var ) const;
+    std::string env( const std::string& path );
 };
 
 

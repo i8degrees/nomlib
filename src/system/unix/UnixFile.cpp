@@ -421,14 +421,15 @@ bool UnixFile::mkfile( const std::string& path )
   return false;
 }
 
-std::string UnixFile::env( const std::string& var ) const
+std::string UnixFile::env( const std::string& path )
 {
-  char* ret = nullptr;
-  ret = getenv( var.c_str() );
+  char* value = nullptr;
 
-  if( ret )
+  value = getenv( path.c_str() );
+
+  if( value != nullptr )
   {
-    return ret;
+    return value;
   }
 
   // Err

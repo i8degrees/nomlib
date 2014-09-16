@@ -222,6 +222,14 @@ class WinFile: public IFile
     bool rmdir( const std::string& path );
 
     bool mkfile( const std::string& path );
+
+    /// \brief Get the value of an environment variable.
+    ///
+    /// \returns A null-terminated string (zero length) upon err, such as an
+    /// non-existent environment variable.
+    ///
+    /// \see http://msdn.microsoft.com/en-us/library/tehxacec.aspx
+    std::string env( const std::string& path );
 };
 
 

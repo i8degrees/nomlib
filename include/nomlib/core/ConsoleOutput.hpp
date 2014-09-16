@@ -33,10 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 
-// FIXME: Implement WinFile::env
-// #include "nomlib/system/File.hpp"
-#include "nomlib/system/unix/UnixFile.hpp"
-
 namespace nom {
 
 /// \brief Platform-independent color output interface
@@ -84,8 +80,17 @@ class ConsoleOutput
     /// ::set_color.
     ConsoleOutput::Color color() const;
 
-    /// \note This is dependent upon the boolean value of the environment
-    /// variable NOM_COLOR.
+    /// \brief Get the current use state of colored output logging.
+    ///
+    /// \returns Boolean TRUE when the platform's environment variable
+    /// NOM_COLOR is set to 'true, 'always', 'yes' or "1", otherwise boolean
+    /// FALSE is returned (the default).
+    ///
+    /// \fixme The environment variable's value is case-sensitive.
+    ///
+    /// \todo Provide 'auto' option for NOM_COLOR; this could be tested on Unix
+    /// platforms with the value of TERM equaling xterm-color or such; see
+    /// also: gtest.cc.
     bool use_color() const;
 
     virtual void set_color( ConsoleOutput::Color color );
@@ -109,11 +114,6 @@ class ConsoleOutput
     ConsoleOutput::Color lcolor_;
 
   private:
-    /// \todo Expand to nom::File (implement WinFile::env).
-    #if defined( NOM_PLATFORM_POSIX )
-      UnixFile shell;
-    #endif
-
     /// \brief The platform-dependent implementation to use.
     ///
     /// \see nom::UnixConsoleOutput, nom::WindowsConsoleOutput

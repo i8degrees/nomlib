@@ -108,6 +108,9 @@ class File
     /// \see UnixFile::mkfile, WinFile::mkfile.
     bool mkfile( const std::string& path );
 
+    /// \see UnixFile::env, WinFile::env.
+    std::string env( const std::string& path );
+
   private:
     std::unique_ptr<IFile> file;
 };
@@ -118,4 +121,6 @@ class File
 #endif // include guard
 
 /// \class nom::File
+///
+/// \todo Declare methods static
 ///

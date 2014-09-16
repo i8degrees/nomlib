@@ -36,6 +36,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #pragma message ( "ConsoleOutput is not implemented for this platform!" )
 #endif
 
+// Private headers
+#include "nomlib/system/File.hpp"
+
 // FIXME: The disabled logging macros are necessary in order to prevent
 // crashing upon attempted usage of said macro.
 #undef NOM_LOG_MESSAGE
@@ -59,18 +62,17 @@ ConsoleOutput::ConsoleOutput( std::ostream& os ) :
 
   #if defined( NOM_PLATFORM_POSIX )
     this->impl_.reset( new UnixConsoleOutput() );
-
-    // This is not yet implemented for Windows
-    if( this->use_color() == false )
-    {
-      // Effectively disables color output
-      this->impl_.reset(nullptr);
-    }
   #elif defined( NOM_PLATFORM_WINDOWS )
     this->impl_.reset( new WindowsConsoleOutput() );
   #else
     NOM_ASSERT( this->impl_ != nullptr );
   #endif
+
+  if( this->use_color() == false )
+  {
+    // Effectively disables color output
+    this->impl_.reset( nullptr );
+  }
 }
 
 ConsoleOutput::~ConsoleOutput()
@@ -85,9 +87,17 @@ ConsoleOutput::Color ConsoleOutput::color() const
 
 bool ConsoleOutput::use_color() const
 {
-  std::string val = this->shell.env("NOM_COLOR");
+  File shell;
 
-  if( val == "TRUE" || val == "true" )
+  std::string value = shell.env("NOM_COLOR");
+
+  if( value.empty() )
+  {
+    // Non-existent value or environment path given
+    return false;
+  }
+
+  if( value == "1" || value == "true" || value == "always" || value == "yes" )
   {
     return true;
   }

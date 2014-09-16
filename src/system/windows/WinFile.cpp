@@ -442,4 +442,19 @@ bool WinFile::mkfile( const std::string& path )
   return false;
 }
 
+std::string WinFile::env( const std::string& path )
+{
+  char* value = nullptr;
+
+  value = getenv( path.c_str() );
+
+  if( value != nullptr )
+  {
+    return value;
+  }
+
+  // Err
+  return "\0";
+}
+
 } // namespace nom

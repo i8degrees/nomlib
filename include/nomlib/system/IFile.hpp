@@ -102,6 +102,8 @@ class IFile
     virtual bool rmdir( const std::string& path ) = 0;
 
     virtual bool mkfile( const std::string& path ) = 0;
+
+    virtual std::string env( const std::string& path ) = 0;
 };
 
 

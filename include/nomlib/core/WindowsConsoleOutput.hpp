@@ -31,12 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
-#include <cstdio>
+// #include <cstdio>
 #include <windows.h>
 #include <winnt.h>
 
 #include "nomlib/config.hpp"
-
 #include "nomlib/core/ConsoleOutput.hpp"
 
 namespace nom {

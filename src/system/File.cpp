@@ -136,4 +136,9 @@ bool File::mkfile( const std::string& path )
   return this->file->mkfile( path );
 }
 
+std::string File::env( const std::string& path )
+{
+  return this->file->env( path );
+}
+
 } // namespace nom

@@ -29,7 +29,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/librocket/RocketSDL2Renderer.hpp"
 
 // Private headers
+#include <SDL.h>
 #include <SDL_image.h>
+
+#if defined( NOM_PLATFORM_OSX )
+  #include <OpenGL/gl.h>
+#else
+  #include <glew.h>
+#endif
 
 #if !(SDL_VIDEO_RENDER_OGL)
   #error "Only the opengl sdl backend is supported. To add support for others, see http://mdqinc.com/blog/2013/01/integrating-librocket-with-sdl-2/"
@@ -40,8 +47,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// static
 bool RocketSDL2Renderer::gl_init( int width, int height )
 {
+  // We get lucky on OS X ... we have up-to-date OpenGL profile to work with,
+  // but otherwise... we're probably stuck with the OpenGL v1.1 API, which does
+  // not include support for the glUseProgramObjectARB function, used in
+  // ::RenderGeometry (introduced in OpenGL v2.0 API).
+  //
+  // TODO: Does SDL2 or libRocket require shaders? I don't really know! It might
+  // be wise to add a GLEW check for the necessary GL extension below ...
+  #if ! defined( NOM_PLATFORM_OSX )
+    GLenum err = glewInit();
+
+    if( err != GLEW_OK )
+    {
+      NOM_LOG_CRIT( NOM_LOG_CATEGORY_GUI, "[GLEW]:", glewGetErrorString(err) );
+      // We'd get white, blocky textures if we were to continue past this
+      // point without the glUseProgramObjectARB call...
+      return false;
+    }
+  #endif
+
   // Initialize OpenGL for SDL2 + libRocket play along
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
   glMatrixMode( GL_PROJECTION | GL_MODELVIEW );

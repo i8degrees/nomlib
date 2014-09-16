@@ -115,6 +115,8 @@ void PlatformSettings::enumerate_fonts( void )
 
   SystemFonts::cache().append_resource( ResourceFile( "LiberationSans-Regular", p.prepend("LiberationSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "LiberationSerif-Regular", p.prepend("LiberationSerif-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
+  SystemFonts::cache().append_resource( ResourceFile( "OpenSans", p.prepend("OpenSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) );
+  SystemFonts::cache().append_resource( ResourceFile( "OpenSans-Bold", p.prepend("OpenSans-Bold.ttf"), ResourceFile::Type::TrueTypeFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "VIII", p.prepend("VIII.png"), ResourceFile::Type::BitmapFont ) );
   SystemFonts::cache().append_resource( ResourceFile( "VIII_small", p.prepend("VIII_small.png"), ResourceFile::Type::BitmapFont ) );
 }

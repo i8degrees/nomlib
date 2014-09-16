@@ -65,6 +65,7 @@ namespace nom {
   @author Lloyd Weehuizen
  */
 
+/// \todo Rename to FileInterface
 class ShellFileInterface: public Rocket::Core::FileInterface
 {
   public:

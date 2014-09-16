@@ -211,16 +211,49 @@ if( NOM_BUILD_GUI_UNIT )
 
 endif( NOM_BUILD_GUI_UNIT )
 
-# TODO: Move to tests/librocket
-if( NOM_BUILD_LIBROCKET_UNIT )
+# Install binary dependencies for the unit tests
+if ( PLATFORM_WINDOWS )
 
-  install (
+  install ( DIRECTORY
+            "${SDL2_LIBRARY_DIR}"
+            "${SDL2_IMAGE_LIBRARY_DIR}"
+            "${SDL2_TTF_LIBRARY_DIR}"
+            "${OPENAL_LIBRARY_DIR}"
+            "${LIBSNDFILE_LIBRARY_DIR}"
+            "${MSVCPP_LIBRARY_REDIST}"
+            "${GTEST_ROOT}/lib/"        # GTest re-dist libs
+            "${GLEW_REDIST_DIR}"
+            DESTINATION
+            "${TESTS_DEPS_INSTALL_PEFIX}"
+            FILES_MATCHING PATTERN "*.dll"
+          )
+
+  # TODO: Move to tests/librocket
+  if( NOM_BUILD_LIBROCKET_UNIT )
+
+    # FIXME: see libRocketTest
+    install (
+              DIRECTORY
+              "${PROJECT_SOURCE_DIR}/Resources/fonts"
+              DESTINATION
+              "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
+            )
+
+    # FIXME: see libRocketTest
+    install (
             DIRECTORY
             "${NOM_TESTS_RESOURCES_DIR}/gui/librocket/nomlibTest"
             DESTINATION
-            "${TESTS_DEPS_INSTALL_PEFIX}/Resources/librocket"
+            "${TESTS_DEPS_INSTALL_PEFIX}/Resources/tests/gui/librocket"
             PATTERN ".*" EXCLUDE # no dotfiles
           )
 
-endif( NOM_BUILD_LIBROCKET_UNIT )
+    install_dependencies  (
+                            "${LIBROCKET_REDIST_DIRS}"
+                            "${TESTS_DEPS_INSTALL_PEFIX}"
+                            "*.dll"
+                          )
+  endif( NOM_BUILD_LIBROCKET_UNIT )
+
+endif ( PLATFORM_WINDOWS )
 

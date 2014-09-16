@@ -265,10 +265,21 @@ class libRocketTest: public nom::VisualUnitTest
       // Use default resolution, provided by nom::VisualUnitTest
       this->window_.create( "nomlib & LibRocket integration tests", this->resolution().w, this->resolution().h, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE, oglIdx, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
 
-      // Not used
-      // SDL_GLContext glcontext = SDL_GL_CreateContext( this->window_.window() );
+      if( nom::RocketSDL2Renderer::gl_init( this->window_.size().w, this->window_.size().h ) == false )
+      {
+        FAIL() << "Could not initialize OpenGL for libRocket.";
+      }
 
-      nom::RocketSDL2Renderer::gl_init( this->window_.size().w, this->window_.size().h );
+      // I don't understand *why*, but when we enable this, we can forgo the use
+      // of the glUseProgramObjectARB call in nom::RocketSDL2Renderer::RenderGeometry
+      // until we go full-screen "desktop" mode, in both Windows and OSX.
+      // There seems to be a severe drop in FPS (~50%) under OSX, whereas the
+      // FPS appears unaffected on my Windows setup...
+      // SDL_GLContext glcontext = SDL_GL_CreateContext( this->window_.window() );
+      // if( glcontext == nullptr )
+      // {
+      //   FAIL() << "Could not create OpenGL Context.";
+      // }
 
       this->renderer = new nom::RocketSDL2Renderer( &this->window_ );
 
@@ -298,7 +309,33 @@ class libRocketTest: public nom::VisualUnitTest
       // reloading feature... Copying file resources is not ideal during development
       // (only for release).
       // nom::ShellFileInterface FileInterface( "./Resources/librocket/nomlibTest/" );
-      this->filesystem = new nom::ShellFileInterface( "../../Resources/tests/gui/librocket/nomlibTest/" );
+      File dir;
+
+      // FIXME: This is a hack to get things running under Windows -- that I
+      // shouldn't be doing... **do not** expect document reloading to occur
+      // from the expected source (project's Resources folder, but from the
+      // installation's "temporary" copy).
+      //
+      // This path should resolve to build/tests/Debug, and only exist normally
+      // on Windows installations (after doing a CMake install).
+      std::string resources_path = "./Resources/tests/gui/librocket/nomlibTest/";
+
+      // This should resolve to the project's base Resources directory
+      std::string search_path = "../../" + resources_path;
+
+
+      if( dir.exists( search_path ) )
+      {
+        resources_path = search_path;
+      }
+      else if( ! dir.exists( resources_path ) )
+      {
+        FAIL()
+        << "Could not find test resources at any of the defined search paths: "
+        << std::endl << search_path << std::endl << resources_path << std::endl;
+      }
+
+      this->filesystem = new nom::ShellFileInterface( resources_path.c_str() );
 
       if( this->filesystem == nullptr )
       {
@@ -333,12 +370,14 @@ class libRocketTest: public nom::VisualUnitTest
         FAIL();
       }
 
+      // TODO: Move these into nomlib's Resources/fonts path?
       Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Bold.otf" );
       Rocket::Core::FontDatabase::LoadFontFace( "Delicious-BoldItalic.otf" );
       Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Italic.otf" );
       Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Roman.otf" );
 
       // Additional fonts
+      // TODO: We should be testing for existence of these...
       Rocket::Core::FontDatabase::LoadFontFace( nom::SystemFonts::cache().find_resource( "Arial" ).path().c_str() );
       Rocket::Core::FontDatabase::LoadFontFace( nom::SystemFonts::cache().find_resource( "OpenSans" ).path().c_str() );
       Rocket::Core::FontDatabase::LoadFontFace( nom::SystemFonts::cache().find_resource( "OpenSans-Bold" ).path().c_str() );

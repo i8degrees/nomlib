@@ -55,3 +55,29 @@ macro ( install_name_rpath rpath binary_path )
                       )
 
 endmacro ( install_name_rpath rpath binary_path )
+
+# Install files wrapper with support for list variables; install DIRECORIES
+# syntax doesn't seem to support multiple directories separated by a semicolon.
+#
+# TODO: I'd like to eventually see this used all throughout the build process;
+# needs more testing and consideration... (areas of use include example and unit
+# test binaries, i.e.: dependencies to run the executables without cluttering up
+# system-wide paths, or requiring administrative rights).
+#
+# TODO: Support CONFIGURATIONS and COMPONENT variables of the install command?
+#
+# http://www.cmake.org/cmake/help/v3.0/command/install.html?highlight=install
+macro( install_dependencies dirs dest file_type )
+
+  foreach( dir ${dirs} )
+
+    install ( DIRECTORY
+              "${dir}"
+              DESTINATION
+              "${dest}"
+              FILES_MATCHING PATTERN ${file_type}
+            )
+
+  endforeach( dir ${dirs} )
+
+endmacro( install_dependencies dirs file_type )

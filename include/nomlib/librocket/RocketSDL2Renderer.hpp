@@ -31,24 +31,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // #include <memory>
 
-#include "nomlib/config.hpp"
-
 #include <Rocket/Core/Core.h>
 #include <Rocket/Core/RenderInterface.h>
 
-#include <SDL.h>
-
-#include <OpenGL/glu.h>
-
-#if !(SDL_VIDEO_RENDER_OGL)
-  #error "Only the opengl sdl backend is supported. To add support for others, see http://mdqinc.com/blog/2013/01/integrating-librocket-with-sdl-2/"
-#endif
+#include "nomlib/config.hpp"
 
 namespace nom {
 
 // Forward declarations
 class RenderWindow;
 
+/// \note Only the OpenGL SDL2 back-end is supported. To add support for others,
+/// see http://mdqinc.com/blog/2013/01/integrating-librocket-with-sdl-2
+///
 /// \see https://wiki.libsdl.org/SDL_GL_BindTexture
 class RocketSDL2Renderer: public Rocket::Core::RenderInterface
 {
@@ -56,18 +51,18 @@ class RocketSDL2Renderer: public Rocket::Core::RenderInterface
     /// \brief Initialize OpenGL with the necessary settings for libRocket and
     /// SDL2 to be all friendly.
     ///
-    /// \returns Always boolean TRUE; the return value is not used at this time.
+    /// \returns Boolean TRUE if OpenGL initialization (this implies GLEW) is
+    /// successful, and boolean FALSE on failure.
     ///
     /// \param width  The width of the clipping plane (orthographic matrix).
     /// \param height The height of the clipping plane (orthographic matrix).
     ///
-    /// \note This method should be called before any rendering is done.
+    /// \note This method should be called before the construction of this
+    /// object, after the creation of a RenderWindow, and before any other
+    /// rendering (OpenGL or otherwise).
     ///
-    /// \remarks This is not part of the "official" interface, and is provided
-    /// purely as a convenience method.
-    ///
-    /// \todo Consider making a call to htis method upon construction? (Probably
-    /// not a wise idea...)
+    /// \remarks This is not part of the libRocket interface, and is provided
+    /// as part of nomlib's high-level initialization routines.
     static bool gl_init( int width, int height );
 
     RocketSDL2Renderer( RenderWindow* window );

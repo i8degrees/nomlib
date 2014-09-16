@@ -40,6 +40,8 @@ Both the 64-bit and 32-bit official development binaries versions of:
 
     * [libsndfile v1.0.25](http://www.mega-nerd.com/libsndfile/)
     * [OpenAL Soft v1.15.1](http://kcat.strangesoft.net/openal.html)
+    * [libRocket v1.3.0](http://librocket.com) compiled with the FreeType v2.3.5 libraries from [GNU win32 FreeType](http://gnuwin32.sourceforge.net/packages/freetype.htm), 'binaries' release.
+      * [GLEW v1.10.0](http://glew.sourceforge.net)
 
 ## Licensing ##
 

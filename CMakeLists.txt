@@ -232,6 +232,15 @@ include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
 # of calls to include_directories & linking of libraries.
 #
 
+# Common dependencies (shared between all platforms)
+
+# libRocket dependency
+find_package( OpenGL REQUIRED )
+if( OPENGL_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${OPENGL_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${OPENGL_LIBRARY} )
+endif( OPENGL_FOUND )
+
 if ( PLATFORM_WINDOWS )
   # Header and library paths -- *INCLUDE_DIR and *LIBRARY_DIR, respectively --
   # *MUST* include trailing backslash for this platform!
@@ -283,7 +292,33 @@ if ( PLATFORM_WINDOWS )
         "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/gtest"
       )
 
+  # Paths must be: a) absolute; b) directory; c) end with a slash
   set ( MSVCPP_LIBRARY_REDIST "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/msvcpp2013/${PLATFORM_ARCH}/" )
+
+  # libRocket dependency
+  set ( GLEW_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/glew/include/GL/" )
+  # Paths must be: a) absolute; b) directory; c) end with a slash
+  set ( GLEW_REDIST_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/glew/bin/${PLATFORM_ARCH}/" )
+  set ( GLEW_LIBRARY
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/glew/lib/${PLATFORM_ARCH}/glew32.lib"
+      )
+  set ( EXT_HEADERS ${EXT_HEADERS} "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/glew/include/GL" )
+  set ( EXTLIBS ${EXTLIBS} ${GLEW_LIBRARY} )
+
+  # libRocket (GUI)
+  set ( LIBROCKET_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/include" )
+  # Paths must be: a) absolute; b) directory; c) end with a slash
+  set ( LIBROCKET_REDIST_DIRS
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/lib/${PLATFORM_ARCH}/;${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/bin/${PLATFORM_ARCH}/" )
+  set ( LIBROCKET_LIBRARY
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/lib/${PLATFORM_ARCH}/RocketControls.lib"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/lib/${PLATFORM_ARCH}/RocketCore.lib"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/lib/${PLATFORM_ARCH}/RocketDebugger.lib"
+      )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBROCKET_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${LIBROCKET_LIBRARY} )
+
+  # TODO: Group third-party dependency libraries for executables together
 
 elseif ( PLATFORM_OSX )
 
@@ -322,15 +357,13 @@ elseif ( PLATFORM_OSX )
         "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/gtest"
       )
 
-  # libRocket dependency
-  find_package( OpenGL )
-  if( OPENGL_FOUND )
-    set ( EXT_HEADERS ${EXT_HEADERS} ${OPENGL_INCLUDE_DIR} )
-    set ( EXTLIBS ${EXTLIBS} ${OPENGL_LIBRARY} )
-  endif( OPENGL_FOUND )
-
+  # libRocket
   set ( LIBROCKET_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/include" )
-  set ( LIBROCKET_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControls.dylib" "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCore.dylib" "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketDebugger.dylib" )
+  set ( LIBROCKET_LIBRARY
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControls.dylib"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCore.dylib"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketDebugger.dylib"
+      )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBROCKET_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBROCKET_LIBRARY} )
 

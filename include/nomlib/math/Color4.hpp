@@ -34,6 +34,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 
+// FIXME: The following declaration is necessary in order to avoid a very
+// nasty compiling conflict that can happen under Windows anytime the
+// windef.h header file is included (commonly from windows.h), due to min and
+// max macros being declared there. This is why macros are evil.
+//
+// http://support.microsoft.com/kb/143208
+// http://stackoverflow.com/questions/5004858/stdmin-gives-error
+#if defined( NOM_PLATFORM_WINDOWS )
+  #undef min
+  #undef max
+#endif
+
 namespace nom {
 
 /// \brief Delimiter character to use with << operator
@@ -271,10 +283,10 @@ inline Color4<T> operator + ( const Color4<T>& left, const Color4<T>& right )
 inline Color4<float> operator +( const Color4<float>& lhs, const Color4<float>& rhs )
 {
   return Color4<float>  (
-                          NOM_SCAST( float, std::min( ( lhs.r + rhs.r / 255 ), 1.0f ) ),
-                          NOM_SCAST( float, std::min( ( lhs.g + rhs.g / 255 ), 1.0f ) ),
-                          NOM_SCAST( float, std::min( ( lhs.b + rhs.b / 255 ), 1.0f ) ),
-                          NOM_SCAST( float, std::min( ( lhs.a + rhs.a / 255 ), 1.0f ) )
+                          std::min( ( lhs.r + rhs.r / 255 ), 1.0f ),
+                          std::min( ( lhs.g + rhs.g / 255 ), 1.0f ),
+                          std::min( ( lhs.b + rhs.b / 255 ), 1.0f ),
+                          std::min( ( lhs.a + rhs.a / 255 ), 1.0f )
                         );
 }
 
@@ -305,10 +317,10 @@ inline Color4<T> operator - ( const Color4<T>& left, const Color4<T>& right )
 inline Color4<float> operator -( const Color4<float>& lhs, const Color4<float>& rhs )
 {
   return Color4<float>  (
-                          NOM_SCAST( float, std::min( ( lhs.r - rhs.r ) / 255, 1.0f ) ),
-                          NOM_SCAST( float, std::min( ( lhs.g - rhs.g ) / 255, 1.0f ) ),
-                          NOM_SCAST( float, std::min( ( lhs.b - rhs.b ) / 255, 1.0f ) ),
-                          NOM_SCAST( float, std::min( ( lhs.a - rhs.a ) / 255, 1.0f ) )
+                          std::min( ( lhs.r - rhs.r ) / 255, 1.0f ),
+                          std::min( ( lhs.g - rhs.g ) / 255, 1.0f ),
+                          std::min( ( lhs.b - rhs.b ) / 255, 1.0f ),
+                          std::min( ( lhs.a - rhs.a ) / 255, 1.0f )
                         );
 }
 

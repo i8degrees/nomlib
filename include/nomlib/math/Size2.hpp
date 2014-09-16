@@ -30,8 +30,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_MATH_SIZE2_HEADERS
 
 #include <iostream>
+#include <algorithm>
 
 #include "nomlib/config.hpp"
+
+// FIXME: The following declaration is necessary in order to avoid a very
+// nasty compiling conflict that can happen under Windows anytime the
+// windef.h header file is included (commonly from windows.h), due to min and
+// max macros being declared there. This is why macros are evil.
+//
+// http://support.microsoft.com/kb/143208
+// http://stackoverflow.com/questions/5004858/stdmin-gives-error
+#if defined( NOM_PLATFORM_WINDOWS )
+  #undef min
+  #undef max
+#endif
 
 namespace nom {
 

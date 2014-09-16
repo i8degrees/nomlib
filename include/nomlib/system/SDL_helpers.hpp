@@ -41,6 +41,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Size2.hpp"
 #include "nomlib/math/Point2.hpp"
 
+// FIXME: The following declaration is necessary in order to avoid a very
+// nasty compiling conflict that can happen under Windows anytime the
+// wingdi.h header file is included (commonly from windows.h), due to min and
+// max macros being declared there. This is why macros are evil.
+//
+// In this case, it's probably not a bad idea to rename our RGB functions...
+// seeing as they are terrible names for a function description, anyhow!
+//
+// http://support.microsoft.com/kb/143208
+// http://stackoverflow.com/questions/5004858/stdmin-gives-error
+#if defined( NOM_PLATFORM_WINDOWS )
+  #undef RGB
+#endif
+
 namespace nom {
 
 /// \brief Convenience definitions for pointer types

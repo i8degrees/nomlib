@@ -254,16 +254,9 @@ void StateMachine::set_deferred_state (
                                         void_ptr data
                                       )
 {
-  priv::DeferredState s;
-
-  s.deferred = true;
-  s.state = std::move( state );
-  s.data = data;
-
-  // if( s.state != nullptr )
-  {
-    this->next_state_ = std::move( s );
-  }
+  this->next_state_.deferred = true;
+  this->next_state_.state = std::move( state );
+  this->next_state_.data = data;
 }
 
 } // namespace nom

@@ -320,19 +320,36 @@ class libRocketTest: public nom::VisualUnitTest
       // on Windows installations (after doing a CMake install).
       std::string resources_path = "./Resources/tests/gui/librocket/nomlibTest/";
 
+      std::vector<std::string> search_paths;
+
       // This should resolve to the project's base Resources directory
-      std::string search_path = "../../" + resources_path;
+      search_paths.push_back( "../../" + resources_path );
+      search_paths.push_back( "../../../" + resources_path );
 
-
-      if( dir.exists( search_path ) )
+      for( auto itr = search_paths.begin(); itr != search_paths.end(); ++itr )
       {
-        resources_path = search_path;
+        if( dir.exists( *itr ) )
+        {
+          resources_path = *itr;
+          break;
+        }
       }
-      else if( ! dir.exists( resources_path ) )
+
+      if( ! dir.exists( resources_path ) )
       {
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_GUI, "Could not find test resources at any of the defined search paths:" );
+        for( auto itr = search_paths.begin(); itr != search_paths.end(); ++itr )
+        {
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, *itr );
+        }
+
         FAIL()
         << "Could not find test resources at any of the defined search paths: "
-        << std::endl << search_path << std::endl << resources_path << std::endl;
+        << std::endl << resources_path << std::endl;
+      }
+      else
+      {
+        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Using resources from:", resources_path );
       }
 
       this->filesystem = new nom::ShellFileInterface( resources_path.c_str() );

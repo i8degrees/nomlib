@@ -218,6 +218,8 @@ set ( SYSTEM_SOURCE
       ${SRC_DIR}/system/ColorDatabase.cpp
 
       ${SRC_DIR}/system/PlatformSettings.cpp
+
+      ${SRC_DIR}/system/SearchPath.cpp
     )
 
 file ( GLOB PTREE_HEADERS "${NOMLIB_HEADERS_DIR}/ptree/*.hpp" )

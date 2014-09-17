@@ -293,6 +293,9 @@ class libRocketTest: public nom::VisualUnitTest
     /// unit test.
     virtual void SetUp()
     {
+      nom::SearchPath resources;
+      std::string ext = ".json";
+
       // NOM_LOG_TRACE( NOM );
 
       // We must set the rendering init callback before calling ::SetUp()
@@ -301,58 +304,20 @@ class libRocketTest: public nom::VisualUnitTest
       // VisualUnitTest environment init...
       VisualUnitTest::SetUp();
 
-      // nom::init sets the working directory to this executable's directory path;
-      // i.e.: build/tests. Now all the documents (including their dependencies)
-      // that are loaded in all use the same root source path.
-      //
-      // FIXME: File organization needs to be dealt with somehow, for document
-      // reloading feature... Copying file resources is not ideal during development
-      // (only for release).
-      // nom::ShellFileInterface FileInterface( "./Resources/librocket/nomlibTest/" );
-      File dir;
+      // nom::init sets the working directory to this executable's directory
+      // path; i.e.: build/tests or build/tests/Debug depending on build
+      // environment. Everything is relative from here on out.
 
-      // FIXME: This is a hack to get things running under Windows -- that I
-      // shouldn't be doing... **do not** expect document reloading to occur
-      // from the expected source (project's Resources folder, but from the
-      // installation's "temporary" copy).
-      //
-      // This path should resolve to build/tests/Debug, and only exist normally
-      // on Windows installations (after doing a CMake install).
-      std::string resources_path = "./Resources/tests/gui/librocket/nomlibTest/";
-
-      std::vector<std::string> search_paths;
-
-      // This should resolve to the project's base Resources directory
-      search_paths.push_back( "../../" + resources_path );
-      search_paths.push_back( "../../../" + resources_path );
-
-      for( auto itr = search_paths.begin(); itr != search_paths.end(); ++itr )
+      // Determine our resources path based on several possible locations --
+      // also dependent upon the build environment
+      if( resources.load_file( nom::UnitTest::test_set() + ext, "resources" ) == false )
       {
-        if( dir.exists( *itr ) )
-        {
-          resources_path = *itr;
-          break;
-        }
-      }
-
-      if( ! dir.exists( resources_path ) )
-      {
-        NOM_LOG_CRIT( NOM_LOG_CATEGORY_GUI, "Could not find test resources at any of the defined search paths:" );
-        for( auto itr = search_paths.begin(); itr != search_paths.end(); ++itr )
-        {
-          NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, *itr );
-        }
-
         FAIL()
-        << "Could not find test resources at any of the defined search paths: "
-        << std::endl << resources_path << std::endl;
-      }
-      else
-      {
-        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Using resources from:", resources_path );
+        << "Could not determine the resource path for "
+        << nom::UnitTest::test_set() + ext;
       }
 
-      this->filesystem = new nom::ShellFileInterface( resources_path.c_str() );
+      this->filesystem = new nom::ShellFileInterface( resources.path().c_str() );
 
       if( this->filesystem == nullptr )
       {
@@ -379,7 +344,7 @@ class libRocketTest: public nom::VisualUnitTest
       Rocket::Controls::Initialise();
 
       this->context = Rocket::Core::CreateContext("default",
-        Rocket::Core::Vector2i( window_.size().w, window_.size().h ));
+        Rocket::Core::Vector2i( this->window_.size().w, this->window_.size().h ));
 
       // Initialize Debugger as early as possible, so we can visually see logging.
       if( Rocket::Debugger::Initialise( this->context ) == false )
@@ -387,17 +352,20 @@ class libRocketTest: public nom::VisualUnitTest
         FAIL();
       }
 
-      // TODO: Move these into nomlib's Resources/fonts path?
-      Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Bold.otf" );
-      Rocket::Core::FontDatabase::LoadFontFace( "Delicious-BoldItalic.otf" );
-      Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Italic.otf" );
-      Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Roman.otf" );
+      if( Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Bold.otf" ) == false )
+      {
+        FAIL() << "Could not load font file: Delicious-Bold.otf";
+      }
 
-      // Additional fonts
-      // TODO: We should be testing for existence of these...
-      Rocket::Core::FontDatabase::LoadFontFace( nom::SystemFonts::cache().find_resource( "Arial" ).path().c_str() );
-      Rocket::Core::FontDatabase::LoadFontFace( nom::SystemFonts::cache().find_resource( "OpenSans" ).path().c_str() );
-      Rocket::Core::FontDatabase::LoadFontFace( nom::SystemFonts::cache().find_resource( "OpenSans-Bold" ).path().c_str() );
+      if( Rocket::Core::FontDatabase::LoadFontFace( "OpenSans-Regular.ttf" ) == false )
+      {
+        FAIL() << "Could not load font file: OpenSans-Regular.ttf";
+      }
+
+      if( Rocket::Core::FontDatabase::LoadFontFace( "OpenSans-Bold.ttf" ) == false )
+      {
+        FAIL() << "Could not load font file: OpenSans-Bold.ttf";
+      }
 
       // Load custom decorators for nomlib
       Rocket::Core::DecoratorInstancer* decorator0 = new nom::DecoratorInstancerFinalFantasyFrame();

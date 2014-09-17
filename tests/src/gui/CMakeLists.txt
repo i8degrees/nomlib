@@ -194,6 +194,14 @@ if( NOM_BUILD_GUI_LIBROCKET_TESTS )
                       ${NOM_TESTS_SOURCE_DIR}/gui/libRocketTest.cpp
                     )
 
+    # Search paths to use in finding resources path
+    install (
+              FILES
+              "${NOM_TESTS_RESOURCES_DIR}/gui/librocket/libRocketTest.json"
+              DESTINATION
+              "${TESTS_DEPS_INSTALL_PEFIX}"
+            )
+
 endif( NOM_BUILD_GUI_LIBROCKET_TESTS )
 
 # Resource dependencies
@@ -226,31 +234,15 @@ if ( PLATFORM_WINDOWS )
             FILES_MATCHING PATTERN "*.dll"
           )
 
-  # TODO: Move to tests/librocket
+  # TODO: Move to tests/librocket?
   if( NOM_BUILD_LIBROCKET_UNIT )
-
-    # FIXME: see libRocketTest
-    install (
-              DIRECTORY
-              "${PROJECT_SOURCE_DIR}/Resources/fonts"
-              DESTINATION
-              "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
-            )
-
-    # FIXME: see libRocketTest
-    install (
-            DIRECTORY
-            "${NOM_TESTS_RESOURCES_DIR}/gui/librocket/nomlibTest"
-            DESTINATION
-            "${TESTS_DEPS_INSTALL_PEFIX}/Resources/tests/gui/librocket"
-            PATTERN ".*" EXCLUDE # no dotfiles
-          )
 
     install_dependencies  (
                             "${LIBROCKET_REDIST_DIRS}"
                             "${TESTS_DEPS_INSTALL_PEFIX}"
                             "*.dll"
                           )
+
   endif( NOM_BUILD_LIBROCKET_UNIT )
 
 endif ( PLATFORM_WINDOWS )

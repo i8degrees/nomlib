@@ -64,4 +64,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/system/ColorDatabase.hpp>
 
+// Filesystem utilities
+#include <nomlib/system/SearchPath.hpp>
+
 #endif // include guard defined

@@ -155,6 +155,33 @@ void RocketSDL2Renderer::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
   {
     NOM_LOG_ERR ( NOM, SDL_GetError() );
   }
+
+  // FIXME: This is prototype / proof of concept code for emulating SDL2's
+  // SDL_RenderSetLogicalSize function. It works, but needs further improvement,
+  // such as being called only when necessary, deal with aspect ratio issues,
+  // etc.
+  //
+  // See also: shell examples (i.e.: ShellRenderInterfaceOpenGL.cpp).
+  // http://gamedev.stackexchange.com/questions/40704/what-is-the-purpose-of-glscissor
+  //
+  // if( this->window_->fullscreen() )
+  // {
+  //   SDL_Rect dims;
+  //   SDL_RenderGetViewport ( this->window_->renderer(), &dims );
+
+  //   glMatrixMode( GL_PROJECTION );
+  //   glLoadIdentity();
+  //   glOrtho( 0, dims.w / 2, dims.h / 2, 0, 0, 1 );
+  // }
+  // else
+  // {
+  //   SDL_Rect dims;
+  //   SDL_RenderGetViewport ( this->window_->renderer(), &dims );
+
+  //   glMatrixMode( GL_PROJECTION );
+  //   glLoadIdentity();
+  //   glOrtho( 0, this->window_->size().w, this->window_->size().h, 0, 0, 1 );
+  // }
 }
 
 void RocketSDL2Renderer::EnableScissorRegion(bool enable)
@@ -171,9 +198,9 @@ void RocketSDL2Renderer::EnableScissorRegion(bool enable)
 
 void RocketSDL2Renderer::SetScissorRegion(int x, int y, int width, int height)
 {
-    int w_width, w_height;
-    SDL_GetWindowSize(this->window_->window(), &w_width, &w_height);
-    glScissor(x, w_height - (y + height), width, height);
+  int w_width, w_height;
+  SDL_GetWindowSize(this->window_->window(), &w_width, &w_height);
+  glScissor(x, w_height - (y + height), width, height);
 }
 
 bool RocketSDL2Renderer::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source)

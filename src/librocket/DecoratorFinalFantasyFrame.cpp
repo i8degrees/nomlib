@@ -100,12 +100,19 @@ void DecoratorFinalFantasyFrame::RenderElement(Rocket::Core::Element* element, R
     Point2i pos( position.x, position.y );
     Size2i dims( size.x, size.y );
 
+    // Keep our decorator within positive bounds on the left side of the window,
+    // else it will vanish on us
+    if( position.x <= 0.0f )
+    {
+      pos.x = 0;
+      dims.w = dims.w - abs( position.x );
+    }
+
     decorator_->set_bounds( pos, dims );
 
     // FIXME: We shouldn't need to do this -- ::set_bounds ought to take care
     // of internal updating...
     // decorator_->update();
-
     decorator_->invalidate();
 
     decorator_->draw( *target );

@@ -323,6 +323,7 @@ elseif ( PLATFORM_OSX )
   find_library ( COCOA_LIBRARY Cocoa )
   mark_as_advanced ( COCOA_LIBRARY )
   set ( EXTLIBS ${EXTLIBS} ${COCOA_LIBRARY} )
+  message( STATUS "Found Cocoa: ${COCOA_LIBRARY}")
 
 elseif ( PLATFORM_LINUX )
   # TODO

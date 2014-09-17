@@ -39,41 +39,41 @@ class Template: public ::testing::Test
 {
   public:
     /// \remarks This method is called at the start of each unit test.
-    Template( void )
+    Template()
     {
-      // NOM_LOG_TRACE( NOM );
+      // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
     }
 
     /// \remarks This method is called at the end of each unit test.
-    virtual ~Template( void )
+    virtual ~Template()
     {
-      // NOM_LOG_TRACE( NOM );
+      // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
     }
 
     /// \remarks This method is called after construction, at the start of each
     /// unit test.
-    virtual void SetUp( void )
+    virtual void SetUp()
     {
-      // NOM_LOG_TRACE( NOM );
+      // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
     }
 
     /// \remarks This method is called before destruction, at the end of each
     /// unit test.
-    virtual void TearDown( void )
+    virtual void TearDown()
     {
-      // NOM_LOG_TRACE( NOM );
+      // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
     }
 
     /// \remarks This method is called at the start of each test case.
-    static void SetUpTestCase( void )
+    static void SetUpTestCase()
     {
-      // NOM_LOG_TRACE( NOM );
+      // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
     }
 
     /// \remarks This method is called at the end of each test case.
-    static void TearDownTestCase( void )
+    static void TearDownTestCase()
     {
-      // NOM_LOG_TRACE( NOM );
+      // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
     }
 
   protected:

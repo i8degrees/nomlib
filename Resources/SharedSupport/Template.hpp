@@ -46,19 +46,16 @@ class Template
     typedef std::shared_ptr<self_type> shared_ptr;
 
     /// \brief Default constructor.
-    Template( void );
+    Template();
 
     /// \brief Destructor.
-    ~Template( void );
+    ~Template();
 
     /// \brief Copy constructor.
     Template( const self_type& copy );
 
     /// \brief Copy assignment operator.
     self_type& operator =( const self_type& other );
-
-    /// \brief Obtain a reference to the object.
-    const self_type& get ( void ) const;
 
   private:
     // Member variables

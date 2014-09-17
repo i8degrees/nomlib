@@ -30,27 +30,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Template::Template( void )
+Template::Template()
 {
-  NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-Template::~Template( void )
+Template::~Template()
 {
-  NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 Template::Template( const self_type& copy )
 {
-  NOM_LOG_TRACE( NOM );
 }
 
 Template::self_type& Template::operator =( const self_type& other )
-{
-  return *this;
-}
-
-const Template::self_type& Template::get( void ) const
 {
   return *this;
 }

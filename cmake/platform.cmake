@@ -15,13 +15,27 @@ if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
 
   # Setup the SDK selection for backwards compatibility
   set ( SDKVER "10.7" )
-  set ( DEVROOT "/Applications/Developer/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer" )
+
+  set ( DEVROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer" )
   set ( SDKROOT "${DEVROOT}/SDKs/MacOSX${SDKVER}.sdk" )
 
   if( EXISTS ${SDKROOT} )
     set( CMAKE_OSX_SYSROOT "${SDKROOT}" )
     set( CMAKE_OSX_DEPLOYMENT_TARGET "${SDKVER}" )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=${SDKVER}" )
+
+    # This resolves the error in UnixFile.cpp I get when trying to compile with
+    # Xcode generated project files -- it complains about not being able to find
+    # the header file <MacTypes.h> in one of the system frameworks (CoreServices
+    # or Carbon, I believe).
+    #
+    # This is due to the fact that it is referencing the MacOSX v10.9 SDK, when
+    # it should be using v10.7 header files, like it appears to be for
+    # everything else. This appears to have been working before, perhaps
+    # my recent upgrade to CMake v3.0 had changed something related to all this?
+    set( CMAKE_SYSTEM_FRAMEWORK_PATH "${SDKROOT}/System/Library/Frameworks" )
+    message( STATUS "Using SDK: ${SDKROOT}" )
+
   else( NOT EXISTS ${SDKROOT} ) # Mac OS X v10.7 SDK not found
     message ( WARNING "WARNING: Mac OS X ${SDKVER} SDK path not found: ${SDKROOT}" )
   endif( EXISTS ${SDKROOT} )

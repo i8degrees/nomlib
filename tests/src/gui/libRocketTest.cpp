@@ -414,7 +414,7 @@ class libRocketTest: public nom::VisualUnitTest
       }
       else
       {
-        FAIL() << "Cursor" << cur->GetSourceURL().CString() << "was NULL.";
+        FAIL() << "Cursor was NULL.";
       }
 
       // Resize window cursor
@@ -427,7 +427,7 @@ class libRocketTest: public nom::VisualUnitTest
       }
       else
       {
-        FAIL() << "Cursor" << cur->GetSourceURL().CString() << "was NULL.";
+        FAIL() << "Cursor was NULL.";
       }
 
       // Let libRocket handle the rendering of the in-window cursor
@@ -452,7 +452,11 @@ class libRocketTest: public nom::VisualUnitTest
     {
       // NOM_LOG_TRACE( NOM );
 
-      this->context->RemoveReference();
+      if( this->context )
+      {
+        this->context->RemoveReference();
+      }
+
       Rocket::Core::Shutdown();
     }
 

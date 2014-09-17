@@ -190,9 +190,7 @@ if( NOM_BUILD_GUI_LIBROCKET_TESTS )
 
     GTEST_ADD_TESTS (
                       libRocketTest
-                      "libRocketTest"
-                      ${NOM_TESTS_COMMON_SOURCE}
-                      ${NOM_TESTS_VTEST_SOURCE}
+                      ""
                       ${NOM_TESTS_SOURCE_DIR}/gui/libRocketTest.cpp
                     )
 

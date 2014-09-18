@@ -1,5 +1,9 @@
 cmake_minimum_required ( VERSION 2.6 )
 
+# TODO: Use CMake v2.8.12 OSX RPath features
+# http://www.kitware.com/blog/home/post/510
+# cmake_minimum_required ( VERSION 2.8.12 )
+
 # CMake Environment
 
 # Opt out of using CMake v3.0 PROJECT_VERSION variables management for the
@@ -360,9 +364,9 @@ elseif ( PLATFORM_OSX )
   # libRocket
   set ( LIBROCKET_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/include" )
   set ( LIBROCKET_LIBRARY
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControls.dylib"
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCore.dylib"
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketDebugger.dylib"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControls.1.dylib"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCore.1.dylib"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketDebugger.1.dylib"
       )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBROCKET_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBROCKET_LIBRARY} )
@@ -542,6 +546,8 @@ if ( PLATFORM_OSX )
     # Bundle dynamic libraries we depend on
     #
     # TODO: libRocket needs to be recompiled with proper RPATH
+    # TODO: FreeType2 needs to be packaged as it is a dependency of libRocket
+    # TODO: Use "Libraries" directory for dynamic libraries.
     #
     # FIXME: This should be copying the symbolic linked files themselves, not
     # the symbolic link.

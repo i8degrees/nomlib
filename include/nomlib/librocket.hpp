@@ -46,7 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // #include "nomlib/gui/UIWidgetEvent.hpp"
 // #include "nomlib/gui/UIEventDispatcher.hpp"
 
-#include "nomlib/librocket/ShellFileInterface.hpp"
+#include "nomlib/librocket/RocketFileInterface.hpp"
 #include "nomlib/librocket/RocketSDL2SystemInterface.hpp"
 #include "nomlib/librocket/RocketSDL2Renderer.hpp"
 

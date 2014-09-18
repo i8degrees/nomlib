@@ -26,6 +26,17 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
+#ifndef NOMLIB_LIBROCKET_ROCKET_FILE_INTERFACE_HPP
+#define NOMLIB_LIBROCKET_ROCKET_FILE_INTERFACE_HPP
+
+#include <memory>
+
+#include "nomlib/config.hpp"
+
+#include <Rocket/Core/String.h>
+#include <Rocket/Core/FileInterface.h>
+
+namespace nom {
 
 /* Copyright (c) 2008-2010 CodePoint Ltd, Shift Technology Ltd
  *
@@ -49,56 +60,36 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
 
-#include "nomlib/librocket/ShellFileInterface.hpp"
+/**
+  Rocket file interface for the shell examples.
+  @author Lloyd Weehuizen
+ */
 
-// Private headers
-#include <stdio.h>
-
-namespace nom {
-
-ShellFileInterface::ShellFileInterface(const Rocket::Core::String& root) : root(root)
+class RocketFileInterface: public Rocket::Core::FileInterface
 {
-}
+  public:
+    RocketFileInterface(const Rocket::Core::String& root);
+    virtual ~RocketFileInterface();
 
-ShellFileInterface::~ShellFileInterface()
-{
-}
+    /// Opens a file.
+    virtual Rocket::Core::FileHandle Open(const Rocket::Core::String& path);
 
-// Opens a file.
-Rocket::Core::FileHandle ShellFileInterface::Open(const Rocket::Core::String& path)
-{
-  // Attempt to open the file relative to the application's root.
-  FILE* fp = fopen((root + path).CString(), "rb");
-  if (fp != NULL)
-    return (Rocket::Core::FileHandle) fp;
+    /// Closes a previously opened file.
+    virtual void Close(Rocket::Core::FileHandle file);
 
-  // Attempt to open the file relative to the current working directory.
-  fp = fopen(path.CString(), "rb");
-  return (Rocket::Core::FileHandle) fp;
-}
+    /// Reads data from a previously opened file.
+    virtual size_t Read(void* buffer, size_t size, Rocket::Core::FileHandle file);
 
-// Closes a previously opened file.
-void ShellFileInterface::Close(Rocket::Core::FileHandle file)
-{
-  fclose((FILE*) file);
-}
+    /// Seeks to a point in a previously opened file.
+    virtual bool Seek(Rocket::Core::FileHandle file, long offset, int origin);
 
-// Reads data from a previously opened file.
-size_t ShellFileInterface::Read(void* buffer, size_t size, Rocket::Core::FileHandle file)
-{
-  return fread(buffer, 1, size, (FILE*) file);
-}
+    /// Returns the current position of the file pointer.
+    virtual size_t Tell(Rocket::Core::FileHandle file);
 
-// Seeks to a point in a previously opened file.
-bool ShellFileInterface::Seek(Rocket::Core::FileHandle file, long offset, int origin)
-{
-  return fseek((FILE*) file, offset, origin) == 0;
-}
-
-// Returns the current position of the file pointer.
-size_t ShellFileInterface::Tell(Rocket::Core::FileHandle file)
-{
-  return ftell((FILE*) file);
-}
+  private:
+    Rocket::Core::String root;
+};
 
 } // namespace nom
+
+#endif // include guard defined

@@ -246,7 +246,7 @@ file ( GLOB LIBROCKET_HEADERS "${NOMLIB_HEADERS_DIR}/librocket/*.hpp" )
 set ( LIBROCKET_SOURCE
       ${SRC_DIR}/librocket/RocketSDL2Renderer.cpp
       ${SRC_DIR}/librocket/RocketSDL2SystemInterface.cpp
-      ${SRC_DIR}/librocket/ShellFileInterface.cpp
+      ${SRC_DIR}/librocket/RocketFileInterface.cpp
       ${SRC_DIR}/librocket/DecoratorInstancerFinalFantasyFrame.cpp
       ${SRC_DIR}/librocket/DecoratorFinalFantasyFrame.cpp
       ${SRC_DIR}/librocket/DecoratorPhotograph.cpp

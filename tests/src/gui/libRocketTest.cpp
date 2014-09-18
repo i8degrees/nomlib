@@ -20,7 +20,6 @@
 #include <Rocket/Controls.h>
 #include <Rocket/Controls/DataSource.h>
 
-#include "nomlib/librocket/ShellFileInterface.hpp"
 #include "nomlib/librocket/RocketSDL2Renderer.hpp"
 #include "nomlib/librocket/RocketSDL2SystemInterface.hpp"
 
@@ -317,11 +316,11 @@ class libRocketTest: public nom::VisualUnitTest
         << nom::UnitTest::test_set() + ext;
       }
 
-      this->filesystem = new nom::ShellFileInterface( resources.path().c_str() );
+      this->filesystem = new nom::RocketFileInterface( resources.path().c_str() );
 
       if( this->filesystem == nullptr )
       {
-        FAIL() << "Could not create Shell File Interface for libRocket.";
+        FAIL() << "Could not create File Interface for libRocket.";
       }
 
       this->sys = new nom::RocketSDL2SystemInterface();
@@ -686,7 +685,7 @@ class libRocketTest: public nom::VisualUnitTest
     nom::RocketSDL2SystemInterface* sys;
 
     /// Filesystem bridge between libRocket & nomlib
-    nom::ShellFileInterface* filesystem;
+    nom::RocketFileInterface* filesystem;
 
     /// UI Desktop ('windows' container)
     Rocket::Core::Context* context;

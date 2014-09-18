@@ -2,6 +2,8 @@
 #include <string>
 #include <map>
 
+#include <SDL.h>
+
 #include "gtest/gtest.h"
 
 // nom::UnitTest framework
@@ -10,8 +12,7 @@
 #include <nomlib/config.hpp>
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
-
-#include <SDL.h>
+#include <nomlib/librocket.hpp>
 
 #include <Rocket/Core.h>
 #include <Rocket/Core/Types.h>
@@ -19,13 +20,6 @@
 #include <Rocket/Debugger/Debugger.h>
 #include <Rocket/Controls.h>
 #include <Rocket/Controls/DataSource.h>
-
-#include "nomlib/librocket/RocketSDL2Renderer.hpp"
-#include "nomlib/librocket/RocketSDL2SystemInterface.hpp"
-
-#include "nomlib/librocket/DecoratorInstancerFinalFantasyFrame.hpp"
-#include "nomlib/librocket/DecoratorFinalFantasyFrame.hpp"
-#include "nomlib/librocket/DecoratorPhotograph.hpp"
 
 namespace nom {
 
@@ -442,139 +436,126 @@ class libRocketTest: public nom::VisualUnitTest
     /// \brief Event loop
     virtual int on_event( Event& event )
     {
-      // nom::Event event;
-      // while( this->running )
-      // {
-        // while( this->event_.poll_event( event ) )
-        // {
-          switch( event.type )
+      switch( event.type )
+      {
+        case SDL_QUIT:
+        {
+          return 0;
+        }
+        break;
+
+        case SDL_MOUSEMOTION:
+        {
+          this->context->ProcessMouseMove( event.motion.x, event.motion.y, this->sys->GetKeyModifiers() );
+        }
+        break;
+
+        case SDL_MOUSEBUTTONDOWN:
+        {
+          this->context->ProcessMouseButtonDown( this->sys->TranslateMouseButton( event.mouse.button ), this->sys->GetKeyModifiers() );
+        }
+        break;
+
+        case SDL_MOUSEBUTTONUP:
+        {
+          this->context->ProcessMouseButtonUp( this->sys->TranslateMouseButton( event.mouse.button ), this->sys->GetKeyModifiers() );
+        }
+        break;
+
+        case SDL_MOUSEWHEEL:
+        {
+          this->context->ProcessMouseWheel( this->sys->TranslateMouseWheel( event.wheel.y ), this->sys->GetKeyModifiers() );
+        }
+        break;
+
+        case SDL_KEYDOWN:
+        {
+          // Check for a shift-~ to toggle the debugger.
+          switch( event.key.sym )
           {
-            case SDL_QUIT:
+            // Quit loop
+            case SDLK_q:
             {
               this->running = false;
+              break;
             }
-            break;
 
-            case SDL_MOUSEMOTION:
+            case SDLK_BACKQUOTE:
             {
-              this->context->ProcessMouseMove( event.motion.x, event.motion.y, this->sys->GetKeyModifiers() );
-            }
-            break;
-
-            case SDL_MOUSEBUTTONDOWN:
-            {
-              this->context->ProcessMouseButtonDown( this->sys->TranslateMouseButton( event.mouse.button ), this->sys->GetKeyModifiers() );
-            }
-            break;
-
-            case SDL_MOUSEBUTTONUP:
-            {
-              context->ProcessMouseButtonUp( this->sys->TranslateMouseButton( event.mouse.button ), this->sys->GetKeyModifiers() );
-            }
-            break;
-
-            case SDL_MOUSEWHEEL:
-            {
-              this->context->ProcessMouseWheel( this->sys->TranslateMouseWheel( event.wheel.y ), this->sys->GetKeyModifiers() );
-            }
-            break;
-
-            case SDL_KEYDOWN:
-            {
-              // Check for a shift-~ to toggle the debugger.
-              switch( event.key.sym )
+              if( event.key.mod == KMOD_LSHIFT || event.key.mod == KMOD_RSHIFT )
               {
-                // Quit loop
-                case SDLK_q:
-                {
-                  this->running = false;
-                  break;
-                }
+                Rocket::Debugger::SetVisible( ! Rocket::Debugger::IsVisible() );
+                break;
+              }
+            }
 
-                case SDLK_BACKQUOTE:
+            // Test showing and hiding documents
+            // case SDLK_h:
+            // {
+            //   if( doc0 != nullptr )
+            //   {
+            //     if( this->doc0->IsVisible() == true )
+            //     {
+            //       this->doc0->Hide();
+            //     }
+            //     else
+            //     {
+            //       this->doc0->Show();
+            //     }
+            //   }
+            //   break;
+            // }
+
+            // Reload document, and its dependencies (i.e.: templates and style
+            // sheets) during run-time.
+            case SDLK_r:
+            {
+              for( auto itr = this->docs.begin(); itr != this->docs.end(); ++itr )
+              {
+                if( (*itr).second != nullptr )
                 {
-                  if( event.key.mod == KMOD_LSHIFT || event.key.mod == KMOD_RSHIFT )
+                  (*itr).second->Close();
+                  Rocket::Core::Factory::ClearStyleSheetCache();
+                  Rocket::Core::Factory::ClearTemplateCache();
+                  this->docs[ (*itr).first ] = this->context->LoadDocument( (*itr).first.c_str() );
+
+                  if( (*itr).second != nullptr )
                   {
-                    Rocket::Debugger::SetVisible( ! Rocket::Debugger::IsVisible() );
-                    break;
+                    (*itr).second->Show();
+                    (*itr).second->RemoveReference();
+                    // NOM_DUMP( this->doc0->GetReferenceCount() );
+                    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", (*itr).second->GetSourceURL().CString(), "reloaded." );
                   }
-                }
-
-                // Test showing and hiding documents
-                // case SDLK_h:
-                // {
-                //   if( doc0 != nullptr )
-                //   {
-                //     if( this->doc0->IsVisible() == true )
-                //     {
-                //       this->doc0->Hide();
-                //     }
-                //     else
-                //     {
-                //       this->doc0->Show();
-                //     }
-                //   }
-                //   break;
-                // }
-
-                // Reload document, and its dependencies (i.e.: templates and style
-                // sheets) during run-time.
-                case SDLK_r:
-                {
-                  for( auto itr = this->docs.begin(); itr != this->docs.end(); ++itr )
+                  else
                   {
-                    if( (*itr).second != nullptr )
-                    {
-                      (*itr).second->Close();
-                      Rocket::Core::Factory::ClearStyleSheetCache();
-                      Rocket::Core::Factory::ClearTemplateCache();
-                      this->docs[ (*itr).first ] = this->context->LoadDocument( (*itr).first.c_str() );
-
-                      if( (*itr).second != nullptr )
-                      {
-                        (*itr).second->Show();
-                        (*itr).second->RemoveReference();
-                        // NOM_DUMP( this->doc0->GetReferenceCount() );
-                        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", (*itr).second->GetSourceURL().CString(), "reloaded." );
-                      }
-                      else
-                      {
-                        NOM_LOG_CRIT(NOM_LOG_CATEGORY_GUI, "Document", (*itr).second->GetSourceURL().CString(), "was NULL.");
-                        return NOM_EXIT_FAILURE;
-                      }
-                    }
+                    NOM_LOG_CRIT(NOM_LOG_CATEGORY_GUI, "Document", (*itr).second->GetSourceURL().CString(), "was NULL.");
+                    return NOM_EXIT_FAILURE;
                   }
-
-                  break;
                 }
               }
 
-              this->context->ProcessKeyDown( this->sys->TranslateKey( event.key.sym ), this->sys->GetKeyModifiers() );
-              break;
-            }
-
-            // TODO: Support Unicode text input with SDL_StartTextInput and
-            // SDL_StopTextInput; on mobile platforms, this will bring up the
-            // virtual keyboard for the end-user.
-            case SDL_TEXTINPUT:
-            {
-              this->context->ProcessTextInput( event.text.text );
-              break;
-            }
-
-            default:
-            {
               break;
             }
           }
-        // }
 
-        // this->window_.update();
-        // this->context->Update();
+          this->context->ProcessKeyDown( this->sys->TranslateKey( event.key.sym ), this->sys->GetKeyModifiers() );
+          break;
+        }
 
-        // this->window_.fill( nom::Color4i::SkyBlue );
-        // this->context->Render();
-      // }
+        // TODO: Support Unicode text input with SDL_StartTextInput and
+        // SDL_StopTextInput; on mobile platforms, this will bring up the
+        // virtual keyboard for the end-user.
+        case SDL_TEXTINPUT:
+        {
+          this->context->ProcessTextInput( event.text.text );
+          break;
+        }
+
+        default:
+        {
+          break;
+        }
+      }
 
       return NOM_EXIT_SUCCESS;
     }
@@ -587,60 +568,56 @@ class libRocketTest: public nom::VisualUnitTest
         // Rocket::Core::Input::KeyIdentifier button_x = (Rocket::Core::Input::KeyIdentifier) event.GetParameter<int>("mouse_x", -1);
         // Rocket::Core::Input::KeyIdentifier button_y = (Rocket::Core::Input::KeyIdentifier) event.GetParameter<int>("mouse_y", -1);
 
-        Rocket::Core::Element* dest = event.GetTargetElement();
+        // Rocket::Core::Element* ev = event.GetCurrentElement();
+        Rocket::Core::Element* ev = event.GetTargetElement();
 
         if( button == 0 )
         {
-          // NOM_DUMP_VAR(NOM, "left button_x:", button_x);
-          // NOM_DUMP_VAR(NOM, "left button_y:", button_y);
+          // NOM_DUMP( ev->GetClassNames().CString() );
 
-          if( dest->GetClassNames() == "choice" )
+          if( ev->GetClassNames().Find( "choice" ) == 0 )
           {
-            NOM_DUMP( "bingo!" );
+            // question
+            NOM_DUMP( ev->GetParentNode()->GetId().CString() );
 
-             // Rocket::Core::String text_color = dest->GetProperty<Rocket::Core::String>( "color" );
+            // Are you Sure?
+            NOM_DUMP( ev->GetOwnerDocument()->GetElementById("message")->GetInnerRML().CString() );
 
-            dest->SetClass( "selected", true );
-            // dest->SetAttribute( "style", "color: red;" );
-
-            std::string c = dest->GetClassNames().CString();
-            NOM_DUMP(c);
-
-            if( c.find( "choice selected" ) == nom::npos )
+            if( ev->GetClassNames().Find( "choice selected" ) == nom::npos )
             {
-              dest->SetClass( "choice selected", true );
+              ev->SetClassNames( "choice selected" );
+              NOM_DUMP_VAR( NOM, "ON", ev->GetClassNames().CString() );
             }
             else
             {
-              dest->SetClass( "choice selected", false );
+              ev->SetClassNames( "choice" );
+              NOM_DUMP_VAR( NOM, "OFF", ev->GetClassNames().CString() );
             }
-
-            // Execute callback
           }
+
+          // std::string id = ev->GetId().CString();
+          // if( id == "choice1" )
+          // {
+          //   Rocket::Core::Element* c = ev->GetParentNode()->GetElementById("choice2");
+          //   c->SetClassNames( "choice" );
+          // }
+          // else
+          // {
+          //   Rocket::Core::Element* c = ev->GetParentNode()->GetElementById("choice1");
+          //   c->SetClassNames( "choice" );
+          // }
         }
         else if( button == 1 )
         {
-          if( dest )
-          {
-            // ...
-          }
-
-          // NOM_DUMP_VAR(NOM, "right button_x:", button_x);
-          // NOM_DUMP_VAR(NOM, "right button_y:", button_y);
+          NOM_DUMP_VAR(NOM_LOG_CATEGORY_GUI, "right button click");
         }
         else if( button == 2 )
         {
-          // NOM_DUMP_VAR(NOM, "middle button_x:", button_x);
-          // NOM_DUMP_VAR(NOM, "middle button_y:", button_y);
+          NOM_DUMP_VAR(NOM_LOG_CATEGORY_GUI, "middle button click");
         }
         else if( button == 3 )  // Undefined
         {
-          NOM_DUMP_VAR(NOM, "Undefined button");
-        }
-
-        if( dest )
-        {
-          // dest->RemoveReference();
+          NOM_DUMP_VAR(NOM_LOG_CATEGORY_GUI, "Undefined button click");
         }
       }
     } // end on_click func
@@ -695,7 +672,8 @@ class libRocketTest: public nom::VisualUnitTest
 
     /// \remarks This object must be global, otherwise crashes will often
     /// result.
-    nom::UIEventListener evt;
+    // nom::UIEventListener evt;
+    nom::UIEventDispatcher evt;
 
     /// \remarks This object must be global, otherwise crashes will often
     /// result (UIEventListener related?).
@@ -823,9 +801,9 @@ TEST_F( libRocketTest, EventListenerTest )
   {
     NOM_DUMP( (*itr)->GetTagName().CString() );
 
-    evt.register_event_listener( *itr, "keydown", [&] ( Rocket::Core::Event& ev ) { this->on_keydown( ev ); } );
-    evt.register_event_listener( *itr, "mouseup", [&] ( Rocket::Core::Event& ev ) { this->on_click( ev ); } );
-    evt.register_event_listener( *itr, "mousescroll", [&] ( Rocket::Core::Event& ev ) { this->on_wheel( ev ); } );
+    evt.register_event_listener( *itr, "mousescroll", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) { this->on_wheel( ev ); } ) );
+    evt.register_event_listener( *itr, "keydown", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) { this->on_keydown( ev ); } ) );
+    evt.register_event_listener( *itr, "mouseup", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) { this->on_click( ev ); } ) );
   }
 
   this->docs[doc_file] = doc;
@@ -839,8 +817,6 @@ TEST_F( libRocketTest, EventListenerTest )
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
-
-  // content_div->RemoveEventListener( "mouseup", &evt );
 }
 
 /// \remarks Models the Cards Menu state of TTcards

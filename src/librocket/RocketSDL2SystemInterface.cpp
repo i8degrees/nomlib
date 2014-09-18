@@ -384,13 +384,14 @@ Rocket::Core::Input::KeyIdentifier RocketSDL2SystemInterface::TranslateKey(SDL_K
   }
 }
 
-int RocketSDL2SystemInterface::TranslateMouseButton(Uint8 button)
+int RocketSDL2SystemInterface::TranslateMouseButton( Uint8 button)
 {
   switch(button)
   {
     default:
     {
-      return 3; // ...the fuck? Why three???
+      // Try to match what SDL2 appears to be returning
+      return button + 1;
     }
 
     case SDL_BUTTON_LEFT:
@@ -509,48 +510,79 @@ bool RocketSDL2SystemInterface::LogMessage(Rocket::Core::Log::Type type, const R
 
 namespace nom {
 
+UIEventDispatcher::UIEventDispatcher()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+UIEventDispatcher::~UIEventDispatcher()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+bool
+UIEventDispatcher::register_event_listener  (
+                                              Rocket::Core::Element* element,
+                                              const event_type& ev,
+                                              callback_type* observer
+                                            )
+{
+  // if( element == nullptr )
+  // {
+  //   // TODO: Err message
+  //   return false;
+  // }
+
+  // if( observer == nullptr )
+  // {
+  //   // TODO: Err message
+  //   return false;
+  // }
+
+  element->AddEventListener( ev.c_str(), observer, false );
+
+  return true;
+}
+
+// bool
+// UIEventDispatcher::remove_event_listener  (
+//                                             Rocket::Core::Element* element,
+//                                             const event_type& ev
+//                                           )
+// {
+//   // element->RemoveEventListener( ev.c_str(), observer, false );
+
+//   // TODO
+//   return true;
+// }
+
+UIEventListener::UIEventListener( const callback_type& observer )
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE );
+
+  this->observer_ = observer;
+}
+
 UIEventListener::~UIEventListener()
 {
-  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
 }
 
-void UIEventListener::register_event_listener   (
-                                                  Rocket::Core::Element* element,
-                                                  const std::string& event_name,
-                                                  const callback_type& observer
-                                                )
+void UIEventListener::OnAttach(Rocket::Core::Element* ROCKET_UNUSED_PARAMETER(element) )
 {
-  this->observers_[event_name].push_back( observer );
-
-  element->AddEventListener( event_name.c_str(), this, false );
+  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
 }
 
-// void UIEventListener::OnAttach(Rocket::Core::Element* ROCKET_UNUSED_PARAMETER(element) )
-// {
-//   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
-// }
-
-// void UIEventListener::OnDetach( Rocket::Core::Element* ROCKET_UNUSED_PARAMETER(element) )
-// {
+void UIEventListener::OnDetach( Rocket::Core::Element* ROCKET_UNUSED_PARAMETER(element) )
+{
   // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
-// }
+}
 
 void UIEventListener::ProcessEvent( event_type& event )
 {
-  // NOM_DUMP_VAR( NOM_LOG_CATEGORY_GUI, "event:", event.GetType().CString() );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_GUI, "event", event.GetType().CString(), "for", event.GetTargetElement()->GetInnerRML().CString() );
 
-  auto res = this->observers_.find( event.GetType().CString() );
-
-  // Match found
-  if( res != this->observers_.end() )
-  {
-    auto obs = res->second;
-    for( auto itr = obs.begin(); itr != obs.end(); ++itr )
-    {
-      // Match found; execute callback.
-      (*itr).operator()( event );
-    }
-  }
+  this->observer_.operator()( event );
 }
 
 } // namespace nom

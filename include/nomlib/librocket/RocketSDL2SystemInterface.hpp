@@ -40,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+/// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Input
 class RocketSDL2SystemInterface: public Rocket::Core::SystemInterface
 {
   public:
@@ -64,44 +65,94 @@ class RocketSDL2SystemInterface: public Rocket::Core::SystemInterface
 
 namespace nom {
 
-/// \see http://librocket.com/wiki/documentation/RML/Events
+/// \brief Interface for an event listener for libRocket's platform.
+///
+/// \note Observer pattern
+///
+/// \note This object must outlive its element's destruction.
+///
+/// \see ~~nom::UIEventDispatcher~~
 /// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Events
 /// \see http://www.librocket.com/wiki/documentation/PythonManual/AttachingToEvents
 class UIEventListener: public Rocket::Core::EventListener
 {
   public:
     typedef UIEventListener self_type;
-
     typedef Rocket::Core::Event event_type;
     typedef std::function<void(event_type&)> callback_type;
 
-    virtual ~UIEventListener();
-
     /// \brief Register an event listener for an element.
     ///
-    /// \param event_type The event to listen for, i.e.: 'mouseup'.
-    /// \param observer   The callback to execute inside ::ProcessEvent.
-    void register_event_listener(
-                                  Rocket::Core::Element* element,
-                                  const std::string& event_name,
-                                  const callback_type& observer
-                                );
+    /// \param observer The callback to be executed when the element has an
+    /// event.
+    UIEventListener( const callback_type& observer );
 
-    // virtual void OnAttach(Rocket::Core::Element* ROCKET_UNUSED_PARAMETER(element) );
-    // virtual void OnDetach( Rocket::Core::Element* ROCKET_UNUSED_PARAMETER(element) );
+    /// \brief Destructor.
+    virtual ~UIEventListener();
+
+    /// \brief Not used.
+    virtual void OnAttach( Rocket::Core::Element* ROCKET_UNUSED_PARAMETER(element) );
+
+    /// \brief Not used.
+    virtual void OnDetach( Rocket::Core::Element* ROCKET_UNUSED_PARAMETER(element) );
 
   protected:
-    /// \brief Callback execution.
+    /// \brief The element's event handler.
     ///
-    /// \remarks The event's logic is done here.
+    /// \remarks The end-user's callback function is executed here; this feature
+    /// is provided by nomlib.
+    ///
+    /// \note This method is called by libRocket internally when there is an
+    /// event for the element ready to be processed.
     virtual void ProcessEvent( event_type& event );
 
   private:
-    /// \brief The data container type that holds a one-to-one mapping of
-    /// registered event observers to its event identifier object.
-    typedef std::map<std::string, std::vector<callback_type>> event_table;
+    callback_type observer_;
+};
 
-    event_table observers_;
+/// \brief High-level events manager
+///
+/// \remarks Bridge interface between libRocket and nomlib.
+///
+/// \todo Consider relocation or removal of this class; it's nothing more than
+/// a pointless wrapper at the moment.
+class UIEventDispatcher
+{
+  public:
+    typedef UIEventDispatcher self_type;
+
+    /// \brief ~~A raw pointer to the object's instance.~~
+    // typedef Rocket::Core::Event event_type;
+    typedef std::string event_type;
+
+    /// \brief The data container type of the callback.
+    ///
+    /// \remarks Delegate execution is done via C++'s object operator method.
+    typedef UIEventListener callback_type;
+
+    /// \brief Default constructor.
+    UIEventDispatcher();
+
+    /// \brief Destructor.
+    virtual ~UIEventDispatcher();
+
+    /// \brief Register an event listener for an element.
+    ///
+    /// \param element  The document's element to listen on behalf of.
+    /// \param ev       The event name to listen for, i.e.: 'mouseup'; must use
+    /// libRocket event names.
+    ///
+    /// \see http://librocket.com/wiki/documentation/RML/Events
+    bool register_event_listener  (
+                                    Rocket::Core::Element* element,
+                                    const event_type& ev,
+                                    callback_type* observer
+                                  );
+
+    // bool remove_event_listener  (
+    //                                 Rocket::Core::Element* element,
+    //                                 const event_type& ev
+    //                             );
 };
 
 } // namespace nom

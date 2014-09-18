@@ -45,10 +45,11 @@
   </head>
   <body template="window">
 
-    <p id='question'>Are you sure?</p>
-
-    <span class='choice'>Yes</span>
-    <span class='choice'>No</span>
+    <div id='question'>
+      <p id='message'>Are you sure?</p>
+      <span id='choice1' class='choice'>Yes</span>
+      <span id='choice2' class='choice'>No</span>
+    </div>
 
   </body>
 </rml>

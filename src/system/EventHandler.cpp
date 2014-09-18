@@ -151,6 +151,8 @@ void EventHandler::process_event( const Event& ev )
           break;
         }
       } // end switch ev.window.event
+
+      break;
     } // end case SDL_WINDOWEVENT
 
     case SDL_USEREVENT:
@@ -215,6 +217,8 @@ void EventHandler::process_event( const Event& ev )
           break;
         }
       } // end switch ev.button.button
+
+      break;
     } // end switch SDL_MOUSEBUTTONDOWN
 
     case SDL_MOUSEBUTTONUP:
@@ -253,6 +257,8 @@ void EventHandler::process_event( const Event& ev )
           break;
         }
       } // end switch ev.button.button
+
+      break;
     } // end switch SDL_MOUSEBUTTONUP
 
     case SDL_MOUSEWHEEL:
@@ -1065,6 +1071,8 @@ void EventHandler::process_event( const SDL_Event* ev )
           break;
         }
       } // end switch ev->window.event
+
+      break;
     } // end case SDL_WINDOWEVENT
 
     case SDL_SYSWMEVENT: break;
@@ -1201,6 +1209,8 @@ void EventHandler::process_event( const SDL_Event* ev )
           break;
         }
       } // end switch ev->button.button
+
+      break;
     } // end switch SDL_MOUSEBUTTONDOWN
 
     case SDL_MOUSEBUTTONUP:
@@ -1288,8 +1298,9 @@ void EventHandler::process_event( const SDL_Event* ev )
           this->push_event( event );
           break;
         }
-
       } // end switch ev->button.button
+
+      break;
     } // end switch SDL_MOUSEBUTTONUP
 
     case SDL_MOUSEWHEEL:

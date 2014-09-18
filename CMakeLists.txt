@@ -245,6 +245,18 @@ if( OPENGL_FOUND )
   set ( EXTLIBS ${EXTLIBS} ${OPENGL_LIBRARY} )
 endif( OPENGL_FOUND )
 
+# This might be a short-term kludge; we are linking statically (by default) so
+# that we are able to start using both nomlib and libRocket in TTcards with a
+# minimum of packaging fuss for the project (statically linking here lets us
+# remove libRocket from the linking of TTcards, and just requires the header
+# files).
+#
+# I'm also not sure that it makes sense to abstract libRocket's higher-level
+# APIs...
+#
+# This only affects builds on OS X. Windows builds always links statically.
+set( NOM_USE_STATIC_LIBROCKET true )
+
 if ( PLATFORM_WINDOWS )
   # Header and library paths -- *INCLUDE_DIR and *LIBRARY_DIR, respectively --
   # *MUST* include trailing backslash for this platform!
@@ -309,7 +321,7 @@ if ( PLATFORM_WINDOWS )
   set ( EXT_HEADERS ${EXT_HEADERS} "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/glew/include/GL" )
   set ( EXTLIBS ${EXTLIBS} ${GLEW_LIBRARY} )
 
-  # libRocket (GUI)
+  # libRocket dependency (GUI)
   set ( LIBROCKET_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/include" )
   # Paths must be: a) absolute; b) directory; c) end with a slash
   set ( LIBROCKET_REDIST_DIRS
@@ -361,17 +373,39 @@ elseif ( PLATFORM_OSX )
         "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/gtest"
       )
 
-  # libRocket
+  # libRocket dependency (FreeType2)
+  #
+  # FIXME: This file needs its RPATH modified; it is **not** being used as the
+  # library for executables yet. We are using brew's version installed at
+  # /usr/local
+  set ( FREETYPE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/bin/libfreetype.6.dylib" )
+  set ( EXTLIBS ${EXTLIBS} ${FREETYPE_LIBRARY} )
+
+  # libRocket dependency (GUI)
+
   set ( LIBROCKET_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/include" )
-  set ( LIBROCKET_LIBRARY
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControls.1.dylib"
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCore.1.dylib"
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketDebugger.1.dylib"
-      )
+
+  if( NOM_USE_STATIC_LIBROCKET )
+    # Note that these are built without debugging (Release) because the
+    # resulting file size was insane otherwise (+158MB).
+    set ( LIBROCKET_LIBRARY
+          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControls.a"
+          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCore.a"
+          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketDebugger.a"
+        )
+  else( NOT NOM_USE_STATIC_LIBROCKET )
+    # Debug libraries
+    set ( LIBROCKET_LIBRARY
+          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControls.1.dylib"
+          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCore.1.dylib"
+          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketDebugger.1.dylib"
+        )
+  endif( NOM_USE_STATIC_LIBROCKET )
+
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBROCKET_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBROCKET_LIBRARY} )
 
-  find_library ( COCOA_LIBRARY Cocoa )
+  find_library ( COCOA_LIBRARY Cocoa REQUIRED )
   mark_as_advanced ( COCOA_LIBRARY )
   set ( EXTLIBS ${EXTLIBS} ${COCOA_LIBRARY} )
   message( STATUS "Found Cocoa: ${COCOA_LIBRARY}")
@@ -543,18 +577,15 @@ if ( PLATFORM_OSX )
               PATTERN ".*" EXCLUDE # do not include those pesky dotfiles
             )
 
-    # Bundle dynamic libraries we depend on
-    #
-    # TODO: libRocket needs to be recompiled with proper RPATH
-    # TODO: FreeType2 needs to be packaged as it is a dependency of libRocket
-    # TODO: Use "Libraries" directory for dynamic libraries.
-    #
-    # FIXME: This should be copying the symbolic linked files themselves, not
-    # the symbolic link.
-    install ( FILES
-              ${LIBROCKET_LIBRARY}
-              DESTINATION "${INSTALL_EXT_FRAMEWORKS_PATH}"
-            )
+    if( NOT NOM_USE_STATIC_LIBROCKET )
+      # Bundle dynamic libraries we depend on
+      #
+      # TODO: Use "Libraries" directory for dynamic libraries.
+      install ( FILES
+                ${LIBROCKET_LIBRARY}
+                DESTINATION "${INSTALL_EXT_FRAMEWORKS_PATH}"
+              )
+    endif( NOT NOM_USE_STATIC_LIBROCKET )
 
     # Add all the necessary runtime search paths for locating the installed
     # dependencies we bundled.

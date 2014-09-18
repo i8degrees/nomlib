@@ -34,6 +34,10 @@ DATE_BIN=$(which date)
 
 TIMESTAMP="$($DATE_BIN +%Y-%m-%d)" # BSD date(1)
 
+# Optional git tag & commits since tag
+GIT_BIN=$(which git)
+GIT_VER=$( ${GIT_BIN} describe)
+
 function usage_info()
 {
   echo "Usage: ./$0 [osx|ios|linux|windows|all]"
@@ -41,7 +45,12 @@ function usage_info()
 
 function osx_deps()
 {
-  DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}_osx-dependencies.tar.gz"
+  if [[ ${GIT_BIN} ]]; then
+    DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}-${GIT_VER}_osx-dependencies.tar.gz"
+  else
+    DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}_osx-dependencies.tar.gz"
+  fi
+
   INCLUSION_MASKS="osx/ common/ README.md"
 
   ${TAR_BIN} ${TAR_ARGS} ${DEPS_FILENAME} --exclude=${EXCLUSION_MASKS} ${INCLUSION_MASKS}
@@ -49,7 +58,12 @@ function osx_deps()
 
 function ios_deps()
 {
-  DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}_ios-dependencies.tar.gz"
+  if [[ ${GIT_BIN} ]]; then
+    DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}-${GIT_VER}_ios-dependencies.tar.gz"
+  else
+    DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}_ios-dependencies.tar.gz"
+  fi
+
   INCLUSION_MASKS="ios/ common/ README.md"
 
   ${TAR_BIN} ${TAR_ARGS} ${DEPS_FILENAME} --exclude=${EXCLUSION_MASKS} ${INCLUSION_MASKS}
@@ -57,7 +71,12 @@ function ios_deps()
 
 function windows_deps()
 {
-  DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}_windows-dependencies.zip"
+  if [[ ${GIT_BIN} ]]; then
+    DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}-${GIT_VER}_windows-dependencies.zip"
+  else
+    DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}_windows-dependencies.zip"
+  fi
+
   INCLUSION_MASKS="windows/ common/ README.md"
 
   ${ZIP_BIN} ${ZIP_ARGS} ${DEPS_FILENAME} ${INCLUSION_MASKS} -x ${EXCLUSION_MASKS}

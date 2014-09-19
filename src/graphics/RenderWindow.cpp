@@ -466,7 +466,10 @@ bool RenderWindow::save_screenshot( const std::string& filename ) const
     return false;
   }
 
-  screenshot.initialize( Renderer::pixels(), renderer_size.w, renderer_size.h, bpp, (renderer_size.w * 4), red_mask, green_mask, blue_mask, alpha_mask );
+  // Turn alpha channel off (no transparency), otherwise we get unintended
+  // transparency in the dump (i.e.: libRocket's TrueType fonts show transparent
+  // spots)...
+  screenshot.initialize( Renderer::pixels(), renderer_size.w, renderer_size.h, bpp, (renderer_size.w * 4), red_mask, green_mask, blue_mask, 0 );
 
   // TODO: additional err checking -- basename & extension can fail!
   basename = fp.basename(filename);

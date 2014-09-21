@@ -329,6 +329,16 @@ int VisualUnitTest::on_run( void )
   {
     while( this->evt_.poll_event( ev ) )
     {
+      // This plumbs in proper quit functionality for when the end-user requests
+      // program termination through the window manager's close button; this
+      // includes Windows ALT+F4 signal.
+      //
+      // Perhaps the event handling system needs a bit of rethinking...
+      if( ev.type == SDL_WINDOWEVENT && ev.window.event == SDL_WINDOWEVENT_CLOSE )
+      {
+        this->set_app_state(false);
+      }
+
       for( auto itr = this->event_callbacks_.begin(); itr != this->event_callbacks_.end(); ++itr )
       {
         itr->operator()( ev );

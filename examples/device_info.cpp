@@ -54,10 +54,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include <glew.h>
 #endif
 
-// TODO: Add this variable to BuildTreeDeps.cmake && config.hpp.in
-// #if defined( NOM_USE_LIBROCKET )
+#if defined( NOM_USE_LIBROCKET )
   #include "Rocket/Core.h"
-// #endif
+#endif
 
 #include "nomlib/version.hpp"
 #include "nomlib/revision.hpp"
@@ -207,11 +206,6 @@ void libsndfile_version_info( void )
   #endif
 }
 
-std::string librocket_version()
-{
-  return Rocket::Core::GetVersion().CString();
-}
-
 void libs_version_info( void )
 {
   std::cout << std::endl;
@@ -229,7 +223,10 @@ void libs_version_info( void )
   libsndfile_version_info();
   std::cout << std::endl;
 
-  std::cout << "libRocket version: " << librocket_version() << std::endl;
+  #if defined( NOM_USE_LIBROCKET )
+    std::cout << "libRocket version: " << Rocket::Core::GetVersion().CString()
+    << std::endl;
+  #endif
 }
 
 int main ( int argc, char* argv[] )

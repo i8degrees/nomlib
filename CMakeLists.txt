@@ -255,8 +255,8 @@ endif( OPENGL_FOUND )
 # APIs...
 #
 # This only affects builds on OS X. Windows builds always links statically.
-set( NOM_USE_STATIC_LIBROCKET true )
-set( NOM_USE_LIBROCKET_LUA true )
+set( NOM_USE_STATIC_LIBROCKET TRUE )
+set( NOM_USE_LIBROCKET_LUA FALSE )
 
 if ( PLATFORM_WINDOWS )
   # Header and library paths -- *INCLUDE_DIR and *LIBRARY_DIR, respectively --

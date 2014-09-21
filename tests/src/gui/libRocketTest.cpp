@@ -22,10 +22,10 @@
 #include <Rocket/Controls/DataSource.h>
 
 // TODO:
-// #if defined( NOM_USE_LIBROCKET_LUA )
+#if defined( NOM_USE_LIBROCKET_LUA )
   #include <Rocket/Core/Lua/Interpreter.h>
   #include <Rocket/Controls/Lua/Controls.h>
-// #endif
+#endif
 
 namespace nom {
 
@@ -805,6 +805,7 @@ TEST_F( libRocketTest, UIMessageBox )
   EXPECT_TRUE( this->compare() );
 }
 
+#if defined( NOM_USE_LIBROCKET_LUA )
 TEST_F( libRocketTest, LuaIntegrationTest )
 {
   // As per the positioning units used for nom::MessageBox ex0 in
@@ -842,6 +843,7 @@ TEST_F( libRocketTest, LuaIntegrationTest )
 
   Rocket::Core::Lua::Interpreter::Shutdown();
 }
+#endif // defined NOM_USE_LIBROCKET_LUA
 
 } // namespace nom
 

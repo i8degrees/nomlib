@@ -28,8 +28,10 @@
       }
 
     </style>
+    <script src="lua-tests.lua" />
   </head>
+  <!-- <body template="window" ontestme_ev="print('boo')"> -->
   <body template="window">
-    <p id="message">Hello, world!</p>
+    <p name='pp' id='p' onclick="testme(event, element, document)">Click me</p>
   </body>
 </rml>

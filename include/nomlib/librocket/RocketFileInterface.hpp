@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_LIBROCKET_ROCKET_FILE_INTERFACE_HPP
 #define NOMLIB_LIBROCKET_ROCKET_FILE_INTERFACE_HPP
 
-#include <memory>
+#include <string>
 
 #include "nomlib/config.hpp"
 
@@ -65,11 +65,18 @@ namespace nom {
   @author Lloyd Weehuizen
  */
 
+/// \brief Filesystem interfacing bridge between libRocket and nomlib
 class RocketFileInterface: public Rocket::Core::FileInterface
 {
   public:
-    RocketFileInterface(const Rocket::Core::String& root);
+    RocketFileInterface( const std::string& root );
+
     virtual ~RocketFileInterface();
+
+    /// \brief Implements Rocket::Core::FileInterface::Release.
+    ///
+    /// \remarks Called when this file interface is released.
+    virtual void Release();
 
     /// Opens a file.
     virtual Rocket::Core::FileHandle Open(const Rocket::Core::String& path);

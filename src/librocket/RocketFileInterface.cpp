@@ -56,12 +56,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-RocketFileInterface::RocketFileInterface(const Rocket::Core::String& root) : root(root)
+RocketFileInterface::RocketFileInterface(const std::string& root) :
+  root{ root.c_str() }
 {
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 RocketFileInterface::~RocketFileInterface()
 {
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+void RocketFileInterface::Release()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+
+  delete this;
 }
 
 Rocket::Core::FileHandle RocketFileInterface::Open(const Rocket::Core::String& path)

@@ -21,6 +21,12 @@
 #include <Rocket/Controls.h>
 #include <Rocket/Controls/DataSource.h>
 
+// TODO:
+// #if defined( NOM_USE_LIBROCKET_LUA )
+  #include <Rocket/Core/Lua/Interpreter.h>
+  #include <Rocket/Controls/Lua/Controls.h>
+// #endif
+
 namespace nom {
 
 // 11 per page for 10 pages for a grand total of 110 cards
@@ -195,12 +201,7 @@ class libRocketTest: public nom::VisualUnitTest
 {
   public:
     /// \remarks This method is called at the start of each unit test.
-    libRocketTest() :
-      running( true ),
-      renderer( nullptr ),
-      sys( nullptr ),
-      filesystem( nullptr ),
-      context( nullptr )
+    libRocketTest()
     {
       // NOM_LOG_TRACE( NOM );
 
@@ -273,13 +274,6 @@ class libRocketTest: public nom::VisualUnitTest
       // {
       //   FAIL() << "Could not create OpenGL Context.";
       // }
-
-      this->renderer = new nom::RocketSDL2Renderer( &this->window_ );
-
-      if( this->renderer == nullptr )
-      {
-        FAIL() << "Could not create SDL2 Renderer for libRocket.";
-      }
     }
 
     /// \remarks This method is called after construction, at the start of each
@@ -310,39 +304,30 @@ class libRocketTest: public nom::VisualUnitTest
         << nom::UnitTest::test_set() + ext;
       }
 
-      this->filesystem = new nom::RocketFileInterface( resources.path().c_str() );
+      // Initialize the core of libRocket; these are the core dependencies that
+      // libRocket depends on for successful initialization.
+      Rocket::Core::FileInterface* fs =
+        new nom::RocketFileInterface( resources.path() );
 
-      if( this->filesystem == nullptr )
+      Rocket::Core::SystemInterface* sys =
+        new RocketSDL2SystemInterface();
+
+      if( nom::init_librocket( fs, sys ) == false )
       {
-        FAIL() << "Could not create File Interface for libRocket.";
+        FAIL()
+        << "Could not initialize libRocket.";
       }
 
-      this->sys = new nom::RocketSDL2SystemInterface();
+      Rocket::Core::RenderInterface* renderer =
+        new nom::RocketSDL2Renderer( &this->window_ );
 
-      if( this->sys == nullptr )
+      // Initialize libRocket's debugger as early as possible, so we get visual
+      // logging
+      this->desktop.enable_debugger();
+      if( this->desktop.create_context( "default", this->resolution(), renderer ) == false )
       {
-        FAIL() << "Could not create System Interface for libRocket.";
-      }
-
-      Rocket::Core::SetFileInterface( this->filesystem );
-      Rocket::Core::SetRenderInterface( this->renderer );
-      Rocket::Core::SetSystemInterface( this->sys );
-
-      if( ! Rocket::Core::Initialise() )
-      {
-        FAIL();
-      }
-
-      // Necessary for form elements
-      Rocket::Controls::Initialise();
-
-      this->context = Rocket::Core::CreateContext("default",
-        Rocket::Core::Vector2i( this->window_.size().w, this->window_.size().h ));
-
-      // Initialize Debugger as early as possible, so we can visually see logging.
-      if( Rocket::Debugger::Initialise( this->context ) == false )
-      {
-        FAIL();
+        FAIL()
+        << "Could not initialize libRocket context.";
       }
 
       if( Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Bold.otf" ) == false )
@@ -366,7 +351,7 @@ class libRocketTest: public nom::VisualUnitTest
       decorator0->RemoveReference();
 
       // Load the default in-window cursor
-      Rocket::Core::ElementDocument* cur = load_cursor( this->context, "./arrow-cursor.rml" );
+      Rocket::Core::ElementDocument* cur = load_cursor( this->desktop.context(), "arrow-cursor.rml" );
 
       if( cur )
       {
@@ -379,7 +364,7 @@ class libRocketTest: public nom::VisualUnitTest
       }
 
       // Resize window cursor
-      cur = load_cursor( this->context, "./diag-cursor.rml" );
+      cur = load_cursor( this->desktop.context(), "diag-cursor.rml" );
 
       if( cur )
       {
@@ -391,20 +376,35 @@ class libRocketTest: public nom::VisualUnitTest
         FAIL() << "Cursor was NULL.";
       }
 
-      // Let libRocket handle the rendering of the in-window cursor
+      // Let libRocket handle the rendering of the platform's window cursor.
       this->cursor_mgr.show_cursor( false );
 
-      // int pos_x = this->doc0->GetProperty<int>( "left" );
-      // int pos_y = this->doc0->GetProperty<int>( "top" );
+      // Register input bindings
+      InputActionMapper state;
+
+      // EXPERIMENTAL: Reload document, and its dependencies (i.e.: templates
+      // and style sheets) during run-time.
+      EventCallback reload_docs( [&] ( const Event& evt )
+      {
+        this->reload_docs( evt );
+      } );
+
+      state.insert  ( "reload_docs",
+                       nom::KeyboardAction( SDL_KEYDOWN,
+                                            SDLK_r ),
+                       reload_docs );
+
+      // Additional input bindings for VisualUnitTest's event loop.
+      this->input_mapper_.insert( "reload_docs", state, true );
 
       /// Put our event polling within the main event's loop
-      this->append_event_callback( [&] ( Event ev ) { this->on_event( ev ); } );
+      this->append_event_callback( [&] ( const Event ev ) { this->desktop.process_event( ev ); } );
 
       // Register GUI updates onto our main loop (::on_run).
-      this->append_update_callback( [&] ( float delta ) { this->context->Update(); } );
+      this->append_update_callback( [&] ( float delta ) { this->desktop.update(); } );
 
       // Register GUI rendering onto our main loop (::on_run).
-      this->append_render_callback( [&] ( const RenderWindow& win ) { this->context->Render(); } );
+      this->append_render_callback( [&] ( const RenderWindow& win ) { this->desktop.draw(); } );
     }
 
     /// \remarks This method is called before destruction, at the end of each
@@ -413,12 +413,16 @@ class libRocketTest: public nom::VisualUnitTest
     {
       // NOM_LOG_TRACE( NOM );
 
-      if( this->context )
+      for( auto itr = docs.begin(); itr != docs.end(); ++itr )
       {
-        this->context->RemoveReference();
+        // TODO: Re-enable once everything is using common base
+        // (*itr).second->RemoveReference();
+        (*itr).second->Close();
       }
 
-      Rocket::Core::Shutdown();
+      this->desktop.shutdown();
+
+      nom::shutdown_librocket();
     }
 
     /// \remarks This method is called at the start of each test case.
@@ -431,133 +435,6 @@ class libRocketTest: public nom::VisualUnitTest
     static void TearDownTestCase()
     {
       // NOM_LOG_TRACE( NOM );
-    }
-
-    /// \brief Event loop
-    virtual int on_event( Event& event )
-    {
-      switch( event.type )
-      {
-        case SDL_QUIT:
-        {
-          return 0;
-        }
-        break;
-
-        case SDL_MOUSEMOTION:
-        {
-          this->context->ProcessMouseMove( event.motion.x, event.motion.y, this->sys->GetKeyModifiers() );
-        }
-        break;
-
-        case SDL_MOUSEBUTTONDOWN:
-        {
-          this->context->ProcessMouseButtonDown( this->sys->TranslateMouseButton( event.mouse.button ), this->sys->GetKeyModifiers() );
-        }
-        break;
-
-        case SDL_MOUSEBUTTONUP:
-        {
-          this->context->ProcessMouseButtonUp( this->sys->TranslateMouseButton( event.mouse.button ), this->sys->GetKeyModifiers() );
-        }
-        break;
-
-        case SDL_MOUSEWHEEL:
-        {
-          this->context->ProcessMouseWheel( this->sys->TranslateMouseWheel( event.wheel.y ), this->sys->GetKeyModifiers() );
-        }
-        break;
-
-        case SDL_KEYDOWN:
-        {
-          // Check for a shift-~ to toggle the debugger.
-          switch( event.key.sym )
-          {
-            // Quit loop
-            case SDLK_q:
-            {
-              this->running = false;
-              break;
-            }
-
-            case SDLK_BACKQUOTE:
-            {
-              if( event.key.mod == KMOD_LSHIFT || event.key.mod == KMOD_RSHIFT )
-              {
-                Rocket::Debugger::SetVisible( ! Rocket::Debugger::IsVisible() );
-                break;
-              }
-            }
-
-            // Test showing and hiding documents
-            // case SDLK_h:
-            // {
-            //   if( doc0 != nullptr )
-            //   {
-            //     if( this->doc0->IsVisible() == true )
-            //     {
-            //       this->doc0->Hide();
-            //     }
-            //     else
-            //     {
-            //       this->doc0->Show();
-            //     }
-            //   }
-            //   break;
-            // }
-
-            // Reload document, and its dependencies (i.e.: templates and style
-            // sheets) during run-time.
-            case SDLK_r:
-            {
-              for( auto itr = this->docs.begin(); itr != this->docs.end(); ++itr )
-              {
-                if( (*itr).second != nullptr )
-                {
-                  (*itr).second->Close();
-                  Rocket::Core::Factory::ClearStyleSheetCache();
-                  Rocket::Core::Factory::ClearTemplateCache();
-                  this->docs[ (*itr).first ] = this->context->LoadDocument( (*itr).first.c_str() );
-
-                  if( (*itr).second != nullptr )
-                  {
-                    (*itr).second->Show();
-                    (*itr).second->RemoveReference();
-                    // NOM_DUMP( this->doc0->GetReferenceCount() );
-                    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", (*itr).second->GetSourceURL().CString(), "reloaded." );
-                  }
-                  else
-                  {
-                    NOM_LOG_CRIT(NOM_LOG_CATEGORY_GUI, "Document", (*itr).second->GetSourceURL().CString(), "was NULL.");
-                    return NOM_EXIT_FAILURE;
-                  }
-                }
-              }
-
-              break;
-            }
-          }
-
-          this->context->ProcessKeyDown( this->sys->TranslateKey( event.key.sym ), this->sys->GetKeyModifiers() );
-          break;
-        }
-
-        // TODO: Support Unicode text input with SDL_StartTextInput and
-        // SDL_StopTextInput; on mobile platforms, this will bring up the
-        // virtual keyboard for the end-user.
-        case SDL_TEXTINPUT:
-        {
-          this->context->ProcessTextInput( event.text.text );
-          break;
-        }
-
-        default:
-        {
-          break;
-        }
-      }
-
-      return NOM_EXIT_SUCCESS;
     }
 
     void on_click( Rocket::Core::Event& event )
@@ -573,6 +450,7 @@ class libRocketTest: public nom::VisualUnitTest
 
         if( button == 0 )
         {
+          NOM_DUMP_VAR(NOM_LOG_CATEGORY_GUI, "LEFT button click");
           // NOM_DUMP( ev->GetClassNames().CString() );
 
           if( ev->GetClassNames().Find( "choice" ) == 0 )
@@ -609,15 +487,15 @@ class libRocketTest: public nom::VisualUnitTest
         }
         else if( button == 1 )
         {
-          NOM_DUMP_VAR(NOM_LOG_CATEGORY_GUI, "right button click");
+          NOM_DUMP_VAR(NOM_LOG_CATEGORY_GUI, "RIGHT button click");
         }
         else if( button == 2 )
         {
-          NOM_DUMP_VAR(NOM_LOG_CATEGORY_GUI, "middle button click");
+          NOM_DUMP_VAR(NOM_LOG_CATEGORY_GUI, "MIDDLE button click");
         }
-        else if( button == 3 )  // Undefined
+        else if( button == 3 )
         {
-          NOM_DUMP_VAR(NOM_LOG_CATEGORY_GUI, "Undefined button click");
+          NOM_DUMP_VAR(NOM_LOG_CATEGORY_GUI, "UNDEFINED button click");
         }
       }
     } // end on_click func
@@ -643,29 +521,38 @@ class libRocketTest: public nom::VisualUnitTest
       }
     } // end on_wheel func
 
-  protected:
-    bool running;
+    void reload_docs( const Event& evt )
+    {
+      if( evt.type != SDL_KEYDOWN ) return;
 
+      for( auto itr = this->docs.begin(); itr != this->docs.end(); ++itr )
+      {
+        if( (*itr).second != nullptr )
+        {
+          (*itr).second->Close();
+          Rocket::Core::Factory::ClearStyleSheetCache();
+          Rocket::Core::Factory::ClearTemplateCache();
+          this->docs[ (*itr).first ] = this->desktop.context()->LoadDocument( (*itr).first.c_str() );
+
+          if( (*itr).second != nullptr )
+          {
+            (*itr).second->Show();
+            (*itr).second->RemoveReference();
+            // NOM_DUMP( this->doc0->GetReferenceCount() );
+            NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", (*itr).second->GetSourceURL().CString(), "reloaded." );
+          }
+          else
+          {
+            NOM_LOG_CRIT(NOM_LOG_CATEGORY_GUI, "Document was NULL.");
+            // return NOM_EXIT_FAILURE;
+          }
+        }
+      }
+    }
+
+  protected:
     /// Wrapper for SDL Cursor
     nom::Cursor cursor_mgr;
-
-    /// Wrapper for SDL Window && SDL Renderer
-    // nom::RenderWindow window_;
-
-    /// \brief nomlib's event interface
-    nom::EventHandler event_;
-
-    /// Rendering bridge between libRocket & nomlib
-    nom::RocketSDL2Renderer* renderer;
-
-    /// System interfacing (events, loop, ...) bridge between libRocket & nomlib
-    nom::RocketSDL2SystemInterface* sys;
-
-    /// Filesystem bridge between libRocket & nomlib
-    nom::RocketFileInterface* filesystem;
-
-    /// UI Desktop ('windows' container)
-    Rocket::Core::Context* context;
 
     /// UI Windows; 'widgets' containers
     std::map<std::string, Rocket::Core::ElementDocument*> docs;
@@ -674,6 +561,8 @@ class libRocketTest: public nom::VisualUnitTest
     /// result.
     // nom::UIEventListener evt;
     nom::UIEventDispatcher evt;
+
+    nom::UIContext desktop;
 
     /// \remarks This object must be global, otherwise crashes will often
     /// result (UIEventListener related?).
@@ -688,10 +577,10 @@ TEST_F( libRocketTest, BaseIntegrationTest )
   // As per the positioning units used for nom::MessageBox ex0 in
   // examples/gui_messagebox.cpp
   Point2i pos( 38, 25 );
-  std::string doc_file = "./messagebox.rml";
+  std::string doc_file = "messagebox.rml";
 
   // Assumes base directory path of FileInterface (see above)
-  Rocket::Core::ElementDocument* doc = nom::load_window( this->context, doc_file, pos );
+  Rocket::Core::ElementDocument* doc = nom::load_window( this->desktop.context(), doc_file, pos );
 
   // Test visual debugger logs
   Rocket::Core::Log::Message( Rocket::Core::Log::LT_INFO, "Hello, world!" );
@@ -716,15 +605,15 @@ TEST_F( libRocketTest, BaseIntegrationTest )
 TEST_F( libRocketTest, RenderTwoDocumentWindows )
 {
   Point2i pos0( 38, 25 );
-  std::string doc_file0 = "./messagebox.rml";
+  std::string doc_file0 = "messagebox.rml";
 
   // As per the positioning units used for nom::QuestionDialogBox (ex2) in
   // examples/gui_messagebox.cpp
   nom::Point2i pos1 = nom::Point2i(38,141);
 
-  std::string doc_file1 = "./questionbox.rml";
+  std::string doc_file1 = "questionbox.rml";
 
-  Rocket::Core::ElementDocument* doc0 = load_window( this->context, doc_file0, pos0 );
+  Rocket::Core::ElementDocument* doc0 = load_window( this->desktop.context(), doc_file0, pos0 );
 
   if( doc0 )
   {
@@ -737,7 +626,7 @@ TEST_F( libRocketTest, RenderTwoDocumentWindows )
     << "Document should not be NULL";
   }
 
-  Rocket::Core::ElementDocument* doc1 = load_window( this->context, doc_file1, pos1 );
+  Rocket::Core::ElementDocument* doc1 = load_window( this->desktop.context(), doc_file1, pos1 );
 
   if( doc1 )
   {
@@ -762,11 +651,11 @@ TEST_F( libRocketTest, EventListenerTest )
   // As per the positioning units used for nom::QuestionDialogBox (ex2) in
   // examples/gui_messagebox.cpp
   nom::Point2i pos = nom::Point2i(38,141);
-  std::string doc_file = "./questionbox.rml";
+  std::string doc_file = "questionbox.rml";
 
   Rocket::Core::Element* content_div = nullptr;
 
-  Rocket::Core::ElementDocument* doc = load_window( this->context, doc_file, pos );
+  Rocket::Core::ElementDocument* doc = load_window( this->desktop.context(), doc_file, pos );
 
   if( doc )
   {
@@ -825,11 +714,11 @@ TEST_F( libRocketTest, DataGridStore )
   // As per the positioning units used for nom::DataViewListTest (ex2) in
   // tests/src/gui/DataViewListTest.cpp.
   Point2i pos( 25, 25 );
-  std::string doc_file = "./dataview.rml";
+  std::string doc_file = "dataview.rml";
 
   store.dump();
 
-  Rocket::Core::ElementDocument* doc = load_window( this->context, doc_file, pos );
+  Rocket::Core::ElementDocument* doc = load_window( this->desktop.context(), doc_file, pos );
 
   if( doc )
   {
@@ -846,6 +735,112 @@ TEST_F( libRocketTest, DataGridStore )
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
+}
+
+TEST_F( libRocketTest, UIMessageBox )
+{
+  // As per the positioning units used for nom::MessageBox ex1 in
+  // examples/gui_messagebox.cpp
+  Point2i pos( 38, 83 );
+  Size2i dims( 300, 48 );
+  std::string doc_file = "messagebox.rml";
+
+  nom::UIMessageBox mbox( pos, dims );
+
+  EXPECT_EQ( true, mbox.set_desktop( this->desktop.context() ) );
+  EXPECT_EQ( true, mbox.set_document_file( doc_file ) );
+
+  if( mbox.initialize() == false )
+  {
+    FAIL()
+    << "UIMessageBox should not be invalid; is the context and document file valid?";
+  }
+
+  mbox.set_title_text("INFO.");
+  mbox.set_message_text("Diablos");
+
+  EXPECT_EQ( "title", mbox.title_id() );
+  EXPECT_EQ( "message", mbox.message_id() );
+
+  EXPECT_EQ( true, mbox.enabled() );
+
+  EXPECT_EQ( "INFO.", mbox.title_text() );
+  EXPECT_EQ( "Diablos", mbox.message_text() );
+
+  EXPECT_EQ( nom::Point2i(38, 83), mbox.position() );
+  EXPECT_EQ( nom::Size2i(300, 48), mbox.size() );
+
+  EXPECT_EQ( nom::IntRect(43,78,25,16), mbox.title_bounds() );
+  EXPECT_EQ( nom::IntRect(53,98,50,23), mbox.message_bounds() );
+
+  EXPECT_EQ( Anchor::TopLeft, mbox.title_alignment() );
+
+  nom::UIEventListener* on_click = new nom::UIEventListener(
+    [&] ( Rocket::Core::Event& ev ) { this->on_click( ev ); } );
+
+  mbox.register_event_listener( mbox.document()->GetElementById("message"),
+                                "mouseup",
+                                on_click );
+
+  // WTF? Why does it think it is MiddleRight?
+  // EXPECT_EQ( Anchor::MiddleCenter, mbox.message_alignment() );
+
+  // Rocket::Core::FontDatabase::LoadFontFace( "/Library/Fonts/Arial.ttf" );
+  // mbox.set_title_font( "Arial" );
+  // mbox.set_title_font_size( 24 );
+
+  // FIXME: Alignment is broken; it's being set, just not taking effect
+  // mbox.set_title_alignment( Anchor::TopCenter );
+
+  // mbox.set_message_font( "Delicious" );
+  // mbox.set_message_font_size( 24 );
+
+  // FIXME: Alignment is broken; it's being set, just not taking effect
+  // mbox.set_message_alignment( Anchor::MiddleRight );
+
+  // FIXME: Reloading RML & RCSS is broken without this (double free issue)
+  // this->docs[doc_file] = mbox.document();
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+}
+
+TEST_F( libRocketTest, LuaIntegrationTest )
+{
+  // As per the positioning units used for nom::MessageBox ex0 in
+  // examples/gui_messagebox.cpp
+  Point2i pos( 38, 25 );
+  std::string doc_file = "lua.rml";
+
+  Rocket::Core::Lua::Interpreter::Initialise();
+
+  // Required for forms
+  Rocket::Controls::Lua::RegisterTypes( Rocket::Core::Lua::Interpreter::GetLuaState() );
+
+  // Assumes base directory path of FileInterface (see above)
+  Rocket::Core::ElementDocument* doc = nom::load_window( this->desktop.context(), doc_file, pos );
+
+  if( doc )
+  {
+    EXPECT_STREQ( "INFO.", doc->GetTitle().CString() )
+    << "Document title should be the text of the title element: 'INFO.'";
+  }
+  else
+  {
+    FAIL()
+    << "Document should not be NULL";
+  }
+
+  // NOM_DUMP( doc->GetElementById("p")->GetInnerRML().CString() );
+  evt.register_event_listener( doc->GetElementById("p"), "testme_ev", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) { NOM_LOG_INFO( NOM, "BINGO!" ); } ) );
+  // doc->GetElementById("p")->DispatchEvent("testme_ev", Rocket::Core::Dictionary() );
+
+  this->docs[doc_file] = doc;
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+
+  Rocket::Core::Lua::Interpreter::Shutdown();
 }
 
 } // namespace nom

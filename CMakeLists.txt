@@ -256,6 +256,7 @@ endif( OPENGL_FOUND )
 #
 # This only affects builds on OS X. Windows builds always links statically.
 set( NOM_USE_STATIC_LIBROCKET true )
+set( NOM_USE_LIBROCKET_LUA true )
 
 if ( PLATFORM_WINDOWS )
   # Header and library paths -- *INCLUDE_DIR and *LIBRARY_DIR, respectively --
@@ -381,6 +382,16 @@ elseif ( PLATFORM_OSX )
   set ( FREETYPE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/bin/libfreetype.6.dylib" )
   set ( EXTLIBS ${EXTLIBS} ${FREETYPE_LIBRARY} )
 
+  # libRocket dependency
+  if( NOM_USE_LIBROCKET_LUA )
+    find_package( Lua REQUIRED )
+
+    if( LUA_FOUND )
+      set ( EXT_HEADERS ${EXT_HEADERS} ${LUA_INCLUDE_DIR} )
+      set ( EXTLIBS ${EXTLIBS} ${LUA_LIBRARY} )
+    endif( LUA_FOUND )
+  endif( NOM_USE_LIBROCKET_LUA )
+
   # libRocket dependency (GUI)
 
   set ( LIBROCKET_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/include" )
@@ -393,6 +404,15 @@ elseif ( PLATFORM_OSX )
           "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCore.a"
           "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketDebugger.a"
         )
+
+    if( NOM_USE_LIBROCKET_LUA )
+      set ( LIBROCKET_LIBRARY
+            ${LIBROCKET_LIBRARY}
+            "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControlsLua.a"
+            "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCoreLua.a"
+          )
+    endif( NOM_USE_LIBROCKET_LUA )
+
   else( NOT NOM_USE_STATIC_LIBROCKET )
     # Debug libraries
     set ( LIBROCKET_LIBRARY
@@ -400,6 +420,15 @@ elseif ( PLATFORM_OSX )
           "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCore.1.dylib"
           "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketDebugger.1.dylib"
         )
+
+    if( NOM_USE_LIBROCKET_LUA )
+      set ( LIBROCKET_LIBRARY
+            ${LIBROCKET_LIBRARY}
+            "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControlsLua.1.dylib"
+            "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCoreLua.1.dylib"
+          )
+    endif( NOM_USE_LIBROCKET_LUA )
+
   endif( NOM_USE_STATIC_LIBROCKET )
 
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBROCKET_INCLUDE_DIR} )

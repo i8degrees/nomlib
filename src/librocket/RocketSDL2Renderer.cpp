@@ -62,7 +62,7 @@ bool RocketSDL2Renderer::gl_init( int width, int height )
 
     if( err != GLEW_OK )
     {
-      NOM_LOG_CRIT( NOM_LOG_CATEGORY_GUI, "[GLEW]:", glewGetErrorString(err) );
+      NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, glewGetErrorString(err) );
       // We'd get white, blocky textures if we were to continue past this
       // point without the glUseProgramObjectARB call...
       return false;
@@ -81,6 +81,17 @@ bool RocketSDL2Renderer::gl_init( int width, int height )
 RocketSDL2Renderer::RocketSDL2Renderer(RenderWindow* window )
 {
   this->window_ = window;
+}
+
+RocketSDL2Renderer::~RocketSDL2Renderer()
+{
+}
+
+void RocketSDL2Renderer::Release()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+
+  delete this;
 }
 
 void RocketSDL2Renderer::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, const Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation)

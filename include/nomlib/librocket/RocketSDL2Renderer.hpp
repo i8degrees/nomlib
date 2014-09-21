@@ -41,10 +41,13 @@ namespace nom {
 // Forward declarations
 class RenderWindow;
 
+/// \brief Rendering interfacing bridge between libRocket and nomlib
+///
 /// \note Only the OpenGL SDL2 back-end is supported. To add support for others,
 /// see http://mdqinc.com/blog/2013/01/integrating-librocket-with-sdl-2
 ///
 /// \see https://wiki.libsdl.org/SDL_GL_BindTexture
+/// \todo Rename to RocketSDL2RenderInterface
 class RocketSDL2Renderer: public Rocket::Core::RenderInterface
 {
   public:
@@ -66,6 +69,13 @@ class RocketSDL2Renderer: public Rocket::Core::RenderInterface
     static bool gl_init( int width, int height );
 
     RocketSDL2Renderer( RenderWindow* window );
+
+    virtual ~RocketSDL2Renderer();
+
+    /// \brief Implements Rocket::Core::SystemInterface::Release.
+    ///
+    /// \remarks Called when this file interface is released.
+    virtual void Release();
 
     /// Called by Rocket when it wants to render geometry that it does not wish to optimise.
     virtual void RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation);

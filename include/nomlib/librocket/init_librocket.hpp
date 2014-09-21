@@ -2,7 +2,7 @@
 
   nomlib - C++11 cross-platform game engine
 
-Copyright (c) 2013, 2014 Jeffrey Carpenter "i8degrees@gmail.com"
+Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -26,37 +26,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_LIBROCKET_PUBLIC_HEADERS_HPP
-#define NOMLIB_LIBROCKET_PUBLIC_HEADERS_HPP
+#ifndef NOMLIB_LIBROCKET_INIT_LIBROCKET_HPP
+#define NOMLIB_LIBROCKET_INIT_LIBROCKET_HPP
 
 #include "nomlib/config.hpp"
 
-#include "nomlib/gui/Drawables.hpp"
+// Forward declarations (third-party)
+namespace Rocket {
+namespace Core {
 
-#include "nomlib/gui/IDecorator.hpp"
-#include "nomlib/gui/Decorator.hpp"
-// #include "nomlib/gui/MinimalDecorator.hpp"
-#include "nomlib/gui/FinalFantasyFrame.hpp"
-#include "nomlib/gui/FinalFantasyDecorator.hpp"
+class Context;
+class FileInterface;
+class SystemInterface;
 
-// #include "nomlib/gui/MessageBox.hpp"
-// #include "nomlib/gui/QuestionDialogBox.hpp"
+} // namespace Core
+} // namespace Rocket
 
-// #include "nomlib/gui/UIEvent.hpp"
-// #include "nomlib/gui/UIWidgetEvent.hpp"
-// #include "nomlib/gui/UIEventDispatcher.hpp"
+namespace nom {
 
-#include "nomlib/librocket/RocketFileInterface.hpp"
-#include "nomlib/librocket/RocketSDL2SystemInterface.hpp"
-#include "nomlib/librocket/RocketSDL2Renderer.hpp"
+/// \brief Initialize libRocket interface.
+///
+/// \remarks The pointer ownership transfers to libRocket.
+///
+/// \note This must be done before the creation of a libRocket context.
+///
+/// \param fs   Platform-dependent file interface implementation.
+/// \param sys  Platform-dependent system interface implementation.
+///
+/// \see nom::UIContext.
+/// \see nom::RocketFileInterface
+/// \see nom::RocketSDL2SystemInterface
+bool init_librocket(  Rocket::Core::FileInterface* fs,
+                      Rocket::Core::SystemInterface* sys );
 
-#include "nomlib/librocket/DecoratorInstancerFinalFantasyFrame.hpp"
-#include "nomlib/librocket/DecoratorFinalFantasyFrame.hpp"
-#include "nomlib/librocket/DecoratorPhotograph.hpp"
+/// \brief Shutdown libRocket interface.
+void shutdown_librocket();
 
-#include "nomlib/librocket/UIMessageBox.hpp"
-#include "nomlib/librocket/UIContext.hpp"
-
-#include "nomlib/librocket/init_librocket.hpp"
+} // namespace nom
 
 #endif // include guard defined

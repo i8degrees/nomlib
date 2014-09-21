@@ -148,6 +148,7 @@ static const int DEFAULT_FONT_SIZE = 12;
 /// \note Borrowed from [maelstrom's screenlib](https://hg.libsdl.org/Maelstrom/)
 enum Alignment: uint32
 {
+  NONE = 0x0,
   X_LEFT = 0x01,
   X_CENTER = 0x02,
   X_RIGHT = 0x4,

@@ -2,7 +2,7 @@
 
   nomlib - C++11 cross-platform game engine
 
-Copyright (c) 2013, 2014 Jeffrey Carpenter "i8degrees@gmail.com"
+Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -26,37 +26,35 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_LIBROCKET_PUBLIC_HEADERS_HPP
-#define NOMLIB_LIBROCKET_PUBLIC_HEADERS_HPP
-
-#include "nomlib/config.hpp"
-
-#include "nomlib/gui/Drawables.hpp"
-
-#include "nomlib/gui/IDecorator.hpp"
-#include "nomlib/gui/Decorator.hpp"
-// #include "nomlib/gui/MinimalDecorator.hpp"
-#include "nomlib/gui/FinalFantasyFrame.hpp"
-#include "nomlib/gui/FinalFantasyDecorator.hpp"
-
-// #include "nomlib/gui/MessageBox.hpp"
-// #include "nomlib/gui/QuestionDialogBox.hpp"
-
-// #include "nomlib/gui/UIEvent.hpp"
-// #include "nomlib/gui/UIWidgetEvent.hpp"
-// #include "nomlib/gui/UIEventDispatcher.hpp"
-
-#include "nomlib/librocket/RocketFileInterface.hpp"
-#include "nomlib/librocket/RocketSDL2SystemInterface.hpp"
-#include "nomlib/librocket/RocketSDL2Renderer.hpp"
-
-#include "nomlib/librocket/DecoratorInstancerFinalFantasyFrame.hpp"
-#include "nomlib/librocket/DecoratorFinalFantasyFrame.hpp"
-#include "nomlib/librocket/DecoratorPhotograph.hpp"
-
-#include "nomlib/librocket/UIMessageBox.hpp"
-#include "nomlib/librocket/UIContext.hpp"
-
 #include "nomlib/librocket/init_librocket.hpp"
 
-#endif // include guard defined
+// Forward declarations (third-party)
+#include <Rocket/Core/Core.h>
+#include <Rocket/Controls/Controls.h>
+
+namespace nom {
+
+bool init_librocket(  Rocket::Core::FileInterface* fs,
+                      Rocket::Core::SystemInterface* sys )
+{
+  Rocket::Core::SetFileInterface( fs );
+  Rocket::Core::SetSystemInterface( sys );
+
+  if( ! Rocket::Core::Initialise() )
+  {
+    NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not initialize libRocket." );
+    return false;
+  }
+
+  // Necessary for form elements
+  Rocket::Controls::Initialise();
+
+  return true;
+}
+
+void shutdown_librocket()
+{
+  Rocket::Core::Shutdown();
+}
+
+} // namespace nom

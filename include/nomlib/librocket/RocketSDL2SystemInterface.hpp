@@ -40,22 +40,45 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+/// \brief System interfacing bridge between libRocket and nomlib
+///
 /// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Input
 class RocketSDL2SystemInterface: public Rocket::Core::SystemInterface
 {
   public:
+    virtual ~RocketSDL2SystemInterface();
+
+    /// \brief Implements Rocket::Core::SystemInterface::Release.
+    ///
+    /// \remarks Called when this file interface is released.
+    virtual void Release();
+
     /// \brief Begin text input mode (brings up virtual keyboard on mobile hardware)
-    void ActivateKeyboard();
+    ///
+    /// \remarks Optional implementation of Rocket::Core::SystemInterface::
+    /// ActivateKeyboard.
+    virtual void ActivateKeyboard();
 
     /// \brief End text input mode (brings up virtual keyboard on mobile hardware)
-    void DeactivateKeyboard();
+    ///
+    /// \remarks Optional implementation of Rocket::Core::SystemInterface::
+    /// DeactivateKeyboard.
+    virtual void DeactivateKeyboard();
 
-    Rocket::Core::Input::KeyIdentifier TranslateKey(SDL_Keycode sdlkey);
-    int TranslateMouseButton(Uint8 button);
-    int TranslateMouseWheel( int32 axis );
-    int GetKeyModifiers();
-    float GetElapsedTime();
-    bool LogMessage(Rocket::Core::Log::Type type, const Rocket::Core::String& message);
+    // Rocket::Core::Input::KeyIdentifier TranslateKey(SDL_Keycode sdlkey);
+    // int TranslateMouseButton(Uint8 button);
+    // int TranslateMouseWheel( int32 axis );
+    // int GetKeyModifiers();
+
+    /// \brief Implements Rocket::Core::SystemInterface::GetElapsedTime.
+    ///
+    /// \remarks Required implementation.
+    virtual float GetElapsedTime();
+
+    /// \brief Implements Rocket::Core::SystemInterface::LogMessage.
+    ///
+    /// \remarks Optional implementation.
+    virtual bool LogMessage(Rocket::Core::Log::Type type, const Rocket::Core::String& message);
 };
 
 } // namespace nom

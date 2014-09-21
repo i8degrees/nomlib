@@ -83,7 +83,8 @@ void SDL2_version_info( void )
 {
   SDL_version compiled_ver;
   SDL_version linked_ver;
-  SDL_GetVersion( &compiled_ver );
+  SDL_VERSION( &compiled_ver );
+  SDL_GetVersion( &linked_ver );
 
   NOM_LOG_INFO  (
                   NOM_LOG_CATEGORY_APPLICATION,
@@ -297,11 +298,13 @@ int main ( int argc, char* argv[] )
   //
   // See also: above note regarding core profile
   #if ! defined( NOM_PLATFORM_OSX )
+    // FIXME: Broken on Windows: "Missing GL version"
     GLenum err = glewInit();
 
     if( err != GLEW_OK )
     {
       NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, glewGetErrorString(err) );
+      return NOM_EXIT_FAILURE;
     }
   #endif
 

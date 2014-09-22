@@ -100,7 +100,7 @@ class UIContext
     /// UIContext::enable_debugger.
     ///
     /// \see nom::init_librocket and nom::shutdown_librocket.
-    /// \see nom::RocketSDL2Renderer.
+    /// \see nom::RocketSDL2RenderInterface.
     bool create_context(  const std::string& name, const Size2i& res,
                           Rocket::Core::RenderInterface* interface = nullptr );
 

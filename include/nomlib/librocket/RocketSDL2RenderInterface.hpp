@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_LIBROCKET_SDL2_RENDERER_INTERFACE_HPP
-#define NOMLIB_LIBROCKET_SDL2_RENDERER_INTERFACE_HPP
+#ifndef NOMLIB_LIBROCKET_ROCKETSDL2_RENDER_INTERFACE_HPP
+#define NOMLIB_LIBROCKET_ROCKETSDL2_RENDER_INTERFACE_HPP
 
 // #include <memory>
 
@@ -47,8 +47,7 @@ class RenderWindow;
 /// see http://mdqinc.com/blog/2013/01/integrating-librocket-with-sdl-2
 ///
 /// \see https://wiki.libsdl.org/SDL_GL_BindTexture
-/// \todo Rename to RocketSDL2RenderInterface
-class RocketSDL2Renderer: public Rocket::Core::RenderInterface
+class RocketSDL2RenderInterface: public Rocket::Core::RenderInterface
 {
   public:
     /// \brief Initialize OpenGL with the necessary settings for libRocket and
@@ -68,9 +67,9 @@ class RocketSDL2Renderer: public Rocket::Core::RenderInterface
     /// as part of nomlib's high-level initialization routines.
     static bool gl_init( int width, int height );
 
-    RocketSDL2Renderer( RenderWindow* window );
+    RocketSDL2RenderInterface( RenderWindow* window );
 
-    virtual ~RocketSDL2Renderer();
+    virtual ~RocketSDL2RenderInterface();
 
     /// \brief Implements Rocket::Core::SystemInterface::Release.
     ///

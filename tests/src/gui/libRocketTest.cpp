@@ -258,13 +258,13 @@ class libRocketTest: public nom::VisualUnitTest
       // Use default resolution, provided by nom::VisualUnitTest
       this->window_.create( "nomlib & LibRocket integration tests", this->resolution().w, this->resolution().h, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE, oglIdx, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
 
-      if( nom::RocketSDL2Renderer::gl_init( this->window_.size().w, this->window_.size().h ) == false )
+      if( nom::RocketSDL2RenderInterface::gl_init( this->window_.size().w, this->window_.size().h ) == false )
       {
         FAIL() << "Could not initialize OpenGL for libRocket.";
       }
 
       // I don't understand *why*, but when we enable this, we can forgo the use
-      // of the glUseProgramObjectARB call in nom::RocketSDL2Renderer::RenderGeometry
+      // of the glUseProgramObjectARB call in nom::RocketSDL2RenderInterface::RenderGeometry
       // until we go full-screen "desktop" mode, in both Windows and OSX.
       // There seems to be a severe drop in FPS (~50%) under OSX, whereas the
       // FPS appears unaffected on my Windows setup...
@@ -326,7 +326,7 @@ class libRocketTest: public nom::VisualUnitTest
       }
 
       Rocket::Core::RenderInterface* renderer =
-        new nom::RocketSDL2Renderer( &this->window_ );
+        new nom::RocketSDL2RenderInterface( &this->window_ );
 
       // Initialize libRocket's debugger as early as possible, so we get visual
       // logging

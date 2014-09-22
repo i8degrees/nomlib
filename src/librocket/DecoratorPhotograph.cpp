@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Rocket/Core/Texture.h>
 
 // Private headers
-#include "nomlib/librocket/RocketSDL2Renderer.hpp"
+#include "nomlib/librocket/RocketSDL2RenderInterface.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
 
@@ -126,7 +126,7 @@ void DecoratorPhotograph::RenderElement(Rocket::Core::Element* element, Rocket::
   NOM_DUMP_VAR( NOM_LOG_CATEGORY_GUI, "pos:", pos.x, pos.y);
   NOM_DUMP_VAR( NOM_LOG_CATEGORY_GUI, "size:", this->image_.size().w, this->image_.size().h );
 
-  nom::RocketSDL2Renderer* p = NOM_DYN_PTR_CAST( nom::RocketSDL2Renderer*, Rocket::Core::GetRenderInterface() );
+  nom::RocketSDL2RenderInterface* p = NOM_DYN_PTR_CAST( nom::RocketSDL2RenderInterface*, Rocket::Core::GetRenderInterface() );
 
   if( p )
   {

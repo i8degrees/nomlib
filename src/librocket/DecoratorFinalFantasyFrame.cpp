@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
 #include "nomlib/gui/FinalFantasyDecorator.hpp"
-#include "nomlib/librocket/RocketSDL2Renderer.hpp"
+#include "nomlib/librocket/RocketSDL2RenderInterface.hpp"
 
 // Forward declarations
 #include "nomlib/gui/IDecorator.hpp"
@@ -91,7 +91,7 @@ void DecoratorFinalFantasyFrame::RenderElement(Rocket::Core::Element* element, R
   // Probably more productive to just optimize our gradient rendering class and
   // call it quits!
 
-  nom::RocketSDL2Renderer* p = NOM_DYN_PTR_CAST( nom::RocketSDL2Renderer*, Rocket::Core::GetRenderInterface() );
+  nom::RocketSDL2RenderInterface* p = NOM_DYN_PTR_CAST( nom::RocketSDL2RenderInterface*, Rocket::Core::GetRenderInterface() );
 
   if( p )
   {

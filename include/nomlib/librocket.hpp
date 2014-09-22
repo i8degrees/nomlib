@@ -48,7 +48,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/librocket/RocketFileInterface.hpp"
 #include "nomlib/librocket/RocketSDL2SystemInterface.hpp"
-#include "nomlib/librocket/RocketSDL2Renderer.hpp"
+#include "nomlib/librocket/RocketSDL2RenderInterface.hpp"
 
 #include "nomlib/librocket/DecoratorInstancerFinalFantasyFrame.hpp"
 #include "nomlib/librocket/DecoratorFinalFantasyFrame.hpp"

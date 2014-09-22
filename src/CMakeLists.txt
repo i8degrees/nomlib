@@ -244,7 +244,7 @@ set(  EXAMPLES_TEMPLATE_SOURCE
 # User Interface module
 file ( GLOB LIBROCKET_HEADERS "${NOMLIB_HEADERS_DIR}/librocket/*.hpp" )
 set ( LIBROCKET_SOURCE
-      ${SRC_DIR}/librocket/RocketSDL2Renderer.cpp
+      ${SRC_DIR}/librocket/RocketSDL2RenderInterface.cpp
       ${SRC_DIR}/librocket/RocketSDL2SystemInterface.cpp
       ${SRC_DIR}/librocket/RocketFileInterface.cpp
       ${SRC_DIR}/librocket/DecoratorInstancerFinalFantasyFrame.cpp

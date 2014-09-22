@@ -26,7 +26,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/librocket/RocketSDL2Renderer.hpp"
+#include "nomlib/librocket/RocketSDL2RenderInterface.hpp"
 
 // Private headers
 #include <SDL.h>
@@ -48,7 +48,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // static
-bool RocketSDL2Renderer::gl_init( int width, int height )
+bool RocketSDL2RenderInterface::gl_init( int width, int height )
 {
   // We get lucky on OS X ... we have up-to-date OpenGL profile to work with,
   // but otherwise... we're probably stuck with the OpenGL v1.1 API, which does
@@ -78,23 +78,23 @@ bool RocketSDL2Renderer::gl_init( int width, int height )
   return true;
 }
 
-RocketSDL2Renderer::RocketSDL2Renderer(RenderWindow* window )
+RocketSDL2RenderInterface::RocketSDL2RenderInterface( RenderWindow* window )
 {
   this->window_ = window;
 }
 
-RocketSDL2Renderer::~RocketSDL2Renderer()
+RocketSDL2RenderInterface::~RocketSDL2RenderInterface()
 {
 }
 
-void RocketSDL2Renderer::Release()
+void RocketSDL2RenderInterface::Release()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 
   delete this;
 }
 
-void RocketSDL2Renderer::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, const Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation)
+void RocketSDL2RenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, const Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation)
 {
   // SDL uses shaders that we need to disable here
   glUseProgramObjectARB(0);
@@ -201,7 +201,7 @@ void RocketSDL2Renderer::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
   }
 }
 
-void RocketSDL2Renderer::EnableScissorRegion(bool enable)
+void RocketSDL2RenderInterface::EnableScissorRegion(bool enable)
 {
   if(enable)
   {
@@ -213,7 +213,7 @@ void RocketSDL2Renderer::EnableScissorRegion(bool enable)
   }
 }
 
-void RocketSDL2Renderer::SetScissorRegion(int x, int y, int width, int height)
+void RocketSDL2RenderInterface::SetScissorRegion(int x, int y, int width, int height)
 {
   if( nom::hint( "NOM_LIBROCKET_EMULATE_SDL2_LOGICAL_VIEWPORT" ) == "0" )
   {
@@ -245,7 +245,7 @@ void RocketSDL2Renderer::SetScissorRegion(int x, int y, int width, int height)
   }
 }
 
-bool RocketSDL2Renderer::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source)
+bool RocketSDL2RenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source)
 {
   Rocket::Core::FileInterface* file_interface = Rocket::Core::GetFileInterface();
   Rocket::Core::FileHandle file_handle = file_interface->Open(source);
@@ -298,7 +298,7 @@ bool RocketSDL2Renderer::LoadTexture(Rocket::Core::TextureHandle& texture_handle
   return false;
 }
 
-bool RocketSDL2Renderer::GenerateTexture(Rocket::Core::TextureHandle& texture_handle, const Rocket::Core::byte* source, const Rocket::Core::Vector2i& source_dimensions)
+bool RocketSDL2RenderInterface::GenerateTexture(Rocket::Core::TextureHandle& texture_handle, const Rocket::Core::byte* source, const Rocket::Core::Vector2i& source_dimensions)
 {
   #if SDL_BYTEORDER == SDL_BIG_ENDIAN
     Uint32 rmask = 0xff000000;
@@ -323,7 +323,7 @@ bool RocketSDL2Renderer::GenerateTexture(Rocket::Core::TextureHandle& texture_ha
   return true;
 }
 
-void RocketSDL2Renderer::ReleaseTexture(Rocket::Core::TextureHandle texture_handle)
+void RocketSDL2RenderInterface::ReleaseTexture(Rocket::Core::TextureHandle texture_handle)
 {
   SDL_DestroyTexture((SDL_Texture*) texture_handle);
 }

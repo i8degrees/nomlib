@@ -77,6 +77,11 @@ class UIWidget: public Transformable
     const std::string& title_id() const;
     std::string title() const;
 
+    /// \brief Get an element's text alignment.
+    ///
+    /// \returns One of the nom::Anchor enumeration values.
+    uint32 alignment( rocket::Element* target ) const;
+
     bool set_desktop( rocket::Context* ctx );
 
     /// \todo Rename to load_document_file?
@@ -95,6 +100,10 @@ class UIWidget: public Transformable
     void set_font( rocket::Element* target, const std::string& font );
     void set_font_size( rocket::Element* target, int point_size );
 
+    /// \param alignment    One of the following Anchor enumerations:
+    /// Anchor::Left, Anchor::Center, Anchor::Right.
+    ///
+    /// \todo Change return type to boolean
     void set_alignment( rocket::Element* element, uint32 alignment );
 
     void register_event_listener( rocket::Element* element,
@@ -154,7 +163,6 @@ class UIMessageBox: public UIWidget
     /// \todo Rename to title_text_bounds
     IntRect title_bounds() const;
 
-    /// \fixme
     uint32 title_alignment() const;
 
     std::string message_text() const;
@@ -171,7 +179,6 @@ class UIMessageBox: public UIWidget
     /// \todo Rename to message_text_bounds
     IntRect message_bounds() const;
 
-    /// \fixme
     uint32 message_alignment() const;
 
     const std::string& message_id() const;
@@ -194,6 +201,14 @@ class UIMessageBox: public UIWidget
     void set_title_font_size( int point_size );
 
     /// \brief Set the title (caption) text's alignment.
+    ///
+    /// \param alignment    One of the following Anchor enumerations:
+    /// Anchor::Left, Anchor::Center, Anchor::Right.
+    ///
+    /// \fixme This method is currently broken; although the text-align
+    /// property is, in fact, being updated (as per visual debugger output), we
+    /// are still getting the original text-align value. Something to do with
+    /// the internal (libRocket) caching perhaps...
     void set_title_alignment( uint32 align );
 
     /// \brief Set the message text label.
@@ -212,6 +227,14 @@ class UIMessageBox: public UIWidget
     void set_message_font_size( int point_size );
 
     /// \brief Set the message text's alignment.
+    ///
+    /// \param alignment    One of the following Anchor enumerations:
+    /// Anchor::Left, Anchor::Center, Anchor::Right.
+    ///
+    /// \fixme This method is currently broken; although the text-align
+    /// property is, in fact, being updated (as per visual debugger output), we
+    /// are still getting the original text-align value. Something to do with
+    /// the internal (libRocket) caching perhaps...
     void set_message_alignment( uint32 align );
 
     void set_message_id( const std::string& id );

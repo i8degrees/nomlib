@@ -32,6 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/librocket/RocketSDL2SystemInterface.hpp"
 #include "nomlib/graphics/RenderWindow.hpp"
 
+// Private headers
+#include <Rocket/Core/StyleSheetKeywords.h>
+
 namespace nom {
 
 UIWidget::UIWidget( const Point2i& pos, const Size2i& dims ) :
@@ -125,6 +128,35 @@ std::string UIWidget::title() const
 const std::string& UIWidget::title_id() const
 {
   return this->title_id_;
+}
+
+uint32 UIWidget::alignment( rocket::Element* target ) const
+{
+  int align = -1;
+
+  NOM_ASSERT( this->valid() != false );
+
+  if( this->valid() == false || target == nullptr )
+  {
+    return Anchor::None;
+  }
+
+  // We cannot use the element's ::GetTextAlign method because it does not
+  // reflect any updates we make through setting properties.
+  const rocket::Property* alignment = target->GetProperty("text-align");
+
+  align = alignment->Get<int>();
+
+  switch( align )
+  {
+    default:
+    case -1:
+    case rocket::TEXT_ALIGN_JUSTIFY: return Anchor::None; break;
+
+    case rocket::TEXT_ALIGN_LEFT: return Anchor::Left; break;
+    case rocket::TEXT_ALIGN_RIGHT: return Anchor::Right; break;
+    case rocket::TEXT_ALIGN_CENTER: return Anchor::Center; break;
+  }
 }
 
 bool UIWidget::set_desktop( rocket::Context* ctx )
@@ -253,21 +285,14 @@ void UIWidget::set_alignment( rocket::Element* element, uint32 alignment )
 
   NOM_ASSERT( element != nullptr );
 
-  if( element == nullptr )
-  {
-    return;
-  }
+  if( this->document() == nullptr || element == nullptr ) return;
 
   // Convert uint32 nom::Alignment type to string for libRocket
   switch( alignment )
   {
     default:
     case Alignment::NONE:
-    {
-      // -1
-      break;
-    }
-
+    case Anchor::Left:
     case Anchor::TopLeft:
     case Anchor::MiddleLeft:
     case Anchor::BottomLeft:
@@ -276,6 +301,7 @@ void UIWidget::set_alignment( rocket::Element* element, uint32 alignment )
       break;
     }
 
+    case Anchor::Center:
     case Anchor::TopCenter:
     case Anchor::MiddleCenter:
     case Anchor::BottomCenter:
@@ -284,6 +310,7 @@ void UIWidget::set_alignment( rocket::Element* element, uint32 alignment )
       break;
     }
 
+    case Anchor::Right:
     case Anchor::TopRight:
     case Anchor::MiddleRight:
     case Anchor::BottomRight:
@@ -293,7 +320,11 @@ void UIWidget::set_alignment( rocket::Element* element, uint32 alignment )
     }
   }
 
-  element->SetProperty( "text-align", rocket::Property(align.c_str(), rocket::Property::STRING) );
+  if( element->SetProperty( "text-align", align.c_str() ) == false )
+  {
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Failed to set text-align property for", element->GetId().CString() );
+    // return false;
+  }
 }
 
 void UIWidget::register_event_listener( rocket::Element* element,
@@ -415,47 +446,22 @@ IntRect UIMessageBox::message_bounds() const
 
 uint32 UIMessageBox::title_alignment() const
 {
-  int align = -1;
-
   NOM_ASSERT( this->valid() != false );
 
-  if( this->document() == nullptr )
-  {
-    return Alignment::NONE;
-  }
+  rocket::Element* target =
+    this->document()->GetElementById( this->title_id().c_str() );
 
-  align = this->document()->GetElementById( this->title_id().c_str() )->GetTextAlign();
-
-  switch( align )
-  {
-    default: return Alignment::NONE; break;
-
-    case 0: return Anchor::TopLeft; break;
-    case 1: return Anchor::TopCenter; break;
-    case 2: return Anchor::TopRight; break;
-  }
+  return this->alignment( target );
 }
 
 uint32 UIMessageBox::message_alignment() const
 {
-  int align = -1;
-
   NOM_ASSERT( this->valid() != false );
 
-  if( this->document() == nullptr )
-  {
-    return Alignment::NONE;
-  }
+  rocket::Element* target =
+    this->document()->GetElementById( this->message_id().c_str() );
 
-  align = this->document()->GetElementById( this->message_id().c_str() )->GetTextAlign();
-
-  switch( align )
-  {
-    default: return Alignment::NONE; break;
-    case 0: return Anchor::MiddleLeft; break;
-    case 1: return Anchor::MiddleCenter; break;
-    case 2: return Anchor::MiddleRight; break;
-  }
+  return this->alignment( target );
 }
 
 const std::string& UIMessageBox::message_id() const

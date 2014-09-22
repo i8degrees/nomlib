@@ -773,8 +773,6 @@ TEST_F( libRocketTest, UIMessageBox )
   EXPECT_EQ( nom::IntRect(43,78,25,16), mbox.title_bounds() );
   EXPECT_EQ( nom::IntRect(53,98,50,23), mbox.message_bounds() );
 
-  EXPECT_EQ( Anchor::TopLeft, mbox.title_alignment() );
-
   nom::UIEventListener* on_click = new nom::UIEventListener(
     [&] ( Rocket::Core::Event& ev ) { this->on_click( ev ); } );
 
@@ -782,24 +780,27 @@ TEST_F( libRocketTest, UIMessageBox )
                                 "mouseup",
                                 on_click );
 
-  // WTF? Why does it think it is MiddleRight?
-  // EXPECT_EQ( Anchor::MiddleCenter, mbox.message_alignment() );
+  EXPECT_EQ( Anchor::Left, mbox.title_alignment() );
+  EXPECT_EQ( Anchor::Center, mbox.message_alignment() );
 
+  // Works
   // Rocket::Core::FontDatabase::LoadFontFace( "/Library/Fonts/Arial.ttf" );
   // mbox.set_title_font( "Arial" );
   // mbox.set_title_font_size( 24 );
 
   // FIXME: Alignment is broken; it's being set, just not taking effect
-  // mbox.set_title_alignment( Anchor::TopCenter );
+  mbox.set_title_alignment( Anchor::Center );
+  EXPECT_EQ( Anchor::Center, mbox.title_alignment() );
 
+  // Works
   // mbox.set_message_font( "Delicious" );
   // mbox.set_message_font_size( 24 );
 
   // FIXME: Alignment is broken; it's being set, just not taking effect
-  // mbox.set_message_alignment( Anchor::MiddleRight );
+  mbox.set_message_alignment( Anchor::Right );
+  EXPECT_EQ( Anchor::Right, mbox.message_alignment() );
 
-  // FIXME: Reloading RML & RCSS is broken without this (double free issue)
-  // this->docs[doc_file] = mbox.document();
+  this->docs[doc_file] = mbox.document();
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );

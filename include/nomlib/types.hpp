@@ -167,6 +167,11 @@ enum Alignment: uint32
 /// \note Borrowed from [maelstrom's screenlib](https://hg.libsdl.org/Maelstrom/)
 enum Anchor: uint32
 {
+  None = NONE,                          // 0
+  Left = X_LEFT,                        // 1
+  Center = X_CENTER,                    // 2
+  Right = X_RIGHT,                      // 4
+
   TopLeft = Y_TOP | X_LEFT,             // Hex: 0x11, Dec: 17
   TopCenter = Y_TOP | X_CENTER,         // Hex: 0x12, Dec: 18
   TopRight = Y_TOP | X_RIGHT,           // Hex: 0x14, Dec: 20

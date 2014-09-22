@@ -21,7 +21,6 @@
 #include <Rocket/Controls.h>
 #include <Rocket/Controls/DataSource.h>
 
-// TODO:
 #if defined( NOM_USE_LIBROCKET_LUA )
   #include <Rocket/Core/Lua/Interpreter.h>
   #include <Rocket/Controls/Lua/Controls.h>
@@ -274,6 +273,14 @@ class libRocketTest: public nom::VisualUnitTest
       // {
       //   FAIL() << "Could not create OpenGL Context.";
       // }
+
+      // Experimental support for emulating SDL2's independent resolution
+      // scaling feature via a "logical viewport" -- this is important to us
+      // because TTcards depends on it somewhat at the moment.
+      if( nom::set_hint( "NOM_LIBROCKET_EMULATE_SDL2_LOGICAL_VIEWPORT", "1" ) == false )
+      {
+        NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Could not enable emulated SDL2 independent resolution scaling." );
+      }
     }
 
     /// \remarks This method is called after construction, at the start of each

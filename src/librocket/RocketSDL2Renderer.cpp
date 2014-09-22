@@ -167,32 +167,38 @@ void RocketSDL2Renderer::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
     NOM_LOG_ERR ( NOM, SDL_GetError() );
   }
 
-  // FIXME: This is prototype / proof of concept code for emulating SDL2's
-  // SDL_RenderSetLogicalSize function. It works, but needs further improvement,
-  // such as being called only when necessary, deal with aspect ratio issues,
-  // etc.
-  //
-  // See also: shell examples (i.e.: ShellRenderInterfaceOpenGL.cpp).
-  // http://gamedev.stackexchange.com/questions/40704/what-is-the-purpose-of-glscissor
-  //
-  // if( this->window_->fullscreen() )
-  // {
-  //   SDL_Rect dims;
-  //   SDL_RenderGetViewport ( this->window_->renderer(), &dims );
+  if( nom::hint( "NOM_LIBROCKET_EMULATE_SDL2_LOGICAL_VIEWPORT" ) == "1" )
+  {
+    // TODO: This is prototype / proof of concept code for emulating SDL2's
+    // SDL_RenderSetLogicalSize function. It works, but needs further improvement,
+    // such as being called only when necessary, deal with aspect ratio issues,
+    // updating mouse coordinates with the faked ones, etc.
+    //
+    // See also: shell examples (i.e.: ShellRenderInterfaceOpenGL.cpp).
+    // http://gamedev.stackexchange.com/questions/40704/what-is-the-purpose-of-glscissor
+    //
+    if( this->window_->fullscreen() )
+    {
+      SDL_Rect dims;
+      SDL_RenderGetViewport( this->window_->renderer(), &dims );
 
-  //   glMatrixMode( GL_PROJECTION );
-  //   glLoadIdentity();
-  //   glOrtho( 0, dims.w / 2, dims.h / 2, 0, 0, 1 );
-  // }
-  // else
-  // {
-  //   SDL_Rect dims;
-  //   SDL_RenderGetViewport ( this->window_->renderer(), &dims );
+      glMatrixMode( GL_PROJECTION | GL_MODELVIEW );
+      glLoadIdentity();
 
-  //   glMatrixMode( GL_PROJECTION );
-  //   glLoadIdentity();
-  //   glOrtho( 0, this->window_->size().w, this->window_->size().h, 0, 0, 1 );
-  // }
+      // TODO: Use calculations from SDL_render.c:UpdateLogicalSize.
+      glOrtho( 0, dims.w / 2, dims.h / 2, 0, 0, 1.0 );
+    }
+    else
+    {
+      SDL_Rect dims;
+      SDL_RenderGetViewport( this->window_->renderer(), &dims );
+
+      glMatrixMode( GL_PROJECTION | GL_MODELVIEW );
+      glLoadIdentity();
+      // glOrtho( 0, this->window_->size().w, this->window_->size().h, 0, 0, 1.0 );
+      glOrtho( 0, dims.w, dims.h, 0, 0, 1.0 );
+    }
+  }
 }
 
 void RocketSDL2Renderer::EnableScissorRegion(bool enable)
@@ -209,9 +215,34 @@ void RocketSDL2Renderer::EnableScissorRegion(bool enable)
 
 void RocketSDL2Renderer::SetScissorRegion(int x, int y, int width, int height)
 {
-  int w_width, w_height;
-  SDL_GetWindowSize(this->window_->window(), &w_width, &w_height);
-  glScissor(x, w_height - (y + height), width, height);
+  if( nom::hint( "NOM_LIBROCKET_EMULATE_SDL2_LOGICAL_VIEWPORT" ) == "0" )
+  {
+    Size2i window = this->window_->size();
+    glScissor(x, window.w - (y + height), width, height);
+  }
+  else
+  {
+    // This helps correct the clipping that otherwise would cut out the contents
+    // of the visual debugger.
+    //
+    // Emulated from the source at SDL_render_gl.c:GL_UpdateViewport
+    //
+    // TODO: Verify whether or not we need to adjust our calculations to account
+    // for Render to Texture -- it appears as though we do need to.
+    IntRect viewport;
+    Size2i output;
+
+    viewport = this->window_->viewport();
+    output = this->window_->output_size();
+
+    // TODO: Adjust to account for scissors; note how the visual debugger
+    // window is not clipped when emulation is turned on
+    glScissor(  viewport.x, (output.h - viewport.y - viewport.h),
+                viewport.w, viewport.h );
+
+    // glScissor(  x, (output.h - y - viewport.h),
+    //             viewport.w, viewport.h );
+  }
 }
 
 bool RocketSDL2Renderer::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source)

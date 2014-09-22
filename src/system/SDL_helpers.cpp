@@ -136,12 +136,17 @@ uint32 RGBA ( const Color4i& color, uint32 fmt )
   return SDL_MapRGBA ( SDL_AllocFormat(fmt), color.r, color.g, color.b, color.a );
 }
 
-const std::string hint ( const std::string& name )
+std::string hint( const std::string& name )
 {
-  std::string result;
+  const char* result;
 
-  result = SDL_GetHint ( name.c_str() );
-  return result;
+  result = SDL_GetHint( name.c_str() );
+
+  // Success
+  if( result != nullptr ) return result;
+
+  // Err
+  return "\0";
 }
 
 bool set_hint ( const std::string& name, const std::string& value )

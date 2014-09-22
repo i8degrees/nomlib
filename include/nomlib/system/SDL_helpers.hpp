@@ -172,7 +172,7 @@ uint32 RGBA ( const Color4i& color, uint32 fmt );
 /// \param name   Hint to query
 ///
 /// \return Value of the queried name, or a null-terminated string if not set
-const std::string hint ( const std::string& name );
+std::string hint( const std::string& name );
 
 /// SDL2 helper function
 ///

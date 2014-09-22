@@ -57,6 +57,19 @@ void UIContextEventHandler::process_event( const Event& ev )
   {
     default: break;
 
+    case SDL_WINDOWEVENT:
+    {
+      switch( ev.window.event )
+      {
+        case SDL_WINDOWEVENT_SIZE_CHANGED:
+        {
+          this->context_->resize( Size2i( ev.window.data1, ev.window.data2 ) );
+          break;
+        }
+      }
+      break;
+    }
+
     case SDL_MOUSEMOTION:
     {
       this->context_->context()->ProcessMouseMove( ev.motion.x, ev.motion.y, this->translate_key_modifiers(ev) );

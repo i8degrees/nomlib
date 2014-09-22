@@ -106,6 +106,10 @@ class UIContext
 
     Rocket::Core::ElementDocument* load_mouse_cursor_file( const std::string& filename );
 
+    bool load_font( const std::string& filename );
+
+    void resize( const Size2i& dims );
+
     /// \brief Event handler for the context's instance.
     ///
     /// \remarks This should be called within the main loop, typically once per

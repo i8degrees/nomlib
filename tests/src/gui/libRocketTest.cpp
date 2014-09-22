@@ -337,17 +337,17 @@ class libRocketTest: public nom::VisualUnitTest
         << "Could not initialize libRocket context.";
       }
 
-      if( Rocket::Core::FontDatabase::LoadFontFace( "Delicious-Bold.otf" ) == false )
+      if( this->desktop.load_font( "Delicious-Bold.otf" ) == false )
       {
         FAIL() << "Could not load font file: Delicious-Bold.otf";
       }
 
-      if( Rocket::Core::FontDatabase::LoadFontFace( "OpenSans-Regular.ttf" ) == false )
+      if( this->desktop.load_font( "OpenSans-Regular.ttf" ) == false )
       {
         FAIL() << "Could not load font file: OpenSans-Regular.ttf";
       }
 
-      if( Rocket::Core::FontDatabase::LoadFontFace( "OpenSans-Bold.ttf" ) == false )
+      if( this->desktop.load_font( "OpenSans-Bold.ttf" ) == false )
       {
         FAIL() << "Could not load font file: OpenSans-Bold.ttf";
       }

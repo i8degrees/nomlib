@@ -151,6 +151,16 @@ Rocket::Core::ElementDocument* UIContext::load_mouse_cursor_file( const std::str
   return cursor;
 }
 
+bool UIContext::load_font( const std::string& filename )
+{
+  return Rocket::Core::FontDatabase::LoadFontFace( filename.c_str() );
+}
+
+void UIContext::resize( const Size2i& dims )
+{
+  this->context_->SetDimensions( Rocket::Core::Vector2i( dims.w, dims.h ) );
+}
+
 void UIContext::process_event( const Event& ev )
 {
   NOM_ASSERT( this->evt_ != nullptr );

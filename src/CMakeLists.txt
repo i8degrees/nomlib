@@ -250,6 +250,7 @@ set ( LIBROCKET_SOURCE
       ${SRC_DIR}/librocket/DecoratorInstancerFinalFantasyFrame.cpp
       ${SRC_DIR}/librocket/DecoratorFinalFantasyFrame.cpp
       ${SRC_DIR}/librocket/DecoratorPhotograph.cpp
+      ${SRC_DIR}/librocket/UIWidget.cpp
       ${SRC_DIR}/librocket/UIMessageBox.cpp
       # ${SRC_DIR}/librocket/DOM.cpp
       ${SRC_DIR}/librocket/RocketUtilities.cpp

@@ -29,97 +29,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_LIBROCKET_UIMESSAGEBOX_HPP
 #define NOMLIB_LIBROCKET_UIMESSAGEBOX_HPP
 
-#include <iostream>
 #include <string>
-#include <memory>
-
-#include <Rocket/Core/Context.h>
-#include <Rocket/Core/ElementDocument.h>
-#include <Rocket/Core/Element.h>
-#include <Rocket/Core/ElementUtilities.h>
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Transformable.hpp"
+#include "nomlib/librocket/UIWidget.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
 #include "nomlib/math/Rect.hpp"
-#include "nomlib/librocket/RocketUtilities.hpp"
 
 namespace nom {
-
-// Forward declarations
-class UIEventListener;
-class RenderWindow;
-
-class UIWidget: public Transformable
-{
-  public:
-    UIWidget( const Point2i& pos, const Size2i& dims );
-
-    virtual ~UIWidget();
-
-    /// \brief Re-implements Transformable::set_position.
-    virtual void set_position( const Point2i& pos );
-
-    /// \brief Re-implements Transformable::set_size.
-    ///
-    /// \remarks The size does not take precedence over the max-width and
-    /// max-height style sheet properties when they have been set by the
-    /// end-user.
-    virtual void set_size( const Size2i& dims );
-
-    rocket::Context* desktop() const;
-    rocket::ElementDocument* document() const;
-
-    bool valid() const;
-    bool visible() const;
-
-    const std::string& title_id() const;
-    std::string title() const;
-
-    /// \brief Get an element's text alignment.
-    ///
-    /// \returns One of the nom::Anchor enumeration values.
-    uint32 alignment( rocket::Element* target ) const;
-
-    bool set_desktop( rocket::Context* ctx );
-
-    /// \todo Rename to load_document_file?
-    bool set_document_file( const std::string& filename );
-
-    void set_document_size();
-
-    void show();
-    void hide();
-    void close();
-
-    void set_title( const std::string& text );
-
-    void set_title_id( const std::string& id );
-
-    void set_font( rocket::Element* target, const std::string& font );
-    void set_font_size( rocket::Element* target, int point_size );
-
-    /// \param alignment    One of the following Anchor enumerations:
-    /// Anchor::Left, Anchor::Center, Anchor::Right.
-    ///
-    /// \todo Change return type to boolean
-    void set_alignment( rocket::Element* element, uint32 alignment );
-
-    void register_event_listener( rocket::Element* element,
-                                  const std::string& ev,
-                                  UIEventListener* observer,
-                                  bool interruptible = false );
-
-  private:
-    /// \remarks This pointer is **not** owned by us, and must not be freed.
-    rocket::Context* desktop_;
-
-    /// \remarks This pointer is **not** owned by us, and must not be freed.
-    rocket::ElementDocument* document_;
-
-    std::string title_id_;
-};
 
 /// \brief Simple UI interface for drawing a styled message box
 ///
@@ -130,8 +48,8 @@ class UIMessageBox: public UIWidget
     typedef UIMessageBox self_type;
 
     typedef self_type* raw_ptr;
-    typedef std::shared_ptr<self_type> shared_ptr;
-    typedef std::unique_ptr<self_type> unique_ptr;
+    // typedef std::shared_ptr<self_type> shared_ptr;
+    // typedef std::unique_ptr<self_type> unique_ptr;
 
     /// \brief Default constructor; initialize object to an invalid state --
     /// its position and size are set to the value of Point2i::null and
@@ -238,13 +156,6 @@ class UIMessageBox: public UIWidget
     void set_message_alignment( uint32 align );
 
     void set_message_id( const std::string& id );
-
-    /// \brief Implements UIWidget::draw method.
-    void draw( RenderTarget& target ) const;
-
-  protected:
-    /// \brief Implements UIWidget::update method.
-    virtual void update();
 
   private:
     std::string message_id_;

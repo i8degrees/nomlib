@@ -30,17 +30,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-void free_document( rocket::ElementDocument* doc )
-{
-  if( doc != nullptr )
-  {
-    doc->RemoveReference();
-    doc->Close();
-  }
-}
+// void free_document( rocket::ElementDocument* doc )
+// {
+//   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
+
+//   if( doc != nullptr )
+//   {
+//     doc->Close();
+//     doc->RemoveReference();
+//   }
+// }
 
 void free_element( rocket::Element* element )
 {
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
+
   if( element != nullptr )
   {
     element->RemoveReference();

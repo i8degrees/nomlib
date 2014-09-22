@@ -79,12 +79,14 @@ class UIWidget: public Transformable
 
     bool set_desktop( rocket::Context* ctx );
 
+    /// \todo Rename to load_document_file?
     bool set_document_file( const std::string& filename );
 
     void set_document_size();
 
     void show();
     void hide();
+    void close();
 
     void set_title( const std::string& text );
 
@@ -103,7 +105,10 @@ class UIWidget: public Transformable
   private:
     /// \remarks This pointer is **not** owned by us, and must not be freed.
     rocket::Context* desktop_;
-    rocket_document document_;
+
+    /// \remarks This pointer is **not** owned by us, and must not be freed.
+    rocket::ElementDocument* document_;
+
     std::string title_id_;
 };
 
@@ -118,6 +123,14 @@ class UIMessageBox: public UIWidget
     typedef self_type* raw_ptr;
     typedef std::shared_ptr<self_type> shared_ptr;
     typedef std::unique_ptr<self_type> unique_ptr;
+
+    /// \brief Default constructor; initialize object to an invalid state --
+    /// its position and size are set to the value of Point2i::null and
+    /// Size2i::null, respectively.
+    ///
+    /// \see UIWidget::set_desktop, UIWidget::set_document_file,
+    /// UIMessageBox::initialize.
+    UIMessageBox();
 
     UIMessageBox( const Point2i& pos, const Size2i& dims );
 

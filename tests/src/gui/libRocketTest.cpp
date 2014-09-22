@@ -420,13 +420,6 @@ class libRocketTest: public nom::VisualUnitTest
     {
       // NOM_LOG_TRACE( NOM );
 
-      for( auto itr = docs.begin(); itr != docs.end(); ++itr )
-      {
-        // TODO: Re-enable once everything is using common base
-        // (*itr).second->RemoveReference();
-        (*itr).second->Close();
-      }
-
       this->desktop.shutdown();
 
       nom::shutdown_librocket();

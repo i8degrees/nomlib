@@ -42,10 +42,10 @@ namespace nom {
 /// \brief Global namespace alias for libRocket
 namespace rocket = Rocket::Core;
 
-typedef std::shared_ptr<rocket::ElementDocument> rocket_document;
+// typedef std::shared_ptr<rocket::ElementDocument> rocket_document;
 typedef std::shared_ptr<rocket::Element> rocket_element;
 
-void free_document( rocket::ElementDocument* doc );
+// void free_document( rocket::ElementDocument* doc );
 void free_element( rocket::Element* element );
 
 } // namespace nom

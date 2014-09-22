@@ -38,12 +38,15 @@ UIWidget::UIWidget( const Point2i& pos, const Size2i& dims ) :
   Transformable( pos, dims ),
   title_id_( "title" )
 {
-  //
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
 }
 
 UIWidget::~UIWidget()
 {
-  // ...
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
+
+  this->desktop_ = nullptr;
+  this->document_ = nullptr;
 }
 
 void UIWidget::set_position( const Point2i& pos )
@@ -79,7 +82,7 @@ rocket::Context* UIWidget::desktop() const
 
 rocket::ElementDocument* UIWidget::document() const
 {
-  return this->document_.get();
+  return this->document_;
 }
 
 bool UIWidget::valid() const
@@ -145,7 +148,9 @@ bool UIWidget::set_document_file( const std::string& filename )
 
   if( doc )
   {
-    this->document_.reset( doc, free_document );
+    this->document_ = doc;
+
+    this->document()->RemoveReference();
 
     return true;
   }
@@ -190,6 +195,14 @@ void UIWidget::hide()
   if( this->document() )
   {
     this->document()->Hide();
+  }
+}
+
+void UIWidget::close()
+{
+  if( this->document() )
+  {
+    this->document()->Close();
   }
 }
 
@@ -291,6 +304,13 @@ void UIWidget::register_event_listener( rocket::Element* element,
   element->AddEventListener( ev.c_str(), observer, interruptible );
 }
 
+UIMessageBox::UIMessageBox() :
+  UIWidget( Point2i::null, Size2i::null )
+  // message_id_( "message" )
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
 UIMessageBox::UIMessageBox( const Point2i& pos, const Size2i& dims ) :
   UIWidget( pos, dims ),
   message_id_( "message" )
@@ -318,9 +338,6 @@ bool UIMessageBox::initialize()
     this->set_document_size();
 
     this->show();
-
-    // FIXME:
-    // this->document()->RemoveReference();
 
     return true;
   }

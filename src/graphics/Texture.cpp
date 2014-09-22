@@ -731,7 +731,7 @@ bool Texture::resize( enum ResizeAlgorithm scaling_algorithm )
           return false;
         }
       #else
-        NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Unable to resize surface: engine was not built with the ScaleX algorithm." );
+        NOM_LOG_WARN( NOM_LOG_CATEGORY_APPLICATION, "Unable to resize surface: engine was not built with the ScaleX algorithm." );
         return false;
       #endif
 

@@ -255,6 +255,7 @@ set ( LIBROCKET_SOURCE
       ${SRC_DIR}/librocket/RocketUtilities.cpp
       ${SRC_DIR}/librocket/UIContext.cpp
       ${SRC_DIR}/librocket/init_librocket.cpp
+      ${SRC_DIR}/librocket/UIContextEventHandler.cpp
     )
 
 # Platform-specific source files

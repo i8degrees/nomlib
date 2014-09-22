@@ -31,8 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
-#include <Rocket/Core/Input.h>
-
 #include "nomlib/config.hpp"
 #include "nomlib/math/Size2.hpp"
 
@@ -51,6 +49,7 @@ namespace nom {
 
 // Forward declarations
 struct Event;
+class IUIEventHandler;
 
 /// \brief libRocket context abstraction
 class UIContext
@@ -107,8 +106,11 @@ class UIContext
 
     Rocket::Core::ElementDocument* load_mouse_cursor_file( const std::string& filename );
 
-    /// \brief Injection of libRocket's event loop.
-    virtual void process_event( const Event& event );
+    /// \brief Event handler for the context's instance.
+    ///
+    /// \remarks This should be called within the main loop, typically once per
+    /// frame.
+    void process_event( const Event& event );
 
     /// \remarks The boolean return from the context's ::Update method is
     /// currently ignored.
@@ -118,13 +120,10 @@ class UIContext
     /// currently ignored.
     void draw();
 
-  protected:
-    virtual Rocket::Core::Input::KeyIdentifier translate_key( const Event& ev );
-    virtual int translate_mouse_button( const Event& ev );
-    virtual int translate_mouse_wheel( const Event& ev );
-    virtual int translate_key_modifiers( const Event& ev );
-
   private:
+    /// \brief Active state of libRocket's visual debugger.
+    bool debugger_;
+
     /// \brief The implementation's element context (used by libRocket).
     ///
     /// \remarks This is a pointer managed by libRocket and must not be freed.
@@ -135,8 +134,9 @@ class UIContext
     /// \remarks This is a pointer managed by libRocket and must not be freed.
     Rocket::Core::RenderInterface* renderer_;
 
-    /// \brief Active state of libRocket's visual debugger.
-    bool debugger_;
+    /// \brief The event handler for this context; automatically initialized to
+    /// nom::UIContextEventHandler.
+    std::shared_ptr<IUIEventHandler> evt_;
 };
 
 } // namespace nom

@@ -33,8 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/gui/Decorator.hpp"
-#include "nomlib/graphics/Gradient.hpp"
-#include "nomlib/gui/FinalFantasyFrame.hpp"
 
 namespace nom {
 

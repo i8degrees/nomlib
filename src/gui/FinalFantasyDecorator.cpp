@@ -28,6 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/FinalFantasyDecorator.hpp"
 
+// Private headers
+#include "nomlib/graphics/Gradient.hpp"
+#include "nomlib/gui/FinalFantasyFrame.hpp"
+
 namespace nom {
 
 FinalFantasyDecorator::FinalFantasyDecorator( void )

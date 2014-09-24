@@ -73,50 +73,56 @@ void DecoratorFinalFantasyFrame::ReleaseElementData(Rocket::Core::DecoratorDataH
 
 void DecoratorFinalFantasyFrame::RenderElement(Rocket::Core::Element* element, Rocket::Core::DecoratorDataHandle ROCKET_UNUSED_PARAMETER(element_data))
 {
-  ROCKET_UNUSED(element_data);
+  NOM_ASSERT( this->decorator_ != nullptr );
+  if( this->decorator_ == nullptr ) return;
 
+  ROCKET_UNUSED(element_data);
   Rocket::Core::Vector2f position = element->GetAbsoluteOffset(Rocket::Core::Box::PADDING);
   Rocket::Core::Vector2f size = element->GetBox().GetSize(Rocket::Core::Box::PADDING);
 
   // NOM_DUMP_VAR( NOM_LOG_CATEGORY_GUI, "position:", position.x, position.y);
   // NOM_DUMP_VAR( NOM_LOG_CATEGORY_GUI, "size:", size.x, size.y);
 
-  // TODO: Optimization (?); determine render state; dirty means we need to
-  // update our decorator, such as when the element is resized or moved...
-  //  For starters: a) ensure float math interface functions for Point2f &&
-  // Size2f; b) translation from GL coordinates to pixel.
-  //
-  // ...or...
-  //
-  // Probably more productive to just optimize our gradient rendering class and
-  // call it quits!
+  nom::RocketSDL2RenderInterface* target = NOM_DYN_PTR_CAST( nom::RocketSDL2RenderInterface*, Rocket::Core::GetRenderInterface() );
 
-  nom::RocketSDL2RenderInterface* p = NOM_DYN_PTR_CAST( nom::RocketSDL2RenderInterface*, Rocket::Core::GetRenderInterface() );
+  NOM_ASSERT( target != nullptr );
+  if( target == nullptr ) return;
 
-  if( p )
+  const RenderWindow* context = target->window_;
+
+  NOM_ASSERT( context != nullptr );
+  if( context == nullptr ) return;
+
+  // Check for whether or not we need to update our decorator
+  if( this->coords_.x != position.x || this->coords_.y != position.y || this->coords_.w != size.x || this->coords_.h != size.y )
   {
-    const RenderWindow* target = p->window_;
+    // Update our coordinates to match new element coordinates
+    this->coords_.x = position.x;
+    this->coords_.y = position.y;
+    this->coords_.w = size.x;
+    this->coords_.h = size.y;
 
-    Point2i pos( position.x, position.y );
-    Size2i dims( size.x, size.y );
-
-    // Keep our decorator within positive bounds on the left side of the window,
-    // else it will vanish on us
-    if( position.x <= 0.0f )
+    // Keeps our decorator within positive bounds on the left side of the
+    // window, else it will vanish on us
+    if( this->coords_.x <= 0 )
     {
-      pos.x = 0;
-      dims.w = dims.w - abs( position.x );
+      // Adjust for the proper width, otherwise stretching of the layout occurs
+      // (a possible bug in libRocket?)
+      this->coords_.w = this->coords_.w - abs( this->coords_.x );
+
+      // Reset afterwards (now that we are done using the value above)
+      this->coords_.x = 0;
     }
 
-    decorator_->set_bounds( pos, dims );
+    decorator_->set_bounds( this->coords_ );
 
     // FIXME: We shouldn't need to do this -- ::set_bounds ought to take care
     // of internal updating...
     // decorator_->update();
     decorator_->invalidate();
-
-    decorator_->draw( *target );
   }
+
+  decorator_->draw( *context );
 }
 
 } // namespace nom

@@ -29,9 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_LIBROCKET_DECORATOR_FINAL_FANTASY_FRAME_HPP
 #define NOMLIB_LIBROCKET_DECORATOR_FINAL_FANTASY_FRAME_HPP
 
-#include <memory>
-
 #include <Rocket/Core/Decorator.h>
+
+#include "nomlib/config.hpp"
+#include "nomlib/math/Rect.hpp"
 
 namespace nom {
 
@@ -65,9 +66,11 @@ class DecoratorFinalFantasyFrame : public Rocket::Core::Decorator
 
   private:
     std::unique_ptr<IDecorator> decorator_;
-    // Point2i pos_;
-    // Size2i dims_;
-    // bool dirty_ = true;
+
+    /// \brief Dirty state; comparison of the element's coordinates and our
+    /// decorator's is necessary for the resizing and moving of the decorator
+    /// to work.
+    IntRect coords_;
 };
 
 } // namespace nom

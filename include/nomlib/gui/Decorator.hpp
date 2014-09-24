@@ -66,6 +66,8 @@ class Decorator: public IDecorator
     virtual IntRect frame_bounds( void ) const;
 
     /// \brief Implements IDecorator::invalidate.
+    ///
+    /// \remarks Alias for ::update.
     virtual void invalidate( void );
 
     /// \brief Re-implements IObject::type.

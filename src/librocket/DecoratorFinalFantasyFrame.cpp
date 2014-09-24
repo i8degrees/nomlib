@@ -115,11 +115,7 @@ void DecoratorFinalFantasyFrame::RenderElement(Rocket::Core::Element* element, R
     }
 
     decorator_->set_bounds( this->coords_ );
-
-    // FIXME: We shouldn't need to do this -- ::set_bounds ought to take care
-    // of internal updating...
-    // decorator_->update();
-    decorator_->invalidate();
+    decorator_->update();
   }
 
   decorator_->draw( *context );

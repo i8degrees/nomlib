@@ -81,12 +81,6 @@ void Transformable::set_size( const Size2i& size )
   this->size_ = size;
 }
 
-void Transformable::set_bounds( const Point2i& pos, const Size2i& size )
-{
-  this->position_ = pos;
-  this->size_ = size;
-}
-
 void Transformable::set_bounds( const IntRect& bounds )
 {
   this->position_ = bounds.position();

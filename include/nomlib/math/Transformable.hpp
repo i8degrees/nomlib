@@ -78,13 +78,16 @@ class Transformable: public virtual IDrawable
 
     /// \brief Set the complete bounds of the object -- position (X, Y) and
     /// size (width and height) dimensions.
-    virtual void set_bounds( const Point2i& pos, const Size2i& size );
-
-    /// \brief Set the complete bounds of the object -- position (X, Y) and
-    /// size (width and height) dimensions.
     virtual void set_bounds( const IntRect& bounds );
 
+    /// \todo Remove this method; it causes trouble in paradise when we need to
+    /// overload the virtual set_position method -- we unsuspectingly go through
+    /// the wrong interface.
     void set_position( int x, int y );
+
+    /// \todo Remove this method; it causes trouble in paradise when we need to
+    /// overload the virtual set_position method -- we unsuspectingly go through
+    /// the wrong interface.
     void set_size( int w, int h );
 
     void move( int x = 0, int y = 0 );

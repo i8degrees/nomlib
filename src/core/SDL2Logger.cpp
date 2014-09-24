@@ -118,6 +118,10 @@ void SDL2Logger::initialize( void )
     SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_ASSERT, LogPriority::NOM_LOG_PRIORITY_WARN );
     SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TEST, LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
+    #if defined( NOM_DEBUG )
+      SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_RENDER, LogPriority::NOM_LOG_PRIORITY_WARN );
+    #endif
+
     // Log all messages from the engine's default NOM category
     SDL2Logger::set_logging_priority( NOM, LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 

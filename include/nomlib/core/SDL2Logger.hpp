@@ -48,6 +48,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// else is LogPriority::NOM_LOG_PRIORITY_CRITICAL priority level. These
 /// priority levels intend to mimic the defaults provided by SDL2's logging
 /// subsystem.
+/// Additionally, NOM_LOG_CATEGORY_RENDER is enabled at NOM_LOG_PRIORITY_WARN
+/// priority level when nomlib is compiled with debugging (NOM_DEBUG).
 ///
 /// \note This enumeration declaration is intentionally outside of the nom
 /// namespace, for the sake of both preserving legacy code and for convenience.

@@ -30,7 +30,7 @@
       }
 
       /* TODO: use list markup elements here */
-      .choice
+      /*.choice
       {
         display: block;
         color: white;
@@ -39,17 +39,27 @@
       .choice.selected
       {
         color: red;
+      }*/
+
+      button
+      {
+        display: block;
+      }
+
+      button:focus, button:active
+      {
+        color: red;
       }
 
     </style>
   </head>
   <body template="window">
+    <p id='question'>Are you sure?</p>
 
-    <div id='question'>
-      <p id='message'>Are you sure?</p>
-      <span id='choice1' class='choice'>Yes</span>
-      <span id='choice2' class='choice'>No</span>
-    </div>
+    <form id='response'>
+      <button id='yes'>Yes</button>
+      <button id='no'>No</button>
+    </form>
 
   </body>
 </rml>

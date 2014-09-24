@@ -120,6 +120,12 @@ void UIContextEventHandler::process_event( const Event& ev )
       } // end switch
     } // end SDL_KEYDOWN
 
+    case SDL_KEYUP:
+    {
+      this->context_->context()->ProcessKeyUp( this->translate_key(ev), this->translate_key_modifiers(ev) );
+      break;
+    } // end SDL_KEYUP
+
     // TODO: Support Unicode text input with SDL_StartTextInput and
     // SDL_StopTextInput; on mobile platforms, this will bring up the
     // virtual keyboard for the end-user.

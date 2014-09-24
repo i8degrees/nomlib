@@ -36,22 +36,25 @@ namespace nom {
 
 UIMessageBox::UIMessageBox() :
   UIWidget( Point2i::null, Size2i::null )
-  // message_id_( "message" )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+
+  // Defaults
+  this->set_message_id( "message" );
 }
 
 UIMessageBox::UIMessageBox( const Point2i& pos, const Size2i& dims ) :
-  UIWidget( pos, dims ),
-  message_id_( "message" )
-
+  UIWidget( pos, dims )
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+
+  // Defaults
+  this->set_message_id( "message" );
 }
 
 UIMessageBox::~UIMessageBox()
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 bool UIMessageBox::initialize()

@@ -88,6 +88,13 @@ class UIContext
     /// \see UIContext::create_context.
     Rocket::Core::Context* context() const;
 
+    /// \brief Get the dimensions (width and height) of this context instance.
+    ///
+    /// \returns A nom::Size2i with a non-zero width and height in pixel units
+    /// on success, or zero width and height on failure -- such as if the
+    /// context is invalid.
+    Size2i size() const;
+
     /// \brief Create a new element context used by libRocket.
     ///
     /// \params interface The custom rendering interface to use, or NULL to use
@@ -108,6 +115,7 @@ class UIContext
 
     bool load_font( const std::string& filename );
 
+    /// \brief Set the dimensions (width and height) of this context instance.
     void resize( const Size2i& dims );
 
     /// \brief Event handler for the context's instance.

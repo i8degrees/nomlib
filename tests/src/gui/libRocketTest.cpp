@@ -337,6 +337,8 @@ class libRocketTest: public nom::VisualUnitTest
         << "Could not initialize libRocket context.";
       }
 
+      EXPECT_EQ( this->resolution(), this->desktop.size() );
+
       if( this->desktop.load_font( "Delicious-Bold.otf" ) == false )
       {
         FAIL() << "Could not load font file: Delicious-Bold.otf";
@@ -445,57 +447,29 @@ class libRocketTest: public nom::VisualUnitTest
         // Rocket::Core::Input::KeyIdentifier button_x = (Rocket::Core::Input::KeyIdentifier) event.GetParameter<int>("mouse_x", -1);
         // Rocket::Core::Input::KeyIdentifier button_y = (Rocket::Core::Input::KeyIdentifier) event.GetParameter<int>("mouse_y", -1);
 
-        // Rocket::Core::Element* ev = event.GetCurrentElement();
         Rocket::Core::Element* ev = event.GetTargetElement();
+
+        if( ev == nullptr )
+        {
+          FAIL()
+          << "Event element target was NULL; this shouldn't have been so!";
+        }
 
         if( button == 0 )
         {
-          NOM_DUMP_VAR(NOM_LOG_CATEGORY_GUI, "LEFT button click");
-          // NOM_DUMP( ev->GetClassNames().CString() );
-
-          if( ev->GetClassNames().Find( "choice" ) == 0 )
-          {
-            // question
-            NOM_DUMP( ev->GetParentNode()->GetId().CString() );
-
-            // Are you Sure?
-            NOM_DUMP( ev->GetOwnerDocument()->GetElementById("message")->GetInnerRML().CString() );
-
-            if( ev->GetClassNames().Find( "choice selected" ) == nom::npos )
-            {
-              ev->SetClassNames( "choice selected" );
-              NOM_DUMP_VAR( NOM, "ON", ev->GetClassNames().CString() );
-            }
-            else
-            {
-              ev->SetClassNames( "choice" );
-              NOM_DUMP_VAR( NOM, "OFF", ev->GetClassNames().CString() );
-            }
-          }
-
-          // std::string id = ev->GetId().CString();
-          // if( id == "choice1" )
-          // {
-          //   Rocket::Core::Element* c = ev->GetParentNode()->GetElementById("choice2");
-          //   c->SetClassNames( "choice" );
-          // }
-          // else
-          // {
-          //   Rocket::Core::Element* c = ev->GetParentNode()->GetElementById("choice1");
-          //   c->SetClassNames( "choice" );
-          // }
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "LEFT button click from", ev->GetId().CString() );
         }
         else if( button == 1 )
         {
-          NOM_DUMP_VAR(NOM_LOG_CATEGORY_GUI, "RIGHT button click");
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "RIGHT button click from", ev->GetId().CString() );
         }
         else if( button == 2 )
         {
-          NOM_DUMP_VAR(NOM_LOG_CATEGORY_GUI, "MIDDLE button click");
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "MIDDLE button click from", ev->GetId().CString() );
         }
         else if( button == 3 )
         {
-          NOM_DUMP_VAR(NOM_LOG_CATEGORY_GUI, "UNDEFINED button click");
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "UNDEFINED button click from", ev->GetId().CString() );
         }
       }
     } // end on_click func
@@ -504,10 +478,17 @@ class libRocketTest: public nom::VisualUnitTest
     {
       if( event == "mousescroll" )
       {
-        // Rocket::Core::Input::KeyIdentifier button = (Rocket::Core::Input::KeyIdentifier) event.GetParameter<int>("button", 3);
         int wheel_delta = event.GetParameter<int>( "wheel_delta", 0 );
 
-        NOM_DUMP( wheel_delta );
+        Rocket::Core::Element* ev = event.GetTargetElement();
+
+        if( ev == nullptr )
+        {
+          FAIL()
+          << "Event element target was NULL; this shouldn't have been so!";
+        }
+
+        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "WHEEL event from", ev->GetId().CString(), "value:", wheel_delta );
       }
     } // end on_wheel func
 
@@ -517,7 +498,15 @@ class libRocketTest: public nom::VisualUnitTest
       {
         Rocket::Core::Input::KeyIdentifier key = NOM_SCAST(Rocket::Core::Input::KeyIdentifier, event.GetParameter<int>("key_identifier", 0) );
 
-        NOM_DUMP( key );
+        Rocket::Core::Element* ev = event.GetTargetElement();
+
+        if( ev == nullptr )
+        {
+          FAIL()
+          << "Event element target was NULL; this shouldn't have been so!";
+        }
+
+        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "KEYDOWN event from", ev->GetId().CString(), "value:", key );
       }
     } // end on_wheel func
 
@@ -671,10 +660,10 @@ TEST_F( libRocketTest, EventListenerTest )
   // Resulting elements matching query
   Rocket::Core::ElementList tags;
 
-  content_div = doc->GetElementById("content");
+  content_div = doc->GetElementById("response");
   if( content_div )
   {
-    Rocket::Core::ElementUtilities::GetElementsByClassName( tags, content_div, "choice" );
+    Rocket::Core::ElementUtilities::GetElementsByTagName( tags, content_div, "button" );
   }
   else
   {
@@ -696,6 +685,49 @@ TEST_F( libRocketTest, EventListenerTest )
   }
 
   this->docs[doc_file] = doc;
+
+  // Experimental integration of input mapper bindings; doesn't work well at
+  // the moment... we need to decide how we would like to sync the event
+  // callbacks.
+  // InputActionMapper state;
+  // EventCallback click( [&] ( const Event& evt )
+  // {
+  //   // tags[0]->Click();
+  //   rocket::Vector2f mouse( evt.mouse.x, evt.mouse.y );
+
+  //   if( tags[0]->IsPointWithinElement( mouse ) )
+  //   {
+  //     Rocket::Core::Dictionary params;
+  //     params.Set("button","0");
+  //     // tags[0]->DispatchEvent("mouseup", params);
+
+  //     Rocket::Core::Event event(tags[0], "mouseup", params);
+  //     this->on_click( event );
+  //   }
+  //   else if( tags[1]->IsPointWithinElement( mouse ) )
+  //   {
+  //     Rocket::Core::Dictionary params;
+  //     params.Set("button","0");
+  //     // tags[1]->DispatchEvent("mouseup", params);
+
+  //     Rocket::Core::Event event(tags[1], "mouseup", params);
+  //     this->on_click( event );
+  //   }
+
+  // } );
+
+  // state.insert  ( "click",
+  //                  nom::MouseButtonAction(  SDL_MOUSEBUTTONUP,
+  //                                           SDL_BUTTON_LEFT ),
+  //                  click );
+
+  // Additional input bindings for VisualUnitTest's event loop.
+  // this->input_mapper_.insert( "click", state, true );
+
+  // if( this->input_mapper_.trigger("click") == false )
+  // {
+  //   FAIL();
+  // }
 
   // Two different ways of simulating events:
   // content_div->Click();
@@ -767,8 +799,8 @@ TEST_F( libRocketTest, UIMessageBox )
   EXPECT_EQ( "INFO.", mbox.title_text() );
   EXPECT_EQ( "Diablos", mbox.message_text() );
 
-  EXPECT_EQ( nom::Point2i(38, 83), mbox.position() );
-  EXPECT_EQ( nom::Size2i(300, 48), mbox.size() );
+  EXPECT_EQ( pos, mbox.position() );
+  EXPECT_EQ( dims, mbox.size() );
 
   EXPECT_EQ( nom::IntRect(43,78,25,16), mbox.title_bounds() );
   EXPECT_EQ( nom::IntRect(53,98,50,23), mbox.message_bounds() );
@@ -804,6 +836,160 @@ TEST_F( libRocketTest, UIMessageBox )
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
+}
+
+/// \brief Event callback for libRocketTest.UIQuestionDialogBox
+void question_response_callback( Rocket::Core::Event& ev, UIQuestionDialogBox* q )
+{
+  Rocket::Core::Element* target = ev.GetTargetElement();
+
+  if( ev == "mouseup" )
+  {
+    int selected = q->selection();
+    Rocket::Core::Input::KeyIdentifier button = NOM_SCAST(Rocket::Core::Input::KeyIdentifier, ev.GetParameter<int>("button", -1) );
+
+    // Mouse coordinates
+    Rocket::Core::Input::KeyIdentifier mouse_x = NOM_SCAST(Rocket::Core::Input::KeyIdentifier, ev.GetParameter<int>("mouse_x", -1) );
+    Rocket::Core::Input::KeyIdentifier mouse_y = NOM_SCAST(Rocket::Core::Input::KeyIdentifier, ev.GetParameter<int>("mouse_y", -1) );
+
+    // Left mouse click
+    if( button != 0 ) return;
+
+    if( target->GetId() == "yes" )
+    {
+      selected = 0;
+    }
+    else if( target->GetId() == "no" )
+    {
+      selected = 1;
+    }
+
+    ASSERT_TRUE( q->hit_test( target, Point2i(mouse_x, mouse_y) ) == true );
+
+    q->set_selection(selected);
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Response:", q->response( q->selection() ) );
+  }
+  else if( ev == "keydown" )
+  {
+    int selected = q->selection();
+
+    if( selected == -1 ) return;
+
+    Rocket::Core::Input::KeyIdentifier key = NOM_SCAST(Rocket::Core::Input::KeyIdentifier, ev.GetParameter<int>("key_identifier", -1) );
+    if( key == Rocket::Core::Input::KI_UP && q->selection() > 0 )  // Up
+    {
+      --selected;
+      q->document()->GetElementById("yes")->Focus();
+    }
+    else if( key == Rocket::Core::Input::KI_DOWN && ( q->selection() < q->num_responses() - 1 ) )  // Down
+    {
+      ++selected;
+      q->document()->GetElementById("no")->Focus();
+    }
+
+    q->set_selection(selected);
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Response:", q->response( q->selection() ) );
+  }
+  else if( ev == "mousescroll" )
+  {
+    int selected = q->selection();
+
+    if( selected == -1 ) return;
+
+    Rocket::Core::Input::KeyIdentifier wheel = NOM_SCAST(Rocket::Core::Input::KeyIdentifier, ev.GetParameter<int>("wheel_delta", 0) );
+
+    if( wheel < 0 && ( q->selection() > 0 ) )  // Up
+    {
+      --selected;
+      q->document()->GetElementById("yes")->Focus();
+    }
+    else if( wheel > 0 && ( q->selection() < q->num_responses() - 1 ) )  // Down
+    {
+      ++selected;
+      q->document()->GetElementById("no")->Focus();
+    }
+
+    q->set_selection(selected);
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Response:", q->response( q->selection() ) );
+  }
+}
+
+TEST_F( libRocketTest, UIQuestionDialogBox )
+{
+  // As per the positioning units used for nom::QuestionDialogBox (ex2) in
+  // examples/gui_messagebox.cpp
+  Point2i pos(38, 141);
+  Size2i dims(124, 72);
+  std::string doc_file = "questionbox.rml";
+
+  UIQuestionDialogBox mbox( pos, dims );
+
+  EXPECT_EQ( true, mbox.set_desktop( this->desktop.context() ) );
+  EXPECT_EQ( true, mbox.set_document_file( doc_file ) );
+
+  if( mbox.initialize() == false )
+  {
+    FAIL()
+    << "UIQuestionDialogBox should not be invalid; is the context and document file valid?";
+  }
+
+  mbox.set_title_text("CHOICE");
+  // mbox.set_message_text("Are you sure?");
+
+  // Set in questionbox.rml
+  EXPECT_EQ( "title", mbox.title_id() );
+  EXPECT_EQ( "question", mbox.message_id() );
+  EXPECT_EQ( "response", mbox.response_id() );
+  EXPECT_EQ( "button", mbox.element_type() );
+
+  EXPECT_EQ( true, mbox.enabled() );
+
+  EXPECT_EQ( "CHOICE", mbox.title_text() );
+  EXPECT_EQ( "Are you sure?", mbox.message_text() );
+
+  EXPECT_EQ( pos, mbox.position() );
+  EXPECT_EQ( dims, mbox.size() );
+
+  EXPECT_EQ( nom::IntRect(43,136,34,16), mbox.title_bounds() );
+  EXPECT_EQ( nom::IntRect(53,153,91,23), mbox.message_bounds() );
+
+  EXPECT_EQ( -1, mbox.selection() );
+
+  // Set the default response
+  mbox.set_selection(1);
+
+  // Not implemented by libRocket...
+  // EXPECT_EQ( UIWidget::FocusPolicy::FOCUS, mbox.focus() );
+
+  // mbox.set_focus( UIWidget::FocusPolicy::MODAL );
+
+  EXPECT_EQ( 2, mbox.num_responses() );
+
+  nom::UIEventListener* on_response = new nom::UIEventListener(
+    [&] ( Rocket::Core::Event& ev ) { question_response_callback( ev, &mbox ); } );
+
+  mbox.register_event_listener( mbox.document()->GetElementById("yes"),
+                                "mouseup",
+                                on_response );
+
+  mbox.register_event_listener( mbox.document()->GetElementById("no"),
+                                "mouseup",
+                                on_response );
+
+  mbox.register_event_listener( mbox.document(),
+                                "mousescroll",
+                                on_response );
+
+  mbox.register_event_listener( mbox.document(),
+                                "keydown",
+                                on_response );
+
+  this->docs[doc_file] = mbox.document();
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+
+  EXPECT_NE( -1, mbox.selection() );
 }
 
 #if defined( NOM_USE_LIBROCKET_LUA )

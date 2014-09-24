@@ -50,6 +50,13 @@ class UIWidget: public Transformable
     typedef UIWidget self_type;
     typedef self_type* raw_ptr;
 
+    enum FocusPolicy
+    {
+      NONE = rocket::ElementDocument::FocusFlags::NONE,
+      FOCUS = rocket::ElementDocument::FocusFlags::FOCUS,
+      MODAL = rocket::ElementDocument::FocusFlags::MODAL
+    };
+
     UIWidget( const Point2i& pos, const Size2i& dims );
 
     virtual ~UIWidget();
@@ -89,6 +96,14 @@ class UIWidget: public Transformable
     void show();
     void hide();
     void close();
+
+    /// \brief Set the focus policy.
+    ///
+    /// \see UIWidget::FocusPolicy enumeration.
+    void set_focus( uint32 focus = FocusPolicy::FOCUS );
+
+    /// \brief Perform a bounds coordinates collision test.
+    bool hit_test( rocket::Element* target, const Point2i& pt );
 
     void set_title( const std::string& text );
 

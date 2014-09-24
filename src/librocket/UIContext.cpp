@@ -83,6 +83,18 @@ Rocket::Core::Context* UIContext::context() const
   return this->context_;
 }
 
+Size2i UIContext::size() const
+{
+  Rocket::Core::Vector2i dims( 0, 0 );
+
+  if( this->context_ )
+  {
+    dims = this->context_->GetDimensions();
+  }
+
+  return Size2i( dims.x, dims.y );
+}
+
 bool UIContext::create_context( const std::string& name, const Size2i& res,
                                 Rocket::Core::RenderInterface* interface )
 {

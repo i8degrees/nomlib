@@ -251,6 +251,25 @@ void UIWidget::close()
   }
 }
 
+void UIWidget::set_focus( uint32 focus )
+{
+  if( this->document() )
+  {
+    this->document()->Show( focus );
+  }
+}
+
+bool UIWidget::hit_test( rocket::Element* target, const Point2i& pt )
+{
+  NOM_ASSERT( this->valid() != false && target != nullptr );
+
+  if( this->valid() == false || target == nullptr ) return false;
+
+  rocket::Vector2f coords( pt.x, pt.y );
+
+  return target->IsPointWithinElement( coords );
+}
+
 void UIWidget::set_title( const std::string& text )
 {
   NOM_ASSERT( this->valid() != false );

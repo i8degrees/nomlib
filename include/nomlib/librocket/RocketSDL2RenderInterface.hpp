@@ -43,10 +43,10 @@ class RenderWindow;
 
 /// \brief Rendering interfacing bridge between libRocket and nomlib
 ///
-/// \note Only the OpenGL SDL2 back-end is supported. To add support for others,
-/// see http://mdqinc.com/blog/2013/01/integrating-librocket-with-sdl-2
+/// \note Currently, only the OpenGL back-end for SDL2 is supported.
 ///
-/// \see https://wiki.libsdl.org/SDL_GL_BindTexture
+/// \todo Add support for OpenGLES and OpenGLES2 (mobile platforms).
+/// \see http://mdqinc.com/blog/2013/01/integrating-librocket-with-sdl-2
 class RocketSDL2RenderInterface: public Rocket::Core::RenderInterface
 {
   public:

@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief Simple UI interface for drawing a styled message box
+/// \brief Simple message box model
 ///
 /// \todo Check for valid element IDs
 class UIMessageBox: public UIWidget
@@ -63,7 +63,7 @@ class UIMessageBox: public UIWidget
 
     virtual ~UIMessageBox();
 
-    bool initialize();
+    virtual bool initialize();
 
     bool enabled() const;
 

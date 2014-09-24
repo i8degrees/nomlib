@@ -216,4 +216,13 @@ void TTF_FreeFont ( TTF_Font* );
 } // namespace priv
 } // namespace nom
 
+/// \brief Output operator overload for SDL_Point (debugging aid)
+std::ostream& operator <<( std::ostream& os, const SDL_Point& pos );
+
+/// \brief Output operator overload for SDL_Rect (debugging aid)
+std::ostream& operator <<( std::ostream& os, const SDL_Rect& rect );
+
+/// \brief Output operator overload for SDL_Color (debugging aid)
+std::ostream& operator <<( std::ostream& os, const SDL_Color& color );
+
 #endif // include guard defined

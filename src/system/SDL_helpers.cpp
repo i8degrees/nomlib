@@ -228,3 +228,44 @@ void TTF_FreeFont ( TTF_Font* font )
 
 } // namespace priv
 } // namespace nom
+
+std::ostream& operator <<( std::ostream& os, const SDL_Point& pos )
+{
+  os
+  << "x: "
+  << pos.x
+  << ", y: "
+  << pos.y;
+
+  return os;
+}
+
+std::ostream& operator <<( std::ostream& os, const SDL_Rect& rect )
+{
+  os
+  << "x: "
+  << rect.x
+  << ", y: "
+  << rect.y
+  << ", w: "
+  << rect.w
+  << ", h: "
+  << rect.h;
+
+  return os;
+}
+
+std::ostream& operator << ( std::ostream& os, const SDL_Color& color )
+{
+  os
+  << "r: "
+  << static_cast<nom::sint>( color.r )
+  << ", g: "
+  << static_cast<nom::sint>( color.g )
+  << ", b: "
+  << static_cast<nom::sint>( color.b )
+  << ", a: "
+  << static_cast<nom::sint>( color.a );
+
+  return os;
+}

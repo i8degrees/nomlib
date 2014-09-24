@@ -52,6 +52,8 @@ Texture::Texture( void ) :
   pitch_ ( 0 ),
   position_ ( 0, 0 ),
   bounds_ ( 0, 0, -1, -1 ),
+  // TODO: use this for the texture size
+  // size_( Size2i::zero ),
   colorkey_ { Color4i::Black }
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
@@ -90,6 +92,8 @@ void Texture::free_texture( void )
   // FIXME: This should be IntRect::null
   // this->bounds_ = IntRect( 0, 0, -1, -1 );
 
+  // this->size_ = Size2i::zero;
+
   // FIXME: This should be Color4i::null
   // this->colorkey_ = Color4i::Black;
 }
@@ -99,6 +103,8 @@ Texture::Texture ( const Texture& copy ) :
   pixels_ { copy.pixels() },
   pitch_ { copy.pitch() },
   position_ { copy.position() },
+  // TODO: use this for the texture size
+  // size_{ copy.size() },
   bounds_ { copy.bounds() },
   colorkey_ { copy.colorkey() }
 {
@@ -111,6 +117,8 @@ Texture& Texture::operator = ( const Texture& other )
   this->pixels_ = other.pixels();
   this->pitch_ = other.pitch();
   this->position_ = other.position();
+  // TODO: use this for the texture size
+  // this->size_ = other.size();
   this->bounds_ = other.bounds();
 
   return *this;
@@ -123,7 +131,29 @@ Texture::SharedPtr Texture::clone ( void ) const
 
 bool Texture::initialize ( uint32 format, uint32 flags, int32 width, int32 height )
 {
-  this->texture_.reset ( SDL_CreateTexture ( RenderWindow::context(), format, flags, width, height ), priv::FreeTexture );
+  SDL_Renderer* context = RenderWindow::context();
+  NOM_ASSERT( context != nullptr );
+
+  if( context == nullptr )
+  {
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, "Could not initialize nom::Texture: invalid context." );
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+    return false;
+  }
+
+  // Ensure that the rendering driver supports Render to Target (FBO)
+  if( flags == SDL_TEXTUREACCESS_TARGET )
+  {
+    RendererInfo caps = RenderWindow::caps( context );
+
+    if( caps.target_texture() == false )
+    {
+      NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, "Could not initialize nom::Texture with SDL_TEXTUREACCESS_TARGET: driver does not support this feature." );
+      return false;
+    }
+  }
+
+  this->texture_.reset ( SDL_CreateTexture ( context, format, flags, width, height ), priv::FreeTexture );
 
   if ( this->valid() == false )
   {
@@ -135,6 +165,9 @@ bool Texture::initialize ( uint32 format, uint32 flags, int32 width, int32 heigh
 
   // Cache the size of our new Texture object with the existing surface info
   this->set_bounds( IntRect(0, 0, width, height) );
+
+  // TODO: use this for the texture size
+  // this->set_size( Size2i( width, height ) );
 
   return true;
 }
@@ -242,6 +275,9 @@ const Point2i& Texture::position( void ) const
 const Size2i Texture::size( void ) const
 {
   return Size2i( this->bounds_.w, this->bounds_.h );
+
+  // TODO: use this for the texture size
+  // return Size2i( this->size_.w, this->size_.h );
 }
 
 const IntRect& Texture::bounds( void ) const
@@ -259,6 +295,9 @@ void Texture::set_size( const Size2i& size )
 {
   this->bounds_.w = size.w;
   this->bounds_.h = size.h;
+
+  // TODO: use this for the texture size
+  // this->size_ = size;
 }
 
 void Texture::set_bounds( const IntRect& bounds )
@@ -518,12 +557,21 @@ void Texture::draw ( SDL_Renderer* target ) const
   render_coords.w = this->bounds().w;
   render_coords.h = this->bounds().h;
 
+  // TODO: use texture size bounds here, texture source bounds are *not* always
+  // the same thing...
+  // render_coords.w = this->size().w;
+  // render_coords.h = this->size().h;
+
   // Render with set clipping bounds; we are rendering only a portion of a
   // larger Texture; think: sprite sheets.
   //
   // NOTE: We have yet to encounter the case where these are not -1; testing of
   // examples/app & TTcards confirms this.
-  if ( render_coords.w != -1 && render_coords.h != -1 )
+
+  // TODO: use texture source bounds here, texture size is *not* always the
+  // same thing
+  if( render_coords.w != -1 && render_coords.h != -1 )
+  // if ( this->bounds().w != -1 && this->bounds().h != -1 )
   {
     SDL_Rect render_bounds;
     render_bounds.x = this->bounds().x;

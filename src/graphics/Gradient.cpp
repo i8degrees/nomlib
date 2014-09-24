@@ -69,19 +69,6 @@ Gradient::~Gradient( void )
   //NOM_LOG_TRACE( NOM );
 }
 
-Gradient::Gradient( const self_type& copy )  :
-  Transformable { copy.position(), copy.size() }, // Base class
-  rectangles_ { copy.rectangles_ },
-  gradient_{ copy.colors() },
-  margins_ { copy.margins() },
-  fill_direction_ { copy.fill_direction() },
-  dithering_{ copy.dithering() }
-{
-  // NOM_LOG_TRACE( NOM );
-
-  this->update();
-}
-
 IDrawable::raw_ptr Gradient::clone( void ) const
 {
   return Gradient::raw_ptr( new Gradient( *this ) );
@@ -182,10 +169,13 @@ void Gradient::set_dithering( bool state )
 
 void Gradient::draw( RenderTarget& target ) const
 {
-  for ( auto itr = this->rectangles_.begin(); itr != this->rectangles_.end(); ++itr )
+  if( this->texture_.valid() )
   {
-    (*itr)->draw( target );
+    // this->texture_.draw( target );
+    this->texture_.draw( RenderWindow::context() );
   }
+
+  NOM_ASSERT( RenderWindow::context() == target.renderer() );
 }
 
 // Private scope
@@ -201,7 +191,7 @@ void Gradient::update( void )
 
   if( this->valid() == false ) return;
 
-  // Clear the rendered drawables of the previously up-to-date object.
+  // Clear internal cache
   this->rectangles_.clear();
 
   if ( this->fill_direction() == FillDirection::Top )
@@ -222,6 +212,12 @@ void Gradient::update( void )
     this->reverse_colors();
     this->strategy_left_right();
   }
+
+  if( this->update_cache() == false )
+  {
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, "Could not update cache for gradient.");
+    return;
+  }
 }
 
 void Gradient::strategy_top_down ( void )
@@ -241,12 +237,11 @@ void Gradient::strategy_top_down ( void )
 
   for ( uint32 rows = this->position().y + this->margins().y; rows < y_offset; rows++ )
   {
-    // Calculate rendering offsets
+    // Calculate rendering offsets and cache for rendering to texture
     IntRect render_coords = IntRect( this->position().x + this->margins().x, rows, this->size().w - this->margins().x, 1 );
     Color4i render_color = Color4i( currentR, currentG, currentB );
 
-    // Queue up to render
-    this->rectangles_.push_back( Rectangle::shared_ptr( new Rectangle( render_coords, render_color ) ) );
+    this->rectangles_.push_back( Rectangle( render_coords, render_color ) );
 
     if ( this->dithering() )
     {
@@ -255,6 +250,10 @@ void Gradient::strategy_top_down ( void )
       currentB += destB;
     }
   } // end blit loop
+
+  NOM_ASSERT( this->rectangles_.size() == this->size().h );
+  // NOM_DUMP( this->size() );
+  // NOM_DUMP( this->rectangles_.size() );
 }
 
 void Gradient::strategy_left_right ( void )
@@ -274,12 +273,11 @@ void Gradient::strategy_left_right ( void )
 
   for ( uint32 rows = this->position().x + this->margins().x; rows < x_offset; rows++ )
   {
-    // Calculate rendering offsets
+    // Calculate rendering offsets and cache for rendering to texture
     IntRect render_coords = IntRect( rows, this->position().y + this->margins().y, 1, this->size().h - this->margins().y );
     Color4i render_color = Color4i( currentR, currentG, currentB );
 
-    // Queue up to render
-    this->rectangles_.push_back( Rectangle::shared_ptr( new Rectangle( render_coords, render_color ) ) );
+    this->rectangles_.push_back( Rectangle( render_coords, render_color ) );
 
     if ( this->dithering() )
     {
@@ -288,6 +286,110 @@ void Gradient::strategy_left_right ( void )
       currentB += destB;
     }
   } // end blit loop
+
+  NOM_ASSERT( this->rectangles_.size() == this->size().w );
+  // NOM_DUMP( this->size() );
+  // NOM_DUMP( this->rectangles_.size() );
+}
+
+bool Gradient::update_cache()
+{
+  // Relative coordinates to use for texture cache; rects are global positions
+  Point2i offset( Point2i::zero );
+
+  SDL_Renderer* context = RenderWindow::context();
+  NOM_ASSERT( context != nullptr );
+
+  // Sanity check
+  if( context == nullptr )
+  {
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, "Could not update texture cache for the gradient: invalid renderer.");
+    return false;
+  }
+
+  // Obtain the optimal pixel format for the platform
+  RendererInfo caps = RenderWindow::caps( context );
+
+  // Create the texture cache that will hold our gradient
+  if( this->texture_.initialize( caps.optimal_texture_format(), SDL_TEXTUREACCESS_TARGET, this->size().w, this->size().h ) == false )
+  {
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, "Could not initialize the texture cache for the gradient." );
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+    return false;
+  }
+
+  // Rendering coordinates
+  this->texture_.set_position( this->position() );
+
+  // Relative coordinates; since we are using the cache as a rendering target
+  // and ultimately expecting to render to the output window (using rendering
+  // coordinates), we must use relative coordinates here. Our rectangle cache
+  // coordinates are specified using rendering coordinates (from the end-user).
+  this->texture_.set_bounds( IntRect( offset, this->size() ) );
+
+  // Set the rendering target to the texture (uses FBO)
+  if( SDL_SetRenderTarget( context, this->texture_.texture() ) != 0 )
+  {
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, "Could not set the rendering target to the texture cache." );
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+    return false;
+  }
+
+  // Debugging aid; red background indicates something went wrong
+  if( SDL_SetRenderDrawColor( context, 255, 0, 0, 255 ) != 0 )
+  {
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+    return false;
+  }
+
+  // Ensure that the texture surface is cleared, otherwise we can get artifacts
+  // leftover from whatever the previous state was set to.
+  if( SDL_RenderClear( context ) != 0 )
+  {
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+    return false;
+  }
+
+  SDL_Rect render_coords;
+  for( auto itr = this->rectangles_.begin(); itr != this->rectangles_.end(); ++itr )
+  {
+    if( SDL_SetRenderDrawColor( context, (*itr).fill_color().r, (*itr).fill_color().g, (*itr).fill_color().b, (*itr).fill_color().a ) != 0 )
+    {
+      NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+      return false;
+    }
+    // NOM_DUMP( (*itr).fill_color() );
+
+    // Translate each rectangle position from global coordinates to relative
+    if( this->fill_direction() == Gradient::FillDirection::Top || this->fill_direction() == Gradient::FillDirection::Bottom )
+    {
+      render_coords = SDL_RECT( Point2i( offset.x, (*itr).position().y - this->position().y ), (*itr).size() );
+    }
+    else if( this->fill_direction() == Gradient::FillDirection::Left || this->fill_direction() == Gradient::FillDirection::Right )
+    {
+      render_coords = SDL_RECT( Point2i( (*itr).position().x - this->position().x, offset.y ), (*itr).size() );
+    }
+    // NOM_DUMP( render_coords );
+
+    if( SDL_RenderFillRect( context, &render_coords ) != 0 )
+    {
+      NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+      return false;
+    }
+  }
+
+  // Reset the rendering target now that we are done using it.
+  if( SDL_SetRenderTarget( context, nullptr ) != 0 )
+  {
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, "Could not reset the rendering target." );
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+    return false;
+  }
+
+  NOM_ASSERT( this->texture_.position() == this->position() );
+  NOM_ASSERT( this->texture_.bounds() == IntRect( offset, this->size() ) );
+
+  return true;
 }
 
 } // namespace nom

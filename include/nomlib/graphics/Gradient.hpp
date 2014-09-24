@@ -42,6 +42,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/shapes/Rectangle.hpp"
 #include "nomlib/core/helpers.hpp"
 
+#include "nomlib/graphics/Texture.hpp"
+
 namespace nom {
 
 /// \brief Rectangle fill class with dithered, linear gradient colors.
@@ -88,9 +90,6 @@ class Gradient: public Transformable
 
     /// \brief Destructor.
     virtual ~Gradient( void );
-
-    /// \brief Copy constructor.
-    Gradient( const self_type& copy );
 
     /// \brief Implements the required IDrawable::clone method.
     IDrawable::raw_ptr clone( void ) const;
@@ -148,6 +147,9 @@ class Gradient: public Transformable
     void set_dithering( bool state );
 
     /// \brief Implements the IDrawable::draw method.
+    ///
+    /// \remarks target This parameter is not currently used; the current
+    /// rendering context is instead used.
     void draw( RenderTarget& target ) const;
 
   private:
@@ -157,13 +159,22 @@ class Gradient: public Transformable
     void strategy_top_down( void );
     void strategy_left_right( void );
 
-    /// Drawables vector containing rectangle objects to be blit
+    /// \brief Synchronize the texture cache with the generated rectangles.
     ///
-    /// \todo Yes, you heard me right! We are using a rectangle function to draw
-    /// what are one pixel wide / high line segments in a row single row
-    /// iteration. Imaginably, performance would hardly measure a difference,
-    /// but nevertheless.
-    std::vector<Rectangle::shared_ptr> rectangles_;
+    /// \returns Boolean TRUE when the texture cache has been successfully
+    /// updated, boolean FALSE when it hasn't been updated, such as when the
+    /// rendering context is invalid, or if the driver does not support FBOs.
+    bool update_cache();
+
+    /// \brief Rectangles cache; this is used to build the texture cache.
+    std::vector<Rectangle> rectangles_;
+
+    /// \brief Render cache for the gradient.
+    ///
+    /// \remarks This greatly optimizes performance of this class when there
+    /// are a large number of rectangles being drawn (i.e.: high resolution
+    /// gradient being used as a backdrop, or several gradient objects).
+    Texture texture_;
 
     /// \brief The starting & ending colors used in the gradient fill.
     ///
@@ -174,8 +185,6 @@ class Gradient: public Transformable
 
     /// \brief Additional offset coordinates, in pixels.
     Point2i margins_;
-
-    //Size2i size_;
 
     /// Color fill axis -- X or Y increment.
     enum Gradient::FillDirection fill_direction_;

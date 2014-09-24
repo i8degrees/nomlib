@@ -84,7 +84,8 @@ class RenderWindow: public Renderer
                   int32 height,
                   uint32 window_flags,
                   int32 rendering_driver = -1,
-                  uint32 context_flags = SDL_RENDERER_ACCELERATED
+                  uint32 context_flags =
+                    SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE
                 );
 
     /// Initialize a SDL window and renderer.

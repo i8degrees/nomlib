@@ -386,6 +386,11 @@ class Texture
     ///           width & height members.
     Point2i position_; // This should probably be an IntRect. (Global bounds).
 
+    /// \todo This needs to be used ASAP; we've been using our texture source
+    /// bounds with our texture size coordinates, and this makes a huge,
+    /// confusing mess of things. See Texture.cpp for additional comments.
+    // Size2i size_;
+
     /// Position & size of texture within memory; X, Y, width & height in pixels.
     ///
     /// \remarks  These coordinates are generally not used unless we are reading

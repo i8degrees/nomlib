@@ -221,12 +221,13 @@ class libRocketTest: public nom::VisualUnitTest
     /// \remarks Initialization callback for VisualUnitTest to act on, instead
     /// of its default rendering setup. A bit of additional setup is
     /// required for plumbing in libRocket into our setup.
-    void init_rendering()
+    bool init_rendering()
     {
       // Required interface as per libRocket SDL2 implementation
       if( nom::set_hint( SDL_HINT_RENDER_DRIVER, "opengl" ) == false )
       {
-        NOM_LOG_INFO ( NOM, "Could not enable vertical refresh." );
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not enable the OpenGL rendering driver." );
+        return false;
       }
 
       if( nom::set_hint( SDL_HINT_RENDER_VSYNC, "0" ) == false )
@@ -260,7 +261,8 @@ class libRocketTest: public nom::VisualUnitTest
 
       if( nom::RocketSDL2RenderInterface::gl_init( this->window_.size().w, this->window_.size().h ) == false )
       {
-        FAIL() << "Could not initialize OpenGL for libRocket.";
+        // FAIL() << "Could not initialize OpenGL for libRocket.";
+        return false;
       }
 
       // I don't understand *why*, but when we enable this, we can forgo the use
@@ -281,6 +283,8 @@ class libRocketTest: public nom::VisualUnitTest
       {
         NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Could not enable emulated SDL2 independent resolution scaling." );
       }
+
+      return true;
     }
 
     /// \remarks This method is called after construction, at the start of each
@@ -292,10 +296,7 @@ class libRocketTest: public nom::VisualUnitTest
 
       // NOM_LOG_TRACE( NOM );
 
-      // We must set the rendering init callback before calling ::SetUp()
-      this->set_init_rendering_callback( [&] () { this->init_rendering(); } );
-
-      // VisualUnitTest environment init...
+      // VisualUnitTest environment init
       VisualUnitTest::SetUp();
 
       // nom::init sets the working directory to this executable's directory

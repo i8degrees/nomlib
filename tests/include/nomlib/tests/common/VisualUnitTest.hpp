@@ -57,12 +57,14 @@ class VisualUnitTest: public UnitTest
     /// and VisualUnitTest::timestamp_ (file & directory sync).
     friend class VisualUnitTestResultWriter;
 
-    typedef std::function<void()> init_rendering_callback_type;
     typedef std::function<void( Event )> event_callback_type;
     typedef std::function<void( float )> update_callback_type;
     typedef std::function<void( const RenderWindow& )> render_callback_type;
 
     /// \brief Initialize the environment for the unit test.
+    ///
+    /// \note This is done for us automatically in the constructor of
+    /// VisualUnitTest.
     ///
     /// \remarks The necessary directory tree -- if any (this is dependent upon
     /// parsed command line options) -- is initialized at this time. The
@@ -70,12 +72,14 @@ class VisualUnitTest: public UnitTest
     /// first constructed object instance of this class.
     void initialize( const Size2i& res );
 
-    /// \brief Default constructor.
+    /// \brief Default constructor; initialize the environment.
     ///
     /// \remarks The resolution default of 640 x 480 is used.
     VisualUnitTest( void );
 
     /// \brief Construct the object using a non-default rendering resolution.
+    ///
+    /// \remarks This is intended for derived classes.
     ///
     /// \remarks The default resolution set for the rendering window is
     /// initialized to 640 x 480 -- to change the rendering resolution, a call
@@ -91,19 +95,26 @@ class VisualUnitTest: public UnitTest
     /// the visual test set when it has images in its list.
     virtual ~VisualUnitTest( void );
 
-    /// \brief Initialize the rendering window and setup the default input
-    /// bindings used for each unit test.
+    /// \brief Initialize the rendering subsystem.
     ///
-    /// \remarks Unless you are re-implementing the initialization for the
-    /// rendering window and input mappings, a call to this base method should
-    /// be made.
+    /// \remarks To override this method with a custom environment, at minimum,
+    /// you must provide the appropriate call to RenderWindow::create.
     ///
-    /// The intended resolution should be set -- using ::set_resolution --
-    /// before this method is called.
+    /// \note This method gets called ::SetUp, which is called by Google Test
+    /// at the start of every test.
+    ///
+    /// \see nom::RenderWindow
+    virtual bool init_rendering();
+
+    /// \brief Initialize the default input bindings used for each unit test.
+    ///
+    /// \remarks When re-implementing this method for your own test, you must
+    /// call this class, otherwise the rendering and input subsystems do not
+    /// get setup.
     ///
     /// \note Re-implements ::testing::SetUp.
     ///
-    /// \see nom::RenderWindow, nom::InputStateMapper, ::testing::SetUp.
+    /// \see nom::InputStateMapper, ::testing::SetUp.
     virtual void SetUp( void );
 
     /// \brief Compare the current test run image against a reference set.
@@ -168,15 +179,6 @@ class VisualUnitTest: public UnitTest
     virtual bool on_frame_end( uint elapsed_frames );
 
     // void save_screenshot( const std::string& file_path );
-
-    /// \brief User-defined initialization callback
-    ///
-    /// \remarks The default is NULL (no user-defined callback). This instructs
-    /// VisualUnitTest to assume defaults that are known to be good for native
-    /// nomlib apps.
-    ///
-    /// \returns Always returns a value of one (1).
-    int set_init_rendering_callback( const init_rendering_callback_type& func );
 
     /// \returns The number of registered event callbacks (after insertion).
     int append_event_callback( const std::function<void( Event )>& func );
@@ -258,9 +260,6 @@ class VisualUnitTest: public UnitTest
     std::string test_reference_directory_;
 
     std::string output_filename_;
-
-    /// \brief User-defined initialization callback
-    init_rendering_callback_type init_rendering_callback_;
 
     std::vector<event_callback_type> event_callbacks_;
     std::vector<update_callback_type> update_callbacks_;

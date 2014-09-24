@@ -120,30 +120,36 @@ VisualUnitTest::VisualUnitTest( const Size2i& res )
   this->initialize( res );
 }
 
-void VisualUnitTest::SetUp( void )
+bool VisualUnitTest::init_rendering()
 {
   uint32 window_flags = 0;
 
-  // Use our default rendering setup defaults -- native nomlib apps will almost
-  // always be happy with these settings!
-  if( this->init_rendering_callback_ == nullptr )
+  // Summon SDL2 & friends.
+  nom::init_third_party( InitHints::DefaultInit );
+
+  if( nom::set_hint( SDL_HINT_RENDER_VSYNC, "0" ) == false )
   {
-    // Summon SDL2 & friends
-    nom::init_third_party( InitHints::DefaultInit );
-
-    if( nom::set_hint( SDL_HINT_RENDER_VSYNC, "0" ) == false )
-    {
-      NOM_LOG_INFO( NOM, "Could not disable vertical refresh." );
-    }
-
-    // Initialize rendering window (and its GL context)
-    EXPECT_TRUE( this->window_.create( this->test_set(), this->resolution(), window_flags ) );
-    this->render_window().set_logical_size( this->resolution() );
+    NOM_LOG_INFO( NOM, "Could not disable vertical refresh." );
   }
-  else
+
+  // Initialize rendering window (and its GL context)
+  if( this->window_.create( this->test_set(), this->resolution(), window_flags ) == false )
   {
-    // Use user-defined initialization
-    this->init_rendering_callback_();
+    return false;
+  }
+
+  // Independent resolution scaling
+  this->render_window().set_logical_size( this->resolution() );
+
+  return true;
+}
+
+void VisualUnitTest::SetUp( void )
+{
+  if( this->init_rendering() == false )
+  {
+    FAIL()
+    << "Initialization of the rendering subsystem failed.";
   }
 
   // this->input_mapper_.clear();
@@ -519,13 +525,6 @@ void VisualUnitTest::set_output_directory( const std::string& dir_path )
 void VisualUnitTest::append_screenshot_frame( uint frame )
 {
   this->screenshot_frames_.push_back( frame );
-}
-
-int VisualUnitTest::set_init_rendering_callback( const init_rendering_callback_type& func )
-{
-  this->init_rendering_callback_ = func;
-
-  return 1;
 }
 
 int VisualUnitTest::append_event_callback( const std::function<void( Event )>& func )

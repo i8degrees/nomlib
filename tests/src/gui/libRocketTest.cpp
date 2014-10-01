@@ -772,78 +772,93 @@ TEST_F( libRocketTest, UIQuestionDialogBox )
 {
   // As per the positioning units used for nom::QuestionDialogBox (ex2) in
   // examples/gui_messagebox.cpp
-  Point2i pos(38, 141);
-  Size2i dims(124, 72);
-  std::string doc_file = "questionbox.rml";
+  Point2i pos1(38, 141);
+  Size2i dims1(124, 72);
+  std::string doc_file1 = "questionbox.rml";
 
-  UIQuestionDialogBox mbox( pos, dims );
+  // A second question box, intended only for the interactive testing of
+  // potential key focus & event listener issues; we'll intentionally be skipping
+  // many of the tests for mbox2.
+  Point2i pos2( (pos1.x + dims1.w) * 1.5, 141 );
+  Size2i dims2 = dims1;
+  std::string doc_file2 = doc_file1;
 
-  EXPECT_EQ( true, mbox.set_desktop( this->desktop.context() ) );
-  EXPECT_EQ( true, mbox.set_document_file( doc_file ) );
-
-  if( mbox.initialize() == false )
+  UIQuestionDialogBox mbox1( pos1, dims1 );
+  EXPECT_EQ( true, mbox1.set_desktop( this->desktop.context() ) );
+  EXPECT_EQ( true, mbox1.set_document_file( doc_file1 ) );
+  if( mbox1.initialize() == false )
   {
     FAIL()
-    << "UIQuestionDialogBox should not be invalid; is the context and document file valid?";
+    << "UIQuestionDialogBox should not be invalid (mbox1); is the context and document file valid?";
   }
 
-  mbox.set_title_text("CHOICE");
-  // mbox.set_message_text("Are you sure?");
+  UIQuestionDialogBox mbox2( pos2, dims2 );
+  EXPECT_EQ( true, mbox2.set_desktop( this->desktop.context() ) );
+  EXPECT_EQ( true, mbox2.set_document_file( doc_file2 ) );
+  if( mbox2.initialize() == false )
+  {
+    FAIL()
+    << "UIQuestionDialogBox should not be invalid (mbox2); is the context and document file valid?";
+  }
+
+  mbox1.set_title_text("CHOICE");
+  // mbox1.set_message_text("Are you sure?");
 
   // Set in questionbox.rml
-  EXPECT_EQ( "title", mbox.title_id() );
-  EXPECT_EQ( "question", mbox.message_id() );
-  EXPECT_EQ( "response", mbox.response_id() );
-  EXPECT_EQ( "button", mbox.element_type() );
+  EXPECT_EQ( "title", mbox1.title_id() );
+  EXPECT_EQ( "question", mbox1.message_id() );
+  EXPECT_EQ( "response", mbox1.response_id() );
+  EXPECT_EQ( "button", mbox1.element_type() );
 
-  EXPECT_EQ( true, mbox.enabled() );
+  EXPECT_EQ( true, mbox1.enabled() );
 
-  EXPECT_EQ( "CHOICE", mbox.title_text() );
-  EXPECT_EQ( "Are you sure?", mbox.message_text() );
+  EXPECT_EQ( "CHOICE", mbox1.title_text() );
+  EXPECT_EQ( "Are you sure?", mbox1.message_text() );
 
-  EXPECT_EQ( pos, mbox.position() );
-  EXPECT_EQ( dims, mbox.size() );
+  EXPECT_EQ( pos1, mbox1.position() );
+  EXPECT_EQ( dims1, mbox1.size() );
 
-  EXPECT_EQ( nom::IntRect(43,136,34,16), mbox.title_bounds() );
-  EXPECT_EQ( nom::IntRect(53,153,91,23), mbox.message_bounds() );
+  EXPECT_EQ( nom::IntRect(43,136,34,16), mbox1.title_bounds() );
+  EXPECT_EQ( nom::IntRect(53,153,91,23), mbox1.message_bounds() );
 
-  EXPECT_EQ( -1, mbox.selection() );
+  EXPECT_EQ( -1, mbox1.selection() );
 
   // Set the default response
-  mbox.set_selection(1);
+  mbox1.set_selection(1);
 
   // Not implemented by libRocket...
-  // EXPECT_EQ( UIWidget::FocusPolicy::FOCUS, mbox.focus() );
+  // EXPECT_EQ( UIWidget::FocusPolicy::FOCUS, mbox1.focus() );
 
-  // mbox.set_focus( UIWidget::FocusPolicy::MODAL );
+  // mbox1.set_focus( UIWidget::FocusPolicy::MODAL );
 
-  EXPECT_EQ( 2, mbox.num_responses() );
+  EXPECT_EQ( 2, mbox1.num_responses() );
 
   nom::UIEventListener* on_response = new nom::UIEventListener(
-    [&] ( Rocket::Core::Event& ev ) { question_response_callback( ev, &mbox ); } );
+    [&] ( Rocket::Core::Event& ev ) { question_response_callback( ev, &mbox1 ); } );
 
-  mbox.register_event_listener( mbox.document()->GetElementById("yes"),
+  mbox1.register_event_listener( mbox1.document()->GetElementById("yes"),
                                 "mouseup",
                                 on_response );
 
-  mbox.register_event_listener( mbox.document()->GetElementById("no"),
+  mbox1.register_event_listener( mbox1.document()->GetElementById("no"),
                                 "mouseup",
                                 on_response );
 
-  mbox.register_event_listener( mbox.document(),
+  mbox1.register_event_listener( mbox1.document(),
                                 "mousescroll",
                                 on_response );
 
-  mbox.register_event_listener( mbox.document(),
+  mbox1.register_event_listener( mbox1.document(),
                                 "keydown",
                                 on_response );
 
-  this->docs[doc_file] = mbox.document();
+  this->docs[doc_file1] = mbox1.document();
+  this->docs[doc_file2] = mbox2.document();
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
 
-  EXPECT_NE( -1, mbox.selection() );
+  EXPECT_NE( -1, mbox1.selection() );
 }
 
 #if defined( NOM_USE_LIBROCKET_LUA )

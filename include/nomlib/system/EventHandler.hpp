@@ -262,10 +262,25 @@ class EventHandler
 
     /// \brief Handler for mouse wheel events.
     ///
-    /// \remark x < 0 = Left
-    /// \remark x > 0 = Right
-    /// \remark y < 0 = Up
-    /// \remark y > 0 = Down
+    /// \remarks Upward wheel motion (scroll forward) generates a positive y
+    /// value and downward wheel motion (scroll backward) generates a negative
+    /// Y value.
+    ///     Wheel motion to the left generates a negative X value and motion to
+    /// the right generates a positive X value.
+    ///
+    /// \note The end-user's platform may invert the wheel values documented
+    /// here (i.e.: Mac OS X's "Scroll direction: natural" Mouse preference).
+    ///
+    /// \code
+    /// y > 0 = Up
+    /// y < 0 = Down
+    /// x > 0 = Left
+    /// x < 0 = Right
+    /// \endcode
+    ///
+    /// \todo Verify documentation notes regarding left and right wheel axis
+    /// values mapping (it's presently only been checked with virtual / fake
+    /// hardware).
     virtual void on_mouse_wheel( const Event& ev );
 
     virtual void on_joy_axis( const Event& ev );

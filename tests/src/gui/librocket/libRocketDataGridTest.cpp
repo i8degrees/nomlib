@@ -24,6 +24,41 @@ namespace nom {
 
 using namespace Rocket::Core;
 
+/// \brief Helper method for automating the creation of a document window
+Rocket::Core::ElementDocument* load_window( Rocket::Core::Context* ctx, const std::string& filename, const nom::Point2i& pos )
+{
+  Rocket::Core::ElementDocument* doc = nullptr;
+
+  doc = ctx->LoadDocument( filename.c_str() );
+
+  if( doc )
+  {
+    doc->Show();
+    // NOM_DUMP( doc->GetReferenceCount() );
+    doc->RemoveReference();
+    // NOM_DUMP( doc->GetReferenceCount() );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", doc->GetSourceURL().CString(), "is loaded." );
+  }
+  else
+  {
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", doc->GetSourceURL().CString(), "was NULL." );
+    return nullptr;
+  }
+
+  // Absolute positioning of the window in global-space -- relative to the
+  // rendering back-end (SDL2)
+  if( pos != nom::Point2i::null )
+  {
+    doc->SetProperty( "left", Rocket::Core::Property( pos.x, Rocket::Core::Property::ABSOLUTE_UNIT ) );
+    doc->SetProperty( "top", Rocket::Core::Property( pos.y, Rocket::Core::Property::ABSOLUTE_UNIT ) );
+  }
+
+  // Set the title of the window to that of the title element's text
+  doc->GetElementById( "title" )->SetInnerRML( doc->GetTitle() );
+
+  return doc;
+}
+
 /// \brief A mock card model
 ///
 /// \see TTcards
@@ -73,12 +108,13 @@ class CardsMenu: public Rocket::Controls::DataSource
     {
       this->load_db();
 
-      this->per_page = 11;
-      // this->total_pages = db.size() / per_page;
+      // Defaults
+      this->per_page_ = 11;
+      // this->total_pages = db.size() / per_page();
       // this->total_pages = 10;
       this->set_total_pages( 5 );
       this->set_current_page( 0 );
-      this->set_cursor_index( 0 );
+      this->set_selection( 0 );
     }
 
     virtual ~CardsMenu()
@@ -176,11 +212,11 @@ class CardsMenu: public Rocket::Controls::DataSource
 
     void set_page( int pg )
     {
-      // cards.begin() = id = per_page * pg
-      int start_id = this->per_page * pg;
+      // cards.begin() = id = per_page() * pg
+      int start_id = this->per_page() * pg;
 
-      // cards.end() = id + per_page
-      int end_id = start_id + this->per_page;
+      // cards.end() = id + per_page()
+      int end_id = start_id + this->per_page();
 
       // Sanity check
       if( start_id > this->cards_pg_.size() ) return;
@@ -326,59 +362,41 @@ class CardsMenu: public Rocket::Controls::DataSource
       tags[ col ]->SetInnerRML( name.c_str() );
     }
 
-    int cursor_index() const
+    int per_page() const
     {
-      return this->cursor_index_;
+      return this->per_page_;
     }
 
-    void set_cursor_index( int idx )
+    // current_page_ + 1 * id(selection_) - 1 = 5*11-1
+    int selection() const
     {
-      this->cursor_index_ = idx;
+      return this->selection_;
+    }
+
+    void set_selection( int idx )
+    {
+      this->selection_ = idx;
     }
 
   private:
     std::vector<Card> db_;
     std::vector<Card> cards_pg_;
+
+    /// \brief The total number of available card pages.
     int total_pages_;
-    int per_page;
-    int cursor_index_;
+
+    /// \brief The number of cards shown per page.
+    int per_page_;
+
+    /// \brief The currently selected page.
     int current_page_;
+
+    /// \brief The currently selected card.
+    ///
+    /// \remarks This maps internally to the element's index position in
+    /// the active cards database.
+    int selection_;
 };
-
-/// \brief Helper method for automating the creation of a document window
-Rocket::Core::ElementDocument* load_window( Rocket::Core::Context* ctx, const std::string& filename, const nom::Point2i& pos )
-{
-  Rocket::Core::ElementDocument* doc = nullptr;
-
-  doc = ctx->LoadDocument( filename.c_str() );
-
-  if( doc )
-  {
-    doc->Show();
-    // NOM_DUMP( doc->GetReferenceCount() );
-    doc->RemoveReference();
-    // NOM_DUMP( doc->GetReferenceCount() );
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", doc->GetSourceURL().CString(), "is loaded." );
-  }
-  else
-  {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", doc->GetSourceURL().CString(), "was NULL." );
-    return nullptr;
-  }
-
-  // Absolute positioning of the window in global-space -- relative to the
-  // rendering back-end (SDL2)
-  if( pos != nom::Point2i::null )
-  {
-    doc->SetProperty( "left", Rocket::Core::Property( pos.x, Rocket::Core::Property::ABSOLUTE_UNIT ) );
-    doc->SetProperty( "top", Rocket::Core::Property( pos.y, Rocket::Core::Property::ABSOLUTE_UNIT ) );
-  }
-
-  // Set the title of the window to that of the title element's text
-  doc->GetElementById( "title" )->SetInnerRML( doc->GetTitle() );
-
-  return doc;
-}
 
 class libRocketDataGridTest: public nom::VisualUnitTest
 {
@@ -577,25 +595,27 @@ class libRocketDataGridTest: public nom::VisualUnitTest
       // NOM_LOG_TRACE( NOM );
     }
 
-    void on_page( Rocket::Core::Event& event )
+    void on_keydown( Rocket::Core::Event& ev )
     {
-      if( event == "keydown" )
+      int pg = store.current_page();
+      int num_pages = store.total_pages();
+
+      int per_page = store.per_page();
+      int selected_card = store.selection();
+
+      Element* target = ev.GetTargetElement();
+
+      if( target == nullptr )
       {
-        Input::KeyIdentifier key = NOM_SCAST(Input::KeyIdentifier, event.GetParameter<int>("key_identifier", 0) );
+        FAIL()
+        << "Event element target was NULL; this shouldn't have been so!";
+      }
 
-        Element* ev = event.GetTargetElement();
+      if( ev == "keydown" )
+      {
+        Input::KeyIdentifier key = NOM_SCAST(Input::KeyIdentifier, ev.GetParameter<int>("key_identifier", 0) );
 
-        if( ev == nullptr )
-        {
-          FAIL()
-          << "Event element target was NULL; this shouldn't have been so!";
-        }
-
-        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "KEYDOWN event from", ev->GetId().CString(), "value:", key );
-
-        int pg = this->store.current_page();
-        int num_pages = this->store.total_pages();
-
+        // Handle paging (left && right)
         if( key == Input::KI_LEFT && pg > 0 )
         {
           --pg;
@@ -605,18 +625,117 @@ class libRocketDataGridTest: public nom::VisualUnitTest
           ++pg;
         }
 
+        // Handle cursor (up && down)
+        else if( key == Input::KI_UP && selected_card > 0 )
+        {
+          --selected_card;
+        }
+        else if( key == Input::KI_DOWN && ( selected_card < per_page - 1 ) )
+        {
+          ++selected_card;
+        }
+
         this->store.set_page(pg);
         this->store.set_current_page(pg);
+        store.set_selection(selected_card);
 
-        this->store.set_title( this->docs["dataview.rml"]->GetElementById("content"), 0, "CARDS P. " + std::to_string(pg+1) );
-
-        // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Pg:", this->store.current_page() );
-
-        EXPECT_EQ( pg, this->store.current_page() );
-        EXPECT_EQ( 11, this->store.GetNumRows("cards") );
-
+        // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "KEYDOWN event from", target->GetId().CString(), "value:", key );
+        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Pg:", store.current_page() );
+        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Selection:", store.selection() );
       } // end if keydown
-    } // end func
+
+      store.set_title( this->docs["dataview.rml"]->GetElementById("content"), 0, "CARDS P. " + std::to_string(pg+1) );
+
+      EXPECT_EQ( pg, store.current_page() );
+      EXPECT_EQ( 11, store.GetNumRows("cards") );
+    } // end func on_keydown
+
+    void on_mouseup( Rocket::Core::Event& ev )
+    {
+      int selection = 0;
+      Rocket::Core::Element* target = ev.GetTargetElement();
+
+      if( target == nullptr )
+      {
+        FAIL()
+        << "Event element target was NULL; this shouldn't have been so!";
+      }
+
+      if( ev == "mouseup" )
+      {
+        if( target->GetTagName() == "datagridcell" )
+        {
+          selection = store.id( target->GetInnerRML().CString() );
+          store.set_selection( selection );
+
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Card name:", target->GetInnerRML().CString() );
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Card ID:", store.selection() );
+
+          EXPECT_EQ( selection, store.selection() );
+          EXPECT_EQ( 11, store.GetNumRows("cards") );
+
+          // datagridrow
+          // NOM_DUMP( target->GetParentNode()->GetTagName().CString() );
+          // <datagridcell>Geezard</datagridcell><datagridcell>1</datagridcell>
+          // NOM_DUMP( target->GetParentNode()->GetInnerRML().CString() );
+
+          // 1
+          // NOM_DUMP( target->GetParentNode()->GetLastChild()->GetInnerRML().CString() );
+
+          // StringList out;
+          // StringList cols;
+          // cols.push_back( "name" );
+          // cols.push_back( "num" );
+          // store.GetRow( out, "cards", 0, cols );  // Geezard
+          // for( auto itr = out.begin(); itr != out.end(); ++itr )
+          // {
+          //   NOM_DUMP( (*itr).CString() );
+          // }
+
+        } // end if target
+
+      } // end if click
+    } // end func on_mouseup
+
+    void on_mousescroll( Rocket::Core::Event& ev )
+    {
+      // int pg = store.current_page();
+      // int num_pages = store.total_pages();
+      int per_page = store.per_page();
+      int selected_card = store.selection();
+
+      Element* target = ev.GetTargetElement();
+
+      if( target == nullptr )
+      {
+        FAIL()
+        << "Event element target was NULL; this shouldn't have been so!";
+      }
+
+      if( ev == "mousescroll" )
+      {
+        Input::KeyIdentifier wheel = NOM_SCAST(Input::KeyIdentifier, ev.GetParameter<int>("wheel_delta", -1) );
+
+        // Handle cursor (up && down)
+        if( wheel < 0 && selected_card > 0 )
+        {
+          --selected_card;
+        }
+        else if( wheel > 0 && ( selected_card < per_page - 1 ) )
+        {
+          ++selected_card;
+        }
+
+        // store.set_page(pg);
+        // store.set_current_page(pg);
+        store.set_selection(selected_card);
+
+        // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "WHEEL event from", target->GetId().CString(), "value:", wheel );
+        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Pg:", store.current_page() );
+        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Selection:", store.selection() );
+
+      } // end if mousescroll
+    } // end func on_mousescroll
 
   protected:
     /// UI Windows; 'widgets' containers
@@ -632,12 +751,6 @@ class libRocketDataGridTest: public nom::VisualUnitTest
 
     /// \remarks This object must be global, otherwise crashes will often
     /// result (UIEventListener related?).
-    ///
-    /// \note ~~This class will (only sometimes) fail to instantiate for a long
-    /// period of time (~30s) -- causing the test runners to halt. The origin
-    /// of this issue are unknown, although the first place I'd like to look is
-    /// in the constructor of CardsMenu (...leading to libRocket's ::DataSource
-    /// interfacing).~~
     CardsMenu store;
 };
 
@@ -777,41 +890,17 @@ TEST_F( libRocketDataGridTest, DataGridStoreGameModel )
   EXPECT_EQ( "CARDS P. 1", this->store.title(doc->GetElementById("content"), 0) );
   EXPECT_EQ( "NUM.", this->store.title(doc->GetElementById("content"), 1) );
 
-  evt.register_event_listener( doc, "keydown", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) { this->on_page( ev ); } ) );
-  evt.register_event_listener( doc, "mouseup", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev )
-    {
-      Rocket::Core::Element* target = ev.GetTargetElement();
-      if( ev == "mouseup" )
-      {
-        if( target && target->GetTagName() == "datagridcell" )
-        {
-          // datagridrow
-          // NOM_DUMP( target->GetParentNode()->GetTagName().CString() );
-          // <datagridcell>Geezard</datagridcell><datagridcell>1</datagridcell>
-          // NOM_DUMP( target->GetParentNode()->GetInnerRML().CString() );
+  evt.register_event_listener( doc, "keydown", new nom::UIEventListener( [&]
+    ( Rocket::Core::Event& ev ) { this->on_keydown( ev ); }
+  ));
 
-          // Geezard
-          NOM_DUMP( target->GetInnerRML().CString() );
-          // 1
-          // NOM_DUMP( target->GetParentNode()->GetLastChild()->GetInnerRML().CString() );
+  evt.register_event_listener( doc, "mouseup", new nom::UIEventListener( [&]
+    ( Rocket::Core::Event& ev ) { this->on_mouseup( ev ); }
+  ));
 
-          // 0
-          NOM_DUMP( this->store.id( target->GetInnerRML().CString() ) );
-
-          // StringList out;
-          // StringList cols;
-          // cols.push_back( "name" );
-          // cols.push_back( "num" );
-          // store.GetRow( out, "cards", 0, cols );  // Geezard
-          // for( auto itr = out.begin(); itr != out.end(); ++itr )
-          // {
-          //   NOM_DUMP( (*itr).CString() );
-          // }
-
-        } // end if target
-
-      } // end if click
-  })); // end callback func
+  evt.register_event_listener( doc, "mousescroll", new nom::UIEventListener( [&]
+    ( Rocket::Core::Event& ev ) { this->on_mousescroll( ev ); }
+  ));
 
   this->docs[doc_file] = doc;
 

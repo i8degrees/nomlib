@@ -6,14 +6,9 @@
 
       body
       {
-        /*width: 168px;
-        height: 200px;*/
-
         /* TTcards at x2 resolution*/
         width: 328px;
         height: 392px;
-
-        /*margin: auto;*/
       }
 
       body.window
@@ -48,8 +43,12 @@
         text-align: left;
         /*margin-left: 4px;*/
         /*margin-right: 3px;*/
+
         /*padding: 0px 4px 4px 4px;*/
-        padding: 0px 4px 4px 25px;
+        padding-top: 0px;
+        padding-right: 4px;
+        padding-bottom: 4px;
+        padding-left: 25px;
       }
 
       datagridheader
@@ -62,9 +61,13 @@
         outline-width: 1px;
         outline-color: black;
 
-        padding: 5px 0px 0px 0px;
-        margin-top: -8px;
         /*padding: 5px 10px 0px 10px;*/
+        padding-top: 5px;
+        padding-right: 0px;
+        padding-bottom: 0px;
+        padding-left: 0px;
+
+        margin-top: -8px;
       }
 
     </style>
@@ -72,7 +75,7 @@
   <body template="window">
     <datagrid source="cards_db.cards">
       <!-- <col fields="id" width="10%">.</col> -->
-      <col fields="name" width="75%">CARDS.</col>
+      <col fields="name" formatter="card" width="75%">CARDS P. 1</col>
       <col fields="num" width="10%">NUM.</col>
     </datagrid>
   </body>

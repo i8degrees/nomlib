@@ -204,6 +204,37 @@ if( NOM_BUILD_GUI_LIBROCKET_TESTS )
 
 endif( NOM_BUILD_GUI_LIBROCKET_TESTS )
 
+if( NOM_BUILD_GUI_LIBROCKET_DATAGRID_TESTS )
+
+  add_executable  (
+                    libRocketDataGridTest
+                    ${NOM_TESTS_COMMON_SOURCE}
+                    ${NOM_TESTS_VTEST_SOURCE}
+                    ${NOM_TESTS_SOURCE_DIR}/gui/librocket/libRocketDataGridTest.cpp
+                  )
+
+  target_link_libraries (
+                          libRocketDataGridTest
+                          ${GTEST_LIBRARY}
+                          ${PROJECT_NAME} # nomlib
+                        )
+
+    GTEST_ADD_TESTS (
+                      libRocketDataGridTest
+                      "" # args
+                      ${NOM_TESTS_SOURCE_DIR}/gui/librocket/libRocketDataGridTest.cpp
+                    )
+
+    # Search paths file to use in finding resources path
+    install (
+              FILES
+              "${NOM_TESTS_RESOURCES_DIR}/gui/librocket/libRocketDataGridTest.json"
+              DESTINATION
+              "${TESTS_DEPS_INSTALL_PEFIX}"
+            )
+
+endif( NOM_BUILD_GUI_LIBROCKET_DATAGRID_TESTS )
+
 # Resource dependencies
 if( NOM_BUILD_GUI_UNIT )
 

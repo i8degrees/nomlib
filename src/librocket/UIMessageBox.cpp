@@ -61,9 +61,6 @@ bool UIMessageBox::initialize()
 {
   NOM_ASSERT( this->valid() != false );
 
-  // Resulting elements that match query
-  rocket::ElementList tags;
-
   if( this->valid() == true )
   {
     this->set_position( this->position() );

@@ -24,44 +24,9 @@ namespace nom {
 
 using namespace Rocket::Core;
 
-/// \brief Helper method for automating the creation of a document window
-Rocket::Core::ElementDocument* load_window( Rocket::Core::Context* ctx, const std::string& filename, const nom::Point2i& pos )
-{
-  Rocket::Core::ElementDocument* doc = nullptr;
-
-  doc = ctx->LoadDocument( filename.c_str() );
-
-  if( doc )
-  {
-    doc->Show();
-    // NOM_DUMP( doc->GetReferenceCount() );
-    doc->RemoveReference();
-    // NOM_DUMP( doc->GetReferenceCount() );
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", doc->GetSourceURL().CString(), "is loaded." );
-  }
-  else
-  {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", doc->GetSourceURL().CString(), "was NULL." );
-    return nullptr;
-  }
-
-  // Absolute positioning of the window in global-space -- relative to the
-  // rendering back-end (SDL2)
-  if( pos != nom::Point2i::null )
-  {
-    doc->SetProperty( "left", Rocket::Core::Property( pos.x, Rocket::Core::Property::ABSOLUTE_UNIT ) );
-    doc->SetProperty( "top", Rocket::Core::Property( pos.y, Rocket::Core::Property::ABSOLUTE_UNIT ) );
-  }
-
-  // Set the title of the window to that of the title element's text
-  doc->GetElementById( "title" )->SetInnerRML( doc->GetTitle() );
-
-  return doc;
-}
-
 /// \brief A mock card model
 ///
-/// \see TTcards
+/// \see TTcards::Card, TTcards::CardCollection
 struct Card
 {
   /// \remarks Invalid card object.
@@ -97,32 +62,30 @@ struct Card
 //     }
 // };
 
-/// \remarks Mock modeling of the Cards Menu state in TTcards
+/// \brief Mock model of the CardsMenu player's hand selection widget in TTcards
 ///
+/// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Controls/DataGrid
 /// \see http://librocket.com/wiki/documentation/tutorials/Datagrid
-class CardsMenu: public Rocket::Controls::DataSource
+class CardsMenuModel: public Rocket::Controls::DataSource
 {
   public:
-    CardsMenu() :
-      Rocket::Controls::DataSource("cards_db")
+    CardsMenuModel( const std::string& source ) :
+      Rocket::Controls::DataSource{ source.c_str() }
     {
-      this->load_db();
-
-      // Defaults
-      this->per_page_ = 11;
-      // this->total_pages = db.size() / per_page();
-      // this->total_pages = 10;
-      this->set_total_pages( 5 );
-      this->set_current_page( 0 );
-      this->set_selection( 0 );
+      // this->load_db();
     }
 
-    virtual ~CardsMenu()
+    /// \brief Destructor.
+    ///
+    /// \remarks libRocket internally handles deletion of the DataSource object
+    /// instance for us.
+    virtual ~CardsMenuModel()
     {
       // NOM_LOG_TRACE( NOM );
     }
 
-    void GetRow(Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index, const Rocket::Core::StringList& columns)
+    /// \note Required interface implementation.
+    virtual void GetRow( Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index, const Rocket::Core::StringList& columns )
     {
       if( table == "cards" )
       {
@@ -145,7 +108,8 @@ class CardsMenu: public Rocket::Controls::DataSource
       }
     } // end GetRow func
 
-    int GetNumRows(const Rocket::Core::String& table)
+    /// \note Required interface implementation.
+    virtual int GetNumRows( const Rocket::Core::String& table )
     {
       if( table == "cards" )
       {
@@ -208,25 +172,6 @@ class CardsMenu: public Rocket::Controls::DataSource
       }
 
       NotifyRowAdd( "cards", this->db_.size(), cards.size() );
-    }
-
-    void set_page( int pg )
-    {
-      // cards.begin() = id = per_page() * pg
-      int start_id = this->per_page() * pg;
-
-      // cards.end() = id + per_page()
-      int end_id = start_id + this->per_page();
-
-      // Sanity check
-      if( start_id > this->cards_pg_.size() ) return;
-
-      int i = 0;
-      for( auto idx = start_id; idx != end_id; ++idx )
-      {
-        this->insert_card( i, this->cards_pg_[idx] );
-        ++i;
-      }
     }
 
     void load_db()
@@ -305,6 +250,202 @@ class CardsMenu: public Rocket::Controls::DataSource
       // NotifyRowChange("cards");
     }
 
+    int id( const std::string& name ) const
+    {
+      for( auto itr = this->cards_pg_.begin(); itr != this->cards_pg_.end(); ++itr )
+      {
+        if( (*itr).name == name )
+        {
+          return (*itr).id;
+        }
+      }
+
+      return nom::npos; // -1
+    }
+
+  private:
+    std::vector<Card> db_;
+  /// \fixme
+  public:
+    std::vector<Card> cards_pg_;
+};
+
+
+/// \see http://librocket.com/wiki/documentation/tutorials/Datagrid
+class UIDataViewList: public nom::UIWidget
+{
+  public:
+    /// \brief Default constructor.
+    ///
+    /// \see UIWidget::set_desktop, UIWidget::set_document_file,
+    /// UIDataViewList::initialize.
+    UIDataViewList( const Point2i& pos, const Size2i& dims ) :
+      UIWidget( pos, dims ),
+      data_source_( nullptr )
+    {
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+
+      this->_initialize();
+    }
+
+    virtual ~UIDataViewList()
+    {
+      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+    }
+
+    virtual bool initialize()
+    {
+      this->_initialize();
+
+      NOM_ASSERT( this->valid() != false );
+
+      if( this->valid() == true )
+      {
+        this->data_source()->load_db();
+
+        this->set_position( this->position() );
+
+        this->set_document_size();
+
+        this->show();
+
+        return true;
+      }
+
+      return false;
+    }
+
+    CardsMenuModel* data_source() const
+    {
+      return NOM_SCAST( CardsMenuModel*, this->data_source_ );
+      // return this->data_source_;
+    }
+
+    void set_data_source( CardsMenuModel* src )
+    {
+      this->data_source_ = src;
+    }
+
+    int size() const
+    {
+      return this->data_source()->size();
+    }
+
+    void dump()
+    {
+      this->data_source()->dump();
+    }
+
+    void insert_card( int pos, const Card& card )
+    {
+      this->data_source()->insert_card( pos, card );
+    }
+
+    void append_card( const Card& card )
+    {
+      this->data_source()->append_card( card );
+    }
+
+    void append_cards( const std::vector<Card>& cards )
+    {
+      this->data_source()->append_cards( cards );
+    }
+
+    void set_page( int pg )
+    {
+      // cards.begin() = id = per_page() * pg
+      int start_id = this->per_page() * pg;
+
+      // cards.end() = id + per_page()
+      int end_id = start_id + this->per_page();
+
+      // Sanity check
+      if( start_id > this->data_source()->cards_pg_.size() ) return;
+
+      int i = 0;
+      for( auto idx = start_id; idx != end_id; ++idx )
+      {
+        this->data_source()->insert_card( i, this->data_source()->cards_pg_[idx] );
+        ++i;
+      }
+    }
+
+    // void load_db()
+    // {
+    //   // pg 0
+    //   this->cards_pg_.push_back(Card( 0,"Geezard",1));
+    //   this->cards_pg_.push_back(Card( 1,"Fungar",1));
+    //   this->cards_pg_.push_back(Card( 2,"Bite Bug",0));
+    //   this->cards_pg_.push_back(Card( 3,"Red Bat",4));
+    //   this->cards_pg_.push_back(Card( 4,"Blobra",2));
+    //   this->cards_pg_.push_back(Card( 5,"Gayla",1));
+    //   this->cards_pg_.push_back(Card( 6,"Gesper",3));
+    //   this->cards_pg_.push_back(Card( 7,"Fastitocalon-F",0));
+    //   this->cards_pg_.push_back(Card( 8,"Blood Soul",1));
+    //   this->cards_pg_.push_back(Card( 9,"Caterchipillar",2));
+    //   this->cards_pg_.push_back(Card( 10,"Cockatrice",3));
+
+    //   // initial population
+    //   this->append_cards( this->cards_pg_ );
+
+    //   // pg 1
+    //   this->cards_pg_.push_back(Card( 11,"Grat",1));
+    //   this->cards_pg_.push_back(Card( 12,"Buel",1));
+    //   this->cards_pg_.push_back(Card( 13,"Mesmerize",0));
+    //   this->cards_pg_.push_back(Card( 14,"Glacial Eye",1));
+    //   this->cards_pg_.push_back(Card( 15,"Belhelmel",1));
+    //   this->cards_pg_.push_back(Card( 16,"Thrustaevis",1));
+    //   this->cards_pg_.push_back(Card( 17,"Anacondaur",1));
+    //   this->cards_pg_.push_back(Card( 18,"Creeps",0));
+    //   this->cards_pg_.push_back(Card( 19,"Grendel",1));
+    //   this->cards_pg_.push_back(Card( 20,"Jelleye",1));
+    //   this->cards_pg_.push_back(Card( 21,"Grand Mantis",3));
+
+    //   // pg 2
+    //   this->cards_pg_.push_back(Card( 22,"Forbidden",1));
+    //   this->cards_pg_.push_back(Card( 23,"Armadodo",1));
+    //   this->cards_pg_.push_back(Card( 24,"TriFace",1));
+    //   this->cards_pg_.push_back(Card( 25,"Fastitocalon",0));
+    //   this->cards_pg_.push_back(Card( 26,"Snow Lion",1));
+    //   this->cards_pg_.push_back(Card( 27,"Ochu",1));
+    //   this->cards_pg_.push_back(Card( 28,"SAM08G",1));
+    //   this->cards_pg_.push_back(Card( 29,"Death Claw",1));
+    //   this->cards_pg_.push_back(Card( 30,"Cactaur",0));
+    //   this->cards_pg_.push_back(Card( 31,"Tonberry",1));
+    //   this->cards_pg_.push_back(Card( 32,"Abyss Worm",1));
+
+    //   // pg 3
+    //   this->cards_pg_.push_back(Card( 33,"Turtapod",1));
+    //   this->cards_pg_.push_back(Card( 34,"Vysage",1));
+    //   this->cards_pg_.push_back(Card( 35,"T-Rexaur",1));
+    //   this->cards_pg_.push_back(Card( 36,"Bomb",1));
+    //   this->cards_pg_.push_back(Card( 37,"Blitz",1));
+    //   this->cards_pg_.push_back(Card( 38,"Wendigo",1));
+    //   this->cards_pg_.push_back(Card( 39,"Torama",1));
+    //   this->cards_pg_.push_back(Card( 40,"Imp",1));
+    //   this->cards_pg_.push_back(Card( 41,"Blue Dragon",1));
+    //   this->cards_pg_.push_back(Card( 42,"Adamantiose",1));
+    //   this->cards_pg_.push_back(Card( 43,"Hexadragon",1));
+
+    //   // pg 4
+    //   this->cards_pg_.push_back(Card( 44,"Iron Giant",1));
+    //   this->cards_pg_.push_back(Card( 45,"Behemoth",1));
+    //   this->cards_pg_.push_back(Card( 46,"Chimera",1));
+    //   this->cards_pg_.push_back(Card( 47,"PuPu",1));
+    //   this->cards_pg_.push_back(Card( 48,"Elastoid",1));
+    //   this->cards_pg_.push_back(Card( 49,"GIM47N",1));
+    //   this->cards_pg_.push_back(Card( 50,"Malboro",1));
+    //   this->cards_pg_.push_back(Card( 51,"Ruby Dragon",1));
+    //   this->cards_pg_.push_back(Card( 52,"Elnoyle",1));
+    //   this->cards_pg_.push_back(Card( 53,"Tonberry King",1));
+    //   this->cards_pg_.push_back(Card( 54,"Wedge, Biggs",1));
+
+    //   // Initial page
+    //   // this->set_page(0);
+
+    //   // NotifyRowChange("cards");
+    // }
+
     int current_page() const
     {
       return this->current_page_;
@@ -325,17 +466,22 @@ class CardsMenu: public Rocket::Controls::DataSource
       this->current_page_ = pg;
     }
 
+    // int id( const std::string& name ) const
+    // {
+    //   for( auto itr = this->cards_pg_.begin(); itr != this->cards_pg_.end(); ++itr )
+    //   {
+    //     if( (*itr).name == name )
+    //     {
+    //       return (*itr).id;
+    //     }
+    //   }
+
+    //   return nom::npos; // -1
+    // }
+
     int id( const std::string& name ) const
     {
-      for( auto itr = this->cards_pg_.begin(); itr != this->cards_pg_.end(); ++itr )
-      {
-        if( (*itr).name == name )
-        {
-          return (*itr).id;
-        }
-      }
-
-      return nom::npos; // -1
+      return this->data_source()->id(name);
     }
 
     std::string title( Element* target, int col ) const
@@ -379,8 +525,27 @@ class CardsMenu: public Rocket::Controls::DataSource
     }
 
   private:
-    std::vector<Card> db_;
-    std::vector<Card> cards_pg_;
+    /// \brief Internal state initialization.
+    void _initialize()
+    {
+      this->per_page_ = 11;
+      // this->total_pages = db.size() / per_page();
+      // this->total_pages = 10;
+      this->set_total_pages( 5 );
+      this->set_current_page( 0 );
+      this->set_selection( 0 );
+    }
+
+    /// \remarks This object pointer is not owned by this class and should not
+    /// be freed.
+    Rocket::Controls::DataSource* data_source_;
+    // DataSourceModel* data_source_;
+    // CardsMenuModel* data_source_;
+
+    /// \todo Remove
+    // std::vector<Card> db_;
+    /// \todo Remove
+    // std::vector<Card> cards_pg_;
 
     /// \brief The total number of available card pages.
     int total_pages_;
@@ -595,164 +760,159 @@ class libRocketDataGridTest: public nom::VisualUnitTest
       // NOM_LOG_TRACE( NOM );
     }
 
-    void on_keydown( Rocket::Core::Event& ev )
-    {
-      int pg = store.current_page();
-      int num_pages = store.total_pages();
-
-      int per_page = store.per_page();
-      int selected_card = store.selection();
-
-      Element* target = ev.GetTargetElement();
-
-      if( target == nullptr )
-      {
-        FAIL()
-        << "Event element target was NULL; this shouldn't have been so!";
-      }
-
-      if( ev == "keydown" )
-      {
-        Input::KeyIdentifier key = NOM_SCAST(Input::KeyIdentifier, ev.GetParameter<int>("key_identifier", 0) );
-
-        // Handle paging (left && right)
-        if( key == Input::KI_LEFT && pg > 0 )
-        {
-          --pg;
-        }
-        else if( key == Input::KI_RIGHT && ( pg < num_pages - 1 ) )
-        {
-          ++pg;
-        }
-
-        // Handle cursor (up && down)
-        else if( key == Input::KI_UP && selected_card > 0 )
-        {
-          --selected_card;
-        }
-        else if( key == Input::KI_DOWN && ( selected_card < per_page - 1 ) )
-        {
-          ++selected_card;
-        }
-
-        this->store.set_page(pg);
-        this->store.set_current_page(pg);
-        store.set_selection(selected_card);
-
-        // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "KEYDOWN event from", target->GetId().CString(), "value:", key );
-        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Pg:", store.current_page() );
-        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Selection:", store.selection() );
-      } // end if keydown
-
-      store.set_title( this->docs["dataview.rml"]->GetElementById("content"), 0, "CARDS P. " + std::to_string(pg+1) );
-
-      EXPECT_EQ( pg, store.current_page() );
-      EXPECT_EQ( 11, store.GetNumRows("cards") );
-    } // end func on_keydown
-
-    void on_mouseup( Rocket::Core::Event& ev )
-    {
-      int selection = 0;
-      Rocket::Core::Element* target = ev.GetTargetElement();
-
-      if( target == nullptr )
-      {
-        FAIL()
-        << "Event element target was NULL; this shouldn't have been so!";
-      }
-
-      if( ev == "mouseup" )
-      {
-        if( target->GetTagName() == "datagridcell" )
-        {
-          selection = store.id( target->GetInnerRML().CString() );
-          store.set_selection( selection );
-
-          NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Card name:", target->GetInnerRML().CString() );
-          NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Card ID:", store.selection() );
-
-          EXPECT_EQ( selection, store.selection() );
-          EXPECT_EQ( 11, store.GetNumRows("cards") );
-
-          // datagridrow
-          // NOM_DUMP( target->GetParentNode()->GetTagName().CString() );
-          // <datagridcell>Geezard</datagridcell><datagridcell>1</datagridcell>
-          // NOM_DUMP( target->GetParentNode()->GetInnerRML().CString() );
-
-          // 1
-          // NOM_DUMP( target->GetParentNode()->GetLastChild()->GetInnerRML().CString() );
-
-          // StringList out;
-          // StringList cols;
-          // cols.push_back( "name" );
-          // cols.push_back( "num" );
-          // store.GetRow( out, "cards", 0, cols );  // Geezard
-          // for( auto itr = out.begin(); itr != out.end(); ++itr )
-          // {
-          //   NOM_DUMP( (*itr).CString() );
-          // }
-
-        } // end if target
-
-      } // end if click
-    } // end func on_mouseup
-
-    void on_mousescroll( Rocket::Core::Event& ev )
-    {
-      // int pg = store.current_page();
-      // int num_pages = store.total_pages();
-      int per_page = store.per_page();
-      int selected_card = store.selection();
-
-      Element* target = ev.GetTargetElement();
-
-      if( target == nullptr )
-      {
-        FAIL()
-        << "Event element target was NULL; this shouldn't have been so!";
-      }
-
-      if( ev == "mousescroll" )
-      {
-        Input::KeyIdentifier wheel = NOM_SCAST(Input::KeyIdentifier, ev.GetParameter<int>("wheel_delta", -1) );
-
-        // Handle cursor (up && down)
-        if( wheel < 0 && selected_card > 0 )
-        {
-          --selected_card;
-        }
-        else if( wheel > 0 && ( selected_card < per_page - 1 ) )
-        {
-          ++selected_card;
-        }
-
-        // store.set_page(pg);
-        // store.set_current_page(pg);
-        store.set_selection(selected_card);
-
-        // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "WHEEL event from", target->GetId().CString(), "value:", wheel );
-        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Pg:", store.current_page() );
-        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Selection:", store.selection() );
-
-      } // end if mousescroll
-    } // end func on_mousescroll
-
   protected:
-    /// UI Windows; 'widgets' containers
-    std::map<std::string, Rocket::Core::ElementDocument*> docs;
-
-    /// \remarks This object must be global, otherwise crashes will often
-    /// result.
-    nom::UIEventDispatcher evt;
-
     nom::UIContext desktop;
 
     // CardFormatter card_formatter;
-
-    /// \remarks This object must be global, otherwise crashes will often
-    /// result (UIEventListener related?).
-    CardsMenu store;
 };
+
+void on_keydown( Rocket::Core::Event& ev, UIDataViewList* store )
+{
+  ASSERT_TRUE( store != nullptr );
+
+  int pg = store->current_page();
+  int num_pages = store->total_pages();
+
+  int per_page = store->per_page();
+  int selected_card = store->selection();
+
+  Element* target = ev.GetTargetElement();
+
+  if( target == nullptr )
+  {
+    FAIL()
+    << "Event element target was NULL; this shouldn't have been so!";
+  }
+
+  if( ev == "keydown" )
+  {
+    Input::KeyIdentifier key = NOM_SCAST(Input::KeyIdentifier, ev.GetParameter<int>("key_identifier", 0) );
+
+    // Handle paging (left && right)
+    if( key == Input::KI_LEFT && pg > 0 )
+    {
+      --pg;
+    }
+    else if( key == Input::KI_RIGHT && ( pg < num_pages - 1 ) )
+    {
+      ++pg;
+    }
+
+    // Handle cursor (up && down)
+    else if( key == Input::KI_UP && selected_card > 0 )
+    {
+      --selected_card;
+    }
+    else if( key == Input::KI_DOWN && ( selected_card < per_page - 1 ) )
+    {
+      ++selected_card;
+    }
+
+    store->set_page(pg);
+    store->set_current_page(pg);
+    store->set_selection(selected_card);
+
+    // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "KEYDOWN event from", target->GetId().CString(), "value:", key );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Pg:", store->current_page() );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Selection:", store->selection() );
+  } // end if keydown
+
+  ASSERT_TRUE( store->document() != nullptr );
+  store->set_title( store->document()->GetElementById("content"), 0, "CARDS P. " + std::to_string(pg+1) );
+
+  EXPECT_EQ( pg, store->current_page() );
+  EXPECT_EQ( 11, store->data_source()->GetNumRows("cards") );
+} // end func on_keydown
+
+void on_mouseup( Rocket::Core::Event& ev, UIDataViewList* store  )
+{
+  ASSERT_TRUE( store != nullptr );
+
+  int selection = 0;
+  Rocket::Core::Element* target = ev.GetTargetElement();
+
+  if( target == nullptr )
+  {
+    FAIL()
+    << "Event element target was NULL; this shouldn't have been so!";
+  }
+
+  if( ev == "mouseup" )
+  {
+    if( target->GetTagName() == "datagridcell" )
+    {
+      selection = store->id( target->GetInnerRML().CString() );
+      store->set_selection( selection );
+
+      NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Card name:", target->GetInnerRML().CString() );
+      NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Card ID:", store->selection() );
+
+      EXPECT_EQ( selection, store->selection() );
+      EXPECT_EQ( 11, store->data_source()->GetNumRows("cards") );
+
+      // datagridrow
+      // NOM_DUMP( target->GetParentNode()->GetTagName().CString() );
+      // <datagridcell>Geezard</datagridcell><datagridcell>1</datagridcell>
+
+      // 1
+      // NOM_DUMP( target->GetParentNode()->GetLastChild()->GetInnerRML().CString() );
+
+      // StringList out;
+      // StringList cols;
+      // cols.push_back( "name" );
+      // cols.push_back( "num" );
+      // store.GetRow( out, "cards", 0, cols );  // Geezard
+      // for( auto itr = out.begin(); itr != out.end(); ++itr )
+      // {
+      //   NOM_DUMP( (*itr).CString() );
+      // }
+
+    } // end if target
+
+  } // end if click
+} // end func on_mouseup
+
+void on_mousescroll( Rocket::Core::Event& ev, UIDataViewList* store )
+{
+  ASSERT_TRUE( store != nullptr );
+
+  // int pg = store.current_page();
+  // int num_pages = store.total_pages();
+  int per_page = store->per_page();
+  int selected_card = store->selection();
+
+  Element* target = ev.GetTargetElement();
+
+  if( target == nullptr )
+  {
+    FAIL()
+    << "Event element target was NULL; this shouldn't have been so!";
+  }
+
+  if( ev == "mousescroll" )
+  {
+    Input::KeyIdentifier wheel = NOM_SCAST(Input::KeyIdentifier, ev.GetParameter<int>("wheel_delta", -1) );
+
+    // Handle cursor (up && down)
+    if( wheel < 0 && selected_card > 0 )
+    {
+      --selected_card;
+    }
+    else if( wheel > 0 && ( selected_card < per_page - 1 ) )
+    {
+      ++selected_card;
+    }
+
+    // store.set_page(pg);
+    // store.set_current_page(pg);
+    store->set_selection(selected_card);
+
+    // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "WHEEL event from", target->GetId().CString(), "value:", wheel );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Pg:", store->current_page() );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Selection:", store->selection() );
+
+  } // end if mousescroll
+} // end func on_mousescroll
 
 /// \todo Clean test up
 // TEST_F( libRocketDataGridTest, BaseIntegration )
@@ -810,8 +970,6 @@ class libRocketDataGridTest: public nom::VisualUnitTest
 //   //   }
 //   // ));
 
-//   this->docs[doc_file] = doc;
-
 //   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 //   EXPECT_TRUE( this->compare() );
 // /*
@@ -862,47 +1020,51 @@ class libRocketDataGridTest: public nom::VisualUnitTest
 // */
 // }
 
-TEST_F( libRocketDataGridTest, DataGridStoreGameModel )
+TEST_F( libRocketDataGridTest, UIDataViewList )
 {
   // As per the positioning units used for nom::DataViewListTest (ex2) in
   // tests/src/gui/DataViewListTest.cpp.
-  Point2i pos( 25, 25 );
-  std::string doc_file = "dataview.rml";
+  Point2i pos1( 25, 25 );
+  std::string doc_file1 = "dataview.rml";
 
-  Rocket::Core::ElementDocument* doc = load_window( this->desktop.context(), doc_file, pos );
+  UIDataViewList store1( pos1, Size2i::null );
+  EXPECT_EQ( true, store1.set_desktop( this->desktop.context() ) );
+  EXPECT_EQ( true, store1.set_document_file( doc_file1 ) );
+  store1.set_data_source( new CardsMenuModel("cards_db") );
 
-  if( doc )
-  {
-    EXPECT_STREQ( "CARDS.", doc->GetTitle().CString() )
-    << "Document title should be the text of the title element: 'CARDS.'";
-  }
-  else
+  if( store1.initialize() == false )
   {
     FAIL()
-    << "Document should not be NULL";
+    << this->test_set() << " object should not be invalid; is the context and document file valid?";
   }
 
-  // this->store.dump();
+  store1.set_title( store1.document()->GetElementById("content"), 0, "CARDS P. " + std::to_string(store1.current_page() + 1) );
 
-  EXPECT_EQ( 0, this->store.current_page() );
-  this->store.set_title( doc->GetElementById("content"), 0, "CARDS P. " + std::to_string(this->store.current_page() + 1) );
+  EXPECT_EQ( true, store1.visible() );
 
-  EXPECT_EQ( "CARDS P. 1", this->store.title(doc->GetElementById("content"), 0) );
-  EXPECT_EQ( "NUM.", this->store.title(doc->GetElementById("content"), 1) );
+  EXPECT_EQ( pos1, store1.position() );
 
-  evt.register_event_listener( doc, "keydown", new nom::UIEventListener( [&]
-    ( Rocket::Core::Event& ev ) { this->on_keydown( ev ); }
+  // Default values
+  EXPECT_EQ( 0, store1.selection() );
+  EXPECT_EQ( 11, store1.per_page() );
+  EXPECT_EQ( 0, store1.current_page() );
+
+  EXPECT_EQ( "CARDS P. 1", store1.title( store1.document()->GetElementById("content"), 0) );
+  EXPECT_EQ( "NUM.", store1.title( store1.document()->GetElementById("content"), 1) );
+
+  store1.register_event_listener( store1.document(), "keydown", new nom::UIEventListener( [&]
+    ( Rocket::Core::Event& ev ) { on_keydown( ev, &store1 ); }
   ));
 
-  evt.register_event_listener( doc, "mouseup", new nom::UIEventListener( [&]
-    ( Rocket::Core::Event& ev ) { this->on_mouseup( ev ); }
+  store1.register_event_listener( store1.document(), "mouseup", new nom::UIEventListener( [&]
+    ( Rocket::Core::Event& ev ) { on_mouseup( ev, &store1 ); }
   ));
 
-  evt.register_event_listener( doc, "mousescroll", new nom::UIEventListener( [&]
-    ( Rocket::Core::Event& ev ) { this->on_mousescroll( ev ); }
+  store1.register_event_listener( store1.document(), "mousescroll", new nom::UIEventListener( [&]
+    ( Rocket::Core::Event& ev ) { on_mousescroll( ev, &store1 ); }
   ));
 
-  this->docs[doc_file] = doc;
+  // store1.dump();
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );

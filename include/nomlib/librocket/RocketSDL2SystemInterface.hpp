@@ -78,6 +78,9 @@ class RocketSDL2SystemInterface: public Rocket::Core::SystemInterface
     /// \brief Implements Rocket::Core::SystemInterface::LogMessage.
     ///
     /// \remarks Optional implementation.
+    ///
+    /// \todo Take a look at libRocket.git/Samples/basic/customlog/src/main.cpp
+    /// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Interfaces#Thesysteminterface
     virtual bool LogMessage(Rocket::Core::Log::Type type, const Rocket::Core::String& message);
 };
 

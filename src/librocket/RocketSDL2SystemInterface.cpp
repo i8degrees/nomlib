@@ -75,11 +75,14 @@ bool RocketSDL2SystemInterface::LogMessage(Rocket::Core::Log::Type type, const R
       break;
     }
 
-    // TODO: Take a look at libRocket.git/Samples/basic/customlog/src/main.cpp
     case Rocket::Core::Log::LT_ASSERT:
     {
-      NOM_LOG_DEBUG( NOM_LOG_CATEGORY_ASSERT, message.CString() );
-      break;
+      NOM_LOG_CRIT( NOM_LOG_CATEGORY_ASSERT, message.CString() );
+
+      // Do not continue execution; this should be applicable only to asserts
+      // made with the ROCKET_ASSERT macros, i.e.: within the internals of
+      // libRocket.
+      return false;
     }
 
     case Rocket::Core::Log::LT_WARNING:
@@ -106,6 +109,7 @@ bool RocketSDL2SystemInterface::LogMessage(Rocket::Core::Log::Type type, const R
     }
   }
 
+  // Continue execution
   return true;
 }
 

@@ -455,6 +455,7 @@ TEST_F( libRocketTest, BaseIntegrationTest )
 
   // Test visual debugger logs
   Rocket::Core::Log::Message( Rocket::Core::Log::LT_INFO, "Hello, world!" );
+  Rocket::Core::Log::Message( Rocket::Core::Log::LT_ASSERT, "Assert log message" );
 
   if( doc )
   {

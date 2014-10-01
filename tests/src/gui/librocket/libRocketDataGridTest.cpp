@@ -264,9 +264,9 @@ class CardsMenu: public Rocket::Controls::DataSource
       this->cards_pg_.push_back(Card( 54,"Wedge, Biggs",1));
 
       // Initial page
-      this->set_page(0);
+      // this->set_page(0);
 
-      NotifyRowChange("cards");
+      // NotifyRowChange("cards");
     }
 
     int current_page() const

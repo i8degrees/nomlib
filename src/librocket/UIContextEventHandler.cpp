@@ -509,15 +509,25 @@ int UIContextEventHandler::translate_mouse_button( const Event& ev )
 
 int UIContextEventHandler::translate_mouse_wheel( const Event& ev )
 {
-  // Rocket treats a negative delta as up movement (away from the user),
-  // positive as down.
   if( ev.wheel.y > 0 )  // Up
   {
     return -1;
   }
-  else  // if (axis < 0 )
+  else if( ev.wheel.y < 0 ) // Down
   {
-    return 1; // Down
+    return 1;
+  }
+  else if( ev.wheel.x > 0 ) // Left
+  {
+    return -1;
+  }
+  else if( ev.wheel.x < 0 ) // Right
+  {
+    return 1;
+  }
+  else  // *shrug* Assume downward motion
+  {
+    return 1;
   }
 }
 

@@ -421,6 +421,7 @@ elseif ( PLATFORM_OSX )
           "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketDebugger.1.dylib"
         )
 
+    # NOTE: Lua bindings for the dynamic library build has not been tested!
     if( NOM_USE_LIBROCKET_LUA )
       set ( LIBROCKET_LIBRARY
             ${LIBROCKET_LIBRARY}

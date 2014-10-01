@@ -32,6 +32,13 @@ Both the 64-bit and 32-bit official development binaries versions of:
       * [SDL2_ttf.framework v2.0.12](http://libsdl.org/projects/SDL_ttf) built with a [font kerning size patch](https://bugzilla.libsdl.org/show_bug.cgi?id=2572).
     
       * [libRocket v1.3.0](http://librocket.com) compiled with the FreeType v2.3.5 libraries from [homebrew](http://brew.sh).
+      ```
+      # dynamic libs
+      cmake -DBUILD_SAMPLES=off -DBUILD_LUA_BINDINGS=on -DCMAKE_BUILD_TYPE=Debug -DROCKET_DEBUG=on -DCMAKE_VERBOSE_MAKEFILE=1 ..
+
+      # static libs; Release target because Debug is way too large (+158MB)
+      cmake -DBUILD_SAMPLES=off -DBUILD_LUA_BINDINGS=on -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=off -DROCKET_DEBUG=on -DCMAKE_VERBOSE_MAKEFILE=1 ..
+      ```
 
   - Packaged only for Windows
     * [Google Test v1.7.0](https://code.google.com/p/googletest/) built with:

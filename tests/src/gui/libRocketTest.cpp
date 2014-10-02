@@ -141,6 +141,10 @@ class libRocketTest: public nom::VisualUnitTest
     /// required for plumbing in libRocket into our setup.
     bool init_rendering()
     {
+      int render_driver = -1;
+      uint32 window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+      uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
+
       // Required interface as per libRocket SDL2 implementation
       if( nom::set_hint( SDL_HINT_RENDER_DRIVER, "opengl" ) == false )
       {
@@ -160,7 +164,6 @@ class libRocketTest: public nom::VisualUnitTest
 
       // Try to force the use of the OpenGL rendering driver; this is required
       // as per the SDL2 implementation for libRocket.
-      int oglIdx = -1;
       int nRD = SDL_GetNumRenderDrivers();
       for( auto i = 0; i < nRD; ++i )
       {
@@ -169,17 +172,24 @@ class libRocketTest: public nom::VisualUnitTest
         {
           if( ! strcmp( info.name, "opengl" ) )
           {
-            oglIdx = i;
+            render_driver = i;
           }
         }
       }
 
-      // Use default resolution, provided by nom::VisualUnitTest
-      this->window_.create( "nomlib & LibRocket integration tests", this->resolution().w, this->resolution().h, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE, oglIdx, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
+      if( this->window_.create( this->test_case(),
+                                this->resolution(),
+                                window_flags,
+                                render_driver,
+                                render_flags ) == false )
+      {
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not initialize rendering context and window." );
+        return false;
+      }
 
       if( nom::RocketSDL2RenderInterface::gl_init( this->window_.size().w, this->window_.size().h ) == false )
       {
-        // FAIL() << "Could not initialize OpenGL for libRocket.";
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not initialize OpenGL for libRocket." );
         return false;
       }
 

@@ -7,7 +7,9 @@
 #
 # NOTE:
 #
-# This script should be ran from the same directory it was found in.
+# This script should always be ran from nomlib's root path, i.e.:
+#
+#   $ ~/Projects/nomlib.git/bin/build-deps.sh
 #
 # Prerequisites:
 #
@@ -28,6 +30,7 @@ ZIP_ARGS="-r"
 EXCLUSION_MASKS="*.DS_Store*"
 
 PROJECT_NAME="nomlib"
+DEPS_DIR="third-party"
 
 # Date binary for prefixing the created timestamp onto resulting archive
 DATE_BIN=$(which date)
@@ -51,7 +54,7 @@ function osx_deps()
     DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}_osx-dependencies.tar.gz"
   fi
 
-  INCLUSION_MASKS="osx/ common/ README.md"
+  INCLUSION_MASKS="${DEPS_DIR}/osx/ ${DEPS_DIR}/common/ ${DEPS_DIR}/README.md"
 
   ${TAR_BIN} ${TAR_ARGS} ${DEPS_FILENAME} --exclude=${EXCLUSION_MASKS} ${INCLUSION_MASKS}
 }
@@ -64,7 +67,7 @@ function ios_deps()
     DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}_ios-dependencies.tar.gz"
   fi
 
-  INCLUSION_MASKS="ios/ common/ README.md"
+  INCLUSION_MASKS="${DEPS_DIR}/ios/ ${DEPS_DIR}/common/ ${DEPS_DIR}/README.md"
 
   ${TAR_BIN} ${TAR_ARGS} ${DEPS_FILENAME} --exclude=${EXCLUSION_MASKS} ${INCLUSION_MASKS}
 }
@@ -77,14 +80,14 @@ function windows_deps()
     DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}_windows-dependencies.zip"
   fi
 
-  INCLUSION_MASKS="windows/ common/ README.md"
+  INCLUSION_MASKS="${DEPS_DIR}/windows/ ${DEPS_DIR}/common/ ${DEPS_DIR}/README.md"
 
   ${ZIP_BIN} ${ZIP_ARGS} ${DEPS_FILENAME} ${INCLUSION_MASKS} -x ${EXCLUSION_MASKS}
 }
 
 function linux_deps()
 {
-  echo "TODO"
+  echo "STUB: Not implemented."
 }
 
 function all_deps()

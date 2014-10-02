@@ -95,6 +95,13 @@ Size2i UIContext::size() const
   return Size2i( dims.x, dims.y );
 }
 
+bool UIContext::valid() const
+{
+  NOM_ASSERT( this->context() != nullptr );
+
+  return( this->context() != nullptr );
+}
+
 bool UIContext::create_context( const std::string& name, const Size2i& res,
                                 Rocket::Core::RenderInterface* interface )
 {
@@ -161,6 +168,15 @@ Rocket::Core::ElementDocument* UIContext::load_mouse_cursor_file( const std::str
   }
 
   return cursor;
+}
+
+void UIContext::show_mouse_cursor( bool state )
+{
+  NOM_ASSERT( this->valid() != false );
+  if( this->context_ )
+  {
+    this->context()->ShowMouseCursor( state );
+  }
 }
 
 bool UIContext::load_font( const std::string& filename )

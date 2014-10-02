@@ -95,6 +95,9 @@ class UIContext
     /// context is invalid.
     Size2i size() const;
 
+    /// \brief Get the validity status of this context instance.
+    bool valid() const;
+
     /// \brief Create a new element context used by libRocket.
     ///
     /// \params interface The custom rendering interface to use, or NULL to use
@@ -112,6 +115,8 @@ class UIContext
                           Rocket::Core::RenderInterface* interface = nullptr );
 
     Rocket::Core::ElementDocument* load_mouse_cursor_file( const std::string& filename );
+
+    void show_mouse_cursor( bool state );
 
     bool load_font( const std::string& filename );
 

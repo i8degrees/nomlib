@@ -157,6 +157,13 @@ class UnitTest: public ::testing::Test
     /// \brief Get the name of the current test case.
     const std::string& test_set( void );
 
+    /// \brief Gets the number of all tests in this test case.
+    ///
+    /// \returns Non-negative integer on success, or negative one (-1) on
+    /// failure, such as the underlying unit testing framework being
+    /// invalid / NULL.
+    int total_test_count() const;
+
     /// \brief Gets the number of failed tests in this test case.
     ///
     /// \returns Non-negative integer on success, or negative one (-1) on

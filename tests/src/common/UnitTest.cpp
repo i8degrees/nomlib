@@ -329,6 +329,20 @@ const std::string& UnitTest::test_set( void )
   return this->test_set_;
 }
 
+int UnitTest::total_test_count() const
+{
+  ::testing::UnitTest* unit_test = ::testing::UnitTest::GetInstance();
+
+  NOM_ASSERT( unit_test != nullptr );
+
+  if( unit_test != nullptr )
+  {
+    return unit_test->total_test_count();
+  }
+
+  return -1;
+}
+
 int UnitTest::failed_test_count() const
 {
   ::testing::UnitTest* unit_test = ::testing::UnitTest::GetInstance();

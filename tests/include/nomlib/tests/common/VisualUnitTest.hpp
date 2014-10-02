@@ -174,6 +174,19 @@ class VisualUnitTest: public UnitTest
 
     virtual int on_run( void );
 
+    /// \brief Screen shot processing logic that must be ran at the end of the
+    /// current (rendered) frames.
+    ///
+    /// \remarks When overriding this method, you will almost certainly want to
+    /// ensure that a call is made to its base class -- VisualUnitTeset::
+    /// on_frame_end. Note that it is critical that you handle the return value
+    /// correctly.
+    ///
+    /// \returns Boolean TRUE when the unit test is ready to terminate its main
+    /// loop -- meaning the test has captured its target frames -- boolean FALSE
+    /// when the unit test is not ready to terminate its main loop (has not
+    /// captured all of its target frames).
+    ///
     /// \fixme Screen-shot dumps of more than the first frame in the list are
     /// broken.
     virtual bool on_frame_end( uint elapsed_frames );

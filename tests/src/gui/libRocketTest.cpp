@@ -103,6 +103,39 @@ class libRocketTest: public nom::VisualUnitTest
       // NOM_LOG_TRACE( NOM );
     }
 
+    /// \brief Hide the user interface's mouse cursor (if any) before
+    /// the end of the current frame (before screen shots are potentially taken)
+    ///
+    /// \remarks Re-implements VisualUnitTest::on_frame_end.
+    ///
+    /// \note The mouse cursor triggers false positives.
+    ///
+    /// \fixme The GUI mouse cursor is not being toggled on/off before the
+    /// screen shot is taken. Mouse cursor rendering with libRocket has been
+    /// disabled until this issue is resolved.
+    // virtual bool on_frame_end( uint elapsed_frames )
+    // {
+    //   // This is the last possible moment we can call this method; a screen dump
+    //   // will have already been processed if we call any further down.
+    //   this->desktop.context()->ShowMouseCursor(false);
+    //   // this->desktop.update();
+    //   // this->desktop.draw();
+
+    //   // OK to reshow the mouse cursor (not terminating main loop yet)
+    //   if( VisualUnitTest::on_frame_end(elapsed_frames) == false )
+    //   {
+    //     this->desktop.context()->ShowMouseCursor(true);
+    //     // this->desktop.update();
+    //     // this->desktop.draw();
+
+    //     // Not ready to terminate the main loop
+    //     return false;
+    //   }
+
+    //   // Ready to terminate the main loop
+    //   return true;
+    // }
+
     /// \remarks Initialization callback for VisualUnitTest to act on, instead
     /// of its default rendering setup. A bit of additional setup is
     /// required for plumbing in libRocket into our setup.
@@ -271,8 +304,15 @@ class libRocketTest: public nom::VisualUnitTest
         FAIL() << "Cursor was NULL.";
       }
 
-      // Let libRocket handle the rendering of the platform's window cursor.
-      this->cursor_mgr.show_cursor( false );
+      // FIXME: Mouse cursors have been disabled until we figure out how to
+      // disable the mouse cursor before a screen shot is taken -- this is
+      // breaking screen shot comparisons.
+      //
+      // See also: libRocketTest::on_frame_end.
+      this->desktop.show_mouse_cursor(false);
+      // FIXME: Let libRocket handle the rendering of the platform's window
+      // cursor.
+      this->cursor_mgr.show_cursor(true);
 
       // Register input bindings
       InputActionMapper state;

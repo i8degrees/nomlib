@@ -329,6 +329,11 @@ const std::string& UnitTest::test_set( void )
   return this->test_set_;
 }
 
+const std::string& UnitTest::test_case()
+{
+  return this->test_set();
+}
+
 int UnitTest::total_test_count() const
 {
   ::testing::UnitTest* unit_test = ::testing::UnitTest::GetInstance();

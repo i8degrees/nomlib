@@ -155,7 +155,15 @@ class UnitTest: public ::testing::Test
     const std::string& test_name( void );
 
     /// \brief Get the name of the current test case.
+    ///
+    /// \deprecated This method will be renamed to *test_case* at some point in
+    /// the future.
+    ///
+    /// \see nom::UnitTest::test_case
     const std::string& test_set( void );
+
+    /// \brief Get the name of the current test case.
+    const std::string& test_case();
 
     /// \brief Gets the number of all tests in this test case.
     ///

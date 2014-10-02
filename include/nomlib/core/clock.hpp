@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-const nom::size TIME_STRING_SIZE = 26;
+const nom::size_type TIME_STRING_SIZE = 26;
 
 /// \brief Get the current date & time.
 ///

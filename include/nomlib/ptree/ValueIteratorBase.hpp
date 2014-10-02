@@ -45,7 +45,7 @@ class ValueIteratorBase
   public:
     typedef ValueIteratorBase SelfType;
     typedef ValueIteratorBase* RawPtr;
-    typedef size_t DifferenceType;
+    typedef nom::size_type DifferenceType;
     typedef Value& ValueTypeReference;
     typedef Value* ValueTypePointer;
 

@@ -68,14 +68,14 @@ bool DecoratorPhotograph::Initialise(const Rocket::Core::String& image_source, c
   }
 
   file_interface->Seek(file_handle, 0, SEEK_END);
-  size_t buffer_size = file_interface->Tell(file_handle);
+  nom::size_type buffer_size = file_interface->Tell(file_handle);
   file_interface->Seek(file_handle, 0, SEEK_SET);
 
   char* buffer = new char[buffer_size];
   file_interface->Read(buffer, buffer_size, file_handle);
   file_interface->Close(file_handle);
 
-  size_t i;
+  nom::size_type i;
   for(i = image_source.Length() - 1; i > 0; i--)
   {
     if(image_source[i] == '.')

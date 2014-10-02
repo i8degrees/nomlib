@@ -71,7 +71,7 @@ class UIQuestionDialogBox: public UIMessageBox
     /// choice (i.e.: button).
     const std::string& element_type() const;
 
-    size_t num_responses() const;
+    nom::size_type num_responses() const;
 
     /// \brief Obtain the current selection index (position) of the responses.
     ///

@@ -38,7 +38,7 @@ std::string time( const std::string& format )
   char timestamp[TIME_STRING_SIZE];
   time_t timer = std::time( nullptr );
 
-  size_t ret = std::strftime( timestamp, sizeof( timestamp ), format.c_str(), std::localtime( &timer ) );
+  nom::size_type ret = std::strftime( timestamp, sizeof( timestamp ), format.c_str(), std::localtime( &timer ) );
   if( ret != 0 )
   {
     // Success

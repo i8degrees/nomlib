@@ -113,8 +113,7 @@ typedef signed int sint;
 /// \brief Variable-size (platform-defined) unsigned integer.
 typedef unsigned int uint;
 
-/// \todo Rename or remove..?
-typedef std::size_t size;
+typedef std::size_t size_type;
 
 typedef sint* sint_ptr;
 typedef uint* uint_ptr;

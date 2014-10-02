@@ -276,7 +276,7 @@ void VisualUnitTest::SetUp( void )
   r.image_filename = this->output_filename();
 
   // FIXME:
-  size_t end = r.image_filename.find_last_of( "_" );
+  nom::size_type end = r.image_filename.find_last_of( "_" );
   r.frame = std::atoi( r.image_filename.substr( end + 1 ).c_str() );
 
   VisualUnitTest::results_.push_back( r );

@@ -164,7 +164,7 @@ NOM_LOG_ERR ( NOM, "Unknown error on attempt to change working directory to: " +
 
 const std::string UnixFile::basename ( const std::string& filename )
 {
-  nom::size pos = 0;
+  nom::size_type pos = 0;
   pos = filename.find_last_of ( ".", PATH_MAX );
 
   // If no matches are found, return the input filename back to the end-user.
@@ -359,7 +359,7 @@ bool UnixFile::mkdir( const std::string& path )
 
 bool UnixFile::recursive_mkdir( const std::string& path )
 {
-  std::size_t pos = std::string::npos;
+  nom::size_type pos = std::string::npos;
 
   Path p;
   std::string delimiter = p.native();

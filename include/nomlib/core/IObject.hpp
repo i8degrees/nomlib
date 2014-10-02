@@ -111,7 +111,7 @@ class IObject
       return false;
     }
 
-    static void* operator new( size_t mem );
+    static void* operator new( nom::size_type mem );
     static void operator delete( void* ptr );
 };
 

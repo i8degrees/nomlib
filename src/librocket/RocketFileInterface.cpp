@@ -91,7 +91,7 @@ void RocketFileInterface::Close(Rocket::Core::FileHandle file)
   fclose((FILE*) file);
 }
 
-size_t RocketFileInterface::Read(void* buffer, size_t size, Rocket::Core::FileHandle file)
+nom::size_type RocketFileInterface::Read(void* buffer, nom::size_type size, Rocket::Core::FileHandle file)
 {
   return fread(buffer, 1, size, (FILE*) file);
 }
@@ -101,7 +101,7 @@ bool RocketFileInterface::Seek(Rocket::Core::FileHandle file, long offset, int o
   return fseek((FILE*) file, offset, origin) == 0;
 }
 
-size_t RocketFileInterface::Tell(Rocket::Core::FileHandle file)
+nom::size_type RocketFileInterface::Tell(Rocket::Core::FileHandle file)
 {
   return ftell((FILE*) file);
 }

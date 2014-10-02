@@ -257,14 +257,14 @@ bool RocketSDL2RenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture
   }
 
   file_interface->Seek(file_handle, 0, SEEK_END);
-  size_t buffer_size = file_interface->Tell(file_handle);
+  nom::size_type buffer_size = file_interface->Tell(file_handle);
   file_interface->Seek(file_handle, 0, SEEK_SET);
 
   char* buffer = new char[buffer_size];
   file_interface->Read(buffer, buffer_size, file_handle);
   file_interface->Close(file_handle);
 
-  size_t i;
+  nom::size_type i;
   for(i = source.Length() - 1; i > 0; i--)
   {
     if(source[i] == '.')

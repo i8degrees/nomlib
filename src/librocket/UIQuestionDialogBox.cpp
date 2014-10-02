@@ -74,7 +74,7 @@ const std::string& UIQuestionDialogBox::element_type() const
   return this->element_type_;
 }
 
-size_t UIQuestionDialogBox::num_responses() const
+nom::size_type UIQuestionDialogBox::num_responses() const
 {
   NOM_ASSERT( this->valid() != false );
 

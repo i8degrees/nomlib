@@ -60,7 +60,7 @@ bool IObject::is_type( const ObjectTypeInfo& rhs ) const
   return false;
 }
 
-void* IObject::operator new( size_t mem )
+void* IObject::operator new( nom::size_type mem )
 {
   // std::stringstream os;
 

@@ -152,7 +152,7 @@ NOM_LOG_ERR ( NOM, "Unknown error on attempt to change working directory to: " +
 
 const std::string WinFile::basename ( const std::string& filename )
 {
-  nom::size pos = 0;
+  nom::size_type pos = 0;
   pos = filename.find_last_of ( ".", PATH_MAX );
 
   // If no matches are found, return the input filename back to the end-user.
@@ -168,7 +168,7 @@ std::vector<std::string> WinFile::read_dir( const std::string& dir_path )
   WIN32_FIND_DATA ffd;
   // LARGE_INTEGER filesize;
   TCHAR szDir[PATH_MAX];
-  size_t length_of_arg;
+  nom::size_type length_of_arg;
   HANDLE hFind = INVALID_HANDLE_VALUE;
   DWORD dwError = 0;
   std::string entry;              // A file entry within a directory
@@ -372,7 +372,7 @@ bool WinFile::mkdir( const std::string& path )
 
 bool WinFile::recursive_mkdir( const std::string& path )
 {
-  std::size_t pos = std::string::npos;
+  nom::size_type pos = std::string::npos;
 
   Path p;
   std::string delimiter = p.native();

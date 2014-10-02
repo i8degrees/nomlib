@@ -70,7 +70,7 @@ class ResourceCache
     }
 
     /// \brief Get the total number of stored resources.
-    size_t size( void ) const
+    nom::size_type size( void ) const
     {
       return this->resources_.size();
     }

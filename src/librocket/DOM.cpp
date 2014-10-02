@@ -68,7 +68,7 @@ Rocket::Core::ElementList DOM::class_names( const std::string& q ) const
   std::string tag_name;
   std::string class_name;
 
-  std::size_t pos = q.find_first_of(".");
+  nom::size_type pos = q.find_first_of(".");
 
   if( pos != std::string::npos ) // match found
   {

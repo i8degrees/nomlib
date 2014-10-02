@@ -14,7 +14,7 @@ if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
 
   GTEST_ADD_TESTS (
                     json_serializer
-                    "JsonCppSerializerTest"
+                    "" # args
                     ${NOM_TESTS_SOURCE_DIR}/serializers/JsonCppSerializerTest.cpp
                   )
 
@@ -33,7 +33,7 @@ if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
 
   GTEST_ADD_TESTS (
                     json_deserializer
-                    "JsonCppDeserializerTest"
+                    "" # args
                     ${NOM_TESTS_SOURCE_DIR}/serializers/JsonCppDeserializerTest.cpp
                   )
 
@@ -55,7 +55,7 @@ if( NOM_BUILD_SERIALIZERS_XML_TESTS )
 
   GTEST_ADD_TESTS (
                     xml_serializer
-                    "RapidXmlSerializer"
+                    "" # args
                     ${NOM_TESTS_SOURCE_DIR}/serializers/RapidXmlSerializerTest.cpp
                   )
 
@@ -73,38 +73,35 @@ if( NOM_BUILD_SERIALIZERS_XML_TESTS )
 
   GTEST_ADD_TESTS (
                     xml_deserializer
-                    "RapidXmlDeserializer"
+                    "" # args
                     ${NOM_TESTS_SOURCE_DIR}/serializers/RapidXmlDeserializerTest.cpp
                   )
 
 endif( NOM_BUILD_SERIALIZERS_XML_TESTS )
 
-# Copy JSON resources for unit tests only if necessary (built).
+# Copy resources file for unit tests if it has been built.
 if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
-
-  install (
-            DIRECTORY
-            "${NOM_EXAMPLES_RESOURCES_DIR}/json"
-            DESTINATION
-            "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
-            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-          )
-
+    # Search paths to use in resolving the full resources path
+    install (
+              FILES
+              "${NOM_TESTS_RESOURCES_DIR}/serializers/JsonCppSerializerTest.json"
+              DESTINATION
+              "${TESTS_DEPS_INSTALL_PEFIX}"
+            )
 endif( NOM_BUILD_SERIALIZERS_JSON_TESTS )
 
-# Copy XML resources for unit tests only if necessary (built).
+# Copy resources file for unit tests if it has been built.
 if( NOM_BUILD_SERIALIZERS_XML_TESTS )
-
-  install (
-            DIRECTORY
-            "${NOM_EXAMPLES_RESOURCES_DIR}/xml"
-            DESTINATION
-            "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
-            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-          )
-
+    # Search paths to use in resolving the full resources path
+    install (
+              FILES
+              "${NOM_TESTS_RESOURCES_DIR}/serializers/RapidXmlSerializerTest.json"
+              DESTINATION
+              "${TESTS_DEPS_INSTALL_PEFIX}"
+            )
 endif( NOM_BUILD_SERIALIZERS_XML_TESTS )
 
+# TODO: Use resources cfg file
 if( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
 
   add_executable  (
@@ -121,7 +118,7 @@ if( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
 
   GTEST_ADD_TESTS (
                     json_config_file
-                    "JsonConfigFileTest"
+                    "" # args
                     ${NOM_TESTS_SOURCE_DIR}/serializers/JsonConfigFileTest.cpp
                   )
 
@@ -151,7 +148,7 @@ if( NOM_BUILD_SERIALIZERS_HTML_TESTS )
 
   GTEST_ADD_TESTS (
                     MiniHTMLTest
-                    "MiniHTMLTest"
+                    "" # args
                     ${NOM_TESTS_SOURCE_DIR}/serializers/MiniHTMLTest.cpp
                   )
 

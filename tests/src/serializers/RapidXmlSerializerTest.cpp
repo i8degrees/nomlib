@@ -3,6 +3,11 @@
 
 #include "gtest/gtest.h"
 
+// nom::init functions
+#include "nomlib/system/init.hpp"
+#include "nomlib/system/dialog_messagebox.hpp"
+#include "nomlib/system/SearchPath.hpp"
+
 #include <nomlib/serializers.hpp>
 #include <nomlib/ptree.hpp> // Property Tree (nom::Value)
 
@@ -15,11 +20,13 @@ namespace nom {
 class RapidXmlSerializerTest: public ::testing::Test
 {
   public:
+    const std::string APP_NAME = "RapidXmlSerializerTest";
+
     /// \brief Default constructor; initialize our input/ouput interfaces to a
     /// sane state, suited for automated testing.
     ///
     /// \note Nearly every test fails without compact (no formatting) output.
-    RapidXmlSerializerTest( void ) :
+    RapidXmlSerializerTest() :
       fp{ new RapidXmlSerializer( nom::SerializerOptions::Compact ) },
       fp_in{ new RapidXmlDeserializer() },
       fp_outs{ new RapidXmlSerializer( nom::SerializerOptions::HumanFriendly ) }
@@ -27,13 +34,30 @@ class RapidXmlSerializerTest: public ::testing::Test
       // ...
     }
 
-    ~RapidXmlSerializerTest( void )
+    virtual ~RapidXmlSerializerTest()
     {
       delete this->fp;
       this->fp = nullptr;
     }
 
+    /// \remarks This method is called after construction, at the start of each
+    /// unit test.
+    virtual void SetUp()
+    {
+      // nom::init sets the working directory to this executable's directory
+      // path; i.e.: build/tests or build/tests/Debug depending on build
+      // environment. Resource path roots become absolute directory paths from
+      // here on out.
+      if( resources.load_file(APP_NAME + ".json") == false )
+      {
+        FAIL()
+        << "Could not determine the root resource path for " << APP_NAME << ".json";
+      }
+    }
+
   protected:
+    nom::SearchPath resources;
+
     nom::IValueSerializer* fp;
     nom::IValueDeserializer* fp_in;
     nom::IValueSerializer* fp_outs;
@@ -640,8 +664,8 @@ TEST_F( RapidXmlSerializerTest, DISABLED_ExtraIO )
   Value os1, os2;
 
   // Un-serialize the JSON data into Value objects
-  ASSERT_TRUE( json->load( RESOURCE_JSON_AUCTIONS, os1 ) );
-  ASSERT_TRUE( json->load( RESOURCE_JSON_INVENTORY, os2 ) );
+  ASSERT_TRUE( json->load( resources.path() + RESOURCE_JSON_AUCTIONS, os1 ) );
+  ASSERT_TRUE( json->load( resources.path() + RESOURCE_JSON_INVENTORY, os2 ) );
 
   // Re-serialize our Value objects back as XML
   ASSERT_TRUE( fp->save( in1, "ah.xml" ) );
@@ -651,7 +675,7 @@ TEST_F( RapidXmlSerializerTest, DISABLED_ExtraIO )
   EXPECT_EQ( in2, os2 );
 
   // FIXME: This will load for us only if we use Json::Reader directly to read.
-  // ASSERT_TRUE( fp->load( RESOURCE_JSON_GAMEDATA, os ) );
+  // ASSERT_TRUE( fp->load( resources.path() + RESOURCE_JSON_GAMEDATA, os ) );
   // EXPECT_EQ( 4, os.size() );
 }
 
@@ -660,6 +684,15 @@ TEST_F( RapidXmlSerializerTest, DISABLED_ExtraIO )
 int main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
+
+  // Set the current working directory path to the path leading to this
+  // executable file; used for unit tests that require file-system I/O.
+  if( nom::init( argc, argv ) == false )
+  {
+    nom::DialogMessageBox( "Critical Error", "Could not initialize nomlib.", nom::MessageBoxType::NOM_DIALOG_ERROR );
+    return NOM_EXIT_FAILURE;
+  }
+  atexit( nom::quit );
 
   return RUN_ALL_TESTS();
 }

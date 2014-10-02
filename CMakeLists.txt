@@ -63,7 +63,7 @@ option( NOM_BUILD_SERIALIZERS_UNIT "Serialization core for JSON, XML, HTML" true
 option( NOM_BUILD_JSON_UNIT "JSON I/O" true )
 
 # Dependencies: RapidXml (included in source tree)
-option( NOM_BUILD_XML_UNIT "XML I/O" false )
+option( NOM_BUILD_XML_UNIT "XML I/O" FALSE )
 
 option( NOM_BUILD_GUI_UNIT "GUI subsystem" false )
 

@@ -26,35 +26,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include <nomlib/ptree.hpp>   // Property Tree (nom::Value)
-#include <nomlib/system.hpp>
+#include "nomlib/ptree.hpp"   // Property Tree (nom::Value)
+#include "nomlib/system.hpp"
 
 namespace nom {
-
-/// Relative file path name to our resources for this unit test
-const nom::Path p;
-
-/// Relative file path name of the resources directory for JSON input
-const std::string APP_RESOURCES_JSON_DIR = "Resources" + p.native() + "json" + p.native();
-
-/// Relative file path name of the resources directory for XML input
-const std::string APP_RESOURCES_XML_DIR = "Resources" + p.native() + "xml" + p.native();
-
-const std::string RESOURCE_SANITY = APP_RESOURCES_JSON_DIR + "sanity.json";
-const std::string RESOURCE_SANITY2 = APP_RESOURCES_JSON_DIR + "sanity2.json";
-
-/// \brief World of Warcraft auction house data (JSON)
-const std::string RESOURCE_JSON_AUCTIONS = APP_RESOURCES_JSON_DIR + "auctions.json";
-
-/// \brief World of Warcraft inventory dump (JSON)
-const std::string RESOURCE_JSON_INVENTORY = APP_RESOURCES_JSON_DIR + "inventory.json";
-
-/// \todo Only this particular file, for whatever reason, refuses to open unless we call Json::Reader::parse directly
-const std::string RESOURCE_JSON_GAMEDATA = APP_RESOURCES_JSON_DIR + "omnom.json";
-
-const std::string RESOURCE_XML = APP_RESOURCES_XML_DIR + "test_one.xml";
-const std::string RESOURCE_JSON_BMFONT_GAMEOVER = APP_RESOURCES_XML_DIR + "gameover.json";
-const std::string RESOURCE_XML_BMFONT_GAMEOVER = APP_RESOURCES_XML_DIR + "gameover.xml";
 
 /// \brief Adapted from the original sanity2.json
 Value sanity2_out( void );

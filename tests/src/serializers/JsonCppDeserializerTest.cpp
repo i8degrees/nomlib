@@ -3,6 +3,10 @@
 
 #include "gtest/gtest.h"
 
+// nom::init functions
+#include "nomlib/system/init.hpp"
+#include "nomlib/system/dialog_messagebox.hpp"
+
 #include <nomlib/serializers.hpp>
 #include <nomlib/ptree.hpp> // Property Tree (nom::Value)
 
@@ -280,6 +284,15 @@ TEST_F( JsonCppDeserializerTest, DeserializeObjectValuesSanity2 )
 int main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
+
+  // Set the current working directory path to the path leading to this
+  // executable file; used for unit tests that require file-system I/O.
+  if( nom::init( argc, argv ) == false )
+  {
+    nom::DialogMessageBox( "Critical Error", "Could not initialize nomlib.", nom::MessageBoxType::NOM_DIALOG_ERROR );
+    return NOM_EXIT_FAILURE;
+  }
+  atexit( nom::quit );
 
   return RUN_ALL_TESTS();
 }

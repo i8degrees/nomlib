@@ -3,6 +3,11 @@
 
 #include "gtest/gtest.h"
 
+// nom::init functions
+#include "nomlib/system/init.hpp"
+#include "nomlib/system/dialog_messagebox.hpp"
+#include "nomlib/system/SearchPath.hpp"
+
 #include <nomlib/serializers.hpp>
 #include <nomlib/ptree.hpp> // Property Tree (nom::Value)
 
@@ -15,12 +20,13 @@ namespace nom {
 class JsonCppSerializerTest: public ::testing::Test
 {
   public:
+    const std::string APP_NAME = "JsonCppSerializerTest";
 
     /// \brief Default constructor; initialize our input/ouput interfaces to a
     /// sane state, suited for automated testing.
     ///
     /// \note Nearly every test fails without compact (no formatting) output.
-    JsonCppSerializerTest( void ) :
+    JsonCppSerializerTest() :
       fp{ new JsonCppSerializer( nom::SerializerOptions::Compact ) },
       fp_in{ new JsonCppDeserializer() },
       fp_outs{ new JsonCppSerializer( nom::SerializerOptions::HumanFriendly ) }
@@ -28,13 +34,30 @@ class JsonCppSerializerTest: public ::testing::Test
       // ...
     }
 
-    ~JsonCppSerializerTest( void )
+    virtual ~JsonCppSerializerTest()
     {
       delete this->fp;
       this->fp = nullptr;
     }
 
+    /// \remarks This method is called after construction, at the start of each
+    /// unit test.
+    virtual void SetUp()
+    {
+      // nom::init sets the working directory to this executable's directory
+      // path; i.e.: build/tests or build/tests/Debug depending on build
+      // environment. Resource path roots become absolute directory paths from
+      // here on out.
+      if( resources.load_file(APP_NAME + ".json") == false )
+      {
+        FAIL()
+        << "Could not determine the root resource path for " << APP_NAME << ".json";
+      }
+    }
+
   protected:
+    nom::SearchPath resources;
+
     nom::IValueSerializer* fp;
     nom::IValueDeserializer* fp_in;
     nom::IValueSerializer* fp_outs;
@@ -575,21 +598,23 @@ TEST_F( JsonCppSerializerTest, FileIO )
   ASSERT_TRUE( in == o ) << in;
 }
 
-/// \fixme Unit test fails if we do not execute from the path of the program
-/// executable (where icon.png is expected to be found).
+/// \todo Our JSON serializer does not currently handle array objects within
+/// array objects, and must be implemented in order for the
+/// RESOURCE_JSON_INVENTORY JSON tests to pass.
+/// to.
 TEST_F( JsonCppSerializerTest, ExtraIO )
 {
   Value in;
   Value os;
 
-  // ASSERT_TRUE( fp->load( RESOURCE_JSON_AUCTIONS, os ) );
-  // EXPECT_EQ( 4, os.size() );
+  // ASSERT_TRUE( fp_in->load( resources.path() + RESOURCE_JSON_INVENTORY, os ) );
+  // EXPECT_EQ( 2, os.size() );
 
-  ASSERT_TRUE( fp_in->load( RESOURCE_JSON_INVENTORY, os ) );
-  EXPECT_EQ( 2, os.size() );
+  // ASSERT_TRUE( fp_in->load( resources.path() + RESOURCE_JSON_INVENTORY, os ) );
+  // EXPECT_EQ( 2, os.size() );
 
   // FIXME: This will load for us only if we use Json::Reader directly to read.
-  // ASSERT_TRUE( fp->load( RESOURCE_JSON_GAMEDATA, os ) );
+  // ASSERT_TRUE( fp_in->load( resources.path() + RESOURCE_JSON_GAMEDATA, os ) );
   // EXPECT_EQ( 4, os.size() );
 }
 
@@ -598,6 +623,15 @@ TEST_F( JsonCppSerializerTest, ExtraIO )
 int main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
+
+  // Set the current working directory path to the path leading to this
+  // executable file; used for unit tests that require file-system I/O.
+  if( nom::init( argc, argv ) == false )
+  {
+    nom::DialogMessageBox( "Critical Error", "Could not initialize nomlib.", nom::MessageBoxType::NOM_DIALOG_ERROR );
+    return NOM_EXIT_FAILURE;
+  }
+  atexit( nom::quit );
 
   return RUN_ALL_TESTS();
 }

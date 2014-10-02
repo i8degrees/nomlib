@@ -1,0 +1,13 @@
+{
+  "resources":
+  {
+    "search_prefix":
+    [
+      "../../",
+      "../../../",
+      "./"
+    ],
+
+    "path": "Resources/tests/serializers/json/"
+  }
+}

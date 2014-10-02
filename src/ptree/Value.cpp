@@ -750,7 +750,7 @@ uint Value::size( void ) const
   }
 }
 
-bool Value::empty( void )
+bool Value::empty() const
 {
   NOM_ASSERT( this->null_type() || this->array_type() || this->object_type() );
 
@@ -942,6 +942,27 @@ Value& Value::push_back( const Value& val )
   return (*this)[ ArrayIndex( this->size() )] = val;
 }
 
+// Value& Value::at( int index )
+// {
+//   NOM_ASSERT( index >= 0 && index > this->size() );
+//   if( index < 0 && index < this->size() )
+//   {
+//     // Valid position
+//     return( *this )[ (index) ];
+//   }
+
+//   // An object node container is required for this method call.
+//   if( ! this->object_valid() )
+//   {
+//     this->type_ = ValueType::ObjectValues;
+//     this->value_.object_ = new Object();
+//   }
+
+//   // Err; invalid position
+//   // return Value::null;
+//   return *this;
+// }
+
 Value Value::find( const std::string& key ) const
 {
   // Sanity check
@@ -982,6 +1003,30 @@ Value Value::erase( const std::string& key )
 
   return Value::null;
 }
+
+// Value Value::erase( int index )
+// {
+//   // Sanity check
+//   NOM_ASSERT( this->null_type() || this->array_type() );
+
+//   VString k( index );
+//   auto res = this->value_.object_->find( k );
+
+//   if( res == this->value_.object_->end() )
+//   {
+//     // No match found
+//     return Value::null;
+//   }
+//   else
+//   {
+//     // Success -- match found; erasing found key pair!
+//     this->value_.object_->erase( res );
+
+//     return res->second;
+//   }
+
+//   return Value::null;
+// }
 
 Value::Members Value::member_names( void ) const
 {

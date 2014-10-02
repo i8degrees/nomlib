@@ -391,7 +391,7 @@ class Value
     ///
     /// \note This method will fail with an assert if the container type is
     /// *not* either: null, array or object node type.
-    bool empty( void );
+    bool empty() const;
 
     /// \brief Remove all array and object members.
     ///
@@ -408,8 +408,13 @@ class Value
     /// \remarks It may be necessary to append the 'u' symbol after the number
     /// in order to have the compiler recognize the request and route to the
     /// correct constructor.
+    ///
+    /// \note In contrast to the standard STL method overloads for
+    /// ::operator[](int), nom::Value should always perform bounds checking.
     Value& operator[]( ArrayIndex index );
 
+    /// \note In contrast to the standard STL method overloads for
+    /// ::operator[](int), nom::Value should always perform bounds checking.
     Value& operator[]( int index );
 
     /// \brief Obtain a stored element by index number.
@@ -424,8 +429,13 @@ class Value
     /// \todo Fix index methods -- VString, ValueBaseIterator & co; this method
     /// call relies on our half-finished implementation stemming from the
     /// VString class.
+    ///
+    /// \note In contrast to the standard STL method overloads for
+    /// ::operator[](int), nom::Value should always perform bounds checking.
     const Value& operator[]( ArrayIndex index ) const;
 
+    /// \note In contrast to the standard STL method overloads for
+    /// ::operator[](int), nom::Value should always perform bounds checking.
     const Value& operator[]( int index ) const;
 
     /// \brief Access an object node's container.
@@ -433,6 +443,9 @@ class Value
     /// \remarks This method call requires an object node container type, and
     /// will immediately initialize one, if one is not found to be valid at the
     /// time of the call -- existing value(s) in the object will be lost.
+    ///
+    /// \note In contrast to the standard STL method overloads for
+    /// ::operator[](int), nom::Value should always perform bounds checking.
     /*const*/ Value& operator[]( const char* key ) /*const*/;
 
     Value& operator[]( const std::string& key );
@@ -440,6 +453,34 @@ class Value
 
     /// \brief Insert array elements.
     Value& push_back( const Value& val );
+
+    /// \brief Access an element.
+    ///
+    /// \returns Returns a reference to the element at position n in the
+    /// container.
+    ///
+    /// \remarks This method is an alias for Value::operator[](int) and is
+    /// provided to help ease the porting of code from standard container
+    /// types from STL, i.e.: std::vector, std::map, ...
+    ///
+    /// \note This function automatically checks whether n is within the bounds
+    /// of valid elements in the vector, throwing an assert if it is not (i.e.,
+    /// if n is greater or equal than its size). This error handling behavior is
+    /// intended to mimic the standard container types -- less and except where
+    /// otherwise noted here in the documentation.
+    ///
+    /// \note Unlike the standard STL err handling behavior for member
+    /// method overloads ::operator[] and friends, bounds checking is **always**
+    /// unconditionally performed when using any method a part of the
+    /// nom::Value interface.
+    ///
+    /// Bounds checking err handling that may be disabled by the end-user is via
+    /// disabling assert macros -- NOM_ASSERT, albeit this alone *should not*
+    /// modify the error state logic of the method(s) in question, if the
+    /// programming is without human mistake.
+    ///
+    /// \todo Verify working state of method.
+    // Value& at( int index );
 
     /// \brief Search the object for an existing member.
     ///
@@ -462,6 +503,21 @@ class Value
     /// \note This method will fail with an assert if the container type is
     /// *not* either a null or object node type.
     Value erase( const std::string& key );
+
+    /// \brief Remove an array object.
+    ///
+    /// \returns The removed array object upon success, or Value::null on
+    /// failure, such as when you specify an invalid position index.
+    ///
+    /// \remarks The object is unchanged if the referenced key does not exist.
+    ///
+    /// \note The object's type is not modified.
+    ///
+    /// \note This method will fail with an assert if the container type is
+    /// *not* either a null or object node type.
+    ///
+    /// \todo Verify working state of method.
+    // Value erase( int index );
 
     /// \brief Obtain the member names (keys) of each pair in this container.
     ///

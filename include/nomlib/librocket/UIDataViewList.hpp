@@ -49,6 +49,7 @@ namespace nom {
 
 // Forward declarations
 class CardsMenuModel;
+class CardCollection;
 
 /// \see http://librocket.com/wiki/documentation/tutorials/Datagrid
 ///
@@ -74,6 +75,9 @@ class UIDataViewList: public nom::UIWidget
 
     void set_data_source( CardsMenuModel* model );
 
+    CardCollection* database() const;
+    void set_database( CardCollection* db );
+
     int current_page() const;
 
     int total_pages() const;
@@ -98,6 +102,7 @@ class UIDataViewList: public nom::UIWidget
     /// \remarks This object pointer is not owned by this class and should not
     /// be freed.
     CardsMenuModel* data_source_;
+    CardCollection* database_;
 
     /// \brief The total number of available card pages.
     int total_pages_;

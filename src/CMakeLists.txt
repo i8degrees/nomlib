@@ -487,16 +487,6 @@ endif( NOM_BUILD_TEMPLATES_UNIT )
 
 if( NOM_BUILD_LIBROCKET_UNIT )
 
-  set ( NOMLIB_HEADERS
-        ${NOMLIB_HEADERS}
-        ${LIBROCKET_HEADERS}
-      )
-
-  set ( NOMLIB_SOURCE
-        ${NOMLIB_SOURCE}
-        ${LIBROCKET_SOURCE}
-      )
-
   # Inclusion of a particular test header intended for use only in unit testing
   # environments is currently required -- src/librocket/UIDataViewList.cpp needs
   # the CardsMenuModel.hpp header file -- tests/include/nomlib/tests/gui/librocket,
@@ -508,6 +498,22 @@ if( NOM_BUILD_LIBROCKET_UNIT )
   # do weird things like disable assertions macros, etc. and are not intended
   # to ever be accessed outside of the testing environment.
   include_directories( "${NOM_TESTS_HEADERS_DIR}" )
+
+  # Append the implementation's source file for linking from the above
+  set ( LIBROCKET_SOURCE
+        ${LIBROCKET_SOURCE}
+        ${NOM_TESTS_SOURCE_DIR}/gui/librocket/CardsMenuModel.cpp
+      )
+
+  set ( NOMLIB_HEADERS
+        ${NOMLIB_HEADERS}
+        ${LIBROCKET_HEADERS}
+      )
+
+  set ( NOMLIB_SOURCE
+        ${NOMLIB_SOURCE}
+        ${LIBROCKET_SOURCE}
+      )
 
 endif( NOM_BUILD_LIBROCKET_UNIT )
 
@@ -523,6 +529,7 @@ source_group ( "include\\graphics\\scale2x" FILES ${GRAPHICS_SCALE2X_HEADERS} )
 source_group ( "include\\graphics\\shapes" FILES ${GRAPHICS_SHAPES_HEADERS} )
 source_group ( "include\\graphics\\sprite" FILES ${GRAPHICS_SPRITE_HEADERS} )
 source_group ( "include\\gui" FILES ${GUI_HEADERS} )
+source_group ( "include\\gui\\librocket" FILES ${LIBROCKET_HEADERS} )
 source_group ( "third-party\\common\\jsoncpp" FILES ${JSONCPP_INCLUDE_DIR} )
 source_group ( "third-party\\common\\rapidxml" FILES ${RAPIDXML_INCLUDE_DIR} )
 source_group ( "include\\math" FILES ${MATH_HEADERS} )
@@ -541,6 +548,7 @@ source_group ( "src\\graphics\\scale2x" FILES ${GRAPHICS_SCALE2X_SOURCE} )
 source_group ( "src\\graphics\\shapes" FILES ${GRAPHICS_SHAPES_SOURCE} )
 source_group ( "src\\graphics\\sprite" FILES ${GRAPHICS_SPRITE_SOURCE} )
 source_group ( "src\\gui" FILES ${GUI_SOURCE} )
+source_group ( "src\\gui\\librocket" FILES ${LIBROCKET_SOURCE} )
 source_group ( "src\\json" FILES ${JSON_SOURCE} )
 source_group ( "third-party\\common\\jsoncpp" FILES ${JSONCPP_SOURCE} )
 source_group ( "src\\math" FILES ${MATH_SOURCE} )

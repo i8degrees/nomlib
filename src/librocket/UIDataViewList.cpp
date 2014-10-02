@@ -38,12 +38,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/tests/gui/librocket/CardsMenuModel.hpp"
 
 using namespace Rocket::Core;
-// using namespace Rocket::Controls;
 
 namespace nom {
 
 UIDataViewList::UIDataViewList( const Point2i& pos, const Size2i& dims ) :
-  UIWidget( pos, dims )
+  UIWidget( pos, dims ),
+  data_source_( nullptr ),
+  database_( nullptr )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 
@@ -135,6 +136,16 @@ void UIDataViewList::set_data_source( CardsMenuModel* model )
   this->data_source_ = model;
 }
 
+CardCollection* UIDataViewList::database() const
+{
+  return this->database_;
+}
+
+void UIDataViewList::set_database( CardCollection* db )
+{
+  this->database_ = db;
+}
+
 int UIDataViewList::current_page() const
 {
   return this->current_page_;
@@ -176,22 +187,23 @@ void UIDataViewList::set_selection( int idx )
 void UIDataViewList::set_page( int pg )
 {
   CardsMenuModel* model = this->data_source();
+  CardCollection* db = this->database();
 
-  NOM_ASSERT( model != nullptr );
-  if( model )
+  NOM_ASSERT( model != nullptr && db != nullptr);
+  if( model && db )
   {
+    CardList cards = db->cards();
+
     int start_id = this->per_page() * pg;
     int end_id = start_id + this->per_page();
 
     // Sanity check
-    // FIXME:
-    // if( start_id > this->cards_.size() ) return;
+    if( start_id > db->num_rows() ) return;
 
     int i = 0;
     for( auto idx = start_id; idx != end_id; ++idx )
     {
-      // FIXME:
-      // model->insert_card( i, this->cards_[idx] );
+      model->insert_card( i, cards[idx] );
       ++i;
     }
   }
@@ -201,8 +213,6 @@ void UIDataViewList::set_page( int pg )
 
 void UIDataViewList::_initialize()
 {
-  this->set_data_source( nullptr );
-
   this->per_page_ = 11;
   // this->total_pages = db.size() / per_page();
   // this->total_pages = 10;

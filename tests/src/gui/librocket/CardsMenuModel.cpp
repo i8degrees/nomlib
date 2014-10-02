@@ -38,6 +38,55 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Card
+
+Card::Card()
+{
+  //
+}
+
+Card::~Card()
+{
+  //
+}
+
+Card::Card( int id, const std::string& name, int num_cards )
+{
+  this->set_id(id);
+  this->set_name(name);
+  this->set_num( num_cards );
+}
+
+int Card::id() const
+{
+  return this->id_;
+}
+
+const std::string& Card::name() const
+{
+  return this->name_;
+}
+
+const std::string& Card::num() const
+{
+  return this->num_;
+}
+
+void Card::set_id(int id)
+{
+  this->id_ = id;
+}
+
+void Card::set_name(const std::string& name)
+{
+  this->name_ = name;
+}
+
+void Card::set_num(int num)
+{
+  this->num_ = std::to_string(num);
+}
+
 // CardsMenuModel
 
 CardsMenuModel::CardsMenuModel( const std::string& source,
@@ -67,11 +116,11 @@ void CardsMenuModel::GetRow( Rocket::Core::StringList& row, const Rocket::Core::
       }
       else if( columns[i] == "name" )
       {
-        row.push_back( this->db_[row_index].name.c_str() );
+        row.push_back( this->db_[row_index].name().c_str() );
       }
       else if( columns[i] == "num" )
       {
-        row.push_back( this->db_[row_index].num.c_str() );
+        row.push_back( this->db_[row_index].num().c_str() );
       }
     } // end for cols loop
   }
@@ -142,17 +191,20 @@ int CardsMenuModel::insert_card( int pos, const Card& card )
   return nom::npos;
 }
 
-int CardsMenuModel::insert_cards( int pos, const std::vector<Card>& cards )
+int CardsMenuModel::insert_cards( int pos, const CardList& cards )
 {
   int rows = this->num_rows();
 
   NOM_ASSERT( pos < rows );
   if( pos < rows )
   {
+    int idx = 0;
     for( auto itr = cards.begin(); itr != cards.end(); ++itr )
     {
-      this->db_.insert( this->db_.end() - pos, (*itr) );
+      this->db_.insert( this->db_.begin() + (pos + idx), (*itr) );
+      ++idx;
     }
+    // this->db_.insert( this->db_.begin() + pos, cards.size() );
 
     NotifyRowChange(  this->table_name().c_str(),
                       // First row index changed -- zero-based index
@@ -185,7 +237,7 @@ int CardsMenuModel::append_card( const Card& card )
   return this->num_rows();
 }
 
-int CardsMenuModel::append_cards( const std::vector<Card>& cards )
+int CardsMenuModel::append_cards( const CardList& cards )
 {
   int rows = this->num_rows();
 
@@ -212,6 +264,8 @@ bool CardsMenuModel::empty() const
 void CardsMenuModel::erase_cards()
 {
   this->db_.clear();
+
+  NotifyRowChange( this->table_name().c_str() );
 }
 
 int CardsMenuModel::erase_card( int pos )
@@ -277,13 +331,13 @@ std::string CardsMenuModel::dump()
   {
     os
     // ID && card name
-    << (*itr).id
+    << (*itr).id()
     << " "
-    << (*itr).name
+    << (*itr).name()
 
     // Number of cards
     << "\t"
-    << (*itr).num
+    << (*itr).num()
     << std::endl;
   }
 
@@ -294,7 +348,7 @@ std::string CardsMenuModel::dump()
 
 CardCollection::CardCollection()
 {
-  this->set_data_source( nullptr );
+  // ...
 }
 
 CardCollection::~CardCollection()
@@ -302,24 +356,18 @@ CardCollection::~CardCollection()
   // ...
 }
 
-CardsMenuModel* CardCollection::data_source() const
+nom::size_type CardCollection::num_rows() const
 {
-  return this->data_source_;
+  return this->cards_.size();
 }
 
-void CardCollection::set_data_source( CardsMenuModel* model )
+CardList CardCollection::cards() const
 {
-  this->data_source_ = model;
-  this->cards_.clear();
+  return this->cards_;
 }
 
 bool CardCollection::load_db()
 {
-  bool ret = false;
-  CardsMenuModel* model = this->data_source();
-
-  NOM_ASSERT( model != nullptr );
-
   // Pg 0 -- initial population
   this->cards_.push_back(Card( 0,"Geezard",1));
   this->cards_.push_back(Card( 1,"Fungar",1));
@@ -332,11 +380,6 @@ bool CardCollection::load_db()
   this->cards_.push_back(Card( 8,"Blood Soul",1));
   this->cards_.push_back(Card( 9,"Caterchipillar",2));
   this->cards_.push_back(Card( 10,"Cockatrice",3));
-
-  if( model )
-  {
-    ret = model->append_cards( this->cards_ );
-  }
 
   // pg 1
   this->cards_.push_back(Card( 11,"Grat",1));
@@ -390,18 +433,17 @@ bool CardCollection::load_db()
   this->cards_.push_back(Card( 53,"Tonberry King",1));
   this->cards_.push_back(Card( 54,"Wedge, Biggs",1));
 
-  // Err
-  return ret;
+  return true;
 }
 
 int CardCollection::lookup_id( const std::string& name ) const
 {
   for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr )
   {
-    if( (*itr).name == name )
+    if( (*itr).name() == name )
     {
       // Successful match
-      return (*itr).id;
+      return (*itr).id();
     }
   }
 
@@ -413,10 +455,10 @@ std::string CardCollection::lookup_name( int id ) const
 {
   for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr )
   {
-    if( (*itr).id == id )
+    if( (*itr).id() == id )
     {
       // Successful match
-      return (*itr).name;
+      return (*itr).name();
     }
   }
 
@@ -424,61 +466,24 @@ std::string CardCollection::lookup_name( int id ) const
   return "\0";
 }
 
-// // cards.begin() = id = per_page() * pg
-// // cards.end() = id + per_page()
-// void CardCollection::set_page( int pg )
-// {
-//   CardsMenuModel* model = this->data_source();
-
-//   NOM_ASSERT( model != nullptr );
-//   if( model )
-//   {
-//     // FIXME:
-//     // int start_id = this->per_page() * pg;
-//     // int end_id = start_id + this->per_page();
-//     int start_id = 11 * pg;
-//     int end_id = start_id + 11;
-
-//     // Sanity check
-//     // FIXME:
-//     if( start_id > this->cards_.size() ) return;
-
-//     int i = 0;
-//     for( auto idx = start_id; idx != end_id; ++idx )
-//     {
-//       // FIXME:
-//       model->insert_card( i, this->cards_[idx] );
-//       ++i;
-//     }
-//   }
-// }
-
 std::string CardCollection::dump()
 {
   std::stringstream os;
 
-  CardsMenuModel* model = this->data_source();
-  NOM_ASSERT( model != nullptr );
-  if( model )
-  {
-    // Table && number of model rows VS number of cards in collection
-    os
-    << "table: " << model->table_name()
-    << "[" << model->num_rows() << "/" << this->cards_.size() << "]" << std::endl;
-  }
+  os << "cards " << "[" << this->cards_.size() << "]" << std::endl;
 
   os << std::endl;
   for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr )
   {
     os
     // ID && card name
-    << (*itr).id
+    << (*itr).id()
     << " "
-    << (*itr).name
+    << (*itr).name()
 
     // Number of cards
     << "\t"
-    << (*itr).num
+    << (*itr).num()
     << std::endl;
   }
 

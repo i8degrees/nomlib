@@ -31,11 +31,6 @@ using namespace Rocket::Core;
 
 namespace nom {
 
-/// \brief Global initialization
-///
-/// \fixme
-CardCollection db = CardCollection();
-
 class libRocketDataGridTest: public nom::VisualUnitTest
 {
   public:
@@ -259,7 +254,7 @@ void on_keydown( Rocket::Core::Event& ev, UIDataViewList* store )
 
   // Element* target = ev.GetTargetElement();
 
-  CardsMenuModel* model = db.data_source();
+  CardsMenuModel* model = store->data_source();
   ASSERT_TRUE( model != nullptr );
 
   if( ev == "keydown" )
@@ -313,15 +308,17 @@ void on_mouseup( Rocket::Core::Event& ev, UIDataViewList* store  )
   int selection = 0;
   Rocket::Core::Element* target = ev.GetTargetElement();
 
-  CardsMenuModel* model = db.data_source();
+  CardsMenuModel* model = store->data_source();
   ASSERT_TRUE( model != nullptr );
+
+  CardCollection* db = store->database();
+  ASSERT_TRUE( db != nullptr );
 
   if( ev == "mouseup" )
   {
     if( target->GetTagName() == "datagridcell" )
     {
-      // selection = model->lookup_id( target->GetInnerRML().CString() );
-      selection = db.lookup_id( target->GetInnerRML().CString() );
+      selection = db->lookup_id( target->GetInnerRML().CString() );
       store->set_selection( selection );
 
       NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Card name:", target->GetInnerRML().CString() );
@@ -353,7 +350,7 @@ void on_mousescroll( Rocket::Core::Event& ev, UIDataViewList* store )
 
   // Element* target = ev.GetTargetElement();
 
-  CardsMenuModel* model = db.data_source();
+  CardsMenuModel* model = store->data_source();
   ASSERT_TRUE( model != nullptr );
 
   if( ev == "mousescroll" )
@@ -413,7 +410,7 @@ TEST_F( libRocketDataGridTest, DataSourceModel )
 
   // Creation tests
 
-  std::vector<Card> cards;
+  CardList cards;
   cards.push_back( Card( 0, "Geezard", 999 ) );
   EXPECT_EQ( 1, store->append_cards( cards ) )
   << "Resulting storage size should be one item.";
@@ -451,43 +448,63 @@ TEST_F( libRocketDataGridTest, DataSourceModel )
   cards.push_back( Card( 3, "Red Bat", 5 ) );
   cards.push_back( Card( 89, "Diablos", 666 ) );
 
-  // Overwrite all but the first card in the model
+  // Overwrite all but the first card in the model, shifting said first card to
+  // the end of the container.
   EXPECT_EQ( 4, store->insert_cards( 0, cards ) )
   << "Resulting storage size should be four items.";
 
+  // Ensure that the first card is at the end of the container
+  row.clear();
+  store->row( store->num_rows()-1, "name", row );
+  EXPECT_EQ( "Geezard", row.at(0) );
+
   // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, store->dump() );
 
-  // Destroy all but 'Diablos' card
+  // Destroy all but 'Geezard' card
   EXPECT_EQ( 1, store->erase_cards( 0, 3 ) )
-  << "The Diablos card should be the only item remaining.";
+  << "The Geezard card should be the only item remaining.";
 
   // ...and verify the results
   row.clear();
   store->row(0, "name", row );
   store->row(0, "num", row );
-  EXPECT_EQ( "Diablos", row.at(0) );
-  EXPECT_EQ( "666", row.at(1) );
+  EXPECT_EQ( "Geezard", row.at(0) );
+  EXPECT_EQ( "999", row.at(1) );
 
   store->erase_cards();
   EXPECT_EQ( true, store->empty() )
   << "Resulting storage size should be emptied (zero).";
 
-  // FIXME: This test fragment never did work as intended for us
-  // row.clear();
-  // store->row(0, "name", row );
-  // store->row(0, "num", row );
+  // FIXME: Even after destroying all cards, the number of rows remains two (2),
+  // whereas we expect zero (0).
+  // I have a hunch that it may have *something* to do with synchronization
+  // between the data source model and our container?
+  row.clear();
+  store->erase_cards();
+  // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, store->dump() );
   // EXPECT_EQ( 0, row.size() )
   // << "Resulting storage size should be empty (zero).";
 
-  // EXPECT_NE( "Diablos", row.at(0) );
-  // EXPECT_NE( "666", row.at(1) );
+  // Note that every other API test other than ::size pass the tests.
+
+  store->row(0, "name", row );
+  store->row(0, "num", row );
+  // FIXME:
+  // EXPECT_EQ( 0, row.size() )
+  // << "Resulting storage size should be empty (zero).";
+
+  EXPECT_NE( "Diablos", row.at(0) );
+  EXPECT_NE( "666", row.at(1) );
 
   NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, store->dump() );
 }
 
-/// \todo Add unit test for displaying two UIDataViewList objects.
+/// \todo Add unit test for rendering two UIDataViewList objects; I'm curious
+/// about performance offsets, etc.
 TEST_F( libRocketDataGridTest, UIDataViewList )
 {
+  CardsMenuModel* model = nullptr;
+
   // As per the positioning units used for nom::DataViewListTest (ex2) in
   // tests/src/gui/DataViewListTest.cpp.
   Point2i pos1( 25, 25 );
@@ -497,15 +514,32 @@ TEST_F( libRocketDataGridTest, UIDataViewList )
   EXPECT_EQ( true, store1.set_desktop( this->desktop.context() ) );
   EXPECT_EQ( true, store1.set_document_file( doc_file1 ) );
 
-  // TODO: Remove db getters & setters once ::load_db is refactored
   store1.set_data_source( new CardsMenuModel("cards_db") );
+  store1.set_database( new CardCollection() );
 
-  CardsMenuModel* model = store1.data_source();
-  NOM_ASSERT( model != nullptr );
+  CardCollection* db = store1.database();
+  NOM_ASSERT( db != nullptr );
 
-  db.set_data_source( store1.data_source() );
-  EXPECT_EQ( true, db.load_db() )
+  EXPECT_EQ( true, db->load_db() )
   << "Could not initialize nom::CardsMenuModel data interface.";
+
+  // Complete collection of cards as loaded from the CardCollection interface
+  CardList cards = db->cards();
+
+  // Initial cards population -- page 0
+  CardList pop;
+
+  for( auto itr = cards.begin(); itr != cards.begin() + store1.per_page(); ++itr )
+  {
+    pop.push_back( *itr );
+  }
+
+  model = store1.data_source();
+  NOM_ASSERT( model != nullptr );
+  if( model )
+  {
+    model->append_cards( pop );
+  }
 
   if( store1.initialize() == false )
   {

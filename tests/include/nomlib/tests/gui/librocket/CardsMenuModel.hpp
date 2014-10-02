@@ -41,23 +41,30 @@ namespace nom {
 /// \brief A mock card model
 ///
 /// \see TTcards::Card, TTcards::CardCollection
-struct Card
+class Card
 {
-  /// \remarks Invalid card object.
-  Card() {}
+  public:
+    /// \brief Default constructor; initialize the object to an invalid state.
+    Card();
+    ~Card();
 
-  Card( int id, const std::string& name, int num ) :
-    id( id ),
-    name( name ),
-    num{ std::to_string( num ) }
-  {
-    // ...
-  }
+    Card( int id, const std::string& name, int num_cards );
 
-  int id = -1;
-  std::string name = "\0";
-  std::string num = "1";
+    int id() const;
+    const std::string& name() const;
+    const std::string& num() const;
+
+    void set_id(int id);
+    void set_name(const std::string& name);
+    void set_num(int num);
+
+  private:
+    int id_ = -1;
+    std::string name_ = "\0";
+    std::string num_ = "1";
 };
+
+typedef std::vector<Card> CardList;
 
 /// \brief Mock model of the CardsMenu player's hand selection widget in TTcards
 ///
@@ -67,6 +74,9 @@ struct Card
 /// \remarks This interface should **not** be used outside of unit tests; for
 /// starters, assertion macros are disabled for running under this particular
 /// testing environment.
+///
+/// \todo Rename to CardsDataSource and move insert, append methods to
+/// CardsListModel?
 class CardsMenuModel: public Rocket::Controls::DataSource
 {
   public:
@@ -105,6 +115,7 @@ class CardsMenuModel: public Rocket::Controls::DataSource
 
     int insert_card( int pos, const Card& card );
 
+    /// \param pos The beginning element position to perform the insertion.
     int insert_cards( int pos, const std::vector<Card>& cards );
 
     int append_card( const Card& card );
@@ -160,13 +171,11 @@ class CardCollection
     CardCollection();
     virtual ~CardCollection();
 
-    /// \todo Remove
-    CardsMenuModel* data_source() const;
-
-    /// \todo Remove
-    void set_data_source( CardsMenuModel* model );
+    CardList cards() const;
 
     bool load_db();
+
+    nom::size_type num_rows() const;
 
     /// \brief Lookup a card ID by name.
     ///
@@ -178,17 +187,10 @@ class CardCollection
     /// \param id The card's identifier.
     std::string lookup_name( int id ) const;
 
-    // /// \todo Rename to set_current_page? (Set current_page_ within method)
-    // void set_page( int pg );
-
     /// \brief Rudimentary debugging aid.
     std::string dump();
 
   private:
-    /// \remarks This object pointer is not owned by this class and should not
-    /// be freed.
-    CardsMenuModel* data_source_;
-
     std::vector<Card> cards_;
 };
 

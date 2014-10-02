@@ -70,11 +70,12 @@ class SearchPath
     /// \brief Parse a file into memory.
     ///
     /// \param filename The absolute file path.
-    /// \param node     The top-level object to use in formation of the path.
+    /// \param node     The top-level object to use in formation of the path;
+    /// defaults to an object member by name of "resources".
     ///
     /// \remarks The default parser is JSON, and can be changed using the
     /// ::set_deserializer method.
-    bool load_file( const std::string& filename, const std::string& node );
+    bool load_file( const std::string& filename, const std::string& node = "resources" );
 
   private:
     /// \brief Parser object to use.
@@ -93,7 +94,22 @@ class SearchPath
 
 #endif // include guard defined
 
-/// Usage example:
+/// Common usage:
+///
+/// #include "nomlib/system.hpp"
+///
+/// int main( int argc, char** argv )
+/// {
+///   // Set the current working directory path to the path leading to this
+///   // executable file; used for unit tests that require file-system I/O.
+///   if( nom::init( argc, argv ) == false )
+///   {
+///     nom::DialogMessageBox( "Critical Error", "Could not initialize nomlib.", nom::MessageBoxType::NOM_DIALOG_ERROR );
+///     return NOM_EXIT_FAILURE;
+///   }
+///   atexit( nom::quit );
+///   return NOM_EXIT_SUCCESS;
+/// }
 ///
 /// nom::SearchPath resources;
 /// resources.load_file( "resources.json" );

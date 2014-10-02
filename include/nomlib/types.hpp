@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_STDINT_TYPES_HPP
 
 #include <string> // std::size_t
+#include <vector>
 
 #include "nomlib/platforms.hpp"
 
@@ -183,6 +184,8 @@ enum Anchor: uint32
   BottomCenter = Y_BOTTOM | X_CENTER,   // Hex: 0x42, Dec: 66
   BottomRight = Y_BOTTOM | X_RIGHT      // Hex: 0x44, Dec: 68
 };
+
+typedef std::vector<std::string> StringList;
 
 } // namespace nom
 

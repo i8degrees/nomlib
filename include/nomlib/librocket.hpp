@@ -57,6 +57,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/librocket/UIWidget.hpp"
 #include "nomlib/librocket/UIMessageBox.hpp"
 #include "nomlib/librocket/UIQuestionDialogBox.hpp"
+#include "nomlib/librocket/UIDataViewList.hpp"
 #include "nomlib/librocket/UIContext.hpp"
 
 #include "nomlib/librocket/init_librocket.hpp"

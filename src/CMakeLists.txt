@@ -253,6 +253,7 @@ set ( LIBROCKET_SOURCE
       ${SRC_DIR}/librocket/UIWidget.cpp
       ${SRC_DIR}/librocket/UIMessageBox.cpp
       ${SRC_DIR}/librocket/UIQuestionDialogBox.cpp
+      ${SRC_DIR}/librocket/UIDataViewList.cpp
       # ${SRC_DIR}/librocket/DOM.cpp
       ${SRC_DIR}/librocket/RocketUtilities.cpp
       ${SRC_DIR}/librocket/UIContext.cpp
@@ -495,6 +496,18 @@ if( NOM_BUILD_LIBROCKET_UNIT )
         ${NOMLIB_SOURCE}
         ${LIBROCKET_SOURCE}
       )
+
+  # Inclusion of a particular test header intended for use only in unit testing
+  # environments is currently required -- src/librocket/UIDataViewList.cpp needs
+  # the CardsMenuModel.hpp header file -- tests/include/nomlib/tests/gui/librocket,
+  # which resides outside of the library's source tree used for building the
+  # library files.
+  #
+  # FIXME: This needs to be resolved sooner than later -- before this branch
+  # gets merged onto dev. Source files from the unit testing tree occasionally
+  # do weird things like disable assertions macros, etc. and are not intended
+  # to ever be accessed outside of the testing environment.
+  include_directories( "${NOM_TESTS_HEADERS_DIR}" )
 
 endif( NOM_BUILD_LIBROCKET_UNIT )
 

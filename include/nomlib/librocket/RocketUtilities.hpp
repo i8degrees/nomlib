@@ -40,7 +40,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Global namespace alias for libRocket
+/// \deprecated
 namespace rocket = Rocket::Core;
+
+using namespace Rocket::Core;
 
 // typedef std::shared_ptr<rocket::ElementDocument> rocket_document;
 typedef std::shared_ptr<rocket::Element> rocket_element;

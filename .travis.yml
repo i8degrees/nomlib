@@ -33,8 +33,10 @@ before_install:
   # FIXME: It might be best if we packaged the freetype2 libs for libRocket
   # ourselves?
   - brew install freetype
-  - wget -O /tmp/deps.tar.gz 'https://downloads.sourceforge.net/project/nomlib/osx/2014-09-17_nomlib_osx-dependencies.tar.gz?r=&ts=1410932537&use_mirror=master'
-  - wget -O /tmp/osx10.7.sdk.tar.gz 'https://www.dropbox.com/s/hk2590g8snkjwe4/MacOSX10.7.sdk.tar.gz'
+
+  # NOM_DEPS_URL and NOM_OSX_SDK_URL has been set by our repository settings
+  - wget -O /tmp/deps.tar.gz $NOM_DEPS_URL
+  - wget -O /tmp/osx10.7.sdk.tar.gz $NOM_OSX_SDK_URL
 before_script:
   - tar -xzf /tmp/deps.tar.gz -C third-party
   - sudo mkdir -p '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs'

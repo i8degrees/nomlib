@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Rocket/Core/ElementUtilities.h>
 
 // Forward declarations
-#include "nomlib/tests/gui/librocket/CardsMenuModel.hpp"
+#include "nomlib/tests/gui/librocket/CardsDataSource.hpp"
 
 using namespace Rocket::Core;
 
@@ -126,12 +126,12 @@ bool UIDataViewList::set_column_title( int col, const std::string& name )
   return false;
 }
 
-CardsMenuModel* UIDataViewList::data_source() const
+CardsDataSource* UIDataViewList::data_source() const
 {
   return this->data_source_;
 }
 
-void UIDataViewList::set_data_source( CardsMenuModel* model )
+void UIDataViewList::set_data_source( CardsDataSource* model )
 {
   this->data_source_ = model;
 }
@@ -186,7 +186,7 @@ void UIDataViewList::set_selection( int idx )
 // cards.end() = id + per_page()
 void UIDataViewList::set_page( int pg )
 {
-  CardsMenuModel* model = this->data_source();
+  CardsDataSource* model = this->data_source();
   CardCollection* db = this->database();
 
   NOM_ASSERT( model != nullptr && db != nullptr);

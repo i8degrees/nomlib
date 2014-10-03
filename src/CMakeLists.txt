@@ -489,7 +489,7 @@ if( NOM_BUILD_LIBROCKET_UNIT )
 
   # Inclusion of a particular test header intended for use only in unit testing
   # environments is currently required -- src/librocket/UIDataViewList.cpp needs
-  # the CardsMenuModel.hpp header file -- tests/include/nomlib/tests/gui/librocket,
+  # the CardsDataSource.hpp header file -- tests/include/nomlib/tests/gui/librocket,
   # which resides outside of the library's source tree used for building the
   # library files.
   #
@@ -502,7 +502,7 @@ if( NOM_BUILD_LIBROCKET_UNIT )
   # Append the implementation's source file for linking from the above
   set ( LIBROCKET_SOURCE
         ${LIBROCKET_SOURCE}
-        ${NOM_TESTS_SOURCE_DIR}/gui/librocket/CardsMenuModel.cpp
+        ${NOM_TESTS_SOURCE_DIR}/gui/librocket/CardsDataSource.cpp
       )
 
   set ( NOMLIB_HEADERS

@@ -74,20 +74,17 @@ typedef std::vector<Card> CardList;
 /// \remarks This interface should **not** be used outside of unit tests; for
 /// starters, assertion macros are disabled for running under this particular
 /// testing environment.
-///
-/// \todo Rename to CardsDataSource and move insert, append methods to
-/// CardsListModel?
-class CardsMenuModel: public Rocket::Controls::DataSource
+class CardsDataSource: public Rocket::Controls::DataSource
 {
   public:
-    CardsMenuModel( const std::string& source,
+    CardsDataSource( const std::string& source,
                     const std::string& table_name = "cards" );
 
     /// \brief Destructor.
     ///
     /// \remarks libRocket handles the deletion of the DataSource object
     /// instance for us.
-    virtual ~CardsMenuModel();
+    virtual ~CardsDataSource();
 
     /// \note Required interface implementation.
     virtual void GetRow( Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index, const Rocket::Core::StringList& columns );

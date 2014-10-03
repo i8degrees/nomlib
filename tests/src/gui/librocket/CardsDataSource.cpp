@@ -26,7 +26,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/gui/librocket/CardsMenuModel.hpp"
+#include "nomlib/tests/gui/librocket/CardsDataSource.hpp"
 
 /// \brief Disable NOM_ASSERT macros so that they do not interfere with tests
 /// that check for failure conditions; i.e.: libRocketDataGridTest
@@ -87,9 +87,9 @@ void Card::set_num(int num)
   this->num_ = std::to_string(num);
 }
 
-// CardsMenuModel
+// CardsDataSource
 
-CardsMenuModel::CardsMenuModel( const std::string& source,
+CardsDataSource::CardsDataSource( const std::string& source,
                                const std::string& table_name ) :
   Rocket::Controls::DataSource( source.c_str() )
 {
@@ -98,12 +98,12 @@ CardsMenuModel::CardsMenuModel( const std::string& source,
   this->set_table_name( table_name );
 }
 
-CardsMenuModel::~CardsMenuModel()
+CardsDataSource::~CardsDataSource()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-void CardsMenuModel::GetRow( Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index, const Rocket::Core::StringList& columns )
+void CardsDataSource::GetRow( Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index, const Rocket::Core::StringList& columns )
 {
   if( table == this->table_name().c_str() )
   {
@@ -126,7 +126,7 @@ void CardsMenuModel::GetRow( Rocket::Core::StringList& row, const Rocket::Core::
   }
 } // end GetRow func
 
-int CardsMenuModel::GetNumRows( const Rocket::Core::String& table )
+int CardsDataSource::GetNumRows( const Rocket::Core::String& table )
 {
   if( table == this->table_name().c_str() )
   {
@@ -137,22 +137,22 @@ int CardsMenuModel::GetNumRows( const Rocket::Core::String& table )
   return -1;
 }
 
-const std::string& CardsMenuModel::table_name() const
+const std::string& CardsDataSource::table_name() const
 {
   return this->table_name_;
 }
 
-void CardsMenuModel::set_table_name( const std::string& name )
+void CardsDataSource::set_table_name( const std::string& name )
 {
   this->table_name_ = name;
 }
 
-int CardsMenuModel::num_rows()
+int CardsDataSource::num_rows()
 {
   return this->GetNumRows( this->table_name().c_str() );
 }
 
-void CardsMenuModel::row( int row, const std::string& column_name, nom::StringList& rows )
+void CardsDataSource::row( int row, const std::string& column_name, nom::StringList& rows )
 {
   Rocket::Core::StringList results;
   Rocket::Core::StringList columns;
@@ -167,7 +167,7 @@ void CardsMenuModel::row( int row, const std::string& column_name, nom::StringLi
   }
 }
 
-int CardsMenuModel::insert_card( int pos, const Card& card )
+int CardsDataSource::insert_card( int pos, const Card& card )
 {
   int rows = this->num_rows();
 
@@ -191,7 +191,7 @@ int CardsMenuModel::insert_card( int pos, const Card& card )
   return nom::npos;
 }
 
-int CardsMenuModel::insert_cards( int pos, const CardList& cards )
+int CardsDataSource::insert_cards( int pos, const CardList& cards )
 {
   int rows = this->num_rows();
 
@@ -221,7 +221,7 @@ int CardsMenuModel::insert_cards( int pos, const CardList& cards )
   return nom::npos;
 }
 
-int CardsMenuModel::append_card( const Card& card )
+int CardsDataSource::append_card( const Card& card )
 {
   int rows = this->num_rows();
 
@@ -237,7 +237,7 @@ int CardsMenuModel::append_card( const Card& card )
   return this->num_rows();
 }
 
-int CardsMenuModel::append_cards( const CardList& cards )
+int CardsDataSource::append_cards( const CardList& cards )
 {
   int rows = this->num_rows();
 
@@ -256,19 +256,19 @@ int CardsMenuModel::append_cards( const CardList& cards )
   return this->num_rows();
 }
 
-bool CardsMenuModel::empty() const
+bool CardsDataSource::empty() const
 {
   return this->db_.empty();
 }
 
-void CardsMenuModel::erase_cards()
+void CardsDataSource::erase_cards()
 {
   this->db_.clear();
 
   NotifyRowChange( this->table_name().c_str() );
 }
 
-int CardsMenuModel::erase_card( int pos )
+int CardsDataSource::erase_card( int pos )
 {
   int rows = this->num_rows();
 
@@ -292,7 +292,7 @@ int CardsMenuModel::erase_card( int pos )
   return nom::npos; // -1
 }
 
-int CardsMenuModel::erase_cards( int begin_pos, int end_pos )
+int CardsDataSource::erase_cards( int begin_pos, int end_pos )
 {
   int rows = this->num_rows();
 
@@ -317,7 +317,7 @@ int CardsMenuModel::erase_cards( int begin_pos, int end_pos )
   return nom::npos; // -1
 }
 
-std::string CardsMenuModel::dump()
+std::string CardsDataSource::dump()
 {
   std::stringstream os;
 

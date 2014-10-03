@@ -48,7 +48,7 @@ namespace Controls {
 namespace nom {
 
 // Forward declarations
-class CardsMenuModel;
+class CardsDataSource;
 class CardCollection;
 
 /// \see http://librocket.com/wiki/documentation/tutorials/Datagrid
@@ -71,9 +71,9 @@ class UIDataViewList: public nom::UIWidget
 
     bool set_column_title( int col, const std::string& name );
 
-    CardsMenuModel* data_source() const;
+    CardsDataSource* data_source() const;
 
-    void set_data_source( CardsMenuModel* model );
+    void set_data_source( CardsDataSource* model );
 
     CardCollection* database() const;
     void set_database( CardCollection* db );
@@ -101,7 +101,7 @@ class UIDataViewList: public nom::UIWidget
 
     /// \remarks This object pointer is not owned by this class and should not
     /// be freed.
-    CardsMenuModel* data_source_;
+    CardsDataSource* data_source_;
     CardCollection* database_;
 
     /// \brief The total number of available card pages.

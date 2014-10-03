@@ -17,7 +17,7 @@
 #include <nomlib/graphics.hpp>
 #include <nomlib/librocket.hpp>
 
-#include "nomlib/tests/gui/librocket/CardsMenuModel.hpp"
+#include "nomlib/tests/gui/librocket/CardsDataSource.hpp"
 
 /// \brief Disable NOM_ASSERT macros so that they do not interfere with tests
 /// that check for failure conditions; i.e.: libRocketDataGridTest
@@ -254,7 +254,7 @@ void on_keydown( Rocket::Core::Event& ev, UIDataViewList* store )
 
   // Element* target = ev.GetTargetElement();
 
-  CardsMenuModel* model = store->data_source();
+  CardsDataSource* model = store->data_source();
   ASSERT_TRUE( model != nullptr );
 
   if( ev == "keydown" )
@@ -308,7 +308,7 @@ void on_mouseup( Rocket::Core::Event& ev, UIDataViewList* store  )
   int selection = 0;
   Rocket::Core::Element* target = ev.GetTargetElement();
 
-  CardsMenuModel* model = store->data_source();
+  CardsDataSource* model = store->data_source();
   ASSERT_TRUE( model != nullptr );
 
   CardCollection* db = store->database();
@@ -350,7 +350,7 @@ void on_mousescroll( Rocket::Core::Event& ev, UIDataViewList* store )
 
   // Element* target = ev.GetTargetElement();
 
-  CardsMenuModel* model = store->data_source();
+  CardsDataSource* model = store->data_source();
   ASSERT_TRUE( model != nullptr );
 
   if( ev == "mousescroll" )
@@ -389,7 +389,7 @@ TEST_F( libRocketDataGridTest, DataSourceModel )
 {
   nom::StringList row;
 
-  CardsMenuModel* store = new CardsMenuModel("cards_db");
+  CardsDataSource* store = new CardsDataSource("cards_db");
 
   // Baseline sanity tests
 
@@ -503,7 +503,7 @@ TEST_F( libRocketDataGridTest, DataSourceModel )
 /// about performance offsets, etc.
 TEST_F( libRocketDataGridTest, UIDataViewList )
 {
-  CardsMenuModel* model = nullptr;
+  CardsDataSource* model = nullptr;
 
   // As per the positioning units used for nom::DataViewListTest (ex2) in
   // tests/src/gui/DataViewListTest.cpp.
@@ -514,14 +514,14 @@ TEST_F( libRocketDataGridTest, UIDataViewList )
   EXPECT_EQ( true, store1.set_desktop( this->desktop.context() ) );
   EXPECT_EQ( true, store1.set_document_file( doc_file1 ) );
 
-  store1.set_data_source( new CardsMenuModel("cards_db") );
+  store1.set_data_source( new CardsDataSource("cards_db") );
   store1.set_database( new CardCollection() );
 
   CardCollection* db = store1.database();
   NOM_ASSERT( db != nullptr );
 
   EXPECT_EQ( true, db->load_db() )
-  << "Could not initialize nom::CardsMenuModel data interface.";
+  << "Could not initialize nom::CardsDataSource data interface.";
 
   // Complete collection of cards as loaded from the CardCollection interface
   CardList cards = db->cards();

@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "gtest/gtest.h"
 
+#include "nomlib/config.hpp"
 #include "nomlib/core.hpp"
 #include "nomlib/math.hpp"
 
@@ -106,7 +107,6 @@ TEST( SDL2LoggerTest, LogVerbose )
 
   expected_logger_state( cat, prio, out, false );
 
-  NOM_LOG_VERBOSE( cat );
   NOM_LOG_VERBOSE( cat, out );
 
   SDL2Logger::set_logging_priority( cat, LogPriority::NOM_LOG_PRIORITY_CRITICAL );
@@ -129,7 +129,6 @@ TEST( SDL2LoggerTest, LogDebug )
 
   expected_logger_state( cat, prio, out, false );
 
-  NOM_LOG_DEBUG( cat );
   NOM_LOG_DEBUG( cat, out );
 
   SDL2Logger::set_logging_priority( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
@@ -152,7 +151,6 @@ TEST( SDL2LoggerTest, LogInfo )
 
   expected_logger_state( cat, prio, out, false );
 
-  NOM_LOG_INFO( cat );
   NOM_LOG_INFO( cat, out );
 
   SDL2Logger::set_logging_priority( cat, LogPriority::NOM_LOG_PRIORITY_CRITICAL );
@@ -175,7 +173,6 @@ TEST( SDL2LoggerTest, LogWarn )
 
   expected_logger_state( cat, prio, out, false );
 
-  NOM_LOG_WARN( cat );
   NOM_LOG_WARN( cat, out );
 
   SDL2Logger::set_logging_priority( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
@@ -198,7 +195,6 @@ TEST( SDL2LoggerTest, LogError )
 
   expected_logger_state( cat, prio, out, false );
 
-  NOM_LOG_ERR( NOM );
   NOM_LOG_ERR( NOM, out );
 
   SDL2Logger::set_logging_priority( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );

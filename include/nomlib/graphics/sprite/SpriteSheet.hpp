@@ -37,8 +37,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Rect.hpp"
-#include "nomlib/serializers/JsonCppSerializer.hpp"
-#include "nomlib/serializers/JsonCppDeserializer.hpp"
 #include "nomlib/ptree.hpp"
 
 namespace nom {
@@ -93,7 +91,7 @@ class SpriteSheet
     SpriteSheet::SharedPtr clone ( void ) const;
 
     /// Get the calculations made for a particular ID number.
-    const IntRect& dimensions ( int32 index ) const;
+    const IntRect& dimensions( int32 index ) const;
 
     /// Obtain the number of frames this object contains
     int32 frames ( void ) const;
@@ -110,13 +108,20 @@ class SpriteSheet
     /// \remarks The requested file path is created upon success.
     bool save( const std::string& filename );
 
-    /// \brief Un-serialize an existing JSON file.
+    /// \brief De-serialize an existing JSON file.
     ///
     /// \param filename The absolute file path to the JSON input.
     ///
     /// \returns An object filled with complete data from a file on success, or
     /// a non-modified object upon failure.
+    ///
+    /// \todo Rename to load_sheet_file?
     bool load( const std::string& filename );
+
+    /// \brief Load a sprite sheet from a de-serialized object.
+    ///
+    /// \param object An existing, de-serialized object to use.
+    bool load_sheet_object( const Value& object );
 
     /// Dump the state of this object instance
     void dump ( void ) const;

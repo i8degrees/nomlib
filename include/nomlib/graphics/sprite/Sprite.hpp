@@ -61,7 +61,13 @@ class Sprite: public Transformable
     virtual ~Sprite ( void );
 
     /// Construct a Sprite object, initializing the width & height coordinates.
+    ///
+    /// \deprecated Use Sprite(const Size2i&) constructor.
     Sprite ( int32 width, int32 height );
+
+    /// \brief Construct a Sprite object, initializing the width & height
+    /// coordinates.
+    Sprite( const Size2i& dims );
 
     /// \brief Re-implements Transformable::set_position.
     ///
@@ -99,14 +105,14 @@ class Sprite: public Transformable
                 enum Texture::Access type = Texture::Access::Static
               );
 
-    void draw ( RenderTarget& target ) const;
+    virtual void draw( RenderTarget& target ) const;
 
     /// Draw a rotated nom::Sprite on a nom::RenderWindow
     ///
     /// \param  target  Reference to an active nom::RenderWindow
     /// \param  angle   Rotation angle in degrees
     ///
-    void draw ( RenderTarget& target, const double angle ) const;
+    virtual void draw ( RenderTarget& target, const double angle ) const;
 
     /// \brief Rescale the sprite with the chosen resizing algorithm
     ///

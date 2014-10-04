@@ -30,7 +30,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-SpriteBatch::SpriteBatch ( void ) : sheet_id_ ( 0 )
+SpriteBatch::SpriteBatch() :
+  sheet_id_( 0 )
+{
+  // NOM_LOG_TRACE ( NOM );
+}
+
+SpriteBatch::~SpriteBatch()
 {
   // NOM_LOG_TRACE ( NOM );
 }
@@ -50,24 +56,43 @@ SpriteBatch::SpriteBatch ( const SpriteSheet& sheet )
   this->set_frame ( 0 );
 }
 
-SpriteBatch::SpriteBatch ( const std::string& filename )
+SpriteBatch::SpriteBatch( const std::string& filename )
 {
   // NOM_LOG_TRACE ( NOM );
 
+  this->load_sheet_file(filename);
+}
+
+bool SpriteBatch::load_sheet_file( const std::string& filename )
+{
+  bool ret = false;
   IntRect dims;
 
-  this->sprite_sheet.load ( filename );
+  ret = this->sprite_sheet.load(filename);
 
   dims = this->sprite_sheet.dimensions(0);
 
-  Sprite ( dims.w, dims.h );
+  Sprite( dims.size() );
 
-  this->set_frame ( 0 );
+  this->set_frame(0);
+
+  return ret;
 }
 
-SpriteBatch::~SpriteBatch ( void )
+bool SpriteBatch::load_sheet_object( const Value& object )
 {
-  // NOM_LOG_TRACE ( NOM );
+  bool ret = false;
+  IntRect dims;
+
+  ret = this->sprite_sheet.load_sheet_object(object);
+
+  dims = this->sprite_sheet.dimensions(0);
+
+  Sprite( dims.size() );
+
+  this->set_frame(0);
+
+  return ret;
 }
 
 ObjectTypeInfo SpriteBatch::type( void ) const
@@ -101,9 +126,10 @@ const std::string& SpriteBatch::sheet_filename ( void ) const
   return this->sprite_sheet.sheet_filename();
 }
 
-void SpriteBatch::set_frame ( int32 id )
+void SpriteBatch::set_frame( int32 id )
 {
-//NOM_ASSERT ( id != ( this->frames() - 1 ) );
+  //NOM_ASSERT ( id != ( this->frames() - 1 ) );
+
   this->sheet_id_ = id;
 
   this->update();
@@ -111,17 +137,36 @@ void SpriteBatch::set_frame ( int32 id )
 
 void SpriteBatch::update( void )
 {
-  Sprite::update(); // Update rendering position
+  if( this->frame() >= 0 )
+  {
+    Sprite::update(); // Update rendering position
 
-  IntRect dims = this->sprite_sheet.dimensions ( this->frame() );
+    IntRect dims = this->sprite_sheet.dimensions( this->frame() );
 
-  this->offsets.x = dims.x * this->scale_factor;
-  this->offsets.y = dims.y * this->scale_factor;
-  this->offsets.w = dims.w * this->scale_factor;
-  this->offsets.h = dims.h * this->scale_factor;
+    this->offsets.x = dims.x * this->scale_factor;
+    this->offsets.y = dims.y * this->scale_factor;
+    this->offsets.w = dims.w * this->scale_factor;
+    this->offsets.h = dims.h * this->scale_factor;
 
-  this->set_size( offsets.w, offsets.h );
-  this->sprite_.set_bounds( this->offsets );
+    this->set_size( offsets.w, offsets.h );
+    this->sprite_.set_bounds( this->offsets );
+  }
+}
+
+void SpriteBatch::draw( RenderTarget& target ) const
+{
+  if( this->frame() >= 0 )
+  {
+    Sprite::draw( target );
+  }
+}
+
+void SpriteBatch::draw( RenderTarget& target, const double angle ) const
+{
+  if( this->frame() >= 0 )
+  {
+    Sprite::draw( target, angle );
+  }
 }
 
 } // namespace nom

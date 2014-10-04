@@ -28,6 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/sprite/SpriteSheet.hpp"
 
+// Private headers
+#include "nomlib/serializers/JsonCppSerializer.hpp"
+#include "nomlib/serializers/JsonCppDeserializer.hpp"
+
 namespace nom {
 
 const int NOM_SPRITE_SHEET_MAJOR_VERSION = 0;
@@ -159,9 +163,11 @@ FIXME */
   this->sheet_height = sheet_height;
 }
 
-const IntRect& SpriteSheet::dimensions  ( int32 index ) const
+const IntRect& SpriteSheet::dimensions( int32 index ) const
 {
-  return this->sheet.at ( index );
+  NOM_ASSERT( index < this->sheet.size() );
+
+  return this->sheet.at( index );
 }
 
 int32 SpriteSheet::frames ( void ) const
@@ -250,17 +256,28 @@ bool SpriteSheet::save( const std::string& filename )
 bool SpriteSheet::load( const std::string& filename )
 {
   IValueDeserializer* serializer = new JsonCppDeserializer();
-  Value object; // Value buffer of resulting un-serialized input.
+  Value output; // Value buffer of resulting de-serialized input.
 
+  if( serializer->load( filename, output ) == false )
+  {
+    NOM_LOG_ERR( NOM, "Unable to parse JSON file:", filename );
+    return false;
+  }
+
+  return this->load_sheet_object(output);
+}
+
+bool SpriteSheet::load_sheet_object( const Value& object )
+{
   // Temporary holding buffers to hold data until we are ready to commit back
   // to our class
   IntRect buffer;
   std::vector<IntRect> buffer_sheet;
   std::string sprite_sheet_version = std::to_string( NOM_SPRITE_SHEET_MAJOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_MINOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_PATCH_VERSION );
 
-  if ( serializer->load( filename, object ) == false )
+  if( object.null_type() )
   {
-    NOM_LOG_ERR( NOM, "Unable to open JSON file at: " + filename );
+    NOM_LOG_ERR( NOM, "Could not load sprite sheet: nom::Value object was null." );
     return false;
   }
 
@@ -270,7 +287,7 @@ bool SpriteSheet::load( const std::string& filename )
 
   // Populate our sheet vector and other instance variables with parsed JSON
   // objects.
-  for( Value::Iterator itr = object.begin(); itr != object.end(); ++itr )
+  for( auto itr = object.begin(); itr != object.end(); ++itr )
   {
     // [ { "key": "value" }, { "key": "value" } ]
     if( itr->object_type() )

@@ -52,6 +52,14 @@ Sprite::Sprite ( int32 width, int32 height )  :
 // NOM_LOG_TRACE ( NOM );
 }
 
+Sprite::Sprite( const Size2i& dims ) :
+  Transformable( Point2i(0, 0), dims ),
+  state_( 0 ),
+  scale_factor( 1 )
+{
+  // NOM_LOG_TRACE ( NOM );
+}
+
 void Sprite::set_position( const Point2i& pos )
 {
   Transformable::set_position( pos );
@@ -103,7 +111,7 @@ bool Sprite::load (
   return true;
 }
 
-void Sprite::draw ( RenderTarget& target ) const
+void Sprite::draw( RenderTarget& target ) const
 {
   NOM_ASSERT ( this->sprite_.valid() );
 

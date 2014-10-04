@@ -54,17 +54,57 @@ class SpriteBatch: public Sprite
 
     /// Default construct for initializing instance variables to their
     /// respective defaults.
-    SpriteBatch ( void );
+    ///
+    /// \todo Consider initializing sheet_id_ to -1..?
+    SpriteBatch();
 
     /// Destructor.
-    virtual ~SpriteBatch ( void );
+    virtual ~SpriteBatch();
 
-    /// Construct a SpriteBatch object, initializing it with a SpriteSheet
-    /// object.
+    /// \brief Construct a SpriteBatch object, initializing it with an existing
+    /// nom::SpriteSheet object.
+    ///
+    /// \remarks The dimensions of this object's Sprite instance are initialized
+    /// to the first frame of the sprite sheet source.
+    ///
+    /// \note The sprite image source to use with this object must be
+    /// explicitly initialized (loaded into memory).
     SpriteBatch ( const SpriteSheet& sheet );
 
     /// Construct a SpriteBatch object from an existing sprite sheet filename.
-    SpriteBatch ( const std::string& filename );
+    ///
+    /// \deprecated This method will be removed at some point in the future and
+    /// should not be used for new implementations. Use ::load_sheet_file or
+    /// ::load_sheet_object.
+    ///
+    /// \note The sprite image source to use with this object must be
+    /// explicitly initialized (loaded into memory).
+    SpriteBatch( const std::string& filename );
+
+    /// \brief Construct a SpriteBatch object from an existing sprite sheet
+    /// filename.
+    ///
+    /// \remarks The dimensions of this object's Sprite instance are initialized
+    /// to the first frame of the sprite sheet source.
+    ///
+    /// \note The sprite image source to use with this object must be
+    /// explicitly initialized (loaded into memory).
+    ///
+    /// \see Sprite::load
+    bool load_sheet_file( const std::string& filename );
+
+    /// \brief Load a sprite sheet from a de-serialized object.
+    ///
+    /// \param object An existing, de-serialized object to use.
+    ///
+    /// \remarks The dimensions of this object's Sprite instance are initialized
+    /// to the first frame of the sprite sheet source.
+    ///
+    /// \note The sprite image source to use with this object must be
+    /// explicitly initialized (loaded into memory).
+    ///
+    /// \see Sprite::load
+    bool load_sheet_object( const Value& object );
 
     /// \brief Re-implements the IObject::type method.
     ///
@@ -84,12 +124,41 @@ class SpriteBatch: public Sprite
 
     const std::string& sheet_filename ( void ) const;
 
-    /// Set a new frame ID to render
-    void set_frame ( int32 id );
+    /// \brief Set a new frame ID to render.
+    ///
+    /// \param id The frame identifier (from the sprite sheet) to use in
+    /// rendering.
+    ///
+    /// \remarks Setting the frame number to negative one (-1) will prevent
+    /// updating and rendering of the object. This can be used to effectively
+    /// toggle visibility of a sprite without the need of using a placeholder
+    /// frame in the image source.
+    ///
+    /// \see ::update.
+    void set_frame( int32 id );
 
     /// \brief Update the sprite for rendering with regard to positioning
     /// coordinates and target frame ID.
+    ///
+    /// \remarks The sprite is not updated when the frame number is negative
+    /// one (-1).
     virtual void update( void );
+
+    /// \brief Render the sprite frame.
+    ///
+    /// \remarks The sprite is not rendered when the frame number is negative
+    /// one (-1).
+    ///
+    /// \note Re-implements Sprite::draw.
+    virtual void draw( RenderTarget& target ) const;
+
+    /// \brief Render the sprite frame at an angle.
+    ///
+    /// \remarks The sprite is not rendered when the frame number is negative
+    /// one (-1).
+    ///
+    /// \note Re-implements Sprite::draw.
+    virtual void draw ( RenderTarget& target, const double angle ) const;
 
   protected:
     /// Source (input) coordinates -- used for sprite sheet positioning

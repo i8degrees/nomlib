@@ -32,7 +32,12 @@ Both the 64-bit and 32-bit official development binaries versions of:
       * [SDL2_ttf.framework v2.0.12](http://libsdl.org/projects/SDL_ttf) built with a [font kerning size patch](https://bugzilla.libsdl.org/show_bug.cgi?id=2572).
 
   - Packaged only for Windows
-    * [Google Test v1.7.0](https://code.google.com/p/googletest/) built with -DBUILD_SHARED_LIBS=on (DLL export).
+    * [Google Test v1.7.0](https://code.google.com/p/googletest/) built with:
+    ```
+    cmake -DBUILD_SHARED_LIBS=on ..
+    msbuild /t:build gtest.vcxproj
+    ```
+
     * [libsndfile v1.0.25](http://www.mega-nerd.com/libsndfile/)
     * [OpenAL Soft v1.15.1](http://kcat.strangesoft.net/openal.html)
 

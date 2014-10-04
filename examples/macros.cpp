@@ -38,31 +38,18 @@ nom::int32 main( nom::int32 argc, char* argv[] )
   // Note that SDL2 does not need to be initialized before using the logging
   // facilities!
 
-  NOM_DUMP( pos );
+  NOM_DUMP( nom::Point2i(pos) );
 
   // NOM_DUMP_VAR();
   NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "pos:", pos );
-
   NOM_LOG_TRACE( NOM );
-
   NOM_STUBBED( NOM );
 
-  NOM_LOG_VERBOSE( NOM );
   NOM_LOG_VERBOSE( NOM, "Verbose message" );
-
-  NOM_LOG_DEBUG( NOM );
   NOM_LOG_DEBUG( NOM, "Debug message" );
-
-  NOM_LOG_INFO( NOM );
   NOM_LOG_INFO( NOM, "Could not initialize something totally not important.");
-
-  NOM_LOG_WARN( NOM );
   NOM_LOG_WARN( NOM, "Could not initialize image resource." );
-
-  NOM_LOG_ERR( NOM );
   NOM_LOG_ERR( NOM, "Could not initialize image resource." );
-
-  NOM_LOG_CRIT( NOM );
   NOM_LOG_CRIT( NOM, "Could not initialize application. Exiting..." );
 
   return NOM_EXIT_SUCCESS;

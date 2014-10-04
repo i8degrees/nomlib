@@ -87,8 +87,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// NOM_LOG_CATEGORY_* enumeration.
 ///
 /// \param ... Variable list of std::ostringstream compatible arguments.
-#define NOM_LOG_VERBOSE( cat, ... ) \
-  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE, __VA_ARGS__ );
+#if defined( NOM_DEBUG )
+  #define NOM_LOG_VERBOSE( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE, "[", __FILE__, ":", __LINE__, "]", __VA_ARGS__ );
+#else
+  #define NOM_LOG_VERBOSE( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE, __VA_ARGS__ );
+#endif
 
 /// \brief Log a debug priority level message.
 ///
@@ -96,8 +101,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// NOM_LOG_CATEGORY_* enumeration.
 ///
 /// \param ... Variable list of std::ostringstream compatible arguments.
-#define NOM_LOG_DEBUG( cat, ... ) \
-  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG, __VA_ARGS__ );
+#if defined( NOM_DEBUG )
+  #define NOM_LOG_DEBUG( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG, "[", __FILE__, ":", __LINE__, "]", __VA_ARGS__ );
+#else
+  #define NOM_LOG_DEBUG( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG, __VA_ARGS__ );
+#endif
 
 /// \brief Log a info priority level message.
 ///
@@ -114,8 +124,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// NOM_LOG_CATEGORY_* enumeration.
 ///
 /// \param ... Variable list of std::ostringstream compatible arguments.
-#define NOM_LOG_WARN( cat, ... ) \
-  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_WARN, __VA_ARGS__ );
+#if defined( NOM_DEBUG )
+  #define NOM_LOG_WARN( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_WARN, "[", __FILE__, ":", __LINE__, "]", __VA_ARGS__ );
+#else
+  #define NOM_LOG_WARN( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_WARN, __VA_ARGS__ );
+#endif
 
 /// \brief Log an error priority level message.
 ///
@@ -123,8 +138,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// NOM_LOG_CATEGORY_* enumeration.
 ///
 /// \param ... Variable list of std::ostringstream compatible arguments.
-#define NOM_LOG_ERR( cat, ... ) \
-  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_ERROR, __VA_ARGS__ );
+#if defined( NOM_DEBUG )
+  #define NOM_LOG_ERR( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_ERROR, "[", __FILE__, ":", __LINE__, "]", __VA_ARGS__ );
+#else
+  #define NOM_LOG_ERR( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_ERROR, __VA_ARGS__ );
+#endif
 
 /// \brief Log a critical priority level message.
 ///
@@ -132,8 +152,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// NOM_LOG_CATEGORY_* enumeration.
 ///
 /// \param ... Variable list of std::ostringstream compatible arguments.
-#define NOM_LOG_CRIT( cat, ... ) \
-  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL, __VA_ARGS__ );
+#if defined( NOM_DEBUG )
+  #define NOM_LOG_CRIT( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL, "[", __FILE__, ":", __LINE__, "]", __VA_ARGS__ );
+#else
+  #define NOM_LOG_CRIT( cat, ... ) \
+    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL, __VA_ARGS__ );
+#endif
 
 /// \brief Macros for logging a variable.
 ///

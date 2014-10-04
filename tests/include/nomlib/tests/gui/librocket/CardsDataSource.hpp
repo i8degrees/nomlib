@@ -77,6 +77,8 @@ typedef std::vector<Card> CardList;
 /// \remarks This interface should **not** be used outside of unit tests; for
 /// starters, assertion macros are disabled for running under this particular
 /// testing environment.
+///
+/// \note This interface only supports using one table per data source.
 class CardsDataSource: public Rocket::Controls::DataSource
 {
   public:
@@ -89,29 +91,32 @@ class CardsDataSource: public Rocket::Controls::DataSource
     /// instance for us.
     virtual ~CardsDataSource();
 
-    /// \note Required interface implementation.
+    /// \note Implements Rocket::Controls::DataSource::GetRow.
     virtual void GetRow( Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index, const Rocket::Core::StringList& columns );
 
-    /// \note Required interface implementation.
+    /// \note Implements Rocket::Controls::DataSource::GetNumRows.
     virtual int GetNumRows( const Rocket::Core::String& table );
 
     const std::string& table_name() const;
 
+    /// \brief Set the table name to use on the data source.
     void set_table_name( const std::string& name );
 
-    /// \brief Get the total number of rows for the current table.
+    /// \brief Get the total number of rows.
     ///
     /// \remarks Convenience alias for ::GetNumRows.
     int num_rows();
 
     /// \brief Fetches the contents of a row of a table within the data source.
     ///
-    /// \param row The element's index position.
-    /// \param column_name The column name -- title -- to grab results from.
-    /// \param rows The container object to use use in row results output.
+    /// \param row        The container object to use use in row results output.
+    /// \param table      The name of the table to grab results for.
+    /// \param row_index  The element's index position.
+    /// \param columns    The columns within the row to grab results for.
     ///
     /// \remarks Convenience alias for ::GetRow.
-    void row( int row, const std::string& column_name, nom::StringList& rows );
+    // void row( nom::StringList& row, const std::string& table, int row_index, const StringList& columns );
+    void row( nom::StringList& row, int row_index, const StringList& columns );
 
     int insert_card( int pos, const Card& card );
 
@@ -158,7 +163,10 @@ class CardsDataSource: public Rocket::Controls::DataSource
     std::string dump();
 
   private:
+    /// \brief The name of the table of the data source.
     std::string table_name_;
+
+    /// \brief The internal storage container for the data source.
     std::vector<Card> db_;
 };
 

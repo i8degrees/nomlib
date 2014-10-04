@@ -41,12 +41,12 @@ namespace nom {
 
 DecoratorSpriteBatch::DecoratorSpriteBatch()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE);
 }
 
 DecoratorSpriteBatch::~DecoratorSpriteBatch()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE);
 }
 
 bool DecoratorSpriteBatch::initialize(  const std::string& sheet_src,

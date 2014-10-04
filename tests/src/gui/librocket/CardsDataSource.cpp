@@ -163,18 +163,25 @@ int CardsDataSource::num_rows()
   return this->GetNumRows( this->table_name().c_str() );
 }
 
-void CardsDataSource::row( int row, const std::string& column_name, nom::StringList& rows )
+void CardsDataSource::row(  nom::StringList& row,
+                            // const std::string& table,
+                            int row_index,
+                            const StringList& columns )
 {
-  Rocket::Core::StringList results;
-  Rocket::Core::StringList columns;
+  Rocket::Core::StringList ret_rows;
+  Rocket::Core::StringList ret_columns;
 
-  columns.push_back( column_name.c_str() );
-
-  this->GetRow( results, this->table_name().c_str(), row, columns );
-
-  for( auto itr = results.begin(); itr != results.end(); ++itr )
+  for( auto itr = columns.begin(); itr != columns.end(); ++itr )
   {
-    rows.push_back( (*itr).CString() );
+    ret_columns.push_back( (*itr).c_str() );
+  }
+
+  // this->GetRow( ret_rows, table.c_str(), row_index, ret_columns );
+  this->GetRow( ret_rows, this->table_name().c_str(), row_index, ret_columns );
+
+  for( auto itr = ret_rows.begin(); itr != ret_rows.end(); ++itr )
+  {
+    row.push_back( (*itr).CString() );
   }
 }
 

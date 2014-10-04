@@ -35,7 +35,7 @@ namespace nom {
 
 DecoratorInstancerSprite::DecoratorInstancerSprite()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE);
 
   RegisterProperty( "sheet-src", "" ).AddParser("string");
   RegisterProperty( "sheet-image-src", "" ).AddParser("string");
@@ -44,7 +44,7 @@ DecoratorInstancerSprite::DecoratorInstancerSprite()
 
 DecoratorInstancerSprite::~DecoratorInstancerSprite()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE);
 }
 
 Rocket::Core::Decorator* DecoratorInstancerSprite::InstanceDecorator(const Rocket::Core::String& ROCKET_UNUSED_PARAMETER(name), const Rocket::Core::PropertyDictionary& properties )

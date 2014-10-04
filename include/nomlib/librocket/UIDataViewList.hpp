@@ -71,11 +71,16 @@ class UIDataViewList: public nom::UIWidget
 
     bool set_column_title( int col, const std::string& name );
 
+    /// \fixme
     CardsDataSource* data_source() const;
 
+    /// \fixme
     void set_data_source( CardsDataSource* model );
 
+    /// \fixme
     CardCollection* database() const;
+
+    /// \fixme
     void set_database( CardCollection* db );
 
     int current_page() const;
@@ -84,16 +89,13 @@ class UIDataViewList: public nom::UIWidget
 
     void set_total_pages( int num_pages );
 
-    void set_current_page( int pg );
-
     int per_page() const;
 
     int selection() const;
 
     void set_selection( int idx );
 
-    /// \todo Rename to set_current_page? (Set current_page_ within method)
-    void set_page( int pg );
+    void set_current_page( int pg );
 
   private:
     /// \brief Internal storage state initialization.

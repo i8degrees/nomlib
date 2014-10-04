@@ -1,0 +1,40 @@
+[
+    {
+        "ID" : 0,
+        "x" : 0,
+        "y" : 0,
+        "width" : 16,
+        "height" : 16
+    },
+    {
+        "ID" : 1,
+        "x" : 16,
+        "y" : 0,
+        "width" : 16,
+        "height" : 16
+    },
+    {
+        "ID" : 2,
+        "x" : 32,
+        "y" : 0,
+        "width" : 16,
+        "height" : 16
+    },
+    {
+        "ID" : 3,
+        "x" : 48,
+        "y" : 0,
+        "width" : 16,
+        "height" : 16
+    },
+    {
+        "sheet_filename" : "menu_elements.png",
+        "sheet_sprites" : 4,
+        "sheet_spacing" : 0,
+        "sheet_padding" : 0,
+        "sheet_width" : 64,
+        "sheet_height" : 16,
+        "sheet_version" : "0.1.0",
+        "Last Modified" : "Tue Sep 10 15:45:03 2013\n"
+    }
+]

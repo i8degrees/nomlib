@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_LIBROCKET_CARDS_MENU_MODEL_HPP
 
 #include <Rocket/Core.h>
+#include <Rocket/Controls.h>
 #include <Rocket/Controls/DataSource.h>
 
 #include "nomlib/config.hpp"
@@ -44,6 +45,8 @@ namespace nom {
 class Card
 {
   public:
+    static const Card null;
+
     /// \brief Default constructor; initialize the object to an invalid state.
     Card();
     ~Card();
@@ -52,16 +55,16 @@ class Card
 
     int id() const;
     const std::string& name() const;
-    const std::string& num() const;
+    int num() const;
 
     void set_id(int id);
     void set_name(const std::string& name);
     void set_num(int num);
 
   private:
-    int id_ = -1;
-    std::string name_ = "\0";
-    std::string num_ = "1";
+    int id_;
+    std::string name_;
+    int num_;
 };
 
 typedef std::vector<Card> CardList;
@@ -77,8 +80,8 @@ typedef std::vector<Card> CardList;
 class CardsDataSource: public Rocket::Controls::DataSource
 {
   public:
-    CardsDataSource( const std::string& source,
-                    const std::string& table_name = "cards" );
+    CardsDataSource(  const std::string& source,
+                      const std::string& table_name = "cards" );
 
     /// \brief Destructor.
     ///
@@ -162,6 +165,50 @@ class CardsDataSource: public Rocket::Controls::DataSource
 /// \remarks This interface should **not** be used outside of unit tests; for
 /// starters, assertion macros are disabled for running under this particular
 /// testing environment.
+class CardStatusFormatter: public Rocket::Controls::DataFormatter
+{
+  public:
+    /// \brief Default constructor.
+    ///
+    /// \remarks The default column formatter used is 'card_status'.
+    CardStatusFormatter();
+
+    virtual ~CardStatusFormatter();
+
+    /// \brief Construct an object using a custom column formatter name.
+    ///
+    /// \param formatter The datagrid column formatter attribute name.
+    CardStatusFormatter( const std::string& formatter );
+
+    void FormatData(  Rocket::Core::String& formatted_data,
+                      const Rocket::Core::StringList& raw_data );
+};
+
+/// \remarks This interface should **not** be used outside of unit tests; for
+/// starters, assertion macros are disabled for running under this particular
+/// testing environment.
+class CardFormatter: public Rocket::Controls::DataFormatter
+{
+  public:
+    /// \brief Default constructor.
+    ///
+    /// \remarks The default column formatter used is 'card'.
+    CardFormatter();
+
+    virtual ~CardFormatter();
+
+    /// \brief Construct an object using a custom column formatter name.
+    ///
+    /// \param formatter The datagrid column formatter attribute name.
+    CardFormatter( const std::string& formatter );
+
+    void FormatData(  Rocket::Core::String& formatted_data,
+                      const Rocket::Core::StringList& raw_data );
+};
+
+/// \remarks This interface should **not** be used outside of unit tests; for
+/// starters, assertion macros are disabled for running under this particular
+/// testing environment.
 class CardCollection
 {
   public:
@@ -177,12 +224,12 @@ class CardCollection
     /// \brief Lookup a card ID by name.
     ///
     /// \param name The card's name.
-    int lookup_id( const std::string& name ) const;
+    const Card& lookup_by_name( const std::string& name ) const;
 
     /// \brief Lookup a card name by ID.
     ///
     /// \param id The card's identifier.
-    std::string lookup_name( int id ) const;
+    const Card& lookup_by_id( int id ) const;
 
     /// \brief Rudimentary debugging aid.
     std::string dump();

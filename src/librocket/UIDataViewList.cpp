@@ -146,11 +146,6 @@ void UIDataViewList::set_database( CardCollection* db )
   this->database_ = db;
 }
 
-int UIDataViewList::current_page() const
-{
-  return this->current_page_;
-}
-
 int UIDataViewList::total_pages() const
 {
   return this->total_pages_;
@@ -159,11 +154,6 @@ int UIDataViewList::total_pages() const
 void UIDataViewList::set_total_pages( int num_pages )
 {
   this->total_pages_ = num_pages;
-}
-
-void UIDataViewList::set_current_page( int pg )
-{
-  this->current_page_ = pg;
 }
 
 int UIDataViewList::per_page() const
@@ -182,9 +172,12 @@ void UIDataViewList::set_selection( int idx )
   this->selection_ = idx;
 }
 
-// cards.begin() = id = per_page() * pg
-// cards.end() = id + per_page()
-void UIDataViewList::set_page( int pg )
+int UIDataViewList::current_page() const
+{
+  return this->current_page_;
+}
+
+void UIDataViewList::set_current_page( int pg )
 {
   CardsDataSource* model = this->data_source();
   CardCollection* db = this->database();
@@ -206,6 +199,8 @@ void UIDataViewList::set_page( int pg )
       model->insert_card( i, cards[idx] );
       ++i;
     }
+
+    this->current_page_ = pg;
   }
 }
 
@@ -217,7 +212,7 @@ void UIDataViewList::_initialize()
   // this->total_pages = db.size() / per_page();
   // this->total_pages = 10;
   this->set_total_pages( 5 );
-  this->set_current_page( 0 );
+  this->current_page_ = 0;
   this->set_selection( 0 );
 }
 

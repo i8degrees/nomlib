@@ -123,8 +123,8 @@ void DecoratorPhotograph::RenderElement(Rocket::Core::Element* element, Rocket::
   // Rocket::Core::Vector2f size = element->GetBox().GetSize(Rocket::Core::Box::PADDING);
 
   // NOM_DUMP_VAR( NOM_LOG_CATEGORY_GUI, "position_margins:", pos_margins.x, pos_margins.y);
-  NOM_DUMP_VAR( NOM_LOG_CATEGORY_GUI, "pos:", pos.x, pos.y);
-  NOM_DUMP_VAR( NOM_LOG_CATEGORY_GUI, "size:", this->image_.size().w, this->image_.size().h );
+  // NOM_DUMP_VAR( NOM_LOG_CATEGORY_GUI, "pos:", pos.x, pos.y);
+  // NOM_DUMP_VAR( NOM_LOG_CATEGORY_GUI, "size:", this->image_.size().w, this->image_.size().h );
 
   nom::RocketSDL2RenderInterface* p = NOM_DYN_PTR_CAST( nom::RocketSDL2RenderInterface*, Rocket::Core::GetRenderInterface() );
 

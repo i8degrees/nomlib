@@ -201,9 +201,14 @@ class libRocketDataGridTest: public nom::VisualUnitTest
       }
 
       // Load custom decorators for nomlib
+
       Rocket::Core::DecoratorInstancer* decorator0 = new nom::DecoratorInstancerFinalFantasyFrame();
       Rocket::Core::Factory::RegisterDecoratorInstancer("final-fantasy-theme", decorator0 );
       decorator0->RemoveReference();
+
+      DecoratorInstancerSprite* decorator1 = new nom::DecoratorInstancerSprite();
+      Rocket::Core::Factory::RegisterDecoratorInstancer("sprite-sheet", decorator1 );
+      decorator1->RemoveReference();
 
       /// Put our event polling within the main event's loop
       this->append_event_callback( [&] ( const Event ev ) { this->desktop.process_event( ev ); } );
@@ -240,11 +245,13 @@ class libRocketDataGridTest: public nom::VisualUnitTest
 
   protected:
     nom::UIContext desktop;
+    CardStatusFormatter card_status_formatter;
+    CardFormatter card_formatter;
 };
 
 void on_keydown( Rocket::Core::Event& ev, UIDataViewList* store )
 {
-  ASSERT_TRUE( store != nullptr );
+  EXPECT_TRUE( store != nullptr );
 
   int pg = store->current_page();
   int num_pages = store->total_pages();
@@ -252,10 +259,10 @@ void on_keydown( Rocket::Core::Event& ev, UIDataViewList* store )
   int per_page = store->per_page();
   int selected_card = store->selection();
 
-  // Element* target = ev.GetTargetElement();
+  EXPECT_TRUE( store->document() != nullptr );
 
   CardsDataSource* model = store->data_source();
-  ASSERT_TRUE( model != nullptr );
+  EXPECT_TRUE( model != nullptr );
 
   if( ev == "keydown" )
   {
@@ -281,17 +288,36 @@ void on_keydown( Rocket::Core::Event& ev, UIDataViewList* store )
       ++selected_card;
     }
 
-    store->set_page(pg);
     store->set_current_page(pg);
     store->set_selection(selected_card);
+
+    Element* page_left = store->document()->GetElementById("page-left");
+    NOM_ASSERT( page_left != nullptr );
+    Element* page_right = store->document()->GetElementById("page-right");
+    NOM_ASSERT( page_right != nullptr );
+
+    page_left->SetClassNames("");
+    page_right->SetClassNames("");
+
+    // Handling logic visual page indicators
+    if( store->current_page() > 0 ) {
+      if( page_left ) {
+        page_left->SetClassNames("page-left");
+      }
+    }
+
+    if( store->current_page() >= 0 && (store->current_page() < store->total_pages() - 1) ) {
+      if( page_right ) {
+        page_right->SetClassNames("page-right");
+      }
+    }
 
     // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "KEYDOWN event from", target->GetId().CString(), "value:", key );
     NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Pg:", store->current_page() );
     NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Selection:", store->selection() );
   } // end if keydown
 
-  ASSERT_TRUE( store->document() != nullptr );
-  EXPECT_TRUE( store->set_column_title( 0, "CARDS P. " + std::to_string(pg+1) ) );
+  EXPECT_TRUE( store->set_column_title(1, "CARDS P. " + std::to_string(pg+1) ) );
 
   EXPECT_EQ( 11, model->num_rows() );
   EXPECT_EQ( pg, store->current_page() );
@@ -316,17 +342,42 @@ void on_mouseup( Rocket::Core::Event& ev, UIDataViewList* store  )
 
   if( ev == "mouseup" )
   {
-    if( target->GetTagName() == "datagridcell" )
+    if( target->GetTagName() == "card" )
     {
-      selection = db->lookup_id( target->GetInnerRML().CString() );
+      Card c = db->lookup_by_name( target->GetInnerRML().CString() );
+      selection = c.id();
       store->set_selection( selection );
 
       NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Card name:", target->GetInnerRML().CString() );
       NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Card ID:", store->selection() );
 
       EXPECT_EQ( 11, model->num_rows() );
-      // EXPECT_EQ( pg, store->current_page() );
       EXPECT_EQ( selection, store->selection() );
+
+      if( target->IsClassSet("unavailable-card") )
+      {
+        target->SetClassNames("available-card");
+      }
+      else
+      {
+        target->SetClassNames("unavailable-card");
+
+        // Card card = db->lookup_by_id( store->selection() );
+
+        // if( card.num() > 0 )
+        // {
+        //   card.set_num( card.num() - 1 );
+        // }
+
+        // model->insert_card( selection, card );
+
+        // target = store->document()->GetElementById( card.name().c_str() );
+        // NOM_ASSERT( target != nullptr );
+        // if( target )
+        // {
+        //   target->SetClassNames("unavailable-card");
+        // }
+      }
 
       // TODO: The store's selection ID needs to be translated
       // model->row( store->selection(), "name", row );
@@ -547,7 +598,7 @@ TEST_F( libRocketDataGridTest, UIDataViewList )
     << this->test_set() << " object should not be invalid; is the context and document file valid?";
   }
 
-  EXPECT_TRUE( store1.set_column_title( 0, "CARDS P. " + std::to_string(store1.current_page() + 1) ) );
+  EXPECT_TRUE( store1.set_column_title(1, "CARDS P. " + std::to_string(store1.current_page() + 1) ) );
 
   EXPECT_EQ( true, store1.visible() );
   EXPECT_EQ( pos1, store1.position() );
@@ -560,8 +611,8 @@ TEST_F( libRocketDataGridTest, UIDataViewList )
   EXPECT_EQ( 11, store1.per_page() );
   EXPECT_EQ( 0, store1.current_page() );
 
-  EXPECT_EQ( "CARDS P. 1", store1.column_title( 0) );
-  EXPECT_EQ( "NUM.", store1.column_title( 1) );
+  EXPECT_EQ( "CARDS P. 1", store1.column_title(1) );
+  EXPECT_EQ( "NUM.", store1.column_title(2) );
 
   store1.register_event_listener( store1.document(), "keydown", new nom::UIEventListener( [&]
     ( Rocket::Core::Event& ev ) { on_keydown( ev, &store1 ); }

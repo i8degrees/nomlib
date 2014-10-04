@@ -51,13 +51,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/librocket/RocketFileInterface.hpp"
 
-// Private headers
+ // Private headers
 #include <stdio.h>
 
 namespace nom {
 
 RocketFileInterface::RocketFileInterface(const std::string& root) :
-  root{ root.c_str() }
+  root_( root.c_str() )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
@@ -77,7 +77,8 @@ void RocketFileInterface::Release()
 Rocket::Core::FileHandle RocketFileInterface::Open(const Rocket::Core::String& path)
 {
   // Attempt to open the file relative to the application's root.
-  FILE* fp = fopen((root + path).CString(), "rb");
+  FILE* fp = fopen( (this->root_ + path).CString(), "rb");
+
   if (fp != NULL)
     return (Rocket::Core::FileHandle) fp;
 
@@ -104,6 +105,11 @@ bool RocketFileInterface::Seek(Rocket::Core::FileHandle file, long offset, int o
 nom::size_type RocketFileInterface::Tell(Rocket::Core::FileHandle file)
 {
   return ftell((FILE*) file);
+}
+
+std::string RocketFileInterface::root() const
+{
+  return this->root_.CString();
 }
 
 } // namespace nom

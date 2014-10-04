@@ -44,10 +44,10 @@
 
         text-align: left;
 
-        padding-top: 0px;
+        padding-top: 4px;
         padding-right: 4px;
         padding-bottom: 4px;
-        padding-left: 25px;
+        padding-left: 5px;
       }
 
       datagridheader
@@ -60,22 +60,89 @@
         outline-width: 1px;
         outline-color: black;
 
-        /*padding: 5px 10px 0px 10px;*/
+        margin-top: -8px;
+        margin-left: -25px;
+
         padding-top: 5px;
         padding-right: 0px;
         padding-bottom: 0px;
         padding-left: 0px;
+      }
 
-        margin-top: -8px;
+      status
+      {
+        sprite-decorator: sprite-sheet;
+        sprite-sheet-src: "menu_elements.json";
+        sprite-sheet-image-src: "menu_elements.png";
+      }
+
+      /* Default state */
+      status, status.available
+      {
+        sprite-sheet-frame: 0;
+      }
+
+      status.unavailable
+      {
+        sprite-sheet-frame: 1;
+      }
+
+      .available-card
+      {
+        color: white;
+      }
+
+      .unavailable-card
+      {
+        /* light gray */
+        color: rgb(195,209,228);
+      }
+
+      /* Page flipping indicators */
+      page
+      {
+        sprite-decorator: sprite-sheet;
+        sprite-sheet-src: "menu_elements.json";
+        sprite-sheet-image-src: "menu_elements.png";
+        /* Do not show sprite */
+        sprite-sheet-frame: -1;
+      }
+
+      page.page-left
+      {
+        position: absolute;
+        left: 1%;
+        top: 79%;
+        sprite-decorator: sprite-sheet;
+        sprite-sheet-src: "menu_elements.json";
+        sprite-sheet-image-src: "menu_elements.png";
+        sprite-sheet-frame: 2;
+      }
+
+      page.page-right
+      {
+        position: absolute;
+        left: 92%;
+        top: 79%;
+        sprite-decorator: sprite-sheet;
+        sprite-sheet-src: "menu_elements.json";
+        sprite-sheet-image-src: "menu_elements.png";
+        sprite-sheet-frame: 3;
       }
 
     </style>
   </head>
   <body template="window">
+
     <datagrid source="cards_db.cards">
-      <!-- <col fields="id" width="10%">.</col> -->
+      <col fields="status" formatter="card_status" width="8%"></col>
       <col fields="name" formatter="card" width="75%">CARDS P. 1</col>
       <col fields="num" width="10%">NUM.</col>
     </datagrid>
+
+    <!-- Assumes that the initial starting page is always one (index of zero) -->
+    <page id='page-left' class='' />
+    <page id='page-right' class='page-right' />
+
   </body>
 </rml>

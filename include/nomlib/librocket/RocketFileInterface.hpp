@@ -93,8 +93,14 @@ class RocketFileInterface: public Rocket::Core::FileInterface
     /// Returns the current position of the file pointer.
     virtual nom::size_type Tell(Rocket::Core::FileHandle file);
 
+    /// \brief Get the root directory path.
+    ///
+    /// \returns A string containing the directory path root that this object
+    /// was initialized with.
+    std::string root() const;
+
   private:
-    Rocket::Core::String root;
+    Rocket::Core::String root_;
 };
 
 } // namespace nom

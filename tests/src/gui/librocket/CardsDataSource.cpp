@@ -40,14 +40,17 @@ namespace nom {
 
 // Card
 
-Card::Card()
+const Card Card::null = Card();
+
+Card::Card() :
+  id_(-1),
+  name_("\0"),
+  num_(0)
 {
-  //
 }
 
 Card::~Card()
 {
-  //
 }
 
 Card::Card( int id, const std::string& name, int num_cards )
@@ -67,7 +70,7 @@ const std::string& Card::name() const
   return this->name_;
 }
 
-const std::string& Card::num() const
+int Card::num() const
 {
   return this->num_;
 }
@@ -84,13 +87,13 @@ void Card::set_name(const std::string& name)
 
 void Card::set_num(int num)
 {
-  this->num_ = std::to_string(num);
+  this->num_ = num;
 }
 
 // CardsDataSource
 
 CardsDataSource::CardsDataSource( const std::string& source,
-                               const std::string& table_name ) :
+                                  const std::string& table_name ) :
   Rocket::Controls::DataSource( source.c_str() )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
@@ -109,10 +112,18 @@ void CardsDataSource::GetRow( Rocket::Core::StringList& row, const Rocket::Core:
   {
     for( auto i = 0; i != columns.size(); ++i )
     {
-      // TODO: Implement column
-      if( columns[i] == "id" )
+      if( columns[i] == "status" )
       {
-        continue;
+        if( this->db_[row_index].num() < 1 )
+        {
+          // Unavailable
+          row.push_back( "0" );
+        }
+        else
+        {
+          // Available
+          row.push_back( "1" );
+        }
       }
       else if( columns[i] == "name" )
       {
@@ -120,7 +131,7 @@ void CardsDataSource::GetRow( Rocket::Core::StringList& row, const Rocket::Core:
       }
       else if( columns[i] == "num" )
       {
-        row.push_back( this->db_[row_index].num().c_str() );
+        row.push_back( std::to_string( this->db_[row_index].num() ).c_str() );
       }
     } // end for cols loop
   }
@@ -344,6 +355,68 @@ std::string CardsDataSource::dump()
   return os.str();
 }
 
+// CardStatusFormatter
+
+CardStatusFormatter::CardStatusFormatter() :
+  Rocket::Controls::DataFormatter("card_status")
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+CardStatusFormatter::CardStatusFormatter( const std::string& formatter ) :
+  Rocket::Controls::DataFormatter( formatter.c_str() )
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+CardStatusFormatter::~CardStatusFormatter()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+void CardStatusFormatter::FormatData( Rocket::Core::String& formatted_data,
+                                      const Rocket::Core::StringList& raw_data )
+{
+  // Account for the font size height for vertical alignment
+  std::string styling = "style='margin-top: -14px;'";
+
+  if( raw_data[0] == "0" )
+  {
+    formatted_data = String("<status class='unavailable' ") +
+      styling.c_str() + String(" />");
+  }
+  else
+  {
+    formatted_data = String("<status class='available' ") +
+      styling.c_str() + String(" />");
+  }
+}
+
+// CardFormatter
+
+CardFormatter::CardFormatter() :
+  Rocket::Controls::DataFormatter("card")
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+CardFormatter::CardFormatter( const std::string& formatter ) :
+  Rocket::Controls::DataFormatter( formatter.c_str() )
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+CardFormatter::~CardFormatter()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+void CardFormatter::FormatData( Rocket::Core::String& formatted_data,
+                                const Rocket::Core::StringList& raw_data )
+{
+  formatted_data = "<card id='" + raw_data[0] + "'>" + raw_data[0] + "</card>";
+}
+
 // CardCollection
 
 CardCollection::CardCollection()
@@ -421,49 +494,49 @@ bool CardCollection::load_db()
   this->cards_.push_back(Card( 43,"Hexadragon",1));
 
   // pg 4
-  this->cards_.push_back(Card( 44,"Iron Giant",1));
-  this->cards_.push_back(Card( 45,"Behemoth",1));
-  this->cards_.push_back(Card( 46,"Chimera",1));
+  this->cards_.push_back(Card( 44,"Iron Giant",0));
+  this->cards_.push_back(Card( 45,"Behemoth",0));
+  this->cards_.push_back(Card( 46,"Chimera",0));
   this->cards_.push_back(Card( 47,"PuPu",1));
-  this->cards_.push_back(Card( 48,"Elastoid",1));
-  this->cards_.push_back(Card( 49,"GIM47N",1));
-  this->cards_.push_back(Card( 50,"Malboro",1));
-  this->cards_.push_back(Card( 51,"Ruby Dragon",1));
-  this->cards_.push_back(Card( 52,"Elnoyle",1));
-  this->cards_.push_back(Card( 53,"Tonberry King",1));
-  this->cards_.push_back(Card( 54,"Wedge, Biggs",1));
+  this->cards_.push_back(Card( 48,"Elastoid",0));
+  this->cards_.push_back(Card( 49,"GIM47N",0));
+  this->cards_.push_back(Card( 50,"Malboro",0));
+  this->cards_.push_back(Card( 51,"Ruby Dragon",0));
+  this->cards_.push_back(Card( 52,"Elnoyle",0));
+  this->cards_.push_back(Card( 53,"Tonberry King",0));
+  this->cards_.push_back(Card( 54,"Wedge, Biggs",0));
 
   return true;
 }
 
-int CardCollection::lookup_id( const std::string& name ) const
+const Card& CardCollection::lookup_by_name( const std::string& name ) const
 {
   for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr )
   {
     if( (*itr).name() == name )
     {
       // Successful match
-      return (*itr).id();
+      return *itr;
     }
   }
 
   // No match
-  return nom::npos;
+  return Card::null;
 }
 
-std::string CardCollection::lookup_name( int id ) const
+const Card& CardCollection::lookup_by_id( int id ) const
 {
   for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr )
   {
     if( (*itr).id() == id )
     {
       // Successful match
-      return (*itr).name();
+      return *itr;
     }
   }
 
   // No match
-  return "\0";
+  return Card::null;
 }
 
 std::string CardCollection::dump()

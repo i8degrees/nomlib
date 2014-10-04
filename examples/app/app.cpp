@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
-#include <nomlib/gui.hpp>
+#include <nomlib/librocket.hpp>
 
 /// \brief File path name of the resources directory; this must be a relative file path.
 const std::string APP_RESOURCES_DIR = "Resources";
@@ -101,18 +101,6 @@ const std::string RESOURCE_INFO_BOX_TEXT_STRINGS[4] = {
                                                         "...Light weight!" // 3
                                                       };
 
-const nom::uint32 RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[9] =  {
-                                                            nom::Anchor::TopLeft,       // 0
-                                                            nom::Anchor::TopCenter,
-                                                            nom::Anchor::TopRight,
-                                                            nom::Anchor::MiddleLeft,
-                                                            nom::Anchor::MiddleCenter,
-                                                            nom::Anchor::MiddleRight,
-                                                            nom::Anchor::BottomLeft,
-                                                            nom::Anchor::BottomCenter,
-                                                            nom::Anchor::BottomRight    // 8
-                                                          };
-
 const int MIN_FONT_POINT_SIZE = 9;
 const int MAX_FONT_POINT_SIZE = 41;
 
@@ -126,31 +114,27 @@ class App: public nom::SDLApp
       // is solely to cut down on the amount of debug logging.
       SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES ),
       sprite_angle ( -90.0f ),
-      selected_font ( 0 ),        // nom::TrueType font
-      selected_alignment ( 4 ),   // nom::Anchor::TopLeft
+      // selected_font ( 0 ),        // nom::TrueType font
       selected_font_size ( 14 ),  // Font's size (in pixels)
       selected_text_string ( 2 )  // "Yeah Buddy!!!"
     {
       NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
-
-      // Fatal error; if we are not able to complete this step, it means that
-      // we probably cannot rely on our resource paths!
-      if ( nom::init ( argc, argv ) == false )
-      {
-        nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
-        exit ( NOM_EXIT_FAILURE );
-      }
-      atexit(nom::quit);
     } // App
 
     ~App ( void )
     {
       NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
+
+      this->desktop.shutdown();
+      nom::shutdown_librocket();
+
     } // ~App
 
     bool on_init ( void )
     {
-      nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
+      nom::uint32 window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+      nom::uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
+
       if ( nom::set_hint ( SDL_HINT_RENDER_VSYNC, "0" ) == false )
       {
         NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
@@ -162,15 +146,31 @@ class App: public nom::SDLApp
       {
         NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" ) );
       }
-/*
+
       if ( nom::set_hint ( SDL_HINT_RENDER_DRIVER, "opengl" ) == false )
       {
         NOM_LOG_INFO ( NOM, "Could not set rendering driver to OpenGL" );
       }
-*/
+
+      // Try to force the use of the OpenGL rendering driver; this is required
+      // as per the SDL2 implementation for libRocket.
+      int oglIdx = -1;
+      int nRD = SDL_GetNumRenderDrivers();
+      for( auto i = 0; i < nRD; ++i )
+      {
+        SDL_RendererInfo info;
+        if( ! SDL_GetRenderDriverInfo( i, &info ) )
+        {
+          if( ! strcmp( info.name, "opengl" ) )
+          {
+            oglIdx = i;
+          }
+        }
+      }
+
       for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
       {
-        if ( this->window[idx].create ( APP_NAME, WINDOW_WIDTH/2, WINDOW_HEIGHT, window_flags ) == false )
+        if ( this->window[idx].create( APP_NAME, WINDOW_WIDTH/2, WINDOW_HEIGHT, window_flags, oglIdx, render_flags ) == false )
         {
           return false;
         }
@@ -183,47 +183,96 @@ class App: public nom::SDLApp
           return false;
         }
 
-        // Scale window contents up by the new width & height
-        this->window[idx].set_logical_size( this->window[idx].size() );
+        // EXPERIMENTAL support for emulating SDL2's independent resolution
+        // scaling feature via a "logical viewport" with libRocket
+        if( nom::set_hint( "NOM_LIBROCKET_EMULATE_SDL2_LOGICAL_VIEWPORT", "0" ) == false )
+        {
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Could not enable emulated SDL2 independent resolution scaling." );
+        }
       }
+
+      if( nom::RocketSDL2RenderInterface::gl_init( this->window[0].size().w, this->window[0].size().h ) == false )
+      {
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not initialize OpenGL for libRocket." );
+        return false;
+      }
+
+      // Initialize the core of libRocket; these are the core dependencies that
+      // libRocket depends on for successful initialization.
+      //
+      // TODO: Use resources configuration file
+      Rocket::Core::FileInterface* fs =
+        new nom::RocketFileInterface( "../../../Resources/tests/gui/librocket/nomlibTest/" );
+
+      Rocket::Core::SystemInterface* sys =
+        new nom::RocketSDL2SystemInterface();
+
+      if( nom::init_librocket( fs, sys ) == false )
+      {
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not initialize libRocket." );
+        return false;
+      }
+
+      Rocket::Core::RenderInterface* renderer =
+        new nom::RocketSDL2RenderInterface( &this->window[0] );
+
+      // Initialize libRocket's debugger as early as possible, so we get visual
+      // logging
+      this->desktop.enable_debugger();
+      if( this->desktop.create_context( "default", this->window[0].size(), renderer ) == false )
+      {
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not initialize libRocket context." );
+        return false;
+      }
+
+      if( this->desktop.load_font( "Delicious-Bold.otf" ) == false )
+      {
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not load font file: Delicious-Bold.otf" );
+        return false;
+      }
+
+      if( this->desktop.load_font( "OpenSans-Regular.ttf" ) == false )
+      {
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not load font file: OpenSans-Regular.ttf" );
+        return false;
+      }
+
+      if( this->desktop.load_font( "OpenSans-Bold.ttf" ) == false )
+      {
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not load font file: OpenSans-Bold.ttf" );
+        return false;
+      }
+
+      // Load custom decorators for nomlib
+      Rocket::Core::DecoratorInstancer* decorator0 = new nom::DecoratorInstancerFinalFantasyFrame();
+      Rocket::Core::Factory::RegisterDecoratorInstancer("final-fantasy-theme", decorator0 );
+      decorator0->RemoveReference();
 
       this->window[0].make_current();
 
-      if ( this->bitmap_font.load ( RESOURCE_BITMAP_FONT ) == false )
-      {
-        nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
-        return false;
-      }
+      // if ( this->bitmap_font.load ( RESOURCE_BITMAP_FONT ) == false )
+      // {
+      //   nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
+      //   return false;
+      // }
       // FIXME: this->bitmap_font.resize ( nom::Texture::ResizeAlgorithm::scale2x );
 
-      if ( this->bitmap_small_font.load ( RESOURCE_BITMAP_SMALL_FONT ) == false )
-      {
-        nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_SMALL_FONT );
-        return false;
-      }
+      // if ( this->bitmap_small_font.load ( RESOURCE_BITMAP_SMALL_FONT ) == false )
+      // {
+      //   nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_SMALL_FONT );
+      //   return false;
+      // }
 
-      if ( this->truetype_font.load ( RESOURCE_TRUETYPE_FONT[0] ) == false )
-      {
-        nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT[0] );
-        return false;
-      }
-
-      // this->truetype_font.set_sharable( true );
-
-      // Cache the glyphs of the font's point size range that we plan on using;
-      // offloads the cost of re-generating the glyph cache when the end-user
-      // requests an increase or decrease. (An increase in load-time for a
-      // decrease in latency upon rescaling, which is especially noticeable on
-      // older platforms and mobile devices).
-      for( auto idx = MIN_FONT_POINT_SIZE - 1; idx != MAX_FONT_POINT_SIZE; ++idx )
-      {
-        this->truetype_font.set_point_size( idx + 1 );
-      }
+      // if ( this->truetype_font.load ( RESOURCE_TRUETYPE_FONT[0] ) == false )
+      // {
+      //   nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT[0] );
+      //   return false;
+      // }
 
       // Load a sprite sheet, using the sheet_filename as the base path to load
       // the image file from disk
       this->sprite = nom::SpriteBatch ( RESOURCE_SPRITE );
-      if ( this->sprite.load ( APP_RESOURCES_DIR + p.native() + this->sprite.sheet_filename(), 0, nom::Texture::Access::Streaming ) == false )
+      if ( this->sprite.load ( APP_RESOURCES_DIR + p.native() + this->sprite.sheet_filename(), false, nom::Texture::Access::Streaming ) == false )
       {
         nom::DialogMessageBox ( APP_NAME, "Could not load sprite: " + this->sprite.sheet_filename() );
         return false;
@@ -251,38 +300,41 @@ class App: public nom::SDLApp
       }
 
       this->window[0].make_current();
-      nom::MessageBox::raw_ptr mbox = nullptr;
 
-      mbox = new nom::MessageBox  (
-                                    nullptr,
-                                    nom::AUTO_ID,
-                                    INFO_BOX_ORIGINS[0],
-                                    INFO_BOX_SIZES[0]
-                                  );
+      this->info_box[0] = nom::UIMessageBox(  INFO_BOX_ORIGINS[0],
+                                              INFO_BOX_SIZES[0] );
 
-      // Initialize our info_box[0] object
-      this->info_box[0].reset ( mbox );
+      this->info_box[0].set_desktop( this->desktop.context() );
+      this->info_box[0].set_document_file( "messagebox.rml" );
 
-      this->info_box[0]->set_title( RESOURCE_INFO_BOX_TITLE_STRINGS[0], this->bitmap_small_font, 8 );
-      this->info_box[0]->set_message( RESOURCE_INFO_BOX_TEXT_STRINGS[0], this->bitmap_font, 12 );
-      this->info_box[0]->set_decorator( new nom::FinalFantasyDecorator() );
+      if( this->info_box[0].initialize() == false )
+      {
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "UIMessageBox should not be invalid; is the context and document file valid?" );
+        return false;
+      }
 
-      mbox = new nom::MessageBox  (
-                                    nullptr,
-                                    nom::AUTO_ID,
-                                    INFO_BOX_ORIGINS[1],
-                                    INFO_BOX_SIZES[1]
-                                  );
+      this->info_box[0].set_title_text( RESOURCE_INFO_BOX_TITLE_STRINGS[0] );
+      this->info_box[0].set_message_text( RESOURCE_INFO_BOX_TEXT_STRINGS[0] );
 
-      // Initialize our info_box[1] object
-      this->info_box[1].reset( mbox );
+      this->info_box[1] = nom::UIMessageBox (
+                                              INFO_BOX_ORIGINS[1],
+                                              INFO_BOX_SIZES[1]
+                                            );
 
-      this->info_box[1]->set_title( RESOURCE_INFO_BOX_TITLE_STRINGS[1], this->bitmap_small_font, 8 );
-      this->info_box[1]->set_message( RESOURCE_INFO_BOX_TEXT_STRINGS[1], this->select_font(), this->select_font_size() );
-      this->info_box[1]->set_decorator( new nom::FinalFantasyDecorator() );
+      this->info_box[1].set_desktop( this->desktop.context() );
+      this->info_box[1].set_document_file( "messagebox.rml" );
 
-      this->sprite.set_position( nom::Point2i(this->info_box[0]->position().x - this->sprite.size().w, this->info_box[0]->position().y) );
-      this->ani_sprite.set_position( nom::Point2i(this->info_box[0]->position().x + this->info_box[0]->size().w + this->sprite.size().w, this->info_box[0]->position().y) );
+      if( this->info_box[1].initialize() == false )
+      {
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "UIMessageBox should not be invalid; is the context and document file valid?" );
+        return false;
+      }
+
+      this->info_box[1].set_title_text( RESOURCE_INFO_BOX_TITLE_STRINGS[1] );
+      this->info_box[1].set_message_text( RESOURCE_INFO_BOX_TEXT_STRINGS[1] );
+
+      this->sprite.set_position( nom::Point2i(this->info_box[0].position().x - this->sprite.size().w, this->info_box[0].position().y) );
+      this->ani_sprite.set_position( nom::Point2i(this->info_box[0].position().x + this->info_box[0].size().w + this->sprite.size().w, this->info_box[0].position().y) );
 
       return true;
     } // onInit
@@ -305,6 +357,7 @@ class App: public nom::SDLApp
         while( this->poll_event( ev ) )
         {
           this->on_event( ev );
+          this->desktop.process_event(ev);
         }
 
         this->ani_sprite.play();
@@ -312,6 +365,7 @@ class App: public nom::SDLApp
         for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
         {
           this->window[idx].update();
+          this->desktop.update();
           this->fps[idx].update();
 
           // Refresh the frames per second at 1 second intervals
@@ -335,8 +389,7 @@ class App: public nom::SDLApp
         if ( this->sprite_angle > 360.0f ) this->sprite_angle -= 360.0f;
 
         this->window[0].fill ( nom::Color4i::SkyBlue );
-        this->info_box[0]->draw ( this->window[0] );
-        this->info_box[1]->draw ( this->window[0] );
+        this->desktop.draw();
         this->sprite.draw ( this->window[0], this->sprite_angle );
         this->ani_sprite.draw ( this->window[0] );
 
@@ -386,7 +439,7 @@ class App: public nom::SDLApp
       // because this is the maximum size that can fit inside our info box.
       if( this->selected_font_size < MAX_FONT_POINT_SIZE )
       {
-        this->info_box[1]->set_message_font_size( this->selected_font_size += point_size );
+        this->info_box[1].set_message_font_size( this->selected_font_size += point_size );
       }
     }
 
@@ -395,7 +448,7 @@ class App: public nom::SDLApp
       // Cap our minimal font point size (defaults is 9)
       if( this->selected_font_size >= MIN_FONT_POINT_SIZE )
       {
-        this->info_box[1]->set_message_font_size( this->selected_font_size -= point_size );
+        this->info_box[1].set_message_font_size( this->selected_font_size -= point_size );
       }
     }
 
@@ -457,18 +510,15 @@ class App: public nom::SDLApp
           if( ev.key.mod == KMOD_LSHIFT )
           {
             this->selected_font_size = 14;
-            this->info_box[1]->set_message_font_size( this->select_font_size() );
+            this->info_box[1].set_message_font_size( this->select_font_size() );
             break;
           }
           else if( ev.key.mod == KMOD_LCTRL )
           {
             this->selected_text_string = 0;
-            this->info_box[1]->set_message_text( this->select_text_string() );
+            this->info_box[1].set_message_text( this->select_text_string() );
             break;
           }
-
-          this->selected_alignment = 0;
-          this->info_box[1]->set_message_alignment( this->select_alignment() );
           break;
         }
 
@@ -477,12 +527,9 @@ class App: public nom::SDLApp
           if( ev.key.mod == KMOD_LCTRL )
           {
             this->selected_text_string = 1;
-            this->info_box[1]->set_message_text( this->select_text_string() );
+            this->info_box[1].set_message_text( this->select_text_string() );
             break;
           }
-
-          this->selected_alignment = 1;
-          this->info_box[1]->set_message_alignment( this->select_alignment() );
           break;
         }
 
@@ -491,12 +538,9 @@ class App: public nom::SDLApp
           if( ev.key.mod == KMOD_LCTRL )
           {
             this->selected_text_string = 2;
-            this->info_box[1]->set_message_text( this->select_text_string() );
+            this->info_box[1].set_message_text( this->select_text_string() );
             break;
           }
-
-          this->selected_alignment = 2;
-          this->info_box[1]->set_message_alignment( this->select_alignment() );
           break;
         }
 
@@ -505,47 +549,9 @@ class App: public nom::SDLApp
           if( ev.key.mod == KMOD_LCTRL )
           {
             this->selected_text_string = 3;
-            this->info_box[1]->set_message_text( this->select_text_string() );
+            this->info_box[1].set_message_text( this->select_text_string() );
             break;
           }
-
-          this->selected_alignment = 3;
-          this->info_box[1]->set_message_alignment( this->select_alignment() );
-          break;
-        }
-
-        case SDLK_4:
-        {
-          this->selected_alignment = 4;
-          this->info_box[1]->set_message_alignment( this->select_alignment() );
-          break;
-        }
-
-        case SDLK_5:
-        {
-          this->selected_alignment = 5;
-          this->info_box[1]->set_message_alignment( this->select_alignment() );
-          break;
-        }
-
-        case SDLK_6:
-        {
-          this->selected_alignment = 6;
-          this->info_box[1]->set_message_alignment( this->select_alignment() );
-          break;
-        }
-
-        case SDLK_7:
-        {
-          this->selected_alignment = 7;
-          this->info_box[1]->set_message_alignment( this->select_alignment() );
-          break;
-        }
-
-        case SDLK_8:
-        {
-          this->selected_alignment = 8;
-          this->info_box[1]->set_message_alignment( this->select_alignment() );
           break;
         }
 
@@ -565,11 +571,11 @@ class App: public nom::SDLApp
         {
           if( ev.key.mod == KMOD_LSHIFT )
           {
-            this->selected_font = 0; // nom::TrueTypeFont
+            // this->selected_font = 0; // nom::TrueTypeFont
             this->selected_font_size = 24;
           }
-          this->info_box[1]->set_message_font( this->select_font() );
-          this->info_box[1]->set_message_font_size( this->select_font_size() );
+          // this->info_box[1].set_message_font( this->select_font() );
+          this->info_box[1].set_message_font_size( this->select_font_size() );
           break;
         }
 
@@ -577,9 +583,9 @@ class App: public nom::SDLApp
         {
           if( ev.key.mod == KMOD_LSHIFT )
           {
-            this->selected_font = 1; // nom::BitmapFont
+            // this->selected_font = 1; // nom::BitmapFont
           }
-          this->info_box[1]->set_message_font( this->select_font() );
+          // this->info_box[1].set_message_font( this->select_font() );
           break;
         }
 
@@ -628,6 +634,8 @@ class App: public nom::SDLApp
     /// \todo Use std::vector
     nom::RenderWindow window[MAXIMUM_WINDOWS];
 
+    nom::UIContext desktop;
+
     /// Interval at which we refresh the frames per second counter
     nom::Timer update[MAXIMUM_WINDOWS];
 
@@ -637,7 +645,7 @@ class App: public nom::SDLApp
     /// Utilize one of nomlib's advanced class object types -- the dialog
     /// message box; this is a part of an interface kit with game interfacing in
     /// mind.
-    nom::MessageBox::shared_ptr info_box[2];
+    nom::UIMessageBox info_box[2];
 
     /// Texture used as a static background image
     nom::Texture background;
@@ -648,47 +656,29 @@ class App: public nom::SDLApp
     nom::AnimatedSprite ani_sprite;
 
     // Our font resources for nom::Text, the text rendering API
-    nom::Font bitmap_font;
-    nom::Font bitmap_small_font;
-    nom::Font truetype_font;
+    // nom::Font bitmap_font;
+    // nom::Font bitmap_small_font;
+    // nom::Font truetype_font;
 
-    int selected_font;
-    int selected_alignment;
+    // int selected_font;
     int selected_font_size;
     nom::sint selected_text_string;
 
-    nom::Font& select_font( void )
-    {
-      if( this->selected_font == 0 )
-      {
-        return this->truetype_font;
-      }
-      else if( this->selected_font == 1 )
-      {
-        return this->bitmap_font;
-      }
-      else
-      {
-        return this->truetype_font;
-      }
-    }
-
-    nom::uint32 select_alignment ( void )
-    {
-      switch ( this->selected_alignment )
-      {
-        default:
-        case 0: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[0]; break;
-        case 1: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[1]; break;
-        case 2: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[2]; break;
-        case 3: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[3]; break;
-        case 4: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[4]; break;
-        case 5: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[5]; break;
-        case 6: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[6]; break;
-        case 7: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[7]; break;
-        case 8: return RESOURCE_INFO_BOX_TEXT_ALIGNMENTS[8]; break;
-      }
-    }
+    // nom::Font& select_font( void )
+    // {
+    //   if( this->selected_font == 0 )
+    //   {
+    //     return this->truetype_font;
+    //   }
+    //   else if( this->selected_font == 1 )
+    //   {
+    //     return this->bitmap_font;
+    //   }
+    //   else
+    //   {
+    //     return this->truetype_font;
+    //   }
+    // }
 
     nom::sint select_font_size ( void )
     {
@@ -710,6 +700,19 @@ class App: public nom::SDLApp
 
 nom::int32 main ( nom::int32 argc, char* argv[] )
 {
+  // Fatal error; if we are not able to complete this step, it means that
+  // we probably cannot rely on our resource paths!
+  if ( nom::init ( argc, argv ) == false )
+  {
+    nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
+    exit ( NOM_EXIT_FAILURE );
+  }
+
+  atexit(nom::quit);
+
+  // nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_INFO );
+  nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_INFO );
+
   App game ( argc, argv );
 
   if ( game.on_init() == false )

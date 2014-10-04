@@ -1,3 +1,8 @@
+# TODO: Remove checks for the necessary build units in order to compile
+# examples. In hindsight, this check is worse than no check at all, because we
+# have no warning / error when the build unit check is FALSE -- this can lead
+# to confusion.
+#
 # TODO: consider adding a custom POST_BUILD command here so that we do not have
 # to manually execute the 'install' target in order to get the example's
 # Resources, etc. to copy.
@@ -16,11 +21,11 @@
 # http://stackoverflow.com/questions/6077810/how-to-correctly-add-resources-to-a-project?rq=1
 cmake_minimum_required ( VERSION 2.6 )
 
-set( NOM_BUILD_APP_EXAMPLE false )
+set( NOM_BUILD_APP_EXAMPLE TRUE )
 set( NOM_BUILD_AUDIO_EXAMPLE false )
-set( NOM_BUILD_DEVICE_INFO_EXAMPLE true )
+set( NOM_BUILD_DEVICE_INFO_EXAMPLE FALSE )
 set( NOM_BUILD_EVENTS_EXAMPLE false )
-set( NOM_BUILD_FONTS_EXAMPLE false )
+set( NOM_BUILD_FONTS_EXAMPLE FALSE )
 set( NOM_BUILD_GAMEOFLIFE_EXAMPLE false )
 
 set( NOM_BUILD_GUI_BUTTON_EXAMPLE false )
@@ -30,10 +35,10 @@ set( NOM_BUILD_GUI_MESSAGEBOX_EXAMPLE false )
 # TODO: Add example for the widget at examples/gui/gui_dataviewlist.cpp
 set( NOM_BUILD_GUI_DATAVIEWLIST_EXAMPLE off )
 
-set( NOM_BUILD_SPRITE_SHEETS_EXAMPLE false )
+set( NOM_BUILD_SPRITE_SHEETS_EXAMPLE FALSE )
 
 set( NOM_BUILD_MOUSE_CURSORS_EXAMPLE false )
-set( NOM_BUILD_MACROS_EXAMPLE false )
+set( NOM_BUILD_MACROS_EXAMPLE FALSE )
 
 link_libraries ( ${PROJECT_NAME} )
 
@@ -72,7 +77,6 @@ endif ( PLATFORM_WINDOWS )
 # Install example resources
 if( NOT NOM_BUILD_MINI_UNIT )
 
-  if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_GUI_UNIT AND NOM_BUILD_JSON_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
     if( NOM_BUILD_APP_EXAMPLE )
       add_executable ( app "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/app/app.cpp" )
 
@@ -92,7 +96,6 @@ if( NOT NOM_BUILD_MINI_UNIT )
               )
 
     endif( NOM_BUILD_APP_EXAMPLE )
-  endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_GUI_UNIT AND NOM_BUILD_JSON_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_SYSTEM_UNIT )
     if( NOM_BUILD_AUDIO_EXAMPLE )
@@ -126,18 +129,16 @@ if( NOT NOM_BUILD_MINI_UNIT )
     endif( NOM_BUILD_DEVICE_INFO_EXAMPLE )
   endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
-  if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
-    if( NOM_BUILD_FONTS_EXAMPLE )
-      add_executable ( fonts "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/fonts.cpp" )
+  if( NOM_BUILD_FONTS_EXAMPLE )
+    add_executable ( fonts "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/fonts.cpp" )
 
-      install ( DIRECTORY
-                "${EXAMPLES_SRC_DIR}/fonts/Resources"
-                DESTINATION
-                "${EXAMPLES_INSTALL_PEFIX}"
-                PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-              )
-    endif( NOM_BUILD_FONTS_EXAMPLE )
-  endif( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+    install ( DIRECTORY
+              "${EXAMPLES_SRC_DIR}/fonts/Resources"
+              DESTINATION
+              "${EXAMPLES_INSTALL_PEFIX}"
+              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+            )
+  endif( NOM_BUILD_FONTS_EXAMPLE )
 
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
         if( NOM_BUILD_GAMEOFLIFE_EXAMPLE )

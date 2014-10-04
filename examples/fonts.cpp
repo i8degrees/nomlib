@@ -337,6 +337,18 @@ class App: public nom::SDLApp
 
       // this->label_tfont.set_alignment( nom::Anchor::TopLeft );
 
+      // Cache the glyphs of the font's point size range that we plan on using;
+      // offloads the cost of re-generating the glyph cache when the end-user
+      // requests an increase or decrease. (An increase in load-time for a
+      // decrease in latency upon rescaling, which is especially noticeable on
+      // older platforms and *presumably* mobile devices).
+      for( auto idx = MIN_FONT_POINT_SIZE - 1; idx != MAX_FONT_POINT_SIZE; ++idx )
+      {
+        this->label_tfont.set_text_size( idx + 1 );
+      }
+
+      this->label_tfont.set_text_size( nom::DEFAULT_FONT_SIZE );
+
       return true;
     }
 

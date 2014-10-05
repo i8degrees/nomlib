@@ -98,7 +98,10 @@ CardsDataSource::CardsDataSource( const std::string& source,
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  this->set_table_name( table_name );
+  this->set_per_page(11);
+  this->set_total_pages(0);
+  this->set_page(0);
+  this->set_table_name(table_name);
 }
 
 CardsDataSource::~CardsDataSource()
@@ -108,13 +111,19 @@ CardsDataSource::~CardsDataSource()
 
 void CardsDataSource::GetRow( Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index, const Rocket::Core::StringList& columns )
 {
+  // The starting ID position to begin reading from the storage container
+  int row_offset = row_index + ( this->per_page() * this->page() );
+
+  // The last ID position; should match return value of ::GetNumRows
+  int row_end = this->per_page();
+
   if( table == this->table_name().c_str() )
   {
     for( auto i = 0; i != columns.size(); ++i )
     {
-      if( columns[i] == "status" )
+      if( columns[i] == "status" && row_index < row_end )
       {
-        if( this->db_[row_index].num() < 1 )
+        if( row_index < row_end && this->db_[row_offset].num() < 1 )
         {
           // Unavailable
           row.push_back( "0" );
@@ -125,13 +134,13 @@ void CardsDataSource::GetRow( Rocket::Core::StringList& row, const Rocket::Core:
           row.push_back( "1" );
         }
       }
-      else if( columns[i] == "name" )
+      else if( row_index < row_end && columns[i] == "name" )
       {
-        row.push_back( this->db_[row_index].name().c_str() );
+        row.push_back( this->db_[row_offset].name().c_str() );
       }
-      else if( columns[i] == "num" )
+      else if( row_index < row_end && columns[i] == "num" )
       {
-        row.push_back( std::to_string( this->db_[row_index].num() ).c_str() );
+        row.push_back( std::to_string( this->db_[row_offset].num() ).c_str() );
       }
     } // end for cols loop
   }
@@ -141,8 +150,11 @@ int CardsDataSource::GetNumRows( const Rocket::Core::String& table )
 {
   if( table == this->table_name().c_str() )
   {
-    return this->db_.size();
+    // Influences the maximum number of row items returned from ::GetRow
+    return this->per_page();
   }
+
+  NOM_ASSERT( table == this->table_name().c_str() );
 
   // Err; ..invalid table?
   return -1;
@@ -158,9 +170,9 @@ void CardsDataSource::set_table_name( const std::string& name )
   this->table_name_ = name;
 }
 
-int CardsDataSource::num_rows()
+nom::size_type CardsDataSource::num_rows()
 {
-  return this->GetNumRows( this->table_name().c_str() );
+  return this->db_.size();
 }
 
 void CardsDataSource::row(  nom::StringList& row,
@@ -201,6 +213,9 @@ int CardsDataSource::insert_card( int pos, const Card& card )
                       // row
                       1 );
 
+    // Update page count
+    this->update();
+
     // Resulting (modified) size
     return this->num_rows();
   }
@@ -231,6 +246,9 @@ int CardsDataSource::insert_cards( int pos, const CardList& cards )
                       // row
                       cards.size() );
 
+    // Update page count
+    this->update();
+
     // Resulting (modified) size
     return this->num_rows();
   }
@@ -251,6 +269,9 @@ int CardsDataSource::append_card( const Card& card )
                 // The number of rows added -- including first row
                 1 );
 
+  // Update page count
+  this->update();
+
   // Resulting (modified) size
   return this->num_rows();
 }
@@ -270,6 +291,9 @@ int CardsDataSource::append_cards( const CardList& cards )
                 // The number of rows added -- including first row
                 cards.size() );
 
+  // Update page count
+  this->update();
+
   // Resulting (modified) size
   return this->num_rows();
 }
@@ -284,6 +308,9 @@ void CardsDataSource::erase_cards()
   this->db_.clear();
 
   NotifyRowChange( this->table_name().c_str() );
+
+  // Update page count
+  this->update();
 }
 
 int CardsDataSource::erase_card( int pos )
@@ -301,6 +328,9 @@ int CardsDataSource::erase_card( int pos )
                       // The number of rows changed -- including the first
                       // row
                       1 );
+
+    // Update page count
+    this->update();
 
     // Resulting (modified) size
     return this->num_rows();
@@ -326,6 +356,9 @@ int CardsDataSource::erase_cards( int begin_pos, int end_pos )
                       // The number of rows changed -- including the first
                       // row
                       begin_pos + end_pos );
+
+    // Update page count
+    this->update();
 
     // Resulting (modified) size
     return this->num_rows();
@@ -362,6 +395,79 @@ std::string CardsDataSource::dump()
   return os.str();
 }
 
+const Card& CardsDataSource::lookup_by_name( const std::string& name ) const
+{
+  for( auto itr = this->db_.begin(); itr != this->db_.end(); ++itr )
+  {
+    if( (*itr).name() == name )
+    {
+      // Successful match
+      return *itr;
+    }
+  }
+
+  // No match
+  return Card::null;
+}
+
+const Card& CardsDataSource::lookup_by_id( int id ) const
+{
+  for( auto itr = this->db_.begin(); itr != this->db_.end(); ++itr )
+  {
+    if( (*itr).id() == id )
+    {
+      // Successful match
+      return *itr;
+    }
+  }
+
+  // No match
+  return Card::null;
+}
+
+int CardsDataSource::per_page() const
+{
+  return this->per_page_;
+}
+
+int CardsDataSource::total_pages() const
+{
+  return this->total_pages_;
+}
+
+int CardsDataSource::page() const
+{
+  return this->page_;
+}
+
+void CardsDataSource::set_per_page( int pg )
+{
+  this->per_page_ = pg;
+
+  // Update page count
+  this->update();
+}
+
+void CardsDataSource::set_total_pages( int num_pages )
+{
+  this->total_pages_ = num_pages;
+}
+
+void CardsDataSource::set_page( int page )
+{
+  this->page_ = page;
+
+  // This is necessary for ::GetRow to immediately update its row indexes
+  NotifyRowChange( this->table_name().c_str() );
+
+  this->update();
+}
+
+void CardsDataSource::update()
+{
+  this->set_total_pages( this->num_rows() / this->per_page() );
+}
+
 // CardStatusFormatter
 
 CardStatusFormatter::CardStatusFormatter() :
@@ -384,16 +490,13 @@ CardStatusFormatter::~CardStatusFormatter()
 void CardStatusFormatter::FormatData( Rocket::Core::String& formatted_data,
                                       const Rocket::Core::StringList& raw_data )
 {
-  // Account for the font size height for vertical alignment
-  std::string styling = "style='margin-top: -14px;'";
+  std::string styling = "";
 
-  if( raw_data[0] == "0" )
-  {
+  if( raw_data[0] == "0" ) {
     formatted_data = String("<status class='unavailable' ") +
       styling.c_str() + String(" />");
   }
-  else
-  {
+  else if( raw_data[0] == "1" ) {
     formatted_data = String("<status class='available' ") +
       styling.c_str() + String(" />");
   }
@@ -421,7 +524,9 @@ CardFormatter::~CardFormatter()
 void CardFormatter::FormatData( Rocket::Core::String& formatted_data,
                                 const Rocket::Core::StringList& raw_data )
 {
-  formatted_data = "<card id='" + raw_data[0] + "'>" + raw_data[0] + "</card>";
+  if( raw_data[0].Length() > 0 ) {
+    formatted_data = "<card id='" + raw_data[0] + "'>" + raw_data[0] + "</card>";
+  }
 }
 
 // CardCollection
@@ -550,7 +655,7 @@ std::string CardCollection::dump()
 {
   std::stringstream os;
 
-  os << "cards " << "[" << this->cards_.size() << "]" << std::endl;
+  os << "cards " << "[" << this->num_rows() << "]" << std::endl;
 
   os << std::endl;
   for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr )

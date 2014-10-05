@@ -51,7 +51,7 @@ option( NOM_BUILD_GRAPHICS_UNIT "Graphics core" true )
 
 # TODO: Shorten this build var
 # Dependencies: scale2x & hq2x (included in source tree)
-option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Include scale2x & hqx algorithms" false )
+option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Include scale2x & hqx algorithms" FALSE )
 
 # TODO: Break unit up further
 option( NOM_BUILD_SYSTEM_UNIT "System unit" true )

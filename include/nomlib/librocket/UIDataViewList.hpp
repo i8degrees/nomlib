@@ -40,16 +40,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Rocket {
 namespace Controls {
 
-// class DataSource;
+
 
 } // namespace Controls
 } // namespace Rocket
 
 namespace nom {
-
-// Forward declarations
-class CardsDataSource;
-class CardCollection;
 
 /// \see http://librocket.com/wiki/documentation/tutorials/Datagrid
 ///
@@ -72,49 +68,12 @@ class UIDataViewList: public nom::UIWidget
     bool set_column_title( int col, const std::string& name );
 
     /// \fixme
-    CardsDataSource* data_source() const;
-
-    /// \fixme
-    void set_data_source( CardsDataSource* model );
-
-    /// \fixme
-    CardCollection* database() const;
-
-    /// \fixme
-    void set_database( CardCollection* db );
-
-    int current_page() const;
-
-    int total_pages() const;
-
-    void set_total_pages( int num_pages );
-
-    int per_page() const;
-
     int selection() const;
 
+    /// \fixme
     void set_selection( int idx );
 
-    void set_current_page( int pg );
-
   private:
-    /// \brief Internal storage state initialization.
-    void _initialize();
-
-    /// \remarks This object pointer is not owned by this class and should not
-    /// be freed.
-    CardsDataSource* data_source_;
-    CardCollection* database_;
-
-    /// \brief The total number of available card pages.
-    int total_pages_;
-
-    /// \brief The number of cards shown per page.
-    int per_page_;
-
-    /// \brief The currently selected page.
-    int current_page_;
-
     /// \brief The currently selected card.
     ///
     /// \remarks This maps internally to the element's index position in

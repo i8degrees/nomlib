@@ -19,32 +19,24 @@
 
 #include "nomlib/tests/gui/librocket/CardsDataSource.hpp"
 
-/// \brief Disable NOM_ASSERT macros so that they do not interfere with tests
-/// that check for failure conditions; i.e.: libRocketDataGridTest
-/// ::DataSourceModelSanity.
-#if defined( NOM_ASSERT )
-  #undef NOM_ASSERT
-  #define NOM_ASSERT(expr)
-#endif // defined NOM_ASSERT
-
 using namespace Rocket::Core;
 
 namespace nom {
 
-void on_keydown( Rocket::Core::Event& ev, UIDataViewList* store )
+std::map<int,Card> player_hand;
+
+void on_keydown( Rocket::Core::Event& ev, UIDataViewList* store, std::shared_ptr<CardCollection> db, std::shared_ptr<CardsDataSource> model )
 {
   EXPECT_TRUE( store != nullptr );
-
-  int pg = store->current_page();
-  int num_pages = store->total_pages();
-
-  int per_page = store->per_page();
-  int selected_card = store->selection();
-
   EXPECT_TRUE( store->document() != nullptr );
-
-  CardsDataSource* model = store->data_source();
+  EXPECT_TRUE( db != nullptr );
   EXPECT_TRUE( model != nullptr );
+
+  int pg = model->page();
+  int num_pages = model->total_pages();
+
+  int per_page = model->per_page();
+  int selected_card = store->selection();
 
   if( ev == "keydown" )
   {
@@ -70,121 +62,124 @@ void on_keydown( Rocket::Core::Event& ev, UIDataViewList* store )
       ++selected_card;
     }
 
-    store->set_current_page(pg);
+    model->set_page(pg);
     store->set_selection(selected_card);
 
+    // Update left page indicator
     Element* page_left = store->document()->GetElementById("page-left");
-    NOM_ASSERT( page_left != nullptr );
+    // NOM_ASSERT( page_left != nullptr );
+    if( page_left ) {
+      page_left->SetClassNames("");
+
+      if( model->page() > 0 ) {
+        if( page_left ) {
+          page_left->SetClassNames("page-left");
+        }
+      }
+    } // end if page_left
+
+    // Update right page indicator
     Element* page_right = store->document()->GetElementById("page-right");
-    NOM_ASSERT( page_right != nullptr );
+    // NOM_ASSERT( page_right != nullptr );
+    if( page_right ) {
+      page_right->SetClassNames("");
 
-    page_left->SetClassNames("");
-    page_right->SetClassNames("");
-
-    // Handling logic visual page indicators
-    if( store->current_page() > 0 ) {
-      if( page_left ) {
-        page_left->SetClassNames("page-left");
+      if( model->page() >= 0 && (model->page() < model->total_pages() - 1) ) {
+        if( page_right ) {
+          page_right->SetClassNames("page-right");
+        }
       }
-    }
-
-    if( store->current_page() >= 0 && (store->current_page() < store->total_pages() - 1) ) {
-      if( page_right ) {
-        page_right->SetClassNames("page-right");
-      }
-    }
+    } // end if page_right
 
     // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "KEYDOWN event from", target->GetId().CString(), "value:", key );
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Pg:", store->current_page() );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Pg:", model->page() );
     NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Selection:", store->selection() );
   } // end if keydown
 
   EXPECT_TRUE( store->set_column_title(1, "CARDS P. " + std::to_string(pg+1) ) );
 
-  EXPECT_EQ( 11, model->num_rows() );
-  EXPECT_EQ( pg, store->current_page() );
+  EXPECT_TRUE( model->per_page() == model->GetNumRows("cards") );
+  EXPECT_EQ( 55, model->num_rows() );
+  EXPECT_EQ( pg, model->page() );
   EXPECT_EQ( selected_card, store->selection() );
 
 } // end func on_keydown
 
-void on_mouseup( Rocket::Core::Event& ev, UIDataViewList* store  )
+void on_mouseup( Rocket::Core::Event& ev, UIDataViewList* store, std::shared_ptr<CardCollection> db, std::shared_ptr<CardsDataSource> model )
 {
   nom::StringList row;
 
-  ASSERT_TRUE( store != nullptr );
+  EXPECT_TRUE( store != nullptr );
+  EXPECT_TRUE( db != nullptr );
+  EXPECT_TRUE( model != nullptr );
 
   int selection = 0;
   Rocket::Core::Element* target = ev.GetTargetElement();
 
-  CardsDataSource* model = store->data_source();
-  ASSERT_TRUE( model != nullptr );
-
-  CardCollection* db = store->database();
-  ASSERT_TRUE( db != nullptr );
-
   if( ev == "mouseup" )
   {
-    if( target->GetTagName() == "card" )
+    Rocket::Core::Input::KeyIdentifier button =
+      (Rocket::Core::Input::KeyIdentifier) ev.GetParameter<int>("button", 3);
+
+    if( target->GetTagName() == "card" && button == 0 )
     {
-      Card c = db->lookup_by_name( target->GetInnerRML().CString() );
+      Card c = model->lookup_by_name( target->GetInnerRML().CString() );
       selection = c.id();
       store->set_selection( selection );
 
       NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Card name:", target->GetInnerRML().CString() );
       NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Card ID:", store->selection() );
 
-      EXPECT_EQ( 11, model->num_rows() );
+      EXPECT_TRUE( model->per_page() == model->GetNumRows("cards") );
+      EXPECT_EQ( 55, model->num_rows() );
       EXPECT_EQ( selection, store->selection() );
 
-      if( target->IsClassSet("unavailable-card") )
+      Card card = db->lookup_by_id( selection );
+
+      if( c.num() > 0 )
       {
-        target->SetClassNames("available-card");
-      }
-      else
-      {
-        target->SetClassNames("unavailable-card");
-
-        // Card card = db->lookup_by_id( store->selection() );
-
-        // if( card.num() > 0 )
-        // {
-        //   card.set_num( card.num() - 1 );
-        // }
-
-        // model->insert_card( selection, card );
-
-        // target = store->document()->GetElementById( card.name().c_str() );
-        // NOM_ASSERT( target != nullptr );
-        // if( target )
-        // {
-        //   target->SetClassNames("unavailable-card");
-        // }
+        c.set_num( c.num() - 1 );
+        model->insert_card( selection, c );
+        player_hand[c.id()] = c;
       }
 
-      // TODO: The store's selection ID needs to be translated
-      // model->row( store->selection(), "name", row );
-      // model->row( store->selection(), "num", row );
-      // if( row.size() == 2 )
-      // {
-        // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Card name (from row):", row.at(0) );
-        // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Card number (from row):", row.at(1) );
-      // }
-    } // end if target
+    } // end if button == 0
+    else if( target->GetTagName() == "card" && button == 1 )
+    {
+      Card c = model->lookup_by_name( target->GetInnerRML().CString() );
+      selection = c.id();
+      // store->set_selection( selection );
+      Card card = db->lookup_by_id( selection );
+
+      // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Card name:", target->GetInnerRML().CString() );
+      // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Card ID:", store->selection() );
+
+      EXPECT_TRUE( model->per_page() == model->GetNumRows("cards") );
+      EXPECT_EQ( 55, model->num_rows() );
+      EXPECT_EQ( selection, store->selection() );
+
+      if( c.num() < card.num() )
+      {
+        c.set_num( c.num() + 1 );
+        model->insert_card( selection, c );
+        player_hand.erase( c.id() );
+      }
+
+    } // end if button == 1
 
   } // end if click
 } // end func on_mouseup
 
-void on_mousescroll( Rocket::Core::Event& ev, UIDataViewList* store )
+void on_mousescroll( Rocket::Core::Event& ev, UIDataViewList* store, std::shared_ptr<CardCollection> db, std::shared_ptr<CardsDataSource> model )
 {
-  ASSERT_TRUE( store != nullptr );
+  EXPECT_TRUE( store != nullptr );
+  EXPECT_TRUE( model != nullptr );
+  EXPECT_TRUE( db != nullptr );
 
-  int per_page = store->per_page();
+  int per_page = model->per_page();
   int selected_card = store->selection();
 
   // Element* target = ev.GetTargetElement();
-
-  CardsDataSource* model = store->data_source();
-  ASSERT_TRUE( model != nullptr );
 
   if( ev == "mousescroll" )
   {
@@ -203,15 +198,54 @@ void on_mousescroll( Rocket::Core::Event& ev, UIDataViewList* store )
     store->set_selection(selected_card);
 
     // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "WHEEL event from", target->GetId().CString(), "value:", wheel );
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Pg:", store->current_page() );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Pg:", model->page() );
     NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Selection:", store->selection() );
 
-    EXPECT_EQ( 11, model->num_rows() );
-    // EXPECT_EQ( pg, store->current_page() );
+    EXPECT_TRUE( model->per_page() == model->GetNumRows("cards") );
+    EXPECT_EQ( 55, model->num_rows() );
+    // EXPECT_EQ( pg, model->page() );
     EXPECT_EQ( selected_card, store->selection() );
 
   } // end if mousescroll
 } // end func on_mousescroll
+
+void on_rowupdate( Rocket::Core::Event& ev, UIDataViewList* store, std::shared_ptr<CardCollection> db, std::shared_ptr<CardsDataSource> model )
+{
+  nom::StringList row;
+
+  EXPECT_TRUE( store != nullptr );
+  EXPECT_TRUE( model != nullptr );
+  EXPECT_TRUE( db != nullptr );
+
+  int selection = 0;
+  Rocket::Core::Element* target = nullptr;
+
+  if( ev == "rowupdate" )
+  {
+    Card c = db->lookup_by_id( store->selection() );
+    selection = c.id();
+
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Selection:", selection );
+
+    EXPECT_TRUE( model->per_page() == model->GetNumRows("cards") );
+    EXPECT_EQ( 55, model->num_rows() );
+    EXPECT_EQ( selection, store->selection() );
+
+    target = store->document()->GetElementById( c.name().c_str() );
+    if( target )
+    {
+      if( player_hand[c.id()].id() == c.id() )
+      {
+        target->SetClassNames("unavailable-card");
+      }
+      else
+      {
+        target->SetClassNames("available-card");
+      }
+    }
+
+  } // end if ev == rowupdate
+} // end func on_rowupdate
 
 class libRocketDataGridTest: public nom::VisualUnitTest
 {
@@ -427,7 +461,17 @@ class libRocketDataGridTest: public nom::VisualUnitTest
 
   protected:
     nom::UIContext desktop;
+
+    /// \brief The back-end model used for the datagrid.
+    std::shared_ptr<CardsDataSource> model;
+
+    /// \brief Mock data source back-end
+    std::shared_ptr<CardCollection> db;
+
+    /// \brief Styling for the first column
     CardStatusFormatter card_status_formatter;
+
+    /// \brief Styling for the second column
     CardFormatter card_formatter;
 };
 
@@ -446,56 +490,56 @@ TEST_F( libRocketDataGridTest, DataSourceModel )
   cols.push_back( "name" );
   cols.push_back( "num" );
 
-  CardsDataSource* store = new CardsDataSource("cards_db");
+  this->model.reset( new CardsDataSource("cards_db") );
 
   // Baseline sanity tests
 
-  ASSERT_TRUE( store != nullptr );
+  EXPECT_TRUE( this->model != nullptr );
 
-  EXPECT_EQ( "cards", store->table_name() )
+  EXPECT_EQ( "cards", this->model->table_name() )
   << "Table name string should be the default initialized value.";
 
-  EXPECT_EQ( true, store->empty() )
+  EXPECT_EQ( true, this->model->empty() )
   << "Resulting storage size should be empty (zero).";
 
-  EXPECT_EQ( nom::npos, store->erase_card( 0 ) )
+  EXPECT_EQ( nom::npos, this->model->erase_card( 0 ) )
   << "Element insertion position should be invalid.";
 
-  EXPECT_EQ( nom::npos, store->erase_cards( 1, 99 ) )
+  EXPECT_EQ( nom::npos, this->model->erase_cards( 1, 99 ) )
   << "Element insertion position should be invalid.";
-  // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, store->dump() );
+  // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, this->model->dump() );
 
   // Creation tests
 
   CardList cards;
   cards.push_back( Card( 0, "Geezard", 999 ) );
-  EXPECT_EQ( 1, store->append_cards( cards ) )
+  EXPECT_EQ( 1, this->model->append_cards( cards ) )
   << "Resulting storage size should be one item.";
 
-  EXPECT_EQ( 2, store->append_card( Card( 89, "testme", 22 ) ) )
+  EXPECT_EQ( 2, this->model->append_card( Card( 89, "testme", 22 ) ) )
   << "Resulting storage size should be two items.";
 
-  EXPECT_EQ( nom::npos, store->insert_card( 11, Card( 0, "Geezard", 99 ) ) )
+  EXPECT_EQ( nom::npos, this->model->insert_card( 11, Card( 0, "Geezard", 99 ) ) )
   << "Element insertion position should be invalid.";
 
   // Overwrite 'testme' card
-  EXPECT_EQ( 2, store->insert_card( 1, Card( 1, "Fungar", 777 ) ) )
+  EXPECT_EQ( 2, this->model->insert_card( 1, Card( 1, "Fungar", 777 ) ) )
   << "Resulting storage size should remain two.";
 
-  EXPECT_EQ( false, store->empty() )
+  EXPECT_EQ( false, this->model->empty() )
   << "Storage should not be empty.";
 
-  // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, store->dump() );
+  // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, this->model->dump() );
 
   // Destruction tests
 
   // Destroy 'Fungar' card
-  EXPECT_EQ( 1, store->erase_card( 1 ) )
+  EXPECT_EQ( 1, this->model->erase_card( 1 ) )
   << "Resulting storage size should be one.";
 
   // ...and verify the results
   row.clear();
-  store->row(row, 0, cols );
+  this->model->row(row, 0, cols );
   EXPECT_EQ( "Geezard", row.at(0) );
   EXPECT_EQ( "999", row.at(1) );
 
@@ -506,42 +550,38 @@ TEST_F( libRocketDataGridTest, DataSourceModel )
 
   // Overwrite all but the first card in the model, shifting said first card to
   // the end of the container.
-  EXPECT_EQ( 4, store->insert_cards( 0, cards ) )
+  EXPECT_EQ( 4, this->model->insert_cards( 0, cards ) )
   << "Resulting storage size should be four items.";
 
   // Ensure that the first card is at the end of the container
   row.clear();
-  store->row( row, store->num_rows() - 1, cols );
+  this->model->row( row, this->model->num_rows() - 1, cols );
   EXPECT_EQ( "Geezard", row.at(0) );
   EXPECT_EQ( "999", row.at(1) );
-  // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, store->dump() );
+  // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, this->model->dump() );
 
   // Destroy all but 'Geezard' card
-  EXPECT_EQ( 1, store->erase_cards( 0, 3 ) )
+  EXPECT_EQ( 1, this->model->erase_cards( 0, 3 ) )
   << "The Geezard card should be the only item remaining.";
 
   // ...and verify the results
   row.clear();
-  store->row(row, 0, cols );
+  this->model->row(row, 0, cols );
   EXPECT_EQ( "Geezard", row.at(0) );
   EXPECT_EQ( "999", row.at(1) );
 
-  store->erase_cards();
-  EXPECT_EQ( true, store->empty() )
+  this->model->erase_cards();
+  EXPECT_EQ( true, this->model->empty() )
   << "Resulting storage size should be emptied (zero).";
 
   row.clear();
-  store->erase_cards();
+  this->model->erase_cards();
 
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, store->dump() );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, this->model->dump() );
 }
 
-/// \todo Add unit test for rendering two UIDataViewList objects; I'm curious
-/// about performance offsets, etc.
 TEST_F( libRocketDataGridTest, UIDataViewList )
 {
-  CardsDataSource* model = nullptr;
-
   // As per the positioning units used for nom::DataViewListTest (ex2) in
   // tests/src/gui/DataViewListTest.cpp.
   Point2i pos1( 25, 25 );
@@ -551,32 +591,24 @@ TEST_F( libRocketDataGridTest, UIDataViewList )
   EXPECT_EQ( true, store1.set_desktop( this->desktop.context() ) );
   EXPECT_EQ( true, store1.set_document_file( doc_file1 ) );
 
-  store1.set_data_source( new CardsDataSource("cards_db") );
-  store1.set_database( new CardCollection() );
-
-  CardCollection* db = store1.database();
-  NOM_ASSERT( db != nullptr );
+  this->model.reset( new CardsDataSource("cards_db") );
+  this->db.reset( new CardCollection() );
+  EXPECT_TRUE( model != nullptr );
+  EXPECT_TRUE( db != nullptr );
 
   EXPECT_EQ( true, db->load_db() )
   << "Could not initialize nom::CardsDataSource data interface.";
 
-  // Complete collection of cards as loaded from the CardCollection interface
+  CardList deck;
   CardList cards = db->cards();
 
-  // Initial cards population -- page 0
-  CardList pop;
-
-  for( auto itr = cards.begin(); itr != cards.begin() + store1.per_page(); ++itr )
+  for( auto itr = cards.begin(); itr != cards.end(); ++itr )
   {
-    pop.push_back( *itr );
+    deck.push_back( *itr );
   }
 
-  model = store1.data_source();
-  NOM_ASSERT( model != nullptr );
-  if( model )
-  {
-    model->append_cards( pop );
-  }
+  // Deck of cards for the data source
+  model->append_cards( deck );
 
   if( store1.initialize() == false )
   {
@@ -584,7 +616,7 @@ TEST_F( libRocketDataGridTest, UIDataViewList )
     << this->test_set() << " object should not be invalid; is the context and document file valid?";
   }
 
-  EXPECT_TRUE( store1.set_column_title(1, "CARDS P. " + std::to_string(store1.current_page() + 1) ) );
+  EXPECT_TRUE( store1.set_column_title(1, "CARDS P. " + std::to_string(model->page() + 1) ) );
 
   EXPECT_EQ( true, store1.visible() );
   EXPECT_EQ( pos1, store1.position() );
@@ -594,22 +626,26 @@ TEST_F( libRocketDataGridTest, UIDataViewList )
   EXPECT_EQ( "cards", model->table_name() );
 
   EXPECT_EQ( 0, store1.selection() );
-  EXPECT_EQ( 11, store1.per_page() );
-  EXPECT_EQ( 0, store1.current_page() );
+  EXPECT_EQ( 11, model->per_page() );
+  EXPECT_EQ( 0, model->page() );
 
   EXPECT_EQ( "CARDS P. 1", store1.column_title(1) );
   EXPECT_EQ( "NUM.", store1.column_title(2) );
 
   store1.register_event_listener( store1.document(), "keydown", new nom::UIEventListener( [&]
-    ( Rocket::Core::Event& ev ) { on_keydown( ev, &store1 ); }
+    ( Rocket::Core::Event& ev ) { on_keydown( ev, &store1, db, model ); }
   ));
 
   store1.register_event_listener( store1.document(), "mouseup", new nom::UIEventListener( [&]
-    ( Rocket::Core::Event& ev ) { on_mouseup( ev, &store1 ); }
+    ( Rocket::Core::Event& ev ) { on_mouseup( ev, &store1, db, model ); }
   ));
 
   store1.register_event_listener( store1.document(), "mousescroll", new nom::UIEventListener( [&]
-    ( Rocket::Core::Event& ev ) { on_mousescroll( ev, &store1 ); }
+    ( Rocket::Core::Event& ev ) { on_mousescroll( ev, &store1, db, model ); }
+  ));
+
+  store1.register_event_listener( store1.document(), "rowupdate", new nom::UIEventListener( [&]
+    ( Rocket::Core::Event& ev ) { on_rowupdate( ev, &store1, db, model ); }
   ));
 
   // NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, store1.dump() );

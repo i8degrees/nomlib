@@ -25,6 +25,10 @@
         text-align: center;
         padding-top: 2%;
         padding-bottom: 2%;
+
+        /* Vertical scrolling */
+        /*height: 100%;*/
+        /*overflow: auto;*/
       }
 
     </style>

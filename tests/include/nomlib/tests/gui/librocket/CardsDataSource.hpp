@@ -79,6 +79,8 @@ typedef std::vector<Card> CardList;
 /// testing environment.
 ///
 /// \note This interface only supports using one table per data source.
+///
+/// \todo Rename to CardsPageDataSource..?
 class CardsDataSource: public Rocket::Controls::DataSource
 {
   public:
@@ -94,7 +96,17 @@ class CardsDataSource: public Rocket::Controls::DataSource
     /// \note Implements Rocket::Controls::DataSource::GetRow.
     virtual void GetRow( Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index, const Rocket::Core::StringList& columns );
 
+    /// \brief Get the total number of rows for a page.
+    ///
+    /// \returns An integer value of the number of rows per table page.
+    ///
+    /// \note The number of rows returned influence the minimal size (height)
+    /// of the the datagrid, even when RCSS properties such as 'max-height',
+    /// 'height', etc. are being applied.
+    ///
     /// \note Implements Rocket::Controls::DataSource::GetNumRows.
+    ///
+    /// \see ::num_rows, ::per_page.
     virtual int GetNumRows( const Rocket::Core::String& table );
 
     const std::string& table_name() const;
@@ -102,10 +114,8 @@ class CardsDataSource: public Rocket::Controls::DataSource
     /// \brief Set the table name to use on the data source.
     void set_table_name( const std::string& name );
 
-    /// \brief Get the total number of rows.
-    ///
-    /// \remarks Convenience alias for ::GetNumRows.
-    int num_rows();
+    /// \brief Get the total number of cards (rows) in storage.
+    nom::size_type num_rows();
 
     /// \brief Fetches the contents of a row of a table within the data source.
     ///
@@ -162,12 +172,55 @@ class CardsDataSource: public Rocket::Controls::DataSource
     /// \brief Rudimentary debugging aid.
     std::string dump();
 
+    /// \brief Lookup a card by name.
+    ///
+    /// \param name The card's name.
+    const Card& lookup_by_name( const std::string& name ) const;
+
+    /// \brief Lookup a card by ID.
+    ///
+    /// \param id The card's identifier.
+    const Card& lookup_by_id( int id ) const;
+
+    int per_page() const;
+    int total_pages() const;
+    int page() const;
+
+    void set_per_page( int pg );
+    void set_total_pages( int num_pages );
+
+    /// \brief Set the current page in the table.
+    ///
+    /// \remarks This method call is potentially expensive, as it calls for a
+    /// refresh on all row indexes within the table.
+    void set_page( int page );
+
+    /// \brief Recalculate the total number of pages.
+    ///
+    /// \remarks The total number of pages is calculated by dividing the total
+    /// number of rows (in storage, not per page) by the number of cards per
+    /// page.
+    ///
+    /// \note This method should ordinarily not need to be called.
+    ///
+    /// \see ::num_rows, ::per_page
+    void update();
+
   private:
     /// \brief The name of the table of the data source.
     std::string table_name_;
 
     /// \brief The internal storage container for the data source.
     std::vector<Card> db_;
+
+    /// \brief The number of cards shown per page.
+    int per_page_;
+
+    /// \brief The total number of available card pages.
+    int total_pages_;
+
+    /// \brief The currently selected page.
+    int page_;
 };
 
 /// \remarks This interface should **not** be used outside of unit tests; for

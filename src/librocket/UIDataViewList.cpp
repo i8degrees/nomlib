@@ -28,27 +28,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/librocket/UIDataViewList.hpp"
 
-// Forward declarations (third-party)
-// #include <Rocket/Controls/DataSource.h>
-
 // Private headers (third-party)
 #include <Rocket/Core/ElementUtilities.h>
-
-// Forward declarations
-#include "nomlib/tests/gui/librocket/CardsDataSource.hpp"
 
 using namespace Rocket::Core;
 
 namespace nom {
 
 UIDataViewList::UIDataViewList( const Point2i& pos, const Size2i& dims ) :
-  UIWidget( pos, dims ),
-  data_source_( nullptr ),
-  database_( nullptr )
+  UIWidget( pos, dims )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  this->_initialize();
+  this->set_selection( 0 );
 }
 
 UIDataViewList::~UIDataViewList()
@@ -58,8 +50,6 @@ UIDataViewList::~UIDataViewList()
 
 bool UIDataViewList::initialize()
 {
-  this->_initialize();
-
   NOM_ASSERT( this->valid() != false );
 
   if( this->valid() == true )
@@ -126,41 +116,6 @@ bool UIDataViewList::set_column_title( int col, const std::string& name )
   return false;
 }
 
-CardsDataSource* UIDataViewList::data_source() const
-{
-  return this->data_source_;
-}
-
-void UIDataViewList::set_data_source( CardsDataSource* model )
-{
-  this->data_source_ = model;
-}
-
-CardCollection* UIDataViewList::database() const
-{
-  return this->database_;
-}
-
-void UIDataViewList::set_database( CardCollection* db )
-{
-  this->database_ = db;
-}
-
-int UIDataViewList::total_pages() const
-{
-  return this->total_pages_;
-}
-
-void UIDataViewList::set_total_pages( int num_pages )
-{
-  this->total_pages_ = num_pages;
-}
-
-int UIDataViewList::per_page() const
-{
-  return this->per_page_;
-}
-
 // current_page_ + 1 * id(selection_) - 1 = 5*11-1
 int UIDataViewList::selection() const
 {
@@ -170,50 +125,6 @@ int UIDataViewList::selection() const
 void UIDataViewList::set_selection( int idx )
 {
   this->selection_ = idx;
-}
-
-int UIDataViewList::current_page() const
-{
-  return this->current_page_;
-}
-
-void UIDataViewList::set_current_page( int pg )
-{
-  CardsDataSource* model = this->data_source();
-  CardCollection* db = this->database();
-
-  NOM_ASSERT( model != nullptr && db != nullptr);
-  if( model && db )
-  {
-    CardList cards = db->cards();
-
-    int start_id = this->per_page() * pg;
-    int end_id = start_id + this->per_page();
-
-    // Sanity check
-    if( start_id > db->num_rows() ) return;
-
-    int i = 0;
-    for( auto idx = start_id; idx != end_id; ++idx )
-    {
-      model->insert_card( i, cards[idx] );
-      ++i;
-    }
-
-    this->current_page_ = pg;
-  }
-}
-
-// Private scope
-
-void UIDataViewList::_initialize()
-{
-  this->per_page_ = 11;
-  // this->total_pages = db.size() / per_page();
-  // this->total_pages = 10;
-  this->set_total_pages( 5 );
-  this->current_page_ = 0;
-  this->set_selection( 0 );
 }
 
 } // namespace nom

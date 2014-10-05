@@ -34,8 +34,7 @@
       div#content
       {
         /*padding-top: 2%;*/
-        padding-bottom: 2%;
-        /*overflow: hidden;*/
+        /*padding-bottom: 2%;*/
       }
 
       datagridbody
@@ -74,6 +73,10 @@
         sprite-decorator: sprite-sheet;
         sprite-sheet-src: "menu_elements.json";
         sprite-sheet-image-src: "menu_elements.png";
+
+        /* Account for the datagridrow text font size (height) for vertical
+        alignment */
+        margin-top: -14px;
       }
 
       /* Default state */

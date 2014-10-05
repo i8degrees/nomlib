@@ -210,7 +210,9 @@ if( NOM_BUILD_GUI_LIBROCKET_DATAGRID_TESTS )
                     libRocketDataGridTest
                     ${NOM_TESTS_COMMON_SOURCE}
                     ${NOM_TESTS_VTEST_SOURCE}
-                    ${NOM_TESTS_SOURCE_DIR}/gui/librocket/CardsDataSource.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/gui/librocket/Card.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/gui/librocket/CardCollection.cpp
+                    ${NOM_TESTS_SOURCE_DIR}/gui/librocket/CardsPageDataSource.cpp
                     ${NOM_TESTS_SOURCE_DIR}/gui/librocket/libRocketDataGridTest.cpp
                   )
 

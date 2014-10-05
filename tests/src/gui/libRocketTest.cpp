@@ -164,6 +164,8 @@ class libRocketTest: public nom::VisualUnitTest
 
       // Try to force the use of the OpenGL rendering driver; this is required
       // as per the SDL2 implementation for libRocket.
+      //
+      // TODO: return false if we do not find a OpenGL driver
       int nRD = SDL_GetNumRenderDrivers();
       for( auto i = 0; i < nRD; ++i )
       {

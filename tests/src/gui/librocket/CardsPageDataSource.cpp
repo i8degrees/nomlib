@@ -26,7 +26,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/gui/librocket/CardsDataSource.hpp"
+#include "nomlib/tests/gui/librocket/CardsPageDataSource.hpp"
 
 /// \brief Disable NOM_ASSERT macros so that they do not interfere with tests
 /// that check for failure conditions; i.e.: libRocketDataGridTest
@@ -38,61 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-// Card
-
-const Card Card::null = Card();
-
-Card::Card() :
-  id_(-1),
-  name_("\0"),
-  num_(0)
-{
-}
-
-Card::~Card()
-{
-}
-
-Card::Card( int id, const std::string& name, int num_cards )
-{
-  this->set_id(id);
-  this->set_name(name);
-  this->set_num( num_cards );
-}
-
-int Card::id() const
-{
-  return this->id_;
-}
-
-const std::string& Card::name() const
-{
-  return this->name_;
-}
-
-int Card::num() const
-{
-  return this->num_;
-}
-
-void Card::set_id(int id)
-{
-  this->id_ = id;
-}
-
-void Card::set_name(const std::string& name)
-{
-  this->name_ = name;
-}
-
-void Card::set_num(int num)
-{
-  this->num_ = num;
-}
-
-// CardsDataSource
-
-CardsDataSource::CardsDataSource( const std::string& source,
+CardsPageDataSource::CardsPageDataSource( const std::string& source,
                                   const std::string& table_name ) :
   Rocket::Controls::DataSource( source.c_str() )
 {
@@ -104,12 +50,12 @@ CardsDataSource::CardsDataSource( const std::string& source,
   this->set_table_name(table_name);
 }
 
-CardsDataSource::~CardsDataSource()
+CardsPageDataSource::~CardsPageDataSource()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-void CardsDataSource::GetRow( Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index, const Rocket::Core::StringList& columns )
+void CardsPageDataSource::GetRow( Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index, const Rocket::Core::StringList& columns )
 {
   // The starting ID position to begin reading from the storage container
   int row_offset = row_index + ( this->per_page() * this->page() );
@@ -146,7 +92,7 @@ void CardsDataSource::GetRow( Rocket::Core::StringList& row, const Rocket::Core:
   }
 } // end GetRow func
 
-int CardsDataSource::GetNumRows( const Rocket::Core::String& table )
+int CardsPageDataSource::GetNumRows( const Rocket::Core::String& table )
 {
   if( table == this->table_name().c_str() )
   {
@@ -160,22 +106,22 @@ int CardsDataSource::GetNumRows( const Rocket::Core::String& table )
   return -1;
 }
 
-const std::string& CardsDataSource::table_name() const
+const std::string& CardsPageDataSource::table_name() const
 {
   return this->table_name_;
 }
 
-void CardsDataSource::set_table_name( const std::string& name )
+void CardsPageDataSource::set_table_name( const std::string& name )
 {
   this->table_name_ = name;
 }
 
-nom::size_type CardsDataSource::num_rows()
+nom::size_type CardsPageDataSource::num_rows()
 {
   return this->db_.size();
 }
 
-void CardsDataSource::row(  nom::StringList& row,
+void CardsPageDataSource::row(  nom::StringList& row,
                             // const std::string& table,
                             int row_index,
                             const StringList& columns )
@@ -197,7 +143,7 @@ void CardsDataSource::row(  nom::StringList& row,
   }
 }
 
-int CardsDataSource::insert_card( int pos, const Card& card )
+int CardsPageDataSource::insert_card( int pos, const Card& card )
 {
   int rows = this->num_rows();
 
@@ -224,7 +170,7 @@ int CardsDataSource::insert_card( int pos, const Card& card )
   return nom::npos;
 }
 
-int CardsDataSource::insert_cards( int pos, const CardList& cards )
+int CardsPageDataSource::insert_cards( int pos, const CardList& cards )
 {
   int rows = this->num_rows();
 
@@ -257,7 +203,7 @@ int CardsDataSource::insert_cards( int pos, const CardList& cards )
   return nom::npos;
 }
 
-int CardsDataSource::append_card( const Card& card )
+int CardsPageDataSource::append_card( const Card& card )
 {
   int rows = this->num_rows();
 
@@ -276,7 +222,7 @@ int CardsDataSource::append_card( const Card& card )
   return this->num_rows();
 }
 
-int CardsDataSource::append_cards( const CardList& cards )
+int CardsPageDataSource::append_cards( const CardList& cards )
 {
   int rows = this->num_rows();
 
@@ -298,12 +244,12 @@ int CardsDataSource::append_cards( const CardList& cards )
   return this->num_rows();
 }
 
-bool CardsDataSource::empty() const
+bool CardsPageDataSource::empty() const
 {
   return this->db_.empty();
 }
 
-void CardsDataSource::erase_cards()
+void CardsPageDataSource::erase_cards()
 {
   this->db_.clear();
 
@@ -313,7 +259,7 @@ void CardsDataSource::erase_cards()
   this->update();
 }
 
-int CardsDataSource::erase_card( int pos )
+int CardsPageDataSource::erase_card( int pos )
 {
   int rows = this->num_rows();
 
@@ -340,7 +286,7 @@ int CardsDataSource::erase_card( int pos )
   return nom::npos; // -1
 }
 
-int CardsDataSource::erase_cards( int begin_pos, int end_pos )
+int CardsPageDataSource::erase_cards( int begin_pos, int end_pos )
 {
   int rows = this->num_rows();
 
@@ -368,7 +314,7 @@ int CardsDataSource::erase_cards( int begin_pos, int end_pos )
   return nom::npos; // -1
 }
 
-std::string CardsDataSource::dump()
+std::string CardsPageDataSource::dump()
 {
   std::stringstream os;
 
@@ -395,7 +341,7 @@ std::string CardsDataSource::dump()
   return os.str();
 }
 
-const Card& CardsDataSource::lookup_by_name( const std::string& name ) const
+const Card& CardsPageDataSource::lookup_by_name( const std::string& name ) const
 {
   for( auto itr = this->db_.begin(); itr != this->db_.end(); ++itr )
   {
@@ -410,7 +356,7 @@ const Card& CardsDataSource::lookup_by_name( const std::string& name ) const
   return Card::null;
 }
 
-const Card& CardsDataSource::lookup_by_id( int id ) const
+const Card& CardsPageDataSource::lookup_by_id( int id ) const
 {
   for( auto itr = this->db_.begin(); itr != this->db_.end(); ++itr )
   {
@@ -425,22 +371,22 @@ const Card& CardsDataSource::lookup_by_id( int id ) const
   return Card::null;
 }
 
-int CardsDataSource::per_page() const
+int CardsPageDataSource::per_page() const
 {
   return this->per_page_;
 }
 
-int CardsDataSource::total_pages() const
+int CardsPageDataSource::total_pages() const
 {
   return this->total_pages_;
 }
 
-int CardsDataSource::page() const
+int CardsPageDataSource::page() const
 {
   return this->page_;
 }
 
-void CardsDataSource::set_per_page( int pg )
+void CardsPageDataSource::set_per_page( int pg )
 {
   this->per_page_ = pg;
 
@@ -448,12 +394,12 @@ void CardsDataSource::set_per_page( int pg )
   this->update();
 }
 
-void CardsDataSource::set_total_pages( int num_pages )
+void CardsPageDataSource::set_total_pages( int num_pages )
 {
   this->total_pages_ = num_pages;
 }
 
-void CardsDataSource::set_page( int page )
+void CardsPageDataSource::set_page( int page )
 {
   this->page_ = page;
 
@@ -463,7 +409,7 @@ void CardsDataSource::set_page( int page )
   this->update();
 }
 
-void CardsDataSource::update()
+void CardsPageDataSource::update()
 {
   this->set_total_pages( this->num_rows() / this->per_page() );
 }
@@ -527,152 +473,6 @@ void CardFormatter::FormatData( Rocket::Core::String& formatted_data,
   if( raw_data[0].Length() > 0 ) {
     formatted_data = "<card id='" + raw_data[0] + "'>" + raw_data[0] + "</card>";
   }
-}
-
-// CardCollection
-
-CardCollection::CardCollection()
-{
-  // ...
-}
-
-CardCollection::~CardCollection()
-{
-  // ...
-}
-
-nom::size_type CardCollection::num_rows() const
-{
-  return this->cards_.size();
-}
-
-CardList CardCollection::cards() const
-{
-  return this->cards_;
-}
-
-bool CardCollection::load_db()
-{
-  // Pg 0 -- initial population
-  this->cards_.push_back(Card( 0,"Geezard",1));
-  this->cards_.push_back(Card( 1,"Fungar",1));
-  this->cards_.push_back(Card( 2,"Bite Bug",0));
-  this->cards_.push_back(Card( 3,"Red Bat",4));
-  this->cards_.push_back(Card( 4,"Blobra",2));
-  this->cards_.push_back(Card( 5,"Gayla",1));
-  this->cards_.push_back(Card( 6,"Gesper",3));
-  this->cards_.push_back(Card( 7,"Fastitocalon-F",0));
-  this->cards_.push_back(Card( 8,"Blood Soul",1));
-  this->cards_.push_back(Card( 9,"Caterchipillar",2));
-  this->cards_.push_back(Card( 10,"Cockatrice",3));
-
-  // pg 1
-  this->cards_.push_back(Card( 11,"Grat",1));
-  this->cards_.push_back(Card( 12,"Buel",1));
-  this->cards_.push_back(Card( 13,"Mesmerize",0));
-  this->cards_.push_back(Card( 14,"Glacial Eye",1));
-  this->cards_.push_back(Card( 15,"Belhelmel",1));
-  this->cards_.push_back(Card( 16,"Thrustaevis",1));
-  this->cards_.push_back(Card( 17,"Anacondaur",1));
-  this->cards_.push_back(Card( 18,"Creeps",0));
-  this->cards_.push_back(Card( 19,"Grendel",1));
-  this->cards_.push_back(Card( 20,"Jelleye",1));
-  this->cards_.push_back(Card( 21,"Grand Mantis",3));
-
-  // pg 2
-  this->cards_.push_back(Card( 22,"Forbidden",1));
-  this->cards_.push_back(Card( 23,"Armadodo",1));
-  this->cards_.push_back(Card( 24,"TriFace",1));
-  this->cards_.push_back(Card( 25,"Fastitocalon",0));
-  this->cards_.push_back(Card( 26,"Snow Lion",1));
-  this->cards_.push_back(Card( 27,"Ochu",1));
-  this->cards_.push_back(Card( 28,"SAM08G",1));
-  this->cards_.push_back(Card( 29,"Death Claw",1));
-  this->cards_.push_back(Card( 30,"Cactaur",0));
-  this->cards_.push_back(Card( 31,"Tonberry",1));
-  this->cards_.push_back(Card( 32,"Abyss Worm",1));
-
-  // pg 3
-  this->cards_.push_back(Card( 33,"Turtapod",1));
-  this->cards_.push_back(Card( 34,"Vysage",1));
-  this->cards_.push_back(Card( 35,"T-Rexaur",1));
-  this->cards_.push_back(Card( 36,"Bomb",1));
-  this->cards_.push_back(Card( 37,"Blitz",1));
-  this->cards_.push_back(Card( 38,"Wendigo",1));
-  this->cards_.push_back(Card( 39,"Torama",1));
-  this->cards_.push_back(Card( 40,"Imp",1));
-  this->cards_.push_back(Card( 41,"Blue Dragon",1));
-  this->cards_.push_back(Card( 42,"Adamantiose",1));
-  this->cards_.push_back(Card( 43,"Hexadragon",1));
-
-  // pg 4
-  this->cards_.push_back(Card( 44,"Iron Giant",0));
-  this->cards_.push_back(Card( 45,"Behemoth",0));
-  this->cards_.push_back(Card( 46,"Chimera",0));
-  this->cards_.push_back(Card( 47,"PuPu",1));
-  this->cards_.push_back(Card( 48,"Elastoid",0));
-  this->cards_.push_back(Card( 49,"GIM47N",0));
-  this->cards_.push_back(Card( 50,"Malboro",0));
-  this->cards_.push_back(Card( 51,"Ruby Dragon",0));
-  this->cards_.push_back(Card( 52,"Elnoyle",0));
-  this->cards_.push_back(Card( 53,"Tonberry King",0));
-  this->cards_.push_back(Card( 54,"Wedge, Biggs",0));
-
-  return true;
-}
-
-const Card& CardCollection::lookup_by_name( const std::string& name ) const
-{
-  for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr )
-  {
-    if( (*itr).name() == name )
-    {
-      // Successful match
-      return *itr;
-    }
-  }
-
-  // No match
-  return Card::null;
-}
-
-const Card& CardCollection::lookup_by_id( int id ) const
-{
-  for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr )
-  {
-    if( (*itr).id() == id )
-    {
-      // Successful match
-      return *itr;
-    }
-  }
-
-  // No match
-  return Card::null;
-}
-
-std::string CardCollection::dump()
-{
-  std::stringstream os;
-
-  os << "cards " << "[" << this->num_rows() << "]" << std::endl;
-
-  os << std::endl;
-  for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr )
-  {
-    os
-    // ID && card name
-    << (*itr).id()
-    << " "
-    << (*itr).name()
-
-    // Number of cards
-    << "\t"
-    << (*itr).num()
-    << std::endl;
-  }
-
-  return os.str();
 }
 
 } // namespace nom

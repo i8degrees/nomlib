@@ -26,48 +26,20 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_LIBROCKET_CARDS_MENU_MODEL_HPP
-#define NOMLIB_LIBROCKET_CARDS_MENU_MODEL_HPP
+#ifndef NOMLIB_LIBROCKET_TESTS_CARDS_PAGE_DATA_SOURCE_HPP
+#define NOMLIB_LIBROCKET_TESTS_CARDS_PAGE_DATA_SOURCE_HPP
 
 #include <Rocket/Core.h>
 #include <Rocket/Controls.h>
 #include <Rocket/Controls/DataSource.h>
 
 #include "nomlib/config.hpp"
+#include "nomlib/tests/gui/librocket/Card.hpp"
+#include "nomlib/tests/gui/librocket/CardCollection.hpp"
 
 using namespace Rocket::Core;
 
 namespace nom {
-
-/// \brief A mock card model
-///
-/// \see TTcards::Card, TTcards::CardCollection
-class Card
-{
-  public:
-    static const Card null;
-
-    /// \brief Default constructor; initialize the object to an invalid state.
-    Card();
-    ~Card();
-
-    Card( int id, const std::string& name, int num_cards );
-
-    int id() const;
-    const std::string& name() const;
-    int num() const;
-
-    void set_id(int id);
-    void set_name(const std::string& name);
-    void set_num(int num);
-
-  private:
-    int id_;
-    std::string name_;
-    int num_;
-};
-
-typedef std::vector<Card> CardList;
 
 /// \brief Mock model of the CardsMenu player's hand selection widget in TTcards
 ///
@@ -79,19 +51,17 @@ typedef std::vector<Card> CardList;
 /// testing environment.
 ///
 /// \note This interface only supports using one table per data source.
-///
-/// \todo Rename to CardsPageDataSource..?
-class CardsDataSource: public Rocket::Controls::DataSource
+class CardsPageDataSource: public Rocket::Controls::DataSource
 {
   public:
-    CardsDataSource(  const std::string& source,
-                      const std::string& table_name = "cards" );
+    CardsPageDataSource(  const std::string& source,
+                          const std::string& table_name = "cards" );
 
     /// \brief Destructor.
     ///
     /// \remarks libRocket handles the deletion of the DataSource object
     /// instance for us.
-    virtual ~CardsDataSource();
+    virtual ~CardsPageDataSource();
 
     /// \note Implements Rocket::Controls::DataSource::GetRow.
     virtual void GetRow( Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index, const Rocket::Core::StringList& columns );
@@ -265,38 +235,6 @@ class CardFormatter: public Rocket::Controls::DataFormatter
 
     void FormatData(  Rocket::Core::String& formatted_data,
                       const Rocket::Core::StringList& raw_data );
-};
-
-/// \remarks This interface should **not** be used outside of unit tests; for
-/// starters, assertion macros are disabled for running under this particular
-/// testing environment.
-class CardCollection
-{
-  public:
-    CardCollection();
-    virtual ~CardCollection();
-
-    CardList cards() const;
-
-    bool load_db();
-
-    nom::size_type num_rows() const;
-
-    /// \brief Lookup a card ID by name.
-    ///
-    /// \param name The card's name.
-    const Card& lookup_by_name( const std::string& name ) const;
-
-    /// \brief Lookup a card name by ID.
-    ///
-    /// \param id The card's identifier.
-    const Card& lookup_by_id( int id ) const;
-
-    /// \brief Rudimentary debugging aid.
-    std::string dump();
-
-  private:
-    std::vector<Card> cards_;
 };
 
 } // namespace nom

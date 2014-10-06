@@ -131,6 +131,9 @@ class VisualUnitTest: public UnitTest
     /// \brief Get the visibility state of the FPS counter.
     bool fps( void ) const;
 
+    /// \brief Get the window flags used.
+    uint32 window_flags() const;
+
     /// \brief The resolution (width and height, in pixels) used for creating
     /// a rendering window for the test.
     const Size2i& resolution( void ) const;
@@ -154,6 +157,15 @@ class VisualUnitTest: public UnitTest
     ///
     /// \see ::SetUp.
     RenderWindow& render_window( void );
+
+    /// \brief Set the default window flags.
+    ///
+    /// \remarks The window flags are applied to the rendering window that is
+    /// created during default initialization (when ::init_rendering is not
+    /// overridden). This implies that you must make a call to this method
+    /// before ::SetUp is called. Typically, this means in your derived class's
+    /// constructor.
+    void set_window_flags( uint32 flags );
 
     /// \brief Toggle the visibility state of the FPS counter.
     void show_fps( bool state );
@@ -193,6 +205,10 @@ class VisualUnitTest: public UnitTest
 
     // void save_screenshot( const std::string& file_path );
 
+    // TODO: VisualUnitTest::event_callback_type default_event_callback();
+    VisualUnitTest::update_callback_type default_update_callback();
+    VisualUnitTest::render_callback_type default_render_callback();
+
     /// \returns The number of registered event callbacks (after insertion).
     int append_event_callback( const std::function<void( Event )>& func );
 
@@ -202,7 +218,40 @@ class VisualUnitTest: public UnitTest
     /// \returns The number of registered event callbacks (after insertion).
     int append_render_callback( const std::function<void( const RenderWindow& )>& func );
 
+    /// \brief Destroy all of the registered event callbacks in storage.
+    ///
+    /// \remarks The default callback(s) for the event logic inside the loop
+    /// is destroyed -- be sure not to forget to take care of that...
+    ///
+    /// \note This method should *not* be called during execution in the main
+    /// loop.
+    void clear_event_callbacks();
+
+    /// \brief Destroy all of the registered update callbacks in storage.
+    ///
+    /// \remarks The default callback(s) for the update logic inside the loop
+    /// is destroyed -- be sure not to forget to take care of that...
+    ///
+    /// \note This method should *not* be called during execution in the main
+    /// loop.
+    void clear_update_callbacks();
+
+    /// \brief Destroy all of the registered rendering callbacks in storage.
+    ///
+    /// \remarks The default callback(s) for the rendering of the window used
+    /// by this interface is also destroyed -- be sure not to forget to take
+    /// care of that...
+    ///
+    /// \note This method should *not* be called during execution in the main
+    /// loop.
+    ///
+    /// \see ::default_render_callback
+    void clear_render_callbacks();
+
   protected:
+    /// \brief Default window initialization flags.
+    uint32 window_flags_;
+
     /// \brief Track visibility state of the FPS counter.
     bool show_fps_;
 

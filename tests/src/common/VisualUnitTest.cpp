@@ -48,7 +48,7 @@ ImageDiffResultBatch VisualUnitTest::results_;
 
 void VisualUnitTest::initialize( const Size2i& res )
 {
-  this->show_fps(true);
+  this->set_window_flags(0);
 
   Path p;
   File fp;
@@ -113,6 +113,7 @@ void VisualUnitTest::initialize( const Size2i& res )
 VisualUnitTest::VisualUnitTest( void )
 {
   this->initialize( Size2i( 640, 480 ) );
+  this->show_fps( true );
 }
 
 VisualUnitTest::VisualUnitTest( const Size2i& res )
@@ -122,8 +123,6 @@ VisualUnitTest::VisualUnitTest( const Size2i& res )
 
 bool VisualUnitTest::init_rendering()
 {
-  uint32 window_flags = 0;
-
   // Summon SDL2 & friends.
   nom::init_third_party( InitHints::DefaultInit );
 
@@ -133,7 +132,8 @@ bool VisualUnitTest::init_rendering()
   }
 
   // Initialize rendering window (and its GL context)
-  if( this->window_.create( this->test_set(), this->resolution(), window_flags ) == false )
+  if( this->window_.create( this->test_set(),
+      this->resolution(), this->window_flags() ) == false )
   {
     return false;
   }
@@ -232,12 +232,12 @@ void VisualUnitTest::SetUp( void )
 
   this->input_mapper_.insert( this->test_set(), state, true );
 
-  // Register the callbacks to be used within the game loop
+  // Register the default callbacks to be used within the game loop
   this->append_event_callback( [&] ( Event ev ) { this->input_mapper_.on_event( ev ); } );
-  this->append_update_callback( [&] ( float delta ) { this->render_window().update(); } );
+  this->append_update_callback( this->default_update_callback() );
 
   // Default background color to use for the render window
-  this->append_render_callback( [&] ( const RenderWindow& win ) { this->render_window().fill( Color4i::SkyBlue ); } );
+  this->append_render_callback( this->default_render_callback() );
 
   // Initialize the visual test set batch
   // VisualUnitTest::visual_test_.set_test_set( this->test_set() );
@@ -475,6 +475,11 @@ bool VisualUnitTest::fps( void ) const
   return this->show_fps_;
 }
 
+uint32 VisualUnitTest::window_flags() const
+{
+  return this->window_flags_;
+}
+
 const Size2i& VisualUnitTest::resolution( void ) const
 {
   return this->resolution_;
@@ -507,6 +512,11 @@ RenderWindow& VisualUnitTest::render_window( void )
   return this->window_;
 }
 
+void VisualUnitTest::set_window_flags(uint32 flags)
+{
+  this->window_flags_ = flags;
+}
+
 void VisualUnitTest::show_fps( bool state )
 {
   this->show_fps_ = state;
@@ -525,6 +535,22 @@ void VisualUnitTest::set_output_directory( const std::string& dir_path )
 void VisualUnitTest::append_screenshot_frame( uint frame )
 {
   this->screenshot_frames_.push_back( frame );
+}
+
+VisualUnitTest::update_callback_type
+VisualUnitTest::default_update_callback()
+{
+  return( [&] ( float delta ) {
+    this->render_window().update();
+   });
+}
+
+VisualUnitTest::render_callback_type
+VisualUnitTest::default_render_callback()
+{
+  return( [&] ( const RenderWindow& win ) {
+    this->render_window().fill( Color4i::SkyBlue );
+   });
 }
 
 int VisualUnitTest::append_event_callback( const std::function<void( Event )>& func )
@@ -546,6 +572,21 @@ int VisualUnitTest::append_render_callback( const std::function<void( const Rend
   this->render_callbacks_.push_back( func );
 
   return this->render_callbacks_.size();
+}
+
+void VisualUnitTest::clear_event_callbacks()
+{
+  this->event_callbacks_.clear();
+}
+
+void VisualUnitTest::clear_update_callbacks()
+{
+  this->update_callbacks_.clear();
+}
+
+void VisualUnitTest::clear_render_callbacks()
+{
+  this->render_callbacks_.clear();
 }
 
 // Private scope

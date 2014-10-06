@@ -62,4 +62,4 @@ matrix:
     - os: linux
 
 notifications:
-  email: false
+  email: true

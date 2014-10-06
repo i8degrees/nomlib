@@ -49,6 +49,7 @@ ImageDiffResultBatch VisualUnitTest::results_;
 void VisualUnitTest::initialize( const Size2i& res )
 {
   this->set_window_flags(0);
+  this->show_fps(true);
 
   Path p;
   File fp;
@@ -113,7 +114,6 @@ void VisualUnitTest::initialize( const Size2i& res )
 VisualUnitTest::VisualUnitTest( void )
 {
   this->initialize( Size2i( 640, 480 ) );
-  this->show_fps( true );
 }
 
 VisualUnitTest::VisualUnitTest( const Size2i& res )

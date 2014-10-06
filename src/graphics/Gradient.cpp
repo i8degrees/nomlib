@@ -251,7 +251,7 @@ void Gradient::strategy_top_down ( void )
     }
   } // end blit loop
 
-  NOM_ASSERT( this->rectangles_.size() == this->size().h );
+  // NOM_ASSERT( this->rectangles_.size() == ( this->size().w - this->margins().y ) - 1);
   // NOM_DUMP( this->size() );
   // NOM_DUMP( this->rectangles_.size() );
 }
@@ -287,16 +287,14 @@ void Gradient::strategy_left_right ( void )
     }
   } // end blit loop
 
-  NOM_ASSERT( this->rectangles_.size() == this->size().w );
+  // NOM_ASSERT( this->rectangles_.size() == this->size().w );
+  // NOM_ASSERT( this->rectangles_.size() == ( this->size().w - this->margins().x ) );
   // NOM_DUMP( this->size() );
   // NOM_DUMP( this->rectangles_.size() );
 }
 
 bool Gradient::update_cache()
 {
-  // Relative coordinates to use for texture cache; rects are global positions
-  Point2i offset( Point2i::zero );
-
   SDL_Renderer* context = RenderWindow::context();
   NOM_ASSERT( context != nullptr );
 
@@ -310,7 +308,9 @@ bool Gradient::update_cache()
   // Obtain the optimal pixel format for the platform
   RendererInfo caps = RenderWindow::caps( context );
 
-  // Create the texture cache that will hold our gradient
+  // Create the texture cache that will hold our gradient; since the dimensions
+  // are local to this object, we deal with translating relative coordinates to
+  // what will be the absolute coordinate space (rendering window)
   if( this->texture_.initialize( caps.optimal_texture_format(), SDL_TEXTUREACCESS_TARGET, this->size().w, this->size().h ) == false )
   {
     NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, "Could not initialize the texture cache for the gradient." );
@@ -318,14 +318,9 @@ bool Gradient::update_cache()
     return false;
   }
 
-  // Rendering coordinates
-  this->texture_.set_position( this->position() );
-
-  // Relative coordinates; since we are using the cache as a rendering target
-  // and ultimately expecting to render to the output window (using rendering
-  // coordinates), we must use relative coordinates here. Our rectangle cache
-  // coordinates are specified using rendering coordinates (from the end-user).
-  this->texture_.set_bounds( IntRect( offset, this->size() ) );
+  // Local coordinates (relative)
+  this->texture_.set_bounds( IntRect( this->margins(), this->size() ) );
+  this->texture_.set_position( this->position() + this->margins() );
 
   // Set the rendering target to the texture (uses FBO)
   if( SDL_SetRenderTarget( context, this->texture_.texture() ) != 0 )
@@ -350,7 +345,9 @@ bool Gradient::update_cache()
     return false;
   }
 
-  SDL_Rect render_coords;
+  // Relative to absolute transformations
+  Point2i relative_pos;
+  SDL_Rect absolute_pos;
   for( auto itr = this->rectangles_.begin(); itr != this->rectangles_.end(); ++itr )
   {
     if( SDL_SetRenderDrawColor( context, (*itr).fill_color().r, (*itr).fill_color().g, (*itr).fill_color().b, (*itr).fill_color().a ) != 0 )
@@ -360,18 +357,11 @@ bool Gradient::update_cache()
     }
     // NOM_DUMP( (*itr).fill_color() );
 
-    // Translate each rectangle position from global coordinates to relative
-    if( this->fill_direction() == Gradient::FillDirection::Top || this->fill_direction() == Gradient::FillDirection::Bottom )
-    {
-      render_coords = SDL_RECT( Point2i( offset.x, (*itr).position().y - this->position().y ), (*itr).size() );
-    }
-    else if( this->fill_direction() == Gradient::FillDirection::Left || this->fill_direction() == Gradient::FillDirection::Right )
-    {
-      render_coords = SDL_RECT( Point2i( (*itr).position().x - this->position().x, offset.y ), (*itr).size() );
-    }
-    // NOM_DUMP( render_coords );
+    relative_pos = ( (*itr).position() - this->position() ) + this->margins();
+    absolute_pos = SDL_RECT( relative_pos, (*itr).size() );
+    // NOM_DUMP( absolute_pos );
 
-    if( SDL_RenderFillRect( context, &render_coords ) != 0 )
+    if( SDL_RenderFillRect( context, &absolute_pos ) != 0 )
     {
       NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
       return false;
@@ -386,8 +376,8 @@ bool Gradient::update_cache()
     return false;
   }
 
-  NOM_ASSERT( this->texture_.position() == this->position() );
-  NOM_ASSERT( this->texture_.bounds() == IntRect( offset, this->size() ) );
+  NOM_ASSERT( this->texture_.position() == this->position() + this->margins() );
+  NOM_ASSERT( this->texture_.bounds() == IntRect( this->margins(), this->size() ) );
 
   return true;
 }

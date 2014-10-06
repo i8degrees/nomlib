@@ -52,4 +52,12 @@ if( NOM_BUILD_GRADIENT_TESTS )
                       ""
                       ${NOM_TESTS_SOURCE_DIR}/graphics/GradientTest.cpp
                     )
+
+  # Copy resource files for the test
+  install (
+            FILES
+            "${NOM_TESTS_RESOURCES_DIR}/graphics/GradientTest.json"
+            DESTINATION
+            "${TESTS_DEPS_INSTALL_PEFIX}"
+          )
 endif( NOM_BUILD_GRADIENT_TESTS )

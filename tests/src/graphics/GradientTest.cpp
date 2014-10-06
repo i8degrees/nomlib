@@ -10,6 +10,10 @@
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
 
+// #if ! defined( NOM_USE_SCALEX )
+//   #pragma message("NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT should be enabled for GradientTest::Margins")
+// #endif
+
 namespace nom {
 
 class GradientTest: public nom::VisualUnitTest
@@ -19,6 +23,8 @@ class GradientTest: public nom::VisualUnitTest
     GradientTest()
     {
       // NOM_LOG_TRACE( NOM );
+
+      this->set_window_flags( SDL_WINDOW_RESIZABLE );
 
       // The frame image to compare against the reference image set
       this->append_screenshot_frame( 0 );
@@ -35,6 +41,14 @@ class GradientTest: public nom::VisualUnitTest
     virtual void SetUp()
     {
       // NOM_LOG_TRACE( NOM );
+
+      std::string res_file = nom::UnitTest::test_set() + ".json";
+
+      if( resources.load_file( res_file, "resources" ) == false )
+      {
+        FAIL()
+        << "Could not resolve the resource path from file: " << res_file;
+      }
 
       // VisualUnitTest environment init...
       VisualUnitTest::SetUp();
@@ -59,6 +73,12 @@ class GradientTest: public nom::VisualUnitTest
                             Color4i::LightGray
                           }
                         };
+      this->colors[1] = {
+                          Color4iColors{
+                            nom::Color4i( 114, 66, 66 ),
+                            nom::Color4i( 251, 222, 232 )
+                          }
+                        };
 
       int w = this->resolution().w;
       int h = this->resolution().h;
@@ -76,7 +96,7 @@ class GradientTest: public nom::VisualUnitTest
       this->grad1.set_position( this->pos1 );
       this->grad1.set_size( this->dims1 );
 
-      this->grad2.set_colors( this->colors[0] );
+      this->grad2.set_colors( this->colors[1] );
       this->grad2.set_position( this->pos2 );
       this->grad2.set_size( this->dims2 );
 
@@ -111,6 +131,8 @@ class GradientTest: public nom::VisualUnitTest
     }
 
   protected:
+    SearchPath resources;
+
     Gradient grad1;
     Gradient grad2;
     // Not used
@@ -172,6 +194,81 @@ TEST_F( GradientTest, RightToLeftLinearFill )
   EXPECT_TRUE( this->compare() );
 }
 
+// TOOD: Verify / fix margins calculations for left to right directions
+TEST_F( GradientTest, Margins )
+{
+  std::shared_ptr<Gradient> card_background;
+  std::shared_ptr<SpriteBatch> card_face;
+
+  // Loosely emulate TTcards scale resolution (scale up)
+  const std::string sheet_coords = resources.path()+"faces.json";
+  const std::string sheet_img = resources.path()+"faces.png";
+  const int SCALE_FACTOR = 2;
+  const int CARD_WIDTH = 64;
+  const int CARD_HEIGHT = 64;
+  const int CARD_ORIGIN_X =
+    ( (this->resolution().w / SCALE_FACTOR) - CARD_WIDTH ) / 2;
+  const int CARD_ORIGIN_Y =
+    ( (this->resolution().h / SCALE_FACTOR) - CARD_HEIGHT ) / 2;
+
+  Color4iColors player1_grad_bg = { Color4i( 208, 223, 255 ),
+                                    Color4i( 50, 59, 114 )
+                                  };
+  Size2i dims;
+  dims.w = this->resolution().w / SCALE_FACTOR;
+  dims.h = this->resolution().h / SCALE_FACTOR;
+  this->render_window().set_logical_size( dims );
+
+  card_background = std::make_shared<Gradient>( Gradient() );
+
+  card_face =
+    std::make_shared<SpriteBatch>( SpriteBatch( sheet_coords ) );
+
+  if( card_face->load( sheet_img ) == false )
+  {
+    FAIL() << "Could not load image from file: " << sheet_img;
+  }
+  // card_face->resize( nom::Texture::ResizeAlgorithm::scale2x );
+
+  // Geezard
+  card_face->set_frame( 0 );
+
+  card_face->set_position( Point2i(CARD_ORIGIN_X, CARD_ORIGIN_Y) );
+  card_background->set_position( nom::Point2i(CARD_ORIGIN_X, CARD_ORIGIN_Y) );
+
+  // The gradient should be bound within the
+  //
+  // Note that the 1 pixel border surrounding each card is why these
+  // calculations are necessary; we want the gradient to be inside the card's
+  // border
+  card_background->set_size( Size2i(CARD_WIDTH-2, CARD_HEIGHT-2) );
+  card_background->set_margins( Point2i(1,1) );
+  card_background->set_colors( player1_grad_bg );
+  card_background->set_fill_direction( nom::Gradient::FillDirection::Top );
+
+  // 62, 62
+  // NOM_DUMP( card_background->size() );
+  // 128, 88
+  // NOM_DUMP( card_background->position() );
+
+  // Need to first clear out the default grad objects in here
+  this->clear_render_callbacks();
+
+  // Re-add the default rendering callback
+  this->append_render_callback( this->default_render_callback() );
+
+  this->append_render_callback( [&] ( const RenderWindow& win ) {
+    card_background->draw( this->render_window() );
+  });
+
+  this->append_render_callback( [&] ( const RenderWindow& win ) {
+    card_face->draw ( this->render_window() );
+  });
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+}
+
 } // namespace nom
 
 int main( int argc, char** argv )
@@ -180,8 +277,11 @@ int main( int argc, char** argv )
 
   // Set the current working directory path to the path leading to this
   // executable file; used for unit tests that require file-system I/O.
-  NOM_ASSERT( nom::init( argc, argv ) == true );
-
+  if( nom::init( argc, argv ) == false )
+  {
+    nom::DialogMessageBox( "Critical Error", "Could not initialize nomlib.", nom::MessageBoxType::NOM_DIALOG_ERROR );
+    return NOM_EXIT_FAILURE;
+  }
   atexit( nom::quit );
 
   // nom::UnitTest framework integration

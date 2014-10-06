@@ -57,6 +57,8 @@ class UIDataViewList: public nom::UIWidget
     ///
     /// \see UIWidget::set_desktop, UIWidget::set_document_file,
     /// UIDataViewList::initialize.
+    UIDataViewList();
+
     UIDataViewList( const Point2i& pos, const Size2i& dims );
 
     virtual ~UIDataViewList();

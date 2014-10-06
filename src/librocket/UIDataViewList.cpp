@@ -35,6 +35,14 @@ using namespace Rocket::Core;
 
 namespace nom {
 
+UIDataViewList::UIDataViewList() :
+  UIWidget( Point2i::null, Size2i::null )
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+
+  this->set_selection( 0 );
+}
+
 UIDataViewList::UIDataViewList( const Point2i& pos, const Size2i& dims ) :
   UIWidget( pos, dims )
 {

@@ -237,11 +237,20 @@ void RocketSDL2RenderInterface::SetScissorRegion(int x, int y, int width, int he
 
     // TODO: Adjust to account for scissors; note how the visual debugger
     // window is not clipped when emulation is turned on
-    glScissor(  viewport.x, (output.h - viewport.y - viewport.h),
+    glScissor(  viewport.x, (output.h - viewport.y - y - viewport.h),
                 viewport.w, viewport.h );
 
-    // glScissor(  x, (output.h - y - viewport.h),
-    //             viewport.w, viewport.h );
+    // (Debug info assumes window size of 684x580 so we see the entire debugger)
+    // NOM_DUMP(viewport);  // viewport : 0, 0, 684,580
+    // NOM_DUMP(output);    // output : 684,580
+    // Default pos of debugger window
+    // NOM_DUMP(x);          // 416
+    // NOM_DUMP(y);          // 74
+    // NOM_DUMP(width);      // 246
+    // NOM_DUMP(height);     // 500
+    // (output.h - y - viewport.h) : -74 (debugger without issue)
+    // (output.h - y - viewport.h) : -31 (debugger with issue)
+    // NOM_DUMP( (output.h - y - viewport.h) );
   }
 }
 

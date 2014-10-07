@@ -161,7 +161,20 @@ class Image
 
     /// Supports every file type that the libSDL_image extension has been
     /// compiled with
-    bool load ( const std::string& filename, uint32 pixel_format = SDL_PIXELFORMAT_ARGB8888 );
+    bool load( const std::string& filename, uint32 pixel_format = SDL_PIXELFORMAT_ARGB8888 );
+
+    /// \brief Load an image surface from a memory source.
+    ///
+    /// \param buffer       The input buffer contents.
+    /// \param buffer_size  The integral size of the image data.
+    /// \param ext          The file extension of the image data.
+    /// \param pixel_format The pixel format of the image data.
+    ///
+    /// \note Uses SDL2_image extension.
+    bool load_memory( const char* buffer,
+                      int buffer_size,
+                      const std::string& ext,
+                      uint32 pixel_format = SDL_PIXELFORMAT_ARGB8888 );
 
     /// Uses SDL's built-in BMP file loader; no alpha channeling support ...
     /// perfect for setting window icons!

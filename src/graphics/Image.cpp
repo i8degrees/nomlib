@@ -322,7 +322,7 @@ void Image::set_bounds ( const IntRect& bounds )
   SDL_SetClipRect ( this->image(), &clip );
 }
 
-bool Image::load ( const std::string& filename, uint32 pixel_format )
+bool Image::load( const std::string& filename, uint32 pixel_format )
 {
   SDL_Surface *buffer = IMG_Load ( filename.c_str() );
 
@@ -337,6 +337,30 @@ NOM_LOG_ERR ( NOM, IMG_GetError() );
   priv::FreeSurface ( buffer );
 
   return true;
+}
+
+bool Image::load_memory(  const char* buffer,
+                          int buffer_size,
+                          const std::string& ext,
+                          uint32 pixel_format )
+{
+
+  SDL_SURFACE::SharedPtr surface;
+
+  surface.reset(  IMG_LoadTyped_RW( SDL_RWFromMem( surface.get(), buffer_size), 1,
+                                    ext.c_str() ), priv::FreeSurface );
+
+  if( surface != nullptr )
+  {
+    this->image_.reset( SDL_ConvertSurfaceFormat( surface.get(), pixel_format, 0),
+                        priv::FreeSurface );
+    return true;
+  }
+  else
+  {
+    NOM_LOG_ERR( NOM, IMG_GetError() );
+    return false;
+  }
 }
 
 bool Image::load_bmp ( const std::string& filename, uint32 pixel_format )

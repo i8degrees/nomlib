@@ -215,9 +215,10 @@ TEST_F( GradientTest, Margins )
                                     Color4i( 50, 59, 114 )
                                   };
   Size2i dims;
-  dims.w = this->resolution().w / SCALE_FACTOR;
-  dims.h = this->resolution().h / SCALE_FACTOR;
+  dims.w = this->resolution().w;
+  dims.h = this->resolution().h;
   this->render_window().set_logical_size( dims );
+  this->render_window().set_scale( Point2f(2) );
 
   card_background = std::make_shared<Gradient>( Gradient() );
 

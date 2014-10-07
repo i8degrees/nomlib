@@ -239,7 +239,7 @@ bool Texture::create ( const Image& source, uint32 pixel_format, enum Texture::A
   return true;
 }
 
-SDL_Texture* Texture::texture( void ) const
+SDL_Texture* Texture::texture() const
 {
   return this->texture_.get();
 }

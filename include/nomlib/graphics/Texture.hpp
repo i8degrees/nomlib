@@ -138,7 +138,7 @@ class Texture
     const IntRect& bounds( void ) const;
 
     /// Get the video memory surface of the Texture object
-    SDL_Texture* texture( void ) const;
+    SDL_Texture* texture() const;
 
     /// Is this object initialized -- not nullptr?
     bool valid ( void ) const;

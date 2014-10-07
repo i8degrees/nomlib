@@ -28,9 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/librocket/RocketSDL2RenderInterface.hpp"
 
-// Private headers
+// Private headers (third-party
 #include <SDL.h>
-#include <SDL_image.h>
 
 #if defined( NOM_PLATFORM_OSX )
   #include <OpenGL/gl.h>
@@ -44,6 +43,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Forward declarations
 #include "nomlib/graphics/RenderWindow.hpp"
+
+// Private headers
+#include "nomlib/graphics/Image.hpp"
+#include "nomlib/graphics/Texture.hpp"
 
 namespace nom {
 
@@ -284,17 +287,17 @@ bool RocketSDL2RenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture
 
   Rocket::Core::String extension = source.Substring(i+1, source.Length()-i);
 
-  SDL_Surface* surface = IMG_LoadTyped_RW(SDL_RWFromMem(buffer, buffer_size), 1, extension.CString());
-
-  if(surface)
+  Image surface;
+  if( surface.load_memory( buffer, buffer_size, extension.CString() ) == true)
   {
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(this->window_->renderer(), surface);
-
-    if(texture)
+    // ::ReleaseTexture is responsible for freeing this pointer
+    Texture* texture = new Texture();
+    if( texture->create( surface ) == true )
     {
-      texture_handle = (Rocket::Core::TextureHandle) texture;
-      texture_dimensions = Rocket::Core::Vector2i(surface->w, surface->h);
-      SDL_FreeSurface(surface);
+      texture_handle = (Rocket::Core::TextureHandle) texture->texture();
+
+      texture_dimensions =
+        Rocket::Core::Vector2i(surface.width(), surface.height() );
     }
     else
     {
@@ -321,20 +324,43 @@ bool RocketSDL2RenderInterface::GenerateTexture(Rocket::Core::TextureHandle& tex
     Uint32 amask = 0xff000000;
   #endif
 
-  SDL_Surface *surface = SDL_CreateRGBSurfaceFrom ((void*) source, source_dimensions.x, source_dimensions.y, 32, source_dimensions.x*4, rmask, gmask, bmask, amask);
-  SDL_Texture *texture = SDL_CreateTextureFromSurface(this->window_->renderer(), surface);
+  Image surface;
+  bool ret;
 
-  SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-  SDL_FreeSurface(surface);
+  // ::ReleaseTexture is responsible for freeing this pointer
+  Texture* texture = new Texture();
 
-  texture_handle = (Rocket::Core::TextureHandle) texture;
+  ret = surface.initialize(
+                            // pixels
+                            (void*) source,
+                            // width
+                            source_dimensions.x,
+                            // height
+                            source_dimensions.y,
+                            // bits per pixel
+                            32,
+                            // pitch
+                            source_dimensions.x * 4,
+                            rmask, gmask, bmask, amask );
+
+  if( ret )
+  {
+    if( texture->create(surface) == false )
+    {
+      return false;
+    }
+
+    SDL_SetTextureBlendMode( texture->texture(), SDL_BLENDMODE_BLEND );
+    texture_handle = (Rocket::Core::TextureHandle) texture->texture();
+
+  }
 
   return true;
 }
 
 void RocketSDL2RenderInterface::ReleaseTexture(Rocket::Core::TextureHandle texture_handle)
 {
-  SDL_DestroyTexture((SDL_Texture*) texture_handle);
+  priv::FreeTexture( (SDL_Texture*)texture_handle );
 }
 
 } // namespace nom

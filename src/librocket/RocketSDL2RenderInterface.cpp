@@ -301,12 +301,14 @@ bool RocketSDL2RenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture
     }
     else
     {
+      NOM_LOG_ERR( NOM_LOG_CATEGORY_GUI, "Could not create texture handle from image source." );
       return false;
     }
 
     return true;
   }
 
+  NOM_LOG_ERR( NOM_LOG_CATEGORY_GUI, "Could not create texture handle." );
   return false;
 }
 
@@ -347,15 +349,18 @@ bool RocketSDL2RenderInterface::GenerateTexture(Rocket::Core::TextureHandle& tex
   {
     if( texture->create(surface) == false )
     {
+      NOM_LOG_ERR( NOM_LOG_CATEGORY_GUI, "Could not generate texture from pixel data." );
       return false;
     }
 
     SDL_SetTextureBlendMode( texture->texture(), SDL_BLENDMODE_BLEND );
     texture_handle = (Rocket::Core::TextureHandle) texture->texture();
 
+    return true;
   }
 
-  return true;
+  NOM_LOG_ERR( NOM_LOG_CATEGORY_GUI, "Could not generate texture." );
+  return false;
 }
 
 void RocketSDL2RenderInterface::ReleaseTexture(Rocket::Core::TextureHandle texture_handle)

@@ -347,8 +347,21 @@ bool Image::load_memory(  const char* buffer,
 
   SDL_SURFACE::SharedPtr surface;
 
-  surface.reset(  IMG_LoadTyped_RW( SDL_RWFromMem( surface.get(), buffer_size), 1,
-                                    ext.c_str() ), priv::FreeSurface );
+  if( buffer == nullptr )
+  {
+    NOM_LOG_ERR( NOM, "Cannot load image source from memory: buffer == nullptr" );
+    return false;
+  }
+
+  if( buffer_size == 0 )
+  {
+    NOM_LOG_WARN( NOM, "Cannot load image source from memory: buffer_size == 0" );
+    return false;
+  }
+
+  surface.reset(  IMG_LoadTyped_RW( SDL_RWFromMem( (char*) buffer,
+                  buffer_size), 1, ext.c_str() ),
+                  priv::FreeSurface );
 
   if( surface != nullptr )
   {

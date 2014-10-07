@@ -444,6 +444,26 @@ TEST_F( MathTest, Size2Operators )
   EXPECT_EQ( false, lhs == rhs );
 }
 
+TEST_F( MathTest, Point2iCtor )
+{
+  Point2i f(2);
+  Point2i out;
+
+  out.x = 2;
+  out.y = 2;
+  EXPECT_EQ( out, f );
+}
+
+TEST_F( MathTest, Size2iCtor )
+{
+  Size2i f(2);
+  Size2i out;
+
+  out.w = 2;
+  out.h = 2;
+  EXPECT_EQ( out, f );
+}
+
 } // namespace nom
 
 int main( int argc, char** argv )

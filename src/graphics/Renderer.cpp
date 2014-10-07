@@ -74,16 +74,16 @@ bool Renderer::renderer_valid ( void ) const
   }
 }
 
-const Point2f Renderer::scale_factor ( void ) const
+const Point2f Renderer::scale() const
 {
   Point2f scale_factor;
 
-  SDL_RenderGetScale ( this->renderer(), &scale_factor.x, &scale_factor.y );
+  SDL_RenderGetScale( this->renderer(), &scale_factor.x, &scale_factor.y );
 
   return scale_factor;
 }
 
-const Point2i Renderer::logical_size ( void ) const
+const Point2i Renderer::logical_size() const
 {
   Point2i size;
 
@@ -223,17 +223,29 @@ bool Renderer::fill ( const Color4i& color )
 
 bool Renderer::set_logical_size( int width, int height )
 {
-  if ( SDL_RenderSetLogicalSize ( this->renderer(), width, height ) != 0 )
+  if( SDL_RenderSetLogicalSize ( this->renderer(), width, height ) != 0 )
   {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+    NOM_LOG_ERR( NOM, SDL_GetError() );
     return false;
   }
+
   return true;
 }
 
 bool Renderer::set_logical_size( const Size2i& size )
 {
   return this->set_logical_size( size.w, size.h );
+}
+
+bool Renderer::set_scale( const Point2f& scale_factor )
+{
+  if( SDL_RenderSetScale( this->renderer(), scale_factor.x, scale_factor.y ) != 0 )
+  {
+    NOM_LOG_ERR( NOM, SDL_GetError() );
+    return false;
+  }
+
+  return true;
 }
 
 bool Renderer::set_viewport ( const IntRect& bounds )

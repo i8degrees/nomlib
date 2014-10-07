@@ -69,18 +69,16 @@ class Renderer
     /// Is this object initialized? Valid when *NOT* nullptr
     bool renderer_valid ( void ) const;
 
-    /// Get the current logical resolution size
+    /// Get the current logical resolution size.
+    const Point2i logical_size() const;
+
+    /// \brief Get the drawing scale for the rendering context.
     ///
-    /// \todo Test me!
-    const Point2i logical_size ( void ) const;
+    /// \see ::set_scale, ::set_logical_size.
+    const Point2f scale() const;
 
     /// Get the current viewport dimensions
-    ///
-    /// \todo Test me!
     const IntRect viewport ( void ) const;
-
-    /// Obtain the current scale factor
-    const Point2f scale_factor ( void ) const;
 
     /// Obtain the blending mode used for drawing
     const SDL_BlendMode blend_mode ( void ) const;
@@ -139,6 +137,11 @@ class Renderer
 
     /// \see ::set_logical_size.
     bool set_logical_size( const Size2i& size );
+
+    /// \brief Set the drawing scale for this rendering context.
+    ///
+    /// \see ::set_logical_size.
+    bool set_scale( const Point2f& scale_factor );
 
     /// Set a new drawing area for rendering
     ///

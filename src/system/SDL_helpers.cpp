@@ -179,6 +179,39 @@ bool save_png ( SDL_SURFACE::RawPtr buffer, const std::string& filename )
   return true;
 }
 
+int available_render_driver(const std::string& driver)
+{
+  int num_drivers = SDL_GetNumRenderDrivers();
+  int render_driver = -1;
+
+  if( num_drivers < 0 )
+  {
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+    return num_drivers;
+  }
+
+  for( auto i = 0; i < num_drivers; ++i )
+  {
+    SDL_RendererInfo info;
+    if( SDL_GetRenderDriverInfo( i, &info ) == 0 )
+    {
+      if( ! strcmp( info.name, driver.c_str() ) )
+      {
+        // Success!
+        render_driver = i;
+        break;
+      }
+    }
+    else
+    {
+      NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+      render_driver = -1;
+    }
+  }
+
+  return render_driver;
+}
+
 namespace priv {
 
 void FreeWindow ( SDL_Window* handle )

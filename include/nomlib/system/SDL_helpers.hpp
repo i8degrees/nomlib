@@ -198,6 +198,14 @@ const std::string PIXEL_FORMAT_NAME ( uint32 format );
 /// ordering; SDL_PIXELFORMAT_ARGB8888
 bool save_png ( SDL_SURFACE::RawPtr, const std::string& filename );
 
+/// \brief Query for the platform's support of a rendering driver.
+///
+/// \remarks The driver name should be one of: directx, opengl, software
+///
+/// \returns The index of the requested rendering driver on success, or
+/// negative one (-1) on failure.
+int available_render_driver(const std::string& driver);
+
 namespace priv {
 
 /// Custom deleter for SDL_Window structures

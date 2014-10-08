@@ -225,9 +225,17 @@ if( NOT NOM_BUILD_MINI_UNIT )
               "${OPENAL_LIBRARY_DIR}"
               "${LIBSNDFILE_LIBRARY_DIR}"
               "${MSVCPP_LIBRARY_REDIST}"
+              "${GLEW_REDIST_DIR}"
               DESTINATION
               "${EXAMPLES_INSTALL_PEFIX}"
               FILES_MATCHING PATTERN "*.dll"
             )
   endif ( PLATFORM_WINDOWS )
+
+  install_dependencies  (
+                          "${LIBROCKET_REDIST_DIRS}"
+                          "${EXAMPLES_INSTALL_PEFIX}"
+                          "*.dll"
+                        )
+
 endif( NOT NOM_BUILD_MINI_UNIT )

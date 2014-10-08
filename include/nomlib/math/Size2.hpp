@@ -305,7 +305,7 @@ inline Size2<T>& operator *=( Size2<T>& lhs, const Size2<T>& rhs )
   return lhs;
 }
 
-/// \brief Method overload of binary operator /= (Division)
+/// \brief Method overload of binary operator /= (Division assignment)
 ///
 /// \param lhs Left operand.
 /// \param rhs Right operand.
@@ -321,6 +321,22 @@ inline Size2<T>& operator /=( Size2<T>& lhs, const Size2<T>& rhs )
   lhs.h /= rhs.h;
 
   return lhs;
+}
+
+/// \brief Method overload of binary operator / (Division)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \returns Size2 template type returned by value
+template <typename T>
+inline Size2<T> operator /( const Size2<T>& lhs, const Size2<T>& rhs )
+{
+  Size2<T> ret;
+  ret.w = lhs.w / rhs.w;
+  ret.h = lhs.h / rhs.h;
+
+  return ret;
 }
 
 /// \brief Lesser than comparison operator.

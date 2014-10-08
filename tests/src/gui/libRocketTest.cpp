@@ -143,14 +143,7 @@ class libRocketTest: public nom::VisualUnitTest
     {
       int render_driver = -1;
       uint32 window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
-      uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
-
-      // Required interface as per libRocket SDL2 implementation
-      if( nom::set_hint( SDL_HINT_RENDER_DRIVER, "opengl" ) == false )
-      {
-        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not enable the OpenGL rendering driver." );
-        return false;
-      }
+      uint32 render_flags = SDL_RENDERER_ACCELERATED;
 
       if( nom::set_hint( SDL_HINT_RENDER_VSYNC, "0" ) == false )
       {
@@ -162,21 +155,13 @@ class libRocketTest: public nom::VisualUnitTest
         NOM_LOG_INFO( NOM, "Could not set scale quality to", "nearest" );
       }
 
-      // Try to force the use of the OpenGL rendering driver; this is required
-      // as per the SDL2 implementation for libRocket.
-      //
-      // TODO: return false if we do not find a OpenGL driver
-      int nRD = SDL_GetNumRenderDrivers();
-      for( auto i = 0; i < nRD; ++i )
+      // Required as per our libRocket implementation
+      render_driver = nom::available_render_driver("opengl");
+      if( render_driver == -1 )
       {
-        SDL_RendererInfo info;
-        if( ! SDL_GetRenderDriverInfo( i, &info ) )
-        {
-          if( ! strcmp( info.name, "opengl" ) )
-          {
-            render_driver = i;
-          }
-        }
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
+                      "Could not find an OpenGL rendering driver." );
+        return false;
       }
 
       if( this->window_.create( this->test_case(),
@@ -194,17 +179,6 @@ class libRocketTest: public nom::VisualUnitTest
         NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not initialize OpenGL for libRocket." );
         return false;
       }
-
-      // I don't understand *why*, but when we enable this, we can forgo the use
-      // of the glUseProgramObjectARB call in nom::RocketSDL2RenderInterface::RenderGeometry
-      // until we go full-screen "desktop" mode, in both Windows and OSX.
-      // There seems to be a severe drop in FPS (~50%) under OSX, whereas the
-      // FPS appears unaffected on my Windows setup...
-      // SDL_GLContext glcontext = SDL_GL_CreateContext( this->window_.window() );
-      // if( glcontext == nullptr )
-      // {
-      //   FAIL() << "Could not create OpenGL Context.";
-      // }
 
       // Experimental support for emulating SDL2's independent resolution
       // scaling feature via a "logical viewport" -- this is important to us

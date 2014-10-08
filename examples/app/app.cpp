@@ -133,7 +133,8 @@ class App: public nom::SDLApp
     bool on_init ( void )
     {
       nom::uint32 window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
-      nom::uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
+      nom::uint32 render_flags = SDL_RENDERER_ACCELERATED;
+      int render_driver = -1;
 
       if ( nom::set_hint ( SDL_HINT_RENDER_VSYNC, "0" ) == false )
       {
@@ -147,30 +148,18 @@ class App: public nom::SDLApp
         NOM_LOG_INFO ( NOM, "Could not set scale quality to " + std::string ( "nearest" ) );
       }
 
-      if ( nom::set_hint ( SDL_HINT_RENDER_DRIVER, "opengl" ) == false )
+      // Required as per our libRocket implementation
+      render_driver = nom::available_render_driver("opengl");
+      if( render_driver == -1 )
       {
-        NOM_LOG_INFO ( NOM, "Could not set rendering driver to OpenGL" );
-      }
-
-      // Try to force the use of the OpenGL rendering driver; this is required
-      // as per the SDL2 implementation for libRocket.
-      int oglIdx = -1;
-      int nRD = SDL_GetNumRenderDrivers();
-      for( auto i = 0; i < nRD; ++i )
-      {
-        SDL_RendererInfo info;
-        if( ! SDL_GetRenderDriverInfo( i, &info ) )
-        {
-          if( ! strcmp( info.name, "opengl" ) )
-          {
-            oglIdx = i;
-          }
-        }
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
+                      "Could not find an OpenGL rendering driver." );
+        return false;
       }
 
       for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
       {
-        if ( this->window[idx].create( APP_NAME, WINDOW_WIDTH/2, WINDOW_HEIGHT, window_flags, oglIdx, render_flags ) == false )
+        if ( this->window[idx].create( APP_NAME, WINDOW_WIDTH/2, WINDOW_HEIGHT, window_flags, render_driver, render_flags ) == false )
         {
           return false;
         }

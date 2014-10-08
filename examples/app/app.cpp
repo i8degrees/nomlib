@@ -700,6 +700,15 @@ class App: public nom::SDLApp
 
 nom::int32 main ( nom::int32 argc, char* argv[] )
 {
+  // FIXME: This must be done before calling nom::init because of a
+  // dependency on SDL's video subsystem being initialized first.
+  // nom::init_third_party should be made explicit (by the end-user).
+  if( nom::set_hint( SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES, "0" ) == false )
+  {
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not disable Spaces support." );
+  }
+
   // Fatal error; if we are not able to complete this step, it means that
   // we probably cannot rely on our resource paths!
   if ( nom::init ( argc, argv ) == false )

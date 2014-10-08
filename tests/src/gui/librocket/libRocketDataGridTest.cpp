@@ -745,6 +745,15 @@ int main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
 
+  // FIXME: This must be done before calling nom::init because of a
+  // dependency on SDL's video subsystem being initialized first.
+  // nom::init_third_party should be made explicit (by the end-user).
+  if( nom::set_hint( SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES, "0" ) == false )
+  {
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not disable Spaces support." );
+  }
+
   // Set the current working directory path to the path leading to this
   // executable file; used for unit tests that require file-system I/O.
   if( nom::init( argc, argv ) == false )

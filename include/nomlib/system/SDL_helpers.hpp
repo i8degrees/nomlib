@@ -181,9 +181,11 @@ std::string hint( const std::string& name );
 /// \param name   Name of hint to set
 /// \param value  New value to set
 ///
-/// Note that it is best to set certain hints -- such as
-/// SDL_RENDERER_PRESENTVSYNC -- before the first call to nom::RenderWindow::create.
-bool set_hint ( const std::string& name, const std::string& value );
+/// \remarks It is best to set hints **before** the first call to nom::init has
+/// been made, as certain hints, i.e.: SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES
+/// must be called before video initialization, whereas others depend on a valid
+/// renderer, etc.
+bool set_hint( const std::string& name, const std::string& value );
 
 const std::string PIXEL_FORMAT_NAME ( uint32 format );
 

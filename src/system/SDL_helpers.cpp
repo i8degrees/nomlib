@@ -149,9 +149,9 @@ std::string hint( const std::string& name )
   return "\0";
 }
 
-bool set_hint ( const std::string& name, const std::string& value )
+bool set_hint( const std::string& name, const std::string& value )
 {
-  if ( SDL_SetHint ( name.c_str(), value.c_str() ) == false ) return false;
+  if( SDL_SetHint( name.c_str(), value.c_str() ) == false ) return false;
 
   return true;
 }

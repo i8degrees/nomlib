@@ -136,7 +136,7 @@ enum InitHints
 /// SDL2_IMAGE, SDL2, SDL2_TTF. Failure of any one of these libraries will halt
 /// the execution.
 ///
-/// \todo Rename method to nom_init_third_party?
+/// \todo Rename method to init_engine?
 bool init_third_party( uint32 flags );
 
 /// Initialize the engine.

@@ -59,6 +59,8 @@ void UIWidget::set_position( const Point2i& pos )
 
   NOM_ASSERT( this->document() != nullptr );
 
+  // FIXME:
+  // if( this->document() != nullptr && pos != Point2i::null )
   if( this->document() != nullptr )
   {
     this->document()->SetProperty( "left", rocket::Property(pos.x, rocket::Property::PX) );
@@ -217,6 +219,7 @@ void UIWidget::set_document_size()
     {
       if( this->size() == Size2i::null )
       {
+        // FIXME:
         this->set_size( Size2i( (*itr)->GetBox().GetSize().x, (*itr)->GetBox().GetSize().y ) );
       }
       else

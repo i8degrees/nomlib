@@ -6,24 +6,23 @@
 
       body
       {
-        /* TTcards at x2 resolution*/
-        width: 328px;
-        height: 392px;
-      }
-
-      body.window
-      {
-        /*min-width: 168px;*/
-        /*min-height: 200px;*/
-        max-width: 400px;
-        max-height: 400px;
+        /* TTcards at x2 scale */
+        /* FIXME: */
+        /*left: 60;*/
+        /*top: 25;*/
+        font-size: 12px;
+        line-height: 0.90;
+        /* FIXME: */
+        /*width: 164px;*/
       }
 
       div#window
       {
-        width: auto;
         padding: 0;
-        padding-left: 5px;
+
+        /* TTcards at x2 scale */
+        width: 164px;
+        height: 196px;
       }
 
       div#title_bar
@@ -31,38 +30,17 @@
         display:none;
       }
 
-      div#content
-      {
-        /*padding-top: 2%;*/
-        /*padding-bottom: 2%;*/
-      }
+      div#content {}
 
       datagridbody
       {
-        max-height: 400px;
-
         text-align: left;
-
-        padding-top: 4px;
-        padding-right: 4px;
-        padding-bottom: 4px;
         padding-left: 5px;
       }
 
       datagridheader
       {
-        font-family: Delicious;
-        color: white;
-        font-size: 12px;
-        font-weight: bold;
-        outline-font-effect: outline;
-        outline-width: 1px;
-        outline-color: black;
-
-        margin-top: -8px;
-        margin-left: -25px;
-
-        padding-top: 5px;
+        margin-left: -6%;
         padding-right: 0px;
         padding-bottom: 0px;
         padding-left: 0px;
@@ -76,7 +54,7 @@
 
         /* Account for the datagridrow text font size (height) for vertical
         alignment */
-        margin-top: -14px;
+        margin-top: -10px;
       }
 
       /* Default state */
@@ -114,8 +92,10 @@
       page.page-left
       {
         position: absolute;
-        left: 1%;
-        top: 79%;
+        /*left: 1%;*/
+        /*top: 79%;*/
+        left: 0px;
+        top: 81%;
         sprite-decorator: sprite-sheet;
         sprite-sheet-src: "menu_elements.json";
         sprite-sheet-image-src: "menu_elements.png";
@@ -125,8 +105,11 @@
       page.page-right
       {
         position: absolute;
-        left: 92%;
-        top: 79%;
+        /*left: 92%;*/
+        /*top: 79%;*/
+        /* FIXME: UIDataViewList widget reports width of 768px; wtfux? */
+        left: 145px;
+        top: 81%;
         sprite-decorator: sprite-sheet;
         sprite-sheet-src: "menu_elements.json";
         sprite-sheet-image-src: "menu_elements.png";

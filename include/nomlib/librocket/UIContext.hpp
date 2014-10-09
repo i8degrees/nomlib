@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
+#include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
 
 // Forward declarations (third-party)
@@ -52,6 +53,8 @@ struct Event;
 class IUIEventHandler;
 
 /// \brief libRocket context abstraction
+///
+/// \todo Consider inheriting off nom::IDrawable?
 class UIContext
 {
   public:
@@ -79,6 +82,25 @@ class UIContext
 
     /// \brief Disable libRocket's visual debugger tool.
     void disable_debugger();
+
+    /// \brief Get the visual debugger's dimensions.
+    ///
+    /// \returns The size of the top-level debugger element on success, or
+    /// Size2i::null on failure, such as when the debugger has not been
+    /// initialized.
+    ///
+    /// \remarks This method depends on the visual debugger being initialized
+    /// within ::create.
+    Size2i debugger_size() const;
+
+    /// \brief Set the visual debugger's position on the screen.
+    ///
+    /// \param pos The X, Y coordinates used for positioning; these will be
+    /// relative to the context's dimensions.
+    ///
+    /// \remarks This method depends on the visual debugger being initialized
+    /// within ::create.
+    void set_debugger_position(const Point2i& pos);
 
     /// \brief Get libRocket's context.
     ///
@@ -138,6 +160,12 @@ class UIContext
     void draw();
 
   private:
+    /// \brief Initialize libRocket's visual debugger tool.
+    ///
+    /// \todo Handle positioning of the event log window in regards to
+    /// independent scale.
+    void initialize_debugger();
+
     /// \brief Active state of libRocket's visual debugger.
     bool debugger_;
 
@@ -154,6 +182,9 @@ class UIContext
     /// \brief The event handler for this context; automatically initialized to
     /// nom::UIContextEventHandler.
     std::shared_ptr<IUIEventHandler> evt_;
+
+    /// \brief The dimensions of the context.
+    Size2i res_;
 };
 
 } // namespace nom

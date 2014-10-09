@@ -70,3 +70,14 @@ div#document:hover
 {
 	cursor: diag-resize;
 }
+
+datagridheader
+{
+  font-family: Delicious;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  outline-font-effect: outline;
+  outline-width: 1px;
+  outline-color: black;
+}

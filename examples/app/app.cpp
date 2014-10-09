@@ -171,13 +171,6 @@ class App: public nom::SDLApp
           nom::DialogMessageBox ( APP_NAME, "Could not load window icon: " + RESOURCE_ICON );
           return false;
         }
-
-        // EXPERIMENTAL support for emulating SDL2's independent resolution
-        // scaling feature via a "logical viewport" with libRocket
-        if( nom::set_hint( "NOM_LIBROCKET_EMULATE_SDL2_LOGICAL_VIEWPORT", "0" ) == false )
-        {
-          NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Could not enable emulated SDL2 independent resolution scaling." );
-        }
       }
 
       if( nom::RocketSDL2RenderInterface::gl_init( this->window[0].size().w, this->window[0].size().h ) == false )
@@ -185,6 +178,15 @@ class App: public nom::SDLApp
         NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not initialize OpenGL for libRocket." );
         return false;
       }
+
+      // Allow for automatic rescaling of the output window based on aspect
+      // ratio (i.e.: handle fullscreen resizing); this will use letterboxing
+      // when the aspect ratio is greater than what is available, or side-bars
+      // when the aspect ratio is less than.
+      this->window[0].set_logical_size( this->window[0].size() );
+
+      // Use no pixel unit scaling; this gives us one to one pixel ratio
+      this->window[0].set_scale( nom::Point2f(1) );
 
       // Initialize the core of libRocket; these are the core dependencies that
       // libRocket depends on for successful initialization.

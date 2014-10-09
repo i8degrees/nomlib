@@ -63,6 +63,7 @@ void UIContextEventHandler::process_event( const Event& ev )
       {
         case SDL_WINDOWEVENT_SIZE_CHANGED:
         {
+          // Update desktop dimensions
           this->context_->resize( Size2i( ev.window.data1, ev.window.data2 ) );
           break;
         }

@@ -331,7 +331,8 @@ class libRocketDataGridTest: public nom::VisualUnitTest
 {
   public:
     /// \remarks This method is called at the start of each unit test.
-    libRocketDataGridTest()
+    libRocketDataGridTest() :
+      VisualUnitTest( Size2i(768,448) )
     {
       // NOM_LOG_TRACE( NOM );
 
@@ -393,13 +394,17 @@ class libRocketDataGridTest: public nom::VisualUnitTest
         return false;
       }
 
-      // Experimental support for emulating SDL2's independent resolution
-      // scaling feature via a "logical viewport" -- this is important to us
-      // because TTcards depends on it somewhat at the moment.
-      if( nom::set_hint( "NOM_LIBROCKET_EMULATE_SDL2_LOGICAL_VIEWPORT", "1" ) == false )
-      {
-        NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Could not enable emulated SDL2 independent resolution scaling." );
-      }
+      // Allow for automatic rescaling of the output window based on aspect
+      // ratio (i.e.: handle fullscreen resizing); this will use letterboxing
+      // when the aspect ratio is greater than what is available, or side-bars
+      // when the aspect ratio is less than.
+      this->render_window().set_logical_size( this->resolution() / Size2i(2) );
+      // this->render_window().set_logical_size( this->resolution() );
+
+      // Use pixel unit scaling; this gives us a one to two pixel ratio --
+      // scale output display by a factor of two.
+      this->render_window().set_scale( Point2f(2) );
+      // this->render_window().set_scale( Point2f(1) );
 
       return true;
     }
@@ -641,9 +646,7 @@ TEST_F( libRocketDataGridTest, DataSourceModel )
 
 TEST_F( libRocketDataGridTest, UIDataViewList )
 {
-  // As per the positioning units used for nom::DataViewListTest (ex2) in
-  // tests/src/gui/DataViewListTest.cpp.
-  Point2i pos1( 25, 25 );
+  Point2i pos1(60,25);
   std::string doc_file1 = "dataview.rml";
 
   UIDataViewList store1( pos1, Size2i::null );

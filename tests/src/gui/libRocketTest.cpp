@@ -180,13 +180,14 @@ class libRocketTest: public nom::VisualUnitTest
         return false;
       }
 
-      // Experimental support for emulating SDL2's independent resolution
-      // scaling feature via a "logical viewport" -- this is important to us
-      // because TTcards depends on it somewhat at the moment.
-      if( nom::set_hint( "NOM_LIBROCKET_EMULATE_SDL2_LOGICAL_VIEWPORT", "1" ) == false )
-      {
-        NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Could not enable emulated SDL2 independent resolution scaling." );
-      }
+      // Allow for automatic rescaling of the output window based on aspect
+      // ratio (i.e.: handle fullscreen resizing); this will use letterboxing
+      // when the aspect ratio is greater than what is available, or side-bars
+      // when the aspect ratio is less than.
+      this->render_window().set_logical_size( this->resolution() );
+
+      // Use no pixel unit scaling; this gives us one to one pixel ratio
+      this->render_window().set_scale( Point2f(1) );
 
       return true;
     }

@@ -35,9 +35,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Forward declarations
 #include "nomlib/system/Event.hpp"
+#include "nomlib/librocket/UIContextEventHandler.hpp"
 
 // Private headers
-#include "nomlib/librocket/UIContextEventHandler.hpp"
+#include "nomlib/graphics/RenderWindow.hpp"
+#include "nomlib/librocket/RocketSDL2RenderInterface.hpp"
 
 namespace nom {
 
@@ -76,6 +78,84 @@ void UIContext::enable_debugger()
 void UIContext::disable_debugger()
 {
   this->debugger_ = false;
+}
+
+Size2i UIContext::debugger_size() const
+{
+  Size2i dims( Size2i::null );
+
+  if( this->valid() ) {
+
+    Rocket::Core::ElementDocument* target =
+      this->context()->GetDocument("rkt-debug-hook");
+
+    NOM_ASSERT( target != nullptr );
+    if( target ) {
+      // NOM_DUMP( target->GetSourceURL().CString() );
+
+      Rocket::Core::Element* body_tag =
+        target->GetParentNode();
+
+      NOM_ASSERT( body_tag != nullptr );
+      if( body_tag ) {
+
+        Rocket::Core::Element* debug_info =
+          body_tag->GetElementById("rkt-debug-info");
+
+        NOM_ASSERT( debug_info != nullptr );
+        if( debug_info ) {
+
+          dims.w = debug_info->GetBox().GetSize().x;
+          dims.h = debug_info->GetBox().GetSize().y;
+
+        } // end if debug_info
+      } // end if body_tag
+    } // end if target
+  } // end if valid context
+
+  return dims;
+}
+
+void UIContext::set_debugger_position(const Point2i& pos)
+{
+  if( this->valid() ) {
+
+    Rocket::Core::ElementDocument* target =
+      this->context()->GetDocument("rkt-debug-hook");
+
+    NOM_ASSERT( target != nullptr );
+    if( target ) {
+      // NOM_DUMP( target->GetSourceURL().CString() );
+
+      Rocket::Core::Element* body_tag =
+        target->GetParentNode();
+
+      NOM_ASSERT( body_tag != nullptr );
+      if( body_tag ) {
+
+        Rocket::Core::Element* debug_info =
+          body_tag->GetElementById("rkt-debug-info");
+
+        NOM_ASSERT( debug_info != nullptr );
+        if( debug_info ) {
+
+          Rocket::Core::Property pos_x( pos.x, Rocket::Core::Property::PX);
+          Rocket::Core::Property pos_y( pos.y, Rocket::Core::Property::PX);
+
+          debug_info->SetProperty("left", pos_x);
+          debug_info->SetProperty("top", pos_y);
+
+        } // end if debug_info
+      } // end if body_tag
+    } // end if target
+  } // end if valid context
+
+  // for( auto itr = tags.begin(); itr != tags.end(); ++itr ) {
+  //   if( (*itr)->GetId() == "rkt-debug-info" ) {
+  //     NOM_DUMP( (*itr)->GetTagName().CString() );
+  //     NOM_DUMP( (*itr)->GetId().CString() );
+  //   }
+  // } // end for tags loop
 }
 
 Rocket::Core::Context* UIContext::context() const
@@ -123,14 +203,14 @@ bool UIContext::create_context( const std::string& name, const Size2i& res,
 
   if( this->context_ )
   {
+    // ::initialize_debugger depends on this value
+    this->res_ = res;
+
     if( this->debugger_enabled() )
     {
-      // Initialize Debugger as early as possible, so we can visually see logging.
-      if( Rocket::Debugger::Initialise( this->context_ ) == false )
-      {
-        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not create Debugger for libRocket." );
-        return false;
-      }
+      // Initialize Debugger as early as possible, so we can visually see
+      // logging.
+      this->initialize_debugger();
     }
 
     // Install the default event handler for this context
@@ -139,7 +219,8 @@ bool UIContext::create_context( const std::string& name, const Size2i& res,
     return true;
   }
 
-  NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not create context for libRocket." );
+  NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
+                "Could not create context for libRocket." );
 
   return false;
 }
@@ -209,6 +290,56 @@ void UIContext::draw()
   if( this->context_ )
   {
     this->context_->Render();
+  }
+}
+
+// Private scope
+
+void UIContext::initialize_debugger()
+{
+  // Alignment offsets for visual debugger
+  Point2i offset( Point2i::zero );
+  Point2f scale( 1.0f, 1.0f );
+
+  if( this->valid() == false ||
+      Rocket::Debugger::Initialise( this->context() ) == false )
+  {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not create Debugger for libRocket." );
+    return;
+  }
+
+  nom::RocketSDL2RenderInterface* target =
+    NOM_DYN_PTR_CAST( nom::RocketSDL2RenderInterface*,
+                      Rocket::Core::GetRenderInterface() );
+  NOM_ASSERT( target != nullptr );
+
+  const RenderWindow* context = target->window_;
+  NOM_ASSERT( context != nullptr );
+  if( target && context )
+  {
+    SDL_RenderGetScale( context->renderer(), &scale.x, &scale.y );
+  }
+
+  Size2i debugger_dims;
+  debugger_dims = this->debugger_size();
+
+  if( debugger_dims != Size2i::null ) {
+
+    // Translations for independent resolution scale dimensions (SDL2)
+    Size2i res_scale;
+    res_scale.w = this->res_.w / scale.x;
+    res_scale.h = this->res_.h / scale.y;
+
+    // Translations for debugger position
+    offset.x = offset.x * scale.x;
+    offset.y = offset.y * scale.y;
+
+    // Top-right corner of context output
+    offset.x = offset.x + res_scale.w - debugger_dims.w;
+    offset.y = offset.y;
+
+    this->set_debugger_position(offset);
   }
 }
 

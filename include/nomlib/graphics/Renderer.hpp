@@ -75,6 +75,8 @@ class Renderer
     /// \brief Get the drawing scale for the rendering context.
     ///
     /// \see ::set_scale, ::set_logical_size.
+    ///
+    /// \todo Rename to logical_scale.
     const Point2f scale() const;
 
     /// Get the current viewport dimensions
@@ -141,6 +143,8 @@ class Renderer
     /// \brief Set the drawing scale for this rendering context.
     ///
     /// \see ::set_logical_size.
+    ///
+    /// \todo Rename to set_logical_scale.
     bool set_scale( const Point2f& scale_factor );
 
     /// Set a new drawing area for rendering

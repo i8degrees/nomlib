@@ -658,19 +658,18 @@ TEST_F( libRocketTest, UIMessageBox )
   Size2i dims( 300, 48 );
   std::string doc_file = "messagebox.rml";
 
-  nom::UIMessageBox mbox( pos, dims );
+  nom::UIMessageBox mbox;
 
   EXPECT_EQ( true, mbox.set_desktop( this->desktop.context() ) );
-  EXPECT_EQ( true, mbox.set_document_file( doc_file ) );
+  EXPECT_EQ( true, mbox.load_document_file( doc_file ) )
+  << "UIMessageBox should not be invalid; is the context and document file valid?";
 
-  if( mbox.initialize() == false )
-  {
-    FAIL()
-    << "UIMessageBox should not be invalid; is the context and document file valid?";
-  }
+  mbox.set_position( pos );
+  mbox.set_size( dims );
 
   mbox.set_title_text("INFO.");
   mbox.set_message_text("Diablos");
+  mbox.show();
 
   EXPECT_EQ( "title", mbox.title_id() );
   EXPECT_EQ( "message", mbox.message_id() );
@@ -810,26 +809,28 @@ TEST_F( libRocketTest, UIQuestionDialogBox )
   Size2i dims2 = dims1;
   std::string doc_file2 = doc_file1;
 
-  UIQuestionDialogBox mbox1( pos1, dims1 );
-  EXPECT_EQ( true, mbox1.set_desktop( this->desktop.context() ) );
-  EXPECT_EQ( true, mbox1.set_document_file( doc_file1 ) );
-  if( mbox1.initialize() == false )
-  {
-    FAIL()
-    << "UIQuestionDialogBox should not be invalid (mbox1); is the context and document file valid?";
-  }
+  UIQuestionDialogBox mbox1;
 
-  UIQuestionDialogBox mbox2( pos2, dims2 );
+  EXPECT_EQ( true, mbox1.set_desktop( this->desktop.context() ) );
+  EXPECT_EQ( true, mbox1.load_document_file( doc_file1 ) )
+  << "UIQuestionDialogBox should not be invalid (mbox1); is the context and document file valid?";
+
+  mbox1.set_position(pos1);
+  mbox1.set_size(dims1);
+
+  UIQuestionDialogBox mbox2;
   EXPECT_EQ( true, mbox2.set_desktop( this->desktop.context() ) );
-  EXPECT_EQ( true, mbox2.set_document_file( doc_file2 ) );
-  if( mbox2.initialize() == false )
-  {
-    FAIL()
-    << "UIQuestionDialogBox should not be invalid (mbox2); is the context and document file valid?";
-  }
+  EXPECT_EQ( true, mbox2.load_document_file( doc_file2 ) )
+  << "UIQuestionDialogBox should not be invalid (mbox2); is the context and document file valid?";
+
+  mbox2.set_position(pos2);
+  mbox2.set_size(dims2);
 
   mbox1.set_title_text("CHOICE");
   // mbox1.set_message_text("Are you sure?");
+
+  mbox1.show();
+  mbox2.show();
 
   // Set in questionbox.rml
   EXPECT_EQ( "title", mbox1.title_id() );

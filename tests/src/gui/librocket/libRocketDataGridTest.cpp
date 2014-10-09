@@ -649,9 +649,10 @@ TEST_F( libRocketDataGridTest, UIDataViewList )
   Point2i pos1(60,25);
   std::string doc_file1 = "dataview.rml";
 
-  UIDataViewList store1( pos1, Size2i::null );
+  UIDataViewList store1;
   EXPECT_EQ( true, store1.set_desktop( this->desktop.context() ) );
-  EXPECT_EQ( true, store1.set_document_file( doc_file1 ) );
+  EXPECT_EQ( true, store1.load_document_file( doc_file1 ) )
+  << this->test_set() << " object should not be invalid; is the context and document file valid?";
 
   this->model.reset( new CardsPageDataSource("cards_db") );
   this->db.reset( new CardCollection() );
@@ -672,11 +673,7 @@ TEST_F( libRocketDataGridTest, UIDataViewList )
   // Deck of cards for the data source
   model->append_cards( deck );
 
-  if( store1.initialize() == false )
-  {
-    FAIL()
-    << this->test_set() << " object should not be invalid; is the context and document file valid?";
-  }
+  store1.show();
 
   EXPECT_TRUE( store1.set_column_title(1, "CARDS P. " + std::to_string(model->page() + 1) ) );
 

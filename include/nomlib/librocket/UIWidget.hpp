@@ -32,19 +32,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Transformable.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
-#include "nomlib/math/Rect.hpp"
 #include "nomlib/librocket/RocketUtilities.hpp"
 
 namespace nom {
 
 // Forward declarations
 class UIEventListener;
-class RenderWindow;
 
-class UIWidget: public Transformable
+class UIWidget
 {
   public:
     typedef UIWidget self_type;
@@ -57,16 +54,53 @@ class UIWidget: public Transformable
       MODAL = rocket::ElementDocument::FocusFlags::MODAL
     };
 
-    UIWidget( const Point2i& pos, const Size2i& dims );
+    /// \brief Default constructor; initialize default title element ID.
+    ///
+    /// \see UIWidget::set_desktop, UIWidget::load_document_file,
+    /// UIWidget::show.
+    UIWidget();
 
+    /// \brief Destructor.
     virtual ~UIWidget();
 
-    /// \brief Re-implements Transformable::set_position.
+    /// \brief Get the position of the widget.
+    ///
+    /// \returns The position of the widget (body element) upon success, or
+    /// Point2i::null on failure, such as when a document has not yet been
+    /// loaded into memory.
+    ///
+    /// \remarks This method depends on the document first being loaded into
+    /// memory.
+    virtual Point2i position() const;
+
+    /// \brief Get the size of the widget.
+    ///
+    /// \returns The size of the widget (body element) upon success, or
+    /// Size2i::null on failure, such as when a document has not yet been
+    /// loaded into memory.
+    ///
+    /// \remarks This method depends on the document first being loaded into
+    /// memory.
+    virtual Size2i size() const;
+
+    /// \brief Set the position of the widget.
+    ///
+    /// \param pos The X, Y coordinates used for document positioning; these
+    /// will be relative to the context in use.
+    ///
+    /// \remarks This method depends on the document first being loaded into
+    /// memory.
     virtual void set_position( const Point2i& pos );
 
-    /// \brief Re-implements Transformable::set_size.
+    /// \brief Set the size of the widget.
     ///
-    /// \remarks The size does not take precedence over the max-width and
+    /// \param dims The width and height to use for document dimensions; these
+    /// will be relative to the context in use.
+    ///
+    /// \remarks This method depends on the document first being loaded into
+    /// memory.
+    ///
+    /// \note The size does not take precedence over the max-width and
     /// max-height style sheet properties when they have been set by the
     /// end-user.
     virtual void set_size( const Size2i& dims );
@@ -88,10 +122,7 @@ class UIWidget: public Transformable
 
     bool set_desktop( rocket::Context* ctx );
 
-    /// \todo Rename to load_document_file?
-    bool set_document_file( const std::string& filename );
-
-    void set_document_size();
+    bool load_document_file( const std::string& filename );
 
     void show();
     void hide();
@@ -122,12 +153,6 @@ class UIWidget: public Transformable
                                   const std::string& ev,
                                   UIEventListener* observer,
                                   bool interruptible = false );
-
-    /// \brief Implements UIWidget::draw method.
-    virtual void draw( RenderTarget& target ) const;
-
-    /// \brief Implements UIWidget::update method.
-    virtual void update();
 
   private:
     /// \remarks This pointer is **not** owned by us, and must not be freed.

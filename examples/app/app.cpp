@@ -292,37 +292,35 @@ class App: public nom::SDLApp
 
       this->window[0].make_current();
 
-      this->info_box[0] = nom::UIMessageBox(  INFO_BOX_ORIGINS[0],
-                                              INFO_BOX_SIZES[0] );
-
+      // info_box[0]
       this->info_box[0].set_desktop( this->desktop.context() );
-      this->info_box[0].set_document_file( "messagebox.rml" );
-
-      if( this->info_box[0].initialize() == false )
+      if( this->info_box[0].load_document_file( "messagebox.rml" ) == false )
       {
-        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "UIMessageBox should not be invalid; is the context and document file valid?" );
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
+                      "UIMessageBox should not be invalid; is the context and document file valid?" );
         return false;
       }
 
+      this->info_box[0].set_position( INFO_BOX_ORIGINS[0] );
+      this->info_box[0].set_size( INFO_BOX_SIZES[0] );
       this->info_box[0].set_title_text( RESOURCE_INFO_BOX_TITLE_STRINGS[0] );
       this->info_box[0].set_message_text( RESOURCE_INFO_BOX_TEXT_STRINGS[0] );
+      this->info_box[0].show();
 
-      this->info_box[1] = nom::UIMessageBox (
-                                              INFO_BOX_ORIGINS[1],
-                                              INFO_BOX_SIZES[1]
-                                            );
-
+      // info_box[1]
       this->info_box[1].set_desktop( this->desktop.context() );
-      this->info_box[1].set_document_file( "messagebox.rml" );
-
-      if( this->info_box[1].initialize() == false )
+      if( this->info_box[1].load_document_file( "messagebox.rml" ) == false )
       {
-        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "UIMessageBox should not be invalid; is the context and document file valid?" );
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
+                      "UIMessageBox should not be invalid; is the context and document file valid?" );
         return false;
       }
 
+      this->info_box[1].set_position( INFO_BOX_ORIGINS[1] );
+      this->info_box[1].set_size( INFO_BOX_SIZES[1] );
       this->info_box[1].set_title_text( RESOURCE_INFO_BOX_TITLE_STRINGS[1] );
       this->info_box[1].set_message_text( RESOURCE_INFO_BOX_TEXT_STRINGS[1] );
+      this->info_box[1].show();
 
       this->sprite.set_position( nom::Point2i(this->info_box[0].position().x - this->sprite.size().w, this->info_box[0].position().y) );
       this->ani_sprite.set_position( nom::Point2i(this->info_box[0].position().x + this->info_box[0].size().w + this->sprite.size().w, this->info_box[0].position().y) );

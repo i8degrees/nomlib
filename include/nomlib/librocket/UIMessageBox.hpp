@@ -51,19 +51,14 @@ class UIMessageBox: public UIWidget
     // typedef std::shared_ptr<self_type> shared_ptr;
     // typedef std::unique_ptr<self_type> unique_ptr;
 
-    /// \brief Default constructor; initialize object to an invalid state --
-    /// its position and size are set to the value of Point2i::null and
-    /// Size2i::null, respectively.
+    /// \brief Default constructor; initialize default element IDs.
     ///
-    /// \see UIWidget::set_desktop, UIWidget::set_document_file,
-    /// UIMessageBox::initialize.
+    /// \see UIWidget::set_desktop, UIWidget::load_document_file,
+    /// UIWidget::show.
     UIMessageBox();
 
-    UIMessageBox( const Point2i& pos, const Size2i& dims );
-
+    /// \brief Destructor.
     virtual ~UIMessageBox();
-
-    virtual bool initialize();
 
     bool enabled() const;
 

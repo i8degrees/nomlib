@@ -35,16 +35,7 @@ using namespace Rocket::Core;
 
 namespace nom {
 
-UIDataViewList::UIDataViewList() :
-  UIWidget( Point2i::null, Size2i::null )
-{
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
-
-  this->set_selection( 0 );
-}
-
-UIDataViewList::UIDataViewList( const Point2i& pos, const Size2i& dims ) :
-  UIWidget( pos, dims )
+UIDataViewList::UIDataViewList()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 
@@ -54,24 +45,6 @@ UIDataViewList::UIDataViewList( const Point2i& pos, const Size2i& dims ) :
 UIDataViewList::~UIDataViewList()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
-}
-
-bool UIDataViewList::initialize()
-{
-  NOM_ASSERT( this->valid() != false );
-
-  if( this->valid() == true )
-  {
-    this->set_position( this->position() );
-
-    this->set_document_size();
-
-    this->show();
-
-    return true;
-  }
-
-  return false;
 }
 
 std::string UIDataViewList::column_title( int col ) const
@@ -124,7 +97,7 @@ bool UIDataViewList::set_column_title( int col, const std::string& name )
   return false;
 }
 
-// current_page_ + 1 * id(selection_) - 1 = 5*11-1
+// curr_page * per_page + selection
 int UIDataViewList::selection() const
 {
   return this->selection_;

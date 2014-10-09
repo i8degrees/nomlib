@@ -7,9 +7,8 @@
       body
       {
         /* TTcards at x2 scale */
-        /* FIXME: */
-        /*left: 60;*/
-        /*top: 25;*/
+        left: 60;
+        top: 25;
         font-size: 12px;
         line-height: 0.90;
         /* FIXME: */
@@ -120,15 +119,20 @@
   </head>
   <body template="window">
 
-    <datagrid source="cards_db.cards">
-      <col fields="status" formatter="card_status" width="8%"></col>
-      <col fields="name" formatter="card" width="75%">CARDS P. 1</col>
-      <col fields="num" width="10%">NUM.</col>
-    </datagrid>
+    <!-- Debugging aid -->
+    <handle move_target="#document">
 
-    <!-- Assumes that the initial starting page is always one (index of zero) -->
-    <page id='page-left' class='' />
-    <page id='page-right' class='page-right' />
+      <datagrid source="cards_db.cards">
+        <col fields="status" formatter="card_status" width="8%"></col>
+        <col fields="name" formatter="card" width="75%">CARDS P. 1</col>
+        <col fields="num" width="10%">NUM.</col>
+      </datagrid>
+
+      <!-- Assumes that the initial starting page is always one (index of zero) -->
+      <page id='page-left' class='' />
+      <page id='page-right' class='page-right' />
+
+  </handle>
 
   </body>
 </rml>

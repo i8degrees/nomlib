@@ -48,22 +48,17 @@ namespace Controls {
 namespace nom {
 
 /// \see http://librocket.com/wiki/documentation/tutorials/Datagrid
-///
-/// \todo Consider renaming class to UIDataViewPagedList or alike..?
 class UIDataViewList: public nom::UIWidget
 {
   public:
-    /// \brief Default constructor.
+    /// \brief Default constructor; initialize default selection.
     ///
-    /// \see UIWidget::set_desktop, UIWidget::set_document_file,
-    /// UIDataViewList::initialize.
+    /// \see UIWidget::set_desktop, UIWidget::load_document_file,
+    /// UIWidget::show.
     UIDataViewList();
 
-    UIDataViewList( const Point2i& pos, const Size2i& dims );
-
+    /// \brief Destructor.
     virtual ~UIDataViewList();
-
-    virtual bool initialize();
 
     std::string column_title( int col ) const;
 

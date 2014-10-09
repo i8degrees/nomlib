@@ -34,17 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-UIMessageBox::UIMessageBox() :
-  UIWidget( Point2i::null, Size2i::null )
-{
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
-
-  // Defaults
-  this->set_message_id( "message" );
-}
-
-UIMessageBox::UIMessageBox( const Point2i& pos, const Size2i& dims ) :
-  UIWidget( pos, dims )
+UIMessageBox::UIMessageBox()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 
@@ -55,24 +45,6 @@ UIMessageBox::UIMessageBox( const Point2i& pos, const Size2i& dims ) :
 UIMessageBox::~UIMessageBox()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
-}
-
-bool UIMessageBox::initialize()
-{
-  NOM_ASSERT( this->valid() != false );
-
-  if( this->valid() == true )
-  {
-    this->set_position( this->position() );
-
-    this->set_document_size();
-
-    this->show();
-
-    return true;
-  }
-
-  return false;
 }
 
 bool UIMessageBox::enabled() const

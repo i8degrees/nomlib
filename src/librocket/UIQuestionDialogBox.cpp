@@ -33,35 +33,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-UIQuestionDialogBox::UIQuestionDialogBox() :
-  UIMessageBox( Point2i::null, Size2i::null )
+UIQuestionDialogBox::UIQuestionDialogBox()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 
   // Defaults
+  this->set_selection(-1);
   this->set_message_id( "question" );
   this->set_response_id( "response" );
   this->set_element_type( "button" );
 }
 
-UIQuestionDialogBox::UIQuestionDialogBox  (
-                                            const Point2i& pos,
-                                            const Size2i& size
-                                          ) :
-  UIMessageBox( pos, size ),
-  selection_( -1 )
-{
-  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
-
-  // Defaults
-  this->set_message_id( "question" );
-  this->set_response_id( "response" );
-  this->set_element_type( "button" );
-}
 
 UIQuestionDialogBox::~UIQuestionDialogBox()
 {
-  // NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 const std::string& UIQuestionDialogBox::response_id() const

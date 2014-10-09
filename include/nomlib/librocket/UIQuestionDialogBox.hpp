@@ -33,7 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
 #include "nomlib/librocket/UIMessageBox.hpp"
@@ -50,17 +49,13 @@ class UIQuestionDialogBox: public UIMessageBox
     typedef UIQuestionDialogBox self_type;
     typedef self_type* raw_ptr;
 
-    /// \brief Default constructor; initialize object to an invalid state --
-    /// its position and size are set to the value of Point2i::null and
-    /// Size2i::null, respectively.
+    /// \brief Default constructor; initialize default element IDs.
     ///
-    /// \see UIWidget::set_desktop, UIWidget::set_document_file,
-    /// UIMessageBox::initialize.
+    /// \see UIWidget::set_desktop, UIWidget::load_document_file,
+    /// UIWidget::show.
     UIQuestionDialogBox();
 
-    UIQuestionDialogBox ( const Point2i& pos,
-                          const Size2i& size );
-
+    /// \brief Destructor.
     virtual ~UIQuestionDialogBox();
 
     /// \brief The ID selector used to search for the number of children; the

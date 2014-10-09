@@ -8,6 +8,7 @@ body
 	color: white;
 }
 
+/* TODO: Remove these defaults */
 body.window
 {
 	/*padding-top: 43px;*/

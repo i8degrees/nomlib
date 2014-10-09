@@ -29,7 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/librocket/UIWidget.hpp"
 
 // Forward declarations
-#include "nomlib/graphics/RenderWindow.hpp"
 #include "nomlib/librocket/RocketSDL2SystemInterface.hpp"
 
 // Private headers
@@ -38,9 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-UIWidget::UIWidget( const Point2i& pos, const Size2i& dims ) :
-  Transformable( pos, dims ),
-  title_id_( "title" )
+UIWidget::UIWidget() :
+  title_id_("title")
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
 }
@@ -53,31 +51,74 @@ UIWidget::~UIWidget()
   this->document_ = nullptr;
 }
 
+Point2i UIWidget::position() const
+{
+  Point2i pos( Point2i::null );
+
+  // body element of the RML document
+  rocket::Element* target = this->document();
+
+  NOM_ASSERT( target != nullptr );
+  if( target ) {
+
+    const rocket::Property* pos_x = target->GetProperty("left");
+    const rocket::Property* pos_y = target->GetProperty("top");
+
+    if( pos_x ) {
+      pos.x = pos_x->Get<int>();
+    }
+
+    if( pos_y ) {
+      pos.y = pos_y->Get<int>();
+    }
+  }
+
+  return pos;
+}
+
+Size2i UIWidget::size() const
+{
+  Size2i dims( Size2i::null );
+
+  // body element of the RML document
+  rocket::Element* target = this->document();
+  NOM_ASSERT( target != nullptr );
+  if( target ) {
+
+    const rocket::Property* dims_w = target->GetProperty("width");
+    const rocket::Property* dims_h = target->GetProperty("height");
+
+    if( dims_w ) {
+      dims.w = dims_w->Get<int>();
+    }
+
+    if( dims_h ) {
+      dims.h = dims_h->Get<int>();
+    }
+  }
+
+  return dims;
+}
+
 void UIWidget::set_position( const Point2i& pos )
 {
-  Transformable::set_position( pos );
+  NOM_ASSERT( this->valid() == true );
+  if( this->valid() == true ) {
 
-  NOM_ASSERT( this->document() != nullptr );
-
-  // FIXME:
-  // if( this->document() != nullptr && pos != Point2i::null )
-  if( this->document() != nullptr )
-  {
-    this->document()->SetProperty( "left", rocket::Property(pos.x, rocket::Property::PX) );
-    this->document()->SetProperty( "top", rocket::Property(pos.y, rocket::Property::PX) );
+    // body element of the RML document
+    this->document()->SetProperty("left", rocket::Property(pos.x, rocket::Property::PX) );
+    this->document()->SetProperty("top", rocket::Property(pos.y, rocket::Property::PX) );
   }
 }
 
 void UIWidget::set_size( const Size2i& dims )
 {
-  Transformable::set_size( dims );
+  NOM_ASSERT( this->valid() == true );
+  if( this->valid() == true ) {
 
-  NOM_ASSERT( this->document() != nullptr );
-
-  if( this->document() != nullptr )
-  {
-    this->document()->SetProperty( "width", rocket::Property(dims.w, rocket::Property::PX) );
-    this->document()->SetProperty( "height", rocket::Property(dims.h, rocket::Property::PX) );
+    // body element of the RML document
+    this->document()->SetProperty("width", rocket::Property(dims.w, rocket::Property::PX) );
+    this->document()->SetProperty("height", rocket::Property(dims.h, rocket::Property::PX) );
   }
 }
 
@@ -189,7 +230,7 @@ bool UIWidget::set_desktop( rocket::Context* ctx )
   return true;
 }
 
-bool UIWidget::set_document_file( const std::string& filename )
+bool UIWidget::load_document_file( const std::string& filename )
 {
   rocket::ElementDocument* doc = this->desktop()->LoadDocument( filename.c_str() );
 
@@ -207,31 +248,9 @@ bool UIWidget::set_document_file( const std::string& filename )
   return false;
 }
 
-void UIWidget::set_document_size()
-{
-  rocket::ElementList tags;
-
-  rocket::ElementUtilities::GetElementsByTagName( tags, this->document()->GetParentNode(), "body" );
-
-  for( auto itr = tags.begin(); itr != tags.end(); ++itr )
-  {
-    if( (*itr) && (*itr)->GetClassNames().Find( "window" ) != nom::npos )
-    {
-      if( this->size() == Size2i::null )
-      {
-        // FIXME:
-        this->set_size( Size2i( (*itr)->GetBox().GetSize().x, (*itr)->GetBox().GetSize().y ) );
-      }
-      else
-      {
-        this->set_size( this->size() );
-      }
-    }
-  }
-}
-
 void UIWidget::show()
 {
+  NOM_ASSERT( this->valid() == true );
   if( this->document() )
   {
     this->document()->Show();
@@ -240,6 +259,7 @@ void UIWidget::show()
 
 void UIWidget::hide()
 {
+  NOM_ASSERT( this->valid() == true );
   if( this->document() )
   {
     this->document()->Hide();
@@ -248,6 +268,7 @@ void UIWidget::hide()
 
 void UIWidget::close()
 {
+  NOM_ASSERT( this->valid() == true );
   if( this->document() )
   {
     this->document()->Close();
@@ -256,6 +277,7 @@ void UIWidget::close()
 
 void UIWidget::set_focus( uint32 focus )
 {
+  NOM_ASSERT( this->valid() == true );
   if( this->document() )
   {
     this->document()->Show( focus );
@@ -368,16 +390,6 @@ void UIWidget::register_event_listener( rocket::Element* element,
                                         bool interruptible )
 {
   element->AddEventListener( ev.c_str(), observer, interruptible );
-}
-
-void UIWidget::draw( RenderTarget& target ) const
-{
-  // ...
-}
-
-void UIWidget::update()
-{
-  // ...
 }
 
 } // namespace nom

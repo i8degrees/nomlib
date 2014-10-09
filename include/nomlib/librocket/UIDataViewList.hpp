@@ -63,19 +63,6 @@ class UIDataViewList: public nom::UIWidget
     std::string column_title( int col ) const;
 
     bool set_column_title( int col, const std::string& name );
-
-    /// \fixme
-    int selection() const;
-
-    /// \fixme
-    void set_selection( int idx );
-
-  private:
-    /// \brief The currently selected card.
-    ///
-    /// \remarks This maps internally to the element's index position in
-    /// the active cards database.
-    int selection_;
 };
 
 } // namespace nom

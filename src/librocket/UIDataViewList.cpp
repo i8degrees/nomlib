@@ -38,8 +38,6 @@ namespace nom {
 UIDataViewList::UIDataViewList()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
-
-  this->set_selection( 0 );
 }
 
 UIDataViewList::~UIDataViewList()
@@ -95,17 +93,6 @@ bool UIDataViewList::set_column_title( int col, const std::string& name )
   }
 
   return false;
-}
-
-// curr_page * per_page + selection
-int UIDataViewList::selection() const
-{
-  return this->selection_;
-}
-
-void UIDataViewList::set_selection( int idx )
-{
-  this->selection_ = idx;
 }
 
 } // namespace nom

@@ -125,6 +125,10 @@ bool CardCollection::load_db()
   this->cards_.push_back(Card( 53,"Tonberry King",0));
   this->cards_.push_back(Card( 54,"Wedge, Biggs",0));
 
+  // pg 5 (test partial page calculations)
+  this->cards_.push_back(Card( 55,"Fujin, Raijin",0));
+  this->cards_.push_back(Card( 56,"Elvoret",0));
+
   return true;
 }
 

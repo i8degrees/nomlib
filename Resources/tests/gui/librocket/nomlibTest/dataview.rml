@@ -124,7 +124,7 @@
 
       <datagrid source="cards_db.cards">
         <col fields="status" formatter="card_status" width="8%"></col>
-        <col fields="name" formatter="card" width="75%">CARDS P. 1</col>
+        <col fields="available, id, name" formatter="card_name" width="75%">CARDS P. 1</col>
         <col fields="num" width="10%">NUM.</col>
       </datagrid>
 

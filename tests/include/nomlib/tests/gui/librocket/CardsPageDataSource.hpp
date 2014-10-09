@@ -68,7 +68,7 @@ class CardsPageDataSource: public Rocket::Controls::DataSource
 
     /// \brief Get the total number of rows for a page.
     ///
-    /// \returns An integer value of the number of rows per table page.
+    /// \returns An integer value of the number of rows per the current page.
     ///
     /// \note The number of rows returned influence the minimal size (height)
     /// of the the datagrid, even when RCSS properties such as 'max-height',
@@ -157,7 +157,6 @@ class CardsPageDataSource: public Rocket::Controls::DataSource
     int page() const;
 
     void set_per_page( int pg );
-    void set_total_pages( int num_pages );
 
     /// \brief Set the current page in the table.
     ///
@@ -165,31 +164,46 @@ class CardsPageDataSource: public Rocket::Controls::DataSource
     /// refresh on all row indexes within the table.
     void set_page( int page );
 
+    /// \brief Get the row index (position) of a page.
+    ///
+    /// \param index  The row index (of the internal representation) to map.
+    /// \param pg     The page number to use to map.
+    ///
+    /// \returns A non-negative row index that is accurate for the currently
+    /// rendered page, or negative one (-1) on failure, such as an invalid page
+    /// or row index.
+    ///
+    /// \remarks This method is useful for mapping game objects, such as a game
+    /// cursor controlled by the user's keyboard.
+    int map_page_row(int index, int pg) const;
+
     /// \brief Recalculate the total number of pages.
     ///
     /// \remarks The total number of pages is calculated by dividing the total
-    /// number of rows (in storage, not per page) by the number of cards per
-    /// page.
+    /// number of rows (internally stored) by the number of cards set for a
+    /// single page.
     ///
     /// \note This method should ordinarily not need to be called.
     ///
-    /// \see ::num_rows, ::per_page
+    /// \see ::num_rows, ::set_per_page
     void update();
 
   private:
+    void set_total_pages( int num_pages );
+
     /// \brief The name of the table of the data source.
     std::string table_name_;
 
-    /// \brief The internal storage container for the data source.
+    /// \brief The internal storage for the data source.
     std::vector<Card> db_;
 
     /// \brief The number of cards shown per page.
     int per_page_;
 
-    /// \brief The total number of available card pages.
+    /// \brief The total number of available pages.
     int total_pages_;
 
-    /// \brief The currently selected page.
+    /// \brief The current (shown) page.
     int page_;
 };
 
@@ -218,20 +232,20 @@ class CardStatusFormatter: public Rocket::Controls::DataFormatter
 /// \remarks This interface should **not** be used outside of unit tests; for
 /// starters, assertion macros are disabled for running under this particular
 /// testing environment.
-class CardFormatter: public Rocket::Controls::DataFormatter
+class CardNameFormatter: public Rocket::Controls::DataFormatter
 {
   public:
     /// \brief Default constructor.
     ///
-    /// \remarks The default column formatter used is 'card'.
-    CardFormatter();
+    /// \remarks The default column formatter used is 'card_name'.
+    CardNameFormatter();
 
-    virtual ~CardFormatter();
+    virtual ~CardNameFormatter();
 
     /// \brief Construct an object using a custom column formatter name.
     ///
     /// \param formatter The datagrid column formatter attribute name.
-    CardFormatter( const std::string& formatter );
+    CardNameFormatter( const std::string& formatter );
 
     void FormatData(  Rocket::Core::String& formatted_data,
                       const Rocket::Core::StringList& raw_data );

@@ -77,7 +77,7 @@ class UIContextEventHandler: public IUIEventHandler
     virtual int translate_key_modifiers( const Event& ev );
 
   private:
-    UIContext* context_;
+    UIContext* ctx_;
 };
 
 } // namespace nom

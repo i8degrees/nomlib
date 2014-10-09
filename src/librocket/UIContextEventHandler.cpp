@@ -39,11 +39,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 UIContextEventHandler::UIContextEventHandler( UIContext* ctx ) :
-  context_( ctx )
+  ctx_( ctx )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  NOM_ASSERT( this->context_->context() != nullptr );
+  NOM_ASSERT( this->ctx_->context() != nullptr );
 }
 
 UIContextEventHandler::~UIContextEventHandler()
@@ -64,7 +64,7 @@ void UIContextEventHandler::process_event( const Event& ev )
         case SDL_WINDOWEVENT_SIZE_CHANGED:
         {
           // Update desktop dimensions
-          this->context_->resize( Size2i( ev.window.data1, ev.window.data2 ) );
+          this->ctx_->resize( Size2i( ev.window.data1, ev.window.data2 ) );
           break;
         }
       }
@@ -73,57 +73,55 @@ void UIContextEventHandler::process_event( const Event& ev )
 
     case SDL_MOUSEMOTION:
     {
-      this->context_->context()->ProcessMouseMove( ev.motion.x, ev.motion.y, this->translate_key_modifiers(ev) );
+      this->ctx_->context()->ProcessMouseMove(  ev.motion.x,
+                                                ev.motion.y,
+                                                this->translate_key_modifiers(ev) );
       break;
     }
 
     case SDL_MOUSEBUTTONDOWN:
     {
-      this->context_->context()->ProcessMouseButtonDown( this->translate_mouse_button(ev), this->translate_key_modifiers(ev) );
+      this->ctx_->context()->ProcessMouseButtonDown(  this->translate_mouse_button(ev),
+                                                      this->translate_key_modifiers(ev) );
       break;
     }
 
     case SDL_MOUSEBUTTONUP:
     {
-      this->context_->context()->ProcessMouseButtonUp( this->translate_mouse_button(ev), this->translate_key_modifiers(ev) );
+      this->ctx_->context()->ProcessMouseButtonUp(  this->translate_mouse_button(ev),
+                                                    this->translate_key_modifiers(ev) );
       break;
     }
 
     case SDL_MOUSEWHEEL:
     {
-      this->context_->context()->ProcessMouseWheel( this->translate_mouse_wheel(ev), this->translate_key_modifiers(ev) );
+      this->ctx_->context()->ProcessMouseWheel( this->translate_mouse_wheel(ev),
+                                                this->translate_key_modifiers(ev) );
       break;
     }
 
     case SDL_KEYDOWN:
     {
-      switch( ev.key.sym )
+      // Intercept key input shift-~ for toggling the visual debugger
+      if( ev.key.sym == SDLK_BACKQUOTE && ev.key.mod == KMOD_LSHIFT )
       {
-        default:
+        NOM_ASSERT( this->ctx_->valid() == true );
+        if( this->ctx_->debugger_enabled() == true )
         {
-          this->context_->context()->ProcessKeyDown( this->translate_key(ev), this->translate_key_modifiers(ev) );
+          Rocket::Debugger::SetVisible( ! Rocket::Debugger::IsVisible() );
           break;
         }
+      }
 
-        // Check for a shift-~ to toggle the debugger.
-        case SDLK_BACKQUOTE:
-        {
-          if( this->context_->debugger_enabled() )
-          {
-            if( ev.key.mod == KMOD_LSHIFT || ev.key.mod == KMOD_RSHIFT )
-            {
-              Rocket::Debugger::SetVisible( ! Rocket::Debugger::IsVisible() );
-            }
-          }
-          break;
-        } // end SDLK_BACKQUOTE
-
-      } // end switch
+      this->ctx_->context()->ProcessKeyDown(  this->translate_key(ev),
+                                              this->translate_key_modifiers(ev) );
+      break;
     } // end SDL_KEYDOWN
 
     case SDL_KEYUP:
     {
-      this->context_->context()->ProcessKeyUp( this->translate_key(ev), this->translate_key_modifiers(ev) );
+      this->ctx_->context()->ProcessKeyUp(  this->translate_key(ev),
+                                            this->translate_key_modifiers(ev) );
       break;
     } // end SDL_KEYUP
 
@@ -132,7 +130,7 @@ void UIContextEventHandler::process_event( const Event& ev )
     // virtual keyboard for the end-user.
     case SDL_TEXTINPUT:
     {
-      this->context_->context()->ProcessTextInput( ev.text.text );
+      this->ctx_->context()->ProcessTextInput( ev.text.text );
       break;
     }
   }

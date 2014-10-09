@@ -344,8 +344,10 @@ void UIContext::resize( const Size2i& dims )
 void UIContext::process_event( const Event& ev )
 {
   NOM_ASSERT( this->evt_ != nullptr );
-
-  this->evt_->process_event( ev );
+  if( this->evt_ != nullptr )
+  {
+    this->evt_->process_event( ev );
+  }
 }
 
 void UIContext::update()

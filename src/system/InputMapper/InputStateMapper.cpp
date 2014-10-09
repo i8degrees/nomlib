@@ -262,14 +262,23 @@ bool InputStateMapper::on_key_press( const InputAction& mapping, const Event& ev
 
   if( evt.type != ev.type ) return false;
 
-  // Handle matching the set keyboard actions to the user's input
-  if( evt.key.sym == ev.key.sym && evt.key.mod == ev.key.mod
-                                &&
-      evt.key.repeat == ev.key.repeat
-    )
+  // Handle a keyboard action with repeat; only trigger if the event is a
+  // repeating one
+  if( evt.key.repeat != 0 )
   {
-    // Matched
-    return true;
+    if( evt.key.sym == ev.key.sym && evt.key.mod == ev.key.mod &&
+        evt.key.repeat == ev.key.repeat )
+    {
+      // Matched
+      return true;
+    }
+  }
+  else  // Handle normal keyboard action; repeating makes no difference to us
+  {
+    if( evt.key.sym == ev.key.sym && evt.key.mod == ev.key.mod ) {
+      // Matched
+      return true;
+    }
   }
 
   // No match to any mapped action

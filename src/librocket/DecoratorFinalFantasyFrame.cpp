@@ -93,6 +93,10 @@ void DecoratorFinalFantasyFrame::RenderElement(Rocket::Core::Element* element, R
   NOM_ASSERT( context != nullptr );
   if( context == nullptr ) return;
 
+  // Not ready to render yet; this can happen when there is no width or height
+  // defined in 'body.window'.
+  if( size.x <= 0 || size.y <= 0 ) return;
+
   // Check for whether or not we need to update our decorator
   if( this->coords_.x != position.x || this->coords_.y != position.y || this->coords_.w != size.x || this->coords_.h != size.y )
   {
@@ -106,12 +110,17 @@ void DecoratorFinalFantasyFrame::RenderElement(Rocket::Core::Element* element, R
     // window, else it will vanish on us
     if( this->coords_.x <= 0 )
     {
-      // Adjust for the proper width, otherwise stretching of the layout occurs
-      // (a possible bug in libRocket?)
-      this->coords_.w = this->coords_.w - abs( this->coords_.x );
+      int x_offset = abs( this->coords_.x );
 
-      // Reset afterwards (now that we are done using the value above)
-      this->coords_.x = 0;
+      // We need to recalculate widths when the object is partially off-screen,
+      // otherwise stretching of the layout occurs -- a possible bug in
+      // libRocket?
+      if( this->coords_.w > x_offset )  // Bad things happen if w < 0
+      {
+        this->coords_.w = this->coords_.w - x_offset;
+        this->coords_.x = 0;
+      }
+      // else The object is entirely offscreen (this is valid)
     }
 
     decorator_->set_bounds( this->coords_ );

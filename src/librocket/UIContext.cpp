@@ -158,6 +158,77 @@ void UIContext::set_debugger_position(const Point2i& pos)
   // } // end for tags loop
 }
 
+Size2i UIContext::beacon_size() const
+{
+  Size2i dims( Size2i::null );
+
+  if( this->valid() ) {
+
+    Rocket::Core::ElementDocument* target =
+      this->context()->GetDocument("rkt-debug-log-beacon");
+
+    NOM_ASSERT( target != nullptr );
+    if( target ) {
+      // NOM_DUMP( target->GetSourceURL().CString() );
+
+      Rocket::Core::Element* body_tag =
+        target->GetParentNode();
+
+      NOM_ASSERT( body_tag != nullptr );
+      if( body_tag ) {
+
+        Rocket::Core::Element* debug_info =
+          body_tag->GetElementById("rkt-debug-log-beacon");
+
+        NOM_ASSERT( debug_info != nullptr );
+        if( debug_info ) {
+
+          dims.w = debug_info->GetBox().GetSize().x;
+          dims.h = debug_info->GetBox().GetSize().y;
+
+        } // end if debug_info
+      } // end if body_tag
+    } // end if target
+  } // end if valid context
+
+  return dims;
+}
+
+void UIContext::set_beacon_position(const Point2i& pos)
+{
+  if( this->valid() ) {
+
+    Rocket::Core::ElementDocument* target =
+      this->context()->GetDocument("rkt-debug-log-beacon");
+
+    NOM_ASSERT( target != nullptr );
+    if( target ) {
+      // NOM_DUMP( target->GetSourceURL().CString() );
+
+      Rocket::Core::Element* body_tag =
+        target->GetParentNode();
+
+      NOM_ASSERT( body_tag != nullptr );
+      if( body_tag ) {
+
+        Rocket::Core::Element* debug_info =
+          body_tag->GetElementById("rkt-debug-log-beacon");
+
+        NOM_ASSERT( debug_info != nullptr );
+        if( debug_info ) {
+
+          Rocket::Core::Property pos_x( pos.x, Rocket::Core::Property::PX);
+          Rocket::Core::Property pos_y( pos.y, Rocket::Core::Property::PX);
+
+          debug_info->SetProperty("left", pos_x);
+          debug_info->SetProperty("top", pos_y);
+
+        } // end if debug_info
+      } // end if body_tag
+    } // end if target
+  } // end if valid context
+}
+
 Rocket::Core::Context* UIContext::context() const
 {
   return this->context_;
@@ -297,9 +368,13 @@ void UIContext::draw()
 
 void UIContext::initialize_debugger()
 {
-  // Alignment offsets for visual debugger
-  Point2i offset( Point2i::zero );
+  // Alignment offsets for visual debugger tools
   Point2f scale( 1.0f, 1.0f );
+  Point2i debugger_offset( Point2i::zero);
+  Point2i beacon_offset( Point2i::zero);
+  Size2i debugger_dims;
+  Size2i beacon_dims;
+  Size2i res_scale;
 
   if( this->valid() == false ||
       Rocket::Debugger::Initialise( this->context() ) == false )
@@ -321,25 +396,38 @@ void UIContext::initialize_debugger()
     SDL_RenderGetScale( context->renderer(), &scale.x, &scale.y );
   }
 
-  Size2i debugger_dims;
+  // Translations for independent resolution scale dimensions (SDL2)
+  res_scale.w = this->res_.w / scale.x;
+  res_scale.h = this->res_.h / scale.y;
+
   debugger_dims = this->debugger_size();
 
   if( debugger_dims != Size2i::null ) {
 
-    // Translations for independent resolution scale dimensions (SDL2)
-    Size2i res_scale;
-    res_scale.w = this->res_.w / scale.x;
-    res_scale.h = this->res_.h / scale.y;
-
     // Translations for debugger position
-    offset.x = offset.x * scale.x;
-    offset.y = offset.y * scale.y;
+    debugger_offset.x = debugger_offset.x * scale.x;
+    debugger_offset.y = debugger_offset.y * scale.y;
 
     // Top-right corner of context output
-    offset.x = offset.x + res_scale.w - debugger_dims.w;
-    offset.y = offset.y;
+    debugger_offset.x = debugger_offset.x + res_scale.w - debugger_dims.w;
+    debugger_offset.y = debugger_offset.y;
 
-    this->set_debugger_position(offset);
+    this->set_debugger_position(debugger_offset);
+  }
+
+  beacon_dims = this->beacon_size();
+
+  if( beacon_dims != Size2i::null ) {
+
+    // Translations for beacon position
+    beacon_offset.x = beacon_offset.x * scale.x;
+    beacon_offset.y = beacon_offset.y * scale.y;
+
+    // Top-right corner of context output
+    beacon_offset.x = beacon_offset.x + res_scale.w - beacon_dims.w;
+    beacon_offset.y = beacon_offset.y;
+
+    this->set_beacon_position(beacon_offset);
   }
 }
 

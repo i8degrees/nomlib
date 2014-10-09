@@ -93,7 +93,7 @@ class UIContext
     /// within ::create.
     Size2i debugger_size() const;
 
-    /// \brief Set the visual debugger's position on the screen.
+    /// \brief Set the visual debugger's position.
     ///
     /// \param pos The X, Y coordinates used for positioning; these will be
     /// relative to the context's dimensions.
@@ -101,6 +101,24 @@ class UIContext
     /// \remarks This method depends on the visual debugger being initialized
     /// within ::create.
     void set_debugger_position(const Point2i& pos);
+
+    /// \brief Get the visual error beacon dimensions.
+    ///
+    /// \returns The size of the visual err beacon on success, or Size2i::null
+    /// on failure, such as when the debugger has not been initialized.
+    ///
+    /// \remarks This method depends on the visual debugger being initialized
+    /// within ::create.
+    Size2i beacon_size() const;
+
+    /// \brief Set the visual error beacon position.
+    ///
+    /// \param pos The X, Y coordinates used for positioning; these will be
+    /// relative to the context's dimensions.
+    ///
+    /// \remarks This method depends on the visual debugger being initialized
+    /// within ::create.
+    void set_beacon_position(const Point2i& pos);
 
     /// \brief Get libRocket's context.
     ///
@@ -161,6 +179,9 @@ class UIContext
 
   private:
     /// \brief Initialize libRocket's visual debugger tool.
+    ///
+    /// \remarks This method call is necessary to support SDL2's independent
+    /// resolution scale.
     ///
     /// \todo Handle positioning of the event log window in regards to
     /// independent scale.

@@ -587,7 +587,7 @@ TEST_F( libRocketTest, EventListenerTest )
 
   for( auto itr = tags.begin(); itr != tags.end(); ++itr )
   {
-    NOM_DUMP( (*itr)->GetTagName().CString() );
+    // NOM_DUMP( (*itr)->GetTagName().CString() );
 
     evt.register_event_listener( *itr, "mousescroll", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) { this->on_wheel( ev ); } ) );
     evt.register_event_listener( *itr, "keydown", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) { this->on_keydown( ev ); } ) );
@@ -650,22 +650,22 @@ TEST_F( libRocketTest, EventListenerTest )
   EXPECT_TRUE( this->compare() );
 }
 
+/// \todo Relocate into UIWidget test case
 TEST_F( libRocketTest, UIMessageBox )
 {
-  // As per the positioning units used for nom::MessageBox ex1 in
-  // examples/gui_messagebox.cpp
-  Point2i pos( 38, 83 );
-  Size2i dims( 300, 48 );
+  Point2i pos(232, 221);
+  Size2i dims(176, 38);
   std::string doc_file = "messagebox.rml";
 
   nom::UIMessageBox mbox;
 
-  EXPECT_EQ( true, mbox.set_desktop( this->desktop.context() ) );
+  EXPECT_EQ( true, mbox.set_context(&this->desktop) );
   EXPECT_EQ( true, mbox.load_document_file( doc_file ) )
   << "UIMessageBox should not be invalid; is the context and document file valid?";
 
-  mbox.set_position( pos );
-  mbox.set_size( dims );
+  // mbox position & size is determined in RCSS
+  // mbox.set_position(pos);
+  // mbox.set_size(dims);
 
   mbox.set_title_text("INFO.");
   mbox.set_message_text("Diablos");
@@ -682,8 +682,8 @@ TEST_F( libRocketTest, UIMessageBox )
   EXPECT_EQ( pos, mbox.position() );
   EXPECT_EQ( dims, mbox.size() );
 
-  EXPECT_EQ( nom::IntRect(43,78,25,16), mbox.title_bounds() );
-  EXPECT_EQ( nom::IntRect(53,98,50,23), mbox.message_bounds() );
+  EXPECT_EQ( nom::IntRect(236,217,25,16), mbox.title_bounds() );
+  EXPECT_EQ( nom::IntRect(232,233,57,26), mbox.message_bounds() );
 
   nom::UIEventListener* on_click = new nom::UIEventListener(
     [&] ( Rocket::Core::Event& ev ) { this->on_click( ev ); } );
@@ -794,40 +794,40 @@ void question_response_callback( Rocket::Core::Event& ev, UIQuestionDialogBox* q
   }
 }
 
+/// \todo Relocate into UIWidget test case
 TEST_F( libRocketTest, UIQuestionDialogBox )
 {
-  // As per the positioning units used for nom::QuestionDialogBox (ex2) in
-  // examples/gui_messagebox.cpp
-  Point2i pos1(38, 141);
-  Size2i dims1(124, 72);
+  Point2i pos1(262,195);
+  Size2i dims1(116,90);
   std::string doc_file1 = "questionbox.rml";
 
   // A second question box, intended only for the interactive testing of
   // potential key focus & event listener issues; we'll intentionally be skipping
   // many of the tests for mbox2.
-  Point2i pos2( (pos1.x + dims1.w) * 1.5, 141 );
+  Point2i pos2( (pos1.x + dims1.w) + 25, pos1.y );
   Size2i dims2 = dims1;
   std::string doc_file2 = doc_file1;
 
   UIQuestionDialogBox mbox1;
 
-  EXPECT_EQ( true, mbox1.set_desktop( this->desktop.context() ) );
+  EXPECT_EQ( true, mbox1.set_context(&this->desktop) );
   EXPECT_EQ( true, mbox1.load_document_file( doc_file1 ) )
   << "UIQuestionDialogBox should not be invalid (mbox1); is the context and document file valid?";
 
-  mbox1.set_position(pos1);
-  mbox1.set_size(dims1);
-
   UIQuestionDialogBox mbox2;
-  EXPECT_EQ( true, mbox2.set_desktop( this->desktop.context() ) );
+  EXPECT_EQ( true, mbox2.set_context(&this->desktop) );
   EXPECT_EQ( true, mbox2.load_document_file( doc_file2 ) )
   << "UIQuestionDialogBox should not be invalid (mbox2); is the context and document file valid?";
 
+  // mbox1 position & size is determined in RCSS
+  // mbox1.set_alignment(nom::Anchor::MiddleCenter);
+
+  // To the right of mbox1
   mbox2.set_position(pos2);
   mbox2.set_size(dims2);
 
   mbox1.set_title_text("CHOICE");
-  // mbox1.set_message_text("Are you sure?");
+  mbox2.set_title_text("CHOICE");
 
   mbox1.show();
   mbox2.show();
@@ -846,8 +846,8 @@ TEST_F( libRocketTest, UIQuestionDialogBox )
   EXPECT_EQ( pos1, mbox1.position() );
   EXPECT_EQ( dims1, mbox1.size() );
 
-  EXPECT_EQ( nom::IntRect(43,136,34,16), mbox1.title_bounds() );
-  EXPECT_EQ( nom::IntRect(53,153,91,23), mbox1.message_bounds() );
+  EXPECT_EQ( nom::IntRect(266,191,34,16), mbox1.title_bounds() );
+  EXPECT_EQ( nom::IntRect(262,212,91,23), mbox1.message_bounds() );
 
   EXPECT_EQ( -1, mbox1.selection() );
 
@@ -956,6 +956,9 @@ int main( int argc, char** argv )
   // Log all messages
   nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE );
   // nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+
+  // No test messages (i.e.: event info)
+  nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TEST, nom::NOM_LOG_PRIORITY_WARN );
 
   return RUN_ALL_TESTS();
 }

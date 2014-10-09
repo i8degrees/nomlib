@@ -6,25 +6,24 @@
 
       body
       {
-        width: 200px;
-        height: 48px;
+        /* Required for alignment */
+        width: 176px;
+        /* The actual height is ultimately determined by the font size */
+        height: 38px;
 
-        margin: auto;
-      }
+        /* Horizontal center */
+        margin-right: auto;
+        margin-left: auto;
 
-      body.window
-      {
-        /*min-width: 200px;*/
-        /*min-height: 48px;*/
-        max-width: 300px;
-        max-height: 48px;
+        /* Vertical center */
+        margin-top: auto;
+        margin-bottom: auto;
       }
 
       div#content
       {
         text-align: center;
-        padding-top: 2%;
-        padding-bottom: 2%;
+        font-size: 16px;
 
         /* Vertical scrolling */
         /*height: 100%;*/

@@ -154,6 +154,9 @@ class UIContext
     bool create_context(  const std::string& name, const Size2i& res,
                           Rocket::Core::RenderInterface* interface = nullptr );
 
+    Rocket::Core::ElementDocument*
+    load_document_file( const std::string& filename );
+
     Rocket::Core::ElementDocument* load_mouse_cursor_file( const std::string& filename );
 
     void show_mouse_cursor( bool state );

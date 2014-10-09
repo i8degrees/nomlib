@@ -15,9 +15,9 @@
 		<div id="content">
 		</div>
 
-		<div id="document">
-			<handle size_target="#document" style="position: absolute; width: 16px; height: 16px; bottom: 0px; right: 0px;"></handle>
-		</div>
+		<!-- <div id="document"> -->
+			<!-- <handle size_target="#document" style="position: absolute; width: 16px; height: 16px; bottom: 0px; right: 0px;"></handle> -->
+		<!-- </div> -->
 
 	</div>
 </body>

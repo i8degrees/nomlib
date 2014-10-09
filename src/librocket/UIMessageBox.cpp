@@ -122,7 +122,7 @@ uint32 UIMessageBox::title_alignment() const
   rocket::Element* target =
     this->document()->GetElementById( this->title_id().c_str() );
 
-  return this->alignment( target );
+  return this->text_alignment( target );
 }
 
 uint32 UIMessageBox::message_alignment() const
@@ -132,7 +132,7 @@ uint32 UIMessageBox::message_alignment() const
   rocket::Element* target =
     this->document()->GetElementById( this->message_id().c_str() );
 
-  return this->alignment( target );
+  return this->text_alignment( target );
 }
 
 const std::string& UIMessageBox::message_id() const
@@ -179,7 +179,7 @@ void UIMessageBox::set_title_alignment( uint32 align )
 
   rocket::Element* element = this->document()->GetElementById( this->title_id().c_str() );
 
-  this->set_alignment( element, align );
+  this->set_text_alignment( element, align );
 }
 
 void UIMessageBox::set_message( const std::string& text, const std::string& font, uint point_size )
@@ -234,7 +234,7 @@ void UIMessageBox::set_message_alignment( uint32 align )
 
   rocket::Element* element = this->document()->GetElementById( this->message_id().c_str() );
 
-  this->set_alignment( element, align );
+  this->set_text_alignment( element, align );
 }
 
 void UIMessageBox::set_message_id( const std::string& id )

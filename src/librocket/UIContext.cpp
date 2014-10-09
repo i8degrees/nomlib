@@ -296,6 +296,33 @@ bool UIContext::create_context( const std::string& name, const Size2i& res,
   return false;
 }
 
+Rocket::Core::ElementDocument*
+UIContext::load_document_file( const std::string& filename )
+{
+  Rocket::Core::ElementDocument* doc = nullptr;
+
+  NOM_ASSERT( this->context_ != nullptr );
+  if( this->context_ != nullptr )
+  {
+    doc = this->context_->LoadDocument( filename.c_str() );
+
+    if( doc ) {
+      doc->RemoveReference();
+    }
+    else { // doc == nullptr
+      NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                    "Could not load document from file:", filename );
+    }
+  }
+  else {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not load document from file (invalid context):",
+                  filename );
+  }
+
+  return doc;
+}
+
 Rocket::Core::ElementDocument* UIContext::load_mouse_cursor_file( const std::string& filename )
 {
   Rocket::Core::ElementDocument* cursor = nullptr;

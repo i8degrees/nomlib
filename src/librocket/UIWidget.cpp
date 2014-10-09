@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Forward declarations
 #include "nomlib/librocket/RocketSDL2SystemInterface.hpp"
+#include "nomlib/librocket/UIContext.hpp"
 
 // Private headers
 #include <Rocket/Core/ElementUtilities.h>
@@ -47,7 +48,7 @@ UIWidget::~UIWidget()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
 
-  this->desktop_ = nullptr;
+  this->ctx_ = nullptr;
   this->document_ = nullptr;
 }
 
@@ -55,22 +56,20 @@ Point2i UIWidget::position() const
 {
   Point2i pos( Point2i::null );
 
-  // body element of the RML document
-  rocket::Element* target = this->document();
-
+  // div#window element of the RML document; this appears to be more accurate
+  // than using the body tag, as it includes the coordinate transformations
+  // *after* layout of child elements are fitted.
+  rocket::Element* target = this->document()->GetElementById("window");
   NOM_ASSERT( target != nullptr );
   if( target ) {
 
-    const rocket::Property* pos_x = target->GetProperty("left");
-    const rocket::Property* pos_y = target->GetProperty("top");
+    // Using properties are **not** accurate; they reflect the coordinates
+    // before transformations are applied (i.e.: layout of children)
+    Rocket::Core::Vector2f position =
+      target->GetAbsoluteOffset(Rocket::Core::Box::PADDING);
 
-    if( pos_x ) {
-      pos.x = pos_x->Get<int>();
-    }
-
-    if( pos_y ) {
-      pos.y = pos_y->Get<int>();
-    }
+    pos.x = position.x;
+    pos.y = position.y;
   }
 
   return pos;
@@ -80,21 +79,20 @@ Size2i UIWidget::size() const
 {
   Size2i dims( Size2i::null );
 
-  // body element of the RML document
-  rocket::Element* target = this->document();
+  // div#window element of the RML document; this appears to be more accurate
+  // than using the body tag, as it includes the coordinate transformations
+  // *after* layout of child elements are fitted.
+  rocket::Element* target = this->document()->GetElementById("window");
   NOM_ASSERT( target != nullptr );
   if( target ) {
 
-    const rocket::Property* dims_w = target->GetProperty("width");
-    const rocket::Property* dims_h = target->GetProperty("height");
+    // Using properties are **not** accurate; they reflect the coordinates
+    // before transformations are applied (i.e.: layout of children)
+    Rocket::Core::Vector2f size =
+      target->GetBox().GetSize(Rocket::Core::Box::PADDING);
 
-    if( dims_w ) {
-      dims.w = dims_w->Get<int>();
-    }
-
-    if( dims_h ) {
-      dims.h = dims_h->Get<int>();
-    }
+    dims.w = size.x;
+    dims.h = size.y;
   }
 
   return dims;
@@ -122,9 +120,9 @@ void UIWidget::set_size( const Size2i& dims )
   }
 }
 
-rocket::Context* UIWidget::desktop() const
+UIContext* UIWidget::context() const
 {
-  return this->desktop_;
+  return this->ctx_;
 }
 
 rocket::ElementDocument* UIWidget::document() const
@@ -134,10 +132,10 @@ rocket::ElementDocument* UIWidget::document() const
 
 bool UIWidget::valid() const
 {
-  NOM_ASSERT( this->desktop() != nullptr );
+  NOM_ASSERT( this->context() != nullptr );
   NOM_ASSERT( this->document() != nullptr );
 
-  if( this->desktop() != nullptr && this->document() != nullptr )
+  if( this->context() != nullptr && this->document() != nullptr )
   {
     return true;
   }
@@ -186,7 +184,7 @@ const std::string& UIWidget::title_id() const
   return this->title_id_;
 }
 
-uint32 UIWidget::alignment( rocket::Element* target ) const
+uint32 UIWidget::text_alignment( rocket::Element* target ) const
 {
   int align = -1;
 
@@ -215,35 +213,33 @@ uint32 UIWidget::alignment( rocket::Element* target ) const
   }
 }
 
-bool UIWidget::set_desktop( rocket::Context* ctx )
+bool UIWidget::set_context(UIContext* ctx)
 {
   NOM_ASSERT( ctx != nullptr );
 
   if( ctx == nullptr )
   {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_GUI, "Could not set desktop: invalid pointer." );
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_GUI, "Could not set context: invalid pointer." );
     return false;
   }
 
-  this->desktop_ = ctx;
+  this->ctx_ = ctx;
 
   return true;
 }
 
 bool UIWidget::load_document_file( const std::string& filename )
 {
-  rocket::ElementDocument* doc = this->desktop()->LoadDocument( filename.c_str() );
+  rocket::ElementDocument* doc = this->ctx_->load_document_file(filename);
 
-  if( doc )
-  {
+  if( doc ) {
     this->document_ = doc;
-
-    this->document()->RemoveReference();
 
     return true;
   }
 
-  NOM_LOG_ERR( NOM_LOG_CATEGORY_GUI, "Could not load document from file:", filename );
+  NOM_LOG_ERR(  NOM_LOG_CATEGORY_GUI,
+                "Could not load document from file:", filename );
 
   return false;
 }
@@ -334,7 +330,55 @@ void UIWidget::set_font_size( rocket::Element* target, int point_size )
   }
 }
 
-void UIWidget::set_alignment( rocket::Element* element, uint32 alignment )
+bool UIWidget::set_alignment(uint32 alignment)
+{
+  Size2i dims = this->size();
+  Point2i offset = this->position();
+  Size2i parent_dims = this->context()->size();
+
+  NOM_ASSERT(this->valid() == true);
+
+  // NOM_ASSERT(element != nullptr);
+
+  // if( this->valid() == false || element == nullptr ) return;
+  if(this->valid() == false) return false;
+
+  // Anchor::TopLeft, Anchor::Left, Anchor::BottomLeft
+  if( alignment & Alignment::X_LEFT ) {
+    offset.x = offset.x;
+  }
+
+  // Anchor::TopCenter, Anchor::MiddleCenter, Anchor::BottomCenter
+  if( alignment & Alignment::X_CENTER ) {
+    offset.x = offset.x + ( parent_dims.w - dims.w ) / 2;
+  }
+
+  // Anchor::TopRight, Anchor::MiddleRight, Anchor::BottomRight
+  if( alignment & Alignment::X_RIGHT ) {
+    offset.x = offset.x + ( parent_dims.w - dims.w );
+  }
+
+  // Anchor::TopLeft, Anchor::TopCenter, Anchor::TopRight
+  if( alignment & Alignment::Y_TOP ) {
+    offset.y = offset.y;
+  }
+
+  // Anchor::MiddleLeft, Anchor::MiddleCenter, Anchor::MiddleRight
+  if( alignment & Alignment::Y_CENTER ) {
+    offset.y = offset.y + ( parent_dims.h - dims.h ) / 2;
+  }
+
+  // Anchor::BottomLeft, Anchor::BottomCenter, Anchor::BottomRight
+  if( alignment & Alignment::Y_BOTTOM ) {
+    offset.y = offset.y + ( parent_dims.h - dims.h );
+  }
+
+  this->set_position(offset);
+
+  return true;
+}
+
+void UIWidget::set_text_alignment( rocket::Element* element, uint32 alignment )
 {
   std::string align = "\0";
 

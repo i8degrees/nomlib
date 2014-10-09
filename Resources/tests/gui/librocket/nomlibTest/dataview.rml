@@ -6,21 +6,19 @@
 
       body
       {
-        /* TTcards at x2 scale */
+        padding: 0;
+
         left: 60;
         top: 25;
         font-size: 12px;
         line-height: 0.90;
-        /* FIXME: */
-        /*width: 164px;*/
+
+        width: 164px;
       }
 
       div#window
       {
-        padding: 0;
-
-        /* TTcards at x2 scale */
-        width: 164px;
+        /* Little extra room for page left, right sprites */
         height: 196px;
       }
 
@@ -88,13 +86,17 @@
         sprite-sheet-frame: -1;
       }
 
+      page
+      {
+        top: 183px;
+        width: 16px;
+        height: 16px;
+      }
+
       page.page-left
       {
         position: absolute;
-        /*left: 1%;*/
-        /*top: 79%;*/
-        left: 0px;
-        top: 81%;
+        left: -1px;
         sprite-decorator: sprite-sheet;
         sprite-sheet-src: "menu_elements.json";
         sprite-sheet-image-src: "menu_elements.png";
@@ -104,11 +106,7 @@
       page.page-right
       {
         position: absolute;
-        /*left: 92%;*/
-        /*top: 79%;*/
-        /* FIXME: UIDataViewList widget reports width of 768px; wtfux? */
         left: 145px;
-        top: 81%;
         sprite-decorator: sprite-sheet;
         sprite-sheet-src: "menu_elements.json";
         sprite-sheet-image-src: "menu_elements.png";

@@ -541,7 +541,7 @@ TEST_F( libRocketDataGridTest, UIDataViewList )
   std::string doc_file1 = "dataview.rml";
 
   UIDataViewList store1;
-  EXPECT_EQ( true, store1.set_desktop( this->desktop.context() ) );
+  EXPECT_EQ( true, store1.set_context(&this->desktop) );
   EXPECT_EQ( true, store1.load_document_file( doc_file1 ) )
   << this->test_set() << " object should not be invalid; is the context and document file valid?";
 

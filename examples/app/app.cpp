@@ -293,7 +293,7 @@ class App: public nom::SDLApp
       this->window[0].make_current();
 
       // info_box[0]
-      this->info_box[0].set_desktop( this->desktop.context() );
+      this->info_box[0].set_context(&this->desktop);
       if( this->info_box[0].load_document_file( "messagebox.rml" ) == false )
       {
         NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
@@ -308,7 +308,7 @@ class App: public nom::SDLApp
       this->info_box[0].show();
 
       // info_box[1]
-      this->info_box[1].set_desktop( this->desktop.context() );
+      this->info_box[1].set_context(&this->desktop);
       if( this->info_box[1].load_document_file( "messagebox.rml" ) == false )
       {
         NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,

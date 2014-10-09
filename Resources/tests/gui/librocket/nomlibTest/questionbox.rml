@@ -6,40 +6,28 @@
 
       body
       {
-        width: 124px;
-        height: 72px;
+        /* Required for alignment; */
+        width: 116px;
+        /* The actual height is ultimately determined by the font size */
+        height: 91px;
 
-        margin: auto;
-      }
+        /* Horizontal center */
+        margin-right: auto;
+        margin-left: auto;
 
-      body.window
-      {
-        min-width: 124px;
-        min-height: 72px;
+        /* Vertical center */
+        margin-top: auto;
+        margin-bottom: auto;
       }
 
       div#content
       {
+        display: block;
         text-align: center;
 
-        padding-top: 2%;
-        padding-bottom: 2%;
-
-        /*padding-left: 2%;*/
-        /*padding-right: 2%;*/
+        padding-top: 4%;
+        padding-bottom: 4%;
       }
-
-      /* TODO: use list markup elements here */
-      /*.choice
-      {
-        display: block;
-        color: white;
-      }
-
-      .choice.selected
-      {
-        color: red;
-      }*/
 
       button
       {
@@ -57,9 +45,14 @@
   <body template="window">
     <p id='question'>Are you sure?</p>
 
+    <!-- Answer tag provides easy access to acquiring text origins -->
     <form id='response'>
-      <button id='yes'>Yes</button>
-      <button id='no'>No</button>
+      <button>
+        <answer id='yes'>Yes</answer>
+      </button>
+      <button>
+        <answer id='no'>No</answer>
+      </button>
     </form>
 
   </body>

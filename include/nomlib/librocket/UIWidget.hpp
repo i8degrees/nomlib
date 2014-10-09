@@ -40,6 +40,7 @@ namespace nom {
 
 // Forward declarations
 class UIEventListener;
+class UIContext;
 
 class UIWidget
 {
@@ -56,7 +57,7 @@ class UIWidget
 
     /// \brief Default constructor; initialize default title element ID.
     ///
-    /// \see UIWidget::set_desktop, UIWidget::load_document_file,
+    /// \see UIWidget::set_context, UIWidget::load_document_file,
     /// UIWidget::show.
     UIWidget();
 
@@ -105,7 +106,10 @@ class UIWidget
     /// end-user.
     virtual void set_size( const Size2i& dims );
 
-    rocket::Context* desktop() const;
+    /// \returns A non-owned object pointer.
+    UIContext* context() const;
+
+    /// \returns A non-owned object pointer.
     rocket::ElementDocument* document() const;
 
     bool valid() const;
@@ -118,9 +122,9 @@ class UIWidget
     /// \brief Get an element's text alignment.
     ///
     /// \returns One of the nom::Anchor enumeration values.
-    uint32 alignment( rocket::Element* target ) const;
+    uint32 text_alignment( rocket::Element* target ) const;
 
-    bool set_desktop( rocket::Context* ctx );
+    bool set_context(UIContext* ctx);
 
     bool load_document_file( const std::string& filename );
 
@@ -143,11 +147,13 @@ class UIWidget
     void set_font( rocket::Element* target, const std::string& font );
     void set_font_size( rocket::Element* target, int point_size );
 
+    bool set_alignment(uint32 alignment);
+
     /// \param alignment    One of the following Anchor enumerations:
     /// Anchor::Left, Anchor::Center, Anchor::Right.
     ///
     /// \todo Change return type to boolean
-    void set_alignment( rocket::Element* element, uint32 alignment );
+    void set_text_alignment( rocket::Element* element, uint32 alignment );
 
     void register_event_listener( rocket::Element* element,
                                   const std::string& ev,
@@ -156,7 +162,7 @@ class UIWidget
 
   private:
     /// \remarks This pointer is **not** owned by us, and must not be freed.
-    rocket::Context* desktop_;
+    UIContext* ctx_;
 
     /// \remarks This pointer is **not** owned by us, and must not be freed.
     rocket::ElementDocument* document_;

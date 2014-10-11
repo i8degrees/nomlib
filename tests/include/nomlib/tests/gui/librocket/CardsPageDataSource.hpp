@@ -85,7 +85,7 @@ class CardsPageDataSource: public Rocket::Controls::DataSource
     void set_table_name( const std::string& name );
 
     /// \brief Get the total number of cards (rows) in storage.
-    nom::size_type num_rows();
+    nom::size_type num_rows() const;
 
     /// \brief Fetches the contents of a row of a table within the data source.
     ///

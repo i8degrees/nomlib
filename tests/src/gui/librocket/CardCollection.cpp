@@ -28,14 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/tests/gui/librocket/CardCollection.hpp"
 
-/// \brief Disable NOM_ASSERT macros so that they do not interfere with tests
-/// that check for failure conditions; i.e.: libRocketDataGridTest
-/// ::DataSourceModelSanity.
-#if defined( NOM_ASSERT )
-  #undef NOM_ASSERT
-  #define NOM_ASSERT(expr)
-#endif // defined NOM_ASSERT
-
 namespace nom {
 
 CardCollection::CardCollection()

@@ -28,14 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/tests/gui/librocket/CardsPageDataSource.hpp"
 
-/// \brief Disable NOM_ASSERT macros so that they do not interfere with tests
-/// that check for failure conditions; i.e.: libRocketDataGridTest
-/// ::DataSourceModelSanity.
-#if defined( NOM_ASSERT )
-  #undef NOM_ASSERT
-  #define NOM_ASSERT(expr)
-#endif // defined NOM_ASSERT
-
 using namespace Rocket::Core;
 
 namespace nom {
@@ -146,15 +138,15 @@ void CardsPageDataSource::set_table_name( const std::string& name )
   this->table_name_ = name;
 }
 
-nom::size_type CardsPageDataSource::num_rows()
+nom::size_type CardsPageDataSource::num_rows() const
 {
   return this->db_.size();
 }
 
 void CardsPageDataSource::row(  nom::StringList& row,
-                            // const std::string& table,
-                            int row_index,
-                            const StringList& columns )
+                                // const std::string& table,
+                                int row_index,
+                                const StringList& columns )
 {
   Rocket::Core::StringList ret_rows;
   Rocket::Core::StringList ret_columns;
@@ -177,8 +169,8 @@ int CardsPageDataSource::insert_card( int pos, const Card& card )
 {
   int rows = this->num_rows();
 
-  NOM_ASSERT( pos < rows );
-  if( pos < rows )
+  NOM_ASSERT( pos <= rows );
+  if( pos <= rows )
   {
     this->db_.at(pos) = card;
 
@@ -206,8 +198,8 @@ int CardsPageDataSource::insert_cards( int pos, const CardList& cards )
 {
   int rows = this->num_rows();
 
-  NOM_ASSERT( pos < rows );
-  if( pos < rows )
+  NOM_ASSERT( pos <= rows );
+  if( pos <= rows )
   {
     int idx = 0;
     for( auto itr = cards.begin(); itr != cards.end(); ++itr )
@@ -301,8 +293,8 @@ int CardsPageDataSource::erase_card( int pos )
 {
   int rows = this->num_rows();
 
-  NOM_ASSERT( pos < rows );
-  if( pos < rows )
+  NOM_ASSERT( pos <= rows );
+  if( pos <= rows )
   {
     this->db_.erase( this->db_.begin() + pos );
 
@@ -330,8 +322,8 @@ int CardsPageDataSource::erase_cards( int begin_pos, int end_pos )
 {
   int rows = this->num_rows();
 
-  NOM_ASSERT( (begin_pos < rows) && (end_pos < rows) );
-  if( (begin_pos < rows) && (end_pos < rows) )
+  NOM_ASSERT( (begin_pos <= rows) && (end_pos <= rows) );
+  if( (begin_pos <= rows) && (end_pos <= rows) )
   {
     this->db_.erase(  (this->db_.begin() + begin_pos),
                       (this->db_.begin() + end_pos) );
@@ -456,12 +448,11 @@ void CardsPageDataSource::set_page( int page )
 int CardsPageDataSource::map_page_row(int index, int pg) const
 {
   int selection = -1;
-  NOM_ASSERT( index < this->num_rows() );
-  NOM_ASSERT( index < 0 && pg < 0 );
-  NOM_ASSERT( pg < this->total_pages() );
+  NOM_ASSERT(index <= this->num_rows() );
+  NOM_ASSERT( pg <= this->total_pages() );
 
   selection = index - ( this->per_page() * pg );
-  NOM_ASSERT( selection != -1 );
+  NOM_ASSERT( selection >= 0 );
 
   return selection;
 }
@@ -475,11 +466,16 @@ void CardsPageDataSource::set_total_pages( int num_pages )
 
 void CardsPageDataSource::update()
 {
-  // Calculate total number of pages we need...
-  float pages = this->num_rows() / this->per_page();
-  pages = floor(pages + 1.0f);
+  // Even number of pages
+  double pages = this->num_rows() / this->per_page();
 
-  this->set_total_pages( pages );
+  // Calculate total number of pages we need for the stored cards
+  if( ( this->num_rows() % this->per_page() ) != 0 ) {
+    // Odd number of pages (a partial page)
+    pages = floor(pages + 1.0f);
+  }
+
+  this->set_total_pages( NOM_SCAST(int, pages) );
 }
 
 // CardStatusFormatter

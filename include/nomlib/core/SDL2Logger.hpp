@@ -181,7 +181,7 @@ class SDL2Logger
     /// \brief Set the default logging category priority levels.
     ///
     /// \see NOM_LOG_CATEGORY enumeration.
-    static void initialize( void );
+    static void initialize();
 
     /// \brief Default constructor; initialize the log category to NOM and
     /// the log priority to LogPriority::NOM_LOG_PRIORITY_INFO.
@@ -321,9 +321,7 @@ class SDL2Logger
 /// and is intended to be fully compatible & consistent with except where
 /// explicitly stated otherwise.
 ///
-/// \fixme Research why the logging facilities are not re-initialized after a
-/// call to SDL_Quit, followed by re-initialization of SDL, is made. Evidence
-/// of this can be found within the project's libRocketTest source.
+/// \remarks Logging priorities are reset upon a call to SDL_Quit.
 ///
 /// \see [SDL2 Logging API](https://wiki.libsdl.org/CategoryLog)
 ///

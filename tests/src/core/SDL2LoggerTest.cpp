@@ -34,7 +34,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-/// \remarks Customized log output function for SDL_LogMessage
+/// \brief Customized log output function for SDL_LogMessage.
+///
+/// \remarks This function is used only in the
+/// SDL2LoggerTest::CustomLogOutputFunction unit test.
 void log_message( void* ptr, int cat, SDL_LogPriority prio, const char* msg )
 {
   if( prio < NOM_NUM_LOG_PRIORITIES && prio > 0 )
@@ -67,25 +70,18 @@ struct FunctionTraceTest
 /// \remarks Helper method for verifying test conditions
 void expected_logger_state( int cat, nom::LogPriority prio, const std::string& msg, bool log_output_state )
 {
-  nom::SDL2Logger logger( cat, prio );
-  logger.write( msg );
-
-  EXPECT_EQ( msg, logger.output_stream().str() );
-  EXPECT_EQ( cat, logger.category() );
-  EXPECT_EQ( prio, logger.priority() );
-
   // This is the control state logic that SDL uses to determine whether or not
   // to output a logged message. If this logic is false, the log message should
   // never be seen.
   if( log_output_state )
   {
-    EXPECT_FALSE( logger.priority() < SDL_LogGetPriority( NOM ) )
+    EXPECT_FALSE( prio < SDL_LogGetPriority(cat) )
     << "Our log priority level should not be less than SDL's log priority level; "
     << "this log message should be output to the console.";
   }
   else
   {
-    EXPECT_TRUE( logger.priority() < SDL_LogGetPriority( NOM ) )
+    EXPECT_TRUE( prio < SDL_LogGetPriority(cat) )
     << "Our log priority level should be less than SDL's log priority level; "
     << "this log message should not be output to the console.";
   }
@@ -102,12 +98,14 @@ TEST( SDL2LoggerTest, LogVerbose )
 
   expected_logger_state( cat, prio, out, true );
 
+  NOM_LOG_VERBOSE(cat, out);
+
   // Should not see this logged message
   SDL2Logger::set_logging_priorities( LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
   expected_logger_state( cat, prio, out, false );
 
-  NOM_LOG_VERBOSE( cat, out );
+  NOM_LOG_VERBOSE(cat, out);
 
   SDL2Logger::set_logging_priority( cat, LogPriority::NOM_LOG_PRIORITY_CRITICAL );
   expected_logger_state( cat, prio, out, false );
@@ -124,12 +122,14 @@ TEST( SDL2LoggerTest, LogDebug )
 
   expected_logger_state( cat, prio, out, true );
 
+  NOM_LOG_DEBUG(cat, out);
+
   // Should not see this logged message
   SDL2Logger::set_logging_priorities( nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
   expected_logger_state( cat, prio, out, false );
 
-  NOM_LOG_DEBUG( cat, out );
+  NOM_LOG_DEBUG(cat, out);
 
   SDL2Logger::set_logging_priority( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
   expected_logger_state( cat, prio, out, false );
@@ -146,12 +146,14 @@ TEST( SDL2LoggerTest, LogInfo )
 
   expected_logger_state( cat, prio, out, true );
 
+  NOM_LOG_INFO(cat, out);
+
   // Should not see this logged message
   SDL2Logger::set_logging_priorities( LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
   expected_logger_state( cat, prio, out, false );
 
-  NOM_LOG_INFO( cat, out );
+  NOM_LOG_INFO(cat, out);
 
   SDL2Logger::set_logging_priority( cat, LogPriority::NOM_LOG_PRIORITY_CRITICAL );
   expected_logger_state( cat, prio, out, false );
@@ -168,12 +170,14 @@ TEST( SDL2LoggerTest, LogWarn )
 
   expected_logger_state( cat, prio, out, true );
 
+  NOM_LOG_WARN(cat, out);
+
   // Should not see this logged message
   SDL2Logger::set_logging_priorities( nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
   expected_logger_state( cat, prio, out, false );
 
-  NOM_LOG_WARN( cat, out );
+  NOM_LOG_WARN(cat, out);
 
   SDL2Logger::set_logging_priority( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
   expected_logger_state( cat, prio, out, false );
@@ -190,12 +194,14 @@ TEST( SDL2LoggerTest, LogError )
 
   expected_logger_state( cat, prio, out, true );
 
+  NOM_LOG_ERR(NOM, out);
+
   // Should not see this logged message
   SDL2Logger::set_logging_priorities( nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
   expected_logger_state( cat, prio, out, false );
 
-  NOM_LOG_ERR( NOM, out );
+  NOM_LOG_ERR(NOM, out);
 
   SDL2Logger::set_logging_priority( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
   expected_logger_state( cat, prio, out, false );
@@ -211,6 +217,8 @@ TEST( SDL2LoggerTest, LogCritical )
   SDL2Logger::set_logging_priorities( prio );
 
   expected_logger_state( cat, prio, out, true );
+
+  NOM_LOG_CRIT(cat, out);
 
   // SDL2Logger::set_logging_priority( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
   // expected_logger_state( cat, prio, out, true );
@@ -228,13 +236,15 @@ TEST( SDL2LoggerTest, LogVariable )
 
   expected_logger_state( cat, prio, out, true );
 
+  NOM_DUMP_VAR(cat, pos);
+
   // Should not see this logged message
   SDL2Logger::set_logging_priorities( nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
   expected_logger_state( cat, prio, out, false );
 
   NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, cat );
-  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "pos:", pos );
+  NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "pos:", Point2i::null );
 }
 
 TEST( SDL2LoggerTest, LogFunctionTraceNomCategory )
@@ -294,6 +304,8 @@ TEST( SDL2LoggerTest, CustomLogOutputFunction )
   SDL2Logger::set_logging_priorities( nom::SDL2Logger::priority( prio ) );
 
   expected_logger_state( cat, nom::SDL2Logger::priority( prio ), out, true );
+
+  NOM_LOG_CRIT(cat, out);
 }
 
 int main( int argc, char** argv )

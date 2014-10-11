@@ -108,7 +108,7 @@ bool SDL2Logger::initialized( void )
 }
 
 // Static
-void SDL2Logger::initialize( void )
+void SDL2Logger::initialize()
 {
   if( SDL2Logger::initialized() == false )
   {
@@ -125,7 +125,7 @@ void SDL2Logger::initialize( void )
     // Log all messages from the engine's default NOM category
     SDL2Logger::set_logging_priority( NOM, LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
-    // Register custom log outpt function for optional colored message support
+    // Register custom log output function for optional colored message support
     void ( *log_output_function )( void*, int, SDL_LogPriority, const char* ) = priv::log_message;
     SDL_LogSetOutputFunction( log_output_function, nullptr );
 

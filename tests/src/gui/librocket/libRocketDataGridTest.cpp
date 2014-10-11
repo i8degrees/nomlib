@@ -671,13 +671,12 @@ int main( int argc, char** argv )
   // nom::UnitTest framework integration
   nom::init_test( argc, argv );
 
-  // Log all messages
-  nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE );
+  // Log all messages from GUI
+  // nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE );
   // nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  // No test messages (i.e.: event info)
+  // No logging output from testing functions (i.e.: event info)
   nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TEST, nom::NOM_LOG_PRIORITY_WARN );
-
 
   return RUN_ALL_TESTS();
 }

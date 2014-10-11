@@ -40,11 +40,11 @@ Rocket::Core::ElementDocument* load_window( Rocket::Core::Context* ctx, const st
     // NOM_DUMP( doc->GetReferenceCount() );
     doc->RemoveReference();
     // NOM_DUMP( doc->GetReferenceCount() );
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", doc->GetSourceURL().CString(), "is loaded." );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "Document", doc->GetSourceURL().CString(), "is loaded." );
   }
   else
   {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", doc->GetSourceURL().CString(), "was NULL." );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "Document", doc->GetSourceURL().CString(), "was NULL." );
     return nullptr;
   }
 
@@ -71,7 +71,7 @@ Rocket::Core::ElementDocument* load_cursor( Rocket::Core::Context* ctx, const st
   {
     cursor->Show();
     cursor->RemoveReference();
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Cursor", cursor->GetSourceURL().CString(), "is loaded." );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "Cursor", cursor->GetSourceURL().CString(), "is loaded." );
   }
   else
   {
@@ -370,19 +370,19 @@ class libRocketTest: public nom::VisualUnitTest
 
         if( button == 0 )
         {
-          NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "LEFT button click from", ev->GetId().CString() );
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "LEFT button click from", ev->GetId().CString() );
         }
         else if( button == 1 )
         {
-          NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "RIGHT button click from", ev->GetId().CString() );
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "RIGHT button click from", ev->GetId().CString() );
         }
         else if( button == 2 )
         {
-          NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "MIDDLE button click from", ev->GetId().CString() );
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "MIDDLE button click from", ev->GetId().CString() );
         }
         else if( button == 3 )
         {
-          NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "UNDEFINED button click from", ev->GetId().CString() );
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "UNDEFINED button click from", ev->GetId().CString() );
         }
       }
     } // end on_click func
@@ -401,7 +401,7 @@ class libRocketTest: public nom::VisualUnitTest
           << "Event element target was NULL; this shouldn't have been so!";
         }
 
-        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "WHEEL event from", ev->GetId().CString(), "value:", wheel_delta );
+        NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "WHEEL event from", ev->GetId().CString(), "value:", wheel_delta );
       }
     } // end on_wheel func
 
@@ -419,7 +419,7 @@ class libRocketTest: public nom::VisualUnitTest
           << "Event element target was NULL; this shouldn't have been so!";
         }
 
-        NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "KEYDOWN event from", ev->GetId().CString(), "value:", key );
+        NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "KEYDOWN event from", ev->GetId().CString(), "value:", key );
       }
     } // end on_wheel func
 
@@ -441,11 +441,11 @@ class libRocketTest: public nom::VisualUnitTest
             (*itr).second->Show();
             (*itr).second->RemoveReference();
             // NOM_DUMP( this->doc0->GetReferenceCount() );
-            NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Document", (*itr).second->GetSourceURL().CString(), "reloaded." );
+            NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "Document", (*itr).second->GetSourceURL().CString(), "reloaded." );
           }
           else
           {
-            NOM_LOG_CRIT(NOM_LOG_CATEGORY_GUI, "Document was NULL.");
+            NOM_LOG_CRIT(NOM_LOG_CATEGORY_APPLICATION, "Document was NULL.");
             // return NOM_EXIT_FAILURE;
           }
         }
@@ -587,7 +587,7 @@ TEST_F( libRocketTest, EventListenerTest )
 
   for( auto itr = tags.begin(); itr != tags.end(); ++itr )
   {
-    // NOM_DUMP( (*itr)->GetTagName().CString() );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, (*itr)->GetTagName().CString() );
 
     evt.register_event_listener( *itr, "mousescroll", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) { this->on_wheel( ev ); } ) );
     evt.register_event_listener( *itr, "keydown", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) { this->on_keydown( ev ); } ) );
@@ -747,7 +747,7 @@ void question_response_callback( Rocket::Core::Event& ev, UIQuestionDialogBox* q
     ASSERT_TRUE( q->hit_test( target, Point2i(mouse_x, mouse_y) ) == true );
 
     q->set_selection(selected);
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Response:", q->response( q->selection() ) );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "Response:", q->response( q->selection() ) );
   }
   else if( ev == "keydown" )
   {
@@ -768,7 +768,7 @@ void question_response_callback( Rocket::Core::Event& ev, UIQuestionDialogBox* q
     }
 
     q->set_selection(selected);
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Response:", q->response( q->selection() ) );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "Response:", q->response( q->selection() ) );
   }
   else if( ev == "mousescroll" )
   {
@@ -790,7 +790,7 @@ void question_response_callback( Rocket::Core::Event& ev, UIQuestionDialogBox* q
     }
 
     q->set_selection(selected);
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Response:", q->response( q->selection() ) );
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "Response:", q->response( q->selection() ) );
   }
 }
 
@@ -953,11 +953,11 @@ int main( int argc, char** argv )
   // nom::UnitTest framework integration
   nom::init_test( argc, argv );
 
-  // Log all messages
-  nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE );
+  // Log all messages from GUI
+  // nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_VERBOSE );
   // nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  // No test messages (i.e.: event info)
+  // No logging output from testing functions (i.e.: event info)
   nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TEST, nom::NOM_LOG_PRIORITY_WARN );
 
   return RUN_ALL_TESTS();

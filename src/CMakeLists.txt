@@ -19,6 +19,7 @@ set (
       ${SRC_DIR}/core/IObject.cpp
       ${SRC_DIR}/core/ConsoleOutput.cpp
       ${SRC_DIR}/core/SDL2Logger.cpp
+      ${SRC_DIR}/core/SDL_assertion_helpers.cpp
     )
 
 # Audio module

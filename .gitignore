@@ -3,6 +3,8 @@ config.hpp
 version.hpp
 revision.cpp
 
+# project
+build/
 .loc.yml
 install_options
 *.sublime-workspace
@@ -10,14 +12,6 @@ install_options
 # ctags
 *.tags
 *.tags_sorted_by_file
-
-# bins
-build
-third-party/windows
-third-party/osx
-third-party/ios
-third-party/linux
-third-party/common/*
 
 # nomlib's github wiki
 wiki

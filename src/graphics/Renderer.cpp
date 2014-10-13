@@ -83,11 +83,11 @@ const Point2f Renderer::scale() const
   return scale_factor;
 }
 
-const Point2i Renderer::logical_size() const
+Size2i Renderer::logical_size() const
 {
-  Point2i size;
+  Size2i size;
 
-  SDL_RenderGetLogicalSize ( this->renderer(), &size.x, &size.y );
+  SDL_RenderGetLogicalSize( this->renderer(), &size.w, &size.h );
 
   return size;
 }

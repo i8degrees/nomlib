@@ -70,7 +70,7 @@ class Renderer
     bool renderer_valid ( void ) const;
 
     /// Get the current logical resolution size.
-    const Point2i logical_size() const;
+    Size2i logical_size() const;
 
     /// \brief Get the drawing scale for the rendering context.
     ///

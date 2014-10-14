@@ -26,31 +26,46 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GUI_PUBLIC_HEADERS_HPP
-#define NOMLIB_GUI_PUBLIC_HEADERS_HPP
+#ifndef NOMLIB_GUI_TESTS_DATAGRID_CARD_HPP
+#define NOMLIB_GUI_TESTS_DATAGRID_CARD_HPP
+
+#include <string>
 
 #include "nomlib/config.hpp"
 
-#include "nomlib/gui/Drawables.hpp"
-#include "nomlib/gui/IDecorator.hpp"
-#include "nomlib/gui/Decorator.hpp"
-// #include "nomlib/gui/MinimalDecorator.hpp"
-#include "nomlib/gui/FinalFantasyFrame.hpp"
-#include "nomlib/gui/FinalFantasyDecorator.hpp"
+namespace nom {
 
-#include "nomlib/gui/RocketFileInterface.hpp"
-#include "nomlib/gui/RocketSDL2SystemInterface.hpp"
-#include "nomlib/gui/RocketSDL2RenderInterface.hpp"
+/// \brief A mock card
+///
+/// \see libRocketDataGridTest,
+/// \see TTcards::Card, TTcards::CardCollection
+class Card
+{
+  public:
+    static const Card null;
 
-#include "nomlib/gui/DecoratorInstancerFinalFantasyFrame.hpp"
-#include "nomlib/gui/DecoratorInstancerSprite.hpp"
+    /// \brief Default constructor; initialize the object to an invalid state.
+    Card();
+    ~Card();
 
-#include "nomlib/gui/UIWidget.hpp"
-#include "nomlib/gui/UIMessageBox.hpp"
-#include "nomlib/gui/UIQuestionDialogBox.hpp"
-#include "nomlib/gui/UIDataViewList.hpp"
-#include "nomlib/gui/UIContext.hpp"
+    Card( int id, const std::string& name, int num_cards );
 
-#include "nomlib/gui/init_librocket.hpp"
+    int id() const;
+    const std::string& name() const;
+    int num() const;
+
+    void set_id(int id);
+    void set_name(const std::string& name);
+    void set_num(int num);
+
+  private:
+    int id_;
+    std::string name_;
+    int num_;
+};
+
+typedef std::vector<Card> CardList;
+
+} // namespace nom
 
 #endif // include guard defined

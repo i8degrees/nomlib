@@ -26,31 +26,73 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GUI_PUBLIC_HEADERS_HPP
-#define NOMLIB_GUI_PUBLIC_HEADERS_HPP
-
-#include "nomlib/config.hpp"
-
-#include "nomlib/gui/Drawables.hpp"
-#include "nomlib/gui/IDecorator.hpp"
-#include "nomlib/gui/Decorator.hpp"
-// #include "nomlib/gui/MinimalDecorator.hpp"
-#include "nomlib/gui/FinalFantasyFrame.hpp"
-#include "nomlib/gui/FinalFantasyDecorator.hpp"
-
-#include "nomlib/gui/RocketFileInterface.hpp"
-#include "nomlib/gui/RocketSDL2SystemInterface.hpp"
-#include "nomlib/gui/RocketSDL2RenderInterface.hpp"
-
-#include "nomlib/gui/DecoratorInstancerFinalFantasyFrame.hpp"
-#include "nomlib/gui/DecoratorInstancerSprite.hpp"
-
-#include "nomlib/gui/UIWidget.hpp"
-#include "nomlib/gui/UIMessageBox.hpp"
-#include "nomlib/gui/UIQuestionDialogBox.hpp"
 #include "nomlib/gui/UIDataViewList.hpp"
-#include "nomlib/gui/UIContext.hpp"
 
-#include "nomlib/gui/init_librocket.hpp"
+// Private headers (third-party)
+#include <Rocket/Core/ElementUtilities.h>
 
-#endif // include guard defined
+using namespace Rocket::Core;
+
+namespace nom {
+
+UIDataViewList::UIDataViewList()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+UIDataViewList::~UIDataViewList()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+std::string UIDataViewList::column_title( int col ) const
+{
+  ElementList tags;
+
+  NOM_ASSERT( this->valid() != false );
+  if( this->valid() == true )
+  {
+    Element* parent = this->document()->GetElementById("content");
+    NOM_ASSERT( parent != nullptr );
+    if( parent )
+    {
+      Rocket::Core::ElementUtilities::GetElementsByTagName( tags, parent, "datagridcolumn" );
+
+      NOM_ASSERT( col < tags.size() );
+      if( col < tags.size() )
+      {
+        return tags[col]->GetInnerRML().CString();
+      }
+    }
+  }
+
+  // ..No title found?
+  return "\0";
+}
+
+bool UIDataViewList::set_column_title( int col, const std::string& name )
+{
+  ElementList tags;
+
+  NOM_ASSERT( this->valid() != false );
+  if( this->valid() == true )
+  {
+    Element* parent = this->document()->GetElementById("content");
+    NOM_ASSERT( parent != nullptr );
+    if( parent )
+    {
+      Rocket::Core::ElementUtilities::GetElementsByTagName( tags, parent, "datagridcolumn" );
+
+      NOM_ASSERT( col < tags.size() );
+      if( col < tags.size() )
+      {
+        tags[col]->SetInnerRML( name.c_str() );
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+} // namespace nom

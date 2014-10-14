@@ -26,31 +26,45 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GUI_PUBLIC_HEADERS_HPP
-#define NOMLIB_GUI_PUBLIC_HEADERS_HPP
+#ifndef NOMLIB_GUI_UIDATAVIEW_LIST_HPP
+#define NOMLIB_GUI_UIDATAVIEW_LIST_HPP
+
+#include <memory>
 
 #include "nomlib/config.hpp"
-
-#include "nomlib/gui/Drawables.hpp"
-#include "nomlib/gui/IDecorator.hpp"
-#include "nomlib/gui/Decorator.hpp"
-// #include "nomlib/gui/MinimalDecorator.hpp"
-#include "nomlib/gui/FinalFantasyFrame.hpp"
-#include "nomlib/gui/FinalFantasyDecorator.hpp"
-
-#include "nomlib/gui/RocketFileInterface.hpp"
-#include "nomlib/gui/RocketSDL2SystemInterface.hpp"
-#include "nomlib/gui/RocketSDL2RenderInterface.hpp"
-
-#include "nomlib/gui/DecoratorInstancerFinalFantasyFrame.hpp"
-#include "nomlib/gui/DecoratorInstancerSprite.hpp"
-
+#include "nomlib/math/Point2.hpp"
+#include "nomlib/math/Size2.hpp"
 #include "nomlib/gui/UIWidget.hpp"
-#include "nomlib/gui/UIMessageBox.hpp"
-#include "nomlib/gui/UIQuestionDialogBox.hpp"
-#include "nomlib/gui/UIDataViewList.hpp"
-#include "nomlib/gui/UIContext.hpp"
 
-#include "nomlib/gui/init_librocket.hpp"
+// Forward declarations (third-party)
+namespace Rocket {
+namespace Controls {
+
+
+
+} // namespace Controls
+} // namespace Rocket
+
+namespace nom {
+
+/// \see http://librocket.com/wiki/documentation/tutorials/Datagrid
+class UIDataViewList: public nom::UIWidget
+{
+  public:
+    /// \brief Default constructor; initialize default selection.
+    ///
+    /// \see UIWidget::set_desktop, UIWidget::load_document_file,
+    /// UIWidget::show.
+    UIDataViewList();
+
+    /// \brief Destructor.
+    virtual ~UIDataViewList();
+
+    std::string column_title( int col ) const;
+
+    bool set_column_title( int col, const std::string& name );
+};
+
+} // namespace nom
 
 #endif // include guard defined

@@ -28,185 +28,114 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/UIWidget.hpp"
 
-// Private headers
-#include "nomlib/system/PlatformSettings.hpp"
-
 // Forward declarations
-#include "nomlib/graphics/shapes/Rectangle.hpp" // tool tip
-#include "nomlib/graphics/Text.hpp"
-#include "nomlib/system/Event.hpp"
+#include "nomlib/gui/RocketSDL2SystemInterface.hpp"
+#include "nomlib/gui/UIContext.hpp"
 
-#include "nomlib/gui/IDecorator.hpp"
-#include "nomlib/gui/UILayout.hpp"
-#include "nomlib/gui/UIStyle.hpp"
-#include "nomlib/gui/UIEventDispatcher.hpp"
-#include "nomlib/gui/UIWidgetEvent.hpp"
-
-// #define NOM_DEBUG_OUTPUT_LAYOUT_DATA
+// Private headers
+#include <Rocket/Core/ElementUtilities.h>
+#include <Rocket/Core/StyleSheetKeywords.h>
 
 namespace nom {
 
-// Static initializations
-int64 UIWidget::next_window_id_ = 0;
-
-UIWidget::UIWidget( void )
+UIWidget::UIWidget() :
+  title_id_("title")
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_GUI );
-
-  this->initialize( nullptr, nom::AUTO_ID, Point2i::null, Size2i::null, typeid( this ).name() );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
 }
 
-UIWidget::~UIWidget( void )
+UIWidget::~UIWidget()
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_GUI );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
+
+  this->ctx_ = nullptr;
+  this->document_ = nullptr;
 }
 
-void UIWidget::initialize (
-                            UIWidget* parent,
-                            int64 id,
-                            const Point2i& pos,
-                            const Size2i& size,
-                            const std::string& name
-                          )
+Point2i UIWidget::position() const
 {
+  Point2i pos( Point2i::null );
 
-  if( this->dispatcher() == nullptr )
-  {
-    this->set_event_dispatcher( new UIEventDispatcher() );
+  // div#window element of the RML document; this appears to be more accurate
+  // than using the body tag, as it includes the coordinate transformations
+  // *after* layout of child elements are fitted.
+  rocket::Element* target = this->document()->GetElementById("window");
+  NOM_ASSERT( target != nullptr );
+  if( target ) {
+
+    // Using properties are **not** accurate; they reflect the coordinates
+    // before transformations are applied (i.e.: layout of children)
+    Rocket::Core::Vector2f position =
+      target->GetAbsoluteOffset(Rocket::Core::Box::PADDING);
+
+    pos.x = position.x;
+    pos.y = position.y;
   }
 
-  // Sane defaults
-  this->set_focused( false );
-  this->set_visibility( true );
-  this->set_updated( false );
-
-  // Initialize widget's default size policy (for use with layouts):
-  this->set_size_policy( UILayoutPolicy::Policy::Preferred );
-
-  // Initialize widget's default focus policy:
-  this->set_focus_policy( FocusPolicy::NoFocus );
-
-  // Top-level widget (parent).
-  this->set_position( pos );
-  this->set_size( size );
-
-  // Generate a uniquely identifying integer when requested, otherwise honor
-  // the number given, even if it may be a duplicate.
-  if( id == nom::AUTO_ID )
-  {
-    this->set_id( this->generate_id() );
-  }
-  else
-  {
-    this->set_id( id );
-  }
-
-  // Use the parent object's existing state for the child widget.
-  if( parent != nullptr )
-  {
-    // Calculate our position relative to the top-level widget (window).
-    Point2i offset = pos + parent->position();
-
-    IntRect parent_bounds( parent->global_bounds() );
-
-    // Handle widget bounds that are outside the top-level widget's boundaries.
-    if( parent_bounds.contains( offset ) == false )
-    {
-      {
-        // FIXME: Temporarily commented to disable debugging output
-        // NOM_DUMP( parent->name() );
-        // NOM_DUMP( parent->position() );
-        // NOM_DUMP( parent->size() );
-
-        // NOM_DUMP( pos );
-        // NOM_DUMP( offset );
-        // NOM_DUMP( size.w );
-      }
-
-      {
-        // FIXME: Not sure how we ought to handle this case yet?
-        // this->set_position( Point2i::null );
-        // this->set_visibility( false );
-      }
-    }
-    else
-    {
-      this->set_position( offset );
-    }
-
-    // Top-level window (owner).
-    this->set_parent( parent );
-    this->set_font( parent->font() );
-  }
-
-  // Auto-generate our name tag if it is empty.
-  if( name.empty() )
-  {
-    this->set_name( "Window" );
-  }
-  else
-  {
-    this->set_name( name );
-  }
-
-  // Ensure that a valid font resource is available.
-  if( this->font().valid() == false )
-  {
-    this->set_font( PlatformSettings::get_system_font( SystemFontType::VariableTrueType ) );
-  }
-
-  // Initialize the default event listener implementations for the widget
-  NOM_CONNECT_RESIZE_EVENT( this, UIEvent::WINDOW_SIZE_CHANGED, this->on_size_changed );
-  NOM_CONNECT_UIWIDGET_EVENT( this, UIEvent::WIDGET_UPDATE, this->on_update );
+  return pos;
 }
 
-UIWidget::UIWidget  (
-                      const Point2i& pos,
-                      const Size2i& size
-                    )
+Size2i UIWidget::size() const
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_GUI );
+  Size2i dims( Size2i::null );
 
-  this->initialize( nullptr, nom::AUTO_ID, pos, size, "\0" );
+  // div#window element of the RML document; this appears to be more accurate
+  // than using the body tag, as it includes the coordinate transformations
+  // *after* layout of child elements are fitted.
+  rocket::Element* target = this->document()->GetElementById("window");
+  NOM_ASSERT( target != nullptr );
+  if( target ) {
+
+    // Using properties are **not** accurate; they reflect the coordinates
+    // before transformations are applied (i.e.: layout of children)
+    Rocket::Core::Vector2f size =
+      target->GetBox().GetSize(Rocket::Core::Box::PADDING);
+
+    dims.w = size.x;
+    dims.h = size.y;
+  }
+
+  return dims;
 }
 
-UIWidget::UIWidget  (
-                      UIWidget* parent,
-                      int64 id,
-                      const Point2i& pos,
-                      const Size2i& size
-                    )
+void UIWidget::set_position( const Point2i& pos )
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_GUI );
+  NOM_ASSERT( this->valid() == true );
+  if( this->valid() == true ) {
 
-  this->initialize( parent, id, pos, size, "\0" );
-}
-
-UIWidget::self_type& UIWidget::operator =( const self_type& rhs )
-{
-  this->swap( &rhs );
-
-  return *this;
-}
-
-UIWidget::UIWidget( const self_type* rhs )
-{
-  this->initialize( rhs->parent(), -1, rhs->position(), rhs->size(), "\0" );
-
-  if( rhs->is_window() == true )
-  {
-    this->set_parent_bounds( rhs->global_bounds() );
+    // body element of the RML document
+    this->document()->SetProperty("left", rocket::Property(pos.x, rocket::Property::PX) );
+    this->document()->SetProperty("top", rocket::Property(pos.y, rocket::Property::PX) );
   }
 }
 
-ObjectTypeInfo UIWidget::type( void ) const
+void UIWidget::set_size( const Size2i& dims )
 {
-  return NOM_OBJECT_TYPE_INFO( self_type );
+  NOM_ASSERT( this->valid() == true );
+  if( this->valid() == true ) {
+
+    // body element of the RML document
+    this->document()->SetProperty("width", rocket::Property(dims.w, rocket::Property::PX) );
+    this->document()->SetProperty("height", rocket::Property(dims.h, rocket::Property::PX) );
+  }
 }
 
-bool UIWidget::valid( void ) const
+UIContext* UIWidget::context() const
 {
-  if( this->dispatcher() != nullptr && this->position() != Point2i::null && this->size() != Size2i::null )
+  return this->ctx_;
+}
+
+rocket::ElementDocument* UIWidget::document() const
+{
+  return this->document_;
+}
+
+bool UIWidget::valid() const
+{
+  NOM_ASSERT( this->context() != nullptr );
+  NOM_ASSERT( this->document() != nullptr );
+
+  if( this->context() != nullptr && this->document() != nullptr )
   {
     return true;
   }
@@ -214,34 +143,11 @@ bool UIWidget::valid( void ) const
   return false;
 }
 
-const Font& UIWidget::font( void ) const
+bool UIWidget::valid( rocket::Element* target ) const
 {
-  return this->font_;
-}
+  NOM_ASSERT( target != nullptr );
 
-uint32 UIWidget::id( void ) const
-{
-  return this->id_;
-}
-
-const std::string& UIWidget::name( void ) const
-{
-  return this->name_;
-}
-
-bool UIWidget::focused( void ) const
-{
-  return this->focused_;
-}
-
-uint32 UIWidget::focus_policy( void ) const
-{
-  return this->focus_policy_;
-}
-
-bool UIWidget::parent_has_focus( void ) const
-{
-  if( this->parent()->focused() == true )
+  if( this->valid() == true && target != nullptr )
   {
     return true;
   }
@@ -249,1106 +155,285 @@ bool UIWidget::parent_has_focus( void ) const
   return false;
 }
 
-UIWidget::raw_ptr UIWidget::parent( void ) const
+bool UIWidget::visible() const
 {
-  return this->parent_.get();
-}
+  NOM_ASSERT( this->valid() != false );
 
-const UIWidget::Children& UIWidget::children( void ) const
-{
-  return this->children_;
-}
-
-std::shared_ptr<IDecorator> UIWidget::decorator( void ) const
-{
-  return this->decorator_;
-}
-
-const std::string UIWidget::title( void ) const
-{
-  if( this->title_ != nullptr )
+  if( this->document() )
   {
-    return this->title_->text();
+    return this->document()->IsVisible();
+  }
+
+  return false;
+}
+
+std::string UIWidget::title() const
+{
+  NOM_ASSERT( this->valid() != false );
+
+  if( this->document() != nullptr )
+  {
+    return this->document()->GetTitle().CString();
   }
 
   return "\0";
 }
 
-const UILayoutPolicy& UIWidget::size_policy( void ) const
+const std::string& UIWidget::title_id() const
 {
-  return this->policy_;
+  return this->title_id_;
 }
 
-bool UIWidget::contains( IDrawable* obj, const Point2i& pt ) const
+uint32 UIWidget::text_alignment( rocket::Element* target ) const
 {
-  IntRect bounds;
+  int align = -1;
 
-  if( NOM_ISA( Transformable*, obj ) != true )
+  NOM_ASSERT( this->valid() != false );
+
+  if( this->valid() == false || target == nullptr )
   {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not perform hit test: object does not derive from Transformable." );
+    return Anchor::None;
+  }
+
+  // We cannot use the element's ::GetTextAlign method because it does not
+  // reflect any updates we make through setting properties.
+  const rocket::Property* alignment = target->GetProperty("text-align");
+
+  align = alignment->Get<int>();
+
+  switch( align )
+  {
+    default:
+    case -1:
+    case rocket::TEXT_ALIGN_JUSTIFY: return Anchor::None; break;
+
+    case rocket::TEXT_ALIGN_LEFT: return Anchor::Left; break;
+    case rocket::TEXT_ALIGN_RIGHT: return Anchor::Right; break;
+    case rocket::TEXT_ALIGN_CENTER: return Anchor::Center; break;
+  }
+}
+
+bool UIWidget::set_context(UIContext* ctx)
+{
+  NOM_ASSERT( ctx != nullptr );
+
+  if( ctx == nullptr )
+  {
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_GUI, "Could not set context: invalid pointer." );
     return false;
   }
 
-  Transformable* object = NOM_DYN_PTR_CAST( Transformable*, obj );
+  this->ctx_ = ctx;
 
-  // Rendering coordinate bounds; we'll need both position & size for our
-  // hit test.
-  bounds = IntRect( object->position(), object->size() );
+  return true;
+}
 
-  if( object->position() == Point2i::null )
-  {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Object's position is NULL; hit test is likely to fail." );
-  }
+bool UIWidget::load_document_file( const std::string& filename )
+{
+  rocket::ElementDocument* doc = this->ctx_->load_document_file(filename);
 
-  if( object->size() == Size2i::null )
-  {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Object's size is NULL; hit test is likely to fail." );
-  }
+  if( doc ) {
+    this->document_ = doc;
 
-  if( bounds.contains( pt ) )
-  {
-    // The bounds of the visual object intersect with the point
     return true;
   }
 
-  // No matches
-  return false;
-}
-
-bool UIWidget::contains_label( Text* obj, const Point2i& pt )
-{
-  IntRect bounds;
-
-  if( NOM_ISA( Text*, obj ) != true )
-  {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not perform hit test: object does not derive from Text." );
-    return false;
-  }
-
-  Text* object = NOM_DYN_PTR_CAST( Text*, obj );
-
-  // FIXME: Rendering coordinate bounds; we'll need both position & size for
-  // our hit test. Note that Text::global_bounds is a bit different than the
-  // usual expectations here -- width and height are in "font units", and must
-  // be referred to using width & height functions (instead of the usual size
-  // method call).
-  bounds = IntRect( object->global_bounds() );
-
-  if( object->position() == Point2i::null )
-  {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Object's position is NULL; hit test is likely to fail." );
-  }
-
-  if( object->size() == Size2i::null )
-  {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Object's size is NULL; hit test is likely to fail." );
-  }
-
-  if( bounds.contains( pt ) )
-  {
-    // The bounds of the visual object intersect with the point
-    return true;
-  }
-
-  // No matches
-  return false;
-}
-
-bool UIWidget::is_window( void ) const
-{
-  if( this->parent_ == nullptr )
-  {
-    return true;
-  }
+  NOM_LOG_ERR(  NOM_LOG_CATEGORY_GUI,
+                "Could not load document from file:", filename );
 
   return false;
 }
 
-bool UIWidget::visible( void ) const
+void UIWidget::show()
 {
-  return this->visible_;
-}
-
-const Size2i UIWidget::maximum_size( void ) const
-{
-  if( this->max_size_ != Size2i::null )
+  NOM_ASSERT( this->valid() == true );
+  if( this->document() )
   {
-    return this->max_size_;
-
-  }
-
-  return Size2i( nom::WIDGET_MAX_SIZE, nom::WIDGET_MAX_SIZE );
-}
-
-const Size2i UIWidget::minimum_size( void ) const
-{
-  if( this->min_size_ != Size2i::null )
-  {
-    return this->min_size_;
-  }
-
-  return Size2i( 0, 0 );
-}
-
-const Size2i UIWidget::size_hint( void ) const
-{
-  if( this->layout() == nullptr )
-  {
-    return Size2i( 0,0 );
-  }
-  else // if( this->layout() != nullptr )
-  {
-    return this->layout()->size_hint();
+    this->document()->Show();
   }
 }
 
-// const IntRect UIWidget::local_bounds( void ) const
-// {
-//   if( this->parent() != nullptr )
-//   {
-//     // Translate the widget's coordinates from global (screen) coordinates to
-//     // relative.
-//     return IntRect( this->position() - this->parent()->position(), this->size() );
-//   }
-
-//   return IntRect( this->position(), this->size() );
-// }
-
-const IntRect UIWidget::global_bounds( void ) const
+void UIWidget::hide()
 {
-  // return this->bounds_;
-  return IntRect( this->position(), this->size() );
-}
-
-UILayout* UIWidget::layout( void ) const
-{
-  return this->layout_.get();
-}
-
-std::shared_ptr<UIStyle> UIWidget::style( void ) const
-{
-  return this->style_;
-}
-
-const IntRect& UIWidget::parent_bounds( void ) const
-{
-  return this->parent_bounds_;
-}
-
-void UIWidget::set_font( const Font& font )
-{
-  UIWidget::Children children = this->children();
-
-  if( children.size() > 0 )
+  NOM_ASSERT( this->valid() == true );
+  if( this->document() )
   {
-    for( auto itr = children.begin(); itr != children.end(); ++itr )
+    this->document()->Hide();
+  }
+}
+
+void UIWidget::close()
+{
+  NOM_ASSERT( this->valid() == true );
+  if( this->document() )
+  {
+    this->document()->Close();
+  }
+}
+
+void UIWidget::set_focus( uint32 focus )
+{
+  NOM_ASSERT( this->valid() == true );
+  if( this->document() )
+  {
+    this->document()->Show( focus );
+  }
+}
+
+bool UIWidget::hit_test( rocket::Element* target, const Point2i& pt )
+{
+  NOM_ASSERT( this->valid() != false && target != nullptr );
+
+  if( this->valid() == false || target == nullptr ) return false;
+
+  rocket::Vector2f coords( pt.x, pt.y );
+
+  return target->IsPointWithinElement( coords );
+}
+
+void UIWidget::set_title( const std::string& text )
+{
+  NOM_ASSERT( this->valid() != false );
+
+  if( this->document() )
+  {
+    this->document()->GetElementById( this->title_id().c_str() )->SetInnerRML( text.c_str() );
+  }
+}
+
+void UIWidget::set_title_id( const std::string& id )
+{
+  this->title_id_ = id;
+}
+
+void UIWidget::set_font( rocket::Element* target, const std::string& font )
+{
+  NOM_ASSERT( this->valid() != false );
+
+  NOM_ASSERT( target != nullptr );
+
+  if( target )
+  {
+    target->SetProperty( "font-family", rocket::Property( font.c_str(), rocket::Property::STRING ) );
+  }
+}
+
+void UIWidget::set_font_size( rocket::Element* target, int point_size )
+{
+  NOM_ASSERT( this->document() != nullptr );
+
+  NOM_ASSERT( target != nullptr );
+
+  if( target )
+  {
+    target->SetProperty( "font-size", rocket::Property( point_size, rocket::Property::PX ) );
+  }
+}
+
+bool UIWidget::set_alignment(uint32 alignment)
+{
+  Size2i dims = this->size();
+  Point2i offset = this->position();
+  Size2i parent_dims = this->context()->size();
+
+  NOM_ASSERT(this->valid() == true);
+
+  // NOM_ASSERT(element != nullptr);
+
+  // if( this->valid() == false || element == nullptr ) return;
+  if(this->valid() == false) return false;
+
+  // Anchor::TopLeft, Anchor::Left, Anchor::BottomLeft
+  if( alignment & Alignment::X_LEFT ) {
+    offset.x = offset.x;
+  }
+
+  // Anchor::TopCenter, Anchor::MiddleCenter, Anchor::BottomCenter
+  if( alignment & Alignment::X_CENTER ) {
+    offset.x = offset.x + ( parent_dims.w - dims.w ) / 2;
+  }
+
+  // Anchor::TopRight, Anchor::MiddleRight, Anchor::BottomRight
+  if( alignment & Alignment::X_RIGHT ) {
+    offset.x = offset.x + ( parent_dims.w - dims.w );
+  }
+
+  // Anchor::TopLeft, Anchor::TopCenter, Anchor::TopRight
+  if( alignment & Alignment::Y_TOP ) {
+    offset.y = offset.y;
+  }
+
+  // Anchor::MiddleLeft, Anchor::MiddleCenter, Anchor::MiddleRight
+  if( alignment & Alignment::Y_CENTER ) {
+    offset.y = offset.y + ( parent_dims.h - dims.h ) / 2;
+  }
+
+  // Anchor::BottomLeft, Anchor::BottomCenter, Anchor::BottomRight
+  if( alignment & Alignment::Y_BOTTOM ) {
+    offset.y = offset.y + ( parent_dims.h - dims.h );
+  }
+
+  this->set_position(offset);
+
+  return true;
+}
+
+void UIWidget::set_text_alignment( rocket::Element* element, uint32 alignment )
+{
+  std::string align = "\0";
+
+  NOM_ASSERT( this->document() != nullptr );
+
+  NOM_ASSERT( element != nullptr );
+
+  if( this->document() == nullptr || element == nullptr ) return;
+
+  // Convert uint32 nom::Alignment type to string for libRocket
+  switch( alignment )
+  {
+    default:
+    case Alignment::NONE:
+    case Anchor::Left:
+    case Anchor::TopLeft:
+    case Anchor::MiddleLeft:
+    case Anchor::BottomLeft:
     {
-      // NOM_DUMP( (*itr)->name() );
-      (*itr)->set_font( font );
+      align = "left";
+      break;
+    }
 
-      // FIXME: This method call yields nothing on widgets that require updated_
-      // to be false.
-      (*itr)->update();
+    case Anchor::Center:
+    case Anchor::TopCenter:
+    case Anchor::MiddleCenter:
+    case Anchor::BottomCenter:
+    {
+      align = "center";
+      break;
+    }
+
+    case Anchor::Right:
+    case Anchor::TopRight:
+    case Anchor::MiddleRight:
+    case Anchor::BottomRight:
+    {
+      align = "right";
+      break;
     }
   }
 
-  // Now that our children are fed, take care of ourselves, the top-level parent
-  // AKA widget / window.
-  if( font != this->font() )
+  if( element->SetProperty( "text-align", align.c_str() ) == false )
   {
-    this->font_ = font;
-  }
-
-  // Associate the widget's unique identifiers with the event notification.
-  UIWidgetEvent evt;
-  evt.set_type( UIEvent::WIDGET_UPDATE );
-  evt.set_id( this->id() );
-
-  this->dispatcher()->emit( evt );
-}
-
-void UIWidget::set_font( const Font* font )
-{
-  this->set_font( *font );
-}
-
-/*
-void UIWidget::set_font( const IFont* font, bool inherit )
-{
-  // Children of this top-level window should inherit the font
-  if( inherit == true )
-  {
-    UIWidget::Children children = this->children();
-
-    if( children.size() > 0 )
-    {
-      for( auto itr = children.begin(); itr != children.end(); ++itr )
-      {
-        // NOM_DUMP( (*itr)->name() );
-
-        // Skip the setting of the font if the child widget already has a copy
-        if( (*itr)->font().get() != font )
-        {
-          (*itr)->set_font( font->clone() );
-
-          // FIXME: This method call yields nothing on widgets that require updated_
-          // to be false.
-          (*itr)->update();
-        }
-      }
-    }
-
-    // Now that are children are fed, take care of us (the top-level window).
-
-    // Skip the setting of the font if we already have a copy
-    if( this->font().get() != font )
-    {
-      this->font_ = font->clone();
-      this->update();
-    }
-  }
-
-  // Do *not* allow children to inherit the font
-
-  else  // inherit == false
-  {
-    // Skip the setting of the font if we already have a copy
-    if( this->font().get() != font )
-    {
-      this->font_ = font->clone();
-      this->update();
-    }
-  }
-}
-*/
-
-void UIWidget::set_id( uint32 id )
-{
-  this->id_ = id;
-}
-
-void UIWidget::set_name( const std::string& name )
-{
-  this->name_ = name;
-}
-
-void UIWidget::set_focused( bool state )
-{
-  this->focused_ = state;
-}
-
-void UIWidget::set_focus_policy( uint32 flags )
-{
-  this->focus_policy_ = flags;
-}
-
-void UIWidget::set_parent( const UIWidget::raw_ptr parent )
-{
-  if( parent != nullptr )
-  {
-    this->parent_.reset( parent );
-
-    // this->set_updated( false );
-    // this->update();
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_GUI, "Failed to set text-align property for", element->GetId().CString() );
+    // return false;
   }
 }
 
-void UIWidget::set_children( const UIWidget::Children& children )
+void UIWidget::register_event_listener( rocket::Element* element,
+                                        const std::string& ev,
+                                        UIEventListener* observer,
+                                        bool interruptible )
 {
-  this->children_ = children;
-
-  // this->set_updated( false );
-  // this->update();
+  element->AddEventListener( ev.c_str(), observer, interruptible );
 }
-
-void UIWidget::set_decorator( IDecorator* object )
-{
-  this->decorator_.reset( object );
-
-  if( this->decorator_ != nullptr )
-  {
-    // Initialize the decorator object with safe
-    this->decorator_->set_bounds( this->global_bounds() );
-
-    // this->set_updated( false );
-    this->update();
-  }
-}
-
-void UIWidget::set_title( const std::string& title )
-{
-  if( this->font().valid() == false )
-  {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not set window title: font is NULL." );
-    return;
-  }
-
-  // this->set_updated( false );
-
-  this->title_.reset( new Text( title, this->font() ) );
-
-  this->title_->set_position( this->position() );
-
-  // This positions the title text of the message box on top of the second "top"
-  // bordering color of nom::GrayFrame, commented as "top1".
-  //
-  // The original coords.x value was + 8, but I think + 4 looks best.
-  // this->title_->set_position( Point2i ( this->position().x + 4, this->position().y - ( this->title_->height() / 2 ) ) );
-  this->title_->set_position( Point2i ( this->position().x + 4, this->position().y ) );
-  this->title_->set_size( this->size() );
-
-  // FIXME:
-  //
-  // In order to preserve the text alignment of the original object, we must
-  // copy the state of the original alignment *after* we set the positioning
-  // on the new object we create for this class
-  this->title_->set_alignment( Anchor::TopLeft );
-
-  // Prevent rendering of text that is longer in length than its container's
-  // set size parameters (see above).
-  this->title_->set_features( Text::ExtraRenderingFeatures::CropText );
-
-  // this->set_updated( false );
-  // this->update();
-}
-
-void UIWidget::set_title( void )
-{
-  this->set_title( this->name() );
-}
-
-void UIWidget::set_size_policy( uint32 horiz, uint32 vert )
-{
-  this->policy_.set_horizontal_policy( horiz );
-  this->policy_.set_vertical_policy( vert );
-}
-
-void UIWidget::set_size_policy( uint32 flags )
-{
-  this->policy_.set_horizontal_policy( flags );
-  this->policy_.set_vertical_policy( flags );
-}
-
-void UIWidget::set_style( const std::shared_ptr<UIStyle> style )
-{
-  this->style_ = style;
-}
-
-void UIWidget::insert_child( const UIWidget::raw_ptr child )
-{
-  // NOM_DUMP( this->name() );
-  // NOM_DUMP( child->id() );
-  // NOM_DUMP( child->name() );
-
-  if( child != nullptr )
-  {
-    this->children_.push_back( child );
-  }
-}
-
-UIWidget::raw_ptr UIWidget::find_child( int64 id )
-{
-  UIWidget::Children children;
-
-  children = this->children();
-
-  for( auto itr = children.begin(); itr != children.end(); ++itr )
-  {
-    if( (*itr)->id() == id )
-    {
-      return *itr;
-    }
-  }
-
-  return nullptr;
-}
-
-UIWidget::raw_ptr UIWidget::find_child( const std::string& name )
-{
-  UIWidget::Children children;
-
-  if( name.empty() )
-  {
-    return nullptr;
-  }
-
-  children = this->children();
-
-  for( auto itr = children.begin(); itr != children.end(); ++itr )
-  {
-    if( (*itr)->name() == name )
-    {
-      return *itr;
-    }
-  }
-
-  return nullptr;
-}
-
-UIWidget::raw_ptr UIWidget::find_child( const UIWidget::raw_ptr widget ) const
-{
-  UIWidget::Children children = widget->parent()->children();
-
-  for( auto itr = children.begin(); itr != children.end(); ++itr )
-  {
-    if( widget->type() == (*itr)->type() )
-    {
-      return *itr;
-    }
-  }
-
-  return nullptr;
-}
-
-UIWidget::Children UIWidget::find_children( const UIWidget::raw_ptr widget ) const
-{
-  UIWidget::Children widgets;
-  UIWidget::Children children = widget->parent()->children();
-
-  for( auto itr = children.begin(); itr != children.end(); ++itr )
-  {
-    if( widget->type() == (*itr)->type() )
-    {
-      widgets.push_back( *itr );
-    }
-  }
-
-  return widgets;
-}
-
-bool UIWidget::erase_child( int64 id )
-{
-  UIWidget::Children children = this->children();
-
-  for( auto itr = children.begin(); itr != children.end(); ++itr )
-  {
-    if( (*itr)->id() == id )
-    {
-      this->children_.erase( itr );
-
-      return true;
-    }
-  }
-
-  return false;
-}
-
-bool UIWidget::erase_child( const std::string& name )
-{
-  UIWidget::Children children = this->children();
-
-  for( auto itr = children.begin(); itr != children.end(); ++itr )
-  {
-    if( (*itr)->name() == name )
-    {
-      this->children_.erase( itr );
-
-      return true;
-    }
-  }
-
-  return false;
-}
-
-void UIWidget::erase_children( int64 id )
-{
-  UIWidget::Children children = this->children();
-
-  for( auto itr = children.begin(); itr != children.end(); ++itr )
-  {
-    if( (*itr)->id() == id )
-    {
-      this->children_.erase( itr );
-    }
-  }
-}
-
-void UIWidget::erase_children( const std::string& name )
-{
-  UIWidget::Children children = this->children();
-
-  for( auto itr = children.begin(); itr != children.end(); ++itr )
-  {
-    if( (*itr)->name() == name )
-    {
-      this->children_.erase( itr );
-    }
-  }
-}
-
-void UIWidget::clear_children( void )
-{
-  this->children_.clear();
-}
-
-void UIWidget::update( void )
-{
-  // if( this->updated() == true )
-  // {
-  //   return;
-  // }
-
-  // Parent window
-  if( this->decorator_ != nullptr )
-  {
-    this->decorator()->update();
-  }
-
-  if( this->title_ != nullptr )
-  {
-    // this->title_->update();
-  }
-
-  Children children = this->children();
-
-  // Widgets
-  for( auto it = children.begin(); it != children.end(); ++it )
-  {
-    if( *it != nullptr )
-    {
-      if( (*it)->decorator() != nullptr )
-      {
-        (*it)->decorator()->update();
-      }
-
-      // (*it)->update();
-    }
-  }
-
-  if( this->tip_ == false )
-  {
-    this->tooltip_.clear();
-  }
-
-  for( auto itr = this->tooltip_.begin(); itr != this->tooltip_.end(); ++itr )
-  {
-    (*itr)->update();
-  }
-
-  // this->set_updated( true );
-}
-
-void UIWidget::draw( RenderTarget& target ) const
-{
-  // Parent window
-  if( this->decorator_ != nullptr )
-  {
-    this->decorator()->draw( target );
-  }
-
-  if( this->title_ != nullptr )
-  {
-    this->title_->draw( target );
-  }
-
-  // Widgets
-  for ( auto it = this->children_.begin(); it != this->children_.end(); ++it )
-  {
-    if( *it != nullptr )
-    {
-      // Do not render widgets that are not visible
-      if( (*it)->visible() == false )
-      {
-        continue;
-      }
-
-      // Render the widget's border & background
-      if( (*it)->decorator() != nullptr )
-      {
-        (*it)->decorator()->draw( target );
-      }
-
-      // Let the widget manage rendering of itself
-      (*it)->draw( target );
-    }
-  }
-
-  for( auto itr = this->tooltip_.begin(); itr != this->tooltip_.end(); ++itr )
-  {
-    (*itr)->draw( target );
-  }
-}
-
-bool UIWidget::process_event( const Event& ev )
-{
-  // Invalid coordinates
-  Point2i mouse_coords( Point2i::null );
-  Point2i ev_mouse( Point2i::null );
-
-  // Propagate the event to every (child) widget until either: a) a widget
-  // consumes said event; b) end of widget tree is reached.
-  for( auto it = this->children_.begin(); it != this->children_.end(); ++it )
-  {
-    if( *it != nullptr )
-    {
-      // Sanity check; nothing to do if callback table is empty.
-      if( (*it)->dispatcher()->size() < 1 )
-      {
-        // NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Callback table is empty; skipping ::process_event." );
-        return false;
-      }
-
-      // return (*it)->process_event( ev );
-
-      IntRect widget_bounds( (*it)->position(), (*it)->size() );
-
-      if( ev.type == SDL_MOUSEMOTION )
-      {
-        ev_mouse = Point2i( ev.motion.x, ev.motion.y );
-
-        if( this->contains( *it, ev_mouse ) == true )
-        {
-          if( (*it)->on_mouse_enter( ev ) == false )
-          {
-            // Widget isn't interested ... so, onwards!
-            continue;
-          }
-
-          // Consumed event
-          return true;
-        }
-        else  // Widget bounds do not intersect mouse coordinates
-        {
-          if( (*it)->on_mouse_leave( ev ) == false )
-          {
-            // Widget isn't interested ... so, onwards!
-            continue;
-          }
-
-          // Consumed event
-          return true;
-        }
-      }
-      else if( ev.type == SDL_MOUSEBUTTONDOWN )
-      {
-        mouse_coords = Point2i( ev.mouse.x, ev.mouse.y );
-
-        if( widget_bounds.contains( mouse_coords ) )
-        {
-          if( (*it)->on_mouse_down( ev ) == false )
-          {
-            // Widget isn't interested ... so, onwards!
-            continue;
-          }
-
-          // Consumed event
-          return true;
-        }
-      }
-      else if( ev.type == SDL_MOUSEBUTTONUP )
-      {
-        mouse_coords = Point2i( ev.mouse.x, ev.mouse.y );
-
-        if( widget_bounds.contains( mouse_coords ) )
-        {
-          if( (*it)->on_mouse_up( ev ) == false )
-          {
-            // Widget isn't interested ... so, onwards!
-            continue;
-          }
-
-          // Consumed event
-          return true;
-        }
-      }
-      else if( ev.type == SDL_MOUSEWHEEL )
-      {
-        if( (*it)->on_mouse_wheel( ev ) == false )
-        {
-          continue;
-        }
-
-        // Consumed event
-        return true;
-      }
-      else if( ev.type == SDL_KEYDOWN )
-      {
-        if( (*it)->on_key_down( ev ) == false )
-        {
-          // Widget isn't interested ... so, onwards!
-          continue;
-        }
-
-        // Consumed event
-        return true;
-      }
-      else if( ev.type == SDL_KEYUP )
-      {
-        if( (*it)->on_key_up( ev ) == false )
-        {
-          // Widget isn't interested ... so, onwards!
-          continue;
-        }
-
-        // Consumed event
-        return true;
-      }
-    }
-  }
-
-  // Sanity check; nothing to do if callback table is empty.
-  if( this->dispatcher()->size() < 1 )
-  {
-    // NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Callback table is empty; skipping ::process_event." );
-    return false;
-  }
-/*
-  else if( ev.type == SDL_MOUSEMOTION )
-  {
-    Point2i ev_mouse( ev.motion.x, ev.motion.y );
-    IntRect window( this->global_bounds() );
-
-    SDL_GetMouseState( &l_x, &l_y );
-    if( window.contains( ev_mouse ) )
-    {
-      if( ev.timestamp > l_time + 2000 )
-      {
-        if( ev.motion.x == l_x && ev.motion.y == l_y )
-        {
-          Text::raw_ptr tip = new Text( "boobies!", this->font().get() );
-          tip->set_position( this->position() );
-          tip->set_size( tip->size().w, tip->size().h );
-          // tip->set_alignment( Anchor::MiddleCenter );
-          tip->set_color( Color4i::Black );
-          Rectangle::raw_ptr background = new Rectangle( IntRect( Point2i( this->position().x, this->position().y ), Size2i( tip->width(), tip->height() ) ), Color4i::ToolTip );
-
-          this->tooltip_.push_back( background );
-          this->tooltip_.push_back( tip );
-          this->tip_ = true;
-        }
-
-        l_time = SDL_GetTicks();
-
-        // return true;
-      }
-      else
-      {
-        this->tip_ = false;
-        l_time = 0;
-      }
-    }
-    else
-    {
-      this->tip_ = false;
-      l_time = 0;
-    }
-
-    // return true;
-  } // end if SDL_MOUSEMOTION
-
-  // l_time = SDL_GetTicks();
-  // l_x = ev.motion.x;
-  // l_y = ev.motion.y;
-*/
-  // else if( ev.type == SDL_MOUSEBUTTONDOWN )
-  // {
-  //   Point2i ev_mouse( ev.mouse.x, ev.mouse.y );
-
-  //   if( this->contains( this, ev_mouse ) == true )
-  //   {
-  //     // Associate the Event object along with the window object's instance
-  //     // identifiers.
-  //     UIWidgetEvent evt( ev.mouse.window_id, this->name(), ev, this->id() );
-
-  //     // Send a public UI event object to the registered callback; public event
-  //     // slot.
-  //     this->dispatcher()->emit( UIEvent::WINDOW_MOUSE_DOWN, evt );
-
-  //     // Successfully processed events
-  //     return true;
-
-  //   } // end if window contains mouse coords
-  // } // end if SDL_MOUSEBUTTONDOWN
-
-  // Event not consumed (nobody was interested)
-  return false;
-}
-
-bool UIWidget::updated( void ) const
-{
-  return this->updated_;
-}
-
-void UIWidget::set_updated( bool state )
-{
-  this->updated_ = state;
-}
-
-void UIWidget::set_visibility( bool state )
-{
-  this->visible_ = state;
-}
-
-void UIWidget::set_maximum_size( const Size2i& size )
-{
-  this->max_size_ = size;
-}
-
-void UIWidget::set_minimum_size( const Size2i& size )
-{
-  this->min_size_ = size;
-}
-
-void UIWidget::set_size_hint( const Size2i& size )
-{
-  this->size_hint_ = size;
-}
-
-// void UIWidget::set_global_bounds( const Point2i& pos, const Size2i& size )
-// {
-//   this->bounds_ = IntRect( pos, size );
-// }
-
-// void UIWidget::set_global_bounds( const IntRect& bounds )
-// {
-//   this->bounds_ = bounds;
-// }
-
-void UIWidget::set_geometry( const IntRect& bounds )
-{
-  this->set_position( bounds.position() + this->position() );
-  this->set_size( bounds.size() );
-}
-
-void UIWidget::set_geometry( int x, int y, int w, int h )
-{
-  this->set_geometry( IntRect( x, y, w, h ) );
-}
-
-void UIWidget::set_layout( UILayout* layout )
-{
-  #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
-    NOM_DUMP( this->name() );
-  #endif
-
-  this->layout_.reset( layout );
-
-  // TODO: Bounds checking, NULL pointer checks
-
-  if( this->parent() == nullptr ) // We are the top-level widget (window)
-  {
-    #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
-      NOM_DUMP( this->layout_->bounds().position() );
-      NOM_DUMP( this->position() );
-    #endif
-
-    // this->layout_->set_bounds( IntRect( this->layout_->bounds().position() + this->position(), this->size() ) );
-
-    #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
-      NOM_DUMP( this->layout_->bounds().size() );
-      NOM_DUMP( this->size() );
-    #endif
-  }
-
-  // Not sure if we still need to set anything here
-  else
-  {
-    #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
-      NOM_DUMP( this->layout_->bounds().position() );
-      NOM_DUMP( this->parent()->position() );
-    #endif
-
-    // this->layout_->set_bounds( IntRect( this->layout_->bounds().position() + this->parent()->position(), this->size() ) );
-    #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
-      NOM_DUMP( this->layout_->bounds().size() );
-      NOM_DUMP( this->parent()->size() );
-    #endif
-  }
-  #if defined( NOM_DEBUG_OUTPUT_LAYOUT_DATA )
-    NOM_DUMP( this->name() );
-    NOM_DUMP( this->position() );
-    NOM_DUMP( this->size() );
-  #endif
-
-  // this->set_updated( false );
-  this->update();
-}
-
-void UIWidget::resize( const Size2i& size )
-{
-  this->set_size( size );
-
-  // Associate the widget's unique identifiers with the sent event.
-  UIWidgetResizeEvent evt;
-  evt.set_id( this->id() );
-  evt.set_type( UIEvent::WINDOW_SIZE_CHANGED );
-  evt.set_bounds( IntRect( this->position(), Size2i( size.w, size.h ) ) );
-  // NOM_DUMP(evt.bounds() );
-
-  this->dispatcher()->emit( evt );
-}
-
-IUIEventDispatcher* UIWidget::dispatcher( void ) const
-{
-  // Sanity check; ensure that we are not an invalid object state (NULL).
-  // NOM_ASSERT( this->dispatcher_.get() != nullptr );
-
-  return this->dispatcher_.get();
-}
-
-// Protected scope
-
-void UIWidget::on_update( const UIWidgetEvent& ev )
-{
-  // NOM_LOG_TRACE( NOM );
-
-  // Required for the ListBox widget
-  this->set_updated( false );
-
-  this->update();
-}
-
-void UIWidget::on_size_changed( const UIWidgetResizeEvent& ev )
-{
-  this->set_updated( false );
-
-  if( this->decorator() != nullptr )
-  {
-    // Update the attached decorator (border & possibly a background)
-    this->decorator()->set_bounds( ev.bounds() );
-  }
-
-  // Update ourselves with the new rendering coordinates
-  this->set_bounds( ev.bounds() );
-
-  UIWidgetEvent info;
-  info.set_type( UIEvent::WIDGET_UPDATE );
-  info.set_id( this->id() );
-
-  this->dispatcher()->emit( info );
-}
-
-bool UIWidget::on_mouse_down( const Event& evt )
-{
-  // Do nothing
-
-  return false;
-}
-
-bool UIWidget::on_mouse_up( const Event& evt )
-{
-  // Do nothing
-
-  return false;
-}
-
-bool UIWidget::on_mouse_enter( const Event& evt )
-{
-  // Do nothing
-
-  return false;
-}
-
-bool UIWidget::on_mouse_leave( const Event& evt )
-{
-  // Do nothing
-
-  return false;
-}
-
-bool UIWidget::on_mouse_wheel( const Event& evt )
-{
-  // Do nothing
-
-  return false;
-}
-
-bool UIWidget::on_key_down( const Event& evt )
-{
-  // Do nothing
-
-  return false;
-}
-
-bool UIWidget::on_key_up( const Event& evt )
-{
-  // Do nothing
-
-  return false;
-}
-
-bool UIWidget::focus_previous_child( void )
-{
-  NOM_STUBBED( NOM );
-
-  return false;
-}
-
-bool UIWidget::focus_next_child( void )
-{
-  NOM_STUBBED( NOM );
-
-  return false;
-}
-
-void UIWidget::swap( const self_type* rhs )
-{
-  this->set_position( rhs->position() );
-  this->set_size( rhs->size() );
-
-  this->set_id( rhs->id() );
-  this->set_name( rhs->name() );
-  this->set_font( rhs->font() );
-  this->set_parent( rhs->parent() );
-  this->set_children( rhs->children() );
-  this->set_focused( rhs->focused() );
-  this->set_visibility( rhs->visible() );
-  this->set_updated( rhs->updated() );
-  this->decorator_ = rhs->decorator();
-  this->set_title( rhs->title() );
-  this->set_maximum_size( rhs->maximum_size() );
-  this->set_minimum_size( rhs->minimum_size() );
-  this->set_size_hint( rhs->size_hint() );
-  this->set_layout( rhs->layout() );
-  this->set_focus_policy( rhs->focus_policy() );
-  this->policy_ = rhs->policy_;
-  this->set_style( rhs->style() );
-  this->set_parent_bounds( rhs->parent_bounds() );
-  this->set_event_dispatcher( rhs->dispatcher() );
-}
-
-// Private scope
-
-int64 UIWidget::generate_id( void ) const
-{
-  return ( ++next_window_id_ );
-}
-
-void UIWidget::set_parent_bounds( const IntRect& bounds )
-{
-  this->parent_bounds_ = bounds;
-}
-
-void UIWidget::set_event_dispatcher( IUIEventDispatcher* dispatcher )
-{
-  this->dispatcher_.reset( dispatcher );
-}
-
-/*
-void UIWidget::validate_dimensions( const IDrawable::raw_ptr object )
-{
-  // Check to see if the end-user (developer) has passed a drawable type that
-  // inherits from nom::Transformable. If so, ensure that the dimensions are not
-  // in an invalid (null) state, so that we are able to render the object.
-  if( NOM_ISA( Transformable*, object ) == true )
-  {
-    Transformable* drawable = NOM_DYN_PTR_CAST(Transformable*, object );
-
-    // If the object's positioning is in an invalid (null) state, use the
-    // positioning of this (parent) object.
-    if( drawable->position() == Point2i::null )
-    {
-      drawable->set_position( this->position() );
-    }
-
-    // If the object's size is in an invalid (null) state, use the size of this
-    // (parent) object.
-    if( drawable->size() == Size2i::null )
-    {
-      drawable->set_size( this->size() );
-    }
-  }
-}
-*/
 
 } // namespace nom

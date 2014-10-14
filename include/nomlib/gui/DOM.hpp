@@ -26,31 +26,31 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GUI_PUBLIC_HEADERS_HPP
-#define NOMLIB_GUI_PUBLIC_HEADERS_HPP
+#ifndef NOMLIB_GUI_DOM_HPP
+#define NOMLIB_GUI_DOM_HPP
+
+#include <Rocket/Core.h>
 
 #include "nomlib/config.hpp"
 
-#include "nomlib/gui/Drawables.hpp"
-#include "nomlib/gui/IDecorator.hpp"
-#include "nomlib/gui/Decorator.hpp"
-// #include "nomlib/gui/MinimalDecorator.hpp"
-#include "nomlib/gui/FinalFantasyFrame.hpp"
-#include "nomlib/gui/FinalFantasyDecorator.hpp"
+namespace nom {
 
-#include "nomlib/gui/RocketFileInterface.hpp"
-#include "nomlib/gui/RocketSDL2SystemInterface.hpp"
-#include "nomlib/gui/RocketSDL2RenderInterface.hpp"
+class DOM
+{
+  public:
+    DOM( Rocket::Core::ElementDocument* model );
 
-#include "nomlib/gui/DecoratorInstancerFinalFantasyFrame.hpp"
-#include "nomlib/gui/DecoratorInstancerSprite.hpp"
+    Rocket::Core::Element* id( const std::string& id ) const;
+    Rocket::Core::ElementList ids( const std::string& id ) const;
+    Rocket::Core::ElementList class_names( const std::string& q ) const;
 
-#include "nomlib/gui/UIWidget.hpp"
-#include "nomlib/gui/UIMessageBox.hpp"
-#include "nomlib/gui/UIQuestionDialogBox.hpp"
-#include "nomlib/gui/UIDataViewList.hpp"
-#include "nomlib/gui/UIContext.hpp"
+    void set_rml( Rocket::Core::ElementList elements, const std::string& text );
 
-#include "nomlib/gui/init_librocket.hpp"
+  private:
+    /// \brief Non-owned pointer.
+    Rocket::Core::ElementDocument* doc_;
+};
+
+} // namespace nom
 
 #endif // include guard defined

@@ -12,7 +12,7 @@
 #include <nomlib/config.hpp>
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
-#include <nomlib/librocket.hpp>
+#include <nomlib/gui.hpp>
 
 #include <Rocket/Core.h>
 #include <Rocket/Core/Types.h>

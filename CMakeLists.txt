@@ -65,9 +65,7 @@ option( NOM_BUILD_JSON_UNIT "JSON I/O" true )
 # Dependencies: RapidXml (included in source tree)
 option( NOM_BUILD_XML_UNIT "XML I/O" FALSE )
 
-option( NOM_BUILD_GUI_UNIT "GUI subsystem" false )
-
-option( NOM_BUILD_LIBROCKET_UNIT "GUI subsystem" TRUE )
+option( NOM_BUILD_GUI_UNIT "GUI subsystem" TRUE )
 
 # Collection of internal templates used in the creation of new functionality
 # such as classes or examples / tests.

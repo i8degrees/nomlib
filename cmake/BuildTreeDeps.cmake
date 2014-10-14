@@ -56,33 +56,13 @@ if( NOM_BUILD_GUI_UNIT )
   set( NOM_BUILD_CORE_UNIT TRUE )
   set( NOM_BUILD_MATH_UNIT TRUE )
   set( NOM_BUILD_GRAPHICS_UNIT TRUE )
-  # FIXME?
   set( NOM_BUILD_SERIALIZERS_UNIT TRUE )
-  # FIXME?
   set( NOM_BUILD_JSON_UNIT TRUE )
   set( NOM_BUILD_SYSTEM_UNIT TRUE )
 
-  # Namespace conflicts
-  if( NOM_BUILD_LIBROCKET_UNIT )
-    message( FATAL_ERROR "Cannot build GUI and libRocket units together." )
-  endif( NOM_BUILD_LIBROCKET_UNIT )
-
+  # config.hpp.in
+  set( NOM_USE_LIBROCKET TRUE )
 endif( NOM_BUILD_GUI_UNIT )
-
-if( NOM_BUILD_LIBROCKET_UNIT )
-  set( NOM_BUILD_CORE_UNIT TRUE )
-  set( NOM_BUILD_MATH_UNIT TRUE )
-  set( NOM_BUILD_GRAPHICS_UNIT TRUE )
-  set( NOM_BUILD_SERIALIZERS_UNIT TRUE )
-  set( NOM_BUILD_JSON_UNIT TRUE )
-  set( NOM_BUILD_SYSTEM_UNIT TRUE )
-
-  # Namespace conflicts
-  if( NOM_BUILD_GUI_UNIT )
-    message( FATAL_ERROR "Cannot build GUI and libRocket units together." )
-  endif( NOM_BUILD_GUI_UNIT )
-
-endif( NOM_BUILD_LIBROCKET_UNIT )
 
 # Stub option; not yet implemented ... experimental use has been implemented in
 # examples/device_info.cpp.
@@ -102,7 +82,3 @@ if( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
   set( NOM_USE_SCALEX TRUE )
   set( NOM_USE_HQX TRUE )
 endif( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
-
-if( NOM_BUILD_LIBROCKET_UNIT )
-  set( NOM_USE_LIBROCKET TRUE )
-endif( NOM_BUILD_LIBROCKET_UNIT )

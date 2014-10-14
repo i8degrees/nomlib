@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
-#include <nomlib/librocket.hpp>
+#include <nomlib/gui.hpp>
 
 /// \brief File path name of the resources directory; this must be a relative file path.
 const std::string APP_RESOURCES_DIR = "Resources";
@@ -193,7 +193,7 @@ class App: public nom::SDLApp
       //
       // TODO: Use resources configuration file
       Rocket::Core::FileInterface* fs =
-        new nom::RocketFileInterface( "../../../Resources/tests/gui/librocket/nomlibTest/" );
+        new nom::RocketFileInterface( "../../../Resources/tests/gui/" );
 
       Rocket::Core::SystemInterface* sys =
         new nom::RocketSDL2SystemInterface();

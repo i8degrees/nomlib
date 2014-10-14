@@ -26,31 +26,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GUI_PUBLIC_HEADERS_HPP
-#define NOMLIB_GUI_PUBLIC_HEADERS_HPP
+#ifndef NOMLIB_GUI_INIT_LIBROCKET_HPP
+#define NOMLIB_GUI_INIT_LIBROCKET_HPP
 
 #include "nomlib/config.hpp"
 
-#include "nomlib/gui/Drawables.hpp"
-#include "nomlib/gui/IDecorator.hpp"
-#include "nomlib/gui/Decorator.hpp"
-// #include "nomlib/gui/MinimalDecorator.hpp"
-#include "nomlib/gui/FinalFantasyFrame.hpp"
-#include "nomlib/gui/FinalFantasyDecorator.hpp"
+// Forward declarations (third-party)
+namespace Rocket {
+namespace Core {
 
-#include "nomlib/gui/RocketFileInterface.hpp"
-#include "nomlib/gui/RocketSDL2SystemInterface.hpp"
-#include "nomlib/gui/RocketSDL2RenderInterface.hpp"
+class Context;
+class FileInterface;
+class SystemInterface;
 
-#include "nomlib/gui/DecoratorInstancerFinalFantasyFrame.hpp"
-#include "nomlib/gui/DecoratorInstancerSprite.hpp"
+} // namespace Core
+} // namespace Rocket
 
-#include "nomlib/gui/UIWidget.hpp"
-#include "nomlib/gui/UIMessageBox.hpp"
-#include "nomlib/gui/UIQuestionDialogBox.hpp"
-#include "nomlib/gui/UIDataViewList.hpp"
-#include "nomlib/gui/UIContext.hpp"
+namespace nom {
 
-#include "nomlib/gui/init_librocket.hpp"
+/// \brief Initialize libRocket interface.
+///
+/// \remarks The pointer ownership transfers to libRocket.
+///
+/// \note This must be done before the creation of a libRocket context.
+///
+/// \param fs   Platform-dependent file interface implementation.
+/// \param sys  Platform-dependent system interface implementation.
+///
+/// \see nom::UIContext.
+/// \see nom::RocketFileInterface
+/// \see nom::RocketSDL2SystemInterface
+bool init_librocket(  Rocket::Core::FileInterface* fs,
+                      Rocket::Core::SystemInterface* sys );
+
+/// \brief Shutdown libRocket interface.
+void shutdown_librocket();
+
+} // namespace nom
 
 #endif // include guard defined

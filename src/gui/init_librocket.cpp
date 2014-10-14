@@ -26,31 +26,35 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GUI_PUBLIC_HEADERS_HPP
-#define NOMLIB_GUI_PUBLIC_HEADERS_HPP
-
-#include "nomlib/config.hpp"
-
-#include "nomlib/gui/Drawables.hpp"
-#include "nomlib/gui/IDecorator.hpp"
-#include "nomlib/gui/Decorator.hpp"
-// #include "nomlib/gui/MinimalDecorator.hpp"
-#include "nomlib/gui/FinalFantasyFrame.hpp"
-#include "nomlib/gui/FinalFantasyDecorator.hpp"
-
-#include "nomlib/gui/RocketFileInterface.hpp"
-#include "nomlib/gui/RocketSDL2SystemInterface.hpp"
-#include "nomlib/gui/RocketSDL2RenderInterface.hpp"
-
-#include "nomlib/gui/DecoratorInstancerFinalFantasyFrame.hpp"
-#include "nomlib/gui/DecoratorInstancerSprite.hpp"
-
-#include "nomlib/gui/UIWidget.hpp"
-#include "nomlib/gui/UIMessageBox.hpp"
-#include "nomlib/gui/UIQuestionDialogBox.hpp"
-#include "nomlib/gui/UIDataViewList.hpp"
-#include "nomlib/gui/UIContext.hpp"
-
 #include "nomlib/gui/init_librocket.hpp"
 
-#endif // include guard defined
+// Forward declarations (third-party)
+#include <Rocket/Core/Core.h>
+#include <Rocket/Controls/Controls.h>
+
+namespace nom {
+
+bool init_librocket(  Rocket::Core::FileInterface* fs,
+                      Rocket::Core::SystemInterface* sys )
+{
+  Rocket::Core::SetFileInterface( fs );
+  Rocket::Core::SetSystemInterface( sys );
+
+  if( ! Rocket::Core::Initialise() )
+  {
+    NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not initialize libRocket." );
+    return false;
+  }
+
+  // Necessary for form elements
+  Rocket::Controls::Initialise();
+
+  return true;
+}
+
+void shutdown_librocket()
+{
+  Rocket::Core::Shutdown();
+}
+
+} // namespace nom

@@ -26,31 +26,44 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GUI_PUBLIC_HEADERS_HPP
-#define NOMLIB_GUI_PUBLIC_HEADERS_HPP
+#ifndef NOMLIB_GUI_DECORATOR_INSTANCER_SPRITE_HPP
+#define NOMLIB_GUI_DECORATOR_INSTANCER_SPRITE_HPP
 
 #include "nomlib/config.hpp"
 
-#include "nomlib/gui/Drawables.hpp"
-#include "nomlib/gui/IDecorator.hpp"
-#include "nomlib/gui/Decorator.hpp"
-// #include "nomlib/gui/MinimalDecorator.hpp"
-#include "nomlib/gui/FinalFantasyFrame.hpp"
-#include "nomlib/gui/FinalFantasyDecorator.hpp"
+#include <Rocket/Core/DecoratorInstancer.h>
 
-#include "nomlib/gui/RocketFileInterface.hpp"
-#include "nomlib/gui/RocketSDL2SystemInterface.hpp"
-#include "nomlib/gui/RocketSDL2RenderInterface.hpp"
+namespace nom {
 
-#include "nomlib/gui/DecoratorInstancerFinalFantasyFrame.hpp"
-#include "nomlib/gui/DecoratorInstancerSprite.hpp"
+/// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Decorators
+/// \see http://librocket.com/wiki/documentation/RCSS/Decorators
+///
+/// \see nom::DecoratorSpriteBatch
+class DecoratorInstancerSprite: public Rocket::Core::DecoratorInstancer
+{
+  public:
+    /// \brief Default constructor.
+    ///
+    /// \remarks Register RCSS properties for sprite-based decorators.
+    DecoratorInstancerSprite();
 
-#include "nomlib/gui/UIWidget.hpp"
-#include "nomlib/gui/UIMessageBox.hpp"
-#include "nomlib/gui/UIQuestionDialogBox.hpp"
-#include "nomlib/gui/UIDataViewList.hpp"
-#include "nomlib/gui/UIContext.hpp"
+    /// \brief Destructor.
+    virtual ~DecoratorInstancerSprite();
 
-#include "nomlib/gui/init_librocket.hpp"
+    /// Instances a decorator given the property tag and attributes from the RCSS file.
+    /// @param name The type of decorator desired. For example, "background-decorator: simple;" is declared as type "simple".
+    /// @param properties All RCSS properties associated with the decorator.
+    /// @return The decorator if it was instanced successful, NULL if an error occured.
+    Rocket::Core::Decorator* InstanceDecorator(const Rocket::Core::String& name, const Rocket::Core::PropertyDictionary& properties);
 
-#endif // include guard defined
+    /// Releases the given decorator.
+    /// @param decorator Decorator to release. This is guaranteed to have been constructed by this instancer.
+    void ReleaseDecorator(Rocket::Core::Decorator* decorator);
+
+    /// Releases the instancer.
+    void Release();
+};
+
+} // namespace nom
+
+#endif // include guard

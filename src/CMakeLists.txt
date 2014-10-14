@@ -63,12 +63,6 @@ set ( GRAPHICS_SOURCE
       ${SRC_DIR}/graphics/fonts/Font.cpp
       ${SRC_DIR}/graphics/fonts/Glyph.cpp
       ${SRC_DIR}/graphics/Cursor.cpp
-      # TODO: Move from gui to graphics?
-      ${SRC_DIR}/gui/FinalFantasyFrame.cpp
-      ${SRC_DIR}/gui/Drawables.cpp
-      ${SRC_DIR}/gui/Decorator.cpp
-      ${SRC_DIR}/gui/MinimalDecorator.cpp
-      ${SRC_DIR}/gui/FinalFantasyDecorator.cpp
     )
 
 # hqx algorithm (third-party)
@@ -104,46 +98,6 @@ set ( GRAPHICS_SPRITE_SOURCE
       # ${SRC_DIR}/graphics/sprite/SpriteBatch.cpp
       # ${SRC_DIR}/graphics/sprite/AnimatedSprite.cpp
       # ${SRC_DIR}/graphics/sprite/SpriteSheet.cpp
-    )
-
-# User Interface module
-file ( GLOB GUI_HEADERS "${NOMLIB_HEADERS_DIR}/gui/*.hpp" )
-set ( GUI_SOURCE
-      ${SRC_DIR}/gui/UILayoutPolicy.cpp
-      ${SRC_DIR}/gui/UISpacerItem.cpp
-      ${SRC_DIR}/gui/UILayoutItem.cpp
-      ${SRC_DIR}/gui/UILayout.cpp
-      # ${SRC_DIR}/gui/Drawables.cpp
-      # ${SRC_DIR}/gui/Decorator.cpp
-      # ${SRC_DIR}/gui/MinimalDecorator.cpp
-      # ${SRC_DIR}/gui/FinalFantasyDecorator.cpp
-      ${SRC_DIR}/gui/MessageBox.cpp
-      ${SRC_DIR}/gui/QuestionDialogBox.cpp
-      # ${SRC_DIR}/gui/YesNoDialogBox.cpp
-      # ${SRC_DIR}/gui/FinalFantasyFrame.cpp
-      ${SRC_DIR}/gui/UIWidget.cpp
-      ${SRC_DIR}/gui/Button.cpp
-      ${SRC_DIR}/gui/BitmapButton.cpp
-      ${SRC_DIR}/gui/ListBox.cpp
-      ${SRC_DIR}/gui/DataViewListStore.cpp
-      ${SRC_DIR}/gui/DataViewBitmapColumn.cpp
-      ${SRC_DIR}/gui/DataViewColumn.cpp
-      ${SRC_DIR}/gui/DataViewList.cpp
-      ${SRC_DIR}/gui/DataViewItem.cpp
-      ${SRC_DIR}/gui/UIEventDispatcher.cpp
-      ${SRC_DIR}/gui/UIWidgetEvent.cpp
-      ${SRC_DIR}/gui/UIEvent.cpp
-      ${SRC_DIR}/gui/UIItemContainer.cpp
-      ${SRC_DIR}/gui/UIWidgetLayoutItem.cpp
-      ${SRC_DIR}/gui/UIBoxLayout.cpp
-      ${SRC_DIR}/gui/UIVBoxLayout.cpp
-      ${SRC_DIR}/gui/UIHBoxLayout.cpp
-      # ${SRC_DIR}/gui/UIListItem.cpp
-      # ${SRC_DIR}/gui/UIItemListControl.cpp
-      # ${SRC_DIR}/gui/ButtonLabel.cpp
-      # ${SRC_DIR}/gui/UIChoice.cpp
-      ${SRC_DIR}/gui/UIStyle.cpp
-      ${SRC_DIR}/gui/String.cpp
     )
 
 # Core serializers module
@@ -243,25 +197,31 @@ set(  EXAMPLES_TEMPLATE_SOURCE
     )
 
 # User Interface module
-file ( GLOB LIBROCKET_HEADERS "${NOMLIB_HEADERS_DIR}/librocket/*.hpp" )
-set ( LIBROCKET_SOURCE
-      ${SRC_DIR}/librocket/RocketSDL2RenderInterface.cpp
-      ${SRC_DIR}/librocket/RocketSDL2SystemInterface.cpp
-      ${SRC_DIR}/librocket/RocketFileInterface.cpp
-      ${SRC_DIR}/librocket/DecoratorInstancerFinalFantasyFrame.cpp
-      ${SRC_DIR}/librocket/DecoratorFinalFantasyFrame.cpp
-      ${SRC_DIR}/librocket/DecoratorPhotograph.cpp
-      ${SRC_DIR}/librocket/DecoratorInstancerSprite.cpp
-      ${SRC_DIR}/librocket/DecoratorSpriteBatch.cpp
-      ${SRC_DIR}/librocket/UIWidget.cpp
-      ${SRC_DIR}/librocket/UIMessageBox.cpp
-      ${SRC_DIR}/librocket/UIQuestionDialogBox.cpp
-      ${SRC_DIR}/librocket/UIDataViewList.cpp
-      # ${SRC_DIR}/librocket/DOM.cpp
-      ${SRC_DIR}/librocket/RocketUtilities.cpp
-      ${SRC_DIR}/librocket/UIContext.cpp
-      ${SRC_DIR}/librocket/init_librocket.cpp
-      ${SRC_DIR}/librocket/UIContextEventHandler.cpp
+file ( GLOB GUI_HEADERS "${NOMLIB_HEADERS_DIR}/gui/*.hpp" )
+set ( GUI_SOURCE
+      ${SRC_DIR}/gui/RocketSDL2RenderInterface.cpp
+      ${SRC_DIR}/gui/RocketSDL2SystemInterface.cpp
+      ${SRC_DIR}/gui/RocketFileInterface.cpp
+      ${SRC_DIR}/gui/DecoratorInstancerFinalFantasyFrame.cpp
+      ${SRC_DIR}/gui/DecoratorFinalFantasyFrame.cpp
+      ${SRC_DIR}/gui/DecoratorPhotograph.cpp
+      ${SRC_DIR}/gui/DecoratorInstancerSprite.cpp
+      ${SRC_DIR}/gui/DecoratorSpriteBatch.cpp
+      ${SRC_DIR}/gui/UIWidget.cpp
+      ${SRC_DIR}/gui/UIMessageBox.cpp
+      ${SRC_DIR}/gui/UIQuestionDialogBox.cpp
+      ${SRC_DIR}/gui/UIDataViewList.cpp
+      # ${SRC_DIR}/gui/DOM.cpp
+      ${SRC_DIR}/gui/RocketUtilities.cpp
+      ${SRC_DIR}/gui/UIContext.cpp
+      ${SRC_DIR}/gui/init_librocket.cpp
+      ${SRC_DIR}/gui/UIContextEventHandler.cpp
+      # Decorator helpers
+      ${SRC_DIR}/gui/FinalFantasyFrame.cpp
+      ${SRC_DIR}/gui/Drawables.cpp
+      ${SRC_DIR}/gui/Decorator.cpp
+      ${SRC_DIR}/gui/MinimalDecorator.cpp
+      ${SRC_DIR}/gui/FinalFantasyDecorator.cpp
     )
 
 # Platform-specific source files
@@ -377,17 +337,6 @@ if( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
       )
 endif( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
 
-if( NOM_BUILD_GUI_UNIT )
-  set ( NOMLIB_HEADERS
-        ${NOMLIB_HEADERS}
-        ${GUI_HEADERS}
-      )
-  set ( NOMLIB_SOURCE
-        ${NOMLIB_SOURCE}
-        ${GUI_SOURCE}
-      )
-endif( NOM_BUILD_GUI_UNIT )
-
 if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_SERIALIZERS_UNIT AND NOM_BUILD_SYSTEM_UNIT )
   set ( NOMLIB_HEADERS
         ${NOMLIB_HEADERS}
@@ -488,19 +437,17 @@ if( NOM_BUILD_TEMPLATES_UNIT )
 
 endif( NOM_BUILD_TEMPLATES_UNIT )
 
-if( NOM_BUILD_LIBROCKET_UNIT )
-
+if( NOM_BUILD_GUI_UNIT )
   set ( NOMLIB_HEADERS
         ${NOMLIB_HEADERS}
-        ${LIBROCKET_HEADERS}
+        ${GUI_HEADERS}
       )
 
   set ( NOMLIB_SOURCE
         ${NOMLIB_SOURCE}
-        ${LIBROCKET_SOURCE}
+        ${GUI_SOURCE}
       )
-
-endif( NOM_BUILD_LIBROCKET_UNIT )
+endif( NOM_BUILD_GUI_UNIT )
 
 # Add header files (*.hpp) and source files (*.cpp) to IDE project list
 # (For those that use Xcode, MSVC++, etc.)
@@ -514,7 +461,6 @@ source_group ( "include\\graphics\\scale2x" FILES ${GRAPHICS_SCALE2X_HEADERS} )
 source_group ( "include\\graphics\\shapes" FILES ${GRAPHICS_SHAPES_HEADERS} )
 source_group ( "include\\graphics\\sprite" FILES ${GRAPHICS_SPRITE_HEADERS} )
 source_group ( "include\\gui" FILES ${GUI_HEADERS} )
-source_group ( "include\\gui\\librocket" FILES ${LIBROCKET_HEADERS} )
 source_group ( "third-party\\common\\jsoncpp" FILES ${JSONCPP_INCLUDE_DIR} )
 source_group ( "third-party\\common\\rapidxml" FILES ${RAPIDXML_INCLUDE_DIR} )
 source_group ( "include\\math" FILES ${MATH_HEADERS} )
@@ -533,7 +479,6 @@ source_group ( "src\\graphics\\scale2x" FILES ${GRAPHICS_SCALE2X_SOURCE} )
 source_group ( "src\\graphics\\shapes" FILES ${GRAPHICS_SHAPES_SOURCE} )
 source_group ( "src\\graphics\\sprite" FILES ${GRAPHICS_SPRITE_SOURCE} )
 source_group ( "src\\gui" FILES ${GUI_SOURCE} )
-source_group ( "src\\gui\\librocket" FILES ${LIBROCKET_SOURCE} )
 source_group ( "src\\json" FILES ${JSON_SOURCE} )
 source_group ( "third-party\\common\\jsoncpp" FILES ${JSONCPP_SOURCE} )
 source_group ( "src\\math" FILES ${MATH_SOURCE} )

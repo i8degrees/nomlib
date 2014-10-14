@@ -26,31 +26,52 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GUI_PUBLIC_HEADERS_HPP
-#define NOMLIB_GUI_PUBLIC_HEADERS_HPP
+#ifndef NOMLIB_GUI_TESTS_DATAGRID_CARD_COLLECTION_HPP
+#define NOMLIB_GUI_TESTS_DATAGRID_CARD_COLLECTION_HPP
+
+#include <string>
 
 #include "nomlib/config.hpp"
+#include "nomlib/tests/gui/datagrid/Card.hpp"
 
-#include "nomlib/gui/Drawables.hpp"
-#include "nomlib/gui/IDecorator.hpp"
-#include "nomlib/gui/Decorator.hpp"
-// #include "nomlib/gui/MinimalDecorator.hpp"
-#include "nomlib/gui/FinalFantasyFrame.hpp"
-#include "nomlib/gui/FinalFantasyDecorator.hpp"
+namespace nom {
 
-#include "nomlib/gui/RocketFileInterface.hpp"
-#include "nomlib/gui/RocketSDL2SystemInterface.hpp"
-#include "nomlib/gui/RocketSDL2RenderInterface.hpp"
+/// \brief A mock CardCollection
+///
+/// \remarks This interface should **not** be used outside of unit tests; for
+/// starters, assertion macros are disabled for running under this particular
+/// testing environment.
+///
+/// \see libRocketDataGridTest, TTcards::CardCollection
+class CardCollection
+{
+  public:
+    CardCollection();
+    virtual ~CardCollection();
 
-#include "nomlib/gui/DecoratorInstancerFinalFantasyFrame.hpp"
-#include "nomlib/gui/DecoratorInstancerSprite.hpp"
+    CardList cards() const;
 
-#include "nomlib/gui/UIWidget.hpp"
-#include "nomlib/gui/UIMessageBox.hpp"
-#include "nomlib/gui/UIQuestionDialogBox.hpp"
-#include "nomlib/gui/UIDataViewList.hpp"
-#include "nomlib/gui/UIContext.hpp"
+    bool load_db();
 
-#include "nomlib/gui/init_librocket.hpp"
+    nom::size_type num_rows() const;
+
+    /// \brief Lookup a card ID by name.
+    ///
+    /// \param name The card's name.
+    const Card& lookup_by_name( const std::string& name ) const;
+
+    /// \brief Lookup a card name by ID.
+    ///
+    /// \param id The card's identifier.
+    const Card& lookup_by_id( int id ) const;
+
+    /// \brief Rudimentary debugging aid.
+    std::string dump();
+
+  private:
+    std::vector<Card> cards_;
+};
+
+} // namespace nom
 
 #endif // include guard defined

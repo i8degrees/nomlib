@@ -26,31 +26,58 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GUI_PUBLIC_HEADERS_HPP
-#define NOMLIB_GUI_PUBLIC_HEADERS_HPP
+#include "nomlib/tests/gui/datagrid/Card.hpp"
 
-#include "nomlib/config.hpp"
+namespace nom {
 
-#include "nomlib/gui/Drawables.hpp"
-#include "nomlib/gui/IDecorator.hpp"
-#include "nomlib/gui/Decorator.hpp"
-// #include "nomlib/gui/MinimalDecorator.hpp"
-#include "nomlib/gui/FinalFantasyFrame.hpp"
-#include "nomlib/gui/FinalFantasyDecorator.hpp"
+const Card Card::null = Card();
 
-#include "nomlib/gui/RocketFileInterface.hpp"
-#include "nomlib/gui/RocketSDL2SystemInterface.hpp"
-#include "nomlib/gui/RocketSDL2RenderInterface.hpp"
+Card::Card() :
+  id_(-1),
+  name_("\0"),
+  num_(0)
+{
+}
 
-#include "nomlib/gui/DecoratorInstancerFinalFantasyFrame.hpp"
-#include "nomlib/gui/DecoratorInstancerSprite.hpp"
+Card::~Card()
+{
+}
 
-#include "nomlib/gui/UIWidget.hpp"
-#include "nomlib/gui/UIMessageBox.hpp"
-#include "nomlib/gui/UIQuestionDialogBox.hpp"
-#include "nomlib/gui/UIDataViewList.hpp"
-#include "nomlib/gui/UIContext.hpp"
+Card::Card( int id, const std::string& name, int num_cards )
+{
+  this->set_id(id);
+  this->set_name(name);
+  this->set_num( num_cards );
+}
 
-#include "nomlib/gui/init_librocket.hpp"
+int Card::id() const
+{
+  return this->id_;
+}
 
-#endif // include guard defined
+const std::string& Card::name() const
+{
+  return this->name_;
+}
+
+int Card::num() const
+{
+  return this->num_;
+}
+
+void Card::set_id(int id)
+{
+  this->id_ = id;
+}
+
+void Card::set_name(const std::string& name)
+{
+  this->name_ = name;
+}
+
+void Card::set_num(int num)
+{
+  this->num_ = num;
+}
+
+} // namespace nom

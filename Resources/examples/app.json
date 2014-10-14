@@ -1,0 +1,25 @@
+{
+  "resources":
+  {
+    "search_prefix":
+    [
+      "../../../",
+      "../../",
+      "./"
+    ],
+
+    "path": "Resources/examples/app/"
+  },
+
+  "gui":
+  {
+    "search_prefix":
+    [
+      "../../../",
+      "../../",
+      "./"
+    ],
+
+    "path": "Resources/tests/gui/"
+  }
+}

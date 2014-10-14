@@ -37,9 +37,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 #include <nomlib/gui.hpp>
 
-/// \brief File path name of the resources directory; this must be a relative file path.
-const std::string APP_RESOURCES_DIR = "Resources";
-
 /// \brief Name of our application.
 const std::string APP_NAME = "nomlib Demo | Multiple Windows";
 
@@ -69,22 +66,20 @@ const nom::Point2i INFO_BOX_ORIGINS[2] =  {
                                                         )
                                           };
 
-/// \brief  Relative file path name of our resource example
-const nom::Path p;
-const std::string RESOURCE_ICON = APP_RESOURCES_DIR + p.native() + "icon.png";
+const std::string RESOURCE_ICON = "icon.png";
 
-const std::string RESOURCE_TRUETYPE_FONT[2] = {
-                                                APP_RESOURCES_DIR + p.native() + "arial.ttf",
-                                                APP_RESOURCES_DIR + p.native() + "TimesNewRoman.ttf"
-                                              };
+// const std::string RESOURCE_TRUETYPE_FONT[2] = {
+//                                                 "arial.ttf",
+//                                                 "TimesNewRoman.ttf"
+//                                               };
 
-const std::string RESOURCE_BITMAP_FONT = APP_RESOURCES_DIR + p.native() + "VIII.png";
-const std::string RESOURCE_BITMAP_SMALL_FONT = APP_RESOURCES_DIR + p.native() + "VIII_small.png";
+// const std::string RESOURCE_BITMAP_FONT = "VIII.png";
+// const std::string RESOURCE_BITMAP_SMALL_FONT = "VIII_small.png";
 
-const std::string RESOURCE_SPRITE = APP_RESOURCES_DIR + p.native() + "cursors.json";
+const std::string RESOURCE_SPRITE_SHEET = "cursors.json";
 
 /// Copyright (c) 2013 Fielding Johnston. All rights reserved.
-const std::string RESOURCE_STATIC_IMAGE = APP_RESOURCES_DIR + p.native() + "boardoutline.png";
+const std::string RESOURCE_STATIC_IMAGE = "boardoutline.png";
 
 /// \brief Relative filename path to saved screen shot example
 ///
@@ -136,6 +131,26 @@ class App: public nom::SDLApp
       nom::uint32 render_flags = SDL_RENDERER_ACCELERATED;
       int render_driver = -1;
 
+      nom::SearchPath res, res_gui;
+      std::string res_file = "app.json";
+
+      // Determine our resources path based on several possible locations;
+      // this is dependent upon the build environment
+      if( res.load_file(res_file,"resources") == false )
+      {
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
+                     "Could not determine the resource path for", res_file );
+        return false;
+      }
+
+      if( res_gui.load_file(res_file,"gui") == false )
+      {
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
+                      "Could not determine the resource path for",
+                      res_file );
+        return false;
+      }
+
       if ( nom::set_hint ( SDL_HINT_RENDER_VSYNC, "0" ) == false )
       {
         NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
@@ -166,9 +181,11 @@ class App: public nom::SDLApp
 
         this->window[idx].set_position ( 0+(WINDOW_WIDTH/2) * idx, WINDOW_HEIGHT/2 );
 
-        if ( this->window[idx].set_window_icon ( RESOURCE_ICON ) == false )
+        if( this->window[idx].set_window_icon( res.path() + RESOURCE_ICON ) == false )
         {
-          nom::DialogMessageBox ( APP_NAME, "Could not load window icon: " + RESOURCE_ICON );
+          nom::DialogMessageBox(  APP_NAME,
+                                  "Could not load window icon: " +
+                                  res.path() + RESOURCE_ICON );
           return false;
         }
       }
@@ -190,10 +207,8 @@ class App: public nom::SDLApp
 
       // Initialize the core of libRocket; these are the core dependencies that
       // libRocket depends on for successful initialization.
-      //
-      // TODO: Use resources configuration file
       Rocket::Core::FileInterface* fs =
-        new nom::RocketFileInterface( "../../../Resources/tests/gui/" );
+        new nom::RocketFileInterface( res_gui.path() );
 
       Rocket::Core::SystemInterface* sys =
         new nom::RocketSDL2SystemInterface();
@@ -262,10 +277,12 @@ class App: public nom::SDLApp
 
       // Load a sprite sheet, using the sheet_filename as the base path to load
       // the image file from disk
-      this->sprite = nom::SpriteBatch ( RESOURCE_SPRITE );
-      if ( this->sprite.load ( APP_RESOURCES_DIR + p.native() + this->sprite.sheet_filename(), false, nom::Texture::Access::Streaming ) == false )
+      this->sprite = nom::SpriteBatch( res.path() + RESOURCE_SPRITE_SHEET );
+      if( this->sprite.load( res.path() + this->sprite.sheet_filename(), false, nom::Texture::Access::Streaming ) == false )
       {
-        nom::DialogMessageBox ( APP_NAME, "Could not load sprite: " + this->sprite.sheet_filename() );
+        nom::DialogMessageBox(  APP_NAME,
+                                "Could not load sprite: " +
+                                res.path() + this->sprite.sheet_filename() );
         return false;
       }
       this->sprite.resize ( nom::Texture::ResizeAlgorithm::scale2x );
@@ -273,19 +290,23 @@ class App: public nom::SDLApp
 
       // Load the same sprite sheet -- but this time -- used for animation
       // effects!
-      this->ani_sprite = nom::AnimatedSprite ( RESOURCE_SPRITE );
-      if ( this->ani_sprite.load ( APP_RESOURCES_DIR + p.native() + this->ani_sprite.sheet_filename() ) == false )
+      this->ani_sprite = nom::AnimatedSprite( res.path() + RESOURCE_SPRITE_SHEET );
+      if ( this->ani_sprite.load( res.path() + this->ani_sprite.sheet_filename() ) == false )
       {
-        nom::DialogMessageBox ( APP_NAME, "Could not load sprite: " + this->ani_sprite.sheet_filename() );
+        nom::DialogMessageBox(  APP_NAME,
+                                "Could not load sprite: " +
+                                res.path() + this->ani_sprite.sheet_filename() );
         return false;
       }
 
       if ( MAXIMUM_WINDOWS > 1 )
       {
         this->window[1].make_current();
-        if ( this->background.load ( RESOURCE_STATIC_IMAGE, 0 ) == false )
+        if ( this->background.load ( res.path() + RESOURCE_STATIC_IMAGE, 0 ) == false )
         {
-          nom::DialogMessageBox ( APP_NAME, "Could not load image file: " + RESOURCE_STATIC_IMAGE );
+          nom::DialogMessageBox(  APP_NAME,
+                                  "Could not load image file: " +
+                                  res.path() + RESOURCE_STATIC_IMAGE );
           return false;
         }
       }
@@ -698,8 +719,8 @@ nom::int32 main ( nom::int32 argc, char* argv[] )
                   "Could not disable Spaces support." );
   }
 
-  // Fatal error; if we are not able to complete this step, it means that
-  // we probably cannot rely on our resource paths!
+  // nom::init sets the working directory to this executable's directory
+  // path
   if ( nom::init ( argc, argv ) == false )
   {
     nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );

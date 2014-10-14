@@ -144,6 +144,8 @@ include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
 set ( SRC_DIR "${PROJECT_SOURCE_DIR}/src" )
 
 # Relative path from project root containing project assets
+#
+# FIXME: Prepend ${PROJECT_SOURCE_DIR} to make this an absolute path
 set ( NOMLIB_RESOURCES_DIR "Resources" )
 
 # Unit tests root (absolute path)

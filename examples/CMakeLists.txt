@@ -73,19 +73,12 @@ if( NOT NOM_BUILD_MINI_UNIT )
     if( NOM_BUILD_APP_EXAMPLE )
       add_executable ( app "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/app/app.cpp" )
 
-      install ( DIRECTORY
-                "${EXAMPLES_SRC_DIR}/app/Resources"
+      # Search paths file to use in finding the resources path
+      install (
+                FILES
+                "${NOM_EXAMPLES_RESOURCES_DIR}/app.json"
                 DESTINATION
                 "${EXAMPLES_INSTALL_PEFIX}"
-                PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-              )
-
-      # JSON Dependency Resources
-      install ( DIRECTORY
-                "${EXAMPLES_SRC_DIR}/json/Resources"
-                DESTINATION
-                "${EXAMPLES_INSTALL_PEFIX}"
-                PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
               )
 
     endif( NOM_BUILD_APP_EXAMPLE )

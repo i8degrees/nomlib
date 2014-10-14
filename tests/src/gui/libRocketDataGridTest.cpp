@@ -352,7 +352,10 @@ class libRocketDataGridTest: public nom::VisualUnitTest
         << "Could not initialize libRocket context.";
       }
 
-      EXPECT_EQ( this->resolution(), this->desktop.size() );
+      Size2i output_size( this->resolution().w / this->window_.scale().x,
+                          this->resolution().h / this->window_.scale().y );
+
+      EXPECT_EQ( output_size, this->desktop.size() );
 
       if( this->desktop.load_font( "Delicious-Bold.otf" ) == false )
       {
@@ -536,6 +539,9 @@ TEST_F( libRocketDataGridTest, UIDataViewList )
   EXPECT_EQ( true, store1.set_context(&this->desktop) );
   EXPECT_EQ( true, store1.load_document_file( doc_file1 ) )
   << this->test_set() << " object should not be invalid; is the context and document file valid?";
+
+  // Ensure that the visual debugger's beacon (err icon) appears on-screen.
+  Rocket::Core::Log::Message( Rocket::Core::Log::LT_ASSERT, "Hello, world!" );
 
   this->model.reset( new CardsPageDataSource("cards_db") );
   this->db.reset( new CardCollection() );

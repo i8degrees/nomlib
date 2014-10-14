@@ -238,6 +238,7 @@ Size2i UIContext::size() const
 {
   Rocket::Core::Vector2i dims( 0, 0 );
 
+  NOM_ASSERT( this->context_ != nullptr );
   if( this->context_ )
   {
     dims = this->context_->GetDimensions();
@@ -276,6 +277,8 @@ bool UIContext::create_context( const std::string& name, const Size2i& res,
   {
     // ::initialize_debugger depends on this value
     this->res_ = res;
+
+    this->set_size(this->res_);
 
     if( this->debugger_enabled() )
     {
@@ -363,9 +366,30 @@ bool UIContext::load_font( const std::string& filename )
   return Rocket::Core::FontDatabase::LoadFontFace( filename.c_str() );
 }
 
-void UIContext::resize( const Size2i& dims )
+void UIContext::set_size(const Size2i& dims)
 {
-  this->context_->SetDimensions( Rocket::Core::Vector2i( dims.w, dims.h ) );
+  Point2f scale( 1.0f, 1.0f );
+  Size2i res(Size2i::zero);
+
+  nom::RocketSDL2RenderInterface* target =
+    NOM_DYN_PTR_CAST( nom::RocketSDL2RenderInterface*,
+                      Rocket::Core::GetRenderInterface() );
+  NOM_ASSERT( target != nullptr );
+
+  const RenderWindow* context = target->window_;
+  NOM_ASSERT( context != nullptr );
+  if( target && context )
+  {
+    SDL_RenderGetScale( context->renderer(), &scale.x, &scale.y );
+  }
+
+  // Translations for independent resolution scale dimensions (SDL2); this is
+  // necessary things like the visual debugger elements to stay on-screen
+  // without manually positioning it.
+  res.w = dims.w / scale.x;
+  res.h = dims.h / scale.y;
+
+  this->context_->SetDimensions( Rocket::Core::Vector2i(res.w, res.h) );
 }
 
 void UIContext::process_event( const Event& ev )
@@ -398,12 +422,12 @@ void UIContext::draw()
 void UIContext::initialize_debugger()
 {
   // Alignment offsets for visual debugger tools
-  Point2f scale( 1.0f, 1.0f );
-  Point2i debugger_offset( Point2i::zero);
-  Point2i beacon_offset( Point2i::zero);
-  Size2i debugger_dims;
-  Size2i beacon_dims;
-  Size2i res_scale;
+  // Point2f scale( 1.0f, 1.0f );
+  // Point2i debugger_offset( Point2i::zero);
+  // Point2i beacon_offset( Point2i::zero);
+  // Size2i debugger_dims;
+  // Size2i beacon_dims;
+  // Size2i res_scale;
 
   if( this->valid() == false ||
       Rocket::Debugger::Initialise( this->context() ) == false )
@@ -413,51 +437,54 @@ void UIContext::initialize_debugger()
     return;
   }
 
-  nom::RocketSDL2RenderInterface* target =
-    NOM_DYN_PTR_CAST( nom::RocketSDL2RenderInterface*,
-                      Rocket::Core::GetRenderInterface() );
-  NOM_ASSERT( target != nullptr );
+  // Not necessary when calculations are done from ::set_size & called from
+  // ::create.
 
-  const RenderWindow* context = target->window_;
-  NOM_ASSERT( context != nullptr );
-  if( target && context )
-  {
-    SDL_RenderGetScale( context->renderer(), &scale.x, &scale.y );
-  }
+  // nom::RocketSDL2RenderInterface* target =
+  //   NOM_DYN_PTR_CAST( nom::RocketSDL2RenderInterface*,
+  //                     Rocket::Core::GetRenderInterface() );
+  // NOM_ASSERT( target != nullptr );
 
-  // Translations for independent resolution scale dimensions (SDL2)
-  res_scale.w = this->res_.w / scale.x;
-  res_scale.h = this->res_.h / scale.y;
+  // const RenderWindow* context = target->window_;
+  // NOM_ASSERT( context != nullptr );
+  // if( target && context )
+  // {
+  //   SDL_RenderGetScale( context->renderer(), &scale.x, &scale.y );
+  // }
 
-  debugger_dims = this->debugger_size();
+  // // Translations for independent resolution scale dimensions (SDL2)
+  // res_scale.w = this->res_.w / scale.x;
+  // res_scale.h = this->res_.h / scale.y;
 
-  if( debugger_dims != Size2i::null ) {
+  // debugger_dims = this->debugger_size();
 
-    // Translations for debugger position
-    debugger_offset.x = debugger_offset.x * scale.x;
-    debugger_offset.y = debugger_offset.y * scale.y;
+  // if( debugger_dims != Size2i::null ) {
 
-    // Top-right corner of context output
-    debugger_offset.x = debugger_offset.x + res_scale.w - debugger_dims.w;
-    debugger_offset.y = debugger_offset.y;
+  //   // Translations for debugger position
+  //   debugger_offset.x = debugger_offset.x * scale.x;
+  //   debugger_offset.y = debugger_offset.y * scale.y;
 
-    this->set_debugger_position(debugger_offset);
-  }
+  //   // Top-right corner of context output
+  //   debugger_offset.x = debugger_offset.x + res_scale.w - debugger_dims.w;
+  //   debugger_offset.y = debugger_offset.y;
 
-  beacon_dims = this->beacon_size();
+  //   this->set_debugger_position(debugger_offset);
+  // }
 
-  if( beacon_dims != Size2i::null ) {
+  // beacon_dims = this->beacon_size();
 
-    // Translations for beacon position
-    beacon_offset.x = beacon_offset.x * scale.x;
-    beacon_offset.y = beacon_offset.y * scale.y;
+  // if( beacon_dims != Size2i::null ) {
 
-    // Top-right corner of context output
-    beacon_offset.x = beacon_offset.x + res_scale.w - beacon_dims.w;
-    beacon_offset.y = beacon_offset.y;
+  //   // Translations for beacon position
+  //   beacon_offset.x = beacon_offset.x * scale.x;
+  //   beacon_offset.y = beacon_offset.y * scale.y;
 
-    this->set_beacon_position(beacon_offset);
-  }
+  //   // Top-right corner of context output
+  //   beacon_offset.x = beacon_offset.x + res_scale.w - beacon_dims.w;
+  //   beacon_offset.y = beacon_offset.y;
+
+  //   this->set_beacon_position(beacon_offset);
+  // }
 }
 
 } // namespace nom

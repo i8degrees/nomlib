@@ -98,6 +98,10 @@ class UIContext
     /// \param pos The X, Y coordinates used for positioning; these will be
     /// relative to the context's dimensions.
     ///
+    /// \remarks This method is provided for overriding the default RCSS as
+    /// defined in libRocket's source and is generally not necessary unless you
+    /// are dealing with especially small windows.
+    ///
     /// \remarks This method depends on the visual debugger being initialized
     /// within ::create.
     void set_debugger_position(const Point2i& pos);
@@ -106,6 +110,10 @@ class UIContext
     ///
     /// \returns The size of the visual err beacon on success, or Size2i::null
     /// on failure, such as when the debugger has not been initialized.
+    ///
+    /// \remarks This method is provided for overriding the default RCSS as
+    /// defined in libRocket's source and is generally not necessary unless you
+    /// are dealing with especially small windows.
     ///
     /// \remarks This method depends on the visual debugger being initialized
     /// within ::create.
@@ -163,8 +171,12 @@ class UIContext
 
     bool load_font( const std::string& filename );
 
-    /// \brief Set the dimensions (width and height) of this context instance.
-    void resize( const Size2i& dims );
+    /// \brief Resize the dimensions (width and height) of this context
+    /// instance.
+    ///
+    /// \remarks This method takes into account the current resolution scale
+    /// as set with SDL2 (logical size).
+    void set_size(const Size2i& dims);
 
     /// \brief Event handler for the context's instance.
     ///

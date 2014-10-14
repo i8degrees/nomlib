@@ -229,6 +229,57 @@ void UIContext::set_beacon_position(const Point2i& pos)
   } // end if valid context
 }
 
+void UIContext::set_debugger_size(const Size2i& dims)
+{
+  if( this->valid() ) {
+
+    Rocket::Core::ElementDocument* target =
+      this->context()->GetDocument("rkt-debug-hook");
+
+    NOM_ASSERT( target != nullptr );
+    if( target ) {
+      // NOM_DUMP( target->GetSourceURL().CString() );
+
+      Rocket::Core::Element* body_tag =
+        target->GetParentNode();
+
+      NOM_ASSERT( body_tag != nullptr );
+      if( body_tag ) {
+
+        // Sets width of visual debugger's Element Info window
+        Rocket::Core::Element* info =
+          body_tag->GetElementById("rkt-debug-info");
+
+        NOM_ASSERT( info != nullptr );
+        if( info ) {
+
+          Rocket::Core::Property width(dims.w, Rocket::Core::Property::PX);
+          info->SetProperty("min-width", width);
+          info->SetProperty("width", width);
+        } // end if info
+
+        // Sets height of visual debugger's Element Info window
+        Rocket::Core::Element* content =
+          body_tag->GetElementById("content");
+
+        NOM_ASSERT( content != nullptr );
+        if( content ) {
+
+          // As per Rocket/Debugger/MenuSource.h
+          // int menu_height = 32;
+
+          // Maximum height shall be no more than half the size of the context,
+          // add menu height
+          Rocket::Core::Property max_height(  dims.h,
+                                              Rocket::Core::Property::PX);
+          content->SetProperty("max-height", max_height);
+        } // end if debug_content
+
+      } // end if body_tag
+    } // end if target
+  } // end if valid context
+}
+
 Rocket::Core::Context* UIContext::context() const
 {
   return this->context_;

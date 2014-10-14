@@ -352,6 +352,11 @@ class libRocketDataGridTest: public nom::VisualUnitTest
         << "Could not initialize libRocket context.";
       }
 
+      // Maximum debugger height shall be no more than half the size of the
+      // context, add menu height of debugger's button bar
+      Size2i debugger_dims( 150, (this->desktop.size().h / 2) + 32 );
+      this->desktop.set_debugger_size(debugger_dims);
+
       Size2i output_size( this->resolution().w / this->window_.scale().x,
                           this->resolution().h / this->window_.scale().y );
 

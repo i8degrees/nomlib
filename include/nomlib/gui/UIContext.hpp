@@ -128,6 +128,16 @@ class UIContext
     /// within ::create.
     void set_beacon_position(const Point2i& pos);
 
+    /// \brief Set the visual debugger's dimensions.
+    ///
+    /// \remarks This method is provided for overriding the default RCSS as
+    /// defined in libRocket's source and is generally not necessary unless you
+    /// are dealing with especially small windows.
+    ///
+    /// \note This overwrites the minimum width, width and max-height of the
+    /// Element Info window.
+    void set_debugger_size(const Size2i& dims);
+
     /// \brief Get libRocket's context.
     ///
     /// \remarks The returned pointer is managed by the engine, and must not be

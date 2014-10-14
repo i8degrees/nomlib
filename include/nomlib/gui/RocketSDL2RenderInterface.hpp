@@ -81,7 +81,12 @@ class RocketSDL2RenderInterface: public Rocket::Core::RenderInterface
 
     /// Called by Rocket when it wants to enable or disable scissoring to clip content.
     virtual void EnableScissorRegion(bool enable);
-    /// Called by Rocket when it wants to change the scissor region.
+
+    /// \brief Called by Rocket when it wants to change the scissor region.
+    ///
+    /// \fixme The clipping calculations are slightly off for the y / height
+    /// dimensions. This bug can often be seen with use of libRocket's scrollbar
+    /// feature (i.e.: visual debugger's element info window).
     virtual void SetScissorRegion(int x, int y, int width, int height);
 
     /// Called by Rocket when a texture is required by the library.

@@ -180,7 +180,8 @@ void StateMachine::update( float delta )
       // Normal state transition
       if( this->next_state_.state->type() == IState::Type::Parent )
       {
-        NOM_LOG_DEBUG( NOM_LOG_CATEGORY_SYSTEM, "Parent state" );
+        NOM_LOG_DEBUG( NOM_LOG_CATEGORY_STATES, "Parent state" );
+        NOM_LOG_DEBUG( NOM_LOG_CATEGORY_STATES, "State ID:", this->next_state_.state->id() );
 
         if( ! this->states_.empty() )
         {
@@ -190,11 +191,17 @@ void StateMachine::update( float delta )
 
         this->states_.push_back( std::move( this->next_state_.state ) );
         this->states_.back()->on_init( this->next_state_.data );
+
+        // Next state is now in existence; no longer a pending state
+        this->next_state_.deferred = false;
+        this->next_state_.state.reset( nullptr );
+        this->next_state_.data = nullptr;
       }
       // Special needs state transition case #1
       else if( this->next_state_.state && this->next_state_.state->type() == IState::Type::Child )
       {
-        NOM_LOG_DEBUG( NOM_LOG_CATEGORY_SYSTEM, "Child state" );
+        NOM_LOG_DEBUG( NOM_LOG_CATEGORY_STATES, "Child state" );
+        NOM_LOG_DEBUG( NOM_LOG_CATEGORY_STATES, "State ID:", this->next_state_.state->id() );
 
         if( ! this->states_.empty() )
         {
@@ -203,28 +210,27 @@ void StateMachine::update( float delta )
 
         this->states_.push_back( std::move( this->next_state_.state ) );
         this->states_.back()->on_init( this->next_state_.data );
+
+        // Next state is now in existence; no longer a pending state
+        this->next_state_.deferred = false;
+        this->next_state_.state.reset( nullptr );
+        this->next_state_.data = nullptr;
       }
     } // end if next_state is not NULL
 
     // Special needs state transition case #2 (resume previous state)
     else // if next state is NULL
     {
-      NOM_LOG_DEBUG( NOM_LOG_CATEGORY_SYSTEM, "Resume previous (parent or child) state" );
+      NOM_LOG_DEBUG( NOM_LOG_CATEGORY_STATES, "Resume previous (parent or child) state" );
+      NOM_LOG_DEBUG( NOM_LOG_CATEGORY_STATES, "State ID:", this->current_state_id() );
 
       if( this->states_.size() > 1 )
       {
         this->states_.back()->on_exit( this->next_state_.data );
         this->states_.pop_back();
+        this->states_.back()->on_resume( this->next_state_.data );
       }
-
-      this->states_.back()->on_resume( this->next_state_.data );
     }
-
-    // Clear the pending state (regardless of conditional case)
-    this->next_state_.deferred = false;
-    this->next_state_.state.reset( nullptr );
-    this->next_state_.data = nullptr;
-
   } // end if next_state is deferred
 }
 

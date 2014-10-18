@@ -98,6 +98,9 @@ enum
   /// \brief Totals (user-defined) of memory allocation & deallocations
   NOM_LOG_CATEGORY_MEMORY_TOTALS,
 
+  /// \brief Game states debugging
+  NOM_LOG_CATEGORY_STATES,
+
   NOM_LOG_CATEGORY_TRACE,
   NOM_LOG_CATEGORY_TRACE_AUDIO,
 

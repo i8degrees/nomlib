@@ -152,5 +152,6 @@ class SpriteSheet
 /// \ingroup graphics
 ///
 /// TexturePacker with a custom exporter for nomlib is used for saving sprite
-/// frame data.
+/// frame data. See Resources/SharedSupport/TexturePacker for the custom
+/// exporter used.
 ///

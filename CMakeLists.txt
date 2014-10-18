@@ -44,14 +44,14 @@ option( NOM_BUILD_CORE_UNIT "Engine core" true )
 option( NOM_BUILD_MATH_UNIT "Math utilities" true )
 
 # Dependencies: OpenAL
-option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" false )
+option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" TRUE )
 
 # Dependencies: SDL2, SDL2_IMAGE, SDL2_TTF
 option( NOM_BUILD_GRAPHICS_UNIT "Graphics core" true )
 
 # TODO: Shorten this build var
 # Dependencies: scale2x & hq2x (included in source tree)
-option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Include scale2x & hqx algorithms" FALSE )
+option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Include scale2x & hqx algorithms" TRUE )
 
 # TODO: Break unit up further
 option( NOM_BUILD_SYSTEM_UNIT "System unit" true )
@@ -255,7 +255,7 @@ endif( OPENGL_FOUND )
 # APIs...
 #
 # This only affects builds on OS X. Windows builds always links statically.
-set( NOM_USE_STATIC_LIBROCKET TRUE )
+set( NOM_USE_STATIC_LIBROCKET FALSE )
 set( NOM_USE_LIBROCKET_LUA FALSE )
 
 if ( PLATFORM_WINDOWS )

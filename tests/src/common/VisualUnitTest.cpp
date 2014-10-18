@@ -146,7 +146,7 @@ bool VisualUnitTest::init_rendering()
   this->render_window().set_logical_size( this->resolution() );
 
   // Use no pixel unit scaling; this gives us one to one pixel ratio
-  this->render_window().set_scale( nom::Point2f(1) );
+  this->render_window().set_scale( nom::Point2f(1,1) );
 
   return true;
 }

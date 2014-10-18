@@ -290,13 +290,13 @@ class libRocketDataGridTest: public nom::VisualUnitTest
       // ratio (i.e.: handle fullscreen resizing); this will use letterboxing
       // when the aspect ratio is greater than what is available, or side-bars
       // when the aspect ratio is less than.
-      this->render_window().set_logical_size( this->resolution() / Size2i(2) );
+      this->render_window().set_logical_size( this->resolution() / Size2i(2,2) );
       // this->render_window().set_logical_size( this->resolution() );
 
       // Use pixel unit scaling; this gives us a one to two pixel ratio --
       // scale output display by a factor of two.
-      this->render_window().set_scale( Point2f(2) );
-      // this->render_window().set_scale( Point2f(1) );
+      this->render_window().set_scale( Point2f(2,2) );
+      // this->render_window().set_scale( Point2f(1,1) );
 
       return true;
     }

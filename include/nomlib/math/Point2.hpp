@@ -64,13 +64,6 @@ struct Point2
     //NOM_LOG_TRACE(NOM);
   }
 
-  /// \brief Construct an object using a specified value for both members.
-  Point2( T factor )
-  {
-    this->x = factor;
-    this->y = factor;
-  }
-
   /// \brief Copy constructor
   ///
   /// \remarks The explicit keyword here will result in compile-time errors

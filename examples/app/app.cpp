@@ -203,7 +203,7 @@ class App: public nom::SDLApp
       this->window[0].set_logical_size( this->window[0].size() );
 
       // Use no pixel unit scaling; this gives us one to one pixel ratio
-      this->window[0].set_scale( nom::Point2f(1) );
+      this->window[0].set_scale( nom::Point2f(1,1) );
 
       // Initialize the core of libRocket; these are the core dependencies that
       // libRocket depends on for successful initialization.

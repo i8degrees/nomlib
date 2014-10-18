@@ -218,7 +218,7 @@ TEST_F( GradientTest, Margins )
   dims.w = this->resolution().w;
   dims.h = this->resolution().h;
   this->render_window().set_logical_size( dims );
-  this->render_window().set_scale( Point2f(2) );
+  this->render_window().set_scale( Point2f(2,2) );
 
   card_background = std::make_shared<Gradient>( Gradient() );
 

@@ -77,13 +77,6 @@ struct Size2
     //NOM_LOG_TRACE(NOM);
   }
 
-  /// \brief Construct an object using a specified value for both members.
-  Size2( T factor )
-  {
-    this->w = factor;
-    this->h = factor;
-  }
-
   /// \brief Copy constructor
   ///
   /// \remarks The explicit keyword here will result in compile-time errors

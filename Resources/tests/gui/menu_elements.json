@@ -1,40 +1,45 @@
-[
+{
+  "frames":
+  {
+    "0":
     {
-        "ID" : 0,
-        "x" : 0,
-        "y" : 0,
-        "width" : 16,
-        "height" : 16
+      "x": 0,
+      "y": 0,
+      "width": 16,
+      "height": 16
     },
+    "1":
     {
-        "ID" : 1,
-        "x" : 16,
-        "y" : 0,
-        "width" : 16,
-        "height" : 16
+      "x": 16,
+      "y": 0,
+      "width": 16,
+      "height": 16
     },
+    "2":
     {
-        "ID" : 2,
-        "x" : 32,
-        "y" : 0,
-        "width" : 16,
-        "height" : 16
+      "x": 0,
+      "y": 16,
+      "width": 16,
+      "height": 16
     },
+    "3":
     {
-        "ID" : 3,
-        "x" : 48,
-        "y" : 0,
-        "width" : 16,
-        "height" : 16
-    },
-    {
-        "sheet_filename" : "menu_elements.png",
-        "sheet_sprites" : 4,
-        "sheet_spacing" : 0,
-        "sheet_padding" : 0,
-        "sheet_width" : 64,
-        "sheet_height" : 16,
-        "sheet_version" : "0.1.0",
-        "Last Modified" : "Tue Sep 10 15:45:03 2013\n"
+      "x": 16,
+      "y": 16,
+      "width": 16,
+      "height": 16
     }
-]
+  },
+  "metadata":
+  {
+    "filename": "menu_elements.png",
+    "version": "0.4.0",
+    "width": 32,
+    "height": 32,
+    "padding": 0,
+    "spacing": 0,
+    "scale": 1,
+    "pixel_format": "RGBA8888",
+    "smartupdate": "$TexturePacker:SmartUpdate:93a04cfb60d9f6ca3fc205a4c216d2c1:a59574d3cefb7582639b96b8d7e0df4e:6e763ce8b365f8707a9a277cfe03a798$"
+  }
+}

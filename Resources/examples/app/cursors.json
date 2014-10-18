@@ -1,54 +1,52 @@
-
-[
-
+{
+  "frames":
   {
-    "height" : 16,
-    "id" : 0,
-    "width" : 26,
-    "x" : 0,
-    "y" : 0
+    "0":
+    {
+      "x": 0,
+      "y": 0,
+      "width": 26,
+      "height": 16
+    },
+    "1":
+    {
+      "x": 26,
+      "y": 0,
+      "width": 26,
+      "height": 16
+    },
+    "2":
+    {
+      "x": 52,
+      "y": 0,
+      "width": 26,
+      "height": 16
+    },
+    "3":
+    {
+      "x": 78,
+      "y": 0,
+      "width": 26,
+      "height": 16
+    },
+    "4":
+    {
+      "x": 104,
+      "y": 0,
+      "width": 26,
+      "height": 16
+    }
   },
-
+  "metadata":
   {
-    "height" : 16,
-    "id" : 1,
-    "width" : 26,
-    "x" : 26,
-    "y" : 0
-  },
-
-  {
-    "height" : 16,
-    "id" : 2,
-    "width" : 26,
-    "x" : 52,
-    "y" : 0
-  },
-
-  {
-    "height" : 16,
-    "id" : 3,
-    "width" : 26,
-    "x" : 78,
-    "y" : 0
-  },
-
-  {
-    "height" : 16,
-    "id" : 4,
-    "width" : 26,
-    "x" : 104,
-    "y" : 0
-  },
-
-  {
-    "sheet_filename" : "cursors.png",
-    "sheet_height" : 16,
-    "sheet_modified" : "Thu Nov  7 22:23:34 2013\n",
-    "sheet_padding" : 0,
-    "sheet_spacing" : 0,
-    "sheet_sprites" : 5,
-    "sheet_version" : "0.2.0",
-    "sheet_width" : 130
+    "filename": "cursors.png",
+    "version": "0.4.0",
+    "width": 130,
+    "height": 16,
+    "padding": 0,
+    "spacing": 0,
+    "scale": 1,
+    "pixel_format": "RGBA8888",
+    "smartupdate": "$TexturePacker:SmartUpdate:db3ae055e6404050ca19646d39dc0968:507022e10396f82f15531867b27b9c71:5c72a818f45abbf727e428f9aec34004$"
   }
-]
+}

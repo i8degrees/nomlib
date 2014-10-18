@@ -34,223 +34,82 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-const int NOM_SPRITE_SHEET_MAJOR_VERSION = 0;
-const int NOM_SPRITE_SHEET_MINOR_VERSION = 2;
-const int NOM_SPRITE_SHEET_PATCH_VERSION = 0;
+// Static initialization
+const int SpriteSheet::MAJOR_VERSION = 0;
+const int SpriteSheet::MINOR_VERSION = 4;
+const int SpriteSheet::PATCH_VERSION = 0;
 
-SpriteSheet::SpriteSheet ( void ) :
-    sheet_filename_ ( "\0" ), sheet_sprites ( 0 ),
-    sheet_spacing ( 0 ), sheet_padding ( 0 ),
-    sheet_width ( 0 ), sheet_height ( 0 )
-{}
-
-SpriteSheet::~SpriteSheet ( void ) {}
-
-SpriteSheet::SpriteSheet ( const std::string& filename ):
-    sheet_filename_ ( filename ), sheet_sprites ( 0 ),
-    sheet_spacing ( 0 ), sheet_padding ( 0 ),
-    sheet_width ( 0 ), sheet_height ( 0 )
+SpriteSheet::SpriteSheet() :
+  sheet_filename_("\0"),
+  sheet_spacing_(0),
+  sheet_padding_(0),
+  sheet_width_(0),
+  sheet_height_(0)
 {
-  if ( this->load( filename ) == false )
-  {
-    NOM_LOG_ERR ( NOM, "Could not load sprite sheet file at: " + filename );
-  }
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-SpriteSheet::SpriteSheet  (
-                            const std::string& filename,
-                            int32 sheet_width, int32 sheet_height,
-                            int32 sprite_width, int32 sprite_height,
-                            int32 spacing, int32 padding, int32 num_sprites
-                          ):
-  sheet_filename_ ( filename ), sheet_sprites ( num_sprites ),
-  sheet_spacing ( spacing ), sheet_padding ( padding ),
-  sheet_width ( sheet_width ), sheet_height ( sheet_height )
+SpriteSheet::~SpriteSheet()
 {
-  // Total number of sprites going from left to right
-  int32 sheet_width_dimensions = ceil ( sheet_width / sprite_width );
-
-  // Total number of sprites going from top to bottom
-  int32 sheet_height_dimensions = ceil ( sheet_height / sprite_height );
-
-  // Total number of sprites on the sheet
-  int32 total_frames = sheet_width_dimensions * sheet_height_dimensions;
-
-  int32 y_offset = 0; // This is used with padding calculation
-
-  int32 rows = 0; // counter used in calculations (left to right)
-  int32 cols = 0; // counter used in calculations (top to bottom)
-
-  // Assume whole sheet coordinates extraction if num_sprites argument passed
-  // is zero.
-  if ( num_sprites == 0 )
-  {
-    num_sprites = total_frames;
-  }
-
-  this->sheet.resize ( num_sprites ); // Make room for storage in our vector
-
-  // Initializing the first sprite frame
-  this->sheet[0].x = spacing;
-  this->sheet[0].y = padding;
-  this->sheet[0].w = sprite_width;
-  this->sheet[0].h = sprite_height;
-
-  y_offset = padding;
-
-  // For while the id variable is less than number of sprites, commence..!
-  for ( int32 id = 0; id < num_sprites; id++ )
-  {
-    // If we have reached the end of the row, go back to the front of the next row
-    if ( rows+1 > ( sheet_width_dimensions ) )
-    {
-      rows = 0;
-      cols += 1;
-
-      // Apply proper padding offset
-      if ( padding )
-      {
-        y_offset = padding * cols + 1;
-      }
-      else
-      {
-        y_offset = padding;
-      }
-    }
-
-#if defined (NOM_DEBUG_SPRITE_SHEET)
-  NOM_DUMP(cols);
-#endif
-
-    // Apply proper spacing calculations
-    if ( spacing )
-    {
-      this->sheet[id].x = ( spacing + rows ) + sprite_width * rows;
-    }
-    else
-    {
-      this->sheet[id].x = sprite_width * rows;
-    }
-
-    // plus one padding (we count from zero)
-    this->sheet[id].y = sprite_height * ( cols ) + y_offset;
-    this->sheet[id].w = sprite_width;
-    this->sheet[id].h = sprite_height;
-
-#if defined (NOM_DEBUG_SPRITE_SHEET)
-  NOM_DUMP( id );
-  NOM_DUMP( this->sheet[id].x );
-  NOM_DUMP( this->sheet[id].y );
-  NOM_DUMP( this->sheet[id].w );
-  NOM_DUMP( this->sheet[id].h );
-#endif
-
-    rows++;
-    // ...check please!
-    // ...The show must go on..
-  } // end for loop
-
-  this->sheet_filename_ = filename;
-NOM_ASSERT ( this->sheet.size() == num_sprites );
-  this->sheet_sprites = this->sheet.size();
-  this->sheet_spacing = spacing;
-  this->sheet_padding = padding;
-/* FIXME
-NOM_ASSERT ( sprite_width * num_sprites == sheet_width );
-  this->sheet_width = sheet_width;
-NOM_ASSERT ( sprite_height * num_sprites == sheet_height );
-FIXME */
-  this->sheet_height = sheet_height;
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-const IntRect& SpriteSheet::dimensions( int32 index ) const
+const IntRect& SpriteSheet::dimensions(int index) const
 {
-  NOM_ASSERT( index < this->sheet.size() );
+  NOM_ASSERT( index < this->sheet_.size() );
 
-  return this->sheet.at( index );
+  return this->sheet_.at(index);
 }
 
-int32 SpriteSheet::frames ( void ) const
+int SpriteSheet::frames() const
 {
-  return this->sheet.size();
+  return this->sheet_.size();
 }
 
-bool SpriteSheet::empty( void ) const
+bool SpriteSheet::empty() const
 {
   if( this->frames() < 1 ) return true;
 
   return false;
 }
 
-const std::string& SpriteSheet::sheet_filename ( void ) const
+std::string SpriteSheet::version() const
+{
+  std::string major = std::to_string(SpriteSheet::MAJOR_VERSION);
+  std::string minor = std::to_string(SpriteSheet::MINOR_VERSION);
+  std::string patch = std::to_string(SpriteSheet::PATCH_VERSION);
+
+  return(major + "." + minor + "." + patch);
+}
+
+const std::string& SpriteSheet::sheet_filename() const
 {
   return this->sheet_filename_;
 }
 
-SpriteSheet::SharedPtr SpriteSheet::clone ( void ) const
+int SpriteSheet::sheet_width() const
 {
-  return SpriteSheet::SharedPtr ( new SpriteSheet ( *this ) );
+  return this->sheet_width_;
 }
 
-bool SpriteSheet::save( const std::string& filename )
+int SpriteSheet::sheet_height() const
 {
-  IValueSerializer* serializer = new JsonCppSerializer();
-  Object object; // Buffer object
-  Object objects; // Collection of objects to be serialized (fed to writer)
+  return this->sheet_height_;
+}
 
-  Value array;
+int SpriteSheet::sheet_padding() const
+{
+  return this->sheet_padding_;
+}
 
-  std::string sprite_sheet_version = std::to_string( NOM_SPRITE_SHEET_MAJOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_MINOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_PATCH_VERSION );
+int SpriteSheet::sheet_spacing() const
+{
+  return this->sheet_spacing_;
+}
 
-  if ( this->sheet.empty() ) return false;
-
-  uint32 id = 0;
-  // First, we serialize our sheet variables.
-  for( auto itr = this->sheet.begin(); itr != this->sheet.end(); ++itr )
-  {
-    // Serialize each IntRect held within our sheet object.
-    object = itr->serialize();
-
-    // Additional variables to be serialized in our object; object's id tag
-    object["id"] = id;
-
-    // id serves as an element index here
-    array[id] = object;
-
-    // Begin a new JSON object
-    object.clear();
-    ++id;
-  }
-
-  NOM_ASSERT( this->sheet.size() == array.size() );
-
-  // Lastly, serialize the meta-data variables.
-  object["sheet_filename"] = this->sheet_filename();
-  object["sheet_height"] = this->sheet_height;
-  object["sheet_modified"] = nom::timestamp();
-  object["sheet_padding"] = this->sheet_padding;
-  object["sheet_spacing"] = this->sheet_spacing;
-  object["sheet_sprites"] = this->sheet_sprites;
-  object["sheet_version"] = sprite_sheet_version;
-  object["sheet_width"] = this->sheet_width;
-
-  // Append our meta-data onto objects
-  array.push_back( object );
-
-  // Number of file meta-data elements appended onto objects
-  NOM_ASSERT( object.size() == 8 );
-
-  #if defined( NOM_DEBUG_SPRITE_SHEET_JSON_SAVE )
-    NOM_DUMP( array );
-  #endif
-
-  if ( serializer->save( array, filename ) == false )
-  {
-    NOM_LOG_ERR( NOM, "Unable to save file: " + filename );
-    return false;
-  }
-
-  return true;
+SpriteSheet::SharedPtr SpriteSheet::clone() const
+{
+  return SpriteSheet::SharedPtr ( new SpriteSheet ( *this ) );
 }
 
 bool SpriteSheet::load( const std::string& filename )
@@ -267,89 +126,95 @@ bool SpriteSheet::load( const std::string& filename )
   return this->load_sheet_object(output);
 }
 
-bool SpriteSheet::load_sheet_object( const Value& object )
+bool SpriteSheet::load_sheet_object(const Value& object)
 {
   // Temporary holding buffers to hold data until we are ready to commit back
   // to our class
-  IntRect buffer;
-  std::vector<IntRect> buffer_sheet;
-  std::string sprite_sheet_version = std::to_string( NOM_SPRITE_SHEET_MAJOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_MINOR_VERSION ) + "." + std::to_string ( NOM_SPRITE_SHEET_PATCH_VERSION );
+  int pos = 0;
+  std::map<int, IntRect> buffer;
+  Value fp = object;
 
-  if( object.null_type() )
-  {
+  if( fp.null_type() ) {
     NOM_LOG_ERR( NOM, "Could not load sprite sheet: nom::Value object was null." );
     return false;
   }
 
   #if defined( NOM_DEBUG_SPRITE_SHEET_JSON_LOAD )
-    NOM_DUMP( object );
+    NOM_DUMP(fp);
   #endif
 
-  // Populate our sheet vector and other instance variables with parsed JSON
-  // objects.
-  for( auto itr = object.begin(); itr != object.end(); ++itr )
-  {
-    // [ { "key": "value" }, { "key": "value" } ]
-    if( itr->object_type() )
-    {
-      Object objects = itr->object();
+  if( fp["metadata"]["version"] != "0.4.0" ) {
+    NOM_LOG_ERR(  NOM,
+                  "Could not load sprite sheet: sprite sheet version mismatch." );
+    return false;
+  }
 
-      // { "key": "value" }
-      for( Value::Iterator itr = objects.begin(); itr != objects.end(); ++itr )
-      {
-        Value::Iterator member( itr );
+  // Populate our object state with parsed JSON object data
+  for( auto itr = fp.begin(); itr != fp.end(); ++itr ) {
+    // NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST, ".");
 
-        buffer.x = objects["x"].get_int();
-        buffer.y = objects["y"].get_int();
-        buffer.w = objects["width"].get_int();
-        buffer.h = objects["height"].get_int();
+    if( itr->object_type() ) {
 
-        this->sheet_filename_ = objects["sheet_filename"].get_string();
-        this->sheet_height = objects["sheet_height"].get_int();
-        this->sheet_padding = objects["sheet_padding"].get_int();
-        this->sheet_spacing = objects["sheet_spacing"].get_int();
-        this->sheet_sprites = objects["sheet_sprites"].get_int();
-        this->sheet_width = objects["sheet_width"].get_int();
-      } // end for objects loop
+      // { "frames": {}, "metadata" }
+      Object obj = itr->object();
+      Value::Iterator member(itr);
+      std::string key = member.key();
+      // NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST, "..", key);
 
-      // Commit contents to our buffer when all goes well
-      buffer_sheet.push_back( buffer );
+      if( key == "metadata" ) {
+        this->sheet_filename_ = fp[key]["filename"].get_string();
+        this->sheet_width_ = fp[key]["width"].get_int();
+        this->sheet_height_ = fp[key]["height"].get_int();
+        this->sheet_padding_ = fp[key]["padding"].get_int();
+        this->sheet_spacing_ = fp[key]["spacing"].get_int();
+      } // end if key == metadata
+      else {
+        for( auto itr = obj.begin(); itr != obj.end(); ++itr ) {
 
+          // { "frames": { "0": { ... } } }
+          Value::Iterator member(itr);
+          std::string key = member.key();
+          // NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST, "...", key);
+
+          // ...This next line here is why we are using an ordered map; we need
+          // a consistent layout order so we can do sprite frame lookups based
+          // on the actual identifier (i.e.: object key), **not** the element
+          // position as was previously the case with a std::vector.
+          //
+          // By using the element's position and not the object's frame ID, you
+          // end up with a sorting problem, i.e.: position ten is not always
+          // necessarily going to be equal to frame ID 10.
+          //
+          // Note that you cannot count on serialized JSON output to be in any
+          // particular order. This is the problem that had me redesign the
+          // internal storage type in the first place...
+          pos = atoi( key.c_str() );
+
+          buffer[pos].x =
+            obj[key]["x"].get_int();
+
+          buffer[pos].y =
+            obj[key]["y"].get_int();
+
+          buffer[pos].w =
+            obj[key]["width"].get_int();
+
+          buffer[pos].h =
+            obj[key]["height"].get_int();
+
+        } // end for inner loop
+      } // end else
     } // end if object type
-    else
-    {
-      // TODO: Error handling?
-      // return false;
-    }
-  } // end for object loop
-
-  // FIXME: This is a temporary workaround in order to not have the next to last object
-  // become a duplicate in our buffered sheet, as what happens currently in the
-  // un-serialization loop above.
-  buffer_sheet.erase( buffer_sheet.end() - 1 );
-
-  // Sanity check; ensure that our buffer sheet object is the same size as
-  // recorded in the serialized data (otherwise something is probably fudged!).
-  //
-  // FIXME: See above FIXME note
-
-  // NOM_ASSERT( ( buffer_sheet.size() - 1 ) == this->sheet_sprites );
-  NOM_ASSERT( buffer_sheet.size() == this->sheet_sprites );
-
-  // FIXME: This assert was never working to begin with.
-  // NOM_ASSERT( this->sheet[0].width * this->sheet.size() == object.get_int ( "sheet_width" ) );
-
-  // FIXME: This assert was never working to begin with.
-  // NOM_ASSERT( this->sheet[0].height * this->sheet.size() == object.get_int ( "sheet_height" ) );
+  } // end for outer loop
 
   #if defined( NOM_DEBUG_SPRITE_SHEET_JSON_LOAD )
-    NOM_DUMP( object );
+    NOM_DUMP(fp);
   #endif
 
   // If we have gotten this far, we assume all is well, so let's commit the data
   // as valid sprite sheet data!
-  this->sheet.clear();
-  this->sheet = buffer_sheet;
+  this->sheet_.clear();
+  this->sheet_ = buffer;
 
   return true;
 }
@@ -357,21 +222,20 @@ bool SpriteSheet::load_sheet_object( const Value& object )
 void SpriteSheet::dump ( void ) const
 {
   // Sheet vector state
-  for ( auto itr = this->sheet.begin(); itr != this->sheet.end(); ++itr )
+  for ( auto itr = this->sheet_.begin(); itr != this->sheet_.end(); ++itr )
   {
-    NOM_DUMP(itr->x);
-    NOM_DUMP(itr->y);
-    NOM_DUMP(itr->w);
-    NOM_DUMP(itr->h);
+    NOM_DUMP(itr->second.x);
+    NOM_DUMP(itr->second.y);
+    NOM_DUMP(itr->second.w);
+    NOM_DUMP(itr->second.h);
   }
 
   // Sheet's meta-data
-  NOM_DUMP(this->sheet_filename());
-  NOM_DUMP(this->sheet_sprites);
-  NOM_DUMP(this->sheet_spacing);
-  NOM_DUMP(this->sheet_padding);
-  NOM_DUMP(this->sheet_width);
-  NOM_DUMP(this->sheet_height);
+  NOM_DUMP(this->sheet_filename() );
+  NOM_DUMP(this->sheet_spacing_);
+  NOM_DUMP(this->sheet_padding_);
+  NOM_DUMP(this->sheet_width_);
+  NOM_DUMP(this->sheet_height_);
 }
 
 

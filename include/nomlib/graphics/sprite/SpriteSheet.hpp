@@ -26,87 +26,82 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SPRITE_SHEET_HPP
-#define NOMLIB_SPRITE_SHEET_HPP
+#ifndef NOMLIB_GRAPHICS_SPRITE_SPRITE_SHEET_HPP
+#define NOMLIB_GRAPHICS_SPRITE_SPRITE_SHEET_HPP
 
-#include <iostream>
 #include <string>
-#include <vector>
-#include <cmath>
+#include <map>
 #include <memory>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/ptree.hpp"
 
-namespace nom {
-
-extern const int NOM_SPRITE_SHEET_MAJOR_VERSION;
-extern const int NOM_SPRITE_SHEET_MINOR_VERSION;
-extern const int NOM_SPRITE_SHEET_PATCH_VERSION;
-
-//#define NOM_DEBUG_SPRITE_SHEET
-
-/// Not implemented; reserved for future usage
-#define NOM_DEBUG_SPRITE_SHEET_JSON_SAVE
-
 // #define NOM_DEBUG_SPRITE_SHEET_JSON_LOAD
 
-/// \brief Specialized class container for the creation of sprite sheets via
-/// RFC 4627 JSON-compliant file input
+namespace nom {
+
+/// \brief Container class for deserialized sprite sheet data
 class SpriteSheet
 {
   public:
+    static const int MAJOR_VERSION;
+    static const int MINOR_VERSION;
+    static const int PATCH_VERSION;
+
     typedef std::shared_ptr<SpriteSheet> SharedPtr;
 
     /// Default construct for initializing instance variables to their
     /// respective defaults.
-    SpriteSheet ( void );
+    SpriteSheet();
 
     /// Destructor.
-    ~SpriteSheet ( void );
-
-    /// Construct a sprite sheet from an existing sprite sheet file
-    SpriteSheet ( const std::string& filename );
-
-    /// Construct a sprite sheet from a given list of arguments. The total tile
-    /// count is used if the num_sprites argument is not initialized.
-    ///
-    /// The filename specified is used only as meta-data.
-    ///
-    /// Padding is applied on all four sides. Spacing is applied between each
-    /// tile.
-    ///
-    /// \todo Re-order these arguments to match the order of instance variables
-    /// \todo Add additional sanity-check asserts for spacing, padding
-    /// and so on
-    SpriteSheet (
-                  const std::string& filename,
-                  int32 sheet_width, int32 sheet_height,
-                  int32 sprite_width, int32 sprite_height,
-                  int32 spacing, int32 padding, int32 num_sprites
-                );
+    ~SpriteSheet();
 
     /// Make a duplicate of this object's instance
-    SpriteSheet::SharedPtr clone ( void ) const;
+    SpriteSheet::SharedPtr clone() const;
 
     /// Get the calculations made for a particular ID number.
-    const IntRect& dimensions( int32 index ) const;
+    const IntRect& dimensions(int index) const;
 
     /// Obtain the number of frames this object contains
-    int32 frames ( void ) const;
+    int frames() const;
 
     /// \brief Obtain whether the sprite sheet is empty or not.
-    bool empty( void ) const;
+    bool empty() const;
 
-    const std::string& sheet_filename ( void ) const;
+    /// \brief Get the current version of the sprite sheet file format.
+    std::string version() const;
 
-    /// \brief Serialize the existing object data to a JSON file.
+    /// \brief Get the sprite sheet's filename.
     ///
-    /// \param filename The absolute file path to the resulting JSON output.
+    /// \remarks This data corresponds to the meta-data object node's 'filename'
+    /// value.
+    const std::string& sheet_filename() const;
+
+    /// \brief Get the total sprite sheet width.
     ///
-    /// \remarks The requested file path is created upon success.
-    bool save( const std::string& filename );
+    /// \remarks This data corresponds to the meta-data object node's 'width'
+    /// value.
+    int sheet_width() const;
+
+    /// \brief Get the total sprite sheet height.
+    ///
+    /// \remarks This data corresponds to the meta-data object node's 'height'
+    /// value.
+    int sheet_height() const;
+
+    /// \brief Get the sprite sheet's padding.
+    ///
+    /// \remarks This data corresponds to the meta-data object node's 'padding'
+    /// value.
+    int sheet_padding() const;
+
+    /// \brief Get the sprite sheet's spacing.
+    ///
+    /// \remarks This data corresponds to the meta-data object node's 'spacing'
+    /// value.
+    int sheet_spacing() const;
 
     /// \brief De-serialize an existing JSON file.
     ///
@@ -121,33 +116,32 @@ class SpriteSheet
     /// \brief Load a sprite sheet from a de-serialized object.
     ///
     /// \param object An existing, de-serialized object to use.
-    bool load_sheet_object( const Value& object );
+    bool load_sheet_object(const Value& object);
 
     /// Dump the state of this object instance
-    void dump ( void ) const;
+    void dump() const;
 
   private:
-    /// Our sprite sheet values container
-    std::vector<IntRect> sheet;
+    /// \brief Sprite sheet container.
+    ///
+    /// \remarks The key field of this container (an int) represents the frame's
+    /// identifier, whereas its second field represents the frame's data.
+    std::map<int, IntRect> sheet_;
 
-    /// Source filename used is saved with the output (meta-data)
+    /// \brief Source filename used is saved with the output (meta-data)
     std::string sheet_filename_;
 
-    /// Source number of sprites specified; this is saved with the resulting
-    /// output as meta-data
-    int32 sheet_sprites;
+    /// \brief Source spacing used is saved with the output (meta-data)
+    int sheet_spacing_;
 
-    /// Source spacing used is saved with the output (meta-data)
-    int32 sheet_spacing;
+    /// \brief Source padding used is saved with the output (meta-data)
+    int sheet_padding_;
 
-    /// Source padding used is saved with the output (meta-data)
-    int32 sheet_padding;
+    /// \brief Source sheet_width used is saved with the output (meta-data)
+    int sheet_width_;
 
-    /// Source sheet_width used is saved with the output (meta-data)
-    int32 sheet_width;
-
-    /// Source sheet_height used is saved with the output (meta-data)
-    int32 sheet_height;
+    /// \brief Source sheet_height used is saved with the output (meta-data)
+    int sheet_height_;
 };
 
 } // namespace nom
@@ -157,54 +151,6 @@ class SpriteSheet
 /// \class nom::SpriteSheet
 /// \ingroup graphics
 ///
-///         [DESCRIPTION STUB]
+/// TexturePacker with a custom exporter for nomlib is used for saving sprite
+/// frame data.
 ///
-/// \code
-///
-/// Example of 4X4 Sheet
-///   ________________
-///  | 0 | 1 | 2 | 3 |
-///  |===============|
-///  | 0 | 1 | 2 | 3 |
-///  |===============|
-///  | 0 | 1 | 2 | 3 |
-///  |===============|
-///  | 0 | 1 | 2 | 3 |
-///  |---------------|
-///
-/// \endcode
-///
-/// Usage example:
-/// \code
-///
-/// #include <nomlib/graphics/graphics.hpp>
-///
-/// nom::SpriteSheet card_faces_sheet ( "faces.png", 256, 262, 64, 64, 0, 1, 16 );
-/// card_faces_sheet.save( "faces.json" );
-///
-/// nom::Sprite card_face = nom::Sprite ( card_faces_sheet );
-///
-/// // ...or!
-///
-/// nom::Sprite card_face ( nom::SpriteSheet ( card_faces_sheet ( "faces.json" ) ) );
-///
-/// \endcode
-///
-///
-/// \code
-///
-///     REFERENCES
-///
-/// 1.  http://www.dreamincode.net/forums/topic/179429-sdl-sprite-sheet/
-/// \endcode
-///
-/// \todo Re-design the JSON layout used, perhaps with something like:
-/// { "metadata": { }, "<filename>": { "<ID>": { } } }
-///
-/// \todo Re-consider our sheet vector's data type (nom::IntRect); we should
-/// ideally be loading the object's ID into this vector
-///
-/// \todo Create structs for our instance vars
-///
-/// \todo Buffer the file meta-data like we do the other JSON objects inside
-/// load method

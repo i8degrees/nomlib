@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Forward declarations
 #include "nomlib/gui/RocketSDL2SystemInterface.hpp"
 #include "nomlib/gui/UIContext.hpp"
+#include "nomlib/gui/UIEventListener.hpp"
 
 // Private headers
 #include <Rocket/Core/ElementUtilities.h>

@@ -459,11 +459,6 @@ class libRocketTest: public nom::VisualUnitTest
     /// UI Windows; 'widgets' containers
     std::map<std::string, Rocket::Core::ElementDocument*> docs;
 
-    /// \remarks This object must be global, otherwise crashes will often
-    /// result.
-    // nom::UIEventListener evt;
-    nom::UIEventDispatcher evt;
-
     nom::UIContext desktop;
 };
 
@@ -589,62 +584,12 @@ TEST_F( libRocketTest, EventListenerTest )
   {
     NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, (*itr)->GetTagName().CString() );
 
-    evt.register_event_listener( *itr, "mousescroll", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) { this->on_wheel( ev ); } ) );
-    evt.register_event_listener( *itr, "keydown", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) { this->on_keydown( ev ); } ) );
-    evt.register_event_listener( *itr, "mouseup", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) { this->on_click( ev ); } ) );
+    (*itr)->AddEventListener("mousescroll", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) { this->on_wheel( ev ); } ) );
+    (*itr)->AddEventListener("keydown", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) { this->on_keydown( ev ); } ) );
+    (*itr)->AddEventListener("mouseup", new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) { this->on_click( ev ); } ) );
   }
 
   this->docs[doc_file] = doc;
-
-  // Experimental integration of input mapper bindings; doesn't work well at
-  // the moment... we need to decide how we would like to sync the event
-  // callbacks.
-  // InputActionMapper state;
-  // EventCallback click( [&] ( const Event& evt )
-  // {
-  //   // tags[0]->Click();
-  //   rocket::Vector2f mouse( evt.mouse.x, evt.mouse.y );
-
-  //   if( tags[0]->IsPointWithinElement( mouse ) )
-  //   {
-  //     Rocket::Core::Dictionary params;
-  //     params.Set("button","0");
-  //     // tags[0]->DispatchEvent("mouseup", params);
-
-  //     Rocket::Core::Event event(tags[0], "mouseup", params);
-  //     this->on_click( event );
-  //   }
-  //   else if( tags[1]->IsPointWithinElement( mouse ) )
-  //   {
-  //     Rocket::Core::Dictionary params;
-  //     params.Set("button","0");
-  //     // tags[1]->DispatchEvent("mouseup", params);
-
-  //     Rocket::Core::Event event(tags[1], "mouseup", params);
-  //     this->on_click( event );
-  //   }
-
-  // } );
-
-  // state.insert  ( "click",
-  //                  nom::MouseButtonAction(  SDL_MOUSEBUTTONUP,
-  //                                           SDL_BUTTON_LEFT ),
-  //                  click );
-
-  // Additional input bindings for VisualUnitTest's event loop.
-  // this->input_mapper_.insert( "click", state, true );
-
-  // if( this->input_mapper_.trigger("click") == false )
-  // {
-  //   FAIL();
-  // }
-
-  // Two different ways of simulating events:
-  // content_div->Click();
-  // Rocket::Core::Dictionary params;
-
-  // params.Set("button","1");
-  // content_div->DispatchEvent("mousedown", params);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );

@@ -26,32 +26,37 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GUI_PUBLIC_HEADERS_HPP
-#define NOMLIB_GUI_PUBLIC_HEADERS_HPP
-
-#include "nomlib/config.hpp"
-
-#include "nomlib/gui/Drawables.hpp"
-#include "nomlib/gui/IDecorator.hpp"
-#include "nomlib/gui/Decorator.hpp"
-// #include "nomlib/gui/MinimalDecorator.hpp"
-#include "nomlib/gui/FinalFantasyFrame.hpp"
-#include "nomlib/gui/FinalFantasyDecorator.hpp"
-
-#include "nomlib/gui/RocketFileInterface.hpp"
-#include "nomlib/gui/RocketSDL2SystemInterface.hpp"
-#include "nomlib/gui/RocketSDL2RenderInterface.hpp"
-
-#include "nomlib/gui/DecoratorInstancerFinalFantasyFrame.hpp"
-#include "nomlib/gui/DecoratorInstancerSprite.hpp"
-
-#include "nomlib/gui/UIWidget.hpp"
-#include "nomlib/gui/UIMessageBox.hpp"
-#include "nomlib/gui/UIQuestionDialogBox.hpp"
-#include "nomlib/gui/UIDataViewList.hpp"
-#include "nomlib/gui/UIContext.hpp"
 #include "nomlib/gui/UIEventListener.hpp"
 
-#include "nomlib/gui/init_librocket.hpp"
+namespace nom {
 
-#endif // include guard defined
+UIEventListener::UIEventListener(const callback_type& observer)
+{
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
+
+  this->observer_ = observer;
+}
+
+UIEventListener::~UIEventListener()
+{
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
+}
+
+void UIEventListener::OnAttach( Rocket::Core::Element* element )
+{
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
+}
+
+void UIEventListener::OnDetach( Rocket::Core::Element* element )
+{
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_GUI, nom::NOM_LOG_PRIORITY_VERBOSE);
+}
+
+void UIEventListener::ProcessEvent(event_type& event)
+{
+  // NOM_DUMP_VAR( NOM_LOG_CATEGORY_GUI, "event", event.GetType().CString(), "for", event.GetTargetElement()->GetInnerRML().CString() );
+
+  this->observer_.operator()(event);
+}
+
+} // namespace nom

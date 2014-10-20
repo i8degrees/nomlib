@@ -155,6 +155,13 @@ class UIWidget
     /// \todo Change return type to boolean
     void set_text_alignment( rocket::Element* element, uint32 alignment );
 
+    /// \brief Register an event listener for an element.
+    ///
+    /// \param element  The document's element to listen on behalf of.
+    /// \param ev       The event name to listen for, i.e.: 'mouseup'; must use
+    /// libRocket event names.
+    ///
+    /// \see http://librocket.com/wiki/documentation/RML/Events
     void register_event_listener( rocket::Element* element,
                                   const std::string& ev,
                                   UIEventListener* observer,

@@ -26,57 +26,60 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GUI_ROCKET_SDL2_SYSTEM_INTERFACE_HPP
-#define NOMLIB_GUI_ROCKET_SDL2_SYSTEM_INTERFACE_HPP
+#ifndef NOMLIB_GUI_UIEVENT_LISTENER_HPP
+#define NOMLIB_GUI_UIEVENT_LISTENER_HPP
 
 #include <functional>
 
+#include <Rocket/Core/EventListener.h>
+// #include <Rocket/Core/Types.h>
+
 #include "nomlib/config.hpp"
-
-#include <Rocket/Core/SystemInterface.h>
-#include <Rocket/Core/Input.h>
-
-#include <SDL.h>
 
 namespace nom {
 
-/// \brief System interfacing bridge between libRocket and nomlib
+/// \brief Interface for an event listener for libRocket's platform.
 ///
-/// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Input
-class RocketSDL2SystemInterface: public Rocket::Core::SystemInterface
+/// \note Observer pattern
+///
+/// \note This object must outlive its element's destruction.
+///
+/// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Events
+/// \see http://www.librocket.com/wiki/documentation/PythonManual/AttachingToEvents
+class UIEventListener: public Rocket::Core::EventListener
 {
   public:
-    virtual ~RocketSDL2SystemInterface();
+    typedef UIEventListener self_type;
+    typedef Rocket::Core::Event event_type;
+    typedef std::function<void(event_type&)> callback_type;
 
-    /// \brief Implements Rocket::Core::SystemInterface::Release.
+    /// \brief Register an event listener for an element.
     ///
-    /// \remarks Called when this file interface is released.
-    virtual void Release();
+    /// \param observer The callback to be executed when the element has an
+    /// event.
+    UIEventListener(const callback_type& observer);
 
-    /// \brief Begin text input mode (brings up virtual keyboard on mobile hardware)
-    ///
-    /// \remarks Optional implementation of Rocket::Core::SystemInterface::
-    /// ActivateKeyboard.
-    virtual void ActivateKeyboard();
+    /// \brief Destructor.
+    virtual ~UIEventListener();
 
-    /// \brief End text input mode (brings up virtual keyboard on mobile hardware)
-    ///
-    /// \remarks Optional implementation of Rocket::Core::SystemInterface::
-    /// DeactivateKeyboard.
-    virtual void DeactivateKeyboard();
+    /// \brief Not used.
+    virtual void OnAttach(Rocket::Core::Element* element);
 
-    /// \brief Implements Rocket::Core::SystemInterface::GetElapsedTime.
-    ///
-    /// \remarks Required implementation.
-    virtual float GetElapsedTime();
+    /// \brief Not used.
+    virtual void OnDetach(Rocket::Core::Element* element);
 
-    /// \brief Implements Rocket::Core::SystemInterface::LogMessage.
+  protected:
+    /// \brief The element's event handler.
     ///
-    /// \remarks Optional implementation.
+    /// \remarks The end-user's callback function is executed here; this feature
+    /// is provided by nomlib.
     ///
-    /// \todo Take a look at libRocket.git/Samples/basic/customlog/src/main.cpp
-    /// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Interfaces#Thesysteminterface
-    virtual bool LogMessage(Rocket::Core::Log::Type type, const Rocket::Core::String& message);
+    /// \note This method is called by libRocket internally when there is an
+    /// event for the element ready to be processed.
+    virtual void ProcessEvent(event_type& event);
+
+  private:
+    callback_type observer_;
 };
 
 } // namespace nom

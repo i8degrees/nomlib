@@ -202,6 +202,7 @@ set ( GUI_SOURCE
       ${SRC_DIR}/gui/RocketSDL2RenderInterface.cpp
       ${SRC_DIR}/gui/RocketSDL2SystemInterface.cpp
       ${SRC_DIR}/gui/RocketFileInterface.cpp
+      ${SRC_DIR}/gui/UIEventListener.cpp
       ${SRC_DIR}/gui/DecoratorInstancerFinalFantasyFrame.cpp
       ${SRC_DIR}/gui/DecoratorFinalFantasyFrame.cpp
       ${SRC_DIR}/gui/DecoratorPhotograph.cpp

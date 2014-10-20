@@ -58,17 +58,17 @@ uint32 FPS::frames ( void ) const
   return this->total_frames;
 }
 
-const std::string FPS::asString ( void ) const
+std::string FPS::asString ( void ) const
 {
-  return std::to_string ( static_cast<uint32> ( this->frames() / ( this->fps_timer.ticks() / 1000.f ) ) );
+  return std::to_string( NOM_SCAST( uint32, this->fps_float() ) );
 }
 
-uint32 FPS::fps ( void ) const
+uint32 FPS::fps() const
 {
-  return this->frames() / static_cast<uint32> ( ( this->fps_timer.ticks() / 1000.f ) );
+  return( this->fps_float() );
 }
 
-float FPS::fps_float ( void ) const
+float FPS::fps_float() const
 {
   return this->frames() / (this->fps_timer.ticks() / 1000.f);
 }

@@ -77,4 +77,14 @@ void sleep( uint32 milliseconds )
   SDL_Delay ( std::max ( milliseconds, static_cast<uint32> ( 10 ) ) );
 }
 
+uint64 hires_counter()
+{
+  return SDL_GetPerformanceCounter();
+}
+
+uint64 hires_frequency()
+{
+  return SDL_GetPerformanceFrequency();
+}
+
 } // namespace nom

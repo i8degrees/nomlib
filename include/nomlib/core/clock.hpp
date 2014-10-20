@@ -90,6 +90,26 @@ std::string ticks_as_string( void );
 /// Values below 10 milliseconds are clamped to 10
 void sleep( uint32 milliseconds );
 
+/// \brief Get the current value of the high resolution counter.
+///
+/// \returns The current counter value.
+///
+/// \remarks Typically used for profiling. The counter values are only
+/// meaningful relative to each other. Differences between values can be
+/// converted to times by using hires_frequency().
+///
+/// \note This is a function wrapper for SDL_GetPerformanceCounter.
+/// \see https://wiki.libsdl.org/SDL_GetPerformanceCounter?highlight=%28%5CbCategoryTimer%5Cb%29%7C%28CategoryEnum%29%7C%28CategoryStruc%29
+uint64 hires_counter();
+
+/// \brief Get the count per second of the high resolution counter.
+///
+/// \returns A platform-specific count per second.
+///
+/// \note This is a function wrapper for SDL_GetPerformanceFrequency.
+/// \see https://wiki.libsdl.org/SDL_GetPerformanceFrequency
+uint64 hires_frequency();
+
 } // namespace nom
 
 #endif // include guard defined

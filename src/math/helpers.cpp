@@ -30,14 +30,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-int32 rand ( int32 start, int32 end )
-{
-  //auto seed = std::chrono::system_clock::now().time_since_epoch().count();
-  auto seed = static_cast<int32> ( ticks() );
-  std::default_random_engine rand_generator ( seed );
-  std::uniform_int_distribution<int32> distribution ( start, end );
+namespace priv {
 
-  return distribution ( rand_generator );
+std::random_device rd;
+std::default_random_engine rd_generator;
+
+} // namespace priv
+
+void init_rand(uint32 seed_seq)
+{
+  priv::rd_generator = std::default_random_engine( priv::rd() );
+
+  if(seed_seq != 0) {
+    priv::rd_generator.seed(seed_seq);
+  }
 }
 
 const Point2d rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y )

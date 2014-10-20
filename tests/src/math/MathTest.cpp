@@ -444,6 +444,123 @@ TEST_F( MathTest, Size2Operators )
   EXPECT_EQ( false, lhs == rhs );
 }
 
+/// \remarks This test should always be ran before nom::init_rand is used.
+TEST_F(MathTest, UniformIntRand)
+{
+  const int nrolls = 10000; // number of experiments
+  const int nstars = 95;    // maximum number of stars to distribute
+
+  int p[10]={};
+
+  for(int i = 0; i < nrolls; ++i) {
+    int number = nom::uniform_int_rand<int>(0,9);
+    ++p[number];
+  }
+
+  std::cout << "nom::uniform_int_rand(0,9):" << std::endl;
+  for(int i = 0; i < 10; ++i) {
+    std::cout << i << ": " << std::string(p[i]*nstars/nrolls,'*') << std::endl;
+  }
+}
+
+/// \remarks This test should always be ran before nom::init_rand is used.
+TEST_F(MathTest, UniformFloatRand)
+{
+  const int nrolls = 10000; // number of experiments
+  const int nstars = 95;    // maximum number of stars to distribute
+
+  int p[10]={};
+
+  for(int i = 0; i < nrolls; ++i) {
+    int number = nom::uniform_real_rand<float>(0.0,9.9f);
+    ++p[number];
+  }
+
+  std::cout << "nom::uniform_real_rand(0.0,9.9):" << std::endl;
+  for(int i = 0; i < 10; ++i) {
+    std::cout << i << ": " << std::string(p[i]*nstars/nrolls,'*') << std::endl;
+  }
+}
+
+/// \remarks This test should always be ran before nom::init_rand is used.
+TEST_F(MathTest, UniformDoubleRand)
+{
+  const int nrolls = 10000; // number of experiments
+  const int nstars = 95;    // maximum number of stars to distribute
+
+  int p[10]={};
+
+  for(int i = 0; i < nrolls; ++i) {
+    int number = nom::uniform_real_rand<double>(0.0,9.9f);
+    ++p[number];
+  }
+
+  std::cout << "nom::uniform_real_rand(0.0,9.9):" << std::endl;
+  for(int i = 0; i < 10; ++i) {
+    std::cout << i << ": " << std::string(p[i]*nstars/nrolls,'*') << std::endl;
+  }
+}
+
+TEST_F(MathTest, UniformIntRandCustomSeedTestOne)
+{
+  const int nrolls = 10000; // number of experiments
+  const int nstars = 95;    // maximum number of stars to distribute
+  int p[10]={};
+
+  // Possible output:
+  // 0: **********
+  // 1: *********
+  // 2: *********
+  // 3: *********
+  // 4: *********
+  // 5: ********
+  // 6: *********
+  // 7: *********
+  // 8: *********
+  // 9: *********
+  nom::init_rand(352264655);
+
+  for(int i = 0; i < nrolls; ++i) {
+    int number = nom::uniform_int_rand<int>(0,9);
+    ++p[number];
+  }
+
+  std::cout << "nom::uniform_int_rand(0,9):" << std::endl;
+  for(int i = 0; i < 10; ++i) {
+    std::cout << i << ": " << std::string(p[i]*nstars/nrolls,'*') << std::endl;
+  }
+}
+
+TEST_F(MathTest, UniformIntRandCustomSeedTestTwo)
+{
+  const int nrolls = 10000; // number of experiments
+  const int nstars = 95;    // maximum number of stars to distribute
+  int p[10]={};
+
+  // Possible output:
+  // 0: *********
+  // 1: *********
+  // 2: *********
+  // 3: *********
+  // 4: *********
+  // 5: *********
+  // 6: *********
+  // 7: *********
+  // 8: *********
+  // 9: ********
+  nom::init_rand(3522646559);
+
+  for(int i = 0; i < nrolls; ++i) {
+    int number = nom::uniform_int_rand<int>(0,9);
+    ++p[number];
+  }
+
+  std::cout << "nom::uniform_int_rand(0,9):" << std::endl;
+  for(int i = 0; i < 10; ++i) {
+    std::cout << i << ": " << std::string(p[i]*nstars/nrolls,'*') << std::endl;
+  }
+}
+
 } // namespace nom
 
 int main( int argc, char** argv )

@@ -418,7 +418,7 @@ class App: public nom::SDLApp
         // MAXIMUM_WINDOWS is greater than 3
         for ( auto idx = 3; idx < MAXIMUM_WINDOWS; idx++ )
         {
-          nom::int32 random_color = nom::rand ( 1, 11 );
+          nom::int32 random_color = nom::uniform_int_rand<nom::int32>(1, 11);
 
           switch ( random_color )
           {

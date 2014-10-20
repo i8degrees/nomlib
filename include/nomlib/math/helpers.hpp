@@ -41,10 +41,51 @@ namespace nom {
 
 const double PI = 4.0 * atan ( 1.0 );
 
-/// Generate a random number
+namespace priv {
+
+extern std::random_device rd;
+extern std::default_random_engine rd_generator;
+
+} // namespace priv
+
+/// \brief Initialize the default random engine.
+///
+/// \param seed The seed sequence value for the random number generator.
+///
+/// \remarks This function does not need to be called when the use of a known
+/// seed source is not necessary.
+///
+/// \note This function should only be called once, and before using any of the
+/// random number generators provided by nomlib.
+///
+/// \see nom::uniform_int_rand, nom::uniform_real_rand.
+void init_rand(uint32 seed_seq);
+
+/// \brief Generate a random number.
 ///
 /// \return Random number between the specified start and end numbers.
-int32 rand ( int32 start, int32 end );
+///
+/// \remarks This function should only be used with signed or unsigned integers.
+template <typename T>
+T uniform_int_rand(T start_range, T end_range)
+{
+  std::uniform_int_distribution<T> distribution(start_range, end_range);
+
+  return distribution(priv::rd_generator);
+}
+
+/// \brief Generate a random number.
+///
+/// \return Random number between the specified start and end numbers.
+///
+/// \remarks This function should only be used with float or double numbers.
+template <typename T>
+T uniform_real_rand(T start_range, T end_range)
+{
+  std::uniform_real_distribution<T> distribution(start_range, end_range);
+
+  return distribution(priv::rd_generator);
+}
 
 /// Rotates a given X & Y coordinate point along a given pivot axis
 /// (rotation point) at the given angle (in degrees), clockwise.

@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Texture.hpp"
 
 // Private headers
-#include "nomlib/math/helpers.hpp"
+#include "nomlib/math/math_helpers.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
 #if defined( NOM_USE_SCALEX )

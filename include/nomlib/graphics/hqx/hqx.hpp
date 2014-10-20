@@ -53,7 +53,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// this working.
 
 #include "nomlib/config.hpp"
-#include "nomlib/math/helpers.hpp"
+#include "nomlib/math/math_helpers.hpp"
 
 #define MASK_2     0x0000FF00
 #define MASK_13    0x00FF00FF

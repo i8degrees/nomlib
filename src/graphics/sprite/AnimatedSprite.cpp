@@ -36,7 +36,8 @@ namespace nom {
 void AnimatedSprite::initialize ( void )
 {
   this->setMaxFrames ( 1 );
-  this->set_frame ( 0 );
+  // this->set_frame ( 0 );
+  this->current_frame = 0;
   this->setFrameIncrement ( 1 );
   this->setAnimationStyle ( AnimatedSprite::AnimationStyle::NoStyle );
   this->setAnimationStatus ( AnimatedSprite::AnimationStatus::Stopped );
@@ -50,31 +51,19 @@ AnimatedSprite::AnimatedSprite ( void )
   this->initialize();
 }
 
-AnimatedSprite::AnimatedSprite ( const SpriteSheet& sheet ) :
-  SpriteBatch ( sheet )
-{
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_RENDER );
-
-  this->initialize();
-
-  this->setMaxFrames ( this->sprite_sheet.frames() - 1 ); // We start from zero
-  this->fps.setFrameRate ( 100 );
-}
-
-AnimatedSprite::AnimatedSprite ( const std::string& filename ) :
-  SpriteBatch ( filename )
-{
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_RENDER );
-
-  this->initialize();
-
-  this->setMaxFrames ( this->sprite_sheet.frames() - 1 ); // We start from zero
-  this->fps.setFrameRate ( 100 );
-}
-
 AnimatedSprite::~AnimatedSprite ( void )
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_RENDER );
+}
+
+void AnimatedSprite::set_sprite_sheet(const SpriteSheet& sheet)
+{
+  // NOM_LOG_TRACE ( NOM );
+
+  this->initialize();
+
+  SpriteBatch::set_sprite_sheet(sheet);
+  this->setMaxFrames( this->sprite_sheet.frames() );
 }
 
 int32 AnimatedSprite::total_frames ( void ) const
@@ -126,7 +115,7 @@ NOM_LOG_ERR ( NOM, "Could not update animation frame: requested frame value is t
   }
 
   this->current_frame = frame;
-  //SpriteBatch::update();
+  SpriteBatch::set_frame(frame);
 }
 
 void AnimatedSprite::setAnimationStyle ( AnimatedSprite::AnimationStyle style )
@@ -150,7 +139,7 @@ void AnimatedSprite::update_animation ( void )
 
   this->fps.start();
 
-  this->set_frame ( this->current_frame + this->frame_increment );
+  // this->set_frame(this->current_frame + this->frame_increment);
 
   if ( this->style() == AnimatedSprite::AnimationStyle::Oscillate )
   {
@@ -190,12 +179,19 @@ void AnimatedSprite::update_animation ( void )
   {
     if ( this->frame() >= this->total_frames() )
     {
-      this->set_frame ( 0 );
+      // this->set_frame ( 0 );
     }
   }
 
-  this->set_frame ( this->frame() );
-  SpriteBatch::update();
+  if( this->current_frame + this->frame_increment < this->total_frames() ) {
+    this->set_frame(this->current_frame + this->frame_increment);
+  }
+  else {
+    this->set_frame(0);
+  }
+
+  // this->set_frame ( this->frame() );
+  // SpriteBatch::update();
 }
 
 void AnimatedSprite::play ( void )

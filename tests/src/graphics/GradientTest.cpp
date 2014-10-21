@@ -222,13 +222,17 @@ TEST_F( GradientTest, Margins )
 
   card_background = std::make_shared<Gradient>( Gradient() );
 
-  card_face =
-    std::make_shared<SpriteBatch>( SpriteBatch( sheet_coords ) );
+  nom::SpriteSheet frames;
+  nom::Texture face_tex;
+  EXPECT_TRUE( frames.load_file(sheet_coords) );
+  EXPECT_TRUE( face_tex.load(sheet_img) );
 
-  if( card_face->load( sheet_img ) == false )
-  {
-    FAIL() << "Could not load image from file: " << sheet_img;
-  }
+  card_face =
+    std::make_shared<SpriteBatch>( SpriteBatch() );
+
+  card_face->set_texture(face_tex);
+  card_face->set_sprite_sheet(frames);
+
   // card_face->resize( nom::Texture::ResizeAlgorithm::scale2x );
 
   // Geezard

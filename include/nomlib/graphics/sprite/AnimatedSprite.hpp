@@ -40,8 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-class AnimatedSprite:
-                        public SpriteBatch
+class AnimatedSprite: public SpriteBatch
 {
   public:
     enum AnimationStyle
@@ -62,16 +61,16 @@ class AnimatedSprite:
     /// respective defaults.
     AnimatedSprite ( void );
 
-    /// Construct an AnimatedSprite object, initializing it with a SpriteSheet
-    /// object.
-    AnimatedSprite ( const SpriteSheet& sheet );
-
-    /// Construct an AnimatedSprite from an existing filename saved with
-    /// SpriteSheet.
-    AnimatedSprite ( const std::string& filename );
-
     /// Destructor.
     virtual ~AnimatedSprite ( void );
+
+    /// \brief Use the sprite frames from an existing SpriteSheet object.
+    ///
+    /// \param sheet The pre-loaded sprite sheet instance to use the frames
+    /// from.
+    ///
+    /// \see nom::SpriteSheet::load_file.
+    virtual void set_sprite_sheet(const SpriteSheet& sheet) override;
 
     /// Get the maximum number of animation frames for this object
     int32 total_frames ( void ) const;

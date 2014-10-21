@@ -275,29 +275,45 @@ class App: public nom::SDLApp
       //   return false;
       // }
 
+      nom::SpriteSheet sprite_frames;
+
       // Load a sprite sheet, using the sheet_filename as the base path to load
       // the image file from disk
-      this->sprite = nom::SpriteBatch( res.path() + RESOURCE_SPRITE_SHEET );
-      if( this->sprite.load( res.path() + this->sprite.sheet_filename(), false, nom::Texture::Access::Streaming ) == false )
-      {
+      if( sprite_frames.load_file(res.path() + RESOURCE_SPRITE_SHEET) == false ) {
         nom::DialogMessageBox(  APP_NAME,
-                                "Could not load sprite: " +
-                                res.path() + this->sprite.sheet_filename() );
+                                "Could not load sprite sheet: " +
+                                res.path() + RESOURCE_SPRITE_SHEET );
         return false;
       }
-      this->sprite.resize ( nom::Texture::ResizeAlgorithm::scale2x );
-      this->sprite.set_frame ( 1 ); // Left-pointing cursor hand
 
-      // Load the same sprite sheet -- but this time -- used for animation
-      // effects!
-      this->ani_sprite = nom::AnimatedSprite( res.path() + RESOURCE_SPRITE_SHEET );
-      if ( this->ani_sprite.load( res.path() + this->ani_sprite.sheet_filename() ) == false )
+      if( this->sprite_tex.load( res.path() + sprite_frames.sheet_filename(), false, nom::Texture::Access::Streaming ) == false )
       {
         nom::DialogMessageBox(  APP_NAME,
-                                "Could not load sprite: " +
-                                res.path() + this->ani_sprite.sheet_filename() );
+                                "Could not load sprite texture: " +
+                                res.path() + sprite_frames.sheet_filename() );
         return false;
       }
+
+      this->sprite.set_texture(sprite_tex);
+      this->sprite.set_sprite_sheet(sprite_frames);
+      this->sprite_tex.resize(nom::Texture::ResizeAlgorithm::scale2x);
+      this->sprite.set_frame(1); // Left-pointing cursor hand
+
+      // Sharing the same texture for the animated sprite instead of loading
+      // another texture source would be OK, too, if we didn't care about
+      // preserving the original scale of the sprite here for testing purposes.
+      // this->ani_sprite.set_texture( *this->sprite_tex.clone() );
+      if( this->ani_sprite_tex.load( res.path() + sprite_frames.sheet_filename() ) == false )
+      {
+        nom::DialogMessageBox(  APP_NAME,
+                                "Could not load sprite texture: " +
+                                res.path() + sprite_frames.sheet_filename() );
+        return false;
+      }
+
+      this->ani_sprite.set_texture(this->ani_sprite_tex);
+      // Use the same sprite sheet source for the animated sprite
+      this->ani_sprite.set_sprite_sheet(sprite_frames);
 
       if ( MAXIMUM_WINDOWS > 1 )
       {
@@ -661,6 +677,8 @@ class App: public nom::SDLApp
     nom::Texture background;
 
     /// Our spiffy sprites
+    nom::Texture sprite_tex;
+    nom::Texture ani_sprite_tex;
     nom::SpriteBatch sprite;
     double sprite_angle;
     nom::AnimatedSprite ani_sprite;

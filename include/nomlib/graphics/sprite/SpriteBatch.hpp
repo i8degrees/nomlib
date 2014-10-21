@@ -35,13 +35,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Rect.hpp"
+#include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/sprite/Sprite.hpp"
 #include "nomlib/graphics/sprite/SpriteSheet.hpp"
 
 namespace nom {
 
-/// \brief Extended bitmap object rendering -- utilizes sprite sheets
+/// \brief Extended sprite rendering using sprite sheets
 class SpriteBatch: public Sprite
 {
   public:
@@ -61,68 +62,30 @@ class SpriteBatch: public Sprite
     /// Destructor.
     virtual ~SpriteBatch();
 
-    /// \brief Construct a SpriteBatch object, initializing it with an existing
-    /// nom::SpriteSheet object.
+    /// \brief Use the sprite frames from an existing SpriteSheet object.
+    ///
+    /// \param sheet The pre-loaded sprite sheet instance to use the frames
+    /// from.
     ///
     /// \remarks The dimensions of this object's Sprite instance are initialized
     /// to the first frame of the sprite sheet source.
     ///
-    /// \note The sprite image source to use with this object must be
-    /// explicitly initialized (loaded into memory).
-    SpriteBatch ( const SpriteSheet& sheet );
-
-    /// Construct a SpriteBatch object from an existing sprite sheet filename.
-    ///
-    /// \deprecated This method will be removed at some point in the future and
-    /// should not be used for new implementations. Use ::load_sheet_file or
-    /// ::load_sheet_object.
-    ///
-    /// \note The sprite image source to use with this object must be
-    /// explicitly initialized (loaded into memory).
-    SpriteBatch( const std::string& filename );
-
-    /// \brief Construct a SpriteBatch object from an existing sprite sheet
-    /// filename.
-    ///
-    /// \remarks The dimensions of this object's Sprite instance are initialized
-    /// to the first frame of the sprite sheet source.
-    ///
-    /// \note The sprite image source to use with this object must be
-    /// explicitly initialized (loaded into memory).
-    ///
-    /// \see Sprite::load
-    bool load_sheet_file( const std::string& filename );
-
-    /// \brief Load a sprite sheet from a de-serialized object.
-    ///
-    /// \param object An existing, de-serialized object to use.
-    ///
-    /// \remarks The dimensions of this object's Sprite instance are initialized
-    /// to the first frame of the sprite sheet source.
-    ///
-    /// \note The sprite image source to use with this object must be
-    /// explicitly initialized (loaded into memory).
-    ///
-    /// \see Sprite::load
-    bool load_sheet_object( const Value& object );
+    /// \see nom::SpriteSheet::load_file.
+    virtual void set_sprite_sheet(const SpriteSheet& sheet);
 
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
-    ObjectTypeInfo type( void ) const;
-
-    raw_ptr get( void );
+    ObjectTypeInfo type() const;
 
     /// \brief Implements the required IDrawable::clone method.
-    IDrawable::raw_ptr clone( void ) const;
+    IDrawable::raw_ptr clone() const;
 
     /// Get the object's current sheet_id.
-    virtual int32 frame ( void ) const;
+    virtual int32 frame() const;
 
     /// Obtain the number of frames available
-    int32 frames ( void ) const;
-
-    const std::string& sheet_filename ( void ) const;
+    int32 frames() const;
 
     /// \brief Set a new frame ID to render.
     ///
@@ -135,14 +98,7 @@ class SpriteBatch: public Sprite
     /// frame in the image source.
     ///
     /// \see ::update.
-    void set_frame( int32 id );
-
-    /// \brief Update the sprite for rendering with regard to positioning
-    /// coordinates and target frame ID.
-    ///
-    /// \remarks The sprite is not updated when the frame number is negative
-    /// one (-1).
-    virtual void update( void );
+    void set_frame(int32 id);
 
     /// \brief Render the sprite frame.
     ///
@@ -150,7 +106,7 @@ class SpriteBatch: public Sprite
     /// one (-1).
     ///
     /// \note Re-implements Sprite::draw.
-    virtual void draw( RenderTarget& target ) const;
+    virtual void draw(IDrawable::RenderTarget& target) const override;
 
     /// \brief Render the sprite frame at an angle.
     ///
@@ -158,9 +114,16 @@ class SpriteBatch: public Sprite
     /// one (-1).
     ///
     /// \note Re-implements Sprite::draw.
-    virtual void draw ( RenderTarget& target, const double angle ) const;
+    virtual void draw(IDrawable::RenderTarget& target, const double angle ) const override;
 
   protected:
+    /// \brief Update the sprite for rendering with regard to positioning
+    /// coordinates and target frame ID.
+    ///
+    /// \remarks The sprite is not updated when the frame number is negative
+    /// one (-1).
+    virtual void update() override;
+
     /// Source (input) coordinates -- used for sprite sheet positioning
     IntRect offsets;
 
@@ -170,7 +133,6 @@ class SpriteBatch: public Sprite
     /// The sheet's frame ID presently in use
     int32 sheet_id_;
 };
-
 
 } // namespace nom
 

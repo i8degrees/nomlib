@@ -31,141 +31,103 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 SpriteBatch::SpriteBatch() :
-  sheet_id_( 0 )
+  sheet_id_(0)
 {
-  // NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_RENDER, NOM_LOG_PRIORITY_VERBOSE);
 }
 
 SpriteBatch::~SpriteBatch()
 {
-  // NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_RENDER, NOM_LOG_PRIORITY_VERBOSE);
 }
 
-SpriteBatch::SpriteBatch ( const SpriteSheet& sheet )
+void SpriteBatch::set_sprite_sheet(const SpriteSheet& sheet)
 {
-  // NOM_LOG_TRACE ( NOM );
-
   IntRect dims;
 
   this->sprite_sheet = sheet;
 
   dims = this->sprite_sheet.dimensions(0);
 
-  Sprite ( dims.w, dims.h );
-
-  this->set_frame ( 0 );
-}
-
-SpriteBatch::SpriteBatch( const std::string& filename )
-{
-  // NOM_LOG_TRACE ( NOM );
-
-  this->load_sheet_file(filename);
-}
-
-bool SpriteBatch::load_sheet_file( const std::string& filename )
-{
-  bool ret = false;
-  IntRect dims;
-
-  ret = this->sprite_sheet.load(filename);
-
-  dims = this->sprite_sheet.dimensions(0);
-
+  // this->set_size( Size2i( this->sprite_sheet.sheet_width(), this->sprite_sheet.sheet_height() ) );
+  // this->set_bounds(dims);
   Sprite( dims.size() );
 
   this->set_frame(0);
 
-  return ret;
+  this->update();
 }
 
-bool SpriteBatch::load_sheet_object( const Value& object )
+ObjectTypeInfo SpriteBatch::type() const
 {
-  bool ret = false;
-  IntRect dims;
-
-  ret = this->sprite_sheet.load_sheet_object(object);
-
-  dims = this->sprite_sheet.dimensions(0);
-
-  Sprite( dims.size() );
-
-  this->set_frame(0);
-
-  return ret;
+  return NOM_OBJECT_TYPE_INFO(self_type);
 }
 
-ObjectTypeInfo SpriteBatch::type( void ) const
+IDrawable* SpriteBatch::clone() const
 {
-  return NOM_OBJECT_TYPE_INFO( self_type );
+  return( new SpriteBatch( *this ) );
 }
 
-SpriteBatch::raw_ptr SpriteBatch::get( void )
+int32 SpriteBatch::frame() const
 {
-  return this;
-}
-
-IDrawable::raw_ptr SpriteBatch::clone( void ) const
-{
-  return self_type::raw_ptr( new SpriteBatch( *this ) );
-}
-
-int32 SpriteBatch::frame ( void ) const
-{
-//NOM_ASSERT ( this->sheet_id != ( this->frames() - 1 ) );
   return this->sheet_id_;
 }
 
-int32 SpriteBatch::frames ( void ) const
+int32 SpriteBatch::frames() const
 {
   return this->sprite_sheet.frames();
 }
 
-const std::string& SpriteBatch::sheet_filename ( void ) const
+void SpriteBatch::set_frame(int32 id)
 {
-  return this->sprite_sheet.sheet_filename();
-}
-
-void SpriteBatch::set_frame( int32 id )
-{
-  //NOM_ASSERT ( id != ( this->frames() - 1 ) );
-
   this->sheet_id_ = id;
 
   this->update();
 }
 
-void SpriteBatch::update( void )
+void SpriteBatch::draw(IDrawable::RenderTarget& target) const
 {
   if( this->frame() >= 0 )
   {
-    Sprite::update(); // Update rendering position
+    Sprite::draw(target);
+  }
+}
+
+void SpriteBatch::draw(IDrawable::RenderTarget& target, const double angle) const
+{
+  if( this->frame() >= 0 )
+  {
+    Sprite::draw(target, angle);
+  }
+}
+
+// Protected scope
+
+void SpriteBatch::update()
+{
+  NOM_ASSERT(this->texture_ != nullptr);
+
+  int scale_factor = 1;
+
+  if( this->texture_ != nullptr ) {
+    scale_factor = this->texture_->scale_factor();
+  }
+
+  if( this->frame() >= 0 ) {
+
+    Sprite::update();
 
     IntRect dims = this->sprite_sheet.dimensions( this->frame() );
 
-    this->offsets.x = dims.x * this->scale_factor;
-    this->offsets.y = dims.y * this->scale_factor;
-    this->offsets.w = dims.w * this->scale_factor;
-    this->offsets.h = dims.h * this->scale_factor;
+    this->offsets.x = dims.x * scale_factor;
+    this->offsets.y = dims.y * scale_factor;
+    this->offsets.w = dims.w * scale_factor;
+    this->offsets.h = dims.h * scale_factor;
 
-    this->set_size( offsets.w, offsets.h );
-    this->sprite_.set_bounds( this->offsets );
-  }
-}
-
-void SpriteBatch::draw( RenderTarget& target ) const
-{
-  if( this->frame() >= 0 )
-  {
-    Sprite::draw( target );
-  }
-}
-
-void SpriteBatch::draw( RenderTarget& target, const double angle ) const
-{
-  if( this->frame() >= 0 )
-  {
-    Sprite::draw( target, angle );
+    this->set_size( Size2i(offsets.w, offsets.h) );
+    if( this->texture_ != nullptr ) {
+      this->texture_->set_bounds(this->offsets);
+    }
   }
 }
 

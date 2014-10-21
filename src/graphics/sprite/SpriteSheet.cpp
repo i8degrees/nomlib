@@ -112,7 +112,7 @@ SpriteSheet::SharedPtr SpriteSheet::clone() const
   return SpriteSheet::SharedPtr ( new SpriteSheet ( *this ) );
 }
 
-bool SpriteSheet::load( const std::string& filename )
+bool SpriteSheet::load_file(const std::string& filename)
 {
   IValueDeserializer* serializer = new JsonCppDeserializer();
   Value output; // Value buffer of resulting de-serialized input.

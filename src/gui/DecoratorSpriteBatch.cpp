@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Forward declarations
 #include "nomlib/graphics/sprite/SpriteBatch.hpp"
+#include "nomlib/graphics/Texture.hpp"
 
 // Private headers
 #include "nomlib/math/Point2.hpp"
@@ -79,20 +80,25 @@ bool DecoratorSpriteBatch::initialize(  const std::string& sheet_src,
     sheet_source_path = fs_root->root() += sheet_src;
   }
 
+  SpriteSheet frames;
+  if( frames.load_file(sheet_source_path) == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not load sprite sheet: ", sheet_source_path );
+    return false;
+  }
+
+  this->texture_.reset( new Texture() );
   this->sprite_.reset( new SpriteBatch() );
 
-  if( this->sprite_->load_sheet_file(sheet_source_path) == false )
-  {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not load sprite sheet: ", sheet_source_path );
-    return false;
-  }
-
-  if( this->sprite_->load( image_source_path ) == false )
+  if( this->texture_->load(image_source_path) == false )
   {
     // Invalid RCSS sprite-sheet-image-src?
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not load sheet image source:", image_source_path );
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Could not load sheet image:",
+                  image_source_path );
     return false;
   }
+  this->sprite_->set_texture( *this->texture_.get() );
+  this->sprite_->set_sprite_sheet(frames);
 
   this->sprite_->set_frame(sheet_frame);
 

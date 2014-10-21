@@ -30,6 +30,7 @@ set( NOM_BUILD_GAMEOFLIFE_EXAMPLE false )
 
 set( NOM_BUILD_MOUSE_CURSORS_EXAMPLE false )
 set( NOM_BUILD_MACROS_EXAMPLE FALSE )
+set( NOM_BUILD_SPRITES_EXAMPLE TRUE )
 
 link_libraries ( ${PROJECT_NAME} )
 
@@ -80,6 +81,19 @@ if( NOT NOM_BUILD_MINI_UNIT )
               )
 
     endif( NOM_BUILD_APP_EXAMPLE )
+
+    if( NOM_BUILD_SPRITES_EXAMPLE )
+      add_executable ( sprites "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/sprites.cpp" )
+
+      # Search paths file to use in finding the resources path
+      install (
+                FILES
+                "${NOM_EXAMPLES_RESOURCES_DIR}/sprites.json"
+                DESTINATION
+                "${EXAMPLES_INSTALL_PEFIX}"
+              )
+
+    endif( NOM_BUILD_SPRITES_EXAMPLE )
 
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_SYSTEM_UNIT )
     if( NOM_BUILD_AUDIO_EXAMPLE )

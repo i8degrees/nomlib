@@ -111,7 +111,7 @@ class SpriteSheet
     /// a non-modified object upon failure.
     ///
     /// \todo Rename to load_sheet_file?
-    bool load( const std::string& filename );
+    bool load_file(const std::string& filename);
 
     /// \brief Load a sprite sheet from a de-serialized object.
     ///

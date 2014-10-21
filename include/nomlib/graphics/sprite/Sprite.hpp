@@ -55,81 +55,55 @@ class Sprite: public Transformable
 
     /// Default construct for initializing instance variables to their
     /// respective defaults.
-    Sprite ( void );
+    Sprite();
 
     /// Destructor.
-    virtual ~Sprite ( void );
-
-    /// Construct a Sprite object, initializing the width & height coordinates.
-    ///
-    /// \deprecated Use Sprite(const Size2i&) constructor.
-    Sprite ( int32 width, int32 height );
+    virtual ~Sprite();
 
     /// \brief Construct a Sprite object, initializing the width & height
     /// coordinates.
-    Sprite( const Size2i& dims );
+    Sprite(const Size2i& dims);
 
     /// \brief Re-implements Transformable::set_position.
     ///
     /// \remarks This method updates the internal positioning coordinates of
     /// this object; freeing us from needing to call ::update manually.
-    virtual void set_position( const Point2i& pos );
+    virtual void set_position(const Point2i& pos) override;
 
     // TODO (?):
     // virtual void set_size( const Size2i& pos );
 
     /// \brief Implements the required IDrawable::clone method.
-    IDrawable::raw_ptr clone( void ) const;
+    IDrawable* clone() const;
 
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
-    ObjectTypeInfo type( void ) const;
+    ObjectTypeInfo type() const override;
 
-    SDL_TEXTURE::RawPtr texture ( void ) const;
+    SDL_Texture* texture() const;
 
-    /// Get the object's state.
-    uint32 state ( void ) const;
-
-    /// Set a new state.
-    void set_state ( uint32 state );
-
-    /// \brief Initialize a Sprite from an image file.
+    /// \brief Set the texture source for this sprite instance.
     ///
-    /// \param type nom::Texture::Access enumeration type
+    /// \remarks Only a reference to the texture is kept for this instance; it
+    /// must outlive the destruction of this instance.
     ///
-    /// \remarks  In order to use the resize method of this class, you must load
-    ///           the sprite image with nom::Texture::Access::Streaming access.
-    bool load ( const std::string& filename,
-                bool use_cache = false,
-                enum Texture::Access type = Texture::Access::Static
-              );
+    /// \see nom::Texture::load
+    void set_texture(/*const*/ Texture& tex);
 
-    virtual void draw( RenderTarget& target ) const;
+    virtual void draw(RenderTarget& target) const override;
 
     /// Draw a rotated nom::Sprite on a nom::RenderWindow
     ///
     /// \param  target  Reference to an active nom::RenderWindow
     /// \param  angle   Rotation angle in degrees
-    ///
-    virtual void draw ( RenderTarget& target, const double angle ) const;
-
-    /// \brief Rescale the sprite with the chosen resizing algorithm
-    ///
-    /// \remarks See nom::Texture::resize
-    bool resize ( enum Texture::ResizeAlgorithm scaling_algorithm );
+    virtual void draw(RenderTarget& target, const double angle) const;
 
   protected:
-    virtual void update( void );
+    virtual void update() override;
 
-    /// Object that holds our sprite image
-    Texture sprite_;
-
-    /// Convenience instance variable (user-defined)
-    uint32 state_;
-
-    /// Scale factor applied if the resize method is called
-    int scale_factor;
+    /// \brief Object that holds our sprite image
+    /*const*/ Texture* texture_;
 };
 
 

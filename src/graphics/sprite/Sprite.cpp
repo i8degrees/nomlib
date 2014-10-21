@@ -30,10 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Sprite::Sprite ( void ) :
-  Transformable { Point2i(0, 0), Size2i(0, 0) },
-  state_ ( 0 ),
-  scale_factor ( 1 )
+Sprite::Sprite() :
+  Transformable( Point2i(0, 0), Size2i(0, 0) ),
+  texture_(nullptr)
 {
 // NOM_LOG_TRACE ( NOM );
 }
@@ -41,121 +40,77 @@ Sprite::Sprite ( void ) :
 Sprite::~Sprite ( void )
 {
 // NOM_LOG_TRACE ( NOM );
+
 }
 
-Sprite::Sprite ( int32 width, int32 height )  :
-  Transformable { Point2i(0, 0), Size2i(width, height) },
-  state_ ( 0 ),
-  scale_factor ( 1 )
-
-{
-// NOM_LOG_TRACE ( NOM );
-}
-
-Sprite::Sprite( const Size2i& dims ) :
+Sprite::Sprite(const Size2i& dims) :
   Transformable( Point2i(0, 0), dims ),
-  state_( 0 ),
-  scale_factor( 1 )
+  texture_(nullptr)
 {
   // NOM_LOG_TRACE ( NOM );
 }
 
-void Sprite::set_position( const Point2i& pos )
+void Sprite::set_position(const Point2i& pos)
 {
-  Transformable::set_position( pos );
+  Transformable::set_position(pos);
 
   Sprite::update();
 }
 
-IDrawable::raw_ptr Sprite::clone( void ) const
+IDrawable* Sprite::clone() const
 {
-  return Sprite::raw_ptr( new Sprite( *this ) );
+  return( new Sprite( *this ) );
 }
 
-ObjectTypeInfo Sprite::type( void ) const
+ObjectTypeInfo Sprite::type() const
 {
-  return NOM_OBJECT_TYPE_INFO( self_type );
+  return NOM_OBJECT_TYPE_INFO(self_type);
 }
 
-SDL_TEXTURE::RawPtr Sprite::texture ( void ) const
+SDL_Texture* Sprite::texture() const
 {
-  return this->sprite_.texture();
-}
+  NOM_ASSERT(this->texture_ != nullptr);
 
-uint32 Sprite::state ( void ) const
-{
-  return this->state_;
-}
-
-void Sprite::set_state ( uint32 state )
-{
-  this->state_ = state;
-}
-
-bool Sprite::load (
-                    const std::string& filename,
-                    bool use_cache,
-                    enum Texture::Access type
-                  )
-{
-  if ( this->sprite_.load ( filename, use_cache, type ) == false )
-  {
-    NOM_LOG_ERR ( NOM, "Could not load sprite image file: " + filename );
-    return false;
+  if(this->texture_ != nullptr) {
+    return this->texture_->texture();
   }
 
-  this->set_size( Size2i( this->sprite_.width(), this->sprite_.height() ) );
+  // Invalid
+  return nullptr;
+}
 
-  this->update();
-
-  return true;
+void Sprite::set_texture(/*const*/ Texture& tex)
+{
+  this->texture_ = &tex;
 }
 
 void Sprite::draw( RenderTarget& target ) const
 {
-  NOM_ASSERT ( this->sprite_.valid() );
+  NOM_ASSERT(this->texture_ != nullptr);
 
-  if ( this->sprite_.valid() )
-  {
-    this->sprite_.draw ( target.renderer() );
+  if(this->texture_ != nullptr) {
+    this->texture_->draw( target.renderer() );
   }
 }
 
-void Sprite::draw ( RenderTarget& target, const double degrees ) const
+void Sprite::draw(RenderTarget& target, const double degrees) const
 {
-  NOM_ASSERT ( this->sprite_.valid() );
+  NOM_ASSERT(this->texture_ != nullptr);
 
-  if ( this->sprite_.valid() )
-  {
-    this->sprite_.draw ( target.renderer(), degrees );
+  if(this->texture_ != nullptr) {
+    this->texture_->draw(target.renderer(), degrees);
   }
-}
-
-bool Sprite::resize ( enum Texture::ResizeAlgorithm scaling_algorithm )
-{
-  if ( this->sprite_.valid() == false )
-  {
-NOM_LOG_ERR ( NOM, "Video surface is invalid." );
-    return false;
-  }
-
-  if ( this->sprite_.resize ( scaling_algorithm ) == false )
-  {
-NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
-    return false;
-  }
-
-  this->scale_factor = this->sprite_.scale_factor ( scaling_algorithm );
-  this->update();
-
-  return true;
 }
 
 // Protected scope
 
-void Sprite::update( void )
+void Sprite::update()
 {
-  this->sprite_.set_position( Point2i( this->position().x, this->position().y ) );
+  NOM_ASSERT(this->texture_ != nullptr);
+
+  if(this->texture_ != nullptr) {
+    this->texture_->set_position( Point2i( this->position().x, this->position().y ) );
+  }
 }
 
 } // namespace nom

@@ -103,9 +103,8 @@ class Texture
     /// Copy assignment operator
     Texture& operator = ( const Texture& other );
 
-    /// Return a std::shared_ptr copy of this instance
-    /// \todo Test me out!
-    Texture::SharedPtr clone ( void ) const;
+    /// Create a deep copy of this instance.
+    Texture* clone() const;
 
     /// Initialize an object with specified parameters
     ///
@@ -267,7 +266,7 @@ class Texture
     /// \remarks This is intended for use with Texture::Access::Static texture
     /// types. When used with Texture::Access::Streaming texture types, you may
     /// not get the pixels back if you lock the texture afterwards.
-    bool update ( const void* source, uint16 pitch, const IntRect& bounds );
+    bool update_pixels(const void* source, uint16 pitch, const IntRect& bounds);
 
     /// Draw a nom::Texture to a SDL_Renderer target
     ///
@@ -280,7 +279,7 @@ class Texture
     /// \param  nom::RenderWindow
     ///
     /// \note This is an alias for nom::Texture::draw ( SDL_Renderer* )
-    void draw ( const RenderWindow& target ) const;
+    void draw( const RenderWindow& target ) const;
 
     /// Draw a rotated nom::Texture to a rendering target
     ///
@@ -294,7 +293,7 @@ class Texture
     ///
     /// \param  target  Reference to an active nom::RenderWindow
     /// \param  angle   Rotation angle in degrees
-    void draw ( const RenderWindow& target, const double angle ) const;
+    void draw( const RenderWindow& target, const double angle ) const;
 
     /// \brief  Set an additional alpha value multiplied into render copy
     ///         operations.
@@ -336,6 +335,7 @@ class Texture
 
     /// \brief Return the scaling factor of the chosen algorithm
     int scale_factor( enum ResizeAlgorithm scaling_algorithm ) const;
+    int scale_factor() const;
 
     /// Set a new blending mode for this texture
     bool set_blend_mode ( const SDL_BlendMode blend );
@@ -372,6 +372,8 @@ class Texture
     bool set_render_target ( void );
 
   private:
+    void set_scale_factor(int factor);
+
     std::shared_ptr<SDL_Texture> texture_;
 
     /// Texture's pixels; these are only available when a Texture is locked.
@@ -401,6 +403,8 @@ class Texture
 
     /// Cached upon use of the set_colorkey method for use by external classes
     Color4i colorkey_;
+
+    int scale_factor_;
 };
 
 

@@ -54,7 +54,8 @@ Texture::Texture( void ) :
   bounds_ ( 0, 0, -1, -1 ),
   // TODO: use this for the texture size
   // size_( Size2i::zero ),
-  colorkey_ { Color4i::Black }
+  colorkey_ { Color4i::Black },
+  scale_factor_(1)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
@@ -96,6 +97,8 @@ void Texture::free_texture( void )
 
   // FIXME: This should be Color4i::null
   // this->colorkey_ = Color4i::Black;
+
+  this->set_scale_factor(1);
 }
 
 Texture::Texture ( const Texture& copy ) :
@@ -106,7 +109,8 @@ Texture::Texture ( const Texture& copy ) :
   // TODO: use this for the texture size
   // size_{ copy.size() },
   bounds_ { copy.bounds() },
-  colorkey_ { copy.colorkey() }
+  colorkey_ { copy.colorkey() },
+  scale_factor_( copy.scale_factor() )
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -120,13 +124,14 @@ Texture& Texture::operator = ( const Texture& other )
   // TODO: use this for the texture size
   // this->size_ = other.size();
   this->bounds_ = other.bounds();
+  this->set_scale_factor( other.scale_factor() );
 
   return *this;
 }
 
-Texture::SharedPtr Texture::clone ( void ) const
+Texture* Texture::clone() const
 {
-  return Texture::SharedPtr ( new Texture ( *this ) );
+  return( new Texture ( *this ) );
 }
 
 bool Texture::initialize ( uint32 format, uint32 flags, int32 width, int32 height )
@@ -519,7 +524,7 @@ bool Texture::load  ( const std::string& filename,
   return true;
 }
 
-bool Texture::update ( const void* pixels, uint16 pitch, const IntRect& bounds )
+bool Texture::update_pixels(const void* pixels, uint16 pitch, const IntRect& bounds)
 {
   // Update entire texture
   if ( bounds == IntRect::null )
@@ -545,6 +550,8 @@ bool Texture::update ( const void* pixels, uint16 pitch, const IntRect& bounds )
 
 void Texture::draw ( SDL_Renderer* target ) const
 {
+  NOM_ASSERT( this->valid() );
+
   Point2i pos = this->position();
   SDL_Rect render_coords;
 
@@ -778,6 +785,7 @@ bool Texture::resize( enum ResizeAlgorithm scaling_algorithm )
           destination.unlock();
           return false;
         }
+        this->set_scale_factor(2);
       #else
         NOM_LOG_WARN( NOM_LOG_CATEGORY_APPLICATION, "Unable to resize surface: engine was not built with the ScaleX algorithm." );
         return false;
@@ -804,6 +812,7 @@ bool Texture::resize( enum ResizeAlgorithm scaling_algorithm )
           destination.unlock();
           return false;
         }
+        this->set_scale_factor(3);
       #else
         NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Unable to resize surface: engine was not built with the ScaleX algorithm." );
         return false;
@@ -830,6 +839,7 @@ bool Texture::resize( enum ResizeAlgorithm scaling_algorithm )
           destination.unlock();
           return false;
         }
+        this->set_scale_factor(4);
       #else
         NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Unable to resize surface: engine was not built with the ScaleX algorithm." );
         return false;
@@ -848,6 +858,8 @@ bool Texture::resize( enum ResizeAlgorithm scaling_algorithm )
                         source_size.x,
                         source_size.y
                       );
+
+        this->set_scale_factor(2);
       #else
         NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Unable to resize surface: engine was not built with the HQX algorithm." );
         return false;
@@ -866,6 +878,7 @@ bool Texture::resize( enum ResizeAlgorithm scaling_algorithm )
                         source_size.x,
                         source_size.y
                       );
+        this->set_scale_factor(3);
       #else
         NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Unable to resize surface: engine was not built with the HQX algorithm." );
         return false;
@@ -884,6 +897,7 @@ bool Texture::resize( enum ResizeAlgorithm scaling_algorithm )
                         source_size.x,
                         source_size.y
                       );
+        this->set_scale_factor(4);
       #else
         NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Unable to resize surface: engine was not built with the HQX algorithm." );
         return false;
@@ -985,6 +999,11 @@ int Texture::scale_factor( enum ResizeAlgorithm scaling_algorithm ) const
   }
 }
 
+int Texture::scale_factor() const
+{
+  return this->scale_factor_;
+}
+
 bool Texture::set_blend_mode ( const SDL_BlendMode blend )
 {
   if ( SDL_SetTextureBlendMode ( this->texture(), blend ) != 0 )
@@ -1070,6 +1089,13 @@ bool Texture::set_render_target ( void )
   }
 
   return true;
+}
+
+// Private scope
+
+void Texture::set_scale_factor(int factor)
+{
+  this->scale_factor_ = factor;
 }
 
 } // namespace nom

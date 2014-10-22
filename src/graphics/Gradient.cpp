@@ -295,26 +295,28 @@ void Gradient::strategy_left_right ( void )
 
 bool Gradient::update_cache()
 {
-  SDL_Renderer* context = RenderWindow::context();
+  RenderWindow* context = nom::render_interface();
   NOM_ASSERT( context != nullptr );
 
   // Sanity check
-  if( context == nullptr )
-  {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, "Could not update texture cache for the gradient: invalid renderer.");
+  if( context == nullptr ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_RENDER,
+                  "Could not update texture cache for the gradient:",
+                  "invalid renderer.");
     return false;
   }
 
   // Obtain the optimal pixel format for the platform
-  RendererInfo caps = RenderWindow::caps( context );
+  RendererInfo caps = context->caps();
 
   // Create the texture cache that will hold our gradient; since the dimensions
   // are local to this object, we deal with translating relative coordinates to
   // what will be the absolute coordinate space (rendering window)
   if( this->texture_.initialize( caps.optimal_texture_format(), SDL_TEXTUREACCESS_TARGET, this->size().w, this->size().h ) == false )
   {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, "Could not initialize the texture cache for the gradient." );
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_RENDER,
+                  "Could not initialize the texture cache for the gradient." );
+    // NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
     return false;
   }
 
@@ -323,56 +325,49 @@ bool Gradient::update_cache()
   this->texture_.set_position( this->position() + this->margins() );
 
   // Set the rendering target to the texture (uses FBO)
-  if( SDL_SetRenderTarget( context, this->texture_.texture() ) != 0 )
-  {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, "Could not set the rendering target to the texture cache." );
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+  if( this->texture_.set_render_target(*context) == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_RENDER,
+                  "Could not set the rendering target to the texture cache." );
+    // NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
     return false;
   }
 
   // Debugging aid; red background indicates something went wrong
-  if( SDL_SetRenderDrawColor( context, 255, 0, 0, 255 ) != 0 )
-  {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+  if( context->set_color(Color4i::Red) == false ) {
+    // NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
     return false;
   }
 
   // Ensure that the texture surface is cleared, otherwise we can get artifacts
   // leftover from whatever the previous state was set to.
-  if( SDL_RenderClear( context ) != 0 )
-  {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+  if( context->clear() == false ) {
+    // NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
     return false;
   }
 
   // Relative to absolute transformations
   Point2i relative_pos;
-  SDL_Rect absolute_pos;
   for( auto itr = this->rectangles_.begin(); itr != this->rectangles_.end(); ++itr )
   {
-    if( SDL_SetRenderDrawColor( context, (*itr).fill_color().r, (*itr).fill_color().g, (*itr).fill_color().b, (*itr).fill_color().a ) != 0 )
-    {
-      NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+    if( context->set_color( Color4i( itr->fill_color().r, itr->fill_color().g, itr->fill_color().b, itr->fill_color().a ) ) == false ) {
+      // NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
       return false;
     }
     // NOM_DUMP( (*itr).fill_color() );
 
     relative_pos = ( (*itr).position() - this->position() ) + this->margins();
-    absolute_pos = SDL_RECT( relative_pos, (*itr).size() );
-    // NOM_DUMP( absolute_pos );
+    // NOM_DUMP(relative_pos);
 
-    if( SDL_RenderFillRect( context, &absolute_pos ) != 0 )
-    {
-      NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
-      return false;
-    }
+    itr->set_position(relative_pos);
+    itr->draw(*context);
+    // itr->set_size( itr->size() );
   }
 
   // Reset the rendering target now that we are done using it.
-  if( SDL_SetRenderTarget( context, nullptr ) != 0 )
+  if( context->reset_render_target() == false )
   {
     NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, "Could not reset the rendering target." );
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+    // NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
     return false;
   }
 

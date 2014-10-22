@@ -169,21 +169,20 @@ const RendererInfo Renderer::caps ( SDL_Renderer* target )
   return renderer_info;
 }
 
-bool Renderer::reset ( void ) const
+bool Renderer::reset_render_target() const
 {
   RendererInfo caps = this->caps();
 
-  // Graphics hardware does not support render to texture
-  if ( caps.target_texture() == false )
-  {
-    NOM_LOG_ERR ( NOM, "Video hardware does not support render to texture" );
+  // Ensure that the rendering device supports FBO
+  if( caps.target_texture() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Video hardware does not support render to texture" );
     return false;
   }
 
-  // Honor the request to reset the renderer
-  if ( SDL_SetRenderTarget ( this->renderer(), nullptr ) != 0 )
-  {
-    NOM_LOG_ERR ( NOM, SDL_GetError() );
+  // Try to honor the request; render to the source texture
+  if( SDL_SetRenderTarget(this->renderer(), nullptr) != 0 ) {
+    NOM_LOG_ERR ( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
     return false;
   }
 

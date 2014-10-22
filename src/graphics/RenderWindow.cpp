@@ -102,6 +102,8 @@ bool RenderWindow::create (
   // window with a solid black paint bucket fill.
   this->fill ( Color4i::Black );
 
+  nom::set_render_interface(*this);
+
   return true;
 }
 
@@ -486,9 +488,10 @@ bool RenderWindow::save_screenshot( const std::string& filename ) const
   return true;
 }
 
-void RenderWindow::make_current ( void )
+void RenderWindow::make_current()
 {
-  set_context ( this->get() );
+  RenderWindow::set_context( this->get() );
+  nom::set_render_interface(*this);
 }
 
 SDL_Renderer* RenderWindow::context( void )
@@ -499,6 +502,23 @@ SDL_Renderer* RenderWindow::context( void )
 void RenderWindow::set_context ( RenderWindow::RawPtr window )
 {
   context_ = window->renderer();
+}
+
+namespace priv {
+
+// Static initializations
+RenderWindow* render_dev_ = nullptr;
+
+} // namespace priv
+
+RenderWindow* render_interface()
+{
+  return priv::render_dev_;
+}
+
+void set_render_interface(RenderWindow& win)
+{
+  priv::render_dev_ = &win;
 }
 
 } // namespace nom

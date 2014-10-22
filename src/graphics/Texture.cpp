@@ -1070,21 +1070,20 @@ bool Texture::copy_pixels ( const void* source, int pitch )
   return true;
 }
 
-bool Texture::set_render_target ( void )
+bool Texture::set_render_target(RenderWindow& target)
 {
-  RendererInfo caps = RenderWindow::caps( RenderWindow::context() );
+  RendererInfo caps = target.caps();
 
-  // Graphics hardware does not support render to texture
-  if ( caps.target_texture() == false )
-  {
-    NOM_LOG_ERR ( NOM, "Video hardware does not support render to texture" );
+  // Ensure that the rendering device supports FBO
+  if( caps.target_texture() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Video hardware does not support render to texture" );
     return false;
   }
 
   // Try to honor the request; render to the source texture
-  if ( SDL_SetRenderTarget ( RenderWindow::context(), this->texture() ) != 0 )
-  {
-    NOM_LOG_ERR ( NOM, SDL_GetError() );
+  if( SDL_SetRenderTarget( target.context(), this->texture() ) != 0 ) {
+    NOM_LOG_ERR ( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
     return false;
   }
 

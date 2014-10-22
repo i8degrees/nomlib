@@ -345,6 +345,18 @@ class RenderWindow: public Renderer
     bool fullscreen_;
 };
 
+namespace priv {
+
+/// \brief The render window instance.
+///
+/// \remarks This pointer is owned by the application, and must not be freed by
+/// us.
+extern RenderWindow* render_dev_;
+
+} // namespace priv
+
+RenderWindow* render_interface();
+void set_render_interface(RenderWindow& win);
 
 } // namespace nom
 

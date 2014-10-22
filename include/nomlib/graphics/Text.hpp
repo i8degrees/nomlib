@@ -232,7 +232,8 @@ class Text: public Transformable
     /// being in a valid state.
     ///
     /// \note Every call to this method modifies the destination positions used
-    /// in the rendered text.
+    /// in the rendered text. You may pass nom::Alignment::NONE or
+    /// nom::Anchor::NONE to clear existing alignment.
     void set_alignment( uint32 align );
 
     /// Render text to a target

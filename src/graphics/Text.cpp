@@ -287,7 +287,7 @@ void Text::set_size( const Size2i& size )
 {
   Transformable::set_size( size );
 
-  this->set_alignment( this->alignment() );
+  // this->set_alignment( this->alignment() );
 }
 
 void Text::set_font( const Text::font_type& font )
@@ -376,6 +376,12 @@ void Text::set_alignment( uint32 align )
   if( this->valid() == false ) return;
   if( this->position() == Point2i::null ) return;
   if( this->size() == Size2i::null ) return;
+
+  // Reset alignment
+  if(align & Alignment::NONE) {
+    offset.x = this->position().x;
+    offset.y = this->position().y;
+  }
 
   // Anchor::TopLeft, Anchor::Left, Anchor::BottomLeft
   if( align & Alignment::X_LEFT )

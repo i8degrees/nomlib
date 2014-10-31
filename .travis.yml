@@ -50,13 +50,14 @@ script:
   # Broken:
   # - examples/Debug/device_info
   # - xcodebuild -target RUN_TESTS
+
 # whitelist
-branches:
-  only:
-    - feature/travis-ci
-    - feature/GUI-librocket
-    - dev
-    - master
+# branches:
+#   only:
+#     - feature/travis-ci
+#     - feature/GUI-librocket
+#     - dev
+#     - master
 
 matrix:
   allow_failures:

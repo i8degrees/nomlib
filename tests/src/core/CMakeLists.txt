@@ -1,5 +1,26 @@
 # Core engine tests
 
+if(NOM_BUILD_VERSION_INFO_TEST)
+
+  add_executable  (
+                    VersionInfoTest
+                    ${NOM_TESTS_SOURCE_DIR}/core/VersionInfoTest.cpp
+                  )
+
+  target_link_libraries (
+                          VersionInfoTest
+                          ${GTEST_LIBRARY}
+                          ${PROJECT_NAME} # nomlib
+                        )
+
+  GTEST_ADD_TESTS (
+                    VersionInfoTest
+                    "" # args
+                    ${NOM_TESTS_SOURCE_DIR}/core/VersionInfoTest.cpp
+                  )
+
+endif(NOM_BUILD_VERSION_INFO_TEST)
+
 if( NOM_BUILD_SDL2_LOGGER_TESTS )
 
   # SDL2Logger

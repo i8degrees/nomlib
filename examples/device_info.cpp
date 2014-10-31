@@ -59,7 +59,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include "nomlib/version.hpp"
-#include "nomlib/revision.hpp"
 #include "nomlib/graphics.hpp"
 #include "nomlib/system.hpp"
 
@@ -68,7 +67,7 @@ void nomlib_version_info( void )
   NOM_LOG_INFO  (
                   NOM_LOG_CATEGORY_APPLICATION,
                   "nomlib version: ",
-                  nom::version()
+                  nom::NOM_VERSION.version_string()
                 );
 
   NOM_LOG_INFO  (

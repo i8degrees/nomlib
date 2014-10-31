@@ -33,63 +33,79 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <sstream>
 
-#include "nomlib/revision.hpp"
-
-// \brief Track version info from project's CMake build script
-#define NOMLIB_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
-#define NOMLIB_VERSION_MINOR @PROJECT_VERSION_MINOR@
-#define NOMLIB_VERSION_PATCH @PROJECT_VERSION_PATCH@
-
-/// \brief Get the full version release number of nomlib
-///
-/// \returns A C++ std::string with the version string filled in.
-///
-/// \remarks Sample output: "1.2.3" (excluding double quotes).
-///
-/// \see nom::major_version, nom::minor_version and nom::patch_version for
-/// creating your own custom version strings.
-#define NOM_VERSION \
-  { version(); }
-
-/// \brief Get a source repository revision number of nomlib
-///
-/// \returns A C++ std::string with the git tag & revision number string filled
-/// in.
-///
-/// \remarks Sample output: "v0.10.0-688-geaccfff" (excluding double quotes).
-///
-/// \see https://github.com/i8degrees/nomlib
-#define NOM_REVISION \
-  { revision(); }
+#include "nomlib/config.hpp"
 
 namespace nom {
 
-/// \brief Get the full version string for nomlib.
-///
-/// \returns A std::string containing the major, minor and patch version numbers
-/// of nomlib.
-std::string version( void );
+/// \brief Container for x.x.x version schemes
+struct VersionInfo
+{
+  public:
+    /// \brief Default constructor; initialize version fields to zero (0).
+    VersionInfo();
 
-/// \brief Get the git revision build of nomlib.
-///
-/// \returns A std::string containing the git tag followed by the commit number.
-///
-/// \note The output of `git describe --tags` is used.
-std::string revision( void );
+    /// \brief Destructor.
+    ~VersionInfo();
 
-/// \brief Get the major version of nomlib.
-///
-/// \returns An integer containing the major version of nomlib.
-int major_version( void );
+    /// \brief Construct an object with specified version fields.
+    VersionInfo(int major, int minor, int patch );
 
-/// \brief Get the minor version of nomlib.
-///
-/// \returns An integer containing the minor version of nomlib.
-int minor_version( void );
+    /// \brief Get the major version.
+    ///
+    /// \returns An integer containing the major version.
+    int major() const;
 
-/// \brief Get the patch version of nomlib.
+    /// \brief Get the minor revision version.
+    ///
+    /// \returns An integer containing the minor revision version.
+    int minor() const;
+
+    /// \brief Get the patch level version.
+    ///
+    /// \returns An integer containing the patch level version.
+    int patch() const;
+
+    /// \brief Get the full version as a string.
+    ///
+    /// \returns A std::string containing the full version.
+    std::string version_string() const;
+
+    /// \brief Convert a version string to major, minor and patch integers.
+    ///
+    /// \param ver_string A version string in the format of x.x.x, where x is a
+    /// number between INT_MIN and INT_MAX.
+    ///
+    /// \returns Boolean TRUE upon a successful conversion, or boolean FALSE upon a
+    /// unsuccessful conversion, such as if the version string format is invalid.
+    ///
+    /// \remarks This implementation derives from [version.cpp](http://www.ncbi.nlm.nih.gov/viewvc/v1/trunk/c%2B%2B/src/corelib/version.cpp?revision=51801&content-type=text%2Fplain&view=co), part of the [NCBI C++ Toolkit](http://www.ncbi.nlm.nih.gov/toolkit/).
+    static bool convert_version_string( const std::string& ver_string,
+                                        VersionInfo& info);
+
+  private:
+    int major_;
+    int minor_;
+    int patch_;
+};
+
+/// \brief Output a formatted, full version string.
+std::ostream& operator <<(std::ostream& os, const VersionInfo& v);
+
+bool operator ==(const VersionInfo& lhs, const VersionInfo& rhs);
+bool operator !=(const VersionInfo& lhs, const VersionInfo& rhs);
+
+/// \brief nomlib's library version.
 ///
-/// \returns An integer containing the minor version of nomlib.
-int patch_version( void );
+/// \remarks This data is taken from from the project's root CMake build script.
+///
+/// \see CMakeLists.txt
+const VersionInfo NOM_VERSION(  @PROJECT_VERSION_MAJOR@,
+                                @PROJECT_VERSION_MINOR@,
+                                @PROJECT_VERSION_PATCH@ );
+
+/// \brief Get the current revision number build of nomlib.
+///
+/// \returns A std::string containing the top git commit ID (SHA).
+std::string revision();
 
 } // namespace nom

@@ -51,9 +51,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include <cassert>
 #endif
 
-// nomlib's library version
-#include "nomlib/version.hpp"
-
 // nomlib's platform detection
 #include "nomlib/platforms.hpp"
 

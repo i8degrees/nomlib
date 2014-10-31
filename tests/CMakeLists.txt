@@ -26,6 +26,7 @@
 set( NOM_BUILD_COMMON_TESTS FALSE )
 
 # Core engine tests
+set( NOM_BUILD_VERSION_INFO_TEST TRUE )
 set( NOM_BUILD_SDL2_LOGGER_TESTS FALSE )
 
 # Audio subsystem tests

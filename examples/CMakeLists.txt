@@ -21,9 +21,9 @@
 # http://stackoverflow.com/questions/6077810/how-to-correctly-add-resources-to-a-project?rq=1
 cmake_minimum_required ( VERSION 2.6 )
 
-set( NOM_BUILD_APP_EXAMPLE TRUE )
+set( NOM_BUILD_APP_EXAMPLE FALSE )
 set( NOM_BUILD_AUDIO_EXAMPLE FALSE )
-set( NOM_BUILD_DEVICE_INFO_EXAMPLE FALSE )
+set( NOM_BUILD_DEVICE_INFO_EXAMPLE TRUE )
 set( NOM_BUILD_EVENTS_EXAMPLE FALSE )
 set( NOM_BUILD_FONTS_EXAMPLE FALSE )
 set( NOM_BUILD_GAMEOFLIFE_EXAMPLE FALSE )

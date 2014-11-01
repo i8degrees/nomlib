@@ -58,6 +58,74 @@ bool operator !=(const VersionInfo& lhs, const VersionInfo& rhs)
   return !( lhs == rhs );
 }
 
+bool operator <(const VersionInfo& lhs, const VersionInfo& rhs)
+{
+  if( ( lhs.major() < rhs.major() ) ) {
+    return true;
+  } // major
+
+  if( ( lhs.minor() < rhs.minor() ) ) {
+    return true;
+  } // minor
+
+  if( ( lhs.patch() < rhs.patch() ) ) {
+    return true;
+  } // patch
+
+  return false;
+}
+
+bool operator <=(const VersionInfo& lhs, const VersionInfo& rhs)
+{
+  if( ( lhs.major() <= rhs.major() ) ) {
+    return true;
+  } // major
+
+  if( ( lhs.minor() <= rhs.minor() ) ) {
+    return true;
+  } // minor
+
+  if( ( lhs.patch() <= rhs.patch() ) ) {
+    return true;
+  } // patch
+
+  return false;
+}
+
+bool operator >(const VersionInfo& lhs, const VersionInfo& rhs)
+{
+  if( ( rhs.major() < lhs.major() ) ) {
+    return true;
+  } // major
+
+  if( ( rhs.minor() < lhs.minor() ) ) {
+    return true;
+  } // minor
+
+  if( ( rhs.patch() < lhs.patch() ) ) {
+    return true;
+  } // patch
+
+  return false;
+}
+
+bool operator >=(const VersionInfo& lhs, const VersionInfo& rhs)
+{
+  if( ( rhs.major() <= lhs.major() ) ) {
+    return true;
+  } // major
+
+  if( ( rhs.minor() <= lhs.minor() ) ) {
+    return true;
+  } // minor
+
+  if( ( rhs.patch() <= lhs.patch() ) ) {
+    return true;
+  } // patch
+
+  return false;
+}
+
 VersionInfo::VersionInfo() :
   major_(0),
   minor_(0),

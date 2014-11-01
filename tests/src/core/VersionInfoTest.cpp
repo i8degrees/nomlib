@@ -101,6 +101,7 @@ TEST( VersionInfoTest, InvalidVersionStrings )
   EXPECT_EQ( "0.0.0", info.version_string() );
 }
 
+/// \todo Use EXPECT_TRUE macro instead of ASSERT_TRUE
 TEST( VersionInfoTest, ComparisonEquality )
 {
   nom::VersionInfo cmp1;
@@ -111,6 +112,7 @@ TEST( VersionInfoTest, ComparisonEquality )
   ASSERT_TRUE( cmp1 != cmp2 );
 }
 
+/// \todo Use EXPECT_TRUE macro instead of ASSERT_TRUE
 TEST( VersionInfoTest, ComparisonInequality )
 {
   nom::VersionInfo cmp1;
@@ -119,6 +121,66 @@ TEST( VersionInfoTest, ComparisonInequality )
   ASSERT_TRUE( VersionInfo::convert_version_string( "0.4.1", cmp1) );
   ASSERT_TRUE( VersionInfo::convert_version_string( "0.4.1", cmp2) );
   ASSERT_TRUE( cmp1 == cmp2 );
+}
+
+TEST( VersionInfoTest, ComparisonLesserThan )
+{
+  nom::VersionInfo cmp1;
+  nom::VersionInfo cmp2;
+
+  EXPECT_TRUE( VersionInfo::convert_version_string( "0.3.9", cmp1 ) );
+  EXPECT_TRUE( VersionInfo::convert_version_string( "0.4.0", cmp2 ) );
+  EXPECT_EQ( true, cmp1 < cmp2 );
+}
+
+TEST( VersionInfoTest, ComparisonNotLesserThan )
+{
+  nom::VersionInfo cmp1;
+  nom::VersionInfo cmp2;
+
+  EXPECT_TRUE( VersionInfo::convert_version_string( "0.4.0", cmp1 ) );
+  EXPECT_TRUE( VersionInfo::convert_version_string( "0.4.0", cmp2 ) );
+  EXPECT_EQ( false, cmp1 < cmp2 );
+}
+
+TEST( VersionInfoTest, ComparisonLesserThanOrEqualTo )
+{
+  nom::VersionInfo cmp1;
+  nom::VersionInfo cmp2;
+
+  EXPECT_TRUE( VersionInfo::convert_version_string( "0.4.0", cmp1 ) );
+  EXPECT_TRUE( VersionInfo::convert_version_string( "0.4.1", cmp2 ) );
+  EXPECT_EQ( true, cmp1 <= cmp2 );
+}
+
+TEST( VersionInfoTest, ComparisonGreaterThan )
+{
+  nom::VersionInfo cmp1;
+  nom::VersionInfo cmp2;
+
+  EXPECT_TRUE( VersionInfo::convert_version_string( "0.11.0", cmp1 ) );
+  EXPECT_TRUE( VersionInfo::convert_version_string( "0.3.9", cmp2 ) );
+  EXPECT_EQ( true, cmp1 > cmp2 );
+}
+
+TEST( VersionInfoTest, ComparisonNotGreaterThan )
+{
+  nom::VersionInfo cmp1;
+  nom::VersionInfo cmp2;
+
+  EXPECT_TRUE( VersionInfo::convert_version_string( "0.4.0", cmp1 ) );
+  EXPECT_TRUE( VersionInfo::convert_version_string( "0.4.0", cmp2 ) );
+  EXPECT_EQ( false, cmp1 > cmp2 );
+}
+
+TEST( VersionInfoTest, ComparisonGreaterThanOrEqualTo )
+{
+  nom::VersionInfo cmp1;
+  nom::VersionInfo cmp2;
+
+  EXPECT_TRUE( VersionInfo::convert_version_string( "0.4.1", cmp1 ) );
+  EXPECT_TRUE( VersionInfo::convert_version_string( "0.1.0", cmp2 ) );
+  EXPECT_EQ( true, cmp1 >= cmp2 );
 }
 
 int main( int argc, char** argv )

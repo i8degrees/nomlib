@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
+#include "nomlib/version.hpp"
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/ptree.hpp"
 
@@ -45,9 +46,7 @@ namespace nom {
 class SpriteSheet
 {
   public:
-    static const int MAJOR_VERSION;
-    static const int MINOR_VERSION;
-    static const int PATCH_VERSION;
+    static const VersionInfo VERSION;
 
     typedef std::shared_ptr<SpriteSheet> SharedPtr;
 
@@ -103,6 +102,12 @@ class SpriteSheet
     /// value.
     int sheet_spacing() const;
 
+    /// \brief Get the total number of sprite frames.
+    ///
+    /// \remarks This data corresponds to the meta-data object node's
+    /// 'total_frames' value.
+    int total_frames() const;
+
     /// \brief De-serialize an existing JSON file.
     ///
     /// \param filename The absolute file path to the JSON input.
@@ -142,6 +147,10 @@ class SpriteSheet
 
     /// \brief Source sheet_height used is saved with the output (meta-data)
     int sheet_height_;
+
+    /// \brief The total number of sprite frames; as per the number of objects
+    /// in the frames object node.
+    int total_frames_;
 };
 
 } // namespace nom

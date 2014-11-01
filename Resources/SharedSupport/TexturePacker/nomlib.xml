@@ -9,7 +9,7 @@
   <description>Exporter for nomlib's SpriteSheet API</description>
 
   <!-- exporter version -->
-  <version>1.0</version>
+  <version>0.4.1</version>
 
   <!-- currently only one file allowed -
        more to come soon -->

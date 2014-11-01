@@ -1,51 +1,11 @@
 {
+  // Note that file inclusion and exclusion patterns effect search results
+  // when using 'goto' (super+p), in addition to side bar file list.
   "folders":
   [
     {
-      "name": "inc",
-      "path": "include/nomlib",
-      "file_include_patterns": [ "*.hpp", "*.h" ],
-      "file_exclude_patterns": [ "config.hpp" ]
-    },
-
-    {
-      "name": "src",
-      "path": "src",
-      "file_include_patterns": [ "*.txt", "*.cpp", "*.c", "*.rb" ]
-    },
-
-    {
-      "name": "examples",
-      "path": "examples",
-      "file_include_patterns": [ "*.txt", "*.hpp", "*.cpp", "Template.cpp", "Template.hpp", "*.json" ]
-      //"folder_exclude_patterns": [ "Resources" ]
-    },
-
-    {
-      "name": "tests",
-      "path": "tests",
-      "file_include_patterns": [ "*.cpp", "*.txt", "*.hpp" ]
-    },
-
-    {
-      "name": "third-party",
-      "path": "third-party",
-      "file_include_patterns": [ "*.txt", "*.md", "*.sh", "*.cpp", "*.hpp", "*.h" ],
-      "folder_include_patterns": [ "common", "jsoncpp", "rapidxml" ]
-    },
-
-    {
-      "name": ".",
       "path": ".",
-      "file_include_patterns": [ "*.md", "*.css", "*.html", "doxygen.cfg", "*.txt", "*.cmake", ".gitignore", "cmake/*", ".travis.yml", "ExamplesTemplate.cpp", "Template.cpp", "Template.hpp", "UnitTestTemplate.hpp", "UnitTestTemplate.cpp", "*.bat", "*.rb", "*.log", "*.diff", "*.patch", "*.json" ],
-      "folder_exclude_patterns": [ "build", "tmp", "docs/public", "docs/man", "src", "include" ]
-    },
-
-    {
-      "name": "Resources",
-      "path": "Resources",
-      "file_include_patterns": [ "*.*"]
-      // "folder_exclude_patterns": [ "" ]
+      "folder_exclude_patterns": [ "build", "tmp", "third-party" ]
     },
 
     {} // placeholder

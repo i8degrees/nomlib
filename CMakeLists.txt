@@ -51,7 +51,7 @@ option( NOM_BUILD_GRAPHICS_UNIT "Graphics core" TRUE )
 
 # TODO: Shorten this build var
 # Dependencies: scale2x & hq2x (included in source tree)
-option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Include scale2x & hqx algorithms" FALSE )
+option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Include scale2x & hqx algorithms" TRUE )
 
 # TODO: Break unit up further
 option( NOM_BUILD_SYSTEM_UNIT "System unit" TRUE )
@@ -63,7 +63,7 @@ option( NOM_BUILD_SERIALIZERS_UNIT "Serialization core for JSON, XML, HTML" TRUE
 option( NOM_BUILD_JSON_UNIT "JSON I/O" TRUE )
 
 # Dependencies: RapidXml (included in source tree)
-option( NOM_BUILD_XML_UNIT "XML I/O" FALSE )
+option( NOM_BUILD_XML_UNIT "XML I/O" TRUE )
 
 option( NOM_BUILD_GUI_UNIT "GUI subsystem" TRUE )
 
@@ -75,7 +75,7 @@ option( NOM_BUILD_GUI_UNIT "GUI subsystem" TRUE )
 # Resources/SharedSupport/Template.cpp
 # Resources/SharedSupport/Template.hpp
 # Resources/SharedSupport/UnitTestTemplate.cpp
-option( NOM_BUILD_TEMPLATES_UNIT FALSE )
+option( NOM_BUILD_TEMPLATES_UNIT TRUE )
 
 project( nomlib ) # Sets PROJECT_NAME variable for us
 

@@ -1,11 +1,27 @@
 {
-  // Note that file inclusion and exclusion patterns effect search results
-  // when using 'goto' (super+p), in addition to side bar file list.
+  // File inclusion and exclusion patterns effect search results when using
+  // 'goto' (super+p), in addition to side bar file list.
+  //
+  // It is necessary to explicitly include the project's include and source
+  // folders in order for the Switch Script package to function.
   "folders":
   [
     {
       "path": ".",
       "folder_exclude_patterns": [ "build", "tmp", "third-party" ]
+    },
+
+    {
+      "name": "inc",
+      "path": "include/nomlib",
+      "file_include_patterns": [ "*.hpp", "*.h", "*.hxx", "*.hpp.in" ]
+      // "file_exclude_patterns": [ "config.hpp" ]
+    },
+
+    {
+      "name": "src",
+      "path": "src",
+      "file_include_patterns": [ "*.cpp", "*.c", "*.cxx", "*.cpp.in" ]
     },
 
     {} // placeholder

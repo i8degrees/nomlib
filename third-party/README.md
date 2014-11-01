@@ -31,7 +31,7 @@ Both the 64-bit and 32-bit official development binaries versions of:
 
       * [SDL2_ttf.framework v2.0.12](http://libsdl.org/projects/SDL_ttf) built with a [font kerning size patch](https://bugzilla.libsdl.org/show_bug.cgi?id=2572).
     
-      * [libRocket v1.3.0](http://librocket.com) compiled with the FreeType v2.3.5 libraries from [homebrew](http://brew.sh).
+      * [libRocket v1.3.0](http://librocket.com) compiled with the FreeType v2.3.5 libraries from [homebrew](http://brew.sh). Refer to my [libRocket fork: dev branch](https://github.com/i8degrees/libRocket/tree/dev) to see any changes from the upstream [libRocket: master branch](https://github.com/libRocket/libRocket/tree/master) library.
       ```
       # dynamic libs
       cmake -DBUILD_SAMPLES=off -DBUILD_LUA_BINDINGS=on -DCMAKE_BUILD_TYPE=Debug -DROCKET_DEBUG=on -DCMAKE_VERBOSE_MAKEFILE=1 ..
@@ -49,8 +49,7 @@ Both the 64-bit and 32-bit official development binaries versions of:
 
     * [libsndfile v1.0.25](http://www.mega-nerd.com/libsndfile/)
     * [OpenAL Soft v1.15.1](http://kcat.strangesoft.net/openal.html)
-    * [libRocket v1.3.0](http://librocket.com) compiled with the FreeType v2.3.5 libraries from [GNU win32 FreeType](http://gnuwin32.sourceforge.net/packages/freetype.htm), 'binaries' release.
-      * [GLEW v1.10.0](http://glew.sourceforge.net)
+    * [libRocket v1.3.0](http://librocket.com) compiled with the FreeType v2.3.5 libraries from [GNU win32 FreeType](http://gnuwin32.sourceforge.net/packages/freetype.htm), 'binaries' release. Refer to my [libRocket fork: dev branch](https://github.com/i8degrees/libRocket/tree/dev) to see any changes from the upstream [libRocket: master branch](https://github.com/libRocket/libRocket/tree/master) library.
 
 ## Licensing ##
 

@@ -779,9 +779,30 @@ configure_file  (
 # Make a version file containing the current version from git
 #
 # Source: http://brianmilco.blogspot.com/2012/11/cmake-automatically-use-git-tags-as.html
-include( GetGitRevisionDescription )
-git_describe( GIT_REVISION )
-string( REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.[0-9]+(.*)" "\\1" VERSION_SHA1 "${GIT_REVISION}" )
+#
+# NOTE: This has been removed from the project due to wrong version output from
+# `git describe` when using our git branching strategy -- also known as Vincent
+# Driessen’s "Git branching model".
+#
+# In short, the problem is introduced during the "Finishing a release branch"
+# section of the model, when we create our release tag. The algorithm
+# `git describe` uses to determine the "nearest" tag is, I believe, the root
+# cause of the problem. It's especially worth mentioning that the problem only
+# occurs on non-HEAD branches -- i.e.: development branches, such as dev or
+# feature/<name>.
+#
+# Full problem description: http://www.xerxesb.com/2010/git-describe-and-the-tale-of-the-wrong-commits/
+#
+# include( GetGitRevisionDescription )
+# git_describe( GIT_REVISION )
+# string( REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.[0-9]+(.*)" "\\1" VERSION_SHA1 "${GIT_REVISION}" )
+
+# Auto-generate a build revision file containing the last recorded git revision
+# number (top of branch).
+include(GetGitRevisionNumber)
+# git_rev_number(GIT_REVISION) # Full SHA
+git_rev_number(GIT_REVISION "--short")
+set(GIT_REVISION "${GIT_REVISION}")
 
 configure_file  (
                   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates/revision.cpp.in

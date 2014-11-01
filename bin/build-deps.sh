@@ -37,9 +37,10 @@ DATE_BIN=$(which date)
 
 TIMESTAMP="$($DATE_BIN +%Y-%m-%d)" # BSD date(1)
 
-# Optional git tag & commits since tag
+# Optional git rev number
 GIT_BIN=$(which git)
-GIT_VER=$( ${GIT_BIN} describe)
+# GIT_VER=$( ${GIT_BIN} rev-parse HEAD) # Full SHA
+GIT_VER=$( ${GIT_BIN} rev-parse --short HEAD)
 
 function usage_info()
 {

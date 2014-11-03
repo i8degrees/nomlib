@@ -8,7 +8,11 @@
   [
     {
       "path": ".",
-      "folder_exclude_patterns": [ "build", "tmp", "third-party" ]
+      // The directories 'src', 'include' and 'tests' are ignored here in order
+      // to prevent duplicate search results when using 'goto'. The duplicates
+      // are created when we define the "inc" and "src" folder names (see below),
+      // for the SwitchScript package.
+      "folder_exclude_patterns": [ "build", "tmp", "third-party", "src", "include", "tests" ]
     },
 
     {

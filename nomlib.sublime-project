@@ -28,6 +28,12 @@
       "file_include_patterns": [ "*.cpp", "*.c", "*.cxx", "*.cpp.in" ]
     },
 
+    {
+      "name": "tests",
+      "path": "tests",
+      "file_include_patterns": [ "*.txt", "*.cpp", "*.c", "*.cxx", "*.cpp.in", "*.hpp", "*.h", "*.hxx", "*.hpp.in" ]
+    },
+
     {} // placeholder
   ],
 

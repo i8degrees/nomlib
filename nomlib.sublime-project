@@ -25,7 +25,7 @@
     {
       "name": "src",
       "path": "src",
-      "file_include_patterns": [ "*.cpp", "*.c", "*.cxx", "*.cpp.in" ]
+      "file_include_patterns": [ "*.txt", "*.cpp", "*.c", "*.cxx", "*.cpp.in" ]
     },
 
     {

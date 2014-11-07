@@ -129,7 +129,7 @@ int main( int argc, char** argv )
   // running tests. Generally speaking, only tests that explicitly check for
   // invalid conditions should be subject to a desire for hiding the logged
   // messages (for sake of cleanliness?).
-  // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_APPLICATION, NOM_LOG_PRIORITY_CRITICAL);
+  // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_APPLICATION, nom::NOM_LOG_PRIORITY_CRITICAL);
 
   return RUN_ALL_TESTS();
 }

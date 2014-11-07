@@ -100,7 +100,7 @@ int BitmapFont::newline( uint32 character_size ) const
 
 int BitmapFont::kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const
 {
-  return -1;
+  return 0;
 }
 
 int BitmapFont::hinting( void ) const

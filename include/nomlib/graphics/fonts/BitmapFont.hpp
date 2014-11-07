@@ -90,8 +90,9 @@ class BitmapFont: public IFont
     /// \returns  Height offset in pixels
     int newline( uint32 character_size ) const;
 
-    /// \returns A non-negative value on success, or negative one (-1) on
-    /// failure.
+    /// \brief Obtain the kerning pair offsets between two glyphs.
+    ///
+    /// \returns Zero (0) is always returned.
     ///
     /// \remarks This method is not implemented.
     int kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const;
@@ -139,7 +140,7 @@ class BitmapFont: public IFont
     /// \brief Set the use of kerning for the font.
     ///
     /// \remarks This method is not implemented.
-    void set_font_kerning( bool state );
+    void set_font_kerning(bool state);
 
     /// \brief Loads a new bitmap font from a file
     bool load( const std::string& filename );

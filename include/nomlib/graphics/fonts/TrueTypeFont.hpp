@@ -96,7 +96,7 @@ class TrueTypeFont: public IFont
     ///           rendered.
     sint spacing ( uint32 character_size ) const;
 
-    int point_size( void ) const;
+    int point_size() const;
 
     /// \brief Obtain font's line spacing
     ///
@@ -105,13 +105,13 @@ class TrueTypeFont: public IFont
     /// \returns  Height offset in pixels
     int newline( uint32 character_size ) const;
 
-    /// \returns A non-negative value on success, or negative one (-1) on
-    /// failure.
+    /// \brief Obtain the kerning pair offsets between two glyphs.
     ///
-    /// \note The font's point size affects the results.
+    /// \returns A kerning pair offset value on success, or nom::int_min on
+    /// failure, such as if the font in use is invalid. If font kerning is
+    /// disabled, a value of zero (0) is always returned.
     ///
-    /// \todo Rename to kerning_size so we can create kerning getter for
-    /// kerning_ class variable.
+    /// \note The font's point size affects the kerning pair offsets.
     int kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const;
 
     /// \brief Get the font's hinting style.
@@ -120,6 +120,8 @@ class TrueTypeFont: public IFont
     /// TTF_HINTING_MONO or TTF_HINTING_NONE.
     ///
     /// \remarks The default hinting is TTF_HINTING_NONE.
+    ///
+    /// \todo Change argument type from int to uint32.
     int hinting( void ) const;
 
     /// \brief Obtain a glyph
@@ -140,8 +142,8 @@ class TrueTypeFont: public IFont
     /// \brief Get the rendering style of the font.
     ///
     /// \returns style A bit-mask composed of one or more of the following
-    /// styles: TTF_STYLE_BOLD, TTF_STYLE_ITALIC, TTF_STYLE_UNDERLINE,
-    /// TTF_STYLE_STRIKETHROUGH.
+    /// styles: TTF_STYLE_NORMAL, TTF_STYLE_BOLD, TTF_STYLE_ITALIC,
+    /// TTF_STYLE_UNDERLINE, TTF_STYLE_STRIKETHROUGH.
     uint32 font_style( void ) const;
 
     /// \brief Set a new font point size
@@ -165,6 +167,8 @@ class TrueTypeFont: public IFont
     ///
     /// \note This method call forces a rebuild of the glyph cache if the input
     /// type does not match the last known hinting.
+    ///
+    /// \todo Change argument type from int to uint32.
     bool set_hinting( int type );
 
     /// \brief Set font's outline size
@@ -256,14 +260,11 @@ class TrueTypeFont: public IFont
     /// \endinternal
     sint point_size_;
 
-    /// \brief The font's applied hinting style.
-    ///
-    /// \remarks The default is TTF_HINTING_NONE.
-    int hinting_;
-
     /// \brief Whether or not to use font kerning.
     ///
     /// \remarks Default is true.
+    ///
+    /// \todo Rename to use_kerning_.
     bool kerning_;
 };
 

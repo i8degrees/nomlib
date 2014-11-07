@@ -61,3 +61,34 @@ if( NOM_BUILD_GRADIENT_TESTS )
             "${TESTS_DEPS_INSTALL_PEFIX}"
           )
 endif( NOM_BUILD_GRADIENT_TESTS )
+
+if(NOM_BUILD_TRUETYPE_FONT_TEST)
+
+    add_executable  (
+                      TrueTypeFontTest
+                      ${NOM_TESTS_SOURCE_DIR}/graphics/TrueTypeFontTest.cpp
+                      # VisualUnitTest
+                      ${NOM_TESTS_COMMON_SOURCE}
+                      ${NOM_TESTS_VTEST_SOURCE}
+                    )
+
+    target_link_libraries (
+                            TrueTypeFontTest
+                            ${GTEST_LIBRARY}
+                            ${PROJECT_NAME} # nomlib
+                          )
+
+    GTEST_ADD_TESTS (
+                      TrueTypeFontTest
+                      "" # args
+                      ${NOM_TESTS_SOURCE_DIR}/graphics/TrueTypeFontTest.cpp
+                    )
+
+  # Copy resource files for the test
+  install (
+            FILES
+            "${NOM_TESTS_RESOURCES_DIR}/graphics/TrueTypeFontTest.json"
+            DESTINATION
+            "${TESTS_DEPS_INSTALL_PEFIX}"
+          )
+endif(NOM_BUILD_TRUETYPE_FONT_TEST)

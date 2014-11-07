@@ -88,6 +88,7 @@ class IFont
     virtual void set_font_style( uint32 style ) = 0;
     virtual void set_font_kerning( bool state ) = 0;
 
+    /// \todo Rename to load_file.
     virtual bool load( const std::string& filename ) = 0;
 };
 

@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include <memory>
 #include <functional>
+// #include <type_traits>
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/File.hpp"
@@ -129,6 +130,13 @@ class ResourceCache
       // Create the resource before insertion
       ResourceType res_type;
 
+      // Initialize the resource when type is a pointer; this resolves a
+      // compile-time warning: res_type is uninitialized when this condition is
+      // false.
+      // if( std::is_pointer<ResourceType>::value == true ) {
+      //   res_type = nullptr;
+      // }
+
       // Use the load handler callback helper for resource initialization, if
       // it has been set.
       if( this->callback_ != nullptr )
@@ -136,7 +144,7 @@ class ResourceCache
         this->callback_( res, res_type );
       }
 
-      this->resources_.insert( { res, std::make_shared<ResourceType>( ResourceType( res_type ) ) } );
+      this->resources_.insert( { res, std::make_shared<ResourceType>(res_type) } );
 
       return true;
     }
@@ -162,14 +170,14 @@ class ResourceCache
         if( res->first.loaded() == false )
         {
           // Err if the resource is invalid
-          if( res->second->valid() == false )
-          {
-            NOM_LOG_ERR( NOM, "Could not load resource: NULL." );
+          // if( res->second->valid() == false ) {
+          if( res->second == nullptr ) {
+            NOM_LOG_ERR( NOM, "Could not load resource: invalid resource." );
             return nullptr;
           }
 
           // Err if the resource cannot be loaded
-          if( res->second->load( res->first.path() ) == false )
+          if( res->second.get()->load( res->first.path() ) == false )
           {
             NOM_LOG_ERR( NOM, "Could not load resource: file path does not exist at " + res->first.path() );
             return nullptr;
@@ -229,7 +237,11 @@ class ResourceCache
 /// \class nom::ResourceCache
 /// \ingroup system
 ///
-/// Note that pure abstract object types are not supported.
+/// Note that pure abstract object types are not supported. The implementation
+/// does **not** support the external use of object pointers, i.e.:
+/// nom::ResourceCache<IFont*>. This is handled internally.
+///
+/// \see FontCacheTest.cpp for a usage example.
 ///
 /// \see http://www.gamedev.net/topic/610582-game-resource-manager-design/#entry4860916
 /// \see http://www.gamedev.net/page/resources/_/technical/game-programming/a-simple-fast-resource-manager-using-c-and-stl-r2503

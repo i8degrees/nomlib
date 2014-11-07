@@ -29,226 +29,113 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/fonts/Font.hpp"
 
 // Private headers
-// #include "nomlib/system/Path.hpp"
 #include "nomlib/system/File.hpp"
 #include "nomlib/graphics/fonts/BitmapFont.hpp"
 #include "nomlib/graphics/fonts/TrueTypeFont.hpp"
 
 namespace nom {
 
-Font::Font( void ) :
-  font_{ nullptr },
-  sharable_{ false }
+Font::Font() :
+  font_(nullptr)
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_FONTS, NOM_LOG_PRIORITY_DEBUG);
 }
 
-Font::~Font( void )
+Font::~Font()
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_FONTS, NOM_LOG_PRIORITY_DEBUG);
 }
 
-// Font::Font( const font_type& font ) :
-//   font_{ font.clone() }, // FIXME
-//   sharable_{ false }
-// {
-//   NOM_LOG_TRACE( NOM );
-// }
-
-Font::Font( const value_type& font ) :
-  font_{ font },
-  sharable_{ false }
+Font::Font(const std::shared_ptr<Font::font_type>& font) :
+  font_(font)
 {
-  // NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_FONTS, NOM_LOG_PRIORITY_DEBUG);
 }
 
-// Font::Font( font_type* font ) :
-//   font_( value_type( font ) )
-// {
-//   NOM_LOG_TRACE( NOM );
-// }
-
-// Font::self_type& Font::operator =( const self_type* rhs )
-// {
-//   this->font_ = rhs->font_;
-//   this->set_sharable( rhs->sharable() );
-
-//   return *this;
-// }
-
-// const Font::font_type& Font::operator *( void ) const
-// {
-//   return *this->font_;
-// }
-
-// Font::font_type& Font::operator *( void )
-// {
-//   this->share();
-
-//   return *this->font_;
-// }
-
-const Font::font_type* Font::operator ->( void ) const
+// Used by nom::Text::set_font and nom::Text::valid.
+Font::Font(font_type* font) :
+  font_( std::shared_ptr<Font::font_type>(font) )
 {
-  return this->font_.operator->();
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_FONTS, NOM_LOG_PRIORITY_DEBUG);
 }
 
-Font::font_type* Font::operator ->( void )
+Font::font_type* Font::operator ->() const
 {
-  this->share();
+  if( this->font_ != nullptr ) {
+    return this->font_.operator->();
+  }
 
-  return this->font_.operator->();
+  // Not initialized
+  return nullptr;
 }
 
-bool Font::operator ==( const self_type& rhs ) const
+bool Font::operator ==(const self_type& rhs) const
 {
-  return ( this->font_ == rhs.font_ );
+  return(this->font_ == rhs.font_);
 }
 
-bool Font::operator !=( const self_type& rhs ) const
+bool Font::operator !=(const self_type& rhs) const
 {
-  return ! ( this->font_ == rhs.font_ );
+  return ! (this->font_ == rhs.font_);
 }
 
-bool Font::unique( void ) const
+bool Font::unique() const
 {
   return this->font_.unique();
 }
 
-bool Font::valid( void ) const
-{
-  if( this->font_ != nullptr )
-  {
-    return true;
-  }
-
-  return false;
-}
-
-bool Font::sharable( void ) const
-{
-  return this->sharable_;
-}
-
-IFont::FontType Font::type( const std::string& filename ) const
+IFont::FontType Font::type(const std::string& filename) const
 {
   File fp;
 
-  if( fp.extension( filename ) == "png" )
-  {
+  if( fp.extension( filename ) == "png" ) {
     return IFont::FontType::BitmapFont;
-  }
-  else if( fp.extension( filename ) == "bmp" )
-  {
+
+  } else if( fp.extension( filename ) == "bmp" ) {
     return IFont::FontType::BitmapFont;
-  }
-  else if( fp.extension( filename ) == "ttf" )  // TrueType
-  {
+
+  } else if( fp.extension( filename ) == "ttf" ) {
     return IFont::FontType::TrueTypeFont;
-  }
-  else if( fp.extension( filename ) == "ttc" )  // TrueType Collection
-  {
+
+  } else if( fp.extension( filename ) == "ttc" ) {  // TrueType Collection
     return IFont::FontType::TrueTypeFont;
-  }
-  else if( fp.extension( filename ) == "otf" )  // OpenType
-  {
+
+  } else if( fp.extension( filename ) == "otf" ) {  // OpenType
     return IFont::FontType::TrueTypeFont;
-  }
-  else if( fp.extension( filename ) == "dfont" )  // Data Fork Suitcase
-  {
+
+  } else if( fp.extension( filename ) == "dfont" ) {  // Data Fork Suitcase
     return IFont::FontType::TrueTypeFont;
   }
 
+  // No matching file extension found
   return IFont::FontType::NotDefined;
 }
 
-bool Font::load( const std::string& filename )
+bool Font::load(const std::string& filename)
 {
-  File fp;
+  this->font_ = nullptr;
 
-  // this->share();
+  // Initialize the font interface
+  if( this->type( filename ) == IFont::FontType::BitmapFont ) {
+    // this->font_ = std::make_shared<BitmapFont>( BitmapFont() );
+    this->font_ = std::shared_ptr<BitmapFont>( new BitmapFont() );
+  } else if( this->type( filename ) == IFont::FontType::TrueTypeFont ) {
+    // this->font_ = std::make_shared<TrueTypeFont>( TrueTypeFont() );
+    this->font_ = std::shared_ptr<TrueTypeFont>( new TrueTypeFont() );
 
-  if( this->type( filename ) == IFont::FontType::BitmapFont )
-  {
-    this->font_ = value_type( new BitmapFont() );
-  }
-  else if( this->type( filename ) == IFont::FontType::TrueTypeFont )
-  {
-    this->font_ = value_type( new TrueTypeFont() );
-  }
-  else
-  {
-    this->font_ = nullptr;
-
-    NOM_LOG_ERR( NOM, "Could not determine the font type for: " + filename );
-
+  } else {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not determine the font type for ", filename );
     return false;
   }
 
-  NOM_ASSERT( this->font_ );
+  NOM_ASSERT(this->font_ != nullptr);
 
-  return this->font_->load( filename );
-}
+  if( this->font_ != nullptr ) {
+    return this->font_->load(filename);
+  }
 
-bool Font::set_point_size( int point_size )
-{
-  NOM_ASSERT( this->font_ );
-
-  // this->share();
-
-  return this->font_->set_point_size( point_size );
-}
-
-void Font::set_hinting( int type )
-{
-  NOM_ASSERT( this->font_ );
-
-  // this->share();
-
-  this->font_->set_hinting( type );
-}
-
-bool Font::set_outline( int outline )
-{
-  NOM_ASSERT( this->font_ );
-
-  // this->share();
-
-  return this->font_->set_outline( outline );
-}
-
-void Font::set_sharable( bool state )
-{
-  this->sharable_ = state;
-}
-
-void Font::share( void )
-{
-  NOM_ASSERT( this->font_ );
-
-  IFont* data = this->font_.get();
-
-  if( data != nullptr && this->unique() == false )
-  {
-    if( this->sharable() == true )
-    {
-      this->font_ = value_type( data->clone() );
-
-      // Debugging aids
-      if( this->font_->type() == IFont::FontType::BitmapFont )
-      {
-        NOM_DUMP_VAR( NOM_LOG_CATEGORY_VIDEO, "font_face: ", this->font_->metrics().name + " (BitmapFont)" );
-      }
-      else if( this->font_->type() == IFont::FontType::TrueTypeFont )
-      {
-        NOM_DUMP_VAR( NOM_LOG_CATEGORY_VIDEO, "font_face: ", this->font_->metrics().name + " (TrueTypeFont)" );
-      }
-      else
-      {
-        NOM_DUMP_VAR( NOM_LOG_CATEGORY_VIDEO, "font_face: ", this->font_->metrics().name + " (Undefined)" );
-      }
-    } // end if sharable
-  } // end if the font is NOT unique
+  return false;
 }
 
 } // namespace nom

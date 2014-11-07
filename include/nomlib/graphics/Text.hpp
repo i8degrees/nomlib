@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
-#include <memory>
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
@@ -49,12 +48,6 @@ class Text: public Transformable
   public:
     typedef Text self_type;
     typedef Transformable derived_class;
-
-    typedef self_type* raw_ptr;
-    typedef std::shared_ptr<self_type> shared_ptr;
-    typedef std::unique_ptr<self_type> unique_ptr;
-
-    typedef Font font_type;
 
     /// \brief Font face style; multiple styles can be combined from bitwise
     /// masks.
@@ -93,7 +86,7 @@ class Text: public Transformable
     /// object reference, character size and text alignment.
     Text (
             const std::string& text,
-            const font_type& font,
+            const Font& font,
             uint character_size = nom::DEFAULT_FONT_SIZE,
             uint32 align = Anchor::TopLeft,
             const Color4i& text_color = Color4i::White
@@ -103,7 +96,7 @@ class Text: public Transformable
     /// object pointer, character size and text alignment.
     Text (
             const std::string& text,
-            const font_type::raw_ptr font,
+            Font* font,
             uint character_size = nom::DEFAULT_FONT_SIZE,
             uint32 align = Anchor::TopLeft,
             const Color4i& text_color = Color4i::White
@@ -120,9 +113,7 @@ class Text: public Transformable
     /// \remarks This uniquely identifies the object's type.
     ObjectTypeInfo type( void ) const;
 
-    font_type& font( void ) const;
-
-    Text::raw_ptr get( void );
+    const Font& font() const;
 
     const Texture& texture ( void ) const;
 
@@ -154,9 +145,6 @@ class Text: public Transformable
     ///           in pixels, on success. Zero (0) integer value on failure;
     ///           a possible combination of: no font, bad font, no text string
     ///           etc.
-    ///
-    /// \todo     We *may* have a better height value to use in our height
-    /// computation -- see nom::FontMetrics.
     sint text_height ( const std::string& text_string ) const;
     sint height ( void ) const;
 
@@ -196,13 +184,21 @@ class Text: public Transformable
     /// \note Re-implements Transformable::set_size.
     void set_size( const Size2i& size );
 
-    /// \brief Set the font from a nom::Font object.
-    void set_font( const Text::font_type& font );
-
-    /// \brief Set a font from a nom::Font object pointer.
+    /// \brief Set the font to use in rendering text.
     ///
-    /// \note Used for ResourceCache::load_resource.
-    void set_font( Text::font_type* font );
+    /// \remarks You must ensure that you are passing a valid nom::Font object
+    /// that has been loaded into memory with its appropriate ::load call.
+    void set_font(const Font& font);
+
+    /// \brief Set the font to use in rendering text.
+    ///
+    /// \remarks This method exists for the convenience of direct interfacing
+    /// with the nom::IFont interface. You must ensure that you are passing a
+    /// valid nom::IFont-derived object that has been loaded into memory with
+    /// its appropriate ::load call.
+    ///
+    /// \note This method is used by nom::FontCache.
+    void set_font(Font* font);
 
     /// \brief Set the text string to be rendered.
     void set_text( const std::string& text );
@@ -263,8 +259,9 @@ class Text: public Transformable
     /// \note Implements nom::IDrawable::update.
     void update( void );
 
-    mutable font_type font_; // FIXME?
-    mutable Texture texture_; // FIXME
+    Font font_;
+    /// \fixme
+    mutable Texture texture_;
 
     /// Holds contents of text as a string buffer
     std::string text_;

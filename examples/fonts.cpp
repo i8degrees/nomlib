@@ -38,9 +38,10 @@ const std::string APP_RESOURCES_DIR = "Resources";
 
 const nom::Path p;
 const std::string RESOURCE_ICON = APP_RESOURCES_DIR + p.native() + "icon.png";
-// const std::string RESOURCE_BITMAP_FONT = APP_RESOURCES_DIR + p.native() + "VIII.png";
-// const std::string RESOURCE_BITMAP_SMALL_FONT = APP_RESOURCES_DIR + p.native() + "VIII_small.png";
-// const std::string RESOURCE_TRUETYPE_FONT = APP_RESOURCES_DIR + p.native() + "arial.ttf";
+// TODO: Replace w/ nom::SearchPath
+const std::string RESOURCE_BITMAP_FONT = APP_RESOURCES_DIR + p.native() + "VIII.png";
+const std::string RESOURCE_BITMAP_SMALL_FONT = APP_RESOURCES_DIR + p.native() + "VIII_small.png";
+const std::string RESOURCE_TRUETYPE_FONT = APP_RESOURCES_DIR + p.native() + "arial.ttf";
 
 /// Name of our application.
 const std::string APP_NAME = "nom::BitmapFont";
@@ -117,18 +118,6 @@ class App: public nom::SDLApp
       this->load_bitmap_font();
       this->load_truetype_font();
       this->load_truetype_font2();
-
-      nom::Font* font = nom::SystemFonts::cache().load_resource("VIII");
-
-      NOM_ASSERT( font != nullptr );
-      NOM_ASSERT( font->valid() == true );
-
-      nom::Font label_font0 = this->label_tfont.font();
-      nom::Font label_font1 = this->label_tfont2.font();
-
-      // Ensure that nom::Font's copy-on-write functionality works; the
-      // resource "VIII" should be unique (cloned).
-      NOM_ASSERT( label_font0 != label_font1 );
 
       return true;
     } // onInit
@@ -268,6 +257,8 @@ class App: public nom::SDLApp
     /// Timer for tracking frames per second
     nom::FPS fps;
 
+    nom::Font bitmap_font;
+    nom::Font truetype_font;
     // nom::BitmapFont bitmap_font;
     // nom::TrueTypeFont truetype_font;
 
@@ -277,15 +268,13 @@ class App: public nom::SDLApp
 
     bool load_bitmap_font( void )
     {
-      // if ( this->bitmap_font.load( RESOURCE_BITMAP_FONT ) == false )
-      // {
-      //   nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
-      //   return false;
-      // }
+      if ( this->bitmap_font.load( RESOURCE_BITMAP_FONT ) == false )
+      {
+        nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
+        return false;
+      }
 
-      // this->label_bfont.set_font( this->bitmap_font );
-
-      this->label_bfont.set_font( nom::SystemFonts::cache().load_resource( "VIII" ) );
+      this->label_bfont.set_font( this->bitmap_font );
 
       this->label_bfont.set_position  ( nom::Point2i(
                                         ( this->window.size().w
@@ -310,15 +299,13 @@ class App: public nom::SDLApp
 
     bool load_truetype_font( void )
     {
-      // if ( this->truetype_font.load ( RESOURCE_TRUETYPE_FONT ) == false )
-      // {
-      //   nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
-      //   return false;
-      // }
+      if ( this->truetype_font.load ( RESOURCE_TRUETYPE_FONT ) == false )
+      {
+        nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
+        return false;
+      }
 
-      // this->label_tfont.set_font( this->truetype_font );
-
-      nom::Font font = *nom::SystemFonts::cache().load_resource( "Arial" );
+      this->label_tfont.set_font( this->truetype_font );
 
       // Font kerning defaults to true.
       //
@@ -326,8 +313,6 @@ class App: public nom::SDLApp
       // a text string that is known to have kerning applied, such as "WAV".
       //
       // font->set_font_kerning( false );
-
-      this->label_tfont.set_font( font );
 
       this->label_tfont.set_position(nom::Point2i(24,24));
       //this->label_tfont.set_color( nom::Color4i(195,209,228) );
@@ -355,14 +340,12 @@ class App: public nom::SDLApp
     /// \remarks Test copy-on-write implementation in nom::Font.
     bool load_truetype_font2( void )
     {
-      // this->label_tfont2.set_font( this->truetype_font );
-
       // A copy has to be made (handled internally by nom::Font), otherwise the
       // font's point size for label_tfont would be modified when we make the
       // call to set the text size on label_tfont2.
       this->label_tfont2.set_text( RESOURCE_FONT_TEXT_STRING );
       this->label_tfont2.set_style( nom::Text::Style::Bold );
-      this->label_tfont2.set_font( nom::SystemFonts::cache().load_resource("Arial") );
+      this->label_tfont2.set_font( this->truetype_font->clone() );
       this->label_tfont2.set_text_size( 24 );
       this->label_tfont2.set_position( nom::Point2i( WINDOW_WIDTH / 2, 24 ) );
       this->label_tfont2.set_color( nom::Color4i( 195,209,228 ) );

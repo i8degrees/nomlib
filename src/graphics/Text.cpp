@@ -43,7 +43,7 @@ Text::Text( void ) :
   text_size_ ( nom::DEFAULT_FONT_SIZE ),
   color_ ( Color4i::White ),
   style_ ( Text::Style::Normal ),
-  alignment_{ Anchor::TopLeft }
+  alignment_(Alignment::NONE)
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -74,7 +74,7 @@ Text::Text  (
 
 Text::Text  (
               const std::string& text,
-              const Font::raw_ptr font,
+              Font* font,
               uint character_size,        // Default parameter
               uint32 align,               // Default parameter
               const Color4i& text_color   // Default parameter
@@ -95,7 +95,8 @@ Text::Text( const std::string& text ) :
   Transformable{ Point2i::null, Size2i::null }, // Base class
   text_{ text },
   text_size_{ nom::DEFAULT_FONT_SIZE },
-  style_{ Text::Style::Normal }
+  style_{ Text::Style::Normal },
+  alignment_(Alignment::NONE)
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -110,12 +111,7 @@ ObjectTypeInfo Text::type( void ) const
   return NOM_OBJECT_TYPE_INFO( self_type );
 }
 
-Text::raw_ptr Text::get( void )
-{
-  return this;
-}
-
-Text::font_type& Text::font( void ) const
+const Font& Text::font() const
 {
   return this->font_;
 }
@@ -127,7 +123,10 @@ const Texture& Text::texture ( void ) const
 
 bool Text::valid ( void ) const
 {
-  return this->font().valid();
+  if( this->font() != nullptr ) {
+    return this->font()->valid();
+  }
+  return false;
 }
 
 // enum IFont::FontType Text::font_type( void ) const
@@ -290,14 +289,14 @@ void Text::set_size( const Size2i& size )
   // this->set_alignment( this->alignment() );
 }
 
-void Text::set_font( const Text::font_type& font )
+void Text::set_font(const Font& font)
 {
   this->font_ = font;
 
   this->set_text_size( this->text_size() );
 }
 
-void Text::set_font( Text::font_type* font )
+void Text::set_font(Font* font)
 {
   this->font_ = *font;
 
@@ -378,7 +377,7 @@ void Text::set_alignment( uint32 align )
   if( this->size() == Size2i::null ) return;
 
   // Reset alignment
-  if(align & Alignment::NONE) {
+  if( align & Alignment::NONE ) {
     offset.x = this->position().x;
     offset.y = this->position().y;
   }

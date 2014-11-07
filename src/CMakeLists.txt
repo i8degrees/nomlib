@@ -166,13 +166,11 @@ set ( SYSTEM_SOURCE
       # Resource management
       #
       # TODO: Consider relocating this to graphics
-      ${SRC_DIR}/system/resource_handlers.cpp
+      # ${SRC_DIR}/system/resource_handlers.cpp
       ${SRC_DIR}/system/ResourceFile.cpp
 
       # TODO: Consider relocating this to graphics
       ${SRC_DIR}/system/ColorDatabase.cpp
-
-      ${SRC_DIR}/system/PlatformSettings.cpp
 
       ${SRC_DIR}/system/SearchPath.cpp
     )
@@ -245,7 +243,6 @@ if( PLATFORM_OSX )
   set (
         SYSTEM_SOURCE
         ${SYSTEM_SOURCE}
-        ${SRC_DIR}/system/osx/PlatformSettings.cpp
       )
 endif( PLATFORM_OSX )
 
@@ -253,8 +250,6 @@ if( PLATFORM_LINUX )
   set (
         SYSTEM_SOURCE
         ${SYSTEM_SOURCE}
-        # TODO:
-        # ${SRC_DIR}/system/unix/PlatformSettings.cpp
       )
 endif( PLATFORM_LINUX )
 
@@ -267,7 +262,6 @@ if( PLATFORM_WINDOWS )
   set (
         SYSTEM_SOURCE
         ${SYSTEM_SOURCE}
-        ${SRC_DIR}/system/windows/PlatformSettings.cpp
         ${SRC_DIR}/system/windows/WinFile.cpp
       )
 endif( PLATFORM_WINDOWS )

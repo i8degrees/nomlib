@@ -279,11 +279,11 @@ class App: public nom::SDLApp
       this->label_bfont.set_position  ( nom::Point2i(
                                         ( this->window.size().w
                                           -
-                                          this->label_bfont.width()
+                                          this->label_bfont.size().w
                                         ) / 2,
                                         ( this->window.size().h
                                           -
-                                          this->label_bfont.height()
+                                          this->label_bfont.size().h
                                         ) / 2
                                                     )
                                       );
@@ -292,7 +292,6 @@ class App: public nom::SDLApp
       this->label_bfont.set_color ( nom::Color4i::White );
       //this->label_bfont.set_color ( nom::Color4i(195,209,228) );
       this->label_bfont.set_text_size ( 24 ); // NO-OP
-      this->label_bfont.set_alignment ( nom::Anchor::TopLeft );
 
       return true;
     }
@@ -319,8 +318,6 @@ class App: public nom::SDLApp
 
       this->label_tfont.set_text( RESOURCE_FONT_TEXT_STRING );
       // this->label_tfont.set_text( "WAV" );
-
-      // this->label_tfont.set_alignment( nom::Anchor::TopLeft );
 
       // Cache the glyphs of the font's point size range that we plan on using;
       // offloads the cost of re-generating the glyph cache when the end-user
@@ -349,7 +346,6 @@ class App: public nom::SDLApp
       this->label_tfont2.set_text_size( 24 );
       this->label_tfont2.set_position( nom::Point2i( WINDOW_WIDTH / 2, 24 ) );
       this->label_tfont2.set_color( nom::Color4i( 195,209,228 ) );
-      // this->label_tfont2.set_alignment( nom::Anchor::TopLeft );
 
       return true;
     }

@@ -35,9 +35,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point2.hpp"
+#include "nomlib/math/Size2.hpp"
 #include "nomlib/core/clock.hpp"
 
 namespace nom {
+
+// Forward declarations
+class Transformable;
 
 const double PI = 4.0 * atan ( 1.0 );
 
@@ -103,6 +107,14 @@ T round ( T number )
 {
   return number < 0.0 ? ceil ( number - 0.5 ) : floor ( number + 0.5 );
 }
+
+/// \brief Set an object's alignment.
+///
+/// \param obj    A nom::Transformable derived object pointer.
+/// \param bounds The dimensions to be aligned in respect to.
+/// \param align  One of the nom::Alignment or nom::Anchor enumeration types.
+void set_alignment( Transformable* obj, const Size2i& bounds,
+                    uint32 align);
 
 } // namespace nom
 

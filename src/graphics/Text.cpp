@@ -40,8 +40,7 @@ Text::Text( void ) :
   Transformable { Point2i::null, Size2i::null }, // Base class
   text_size_ ( nom::DEFAULT_FONT_SIZE ),
   color_ ( Color4i::White ),
-  style_ ( Text::Style::Normal ),
-  alignment_(Alignment::NONE)
+  style_ ( Text::Style::Normal )
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -55,7 +54,6 @@ Text::Text  (
               const std::string& text,
               const Font& font,
               uint character_size,        // Default parameter
-              uint32 align,               // Default parameter
               const Color4i& text_color   // Default parameter
             )  :
   Transformable { Point2i::null, Size2i::null }, // Base class
@@ -67,14 +65,12 @@ Text::Text  (
 
   this->set_font( font );
   this->set_color( text_color );
-  this->set_alignment( align );
 }
 
 Text::Text  (
               const std::string& text,
               Font* font,
               uint character_size,        // Default parameter
-              uint32 align,               // Default parameter
               const Color4i& text_color   // Default parameter
             )  :
   Transformable { Point2i::null, Size2i::null }, // Base class
@@ -86,17 +82,6 @@ Text::Text  (
 
   this->set_font( font );
   this->set_color( text_color );
-  this->set_alignment( align );
-}
-
-Text::Text( const std::string& text ) :
-  Transformable{ Point2i::null, Size2i::null }, // Base class
-  text_{ text },
-  text_size_{ nom::DEFAULT_FONT_SIZE },
-  style_{ Text::Style::Normal },
-  alignment_(Alignment::NONE)
-{
-  // NOM_LOG_TRACE( NOM );
 }
 
 IDrawable::raw_ptr Text::clone( void ) const
@@ -152,7 +137,7 @@ sint Text::text_width ( const std::string& text_string ) const
   //
   // We add kerning offsets, the glyph's advance offsets, and spacing onto the
   // total text_width count.
-  for ( uint32 pos = 0; pos < text_buffer.length() && text_buffer[pos] != '\n'; ++pos )
+  for( auto pos = 0; pos < text_buffer.length(); ++pos )
   {
     // Apply kerning offset
     uint32 current_char = text_buffer[pos];
@@ -173,6 +158,10 @@ sint Text::text_width ( const std::string& text_string ) const
     {
       text_width += this->font()->spacing ( this->text_size() ) * 2;
     }
+    else if( current_char == '\n' )
+    {
+      break;
+    }
     else // Printable ASCII glyph (33..127)
     {
       // Match the offset calculations done in the text rendering -- hence the
@@ -182,11 +171,6 @@ sint Text::text_width ( const std::string& text_string ) const
   } // end for loop
 
   return text_width;
-}
-
-sint Text::width ( void ) const
-{
-  return this->text_width ( this->text() );
 }
 
 sint Text::text_height ( const std::string& text_string ) const
@@ -223,11 +207,6 @@ sint Text::text_height ( const std::string& text_string ) const
   return text_height;
 }
 
-sint Text::height ( void ) const
-{
-  return this->text_height ( this->text() );
-}
-
 const std::string& Text::text ( void ) const
 {
   return this->text_;
@@ -248,44 +227,6 @@ uint32 Text::style( void ) const
   return this->style_;
 }
 
-/*
-const Point2i& Text::local_bounds ( void ) const
-{
-}
-*/
-
-IntRect Text::global_bounds( void ) const
-{
-  IntRect bounds;
-
-  // Positioning coordinates as would be rendered on-screen
-  bounds.x = this->position().x;
-  bounds.y = this->position().y;
-
-  // Text width and height, in pixels, with respect to set font
-  bounds.w = this->width();
-  bounds.h = this->height();
-
-  return bounds;
-}
-
-uint32 Text::alignment( void ) const
-{
-  return this->alignment_;
-}
-
-uint32 Text::features( void ) const
-{
-  return this->features_;
-}
-
-void Text::set_size( const Size2i& size )
-{
-  Transformable::set_size( size );
-
-  // this->set_alignment( this->alignment() );
-}
-
 void Text::set_font(const Font& font)
 {
   this->font_ = font;
@@ -298,24 +239,17 @@ void Text::set_font(Font* font)
   this->font_ = *font;
 
   this->set_text_size( this->text_size() );
-
-  // Set the overall size of this text label to the width & height of the text,
-  // with consideration to the specific font in use.
-  // this->set_size( Size2i( this->text_width( this->text() ), this->text_height( this->text() ) ) );
 }
 
 void Text::set_text( const std::string& text )
 {
-  if ( text == this->text() )
-  {
+  if ( text == this->text() ) {
     return;
   }
 
   this->text_ = text;
 
-  // Set the overall size of this text label to the width & height of the text,
-  // with consideration to the specific font in use.
-  // this->set_size( Size2i( this->text_width( text ), this->text_height( text ) ) );
+  this->update();
 }
 
 void Text::set_text_size ( uint character_size )
@@ -332,10 +266,6 @@ void Text::set_text_size ( uint character_size )
   this->font()->set_point_size( this->text_size() );
 
   this->update();
-
-  // Set the overall size of this text label to the width & height of the text,
-  // with consideration to the specific font in use.
-  // this->set_size( Size2i( this->text_width( this->text() ), this->text_height( this->text() ) ) );
 }
 
 void Text::set_color( const Color4i& color )
@@ -361,61 +291,6 @@ void Text::set_style( uint32 style )
   this->style_ = style;
 
   this->update();
-}
-
-void Text::set_alignment( uint32 align )
-{
-  Point2i offset( this->position() );
-
-  this->alignment_ = align;
-
-  if( this->valid() == false ) return;
-  if( this->position() == Point2i::null ) return;
-  if( this->size() == Size2i::null ) return;
-
-  // Reset alignment
-  if( align & Alignment::NONE ) {
-    offset.x = this->position().x;
-    offset.y = this->position().y;
-  }
-
-  // Anchor::TopLeft, Anchor::Left, Anchor::BottomLeft
-  if( align & Alignment::X_LEFT )
-  {
-    offset.x = this->position().x;
-  }
-
-  // Anchor::TopCenter, Anchor::MiddleCenter, Anchor::BottomCenter
-  if( align & Alignment::X_CENTER )
-  {
-    offset.x = this->position().x + ( this->size().w - this->width() ) / 2;
-  }
-
-  // Anchor::TopRight, Anchor::MiddleRight, Anchor::BottomRight
-  if( align & Alignment::X_RIGHT )
-  {
-    offset.x = this->position().x + ( this->size().w - this->width() );
-  }
-
-  // Anchor::TopLeft, Anchor::TopCenter, Anchor::TopRight
-  if( align & Alignment::Y_TOP )
-  {
-    offset.y = this->position().y;
-  }
-
-  // Anchor::MiddleLeft, Anchor::MiddleCenter, Anchor::MiddleRight
-  if( align & Alignment::Y_CENTER )
-  {
-    offset.y = this->position().y + ( this->size().h - this->height() ) / 2;
-  }
-
-  // Anchor::BottomLeft, Anchor::BottomCenter, Anchor::BottomRight
-  if( align & Alignment::Y_BOTTOM )
-  {
-    offset.y = this->position().y + ( this->size().h - this->height() );
-  }
-
-  this->set_position( offset );
 }
 
 void Text::draw ( RenderTarget& target ) const
@@ -493,53 +368,8 @@ void Text::draw ( RenderTarget& target ) const
       // Move over the width of the character with one pixel of padding
       pos.x += ( this->font()->glyph(current_char, this->text_size() ).advance ) + 1;
 
-      // Prevent rendering of text that is longer than its contained size;
-      // this generally must be set by the developer.
-      if( this->features() & ExtraRenderingFeatures::CropText &&
-          this->size() != Size2i::null
-        )
-      {
-        // Maximal cropping bounds
-        int bounds = this->position().x + this->size().w;
-
-        if( pos.x >= bounds ) break;
-      }
-
     } // end else
   } // end for loop
-}
-
-bool Text::resize ( enum Texture::ResizeAlgorithm scaling_algorithm )
-{
-  if ( this->valid() == false )
-  {
-    NOM_LOG_ERR ( NOM, "Video surface is invalid." );
-    return false;
-  }
-/* TODO: (an implementation in nom::Image)
-  if ( this->bitmap_font.resize ( scaling_algorithm ) == false )
-  {
-NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
-    return false;
-  }
-TODO */
-
-/* TODO (implement in IFont, BitmapFont, TrueTypeFont classes)
-  if ( this->font_->build() == false )
-  {
-    NOM_LOG_ERR ( NOM, "Could not build bitmap font metrics" );
-    return false;
-  }
-TODO */
-
-  return true;
-}
-
-void Text::set_features( uint32 flags )
-{
-  this->features_ = flags;
-
-  this->update();
 }
 
 void Text::update( void )
@@ -589,10 +419,21 @@ void Text::update( void )
   // Update the font's text color.
   this->texture_.set_color_modulation( this->color() );
 
-  if( this->features() & ExtraRenderingFeatures::CropText )
-  {
-    // this->set_alignment( alignment() );
-  }
+  // Set the overall size of this text label to the width & height of the text,
+  // with consideration to the specific font in use.
+  this->set_size( Size2i( this->width(), this->height() ) );
+}
+
+// Private scope
+
+int Text::width() const
+{
+  return this->text_width( this->text() );
+}
+
+int Text::height() const
+{
+  return this->text_height( this->text() );
 }
 
 } // namespace nom

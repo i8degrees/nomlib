@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/tests/common.hpp"
 
 #include <nomlib/config.hpp>
+#include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
 
@@ -112,16 +113,13 @@ class TrueTypeFontTest: public nom::VisualUnitTest
 
       this->rendered_text.set_font(this->font);
       this->rendered_text.set_text(this->text);
-
-      // FIXME: TrueTypeFont alignments break if we try setting pt size after
-      // alignment.
       this->rendered_text.set_text_size(this->pt_size);
       this->rendered_text.set_color(this->color);
 
       // FIXME: Proper multi-line alignment logic is not implemented
       this->rendered_text.set_position(this->pos);
-      this->rendered_text.set_size( this->resolution() );
-      this->rendered_text.set_alignment(this->align);
+      nom::set_alignment( &this->rendered_text,
+                          this->resolution(), this->align);
 
       this->append_render_callback( [&] ( const RenderWindow& win ) {
         this->rendered_text.draw( this->render_window() );
@@ -147,7 +145,7 @@ class TrueTypeFontTest: public nom::VisualUnitTest
     Point2i pos;
 
     /// \brief The text alignment.
-    int align;
+    uint32 align = Anchor::None;
 
     /// \brief The text color.
     Color4i color;

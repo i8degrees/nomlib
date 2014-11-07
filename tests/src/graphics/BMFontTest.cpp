@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/tests/common.hpp"
 
 #include <nomlib/config.hpp>
+#include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
 
@@ -204,12 +205,13 @@ TEST_F(BMFontTest, RenderScoreboardFont)
   rendered_text.set_text("7");
 
   // TTcards player 2 scoreboard origins (approximation)
-  // rendered_text.set_position( Point2i(64,352) );
   rendered_text.set_position( Point2i(64,0) );
-  // rendered_text.set_position( Point2i(-64,0) );  // player1
-  rendered_text.set_size( Size2i( this->resolution().w, this->resolution().h ) );
-  rendered_text.set_alignment( Anchor::BottomLeft ); // player2
-  // rendered_text.set_alignment( Anchor::BottomRight ); // player1
+  nom::set_alignment(&rendered_text, this->resolution(), Anchor::BottomLeft);
+  // player1
+  // rendered_text.set_position( Point2i(-64,0) );
+  // nom::set_alignment(&rendered_text, this->resolution(), Anchor::BottomRight);
+
+  EXPECT_EQ( Size2i(13,114), rendered_text.size() );
 
   this->append_render_callback( [&] ( const RenderWindow& win ) {
     rendered_text.draw( this->render_window() );
@@ -233,12 +235,9 @@ TEST_F(BMFontTest, RenderGameOverFont)
   rendered_text.set_font(font);
   rendered_text.set_text("You Lose...");
   rendered_text.set_position( Point2i(0,0) );
-  rendered_text.set_size( Size2i( this->resolution().w, this->resolution().h) );
-  rendered_text.set_alignment(Anchor::MiddleCenter);
+  nom::set_alignment(&rendered_text, this->resolution(), Anchor::MiddleCenter);
 
-  EXPECT_EQ( 340, rendered_text.width() );
-  EXPECT_EQ( 90, rendered_text.height() )
-  << "Text height should be the highest height value from its glyph char set.";
+  EXPECT_EQ( Size2i(340,90), rendered_text.size() );
   EXPECT_EQ( 90, font->newline(0) )
   << "Text line spacing (newline) should be the same as the 'lineHeight' field.";
 
@@ -264,11 +263,9 @@ TEST_F(BMFontTest, RenderMultipleLines)
   rendered_text.set_font(font);
   rendered_text.set_text("You Lose...\nYou Win!\nDraw");
   rendered_text.set_position( Point2i(0,0) );
-  rendered_text.set_size( Size2i( this->resolution().w, this->resolution().h) );
-  rendered_text.set_alignment(Anchor::MiddleCenter);
+  nom::set_alignment(&rendered_text, this->resolution(), Anchor::MiddleCenter);
 
-  EXPECT_EQ( 340, rendered_text.width() );
-  EXPECT_EQ( 270, rendered_text.height() );
+  EXPECT_EQ( Size2i(340,270), rendered_text.size() );
   EXPECT_EQ( 90, font->newline(0) )
   << "Text line spacing (newline) should be the same as the 'lineHeight' field.";
 

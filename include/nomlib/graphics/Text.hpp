@@ -65,17 +65,6 @@ class Text: public Transformable
       Strikethrough = 16  /// Verify working functionality
     };
 
-    /// \brief Additional rendering features; these are all optional, and are
-    /// turned off by default.
-    ///
-    /// \remarks Bit-mask friendly to pass.
-    enum ExtraRenderingFeatures: uint32
-    {
-      // Prevent rendering of text that goes beyond a user-defined size; the
-      // formula for detecting "out of bounds" is ::position().x + ::size().w.
-      CropText = 1
-    };
-
     /// Default constructor
     Text( void );
 
@@ -83,27 +72,22 @@ class Text: public Transformable
     ~Text( void );
 
     /// \brief Construct a Text, initializing it with a text string, a nom::Font
-    /// object reference, character size and text alignment.
+    /// object reference and character size.
     Text (
             const std::string& text,
             const Font& font,
             uint character_size = nom::DEFAULT_FONT_SIZE,
-            uint32 align = Anchor::TopLeft,
             const Color4i& text_color = Color4i::White
           );
 
     /// \brief Construct a Text, initializing it with a text string, a nom::Font
-    /// object pointer, character size and text alignment.
+    /// object pointer and character size.
     Text (
             const std::string& text,
             Font* font,
             uint character_size = nom::DEFAULT_FONT_SIZE,
-            uint32 align = Anchor::TopLeft,
             const Color4i& text_color = Color4i::White
           );
-
-    /// \see nom::DataViewTextItem
-    Text( const std::string& text );
 
     /// \brief Implements the required IDrawable::clone method.
     IDrawable::raw_ptr clone( void ) const;
@@ -134,7 +118,6 @@ class Text: public Transformable
     ///
     /// \todo Support multi-line texts (newline character handling)
     sint text_width ( const std::string& text_string ) const;
-    sint width ( void ) const;
 
     /// \brief Obtain the text height in pixels of the set text
     ///
@@ -146,7 +129,6 @@ class Text: public Transformable
     ///           a possible combination of: no font, bad font, no text string
     ///           etc.
     sint text_height ( const std::string& text_string ) const;
-    sint height ( void ) const;
 
     /// Get text string
     const std::string& text ( void ) const;
@@ -157,32 +139,8 @@ class Text: public Transformable
     /// Get text style
     uint32 style( void ) const;
 
-    //const Point2i& local_bounds ( void ) const;
-
-    /// \brief Obtain the rendered coordinate bounds of the text object.
-    ///
-    /// \remarks This is equivalent to a call made to the methods ::position(),
-    /// ::width and ::height.
-    IntRect global_bounds( void ) const;
-
-    /// \brief Get the text alignment.
-    uint32 alignment( void ) const;
-
     /// Get text character size (in pixels?)
     uint text_size ( void ) const;
-
-    /// \brief Obtain the set rendering flags.
-    ///
-    /// \remarks See also: nom::Text::ExtraRenderingFeatures enumeration.
-    uint32 features( void ) const;
-
-    /// \brief Set the overall dimension bounds (width & height) of the text
-    /// object.
-    ///
-    /// \remarks This method ensures that the text's alignment is recalculated.
-    ///
-    /// \note Re-implements Transformable::set_size.
-    void set_size( const Size2i& size );
 
     /// \brief Set the font to use in rendering text.
     ///
@@ -220,34 +178,10 @@ class Text: public Transformable
     /// \see The nom::Text::Style enumeration.
     void set_style( uint32 style );
 
-    /// \brief Set the text's alignment.
-    ///
-    /// \see The nom::Anchor enumeration.
-    ///
-    /// \remarks This method depends on the size dimensions and the text's font
-    /// being in a valid state.
-    ///
-    /// \note Every call to this method modifies the destination positions used
-    /// in the rendered text. You may pass nom::Alignment::NONE or
-    /// nom::Anchor::NONE to clear existing alignment.
-    void set_alignment( uint32 align );
-
     /// Render text to a target
     ///
     /// \todo Test horizontal tabbing '\t'
     void draw ( RenderTarget& target ) const;
-
-    /// Rescale the font with a chosen resizing algorithm
-    ///
-    /// \todo SDL2 port
-    bool resize ( enum Texture::ResizeAlgorithm scaling_algorithm );
-
-    /// \brief Set additional rendering flags.
-    ///
-    /// \remarks See also: nom::Text::ExtraRenderingFeatures enumeration.
-    ///
-    /// \note Bit-mask friendly.
-    void set_features( uint32 flags );
 
   private:
     /// \brief Apply requested transformations, styles, etc
@@ -258,6 +192,12 @@ class Text: public Transformable
     ///
     /// \note Implements nom::IDrawable::update.
     void update( void );
+
+    /// \brief Get the current text width.
+    int width() const;
+
+    /// \brief Get the current text height.
+    int height() const;
 
     Font font_;
     /// \fixme
@@ -270,17 +210,6 @@ class Text: public Transformable
 
     /// Current text effect set
     uint32 style_;
-    uint32 alignment_;
-
-    /// \brief Set additional rendering flags.
-    ///
-    /// \remarks See also: nom::Text::ExtraRenderingFeatures enumeration.
-    uint32 features_;
-
-/*
-    Point2i local_bounds;
-    Point2i global_bounds;
-*/
 };
 
 } // namespace nom

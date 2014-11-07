@@ -41,6 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics/IDrawable.hpp>
 #include <nomlib/graphics/Gradient.hpp>
 #include <nomlib/graphics/Image.hpp>
+#include <nomlib/graphics/fonts/BMFont.hpp>
 #include <nomlib/graphics/fonts/BitmapFont.hpp>
 #include <nomlib/graphics/fonts/FontMetrics.hpp>
 #include <nomlib/graphics/fonts/FontPage.hpp>

@@ -26,50 +26,41 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_FONT_PAGE_HPP
-#define NOMLIB_GRAPHICS_FONT_PAGE_HPP
+#include "nomlib/graphics/fonts/FontPage.hpp"
 
-#include <map>
-
-#include "nomlib/config.hpp"
-#include "nomlib/graphics/fonts/Glyph.hpp"
-#include "nomlib/graphics/fonts/FontRow.hpp"
+// Forward declarations
+#include "nomlib/graphics/Image.hpp"
 
 namespace nom {
 
-// Forward declarations
-class Image;
-
-/// \brief Container structure for font data
-struct FontPage
+FontPage::FontPage()
 {
-  /// \brief Default constructor; initialize the font page to its empty state.
-  FontPage();
+  //NOM_LOG_TRACE(NOM);
 
-  /// \brief Destructor.
-  ~FontPage();
+  this->invalidate();
+}
 
-  /// \brief Validity of the glyph page.
-  bool valid() const;
+FontPage::~FontPage()
+{
+  //NOM_LOG_TRACE(NOM);
+}
 
-  /// \brief Re-initialize the page to its defaults.
-  void invalidate();
+bool FontPage::valid() const
+{
+  if( this->texture->valid() == true && this->glyphs.empty() == false )
+  {
+    return true;
+  }
 
-  GlyphAtlas glyphs;
+  return false;
+}
 
-  /// Container for the glyph's pixel buffer
-  std::shared_ptr<Image> texture;
-
-  /// Y position of the next new row in the texture
-  uint next_row;
-
-  /// Positioning of all the existing rows
-  PageRow rows;
-};
-
-/// Table mapping glyph data with its corresponding texture
-typedef std::map<uint32, FontPage> GlyphPage;
+void FontPage::invalidate()
+{
+  this->texture.reset( new Image() );
+  this->next_row = 0;
+  this->glyphs.clear();
+  this->rows.clear();
+}
 
 } // namespace nom
-
-#endif // include guard defined

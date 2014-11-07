@@ -57,14 +57,18 @@ struct FontMetrics
   /// Maximum height of a font
   sint height;
 
-  /// Line skip height of a font; maximum pixel height of any glyph in a font
-  sint newline;
+  /// \brief Get the line spacing
+  ///
+  /// \remarks Line spacing is the vertical offset to apply between two
+  /// consecutive lines of text.
+  int newline;
 
-  /// Height from the top of the font to the baseline
-  sint ascent;
+  /// \brief The height (in pixels) from the absolute top of the glyph to the
+  /// base of the glyph.
+  int ascent;
 
-  /// Height from the baseline to the bottom of the font
-  sint descent;
+  /// \brief Height (in pixels) from the baseline to the bottom of the glyph.
+  int descent;
 
   /// Font family
   std::string family;

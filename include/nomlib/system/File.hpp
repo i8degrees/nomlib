@@ -115,6 +115,29 @@ class File
     std::unique_ptr<IFile> file;
 };
 
+namespace priv {
+
+/// \brief The root directory path.
+extern std::string file_root_;
+
+} // namespace priv
+
+/// \brief Get the root directory path.
+///
+/// \returns A string containing the directory path root.
+///
+/// \see nom::set_file_root.
+std::string file_root();
+
+/// \brief Set the root directory path.
+///
+/// \param root The absolute directory path, ending with a slash.
+///
+/// \remarks This path can be used to establish a relative directory path to
+/// prepend onto a file name to form a complete, absolute path.
+///
+/// \see nom::BMFont::build
+void set_file_root(const std::string& root);
 
 } // namespace nom
 

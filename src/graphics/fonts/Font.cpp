@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers
 #include "nomlib/system/File.hpp"
+#include "nomlib/graphics/fonts/BMFont.hpp"
 #include "nomlib/graphics/fonts/BitmapFont.hpp"
 #include "nomlib/graphics/fonts/TrueTypeFont.hpp"
 
@@ -105,6 +106,9 @@ IFont::FontType Font::type(const std::string& filename) const
 
   } else if( fp.extension( filename ) == "dfont" ) {  // Data Fork Suitcase
     return IFont::FontType::TrueTypeFont;
+
+  } else if( fp.extension( filename ) == "fnt" ) {
+    return IFont::FontType::BMFont;
   }
 
   // No matching file extension found
@@ -119,6 +123,11 @@ bool Font::load(const std::string& filename)
   if( this->type( filename ) == IFont::FontType::BitmapFont ) {
     // this->font_ = std::make_shared<BitmapFont>( BitmapFont() );
     this->font_ = std::shared_ptr<BitmapFont>( new BitmapFont() );
+
+  } else if( this->type( filename ) == IFont::FontType::BMFont ) {
+    // this->font_ = std::make_shared<BMFont>( BMFont() );
+    this->font_ = std::shared_ptr<BMFont>( new BMFont() );
+
   } else if( this->type( filename ) == IFont::FontType::TrueTypeFont ) {
     // this->font_ = std::make_shared<TrueTypeFont>( TrueTypeFont() );
     this->font_ = std::shared_ptr<TrueTypeFont>( new TrueTypeFont() );

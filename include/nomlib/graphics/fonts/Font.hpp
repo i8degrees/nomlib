@@ -36,7 +36,7 @@ namespace nom {
 
 /// \brief Font interface wrapper for nom::IFont derived objects.
 ///
-/// \see nom::IFont, nom::BitmapFont, nom::TrueTypeFont.
+/// \see nom::IFont, nom::BitmapFont, nom::TrueTypeFont, nom::BMFont
 class Font
 {
   public:
@@ -92,7 +92,7 @@ class Font
     ///
     /// \param filename The file name (absolute or relative) with the full
     /// extension. File extensions recognized are 'png', 'bmp', 'ttf', 'ttc'
-    /// 'otf' and 'ttf'.
+    /// 'otf', 'ttf' and 'fnt'.
     ///
     /// \returns One of the IFont::FontType enumerations.
     ///

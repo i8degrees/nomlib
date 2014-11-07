@@ -58,10 +58,12 @@ set ( GRAPHICS_SOURCE
       ${SRC_DIR}/graphics/Renderer.cpp
       ${SRC_DIR}/graphics/VideoMode.cpp
       ${SRC_DIR}/graphics/Gradient.cpp
+      ${SRC_DIR}/graphics/fonts/BMFont.cpp
       ${SRC_DIR}/graphics/fonts/BitmapFont.cpp
       ${SRC_DIR}/graphics/fonts/TrueTypeFont.cpp
       ${SRC_DIR}/graphics/fonts/Font.cpp
       ${SRC_DIR}/graphics/fonts/Glyph.cpp
+      ${SRC_DIR}/graphics/fonts/FontPage.cpp
       ${SRC_DIR}/graphics/Cursor.cpp
     )
 

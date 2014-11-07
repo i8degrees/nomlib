@@ -92,3 +92,34 @@ if(NOM_BUILD_TRUETYPE_FONT_TEST)
             "${TESTS_DEPS_INSTALL_PEFIX}"
           )
 endif(NOM_BUILD_TRUETYPE_FONT_TEST)
+
+if(NOM_BUILD_BMFONT_TEST)
+
+    add_executable  (
+                      BMFontTest
+                      ${NOM_TESTS_SOURCE_DIR}/graphics/BMFontTest.cpp
+                      # VisualUnitTest
+                      ${NOM_TESTS_COMMON_SOURCE}
+                      ${NOM_TESTS_VTEST_SOURCE}
+                    )
+
+    target_link_libraries (
+                            BMFontTest
+                            ${GTEST_LIBRARY}
+                            ${PROJECT_NAME} # nomlib
+                          )
+
+    GTEST_ADD_TESTS (
+                      BMFontTest
+                      "" # args
+                      ${NOM_TESTS_SOURCE_DIR}/graphics/BMFontTest.cpp
+                    )
+
+  # Copy resource files for the test
+  install (
+            FILES
+            "${NOM_TESTS_RESOURCES_DIR}/graphics/BMFontTest.json"
+            DESTINATION
+            "${TESTS_DEPS_INSTALL_PEFIX}"
+          )
+endif(NOM_BUILD_BMFONT_TEST)

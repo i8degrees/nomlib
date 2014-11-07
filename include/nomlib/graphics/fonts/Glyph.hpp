@@ -46,14 +46,21 @@ struct Glyph
 
   ~Glyph ( void );
 
-  /// Bounding rectangle coordinates of the glyph (relative to the baseline?)
+  /// \brief Bounding rectangle coordinates of the glyph as per the texture
+  /// source.
   IntRect bounds;
 
   /// Offset to move horizontally to the next character (spacing)
-  sint advance;
+  int advance;
 
-  /// Bounding rectangle coordinates of the glyph inside font's bitmap / texture
-  //IntRect texture_bounds;
+  /// \brief The additional X, Y rendering offsets to apply when copying the
+  /// glyph from the texture source to the output.
+  ///
+  /// \remarks This member field is implemented to support the BMFont file
+  /// spec -- char tag's 'xoffset' and 'yoffset' fields.
+  ///
+  /// \see nom::BMFont, nom::Text.
+  Point2i offset = Point2i::zero;
 };
 
 /// Table mapping glyph data with its corresponding texture

@@ -430,8 +430,13 @@ void Text::draw ( RenderTarget& target ) const
 
   // Use coordinates provided by interface user as our starting origin
   // coordinates to compute from
-  int x_offset = this->position().x;
-  int y_offset = this->position().y;
+  Point2i pos( this->position() );
+
+  // Additional rendering offsets; applicable to nom::BMFont
+  Point2i glyph_offset(Point2i::zero);
+
+  // Final rendering position
+  Point2i tex_pos(Point2i::zero);
 
   double angle = 0;
 
@@ -449,10 +454,10 @@ void Text::draw ( RenderTarget& target ) const
     angle = 12; // 12 degrees as per SDL2_ttf
   }
 
-  for ( uint32 pos = 0; pos < text_buffer.length(); ++pos )
-  {
+  for( auto i = 0; i < text_buffer.length(); ++i ) {
+
     // Apply kerning offset
-    current_char = text_buffer[pos];
+    current_char = text_buffer[i];
     kerning_value = this->font()->kerning( previous_char, current_char, this->text_size() );
 
     if( kerning_value != -1 )
@@ -464,35 +469,41 @@ void Text::draw ( RenderTarget& target ) const
         }
       #endif
 
-      x_offset += kerning_value;
+      pos.x += kerning_value;
     }
 
     previous_char = current_char;
 
+    glyph_offset =
+      this->font()->glyph( current_char, this->text_size() ).offset;
+
     if ( current_char == ' ' ) // Space character
     {
-      //Move over
-      x_offset += this->font()->spacing ( this->text_size() );
+      // Move over
+      pos.x += this->font()->spacing ( this->text_size() );
     }
     else if( current_char == '\n' || current_char == '\v' ) // Vertical chars
     {
-      //Move down and back over to the beginning of line
-      y_offset += this->font()->newline ( this->text_size() );
-      x_offset = this->position().x;
+      // Move down and back over to the beginning of line
+      pos.y += this->font()->newline ( this->text_size() );
+      pos.x = this->position().x;
     }
     else if( current_char == '\t' ) // Tab character (we indent two spaces)
     {
-      x_offset += this->font()->spacing ( this->text_size() ) * 2;
+      pos.x += this->font()->spacing ( this->text_size() ) * 2;
     }
     else // The time to render is now!
     {
-      this->texture_.set_position ( Point2i ( x_offset, y_offset ) );
+      // Apply rendering offsets; applicable to nom::BMFont glyphs
+      tex_pos = Point2i(pos.x + glyph_offset.x, pos.y + glyph_offset.y);
+
+      this->texture_.set_position(tex_pos);
       this->texture_.set_bounds ( this->font()->glyph(current_char, this->text_size() ).bounds );
 
       this->texture_.draw ( target.renderer(), angle );
 
       // Move over the width of the character with one pixel of padding
-      x_offset += ( this->font()->glyph(current_char, this->text_size() ).advance ) + 1;
+      pos.x += ( this->font()->glyph(current_char, this->text_size() ).advance ) + 1;
 
       // Prevent rendering of text that is longer than its contained size;
       // this generally must be set by the developer.
@@ -503,7 +514,7 @@ void Text::draw ( RenderTarget& target ) const
         // Maximal cropping bounds
         int bounds = this->position().x + this->size().w;
 
-        if( x_offset >= bounds ) break;
+        if( pos.x >= bounds ) break;
       }
 
     } // end else

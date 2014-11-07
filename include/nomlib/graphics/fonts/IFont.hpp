@@ -55,7 +55,8 @@ class IFont
     {
       NotDefined = 0,
       BitmapFont,
-      TrueTypeFont
+      TrueTypeFont,
+      BMFont
     };
 
     IFont( void )

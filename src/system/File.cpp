@@ -141,4 +141,21 @@ std::string File::env( const std::string& path )
   return this->file->env( path );
 }
 
+namespace priv {
+
+// Static initializations
+std::string file_root_ = "\0";
+
+} // namespace priv
+
+std::string file_root()
+{
+  return priv::file_root_;
+}
+
+void set_file_root(const std::string& root)
+{
+  priv::file_root_ = root;
+}
+
 } // namespace nom

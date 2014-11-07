@@ -1,0 +1,15 @@
+info face="Times New Roman" size=96 bold=0 italic=0 charset="" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=0,0
+common lineHeight=114 base=114 scaleW=1024 scaleH=1024 pages=1 packed=0
+page id=0 file="scoreboard.png"
+chars count=11
+char id=32 x=-1 y=1 width=0 height=0 xoffset=0 yoffset=0 xadvance=12 page=0 chnl=0
+char id=48 x=205 y=1 width=204 height=118 xoffset=0 yoffset=0 xadvance=12 page=0 chnl=0
+char id=49 x=411 y=1 width=135 height=118 xoffset=0 yoffset=0 xadvance=12 page=0 chnl=0
+char id=50 x=617 y=1 width=135 height=118 xoffset=0 yoffset=0 xadvance=12 page=0 chnl=0
+char id=51 x=-1 y=121 width=135 height=118 xoffset=0 yoffset=0 xadvance=12 page=0 chnl=0
+char id=52 x=205 y=121 width=135 height=118 xoffset=0 yoffset=0 xadvance=12 page=0 chnl=0
+char id=53 x=411 y=121 width=135 height=118 xoffset=0 yoffset=0 xadvance=12 page=0 chnl=0
+char id=54 x=617 y=121 width=135 height=118 xoffset=0 yoffset=0 xadvance=12 page=0 chnl=0
+char id=55 x=-1 y=241 width=135 height=118 xoffset=0 yoffset=0 xadvance=12 page=0 chnl=0
+char id=56 x=205 y=241 width=135 height=118 xoffset=0 yoffset=0 xadvance=12 page=0 chnl=0
+char id=57 x=411 y=241 width=135 height=118 xoffset=0 yoffset=0 xadvance=12 page=0 chnl=0

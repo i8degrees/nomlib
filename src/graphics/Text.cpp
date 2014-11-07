@@ -34,8 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Private headers
 #include "nomlib/graphics/fonts/Glyph.hpp"
 
-// #define NOM_DEBUG_OUTPUT_KERNING_VALUES
-
 namespace nom {
 
 Text::Text( void ) :
@@ -140,7 +138,7 @@ sint Text::text_width ( const std::string& text_string ) const
 {
   sint text_width = 0;
   uint32 previous_char = 0; // Kerning calculation
-  int kerning_value = -1;
+  int kerning_offset = 0;
   std::string text_buffer = text_string;
 
   // Ensure that our font pointer is still valid
@@ -159,11 +157,10 @@ sint Text::text_width ( const std::string& text_string ) const
     // Apply kerning offset
     uint32 current_char = text_buffer[pos];
 
-    kerning_value = this->font()->kerning( previous_char, current_char, this->text_size() );
+    kerning_offset = this->font()->kerning( previous_char, current_char, this->text_size() );
 
-    if( kerning_value != -1 )
-    {
-      text_width += kerning_value;
+    if( kerning_offset != nom::int_min ) {
+      text_width += kerning_offset;
     }
 
     previous_char = current_char;
@@ -423,8 +420,7 @@ void Text::set_alignment( uint32 align )
 
 void Text::draw ( RenderTarget& target ) const
 {
-  // Font kerning
-  int kerning_value = -1;
+  int kerning_offset = 0;
   uint32 previous_char = 0;
   uint32 current_char = 0;
 
@@ -458,18 +454,10 @@ void Text::draw ( RenderTarget& target ) const
 
     // Apply kerning offset
     current_char = text_buffer[i];
-    kerning_value = this->font()->kerning( previous_char, current_char, this->text_size() );
+    kerning_offset = this->font()->kerning( previous_char, current_char, this->text_size() );
 
-    if( kerning_value != -1 )
-    {
-      #if defined( NOM_DEBUG_OUTPUT_KERNING_VALUES )
-        if( kerning_value != 0 )
-        {
-          NOM_LOG_INFO( NOM, "kerning_value: ", kerning_value );
-        }
-      #endif
-
-      pos.x += kerning_value;
+    if( kerning_offset != nom::int_min ) {
+      pos.x += kerning_offset;
     }
 
     previous_char = current_char;

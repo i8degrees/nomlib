@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string> // std::size_t
 #include <vector>
+#include <limits> // min && max types
 
 #include "nomlib/platforms.hpp"
 
@@ -53,6 +54,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include <sys/types.h>
 #endif
 
+// FIXME: The following declaration is necessary in order to avoid a very
+// nasty compiling conflict that can happen under Windows anytime the
+// windef.h header file is included (commonly from windows.h), due to min and
+// max macros being declared there. This is why macros are evil.
+//
+// http://support.microsoft.com/kb/143208
+// http://stackoverflow.com/questions/5004858/stdmin-gives-error
+#if defined( NOM_PLATFORM_WINDOWS )
+  #undef min
+  #undef max
+#endif
+
 // Borrowed from /usr/include/MacTypes.h && /usr/include/objc/objc.h:
 #ifndef NULL
   #if defined( NOM_COMPILER_FEATURE_NULLPTR )
@@ -61,14 +74,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     #define NULL 0 //__DARWIN_NULL
   #endif
 #endif // ! NULL
-
-#ifndef nil
-  #if defined( NOM_COMPILER_FEATURE_NULLPTR )
-    #define nil nullptr
-  #else
-    #define nil 0 //__DARWIN_NULL
-  #endif
-#endif // ! nil
 
 // Portable fixed-size data types derive from stdint.h
 namespace nom {
@@ -131,6 +136,23 @@ typedef void* void_ptr;
 
 typedef unsigned long ulong;
 
+// Definitions for minimum && maximum integral types
+//
+// http://en.cppreference.com/w/cpp/types/numeric_limits
+const int int_min = std::numeric_limits<int>::lowest();
+const int int_max = std::numeric_limits<int>::max();
+const uint uint_min = std::numeric_limits<uint>::lowest();
+const uint uint_max = std::numeric_limits<uint>::max();
+
+const int char_min = std::numeric_limits<char>::lowest();
+const int char_max = std::numeric_limits<char>::max();
+const uint uchar_min = std::numeric_limits<uchar>::lowest();
+const uint uchar_max = std::numeric_limits<uchar>::max();
+
+// Always an unsigned type
+const size_type size_type_min = std::numeric_limits<size_type>::lowest();
+const size_type size_type_max = std::numeric_limits<size_type>::max();
+
 /// \brief An integer indicating that there is no match, an error or NULL.
 static const int npos = -1;
 
@@ -138,13 +160,6 @@ static const int npos = -1;
 ///
 /// \remarks Used in default initialization of nom::Text, nom::UIWidget, etc.
 static const int DEFAULT_FONT_SIZE = 12;
-
-/// \brief Upper limit of exact-width integer types
-#if defined( INT32_MAX )
-
-  /// \note As per /usr/include/stdint.h under OS X v10.9.x "Mavericks".
-  static const int MAX_INT = INT32_MAX;
-#endif
 
 /// \brief Alignment types.
 ///

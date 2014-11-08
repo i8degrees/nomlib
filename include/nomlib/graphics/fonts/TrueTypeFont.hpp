@@ -88,7 +88,7 @@ class TrueTypeFont: public IFont
     ///
     /// \remarks It is assumed that the requested character size is already
     /// loaded into memory (using TrueTypeFont::set_point_size).
-    const Image& image ( uint32 character_size ) const;
+    const Image* image(uint32 character_size) const;
 
     /// \brief Obtain text character spacing width in pixels
     ///

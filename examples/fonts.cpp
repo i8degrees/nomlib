@@ -157,7 +157,9 @@ class App: public nom::SDLApp
           this->update.restart();
         } // end refresh cycle
 
-        this->window.fill ( nom::Color4i::SkyBlue );
+        // Use a color slightly darker than anything we might be using for
+        // a color key, so that rendering problems will bleed through for us
+        this->window.fill( nom::Color4i::SkyBlue - nom::Color4i(10,10,10,255) );
 
         this->label_bfont.draw( this->window );
         this->label_tfont.draw( this->window );

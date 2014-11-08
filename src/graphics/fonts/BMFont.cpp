@@ -82,9 +82,9 @@ IFont::FontType BMFont::type() const
   return IFont::FontType::BMFont;
 }
 
-const Image& BMFont::image(uint32 character_size) const
+const Image* BMFont::image(uint32 character_size) const
 {
-  return *this->pages_[0].texture.get();
+  return this->pages_[0].texture.get();
 }
 
 const Glyph& BMFont::glyph(uint32 codepoint, uint32 character_size) const

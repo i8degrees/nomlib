@@ -98,9 +98,9 @@ TTF_Font* TrueTypeFont::font ( void ) const
   return this->font_.get();
 }
 
-const Image& TrueTypeFont::image ( uint32 character_size ) const
+const Image* TrueTypeFont::image(uint32 character_size) const
 {
-  return *this->pages_[character_size].texture.get();
+  return this->pages_[character_size].texture.get();
 }
 
 int TrueTypeFont::spacing ( uint32 character_size ) const

@@ -60,9 +60,9 @@ class Text: public Transformable
     {
       Normal = 1,         /// Default
       Bold = 2,
-      Italic = 4,         /// Verify working functionality
-      Underlined = 8,     /// Verify working functionality
-      Strikethrough = 16  /// Verify working functionality
+      Italic = 4,
+      Underlined = 8,
+      Strikethrough = 16
     };
 
     /// Default constructor
@@ -191,7 +191,7 @@ class Text: public Transformable
     /// need to worry about using the API in a particular order.
     ///
     /// \note Implements nom::IDrawable::update.
-    void update( void );
+    void update();
 
     /// \brief Get the current text width.
     int width() const;
@@ -200,6 +200,7 @@ class Text: public Transformable
     int height() const;
 
     Font font_;
+
     /// \fixme
     mutable Texture texture_;
 
@@ -210,6 +211,9 @@ class Text: public Transformable
 
     /// Current text effect set
     uint32 style_;
+
+    /// \see nom::Text::update
+    bool dirty_;
 };
 
 } // namespace nom

@@ -95,7 +95,7 @@ class BMFont: public IFont
     IFont::FontType type() const override;
 
     /// \param character_size Not implemented.
-    const Image& image(uint32 character_size) const override;
+    const Image* image(uint32 character_size) const;
 
     /// \param codepoint      The char identifier (an ASCII value) to lookup.
     /// \param character_size Not implemented.

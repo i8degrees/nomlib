@@ -39,6 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 
 #include "nomlib/config.hpp"
+#include "nomlib/math/Color4.hpp"
 #include "nomlib/graphics/fonts/IFont.hpp"
 #include "nomlib/graphics/fonts/FontMetrics.hpp"
 #include "nomlib/graphics/fonts/FontPage.hpp"
@@ -75,7 +76,7 @@ class BitmapFont: public IFont
 
     enum IFont::FontType type ( void ) const;
 
-    const Image& image ( uint32 character_size ) const;
+    const Image* image(uint32 character_size) const;
 
     /// \brief Obtain text character spacing width in pixels
     ///
@@ -177,6 +178,12 @@ class BitmapFont: public IFont
 
     /// General font metric data, such as the proper value for newline spacing
     FontMetrics metrics_;
+
+    /// \brief The pixel color found at the texture atlas position 0, 0 is used
+    /// as a color mask -- to filter out non-glyph data.
+    ///
+    /// \see nom::BitmapFont::build
+    Color4i color_mask_;
 };
 
 } // namespace nom

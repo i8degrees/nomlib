@@ -113,6 +113,7 @@ class TrueTypeFontTest: public nom::VisualUnitTest
 
       this->rendered_text.set_font(this->font);
       this->rendered_text.set_text(this->text);
+      this->rendered_text.set_style(this->style);
       this->rendered_text.set_text_size(this->pt_size);
       this->rendered_text.set_color(this->color);
 
@@ -146,6 +147,8 @@ class TrueTypeFontTest: public nom::VisualUnitTest
 
     /// \brief The text alignment.
     uint32 align = Anchor::None;
+
+    uint32 style = Text::Style::Normal;
 
     /// \brief The text color.
     Color4i color;
@@ -391,6 +394,78 @@ TEST_F(TrueTypeFontTest, BottomRightAlignment)
   this->text = "Hello, world!";
   this->pt_size = 48;
   this->align = Anchor::BottomRight;
+
+  EXPECT_EQ(true, this->load_font(font) )
+  << "Could not load font file: " << font;
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+}
+
+TEST_F(TrueTypeFontTest, Bold)
+{
+  std::string font =
+    this->resources.path() + "OpenSans-Regular.ttf";
+
+  this->style = Text::Style::Bold;
+
+  EXPECT_EQ(true, this->load_font(font) )
+  << "Could not load font file: " << font;
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+}
+
+TEST_F(TrueTypeFontTest, Italic)
+{
+  std::string font =
+    this->resources.path() + "OpenSans-Regular.ttf";
+
+  this->style = Text::Style::Italic;
+
+  EXPECT_EQ(true, this->load_font(font) )
+  << "Could not load font file: " << font;
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+}
+
+TEST_F(TrueTypeFontTest, Underline)
+{
+  std::string font =
+    this->resources.path() + "OpenSans-Regular.ttf";
+
+  this->style = Text::Style::Underlined;
+
+  EXPECT_EQ(true, this->load_font(font) )
+  << "Could not load font file: " << font;
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+}
+
+TEST_F(TrueTypeFontTest, Strikethrough)
+{
+  std::string font =
+    this->resources.path() + "OpenSans-Regular.ttf";
+
+  this->style = Text::Style::Strikethrough;
+
+  EXPECT_EQ(true, this->load_font(font) )
+  << "Could not load font file: " << font;
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+}
+
+TEST_F(TrueTypeFontTest, UseAllTextStyles)
+{
+  std::string font =
+    this->resources.path() + "OpenSans-Regular.ttf";
+
+  this->style =
+    Text::Style::Bold | Text::Style::Italic | Text::Style::Underlined |
+    Text::Style::Strikethrough;
 
   EXPECT_EQ(true, this->load_font(font) )
   << "Could not load font file: " << font;

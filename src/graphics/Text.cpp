@@ -40,7 +40,8 @@ Text::Text( void ) :
   Transformable { Point2i::null, Size2i::null }, // Base class
   text_size_ ( nom::DEFAULT_FONT_SIZE ),
   color_ ( Color4i::White ),
-  style_ ( Text::Style::Normal )
+  style_ ( Text::Style::Normal ),
+  dirty_(false)
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -59,7 +60,8 @@ Text::Text  (
   Transformable { Point2i::null, Size2i::null }, // Base class
   text_ ( text ),
   text_size_( character_size ),
-  style_( Text::Style::Normal )
+  style_( Text::Style::Normal ),
+  dirty_(false)
 {
   // NOM_LOG_TRACE( NOM );
 
@@ -76,7 +78,8 @@ Text::Text  (
   Transformable { Point2i::null, Size2i::null }, // Base class
   text_ ( text ),
   text_size_( character_size ),
-  style_( Text::Style::Normal )
+  style_( Text::Style::Normal ),
+  dirty_(false)
 {
   // NOM_LOG_TRACE( NOM );
 
@@ -243,13 +246,12 @@ void Text::set_font(Font* font)
 
 void Text::set_text( const std::string& text )
 {
-  if ( text == this->text() ) {
-    return;
+  if( text != this->text() ) {
+    this->text_ = text;
+
+    this->dirty_ = true;
+    this->update();
   }
-
-  this->text_ = text;
-
-  this->update();
 }
 
 void Text::set_text_size ( uint character_size )
@@ -265,6 +267,15 @@ void Text::set_text_size ( uint character_size )
   // Force a rebuild of the texture atlas at the specified point size
   this->font()->set_point_size( this->text_size() );
 
+  // We can only (sanely) initialize our texture once we know the text size; we
+  // will update this texture only as it becomes necessary (see ::update).
+  if( this->texture_.create( *this->font()->image( this->text_size() ), SDL_PIXELFORMAT_ARGB8888, Texture::Access::Streaming ) == false ) {
+    NOM_LOG_ERR(  NOM, "Could not create texture at point size:",
+                  std::to_string( this->text_size() ) );
+    return;
+  }
+
+  this->dirty_ = true;
   this->update();
 }
 
@@ -277,6 +288,7 @@ void Text::set_color( const Color4i& color )
 
   this->color_ = color;
 
+  this->dirty_ = true;
   this->update();
 }
 
@@ -290,6 +302,7 @@ void Text::set_style( uint32 style )
   // Set new style if sanity checks pass
   this->style_ = style;
 
+  this->dirty_ = true;
   this->update();
 }
 
@@ -322,7 +335,7 @@ void Text::draw ( RenderTarget& target ) const
 
   if ( this->style() == Text::Style::Italic )
   {
-    angle = 12; // 12 degrees as per SDL2_ttf
+    // angle = 12; // 12 degrees as per SDL2_ttf
   }
 
   for( auto i = 0; i < text_buffer.length(); ++i ) {
@@ -372,49 +385,63 @@ void Text::draw ( RenderTarget& target ) const
   } // end for loop
 }
 
-void Text::update( void )
+void Text::update()
 {
   uint32 style = this->style();
+  uint32 e_style = 0;
 
-  // No font has been loaded -- nothing to draw!
-  if ( this->valid() == false )
-  {
+  if( this->dirty_ == false ) {
     return;
   }
 
-  if( style & Text::Style::Normal )
-  {
-    this->font()->set_font_style( TTF_STYLE_NORMAL );
+  this->dirty_ = false;
+
+  // No font has been loaded -- nothing to draw!
+  if( this->valid() == false ) {
+    return;
   }
 
-  if( style & Text::Style::Bold )
-  {
-    this->font()->set_font_style( TTF_STYLE_BOLD );
+  e_style = this->font()->font_style();
+
+  if( style & Text::Style::Bold ) {
+    e_style |= TTF_STYLE_BOLD;
   }
 
-  if( style & Text::Style::Italic )
-  {
-    this->font()->set_font_style( TTF_STYLE_ITALIC );
+  if( style & Text::Style::Italic ) {
+    e_style |= TTF_STYLE_ITALIC;
   }
 
-  if( style & Text::Style::Underlined )
-  {
-    this->font()->set_font_style( TTF_STYLE_UNDERLINE );
+  if( style & Text::Style::Underlined ) {
+    e_style |= TTF_STYLE_UNDERLINE;
   }
 
-  if( style & Text::Style::Strikethrough )
-  {
-    this->font()->set_font_style( TTF_STYLE_STRIKETHROUGH );
+  if( style & Text::Style::Strikethrough ) {
+    e_style |= TTF_STYLE_STRIKETHROUGH;
+  }
+
+  // Expensive call
+  if( ! (style & Text::Style::Normal) ) {
+    this->font()->set_font_style(e_style);
   }
 
   // Update the texture atlas; this is necessary anytime we rebuild the font's
   // glyphs cache, such as when we change the text's font point size or rendering
   // style.
-  if( this->texture_.create( this->font()->image( this->text_size() ) ) == false )
-  {
-    NOM_LOG_ERR ( NOM, "Could not create texture at point size: " + std::to_string( this->text_size() ) );
+  const Image* source = this->font()->image( this->text_size() );
+
+  if( source->valid() == false ) {
+    NOM_LOG_ERR(  NOM,
+                  "Could not update texture: invalid glyph image source." );
     return;
   }
+
+  this->texture_.lock();
+  this->texture_.copy_pixels( source->pixels(),
+                              source->pitch() * source->height() );
+  this->texture_.unlock();
+
+  // Preserve alpha channel
+  this->texture_.set_blend_mode(SDL_BLENDMODE_BLEND);
 
   // Update the font's text color.
   this->texture_.set_color_modulation( this->color() );

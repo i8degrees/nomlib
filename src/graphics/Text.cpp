@@ -411,7 +411,7 @@ void Text::update()
     e_style |= TTF_STYLE_ITALIC;
   }
 
-  if( style & Text::Style::Underlined ) {
+  if( style & Text::Style::Underline ) {
     e_style |= TTF_STYLE_UNDERLINE;
   }
 

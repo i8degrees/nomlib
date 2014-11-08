@@ -435,7 +435,7 @@ TEST_F(TrueTypeFontTest, Underline)
   std::string font =
     this->resources.path() + "OpenSans-Regular.ttf";
 
-  this->style = Text::Style::Underlined;
+  this->style = Text::Style::Underline;
 
   EXPECT_EQ(true, this->load_font(font) )
   << "Could not load font file: " << font;
@@ -464,7 +464,7 @@ TEST_F(TrueTypeFontTest, UseAllTextStyles)
     this->resources.path() + "OpenSans-Regular.ttf";
 
   this->style =
-    Text::Style::Bold | Text::Style::Italic | Text::Style::Underlined |
+    Text::Style::Bold | Text::Style::Italic | Text::Style::Underline |
     Text::Style::Strikethrough;
 
   EXPECT_EQ(true, this->load_font(font) )

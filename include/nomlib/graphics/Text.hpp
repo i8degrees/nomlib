@@ -61,7 +61,7 @@ class Text: public Transformable
       Normal = 1,         /// Default
       Bold = 2,
       Italic = 4,
-      Underlined = 8,
+      Underline = 8,
       Strikethrough = 16
     };
 

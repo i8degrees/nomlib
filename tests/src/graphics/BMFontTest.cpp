@@ -223,7 +223,6 @@ TEST_F(BMFontTest, RenderScoreboardFont)
 
 TEST_F(BMFontTest, RenderGameOverFont)
 {
-  Glyph g;
   nom::Font font;
 
   Text rendered_text;
@@ -251,7 +250,6 @@ TEST_F(BMFontTest, RenderGameOverFont)
 
 TEST_F(BMFontTest, RenderMultipleLines)
 {
-  Glyph g;
   nom::Font font;
 
   Text rendered_text;
@@ -267,6 +265,99 @@ TEST_F(BMFontTest, RenderMultipleLines)
 
   EXPECT_EQ( Size2i(340,270), rendered_text.size() );
   EXPECT_EQ( 90, font->newline(0) )
+  << "Text line spacing (newline) should be the same as the 'lineHeight' field.";
+
+  this->append_render_callback( [&] ( const RenderWindow& win ) {
+    rendered_text.draw( this->render_window() );
+  });
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+}
+
+TEST_F(BMFontTest, Kerning)
+{
+  int kerning_offset = 0;
+  nom::Font font;
+
+  Text rendered_text;
+  std::string filename = resources.path() + "gameover.fnt";
+
+  ASSERT_TRUE( font.load(filename) )
+  << "Could not load input texture source: " << filename;
+
+  rendered_text.set_font(font);
+  rendered_text.set_text("WAV");
+  rendered_text.set_position( Point2i(0,0) );
+  nom::set_alignment(&rendered_text, this->resolution(), Anchor::MiddleCenter);
+
+  kerning_offset = font->kerning(87, 65, 0);
+  EXPECT_EQ(-7, kerning_offset);
+
+  EXPECT_EQ( Size2i(159,90), rendered_text.size() );
+  EXPECT_EQ( 90, font->newline(0) )
+  << "Text line spacing (newline) should be the same as the 'lineHeight' field.";
+
+  this->append_render_callback( [&] ( const RenderWindow& win ) {
+    rendered_text.draw( this->render_window() );
+  });
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+}
+
+TEST_F(BMFontTest, NoKerning)
+{
+  int kerning_offset = 0;
+  nom::Font font;
+
+  Text rendered_text;
+  std::string filename = resources.path() + "gameover.fnt";
+
+  ASSERT_TRUE( font.load(filename) )
+  << "Could not load input texture source: " << filename;
+
+  rendered_text.set_font(font);
+  rendered_text.set_text("WAV");
+  rendered_text.set_position( Point2i(0,0) );
+  nom::set_alignment(&rendered_text, this->resolution(), Anchor::MiddleCenter);
+
+  font->set_font_kerning(false);
+
+  kerning_offset = font->kerning(87, 65, 0);
+  EXPECT_EQ(0, kerning_offset);
+
+  EXPECT_EQ( Size2i(159,90), rendered_text.size() );
+  EXPECT_EQ( 90, font->newline(0) )
+  << "Text line spacing (newline) should be the same as the 'lineHeight' field.";
+
+  this->append_render_callback( [&] ( const RenderWindow& win ) {
+    rendered_text.draw( this->render_window() );
+  });
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+}
+
+/// \remarks The default settings of [BMFont v1.14b](http://www.angelcode.com/products/bmfont/)
+/// were used to export the files used in this test.
+TEST_F(BMFontTest, RenderAngelCodeBMFontExport)
+{
+  nom::Font font;
+  Text rendered_text;
+
+  std::string filename = resources.path() + "arial.fnt";
+
+  ASSERT_TRUE( font.load(filename) )
+  << "Could not load input texture source: " << filename;
+
+  rendered_text.set_font(font);
+  rendered_text.set_text("Hello, World!");
+  rendered_text.set_position( Point2i(0,0) );
+  nom::set_alignment(&rendered_text, this->resolution(), Anchor::MiddleCenter);
+
+  EXPECT_EQ( Size2i(169,32), rendered_text.size() );
+  EXPECT_EQ( 32, font->newline(0) )
   << "Text line spacing (newline) should be the same as the 'lineHeight' field.";
 
   this->append_render_callback( [&] ( const RenderWindow& win ) {

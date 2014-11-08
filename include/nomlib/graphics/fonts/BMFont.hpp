@@ -224,3 +224,8 @@ class BMFont: public IFont
 /// Only one glyph page is supported. String sequences with spaces are not
 /// supported.
 ///
+/// Software this interface has been tested with includes:
+///
+/// [BMGlyph v2.0.4](http://www.bmglyph.com/)
+/// [BMFont v1.14b](http://www.angelcode.com/products/bmfont/)
+///

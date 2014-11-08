@@ -348,7 +348,10 @@ class Texture
     /// \todo ERR check on locking call, etc.
     ///
     /// (This method requires locking the texture; use wisely!).
-    bool set_colorkey ( const Color4i& colorkey );
+    ///
+    /// \remarks This method converts a a color key to a fully transparent
+    /// alpha channel.
+    bool set_colorkey(const Color4i& colorkey);
 
     /// \brief    Set an additional color value multiplied into render copy
     ///           operations

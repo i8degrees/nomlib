@@ -1015,24 +1015,26 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Texture::set_colorkey ( const Color4i& colorkey )
+bool Texture::set_colorkey(const Color4i& colorkey)
 {
-  this->lock ( this->bounds() ); // Safe for writing
+  Color4i tcolor(colorkey);
+  tcolor.a = 0;
 
   uint32* pixels = static_cast<uint32*> ( this->pixels() );
-
   uint32 key = RGB ( colorkey, this->pixel_format() );
-  uint32 transparent = RGBA ( colorkey, this->pixel_format() );
+  uint32 transparent = RGBA( tcolor, this->pixel_format() );
+
+  this->lock ( this->bounds() ); // Safe for writing
 
   for ( auto idx = 0; idx < ( this->pitch() / 4 ) * this->height(); ++idx )
   {
     if ( pixels[idx] == key ) pixels[idx] = transparent;
   }
 
+  this->colorkey_ = colorkey; // Cache the state of our color key used
+
   // Once we unlock the texture, it will be uploaded to the GPU
   this->unlock();
-
-  this->colorkey_ = colorkey; // Cache the state of our color key used
 
   return true;
 }

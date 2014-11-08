@@ -95,7 +95,7 @@ class BMFont: public IFont
     IFont::FontType type() const override;
 
     /// \param character_size Not implemented.
-    const Image* image(uint32 character_size) const;
+    const Image* image(uint32 character_size) const override;
 
     /// \param codepoint      The char identifier (an ASCII value) to lookup.
     /// \param character_size Not implemented.
@@ -146,7 +146,7 @@ class BMFont: public IFont
     /// \brief Set the use of kerning for the font.
     ///
     /// \remarks Not implemented.
-    void set_font_kerning(bool state);
+    void set_font_kerning(bool state) override;
 
     bool load(const std::string& filename) override;
 

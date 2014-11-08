@@ -69,46 +69,46 @@ class BitmapFont: public IFont
     BitmapFont ( const BitmapFont& copy );
 
     /// \brief Construct a clone of the existing instance
-    IFont::raw_ptr clone( void ) const;
+    IFont::raw_ptr clone( void ) const override;
 
     /// \brief Validity check
-    bool valid ( void ) const;
+    bool valid ( void ) const override;
 
-    enum IFont::FontType type ( void ) const;
+    enum IFont::FontType type ( void ) const override;
 
-    const Image* image(uint32 character_size) const;
+    const Image* image(uint32 character_size) const override;
 
     /// \brief Obtain text character spacing width in pixels
     ///
     /// \returns  The width applied when the space carriage is encountered when
     ///           rendered.
-    sint spacing ( uint32 character_size ) const;
+    sint spacing ( uint32 character_size ) const override;
 
     /// \brief Obtain font's line spacing
     ///
     /// \param character_size Point size in pixels
     ///
     /// \returns  Height offset in pixels
-    int newline( uint32 character_size ) const;
+    int newline( uint32 character_size ) const override;
 
     /// \brief Obtain the kerning pair offsets between two glyphs.
     ///
     /// \returns Zero (0) is always returned.
     ///
     /// \remarks This method is not implemented.
-    int kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const;
+    int kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const override;
 
     /// \brief Get the font's hinting style.
     ///
     /// \remarks This method is not implemented.
     ///
     /// \returns Zero.
-    int hinting( void ) const;
+    int hinting( void ) const override;
 
     /// \brief Get the rendering style of the font.
     ///
     /// \remarks This method is not implemented.
-    uint32 font_style( void ) const;
+    uint32 font_style( void ) const override;
 
     /// \brief Obtain a glyph
     ///
@@ -116,40 +116,40 @@ class BitmapFont: public IFont
     /// \param    character_size   Reserved for future implementation
     ///
     /// \returns  nom::Glyph structure
-    const Glyph& glyph ( uint32 codepoint, uint32 character_size ) const;
+    const Glyph& glyph ( uint32 codepoint, uint32 character_size ) const override;
 
     /// \brief Set a new font point size
     ///
     /// \param size Point size in pixels
     ///
     /// \remarks Not implemented
-    bool set_point_size ( sint size );
+    bool set_point_size ( sint size ) override;
 
     /// \brief Set the requested font hinting style.
     ///
     /// \remarks This method is not implemented.
-    bool set_hinting( int type );
+    bool set_hinting( int type ) override;
 
     /// \remarks This method is not implemented.
-    bool set_outline( int );
+    bool set_outline( int ) override;
 
     /// \brief Set the rendering style of the font.
     ///
     /// \remarks This method is not implemented.
-    void set_font_style( uint32 style );
+    void set_font_style( uint32 style ) override;
 
     /// \brief Set the use of kerning for the font.
     ///
     /// \remarks This method is not implemented.
-    void set_font_kerning(bool state);
+    void set_font_kerning(bool state) override;
 
     /// \brief Loads a new bitmap font from a file
-    bool load( const std::string& filename );
+    bool load( const std::string& filename ) override;
 
     /// \brief Obtain information about the loaded font
     ///
     /// \remarks Implements IFont::metrics.
-    const FontMetrics& metrics( void ) const;
+    const FontMetrics& metrics( void ) const override;
 
   private:
     /// Trigger a build of the font characteristics gleaned from the image file;

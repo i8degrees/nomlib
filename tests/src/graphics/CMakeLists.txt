@@ -62,6 +62,38 @@ if( NOM_BUILD_GRADIENT_TESTS )
           )
 endif( NOM_BUILD_GRADIENT_TESTS )
 
+if(NOM_BUILD_BITMAP_FONT_TEST)
+
+  add_executable  (
+                    BitmapFontTest
+                    ${NOM_TESTS_SOURCE_DIR}/graphics/BitmapFontTest.cpp
+                    # VisualUnitTest
+                    ${NOM_TESTS_COMMON_SOURCE}
+                    ${NOM_TESTS_VTEST_SOURCE}
+                  )
+
+  target_link_libraries (
+                          BitmapFontTest
+                          ${GTEST_LIBRARY}
+                          ${PROJECT_NAME} # nomlib
+                        )
+
+  GTEST_ADD_TESTS (
+                    BitmapFontTest
+                    "" # args
+                    ${NOM_TESTS_SOURCE_DIR}/graphics/BitmapFontTest.cpp
+                  )
+
+  # Copy resource files for the test
+  install (
+            FILES
+            "${NOM_TESTS_RESOURCES_DIR}/graphics/BitmapFontTest.json"
+            DESTINATION
+            "${TESTS_DEPS_INSTALL_PEFIX}"
+          )
+
+endif(NOM_BUILD_BITMAP_FONT_TEST)
+
 if(NOM_BUILD_TRUETYPE_FONT_TEST)
 
     add_executable  (
@@ -91,6 +123,7 @@ if(NOM_BUILD_TRUETYPE_FONT_TEST)
             DESTINATION
             "${TESTS_DEPS_INSTALL_PEFIX}"
           )
+
 endif(NOM_BUILD_TRUETYPE_FONT_TEST)
 
 if(NOM_BUILD_BMFONT_TEST)

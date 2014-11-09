@@ -474,6 +474,91 @@ TEST_F(TrueTypeFontTest, UseAllTextStyles)
   EXPECT_TRUE( this->compare() );
 }
 
+/// \brief An interactive test for variable point size rendering.
+///
+/// \remarks This is a test to help determine efficiency of the glyph cache
+/// when rendering text with many different point sizes. Large memory
+/// allocations (i.e.: generation of a glyph page) should not occur after the
+/// initial caching -- the two things to look out for: a) large FPS drop;
+/// b) stuttering.
+///
+/// \note Use your mouse wheel's Y axis -- up and down -- to zoom in and out.
+TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
+{
+  const int MIN_POINT_SIZE = 9;
+  const int MAX_POINT_SIZE = 72;
+
+  std::string font =
+    this->resources.path() + "OpenSans-Regular.ttf";
+
+  this->text = "Hello, world!";
+  this->pt_size = MIN_POINT_SIZE;
+  this->align = Anchor::MiddleCenter;
+
+  ASSERT_TRUE(this->load_font(font) == true)
+  << "Could not load font file: " << font;
+
+  // Cache the glyphs of the font's point size range that we wish to test for
+  for( auto idx = MIN_POINT_SIZE - 1; idx != MAX_POINT_SIZE; ++idx ) {
+    this->rendered_text.set_text_size(idx + 1);
+  }
+
+  this->rendered_text.set_text_size(nom::DEFAULT_FONT_SIZE);
+
+  // Register additional input bindings
+  InputActionMapper wheel;
+
+  EventCallback zoom_in( [&] (const Event& evt) {
+    int current_size = this->rendered_text.text_size();
+
+    if( current_size < MAX_POINT_SIZE ) {
+      this->rendered_text.set_text_size(current_size += 1);
+
+      // Reset alignment calcs
+      nom::set_alignment( &this->rendered_text,
+                          Size2i( this->resolution() ),
+                          Anchor::None );
+
+      nom::set_alignment( &this->rendered_text,
+                          Size2i( this->resolution() ),
+                          this->align );
+    }
+  });
+
+  EventCallback zoom_out( [&] (const Event& evt) {
+    int current_size = this->rendered_text.text_size();
+
+    if( current_size >= MIN_POINT_SIZE ) {
+      this->rendered_text.set_text_size(current_size -= 1);
+
+      // Reset alignment calcs
+      nom::set_alignment( &this->rendered_text,
+                          Size2i( this->resolution() ),
+                          Anchor::None );
+
+      nom::set_alignment( &this->rendered_text,
+                          Size2i( this->resolution() ),
+                          this->align );
+    }
+  });
+
+  wheel.insert( "zoom_in",
+                 MouseWheelAction(  SDL_MOUSEWHEEL,
+                                    MouseWheelAction::AXIS_Y,
+                                    MouseWheelAction::UP ), zoom_in );
+
+  wheel.insert( "zoom_out",
+                 MouseWheelAction(  SDL_MOUSEWHEEL,
+                                    MouseWheelAction::AXIS_Y,
+                                    MouseWheelAction::DOWN ), zoom_out );
+
+  this->input_mapper_.insert("zoom_in", wheel, true);
+  this->input_mapper_.insert("zoom_out", wheel, true);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  // EXPECT_TRUE( this->compare() );
+}
+
 } // namespace nom
 
 int main( int argc, char** argv )

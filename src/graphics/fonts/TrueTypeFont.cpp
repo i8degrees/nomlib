@@ -46,7 +46,7 @@ TrueTypeFont::TrueTypeFont ( void ) :
   sheet_width_ ( 16 ),
   sheet_height_ ( 16 ),
   point_size_ ( nom::DEFAULT_FONT_SIZE ),   // Terrible Eyesight (TM)
-  kerning_( true )
+  use_kerning_(true)
 {
   // NOM_LOG_TRACE( NOM );
 
@@ -71,7 +71,7 @@ TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy ) :
   metrics_ { copy.metrics() },
   filename_ { copy.filename_ },
   point_size_ { copy.point_size() },
-  kerning_{ copy.kerning_ }
+  use_kerning_(copy.use_kerning_)
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -134,7 +134,7 @@ int TrueTypeFont::kerning( uint32 first_char, uint32 second_char, uint32 charact
   //   return kerning_offset;
   // }
 
-  if( this->kerning_ == false ) {
+  if( this->use_kerning_ == false ) {
     // Use of kerning pair offsets are disabled
     return kerning_offset;
   }
@@ -147,7 +147,7 @@ int TrueTypeFont::kerning( uint32 first_char, uint32 second_char, uint32 charact
   // NOM_LOG_INFO( NOM, "sdl2_ttf kerning: ", TTF_GetFontKerning( this->font() ) );
 
   // Check for state consistency between SDL_TTF and us
-  NOM_ASSERT(TTF_GetFontKerning( this->font() ) == this->kerning_);
+  NOM_ASSERT(TTF_GetFontKerning( this->font() ) == this->use_kerning_);
 
   kerning_offset = TTF_GetFontKerningSize(this->font(), first_char, second_char);
 
@@ -298,12 +298,12 @@ void TrueTypeFont::set_font_kerning( bool state )
   if( state == true )
   {
     TTF_SetFontKerning( this->font(), 1 );
-    this->kerning_ = true;
+    this->use_kerning_ = true;
   }
   else
   {
     TTF_SetFontKerning( this->font(), 0 );
-    this->kerning_ = false;
+    this->use_kerning_ = false;
   }
 }
 

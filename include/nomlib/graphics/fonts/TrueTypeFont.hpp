@@ -120,8 +120,6 @@ class TrueTypeFont: public IFont
     /// TTF_HINTING_MONO or TTF_HINTING_NONE.
     ///
     /// \remarks The default hinting is TTF_HINTING_NONE.
-    ///
-    /// \todo Change argument type from int to uint32.
     int hinting( void ) const override;
 
     /// \brief Obtain a glyph
@@ -167,8 +165,6 @@ class TrueTypeFont: public IFont
     ///
     /// \note This method call forces a rebuild of the glyph cache if the input
     /// type does not match the last known hinting.
-    ///
-    /// \todo Change argument type from int to uint32.
     bool set_hinting( int type ) override;
 
     /// \brief Set font's outline size
@@ -183,8 +179,6 @@ class TrueTypeFont: public IFont
     /// \param style A bit-mask composed of one or more of the following styles:
     /// TTF_STYLE_BOLD, TTF_STYLE_ITALIC, TTF_STYLE_UNDERLINE,
     /// TTF_STYLE_STRIKETHROUGH.
-    ///
-    /// \fixme This method must be called *after* ::set_font_size.
     void set_font_style( uint32 style ) override;
 
     /// \brief Set the use of kerning for the font.
@@ -263,9 +257,7 @@ class TrueTypeFont: public IFont
     /// \brief Whether or not to use font kerning.
     ///
     /// \remarks Default is true.
-    ///
-    /// \todo Rename to use_kerning_.
-    bool kerning_;
+    bool use_kerning_;
 };
 
 } // namespace nom

@@ -474,19 +474,21 @@ TEST_F(TrueTypeFontTest, UseAllTextStyles)
   EXPECT_TRUE( this->compare() );
 }
 
-/// \brief An interactive test for variable point size rendering.
-///
-/// \remarks This is a test to help determine efficiency of the glyph cache
-/// when rendering text with many different point sizes. Large memory
-/// allocations (i.e.: generation of a glyph page) should not occur after the
-/// initial caching -- the two things to look out for: a) large FPS drop;
-/// b) stuttering.
-///
-/// \note Use your mouse wheel's Y axis -- up and down -- to zoom in and out.
 TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
 {
   const int MIN_POINT_SIZE = 9;
   const int MAX_POINT_SIZE = 72;
+  std::stringstream help_info;
+
+  help_info << "This is a test to help determine efficiency of the glyph cache."
+  << "Your mission, should you accept it, is to ensure acceptable performance"
+  << "of text rendering when rapidly changing the text's point size.\n\n";
+
+  help_info << "The things to watch out for include:\n  a) unstable FPS\n"
+  << "  b) stuttering\n\n";
+
+  help_info << "Use your mouse wheel's Y-axis to zoom the text in and out as"
+  << " quickly as you can.";
 
   std::string font =
     this->resources.path() + "OpenSans-Regular.ttf";
@@ -554,6 +556,9 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
 
   this->input_mapper_.insert("zoom_in", wheel, true);
   this->input_mapper_.insert("zoom_out", wheel, true);
+
+  nom::DialogMessageBox(  this->test_case() + ":" + this->test_name(),
+                          help_info.str() );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   // EXPECT_TRUE( this->compare() );

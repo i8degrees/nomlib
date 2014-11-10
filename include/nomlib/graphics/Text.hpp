@@ -58,7 +58,7 @@ class Text: public Transformable
     /// \fixme Implement styles for BitmapFont objects.
     enum Style: uint32
     {
-      Normal = 1,         /// Default
+      Normal = 0,         /// Default
       Bold = 2,
       Italic = 4,
       Underline = 8,

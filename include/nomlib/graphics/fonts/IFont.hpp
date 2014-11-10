@@ -84,8 +84,13 @@ class IFont
     virtual const FontMetrics& metrics( void ) const = 0;
 
     virtual bool set_point_size( int ) = 0;
+
+    /// \todo Rename to set_font_hinting..?
     virtual bool set_hinting( int ) = 0;
+
+    /// \todo Rename to set_font_outline..?
     virtual bool set_outline( int ) = 0;
+
     virtual void set_font_style( uint32 style ) = 0;
     virtual void set_font_kerning( bool state ) = 0;
 

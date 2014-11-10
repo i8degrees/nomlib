@@ -165,6 +165,8 @@ class TrueTypeFont: public IFont
     ///
     /// \note This method call forces a rebuild of the glyph cache if the input
     /// type does not match the last known hinting.
+    ///
+    /// \fixme This feature is broken.
     bool set_hinting( int type ) override;
 
     /// \brief Set font's outline size

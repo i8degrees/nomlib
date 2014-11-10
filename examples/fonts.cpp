@@ -28,29 +28,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
 #include <iostream>
+#include <cstdlib>
 #include <string>
 
+#include "tclap/CmdLine.h"
+
+#include <nomlib/math.hpp>
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
-/// File path name of the resources directory; this must be a relative file path.
-const std::string APP_RESOURCES_DIR = "Resources";
-
-const nom::Path p;
-const std::string RESOURCE_ICON = APP_RESOURCES_DIR + p.native() + "icon.png";
-// TODO: Replace w/ nom::SearchPath
-const std::string RESOURCE_BITMAP_FONT = APP_RESOURCES_DIR + p.native() + "VIII.png";
-const std::string RESOURCE_BITMAP_SMALL_FONT = APP_RESOURCES_DIR + p.native() + "VIII_small.png";
-const std::string RESOURCE_TRUETYPE_FONT = APP_RESOURCES_DIR + p.native() + "arial.ttf";
-
 /// Name of our application.
-const std::string APP_NAME = "nom::BitmapFont";
+const std::string APP_NAME = "fonts";
 
 /// Width, in pixels, of our effective rendering surface.
-const nom::int32 WINDOW_WIDTH = 768;
+const nom::int32 WINDOW_WIDTH = 640;
 
 /// Height, in pixels, of our effective rendering surface.
-const nom::int32 WINDOW_HEIGHT = 448;
+const nom::int32 WINDOW_HEIGHT = 480;
 
 /// Relative filename path to saved screenshot example
 ///
@@ -58,39 +52,64 @@ const nom::int32 WINDOW_HEIGHT = 448;
 /// executable
 const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
 
-const std::string RESOURCE_FONT_TEXT_STRING = "!\"#$%&'()*+,-.\n//0123456789\n:;<=>?@\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n[\\]^_`\nabcdefghijklmnopqrstuvwxyz\n{|}~";
-//const std::string RESOURCE_FONT_TEXT_STRING = "I am a Bitmap Font";
+/// \brief Defaults for text rendering.
+///
+/// \remarks See program usage by passing --help
+struct AppFlags
+{
+  /// --text argument; optional
+  std::string text = "!\"#$%&'()*+,-.\n//0123456789\n:;<=>?@\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n[\\]^_`\nabcdefghijklmnopqrstuvwxyz\n{|}~";
 
-const int MAX_FONT_POINT_SIZE = 41;
-const int MIN_FONT_POINT_SIZE = 9;
+  /// -b -i -s -u arguments; optional
+  nom::uint32 style = nom::Text::Style::Normal;
 
-/// \brief nom::BitmapFont usage example
-class App: public nom::SDLApp
+  /// --type argument; optional
+  // std::string type;
+  // nom::IFont::FontType font_type = nom::IFont::FontType::NotDefined;
+
+  /// --no-kerning
+  bool use_kerning = true;
+
+  /// --hinting
+  bool use_hinting = false;
+
+  /// last argument 1/2; required
+  std::string filename;
+
+  /// last argument 2/2; optional
+  int pt_size = nom::DEFAULT_FONT_SIZE;
+};
+
+/// \brief Text rendering with nom::Font
+class FontRenderingApp: public nom::SDLApp
 {
   public:
-    App( nom::int32 argc, char* argv[] )
+    FontRenderingApp(const AppFlags& opts)
     {
-      NOM_LOG_TRACE ( NOM );
+      NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE);
 
-      // Fatal error; if we are not able to complete this step, it means that
-      // we probably cannot rely on our resource paths!
-      if( nom::init( argc, argv ) == false )
-      {
-        nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
-        exit ( NOM_EXIT_FAILURE );
-      }
+      nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_TEST, nom::NOM_LOG_PRIORITY_CRITICAL);
 
-      atexit( nom::quit );
+      NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "opts.style:", this->opts.style);
+      // NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "opts.font_type:", this->opts.font_type);
+      NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "opts.text:", this->opts.text);
+      NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "opts.use_kerning:", this->opts.use_kerning);
+      NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "opts.use_hinting:", this->opts.use_hinting);
+      NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "opts.filename:", this->opts.filename);
+      NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "opts.pt_size:", this->opts.pt_size);
+
+      this->opts = opts;
     }
 
-    ~App( void )
+    virtual ~FontRenderingApp()
     {
-      NOM_LOG_TRACE ( NOM );
-    } // ~App
+      NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE);
+    }
 
-    bool on_init ( void )
+    bool on_init() override
     {
-      nom::uint32 window_flags = 0; //SDL_WINDOW_RESIZABLE
+      nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
+
       if ( nom::set_hint ( SDL_HINT_RENDER_VSYNC, "0" ) == false )
       {
         NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
@@ -109,20 +128,26 @@ class App: public nom::SDLApp
       // Scale window contents up by the new width & height
       this->window.set_logical_size ( this->window.size() );
 
-      if ( this->window.set_window_icon ( RESOURCE_ICON ) == false )
-      {
-        nom::DialogMessageBox ( APP_NAME, "Could not load window icon: " + RESOURCE_ICON );
-        return false;
-      }
+      // FIXME:
+      // if ( this->window.set_window_icon ( RESOURCE_ICON ) == false )
+      // {
+      //   nom::DialogMessageBox ( APP_NAME, "Could not load window icon: " + RESOURCE_ICON );
+      //   return false;
+      // }
 
-      this->load_bitmap_font();
-      this->load_truetype_font();
-      this->load_truetype_font2();
+      nom::File fp;
+      nom::Path p;
+      // Used by nom::BMFont interface; this sets the relative file root for
+      // filenames given in .FNT files to be loaded from, using the pages tag's
+      // 'file' field.
+      nom::set_file_root( fp.path(this->opts.filename) + p.native() );
+
+      this->load_font();
 
       return true;
     } // onInit
 
-    nom::int32 Run ( void )
+    nom::int32 Run ( void ) override
     {
       this->update.start();
       this->fps.start();
@@ -161,19 +186,21 @@ class App: public nom::SDLApp
         // a color key, so that rendering problems will bleed through for us
         this->window.fill( nom::Color4i::SkyBlue - nom::Color4i(10,10,10,255) );
 
-        this->label_bfont.draw( this->window );
-        this->label_tfont.draw( this->window );
-        this->label_tfont2.draw( this->window );
+        if( this->rendered_text.valid() ) {
+          this->rendered_text.draw(this->window);
+        }
 
       } // end while SDLApp::running() is true
       return NOM_EXIT_SUCCESS;
     } // Run
 
   private:
+    AppFlags opts;
+
     /// \brief Event handler for key down actions.
     ///
     /// Implements the nom::Input::on_key_down method.
-    void on_key_down( const nom::Event& ev )
+    void on_key_down( const nom::Event& ev ) override
     {
       switch ( ev.key.sym )
       {
@@ -214,41 +241,6 @@ class App: public nom::SDLApp
       } // end switch key
     } // onKeyDown
 
-    void increase_font_size( nom::uint point_size )
-    {
-      nom::uint current_size = this->label_tfont.text_size();
-
-      if( current_size < MAX_FONT_POINT_SIZE )
-      {
-        this->label_tfont.set_text_size( current_size += point_size );
-      }
-    }
-
-    void decrease_font_size( nom::uint point_size )
-    {
-      nom::uint current_size = this->label_tfont.text_size();
-
-      if( current_size >= MIN_FONT_POINT_SIZE )
-      {
-        this->label_tfont.set_text_size( current_size -= point_size );
-      }
-    }
-
-    void on_mouse_wheel( const nom::Event& ev )
-    {
-      // Filter out non-wheel events (otherwise we can receive false positives)
-      if( ev.type != SDL_MOUSEWHEEL ) return;
-
-      if( ev.wheel.y > 0 )  // Up
-      {
-        this->increase_font_size( 1 );
-      }
-      else if( ev.wheel.y < 0 ) // Down
-      {
-        this->decrease_font_size( 1 );
-      }
-    }
-
   private:
     /// Window handle
     nom::RenderWindow window;
@@ -259,111 +251,172 @@ class App: public nom::SDLApp
     /// Timer for tracking frames per second
     nom::FPS fps;
 
-    nom::Font bitmap_font;
-    nom::Font truetype_font;
-    // nom::BitmapFont bitmap_font;
-    // nom::TrueTypeFont truetype_font;
+    nom::Font font;
+    nom::Text rendered_text;
 
-    nom::Text label_bfont;
-    nom::Text label_tfont;
-    nom::Text label_tfont2;
-
-    bool load_bitmap_font( void )
+    bool load_font()
     {
-      if ( this->bitmap_font.load( RESOURCE_BITMAP_FONT ) == false )
-      {
-        nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
+      if( this->font.load(this->opts.filename) == false ) {
+
+        nom::DialogMessageBox(  APP_NAME,
+                                "Could not load font file:" +
+                                this->opts.filename );
         return false;
       }
 
-      this->label_bfont.set_font( this->bitmap_font );
+      this->font->set_font_kerning(this->opts.use_kerning);
 
-      this->label_bfont.set_position  ( nom::Point2i(
-                                        ( this->window.size().w
-                                          -
-                                          this->label_bfont.size().w
-                                        ) / 2,
-                                        ( this->window.size().h
-                                          -
-                                          this->label_bfont.size().h
-                                        ) / 2
-                                                    )
-                                      );
+      // TODO: support additional hinting types; see TrueTypeFont.hpp
+      // FIXME: Not working; methinks the problem might be in TrueTypeFont
+      // class, although it would not hurt to verify SDL2_ttf functionality
+      // using the included 'showfont' binary.
+      // if( this->opts.use_hinting == true ) {
+      //   this->font->set_hinting(TTF_HINTING_LIGHT);
+      // }
 
-      this->label_bfont.set_text ( RESOURCE_FONT_TEXT_STRING );
-      this->label_bfont.set_color ( nom::Color4i::White );
-      //this->label_bfont.set_color ( nom::Color4i(195,209,228) );
-      this->label_bfont.set_text_size ( 24 ); // NO-OP
+      this->rendered_text.set_font(this->font);
+      this->rendered_text.set_position( nom::Point2i(0,0) );
+      this->rendered_text.set_text(this->opts.text);
+      this->rendered_text.set_text_size(this->opts.pt_size);
+      this->rendered_text.set_style(this->opts.style);
 
-      return true;
-    }
+      // TODO:
+      //this->rendered_text.set_color( nom::Color4i(195,209,228) );
 
-    bool load_truetype_font( void )
-    {
-      if ( this->truetype_font.load ( RESOURCE_TRUETYPE_FONT ) == false )
-      {
-        nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT );
-        return false;
-      }
-
-      this->label_tfont.set_font( this->truetype_font );
-
-      // Font kerning defaults to true.
-      //
-      // Note that if you disable kerning, be sure to update the text with
-      // a text string that is known to have kerning applied, such as "WAV".
-      //
-      // font->set_font_kerning( false );
-
-      this->label_tfont.set_position(nom::Point2i(24,24));
-      //this->label_tfont.set_color( nom::Color4i(195,209,228) );
-
-      this->label_tfont.set_text( RESOURCE_FONT_TEXT_STRING );
-      // this->label_tfont.set_text( "WAV" );
-
-      // Cache the glyphs of the font's point size range that we plan on using;
-      // offloads the cost of re-generating the glyph cache when the end-user
-      // requests an increase or decrease. (An increase in load-time for a
-      // decrease in latency upon rescaling, which is especially noticeable on
-      // older platforms and *presumably* mobile devices).
-      for( auto idx = MIN_FONT_POINT_SIZE - 1; idx != MAX_FONT_POINT_SIZE; ++idx )
-      {
-        this->label_tfont.set_text_size( idx + 1 );
-      }
-
-      this->label_tfont.set_text_size( nom::DEFAULT_FONT_SIZE );
+      nom::set_alignment( &this->rendered_text,
+                          this->window.size(),
+                          nom::Anchor::MiddleCenter );
 
       return true;
     }
-
-    /// \remarks Test copy-on-write implementation in nom::Font.
-    bool load_truetype_font2( void )
-    {
-      // A copy has to be made (handled internally by nom::Font), otherwise the
-      // font's point size for label_tfont would be modified when we make the
-      // call to set the text size on label_tfont2.
-      this->label_tfont2.set_text( RESOURCE_FONT_TEXT_STRING );
-      this->label_tfont2.set_style( nom::Text::Style::Bold );
-      this->label_tfont2.set_font( this->truetype_font->clone() );
-      this->label_tfont2.set_text_size( 24 );
-      this->label_tfont2.set_position( nom::Point2i( WINDOW_WIDTH / 2, 24 ) );
-      this->label_tfont2.set_color( nom::Color4i( 195,209,228 ) );
-
-      return true;
-    }
-}; // class App
+}; // end class FontRenderingApp
 
 nom::int32 main ( nom::int32 argc, char* argv[] )
 {
-  App game ( argc, argv );
+  using namespace TCLAP;
 
-  if ( game.on_init() == false )
+  AppFlags opts;
+
+  if( argc < 0 ) {
+    return NOM_EXIT_FAILURE;
+  }
+
+  try
   {
+    CmdLine cmd( "font", ' ', nom::NOM_VERSION.version_string() );
+
+    std::string kerning_desc = "Enable use of font kerning; defaults to TRUE";
+    // std::string hinting_desc = "Enable use of font hinting; defaults to FALSE";
+    std::string hinting_desc = "FIXME: Enable use of font hinting; defaults to FALSE";
+
+    SwitchArg bold_arg( "b", "bold", "Render bold text", cmd, 0);
+    SwitchArg italics_arg( "i", "italics", "Render italicized text", cmd, 0);
+    SwitchArg underline_arg( "u", "underline", "Render underlined text", cmd, 0);
+    SwitchArg strikethrough_arg(  "s", "strikethrough", "Render strikethrough text",
+                                  cmd, 0);
+
+    SwitchArg use_kerning("", "no-kerning", kerning_desc, cmd, true);
+    SwitchArg use_hinting("", "hinting", hinting_desc, cmd, opts.use_hinting);
+
+    // std::string type_arg_desc =
+      // "Override the file extension with explicit font type";
+
+    // ValueArg<std::string> type_arg( "", "type", type_arg_desc, false, opts.type,
+                                    // "bitmap|truetype|bm", cmd );
+
+    ValueArg<std::string> text_arg( "", "text", "Text string to render", false,
+                                    opts.text, "Rendered string", cmd );
+
+    // NOTE: These must always be added to the command parser last
+    UnlabeledMultiArg<std::string> font_args( "font",
+                                              "The font file path to use", true,
+                                              "<font>.[png|fnt|ttf] [pt size]",
+                                              cmd, false );
+
+    cmd.parse(argc, argv);
+
+    if( bold_arg.getValue() == true ) {
+      opts.style |= nom::Text::Style::Bold; // 0x2
+    }
+
+    if( italics_arg.getValue() == true ) {
+      opts.style |= nom::Text::Style::Italic; // 0x4
+    }
+
+    if( underline_arg.getValue() == true ) {
+      opts.style |= nom::Text::Style::Underline;  // 0x8
+    }
+
+    if( strikethrough_arg.getValue() == true ) {
+      opts.style |= nom::Text::Style::Strikethrough; // 0x16
+    }
+
+    opts.use_kerning = use_kerning.getValue();
+    opts.use_hinting = use_hinting.getValue();
+
+    // Use explicitly defined font type instead of file name extension
+    // if( type_arg.getValue() != "" ) {
+    //   std::string type_val = type_arg.getValue();
+
+    //   if( type_val == "bitmap" || type_val == "BITMAP" ) {
+    //     opts.font_type = nom::IFont::FontType::BitmapFont; // 1
+
+    //   } else if( type_val == "truetype" || type_val == "TRUETYPE" ) {
+    //     opts.font_type = nom::IFont::FontType::TrueTypeFont; // 2
+
+    //   } else if( type_val == "bm" || type_val == "BM" ) {
+    //     opts.font_type = nom::IFont::FontType::BMFont; // 3
+    //   }
+
+    //   // Leave font_type as-is (default value)
+    // }
+
+    if( text_arg.getValue() != "" ) {
+      opts.text = text_arg.getValue();
+    }
+
+    nom::StringList args = font_args.getValue();
+
+    int pt_size_arg = 0;
+    nom::size_type next_to_last = args.size() - 1;
+    for( auto i = 0; i != args.size(); ++i ) {
+
+      if( i == 0 ) {
+        opts.filename = args[i];
+      } else if( i == next_to_last ) {
+        pt_size_arg = std::atoi( args[i].c_str() );
+
+        if( pt_size_arg != 0 ) {
+          opts.pt_size = pt_size_arg;
+        }
+      }
+    }
+
+  }
+  catch( TCLAP::ArgException &e )
+  {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  e.error(), "for arg", e.argId() );
+
+    exit(NOM_EXIT_FAILURE);
+  }
+
+  // Engine init
+  if( nom::init(argc, argv) == false ) {
+    nom::DialogMessageBox(APP_NAME, "Could not initialize nomlib.");
+    exit(NOM_EXIT_FAILURE);
+  }
+
+  atexit(nom::quit);
+
+  FontRenderingApp app(opts);
+
+  if( app.on_init() == false ) {
     nom::DialogMessageBox ( APP_NAME, "Could not initialize application." );
     return NOM_EXIT_FAILURE;
   }
 
-  return game.Run();
+  return app.Run();
 
   // ...Goodbye cruel world..!
 }

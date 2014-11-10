@@ -239,7 +239,12 @@ bool TrueTypeFont::set_hinting( int type )
     if( this->valid() == true ) {
       TTF_SetFontHinting( this->font(), type );
 
-      if( this->build( this->point_size() ) == false ) {
+      int point_size = this->point_size();
+
+      // Force a rebuild of the font page by clearing / invalidating it.
+      // this->pages_[point_size].invalidate();
+
+      if( this->build(point_size) == false ) {
         NOM_LOG_ERR ( NOM, "Could not set requested font hinting." );
         return false;
       }
@@ -333,6 +338,9 @@ bool TrueTypeFont::load( const std::string& filename )
 
   // Set the font face style name
   this->metrics_.name = std::string( TTF_FontFaceFamilyName( this->font() ) );
+
+  // FIXME: This feature is broken
+  // this->set_hinting( this->hinting() );
 
   // Attempt to build font metrics
   if ( this->build ( this->point_size() ) == false )

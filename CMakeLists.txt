@@ -177,11 +177,6 @@ set( NOM_EXAMPLES_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/${NOMLIB_RESOURCES_DIR}/e
 # Unit testing resources path
 set( NOM_TESTS_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/${NOMLIB_RESOURCES_DIR}/tests" )
 
-# Distributed typographic fonts.
-set ( NOMLIB_FONTS
-      "${PROJECT_SOURCE_DIR}/Resources/fonts"
-    )
-
 # Additional flags to pass add_executable -- used when library examples are
 # built
 set ( EXECUTABLE_FLAGS "" )
@@ -622,28 +617,6 @@ if ( PLATFORM_OSX )
       add_rpath ( "${RUNTIME_PATH}" "${INSTALL_BINARY_PATH}" )
       install_name_rpath ( "@rpath/sndfile.framework/Versions/A/sndfile" "${LIBSNDFILE_LIBRARY}/Versions/A/sndfile" )
     endif ( NOT CMAKE_GENERATOR STREQUAL "Xcode" )
-
-    # FIXME: This is a really lazy workaround to get things up and running for
-    # travis-ci builds.
-    if( CMAKE_GENERATOR STREQUAL "Xcode" )
-      set( FONTS_DEST_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}" )
-    else( CMAKE_GENERATOR NOT STREQUAL "Xcode" )
-      set( FONTS_DEST_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" )
-    endif( CMAKE_GENERATOR STREQUAL "Xcode" )
-
-    # Install nomlib's default fonts
-    #
-    # FIXME: We need to be building the framework bundle locally -- within
-    # cmake's build dir -- and then after *everything* is built, copy said
-    # bundle over to the destination prefix.
-    install (
-              DIRECTORY
-              "${NOMLIB_FONTS}"
-              # DESTINATION "${INSTALL_ROOT_PATH}/Resources"
-              DESTINATION "${FONTS_DEST_PREFIX}/${PROJECT_NAME}.framework/Resources"
-              OPTIONAL
-              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-            )
 
   endif ( FRAMEWORK )
 

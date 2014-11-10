@@ -1,11 +1,14 @@
 #include "gtest/gtest.h"
 
+// GTest helpers
+#include "nomlib/tests/common/UnitTest.hpp"
+
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
 namespace nom {
 
-class FontCacheTest: public ::testing::Test
+class FontCacheTest: public nom::UnitTest
 {
   public:
     FontCacheTest()
@@ -29,8 +32,27 @@ class FontCacheTest: public ::testing::Test
       // ...
     }
 
+    virtual void SetUp() override
+    {
+      std::string res_file = this->test_case() + ".json";
+
+      ASSERT_TRUE( res_bitmap.load_file(res_file, "bitmap") )
+      << "Could not resolve 'bitmap' from the resource path in file: "
+      << res_file;
+
+      ASSERT_TRUE( res_truetype.load_file(res_file, "truetype") )
+      << "Could not resolve 'truetype' from the resource path in file: "
+      << res_file;
+
+      ASSERT_TRUE( res_bm.load_file(res_file, "bm") )
+      << "Could not resolve 'bm' from the resource path in file: "
+      << res_file;
+    }
+
   protected:
-    // ...
+    nom::SearchPath res_bitmap;
+    nom::SearchPath res_truetype;
+    nom::SearchPath res_bm;
 };
 
 TEST_F( FontCacheTest, ResourceCacheAPI )
@@ -39,32 +61,30 @@ TEST_F( FontCacheTest, ResourceCacheAPI )
   File fp;
   Path p;
 
-  p = fp.resource_path( "org.i8degrees.nomlib" ) + p.native() + "fonts";
+  ASSERT_TRUE( fonts_.append_resource( ResourceFile("LiberationSerif", res_truetype.path() + "LiberationSerif-Regular.ttf", ResourceFile::Type::TrueTypeFont) ) );
+  ASSERT_TRUE( fonts_.append_resource( ResourceFile("LiberationSerif-Bold", res_truetype.path() + "LiberationSerif-Bold.ttf", ResourceFile::Type::TrueTypeFont) ) );
 
-  #if defined( NOM_PLATFORM_OSX )
-    Path sys( "/System/Library/Fonts" );
-    Path lib( "/Library/Fonts" );
-    ASSERT_TRUE( fonts_.append_resource( ResourceFile( "LucidaGrande", sys.prepend("LucidaGrande.ttc"), ResourceFile::Type::TrueTypeFont ) ) );
-  #elif defined( NOM_PLATFORM_WINDOWS )
-    Path sys( "C:\\Windows\\Fonts" );
-    ASSERT_TRUE( fonts_.append_resource( ResourceFile( "Arial", sys.prepend("Arial.ttf"), ResourceFile::Type::TrueTypeFont ) ) );
-  #endif
-
-  ASSERT_TRUE( fonts_.append_resource( ResourceFile( "LiberationSans-Regular", p.prepend("LiberationSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) ) );
-  ASSERT_TRUE( fonts_.append_resource( ResourceFile( "LiberationSerif-Regular", p.prepend("LiberationSerif-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) ) );
-  ASSERT_TRUE( fonts_.append_resource( ResourceFile( "VIII", p.prepend("VIII.png"), ResourceFile::Type::BitmapFont ) ) );
-  ASSERT_TRUE( fonts_.append_resource( ResourceFile( "VIII_small", p.prepend("VIII_small.png"), ResourceFile::Type::BitmapFont ) ) );
+  ASSERT_TRUE( fonts_.append_resource( ResourceFile("VIII", res_bitmap.path()+"VIII.png", ResourceFile::Type::BitmapFont) ) );
+  ASSERT_TRUE( fonts_.append_resource( ResourceFile("VIII_small", res_bitmap.path()+"VIII_small.png", ResourceFile::Type::BitmapFont) ) );
 
   // Should not exist
-  ASSERT_FALSE( fonts_.append_resource( ResourceFile( "IX", p.prepend("IX.png") ) ) );
+  ASSERT_FALSE( fonts_.append_resource( ResourceFile("IX", res_bitmap.path()+"IX.png", ResourceFile::Type::BitmapFont) ) );
 
   // Should already exist.
-  ASSERT_FALSE( fonts_.append_resource( ResourceFile( "VIII", p.prepend("VIII.png") ) ) );
+  ASSERT_FALSE( fonts_.append_resource( ResourceFile("VIII", res_bitmap.path()+"VIII.png", ResourceFile::Type::BitmapFont) ) );
 
   ResourceFile res;
 
   ASSERT_TRUE( res == ResourceFile::null );
   ASSERT_FALSE( res.exists() );
+
+  res = fonts_.find_resource("LiberationSerif");
+  ASSERT_TRUE( res.exists() );
+  EXPECT_EQ( "LiberationSerif", res.name() );
+
+  res = fonts_.find_resource("LiberationSerif-Bold");
+  ASSERT_TRUE( res.exists() );
+  EXPECT_EQ( "LiberationSerif-Bold", res.name() );
 
   res = fonts_.find_resource( "VIII" );
   ASSERT_TRUE( res.exists() );
@@ -89,7 +109,7 @@ TEST_F( FontCacheTest, ResourceCacheAPI )
   // 2. http://msdn.microsoft.com/library/vstudio/swezty51
   // 3. See also: tests/CMakeLists.txt FIXME note regarding err when using 'test'
   // target under Windows from the command line.
-  EXPECT_EQ( 5, fonts_.size() );
+  EXPECT_EQ( 4, fonts_.size() );
 
   fonts_.clear();
 
@@ -107,10 +127,8 @@ TEST_F( FontCacheTest, FontCacheAPI )
   // otherwise we will receive err messages upon trying to load TrueType fonts.
   nom::init_third_party(0);
 
-  p = fp.resource_path( "org.i8degrees.nomlib" ) + p.native() + "fonts";
-
   // Necessary for loading font resources
-  ASSERT_TRUE( window.create( "FontCacheTest", 0, 0, SDL_WINDOW_HIDDEN ) == true )
+  ASSERT_TRUE( window.create( this->test_case(), 0, 0, SDL_WINDOW_HIDDEN ) == true )
   << "Could not create nom::RenderWindow object for loading font resources from";
 
   // cache.set_resource_handler( [&] (const ResourceFile& res, IFont* font) {
@@ -118,16 +136,18 @@ TEST_F( FontCacheTest, FontCacheAPI )
   // });
 
   // Add two (2) bitmap fonts to the cache for testing use:
-  ASSERT_TRUE( cache.append_resource( ResourceFile( "VIII", p.prepend("VIII.png"), ResourceFile::Type::BitmapFont ) ) )
+  ASSERT_TRUE( cache.append_resource( ResourceFile( "VIII", res_bitmap.path()+"VIII.png", ResourceFile::Type::BitmapFont ) ) )
   << "Could not insert BitmapFont resource VIII";
-  ASSERT_TRUE( cache.append_resource( ResourceFile( "VIII_small", p.prepend("VIII_small.png"), ResourceFile::Type::BitmapFont ) ) )
+
+  ASSERT_TRUE( cache.append_resource( ResourceFile( "VIII_small", res_bitmap.path()+"VIII_small.png", ResourceFile::Type::BitmapFont ) ) )
   << "Could not insert BitmapFont resource VIII_small";
 
   // Add two (2) TrueType fonts to the cache for testing use:
-  ASSERT_TRUE( cache.append_resource( ResourceFile( "LiberationSans", p.prepend("LiberationSans-Regular.ttf"), ResourceFile::Type::TrueTypeFont )  ) )
-  << "Could not insert TrueType resource LiberationSans";
-  ASSERT_TRUE( cache.append_resource( ResourceFile( "LiberationSerif", p.prepend("LiberationSerif-Regular.ttf"), ResourceFile::Type::TrueTypeFont ) ) )
+  ASSERT_TRUE( cache.append_resource( ResourceFile( "LiberationSerif", res_truetype.path()+"LiberationSerif-Regular.ttf", ResourceFile::Type::TrueTypeFont ) ) )
   << "Could not insert TrueType resource LiberationSerif";
+
+  ASSERT_TRUE( cache.append_resource( ResourceFile( "LiberationSerif-Bold", res_truetype.path()+"LiberationSerif-Bold.ttf", ResourceFile::Type::TrueTypeFont )  ) )
+  << "Could not insert TrueType resource LiberationSerif-Bold";
 
   // Bitmap font tests:
   nom::Font bfont1 = *cache.load_resource( "VIII" );
@@ -154,8 +174,8 @@ TEST_F( FontCacheTest, FontCacheAPI )
   << "bfont1 should **not** be the same as bfont3.";
 
   // TrueType font tests:
-  nom::Font bfont4 = *cache.load_resource( "LiberationSans" );
-  nom::Font bfont5 = *cache.load_resource( "LiberationSans" );
+  nom::Font bfont4 = *cache.load_resource( "LiberationSerif" );
+  nom::Font bfont5 = *cache.load_resource( "LiberationSerif" );
 
   ASSERT_TRUE( bfont4->valid() )
   << "Font resource 4 should be valid";

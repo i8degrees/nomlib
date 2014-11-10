@@ -129,13 +129,6 @@ if( NOT NOM_BUILD_MINI_UNIT )
 
   if( NOM_BUILD_FONTS_EXAMPLE )
     add_executable ( fonts "${EXECUTABLE_FLAGS}" "${EXAMPLES_SRC_DIR}/fonts.cpp" )
-
-    install ( DIRECTORY
-              "${EXAMPLES_SRC_DIR}/fonts/Resources"
-              DESTINATION
-              "${EXAMPLES_INSTALL_PEFIX}"
-              PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-            )
   endif( NOM_BUILD_FONTS_EXAMPLE )
 
   if( NOM_BUILD_CORE_UNIT AND NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )

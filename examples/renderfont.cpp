@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 /// Name of our application.
-const std::string APP_NAME = "fonts";
+const std::string APP_NAME = "renderfont";
 
 /// Width, in pixels, of our effective rendering surface.
 const nom::int32 WINDOW_WIDTH = 640;
@@ -291,6 +291,9 @@ class FontRenderingApp: public nom::SDLApp
     }
 }; // end class FontRenderingApp
 
+// ./renderfont --text 'Hello, World!' ~/Projects/nomlib.git/Resources/tests/graphics/BitmapFontTest/VIII.png 72
+// ./renderfont --text 'Hello, World!' ~/Projects/nomlib.git/Resources/tests/graphics/TrueTypeFontTest/OpenSans-Regular.ttf 72
+// ./renderfont --text 'Hello, World!' ~/Projects/nomlib.git/Resources/tests/graphics/BMFontTest/gameover.fnt 72
 nom::int32 main ( nom::int32 argc, char* argv[] )
 {
   using namespace TCLAP;
@@ -303,7 +306,7 @@ nom::int32 main ( nom::int32 argc, char* argv[] )
 
   try
   {
-    CmdLine cmd( "font", ' ', nom::NOM_VERSION.version_string() );
+    CmdLine cmd( APP_NAME, ' ', nom::NOM_VERSION.version_string() );
 
     std::string kerning_desc = "Enable use of font kerning; defaults to TRUE";
     // std::string hinting_desc = "Enable use of font hinting; defaults to FALSE";

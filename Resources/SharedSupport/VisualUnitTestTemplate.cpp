@@ -44,7 +44,7 @@ class VisualUnitTestTemplate: public nom::VisualUnitTest
 {
   public:
     /// \remarks This method is called at the start of each unit test.
-    BMFontTest()
+    VisualUnitTestTemplate()
     {
       // NOM_LOG_TRACE( NOM );
 
@@ -53,7 +53,7 @@ class VisualUnitTestTemplate: public nom::VisualUnitTest
     }
 
     /// \remarks This method is called at the end of each unit test.
-    virtual ~BMFontTest()
+    virtual ~VisualUnitTestTemplate()
     {
       // NOM_LOG_TRACE( NOM );
     }
@@ -72,7 +72,7 @@ class VisualUnitTestTemplate: public nom::VisualUnitTest
         << "Could not resolve the resource path from file: " << res_file;
       }
 
-      // VisualUnitTest environment init...
+      // VisualUnitTest environment init
       VisualUnitTest::SetUp();
     }
 

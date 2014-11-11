@@ -521,15 +521,6 @@ set_target_properties ( ${PROJECT_NAME} # makefile target
 
 if ( PLATFORM_OSX )
 
-  set ( INSTALL_NAME_PATH "@rpath" )
-
-  # For distribution in user's frameworks / OSX App Bundle
-  set_target_properties ( ${PROJECT_NAME} PROPERTIES
-                          BUILD_WITH_INSTALL_RPATH 1
-                          INSTALL_NAME_DIR
-                          "${INSTALL_NAME_PATH}"
-                        )
-
   if ( FRAMEWORK )
 
     set ( INSTALL_LIB_PATH "${BUNDLE_NAME}.framework" )
@@ -547,13 +538,6 @@ if ( PLATFORM_OSX )
     # * All paths must *NOT* include closing backslash character
     set ( INSTALL_EXT_FRAMEWORKS_PATH "${INSTALL_ROOT_PATH}/Frameworks" )
     set ( INSTALL_EXT_LIBRARIES_PATH "${INSTALL_ROOT_PATH}/Libraries" )
-
-    # For distribution in user's frameworks / OSX App Bundle
-    set_target_properties ( ${PROJECT_NAME} PROPERTIES
-                            BUILD_WITH_INSTALL_RPATH 1
-                            INSTALL_NAME_DIR
-                            "${INSTALL_NAME_PATH}"
-                          )
 
     # Frameworks distribution
     set_target_properties ( ${PROJECT_NAME} PROPERTIES

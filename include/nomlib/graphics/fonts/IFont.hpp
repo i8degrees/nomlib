@@ -126,3 +126,6 @@ class IFont
 ///       [USAGE EXAMPLE STUB]
 ///
 /// \endcode
+///
+/// Reference: [ASCII Table](http://upload.wikimedia.org/wikipedia/commons/1/1b/ASCII-Table-wide.svg)
+///

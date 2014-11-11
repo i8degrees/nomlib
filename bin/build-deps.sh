@@ -50,12 +50,14 @@ function usage_info()
 function osx_deps()
 {
   if [[ ${GIT_BIN} ]]; then
-    DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}-${GIT_VER}_osx-dependencies.tar.gz"
+    # Put the resulting output file at project's root dir
+    DEPS_FILENAME="../${TIMESTAMP}_${PROJECT_NAME}-${GIT_VER}_osx-dependencies.tar.gz"
   else
-    DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}_osx-dependencies.tar.gz"
+    # Put the resulting output file at project's root dir
+    DEPS_FILENAME="../${TIMESTAMP}_${PROJECT_NAME}_osx-dependencies.tar.gz"
   fi
 
-  INCLUSION_MASKS="${DEPS_DIR}/osx/ ${DEPS_DIR}/common/ ${DEPS_DIR}/README.md"
+  INCLUSION_MASKS="osx/ common/ README.md"
 
   ${TAR_BIN} ${TAR_ARGS} ${DEPS_FILENAME} --exclude=${EXCLUSION_MASKS} ${INCLUSION_MASKS}
 }
@@ -63,12 +65,14 @@ function osx_deps()
 function ios_deps()
 {
   if [[ ${GIT_BIN} ]]; then
-    DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}-${GIT_VER}_ios-dependencies.tar.gz"
+    # Put the resulting output file at project's root dir
+    DEPS_FILENAME="../${TIMESTAMP}_${PROJECT_NAME}-${GIT_VER}_ios-dependencies.tar.gz"
   else
-    DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}_ios-dependencies.tar.gz"
+    # Put the resulting output file at project's root dir
+    DEPS_FILENAME="../${TIMESTAMP}_${PROJECT_NAME}_ios-dependencies.tar.gz"
   fi
 
-  INCLUSION_MASKS="${DEPS_DIR}/ios/ ${DEPS_DIR}/common/ ${DEPS_DIR}/README.md"
+  INCLUSION_MASKS="ios/ common/ README.md"
 
   ${TAR_BIN} ${TAR_ARGS} ${DEPS_FILENAME} --exclude=${EXCLUSION_MASKS} ${INCLUSION_MASKS}
 }
@@ -76,12 +80,14 @@ function ios_deps()
 function windows_deps()
 {
   if [[ ${GIT_BIN} ]]; then
-    DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}-${GIT_VER}_windows-dependencies.zip"
+    # Put the resulting output file at project's root dir
+    DEPS_FILENAME="../${TIMESTAMP}_${PROJECT_NAME}-${GIT_VER}_windows-dependencies.zip"
   else
-    DEPS_FILENAME="./${TIMESTAMP}_${PROJECT_NAME}_windows-dependencies.zip"
+    # Put the resulting output file at project's root dir
+    DEPS_FILENAME="../${TIMESTAMP}_${PROJECT_NAME}_windows-dependencies.zip"
   fi
 
-  INCLUSION_MASKS="${DEPS_DIR}/windows/ ${DEPS_DIR}/common/ ${DEPS_DIR}/README.md"
+  INCLUSION_MASKS="windows/ common/ README.md"
 
   ${ZIP_BIN} ${ZIP_ARGS} ${DEPS_FILENAME} ${INCLUSION_MASKS} -x ${EXCLUSION_MASKS}
 }
@@ -98,6 +104,8 @@ function all_deps()
   linux_deps
   windows_deps
 }
+
+cd ${DEPS_DIR}
 
 if [[ "$1" == "osx" ]]; then
   osx_deps

@@ -149,17 +149,28 @@ endif ( PLATFORM_WINDOWS )
 
 if( NOM_BUILD_TEMPLATES_UNIT )
 
+  set( EXECUTABLE_NAME "UnitTestTemplate" )
+
   add_executable  (
-                    Template
+                    ${EXECUTABLE_NAME}
                     "${PROJECT_SOURCE_DIR}/Resources/SharedSupport/UnitTestTemplate.cpp"
                   )
 
-  target_link_libraries( Template UnitTest )
+  target_link_libraries( ${EXECUTABLE_NAME} UnitTest )
 
   GTEST_ADD_TESTS (
-                    Template
-                    "Template"
+                    ${EXECUTABLE_NAME}
+                    "" # args
                     "${PROJECT_SOURCE_DIR}/Resources/SharedSupport/UnitTestTemplate.cpp"
                   )
+
+  set( EXECUTABLE_NAME "VisualUnitTestTemplate" )
+
+  add_executable  (
+                    ${EXECUTABLE_NAME}
+                    "${PROJECT_SOURCE_DIR}/Resources/SharedSupport/VisualUnitTestTemplate.cpp"
+                  )
+
+  target_link_libraries( ${EXECUTABLE_NAME} VisualUnitTest )
 
 endif( NOM_BUILD_TEMPLATES_UNIT )

@@ -7,7 +7,7 @@ if(NOM_BUILD_VERSION_INFO_TEST)
                     ${NOM_TESTS_SOURCE_DIR}/core/VersionInfoTest.cpp
                   )
 
-  target_link_libraries( VersionInfoTest UnitTest )
+  target_link_libraries( VersionInfoTest ${NOM_UNIT_TEST_LIBRARY} )
 
   GTEST_ADD_TESTS (
                     VersionInfoTest
@@ -25,7 +25,7 @@ if( NOM_BUILD_SDL2_LOGGER_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/core/SDL2LoggerTest.cpp
                   )
 
-  target_link_libraries( SDL2LoggerTest UnitTest )
+  target_link_libraries( SDL2LoggerTest ${NOM_UNIT_TEST_LIBRARY} )
 
   GTEST_ADD_TESTS (
                     SDL2LoggerTest
@@ -40,7 +40,7 @@ if( NOM_BUILD_SDL2_LOGGER_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/core/ConsoleOutputTest.cpp
                   )
 
-  target_link_libraries( ConsoleOutputTest UnitTest )
+  target_link_libraries( ConsoleOutputTest ${NOM_UNIT_TEST_LIBRARY} )
 
   GTEST_ADD_TESTS (
                     ConsoleOutputTest

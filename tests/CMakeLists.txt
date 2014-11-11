@@ -110,13 +110,16 @@ else( NOT BUILD_SHARED_LIBS )
   set( LIBRARY_OUTPUT_TYPE "STATIC" )
 endif( BUILD_SHARED_LIBS )
 
-# Link the nom::UnitTest library
-add_library( UnitTest ${LIBRARY_OUTPUT_TYPE} ${NOM_TESTS_UNIT_TEST_SOURCE} )
-target_link_libraries( UnitTest ${GTEST_LIBRARY} ${PROJECT_NAME} )
+set( NOM_UNIT_TEST_LIBRARY "${PROJECT_NAME}UnitTest" )
+set( NOM_VISUAL_UNIT_TEST_LIBRARY "${PROJECT_NAME}VisualUnitTest" )
 
-# Link the nom::VisualUnitTest library
-add_library( VisualUnitTest ${LIBRARY_OUTPUT_TYPE} ${NOM_TESTS_VTEST_SOURCE} )
-target_link_libraries( VisualUnitTest UnitTest ${GTEST_LIBRARY} ${PROJECT_NAME} )
+# Link the nom::UnitTest library to nomlib && GTest
+add_library( ${NOM_UNIT_TEST_LIBRARY} ${LIBRARY_OUTPUT_TYPE} ${NOM_TESTS_UNIT_TEST_SOURCE} )
+target_link_libraries( ${NOM_UNIT_TEST_LIBRARY} ${GTEST_LIBRARY} ${PROJECT_NAME} )
+
+# Link the nom::VisualUnitTest library to UnitTest, nomlib && GTest
+add_library( ${NOM_VISUAL_UNIT_TEST_LIBRARY} ${LIBRARY_OUTPUT_TYPE} ${NOM_TESTS_VTEST_SOURCE} )
+target_link_libraries( ${NOM_VISUAL_UNIT_TEST_LIBRARY} ${NOM_UNIT_TEST_LIBRARY} ${GTEST_LIBRARY} ${PROJECT_NAME} )
 
 include_directories( "${NOM_TESTS_HEADERS_DIR}" )
 
@@ -157,7 +160,7 @@ if( NOM_BUILD_TEMPLATES_UNIT )
                     "${PROJECT_SOURCE_DIR}/Resources/SharedSupport/UnitTestTemplate.cpp"
                   )
 
-  target_link_libraries( ${EXECUTABLE_NAME} UnitTest )
+  target_link_libraries( ${EXECUTABLE_NAME} ${NOM_UNIT_TEST_LIBRARY} )
 
   GTEST_ADD_TESTS (
                     ${EXECUTABLE_NAME}
@@ -172,6 +175,6 @@ if( NOM_BUILD_TEMPLATES_UNIT )
                     "${PROJECT_SOURCE_DIR}/Resources/SharedSupport/VisualUnitTestTemplate.cpp"
                   )
 
-  target_link_libraries( ${EXECUTABLE_NAME} VisualUnitTest )
+  target_link_libraries( ${EXECUTABLE_NAME} ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
 
 endif( NOM_BUILD_TEMPLATES_UNIT )

@@ -6,7 +6,7 @@ if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
-  target_link_libraries( JsonCppSerializerTest UnitTest )
+  target_link_libraries( JsonCppSerializerTest ${NOM_UNIT_TEST_LIBRARY} )
 
   GTEST_ADD_TESTS (
                     JsonCppSerializerTest
@@ -21,7 +21,7 @@ if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
                   )
 
 
-  target_link_libraries( JsonCppDeserializerTest UnitTest )
+  target_link_libraries( JsonCppDeserializerTest ${NOM_UNIT_TEST_LIBRARY} )
 
   GTEST_ADD_TESTS (
                     JsonCppDeserializerTest
@@ -39,7 +39,7 @@ if( NOM_BUILD_SERIALIZERS_XML_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
-  target_link_libraries( RapidXmlSerializerTest UnitTest )
+  target_link_libraries( RapidXmlSerializerTest ${NOM_UNIT_TEST_LIBRARY} )
 
   GTEST_ADD_TESTS (
                     RapidXmlSerializerTest
@@ -53,7 +53,7 @@ if( NOM_BUILD_SERIALIZERS_XML_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
-  target_link_libraries( RapidXmlDeserializerTest UnitTest )
+  target_link_libraries( RapidXmlDeserializerTest ${NOM_UNIT_TEST_LIBRARY} )
 
   GTEST_ADD_TESTS (
                     RapidXmlDeserializerTest
@@ -94,7 +94,7 @@ if( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
                     # ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
-  target_link_libraries( JsonConfigFileTest UnitTest )
+  target_link_libraries( JsonConfigFileTest ${NOM_UNIT_TEST_LIBRARY} )
 
   GTEST_ADD_TESTS (
                     JsonConfigFileTest
@@ -120,7 +120,7 @@ if( NOM_BUILD_SERIALIZERS_HTML_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/serializers/MiniHTMLTest.cpp
                   )
 
-  target_link_libraries( MiniHTMLTest UnitTest )
+  target_link_libraries( MiniHTMLTest ${NOM_UNIT_TEST_LIBRARY} )
 
   GTEST_ADD_TESTS (
                     MiniHTMLTest

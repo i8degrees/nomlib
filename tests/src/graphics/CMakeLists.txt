@@ -7,7 +7,7 @@ if( NOM_BUILD_RENDERWINDOW_TESTS )
                       ${NOM_TESTS_SOURCE_DIR}/graphics/RenderWindowTest.cpp
                     )
 
-    target_link_libraries( RenderWindowTest UnitTest )
+    target_link_libraries( RenderWindowTest ${NOM_UNIT_TEST_LIBRARY} )
 
     GTEST_ADD_TESTS (
                       RenderWindowTest
@@ -34,7 +34,7 @@ if( NOM_BUILD_GRADIENT_TESTS )
                       ${NOM_TESTS_SOURCE_DIR}/graphics/GradientTest.cpp
                     )
 
-    target_link_libraries( GradientTest UnitTest VisualUnitTest )
+    target_link_libraries( GradientTest ${NOM_UNIT_TEST_LIBRARY} ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
 
     GTEST_ADD_TESTS (
                       GradientTest
@@ -58,7 +58,7 @@ if(NOM_BUILD_BITMAP_FONT_TEST)
                     ${NOM_TESTS_SOURCE_DIR}/graphics/BitmapFontTest.cpp
                   )
 
-  target_link_libraries( BitmapFontTest UnitTest VisualUnitTest )
+  target_link_libraries( BitmapFontTest ${NOM_UNIT_TEST_LIBRARY} ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
 
   GTEST_ADD_TESTS (
                     BitmapFontTest
@@ -83,7 +83,7 @@ if(NOM_BUILD_TRUETYPE_FONT_TEST)
                       ${NOM_TESTS_SOURCE_DIR}/graphics/TrueTypeFontTest.cpp
                     )
 
-    target_link_libraries( TrueTypeFontTest UnitTest VisualUnitTest )
+    target_link_libraries( TrueTypeFontTest ${NOM_UNIT_TEST_LIBRARY} ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
 
     GTEST_ADD_TESTS (
                       TrueTypeFontTest
@@ -108,7 +108,7 @@ if(NOM_BUILD_BMFONT_TEST)
                       ${NOM_TESTS_SOURCE_DIR}/graphics/BMFontTest.cpp
                     )
 
-    target_link_libraries( BMFontTest UnitTest VisualUnitTest )
+    target_link_libraries( BMFontTest ${NOM_UNIT_TEST_LIBRARY} ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
 
     GTEST_ADD_TESTS (
                       BMFontTest

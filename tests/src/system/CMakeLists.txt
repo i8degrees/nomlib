@@ -4,7 +4,7 @@ if( NOM_BUILD_FONT_CACHE_TESTS )
   add_executable( FontCacheTest
                   ${NOM_TESTS_SOURCE_DIR}/system/FontCacheTest.cpp )
 
-  target_link_libraries( FontCacheTest UnitTest )
+  target_link_libraries( FontCacheTest ${NOM_UNIT_TEST_LIBRARY} )
 
   GTEST_ADD_TESTS (
                     FontCacheTest
@@ -31,7 +31,7 @@ if( NOM_BUILD_COLOR_DB_TESTS )
                       ${NOM_TESTS_SOURCE_DIR}/system/ColorDatabaseTest.cpp
                     )
 
-    target_link_libraries( ColorDatabaseTest UnitTest )
+    target_link_libraries( ColorDatabaseTest ${NOM_UNIT_TEST_LIBRARY} )
 
     GTEST_ADD_TESTS (
                       ColorDatabaseTest
@@ -52,7 +52,7 @@ if( NOM_BUILD_FILE_TESTS )
                       ${NOM_TESTS_SOURCE_DIR}/system/FileInterfaceTest.cpp
                     )
 
-    target_link_libraries( FileInterfaceTest UnitTest )
+    target_link_libraries( FileInterfaceTest ${NOM_UNIT_TEST_LIBRARY} )
 
     GTEST_ADD_TESTS (
                       FileInterfaceTest

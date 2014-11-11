@@ -5,7 +5,7 @@ if( NOM_BUILD_GUI_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/gui/libRocketTest.cpp
                   )
 
-  target_link_libraries( libRocketTest UnitTest VisualUnitTest )
+  target_link_libraries( libRocketTest ${NOM_UNIT_TEST_LIBRARY} ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
 
     GTEST_ADD_TESTS (
                       libRocketTest
@@ -33,7 +33,7 @@ if( NOM_BUILD_GUI_DATAGRID_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/gui/libRocketDataGridTest.cpp
                   )
 
-  target_link_libraries( libRocketDataGridTest UnitTest VisualUnitTest )
+  target_link_libraries( libRocketDataGridTest ${NOM_UNIT_TEST_LIBRARY} ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
 
     GTEST_ADD_TESTS (
                       libRocketDataGridTest

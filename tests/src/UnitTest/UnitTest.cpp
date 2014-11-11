@@ -26,7 +26,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/common/UnitTest.hpp"
+#include "nomlib/tests/UnitTest/UnitTest.hpp"
 
 // Private headers (third-party)
 #include "tclap/CmdLine.h"    // TCLAP command line parser

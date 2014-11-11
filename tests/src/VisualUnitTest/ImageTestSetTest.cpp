@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gtest/gtest.h"
 
-#include "nomlib/tests/common/ImageTestSet.hpp"
+#include "nomlib/tests/VisualUnitTest/ImageTestSet.hpp"
 
 #include "nomlib/version.hpp"
 #include "nomlib/math.hpp"

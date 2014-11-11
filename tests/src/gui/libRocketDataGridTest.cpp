@@ -37,8 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Rocket/Core.h>
 #include <Rocket/Core/Input.h>
 
-// nom::UnitTest framework
-#include "nomlib/tests/common.hpp"
+// nom::VisualUnitTest framework
+#include "nomlib/tests/VisualUnitTest.hpp"
 
 #include <nomlib/config.hpp>
 #include <nomlib/core/SDL_assertion_helpers.hpp>

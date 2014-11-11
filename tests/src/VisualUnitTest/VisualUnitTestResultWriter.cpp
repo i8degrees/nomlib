@@ -26,7 +26,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/common/VisualUnitTestResultWriter.hpp"
+#include "nomlib/tests/VisualUnitTest/VisualUnitTestResultWriter.hpp"
 
 // Private headers
 #include "nomlib/system/Path.hpp"
@@ -36,11 +36,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/serializers/JsonCppSerializer.hpp"
 #include "nomlib/serializers/JsonCppDeserializer.hpp"
 
-#include "nomlib/tests/common/VisualUnitTest.hpp"
-#include "nomlib/tests/common/ImageTestSet.hpp"
-#include "nomlib/tests/common/ImageDiffResult.hpp"
-// #include "nomlib/tests/common/MinimalTestResultWriter.hpp"
-#include "nomlib/tests/common/HTMLTestResultWriter.hpp"
+#include "nomlib/tests/VisualUnitTest/VisualUnitTest.hpp"
+#include "nomlib/tests/VisualUnitTest/ImageTestSet.hpp"
+#include "nomlib/tests/VisualUnitTest/ImageDiffResult.hpp"
+// #include "nomlib/tests/VisualUnitTest/MinimalTestResultWriter.hpp"
+#include "nomlib/tests/VisualUnitTest/HTMLTestResultWriter.hpp"
 
 namespace nom {
 

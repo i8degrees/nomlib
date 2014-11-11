@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 
 // GTest helpers
-#include "nomlib/tests/common/UnitTest.hpp"
+#include "nomlib/tests/UnitTest.hpp"
 
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>

@@ -26,7 +26,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/common/ImageDiff.hpp"
+#include "nomlib/tests/VisualUnitTest/ImageDiff.hpp"
 
 // Forward declarations
 #include "nomlib/graphics/Image.hpp"

@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/tests/common/ImageDiffResult.hpp"
+#include "nomlib/tests/VisualUnitTest/ImageDiffResult.hpp"
 
 namespace nom {
 

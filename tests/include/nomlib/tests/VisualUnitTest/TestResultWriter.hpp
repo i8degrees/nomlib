@@ -26,68 +26,41 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_TESTS_COMMON_HTML_WRITER_HPP
-#define NOMLIB_TESTS_COMMON_HTML_WRITER_HPP
+#ifndef NOMLIB_TESTS_COMMON_TEST_RESULT_WRITER_HPP
+#define NOMLIB_TESTS_COMMON_TEST_RESULT_WRITER_HPP
 
-#include <iostream>
-#include <string>
-#include <sstream>
+#include <fstream>
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/tests/common/TestResultWriter.hpp"
-#include "nomlib/tests/common/ImageDiffResult.hpp"
+#include "nomlib/tests/VisualUnitTest/ImageDiffResult.hpp"
 
 namespace nom {
 
 // Forward declarations
 class ImageTestSet;
-class HTMLElement;
 
-/// \brief HTML test result writer.
-class HTMLTestResultWriter: public TestResultWriter
+/// \brief Abstract class for outputting test results
+class TestResultWriter
 {
   public:
-    typedef HTMLTestResultWriter self_type;
+    TestResultWriter  (
+                        const ImageTestSet& set1,
+                        const ImageTestSet& set2,
+                        const ImageDiffResultBatch& results
+                      );
 
-    typedef self_type* raw_ptr;
-    typedef std::unique_ptr<self_type> unique_ptr;
-    typedef std::shared_ptr<self_type> shared_ptr;
+    virtual ~TestResultWriter( void );
 
-    /// \brief Default constructor.
-    HTMLTestResultWriter  (
-                            const ImageTestSet& set1,
-                            const ImageTestSet& set2,
-                            const ImageDiffResultBatch& results
-                          );
-
-    /// \brief Destructor.
-    virtual ~HTMLTestResultWriter( void );
+    virtual void save_file( const std::string& filename );
 
     virtual std::string output( void );
 
-    /// \brief Summarizes the results of a single test; side-by-side images,
-    /// pass/fail, etc.
-    ///
-    /// \returns Returns an html div with summary markup
-    HTMLElement* summarize_single_result  (
-                                            const ImageDiffResult& result,
-                                            const ImageTestSet& set1,
-                                            const ImageTestSet& set2
-                                          );
+  protected:
+    const ImageTestSet& set1_;
+    const ImageTestSet& set2_;
 
-    /// \brief Output a HTML table with information associated with a
-    /// nom::ImageDiff result.
-    ///
-    /// \param set  The result set to use.
-    /// \param name The string to use in the header above the table.
-    HTMLElement* output_info_table  (
-                                      const ImageTestSet& set,
-                                      const std::string& name
-                                    );
-
-    /// \brief Method helper to formats a float nice 'n' pretty like for output.
-    std::string format_float( float num, int length = 6 );
+    ImageDiffResultBatch results_;
 };
 
 } // namespace nom

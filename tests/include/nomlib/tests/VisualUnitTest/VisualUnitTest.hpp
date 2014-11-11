@@ -37,9 +37,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gtest/gtest.h"
 
 #include "nomlib/config.hpp"
-#include "nomlib/tests/common/UnitTest.hpp"
-#include "nomlib/tests/common/ImageTestSet.hpp"
-#include "nomlib/tests/common/ImageDiff.hpp"
+#include "nomlib/tests/UnitTest/UnitTest.hpp"
+#include "nomlib/tests/VisualUnitTest/ImageTestSet.hpp"
+#include "nomlib/tests/VisualUnitTest/ImageDiff.hpp"
 #include "nomlib/graphics/RenderWindow.hpp"
 #include "nomlib/system/Timer.hpp"
 #include "nomlib/system/FPS.hpp"

@@ -29,7 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 
-#include "nomlib/tests/common.hpp"
+// nom::VisualUnitTest framework
+#include "nomlib/tests/VisualUnitTest.hpp"
 
 #include "nomlib/math.hpp"
 #include "nomlib/system.hpp"

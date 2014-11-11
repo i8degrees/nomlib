@@ -6,8 +6,8 @@
 
 #include "gtest/gtest.h"
 
-// nom::UnitTest framework
-#include "nomlib/tests/common.hpp"
+// nom::VisualUnitTest framework
+#include "nomlib/tests/VisualUnitTest.hpp"
 
 #include <nomlib/config.hpp>
 #include <nomlib/system.hpp>

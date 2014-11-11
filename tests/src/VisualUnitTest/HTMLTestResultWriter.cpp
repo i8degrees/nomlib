@@ -26,13 +26,13 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/common/HTMLTestResultWriter.hpp"
+#include "nomlib/tests/VisualUnitTest/HTMLTestResultWriter.hpp"
 
 // Private headers
 #include "nomlib/serializers/MiniHTML.hpp"
 
 // Forward declarations
-#include "nomlib/tests/common/ImageTestSet.hpp"
+#include "nomlib/tests/VisualUnitTest/ImageTestSet.hpp"
 
 namespace nom {
 

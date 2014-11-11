@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_TESTS_COMMON_UNIT_TEST_HPP
-#define NOMLIB_TESTS_COMMON_UNIT_TEST_HPP
+#ifndef NOMLIB_TESTS_UNIT_TEST_HPP
+#define NOMLIB_TESTS_UNIT_TEST_HPP
 
 #include <iostream>
 #include <string>

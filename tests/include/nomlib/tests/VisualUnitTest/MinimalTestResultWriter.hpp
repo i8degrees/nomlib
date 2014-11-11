@@ -26,47 +26,45 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/common/TestResultWriter.hpp"
+#ifndef NOMLIB_TESTS_COMMON_MINIMAL_TEXT_RESULT_WRITER_HPP
+#define NOMLIB_TESTS_COMMON_MINIMAL_TEXT_RESULT_WRITER_HPP
 
-// Forward declarations
-#include "nomlib/tests/common/ImageTestSet.hpp"
+#include <iostream>
+#include <string>
+#include <sstream>
+
+#include "nomlib/config.hpp"
+#include "nomlib/tests/VisualUnitTest/TestResultWriter.hpp"
+#include "nomlib/tests/VisualUnitTest/ImageDiffResult.hpp"
 
 namespace nom {
 
-TestResultWriter::TestResultWriter  (
-                                      const ImageTestSet& set1,
-                                      const ImageTestSet& set2,
-                                      const ImageDiffResultBatch& results
-                                    ) :
-  set1_{ set1 },
-  set2_{ set2 },
-  results_{ results }
+// Forward declarations
+class VisualTestSet;
+
+/// \brief Simple, minimal test result output.
+class MinimalTestResultWriter: public TestResultWriter
 {
-  // NOM_LOG_TRACE( NOM );
-}
+  public:
+    /// \brief Default constructor.
+    MinimalTestResultWriter (
+                              const ImageTestSet& set1,
+                              const ImageTestSet& set2,
+                              const ImageDiffResultBatch& results
+                            );
 
-TestResultWriter::~TestResultWriter( void )
-{
-  // NOM_LOG_TRACE( NOM );
-}
+    /// \brief Destructor.
+    virtual ~MinimalTestResultWriter( void );
 
-void TestResultWriter::save_file( const std::string& filename )
-{
-  std::ofstream fp;
-
-  fp.open( filename );
-
-  if( fp.is_open() )
-  {
-    fp << output();
-
-    fp.close();
-  }
-}
-
-std::string TestResultWriter::output( void )
-{
-  return "\0";
-}
+    virtual std::string output( void );
+};
 
 } // namespace nom
+
+#endif // include guard defined
+
+/// \class nom::MinimalTestResultWriter
+/// \ingroup tests
+///
+/// \see Adapted from the implementation for [Ogre3D](http://www.ogre3d.org/tikiwiki/Visual+Unit+Testing+Framework) by Riley Adams <praetor57@gmail.com>.
+///

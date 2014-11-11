@@ -26,45 +26,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_TESTS_COMMON_MINIMAL_TEXT_RESULT_WRITER_HPP
-#define NOMLIB_TESTS_COMMON_MINIMAL_TEXT_RESULT_WRITER_HPP
+#include "nomlib/tests/VisualUnitTest/MinimalTestResultWriter.hpp"
 
-#include <iostream>
-#include <string>
-#include <sstream>
-
-#include "nomlib/config.hpp"
-#include "nomlib/tests/common/TestResultWriter.hpp"
-#include "nomlib/tests/common/ImageDiffResult.hpp"
+// Forward declarations
+#include "nomlib/tests/VisualUnitTest/ImageTestSet.hpp"
 
 namespace nom {
 
-// Forward declarations
-class VisualTestSet;
-
-/// \brief Simple, minimal test result output.
-class MinimalTestResultWriter: public TestResultWriter
+MinimalTestResultWriter::MinimalTestResultWriter  (
+                                                    const ImageTestSet& set1,
+                                                    const ImageTestSet& set2,
+                                                    const ImageDiffResultBatch&
+                                                    results
+                                                  ) :
+  TestResultWriter( set1, set2, results )
 {
-  public:
-    /// \brief Default constructor.
-    MinimalTestResultWriter (
-                              const ImageTestSet& set1,
-                              const ImageTestSet& set2,
-                              const ImageDiffResultBatch& results
-                            );
+  // NOM_LOG_TRACE( NOM );
+}
 
-    /// \brief Destructor.
-    virtual ~MinimalTestResultWriter( void );
+MinimalTestResultWriter::~MinimalTestResultWriter( void )
+{
+  // NOM_LOG_TRACE( NOM );
+}
 
-    virtual std::string output( void );
-};
+std::string MinimalTestResultWriter::output( void )
+{
+  std::stringstream os;
+
+  for( auto i = 0; i < this->results_.size(); ++i )
+  {
+    os  <<  this->results_[i].test_name
+        <<  "="
+        << ( this->results_[i].passed ? "Passed" : "Failed" )
+        << "\n";
+  }
+
+  return os.str();
+}
 
 } // namespace nom
-
-#endif // include guard defined
-
-/// \class nom::MinimalTestResultWriter
-/// \ingroup tests
-///
-/// \see Adapted from the implementation for [Ogre3D](http://www.ogre3d.org/tikiwiki/Visual+Unit+Testing+Framework) by Riley Adams <praetor57@gmail.com>.
-///

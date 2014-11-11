@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <fstream>
 
-#include "nomlib/tests/common.hpp"
+#include "gtest/gtest.h"
 
 #include "nomlib/serializers.hpp"
 #include "nomlib/system.hpp"

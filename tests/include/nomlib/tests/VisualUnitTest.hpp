@@ -26,49 +26,15 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_TESTS_COMMON_TEST_RESULT_WRITER_HPP
-#define NOMLIB_TESTS_COMMON_TEST_RESULT_WRITER_HPP
+#ifndef NOMLIB_TESTS_VISUAL_UNIT_TEST_PUBLIC_HPP
+#define NOMLIB_TESTS_VISUAL_UNIT_TEST_PUBLIC_HPP
 
-#include <fstream>
-#include <memory>
+#include "gtest/gtest.h"  // Google Test framework
 
 #include "nomlib/config.hpp"
-#include "nomlib/tests/common/ImageDiffResult.hpp"
-
-namespace nom {
-
-// Forward declarations
-class ImageTestSet;
-
-/// \brief Abstract class for outputting test results
-class TestResultWriter
-{
-  public:
-    TestResultWriter  (
-                        const ImageTestSet& set1,
-                        const ImageTestSet& set2,
-                        const ImageDiffResultBatch& results
-                      );
-
-    virtual ~TestResultWriter( void );
-
-    virtual void save_file( const std::string& filename );
-
-    virtual std::string output( void );
-
-  protected:
-    const ImageTestSet& set1_;
-    const ImageTestSet& set2_;
-
-    ImageDiffResultBatch results_;
-};
-
-} // namespace nom
+#include "nomlib/tests/UnitTest/UnitTest.hpp"
+#include "nomlib/tests/VisualUnitTest/VisualUnitTest.hpp"
+#include "nomlib/tests/VisualUnitTest/ImageTestSet.hpp"
+#include "nomlib/tests/VisualUnitTest/ImageDiff.hpp"
 
 #endif // include guard defined
-
-/// \class nom::TestResultWriter
-/// \ingroup tests
-///
-/// \see Adapted from the implementation for [Ogre3D](http://www.ogre3d.org/tikiwiki/Visual+Unit+Testing+Framework) by Riley Adams <praetor57@gmail.com>.
-///

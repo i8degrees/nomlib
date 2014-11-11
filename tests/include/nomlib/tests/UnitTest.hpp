@@ -26,15 +26,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_TESTS_COMMON_HPP
-#define NOMLIB_TESTS_COMMON_HPP
+#ifndef NOMLIB_TESTS_UNIT_TEST_PUBLIC_HPP
+#define NOMLIB_TESTS_UNIT_TEST_PUBLIC_HPP
 
 #include "gtest/gtest.h"  // Google Test framework
 
 #include "nomlib/config.hpp"
-#include "nomlib/tests/common/UnitTest.hpp"
-#include "nomlib/tests/common/VisualUnitTest.hpp"
-#include "nomlib/tests/common/ImageTestSet.hpp"
-#include "nomlib/tests/common/ImageDiff.hpp"
+#include "nomlib/tests/UnitTest/UnitTest.hpp"
 
 #endif // include guard defined

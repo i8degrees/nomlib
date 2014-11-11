@@ -22,8 +22,7 @@
 # unit test's main functions. In summary, only the library target
 # ${GTEST_LIBRARY} should be used, to ensure cross-platform support.
 
-# UnitTest framework tests
-set( NOM_BUILD_COMMON_TESTS TRUE )
+set( NOM_BUILD_UNIT_TEST_TESTS TRUE )
 set( NOM_BUILD_VTEST_TESTS TRUE )
 
 # Core engine tests
@@ -86,22 +85,23 @@ include_directories( ${GTEST_INCLUDE_DIRS} )
 # TODO: Header file list is used for adding to project files (IDE)
 #
 # See also: src/CMakeLists.txt, source_group command
-file ( GLOB NOM_TESTS_COMMON_HEADERS ${NOM_TESTS_COMMON_HEADERS} "${NOM_TESTS_HEADERS_DIR}/${PROJECT_NAME}/tests/common/*.hpp" )
+file ( GLOB NOM_TESTS_UNIT_TEST_HEADERS ${NOM_TESTS_UNIT_TEST_HEADERS} "${NOM_TESTS_HEADERS_DIR}/${PROJECT_NAME}/tests/UnitTest/*.hpp" )
+file ( GLOB NOM_TESTS_VISUAL_UNIT_TEST_HEADERS ${NOM_TESTS_VISUAL_UNIT_TEST_HEADERS} "${NOM_TESTS_HEADERS_DIR}/${PROJECT_NAME}/tests/VisualUnitTest/*.hpp" )
 
 set (
-      NOM_TESTS_COMMON_SOURCE
-      ${NOM_TESTS_SOURCE_DIR}/common/UnitTest.cpp
+      NOM_TESTS_UNIT_TEST_SOURCE
+      ${NOM_TESTS_SOURCE_DIR}/UnitTest/UnitTest.cpp
     )
 
 set (
       NOM_TESTS_VTEST_SOURCE
-      ${NOM_TESTS_SOURCE_DIR}/common/ImageTestSet.cpp
-      ${NOM_TESTS_SOURCE_DIR}/common/VisualUnitTest.cpp
-      ${NOM_TESTS_SOURCE_DIR}/common/ImageDiff.cpp
-      ${NOM_TESTS_SOURCE_DIR}/common/TestResultWriter.cpp
-      ${NOM_TESTS_SOURCE_DIR}/common/VisualUnitTestResultWriter.cpp
-      ${NOM_TESTS_SOURCE_DIR}/common/HTMLTestResultWriter.cpp
-      ${NOM_TESTS_SOURCE_DIR}/common/MinimalTestResultWriter.cpp
+      ${NOM_TESTS_SOURCE_DIR}/VisualUnitTest/ImageTestSet.cpp
+      ${NOM_TESTS_SOURCE_DIR}/VisualUnitTest/VisualUnitTest.cpp
+      ${NOM_TESTS_SOURCE_DIR}/VisualUnitTest/ImageDiff.cpp
+      ${NOM_TESTS_SOURCE_DIR}/VisualUnitTest/TestResultWriter.cpp
+      ${NOM_TESTS_SOURCE_DIR}/VisualUnitTest/VisualUnitTestResultWriter.cpp
+      ${NOM_TESTS_SOURCE_DIR}/VisualUnitTest/HTMLTestResultWriter.cpp
+      ${NOM_TESTS_SOURCE_DIR}/VisualUnitTest/MinimalTestResultWriter.cpp
     )
 
 if( BUILD_SHARED_LIBS )
@@ -111,7 +111,7 @@ else( NOT BUILD_SHARED_LIBS )
 endif( BUILD_SHARED_LIBS )
 
 # Link the nom::UnitTest library
-add_library( UnitTest ${LIBRARY_OUTPUT_TYPE} ${NOM_TESTS_COMMON_SOURCE} )
+add_library( UnitTest ${LIBRARY_OUTPUT_TYPE} ${NOM_TESTS_UNIT_TEST_SOURCE} )
 target_link_libraries( UnitTest ${GTEST_LIBRARY} ${PROJECT_NAME} )
 
 # Link the nom::VisualUnitTest library
@@ -120,7 +120,8 @@ target_link_libraries( VisualUnitTest UnitTest ${GTEST_LIBRARY} ${PROJECT_NAME} 
 
 include_directories( "${NOM_TESTS_HEADERS_DIR}" )
 
-include( "${NOM_TESTS_SOURCE_DIR}/common/CMakeLists.txt" )
+include( "${NOM_TESTS_SOURCE_DIR}/UnitTest/CMakeLists.txt" )
+include( "${NOM_TESTS_SOURCE_DIR}/VisualUnitTest/CMakeLists.txt" )
 include( "${NOM_TESTS_SOURCE_DIR}/core/CMakeLists.txt" )
 include( "${NOM_TESTS_SOURCE_DIR}/audio/CMakeLists.txt" )
 include( "${NOM_TESTS_SOURCE_DIR}/graphics/CMakeLists.txt" )

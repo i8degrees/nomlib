@@ -29,7 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 
-#include "nomlib/tests/common.hpp"
+// nom::UnitTest framework
+#include "nomlib/tests/UnitTest.hpp"
 
 namespace nom {
 

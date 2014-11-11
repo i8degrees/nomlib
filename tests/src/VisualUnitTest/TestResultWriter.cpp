@@ -26,42 +26,47 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/common/MinimalTestResultWriter.hpp"
+#include "nomlib/tests/VisualUnitTest/TestResultWriter.hpp"
 
 // Forward declarations
-#include "nomlib/tests/common/ImageTestSet.hpp"
+#include "nomlib/tests/VisualUnitTest/ImageTestSet.hpp"
 
 namespace nom {
 
-MinimalTestResultWriter::MinimalTestResultWriter  (
-                                                    const ImageTestSet& set1,
-                                                    const ImageTestSet& set2,
-                                                    const ImageDiffResultBatch&
-                                                    results
-                                                  ) :
-  TestResultWriter( set1, set2, results )
+TestResultWriter::TestResultWriter  (
+                                      const ImageTestSet& set1,
+                                      const ImageTestSet& set2,
+                                      const ImageDiffResultBatch& results
+                                    ) :
+  set1_{ set1 },
+  set2_{ set2 },
+  results_{ results }
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-MinimalTestResultWriter::~MinimalTestResultWriter( void )
+TestResultWriter::~TestResultWriter( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-std::string MinimalTestResultWriter::output( void )
+void TestResultWriter::save_file( const std::string& filename )
 {
-  std::stringstream os;
+  std::ofstream fp;
 
-  for( auto i = 0; i < this->results_.size(); ++i )
+  fp.open( filename );
+
+  if( fp.is_open() )
   {
-    os  <<  this->results_[i].test_name
-        <<  "="
-        << ( this->results_[i].passed ? "Passed" : "Failed" )
-        << "\n";
-  }
+    fp << output();
 
-  return os.str();
+    fp.close();
+  }
+}
+
+std::string TestResultWriter::output( void )
+{
+  return "\0";
 }
 
 } // namespace nom

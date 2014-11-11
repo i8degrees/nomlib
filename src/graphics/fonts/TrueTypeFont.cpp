@@ -151,12 +151,12 @@ int TrueTypeFont::kerning( uint32 first_char, uint32 second_char, uint32 charact
 
   kerning_offset = TTF_GetFontKerningSize(this->font(), first_char, second_char);
 
-  if( kerning_offset == -1 ) {
+  if( kerning_offset == nom::int_min ) {
     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
                   "Could not obtain kerning offset: ", TTF_GetError() );
 
     // Err; SDL_TTF related
-    return nom::int_min;
+    return kerning_offset;
   }
 
   // Success

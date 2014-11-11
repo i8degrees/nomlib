@@ -29,7 +29,7 @@ Both the 64-bit and 32-bit official development binaries versions of:
         * [libtiff v4.0.3](https://github.com/Homebrew/homebrew/commits/master/Library/Formula/libtiff.rb) from Homebrew's repository with the --universal build flag.
         * [libjpeg 8d](https://github.com/Homebrew/homebrew/commits/master/Library/Formula/jpeg.rb) from Homebrew's repository with the --universal build flag.
 
-      * [SDL2_ttf.framework v2.0.12](http://libsdl.org/projects/SDL_ttf) built with a [font kerning size patch](https://bugzilla.libsdl.org/show_bug.cgi?id=2572).
+      * [SDL_ttf.framework v2.0.12](http://libsdl.org/projects/SDL_ttf) built with two patches: [TTF_GetFontKerningSize fix](https://bugzilla.libsdl.org/show_bug.cgi?id=2572) and related [TTF_GetFontKerningSize err code fix](https://bugzilla.libsdl.org/show_bug.cgi?id=2779).
     
       * [libRocket v1.3.0](http://librocket.com) compiled with the FreeType v2.3.5 libraries from [homebrew](http://brew.sh). Refer to my [libRocket fork: dev branch](https://github.com/i8degrees/libRocket/tree/dev) to see any changes from the upstream [libRocket: master branch](https://github.com/libRocket/libRocket/tree/master) library.
       ```

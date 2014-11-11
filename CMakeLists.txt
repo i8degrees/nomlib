@@ -1,8 +1,19 @@
-cmake_minimum_required ( VERSION 2.6 )
+cmake_minimum_required( VERSION 2.8.12 )
 
-# TODO: Use CMake v2.8.12 OSX RPath features
+# Enable the use of MACOSX_RPATH by default; this effectively allows plug 'n'
+# play functionality, so to speak -- the resulting shared library files can
+# simply be copied over into the end-user's application bundle or framework
+# bundle. No mucking around with install_name_tool.
+#
+# (Minimum required CMake: v2.8.12)
+#
+#   See also:
+#
+# cmake --help-policy cmp0042
 # http://www.kitware.com/blog/home/post/510
-# cmake_minimum_required ( VERSION 2.8.12 )
+if(POLICY CMP0042)
+  cmake_policy(SET CMP0042 NEW)
+endif(POLICY CMP0042)
 
 # CMake Environment
 
@@ -355,6 +366,7 @@ elseif ( PLATFORM_OSX )
   set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 
   # Google Test dependency; only used if building with NOM_BUILD_TESTS
+  # NOTE: We prefer linking to GTest statically.
   set ( GTEST_ROOT
         "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/gtest"
       )

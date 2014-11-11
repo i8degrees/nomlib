@@ -5,11 +5,7 @@ if( NOM_BUILD_PTREE_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/ptree/ptree.cpp
                   )
 
-  target_link_libraries (
-                          ptree
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( ptree UnitTest )
 
   GTEST_ADD_TESTS (
                     ptree

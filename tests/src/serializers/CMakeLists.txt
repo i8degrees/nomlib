@@ -6,11 +6,7 @@ if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
-  target_link_libraries (
-                          json_serializer
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( json_serializer UnitTest )
 
   GTEST_ADD_TESTS (
                     json_serializer
@@ -25,11 +21,7 @@ if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
                   )
 
 
-  target_link_libraries (
-                          json_deserializer
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( json_deserializer UnitTest )
 
   GTEST_ADD_TESTS (
                     json_deserializer
@@ -47,11 +39,7 @@ if( NOM_BUILD_SERIALIZERS_XML_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
-  target_link_libraries (
-                          xml_serializer
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( xml_serializer UnitTest )
 
   GTEST_ADD_TESTS (
                     xml_serializer
@@ -65,11 +53,7 @@ if( NOM_BUILD_SERIALIZERS_XML_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
-  target_link_libraries (
-                          xml_deserializer
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( xml_deserializer UnitTest )
 
   GTEST_ADD_TESTS (
                     xml_deserializer
@@ -110,11 +94,7 @@ if( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
                     # ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
-  target_link_libraries (
-                          json_config_file
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( json_config_file UnitTest )
 
   GTEST_ADD_TESTS (
                     json_config_file
@@ -140,11 +120,7 @@ if( NOM_BUILD_SERIALIZERS_HTML_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/serializers/MiniHTMLTest.cpp
                   )
 
-  target_link_libraries (
-                          MiniHTMLTest
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( MiniHTMLTest UnitTest )
 
   GTEST_ADD_TESTS (
                     MiniHTMLTest

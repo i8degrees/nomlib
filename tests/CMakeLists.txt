@@ -24,6 +24,7 @@
 
 # UnitTest framework tests
 set( NOM_BUILD_COMMON_TESTS TRUE )
+set( NOM_BUILD_VTEST_TESTS TRUE )
 
 # Core engine tests
 set( NOM_BUILD_VERSION_INFO_TEST TRUE )
@@ -94,7 +95,6 @@ set (
 
 set (
       NOM_TESTS_VTEST_SOURCE
-      ${NOM_TESTS_COMMON_SOURCE}
       ${NOM_TESTS_SOURCE_DIR}/common/ImageTestSet.cpp
       ${NOM_TESTS_SOURCE_DIR}/common/VisualUnitTest.cpp
       ${NOM_TESTS_SOURCE_DIR}/common/ImageDiff.cpp
@@ -103,6 +103,20 @@ set (
       ${NOM_TESTS_SOURCE_DIR}/common/HTMLTestResultWriter.cpp
       ${NOM_TESTS_SOURCE_DIR}/common/MinimalTestResultWriter.cpp
     )
+
+if( BUILD_SHARED_LIBS )
+  set( LIBRARY_OUTPUT_TYPE "SHARED" )
+else( NOT BUILD_SHARED_LIBS )
+  set( LIBRARY_OUTPUT_TYPE "STATIC" )
+endif( BUILD_SHARED_LIBS )
+
+# Link the nom::UnitTest library
+add_library( UnitTest ${LIBRARY_OUTPUT_TYPE} ${NOM_TESTS_COMMON_SOURCE} )
+target_link_libraries( UnitTest ${GTEST_LIBRARY} ${PROJECT_NAME} )
+
+# Link the nom::VisualUnitTest library
+add_library( VisualUnitTest ${LIBRARY_OUTPUT_TYPE} ${NOM_TESTS_VTEST_SOURCE} )
+target_link_libraries( VisualUnitTest UnitTest ${GTEST_LIBRARY} ${PROJECT_NAME} )
 
 include_directories( "${NOM_TESTS_HEADERS_DIR}" )
 
@@ -140,10 +154,7 @@ if( NOM_BUILD_TEMPLATES_UNIT )
                     "${PROJECT_SOURCE_DIR}/Resources/SharedSupport/UnitTestTemplate.cpp"
                   )
 
-  target_link_libraries ( Template
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( Template UnitTest )
 
   GTEST_ADD_TESTS (
                     Template

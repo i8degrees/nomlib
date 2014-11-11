@@ -2,16 +2,10 @@ if( NOM_BUILD_GUI_TESTS )
 
   add_executable  (
                     libRocketTest
-                    ${NOM_TESTS_COMMON_SOURCE}
-                    ${NOM_TESTS_VTEST_SOURCE}
                     ${NOM_TESTS_SOURCE_DIR}/gui/libRocketTest.cpp
                   )
 
-  target_link_libraries (
-                          libRocketTest
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( libRocketTest UnitTest VisualUnitTest )
 
     GTEST_ADD_TESTS (
                       libRocketTest
@@ -33,19 +27,13 @@ if( NOM_BUILD_GUI_DATAGRID_TESTS )
 
   add_executable  (
                     libRocketDataGridTest
-                    ${NOM_TESTS_COMMON_SOURCE}
-                    ${NOM_TESTS_VTEST_SOURCE}
                     ${NOM_TESTS_SOURCE_DIR}/gui/datagrid/Card.cpp
                     ${NOM_TESTS_SOURCE_DIR}/gui/datagrid/CardCollection.cpp
                     ${NOM_TESTS_SOURCE_DIR}/gui/datagrid/CardsPageDataSource.cpp
                     ${NOM_TESTS_SOURCE_DIR}/gui/libRocketDataGridTest.cpp
                   )
 
-  target_link_libraries (
-                          libRocketDataGridTest
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( libRocketDataGridTest UnitTest VisualUnitTest )
 
     GTEST_ADD_TESTS (
                       libRocketDataGridTest

@@ -7,11 +7,7 @@ if( NOM_BUILD_RENDERWINDOW_TESTS )
                       ${NOM_TESTS_SOURCE_DIR}/graphics/RenderWindowTest.cpp
                     )
 
-    target_link_libraries (
-                            render_window
-                            ${GTEST_LIBRARY}
-                            ${PROJECT_NAME} # nomlib
-                          )
+    target_link_libraries( render_window UnitTest )
 
     GTEST_ADD_TESTS (
                       render_window
@@ -36,16 +32,9 @@ if( NOM_BUILD_GRADIENT_TESTS )
     add_executable  (
                       GradientTest
                       ${NOM_TESTS_SOURCE_DIR}/graphics/GradientTest.cpp
-                      # VisualUnitTest
-                      ${NOM_TESTS_COMMON_SOURCE}
-                      ${NOM_TESTS_VTEST_SOURCE}
                     )
 
-    target_link_libraries (
-                            GradientTest
-                            ${GTEST_LIBRARY}
-                            ${PROJECT_NAME} # nomlib
-                          )
+    target_link_libraries( GradientTest UnitTest VisualUnitTest )
 
     GTEST_ADD_TESTS (
                       GradientTest
@@ -67,16 +56,9 @@ if(NOM_BUILD_BITMAP_FONT_TEST)
   add_executable  (
                     BitmapFontTest
                     ${NOM_TESTS_SOURCE_DIR}/graphics/BitmapFontTest.cpp
-                    # VisualUnitTest
-                    ${NOM_TESTS_COMMON_SOURCE}
-                    ${NOM_TESTS_VTEST_SOURCE}
                   )
 
-  target_link_libraries (
-                          BitmapFontTest
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( BitmapFontTest UnitTest VisualUnitTest )
 
   GTEST_ADD_TESTS (
                     BitmapFontTest
@@ -99,16 +81,9 @@ if(NOM_BUILD_TRUETYPE_FONT_TEST)
     add_executable  (
                       TrueTypeFontTest
                       ${NOM_TESTS_SOURCE_DIR}/graphics/TrueTypeFontTest.cpp
-                      # VisualUnitTest
-                      ${NOM_TESTS_COMMON_SOURCE}
-                      ${NOM_TESTS_VTEST_SOURCE}
                     )
 
-    target_link_libraries (
-                            TrueTypeFontTest
-                            ${GTEST_LIBRARY}
-                            ${PROJECT_NAME} # nomlib
-                          )
+    target_link_libraries( TrueTypeFontTest UnitTest VisualUnitTest )
 
     GTEST_ADD_TESTS (
                       TrueTypeFontTest
@@ -131,16 +106,9 @@ if(NOM_BUILD_BMFONT_TEST)
     add_executable  (
                       BMFontTest
                       ${NOM_TESTS_SOURCE_DIR}/graphics/BMFontTest.cpp
-                      # VisualUnitTest
-                      ${NOM_TESTS_COMMON_SOURCE}
-                      ${NOM_TESTS_VTEST_SOURCE}
                     )
 
-    target_link_libraries (
-                            BMFontTest
-                            ${GTEST_LIBRARY}
-                            ${PROJECT_NAME} # nomlib
-                          )
+    target_link_libraries( BMFontTest UnitTest VisualUnitTest )
 
     GTEST_ADD_TESTS (
                       BMFontTest

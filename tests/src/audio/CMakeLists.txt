@@ -5,11 +5,7 @@ if( NOM_BUILD_OPENAL_AUDIO_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/audio/ALAudioTest.cpp
                   )
 
-  target_link_libraries (
-                          al_audio_test
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( al_audio_test UnitTest )
 
   GTEST_ADD_TESTS (
                     al_audio_test

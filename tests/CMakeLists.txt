@@ -60,21 +60,12 @@ set( NOM_BUILD_FILE_TESTS TRUE )
 set( NOM_BUILD_FONT_CACHE_TESTS TRUE )
 set( NOM_BUILD_COLOR_DB_TESTS TRUE )
 
-if( PLATFORM_WINDOWS OR CMAKE_GENERATOR STREQUAL "Xcode" )
+# Matching what output directories IDEs prefer to use makes our life much
+# easier -- should resolve to something like build/tests/Debug
+set(  TESTS_DEPS_INSTALL_PEFIX
+      "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}" )
 
-  # Path under Windows should resolve to: build/tests/Debug
-  set ( TESTS_DEPS_INSTALL_PEFIX
-        "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}"
-      )
-
-else( NOT PLATFORM_WINDOWS )
-
-  # Path should resolve to a directory: build/tests
-  set ( TESTS_DEPS_INSTALL_PEFIX
-        "${CMAKE_CURRENT_BINARY_DIR}"
-      )
-
-endif( PLATFORM_WINDOWS OR CMAKE_GENERATOR STREQUAL "Xcode" )
+set(  EXECUTABLE_OUTPUT_PATH "${TESTS_DEPS_INSTALL_PEFIX}" )
 
 # NOTE: we set GTEST_ROOT in the dependencies section of our project's
 # root build script.

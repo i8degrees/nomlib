@@ -19,6 +19,7 @@
 #
 # http://stackoverflow.com/questions/13422202/adding-distinct-xcode-resources-for-multiple-executables-using-cmake
 # http://stackoverflow.com/questions/6077810/how-to-correctly-add-resources-to-a-project?rq=1
+
 set( NOM_BUILD_APP_EXAMPLE TRUE )
 set( NOM_BUILD_AUDIO_EXAMPLE TRUE )
 set( NOM_BUILD_DEVICE_INFO_EXAMPLE TRUE )
@@ -41,28 +42,14 @@ if ( PLATFORM_WINDOWS )
     # MSVCPP should default to Console if we set EXECUTABLE_FLAGS empty
     set ( EXECUTABLE_FLAGS "" )
   endif ( NOT DEBUG )
-
-  # This workaround is to get the file paths to match up on all platforms -_-
-  # build/examples/Debug under MSVC++
-  set ( EXAMPLES_INSTALL_PEFIX "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}" )
-else ( NOT PLATFORM_WINDOWS )
-
-  if ( CMAKE_GENERATOR STREQUAL "Xcode" )
-
-    # Match build/Debug/examples
-    set ( EXAMPLES_INSTALL_PEFIX "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}" )
-
-  else ( NOT CMAKE_GENERATOR STREQUAL "Xcode" )
-
-    # We prefer lower-case file paths
-    string ( TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE )
-
-    # Match build/examples/debug (from MSVC++ configuration)
-    set ( EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/examples/${CMAKE_BUILD_TYPE}" )
-    set ( EXAMPLES_INSTALL_PEFIX "${EXECUTABLE_OUTPUT_PATH}" )
-  endif ( CMAKE_GENERATOR STREQUAL "Xcode" )
-
 endif ( PLATFORM_WINDOWS )
+
+# Matching what output directories IDEs prefer to use makes our life much
+# easier -- should resolve to something like build/examples/Debug
+set(  EXAMPLES_INSTALL_PEFIX
+      "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}" )
+
+set(  EXECUTABLE_OUTPUT_PATH "${EXAMPLES_INSTALL_PEFIX}" )
 
 # Install example resources
 if( NOT NOM_BUILD_MINI_UNIT )

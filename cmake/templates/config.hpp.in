@@ -265,4 +265,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #cmakedefine NOM_USE_LIBROCKET @NOM_USE_LIBROCKET@
 #cmakedefine NOM_USE_LIBROCKET_LUA @NOM_USE_LIBROCKET_LUA@
 
+// Do not run interactive tests (i.e.: TrueTypeFontTest.InteractiveGlyphCache)
+#cmakedefine NOM_RUN_TESTS_HEADLESS @NOM_RUN_TESTS_HEADLESS@
+
 #endif // include guard defined

@@ -474,6 +474,7 @@ TEST_F(TrueTypeFontTest, UseAllTextStyles)
   EXPECT_TRUE( this->compare() );
 }
 
+#ifndef NOM_RUN_TESTS_HEADLESS  // travis-ci
 TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
 {
   const int MIN_POINT_SIZE = 9;
@@ -563,6 +564,7 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   // EXPECT_TRUE( this->compare() );
 }
+#endif // defined NOM_RUN_TESTS_HEADLESS
 
 } // namespace nom
 

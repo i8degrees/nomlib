@@ -65,24 +65,24 @@ endif( NOM_BUILD_SERIALIZERS_XML_TESTS )
 
 # Copy resources file for unit tests if it has been built.
 if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
-    # Search paths to use in resolving the full resources path
-    install (
-              FILES
-              "${NOM_TESTS_RESOURCES_DIR}/serializers/JsonCppSerializerTest.json"
-              DESTINATION
-              "${TESTS_DEPS_INSTALL_PEFIX}"
-            )
+  # Search paths to use in resolving the full resources path
+  install (
+            FILES
+            "${NOM_TESTS_RESOURCES_DIR}/serializers/JsonCppSerializerTest.json"
+            DESTINATION
+            "${TESTS_DEPS_INSTALL_PEFIX}"
+          )
 endif( NOM_BUILD_SERIALIZERS_JSON_TESTS )
 
 # Copy resources file for unit tests if it has been built.
 if( NOM_BUILD_SERIALIZERS_XML_TESTS )
-    # Search paths to use in resolving the full resources path
-    install (
-              FILES
-              "${NOM_TESTS_RESOURCES_DIR}/serializers/RapidXmlSerializerTest.json"
-              DESTINATION
-              "${TESTS_DEPS_INSTALL_PEFIX}"
-            )
+  # Search paths to use in resolving the full resources path
+  install (
+            FILES
+            "${NOM_TESTS_RESOURCES_DIR}/serializers/RapidXmlSerializerTest.json"
+            DESTINATION
+            "${TESTS_DEPS_INSTALL_PEFIX}"
+          )
 endif( NOM_BUILD_SERIALIZERS_XML_TESTS )
 
 # TODO: Use resources cfg file

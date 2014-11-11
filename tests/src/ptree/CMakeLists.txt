@@ -9,7 +9,7 @@ if( NOM_BUILD_PTREE_TESTS )
 
   GTEST_ADD_TESTS (
                     ptree
-                    "values"
+                    "" # args
                     ${NOM_TESTS_SOURCE_DIR}/ptree/ptree.cpp
                   )
 

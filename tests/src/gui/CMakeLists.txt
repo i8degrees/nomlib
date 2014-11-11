@@ -5,21 +5,23 @@ if( NOM_BUILD_GUI_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/gui/libRocketTest.cpp
                   )
 
-  target_link_libraries( libRocketTest ${NOM_UNIT_TEST_LIBRARY} ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
+  target_link_libraries(  libRocketTest
+                          ${NOM_UNIT_TEST_LIBRARY}
+                          ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
 
-    GTEST_ADD_TESTS (
-                      libRocketTest
-                      "" # args
-                      ${NOM_TESTS_SOURCE_DIR}/gui/libRocketTest.cpp
-                    )
+  GTEST_ADD_TESTS (
+                    libRocketTest
+                    "" # args
+                    ${NOM_TESTS_SOURCE_DIR}/gui/libRocketTest.cpp
+                  )
 
-    # Search paths to use in finding resources path
-    install (
-              FILES
-              "${NOM_TESTS_RESOURCES_DIR}/libRocketTest.json"
-              DESTINATION
-              "${TESTS_DEPS_INSTALL_PEFIX}"
-            )
+  # Search paths to use in finding resources path
+  install (
+            FILES
+            "${NOM_TESTS_RESOURCES_DIR}/libRocketTest.json"
+            DESTINATION
+            "${TESTS_DEPS_INSTALL_PEFIX}"
+          )
 
 endif( NOM_BUILD_GUI_TESTS )
 
@@ -33,21 +35,23 @@ if( NOM_BUILD_GUI_DATAGRID_TESTS )
                     ${NOM_TESTS_SOURCE_DIR}/gui/libRocketDataGridTest.cpp
                   )
 
-  target_link_libraries( libRocketDataGridTest ${NOM_UNIT_TEST_LIBRARY} ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
+  target_link_libraries(  libRocketDataGridTest
+                          ${NOM_UNIT_TEST_LIBRARY}
+                          ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
 
-    GTEST_ADD_TESTS (
-                      libRocketDataGridTest
-                      "" # args
-                      ${NOM_TESTS_SOURCE_DIR}/gui/libRocketDataGridTest.cpp
-                    )
+  GTEST_ADD_TESTS (
+                    libRocketDataGridTest
+                    "" # args
+                    ${NOM_TESTS_SOURCE_DIR}/gui/libRocketDataGridTest.cpp
+                  )
 
-    # Search paths file to use in finding resources path
-    install (
-              FILES
-              "${NOM_TESTS_RESOURCES_DIR}/libRocketDataGridTest.json"
-              DESTINATION
-              "${TESTS_DEPS_INSTALL_PEFIX}"
-            )
+  # Search paths file to use in finding resources path
+  install (
+            FILES
+            "${NOM_TESTS_RESOURCES_DIR}/libRocketDataGridTest.json"
+            DESTINATION
+            "${TESTS_DEPS_INSTALL_PEFIX}"
+          )
 
 endif( NOM_BUILD_GUI_DATAGRID_TESTS )
 

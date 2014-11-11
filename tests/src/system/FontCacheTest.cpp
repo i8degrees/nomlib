@@ -200,5 +200,14 @@ int main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
 
+  // Set the current working directory path to the path leading to this
+  // executable file; used for unit tests that require file-system I/O.
+  if( nom::init( argc, argv ) == false )
+  {
+    NOM_LOG_CRIT(NOM_LOG_CATEGORY_APPLICATION, "Could not initialize nomlib.");
+    return NOM_EXIT_FAILURE;
+  }
+  atexit(nom::quit);
+
   return RUN_ALL_TESTS();
 }

@@ -1,30 +1,30 @@
 if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
 
   add_executable  (
-                    json_serializer
+                    JsonCppSerializerTest
                     ${NOM_TESTS_SOURCE_DIR}/serializers/JsonCppSerializerTest.cpp
                     ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
-  target_link_libraries( json_serializer UnitTest )
+  target_link_libraries( JsonCppSerializerTest UnitTest )
 
   GTEST_ADD_TESTS (
-                    json_serializer
+                    JsonCppSerializerTest
                     "" # args
                     ${NOM_TESTS_SOURCE_DIR}/serializers/JsonCppSerializerTest.cpp
                   )
 
   add_executable  (
-                    json_deserializer
+                    JsonCppDeserializerTest
                     ${NOM_TESTS_SOURCE_DIR}/serializers/JsonCppDeserializerTest.cpp
                     ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
 
-  target_link_libraries( json_deserializer UnitTest )
+  target_link_libraries( JsonCppDeserializerTest UnitTest )
 
   GTEST_ADD_TESTS (
-                    json_deserializer
+                    JsonCppDeserializerTest
                     "" # args
                     ${NOM_TESTS_SOURCE_DIR}/serializers/JsonCppDeserializerTest.cpp
                   )
@@ -34,29 +34,29 @@ endif( NOM_BUILD_SERIALIZERS_JSON_TESTS )
 if( NOM_BUILD_SERIALIZERS_XML_TESTS )
 
   add_executable  (
-                    xml_serializer
+                    RapidXmlSerializerTest
                     ${NOM_TESTS_SOURCE_DIR}/serializers/RapidXmlSerializerTest.cpp
                     ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
-  target_link_libraries( xml_serializer UnitTest )
+  target_link_libraries( RapidXmlSerializerTest UnitTest )
 
   GTEST_ADD_TESTS (
-                    xml_serializer
+                    RapidXmlSerializerTest
                     "" # args
                     ${NOM_TESTS_SOURCE_DIR}/serializers/RapidXmlSerializerTest.cpp
                   )
 
   add_executable  (
-                    xml_deserializer
+                    RapidXmlDeserializerTest
                     ${NOM_TESTS_SOURCE_DIR}/serializers/RapidXmlDeserializerTest.cpp
                     ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
-  target_link_libraries( xml_deserializer UnitTest )
+  target_link_libraries( RapidXmlDeserializerTest UnitTest )
 
   GTEST_ADD_TESTS (
-                    xml_deserializer
+                    RapidXmlDeserializerTest
                     "" # args
                     ${NOM_TESTS_SOURCE_DIR}/serializers/RapidXmlDeserializerTest.cpp
                   )
@@ -89,15 +89,15 @@ endif( NOM_BUILD_SERIALIZERS_XML_TESTS )
 if( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
 
   add_executable  (
-                    json_config_file
+                    JsonConfigFileTest
                     ${NOM_TESTS_SOURCE_DIR}/serializers/JsonConfigFileTest.cpp
                     # ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
                   )
 
-  target_link_libraries( json_config_file UnitTest )
+  target_link_libraries( JsonConfigFileTest UnitTest )
 
   GTEST_ADD_TESTS (
-                    json_config_file
+                    JsonConfigFileTest
                     "" # args
                     ${NOM_TESTS_SOURCE_DIR}/serializers/JsonConfigFileTest.cpp
                   )

@@ -36,15 +36,15 @@ if( NOM_BUILD_SDL2_LOGGER_TESTS )
   # ConsoleOutput
 
   add_executable  (
-                    console_output_test
+                    ConsoleOutputTest
                     ${NOM_TESTS_SOURCE_DIR}/core/ConsoleOutputTest.cpp
                   )
 
-  target_link_libraries( console_output_test UnitTest )
+  target_link_libraries( ConsoleOutputTest UnitTest )
 
   GTEST_ADD_TESTS (
-                    console_output_test
-                    ""
+                    ConsoleOutputTest
+                    "" # args
                     ${NOM_TESTS_SOURCE_DIR}/core/ConsoleOutputTest.cpp
                   )
 

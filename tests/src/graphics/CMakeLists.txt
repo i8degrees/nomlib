@@ -3,15 +3,15 @@ if( NOM_BUILD_RENDERWINDOW_TESTS )
   if( NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
     add_executable  (
-                      render_window
+                      RenderWindowTest
                       ${NOM_TESTS_SOURCE_DIR}/graphics/RenderWindowTest.cpp
                     )
 
-    target_link_libraries( render_window UnitTest )
+    target_link_libraries( RenderWindowTest UnitTest )
 
     GTEST_ADD_TESTS (
-                      render_window
-                      "RenderWindowTest"
+                      RenderWindowTest
+                      "" # args
                       ${NOM_TESTS_SOURCE_DIR}/graphics/RenderWindowTest.cpp
                     )
 
@@ -38,7 +38,7 @@ if( NOM_BUILD_GRADIENT_TESTS )
 
     GTEST_ADD_TESTS (
                       GradientTest
-                      ""
+                      "" # args
                       ${NOM_TESTS_SOURCE_DIR}/graphics/GradientTest.cpp
                     )
 

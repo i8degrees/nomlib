@@ -1,15 +1,15 @@
 if( NOM_BUILD_OPENAL_AUDIO_TESTS )
 
   add_executable  (
-                    al_audio_test
+                    ALAudioTest
                     ${NOM_TESTS_SOURCE_DIR}/audio/ALAudioTest.cpp
                   )
 
-  target_link_libraries( al_audio_test UnitTest )
+  target_link_libraries( ALAudioTest UnitTest )
 
   GTEST_ADD_TESTS (
-                    al_audio_test
-                    "ALAudioTest"
+                    ALAudioTest
+                    "" # args
                     ${NOM_TESTS_SOURCE_DIR}/audio/ALAudioTest.cpp
                   )
 

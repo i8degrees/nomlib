@@ -27,15 +27,15 @@ if( NOM_BUILD_COLOR_DB_TESTS )
   if( NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
 
     add_executable  (
-                      color_database
+                      ColorDatabaseTest
                       ${NOM_TESTS_SOURCE_DIR}/system/ColorDatabaseTest.cpp
                     )
 
-    target_link_libraries( color_database UnitTest )
+    target_link_libraries( ColorDatabaseTest UnitTest )
 
     GTEST_ADD_TESTS (
-                      color_database
-                      "ColorDatabaseTest"
+                      ColorDatabaseTest
+                      "" # args
                       ${NOM_TESTS_SOURCE_DIR}/system/ColorDatabaseTest.cpp
                     )
 
@@ -48,15 +48,15 @@ if( NOM_BUILD_FILE_TESTS )
   if( NOM_BUILD_SYSTEM_UNIT )
 
     add_executable  (
-                      file_interface
+                      FileInterfaceTest
                       ${NOM_TESTS_SOURCE_DIR}/system/FileInterfaceTest.cpp
                     )
 
-    target_link_libraries( file_interface UnitTest )
+    target_link_libraries( FileInterfaceTest UnitTest )
 
     GTEST_ADD_TESTS (
-                      file_interface
-                      "FileInterfaceTest"
+                      FileInterfaceTest
+                      "" # args
                       ${NOM_TESTS_SOURCE_DIR}/system/FileInterfaceTest.cpp
                     )
 

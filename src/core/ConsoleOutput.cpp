@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers
 #include "nomlib/system/File.hpp"
+#include <stdlib.h> // getenv
 
 // FIXME: The disabled logging macros are necessary in order to prevent
 // crashing upon attempted usage of said macro.
@@ -85,13 +86,9 @@ ConsoleOutput::Color ConsoleOutput::color() const
   return this->lcolor_;
 }
 
-// FIXME
 bool ConsoleOutput::use_color() const
 {
-  // File shell;
-
-  // std::string value = shell.env("NOM_COLOR");
-  std::string value;
+  std::string value = this->env("NOM_COLOR");
 
   if( value.empty() )
   {
@@ -130,6 +127,21 @@ void ConsoleOutput::endl()
   {
     this->impl_->endl();
   }
+}
+
+std::string ConsoleOutput::env(const std::string& path) const
+{
+  char* value = nullptr;
+
+  value = getenv( path.c_str() );
+
+  if( value != nullptr )
+  {
+    return value;
+  }
+
+  // Err
+  return "\0";
 }
 
 } // namespace nom

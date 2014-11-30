@@ -413,10 +413,7 @@ include(GetGitRevisionNumber)
 git_rev_number(GIT_REVISION "--short")
 set(GIT_REVISION "${GIT_REVISION}")
 
-configure_file  (
-                  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates/revision.cpp.in
-                  ${SRC_DIR}/revision.cpp
-                )
+configure_file( ${SRC_DIR}/revision.cpp.in ${SRC_DIR}/revision.cpp )
 
 # Uninstall target support; 'make uninstall'
 configure_file  (

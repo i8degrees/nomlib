@@ -13,14 +13,14 @@ set(  NOM_CORE_SOURCE
       ${INC_DIR}/types.hpp
 
       ${INC_DIR}/config.hpp # auto-generated
-      ${CMAKE_TEMPLATE_PATH}/config.hpp.in
+      ${INC_DIR}/config.hpp.in
 
       ${SRC_DIR}/version.cpp
       ${INC_DIR}/version.hpp # auto-generated
-      ${CMAKE_TEMPLATE_PATH}/version.hpp.in
+      ${INC_DIR}/version.hpp.in
 
       ${SRC_DIR}/revision.cpp # auto-generated
-      ${CMAKE_TEMPLATE_PATH}/revision.cpp.in
+      ${SRC_DIR}/revision.cpp.in
       ${INC_DIR}/revision.hpp
 
       ${SRC_DIR}/core/helpers.cpp
@@ -70,9 +70,7 @@ nom_add_library(  ${NOM_CORE_LIBRARY} ${LIBRARY_OUTPUT_TYPE}
 # set( NOM_CORE_LIBRARY "${NOM_CORE_LIBRARY}" PARENT_SCOPE )
 
 # Auto-generated header file containing engine version
-configure_file( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
-                "${INC_DIR}/version.hpp" )
+configure_file( ${INC_DIR}/version.hpp.in ${INC_DIR}/version.hpp )
 
 # Auto-generated config for engine
-configure_file( "${CMAKE_TEMPLATE_PATH}/config.hpp.in"
-                "${INC_DIR}/config.hpp" )
+configure_file( ${INC_DIR}/config.hpp.in ${INC_DIR}/config.hpp )

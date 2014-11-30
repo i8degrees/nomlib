@@ -474,7 +474,6 @@ TEST_F(TrueTypeFontTest, UseAllTextStyles)
   EXPECT_TRUE( this->compare() );
 }
 
-#ifndef NOM_RUN_TESTS_HEADLESS  // travis-ci
 TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
 {
   const int MIN_POINT_SIZE = 9;
@@ -558,13 +557,14 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
   this->input_mapper_.insert("zoom_in", wheel, true);
   this->input_mapper_.insert("zoom_out", wheel, true);
 
-  nom::DialogMessageBox(  this->test_case() + ":" + this->test_name(),
-                          help_info.str() );
+  if( NOM_TEST_FLAG(interactive) == true ) {
+    nom::DialogMessageBox(  this->test_case() + ":" + this->test_name(),
+                            help_info.str() );
+  }
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   // EXPECT_TRUE( this->compare() );
 }
-#endif // defined NOM_RUN_TESTS_HEADLESS
 
 } // namespace nom
 

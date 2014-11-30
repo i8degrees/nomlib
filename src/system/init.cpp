@@ -168,13 +168,9 @@ bool init ( int argc, char* argv[] )
   nom::File dir;
   std::string pwd = "\0";
 
+  // Note that this will always be a POSIX path -- Unix path delimiters -- even
+  // on Windows
   pwd = dir.path( argv[0] );
-
-  // We might want to consider using the following instead, so that we may not
-  // need to depend on program arguments, which is a major platform-specific
-  // implementation detail.
-  //
-  // pwd = dir.currentPath();
 
   if( pwd.length() < 1 )
   {

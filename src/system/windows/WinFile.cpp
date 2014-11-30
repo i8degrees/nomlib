@@ -105,9 +105,17 @@ bool WinFile::exists( const std::string& file_path )
 
 const std::string WinFile::path( const std::string& dir_path )
 {
-  Path p; // Just to be safe, we'll let nom::Path determine our path separator!
+  Path p;
+  nom::size_type pos = std::string::npos;
 
-  int32 pos = dir_path.find_last_of( p.native(), PATH_MAX );
+  // Try finding the last directory delimiter using the platform's native
+  // separator
+  pos = dir_path.find_last_of( p.native(), PATH_MAX );
+
+  // No luck, let's see if we have a POSIX path
+  if( pos == std::string::npos ) {
+    pos = dir_path.find_last_of( "/", PATH_MAX );
+  }
 
   // If no matches are found, this means the file path given is actually a base
   // file name path, without any directory path at all.

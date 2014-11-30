@@ -7,7 +7,7 @@ if( NOM_BUILD_GUI_BASE_TEST )
 
   add_executable( libRocketTest "libRocketTest.cpp" )
 
-  target_link_libraries( libRocketTest nomlib-visual-unit-test )
+  target_link_libraries( libRocketTest nomlib-visual-unit-test nomlib-gui )
 
   GTEST_ADD_TESTS ( ${TESTS_INSTALL_DIR}/libRocketTest
                     "" # args
@@ -31,7 +31,7 @@ if( NOM_BUILD_GUI_DATAGRID_TESTS )
                   "datagrid/CardsPageDataSource.cpp"
                   "libRocketDataGridTest.cpp" )
 
-  target_link_libraries( libRocketDataGridTest nomlib-visual-unit-test )
+  target_link_libraries( libRocketDataGridTest nomlib-visual-unit-test nomlib-gui )
 
   GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/libRocketDataGridTest
                     "" # args

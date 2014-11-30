@@ -174,15 +174,7 @@ endif( NOM_BUILD_UNIT_TEST_UNIT )
 
 if( NOM_BUILD_VISUAL_UNIT_TEST_UNIT )
 
-  # FIXME: nomlib-gui is only required here due to FinalFantasyFrame && friends
-  # being used in the VisualUnitTestFramework test. We need to relocate said
-  # classes from the GUI build unit to the graphics unit. Then we can swap out
-  # nomlib-gui with nomlib-graphics.
-  set( NOM_VISUAL_UNIT_TEST_LIBRARY_DEPS nomlib-unit-test nomlib-gui )
-
-  if( PLATFORM_WINDOWS )
-    list( APPEND NOM_VISUAL_UNIT_TEST_LIBRARY_DEPS ${SDL2MAIN_LIBRARY} )
-  endif( PLATFORM_WINDOWS )
+  set( NOM_VISUAL_UNIT_TEST_LIBRARY_DEPS nomlib-unit-test nomlib-graphics )
 
   add_library(  nomlib-visual-unit-test
                 ${LIBRARY_OUTPUT_TYPE} ${NOM_TESTS_VTEST_SOURCE} )

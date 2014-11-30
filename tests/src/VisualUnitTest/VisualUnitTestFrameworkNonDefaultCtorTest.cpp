@@ -35,17 +35,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math.hpp"
 #include "nomlib/system.hpp"
 #include "nomlib/graphics.hpp"
-#include "nomlib/gui.hpp"
 
 namespace nom {
 
 /// \brief Create a suitable rendering for the unit tests.
 ///
-/// \remarks Borders created using simple lines are nice, easy to visualize
-/// image differentials.
-FinalFantasyFrame generate_frame( const Point2i& pos, const Size2i& size )
+/// \remarks Filled rectangles make nice, simple to visualize image
+/// differentials.
+Rectangle generate_frame(const Point2i& pos, const Size2i& size)
 {
-  return FinalFantasyFrame( pos, size );
+  Rectangle rect( IntRect(pos, size), Color4i::Magenta );
+
+  return rect;
 }
 
 class VisualUnitTestFrameworkNonDefaultCtorTest: public VisualUnitTest
@@ -118,7 +119,7 @@ class VisualUnitTestFrameworkNonDefaultCtorTest: public VisualUnitTest
 
 TEST_F( VisualUnitTestFrameworkNonDefaultCtorTest, RenderTestImage1 )
 {
-  FinalFantasyFrame f = nom::generate_frame( Point2i( 25, 25 ), Size2i( 80, 60 ) );
+  nom::Rectangle f = nom::generate_frame( Point2i( 25, 25 ), Size2i( 80, 60 ) );
   NOM_TEST_ADD_RENDER( const RenderWindow& win, f.draw( this->render_window() ) );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
@@ -127,7 +128,7 @@ TEST_F( VisualUnitTestFrameworkNonDefaultCtorTest, RenderTestImage1 )
 
 TEST_F( VisualUnitTestFrameworkNonDefaultCtorTest, RenderTestImage2 )
 {
-  FinalFantasyFrame f = nom::generate_frame( Point2i( 25, 25 ), Size2i( 160, 120 ) );
+  nom::Rectangle f = nom::generate_frame( Point2i( 25, 25 ), Size2i( 160, 120 ) );
   NOM_TEST_ADD_RENDER( const RenderWindow& win, f.draw( this->render_window() ) );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
@@ -137,7 +138,7 @@ TEST_F( VisualUnitTestFrameworkNonDefaultCtorTest, RenderTestImage2 )
 /// \remarks This test is setup to fail on the second run.
 TEST_F( VisualUnitTestFrameworkNonDefaultCtorTest, RenderTestImage3 )
 {
-  FinalFantasyFrame f;
+  nom::Rectangle f;
 
   // Intentionally create an image differential (test failure) if we are not
   // creating reference screen dumps.

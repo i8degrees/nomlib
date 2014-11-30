@@ -46,7 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Include SDL2's enhanced assert facility if enabled, otherwise fall-back to
 // standard C assert facility.
 #if defined( NOM_USE_SDL2_ASSERT )  // See cmake/platform.cmake
-  #include "SDL_assert.h"
+  #include <SDL_assert.h>
 #else
   #include <cassert>
 #endif

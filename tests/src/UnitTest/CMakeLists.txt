@@ -1,12 +1,9 @@
-if( NOM_BUILD_UNIT_TEST_TESTS )
+# nomlib-unit-test module tests
 
-  add_executable( UnitTestFrameworkTest
-                  ${NOM_TESTS_SOURCE_DIR}/UnitTest/UnitTestFrameworkTest.cpp )
+add_executable( UnitTestFrameworkTest "UnitTestFrameworkTest.cpp" )
 
-  target_link_libraries( UnitTestFrameworkTest ${NOM_UNIT_TEST_LIBRARY} )
+target_link_libraries( UnitTestFrameworkTest nomlib-unit-test )
 
-  GTEST_ADD_TESTS(  UnitTestFrameworkTest
-                    "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/UnitTest/UnitTestFrameworkTest.cpp )
-
-endif( NOM_BUILD_UNIT_TEST_TESTS )
+GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/UnitTestFrameworkTest
+                  "" # args
+                  "UnitTestFrameworkTest.cpp" )

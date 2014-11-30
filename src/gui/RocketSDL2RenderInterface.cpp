@@ -28,14 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/gui/RocketSDL2RenderInterface.hpp"
 
-// Private headers (third-party
+// Private headers (third-party)
 #include <SDL.h>
 
-#if defined( NOM_PLATFORM_OSX )
-  #include <OpenGL/gl.h>
-#else
-  #include <glew.h>
-#endif
+#include <SDL_opengl.h>
 
 #if !(SDL_VIDEO_RENDER_OGL)
   #error "Only the opengl sdl backend is supported. To add support for others, see http://mdqinc.com/blog/2013/01/integrating-librocket-with-sdl-2/"
@@ -50,33 +46,75 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+priv::glUseProgramObjectARB_func RocketSDL2RenderInterface::ctx_ = nullptr;
+
 // static
 bool RocketSDL2RenderInterface::gl_init( int width, int height )
 {
-  // We get lucky on OS X ... we have up-to-date OpenGL profile to work with,
-  // but otherwise... we're probably stuck with the OpenGL v1.1 API, which does
-  // not include support for the glUseProgramObjectARB function, used in
-  // ::RenderGeometry (introduced in OpenGL v2.0 API).
-  //
-  // TODO: Does SDL2 or libRocket require shaders? I don't really know! It might
-  // be wise to add a GLEW check for the necessary GL extension below ...
-  #if ! defined( NOM_PLATFORM_OSX )
-    GLenum err = glewInit();
-
-    if( err != GLEW_OK )
-    {
-      NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, glewGetErrorString(err) );
-      // We'd get white, blocky textures if we were to continue past this
-      // point without the glUseProgramObjectARB call...
-      return false;
-    }
-  #endif
-
   // Initialize OpenGL for SDL2 + libRocket play along
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
   glMatrixMode( GL_PROJECTION | GL_MODELVIEW );
   glLoadIdentity();
   glOrtho( 0, width, height, 0, 0, 1 );
+
+  // Without shader extensions, we cannot disable the SDL shaders that
+  // result in unreadable, blocky text when rendered with libRocket's font
+  // subsystem.
+  if( SDL_GL_ExtensionSupported("GL_ARB_shader_objects") == false ) {
+    NOM_LOG_WARN( NOM_LOG_CATEGORY_APPLICATION,
+                  "OpenGL extension 'GL_ARB_shader_objects' is unsupported." );
+    return false;
+  }
+  if( SDL_GL_ExtensionSupported("GL_ARB_shading_language_100") == false ) {
+    NOM_LOG_WARN( NOM_LOG_CATEGORY_APPLICATION,
+                  "OpenGL extension 'GL_ARB_shading_language_100' is unsupported." );
+    return false;
+  }
+  if( SDL_GL_ExtensionSupported("GL_ARB_vertex_shader") == false ) {
+    NOM_LOG_WARN( NOM_LOG_CATEGORY_APPLICATION,
+                  "OpenGL extension 'GL_ARB_vertex_shader' is unsupported." );
+    return false;
+  }
+  if( SDL_GL_ExtensionSupported("GL_ARB_fragment_shader") == false ) {
+    NOM_LOG_WARN( NOM_LOG_CATEGORY_APPLICATION,
+                  "OpenGL extension 'GL_ARB_fragment_shader' is unsupported." );
+    return false;
+  }
+
+  // Try to obtain the function address of the exported symbol with SDL
+  RocketSDL2RenderInterface::ctx_ =
+    (priv::glUseProgramObjectARB_func) new priv::glUseProgramObjectARB_func;
+
+  NOM_ASSERT(RocketSDL2RenderInterface::ctx_ != nullptr);
+  if( RocketSDL2RenderInterface::ctx_ == nullptr ) {
+    return false;
+  }
+
+  // It may be unsafe (CRASH) to use this function pointer when
+  // SDL_GL_ExtensionSupported returns FALSE as per SDL2 wiki documentation [1]
+  //
+  // 1. https://wiki.libsdl.org/SDL_GL_GetProcAddress
+  RocketSDL2RenderInterface::ctx_ =
+    (priv::glUseProgramObjectARB_func) SDL_GL_GetProcAddress("glUseProgramObjectARB");
+
+  NOM_ASSERT(RocketSDL2RenderInterface::ctx_ != nullptr);
+  if( RocketSDL2RenderInterface::ctx_ == nullptr ) {
+    return false;
+  }
+
+  // TODO: Consider restructuring how (when) we initialize the rendering
+  // window. SDL rendering hints like the following aren't working because the
+  // hint's value is checked only during renderer creation (for us, that means
+  // when nom::RenderWindow is constructed). Resolving the initialization order
+  // issue would let us to simplify things by removing the SDL_GL_ calls made
+  // above.
+
+  // If this fails, a side-effect may be unreadable, blocky text by anything
+  // that is rendered using libRocket's interface.
+  // if( nom::set_hint(SDL_HINT_RENDER_OPENGL_SHADERS, "0" ) == false ) {
+    // NOM_LOG_WARN( NOM_LOG_CATEGORY_APPLICATION,
+                  // "Could not disable OpenGL shaders; rendering side-effects may occur." );
+  // }
 
   return true;
 }
@@ -84,10 +122,13 @@ bool RocketSDL2RenderInterface::gl_init( int width, int height )
 RocketSDL2RenderInterface::RocketSDL2RenderInterface( RenderWindow* window )
 {
   this->window_ = window;
+
+  // SDL_GLContext glcontext = SDL_GL_CreateContext( this->window_->window() );
 }
 
 RocketSDL2RenderInterface::~RocketSDL2RenderInterface()
 {
+  RocketSDL2RenderInterface::ctx_ = nullptr;
 }
 
 void RocketSDL2RenderInterface::Release()
@@ -99,13 +140,16 @@ void RocketSDL2RenderInterface::Release()
 
 void RocketSDL2RenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, const Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation)
 {
-  // Support for independent resolution scale -- SDL2 logical viewport) -- we
+  // Support for independent resolution scale -- SDL2 logical viewport -- we
   // translate positioning coordinates in respect to the current scale
   Point2f scale;
   SDL_RenderGetScale( this->window_->renderer(), &scale.x, &scale.y );
 
   // SDL uses shaders that we need to disable here
-  glUseProgramObjectARB(0);
+  if( RocketSDL2RenderInterface::ctx_ ) {
+    RocketSDL2RenderInterface::ctx_(0); // glUseProgramObjectARB(0);
+  }
+
   glPushMatrix();
 
   glTranslatef(translation.x * scale.x, translation.y * scale.y, 0);

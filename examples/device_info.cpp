@@ -26,32 +26,27 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "SDL.h"
+#include <SDL.h>
+#include <SDL_opengl.h>
 #include "SDL_revision.h"
 
 // Must be included before NOM_USE_* preprocessor definitions are checked
 #include "nomlib/config.hpp"
 
 #if defined( NOM_USE_SDL2_IMAGE )
-  #include "SDL_image.h"
+  #include <SDL_image.h>
 #endif
 
 #if defined( NOM_USE_SDL2_TTF )
-  #include "SDL_ttf.h"
+  #include <SDL_ttf.h>
 #endif
 
 #if defined( NOM_USE_OPENAL )
   #include "nomlib/audio/AL/OpenAL.hpp"
 #endif
 
-#if defined( NOM_USE_LIBSNDFILE )
-  #include "sndfile.h"
-#endif
-
-#if defined( NOM_PLATFORM_OSX )
-  #include <OpenGL/gl.h>
-#else
-  #include <glew.h>
+#if defined(NOM_USE_OPENAL) && defined(NOM_USE_LIBSNDFILE)
+  #include "nomlib/audio/AL/SoundFile.hpp"
 #endif
 
 #if defined( NOM_USE_LIBROCKET )
@@ -199,9 +194,9 @@ void OpenAL_version_info( void )
 
 void libsndfile_version_info( void )
 {
-  #if defined( NOM_USE_LIBSNDFILE )
-
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "libsndfile version: ", sf_version_string() );
+  #if defined(NOM_USE_OPENAL) && defined(NOM_USE_LIBSNDFILE)
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+                  "libsndfile version:", nom::libsndfile_version() );
   #endif
 }
 
@@ -261,12 +256,12 @@ int main ( int argc, char* argv[] )
   // profile.
   //
   // Source: http://stackoverflow.com/questions/19865463/opengl-4-1-under-mavericks
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+  // SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
   // Output the versions used of nomlib and its dependencies.
   libs_version_info();
 
-  if( window.create( "device_info", window_size, SDL_WINDOW_HIDDEN ) == false )
+  if( window.create( "device_info", window_size, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL ) == false )
   {
     NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not create a window." );
     exit( NOM_EXIT_FAILURE );
@@ -288,21 +283,6 @@ int main ( int argc, char* argv[] )
     NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, nom::PIXEL_FORMAT_NAME( *itr ), index == 0 ? " (optimal)" : "" );
     ++index;
   }
-
-  // For whatever reason, using SDL_GL attributes refused to give me the correct
-  // OpenGL version on my MacBook Air ...
-  //
-  // See also: above note regarding core profile
-  #if ! defined( NOM_PLATFORM_OSX )
-    // FIXME: Broken on Windows: "Missing GL version"
-    GLenum err = glewInit();
-
-    if( err != GLEW_OK )
-    {
-      NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, glewGetErrorString(err) );
-      return NOM_EXIT_FAILURE;
-    }
-  #endif
 
   std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 

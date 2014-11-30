@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/core/clock.hpp"
 
 // Private headers (third-party libs)
-#include "SDL.h" // Used for ticks & sleep implementations
+#include <SDL.h> // Used for ticks & sleep implementations
 
 namespace nom {
 

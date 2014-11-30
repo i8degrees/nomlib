@@ -42,9 +42,9 @@ before_script:
   - sudo mkdir -p '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs'
   - sudo tar -xzf /tmp/osx10.7.sdk.tar.gz -C /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
   - mkdir -p build && cd build
-  - cmake -GXcode -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=on -DNOM_BUILD_TESTS=on -DCMAKE_INSTALL_PREFIX=~/Library/Frameworks -DNOM_RUN_TESTS_HEADLESS=on ..
+  - cmake -GXcode -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=on -DNOM_BUILD_TESTS=on -DCMAKE_OSX_DEPLOYMENT_TARGET=10.7 -DCMAKE_INSTALL_PREFIX=~/Library/Frameworks -DNOM_RUN_TESTS_HEADLESS=on ..
 script:
-  - xcodebuild -sdk macosx10.7 build
+  - xcodebuild build
   - xcodebuild -target install
   # - xcodebuild -target uninstall
   # Broken:

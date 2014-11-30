@@ -33,16 +33,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/audio/IAudioDevice.hpp"
-#include "nomlib/audio/AL/OpenAL.hpp"
+
+// Forward declarations
+struct ALCdevice_struct {};
+struct ALCcontext_struct {};
+typedef char ALCchar;
 
 namespace nom {
   namespace priv {
 
 /// Custom deleter for freeing an OpenAL audio device; debugging aid.
-void AL_FreeAudioDevice ( ALCdevice* );
+void AL_FreeAudioDevice ( ALCdevice_struct* );
 
 /// Custom deleter for freeing an OpenAL audio context; debugging aid.
-void AL_FreeAudioContext ( ALCcontext* );
+void AL_FreeAudioContext ( ALCcontext_struct* );
 
   } // namespace priv
 } // namespace nom
@@ -82,9 +86,9 @@ class AudioDevice: public IAudioDevice
     /// ...
     bool initialized ( void ) const;
     /// Audio device handle
-    std::shared_ptr<ALCdevice> audio_device;
+    std::shared_ptr<ALCdevice_struct> audio_device;
     /// Audio device context
-    std::shared_ptr<ALCcontext> audio_context;
+    std::shared_ptr<ALCcontext_struct> audio_context;
     /// device name
     const ALCchar *device_name;
 };

@@ -29,8 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GRAPHICS_SHAPES_RECTANGLE_HPP
 #define NOMLIB_GRAPHICS_SHAPES_RECTANGLE_HPP
 
-#include "SDL.h" // SDL2
-
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Rect.hpp"

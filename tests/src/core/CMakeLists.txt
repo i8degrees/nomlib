@@ -1,51 +1,51 @@
-# Core engine tests
+# nomlib-core module tests
+
+set( NOM_BUILD_VERSION_INFO_TEST ON )
+set( NOM_BUILD_SDL2_LOGGER_TESTS ON )
 
 if(NOM_BUILD_VERSION_INFO_TEST)
 
-  add_executable  (
-                    VersionInfoTest
-                    ${NOM_TESTS_SOURCE_DIR}/core/VersionInfoTest.cpp
-                  )
+  # FIXME: We only need nomlib-system for init...
+  set( NOM_CORE_TESTS_DEPS ${GTEST_LIBRARY} nomlib-core nomlib-system )
 
-  target_link_libraries( VersionInfoTest ${NOM_UNIT_TEST_LIBRARY} )
+  if( PLATFORM_WINDOWS )
+    list( APPEND NOM_CORE_TESTS_DEPS ${SDL2MAIN_LIBRARY} )
+  endif( PLATFORM_WINDOWS )
 
-  GTEST_ADD_TESTS (
-                    VersionInfoTest
+  add_executable( VersionInfoTest "VersionInfoTest.cpp" )
+
+  target_link_libraries( VersionInfoTest ${NOM_CORE_TESTS_DEPS} )
+
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/VersionInfoTest
                     "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/core/VersionInfoTest.cpp
-                  )
+                    "VersionInfoTest.cpp" )
 
 endif(NOM_BUILD_VERSION_INFO_TEST)
 
 if( NOM_BUILD_SDL2_LOGGER_TESTS )
 
-  # SDL2Logger
-  add_executable  (
-                    SDL2LoggerTest
-                    ${NOM_TESTS_SOURCE_DIR}/core/SDL2LoggerTest.cpp
-                  )
+  set( NOM_CORE_TESTS_DEPS ${GTEST_LIBRARY} nomlib-core nomlib-math )
 
-  target_link_libraries( SDL2LoggerTest ${NOM_UNIT_TEST_LIBRARY} )
+  if( PLATFORM_WINDOWS )
+    list( APPEND NOM_CORE_TESTS_DEPS ${SDL2MAIN_LIBRARY} )
+  endif( PLATFORM_WINDOWS )
 
-  GTEST_ADD_TESTS (
-                    SDL2LoggerTest
-                    ""
-                    ${NOM_TESTS_SOURCE_DIR}/core/SDL2LoggerTest.cpp
-                  )
+  add_executable( SDL2LoggerTest "SDL2LoggerTest.cpp" )
 
-  # ConsoleOutput
+  target_link_libraries( SDL2LoggerTest ${NOM_CORE_TESTS_DEPS} )
 
-  add_executable  (
-                    ConsoleOutputTest
-                    ${NOM_TESTS_SOURCE_DIR}/core/ConsoleOutputTest.cpp
-                  )
-
-  target_link_libraries( ConsoleOutputTest ${NOM_UNIT_TEST_LIBRARY} )
-
-  GTEST_ADD_TESTS (
-                    ConsoleOutputTest
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/SDL2LoggerTest
                     "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/core/ConsoleOutputTest.cpp
-                  )
+                    "SDL2LoggerTest.cpp" )
+
+  add_executable( ConsoleOutputTest
+                  "ConsoleOutputTest.cpp" )
+
+  # NOTE: We don't actually need nomlib-math for this test
+  target_link_libraries( ConsoleOutputTest ${NOM_CORE_TESTS_DEPS} )
+
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/ConsoleOutputTest
+                    "" # args
+                    "ConsoleOutputTest.cpp" )
 
 endif( NOM_BUILD_SDL2_LOGGER_TESTS )

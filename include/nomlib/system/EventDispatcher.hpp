@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 
-#include "SDL.h"
+#include <SDL.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/core/clock.hpp"

@@ -85,11 +85,13 @@ ConsoleOutput::Color ConsoleOutput::color() const
   return this->lcolor_;
 }
 
+// FIXME
 bool ConsoleOutput::use_color() const
 {
-  File shell;
+  // File shell;
 
-  std::string value = shell.env("NOM_COLOR");
+  // std::string value = shell.env("NOM_COLOR");
+  std::string value;
 
   if( value.empty() )
   {

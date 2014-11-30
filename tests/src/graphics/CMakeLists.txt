@@ -1,43 +1,46 @@
+# nomlib-graphics module tests
+
+set( NOM_BUILD_RENDERWINDOW_TESTS ON )
+set( NOM_BUILD_GRADIENT_TESTS ON )
+set( NOM_BUILD_BITMAP_FONT_TEST ON )
+set( NOM_BUILD_TRUETYPE_FONT_TEST ON )
+set( NOM_BUILD_BMFONT_TEST ON )
+
 if( NOM_BUILD_RENDERWINDOW_TESTS )
 
-  add_executable  (
-                    RenderWindowTest
-                    ${NOM_TESTS_SOURCE_DIR}/graphics/RenderWindowTest.cpp
-                  )
+  add_executable( RenderWindowTest "RenderWindowTest.cpp" )
 
-  target_link_libraries( RenderWindowTest ${NOM_UNIT_TEST_LIBRARY} )
+  set( RENDERWINDOW_DEPS ${GTEST_LIBRARY} nomlib-graphics )
 
-  GTEST_ADD_TESTS (
-                    RenderWindowTest
+  if( PLATFORM_WINDOWS )
+    list( APPEND RENDERWINDOW_DEPS ${SDL2MAIN_LIBRARY} )
+  endif( PLATFORM_WINDOWS )
+
+  target_link_libraries( RenderWindowTest ${RENDERWINDOW_DEPS} )
+
+  GTEST_ADD_TESTS ( ${TESTS_INSTALL_DIR}/RenderWindowTest
                     "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/graphics/RenderWindowTest.cpp
-                  )
+                    "RenderWindowTest.cpp" )
 
   # Copy nomlib's window icon resource.
   install (
             FILES
-            "${PROJECT_SOURCE_DIR}/${NOMLIB_RESOURCES_DIR}/icon.png"
+            "${NOMLIB_RESOURCES_DIR}/icon.png"
             DESTINATION
-            "${TESTS_DEPS_INSTALL_PEFIX}"
+            "${TESTS_INSTALL_DIR}"
           )
 
 endif( NOM_BUILD_RENDERWINDOW_TESTS )
 
 if( NOM_BUILD_GRADIENT_TESTS )
 
-  add_executable  (
-                    GradientTest
-                    ${NOM_TESTS_SOURCE_DIR}/graphics/GradientTest.cpp
-                  )
+  add_executable( GradientTest "GradientTest.cpp" )
 
-  target_link_libraries(  GradientTest
-                          ${NOM_UNIT_TEST_LIBRARY}
-                          ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
+  target_link_libraries( GradientTest nomlib-graphics nomlib-visual-unit-test )
 
-  GTEST_ADD_TESTS (
-                    GradientTest
+  GTEST_ADD_TESTS ( ${TESTS_INSTALL_DIR}/GradientTest
                     "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/graphics/GradientTest.cpp
+                    "GradientTest.cpp"
                   )
 
   # Copy resource files for the test
@@ -45,26 +48,20 @@ if( NOM_BUILD_GRADIENT_TESTS )
             FILES
             "${NOM_TESTS_RESOURCES_DIR}/graphics/GradientTest.json"
             DESTINATION
-            "${TESTS_DEPS_INSTALL_PEFIX}"
+            "${TESTS_INSTALL_DIR}"
           )
 
 endif( NOM_BUILD_GRADIENT_TESTS )
 
 if(NOM_BUILD_BITMAP_FONT_TEST)
 
-  add_executable  (
-                    BitmapFontTest
-                    ${NOM_TESTS_SOURCE_DIR}/graphics/BitmapFontTest.cpp
-                  )
+  add_executable( BitmapFontTest "BitmapFontTest.cpp" )
 
-  target_link_libraries(  BitmapFontTest
-                          ${NOM_UNIT_TEST_LIBRARY}
-                          ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
+  target_link_libraries( BitmapFontTest nomlib-graphics nomlib-visual-unit-test )
 
-  GTEST_ADD_TESTS (
-                    BitmapFontTest
+  GTEST_ADD_TESTS ( ${TESTS_INSTALL_DIR}/BitmapFontTest
                     "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/graphics/BitmapFontTest.cpp
+                    "BitmapFontTest.cpp"
                   )
 
   # Copy resource files for the test
@@ -72,61 +69,47 @@ if(NOM_BUILD_BITMAP_FONT_TEST)
             FILES
             "${NOM_TESTS_RESOURCES_DIR}/graphics/BitmapFontTest.json"
             DESTINATION
-            "${TESTS_DEPS_INSTALL_PEFIX}"
+            "${TESTS_INSTALL_DIR}"
           )
 
 endif(NOM_BUILD_BITMAP_FONT_TEST)
 
 if(NOM_BUILD_TRUETYPE_FONT_TEST)
 
-  add_executable  (
-                    TrueTypeFontTest
-                    ${NOM_TESTS_SOURCE_DIR}/graphics/TrueTypeFontTest.cpp
-                  )
+  add_executable( TrueTypeFontTest "TrueTypeFontTest.cpp" )
 
-  target_link_libraries(  TrueTypeFontTest
-                          ${NOM_UNIT_TEST_LIBRARY}
-                          ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
+  target_link_libraries( TrueTypeFontTest nomlib-graphics nomlib-visual-unit-test )
 
-  GTEST_ADD_TESTS (
-                    TrueTypeFontTest
+  GTEST_ADD_TESTS ( ${TESTS_INSTALL_DIR}/TrueTypeFontTest
                     "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/graphics/TrueTypeFontTest.cpp
-                  )
+                    "TrueTypeFontTest.cpp" )
 
   # Copy resource files for the test
   install (
             FILES
             "${NOM_TESTS_RESOURCES_DIR}/graphics/TrueTypeFontTest.json"
             DESTINATION
-            "${TESTS_DEPS_INSTALL_PEFIX}"
+            "${TESTS_INSTALL_DIR}"
           )
 
 endif(NOM_BUILD_TRUETYPE_FONT_TEST)
 
 if(NOM_BUILD_BMFONT_TEST)
 
-  add_executable  (
-                    BMFontTest
-                    ${NOM_TESTS_SOURCE_DIR}/graphics/BMFontTest.cpp
-                  )
+  add_executable( BMFontTest "BMFontTest.cpp" )
 
-  target_link_libraries(  BMFontTest
-                          ${NOM_UNIT_TEST_LIBRARY}
-                          ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
+  target_link_libraries( BMFontTest nomlib-graphics nomlib-visual-unit-test )
 
-  GTEST_ADD_TESTS (
-                    BMFontTest
+  GTEST_ADD_TESTS ( ${TESTS_INSTALL_DIR}/BMFontTest
                     "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/graphics/BMFontTest.cpp
-                  )
+                    "BMFontTest.cpp" )
 
   # Copy resource files for the test
   install (
             FILES
             "${NOM_TESTS_RESOURCES_DIR}/graphics/BMFontTest.json"
             DESTINATION
-            "${TESTS_DEPS_INSTALL_PEFIX}"
+            "${TESTS_INSTALL_DIR}"
           )
 
 endif(NOM_BUILD_BMFONT_TEST)

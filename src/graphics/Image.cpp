@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Image.hpp"
 
 // Private headers (third-party)
-#include "SDL_image.h"
+#include <SDL_image.h>
 
 // Private headers
 #include "nomlib/graphics/RenderWindow.hpp"

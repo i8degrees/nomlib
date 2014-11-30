@@ -29,7 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Text.hpp"
 
 // Private headers (third-party)
-#include "SDL.h"
+#include <SDL.h>
+#include <SDL_ttf.h>
 
 // Private headers
 #include "nomlib/graphics/fonts/Glyph.hpp"

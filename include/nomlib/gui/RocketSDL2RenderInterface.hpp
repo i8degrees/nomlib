@@ -36,7 +36,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 
+#if defined(NOM_PLATFORM_WINDOWS)
+  #define NOM_API_EXPORT __stdcall
+#else
+  #define NOM_API_EXPORT
+#endif
+
 namespace nom {
+
+namespace priv {
+
+typedef void (NOM_API_EXPORT* glUseProgramObjectARB_func) (unsigned int);
+
+} // namespace priv
 
 // Forward declarations
 class RenderWindow;
@@ -53,8 +65,8 @@ class RocketSDL2RenderInterface: public Rocket::Core::RenderInterface
     /// \brief Initialize OpenGL with the necessary settings for libRocket and
     /// SDL2 to be all friendly.
     ///
-    /// \returns Boolean TRUE if OpenGL initialization (this implies GLEW) is
-    /// successful, and boolean FALSE on failure.
+    /// \returns Boolean TRUE if OpenGL initialization is successful, and
+    /// boolean FALSE on failure.
     ///
     /// \param width  The width of the clipping plane (orthographic matrix).
     /// \param height The height of the clipping plane (orthographic matrix).
@@ -100,6 +112,13 @@ class RocketSDL2RenderInterface: public Rocket::Core::RenderInterface
     ///
     /// \remarks The interface does **not** own the pointer.
     RenderWindow* window_;
+
+  private:
+    /// \brief Shader context function pointer
+    ///
+    /// \note We bypass the use of GLEW by requesting this extension through
+    /// SDL2.
+    static priv::glUseProgramObjectARB_func ctx_;
 };
 
 } // namespace nom

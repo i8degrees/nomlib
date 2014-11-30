@@ -1,84 +1,65 @@
-if( NOM_BUILD_VTEST_TESTS )
+# nomlib-visual-unit-test module tests
 
-  add_executable  (
-                    VisualUnitTestFrameworkTest
-                    ${NOM_TESTS_SOURCE_DIR}/VisualUnitTest/VisualUnitTestFrameworkTest.cpp
-                  )
+add_executable( VisualUnitTestFrameworkTest "VisualUnitTestFrameworkTest.cpp" )
 
-  target_link_libraries(  VisualUnitTestFrameworkTest
-                          ${NOM_UNIT_TEST_LIBRARY}
-                          ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
+target_link_libraries(  VisualUnitTestFrameworkTest
+                        nomlib-visual-unit-test )
 
-  add_test  (
-              # test name
-              VisualUnitTestFrameworkTestGenRefImages,
-              # executable name
-              VisualUnitTestFrameworkTest
-              "-r" # args
-            )
+add_test(   # test name
+            VisualUnitTestFrameworkTestGenRefImages,
+            # executable name
+            ${TESTS_INSTALL_DIR}/VisualUnitTestFrameworkTest
+            # args
+            "-r" )
 
-  add_test  (
-              # test name
-              VisualUnitTestFrameworkTestCompareImages,
-              # executable name
-              VisualUnitTestFrameworkTest
-              "" # args
-            )
+add_test( # test name
+          VisualUnitTestFrameworkTestCompareImages,
+          # executable name
+          ${TESTS_INSTALL_DIR}/VisualUnitTestFrameworkTest
+          # args
+          "" )
 
-  add_executable  (
-                    VisualUnitTestFrameworkNonDefaultCtorTest
-                    ${NOM_TESTS_SOURCE_DIR}/VisualUnitTest/VisualUnitTestFrameworkNonDefaultCtorTest.cpp
-                  )
+add_executable( VisualUnitTestFrameworkNonDefaultCtorTest
+                "VisualUnitTestFrameworkNonDefaultCtorTest.cpp" )
 
-  target_link_libraries(  VisualUnitTestFrameworkNonDefaultCtorTest
-                          ${NOM_UNIT_TEST_LIBRARY}
-                          ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
+target_link_libraries(  VisualUnitTestFrameworkNonDefaultCtorTest
+                        nomlib-visual-unit-test )
 
-  add_test  (
-              # test name
-              VisualUnitTestFrameworkNonDefaultCtorTestGenRefImages,
-              # executable name
-              VisualUnitTestFrameworkNonDefaultCtorTest
-              "-r" # args
-            )
+add_test( # test name
+          VisualUnitTestFrameworkNonDefaultCtorTestGenRefImages,
+          # executable name
+          ${TESTS_INSTALL_DIR}/VisualUnitTestFrameworkNonDefaultCtorTest
+          # args
+          "-r" )
 
-  add_test  (
-              # test name
-              VisualUnitTestFrameworkNonDefaultCtorTestCompareImages,
-              # executable name
-              VisualUnitTestFrameworkNonDefaultCtorTest
-              "" # args
-            )
+add_test( # test name
+          VisualUnitTestFrameworkNonDefaultCtorTestCompareImages,
+          # executable name
+          ${TESTS_INSTALL_DIR}/VisualUnitTestFrameworkNonDefaultCtorTest
+          # args
+          "" )
 
-  add_executable( ImageTestSetTest
-                  ${NOM_TESTS_SOURCE_DIR}/VisualUnitTest/ImageTestSetTest.cpp )
+# FIXME
+# add_executable( ImageTestSetTest "ImageTestSetTest.cpp" )
 
-  target_link_libraries(  ImageTestSetTest
-                          ${NOM_UNIT_TEST_LIBRARY}
-                          ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
+# target_link_libraries( ImageTestSetTest nomlib-visual-unit-test )
 
-  GTEST_ADD_TESTS(  ImageTestSetTest
-                    "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/VisualUnitTest/ImageTestSetTest.cpp
-                  )
+# GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/ImageTestSetTest
+#                   "" # args
+#                   "ImageTestSetTest.cpp" )
 
-  add_executable  (
-                    ImageDiffTest
-                    ${NOM_TESTS_SOURCE_DIR}/VisualUnitTest/ImageDiffTest.cpp )
+# FIXME
+# add_executable( ImageDiffTest "ImageDiffTest.cpp" )
 
-  target_link_libraries(  ImageDiffTest
-                          ${NOM_UNIT_TEST_LIBRARY}
-                          ${NOM_VISUAL_UNIT_TEST_LIBRARY} )
+# target_link_libraries( ImageDiffTest nomlib-visual-unit-test )
 
-  GTEST_ADD_TESTS(  ImageDiffTest
-                    "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/VisualUnitTest/ImageDiffTest.cpp )
+# GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/ImageDiffTest
+#                   "" # args
+#                   "ImageDiffTest.cpp" )
 
-  install(  DIRECTORY
-            "${NOM_TESTS_RESOURCES_DIR}/ImageDiffTest"
-            DESTINATION
-            "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
-            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
-          )
-
-endif( NOM_BUILD_VTEST_TESTS )
+# install(  DIRECTORY
+#           "${NOM_TESTS_RESOURCES_DIR}/ImageDiffTest"
+#           DESTINATION
+#           "${TESTS_INSTALL_DIR}/Resources"
+#           PATTERN ".*" EXCLUDE
+#         )

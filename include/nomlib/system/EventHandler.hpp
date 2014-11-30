@@ -33,8 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstring>
 #include <queue>
 
-#include "SDL.h"
-
 #include "nomlib/config.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/system/Joystick.hpp"

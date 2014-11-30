@@ -31,8 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 
-#include "SDL.h" // SDL2
-
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Rect.hpp"

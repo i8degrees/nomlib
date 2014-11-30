@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Cursor.hpp"
 
 // Private headers (third-party libs)
-#include "SDL.h"
+#include <SDL.h>
 
 namespace nom {
 

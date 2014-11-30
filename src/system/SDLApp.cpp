@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/SDLApp.hpp"
 
 // Private headers (third-party libs)
-// #include "SDL.h"
+// #include <SDL.h>
 
 // Private headers
 #include "nomlib/system/SDL_helpers.hpp"

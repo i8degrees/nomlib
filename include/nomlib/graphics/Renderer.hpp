@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <memory>
 
-#include "SDL.h"
+#include <SDL.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"

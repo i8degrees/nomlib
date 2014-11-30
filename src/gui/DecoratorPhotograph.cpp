@@ -33,11 +33,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Rocket/Core/Texture.h>
 
 // Private headers
+#include <SDL_image.h>
+
 #include "nomlib/gui/RocketSDL2RenderInterface.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
 
-// Clean up these headers
+// TODO: Clean up these headers
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/RenderWindow.hpp"
 

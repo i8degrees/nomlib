@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/audio/AL/AudioDevice.hpp"
 
+// Forward declarations
+#include "nomlib/audio/AL/OpenAL.hpp"
+
 namespace nom {
   namespace priv {
 

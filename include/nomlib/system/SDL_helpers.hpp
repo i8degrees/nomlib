@@ -31,9 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_ttf.h"
+#include <SDL.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
@@ -54,6 +52,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined( NOM_PLATFORM_WINDOWS )
   #undef RGB
 #endif
+
+// Forward declarations
+struct _TTF_Font {};
 
 namespace nom {
 
@@ -221,7 +222,7 @@ void FreeTexture ( SDL_Texture* );
 void FreeSurface ( SDL_Surface* );
 
 /// Custom deleter for TTF_Font* structures
-void TTF_FreeFont ( TTF_Font* );
+void TTF_FreeFont ( _TTF_Font* );
 
 } // namespace priv
 } // namespace nom

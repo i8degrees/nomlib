@@ -10,35 +10,24 @@ if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
   set( PLATFORM_OSX true )
   set( NOM_PLATFORM_POSIX true )
 
+  # TODO: Rename to BUILD_FRAMEWORK
   option ( FRAMEWORK "Build OSX Framework instead of dylib" on )
   option ( UNIVERSAL "Build as an OSX Universal Library" off )
 
-  # Setup the SDK selection for backwards compatibility
-  set ( SDKVER "10.7" )
-
-  set ( DEVROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer" )
-  set ( SDKROOT "${DEVROOT}/SDKs/MacOSX${SDKVER}.sdk" )
-
-  if( EXISTS ${SDKROOT} )
-    set( CMAKE_OSX_SYSROOT "${SDKROOT}" )
-    set( CMAKE_OSX_DEPLOYMENT_TARGET "${SDKVER}" )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=${SDKVER}" )
-
-    # This resolves the error in UnixFile.cpp I get when trying to compile with
-    # Xcode generated project files -- it complains about not being able to find
-    # the header file <MacTypes.h> in one of the system frameworks (CoreServices
-    # or Carbon, I believe).
-    #
-    # This is due to the fact that it is referencing the MacOSX v10.9 SDK, when
-    # it should be using v10.7 header files, like it appears to be for
-    # everything else. This appears to have been working before, perhaps
-    # my recent upgrade to CMake v3.0 had changed something related to all this?
-    set( CMAKE_SYSTEM_FRAMEWORK_PATH "${SDKROOT}/System/Library/Frameworks" )
-    message( STATUS "Using SDK: ${SDKROOT}" )
-
-  else( NOT EXISTS ${SDKROOT} ) # Mac OS X v10.7 SDK not found
-    message ( WARNING "WARNING: Mac OS X ${SDKVER} SDK path not found: ${SDKROOT}" )
-  endif( EXISTS ${SDKROOT} )
+  # This variable influences the system header files version we build against,
+  # which in turn determines the **minimum** version of OS X this build will
+  # be binary compatible with (run on).
+  #
+  # Internally, this influences the search paths for system header files and
+  # also instructs CMake to pass -mmacosx-version-min to the compiler.
+  #
+  # To modify this variable's resulting value, you should pass
+  # -DCMAKE_OSX_DEPLOYMENT_TARGET=<ver> to CMake at the time of project files
+  # generation -- 'cmake ..' from your out-of-source build directory.
+  #
+  # NOTE: CMAKE_OSX_SYSROOT must be set **before** the project command is
+  # called.
+  message( STATUS "Using SDK: ${CMAKE_OSX_SYSROOT}" )
 
   # libc++ requires OSX v10.7+
   set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )

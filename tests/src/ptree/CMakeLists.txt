@@ -1,16 +1,15 @@
-if( NOM_BUILD_PTREE_TESTS )
+# nomlib-ptree module tests
 
-  add_executable  (
-                    ptree
-                    ${NOM_TESTS_SOURCE_DIR}/ptree/ptree.cpp
-                  )
+set( NOM_PTREE_TESTS_DEPS ${GTEST_LIBRARY} nomlib-ptree )
 
-  target_link_libraries( ptree ${NOM_UNIT_TEST_LIBRARY} )
+if( PLATFORM_WINDOWS )
+  list( APPEND NOM_PTREE_TESTS_DEPS ${SDL2MAIN_LIBRARY} )
+endif( PLATFORM_WINDOWS )
 
-  GTEST_ADD_TESTS (
-                    ptree
-                    "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/ptree/ptree.cpp
-                  )
+add_executable( ptree "ptree.cpp" )
 
-endif( NOM_BUILD_PTREE_TESTS )
+target_link_libraries( ptree ${NOM_PTREE_TESTS_DEPS} )
+
+GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/ptree
+                  "" # args
+                  "ptree.cpp" )

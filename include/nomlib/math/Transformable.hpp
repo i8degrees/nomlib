@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_MATH_TRANSFORMABLE_HPP
-#define NOMLIB_MATH_TRANSFORMABLE_HPP
+#ifndef NOMLIB_GRAPHICS_TRANSFORMABLE_HPP
+#define NOMLIB_GRAPHICS_TRANSFORMABLE_HPP
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Size2.hpp"

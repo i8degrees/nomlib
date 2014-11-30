@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 #include <string>
 
-#include "SDL.h"
+#include <SDL.h>
 
 #include "nomlib/core/clock.hpp"
 

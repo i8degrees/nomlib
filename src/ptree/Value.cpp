@@ -28,9 +28,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/ptree/Value.hpp"
 
+// Private headers
+#include <cassert>
+
 // Forward declarations
 #include "nomlib/ptree/ValueIterator.hpp"
 #include "nomlib/ptree/ValueConstIterator.hpp"
+
+// Use standard assert facilities, so we do not need to link to SDL2
+#if defined(NOM_DEBUG_ASSERT) && defined(NOM_USE_SDL2_ASSERT)
+  #undef NOM_ASSERT
+  #define NOM_ASSERT(expression) ( assert (expression) )
+#endif
 
 namespace nom {
 

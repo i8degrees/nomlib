@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <memory>
 
-#include "SDL.h" // SDL2
+#include <SDL.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Rect.hpp"

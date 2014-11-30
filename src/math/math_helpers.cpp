@@ -28,9 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/math/math_helpers.hpp"
 
-// Forward declarations
-#include "nomlib/math/Transformable.hpp"
-
 namespace nom {
 
 namespace priv {
@@ -73,66 +70,6 @@ const Point2d rotate_points ( float angle, float x, float y, float pivot_x, floa
   p.y = rotated_y;
 
   return p;
-}
-
-void set_alignment( Transformable* obj, const Size2i& bounds,
-                    uint32 align)
-{
-  // Resulting alignment calculation
-  Point2i offset(Point2i::zero);
-
-  // Object's rendered position
-  Point2i pos(Point2i::zero);
-
-  // Object's rendered width and height
-  Size2i dims(Size2i::zero);
-
-  NOM_ASSERT(obj != nullptr);
-
-  if( obj != nullptr ) {
-    pos = obj->position();
-    dims = obj->size();
-  } else {
-    return;
-  }
-
-  // Reset alignment
-  // if( align & Alignment::NONE ) {
-  //   offset.x = pos.x;
-  //   offset.y = pos.y;
-  // }
-
-  // Anchor::TopLeft, Anchor::Left, Anchor::BottomLeft
-  if( align & Alignment::X_LEFT ) {
-    offset.x = pos.x;
-  }
-
-  // Anchor::TopCenter, Anchor::MiddleCenter, Anchor::BottomCenter
-  if( align & Alignment::X_CENTER ) {
-    offset.x = pos.x + (bounds.w - dims.w) / 2;
-  }
-
-  // Anchor::TopRight, Anchor::MiddleRight, Anchor::BottomRight
-  if( align & Alignment::X_RIGHT ) {
-    offset.x = pos.x + (bounds.w - dims.w);
-  }
-
-  // Anchor::TopLeft, Anchor::TopCenter, Anchor::TopRight
-  if( align & Alignment::Y_TOP ) {
-    offset.y = pos.y;
-  }
-
-  // Anchor::MiddleLeft, Anchor::MiddleCenter, Anchor::MiddleRight
-  if( align & Alignment::Y_CENTER ) {
-    offset.y = pos.y + (bounds.h - dims.h) / 2;
-  }
-
-  // Anchor::BottomLeft, Anchor::BottomCenter, Anchor::BottomRight
-  if( align & Alignment::Y_BOTTOM ) {
-    offset.y = pos.y + (bounds.h - dims.h);
-  }
-
-  obj->set_position(offset);
 }
 
 } // namespace nom

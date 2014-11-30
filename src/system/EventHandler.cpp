@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/EventHandler.hpp"
 
+// Private headers (third-party)
+#include <SDL.h>
+
 namespace nom {
 
 EventHandler::EventHandler( void )

@@ -47,6 +47,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+/// \brief Custom deleter for void* return of Renderer::pixels()
+struct PixelsDeleter
+{
+  void operator()(void* ptr);
+};
+
 //class Renderer;
 
 class RenderWindow: public Renderer

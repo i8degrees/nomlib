@@ -176,10 +176,16 @@ class Renderer
     /// \todo Test me!
     bool set_bounds ( const IntRect& bounds );
 
-    /// Obtain pixels buffer of the entire rendering target
+    /// \brief Obtain pixels buffer of the entire rendering target
+    ///
+    /// \returns An allocated memory buffer pointing to the current rendering
+    /// target's pixel values on success, or NULLPTR on failure, such as a
+    /// memory allocation failure (out of memory?).
+    ///
+    /// \remarks It is your responsibility to free the pointer that is returned.
     ///
     /// \todo Pixels pitch calculation
-    void* pixels ( void ) const;
+    void* pixels() const;
 
   protected:
     /// This is automatically released after the attached nom::RenderWindow has been

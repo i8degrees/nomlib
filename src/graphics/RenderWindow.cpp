@@ -29,7 +29,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/RenderWindow.hpp"
 //#include "nomlib/graphics/Renderer.hpp"
 
+// Private headers
+#include <cstdlib>
+
 namespace nom {
+
+void PixelsDeleter::operator()(void* ptr)
+{
+  std::free(ptr);
+}
 
 // static initialization
 SDL_Renderer* RenderWindow::context_ = nullptr;
@@ -417,6 +425,7 @@ bool RenderWindow::save_png_file( const std::string& filename ) const
   uint32 green_mask = 0;
   uint32 blue_mask = 0;
   uint32 alpha_mask = 0;
+  std::unique_ptr<void, PixelsDeleter> pixels;
 
   RendererInfo caps = this->caps(); // Pixel format
   Image screenshot;                 // Surface
@@ -430,10 +439,16 @@ bool RenderWindow::save_png_file( const std::string& filename ) const
     return false;
   }
 
-  screenshot.initialize( Renderer::pixels(), renderer_size.w, renderer_size.h, bpp, (renderer_size.w * 4), red_mask, green_mask, blue_mask, alpha_mask );
+  pixels.reset( Renderer::pixels() );
 
-  if( screenshot.save_png( filename ) == false )
-  {
+  if( pixels == nullptr ) {
+    NOM_LOG_ERR( NOM, "Could not obtain pixel buffer for screen dump." );
+    return false;
+  }
+
+  screenshot.initialize( pixels.get(), renderer_size.w, renderer_size.h, bpp, (renderer_size.w * 4), red_mask, green_mask, blue_mask, alpha_mask );
+
+  if( screenshot.save_png( filename ) == false ) {
     return false;
   }
 
@@ -448,6 +463,7 @@ bool RenderWindow::save_screenshot( const std::string& filename ) const
   RendererInfo caps = this->caps();
   Image screenshot;
   File fp; // Using File::exists
+  std::unique_ptr<void, PixelsDeleter> pixels;
 
   // We create a new file path deriving from the given filename string by
   // appending a unique identifier onto the end of the given filename string.
@@ -468,10 +484,17 @@ bool RenderWindow::save_screenshot( const std::string& filename ) const
     return false;
   }
 
+  pixels.reset( Renderer::pixels() );
+
+  if( pixels == nullptr ) {
+    NOM_LOG_ERR( NOM, "Could not obtain pixel buffer for screen dump." );
+    return false;
+  }
+
   // Turn alpha channel off (no transparency), otherwise we get unintended
   // transparency in the dump (i.e.: libRocket's TrueType fonts show transparent
   // spots)...
-  screenshot.initialize( Renderer::pixels(), renderer_size.w, renderer_size.h, bpp, (renderer_size.w * 4), red_mask, green_mask, blue_mask, 0 );
+  screenshot.initialize( pixels.get(), renderer_size.w, renderer_size.h, bpp, (renderer_size.w * 4), red_mask, green_mask, blue_mask, 0 );
 
   // TODO: additional err checking -- basename & extension can fail!
   basename = fp.basename(filename);

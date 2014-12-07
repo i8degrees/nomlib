@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/Renderer.hpp"
 
+// Private headers
+#include <cstdlib>
+
 namespace nom {
 
 Renderer::Renderer ( void ) :
@@ -316,7 +319,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-void* Renderer::pixels ( void ) const
+void* Renderer::pixels() const
 {
   SDL_Rect clip;
   void* pixels = nullptr;
@@ -348,6 +351,12 @@ void* Renderer::pixels ( void ) const
 
   pixels = static_cast<uint32*> ( malloc( clip.w * clip.h * 4 ) );
 
+  if( pixels == nullptr ) {
+    // Out of memory???
+    NOM_LOG_ERR( NOM, "Could not allocate pixel buffer for screen dump." );
+    return nullptr;
+  }
+
   if ( SDL_RenderReadPixels(  this->renderer(),
                               // Use calculated bounding dimensions;
                               // Pass null to dump the pixels of the entire
@@ -364,6 +373,7 @@ void* Renderer::pixels ( void ) const
                               clip.w * 4 ) != 0 )
   {
     NOM_LOG_ERR( NOM, SDL_GetError() );
+    std::free(pixels);
     return nullptr;
   }
 

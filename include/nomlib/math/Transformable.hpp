@@ -90,7 +90,8 @@ class Transformable: public virtual IDrawable
     /// the wrong interface.
     void set_size( int w, int h );
 
-    void move( int x = 0, int y = 0 );
+    /// \param pos The offset to add onto the stored position.
+    virtual void translate(const Point2i& pos);
 
   private:
     Point2i position_;

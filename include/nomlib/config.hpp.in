@@ -237,8 +237,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     _Pragma("clang diagnostic ignored \"-Wunused\"" )
 
   /// \brief Macro for terminating the ignoring of variable(s).
-  #define NOM_IGNORED_ENDL(expr) \
+  #define NOM_IGNORED_VARS_ENDL(expr) \
     _Pragma("clang diagnostic pop")
+
+  /// \deprecated Use NOM_IGNORED_VARS_ENDL macro.
+  #define NOM_IGNORED_ENDL(expr) NOM_IGNORED_VARS_ENDL(expr)
 
 #else // Ignoring of compiler generated warning messages is not supported
 

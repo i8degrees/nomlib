@@ -66,12 +66,15 @@ macro(nom_add_library target lib_type source headers external_deps)
 
   add_library( ${target} ${lib_type} ${source} )
 
+  # The Application Binary Interface (ABI) version; PATCH level versions are
+  # intended **not** to break the ABI version.
   set_target_properties(  ${target} PROPERTIES SOVERSION
-                          ${PROJECT_VERSION_MAJOR}
+                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
   )
 
+  # The Application Programming Interface (API) version
   set_target_properties(  ${target} PROPERTIES VERSION
-                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
   )
 
   set_target_properties( ${target} PROPERTIES DEBUG_POSTFIX "-d" )

@@ -26,15 +26,13 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include <iostream>
 #include <string>
-
-#include "gtest/gtest.h"
 
 // nom::VisualUnitTest framework
 #include "nomlib/tests/VisualUnitTest.hpp"
 
 #include <nomlib/config.hpp>
+#include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
 
@@ -57,6 +55,27 @@ class VisualUnitTestTemplate: public nom::VisualUnitTest
     {
       // NOM_LOG_TRACE( NOM );
     }
+
+    // virtual bool init_rendering()
+    // {
+    //   // Initialize rendering window (and its GL context)
+    //   if( this->window_.create( this->test_set(),
+    //       this->resolution(), this->window_flags() ) == false )
+    //   {
+    //     return false;
+    //   }
+
+    //   // Allow for automatic rescaling of the output window based on aspect
+    //   // ratio (i.e.: handle fullscreen resizing); this will use letterboxing
+    //   // when the aspect ratio is greater than what is available, or side-bars
+    //   // when the aspect ratio is less than.
+    //   this->render_window().set_logical_size( this->resolution() );
+
+    //   // Use no pixel unit scaling; this gives us one to one pixel ratio
+    //   this->render_window().set_scale( nom::Point2f(1,1) );
+
+    //   return true;
+    // }
 
     /// \remarks This method is called after construction, at the start of each
     /// unit test.

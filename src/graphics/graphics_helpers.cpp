@@ -33,8 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-void set_alignment( Transformable* obj, const Size2i& bounds,
-                    uint32 align)
+Point2i alignment(Transformable* obj, const Size2i& bounds, uint32 align)
 {
   // Resulting alignment calculation
   Point2i offset(Point2i::zero);
@@ -45,13 +44,12 @@ void set_alignment( Transformable* obj, const Size2i& bounds,
   // Object's rendered width and height
   Size2i dims(Size2i::zero);
 
-  NOM_ASSERT(obj != nullptr);
-
   if( obj != nullptr ) {
     pos = obj->position();
     dims = obj->size();
   } else {
-    return;
+    // Err: invalid pointer given
+    return Point2i::null;
   }
 
   // Reset alignment
@@ -90,7 +88,24 @@ void set_alignment( Transformable* obj, const Size2i& bounds,
     offset.y = pos.y + (bounds.h - dims.h);
   }
 
-  obj->set_position(offset);
+  return offset;
+}
+
+void set_alignment(Transformable* obj, const Size2i& bounds, uint32 align)
+{
+  // Resulting alignment calculation
+  Point2i offset(Point2i::zero);
+
+  NOM_ASSERT(obj != nullptr);
+  if( obj == nullptr ) {
+    return; // Err
+  }
+
+  offset = alignment(obj, bounds, align);
+
+  if(offset != Point2i::null) {
+    obj->set_position(offset);
+  }
 }
 
 } // namespace nom

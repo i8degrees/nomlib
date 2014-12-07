@@ -31,19 +31,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Size2.hpp"
+#include "nomlib/math/Point2.hpp"
 
 namespace nom {
 
 // Forward declarations
 class Transformable;
 
+/// \brief Calculate an object's alignment rectangle.
+///
+/// \returns Point2i::null on failure, such as when an invalid Transformable
+/// object pointer is passed to this function.
+///
+/// \param obj    A nom::Transformable derived object pointer.
+/// \param bounds The dimensions to calculate alignment for.
+/// \param align  One of the nom::Alignment or nom::Anchor enumeration types.
+Point2i alignment(Transformable* obj, const Size2i& bounds, uint32 align);
+
 /// \brief Set an object's alignment.
 ///
 /// \param obj    A nom::Transformable derived object pointer.
 /// \param bounds The dimensions to be aligned in respect to.
 /// \param align  One of the nom::Alignment or nom::Anchor enumeration types.
-void set_alignment( Transformable* obj, const Size2i& bounds,
-                    uint32 align);
+void set_alignment(Transformable* obj, const Size2i& bounds, uint32 align);
 
 } // namespace nom
 

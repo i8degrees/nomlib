@@ -63,14 +63,14 @@ TrueTypeFont::~TrueTypeFont ( void )
 }
 
 TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy ) :
-  type_ { copy.type() },
-  sheet_width_ { copy.sheet_width() },
-  sheet_height_ { copy.sheet_height() },
-  font_ { copy.font_ },
-  pages_ { copy.pages() },
-  metrics_ { copy.metrics() },
-  filename_ { copy.filename_ },
-  point_size_ { copy.point_size() },
+  type_( copy.type() ),
+  sheet_width_( copy.sheet_width() ),
+  sheet_height_( copy.sheet_height() ),
+  font_( copy.font_ ),
+  pages_( copy.pages() ),
+  metrics_( copy.metrics() ),
+  filename_( copy.filename_ ),
+  point_size_( copy.point_size() ),
   use_kerning_(copy.use_kerning_)
 {
   // NOM_LOG_TRACE( NOM );

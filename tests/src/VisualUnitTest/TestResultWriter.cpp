@@ -38,9 +38,9 @@ TestResultWriter::TestResultWriter  (
                                       const ImageTestSet& set2,
                                       const ImageDiffResultBatch& results
                                     ) :
-  set1_{ set1 },
-  set2_{ set2 },
-  results_{ results }
+  set1_(set1),
+  set2_(set2),
+  results_(results)
 {
   // NOM_LOG_TRACE( NOM );
 }

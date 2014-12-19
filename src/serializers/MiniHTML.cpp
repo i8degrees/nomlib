@@ -41,7 +41,7 @@ HTMLNode::~HTMLNode( void )
 }
 
 HTMLTextNode::HTMLTextNode( const std::string& text ) :
-  contents_{ text }
+  contents_(text)
 {
   // NOM_LOG_TRACE( NOM );
 }

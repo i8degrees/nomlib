@@ -32,7 +32,7 @@ namespace nom {
 
 Gradient::Gradient( void ) :
   Transformable( Point2i::null, Size2i::null ),   // Invalid position & size
-  gradient_{ { Color4i::Blue, Color4i::Blue } }   // Opaque color to serve as
+  gradient_( { Color4i::Blue, Color4i::Blue } )   // Opaque color to serve as
                                                   // warning!
 {
   // No margins set.
@@ -55,7 +55,7 @@ Gradient::Gradient  (
                       Gradient::FillDirection direction
                     ) :
   Transformable( pos, size ), // Base class
-  gradient_{ colors }
+  gradient_(colors)
 {
   this->set_margins( margin );
   this->set_fill_direction( direction );

@@ -40,8 +40,8 @@ ImageDiff::ImageDiff  (
                         const std::string& dir1_path,
                         const std::string& dir2_path
                       ) :
-  image1_directory_{ dir1_path },
-  image2_directory_{ dir2_path }
+  image1_directory_(dir1_path),
+  image2_directory_(dir2_path)
 {
   // NOM_LOG_TRACE( NOM );
 }

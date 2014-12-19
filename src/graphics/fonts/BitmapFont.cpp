@@ -57,11 +57,11 @@ BitmapFont::~BitmapFont ( void )
 }
 
 BitmapFont::BitmapFont ( const BitmapFont& copy ) :
-  type_ { copy.type() },
-  sheet_width_ { copy.sheet_width() },
-  sheet_height_ { copy.sheet_height() },
-  pages_ { copy.pages() },
-  metrics_ { copy.metrics() }
+  type_( copy.type() ),
+  sheet_width_( copy.sheet_width() ),
+  sheet_height_( copy.sheet_height() ),
+  pages_( copy.pages() ),
+  metrics_( copy.metrics() )
 {
   // NOM_LOG_TRACE( NOM );
 }

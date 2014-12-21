@@ -476,6 +476,13 @@ TEST_F(TrueTypeFontTest, UseAllTextStyles)
 
 TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
 {
+  // No point in running this test when the end-user is not present; this
+  // speeds up automated test runs, particularly in the case of older systems.
+  if( NOM_TEST_FLAG(interactive) == false ) {
+    SUCCEED();
+    return;
+  }
+
   const int MIN_POINT_SIZE = 9;
   const int MAX_POINT_SIZE = 72;
   std::stringstream help_info;
@@ -496,6 +503,10 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
   this->text = "Hello, world!";
   this->pt_size = MIN_POINT_SIZE;
   this->align = Anchor::MiddleCenter;
+
+  // Caching font point sizes notification for slower systems
+  this->render_window().set_window_title( this->test_set() + "::" +
+                                          this->test_name() + "Loading..." );
 
   ASSERT_TRUE(this->load_font(font) == true)
   << "Could not load font file: " << font;
@@ -557,10 +568,12 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
   this->input_mapper_.insert("zoom_in", wheel, true);
   this->input_mapper_.insert("zoom_out", wheel, true);
 
-  if( NOM_TEST_FLAG(interactive) == true ) {
-    nom::DialogMessageBox(  this->test_case() + ":" + this->test_name(),
-                            help_info.str() );
-  }
+  // Done loading ... reset title to default
+  this->render_window().set_window_title( this->test_set() + "::" +
+                                          this->test_name() );
+
+  nom::DialogMessageBox(  this->test_case() + ":" + this->test_name(),
+                          help_info.str() );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   // EXPECT_TRUE( this->compare() );

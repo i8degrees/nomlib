@@ -36,12 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <fstream>
 
-#include <unistd.h>
-#include <libgen.h>
-#include <sys/stat.h>
-#include <dirent.h>
-#include <sys/types.h>
-
 #include "nomlib/config.hpp"
 #include "nomlib/system/IFile.hpp"
 

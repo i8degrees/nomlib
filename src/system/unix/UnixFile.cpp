@@ -29,6 +29,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/unix/UnixFile.hpp"
 
 // Private headers (third-party libs)
+#include <unistd.h>
+//#include <libgen.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <sys/types.h>
+
 #if defined( NOM_PLATFORM_OSX )
   #include <CoreServices/CoreServices.h>
   #include <CoreFoundation/CoreFoundation.h>
@@ -225,6 +231,8 @@ std::vector<std::string> UnixFile::read_dir( const std::string& dir_path )
 
 const std::string UnixFile::resource_path( const std::string& identifier )
 {
+  return "\0";
+/*
   char resources_path [ PATH_MAX ]; // file-system path
   CFBundleRef bundle; // bundle type reference
 
@@ -259,13 +267,16 @@ const std::string UnixFile::resource_path( const std::string& identifier )
   CFRelease ( resourcesURL );
 
   return resources_path;
+  */
 }
 
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+//#pragma clang diagnostic push
+//#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 const std::string UnixFile::user_documents_path( void )
 {
+  return "/home/jeff/Documents";
+/*
   FSRef ref;
   OSType folderType = kDocumentsFolderType;
   char path[PATH_MAX];
@@ -275,10 +286,13 @@ const std::string UnixFile::user_documents_path( void )
   FSRefMakePath ( &ref, (uint8*) &path, PATH_MAX );
 
   return std::string ( path );
+  */
 }
 
 const std::string UnixFile::user_app_support_path( void )
 {
+  return "/home/jeff/.config";
+  /*
   FSRef ref;
   OSType folderType = kApplicationSupportFolderType;
   char path[PATH_MAX];
@@ -288,10 +302,13 @@ const std::string UnixFile::user_app_support_path( void )
   FSRefMakePath ( &ref, (uint8*) &path, PATH_MAX );
 
   return std::string ( path );
+  */
 }
 
 const std::string UnixFile::user_home_path( void )
 {
+  return "/home/jeff";
+  /*
   char path[PATH_MAX];
   FSRef ref;
   OSType folderType = kCurrentUserFolderType;
@@ -300,11 +317,13 @@ const std::string UnixFile::user_home_path( void )
 
   FSRefMakePath( &ref, ( uint8* ) &path, PATH_MAX );
 
-  return path;
+  return path;*/
 }
 
 const std::string UnixFile::system_path( void )
 {
+  return "\0";
+  /*
   char path[PATH_MAX];
   FSRef ref;
   OSType folderType = kSystemFolderType;
@@ -314,6 +333,7 @@ const std::string UnixFile::system_path( void )
   FSRefMakePath( &ref, ( uint8* ) &path, PATH_MAX );
 
   return path;
+*/
 }
 
 // const std::string UnixFile::system_library_path( void )
@@ -330,7 +350,7 @@ const std::string UnixFile::system_path( void )
 //   return p.prepend( "Fonts" );
 // }
 
-#pragma clang diagnostic pop
+//#pragma clang diagnostic pop
 
 bool UnixFile::mkdir( const std::string& path )
 {

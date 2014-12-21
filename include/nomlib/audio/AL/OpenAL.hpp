@@ -39,7 +39,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(NOM_PLATFORM_OSX) // Use platform-distributed OpenAL headers
   #include <OpenAL/al.h>
   #include <OpenAL/alc.h>
-#else // As per the header inclusion path that FindOpenAL.cmake offers us
+#elif defined(NOM_PLATFORM_LINUX)
+  #include <AL/al.h>
+  #include <AL/alc.h>
+#else // As per the header inclusion path that FindOpenAL.cmake gives us
   #include <al.h>
   #include <alc.h>
 #endif

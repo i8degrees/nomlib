@@ -505,6 +505,8 @@ TEST_F(TrueTypeFontTest, UseAllTextStyles)
 /// \remarks This test is only ran when the interactive flag (-i) is passed.
 TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
 {
+  // No point in running this test when the end-user is not present; this
+  // speeds up automated test runs, particularly in the case of older systems.
   if( NOM_TEST_FLAG(interactive) == false ) {
     SUCCEED();
     return;
@@ -530,6 +532,10 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
   this->text = "Hello, world!";
   this->pt_size = MIN_POINT_SIZE;
   this->align = Anchor::MiddleCenter;
+
+  // Caching font point sizes notification for slower systems
+  this->render_window().set_window_title( this->test_set() + "::" +
+                                          this->test_name() + "Loading..." );
 
   ASSERT_TRUE(this->load_font(font) == true)
   << "Could not load font file: " << font;
@@ -572,6 +578,10 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
 
   this->input_mapper_.insert("zoom_in", wheel, true);
   this->input_mapper_.insert("zoom_out", wheel, true);
+
+  // Done loading ... reset title to default
+  this->render_window().set_window_title( this->test_set() + "::" +
+                                          this->test_name() );
 
   nom::DialogMessageBox(  this->test_case() + ":" + this->test_name(),
                           help_info.str() );

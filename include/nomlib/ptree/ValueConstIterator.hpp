@@ -48,7 +48,7 @@ class ValueConstIterator: public ValueIteratorBase
     typedef SelfType* RawPtr;
     typedef SelfType& Reference;
 
-    typedef const ValueIteratorBase::ValueTypeReference ConstReference;
+    typedef ValueIteratorBase::ValueTypeReference ConstReference;
     typedef SelfType ConstIterator;
 
     /// \brief Default constructor.

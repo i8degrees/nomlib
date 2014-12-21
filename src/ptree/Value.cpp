@@ -488,7 +488,8 @@ Value::RawPtr Value::get( void )
   return this;
 }
 
-const Value::Reference Value::ref( void )
+//const Value::Reference Value::ref( void )
+Value::Reference Value::ref()
 {
   return *this;
 }

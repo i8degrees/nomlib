@@ -105,7 +105,7 @@ endif( OPENGL_FOUND )
 #   endif( LUA_FOUND )
 # endif( NOM_USE_LIBROCKET_LUA )
 
-find_package( libRocket REQUIRED )
+find_package( LibRocket REQUIRED )
 if( LIBROCKET_FOUND )
   # Add development header files
   include_directories( ${LIBROCKET_INCLUDE_DIRS} )

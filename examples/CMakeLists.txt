@@ -65,7 +65,7 @@ if( PLATFORM_WINDOWS )
 endif( PLATFORM_WINDOWS )
 
 # nomlib-gui external deps
-find_package( libRocket REQUIRED )
+find_package( LibRocket REQUIRED )
 if( LIBROCKET_FOUND )
   # Add development header files
   include_directories( ${LIBROCKET_INCLUDE_DIRS} )
@@ -205,7 +205,7 @@ if( NOM_BUILD_DEVICE_INFO_EXAMPLE )
     list( APPEND DEVICE_INFO_DEPS ${OPENGL_LIBRARY} )
   endif( OPENGL_FOUND )
 
-  find_package( libRocket REQUIRED )
+  find_package( LibRocket REQUIRED )
   if( LIBROCKET_FOUND )
     # Add development header files
     include_directories( ${LIBROCKET_INCLUDE_DIRS} )

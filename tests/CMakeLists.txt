@@ -91,7 +91,7 @@ if( PLATFORM_WINDOWS )
 endif( PLATFORM_WINDOWS )
 
 # nomlib-gui external deps
-find_package( libRocket REQUIRED )
+find_package( LibRocket REQUIRED )
 if( LIBROCKET_FOUND )
   # Add development header files
   include_directories( ${LIBROCKET_INCLUDE_DIRS} )

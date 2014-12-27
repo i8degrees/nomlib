@@ -44,10 +44,11 @@ set(  LIBROCKET_DEBUGGER_NAMES
 #       RocketControlsLua
 # )
 
+# Prefix search path
 set(  LIBROCKET_SEARCH_PATHS
       ~/Library/Frameworks
       /Library/Frameworks
-      /usr/local/include # homebrew
+      /usr/local # homebrew
       /sw # Fink
       /opt/local # DarwinPorts
       /opt/csw # Blastwave
@@ -102,7 +103,7 @@ find_library( LIBROCKET_CORE_LIBRARY
               HINTS
               $ENV{LIBROCKETDIR}
               PATH_SUFFIXES
-              lib64 lib ${VC_LIB_PATH_SUFFIX}
+              lib64 lib lib/i386-linux-gnu ${VC_LIB_PATH_SUFFIX}
               PATHS
               ${LIBROCKET_SEARCH_PATHS}
 )
@@ -112,7 +113,7 @@ find_library( LIBROCKET_CONTROLS_LIBRARY
               HINTS
               $ENV{LIBROCKETDIR}
               PATH_SUFFIXES
-              lib64 lib ${VC_LIB_PATH_SUFFIX}
+              lib64 lib lib/i386-linux-gnu ${VC_LIB_PATH_SUFFIX}
               PATHS
               ${LIBROCKET_SEARCH_PATHS}
 )
@@ -122,7 +123,7 @@ find_library( LIBROCKET_DEBUGGER_LIBRARY
               HINTS
               $ENV{LIBROCKETDIR}
               PATH_SUFFIXES
-              lib64 lib ${VC_LIB_PATH_SUFFIX}
+              lib64 lib lib/i386-linux-gnu ${VC_LIB_PATH_SUFFIX}
               PATHS
               ${LIBROCKET_SEARCH_PATHS}
 )

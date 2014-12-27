@@ -166,7 +166,7 @@ set(  LIBROCKET_LIBRARIES
 # all listed variables are TRUE
 include( FindPackageHandleStandardArgs )
 
-find_package_handle_standard_args(  libRocket
+find_package_handle_standard_args(  LibRocket
                                     REQUIRED_VARS
                                     LIBROCKET_CORE_LIBRARY
                                     LIBROCKET_CONTROLS_LIBRARY

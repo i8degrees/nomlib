@@ -55,6 +55,9 @@ set(  NOM_SYSTEM_SOURCE
       ${SRC_DIR}/system/Timer.cpp
       ${INC_DIR}/system/Timer.hpp
 
+      ${SRC_DIR}/system/HighResolutionTimer.cpp
+      ${INC_DIR}/system/HighResolutionTimer.hpp
+
       ${SRC_DIR}/system/dialog_messagebox.cpp
       ${INC_DIR}/system/dialog_messagebox.hpp
 

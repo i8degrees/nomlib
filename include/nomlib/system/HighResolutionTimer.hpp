@@ -26,44 +26,69 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_HEADERS
-#define NOMLIB_SYSTEM_HEADERS
+#ifndef NOMLIB_SYSTEM_HIGH_RESOLUTION_TIMER_HPP
+#define NOMLIB_SYSTEM_HIGH_RESOLUTION_TIMER_HPP
 
-// Public header file
+#include "nomlib/config.hpp"
 
-#include <nomlib/config.hpp>
-#include <nomlib/system/FPS.hpp>
-#include <nomlib/system/StateMachine.hpp>
-#include <nomlib/system/IState.hpp>
-#include <nomlib/system/dialog_messagebox.hpp>
-#include <nomlib/system/Path.hpp>
-#include <nomlib/system/File.hpp>
-#include <nomlib/system/SDLApp.hpp>
-#include <nomlib/system/EventHandler.hpp>
-#include <nomlib/system/Joystick.hpp>
-#include <nomlib/system/Timer.hpp>
-#include <nomlib/system/AnimationTimer.hpp>
-#include <nomlib/system/HighResolutionTimer.hpp>
+namespace nom {
 
-// Engine initialization & shutdown
-#include <nomlib/system/init.hpp>
+/// \brief High-granularity time keeper
+class HighResolutionTimer
+{
+  public:
+    /// \brief Default constructor.
+    HighResolutionTimer();
 
-#include <nomlib/system/SDL_helpers.hpp>
-#include <nomlib/system/Event.hpp>
-#include <nomlib/system/EventCallback.hpp>
-#include <nomlib/system/EventDispatcher.hpp>
-#include <nomlib/system/InputMapper/InputAction.hpp>
-#include <nomlib/system/InputMapper/InputStateMapper.hpp>
-#include <nomlib/system/InputMapper/InputActionMapper.hpp>
+    /// \brief Destructor.
+    ~HighResolutionTimer();
 
-// Resource management
-#include <nomlib/system/resource_types.hpp>
-#include <nomlib/system/ResourceFile.hpp>
-#include <nomlib/system/ResourceCache.hpp>
+    bool started() const;
+    bool paused() const;
 
-#include <nomlib/system/ColorDatabase.hpp>
+    uint64 ticks() const;
 
-// Filesystem utilities
-#include <nomlib/system/SearchPath.hpp>
+    std::string ticks_str() const;
+
+    void start();
+    void stop();
+
+    /// \brief Alias for start.
+    void restart();
+
+    void pause();
+    void unpause();
+
+    static real64 elapsed_ticks(uint64 start_time, uint64 end_time);
+
+    /// \brief Convert a timing value from this interface to milliseconds.
+    ///
+    /// \param elapsed_ticks The timing value from ::ticks to convert.
+    ///
+    /// \see nom::hires_ticks
+    static real64 to_milliseconds(uint64 elapsed_ticks);
+
+    /// \brief Convert a timing value from this interface to seconds.
+    ///
+    /// \param elapsed_ticks The timing value from ::ticks to convert.
+    ///
+    /// \see nom::hires_ticks
+    static real64 to_seconds(uint64 elapsed_ticks);
+
+  private:
+    /// \brief Activity status of the timer.
+    bool paused_;
+
+    /// \brief Running status of the timer.
+    bool started_;
+
+    /// \brief The recorded timestamp at the time of starting the timer.
+    uint64 elapsed_ticks_;
+
+    /// \brief The recorded timestamp at the time of pausing the timer.
+    uint64 paused_ticks_;
+};
+
+} // namespace nom
 
 #endif // include guard defined

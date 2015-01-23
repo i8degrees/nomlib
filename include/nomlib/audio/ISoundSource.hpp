@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_AUDIO_ISOUND_SOURCE_HPP
 
 #include "nomlib/config.hpp"
+#include "nomlib/math/Point3.hpp"
 
 namespace nom {
 

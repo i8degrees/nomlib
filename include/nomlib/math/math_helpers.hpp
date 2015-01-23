@@ -90,17 +90,33 @@ T uniform_real_rand(T start_range, T end_range)
 /// (rotation point) at the given angle (in degrees), clockwise.
 const Point2d rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y );
 
-/// Round a fractional value
+/// \brief Round a fractional value.
 ///
-/// \param number Number to round up or down
+/// \param number The 32-bit floating-point number to round.
 ///
-/// \return Rounded value
+/// \returns The rounded value as a signed 32-bit integer.
 ///
-/// \note Round up when number > 0.5; round down when number < 0.5
+/// \remarks The number is round up when it is greater than 0.5 and rounded
+/// down when the number is less than 0.5
 template <typename T>
-T round ( T number )
+T round_float(real32 number)
 {
-  return number < 0.0 ? ceil ( number - 0.5 ) : floor ( number + 0.5 );
+  real32 ret = number < 0.0f ? ceilf(number - 0.5f) : floorf(number + 0.5f);
+  return NOM_SCAST(T, ret);
+}
+
+/// \brief Round a fractional value.
+///
+/// \param number The 64-bit floating-point number to round.
+///
+/// \returns The rounded value as a signed 64-bit integer.
+///
+/// \remarks The number is round up when it is greater than 0.5 and rounded
+template <typename T>
+T round_double(real64 number)
+{
+  real64 ret = number < 0.0f ? ceil(number - 0.5f) : floor(number + 0.5f);
+  return NOM_SCAST(T, ret);
 }
 
 } // namespace nom

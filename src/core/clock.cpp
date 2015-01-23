@@ -77,7 +77,7 @@ void sleep( uint32 milliseconds )
   SDL_Delay ( std::max ( milliseconds, static_cast<uint32> ( 10 ) ) );
 }
 
-uint64 hires_counter()
+uint64 hires_ticks()
 {
   return SDL_GetPerformanceCounter();
 }

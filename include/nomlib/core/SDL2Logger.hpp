@@ -162,6 +162,11 @@ void log_message( void* ptr, int cat, SDL_LogPriority prio, const char* msg );
 } // namespace priv
 
 /// \brief Helper method for nom::SDL2Logger.
+///
+/// \todo Optionally support modifying floating-point precision so to help
+/// catch floating-point math errs such as 254.999984741 being represented
+/// in the debug output as 255 without explicitly setting the precision to
+/// five (5) or greater.
 template<typename Type>
 void write_debug_output( std::ostream& out, const Type& f )
 {

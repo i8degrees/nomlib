@@ -60,7 +60,8 @@ namespace nom {
 
 /// \brief Convenience definitions for pointer types
 ///
-/// \todo Remove.
+/// \todo Remove or perhaps better yet, refer to as a light-weight handle,
+/// i.e.: nom::WindowHandle?
 namespace SDL_WINDOW
 {
   typedef std::unique_ptr<SDL_Window, void (*)(SDL_Window*)> UniquePtr;
@@ -69,7 +70,7 @@ namespace SDL_WINDOW
 
 /// \brief Convenience definitions for pointer types
 ///
-/// \todo Remove.
+/// \todo Remove or perhaps better yet, refer to as a light-weight handle..?
 namespace SDL_PIXELFORMAT
 {
   typedef SDL_PixelFormat* RawPtr;
@@ -77,7 +78,8 @@ namespace SDL_PIXELFORMAT
 
 /// \brief Convenience definitions for pointer types
 ///
-/// \todo Remove.
+/// \todo Remove or perhaps better yet, refer to as a light-weight handle,
+/// i.e.: nom::SurfaceHandle?
 namespace SDL_SURFACE
 {
   typedef std::unique_ptr<SDL_Surface, void(*) (SDL_Surface*)> UniquePtr;
@@ -87,7 +89,8 @@ namespace SDL_SURFACE
 
 /// \brief Convenience definitions for pointer types
 ///
-/// \todo Remove.
+/// \todo Remove or perhaps better yet, refer to as a light-weight handle,
+/// i.e.: nom::TextureHandle?
 namespace SDL_TEXTURE
 {
   typedef std::shared_ptr<SDL_Texture> SharedPtr;

@@ -32,25 +32,26 @@ namespace nom {
 
 Rectangle::Rectangle ( void )
 {
-  //NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_RENDER, NOM_LOG_PRIORITY_VERBOSE);
 }
 
 Rectangle::~Rectangle ( void )
 {
-  //NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_RENDER, NOM_LOG_PRIORITY_VERBOSE);
 }
 
 Rectangle::Rectangle ( const IntRect& rect, const Color4i& fill )
 {
-  //NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_RENDER, NOM_LOG_PRIORITY_VERBOSE);
+
   this->set_position ( Point2i( rect.x, rect.y ) );
   this->set_size ( Size2i( rect.w, rect.h ) );
   this->set_fill_color ( fill );
 }
 
-IDrawable::raw_ptr Rectangle::clone( void ) const
+std::unique_ptr<Rectangle::derived_type> Rectangle::clone() const
 {
-  return Rectangle::raw_ptr( new Rectangle( *this ) );
+  return( std::unique_ptr<self_type>( new self_type(*this) ) );
 }
 
 ObjectTypeInfo Rectangle::type( void ) const

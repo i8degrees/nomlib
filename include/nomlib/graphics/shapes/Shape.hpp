@@ -49,6 +49,8 @@ class Shape: public Transformable
     /// \brief Copy assignment operator
     //Shape& operator = ( const Shape& other );
 
+    virtual std::unique_ptr<self_type> clone() const = 0;
+
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.

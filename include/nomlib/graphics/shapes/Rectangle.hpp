@@ -46,10 +46,7 @@ class Rectangle: public Shape
 {
   public:
     typedef Rectangle self_type;
-    typedef self_type* raw_ptr;
-
-    typedef std::unique_ptr<self_type> unique_ptr;
-    typedef std::shared_ptr<self_type> shared_ptr;
+    typedef Shape derived_type;
 
     /// \brief Default constructor.
     Rectangle ( void );
@@ -63,8 +60,8 @@ class Rectangle: public Shape
     /// \param color nom::Color4i color to fill with.
     Rectangle ( const IntRect& rect, const Color4i& fill );
 
-    /// \brief Implements the required IDrawable::clone method.
-    IDrawable::raw_ptr clone( void ) const;
+    /// \brief Implements the required Shape::clone method.
+    virtual std::unique_ptr<derived_type> clone() const override;
 
     /// \brief Re-implements the IObject::type method.
     ///

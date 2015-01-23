@@ -96,6 +96,12 @@ typedef int32_t int32;
 /// \brief Unsigned 16-bit integer.
 typedef uint32_t uint32;
 
+/// \brief 32-bit IEEE floating-point value.
+typedef float real32;
+
+/// \brief 64-bit IEEE floating-point value.
+typedef double real64;
+
 /// \brief 64-bit integer types
 /// \note As per **/usr/include/MacTypes.h**:
 ///
@@ -221,6 +227,9 @@ static_assert ( sizeof ( nom::int32 ) == 4, "nom::int32" );
 
 static_assert ( sizeof ( nom::uint64 ) == 8, "nom::uint64" );
 static_assert ( sizeof ( nom::int64 ) == 8, "nom::int64" );
+
+static_assert ( sizeof ( nom::real32 ) == 4, "nom::real32" );
+static_assert ( sizeof ( nom::real64 ) == 8, "nom::real64" );
 
 static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
 

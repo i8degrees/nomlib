@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "gtest/gtest.h"      // Google Test framework
 
@@ -38,6 +39,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /// \brief Set or get a global state control flag.
 #define NOM_TEST_FLAG(var) nom::priv::test_flags.var
+
+// Forward declarations
+namespace TCLAP {
+  class Arg;
+} // namespace TCLAP
+
+typedef std::vector<TCLAP::Arg*> TCLAPArgs;
 
 namespace nom {
 
@@ -110,6 +118,10 @@ extern std::string test_output_directory;
 
 /// \brief Initialize nomlib's unit testing framework.
 ///
+/// \param add_args A std::vector containing pointers to the additional
+/// arguments for TCLAP to parse. The ownership of the pointers is transferred
+/// to TCLAP.
+///
 /// \remarks This method parses the command line for state control options
 /// supported by the framework.
 ///
@@ -117,8 +129,15 @@ extern std::string test_output_directory;
 /// and before the use of any other feature of the nom::UnitTest framework,
 /// generally within the main execution function.
 ///
+/// \note An err is thrown by TCLAP if an attempt to overwrite any existing
+/// arguments, such as those defined by nom::init_test. The responsibility to
+/// ensure that there are no conflicts is your burden. It is strongly
+/// recommended to **not** use short forms of the arguments in order to
+/// decrease the potential of collision.
+///
 /// \see nom::UnitTest, nom::UnitTestFlags, nom::VisualUnitTest
-void init_test( int argc, char** argv );
+/// \see http://tclap.sourceforge.net/html/classTCLAP_1_1Arg.html
+void init_test(int argc, char** argv, const TCLAPArgs& add_args = TCLAPArgs() );
 
 /// \brief Base class interface for unit testing within Google Test
 class UnitTest: public ::testing::Test

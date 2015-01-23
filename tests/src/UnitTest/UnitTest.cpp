@@ -48,7 +48,7 @@ UnitTestFlags test_flags = UnitTestFlags();
 // Static initializations
 std::string test_output_directory = "\0";
 
-void init_test( int argc, char** argv )
+void init_test(int argc, char** argv, const std::vector<TCLAP::Arg*>& add_args)
 {
   Path p;
   File fp;
@@ -169,6 +169,15 @@ void init_test( int argc, char** argv )
                                         // Option default
                                         NOM_TEST_FLAG(force_overwrite)
                                       );
+
+    // Append additional arguments; conflicts will result in an err being
+    // thrown
+    for( auto itr = add_args.begin(); itr != add_args.end(); ++itr ) {
+      NOM_ASSERT( *itr != nullptr );
+      if( *itr != nullptr ) {
+        cmd.add(*itr);
+      }
+    }
 
     cmd.parse( argc, argv );
 

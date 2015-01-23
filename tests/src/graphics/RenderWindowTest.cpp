@@ -94,6 +94,36 @@ TEST_F( RenderWindowTest, SetWindowTitle )
   EXPECT_EQ( "SetWindowTitle", this->window.window_title() );
 }
 
+TEST_F(RenderWindowTest, DisplayModes)
+{
+  bool ret;
+  DisplayModeList modes;
+
+  ret = this->window.display_modes(modes);
+
+  EXPECT_EQ(true, ret);
+  EXPECT_NE(0, modes.size() );
+
+  nom::size_type mode_idx = 0;
+  for( auto itr = modes.begin(); itr != modes.end(); ++itr ) {
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST,
+                  "Mode", mode_idx,
+                  (itr)->bounds.w, "x", (itr)->bounds.h,
+                  "x", SDL_BITSPERPIXEL( (itr)->format ),
+                  "@", (itr)->refresh_rate, "Hz" );
+    ++mode_idx;
+  }
+}
+
+TEST_F(RenderWindowTest, VerticalRefreshRate)
+{
+  int refresh_rate = -1;
+
+  refresh_rate = this->window.refresh_rate();
+
+  EXPECT_NE(-1, refresh_rate);
+}
+
 } // namespace nom
 
 int main( int argc, char** argv )
@@ -102,9 +132,16 @@ int main( int argc, char** argv )
 
   // Set the current working directory path to the path leading to this
   // executable file; used for unit tests that require file-system I/O.
-  NOM_ASSERT( nom::init( argc, argv ) == true );
+  if( nom::init( argc, argv ) == false )
+  {
+    NOM_LOG_CRIT(NOM_LOG_CATEGORY_APPLICATION, "Could not initialize nomlib.");
+    return NOM_EXIT_FAILURE;
+  }
+  atexit(nom::quit);
 
-  atexit( nom::quit );
+  // Disable verbose, debug output
+  nom::SDL2Logger::set_logging_priority(  NOM_LOG_CATEGORY_TEST,
+                                          nom::NOM_LOG_PRIORITY_CRITICAL );
 
   return RUN_ALL_TESTS();
 }

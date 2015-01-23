@@ -251,6 +251,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif  // defined( NOM_DEBUG ) && defined( NOM_COMPILER_CLANG )
 
+// Cross-platform macro for obtaining the CPU's Time Stamp Counter (RDTSC)
+//
+//    See also
+// 1. http://handmadehero.com
+// 2. http://www.strchr.com/performance_measurements_with_rdtsc
+#if defined(NOM_PLATFORM_WINDOWS) && defined(NOM_COMPILER_MSVCPP)
+  // Use built-in compiler intrinsic
+  #define NOM_RDTSC() __rdtsc();
+#else // Assume clang compiler
+
+namespace nom {
+
+// Source: http://www.brue.org/2013/01/using-rdtsc-in-gcc-and-clang/
+inline volatile uint64 rdtsc()
+{
+  uint32 a;
+  uint32 d;
+  asm volatile
+      (".byte 0x0f, 0x31 #rdtsc\n" // edx:eax
+       :"=a"(a), "=d"(d)::);
+  return( ( (uint64) d) << 32) | (uint64) a;
+}
+
+} // namespace nom
+
+  #define NOM_RDTSC() nom::rdtsc()
+#endif // MS Windows && MSVCPP
+
 // Image loader
 #cmakedefine NOM_USE_SDL2_IMAGE @NOM_USE_SDL2_IMAGE@
 

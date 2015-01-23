@@ -369,25 +369,6 @@ int VisualUnitTest::on_run( void )
       }
     }
 
-    this->fps_counter_.update();
-
-    // Refresh the FPS display at one (1) second intervals
-    if( this->fps_counter_update_.ticks() > 1000 )
-    {
-      if( this->fps() == true )
-      {
-        // Show test title plus FPS counter
-        this->render_window().set_window_title( title + " - " + this->fps_counter_.asString() + ' ' + "fps" );
-      }
-      else
-      {
-        // Restore window title to defaults
-        this->render_window().set_window_title( title );
-      }
-
-      this->fps_counter_update_.restart();
-    } // end FPS refresh cycle
-
     for( auto itr = this->update_callbacks_.begin(); itr != this->update_callbacks_.end(); ++itr )
     {
       itr->operator()( 0 );
@@ -406,6 +387,24 @@ int VisualUnitTest::on_run( void )
         this->quit();
       }
     }
+
+    this->fps_counter_.update();
+    // Refresh the FPS display at one (1) second intervals
+    if( this->fps_counter_update_.ticks() > 1000 ) {
+      if( this->fps() == true ) {
+        std::stringstream fps_str;
+        fps_str << title << " - " << this->fps_counter_.asString()
+        << ' ' << "fps";
+
+        // Show test title plus FPS counter
+        this->render_window().set_window_title(fps_str.str());
+      } else {
+        // Restore window title to defaults
+        this->render_window().set_window_title(title);
+      }
+
+      this->fps_counter_update_.restart();
+    } // end FPS refresh cycle
 
     ++elapsed_frames;
   } // end while loop

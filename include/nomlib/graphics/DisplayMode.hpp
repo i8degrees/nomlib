@@ -26,68 +26,56 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/graphics/VideoMode.hpp"
+#ifndef NOMLIB_GRAPHICS_DISPLAY_MODE_HPP
+#define NOMLIB_GRAPHICS_DISPLAY_MODE_HPP
+
+// #include <memory>
+#include <vector>
+
+#include "nomlib/config.hpp"
+#include "nomlib/math/Size2.hpp"
 
 namespace nom {
 
-VideoMode::VideoMode ( void ) : width ( 0 ), height ( 0 ), bpp ( 0 ) {}
-
-VideoMode::VideoMode ( int32 mode_width, int32 mode_height, uint8 mode_bpp ) : width ( mode_width ), height ( mode_height ), bpp ( mode_bpp )
-{}
-
-VideoMode::~VideoMode ( void ) {}
-
-std::ostream& operator << ( std::ostream& os, const VideoMode& mode )
+/// \brief Container for describing a video display mode
+struct DisplayMode
 {
-  os << mode.width << "x" << mode.height << "x" << static_cast<int> ( mode.bpp );
-  return os;
-}
+  /// \brief The pixel format of the display video mode.
+  ///
+  /// \remarks One of the SDL_PixelFormatEnum enumeration values.
+  uint32 format = 0;
 
-bool operator == ( const VideoMode& lhs, const VideoMode& rhs )
-{
-  return  ( lhs.width == rhs.width )                 &&
-          ( lhs.height == rhs.height )               &&
-          ( lhs.bpp == rhs.bpp );
-}
+  /// \brief The horizontal and vertical dimensions, in pixel units, of the
+  /// display video mode.
+  Size2i bounds;
 
-bool operator != ( const VideoMode& lhs, const VideoMode& rhs )
-{
-  return ! ( lhs == rhs );
-}
+  /// \brief The display vertical refresh rate of the display video mode.
+  ///
+  /// \remarks The display's vertical refresh rate, in hertz. Zero (0) if
+  /// unspecified.
+  int refresh_rate = 0;
+};
 
-bool operator < ( const VideoMode& lhs, const VideoMode& rhs )
-{
-  if ( lhs.bpp == rhs.bpp )
-  {
-    if ( lhs.width == rhs.width )
-    {
-      return lhs.height < rhs.height;
-    }
-    else
-    {
-      return lhs.width < rhs.width;
-    }
-  }
-  else
-  {
-    return lhs.bpp < rhs.bpp;
-  }
-}
+typedef std::vector<DisplayMode> DisplayModeList;
 
-bool operator > ( const VideoMode& lhs, const VideoMode& rhs )
-{
-  return rhs < lhs;
-}
+/// \brief Compare two video modes for equality.
+bool operator ==(const DisplayMode& lhs, const DisplayMode& rhs);
 
-bool operator <= ( const VideoMode& lhs, const VideoMode& rhs )
-{
-  return ! (rhs < lhs );
-}
+/// \brief Compare two video modes for inequality.
+bool operator !=(const DisplayMode& lhs, const DisplayMode& rhs);
 
-bool operator >= ( const VideoMode& lhs, const VideoMode& rhs )
-{
-  return ! ( lhs < rhs );
-}
+/// \brief Compare two video modes for lesser than.
+bool operator <(const DisplayMode& lhs, const DisplayMode& rhs);
 
+/// \brief Compare two video modes for greater than.
+bool operator >(const DisplayMode& lhs, const DisplayMode& rhs);
+
+/// \brief Compare two video modes for lesser than or equal to.
+bool operator <=(const DisplayMode& lhs, const DisplayMode& rhs);
+
+/// \brief Compare two video modes for greater than or equal to.
+bool operator >=(const DisplayMode& lhs, const DisplayMode& rhs);
 
 } // namespace nom
+
+#endif // include guard defined

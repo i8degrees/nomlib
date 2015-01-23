@@ -37,8 +37,8 @@ if( NOM_BUILD_GRAPHICS_UNIT )
         ${SRC_DIR}/graphics/Texture.cpp
         ${INC_DIR}/graphics/Texture.hpp
 
-        ${SRC_DIR}/graphics/VideoMode.cpp
-        ${INC_DIR}/graphics/VideoMode.hpp
+        ${SRC_DIR}/graphics/DisplayMode.cpp
+        ${INC_DIR}/graphics/DisplayMode.hpp
 
         ${SRC_DIR}/graphics/fonts/BMFont.cpp
         ${INC_DIR}/graphics/fonts/BMFont.hpp

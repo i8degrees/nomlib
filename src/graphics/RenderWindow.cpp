@@ -68,6 +68,10 @@ bool RenderWindow::create (
 {
   this->window_.reset ( SDL_CreateWindow  (
                                             window_title.c_str(),
+                                            // TODO: Display index specific
+                                            // window creation
+                                            // SDL_WINDOWPOS_CENTERED_DISPLAY(0),
+                                            // SDL_WINDOWPOS_CENTERED_DISPLAY(0),
                                             SDL_WINDOWPOS_UNDEFINED,
                                             SDL_WINDOWPOS_UNDEFINED,
                                             width,
@@ -213,36 +217,58 @@ const IntRect RenderWindow::display_bounds ( void ) const
   return bounds;
 }
 
-VideoModeList RenderWindow::getVideoModes ( void ) const
+bool RenderWindow::display_modes(DisplayModeList& modes) const
 {
-/*
-  VideoModeList modes;
-  SDL_Rect** mode;
+  int display_mode_count = 0;
+  int display_id = this->window_display_id();
+  SDL_DisplayMode mode = {};
 
-  mode = SDL_ListModes ( nullptr, SDL_FULLSCREEN );
+  // Get the number of display modes available for this window
+  display_mode_count = SDL_GetNumDisplayModes(display_id);
+  if( display_mode_count < 1 ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not enumerate window's display modes:",
+                  SDL_GetError() );
+    return false;
+  }
 
-  if ( mode == nullptr )
-  {
-NOM_LOG_INFO ( NOM, "Any video mode is supported." ); // FIXME?
-    return modes;
-  }
-  else if ( mode == ( SDL_Rect**) - 1 )
-  {
-NOM_LOG_INFO ( NOM, "No video modes are supported." );
-    return modes;
-  }
-  else
-  {
-    for ( int32 idx = 0; mode[idx]; idx++ )
-    {
-      modes.push_back ( VideoMode ( mode[idx]->w, mode[idx]->h, this->getDisplayColorBits() ) );
+  // Enumerate through the list of video modes for this window
+  for( auto idx = 0; idx != display_mode_count; ++idx ) {
+
+    if( SDL_GetDisplayMode(this->window_display_id(), idx, &mode) != 0 ) {
+      NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                    "Could not enumerate window's display modes:",
+                    SDL_GetError() );
+      return false;
     }
 
-    std::sort ( modes.begin(), modes.end(), std::greater<VideoMode>()  );
+    // Construct a nom::DisplayMode object from the data in the
+    // SDL_DisplayMode struct
+    DisplayMode video_mode;
+    video_mode.format = mode.format;
+    video_mode.bounds.w = mode.w;
+    video_mode.bounds.h = mode.h;
+    video_mode.refresh_rate = mode.refresh_rate;
+
+    modes.push_back(video_mode);
   }
-  return modes;
-*/
-    return VideoModeList();
+
+  return true;
+}
+
+int RenderWindow::refresh_rate() const
+{
+  int window_display_id = this->window_display_id();
+  SDL_DisplayMode current_mode = {};
+
+  if( SDL_GetCurrentDisplayMode(window_display_id, &current_mode) != 0 ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not get display video mode for the window:",
+                  SDL_GetError() );
+    return -1;
+  }
+
+  return current_mode.refresh_rate;
 }
 
 bool RenderWindow::flip ( void ) const

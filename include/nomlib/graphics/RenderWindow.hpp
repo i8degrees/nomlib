@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Point2.hpp"
-#include "nomlib/graphics/VideoMode.hpp"
+#include "nomlib/graphics/DisplayMode.hpp"
 #include "nomlib/graphics/Renderer.hpp"
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
@@ -144,14 +144,25 @@ class RenderWindow: public Renderer
     /// \todo Test me
     const IntRect display_bounds ( void ) const;
 
-    /// Obtain a list of supported video modes
+    /// \brief Get the display mode capabilities of the window.
     ///
-    /// Returns a sorted vector of VideoMode objects, from greatest to least.
+    /// \param modes The object reference to fill with the list of display
+    /// video modes.
     ///
-    /// \todo Test out 8-bit, 16-bit, 24-bit video surfaces
+    /// \returns Boolean TRUE if the enumeration of display video models was
+    /// successful, and boolean FALSE if the enumeration was non-successful.
     ///
-    /// \todo SDL2 support
-    VideoModeList getVideoModes ( void ) const;
+    /// \remarks The display video modes will be sorted from greater to least.
+    ///
+    /// \see nom::DisplayMode, SDL_DisplayMode
+    bool display_modes(DisplayModeList& modes) const;
+
+    /// \brief Get a video mode's refresh rate for the display of the window.
+    ///
+    /// \returns The video mode vertical refresh rate, in hertz, or zero (0)
+    /// if unspecified on success, or negative one (-1) on failure, such as if
+    /// the enumeration of the current display video mode for the window failed.
+    int refresh_rate() const;
 
     void set_size ( int32 width, int32 height );
 

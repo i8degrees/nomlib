@@ -557,7 +557,7 @@ bool Texture::update_pixels(const void* pixels, uint16 pitch, const IntRect& bou
 
 void Texture::draw ( SDL_Renderer* target ) const
 {
-  NOM_ASSERT( this->valid() );
+  // NOM_ASSERT( this->valid() );
 
   Point2i pos = this->position();
   SDL_Rect render_coords;
@@ -594,7 +594,7 @@ void Texture::draw ( SDL_Renderer* target ) const
     render_bounds.h = this->bounds().h;
     if ( SDL_RenderCopy ( target, this->texture(), &render_bounds, &render_coords ) != 0 )
     {
-      NOM_LOG_ERR ( NOM, SDL_GetError() );
+      // NOM_LOG_ERR ( NOM, SDL_GetError() );
       return;
     }
   }
@@ -602,7 +602,7 @@ void Texture::draw ( SDL_Renderer* target ) const
   {
     if ( SDL_RenderCopy ( target, this->texture(), nullptr, &render_coords ) != 0 )
     {
-      NOM_LOG_ERR ( NOM, SDL_GetError() );
+      // NOM_LOG_ERR ( NOM, SDL_GetError() );
       return;
     }
   }
@@ -636,7 +636,7 @@ void Texture::draw ( SDL_Renderer* target, const double angle ) const
     render_bounds.h = this->bounds().h;
     if ( SDL_RenderCopyEx ( target, this->texture(), &render_bounds, &render_coords, angle, nullptr, SDL_FLIP_NONE ) != 0 )
     {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+// NOM_LOG_ERR ( NOM, SDL_GetError() );
       return;
     }
   }
@@ -644,7 +644,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   {
     if ( SDL_RenderCopyEx ( target, this->texture(), nullptr, &render_coords, angle, nullptr, SDL_FLIP_NONE ) != 0 )
     {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+// NOM_LOG_ERR ( NOM, SDL_GetError() );
       return;
     }
   }

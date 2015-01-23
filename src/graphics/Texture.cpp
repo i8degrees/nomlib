@@ -655,6 +655,32 @@ void Texture::draw ( const RenderWindow& target, const double degrees ) const
   this->draw ( target.renderer(), degrees );
 }
 
+// FIXME: This is a TEMPORARY function just to get AnimationScaleBy working
+bool Texture::draw_scaled(const Size2i& dims, real64 angle, const RenderWindow& target) const
+{
+  SDL_Renderer* ctx = target.renderer();
+  NOM_ASSERT(ctx != nullptr);
+  if( ctx == nullptr ) {
+    return false;
+  }
+
+  NOM_ASSERT(this->valid() == true);
+
+  SDL_Rect render_coords;
+  render_coords.x = this->position().x;
+  render_coords.y = this->position().y;
+  render_coords.w = dims.w;
+  render_coords.h = dims.h;
+
+  SDL_Texture* texture = this->texture();
+
+  if( SDL_RenderCopyEx(ctx, texture, nullptr, &render_coords, angle, nullptr, SDL_FLIP_NONE) != 0 ) {
+    return false;
+  }
+
+  return true;
+}
+
 bool Texture::set_alpha ( uint8 opacity )
 {
 NOM_ASSERT ( ! ( opacity > Color4i::ALPHA_OPAQUE ) || ( opacity < Color4i::ALPHA_TRANSPARENT ) );

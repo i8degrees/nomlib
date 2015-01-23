@@ -1,0 +1,25 @@
+{
+  "resources":
+  {
+    "search_prefix":
+    [
+      "../../../",
+      "../../",
+      "./"
+    ],
+
+    "path": "Resources/tests/graphics/AnimationTest/"
+  },
+
+  "fonts":
+  {
+    "search_prefix":
+    [
+      "../../../",
+      "../../",
+      "./"
+    ],
+
+    "path": "Resources/tests/graphics/BMFontTest/"
+  }
+}

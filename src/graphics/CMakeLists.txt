@@ -95,6 +95,64 @@ if( NOM_BUILD_GRAPHICS_UNIT )
         # TODO: Relocate to graphics
         ${SRC_DIR}/math/Transformable.cpp
         ${INC_DIR}/math/Transformable.hpp
+
+        ${SRC_DIR}/graphics/AnimationTimingModes.cpp
+        ${INC_DIR}/graphics/AnimationTimingModes.hpp
+
+        ${SRC_DIR}/graphics/IActionObject.cpp
+        ${INC_DIR}/graphics/IActionObject.hpp
+
+        ${SRC_DIR}/graphics/AnimationTexture.cpp
+        ${INC_DIR}/graphics/AnimationTexture.hpp
+
+        ${SRC_DIR}/graphics/FadeInAction.cpp
+        ${INC_DIR}/graphics/FadeInAction.hpp
+
+        ${SRC_DIR}/graphics/FadeOutAction.cpp
+        ${INC_DIR}/graphics/FadeOutAction.hpp
+
+        ${SRC_DIR}/graphics/FadeAlphaByAction.cpp
+        ${INC_DIR}/graphics/FadeAlphaByAction.hpp
+
+        ${SRC_DIR}/graphics/WaitForDurationAction.cpp
+        ${INC_DIR}/graphics/WaitForDurationAction.hpp
+
+        ${SRC_DIR}/graphics/MoveByAction.cpp
+        ${INC_DIR}/graphics/MoveByAction.hpp
+
+        ${SRC_DIR}/graphics/MoveToAction.cpp
+        ${INC_DIR}/graphics/MoveToAction.hpp
+
+        ${SRC_DIR}/graphics/ScaleByAction.cpp
+        ${INC_DIR}/graphics/ScaleByAction.hpp
+
+        ${SRC_DIR}/graphics/ReversedAction.cpp
+        ${INC_DIR}/graphics/ReversedAction.hpp
+
+        ${SRC_DIR}/graphics/RepeatForAction.cpp
+        ${INC_DIR}/graphics/RepeatForAction.hpp
+
+        ${SRC_DIR}/graphics/RepeatForeverAction.cpp
+        ${INC_DIR}/graphics/RepeatForeverAction.hpp
+
+        ${SRC_DIR}/graphics/CallbackAction.cpp
+        ${INC_DIR}/graphics/CallbackAction.hpp
+
+        ${SRC_DIR}/graphics/RemoveAction.cpp
+        ${INC_DIR}/graphics/RemoveAction.hpp
+
+        ${SRC_DIR}/graphics/GroupAction.cpp
+        ${INC_DIR}/graphics/GroupAction.hpp
+
+        ${SRC_DIR}/graphics/SequenceAction.cpp
+        ${INC_DIR}/graphics/SequenceAction.hpp
+
+        # TODO
+        # ${SRC_DIR}/graphics/FadeAudioByAction.cpp
+        # ${INC_DIR}/graphics/FadeAudioByAction.hpp
+
+        ${SRC_DIR}/graphics/ActionPlayer.cpp
+        ${INC_DIR}/graphics/ActionPlayer.hpp
   )
 
   # Common dependencies on all platforms

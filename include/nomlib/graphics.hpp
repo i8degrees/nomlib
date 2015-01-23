@@ -60,4 +60,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics/Cursor.hpp>
 #include <nomlib/graphics/graphics_helpers.hpp>
 
+#include <nomlib/graphics/AnimationTimingModes.hpp>
+#include <nomlib/graphics/IActionObject.hpp>
+#include <nomlib/graphics/AnimationTexture.hpp>
+#include <nomlib/graphics/FadeInAction.hpp>
+#include <nomlib/graphics/FadeOutAction.hpp>
+#include <nomlib/graphics/FadeAlphaByAction.hpp>
+#include <nomlib/graphics/WaitForDurationAction.hpp>
+#include <nomlib/graphics/MoveByAction.hpp>
+#include <nomlib/graphics/MoveToAction.hpp>
+#include <nomlib/graphics/ScaleByAction.hpp>
+#include <nomlib/graphics/ReversedAction.hpp>
+#include <nomlib/graphics/RepeatForAction.hpp>
+#include <nomlib/graphics/RepeatForeverAction.hpp>
+#include <nomlib/graphics/CallbackAction.hpp>
+#include <nomlib/graphics/FadeAudioByAction.hpp>
+#include <nomlib/graphics/RemoveAction.hpp>
+#include <nomlib/graphics/SequenceAction.hpp>
+#include <nomlib/graphics/GroupAction.hpp>
+#include <nomlib/graphics/ActionPlayer.hpp>
+
 #endif // include guard defined

@@ -83,6 +83,11 @@ enum
   /// \brief Rendering subsystem logging category
   NOM_LOG_CATEGORY_RENDER,
 
+  /// \brief Animation action objects
+  NOM_LOG_CATEGORY_ANIMATION,
+  NOM_LOG_CATEGORY_ACTION_PLAYER,
+  NOM_LOG_CATEGORY_ACTION_QUEUE,
+
   /// \brief Events logging category
   NOM_LOG_CATEGORY_EVENT,
 
@@ -119,6 +124,10 @@ enum
 
   /// \brief Call stacks for engine unit tests
   NOM_LOG_CATEGORY_TRACE_UNIT_TEST,
+
+  /// \brief Call stacks for animation engine objects
+  NOM_LOG_CATEGORY_TRACE_ANIMATION,
+
   /// \brief Custom logging category that is reserved for application-level use.
   /// For example:
   ///

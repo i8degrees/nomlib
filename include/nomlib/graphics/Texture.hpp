@@ -315,6 +315,10 @@ class Texture
     /// \param  angle   Rotation angle in degrees
     void draw( const RenderWindow& target, const double angle ) const;
 
+    // FIXME: This is a TEMPORARY function just to get AnimationScaleBy working
+    bool
+    draw_scaled(const Size2i& dims, real64 angle, const RenderWindow& target) const;
+
     /// \brief  Set an additional alpha value multiplied into render copy
     ///         operations.
     ///

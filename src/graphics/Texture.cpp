@@ -177,6 +177,11 @@ bool Texture::initialize ( uint32 format, uint32 flags, int32 width, int32 heigh
   return true;
 }
 
+bool Texture::initialize(uint32 format, uint32 flags, const Size2i& dims)
+{
+  return this->initialize(format, flags, dims.w, dims.h);
+}
+
 bool Texture::create( const Image& source )
 {
   // Static access type

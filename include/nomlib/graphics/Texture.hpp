@@ -104,7 +104,20 @@ class Texture
     /// Copy assignment operator
     Texture& operator = ( const Texture& other );
 
-    /// Create a deep copy of this instance.
+    /// \brief Get a shallow-copy of the underlying stored texture.
+    ///
+    /// \returns A pointer to a new nom::Texture instance from the stored
+    /// data of this object's instance. The returned pointer is owned by the
+    /// caller.
+    ///
+    /// \remarks The cloned instance shares the same internal texture memory.
+    /// If a deep-copy clone is required, you should either keep the nom::Image
+    /// source used to create the texture's pixel buffer and clone from it
+    /// instead. Alternatives may include using a Render To Texture target or
+    /// nom::Renderer::pixels.
+    ///
+    /// \todo Change return type to std::unique_ptr<Texture> to better express
+    /// intent?
     Texture* clone() const;
 
     /// Initialize an object with specified parameters

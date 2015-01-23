@@ -70,7 +70,6 @@ class VisualUnitTestFrameworkNonDefaultCtorTest: public VisualUnitTest
       // Always use the same backdrop color on each unit test
       NOM_TEST_ADD_RENDER( const RenderWindow& win, this->render_window().fill( Color4i::SkyBlue ) );
 
-      // FIXME:
       // Take a snapshot on the first and 50th rendered frames
       this->append_screenshot_frame( 0 );
       this->append_screenshot_frame( 50 );

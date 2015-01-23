@@ -62,4 +62,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOM_DELETE_VOID_PTR(var) \
   if( var != nullptr ) free(var); var = nullptr;
 
+// A macro declaration from gtest_prod.h for allowing internal access into
+// private parts of a class. (I prefer not to include the framework's header
+// files path into our main project namespace).
+#define NOM_GTEST_FRIEND(test_case_name, test_name)\
+friend class test_case_name##_##test_name##_Test
+
 #endif // include guard defined

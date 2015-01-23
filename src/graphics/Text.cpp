@@ -88,9 +88,9 @@ Text::Text  (
   this->set_color( text_color );
 }
 
-IDrawable::raw_ptr Text::clone( void ) const
+std::unique_ptr<Text::derived_type> Text::clone() const
 {
-  return Text::raw_ptr( new Text( *this ) );
+  return( std::unique_ptr<self_type>( new self_type(*this) ) );
 }
 
 ObjectTypeInfo Text::type( void ) const
@@ -103,9 +103,12 @@ const Font& Text::font() const
   return this->font_;
 }
 
-const Texture& Text::texture ( void ) const
+std::unique_ptr<Texture> Text::texture_clone()
 {
-  return this->texture_;
+  // NOTE: It is necessary to always return a cloned texture instance because
+  // the stored texture may be reallocated at any time, i.e.: glyph rebuild from
+  // point size modification -- leaving the end-user with a dangling pointer!
+  return( std::unique_ptr<Texture>( this->texture_.clone() ) );
 }
 
 bool Text::valid ( void ) const

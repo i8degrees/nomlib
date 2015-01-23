@@ -47,7 +47,7 @@ class Text: public Transformable
 {
   public:
     typedef Text self_type;
-    typedef Transformable derived_class;
+    typedef Transformable derived_type;
 
     /// \brief Font face style; multiple styles can be combined from bitwise
     /// masks.
@@ -90,7 +90,7 @@ class Text: public Transformable
           );
 
     /// \brief Implements the required IDrawable::clone method.
-    IDrawable::raw_ptr clone( void ) const;
+    std::unique_ptr<derived_type> clone() const;
 
     /// \brief Re-implements the IObject::type method.
     ///
@@ -99,7 +99,14 @@ class Text: public Transformable
 
     const Font& font() const;
 
-    const Texture& texture ( void ) const;
+    /// \brief Get the underlying texture stored for the text rendering.
+    ///
+    /// \returns A pointer to a new nom::Texture instance from the stored
+    /// texture of this object's instance. The returned pointer is owned by the
+    /// caller.
+    ///
+    /// \see nom::Texture::clone
+    std::unique_ptr<Texture> texture_clone();
 
     /// Obtain validity of the Text object
     bool valid ( void ) const;

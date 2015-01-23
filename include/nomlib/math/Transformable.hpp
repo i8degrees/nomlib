@@ -38,6 +38,8 @@ namespace nom {
 class Transformable: public virtual IDrawable
 {
   public:
+    typedef Transformable self_type;
+
     Transformable( void );
     virtual ~Transformable( void );
 

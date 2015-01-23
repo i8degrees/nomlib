@@ -131,7 +131,9 @@ Texture& Texture::operator = ( const Texture& other )
 
 Texture* Texture::clone() const
 {
-  return( new Texture ( *this ) );
+  Texture* tex = new self_type(*this);
+
+  return(tex);
 }
 
 bool Texture::initialize ( uint32 format, uint32 flags, int32 width, int32 height )

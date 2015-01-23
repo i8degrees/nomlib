@@ -560,23 +560,59 @@ VisualUnitTest::default_render_callback()
    });
 }
 
-int VisualUnitTest::append_event_callback( const std::function<void( Event )>& func )
+int
+VisualUnitTest::insert_event_callback(  nom::size_type pos,
+                                        const event_callback_type& func )
 {
-  this->event_callbacks_.push_back( func );
+  NOM_ASSERT( pos <= this->event_callbacks_.size() );
+
+  this->event_callbacks_.insert( (this->event_callbacks_.begin()+pos), func);
 
   return this->event_callbacks_.size();
 }
 
-int VisualUnitTest::append_update_callback( const std::function<void( float )>& func )
+int
+VisualUnitTest::append_event_callback(const event_callback_type& func)
 {
-  this->update_callbacks_.push_back( func );
+  this->insert_event_callback(this->event_callbacks_.size(), func);
+
+  return this->event_callbacks_.size();
+}
+
+int
+VisualUnitTest::insert_update_callback( nom::size_type pos,
+                                        const update_callback_type& func )
+{
+  NOM_ASSERT( pos <= this->update_callbacks_.size() );
+
+  this->update_callbacks_.insert( (this->update_callbacks_.begin()+pos), func);
 
   return this->update_callbacks_.size();
 }
 
-int VisualUnitTest::append_render_callback( const std::function<void( const RenderWindow& )>& func )
+int
+VisualUnitTest::append_update_callback(const update_callback_type& func)
 {
-  this->render_callbacks_.push_back( func );
+  this->insert_update_callback(this->update_callbacks_.size(), func);
+
+  return this->update_callbacks_.size();
+}
+
+int
+VisualUnitTest::insert_render_callback( nom::size_type pos,
+                                        const render_callback_type& func )
+{
+  NOM_ASSERT( pos <= this->render_callbacks_.size() );
+
+  this->render_callbacks_.insert( (this->render_callbacks_.begin()+pos), func);
+
+  return this->render_callbacks_.size();
+}
+
+int
+VisualUnitTest::append_render_callback(const render_callback_type& func)
+{
+  this->insert_render_callback(this->render_callbacks_.size(), func);
 
   return this->render_callbacks_.size();
 }

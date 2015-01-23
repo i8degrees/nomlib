@@ -29,12 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_TESTS_VISUAL_UNIT_TEST_PUBLIC_HPP
 #define NOMLIB_TESTS_VISUAL_UNIT_TEST_PUBLIC_HPP
 
-#include "gtest/gtest.h"  // Google Test framework
-
-#include "nomlib/config.hpp"
-#include "nomlib/tests/UnitTest/UnitTest.hpp"
 #include "nomlib/tests/VisualUnitTest/VisualUnitTest.hpp"
-#include "nomlib/tests/VisualUnitTest/ImageTestSet.hpp"
-#include "nomlib/tests/VisualUnitTest/ImageDiff.hpp"
 
 #endif // include guard defined

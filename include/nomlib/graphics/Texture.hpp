@@ -53,6 +53,7 @@ class RenderWindow;
 class Texture
 {
   public:
+    typedef Texture self_type;
     typedef std::shared_ptr<Texture> SharedPtr;
 
     /// \brief Available pixel rescaling algorithms
@@ -116,6 +117,9 @@ class Texture
     ///                 SDL_TextureAccess
     bool initialize ( uint32 format, uint32 flags, int width, int height );
 
+    /// \see ::intialize(uint32 format, uint32 flags, int width, int height)
+    bool initialize(uint32 format, uint32 flags, const Size2i& dims);
+
     /// \remarks Texture::Access::Static type
     bool create ( const Image& source );
 
@@ -136,7 +140,7 @@ class Texture
 
     const IntRect& bounds( void ) const;
 
-    /// Get the video memory surface of the Texture object
+    /// \brief Get the underlying texture stored.
     SDL_Texture* texture() const;
 
     /// Is this object initialized -- not nullptr?
@@ -150,6 +154,9 @@ class Texture
     void set_position( const Point2i& pos );
 
     /// \brief Set the width & height dimensions of the texture.
+    ///
+    /// \remarks If the width or height dimensions are greater than the
+    /// original source dimensions, they will automatically be rescaled.
     void set_size( const Size2i& size );
 
     /// Set bounding coordinates of the Texture

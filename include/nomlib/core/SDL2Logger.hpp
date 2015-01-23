@@ -117,6 +117,8 @@ enum
 
   NOM_LOG_CATEGORY_TRACE_SYSTEM,
 
+  /// \brief Call stacks for engine unit tests
+  NOM_LOG_CATEGORY_TRACE_UNIT_TEST,
   /// \brief Custom logging category that is reserved for application-level use.
   /// For example:
   ///

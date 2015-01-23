@@ -49,10 +49,6 @@ class Line: public Shape
     typedef Line self_type;
     typedef Shape derived_class;
 
-    typedef self_type* raw_ptr;
-    typedef std::unique_ptr<self_type> unique_ptr;
-    typedef std::shared_ptr<self_type> shared_ptr;
-
     /// \brief Default constructor.
     Line ( void );
 
@@ -66,8 +62,8 @@ class Line: public Shape
     /// \param color nom::Color4i color to render.
     Line ( const IntRect& bounds, const Color4i& outline );
 
-    /// \brief Implements the required IDrawable::clone method.
-    IDrawable::raw_ptr clone( void ) const;
+    /// \brief Implements the required Shape::clone method.
+    virtual std::unique_ptr<derived_class> clone() const override;
 
     /// \brief Re-implements the IObject::type method.
     ///

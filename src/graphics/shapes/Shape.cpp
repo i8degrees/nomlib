@@ -34,12 +34,12 @@ Shape::Shape ( void ) :
   outline_color_ { Color4i::White },
   fill_color_ { Color4i::Black }
 {
-  //NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_RENDER, NOM_LOG_PRIORITY_VERBOSE);
 }
 
 Shape::~Shape ( void )
 {
-  //NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_RENDER, NOM_LOG_PRIORITY_VERBOSE);
 }
 
 Shape::Shape ( const Shape& copy )  :
@@ -47,7 +47,7 @@ Shape::Shape ( const Shape& copy )  :
   outline_color_ { copy.outline_color() },
   fill_color_ { copy.fill_color() }
 {
-  //NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_RENDER, NOM_LOG_PRIORITY_VERBOSE);
 }
 
 /*

@@ -39,6 +39,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Debugging
 #include <iostream>
+#include <string.h> // __FILE__ macro post-processing
+
+// Shortened __FILE__ utility macro
+//
+// TODO: I'd like to see this integrated into the SDL2Logger interface!
+#define NOM_FILE \
+  ( strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__ )
 
 /// \brief See also: cmake/platform.cmake
 #cmakedefine NOM_USE_SDL2_ASSERT
@@ -86,7 +93,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// \param ... Variable list of std::ostringstream compatible arguments.
 #if defined( NOM_DEBUG )
   #define NOM_LOG_VERBOSE( cat, ... ) \
-    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE, "[", __FILE__, ":", __LINE__, "]", __VA_ARGS__ );
+    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE, "[", NOM_FILE, ":", __LINE__, "]", __VA_ARGS__ );
 #else
   #define NOM_LOG_VERBOSE( cat, ... ) \
     NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE, __VA_ARGS__ );
@@ -100,7 +107,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// \param ... Variable list of std::ostringstream compatible arguments.
 #if defined( NOM_DEBUG )
   #define NOM_LOG_DEBUG( cat, ... ) \
-    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG, "[", __FILE__, ":", __LINE__, "]", __VA_ARGS__ );
+    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG, "[", NOM_FILE, ":", __LINE__, "]", __VA_ARGS__ );
 #else
   #define NOM_LOG_DEBUG( cat, ... ) \
     NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG, __VA_ARGS__ );
@@ -123,7 +130,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// \param ... Variable list of std::ostringstream compatible arguments.
 #if defined( NOM_DEBUG )
   #define NOM_LOG_WARN( cat, ... ) \
-    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_WARN, "[", __FILE__, ":", __LINE__, "]", __VA_ARGS__ );
+    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_WARN, "[", NOM_FILE, ":", __LINE__, "]", __VA_ARGS__ );
 #else
   #define NOM_LOG_WARN( cat, ... ) \
     NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_WARN, __VA_ARGS__ );
@@ -137,7 +144,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// \param ... Variable list of std::ostringstream compatible arguments.
 #if defined( NOM_DEBUG )
   #define NOM_LOG_ERR( cat, ... ) \
-    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_ERROR, "[", __FILE__, ":", __LINE__, "]", __VA_ARGS__ );
+    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_ERROR, "[", NOM_FILE, ":", __LINE__, "]", __VA_ARGS__ );
 #else
   #define NOM_LOG_ERR( cat, ... ) \
     NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_ERROR, __VA_ARGS__ );
@@ -151,7 +158,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// \param ... Variable list of std::ostringstream compatible arguments.
 #if defined( NOM_DEBUG )
   #define NOM_LOG_CRIT( cat, ... ) \
-    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL, "[", __FILE__, ":", __LINE__, "]", __VA_ARGS__ );
+    NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL, "[", NOM_FILE, ":", __LINE__, "]", __VA_ARGS__ );
 #else
   #define NOM_LOG_CRIT( cat, ... ) \
     NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL, __VA_ARGS__ );
@@ -164,7 +171,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// especially avoid using this, as it forces one to enable NOM logging
 /// category logging -- cluttering logs with both engine & app-level output.
 #define NOM_DUMP( var ) \
-  NOM_LOG_MESSAGE( NOM, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG, "[", __FILE__, ":", __LINE__, "]", #var, ":", var );
+  NOM_LOG_MESSAGE( NOM, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG, "[", NOM_FILE, ":", __LINE__, "]", #var, ":", var );
 
 /// \brief Log one or more variables.
 ///
@@ -175,7 +182,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 /// \remarks The message is logged under the debug priority.
 #define NOM_DUMP_VAR( cat, ... ) \
-  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG, "[", __FILE__, ":", __LINE__, "]", __VA_ARGS__ );
+  NOM_LOG_MESSAGE( cat, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG, "[", NOM_FILE, ":", __LINE__, "]", __VA_ARGS__ );
 
 /// \brief Log class construction and destruction
 ///

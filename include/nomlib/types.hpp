@@ -159,6 +159,12 @@ const uint uchar_max = std::numeric_limits<uchar>::max();
 const size_type size_type_min = std::numeric_limits<size_type>::lowest();
 const size_type size_type_max = std::numeric_limits<size_type>::max();
 
+const real32 real32_min = std::numeric_limits<real32>::lowest();
+const real32 real32_max = std::numeric_limits<real32>::max();
+
+const real64 real64_min = std::numeric_limits<real64>::lowest();
+const real64 real64_max = std::numeric_limits<real64>::max();
+
 /// \brief An integer indicating that there is no match, an error or NULL.
 static const int npos = -1;
 

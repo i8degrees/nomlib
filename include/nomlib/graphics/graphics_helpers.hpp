@@ -49,7 +49,8 @@ class Texture;
 /// \param align  One of the nom::Alignment or nom::Anchor enumeration types.
 ///
 /// \todo Add pos_offset argument
-Point2i alignment_rect(Transformable* obj, const Size2i& bounds, uint32 align);
+Point2i alignment_rect( Transformable* obj, const Point2i& pos_offset,
+                        const Size2i& bounds, uint32 align );
 
 /// \brief Set an object's alignment.
 ///
@@ -58,7 +59,8 @@ Point2i alignment_rect(Transformable* obj, const Size2i& bounds, uint32 align);
 /// \param align  One of the nom::Alignment or nom::Anchor enumeration types.
 ///
 /// \todo Add pos_offset argument
-void set_alignment(Transformable* obj, const Size2i& bounds, uint32 align);
+void set_alignment( Transformable* obj, const Point2i& pos_offset,
+                    const Size2i& bounds, uint32 align );
 
 /// \brief Calculate an object's alignment rectangle.
 ///

@@ -1,3 +1,31 @@
+/******************************************************************************
+
+  nomlib - C++11 cross-platform game engine
+
+Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+******************************************************************************/
 #include <iostream>
 #include <string>
 
@@ -274,6 +302,33 @@ TEST_F( GradientTest, Margins )
   EXPECT_TRUE( this->compare() );
 }
 
+TEST_F(GradientTest, ClonedTextureInstances)
+{
+  this->grad1.set_fill_direction( Gradient::FillDirection::Right );
+  this->grad2.set_fill_direction( Gradient::FillDirection::Right );
+  std::unique_ptr<Texture> grad1_tex = this->grad1.texture();
+  std::unique_ptr<Texture> grad2_tex = this->grad2.texture();
+
+  // Need to first clear out the default grad objects in here
+  this->clear_render_callbacks();
+
+  this->append_render_callback( this->default_render_callback() );
+
+  this->append_render_callback( [&] ( const RenderWindow& win ) {
+
+    if( grad1_tex != nullptr && grad1_tex->valid() == true ) {
+      grad1_tex->draw( this->render_window() );
+    }
+
+    if( grad2_tex != nullptr && grad2_tex->valid() == true ) {
+      grad2_tex->draw( this->render_window() );
+    }
+  });
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+}
+
 } // namespace nom
 
 int main( int argc, char** argv )
@@ -292,7 +347,7 @@ int main( int argc, char** argv )
   // nom::UnitTest framework integration
   nom::init_test( argc, argv );
 
-  nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_RENDER, nom::NOM_LOG_PRIORITY_VERBOSE );
+  // nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_RENDER, nom::NOM_LOG_PRIORITY_VERBOSE );
   // nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 
   return RUN_ALL_TESTS();

@@ -79,6 +79,14 @@ ObjectTypeInfo Gradient::type( void ) const
   return NOM_OBJECT_TYPE_INFO( self_type );
 }
 
+std::unique_ptr<Texture> Gradient::texture() const
+{
+  // NOTE: It is necessary to always return a new instance because the stored
+  // texture may be reallocated at any time from within ::update -- leaving us
+  // with with a dangling pointer!
+  return( std::unique_ptr<Texture>( new Texture(this->texture_) ) );
+}
+
 bool Gradient::valid( void ) const
 {
   if ( this->position() != Point2i::null && this->size() != Size2i::null )
@@ -334,13 +342,6 @@ bool Gradient::update_cache()
 
   // Debugging aid; red background indicates something went wrong
   if( context->set_color(Color4i::Red) == false ) {
-    // NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
-    return false;
-  }
-
-  // Ensure that the texture surface is cleared, otherwise we can get artifacts
-  // leftover from whatever the previous state was set to.
-  if( context->clear() == false ) {
     // NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
     return false;
   }

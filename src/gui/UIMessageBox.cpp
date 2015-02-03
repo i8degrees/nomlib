@@ -195,8 +195,12 @@ void UIMessageBox::set_message_text( const std::string& text )
   NOM_ASSERT( this->valid() != false );
 
   rocket::Element* content = this->document()->GetElementById( this->message_id().c_str() );
-
   NOM_ASSERT( content != nullptr );
+  if( content != nullptr ) {
+    if( content->GetInnerRML() != text.c_str() ) {
+      content->SetInnerRML( text.c_str() );
+    }
+  }
 
   // std::shared_ptr<rocket::Element> container;
   // container.reset( this->document()->CreateElement( "p" ), free_element );
@@ -207,8 +211,6 @@ void UIMessageBox::set_message_text( const std::string& text )
   // message.reset( this->document()->CreateTextNode( text.c_str() ), free_element );
 
   // NOM_ASSERT( message != nullptr );
-
-  content->SetInnerRML( text.c_str() );
 
   // FIXME: I believe that the second method call is the correct way -- we get
   // '<p>Hello, World</p>' if we disable the first and enable the second...

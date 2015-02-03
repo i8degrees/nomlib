@@ -223,7 +223,6 @@ void Gradient::update( void )
 
   if( this->update_cache() == false )
   {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, "Could not update cache for gradient.");
     return;
   }
 }
@@ -308,7 +307,7 @@ bool Gradient::update_cache()
 
   // Sanity check
   if( context == nullptr ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_RENDER,
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
                   "Could not update texture cache for the gradient:",
                   "invalid renderer.");
     return false;
@@ -317,15 +316,24 @@ bool Gradient::update_cache()
   // Obtain the optimal pixel format for the platform
   RendererInfo caps = context->caps();
 
-  // Create the texture cache that will hold our gradient; since the dimensions
-  // are local to this object, we deal with translating relative coordinates to
-  // what will be the absolute coordinate space (rendering window)
-  if( this->texture_.initialize( caps.optimal_texture_format(), SDL_TEXTUREACCESS_TARGET, this->size().w, this->size().h ) == false )
-  {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_RENDER,
-                  "Could not initialize the texture cache for the gradient." );
-    // NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
-    return false;
+  if( this->texture_.size() != this->size() ) {
+
+    // Poor man's counter of how often we are re-allocating this texture
+    NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_RENDER, NOM_LOG_PRIORITY_DEBUG);
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_RENDER,
+                    "old_size:", this->texture_.size(),
+                    "new_size:", this->size() );
+
+    // Create the texture cache that will hold our gradient; since the
+    // dimensions are local to this object, we deal with translating relative
+    // coordinates to what will be the absolute coordinate space -- our
+    // output rendering window
+    if( this->texture_.initialize( caps.optimal_texture_format(), SDL_TEXTUREACCESS_TARGET, this->size() ) == false )
+    {
+      NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                    "Could not initialize the texture cache for the gradient." );
+      return false;
+    }
   }
 
   // Local coordinates (relative)
@@ -334,15 +342,15 @@ bool Gradient::update_cache()
 
   // Set the rendering target to the texture (uses FBO)
   if( this->texture_.set_render_target(*context) == false ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_RENDER,
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
                   "Could not set the rendering target to the texture cache." );
-    // NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+    // NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
     return false;
   }
 
   // Debugging aid; red background indicates something went wrong
   if( context->set_color(Color4i::Red) == false ) {
-    // NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+    // NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
     return false;
   }
 
@@ -351,7 +359,7 @@ bool Gradient::update_cache()
   for( auto itr = this->rectangles_.begin(); itr != this->rectangles_.end(); ++itr )
   {
     if( context->set_color( Color4i( itr->fill_color().r, itr->fill_color().g, itr->fill_color().b, itr->fill_color().a ) ) == false ) {
-      // NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+      // NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
       return false;
     }
     // NOM_DUMP( (*itr).fill_color() );
@@ -367,8 +375,8 @@ bool Gradient::update_cache()
   // Reset the rendering target now that we are done using it.
   if( context->reset_render_target() == false )
   {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, "Could not reset the rendering target." );
-    // NOM_LOG_ERR( NOM_LOG_CATEGORY_RENDER, SDL_GetError() );
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not reset the rendering target." );
+    // NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
     return false;
   }
 

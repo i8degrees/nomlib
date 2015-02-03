@@ -478,6 +478,7 @@ TEST_F(TrueTypeFontTest, UseAllTextStyles)
   EXPECT_TRUE( this->compare() );
 }
 
+/// \remarks This test is only ran when the interactive flag (-i) is passed.
 TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
 {
   // No point in running this test when the end-user is not present; this
@@ -554,10 +555,13 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
   this->input_mapper_.insert("zoom_in", wheel, true);
   this->input_mapper_.insert("zoom_out", wheel, true);
 
+<<<<<<< HEAD
   // Done loading ... reset title to default
   this->render_window().set_window_title( this->test_set() + "::" +
                                           this->test_name() );
 
+=======
+>>>>>>> a35377e7 (Bail out of InteractiveGlyphCache test when not running w/ -i)
   nom::DialogMessageBox(  this->test_case() + ":" + this->test_name(),
                           help_info.str() );
 

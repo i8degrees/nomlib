@@ -426,6 +426,86 @@ TEST_F( MathTest, RectOperators )
   EXPECT_EQ( false, lhs == rhs );
 }
 
+TEST_F(MathTest, IntRectAdditionOperators)
+{
+  nom::IntRect dims(2, 4, 2, 4);
+
+  EXPECT_EQ( IntRect(4, 8, 4, 8), dims + dims);
+  EXPECT_EQ( IntRect(4, 6, 4, 6), 2 + dims);
+  EXPECT_EQ( IntRect(4, 6, 4, 6), dims + 2);
+  EXPECT_EQ( IntRect(4, 6, 4, 6), dims += 2);
+}
+
+TEST_F(MathTest, IntRectSubtractionOperators)
+{
+  nom::IntRect dims(2, 4, 2, 4);
+
+  EXPECT_EQ( IntRect(0, 0, 0, 0), dims - dims);
+  EXPECT_EQ( IntRect(0, -2, 0, -2), 2 - dims);
+  EXPECT_EQ( IntRect(0, 2, 0, 2), dims - 2);
+  EXPECT_EQ( IntRect(0, 2, 0, 2), dims -= 2);
+}
+
+TEST_F(MathTest, IntRectMultiplyOperators)
+{
+  nom::IntRect dims(2, 4, 2, 4);
+
+  EXPECT_EQ( IntRect(4, 16, 4, 16), dims * dims);
+  EXPECT_EQ( IntRect(4, 8, 4, 8), 2 * dims);
+  EXPECT_EQ( IntRect(4, 8, 4, 8), dims * 2);
+  EXPECT_EQ( IntRect(4, 16, 4, 16), dims *= dims);
+}
+
+TEST_F(MathTest, IntRectDivisionOperators)
+{
+  nom::IntRect dims(2, 4, 2, 4);
+
+  EXPECT_EQ( IntRect(1, 1, 1, 1), dims / dims);
+  EXPECT_EQ( IntRect(1, 0, 1, 0), 2 / dims);
+  EXPECT_EQ( IntRect(1, 2, 1, 2), dims / 2);
+  EXPECT_EQ( IntRect(1, 1, 1, 1), dims /= dims);
+}
+
+TEST_F(MathTest, Point2iAdditionOperators)
+{
+  nom::Point2i dims(2, 4);
+
+  EXPECT_EQ( Point2i(4, 8), dims + dims);
+  EXPECT_EQ( Point2i(4, 6), 2 + dims);
+  EXPECT_EQ( Point2i(4, 6), dims + 2);
+  EXPECT_EQ( Point2i(4, 6), dims += 2);
+}
+
+TEST_F(MathTest, Point2iSubtractionOperators)
+{
+  nom::Point2i dims(2, 4);
+
+  EXPECT_EQ( Point2i(0, 0), dims - dims);
+  EXPECT_EQ( Point2i(0, -2), 2 - dims);
+  EXPECT_EQ( Point2i(0, 2), dims - 2);
+  EXPECT_EQ( Point2i(0, 2), dims -= 2);
+}
+
+TEST_F(MathTest, Point2iMultiplyOperators)
+{
+  nom::Point2i dims(2, 4);
+
+  EXPECT_EQ( Point2i(4, 16), dims * dims);
+  EXPECT_EQ( Point2i(4, 8), 2 * dims);
+  EXPECT_EQ( Point2i(4, 8), dims * 2);
+  EXPECT_EQ( Point2i(4, 16), dims *= dims);
+}
+
+TEST_F(MathTest, Point2iDivisionOperators)
+{
+  nom::Point2i dims(2, 4);
+
+  EXPECT_EQ( Point2i(1, 1), dims / dims);
+  EXPECT_EQ( Point2i(1, 0), 2 / dims);
+  EXPECT_EQ( Point2i(1, 2), dims / 2);
+  EXPECT_EQ( Point2i(1, 1), dims /= dims);
+}
+
 TEST_F( MathTest, Size2Operators )
 {
   nom::Size2i lhs( 25, 25 );
@@ -442,6 +522,46 @@ TEST_F( MathTest, Size2Operators )
   EXPECT_EQ( true, rhs >= lhs );
   EXPECT_EQ( true, lhs == lhs );
   EXPECT_EQ( false, lhs == rhs );
+}
+
+TEST_F(MathTest, Size2iAdditionOperators)
+{
+  nom::Size2i dims(2, 4);
+
+  EXPECT_EQ( Size2i(4, 8), dims + dims);
+  EXPECT_EQ( Size2i(4, 6), 2 + dims);
+  EXPECT_EQ( Size2i(4, 6), dims + 2);
+  EXPECT_EQ( Size2i(4, 6), dims += 2);
+}
+
+TEST_F(MathTest, Size2iSubtractionOperators)
+{
+  nom::Size2i dims(2, 4);
+
+  EXPECT_EQ( Size2i(0, 0), dims - dims);
+  EXPECT_EQ( Size2i(0, -2), 2 - dims);
+  EXPECT_EQ( Size2i(0, 2), dims - 2);
+  EXPECT_EQ( Size2i(0, 2), dims -= 2);
+}
+
+TEST_F(MathTest, Size2iMultiplyOperators)
+{
+  nom::Size2i dims(2, 4);
+
+  EXPECT_EQ( Size2i(4, 16), dims * dims);
+  EXPECT_EQ( Size2i(4, 8), 2 * dims);
+  EXPECT_EQ( Size2i(4, 8), dims * 2);
+  EXPECT_EQ( Size2i(4, 16), dims *= dims);
+}
+
+TEST_F(MathTest, Size2iDivisionOperators)
+{
+  nom::Size2i dims(2, 4);
+
+  EXPECT_EQ( Size2i(1, 1), dims / dims);
+  EXPECT_EQ( Size2i(1, 0), 2 / dims);
+  EXPECT_EQ( Size2i(1, 2), dims / 2);
+  EXPECT_EQ( Size2i(1, 1), dims /= dims);
 }
 
 /// \remarks This test should always be ran before nom::init_rand is used.

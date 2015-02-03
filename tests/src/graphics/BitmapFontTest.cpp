@@ -122,8 +122,11 @@ class BitmapFontTest: public nom::VisualUnitTest
 
       // FIXME: Proper multi-line alignment logic is not implemented
       this->rendered_text.set_position(this->pos);
-      nom::set_alignment( &this->rendered_text,
-                          this->resolution(), this->align);
+
+      this->append_update_callback( [=] (float) {
+        nom::set_alignment( &this->rendered_text, Point2i(0, 0),
+                            this->resolution(), this->align );
+      });
 
       this->append_render_callback( [&] ( const RenderWindow& win ) {
         this->rendered_text.draw( this->render_window() );

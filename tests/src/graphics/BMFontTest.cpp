@@ -234,7 +234,8 @@ TEST_F(BMFontTest, RenderGameOverFont)
   rendered_text.set_font(font);
   rendered_text.set_text("You Lose...");
   rendered_text.set_position( Point2i(0,0) );
-  nom::set_alignment(&rendered_text, this->resolution(), Anchor::MiddleCenter);
+  nom::set_alignment( &rendered_text, rendered_text.position(),
+                      this->resolution(), Anchor::MiddleCenter );
 
   EXPECT_EQ( Size2i(340,90), rendered_text.size() );
   EXPECT_EQ( 90, font->newline(0) )
@@ -261,7 +262,8 @@ TEST_F(BMFontTest, RenderMultipleLines)
   rendered_text.set_font(font);
   rendered_text.set_text("You Lose...\nYou Win!\nDraw");
   rendered_text.set_position( Point2i(0,0) );
-  nom::set_alignment(&rendered_text, this->resolution(), Anchor::MiddleCenter);
+  nom::set_alignment( &rendered_text, rendered_text.position(),
+                      this->resolution(), Anchor::MiddleCenter );
 
   EXPECT_EQ( Size2i(340,270), rendered_text.size() );
   EXPECT_EQ( 90, font->newline(0) )
@@ -289,7 +291,8 @@ TEST_F(BMFontTest, Kerning)
   rendered_text.set_font(font);
   rendered_text.set_text("WAV");
   rendered_text.set_position( Point2i(0,0) );
-  nom::set_alignment(&rendered_text, this->resolution(), Anchor::MiddleCenter);
+  nom::set_alignment( &rendered_text, rendered_text.position(),
+                      this->resolution(), Anchor::MiddleCenter );
 
   kerning_offset = font->kerning(87, 65, 0);
   EXPECT_EQ(-7, kerning_offset);
@@ -320,9 +323,9 @@ TEST_F(BMFontTest, NoKerning)
   rendered_text.set_font(font);
   rendered_text.set_text("WAV");
   rendered_text.set_position( Point2i(0,0) );
-  nom::set_alignment(&rendered_text, this->resolution(), Anchor::MiddleCenter);
-
   font->set_font_kerning(false);
+  nom::set_alignment( &rendered_text, rendered_text.position(),
+                      this->resolution(), Anchor::MiddleCenter );
 
   kerning_offset = font->kerning(87, 65, 0);
   EXPECT_EQ(0, kerning_offset);
@@ -354,7 +357,8 @@ TEST_F(BMFontTest, RenderAngelCodeBMFontExport)
   rendered_text.set_font(font);
   rendered_text.set_text("Hello, World!");
   rendered_text.set_position( Point2i(0,0) );
-  nom::set_alignment(&rendered_text, this->resolution(), Anchor::MiddleCenter);
+  nom::set_alignment( &rendered_text, rendered_text.position(),
+                      this->resolution(), Anchor::MiddleCenter );
 
   EXPECT_EQ( Size2i(169,32), rendered_text.size() );
   EXPECT_EQ( 32, font->newline(0) )

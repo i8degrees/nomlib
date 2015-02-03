@@ -262,6 +262,12 @@ bool BMFont::parse_ascii_file(std::istream& fp)
   std::string key;    // left-hand constituent of the buffer
   std::string value;  // right-hand constituent of the buffer
 
+  if( fp.good() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not parse BMFont file stream." );
+    return false;
+  }
+
   while( !fp.eof() )
   {
     std::stringstream stream;

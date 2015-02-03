@@ -283,9 +283,8 @@ class FontRenderingApp: public nom::SDLApp
       // TODO:
       //this->rendered_text.set_color( nom::Color4i(195,209,228) );
 
-      nom::set_alignment( &this->rendered_text,
-                          this->window.size(),
-                          nom::Anchor::MiddleCenter );
+      nom::set_alignment( &this->rendered_text, this->rendered_text.position(),
+                          this->window.size(), nom::Anchor::MiddleCenter );
 
       return true;
     }

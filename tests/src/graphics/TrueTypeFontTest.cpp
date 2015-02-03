@@ -119,8 +119,12 @@ class TrueTypeFontTest: public nom::VisualUnitTest
 
       // FIXME: Proper multi-line alignment logic is not implemented
       this->rendered_text.set_position(this->pos);
-      nom::set_alignment( &this->rendered_text,
-                          this->resolution(), this->align);
+
+      this->append_update_callback( [=](float) {
+        nom::set_alignment( &this->rendered_text, Point2i(0,0),
+                            Size2i( this->resolution() ),
+                            this->align );
+      });
 
       this->append_render_callback( [&] ( const RenderWindow& win ) {
         this->rendered_text.draw( this->render_window() );
@@ -515,15 +519,6 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
 
     if( current_size < MAX_POINT_SIZE ) {
       this->rendered_text.set_text_size(current_size += 1);
-
-      // Reset alignment calcs
-      nom::set_alignment( &this->rendered_text,
-                          Size2i( this->resolution() ),
-                          Anchor::None );
-
-      nom::set_alignment( &this->rendered_text,
-                          Size2i( this->resolution() ),
-                          this->align );
     }
   });
 
@@ -532,15 +527,6 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
 
     if( current_size >= MIN_POINT_SIZE ) {
       this->rendered_text.set_text_size(current_size -= 1);
-
-      // Reset alignment calcs
-      nom::set_alignment( &this->rendered_text,
-                          Size2i( this->resolution() ),
-                          Anchor::None );
-
-      nom::set_alignment( &this->rendered_text,
-                          Size2i( this->resolution() ),
-                          this->align );
     }
   });
 

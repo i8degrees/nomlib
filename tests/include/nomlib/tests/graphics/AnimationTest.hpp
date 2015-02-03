@@ -123,17 +123,17 @@ class AnimationTest: public nom::VisualUnitTest
 
     /// \brief Helper method for testing properties of nom::FadeInAction.
     void expected_alpha_in_params(  const FadeInAction* obj, int16 alpha,
-                                    const Texture* tex = nullptr,
+                                    const Sprite* tex = nullptr,
                                     const std::string& scope_name = "" );
 
     /// \brief Helper method for testing properties of nom::FadeOutAction.
     void expected_alpha_out_params( const FadeOutAction* obj, int16 alpha,
-                                    const Texture* tex = nullptr,
+                                    const Sprite* tex = nullptr,
                                     const std::string& scope_name = "" );
 
     /// \brief Helper method for testing properties of nom::FadeAlphaByAction.
     void expected_alpha_by_params(  const FadeAlphaByAction* obj, int16 alpha,
-                                    const Texture* tex = nullptr,
+                                    const Sprite* tex = nullptr,
                                     const std::string& scope_name = "" );
 
     /// \brief Helper method for testing properties of nom::RepeatForAction.
@@ -147,11 +147,18 @@ class AnimationTest: public nom::VisualUnitTest
                                   uint32 num_repeats,
                                   const std::string& scope_name = "" );
 
-    /// \brief Helper method for testing properties of nom::AnimationTexture.
-    void expected_animation_texture_params( const AnimationTexture* obj,
-                                            nom::size_type num_frames,
-                                            real32 duration, real32 speed,
-                                            const std::string& scope_name = "" );
+    /// \brief Helper method for testing properties of nom::SpriteAction.
+    void expected_sprite_action_params( const SpriteAction* obj,
+                                        nom::size_type num_frames,
+                                        real32 duration, real32 speed,
+                                        const std::string& scope_name = "" );
+
+    /// \brief Helper method for testing properties of nom::SpriteBatchAction.
+    void expected_sprite_batch_action_params( const SpriteBatchAction* obj,
+                                              nom::size_type num_frames,
+                                              real32 duration, real32 speed,
+                                              const
+                                              std::string& scope_name = "" );
 
     /// \brief Set the frame interval at which actions are updated.
     ///
@@ -162,8 +169,8 @@ class AnimationTest: public nom::VisualUnitTest
     void set_frame_interval(uint32 interval);
 
     void
-    init_animation_texture_test(  const std::vector<const char*>& texture_filenames,
-                                  texture_frames& anim_frames );
+    init_sprite_action_test(  const std::vector<const char*>& texture_filenames,
+                              texture_frames& anim_frames );
 
     enum ActionType: uint32
     {
@@ -176,7 +183,7 @@ class AnimationTest: public nom::VisualUnitTest
 
     /// \params duration The maximum testing duration before termination of
     /// the test occurs. The number of times the action has repeated will be
-    /// validated at this time.
+    /// validated at the time of termination.
     ///
     /// \params num_repeats The number of times to repeat the action.
     void
@@ -198,12 +205,6 @@ class AnimationTest: public nom::VisualUnitTest
 };
 
 bool init_cmd_line_args(int argc, char** argv);
-
-/// \brief Helper method for creating a stubbed texture resource that we
-/// can use for testing API features.
-std::shared_ptr<Texture>
-create_rect_texture(  RenderWindow& window, const Point2i& pos,
-                      const Size2i& dims, const Color4i& color );
 
 /// \brief Helper method for converting the timing mode string passed in from
 /// command-line or NOM_ANIM_TEST_FLAG to a timing mode function.

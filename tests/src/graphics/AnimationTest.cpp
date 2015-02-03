@@ -74,10 +74,9 @@ AnimationTest::AnimationTest()
     nom::set_hint(SDL_HINT_RENDER_VSYNC, "0");
   }
 
-  // TODO: Change this back to linear?
   // I get a subtle animation flicker when toggled full screen when using
   // nearest scale quality
-  if( nom::set_hint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest") == false ) {
+  if( nom::set_hint(SDL_HINT_RENDER_SCALE_QUALITY, "linear") == false ) {
     NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
                   "Could not set scale quality to linear;",
                   "animation flicker may result!" );
@@ -275,7 +274,7 @@ void AnimationTest::expected_action_params( const SequenceAction* action,
 
 void
 AnimationTest::expected_alpha_in_params(  const FadeInAction* obj,
-                                          int16 alpha, const Texture* tex,
+                                          int16 alpha, const Sprite* tex,
                                           const std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)
@@ -294,7 +293,7 @@ AnimationTest::expected_alpha_in_params(  const FadeInAction* obj,
 
 void
 AnimationTest::expected_alpha_out_params( const FadeOutAction* obj,
-                                          int16 alpha, const Texture* tex,
+                                          int16 alpha, const Sprite* tex,
                                           const std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)
@@ -313,7 +312,7 @@ AnimationTest::expected_alpha_out_params( const FadeOutAction* obj,
 
 void
 AnimationTest::expected_alpha_by_params(  const FadeAlphaByAction* obj,
-                                          int16 alpha, const Texture* tex,
+                                          int16 alpha, const Sprite* tex,
                                           const std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)
@@ -356,22 +355,43 @@ void AnimationTest::expected_repeat_params( const RepeatForeverAction* obj,
 }
 
 void
-AnimationTest::expected_animation_texture_params( const AnimationTexture* obj,
-                                                  nom::size_type num_frames,
-                                                  real32 duration, real32 speed,
-                                                  const std::string& scope_name )
+AnimationTest::expected_sprite_action_params( const SpriteAction* obj,
+                                              nom::size_type num_frames,
+                                              real32 duration, real32 speed,
+                                              const std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)
-  << "expected_animation_texture_params scoped_name: " << scope_name << "\n";
+  << "expected_sprite_action_params scoped_name: " << scope_name << "\n";
 
   EXPECT_EQ(num_frames, obj->frames_.size() )
-  << "expected_animation_texture_params scoped_name: " << scope_name << "\n";
+  << "expected_sprite_action_params scoped_name: " << scope_name << "\n";
 
   EXPECT_EQ(duration*1000.0f, obj->duration() )
-  << "expected_animation_texture_params scoped_name: " << scope_name << "\n";
+  << "expected_sprite_action_params scoped_name: " << scope_name << "\n";
 
   EXPECT_EQ(speed, obj->speed() )
-  << "expected_animation_texture_params scoped_name: " << scope_name << "\n";
+  << "expected_sprite_action_params scoped_name: " << scope_name << "\n";
+}
+
+void
+AnimationTest::expected_sprite_batch_action_params( const SpriteBatchAction* obj,
+                                                    nom::size_type num_frames,
+                                                    real32 duration,
+                                                    real32 speed,
+                                                    const
+                                                    std::string& scope_name )
+{
+  ASSERT_TRUE(obj != nullptr)
+  << "expected_sprite_batch_action_params scoped_name: " << scope_name << "\n";
+
+  EXPECT_EQ(num_frames, obj->sprite_->frames() )
+  << "expected_sprite_batch_action_params scoped_name: " << scope_name << "\n";
+
+  EXPECT_EQ(duration*1000.0f, obj->duration() )
+  << "expected_sprite_batch_action_params scoped_name: " << scope_name << "\n";
+
+  EXPECT_EQ(speed, obj->speed() )
+  << "expected_sprite_batch_action_params scoped_name: " << scope_name << "\n";
 }
 
 // TODO: Clean up function
@@ -434,150 +454,34 @@ void AnimationTest::set_frame_interval(uint32 interval)
 NOM_IGNORED_VARS_ENDL();
 
 void
-AnimationTest::init_animation_texture_test( const std::vector<const char*>& texture_filenames,
-                                            texture_frames& anim_frames )
+AnimationTest::init_sprite_action_test( const std::vector<const char*>&
+                                        texture_filenames, texture_frames&
+                                        anim_frames )
 {
   for(  auto itr = texture_filenames.begin();
         itr != texture_filenames.end();
         ++itr )
   {
-    auto tex = std::make_shared<Texture>( Texture() );
-    ASSERT_TRUE(tex != nullptr);
     ASSERT_TRUE(*itr != nullptr);
+
+    auto tex = std::make_shared<Texture>();
+    ASSERT_TRUE(tex != nullptr);
+
     bool ret = tex->load(this->resources[0].path() + *itr );
     if( ret == false ) {
       FAIL()  << "Could not load texture" << *itr << "from file path: "
               << this->resources[0].path() << "\n";
     }
 
-    if( tex->valid() == false ) {
-      FAIL()  << "Initialized nom::Texture instance was invalid!\n";
-    }
+    auto sprite = std::make_shared<Sprite>();
+    ASSERT_TRUE(sprite != nullptr);
+    EXPECT_EQ(true, sprite->set_texture(tex) );
 
-    nom::set_alignment( tex.get(), Point2i::zero, this->WINDOW_DIMS,
+    nom::set_alignment( sprite.get(), Point2i::zero, this->WINDOW_DIMS,
                         Anchor::MiddleCenter );
 
-    anim_frames.push_back(tex);
+    anim_frames.emplace_back(sprite);
   } // end for tex filenames loop
-}
-
-void
-AnimationTest::setup_repeating_cursor_test( real32 duration, real32 speed,
-                                            real32 fps, uint32 type,
-                                            nom::size_type num_repeats,
-                                            const std::string& scope_name )
-{
-  NOM_LOG_DEBUG(NOM_LOG_CATEGORY_ANIMATION, "Marker:", scope_name);
-
-  // Testing parameters
-  const nom::size_type NUM_REPEATS = num_repeats;
-  texture_frames anim_frames;
-  const std::vector<const char*> texture_filenames = {{
-    "game-cursor_0.png", "game-cursor_1.png", "game-cursor_2.png",
-    "game-cursor_3.png"
-  }};
-
-  // maximum test duration before test termination occurs
-  const real32 TEST_DURATION = duration;
-
-  // fps per texture
-  const real32 FRAME_DURATION = 0.100f;
-
-  // total action duration
-  const real32 DURATION = FRAME_DURATION * texture_filenames.size();
-
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
-  const real32 SPEED_MOD = speed;
-  const uint32 FPS = fps;
-
-  this->init_animation_texture_test(texture_filenames, anim_frames);
-
-  EXPECT_EQ( anim_frames.size(), texture_filenames.size() );
-
-  auto tex_bg =
-    nom::create_action<AnimationTexture>(anim_frames, FRAME_DURATION);
-  ASSERT_TRUE(tex_bg != nullptr);
-  tex_bg->set_speed(SPEED_MOD);
-
-  std::shared_ptr<IActionObject> action0;
-  if( type & GROUP ) {
-    action0 = nom::create_action<GroupAction>( {tex_bg}, "action0" );
-  } else if( type & SEQUENCE ) {
-    action0 = nom::create_action<SequenceAction>( {tex_bg}, "action0" );
-  } else if( type & REVERSED ) {
-    action0 = nom::create_action<ReversedAction>(tex_bg, "action0");
-  } else {
-    ASSERT_TRUE("ActionType must be either one of: GROUP, SEQUENCE, REVERSED")
-    << scope_name;
-  }
-  ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
-
-  std::shared_ptr<IActionObject> repeat;
-  if( type & REPEAT_FOR ) {
-    repeat =
-      nom::create_action<RepeatForAction>(action0, NUM_REPEATS, "action0_RepeatFor");
-  } else if( type & REPEAT_FOREVER ) {
-    repeat =
-      nom::create_action<RepeatForeverAction>(action0, "action0_RepeatForever");
-  }
-  ASSERT_TRUE(repeat != nullptr);
-
-  EXPECT_EQ(0, this->player.num_actions() )
-  << scope_name;
-  this->run_action_ret =
-  this->player.run_action(repeat, [=]() {
-
-    this->expected_animation_texture_params(  tex_bg.get(), anim_frames.size(),
-                                              DURATION, SPEED_MOD,
-                                              "texture_params" );
-  });
-  EXPECT_EQ(true, this->run_action_ret)
-  << "Failed to queue repeating action in " << scope_name;
-  EXPECT_EQ(1, this->player.num_actions() )
-  << scope_name;
-
-  auto kill_timer =
-    nom::create_action<WaitForDurationAction>(TEST_DURATION);
-  ASSERT_TRUE(kill_timer != nullptr);
-  kill_timer->set_name("kill_timer");
-
-  EXPECT_EQ(1, this->player.num_actions() )
-  << scope_name;
-  this->run_action_ret =
-  this->player.run_action( kill_timer, [=]() {
-
-    if( type & REPEAT_FOR ) {
-      RepeatForAction* repeat_obj =
-        NOM_DYN_PTR_CAST(RepeatForAction*, repeat.get() );
-
-      this->expected_repeat_params( repeat_obj, NUM_REPEATS, "repeat_params" );
-    } else if( type & REPEAT_FOREVER ) {
-      RepeatForeverAction* repeat_obj =
-        NOM_DYN_PTR_CAST(RepeatForeverAction*, repeat.get() );
-
-      this->expected_repeat_params( repeat_obj, NUM_REPEATS, "repeat_params" );
-    }
-
-    this->quit();
-  });
-  EXPECT_EQ(true, this->run_action_ret)
-  << "Failed to queue the kill_timer in " << scope_name;
-  EXPECT_EQ(2, this->player.num_actions() )
-  << scope_name;
-
-  this->append_render_callback( [=](const RenderWindow& win) {
-
-    // Render our animation's texture
-    if( tex_bg != nullptr ) {
-      tex_bg->render(0);
-    }
-
-    this->set_frame_interval(FPS);
-  });
-
-  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
 bool init_cmd_line_args(int argc, char** argv)
@@ -680,55 +584,6 @@ bool init_cmd_line_args(int argc, char** argv)
   NOM_ANIM_TEST_FLAG(enable_vsync) = vsync_arg.getValue();
 
   return true;
-}
-
-std::shared_ptr<Texture>
-create_rect_texture(  RenderWindow& window, const Point2i& pos,
-                      const Size2i& dims, const Color4i& color )
-{
-  std::shared_ptr<Texture> tex =
-    std::make_shared<Texture>( Texture() );
-
-  if( tex == nullptr ) {
-    // Out of memory???
-    return nullptr; // NULL
-  }
-
-  // Obtain the optimal pixel format for the platform
-  RendererInfo caps = window.caps();
-
-  if( tex->initialize(caps.optimal_texture_format(),
-      SDL_TEXTUREACCESS_TARGET, dims) == false )
-  {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not initialize the texture source." );
-    return nullptr; // Err
-  }
-
-  tex->set_position(pos);
-
-  // Set the rendering target to the texture (uses FBO)
-  if( tex->set_render_target(window) == false ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not set the rendering target to the texture;",
-                  "does your video card support FBO?" );
-    return nullptr; // Err
-  }
-
-  if( window.fill(color) == false ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not set texture's color" );
-    return nullptr; // Err
-  }
-
-  if( window.reset_render_target() == false ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not reset the rendering target." );
-    return nullptr; // Err
-  }
-
-  // Success!
-  return tex;
 }
 
 IActionObject::timing_mode_func
@@ -905,165 +760,7 @@ TEST_F(AnimationTest, WaitForDurationAction2s)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, RepeatForAction)
-{
-  // Testing parameters
-  const float DURATION = 0.5f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const uint NUM_REPEATS = 4;
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
-  const Point2i TRANSLATE_POS( Point2i(WINDOW_DIMS.w,0) );
-
-  // Initial texture position and size
-  const Point2i RECT_POS(Point2i::zero);
-  const Size2i RECT_SIZE(WINDOW_DIMS.w/4, WINDOW_DIMS.h);
-  const Point2i EXPECTED_TEX_POS(TRANSLATE_POS);
-
-  auto rect = std::make_shared<Rectangle>(
-    Rectangle( IntRect(RECT_POS, RECT_SIZE), Color4i::Red) );
-  ASSERT_TRUE(rect != nullptr);
-
-  // Gradient test
-  // Color4iColors grad_colors = { Color4iColors{ Color4i( 114, 66, 66 ), Color4i( 251, 222, 232 ) } };
-  // auto rect = std::make_shared<Gradient>();
-  // ASSERT_TRUE(rect != nullptr);
-  // rect->set_fill_direction(Gradient::FillDirection::Top);
-  // rect->set_colors(grad_colors);
-  // rect->set_position(RECT_POS);
-  // rect->set_size(RECT_SIZE);
-
-  auto translate =
-    nom::create_action<MoveByAction>(rect, TRANSLATE_POS, DURATION);
-  ASSERT_TRUE(translate != nullptr);
-
-  auto repeat =
-    nom::create_action<RepeatForAction>(translate, NUM_REPEATS);
-  ASSERT_TRUE(repeat != nullptr);
-
-  auto action0 =
-    nom::create_action<GroupAction>( {repeat}, nom::UnitTest::test_name() );
-  ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
-  action0->set_speed(SPEED_MOD);
-
-  EXPECT_EQ(0, this->player.num_actions() );
-  this->run_action_ret =
-  this->player.run_action(action0, [=]() {
-
-    EXPECT_EQ(1, this->player.num_actions() );
-    EXPECT_EQ(EXPECTED_TEX_POS, rect->position() );
-
-    this->expected_action_params(action0.get(), 1);
-    this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
-    this->expected_repeat_params(repeat.get(), NUM_REPEATS);
-    this->quit(); // graceful exit
-  });
-  EXPECT_EQ(true, this->run_action_ret)
-  << "Failed to queue the action!";
-  EXPECT_EQ(1, this->player.num_actions() );
-
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render our animation's rectangle
-    if( rect != nullptr ) {
-      rect->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
-
-  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-}
-
-/// \remarks This test does not honor custom speed modifiers passed via command
-/// line.
-TEST_F(AnimationTest, RepeatForeverAction)
-{
-  // Testing parameters
-  const real32 TEST_DURATION = 2.5f;  // when to stop testing "forever"
-  const nom::size_type NUM_REPEATS = 4;
-  const real32 DURATION = 0.5f;
-
-  // IMPORTANT: This value must remain constant for reproducing consistent test
-  // results!
-  const real32 SPEED_MOD = 1.0f;
-
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
-
-  const Point2i TRANSLATE_POS( Point2i(WINDOW_DIMS.w,0) );
-  // Initial texture position and size
-  const Point2i RECT_POS(Point2i::zero);
-  const Size2i RECT_SIZE(WINDOW_DIMS.w/4, WINDOW_DIMS.h);
-
-  auto rect =
-    std::make_shared<Rectangle>(IntRect(RECT_POS, RECT_SIZE), Color4i::Red);
-  ASSERT_TRUE(rect != nullptr);
-
-  auto translate =
-    nom::create_action<MoveByAction>(rect, TRANSLATE_POS, DURATION);
-  ASSERT_TRUE(translate != nullptr);
-
-  auto repeat_forever =
-    nom::create_action<RepeatForeverAction>(translate);
-  ASSERT_TRUE(repeat_forever != nullptr);
-
-  auto action0 =
-    nom::create_action<GroupAction>( {repeat_forever}, "action0" );
-  ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
-  action0->set_speed(SPEED_MOD);
-
-  auto kill_timer =
-    nom::create_action<WaitForDurationAction>(TEST_DURATION);
-  ASSERT_TRUE(kill_timer != nullptr);
-
-  auto action1 =
-    nom::create_action<SequenceAction>( {kill_timer}, "action1" );
-  ASSERT_TRUE(action1 != nullptr);
-  action1->set_timing_mode(TIMING_MODE);
-  action1->set_speed(SPEED_MOD);
-
-  EXPECT_EQ(0, this->player.num_actions() );
-  this->run_action_ret =
-  this->player.run_action(action0, [=]() {
-    FAIL() << "action0 should never complete!";
-  });
-  EXPECT_EQ(true, this->run_action_ret)
-  << "Failed to queue the action!";
-  EXPECT_EQ(1, this->player.num_actions() );
-
-  this->run_action_ret =
-  this->player.run_action(action1, [=]() {
-
-    EXPECT_EQ(2, this->player.num_actions() );
-    this->expected_repeat_params(repeat_forever.get(), NUM_REPEATS);
-    this->expected_action_params(action0.get(), 1);
-    this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
-    this->expected_action_params(action1.get(), 1);
-    this->expected_common_params(kill_timer.get(), TEST_DURATION, SPEED_MOD);
-
-    this->quit();
-  });
-  EXPECT_EQ(true, this->run_action_ret)
-  << "Failed to queue the action!";
-  EXPECT_EQ(2, this->player.num_actions() );
-
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render our animation's rectangle
-    if( rect != nullptr ) {
-      rect->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
-
-  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-}
-
-TEST_F(AnimationTest, AnimationTexture)
+TEST_F(AnimationTest, SpriteActionOneSprite)
 {
   // Testing parameters
   const float DURATION = 2.0f;
@@ -1076,15 +773,21 @@ TEST_F(AnimationTest, AnimationTexture)
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto tex = create_rect_texture( this->render_window(), TEX_POS, TEX_SIZE,
-                                  Color4i::Green );
-  if( tex == nullptr ) {
-    // Out of memory???
-    FAIL() << "Could not allocate memory for Texture.";
-  }
+  auto rect = std::make_shared<Rectangle>(
+    IntRect(TEX_POS, TEX_SIZE), Color4i::Green);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto tex =
+    std::shared_ptr<Texture>( rect->texture() );
+  ASSERT_TRUE(tex != nullptr);
+
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
 
   auto tex_bg =
-    nom::create_action<AnimationTexture>(tex, DURATION);
+    nom::create_action<SpriteAction>(sprite, DURATION);
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
@@ -1106,13 +809,13 @@ TEST_F(AnimationTest, AnimationTexture)
   << "Failed to queue the action!";
   EXPECT_EQ(1, this->player.num_actions() );
 
-  nom::set_alignment( tex.get(), Point2i::zero, WINDOW_DIMS,
+  nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                       Anchor::MiddleCenter );
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's texture
-    if( tex != nullptr ) {
-      tex->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -1123,7 +826,7 @@ TEST_F(AnimationTest, AnimationTexture)
 
 /// \remarks Thanks goes to Tim Jones of [sdltutorials.com](http://www.sdltutorials.com/sdl-animation)
 /// for the sprite frames of Yoshi chosen for this test!
-TEST_F(AnimationTest, AnimatedYoshiSpriteWithAnimationTexture)
+TEST_F(AnimationTest, SpriteActionMultipleSprites)
 {
   // Testing parameters
   texture_frames anim_frames;
@@ -1143,12 +846,12 @@ TEST_F(AnimationTest, AnimatedYoshiSpriteWithAnimationTexture)
     NOM_ANIM_TEST_FLAG(timing_mode);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
-  this->init_animation_texture_test(texture_filenames, anim_frames);
+  this->init_sprite_action_test(texture_filenames, anim_frames);
 
   EXPECT_EQ( anim_frames.size(), texture_filenames.size() );
 
   auto tex_bg =
-    nom::create_action<AnimationTexture>(anim_frames, FRAME_DURATION);
+    nom::create_action<SpriteAction>(anim_frames, FRAME_DURATION);
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
@@ -1162,9 +865,9 @@ TEST_F(AnimationTest, AnimatedYoshiSpriteWithAnimationTexture)
   this->player.run_action(action0, [=]() {
 
     EXPECT_EQ(1, this->player.num_actions() );
-    this->expected_animation_texture_params(  tex_bg.get(), anim_frames.size(),
-                                              DURATION, SPEED_MOD,
-                                              "texture_params" );
+    this->expected_sprite_action_params(  tex_bg.get(), anim_frames.size(),
+                                          DURATION, SPEED_MOD,
+                                          "sprite_action_params" );
     this->expected_action_params(action0.get(), 1);
 
     this->quit(); // graceful exit
@@ -1173,7 +876,7 @@ TEST_F(AnimationTest, AnimatedYoshiSpriteWithAnimationTexture)
   << "Failed to queue action0";
   EXPECT_EQ(1, this->player.num_actions() );
 
-  this->append_render_callback( [=](const RenderWindow& win) {
+  this->append_render_callback( [=, &tex_bg](const RenderWindow& win) {
 
     // Render our animation's texture
     if( tex_bg != nullptr ) {
@@ -1184,132 +887,6 @@ TEST_F(AnimationTest, AnimatedYoshiSpriteWithAnimationTexture)
   });
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-}
-
-TEST_F(AnimationTest, RepeatingAnimatedCursorSpriteWithAnimationTextureGroup)
-{
-  // Testing parameters
-
-  // maximal test duration before termination
-  const real32 TEST_DURATION = 2.0f;
-  const uint32 action_type =
-    ActionType::REPEAT_FOR | ActionType::GROUP;
-  const nom::size_type NUM_REPEATS = 4;
-
-  // IMPORTANT: This value must remain constant for reproducing consistent test
-  // results!
-  const real32 SPEED_MOD = 1.0f;
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
-
-  this->setup_repeating_cursor_test(  TEST_DURATION, SPEED_MOD, FPS,
-                                      action_type, NUM_REPEATS,
-                                      nom::UnitTest::test_name() );
-}
-
-TEST_F(AnimationTest, RepeatingAnimatedCursorSpriteWithAnimationTextureSequence)
-{
-  // Testing parameters
-
-  // maximal test duration before termination
-  const real32 TEST_DURATION = 2.0f;
-  const uint32 action_type =
-    ActionType::REPEAT_FOR | ActionType::SEQUENCE;
-  const nom::size_type NUM_REPEATS = 4;
-
-  // IMPORTANT: This value must remain constant for reproducing consistent test
-  // results!
-  const real32 SPEED_MOD = 1.0f;
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
-
-  this->setup_repeating_cursor_test(  TEST_DURATION, SPEED_MOD, FPS,
-                                      action_type, NUM_REPEATS,
-                                      nom::UnitTest::test_name() );
-}
-
-TEST_F(AnimationTest, RepeatingAnimatedCursorSpriteWithAnimationTextureReversed)
-{
-  // Testing parameters
-
-  // maximal test duration before termination
-  const real32 TEST_DURATION = 2.0f;
-  const uint32 action_type =
-    ActionType::REPEAT_FOR | ActionType::REVERSED;
-  const nom::size_type NUM_REPEATS = 4;
-
-  // IMPORTANT: This value must remain constant for reproducing consistent test
-  // results!
-  const real32 SPEED_MOD = 1.0f;
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
-
-  this->setup_repeating_cursor_test(  TEST_DURATION, SPEED_MOD, FPS,
-                                      action_type, NUM_REPEATS,
-                                      nom::UnitTest::test_name() );
-}
-
-/// \remarks This test does not honor custom speed modifiers passed via command
-/// line.
-TEST_F(AnimationTest, RepeatingForeverAnimatedCursorSpriteWithAnimationTextureGroup)
-{
-  // Testing parameters
-
-  // maximal test duration before termination
-  const real32 TEST_DURATION = 2.0f;
-  const uint32 action_type =
-    ActionType::REPEAT_FOREVER | ActionType::GROUP;
-  const nom::size_type NUM_REPEATS = 4;
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
-
-  // IMPORTANT: This value must remain constant for reproducing consistent test
-  // results!
-  const real32 SPEED_MOD = 1.0f;
-
-  this->setup_repeating_cursor_test(  TEST_DURATION, SPEED_MOD, FPS,
-                                      action_type, NUM_REPEATS,
-                                      nom::UnitTest::test_name() );
-}
-
-/// \remarks This test does not honor custom speed modifiers and frame
-/// intervals passed via command line.
-TEST_F(AnimationTest, RepeatingForeverAnimatedCursorSpriteWithAnimationTextureSequence)
-{
-  // Testing parameters
-
-  // maximal test duration before termination
-  const real32 TEST_DURATION = 2.0f;
-  const uint32 action_type =
-    ActionType::REPEAT_FOREVER | ActionType::SEQUENCE;
-  const nom::size_type NUM_REPEATS = 4;
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
-
-  // IMPORTANT: This value must remain constant for reproducing consistent test
-  // results!
-  const real32 SPEED_MOD = 1.0f;
-
-  this->setup_repeating_cursor_test(  TEST_DURATION, SPEED_MOD, FPS,
-                                      action_type, NUM_REPEATS,
-                                      nom::UnitTest::test_name() );
-}
-
-/// \remarks This test does not honor custom speed modifiers and frame
-/// intervals passed via command line.
-TEST_F(AnimationTest, RepeatingForeverAnimatedCursorSpriteWithAnimationTextureReversed)
-{
-  // Testing parameters
-
-  // maximal test duration before termination
-  const real32 TEST_DURATION = 2.0f;
-  const uint32 action_type =
-    ActionType::REPEAT_FOREVER | ActionType::REVERSED;
-  const nom::size_type NUM_REPEATS = 4;
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
-
-  // IMPORTANT: This value must remain constant for reproducing consistent test
-  // results!
-  const real32 SPEED_MOD = 1.0f;
-
-  this->setup_repeating_cursor_test(  TEST_DURATION, SPEED_MOD, FPS,
-                                      action_type, NUM_REPEATS,
-                                      nom::UnitTest::test_name() );
 }
 
 TEST_F(AnimationTest, MoveByAction)
@@ -1331,8 +908,11 @@ TEST_F(AnimationTest, MoveByAction)
     Rectangle( IntRect(RECT_POS, RECT_SIZE), Color4i::Green) );
   ASSERT_TRUE(rect != nullptr);
 
+  auto sprite = std::make_shared<Sprite>( rect->texture() );
+  ASSERT_TRUE(sprite != nullptr);
+
   auto translate =
-    nom::create_action<MoveByAction>(rect, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate != nullptr);
 
   auto action0 =
@@ -1345,7 +925,7 @@ TEST_F(AnimationTest, MoveByAction)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX_POS, rect->position() );
+    EXPECT_EQ( EXPECTED_TEX_POS, sprite->position() );
     EXPECT_EQ(1, this->player.num_actions() );
 
     this->expected_action_params(action0.get(), 1);
@@ -1357,10 +937,10 @@ TEST_F(AnimationTest, MoveByAction)
   << "Failed to queue the action!";
   EXPECT_EQ(1, this->player.num_actions() );
 
-  this->append_render_callback( [=](const RenderWindow& win) {
+  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
     // Render our animation's rectangle
-    if( rect != nullptr ) {
-      rect->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -1388,8 +968,11 @@ TEST_F(AnimationTest, MoveByActionNegativeXDelta)
     Rectangle( IntRect(RECT_POS, RECT_SIZE), Color4i::Green) );
   ASSERT_TRUE(rect != nullptr);
 
+  auto sprite = std::make_shared<Sprite>( rect->texture() );
+  ASSERT_TRUE(sprite != nullptr);
+
   auto translate =
-    nom::create_action<MoveByAction>(rect, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate != nullptr);
 
   auto action0 =
@@ -1402,7 +985,7 @@ TEST_F(AnimationTest, MoveByActionNegativeXDelta)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX_POS, rect->position() );
+    EXPECT_EQ(EXPECTED_TEX_POS, sprite->position() );
     EXPECT_EQ(1, this->player.num_actions() );
 
     this->expected_action_params(action0.get(), 1);
@@ -1416,8 +999,8 @@ TEST_F(AnimationTest, MoveByActionNegativeXDelta)
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's rectangle
-    if( rect != nullptr ) {
-      rect->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -1445,8 +1028,11 @@ TEST_F(AnimationTest, MoveByActionWithNegativeYDelta)
     Rectangle( IntRect(RECT_POS, RECT_SIZE), Color4i::Green) );
   ASSERT_TRUE(rect != nullptr);
 
+  auto sprite = std::make_shared<Sprite>( rect->texture() );
+  ASSERT_TRUE(sprite != nullptr);
+
   auto translate =
-    nom::create_action<MoveByAction>(rect, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate != nullptr);
 
   auto action0 =
@@ -1459,7 +1045,7 @@ TEST_F(AnimationTest, MoveByActionWithNegativeYDelta)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX_POS, rect->position() );
+    EXPECT_EQ(EXPECTED_TEX_POS, sprite->position() );
     EXPECT_EQ(1, this->player.num_actions() );
 
     this->expected_action_params(action0.get(), 1);
@@ -1473,8 +1059,8 @@ TEST_F(AnimationTest, MoveByActionWithNegativeYDelta)
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's rectangle
-    if( rect != nullptr ) {
-      rect->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -1500,15 +1086,18 @@ TEST_F(AnimationTest, ScaleByAction)
                                           TEX_SIZE.h * SCALE_FACTOR.h )
   );
 
-  auto tex = create_rect_texture( this->render_window(), TEX_POS, TEX_SIZE,
-                                  Color4i::Blue );
-  if( tex == nullptr ) {
-    // Out of memory???
-    FAIL() << "Could not allocate memory for Texture.";
-  }
+  auto rect = std::make_shared<Rectangle>(
+    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto tex = rect->texture();
+
+  auto sprite = std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
 
   auto scale_by =
-    nom::create_action<ScaleByAction>(tex, SCALE_FACTOR, DURATION);
+    nom::create_action<ScaleByAction>(sprite, SCALE_FACTOR, DURATION);
   ASSERT_TRUE(scale_by != nullptr);
 
   auto action0 =
@@ -1521,7 +1110,7 @@ TEST_F(AnimationTest, ScaleByAction)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX_SIZE, tex->size() );
+    EXPECT_EQ( EXPECTED_TEX_SIZE, sprite->size() );
     EXPECT_EQ(1, this->player.num_actions() );
 
     this->expected_action_params(action0.get(), 1);
@@ -1534,14 +1123,14 @@ TEST_F(AnimationTest, ScaleByAction)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( tex.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's texture
-    if( tex != nullptr ) {
-      tex->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -1568,14 +1157,21 @@ TEST_F(AnimationTest, ScaleByActionWithNegativeFactor)
     nom::round_float<int>( (real32)(TEX_SIZE.h) / abs(SCALE_FACTOR.h) )
   );
 
+  std::string TEX_FILE_PATH = resources[0].path() + "card.png";
+
   auto tex = std::make_shared<Texture>( Texture() );
-  tex->load(resources[0].path() + "card.png");
-  if(tex == nullptr) {
-    FAIL() << "Could not load texture from file source.";
+  ASSERT_TRUE(tex != nullptr);
+  if( tex->load(TEX_FILE_PATH) == false ) {
+    FAIL() << "Could not load texture from file: " << TEX_FILE_PATH;
   }
 
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
+
   auto scale_by =
-    nom::create_action<nom::ScaleByAction>(tex, SCALE_FACTOR, DURATION);
+    nom::create_action<nom::ScaleByAction>(sprite, SCALE_FACTOR, DURATION);
   ASSERT_TRUE(scale_by != nullptr);
   scale_by->set_name("scale_by");
 
@@ -1589,7 +1185,7 @@ TEST_F(AnimationTest, ScaleByActionWithNegativeFactor)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX_SIZE, tex->size() );
+    EXPECT_EQ(EXPECTED_TEX_SIZE, sprite->size() );
     EXPECT_EQ(1, this->player.num_actions() );
 
     this->expected_action_params(action0.get(), 1);
@@ -1602,16 +1198,15 @@ TEST_F(AnimationTest, ScaleByActionWithNegativeFactor)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( tex.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
-    // FIXME: Render our animation's texture
-    // tex->draw( this->render_window() );
-    if( tex != nullptr ) {
-      // This is a temporary workaround
-      tex->draw_scaled( scale_by->size_, 0, this->render_window() );
+
+    // Render our animation's texture
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -1637,15 +1232,18 @@ TEST_F(AnimationTest, ScaleByActionWithNonPowerOfTwo)
     Size2i( TEX_SIZE.w * SCALE_FACTOR.w,
             nom::round_float<int>(TEX_SIZE.h * SCALE_FACTOR.h) );
 
-  auto tex = create_rect_texture( this->render_window(), TEX_POS, TEX_SIZE,
-                                  Color4i::Blue );
-  if( tex == nullptr ) {
-    // Out of memory???
-    FAIL() << "Could not allocate memory for Texture.";
-  }
+  auto rect = std::make_shared<Rectangle>(
+    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto tex = rect->texture();
+
+  auto sprite = std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
 
   auto scale_by =
-    nom::create_action<ScaleByAction>(tex, SCALE_FACTOR, DURATION);
+    nom::create_action<ScaleByAction>(sprite, SCALE_FACTOR, DURATION);
   ASSERT_TRUE(scale_by != nullptr);
   scale_by->set_name("scale_by");
 
@@ -1659,7 +1257,7 @@ TEST_F(AnimationTest, ScaleByActionWithNonPowerOfTwo)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX_SIZE, tex->size() );
+    EXPECT_EQ( EXPECTED_TEX_SIZE, sprite->size() );
     EXPECT_EQ(1, this->player.num_actions() );
 
     this->expected_action_params(action0.get(), 1);
@@ -1672,14 +1270,14 @@ TEST_F(AnimationTest, ScaleByActionWithNonPowerOfTwo)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( tex.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's texture
-    if( tex != nullptr ) {
-      tex->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -1772,6 +1370,171 @@ TEST_F(AnimationTest, CallbackActionWithNonZeroDuration)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->append_render_callback( [=](const RenderWindow& win) {
+    this->set_frame_interval(FPS);
+  });
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+// TODO: Remove
+TEST_F(AnimationTest, ScratchTest)
+{
+  // Testing parameters
+  const float DURATION = 2.5f;
+  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const IActionObject::timing_mode_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_mode);
+  const Point2i TRANSLATE_POS( Point2i(640,0) );
+  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+
+  // Initial texture position and size
+  const Point2i RECT_POS(Point2i::zero);
+  const Size2i RECT_SIZE(256,256);
+  const Point2i EXPECTED_TEX_POS(TRANSLATE_POS);
+
+#define RECT_TEX
+
+#if defined(RECT_TEX)
+  auto rect =
+    std::make_shared<Rectangle>( IntRect(RECT_POS, RECT_SIZE), Color4i::Magenta);
+  ASSERT_TRUE(rect != nullptr);
+#else
+  Color4iColors grad_colors = { Color4iColors{ Color4i( 114, 66, 66 ), Color4i( 251, 222, 232 ) } };
+  auto rect = std::make_shared<Gradient>();
+  ASSERT_TRUE(rect != nullptr);
+  rect->set_fill_direction(Gradient::FillDirection::Top);
+  rect->set_colors(grad_colors);
+  rect->set_position(RECT_POS);
+  rect->set_size(RECT_SIZE);
+#endif
+
+  auto sprite0 = std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite0 != nullptr);
+
+#if defined(RECT_TEX)
+  sprite0->set_texture( rect->texture() );
+#else
+  auto rect_ptr = rect->texture();
+  sprite0->set_texture( *rect_ptr.get() );
+#endif
+
+  sprite0->set_size( RECT_SIZE / Size2i(2,2) );
+  sprite0->set_color_blend_mode(nom::BLEND_MODE_BLEND);
+  // sprite0->set_alpha(128);
+  sprite0->set_color(Color4i::Blue);
+
+  // nom::set_alignment(sprite0.get(), RECT_POS, WINDOW_DIMS, Anchor::BottomLeft);
+
+  auto action0 =
+    nom::create_action<MoveByAction>(sprite0, TRANSLATE_POS, DURATION);
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_speed(SPEED_MOD);
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ( EXPECTED_TEX_POS, sprite0->position() );
+    EXPECT_EQ(1, this->player.num_actions() );
+
+    this->expected_common_params(action0.get(), DURATION, SPEED_MOD);
+
+    this->quit(); // graceful exit
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue the action!";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+// const std::string TEX_FILE_PATH = resources[0].path() + "card.png";
+// auto imgT = std::make_shared<Image>( Image() );
+// ASSERT_TRUE(imgT != nullptr);
+// if( imgT->load(TEX_FILE_PATH) == false ) {
+//   FAIL() << "Could not load texture from file: " << TEX_FILE_PATH;
+// }
+
+// auto texT = std::make_shared<Texture>( Texture() );
+// ASSERT_TRUE(texT != nullptr);
+// EXPECT_EQ(true, texT->create(imgT->texture() ) );
+
+// auto spriteT = std::make_shared<Sprite>();
+// ASSERT_TRUE(spriteT != nullptr);
+// EXPECT_EQ(true, spriteT->set_texture(texT) );
+
+  this->append_render_callback( [=](const RenderWindow& win) {
+
+    if( sprite0 != nullptr && sprite0->valid() == true ) {
+      sprite0->draw( this->render_window() );
+    }
+
+    // if( spriteT != nullptr && spriteT->valid() == true ) {
+    //   spriteT->draw( this->render_window() );
+    // }
+
+    this->set_frame_interval(FPS);
+  });
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+
+  // NOM_DELETE_PTR(rect_ptr);
+}
+
+TEST_F(AnimationTest, ColorizeAction)
+{
+  // Testing parameters
+  const float DURATION = 2.0f;
+  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const IActionObject::timing_mode_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_mode);
+  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+
+  const Color4i TEX_START_COLOR(Color4i::Black);
+  const Color4i TEX_END_COLOR(Color4i::White);
+  const BlendMode BLEND_MODE = BLEND_MODE_ADD;
+  const std::string TEX_FILE_PATH = resources[0].path() + "card.png";
+
+  auto tex = std::make_shared<Texture>( Texture() );
+  ASSERT_TRUE(tex != nullptr);
+  if( tex->load(TEX_FILE_PATH) == false ) {
+    FAIL() << "Could not load texture from file: " << TEX_FILE_PATH;
+  }
+
+  auto sprite = std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
+  sprite->set_color(TEX_START_COLOR);
+
+  auto colorize = nom::create_action<nom::ColorizeAction>(sprite,
+    TEX_END_COLOR, BLEND_MODE, DURATION);
+  ASSERT_TRUE(colorize != nullptr);
+  colorize->set_name("colorize");
+  colorize->set_speed(SPEED_MOD);
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(colorize, [=]() {
+
+    EXPECT_EQ(1, this->player.num_actions() );
+    EXPECT_EQ(TEX_END_COLOR, sprite->color() );
+    EXPECT_EQ(BLEND_MODE, sprite->color_blend_mode() );
+    this->expected_common_params(colorize.get(), DURATION, SPEED_MOD);
+
+    this->quit(); // graceful exit
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue the action!";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](float) mutable {
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
+                        Anchor::MiddleCenter );
+  });
+
+  this->append_render_callback( [=](const RenderWindow& win) {
+
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
+    }
+
     this->set_frame_interval(FPS);
   });
 

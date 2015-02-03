@@ -102,8 +102,11 @@ if( NOM_BUILD_GRAPHICS_UNIT )
         ${SRC_DIR}/graphics/IActionObject.cpp
         ${INC_DIR}/graphics/IActionObject.hpp
 
-        ${SRC_DIR}/graphics/AnimationTexture.cpp
-        ${INC_DIR}/graphics/AnimationTexture.hpp
+        ${SRC_DIR}/graphics/SpriteAction.cpp
+        ${INC_DIR}/graphics/SpriteAction.hpp
+
+        ${SRC_DIR}/graphics/SpriteBatchAction.cpp
+        ${INC_DIR}/graphics/SpriteBatchAction.hpp
 
         ${SRC_DIR}/graphics/FadeInAction.cpp
         ${INC_DIR}/graphics/FadeInAction.hpp
@@ -150,6 +153,9 @@ if( NOM_BUILD_GRAPHICS_UNIT )
         # TODO
         # ${SRC_DIR}/graphics/FadeAudioByAction.cpp
         # ${INC_DIR}/graphics/FadeAudioByAction.hpp
+
+        ${SRC_DIR}/graphics/ColorizeAction.cpp
+        ${INC_DIR}/graphics/ColorizeAction.hpp
 
         ${SRC_DIR}/graphics/ActionPlayer.cpp
         ${INC_DIR}/graphics/ActionPlayer.hpp

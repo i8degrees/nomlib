@@ -32,11 +32,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/math_helpers.hpp"
 
 // Forward declarations
-#include "nomlib/graphics/Texture.hpp"
+#include "nomlib/graphics/sprite/Sprite.hpp"
 
 namespace nom {
 
-ScaleByAction::ScaleByAction( const std::shared_ptr<Texture>& obj,
+ScaleByAction::ScaleByAction( const std::shared_ptr<Sprite>& obj,
                               const Size2f& delta, real32 duration ) :
   total_displacement_(delta)
 {

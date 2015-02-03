@@ -62,7 +62,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/graphics/AnimationTimingModes.hpp>
 #include <nomlib/graphics/IActionObject.hpp>
-#include <nomlib/graphics/AnimationTexture.hpp>
+#include <nomlib/graphics/SpriteAction.hpp>
+#include <nomlib/graphics/SpriteBatchAction.hpp>
 #include <nomlib/graphics/FadeInAction.hpp>
 #include <nomlib/graphics/FadeOutAction.hpp>
 #include <nomlib/graphics/FadeAlphaByAction.hpp>
@@ -78,6 +79,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics/RemoveAction.hpp>
 #include <nomlib/graphics/SequenceAction.hpp>
 #include <nomlib/graphics/GroupAction.hpp>
+#include <nomlib/graphics/ColorizeAction.hpp>
 #include <nomlib/graphics/ActionPlayer.hpp>
 
 #endif // include guard defined

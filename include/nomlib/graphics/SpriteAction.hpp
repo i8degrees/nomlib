@@ -26,56 +26,56 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_MOVE_BY_ACTION_HPP
-#define NOMLIB_GRAPHICS_MOVE_BY_ACTION_HPP
+#ifndef NOMLIB_GRAPHICS_SPRITE_ACTION_HPP
+#define NOMLIB_GRAPHICS_SPRITE_ACTION_HPP
 
 #include <memory>
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IActionObject.hpp"
-#include "nomlib/math/Point2.hpp"
 
 namespace nom {
 
 // Forward declarations
 class Sprite;
 
+typedef std::vector<std::shared_ptr<Sprite>> texture_frames;
+
 /// \brief [TODO: Description]
-class MoveByAction: public virtual IActionObject
+class SpriteAction: public virtual IActionObject
 {
   public:
-    typedef MoveByAction self_type;
+    typedef SpriteAction self_type;
     typedef IActionObject derived_type;
 
-    /// \brief Construct an action that moves an object relative to its starting
-    /// position.
+    /// \brief Allow access into our private parts for obtaining the current
+    /// frame.
+    friend class AnimationTest;
+
+    /// \brief Default constructor; construct an action with a valid
+    /// nom::Sprite instance.
     ///
-    /// \param delta The total change (displacement) over time to translate to.
-    ///
-    /// \param duration The time, in fractional seconds, to play the animation
-    /// to completion.
-    ///
-    /// \remarks Negative values are valid deltas for displacement.
-    MoveByAction( const std::shared_ptr<Sprite>& action,
-                  const Point2i& delta, real32 duration );
+    /// \param frame_interval The amount of time (in fractional seconds) that
+    /// each texture is displayed.
+    SpriteAction(const std::shared_ptr<Sprite>& frame, real32 frame_interval);
 
     /// \brief Destructor.
-    virtual ~MoveByAction();
+    virtual ~SpriteAction();
 
-    /// \brief Create a deep copy of this instance.
+    /// \brief Construct an action with a container of valid (i.e.: pre-loaded)
+    /// nom::SpriteBatch objects.
     ///
-    /// \remarks This is necessary anytime you wish to re-use an object that
-    /// has been used once before, due to its state not being reset after the
-    /// first use.
+    /// \param frame_interval The amount of time (in fractional seconds) that
+    /// each texture is displayed.
+    SpriteAction(const texture_frames& textures, real32 frame_interval);
+
     virtual std::unique_ptr<derived_type> clone() const override;
 
-    /// \brief Displace the current animation frame.
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
-
-    /// \brief Displace the previous animation frame (inverse of ::next_frame).
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
 
-    /// \brief Frame-freeze the animation.
+    bool render(real32 delta_time) const;
+
     virtual void pause(real32 delta_time) override;
 
     /// \brief Resume logic for the animation object.
@@ -83,33 +83,31 @@ class MoveByAction: public virtual IActionObject
     /// \remarks Reserved for future implementation.
     virtual void resume(real32 delta_time) override;
 
-    /// \brief Reset state back to the first frame of the animation.
-    ///
-    /// \remarks This is used by nom::AnimationPlayer.
     virtual void rewind(real32 delta_time) override;
 
-    /// \brief Free resources associated with this object.
     virtual void release() override;
 
   private:
-    /// \brief Execute the displacement logic for the animation.
+    void initialize(const texture_frames& textures, real32 frame_interval);
+    void set_frame_interval(real32 seconds);
+
+    typedef std::vector<std::shared_ptr<Sprite>>::iterator frame_iterator;
+
     IActionObject::FrameState
-    update(real32 t, const Point2i& b, const Point2i& c, real32 d);
+    update(real32 t, real32 b, real32 c, real32 d);
 
-    /// \brief Initialize timer and initial position.
     void first_frame(real32 delta_time);
-
-    /// \brief Clean up logic.
     void last_frame(real32 delta_time);
 
-    /// \brief The total change (displacement) over time (duration).
-    const Point2i total_displacement_;
+    /// \brief The number of textures to animate.
+    real32 total_displacement_;
 
-    /// \brief The starting position of the animation for displacement from.
-    Point2i initial_position_;
+    /// \brief The animation proxy object.
+    texture_frames frames_;
+    frame_iterator frame_iterator_;
 
-    /// \brief The texture to animate.
-    std::shared_ptr<Sprite> drawable_;
+    real32 frame_interval_;
+    uint64 last_delta_;
 };
 
 } // namespace nom

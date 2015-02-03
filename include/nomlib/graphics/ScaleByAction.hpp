@@ -39,23 +39,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // Forward declarations
-class Texture;
+class Sprite;
 
 /// \brief [TODO: Description]
 class ScaleByAction: public virtual IActionObject
 {
   public:
-    // FIXME: This is a temporary workaround until Texture::draw issues are
-    // resolved.
-    NOM_GTEST_FRIEND(AnimationTest, ScaleByActionWithNegativeFactor);
-
     typedef ScaleByAction self_type;
     typedef IActionObject derived_type;
 
     /// \brief Construct an animation action using a scale factor.
     ///
     /// \param delta The width, height offsets to use for a scale factor.
-    ScaleByAction(  const std::shared_ptr<Texture>& obj, const Size2f& delta,
+    ScaleByAction(  const std::shared_ptr<Sprite>& obj, const Size2f& delta,
                     real32 duration );
 
     /// \brief Destructor.
@@ -97,8 +93,8 @@ class ScaleByAction: public virtual IActionObject
     /// \remarks This is used in ::rewind.
     Size2i initial_size_;
 
-    /// \brief The animation proxy object.
-    std::shared_ptr<Texture> drawable_;
+    /// \brief The action to animate.
+    std::shared_ptr<Sprite> drawable_;
 };
 
 } // namespace nom

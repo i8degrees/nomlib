@@ -118,10 +118,6 @@ endif(NOM_BUILD_BMFONT_TEST)
 
 if(NOM_BUILD_ANIMATION_TESTS)
 
-  if(PLATFORM_POSIX) # GCC && LLVM
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wno-unused-variable")
-  endif(PLATFORM_POSIX)
-
   set(  ANIMATION_SRC
         ${ANIMATION_SRC}
         "AnimationTest.cpp"
@@ -129,6 +125,7 @@ if(NOM_BUILD_ANIMATION_TESTS)
         "AnimationTest_AlphaBlending.cpp"
         "AnimationTest_Reversed.cpp"
         "AnimationTest_Demos.cpp"
+        "AnimationTest_Repeating.cpp"
   )
 
   add_executable( AnimationTest ${ANIMATION_SRC} )

@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // Forward declarations
-class Texture;
+class Sprite;
 
 /// \brief [TODO: Description]
 class FadeOutAction: public virtual IActionObject
@@ -50,7 +50,7 @@ class FadeOutAction: public virtual IActionObject
     typedef IActionObject derived_type;
 
     /// \brief Default constructor.
-    FadeOutAction(const std::shared_ptr<Texture>& obj, real32 duration);
+    FadeOutAction(const std::shared_ptr<Sprite>& action, real32 duration);
 
     /// \brief Destructor.
     virtual ~FadeOutAction();
@@ -90,8 +90,8 @@ class FadeOutAction: public virtual IActionObject
     /// \brief The total change in the alpha blending value.
     const int16 total_displacement_;
 
-    /// \brief The animation proxy object used to perform alpha blending on.
-    std::shared_ptr<Texture> drawable_;
+    /// \brief The texture to animate.
+    std::shared_ptr<Sprite> drawable_;
 };
 
 } // namespace nom

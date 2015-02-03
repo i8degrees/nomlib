@@ -26,14 +26,15 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_MOVE_BY_ACTION_HPP
-#define NOMLIB_GRAPHICS_MOVE_BY_ACTION_HPP
+#ifndef NOMLIB_GRAPHICS_COLORIZE_ACTION_HPP
+#define NOMLIB_GRAPHICS_COLORIZE_ACTION_HPP
 
 #include <memory>
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IActionObject.hpp"
-#include "nomlib/math/Point2.hpp"
+#include "nomlib/math/Color4.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
 
 namespace nom {
 
@@ -41,26 +42,24 @@ namespace nom {
 class Sprite;
 
 /// \brief [TODO: Description]
-class MoveByAction: public virtual IActionObject
+class ColorizeAction: public virtual IActionObject
 {
   public:
-    typedef MoveByAction self_type;
+    typedef ColorizeAction self_type;
     typedef IActionObject derived_type;
 
-    /// \brief Construct an action that moves an object relative to its starting
-    /// position.
+    /// \brief Construct an action that animates an object's color and blend
+    /// factor.
     ///
-    /// \param delta The total change (displacement) over time to translate to.
+    /// \param delta The total change in color over time.
     ///
-    /// \param duration The time, in fractional seconds, to play the animation
-    /// to completion.
-    ///
-    /// \remarks Negative values are valid deltas for displacement.
-    MoveByAction( const std::shared_ptr<Sprite>& action,
-                  const Point2i& delta, real32 duration );
+    /// \param duration The time, in fractional seconds, to play the action to
+    /// completion.
+    ColorizeAction( const std::shared_ptr<Sprite>& action, const Color4i& delta,
+                    BlendMode mode, real32 duration );
 
     /// \brief Destructor.
-    virtual ~MoveByAction();
+    virtual ~ColorizeAction();
 
     /// \brief Create a deep copy of this instance.
     ///
@@ -92,23 +91,22 @@ class MoveByAction: public virtual IActionObject
     virtual void release() override;
 
   private:
-    /// \brief Execute the displacement logic for the animation.
     IActionObject::FrameState
-    update(real32 t, const Point2i& b, const Point2i& c, real32 d);
+    update(real32 t, const Color4i& b, const Color4i& c, real32 d);
 
-    /// \brief Initialize timer and initial position.
     void first_frame(real32 delta_time);
-
-    /// \brief Clean up logic.
     void last_frame(real32 delta_time);
 
-    /// \brief The total change (displacement) over time (duration).
-    const Point2i total_displacement_;
+    /// \brief The total change over time.
+    const Color4i total_displacement_;
 
-    /// \brief The starting position of the animation for displacement from.
-    Point2i initial_position_;
+    /// \brief The starting color of the action for blending.
+    Color4i initial_color_;
 
-    /// \brief The texture to animate.
+    /// \brief The color blending mode to apply to the action.
+    BlendMode blend_mode_;
+
+    /// \brief The sprite to animate.
     std::shared_ptr<Sprite> drawable_;
 };
 

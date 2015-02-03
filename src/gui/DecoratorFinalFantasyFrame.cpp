@@ -98,33 +98,32 @@ void DecoratorFinalFantasyFrame::RenderElement(Rocket::Core::Element* element, R
   if( size.x <= 0 || size.y <= 0 ) return;
 
   // Check for whether or not we need to update our decorator
-  if( this->coords_.x != position.x || this->coords_.y != position.y || this->coords_.w != size.x || this->coords_.h != size.y )
+  if( this->bounds_.x != position.x || this->bounds_.y != position.y || this->bounds_.w != size.x || this->bounds_.h != size.y )
   {
     // Update our coordinates to match new element coordinates
-    this->coords_.x = position.x;
-    this->coords_.y = position.y;
-    this->coords_.w = size.x;
-    this->coords_.h = size.y;
+    this->bounds_.x = position.x;
+    this->bounds_.y = position.y;
+    this->bounds_.w = size.x;
+    this->bounds_.h = size.y;
 
     // Keeps our decorator within positive bounds on the left side of the
     // window, else it will vanish on us
-    if( this->coords_.x <= 0 )
+    if( this->bounds_.x <= 0 )
     {
-      int x_offset = abs( this->coords_.x );
+      int x_offset = abs(this->bounds_.x);
 
       // We need to recalculate widths when the object is partially off-screen,
       // otherwise stretching of the layout occurs -- a possible bug in
       // libRocket?
-      if( this->coords_.w > x_offset )  // Bad things happen if w < 0
+      if( this->bounds_.w > x_offset )  // Bad things happen if w < 0
       {
-        this->coords_.w = this->coords_.w - x_offset;
-        this->coords_.x = 0;
+        this->bounds_.w = this->bounds_.w - x_offset;
+        this->bounds_.x = 0;
       }
       // else The object is entirely offscreen (this is valid)
     }
 
-    decorator_->set_bounds( this->coords_ );
-    decorator_->update();
+    decorator_->set_bounds( IntRect(this->bounds_) );
   }
 
   decorator_->draw( *context );

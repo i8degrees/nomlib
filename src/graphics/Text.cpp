@@ -369,13 +369,26 @@ void Text::set_text_size ( uint character_size )
 
   if( context != nullptr ) {
     RendererInfo caps = context->caps();
+    pixel_format = caps.optimal_texture_format();
   }
 
   // We can only (sanely) initialize our texture once we know the text size; we
   // will update this texture only as it becomes necessary (see ::update).
   if( this->glyphs_texture_.create( *this->font()->image( this->text_size() ), pixel_format, Texture::Access::Streaming ) == false ) {
-    NOM_LOG_ERR(  NOM, "Could not create texture at point size:",
+    NOM_LOG_ERR(  NOM, "Could not create texture atlas at point size:",
                   std::to_string( this->text_size() ) );
+    return;
+  }
+
+  if( this->rendered_text_ == nullptr ) {
+    this->rendered_text_.reset( new Texture() );
+  }
+
+  NOM_ASSERT(this->rendered_text_ != nullptr);
+  if( this->rendered_text_ == nullptr ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not create texture cache:",
+                  "failed to allocate texture memory." );
     return;
   }
 
@@ -645,21 +658,10 @@ bool Text::update_cache()
   // Padding
   // texture_dims.w += this->text_width(" ");
 
-  if( this->rendered_text_ == nullptr ) {
-    this->rendered_text_.reset( new Texture() );
-  }
-
-  NOM_ASSERT(this->rendered_text_ != nullptr);
-  if( this->rendered_text_ == nullptr ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_RENDER, "Could not update cache:",
-                  "failed to allocate texture memory." );
-    return false;
-  }
-
   RenderWindow* context = nom::render_interface();
   NOM_ASSERT(context != nullptr);
   if( context == nullptr ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_RENDER, "Could not update cache",
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Could not update cache",
                   "invalid renderer." );
     return false;
   }
@@ -667,12 +669,21 @@ bool Text::update_cache()
   // Obtain the optimal pixel format for the platform
   RendererInfo caps = context->caps();
 
-  if( this->rendered_text_->initialize( caps.optimal_texture_format(),
-      SDL_TEXTUREACCESS_TARGET, texture_dims ) == false )
-  {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not update cache: failed texture creation." );
-    return false;
+  if( this->rendered_text_->size() != texture_dims ) {
+
+    // Poor man's counter of how often we are re-allocating this texture
+    // NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_RENDER, NOM_LOG_PRIORITY_DEBUG);
+    // NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_RENDER,
+    //                 "old_size:", this->rendered_text_->size(),
+    //                 "new_size:", texture_dims );
+
+    if( this->rendered_text_->initialize( caps.optimal_texture_format(),
+        SDL_TEXTUREACCESS_TARGET, texture_dims ) == false )
+    {
+      NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                    "Could not update cache: failed texture creation." );
+      return false;
+    }
   }
 
   // Use an alpha channel; otherwise the text is rendered on a black

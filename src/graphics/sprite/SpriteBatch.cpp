@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/sprite/SpriteBatch.hpp"
 
+// Forward declarations
+#include "nomlib/graphics/Texture.hpp"
+
 namespace nom {
 
 SpriteBatch::SpriteBatch() :
@@ -49,9 +52,7 @@ void SpriteBatch::set_sprite_sheet(const SpriteSheet& sheet)
 
   dims = this->sprite_sheet.dimensions(0);
 
-  // this->set_size( Size2i( this->sprite_sheet.sheet_width(), this->sprite_sheet.sheet_height() ) );
-  // this->set_bounds(dims);
-  Sprite( dims.size() );
+  Sprite::set_size( dims.size() );
 
   this->set_frame(0);
 
@@ -101,7 +102,7 @@ void SpriteBatch::draw(IDrawable::RenderTarget& target, const double angle) cons
   }
 }
 
-// Protected scope
+// Private scope
 
 void SpriteBatch::update()
 {
@@ -115,7 +116,7 @@ void SpriteBatch::update()
 
   if( this->frame() >= 0 ) {
 
-    Sprite::update();
+    Sprite::set_position( this->position() );
 
     IntRect dims = this->sprite_sheet.dimensions( this->frame() );
 
@@ -124,7 +125,7 @@ void SpriteBatch::update()
     this->offsets.w = dims.w * scale_factor;
     this->offsets.h = dims.h * scale_factor;
 
-    this->set_size( Size2i(offsets.w, offsets.h) );
+    Sprite::set_size( Size2i(offsets.w, offsets.h) );
     if( this->texture_ != nullptr ) {
       this->texture_->set_bounds(this->offsets);
     }

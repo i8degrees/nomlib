@@ -26,21 +26,23 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_SPRITE_HPP
-#define NOMLIB_SDL2_SPRITE_HPP
+#ifndef NOMLIB_GRAPHICS_SPRITE_HPP
+#define NOMLIB_GRAPHICS_SPRITE_HPP
 
-#include <iostream>
-#include <string>
 #include <memory>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/math/Point2.hpp"
-#include "nomlib/graphics/Texture.hpp"
-#include "nomlib/graphics/Renderer.hpp"
+#include "nomlib/system/SDL_helpers.hpp"
 
 namespace nom {
+
+// Forward declarations
+class Texture;
+class RenderWindow;
+typedef const RenderWindow RenderTarget;
 
 /// \brief Base class for bitmap objects
 class Sprite: public Transformable
@@ -49,10 +51,6 @@ class Sprite: public Transformable
     typedef Sprite self_type;
     typedef Transformable derived_class;
 
-    typedef self_type* raw_ptr;
-    typedef std::unique_ptr<self_type> unique_ptr;
-    typedef std::shared_ptr<self_type> shared_ptr;
-
     /// Default construct for initializing instance variables to their
     /// respective defaults.
     Sprite();
@@ -60,36 +58,79 @@ class Sprite: public Transformable
     /// Destructor.
     virtual ~Sprite();
 
-    /// \brief Construct a Sprite object, initializing the width & height
-    /// coordinates.
-    Sprite(const Size2i& dims);
-
-    /// \brief Re-implements Transformable::set_position.
+    /// \brief Construct a sprite from an existing texture source.
     ///
-    /// \remarks This method updates the internal positioning coordinates of
-    /// this object; freeing us from needing to call ::update manually.
-    virtual void set_position(const Point2i& pos) override;
+    /// \see ::set_texture
+    Sprite(Texture& tex);
 
-    // TODO (?):
-    // virtual void set_size( const Size2i& pos );
+    /// \brief Construct a sprite from an existing texture source.
+    ///
+    /// \see ::set_texture
+    Sprite(Texture* tex);
 
-    /// \brief Implements the required IDrawable::clone method.
-    IDrawable* clone() const;
+    /// \brief Construct a sprite from an existing texture source.
+    ///
+    /// \see ::set_texture
+    Sprite(std::shared_ptr<Texture>& tex);
 
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
     ObjectTypeInfo type() const override;
 
-    SDL_Texture* texture() const;
+    /// \brief Re-implements Transformable::set_position.
+    virtual void set_position(const Point2i& pos) override;
 
-    /// \brief Set the texture source for this sprite instance.
+    /// \brief Re-implements Transformable::set_size.
+    virtual void set_size(const Size2i& dims) override;
+
+    /// \brief Implements the required IDrawable::clone method.
+    std::unique_ptr<self_type> clone() const;
+
+    std::shared_ptr<Texture>& texture();
+
+    bool valid() const;
+
+    /// \brief Get the texture color of the sprite.
+    Color4i color() const;
+
+    /// \brief Get the color blend mode of the sprite.
+    BlendMode color_blend_mode() const;
+
+    /// \brief Get the alpha value of the sprite.
+    uint8 alpha() const;
+
+    /// \brief Set the texture source for the sprite.
     ///
-    /// \remarks Only a reference to the texture is kept for this instance; it
-    /// must outlive the destruction of this instance.
+    /// \param tex  A valid nom::Texture reference.
+    ///
+    /// \remarks You are responsible for ensuring that the nom::Texture object
+    /// outlives the destruction of this instance.
     ///
     /// \see nom::Texture::load
-    void set_texture(/*const*/ Texture& tex);
+    bool set_texture(Texture& tex);
+
+    /// \brief Set the texture source for the sprite.
+    ///
+    /// \param tex  A valid nom::Texture pointer.
+    ///
+    /// \remarks The ownership of the pointer is transferred to this instance.
+    ///
+    /// \see nom::Texture::load
+    bool set_texture(Texture* tex);
+
+    /// \brief Set the texture source for the sprite.
+    ///
+    /// \param tex  A valid nom::Texture std::shared_ptr.
+    ///
+    /// \see nom::Texture::load
+    bool set_texture(std::shared_ptr<Texture>& tex);
+
+    bool set_alpha(uint8 opacity);
+
+    bool set_color(const Color4i& color);
+
+    bool set_color_blend_mode(BlendMode blend);
 
     virtual void draw(RenderTarget& target) const override;
 
@@ -97,15 +138,15 @@ class Sprite: public Transformable
     ///
     /// \param  target  Reference to an active nom::RenderWindow
     /// \param  angle   Rotation angle in degrees
-    virtual void draw(RenderTarget& target, const double angle) const;
+    virtual void draw(RenderTarget& target, real64 angle) const;
 
   protected:
+    /// \brief The underlying texture for the sprite.
+    std::shared_ptr<Texture> texture_;
+
+  private:
     virtual void update() override;
-
-    /// \brief Object that holds our sprite image
-    /*const*/ Texture* texture_;
 };
-
 
 } // namespace nom
 

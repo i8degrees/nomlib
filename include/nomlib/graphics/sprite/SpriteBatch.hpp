@@ -26,17 +26,11 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_SPRITE_BATCH_HEADERS
-#define NOMLIB_SDL2_SPRITE_BATCH_HEADERS
-
-#include <iostream>
-#include <string>
-#include <memory>
+#ifndef NOMLIB_GRAPHICS_SPRITE_BATCH_HPP
+#define NOMLIB_GRAPHICS_SPRITE_BATCH_HPP
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Rect.hpp"
-#include "nomlib/graphics/IDrawable.hpp"
-#include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/sprite/Sprite.hpp"
 #include "nomlib/graphics/sprite/SpriteSheet.hpp"
 
@@ -48,10 +42,6 @@ class SpriteBatch: public Sprite
   public:
     typedef SpriteBatch self_type;
     typedef Sprite derived_class;
-
-    typedef self_type* raw_ptr;
-    typedef std::unique_ptr<self_type> unique_ptr;
-    typedef std::shared_ptr<self_type> shared_ptr;
 
     /// Default construct for initializing instance variables to their
     /// respective defaults.
@@ -117,13 +107,6 @@ class SpriteBatch: public Sprite
     virtual void draw(IDrawable::RenderTarget& target, const double angle ) const override;
 
   protected:
-    /// \brief Update the sprite for rendering with regard to positioning
-    /// coordinates and target frame ID.
-    ///
-    /// \remarks The sprite is not updated when the frame number is negative
-    /// one (-1).
-    virtual void update() override;
-
     /// Source (input) coordinates -- used for sprite sheet positioning
     IntRect offsets;
 
@@ -132,6 +115,14 @@ class SpriteBatch: public Sprite
 
     /// The sheet's frame ID presently in use
     int32 sheet_id_;
+
+  private:
+    /// \brief Update the sprite for rendering with regard to positioning
+    /// coordinates and target frame ID.
+    ///
+    /// \remarks The sprite is not updated when the frame number is negative
+    /// one (-1).
+    virtual void update() override;
 };
 
 } // namespace nom

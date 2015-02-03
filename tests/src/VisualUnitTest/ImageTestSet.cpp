@@ -44,7 +44,7 @@ ImageTestSet::ImageTestSet( void )
 {
   // NOM_LOG_TRACE( NOM );
 
-  this->set_version( nom::revision() );
+  this->set_version( NOM_VERSION.version_string() + "-" + nom::revision() );
 
   // Should not be used; see documentation notes for why
   // this->set_timestamp( nom::timestamp() );

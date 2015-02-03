@@ -264,8 +264,6 @@ class FontRenderingApp: public nom::SDLApp
         return false;
       }
 
-      this->font->set_font_kerning(this->opts.use_kerning);
-
       // TODO: support additional hinting types; see TrueTypeFont.hpp
       // FIXME: Not working; methinks the problem might be in TrueTypeFont
       // class, although it would not hurt to verify SDL2_ttf functionality
@@ -279,6 +277,7 @@ class FontRenderingApp: public nom::SDLApp
       this->rendered_text.set_text(this->opts.text);
       this->rendered_text.set_text_size(this->opts.pt_size);
       this->rendered_text.set_style(this->opts.style);
+      this->rendered_text.set_text_kerning(this->opts.use_kerning);
 
       // TODO:
       //this->rendered_text.set_color( nom::Color4i(195,209,228) );
@@ -293,6 +292,7 @@ class FontRenderingApp: public nom::SDLApp
 // ./renderfont --text 'Hello, World!' ~/Projects/nomlib.git/Resources/tests/graphics/BitmapFontTest/VIII.png 72
 // ./renderfont --text 'Hello, World!' ~/Projects/nomlib.git/Resources/tests/graphics/TrueTypeFontTest/OpenSans-Regular.ttf 72
 // ./renderfont --text 'Hello, World!' ~/Projects/nomlib.git/Resources/tests/graphics/BMFontTest/gameover.fnt 72
+// ./renderfont --text 'WAV' --no-kerning ~/Library/Fonts/OpenSans-Regular.ttf 72
 nom::int32 main ( nom::int32 argc, char* argv[] )
 {
   using namespace TCLAP;

@@ -50,10 +50,9 @@ Texture::Texture( void ) :
   texture_ { nullptr, priv::FreeTexture },
   pixels_ ( nullptr ),
   pitch_ ( 0 ),
-  position_ ( 0, 0 ),
-  bounds_ ( 0, 0, -1, -1 ),
-  // TODO: use this for the texture size
-  // size_( Size2i::zero ),
+  position_(Point2i::zero),
+  size_(Size2i::zero),
+  bounds_(0, 0, -1, -1),
   colorkey_ { Color4i::Black },
   scale_factor_(1)
 {
@@ -106,9 +105,8 @@ Texture::Texture ( const Texture& copy ) :
   pixels_ { copy.pixels() },
   pitch_ { copy.pitch() },
   position_ { copy.position() },
-  // TODO: use this for the texture size
-  // size_{ copy.size() },
-  bounds_ { copy.bounds() },
+  size_( copy.size() ),
+  bounds_( copy.bounds() ),
   colorkey_ { copy.colorkey() },
   scale_factor_( copy.scale_factor() )
 {
@@ -121,8 +119,7 @@ Texture& Texture::operator = ( const Texture& other )
   this->pixels_ = other.pixels();
   this->pitch_ = other.pitch();
   this->position_ = other.position();
-  // TODO: use this for the texture size
-  // this->size_ = other.size();
+  this->size_ = other.size();
   this->bounds_ = other.bounds();
   this->set_scale_factor( other.scale_factor() );
 
@@ -162,19 +159,14 @@ bool Texture::initialize ( uint32 format, uint32 flags, int32 width, int32 heigh
 
   this->texture_.reset ( SDL_CreateTexture ( context, format, flags, width, height ), priv::FreeTexture );
 
-  if ( this->valid() == false )
-  {
-    NOM_LOG_ERR ( NOM, SDL_GetError() );
+  if( this->valid() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Failed to initialize valid texture: ", SDL_GetError() );
     return false;
   }
 
-  // TODO: cache width & height?
-
-  // Cache the size of our new Texture object with the existing surface info
-  this->set_bounds( IntRect(0, 0, width, height) );
-
-  // TODO: use this for the texture size
-  // this->set_size( Size2i( width, height ) );
+  // TODO: set_position?
+  this->set_size( Size2i(width, height) );
 
   return true;
 }
@@ -184,20 +176,40 @@ bool Texture::initialize(uint32 format, uint32 flags, const Size2i& dims)
   return this->initialize(format, flags, dims.w, dims.h);
 }
 
+bool Texture::create(SDL_Texture* source)
+{
+  // Static access type
+  this->texture_.reset(source, priv::FreeTexture);
+
+  if( this->valid() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Failed to initialize valid texture: ", SDL_GetError() );
+    return false;
+  }
+
+  Size2i tex_dims;
+  tex_dims.w = this->width();
+  tex_dims.h = this->height();
+
+  // TODO: set_position?
+  this->set_size(tex_dims);
+
+  return true;
+}
+
 bool Texture::create( const Image& source )
 {
   // Static access type
   this->texture_.reset ( source.texture(), priv::FreeTexture );
 
-  if ( this->valid() == false )
-  {
-    NOM_LOG_ERR ( NOM, SDL_GetError() );
+  if( this->valid() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Failed to initialize valid texture: ", SDL_GetError() );
     return false;
   }
-  // TODO: cache width & height?
 
-  // Cache the size of our new Texture object with the existing surface info
-  this->set_bounds ( IntRect(0, 0, source.width(), source.height()) );
+  // TODO: set_position?
+  this->set_size( source.size() );
 
   return true;
 }
@@ -256,9 +268,11 @@ SDL_Texture* Texture::texture() const
   return this->texture_.get();
 }
 
-bool Texture::valid ( void ) const
+bool Texture::valid() const
 {
-  if ( this->texture() != nullptr ) return true;
+  if( this->texture() != nullptr ) {
+    return true;
+  }
 
   return false;
 }
@@ -279,40 +293,33 @@ enum Texture::Access Texture::access ( void ) const
   return Texture::Access::Invalid;
 }
 
-const Point2i& Texture::position( void ) const
+const Point2i& Texture::position() const
 {
   return this->position_;
 }
 
-const Size2i Texture::size( void ) const
+const Size2i& Texture::size() const
 {
-  return Size2i( this->bounds_.w, this->bounds_.h );
-
-  // TODO: use this for the texture size
-  // return Size2i( this->size_.w, this->size_.h );
+  return this->size_;
 }
 
-const IntRect& Texture::bounds( void ) const
+const IntRect& Texture::bounds() const
 {
   return this->bounds_;
 }
 
-void Texture::set_position( const Point2i& pos )
+void Texture::set_position(const Point2i& pos)
 {
   this->position_.x = pos.x;
   this->position_.y = pos.y;
 }
 
-void Texture::set_size( const Size2i& size )
+void Texture::set_size(const Size2i& size)
 {
-  this->bounds_.w = size.w;
-  this->bounds_.h = size.h;
-
-  // TODO: use this for the texture size
-  // this->size_ = size;
+  this->size_ = size;
 }
 
-void Texture::set_bounds( const IntRect& bounds )
+void Texture::set_bounds(const IntRect& bounds)
 {
   this->bounds_ = bounds;
 }
@@ -437,21 +444,17 @@ const Point2i Texture::maximum_size ( void )
   return Point2i ( info.texture_width(), info.texture_height() );
 }
 
-bool Texture::locked ( void ) const
+bool Texture::locked() const
 {
-  if ( this->pixels() == nullptr ) return false;
-
-  return true;
+  return this->pixels();
 }
 
-bool Texture::lock ( void )
+bool Texture::lock()
 {
-  if ( this->lock( IntRect::null ) == false ) return false;
-
-  return true;
+  return this->lock(IntRect::null);
 }
 
-bool Texture::lock ( const IntRect& bounds )
+bool Texture::lock(const IntRect& bounds)
 {
   if ( this->locked() )
   {
@@ -525,8 +528,6 @@ bool Texture::load  ( const std::string& filename,
 
   // Set our default blending mode for texture copies
   this->set_blend_mode( SDL_BLENDMODE_BLEND );
-  // Update our Texture clipping bounds with the new source
-  this->set_bounds ( source.bounds() );
 
   return true;
 }
@@ -555,130 +556,64 @@ bool Texture::update_pixels(const void* pixels, uint16 pitch, const IntRect& bou
   return true;
 }
 
-void Texture::draw ( SDL_Renderer* target ) const
+void Texture::draw(SDL_Renderer* target) const
 {
-  // NOM_ASSERT( this->valid() );
+  this->draw(target, 0.0f);
+}
+
+void Texture::draw(const RenderWindow& target) const
+{
+  this->draw(target.renderer(), 0.0f );
+}
+
+void Texture::draw(SDL_Renderer* target, const real64 angle) const
+{
+  SDL_Rect render_coords = {};
+
+  if( target == nullptr ) {
+    return;
+  }
+
+  if( this->texture() == nullptr ) {
+    return;
+  }
 
   Point2i pos = this->position();
-  SDL_Rect render_coords;
+  Size2i dims = this->size();
 
   render_coords.x = pos.x;
   render_coords.y = pos.y;
-
-  // Use preset clipping bounds for the width and height of this texture
-  //
-  // These two coordinates can be used for rendering a rescaled texture
-  render_coords.w = this->bounds().w;
-  render_coords.h = this->bounds().h;
-
-  // TODO: use texture size bounds here, texture source bounds are *not* always
-  // the same thing...
-  // render_coords.w = this->size().w;
-  // render_coords.h = this->size().h;
-
-  // Render with set clipping bounds; we are rendering only a portion of a
-  // larger Texture; think: sprite sheets.
-  //
-  // NOTE: We have yet to encounter the case where these are not -1; testing of
-  // examples/app & TTcards confirms this.
-
-  // TODO: use texture source bounds here, texture size is *not* always the
-  // same thing
-  if( render_coords.w != -1 && render_coords.h != -1 )
-  // if ( this->bounds().w != -1 && this->bounds().h != -1 )
-  {
-    SDL_Rect render_bounds;
-    render_bounds.x = this->bounds().x;
-    render_bounds.y = this->bounds().y;
-    render_bounds.w = this->bounds().w;
-    render_bounds.h = this->bounds().h;
-    if ( SDL_RenderCopy ( target, this->texture(), &render_bounds, &render_coords ) != 0 )
-    {
-      // NOM_LOG_ERR ( NOM, SDL_GetError() );
-      return;
-    }
-  }
-  else // Render the entire Texture we have in memory
-  {
-    if ( SDL_RenderCopy ( target, this->texture(), nullptr, &render_coords ) != 0 )
-    {
-      // NOM_LOG_ERR ( NOM, SDL_GetError() );
-      return;
-    }
-  }
-}
-
-void Texture::draw ( const RenderWindow& target ) const
-{
-  this->draw ( target.renderer() );
-}
-
-void Texture::draw ( SDL_Renderer* target, const double angle ) const
-{
-  Point2i pos = this->position();
-  SDL_Rect render_coords;
-
-  render_coords.x = pos.x;
-  render_coords.y = pos.y;
-
-  // Use preset clipping bounds for the width and height of this texture
-  render_coords.w = this->bounds().w;
-  render_coords.h = this->bounds().h;
-
-  // Render with set clipping bounds; we are rendering only a portion of a
-  // larger Texture; think: sprite sheets.
-  if ( this->bounds().w != -1 && this->bounds().h != -1 )
-  {
-    SDL_Rect render_bounds;
-    render_bounds.x = this->bounds().x;
-    render_bounds.y = this->bounds().y;
-    render_bounds.w = this->bounds().w;
-    render_bounds.h = this->bounds().h;
-    if ( SDL_RenderCopyEx ( target, this->texture(), &render_bounds, &render_coords, angle, nullptr, SDL_FLIP_NONE ) != 0 )
-    {
-// NOM_LOG_ERR ( NOM, SDL_GetError() );
-      return;
-    }
-  }
-  else // Render the entire Texture we have in memory
-  {
-    if ( SDL_RenderCopyEx ( target, this->texture(), nullptr, &render_coords, angle, nullptr, SDL_FLIP_NONE ) != 0 )
-    {
-// NOM_LOG_ERR ( NOM, SDL_GetError() );
-      return;
-    }
-  }
-}
-
-void Texture::draw ( const RenderWindow& target, const double degrees ) const
-{
-  this->draw ( target.renderer(), degrees );
-}
-
-// FIXME: This is a TEMPORARY function just to get AnimationScaleBy working
-bool Texture::draw_scaled(const Size2i& dims, real64 angle, const RenderWindow& target) const
-{
-  SDL_Renderer* ctx = target.renderer();
-  NOM_ASSERT(ctx != nullptr);
-  if( ctx == nullptr ) {
-    return false;
-  }
-
-  NOM_ASSERT(this->valid() == true);
-
-  SDL_Rect render_coords;
-  render_coords.x = this->position().x;
-  render_coords.y = this->position().y;
   render_coords.w = dims.w;
   render_coords.h = dims.h;
 
-  SDL_Texture* texture = this->texture();
+  if( this->bounds().w != -1 && this->bounds().h != -1 ) {
 
-  if( SDL_RenderCopyEx(ctx, texture, nullptr, &render_coords, angle, nullptr, SDL_FLIP_NONE) != 0 ) {
-    return false;
+    // Render a portion of the texture
+    SDL_Rect render_bounds = {};
+    IntRect tex_bounds = this->bounds();
+    render_bounds = nom::SDL_RECT(tex_bounds);
+
+    if( SDL_RenderCopyEx( target, this->texture(), &render_bounds,
+                          &render_coords, angle, nullptr, SDL_FLIP_NONE ) != 0 )
+    {
+      NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
+      return;
+    }
+  } else {
+
+    // Render the whole texture
+    if( SDL_RenderCopyEx( target, this->texture(), nullptr,
+                          &render_coords, angle, nullptr, SDL_FLIP_NONE ) != 0 )
+    {
+      NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
+      return;
+    }
   }
+}
 
-  return true;
+void Texture::draw(const RenderWindow& target, const real64 angle) const
+{
+  this->draw(target.renderer(), 0.0f );
 }
 
 bool Texture::set_alpha ( uint8 opacity )

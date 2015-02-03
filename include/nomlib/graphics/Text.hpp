@@ -42,7 +42,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \todo Implement back-buffer for texture rendering
 class Text: public Transformable
 {
   public:
@@ -89,6 +88,27 @@ class Text: public Transformable
             const Color4i& text_color = Color4i::White
           );
 
+    /// \brief Copy constructor.
+    ///
+    /// \internal
+    /// \remarks This is necessary for the std::unique_ptr instance we use for
+    /// the cached texture.
+    /// \endinternal
+    Text(const self_type& rhs);
+
+    /// \brief Copy assignment operator.
+    ///
+    /// \internal
+    /// \remarks This is necessary for the std::unique_ptr instance we use for
+    /// the cached texture.
+    /// \endinternal
+    self_type& operator =(const self_type& rhs);
+
+    /// \brief Set the position of the rendered text.
+    ///
+    /// \remarks Re-implements Transformable::set_position.
+    virtual void set_position(const Point2i& pos) override;
+
     /// \brief Implements the required IDrawable::clone method.
     std::unique_ptr<derived_type> clone() const;
 
@@ -99,14 +119,12 @@ class Text: public Transformable
 
     const Font& font() const;
 
-    /// \brief Get the underlying texture stored for the text rendering.
+    /// \brief Get the underlying texture stored of the rendered text.
     ///
-    /// \returns A pointer to a new nom::Texture instance from the stored
-    /// texture of this object's instance. The returned pointer is owned by the
+    /// \returns A pointer to a new nom::Texture instance of the cached
+    /// texture used for the rendered text. The returned pointer is owned by the
     /// caller.
-    ///
-    /// \see nom::Texture::clone
-    std::unique_ptr<Texture> texture_clone();
+    std::unique_ptr<Texture> texture() const;
 
     /// Obtain validity of the Text object
     bool valid ( void ) const;
@@ -122,9 +140,7 @@ class Text: public Transformable
     ///           in pixels, on success. Zero (0) integer value on failure;
     ///           a possible combination of: no font, bad font, no text string
     ///           etc.
-    ///
-    /// \todo Support multi-line texts (newline character handling)
-    sint text_width ( const std::string& text_string ) const;
+    int text_width(const std::string& text_buffer) const;
 
     /// \brief Obtain the text height in pixels of the set text
     ///
@@ -185,12 +201,18 @@ class Text: public Transformable
     /// \see The nom::Text::Style enumeration.
     void set_style( uint32 style );
 
+    /// \brief Set the use of rendering glyphs with respect to kerning offsets,
+    /// when supported by the underlying font type.
+    void set_text_kerning(bool state);
+
     /// Render text to a target
     ///
     /// \todo Test horizontal tabbing '\t'
-    void draw ( RenderTarget& target ) const;
+    void draw(RenderTarget& target) const;
 
   private:
+    void render_text(RenderTarget& target) const;
+
     /// \brief Apply requested transformations, styles, etc
     ///
     /// \remarks This internal method takes care of updating the properties of
@@ -206,10 +228,23 @@ class Text: public Transformable
     /// \brief Get the current text height.
     int height() const;
 
+    bool update_cache();
+
+    int
+    multiline_width(const std::string& text_buffer, nom::size_type pos) const;
+
     Font font_;
 
-    /// \fixme
-    mutable Texture texture_;
+    /// \brief A texture atlas created from the nom::Font instance that is
+    /// referred to in rendering a text.
+    ///
+    /// \see ::set_text_size, ::update, ::render_text
+    mutable Texture glyphs_texture_;
+
+    /// \brief The texture containing the rendered text.
+    ///
+    /// \see ::update_cache, ::texture, ::draw
+    std::unique_ptr<Texture> rendered_text_;
 
     /// Holds contents of text as a string buffer
     std::string text_;

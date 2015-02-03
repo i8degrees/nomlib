@@ -375,11 +375,12 @@ bool BitmapFont::build ( uint32 character_size )
 
   page.texture->unlock(); // Finished messing with pixels
 
-  // Calculate new line by subtracting the baseline of the "chosen glyph"
-  // from the bitmap's ascent.
-  //
-  // (See also: baseline_glyph variable)
   this->metrics_.newline = base - top;
+
+  // NOTE: The original new line feed computation -- 'base - top', breaks text
+  // rendering bounds within nom::Text::update_cache because the height
+  // calculation it relies on was inaccurate.
+  this->metrics_.newline = base + top + 1;
 
   // Loop off excess top pixels
   for ( uint32 top_pixels = 0; top_pixels < current_char; ++top_pixels )

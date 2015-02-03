@@ -133,6 +133,9 @@ class Texture
     /// \see ::intialize(uint32 format, uint32 flags, int width, int height)
     bool initialize(uint32 format, uint32 flags, const Size2i& dims);
 
+    /// \see Image::texture
+    bool create(SDL_Texture* source);
+
     /// \remarks Texture::Access::Static type
     bool create ( const Image& source );
 
@@ -140,7 +143,7 @@ class Texture
     /// Access::RenderTarget.
     bool create( const Image& source, uint32 pixel_format, enum Texture::Access type );
 
-    const Point2i& position( void ) const;
+    const Point2i& position() const;
 
     /// \brief Get the width & height dimensions of the texture.
     ///
@@ -149,31 +152,31 @@ class Texture
     ///
     /// \fixme We need to decide if we ought to return the dimensions as per
     /// what SDL has on record, or if we should use cached values.
-    const Size2i size( void ) const;
+    const Size2i& size() const;
 
-    const IntRect& bounds( void ) const;
+    const IntRect& bounds() const;
 
     /// \brief Get the underlying texture stored.
     SDL_Texture* texture() const;
 
     /// Is this object initialized -- not nullptr?
-    bool valid ( void ) const;
+    bool valid() const;
 
     /// \brief Query texture access type
     ///
     /// \returns Texture::Access enumeration
     enum Texture::Access access ( void ) const;
 
-    void set_position( const Point2i& pos );
+    void set_position(const Point2i& pos);
 
     /// \brief Set the width & height dimensions of the texture.
     ///
     /// \remarks If the width or height dimensions are greater than the
     /// original source dimensions, they will automatically be rescaled.
-    void set_size( const Size2i& size );
+    void set_size(const Size2i& size);
 
     /// Set bounding coordinates of the Texture
-    void set_bounds( const IntRect& bounds );
+    void set_bounds(const IntRect& bounds);
 
     /// Obtain width, in pixels, of texture
     ///
@@ -233,13 +236,13 @@ class Texture
     static const Point2i maximum_size ( void );
 
     /// \brief Query lock status of texture
-    bool locked ( void ) const;
+    bool locked() const;
 
     /// \brief Lock the entire bounds of the texture for write access to the
     /// pixel buffer.
     ///
     /// \remarks Texture must have been created as the Access::Streaming type.
-    bool lock ( void );
+    bool lock();
 
     /// \brief Lock a portion of the texture for write access to the pixel
     /// buffer.
@@ -249,7 +252,7 @@ class Texture
     ///
     /// \remarks Texture must have been created as the Access::Streaming type.
 
-    bool lock ( const IntRect& bounds );
+    bool lock(const IntRect& bounds);
 
     /// Unlock the texture; signals the OK to upload the pixel buffer to the GPU
     ///
@@ -292,14 +295,14 @@ class Texture
     ///
     /// \param  SDL_Renderer
     ///
-    void draw ( SDL_Renderer* target ) const;
+    void draw(SDL_Renderer* target) const;
 
     /// Draw a nom::Texture to a nom::RenderWindow target
     ///
     /// \param  nom::RenderWindow
     ///
     /// \note This is an alias for nom::Texture::draw ( SDL_Renderer* )
-    void draw( const RenderWindow& target ) const;
+    void draw(const RenderWindow& target) const;
 
     /// Draw a rotated nom::Texture to a rendering target
     ///
@@ -307,17 +310,13 @@ class Texture
     /// \param  angle   Rotation angle in degrees
     ///
     /// \todo Implement pivot point & make use of SDL_RendererFlip enum
-    void draw ( SDL_Renderer* target, const double angle ) const;
+    void draw(SDL_Renderer* target, const real64 angle) const;
 
     /// Draw a rotated nom::Texture on a nom::RenderWindow
     ///
     /// \param  target  Reference to an active nom::RenderWindow
     /// \param  angle   Rotation angle in degrees
-    void draw( const RenderWindow& target, const double angle ) const;
-
-    // FIXME: This is a TEMPORARY function just to get AnimationScaleBy working
-    bool
-    draw_scaled(const Size2i& dims, real64 angle, const RenderWindow& target) const;
+    void draw(const RenderWindow& target, const real64 angle) const;
 
     /// \brief  Set an additional alpha value multiplied into render copy
     ///         operations.
@@ -417,10 +416,7 @@ class Texture
     ///           width & height members.
     Point2i position_; // This should probably be an IntRect. (Global bounds).
 
-    /// \todo This needs to be used ASAP; we've been using our texture source
-    /// bounds with our texture size coordinates, and this makes a huge,
-    /// confusing mess of things. See Texture.cpp for additional comments.
-    // Size2i size_;
+    Size2i size_;
 
     /// Position & size of texture within memory; X, Y, width & height in pixels.
     ///

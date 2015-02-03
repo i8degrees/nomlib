@@ -58,6 +58,28 @@ struct _TTF_Font {};
 
 namespace nom {
 
+enum BlendMode
+{
+  /// no blending
+  /// dstRGBA = srcRGBA
+  BLEND_MODE_NONE = SDL_BLENDMODE_NONE,
+
+  /// alpha blending
+  /// dstRGB = (srcRGB * srcA) + (dstRGB * (1-srcA))
+  /// dstA = srcA + (dstA * (1-srcA))
+  BLEND_MODE_BLEND = SDL_BLENDMODE_BLEND,
+
+  /// additive blending
+  /// dstRGB = (srcRGB * srcA) + dstRGB
+  /// dstA = dstA
+  BLEND_MODE_ADD = SDL_BLENDMODE_ADD,
+
+  /// color modulate
+  /// dstRGB = srcRGB * dstRGB
+  /// dstA = dstA
+  BLEND_MODE_MOD = SDL_BLENDMODE_MOD
+};
+
 /// \brief Convenience definitions for pointer types
 ///
 /// \todo Remove or perhaps better yet, refer to as a light-weight handle,
@@ -96,6 +118,14 @@ namespace SDL_TEXTURE
   typedef std::shared_ptr<SDL_Texture> SharedPtr;
   typedef SDL_Texture* RawPtr;
 }
+
+/// \brief Convert a SDL_BlendMode enumeration value to a nom::BlendMode
+/// enumeration value.
+BlendMode blend_mode(SDL_BlendMode mode);
+
+/// \brief Convert a nom::BlendMode enumeration value to a SDL_BlendMode
+/// enumeration value.
+SDL_BlendMode SDL_blend_mode(BlendMode mode);
 
 /// SDL2 data structure wrappers for nomlib
 ///

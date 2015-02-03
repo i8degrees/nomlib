@@ -478,8 +478,14 @@ TEST_F(TrueTypeFontTest, UseAllTextStyles)
   EXPECT_TRUE( this->compare() );
 }
 
+/// \remarks This test is only ran when the interactive flag (-i) is passed.
 TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
 {
+  if( NOM_TEST_FLAG(interactive) == false ) {
+    SUCCEED();
+    return;
+  }
+
   const int MIN_POINT_SIZE = 9;
   const int MAX_POINT_SIZE = 72;
   std::stringstream help_info;
@@ -543,10 +549,8 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
   this->input_mapper_.insert("zoom_in", wheel, true);
   this->input_mapper_.insert("zoom_out", wheel, true);
 
-  if( NOM_TEST_FLAG(interactive) == true ) {
-    nom::DialogMessageBox(  this->test_case() + ":" + this->test_name(),
-                            help_info.str() );
-  }
+  nom::DialogMessageBox(  this->test_case() + ":" + this->test_name(),
+                          help_info.str() );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   // EXPECT_TRUE( this->compare() );

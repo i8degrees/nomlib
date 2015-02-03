@@ -201,7 +201,7 @@ class Image
     bool save_png ( const std::string& filename ) const;
 
     /// Obtain the width and height (in pixels) of the stored bitmap buffer
-    const Point2i size ( void ) const;
+    Size2i size() const;
 
     /// Obtain the set color key for this image
     ///

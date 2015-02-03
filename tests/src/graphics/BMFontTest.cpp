@@ -206,7 +206,7 @@ TEST_F(BMFontTest, RenderGameOverFont)
   nom::set_alignment( &rendered_text, rendered_text.position(),
                       this->resolution(), Anchor::MiddleCenter );
 
-  EXPECT_EQ( Size2i(340,90), rendered_text.size() );
+  EXPECT_EQ( Size2i(358,90), rendered_text.size() );
   EXPECT_EQ( 90, font->newline(0) )
   << "Text line spacing (newline) should be the same as the 'lineHeight' field.";
 
@@ -234,7 +234,8 @@ TEST_F(BMFontTest, RenderMultipleLines)
   nom::set_alignment( &rendered_text, rendered_text.position(),
                       this->resolution(), Anchor::MiddleCenter );
 
-  EXPECT_EQ( Size2i(340,270), rendered_text.size() );
+  EXPECT_EQ(Size2i(358, 270), rendered_text.size() )
+  << "The rendered text length should be the longest line: 'You Lose...'";
   EXPECT_EQ( 90, font->newline(0) )
   << "Text line spacing (newline) should be the same as the 'lineHeight' field.";
 
@@ -266,7 +267,7 @@ TEST_F(BMFontTest, Kerning)
   kerning_offset = font->kerning(87, 65, 0);
   EXPECT_EQ(-7, kerning_offset);
 
-  EXPECT_EQ( Size2i(159,90), rendered_text.size() );
+  EXPECT_EQ( Size2i(169, 90), rendered_text.size() );
   EXPECT_EQ( 90, font->newline(0) )
   << "Text line spacing (newline) should be the same as the 'lineHeight' field.";
 
@@ -292,14 +293,15 @@ TEST_F(BMFontTest, NoKerning)
   rendered_text.set_font(font);
   rendered_text.set_text("WAV");
   rendered_text.set_position( Point2i(0,0) );
-  font->set_font_kerning(false);
+  rendered_text.set_text_kerning(false);
   nom::set_alignment( &rendered_text, rendered_text.position(),
                       this->resolution(), Anchor::MiddleCenter );
 
   kerning_offset = font->kerning(87, 65, 0);
   EXPECT_EQ(0, kerning_offset);
 
-  EXPECT_EQ( Size2i(159,90), rendered_text.size() );
+  EXPECT_EQ( Size2i(185,90), rendered_text.size() )
+  << "Text length without kerning should be larger than the previous test!";
   EXPECT_EQ( 90, font->newline(0) )
   << "Text line spacing (newline) should be the same as the 'lineHeight' field.";
 

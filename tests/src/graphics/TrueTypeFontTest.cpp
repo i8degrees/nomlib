@@ -78,7 +78,7 @@ class TrueTypeFontTest: public nom::VisualUnitTest
 
       // Text rendering defaults
       this->text =
-        "!\"#$%&'()*+,-.\n//0123456789\n:;<=>?@\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n[\\]^_`\nabcdefghijklmnopqrstuvwxyz\n{|}~";
+        "!\"#$%&'()*+,-.\n/0123456789\n:;<=>?@\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n[\\]^_`\nabcdefghijklmnopqrstuvwxyz\n{|}~";
 
       this->pt_size = nom::DEFAULT_FONT_SIZE;
       this->pos = Point2i(0,0);
@@ -116,8 +116,6 @@ class TrueTypeFontTest: public nom::VisualUnitTest
       this->rendered_text.set_style(this->style);
       this->rendered_text.set_text_size(this->pt_size);
       this->rendered_text.set_color(this->color);
-
-      // FIXME: Proper multi-line alignment logic is not implemented
       this->rendered_text.set_position(this->pos);
 
       this->append_update_callback( [=](float) {
@@ -147,7 +145,7 @@ class TrueTypeFontTest: public nom::VisualUnitTest
     int pt_size;
 
     /// \brief The text rendering position.
-    Point2i pos;
+    Point2i pos = Point2i::zero;
 
     /// \brief The text alignment.
     uint32 align = Anchor::None;
@@ -166,6 +164,10 @@ TEST_F(TrueTypeFontTest, OpenSansRegular)
   EXPECT_EQ(true, this->load_font(font) )
   << "Could not load font file: " << font;
 
+  EXPECT_EQ(Size2i(223, 119), rendered_text.size() )
+  << "The rendered text length should be the longest line: "
+  << "'ABCDEFGHIJKLMNOPQRSTUVWXYZ'";
+
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
 }
@@ -177,6 +179,10 @@ TEST_F(TrueTypeFontTest, OpenSansBold)
 
   EXPECT_EQ(true, this->load_font(font) )
   << "Could not load font file: " << font;
+
+  EXPECT_EQ(Size2i(236, 119), rendered_text.size() )
+  << "The rendered text length should be the longest line: "
+  << "'ABCDEFGHIJKLMNOPQRSTUVWXYZ'";
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
@@ -190,6 +196,10 @@ TEST_F(TrueTypeFontTest, LiberationSerif)
   EXPECT_EQ(true, this->load_font(font) )
   << "Could not load font file: " << font;
 
+  EXPECT_EQ(Size2i(238, 98), rendered_text.size() )
+  << "The rendered text length should be the longest line: "
+  << "'ABCDEFGHIJKLMNOPQRSTUVWXYZ'";
+
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
 }
@@ -201,6 +211,10 @@ TEST_F(TrueTypeFontTest, LiberationSerifBold)
 
   EXPECT_EQ(true, this->load_font(font) )
   << "Could not load font file: " << font;
+
+  EXPECT_EQ(Size2i(239, 98), rendered_text.size() )
+  << "The rendered text length should be the longest line: "
+  << "'ABCDEFGHIJKLMNOPQRSTUVWXYZ'";
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
@@ -215,6 +229,10 @@ TEST_F(TrueTypeFontTest, MagentaText)
 
   EXPECT_EQ(true, this->load_font(font) )
   << "Could not load font file: " << font;
+
+  EXPECT_EQ(Size2i(223, 119), rendered_text.size() )
+  << "The rendered text length should be the longest line: "
+  << "'ABCDEFGHIJKLMNOPQRSTUVWXYZ'";
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
@@ -237,6 +255,8 @@ TEST_F(TrueTypeFontTest, Kerning)
   << "Are you not using a build of SDL2_ttf with the kerning pairs patch "
   << "applied? See third-party/README.md for details.";
 
+  EXPECT_EQ( Size2i(202, 131), rendered_text.size() );
+
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
 }
@@ -253,10 +273,13 @@ TEST_F(TrueTypeFontTest, NoKerning)
   EXPECT_EQ(true, this->load_font(font) )
   << "Could not load font file: " << font;
 
-  this->font->set_font_kerning(false);
+  this->rendered_text.set_text_kerning(false);
 
   kerning_offset = this->font->kerning(87, 65, this->pt_size);
   EXPECT_EQ(0, kerning_offset);
+
+  EXPECT_EQ( Size2i(210, 131), rendered_text.size() )
+  << "Text length without kerning should be larger than the previous test!";
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );

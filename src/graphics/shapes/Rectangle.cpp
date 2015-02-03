@@ -28,25 +28,27 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/shapes/Rectangle.hpp"
 
+// Forward declarations
+#include "nomlib/graphics/Texture.hpp"
+
 namespace nom {
 
-Rectangle::Rectangle ( void )
+Rectangle::Rectangle()
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_RENDER, NOM_LOG_PRIORITY_VERBOSE);
 }
 
-Rectangle::~Rectangle ( void )
+Rectangle::~Rectangle()
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_RENDER, NOM_LOG_PRIORITY_VERBOSE);
 }
 
-Rectangle::Rectangle ( const IntRect& rect, const Color4i& fill )
+Rectangle::Rectangle(const IntRect& rect, const Color4i& fill)
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_RENDER, NOM_LOG_PRIORITY_VERBOSE);
 
-  this->set_position ( Point2i( rect.x, rect.y ) );
-  this->set_size ( Size2i( rect.w, rect.h ) );
-  this->set_fill_color ( fill );
+  this->set_bounds(rect);
+  this->set_fill_color(fill);
 }
 
 std::unique_ptr<Rectangle::derived_type> Rectangle::clone() const
@@ -54,17 +56,79 @@ std::unique_ptr<Rectangle::derived_type> Rectangle::clone() const
   return( std::unique_ptr<self_type>( new self_type(*this) ) );
 }
 
-ObjectTypeInfo Rectangle::type( void ) const
+ObjectTypeInfo Rectangle::type() const
 {
   return NOM_OBJECT_TYPE_INFO( self_type );
 }
 
-void Rectangle::update ( void )
+Texture* Rectangle::texture() const
 {
-  // Stub (NO-OP)
+  Texture* texture = new Texture();
+
+  NOM_ASSERT(texture != nullptr);
+  if( texture == nullptr ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_RENDER, "Could not update cache:",
+                  "failed to allocate texture memory." );
+    NOM_DELETE_PTR(texture);
+    return nullptr;
+  }
+
+  RenderWindow* context = nom::render_interface();
+  NOM_ASSERT(context != nullptr);
+
+  if( context == nullptr ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_RENDER, "Could not update cache",
+                  "invalid renderer." );
+    NOM_DELETE_PTR(texture);
+    return nullptr;
+  }
+
+  // Obtain the optimal pixel format for the platform
+  RendererInfo caps = context->caps();
+
+  if( texture->initialize( caps.optimal_texture_format(),
+      SDL_TEXTUREACCESS_TARGET, this->size() ) == false )
+  {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Could not update cache:",
+                  "failed texture creation." );
+    NOM_DELETE_PTR(texture);
+    return nullptr;
+  }
+
+  texture->set_position( this->position() );
+
+  if( texture->set_render_target(*context) == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Could not update cache:",
+                  "render targets not supported." );
+    NOM_DELETE_PTR(texture);
+    return nullptr;
+  }
+
+  if( context->fill( this->fill_color() ) == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Could not update cache:",
+                  "failed to set texture color." );
+    NOM_DELETE_PTR(texture);
+    return nullptr;
+  }
+
+  this->draw(*context);
+
+  if( context->reset_render_target() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Could not update cache:",
+                  "failed to reset the rendering target." );
+    NOM_DELETE_PTR(texture);
+    return nullptr;
+  }
+
+  return texture;
 }
 
-void Rectangle::draw ( RenderTarget& target ) const
+void Rectangle::update()
+{
+  // Stub
+}
+
+void Rectangle::draw(RenderTarget& target) const
 {
   SDL_SetRenderDrawBlendMode( target.renderer(), SDL_BLENDMODE_BLEND );
 

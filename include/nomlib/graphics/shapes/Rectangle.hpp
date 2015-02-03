@@ -37,6 +37,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Forward declarations
+class Texture;
+
 /// \brief 2D Rectangle shape
 ///
 /// \todo Use SDL2's new multi-rectangle API; see SDL_RenderFillRects.
@@ -49,38 +52,41 @@ class Rectangle: public Shape
     typedef Shape derived_type;
 
     /// \brief Default constructor.
-    Rectangle ( void );
+    Rectangle();
 
     /// \brief Destructor; should be fine to inherit from.
-    virtual ~Rectangle ( void );
+    virtual ~Rectangle();
 
     /// \brief Construct a Rectangle object from parameters.
     ///
     /// \param rect nom::IntRect object containing the coordinates.
     /// \param color nom::Color4i color to fill with.
-    Rectangle ( const IntRect& rect, const Color4i& fill );
+    Rectangle(const IntRect& rect, const Color4i& fill);
 
-    /// \brief Implements the required Shape::clone method.
+    /// \note Implements the required Shape::clone method.
     virtual std::unique_ptr<derived_type> clone() const override;
 
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
-    ObjectTypeInfo type( void ) const;
+    ObjectTypeInfo type() const;
 
-    /// Do nothing method; we have it only because it is required by interface
-    /// contract with IDrawable (which is fine).
+    /// \brief Get a texture representation of the rectangle.
     ///
-    /// \todo Measure performance (CPU cycles, ticks/FPS, ...) difference with
-    /// using a return / abort on rendering when our line object is up-to-date
-    /// and determine if it is worth the implementation VS risk of inconsistency.
-    /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
-    void update ( void );
+    /// \returns A pointer to a new nom::Texture instance containing the
+    /// rendering of the rectangle. The returned pointer is owned by the
+    /// caller.
+    ///
+    /// \remarks This is an expensive function call.
+    Texture* texture() const;
+
+    /// \note Implements the required IDrawable::update method.
+    void update() override;
 
     /// \brief Render the rectangle shape.
     ///
     /// \param target nom::RenderWindow object to render to.
-    void draw ( RenderTarget& target ) const;
+    void draw(RenderTarget& target) const;
 };
 
 } // namespace nom

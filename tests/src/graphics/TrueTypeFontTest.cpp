@@ -573,10 +573,13 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
   this->input_mapper_.insert("zoom_out", wheel, true);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   // Done loading ... reset title to default
   this->render_window().set_window_title( this->test_set() + "::" +
                                           this->test_name() );
 
+=======
+>>>>>>> a35377e7 (Bail out of InteractiveGlyphCache test when not running w/ -i)
 =======
 >>>>>>> a35377e7 (Bail out of InteractiveGlyphCache test when not running w/ -i)
   nom::DialogMessageBox(  this->test_case() + ":" + this->test_name(),

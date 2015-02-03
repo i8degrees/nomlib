@@ -108,7 +108,7 @@ TEST_F(BMFontTest, BasicParserSanity)
 {
   BMFont font;
   Glyph g;
-  std::string filename = resources.path() + "scoreboard.fnt";
+  std::string filename = resources.path() + "gameover.fnt";
 
   std::ifstream fp(filename);
 
@@ -120,49 +120,49 @@ TEST_F(BMFontTest, BasicParserSanity)
   EXPECT_EQ(IFont::FontType::BMFont, font.type() );
 
   // Info tag
-  EXPECT_EQ(96, font.point_size() );
+  EXPECT_EQ(72, font.point_size() );
 
   // Common tag
-  EXPECT_EQ(114, font.newline(0) );
-  EXPECT_EQ(114, font.metrics().newline);
-  EXPECT_EQ(114, font.metrics().ascent);
-  EXPECT_EQ(Size2i(1024,1024), font.page_size(0) );
+  EXPECT_EQ(90, font.newline(0) );
+  EXPECT_EQ(90, font.metrics().newline);
+  EXPECT_EQ(76, font.metrics().ascent);
+  EXPECT_EQ(Size2i(576, 512), font.page_size(0) );
   // EXPECT_EQ(1, font.pages_.size() );
 
   // First glyph (chars tag)
   g = font.glyph(32,0);
-  EXPECT_EQ(IntRect(-1,1,0,0), g.bounds)
+  EXPECT_EQ(IntRect(64, 82, 0, 0), g.bounds)
   << "Incorrect x, y, width or height for char";
 
-  EXPECT_EQ(12, font.spacing(0) )
-  << "Incorrect xadvance for char";
+  EXPECT_EQ(18, font.spacing(0) )
+  << "Incorrect xadvance for char id 32";
 
   // Rendering offset
-  EXPECT_EQ( Point2i(0,0), g.offset )
+  EXPECT_EQ( Point2i(0, 65), g.offset )
   << "Incorrect xoffset or yoffset for char";
 
   // Second glyph (chars tag)
-  g = font.glyph(48,0);
-  EXPECT_EQ(IntRect(205,1,204,118), g.bounds)
+  g = font.glyph(33,0);
+  EXPECT_EQ(IntRect(444, 418, 20, 62), g.bounds)
   << "Incorrect x, y, width or height for char";
 
-  EXPECT_EQ(12, font.spacing(0) )
-  << "Incorrect xadvance for char";
+  EXPECT_EQ(18, font.spacing(0) )
+  << "Incorrect xadvance for char id 32";
 
   // Rendering offset
-  EXPECT_EQ( Point2i(0,0), g.offset )
+  EXPECT_EQ( Point2i(9, 15), g.offset )
   << "Incorrect xoffset or yoffset for char";
 
   // Last glyph (chars tag)
-  g = font.glyph(57,0);
-  EXPECT_EQ(IntRect(411,241,135,118), g.bounds)
+  g = font.glyph(126,0);
+  EXPECT_EQ(IntRect(240, 484, 50, 22), g.bounds)
   << "Incorrect x, y, width or height for char";
 
-  EXPECT_EQ(12, font.spacing(0) )
-  << "Incorrect xadvance for char";
+  EXPECT_EQ(18, font.spacing(0) )
+  << "Incorrect xadvance for char id 32";
 
   // Rendering offset
-  EXPECT_EQ( Point2i(0,0), g.offset )
+  EXPECT_EQ( Point2i(1, 41), g.offset )
   << "Incorrect xoffset or yoffset for char";
 }
 
@@ -188,37 +188,6 @@ TEST_F(BMFontTest, KerningParserSanity)
 
   // Last kerning pair
   EXPECT_EQ(-9, font.kerning(86,46,0) );
-}
-
-TEST_F(BMFontTest, RenderScoreboardFont)
-{
-  Glyph g;
-  nom::Font font;
-
-  Text rendered_text;
-  std::string filename = resources.path() + "scoreboard.fnt";
-
-  ASSERT_TRUE( font.load(filename) )
-  << "Could not load input texture source: " << filename;
-
-  rendered_text.set_font(font);
-  rendered_text.set_text("7");
-
-  // TTcards player 2 scoreboard origins (approximation)
-  rendered_text.set_position( Point2i(64,0) );
-  nom::set_alignment(&rendered_text, this->resolution(), Anchor::BottomLeft);
-  // player1
-  // rendered_text.set_position( Point2i(-64,0) );
-  // nom::set_alignment(&rendered_text, this->resolution(), Anchor::BottomRight);
-
-  EXPECT_EQ( Size2i(13,114), rendered_text.size() );
-
-  this->append_render_callback( [&] ( const RenderWindow& win ) {
-    rendered_text.draw( this->render_window() );
-  });
-
-  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-  EXPECT_TRUE( this->compare() );
 }
 
 TEST_F(BMFontTest, RenderGameOverFont)

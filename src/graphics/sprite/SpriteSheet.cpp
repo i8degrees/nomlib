@@ -240,6 +240,21 @@ bool SpriteSheet::load_sheet_object(const Value& object)
   return true;
 }
 
+bool SpriteSheet::remove_frame(nom::size_type frame)
+{
+  auto res = this->sheet_.find(frame);
+
+  if( res == this->sheet_.end() ) {
+    // Not found
+    return false;
+  } else {
+
+    // Found
+    this->sheet_.erase(res);
+    return true;
+  }
+}
+
 void SpriteSheet::dump ( void ) const
 {
   // Sheet vector state

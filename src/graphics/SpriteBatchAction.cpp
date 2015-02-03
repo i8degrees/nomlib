@@ -26,70 +26,55 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/graphics/AnimationTexture.hpp"
+#include "nomlib/graphics/SpriteBatchAction.hpp"
 
 // Private headers
 #include "nomlib/math/math_helpers.hpp"
-#include "nomlib/graphics/RenderWindow.hpp"
+// #include "nomlib/graphics/RenderWindow.hpp"
 
 // Forward declarations
-#include "nomlib/graphics/Texture.hpp"
+#include "nomlib/graphics/sprite/SpriteBatch.hpp"
 
 namespace nom {
 
-void
-AnimationTexture::initialize( const texture_frames& textures,
-                              real32 frame_interval )
+SpriteBatchAction::SpriteBatchAction( const std::shared_ptr<SpriteBatch>& sprite,
+                                      real32 frame_interval )
 {
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+                      nom::NOM_LOG_PRIORITY_VERBOSE );
+
   this->curr_frame_ = 0.0f;
   this->set_frame_interval(frame_interval);
 
-  this->frames_ = std::move(textures);
-  NOM_ASSERT( this->frames_.size() > 0 );
-  this->total_displacement_ = this->frames_.size();
+  this->sprite_ = sprite;
+  NOM_ASSERT(this->sprite_->frames() > 0);
+  this->total_displacement_ = this->sprite_->frames();
 
   real32 interval_seconds =
     this->frame_interval_ / 1000.0f;
 
   real32 action_duration =
-    ( interval_seconds  * this->frames_.size() ) / this->speed();
+    ( interval_seconds  * this->sprite_->frames() ) / this->speed();
 
   this->set_duration(action_duration);
 
   this->last_delta_ = 0;
 }
 
-AnimationTexture::AnimationTexture( const std::shared_ptr<Texture>& frame,
-                                    real32 frame_interval )
-{
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
-                      nom::NOM_LOG_PRIORITY_VERBOSE );
-
-  this->initialize( {frame}, frame_interval);
-}
-
-AnimationTexture::~AnimationTexture()
+SpriteBatchAction::~SpriteBatchAction()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-AnimationTexture::AnimationTexture( const texture_frames& textures,
-                                    real32 frame_interval )
-{
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
-                      nom::NOM_LOG_PRIORITY_VERBOSE );
-
-  this->initialize(textures, frame_interval);
-}
-
-std::unique_ptr<AnimationTexture::derived_type> AnimationTexture::clone() const
+std::unique_ptr<SpriteBatchAction::derived_type>
+SpriteBatchAction::clone() const
 {
   return( std::unique_ptr<self_type>( new self_type(*this) ) );
 }
 
 IActionObject::FrameState
-AnimationTexture::update(real32 t, real32 b, real32 c, real32 d)
+SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
 {
   real32 frame_interval =
     this->frame_interval_ / this->speed();
@@ -99,9 +84,6 @@ AnimationTexture::update(real32 t, real32 b, real32 c, real32 d)
 
   // Total duration of the action
   const real32 duration = d;
-
-  // Initial starting frame
-  const real32 initial_frame(b);
 
   // The computed texture frame to show next
   real32 displacement(0.0f);
@@ -125,14 +107,12 @@ AnimationTexture::update(real32 t, real32 b, real32 c, real32 d)
   if( delta_time >= (this->last_delta_ + frame_interval) ) {
 
     this->last_delta_ = delta_time;
-    ++this->frame_iterator_;
 
-    if( this->frame_iterator_ == this->frames_.end() ) {
-      this->frame_iterator_ = this->frames_.begin();
-      this->curr_frame_ = initial_frame;
+    if( this->sprite_ != nullptr ) {
+      this->sprite_->set_frame(displacement);
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[AnimationTexture]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[SpriteBatchAction]",
                     "delta_time:", delta_time, "frame_time:", frame_time,
                     "[elapsed frames]:", this->curr_frame_,
                     "[fps]:", this->frame_interval_ );
@@ -152,7 +132,7 @@ AnimationTexture::update(real32 t, real32 b, real32 c, real32 d)
   } // end if delta_time **less than** action's duration
 }
 
-IActionObject::FrameState AnimationTexture::next_frame(real32 delta_time)
+IActionObject::FrameState SpriteBatchAction::next_frame(real32 delta_time)
 {
   this->first_frame(delta_time);
 
@@ -163,97 +143,70 @@ IActionObject::FrameState AnimationTexture::next_frame(real32 delta_time)
           this->duration() ) );
 }
 
-IActionObject::FrameState AnimationTexture::prev_frame(real32 delta_time)
+IActionObject::FrameState SpriteBatchAction::prev_frame(real32 delta_time)
 {
   this->first_frame(delta_time);
 
   delta_time = this->timer_.ticks();
 
-  real32 initial_frame = this->frames_.size();
+  real32 initial_frame = this->sprite_->frames();
   return( this->update( delta_time, initial_frame, -(this->total_displacement_),
           this->duration() ) );
 }
 
-bool AnimationTexture::render(real32 delta_time) const
-{
-  return( this->render(delta_time, 0) );
-}
-
-bool AnimationTexture::render(real32 delta_time, real64 angle) const
-{
-  RenderWindow* ctx = nom::render_interface();
-  if( ctx == nullptr ) {
-    return false;
-  }
-
-  auto itr = this->frame_iterator_;
-
-  if( *itr != nullptr && ctx != nullptr ) {
-
-    Size2i dims = (*itr)->size();
-    (*itr)->draw_scaled(dims, angle, *ctx);
-
-    return true;
-  } else {
-    return false;
-  }
-
-  return true;
-}
-
-void AnimationTexture::pause(real32 delta_time)
+void SpriteBatchAction::pause(real32 delta_time)
 {
   this->timer_.pause();
 }
 
-void AnimationTexture::resume(real32 delta_time)
+void SpriteBatchAction::resume(real32 delta_time)
 {
   this->timer_.unpause();
 }
 
-void AnimationTexture::rewind(real32 delta_time)
+void SpriteBatchAction::rewind(real32 delta_time)
 {
   // Reset frame cycle back to initial value
   this->curr_frame_ = 0.0f;
-  this->frame_iterator_ = this->frames_.begin();
   this->last_delta_ = 0;
 
   // Reset frame timing
   this->timer_.stop();
 }
 
-void AnimationTexture::release()
+void SpriteBatchAction::release()
 {
-  for( auto itr = this->frames_.begin(); itr != this->frames_.end(); ++itr ) {
-    if( *itr != nullptr ) {
-      (*itr).reset();
-    }
-  } // end for loop
+  this->sprite_.reset();
 }
 
 // Private scope
 
-void AnimationTexture::set_frame_interval(real32 seconds)
+void SpriteBatchAction::set_frame_interval(real32 seconds)
 {
   this->frame_interval_ = seconds * 1000.0f;
 }
 
-void AnimationTexture::first_frame(real32 delta_time)
+void SpriteBatchAction::first_frame(real32 delta_time)
 {
   if( this->timer_.started() == false ) {
+
     // Start frame timing
     this->curr_frame_ = 0.0f;
-    this->frame_iterator_ = this->frames_.begin();
     this->timer_.start();
     delta_time = this->timer_.ticks();
     this->last_delta_ = 0;
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
-                    "AnimationTexture::BEGIN at", delta_time );
+                    "SpriteBatchAction::BEGIN at", delta_time );
+
+    if( this->sprite_ != nullptr ) {
+      NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[SpriteBatchAction]"
+                      "[num_frames]:", this->sprite_->frames() );
+    }
   }
 }
 
-void AnimationTexture::last_frame(real32 delta_time)
+void SpriteBatchAction::last_frame(real32 delta_time)
 {
   this->timer_.stop();
 }

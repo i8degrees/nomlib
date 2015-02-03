@@ -32,11 +32,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/math_helpers.hpp"
 
 // Forward declarations
-#include "nomlib/graphics/Texture.hpp"
+#include "nomlib/graphics/sprite/Sprite.hpp"
 
 namespace nom {
 
-FadeInAction::FadeInAction( const std::shared_ptr<Texture>& obj,
+FadeInAction::FadeInAction( const std::shared_ptr<Sprite>& action,
                             real32 duration ) :
   total_displacement_(255)
 {
@@ -46,7 +46,7 @@ FadeInAction::FadeInAction( const std::shared_ptr<Texture>& obj,
   this->set_duration(duration);
   this->curr_frame_ = 0.0f;
   this->initial_alpha_ = 0;
-  this->drawable_ = obj;
+  this->drawable_ = action;
 }
 
 FadeInAction::~FadeInAction()

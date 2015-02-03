@@ -43,19 +43,25 @@ TEST_F(AnimationTest, FadeInActionReversed)
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto tex = create_rect_texture( this->render_window(), TEX_POS, TEX_SIZE,
-                                  Color4i::Blue );
-  if( tex == nullptr ) {
-    // Out of memory???
-    FAIL() << "Could not allocate memory for Texture.";
-  }
+  auto rect = std::make_shared<Rectangle>(
+    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto tex =
+    std::shared_ptr<Texture>( rect->texture() );
+  ASSERT_TRUE(tex != nullptr);
 
   // Initialize texture with its starting alpha value for blending test
   tex->set_alpha(Color4i::ALPHA_TRANSPARENT);
   tex->set_blend_mode(SDL_BLENDMODE_BLEND);
 
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
+
   auto fade_in =
-    nom::create_action<FadeInAction>(tex, DURATION);
+    nom::create_action<FadeInAction>(sprite, DURATION);
   ASSERT_TRUE(fade_in != nullptr);
 
   auto fade_in_reversed =
@@ -63,7 +69,7 @@ TEST_F(AnimationTest, FadeInActionReversed)
   ASSERT_TRUE(fade_in_reversed != nullptr);
 
   auto tex_bg =
-    nom::create_action<AnimationTexture>(tex, DURATION);
+    nom::create_action<SpriteAction>(sprite, DURATION);
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
@@ -77,7 +83,7 @@ TEST_F(AnimationTest, FadeInActionReversed)
   this->player.run_action(action0, [=]() {
 
     this->expected_alpha_in_params( fade_in.get(), Color4i::ALPHA_TRANSPARENT,
-                                    tex.get() );
+                                    sprite.get() );
     EXPECT_EQ(1, this->player.num_actions() );
 
     this->expected_action_params(action0.get(), 2);
@@ -90,14 +96,14 @@ TEST_F(AnimationTest, FadeInActionReversed)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( tex.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's texture
-    if( tex != nullptr ) {
-      tex->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -119,23 +125,29 @@ TEST_F(AnimationTest, FadeOutActionReversed)
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto tex = create_rect_texture( this->render_window(), TEX_POS, TEX_SIZE,
-                                  Color4i::Blue );
-  if( tex == nullptr ) {
-    // Out of memory???
-    FAIL() << "Could not allocate memory for Texture.";
-  }
+  auto rect = std::make_shared<Rectangle>(
+    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto tex =
+    std::shared_ptr<Texture>( rect->texture() );
+  ASSERT_TRUE(tex != nullptr);
 
   // Initialize texture with its starting alpha value for blending test
   tex->set_alpha(Color4i::ALPHA_TRANSPARENT);
   tex->set_blend_mode(SDL_BLENDMODE_BLEND);
 
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
+
   auto fade_out =
-    nom::create_action<FadeOutAction>(tex, DURATION);
+    nom::create_action<FadeOutAction>(sprite, DURATION);
   ASSERT_TRUE(fade_out != nullptr);
 
   auto tex_bg =
-    nom::create_action<AnimationTexture>(tex, DURATION);
+    nom::create_action<SpriteAction>(sprite, DURATION);
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto fade_out_reversed =
@@ -154,7 +166,7 @@ TEST_F(AnimationTest, FadeOutActionReversed)
 
     EXPECT_EQ(1, this->player.num_actions() );
     this->expected_alpha_out_params(  fade_out.get(), Color4i::ALPHA_OPAQUE,
-                                      tex.get() );
+                                      sprite.get() );
     this->expected_action_params(action0.get(), 2);
     this->expected_common_params(tex_bg.get(), DURATION, SPEED_MOD);
 
@@ -165,14 +177,14 @@ TEST_F(AnimationTest, FadeOutActionReversed)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( tex.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's texture
-    if( tex != nullptr ) {
-      tex->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -195,19 +207,25 @@ TEST_F(AnimationTest, FadeAlphaByActionReversed)
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto tex = create_rect_texture( this->render_window(), TEX_POS, TEX_SIZE,
-                                  Color4i::Blue );
-  if( tex == nullptr ) {
-    // Out of memory???
-    FAIL() << "Could not allocate memory for Texture.";
-  }
+  auto rect = std::make_shared<Rectangle>(
+    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto tex =
+    std::shared_ptr<Texture>( rect->texture() );
+  ASSERT_TRUE(tex != nullptr);
 
   // Initialize texture with its starting alpha value for blending test
   tex->set_alpha(Color4i::ALPHA_TRANSPARENT);
   tex->set_blend_mode(SDL_BLENDMODE_BLEND);
 
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
+
   auto fade_by =
-    nom::create_action<FadeAlphaByAction>(tex, FADE_BY, DURATION);
+    nom::create_action<FadeAlphaByAction>(sprite, FADE_BY, DURATION);
   ASSERT_TRUE(fade_by != nullptr);
 
   auto fade_by_reversed =
@@ -215,7 +233,7 @@ TEST_F(AnimationTest, FadeAlphaByActionReversed)
   ASSERT_TRUE(fade_by_reversed != nullptr);
 
   auto tex_bg =
-    nom::create_action<AnimationTexture>(tex, DURATION);
+    nom::create_action<SpriteAction>(sprite, DURATION);
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
@@ -229,7 +247,7 @@ TEST_F(AnimationTest, FadeAlphaByActionReversed)
   this->player.run_action(action0, [=]() {
 
     this->expected_alpha_by_params(fade_by.get(), FADE_BY);
-    EXPECT_EQ( FADE_BY, tex->alpha() );
+    EXPECT_EQ( FADE_BY, sprite->alpha() );
 
     EXPECT_EQ(1, this->player.num_actions() );
     this->expected_action_params(action0.get(), 2);
@@ -242,14 +260,14 @@ TEST_F(AnimationTest, FadeAlphaByActionReversed)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( tex.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's texture
-    if( tex != nullptr ) {
-      tex->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -277,8 +295,11 @@ TEST_F(AnimationTest, MoveByActionReversed)
     std::make_shared<Rectangle>(IntRect(RECT_POS, RECT_SIZE), Color4i::Green);
   ASSERT_TRUE(rect != nullptr);
 
+  auto sprite = std::make_shared<Sprite>( rect->texture() );
+  ASSERT_TRUE(sprite != nullptr);
+
   auto translate =
-    nom::create_action<MoveByAction>(rect, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate != nullptr);
 
   auto translate_rev =
@@ -295,7 +316,7 @@ TEST_F(AnimationTest, MoveByActionReversed)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX_POS, rect->position() );
+    EXPECT_EQ( EXPECTED_TEX_POS, sprite->position() );
     EXPECT_EQ(1, this->player.num_actions() );
 
     this->expected_action_params(action0.get(), 1);
@@ -309,8 +330,8 @@ TEST_F(AnimationTest, MoveByActionReversed)
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's rectangle
-    if( rect != nullptr ) {
-      rect->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -338,17 +359,21 @@ TEST_F(AnimationTest, ScaleByActionReversed)
                                           TEX_SIZE.h / SCALE_FACTOR.h )
   );
 
-  auto tex = create_rect_texture( this->render_window(), TEX_POS, TEX_SIZE,
-                                  Color4i::Blue );
-  if( tex == nullptr ) {
-    // Out of memory???
-    FAIL() << "Could not allocate memory for Texture.";
-  }
+  auto rect = std::make_shared<Rectangle>(
+    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
+  ASSERT_TRUE(rect != nullptr);
 
-  EXPECT_EQ( TEX_SIZE, tex->size() );
+  auto tex =
+    std::shared_ptr<Texture>( rect->texture() );
+  ASSERT_TRUE(tex != nullptr);
+
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
 
   auto scale_by =
-    nom::create_action<nom::ScaleByAction>(tex, SCALE_FACTOR, DURATION);
+    nom::create_action<nom::ScaleByAction>(sprite, SCALE_FACTOR, DURATION);
   ASSERT_TRUE(scale_by != nullptr);
 
   auto scale_by_reversed =
@@ -365,7 +390,7 @@ TEST_F(AnimationTest, ScaleByActionReversed)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX_SIZE, tex->size() );
+    EXPECT_EQ( EXPECTED_TEX_SIZE, sprite->size() );
     EXPECT_EQ(1, this->player.num_actions() );
     this->expected_action_params(action0.get(), 1);
     this->expected_common_params(scale_by.get(), DURATION, SPEED_MOD);
@@ -377,14 +402,14 @@ TEST_F(AnimationTest, ScaleByActionReversed)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( tex.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's texture
-    if( tex != nullptr ) {
-      tex->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -413,8 +438,11 @@ TEST_F(AnimationTest, MoveByActionRepeatForReversed)
     std::make_shared<Rectangle>(IntRect(RECT_POS, RECT_SIZE), Color4i::Red);
   ASSERT_TRUE(rect != nullptr);
 
+  auto sprite = std::make_shared<Sprite>( rect->texture() );
+  ASSERT_TRUE(sprite != nullptr);
+
   auto translate =
-    nom::create_action<MoveByAction>(rect, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate != nullptr);
 
   auto repeat =
@@ -435,7 +463,7 @@ TEST_F(AnimationTest, MoveByActionRepeatForReversed)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    EXPECT_EQ(EXPECTED_TEX_POS, rect->position() );
+    EXPECT_EQ(EXPECTED_TEX_POS, sprite->position() );
     EXPECT_EQ(1, this->player.num_actions() );
 
     this->expected_action_params(action0.get(), 1);
@@ -451,8 +479,8 @@ TEST_F(AnimationTest, MoveByActionRepeatForReversed)
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's rectangle
-    if( rect != nullptr ) {
-      rect->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -486,8 +514,11 @@ TEST_F(AnimationTest, RepeatForeverActionReversed)
     std::make_shared<Rectangle>(IntRect(RECT_POS, RECT_SIZE), Color4i::Red);
   ASSERT_TRUE(rect != nullptr);
 
+  auto sprite = std::make_shared<Sprite>( rect->texture() );
+  ASSERT_TRUE(sprite != nullptr);
+
   auto translate =
-    nom::create_action<MoveByAction>(rect, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate != nullptr);
 
   auto repeat_forever =
@@ -546,8 +577,8 @@ TEST_F(AnimationTest, RepeatForeverActionReversed)
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's rectangle
-    if( rect != nullptr ) {
-      rect->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -558,7 +589,7 @@ TEST_F(AnimationTest, RepeatForeverActionReversed)
 
 /// \remarks Thanks goes to Tim Jones of [sdltutorials.com](http://www.sdltutorials.com/sdl-animation)
 /// for the sprite frames of Yoshi chosen for this test!
-TEST_F(AnimationTest, AnimatedYoshiSpriteWithAnimationTextureReversed)
+TEST_F(AnimationTest, SpriteActionReversed)
 {
   // Testing parameters
   texture_frames anim_frames;
@@ -578,12 +609,12 @@ TEST_F(AnimationTest, AnimatedYoshiSpriteWithAnimationTextureReversed)
     NOM_ANIM_TEST_FLAG(timing_mode);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
-  this->init_animation_texture_test(texture_filenames, anim_frames);
+  this->init_sprite_action_test(texture_filenames, anim_frames);
 
   EXPECT_EQ( anim_frames.size(), texture_filenames.size() );
 
   auto tex_bg =
-    nom::create_action<AnimationTexture>(anim_frames, FRAME_DURATION);
+    nom::create_action<SpriteAction>(anim_frames, FRAME_DURATION);
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
@@ -597,9 +628,9 @@ TEST_F(AnimationTest, AnimatedYoshiSpriteWithAnimationTextureReversed)
   this->player.run_action(action0, [=]() {
 
     EXPECT_EQ(1, this->player.num_actions() );
-    this->expected_animation_texture_params(  tex_bg.get(), anim_frames.size(),
-                                              DURATION, SPEED_MOD,
-                                              "texture_params" );
+    this->expected_sprite_action_params(  tex_bg.get(), anim_frames.size(),
+                                          DURATION, SPEED_MOD,
+                                          "sprite_action_params" );
     this->expected_common_params(tex_bg.get(), DURATION, SPEED_MOD);
 
     this->quit(); // graceful exit
@@ -620,5 +651,75 @@ TEST_F(AnimationTest, AnimatedYoshiSpriteWithAnimationTextureReversed)
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
+
+// FIXME
+#if 0
+TEST_F(AnimationTest, ColorizeActionReversed)
+{
+  // Testing parameters
+  const float DURATION = 2.0f;
+  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const IActionObject::timing_mode_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_mode);
+  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+
+  const Color4i TEX_START_COLOR(Color4i::Black);
+  const Color4i TEX_END_COLOR(Color4i::White);
+  const BlendMode BLEND_MODE = BLEND_MODE_ADD;
+  const std::string TEX_FILE_PATH = resources[0].path() + "card.png";
+
+  auto tex = std::make_shared<Texture>( Texture() );
+  ASSERT_TRUE(tex != nullptr);
+  if( tex->load(TEX_FILE_PATH) == false ) {
+    FAIL() << "Could not load texture from file: " << TEX_FILE_PATH;
+  }
+
+  auto sprite = std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
+  sprite->set_color(TEX_START_COLOR);
+
+  auto colorize = nom::create_action<nom::ColorizeAction>(sprite,
+    TEX_START_COLOR, BLEND_MODE, DURATION);
+  ASSERT_TRUE(colorize != nullptr);
+  colorize->set_name("colorize");
+  colorize->set_speed(SPEED_MOD);
+
+  auto colorize_rev =
+    nom::create_action<nom::ReversedAction>(colorize, "colorize_rev");
+  ASSERT_TRUE(colorize_rev != nullptr);
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(colorize_rev, [=]() {
+
+    EXPECT_EQ(1, this->player.num_actions() );
+    EXPECT_EQ(TEX_END_COLOR, sprite->color() );
+    EXPECT_EQ(BLEND_MODE, sprite->blend_mode() );
+    this->expected_common_params(colorize.get(), DURATION, SPEED_MOD);
+
+    this->quit(); // graceful exit
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue the action!";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](float) mutable {
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
+                        Anchor::MiddleCenter );
+  });
+
+  this->append_render_callback( [=](const RenderWindow& win) {
+
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
+    }
+
+    this->set_frame_interval(FPS);
+  });
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+#endif
 
 } // namespace nom

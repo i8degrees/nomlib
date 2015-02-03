@@ -43,23 +43,29 @@ TEST_F(AnimationTest, FadeInAction)
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto tex = create_rect_texture( this->render_window(), TEX_POS, TEX_SIZE,
-                                  Color4i::Blue );
-  if( tex == nullptr ) {
-    // Out of memory???
-    FAIL() << "Could not allocate memory for Texture.";
-  }
+  auto rect = std::make_shared<Rectangle>(
+    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto tex =
+    std::shared_ptr<Texture>( rect->texture() );
+  ASSERT_TRUE(tex != nullptr);
 
   // Initialize texture with its starting alpha value for blending test
   tex->set_alpha(Color4i::ALPHA_TRANSPARENT);
   tex->set_blend_mode(SDL_BLENDMODE_BLEND);
 
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
+
   auto fade_in =
-    nom::create_action<FadeInAction>(tex, DURATION);
+    nom::create_action<FadeInAction>(sprite, DURATION);
   ASSERT_TRUE(fade_in != nullptr);
 
   auto tex_bg =
-    nom::create_action<AnimationTexture>(tex, DURATION);
+    nom::create_action<SpriteAction>(sprite, DURATION);
   ASSERT_TRUE(tex_bg != nullptr);
 
   fade_in->set_name("fade_in");
@@ -76,7 +82,7 @@ TEST_F(AnimationTest, FadeInAction)
   this->player.run_action(action0, [=]() {
 
     this->expected_alpha_in_params( fade_in.get(), Color4i::ALPHA_OPAQUE,
-                                    tex.get() );
+                                    sprite.get() );
 
     EXPECT_EQ(1, this->player.num_actions() );
 
@@ -91,14 +97,14 @@ TEST_F(AnimationTest, FadeInAction)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( tex.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's texture
-    if( tex != nullptr ) {
-      tex->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -120,23 +126,29 @@ TEST_F(AnimationTest, FadeInActionFromNonTransparentOpacity)
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto tex = create_rect_texture( this->render_window(), TEX_POS, TEX_SIZE,
-                                  Color4i::Blue );
-  if( tex == nullptr ) {
-    // Out of memory???
-    FAIL() << "Could not allocate memory for Texture.";
-  }
+  auto rect = std::make_shared<Rectangle>(
+    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto tex =
+    std::shared_ptr<Texture>( rect->texture() );
+  ASSERT_TRUE(tex != nullptr);
 
   // Initialize texture with its starting alpha value for blending test
   tex->set_alpha(Color4i::ALPHA_OPAQUE/2);
   tex->set_blend_mode(SDL_BLENDMODE_BLEND);
 
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
+
   auto fade_in =
-    nom::create_action<FadeInAction>(tex, DURATION);
+    nom::create_action<FadeInAction>(sprite, DURATION);
   ASSERT_TRUE(fade_in != nullptr);
 
   auto tex_bg =
-    nom::create_action<AnimationTexture>(tex, DURATION);
+    nom::create_action<SpriteAction>(sprite, DURATION);
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
@@ -150,7 +162,7 @@ TEST_F(AnimationTest, FadeInActionFromNonTransparentOpacity)
   this->player.run_action(action0, [=]() {
 
     this->expected_alpha_in_params( fade_in.get(), Color4i::ALPHA_OPAQUE,
-                                    tex.get() );
+                                    sprite.get() );
 
     EXPECT_EQ(1, this->player.num_actions() );
     this->expected_action_params(action0.get(), 2);
@@ -164,14 +176,14 @@ TEST_F(AnimationTest, FadeInActionFromNonTransparentOpacity)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( tex.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's texture
-    if( tex != nullptr ) {
-      tex->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -193,19 +205,29 @@ TEST_F(AnimationTest, FadeOutAction)
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto tex = create_rect_texture( this->render_window(), TEX_POS, TEX_SIZE,
-                                  Color4i::Blue );
+  auto rect = std::make_shared<Rectangle>(
+    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto tex =
+    std::shared_ptr<Texture>( rect->texture() );
+  ASSERT_TRUE(tex != nullptr);
 
   // Initialize texture with its starting alpha value for blending test
   tex->set_alpha(Color4i::ALPHA_OPAQUE);
   tex->set_blend_mode(SDL_BLENDMODE_BLEND);
 
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
+
   auto fade_out =
-    nom::create_action<FadeOutAction>(tex, DURATION);
+    nom::create_action<FadeOutAction>(sprite, DURATION);
   ASSERT_TRUE(fade_out != nullptr);
 
   auto tex_bg =
-    nom::create_action<AnimationTexture>(tex, DURATION);
+    nom::create_action<SpriteAction>(sprite, DURATION);
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
@@ -221,7 +243,7 @@ TEST_F(AnimationTest, FadeOutAction)
 
     EXPECT_EQ(1, this->player.num_actions() );
     this->expected_alpha_out_params(  fade_out.get(), Color4i::ALPHA_TRANSPARENT,
-                                      tex.get() );
+                                      sprite.get() );
 
     this->expected_action_params(action0.get(), 2);
     this->expected_common_params(fade_out.get(), DURATION, SPEED_MOD);
@@ -235,14 +257,14 @@ TEST_F(AnimationTest, FadeOutAction)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( tex.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's texture
-    if( tex != nullptr ) {
-      tex->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -264,19 +286,29 @@ TEST_F(AnimationTest, FadeOutActionFromNonOpaqueOpacity)
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto tex = create_rect_texture( this->render_window(), TEX_POS, TEX_SIZE,
-                                  Color4i::Blue );
+  auto rect =
+    std::make_shared<Rectangle>(IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto tex =
+    std::shared_ptr<Texture>( rect->texture() );
+  ASSERT_TRUE(tex != nullptr);
 
   // Initialize texture with its starting alpha value for blending test
   tex->set_alpha(Color4i::ALPHA_OPAQUE/2);
   tex->set_blend_mode(SDL_BLENDMODE_BLEND);
 
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
+
   auto fade_out =
-    nom::create_action<FadeOutAction>(tex, DURATION);
+    nom::create_action<FadeOutAction>(sprite, DURATION);
   ASSERT_TRUE(fade_out != nullptr);
 
   auto tex_bg =
-    nom::create_action<AnimationTexture>(tex, DURATION);
+    nom::create_action<SpriteAction>(sprite, DURATION);
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
@@ -291,7 +323,7 @@ TEST_F(AnimationTest, FadeOutActionFromNonOpaqueOpacity)
   this->player.run_action(action0, [=]() {
 
     this->expected_alpha_out_params(  fade_out.get(), Color4i::ALPHA_OPAQUE,
-                                      tex.get() );
+                                      sprite.get() );
 
     EXPECT_EQ(1, this->player.num_actions() );
     this->expected_action_params(action0.get(), 2);
@@ -305,7 +337,7 @@ TEST_F(AnimationTest, FadeOutActionFromNonOpaqueOpacity)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( tex.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
@@ -337,23 +369,29 @@ TEST_F(AnimationTest, FadeAlphaByAction)
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto tex = create_rect_texture( this->render_window(), TEX_POS, TEX_SIZE,
-                                  Color4i::Blue );
-  if( tex == nullptr ) {
-    // Out of memory???
-    FAIL() << "Could not allocate memory for Texture.";
-  }
+  auto rect = std::make_shared<Rectangle>(
+    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto tex =
+    std::shared_ptr<Texture>( rect->texture() );
+  ASSERT_TRUE(tex != nullptr);
 
   // Initialize texture with its starting alpha value for blending test
   tex->set_alpha(Color4i::ALPHA_TRANSPARENT);
   tex->set_blend_mode(SDL_BLENDMODE_BLEND);
 
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
+
   auto fade_by =
-    nom::create_action<FadeAlphaByAction>(tex, FADE_BY, DURATION);
+    nom::create_action<FadeAlphaByAction>(sprite, FADE_BY, DURATION);
   ASSERT_TRUE(fade_by != nullptr);
 
   auto tex_bg =
-    nom::create_action<AnimationTexture>(tex, DURATION);
+    nom::create_action<SpriteAction>(sprite, DURATION);
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
@@ -366,7 +404,7 @@ TEST_F(AnimationTest, FadeAlphaByAction)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    this->expected_alpha_by_params( fade_by.get(), FADE_BY, tex.get() );
+    this->expected_alpha_by_params( fade_by.get(), FADE_BY, sprite.get() );
     EXPECT_EQ(1, this->player.num_actions() );
 
     this->expected_action_params(action0.get(), 2);
@@ -380,14 +418,14 @@ TEST_F(AnimationTest, FadeAlphaByAction)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( tex.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's texture
-    if( tex != nullptr ) {
-      tex->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -410,23 +448,29 @@ TEST_F(AnimationTest, FadeAlphaByActionFromNonOpaqueOpacity)
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto tex = create_rect_texture( this->render_window(), TEX_POS, TEX_SIZE,
-                                  Color4i::Blue );
-  if( tex == nullptr ) {
-    // Out of memory???
-    FAIL() << "Could not allocate memory for Texture.";
-  }
+  auto rect = std::make_shared<Rectangle>(
+    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto tex =
+    std::shared_ptr<Texture>( rect->texture() );
+  ASSERT_TRUE(tex != nullptr);
 
   // Initialize texture with its starting alpha value for blending test
   tex->set_alpha(Color4i::ALPHA_OPAQUE/4);
   tex->set_blend_mode(SDL_BLENDMODE_BLEND);
 
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
+
   auto fade_by =
-    nom::create_action<FadeAlphaByAction>(tex, FADE_BY, DURATION);
+    nom::create_action<FadeAlphaByAction>(sprite, FADE_BY, DURATION);
   ASSERT_TRUE(fade_by != nullptr);
 
   auto tex_bg =
-    nom::create_action<AnimationTexture>(tex, DURATION);
+    nom::create_action<SpriteAction>(sprite, DURATION);
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
@@ -439,7 +483,7 @@ TEST_F(AnimationTest, FadeAlphaByActionFromNonOpaqueOpacity)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    this->expected_alpha_by_params( fade_by.get(), FADE_BY, tex.get() );
+    this->expected_alpha_by_params( fade_by.get(), FADE_BY, sprite.get() );
 
     EXPECT_EQ(1, this->player.num_actions() );
 
@@ -454,14 +498,14 @@ TEST_F(AnimationTest, FadeAlphaByActionFromNonOpaqueOpacity)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( tex.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's texture
-    if( tex != nullptr ) {
-      tex->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -485,23 +529,29 @@ TEST_F(AnimationTest, FadeAlphaByActionWithNegativeValue)
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto tex = create_rect_texture( this->render_window(), TEX_POS, TEX_SIZE,
-                                  Color4i::Blue );
-  if( tex == nullptr ) {
-    // Out of memory???
-    FAIL() << "Could not allocate memory for Texture.";
-  }
+  auto rect = std::make_shared<Rectangle>(
+    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto tex =
+    std::shared_ptr<Texture>( rect->texture() );
+  ASSERT_TRUE(tex != nullptr);
 
   // Initialize texture with its starting alpha value for blending test
   tex->set_alpha(Color4i::ALPHA_OPAQUE);
   tex->set_blend_mode(SDL_BLENDMODE_BLEND);
 
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
+
   auto fade_by =
-    nom::create_action<FadeAlphaByAction>(tex, FADE_BY, DURATION);
+    nom::create_action<FadeAlphaByAction>(sprite, FADE_BY, DURATION);
   ASSERT_TRUE(fade_by != nullptr);
 
   auto tex_bg =
-    nom::create_action<AnimationTexture>(tex, DURATION);
+    nom::create_action<SpriteAction>(sprite, DURATION);
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
@@ -515,7 +565,8 @@ TEST_F(AnimationTest, FadeAlphaByActionWithNegativeValue)
   this->player.run_action(action0, [=]() {
 
     EXPECT_EQ(1, this->player.num_actions() );
-    this->expected_alpha_by_params( fade_by.get(), EXPECTED_ALPHA, tex.get() );
+    this->expected_alpha_by_params( fade_by.get(), EXPECTED_ALPHA,
+                                    sprite.get() );
 
     this->expected_action_params(action0.get(), 2);
     this->expected_common_params(fade_by.get(), DURATION, SPEED_MOD);
@@ -528,14 +579,169 @@ TEST_F(AnimationTest, FadeAlphaByActionWithNegativeValue)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( tex.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's texture
-    if( tex != nullptr ) {
-      tex->draw( this->render_window() );
+    if( sprite != nullptr ) {
+      sprite->draw( this->render_window() );
+    }
+
+    this->set_frame_interval(FPS);
+  });
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F(AnimationTest, AlphaBlendingDemo)
+{
+  // Testing parameters
+  const float DURATION = 2.5f;  // 5s total duration due to x2 sequences
+  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const IActionObject::timing_mode_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_mode);
+  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+
+  // Initial texture position and size
+  const Point2i RECT_POS(Point2i::zero);
+  const Size2i RECT_SIZE(256, 256);
+
+  auto bg_tex = std::make_shared<Texture>();
+  ASSERT_TRUE(bg_tex != nullptr);
+  if( bg_tex->load( resources[0].path() + "backdrop.png" ) == false ) {
+    FAIL()  << "Could not load 'backdrop.png' input file from "
+            << resources[0].path();
+  }
+
+  bg_tex->set_alpha(Color4i::ALPHA_OPAQUE);
+
+  // Stretched dimensions to cover entire window
+  bg_tex->set_size(WINDOW_DIMS);
+
+  auto bg_sprite = std::make_shared<Sprite>();
+  ASSERT_TRUE(bg_sprite != nullptr);
+  EXPECT_EQ(true, bg_sprite->set_texture(bg_tex) );
+
+  auto rect0 =
+    std::make_shared<Rectangle>(  IntRect(RECT_POS, RECT_SIZE),
+                                  Color4i::Magenta );
+  ASSERT_TRUE(rect0 != nullptr);
+
+  auto rect1 =
+    std::make_shared<Rectangle>(  IntRect(RECT_POS, RECT_SIZE),
+                                  Color4i::Blue );
+  ASSERT_TRUE(rect1 != nullptr);
+
+  auto rect_tex0 =
+    std::shared_ptr<Texture>( rect0->texture() );
+  ASSERT_TRUE(rect_tex0 != nullptr);
+
+  auto rect_tex1 =
+    std::shared_ptr<Texture>( rect1->texture() );
+  ASSERT_TRUE(rect_tex1 != nullptr);
+
+  // Initialize texture with its initial alpha value for blending test
+  rect_tex0->set_alpha(Color4i::ALPHA_TRANSPARENT);
+  rect_tex0->set_blend_mode(SDL_BLENDMODE_BLEND);
+
+  rect_tex1->set_alpha(Color4i::ALPHA_OPAQUE);
+  rect_tex1->set_blend_mode(SDL_BLENDMODE_BLEND);
+
+  // magenta rect
+  auto sprite0 =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite0 != nullptr);
+  EXPECT_EQ(true, sprite0->set_texture(rect_tex0) );
+
+  // blue rect
+  auto sprite1 =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite1 != nullptr);
+  EXPECT_EQ(true, sprite1->set_texture(rect_tex1) );
+
+  auto fade_bg_tex_out =
+    nom::create_action<FadeOutAction>(bg_sprite, DURATION);
+  ASSERT_TRUE(fade_bg_tex_out != nullptr);
+
+  auto action0 =
+    nom::create_action<GroupAction>( {fade_bg_tex_out}, "bg_layer");
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_mode(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+
+  auto fade_rect0_in =
+    nom::create_action<FadeInAction>(sprite0, DURATION);
+  ASSERT_TRUE(fade_rect0_in != nullptr);
+
+  auto fade_rect1_out =
+    nom::create_action<FadeOutAction>(sprite1, DURATION);
+  ASSERT_TRUE(fade_rect1_out != nullptr);
+
+  auto action1 =
+    nom::create_action<SequenceAction>( {
+      fade_rect0_in, fade_rect1_out}, "fade_rect0_in, fade_rect1_out" );
+  ASSERT_TRUE(action1 != nullptr);
+  action1->set_timing_mode(TIMING_MODE);
+  action1->set_speed(SPEED_MOD);
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ(2, this->player.num_actions() );
+    this->expected_action_params(action0.get(), 1);
+    this->expected_common_params(fade_bg_tex_out.get(), DURATION, SPEED_MOD);
+
+    this->expected_alpha_out_params(  fade_bg_tex_out.get(),
+                                      Color4i::ALPHA_TRANSPARENT,
+                                      bg_sprite.get(), "fade_bg_sprite_out" );
+    this->expected_alpha_in_params( fade_rect0_in.get(),
+                                    Color4i::ALPHA_OPAQUE,
+                                    sprite0.get(), "fade_sprite0_in" );
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to enqueue fade_blue_rect!";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->run_action_ret =
+  this->player.run_action(action1, [=]() {
+
+    EXPECT_EQ(1, this->player.num_actions() );
+    this->expected_action_params(action1.get(), 2);
+    this->expected_common_params(fade_rect0_in.get(), DURATION, SPEED_MOD);
+    this->expected_common_params(fade_rect1_out.get(), DURATION, SPEED_MOD);
+
+    this->expected_alpha_out_params(  fade_rect1_out.get(),
+                                      Color4i::ALPHA_TRANSPARENT,
+                                      sprite1.get(), "fade_sprite1_out" );
+    this->quit(); // graceful exit
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to enqueue fade_blue_rect!";
+  EXPECT_EQ(2, this->player.num_actions() );
+
+  this->append_update_callback( [=](float) mutable {
+    nom::set_alignment( sprite0.get(), Point2i::zero, WINDOW_DIMS,
+                        Anchor::MiddleCenter );
+    nom::set_alignment( sprite1.get(), Point2i::zero, WINDOW_DIMS,
+                        Anchor::MiddleCenter );
+  });
+
+  this->append_render_callback( [=](const RenderWindow& win) {
+    // Render a pretty backdrop for our demo
+    if( bg_sprite != nullptr ) {
+      bg_sprite->draw( this->render_window() );
+    }
+
+    // Render our animation's blue rectangle
+    if( sprite0 != nullptr ) {
+      sprite0->draw( this->render_window() );
+    }
+
+    if( sprite1 != nullptr ) {
+      sprite1->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);

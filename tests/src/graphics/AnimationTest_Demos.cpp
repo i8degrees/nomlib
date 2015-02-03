@@ -84,7 +84,7 @@ TEST_F(AnimationTest, RainingRectsStressTest)
   colors.push_back(Color4i::Gray);
   nom::size_type num_colors = colors.size();
 
-  std::vector<std::shared_ptr<Rectangle>> rects;
+  std::vector<std::shared_ptr<Sprite>> rects;
   actions_container actions;
 
   // drawables generation
@@ -121,7 +121,11 @@ TEST_F(AnimationTest, RainingRectsStressTest)
     auto rect =
       std::make_shared<Rectangle>(rect_bounds, color);
     ASSERT_TRUE(rect != nullptr);
-    rects.push_back(rect);
+
+    auto sprite = std::make_shared<Sprite>( rect->texture() );
+    ASSERT_TRUE(sprite != nullptr);
+
+    rects.push_back(sprite);
   }
 
   for( auto idx = 0; idx != NUM_OBJECTS; ++idx ) {
@@ -199,129 +203,6 @@ TEST_F(AnimationTest, RainingRectsStressTest)
 }
 NOM_IGNORED_VARS_ENDL();
 
-TEST_F(AnimationTest, AlphaBlendingDemo)
-{
-  // Testing parameters
-  const float DURATION = 2.5f;  // 5s total duration due to x2 sequences
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
-
-  // Initial texture position and size
-  const Point2i BLUE_RECT_POS(Point2i::zero);
-  const Size2i BLUE_RECT_SIZE(256, 256);
-
-  auto bg_tex = std::make_shared<Texture>();
-  ASSERT_TRUE(bg_tex != nullptr);
-  if( bg_tex->load( resources[0].path() + "backdrop.png" ) == false ) {
-    FAIL()  << "Could not load 'backdrop.png' input file from "
-            << resources[0].path();
-  }
-  if( bg_tex->valid() == false ) {
-    FAIL() << "Texture is not valid.";
-  }
-
-  bg_tex->set_alpha(Color4i::ALPHA_OPAQUE);
-
-  // Stretched dimensions to cover entire window
-  bg_tex->set_size(WINDOW_DIMS);
-
-  auto blue_rect =
-    create_rect_texture(  this->render_window(), BLUE_RECT_POS, BLUE_RECT_SIZE,
-                          Color4i::Blue );
-
-  ASSERT_TRUE(blue_rect != nullptr)
-  << "Could not allocate memory for Texture.";
-
-  // Initialize texture with its initial alpha value for blending test
-  blue_rect->set_alpha(Color4i::ALPHA_TRANSPARENT);
-  blue_rect->set_blend_mode(SDL_BLENDMODE_BLEND);
-
-  auto fade_bg_tex_out =
-    nom::create_action<FadeOutAction>(bg_tex, DURATION);
-  ASSERT_TRUE(fade_bg_tex_out != nullptr);
-
-  auto bg_layer =
-    nom::create_action<GroupAction>( {fade_bg_tex_out}, "bg_layer");
-  ASSERT_TRUE(bg_layer != nullptr);
-  bg_layer->set_timing_mode(TIMING_MODE);
-  bg_layer->set_speed(SPEED_MOD);
-
-  auto fade_blue_rect_in =
-    nom::create_action<FadeInAction>(blue_rect, DURATION);
-  ASSERT_TRUE(fade_blue_rect_in != nullptr);
-
-  auto fade_blue_rect_out =
-    nom::create_action<FadeOutAction>(blue_rect, DURATION);
-  ASSERT_TRUE(fade_blue_rect_out != nullptr);
-
-  auto action0 =
-    nom::create_action<SequenceAction>( {
-      fade_blue_rect_in, fade_blue_rect_out}, "fade_blue_rect" );
-  ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
-  action0->set_speed(SPEED_MOD);
-
-  EXPECT_EQ(0, this->player.num_actions() );
-  this->run_action_ret =
-  this->player.run_action(bg_layer, [=]() {
-
-    EXPECT_EQ(2, this->player.num_actions() );
-    this->expected_alpha_out_params(  fade_bg_tex_out.get(),
-                                      Color4i::ALPHA_TRANSPARENT, bg_tex.get(),
-                                      "fade_bg_tex_out" );
-
-    this->expected_action_params(bg_layer.get(), 1);
-    this->expected_common_params(fade_bg_tex_out.get(), DURATION, SPEED_MOD);
-  });
-  EXPECT_EQ(true, this->run_action_ret)
-  << "Failed to enqueue fade_blue_rect!";
-  EXPECT_EQ(1, this->player.num_actions() );
-
-  this->run_action_ret =
-  this->player.run_action(action0, [=]() {
-
-    EXPECT_EQ(1, this->player.num_actions() );
-    this->expected_alpha_in_params( fade_blue_rect_in.get(),
-                                    Color4i::ALPHA_OPAQUE, nullptr,
-                                    "fade_blue_rect_in" );
-    this->expected_alpha_out_params(  fade_blue_rect_out.get(),
-                                      Color4i::ALPHA_TRANSPARENT,
-                                      blue_rect.get(), "fade_blue_rect_out" );
-
-    this->expected_action_params(action0.get(), 2);
-    this->expected_common_params(fade_blue_rect_in.get(), DURATION, SPEED_MOD);
-    this->expected_common_params(fade_blue_rect_out.get(), DURATION, SPEED_MOD);
-
-    this->quit(); // graceful exit
-  });
-  EXPECT_EQ(true, this->run_action_ret)
-  << "Failed to enqueue fade_blue_rect!";
-  EXPECT_EQ(2, this->player.num_actions() );
-
-  this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( blue_rect.get(), Point2i::zero, WINDOW_DIMS,
-                        Anchor::MiddleCenter );
-  });
-
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render a pretty backdrop for our demo
-    if( bg_tex != nullptr ) {
-      bg_tex->draw( this->render_window() );
-    }
-
-    // Render our animation's blue rectangle
-    if( blue_rect != nullptr ) {
-      blue_rect->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
-
-  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-}
-
 TEST_F(AnimationTest, CardPlacementEffectsDemo)
 {
   // Testing parameters
@@ -382,12 +263,12 @@ TEST_F(AnimationTest, CardPlacementEffectsDemo)
 
   auto sprite0 = std::make_shared<Sprite>();
   ASSERT_TRUE(sprite0 != nullptr);
-  sprite0->set_texture( *tex0.get() );
+  sprite0->set_texture(tex0);
   sprite0->set_size(TEX_SIZE);
 
   auto sprite1 = std::make_shared<Sprite>();
   ASSERT_TRUE(sprite1 != nullptr);
-  sprite1->set_texture(*tex1);
+  sprite1->set_texture(tex1);
   sprite1->set_size(TEX_SIZE);
 
   nom::set_alignment(sprite0.get(), Point2i::zero, WINDOW_DIMS, Anchor::BottomLeft);
@@ -407,11 +288,11 @@ TEST_F(AnimationTest, CardPlacementEffectsDemo)
   ASSERT_TRUE(move_up1 != nullptr);
 
   auto scale_by0 =
-    nom::create_action<nom::ScaleByAction>(tex0, SCALE_FACTOR, DURATION);
+    nom::create_action<nom::ScaleByAction>(sprite0, SCALE_FACTOR, DURATION);
   ASSERT_TRUE(scale_by0 != nullptr);
 
   auto scale_by1 =
-    nom::create_action<nom::ScaleByAction>(tex1, SCALE_FACTOR, DURATION);
+    nom::create_action<nom::ScaleByAction>(sprite1, SCALE_FACTOR, DURATION);
   ASSERT_TRUE(scale_by1 != nullptr);
 
   auto scale_by_reversed0 =
@@ -462,7 +343,7 @@ TEST_F(AnimationTest, CardPlacementEffectsDemo)
     // move_up0
     EXPECT_EQ( A1_EXPECTED_TEX_POS, sprite0->position() );
     // scale_by0
-    EXPECT_EQ( A1_EXPECTED_TEX_SIZE, tex0->size() );
+    EXPECT_EQ( A1_EXPECTED_TEX_SIZE, sprite0->size() );
     EXPECT_EQ(2, this->player.num_actions() );
 
     this->expected_action_params(action0.get(), 2);
@@ -474,7 +355,7 @@ TEST_F(AnimationTest, CardPlacementEffectsDemo)
       // move_up0
       EXPECT_EQ( A2_EXPECTED_TEX_POS, sprite0->position() );
       // scale_by_reversed0
-      EXPECT_EQ( A2_EXPECTED_TEX_SIZE, tex0->size() );
+      EXPECT_EQ( A2_EXPECTED_TEX_SIZE, sprite0->size() );
       EXPECT_EQ(2, this->player.num_actions() );
 
       this->expected_action_params(action1.get(), 1);
@@ -491,7 +372,7 @@ TEST_F(AnimationTest, CardPlacementEffectsDemo)
     // move_up1
     EXPECT_EQ( A3_EXPECTED_TEX_POS, sprite1->position() );
     // scale_by1
-    EXPECT_EQ( A1_EXPECTED_TEX_SIZE, tex1->size() );
+    EXPECT_EQ( A1_EXPECTED_TEX_SIZE, sprite1->size() );
     EXPECT_EQ(3, this->player.num_actions() );
 
     this->expected_action_params(action2.get(), 2);
@@ -503,7 +384,7 @@ TEST_F(AnimationTest, CardPlacementEffectsDemo)
       // move_up1
       EXPECT_EQ( A3_EXPECTED_TEX_POS, sprite1->position() );
       // scale_by_reversed1
-      EXPECT_EQ( A3_EXPECTED_TEX_SIZE, tex1->size() );
+      EXPECT_EQ( A3_EXPECTED_TEX_SIZE, sprite1->size() );
       EXPECT_EQ(2, this->player.num_actions() );
 
       this->expected_action_params(action3.get(), 1);
@@ -512,7 +393,7 @@ TEST_F(AnimationTest, CardPlacementEffectsDemo)
     });
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
+  this->append_render_callback( [=, &bg_tex, &sprite0, &sprite1] (const RenderWindow& win) {
     // Render a pretty backdrop for our demo
     if( bg_tex != nullptr ) {
       bg_tex->draw( this->render_window() );
@@ -534,6 +415,9 @@ TEST_F(AnimationTest, CardPlacementEffectsDemo)
 
 TEST_F(AnimationTest, ScrollingTextDemo)
 {
+  nom::Font font;
+  nom::Text rendered_text;
+
   // #define DEV_SCROLLING_TEXT_NO_WAIT_TIMER
 
   // Testing parameters
@@ -569,8 +453,10 @@ TEST_F(AnimationTest, ScrollingTextDemo)
   // Stretched dimensions to cover entire window
   bg_tex->set_size(WINDOW_DIMS);
 
-  nom::Font font;
-  nom::Text rendered_text;
+  auto bg_sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(bg_sprite != nullptr);
+  EXPECT_EQ(true, bg_sprite->set_texture(bg_tex) );
 
   nom::set_file_root( resources[1].path() );
   if( font.load( resources[1].path() + "gameover.fnt" ) == false ) {
@@ -581,29 +467,45 @@ TEST_F(AnimationTest, ScrollingTextDemo)
   rendered_text.set_font(&font);
   rendered_text.set_text("Hello, world!");
   rendered_text.set_position( Point2i(0,0) );
-  nom::set_alignment(&rendered_text, Point2i::zero, WINDOW_DIMS, Anchor::MiddleLeft);
 
-  std::shared_ptr<Transformable> anim_text;
-  std::shared_ptr<Texture> anim_fade_tex;
+  // anim_text_tex; this is the rendered_text object's internal texture; used
+  // for position translations on the rendered text
+  auto anim_text_tex =
+    std::shared_ptr<Texture>( rendered_text.texture() );
+  ASSERT_TRUE(anim_text_tex != nullptr);
 
-  anim_text = rendered_text.clone();
-  anim_fade_tex = rendered_text.texture_clone();
+  auto anim_text_sprite = std::make_shared<Sprite>();
+  ASSERT_TRUE(anim_text_sprite != nullptr);
+  EXPECT_EQ(true, anim_text_sprite->set_texture(anim_text_tex) );
+
+  // anim_text_tex; this is the rendered_text object's internal texture; used
+  // for alpha blending animations
+  auto anim_fade_tex =
+    std::shared_ptr<Texture>( rendered_text.texture() );
+  ASSERT_TRUE(anim_fade_tex != nullptr);
+
+  auto anim_fade_sprite = std::make_shared<Sprite>();
+  ASSERT_TRUE(anim_fade_sprite != nullptr);
+  EXPECT_EQ(true, anim_fade_sprite->set_texture(anim_fade_tex) );
+
+  nom::set_alignment( anim_text_sprite.get(), rendered_text.position(),
+                      WINDOW_DIMS, Anchor::MiddleLeft );
 
   // Initialize texture with its starting alpha value for testing alpha
   // blending to full opacity
-  anim_fade_tex->set_alpha(Color4i::ALPHA_TRANSPARENT);
+  anim_fade_sprite->set_alpha(Color4i::ALPHA_TRANSPARENT);
 
   auto anim_translate0 =
-    nom::create_action<nom::MoveByAction>(anim_text, Point2i(200, 0), MOVE_BY_DURATION);
+    nom::create_action<nom::MoveByAction>(anim_text_sprite, Point2i(200, 0), MOVE_BY_DURATION);
 
   auto anim_translate2 =
-    nom::create_action<nom::MoveByAction>(anim_text, Point2i(0,300), MOVE_BY_DURATION);
+    nom::create_action<nom::MoveByAction>(anim_text_sprite, Point2i(0,300), MOVE_BY_DURATION);
 
   auto anim_fade_out0 =
-    nom::create_action<nom::FadeOutAction>(anim_fade_tex, FADE_OUT_DURATION);
+    nom::create_action<nom::FadeOutAction>(anim_fade_sprite, FADE_OUT_DURATION);
 
   auto anim_fade_in =
-    nom::create_action<nom::FadeInAction>(anim_fade_tex, FADE_IN_DURATION);
+    nom::create_action<nom::FadeInAction>(anim_fade_sprite, FADE_IN_DURATION);
   ASSERT_TRUE(anim_fade_in != nullptr);
 
   auto wait1s =
@@ -646,7 +548,7 @@ TEST_F(AnimationTest, ScrollingTextDemo)
   }
 
   auto scroll_right_again_action =
-    nom::create_action<nom::MoveByAction>(anim_text, Point2i(200,0), MOVE_BY_DURATION);
+    nom::create_action<nom::MoveByAction>(anim_text_sprite, Point2i(200,0), MOVE_BY_DURATION);
   ASSERT_TRUE(scroll_right_again_action != nullptr);
 
   auto scroll_right_again =
@@ -657,7 +559,7 @@ TEST_F(AnimationTest, ScrollingTextDemo)
   scroll_right_again->set_timing_mode(TIMING_MODE);
 
   auto scroll_up_move_action =
-    nom::create_action<nom::MoveByAction>(anim_text, Point2i(0,-300), MOVE_BY_DURATION);
+    nom::create_action<nom::MoveByAction>(anim_text_sprite, Point2i(0,-300), MOVE_BY_DURATION);
   ASSERT_TRUE(scroll_up_move_action != nullptr);
 
   auto scroll_up =
@@ -693,7 +595,7 @@ TEST_F(AnimationTest, ScrollingTextDemo)
   }
 
   auto fade_screen_out =
-    nom::create_action<nom::FadeOutAction>(bg_tex, FADE_OUT_DURATION);
+    nom::create_action<nom::FadeOutAction>(bg_sprite, FADE_OUT_DURATION);
 
   auto fade_screen_out_action =
     nom::create_action<SequenceAction>( {fade_screen_out}, "fade_screen_out");
@@ -706,9 +608,6 @@ TEST_F(AnimationTest, ScrollingTextDemo)
   }
 
   EXPECT_EQ(0, this->player.num_actions() );
-  // NOTE: Windows build requires that we use the Lambda this capture list, [=]
-  // or else these calls will fail with a SEH exception. The reference variable
-  // capture list, [&] works for us on OS X...
   this->run_action_ret =
   this->player.run_action(wait3s, [=]() {
     EXPECT_EQ(1, this->player.num_actions() );
@@ -721,10 +620,11 @@ TEST_F(AnimationTest, ScrollingTextDemo)
     this->player.run_action(scroll_right, [=]() {
 
       EXPECT_EQ(1, this->player.num_actions() );
-      EXPECT_EQ( Point2i(200,195), anim_text->position() );
+      EXPECT_EQ( Point2i(200,195), anim_text_sprite->position() );
 
       this->expected_alpha_in_params( anim_fade_in.get(),
-                                      Color4i::ALPHA_OPAQUE, anim_fade_tex.get() );
+                                      Color4i::ALPHA_OPAQUE,
+                                      anim_fade_sprite.get() );
 
       this->expected_action_params(scroll_right.get(), 2, "scroll_right" );
 
@@ -736,8 +636,8 @@ TEST_F(AnimationTest, ScrollingTextDemo)
       this->player.run_action(scroll_left, [=]() {
 
         EXPECT_EQ(1, this->player.num_actions() );
-        EXPECT_EQ( Point2i(0,195), anim_text->position() );
-        EXPECT_EQ( Color4i::ALPHA_OPAQUE, anim_fade_tex->alpha() );
+        EXPECT_EQ( Point2i(0,195), anim_text_sprite->position() );
+        EXPECT_EQ( Color4i::ALPHA_OPAQUE, anim_fade_sprite->alpha() );
 
         this->expected_common_params( scroll_left_action.get(),
                                       MOVE_BY_DURATION, SPEED_MOD,
@@ -746,8 +646,8 @@ TEST_F(AnimationTest, ScrollingTextDemo)
         this->player.run_action(scroll_right_again, [=]() {
 
           EXPECT_EQ(1, this->player.num_actions() );
-          EXPECT_EQ( Point2i(200,195), anim_text->position() );
-          EXPECT_EQ( Color4i::ALPHA_OPAQUE, anim_fade_tex->alpha() );
+          EXPECT_EQ( Point2i(200,195), anim_text_sprite->position() );
+          EXPECT_EQ( Color4i::ALPHA_OPAQUE, anim_fade_sprite->alpha() );
 
           this->expected_action_params( scroll_right_again.get(), 1,
                                         "scroll_right_again" );
@@ -758,14 +658,12 @@ TEST_F(AnimationTest, ScrollingTextDemo)
           this->player.run_action(scroll_up, [=]() {
 
             EXPECT_EQ(1, this->player.num_actions() );
-            EXPECT_EQ( Point2i(200,-105), anim_text->position() );
-
+            EXPECT_EQ( Point2i(200,-105), anim_text_sprite->position() );
             this->expected_alpha_out_params(  anim_fade_out0.get(),
                                               Color4i::ALPHA_TRANSPARENT,
                                               nullptr,
                                               "scroll_up" );
             this->expected_action_params(scroll_up.get(), 2, "scroll_up" );
-
             this->expected_common_params( scroll_up_move_action.get(),
                                           MOVE_BY_DURATION, SPEED_MOD,
                                           "scroll_up" );
@@ -776,15 +674,15 @@ TEST_F(AnimationTest, ScrollingTextDemo)
             // Reset the initial alpha value for the next action to re-use;
             // we are using a shallow-copy of the fade out action -- the
             // underlying texture data is shared across clones
-            anim_fade_tex->set_alpha(Color4i::ALPHA_OPAQUE);
+            anim_fade_sprite->set_alpha(Color4i::ALPHA_OPAQUE);
 
             this->player.run_action(scroll_down_repeat2, [=]() {
 
               EXPECT_EQ(1, this->player.num_actions() );
-              EXPECT_EQ( Point2i(200,300), anim_text->position() );
+              EXPECT_EQ( Point2i(200,300), anim_text_sprite->position() );
               this->expected_alpha_out_params(  anim_fade_out0.get(),
                                                 Color4i::ALPHA_TRANSPARENT,
-                                                anim_fade_tex.get(),
+                                                anim_fade_sprite.get(),
                                                 "scroll_down_repeat2" );
 
               this->expected_repeat_params( scroll_down_repeat2_translate.get(),
@@ -808,7 +706,7 @@ TEST_F(AnimationTest, ScrollingTextDemo)
                 EXPECT_EQ(1, this->player.num_actions() );
                 this->expected_alpha_out_params(  fade_screen_out.get(),
                                                   Color4i::ALPHA_TRANSPARENT,
-                                                  bg_tex.get(), "fade_screen_out" );
+                                                  bg_sprite.get(), "fade_screen_out" );
 
                 this->expected_action_params( fade_screen_out_action.get(), 1,
                                               "fade_screen_out" );
@@ -825,18 +723,18 @@ TEST_F(AnimationTest, ScrollingTextDemo)
   << "Failed to queue one or more actions!";
   EXPECT_EQ(1, this->player.num_actions() );
 
-  this->append_render_callback( [&](const RenderWindow& win) {
+  this->append_render_callback( [=, &bg_sprite, &anim_text_sprite] (const RenderWindow& win) {
 
     this->render_window().fill(Color4i::Black);
 
     // Render a pretty backdrop for our animation
-    if( bg_tex != nullptr ) {
-      bg_tex->draw( this->render_window() );
+    if( bg_sprite != nullptr ) {
+      bg_sprite->draw( this->render_window() );
     }
 
     // Render our animation's text
-    if( anim_text != nullptr ) {
-      anim_text->draw( this->render_window() );
+    if( anim_text_sprite != nullptr ) {
+      anim_text_sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);

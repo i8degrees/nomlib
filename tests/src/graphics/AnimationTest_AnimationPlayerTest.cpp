@@ -69,20 +69,32 @@ TEST_F(AnimationTest, GroupActionFinishEquality)
     std::make_shared<Rectangle>(IntRect(RECT3_POS, RECT_SIZE), Color4i::Yellow);
   ASSERT_TRUE(rect3 != nullptr);
 
+  auto sprite0 = std::make_shared<Sprite>( rect0->texture() );
+  ASSERT_TRUE(sprite0 != nullptr);
+
+  auto sprite1 = std::make_shared<Sprite>( rect1->texture() );
+  ASSERT_TRUE(sprite1 != nullptr);
+
+  auto sprite2 = std::make_shared<Sprite>( rect2->texture() );
+  ASSERT_TRUE(sprite2 != nullptr);
+
+  auto sprite3 = std::make_shared<Sprite>( rect3->texture() );
+  ASSERT_TRUE(sprite3 != nullptr);
+
   auto translate0 =
-    nom::create_action<MoveByAction>(rect0, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite0, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate0 != nullptr);
 
   auto translate1 =
-    nom::create_action<MoveByAction>(rect1, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite1, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate1 != nullptr);
 
   auto translate2 =
-    nom::create_action<MoveByAction>(rect2, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite2, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate2 != nullptr);
 
   auto translate3 =
-    nom::create_action<MoveByAction>(rect3, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite3, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate3 != nullptr);
 
   auto action0 =
@@ -103,8 +115,8 @@ TEST_F(AnimationTest, GroupActionFinishEquality)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX0_POS, rect0->position() );
-    EXPECT_EQ( EXPECTED_TEX1_POS, rect1->position() );
+    EXPECT_EQ( EXPECTED_TEX0_POS, sprite0->position() );
+    EXPECT_EQ( EXPECTED_TEX1_POS, sprite1->position() );
     this->expected_action_params(action0.get(), 2);
     this->expected_common_params(translate0.get(), DURATION, SPEED_MOD0);
     this->expected_common_params(translate1.get(), DURATION, SPEED_MOD0);
@@ -119,8 +131,8 @@ TEST_F(AnimationTest, GroupActionFinishEquality)
   this->run_action_ret =
   this->player.run_action(action1, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX2_POS, rect2->position() );
-    EXPECT_EQ( EXPECTED_TEX3_POS, rect3->position() );
+    EXPECT_EQ( EXPECTED_TEX2_POS, sprite2->position() );
+    EXPECT_EQ( EXPECTED_TEX3_POS, sprite3->position() );
     this->expected_action_params(action1.get(), 2);
     this->expected_common_params(translate2.get(), DURATION, SPEED_MOD1);
     this->expected_common_params(translate3.get(), DURATION, SPEED_MOD1);
@@ -140,20 +152,20 @@ TEST_F(AnimationTest, GroupActionFinishEquality)
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's rectangles
-    if( rect0 != nullptr ) {  // action0
-      rect0->draw( this->render_window() );
+    if( sprite0 != nullptr ) {  // action0
+      sprite0->draw( this->render_window() );
     }
 
-    if( rect1 != nullptr ) {  // action1
-      rect1->draw( this->render_window() );
+    if( sprite1 != nullptr ) {  // action1
+      sprite1->draw( this->render_window() );
     }
 
-    if( rect2 != nullptr ) {  // action2
-      rect2->draw( this->render_window() );
+    if( sprite2 != nullptr ) {  // action2
+      sprite2->draw( this->render_window() );
     }
 
-    if( rect3 != nullptr ) {  // action3
-      rect3->draw( this->render_window() );
+    if( sprite3 != nullptr ) {  // action3
+      sprite3->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -248,20 +260,32 @@ TEST_F(AnimationTest, ConcurrentGroupActions)
     std::make_shared<Rectangle>(IntRect(RECT3_POS, RECT_SIZE), Color4i::Yellow);
   ASSERT_TRUE(rect3 != nullptr);
 
+  auto sprite0 = std::make_shared<Sprite>( rect0->texture() );
+  ASSERT_TRUE(sprite0 != nullptr);
+
+  auto sprite1 = std::make_shared<Sprite>( rect1->texture() );
+  ASSERT_TRUE(sprite1 != nullptr);
+
+  auto sprite2 = std::make_shared<Sprite>( rect2->texture() );
+  ASSERT_TRUE(sprite2 != nullptr);
+
+  auto sprite3 = std::make_shared<Sprite>( rect3->texture() );
+  ASSERT_TRUE(sprite3 != nullptr);
+
   auto translate0 =
-    nom::create_action<MoveByAction>(rect0, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite0, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate0 != nullptr);
 
   auto translate1 =
-    nom::create_action<MoveByAction>(rect1, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite1, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate1 != nullptr);
 
   auto translate2 =
-    nom::create_action<MoveByAction>(rect2, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite2, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate2 != nullptr);
 
   auto translate3 =
-    nom::create_action<MoveByAction>(rect3, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite3, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate3 != nullptr);
 
   translate0->set_name("translate0");
@@ -293,7 +317,7 @@ TEST_F(AnimationTest, ConcurrentGroupActions)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX0_POS, rect0->position() );
+    EXPECT_EQ( EXPECTED_TEX0_POS, sprite0->position() );
     this->expected_action_params(action0.get(), 1);
     this->expected_common_params(translate0.get(), DURATION, SPEED_MOD0);
   });
@@ -304,7 +328,7 @@ TEST_F(AnimationTest, ConcurrentGroupActions)
   this->run_action_ret =
   this->player.run_action(action1, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX1_POS, rect1->position() );
+    EXPECT_EQ( EXPECTED_TEX1_POS, sprite1->position() );
     this->expected_action_params(action1.get(), 1);
     this->expected_common_params(translate1.get(), DURATION, SPEED_MOD1);
   });
@@ -315,7 +339,7 @@ TEST_F(AnimationTest, ConcurrentGroupActions)
   this->run_action_ret =
   this->player.run_action(action2, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX2_POS, rect2->position() );
+    EXPECT_EQ( EXPECTED_TEX2_POS, sprite2->position() );
     this->expected_action_params(action2.get(), 1);
     this->expected_common_params(translate2.get(), DURATION, SPEED_MOD2);
   });
@@ -326,7 +350,7 @@ TEST_F(AnimationTest, ConcurrentGroupActions)
   this->run_action_ret =
   this->player.run_action(action3, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX3_POS, rect3->position() );
+    EXPECT_EQ( EXPECTED_TEX3_POS, sprite3->position() );
     this->expected_action_params(action3.get(), 1);
     this->expected_common_params(translate3.get(), DURATION, SPEED_MOD3);
   });
@@ -355,20 +379,20 @@ TEST_F(AnimationTest, ConcurrentGroupActions)
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's rectangles
-    if( rect0 != nullptr ) {  // action0
-      rect0->draw( this->render_window() );
+    if( sprite0 != nullptr ) {  // action0
+      sprite0->draw( this->render_window() );
     }
 
-    if( rect1 != nullptr ) {  // action1
-      rect1->draw( this->render_window() );
+    if( sprite1 != nullptr ) {  // action1
+      sprite1->draw( this->render_window() );
     }
 
-    if( rect2 != nullptr ) {  // action2
-      rect2->draw( this->render_window() );
+    if( sprite2 != nullptr ) {  // action2
+      sprite2->draw( this->render_window() );
     }
 
-    if( rect3 != nullptr ) {  // action3
-      rect3->draw( this->render_window() );
+    if( sprite3 != nullptr ) {  // action3
+      sprite3->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -423,20 +447,32 @@ TEST_F(AnimationTest, ConcurrentSequenceActions)
     std::make_shared<Rectangle>(IntRect(RECT3_POS, RECT_SIZE), Color4i::Yellow);
   ASSERT_TRUE(rect3 != nullptr);
 
+  auto sprite0 = std::make_shared<Sprite>( rect0->texture() );
+  ASSERT_TRUE(sprite0 != nullptr);
+
+  auto sprite1 = std::make_shared<Sprite>( rect1->texture() );
+  ASSERT_TRUE(sprite1 != nullptr);
+
+  auto sprite2 = std::make_shared<Sprite>( rect2->texture() );
+  ASSERT_TRUE(sprite2 != nullptr);
+
+  auto sprite3 = std::make_shared<Sprite>( rect3->texture() );
+  ASSERT_TRUE(sprite3 != nullptr);
+
   auto translate0 =
-    nom::create_action<MoveByAction>(rect0, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite0, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate0 != nullptr);
 
   auto translate1 =
-    nom::create_action<MoveByAction>(rect1, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite1, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate1 != nullptr);
 
   auto translate2 =
-    nom::create_action<MoveByAction>(rect2, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite2, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate2 != nullptr);
 
   auto translate3 =
-    nom::create_action<MoveByAction>(rect3, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite3, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate3 != nullptr);
 
   translate0->set_name("translate0");
@@ -462,8 +498,8 @@ TEST_F(AnimationTest, ConcurrentSequenceActions)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX0_POS, rect0->position() );
-    EXPECT_EQ( EXPECTED_TEX1_POS, rect1->position() );
+    EXPECT_EQ( EXPECTED_TEX0_POS, sprite0->position() );
+    EXPECT_EQ( EXPECTED_TEX1_POS, sprite1->position() );
     this->expected_action_params(action0.get(), 2);
     this->expected_common_params(translate0.get(), DURATION, SPEED_MOD0);
     this->expected_common_params(translate1.get(), DURATION, SPEED_MOD1);
@@ -475,8 +511,8 @@ TEST_F(AnimationTest, ConcurrentSequenceActions)
   this->run_action_ret =
   this->player.run_action(action1, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX2_POS, rect2->position() );
-    EXPECT_EQ( EXPECTED_TEX3_POS, rect3->position() );
+    EXPECT_EQ( EXPECTED_TEX2_POS, sprite2->position() );
+    EXPECT_EQ( EXPECTED_TEX3_POS, sprite3->position() );
     this->expected_action_params(action1.get(), 2);
     this->expected_common_params(translate2.get(), DURATION, SPEED_MOD2);
     this->expected_common_params(translate3.get(), DURATION, SPEED_MOD3);
@@ -504,20 +540,20 @@ TEST_F(AnimationTest, ConcurrentSequenceActions)
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's rectangles
-    if( rect0 != nullptr ) {  // action0
-      rect0->draw( this->render_window() );
+    if( sprite0 != nullptr ) {  // action0
+      sprite0->draw( this->render_window() );
     }
 
-    if( rect1 != nullptr ) {  // action01
-      rect1->draw( this->render_window() );
+    if( sprite1 != nullptr ) {  // action01
+      sprite1->draw( this->render_window() );
     }
 
-    if( rect2 != nullptr ) {  // action1
-      rect2->draw( this->render_window() );
+    if( sprite2 != nullptr ) {  // action1
+      sprite2->draw( this->render_window() );
     }
 
-    if( rect3 != nullptr ) {  // action1
-      rect3->draw( this->render_window() );
+    if( sprite3 != nullptr ) {  // action1
+      sprite3->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -572,20 +608,32 @@ TEST_F(AnimationTest, ConcurrentGroupAndSequenceActions)
     std::make_shared<Rectangle>(IntRect(RECT3_POS, RECT_SIZE), Color4i::Yellow);
   ASSERT_TRUE(rect3 != nullptr);
 
+  auto sprite0 = std::make_shared<Sprite>( rect0->texture() );
+  ASSERT_TRUE(sprite0 != nullptr);
+
+  auto sprite1 = std::make_shared<Sprite>( rect1->texture() );
+  ASSERT_TRUE(sprite1 != nullptr);
+
+  auto sprite2 = std::make_shared<Sprite>( rect2->texture() );
+  ASSERT_TRUE(sprite2 != nullptr);
+
+  auto sprite3 = std::make_shared<Sprite>( rect3->texture() );
+  ASSERT_TRUE(sprite3 != nullptr);
+
   auto translate0 =
-    nom::create_action<MoveByAction>(rect0, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite0, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate0 != nullptr);
 
   auto translate1 =
-    nom::create_action<MoveByAction>(rect1, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite1, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate1 != nullptr);
 
   auto translate2 =
-    nom::create_action<MoveByAction>(rect2, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite2, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate2 != nullptr);
 
   auto translate3 =
-    nom::create_action<MoveByAction>(rect3, TRANSLATE_POS, DURATION);
+    nom::create_action<MoveByAction>(sprite3, TRANSLATE_POS, DURATION);
   ASSERT_TRUE(translate3 != nullptr);
 
   translate0->set_name("translate0");
@@ -612,8 +660,8 @@ TEST_F(AnimationTest, ConcurrentGroupAndSequenceActions)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX0_POS, rect0->position() );
-    EXPECT_EQ( EXPECTED_TEX1_POS, rect1->position() );
+    EXPECT_EQ( EXPECTED_TEX0_POS, sprite0->position() );
+    EXPECT_EQ( EXPECTED_TEX1_POS, sprite1->position() );
     this->expected_action_params(action0.get(), 2);
     this->expected_common_params(translate0.get(), DURATION, SPEED_MOD0);
     this->expected_common_params(translate1.get(), DURATION, SPEED_MOD1);
@@ -626,8 +674,8 @@ TEST_F(AnimationTest, ConcurrentGroupAndSequenceActions)
   this->run_action_ret =
   this->player.run_action(action1, [=]() {
 
-    EXPECT_EQ( EXPECTED_TEX2_POS, rect2->position() );
-    EXPECT_EQ( EXPECTED_TEX3_POS, rect3->position() );
+    EXPECT_EQ( EXPECTED_TEX2_POS, sprite2->position() );
+    EXPECT_EQ( EXPECTED_TEX3_POS, sprite3->position() );
     this->expected_action_params(action1.get(), 2);
     this->expected_common_params(translate2.get(), DURATION, SPEED_MOD2);
     this->expected_common_params(translate3.get(), DURATION, SPEED_MOD3);
@@ -673,23 +721,23 @@ TEST_F(AnimationTest, ConcurrentGroupAndSequenceActions)
   this->append_render_callback( [=](const RenderWindow& win) {
 
     // action0
-    if( rect0 != nullptr ) {
-      rect0->draw( this->render_window() );
+    if( sprite0 != nullptr ) {
+      sprite0->draw( this->render_window() );
     }
 
     // action0
-    if( rect1 != nullptr ) {
-      rect1->draw( this->render_window() );
+    if( sprite1 != nullptr ) {
+      sprite1->draw( this->render_window() );
     }
 
     // action1
-    if( rect2 != nullptr ) {
-      rect2->draw( this->render_window() );
+    if( sprite2 != nullptr ) {
+      sprite2->draw( this->render_window() );
     }
 
     // action1
-    if( rect3 != nullptr ) {
-      rect3->draw( this->render_window() );
+    if( sprite3 != nullptr ) {
+      sprite3->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);

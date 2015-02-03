@@ -1,0 +1,25 @@
+{
+  "resources":
+  {
+    "search_prefix":
+    [
+      "../../../",
+      "../../",
+      "./"
+    ],
+
+    "path": "Resources/tests/graphics/SpriteTest/"
+  },
+
+  "common":
+  {
+    "search_prefix":
+    [
+      "../../../",
+      "../../",
+      "./"
+    ],
+
+    "path": "Resources/examples/app/"
+  }
+}

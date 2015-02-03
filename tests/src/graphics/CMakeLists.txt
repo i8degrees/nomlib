@@ -6,6 +6,7 @@ set( NOM_BUILD_BITMAP_FONT_TEST ON )
 set( NOM_BUILD_TRUETYPE_FONT_TEST ON )
 set( NOM_BUILD_BMFONT_TEST ON )
 set( NOM_BUILD_ANIMATION_TESTS ON )
+set( NOM_BUILD_SPRITE_TESTS ON )
 
 if( NOM_BUILD_RENDERWINDOW_TESTS )
 
@@ -231,3 +232,20 @@ if(NOM_BUILD_ANIMATION_TESTS)
   )
 
 endif(NOM_BUILD_ANIMATION_TESTS)
+
+if(NOM_BUILD_SPRITE_TESTS)
+
+  add_executable(SpriteTest "SpriteTest.cpp")
+
+  target_link_libraries(SpriteTest nomlib-graphics nomlib-visual-unit-test)
+
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/SpriteTest
+                    "" # args
+                    "SpriteTest.cpp" )
+
+  # Copy resource files for the test
+  install(  FILES
+            "${NOM_TESTS_RESOURCES_DIR}/graphics/SpriteTest.json"
+            DESTINATION "${TESTS_INSTALL_DIR}" )
+
+endif(NOM_BUILD_SPRITE_TESTS)

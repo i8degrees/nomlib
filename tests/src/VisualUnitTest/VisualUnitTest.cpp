@@ -328,6 +328,8 @@ VisualUnitTest::~VisualUnitTest( void )
   {
     VisualUnitTest::visual_test_.save_file( fp );
   }
+
+  NOM_DELETE_PTR(fp);
 }
 
 int VisualUnitTest::on_run( void )

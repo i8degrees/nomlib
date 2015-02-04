@@ -51,14 +51,14 @@ Rectangle::Rectangle(const IntRect& rect, const Color4i& fill)
   this->set_fill_color(fill);
 }
 
-std::unique_ptr<Rectangle::derived_type> Rectangle::clone() const
-{
-  return( std::unique_ptr<self_type>( new self_type(*this) ) );
-}
-
 ObjectTypeInfo Rectangle::type() const
 {
   return NOM_OBJECT_TYPE_INFO( self_type );
+}
+
+Shape* Rectangle::clone() const
+{
+  return( new self_type(*this) );
 }
 
 Texture* Rectangle::texture() const

@@ -63,7 +63,7 @@ class Line: public Shape
     Line ( const IntRect& bounds, const Color4i& outline );
 
     /// \brief Implements the required Shape::clone method.
-    virtual std::unique_ptr<derived_class> clone() const override;
+    virtual Shape* clone() const override;
 
     /// \brief Re-implements the IObject::type method.
     ///

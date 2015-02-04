@@ -139,9 +139,9 @@ void Text::set_position(const Point2i& pos)
   }
 }
 
-std::unique_ptr<Text::derived_type> Text::clone() const
+Transformable* Text::clone() const
 {
-  return( std::unique_ptr<self_type>( new self_type(*this) ) );
+  return( new self_type(*this) );
 }
 
 ObjectTypeInfo Text::type( void ) const
@@ -154,12 +154,12 @@ const Font& Text::font() const
   return this->font_;
 }
 
-std::unique_ptr<Texture> Text::texture() const
+Texture* Text::texture() const
 {
   // NOTE: It is necessary to always return a new instance because the stored
   // texture may be reallocated at any time, i.e.: glyph rebuild from
   // point size modification -- leaving the end-user with a dangling pointer!
-  return( std::unique_ptr<Texture>( new Texture(*this->rendered_text_) ) );
+  return( new Texture(*this->rendered_text_) );
 }
 
 bool Text::valid ( void ) const

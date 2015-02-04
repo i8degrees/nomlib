@@ -53,6 +53,11 @@ SpriteSheet::~SpriteSheet()
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
+SpriteSheet* SpriteSheet::clone() const
+{
+  return( new SpriteSheet(*this) );
+}
+
 const IntRect& SpriteSheet::dimensions(int index) const
 {
   NOM_ASSERT( index < this->sheet_.size() );
@@ -105,11 +110,6 @@ int SpriteSheet::sheet_spacing() const
 int SpriteSheet::total_frames() const
 {
   return this->total_frames_;
-}
-
-SpriteSheet::SharedPtr SpriteSheet::clone() const
-{
-  return SpriteSheet::SharedPtr ( new SpriteSheet ( *this ) );
 }
 
 bool SpriteSheet::load_file(const std::string& filename)

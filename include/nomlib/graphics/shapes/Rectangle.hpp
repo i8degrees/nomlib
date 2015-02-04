@@ -63,13 +63,13 @@ class Rectangle: public Shape
     /// \param color nom::Color4i color to fill with.
     Rectangle(const IntRect& rect, const Color4i& fill);
 
-    /// \note Implements the required Shape::clone method.
-    virtual std::unique_ptr<derived_type> clone() const override;
-
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
     ObjectTypeInfo type() const;
+
+    /// \note Implements the required Shape::clone method.
+    virtual Shape* clone() const override;
 
     /// \brief Get a texture representation of the rectangle.
     ///

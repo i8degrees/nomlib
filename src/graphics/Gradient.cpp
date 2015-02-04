@@ -79,12 +79,12 @@ ObjectTypeInfo Gradient::type( void ) const
   return NOM_OBJECT_TYPE_INFO( self_type );
 }
 
-std::unique_ptr<Texture> Gradient::texture() const
+Texture* Gradient::texture() const
 {
   // NOTE: It is necessary to always return a new instance because the stored
   // texture may be reallocated at any time from within ::update -- leaving us
   // with with a dangling pointer!
-  return( std::unique_ptr<Texture>( new Texture(this->texture_) ) );
+  return( new Texture(this->texture_) );
 }
 
 bool Gradient::valid( void ) const

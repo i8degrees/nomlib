@@ -48,7 +48,7 @@ class SpriteSheet
   public:
     static const VersionInfo VERSION;
 
-    typedef std::shared_ptr<SpriteSheet> SharedPtr;
+    typedef SpriteSheet self_type;
 
     /// Default construct for initializing instance variables to their
     /// respective defaults.
@@ -58,7 +58,7 @@ class SpriteSheet
     ~SpriteSheet();
 
     /// Make a duplicate of this object's instance
-    SpriteSheet::SharedPtr clone() const;
+    SpriteSheet* clone() const;
 
     /// Get the calculations made for a particular ID number.
     const IntRect& dimensions(int index) const;

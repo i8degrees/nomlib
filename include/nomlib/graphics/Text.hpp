@@ -110,7 +110,7 @@ class Text: public Transformable
     virtual void set_position(const Point2i& pos) override;
 
     /// \brief Implements the required IDrawable::clone method.
-    std::unique_ptr<derived_type> clone() const;
+    Transformable* clone() const;
 
     /// \brief Re-implements the IObject::type method.
     ///
@@ -124,7 +124,7 @@ class Text: public Transformable
     /// \returns A pointer to a new nom::Texture instance of the cached
     /// texture used for the rendered text. The returned pointer is owned by the
     /// caller.
-    std::unique_ptr<Texture> texture() const;
+    Texture* texture() const;
 
     /// Obtain validity of the Text object
     bool valid ( void ) const;

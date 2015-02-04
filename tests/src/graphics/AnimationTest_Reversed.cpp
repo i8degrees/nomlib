@@ -68,12 +68,8 @@ TEST_F(AnimationTest, FadeInActionReversed)
     nom::create_action<ReversedAction>(fade_in);
   ASSERT_TRUE(fade_in_reversed != nullptr);
 
-  auto tex_bg =
-    nom::create_action<SpriteAction>(sprite, DURATION);
-  ASSERT_TRUE(tex_bg != nullptr);
-
   auto action0 =
-    nom::create_action<GroupAction>( {fade_in_reversed, tex_bg}, "action0" );
+    nom::create_action<GroupAction>( {fade_in_reversed}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_mode(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
@@ -86,8 +82,7 @@ TEST_F(AnimationTest, FadeInActionReversed)
                                     sprite.get() );
     EXPECT_EQ(1, this->player.num_actions() );
 
-    this->expected_action_params(action0.get(), 2);
-    this->expected_common_params(tex_bg.get(), DURATION, SPEED_MOD);
+    this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
 
     this->quit(); // graceful exit
   });
@@ -146,16 +141,12 @@ TEST_F(AnimationTest, FadeOutActionReversed)
     nom::create_action<FadeOutAction>(sprite, DURATION);
   ASSERT_TRUE(fade_out != nullptr);
 
-  auto tex_bg =
-    nom::create_action<SpriteAction>(sprite, DURATION);
-  ASSERT_TRUE(tex_bg != nullptr);
-
   auto fade_out_reversed =
     nom::create_action<ReversedAction>(fade_out);
   ASSERT_TRUE(fade_out_reversed != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {fade_out_reversed, tex_bg}, "action0" );
+    nom::create_action<GroupAction>( {fade_out_reversed}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_mode(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
@@ -167,8 +158,7 @@ TEST_F(AnimationTest, FadeOutActionReversed)
     EXPECT_EQ(1, this->player.num_actions() );
     this->expected_alpha_out_params(  fade_out.get(), Color4i::ALPHA_OPAQUE,
                                       sprite.get() );
-    this->expected_action_params(action0.get(), 2);
-    this->expected_common_params(tex_bg.get(), DURATION, SPEED_MOD);
+    this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
 
     this->quit(); // graceful exit
   });
@@ -232,12 +222,8 @@ TEST_F(AnimationTest, FadeAlphaByActionReversed)
     nom::create_action<ReversedAction>(fade_by);
   ASSERT_TRUE(fade_by_reversed != nullptr);
 
-  auto tex_bg =
-    nom::create_action<SpriteAction>(sprite, DURATION);
-  ASSERT_TRUE(tex_bg != nullptr);
-
   auto action0 =
-    nom::create_action<GroupAction>( {fade_by_reversed, tex_bg}, "action0" );
+    nom::create_action<GroupAction>( {fade_by_reversed}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_mode(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
@@ -250,8 +236,7 @@ TEST_F(AnimationTest, FadeAlphaByActionReversed)
     EXPECT_EQ( FADE_BY, sprite->alpha() );
 
     EXPECT_EQ(1, this->player.num_actions() );
-    this->expected_action_params(action0.get(), 2);
-    this->expected_common_params(tex_bg.get(), DURATION, SPEED_MOD);
+    this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
 
     this->quit(); // graceful exit
   });
@@ -613,8 +598,12 @@ TEST_F(AnimationTest, SpriteActionReversed)
 
   EXPECT_EQ( anim_frames.size(), texture_filenames.size() );
 
+  auto sprite0 =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite0 != nullptr);
+
   auto tex_bg =
-    nom::create_action<SpriteAction>(anim_frames, FRAME_DURATION);
+    nom::create_action<SpriteTexturesAction>(sprite0, anim_frames, FRAME_DURATION);
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
@@ -628,9 +617,9 @@ TEST_F(AnimationTest, SpriteActionReversed)
   this->player.run_action(action0, [=]() {
 
     EXPECT_EQ(1, this->player.num_actions() );
-    this->expected_sprite_action_params(  tex_bg.get(), anim_frames.size(),
-                                          DURATION, SPEED_MOD,
-                                          "sprite_action_params" );
+    this->expected_sprite_textures_params(  tex_bg.get(), anim_frames.size(),
+                                            DURATION, SPEED_MOD,
+                                            "sprite_textures_params" );
     this->expected_common_params(tex_bg.get(), DURATION, SPEED_MOD);
 
     this->quit(); // graceful exit
@@ -639,11 +628,10 @@ TEST_F(AnimationTest, SpriteActionReversed)
   << "Failed to queue action0";
   EXPECT_EQ(1, this->player.num_actions() );
 
-  this->append_render_callback( [=](const RenderWindow& win) {
+  this->append_render_callback( [=, &sprite0](const RenderWindow& win) {
 
-    // Render our animation's texture
-    if( tex_bg != nullptr ) {
-      tex_bg->render(0);
+    if( sprite0 != nullptr && sprite0->valid() == true ) {
+      sprite0->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);

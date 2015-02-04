@@ -143,8 +143,8 @@ TEST_F(AnimationTest, GroupActionFinishEquality)
 
   this->append_update_callback( [=](float) {
 
-    if( this->player.action_running("action0") == true &&
-        this->player.action_running("action1") == true )
+    if( this->player.action_running("action0") == false &&
+        this->player.action_running("action1") == false )
     {
       this->quit();
     }
@@ -362,10 +362,10 @@ TEST_F(AnimationTest, ConcurrentGroupActions)
 
     uint32 last_delta = nom::ticks();
 
-    if( this->player.action_running("action0") == true &&
-        this->player.action_running("action1") == true &&
-        this->player.action_running("action2") == true &&
-        this->player.action_running("action3") == true )
+    if( this->player.action_running("action0") == false &&
+        this->player.action_running("action1") == false &&
+        this->player.action_running("action2") == false &&
+        this->player.action_running("action3") == false )
     {
       // Try to check for minimum test duration; the smallest speed modifier
       // should always be used for this calculation!
@@ -525,8 +525,8 @@ TEST_F(AnimationTest, ConcurrentSequenceActions)
 
     uint32 last_delta = nom::ticks();
 
-    if( this->player.action_running("action0") == true &&
-        this->player.action_running("action1") == true )
+    if( this->player.action_running("action0") == false &&
+        this->player.action_running("action1") == false )
     {
       // Try to check for minimum test duration; the smallest speed modifier
       // should always be used for this calculation!
@@ -688,8 +688,8 @@ TEST_F(AnimationTest, ConcurrentGroupAndSequenceActions)
   this->append_update_callback( [=](float) {
 
     uint32 last_delta = nom::ticks();
-    if( this->player.action_running("action0") == true &&
-        this->player.action_running("action1") == true )
+    if( this->player.action_running("action0") == false &&
+        this->player.action_running("action1") == false )
     {
       // EXPECT_EQ( ActionPlayer::IDLE, this->player.player_state() );
 
@@ -698,21 +698,6 @@ TEST_F(AnimationTest, ConcurrentGroupAndSequenceActions)
       if( last_delta < ( (DURATION * 1000) / SPEED_MOD0) ) {
         EXPECT_EQ( ( (DURATION * 1000) / SPEED_MOD0), last_delta);
       }
-
-      // FIXME:
-      // {
-      //   queue_container layers = this->actions( action0.get() );
-      //   ActionTimeComparisonResult ret =
-      //     nom::compare_action_timestamps(&this->player, layers[0].get(), layers[1].get() );
-      //   EXPECT_EQ(ActionTimeComparisonResult::ACTION2, ret);
-      // }
-
-      // {
-      //   queue_container layers = this->actions( action1.get() );
-      //   ActionTimeComparisonResult ret =
-      //     nom::compare_action_timestamps(&this->player, layers[0].get(), layers[1].get() );
-      //   EXPECT_EQ(ActionTimeComparisonResult::ACTION1, ret);
-      // }
 
       this->quit();
     }
@@ -744,6 +729,35 @@ TEST_F(AnimationTest, ConcurrentGroupAndSequenceActions)
   });
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F(AnimationTest, RunActionWithName)
+{
+  // Testing parameters
+  const float DURATION = 1.0f;
+  const Point2i TRANSLATE_POS(Point2i::zero);
+
+  auto translate0 =
+    nom::create_action<MoveByAction>(nullptr, TRANSLATE_POS, DURATION);
+  ASSERT_TRUE(translate0 != nullptr);
+
+  auto action0 =
+    nom::create_action<GroupAction>( {translate0} );
+  ASSERT_TRUE(action0 != nullptr);
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, "action0");
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue action0";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  EXPECT_EQ(true, this->player.action_running("action0") );
+  EXPECT_FALSE(action0.get() == this->player.action("action0") )
+  << "action0 should not be equal to the returned action; ::run_action should"
+  << "be cloning the instance";
+
+  EXPECT_EQ(1, this->player.num_actions() );
 }
 
 } // namespace nom

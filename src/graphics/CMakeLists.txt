@@ -102,8 +102,8 @@ if( NOM_BUILD_GRAPHICS_UNIT )
         ${SRC_DIR}/graphics/IActionObject.cpp
         ${INC_DIR}/graphics/IActionObject.hpp
 
-        ${SRC_DIR}/graphics/SpriteAction.cpp
-        ${INC_DIR}/graphics/SpriteAction.hpp
+        ${SRC_DIR}/graphics/SpriteTexturesAction.cpp
+        ${INC_DIR}/graphics/SpriteTexturesAction.hpp
 
         ${SRC_DIR}/graphics/SpriteBatchAction.cpp
         ${INC_DIR}/graphics/SpriteBatchAction.hpp
@@ -122,9 +122,6 @@ if( NOM_BUILD_GRAPHICS_UNIT )
 
         ${SRC_DIR}/graphics/MoveByAction.cpp
         ${INC_DIR}/graphics/MoveByAction.hpp
-
-        ${SRC_DIR}/graphics/MoveToAction.cpp
-        ${INC_DIR}/graphics/MoveToAction.hpp
 
         ${SRC_DIR}/graphics/ScaleByAction.cpp
         ${INC_DIR}/graphics/ScaleByAction.hpp
@@ -156,6 +153,9 @@ if( NOM_BUILD_GRAPHICS_UNIT )
 
         ${SRC_DIR}/graphics/ColorizeAction.cpp
         ${INC_DIR}/graphics/ColorizeAction.hpp
+
+        ${SRC_DIR}/graphics/DispatchQueue.cpp
+        ${INC_DIR}/graphics/DispatchQueue.hpp
 
         ${SRC_DIR}/graphics/ActionPlayer.cpp
         ${INC_DIR}/graphics/ActionPlayer.hpp

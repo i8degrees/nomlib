@@ -64,15 +64,10 @@ TEST_F(AnimationTest, FadeInAction)
     nom::create_action<FadeInAction>(sprite, DURATION);
   ASSERT_TRUE(fade_in != nullptr);
 
-  auto tex_bg =
-    nom::create_action<SpriteAction>(sprite, DURATION);
-  ASSERT_TRUE(tex_bg != nullptr);
-
   fade_in->set_name("fade_in");
-  tex_bg->set_name("tex_bg");
 
   auto action0 =
-    nom::create_action<GroupAction>( {fade_in, tex_bg}, "action0" );
+    nom::create_action<GroupAction>( {fade_in}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_mode(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
@@ -86,9 +81,8 @@ TEST_F(AnimationTest, FadeInAction)
 
     EXPECT_EQ(1, this->player.num_actions() );
 
-    this->expected_action_params(action0.get(), 2);
+    this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
     this->expected_common_params(fade_in.get(), DURATION, SPEED_MOD);
-    this->expected_common_params(tex_bg.get(), DURATION, SPEED_MOD);
 
     this->quit(); // graceful exit
   });
@@ -101,9 +95,10 @@ TEST_F(AnimationTest, FadeInAction)
                         Anchor::MiddleCenter );
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
+  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
+
     // Render our animation's texture
-    if( sprite != nullptr ) {
+    if( sprite != nullptr && sprite->valid() == true ) {
       sprite->draw( this->render_window() );
     }
 
@@ -147,12 +142,8 @@ TEST_F(AnimationTest, FadeInActionFromNonTransparentOpacity)
     nom::create_action<FadeInAction>(sprite, DURATION);
   ASSERT_TRUE(fade_in != nullptr);
 
-  auto tex_bg =
-    nom::create_action<SpriteAction>(sprite, DURATION);
-  ASSERT_TRUE(tex_bg != nullptr);
-
   auto action0 =
-    nom::create_action<GroupAction>( {fade_in, tex_bg}, "action0" );
+    nom::create_action<GroupAction>( {fade_in}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_mode(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
@@ -165,9 +156,8 @@ TEST_F(AnimationTest, FadeInActionFromNonTransparentOpacity)
                                     sprite.get() );
 
     EXPECT_EQ(1, this->player.num_actions() );
-    this->expected_action_params(action0.get(), 2);
+    this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
     this->expected_common_params(fade_in.get(), DURATION, SPEED_MOD);
-    this->expected_common_params(tex_bg.get(), DURATION, SPEED_MOD);
 
     this->quit(); // graceful exit
   });
@@ -180,9 +170,10 @@ TEST_F(AnimationTest, FadeInActionFromNonTransparentOpacity)
                         Anchor::MiddleCenter );
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
+  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
+
     // Render our animation's texture
-    if( sprite != nullptr ) {
+    if( sprite != nullptr && sprite->valid() == true ) {
       sprite->draw( this->render_window() );
     }
 
@@ -226,12 +217,8 @@ TEST_F(AnimationTest, FadeOutAction)
     nom::create_action<FadeOutAction>(sprite, DURATION);
   ASSERT_TRUE(fade_out != nullptr);
 
-  auto tex_bg =
-    nom::create_action<SpriteAction>(sprite, DURATION);
-  ASSERT_TRUE(tex_bg != nullptr);
-
   auto action0 =
-    nom::create_action<GroupAction>( {fade_out, tex_bg}, "action0" );
+    nom::create_action<GroupAction>( {fade_out}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_mode(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
@@ -245,9 +232,8 @@ TEST_F(AnimationTest, FadeOutAction)
     this->expected_alpha_out_params(  fade_out.get(), Color4i::ALPHA_TRANSPARENT,
                                       sprite.get() );
 
-    this->expected_action_params(action0.get(), 2);
+    this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
     this->expected_common_params(fade_out.get(), DURATION, SPEED_MOD);
-    this->expected_common_params(tex_bg.get(), DURATION, SPEED_MOD);
 
     this->quit(); // graceful exit
   });
@@ -261,9 +247,10 @@ TEST_F(AnimationTest, FadeOutAction)
                         Anchor::MiddleCenter );
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
+  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
+
     // Render our animation's texture
-    if( sprite != nullptr ) {
+    if( sprite != nullptr && sprite->valid() == true ) {
       sprite->draw( this->render_window() );
     }
 
@@ -307,12 +294,8 @@ TEST_F(AnimationTest, FadeOutActionFromNonOpaqueOpacity)
     nom::create_action<FadeOutAction>(sprite, DURATION);
   ASSERT_TRUE(fade_out != nullptr);
 
-  auto tex_bg =
-    nom::create_action<SpriteAction>(sprite, DURATION);
-  ASSERT_TRUE(tex_bg != nullptr);
-
   auto action0 =
-    nom::create_action<GroupAction>( {fade_out, tex_bg}, "action0");
+    nom::create_action<GroupAction>( {fade_out}, "action0");
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_mode(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
@@ -326,9 +309,8 @@ TEST_F(AnimationTest, FadeOutActionFromNonOpaqueOpacity)
                                       sprite.get() );
 
     EXPECT_EQ(1, this->player.num_actions() );
-    this->expected_action_params(action0.get(), 2);
+    this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
     this->expected_common_params(fade_out.get(), DURATION, SPEED_MOD);
-    this->expected_common_params(tex_bg.get(), DURATION, SPEED_MOD);
 
     this->quit(); // graceful exit
   });
@@ -341,10 +323,11 @@ TEST_F(AnimationTest, FadeOutActionFromNonOpaqueOpacity)
                         Anchor::MiddleCenter );
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
+  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
+
     // Render our animation's texture
-    if( tex != nullptr ) {
-      tex->draw( this->render_window() );
+    if( sprite != nullptr && sprite->valid() == true ) {
+      sprite->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);
@@ -390,12 +373,8 @@ TEST_F(AnimationTest, FadeAlphaByAction)
     nom::create_action<FadeAlphaByAction>(sprite, FADE_BY, DURATION);
   ASSERT_TRUE(fade_by != nullptr);
 
-  auto tex_bg =
-    nom::create_action<SpriteAction>(sprite, DURATION);
-  ASSERT_TRUE(tex_bg != nullptr);
-
   auto action0 =
-    nom::create_action<GroupAction>( {fade_by, tex_bg}, "action0" );
+    nom::create_action<GroupAction>( {fade_by}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_mode(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
@@ -407,9 +386,8 @@ TEST_F(AnimationTest, FadeAlphaByAction)
     this->expected_alpha_by_params( fade_by.get(), FADE_BY, sprite.get() );
     EXPECT_EQ(1, this->player.num_actions() );
 
-    this->expected_action_params(action0.get(), 2);
+    this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
     this->expected_common_params(fade_by.get(), DURATION, SPEED_MOD);
-    this->expected_common_params(tex_bg.get(), DURATION, SPEED_MOD);
 
     this->quit(); // graceful exit
   });
@@ -422,9 +400,10 @@ TEST_F(AnimationTest, FadeAlphaByAction)
                         Anchor::MiddleCenter );
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
+  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
+
     // Render our animation's texture
-    if( sprite != nullptr ) {
+    if( sprite != nullptr && sprite->valid() == true ) {
       sprite->draw( this->render_window() );
     }
 
@@ -469,12 +448,8 @@ TEST_F(AnimationTest, FadeAlphaByActionFromNonOpaqueOpacity)
     nom::create_action<FadeAlphaByAction>(sprite, FADE_BY, DURATION);
   ASSERT_TRUE(fade_by != nullptr);
 
-  auto tex_bg =
-    nom::create_action<SpriteAction>(sprite, DURATION);
-  ASSERT_TRUE(tex_bg != nullptr);
-
   auto action0 =
-    nom::create_action<GroupAction>( {fade_by, tex_bg}, "action0" );
+    nom::create_action<GroupAction>( {fade_by}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_mode(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
@@ -487,9 +462,8 @@ TEST_F(AnimationTest, FadeAlphaByActionFromNonOpaqueOpacity)
 
     EXPECT_EQ(1, this->player.num_actions() );
 
-    this->expected_action_params(action0.get(), 2);
+    this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
     this->expected_common_params(fade_by.get(), DURATION, SPEED_MOD);
-    this->expected_common_params(tex_bg.get(), DURATION, SPEED_MOD);
 
     this->quit(); // graceful exit
   });
@@ -502,9 +476,10 @@ TEST_F(AnimationTest, FadeAlphaByActionFromNonOpaqueOpacity)
                         Anchor::MiddleCenter );
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
+  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
+
     // Render our animation's texture
-    if( sprite != nullptr ) {
+    if( sprite != nullptr && sprite->valid() == true ) {
       sprite->draw( this->render_window() );
     }
 
@@ -550,12 +525,8 @@ TEST_F(AnimationTest, FadeAlphaByActionWithNegativeValue)
     nom::create_action<FadeAlphaByAction>(sprite, FADE_BY, DURATION);
   ASSERT_TRUE(fade_by != nullptr);
 
-  auto tex_bg =
-    nom::create_action<SpriteAction>(sprite, DURATION);
-  ASSERT_TRUE(tex_bg != nullptr);
-
   auto action0 =
-    nom::create_action<GroupAction>( {fade_by, tex_bg}, "action0" );
+    nom::create_action<GroupAction>( {fade_by}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_mode(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
@@ -568,9 +539,8 @@ TEST_F(AnimationTest, FadeAlphaByActionWithNegativeValue)
     this->expected_alpha_by_params( fade_by.get(), EXPECTED_ALPHA,
                                     sprite.get() );
 
-    this->expected_action_params(action0.get(), 2);
+    this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
     this->expected_common_params(fade_by.get(), DURATION, SPEED_MOD);
-    this->expected_common_params(tex_bg.get(), DURATION, SPEED_MOD);
 
     this->quit(); // graceful exit
   });
@@ -583,9 +553,10 @@ TEST_F(AnimationTest, FadeAlphaByActionWithNegativeValue)
                         Anchor::MiddleCenter );
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
+  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
+
     // Render our animation's texture
-    if( sprite != nullptr ) {
+    if( sprite != nullptr && sprite->valid() == true ) {
       sprite->draw( this->render_window() );
     }
 

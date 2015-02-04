@@ -85,7 +85,7 @@ TEST_F(AnimationTest, RainingRectsStressTest)
   nom::size_type num_colors = colors.size();
 
   std::vector<std::shared_ptr<Sprite>> rects;
-  actions_container actions;
+  action_list actions;
 
   // drawables generation
   nom::size_type c = 0;
@@ -165,7 +165,7 @@ TEST_F(AnimationTest, RainingRectsStressTest)
 #if 1
   this->append_render_callback( [=](const RenderWindow& win) mutable {
     // Render our animation's rectangles
-    if( this->player.action_running("action0") == false ) {
+    if( this->player.action_running("action0") == true ) {
       for( auto itr = rects.begin(); itr != rects.end(); ++itr ) {
         if( *itr != nullptr ) {  // action0
           (*itr)->draw( this->render_window() );

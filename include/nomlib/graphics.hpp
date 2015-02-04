@@ -62,14 +62,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/graphics/AnimationTimingModes.hpp>
 #include <nomlib/graphics/IActionObject.hpp>
-#include <nomlib/graphics/SpriteAction.hpp>
+#include <nomlib/graphics/SpriteTexturesAction.hpp>
 #include <nomlib/graphics/SpriteBatchAction.hpp>
 #include <nomlib/graphics/FadeInAction.hpp>
 #include <nomlib/graphics/FadeOutAction.hpp>
 #include <nomlib/graphics/FadeAlphaByAction.hpp>
 #include <nomlib/graphics/WaitForDurationAction.hpp>
 #include <nomlib/graphics/MoveByAction.hpp>
-#include <nomlib/graphics/MoveToAction.hpp>
 #include <nomlib/graphics/ScaleByAction.hpp>
 #include <nomlib/graphics/ReversedAction.hpp>
 #include <nomlib/graphics/RepeatForAction.hpp>

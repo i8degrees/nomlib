@@ -132,9 +132,10 @@ if(NOM_BUILD_ANIMATION_TESTS)
 
   target_link_libraries( AnimationTest nomlib-visual-unit-test nomlib-graphics )
 
-  # NOTE: -i must always be passed for these tests; tests will be automatically
-  # terminated upon the appropriate completion conditions.
-  set( ANIMATION_TEST_ARGS -id )
+  # Any frame rate that your hardware can handle should be fine here; the only
+  # reason why I have the default set so low is due to my initial modeling of
+  # the system to fit with TTcards' -- the game runs at between 15..30 FPS.
+  set( ANIMATION_TEST_ARGS --fps 30 )
 
   # Fractional speed modifier values, such as 22.5 and the oddball number of 45
   # seemed to carry the most bugs during development of this feature.
@@ -144,6 +145,8 @@ if(NOM_BUILD_ANIMATION_TESTS)
   # NOTE: To conserve on total test duration, we only run a minimal selection
   # of tests for this engine feature -- the following tests below are intended
   # to be explicitly called by the end-user, i.e.: 'ctest -C EXT -R <test>'.
+  # Running these tests in parallel is possible with the -j option, and will
+  # save considerable time; see also: man 1 ctest.
 
   # Tests for checking the frame time stability of the speed modifiers
   add_animation_test( AnimationTestExtended_SpeedModifierAt0.5
@@ -152,12 +155,9 @@ if(NOM_BUILD_ANIMATION_TESTS)
   add_animation_test( AnimationTestExtended_SpeedModifierAt1.0
                       ${ANIMATION_TEST_ARGS} --speed 1.0 )
 
-  add_animation_test( AnimationTestExtended_SpeedModifierAt4.0
-                      ${ANIMATION_TEST_ARGS} --speed 4.0 )
-
-  # NOTE: Only run the tests for the standard five (5) timing modes are done;
-  # there are many additional timing mode options available. See the test
-  # executable's documentation by passing '--help' from the command line.
+  # NOTE: Only the standard five (5) timing modes are tested -- there are
+  # several more timing modes available in the testing unit; see test
+  # documentation by passing '-h' to AnimationTest from the command line.
   add_animation_test( AnimationTestExtended_QuadEaseIn
                       ${ANIMATION_TEST_ARGS} --speed 100.0
                       --timing-mode quad_ease_in )

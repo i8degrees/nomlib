@@ -78,7 +78,7 @@ IActionObject::FrameState RepeatForeverAction::next_frame(real32 delta_time)
     ++this->elapsed_repeats_;
     action->rewind(delta_time);
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_TEST, "[RepeatForeverAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[RepeatForeverAction]",
                     "[elapsed_repeats]:", this->elapsed_repeats_ );
   }
 
@@ -107,7 +107,7 @@ IActionObject::FrameState RepeatForeverAction::prev_frame(real32 delta_time)
     ++this->elapsed_repeats_;
     action->rewind(delta_time);
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_TEST, "[RepeatForeverAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[RepeatForeverAction]",
                     "[elapsed_repeats]:", this->elapsed_repeats_ );
   }
 

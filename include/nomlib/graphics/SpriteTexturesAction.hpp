@@ -42,39 +42,36 @@ class Sprite;
 typedef std::vector<std::shared_ptr<Sprite>> texture_frames;
 
 /// \brief [TODO: Description]
-class SpriteAction: public virtual IActionObject
+
+class SpriteTexturesAction: public virtual IActionObject
 {
   public:
-    typedef SpriteAction self_type;
+    typedef SpriteTexturesAction self_type;
     typedef IActionObject derived_type;
 
     /// \brief Allow access into our private parts for obtaining the current
     /// frame.
     friend class AnimationTest;
 
-    /// \brief Default constructor; construct an action with a valid
-    /// nom::Sprite instance.
-    ///
-    /// \param frame_interval The amount of time (in fractional seconds) that
-    /// each texture is displayed.
-    SpriteAction(const std::shared_ptr<Sprite>& frame, real32 frame_interval);
-
-    /// \brief Destructor.
-    virtual ~SpriteAction();
-
     /// \brief Construct an action with a container of valid (i.e.: pre-loaded)
     /// nom::SpriteBatch objects.
     ///
+    /// \param sprite         A valid (non-NULL) sprite object for updating its
+    /// texture.
+    ///
     /// \param frame_interval The amount of time (in fractional seconds) that
-    /// each texture is displayed.
-    SpriteAction(const texture_frames& textures, real32 frame_interval);
+    /// each texture is displayed on the sprite.
+    SpriteTexturesAction( const std::shared_ptr<Sprite>& sprite,
+                          const texture_frames& textures,
+                          real32 frame_interval );
+
+    /// \brief Destructor.
+    virtual ~SpriteTexturesAction();
 
     virtual std::unique_ptr<derived_type> clone() const override;
 
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
-
-    bool render(real32 delta_time) const;
 
     virtual void pause(real32 delta_time) override;
 
@@ -89,6 +86,7 @@ class SpriteAction: public virtual IActionObject
 
   private:
     void initialize(const texture_frames& textures, real32 frame_interval);
+
     void set_frame_interval(real32 seconds);
 
     typedef std::vector<std::shared_ptr<Sprite>>::iterator frame_iterator;
@@ -105,6 +103,9 @@ class SpriteAction: public virtual IActionObject
     /// \brief The animation proxy object.
     texture_frames frames_;
     frame_iterator frame_iterator_;
+
+    /// \brief The sprite to animate.
+    std::shared_ptr<Sprite> drawable_;
 
     real32 frame_interval_;
     uint64 last_delta_;

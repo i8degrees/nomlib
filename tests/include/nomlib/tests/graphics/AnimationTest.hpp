@@ -147,11 +147,13 @@ class AnimationTest: public nom::VisualUnitTest
                                   uint32 num_repeats,
                                   const std::string& scope_name = "" );
 
-    /// \brief Helper method for testing properties of nom::SpriteAction.
-    void expected_sprite_action_params( const SpriteAction* obj,
-                                        nom::size_type num_frames,
-                                        real32 duration, real32 speed,
-                                        const std::string& scope_name = "" );
+    /// \brief Helper method for testing properties of
+    /// nom::SpriteTexturesAction.
+    void
+    expected_sprite_textures_params(  const SpriteTexturesAction* obj,
+                                      nom::size_type num_frames,
+                                      real32 duration, real32 speed,
+                                      const std::string& scope_name = "" );
 
     /// \brief Helper method for testing properties of nom::SpriteBatchAction.
     void expected_sprite_batch_action_params( const SpriteBatchAction* obj,
@@ -169,7 +171,7 @@ class AnimationTest: public nom::VisualUnitTest
     void set_frame_interval(uint32 interval);
 
     void
-    init_sprite_action_test(  const std::vector<const char*>& texture_filenames,
+    init_sprite_action_test(   const std::vector<const char*>& texture_filenames,
                               texture_frames& anim_frames );
 
     enum ActionType: uint32

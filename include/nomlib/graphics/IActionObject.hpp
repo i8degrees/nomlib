@@ -46,6 +46,7 @@ class IActionObject
   public:
     typedef IActionObject self_type;
 
+    typedef std::function<void()> action_callback;
     typedef std::function<real32(real32, real32, real32, real32)> timing_mode_func;
 
     /// \brief Allow access into our private parts for obtaining the current
@@ -213,8 +214,7 @@ class IActionObject
     timing_mode_func timing_mode_;
 };
 
-typedef std::initializer_list<std::shared_ptr<IActionObject>> actions_list;
-typedef std::vector<std::shared_ptr<IActionObject>> actions_container;
+typedef std::vector<std::shared_ptr<IActionObject>> action_list;
 
 /// \brief Convenience non-member constructor function for creating new
 /// animation objects.
@@ -235,7 +235,7 @@ std::shared_ptr<ObjectType> create_action(ObjectArgs&&... args)
 
 template<typename ObjectType>
 std::shared_ptr<ObjectType>
-create_action(const actions_list& actions, const std::string& name = "")
+create_action(const action_list& actions, const std::string& name = "")
 {
   return( std::make_shared<ObjectType>(actions, name) );
 }

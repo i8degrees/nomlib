@@ -39,7 +39,7 @@ namespace nom {
 
 // TODO: Use different logging category for erasing diagnostics?
 
-/// \brief [TODO: Description]
+/// \brief Proxy container object for updating actions sequentially.
 class SequenceAction: public virtual IActionObject
 {
   public:
@@ -53,12 +53,12 @@ class SequenceAction: public virtual IActionObject
     typedef SequenceAction self_type;
     typedef IActionObject derived_type;
 
+    /// \brief Default constructor.
+    SequenceAction( const action_list& actions,
+                    const std::string& name = "" );
+
     /// \brief Destructor.
     virtual ~SequenceAction();
-
-    /// \brief Default constructor.
-    SequenceAction( const actions_container& actions,
-                    const std::string& name = "" );
 
     virtual std::unique_ptr<derived_type> clone() const override;
 

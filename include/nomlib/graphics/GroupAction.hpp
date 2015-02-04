@@ -39,7 +39,8 @@ namespace nom {
 
 // TODO: Use different logging category for erasing diagnostics?
 
-/// \brief [TODO: Description]
+/// \brief Proxy container object for updating actions **simultaneously** -- in
+/// parallel.
 class GroupAction: public virtual IActionObject
 {
   public:
@@ -53,12 +54,12 @@ class GroupAction: public virtual IActionObject
     typedef GroupAction self_type;
     typedef IActionObject derived_type;
 
+    /// \brief Default constructor.
+    GroupAction(  const action_list& actions,
+                  const std::string& name = "" );
+
     /// \brief Destructor.
     virtual ~GroupAction();
-
-    /// \brief Default constructor.
-    GroupAction(  const actions_container& actions,
-                  const std::string& name = "" );
 
     virtual std::unique_ptr<derived_type> clone() const override;
 

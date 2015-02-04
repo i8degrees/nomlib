@@ -30,7 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers
 #include "nomlib/math/math_helpers.hpp"
-// #include "nomlib/graphics/RenderWindow.hpp"
 
 // Forward declarations
 #include "nomlib/graphics/sprite/SpriteBatch.hpp"
@@ -46,17 +45,17 @@ SpriteBatchAction::SpriteBatchAction( const std::shared_ptr<SpriteBatch>& sprite
   this->curr_frame_ = 0.0f;
   this->set_frame_interval(frame_interval);
 
-  this->sprite_ = sprite;
-  NOM_ASSERT(this->sprite_->frames() > 0);
-  this->total_displacement_ = this->sprite_->frames();
+  this->drawable_ = sprite;
+  NOM_ASSERT(this->drawable_->frames() > 0);
+  this->initial_frame_ = 0;
+  this->total_displacement_ = this->drawable_->frames();
 
-  real32 interval_seconds =
+  real32 frame_delay_milliseconds =
     this->frame_interval_ / 1000.0f;
 
-  real32 action_duration =
-    ( interval_seconds  * this->sprite_->frames() ) / this->speed();
-
-  this->set_duration(action_duration);
+  real32 action_duration_seconds =
+    (frame_delay_milliseconds * this->total_displacement_) / this->speed();
+  this->set_duration(action_duration_seconds);
 
   this->last_delta_ = 0;
 }
@@ -85,6 +84,12 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
   // Total duration of the action
   const real32 duration = d;
 
+  // initial starting value
+  const int b1 = b;
+
+  // Total number of frames over time
+  const nom::size_type total_displacement(c);
+
   // The computed texture frame to show next
   real32 displacement(0.0f);
 
@@ -94,13 +99,16 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
     delta_time = duration / this->speed();
   }
 
+  // total change in value (applied over time)
+  real32 c1 = total_displacement - 1;
+
   NOM_ASSERT(this->timing_mode() != nullptr);
 
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
 
   displacement =
-    this->timing_mode().operator()(frame_time, b, c, duration);
+    this->timing_mode().operator()(frame_time, b1, c1, duration);
 
   this->curr_frame_ = displacement;
 
@@ -108,14 +116,17 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
 
     this->last_delta_ = delta_time;
 
-    if( this->sprite_ != nullptr ) {
-      this->sprite_->set_frame(displacement);
-    }
+    nom::size_type displacement_as_integer =
+      nom::round_float<nom::size_type>(displacement);
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[SpriteBatchAction]",
                     "delta_time:", delta_time, "frame_time:", frame_time,
                     "[elapsed frames]:", this->curr_frame_,
-                    "[fps]:", this->frame_interval_ );
+                    "displacement (output):", displacement_as_integer );
+
+    if( this->drawable_ != nullptr ) {
+      this->drawable_->set_frame(displacement_as_integer);
+    }
   } // end if delta_time **greater than or equal to** elapsed interval frames
 
   // Continue playing the animation only when we are inside our frame duration
@@ -138,9 +149,8 @@ IActionObject::FrameState SpriteBatchAction::next_frame(real32 delta_time)
 
   delta_time = this->timer_.ticks();
 
-  real32 initial_frame = 0.0f;
-  return( this->update( delta_time, initial_frame, this->total_displacement_,
-          this->duration() ) );
+  return( this->update( delta_time, this->initial_frame_,
+          this->total_displacement_, this->duration() ) );
 }
 
 IActionObject::FrameState SpriteBatchAction::prev_frame(real32 delta_time)
@@ -149,9 +159,8 @@ IActionObject::FrameState SpriteBatchAction::prev_frame(real32 delta_time)
 
   delta_time = this->timer_.ticks();
 
-  real32 initial_frame = this->sprite_->frames();
-  return( this->update( delta_time, initial_frame, -(this->total_displacement_),
-          this->duration() ) );
+  return( this->update( delta_time, this->initial_frame_,
+          -(this->total_displacement_), this->duration() ) );
 }
 
 void SpriteBatchAction::pause(real32 delta_time)
@@ -172,18 +181,16 @@ void SpriteBatchAction::rewind(real32 delta_time)
 
   // Reset frame timing
   this->timer_.stop();
+
+  // Reset starting frame
+  if( this->drawable_ != nullptr ) {
+    this->drawable_->set_frame(this->initial_frame_);
+  }
 }
 
 void SpriteBatchAction::release()
 {
-  this->sprite_.reset();
-}
-
-// Private scope
-
-void SpriteBatchAction::set_frame_interval(real32 seconds)
-{
-  this->frame_interval_ = seconds * 1000.0f;
+  this->drawable_.reset();
 }
 
 void SpriteBatchAction::first_frame(real32 delta_time)
@@ -199,16 +206,27 @@ void SpriteBatchAction::first_frame(real32 delta_time)
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
                     "SpriteBatchAction::BEGIN at", delta_time );
 
-    if( this->sprite_ != nullptr ) {
-      NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[SpriteBatchAction]"
-                      "[num_frames]:", this->sprite_->frames() );
+    if( this->drawable_ != nullptr ) {
+      this->initial_frame_ = this->drawable_->frame();
     }
+
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[SpriteBatchAction]"
+                    "[initial_frame]:", this->initial_frame_,
+                    "[num_frames]:", this->total_displacement_,
+                    "[fps]:", this->frame_interval_ );
   }
 }
 
 void SpriteBatchAction::last_frame(real32 delta_time)
 {
   this->timer_.stop();
+}
+
+// Private scope
+
+void SpriteBatchAction::set_frame_interval(real32 seconds)
+{
+  this->frame_interval_ = seconds * 1000.0f;
 }
 
 } // namespace nom

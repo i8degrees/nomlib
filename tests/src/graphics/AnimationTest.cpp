@@ -48,7 +48,7 @@ AnimationTest::AnimationTest()
   NOM_TEST_FLAG(interactive) = true;
 
   // Enable debug diagnostics for action animation objects
-  // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ANIMATION, nom::NOM_LOG_PRIORITY_DEBUG);
+  nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ANIMATION, nom::NOM_LOG_PRIORITY_DEBUG);
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ANIMATION, nom::NOM_LOG_PRIORITY_VERBOSE);
 
   // Enable debug diagnostics
@@ -354,23 +354,27 @@ void AnimationTest::expected_repeat_params( const RepeatForeverAction* obj,
   << "expected_repeat_params scoped_name: " << scope_name << "\n";
 }
 
-void
-AnimationTest::expected_sprite_action_params( const SpriteAction* obj,
-                                              nom::size_type num_frames,
-                                              real32 duration, real32 speed,
-                                              const std::string& scope_name )
+void AnimationTest::
+expected_sprite_textures_params(  const SpriteTexturesAction* obj,
+                                  nom::size_type num_frames,
+                                  real32 duration, real32 speed,
+                                  const std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)
-  << "expected_sprite_action_params scoped_name: " << scope_name << "\n";
+  << "expected_sprite_textures_action_params scoped_name: "
+  << scope_name << "\n";
 
   EXPECT_EQ(num_frames, obj->frames_.size() )
-  << "expected_sprite_action_params scoped_name: " << scope_name << "\n";
+  << "expected_sprite_textures_action_params scoped_name: "
+  << scope_name << "\n";
 
   EXPECT_EQ(duration*1000.0f, obj->duration() )
-  << "expected_sprite_action_params scoped_name: " << scope_name << "\n";
+  << "expected_sprite_textures_action_params scoped_name: "
+  << scope_name << "\n";
 
   EXPECT_EQ(speed, obj->speed() )
-  << "expected_sprite_action_params scoped_name: " << scope_name << "\n";
+  << "expected_sprite_textures_action_params scoped_name: "
+  << scope_name << "\n";
 }
 
 void
@@ -384,7 +388,7 @@ AnimationTest::expected_sprite_batch_action_params( const SpriteBatchAction* obj
   ASSERT_TRUE(obj != nullptr)
   << "expected_sprite_batch_action_params scoped_name: " << scope_name << "\n";
 
-  EXPECT_EQ(num_frames, obj->sprite_->frames() )
+  EXPECT_EQ(num_frames, obj->drawable_->frames() )
   << "expected_sprite_batch_action_params scoped_name: " << scope_name << "\n";
 
   EXPECT_EQ(duration*1000.0f, obj->duration() )
@@ -760,70 +764,6 @@ TEST_F(AnimationTest, WaitForDurationAction2s)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, SpriteActionOneSprite)
-{
-  // Testing parameters
-  const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
-
-  // Initial texture position and size
-  const Point2i TEX_POS(Point2i::zero);
-  const Size2i TEX_SIZE(256, 256);
-
-  auto rect = std::make_shared<Rectangle>(
-    IntRect(TEX_POS, TEX_SIZE), Color4i::Green);
-  ASSERT_TRUE(rect != nullptr);
-
-  auto tex =
-    std::shared_ptr<Texture>( rect->texture() );
-  ASSERT_TRUE(tex != nullptr);
-
-  auto sprite =
-    std::make_shared<Sprite>();
-  ASSERT_TRUE(sprite != nullptr);
-  EXPECT_EQ(true, sprite->set_texture(tex) );
-
-  auto tex_bg =
-    nom::create_action<SpriteAction>(sprite, DURATION);
-  ASSERT_TRUE(tex_bg != nullptr);
-
-  auto action0 =
-    nom::create_action<GroupAction>( {tex_bg}, "action0" );
-  ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
-  action0->set_speed(SPEED_MOD);
-
-  EXPECT_EQ(0, this->player.num_actions() );
-  this->run_action_ret =
-  this->player.run_action(action0, [=]() {
-
-    EXPECT_EQ(1, this->player.num_actions() );
-    this->expected_action_params(action0.get(), 1);
-
-    this->quit(); // graceful exit
-  });
-  EXPECT_EQ(true, this->run_action_ret)
-  << "Failed to queue the action!";
-  EXPECT_EQ(1, this->player.num_actions() );
-
-  nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
-                      Anchor::MiddleCenter );
-
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render our animation's texture
-    if( sprite != nullptr ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
-
-  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-}
-
 /// \remarks Thanks goes to Tim Jones of [sdltutorials.com](http://www.sdltutorials.com/sdl-animation)
 /// for the sprite frames of Yoshi chosen for this test!
 TEST_F(AnimationTest, SpriteActionMultipleSprites)
@@ -850,8 +790,12 @@ TEST_F(AnimationTest, SpriteActionMultipleSprites)
 
   EXPECT_EQ( anim_frames.size(), texture_filenames.size() );
 
+  auto sprite0 =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite0 != nullptr);
+
   auto tex_bg =
-    nom::create_action<SpriteAction>(anim_frames, FRAME_DURATION);
+    nom::create_action<SpriteTexturesAction>(sprite0, anim_frames, FRAME_DURATION);
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
@@ -865,9 +809,9 @@ TEST_F(AnimationTest, SpriteActionMultipleSprites)
   this->player.run_action(action0, [=]() {
 
     EXPECT_EQ(1, this->player.num_actions() );
-    this->expected_sprite_action_params(  tex_bg.get(), anim_frames.size(),
-                                          DURATION, SPEED_MOD,
-                                          "sprite_action_params" );
+    this->expected_sprite_textures_params(  tex_bg.get(), anim_frames.size(),
+                                            DURATION, SPEED_MOD,
+                                            "sprite_textures_params" );
     this->expected_action_params(action0.get(), 1);
 
     this->quit(); // graceful exit
@@ -876,11 +820,10 @@ TEST_F(AnimationTest, SpriteActionMultipleSprites)
   << "Failed to queue action0";
   EXPECT_EQ(1, this->player.num_actions() );
 
-  this->append_render_callback( [=, &tex_bg](const RenderWindow& win) {
+  this->append_render_callback( [=, &sprite0](const RenderWindow& win) {
 
-    // Render our animation's texture
-    if( tex_bg != nullptr ) {
-      tex_bg->render(0);
+    if( sprite0 != nullptr && sprite0->valid() == true ) {
+      sprite0->draw( this->render_window() );
     }
 
     this->set_frame_interval(FPS);

@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-SequenceAction::SequenceAction( const actions_container& actions,
+SequenceAction::SequenceAction( const action_list& actions,
                                 const std::string& name )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,

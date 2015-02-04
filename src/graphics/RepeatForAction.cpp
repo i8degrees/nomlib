@@ -85,7 +85,7 @@ IActionObject::FrameState RepeatForAction::next_frame(real32 delta_time)
       return this->status_;
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_TEST, "[RepeatForAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[RepeatForAction]",
                     "[elapsed_repeats]:", this->elapsed_repeats_,
                     "[num_repeats]:", this->num_repeats_ );
   }
@@ -121,7 +121,7 @@ IActionObject::FrameState RepeatForAction::prev_frame(real32 delta_time)
       return this->status_;
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_TEST, "[RepeatForAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[RepeatForAction]",
                     "[elapsed_repeats]:", this->elapsed_repeats_,
                     "[num_repeats]:", this->num_repeats_ );
   }

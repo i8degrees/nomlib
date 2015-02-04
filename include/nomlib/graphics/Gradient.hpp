@@ -104,7 +104,7 @@ class Gradient: public Transformable
     /// \returns A pointer to a new nom::Texture instance of the stored texture
     /// used for rendering the gradient. The returned pointer is owned by the
     /// caller.
-    std::unique_ptr<Texture> texture() const;
+    Texture* texture() const;
 
     /// \brief Query the validity of the object
     ///

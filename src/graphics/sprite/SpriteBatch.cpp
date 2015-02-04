@@ -64,9 +64,9 @@ ObjectTypeInfo SpriteBatch::type() const
   return NOM_OBJECT_TYPE_INFO(self_type);
 }
 
-IDrawable* SpriteBatch::clone() const
+Transformable* SpriteBatch::clone() const
 {
-  return( new SpriteBatch( *this ) );
+  return( new SpriteBatch(*this) );
 }
 
 int32 SpriteBatch::frame() const

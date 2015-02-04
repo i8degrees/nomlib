@@ -69,7 +69,7 @@ class SpriteBatch: public Sprite
     ObjectTypeInfo type() const;
 
     /// \brief Implements the required IDrawable::clone method.
-    IDrawable::raw_ptr clone() const;
+    Transformable* clone() const;
 
     /// Get the object's current sheet_id.
     virtual int32 frame() const;

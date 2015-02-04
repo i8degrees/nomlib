@@ -306,8 +306,9 @@ TEST_F(GradientTest, ClonedTextureInstances)
 {
   this->grad1.set_fill_direction( Gradient::FillDirection::Right );
   this->grad2.set_fill_direction( Gradient::FillDirection::Right );
-  std::unique_ptr<Texture> grad1_tex = this->grad1.texture();
-  std::unique_ptr<Texture> grad2_tex = this->grad2.texture();
+
+  auto grad1_tex = std::shared_ptr<Texture>( this->grad1.texture() );
+  auto grad2_tex = std::shared_ptr<Texture>( this->grad2.texture() );
 
   // Need to first clear out the default grad objects in here
   this->clear_render_callbacks();

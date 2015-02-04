@@ -54,7 +54,6 @@ class Texture
 {
   public:
     typedef Texture self_type;
-    typedef std::shared_ptr<Texture> SharedPtr;
 
     /// \brief Available pixel rescaling algorithms
     enum ResizeAlgorithm
@@ -115,9 +114,6 @@ class Texture
     /// source used to create the texture's pixel buffer and clone from it
     /// instead. Alternatives may include using a Render To Texture target or
     /// nom::Renderer::pixels.
-    ///
-    /// \todo Change return type to std::unique_ptr<Texture> to better express
-    /// intent?
     Texture* clone() const;
 
     /// Initialize an object with specified parameters

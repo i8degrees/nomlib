@@ -89,9 +89,9 @@ void Sprite::set_size(const Size2i& dims)
   }
 }
 
-std::unique_ptr<Sprite> Sprite::clone() const
+Transformable* Sprite::clone() const
 {
-  return( std::unique_ptr<self_type>( new self_type(*this) ) );
+  return( new self_type(*this) );
 }
 
 std::shared_ptr<Texture>& Sprite::texture()

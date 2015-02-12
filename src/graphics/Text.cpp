@@ -139,7 +139,7 @@ void Text::set_position(const Point2i& pos)
   }
 }
 
-Transformable* Text::clone() const
+Text* Text::clone() const
 {
   return( new self_type(*this) );
 }

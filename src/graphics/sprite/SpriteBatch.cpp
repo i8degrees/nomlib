@@ -64,7 +64,7 @@ ObjectTypeInfo SpriteBatch::type() const
   return NOM_OBJECT_TYPE_INFO(self_type);
 }
 
-Transformable* SpriteBatch::clone() const
+SpriteBatch* SpriteBatch::clone() const
 {
   return( new SpriteBatch(*this) );
 }
@@ -94,7 +94,7 @@ void SpriteBatch::draw(IDrawable::RenderTarget& target) const
   }
 }
 
-void SpriteBatch::draw(IDrawable::RenderTarget& target, const double angle) const
+void SpriteBatch::draw(IDrawable::RenderTarget& target, real64 angle) const
 {
   if( this->frame() >= 0 )
   {

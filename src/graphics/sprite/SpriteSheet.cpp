@@ -240,6 +240,32 @@ bool SpriteSheet::load_sheet_object(const Value& object)
   return true;
 }
 
+bool SpriteSheet::
+insert_frame(nom::size_type frame_num, const IntRect& frame_bounds)
+{
+  this->sheet_[frame_num] = frame_bounds;
+
+  return true;
+}
+
+bool SpriteSheet::append_frame(const IntRect& frame_bounds)
+{
+  nom::size_type num_frames = this->frames();
+
+  auto pair =
+    std::make_pair(num_frames, frame_bounds);
+
+  auto res = this->sheet_.insert(pair);
+  if( res.second == true ) {
+    // Success!
+    return true;
+  } else {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not append frame: key already exists at", num_frames );
+    return false;
+  }
+}
+
 bool SpriteSheet::remove_frame(nom::size_type frame)
 {
   auto res = this->sheet_.find(frame);
@@ -253,6 +279,11 @@ bool SpriteSheet::remove_frame(nom::size_type frame)
     this->sheet_.erase(res);
     return true;
   }
+}
+
+void SpriteSheet::remove_frames()
+{
+  this->sheet_.clear();
 }
 
 void SpriteSheet::dump ( void ) const

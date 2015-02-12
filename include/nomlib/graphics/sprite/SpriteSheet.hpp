@@ -123,8 +123,14 @@ class SpriteSheet
     /// \param object An existing, de-serialized object to use.
     bool load_sheet_object(const Value& object);
 
+    bool insert_frame(nom::size_type frame_num, const IntRect& frame_bounds);
+    bool append_frame(const IntRect& frame_bounds);
+
     /// \brief Erase an existing frame from the sheet.
     bool remove_frame(nom::size_type frame);
+
+    /// \brief Destroy all stored sprite frames.
+    void remove_frames();
 
     /// Dump the state of this object instance
     void dump() const;

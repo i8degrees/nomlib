@@ -85,7 +85,7 @@ class Sprite: public Transformable
     virtual void set_size(const Size2i& dims) override;
 
     /// \brief Implements the required IDrawable::clone method.
-    Transformable* clone() const;
+    Sprite* clone() const;
 
     std::shared_ptr<Texture>& texture();
 

@@ -89,7 +89,7 @@ void Sprite::set_size(const Size2i& dims)
   }
 }
 
-Transformable* Sprite::clone() const
+Sprite* Sprite::clone() const
 {
   return( new self_type(*this) );
 }

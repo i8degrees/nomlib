@@ -69,7 +69,7 @@ class SpriteBatch: public Sprite
     ObjectTypeInfo type() const;
 
     /// \brief Implements the required IDrawable::clone method.
-    Transformable* clone() const;
+    SpriteBatch* clone() const;
 
     /// Get the object's current sheet_id.
     virtual int32 frame() const;
@@ -104,7 +104,7 @@ class SpriteBatch: public Sprite
     /// one (-1).
     ///
     /// \note Re-implements Sprite::draw.
-    virtual void draw(IDrawable::RenderTarget& target, const double angle ) const override;
+    virtual void draw(RenderTarget& target, real64 angle) const override;
 
   protected:
     /// Source (input) coordinates -- used for sprite sheet positioning

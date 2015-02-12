@@ -110,7 +110,7 @@ class Text: public Transformable
     virtual void set_position(const Point2i& pos) override;
 
     /// \brief Implements the required IDrawable::clone method.
-    Transformable* clone() const;
+    Text* clone() const;
 
     /// \brief Re-implements the IObject::type method.
     ///

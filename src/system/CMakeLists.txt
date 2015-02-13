@@ -8,8 +8,6 @@ set( NOM_SYSTEM_LIBRARY "nomlib-system" )
 
 set(  NOM_SYSTEM_SOURCE
       ${INC_DIR}/system.hpp
-      ${SRC_DIR}/system/AnimationTimer.cpp
-      ${INC_DIR}/system/AnimationTimer.hpp
 
       # TODO: Consider relocating this to graphics
       ${SRC_DIR}/system/ColorDatabase.cpp

@@ -56,7 +56,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics/sprite/Sprite.hpp>
 #include <nomlib/graphics/sprite/SpriteBatch.hpp>
 #include <nomlib/graphics/sprite/SpriteSheet.hpp>
-#include <nomlib/graphics/sprite/AnimatedSprite.hpp>
 #include <nomlib/graphics/Cursor.hpp>
 #include <nomlib/graphics/graphics_helpers.hpp>
 

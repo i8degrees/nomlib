@@ -79,9 +79,6 @@ if( NOM_BUILD_GRAPHICS_UNIT )
         ${SRC_DIR}/graphics/shapes/Rectangle.cpp
         ${INC_DIR}/graphics/shapes/Rectangle.hpp
 
-        ${SRC_DIR}/graphics/sprite/AnimatedSprite.cpp
-        ${INC_DIR}/graphics/sprite/AnimatedSprite.hpp
-
         ${SRC_DIR}/graphics/sprite/Sprite.cpp
         ${INC_DIR}/graphics/sprite/Sprite.hpp
 

@@ -42,7 +42,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/EventHandler.hpp>
 #include <nomlib/system/Joystick.hpp>
 #include <nomlib/system/Timer.hpp>
-#include <nomlib/system/AnimationTimer.hpp>
 #include <nomlib/system/HighResolutionTimer.hpp>
 
 // Engine initialization & shutdown

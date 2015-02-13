@@ -594,7 +594,7 @@ void Texture::draw(SDL_Renderer* target, const real64 angle) const
     if( SDL_RenderCopyEx( target, this->texture(), &render_bounds,
                           &render_coords, angle, nullptr, SDL_FLIP_NONE ) != 0 )
     {
-      NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
+      // NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
       return;
     }
   } else {
@@ -603,7 +603,7 @@ void Texture::draw(SDL_Renderer* target, const real64 angle) const
     if( SDL_RenderCopyEx( target, this->texture(), nullptr,
                           &render_coords, angle, nullptr, SDL_FLIP_NONE ) != 0 )
     {
-      NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
+      // NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
       return;
     }
   }

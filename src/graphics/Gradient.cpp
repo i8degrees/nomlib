@@ -350,7 +350,7 @@ bool Gradient::update_cache()
   this->texture_->set_position( this->position() + this->margins() );
 
   // Set the rendering target to the texture (uses FBO)
-  if( texture->set_render_target(*context) == false ) {
+  if( context->set_render_target( this->texture_.get() ) == false ) {
     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
                   "Could not update texture cache: failed to set rendering"
                   "target" );

@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/Renderer.hpp"
 
+// Forward declarations
+#include "nomlib/graphics/Texture.hpp"
+
 // Private headers
 #include <cstdlib>
 
@@ -172,24 +175,39 @@ const RendererInfo Renderer::caps ( SDL_Renderer* target )
   return renderer_info;
 }
 
-bool Renderer::reset_render_target() const
+bool Renderer::set_render_target(const Texture* texture) const
 {
+  SDL_Renderer* renderer = this->renderer();
+  NOM_ASSERT(renderer != nullptr);
+
+  SDL_Texture* target = nullptr;
+  if( texture != nullptr ) {
+    target = texture->texture();
+  }
+
   RendererInfo caps = this->caps();
 
-  // Ensure that the rendering device supports FBO
+  // Check to see if the rendering hardware supports FBO
   if( caps.target_texture() == false ) {
     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Video hardware does not support render to texture" );
+                  "Failed to set rendering target:",
+                  "the hardware does not support the operation." );
     return false;
   }
 
   // Try to honor the request; render to the source texture
-  if( SDL_SetRenderTarget(this->renderer(), nullptr) != 0 ) {
-    NOM_LOG_ERR ( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
+  if( SDL_SetRenderTarget(renderer, target) != 0 ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Failed to set rendering target:", SDL_GetError() );
     return false;
   }
 
   return true;
+}
+
+bool Renderer::reset_render_target() const
+{
+  return this->set_render_target(nullptr);
 }
 
 void Renderer::update ( void ) const

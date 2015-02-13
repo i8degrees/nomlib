@@ -97,9 +97,9 @@ Texture* Rectangle::texture() const
 
   texture->set_position( this->position() );
 
-  if( texture->set_render_target(*context) == false ) {
+  if( context->set_render_target(texture) == false ) {
     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Could not update cache:",
-                  "render targets not supported." );
+                  "could not set rendering target." );
     NOM_DELETE_PTR(texture);
     return nullptr;
   }

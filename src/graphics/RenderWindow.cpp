@@ -27,7 +27,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 #include "nomlib/graphics/RenderWindow.hpp"
-//#include "nomlib/graphics/Renderer.hpp"
 
 // Private headers
 #include <cstdlib>

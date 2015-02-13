@@ -1289,7 +1289,7 @@ TEST_F(AnimationTest, CallbackActionWithNonZeroDuration)
     std::cout << "Hello, there!\n";
   };
 
-  auto anim0 = nom::create_action<CallbackAction>(callback_func, DURATION);
+  auto anim0 = nom::create_action<CallbackAction>(DURATION, callback_func);
 
   auto action0 =
     nom::create_action<GroupAction>( {anim0}, nom::UnitTest::test_name() );

@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/Gradient.hpp"
 
+// Forward declarations
+#include "nomlib/graphics/Texture.hpp"
+
 namespace nom {
 
 Gradient::Gradient( void ) :
@@ -35,6 +38,8 @@ Gradient::Gradient( void ) :
   gradient_( { Color4i::Blue, Color4i::Blue } )   // Opaque color to serve as
                                                   // warning!
 {
+  this->texture_.reset( new Texture() );
+
   // No margins set.
   this->set_margins( Point2i( 0, 0 ) );
 
@@ -57,11 +62,11 @@ Gradient::Gradient  (
   Transformable( pos, size ), // Base class
   gradient_(colors)
 {
+  this->texture_.reset( new Texture() );
+
   this->set_margins( margin );
   this->set_fill_direction( direction );
   this->set_dithering( true );
-
-  this->update();
 }
 
 Gradient::~Gradient( void )
@@ -81,10 +86,11 @@ ObjectTypeInfo Gradient::type( void ) const
 
 Texture* Gradient::texture() const
 {
-  // NOTE: It is necessary to always return a new instance because the stored
-  // texture may be reallocated at any time from within ::update -- leaving us
-  // with with a dangling pointer!
-  return( new Texture(this->texture_) );
+  if( this->texture_ != nullptr ) {
+    return( new Texture(*this->texture_) );
+  } else {
+    return nullptr;
+  }
 }
 
 bool Gradient::valid( void ) const
@@ -177,13 +183,9 @@ void Gradient::set_dithering( bool state )
 
 void Gradient::draw( RenderTarget& target ) const
 {
-  if( this->texture_.valid() )
-  {
-    // this->texture_.draw( target );
-    this->texture_.draw( RenderWindow::context() );
+  if( this->texture_ != nullptr && this->texture_->valid() == true ) {
+    this->texture_->draw(target);
   }
-
-  NOM_ASSERT( RenderWindow::context() == target.renderer() );
 }
 
 // Private scope
@@ -316,19 +318,26 @@ bool Gradient::update_cache()
   // Obtain the optimal pixel format for the platform
   RendererInfo caps = context->caps();
 
-  if( this->texture_.size() != this->size() ) {
+  if( this->texture_ == nullptr ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not update texture cache for the gradient:",
+                  "NULL texture.");
+    return false;
+  }
+
+  if( this->texture_->size() != this->size() ) {
 
     // Poor man's counter of how often we are re-allocating this texture
     NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_RENDER, NOM_LOG_PRIORITY_DEBUG);
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_RENDER,
-                    "old_size:", this->texture_.size(),
+                    "old_size:", this->texture_->size(),
                     "new_size:", this->size() );
 
     // Create the texture cache that will hold our gradient; since the
     // dimensions are local to this object, we deal with translating relative
     // coordinates to what will be the absolute coordinate space -- our
     // output rendering window
-    if( this->texture_.initialize( caps.optimal_texture_format(), SDL_TEXTUREACCESS_TARGET, this->size() ) == false )
+    if( this->texture_->initialize( caps.optimal_texture_format(), SDL_TEXTUREACCESS_TARGET, this->size() ) == false )
     {
       NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
                     "Could not initialize the texture cache for the gradient." );
@@ -337,53 +346,110 @@ bool Gradient::update_cache()
   }
 
   // Local coordinates (relative)
-  this->texture_.set_bounds( IntRect( this->margins(), this->size() ) );
-  this->texture_.set_position( this->position() + this->margins() );
+  this->texture_->set_bounds( IntRect( this->margins(), this->size() ) );
+  this->texture_->set_position( this->position() + this->margins() );
 
   // Set the rendering target to the texture (uses FBO)
-  if( this->texture_.set_render_target(*context) == false ) {
+  if( texture->set_render_target(*context) == false ) {
     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not set the rendering target to the texture cache." );
-    // NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
+                  "Could not update texture cache: failed to set rendering"
+                  "target" );
     return false;
   }
 
   // Debugging aid; red background indicates something went wrong
-  if( context->set_color(Color4i::Red) == false ) {
-    // NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
-    return false;
+  if( context->fill(Color4i::Red) == false ) {
   }
 
   // Relative to absolute transformations
   Point2i relative_pos;
   for( auto itr = this->rectangles_.begin(); itr != this->rectangles_.end(); ++itr )
   {
-    if( context->set_color( Color4i( itr->fill_color().r, itr->fill_color().g, itr->fill_color().b, itr->fill_color().a ) ) == false ) {
-      // NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
-      return false;
-    }
-    // NOM_DUMP( (*itr).fill_color() );
-
     relative_pos = ( (*itr).position() - this->position() ) + this->margins();
-    // NOM_DUMP(relative_pos);
 
     itr->set_position(relative_pos);
     itr->draw(*context);
-    // itr->set_size( itr->size() );
   }
 
   // Reset the rendering target now that we are done using it.
-  if( context->reset_render_target() == false )
-  {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not reset the rendering target." );
-    // NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
+  if( context->reset_render_target() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not update texture cache:",
+                  "failed to reset the rendering target." );
     return false;
   }
 
-  NOM_ASSERT( this->texture_.position() == this->position() + this->margins() );
-  NOM_ASSERT( this->texture_.bounds() == IntRect( this->margins(), this->size() ) );
+  NOM_ASSERT( this->texture_->position() == this->position() + this->margins() );
+  NOM_ASSERT( this->texture_->bounds() == IntRect( this->margins(), this->size() ) );
 
   return true;
 }
+
+// Broken
+// Texture* Gradient::clone_texture() const
+// {
+//   Texture* texture = new Texture();
+//   NOM_ASSERT(texture != nullptr);
+
+//   RenderWindow* context = nom::render_interface();
+//   NOM_ASSERT(context != nullptr);
+
+//   // Sanity check
+//   if( context == nullptr ) {
+//     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+//                   "Could not update texture cache for the gradient:",
+//                   "invalid renderer.");
+//     NOM_DELETE_PTR(texture);
+//     return nullptr;
+//   }
+
+//   // Obtain the optimal pixel format for the platform
+//   RendererInfo caps = context->caps();
+
+//   // Create the texture cache that will hold our gradient; since the
+//   // dimensions are local to this object, we deal with translating relative
+//   // coordinates to what will be the absolute coordinate space -- our
+//   // output rendering window
+//   if( texture->initialize( caps.optimal_texture_format(), SDL_TEXTUREACCESS_TARGET, this->size() ) == false )
+//   {
+//     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+//                   "Could not initialize the texture cache for the gradient." );
+//     NOM_DELETE_PTR(texture);
+//     return nullptr;
+//   }
+
+//   // Local coordinates (relative)
+//   texture->set_bounds( IntRect( this->margins(), this->size() ) );
+//   texture->set_position( this->position() + this->margins() );
+
+//   // Set the rendering target to the texture (uses FBO)
+//   if( context->set_render_target(texture) == false ) {
+//     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+//                   "Could not update texture cache: failed to set rendering"
+//                   "target" );
+//     NOM_DELETE_PTR(texture);
+//     return nullptr;
+//   }
+
+//   // Debugging aid; red background indicates something went wrong
+//   if( context->fill(Color4i::Red) == false ) {
+//   }
+
+//   this->draw(*context);
+
+//   // Reset the rendering target now that we are done using it.
+//   if( context->reset_render_target() == false ) {
+//     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+//                   "Could not update texture cache:",
+//                   "failed to reset the rendering target." );
+//     NOM_DELETE_PTR(texture);
+//     return nullptr;
+//   }
+
+//   NOM_ASSERT( texture->position() == this->position() + this->margins() );
+//   NOM_ASSERT( texture->bounds() == IntRect( this->margins(), this->size() ) );
+
+//   return texture;
+// }
 
 } // namespace nom

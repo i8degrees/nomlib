@@ -42,9 +42,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/shapes/Rectangle.hpp"
 #include "nomlib/core/helpers.hpp"
 
-#include "nomlib/graphics/Texture.hpp"
-
 namespace nom {
+
+// Forward declarations
+class Texture;
 
 /// \brief Rectangle fill class with dithered, linear gradient colors.
 class Gradient: public Transformable
@@ -104,6 +105,8 @@ class Gradient: public Transformable
     /// \returns A pointer to a new nom::Texture instance of the stored texture
     /// used for rendering the gradient. The returned pointer is owned by the
     /// caller.
+    ///
+    /// \remarks This is **not** a deep-copy of the texture.
     Texture* texture() const;
 
     /// \brief Query the validity of the object
@@ -181,7 +184,7 @@ class Gradient: public Transformable
     /// \remarks This greatly optimizes performance of this class when there
     /// are a large number of rectangles being drawn (i.e.: high resolution
     /// gradient being used as a backdrop, or several gradient objects).
-    Texture texture_;
+    std::shared_ptr<Texture> texture_;
 
     /// \brief The starting & ending colors used in the gradient fill.
     ///

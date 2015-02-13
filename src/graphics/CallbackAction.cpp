@@ -30,8 +30,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-CallbackAction::CallbackAction( const callback_type& func,
-                                real32 duration ) :
+CallbackAction::CallbackAction(const callback_type& func) :
+  delegate_(func)
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+                      nom::NOM_LOG_PRIORITY_VERBOSE );
+
+  this->set_duration(0.0f);
+  this->curr_frame_ = 0.0f;
+}
+
+CallbackAction::CallbackAction(real32 duration, const callback_type& func) :
   delegate_(func)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,

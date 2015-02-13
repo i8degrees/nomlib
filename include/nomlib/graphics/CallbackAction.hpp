@@ -51,7 +51,9 @@ class CallbackAction: public virtual IActionObject
     ///
     /// \remarks Constructs an animation object that executes a function
     /// pointer.
-    CallbackAction(const callback_type& func, real32 duration = 0.0f);
+    CallbackAction(const callback_type& func);
+
+    CallbackAction(real32 duration, const callback_type& func);
 
     /// \brief Destructor.
     virtual ~CallbackAction();

@@ -56,7 +56,15 @@ class InputActionMapper
     ~InputActionMapper( void );
 
     /// \brief Insert an action mapping.
+
+    /// \deprecated nom::EventCallback will likely be removed in the future;
+    /// use the signature below.
     bool insert( const std::string& key, const InputAction& action, const EventCallback& callback );
+
+    /// \see nom::InputAction
+    bool
+    insert( const std::string& key, const InputAction& action,
+            const event_callback& callback );
 
     /// \brief Remove an action mapping.
     bool erase( const std::string& key );

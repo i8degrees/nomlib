@@ -468,20 +468,20 @@ TEST_F(AnimationTest, ScrollingTextDemo)
   rendered_text.set_text("Hello, world!");
   rendered_text.set_position( Point2i(0,0) );
 
-  // anim_text_tex; this is the rendered_text object's internal texture; used
-  // for position translations on the rendered text
+  // This is a deep-copy clone of rendered_text object's text texture; used for
+  // animation of the displacement
   auto anim_text_tex =
-    std::shared_ptr<Texture>( rendered_text.texture() );
+    std::shared_ptr<Texture>( rendered_text.clone_texture() );
   ASSERT_TRUE(anim_text_tex != nullptr);
 
   auto anim_text_sprite = std::make_shared<Sprite>();
   ASSERT_TRUE(anim_text_sprite != nullptr);
   EXPECT_EQ(true, anim_text_sprite->set_texture(anim_text_tex) );
 
-  // anim_text_tex; this is the rendered_text object's internal texture; used
-  // for alpha blending animations
+  // This is sharing the same texture used for the animated text, in order to
+  // modify the same texture data for alpha blending animations
   auto anim_fade_tex =
-    std::shared_ptr<Texture>( rendered_text.texture() );
+    std::shared_ptr<Texture>( anim_text_sprite->texture() );
   ASSERT_TRUE(anim_fade_tex != nullptr);
 
   auto anim_fade_sprite = std::make_shared<Sprite>();

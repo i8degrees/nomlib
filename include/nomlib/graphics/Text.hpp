@@ -119,12 +119,12 @@ class Text: public Transformable
 
     const Font& font() const;
 
-    /// \brief Get the underlying texture stored of the rendered text.
+    /// \brief Get a deep-copy instance of the underlying texture used for the
+    /// text rendering.
     ///
-    /// \returns A pointer to a new nom::Texture instance of the cached
-    /// texture used for the rendered text. The returned pointer is owned by the
-    /// caller.
-    Texture* texture() const;
+    /// \returns A raw pointer to a new nom::Texture instance of the rendered
+    /// text. The returned pointer is owned by the caller.
+    Texture* clone_texture() const;
 
     /// Obtain validity of the Text object
     bool valid ( void ) const;

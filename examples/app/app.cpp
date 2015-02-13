@@ -299,11 +299,15 @@ class App: public nom::SDLApp
       this->sprite_tex.resize(nom::Texture::ResizeAlgorithm::scale2x);
       this->sprite.set_frame(1); // Left-pointing cursor hand
 
+      auto ani_sprite_tex =
+        std::make_shared<nom::Texture>();
+      NOM_ASSERT(ani_sprite_tex != nullptr);
+
       // Sharing the same texture for the animated sprite instead of loading
       // another texture source would be OK, too, if we didn't care about
       // preserving the original scale of the sprite here for testing purposes.
       // this->ani_sprite.set_texture( *this->sprite_tex.clone() );
-      if( this->ani_sprite_tex.load( res.path() + sprite_frames.sheet_filename() ) == false )
+      if( ani_sprite_tex->load( res.path() + sprite_frames.sheet_filename() ) == false )
       {
         nom::DialogMessageBox(  APP_NAME,
                                 "Could not load sprite texture: " +
@@ -311,9 +315,25 @@ class App: public nom::SDLApp
         return false;
       }
 
-      this->ani_sprite.set_texture(this->ani_sprite_tex);
+      this->ani_sprite =
+        std::make_shared<nom::SpriteBatch>();
+      NOM_ASSERT(this->ani_sprite != nullptr);
+      this->ani_sprite->set_texture(ani_sprite_tex);
+
       // Use the same sprite sheet source for the animated sprite
-      this->ani_sprite.set_sprite_sheet(sprite_frames);
+      this->ani_sprite->set_sprite_sheet(sprite_frames);
+      this->ani_sprite->set_frame(0);
+
+      // 100ms blink (~10 fps)
+      auto sprite_action =
+        nom::create_action<nom::SpriteBatchAction>(this->ani_sprite, 0.100f);
+      NOM_ASSERT(sprite_action != nullptr);
+
+      auto blinking_sprite_action =
+        nom::create_action<nom::RepeatForeverAction>(sprite_action);
+      NOM_ASSERT(blinking_sprite_action != nullptr);
+
+      this->actions.run_action(blinking_sprite_action, "blinking_cursor");
 
       if ( MAXIMUM_WINDOWS > 1 )
       {
@@ -360,7 +380,7 @@ class App: public nom::SDLApp
       this->info_box[1].show();
 
       this->sprite.set_position( nom::Point2i(this->info_box[0].position().x - this->sprite.size().w, this->info_box[0].position().y) );
-      this->ani_sprite.set_position( nom::Point2i(this->info_box[0].position().x + this->info_box[0].size().w + this->sprite.size().w, this->info_box[0].position().y) );
+      this->ani_sprite->set_position( nom::Point2i(this->info_box[0].position().x + this->info_box[0].size().w + this->sprite.size().w, this->info_box[0].position().y) );
 
       return true;
     } // onInit
@@ -386,12 +406,11 @@ class App: public nom::SDLApp
           this->desktop.process_event(ev);
         }
 
-        this->ani_sprite.play();
-
         for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
         {
           this->window[idx].update();
           this->desktop.update();
+          this->actions.update(0);
           this->fps[idx].update();
 
           // Refresh the frames per second at 1 second intervals
@@ -417,7 +436,9 @@ class App: public nom::SDLApp
         this->window[0].fill ( nom::Color4i::SkyBlue );
         this->desktop.draw();
         this->sprite.draw ( this->window[0], this->sprite_angle );
-        this->ani_sprite.draw ( this->window[0] );
+        if( this->ani_sprite != nullptr && this->ani_sprite->valid() == true ) {
+          this->ani_sprite->draw(this->window[0]);
+        }
 
         if ( MAXIMUM_WINDOWS > 1 )
         {
@@ -678,10 +699,12 @@ class App: public nom::SDLApp
 
     /// Our spiffy sprites
     nom::Texture sprite_tex;
-    nom::Texture ani_sprite_tex;
     nom::SpriteBatch sprite;
     double sprite_angle;
-    nom::AnimatedSprite ani_sprite;
+    std::shared_ptr<nom::SpriteBatch> ani_sprite;
+
+    // Animations queue
+    nom::ActionPlayer actions;
 
     // Our font resources for nom::Text, the text rendering API
     // nom::Font bitmap_font;

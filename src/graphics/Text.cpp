@@ -154,12 +154,78 @@ const Font& Text::font() const
   return this->font_;
 }
 
-Texture* Text::texture() const
+// NOTE: It is necessary to always return a new Texture instance because the
+// stored texture may be reallocated at any time, i.e.: glyph rebuild from
+// point size modification -- leaving the end-user with an invalid texture!
+Texture* Text::clone_texture() const
 {
-  // NOTE: It is necessary to always return a new instance because the stored
-  // texture may be reallocated at any time, i.e.: glyph rebuild from
-  // point size modification -- leaving the end-user with a dangling pointer!
-  return( new Texture(*this->rendered_text_) );
+  Texture* texture = new Texture();
+  NOM_ASSERT(texture != nullptr);
+
+  // Our cached texture dimensions should always be the same as the rendered
+  // text's dimensions; if the rendered text appears cut off, the calculated
+  // text width or height is likely to blame!
+  Size2i texture_dims(Size2i::zero);
+  texture_dims = this->size();
+  // Padding
+  // texture_dims.w += this->text_width(" ");
+
+  RenderWindow* context = nom::render_interface();
+  NOM_ASSERT(context != nullptr);
+  if( context == nullptr ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Could not update cache",
+                  "invalid renderer." );
+    NOM_DELETE_PTR(texture);
+    return texture;
+  }
+
+  // Obtain the optimal pixel format for the platform
+  RendererInfo caps = context->caps();
+
+  if( texture->initialize( caps.optimal_texture_format(),
+      SDL_TEXTUREACCESS_TARGET, texture_dims ) == false )
+  {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not update cache: failed texture creation." );
+    NOM_DELETE_PTR(texture);
+    return texture;
+  }
+
+  // Use an alpha channel; otherwise the text is rendered on a black
+  // background!
+  texture->set_blend_mode(SDL_BLENDMODE_BLEND);
+
+  // Set the destination (screen) positioning of the rendered text
+  texture->set_position( this->position() );
+
+  if( context->set_render_target(texture) == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not update cache: failed to set the rendering target." );
+    NOM_DELETE_PTR(texture);
+    return texture;
+  }
+
+  // Clear the rendering backdrop color to be fully transparent; this preserves
+  // any existing alpha channel data from the rendered text
+  if( context->fill(Color4i::Transparent) == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not update cache:",
+                  "failed to set the render target's color." );
+    NOM_DELETE_PTR(texture);
+    return texture;
+  }
+
+  this->render_text(*context);
+
+  if( context->reset_render_target() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not update cache:",
+                  "failed to reset the rendering target." );
+    NOM_DELETE_PTR(texture);
+    return texture;
+  }
+
+  return texture;
 }
 
 bool Text::valid ( void ) const

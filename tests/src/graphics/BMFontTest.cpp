@@ -343,6 +343,43 @@ TEST_F(BMFontTest, RenderAngelCodeBMFontExport)
   EXPECT_TRUE( this->compare() );
 }
 
+TEST_F(BMFontTest, ClonedTexture)
+{
+  nom::Font font;
+
+  Text rendered_text;
+  std::string filename = resources.path() + "gameover.fnt";
+
+  ASSERT_TRUE( font.load(filename) )
+  << "Could not load input texture source: " << filename;
+
+  rendered_text.set_font(font);
+  rendered_text.set_text("You Lose...");
+  rendered_text.set_position( Point2i(0,0) );
+
+  auto tex = std::make_shared<Sprite>();
+  ASSERT_TRUE(tex != nullptr);
+
+  EXPECT_EQ(true, tex->set_texture( rendered_text.clone_texture() ) );
+  nom::set_alignment( tex.get(), rendered_text.position(),
+                      this->resolution(), Anchor::MiddleCenter );
+
+  // Should **not** change the texture -- the clone should be a deep-copy
+  rendered_text.set_text("You Win!");
+
+  EXPECT_EQ( Size2i(289,90), rendered_text.size() );
+  EXPECT_EQ( Size2i(358,90), tex->size() );
+
+  this->append_render_callback( [&] ( const RenderWindow& win ) {
+    if( tex != nullptr && tex->valid() == true ) {
+      tex->draw( this->render_window() );
+    }
+  });
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+}
+
 } // namespace nom
 
 int main( int argc, char** argv )

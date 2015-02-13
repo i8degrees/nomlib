@@ -1038,26 +1038,6 @@ bool Texture::copy_pixels ( const void* source, int pitch )
   return true;
 }
 
-bool Texture::set_render_target(RenderWindow& target)
-{
-  RendererInfo caps = target.caps();
-
-  // Ensure that the rendering device supports FBO
-  if( caps.target_texture() == false ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Video hardware does not support render to texture" );
-    return false;
-  }
-
-  // Try to honor the request; render to the source texture
-  if( SDL_SetRenderTarget( target.context(), this->texture() ) != 0 ) {
-    NOM_LOG_ERR ( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
-    return false;
-  }
-
-  return true;
-}
-
 // Private scope
 
 void Texture::set_scale_factor(int factor)

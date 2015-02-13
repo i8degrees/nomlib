@@ -53,8 +53,6 @@ struct PixelsDeleter
   void operator()(void* ptr);
 };
 
-//class Renderer;
-
 class RenderWindow: public Renderer
 {
   public:

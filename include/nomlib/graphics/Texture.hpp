@@ -386,15 +386,6 @@ class Texture
 
     bool copy_pixels ( const void* source, int pitch );
 
-    /// \brief    Set the nom::Texture as the current renderer target.
-    ///
-    /// \remarks  nom::Texture access type must be Texture::Access::RenderTarget
-    ///
-    /// \note     Not all graphics hardware supports this request
-    ///
-    /// \see nom::Renderer::reset_render_target.
-    bool set_render_target(RenderWindow& target);
-
   private:
     void set_scale_factor(int factor);
 

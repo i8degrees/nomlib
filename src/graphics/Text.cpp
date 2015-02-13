@@ -693,7 +693,7 @@ bool Text::update_cache()
   // Set the destination (screen) positioning of the rendered text
   this->rendered_text_->set_position( this->position() );
 
-  if( this->rendered_text_->set_render_target(*context) == false ) {
+  if( context->set_render_target( this->rendered_text_.get() ) == false ) {
     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
                   "Could not update cache: render targets not supported." );
     return false;

@@ -43,6 +43,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Forward declarations
+class Texture;
+
 /// \brief Video subsystem responsible for managing high-level graphics display
 /// (think: *very* fancy back-buffer).
 ///
@@ -108,10 +111,18 @@ class Renderer
     ///         is probably the API you want to use outside of nomlib.
     static const RendererInfo caps ( SDL_Renderer* target );
 
-    /// \brief Reset the current rendering target.
-    ///
-    /// \see nom::Texture::set_render_target.
+    /// \brief Set the current rendering target back to the default renderer.
     bool reset_render_target() const;
+
+    /// \brief Set a texture as the current rendering target.
+    ///
+    /// \remarks The nom::Texture must be initialized as a
+    /// nom::Texture::Access::RenderTarget.
+    ///
+    /// \note Not all video hardware has support for this feature.
+    ///
+    /// \see ::reset_render_target
+    bool set_render_target(const Texture* texture) const;
 
     /// Update the renderer surface on the attached window
     void update ( void ) const;

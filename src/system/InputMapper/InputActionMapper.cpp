@@ -62,6 +62,25 @@ bool InputActionMapper::insert( const std::string& key, const InputAction& actio
   return true;
 }
 
+bool InputActionMapper::
+insert( const std::string& key, const InputAction& action,
+        const event_callback& callback )
+{
+  ActionPair p( key, std::make_shared<InputAction>( action ) );
+  p.second->set_callback( callback );
+
+  auto it = this->input_map_.insert( p );
+
+  // No dice; the insertion failed for some reason!
+  if( it == this->input_map_.end() )
+  {
+    NOM_LOG_ERR( NOM, "Could not insert action with key: " + key );
+    return false;
+  }
+
+  return true;
+}
+
 bool InputActionMapper::erase( const std::string& key )
 {
   ActionMap::const_iterator itr = this->input_map_.find( key );

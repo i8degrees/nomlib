@@ -108,14 +108,19 @@ class App: public nom::SDLApp
       nom::EventDispatcher sender;
       nom::Event user_event;
 
-      nom::EventCallback delegate1( [&] ( const nom::Event& evt ) { this->minimize( evt ); } );
-      nom::EventCallback delegate2( [&] ( const nom::Event& evt ) { this->restore( evt ); } );
+      nom::event_callback delegate1( [&] (const nom::Event& evt) {
+        this->minimize(evt);
+      });
+
+      nom::event_callback delegate2( [&] (const nom::Event& evt) {
+        this->restore(evt);
+      });
 
       user_event.type = SDL_USEREVENT;
       user_event.timestamp = ticks();
       user_event.user.code = USER_EVENT_DEBUG;
       user_event.user.data1 = nullptr;
-      user_event.user.data2 = NOM_SCAST( nom::EventCallback*, &delegate1 );
+      user_event.user.data2 = NOM_SCAST(nom::event_callback*, &delegate1);
       user_event.user.window_id = 0;
       // sender.dispatch( user_event );
 
@@ -123,7 +128,7 @@ class App: public nom::SDLApp
       user_event.timestamp = ticks();
       user_event.user.code = USER_EVENT_DEBUG;
       user_event.user.data1 = nullptr;
-      user_event.user.data2 = NOM_SCAST( nom::EventCallback*, &delegate2 );
+      user_event.user.data2 = NOM_SCAST(nom::event_callback*, &delegate2);
       user_event.user.window_id = 0;
       // sender.dispatch( user_event );
 
@@ -136,16 +141,18 @@ class App: public nom::SDLApp
       // State 5 is keyboard input mapping with repeating key active
       nom::InputActionMapper state0, state1, state2, state3, state4, state5;
 
-      nom::EventCallback quit_app( [&] ( const nom::Event& evt )
-        {
-            this->on_app_quit( evt );
-        }
-      );
+      nom::event_callback quit_app( [&] (const nom::Event& evt) {
+        this->on_app_quit(evt);
+      });
 
       // Mouse button mappings
 
-      state0.insert( "minimize_window_0", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT ), nom::EventCallback( [&] ( const nom::Event& evt ) { this->minimize( evt ); } ) );
-      state0.insert( "restore_window_0", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_RIGHT ), nom::EventCallback( [&] ( const nom::Event& evt ) { this->restore( evt ); } ) );
+      state0.insert(  "minimize_window_0",
+                      nom::MouseButtonAction(SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT),
+                      nom::event_callback( [&] ( const nom::Event& evt ) {
+                        this->minimize( evt );
+                      }) );
+      state0.insert(  "restore_window_0", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_RIGHT ), nom::event_callback( [&] ( const nom::Event& evt ) { this->restore( evt ); } ) );
       state0.insert (
                       "quit_app",
                       nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT, 3 ),
@@ -169,17 +176,17 @@ class App: public nom::SDLApp
 
       // Joystick button mappings
 
-      state2.insert (
-                      "minimize_window_0",
+      state2.insert ( "minimize_window_0",
                       nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::L1 ),
-                      nom::EventCallback( [&] ( const nom::Event& evt ) { this->minimize( evt ); } )
-                     );
+                      nom::event_callback( [&] (const nom::Event& evt) {
+                        this->minimize(evt);
+                      }) );
 
-      state2.insert (
-                      "restore_window_0",
+      state2.insert ( "restore_window_0",
                       nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::R1 ),
-                      nom::EventCallback( [&] ( const nom::Event& evt ) { this->restore( evt ); } )
-                    );
+                      nom::event_callback( [&] (const nom::Event& evt) {
+                        this->restore(evt);
+                      }) );
 
       // Mouse wheel mappings
 
@@ -190,7 +197,10 @@ class App: public nom::SDLApp
                                           nom::MouseWheelAction::UP
                                         );
 
-      state3.insert( "color_fill_1", mouse_wheel, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 0 ); } ) );
+      state3.insert(  "color_fill_1", mouse_wheel,
+                      nom::event_callback( [&] (const nom::Event& evt) {
+                        this->color_fill(evt, 0);
+                      }) );
 
       // Wheel is going downward
       mouse_wheel = nom::MouseWheelAction (
@@ -199,7 +209,10 @@ class App: public nom::SDLApp
                                             nom::MouseWheelAction::DOWN
                                           );
 
-      state3.insert( "color_fill_1", mouse_wheel, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 1 ); } ) );
+      state3.insert(  "color_fill_1", mouse_wheel,
+                      nom::event_callback( [&] (const nom::Event& evt) {
+                        this->color_fill(evt, 1);
+                      }) );
 
       // Wheel is going leftward
       mouse_wheel = nom::MouseWheelAction (
@@ -208,7 +221,10 @@ class App: public nom::SDLApp
                                             nom::MouseWheelAction::LEFT
                                           );
 
-      state3.insert( "color_fill_1", mouse_wheel, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 2 ); } ) );
+      state3.insert(  "color_fill_1", mouse_wheel,
+                      nom::event_callback( [&] (const nom::Event& evt) {
+                        this->color_fill(evt, 2);
+                      }) );
 
       // Wheel is going rightward
       mouse_wheel = nom::MouseWheelAction (
@@ -217,29 +233,44 @@ class App: public nom::SDLApp
                                             nom::MouseWheelAction::RIGHT
                                           );
 
-      state3.insert( "color_fill_1", mouse_wheel, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 3 ); } ) );
+      state3.insert( "color_fill_1", mouse_wheel,
+                      nom::event_callback( [&] (const nom::Event& evt) {
+                        this->color_fill(evt, 3);
+                      }) );
 
       nom::InputAction jaxis;
 
       // Joystick axis is going upward
       jaxis = nom::JoystickAxisAction ( 0, SDL_JOYAXISMOTION, 0, -1 );
 
-      state4.insert( "color_fill_1", jaxis, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 0 ); } ) );
+      state4.insert(  "color_fill_1", jaxis,
+                      nom::event_callback( [&] (const nom::Event& evt) {
+                        this->color_fill(evt, 0);
+                      }) );
 
       // Joystick axis is going downward
       jaxis = nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 0, 1 );
 
-      state4.insert( "color_fill_1", jaxis, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 1 ); } ) );
+      state4.insert(  "color_fill_1", jaxis,
+                      nom::event_callback( [&] (const nom::Event& evt) {
+                        this->color_fill(evt, 1);
+                      }) );
 
       // Joystick axis is going leftward
       jaxis = nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 1, -1 );
 
-      state4.insert( "color_fill_1", jaxis, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 2 ); } ) );
+      state4.insert(  "color_fill_1", jaxis,
+                      nom::event_callback( [&] (const nom::Event& evt) {
+                        this->color_fill(evt, 2);
+                      }) );
 
       // Joystick axis is going rightward
       jaxis = nom::JoystickAxisAction( 0, SDL_JOYAXISMOTION, 1, 1 );
 
-      state4.insert( "color_fill_1", jaxis, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 3 ); } ) );
+      state4.insert(  "color_fill_1", jaxis,
+                      nom::event_callback( [&] (const nom::Event& evt) {
+                        this->color_fill(evt, 3);
+                      }) );
 
       nom::InputAction kb_repeat;
 
@@ -247,7 +278,10 @@ class App: public nom::SDLApp
       // Command (OS X) or Windows modifier key is repeating (pressed down for
       // at least ~0.5s).
       kb_repeat = nom::KeyboardAction( SDL_KEYDOWN, SDLK_3, KMOD_LGUI, 1 );
-      state5.insert( "color_fill_1", kb_repeat, nom::EventCallback( [&] ( const nom::Event& evt ) { this->color_fill( evt, 3 ); } ) );
+      state5.insert(  "color_fill_1", kb_repeat,
+                      nom::event_callback( [&] (const nom::Event& evt) {
+                        this->color_fill(evt, 3);
+                      }) );
 
       // Mouse button input mapping
       this->input_mapper.insert( "state0", state0, true );

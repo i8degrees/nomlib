@@ -116,10 +116,6 @@ class GradientTest: public nom::VisualUnitTest
       this->pos2 = Point2i( 0, h / 2 );
       this->dims2 = Size2i( w, h / 2 );
 
-      // Not used
-      this->pos3 = Point2i( w/3, h/2 );
-      this->dims3 = Size2i( w/3, h/3 );
-
       this->grad1.set_colors( this->colors[0] );
       this->grad1.set_position( this->pos1 );
       this->grad1.set_size( this->dims1 );
@@ -128,15 +124,9 @@ class GradientTest: public nom::VisualUnitTest
       this->grad2.set_position( this->pos2 );
       this->grad2.set_size( this->dims2 );
 
-      // Not used
-      this->grad3.set_colors( this->colors[0] );
-      this->grad3.set_position( this->pos3 );
-      this->grad3.set_size( this->dims3 );
-
       // Register our main loop
       this->append_render_callback( [&] ( const RenderWindow& win ) { this->grad1.draw( this->render_window() ); } );
       this->append_render_callback( [&] ( const RenderWindow& win ) { this->grad2.draw( this->render_window() ); } );
-      // this->append_render_callback( [&] ( const RenderWindow& win ) { this->grad3.draw( this->render_window() ); } );
     }
 
     /// \remarks This method is called before destruction, at the end of each
@@ -163,18 +153,12 @@ class GradientTest: public nom::VisualUnitTest
 
     Gradient grad1;
     Gradient grad2;
-    // Not used
-    Gradient grad3;
 
     Point2i pos1;
     Size2i dims1;
 
     Point2i pos2;
     Size2i dims2;
-
-    // Not used
-    Point2i pos3;
-    Size2i dims3;
 
     /// \brief Colors used to create the gradient
 
@@ -186,7 +170,6 @@ TEST_F( GradientTest, TopToBottomLinearFill )
 {
   this->grad1.set_fill_direction( Gradient::FillDirection::Top );
   this->grad2.set_fill_direction( Gradient::FillDirection::Top );
-  // this->grad3.set_fill_direction( Gradient::FillDirection::Top );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
@@ -196,7 +179,6 @@ TEST_F( GradientTest, BottomToTopLinearFill )
 {
   this->grad1.set_fill_direction( Gradient::FillDirection::Bottom );
   this->grad2.set_fill_direction( Gradient::FillDirection::Bottom );
-  // this->grad3.set_fill_direction( Gradient::FillDirection::Bottom );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
@@ -206,7 +188,6 @@ TEST_F( GradientTest, LeftToRightLinearFill )
 {
   this->grad1.set_fill_direction( Gradient::FillDirection::Left );
   this->grad2.set_fill_direction( Gradient::FillDirection::Left );
-  // this->grad3.set_fill_direction( Gradient::FillDirection::Left );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
@@ -216,7 +197,6 @@ TEST_F( GradientTest, RightToLeftLinearFill )
 {
   this->grad1.set_fill_direction( Gradient::FillDirection::Right );
   this->grad2.set_fill_direction( Gradient::FillDirection::Right );
-  // this->grad3.set_fill_direction( Gradient::FillDirection::Right );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
@@ -302,13 +282,19 @@ TEST_F( GradientTest, Margins )
   EXPECT_TRUE( this->compare() );
 }
 
-TEST_F(GradientTest, ClonedTextureInstances)
+TEST_F(GradientTest, SharedTexturePointers)
 {
   this->grad1.set_fill_direction( Gradient::FillDirection::Right );
   this->grad2.set_fill_direction( Gradient::FillDirection::Right );
 
+#if 1
   auto grad1_tex = std::shared_ptr<Texture>( this->grad1.texture() );
   auto grad2_tex = std::shared_ptr<Texture>( this->grad2.texture() );
+#else
+  // ...Broken...
+  auto grad1_tex = std::shared_ptr<Texture>( this->grad1.clone_texture() );
+  auto grad2_tex = std::shared_ptr<Texture>( this->grad2.clone_texture() );
+#endif
 
   // Need to first clear out the default grad objects in here
   this->clear_render_callbacks();

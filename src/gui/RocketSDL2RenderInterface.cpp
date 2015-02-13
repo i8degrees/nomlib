@@ -218,7 +218,7 @@ void RocketSDL2RenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, i
   // work in the instance I'm working in (custom libRocket decorator)...
   if( this->window_->set_color( Color4i::Blue ) == false )
   {
-    NOM_LOG_ERR ( NOM, SDL_GetError() );
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, SDL_GetError() );
   }
 }
 
@@ -271,7 +271,9 @@ bool RocketSDL2RenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture
 
   if( !file_handle )
   {
-    NOM_LOG_ERR( NOM_LOG_CATEGORY_GUI, "Could not obtain file handle for source:", source.CString() );
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not obtain file handle for source:",
+                  source.CString() );
     return false;
   }
 
@@ -295,12 +297,13 @@ bool RocketSDL2RenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture
   Rocket::Core::String extension = source.Substring(i+1, source.Length()-i);
 
   Image surface;
+  Texture* texture = new Texture();
+  NOM_ASSERT(texture != nullptr);
   if( surface.load_memory( buffer, buffer_size, extension.CString() ) == true)
   {
-    // ::ReleaseTexture is responsible for freeing this pointer
-    Texture* texture = new Texture();
     if( texture->create( surface ) == true )
     {
+      // ::ReleaseTexture is responsible for freeing this pointer
       texture_handle = (Rocket::Core::TextureHandle) texture->texture();
 
       texture_dimensions =
@@ -308,14 +311,18 @@ bool RocketSDL2RenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture
     }
     else
     {
-      NOM_LOG_ERR( NOM_LOG_CATEGORY_GUI, "Could not create texture handle from image source." );
+      NOM_DELETE_PTR(texture);
+      NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                    "Could not create texture handle from image source." );
       return false;
     }
 
     return true;
   }
 
-  NOM_LOG_ERR( NOM_LOG_CATEGORY_GUI, "Could not create texture handle." );
+  NOM_DELETE_PTR(texture);
+  NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                "Could not create texture handle." );
   return false;
 }
 
@@ -336,9 +343,6 @@ bool RocketSDL2RenderInterface::GenerateTexture(Rocket::Core::TextureHandle& tex
   Image surface;
   bool ret;
 
-  // ::ReleaseTexture is responsible for freeing this pointer
-  Texture* texture = new Texture();
-
   ret = surface.initialize(
                             // pixels
                             (void*) source,
@@ -352,21 +356,30 @@ bool RocketSDL2RenderInterface::GenerateTexture(Rocket::Core::TextureHandle& tex
                             source_dimensions.x * 4,
                             rmask, gmask, bmask, amask );
 
+  Texture* texture = new Texture();
+  NOM_ASSERT(texture != nullptr);
+
   if( ret )
   {
     if( texture->create(surface) == false )
     {
-      NOM_LOG_ERR( NOM_LOG_CATEGORY_GUI, "Could not generate texture from pixel data." );
+      NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                    "Could not generate texture from pixel data." );
+      NOM_DELETE_PTR(texture);
       return false;
     }
 
     SDL_SetTextureBlendMode( texture->texture(), SDL_BLENDMODE_BLEND );
+
+    // ::ReleaseTexture is responsible for freeing this pointer
     texture_handle = (Rocket::Core::TextureHandle) texture->texture();
 
     return true;
   }
 
-  NOM_LOG_ERR( NOM_LOG_CATEGORY_GUI, "Could not generate texture." );
+  NOM_DELETE_PTR(texture);
+
+  NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not generate texture." );
   return false;
 }
 

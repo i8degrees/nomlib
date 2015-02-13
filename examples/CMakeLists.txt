@@ -116,27 +116,6 @@ if( NOM_BUILD_APP_EXAMPLE )
           )
 endif( NOM_BUILD_APP_EXAMPLE )
 
-if( NOM_BUILD_SPRITES_EXAMPLE )
-  add_executable ( sprites "${EXECUTABLE_FLAGS}" "sprites.cpp" )
-
-  set( SPRITES_DEPS nomlib-graphics )
-
-  if( PLATFORM_WINDOWS )
-    # We need to link to SDL2main library on Windows
-    list( APPEND SPRITES_DEPS ${SDL2MAIN_LIBRARY} )
-  endif( PLATFORM_WINDOWS )
-
-  target_link_libraries( sprites ${SPRITES_DEPS} )
-
-  # Search paths file to use in finding the resources path
-  install (
-            FILES
-            "${NOM_EXAMPLES_RESOURCES_DIR}/sprites.json"
-            DESTINATION
-            "${EXAMPLES_INSTALL_DIR}"
-          )
-endif( NOM_BUILD_SPRITES_EXAMPLE )
-
 if( NOM_BUILD_AUDIO_EXAMPLE )
   add_executable ( audio "${EXECUTABLE_FLAGS}" "audio/audio.cpp" )
 

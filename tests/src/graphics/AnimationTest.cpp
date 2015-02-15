@@ -166,7 +166,7 @@ void AnimationTest::SetUp()
 
           case SDLK_3:
           {
-            this->player.remove_actions();
+            this->player.cancel_actions();
           } break;
 
         } break; // end switch ev.key.sym
@@ -1317,108 +1317,6 @@ TEST_F(AnimationTest, CallbackActionWithNonZeroDuration)
   });
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-}
-
-// TODO: Remove
-TEST_F(AnimationTest, ScratchTest)
-{
-  // Testing parameters
-  const float DURATION = 2.5f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
-  const Point2i TRANSLATE_POS( Point2i(640,0) );
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
-
-  // Initial texture position and size
-  const Point2i RECT_POS(Point2i::zero);
-  const Size2i RECT_SIZE(256,256);
-  const Point2i EXPECTED_TEX_POS(TRANSLATE_POS);
-
-#define RECT_TEX
-
-#if defined(RECT_TEX)
-  auto rect =
-    std::make_shared<Rectangle>( IntRect(RECT_POS, RECT_SIZE), Color4i::Magenta);
-  ASSERT_TRUE(rect != nullptr);
-#else
-  Color4iColors grad_colors = { Color4iColors{ Color4i( 114, 66, 66 ), Color4i( 251, 222, 232 ) } };
-  auto rect = std::make_shared<Gradient>();
-  ASSERT_TRUE(rect != nullptr);
-  rect->set_fill_direction(Gradient::FillDirection::Top);
-  rect->set_colors(grad_colors);
-  rect->set_position(RECT_POS);
-  rect->set_size(RECT_SIZE);
-#endif
-
-  auto sprite0 = std::make_shared<Sprite>();
-  ASSERT_TRUE(sprite0 != nullptr);
-
-#if defined(RECT_TEX)
-  sprite0->set_texture( rect->texture() );
-#else
-  auto rect_ptr = rect->texture();
-  sprite0->set_texture( *rect_ptr.get() );
-#endif
-
-  sprite0->set_size( RECT_SIZE / Size2i(2,2) );
-  sprite0->set_color_blend_mode(nom::BLEND_MODE_BLEND);
-  // sprite0->set_alpha(128);
-  sprite0->set_color(Color4i::Blue);
-
-  // nom::set_alignment(sprite0.get(), RECT_POS, WINDOW_DIMS, Anchor::BottomLeft);
-
-  auto action0 =
-    nom::create_action<MoveByAction>(sprite0, TRANSLATE_POS, DURATION);
-  ASSERT_TRUE(action0 != nullptr);
-  action0->set_speed(SPEED_MOD);
-
-  EXPECT_EQ(0, this->player.num_actions() );
-  this->run_action_ret =
-  this->player.run_action(action0, [=]() {
-
-    EXPECT_EQ( EXPECTED_TEX_POS, sprite0->position() );
-    EXPECT_EQ(1, this->player.num_actions() );
-
-    this->expected_common_params(action0.get(), DURATION, SPEED_MOD);
-
-    this->quit(); // graceful exit
-  });
-  EXPECT_EQ(true, this->run_action_ret)
-  << "Failed to queue the action!";
-  EXPECT_EQ(1, this->player.num_actions() );
-
-// const std::string TEX_FILE_PATH = resources[0].path() + "card.png";
-// auto imgT = std::make_shared<Image>( Image() );
-// ASSERT_TRUE(imgT != nullptr);
-// if( imgT->load(TEX_FILE_PATH) == false ) {
-//   FAIL() << "Could not load texture from file: " << TEX_FILE_PATH;
-// }
-
-// auto texT = std::make_shared<Texture>( Texture() );
-// ASSERT_TRUE(texT != nullptr);
-// EXPECT_EQ(true, texT->create(imgT->texture() ) );
-
-// auto spriteT = std::make_shared<Sprite>();
-// ASSERT_TRUE(spriteT != nullptr);
-// EXPECT_EQ(true, spriteT->set_texture(texT) );
-
-  this->append_render_callback( [=](const RenderWindow& win) {
-
-    if( sprite0 != nullptr && sprite0->valid() == true ) {
-      sprite0->draw( this->render_window() );
-    }
-
-    // if( spriteT != nullptr && spriteT->valid() == true ) {
-    //   spriteT->draw( this->render_window() );
-    // }
-
-    this->set_frame_interval(FPS);
-  });
-
-  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
-
-  // NOM_DELETE_PTR(rect_ptr);
 }
 
 TEST_F(AnimationTest, ColorizeAction)

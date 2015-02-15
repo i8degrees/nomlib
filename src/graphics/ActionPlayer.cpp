@@ -278,7 +278,7 @@ bool ActionPlayer::update(real32 delta_time)
   return running;
 }
 
-bool ActionPlayer::remove_action(const std::string& action_name)
+bool ActionPlayer::cancel_action(const std::string& action_name)
 {
   auto res = this->actions_.find(action_name);
 
@@ -297,7 +297,7 @@ bool ActionPlayer::remove_action(const std::string& action_name)
   return false;
 }
 
-void ActionPlayer::remove_actions()
+void ActionPlayer::cancel_actions()
 {
   this->free_list_.clear();
   this->actions_.clear();

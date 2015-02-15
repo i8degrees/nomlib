@@ -174,7 +174,7 @@ TEST_F(AnimationTest, GroupActionFinishEquality)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, RemoveAction)
+TEST_F(AnimationTest, CancelAction)
 {
   // Testing parameters
   const float DURATION = 1.0f;
@@ -199,8 +199,8 @@ TEST_F(AnimationTest, RemoveAction)
   << "Failed to queue action0";
   EXPECT_EQ(1, this->player.num_actions() );
 
-  EXPECT_EQ(true, this->player.remove_action("action0") );
-  EXPECT_EQ(false, this->player.remove_action("action1") );
+  EXPECT_EQ(true, this->player.cancel_action("action0") );
+  EXPECT_EQ(false, this->player.cancel_action("action1") );
 
   this->run_action_ret =
   this->player.run_action(action1);
@@ -208,7 +208,7 @@ TEST_F(AnimationTest, RemoveAction)
   << "Failed to queue action1";
   EXPECT_EQ(1, this->player.num_actions() );
 
-  EXPECT_EQ(true, this->player.remove_action("action1") );
+  EXPECT_EQ(true, this->player.cancel_action("action1") );
 }
 
 // NOTE: These logs show the inaccurate results previous to bug fixes!!

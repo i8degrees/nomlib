@@ -87,7 +87,6 @@ void set_alignment(Transformable* obj, const Point2i& pos_offset, const Size2i& 
   // Resulting alignment calculation
   Point2i offset(Point2i::zero);
 
-  NOM_ASSERT(obj != nullptr);
   if( obj == nullptr ) {
     return; // Err
   }
@@ -154,7 +153,6 @@ void set_alignment( Texture* obj, const Point2i& pos_offset,
   // Resulting alignment calculation
   Point2i align_offset(Point2i::zero);
 
-  NOM_ASSERT(obj != nullptr);
   if( obj == nullptr ) {
     return; // Err
   }

@@ -83,7 +83,6 @@ IActionObject::FrameState CallbackAction::next_frame(real32 delta_time)
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
 
-  NOM_ASSERT(this->delegate_ != nullptr);
   if( this->delegate_ != nullptr ) {
     this->delegate_.operator()();
   }

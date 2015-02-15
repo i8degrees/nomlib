@@ -51,7 +51,6 @@ std::unique_ptr<RemoveAction::derived_type> RemoveAction::clone() const
 
 IActionObject::FrameState RemoveAction::next_frame(real32 delta_time)
 {
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
     this->object_->release();
     this->status_ = FrameState::DONE;
@@ -85,7 +84,6 @@ void RemoveAction::rewind(real32 delta_time)
 
 void RemoveAction::release()
 {
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
     this->object_->release();
   }

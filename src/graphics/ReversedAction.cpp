@@ -57,7 +57,6 @@ std::unique_ptr<ReversedAction::derived_type> ReversedAction::clone() const
 
 IActionObject::FrameState ReversedAction::next_frame(real32 delta_time)
 {
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
     this->status_ = this->object_->prev_frame(delta_time);
     return this->status_;
@@ -70,7 +69,6 @@ IActionObject::FrameState ReversedAction::next_frame(real32 delta_time)
 
 IActionObject::FrameState ReversedAction::prev_frame(real32 delta_time)
 {
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
     this->status_ = this->object_->next_frame(delta_time);
     return this->status_;
@@ -83,7 +81,6 @@ IActionObject::FrameState ReversedAction::prev_frame(real32 delta_time)
 
 void ReversedAction::pause(real32 delta_time)
 {
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
     this->object_->pause(delta_time);
   }
@@ -91,7 +88,6 @@ void ReversedAction::pause(real32 delta_time)
 
 void ReversedAction::resume(real32 delta_time)
 {
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
     this->object_->resume(delta_time);
   }
@@ -99,7 +95,6 @@ void ReversedAction::resume(real32 delta_time)
 
 void ReversedAction::rewind(real32 delta_time)
 {
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
     // Reset proxy object back to initial starting values
     this->object_->rewind(delta_time);
@@ -108,7 +103,6 @@ void ReversedAction::rewind(real32 delta_time)
 
 void ReversedAction::release()
 {
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
     this->object_->release();
   }
@@ -119,7 +113,6 @@ void ReversedAction::set_speed(real32 speed)
   IActionObject::set_speed(speed);
 
   // Propagate the speed modifier to our proxy / child object
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
     this->object_->set_speed(speed);
   }
@@ -131,9 +124,7 @@ ReversedAction::set_timing_mode(const IActionObject::timing_mode_func& mode)
   IActionObject::set_timing_mode(mode);
 
   // Propagate the timing mode modifier to our proxy / child object
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
-
     this->object_->set_timing_mode(mode);
   }
 }

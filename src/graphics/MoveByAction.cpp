@@ -115,7 +115,6 @@ MoveByAction::update(real32 t, const Point2i& b, const Point2i& c, real32 d)
   // Update our internal elapsed frames counter (diagnostics)
   ++this->curr_frame_;
 
-  NOM_ASSERT(this->drawable_ != nullptr);
   if( this->drawable_ != nullptr ) {
 
     // State diagnostics

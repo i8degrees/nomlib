@@ -65,7 +65,6 @@ IActionObject::FrameState RepeatForeverAction::next_frame(real32 delta_time)
   action =
     this->underlying_action_type( this->object_.get() );
 
-  NOM_ASSERT(action != nullptr);
   if( action == nullptr ) {
     // No proxy object to repeat for!
     this->status_ = FrameState::DONE;
@@ -94,7 +93,6 @@ IActionObject::FrameState RepeatForeverAction::prev_frame(real32 delta_time)
   action =
     this->underlying_action_type( this->object_.get() );
 
-  NOM_ASSERT(action != nullptr);
   if( action == nullptr ) {
     // No proxy object to repeat for!
     this->status_ = FrameState::DONE;
@@ -117,7 +115,6 @@ IActionObject::FrameState RepeatForeverAction::prev_frame(real32 delta_time)
 
 void RepeatForeverAction::pause(real32 delta_time)
 {
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
     this->object_->pause(delta_time);
   }
@@ -125,7 +122,6 @@ void RepeatForeverAction::pause(real32 delta_time)
 
 void RepeatForeverAction::resume(real32 delta_time)
 {
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
     this->object_->resume(delta_time);
   }
@@ -136,7 +132,6 @@ void RepeatForeverAction::rewind(real32 delta_time)
   // Reset our object back to its original value
   this->elapsed_repeats_ = 0;
 
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
     // Reset proxy object back to initial value
     this->object_->rewind(delta_time);
@@ -145,7 +140,6 @@ void RepeatForeverAction::rewind(real32 delta_time)
 
 void RepeatForeverAction::release()
 {
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
     this->object_->release();
   }
@@ -156,7 +150,6 @@ void RepeatForeverAction::set_speed(real32 speed)
   IActionObject::set_speed(speed);
 
   // Propagate the speed modifier to our proxy / child object
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
     this->object_->set_speed(speed);
   }
@@ -168,7 +161,6 @@ RepeatForeverAction::set_timing_mode(const IActionObject::timing_mode_func& mode
   IActionObject::set_timing_mode(mode);
 
   // Propagate the timing mode modifier to our proxy / child object
-  NOM_ASSERT(this->object_ != nullptr);
   if( this->object_ != nullptr ) {
     this->object_->set_timing_mode(mode);
   }

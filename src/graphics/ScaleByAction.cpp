@@ -120,7 +120,6 @@ ScaleByAction::update(real32 t, const Size2i& b, const Size2f& c, real32 d)
   // Update our internal elapsed frames counter (diagnostics)
   ++this->curr_frame_;
 
-  NOM_ASSERT(this->drawable_ != nullptr);
   if( this->drawable_ != nullptr ) {
 
     // State diagnostics logging
@@ -238,7 +237,6 @@ void ScaleByAction::first_frame(real32 delta_time)
 
     // Initialize the initial size scaling value; this is also necessary for
     // reversing the animation, repeating it, etc.
-    NOM_ASSERT(this->drawable_ != nullptr);
     if( this->drawable_ != nullptr ) {
       this->initial_size_ = this->drawable_->size();
     }

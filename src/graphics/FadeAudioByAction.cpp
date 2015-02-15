@@ -110,7 +110,6 @@ FadeAudioByAction::update(real32 t, uint8 b, int16 c, real32 d)
   // Update our internal elapsed frames counter (diagnostics
   ++this->curr_frame_;
 
-  NOM_ASSERT(this->drawable_ != nullptr);
   if( this->drawable_ != nullptr ) {
 
     // Convert floating-point value to integer; it is critical that we round

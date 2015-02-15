@@ -112,7 +112,6 @@ FadeAlphaByAction::update(real32 t, uint8 b, int16 c, real32 d)
 
   int16 displacement_as_integer = 0;
 
-  NOM_ASSERT(this->drawable_ != nullptr);
   if( this->drawable_ != nullptr ) {
 
     // Convert floating-point value to integer; it is critical that we round

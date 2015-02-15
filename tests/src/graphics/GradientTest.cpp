@@ -282,33 +282,44 @@ TEST_F( GradientTest, Margins )
   EXPECT_TRUE( this->compare() );
 }
 
-TEST_F(GradientTest, SharedTexturePointers)
+TEST_F(GradientTest, SharedTextureForSprite)
 {
-  this->grad1.set_fill_direction( Gradient::FillDirection::Right );
-  this->grad2.set_fill_direction( Gradient::FillDirection::Right );
+  this->grad1.set_fill_direction(Gradient::FillDirection::Right);
+  this->grad2.set_fill_direction(Gradient::FillDirection::Right);
 
 #if 1
-  auto grad1_tex = std::shared_ptr<Texture>( this->grad1.texture() );
-  auto grad2_tex = std::shared_ptr<Texture>( this->grad2.texture() );
+  auto grad1_tex =
+    std::shared_ptr<Texture>( this->grad1.texture() );
+  auto grad2_tex =
+    std::shared_ptr<Texture>( this->grad2.texture() );
 #else
   // ...Broken...
   auto grad1_tex = std::shared_ptr<Texture>( this->grad1.clone_texture() );
   auto grad2_tex = std::shared_ptr<Texture>( this->grad2.clone_texture() );
 #endif
 
+  auto sprite_grad1 =
+    std::make_shared<Sprite>(grad1_tex);
+  ASSERT_TRUE(sprite_grad1 != nullptr);
+  ASSERT_TRUE(sprite_grad1->valid() != false);
+
+  auto sprite_grad2 =
+    std::make_shared<Sprite>(grad2_tex);
+  ASSERT_TRUE(sprite_grad2 != nullptr);
+  ASSERT_TRUE(sprite_grad2->valid() != false);
+
   // Need to first clear out the default grad objects in here
   this->clear_render_callbacks();
-
   this->append_render_callback( this->default_render_callback() );
 
-  this->append_render_callback( [&] ( const RenderWindow& win ) {
+  this->append_render_callback( [=] (const RenderWindow& win) {
 
-    if( grad1_tex != nullptr && grad1_tex->valid() == true ) {
-      grad1_tex->draw( this->render_window() );
+    if( sprite_grad1 != nullptr && sprite_grad1->valid() == true ) {
+      sprite_grad1->draw( this->render_window() );
     }
 
-    if( grad2_tex != nullptr && grad2_tex->valid() == true ) {
-      grad2_tex->draw( this->render_window() );
+    if( sprite_grad2 != nullptr && sprite_grad2->valid() == true ) {
+      sprite_grad2->draw( this->render_window() );
     }
   });
 

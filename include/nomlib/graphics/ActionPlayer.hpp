@@ -197,12 +197,12 @@ class ActionPlayer
     /// \param action_name The action's name to erase.
     ///
     /// \see IActionObject::set_name.
-    bool remove_action(const std::string& action_name);
+    bool cancel_action(const std::string& action_name);
 
     /// \brief Clear all actions from the queue.
     ///
     /// \remarks This will instantly stop all running actions.
-    void remove_actions();
+    void cancel_actions();
 
     bool update(real32 delta_time);
 

@@ -1,12 +1,12 @@
 # nomlib-graphics module tests
 
-set( NOM_BUILD_RENDERWINDOW_TESTS ON )
-set( NOM_BUILD_GRADIENT_TESTS ON )
-set( NOM_BUILD_BITMAP_FONT_TEST ON )
-set( NOM_BUILD_TRUETYPE_FONT_TEST ON )
-set( NOM_BUILD_BMFONT_TEST ON )
+# set( NOM_BUILD_RENDERWINDOW_TESTS ON )
+# set( NOM_BUILD_GRADIENT_TESTS ON )
+# set( NOM_BUILD_BITMAP_FONT_TEST ON )
+# set( NOM_BUILD_TRUETYPE_FONT_TEST ON )
+# set( NOM_BUILD_BMFONT_TEST ON )
 set( NOM_BUILD_ANIMATION_TESTS ON )
-set( NOM_BUILD_SPRITE_TESTS ON )
+# set( NOM_BUILD_SPRITE_TESTS ON )
 
 if( NOM_BUILD_RENDERWINDOW_TESTS )
 
@@ -132,9 +132,9 @@ if(NOM_BUILD_ANIMATION_TESTS)
 
   target_link_libraries( AnimationTest nomlib-visual-unit-test nomlib-graphics )
 
-  # Any frame rate that your hardware can handle should be fine here; the only
-  # reason why I have the default set so low is due to my initial modeling of
-  # the system to fit with TTcards' -- the game runs at between 15..30 FPS.
+  # Any frame rate that your hardware can handle should be fine here; a
+  # conservative value is chosen here chiefly to lower system utilization
+  # during test runs.
   set( ANIMATION_TEST_ARGS --fps 30 )
 
   # Fractional speed modifier values, such as 22.5 and the oddball number of 45
@@ -157,7 +157,7 @@ if(NOM_BUILD_ANIMATION_TESTS)
 
   # NOTE: Only the standard five (5) timing modes are tested -- there are
   # several more timing modes available in the testing unit; see test
-  # documentation by passing '-h' to AnimationTest from the command line.
+  # documentation by passing '--help' to AnimationTest from the command line.
   add_animation_test( AnimationTestExtended_QuadEaseIn
                       ${ANIMATION_TEST_ARGS} --speed 100.0
                       --timing-mode quad_ease_in )

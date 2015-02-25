@@ -36,16 +36,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-ScaleByAction::ScaleByAction( const std::shared_ptr<Sprite>& obj,
-                              const Size2f& delta, real32 duration ) :
+ScaleByAction::ScaleByAction( const std::shared_ptr<Sprite>& action,
+                              const Size2f& delta,
+                              real32 seconds ) :
   total_displacement_(delta)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  this->set_duration(duration);
+  this->set_duration(seconds);
   this->curr_frame_ = 0.0f;
-  this->drawable_ = obj;
+  this->drawable_ = action;
 }
 
 ScaleByAction::~ScaleByAction()

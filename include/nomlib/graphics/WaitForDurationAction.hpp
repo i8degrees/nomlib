@@ -36,35 +36,35 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief [TODO: Description]
+/// \brief An action that acts as a delay timer
 class WaitForDurationAction: public virtual IActionObject
 {
   public:
     typedef WaitForDurationAction self_type;
     typedef IActionObject derived_type;
 
-    /// \brief Default constructor.
+    /// \brief Create an action that idles for a specified period of time.
     ///
-    /// \param duration The time, in fractional seconds to idle (tick) for
-    /// before completion of the object occurs.
-    WaitForDurationAction(real32 duration);
+    /// \param seconds The time -- in fractional seconds -- to idle for before
+    /// the action ends.
+    WaitForDurationAction(real32 seconds);
 
     /// \brief Destructor.
     virtual ~WaitForDurationAction();
 
     virtual std::unique_ptr<derived_type> clone() const override;
 
-    /// \brief Play the animation logic starting from the first frame to the
-    /// last frame.
+    /// \brief Play the action forward in time by one frame step.
     ///
-    /// \note This is internally called by nom::AnimationPlayer.
+    /// \see nom::ActionPlayer.
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
 
-    /// \brief Play the animation logic in reverse -- starting from the last
-    /// frame to the first frame.
+    /// \brief Play the action backwards in time by one frame step.
     ///
-    /// \note This is internally called by nom::AnimationReversed on each
-    /// animation update cycle.
+    /// \remarks This action is not reversible; the reverse of this action is
+    /// the same action.
+    ///
+    /// \see nom::ReversedAction
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
 
     /// \brief Reserved for future implementation.
@@ -92,3 +92,16 @@ class WaitForDurationAction: public virtual IActionObject
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::WaitForDurationAction
+/// \ingroup graphics
+///
+/// \brief When the action executes, the action waits for the specified amount
+/// of time, then ends. This is typically used as part of a sequence of actions
+/// to insert a delay between two other actions. You might also use it in
+/// conjunction with nom::ActionPlayer::run_action(action, completion_func)
+/// to trigger logic that needs to run at a later time.
+///
+/// \note This action is conceptually similar to SDL_AddTimer, less and except
+/// the separate thread execution.
+///

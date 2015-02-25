@@ -31,23 +31,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Private headers
 #include "nomlib/graphics/AnimationTimingModes.hpp"
 
-// Forward declarations
-// #include "nomlib/system/Timer.hpp"
-
 namespace nom {
 
 IActionObject::IActionObject() :
   timing_mode_(nom::Linear::ease_in_out)
-  // timer_( new Timer() )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
-                      nom::NOM_LOG_PRIORITY_VERBOSE );
+                      NOM_LOG_PRIORITY_VERBOSE );
 }
 
 IActionObject::~IActionObject()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
-                      nom::NOM_LOG_PRIORITY_VERBOSE );
+                      NOM_LOG_PRIORITY_VERBOSE );
 }
 
 const std::string& IActionObject::name() const
@@ -98,31 +94,5 @@ void IActionObject::set_duration(real32 seconds)
 {
   this->duration_ = seconds * 1000.0f;
 }
-
-// uint32 IActionObject::frame_time()
-// {
-//   NOM_ASSERT(this->timer_ != nullptr);
-//   if(this->timer_ != nullptr) {
-//     return this->timer->ticks();
-//   }
-// }
-
-// void IActionObject::start_frame_timer()
-// {
-//   NOM_ASSERT(this->timer_ != nullptr);
-//   if(this->timer_ != nullptr) {
-//     if( this->timer->started() == false ) {
-//       this->timer->start();
-//     }
-//   }
-// }
-
-// void IActionObject::stop_frame_timer()
-// {
-//   NOM_ASSERT(this->timer_ != nullptr);
-//   if(this->timer_ != nullptr) {
-//     this->timer->stop();
-//   }
-// }
 
 } // namespace nom

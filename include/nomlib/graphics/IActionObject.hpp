@@ -36,11 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-// Forward declarations
-class Transformable;
-// class Timer;
-
-/// \brief [TODO: Description]
+/// \brief Base interface class for action objects.
 class IActionObject
 {
   public:
@@ -48,14 +44,6 @@ class IActionObject
 
     typedef std::function<void()> action_callback;
     typedef std::function<real32(real32, real32, real32, real32)> timing_mode_func;
-
-    /// \brief Allow access into our private parts for obtaining the current
-    /// frame.
-    // TODO: Remove
-    NOM_GTEST_FRIEND(AnimationTest, TextureFramesDemo);
-
-    /// \brief Allow access into our private parts for unit testing.
-    friend class AnimationTest;
 
     /// \brief The animation object's state.
     ///
@@ -73,19 +61,11 @@ class IActionObject
 
     /// \brief Default constructor.
     ///
-    /// \remarks The speed modifier is initialized to 1.0f. The default timing
-    /// mode function is nom::Linear::ease_in_out.
+    /// \remarks The default timing mode function is initialized to
+    /// nom::Linear::ease_in_out.
     IActionObject();
 
-    /// \brief Destructor.
     virtual ~IActionObject();
-
-    /// \brief Copy constructor.
-    ///
-    /// \fixme This does not work as intended because we cannot create a copy
-    /// constructor that clones nom::Transformable -- it is considered a pure
-    /// abstract class type, since it inherits off nom::IDrawable.
-    // IActionObject(const self_type& rhs);
 
     const std::string& name() const;
 
@@ -152,7 +132,7 @@ class IActionObject
   protected:
     IActionObject::FrameState status() const;
 
-    /// \brief Set the action's run duration.
+    /// \brief Set the action's play time.
     void set_duration(real32 seconds);
 
     /// \brief The animation object's frame state.
@@ -160,18 +140,9 @@ class IActionObject
         IActionObject::FrameState::PLAY_NEXT_FRAME;
 
     /// \brief The elapsed frame count of the animation object.
-    ///
-    /// \remarks This value is incremented per frame when it is less than the
-    /// total number of frames.
-    ///
-    /// \note This value is fractional to ease the addition of fractional speed
-    /// modifiers, such as 0.5f.
     real32 curr_frame_ = 0.0f;
 
-    /// \brief The number of milliseconds to run the action for.
-    ///
-    /// \remarks The duration of an animation correlates to the number of
-    /// frames.
+    /// \brief The number of milliseconds to play the action for.
     real32 duration_ = 0.0f;
 
     /// \brief Internal time clock (milliseconds resolution).
@@ -180,26 +151,9 @@ class IActionObject
     /// if performance suffers, but otherwise will not affected by variable
     /// frame rates (i.e.: a duration of one second should always be a minimum
     /// of one second, less and except frames that are missed).
-
-    // TODO: We need to verify frame timings ... the above statement may not be
-    // true! See CallbackActionWithNonZeroDuration test; --fps 0 produces many
-    // more frames than --fps 30 ... also, on occasion, with --fps 30, we'll
-    // see only a couple frames, with delta times way below expected values,
-    // implying that a large slice of time went unaccounted for before coming
-    // back to the action!
-
-    // This must be used because of the way we iterate through animations in
-    // the AnimationPlayer ... delta_time is inaccurate because the elapsed
-    // delta is not up-to-date in reference to the time at which ::next_frame,
-    // ::prev_frame gets called.
+    ///
+    /// \note Fixed time step.
     Timer timer_;
-    // std::unique_ptr<Timer> timer_;
-
-    // virtual uint32 frame_time();
-    // virtual void start_frame_timer();
-    // virtual void stop_frame_timer();
-    // virtual void pause_frame_timer();
-    // virtual void resume_frame_timer();
 
   private:
     std::string name_;
@@ -218,13 +172,6 @@ typedef std::vector<std::shared_ptr<IActionObject>> action_list;
 
 /// \brief Convenience non-member constructor function for creating new
 /// animation objects.
-///
-/// \internal
-///
-/// \remarks This is a wrapper for
-/// std::make_shared<AnimationObjectType>(ctor_args).
-///
-/// \endinternal
 template<typename ObjectType, typename... ObjectArgs>
 std::shared_ptr<ObjectType> create_action(ObjectArgs&&... args)
 {

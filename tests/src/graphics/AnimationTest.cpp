@@ -48,7 +48,7 @@ AnimationTest::AnimationTest()
   NOM_TEST_FLAG(interactive) = true;
 
   // Enable debug diagnostics for action animation objects
-  nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ANIMATION, nom::NOM_LOG_PRIORITY_DEBUG);
+  // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ANIMATION, nom::NOM_LOG_PRIORITY_DEBUG);
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ANIMATION, nom::NOM_LOG_PRIORITY_VERBOSE);
 
   // Enable debug diagnostics
@@ -111,6 +111,19 @@ bool AnimationTest::init_rendering()
 
   // Use no pixel unit scaling; this gives us one to one pixel ratio
   this->render_window().set_scale( nom::Point2f(1,1) );
+
+  // Try to set a sensible (optimal) refresh rate based on the display
+  // capabilities when VSYNC is enabled.
+  if( NOM_ANIM_TEST_FLAG(enable_vsync) == true ) {
+    auto display_refresh_rate =
+      this->render_window().refresh_rate();
+    if( display_refresh_rate > 0 ) {
+      NOM_ANIM_TEST_FLAG(fps) = display_refresh_rate;
+    } else {
+      // ...fall back to using the initialized value of the FPS test flag
+      NOM_ASSERT( NOM_ANIM_TEST_FLAG(fps) > 0);
+    }
+  }
 
   return true;
 }
@@ -193,13 +206,10 @@ void AnimationTest::SetUp()
     } // end switch ev.type
   });
 
-  // Do not use the default update callbacks provided by nom::VisualUnitTest
-  // this->clear_update_callbacks();
-
   Timer anim_timer;
   anim_timer.start();
   uint32 last_delta = anim_timer.ticks();
-  this->append_update_callback( [&, anim_timer, last_delta](float) mutable {
+  this->append_update_callback( [=, &anim_timer, &last_delta](float) mutable {
 
     uint32 end_delta = anim_timer.ticks();
     uint32 elapsed_delta = end_delta - last_delta;
@@ -207,16 +217,6 @@ void AnimationTest::SetUp()
 
     // NOM_DUMP(elapsed_delta);
     this->player.update(elapsed_delta);
-
-    // TODO: We need to determine if doing the frame update logic is best done
-    // as-is -- at the end of each render callback per test -- or after the
-    // action player has updated its loop for the frame (below).
-    // ...I'm thinking that the latter is the most proper solution, but I
-    // hesitate because it involves removing ::set_frame_interval from each
-    // test individually!
-    // const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
-    // this->set_frame_interval(FPS);
-    // this->render_window().update();
   });
 }
 
@@ -398,64 +398,38 @@ AnimationTest::expected_sprite_batch_action_params( const SpriteBatchAction* obj
   << "expected_sprite_batch_action_params scoped_name: " << scope_name << "\n";
 }
 
-// TODO: Clean up function
-NOM_IGNORED_VARS();
+// NOTE: This implementation derives from [Handmade Hero](https://www.handmadehero.org/)'s
+// "Enforcing a Video Frame Rate" (Week 4). It is currently assumed that
+// "granular sleep" AKA high-resolution timing is properly supported by the
+// platform -- this might come back to bite us in the ass someday!
 void AnimationTest::set_frame_interval(uint32 interval)
 {
-  const bool SleepIsGranular = true;
-  real32 TargetSecondsPerFrame = 1.0f / (real32)interval;
-
+  real32 target_seconds_per_frame =
+    1.0f / (real32)interval;
+  uint64 last_delta = 0;
   HighResolutionTimer anim_timer;
-  anim_timer.start();
 
-  uint64 last_delta = anim_timer.ticks();
-
-  // Choose the update looping strategy based on whether or not we have a
-  // display that is synced to the vertical refresh rate; this determines the
-  // effective frame interval we advance by
-
-  // Setup a update callback based on a fixed time step; the display is
-  // synced to the vertical refresh rate -- so our target frame interval rate
-  // should be 16.66ms (on a 60Hz vertical refresh rate display)
-
-  // Disable frame cap if requested
+  // Abort our frame capping logic when explicitly requested
   if( interval == 0 ) {
     return;
   }
 
-  uint64 end_delta = anim_timer.ticks();
-  uint64 elapsed_delta = end_delta - last_delta;
-  last_delta = end_delta;
+  anim_timer.start();
 
-  uint64 WorkCounter = anim_timer.ticks();
-  real32 WorkSecondsElapsed =
-    HighResolutionTimer::elapsed_ticks(last_delta, WorkCounter);
+  last_delta = anim_timer.ticks();
 
-  real32 SecondsElapsedForFrame = WorkSecondsElapsed;
-  if(SecondsElapsedForFrame < TargetSecondsPerFrame) {
+  real32 elapsed_delta =
+    HighResolutionTimer::elapsed_ticks(last_delta, anim_timer.ticks() );
 
-    if(SleepIsGranular) {
-      uint32 SleepMS = (uint32)(1000.0f * ( TargetSecondsPerFrame -
-                                            SecondsElapsedForFrame) );
-      if(SleepMS > 0) {
-        nom::sleep(SleepMS);
-      }
-    } else {
-      // Not granular; use CPU melter
-      // real32 TestSecondsElapsedForFrame =
-        // HighResolutionTimer::elapsed_ticks(last_delta, anim_timer.ticks() );
-      // NOM_ASSERT(TestSecondsElapsedForFrame < TargetSecondsPerFrame);
+  if(elapsed_delta < target_seconds_per_frame) {
 
-      while(SecondsElapsedForFrame < TargetSecondsPerFrame) {
-        SecondsElapsedForFrame =
-          HighResolutionTimer::elapsed_ticks(last_delta, anim_timer.ticks() );
-      }
-    } // end if SleepIsGranular
-  } else {
-    // MISSED FRAME RATE!
+    uint32 sleep_ms =
+      (uint32)(1000.0f * (target_seconds_per_frame - elapsed_delta) );
+    if(sleep_ms > 0) {
+      nom::sleep(sleep_ms);
+    }
   }
 }
-NOM_IGNORED_VARS_ENDL();
 
 void
 AnimationTest::init_sprite_action_test( const std::vector<const char*>&
@@ -550,13 +524,18 @@ bool init_cmd_line_args(int argc, char** argv)
     "30, 60, 90, 120, ..."
   );
 
+  std::stringstream vsync_arg_desc;
+  vsync_arg_desc  << "Try to always render the action during the monitor's "
+                  << "VSYNC period -- enabling this option will override any "
+                  << "end-user specified FPS value when a sensible value can "
+                  << "be determined from the display hardware.";
   TCLAP::SwitchArg vsync_arg(
     // Option short form (not supported)
     "",
     // Option long form
     "enable-vsync",
     // Option description
-    "Enable updating animation logic during the display's VSYNC period",
+    vsync_arg_desc.str().c_str(),
     // Option default
     NOM_ANIM_TEST_FLAG(enable_vsync)
   );
@@ -712,7 +691,7 @@ TEST_F(AnimationTest, WaitForDurationAction2s)
   const float SPEED_MOD = 1.0f;
   const IActionObject::timing_mode_func TIMING_MODE =
     NOM_ANIM_TEST_FLAG(timing_mode);
-    const uint32 FPS = 0;
+  const uint32 FPS = 0;
 
   auto idle2s =
     nom::create_action<WaitForDurationAction>( WaitForDurationAction(DURATION) );

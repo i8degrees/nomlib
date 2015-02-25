@@ -51,8 +51,8 @@ class ScaleByAction: public virtual IActionObject
     /// \brief Construct an animation action using a scale factor.
     ///
     /// \param delta The width, height offsets to use for a scale factor.
-    ScaleByAction(  const std::shared_ptr<Sprite>& obj, const Size2f& delta,
-                    real32 duration );
+    ScaleByAction(  const std::shared_ptr<Sprite>& action, const Size2f& delta,
+                    real32 seconds );
 
     /// \brief Destructor.
     virtual ~ScaleByAction();

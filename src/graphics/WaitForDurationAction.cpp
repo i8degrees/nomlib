@@ -30,12 +30,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-WaitForDurationAction::WaitForDurationAction(real32 duration)
+WaitForDurationAction::WaitForDurationAction(real32 seconds)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  this->set_duration(duration);
+  this->set_duration(seconds);
   this->curr_frame_ = 0.0f;
 }
 

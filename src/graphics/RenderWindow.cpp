@@ -38,8 +38,14 @@ void PixelsDeleter::operator()(void* ptr)
   std::free(ptr);
 }
 
-// static initialization
+// Static Initializations
 SDL_Renderer* RenderWindow::context_ = nullptr;
+
+const Point2i RenderWindow::DEFAULT_WINDOW_POS =
+  Point2i(SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED);
+
+const Point2i RenderWindow::WINDOW_POS_CENTERED =
+  Point2i(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
 RenderWindow::RenderWindow( void ) : window_
     { SDL_WINDOW::UniquePtr ( nullptr, priv::FreeWindow ) },
@@ -56,77 +62,73 @@ RenderWindow::~RenderWindow( void )
   priv::FreeRenderTarget( context_ );
 }
 
-bool RenderWindow::create (
-                            const std::string& window_title,
-                            int32 width,
-                            int32 height,
-                            uint32 window_flags,
-                            int32 rendering_driver,
-                            uint32 context_flags
-                          )
+bool
+RenderWindow::create( const std::string& window_title, const Size2i& res,
+                      uint32 window_flags, int rendering_driver,
+                      uint32 renderer_flags )
 {
-  this->window_.reset ( SDL_CreateWindow  (
-                                            window_title.c_str(),
-                                            // TODO: Display index specific
-                                            // window creation
-                                            // SDL_WINDOWPOS_CENTERED_DISPLAY(0),
-                                            // SDL_WINDOWPOS_CENTERED_DISPLAY(0),
-                                            SDL_WINDOWPOS_UNDEFINED,
-                                            SDL_WINDOWPOS_UNDEFINED,
-                                            width,
-                                            height,
-                                            window_flags
-                                          )
-                      );
+  return this->create(  window_title, DEFAULT_WINDOW_POS, 0, res, window_flags,
+                        rendering_driver, renderer_flags );
+}
 
-  if ( this->window_valid() == false )
-  {
-    NOM_LOG_ERR( NOM, SDL_GetError() );
+bool
+RenderWindow::create( const std::string& window_title, const Point2i& pos,
+                      int display_index, const Size2i& res, uint32 window_flags,
+                      int rendering_driver, uint32 renderer_flags )
+{
+  int window_pos_x = 0;
+  int window_pos_y = 0;
+
+  if( SDL_WINDOWPOS_ISCENTERED(pos.x) || SDL_WINDOWPOS_ISCENTERED(pos.y) ) {
+    window_pos_x = SDL_WINDOWPOS_CENTERED_DISPLAY(display_index);
+    window_pos_y = SDL_WINDOWPOS_CENTERED_DISPLAY(display_index);
+  }
+
+  if( SDL_WINDOWPOS_ISUNDEFINED(pos.x) || SDL_WINDOWPOS_ISUNDEFINED(pos.y) ) {
+    window_pos_x = SDL_WINDOWPOS_UNDEFINED_DISPLAY(display_index);
+    window_pos_y = SDL_WINDOWPOS_UNDEFINED_DISPLAY(display_index);
+  }
+
+  auto render_window = SDL_CreateWindow(  window_title.c_str(), window_pos_x,
+                                          window_pos_y, res.w, res.h,
+                                          window_flags );
+  this->window_.reset(render_window);
+
+  if( this->window_valid() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Failed to create rendering window:", SDL_GetError() );
     return false;
   }
 
-  Renderer::create ( this->window(), rendering_driver, context_flags );
+  Renderer::create(this->window(), rendering_driver, renderer_flags);
 
-  if( this->renderer_valid() == false )
-  {
-    NOM_LOG_ERR( NOM, SDL_GetError() );
+  if( this->renderer_valid() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Failed to initialize rendering driver:", SDL_GetError() );
     return false;
   }
 
   // Track our unique identifiers for our brand spanking new window!
-  this->window_id_ = SDL_GetWindowID ( this->window() );
-  this->window_display_id_ = SDL_GetWindowDisplayIndex ( this->window() );
+  this->window_id_ = SDL_GetWindowID( this->window() );
+  this->window_display_id_ = SDL_GetWindowDisplayIndex( this->window() );
   this->enabled_ = true;
 
-  // You must *always* have an active, valid rendering context. An invalid
-  // rendering context will break the vast majority of graphics operations!
+  // We must **always** have a valid rendering context. Without this, you can
+  // kiss pretty much everything but SDL1-era functionality goodbye!
   //
-  // By default, we use the rendering context that is created at the
-  // initialization of this window object (see above).
-  //
-  // Note that the same rendering context that was used during the creation of
-  // a resource *must* stay around for as long as the resource(s) are using
-  // said rendering context.
+  // NOTE:Resource data, i.e.: nom::Texture && friends, are dependent upon the
+  // rendering context that is active during the creation of said resource.
+  // Therefore, the context **must** remain valid for the lifetime of the
+  // resource.
   this->make_current();
 
-  // Try to ensure that we have no leftover artifacts by clearing and filling
-  // window with a solid black paint bucket fill.
-  this->fill ( Color4i::Black );
+  // Clearing the window to a known value Helps keep rendering artifacts
+  // (garbage) away.
+  this->fill(Color4i::Transparent);
 
   nom::set_render_interface(*this);
 
   return true;
-}
-
-bool RenderWindow::create (
-                            const std::string& window_title,
-                            const Size2i& res,
-                            uint32 window_flags,
-                            int32 rendering_driver,
-                            uint32 context_flags
-                          )
-{
-  return this->create( window_title, res.w, res.h, window_flags, rendering_driver, context_flags );
 }
 
 RenderWindow::RawPtr RenderWindow::get ( void )
@@ -164,11 +166,10 @@ bool RenderWindow::window_valid( void ) const
   return false;
 }
 
-Point2i RenderWindow::position ( void ) const
+Point2i RenderWindow::position() const
 {
   Point2i pos;
-
-  SDL_GetWindowPosition ( this->window(), &pos.x, &pos.y );
+  SDL_GetWindowPosition(this->window(), &pos.x, &pos.y);
 
   return pos;
 }
@@ -363,9 +364,9 @@ void RenderWindow::set_size ( int32 width, int32 height )
   SDL_SetWindowSize ( this->window(), width, height );
 }
 
-void RenderWindow::set_position ( int32 x, int32 y )
+void RenderWindow::set_position(const Point2i& window_pos)
 {
-  SDL_SetWindowPosition ( this->window(), x, y );
+  SDL_SetWindowPosition(this->window(), window_pos.x, window_pos.y);
 }
 
 uint32 RenderWindow::window_id( void ) const
@@ -550,6 +551,11 @@ SDL_Renderer* RenderWindow::context( void )
 void RenderWindow::set_context ( RenderWindow::RawPtr window )
 {
   context_ = window->renderer();
+}
+
+int RenderWindow::num_video_displays()
+{
+  return SDL_GetNumVideoDisplays();
 }
 
 namespace priv {

@@ -49,18 +49,17 @@ Renderer::~Renderer ( void )
   // Thanks for all the fish!
 }
 
-bool Renderer::create ( SDL_WINDOW::RawPtr window, int32 rendering_driver, uint32 context_flags )
+bool
+Renderer::create( SDL_WINDOW::RawPtr window, int rendering_driver,
+                  uint32 renderer_flags )
 {
   // NOM_LOG_TRACE( NOM );
 
-  this->renderer_.reset( SDL_CreateRenderer( window, rendering_driver, context_flags ) );
+  auto render_driver =
+    SDL_CreateRenderer(window, rendering_driver, renderer_flags);
+  this->renderer_.reset(render_driver);
 
-  if( this->renderer_valid() == false )
-  {
-    return false;
-  }
-
-  return true;
+  return this->renderer_valid();
 }
 
 SDL_Renderer* Renderer::renderer ( void ) const

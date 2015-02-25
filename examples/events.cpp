@@ -34,6 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
 
+using namespace nom;
+
 /// File path name of the resources directory; this must be a relative file path.
 const std::string APP_RESOURCES_DIR = "Resources";
 
@@ -49,6 +51,8 @@ const nom::int32 WINDOW_WIDTH = 768;
 
 /// \brief Height, in pixels, of our effective rendering surface.
 const nom::int32 WINDOW_HEIGHT = 448;
+
+const auto WINDOW_RESOLUTION = Size2i(WINDOW_WIDTH / 2, WINDOW_HEIGHT);
 
 /// \brief Maximum number of active windows we will attempt to spawn in this
 /// example.
@@ -87,12 +91,17 @@ class App: public nom::SDLApp
 
       for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
       {
-        if ( this->window[idx].create( APP_NAME, ( WINDOW_WIDTH / 2 ), WINDOW_HEIGHT, window_flags ) == false )
+        if( this->window[idx].create( APP_NAME,
+            WINDOW_RESOLUTION, window_flags) == false )
         {
           return false;
         }
 
-        this->window[idx].set_position( 0 + ( WINDOW_WIDTH / 2 ) * idx, ( WINDOW_HEIGHT / 2 ) );
+        auto window_pos = Point2i::zero;
+        window_pos.x = (WINDOW_WIDTH / 2 ) * idx;
+        window_pos.y = WINDOW_HEIGHT / 2;
+
+        this->window[idx].set_position(window_pos);
 
         if( this->window[idx].set_window_icon( RESOURCE_ICON ) == false )
         {

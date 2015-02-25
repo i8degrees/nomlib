@@ -59,6 +59,10 @@ class RenderWindow: public Renderer
     typedef RenderWindow SelfType;
     typedef SelfType* RawPtr;
 
+    static const Point2i DEFAULT_WINDOW_POS;
+    static const Point2i WINDOW_POS_CENTERED;
+    static const uint32 DEFAULT_WINDOW_FLAGS = 0;
+
     /// \brief Default constructor; initialize an object to sane, but invalid
     /// defaults
     RenderWindow( void );
@@ -81,27 +85,28 @@ class RenderWindow: public Renderer
     /// \remarks This resource has been marked non-copyable.
     SelfType& operator =( const SelfType& other ) = delete;
 
-    /// Initialize a SDL window and renderer
-    bool create (
-                  const std::string& window_title,
-                  int32 width,
-                  int32 height,
+    /// \brief Initialize a native platform window and renderer.
+    bool create(  const std::string& window_title, const Size2i& res,
                   uint32 window_flags,
-                  int32 rendering_driver = -1,
-                  uint32 context_flags =
-                    SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE
-                );
+                  int rendering_driver = DEFAULT_RENDERING_DRIVER,
+                  uint32 renderer_flags = DEFAULT_RENDERER_FLAGS );
 
-    /// Initialize a SDL window and renderer.
+    /// \brief Initialize a native platform window and renderer.
     ///
-    /// \see nom::RenderWindow::create.
-    bool create (
-                  const std::string& window_title,
-                  const Size2i& res,
-                  uint32 window_flags,
-                  int32 rendering_driver = -1,
-                  uint32 context_flags = SDL_RENDERER_ACCELERATED
-                );
+    /// \param pos The position of the window, relative to the video display
+    /// bounds.
+    ///
+    /// \param display_index The video display to position the window on.
+    ///
+    /// \see nom::RenderWindow::DEFAULT_WINDOW_POS,
+    /// nom::RenderWindow::WINDOW_POS_CENTERED
+    ///
+    /// \see nom::RenderWindow::::display_bounds,
+    /// nom::RenderWindow::::display_modes
+    bool create(  const std::string& window_title, const Point2i& pos,
+                  int display_index, const Size2i& res, uint32 window_flags,
+                  int rendering_driver = DEFAULT_RENDERING_DRIVER,
+                  uint32 renderer_flags = DEFAULT_RENDERER_FLAGS );
 
     /// Obtain a pointer to this Window object.
     RenderWindow::RawPtr get ( void );
@@ -118,8 +123,8 @@ class RenderWindow: public Renderer
     /// Is this object initialized -- not nullptr?
     bool window_valid( void ) const;
 
-    /// Obtain this Window's position.
-    Point2i position ( void ) const;
+    /// \brief Get the window's current position.
+    Point2i position() const;
 
     /// \brief Get this window's size dimensions.
     ///
@@ -164,7 +169,8 @@ class RenderWindow: public Renderer
 
     void set_size ( int32 width, int32 height );
 
-    void set_position ( int32 x, int32 y );
+    /// \brief Set the window's position.
+    void set_position(const Point2i& window_pos);
 
     /// Update the surface of the screen inside the window
     ///
@@ -336,6 +342,12 @@ class RenderWindow: public Renderer
     /// \remarks  Used internally within nomlib for automatically using the
     ///           active context -- set by nom::RenderWindow::make_current.
     static SDL_Renderer* context( void );
+
+    /// \brief Get the number of available video displays.
+    ///
+    /// \returns The number of video displays -- a number greater than or equal
+    /// to one (1) on success, or a negative number on failure.
+    static int num_video_displays();
 
   private:
     /// \brief  Set a new nom::RenderWindow as the active rendering context; we must

@@ -47,6 +47,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define GAMEOFLIFE_DEBUG 0
 
+using namespace nom;
+
 /// File path name of the resources directory; this must be a relative file path.
 const std::string APP_RESOURCES_DIR = "Resources";
 
@@ -70,6 +72,8 @@ const nom::int32 BOARD_SIZE = 800;
 
 /// \brief length and width (in pixels) for the square cells
 const nom::sint CELL_SIZE = 16;
+
+const auto WINDOW_RESOLUTION = Size2i(BOARD_SIZE, BOARD_SIZE);
 
 /// \brief Maximum number of active windows we will attempt to spawn in this
 /// example.
@@ -109,7 +113,7 @@ class App: public nom::SDLApp
 
       for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
       {
-        if ( this->window[idx].create( APP_NAME, BOARD_SIZE, BOARD_SIZE, window_flags ) == false )
+        if ( this->window[idx].create(APP_NAME, WINDOW_RESOLUTION, window_flags) == false )
         {
           return false;
         }

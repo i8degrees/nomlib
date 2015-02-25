@@ -126,15 +126,18 @@ class SpriteTest: public nom::VisualUnitTest
 
     void init_sprite_test(sprite_test& params)
     {
-      if( params.tex.load(params.sprite_tex_path, false,
-          params.tex_type) == false )
-      {
-        FAIL()  << "Could not load the sprite texture from: "
-                << params.sprite_tex_path;
-      }
+      if( params.sprite_tex_path != "" ) {
 
-      EXPECT_EQ(true, params.sprite.set_texture(params.tex) );
-      ASSERT_TRUE(params.sprite.valid() == true);
+        if( params.tex.load(params.sprite_tex_path, false,
+            params.tex_type) == false )
+        {
+          FAIL()  << "Could not load the sprite texture from: "
+                  << params.sprite_tex_path;
+        }
+
+        EXPECT_EQ(true, params.sprite.set_texture(params.tex) );
+        ASSERT_TRUE(params.sprite.valid() == true);
+      }
 
       nom::set_alignment( &params.sprite, params.pos, WINDOW_DIMS,
                           Anchor::MiddleCenter );
@@ -333,6 +336,24 @@ TEST_F(SpriteTest, SpriteInterfaceSetColor)
   this->init_sprite_test(params);
 
   params.sprite.set_color(Color4i::Magenta);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+}
+
+TEST_F(SpriteTest, SpriteInterfaceInitWithColor)
+{
+  sprite_test params;
+  params.sprite_tex_path = "";
+
+  const auto SPRITE_COLOR = Color4i::Magenta;
+  const auto SPRITE_DIMS = WINDOW_DIMS/2;
+
+  this->init_sprite_test(params);
+  params.sprite.init_with_color(SPRITE_COLOR, SPRITE_DIMS);
+
+  nom::set_alignment( &params.sprite, params.pos, WINDOW_DIMS,
+                      Anchor::MiddleCenter );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );

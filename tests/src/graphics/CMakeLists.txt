@@ -147,6 +147,12 @@ if(NOM_BUILD_ANIMATION_TESTS)
   # to be explicitly called by the end-user, i.e.: 'ctest -C EXT -R <test>'.
   # Running these tests in parallel is possible with the -j option, and will
   # save considerable time; see also: man 1 ctest.
+  #
+  # It is worth noting that the act of running these tests in parallel can in
+  # itself risk false positive test failures, due to the inherit relationship
+  # between performance and frame rates. It should go without saying that,
+  # ideally, these tests should be ran when more than adequate system resources
+  # are able to be given out.
 
   # Tests for checking the frame time stability of the speed modifiers
   add_animation_test( AnimationTestExtended_SpeedModifierAt0.5

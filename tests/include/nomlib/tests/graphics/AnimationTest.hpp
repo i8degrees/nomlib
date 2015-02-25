@@ -213,23 +213,6 @@ bool init_cmd_line_args(int argc, char** argv);
 IActionObject::timing_mode_func
 timing_mode_func_from_str(const std::string& timing_mode);
 
-enum ActionTimeComparisonResult
-{
-  ERROR = -1,   /// NULL action was passed
-  WAITING = 0,  /// Not done comparing
-  ACTION1 = 1,  /// action 1 took longer to complete than action 2
-  ACTION2 = 2,  /// action 2 took longer to complete than action 1
-  EQUAL = 3     /// action 1 took the same time to complete as action 2
-};
-
-/// \brief Compare action duration timestamps.
-///
-/// \see ActionTimeComparisonResult
-ActionTimeComparisonResult
-compare_action_timestamps(  const ActionPlayer* player,
-                            const std::string& action1,
-                            const std::string& action2 );
-
 } // namespace nom
 
 #endif // include guard defined

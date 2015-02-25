@@ -34,12 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-RepeatForAction::~RepeatForAction()
-{
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
-                      nom::NOM_LOG_PRIORITY_VERBOSE );
-}
-
 RepeatForAction::RepeatForAction( const std::shared_ptr<IActionObject>& action,
                                   nom::size_type num_repeats,
                                   const std::string& name ) :
@@ -51,6 +45,12 @@ RepeatForAction::RepeatForAction( const std::shared_ptr<IActionObject>& action,
   this->set_name(name);
   this->object_ = action;
   this->elapsed_repeats_ = 0;
+}
+
+RepeatForAction::~RepeatForAction()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+                      nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
 std::unique_ptr<RepeatForAction::derived_type> RepeatForAction::clone() const

@@ -37,16 +37,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-// TODO: Use different logging category for erasing diagnostics?
-
-/// \brief Proxy container object for updating actions sequentially.
+/// \brief Proxy action for running actions one at a time
 class SequenceAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.
     friend class AnimationTest;
 
-    // FIXME:
     friend class RepeatForAction;
     friend class RepeatForeverAction;
 
@@ -107,3 +104,18 @@ class SequenceAction: public virtual IActionObject
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::SequenceAction
+/// \ingroup graphics
+///
+/// \brief This is an action that acts on behalf of other action(s) as a proxy,
+/// grouping actions together so that every action within its container is
+/// executed to completion **one** at a time, in FIFO order. This is
+/// particularly useful for transition-style animations, and is considered the
+/// second fundamental animation logic flow type.
+///
+/// \remarks This action is not reversible, but the action(s) contained
+/// within may be. Consult the documentation for each action type in question.
+///
+/// \see nom::WaitForDurationAction, nom::GroupAction
+///

@@ -79,11 +79,15 @@ IActionObject::FrameState SequenceAction::next_frame(real32 delta_time)
   if( action_status == FrameState::DONE ) {
 
     std::string action_id = (*itr)->name();
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_QUEUE,
-                    "SequenceAction: releasing", action_id,
-                    "[", this->itr_pos_ + 1,
-                    "/", this->num_actions_, "]",
-                    "[id]:", this->name() );
+    if( action_id == "" ) {
+      action_id = "action";
+    }
+
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_ANIMATION, "[SequenceAction]:"
+                  "removing", action_id, "from container",
+                  "[", this->itr_pos_ + 1,
+                  "/", this->num_actions_, "]",
+                  "[id]:", this->name() );
 
     this->actions_.pop_front();
     itr = this->actions_.begin();
@@ -91,7 +95,6 @@ IActionObject::FrameState SequenceAction::next_frame(real32 delta_time)
     this->status_ = FrameState::PLAY_NEXT_FRAME;
 
     if( this->actions_.empty() == true ) {
-      NOM_LOG_DEBUG( NOM_LOG_CATEGORY_TEST, "SEQ_DONE2");
       this->status_ = FrameState::DONE;
       return this->status_;
     }
@@ -106,7 +109,6 @@ IActionObject::FrameState SequenceAction::prev_frame(real32 delta_time)
     FrameState::DONE;
 
   if( this->actions_.empty() == true ) {
-    NOM_LOG_DEBUG( NOM_LOG_CATEGORY_TEST, "SEQ_DONE1");
     this->status_ = FrameState::DONE;
     return FrameState::DONE;
   }
@@ -123,11 +125,15 @@ IActionObject::FrameState SequenceAction::prev_frame(real32 delta_time)
   if( action_status == FrameState::DONE ) {
 
     std::string action_id = (*itr)->name();
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_QUEUE,
-                    "SequenceAction: releasing", action_id,
-                    "[", this->itr_pos_ + 1,
-                    "/", this->num_actions_, "]",
-                    "[id]:", this->name() );
+    if( action_id == "" ) {
+      action_id = "action";
+    }
+
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_ANIMATION, "[SequenceAction]:",
+                  "removing", action_id, "from container",
+                  "[", this->itr_pos_ + 1,
+                  "/", this->num_actions_, "]",
+                  "[id]:", this->name() );
 
     this->actions_.pop_front();
     itr = this->actions_.begin();
@@ -135,7 +141,6 @@ IActionObject::FrameState SequenceAction::prev_frame(real32 delta_time)
     this->status_ = FrameState::PLAY_NEXT_FRAME;
 
     if( this->actions_.empty() == true ) {
-      NOM_LOG_DEBUG( NOM_LOG_CATEGORY_TEST, "SEQ_DONE2");
       this->status_ = FrameState::DONE;
       return this->status_;
     }

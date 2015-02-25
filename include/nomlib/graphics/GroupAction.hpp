@@ -37,17 +37,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-// TODO: Use different logging category for erasing diagnostics?
-
-/// \brief Proxy container object for updating actions **simultaneously** -- in
-/// parallel.
+/// \brief Proxy action for running actions together (in parallel)
 class GroupAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.
     friend class AnimationTest;
 
-    // FIXME:
     friend class RepeatForAction;
     friend class RepeatForeverAction;
 
@@ -109,3 +105,23 @@ class GroupAction: public virtual IActionObject
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::GroupAction
+/// \ingroup graphics
+///
+/// \brief This is perhaps the most fundamental animation type. This action
+/// acts on behalf of other action(s) as a proxy, grouping actions together so
+/// that every action within its container is updated **simultaneously** --
+/// in parallel, until each action has completed.
+///
+/// \remarks This action is not reversible, but the action(s) contained
+/// within may be. Consult the documentation for each action type in question.
+///
+/// \note Although the grouping of objects came first as a necessity of
+/// convenience, the particular fashion in which things are updated is
+/// paramount for the proper time step increments to occur. In short, actions
+/// that are "related" to one another **must** share a common time step, else
+/// they fall out of sync by one or more frames.
+///
+/// \see nom::SequenceAction
+///

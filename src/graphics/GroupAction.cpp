@@ -60,7 +60,6 @@ std::unique_ptr<GroupAction::derived_type> GroupAction::clone() const
 IActionObject::FrameState GroupAction::next_frame(real32 delta_time)
 {
   if( this->actions_.empty() == true ) {
-    NOM_LOG_DEBUG( NOM_LOG_CATEGORY_TEST, "GRP_DONE1");
     this->status_ = FrameState::DONE;
     return FrameState::DONE;
   }
@@ -78,10 +77,14 @@ IActionObject::FrameState GroupAction::next_frame(real32 delta_time)
     if( action_status == FrameState::DONE ) {
 
       std::string action_id = (*itr)->name();
-      NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_QUEUE,
-                      "GroupAction: releasing", (*itr)->name(),
-                      "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
-                      "[id]:", this->name() );
+      if( action_id == "" ) {
+        action_id = "action";
+      }
+
+      NOM_LOG_INFO( NOM_LOG_CATEGORY_ANIMATION, "[GroupAction]:",
+                    "removing", action_id, "from container",
+                    "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
+                    "[id]:", this->name() );
 
       // Erase the group action in the order in which it is completed
       itr = this->actions_.erase(itr);
@@ -96,7 +99,6 @@ IActionObject::FrameState GroupAction::next_frame(real32 delta_time)
       }
 
       if( this->actions_.empty() == true ) {
-        NOM_LOG_DEBUG( NOM_LOG_CATEGORY_TEST, "GRP_DONE2");
         this->status_ = FrameState::DONE;
         return this->status_;
       }
@@ -109,7 +111,6 @@ IActionObject::FrameState GroupAction::next_frame(real32 delta_time)
 IActionObject::FrameState GroupAction::prev_frame(real32 delta_time)
 {
   if( this->actions_.empty() == true ) {
-    NOM_LOG_DEBUG( NOM_LOG_CATEGORY_TEST, "GRP_DONE1");
     this->status_ = FrameState::DONE;
     return FrameState::DONE;
   }
@@ -127,10 +128,14 @@ IActionObject::FrameState GroupAction::prev_frame(real32 delta_time)
     if( action_status == FrameState::DONE ) {
 
       std::string action_id = (*itr)->name();
-      NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_QUEUE,
-                      "GroupAction: releasing", (*itr)->name(),
-                      "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
-                      "[id]:", this->name() );
+      if( action_id == "" ) {
+        action_id = "action";
+      }
+
+      NOM_LOG_INFO( NOM_LOG_CATEGORY_ANIMATION, "[GroupAction]:",
+                    "removing", action_id, "from container",
+                    "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
+                    "[id]:", this->name() );
 
       // Erase the group action in the order in which it is completed
       itr = this->actions_.erase(itr);
@@ -145,7 +150,6 @@ IActionObject::FrameState GroupAction::prev_frame(real32 delta_time)
       }
 
       if( this->actions_.empty() == true ) {
-        NOM_LOG_DEBUG( NOM_LOG_CATEGORY_TEST, "GRP_DONE2");
         this->status_ = FrameState::DONE;
         return this->status_;
       }

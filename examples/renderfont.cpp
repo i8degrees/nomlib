@@ -37,6 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
+using namespace nom;
+
 /// Name of our application.
 const std::string APP_NAME = "renderfont";
 
@@ -45,6 +47,8 @@ const nom::int32 WINDOW_WIDTH = 640;
 
 /// Height, in pixels, of our effective rendering surface.
 const nom::int32 WINDOW_HEIGHT = 480;
+
+const auto WINDOW_RESOLUTION = Size2i(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 /// Relative filename path to saved screenshot example
 ///
@@ -120,7 +124,7 @@ class FontRenderingApp: public nom::SDLApp
         NOM_LOG_INFO ( NOM, "Could not set scale quality." );
       }
 */
-      if ( this->window.create ( APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, window_flags ) == false )
+      if ( this->window.create (APP_NAME, WINDOW_RESOLUTION, window_flags) == false )
       {
         return false;
       }

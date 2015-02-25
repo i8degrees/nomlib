@@ -6,7 +6,7 @@
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
-namespace nom {
+using namespace nom;
 
 class FontCacheTest: public nom::UnitTest
 {
@@ -50,6 +50,8 @@ class FontCacheTest: public nom::UnitTest
     }
 
   protected:
+    const Size2i WINDOW_RESOLUTION = Size2i(0, 0);
+
     nom::SearchPath res_bitmap;
     nom::SearchPath res_truetype;
     nom::SearchPath res_bm;
@@ -128,7 +130,7 @@ TEST_F( FontCacheTest, FontCacheAPI )
   nom::init_third_party(0);
 
   // Necessary for loading font resources
-  ASSERT_TRUE( window.create( this->test_case(), 0, 0, SDL_WINDOW_HIDDEN ) == true )
+  ASSERT_TRUE( window.create(this->test_case(), WINDOW_RESOLUTION, SDL_WINDOW_HIDDEN) == true )
   << "Could not create nom::RenderWindow object for loading font resources from";
 
   // cache.set_resource_handler( [&] (const ResourceFile& res, IFont* font) {
@@ -193,8 +195,6 @@ TEST_F( FontCacheTest, FontCacheAPI )
   ASSERT_FALSE( label3.font() == label4.font() )
   << "bfont4 should **not** be the same as bfont5";
 }
-
-} // namespace nom
 
 int main( int argc, char** argv )
 {

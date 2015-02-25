@@ -52,12 +52,11 @@ class RenderWindowTest: public ::testing::Test
 
     virtual void SetUp( void )
     {
-      const int WINDOW_WIDTH = 320;
-      const int WINDOW_HEIGHT = 240;
+      const auto WINDOW_RESOLUTION = Size2i(320, 240);
       // uint32 wflags = SDL_WINDOW_SHOWN;
       uint32 wflags = SDL_WINDOW_HIDDEN;
 
-      ASSERT_TRUE( this->window.create( "RenderWindowTest", WINDOW_WIDTH, WINDOW_HEIGHT, wflags ) == true );
+      ASSERT_TRUE( this->window.create( "RenderWindowTest", WINDOW_RESOLUTION, wflags) == true );
     }
 
     virtual void TearDown( void )

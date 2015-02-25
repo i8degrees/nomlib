@@ -37,6 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 #include <nomlib/gui.hpp>
 
+using namespace nom;
+
 /// \brief Name of our application.
 const std::string APP_NAME = "nomlib Demo | Multiple Windows";
 
@@ -45,6 +47,8 @@ const nom::int32 WINDOW_WIDTH = 768;
 
 /// \brief Height, in pixels, of our effective rendering surface.
 const nom::int32 WINDOW_HEIGHT = 448;
+
+const auto WINDOW_RESOLUTION = Size2i(WINDOW_WIDTH/2, WINDOW_HEIGHT);
 
 /// \brief Maximum number of active windows we will attempt to spawn in this example
 const nom::int32 MAXIMUM_WINDOWS = 3;
@@ -67,14 +71,6 @@ const nom::Point2i INFO_BOX_ORIGINS[2] =  {
                                           };
 
 const std::string RESOURCE_ICON = "icon.png";
-
-// const std::string RESOURCE_TRUETYPE_FONT[2] = {
-//                                                 "arial.ttf",
-//                                                 "TimesNewRoman.ttf"
-//                                               };
-
-// const std::string RESOURCE_BITMAP_FONT = "VIII.png";
-// const std::string RESOURCE_BITMAP_SMALL_FONT = "VIII_small.png";
 
 const std::string RESOURCE_SPRITE_SHEET = "cursors.json";
 
@@ -108,10 +104,9 @@ class App: public nom::SDLApp
       // functionality in this example). The reasoning for disabling the feature
       // is solely to cut down on the amount of debug logging.
       SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES ),
-      sprite_angle ( -90.0f ),
-      // selected_font ( 0 ),        // nom::TrueType font
-      selected_font_size ( 14 ),  // Font's size (in pixels)
-      selected_text_string ( 2 )  // "Yeah Buddy!!!"
+      sprite_angle(-90.0f),
+      selected_font_size(nom::DEFAULT_FONT_SIZE),  // Font's size (in pixels)
+      selected_text_string(2)  // "Yeah Buddy!!!"
     {
       NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
     } // App
@@ -172,17 +167,20 @@ class App: public nom::SDLApp
         return false;
       }
 
-      for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
+      auto num_video_displays =
+        RenderWindow::num_video_displays();
+      for(  auto idx = 0;
+            idx != MAXIMUM_WINDOWS && idx != num_video_displays;
+            ++idx )
       {
-        if ( this->window[idx].create( APP_NAME, WINDOW_WIDTH/2, WINDOW_HEIGHT, window_flags, render_driver, render_flags ) == false )
+        if( this->window[idx].create( APP_NAME,
+            RenderWindow::WINDOW_POS_CENTERED, idx, WINDOW_RESOLUTION,
+            window_flags, render_driver, render_flags) == false )
         {
           return false;
         }
 
-        this->window[idx].set_position ( 0+(WINDOW_WIDTH/2) * idx, WINDOW_HEIGHT/2 );
-
-        if( this->window[idx].set_window_icon( res.path() + RESOURCE_ICON ) == false )
-        {
+        if( this->window[idx].set_window_icon( res.path() + RESOURCE_ICON ) == false ) {
           nom::DialogMessageBox(  APP_NAME,
                                   "Could not load window icon: " +
                                   res.path() + RESOURCE_ICON );
@@ -255,25 +253,6 @@ class App: public nom::SDLApp
       decorator0->RemoveReference();
 
       this->window[0].make_current();
-
-      // if ( this->bitmap_font.load ( RESOURCE_BITMAP_FONT ) == false )
-      // {
-      //   nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_FONT );
-      //   return false;
-      // }
-      // FIXME: this->bitmap_font.resize ( nom::Texture::ResizeAlgorithm::scale2x );
-
-      // if ( this->bitmap_small_font.load ( RESOURCE_BITMAP_SMALL_FONT ) == false )
-      // {
-      //   nom::DialogMessageBox ( APP_NAME, "Could not load BitmapFont: " + RESOURCE_BITMAP_SMALL_FONT );
-      //   return false;
-      // }
-
-      // if ( this->truetype_font.load ( RESOURCE_TRUETYPE_FONT[0] ) == false )
-      // {
-      //   nom::DialogMessageBox ( APP_NAME, "Could not load TrueTypeFont: " + RESOURCE_TRUETYPE_FONT[0] );
-      //   return false;
-      // }
 
       nom::SpriteSheet sprite_frames;
 
@@ -706,30 +685,8 @@ class App: public nom::SDLApp
     // Animations queue
     nom::ActionPlayer actions;
 
-    // Our font resources for nom::Text, the text rendering API
-    // nom::Font bitmap_font;
-    // nom::Font bitmap_small_font;
-    // nom::Font truetype_font;
-
-    // int selected_font;
     int selected_font_size;
     nom::sint selected_text_string;
-
-    // nom::Font& select_font( void )
-    // {
-    //   if( this->selected_font == 0 )
-    //   {
-    //     return this->truetype_font;
-    //   }
-    //   else if( this->selected_font == 1 )
-    //   {
-    //     return this->bitmap_font;
-    //   }
-    //   else
-    //   {
-    //     return this->truetype_font;
-    //   }
-    // }
 
     nom::sint select_font_size ( void )
     {
@@ -771,7 +728,7 @@ nom::int32 main ( nom::int32 argc, char* argv[] )
   atexit(nom::quit);
 
   // nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_INFO );
-  nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_INFO );
+  // nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_GUI, nom::NOM_LOG_PRIORITY_INFO );
 
   App game ( argc, argv );
 

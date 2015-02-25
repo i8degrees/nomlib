@@ -53,6 +53,17 @@ class Texture;
 class Renderer
 {
   public:
+    /// \brief The index of the default rendering driver to use.
+    ///
+    /// \remarks A value of negative one (-1) will choose the first available
+    /// driver that supports the requested rendering flags.
+    ///
+    /// \see nom::available_render_driver
+    static const int DEFAULT_RENDERING_DRIVER = -1;
+
+    static const uint32 DEFAULT_RENDERER_FLAGS =
+      SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE;
+
     /// Default constructor; initializes instance to sane defaults
     Renderer ( void );
 
@@ -64,7 +75,9 @@ class Renderer
     /// Initializes with the first rendering driver supporting our request
     /// flags
     /// Enables video acceleration when able
-    bool create ( SDL_WINDOW::RawPtr window, int32 rendering_driver = -1, uint32 context_flags = SDL_RENDERER_ACCELERATED );
+    bool create(  SDL_WINDOW::RawPtr window,
+                  int rendering_driver = DEFAULT_RENDERING_DRIVER,
+                  uint32 renderer_flags = DEFAULT_RENDERER_FLAGS );
 
     /// Get a raw pointer to the SDL_Renderer in use
     SDL_Renderer* renderer ( void ) const;

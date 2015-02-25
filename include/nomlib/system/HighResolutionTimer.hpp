@@ -59,21 +59,24 @@ class HighResolutionTimer
     void pause();
     void unpause();
 
-    static real64 elapsed_ticks(uint64 start_time, uint64 end_time);
+    /// \brief Get the elapsed frequency count per second of the high
+    /// resolution counter.
+    static
+    real64 elapsed_ticks(uint64 start_hires_ticks, uint64 end_hires_ticks);
 
-    /// \brief Convert a timing value from this interface to milliseconds.
+    /// \brief Convert a high resolution timing value to milliseconds.
     ///
-    /// \param elapsed_ticks The timing value from ::ticks to convert.
+    /// \param elapsed_hires_ticks A high resolution timing value to convert.
     ///
-    /// \see nom::hires_ticks
-    static real64 to_milliseconds(uint64 elapsed_ticks);
+    /// \see ::ticks, nom::hires_ticks
+    static real64 to_milliseconds(uint64 elapsed_hires_ticks);
 
-    /// \brief Convert a timing value from this interface to seconds.
+    /// \brief Convert a high resolution timing value to seconds.
     ///
-    /// \param elapsed_ticks The timing value from ::ticks to convert.
+    /// \param elapsed_hires_ticks A high resolution timing value to convert.
     ///
-    /// \see nom::hires_ticks
-    static real64 to_seconds(uint64 elapsed_ticks);
+    /// \see ::ticks, nom::hires_ticks
+    static real64 to_seconds(uint64 elapsed_hires_ticks);
 
   private:
     /// \brief Activity status of the timer.

@@ -84,7 +84,8 @@ class TimerTest: public ::testing::Test
   protected:
     HighResolutionTimer duration_timer;
     HighResolutionTimer timer;
-    uint64 t = 0;
+    uint64 t1 = 0;
+    uint64 t2 = 0;
 };
 
 TEST_F(TimerTest, ConversionToMilliseconds)
@@ -93,11 +94,11 @@ TEST_F(TimerTest, ConversionToMilliseconds)
 
   timer.start();
   duration_timer.start();
-  while( HighResolutionTimer::to_milliseconds(t) < DURATION ) {
-    t = duration_timer.ticks();
+  while( HighResolutionTimer::to_milliseconds(t1) < DURATION ) {
+    t1 = duration_timer.ticks();
   }
 
-  uint64 ret = HighResolutionTimer::to_milliseconds(t);
+  uint64 ret = HighResolutionTimer::to_milliseconds(t1);
   EXPECT_GE(ret, DURATION);
 }
 
@@ -107,26 +108,36 @@ TEST_F(TimerTest, ConversionToSeconds)
 
   timer.start();
   duration_timer.start();
-  while( HighResolutionTimer::to_seconds(t) < DURATION ) {
-    t = duration_timer.ticks();
+  while( HighResolutionTimer::to_seconds(t1) < DURATION ) {
+    t1 = duration_timer.ticks();
   }
 
-  uint64 ret = HighResolutionTimer::to_seconds(t);
+  uint64 ret = HighResolutionTimer::to_seconds(t1);
   EXPECT_GE(ret, DURATION);
 }
 
-TEST_F(TimerTest, HighResolutionTimer)
+TEST_F(TimerTest, ElapsedSeconds)
 {
-  const uint32 DURATION = 2000;
+  const uint32 DURATION_T1 = 2000;
+  const uint32 DURATION_T2 = DURATION_T1 * 2;
+  HighResolutionTimer t2_timer;
 
   timer.start();
   duration_timer.start();
-  while( HighResolutionTimer::to_milliseconds(t) < DURATION ) {
-    t = duration_timer.ticks();
+  t2_timer.start();
+  while( HighResolutionTimer::to_milliseconds(t1) < DURATION_T1 ) {
+    t1 = duration_timer.ticks();
   }
 
-  uint64 ret = HighResolutionTimer::to_milliseconds(t);
-  EXPECT_GE(ret, DURATION);
+  while( HighResolutionTimer::to_milliseconds(t2) < (DURATION_T2) ) {
+    t2 = t2_timer.ticks();
+  }
+
+  uint64 ret = HighResolutionTimer::elapsed_ticks(t1, t2);
+  EXPECT_LE(ret, t1);
+  EXPECT_GE(t1, ret);
+  EXPECT_LE(t1, t2);
+  EXPECT_GE(t2, t1);
 }
 
 int main(int argc, char** argv)

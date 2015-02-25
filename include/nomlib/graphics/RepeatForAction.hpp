@@ -46,9 +46,6 @@ class RepeatForAction: public virtual IActionObject
     typedef RepeatForAction self_type;
     typedef IActionObject derived_type;
 
-    /// \brief Destructor.
-    virtual ~RepeatForAction();
-
     /// \brief Construct a repeating action object.
     ///
     /// \param action The action object to repeat.
@@ -56,6 +53,9 @@ class RepeatForAction: public virtual IActionObject
     /// zero will repeat the action indefinitely.
     RepeatForAction(  const std::shared_ptr<IActionObject>& action,
                       nom::size_type num_repeats, const std::string& name = "" );
+
+    /// \brief Destructor.
+    virtual ~RepeatForAction();
 
     virtual std::unique_ptr<derived_type> clone() const override;
 

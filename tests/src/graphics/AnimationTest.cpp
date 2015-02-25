@@ -87,8 +87,8 @@ AnimationTest::~AnimationTest()
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_UNIT_TEST, NOM_LOG_PRIORITY_VERBOSE);
 
-  NOM_LOG_DEBUG( NOM_LOG_CATEGORY_TEST,
-                "Number of actions remaining in queue at time of exit:",
+  NOM_LOG_DEBUG( NOM_LOG_CATEGORY_ANIMATION,
+                "Number of actions remaining in queue at the time of exit:",
                 this->player.num_actions() );
 }
 
@@ -640,49 +640,6 @@ timing_mode_func_from_str(const std::string& timing_mode)
   return mode;
 }
 
-// FIXME:
-ActionTimeComparisonResult
-compare_action_timestamps(  const ActionPlayer* player,
-                            const std::string& action1,
-                            const std::string& action2 )
-{
-  static uint32 action1_done_time = 0;
-  static uint32 action2_done_time = 0;
-
-  bool action1_done = player->action_running(action1);
-  bool action2_done = player->action_running(action2);
-
-  if( action1_done == true && action1_done_time == 0 ) {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "action1 is done!");
-    action1_done_time = nom::ticks();
-  }
-
-  if( action2_done == true && action2_done_time == 0 ) {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "action2 is done!");
-    action2_done_time = nom::ticks();
-  }
-
-  // process final results
-  if( action1_done == true && action2_done == true ) {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "action1 && action2 are done!");
-
-
-    if( action1_done_time > action2_done_time ) {
-      // action 1 took longer to complete than action 2
-      return ActionTimeComparisonResult::ACTION2;
-    } else if( action2_done_time > action1_done_time ) {
-      // action 2 took longer to complete than action 1
-      return ActionTimeComparisonResult::ACTION1;
-    } else {
-      // action 1 took the same time to complete as action 2
-      return ActionTimeComparisonResult::EQUAL;
-    }
-  }
-
-  // Not done comparing
-  return ActionTimeComparisonResult::WAITING;
-}
-
 /// \brief Test animation timing sanity.
 TEST_F(AnimationTest, WaitForDurationAction2s)
 {
@@ -691,7 +648,7 @@ TEST_F(AnimationTest, WaitForDurationAction2s)
   const float SPEED_MOD = 1.0f;
   const IActionObject::timing_mode_func TIMING_MODE =
     NOM_ANIM_TEST_FLAG(timing_mode);
-  const uint32 FPS = 0;
+  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   auto idle2s =
     nom::create_action<WaitForDurationAction>( WaitForDurationAction(DURATION) );
@@ -720,22 +677,23 @@ TEST_F(AnimationTest, WaitForDurationAction2s)
 
   // Do not terminate loop until we have the animation object's DONE timestamp
   // recorded, so we can ensure proper operational values.
-  this->append_update_callback( [&](float) {
+  this->append_update_callback( [=,&action_done_time](float) {
 
-    // We cannot use nom::ActionPlayer::action_running here because the action
-    // is erased from the queue right before this callback gets called
-
-    // TODO: Verify if this is still true!
-    if( this->player.num_actions() == 0 ) {
+    // NOTE: We must additionally check for the state of the action queue
+    // because our action will not yet be running on the first time around on
+    // the main loop's update loop.
+    if( this->player.idle() == true &&
+        this->player.action_running("action0") == false )
+    {
       action_done_time = nom::ticks();
       EXPECT_GT(action_done_time, action_start_time);
       EXPECT_GT(action_done_time, 2000);
+      EXPECT_EQ(0, this->player.num_actions() );
+
       this->quit(); // graceful exit
     }
   });
 
-  // Intentionally disabled frame throttling; I want to ensure that high frame
-  // rates do not alter the 2s duration!
   this->append_render_callback( [=](const RenderWindow&) {
     this->set_frame_interval(FPS);
   });

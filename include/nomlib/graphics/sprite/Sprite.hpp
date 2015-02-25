@@ -73,6 +73,8 @@ class Sprite: public Transformable
     /// \see ::set_texture
     Sprite(std::shared_ptr<Texture>& tex);
 
+    bool init_with_color(const Color4i& color, const Size2i& dims);
+
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.

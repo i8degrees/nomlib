@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/sprite/Sprite.hpp"
 
+// Private headers
+#include "nomlib/graphics/shapes/Rectangle.hpp"
+
 // Forward declarations
 #include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/RenderWindow.hpp"
@@ -64,6 +67,18 @@ Sprite::Sprite(Texture* tex)
 Sprite::Sprite(std::shared_ptr<Texture>& tex)
 {
   this->set_texture(tex);
+}
+
+bool Sprite::init_with_color(const Color4i& color, const Size2i& dims)
+{
+  Point2i rect_pos(Point2i::zero);
+  Size2i rect_dims(dims);
+  IntRect rect_bounds(rect_pos, rect_dims);
+
+  Rectangle rect(rect_bounds, color);
+  auto tex = rect.texture();
+
+  return this->set_texture(tex);
 }
 
 ObjectTypeInfo Sprite::type() const

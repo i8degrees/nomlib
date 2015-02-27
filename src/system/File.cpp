@@ -28,117 +28,131 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/File.hpp"
 
+// Forward declarations
+#include "nomlib/system/IFile.hpp"
+
+#if defined(NOM_PLATFORM_OSX) || defined(NOM_PLATFORM_LINUX)
+  #include "nomlib/system/unix/UnixFile.hpp"
+#elif defined(NOM_PLATFORM_WINDOWS)
+  #include "nomlib/system/windows/WinFile.hpp"
+#else
+  #pragma message("The file interface must be implemented for this platform")
+#endif
+
 namespace nom {
 
-File::File ( void )
+File::File()
 {
-  #if defined (NOM_PLATFORM_WINDOWS) // Use Windows APIs
-    this->file = std::unique_ptr<IFile> ( new WinFile() );
-  #else // Assume POSIX compatibility; use POSIX / BSD & GNU APIs
-    this->file = std::unique_ptr<IFile> ( new UnixFile() );
-  #endif
+#if defined (NOM_PLATFORM_WINDOWS) // Use Windows APIs
+  this->file = std::unique_ptr<IFile> ( new WinFile() );
+#else // Assume POSIX compatibility; use POSIX / BSD & GNU APIs
+  this->file = std::unique_ptr<IFile> ( new UnixFile() );
+#endif
 }
 
-File::~File ( void ) {}
-
-const std::string File::extension ( const std::string& file )
+File::~File()
 {
-  return this->file->extension ( file );
+  //
 }
 
-int32 File::size ( const std::string& file_path )
+std::string File::extension(const std::string& file) const
 {
-  return this->file->size ( file_path );
+  return this->file->extension(file);
 }
 
-bool File::is_dir( const std::string& file_path )
+int32 File::size(const std::string& file_path) const
 {
-  return this->file->is_dir( file_path );
+  return this->file->size(file_path);
 }
 
-bool File::is_file( const std::string& file_path )
+bool File::is_dir(const std::string& file_path) const
 {
-  return this->file->is_file( file_path );
+  return this->file->is_dir(file_path);
 }
 
-bool File::exists( const std::string& file_path )
+bool File::is_file(const std::string& file_path) const
 {
-  return this->file->exists( file_path );
+  return this->file->is_file(file_path);
 }
 
-const std::string File::path( const std::string& dir_path )
+bool File::exists(const std::string& file_path) const
 {
-  return this->file->path ( dir_path );
+  return this->file->exists(file_path);
 }
 
-std::string File::currentPath( void ) const
+std::string File::path(const std::string& dir_path) const
+{
+  return this->file->path(dir_path);
+}
+
+std::string File::currentPath() const
 {
   return this->file->currentPath();
 }
 
-bool File::set_path ( const std::string& path )
+bool File::set_path (const std::string& path) const
 {
   return this->file->set_path(path);
 }
 
-const std::string File::basename ( const std::string& filename )
+std::string File::basename(const std::string& filename) const
 {
   return this->file->basename(filename);
 }
 
-std::vector<std::string> File::read_dir( const std::string& dir_path )
+std::vector<std::string> File::read_dir(const std::string& dir_path) const
 {
-  return this->file->read_dir( dir_path );
+  return this->file->read_dir(dir_path);
 }
 
-const std::string File::resource_path( const std::string& identifier )
+std::string File::resource_path(const std::string& identifier) const
 {
-  return this->file->resource_path( identifier );
+  return this->file->resource_path(identifier);
 }
 
-const std::string File::user_documents_path( void )
+std::string File::user_documents_path() const
 {
   return this->file->user_documents_path();
 }
 
-const std::string File::user_app_support_path( void )
+std::string File::user_app_support_path() const
 {
   return this->file->user_app_support_path();
 }
 
-const std::string File::user_home_path( void )
+std::string File::user_home_path() const
 {
   return this->file->user_home_path();
 }
 
-const std::string File::system_path( void )
+std::string File::system_path() const
 {
   return this->file->system_path();
 }
 
-bool File::mkdir( const std::string& path )
+bool File::mkdir(const std::string& path) const
 {
-  return this->file->mkdir( path );
+  return this->file->mkdir(path);
 }
 
-bool File::recursive_mkdir( const std::string& path )
+bool File::recursive_mkdir(const std::string& path) const
 {
-  return this->file->recursive_mkdir( path );
+  return this->file->recursive_mkdir(path);
 }
 
-bool File::rmdir( const std::string& path )
+bool File::rmdir(const std::string& path) const
 {
-  return this->file->rmdir( path );
+  return this->file->rmdir(path);
 }
 
-bool File::mkfile( const std::string& path )
+bool File::mkfile(const std::string& path) const
 {
-  return this->file->mkfile( path );
+  return this->file->mkfile(path);
 }
 
-std::string File::env( const std::string& path )
+std::string File::env(const std::string& path) const
 {
-  return this->file->env( path );
+  return this->file->env(path);
 }
 
 namespace priv {

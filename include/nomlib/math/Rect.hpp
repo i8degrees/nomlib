@@ -170,24 +170,25 @@ struct Rect
     return Size2i( NOM_SCAST( T, this->w ), NOM_SCAST( T, this->h ) );
   }
 
-  const T& left( void ) const
+  const T& left() const
   {
     return this->x;
   }
 
-  const T& top( void ) const
+  const T& top() const
   {
     return this->y;
   }
 
-  const T& right( void ) const
+  const T& right() const
   {
-    return this->w;
+    return(this->x + this->w);
   }
 
-  const T& bottom( void ) const
+  const T& bottom() const
   {
-    return this->h;
+    return(this->y + this->h);
+  }
   }
 
   /// \brief Null value

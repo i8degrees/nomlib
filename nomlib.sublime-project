@@ -1,65 +1,26 @@
 {
-  // File inclusion and exclusion patterns effect search results when using
-  // 'goto' (super+p), in addition to side bar file list.
-  //
-  // It is necessary to explicitly include the project's include and source
-  // folders in order for the Switch Script package to function.
   "folders":
   [
     {
       "path": ".",
-      // The directories 'src', 'include' and 'tests' are ignored here in order
-      // to prevent duplicate search results when using 'goto'. The duplicates
-      // are created when we define the "inc" and "src" folder names (see below),
-      // for the SwitchScript package.
-      //
+
       // 'xcode' is my CMake build directory for Xcode generated project files
       // and must be excluded due to a bug that often crashes Sublime Text 2
       // anytime I build from this directory.
       //
       // See also: http://www.sublimetext.com/forum/viewtopic.php?f=3&t=8417
-      "folder_exclude_patterns": [ "build", "xcode", "tmp", "third-party", "src", "include", "tests" ]
-    },
-
-    {
-      "name": "inc",
-      "path": "include/nomlib",
-      "file_include_patterns": [ "*.hpp", "*.h", "*.hxx", "*.hpp.in" ]
-      // "file_exclude_patterns": [ "config.hpp" ]
-    },
-
-    {
-      "name": "src",
-      "path": "src",
-      "file_include_patterns": [ "*.txt", "*.cpp", "*.c", "*.cxx", "*.cpp.in" ]
-    },
-
-    {
-      "name": "tests",
-      "path": "tests",
-      "file_include_patterns": [ "*.txt", "*.cpp", "*.c", "*.cxx", "*.cpp.in", "*.hpp", "*.h", "*.hxx", "*.hpp.in" ]
-    },
-
-    {} // placeholder
+      "folder_exclude_patterns": [ "build", "xcode", "tmp", "third-party" ]
+    }
   ],
 
   "settings":
   {
     "tab_size": 2,
-    "translate_tabs_to_spaces": true,
-    //"sublimegdb_workingdir": "${folder:${project_path:build}}",
-    //"sublimegdb_workingdir": "${folder:${project_path:build/TTcards.app/Contents/MacOS/ttcards}}",
-    //"sublimegdb_commandline": "gdb --interpreter=mi ./your_executable_name"
-    "ctags_command": "/usr/local/bin/ctags -R -f .tags src/ include/"
-
+    "translate_tabs_to_spaces": true
   },
 
   "build_systems":
   [
-    {
-    	// placeholder
-    },
-
-    {} // placeholder
+    {}
   ]
 }

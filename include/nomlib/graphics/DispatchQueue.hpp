@@ -110,3 +110,12 @@ class DispatchQueue
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::DispatchQueue
+/// \ingroup graphics
+///
+/// \see nom::ActionPlayer
+///
+/// \internal
+/// \see [Grand Central Dispatch (GCD) Reference](https://developer.apple.com/library/ios/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html)
+/// \endinternal

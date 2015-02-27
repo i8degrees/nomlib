@@ -190,3 +190,8 @@ create_action(const action_list& actions, const std::string& name = "")
 } // namespace nom
 
 #endif // include guard defined
+
+/// \internal
+/// \see [SKAction](https://developer.apple.com/library/prerelease/ios/documentation/SpriteKit/Reference/SKAction_Ref/index.html)
+/// \see [SpriteKit Programming Guide](https://developer.apple.com/library/prerelease/ios/documentation/GraphicsAnimation/Conceptual/SpriteKit_PG/Introduction/Introduction.html)
+/// \endinternal

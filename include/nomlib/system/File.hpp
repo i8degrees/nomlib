@@ -111,9 +111,12 @@ class File
 
     /// \see UnixFile::env, WinFile::env.
     std::string env(const std::string& path) const;
+<<<<<<< HEAD
 
     /// \see UnixFile::num_files, WinFile::num_files
     nom::size_type num_files(const std::string& path) const;
+=======
+>>>>>>> b78691cf (File: Add const onto the end of methods)
 
   private:
     std::unique_ptr<IFile> file;

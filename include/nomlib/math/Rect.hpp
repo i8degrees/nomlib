@@ -189,6 +189,19 @@ struct Rect
   {
     return(this->y + this->h);
   }
+
+  template <typename U>
+  void set_position(const Point2<U>& pos)
+  {
+    this->x = pos.x;
+    this->y = pos.y;
+  }
+
+  template <typename U>
+  void set_size(const Size2<U>& dims)
+  {
+    this->w = dims.w;
+    this->h = dims.h;
   }
 
   /// \brief Null value

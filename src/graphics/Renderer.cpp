@@ -133,13 +133,13 @@ Size2i Renderer::output_size( void ) const
   return size;
 }
 
-const IntRect Renderer::bounds ( void ) const
+IntRect Renderer::clip_bounds() const
 {
   SDL_Rect clip;
 
-  SDL_RenderGetClipRect( this->renderer(), &clip );
+  SDL_RenderGetClipRect(this->renderer(), &clip);
 
-  return IntRect ( clip.x, clip.y, clip.w, clip.h );
+  return IntRect(clip.x, clip.y, clip.w, clip.h);
 }
 
 const RendererInfo Renderer::caps ( void ) const
@@ -312,24 +312,19 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Renderer::set_bounds ( const IntRect& bounds )
+bool Renderer::set_clip_bounds(const IntRect& bounds)
 {
-  if ( bounds == IntRect::null ) // Disable clipping bounds rectangle
-  {
-    if ( SDL_RenderSetClipRect( this->renderer(), nullptr ) != 0 )
-    {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-      return false;
-    }
+  SDL_Rect* clip = nullptr;
 
-    return true;
+  if( bounds != IntRect::null ) {
+    clip = new SDL_Rect( SDL_RECT(bounds) );
+  } else {
+    // Disable clipping bounds
   }
 
-  // IntRect argument is not null -- try setting the requested bounds
-  SDL_Rect clip = SDL_RECT ( bounds );
-  if ( SDL_RenderSetClipRect( this->renderer(), &clip ) != 0 )
-  {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+  if( SDL_RenderSetClipRect(this->renderer(), clip) != 0 ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Failed to set clipping bounds:", SDL_GetError() );
     return false;
   }
 

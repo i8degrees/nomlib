@@ -106,10 +106,8 @@ class Renderer
     /// \returns Size2i object filled with the width and height fields.
     Size2i output_size( void ) const;
 
-    /// Obtain the renderer's clipping rectangle bounds (X, Y, width & height)
-    /// in pixels
-    /// \todo Test me!
-    const IntRect bounds ( void ) const;
+    /// \brief Obtain the renderer's clipping rectangle bounds (in pixels).
+    IntRect clip_bounds() const;
 
     /// \brief Obtain information specific to your rendering hardware
     /// capabilities.
@@ -192,13 +190,11 @@ class Renderer
     /// SDL_BLENDMODE_MOD
     bool set_blend_mode ( const SDL_BlendMode mode );
 
-    /// Set new clipping rectangle bounds for the rendering target.
+    /// \brief Set new clipping rectangle bounds for the rendering target.
     ///
     /// \param bounds    Passing nom::IntRect::null will disable clipping on
-    ///                  the target
-    ///
-    /// \todo Test me!
-    bool set_bounds ( const IntRect& bounds );
+    ///                  the target.
+    bool set_clip_bounds(const IntRect& bounds);
 
     /// \brief Obtain pixels buffer of the entire rendering target
     ///

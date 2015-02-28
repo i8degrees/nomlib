@@ -95,17 +95,17 @@ ColorizeAction::update(real32 t, const Color4i& b, const Color4i& c, real32 d)
     c1 = Color4i::Black;
   }
 
-  NOM_ASSERT(this->timing_mode() != nullptr);
+  NOM_ASSERT(this->timing_curve() != nullptr);
 
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
 
   displacement.r =
-    this->timing_mode().operator()(frame_time, b1.r, c1.r, duration);
+    this->timing_curve().operator()(frame_time, b1.r, c1.r, duration);
   displacement.g =
-    this->timing_mode().operator()(frame_time, b1.g, c1.g, duration);
+    this->timing_curve().operator()(frame_time, b1.g, c1.g, duration);
   displacement.b =
-    this->timing_mode().operator()(frame_time, b1.b, c1.b, duration);
+    this->timing_curve().operator()(frame_time, b1.b, c1.b, duration);
 
   // Clamp to valid color values
   if( displacement.r > 255.0f ) {

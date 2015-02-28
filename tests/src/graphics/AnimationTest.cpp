@@ -553,10 +553,10 @@ bool init_cmd_line_args(int argc, char** argv)
   }
 
   // nom::Linear is the default timing mode when none is given
-  nom::IActionObject::timing_mode_func mode =
-    nom::timing_mode_func_from_str( timing_mode_arg.getValue() );
+  nom::IActionObject::timing_curve_func mode =
+    nom::timing_curve_from_str( timing_mode_arg.getValue() );
 
-  NOM_ANIM_TEST_FLAG(timing_mode) = mode;
+  NOM_ANIM_TEST_FLAG(timing_curve) = mode;
   NOM_ANIM_TEST_FLAG(timing_mode_str) = timing_mode_arg.getValue();
 
   uint32 fps = fps_arg.getValue();
@@ -569,11 +569,12 @@ bool init_cmd_line_args(int argc, char** argv)
   return true;
 }
 
-IActionObject::timing_mode_func
-timing_mode_func_from_str(const std::string& timing_mode)
+IActionObject::timing_curve_func
+timing_curve_from_str(const std::string& timing_mode)
 {
   // Default timing mode
-  IActionObject::timing_mode_func mode = nom::Linear::ease_in_out;
+  IActionObject::timing_curve_func mode =
+    nom::Linear::ease_in_out;
 
   if( timing_mode == "quad_ease_in" ) {
     mode = nom::Quad::ease_in;
@@ -646,8 +647,8 @@ TEST_F(AnimationTest, WaitForDurationAction2s)
   // Testing parameters
   const float DURATION = 2.0f;
   const float SPEED_MOD = 1.0f;
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   auto idle2s =
@@ -657,7 +658,7 @@ TEST_F(AnimationTest, WaitForDurationAction2s)
   auto action0 =
     nom::create_action<SequenceAction>( {idle2s}, nom::UnitTest::test_name() );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -719,8 +720,8 @@ TEST_F(AnimationTest, SpriteActionMultipleSprites)
   const real32 DURATION = FRAME_DURATION * texture_filenames.size();
 
   const real32 SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   this->init_sprite_action_test(texture_filenames, anim_frames);
@@ -738,7 +739,7 @@ TEST_F(AnimationTest, SpriteActionMultipleSprites)
   auto action0 =
     nom::create_action<GroupAction>( {tex_bg}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -774,8 +775,8 @@ TEST_F(AnimationTest, MoveByAction)
   // Testing parameters
   const float DURATION = 2.5f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const Point2i TRANSLATE_POS( Point2i(200,0) );
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
@@ -798,7 +799,7 @@ TEST_F(AnimationTest, MoveByAction)
   auto action0 =
     nom::create_action<GroupAction>( {translate}, nom::UnitTest::test_name() );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -834,8 +835,8 @@ TEST_F(AnimationTest, MoveByActionNegativeXDelta)
   // Testing parameters
   const float DURATION = 2.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -858,7 +859,7 @@ TEST_F(AnimationTest, MoveByActionNegativeXDelta)
   auto action0 =
     nom::create_action<GroupAction>( {translate}, nom::UnitTest::test_name() );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -894,8 +895,8 @@ TEST_F(AnimationTest, MoveByActionWithNegativeYDelta)
   // Testing parameters
   const float DURATION = 2.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -918,7 +919,7 @@ TEST_F(AnimationTest, MoveByActionWithNegativeYDelta)
   auto action0 =
     nom::create_action<GroupAction>( {translate}, nom::UnitTest::test_name() );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -954,8 +955,8 @@ TEST_F(AnimationTest, ScaleByAction)
   // Testing parameters
   const float DURATION = 1.5f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
   const Size2f SCALE_FACTOR(2.0f, 2.0f);
 
@@ -983,7 +984,7 @@ TEST_F(AnimationTest, ScaleByAction)
   auto action0 =
     nom::create_action<GroupAction>( {scale_by}, nom::UnitTest::test_name());
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -1024,8 +1025,8 @@ TEST_F(AnimationTest, ScaleByActionWithNegativeFactor)
   // Testing parameters
   const float DURATION = 1.5f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
   const Size2f SCALE_FACTOR(-3.0f, -3.0f);
 
@@ -1058,7 +1059,7 @@ TEST_F(AnimationTest, ScaleByActionWithNegativeFactor)
   auto action0 =
     nom::create_action<GroupAction>( {scale_by}, nom::UnitTest::test_name() );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -1101,8 +1102,8 @@ TEST_F(AnimationTest, ScaleByActionWithNonPowerOfTwo)
   const float DURATION = 1.5f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
   const Size2f SCALE_FACTOR(2.25f, 1.75f);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -1130,7 +1131,7 @@ TEST_F(AnimationTest, ScaleByActionWithNonPowerOfTwo)
   auto action0 =
     nom::create_action<GroupAction>( {scale_by}, nom::UnitTest::test_name() );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -1171,8 +1172,8 @@ TEST_F(AnimationTest, CallbackActionDefaultDuration)
   // Testing parameters
   const float DURATION = 0.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   CallbackAction::callback_type callback_func;
@@ -1185,7 +1186,7 @@ TEST_F(AnimationTest, CallbackActionDefaultDuration)
   auto action0 =
     nom::create_action<GroupAction>( {anim0}, nom::UnitTest::test_name() );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -1217,8 +1218,8 @@ TEST_F(AnimationTest, CallbackActionWithNonZeroDuration)
   const float DURATION = 0.05f;
   // const float DURATION = 1.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   CallbackAction::callback_type callback_func;
@@ -1231,7 +1232,7 @@ TEST_F(AnimationTest, CallbackActionWithNonZeroDuration)
   auto action0 =
     nom::create_action<GroupAction>( {anim0}, nom::UnitTest::test_name() );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -1261,8 +1262,8 @@ TEST_F(AnimationTest, ColorizeAction)
   // Testing parameters
   const float DURATION = 2.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   const Color4i TEX_START_COLOR(Color4i::Black);

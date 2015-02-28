@@ -208,16 +208,16 @@ void SequenceAction::set_speed(real32 speed)
 }
 
 void
-SequenceAction::set_timing_mode(const IActionObject::timing_mode_func& mode)
+SequenceAction::set_timing_curve(const IActionObject::timing_curve_func& mode)
 {
-  IActionObject::set_timing_mode(mode);
+  IActionObject::set_timing_curve(mode);
 
   // Propagate the timing mode for our children
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
     NOM_ASSERT(*itr != nullptr);
     if( *itr != nullptr ) {
-      (*itr)->set_timing_mode(mode);
+      (*itr)->set_timing_curve(mode);
     }
   }
 }

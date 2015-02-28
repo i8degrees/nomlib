@@ -51,7 +51,7 @@ TEST_F(AnimationTest, RainingRectsStressTest)
 {
   // Testing parameters
   const real32 DURATION = 2.0f;
-  const IActionObject::timing_mode_func TIMING_MODE =
+  const IActionObject::timing_curve_func TIMING_MODE =
     nom::Bounce::ease_in_out;
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
   const real32 MIN_SPEED_MOD = DURATION;
@@ -146,7 +146,7 @@ TEST_F(AnimationTest, RainingRectsStressTest)
   auto action0 =
     nom::create_action<GroupAction>(actions, "action0");
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
 
   auto remove_action0 =
     nom::create_action<RemoveAction>(action0);
@@ -208,8 +208,8 @@ TEST_F(AnimationTest, CardPlacementEffectsDemo)
   // Testing parameters
   const float DURATION = 0.5f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
   const Size2f SCALE_FACTOR(3.0f, 3.0f);
 
@@ -315,25 +315,25 @@ TEST_F(AnimationTest, CardPlacementEffectsDemo)
   auto action0 =
     nom::create_action<GroupAction>( {move_up0, scale_by0}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(nom::Expo::ease_out);
+  action0->set_timing_curve(nom::Expo::ease_out);
   action0->set_speed(SPEED_MOD);
 
   auto action1 =
     nom::create_action<GroupAction>( {scale_by_reversed0}, "action1" );
   ASSERT_TRUE(action1 != nullptr);
-  action1->set_timing_mode(nom::Expo::ease_out);
+  action1->set_timing_curve(nom::Expo::ease_out);
   action1->set_speed(SPEED_MOD);
 
   auto action2 =
     nom::create_action<GroupAction>( {move_up1, scale_by1}, "action2" );
   ASSERT_TRUE(action2 != nullptr);
-  action2->set_timing_mode(nom::Expo::ease_out);
+  action2->set_timing_curve(nom::Expo::ease_out);
   action2->set_speed(SPEED_MOD);
 
   auto action3 =
     nom::create_action<GroupAction>( {scale_by_reversed1}, "action3" );
   ASSERT_TRUE(action3 != nullptr);
-  action3->set_timing_mode(nom::Expo::ease_out);
+  action3->set_timing_curve(nom::Expo::ease_out);
   action3->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -422,8 +422,8 @@ TEST_F(AnimationTest, ScrollingTextDemo)
 
   // Testing parameters
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   const real32 MOVE_BY_DURATION = 2.5f;
@@ -520,18 +520,18 @@ TEST_F(AnimationTest, ScrollingTextDemo)
     nom::create_action<SequenceAction>( {wait1s, wait2s}, "wait3s" );
   ASSERT_TRUE(wait3s != nullptr);
   wait3s->set_speed(SPEED_MOD);
-  wait3s->set_timing_mode(TIMING_MODE);
+  wait3s->set_timing_curve(TIMING_MODE);
 
   auto scroll_right =
     nom::create_action<GroupAction>( {
       anim_translate0, anim_fade_in}, "scroll_right");
   ASSERT_TRUE(scroll_right != nullptr);
   scroll_right->set_speed(SPEED_MOD);
-  scroll_right->set_timing_mode(TIMING_MODE);
+  scroll_right->set_timing_curve(TIMING_MODE);
   if( NOM_ANIM_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
-    scroll_right->set_timing_mode(TIMING_MODE);
+    scroll_right->set_timing_curve(TIMING_MODE);
   } else {
-    scroll_right->set_timing_mode(nom::Quad::ease_in_out);
+    scroll_right->set_timing_curve(nom::Quad::ease_in_out);
   }
 
   std::shared_ptr<IActionObject> scroll_left_action;
@@ -542,9 +542,9 @@ TEST_F(AnimationTest, ScrollingTextDemo)
   ASSERT_TRUE(scroll_left != nullptr);
   scroll_left->set_speed(SPEED_MOD);
   if( NOM_ANIM_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
-    scroll_left->set_timing_mode(TIMING_MODE);
+    scroll_left->set_timing_curve(TIMING_MODE);
   } else {
-    scroll_left->set_timing_mode(nom::Expo::ease_out);
+    scroll_left->set_timing_curve(nom::Expo::ease_out);
   }
 
   auto scroll_right_again_action =
@@ -556,7 +556,7 @@ TEST_F(AnimationTest, ScrollingTextDemo)
       "scroll_right_again" );
   ASSERT_TRUE(scroll_right_again != nullptr);
   scroll_right_again->set_speed(SPEED_MOD);
-  scroll_right_again->set_timing_mode(TIMING_MODE);
+  scroll_right_again->set_timing_curve(TIMING_MODE);
 
   auto scroll_up_move_action =
     nom::create_action<nom::MoveByAction>(anim_text_sprite, Point2i(0,-300), MOVE_BY_DURATION);
@@ -568,9 +568,9 @@ TEST_F(AnimationTest, ScrollingTextDemo)
   ASSERT_TRUE(scroll_up != nullptr);
   scroll_up->set_speed(SPEED_MOD);
   if( NOM_ANIM_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
-    scroll_up->set_timing_mode(TIMING_MODE);
+    scroll_up->set_timing_curve(TIMING_MODE);
   } else {
-    scroll_up->set_timing_mode(nom::Quad::ease_in);
+    scroll_up->set_timing_curve(nom::Quad::ease_in);
     scroll_up->set_speed(SPEED_MOD);
   }
 
@@ -589,9 +589,9 @@ TEST_F(AnimationTest, ScrollingTextDemo)
   ASSERT_TRUE(scroll_down_repeat2 != nullptr);
   scroll_down_repeat2->set_speed(SPEED_MOD);
   if( NOM_ANIM_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
-    scroll_down_repeat2->set_timing_mode(TIMING_MODE);
+    scroll_down_repeat2->set_timing_curve(TIMING_MODE);
   } else {
-    scroll_down_repeat2->set_timing_mode(nom::Bounce::ease_out);
+    scroll_down_repeat2->set_timing_curve(nom::Bounce::ease_out);
   }
 
   auto fade_screen_out =
@@ -602,9 +602,9 @@ TEST_F(AnimationTest, ScrollingTextDemo)
   ASSERT_TRUE(fade_screen_out_action != nullptr);
   fade_screen_out_action->set_speed(SPEED_MOD);
   if( NOM_ANIM_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
-    fade_screen_out_action->set_timing_mode(TIMING_MODE);
+    fade_screen_out_action->set_timing_curve(TIMING_MODE);
   } else {
-    fade_screen_out_action->set_timing_mode(nom::Bounce::ease_in_out);
+    fade_screen_out_action->set_timing_curve(nom::Bounce::ease_in_out);
   }
 
   EXPECT_EQ(0, this->player.num_actions() );

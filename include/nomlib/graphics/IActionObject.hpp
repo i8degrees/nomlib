@@ -43,7 +43,7 @@ class IActionObject
     typedef IActionObject self_type;
 
     typedef std::function<void()> action_callback;
-    typedef std::function<real32(real32, real32, real32, real32)> timing_mode_func;
+    typedef std::function<real32(real32, real32, real32, real32)> timing_curve_func;
 
     /// \brief The animation object's state.
     ///
@@ -78,7 +78,7 @@ class IActionObject
     real32 speed() const;
 
     /// \brief Get the action's timing mode.
-    const IActionObject::timing_mode_func& timing_mode() const;
+    const IActionObject::timing_curve_func& timing_curve() const;
 
     /// \brief Create a deep copy of this instance.
     ///
@@ -127,7 +127,7 @@ class IActionObject
     virtual void set_speed(real32 speed);
 
     /// \brief Set the animation object's timing mode.
-    virtual void set_timing_mode(const IActionObject::timing_mode_func& mode);
+    virtual void set_timing_curve(const IActionObject::timing_curve_func& mode);
 
   protected:
     IActionObject::FrameState status() const;
@@ -165,7 +165,7 @@ class IActionObject
     /// animation object by preventing the current frame counter from advancing.
     real32 speed_ = 1.0f;
 
-    timing_mode_func timing_mode_;
+    timing_curve_func timing_curve_;
 };
 
 typedef std::vector<std::shared_ptr<IActionObject>> action_list;

@@ -37,8 +37,8 @@ TEST_F(AnimationTest, GroupActionFinishEquality)
   const real32 DURATION = 1.0f;
   const real32 SPEED_MOD0 = NOM_ANIM_TEST_FLAG(speed);
   const real32 SPEED_MOD1 = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -100,14 +100,14 @@ TEST_F(AnimationTest, GroupActionFinishEquality)
   auto action0 =
     nom::create_action<GroupAction>( {translate0, translate1}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD0);
 
   auto action1 =
     nom::create_action<GroupAction>( {translate2, translate3}, "action1" );
   ASSERT_TRUE(action1 != nullptr);
   action1->set_speed(SPEED_MOD1);
-  action1->set_timing_mode(TIMING_MODE);
+  action1->set_timing_curve(TIMING_MODE);
 
   // action0
 
@@ -228,8 +228,8 @@ TEST_F(AnimationTest, ConcurrentGroupActions)
   const real32 SPEED_MOD1 = NOM_ANIM_TEST_FLAG(speed) * 2.0f;     // action1
   const real32 SPEED_MOD2 = NOM_ANIM_TEST_FLAG(speed) * 2.25f;    // action2
   const real32 SPEED_MOD3 = NOM_ANIM_TEST_FLAG(speed) * 1.25f;    // action3
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -295,23 +295,23 @@ TEST_F(AnimationTest, ConcurrentGroupActions)
 
   auto action0 = nom::create_action<GroupAction>( {translate0}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD0);
 
   auto action1 = nom::create_action<GroupAction>( {translate1}, "action1" );
   ASSERT_TRUE(action1 != nullptr);
   action1->set_speed(SPEED_MOD1);
-  action1->set_timing_mode(TIMING_MODE);
+  action1->set_timing_curve(TIMING_MODE);
 
   auto action2 = nom::create_action<GroupAction>( {translate2}, "action2" );
   ASSERT_TRUE(action2 != nullptr);
   action2->set_speed(SPEED_MOD2);
-  action2->set_timing_mode(TIMING_MODE);
+  action2->set_timing_curve(TIMING_MODE);
 
   auto action3 = nom::create_action<GroupAction>( {translate3}, "action3" );
   ASSERT_TRUE(action3 != nullptr);
   action3->set_speed(SPEED_MOD3);
-  action3->set_timing_mode(TIMING_MODE);
+  action3->set_timing_curve(TIMING_MODE);
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -415,8 +415,8 @@ TEST_F(AnimationTest, ConcurrentSequenceActions)
   const real32 SPEED_MOD1 = NOM_ANIM_TEST_FLAG(speed) * 2.0f;   // action0(1/2)
   const real32 SPEED_MOD2 = NOM_ANIM_TEST_FLAG(speed) * 2.25f;  // action1(1/2)
   const real32 SPEED_MOD3 = NOM_ANIM_TEST_FLAG(speed) * 1.25f;  // action1(2/2)
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -487,12 +487,12 @@ TEST_F(AnimationTest, ConcurrentSequenceActions)
   auto action0 =
     nom::create_action<SequenceAction>( {translate0, translate1}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
 
   auto action1 =
     nom::create_action<SequenceAction>( {translate2, translate3}, "action1" );
   ASSERT_TRUE(action1 != nullptr);
-  action1->set_timing_mode(TIMING_MODE);
+  action1->set_timing_curve(TIMING_MODE);
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -576,8 +576,8 @@ TEST_F(AnimationTest, ConcurrentGroupAndSequenceActions)
   const real32 SPEED_MOD1 = NOM_ANIM_TEST_FLAG(speed) * 2.0f; // action0
   const real32 SPEED_MOD2 = NOM_ANIM_TEST_FLAG(speed) * 2.25f; // action1
   const real32 SPEED_MOD3 = NOM_ANIM_TEST_FLAG(speed) * 1.25f; // action1
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -648,12 +648,12 @@ TEST_F(AnimationTest, ConcurrentGroupAndSequenceActions)
   auto action0 =
     nom::create_action<GroupAction>( {translate0, translate1}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
 
   auto action1 =
     nom::create_action<SequenceAction>( {translate2, translate3}, "action1" );
   ASSERT_TRUE(action1 != nullptr);
-  action1->set_timing_mode(TIMING_MODE);
+  action1->set_timing_curve(TIMING_MODE);
 
   // EXPECT_EQ( ActionPlayer::IDLE, this->player.player_state() );
   EXPECT_EQ(0, this->player.num_actions() );

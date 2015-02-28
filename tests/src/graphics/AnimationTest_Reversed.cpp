@@ -35,8 +35,8 @@ TEST_F(AnimationTest, FadeInActionReversed)
   // Testing parameters
   const float DURATION = 2.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -71,7 +71,7 @@ TEST_F(AnimationTest, FadeInActionReversed)
   auto action0 =
     nom::create_action<GroupAction>( {fade_in_reversed}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -112,8 +112,8 @@ TEST_F(AnimationTest, FadeOutActionReversed)
   // Testing parameters
   const float DURATION = 2.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -148,7 +148,7 @@ TEST_F(AnimationTest, FadeOutActionReversed)
   auto action0 =
     nom::create_action<GroupAction>( {fade_out_reversed}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -189,8 +189,8 @@ TEST_F(AnimationTest, FadeAlphaByActionReversed)
   const float DURATION = 2.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
   const uint8 FADE_BY = 129;
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -225,7 +225,7 @@ TEST_F(AnimationTest, FadeAlphaByActionReversed)
   auto action0 =
     nom::create_action<GroupAction>( {fade_by_reversed}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -267,8 +267,8 @@ TEST_F(AnimationTest, MoveByActionReversed)
   const float DURATION = 2.5f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
   const Point2i TRANSLATE_POS( Point2i(200,0) );
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -294,7 +294,7 @@ TEST_F(AnimationTest, MoveByActionReversed)
   auto action0 =
     nom::create_action<GroupAction>( {translate_rev}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -331,8 +331,8 @@ TEST_F(AnimationTest, ScaleByActionReversed)
   const float DURATION = 1.5f;  // 90 frames @ 60 FPS
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
   const Size2f SCALE_FACTOR(2.0f, 2.0f);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -368,7 +368,7 @@ TEST_F(AnimationTest, ScaleByActionReversed)
   auto action0 =
     nom::create_action<GroupAction>( {scale_by_reversed}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -410,8 +410,8 @@ TEST_F(AnimationTest, MoveByActionRepeatForReversed)
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
   const uint NUM_REPEATS = 4;
   const Point2i TRANSLATE_POS( Point2i(WINDOW_DIMS.w,0) );
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -441,7 +441,7 @@ TEST_F(AnimationTest, MoveByActionRepeatForReversed)
   auto action0 =
     nom::create_action<GroupAction>( {repeat_reversed}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -486,8 +486,8 @@ TEST_F(AnimationTest, RepeatForeverActionReversed)
   // IMPORTANT: This value must remain constant for reproducing consistent test
   // results!
   const real32 SPEED_MOD = 1.0f;
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   const Point2i TRANSLATE_POS( Point2i(WINDOW_DIMS.w,0) );
@@ -517,7 +517,7 @@ TEST_F(AnimationTest, RepeatForeverActionReversed)
   auto action0 =
     nom::create_action<GroupAction>( {repeat_forever_rev}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   auto kill_timer =
@@ -527,7 +527,7 @@ TEST_F(AnimationTest, RepeatForeverActionReversed)
   auto action1 =
     nom::create_action<SequenceAction>( {kill_timer}, "action1" );
   ASSERT_TRUE(action1 != nullptr);
-  action1->set_timing_mode(TIMING_MODE);
+  action1->set_timing_curve(TIMING_MODE);
   action1->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -590,8 +590,8 @@ TEST_F(AnimationTest, SpriteActionReversed)
   const real32 DURATION = FRAME_DURATION * texture_filenames.size();
 
   const real32 SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   this->init_sprite_action_test(texture_filenames, anim_frames);
@@ -609,7 +609,7 @@ TEST_F(AnimationTest, SpriteActionReversed)
   auto action0 =
     nom::create_action<ReversedAction>(tex_bg, "action0_rev");
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -647,8 +647,8 @@ TEST_F(AnimationTest, ColorizeActionReversed)
   // Testing parameters
   const float DURATION = 2.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   const Color4i TEX_START_COLOR(Color4i::Black);

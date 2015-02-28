@@ -98,13 +98,13 @@ FadeOutAction::update(real32 t, uint8 b, int16 c, real32 d)
     c1 = total_displacement;
   }
 
-  NOM_ASSERT(this->timing_mode() != nullptr);
+  NOM_ASSERT(this->timing_curve() != nullptr);
 
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
 
   displacement =
-    this->timing_mode().operator()(frame_time, b1, c1, duration);
+    this->timing_curve().operator()(frame_time, b1, c1, duration);
 
   // Update our internal elapsed frames counter (diagnostics
   ++this->curr_frame_;

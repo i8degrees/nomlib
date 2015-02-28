@@ -107,16 +107,16 @@ ScaleByAction::update(real32 t, const Size2i& b, const Size2f& c, real32 d)
     c2 = -( (b2 / total_displacement.h) ) - b2;
   }
 
-  NOM_ASSERT(this->timing_mode() != nullptr);
+  NOM_ASSERT(this->timing_curve() != nullptr);
 
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
 
   displacement.w =
-    this->timing_mode().operator()(frame_time, b1, c1, duration);
+    this->timing_curve().operator()(frame_time, b1, c1, duration);
 
   displacement.h =
-    this->timing_mode().operator()(frame_time, b2, c2, duration);
+    this->timing_curve().operator()(frame_time, b2, c2, duration);
 
   // Update our internal elapsed frames counter (diagnostics)
   ++this->curr_frame_;

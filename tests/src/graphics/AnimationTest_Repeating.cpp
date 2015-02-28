@@ -55,8 +55,8 @@ AnimationTest::setup_repeating_cursor_test( real32 duration, real32 speed,
   // total action duration
   const real32 DURATION = FRAME_DURATION * NUM_FRAMES;
 
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const real32 SPEED_MOD = speed;
   const uint32 FPS = fps;
   nom::SpriteSheet anim_frames;
@@ -108,7 +108,7 @@ AnimationTest::setup_repeating_cursor_test( real32 duration, real32 speed,
     << scope_name;
   }
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
 
   std::shared_ptr<IActionObject> repeat;
   if( type & REPEAT_FOR ) {
@@ -182,8 +182,8 @@ TEST_F(AnimationTest, RepeatForAction)
   const float DURATION = 0.5f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
   const uint NUM_REPEATS = 4;
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
   const Point2i TRANSLATE_POS( Point2i(WINDOW_DIMS.w,0) );
 
@@ -210,7 +210,7 @@ TEST_F(AnimationTest, RepeatForAction)
   auto action0 =
     nom::create_action<GroupAction>( {repeat}, nom::UnitTest::test_name() );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -253,8 +253,8 @@ TEST_F(AnimationTest, RepeatForeverAction)
   // results!
   const real32 SPEED_MOD = 1.0f;
 
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   const Point2i TRANSLATE_POS( Point2i(WINDOW_DIMS.w,0) );
@@ -280,7 +280,7 @@ TEST_F(AnimationTest, RepeatForeverAction)
   auto action0 =
     nom::create_action<GroupAction>( {repeat_forever}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   auto kill_timer =
@@ -290,7 +290,7 @@ TEST_F(AnimationTest, RepeatForeverAction)
   auto action1 =
     nom::create_action<SequenceAction>( {kill_timer}, "action1" );
   ASSERT_TRUE(action1 != nullptr);
-  action1->set_timing_mode(TIMING_MODE);
+  action1->set_timing_curve(TIMING_MODE);
   action1->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );

@@ -102,15 +102,15 @@ MoveByAction::update(real32 t, const Point2i& b, const Point2i& c, real32 d)
     c2 = total_displacement.y;
   }
 
-  NOM_ASSERT(this->timing_mode() != nullptr);
+  NOM_ASSERT(this->timing_curve() != nullptr);
 
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
 
   displacement.x =
-    this->timing_mode().operator()(frame_time, b1, c1, duration);
+    this->timing_curve().operator()(frame_time, b1, c1, duration);
   displacement.y =
-    this->timing_mode().operator()(frame_time, b2, c2, duration);
+    this->timing_curve().operator()(frame_time, b2, c2, duration);
 
   // Update our internal elapsed frames counter (diagnostics)
   ++this->curr_frame_;

@@ -104,13 +104,13 @@ SpriteTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
     delta_time = duration / this->speed();
   }
 
-  NOM_ASSERT(this->timing_mode() != nullptr);
+  NOM_ASSERT(this->timing_curve() != nullptr);
 
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
 
   displacement =
-    this->timing_mode().operator()(frame_time, b, c, duration);
+    this->timing_curve().operator()(frame_time, b, c, duration);
 
   this->curr_frame_ = displacement;
 

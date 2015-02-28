@@ -82,7 +82,7 @@ class GroupAction: public virtual IActionObject
     ///
     /// \remarks The timing mode of every action is modified.
     virtual
-    void set_timing_mode(const IActionObject::timing_mode_func& mode) override;
+    void set_timing_curve(const IActionObject::timing_curve_func& mode) override;
 
   private:
     typedef std::vector<std::shared_ptr<IActionObject>> container_type;

@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 IActionObject::IActionObject() :
-  timing_mode_(nom::Linear::ease_in_out)
+  timing_curve_(nom::Linear::ease_in_out)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
                       NOM_LOG_PRIORITY_VERBOSE );
@@ -62,9 +62,9 @@ real32 IActionObject::speed() const
 }
 
 const
-IActionObject::timing_mode_func& IActionObject::timing_mode() const
+IActionObject::timing_curve_func& IActionObject::timing_curve() const
 {
-  return this->timing_mode_;
+  return this->timing_curve_;
 }
 
 void IActionObject::set_name(const std::string& action_id)
@@ -78,9 +78,9 @@ void IActionObject::set_speed(real32 speed)
 }
 
 void
-IActionObject::set_timing_mode(const IActionObject::timing_mode_func& mode)
+IActionObject::set_timing_curve(const IActionObject::timing_curve_func& mode)
 {
-  this->timing_mode_ = mode;
+  this->timing_curve_ = mode;
 }
 
 // Protected scope

@@ -35,8 +35,8 @@ TEST_F(AnimationTest, FadeInAction)
   // Testing parameters
   const float DURATION = 2.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -69,7 +69,7 @@ TEST_F(AnimationTest, FadeInAction)
   auto action0 =
     nom::create_action<GroupAction>( {fade_in}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -113,8 +113,8 @@ TEST_F(AnimationTest, FadeInActionFromNonTransparentOpacity)
   // Testing parameters
   const float DURATION = 1.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -145,7 +145,7 @@ TEST_F(AnimationTest, FadeInActionFromNonTransparentOpacity)
   auto action0 =
     nom::create_action<GroupAction>( {fade_in}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -188,8 +188,8 @@ TEST_F(AnimationTest, FadeOutAction)
   // Testing parameters
   const float DURATION = 2.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -220,7 +220,7 @@ TEST_F(AnimationTest, FadeOutAction)
   auto action0 =
     nom::create_action<GroupAction>( {fade_out}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -265,8 +265,8 @@ TEST_F(AnimationTest, FadeOutActionFromNonOpaqueOpacity)
   // Testing parameters
   const float DURATION = 1.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -297,7 +297,7 @@ TEST_F(AnimationTest, FadeOutActionFromNonOpaqueOpacity)
   auto action0 =
     nom::create_action<GroupAction>( {fade_out}, "action0");
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -343,8 +343,8 @@ TEST_F(AnimationTest, FadeAlphaByAction)
   // Testing parameters
   const float DURATION = 2.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
   const uint8 FADE_BY = 129;
 
@@ -376,7 +376,7 @@ TEST_F(AnimationTest, FadeAlphaByAction)
   auto action0 =
     nom::create_action<GroupAction>( {fade_by}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -418,8 +418,8 @@ TEST_F(AnimationTest, FadeAlphaByActionFromNonOpaqueOpacity)
   // Testing parameters
   const float DURATION = 2.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
   const uint8 FADE_BY = 129;
 
@@ -451,7 +451,7 @@ TEST_F(AnimationTest, FadeAlphaByActionFromNonOpaqueOpacity)
   auto action0 =
     nom::create_action<GroupAction>( {fade_by}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -494,8 +494,8 @@ TEST_F(AnimationTest, FadeAlphaByActionWithNegativeValue)
   // Testing parameters
   const float DURATION = 2.0f;
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
   const int16 FADE_BY = -129;
   const int16 EXPECTED_ALPHA = 126;
@@ -528,7 +528,7 @@ TEST_F(AnimationTest, FadeAlphaByActionWithNegativeValue)
   auto action0 =
     nom::create_action<GroupAction>( {fade_by}, "action0" );
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );
@@ -571,8 +571,8 @@ TEST_F(AnimationTest, AlphaBlendingDemo)
   // Testing parameters
   const float DURATION = 2.5f;  // 5s total duration due to x2 sequences
   const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
-  const IActionObject::timing_mode_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_mode);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ANIM_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
 
   // Initial texture position and size
@@ -639,7 +639,7 @@ TEST_F(AnimationTest, AlphaBlendingDemo)
   auto action0 =
     nom::create_action<GroupAction>( {fade_bg_tex_out}, "bg_layer");
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_mode(TIMING_MODE);
+  action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
   auto fade_rect0_in =
@@ -654,7 +654,7 @@ TEST_F(AnimationTest, AlphaBlendingDemo)
     nom::create_action<SequenceAction>( {
       fade_rect0_in, fade_rect1_out}, "fade_rect0_in, fade_rect1_out" );
   ASSERT_TRUE(action1 != nullptr);
-  action1->set_timing_mode(TIMING_MODE);
+  action1->set_timing_curve(TIMING_MODE);
   action1->set_speed(SPEED_MOD);
 
   EXPECT_EQ(0, this->player.num_actions() );

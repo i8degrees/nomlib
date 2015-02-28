@@ -82,7 +82,7 @@ class RepeatForAction: public virtual IActionObject
     ///
     /// \remarks The timing mode of the proxy object is modified.
     virtual
-    void set_timing_mode(const IActionObject::timing_mode_func& mode) override;
+    void set_timing_curve(const IActionObject::timing_curve_func& mode) override;
 
   private:
     /// \fixme This is to work around a bug that prevents us from using

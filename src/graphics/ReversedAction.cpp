@@ -119,13 +119,13 @@ void ReversedAction::set_speed(real32 speed)
 }
 
 void
-ReversedAction::set_timing_mode(const IActionObject::timing_mode_func& mode)
+ReversedAction::set_timing_curve(const IActionObject::timing_curve_func& mode)
 {
-  IActionObject::set_timing_mode(mode);
+  IActionObject::set_timing_curve(mode);
 
   // Propagate the timing mode modifier to our proxy / child object
   if( this->object_ != nullptr ) {
-    this->object_->set_timing_mode(mode);
+    this->object_->set_timing_curve(mode);
   }
 }
 

@@ -70,7 +70,7 @@ struct AnimTestFlags
   real32 speed = 1.0f;
 
   /// \brief The timing mode used in action tests.
-  IActionObject::timing_mode_func timing_mode = nom::Linear::ease_in_out;
+  IActionObject::timing_curve_func timing_curve = nom::Linear::ease_in_out;
   std::string timing_mode_str = "linear_ease_in_out";
 };
 
@@ -210,8 +210,8 @@ bool init_cmd_line_args(int argc, char** argv);
 
 /// \brief Helper method for converting the timing mode string passed in from
 /// command-line or NOM_ANIM_TEST_FLAG to a timing mode function.
-IActionObject::timing_mode_func
-timing_mode_func_from_str(const std::string& timing_mode);
+IActionObject::timing_curve_func
+timing_curve_from_str(const std::string& timing_mode);
 
 } // namespace nom
 

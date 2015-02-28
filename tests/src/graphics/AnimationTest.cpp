@@ -209,7 +209,7 @@ void AnimationTest::SetUp()
   Timer anim_timer;
   anim_timer.start();
   uint32 last_delta = anim_timer.ticks();
-  this->append_update_callback( [=, &anim_timer, &last_delta](float) mutable {
+  this->append_update_callback( [&, anim_timer, last_delta](float) mutable {
 
     uint32 end_delta = anim_timer.ticks();
     uint32 elapsed_delta = end_delta - last_delta;

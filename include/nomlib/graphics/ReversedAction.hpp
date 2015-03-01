@@ -41,7 +41,7 @@ class ReversedAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.
-    friend class AnimationTest;
+    friend class ActionTest;
 
     typedef ReversedAction self_type;
     typedef IActionObject derived_type;

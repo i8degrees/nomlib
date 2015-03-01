@@ -26,18 +26,18 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/graphics/AnimationTest.hpp"
+#include "nomlib/tests/graphics/ActionTest.hpp"
 
 namespace nom {
 
-TEST_F(AnimationTest, FadeInActionReversed)
+TEST_F(ActionTest, FadeInActionReversed)
 {
   // Testing parameters
   const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
@@ -107,14 +107,14 @@ TEST_F(AnimationTest, FadeInActionReversed)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, FadeOutActionReversed)
+TEST_F(ActionTest, FadeOutActionReversed)
 {
   // Testing parameters
   const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
@@ -183,15 +183,15 @@ TEST_F(AnimationTest, FadeOutActionReversed)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, FadeAlphaByActionReversed)
+TEST_F(ActionTest, FadeAlphaByActionReversed)
 {
   // Testing parameters
   const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const uint8 FADE_BY = 129;
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
@@ -261,15 +261,15 @@ TEST_F(AnimationTest, FadeAlphaByActionReversed)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, MoveByActionReversed)
+TEST_F(ActionTest, MoveByActionReversed)
 {
   // Testing parameters
   const float DURATION = 2.5f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const Point2i TRANSLATE_POS( Point2i(200,0) );
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Point2i RECT_POS(TRANSLATE_POS);
@@ -325,15 +325,15 @@ TEST_F(AnimationTest, MoveByActionReversed)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, ScaleByActionReversed)
+TEST_F(ActionTest, ScaleByActionReversed)
 {
   // Testing parameters
   const float DURATION = 1.5f;  // 90 frames @ 60 FPS
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const Size2f SCALE_FACTOR(2.0f, 2.0f);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
@@ -403,16 +403,16 @@ TEST_F(AnimationTest, ScaleByActionReversed)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, MoveByActionRepeatForReversed)
+TEST_F(ActionTest, MoveByActionRepeatForReversed)
 {
   // Testing parameters
   const float DURATION = 0.5f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const uint NUM_REPEATS = 4;
   const Point2i TRANSLATE_POS( Point2i(WINDOW_DIMS.w,0) );
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Point2i RECT_POS(TRANSLATE_POS);
@@ -476,7 +476,7 @@ TEST_F(AnimationTest, MoveByActionRepeatForReversed)
 
 /// \remarks This test does not honor custom speed modifiers passed via command
 /// line.
-TEST_F(AnimationTest, RepeatForeverActionReversed)
+TEST_F(ActionTest, RepeatForeverActionReversed)
 {
   // Testing parameters
   const real32 TEST_DURATION = 2.5f;  // when to stop testing "forever"
@@ -487,8 +487,8 @@ TEST_F(AnimationTest, RepeatForeverActionReversed)
   // results!
   const real32 SPEED_MOD = 1.0f;
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   const Point2i TRANSLATE_POS( Point2i(WINDOW_DIMS.w,0) );
   // Initial texture position and size
@@ -574,7 +574,7 @@ TEST_F(AnimationTest, RepeatForeverActionReversed)
 
 /// \remarks Thanks goes to Tim Jones of [sdltutorials.com](http://www.sdltutorials.com/sdl-animation)
 /// for the sprite frames of Yoshi chosen for this test!
-TEST_F(AnimationTest, SpriteActionReversed)
+TEST_F(ActionTest, SpriteActionReversed)
 {
   // Testing parameters
   texture_frames anim_frames;
@@ -589,10 +589,10 @@ TEST_F(AnimationTest, SpriteActionReversed)
   // total test duration
   const real32 DURATION = FRAME_DURATION * texture_filenames.size();
 
-  const real32 SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   this->init_sprite_action_test(texture_filenames, anim_frames);
 
@@ -642,14 +642,14 @@ TEST_F(AnimationTest, SpriteActionReversed)
 
 // FIXME
 #if 0
-TEST_F(AnimationTest, ColorizeActionReversed)
+TEST_F(ActionTest, ColorizeActionReversed)
 {
   // Testing parameters
   const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   const Color4i TEX_START_COLOR(Color4i::Black);
   const Color4i TEX_END_COLOR(Color4i::White);

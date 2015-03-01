@@ -51,7 +51,7 @@ class SpriteTexturesAction: public virtual IActionObject
 
     /// \brief Allow access into our private parts for obtaining the current
     /// frame.
-    friend class AnimationTest;
+    friend class ActionTest;
 
     /// \brief Construct an action with a container of valid (i.e.: pre-loaded)
     /// nom::SpriteBatch objects.

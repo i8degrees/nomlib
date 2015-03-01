@@ -179,22 +179,3 @@ endmacro(NOM_LOG_WARN msg)
 macro(NOM_LOG_CRIT msg)
   message( FATAL_ERROR "CRITICAL: ${msg}" )
 endmacro(NOM_LOG_CRIT msg)
-
-# Helper function for adding animation tests
-macro( add_animation_test test_name )
-  set( ANIMATION_TEST_BIN "${TESTS_INSTALL_DIR}/AnimationTest" )
-
-  # Extended tests are ignored by default; they are intended to be explicitly
-  # ran by invoking ctest with the "EXT" build configuration: ctest -C EXT
-  if( ${test_name} MATCHES "Extended*" )
-    set( ANIMATION_TEST_CFG_TYPE "EXT" )
-  endif()
-
-  add_test( NAME
-            ${test_name}
-            CONFIGURATIONS
-            ${ANIMATION_TEST_CFG_TYPE}
-            COMMAND
-            ${ANIMATION_TEST_BIN}
-            ${ARGN} )
-endmacro()

@@ -26,16 +26,16 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/graphics/AnimationTest.hpp"
+#include "nomlib/tests/graphics/ActionTest.hpp"
 
 namespace nom {
 
 // Uses SpriteBatchAction
 void
-AnimationTest::setup_repeating_cursor_test( real32 duration, real32 speed,
-                                            real32 fps, uint32 type,
-                                            nom::size_type num_repeats,
-                                            const std::string& scope_name )
+ActionTest::setup_repeating_cursor_test(  real32 duration, real32 speed,
+                                          real32 fps, uint32 type,
+                                          nom::size_type num_repeats,
+                                          const std::string& scope_name )
 {
   NOM_LOG_DEBUG(NOM_LOG_CATEGORY_ANIMATION, "Marker:", scope_name);
 
@@ -56,7 +56,7 @@ AnimationTest::setup_repeating_cursor_test( real32 duration, real32 speed,
   const real32 DURATION = FRAME_DURATION * NUM_FRAMES;
 
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
+    NOM_ACTION_TEST_FLAG(timing_curve);
   const real32 SPEED_MOD = speed;
   const uint32 FPS = fps;
   nom::SpriteSheet anim_frames;
@@ -176,15 +176,15 @@ AnimationTest::setup_repeating_cursor_test( real32 duration, real32 speed,
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, RepeatForAction)
+TEST_F(ActionTest, RepeatForAction)
 {
   // Testing parameters
   const float DURATION = 0.5f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const uint NUM_REPEATS = 4;
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
   const Point2i TRANSLATE_POS( Point2i(WINDOW_DIMS.w,0) );
 
   // Initial texture position and size
@@ -242,7 +242,7 @@ TEST_F(AnimationTest, RepeatForAction)
 
 /// \remarks This test does not honor custom speed modifiers passed via command
 /// line.
-TEST_F(AnimationTest, RepeatForeverAction)
+TEST_F(ActionTest, RepeatForeverAction)
 {
   // Testing parameters
   const real32 TEST_DURATION = 2.5f;  // when to stop testing "forever"
@@ -254,8 +254,8 @@ TEST_F(AnimationTest, RepeatForeverAction)
   const real32 SPEED_MOD = 1.0f;
 
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   const Point2i TRANSLATE_POS( Point2i(WINDOW_DIMS.w,0) );
   // Initial texture position and size
@@ -330,7 +330,7 @@ TEST_F(AnimationTest, RepeatForeverAction)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, SpriteBatchActionGroup)
+TEST_F(ActionTest, SpriteBatchActionGroup)
 {
   // Testing parameters
 
@@ -343,14 +343,14 @@ TEST_F(AnimationTest, SpriteBatchActionGroup)
   // IMPORTANT: This value must remain constant for reproducing consistent test
   // results!
   const real32 SPEED_MOD = 1.0f;
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   this->setup_repeating_cursor_test(  TEST_DURATION, SPEED_MOD, FPS,
                                       action_type, NUM_REPEATS,
                                       nom::UnitTest::test_name() );
 }
 
-TEST_F(AnimationTest, SpriteBatchActionSequence)
+TEST_F(ActionTest, SpriteBatchActionSequence)
 {
   // Testing parameters
 
@@ -363,14 +363,14 @@ TEST_F(AnimationTest, SpriteBatchActionSequence)
   // IMPORTANT: This value must remain constant for reproducing consistent test
   // results!
   const real32 SPEED_MOD = 1.0f;
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   this->setup_repeating_cursor_test(  TEST_DURATION, SPEED_MOD, FPS,
                                       action_type, NUM_REPEATS,
                                       nom::UnitTest::test_name() );
 }
 
-TEST_F(AnimationTest, SpriteBatchActionReversed)
+TEST_F(ActionTest, SpriteBatchActionReversed)
 {
   // Testing parameters
 
@@ -383,7 +383,7 @@ TEST_F(AnimationTest, SpriteBatchActionReversed)
   // IMPORTANT: This value must remain constant for reproducing consistent test
   // results!
   const real32 SPEED_MOD = 1.0f;
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   this->setup_repeating_cursor_test(  TEST_DURATION, SPEED_MOD, FPS,
                                       action_type, NUM_REPEATS,
@@ -392,7 +392,7 @@ TEST_F(AnimationTest, SpriteBatchActionReversed)
 
 /// \remarks This test does not honor custom speed modifiers passed via command
 /// line.
-TEST_F(AnimationTest, SpriteBatchActionGroupRepeatingForever)
+TEST_F(ActionTest, SpriteBatchActionGroupRepeatingForever)
 {
   // Testing parameters
 
@@ -401,7 +401,7 @@ TEST_F(AnimationTest, SpriteBatchActionGroupRepeatingForever)
   const uint32 action_type =
     ActionType::REPEAT_FOREVER | ActionType::GROUP;
   const nom::size_type NUM_REPEATS = 4;
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // IMPORTANT: This value must remain constant for reproducing consistent test
   // results!
@@ -414,7 +414,7 @@ TEST_F(AnimationTest, SpriteBatchActionGroupRepeatingForever)
 
 /// \remarks This test does not honor custom speed modifiers and frame
 /// intervals passed via command line.
-TEST_F(AnimationTest, SpriteBatchActionSequenceRepeatingForever)
+TEST_F(ActionTest, SpriteBatchActionSequenceRepeatingForever)
 {
   // Testing parameters
 
@@ -423,7 +423,7 @@ TEST_F(AnimationTest, SpriteBatchActionSequenceRepeatingForever)
   const uint32 action_type =
     ActionType::REPEAT_FOREVER | ActionType::SEQUENCE;
   const nom::size_type NUM_REPEATS = 4;
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // IMPORTANT: This value must remain constant for reproducing consistent test
   // results!
@@ -436,7 +436,7 @@ TEST_F(AnimationTest, SpriteBatchActionSequenceRepeatingForever)
 
 /// \remarks This test does not honor custom speed modifiers and frame
 /// intervals passed via command line.
-TEST_F(AnimationTest, SpriteBatchActionRepeatingForeverReversed)
+TEST_F(ActionTest, SpriteBatchActionRepeatingForeverReversed)
 {
   // Testing parameters
 
@@ -445,7 +445,7 @@ TEST_F(AnimationTest, SpriteBatchActionRepeatingForeverReversed)
   const uint32 action_type =
     ActionType::REPEAT_FOREVER | ActionType::REVERSED;
   const nom::size_type NUM_REPEATS = 4;
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // IMPORTANT: This value must remain constant for reproducing consistent test
   // results!

@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_ANIMATION_TEST_HPP
-#define NOMLIB_GRAPHICS_ANIMATION_TEST_HPP
+#ifndef NOMLIB_GRAPHICS_ACTION_TEST_HPP
+#define NOMLIB_GRAPHICS_ACTION_TEST_HPP
 
 #include <string>
 #include <vector>
@@ -44,12 +44,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 
 /// \brief Set or get a global state control flag.
-#define NOM_ANIM_TEST_FLAG(var) nom::anim_test_flags.var
+#define NOM_ACTION_TEST_FLAG(var) nom::anim_test_flags.var
 
 namespace nom {
 
 /// \brief Testing state flags container.
-struct AnimTestFlags
+struct ActionTestFlags
 {
   /// \brief The frame interval to update by in action tests.
   ///
@@ -76,19 +76,19 @@ struct AnimTestFlags
 
 /// \brief Testing state flags.
 ///
-/// \remarks These are accessible at build-time via NOM_ANIM_TEST_FLAG and
+/// \remarks These are accessible at build-time via NOM_ACTION_TEST_FLAG and
 /// run-time via command line switch.
-extern AnimTestFlags anim_test_flags;
+extern ActionTestFlags anim_test_flags;
 
 /// \brief Animation engine unit tests
-class AnimationTest: public nom::VisualUnitTest
+class ActionTest: public nom::VisualUnitTest
 {
   public:
     /// \remarks This method is called at the start of each unit test.
-    AnimationTest();
+    ActionTest();
 
     /// \remarks This method is called at the end of each unit test.
-    virtual ~AnimationTest();
+    virtual ~ActionTest();
 
     virtual bool init_rendering();
 
@@ -209,7 +209,7 @@ class AnimationTest: public nom::VisualUnitTest
 bool init_cmd_line_args(int argc, char** argv);
 
 /// \brief Helper method for converting the timing mode string passed in from
-/// command-line or NOM_ANIM_TEST_FLAG to a timing mode function.
+/// command-line or NOM_ACTION_TEST_FLAG to a timing mode function.
 IActionObject::timing_curve_func
 timing_curve_from_str(const std::string& timing_mode);
 

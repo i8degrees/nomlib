@@ -26,18 +26,18 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/graphics/AnimationTest.hpp"
+#include "nomlib/tests/graphics/ActionTest.hpp"
 
 namespace nom {
 
-TEST_F(AnimationTest, FadeInAction)
+TEST_F(ActionTest, FadeInAction)
 {
   // Testing parameters
   const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
@@ -108,14 +108,14 @@ TEST_F(AnimationTest, FadeInAction)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, FadeInActionFromNonTransparentOpacity)
+TEST_F(ActionTest, FadeInActionFromNonTransparentOpacity)
 {
   // Testing parameters
   const float DURATION = 1.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
@@ -183,14 +183,14 @@ TEST_F(AnimationTest, FadeInActionFromNonTransparentOpacity)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, FadeOutAction)
+TEST_F(ActionTest, FadeOutAction)
 {
   // Testing parameters
   const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
@@ -260,14 +260,14 @@ TEST_F(AnimationTest, FadeOutAction)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, FadeOutActionFromNonOpaqueOpacity)
+TEST_F(ActionTest, FadeOutActionFromNonOpaqueOpacity)
 {
   // Testing parameters
   const float DURATION = 1.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
@@ -338,14 +338,14 @@ TEST_F(AnimationTest, FadeOutActionFromNonOpaqueOpacity)
 
 /// \brief Fade in, from an alpha value of zero to an alpha value of 129-1 a
 /// texture of a blue block.
-TEST_F(AnimationTest, FadeAlphaByAction)
+TEST_F(ActionTest, FadeAlphaByAction)
 {
   // Testing parameters
   const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
   const uint8 FADE_BY = 129;
 
   // Initial texture position and size
@@ -413,14 +413,14 @@ TEST_F(AnimationTest, FadeAlphaByAction)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, FadeAlphaByActionFromNonOpaqueOpacity)
+TEST_F(ActionTest, FadeAlphaByActionFromNonOpaqueOpacity)
 {
   // Testing parameters
   const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
   const uint8 FADE_BY = 129;
 
   // Initial texture position and size
@@ -489,14 +489,14 @@ TEST_F(AnimationTest, FadeAlphaByActionFromNonOpaqueOpacity)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, FadeAlphaByActionWithNegativeValue)
+TEST_F(ActionTest, FadeAlphaByActionWithNegativeValue)
 {
   // Testing parameters
   const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
   const int16 FADE_BY = -129;
   const int16 EXPECTED_ALPHA = 126;
 
@@ -566,14 +566,14 @@ TEST_F(AnimationTest, FadeAlphaByActionWithNegativeValue)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, AlphaBlendingDemo)
+TEST_F(ActionTest, AlphaBlendingDemo)
 {
   // Testing parameters
   const float DURATION = 2.5f;  // 5s total duration due to x2 sequences
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Point2i RECT_POS(Point2i::zero);

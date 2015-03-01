@@ -28,8 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Easing algorithms are Copyright (c) 2001 Robert Penner
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_ANIMATION_TIMING_MODES_HPP
-#define NOMLIB_GRAPHICS_ANIMATION_TIMING_MODES_HPP
+#ifndef NOMLIB_GRAPHICS_ACTION_TIMING_CURVES_HPP
+#define NOMLIB_GRAPHICS_ACTION_TIMING_CURVES_HPP
 
 #include "nomlib/config.hpp"
 

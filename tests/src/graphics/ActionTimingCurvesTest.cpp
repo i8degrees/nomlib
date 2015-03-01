@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <gtest/gtest.h>
 
 #include <nomlib/config.hpp>
-#include <nomlib/graphics/AnimationTimingModes.hpp>
+#include <nomlib/graphics/ActionTimingCurves.hpp>
 #include <nomlib/system/init.hpp>
 
 using namespace nom;

@@ -59,7 +59,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics/Cursor.hpp>
 #include <nomlib/graphics/graphics_helpers.hpp>
 
-#include <nomlib/graphics/AnimationTimingModes.hpp>
+#include <nomlib/graphics/ActionTimingCurves.hpp>
 #include <nomlib/graphics/IActionObject.hpp>
 #include <nomlib/graphics/SpriteTexturesAction.hpp>
 #include <nomlib/graphics/SpriteBatchAction.hpp>

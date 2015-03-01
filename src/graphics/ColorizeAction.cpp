@@ -41,7 +41,7 @@ ColorizeAction::ColorizeAction( const std::shared_ptr<Sprite>& action,
                                 real32 duration ) :
   total_displacement_(delta)
 {
-  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_ANIMATION, NOM_LOG_PRIORITY_VERBOSE);
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_ACTION, NOM_LOG_PRIORITY_VERBOSE);
 
   this->set_duration(duration);
   this->curr_frame_ = 0.0f;
@@ -51,7 +51,7 @@ ColorizeAction::ColorizeAction( const std::shared_ptr<Sprite>& action,
 
 ColorizeAction::~ColorizeAction()
 {
-  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_ANIMATION, NOM_LOG_PRIORITY_VERBOSE);
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_ACTION, NOM_LOG_PRIORITY_VERBOSE);
 }
 
 std::unique_ptr<ColorizeAction::derived_type> ColorizeAction::clone() const
@@ -148,15 +148,15 @@ ColorizeAction::update(real32 t, const Color4i& b, const Color4i& c, real32 d)
     this->drawable_->set_color(color_as_integer);
 
     // Diagnostics
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[ColorizeAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[ColorizeAction]",
                     "delta_time:", delta_time, "frame_time:", frame_time,
                     "[elapsed frames]:", this->curr_frame_ );
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[ColorizeAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[ColorizeAction]",
                     "color (input):", drawable_color,
                     "color (output):", color_as_integer );
 
     // Extended diagnostics
-    NOM_LOG_VERBOSE(  NOM_LOG_CATEGORY_ANIMATION, "[ColorizeAction]",
+    NOM_LOG_VERBOSE(  NOM_LOG_CATEGORY_ACTION, "[ColorizeAction]",
                       "[b]:", b1, "[c1]:", c1 );
   }
 
@@ -243,7 +243,7 @@ void ColorizeAction::first_frame(real32 delta_time)
     this->timer_.start();
     delta_time = this->timer_.ticks();
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "ColorizeAction::BEGIN at", delta_time );
 
     // This is also necessary for reversing the animation, repeating it, etc.
@@ -259,7 +259,7 @@ void ColorizeAction::first_frame(real32 delta_time)
       }
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[ColorizeAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[ColorizeAction]",
                     "[initial_color]:", this->initial_color_,
                     "[blend_mode]:", this->blend_mode_ );
   }

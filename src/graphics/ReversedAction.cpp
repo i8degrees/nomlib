@@ -37,7 +37,7 @@ namespace nom {
 ReversedAction::ReversedAction( const std::shared_ptr<IActionObject>& action,
                                 const std::string& name )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_name(name);
@@ -46,7 +46,7 @@ ReversedAction::ReversedAction( const std::shared_ptr<IActionObject>& action,
 
 ReversedAction::~ReversedAction()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 

@@ -32,7 +32,7 @@ namespace nom {
 
 WaitForDurationAction::WaitForDurationAction(real32 seconds)
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_duration(seconds);
@@ -41,7 +41,7 @@ WaitForDurationAction::WaitForDurationAction(real32 seconds)
 
 WaitForDurationAction::~WaitForDurationAction()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
@@ -58,7 +58,7 @@ IActionObject::FrameState WaitForDurationAction::next_frame(real32 delta_time)
     this->timer_.start();
     delta_time = this->timer_.ticks();
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "WaitForDurationAction::BEGIN at", delta_time );
   }
 
@@ -80,7 +80,7 @@ IActionObject::FrameState WaitForDurationAction::next_frame(real32 delta_time)
   // stability to variable time steps
   if( delta_time < (this->duration() / this->speed() ) ) {
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[WaitForDurationAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[WaitForDurationAction]",
                     "delta_time:", delta_time,
                     "frame_time:", frame_time,
                     "[elapsed frames]:", this->curr_frame_ );

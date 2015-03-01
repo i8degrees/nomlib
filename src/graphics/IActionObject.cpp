@@ -36,13 +36,13 @@ namespace nom {
 IActionObject::IActionObject() :
   timing_curve_(nom::Linear::ease_in_out)
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       NOM_LOG_PRIORITY_VERBOSE );
 }
 
 IActionObject::~IActionObject()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       NOM_LOG_PRIORITY_VERBOSE );
 }
 

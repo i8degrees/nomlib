@@ -37,7 +37,7 @@ namespace nom {
 RepeatForeverAction::RepeatForeverAction( const std::shared_ptr<IActionObject>& action,
                                           const std::string& name )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_name(name);
@@ -47,7 +47,7 @@ RepeatForeverAction::RepeatForeverAction( const std::shared_ptr<IActionObject>& 
 
 RepeatForeverAction::~RepeatForeverAction()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
@@ -77,7 +77,7 @@ IActionObject::FrameState RepeatForeverAction::next_frame(real32 delta_time)
     ++this->elapsed_repeats_;
     action->rewind(delta_time);
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[RepeatForeverAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[RepeatForeverAction]",
                     "[elapsed_repeats]:", this->elapsed_repeats_ );
   }
 
@@ -105,7 +105,7 @@ IActionObject::FrameState RepeatForeverAction::prev_frame(real32 delta_time)
     ++this->elapsed_repeats_;
     action->rewind(delta_time);
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[RepeatForeverAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[RepeatForeverAction]",
                     "[elapsed_repeats]:", this->elapsed_repeats_ );
   }
 

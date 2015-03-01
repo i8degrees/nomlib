@@ -40,7 +40,7 @@ FadeAudioByAction::FadeAudioByAction( const std::shared_ptr<ISoundSource>& obj,
                                       real32 delta, real32 duration ) :
   total_displacement_(delta)
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->duration_ = duration * 1000; // milliseconds
@@ -52,7 +52,7 @@ FadeAudioByAction::FadeAudioByAction( const std::shared_ptr<ISoundSource>& obj,
 
 FadeAudioByAction::~FadeAudioByAction()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
@@ -120,9 +120,9 @@ FadeAudioByAction::update(real32 t, uint8 b, int16 c, real32 d)
     this->volume_ = displacement;
 
     // Diagnostics
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_ANIMATION, "delta_time:", delta_time,
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_ACTION, "delta_time:", delta_time,
                   "frame_time:", frame_time, "[elapsed frames]:", this->curr_frame_ );
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_ACTION,
                   "volume (input):", this->drawable_->getVolume(),
                   "displacement (output):", displacement );
   }
@@ -202,7 +202,7 @@ void FadeAudioByAction::first_frame(real32 delta_time)
     this->timer_.start();
 
     // Diagnostics
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_ACTION,
                   "FadeAudioByAction::BEGIN at", this->timer_.ticks() );
 
     // Initialize the initial alpha blending value; this is also necessary for
@@ -211,7 +211,7 @@ void FadeAudioByAction::first_frame(real32 delta_time)
       this->initial_volume_ = this->drawable_->getVolume();
 
       // Diagnostics
-      NOM_LOG_INFO( NOM_LOG_CATEGORY_ANIMATION,
+      NOM_LOG_INFO( NOM_LOG_CATEGORY_ACTION,
                     "initial_alpha:", NOM_SCAST(int, this->initial_volume_) );
     }
   }

@@ -33,7 +33,7 @@ namespace nom {
 SequenceAction::SequenceAction( const action_list& actions,
                                 const std::string& name )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_name(name);
@@ -48,7 +48,7 @@ SequenceAction::SequenceAction( const action_list& actions,
 
 SequenceAction::~SequenceAction()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
@@ -83,11 +83,10 @@ IActionObject::FrameState SequenceAction::next_frame(real32 delta_time)
       action_id = "action";
     }
 
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_ANIMATION, "[SequenceAction]:"
-                  "removing", action_id, "from container",
-                  "[", this->itr_pos_ + 1,
-                  "/", this->num_actions_, "]",
-                  "[id]:", this->name() );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SequenceAction]:"
+                    "removing", action_id, "from container",
+                    "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
+                    "[id]:", this->name() );
 
     this->actions_.pop_front();
     itr = this->actions_.begin();
@@ -129,11 +128,10 @@ IActionObject::FrameState SequenceAction::prev_frame(real32 delta_time)
       action_id = "action";
     }
 
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_ANIMATION, "[SequenceAction]:",
-                  "removing", action_id, "from container",
-                  "[", this->itr_pos_ + 1,
-                  "/", this->num_actions_, "]",
-                  "[id]:", this->name() );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SequenceAction]:",
+                    "removing", action_id, "from container",
+                    "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
+                    "[id]:", this->name() );
 
     this->actions_.pop_front();
     itr = this->actions_.begin();

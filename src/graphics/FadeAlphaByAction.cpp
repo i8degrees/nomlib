@@ -40,7 +40,7 @@ FadeAlphaByAction::FadeAlphaByAction( const std::shared_ptr<Sprite>& obj,
                                       int16 delta, real32 duration ) :
   total_displacement_(delta)
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_duration(duration);
@@ -52,7 +52,7 @@ FadeAlphaByAction::FadeAlphaByAction( const std::shared_ptr<Sprite>& obj,
 
 FadeAlphaByAction::~FadeAlphaByAction()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
@@ -125,11 +125,11 @@ FadeAlphaByAction::update(real32 t, uint8 b, int16 c, real32 d)
     this->alpha_ = (uint8)abs(displacement_as_integer);
 
     // Diagnostics
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "[FadeAlphaByAction]", "delta_time:", delta_time,
                     "frame_time:", frame_time,
                     "[elapsed frames]:", this->curr_frame_ );
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "[FadeAlphaByAction]", "alpha (input):",
                     NOM_SCAST(int, this->drawable_->alpha() ),
                     "displacement (output):",
@@ -218,7 +218,7 @@ void FadeAlphaByAction::first_frame(real32 delta_time)
     this->timer_.start();
     delta_time = this->timer_.ticks();
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "FadeAlphaByAction::BEGIN at", delta_time );
 
     // Initialize the initial alpha blending value; this is also necessary for
@@ -227,7 +227,7 @@ void FadeAlphaByAction::first_frame(real32 delta_time)
       this->initial_alpha_ = this->drawable_->alpha();
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "[FadeAlphaByAction]", "initial_alpha:",
                     NOM_SCAST(int, this->initial_alpha_) );
   }

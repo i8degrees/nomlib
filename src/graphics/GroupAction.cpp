@@ -33,7 +33,7 @@ namespace nom {
 GroupAction::GroupAction( const action_list& actions,
                           const std::string& name )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_name(name);
@@ -48,7 +48,7 @@ GroupAction::GroupAction( const action_list& actions,
 
 GroupAction::~GroupAction()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
@@ -81,10 +81,10 @@ IActionObject::FrameState GroupAction::next_frame(real32 delta_time)
         action_id = "action";
       }
 
-      NOM_LOG_INFO( NOM_LOG_CATEGORY_ANIMATION, "[GroupAction]:",
-                    "removing", action_id, "from container",
-                    "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
-                    "[id]:", this->name() );
+      NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[GroupAction]:",
+                      "removing", action_id, "from container",
+                      "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
+                      "[id]:", this->name() );
 
       // Erase the group action in the order in which it is completed
       itr = this->actions_.erase(itr);
@@ -132,10 +132,10 @@ IActionObject::FrameState GroupAction::prev_frame(real32 delta_time)
         action_id = "action";
       }
 
-      NOM_LOG_INFO( NOM_LOG_CATEGORY_ANIMATION, "[GroupAction]:",
-                    "removing", action_id, "from container",
-                    "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
-                    "[id]:", this->name() );
+      NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[GroupAction]:",
+                      "removing", action_id, "from container",
+                      "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
+                      "[id]:", this->name() );
 
       // Erase the group action in the order in which it is completed
       itr = this->actions_.erase(itr);

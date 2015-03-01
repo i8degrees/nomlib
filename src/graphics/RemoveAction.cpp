@@ -32,7 +32,7 @@ namespace nom {
 
 RemoveAction::RemoveAction(const std::shared_ptr<IActionObject>& action)
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->object_ = action;
@@ -40,7 +40,7 @@ RemoveAction::RemoveAction(const std::shared_ptr<IActionObject>& action)
 
 RemoveAction::~RemoveAction()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 

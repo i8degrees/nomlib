@@ -39,7 +39,7 @@ namespace nom {
 SpriteBatchAction::SpriteBatchAction( const std::shared_ptr<SpriteBatch>& sprite,
                                       real32 frame_interval )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->curr_frame_ = 0.0f;
@@ -62,7 +62,7 @@ SpriteBatchAction::SpriteBatchAction( const std::shared_ptr<SpriteBatch>& sprite
 
 SpriteBatchAction::~SpriteBatchAction()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
@@ -119,7 +119,7 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
     nom::size_type displacement_as_integer =
       nom::round_float<nom::size_type>(displacement);
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[SpriteBatchAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SpriteBatchAction]",
                     "delta_time:", delta_time, "frame_time:", frame_time,
                     "[elapsed frames]:", this->curr_frame_,
                     "displacement (output):", displacement_as_integer );
@@ -203,14 +203,14 @@ void SpriteBatchAction::first_frame(real32 delta_time)
     delta_time = this->timer_.ticks();
     this->last_delta_ = 0;
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "SpriteBatchAction::BEGIN at", delta_time );
 
     if( this->drawable_ != nullptr ) {
       this->initial_frame_ = this->drawable_->frame();
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[SpriteBatchAction]"
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SpriteBatchAction]"
                     "[initial_frame]:", this->initial_frame_,
                     "[num_frames]:", this->total_displacement_,
                     "[fps]:", this->frame_interval_ );

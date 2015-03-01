@@ -42,34 +42,31 @@ namespace nom {
 /// \note This easing class uses a power of one (1).
 struct Linear
 {
-  /// \brief Linear ease in.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Linear ease out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Linear ease in and out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
@@ -78,34 +75,31 @@ struct Linear
 /// \note This easing class uses a power of two (2).
 struct Quad
 {
-  /// \brief Quad ease in.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Quad ease out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Quad ease in and out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
@@ -114,34 +108,31 @@ struct Quad
 /// \note This easing class uses a power of three (3).
 struct Cubic
 {
-  /// \brief Cubic ease in.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Cubic ease out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Cubic ease in and out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
@@ -150,34 +141,31 @@ struct Cubic
 /// \note This easing class uses a power of four (4).
 struct Quart
 {
-  /// \brief Quart ease in.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Quart ease out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Quart ease in and out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
@@ -186,34 +174,31 @@ struct Quart
 /// \note This easing class uses a power of five (5).
 struct Quint
 {
-  /// \brief Quint ease in.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Quint ease out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Quint ease in and out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
@@ -221,200 +206,182 @@ struct Quint
 
 struct Back
 {
-  /// \brief Back ease in.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Back ease out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Back ease in and out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
 struct Bounce
 {
-  /// \brief Bounce ease in.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Bounce ease out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Bounce ease in and out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
 struct Circ
 {
-  /// \brief Circ ease in.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Circ ease out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Circ ease in and out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
 struct Elastic
 {
-  /// \brief Elastic ease in.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Elastic ease out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Elastic ease in and out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
 /// \note This easing class uses a power of ten (10).
 struct Expo
 {
-  /// \brief Expo ease in.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Expo ease out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Expo ease in and out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
 struct Sine
 {
-  /// \brief Sine ease in.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Sine ease out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
-  /// \brief Sine ease in and out.
+  /// \param t The elapsed time.
+  /// \param b The initial value to interpolate from.
+  /// \param c The total change in value over time.
+  /// \param d The total duration in time.
   ///
-  /// \param t elapsed time in milliseconds
-  /// \param b initial value
-  /// \param c total change in value -- applied over time.
-  /// \param d duration in milliseconds
-  ///
-  /// \returns ...
+  /// \remarks The elapsed time and total duration time must be expressed in
+  /// the same time units.
   static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
@@ -422,17 +389,14 @@ struct Sine
 
 #endif // include guard defined
 
-/// \ingroup graphics/Animation
+/// \ingroup graphics
 ///
-/// These easing functions derive from jesusgollonet's [GitHub repository](https://github.com/jesusgollonet/ofpennereasing). The easing algorithms are the work of [Robbert Penner](http://www.robertpenner.com/easing/).
+/// These easing functions derive from jesusgollonet's [GitHub repository](https://github.com/jesusgollonet/ofpennereasing).
+/// The easing algorithms are the work of [Robbert Penner](http://www.robertpenner.com/easing/).
 ///
 /// ## References
 ///
 /// \see [Visual graphing of each algorithm](http://easings.net/)
 /// \see [Explaining Penner’s equations](http://upshots.org/actionscript/jsas-understanding-easing)
 /// \see [Chapter 7 of Penner's book](http://robertpenner.com/easing/penner_chapter7_tweening.pdf)
-///
-/// ## Usage examples of my implementation
-///
-/// \see AnimationTest (unit tests), nom::IAnimationObject
 ///

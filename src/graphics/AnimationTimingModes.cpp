@@ -84,14 +84,15 @@ real32 Quad::ease_in_out(real32 t, real32 b, real32 c, real32 d)
   */
 
   // The above easing algorithm [1] does not return the proper frame step value
-  // as per our unit test in AnimationTimingModesTest.QuadEaseInOut [2]. I
-  // expected to see a return value of 300 at elapsed frame marker 1000, but
-  // instead got a return value of 164.
+  // as per our unit test for this function [2]. I expected to see a return
+  // value of 300 at elapsed frame marker 1000, but instead got a return value
+  // of 164.
   //
   // The easing algorithm below [3] works as expected.
   //
-  // 1.https://github.com/jesusgollonet/ofpennereasing). The easing algorithms are the work of [Robbert Penner](http://www.robertpenner.com/easing/
-  // 2. AnimationTimingModesTest.cpp
+  // 1.https://github.com/jesusgollonet/ofpennereasing). The easing algorithms
+  // are the work of [Robbert Penner](http://www.robertpenner.com/easing/).
+  // 2. ActionTimingCurvesTest::QuadEaseOut
   // 3. http://gsgd.co.uk/sandbox/jquery/easing/jquery.easing.1.3.js
   if( (t /= d / 2) < 1 ) {
     return c / 2 * t * t + b;

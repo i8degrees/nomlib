@@ -35,11 +35,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace nom;
 
 /// \brief Animation engine unit tests
-class AnimationTimingModesTest: public ::testing::Test
+class ActionTimingCurvesTest: public ::testing::Test
 {
   public:
     /// \remarks This method is called at the start of each unit test.
-    AnimationTimingModesTest()
+    ActionTimingCurvesTest()
     {
       // SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ANIMATION, NOM_LOG_PRIORITY_VERBOSE);
 
@@ -51,7 +51,7 @@ class AnimationTimingModesTest: public ::testing::Test
     }
 
     /// \remarks This method is called at the end of each unit test.
-    virtual ~AnimationTimingModesTest()
+    virtual ~ActionTimingCurvesTest()
     {
       //
     }
@@ -98,7 +98,7 @@ class AnimationTimingModesTest: public ::testing::Test
 
 // ...Linear tests...
 
-TEST_F(AnimationTimingModesTest, LinearEaseIn)
+TEST_F(ActionTimingCurvesTest, LinearEaseIn)
 {
   ret = nom::Linear::ease_in(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -128,7 +128,7 @@ TEST_F(AnimationTimingModesTest, LinearEaseIn)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, LinearEaseOut)
+TEST_F(ActionTimingCurvesTest, LinearEaseOut)
 {
   ret = nom::Linear::ease_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -158,7 +158,7 @@ TEST_F(AnimationTimingModesTest, LinearEaseOut)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, LinearEaseInOut)
+TEST_F(ActionTimingCurvesTest, LinearEaseInOut)
 {
   ret = nom::Linear::ease_in_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -190,7 +190,7 @@ TEST_F(AnimationTimingModesTest, LinearEaseInOut)
 
 // ...Quad tests...
 
-TEST_F(AnimationTimingModesTest, QuadEaseIn)
+TEST_F(ActionTimingCurvesTest, QuadEaseIn)
 {
   ret = nom::Quad::ease_in(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -220,7 +220,7 @@ TEST_F(AnimationTimingModesTest, QuadEaseIn)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, QuadEaseOut)
+TEST_F(ActionTimingCurvesTest, QuadEaseOut)
 {
   ret = nom::Quad::ease_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -250,7 +250,7 @@ TEST_F(AnimationTimingModesTest, QuadEaseOut)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, QuadEaseInOut)
+TEST_F(ActionTimingCurvesTest, QuadEaseInOut)
 {
   ret = nom::Quad::ease_in_out(0, b, c, DURATION);
   NOM_LOG_INFO(NOM_LOG_CATEGORY_ANIMATION, "ret:", ret);
@@ -291,7 +291,7 @@ TEST_F(AnimationTimingModesTest, QuadEaseInOut)
 
 // ...Cubic tests...
 
-TEST_F(AnimationTimingModesTest, CubicEaseIn)
+TEST_F(ActionTimingCurvesTest, CubicEaseIn)
 {
   ret = nom::Cubic::ease_in(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -321,7 +321,7 @@ TEST_F(AnimationTimingModesTest, CubicEaseIn)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, CubicEaseOut)
+TEST_F(ActionTimingCurvesTest, CubicEaseOut)
 {
   ret = nom::Cubic::ease_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -351,7 +351,7 @@ TEST_F(AnimationTimingModesTest, CubicEaseOut)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, CubicEaseInOut)
+TEST_F(ActionTimingCurvesTest, CubicEaseInOut)
 {
   ret = nom::Cubic::ease_in_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -383,7 +383,7 @@ TEST_F(AnimationTimingModesTest, CubicEaseInOut)
 
 // ...Quart tests...
 
-TEST_F(AnimationTimingModesTest, QuartEaseIn)
+TEST_F(ActionTimingCurvesTest, QuartEaseIn)
 {
   ret = nom::Quart::ease_in(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -413,7 +413,7 @@ TEST_F(AnimationTimingModesTest, QuartEaseIn)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, QuartEaseOut)
+TEST_F(ActionTimingCurvesTest, QuartEaseOut)
 {
   ret = nom::Quart::ease_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -443,7 +443,7 @@ TEST_F(AnimationTimingModesTest, QuartEaseOut)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, QuartEaseInOut)
+TEST_F(ActionTimingCurvesTest, QuartEaseInOut)
 {
   ret = nom::Quart::ease_in_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -475,7 +475,7 @@ TEST_F(AnimationTimingModesTest, QuartEaseInOut)
 
 // ...Quint tests...
 
-TEST_F(AnimationTimingModesTest, QuintEaseIn)
+TEST_F(ActionTimingCurvesTest, QuintEaseIn)
 {
   ret = nom::Quint::ease_in(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -505,7 +505,7 @@ TEST_F(AnimationTimingModesTest, QuintEaseIn)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, QuintEaseOut)
+TEST_F(ActionTimingCurvesTest, QuintEaseOut)
 {
   ret = nom::Quint::ease_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -535,7 +535,7 @@ TEST_F(AnimationTimingModesTest, QuintEaseOut)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, QuintEaseInOut)
+TEST_F(ActionTimingCurvesTest, QuintEaseInOut)
 {
   ret = nom::Quint::ease_in_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -567,7 +567,7 @@ TEST_F(AnimationTimingModesTest, QuintEaseInOut)
 
 // ...Back tests...
 
-TEST_F(AnimationTimingModesTest, BackEaseIn)
+TEST_F(ActionTimingCurvesTest, BackEaseIn)
 {
   ret = nom::Back::ease_in(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -597,7 +597,7 @@ TEST_F(AnimationTimingModesTest, BackEaseIn)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, BackEaseOut)
+TEST_F(ActionTimingCurvesTest, BackEaseOut)
 {
   ret = nom::Back::ease_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -627,7 +627,7 @@ TEST_F(AnimationTimingModesTest, BackEaseOut)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, BackEaseInOut)
+TEST_F(ActionTimingCurvesTest, BackEaseInOut)
 {
   ret = nom::Back::ease_in_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -659,7 +659,7 @@ TEST_F(AnimationTimingModesTest, BackEaseInOut)
 
 // ...Bounce tests...
 
-TEST_F(AnimationTimingModesTest, BounceEaseIn)
+TEST_F(ActionTimingCurvesTest, BounceEaseIn)
 {
   ret = nom::Bounce::ease_in(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -689,7 +689,7 @@ TEST_F(AnimationTimingModesTest, BounceEaseIn)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, BounceEaseOut)
+TEST_F(ActionTimingCurvesTest, BounceEaseOut)
 {
   ret = nom::Bounce::ease_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -719,7 +719,7 @@ TEST_F(AnimationTimingModesTest, BounceEaseOut)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, BounceEaseInOut)
+TEST_F(ActionTimingCurvesTest, BounceEaseInOut)
 {
   ret = nom::Bounce::ease_in_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -751,7 +751,7 @@ TEST_F(AnimationTimingModesTest, BounceEaseInOut)
 
 // ...Circ tests...
 
-TEST_F(AnimationTimingModesTest, CircEaseIn)
+TEST_F(ActionTimingCurvesTest, CircEaseIn)
 {
   ret = nom::Circ::ease_in(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -781,7 +781,7 @@ TEST_F(AnimationTimingModesTest, CircEaseIn)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, CircEaseOut)
+TEST_F(ActionTimingCurvesTest, CircEaseOut)
 {
   ret = nom::Circ::ease_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -811,7 +811,7 @@ TEST_F(AnimationTimingModesTest, CircEaseOut)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, CircEaseInOut)
+TEST_F(ActionTimingCurvesTest, CircEaseInOut)
 {
   ret = nom::Circ::ease_in_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -843,7 +843,7 @@ TEST_F(AnimationTimingModesTest, CircEaseInOut)
 
 // ...Elastic tests...
 
-TEST_F(AnimationTimingModesTest, ElasticEaseIn)
+TEST_F(ActionTimingCurvesTest, ElasticEaseIn)
 {
   ret = nom::Elastic::ease_in(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -873,7 +873,7 @@ TEST_F(AnimationTimingModesTest, ElasticEaseIn)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, ElasticEaseOut)
+TEST_F(ActionTimingCurvesTest, ElasticEaseOut)
 {
   ret = nom::Elastic::ease_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -903,7 +903,7 @@ TEST_F(AnimationTimingModesTest, ElasticEaseOut)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, ElasticEaseInOut)
+TEST_F(ActionTimingCurvesTest, ElasticEaseInOut)
 {
   ret = nom::Elastic::ease_in_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -935,7 +935,7 @@ TEST_F(AnimationTimingModesTest, ElasticEaseInOut)
 
 // ...Expo tests...
 
-TEST_F(AnimationTimingModesTest, ExpoEaseIn)
+TEST_F(ActionTimingCurvesTest, ExpoEaseIn)
 {
   ret = nom::Expo::ease_in(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -965,7 +965,7 @@ TEST_F(AnimationTimingModesTest, ExpoEaseIn)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, ExpoEaseOut)
+TEST_F(ActionTimingCurvesTest, ExpoEaseOut)
 {
   ret = nom::Expo::ease_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -995,7 +995,7 @@ TEST_F(AnimationTimingModesTest, ExpoEaseOut)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, ExpoEaseInOut)
+TEST_F(ActionTimingCurvesTest, ExpoEaseInOut)
 {
   ret = nom::Expo::ease_in_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -1027,7 +1027,7 @@ TEST_F(AnimationTimingModesTest, ExpoEaseInOut)
 
 // ...Sine tests...
 
-TEST_F(AnimationTimingModesTest, SineEaseIn)
+TEST_F(ActionTimingCurvesTest, SineEaseIn)
 {
   ret = nom::Sine::ease_in(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -1057,7 +1057,7 @@ TEST_F(AnimationTimingModesTest, SineEaseIn)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, SineEaseOut)
+TEST_F(ActionTimingCurvesTest, SineEaseOut)
 {
   ret = nom::Sine::ease_out(0, b, c, DURATION);
   EXPECT_FLOAT_EQ(100, ret);
@@ -1087,7 +1087,7 @@ TEST_F(AnimationTimingModesTest, SineEaseOut)
   EXPECT_FLOAT_EQ(300, ret);
 }
 
-TEST_F(AnimationTimingModesTest, SineEaseInOut)
+TEST_F(ActionTimingCurvesTest, SineEaseInOut)
 {
   const real32 DURATION = 2.5f * 1000; // milliseconds
   const real32 b = 100.0f;             // initial value

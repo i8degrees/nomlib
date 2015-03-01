@@ -219,19 +219,19 @@ if(NOM_BUILD_ANIMATION_TESTS)
             "${TESTS_INSTALL_DIR}"
   )
 
-  set(  ANIMATION_TIMING_MODES_SRC
-        ${ANIMATION_TIMING_MODES_SRC}
-        "AnimationTimingModesTest.cpp"
+  set(  ACTION_TIMING_CURVES_SRC
+        ${ACTION_TIMING_CURVES_SRC}
+        "ActionTimingCurvesTest.cpp"
   )
 
-  add_executable( AnimationTimingModesTest ${ANIMATION_TIMING_MODES_SRC} )
+  add_executable( ActionTimingCurvesTest ${ACTION_TIMING_CURVES_SRC} )
 
-  target_link_libraries(  AnimationTimingModesTest nomlib-graphics
+  target_link_libraries(  ActionTimingCurvesTest nomlib-graphics
                           nomlib-unit-test )
 
-  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/AnimationTimingModesTest
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/ActionTimingCurvesTest
                     "" # args
-                    ${ANIMATION_TIMING_MODES_SRC}
+                    ${ACTION_TIMING_CURVES_SRC}
   )
 
 endif(NOM_BUILD_ANIMATION_TESTS)

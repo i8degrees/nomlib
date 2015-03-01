@@ -26,14 +26,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/graphics/AnimationTest.hpp"
+#include "nomlib/tests/graphics/ActionTest.hpp"
 
 namespace nom {
 
 // extern initialization
-AnimTestFlags anim_test_flags = {};
+ActionTestFlags anim_test_flags = {};
 
-AnimationTest::AnimationTest()
+ActionTest::ActionTest()
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_UNIT_TEST, NOM_LOG_PRIORITY_VERBOSE);
 
@@ -68,7 +68,7 @@ AnimationTest::AnimationTest()
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_TEST, NOM_LOG_PRIORITY_CRITICAL);
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_TEST, NOM_LOG_PRIORITY_DEBUG);
 
-  if( NOM_ANIM_TEST_FLAG(enable_vsync) == true ) {
+  if( NOM_ACTION_TEST_FLAG(enable_vsync) == true ) {
     nom::set_hint(SDL_HINT_RENDER_VSYNC, "1");
   } else {
     nom::set_hint(SDL_HINT_RENDER_VSYNC, "0");
@@ -83,7 +83,7 @@ AnimationTest::AnimationTest()
   }
 }
 
-AnimationTest::~AnimationTest()
+ActionTest::~ActionTest()
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_UNIT_TEST, NOM_LOG_PRIORITY_VERBOSE);
 
@@ -92,7 +92,7 @@ AnimationTest::~AnimationTest()
                 this->player.num_actions() );
 }
 
-bool AnimationTest::init_rendering()
+bool ActionTest::init_rendering()
 {
   uint32 window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
 
@@ -114,21 +114,21 @@ bool AnimationTest::init_rendering()
 
   // Try to set a sensible (optimal) refresh rate based on the display
   // capabilities when VSYNC is enabled.
-  if( NOM_ANIM_TEST_FLAG(enable_vsync) == true ) {
+  if( NOM_ACTION_TEST_FLAG(enable_vsync) == true ) {
     auto display_refresh_rate =
       this->render_window().refresh_rate();
     if( display_refresh_rate > 0 ) {
-      NOM_ANIM_TEST_FLAG(fps) = display_refresh_rate;
+      NOM_ACTION_TEST_FLAG(fps) = display_refresh_rate;
     } else {
       // ...fall back to using the initialized value of the FPS test flag
-      NOM_ASSERT( NOM_ANIM_TEST_FLAG(fps) > 0);
+      NOM_ASSERT( NOM_ACTION_TEST_FLAG(fps) > 0);
     }
   }
 
   return true;
 }
 
-void AnimationTest::SetUp()
+void ActionTest::SetUp()
 {
   // NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_UNIT_TEST, NOM_LOG_PRIORITY_VERBOSE);
 
@@ -220,25 +220,25 @@ void AnimationTest::SetUp()
   });
 }
 
-void AnimationTest::TearDown()
+void ActionTest::TearDown()
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_UNIT_TEST, nom::NOM_LOG_PRIORITY_VERBOSE);
 }
 
-void AnimationTest::SetUpTestCase()
+void ActionTest::SetUpTestCase()
 {
   // NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_UNIT_TEST, NOM_LOG_PRIORITY_VERBOSE);
 }
 
-void AnimationTest::TearDownTestCase()
+void ActionTest::TearDownTestCase()
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_UNIT_TEST, NOM_LOG_PRIORITY_VERBOSE);
 }
 
 void
-AnimationTest::expected_common_params(  const IActionObject* obj,
-                                        float duration, float speed,
-                                        const std::string& scope_name )
+ActionTest::expected_common_params( const IActionObject* obj,
+                                    float duration, float speed,
+                                    const std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)
   << "expected_common_params: " << scope_name << "\n";
@@ -250,9 +250,9 @@ AnimationTest::expected_common_params(  const IActionObject* obj,
   << "expected_common_params scoped_name: " << scope_name << "\n";
 }
 
-void AnimationTest::expected_action_params( const GroupAction* action,
-                                            nom::size_type size,
-                                            const std::string& scope_name )
+void ActionTest::expected_action_params(  const GroupAction* action,
+                                          nom::size_type size,
+                                          const std::string& scope_name )
 {
   ASSERT_TRUE(action != nullptr)
   << "expected_action_params scoped_name: " << scope_name << "\n";
@@ -261,9 +261,9 @@ void AnimationTest::expected_action_params( const GroupAction* action,
   << "expected_action_params scoped_name: " << scope_name << "\n";
 }
 
-void AnimationTest::expected_action_params( const SequenceAction* action,
-                                            nom::size_type size,
-                                            const std::string& scope_name )
+void ActionTest::expected_action_params(  const SequenceAction* action,
+                                          nom::size_type size,
+                                          const std::string& scope_name )
 {
   ASSERT_TRUE(action != nullptr)
   << "expected_action_params scoped_name: " << scope_name << "\n";
@@ -273,9 +273,9 @@ void AnimationTest::expected_action_params( const SequenceAction* action,
 }
 
 void
-AnimationTest::expected_alpha_in_params(  const FadeInAction* obj,
-                                          int16 alpha, const Sprite* tex,
-                                          const std::string& scope_name )
+ActionTest::expected_alpha_in_params( const FadeInAction* obj,
+                                      int16 alpha, const Sprite* tex,
+                                      const std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)
   << "expected_alpha_in_params scoped_name: " << scope_name << "\n";
@@ -292,9 +292,9 @@ AnimationTest::expected_alpha_in_params(  const FadeInAction* obj,
 }
 
 void
-AnimationTest::expected_alpha_out_params( const FadeOutAction* obj,
-                                          int16 alpha, const Sprite* tex,
-                                          const std::string& scope_name )
+ActionTest::expected_alpha_out_params(  const FadeOutAction* obj,
+                                        int16 alpha, const Sprite* tex,
+                                        const std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)
   << "expected_alpha_out_params scoped_name: " << scope_name << "\n";
@@ -311,9 +311,9 @@ AnimationTest::expected_alpha_out_params( const FadeOutAction* obj,
 }
 
 void
-AnimationTest::expected_alpha_by_params(  const FadeAlphaByAction* obj,
-                                          int16 alpha, const Sprite* tex,
-                                          const std::string& scope_name )
+ActionTest::expected_alpha_by_params( const FadeAlphaByAction* obj,
+                                      int16 alpha, const Sprite* tex,
+                                      const std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)
   << "expected_alpha_by_params scoped_name: " << scope_name << "\n";
@@ -329,9 +329,9 @@ AnimationTest::expected_alpha_by_params(  const FadeAlphaByAction* obj,
   }
 }
 
-void AnimationTest::expected_repeat_params( const RepeatForAction* obj,
-                                            uint32 num_repeats,
-                                            const std::string& scope_name )
+void ActionTest::expected_repeat_params(  const RepeatForAction* obj,
+                                          uint32 num_repeats,
+                                          const std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)
   << "expected_repeat_params scoped_name: " << scope_name << "\n";
@@ -343,9 +343,9 @@ void AnimationTest::expected_repeat_params( const RepeatForAction* obj,
   << "expected_repeat_params scoped_name: " << scope_name << "\n";
 }
 
-void AnimationTest::expected_repeat_params( const RepeatForeverAction* obj,
-                                            uint32 num_repeats,
-                                            const std::string& scope_name )
+void ActionTest::expected_repeat_params(  const RepeatForeverAction* obj,
+                                          uint32 num_repeats,
+                                          const std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)
   << "expected_repeat_params scoped_name: " << scope_name << "\n";
@@ -354,7 +354,7 @@ void AnimationTest::expected_repeat_params( const RepeatForeverAction* obj,
   << "expected_repeat_params scoped_name: " << scope_name << "\n";
 }
 
-void AnimationTest::
+void ActionTest::
 expected_sprite_textures_params(  const SpriteTexturesAction* obj,
                                   nom::size_type num_frames,
                                   real32 duration, real32 speed,
@@ -378,12 +378,12 @@ expected_sprite_textures_params(  const SpriteTexturesAction* obj,
 }
 
 void
-AnimationTest::expected_sprite_batch_action_params( const SpriteBatchAction* obj,
-                                                    nom::size_type num_frames,
-                                                    real32 duration,
-                                                    real32 speed,
-                                                    const
-                                                    std::string& scope_name )
+ActionTest::expected_sprite_batch_action_params(  const SpriteBatchAction* obj,
+                                                  nom::size_type num_frames,
+                                                  real32 duration,
+                                                  real32 speed,
+                                                  const
+                                                  std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)
   << "expected_sprite_batch_action_params scoped_name: " << scope_name << "\n";
@@ -402,7 +402,7 @@ AnimationTest::expected_sprite_batch_action_params( const SpriteBatchAction* obj
 // "Enforcing a Video Frame Rate" (Week 4). It is currently assumed that
 // "granular sleep" AKA high-resolution timing is properly supported by the
 // platform -- this might come back to bite us in the ass someday!
-void AnimationTest::set_frame_interval(uint32 interval)
+void ActionTest::set_frame_interval(uint32 interval)
 {
   real32 target_seconds_per_frame =
     1.0f / (real32)interval;
@@ -432,9 +432,9 @@ void AnimationTest::set_frame_interval(uint32 interval)
 }
 
 void
-AnimationTest::init_sprite_action_test( const std::vector<const char*>&
-                                        texture_filenames, texture_frames&
-                                        anim_frames )
+ActionTest::init_sprite_action_test(  const std::vector<const char*>&
+                                      texture_filenames, texture_frames&
+                                      anim_frames )
 {
   for(  auto itr = texture_filenames.begin();
         itr != texture_filenames.end();
@@ -477,7 +477,7 @@ bool init_cmd_line_args(int argc, char** argv)
     // Not required
     false,
     // Option default
-    NOM_ANIM_TEST_FLAG(speed),
+    NOM_ACTION_TEST_FLAG(speed),
     // Option example (part of description)
     "32-bit floating-point number"
   );
@@ -519,7 +519,7 @@ bool init_cmd_line_args(int argc, char** argv)
     // Not required
     false,
     // Option default
-    NOM_ANIM_TEST_FLAG(fps),
+    NOM_ACTION_TEST_FLAG(fps),
     // Option example (part of description)
     "30, 60, 90, 120, ..."
   );
@@ -537,7 +537,7 @@ bool init_cmd_line_args(int argc, char** argv)
     // Option description
     vsync_arg_desc.str().c_str(),
     // Option default
-    NOM_ANIM_TEST_FLAG(enable_vsync)
+    NOM_ACTION_TEST_FLAG(enable_vsync)
   );
 
   args.push_back(&speed_modifier_arg);
@@ -548,23 +548,23 @@ bool init_cmd_line_args(int argc, char** argv)
   // nom::UnitTest framework integration
   nom::init_test(argc, argv, args);
 
-  if( speed_modifier_arg.getValue() != NOM_ANIM_TEST_FLAG(speed) ) {
-    NOM_ANIM_TEST_FLAG(speed) = speed_modifier_arg.getValue();
+  if( speed_modifier_arg.getValue() != NOM_ACTION_TEST_FLAG(speed) ) {
+    NOM_ACTION_TEST_FLAG(speed) = speed_modifier_arg.getValue();
   }
 
   // nom::Linear is the default timing mode when none is given
   nom::IActionObject::timing_curve_func mode =
     nom::timing_curve_from_str( timing_mode_arg.getValue() );
 
-  NOM_ANIM_TEST_FLAG(timing_curve) = mode;
-  NOM_ANIM_TEST_FLAG(timing_mode_str) = timing_mode_arg.getValue();
+  NOM_ACTION_TEST_FLAG(timing_curve) = mode;
+  NOM_ACTION_TEST_FLAG(timing_mode_str) = timing_mode_arg.getValue();
 
   uint32 fps = fps_arg.getValue();
-  if( fps != NOM_ANIM_TEST_FLAG(fps) ) {
-    NOM_ANIM_TEST_FLAG(fps) = fps;
+  if( fps != NOM_ACTION_TEST_FLAG(fps) ) {
+    NOM_ACTION_TEST_FLAG(fps) = fps;
   }
 
-  NOM_ANIM_TEST_FLAG(enable_vsync) = vsync_arg.getValue();
+  NOM_ACTION_TEST_FLAG(enable_vsync) = vsync_arg.getValue();
 
   return true;
 }
@@ -642,14 +642,14 @@ timing_curve_from_str(const std::string& timing_mode)
 }
 
 /// \brief Test animation timing sanity.
-TEST_F(AnimationTest, WaitForDurationAction2s)
+TEST_F(ActionTest, WaitForDurationAction2s)
 {
   // Testing parameters
   const float DURATION = 2.0f;
   const float SPEED_MOD = 1.0f;
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   auto idle2s =
     nom::create_action<WaitForDurationAction>( WaitForDurationAction(DURATION) );
@@ -704,7 +704,7 @@ TEST_F(AnimationTest, WaitForDurationAction2s)
 
 /// \remarks Thanks goes to Tim Jones of [sdltutorials.com](http://www.sdltutorials.com/sdl-animation)
 /// for the sprite frames of Yoshi chosen for this test!
-TEST_F(AnimationTest, SpriteActionMultipleSprites)
+TEST_F(ActionTest, SpriteActionMultipleSprites)
 {
   // Testing parameters
   texture_frames anim_frames;
@@ -719,10 +719,10 @@ TEST_F(AnimationTest, SpriteActionMultipleSprites)
   // total test duration
   const real32 DURATION = FRAME_DURATION * texture_filenames.size();
 
-  const real32 SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   this->init_sprite_action_test(texture_filenames, anim_frames);
 
@@ -770,15 +770,15 @@ TEST_F(AnimationTest, SpriteActionMultipleSprites)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, MoveByAction)
+TEST_F(ActionTest, MoveByAction)
 {
   // Testing parameters
   const float DURATION = 2.5f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
+    NOM_ACTION_TEST_FLAG(timing_curve);
   const Point2i TRANSLATE_POS( Point2i(200,0) );
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Point2i RECT_POS(Point2i::zero);
@@ -830,14 +830,14 @@ TEST_F(AnimationTest, MoveByAction)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, MoveByActionNegativeXDelta)
+TEST_F(ActionTest, MoveByActionNegativeXDelta)
 {
   // Testing parameters
   const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Size2i RECT_SIZE(WINDOW_DIMS.w/4, WINDOW_DIMS.h);
@@ -890,14 +890,14 @@ TEST_F(AnimationTest, MoveByActionNegativeXDelta)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, MoveByActionWithNegativeYDelta)
+TEST_F(ActionTest, MoveByActionWithNegativeYDelta)
 {
   // Testing parameters
   const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Size2i RECT_SIZE(WINDOW_DIMS.w/4, WINDOW_DIMS.h/4);
@@ -950,14 +950,14 @@ TEST_F(AnimationTest, MoveByActionWithNegativeYDelta)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, ScaleByAction)
+TEST_F(ActionTest, ScaleByAction)
 {
   // Testing parameters
   const float DURATION = 1.5f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
   const Size2f SCALE_FACTOR(2.0f, 2.0f);
 
   // Initial texture position and size
@@ -1020,14 +1020,14 @@ TEST_F(AnimationTest, ScaleByAction)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, ScaleByActionWithNegativeFactor)
+TEST_F(ActionTest, ScaleByActionWithNegativeFactor)
 {
   // Testing parameters
   const float DURATION = 1.5f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
   const Size2f SCALE_FACTOR(-3.0f, -3.0f);
 
   // Initial texture position and size
@@ -1096,15 +1096,15 @@ TEST_F(AnimationTest, ScaleByActionWithNegativeFactor)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, ScaleByActionWithNonPowerOfTwo)
+TEST_F(ActionTest, ScaleByActionWithNonPowerOfTwo)
 {
   // Testing parameters
   const float DURATION = 1.5f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const Size2f SCALE_FACTOR(2.25f, 1.75f);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
@@ -1167,14 +1167,14 @@ TEST_F(AnimationTest, ScaleByActionWithNonPowerOfTwo)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, CallbackActionDefaultDuration)
+TEST_F(ActionTest, CallbackActionDefaultDuration)
 {
   // Testing parameters
   const float DURATION = 0.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   CallbackAction::callback_type callback_func;
   callback_func = [=]() {
@@ -1212,15 +1212,15 @@ TEST_F(AnimationTest, CallbackActionDefaultDuration)
 }
 
 /// \brief Outputs "Hello, there!" to the console several times.
-TEST_F(AnimationTest, CallbackActionWithNonZeroDuration)
+TEST_F(ActionTest, CallbackActionWithNonZeroDuration)
 {
   // Testing parameters
   const float DURATION = 0.05f;
   // const float DURATION = 1.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   CallbackAction::callback_type callback_func;
   callback_func = [=]() {
@@ -1257,14 +1257,14 @@ TEST_F(AnimationTest, CallbackActionWithNonZeroDuration)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, ColorizeAction)
+TEST_F(ActionTest, ColorizeAction)
 {
   // Testing parameters
   const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   const Color4i TEX_START_COLOR(Color4i::Black);
   const Color4i TEX_END_COLOR(Color4i::White);

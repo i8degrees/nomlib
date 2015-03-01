@@ -41,7 +41,7 @@ class RepeatForeverAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.
-    friend class AnimationTest;
+    friend class ActionTest;
 
     typedef RepeatForeverAction self_type;
     typedef IActionObject derived_type;

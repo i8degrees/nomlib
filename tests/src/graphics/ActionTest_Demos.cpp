@@ -26,7 +26,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/graphics/AnimationTest.hpp"
+#include "nomlib/tests/graphics/ActionTest.hpp"
 
 namespace nom {
 
@@ -47,15 +47,15 @@ NOM_IGNORED_VARS();
 /// such as a large number of particles being thrown around at once -- BOOM!
 ///   Performance can be increased by roughly a factor of two just by splitting
 /// the load of objects into two separate actions to be run with ::run_action.
-TEST_F(AnimationTest, RainingRectsStressTest)
+TEST_F(ActionTest, RainingRectsStressTest)
 {
   // Testing parameters
   const real32 DURATION = 2.0f;
   const IActionObject::timing_curve_func TIMING_MODE =
     nom::Bounce::ease_in_out;
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
   const real32 MIN_SPEED_MOD = DURATION;
-  const real32 MAX_SPEED_MOD = MIN_SPEED_MOD + NOM_ANIM_TEST_FLAG(speed);
+  const real32 MAX_SPEED_MOD = MIN_SPEED_MOD + NOM_ACTION_TEST_FLAG(speed);
 
   const nom::size_type NUM_OBJECTS = 100;
   // const nom::size_type NUM_OBJECTS = 250;
@@ -203,14 +203,14 @@ TEST_F(AnimationTest, RainingRectsStressTest)
 }
 NOM_IGNORED_VARS_ENDL();
 
-TEST_F(AnimationTest, CardPlacementEffectsDemo)
+TEST_F(ActionTest, CardPlacementEffectsDemo)
 {
   // Testing parameters
   const float DURATION = 0.5f;
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
   const Size2f SCALE_FACTOR(3.0f, 3.0f);
 
   // Initial texture position and size
@@ -413,7 +413,7 @@ TEST_F(AnimationTest, CardPlacementEffectsDemo)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, ScrollingTextDemo)
+TEST_F(ActionTest, ScrollingTextDemo)
 {
   nom::Font font;
   nom::Text rendered_text;
@@ -421,10 +421,10 @@ TEST_F(AnimationTest, ScrollingTextDemo)
   // #define DEV_SCROLLING_TEXT_NO_WAIT_TIMER
 
   // Testing parameters
-  const float SPEED_MOD = NOM_ANIM_TEST_FLAG(speed);
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   const real32 MOVE_BY_DURATION = 2.5f;
   const real32 FADE_OUT_DURATION = 2.5f;
@@ -528,7 +528,7 @@ TEST_F(AnimationTest, ScrollingTextDemo)
   ASSERT_TRUE(scroll_right != nullptr);
   scroll_right->set_speed(SPEED_MOD);
   scroll_right->set_timing_curve(TIMING_MODE);
-  if( NOM_ANIM_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
+  if( NOM_ACTION_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
     scroll_right->set_timing_curve(TIMING_MODE);
   } else {
     scroll_right->set_timing_curve(nom::Quad::ease_in_out);
@@ -541,7 +541,7 @@ TEST_F(AnimationTest, ScrollingTextDemo)
     nom::create_action<nom::ReversedAction>(scroll_left_action, "scroll_left" );
   ASSERT_TRUE(scroll_left != nullptr);
   scroll_left->set_speed(SPEED_MOD);
-  if( NOM_ANIM_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
+  if( NOM_ACTION_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
     scroll_left->set_timing_curve(TIMING_MODE);
   } else {
     scroll_left->set_timing_curve(nom::Expo::ease_out);
@@ -567,7 +567,7 @@ TEST_F(AnimationTest, ScrollingTextDemo)
       scroll_up_move_action, anim_fade_out0->clone() }, "scroll_up" );
   ASSERT_TRUE(scroll_up != nullptr);
   scroll_up->set_speed(SPEED_MOD);
-  if( NOM_ANIM_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
+  if( NOM_ACTION_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
     scroll_up->set_timing_curve(TIMING_MODE);
   } else {
     scroll_up->set_timing_curve(nom::Quad::ease_in);
@@ -588,7 +588,7 @@ TEST_F(AnimationTest, ScrollingTextDemo)
       "scroll_down_repeat2" );
   ASSERT_TRUE(scroll_down_repeat2 != nullptr);
   scroll_down_repeat2->set_speed(SPEED_MOD);
-  if( NOM_ANIM_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
+  if( NOM_ACTION_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
     scroll_down_repeat2->set_timing_curve(TIMING_MODE);
   } else {
     scroll_down_repeat2->set_timing_curve(nom::Bounce::ease_out);
@@ -601,7 +601,7 @@ TEST_F(AnimationTest, ScrollingTextDemo)
     nom::create_action<SequenceAction>( {fade_screen_out}, "fade_screen_out");
   ASSERT_TRUE(fade_screen_out_action != nullptr);
   fade_screen_out_action->set_speed(SPEED_MOD);
-  if( NOM_ANIM_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
+  if( NOM_ACTION_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
     fade_screen_out_action->set_timing_curve(TIMING_MODE);
   } else {
     fade_screen_out_action->set_timing_curve(nom::Bounce::ease_in_out);

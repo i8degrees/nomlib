@@ -26,20 +26,20 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/tests/graphics/AnimationTest.hpp"
+#include "nomlib/tests/graphics/ActionTest.hpp"
 
 namespace nom {
 
 /// \brief The two group actions should finish within one frame of each other.
-TEST_F(AnimationTest, GroupActionFinishEquality)
+TEST_F(ActionTest, GroupActionFinishEquality)
 {
   // Testing parameters
   const real32 DURATION = 1.0f;
-  const real32 SPEED_MOD0 = NOM_ANIM_TEST_FLAG(speed);
-  const real32 SPEED_MOD1 = NOM_ANIM_TEST_FLAG(speed);
+  const real32 SPEED_MOD0 = NOM_ACTION_TEST_FLAG(speed);
+  const real32 SPEED_MOD1 = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Size2i RECT_SIZE(WINDOW_DIMS.w/4, WINDOW_DIMS.h/4);
@@ -174,7 +174,7 @@ TEST_F(AnimationTest, GroupActionFinishEquality)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, CancelAction)
+TEST_F(ActionTest, CancelAction)
 {
   // Testing parameters
   const float DURATION = 1.0f;
@@ -220,17 +220,17 @@ TEST_F(AnimationTest, CancelAction)
 // erasing from queue [id]: ConcurrentGroupActions_action3 [type]: GROUP
 // erasing action [ 1 / 1 ] [id]: ConcurrentGroupActions_action0 [type]: GROUP
 // erasing from queue [id]: ConcurrentGroupActions_action0 [type]: GROUP
-TEST_F(AnimationTest, ConcurrentGroupActions)
+TEST_F(ActionTest, ConcurrentGroupActions)
 {
   // Testing parameters
   const real32 DURATION = 1.0f;
-  const real32 SPEED_MOD0 = NOM_ANIM_TEST_FLAG(speed) * 1.0f;     // action0
-  const real32 SPEED_MOD1 = NOM_ANIM_TEST_FLAG(speed) * 2.0f;     // action1
-  const real32 SPEED_MOD2 = NOM_ANIM_TEST_FLAG(speed) * 2.25f;    // action2
-  const real32 SPEED_MOD3 = NOM_ANIM_TEST_FLAG(speed) * 1.25f;    // action3
+  const real32 SPEED_MOD0 = NOM_ACTION_TEST_FLAG(speed) * 1.0f;     // action0
+  const real32 SPEED_MOD1 = NOM_ACTION_TEST_FLAG(speed) * 2.0f;     // action1
+  const real32 SPEED_MOD2 = NOM_ACTION_TEST_FLAG(speed) * 2.25f;    // action2
+  const real32 SPEED_MOD3 = NOM_ACTION_TEST_FLAG(speed) * 1.25f;    // action3
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Size2i RECT_SIZE(WINDOW_DIMS.w/4, WINDOW_DIMS.h/4);
@@ -407,17 +407,17 @@ TEST_F(AnimationTest, ConcurrentGroupActions)
 // erasing from queue [id]: ConcurrentSequenceActions_action1 [type]: SEQUENCE
 // erasing action [ 2 / 2 ] [id]: ConcurrentSequenceActions_action0 [type]: SEQUENCE
 // erasing from queue [id]: ConcurrentSequenceActions_action0 [type]: SEQUENCE
-TEST_F(AnimationTest, ConcurrentSequenceActions)
+TEST_F(ActionTest, ConcurrentSequenceActions)
 {
   // Testing parameters
   const float DURATION = 1.0f;
-  const real32 SPEED_MOD0 = NOM_ANIM_TEST_FLAG(speed) * 1.0f;   // action0(2/2)
-  const real32 SPEED_MOD1 = NOM_ANIM_TEST_FLAG(speed) * 2.0f;   // action0(1/2)
-  const real32 SPEED_MOD2 = NOM_ANIM_TEST_FLAG(speed) * 2.25f;  // action1(1/2)
-  const real32 SPEED_MOD3 = NOM_ANIM_TEST_FLAG(speed) * 1.25f;  // action1(2/2)
+  const real32 SPEED_MOD0 = NOM_ACTION_TEST_FLAG(speed) * 1.0f;   // action0(2/2)
+  const real32 SPEED_MOD1 = NOM_ACTION_TEST_FLAG(speed) * 2.0f;   // action0(1/2)
+  const real32 SPEED_MOD2 = NOM_ACTION_TEST_FLAG(speed) * 2.25f;  // action1(1/2)
+  const real32 SPEED_MOD3 = NOM_ACTION_TEST_FLAG(speed) * 1.25f;  // action1(2/2)
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Size2i RECT_SIZE(WINDOW_DIMS.w/4, WINDOW_DIMS.h/4);
@@ -568,17 +568,17 @@ TEST_F(AnimationTest, ConcurrentSequenceActions)
 // erasing from queue [id]: action0 [type]: GROUP
 // erasing action [ 2 / 2 ] [id]: action1 [type]: SEQUENCE
 // erasing from queue [id]: action1 [type]: SEQUENCE
-TEST_F(AnimationTest, ConcurrentGroupAndSequenceActions)
+TEST_F(ActionTest, ConcurrentGroupAndSequenceActions)
 {
   // Testing parameters
   const float DURATION = 2.0f;
-  const real32 SPEED_MOD0 = NOM_ANIM_TEST_FLAG(speed) * 1.0f; // action0
-  const real32 SPEED_MOD1 = NOM_ANIM_TEST_FLAG(speed) * 2.0f; // action0
-  const real32 SPEED_MOD2 = NOM_ANIM_TEST_FLAG(speed) * 2.25f; // action1
-  const real32 SPEED_MOD3 = NOM_ANIM_TEST_FLAG(speed) * 1.25f; // action1
+  const real32 SPEED_MOD0 = NOM_ACTION_TEST_FLAG(speed) * 1.0f; // action0
+  const real32 SPEED_MOD1 = NOM_ACTION_TEST_FLAG(speed) * 2.0f; // action0
+  const real32 SPEED_MOD2 = NOM_ACTION_TEST_FLAG(speed) * 2.25f; // action1
+  const real32 SPEED_MOD3 = NOM_ACTION_TEST_FLAG(speed) * 1.25f; // action1
   const IActionObject::timing_curve_func TIMING_MODE =
-    NOM_ANIM_TEST_FLAG(timing_curve);
-  const uint32 FPS = NOM_ANIM_TEST_FLAG(fps);
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // Initial texture position and size
   const Size2i RECT_SIZE(WINDOW_DIMS.w/4, WINDOW_DIMS.h/4);
@@ -731,7 +731,7 @@ TEST_F(AnimationTest, ConcurrentGroupAndSequenceActions)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(AnimationTest, RunActionWithName)
+TEST_F(ActionTest, RunActionWithName)
 {
   // Testing parameters
   const float DURATION = 1.0f;

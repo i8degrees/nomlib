@@ -48,7 +48,7 @@ class SpriteBatchAction: public virtual IActionObject
 
     /// \brief Allow access into our private parts for obtaining the current
     /// frame.
-    friend class AnimationTest;
+    friend class ActionTest;
 
     /// \param frame_interval The amount of time (in fractional seconds) that
     /// each texture is displayed.

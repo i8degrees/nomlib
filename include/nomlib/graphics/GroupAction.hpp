@@ -42,7 +42,7 @@ class GroupAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.
-    friend class AnimationTest;
+    friend class ActionTest;
 
     friend class RepeatForAction;
     friend class RepeatForeverAction;

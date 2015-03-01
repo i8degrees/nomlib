@@ -93,8 +93,8 @@ if( NOM_BUILD_GRAPHICS_UNIT )
         ${SRC_DIR}/math/Transformable.cpp
         ${INC_DIR}/math/Transformable.hpp
 
-        ${SRC_DIR}/graphics/AnimationTimingModes.cpp
-        ${INC_DIR}/graphics/AnimationTimingModes.hpp
+        ${SRC_DIR}/graphics/ActionTimingCurves.cpp
+        ${INC_DIR}/graphics/ActionTimingCurves.hpp
 
         ${SRC_DIR}/graphics/IActionObject.cpp
         ${INC_DIR}/graphics/IActionObject.hpp

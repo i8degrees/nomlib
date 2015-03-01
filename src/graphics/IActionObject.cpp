@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/IActionObject.hpp"
 
 // Private headers
-#include "nomlib/graphics/AnimationTimingModes.hpp"
+#include "nomlib/graphics/ActionTimingCurves.hpp"
 
 namespace nom {
 

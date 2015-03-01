@@ -26,7 +26,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/graphics/AnimationTimingModes.hpp"
+#include "nomlib/graphics/ActionTimingCurves.hpp"
 
 // Private headers
 #include "nomlib/math/math_helpers.hpp" // definition of PI

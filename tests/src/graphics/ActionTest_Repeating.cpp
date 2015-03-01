@@ -30,15 +30,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-// Uses SpriteBatchAction
 void
 ActionTest::setup_repeating_cursor_test(  real32 duration, real32 speed,
                                           real32 fps, uint32 type,
                                           nom::size_type num_repeats,
                                           const std::string& scope_name )
 {
-  NOM_LOG_DEBUG(NOM_LOG_CATEGORY_ANIMATION, "Marker:", scope_name);
-
   // Testing parameters
   const nom::size_type NUM_REPEATS = num_repeats;
   const std::string TEXTURE_FILENAME = "cursors.png";

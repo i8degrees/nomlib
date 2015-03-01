@@ -33,7 +33,7 @@ namespace nom {
 CallbackAction::CallbackAction(const callback_type& func) :
   delegate_(func)
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_duration(0.0f);
@@ -43,7 +43,7 @@ CallbackAction::CallbackAction(const callback_type& func) :
 CallbackAction::CallbackAction(real32 duration, const callback_type& func) :
   delegate_(func)
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_duration(duration);
@@ -52,7 +52,7 @@ CallbackAction::CallbackAction(real32 duration, const callback_type& func) :
 
 CallbackAction::~CallbackAction()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
@@ -68,7 +68,7 @@ IActionObject::FrameState CallbackAction::next_frame(real32 delta_time)
     this->timer_.start();
     delta_time = this->timer_.ticks();
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "CallbackAction::BEGIN at", delta_time );
   }
 
@@ -94,7 +94,7 @@ IActionObject::FrameState CallbackAction::next_frame(real32 delta_time)
   // stability to variable time steps
   if( delta_time < (this->duration() / this->speed() ) ) {
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[CallbackAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[CallbackAction]",
                     "delta_time:", delta_time, "frame_time:", frame_time,
                     "[elapsed frames]:", this->curr_frame_ );
 

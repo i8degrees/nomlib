@@ -40,7 +40,7 @@ MoveByAction::MoveByAction( const std::shared_ptr<Sprite>& action,
                             const Point2i& delta, real32 duration ) :
   total_displacement_(delta)
 {
-  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_ANIMATION, NOM_LOG_PRIORITY_VERBOSE);
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_ACTION, NOM_LOG_PRIORITY_VERBOSE);
 
   this->set_duration(duration);
   this->curr_frame_ = 0.0f;
@@ -49,7 +49,7 @@ MoveByAction::MoveByAction( const std::shared_ptr<Sprite>& action,
 
 MoveByAction::~MoveByAction()
 {
-  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_ANIMATION, NOM_LOG_PRIORITY_VERBOSE);
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_ACTION, NOM_LOG_PRIORITY_VERBOSE);
 }
 
 std::unique_ptr<MoveByAction::derived_type> MoveByAction::clone() const
@@ -131,16 +131,16 @@ MoveByAction::update(real32 t, const Point2i& b, const Point2i& c, real32 d)
     this->drawable_->set_position(displacement_as_integer);
 
     // Diagnostics
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[MoveByAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[MoveByAction]",
                     "delta_time:", delta_time,
                     "frame_time:", frame_time,
                     "[elapsed frames]:", this->curr_frame_ );
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[MoveByAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[MoveByAction]",
                     "position (input):", drawable_pos,
                     "displacement (output):", displacement_as_integer );
 
     // Extended diagnostics
-    NOM_LOG_VERBOSE(  NOM_LOG_CATEGORY_ANIMATION, "[MoveByAction]",
+    NOM_LOG_VERBOSE(  NOM_LOG_CATEGORY_ACTION, "[MoveByAction]",
                       "[b1]:", b1, "[c1]:", c1,
                       "[b2]:", b2, "[c2]:", c2 );
   }
@@ -220,7 +220,7 @@ void MoveByAction::first_frame(real32 delta_time)
     this->timer_.start();
     delta_time = this->timer_.ticks();
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "MoveByAction::BEGIN at", delta_time );
 
     // Initialize the initial displacement position; this is also necessary for
@@ -229,7 +229,7 @@ void MoveByAction::first_frame(real32 delta_time)
       this->initial_position_ = this->drawable_->position();
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "[MoveByAction]", "initial_position:",
                     this->initial_position_ );
   }

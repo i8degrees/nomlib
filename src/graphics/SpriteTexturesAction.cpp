@@ -61,7 +61,7 @@ SpriteTexturesAction::
 SpriteTexturesAction( const std::shared_ptr<Sprite>& sprite,
                       const texture_frames& textures, real32 frame_interval )
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->drawable_ = sprite;
@@ -70,7 +70,7 @@ SpriteTexturesAction( const std::shared_ptr<Sprite>& sprite,
 
 SpriteTexturesAction::~SpriteTexturesAction()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
@@ -128,7 +128,7 @@ SpriteTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
     NOM_ASSERT(res != nullptr);
     NOM_ASSERT(res->valid() == true);
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[SpriteTexturesAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SpriteTexturesAction]",
                     "delta_time:", delta_time, "frame_time:", frame_time,
                     "[elapsed frames]:", this->curr_frame_ );
 
@@ -228,7 +228,7 @@ void SpriteTexturesAction::first_frame(real32 delta_time)
     delta_time = this->timer_.ticks();
     this->last_delta_ = 0;
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "SpriteTexturesAction::BEGIN at", delta_time );
 
     auto res = this->frame_iterator_->get();
@@ -241,7 +241,7 @@ void SpriteTexturesAction::first_frame(real32 delta_time)
       this->drawable_->set_texture( res->texture() );
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[SpriteTexturesAction]"
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SpriteTexturesAction]"
                     "[initial_frame]:", this->curr_frame_,
                     "[num_frames]:", this->total_displacement_,
                     "[fps]:", this->frame_interval_ );

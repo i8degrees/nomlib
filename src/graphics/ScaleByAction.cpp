@@ -41,7 +41,7 @@ ScaleByAction::ScaleByAction( const std::shared_ptr<Sprite>& action,
                               real32 seconds ) :
   total_displacement_(delta)
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_duration(seconds);
@@ -51,7 +51,7 @@ ScaleByAction::ScaleByAction( const std::shared_ptr<Sprite>& action,
 
 ScaleByAction::~ScaleByAction()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
@@ -144,11 +144,11 @@ ScaleByAction::update(real32 t, const Size2i& b, const Size2f& c, real32 d)
     this->size_ = displacement_as_integer;
 
     // Diagnostics
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[ScaleByAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[ScaleByAction]",
                     "delta_time:", delta_time,
                     "frame_time:", frame_time,
                     "[elapsed frames]:", this->curr_frame_ );
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "ScaleByAction:", "size (input):", drawable_size,
                     "displacement (output):", displacement_as_integer );
   }
@@ -233,7 +233,7 @@ void ScaleByAction::first_frame(real32 delta_time)
     this->timer_.start();
     delta_time = this->timer_.ticks();
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "ScaleByAction::BEGIN at", delta_time );
 
     // Initialize the initial size scaling value; this is also necessary for
@@ -242,7 +242,7 @@ void ScaleByAction::first_frame(real32 delta_time)
       this->initial_size_ = this->drawable_->size();
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "[ScaleByAction]", "initial_size:", this->initial_size_ );
   }
 }

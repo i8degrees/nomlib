@@ -40,7 +40,7 @@ FadeOutAction::FadeOutAction( const std::shared_ptr<Sprite>& action,
                               real32 duration ) :
   total_displacement_(255)
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_duration(duration);
@@ -52,7 +52,7 @@ FadeOutAction::FadeOutAction( const std::shared_ptr<Sprite>& action,
 
 FadeOutAction::~FadeOutAction()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ANIMATION,
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
@@ -123,11 +123,11 @@ FadeOutAction::update(real32 t, uint8 b, int16 c, real32 d)
     this->alpha_ = (uint8)displacement_as_integer;
 
     // Diagnostics
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[FadeOutAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[FadeOutAction]",
                     "delta_time:", delta_time,
                     "frame_time:", frame_time,
                     "[elapsed frames]:", this->curr_frame_ );
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION, "[FadeOutAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[FadeOutAction]",
                     "alpha (input):", NOM_SCAST(int, this->drawable_->alpha() ),
                     "displacement (output):",
                     NOM_SCAST(int, displacement_as_integer) );
@@ -221,7 +221,7 @@ void FadeOutAction::first_frame(real32 delta_time)
     this->timer_.start();
     delta_time = this->timer_.ticks();
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "FadeOutAction::BEGIN at", delta_time );
 
     // Initialize the initial alpha blending value; this is also necessary for
@@ -230,7 +230,7 @@ void FadeOutAction::first_frame(real32 delta_time)
       this->initial_alpha_ = this->drawable_->alpha();
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ANIMATION,
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "[FadeOutAction]", "initial_alpha:",
                     NOM_SCAST(int, this->initial_alpha_) );
   }

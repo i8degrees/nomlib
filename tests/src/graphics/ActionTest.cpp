@@ -47,20 +47,20 @@ ActionTest::ActionTest()
   // the appropriate completion conditions.
   NOM_TEST_FLAG(interactive) = true;
 
-  // Enable debug diagnostics for action animation objects
-  // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ANIMATION, nom::NOM_LOG_PRIORITY_DEBUG);
-  // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ANIMATION, nom::NOM_LOG_PRIORITY_VERBOSE);
+  // Enable debug diagnostics for action objects
+  // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION, nom::NOM_LOG_PRIORITY_DEBUG);
+  // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION, nom::NOM_LOG_PRIORITY_VERBOSE);
 
-  // Enable debug diagnostics
+  // Enable debug diagnostics for action engine && internal queue
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_QUEUE, nom::NOM_LOG_PRIORITY_DEBUG);
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_PLAYER, nom::NOM_LOG_PRIORITY_DEBUG);
 
-  // Enable full debug diagnostics
+  // Enable full debug diagnostics for action engine && internal queue
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_QUEUE, nom::NOM_LOG_PRIORITY_VERBOSE);
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_PLAYER, nom::NOM_LOG_PRIORITY_VERBOSE);
 
   // Enable debug call stack diagnostics
-  // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_TRACE_ANIMATION, NOM_LOG_PRIORITY_VERBOSE);
+  // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_TRACE_ACTION, NOM_LOG_PRIORITY_VERBOSE);
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_TRACE_RENDER, NOM_LOG_PRIORITY_VERBOSE);
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_TRACE_UNIT_TEST, NOM_LOG_PRIORITY_VERBOSE);
 
@@ -87,7 +87,7 @@ ActionTest::~ActionTest()
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_UNIT_TEST, NOM_LOG_PRIORITY_VERBOSE);
 
-  NOM_LOG_DEBUG( NOM_LOG_CATEGORY_ANIMATION,
+  NOM_LOG_DEBUG( NOM_LOG_CATEGORY_ACTION,
                 "Number of actions remaining in queue at the time of exit:",
                 this->player.num_actions() );
 }

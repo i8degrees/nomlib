@@ -704,7 +704,7 @@ TEST_F(ActionTest, WaitForDurationAction2s)
 
 /// \remarks Thanks goes to Tim Jones of [sdltutorials.com](http://www.sdltutorials.com/sdl-animation)
 /// for the sprite frames of Yoshi chosen for this test!
-TEST_F(ActionTest, SpriteActionMultipleSprites)
+TEST_F(ActionTest, SpriteTexturesAction)
 {
   // Testing parameters
   texture_frames anim_frames;

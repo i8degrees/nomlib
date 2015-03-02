@@ -133,18 +133,18 @@ HighResolutionTimer::elapsed_ticks( uint64 start_hires_ticks,
   return result;
 }
 
-real64 HighResolutionTimer::to_milliseconds(uint64 elapsed_hires_ticks)
+real64 HighResolutionTimer::to_milliseconds(uint64 hires_ticks)
 {
-  real64 result = ( (1000.0f * (real64)(elapsed_hires_ticks) /
+  real64 result = ( (1000.0f * (real64)(hires_ticks) /
                     (real64)nom::hires_frequency() ) );
 
   return result;
 }
 
-real64 HighResolutionTimer::to_seconds(uint64 elapsed_hires_ticks)
+real64 HighResolutionTimer::to_seconds(uint64 hires_ticks)
 {
   real64 result =
-    ( (HighResolutionTimer::to_milliseconds(elapsed_hires_ticks) / 1000.0f) );
+    ( (HighResolutionTimer::to_milliseconds(hires_ticks) / 1000.0f) );
 
   return result;
 }

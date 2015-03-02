@@ -26,37 +26,73 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_HPP
-#define NOMLIB_GRAPHICS_HPP
+#include "nomlib/actions/IActionObject.hpp"
 
-// Public header file
+// Private headers
+#include "nomlib/actions/ActionTimingCurves.hpp"
 
-#include <nomlib/config.hpp>
-#include <nomlib/graphics/Text.hpp>
-#include <nomlib/graphics/RendererInfo.hpp>
-#include <nomlib/graphics/Texture.hpp>
-#include <nomlib/graphics/DisplayMode.hpp>
-#include <nomlib/graphics/RenderWindow.hpp>
-#include <nomlib/graphics/Renderer.hpp>
-#include <nomlib/graphics/IDrawable.hpp>
-#include <nomlib/graphics/Gradient.hpp>
-#include <nomlib/graphics/Image.hpp>
-#include <nomlib/graphics/fonts/BMFont.hpp>
-#include <nomlib/graphics/fonts/BitmapFont.hpp>
-#include <nomlib/graphics/fonts/FontMetrics.hpp>
-#include <nomlib/graphics/fonts/FontPage.hpp>
-#include <nomlib/graphics/fonts/FontRow.hpp>
-#include <nomlib/graphics/fonts/Glyph.hpp>
-#include <nomlib/graphics/fonts/TrueTypeFont.hpp>
-#include <nomlib/graphics/fonts/Font.hpp>
-#include <nomlib/graphics/shapes/Shape.hpp>
-#include <nomlib/graphics/shapes/Point.hpp>
-#include <nomlib/graphics/shapes/Line.hpp>
-#include <nomlib/graphics/shapes/Rectangle.hpp>
-#include <nomlib/graphics/sprite/Sprite.hpp>
-#include <nomlib/graphics/sprite/SpriteBatch.hpp>
-#include <nomlib/graphics/sprite/SpriteSheet.hpp>
-#include <nomlib/graphics/Cursor.hpp>
-#include <nomlib/graphics/graphics_helpers.hpp>
+namespace nom {
 
-#endif // include guard defined
+IActionObject::IActionObject() :
+  timing_curve_(nom::Linear::ease_in_out)
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
+                      NOM_LOG_PRIORITY_VERBOSE );
+}
+
+IActionObject::~IActionObject()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
+                      NOM_LOG_PRIORITY_VERBOSE );
+}
+
+const std::string& IActionObject::name() const
+{
+  return this->name_;
+}
+
+real32 IActionObject::duration() const
+{
+  return this->duration_;
+}
+
+real32 IActionObject::speed() const
+{
+  return this->speed_;
+}
+
+const
+IActionObject::timing_curve_func& IActionObject::timing_curve() const
+{
+  return this->timing_curve_;
+}
+
+void IActionObject::set_name(const std::string& action_id)
+{
+  this->name_ = action_id;
+}
+
+void IActionObject::set_speed(real32 speed)
+{
+  this->speed_ = speed;
+}
+
+void
+IActionObject::set_timing_curve(const IActionObject::timing_curve_func& mode)
+{
+  this->timing_curve_ = mode;
+}
+
+// Protected scope
+
+IActionObject::FrameState IActionObject::status() const
+{
+  return this->status_;
+}
+
+void IActionObject::set_duration(real32 seconds)
+{
+  this->duration_ = seconds * 1000.0f;
+}
+
+} // namespace nom

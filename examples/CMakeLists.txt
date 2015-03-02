@@ -28,7 +28,6 @@ set( NOM_BUILD_FONTS_EXAMPLE ON )
 set( NOM_BUILD_GAMEOFLIFE_EXAMPLE ON )
 set( NOM_BUILD_MOUSE_CURSORS_EXAMPLE ON )
 set( NOM_BUILD_MACROS_EXAMPLE ON )
-set( NOM_BUILD_SPRITES_EXAMPLE ON )
 
 # Used only by the MSVCPP generator; this path will be expanded to include the
 # configuration build type, i.e.: Debug or Release, so the full path resolve

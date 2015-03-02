@@ -92,71 +92,57 @@ if( NOM_BUILD_GRAPHICS_UNIT )
         # TODO: Relocate to graphics
         ${SRC_DIR}/math/Transformable.cpp
         ${INC_DIR}/math/Transformable.hpp
-
-        ${SRC_DIR}/graphics/ActionTimingCurves.cpp
-        ${INC_DIR}/graphics/ActionTimingCurves.hpp
-
-        ${SRC_DIR}/graphics/IActionObject.cpp
-        ${INC_DIR}/graphics/IActionObject.hpp
-
-        ${SRC_DIR}/graphics/SpriteTexturesAction.cpp
-        ${INC_DIR}/graphics/SpriteTexturesAction.hpp
-
-        ${SRC_DIR}/graphics/SpriteBatchAction.cpp
-        ${INC_DIR}/graphics/SpriteBatchAction.hpp
-
-        ${SRC_DIR}/graphics/FadeInAction.cpp
-        ${INC_DIR}/graphics/FadeInAction.hpp
-
-        ${SRC_DIR}/graphics/FadeOutAction.cpp
-        ${INC_DIR}/graphics/FadeOutAction.hpp
-
-        ${SRC_DIR}/graphics/FadeAlphaByAction.cpp
-        ${INC_DIR}/graphics/FadeAlphaByAction.hpp
-
-        ${SRC_DIR}/graphics/WaitForDurationAction.cpp
-        ${INC_DIR}/graphics/WaitForDurationAction.hpp
-
-        ${SRC_DIR}/graphics/MoveByAction.cpp
-        ${INC_DIR}/graphics/MoveByAction.hpp
-
-        ${SRC_DIR}/graphics/ScaleByAction.cpp
-        ${INC_DIR}/graphics/ScaleByAction.hpp
-
-        ${SRC_DIR}/graphics/ReversedAction.cpp
-        ${INC_DIR}/graphics/ReversedAction.hpp
-
-        ${SRC_DIR}/graphics/RepeatForAction.cpp
-        ${INC_DIR}/graphics/RepeatForAction.hpp
-
-        ${SRC_DIR}/graphics/RepeatForeverAction.cpp
-        ${INC_DIR}/graphics/RepeatForeverAction.hpp
-
-        ${SRC_DIR}/graphics/CallbackAction.cpp
-        ${INC_DIR}/graphics/CallbackAction.hpp
-
-        ${SRC_DIR}/graphics/RemoveAction.cpp
-        ${INC_DIR}/graphics/RemoveAction.hpp
-
-        ${SRC_DIR}/graphics/GroupAction.cpp
-        ${INC_DIR}/graphics/GroupAction.hpp
-
-        ${SRC_DIR}/graphics/SequenceAction.cpp
-        ${INC_DIR}/graphics/SequenceAction.hpp
-
-        # TODO
-        # ${SRC_DIR}/graphics/FadeAudioByAction.cpp
-        # ${INC_DIR}/graphics/FadeAudioByAction.hpp
-
-        ${SRC_DIR}/graphics/ColorizeAction.cpp
-        ${INC_DIR}/graphics/ColorizeAction.hpp
-
-        ${SRC_DIR}/graphics/DispatchQueue.cpp
-        ${INC_DIR}/graphics/DispatchQueue.hpp
-
-        ${SRC_DIR}/graphics/ActionPlayer.cpp
-        ${INC_DIR}/graphics/ActionPlayer.hpp
   )
+
+  # TODO: Consider breaking the actions engine off into its own library? It
+  # appears to be a strong candidate for doing so. I'll see how future build
+  # times are affected by leaving things as is for now -- because we are able
+  # to forward declare all graphical components used here, we may well be OK.
+  set(  NOM_ACTIONS_SOURCE
+        ${INC_DIR}/actions.hpp
+        ${SRC_DIR}/actions/ActionTimingCurves.cpp
+        ${INC_DIR}/actions/ActionTimingCurves.hpp
+        ${SRC_DIR}/actions/IActionObject.cpp
+        ${INC_DIR}/actions/IActionObject.hpp
+        ${SRC_DIR}/actions/SpriteTexturesAction.cpp
+        ${INC_DIR}/actions/SpriteTexturesAction.hpp
+        ${SRC_DIR}/actions/SpriteBatchAction.cpp
+        ${INC_DIR}/actions/SpriteBatchAction.hpp
+        ${SRC_DIR}/actions/FadeInAction.cpp
+        ${INC_DIR}/actions/FadeInAction.hpp
+        ${SRC_DIR}/actions/FadeOutAction.cpp
+        ${INC_DIR}/actions/FadeOutAction.hpp
+        ${SRC_DIR}/actions/FadeAlphaByAction.cpp
+        ${INC_DIR}/actions/FadeAlphaByAction.hpp
+        ${SRC_DIR}/actions/WaitForDurationAction.cpp
+        ${INC_DIR}/actions/WaitForDurationAction.hpp
+        ${SRC_DIR}/actions/MoveByAction.cpp
+        ${INC_DIR}/actions/MoveByAction.hpp
+        ${SRC_DIR}/actions/ScaleByAction.cpp
+        ${INC_DIR}/actions/ScaleByAction.hpp
+        ${SRC_DIR}/actions/ReversedAction.cpp
+        ${INC_DIR}/actions/ReversedAction.hpp
+        ${SRC_DIR}/actions/RepeatForAction.cpp
+        ${INC_DIR}/actions/RepeatForAction.hpp
+        ${SRC_DIR}/actions/RepeatForeverAction.cpp
+        ${INC_DIR}/actions/RepeatForeverAction.hpp
+        ${SRC_DIR}/actions/CallbackAction.cpp
+        ${INC_DIR}/actions/CallbackAction.hpp
+        ${SRC_DIR}/actions/RemoveAction.cpp
+        ${INC_DIR}/actions/RemoveAction.hpp
+        ${SRC_DIR}/actions/GroupAction.cpp
+        ${INC_DIR}/actions/GroupAction.hpp
+        ${SRC_DIR}/actions/SequenceAction.cpp
+        ${INC_DIR}/actions/SequenceAction.hpp
+        ${SRC_DIR}/actions/ColorizeAction.cpp
+        ${INC_DIR}/actions/ColorizeAction.hpp
+        ${SRC_DIR}/actions/DispatchQueue.cpp
+        ${INC_DIR}/actions/DispatchQueue.hpp
+        ${SRC_DIR}/actions/ActionPlayer.cpp
+        ${INC_DIR}/actions/ActionPlayer.hpp )
+
+  # Actions engine
+  list( APPEND NOM_GRAPHICS_SOURCE ${NOM_ACTIONS_SOURCE} )
 
   # Common dependencies on all platforms
   set(  NOM_GRAPHICS_DEPS nomlib-core nomlib-math nomlib-file

@@ -26,37 +26,67 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_HPP
-#define NOMLIB_GRAPHICS_HPP
+#include "nomlib/actions/RemoveAction.hpp"
 
-// Public header file
+namespace nom {
 
-#include <nomlib/config.hpp>
-#include <nomlib/graphics/Text.hpp>
-#include <nomlib/graphics/RendererInfo.hpp>
-#include <nomlib/graphics/Texture.hpp>
-#include <nomlib/graphics/DisplayMode.hpp>
-#include <nomlib/graphics/RenderWindow.hpp>
-#include <nomlib/graphics/Renderer.hpp>
-#include <nomlib/graphics/IDrawable.hpp>
-#include <nomlib/graphics/Gradient.hpp>
-#include <nomlib/graphics/Image.hpp>
-#include <nomlib/graphics/fonts/BMFont.hpp>
-#include <nomlib/graphics/fonts/BitmapFont.hpp>
-#include <nomlib/graphics/fonts/FontMetrics.hpp>
-#include <nomlib/graphics/fonts/FontPage.hpp>
-#include <nomlib/graphics/fonts/FontRow.hpp>
-#include <nomlib/graphics/fonts/Glyph.hpp>
-#include <nomlib/graphics/fonts/TrueTypeFont.hpp>
-#include <nomlib/graphics/fonts/Font.hpp>
-#include <nomlib/graphics/shapes/Shape.hpp>
-#include <nomlib/graphics/shapes/Point.hpp>
-#include <nomlib/graphics/shapes/Line.hpp>
-#include <nomlib/graphics/shapes/Rectangle.hpp>
-#include <nomlib/graphics/sprite/Sprite.hpp>
-#include <nomlib/graphics/sprite/SpriteBatch.hpp>
-#include <nomlib/graphics/sprite/SpriteSheet.hpp>
-#include <nomlib/graphics/Cursor.hpp>
-#include <nomlib/graphics/graphics_helpers.hpp>
+RemoveAction::RemoveAction(const std::shared_ptr<IActionObject>& action)
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
+                      nom::NOM_LOG_PRIORITY_VERBOSE );
 
-#endif // include guard defined
+  this->object_ = action;
+}
+
+RemoveAction::~RemoveAction()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
+                      nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+std::unique_ptr<RemoveAction::derived_type> RemoveAction::clone() const
+{
+  return( std::unique_ptr<self_type>( new self_type(*this) ) );
+}
+
+IActionObject::FrameState RemoveAction::next_frame(real32 delta_time)
+{
+  if( this->object_ != nullptr ) {
+    this->object_->release();
+    this->status_ = FrameState::DONE;
+    return this->status_;
+  }
+
+  // No proxy action to remove
+  this->status_ = FrameState::DONE;
+  return this->status_;
+}
+
+IActionObject::FrameState RemoveAction::prev_frame(real32 delta_time)
+{
+  return this->next_frame(delta_time);
+}
+
+void RemoveAction::pause(real32 delta_time)
+{
+  // Not supported
+}
+
+void RemoveAction::resume(real32 delta_time)
+{
+  // Not supported
+}
+
+void RemoveAction::rewind(real32 delta_time)
+{
+  // Not supported
+}
+
+void RemoveAction::release()
+{
+  if( this->object_ != nullptr ) {
+    this->object_->release();
+  }
+}
+
+} // namespace nom

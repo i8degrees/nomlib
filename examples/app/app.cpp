@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
+#include <nomlib/actions.hpp>
 #include <nomlib/gui.hpp>
 
 using namespace nom;

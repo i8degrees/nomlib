@@ -40,6 +40,7 @@ set( NOM_BUILD_SERIALIZERS_TESTS ON )
 set( NOM_BUILD_SYSTEM_TESTS ON )
 set( NOM_BUILD_AUDIO_TESTS ON )
 set( NOM_BUILD_GRAPHICS_TESTS ON )
+set( NOM_BUILD_ACTIONS_TESTS ON )
 set( NOM_BUILD_GUI_TESTS ON )
 
 # Tests for the testing framework
@@ -205,6 +206,10 @@ endif( NOM_BUILD_AUDIO_TESTS )
 if( NOM_BUILD_GRAPHICS_TESTS )
   add_subdirectory("src/graphics")
 endif( NOM_BUILD_GRAPHICS_TESTS )
+
+if( NOM_BUILD_ACTIONS_TESTS )
+  add_subdirectory("src/actions")
+endif( NOM_BUILD_ACTIONS_TESTS )
 
 if( NOM_BUILD_GUI_TESTS )
   add_subdirectory("src/gui")

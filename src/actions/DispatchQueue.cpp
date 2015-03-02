@@ -139,8 +139,6 @@ bool DispatchQueue::update(uint32 player_state, real32 delta_time)
   nom::size_type* action_pos = &(*res)->action_pos;
   nom::size_type num_actions = this->enqueued_actions_.size();
   NOM_ASSERT(*action_pos >= 0);
-  NOM_ASSERT(*action_pos < 3);
-  NOM_ASSERT(num_actions == 1);
 
   IActionObject::FrameState action_status =
     IActionObject::FrameState::DONE;
@@ -170,8 +168,6 @@ bool DispatchQueue::update(uint32 player_state, real32 delta_time)
 
     // completed actions counter
     ++(*action_pos);
-
-    NOM_ASSERT(*action_pos < 3);
 
     // Goodbye cruel world!
     this->enqueued_actions_.erase(res);

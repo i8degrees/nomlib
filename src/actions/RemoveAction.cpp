@@ -52,7 +52,17 @@ std::unique_ptr<RemoveAction::derived_type> RemoveAction::clone() const
 IActionObject::FrameState RemoveAction::next_frame(real32 delta_time)
 {
   if( this->object_ != nullptr ) {
-    this->object_->release();
+
+    std::string action_id = this->object_->name();
+    if( action_id == "" ) {
+      action_id = "action";
+    }
+
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[RemoveAction]:",
+                    "removing", action_id, "from container",
+                    "[id]:", this->name() );
+
+    this->release();
     this->status_ = FrameState::DONE;
     return this->status_;
   }
@@ -87,6 +97,8 @@ void RemoveAction::release()
   if( this->object_ != nullptr ) {
     this->object_->release();
   }
+
+  this->object_.reset();
 }
 
 } // namespace nom

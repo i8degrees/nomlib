@@ -156,48 +156,32 @@ TEST_F(ActionTest, RainingRectsStressTest)
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
     this->player.run_action(remove_action0, [=]() {
+
+      // NOTE: The removal of the action should free the stored texture of each
+      // sprite, preventing it from being rendered by invalidating the texture.
+      for( auto itr = rects.begin(); itr != rects.end(); ++itr ) {
+        EXPECT_TRUE(*itr != nullptr);
+        EXPECT_FALSE( (*itr)->valid() );
+      }
+#if 1
       this->quit();
+#endif
     });
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
 
-#if 1
-  this->append_render_callback( [=](const RenderWindow& win) mutable {
-    // Render our animation's rectangles
-    if( this->player.action_running("action0") == true ) {
-      for( auto itr = rects.begin(); itr != rects.end(); ++itr ) {
-        if( *itr != nullptr ) {  // action0
-          (*itr)->draw( this->render_window() );
-        }
+  this->append_render_callback( [=](const RenderWindow& win) {
+
+    // Render our animation's rectangles (action0)
+    for( auto itr = rects.begin(); itr != rects.end(); ++itr ) {
+      if( *itr != nullptr && (*itr)->valid() == true ) {
+        (*itr)->draw( this->render_window() );
       }
     }
 
     this->set_frame_interval(FPS);
   });
-#endif
-
-#if 0
-  this->append_render_callback( [=](const RenderWindow& win) mutable {
-    // Render our animation's rectangles
-    {
-      for( auto itr = rects.begin(); itr != rects.end(); ++itr ) {
-        if( *itr != nullptr ) {  // action0
-          (*itr)->draw( this->render_window() );
-        }
-      }
-    }
-
-    if( this->player.action_running("action0") == true ) {
-      for( auto itr = rects.begin(); itr != rects.end(); ++itr ) {
-        // (itr)->reset();
-        NOM_LOG_INFO( NOM, "use_count:", (*itr).use_count() );
-      }
-    }
-
-    this->set_frame_interval(FPS);
-  });
-#endif
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }

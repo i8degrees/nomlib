@@ -213,6 +213,7 @@ void GroupAction::release()
     NOM_ASSERT(*itr != nullptr);
     if( *itr != nullptr ) {
       (*itr)->release();
+      (*itr).reset();
     }
   } // end for loop
 }

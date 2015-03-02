@@ -158,6 +158,8 @@ void RepeatForAction::release()
   if( this->object_ != nullptr ) {
     this->object_->release();
   }
+
+  this->object_.reset();
 }
 
 void RepeatForAction::set_speed(real32 speed)

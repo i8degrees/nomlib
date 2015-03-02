@@ -188,6 +188,10 @@ void SpriteBatchAction::rewind(real32 delta_time)
 
 void SpriteBatchAction::release()
 {
+  if( this->drawable_ != nullptr ) {
+    this->drawable_->release_texture();
+  }
+
   this->drawable_.reset();
 }
 

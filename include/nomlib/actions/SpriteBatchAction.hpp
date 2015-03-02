@@ -53,7 +53,7 @@ class SpriteBatchAction: public virtual IActionObject
     /// \param frame_interval The amount of time (in fractional seconds) that
     /// each texture is displayed.
     SpriteBatchAction(  const std::shared_ptr<SpriteBatch>& action,
-                        real32 frame_interval );
+                        real32 frame_interval_seconds );
 
     /// \brief Destructor.
     virtual ~SpriteBatchAction();
@@ -75,9 +75,6 @@ class SpriteBatchAction: public virtual IActionObject
     virtual void release() override;
 
   private:
-    /// \brief Set the frame delay in fractional seconds.
-    void set_frame_interval(real32 seconds);
-
     IActionObject::FrameState
     update(real32 t, real32 b, real32 c, real32 d);
 
@@ -93,8 +90,11 @@ class SpriteBatchAction: public virtual IActionObject
     /// \brief The batch of sprites to animate.
     std::shared_ptr<SpriteBatch> drawable_;
 
+    /// \brief The length of time to display a frame, in seconds.
     real32 frame_interval_;
-    uint64 last_delta_;
+
+    /// \brief The last recorded time interval, in seconds.
+    real32 last_delta_;
 };
 
 } // namespace nom

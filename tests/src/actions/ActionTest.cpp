@@ -246,7 +246,7 @@ ActionTest::expected_common_params( const IActionObject* obj,
   EXPECT_EQ(speed, obj->speed() )
   << "expected_common_params: " << scope_name << "\n";
 
-  EXPECT_EQ(duration*1000, obj->duration() )
+  EXPECT_EQ(duration, obj->duration() )
   << "expected_common_params scoped_name: " << scope_name << "\n";
 }
 
@@ -368,7 +368,7 @@ expected_sprite_textures_params(  const SpriteTexturesAction* obj,
   << "expected_sprite_textures_action_params scoped_name: "
   << scope_name << "\n";
 
-  EXPECT_EQ(duration*1000.0f, obj->duration() )
+  EXPECT_EQ(duration, obj->duration() )
   << "expected_sprite_textures_action_params scoped_name: "
   << scope_name << "\n";
 
@@ -391,7 +391,7 @@ ActionTest::expected_sprite_batch_action_params(  const SpriteBatchAction* obj,
   EXPECT_EQ(num_frames, obj->drawable_->frames() )
   << "expected_sprite_batch_action_params scoped_name: " << scope_name << "\n";
 
-  EXPECT_EQ(duration*1000.0f, obj->duration() )
+  EXPECT_EQ(duration, obj->duration() )
   << "expected_sprite_batch_action_params scoped_name: " << scope_name << "\n";
 
   EXPECT_EQ(speed, obj->speed() )

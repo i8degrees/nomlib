@@ -44,7 +44,7 @@ FadeAlphaByAction::FadeAlphaByAction( const std::shared_ptr<Sprite>& obj,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_duration(duration);
-  this->curr_frame_ = 0.0f;
+  this->elapsed_frames_ = 0.0f;
   this->alpha_ = 0;
   this->initial_alpha_ = 0;
   this->drawable_ = obj;
@@ -108,7 +108,7 @@ FadeAlphaByAction::update(real32 t, uint8 b, int16 c, real32 d)
     this->timing_curve().operator()(frame_time, b1, c1, duration);
 
   // Update our internal elapsed frames counter (diagnostics
-  ++this->curr_frame_;
+  ++this->elapsed_frames_;
 
   int16 displacement_as_integer = 0;
 
@@ -128,7 +128,7 @@ FadeAlphaByAction::update(real32 t, uint8 b, int16 c, real32 d)
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "[FadeAlphaByAction]", "delta_time:", delta_time,
                     "frame_time:", frame_time,
-                    "[elapsed frames]:", this->curr_frame_ );
+                    "[elapsed frames]:", this->elapsed_frames_ );
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "[FadeAlphaByAction]", "alpha (input):",
                     NOM_SCAST(int, this->drawable_->alpha() ),
@@ -153,10 +153,10 @@ FadeAlphaByAction::update(real32 t, uint8 b, int16 c, real32 d)
 
 IActionObject::FrameState FadeAlphaByAction::next_frame(real32 delta_time)
 {
+  delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
+
   // Initialize timer and initial alpha
   this->first_frame(delta_time);
-
-  delta_time = this->timer_.ticks();
 
   return this->update(  delta_time, this->initial_alpha_,
                         this->total_displacement_, this->duration() );
@@ -164,10 +164,10 @@ IActionObject::FrameState FadeAlphaByAction::next_frame(real32 delta_time)
 
 IActionObject::FrameState FadeAlphaByAction::prev_frame(real32 delta_time)
 {
+  delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
+
   // Initialize timer and initial alpha
   this->first_frame(delta_time);
-
-  delta_time = this->timer_.ticks();
 
   return this->update(  delta_time, this->initial_alpha_,
                         -(this->total_displacement_), this->duration() );
@@ -189,7 +189,7 @@ void FadeAlphaByAction::resume(real32 delta_time)
 void FadeAlphaByAction::rewind(real32 delta_time)
 {
   // Reset the starting frame
-  this->curr_frame_ = 0.0f;
+  this->elapsed_frames_ = 0.0f;
 
   // Reset last recorded alpha state
   this->alpha_ = 0;
@@ -216,7 +216,6 @@ void FadeAlphaByAction::first_frame(real32 delta_time)
   if( this->timer_.started() == false ) {
     // Start frame timing
     this->timer_.start();
-    delta_time = this->timer_.ticks();
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "FadeAlphaByAction::BEGIN at", delta_time );

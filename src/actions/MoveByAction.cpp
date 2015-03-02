@@ -43,7 +43,7 @@ MoveByAction::MoveByAction( const std::shared_ptr<Sprite>& action,
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_ACTION, NOM_LOG_PRIORITY_VERBOSE);
 
   this->set_duration(duration);
-  this->curr_frame_ = 0.0f;
+  this->elapsed_frames_ = 0.0f;
   this->drawable_ = action;
 }
 
@@ -113,7 +113,7 @@ MoveByAction::update(real32 t, const Point2i& b, const Point2i& c, real32 d)
     this->timing_curve().operator()(frame_time, b2, c2, duration);
 
   // Update our internal elapsed frames counter (diagnostics)
-  ++this->curr_frame_;
+  ++this->elapsed_frames_;
 
   if( this->drawable_ != nullptr ) {
 
@@ -134,7 +134,7 @@ MoveByAction::update(real32 t, const Point2i& b, const Point2i& c, real32 d)
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[MoveByAction]",
                     "delta_time:", delta_time,
                     "frame_time:", frame_time,
-                    "[elapsed frames]:", this->curr_frame_ );
+                    "[elapsed frames]:", this->elapsed_frames_ );
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[MoveByAction]",
                     "position (input):", drawable_pos,
                     "displacement (output):", displacement_as_integer );
@@ -161,10 +161,10 @@ MoveByAction::update(real32 t, const Point2i& b, const Point2i& c, real32 d)
 
 IActionObject::FrameState MoveByAction::next_frame(real32 delta_time)
 {
+  delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
+
   // Initialize timer and initial position
   this->first_frame(delta_time);
-
-  delta_time = this->timer_.ticks();
 
   return this->update(  delta_time, this->initial_position_,
                         this->total_displacement_, this->duration() );
@@ -172,10 +172,10 @@ IActionObject::FrameState MoveByAction::next_frame(real32 delta_time)
 
 IActionObject::FrameState MoveByAction::prev_frame(real32 delta_time)
 {
+  delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
+
   // Initialize timer and initial position
   this->first_frame(delta_time);
-
-  delta_time = this->timer_.ticks();
 
   // Inverse of ::next_frame
   return this->update(  delta_time, this->initial_position_,
@@ -195,7 +195,7 @@ void MoveByAction::resume(real32 delta_time)
 void MoveByAction::rewind(real32 delta_time)
 {
   // Reset elapsed frame (diagnostics)
-  this->curr_frame_ = 0.0f;
+  this->elapsed_frames_ = 0.0f;
 
   // Reset frame timing
   this->timer_.stop();
@@ -218,7 +218,6 @@ void MoveByAction::first_frame(real32 delta_time)
   if( this->timer_.started() == false ) {
     // Start frame timing
     this->timer_.start();
-    delta_time = this->timer_.ticks();
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "MoveByAction::BEGIN at", delta_time );

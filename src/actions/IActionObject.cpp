@@ -92,7 +92,7 @@ IActionObject::FrameState IActionObject::status() const
 
 void IActionObject::set_duration(real32 seconds)
 {
-  this->duration_ = seconds * 1000.0f;
+  this->duration_ = seconds;
 }
 
 } // namespace nom

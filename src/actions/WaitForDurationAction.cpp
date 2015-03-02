@@ -36,7 +36,7 @@ WaitForDurationAction::WaitForDurationAction(real32 seconds)
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_duration(seconds);
-  this->curr_frame_ = 0.0f;
+  this->elapsed_frames_ = 0.0f;
 }
 
 WaitForDurationAction::~WaitForDurationAction()
@@ -53,16 +53,15 @@ WaitForDurationAction::clone() const
 
 IActionObject::FrameState WaitForDurationAction::next_frame(real32 delta_time)
 {
+  delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
+
   if( this->timer_.started() == false ) {
     // Start frame timing
     this->timer_.start();
-    delta_time = this->timer_.ticks();
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "WaitForDurationAction::BEGIN at", delta_time );
   }
-
-  delta_time = this->timer_.ticks();
 
   // Clamp delta values that go beyond the time duration bounds; this adds
   // stability to variable time steps
@@ -74,7 +73,7 @@ IActionObject::FrameState WaitForDurationAction::next_frame(real32 delta_time)
   real32 frame_time = delta_time * this->speed();
 
   // Internal diagnostics
-  ++this->curr_frame_;
+  ++this->elapsed_frames_;
 
   // Continue waiting if we are inside our frame duration bounds; this adds
   // stability to variable time steps
@@ -83,7 +82,7 @@ IActionObject::FrameState WaitForDurationAction::next_frame(real32 delta_time)
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[WaitForDurationAction]",
                     "delta_time:", delta_time,
                     "frame_time:", frame_time,
-                    "[elapsed frames]:", this->curr_frame_ );
+                    "[elapsed frames]:", this->elapsed_frames_ );
 
     this->status_ = FrameState::PLAY_NEXT_FRAME;
     return this->status_;
@@ -113,7 +112,7 @@ void WaitForDurationAction::resume(real32 delta_time)
 void WaitForDurationAction::rewind(real32 delta_time)
 {
   // Reset frame cycle back to initial starting values
-  this->curr_frame_ = 0.0f;
+  this->elapsed_frames_ = 0.0f;
 
   // Reset frame timing
   this->timer_.stop();

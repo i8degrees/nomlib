@@ -63,7 +63,7 @@ class SpriteTexturesAction: public virtual IActionObject
     /// each texture is displayed on the sprite.
     SpriteTexturesAction( const std::shared_ptr<Sprite>& sprite,
                           const texture_frames& textures,
-                          real32 frame_interval );
+                          real32 frame_interval_seconds );
 
     /// \brief Destructor.
     virtual ~SpriteTexturesAction();
@@ -87,8 +87,6 @@ class SpriteTexturesAction: public virtual IActionObject
   private:
     void initialize(const texture_frames& textures, real32 frame_interval);
 
-    void set_frame_interval(real32 seconds);
-
     typedef std::vector<std::shared_ptr<Sprite>>::iterator frame_iterator;
 
     IActionObject::FrameState
@@ -107,8 +105,11 @@ class SpriteTexturesAction: public virtual IActionObject
     /// \brief The sprite to animate.
     std::shared_ptr<Sprite> drawable_;
 
+    /// \brief The length of time to display a frame, in seconds.
     real32 frame_interval_;
-    uint64 last_delta_;
+
+    /// \brief The last recorded time interval, in seconds.
+    real32 last_delta_;
 };
 
 } // namespace nom

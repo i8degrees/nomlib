@@ -71,7 +71,7 @@ class IActionObject
 
     /// \brief Get the action's duration.
     ///
-    /// \returns The duration in milliseconds.
+    /// \returns The duration in seconds.
     real32 duration() const;
 
     /// \brief Get the action's speed modifier.
@@ -139,10 +139,12 @@ class IActionObject
     IActionObject::FrameState status_ =
         IActionObject::FrameState::PLAY_NEXT_FRAME;
 
-    /// \brief The elapsed frame count of the animation object.
-    real32 curr_frame_ = 0.0f;
+    /// \brief The recorded number of frames incremented.
+    ///
+    /// \remarks This is used for debugging diagnostics.
+    real32 elapsed_frames_ = 0.0f;
 
-    /// \brief The number of milliseconds to play the action for.
+    /// \brief The number of seconds to play the action for.
     real32 duration_ = 0.0f;
 
     /// \brief Internal time clock (milliseconds resolution).

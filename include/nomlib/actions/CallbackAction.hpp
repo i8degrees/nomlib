@@ -26,37 +26,59 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_HPP
-#define NOMLIB_GRAPHICS_HPP
+#ifndef NOMLIB_ACTIONS_CALLBACK_ACTION_HPP
+#define NOMLIB_ACTIONS_CALLBACK_ACTION_HPP
 
-// Public header file
+#include <memory>
 
-#include <nomlib/config.hpp>
-#include <nomlib/graphics/Text.hpp>
-#include <nomlib/graphics/RendererInfo.hpp>
-#include <nomlib/graphics/Texture.hpp>
-#include <nomlib/graphics/DisplayMode.hpp>
-#include <nomlib/graphics/RenderWindow.hpp>
-#include <nomlib/graphics/Renderer.hpp>
-#include <nomlib/graphics/IDrawable.hpp>
-#include <nomlib/graphics/Gradient.hpp>
-#include <nomlib/graphics/Image.hpp>
-#include <nomlib/graphics/fonts/BMFont.hpp>
-#include <nomlib/graphics/fonts/BitmapFont.hpp>
-#include <nomlib/graphics/fonts/FontMetrics.hpp>
-#include <nomlib/graphics/fonts/FontPage.hpp>
-#include <nomlib/graphics/fonts/FontRow.hpp>
-#include <nomlib/graphics/fonts/Glyph.hpp>
-#include <nomlib/graphics/fonts/TrueTypeFont.hpp>
-#include <nomlib/graphics/fonts/Font.hpp>
-#include <nomlib/graphics/shapes/Shape.hpp>
-#include <nomlib/graphics/shapes/Point.hpp>
-#include <nomlib/graphics/shapes/Line.hpp>
-#include <nomlib/graphics/shapes/Rectangle.hpp>
-#include <nomlib/graphics/sprite/Sprite.hpp>
-#include <nomlib/graphics/sprite/SpriteBatch.hpp>
-#include <nomlib/graphics/sprite/SpriteSheet.hpp>
-#include <nomlib/graphics/Cursor.hpp>
-#include <nomlib/graphics/graphics_helpers.hpp>
+#include "nomlib/config.hpp"
+#include "nomlib/actions/IActionObject.hpp"
+
+namespace nom {
+
+/// \brief [TODO: Description]
+class CallbackAction: public virtual IActionObject
+{
+  public:
+    /// \brief Allow access into our private parts for unit testing.
+    friend class ActionTest;
+
+    typedef CallbackAction self_type;
+    typedef IActionObject derived_type;
+    typedef std::function<void()> callback_type;
+
+    /// \brief Default constructor.
+    ///
+    /// \remarks Constructs an animation object that executes a function
+    /// pointer.
+    CallbackAction(const callback_type& func);
+
+    CallbackAction(real32 duration, const callback_type& func);
+
+    /// \brief Destructor.
+    virtual ~CallbackAction();
+
+    virtual std::unique_ptr<derived_type> clone() const override;
+
+    virtual IActionObject::FrameState next_frame(real32 delta_time) override;
+    virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
+
+    virtual void pause(real32 delta_time) override;
+
+    /// \brief Resume logic for the animation object.
+    ///
+    /// \remarks Reserved for future implementation.
+    virtual void resume(real32 delta_time) override;
+
+    virtual void rewind(real32 delta_time) override;
+
+    virtual void release() override;
+
+  private:
+    /// \brief The stored function.
+    callback_type delegate_;
+};
+
+} // namespace nom
 
 #endif // include guard defined

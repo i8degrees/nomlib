@@ -26,37 +26,29 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_GRAPHICS_HPP
-#define NOMLIB_GRAPHICS_HPP
+#ifndef NOMLIB_ACTIONS_HPP
+#define NOMLIB_ACTIONS_HPP
 
 // Public header file
 
-#include <nomlib/config.hpp>
-#include <nomlib/graphics/Text.hpp>
-#include <nomlib/graphics/RendererInfo.hpp>
-#include <nomlib/graphics/Texture.hpp>
-#include <nomlib/graphics/DisplayMode.hpp>
-#include <nomlib/graphics/RenderWindow.hpp>
-#include <nomlib/graphics/Renderer.hpp>
-#include <nomlib/graphics/IDrawable.hpp>
-#include <nomlib/graphics/Gradient.hpp>
-#include <nomlib/graphics/Image.hpp>
-#include <nomlib/graphics/fonts/BMFont.hpp>
-#include <nomlib/graphics/fonts/BitmapFont.hpp>
-#include <nomlib/graphics/fonts/FontMetrics.hpp>
-#include <nomlib/graphics/fonts/FontPage.hpp>
-#include <nomlib/graphics/fonts/FontRow.hpp>
-#include <nomlib/graphics/fonts/Glyph.hpp>
-#include <nomlib/graphics/fonts/TrueTypeFont.hpp>
-#include <nomlib/graphics/fonts/Font.hpp>
-#include <nomlib/graphics/shapes/Shape.hpp>
-#include <nomlib/graphics/shapes/Point.hpp>
-#include <nomlib/graphics/shapes/Line.hpp>
-#include <nomlib/graphics/shapes/Rectangle.hpp>
-#include <nomlib/graphics/sprite/Sprite.hpp>
-#include <nomlib/graphics/sprite/SpriteBatch.hpp>
-#include <nomlib/graphics/sprite/SpriteSheet.hpp>
-#include <nomlib/graphics/Cursor.hpp>
-#include <nomlib/graphics/graphics_helpers.hpp>
+#include <nomlib/actions/ActionTimingCurves.hpp>
+#include <nomlib/actions/IActionObject.hpp>
+#include <nomlib/actions/SpriteTexturesAction.hpp>
+#include <nomlib/actions/SpriteBatchAction.hpp>
+#include <nomlib/actions/FadeInAction.hpp>
+#include <nomlib/actions/FadeOutAction.hpp>
+#include <nomlib/actions/FadeAlphaByAction.hpp>
+#include <nomlib/actions/WaitForDurationAction.hpp>
+#include <nomlib/actions/MoveByAction.hpp>
+#include <nomlib/actions/ScaleByAction.hpp>
+#include <nomlib/actions/ReversedAction.hpp>
+#include <nomlib/actions/RepeatForAction.hpp>
+#include <nomlib/actions/RepeatForeverAction.hpp>
+#include <nomlib/actions/CallbackAction.hpp>
+#include <nomlib/actions/RemoveAction.hpp>
+#include <nomlib/actions/SequenceAction.hpp>
+#include <nomlib/actions/GroupAction.hpp>
+#include <nomlib/actions/ColorizeAction.hpp>
+#include <nomlib/actions/ActionPlayer.hpp>
 
 #endif // include guard defined

@@ -37,35 +37,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 void SpriteTexturesAction::
-initialize(const texture_frames& textures, real32 frame_interval)
+initialize(const texture_frames& textures, real32 frame_interval_seconds)
 {
-  this->curr_frame_ = 0.0f;
-  this->set_frame_interval(frame_interval);
+  this->elapsed_frames_ = 0.0f;
+  this->frame_interval_ = frame_interval_seconds;
 
   this->frames_ = textures;
   NOM_ASSERT(this->frames_.size() > 0);
   this->total_displacement_ = this->frames_.size();
 
-  real32 interval_seconds =
-    this->frame_interval_ / 1000.0f;
+  real32 action_duration_seconds =
+    (this->frame_interval_ * this->total_displacement_) / this->speed();
 
-  real32 action_duration =
-    (interval_seconds  * this->total_displacement_) / this->speed();
-
-  this->set_duration(action_duration);
+  this->set_duration(action_duration_seconds);
 
   this->last_delta_ = 0;
 }
 
 SpriteTexturesAction::
 SpriteTexturesAction( const std::shared_ptr<Sprite>& sprite,
-                      const texture_frames& textures, real32 frame_interval )
+                      const texture_frames& textures,
+                      real32 frame_interval_seconds )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->drawable_ = sprite;
-  this->initialize(textures, frame_interval);
+  this->initialize(textures, frame_interval_seconds);
 }
 
 SpriteTexturesAction::~SpriteTexturesAction()
@@ -112,7 +110,7 @@ SpriteTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
   displacement =
     this->timing_curve().operator()(frame_time, b, c, duration);
 
-  this->curr_frame_ = displacement;
+  this->elapsed_frames_ = displacement;
 
   if( delta_time >= (this->last_delta_ + frame_interval) ) {
 
@@ -121,7 +119,7 @@ SpriteTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
     ++this->frame_iterator_;
     if( this->frame_iterator_ == this->frames_.end() ) {
       this->frame_iterator_ = this->frames_.begin();
-      this->curr_frame_ = initial_frame;
+      this->elapsed_frames_ = initial_frame;
     }
 
     auto res = this->frame_iterator_->get();
@@ -130,7 +128,7 @@ SpriteTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SpriteTexturesAction]",
                     "delta_time:", delta_time, "frame_time:", frame_time,
-                    "[elapsed frames]:", this->curr_frame_ );
+                    "[elapsed frames]:", this->elapsed_frames_ );
 
     if( this->drawable_ != nullptr ) {
       this->drawable_->set_texture( res->texture() );
@@ -156,7 +154,7 @@ IActionObject::FrameState SpriteTexturesAction::next_frame(real32 delta_time)
 {
   this->first_frame(delta_time);
 
-  delta_time = this->timer_.ticks();
+  delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
 
   real32 initial_frame = 0.0f;
   return( this->update( delta_time, initial_frame, this->total_displacement_,
@@ -167,7 +165,7 @@ IActionObject::FrameState SpriteTexturesAction::prev_frame(real32 delta_time)
 {
   this->first_frame(delta_time);
 
-  delta_time = this->timer_.ticks();
+  delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
 
   real32 initial_frame = this->frames_.size();
   return( this->update( delta_time, initial_frame, -(this->total_displacement_),
@@ -187,7 +185,7 @@ void SpriteTexturesAction::resume(real32 delta_time)
 void SpriteTexturesAction::rewind(real32 delta_time)
 {
   // Reset frame cycle back to initial value
-  this->curr_frame_ = 0.0f;
+  this->elapsed_frames_ = 0.0f;
   this->frame_iterator_ = this->frames_.begin();
   this->last_delta_ = 0;
 
@@ -212,21 +210,14 @@ void SpriteTexturesAction::release()
 
 // Private scope
 
-void SpriteTexturesAction::set_frame_interval(real32 seconds)
-{
-  this->frame_interval_ = seconds * 1000.0f;
-}
-
 void SpriteTexturesAction::first_frame(real32 delta_time)
 {
   if( this->timer_.started() == false ) {
-
     // Start frame timing
-    this->curr_frame_ = 0.0f;
+    this->elapsed_frames_ = 0.0f;
     this->frame_iterator_ = this->frames_.begin();
-    this->timer_.start();
-    delta_time = this->timer_.ticks();
     this->last_delta_ = 0;
+    this->timer_.start();
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "SpriteTexturesAction::BEGIN at", delta_time );
@@ -242,9 +233,9 @@ void SpriteTexturesAction::first_frame(real32 delta_time)
     }
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SpriteTexturesAction]"
-                    "[initial_frame]:", this->curr_frame_,
+                    "[initial_frame]:", this->elapsed_frames_,
                     "[num_frames]:", this->total_displacement_,
-                    "[fps]:", this->frame_interval_ );
+                    "[frame_interval]:", this->frame_interval_ );
   }
 }
 

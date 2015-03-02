@@ -37,7 +37,7 @@ CallbackAction::CallbackAction(const callback_type& func) :
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_duration(0.0f);
-  this->curr_frame_ = 0.0f;
+  this->elapsed_frames_ = 0.0f;
 }
 
 CallbackAction::CallbackAction(real32 duration, const callback_type& func) :
@@ -47,7 +47,7 @@ CallbackAction::CallbackAction(real32 duration, const callback_type& func) :
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_duration(duration);
-  this->curr_frame_ = 0.0f;
+  this->elapsed_frames_ = 0.0f;
 }
 
 CallbackAction::~CallbackAction()
@@ -63,16 +63,15 @@ std::unique_ptr<CallbackAction::derived_type> CallbackAction::clone() const
 
 IActionObject::FrameState CallbackAction::next_frame(real32 delta_time)
 {
+  delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
+
   if( this->timer_.started() == false ) {
     // Start frame timing
     this->timer_.start();
-    delta_time = this->timer_.ticks();
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "CallbackAction::BEGIN at", delta_time );
   }
-
-  delta_time = this->timer_.ticks();
 
   // Clamp delta values that go beyond the time duration bounds; this adds
   // stability to variable time steps
@@ -88,7 +87,7 @@ IActionObject::FrameState CallbackAction::next_frame(real32 delta_time)
   }
 
   // Internal diagnostics
-  ++this->curr_frame_;
+  ++this->elapsed_frames_;
 
   // Continue waiting if we are inside our frame duration bounds; this adds
   // stability to variable time steps
@@ -96,7 +95,7 @@ IActionObject::FrameState CallbackAction::next_frame(real32 delta_time)
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[CallbackAction]",
                     "delta_time:", delta_time, "frame_time:", frame_time,
-                    "[elapsed frames]:", this->curr_frame_ );
+                    "[elapsed frames]:", this->elapsed_frames_ );
 
     this->status_ = FrameState::PLAY_NEXT_FRAME;
     return this->status_;

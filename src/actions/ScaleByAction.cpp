@@ -45,7 +45,7 @@ ScaleByAction::ScaleByAction( const std::shared_ptr<Sprite>& action,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_duration(seconds);
-  this->curr_frame_ = 0.0f;
+  this->elapsed_frames_ = 0.0f;
   this->drawable_ = action;
 }
 
@@ -119,7 +119,7 @@ ScaleByAction::update(real32 t, const Size2i& b, const Size2f& c, real32 d)
     this->timing_curve().operator()(frame_time, b2, c2, duration);
 
   // Update our internal elapsed frames counter (diagnostics)
-  ++this->curr_frame_;
+  ++this->elapsed_frames_;
 
   if( this->drawable_ != nullptr ) {
 
@@ -147,7 +147,7 @@ ScaleByAction::update(real32 t, const Size2i& b, const Size2f& c, real32 d)
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[ScaleByAction]",
                     "delta_time:", delta_time,
                     "frame_time:", frame_time,
-                    "[elapsed frames]:", this->curr_frame_ );
+                    "[elapsed frames]:", this->elapsed_frames_ );
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "ScaleByAction:", "size (input):", drawable_size,
                     "displacement (output):", displacement_as_integer );
@@ -169,10 +169,10 @@ ScaleByAction::update(real32 t, const Size2i& b, const Size2f& c, real32 d)
 
 IActionObject::FrameState ScaleByAction::next_frame(real32 delta_time)
 {
+  delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
+
   // Initialize timer and initial alpha
   this->first_frame(delta_time);
-
-  delta_time = this->timer_.ticks();
 
   return this->update(  delta_time, this->initial_size_,
                         this->total_displacement_, this->duration() );
@@ -180,10 +180,10 @@ IActionObject::FrameState ScaleByAction::next_frame(real32 delta_time)
 
 IActionObject::FrameState ScaleByAction::prev_frame(real32 delta_time)
 {
+  delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
+
   // Initialize timer and initial alpha
   this->first_frame(delta_time);
-
-  delta_time = this->timer_.ticks();
 
   Size2f delta(Size2f::zero);
   delta.w = -(this->total_displacement_.w);
@@ -207,7 +207,7 @@ void ScaleByAction::resume(real32 delta_time)
 void ScaleByAction::rewind(real32 delta_time)
 {
   // Reset the starting frame
-  this->curr_frame_ = 0.0f;
+  this->elapsed_frames_ = 0.0f;
 
   // Reset frame timing
   this->timer_.stop();
@@ -231,7 +231,6 @@ void ScaleByAction::first_frame(real32 delta_time)
   if( this->timer_.started() == false ) {
     // Start frame timing
     this->timer_.start();
-    delta_time = this->timer_.ticks();
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "ScaleByAction::BEGIN at", delta_time );

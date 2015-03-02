@@ -106,6 +106,8 @@ void ReversedAction::release()
   if( this->object_ != nullptr ) {
     this->object_->release();
   }
+
+  this->object_.reset();
 }
 
 void ReversedAction::set_speed(real32 speed)

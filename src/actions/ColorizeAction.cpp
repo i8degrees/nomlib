@@ -231,6 +231,10 @@ void ColorizeAction::rewind(real32 delta_time)
 
 void ColorizeAction::release()
 {
+  if( this->drawable_ != nullptr ) {
+    this->drawable_->release_texture();
+  }
+
   this->drawable_.reset();
 }
 

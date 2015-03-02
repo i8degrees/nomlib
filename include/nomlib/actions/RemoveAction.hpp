@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief Creates an action that removes a node from its action queue.
+/// \brief Free an action's allocated resources (i.e.: textures)
 class RemoveAction: public virtual IActionObject
 {
   public:

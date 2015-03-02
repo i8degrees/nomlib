@@ -187,6 +187,7 @@ void SequenceAction::release()
     NOM_ASSERT(*itr != nullptr);
     if( *itr != nullptr ) {
       (*itr)->release();
+      (*itr).reset();
     }
   }
 }

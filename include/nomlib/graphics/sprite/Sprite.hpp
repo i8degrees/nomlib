@@ -134,6 +134,12 @@ class Sprite: public Transformable
 
     bool set_color_blend_mode(BlendMode blend);
 
+    /// \brief Free the stored texture.
+    ///
+    /// \remarks This decrements the shared reference count, potentially
+    /// freeing the resource.
+    void release_texture();
+
     virtual void draw(RenderTarget& target) const override;
 
     /// Draw a rotated nom::Sprite on a nom::RenderWindow

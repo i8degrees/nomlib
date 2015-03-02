@@ -255,6 +255,11 @@ bool Sprite::set_color_blend_mode(BlendMode blend)
   }
 }
 
+void Sprite::release_texture()
+{
+  this->texture_.reset();
+}
+
 void Sprite::draw(RenderTarget& target) const
 {
   if( this->valid() == true ) {

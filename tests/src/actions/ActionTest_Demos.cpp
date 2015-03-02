@@ -30,23 +30,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-// TODO: Clean up / finish the test!
-NOM_IGNORED_VARS();
-
-/// \remarks On my old windev system -- a AMD Athlon 2650e 1.6Ghz, 1GB RAM,
-/// NVIDIA GeForce 6150SE (nForce 430) -- a stable, smooth frame rate is
-/// sustained during freeing of up to 100 objects at once.
-///   On my much newer OS X system -- a Intel Core i5 1.6 GHz, 4 GB RAM, Intel
-/// HD Graphics 3000 -- a stable, smooth frame rate is sustained during freeing
-/// of up to 250 objects at once.
-///   The smooth-free target of even 25 objects at once is well above the
-/// anticipated needs for TTcards.
+/// \brief This test is intended to simulate a worst-case scenario, i.e.: a
+/// large number of objects enqueued and deallocated at the same time.
 ///
-/// \note This test is intended to simulate an absolute worst-case scenario,
-/// i.e.: lots of objects dumped into the same individual action queue at once,
-/// such as a large number of particles being thrown around at once -- BOOM!
-///   Performance can be increased by roughly a factor of two just by splitting
-/// the load of objects into two separate actions to be run with ::run_action.
+/// \remarks Enabling VSYNC may help performance here!
 TEST_F(ActionTest, RainingRectsStressTest)
 {
   // Testing parameters
@@ -56,12 +43,14 @@ TEST_F(ActionTest, RainingRectsStressTest)
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
   const real32 MIN_SPEED_MOD = DURATION;
   const real32 MAX_SPEED_MOD = MIN_SPEED_MOD + NOM_ACTION_TEST_FLAG(speed);
+  const real32 NUM_REPEATS = 4;
 
   const nom::size_type NUM_OBJECTS = 100;
   // const nom::size_type NUM_OBJECTS = 250;
   // const nom::size_type NUM_OBJECTS = 500;
   // const nom::size_type NUM_OBJECTS = 1000;
 
+  const Size2i MIN_RECT_SIZE(8, 8);
   const Size2i MAX_RECT_SIZE(16, 16);
 
   // Position delta applied over duration
@@ -107,8 +96,10 @@ TEST_F(ActionTest, RainingRectsStressTest)
       color = Color4i(red, green, blue);
     }
 
-    dims.w = nom::uniform_real_rand<real32>(1, MAX_RECT_SIZE.w);
-    dims.h = nom::uniform_real_rand<real32>(1, MAX_RECT_SIZE.h);
+    dims.w =
+      nom::uniform_real_rand<real32>(MIN_RECT_SIZE.w, MAX_RECT_SIZE.w);
+    dims.h =
+      nom::uniform_real_rand<real32>(MIN_RECT_SIZE.h, MAX_RECT_SIZE.h);
 
     if( x_offset >= 640 ) {
       x_offset = 0;
@@ -138,7 +129,7 @@ TEST_F(ActionTest, RainingRectsStressTest)
     translate->set_speed(random_speed_mod);
 
     auto repeat =
-      nom::create_action<RepeatForAction>(translate, 4);
+      nom::create_action<RepeatForAction>(translate, NUM_REPEATS);
     ASSERT_TRUE(repeat != nullptr);
     actions.push_back(repeat);
   }
@@ -185,7 +176,6 @@ TEST_F(ActionTest, RainingRectsStressTest)
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
-NOM_IGNORED_VARS_ENDL();
 
 TEST_F(ActionTest, CardPlacementEffectsDemo)
 {

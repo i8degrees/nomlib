@@ -66,17 +66,17 @@ class HighResolutionTimer
 
     /// \brief Convert a high resolution timing value to milliseconds.
     ///
-    /// \param elapsed_hires_ticks A high resolution timing value to convert.
+    /// \param hires_ticks A high resolution timing value to convert.
     ///
     /// \see ::ticks, nom::hires_ticks
-    static real64 to_milliseconds(uint64 elapsed_hires_ticks);
+    static real64 to_milliseconds(uint64 hires_ticks);
 
     /// \brief Convert a high resolution timing value to seconds.
     ///
-    /// \param elapsed_hires_ticks A high resolution timing value to convert.
+    /// \param hires_ticks A high resolution timing value to convert.
     ///
     /// \see ::ticks, nom::hires_ticks
-    static real64 to_seconds(uint64 elapsed_hires_ticks);
+    static real64 to_seconds(uint64 hires_ticks);
 
   private:
     /// \brief Activity status of the timer.

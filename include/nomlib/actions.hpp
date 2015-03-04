@@ -48,7 +48,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/actions/RemoveAction.hpp>
 #include <nomlib/actions/SequenceAction.hpp>
 #include <nomlib/actions/GroupAction.hpp>
-#include <nomlib/actions/ColorizeAction.hpp>
 #include <nomlib/actions/ActionPlayer.hpp>
 
 #endif // include guard defined

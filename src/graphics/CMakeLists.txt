@@ -134,8 +134,6 @@ if( NOM_BUILD_GRAPHICS_UNIT )
         ${INC_DIR}/actions/GroupAction.hpp
         ${SRC_DIR}/actions/SequenceAction.cpp
         ${INC_DIR}/actions/SequenceAction.hpp
-        ${SRC_DIR}/actions/ColorizeAction.cpp
-        ${INC_DIR}/actions/ColorizeAction.hpp
         ${SRC_DIR}/actions/DispatchQueue.cpp
         ${INC_DIR}/actions/DispatchQueue.hpp
         ${SRC_DIR}/actions/ActionPlayer.cpp

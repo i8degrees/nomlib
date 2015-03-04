@@ -83,8 +83,6 @@ TEST_F(ActionTest, FadeInActionReversed)
     EXPECT_EQ(1, this->player.num_actions() );
 
     this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
-
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue the action!";
@@ -93,6 +91,12 @@ TEST_F(ActionTest, FadeInActionReversed)
   this->append_update_callback( [=](float) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
@@ -159,8 +163,6 @@ TEST_F(ActionTest, FadeOutActionReversed)
     this->expected_alpha_out_params(  fade_out.get(), Color4i::ALPHA_OPAQUE,
                                       sprite.get() );
     this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
-
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
@@ -169,6 +171,12 @@ TEST_F(ActionTest, FadeOutActionReversed)
   this->append_update_callback( [=](float) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
@@ -237,8 +245,6 @@ TEST_F(ActionTest, FadeAlphaByActionReversed)
 
     EXPECT_EQ(1, this->player.num_actions() );
     this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
-
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
@@ -247,6 +253,12 @@ TEST_F(ActionTest, FadeAlphaByActionReversed)
   this->append_update_callback( [=](float) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
@@ -306,12 +318,16 @@ TEST_F(ActionTest, MoveByActionReversed)
 
     this->expected_action_params(action0.get(), 1);
     this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
-
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
   EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's rectangle
@@ -379,8 +395,6 @@ TEST_F(ActionTest, ScaleByActionReversed)
     EXPECT_EQ(1, this->player.num_actions() );
     this->expected_action_params(action0.get(), 1);
     this->expected_common_params(scale_by.get(), DURATION, SPEED_MOD);
-
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
@@ -389,6 +403,12 @@ TEST_F(ActionTest, ScaleByActionReversed)
   this->append_update_callback( [=](float) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {
@@ -454,13 +474,17 @@ TEST_F(ActionTest, MoveByActionRepeatForReversed)
     this->expected_action_params(action0.get(), 1);
     this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
     this->expected_repeat_params(repeat.get(), NUM_REPEATS);
-
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
 
   EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's rectangle
@@ -523,12 +547,8 @@ TEST_F(ActionTest, RepeatForeverActionReversed)
   auto kill_timer =
     nom::create_action<WaitForDurationAction>(TEST_DURATION);
   ASSERT_TRUE(kill_timer != nullptr);
-
-  auto action1 =
-    nom::create_action<SequenceAction>( {kill_timer}, "action1" );
-  ASSERT_TRUE(action1 != nullptr);
-  action1->set_timing_curve(TIMING_MODE);
-  action1->set_speed(SPEED_MOD);
+  kill_timer->set_speed(SPEED_MOD);
+  kill_timer->set_name("kill_timer");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -540,7 +560,7 @@ TEST_F(ActionTest, RepeatForeverActionReversed)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->run_action_ret =
-  this->player.run_action(action1, [=]() {
+  this->player.run_action(kill_timer, [=]() {
 
     EXPECT_EQ(2, this->player.num_actions() );
     this->expected_repeat_params( repeat_forever.get(), NUM_REPEATS,
@@ -552,12 +572,11 @@ TEST_F(ActionTest, RepeatForeverActionReversed)
                                   "common_params" );
 
     this->expected_action_params(action0.get(), 1, "action_params" );
-    this->expected_action_params(action1.get(), 1, "action_params");
 
     this->quit();
   });
   EXPECT_EQ(true, this->run_action_ret)
-  << "Failed to queue the action!";
+  << "Failed to queue kill_timer!";
   EXPECT_EQ(2, this->player.num_actions() );
 
   this->append_render_callback( [=](const RenderWindow& win) {
@@ -621,12 +640,16 @@ TEST_F(ActionTest, SpriteActionReversed)
                                             DURATION, SPEED_MOD,
                                             "sprite_textures_params" );
     this->expected_common_params(tex_bg.get(), DURATION, SPEED_MOD);
-
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
   EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
 
   this->append_render_callback( [=, &sprite0](const RenderWindow& win) {
 

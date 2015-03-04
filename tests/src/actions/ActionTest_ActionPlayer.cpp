@@ -144,7 +144,9 @@ TEST_F(ActionTest, GroupActionFinishEquality)
   this->append_update_callback( [=](float) {
 
     if( this->player.action_running("action0") == false &&
-        this->player.action_running("action1") == false )
+        this->player.action_running("action1") == false &&
+        // The smallest speed modifier should always be used here
+        this->expected_min_duration(DURATION, SPEED_MOD0) == true )
     {
       this->quit();
     }
@@ -358,21 +360,16 @@ TEST_F(ActionTest, ConcurrentGroupActions)
   << "Failed to queue action3";
   EXPECT_EQ(4, this->player.num_actions() );
 
-  this->append_update_callback( [=](float) {
 
-    uint32 last_delta = nom::ticks();
+  this->append_update_callback( [=](float) {
 
     if( this->player.action_running("action0") == false &&
         this->player.action_running("action1") == false &&
         this->player.action_running("action2") == false &&
-        this->player.action_running("action3") == false )
+        this->player.action_running("action3") == false &&
+        // The smallest speed modifier should always be used here
+        this->expected_min_duration(DURATION, SPEED_MOD0) == true )
     {
-      // Try to check for minimum test duration; the smallest speed modifier
-      // should always be used for this calculation!
-      if( last_delta < ( (DURATION * 1000) / SPEED_MOD0) ) {
-        EXPECT_EQ( ( (DURATION * 1000) / SPEED_MOD0), last_delta);
-      }
-
       this->quit();
     }
   });
@@ -523,17 +520,11 @@ TEST_F(ActionTest, ConcurrentSequenceActions)
 
   this->append_update_callback( [=](float) {
 
-    uint32 last_delta = nom::ticks();
-
     if( this->player.action_running("action0") == false &&
-        this->player.action_running("action1") == false )
+        this->player.action_running("action1") == false &&
+        // The smallest speed modifier should always be used here
+        this->expected_min_duration(DURATION, SPEED_MOD0) == true )
     {
-      // Try to check for minimum test duration; the smallest speed modifier
-      // should always be used for this calculation!
-      if( last_delta < ( (DURATION * 1000) / SPEED_MOD0) ) {
-        EXPECT_EQ( ( (DURATION * 1000) / SPEED_MOD0), last_delta);
-      }
-
       this->quit();
     }
   });
@@ -683,22 +674,14 @@ TEST_F(ActionTest, ConcurrentGroupAndSequenceActions)
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action1";
   EXPECT_EQ(2, this->player.num_actions() );
-  // EXPECT_EQ( ActionPlayer::IDLE, this->player.player_state() );
 
   this->append_update_callback( [=](float) {
 
-    uint32 last_delta = nom::ticks();
     if( this->player.action_running("action0") == false &&
-        this->player.action_running("action1") == false )
+        this->player.action_running("action1") == false &&
+        // The smallest speed modifier should always be used here
+        this->expected_min_duration(DURATION, SPEED_MOD0) == true )
     {
-      // EXPECT_EQ( ActionPlayer::IDLE, this->player.player_state() );
-
-      // Try to check for minimum test duration; the smallest speed modifier
-      // should always be used for this calculation!
-      if( last_delta < ( (DURATION * 1000) / SPEED_MOD0) ) {
-        EXPECT_EQ( ( (DURATION * 1000) / SPEED_MOD0), last_delta);
-      }
-
       this->quit();
     }
   });

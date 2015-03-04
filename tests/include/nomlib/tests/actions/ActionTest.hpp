@@ -198,6 +198,18 @@ class ActionTest: public nom::VisualUnitTest
                                   uint32 type, nom::size_type num_repeats,
                                   const std::string& scope_name = "" );
 
+    void
+    append_render_queue(const Texture* drawable);
+
+    void
+    append_render_queue(const Sprite* drawable);
+
+    void
+    append_render_queue(const std::vector<std::shared_ptr<Sprite>>& drawables);
+
+    /// \remarks This should only be done once per test.
+    void append_frame_interval(uint32 fps);
+
   protected:
     const Size2i WINDOW_DIMS = Size2i( this->resolution() );
 

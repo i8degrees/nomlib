@@ -99,15 +99,8 @@ TEST_F(ActionTest, FadeInAction)
     }
   });
 
-  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
-
-    // Render our animation's texture
-    if( sprite != nullptr && sprite->valid() == true ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -178,15 +171,8 @@ TEST_F(ActionTest, FadeInActionFromNonTransparentOpacity)
     }
   });
 
-  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
-
-    // Render our animation's texture
-    if( sprite != nullptr && sprite->valid() == true ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -259,15 +245,8 @@ TEST_F(ActionTest, FadeOutAction)
     }
   });
 
-  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
-
-    // Render our animation's texture
-    if( sprite != nullptr && sprite->valid() == true ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -339,15 +318,8 @@ TEST_F(ActionTest, FadeOutActionFromNonOpaqueOpacity)
     }
   });
 
-  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
-
-    // Render our animation's texture
-    if( sprite != nullptr && sprite->valid() == true ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -420,15 +392,8 @@ TEST_F(ActionTest, FadeAlphaByAction)
     }
   });
 
-  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
-
-    // Render our animation's texture
-    if( sprite != nullptr && sprite->valid() == true ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -500,15 +465,8 @@ TEST_F(ActionTest, FadeAlphaByActionFromNonOpaqueOpacity)
     }
   });
 
-  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
-
-    // Render our animation's texture
-    if( sprite != nullptr && sprite->valid() == true ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -581,15 +539,8 @@ TEST_F(ActionTest, FadeAlphaByActionWithNegativeValue)
     }
   });
 
-  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
-
-    // Render our animation's texture
-    if( sprite != nullptr && sprite->valid() == true ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -733,23 +684,10 @@ TEST_F(ActionTest, AlphaBlendingDemo)
     }
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render a pretty backdrop for our demo
-    if( bg_sprite != nullptr ) {
-      bg_sprite->draw( this->render_window() );
-    }
-
-    // Render our animation's blue rectangle
-    if( sprite0 != nullptr ) {
-      sprite0->draw( this->render_window() );
-    }
-
-    if( sprite1 != nullptr ) {
-      sprite1->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( bg_sprite.get() );
+  this->append_render_queue( sprite0.get() );
+  this->append_render_queue( sprite1.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }

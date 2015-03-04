@@ -152,26 +152,11 @@ TEST_F(ActionTest, GroupActionFinishEquality)
     }
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render our animation's rectangles
-    if( sprite0 != nullptr ) {  // action0
-      sprite0->draw( this->render_window() );
-    }
-
-    if( sprite1 != nullptr ) {  // action1
-      sprite1->draw( this->render_window() );
-    }
-
-    if( sprite2 != nullptr ) {  // action2
-      sprite2->draw( this->render_window() );
-    }
-
-    if( sprite3 != nullptr ) {  // action3
-      sprite3->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite0.get() ); // action0
+  this->append_render_queue( sprite1.get() ); // action1
+  this->append_render_queue( sprite2.get() ); // action2
+  this->append_render_queue( sprite3.get() ); // action3
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -374,26 +359,11 @@ TEST_F(ActionTest, ConcurrentGroupActions)
     }
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render our animation's rectangles
-    if( sprite0 != nullptr ) {  // action0
-      sprite0->draw( this->render_window() );
-    }
-
-    if( sprite1 != nullptr ) {  // action1
-      sprite1->draw( this->render_window() );
-    }
-
-    if( sprite2 != nullptr ) {  // action2
-      sprite2->draw( this->render_window() );
-    }
-
-    if( sprite3 != nullptr ) {  // action3
-      sprite3->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite0.get() ); // action0
+  this->append_render_queue( sprite1.get() ); // action1
+  this->append_render_queue( sprite2.get() ); // action2
+  this->append_render_queue( sprite3.get() ); // action3
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -529,26 +499,11 @@ TEST_F(ActionTest, ConcurrentSequenceActions)
     }
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render our animation's rectangles
-    if( sprite0 != nullptr ) {  // action0
-      sprite0->draw( this->render_window() );
-    }
-
-    if( sprite1 != nullptr ) {  // action01
-      sprite1->draw( this->render_window() );
-    }
-
-    if( sprite2 != nullptr ) {  // action1
-      sprite2->draw( this->render_window() );
-    }
-
-    if( sprite3 != nullptr ) {  // action1
-      sprite3->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite0.get() ); // action0
+  this->append_render_queue( sprite1.get() ); // action0
+  this->append_render_queue( sprite2.get() ); // action1
+  this->append_render_queue( sprite3.get() ); // action1
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -686,30 +641,11 @@ TEST_F(ActionTest, ConcurrentGroupAndSequenceActions)
     }
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
-
-    // action0
-    if( sprite0 != nullptr ) {
-      sprite0->draw( this->render_window() );
-    }
-
-    // action0
-    if( sprite1 != nullptr ) {
-      sprite1->draw( this->render_window() );
-    }
-
-    // action1
-    if( sprite2 != nullptr ) {
-      sprite2->draw( this->render_window() );
-    }
-
-    // action1
-    if( sprite3 != nullptr ) {
-      sprite3->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite0.get() ); // action0
+  this->append_render_queue( sprite1.get() ); // action0
+  this->append_render_queue( sprite2.get() ); // action1
+  this->append_render_queue( sprite3.get() ); // action1
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }

@@ -161,15 +161,8 @@ ActionTest::setup_repeating_cursor_test(  real32 duration, real32 speed,
   EXPECT_EQ(2, this->player.num_actions() )
   << scope_name;
 
-  this->append_render_callback( [=, &sprite](const RenderWindow& win) {
-
-    // Render our animation's texture
-    if( sprite != nullptr ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -231,14 +224,8 @@ TEST_F(ActionTest, RepeatForAction)
     }
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render our animation's rectangle
-    if( sprite != nullptr ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -316,14 +303,8 @@ TEST_F(ActionTest, RepeatForeverAction)
   << "Failed to queue kill_timer!";
   EXPECT_EQ(2, this->player.num_actions() );
 
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render our animation's rectangle
-    if( sprite != nullptr ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }

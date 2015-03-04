@@ -99,14 +99,8 @@ TEST_F(ActionTest, FadeInActionReversed)
     }
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render our animation's texture
-    if( sprite != nullptr ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -179,14 +173,8 @@ TEST_F(ActionTest, FadeOutActionReversed)
     }
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render our animation's texture
-    if( sprite != nullptr ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -261,14 +249,8 @@ TEST_F(ActionTest, FadeAlphaByActionReversed)
     }
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render our animation's texture
-    if( sprite != nullptr ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -329,14 +311,8 @@ TEST_F(ActionTest, MoveByActionReversed)
     }
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render our animation's rectangle
-    if( sprite != nullptr ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -411,14 +387,8 @@ TEST_F(ActionTest, ScaleByActionReversed)
     }
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render our animation's texture
-    if( sprite != nullptr ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -486,14 +456,8 @@ TEST_F(ActionTest, MoveByActionRepeatForReversed)
     }
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render our animation's rectangle
-    if( sprite != nullptr ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -579,14 +543,8 @@ TEST_F(ActionTest, RepeatForeverActionReversed)
   << "Failed to queue kill_timer!";
   EXPECT_EQ(2, this->player.num_actions() );
 
-  this->append_render_callback( [=](const RenderWindow& win) {
-    // Render our animation's rectangle
-    if( sprite != nullptr ) {
-      sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -651,14 +609,8 @@ TEST_F(ActionTest, SpriteActionReversed)
     }
   });
 
-  this->append_render_callback( [=, &sprite0](const RenderWindow& win) {
-
-    if( sprite0 != nullptr && sprite0->valid() == true ) {
-      sprite0->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( sprite0.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }

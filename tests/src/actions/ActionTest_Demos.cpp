@@ -165,17 +165,8 @@ TEST_F(ActionTest, RainingRectsStressTest)
     }
   });
 
-  this->append_render_callback( [=](const RenderWindow& win) {
-
-    // Render our animation's rectangles (action0)
-    for( auto itr = rects.begin(); itr != rects.end(); ++itr ) {
-      if( *itr != nullptr && (*itr)->valid() == true ) {
-        (*itr)->draw( this->render_window() );
-      }
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue(rects);
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -374,22 +365,10 @@ TEST_F(ActionTest, CardPlacementEffectsDemo)
     }
   });
 
-  this->append_render_callback( [=, &bg_tex, &sprite0, &sprite1] (const RenderWindow& win) {
-    // Render a pretty backdrop for our demo
-    if( bg_tex != nullptr ) {
-      bg_tex->draw( this->render_window() );
-    }
-
-    if( sprite0 != nullptr ) {
-      sprite0->draw( this->render_window() );
-    }
-
-    if( sprite1 != nullptr ) {
-      sprite1->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
-  });
+  this->append_render_queue( bg_tex.get() );
+  this->append_render_queue( sprite0.get() );
+  this->append_render_queue( sprite1.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
@@ -709,22 +688,14 @@ TEST_F(ActionTest, ScrollingTextDemo)
     }
   });
 
-  this->append_render_callback( [=, &bg_sprite, &anim_text_sprite] (const RenderWindow& win) {
-
+  this->append_render_callback( [=](const RenderWindow& win) {
+    // For the aesthetic appeal of fading the screen out
     this->render_window().fill(Color4i::Black);
-
-    // Render a pretty backdrop for our animation
-    if( bg_sprite != nullptr ) {
-      bg_sprite->draw( this->render_window() );
-    }
-
-    // Render our animation's text
-    if( anim_text_sprite != nullptr ) {
-      anim_text_sprite->draw( this->render_window() );
-    }
-
-    this->set_frame_interval(FPS);
   });
+
+  this->append_render_queue( bg_sprite.get() );
+  this->append_render_queue( anim_text_sprite.get() );
+  this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }

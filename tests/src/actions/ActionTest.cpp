@@ -118,10 +118,12 @@ bool ActionTest::init_rendering()
     auto display_refresh_rate =
       this->render_window().refresh_rate();
     if( display_refresh_rate > 0 ) {
-      NOM_ACTION_TEST_FLAG(fps) = display_refresh_rate;
+      // Disable frame rate governor; the effective frame rate will be
+      // determined by updating the display at the display's refresh rate
+      NOM_ACTION_TEST_FLAG(fps) = 0;
     } else {
       // ...fall back to using the initialized value of the FPS test flag
-      NOM_ASSERT( NOM_ACTION_TEST_FLAG(fps) > 0);
+      NOM_ASSERT( NOM_ACTION_TEST_FLAG(fps) >= 0);
     }
   }
 

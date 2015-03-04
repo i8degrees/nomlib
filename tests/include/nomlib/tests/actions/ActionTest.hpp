@@ -163,6 +163,10 @@ class ActionTest: public nom::VisualUnitTest
                                               const
                                               std::string& scope_name = "" );
 
+    bool
+    expected_min_duration(  real32 duration, real32 speed,
+                            const std::string& scope_name = "" );
+
     /// \brief Set the frame interval at which actions are updated.
     ///
     /// \param interval A value of zero disables this function.
@@ -205,6 +209,8 @@ class ActionTest: public nom::VisualUnitTest
 
     /// \brief The stored return value of ActionPlayer::run_action.
     bool run_action_ret = false;
+
+    Timer test_timer;
 };
 
 bool init_cmd_line_args(int argc, char** argv);

@@ -83,8 +83,6 @@ TEST_F(ActionTest, FadeInAction)
 
     this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
     this->expected_common_params(fade_in.get(), DURATION, SPEED_MOD);
-
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
@@ -93,6 +91,12 @@ TEST_F(ActionTest, FadeInAction)
   this->append_update_callback( [=](float) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
   });
 
   this->append_render_callback( [=, &sprite](const RenderWindow& win) {
@@ -158,8 +162,6 @@ TEST_F(ActionTest, FadeInActionFromNonTransparentOpacity)
     EXPECT_EQ(1, this->player.num_actions() );
     this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
     this->expected_common_params(fade_in.get(), DURATION, SPEED_MOD);
-
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
@@ -168,6 +170,12 @@ TEST_F(ActionTest, FadeInActionFromNonTransparentOpacity)
   this->append_update_callback( [=](float) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
   });
 
   this->append_render_callback( [=, &sprite](const RenderWindow& win) {
@@ -234,8 +242,6 @@ TEST_F(ActionTest, FadeOutAction)
 
     this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
     this->expected_common_params(fade_out.get(), DURATION, SPEED_MOD);
-
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
@@ -245,6 +251,12 @@ TEST_F(ActionTest, FadeOutAction)
   this->append_update_callback( [=](float) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
   });
 
   this->append_render_callback( [=, &sprite](const RenderWindow& win) {
@@ -311,8 +323,6 @@ TEST_F(ActionTest, FadeOutActionFromNonOpaqueOpacity)
     EXPECT_EQ(1, this->player.num_actions() );
     this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
     this->expected_common_params(fade_out.get(), DURATION, SPEED_MOD);
-
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
@@ -321,6 +331,12 @@ TEST_F(ActionTest, FadeOutActionFromNonOpaqueOpacity)
   this->append_update_callback( [=](float) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
   });
 
   this->append_render_callback( [=, &sprite](const RenderWindow& win) {
@@ -388,8 +404,6 @@ TEST_F(ActionTest, FadeAlphaByAction)
 
     this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
     this->expected_common_params(fade_by.get(), DURATION, SPEED_MOD);
-
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
@@ -398,6 +412,12 @@ TEST_F(ActionTest, FadeAlphaByAction)
   this->append_update_callback( [=](float) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
   });
 
   this->append_render_callback( [=, &sprite](const RenderWindow& win) {
@@ -464,8 +484,6 @@ TEST_F(ActionTest, FadeAlphaByActionFromNonOpaqueOpacity)
 
     this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
     this->expected_common_params(fade_by.get(), DURATION, SPEED_MOD);
-
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
@@ -474,6 +492,12 @@ TEST_F(ActionTest, FadeAlphaByActionFromNonOpaqueOpacity)
   this->append_update_callback( [=](float) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
   });
 
   this->append_render_callback( [=, &sprite](const RenderWindow& win) {
@@ -541,8 +565,6 @@ TEST_F(ActionTest, FadeAlphaByActionWithNegativeValue)
 
     this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
     this->expected_common_params(fade_by.get(), DURATION, SPEED_MOD);
-
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
@@ -551,6 +573,12 @@ TEST_F(ActionTest, FadeAlphaByActionWithNegativeValue)
   this->append_update_callback( [=](float) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
   });
 
   this->append_render_callback( [=, &sprite](const RenderWindow& win) {
@@ -687,7 +715,6 @@ TEST_F(ActionTest, AlphaBlendingDemo)
     this->expected_alpha_out_params(  fade_rect1_out.get(),
                                       Color4i::ALPHA_TRANSPARENT,
                                       sprite1.get(), "fade_sprite1_out" );
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to enqueue fade_blue_rect!";
@@ -698,6 +725,12 @@ TEST_F(ActionTest, AlphaBlendingDemo)
                         Anchor::MiddleCenter );
     nom::set_alignment( sprite1.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
   });
 
   this->append_render_callback( [=](const RenderWindow& win) {

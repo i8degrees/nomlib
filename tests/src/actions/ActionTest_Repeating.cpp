@@ -41,16 +41,15 @@ ActionTest::setup_repeating_cursor_test(  real32 duration, real32 speed,
   const std::string TEXTURE_FILENAME = "cursors.png";
   const std::string SPRITE_SHEET_FILENAME = "cursors.json";
 
-  // maximum test duration before test termination occurs
-  const real32 TEST_DURATION = duration;
-
   // fps per texture
   const real32 FRAME_DURATION = 0.100f;
 
   const nom::size_type NUM_FRAMES = 3;
 
-  // total action duration
-  const real32 DURATION = FRAME_DURATION * NUM_FRAMES;
+  const real32 ACTION_DURATION = (FRAME_DURATION * NUM_FRAMES) / speed;
+
+  // maximum duration before test termination occurs
+  const real32 DURATION = duration;
 
   const IActionObject::timing_curve_func TIMING_MODE =
     NOM_ACTION_TEST_FLAG(timing_curve);
@@ -123,7 +122,7 @@ ActionTest::setup_repeating_cursor_test(  real32 duration, real32 speed,
   this->player.run_action(repeat, [=]() {
 
     this->expected_sprite_batch_action_params(  sprite_action.get(), NUM_FRAMES,
-                                                DURATION, SPEED_MOD,
+                                                ACTION_DURATION, SPEED_MOD,
                                                 "sprite_batch_params" );
   });
   EXPECT_EQ(true, this->run_action_ret)
@@ -132,15 +131,17 @@ ActionTest::setup_repeating_cursor_test(  real32 duration, real32 speed,
   << scope_name;
 
   auto kill_timer =
-    nom::create_action<WaitForDurationAction>(TEST_DURATION);
+    nom::create_action<WaitForDurationAction>(DURATION);
   ASSERT_TRUE(kill_timer != nullptr);
   kill_timer->set_name("kill_timer");
 
   EXPECT_EQ(1, this->player.num_actions() )
   << scope_name;
   this->run_action_ret =
-  this->player.run_action( kill_timer, [=]() {
+  this->player.run_action(kill_timer, [=]() {
 
+    this->expected_common_params( kill_timer.get(), DURATION, SPEED_MOD,
+                                  "common_params" );
     if( type & REPEAT_FOR ) {
       RepeatForAction* repeat_obj =
         NOM_DYN_PTR_CAST(RepeatForAction*, repeat.get() );
@@ -219,11 +220,16 @@ TEST_F(ActionTest, RepeatForAction)
     this->expected_action_params(action0.get(), 1);
     this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
     this->expected_repeat_params(repeat.get(), NUM_REPEATS);
-    this->quit(); // graceful exit
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue the action!";
   EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
 
   this->append_render_callback( [=](const RenderWindow& win) {
     // Render our animation's rectangle
@@ -283,12 +289,8 @@ TEST_F(ActionTest, RepeatForeverAction)
   auto kill_timer =
     nom::create_action<WaitForDurationAction>(TEST_DURATION);
   ASSERT_TRUE(kill_timer != nullptr);
-
-  auto action1 =
-    nom::create_action<SequenceAction>( {kill_timer}, "action1" );
-  ASSERT_TRUE(action1 != nullptr);
-  action1->set_timing_curve(TIMING_MODE);
-  action1->set_speed(SPEED_MOD);
+  kill_timer->set_speed(SPEED_MOD);
+  kill_timer->set_name("kill_timer");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -300,19 +302,18 @@ TEST_F(ActionTest, RepeatForeverAction)
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->run_action_ret =
-  this->player.run_action(action1, [=]() {
+  this->player.run_action(kill_timer, [=]() {
 
     EXPECT_EQ(2, this->player.num_actions() );
     this->expected_repeat_params(repeat_forever.get(), NUM_REPEATS);
     this->expected_action_params(action0.get(), 1);
     this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
-    this->expected_action_params(action1.get(), 1);
     this->expected_common_params(kill_timer.get(), TEST_DURATION, SPEED_MOD);
 
     this->quit();
   });
   EXPECT_EQ(true, this->run_action_ret)
-  << "Failed to queue the action!";
+  << "Failed to queue kill_timer!";
   EXPECT_EQ(2, this->player.num_actions() );
 
   this->append_render_callback( [=](const RenderWindow& win) {
@@ -333,9 +334,10 @@ TEST_F(ActionTest, SpriteBatchActionGroup)
 
   // maximal test duration before termination
   const real32 TEST_DURATION = 1.5f;
+  // this value correlates with TEST_DURATION
+  const nom::size_type NUM_REPEATS = 4;
   const uint32 action_type =
     ActionType::REPEAT_FOR | ActionType::GROUP;
-  const nom::size_type NUM_REPEATS = 4;
 
   // IMPORTANT: This value must remain constant for reproducing consistent test
   // results!
@@ -353,9 +355,10 @@ TEST_F(ActionTest, SpriteBatchActionSequence)
 
   // maximal test duration before termination
   const real32 TEST_DURATION = 1.5f;
+  // this value correlates with TEST_DURATION
+  const nom::size_type NUM_REPEATS = 4;
   const uint32 action_type =
     ActionType::REPEAT_FOR | ActionType::SEQUENCE;
-  const nom::size_type NUM_REPEATS = 4;
 
   // IMPORTANT: This value must remain constant for reproducing consistent test
   // results!
@@ -373,9 +376,10 @@ TEST_F(ActionTest, SpriteBatchActionReversed)
 
   // maximal test duration before termination
   const real32 TEST_DURATION = 1.5f;
+  // this value correlates with TEST_DURATION
+  const nom::size_type NUM_REPEATS = 4;
   const uint32 action_type =
     ActionType::REPEAT_FOR | ActionType::REVERSED;
-  const nom::size_type NUM_REPEATS = 4;
 
   // IMPORTANT: This value must remain constant for reproducing consistent test
   // results!
@@ -395,9 +399,10 @@ TEST_F(ActionTest, SpriteBatchActionGroupRepeatingForever)
 
   // maximal test duration before termination
   const real32 TEST_DURATION = 1.5f;
+  // this value correlates with TEST_DURATION
+  const nom::size_type NUM_REPEATS = 4;
   const uint32 action_type =
     ActionType::REPEAT_FOREVER | ActionType::GROUP;
-  const nom::size_type NUM_REPEATS = 4;
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // IMPORTANT: This value must remain constant for reproducing consistent test
@@ -417,9 +422,10 @@ TEST_F(ActionTest, SpriteBatchActionSequenceRepeatingForever)
 
   // maximal test duration before termination
   const real32 TEST_DURATION = 1.5f;
+  // this value correlates with TEST_DURATION
+  const nom::size_type NUM_REPEATS = 4;
   const uint32 action_type =
     ActionType::REPEAT_FOREVER | ActionType::SEQUENCE;
-  const nom::size_type NUM_REPEATS = 4;
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // IMPORTANT: This value must remain constant for reproducing consistent test
@@ -439,9 +445,10 @@ TEST_F(ActionTest, SpriteBatchActionRepeatingForeverReversed)
 
   // maximal test duration before termination
   const real32 TEST_DURATION = 1.5f;
+  // this value correlates with TEST_DURATION
+  const nom::size_type NUM_REPEATS = 4;
   const uint32 action_type =
     ActionType::REPEAT_FOREVER | ActionType::REVERSED;
-  const nom::size_type NUM_REPEATS = 4;
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // IMPORTANT: This value must remain constant for reproducing consistent test

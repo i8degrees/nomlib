@@ -154,13 +154,16 @@ TEST_F(ActionTest, RainingRectsStressTest)
         EXPECT_TRUE(*itr != nullptr);
         EXPECT_FALSE( (*itr)->valid() );
       }
-#if 1
-      this->quit();
-#endif
     });
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, MIN_SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
 
   this->append_render_callback( [=](const RenderWindow& win) {
 
@@ -362,9 +365,13 @@ TEST_F(ActionTest, CardPlacementEffectsDemo)
       EXPECT_EQ(2, this->player.num_actions() );
 
       this->expected_action_params(action3.get(), 1);
-
-      this->quit();
     });
+  });
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
   });
 
   this->append_render_callback( [=, &bg_tex, &sprite0, &sprite1] (const RenderWindow& win) {
@@ -395,6 +402,7 @@ TEST_F(ActionTest, ScrollingTextDemo)
   // #define DEV_SCROLLING_TEXT_NO_WAIT_TIMER
 
   // Testing parameters
+  const real32 DURATION = 15.5f;
   const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
     NOM_ACTION_TEST_FLAG(timing_curve);
@@ -684,8 +692,6 @@ TEST_F(ActionTest, ScrollingTextDemo)
 
                 this->expected_action_params( fade_screen_out_action.get(), 1,
                                               "fade_screen_out" );
-
-                this->quit();
               });
             });
           });
@@ -696,6 +702,12 @@ TEST_F(ActionTest, ScrollingTextDemo)
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue one or more actions!";
   EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
 
   this->append_render_callback( [=, &bg_sprite, &anim_text_sprite] (const RenderWindow& win) {
 

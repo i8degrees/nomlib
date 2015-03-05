@@ -160,7 +160,7 @@ TEST_F(ActionTest, RainingRectsStressTest)
   << "Failed to queue action0";
 
   this->append_update_callback( [=](float) {
-    if( this->expected_min_duration(DURATION, MIN_SPEED_MOD) == true ) {
+    if( this->expected_min_duration(DURATION, MAX_SPEED_MOD) == true ) {
       this->quit();
     }
   });

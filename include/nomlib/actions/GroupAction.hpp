@@ -85,14 +85,15 @@ class GroupAction: public virtual IActionObject
     void set_timing_curve(const IActionObject::timing_curve_func& mode) override;
 
   private:
-    typedef std::vector<std::shared_ptr<IActionObject>> container_type;
+    IActionObject::FrameState
+    update(real32 delta_time, uint32 direction);
+
+    // TODO: Rename to queue_container?
+    typedef std::deque<std::shared_ptr<IActionObject>> container_type;
 
     const container_type& actions() const;
 
     /// \brief The enqueued actions.
-    ///
-    /// \remarks This is not a queue container because we need to erase actions
-    /// based on the order in which they complete.
     container_type actions_;
 
     /// \brief Iteration counter.

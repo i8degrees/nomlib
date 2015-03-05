@@ -30,6 +30,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+enum FrameStateDirection
+{
+  NEXT_FRAME,
+  PREV_FRAME
+};
+
 SequenceAction::SequenceAction( const action_list& actions,
                                 const std::string& name )
 {
@@ -44,6 +50,7 @@ SequenceAction::SequenceAction( const action_list& actions,
 
   this->itr_pos_ = 0;
   this->num_actions_ = this->actions_.size();
+  this->actions_iterator_ = this->actions_.begin();
 }
 
 SequenceAction::~SequenceAction()
@@ -57,94 +64,69 @@ std::unique_ptr<SequenceAction::derived_type> SequenceAction::clone() const
   return( std::unique_ptr<self_type>( new self_type(*this) ) );
 }
 
-IActionObject::FrameState SequenceAction::next_frame(real32 delta_time)
+IActionObject::FrameState
+SequenceAction::update(real32 delta_time, uint32 direction)
 {
   IActionObject::FrameState action_status =
     FrameState::DONE;
 
-  if( this->actions_.empty() == true ) {
-    this->status_ = FrameState::DONE;
-    return FrameState::DONE;
+  // Program flow is structured to never call back here after the actions are
+  // finished -- this serves only as a reminder to the intended flow.
+  if( this->status_ == FrameState::DONE ) {
+    NOM_ASSERT_INVALID_PATH();
+    return this->status_;
   }
 
-  auto itr = this->actions_.begin();
+  auto &itr = this->actions_iterator_;
   auto actions_end = this->actions_.end();
   NOM_ASSERT(itr != actions_end);
 
   NOM_ASSERT(*itr != nullptr);
   if( *itr != nullptr ) {
-    action_status = (*itr)->next_frame(delta_time);
+    if( direction == FrameStateDirection::NEXT_FRAME ) {
+      action_status = (*itr)->next_frame(delta_time);
+    } else {
+      action_status = (*itr)->prev_frame(delta_time);
+    }
   }
 
   if( action_status == FrameState::DONE ) {
 
-    std::string action_id = (*itr)->name();
-    if( action_id == "" ) {
-      action_id = "action";
+    std::string action_id;
+    if( *itr != nullptr ) {
+      action_id = (*itr)->name();
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SequenceAction]:"
-                    "removing", action_id, "from container",
-                    "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
-                    "[id]:", this->name() );
-
-    this->actions_.pop_front();
-    itr = this->actions_.begin();
-    ++this->itr_pos_;
-    this->status_ = FrameState::PLAY_NEXT_FRAME;
-
-    if( this->actions_.empty() == true ) {
-      this->status_ = FrameState::DONE;
-      return this->status_;
-    }
-  }
-
-  return this->status_;
-}
-
-IActionObject::FrameState SequenceAction::prev_frame(real32 delta_time)
-{
-  IActionObject::FrameState action_status =
-    FrameState::DONE;
-
-  if( this->actions_.empty() == true ) {
-    this->status_ = FrameState::DONE;
-    return FrameState::DONE;
-  }
-
-  auto itr = this->actions_.begin();
-  auto actions_end = this->actions_.end();
-  NOM_ASSERT(itr != actions_end);
-
-  NOM_ASSERT(*itr != nullptr);
-  if( *itr != nullptr ) {
-    action_status = (*itr)->prev_frame(delta_time);
-  }
-
-  if( action_status == FrameState::DONE ) {
-
-    std::string action_id = (*itr)->name();
     if( action_id == "" ) {
       action_id = "action";
     }
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SequenceAction]:",
-                    "removing", action_id, "from container",
+                    action_id, "has finished",
                     "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
                     "[id]:", this->name() );
 
-    this->actions_.pop_front();
-    itr = this->actions_.begin();
+    ++itr;
     ++this->itr_pos_;
     this->status_ = FrameState::PLAY_NEXT_FRAME;
+  }
 
-    if( this->actions_.empty() == true ) {
-      this->status_ = FrameState::DONE;
-      return this->status_;
-    }
+  if( this->itr_pos_ == this->num_actions_ ) {
+    this->status_ = FrameState::DONE;
+    return this->status_;
   }
 
   return this->status_;
+}
+
+IActionObject::FrameState SequenceAction::next_frame(real32 delta_time)
+{
+  return this->update(delta_time, FrameStateDirection::NEXT_FRAME);
+}
+
+IActionObject::FrameState SequenceAction::prev_frame(real32 delta_time)
+{
+  return this->update(delta_time, FrameStateDirection::PREV_FRAME);
 }
 
 void SequenceAction::pause(real32 delta_time)
@@ -171,6 +153,9 @@ void SequenceAction::resume(real32 delta_time)
 
 void SequenceAction::rewind(real32 delta_time)
 {
+  this->itr_pos_ = 0;
+  this->actions_iterator_ = this->actions_.begin();
+
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
     NOM_ASSERT(*itr != nullptr);

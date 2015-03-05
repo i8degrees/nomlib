@@ -85,7 +85,13 @@ class SequenceAction: public virtual IActionObject
     void set_timing_curve(const IActionObject::timing_curve_func& mode) override;
 
   private:
+    IActionObject::FrameState
+    update(real32 delta_time, uint32 direction);
+
+    // TODO: Rename to queue_container?
     typedef std::deque<std::shared_ptr<IActionObject>> container_type;
+    typedef std::deque<std::shared_ptr<IActionObject>>::iterator
+    container_iterator;
 
     const container_type& actions() const;
 
@@ -93,6 +99,7 @@ class SequenceAction: public virtual IActionObject
     ///
     /// \remarks The stored actions are processed in a FIFO order.
     container_type actions_;
+    container_iterator actions_iterator_;
 
     /// \brief Iteration counter.
     nom::size_type itr_pos_;

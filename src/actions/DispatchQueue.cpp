@@ -30,8 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Forward declarations
 #include "nomlib/actions/IActionObject.hpp"
-#include "nomlib/actions/SequenceAction.hpp"
-#include "nomlib/actions/GroupAction.hpp"
 #include "nomlib/actions/ActionPlayer.hpp"
 
 namespace nom {
@@ -82,31 +80,11 @@ enqueue_action( const std::shared_ptr<IActionObject>& action,
 {
   DispatchEnqueue enqueue;
 
-  if( action == nullptr ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not enqueue the action; action was NULL." );
-    return false;
-  }
-
-  // FIXME?
-  // Do not erase the actions the end-user passes to us; things like unit
-  // testing and accessing action elements after deletion break otherwise!
-  GroupAction* grp = NOM_DYN_PTR_CAST(GroupAction*, action.get() );
-  SequenceAction* seq = NOM_DYN_PTR_CAST(SequenceAction*, action.get() );
-
-  if( grp != nullptr ) {
-    enqueue.action = action->clone();
-  } else if( seq != nullptr ) {
-    enqueue.action = action->clone();
-  } else {
-    // Non-proxy action objects do not need special handling
-    enqueue.action = action;
-  }
-
+  enqueue.action = action;
   NOM_ASSERT(enqueue.action != nullptr);
   if( enqueue.action == nullptr ) {
     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not enqueue the action; failed cloning action." );
+                  "Could not enqueue the action; action was NULL." );
     return false;
   }
 

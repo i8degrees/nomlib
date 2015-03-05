@@ -30,6 +30,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+enum FrameStateDirection
+{
+  NEXT_FRAME,
+  PREV_FRAME
+};
+
 GroupAction::GroupAction( const action_list& actions,
                           const std::string& name )
 {
@@ -57,11 +63,14 @@ std::unique_ptr<GroupAction::derived_type> GroupAction::clone() const
   return( std::unique_ptr<self_type>( new self_type(*this) ) );
 }
 
-IActionObject::FrameState GroupAction::next_frame(real32 delta_time)
+IActionObject::FrameState
+GroupAction::update(real32 delta_time, uint32 direction)
 {
-  if( this->actions_.empty() == true ) {
-    this->status_ = FrameState::DONE;
-    return FrameState::DONE;
+  // Program flow is structured to never call back here after the actions are
+  // finished -- this serves only as a reminder to the intended flow.
+  if( this->status_ == FrameState::DONE ) {
+    NOM_ASSERT_INVALID_PATH();
+    return this->status_;
   }
 
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
@@ -71,7 +80,11 @@ IActionObject::FrameState GroupAction::next_frame(real32 delta_time)
 
     NOM_ASSERT(*itr != nullptr);
     if( *itr != nullptr ) {
-      action_status = (*itr)->next_frame(delta_time);
+      if( direction == FrameStateDirection::NEXT_FRAME ) {
+        action_status = (*itr)->next_frame(delta_time);
+      } else {
+        action_status = (*itr)->prev_frame(delta_time);
+      }
     }
 
     if( action_status == FrameState::DONE ) {
@@ -82,81 +95,31 @@ IActionObject::FrameState GroupAction::next_frame(real32 delta_time)
       }
 
       NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[GroupAction]:",
-                      "removing", action_id, "from container",
+                      action_id, "has finished",
                       "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
                       "[id]:", this->name() );
 
-      // Erase the group action in the order in which it is completed
-      itr = this->actions_.erase(itr);
-
-      // Debug counter
       ++this->itr_pos_;
-
       this->status_ = FrameState::PLAY_NEXT_FRAME;
+    }
 
-      if( itr == this->actions_.end() ) {
-        break;
-      }
-
-      if( this->actions_.empty() == true ) {
-        this->status_ = FrameState::DONE;
-        return this->status_;
-      }
+    if( this->itr_pos_ == this->num_actions_ ) {
+      this->status_ = FrameState::DONE;
+      return this->status_;
     }
   }
 
   return this->status_;
 }
 
+IActionObject::FrameState GroupAction::next_frame(real32 delta_time)
+{
+  return this->update(delta_time, FrameStateDirection::NEXT_FRAME);
+}
+
 IActionObject::FrameState GroupAction::prev_frame(real32 delta_time)
 {
-  if( this->actions_.empty() == true ) {
-    this->status_ = FrameState::DONE;
-    return FrameState::DONE;
-  }
-
-  for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
-
-    IActionObject::FrameState action_status =
-      FrameState::DONE;
-
-    NOM_ASSERT(*itr != nullptr);
-    if( *itr != nullptr ) {
-      action_status = (*itr)->prev_frame(delta_time);
-    }
-
-    if( action_status == FrameState::DONE ) {
-
-      std::string action_id = (*itr)->name();
-      if( action_id == "" ) {
-        action_id = "action";
-      }
-
-      NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[GroupAction]:",
-                      "removing", action_id, "from container",
-                      "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
-                      "[id]:", this->name() );
-
-      // Erase the group action in the order in which it is completed
-      itr = this->actions_.erase(itr);
-
-      // Debug counter
-      ++this->itr_pos_;
-
-      this->status_ = FrameState::PLAY_NEXT_FRAME;
-
-      if( itr == this->actions_.end() ) {
-        break;
-      }
-
-      if( this->actions_.empty() == true ) {
-        this->status_ = FrameState::DONE;
-        return this->status_;
-      }
-    }
-  }
-
-  return this->status_;
+  return this->update(delta_time, FrameStateDirection::PREV_FRAME);
 }
 
 void GroupAction::pause(real32 delta_time)
@@ -183,26 +146,15 @@ void GroupAction::resume(real32 delta_time)
 
 void GroupAction::rewind(real32 delta_time)
 {
+  this->itr_pos_ = 0;
+
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
     NOM_ASSERT(*itr != nullptr);
 
-    // FIXME: We cannot rewind our objects until their memory store is released,
-    // otherwise the memory never gets released!
-
-    // FIXME: Memory stops being released when stopped or paused -- we want it
-    // to occur regardless if the object is in the DONE frame state!
-#if 0
-    if( (*itr) != nullptr && (*itr)->status() == FrameState::DONE &&
-        this->status() == FrameState::DONE )
-    {
-      (*itr)->rewind(delta_time);
-    }
-#else
     if( (*itr) != nullptr ) {
       (*itr)->rewind(delta_time);
     }
-#endif
   } // end for loop
 }
 

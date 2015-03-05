@@ -551,7 +551,7 @@ TEST_F(ActionTest, RepeatForeverActionReversed)
 
 /// \remarks Thanks goes to Tim Jones of [sdltutorials.com](http://www.sdltutorials.com/sdl-animation)
 /// for the sprite frames of Yoshi chosen for this test!
-TEST_F(ActionTest, SpriteActionReversed)
+TEST_F(ActionTest, SpriteTexturesActionReversed)
 {
   // Testing parameters
   texture_frames anim_frames;

@@ -109,7 +109,15 @@ TEST_F(ActionTest, GroupActionFinishEquality)
   action1->set_speed(SPEED_MOD1);
   action1->set_timing_curve(TIMING_MODE);
 
-  // action0
+  auto remove_action0 =
+    nom::create_action<RemoveAction>(action0);
+  ASSERT_TRUE(remove_action0 != nullptr);
+  remove_action0->set_name("remove_action0");
+
+  auto remove_action1 =
+    nom::create_action<RemoveAction>(action1);
+  ASSERT_TRUE(remove_action1 != nullptr);
+  remove_action1->set_name("remove_action1");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -120,12 +128,19 @@ TEST_F(ActionTest, GroupActionFinishEquality)
     this->expected_action_params(action0.get(), 2);
     this->expected_common_params(translate0.get(), DURATION, SPEED_MOD0);
     this->expected_common_params(translate1.get(), DURATION, SPEED_MOD0);
+
+    this->player.run_action(remove_action0, [=]() {
+      // NOTE: The removal of the action should free the stored texture of each
+      // sprite, preventing it from being rendered by invalidating the texture.
+      EXPECT_TRUE(sprite0 != nullptr);
+      EXPECT_FALSE( sprite0->valid() );
+      EXPECT_TRUE(sprite1 != nullptr);
+      EXPECT_FALSE( sprite1->valid() );
+    });
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
   EXPECT_EQ(1, this->player.num_actions() );
-
-  // action1
 
   EXPECT_EQ(1, this->player.num_actions() );
   this->run_action_ret =
@@ -136,6 +151,15 @@ TEST_F(ActionTest, GroupActionFinishEquality)
     this->expected_action_params(action1.get(), 2);
     this->expected_common_params(translate2.get(), DURATION, SPEED_MOD1);
     this->expected_common_params(translate3.get(), DURATION, SPEED_MOD1);
+
+    this->player.run_action(remove_action1, [=]() {
+      // NOTE: The removal of the action should free the stored texture of each
+      // sprite, preventing it from being rendered by invalidating the texture.
+      EXPECT_TRUE(sprite2 != nullptr);
+      EXPECT_FALSE( sprite2->valid() );
+      EXPECT_TRUE(sprite2 != nullptr);
+      EXPECT_FALSE( sprite2->valid() );
+    });
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action1";
@@ -300,6 +324,26 @@ TEST_F(ActionTest, ConcurrentGroupActions)
   action3->set_speed(SPEED_MOD3);
   action3->set_timing_curve(TIMING_MODE);
 
+  auto remove_action0 =
+    nom::create_action<RemoveAction>(action0);
+  ASSERT_TRUE(remove_action0 != nullptr);
+  remove_action0->set_name("remove_action0");
+
+  auto remove_action1 =
+    nom::create_action<RemoveAction>(action1);
+  ASSERT_TRUE(remove_action1 != nullptr);
+  remove_action1->set_name("remove_action1");
+
+  auto remove_action2 =
+    nom::create_action<RemoveAction>(action2);
+  ASSERT_TRUE(remove_action2 != nullptr);
+  remove_action2->set_name("remove_action2");
+
+  auto remove_action3 =
+    nom::create_action<RemoveAction>(action3);
+  ASSERT_TRUE(remove_action3 != nullptr);
+  remove_action3->set_name("remove_action3");
+
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
@@ -307,6 +351,13 @@ TEST_F(ActionTest, ConcurrentGroupActions)
     EXPECT_EQ( EXPECTED_TEX0_POS, sprite0->position() );
     this->expected_action_params(action0.get(), 1);
     this->expected_common_params(translate0.get(), DURATION, SPEED_MOD0);
+
+    this->player.run_action(remove_action0, [=]() {
+      // NOTE: The removal of the action should free the stored texture of each
+      // sprite, preventing it from being rendered by invalidating the texture.
+      EXPECT_TRUE(sprite0 != nullptr);
+      EXPECT_FALSE( sprite0->valid() );
+    });
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
@@ -318,6 +369,13 @@ TEST_F(ActionTest, ConcurrentGroupActions)
     EXPECT_EQ( EXPECTED_TEX1_POS, sprite1->position() );
     this->expected_action_params(action1.get(), 1);
     this->expected_common_params(translate1.get(), DURATION, SPEED_MOD1);
+
+    this->player.run_action(remove_action1, [=]() {
+      // NOTE: The removal of the action should free the stored texture of each
+      // sprite, preventing it from being rendered by invalidating the texture.
+      EXPECT_TRUE(sprite1 != nullptr);
+      EXPECT_FALSE( sprite1->valid() );
+    });
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action1";
@@ -329,6 +387,13 @@ TEST_F(ActionTest, ConcurrentGroupActions)
     EXPECT_EQ( EXPECTED_TEX2_POS, sprite2->position() );
     this->expected_action_params(action2.get(), 1);
     this->expected_common_params(translate2.get(), DURATION, SPEED_MOD2);
+
+    this->player.run_action(remove_action2, [=]() {
+      // NOTE: The removal of the action should free the stored texture of each
+      // sprite, preventing it from being rendered by invalidating the texture.
+      EXPECT_TRUE(sprite2 != nullptr);
+      EXPECT_FALSE( sprite2->valid() );
+    });
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action2";
@@ -340,11 +405,17 @@ TEST_F(ActionTest, ConcurrentGroupActions)
     EXPECT_EQ( EXPECTED_TEX3_POS, sprite3->position() );
     this->expected_action_params(action3.get(), 1);
     this->expected_common_params(translate3.get(), DURATION, SPEED_MOD3);
+
+    this->player.run_action(remove_action3, [=]() {
+      // NOTE: The removal of the action should free the stored texture of each
+      // sprite, preventing it from being rendered by invalidating the texture.
+      EXPECT_TRUE(sprite3 != nullptr);
+      EXPECT_FALSE( sprite3->valid() );
+    });
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action3";
   EXPECT_EQ(4, this->player.num_actions() );
-
 
   this->append_update_callback( [=](float) {
 
@@ -461,6 +532,16 @@ TEST_F(ActionTest, ConcurrentSequenceActions)
   ASSERT_TRUE(action1 != nullptr);
   action1->set_timing_curve(TIMING_MODE);
 
+  auto remove_action0 =
+    nom::create_action<RemoveAction>(action0);
+  ASSERT_TRUE(remove_action0 != nullptr);
+  remove_action0->set_name("remove_action0");
+
+  auto remove_action1 =
+    nom::create_action<RemoveAction>(action1);
+  ASSERT_TRUE(remove_action1 != nullptr);
+  remove_action1->set_name("remove_action1");
+
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
@@ -470,6 +551,15 @@ TEST_F(ActionTest, ConcurrentSequenceActions)
     this->expected_action_params(action0.get(), 2);
     this->expected_common_params(translate0.get(), DURATION, SPEED_MOD0);
     this->expected_common_params(translate1.get(), DURATION, SPEED_MOD1);
+
+    this->player.run_action(remove_action0, [=]() {
+      // NOTE: The removal of the action should free the stored texture of each
+      // sprite, preventing it from being rendered by invalidating the texture.
+      EXPECT_TRUE(sprite0 != nullptr);
+      EXPECT_FALSE( sprite0->valid() );
+      EXPECT_TRUE(sprite1 != nullptr);
+      EXPECT_FALSE( sprite1->valid() );
+    });
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
@@ -483,6 +573,15 @@ TEST_F(ActionTest, ConcurrentSequenceActions)
     this->expected_action_params(action1.get(), 2);
     this->expected_common_params(translate2.get(), DURATION, SPEED_MOD2);
     this->expected_common_params(translate3.get(), DURATION, SPEED_MOD3);
+
+    this->player.run_action(remove_action1, [=]() {
+      // NOTE: The removal of the action should free the stored texture of each
+      // sprite, preventing it from being rendered by invalidating the texture.
+      EXPECT_TRUE(sprite2 != nullptr);
+      EXPECT_FALSE( sprite2->valid() );
+      EXPECT_TRUE(sprite3 != nullptr);
+      EXPECT_FALSE( sprite3->valid() );
+    });
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action1";
@@ -601,6 +700,16 @@ TEST_F(ActionTest, ConcurrentGroupAndSequenceActions)
   ASSERT_TRUE(action1 != nullptr);
   action1->set_timing_curve(TIMING_MODE);
 
+  auto remove_action0 =
+    nom::create_action<RemoveAction>(action0);
+  ASSERT_TRUE(remove_action0 != nullptr);
+  remove_action0->set_name("remove_action0");
+
+  auto remove_action1 =
+    nom::create_action<RemoveAction>(action1);
+  ASSERT_TRUE(remove_action1 != nullptr);
+  remove_action1->set_name("remove_action1");
+
   // EXPECT_EQ( ActionPlayer::IDLE, this->player.player_state() );
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -611,6 +720,15 @@ TEST_F(ActionTest, ConcurrentGroupAndSequenceActions)
     this->expected_action_params(action0.get(), 2);
     this->expected_common_params(translate0.get(), DURATION, SPEED_MOD0);
     this->expected_common_params(translate1.get(), DURATION, SPEED_MOD1);
+
+    this->player.run_action(remove_action0, [=]() {
+      // NOTE: The removal of the action should free the stored texture of each
+      // sprite, preventing it from being rendered by invalidating the texture.
+      EXPECT_TRUE(sprite0 != nullptr);
+      EXPECT_FALSE( sprite0->valid() );
+      EXPECT_TRUE(sprite1 != nullptr);
+      EXPECT_FALSE( sprite1->valid() );
+    });
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
@@ -625,6 +743,15 @@ TEST_F(ActionTest, ConcurrentGroupAndSequenceActions)
     this->expected_action_params(action1.get(), 2);
     this->expected_common_params(translate2.get(), DURATION, SPEED_MOD2);
     this->expected_common_params(translate3.get(), DURATION, SPEED_MOD3);
+
+    this->player.run_action(remove_action1, [=]() {
+      // NOTE: The removal of the action should free the stored texture of each
+      // sprite, preventing it from being rendered by invalidating the texture.
+      EXPECT_TRUE(sprite2 != nullptr);
+      EXPECT_FALSE( sprite2->valid() );
+      EXPECT_TRUE(sprite3 != nullptr);
+      EXPECT_FALSE( sprite3->valid() );
+    });
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action1";

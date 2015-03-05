@@ -266,7 +266,7 @@ void ActionTest::expected_action_params(  const GroupAction* action,
   ASSERT_TRUE(action != nullptr)
   << "expected_action_params scoped_name: " << scope_name << "\n";
 
-  EXPECT_EQ(size, action->actions_.size() )
+  EXPECT_EQ(size, action->num_actions_)
   << "expected_action_params scoped_name: " << scope_name << "\n";
 }
 
@@ -277,7 +277,7 @@ void ActionTest::expected_action_params(  const SequenceAction* action,
   ASSERT_TRUE(action != nullptr)
   << "expected_action_params scoped_name: " << scope_name << "\n";
 
-  EXPECT_EQ(size, action->actions_.size() )
+  EXPECT_EQ(size, action->num_actions_)
   << "expected_action_params scoped_name: " << scope_name << "\n";
 }
 

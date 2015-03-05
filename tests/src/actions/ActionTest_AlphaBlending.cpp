@@ -558,80 +558,70 @@ TEST_F(ActionTest, AlphaBlendingDemo)
   const Point2i RECT_POS(Point2i::zero);
   const Size2i RECT_SIZE(256, 256);
 
-  auto bg_tex = std::make_shared<Texture>();
-  ASSERT_TRUE(bg_tex != nullptr);
-  if( bg_tex->load( resources[0].path() + "backdrop.png" ) == false ) {
+  // NOTE: action0 init
+
+  auto bg_sprite_tex = std::make_shared<Texture>();
+  ASSERT_TRUE(bg_sprite_tex != nullptr);
+  if( bg_sprite_tex->load( resources[0].path() + "backdrop.png" ) == false ) {
     FAIL()  << "Could not load 'backdrop.png' input file from "
             << resources[0].path();
   }
 
-  bg_tex->set_alpha(Color4i::ALPHA_OPAQUE);
-
-  // Stretched dimensions to cover entire window
-  bg_tex->set_size(WINDOW_DIMS);
-
   auto bg_sprite = std::make_shared<Sprite>();
   ASSERT_TRUE(bg_sprite != nullptr);
-  EXPECT_EQ(true, bg_sprite->set_texture(bg_tex) );
+  EXPECT_EQ(true, bg_sprite->set_texture(bg_sprite_tex) );
+  bg_sprite->set_alpha(Color4i::ALPHA_OPAQUE);
+  // Stretched dimensions to cover entire window
+  bg_sprite->set_size(WINDOW_DIMS);
 
-  auto rect0 =
-    std::make_shared<Rectangle>(  IntRect(RECT_POS, RECT_SIZE),
-                                  Color4i::Magenta );
-  ASSERT_TRUE(rect0 != nullptr);
-
-  auto rect1 =
-    std::make_shared<Rectangle>(  IntRect(RECT_POS, RECT_SIZE),
-                                  Color4i::Blue );
-  ASSERT_TRUE(rect1 != nullptr);
-
-  auto rect_tex0 =
-    std::shared_ptr<Texture>( rect0->texture() );
-  ASSERT_TRUE(rect_tex0 != nullptr);
-
-  auto rect_tex1 =
-    std::shared_ptr<Texture>( rect1->texture() );
-  ASSERT_TRUE(rect_tex1 != nullptr);
-
-  // Initialize texture with its initial alpha value for blending test
-  rect_tex0->set_alpha(Color4i::ALPHA_TRANSPARENT);
-  rect_tex0->set_blend_mode(SDL_BLENDMODE_BLEND);
-
-  rect_tex1->set_alpha(Color4i::ALPHA_OPAQUE);
-  rect_tex1->set_blend_mode(SDL_BLENDMODE_BLEND);
-
-  // magenta rect
-  auto sprite0 =
-    std::make_shared<Sprite>();
-  ASSERT_TRUE(sprite0 != nullptr);
-  EXPECT_EQ(true, sprite0->set_texture(rect_tex0) );
-
-  // blue rect
-  auto sprite1 =
-    std::make_shared<Sprite>();
-  ASSERT_TRUE(sprite1 != nullptr);
-  EXPECT_EQ(true, sprite1->set_texture(rect_tex1) );
-
-  auto fade_bg_tex_out =
+  auto fade_bg_sprite_out_action =
     nom::create_action<FadeOutAction>(bg_sprite, DURATION);
-  ASSERT_TRUE(fade_bg_tex_out != nullptr);
+  ASSERT_TRUE(fade_bg_sprite_out_action != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {fade_bg_tex_out}, "bg_layer");
+    nom::create_action<GroupAction>(  {fade_bg_sprite_out_action},
+                                      "fade_bg_sprite_out" );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
-  auto fade_rect0_in =
-    nom::create_action<FadeInAction>(sprite0, DURATION);
-  ASSERT_TRUE(fade_rect0_in != nullptr);
+  // NOTE: action1 init
 
-  auto fade_rect1_out =
-    nom::create_action<FadeOutAction>(sprite1, DURATION);
-  ASSERT_TRUE(fade_rect1_out != nullptr);
+  auto magenta_rect =
+    std::make_shared<Rectangle>(  IntRect(RECT_POS, RECT_SIZE),
+                                  Color4i::Magenta );
+  ASSERT_TRUE(magenta_rect != nullptr);
+
+  auto blue_rect =
+    std::make_shared<Rectangle>(  IntRect(RECT_POS, RECT_SIZE),
+                                  Color4i::Blue );
+  ASSERT_TRUE(blue_rect != nullptr);
+
+  auto magenta_sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(magenta_sprite != nullptr);
+  EXPECT_EQ(true, magenta_sprite->set_texture( magenta_rect->texture() ) );
+  magenta_sprite->set_alpha(Color4i::ALPHA_TRANSPARENT);
+  magenta_sprite->set_color_blend_mode(BLEND_MODE_BLEND);
+
+  auto blue_sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(blue_sprite != nullptr);
+  EXPECT_EQ(true, blue_sprite->set_texture( blue_rect->texture() ) );
+  blue_sprite->set_alpha(Color4i::ALPHA_OPAQUE);
+  blue_sprite->set_color_blend_mode(BLEND_MODE_BLEND);
+
+  auto fade_magenta_sprite_in_action =
+    nom::create_action<FadeInAction>(magenta_sprite, DURATION);
+  ASSERT_TRUE(fade_magenta_sprite_in_action != nullptr);
+
+  auto fade_blue_sprite_out =
+    nom::create_action<FadeOutAction>(blue_sprite, DURATION);
+  ASSERT_TRUE(fade_blue_sprite_out != nullptr);
 
   auto action1 =
     nom::create_action<SequenceAction>( {
-      fade_rect0_in, fade_rect1_out}, "fade_rect0_in, fade_rect1_out" );
+      fade_magenta_sprite_in_action, fade_blue_sprite_out}, "action1" );
   ASSERT_TRUE(action1 != nullptr);
   action1->set_timing_curve(TIMING_MODE);
   action1->set_speed(SPEED_MOD);
@@ -642,17 +632,20 @@ TEST_F(ActionTest, AlphaBlendingDemo)
 
     EXPECT_EQ(2, this->player.num_actions() );
     this->expected_action_params(action0.get(), 1);
-    this->expected_common_params(fade_bg_tex_out.get(), DURATION, SPEED_MOD);
-
-    this->expected_alpha_out_params(  fade_bg_tex_out.get(),
+    this->expected_common_params( fade_bg_sprite_out_action.get(), DURATION,
+                                  SPEED_MOD );
+    this->expected_alpha_out_params(  fade_bg_sprite_out_action.get(),
                                       Color4i::ALPHA_TRANSPARENT,
                                       bg_sprite.get(), "fade_bg_sprite_out" );
-    this->expected_alpha_in_params( fade_rect0_in.get(),
+
+    // action1
+    this->expected_alpha_in_params( fade_magenta_sprite_in_action.get(),
                                     Color4i::ALPHA_OPAQUE,
-                                    sprite0.get(), "fade_sprite0_in" );
+                                    magenta_sprite.get(),
+                                    "fade_magenta_sprite_in" );
   });
   EXPECT_EQ(true, this->run_action_ret)
-  << "Failed to enqueue fade_blue_rect!";
+  << "Failed to enqueue action0!";
   EXPECT_EQ(1, this->player.num_actions() );
 
   this->run_action_ret =
@@ -660,21 +653,23 @@ TEST_F(ActionTest, AlphaBlendingDemo)
 
     EXPECT_EQ(1, this->player.num_actions() );
     this->expected_action_params(action1.get(), 2);
-    this->expected_common_params(fade_rect0_in.get(), DURATION, SPEED_MOD);
-    this->expected_common_params(fade_rect1_out.get(), DURATION, SPEED_MOD);
-
-    this->expected_alpha_out_params(  fade_rect1_out.get(),
+    this->expected_common_params( fade_magenta_sprite_in_action.get(),
+                                  DURATION, SPEED_MOD );
+    this->expected_common_params( fade_blue_sprite_out.get(), DURATION,
+                                  SPEED_MOD );
+    this->expected_alpha_out_params(  fade_blue_sprite_out.get(),
                                       Color4i::ALPHA_TRANSPARENT,
-                                      sprite1.get(), "fade_sprite1_out" );
+                                      blue_sprite.get(),
+                                      "fade_blue_sprite_out" );
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to enqueue fade_blue_rect!";
   EXPECT_EQ(2, this->player.num_actions() );
 
   this->append_update_callback( [=](float) mutable {
-    nom::set_alignment( sprite0.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( magenta_sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
-    nom::set_alignment( sprite1.get(), Point2i::zero, WINDOW_DIMS,
+    nom::set_alignment( blue_sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
@@ -685,8 +680,8 @@ TEST_F(ActionTest, AlphaBlendingDemo)
   });
 
   this->append_render_queue( bg_sprite.get() );
-  this->append_render_queue( sprite0.get() );
-  this->append_render_queue( sprite1.get() );
+  this->append_render_queue( magenta_sprite.get() );
+  this->append_render_queue( blue_sprite.get() );
   this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );

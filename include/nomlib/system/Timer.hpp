@@ -58,6 +58,8 @@ class Timer
 
     const std::string ticksAsString ( void ) const;
 
+    real32 to_seconds() const;
+
     /// \brief Convert milliseconds to seconds.
     ///
     /// \param elapsed_ticks A timing value in milliseconds to convert.

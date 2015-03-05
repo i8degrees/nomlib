@@ -219,6 +219,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #define NOM_ASSERT(expression)  // NO-OP
 #endif // defined( NOM_DEBUG_ASSERT )
 
+#define NOM_ASSERT_INVALID_PATH(reserved) \
+  NOM_ASSERT(!"Invalid execution path assertion triggered")
+
 #ifndef __cplusplus
   #pragma message ( "nomlib requires a C++11 capable compiler." )
 #endif

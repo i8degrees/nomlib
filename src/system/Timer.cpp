@@ -130,6 +130,13 @@ const std::string Timer::ticksAsString ( void ) const
   return std::to_string ( static_cast<uint32> ( this->ticks() ) );
 }
 
+real32 Timer::to_seconds() const
+{
+  real32 result = this->ticks() / 1000.0f;
+
+  return result;
+}
+
 uint32 Timer::to_milliseconds(real32 seconds)
 {
   uint32 result = (seconds * 1000.0f);

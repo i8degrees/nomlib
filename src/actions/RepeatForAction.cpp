@@ -75,18 +75,18 @@ IActionObject::FrameState RepeatForAction::next_frame(real32 delta_time)
   obj_status = action->next_frame(delta_time);
   if( obj_status == FrameState::DONE ) {
 
-    ++this->elapsed_repeats_;
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[RepeatForAction]",
+                    "[elapsed_repeats]:", this->elapsed_repeats_,
+                    "[num_repeats]:", this->num_repeats_ );
+
     if( this->elapsed_repeats_ < this->num_repeats_ ) {
+      ++this->elapsed_repeats_;
       action->rewind(delta_time);
     } else {
       NOM_ASSERT(this->num_repeats_ == this->elapsed_repeats_);
       this->status_ = FrameState::DONE;
       return this->status_;
     }
-
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[RepeatForAction]",
-                    "[elapsed_repeats]:", this->elapsed_repeats_,
-                    "[num_repeats]:", this->num_repeats_ );
   }
 
   this->status_ = FrameState::PLAY_NEXT_FRAME;

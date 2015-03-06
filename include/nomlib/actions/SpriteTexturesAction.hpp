@@ -98,6 +98,9 @@ class SpriteTexturesAction: public virtual IActionObject
     void first_frame(real32 delta_time);
     void last_frame(real32 delta_time);
 
+    /// \brief The starting frame of the animation to iterate from.
+    uint32 initial_frame_;
+
     /// \brief The number of textures to animate.
     real32 total_displacement_;
 

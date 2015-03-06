@@ -28,10 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/actions/ReversedAction.hpp"
 
-// Private headers
-#include "nomlib/actions/GroupAction.hpp"
-#include "nomlib/actions/SequenceAction.hpp"
-
 namespace nom {
 
 ReversedAction::ReversedAction( const std::shared_ptr<IActionObject>& action,

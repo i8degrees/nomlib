@@ -84,10 +84,8 @@ class RepeatForeverAction: public virtual IActionObject
     void set_timing_curve(const IActionObject::timing_curve_func& mode) override;
 
   private:
-    /// \fixme This is to work around a bug that prevents us from using
-    /// GroupAction or SequenceAction objects within this interface; the
-    /// underlying cause is unknown.
-    IActionObject* underlying_action_type(IActionObject* action);
+    IActionObject::FrameState
+    update(real32 delta_time, uint32 direction);
 
     /// \brief The animation proxy object.
     std::shared_ptr<IActionObject> object_;

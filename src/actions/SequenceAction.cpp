@@ -156,6 +156,11 @@ void SequenceAction::rewind(real32 delta_time)
   this->itr_pos_ = 0;
   this->actions_iterator_ = this->actions_.begin();
 
+  // NOTE: Since this object type does not handle its frame state based on time
+  // intervals like the other actions do, we must explicitly reset it here for
+  // looping actions to work correctly.
+  this->status_ = FrameState::PLAY_NEXT_FRAME;
+
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
     NOM_ASSERT(*itr != nullptr);

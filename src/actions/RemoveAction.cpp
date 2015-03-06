@@ -63,12 +63,12 @@ IActionObject::FrameState RemoveAction::next_frame(real32 delta_time)
                     "[id]:", this->name() );
 
     this->release();
-    this->status_ = FrameState::DONE;
+    this->status_ = FrameState::COMPLETED;
     return this->status_;
   }
 
   // No proxy action to remove
-  this->status_ = FrameState::DONE;
+  this->status_ = FrameState::COMPLETED;
   return this->status_;
 }
 

@@ -51,12 +51,12 @@ class IActionObject
     /// the course of action to take in the proceeding object cycle.
     enum FrameState
     {
-      // TODO: Rename to IDLE or COMPLETED?
-      DONE,             /// Stop iterating the animation object.
-      // TODO: Rename to PLAYING?
-      PLAY_NEXT_FRAME,  /// Continue iterating the animation object.
-      REWIND,
-      PAUSED
+      /// Stop iterating the animation object.
+      COMPLETED,
+      /// Continue iterating the animation object.
+      PLAYING,
+      /// Frozen in place
+      PAUSED,
     };
 
     /// \brief Default constructor.
@@ -118,7 +118,7 @@ class IActionObject
     /// \brief Free the object's resources.
     ///
     /// \note This is called internally by nom::AnimationPlayer when the
-    /// animation object is finished updating (signified by FrameState::DONE).
+    /// animation object is finished updating (signified by FrameState::COMPLETED).
     virtual void release() = 0;
 
     void set_name(const std::string& action_id);
@@ -137,7 +137,7 @@ class IActionObject
 
     /// \brief The animation object's frame state.
     IActionObject::FrameState status_ =
-        IActionObject::FrameState::PLAY_NEXT_FRAME;
+      IActionObject::FrameState::PLAYING;
 
     /// \brief The recorded number of frames incremented.
     ///

@@ -59,7 +59,7 @@ IActionObject::FrameState ReversedAction::next_frame(real32 delta_time)
   }
 
   // No proxy object to reverse
-  this->status_ = FrameState::DONE;
+  this->status_ = FrameState::COMPLETED;
   return this->status_;
 }
 
@@ -71,7 +71,7 @@ IActionObject::FrameState ReversedAction::prev_frame(real32 delta_time)
   }
 
   // No proxy object to reverse
-  this->status_ = FrameState::DONE;
+  this->status_ = FrameState::COMPLETED;
   return this->status_;
 }
 

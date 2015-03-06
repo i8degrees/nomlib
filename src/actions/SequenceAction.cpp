@@ -68,11 +68,11 @@ IActionObject::FrameState
 SequenceAction::update(real32 delta_time, uint32 direction)
 {
   IActionObject::FrameState action_status =
-    FrameState::DONE;
+    FrameState::COMPLETED;
 
   // Program flow is structured to never call back here after the actions are
   // finished -- this serves only as a reminder to the intended flow.
-  if( this->status_ == FrameState::DONE ) {
+  if( this->status_ == FrameState::COMPLETED ) {
     NOM_ASSERT_INVALID_PATH();
     return this->status_;
   }
@@ -90,7 +90,7 @@ SequenceAction::update(real32 delta_time, uint32 direction)
     }
   }
 
-  if( action_status == FrameState::DONE ) {
+  if( action_status == FrameState::COMPLETED ) {
 
     std::string action_id;
     if( *itr != nullptr ) {
@@ -108,11 +108,11 @@ SequenceAction::update(real32 delta_time, uint32 direction)
 
     ++itr;
     ++this->itr_pos_;
-    this->status_ = FrameState::PLAY_NEXT_FRAME;
+    this->status_ = FrameState::PLAYING;
   }
 
   if( this->itr_pos_ == this->num_actions_ ) {
-    this->status_ = FrameState::DONE;
+    this->status_ = FrameState::COMPLETED;
     return this->status_;
   }
 
@@ -159,7 +159,7 @@ void SequenceAction::rewind(real32 delta_time)
   // NOTE: Since this object type does not handle its frame state based on time
   // intervals like the other actions do, we must explicitly reset it here for
   // looping actions to work correctly.
-  this->status_ = FrameState::PLAY_NEXT_FRAME;
+  this->status_ = FrameState::PLAYING;
 
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 

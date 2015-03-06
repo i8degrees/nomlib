@@ -94,8 +94,6 @@ const Point2d rotate_points ( float angle, float x, float y, float pivot_x, floa
 ///
 /// \param number The 32-bit floating-point number to round.
 ///
-/// \returns The rounded value as a signed 32-bit integer.
-///
 /// \remarks The number is round up when it is greater than 0.5 and rounded
 /// down when the number is less than 0.5
 template <typename T>
@@ -105,13 +103,32 @@ T round_float(real32 number)
   return NOM_SCAST(T, ret);
 }
 
+/// \brief Round a fractional value down to the nearest integral number.
+///
+/// \param number The 32-bit floating-point number to round.
+template <typename T>
+T round_float_down(real32 number)
+{
+  real32 ret = floorf(number);
+  return NOM_SCAST(T, ret);
+}
+
+/// \brief Round a fractional value up to the largest integral number.
+///
+/// \param number The 32-bit floating-point number to round.
+template <typename T>
+T round_float_up(real32 number)
+{
+  real32 ret = ceilf(number);
+  return NOM_SCAST(T, ret);
+}
+
 /// \brief Round a fractional value.
 ///
 /// \param number The 64-bit floating-point number to round.
 ///
-/// \returns The rounded value as a signed 64-bit integer.
-///
 /// \remarks The number is round up when it is greater than 0.5 and rounded
+/// down when the number is less than 0.5.
 template <typename T>
 T round_double(real64 number)
 {

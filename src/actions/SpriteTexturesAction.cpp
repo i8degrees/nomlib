@@ -39,6 +39,7 @@ namespace nom {
 void SpriteTexturesAction::
 initialize(const texture_frames& textures, real32 frame_interval_seconds)
 {
+  this->initial_frame_ = 0;
   this->elapsed_frames_ = 0.0f;
   this->frame_interval_ = frame_interval_seconds;
 
@@ -152,24 +153,22 @@ SpriteTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
 
 IActionObject::FrameState SpriteTexturesAction::next_frame(real32 delta_time)
 {
-  this->first_frame(delta_time);
-
   delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
 
-  real32 initial_frame = 0.0f;
-  return( this->update( delta_time, initial_frame, this->total_displacement_,
-          this->duration() ) );
+  this->first_frame(delta_time);
+
+  return( this->update( delta_time, this->initial_frame_,
+          this->total_displacement_, this->duration() ) );
 }
 
 IActionObject::FrameState SpriteTexturesAction::prev_frame(real32 delta_time)
 {
-  this->first_frame(delta_time);
-
   delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
 
-  real32 initial_frame = this->frames_.size();
-  return( this->update( delta_time, initial_frame, -(this->total_displacement_),
-          this->duration() ) );
+  this->first_frame(delta_time);
+
+  return( this->update( delta_time, this->total_displacement_,
+          -(this->total_displacement_), this->duration() ) );
 }
 
 void SpriteTexturesAction::pause(real32 delta_time)
@@ -199,6 +198,7 @@ void SpriteTexturesAction::rewind(real32 delta_time)
     auto res = this->frame_iterator_;
     NOM_ASSERT(res->get() != nullptr);
 
+    this->initial_frame_ = 0;
     this->drawable_->set_texture( res->get()->texture() );
   }
 }
@@ -230,6 +230,8 @@ void SpriteTexturesAction::first_frame(real32 delta_time)
     NOM_ASSERT(res != nullptr);
     NOM_ASSERT(res->valid() == true);
 
+    this->initial_frame_ = 0;
+
     // Set the texture of the sprite immediately, so we do not have a momentary
     // gap in rendering
     if( this->drawable_ != nullptr && this->drawable_->valid() == false ) {
@@ -237,8 +239,8 @@ void SpriteTexturesAction::first_frame(real32 delta_time)
     }
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SpriteTexturesAction]"
-                    "[initial_frame]:", this->elapsed_frames_,
-                    "[num_frames]:", this->total_displacement_,
+                    "[initial_frame]:", this->initial_frame_,
+                    "[elapsed_frames]:", this->elapsed_frames_,
                     "[frame_interval]:", this->frame_interval_ );
   }
 }

@@ -85,7 +85,7 @@ class WaitForDurationAction: public virtual IActionObject
     /// \brief Stubbed implementation (no object resources to free).
     ///
     /// \note This is called internally by nom::AnimationPlayer when the
-    /// animation object is finished updating (signified by FrameState::DONE).
+    /// animation object is finished updating (signified by FrameState::COMPLETED).
     virtual void release() override;
 };
 

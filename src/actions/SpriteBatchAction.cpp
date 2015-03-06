@@ -134,12 +134,12 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
   // bounds; this adds stability to variable time steps
   if( delta_time < (duration / this->speed() ) ) {
 
-    this->status_ = FrameState::PLAY_NEXT_FRAME;
+    this->status_ = FrameState::PLAYING;
     return this->status_;
   } else {
     this->last_frame(delta_time);
 
-    this->status_ = FrameState::DONE;
+    this->status_ = FrameState::COMPLETED;
     return this->status_;
   } // end if delta_time **less than** action's duration
 }

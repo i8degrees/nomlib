@@ -148,13 +148,13 @@ MoveByAction::update(real32 t, const Point2i& b, const Point2i& c, real32 d)
   // Continue playing the animation only when we are inside our frame duration
   // bounds; this adds stability to variable time steps
   if( delta_time < (duration / this->speed() ) ) {
-    this->status_ = FrameState::PLAY_NEXT_FRAME;
+    this->status_ = FrameState::PLAYING;
     return this->status_;
   } else {
     // Diagnostics
     this->last_frame(delta_time);
 
-    this->status_ = FrameState::DONE;
+    this->status_ = FrameState::COMPLETED;
     return this->status_;
   }
 }

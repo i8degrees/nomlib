@@ -68,7 +68,7 @@ RepeatForAction::update(real32 delta_time, uint32 direction)
 
   if( action == nullptr ) {
     // No proxy object to repeat for!
-    this->status_ = FrameState::DONE;
+    this->status_ = FrameState::COMPLETED;
     return this->status_;
   }
 
@@ -78,7 +78,7 @@ RepeatForAction::update(real32 delta_time, uint32 direction)
     obj_status = action->prev_frame(delta_time);
   }
 
-  if( obj_status == FrameState::DONE ) {
+  if( obj_status == FrameState::COMPLETED ) {
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[RepeatForAction]",
                     "[elapsed_repeats]:", this->elapsed_repeats_,
@@ -89,12 +89,12 @@ RepeatForAction::update(real32 delta_time, uint32 direction)
       action->rewind(delta_time);
     } else {
       NOM_ASSERT(this->num_repeats_ == this->elapsed_repeats_);
-      this->status_ = FrameState::DONE;
+      this->status_ = FrameState::COMPLETED;
       return this->status_;
     }
   }
 
-  this->status_ = FrameState::PLAY_NEXT_FRAME;
+  this->status_ = FrameState::PLAYING;
   return this->status_;
 }
 

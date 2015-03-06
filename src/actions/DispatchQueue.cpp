@@ -119,12 +119,12 @@ bool DispatchQueue::update(uint32 player_state, real32 delta_time)
   NOM_ASSERT(*action_pos >= 0);
 
   IActionObject::FrameState action_status =
-    IActionObject::FrameState::DONE;
+    IActionObject::FrameState::COMPLETED;
 
   action_status = (itr)->next_frame(delta_time);
 
   // Handle the current animation with respect to the player's state
-  if( action_status != IActionObject::FrameState::DONE ) {
+  if( action_status != IActionObject::FrameState::COMPLETED ) {
 
     if( player_state == ActionPlayer::State::PAUSED ) {
       (itr)->pause(delta_time);
@@ -135,10 +135,10 @@ bool DispatchQueue::update(uint32 player_state, real32 delta_time)
       (itr)->resume(delta_time);
 
     } // ActionPlayer::State::RUNNING
-  } // end if status != DONE
+  } // end if status != COMPLETED
 
   // EOF -- handle internal clean up
-  if( action_status == IActionObject::FrameState::DONE ) {
+  if( action_status == IActionObject::FrameState::COMPLETED ) {
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_QUEUE, "DispatchQueue [erasing]:",
                     "[", *action_pos + 1, "/", num_actions, "]",
@@ -158,7 +158,7 @@ bool DispatchQueue::update(uint32 player_state, real32 delta_time)
     // Update iteration is finished
     return true;
 
-  } // end if itr == FrameState::DONE
+  } // end if itr == FrameState::COMPLETED
 
   // Update iteration is **not** finished
   return false;

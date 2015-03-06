@@ -222,15 +222,6 @@ TEST_F(ActionTest, CancelAction)
   EXPECT_EQ(true, this->player.cancel_action("action1") );
 }
 
-// NOTE: These logs show the inaccurate results previous to bug fixes!!
-// erasing action [ 1 / 1 ] [id]: ConcurrentGroupActions_action1 [type]: GROUP
-// erasing from queue [id]: ConcurrentGroupActions_action1 [type]: GROUP
-// erasing action [ 1 / 1 ] [id]: ConcurrentGroupActions_action2 [type]: GROUP
-// erasing from queue [id]: ConcurrentGroupActions_action2 [type]: GROUP
-// erasing action [ 1 / 1 ] [id]: ConcurrentGroupActions_action3 [type]: GROUP
-// erasing from queue [id]: ConcurrentGroupActions_action3 [type]: GROUP
-// erasing action [ 1 / 1 ] [id]: ConcurrentGroupActions_action0 [type]: GROUP
-// erasing from queue [id]: ConcurrentGroupActions_action0 [type]: GROUP
 TEST_F(ActionTest, ConcurrentGroupActions)
 {
   // Testing parameters
@@ -423,8 +414,7 @@ TEST_F(ActionTest, ConcurrentGroupActions)
         this->player.action_running("action1") == false &&
         this->player.action_running("action2") == false &&
         this->player.action_running("action3") == false &&
-        // The smallest speed modifier should always be used here
-        this->expected_min_duration(DURATION, SPEED_MOD0) == true )
+        this->expected_min_duration(DURATION, SPEED_MOD2) == true )
     {
       this->quit();
     }
@@ -439,12 +429,6 @@ TEST_F(ActionTest, ConcurrentGroupActions)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-// erasing action [ 1 / 2 ] [id]: ConcurrentSequenceActions_action1 [type]: SEQUENCE
-// erasing action [ 1 / 2 ] [id]: ConcurrentSequenceActions_action0 [type]: SEQUENCE
-// erasing action [ 2 / 2 ] [id]: ConcurrentSequenceActions_action1 [type]: SEQUENCE
-// erasing from queue [id]: ConcurrentSequenceActions_action1 [type]: SEQUENCE
-// erasing action [ 2 / 2 ] [id]: ConcurrentSequenceActions_action0 [type]: SEQUENCE
-// erasing from queue [id]: ConcurrentSequenceActions_action0 [type]: SEQUENCE
 TEST_F(ActionTest, ConcurrentSequenceActions)
 {
   // Testing parameters
@@ -591,8 +575,7 @@ TEST_F(ActionTest, ConcurrentSequenceActions)
 
     if( this->player.action_running("action0") == false &&
         this->player.action_running("action1") == false &&
-        // The smallest speed modifier should always be used here
-        this->expected_min_duration(DURATION, SPEED_MOD0) == true )
+        this->expected_min_duration(DURATION, SPEED_MOD2) == true )
     {
       this->quit();
     }
@@ -607,12 +590,6 @@ TEST_F(ActionTest, ConcurrentSequenceActions)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-// erasing action [ 1 / 2 ] [id]: action1 [type]: SEQUENCE
-// erasing action [ 1 / 2 ] [id]: action0 [type]: GROUP
-// erasing action [ 2 / 2 ] [id]: action0 [type]: GROUP
-// erasing from queue [id]: action0 [type]: GROUP
-// erasing action [ 2 / 2 ] [id]: action1 [type]: SEQUENCE
-// erasing from queue [id]: action1 [type]: SEQUENCE
 TEST_F(ActionTest, ConcurrentGroupAndSequenceActions)
 {
   // Testing parameters
@@ -761,8 +738,7 @@ TEST_F(ActionTest, ConcurrentGroupAndSequenceActions)
 
     if( this->player.action_running("action0") == false &&
         this->player.action_running("action1") == false &&
-        // The smallest speed modifier should always be used here
-        this->expected_min_duration(DURATION, SPEED_MOD0) == true )
+        this->expected_min_duration(DURATION, SPEED_MOD2) == true )
     {
       this->quit();
     }

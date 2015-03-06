@@ -44,9 +44,6 @@ class SequenceAction: public virtual IActionObject
     /// \brief Allow access into our private parts for unit testing.
     friend class ActionTest;
 
-    friend class RepeatForAction;
-    friend class RepeatForeverAction;
-
     typedef SequenceAction self_type;
     typedef IActionObject derived_type;
 

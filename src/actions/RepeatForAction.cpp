@@ -28,11 +28,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/actions/RepeatForAction.hpp"
 
-// Private headers
-#include "nomlib/actions/GroupAction.hpp"
-#include "nomlib/actions/SequenceAction.hpp"
-
 namespace nom {
+
+enum FrameStateDirection
+{
+  NEXT_FRAME,
+  PREV_FRAME
+};
 
 RepeatForAction::RepeatForAction( const std::shared_ptr<IActionObject>& action,
                                   nom::size_type num_repeats,
@@ -58,13 +60,11 @@ std::unique_ptr<RepeatForAction::derived_type> RepeatForAction::clone() const
   return( std::unique_ptr<self_type>( new self_type(*this) ) );
 }
 
-IActionObject::FrameState RepeatForAction::next_frame(real32 delta_time)
+IActionObject::FrameState
+RepeatForAction::update(real32 delta_time, uint32 direction)
 {
   IActionObject::FrameState obj_status;
-  IActionObject* action = nullptr;
-
-  action =
-    this->underlying_action_type( this->object_.get() );
+  IActionObject* action = this->object_.get();
 
   if( action == nullptr ) {
     // No proxy object to repeat for!
@@ -72,7 +72,12 @@ IActionObject::FrameState RepeatForAction::next_frame(real32 delta_time)
     return this->status_;
   }
 
-  obj_status = action->next_frame(delta_time);
+  if( direction == FrameStateDirection::NEXT_FRAME ) {
+    obj_status = action->next_frame(delta_time);
+  } else {
+    obj_status = action->prev_frame(delta_time);
+  }
+
   if( obj_status == FrameState::DONE ) {
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[RepeatForAction]",
@@ -93,39 +98,14 @@ IActionObject::FrameState RepeatForAction::next_frame(real32 delta_time)
   return this->status_;
 }
 
+IActionObject::FrameState RepeatForAction::next_frame(real32 delta_time)
+{
+  return this->update(delta_time, FrameStateDirection::NEXT_FRAME);
+}
+
 IActionObject::FrameState RepeatForAction::prev_frame(real32 delta_time)
 {
-  IActionObject::FrameState obj_status;
-  IActionObject* action = nullptr;
-
-  action =
-    this->underlying_action_type( this->object_.get() );
-
-  if( action == nullptr ) {
-    // No proxy object to repeat for!
-    this->status_ = FrameState::DONE;
-    return this->status_;
-  }
-
-  obj_status = action->prev_frame(delta_time);
-  if( obj_status == FrameState::DONE ) {
-
-    ++this->elapsed_repeats_;
-    if( this->elapsed_repeats_ < this->num_repeats_ ) {
-      action->rewind(delta_time);
-    } else {
-      NOM_ASSERT(this->num_repeats_ == this->elapsed_repeats_);
-      this->status_ = FrameState::DONE;
-      return this->status_;
-    }
-
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[RepeatForAction]",
-                    "[elapsed_repeats]:", this->elapsed_repeats_,
-                    "[num_repeats]:", this->num_repeats_ );
-  }
-
-  this->status_ = FrameState::PLAY_NEXT_FRAME;
-  return this->status_;
+  return this->update(delta_time, FrameStateDirection::PREV_FRAME);
 }
 
 void RepeatForAction::pause(real32 delta_time)
@@ -181,36 +161,6 @@ RepeatForAction::set_timing_curve(const IActionObject::timing_curve_func& mode)
   if( this->object_ != nullptr ) {
     this->object_->set_timing_curve(mode);
   }
-}
-
-// Private scope
-
-IActionObject*
-RepeatForAction::underlying_action_type(IActionObject* action)
-{
-  nom::size_type itr_pos = 0;
-  IActionObject* action_obj = action;
-
-  GroupAction* grp_obj =
-    NOM_DYN_PTR_CAST(GroupAction*, action_obj);
-  SequenceAction* seq_obj =
-    NOM_DYN_PTR_CAST(SequenceAction*, action_obj);
-
-  if( grp_obj ) {
-    itr_pos = grp_obj->itr_pos_;
-    NOM_ASSERT(itr_pos >= 0);
-    action_obj = grp_obj->actions_[itr_pos].get();
-  } else if( seq_obj ) {
-    itr_pos = seq_obj->itr_pos_;
-    NOM_ASSERT(itr_pos >= 0);
-    action_obj = seq_obj->actions_[itr_pos].get();
-  } else {
-    // Assume that the underlying object type is safe to use without this
-    // workaround; nothing needs to be done -- return the same object the
-    // end-user gave us as-is
-  }
-
-  return action_obj;
 }
 
 } // namespace nom

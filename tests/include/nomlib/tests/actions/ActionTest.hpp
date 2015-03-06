@@ -183,9 +183,10 @@ class ActionTest: public nom::VisualUnitTest
     {
       GROUP = 0x2,
       SEQUENCE = 0x4,
-      REPEAT_FOR = 0x8,
-      REPEAT_FOREVER = 0x16,
-      REVERSED = 0x32
+      ACTION = 0x8,
+      REPEAT_FOR = 0x100,
+      REPEAT_FOREVER = 0x200,
+      REVERSED = 0x400,
     };
 
     /// \params duration The maximum testing duration before termination of

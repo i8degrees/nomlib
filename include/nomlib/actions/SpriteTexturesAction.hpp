@@ -71,6 +71,9 @@ class SpriteTexturesAction: public virtual IActionObject
     virtual std::unique_ptr<derived_type> clone() const override;
 
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
+
+    /// \fixme This is not implemented properly; the frame iterator should be
+    //// reversed in ::update!
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
 
     virtual void pause(real32 delta_time) override;

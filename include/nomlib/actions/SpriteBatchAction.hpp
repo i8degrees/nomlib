@@ -82,7 +82,7 @@ class SpriteBatchAction: public virtual IActionObject
     void last_frame(real32 delta_time);
 
     /// \brief The starting frame of the animation to iterate from.
-    nom::size_type initial_frame_;
+    uint32 initial_frame_;
 
     /// \brief The number of textures to animate.
     real32 total_displacement_;

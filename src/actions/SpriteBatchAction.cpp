@@ -86,7 +86,7 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
   const int b1 = b;
 
   // Total number of frames over time
-  const nom::size_type total_displacement(c);
+  const real32 total_displacement(c);
 
   // The computed texture frame to show next
   real32 displacement(0.0f);
@@ -98,7 +98,7 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
   }
 
   // total change in value (applied over time)
-  real32 c1 = total_displacement - 1;
+  real32 c1 = total_displacement;
 
   NOM_ASSERT(this->timing_curve() != nullptr);
 
@@ -108,14 +108,17 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
   displacement =
     this->timing_curve().operator()(frame_time, b1, c1, duration);
 
+  NOM_ASSERT(displacement <= this->total_displacement_);
+  NOM_ASSERT(displacement >= this->initial_frame_);
+
   this->elapsed_frames_ = displacement;
 
   if( delta_time >= (this->last_delta_ + frame_interval) ) {
 
     this->last_delta_ = delta_time;
 
-    nom::size_type displacement_as_integer =
-      nom::round_float<nom::size_type>(displacement);
+    int displacement_as_integer =
+      nom::round_float_down<int>(displacement);
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SpriteBatchAction]",
                     "delta_time:", delta_time, "frame_time:", frame_time,
@@ -157,7 +160,7 @@ IActionObject::FrameState SpriteBatchAction::prev_frame(real32 delta_time)
 
   this->first_frame(delta_time);
 
-  return( this->update( delta_time, this->initial_frame_,
+  return( this->update( delta_time, this->total_displacement_,
           -(this->total_displacement_), this->duration() ) );
 }
 

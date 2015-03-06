@@ -93,24 +93,27 @@ ActionTest::setup_repeating_cursor_test(  real32 duration, real32 speed,
   sprite_action->set_speed(SPEED_MOD);
 
   std::shared_ptr<IActionObject> action0;
-  if( type & GROUP ) {
+  if( type & ActionType::GROUP ) {
     action0 = nom::create_action<GroupAction>( {sprite_action}, "action0" );
-  } else if( type & SEQUENCE ) {
+  } else if( type & ActionType::SEQUENCE ) {
     action0 = nom::create_action<SequenceAction>( {sprite_action}, "action0" );
-  } else if( type & REVERSED ) {
+  } else if( type & ActionType::REVERSED ) {
     action0 = nom::create_action<ReversedAction>(sprite_action, "action0");
+  } else if( type & ActionType::ACTION ) {
+    action0 = sprite_action;
   } else {
-    ASSERT_TRUE("ActionType must be either one of: GROUP, SEQUENCE, REVERSED")
+    ASSERT_TRUE("ActionType must be either one of the enumeration values")
     << scope_name;
   }
+
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
 
   std::shared_ptr<IActionObject> repeat;
-  if( type & REPEAT_FOR ) {
+  if( type & ActionType::REPEAT_FOR ) {
     repeat =
       nom::create_action<RepeatForAction>(action0, NUM_REPEATS, "action0_RepeatFor");
-  } else if( type & REPEAT_FOREVER ) {
+  } else if( type & ActionType::REPEAT_FOREVER ) {
     repeat =
       nom::create_action<RepeatForeverAction>(action0, "action0_RepeatForever");
   }
@@ -142,12 +145,12 @@ ActionTest::setup_repeating_cursor_test(  real32 duration, real32 speed,
 
     this->expected_common_params( kill_timer.get(), DURATION, SPEED_MOD,
                                   "common_params" );
-    if( type & REPEAT_FOR ) {
+    if( type & ActionType::REPEAT_FOR ) {
       RepeatForAction* repeat_obj =
         NOM_DYN_PTR_CAST(RepeatForAction*, repeat.get() );
 
       this->expected_repeat_params( repeat_obj, NUM_REPEATS, "repeat_params" );
-    } else if( type & REPEAT_FOREVER ) {
+    } else if( type & ActionType::REPEAT_FOREVER ) {
       RepeatForeverAction* repeat_obj =
         NOM_DYN_PTR_CAST(RepeatForeverAction*, repeat.get() );
 
@@ -309,6 +312,48 @@ TEST_F(ActionTest, RepeatForeverAction)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
+TEST_F(ActionTest, SpriteBatchActionRepeatForever)
+{
+  // Testing parameters
+
+  // maximal test duration before termination
+  const real32 TEST_DURATION = 1.5f;
+  // this value correlates with TEST_DURATION
+  const nom::size_type NUM_REPEATS = 4;
+  const uint32 action_type =
+    ActionType::ACTION | ActionType::REPEAT_FOREVER;
+
+  // IMPORTANT: This value must remain constant for reproducing consistent test
+  // results!
+  const real32 SPEED_MOD = 1.0f;
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+
+  this->setup_repeating_cursor_test(  TEST_DURATION, SPEED_MOD, FPS,
+                                      action_type, NUM_REPEATS,
+                                      nom::UnitTest::test_name() );
+}
+
+TEST_F(ActionTest, SpriteBatchActionRepeatForeverReversed)
+{
+  // Testing parameters
+
+  // maximal test duration before termination
+  const real32 TEST_DURATION = 1.5f;
+  // this value correlates with TEST_DURATION
+  const nom::size_type NUM_REPEATS = 4;
+  const uint32 action_type =
+    ActionType::REVERSED | ActionType::REPEAT_FOREVER;
+
+  // IMPORTANT: This value must remain constant for reproducing consistent test
+  // results!
+  const real32 SPEED_MOD = 1.0f;
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+
+  this->setup_repeating_cursor_test(  TEST_DURATION, SPEED_MOD, FPS,
+                                      action_type, NUM_REPEATS,
+                                      nom::UnitTest::test_name() );
+}
+
 TEST_F(ActionTest, SpriteBatchActionGroup)
 {
   // Testing parameters
@@ -318,7 +363,7 @@ TEST_F(ActionTest, SpriteBatchActionGroup)
   // this value correlates with TEST_DURATION
   const nom::size_type NUM_REPEATS = 4;
   const uint32 action_type =
-    ActionType::REPEAT_FOR | ActionType::GROUP;
+    ActionType::GROUP | ActionType::REPEAT_FOR;
 
   // IMPORTANT: This value must remain constant for reproducing consistent test
   // results!
@@ -339,7 +384,7 @@ TEST_F(ActionTest, SpriteBatchActionSequence)
   // this value correlates with TEST_DURATION
   const nom::size_type NUM_REPEATS = 4;
   const uint32 action_type =
-    ActionType::REPEAT_FOR | ActionType::SEQUENCE;
+    ActionType::SEQUENCE | ActionType::REPEAT_FOR;
 
   // IMPORTANT: This value must remain constant for reproducing consistent test
   // results!
@@ -360,7 +405,7 @@ TEST_F(ActionTest, SpriteBatchActionReversed)
   // this value correlates with TEST_DURATION
   const nom::size_type NUM_REPEATS = 4;
   const uint32 action_type =
-    ActionType::REPEAT_FOR | ActionType::REVERSED;
+    ActionType::REVERSED | ActionType::REPEAT_FOR;
 
   // IMPORTANT: This value must remain constant for reproducing consistent test
   // results!
@@ -383,7 +428,7 @@ TEST_F(ActionTest, SpriteBatchActionGroupRepeatingForever)
   // this value correlates with TEST_DURATION
   const nom::size_type NUM_REPEATS = 4;
   const uint32 action_type =
-    ActionType::REPEAT_FOREVER | ActionType::GROUP;
+    ActionType::GROUP | ActionType::REPEAT_FOREVER;
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // IMPORTANT: This value must remain constant for reproducing consistent test
@@ -406,7 +451,7 @@ TEST_F(ActionTest, SpriteBatchActionSequenceRepeatingForever)
   // this value correlates with TEST_DURATION
   const nom::size_type NUM_REPEATS = 4;
   const uint32 action_type =
-    ActionType::REPEAT_FOREVER | ActionType::SEQUENCE;
+    ActionType::SEQUENCE | ActionType::REPEAT_FOREVER;
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // IMPORTANT: This value must remain constant for reproducing consistent test
@@ -429,7 +474,7 @@ TEST_F(ActionTest, SpriteBatchActionRepeatingForeverReversed)
   // this value correlates with TEST_DURATION
   const nom::size_type NUM_REPEATS = 4;
   const uint32 action_type =
-    ActionType::REPEAT_FOREVER | ActionType::REVERSED;
+    ActionType::REVERSED | ActionType::REPEAT_FOREVER;
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
   // IMPORTANT: This value must remain constant for reproducing consistent test

@@ -80,21 +80,24 @@ RepeatForAction::update(real32 delta_time, uint32 direction)
 
   if( obj_status == FrameState::COMPLETED ) {
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[RepeatForAction]",
-                    "[elapsed_repeats]:", this->elapsed_repeats_,
-                    "[num_repeats]:", this->num_repeats_ );
-
+    ++this->elapsed_repeats_;
     if( this->elapsed_repeats_ < this->num_repeats_ ) {
-      ++this->elapsed_repeats_;
       action->rewind(delta_time);
     } else {
       NOM_ASSERT(this->num_repeats_ == this->elapsed_repeats_);
-      this->status_ = FrameState::COMPLETED;
-      return this->status_;
     }
   }
 
-  this->status_ = FrameState::PLAYING;
+  NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[RepeatForAction]",
+                  "[elapsed_repeats]:", this->elapsed_repeats_,
+                  "[num_repeats]:", this->num_repeats_ );
+
+  if( this->elapsed_repeats_ == this->num_repeats_ ) {
+    this->status_ = FrameState::COMPLETED;
+  } else {
+    this->status_ = FrameState::PLAYING;
+  }
+
   return this->status_;
 }
 

@@ -238,56 +238,58 @@ run_action( const std::shared_ptr<IActionObject>& action,
 // Called within the main game loop
 bool ActionPlayer::update(real32 delta_time)
 {
-  bool running = true;
-  ActionPlayer::State enqueue_state = ActionPlayer::State::RUNNING;
+  uint32 dispatch_running = ActionPlayer::State::IDLING;
+  ActionPlayer::State player_state = this->player_state();
 
+  // Process the queue in FIFO order
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
-    auto enqueue = itr->second.get();
+    auto action_id = itr->first;
+    auto action_queue = itr->second.get();
 
     // This is a valid condition; enqueued actions are subject to being removed
     // before their completion, i.e.: ::run_action will happily overwrite
     // existing action keys
-    if( enqueue == nullptr ) {
+    if( action_queue == nullptr ) {
       NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_PLAYER,
                       "ActionPlayer: enqueue erasable",
-                      "[id]:", itr->first );
+                      "[action_id]:", action_id );
 
       this->free_list_.push_back(itr);
-    } else { // enqueue != nullptr
+    } else {
 
-      enqueue_state = this->player_state();
-      running = (enqueue)->update(enqueue_state, delta_time);
+      dispatch_running = (action_queue)->update(player_state, delta_time);
 
-      if( (itr->second)->num_actions() == 0 ) {
+      if( dispatch_running == ActionPlayer::State::IDLING ) {
         NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_PLAYER,
                         "ActionPlayer: enqueue erasable",
-                        "[id]:", itr->first );
+                        "[action_id]:", action_id );
 
         this->free_list_.push_back(itr);
-      } // end if num_actions == 0
-    } // end if enqueue != NULL
+      } // end if IDLE
+    } // end if action queue is valid
   } // end for loop
 
-  if( this->free_list_.empty() == false ) {
 
-    while( this->free_list_.empty() == false ) {
-      auto res = this->free_list_.front();
+  // Erase the actions from the queue in LIFO order
+  while( this->free_list_.empty() == false ) {
+    auto res = this->free_list_.front();
 
-      NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_PLAYER,
-                      "ActionPlayer: erasing action",
-                      "[id]:", res->first );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_PLAYER,
+                    "ActionPlayer: erasing action",
+                    "[id]:", res->first );
 
-      this->actions_.erase(res);
-      this->free_list_.pop_front();
-    } // end while free_list_ NOT empty
-  } else if( running == false && this->free_list_.empty() == true ) {
-    // return false;
-    return running;
+    this->actions_.erase(res);
+    this->free_list_.pop_front();
   }
 
-  // return true;
-  return running;
+  if( this->actions_.empty() == true ) {
+    // Finished update iterations; all actions are completed
+    return false;
+  }
+
+  // Not finished with update iterations; one or more actions are still running
+  return true;
 }
 
 } // namespace nom

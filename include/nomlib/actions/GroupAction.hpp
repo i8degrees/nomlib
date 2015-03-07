@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_ACTIONS_GROUP_ACTION_HPP
 
 #include <memory>
-#include <deque>
+#include <vector>
 
 #include "nomlib/config.hpp"
 #include "nomlib/actions/IActionObject.hpp"
@@ -85,8 +85,11 @@ class GroupAction: public virtual IActionObject
     IActionObject::FrameState
     update(real32 delta_time, uint32 direction);
 
-    // TODO: Rename to queue_container?
-    typedef std::deque<std::shared_ptr<IActionObject>> container_type;
+    /// \remarks A std::vector container seems most appropriate here because
+    /// of the contiguous memory access, for lack of any other special needs,
+    /// i.e.: fast front/back iteration or fast expansion time.
+    typedef std::vector<std::shared_ptr<IActionObject>> container_type;
+    typedef container_type::iterator container_iterator;
 
     const container_type& actions() const;
 

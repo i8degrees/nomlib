@@ -30,8 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_ACTIONS_ACTION_PLAYER_HPP
 
 #include <memory>
-#include <map>
 #include <functional>
+#include <map>
 #include <deque>
 
 #include "nomlib/config.hpp"
@@ -75,6 +75,8 @@ class ActionPlayer
     /// \brief Disabled copy assignment operator.
     ActionPlayer& operator =(const ActionPlayer& rhs) = delete;
 
+    /// \returns Boolean FALSE when one or more actions are running, and boolean
+    /// TRUE when all actions have been completed.
     bool idle() const;
 
     /// \brief Get the number of actions enqueued.
@@ -186,14 +188,19 @@ class ActionPlayer
     /// completed -- this value may be NULL.
     /// \param queue            The queue to perform the action on.
     ///
-    /// \remarks This can be used to constrain or maximize the number of actions
-    /// per dispatch queue.
+    /// \remarks This can be used to constrain or maximize the number of
+    /// actions per dispatch queue. The default allocation scheme is a one to
+    /// one ratio; one dispatch queue per action.
     ///
     /// \see nom::DispatchQueue
     bool run_action(  const std::shared_ptr<IActionObject>& action,
                       const action_callback& completion_func,
                       std::unique_ptr<DispatchQueue> queue );
 
+    /// \returns Boolean TRUE when one or more actions are running, and boolean
+    /// FALSE when all actions have been completed.
+    ///
+    /// \see ::idle
     bool update(real32 delta_time);
 
   private:

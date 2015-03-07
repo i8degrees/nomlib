@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 #include <functional>
-#include <deque>
+#include <vector>
 
 #include "nomlib/config.hpp"
 
@@ -61,7 +61,7 @@ class DispatchQueue
     /// \brief Disabled copy assignment operator.
     DispatchQueue& operator =(const DispatchQueue& rhs) = delete;
 
-    /// \brief Get the current number of queued animation actions.
+    /// \brief Get the total number of enqueued actions.
     nom::size_type num_actions() const;
 
     /// \brief Append an action to the list of animations to be executed.
@@ -88,13 +88,21 @@ class DispatchQueue
     /// \remarks This method must be implemented in the appropriate game loop.
     /// Applicable places include the main game loop or within a game state
     /// loop.
-    bool update(uint32 player_state, real32 delta_time);
+    uint32 update(uint32 player_state, real32 delta_time);
 
   private:
-    typedef std::deque<std::unique_ptr<DispatchEnqueue>> container_type;
+    /// \remarks A std::vector container seems most appropriate here because
+    /// of the contiguous memory access, for lack of any other special needs,
+    /// i.e.: fast front/back iteration or fast expansion time.
+    typedef std::vector<std::unique_ptr<DispatchEnqueue>> container_type;
+    typedef container_type::iterator iterator_type;
 
     /// \brief Enqueued actions.
     container_type actions_;
+    iterator_type actions_iterator_;
+
+    /// \brief The total number of actions enqueued.
+    nom::size_type num_actions_ = 0;
 };
 
 } // namespace nom

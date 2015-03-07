@@ -63,7 +63,7 @@ DispatchQueue::~DispatchQueue()
 
 nom::size_type DispatchQueue::num_actions() const
 {
-  return( this->actions_.size() );
+  return this->num_actions_;
 }
 
 bool DispatchQueue::
@@ -82,25 +82,27 @@ enqueue_action( const std::shared_ptr<IActionObject>& action,
   enqueued_action->action = action;
   enqueued_action->on_completion_callback = completion_func;
 
-  this->actions_.push_front( std::move(enqueued_action) );
+  this->actions_.push_back( std::move(enqueued_action) );
+  this->actions_iterator_ = this->actions_.begin();
+  ++this->num_actions_;
 
   return true;
 }
 
-bool DispatchQueue::update(uint32 player_state, real32 delta_time)
+uint32 DispatchQueue::update(uint32 player_state, real32 delta_time)
 {
-  if( this->actions_.empty() == true ) {
-    // Done updating; nothing to update
-    return false;
-  }
+  auto itr = this->actions_iterator_;
+  auto actions_end = this->actions_.end();
 
-  auto itr = this->actions_.begin();
-  NOM_ASSERT(itr != this->actions_.end() );
+  if( itr == actions_end ) {
+    // Finished updating; nothing left to do
+    return ActionPlayer::State::IDLING;
+  }
 
   auto action = (*itr)->action;
   if( action == nullptr ) {
-    // Done updating; nothing to update
-    return false;
+    // Finished updating; nothing left to do
+    return ActionPlayer::State::IDLING;
   }
 
   std::string action_id = action->name();
@@ -109,9 +111,8 @@ bool DispatchQueue::update(uint32 player_state, real32 delta_time)
 
   // Diagnostics
   nom::size_type action_pos = (*itr)->action_pos;
-  nom::size_type num_actions = this->actions_.size();
+  nom::size_type num_actions = this->num_actions_;
   NOM_ASSERT(action_pos >= 0);
-  NOM_ASSERT(action_pos <= num_actions);
 
   IActionObject::FrameState action_status =
     IActionObject::FrameState::COMPLETED;
@@ -138,22 +139,24 @@ bool DispatchQueue::update(uint32 player_state, real32 delta_time)
                     "[id]:", action_id );
 
     ++(*itr)->action_pos;
-
-    // Goodbye cruel world!
-    this->actions_.erase(itr);
+    --this->num_actions_;
+    ++this->actions_iterator_;
+    NOM_ASSERT( (*itr)->action_pos <= num_actions);
+    NOM_ASSERT(this->num_actions_ >= 0);
 
     // Holla back
     if( completion_func != nullptr ) {
       completion_func.operator()();
     }
+  } // end if FrameState::COMPLETED
 
-    // Update iteration is finished
-    return true;
-
-  } // end if itr == FrameState::COMPLETED
-
-  // Update iteration is **not** finished
-  return false;
+  if( this->actions_iterator_ == actions_end ) {
+    // Finished update cycle
+    return ActionPlayer::State::IDLING;
+  } else {
+    // Update cycle is **not** finished
+    return ActionPlayer::State::RUNNING;
+  }
 }
 
 } // namespace nom

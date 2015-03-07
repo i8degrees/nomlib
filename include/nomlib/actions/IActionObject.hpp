@@ -177,16 +177,21 @@ typedef std::vector<std::shared_ptr<IActionObject>> action_list;
 template<typename ObjectType, typename... ObjectArgs>
 std::shared_ptr<ObjectType> create_action(ObjectArgs&&... args)
 {
-  return( std::make_shared<ObjectType>(
-          ObjectType( std::forward<ObjectArgs>(args) ... ) )
-        );
+  // IMPORTaNT: We risk object slicing if we use std::make_shared here! The
+  // problem occurs when the end-user tries to return the created action
+  // pointer by value.
+  return( std::shared_ptr<ObjectType>(
+          new ObjectType( std::forward<ObjectArgs>(args) ... ) ) );
 }
 
 template<typename ObjectType>
 std::shared_ptr<ObjectType>
 create_action(const action_list& actions, const std::string& name = "")
 {
-  return( std::make_shared<ObjectType>(actions, name) );
+  // IMPORTaNT: We risk object slicing if we use std::make_shared here! The
+  // problem occurs when the end-user tries to return the created action
+  // pointer by value.
+  return( std::shared_ptr<ObjectType>( new ObjectType(actions, name) ) );
 }
 
 } // namespace nom

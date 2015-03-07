@@ -51,7 +51,7 @@ SpriteBatchAction::SpriteBatchAction( const std::shared_ptr<SpriteBatch>& sprite
   this->total_displacement_ = this->drawable_->frames();
 
   real32 action_duration_seconds =
-    (this->frame_interval_ * this->total_displacement_) / this->speed();
+    (this->frame_interval_ * this->total_displacement_);
 
   this->set_duration(action_duration_seconds);
 
@@ -86,7 +86,7 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
   const int b1 = b;
 
   // Total number of frames over time
-  const real32 total_displacement(c);
+  const real32 total_displacement = c;
 
   // The computed texture frame to show next
   real32 displacement(0.0f);
@@ -107,14 +107,14 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
 
   displacement =
     this->timing_curve().operator()(frame_time, b1, c1, duration);
-
   NOM_ASSERT(displacement <= this->total_displacement_);
   NOM_ASSERT(displacement >= this->initial_frame_);
 
   this->elapsed_frames_ = displacement;
 
-  if( delta_time >= (this->last_delta_ + frame_interval) ) {
-
+  if( delta_time >= (this->last_delta_ + frame_interval) &&
+      delta_time < (duration / this->speed() ) )
+  {
     this->last_delta_ = delta_time;
 
     int displacement_as_integer =

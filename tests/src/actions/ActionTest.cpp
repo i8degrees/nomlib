@@ -47,6 +47,10 @@ ActionTest::ActionTest()
   // the appropriate completion conditions.
   NOM_TEST_FLAG(interactive) = true;
 
+  // ActionTest reports various test statistics at this log level
+  nom::SDL2Logger::set_logging_priority(  NOM_LOG_CATEGORY_ACTION,
+                                          nom::NOM_LOG_PRIORITY_INFO );
+
   // Enable debug diagnostics for action objects
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION, nom::NOM_LOG_PRIORITY_DEBUG);
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION, nom::NOM_LOG_PRIORITY_VERBOSE);
@@ -59,10 +63,6 @@ ActionTest::ActionTest()
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_TRACE_ACTION, NOM_LOG_PRIORITY_VERBOSE);
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_TRACE_RENDER, NOM_LOG_PRIORITY_VERBOSE);
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_TRACE_UNIT_TEST, NOM_LOG_PRIORITY_VERBOSE);
-
-  // Disable NOM_LOG_CATEGORY_TEST logging for these tests
-  // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_TEST, NOM_LOG_PRIORITY_CRITICAL);
-  // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_TEST, NOM_LOG_PRIORITY_DEBUG);
 
   if( NOM_ACTION_TEST_FLAG(enable_vsync) == true ) {
     nom::set_hint(SDL_HINT_RENDER_VSYNC, "1");
@@ -83,12 +83,12 @@ ActionTest::~ActionTest()
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_UNIT_TEST, NOM_LOG_PRIORITY_VERBOSE);
 
-  NOM_LOG_DEBUG( NOM_LOG_CATEGORY_ACTION,
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_ACTION,
                 "Number of actions remaining in queue at the time of exit:",
                 this->player.num_actions() );
 
-  NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "test completion time (seconds):",
-                  Timer::to_seconds( this->test_timer.ticks() ) );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_ACTION, "test completion time (seconds):",
+                Timer::to_seconds( this->test_timer.ticks() ) );
 
   this->test_timer.stop();
 }
@@ -1212,7 +1212,7 @@ TEST_F(ActionTest, CallbackActionDefaultDuration)
 
   CallbackAction::callback_type callback_func;
   callback_func = [=]() {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "Hello, there!" );
+    NOM_LOG_DEBUG(NOM_LOG_CATEGORY_ACTION, "Hello, there!");
   };
 
   auto anim0 = nom::create_action<CallbackAction>(callback_func);

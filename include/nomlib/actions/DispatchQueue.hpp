@@ -91,7 +91,7 @@ class DispatchQueue
     bool update(uint32 player_state, real32 delta_time);
 
   private:
-    typedef std::deque<std::shared_ptr<DispatchEnqueue>> container_type;
+    typedef std::deque<std::unique_ptr<DispatchEnqueue>> container_type;
 
     /// \brief Enqueued actions.
     container_type actions_;

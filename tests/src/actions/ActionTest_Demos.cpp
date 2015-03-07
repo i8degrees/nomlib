@@ -45,9 +45,9 @@ TEST_F(ActionTest, RainingRectsStressTest)
   const real32 MAX_SPEED_MOD = MIN_SPEED_MOD + NOM_ACTION_TEST_FLAG(speed);
   const real32 NUM_REPEATS = 4;
 
-  const nom::size_type NUM_OBJECTS = 100;
+  // const nom::size_type NUM_OBJECTS = 100;
   // const nom::size_type NUM_OBJECTS = 250;
-  // const nom::size_type NUM_OBJECTS = 500;
+  const nom::size_type NUM_OBJECTS = 500;
   // const nom::size_type NUM_OBJECTS = 1000;
 
   const Size2i MIN_RECT_SIZE(8, 8);

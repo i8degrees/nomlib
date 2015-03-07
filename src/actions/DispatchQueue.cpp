@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/actions/DispatchQueue.hpp"
 
+#include "nomlib/core/helpers.hpp"
+
 // Forward declarations
 #include "nomlib/actions/IActionObject.hpp"
 #include "nomlib/actions/ActionPlayer.hpp"
@@ -68,21 +70,19 @@ bool DispatchQueue::
 enqueue_action( const std::shared_ptr<IActionObject>& action,
                 const action_callback& completion_func )
 {
-  DispatchEnqueue enqueue;
-
-  enqueue.action = action;
-  NOM_ASSERT(enqueue.action != nullptr);
-  if( enqueue.action == nullptr ) {
+  auto enqueued_action =
+    nom::make_unique<DispatchEnqueue>();
+  if( enqueued_action == nullptr ) {
     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not enqueue the action; action was NULL." );
+                  "Failed to enqueue the action:",
+                  "could not allocate memory for the dispatch entry!" );
     return false;
   }
 
-  enqueue.on_completion_callback = completion_func;
+  enqueued_action->action = action;
+  enqueued_action->on_completion_callback = completion_func;
 
-  auto queue_ptr =
-    std::make_shared<DispatchEnqueue>(enqueue);
-  this->actions_.emplace_back(queue_ptr);
+  this->actions_.push_front( std::move(enqueued_action) );
 
   return true;
 }

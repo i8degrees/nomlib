@@ -50,25 +50,23 @@ class ActionPlayer
   public:
     typedef ActionPlayer self_type;
 
+    /// \brief The status of the actions update loop.
     enum State
     {
-      RUNNING = 1,
+      /// \brief Reserved for future implementation.
+      IDLING = 0,
+      /// \brief The default state of the action player.
+      RUNNING,
       PAUSED,
       STOPPED,
-      TOTAL_STATES
+      TOTAL_STATES,
     };
 
     /// \brief nom::ActionPlayer::State enumerations as strings translation.
     static const char*
-    ANIMATION_STATE_STR[ActionPlayer::State::TOTAL_STATES];
+    ACTION_STATE_STR[ActionPlayer::State::TOTAL_STATES];
 
-    /// \brief Default constructor.
-    ///
-    /// \remarks The default player state is initialized to
-    /// nom::ActionPlayer::RUNNING.
     ActionPlayer();
-
-    /// \brief Destructor.
     ~ActionPlayer();
 
     /// \brief Disabled copy constructor.
@@ -130,14 +128,6 @@ class ActionPlayer
     /// \see nom::IActionObject::resume
     void stop();
 
-    /// \brief Get an enqueued action by its name.
-    ///
-    /// \param key  A string that uniquely identifies the action.
-    ///
-    /// \returns A non-owned object pointer to the action on success, or NULL
-    /// on failure, such as when a non-existing action key has been passed.
-    IActionObject* action(const std::string& action_name);
-
     /// \brief Get the completion status of an action.
     ///
     /// \param action_name The action's name to query.
@@ -147,6 +137,18 @@ class ActionPlayer
     ///
     /// \see IActionObject::set_name.
     bool action_running(const std::string& action_name) const;
+
+    /// \brief Erase an action from the queue.
+    ///
+    /// \param action_name The action's name to erase.
+    ///
+    /// \see IActionObject::set_name.
+    bool cancel_action(const std::string& action_name);
+
+    /// \brief Clear all actions from the queue.
+    ///
+    /// \remarks This will instantly stop all running actions.
+    void cancel_actions();
 
     /// \brief Enqueue an action.
     ///
@@ -192,32 +194,19 @@ class ActionPlayer
                       const action_callback& completion_func,
                       std::unique_ptr<DispatchQueue> queue );
 
-    /// \brief Erase an action from the queue.
-    ///
-    /// \param action_name The action's name to erase.
-    ///
-    /// \see IActionObject::set_name.
-    bool cancel_action(const std::string& action_name);
-
-    /// \brief Clear all actions from the queue.
-    ///
-    /// \remarks This will instantly stop all running actions.
-    void cancel_actions();
-
     bool update(real32 delta_time);
 
   private:
-    typedef std::map<std::string, std::unique_ptr<DispatchQueue>> queue_type;
-
-    typedef std::map<std::string, std::unique_ptr<DispatchQueue>>
-    ::iterator queue_iterator;
+    typedef std::map<std::string, std::unique_ptr<DispatchQueue>> container_type;
+    typedef container_type::iterator container_iterator;
 
     ActionPlayer::State player_state_;
 
-    queue_type actions_;
+    /// \brief Enqueued actions.
+    container_type actions_;
 
-    /// \brief The queue of actions pending removal.
-    std::deque<queue_iterator> free_list_;
+    /// \brief The actions pending removal.
+    std::deque<container_iterator> free_list_;
 };
 
 } // namespace nom

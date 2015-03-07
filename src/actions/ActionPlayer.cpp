@@ -45,8 +45,8 @@ static uint64 generate_action_id()
 
 // Static initializations
 const char*
-ActionPlayer::ANIMATION_STATE_STR[ActionPlayer::State::TOTAL_STATES] = {
-  NULL,
+ActionPlayer::ACTION_STATE_STR[ActionPlayer::State::TOTAL_STATES] = {
+  "IDLING",
   "RUNNING",
   "PAUSED",
   "STOPPED"
@@ -98,19 +98,6 @@ void ActionPlayer::stop()
   this->set_player_state(ActionPlayer::State::STOPPED);
 }
 
-IActionObject* ActionPlayer::action(const std::string& action_name)
-{
-  auto res = this->actions_.find(action_name);
-
-  if( res == this->actions_.end() ) {
-    // Err -- no action by that name was found
-    return nullptr;
-  } else {
-    // Success -- action found!
-    return res->second->action(0);
-  }
-}
-
 bool ActionPlayer::action_running(const std::string& action_name) const
 {
   auto res = this->actions_.find(action_name);
@@ -122,6 +109,31 @@ bool ActionPlayer::action_running(const std::string& action_name) const
     // The action is still running
     return true;
   }
+}
+
+bool ActionPlayer::cancel_action(const std::string& action_name)
+{
+  auto res = this->actions_.find(action_name);
+
+  if( res == this->actions_.end() ) {
+    // Err -- no action by that name found
+    return false;
+  } else {
+
+    // Success -- action was found
+    this->actions_.erase(res);
+
+    return true;
+  }
+
+  // Err -- no action by that name found
+  return false;
+}
+
+void ActionPlayer::cancel_actions()
+{
+  this->free_list_.clear();
+  this->actions_.clear();
 }
 
 bool ActionPlayer::run_action(const std::shared_ptr<IActionObject>& action)
@@ -276,31 +288,6 @@ bool ActionPlayer::update(real32 delta_time)
 
   // return true;
   return running;
-}
-
-bool ActionPlayer::cancel_action(const std::string& action_name)
-{
-  auto res = this->actions_.find(action_name);
-
-  if( res == this->actions_.end() ) {
-    // Err -- no action by that name found
-    return false;
-  } else {
-
-    // Success -- action was found
-    this->actions_.erase(res);
-
-    return true;
-  }
-
-  // Err -- no action by that name found
-  return false;
-}
-
-void ActionPlayer::cancel_actions()
-{
-  this->free_list_.clear();
-  this->actions_.clear();
 }
 
 } // namespace nom

@@ -44,7 +44,7 @@ typedef std::function<void()> action_callback;
 // Forward declarations
 struct DispatchEnqueue;
 
-/// \brief Internal queue that drives the individual action's loop.
+/// \brief Internal queue that drives each action's update logic
 ///
 /// \see nom::ActionPlayer
 class DispatchQueue
@@ -52,10 +52,7 @@ class DispatchQueue
   public:
     typedef DispatchQueue self_type;
 
-    /// \brief Default constructor.
     DispatchQueue();
-
-    /// \brief Destructor.
     ~DispatchQueue();
 
     /// \brief Disabled copy constructor.
@@ -66,10 +63,6 @@ class DispatchQueue
 
     /// \brief Get the current number of queued animation actions.
     nom::size_type num_actions() const;
-
-    /// \returns A non-owned object pointer to the action on success, or NULL on
-    /// failure, such as when an out-of-bounds index is passed.
-    IActionObject* action(nom::size_type index) const;
 
     /// \brief Append an action to the list of animations to be executed.
     ///
@@ -98,13 +91,10 @@ class DispatchQueue
     bool update(uint32 player_state, real32 delta_time);
 
   private:
-    typedef std::deque<std::shared_ptr<DispatchEnqueue>> queue_type;
-    typedef std::deque<std::shared_ptr<DispatchEnqueue>>
-    ::iterator queue_iterator;
+    typedef std::deque<std::shared_ptr<DispatchEnqueue>> container_type;
 
-    /// \brief Enqueued action objects.
-    queue_type enqueued_actions_;
-    queue_iterator queue_iterator_;
+    /// \brief Enqueued actions.
+    container_type actions_;
 };
 
 } // namespace nom

@@ -775,10 +775,6 @@ TEST_F(ActionTest, RunActionWithName)
   EXPECT_EQ(1, this->player.num_actions() );
 
   EXPECT_EQ(true, this->player.action_running("action0") );
-  EXPECT_TRUE(action0.get() == this->player.action("action0") )
-  << "action0 should be equal to the returned action; ::run_action should "
-  << "**not** be cloning the action instances!";
-
   EXPECT_EQ(1, this->player.num_actions() );
 }
 

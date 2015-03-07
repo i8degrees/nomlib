@@ -27,7 +27,7 @@ before_install:
   # - xvfb-run -- :99 -ac -screen 0 1024x768x32
   # - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1024x768x32
 
-  # - brew update
+  - brew update
   # - brew install cmake
 
   # FIXME: It might be best if we packaged the freetype2 libs for libRocket

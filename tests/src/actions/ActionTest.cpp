@@ -511,15 +511,14 @@ void ActionTest::append_render_queue(const Sprite* drawable)
 void ActionTest::
 append_render_queue(const std::vector<std::shared_ptr<Sprite>>& drawables)
 {
-  for( auto itr = drawables.begin(); itr != drawables.end(); ++itr ) {
-
-    auto sp = (*itr).get();
-    this->append_render_callback( [=](const RenderWindow&) {
+  this->append_render_callback( [=](const RenderWindow&) {
+    for( auto itr = drawables.begin(); itr != drawables.end(); ++itr ) {
+      auto sp = (*itr).get();
       if( sp != nullptr && sp->valid() == true ) {
         sp->draw( this->render_window() );
       }
-    });
-  }
+    }
+  });
 }
 
 void ActionTest::append_frame_interval(uint32 fps)

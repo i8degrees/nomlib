@@ -61,17 +61,7 @@ DispatchQueue::~DispatchQueue()
 
 nom::size_type DispatchQueue::num_actions() const
 {
-  return( this->enqueued_actions_.size() );
-}
-
-IActionObject* DispatchQueue::action(nom::size_type index) const
-{
-  if( index <= this->enqueued_actions_.size() ) {
-    return this->enqueued_actions_[index]->action.get();
-  } else {
-    // Err -- empty container!
-    return nullptr;
-  }
+  return( this->actions_.size() );
 }
 
 bool DispatchQueue::
@@ -92,48 +82,51 @@ enqueue_action( const std::shared_ptr<IActionObject>& action,
 
   auto queue_ptr =
     std::make_shared<DispatchEnqueue>(enqueue);
-  this->enqueued_actions_.emplace_back(queue_ptr);
-
-  this->queue_iterator_ = this->enqueued_actions_.begin();
+  this->actions_.emplace_back(queue_ptr);
 
   return true;
 }
 
 bool DispatchQueue::update(uint32 player_state, real32 delta_time)
 {
-  if( this->enqueued_actions_.empty() == true ) {
-    // Nothing to update
+  if( this->actions_.empty() == true ) {
+    // Done updating; nothing to update
     return false;
   }
 
-  auto res = this->queue_iterator_;
-  auto itr = (*res)->action;
+  auto itr = this->actions_.begin();
+  NOM_ASSERT(itr != this->actions_.end() );
 
-  std::string action_id = (*res)->action->name();
+  auto action = (*itr)->action;
+  if( action == nullptr ) {
+    // Done updating; nothing to update
+    return false;
+  }
+
+  std::string action_id = action->name();
   action_callback completion_func =
-    (*res)->on_completion_callback;
+    (*itr)->on_completion_callback;
 
   // Diagnostics
-  nom::size_type* action_pos = &(*res)->action_pos;
-  nom::size_type num_actions = this->enqueued_actions_.size();
-  NOM_ASSERT(*action_pos >= 0);
+  nom::size_type action_pos = (*itr)->action_pos;
+  nom::size_type num_actions = this->actions_.size();
+  NOM_ASSERT(action_pos >= 0);
+  NOM_ASSERT(action_pos <= num_actions);
 
   IActionObject::FrameState action_status =
     IActionObject::FrameState::COMPLETED;
 
-  action_status = (itr)->next_frame(delta_time);
+  action_status = action->next_frame(delta_time);
 
   // Handle the current animation with respect to the player's state
   if( action_status != IActionObject::FrameState::COMPLETED ) {
 
     if( player_state == ActionPlayer::State::PAUSED ) {
-      (itr)->pause(delta_time);
+      action->pause(delta_time);
     } else if( player_state == ActionPlayer::State::STOPPED ) {
-      (itr)->rewind(delta_time);
+      action->rewind(delta_time);
     } else {
-      // FIXME: Temporary workaround?
-      (itr)->resume(delta_time);
-
+      action->resume(delta_time);
     } // ActionPlayer::State::RUNNING
   } // end if status != COMPLETED
 
@@ -141,14 +134,13 @@ bool DispatchQueue::update(uint32 player_state, real32 delta_time)
   if( action_status == IActionObject::FrameState::COMPLETED ) {
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_QUEUE, "DispatchQueue [erasing]:",
-                    "[", *action_pos + 1, "/", num_actions, "]",
+                    "[", action_pos + 1, "/", num_actions, "]",
                     "[id]:", action_id );
 
-    // completed actions counter
-    ++(*action_pos);
+    ++(*itr)->action_pos;
 
     // Goodbye cruel world!
-    this->enqueued_actions_.erase(res);
+    this->actions_.erase(itr);
 
     // Holla back
     if( completion_func != nullptr ) {

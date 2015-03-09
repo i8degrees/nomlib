@@ -52,6 +52,9 @@ ActionPlayer::ACTION_STATE_STR[ActionPlayer::State::TOTAL_STATES] = {
   "STOPPED"
 };
 
+// Static initializations
+const char* ActionPlayer::DEBUG_CLASS_NAME = "[ActionPlayer]:";
+
 ActionPlayer::ActionPlayer() :
   player_state_(ActionPlayer::State::RUNNING)
 {
@@ -251,9 +254,8 @@ bool ActionPlayer::update(real32 delta_time)
     // before their completion, i.e.: ::run_action will happily overwrite
     // existing action keys
     if( action_queue == nullptr ) {
-      NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_PLAYER,
-                      "ActionPlayer: enqueue erasable",
-                      "[action_id]:", action_id );
+      NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_PLAYER, DEBUG_CLASS_NAME,
+                      "enqueue erasable", "[action_id]:", action_id );
 
       this->free_list_.push_back(itr);
     } else {
@@ -261,9 +263,8 @@ bool ActionPlayer::update(real32 delta_time)
       dispatch_running = (action_queue)->update(player_state, delta_time);
 
       if( dispatch_running == ActionPlayer::State::IDLING ) {
-        NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_PLAYER,
-                        "ActionPlayer: enqueue erasable",
-                        "[action_id]:", action_id );
+        NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_PLAYER, DEBUG_CLASS_NAME,
+                        "enqueue erasable", "[action_id]:", action_id );
 
         this->free_list_.push_back(itr);
       } // end if IDLE
@@ -275,9 +276,8 @@ bool ActionPlayer::update(real32 delta_time)
   while( this->free_list_.empty() == false ) {
     auto res = this->free_list_.front();
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_PLAYER,
-                    "ActionPlayer: erasing action",
-                    "[id]:", res->first );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_PLAYER, DEBUG_CLASS_NAME,
+                    "erasing action", "[action_id]:", res->first );
 
     this->actions_.erase(res);
     this->free_list_.pop_front();

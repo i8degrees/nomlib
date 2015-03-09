@@ -36,6 +36,9 @@ enum FrameStateDirection
   PREV_FRAME
 };
 
+// Static initializations
+const char* RepeatForAction::DEBUG_CLASS_NAME = "[RepeatForAction]:";
+
 RepeatForAction::RepeatForAction( const std::shared_ptr<IActionObject>& action,
                                   nom::size_type num_repeats,
                                   const std::string& name ) :
@@ -88,7 +91,7 @@ RepeatForAction::update(real32 delta_time, uint32 direction)
     }
   }
 
-  NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[RepeatForAction]",
+  NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                   "[elapsed_repeats]:", this->elapsed_repeats_,
                   "[num_repeats]:", this->num_repeats_ );
 

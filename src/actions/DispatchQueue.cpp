@@ -51,6 +51,9 @@ struct DispatchEnqueue
   nom::size_type action_pos = 0;
 };
 
+// Static initializations
+const char* DispatchQueue::DEBUG_CLASS_NAME = "[DispatchQueue]:";
+
 DispatchQueue::DispatchQueue()
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_ACTION, NOM_LOG_PRIORITY_VERBOSE);
@@ -134,9 +137,9 @@ uint32 DispatchQueue::update(uint32 player_state, real32 delta_time)
   // EOF -- handle internal clean up
   if( action_status == IActionObject::FrameState::COMPLETED ) {
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_QUEUE, "DispatchQueue [erasing]:",
-                    "[", action_pos + 1, "/", num_actions, "]",
-                    "[id]:", action_id );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_QUEUE, DEBUG_CLASS_NAME,
+                    "[erasing]:", "[", action_pos + 1, "/", num_actions, "]",
+                    "[action_id]:", action_id );
 
     ++(*itr)->action_pos;
     --this->num_actions_;

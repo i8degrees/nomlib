@@ -30,6 +30,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Static initializations
+const char* WaitForDurationAction::DEBUG_CLASS_NAME =
+  "[WaitForDurationAction]:";
+
 WaitForDurationAction::WaitForDurationAction(real32 seconds)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
@@ -59,8 +63,8 @@ IActionObject::FrameState WaitForDurationAction::next_frame(real32 delta_time)
     // Start frame timing
     this->timer_.start();
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
-                    "WaitForDurationAction::BEGIN at", delta_time );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
+                    "BEGIN at", delta_time );
   }
 
   // Clamp delta values that go beyond the time duration bounds; this adds
@@ -79,7 +83,7 @@ IActionObject::FrameState WaitForDurationAction::next_frame(real32 delta_time)
   // stability to variable time steps
   if( delta_time < (this->duration() / this->speed() ) ) {
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[WaitForDurationAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "delta_time:", delta_time,
                     "frame_time:", frame_time,
                     "[elapsed frames]:", this->elapsed_frames_ );

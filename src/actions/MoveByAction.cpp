@@ -36,6 +36,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Static initializations
+const char* MoveByAction::DEBUG_CLASS_NAME = "[MoveByAction]:";
+
 MoveByAction::MoveByAction( const std::shared_ptr<Sprite>& action,
                             const Point2i& delta, real32 duration ) :
   total_displacement_(delta)
@@ -131,16 +134,16 @@ MoveByAction::update(real32 t, const Point2i& b, const Point2i& c, real32 d)
     this->drawable_->set_position(displacement_as_integer);
 
     // Diagnostics
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[MoveByAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "delta_time:", delta_time,
                     "frame_time:", frame_time,
                     "[elapsed frames]:", this->elapsed_frames_ );
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[MoveByAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "position (input):", drawable_pos,
                     "displacement (output):", displacement_as_integer );
 
     // Extended diagnostics
-    NOM_LOG_VERBOSE(  NOM_LOG_CATEGORY_ACTION, "[MoveByAction]",
+    NOM_LOG_VERBOSE(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                       "[b1]:", b1, "[c1]:", c1,
                       "[b2]:", b2, "[c2]:", c2 );
   }
@@ -223,8 +226,8 @@ void MoveByAction::first_frame(real32 delta_time)
     // Start frame timing
     this->timer_.start();
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
-                    "MoveByAction::BEGIN at", delta_time );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
+                    "BEGIN at", delta_time );
 
     // Initialize the initial displacement position; this is also necessary for
     // reversing the animation, repeating it, etc.
@@ -232,8 +235,7 @@ void MoveByAction::first_frame(real32 delta_time)
       this->initial_position_ = this->drawable_->position();
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
-                    "[MoveByAction]", "initial_position:",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "initial_position:",
                     this->initial_position_ );
   }
 }

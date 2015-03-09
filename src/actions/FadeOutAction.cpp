@@ -36,6 +36,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Static initializations
+const char* FadeOutAction::DEBUG_CLASS_NAME = "[FadeOutAction]:";
+
 FadeOutAction::FadeOutAction( const std::shared_ptr<Sprite>& action,
                               real32 duration ) :
   total_displacement_(255)
@@ -123,11 +126,11 @@ FadeOutAction::update(real32 t, uint8 b, int16 c, real32 d)
     this->alpha_ = (uint8)displacement_as_integer;
 
     // Diagnostics
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[FadeOutAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "delta_time:", delta_time,
                     "frame_time:", frame_time,
                     "[elapsed frames]:", this->elapsed_frames_ );
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[FadeOutAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "alpha (input):", NOM_SCAST(int, this->drawable_->alpha() ),
                     "displacement (output):",
                     NOM_SCAST(int, displacement_as_integer) );
@@ -224,8 +227,8 @@ void FadeOutAction::first_frame(real32 delta_time)
   if( this->timer_.started() == false ) {
     this->timer_.start();
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
-                    "FadeOutAction::BEGIN at", delta_time );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
+                    "BEGIN at", delta_time );
 
     // Initialize the initial alpha blending value; this is also necessary for
     // reversing the animation, repeating it, etc.
@@ -233,8 +236,7 @@ void FadeOutAction::first_frame(real32 delta_time)
       this->initial_alpha_ = this->drawable_->alpha();
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
-                    "[FadeOutAction]", "initial_alpha:",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "initial_alpha:",
                     NOM_SCAST(int, this->initial_alpha_) );
   }
 }

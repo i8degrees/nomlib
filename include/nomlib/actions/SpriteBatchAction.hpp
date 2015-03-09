@@ -43,12 +43,14 @@ class SpriteBatch;
 class SpriteBatchAction: public virtual IActionObject
 {
   public:
-    typedef SpriteBatchAction self_type;
-    typedef IActionObject derived_type;
-
     /// \brief Allow access into our private parts for obtaining the current
     /// frame.
     friend class ActionTest;
+
+    static const char* DEBUG_CLASS_NAME;
+
+    typedef SpriteBatchAction self_type;
+    typedef IActionObject derived_type;
 
     /// \param frame_interval The amount of time (in fractional seconds) that
     /// each texture is displayed.

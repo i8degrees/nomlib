@@ -36,6 +36,9 @@ enum FrameStateDirection
   PREV_FRAME
 };
 
+// Static initializations
+const char* SequenceAction::DEBUG_CLASS_NAME = "[SequenceAction]:";
+
 SequenceAction::SequenceAction( const action_list& actions,
                                 const std::string& name )
 {
@@ -101,7 +104,7 @@ SequenceAction::update(real32 delta_time, uint32 direction)
       action_id = "action";
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SequenceAction]:",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     action_id, "has finished",
                     "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
                     "[id]:", this->name() );

@@ -47,18 +47,19 @@ SpriteBatchAction::SpriteBatchAction( const std::shared_ptr<SpriteBatch>& sprite
 
   this->elapsed_frames_ = 0.0f;
   this->frame_interval_ = frame_interval_seconds;
+  this->total_displacement_ = 0.0f;
+  this->initial_frame_ = 0.0f;
+  this->last_delta_ = 0;
 
   this->drawable_ = sprite;
-  NOM_ASSERT(this->drawable_->frames() > 0);
-  this->initial_frame_ = 0;
-  this->total_displacement_ = this->drawable_->frames();
+  if( this->drawable_ != nullptr ) {
+    NOM_ASSERT(this->drawable_->frames() > 0);
+    this->total_displacement_ = this->drawable_->frames();
+  }
 
   real32 action_duration_seconds =
     (this->frame_interval_ * this->total_displacement_);
-
   this->set_duration(action_duration_seconds);
-
-  this->last_delta_ = 0;
 }
 
 SpriteBatchAction::~SpriteBatchAction()

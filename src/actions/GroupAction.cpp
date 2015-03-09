@@ -81,7 +81,6 @@ GroupAction::update(real32 delta_time, uint32 direction)
     IActionObject::FrameState action_status =
       FrameState::COMPLETED;
 
-    NOM_ASSERT(*itr != nullptr);
     if( *itr != nullptr ) {
       if( direction == FrameStateDirection::NEXT_FRAME ) {
         action_status = (*itr)->next_frame(delta_time);
@@ -129,7 +128,6 @@ void GroupAction::pause(real32 delta_time)
 {
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
-    NOM_ASSERT(*itr != nullptr);
     if( *itr != nullptr ) {
       (*itr)->pause(delta_time);
     }
@@ -140,7 +138,6 @@ void GroupAction::resume(real32 delta_time)
 {
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
-    NOM_ASSERT(*itr != nullptr);
     if( *itr != nullptr ) {
       (*itr)->resume(delta_time);
     }
@@ -158,8 +155,6 @@ void GroupAction::rewind(real32 delta_time)
 
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
-    NOM_ASSERT(*itr != nullptr);
-
     if( (*itr) != nullptr ) {
       (*itr)->rewind(delta_time);
     }
@@ -170,7 +165,6 @@ void GroupAction::release()
 {
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
-    NOM_ASSERT(*itr != nullptr);
     if( *itr != nullptr ) {
       (*itr)->release();
       (*itr).reset();
@@ -185,7 +179,6 @@ void GroupAction::set_speed(real32 speed)
   // Propagate the speed modifier for our children
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
-    NOM_ASSERT(*itr != nullptr);
     if( *itr != nullptr ) {
       (*itr)->set_speed(speed);
     }
@@ -200,7 +193,6 @@ GroupAction::set_timing_curve(const IActionObject::timing_curve_func& mode)
   // Propagate the timing mode for our children
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
-    NOM_ASSERT(*itr != nullptr);
     if( *itr != nullptr ) {
       (*itr)->set_timing_curve(mode);
     }

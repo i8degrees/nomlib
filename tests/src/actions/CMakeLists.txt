@@ -3,6 +3,10 @@
 set( NOM_BUILD_ACTION_TESTS ON )
 set( NOM_BUILD_ACTION_TIMING_CURVES_TESTS ON )
 
+if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+endif()
+
 if( NOM_BUILD_ACTION_TESTS )
 
   set(  ACTION_SRC

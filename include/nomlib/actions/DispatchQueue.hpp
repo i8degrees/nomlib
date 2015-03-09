@@ -52,6 +52,8 @@ class DispatchQueue
   public:
     typedef DispatchQueue self_type;
 
+    static const char* DEBUG_CLASS_NAME;
+
     DispatchQueue();
     ~DispatchQueue();
 

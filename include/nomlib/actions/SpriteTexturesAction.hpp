@@ -42,16 +42,17 @@ class Sprite;
 typedef std::vector<std::shared_ptr<Sprite>> texture_frames;
 
 /// \brief [TODO: Description]
-
 class SpriteTexturesAction: public virtual IActionObject
 {
   public:
-    typedef SpriteTexturesAction self_type;
-    typedef IActionObject derived_type;
-
     /// \brief Allow access into our private parts for obtaining the current
     /// frame.
     friend class ActionTest;
+
+    static const char* DEBUG_CLASS_NAME;
+
+    typedef SpriteTexturesAction self_type;
+    typedef IActionObject derived_type;
 
     /// \brief Construct an action with a container of valid (i.e.: pre-loaded)
     /// nom::SpriteBatch objects.

@@ -36,6 +36,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Static initializations
+const char* ScaleByAction::DEBUG_CLASS_NAME = "[ScaleByAction]:";
+
 ScaleByAction::ScaleByAction( const std::shared_ptr<Sprite>& action,
                               const Size2f& delta,
                               real32 seconds ) :
@@ -144,12 +147,12 @@ ScaleByAction::update(real32 t, const Size2i& b, const Size2f& c, real32 d)
     this->size_ = displacement_as_integer;
 
     // Diagnostics
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[ScaleByAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "delta_time:", delta_time,
                     "frame_time:", frame_time,
                     "[elapsed frames]:", this->elapsed_frames_ );
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
-                    "ScaleByAction:", "size (input):", drawable_size,
+                    DEBUG_CLASS_NAME, "size (input):", drawable_size,
                     "displacement (output):", displacement_as_integer );
   }
 
@@ -236,8 +239,8 @@ void ScaleByAction::first_frame(real32 delta_time)
     // Start frame timing
     this->timer_.start();
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
-                    "ScaleByAction::BEGIN at", delta_time );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
+                    "BEGIN at", delta_time );
 
     // Initialize the initial size scaling value; this is also necessary for
     // reversing the animation, repeating it, etc.
@@ -245,8 +248,8 @@ void ScaleByAction::first_frame(real32 delta_time)
       this->initial_size_ = this->drawable_->size();
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
-                    "[ScaleByAction]", "initial_size:", this->initial_size_ );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "initial_size:",
+                    this->initial_size_ );
   }
 }
 

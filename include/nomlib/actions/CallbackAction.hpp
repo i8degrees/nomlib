@@ -43,6 +43,8 @@ class CallbackAction: public virtual IActionObject
     /// \brief Allow access into our private parts for unit testing.
     friend class ActionTest;
 
+    static const char* DEBUG_CLASS_NAME;
+
     typedef CallbackAction self_type;
     typedef IActionObject derived_type;
     typedef std::function<void()> callback_type;

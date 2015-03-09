@@ -40,6 +40,12 @@ namespace nom {
 class WaitForDurationAction: public virtual IActionObject
 {
   public:
+    /// \brief Allow access into our private parts for obtaining the current
+    /// frame.
+    friend class ActionTest;
+
+    static const char* DEBUG_CLASS_NAME;
+
     typedef WaitForDurationAction self_type;
     typedef IActionObject derived_type;
 

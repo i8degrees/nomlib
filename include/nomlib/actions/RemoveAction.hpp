@@ -43,6 +43,8 @@ class RemoveAction: public virtual IActionObject
     /// \brief Allow access into our private parts for unit testing.
     friend class ActionTest;
 
+    static const char* DEBUG_CLASS_NAME;
+
     typedef RemoveAction self_type;
     typedef IActionObject derived_type;
 

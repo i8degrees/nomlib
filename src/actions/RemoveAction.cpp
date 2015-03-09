@@ -30,6 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Static initializations
+const char* RemoveAction::DEBUG_CLASS_NAME = "[RemoveAction]:";
+
 RemoveAction::RemoveAction(const std::shared_ptr<IActionObject>& action)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
@@ -58,9 +61,9 @@ IActionObject::FrameState RemoveAction::next_frame(real32 delta_time)
       action_id = "action";
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[RemoveAction]:",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "removing", action_id, "from container",
-                    "[id]:", this->name() );
+                    "[action_id]:", this->name() );
 
     this->release();
     this->status_ = FrameState::COMPLETED;

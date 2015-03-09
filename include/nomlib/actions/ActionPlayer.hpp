@@ -66,6 +66,8 @@ class ActionPlayer
     static const char*
     ACTION_STATE_STR[ActionPlayer::State::TOTAL_STATES];
 
+    static const char* DEBUG_CLASS_NAME;
+
     ActionPlayer();
     ~ActionPlayer();
 

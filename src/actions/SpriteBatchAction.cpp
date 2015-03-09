@@ -36,6 +36,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Static initializations
+const char* SpriteBatchAction::DEBUG_CLASS_NAME = "[SpriteBatchAction]:";
+
 SpriteBatchAction::SpriteBatchAction( const std::shared_ptr<SpriteBatch>& sprite,
                                       real32 frame_interval_seconds )
 {
@@ -120,7 +123,7 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
     int displacement_as_integer =
       nom::round_float_down<int>(displacement);
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SpriteBatchAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "delta_time:", delta_time, "frame_time:", frame_time,
                     "[elapsed frames]:", this->elapsed_frames_,
                     "displacement (output):", displacement_as_integer );
@@ -205,14 +208,14 @@ void SpriteBatchAction::first_frame(real32 delta_time)
     this->last_delta_ = 0;
     this->timer_.start();
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
-                    "SpriteBatchAction::BEGIN at", delta_time );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
+                    "BEGIN at", delta_time );
 
     if( this->drawable_ != nullptr ) {
       this->initial_frame_ = this->drawable_->frame();
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SpriteBatchAction]"
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "[initial_frame]:", this->initial_frame_,
                     "[num_frames]:", this->total_displacement_,
                     "[frame_interval]:", this->frame_interval_ );

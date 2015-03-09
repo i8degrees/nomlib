@@ -30,6 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Static initializations
+const char* ReversedAction::DEBUG_CLASS_NAME = "[ReversedAction]:";
+
 ReversedAction::ReversedAction( const std::shared_ptr<IActionObject>& action,
                                 const std::string& name )
 {

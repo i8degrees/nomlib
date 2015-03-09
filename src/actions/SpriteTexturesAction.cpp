@@ -36,6 +36,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Static initializations
+const char* SpriteTexturesAction::DEBUG_CLASS_NAME = "[SpriteTexturesAction]:";
+
 void SpriteTexturesAction::
 initialize(const texture_frames& textures, real32 frame_interval_seconds)
 {
@@ -127,7 +130,7 @@ SpriteTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
     NOM_ASSERT(res != nullptr);
     NOM_ASSERT(res->valid() == true);
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SpriteTexturesAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "delta_time:", delta_time, "frame_time:", frame_time,
                     "[elapsed frames]:", this->elapsed_frames_ );
 
@@ -223,8 +226,8 @@ void SpriteTexturesAction::first_frame(real32 delta_time)
     this->last_delta_ = 0;
     this->timer_.start();
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
-                    "SpriteTexturesAction::BEGIN at", delta_time );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
+                    "BEGIN at", delta_time );
 
     auto res = this->frame_iterator_->get();
     NOM_ASSERT(res != nullptr);
@@ -238,7 +241,7 @@ void SpriteTexturesAction::first_frame(real32 delta_time)
       this->drawable_->set_texture( res->texture() );
     }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[SpriteTexturesAction]"
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "[initial_frame]:", this->initial_frame_,
                     "[elapsed_frames]:", this->elapsed_frames_,
                     "[frame_interval]:", this->frame_interval_ );

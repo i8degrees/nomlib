@@ -30,6 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Static initializations
+const char* CallbackAction::DEBUG_CLASS_NAME = "[CallbackAction]:";
+
 CallbackAction::CallbackAction(const callback_type& func) :
   delegate_(func)
 {
@@ -69,8 +72,8 @@ IActionObject::FrameState CallbackAction::next_frame(real32 delta_time)
     // Start frame timing
     this->timer_.start();
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
-                    "CallbackAction::BEGIN at", delta_time );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
+                    "BEGIN at", delta_time );
   }
 
   // Clamp delta values that go beyond the time duration bounds; this adds
@@ -93,7 +96,7 @@ IActionObject::FrameState CallbackAction::next_frame(real32 delta_time)
   // stability to variable time steps
   if( delta_time < (this->duration() / this->speed() ) ) {
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, "[CallbackAction]",
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "delta_time:", delta_time, "frame_time:", frame_time,
                     "[elapsed frames]:", this->elapsed_frames_ );
 

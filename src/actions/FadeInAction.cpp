@@ -44,7 +44,9 @@ FadeInAction::FadeInAction( const std::shared_ptr<Sprite>& action,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_duration(duration);
+
   this->elapsed_frames_ = 0.0f;
+  this->alpha_ = 0;
   this->initial_alpha_ = 0;
   this->drawable_ = action;
 }
@@ -176,17 +178,11 @@ IActionObject::FrameState FadeInAction::prev_frame(real32 delta_time)
 
 void FadeInAction::pause(real32 delta_time)
 {
-  // Stub
-  // if( this->timer_.paused() == true ) {
-    // this->timer_.unpause();
-  // } else {
-    this->timer_.pause();
-  // }
+  this->timer_.pause();
 }
 
 void FadeInAction::resume(real32 delta_time)
 {
-  // Stub
   this->timer_.unpause();
 }
 

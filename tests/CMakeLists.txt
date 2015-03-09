@@ -47,6 +47,10 @@ set( NOM_BUILD_GUI_TESTS ON )
 set( NOM_BUILD_UNIT_TEST_TESTS ON )
 set( NOM_BUILD_VTEST_TESTS ON )
 
+if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+endif()
+
 # Used only by the MSVCPP generator; this path will be expanded to include the
 # configuration build type, i.e.: Debug or Release, so the full path resolve
 # to '<cmake_build_dir>/tests/Debug' or '<cmake_build_dir>/tests/Release'.

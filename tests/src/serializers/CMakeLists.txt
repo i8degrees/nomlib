@@ -5,6 +5,10 @@ set( NOM_BUILD_SERIALIZERS_XML_TESTS ON )
 set( NOM_BUILD_JSON_CONFIG_FILE_TESTS ON )
 set( NOM_BUILD_SERIALIZERS_HTML_TESTS ON )
 
+if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+endif()
+
 set(  NOM_SERIALIZER_TESTS_DEPS ${GTEST_LIBRARY} nomlib-serializers
       # FIXME: Just needs init...
       nomlib-system

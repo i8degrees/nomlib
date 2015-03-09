@@ -12,6 +12,7 @@ install_options
 # ctags
 *.tags
 *.tags_sorted_by_file
+local_env.cmake
 
 # nomlib's github wiki
 wiki

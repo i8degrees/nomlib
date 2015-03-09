@@ -3,6 +3,10 @@
 set( NOM_BUILD_GUI_BASE_TEST ON )
 set( NOM_BUILD_GUI_DATAGRID_TESTS ON )
 
+if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+endif()
+
 if( NOM_BUILD_GUI_BASE_TEST )
 
   add_executable( libRocketTest "libRocketTest.cpp" )

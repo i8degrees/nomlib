@@ -5,6 +5,10 @@ set( NOM_BUILD_FONT_CACHE_TESTS ON )
 set( NOM_BUILD_COLOR_DB_TESTS ON )
 set( NOM_BUILD_TIMER_TESTS ON )
 
+if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+endif()
+
 if( NOM_BUILD_FONT_CACHE_TESTS )
 
   add_executable( FontCacheTest "FontCacheTest.cpp" )

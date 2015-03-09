@@ -254,6 +254,11 @@ class SDL2Logger
       nom::write_debug_output( this->output_stream(), f );
     }
 
+    void write(uint8 f)
+    {
+      nom::write_debug_output(this->output_stream(), (int)f);
+    }
+
     /// \brief Write a log message to the output stream.
     ///
     /// \remarks This is an intentional method overload when the desire is to

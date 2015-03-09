@@ -139,8 +139,10 @@ class SpriteTest: public nom::VisualUnitTest
         ASSERT_TRUE(params.sprite.valid() == true);
       }
 
-      nom::set_alignment( &params.sprite, params.pos, WINDOW_DIMS,
-                          Anchor::MiddleCenter );
+      if( params.sprite.valid() == true ) {
+        nom::set_alignment( &params.sprite, params.pos, WINDOW_DIMS,
+                            Anchor::MiddleCenter );
+      }
 
       this->append_render_callback( [=, &params](const RenderWindow& win) {
 
@@ -352,8 +354,10 @@ TEST_F(SpriteTest, SpriteInterfaceInitWithColor)
   this->init_sprite_test(params);
   params.sprite.init_with_color(SPRITE_COLOR, SPRITE_DIMS);
 
-  nom::set_alignment( &params.sprite, params.pos, WINDOW_DIMS,
-                      Anchor::MiddleCenter );
+  if( params.sprite.valid() == true ) {
+    nom::set_alignment( &params.sprite, params.pos, WINDOW_DIMS,
+                        Anchor::MiddleCenter );
+  }
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );

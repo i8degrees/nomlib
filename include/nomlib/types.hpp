@@ -165,6 +165,11 @@ const real32 real32_max = std::numeric_limits<real32>::max();
 const real64 real64_min = std::numeric_limits<real64>::lowest();
 const real64 real64_max = std::numeric_limits<real64>::max();
 
+const nom::size_type SIZE_TYPE_MIN =
+  std::numeric_limits<nom::size_type>::lowest();
+const nom::size_type SIZE_TYPE_MAX =
+  std::numeric_limits<nom::size_type>::max();
+
 /// \brief An integer indicating that there is no match, an error or NULL.
 static const int npos = -1;
 

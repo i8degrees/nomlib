@@ -790,6 +790,11 @@ TEST_F(ActionTest, SpriteTexturesAction)
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
 
+  auto remove_action0 =
+    nom::create_action<RemoveAction>(action0);
+  ASSERT_TRUE(remove_action0 != nullptr);
+  remove_action0->set_name("remove_action0");
+
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
@@ -799,12 +804,17 @@ TEST_F(ActionTest, SpriteTexturesAction)
                                             DURATION, SPEED_MOD,
                                             "sprite_textures_params" );
     this->expected_action_params(action0.get(), 1);
+
+    this->player.run_action(remove_action0, [=]() {
+      ASSERT_TRUE(sprite0 != nullptr);
+      EXPECT_FALSE( sprite0->valid() );
+    });
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
   EXPECT_EQ(1, this->player.num_actions() );
 
-  this->append_update_callback( [=](float) {
+  this->append_update_callback( [=](real32) {
     if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
       this->quit();
     }

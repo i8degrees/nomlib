@@ -196,8 +196,8 @@ class ActionPlayer
     ///
     /// \see nom::DispatchQueue
     bool run_action(  const std::shared_ptr<IActionObject>& action,
-                      const action_callback& completion_func,
-                      std::unique_ptr<DispatchQueue> queue );
+                      std::unique_ptr<DispatchQueue> queue,
+                      const action_callback& completion_func );
 
     /// \returns Boolean TRUE when one or more actions are running, and boolean
     /// FALSE when all actions have been completed.

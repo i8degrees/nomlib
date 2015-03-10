@@ -57,12 +57,6 @@ class DispatchQueue
     DispatchQueue();
     ~DispatchQueue();
 
-    /// \brief Disabled copy constructor.
-    DispatchQueue(const DispatchQueue& rhs) = delete;
-
-    /// \brief Disabled copy assignment operator.
-    DispatchQueue& operator =(const DispatchQueue& rhs) = delete;
-
     /// \brief Get the total number of enqueued actions.
     nom::size_type num_actions() const;
 

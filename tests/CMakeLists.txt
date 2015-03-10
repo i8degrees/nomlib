@@ -12,8 +12,8 @@
 # and friends), run the test's executable directly. This debugging output will
 # not be shown when using the 'test' target -- i.e.: make target.
 #
-# NOTE: Compiling nomlib under Windows without iterator asserts --
-# /D_ITERATOR_DBUG_LEVEL=0 -- will cause GTest to throw SEH exception errors
+# IMPORTANT: Compiling nomlib under Windows without iterator asserts --
+# /D_ITERATOR_DEBUG_LEVEL=0 -- will cause GTest to throw SEH exception errors
 # before it is able to display actual & expected results when a unit test fails.
 #
 # NOTE: The custom command line processing used by nom::UnitTest for interactive

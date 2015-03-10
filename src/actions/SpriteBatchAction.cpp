@@ -49,8 +49,8 @@ SpriteBatchAction::SpriteBatchAction( const std::shared_ptr<SpriteBatch>& sprite
   this->elapsed_frames_ = 0.0f;
   this->frame_interval_ = frame_interval_seconds;
   this->total_displacement_ = 0.0f;
-  this->initial_frame_ = 0.0f;
-  this->last_delta_ = 0;
+  this->initial_frame_ = 0;
+  this->last_delta_ = 0.0f;
 
   this->drawable_ = sprite;
   if( this->drawable_ != nullptr ) {
@@ -132,7 +132,7 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
     if( this->drawable_ != nullptr ) {
       this->drawable_->set_frame(displacement_as_integer);
     }
-  } // end if delta_time **greater than or equal to** elapsed interval frames
+  }
 
   // Continue playing the animation only when we are inside our frame duration
   // bounds; this adds stability to variable time steps
@@ -145,7 +145,7 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
 
     this->status_ = FrameState::COMPLETED;
     return this->status_;
-  } // end if delta_time **less than** action's duration
+  }
 }
 
 IActionObject::FrameState SpriteBatchAction::next_frame(real32 delta_time)
@@ -182,7 +182,7 @@ void SpriteBatchAction::rewind(real32 delta_time)
 {
   // Reset frame cycle back to initial value
   this->elapsed_frames_ = 0.0f;
-  this->last_delta_ = 0;
+  this->last_delta_ = 0.0f;
 
   // Reset frame timing
   this->timer_.stop();
@@ -208,7 +208,7 @@ void SpriteBatchAction::first_frame(real32 delta_time)
 {
   if( this->timer_.started() == false ) {
     // Start frame timing
-    this->last_delta_ = 0;
+    this->last_delta_ = 0.0f;
     this->timer_.start();
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,

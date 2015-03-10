@@ -46,7 +46,8 @@ ActionTest::setup_repeating_cursor_test(  real32 duration, real32 speed,
 
   const nom::size_type NUM_FRAMES = 3;
 
-  const real32 ACTION_DURATION = (FRAME_DURATION * NUM_FRAMES) / speed;
+  // total duration of a single repeat
+  const real32 ACTION_DURATION = (FRAME_DURATION * NUM_FRAMES);
 
   // maximum duration before test termination occurs
   const real32 DURATION = duration;

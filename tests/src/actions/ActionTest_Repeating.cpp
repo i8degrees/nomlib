@@ -487,4 +487,85 @@ TEST_F(ActionTest, SpriteBatchActionRepeatingForeverReversed)
                                       nom::UnitTest::test_name() );
 }
 
+/// \remarks Thanks goes to Tim Jones of [sdltutorials.com](http://www.sdltutorials.com/sdl-animation)
+/// for the sprite frames of Yoshi chosen for this test!
+TEST_F(ActionTest, SpriteTexturesActionWithRepeatForAction)
+{
+  // Testing parameters
+  texture_frames anim_frames;
+  const std::vector<const char*> texture_filenames = {{
+    "yoshi_000.png", "yoshi_001.png", "yoshi_002.png", "yoshi_003.png",
+    "yoshi_004.png", "yoshi_005.png", "yoshi_006.png", "yoshi_007.png"
+  }};
+
+  // fps per texture
+  const real32 FRAME_DURATION = 0.100f;
+
+  // total duration of a single repeat
+  const real32 ACTION_DURATION =
+    (FRAME_DURATION * texture_filenames.size() );
+
+  const nom::size_type NUM_REPEATS = 4;
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+
+  this->init_sprite_action_test(texture_filenames, anim_frames);
+
+  EXPECT_EQ( anim_frames.size(), texture_filenames.size() );
+
+  auto sprite0 =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite0 != nullptr);
+
+  auto tex_bg =
+    nom::create_action<SpriteTexturesAction>(sprite0, anim_frames, FRAME_DURATION);
+  ASSERT_TRUE(tex_bg != nullptr);
+
+  auto action0 =
+    nom::create_action<RepeatForAction>(tex_bg, NUM_REPEATS);
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+  action0->set_name("action0_repeat");
+
+  auto remove_action0 =
+    nom::create_action<RemoveAction>(action0);
+  ASSERT_TRUE(remove_action0 != nullptr);
+  remove_action0->set_name("remove_action0");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ(1, this->player.num_actions() );
+    this->expected_sprite_textures_params(  tex_bg.get(), anim_frames.size(),
+                                            ACTION_DURATION, SPEED_MOD,
+                                            "sprite_textures_params" );
+    this->expected_repeat_params(action0.get(), NUM_REPEATS);
+
+    this->player.run_action(remove_action0, [=]() {
+      ASSERT_TRUE(sprite0 != nullptr);
+      EXPECT_FALSE( sprite0->valid() );
+    });
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue action0";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](real32) {
+    if( this->expected_min_duration(  (ACTION_DURATION * NUM_REPEATS),
+                                      SPEED_MOD ) == true )
+    {
+      this->quit();
+    }
+  });
+
+  this->append_render_queue( sprite0.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
 } // namespace nom

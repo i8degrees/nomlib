@@ -73,8 +73,6 @@ class SpriteTexturesAction: public virtual IActionObject
 
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
 
-    /// \fixme This is not implemented properly; the frame iterator should be
-    //// reversed in ::update!
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
 
     virtual void pause(real32 delta_time) override;
@@ -86,12 +84,19 @@ class SpriteTexturesAction: public virtual IActionObject
 
     virtual void rewind(real32 delta_time) override;
 
+    /// \brief Free the sprite's texture and relinquish the pointer to the
+    /// sprite.
+    ///
+    /// \remarks The stored texture frames are not freed until the destruction
+    /// of this action.
+    ///
+    /// \see nom::RemoveAction
     virtual void release() override;
 
   private:
-    void initialize(const texture_frames& textures, real32 frame_interval);
+    typedef texture_frames::iterator frame_iterator;
 
-    typedef std::vector<std::shared_ptr<Sprite>>::iterator frame_iterator;
+    void initialize(const texture_frames& textures, real32 frame_interval);
 
     IActionObject::FrameState
     update(real32 t, real32 b, real32 c, real32 d);
@@ -105,11 +110,12 @@ class SpriteTexturesAction: public virtual IActionObject
     /// \brief The number of textures to animate.
     real32 total_displacement_;
 
-    /// \brief The animation proxy object.
+    /// \brief The textures to animate.
     texture_frames frames_;
-    frame_iterator frame_iterator_;
+    frame_iterator next_frame_;
+    frame_iterator last_frame_;
 
-    /// \brief The sprite to animate.
+    /// \brief The sprite to render the textures to.
     std::shared_ptr<Sprite> drawable_;
 
     /// \brief The length of time to display a frame, in seconds.

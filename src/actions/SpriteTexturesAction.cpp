@@ -37,26 +37,31 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+enum FrameStateDirection
+{
+  NEXT_FRAME,
+  PREV_FRAME
+};
+
 // Static initializations
 const char* SpriteTexturesAction::DEBUG_CLASS_NAME = "[SpriteTexturesAction]:";
 
 void SpriteTexturesAction::
 initialize(const texture_frames& textures, real32 frame_interval_seconds)
 {
-  this->initial_frame_ = 0;
+
   this->elapsed_frames_ = 0.0f;
+  this->initial_frame_ = 0;
   this->frame_interval_ = frame_interval_seconds;
+  this->last_delta_ = 0.0f;
 
   this->frames_ = textures;
   NOM_ASSERT(this->frames_.size() > 0);
   this->total_displacement_ = this->frames_.size();
 
   real32 action_duration_seconds =
-    (this->frame_interval_ * this->total_displacement_) / this->speed();
-
+    (this->frame_interval_ * this->total_displacement_);
   this->set_duration(action_duration_seconds);
-
-  this->last_delta_ = 0;
 }
 
 SpriteTexturesAction::
@@ -94,9 +99,6 @@ SpriteTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
   // Total duration of the action
   const real32 duration = d;
 
-  // Initial starting frame
-  const real32 initial_frame(b);
-
   // The computed texture frame to show next
   real32 displacement(0.0f);
 
@@ -106,6 +108,13 @@ SpriteTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
     delta_time = duration / this->speed();
   }
 
+  FrameStateDirection direction;
+  if( c >= 0 ) {
+    direction = NEXT_FRAME;
+  } else {
+    direction = PREV_FRAME;
+  }
+
   NOM_ASSERT(this->timing_curve() != nullptr);
 
   // Apply speed scalar onto current frame time
@@ -113,32 +122,52 @@ SpriteTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
 
   displacement =
     this->timing_curve().operator()(frame_time, b, c, duration);
+  NOM_ASSERT(displacement <= this->total_displacement_);
+  NOM_ASSERT(displacement >= this->initial_frame_);
 
   this->elapsed_frames_ = displacement;
 
-  if( delta_time >= (this->last_delta_ + frame_interval) ) {
-
+  if( delta_time >= (this->last_delta_ + frame_interval) &&
+      delta_time < ( duration / this->speed() ) )
+  {
     this->last_delta_ = delta_time;
 
-    ++this->frame_iterator_;
-    if( this->frame_iterator_ == this->frames_.end() ) {
-      this->frame_iterator_ = this->frames_.begin();
-      this->elapsed_frames_ = initial_frame;
+    frame_iterator curr_frame;
+    if( direction == NEXT_FRAME ) {
+      ++this->next_frame_;
+      if( this->next_frame_ == (this->frames_.end() - 1) ) {
+        this->next_frame_ =
+          (this->frames_.begin() + this->initial_frame_);
+      }
+
+      curr_frame = this->next_frame_;
+    } else if( direction == PREV_FRAME ) {
+
+      --this->last_frame_;
+      if( this->last_frame_ == this->frames_.begin() ) {
+        this->last_frame_ = (this->frames_.end() - 1);
+      }
+
+      curr_frame = this->last_frame_;
     }
 
-    auto res = this->frame_iterator_->get();
-    NOM_ASSERT(res != nullptr);
-    NOM_ASSERT(res->valid() == true);
+    NOM_ASSERT( curr_frame != this->frames_.end() );
+    if( curr_frame != this->frames_.end() ) {
+      auto sprite = curr_frame->get();
 
+      if( this->drawable_ != nullptr && sprite != nullptr ) {
+        this->drawable_->set_texture( *sprite->texture() );
+      }
+    }
+
+    uint32 displacement_as_integer =
+      nom::round_float_down<uint32>(displacement);
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "delta_time:", delta_time, "frame_time:", frame_time,
-                    "[elapsed frames]:", this->elapsed_frames_ );
+                    "[elapsed frames]:", this->elapsed_frames_,
+                    "displacement (output):", displacement_as_integer );
 
-    if( this->drawable_ != nullptr ) {
-      this->drawable_->set_texture( *res->texture() );
-    }
-
-  } // end if delta_time **greater than or equal to** elapsed interval frames
+  }
 
   // Continue playing the animation only when we are inside our frame duration
   // bounds; this adds stability to variable time steps
@@ -151,7 +180,7 @@ SpriteTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
 
     this->status_ = FrameState::COMPLETED;
     return this->status_;
-  } // end if delta_time **less than** action's duration
+  }
 }
 
 IActionObject::FrameState SpriteTexturesAction::next_frame(real32 delta_time)
@@ -188,23 +217,25 @@ void SpriteTexturesAction::rewind(real32 delta_time)
 {
   // Reset frame cycle back to initial value
   this->elapsed_frames_ = 0.0f;
-  this->frame_iterator_ = this->frames_.begin();
-  this->last_delta_ = 0;
+  this->initial_frame_ = 0;
+  this->next_frame_ = (this->frames_.begin() + this->initial_frame_);
+  this->last_frame_ = (this->frames_.end() - 1);
+  this->last_delta_ = 0.0f;
 
   // Reset frame timing
   this->timer_.stop();
 
   this->status_ = FrameState::PLAYING;
 
-  // Reset starting frame
+  auto curr_frame = this->next_frame_;
+  NOM_ASSERT( curr_frame != this->frames_.end() );
   if( this->drawable_ != nullptr &&
-      this->frame_iterator_ != this->frames_.end() )
+      curr_frame != this->frames_.end() )
   {
-    auto res = this->frame_iterator_;
-    NOM_ASSERT(res->get() != nullptr);
-
-    this->initial_frame_ = 0;
-    this->drawable_->set_texture( *res->get()->texture() );
+    auto sprite = curr_frame->get();
+    if( this->drawable_ != nullptr && sprite != nullptr ) {
+      this->drawable_->set_texture( *sprite->texture() );
+    }
   }
 }
 
@@ -224,28 +255,30 @@ void SpriteTexturesAction::first_frame(real32 delta_time)
   if( this->timer_.started() == false ) {
     // Start frame timing
     this->elapsed_frames_ = 0.0f;
-    this->frame_iterator_ = this->frames_.begin();
-    this->last_delta_ = 0;
+    this->initial_frame_ = 0;
+    this->last_delta_ = 0.0f;
+    this->next_frame_ = (this->frames_.begin() + this->initial_frame_);
+    this->last_frame_ = (this->frames_.end() - 1);
     this->timer_.start();
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "BEGIN at", delta_time );
 
-    auto res = this->frame_iterator_->get();
-    NOM_ASSERT(res != nullptr);
-    NOM_ASSERT(res->valid() == true);
+    auto curr_frame = this->next_frame_;
+    NOM_ASSERT( curr_frame != this->frames_.end() );
+    if( curr_frame != this->frames_.end() ) {
 
-    this->initial_frame_ = 0;
-
-    // Set the texture of the sprite immediately, so we do not have a momentary
-    // gap in rendering
-    if( this->drawable_ != nullptr && this->drawable_->valid() == false ) {
-      this->drawable_->set_texture( *res->texture() );
+      auto sprite = curr_frame->get();
+      // NOTE: Set the texture of the sprite immediately, so we do not have a
+      // momentary gap in rendering
+      if( this->drawable_ != nullptr && sprite != nullptr ) {
+        this->drawable_->set_texture( *sprite->texture() );
+      }
     }
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "[initial_frame]:", this->initial_frame_,
-                    "[elapsed_frames]:", this->elapsed_frames_,
+                    "[num_frames]:", this->total_displacement_,
                     "[frame_interval]:", this->frame_interval_ );
   }
 }

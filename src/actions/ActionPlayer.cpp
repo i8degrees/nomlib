@@ -132,7 +132,12 @@ void ActionPlayer::cancel_actions()
 
 bool ActionPlayer::run_action(const std::shared_ptr<IActionObject>& action)
 {
-  return this->run_action(action, action->name().c_str() );
+  std::string action_id = "";
+  if( action != nullptr ) {
+    action_id = action->name();
+  }
+
+  return this->run_action(action, action_id.c_str() );
 }
 
 bool ActionPlayer::
@@ -186,14 +191,12 @@ run_action( const std::shared_ptr<IActionObject>& action,
 {
   std::string action_id;
 
-  NOM_ASSERT(action != nullptr);
   if( action == nullptr ) {
     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
                   "Could not enqueue the action -- action was NULL." );
     return false;
   }
 
-  NOM_ASSERT(queue != nullptr);
   if( queue == nullptr ) {
     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
                   "Could not enqueue the action -- dispatch queue was NULL." );

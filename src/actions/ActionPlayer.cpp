@@ -156,7 +156,7 @@ run_action( const std::shared_ptr<IActionObject>& action,
   enqueue.reset( new DispatchQueue() );
 
   if( enqueue != nullptr ) {
-    return this->run_action(action, nullptr, std::move(enqueue) );
+    return this->run_action(action, std::move(enqueue), nullptr);
   }
 
   NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Failed to enqueue action: ",
@@ -175,7 +175,7 @@ run_action( const std::shared_ptr<IActionObject>& action,
   enqueue.reset( new DispatchQueue() );
 
   if( enqueue != nullptr ) {
-    return this->run_action(action, completion_func, std::move(enqueue) );
+    return this->run_action(action, std::move(enqueue), completion_func);
   }
 
   if( action != nullptr ) {
@@ -190,8 +190,8 @@ run_action( const std::shared_ptr<IActionObject>& action,
 
 bool ActionPlayer::
 run_action( const std::shared_ptr<IActionObject>& action,
-            const action_callback& completion_func,
-            std::unique_ptr<DispatchQueue> queue )
+            std::unique_ptr<DispatchQueue> queue,
+            const action_callback& completion_func )
 {
   std::string action_id;
 

@@ -92,20 +92,21 @@ enqueue_action( const std::shared_ptr<IActionObject>& action,
   return true;
 }
 
-uint32 DispatchQueue::update(uint32 player_state, real32 delta_time)
+DispatchQueue::State
+DispatchQueue::update(uint32 player_state, real32 delta_time)
 {
   auto itr = this->actions_iterator_;
   auto actions_end = this->actions_.end();
 
   if( itr == actions_end ) {
     // Finished updating; nothing left to do
-    return ActionPlayer::State::IDLING;
+    return State::IDLING;
   }
 
   auto action = (*itr)->action;
   if( action == nullptr ) {
     // Finished updating; nothing left to do
-    return ActionPlayer::State::IDLING;
+    return State::IDLING;
   }
 
   std::string action_id = action->name();
@@ -155,10 +156,10 @@ uint32 DispatchQueue::update(uint32 player_state, real32 delta_time)
 
   if( this->actions_iterator_ == actions_end ) {
     // Finished update cycle
-    return ActionPlayer::State::IDLING;
+    return State::IDLING;
   } else {
     // Update cycle is **not** finished
-    return ActionPlayer::State::RUNNING;
+    return State::RUNNING;
   }
 }
 

@@ -50,21 +50,14 @@ class ActionPlayer
   public:
     typedef ActionPlayer self_type;
 
-    /// \brief The status of the actions update loop.
+    /// \brief The status of the player.
     enum State
     {
-      /// \brief Reserved for future implementation.
-      IDLING = 0,
-      /// \brief The default state of the action player.
-      RUNNING,
+      RUNNING = 0,
       PAUSED,
       STOPPED,
       TOTAL_STATES,
     };
-
-    /// \brief nom::ActionPlayer::State enumerations as strings translation.
-    static const char*
-    ACTION_STATE_STR[ActionPlayer::State::TOTAL_STATES];
 
     static const char* DEBUG_CLASS_NAME;
 

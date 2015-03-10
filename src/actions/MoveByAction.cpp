@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/actions/MoveByAction.hpp"
 
 // Private headers
+#include "nomlib/core/helpers.hpp"
 #include "nomlib/math/math_helpers.hpp"
 
 // Forward declarations
@@ -55,9 +56,9 @@ MoveByAction::~MoveByAction()
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_ACTION, NOM_LOG_PRIORITY_VERBOSE);
 }
 
-std::unique_ptr<MoveByAction::derived_type> MoveByAction::clone() const
+std::unique_ptr<IActionObject> MoveByAction::clone() const
 {
-  return( std::unique_ptr<self_type>( new self_type(*this) ) );
+  return( nom::make_unique<self_type>( self_type(*this) ) );
 }
 
 IActionObject::FrameState
@@ -202,6 +203,8 @@ void MoveByAction::rewind(real32 delta_time)
 
   // Reset frame timing
   this->timer_.stop();
+
+  this->status_ = FrameState::PLAYING;
 
   // Reset starting displacement position
   if( this->drawable_ != nullptr && this->initial_position_ != Point2i::null ) {

@@ -246,7 +246,7 @@ bool ActionPlayer::update(real32 delta_time)
     // existing action keys
     if( action_queue == nullptr ) {
       NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_PLAYER, DEBUG_CLASS_NAME,
-                      "enqueue erasable", "[action_id]:", action_id );
+                      "enqueue erasable (NULL)", "[action_id]:", action_id );
 
       this->free_list_.push_back(itr);
     } else {

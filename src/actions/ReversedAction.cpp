@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/actions/ReversedAction.hpp"
 
+#include "nomlib/core/helpers.hpp"
+
 namespace nom {
 
 // Static initializations
@@ -49,9 +51,25 @@ ReversedAction::~ReversedAction()
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-std::unique_ptr<ReversedAction::derived_type> ReversedAction::clone() const
+std::unique_ptr<IActionObject> ReversedAction::clone() const
 {
-  return( std::unique_ptr<self_type>( new self_type(*this) ) );
+  auto cloned_obj = nom::make_unique<self_type>( self_type(*this) );
+  if( cloned_obj != nullptr ) {
+
+    cloned_obj->status_ = FrameState::PLAYING;
+
+    if( this->object_ != nullptr ) {
+      cloned_obj->object_ = this->object_->clone();
+    }
+
+    // NOTE: This is done to prevent the cloned action from being erased from a
+    // running queue at the same time as the original instance!
+    cloned_obj->set_name( "__" + this->name() + "_cloned" );
+
+    return std::move(cloned_obj);
+  } else {
+    return nullptr;
+  }
 }
 
 IActionObject::FrameState ReversedAction::next_frame(real32 delta_time)
@@ -94,6 +112,8 @@ void ReversedAction::resume(real32 delta_time)
 
 void ReversedAction::rewind(real32 delta_time)
 {
+  this->status_ = FrameState::PLAYING;
+
   if( this->object_ != nullptr ) {
     // Reset proxy object back to initial starting values
     this->object_->rewind(delta_time);

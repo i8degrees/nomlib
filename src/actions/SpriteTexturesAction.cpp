@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/actions/SpriteTexturesAction.hpp"
 
 // Private headers
+#include "nomlib/core/helpers.hpp"
 #include "nomlib/math/math_helpers.hpp"
 
 // Forward declarations
@@ -76,10 +77,9 @@ SpriteTexturesAction::~SpriteTexturesAction()
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-std::unique_ptr<SpriteTexturesAction::derived_type>
-SpriteTexturesAction::clone() const
+std::unique_ptr<IActionObject> SpriteTexturesAction::clone() const
 {
-  return( std::unique_ptr<self_type>( new self_type(*this) ) );
+  return( nom::make_unique<self_type>( self_type(*this) ) );
 }
 
 IActionObject::FrameState
@@ -135,7 +135,7 @@ SpriteTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
                     "[elapsed frames]:", this->elapsed_frames_ );
 
     if( this->drawable_ != nullptr ) {
-      this->drawable_->set_texture( res->texture() );
+      this->drawable_->set_texture( *res->texture() );
     }
 
   } // end if delta_time **greater than or equal to** elapsed interval frames
@@ -194,6 +194,8 @@ void SpriteTexturesAction::rewind(real32 delta_time)
   // Reset frame timing
   this->timer_.stop();
 
+  this->status_ = FrameState::PLAYING;
+
   // Reset starting frame
   if( this->drawable_ != nullptr &&
       this->frame_iterator_ != this->frames_.end() )
@@ -202,7 +204,7 @@ void SpriteTexturesAction::rewind(real32 delta_time)
     NOM_ASSERT(res->get() != nullptr);
 
     this->initial_frame_ = 0;
-    this->drawable_->set_texture( res->get()->texture() );
+    this->drawable_->set_texture( *res->get()->texture() );
   }
 }
 
@@ -238,7 +240,7 @@ void SpriteTexturesAction::first_frame(real32 delta_time)
     // Set the texture of the sprite immediately, so we do not have a momentary
     // gap in rendering
     if( this->drawable_ != nullptr && this->drawable_->valid() == false ) {
-      this->drawable_->set_texture( res->texture() );
+      this->drawable_->set_texture( *res->texture() );
     }
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,

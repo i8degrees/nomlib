@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/actions/WaitForDurationAction.hpp"
 
+#include "nomlib/core/helpers.hpp"
+
 namespace nom {
 
 // Static initializations
@@ -49,10 +51,9 @@ WaitForDurationAction::~WaitForDurationAction()
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-std::unique_ptr<WaitForDurationAction::derived_type>
-WaitForDurationAction::clone() const
+std::unique_ptr<IActionObject> WaitForDurationAction::clone() const
 {
-  return( std::unique_ptr<self_type>( new self_type(*this) ) );
+  return( nom::make_unique<self_type>( self_type(*this) ) );
 }
 
 IActionObject::FrameState WaitForDurationAction::next_frame(real32 delta_time)
@@ -120,6 +121,8 @@ void WaitForDurationAction::rewind(real32 delta_time)
 
   // Reset frame timing
   this->timer_.stop();
+
+  this->status_ = FrameState::PLAYING;
 }
 
 void WaitForDurationAction::release()

@@ -73,7 +73,7 @@ class MoveByAction: public virtual IActionObject
     /// \remarks This is necessary anytime you wish to re-use an object that
     /// has been used once before, due to its state not being reset after the
     /// first use.
-    virtual std::unique_ptr<derived_type> clone() const override;
+    virtual std::unique_ptr<IActionObject> clone() const override;
 
     /// \brief Displace the current animation frame.
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;

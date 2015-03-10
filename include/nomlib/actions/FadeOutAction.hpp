@@ -57,7 +57,7 @@ class FadeOutAction: public virtual IActionObject
     /// \brief Destructor.
     virtual ~FadeOutAction();
 
-    virtual std::unique_ptr<derived_type> clone() const override;
+    virtual std::unique_ptr<IActionObject> clone() const override;
 
     // FIXME: Take a closer look at how to do the proper math required for this
     // instead of using the workaround in here!

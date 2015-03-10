@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/actions/ScaleByAction.hpp"
 
 // Private headers
+#include "nomlib/core/helpers.hpp"
 #include "nomlib/math/math_helpers.hpp"
 
 // Forward declarations
@@ -58,9 +59,9 @@ ScaleByAction::~ScaleByAction()
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-std::unique_ptr<ScaleByAction::derived_type> ScaleByAction::clone() const
+std::unique_ptr<IActionObject> ScaleByAction::clone() const
 {
-  return( std::unique_ptr<self_type>( new self_type(*this) ) );
+  return( nom::make_unique<self_type>( self_type(*this) ) );
 }
 
 IActionObject::FrameState

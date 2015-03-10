@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/actions/SequenceAction.hpp"
 
+#include "nomlib/core/helpers.hpp"
+
 namespace nom {
 
 enum FrameStateDirection
@@ -62,9 +64,31 @@ SequenceAction::~SequenceAction()
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-std::unique_ptr<SequenceAction::derived_type> SequenceAction::clone() const
+std::unique_ptr<IActionObject> SequenceAction::clone() const
 {
-  return( std::unique_ptr<self_type>( new self_type(*this) ) );
+  auto cloned_obj = nom::make_unique<self_type>( self_type(*this) );
+  if( cloned_obj != nullptr ) {
+
+    cloned_obj->status_ = FrameState::PLAYING;
+
+    cloned_obj->actions_.clear();
+    auto actions_end = this->actions_.end();
+    for( auto itr = this->actions_.begin(); itr != actions_end; ++itr ) {
+      cloned_obj->actions_.push_back( (*itr)->clone() );
+    }
+
+    cloned_obj->actions_iterator_ = cloned_obj->actions_.begin();
+    cloned_obj->itr_pos_ = 0;
+    cloned_obj->num_actions_ = cloned_obj->actions_.size();
+
+    // NOTE: This is done to prevent the cloned action from being erased from a
+    // running queue at the same time as the original instance!
+    cloned_obj->set_name( "__" + this->name() + "_cloned" );
+
+    return std::move(cloned_obj);
+  } else {
+    return nullptr;
+  }
 }
 
 IActionObject::FrameState
@@ -154,10 +178,6 @@ void SequenceAction::rewind(real32 delta_time)
 {
   this->itr_pos_ = 0;
   this->actions_iterator_ = this->actions_.begin();
-
-  // NOTE: Since this object type does not handle its frame state based on time
-  // intervals like the other actions do, we must explicitly reset it here for
-  // looping actions to work correctly.
   this->status_ = FrameState::PLAYING;
 
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {

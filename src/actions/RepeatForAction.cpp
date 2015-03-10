@@ -75,6 +75,11 @@ RepeatForAction::update(real32 delta_time, uint32 direction)
     return this->status_;
   }
 
+  if( this->elapsed_repeats_ == this->num_repeats_ ) {
+    this->status_ = FrameState::COMPLETED;
+    return this->status_;
+  }
+
   if( direction == FrameStateDirection::NEXT_FRAME ) {
     obj_status = action->next_frame(delta_time);
   } else {
@@ -85,8 +90,10 @@ RepeatForAction::update(real32 delta_time, uint32 direction)
 
     ++this->elapsed_repeats_;
     if( this->elapsed_repeats_ < this->num_repeats_ ) {
+      this->status_ = FrameState::PLAYING;
       action->rewind(delta_time);
     } else {
+      this->status_ = FrameState::COMPLETED;
       NOM_ASSERT(this->num_repeats_ == this->elapsed_repeats_);
     }
   }
@@ -94,12 +101,6 @@ RepeatForAction::update(real32 delta_time, uint32 direction)
   NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                   "[elapsed_repeats]:", this->elapsed_repeats_,
                   "[num_repeats]:", this->num_repeats_ );
-
-  if( this->elapsed_repeats_ == this->num_repeats_ ) {
-    this->status_ = FrameState::COMPLETED;
-  } else {
-    this->status_ = FrameState::PLAYING;
-  }
 
   return this->status_;
 }

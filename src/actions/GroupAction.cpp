@@ -47,8 +47,12 @@ GroupAction::GroupAction( const action_list& actions,
 
   this->set_name(name);
 
+  group_action entry;
   for( auto itr = actions.begin(); itr != actions.end(); ++itr ) {
-    this->actions_.push_back(*itr);
+
+    entry.action = *itr;
+    entry.status = FrameState::PLAYING;
+    this->actions_.push_back( std::move(entry) );
   }
 
   this->itr_pos_ = 0;
@@ -69,6 +73,8 @@ std::unique_ptr<GroupAction::derived_type> GroupAction::clone() const
 IActionObject::FrameState
 GroupAction::update(real32 delta_time, uint32 direction)
 {
+  std::string action_id = "action";
+
   // Program flow is structured to never call back here after the actions are
   // finished -- this serves only as a reminder to the intended flow.
   if( this->status_ == FrameState::COMPLETED ) {
@@ -78,37 +84,48 @@ GroupAction::update(real32 delta_time, uint32 direction)
 
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
-    IActionObject::FrameState action_status =
-      FrameState::COMPLETED;
+    IActionObject* action = (*itr).action.get();
+    FrameState action_status = FrameState::COMPLETED;
 
-    if( *itr != nullptr ) {
+    if( action != nullptr ) {
+
+      if( action->name() != "" ) {
+        action_id = action->name();
+      }
+
       if( direction == FrameStateDirection::NEXT_FRAME ) {
-        action_status = (*itr)->next_frame(delta_time);
+        action_status = action->next_frame(delta_time);
       } else {
-        action_status = (*itr)->prev_frame(delta_time);
+        action_status = action->prev_frame(delta_time);
       }
     }
 
     if( action_status == FrameState::COMPLETED ) {
 
-      std::string action_id = (*itr)->name();
-      if( action_id == "" ) {
-        action_id = "action";
+      if( (*itr).status != FrameState::COMPLETED ) {
+
+        (*itr).status = FrameState::COMPLETED;
+        ++this->itr_pos_;
+
+        NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
+                        action_id, "has finished at",
+                        Timer::to_seconds( nom::ticks() ),
+                        "[", this->itr_pos_, "/", this->num_actions_, "]",
+                        "[action_id]:", this->name() );
       }
 
-      NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
-                      action_id, "has finished",
-                      "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
-                      "[id]:", this->name() );
-
-      ++this->itr_pos_;
-      this->status_ = FrameState::PLAYING;
     }
 
     if( this->itr_pos_ == this->num_actions_ ) {
+      NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
+                      "Finished at:", Timer::to_seconds( nom::ticks() ),
+                      "[itr_pos]:", itr_pos_ );
       this->status_ = FrameState::COMPLETED;
       return this->status_;
+    } else {
+      this->status_ = FrameState::PLAYING;
     }
+
   }
 
   return this->status_;
@@ -128,8 +145,9 @@ void GroupAction::pause(real32 delta_time)
 {
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
-    if( *itr != nullptr ) {
-      (*itr)->pause(delta_time);
+    IActionObject* action = (*itr).action.get();
+    if( action != nullptr ) {
+      action->pause(delta_time);
     }
   } // end for loop
 }
@@ -138,8 +156,9 @@ void GroupAction::resume(real32 delta_time)
 {
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
-    if( *itr != nullptr ) {
-      (*itr)->resume(delta_time);
+    IActionObject* action = (*itr).action.get();
+    if( action != nullptr ) {
+      action->resume(delta_time);
     }
   } // end for loop
 }
@@ -155,8 +174,10 @@ void GroupAction::rewind(real32 delta_time)
 
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
-    if( (*itr) != nullptr ) {
-      (*itr)->rewind(delta_time);
+    (*itr).status = FrameState::PLAYING;
+    IActionObject* action = (*itr).action.get();
+    if( action != nullptr ) {
+      action->rewind(delta_time);
     }
   } // end for loop
 }
@@ -165,9 +186,9 @@ void GroupAction::release()
 {
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
-    if( *itr != nullptr ) {
-      (*itr)->release();
-      (*itr).reset();
+    IActionObject* action = (*itr).action.get();
+    if( action != nullptr ) {
+      action->release();
     }
   } // end for loop
 }
@@ -179,8 +200,9 @@ void GroupAction::set_speed(real32 speed)
   // Propagate the speed modifier for our children
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
-    if( *itr != nullptr ) {
-      (*itr)->set_speed(speed);
+    IActionObject* action = (*itr).action.get();
+    if( action != nullptr ) {
+      action->set_speed(speed);
     }
   } // end for loop
 }
@@ -193,8 +215,9 @@ GroupAction::set_timing_curve(const IActionObject::timing_curve_func& mode)
   // Propagate the timing mode for our children
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 
-    if( *itr != nullptr ) {
-      (*itr)->set_timing_curve(mode);
+    IActionObject* action = (*itr).action.get();
+    if( action != nullptr ) {
+      action->set_timing_curve(mode);
     }
   } // end for loop
 }

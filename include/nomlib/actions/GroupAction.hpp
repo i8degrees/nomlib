@@ -84,14 +84,20 @@ class GroupAction: public virtual IActionObject
     void set_timing_curve(const IActionObject::timing_curve_func& mode) override;
 
   private:
-    IActionObject::FrameState
-    update(real32 delta_time, uint32 direction);
+    struct group_action
+    {
+      IActionObject::FrameState status;
+      std::shared_ptr<IActionObject> action;
+    };
 
     /// \remarks A std::vector container seems most appropriate here because
     /// of the contiguous memory access, for lack of any other special needs,
     /// i.e.: fast front/back iteration or fast expansion time.
-    typedef std::vector<std::shared_ptr<IActionObject>> container_type;
+    typedef std::vector<group_action> container_type;
     typedef container_type::iterator container_iterator;
+
+    IActionObject::FrameState
+    update(real32 delta_time, uint32 direction);
 
     const container_type& actions() const;
 

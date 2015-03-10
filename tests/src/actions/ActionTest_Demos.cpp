@@ -30,6 +30,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+/// \see ActionTest.RainingRectsStressTest
+struct test_action
+{
+  std::shared_ptr<Sprite> sprite;
+  std::shared_ptr<MoveByAction> action;
+  std::shared_ptr<RepeatForAction> container;
+  Point2i sprite_pos = Point2i::null;
+  real32 speed = 1.0f;
+};
+
 /// \brief This test is intended to simulate a worst-case scenario, i.e.: a
 /// large number of objects enqueued and deallocated at the same time.
 ///
@@ -56,45 +66,25 @@ TEST_F(ActionTest, RainingRectsStressTest)
   // Position delta applied over duration
   const Point2i TRANSLATE_POS( Point2i(0, WINDOW_DIMS.h-MAX_RECT_SIZE.h) );
 
-  std::vector<Color4i> colors;  // 13
-  colors.push_back(Color4i::Green);
-  colors.push_back(Color4i::Red);
-  colors.push_back(Color4i::Blue);
-  colors.push_back(Color4i::Yellow);
-  colors.push_back(Color4i::Cyan);
-  colors.push_back(Color4i::Silver);
-  colors.push_back(Color4i::LightGray);
-  colors.push_back(Color4i::Black);
-  colors.push_back(Color4i::White);
-  colors.push_back(Color4i::Purple);
-  colors.push_back(Color4i::Orange);
-  colors.push_back(Color4i::Magenta);
-  colors.push_back(Color4i::Purple);
-  colors.push_back(Color4i::Gray);
-  nom::size_type num_colors = colors.size();
+  auto rand_seed = nom::ticks();
+  nom::init_rand(rand_seed);
 
-  std::vector<std::shared_ptr<Sprite>> rects;
-  action_list actions;
+  NOM_LOG_DEBUG(NOM_LOG_CATEGORY_ACTION, "Random seed value:", rand_seed);
+
+  std::map<uint32, test_action> actions;
 
   // drawables generation
-  nom::size_type c = 0;
   int x_offset = 0;
   for( auto idx = 0; idx != NUM_OBJECTS; ++idx ) {
 
-    // rects
     Point2i pos(x_offset, 0);
     Size2i dims(Size2i::zero);
     Color4i color;
 
-    if( c != num_colors ) {
-      color = Color4i(colors[c]);
-      ++c;
-    } else {
-      int16 red = nom::uniform_real_rand<real32>(0.0f,255.0f);
-      int16 green = nom::uniform_real_rand<real32>(0.0f,255.0f);
-      int16 blue = nom::uniform_real_rand<real32>(0.0f,255.0f);
-      color = Color4i(red, green, blue);
-    }
+    int16 red = nom::uniform_real_rand<real32>(0.0f,255.0f);
+    int16 green = nom::uniform_real_rand<real32>(0.0f,255.0f);
+    int16 blue = nom::uniform_real_rand<real32>(0.0f,255.0f);
+    color = Color4i(red, green, blue);
 
     dims.w =
       nom::uniform_real_rand<real32>(MIN_RECT_SIZE.w, MAX_RECT_SIZE.w);
@@ -110,32 +100,43 @@ TEST_F(ActionTest, RainingRectsStressTest)
     IntRect rect_bounds(pos, dims);
 
     auto rect =
-      std::make_shared<Rectangle>(rect_bounds, color);
+      new Rectangle(rect_bounds, color);
     ASSERT_TRUE(rect != nullptr);
 
     auto sprite = std::make_shared<Sprite>( rect->texture() );
     ASSERT_TRUE(sprite != nullptr);
+    NOM_DELETE_PTR(rect);
 
-    rects.push_back(sprite);
+    actions[idx].sprite_pos = sprite->position();
+    actions[idx].sprite = sprite;
   }
 
   for( auto idx = 0; idx != NUM_OBJECTS; ++idx ) {
     auto translate =
-      nom::create_action<MoveByAction>(rects[idx], TRANSLATE_POS, DURATION);
+      nom::create_action<MoveByAction>(actions[idx].sprite, TRANSLATE_POS, DURATION);
     ASSERT_TRUE(translate != nullptr);
+    translate->set_name("MoveByAction" + std::to_string(idx) );
+    actions[idx].action = translate;
 
     real32 random_speed_mod =
       nom::uniform_real_rand<real32>(MIN_SPEED_MOD, MAX_SPEED_MOD);
     translate->set_speed(random_speed_mod);
+    actions[idx].speed = random_speed_mod;
 
     auto repeat =
       nom::create_action<RepeatForAction>(translate, NUM_REPEATS);
     ASSERT_TRUE(repeat != nullptr);
-    actions.push_back(repeat);
+    repeat->set_name("RepeatForAction_MoveByAction" + std::to_string(idx) );
+    actions[idx].container = repeat;
+  }
+
+  action_list group_actions;
+  for( auto idx = 0; idx != NUM_OBJECTS; ++idx ) {
+    group_actions.push_back(actions[idx].container);
   }
 
   auto action0 =
-    nom::create_action<GroupAction>(actions, "action0");
+    nom::create_action<GroupAction>(group_actions, "group_action0");
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
 
@@ -145,27 +146,52 @@ TEST_F(ActionTest, RainingRectsStressTest)
   remove_action0->set_name("remove_action0");
 
   this->run_action_ret =
-  this->player.run_action(action0, [=]() {
-    this->player.run_action(remove_action0, [=]() {
+  this->player.run_action(action0, [=]() mutable {
 
-      // NOTE: The removal of the action should free the stored texture of each
-      // sprite, preventing it from being rendered by invalidating the texture.
-      for( auto itr = rects.begin(); itr != rects.end(); ++itr ) {
-        EXPECT_TRUE(*itr != nullptr);
-        EXPECT_FALSE( (*itr)->valid() );
+    for( auto idx = 0; idx != NUM_OBJECTS; ++idx ) {
+
+      auto sprite = actions[idx].sprite.get();
+      auto sprite_pos = actions[idx].sprite_pos;
+      ASSERT_TRUE(sprite != nullptr);
+      EXPECT_EQ(sprite_pos.x, sprite->position().x);
+      EXPECT_EQ(TRANSLATE_POS.y, sprite->position().y);
+
+      auto action = actions[idx].action.get();
+      ASSERT_TRUE(action != nullptr);
+      this->expected_common_params( action, DURATION, actions[idx].speed,
+                                    "action_speed" );
+
+      auto action_container = actions[idx].container.get();
+      ASSERT_TRUE(action_container != nullptr);
+      this->expected_repeat_params( action_container, NUM_REPEATS,
+                                    "action_num_repeats" );
+    }
+
+    this->player.run_action(remove_action0, [=]() mutable {
+
+      for( auto idx = 0; idx != NUM_OBJECTS; ++idx ) {
+
+        auto sprite = actions[idx].sprite.get();
+        ASSERT_TRUE(sprite != nullptr);
+        EXPECT_FALSE( sprite->valid() );
       }
     });
+
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
 
-  this->append_update_callback( [=](float) {
+  this->append_update_callback( [=](real32) {
     if( this->expected_min_duration(DURATION, MAX_SPEED_MOD) == true ) {
       this->quit();
     }
   });
 
-  this->append_render_queue(rects);
+  for( auto idx = 0; idx != NUM_OBJECTS; ++idx ) {
+    auto drawable = actions[idx].sprite.get();
+    this->append_render_queue(drawable);
+  }
+
   this->append_frame_interval(FPS);
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );

@@ -30,7 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \see ActionTest.RainingRectsStressTest
 struct test_action
 {
   std::shared_ptr<Sprite> sprite;
@@ -39,6 +38,8 @@ struct test_action
   Point2i sprite_pos = Point2i::null;
   real32 speed = 1.0f;
 };
+
+typedef std::map<uint32, test_action> test_action_list;
 
 /// \brief This test is intended to simulate a worst-case scenario, i.e.: a
 /// large number of objects enqueued and deallocated at the same time.
@@ -66,12 +67,7 @@ TEST_F(ActionTest, RainingRectsStressTest)
   // Position delta applied over duration
   const Point2i TRANSLATE_POS( Point2i(0, WINDOW_DIMS.h-MAX_RECT_SIZE.h) );
 
-  auto rand_seed = nom::ticks();
-  nom::init_rand(rand_seed);
-
-  NOM_LOG_DEBUG(NOM_LOG_CATEGORY_ACTION, "Random seed value:", rand_seed);
-
-  std::map<uint32, test_action> actions;
+  test_action_list actions;
 
   // drawables generation
   int x_offset = 0;
@@ -180,6 +176,306 @@ TEST_F(ActionTest, RainingRectsStressTest)
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
+
+  this->append_update_callback( [=](real32) {
+    if( this->expected_min_duration(DURATION, MAX_SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
+
+  for( auto idx = 0; idx != NUM_OBJECTS; ++idx ) {
+    auto drawable = actions[idx].sprite.get();
+    this->append_render_queue(drawable);
+  }
+
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+/// \remarks Enabling VSYNC may help performance here!
+TEST_F(ActionTest, RainingRectsStressTestMultipleDispatchQueues)
+{
+  // Testing parameters
+  const real32 DURATION = 2.0f;
+  const IActionObject::timing_curve_func TIMING_MODE =
+    nom::Bounce::ease_in_out;
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+  const real32 MIN_SPEED_MOD = DURATION;
+  const real32 MAX_SPEED_MOD = MIN_SPEED_MOD + NOM_ACTION_TEST_FLAG(speed);
+  const real32 NUM_REPEATS = 4;
+
+  // const nom::size_type NUM_OBJECTS = 100;
+  // const nom::size_type NUM_OBJECTS = 252;
+  const nom::size_type NUM_OBJECTS = 500;
+  // const nom::size_type NUM_OBJECTS = 1000;
+
+  ASSERT_TRUE( (NUM_OBJECTS % 4) == 0 )
+  << "The number of objects must divide evenly by a multiple of four!\n";
+
+  const auto NUM_ACTIONS_GROUP0 = NUM_OBJECTS/4;
+  const auto NUM_ACTIONS_GROUP1 = (NUM_OBJECTS/4)*2;
+  const auto NUM_ACTIONS_GROUP2 = (NUM_OBJECTS/4)*3;
+  const auto NUM_ACTIONS_GROUP3 = (NUM_OBJECTS/4)*4;
+
+  const Size2i MIN_RECT_SIZE(8, 8);
+  const Size2i MAX_RECT_SIZE(16, 16);
+
+  // Position delta applied over duration
+  const Point2i TRANSLATE_POS( Point2i(0, WINDOW_DIMS.h-MAX_RECT_SIZE.h) );
+
+  auto queue0 = nom::make_unique<DispatchQueue>();
+  auto queue1 = nom::make_unique<DispatchQueue>();
+  auto queue2 = nom::make_unique<DispatchQueue>();
+  auto queue3 = nom::make_unique<DispatchQueue>();
+
+  test_action_list actions;
+
+  // drawables generation
+  int x_offset = 0;
+  for( auto idx = 0; idx != NUM_OBJECTS; ++idx ) {
+
+    Point2i pos(x_offset, 0);
+    Size2i dims(Size2i::zero);
+    Color4i color;
+
+    int16 red = nom::uniform_real_rand<real32>(0.0f,255.0f);
+    int16 green = nom::uniform_real_rand<real32>(0.0f,255.0f);
+    int16 blue = nom::uniform_real_rand<real32>(0.0f,255.0f);
+    color = Color4i(red, green, blue);
+
+    dims.w =
+      nom::uniform_real_rand<real32>(MIN_RECT_SIZE.w, MAX_RECT_SIZE.w);
+    dims.h =
+      nom::uniform_real_rand<real32>(MIN_RECT_SIZE.h, MAX_RECT_SIZE.h);
+
+    if( x_offset >= 640 ) {
+      x_offset = 0;
+    } else {
+      x_offset += dims.w + (dims.w / 2);
+    }
+
+    IntRect rect_bounds(pos, dims);
+
+    auto rect =
+      new Rectangle(rect_bounds, color);
+    ASSERT_TRUE(rect != nullptr);
+
+    auto sprite = std::make_shared<Sprite>( rect->texture() );
+    ASSERT_TRUE(sprite != nullptr);
+    NOM_DELETE_PTR(rect);
+
+    actions[idx].sprite_pos = sprite->position();
+    actions[idx].sprite = sprite;
+  }
+
+  for( auto idx = 0; idx != NUM_OBJECTS; ++idx ) {
+    auto translate =
+      nom::create_action<MoveByAction>(actions[idx].sprite, TRANSLATE_POS, DURATION);
+    ASSERT_TRUE(translate != nullptr);
+    translate->set_name("MoveByAction" + std::to_string(idx) );
+    actions[idx].action = translate;
+
+    real32 random_speed_mod =
+      nom::uniform_real_rand<real32>(MIN_SPEED_MOD, MAX_SPEED_MOD);
+    translate->set_speed(random_speed_mod);
+    actions[idx].speed = random_speed_mod;
+
+    auto repeat =
+      nom::create_action<RepeatForAction>(translate, NUM_REPEATS);
+    ASSERT_TRUE(repeat != nullptr);
+    repeat->set_name("RepeatForAction_MoveByAction" + std::to_string(idx) );
+    actions[idx].container = repeat;
+  }
+
+  action_list group_actions0;
+  for( auto idx = 0; idx != NUM_ACTIONS_GROUP0; ++idx ) {
+    group_actions0.push_back(actions[idx].container);
+  }
+
+  action_list group_actions1;
+  for( auto idx = NUM_ACTIONS_GROUP0; idx != NUM_ACTIONS_GROUP1; ++idx ) {
+    group_actions1.push_back(actions[idx].container);
+  }
+
+  action_list group_actions2;
+  for( auto idx = NUM_ACTIONS_GROUP1; idx != NUM_ACTIONS_GROUP2; ++idx ) {
+    group_actions2.push_back(actions[idx].container);
+  }
+
+  action_list group_actions3;
+  for( auto idx = NUM_ACTIONS_GROUP2; idx != NUM_ACTIONS_GROUP3; ++idx ) {
+    group_actions3.push_back(actions[idx].container);
+  }
+
+  auto action0 =
+    nom::create_action<GroupAction>(group_actions0, "group_action0");
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+
+  auto action1 =
+    nom::create_action<GroupAction>(group_actions1, "group_action1");
+  ASSERT_TRUE(action1 != nullptr);
+  action1->set_timing_curve(TIMING_MODE);
+
+  auto action2 =
+    nom::create_action<GroupAction>(group_actions2, "group_action2");
+  ASSERT_TRUE(action2 != nullptr);
+  action2->set_timing_curve(TIMING_MODE);
+
+  auto action3 =
+    nom::create_action<GroupAction>(group_actions3, "group_action3");
+  ASSERT_TRUE(action3 != nullptr);
+  action3->set_timing_curve(TIMING_MODE);
+
+  auto remove_action0 =
+    nom::create_action<RemoveAction>(action0);
+  ASSERT_TRUE(remove_action0 != nullptr);
+  remove_action0->set_name("remove_action0");
+
+  auto remove_action1 =
+    nom::create_action<RemoveAction>(action1);
+  ASSERT_TRUE(remove_action1 != nullptr);
+  remove_action1->set_name("remove_action1");
+
+  auto remove_action2 =
+    nom::create_action<RemoveAction>(action2);
+  ASSERT_TRUE(remove_action2 != nullptr);
+  remove_action2->set_name("remove_action2");
+
+  auto remove_action3 =
+    nom::create_action<RemoveAction>(action3);
+  ASSERT_TRUE(remove_action3 != nullptr);
+  remove_action3->set_name("remove_action3");
+
+  this->run_action_ret =
+  this->player.run_action(action0, std::move(queue0), [=]() mutable {
+
+    for( auto idx = 0; idx != NUM_ACTIONS_GROUP0; ++idx ) {
+
+      auto sprite = actions[idx].sprite.get();
+      auto sprite_pos = actions[idx].sprite_pos;
+      ASSERT_TRUE(sprite != nullptr);
+      EXPECT_EQ(sprite_pos.x, sprite->position().x);
+      EXPECT_EQ(TRANSLATE_POS.y, sprite->position().y);
+
+      auto action = actions[idx].action.get();
+      ASSERT_TRUE(action != nullptr);
+      this->expected_common_params( action, DURATION, actions[idx].speed,
+                                    "action_speed" );
+
+      auto action_container = actions[idx].container.get();
+      ASSERT_TRUE(action_container != nullptr);
+      this->expected_repeat_params( action_container, NUM_REPEATS,
+                                    "action_num_repeats" );
+    }
+
+    this->player.run_action(remove_action0, [=]() mutable {
+
+      for( auto idx = 0; idx != NUM_ACTIONS_GROUP0; ++idx ) {
+
+        auto sprite = actions[idx].sprite.get();
+        ASSERT_TRUE(sprite != nullptr);
+        EXPECT_FALSE( sprite->valid() );
+      }
+    });
+
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue action0";
+
+  this->run_action_ret =
+  this->player.run_action(action1, std::move(queue1), [=]() mutable {
+
+    for( auto idx = NUM_ACTIONS_GROUP0; idx != NUM_ACTIONS_GROUP1; ++idx ) {
+
+      auto sprite = actions[idx].sprite.get();
+      auto sprite_pos = actions[idx].sprite_pos;
+      ASSERT_TRUE(sprite != nullptr);
+      EXPECT_EQ(sprite_pos.x, sprite->position().x);
+      EXPECT_EQ(TRANSLATE_POS.y, sprite->position().y);
+
+      auto action = actions[idx].action.get();
+      ASSERT_TRUE(action != nullptr);
+      this->expected_common_params( action, DURATION, actions[idx].speed,
+                                    "action_speed" );
+
+      auto action_container = actions[idx].container.get();
+      ASSERT_TRUE(action_container != nullptr);
+      this->expected_repeat_params( action_container, NUM_REPEATS,
+                                    "action_num_repeats" );
+    }
+
+    this->player.run_action(remove_action1, [=]() mutable {
+      for( auto idx = NUM_ACTIONS_GROUP0; idx != NUM_ACTIONS_GROUP1; ++idx ) {
+        auto sprite = actions[idx].sprite.get();
+        ASSERT_TRUE(sprite != nullptr);
+        EXPECT_FALSE( sprite->valid() );
+      }
+    });
+  });
+
+  this->run_action_ret =
+  this->player.run_action(action2, std::move(queue2), [=]() mutable {
+
+    for( auto idx = NUM_ACTIONS_GROUP1; idx != NUM_ACTIONS_GROUP2; ++idx ) {
+
+      auto sprite = actions[idx].sprite.get();
+      auto sprite_pos = actions[idx].sprite_pos;
+      ASSERT_TRUE(sprite != nullptr);
+      EXPECT_EQ(sprite_pos.x, sprite->position().x);
+      EXPECT_EQ(TRANSLATE_POS.y, sprite->position().y);
+
+      auto action = actions[idx].action.get();
+      ASSERT_TRUE(action != nullptr);
+      this->expected_common_params( action, DURATION, actions[idx].speed,
+                                    "action_speed" );
+
+      auto action_container = actions[idx].container.get();
+      ASSERT_TRUE(action_container != nullptr);
+      this->expected_repeat_params( action_container, NUM_REPEATS,
+                                    "action_num_repeats" );
+    }
+
+    this->player.run_action(remove_action2, [=]() mutable {
+      for( auto idx = NUM_ACTIONS_GROUP1; idx != NUM_ACTIONS_GROUP2; ++idx ) {
+        auto sprite = actions[idx].sprite.get();
+        ASSERT_TRUE(sprite != nullptr);
+        EXPECT_FALSE( sprite->valid() );
+      }
+    });
+  });
+
+  this->run_action_ret =
+  this->player.run_action(action3, std::move(queue3), [=]() mutable {
+
+    for( auto idx = NUM_ACTIONS_GROUP2; idx != NUM_ACTIONS_GROUP3; ++idx ) {
+
+      auto sprite = actions[idx].sprite.get();
+      auto sprite_pos = actions[idx].sprite_pos;
+      ASSERT_TRUE(sprite != nullptr);
+      EXPECT_EQ(sprite_pos.x, sprite->position().x);
+      EXPECT_EQ(TRANSLATE_POS.y, sprite->position().y);
+
+      auto action = actions[idx].action.get();
+      ASSERT_TRUE(action != nullptr);
+      this->expected_common_params( action, DURATION, actions[idx].speed,
+                                    "action_speed" );
+
+      auto action_container = actions[idx].container.get();
+      ASSERT_TRUE(action_container != nullptr);
+      this->expected_repeat_params( action_container, NUM_REPEATS,
+                                    "action_num_repeats" );
+    }
+
+    this->player.run_action(remove_action3, [=]() mutable {
+      for( auto idx = NUM_ACTIONS_GROUP2; idx != NUM_ACTIONS_GROUP3; ++idx ) {
+        auto sprite = actions[idx].sprite.get();
+        ASSERT_TRUE(sprite != nullptr);
+        EXPECT_FALSE( sprite->valid() );
+      }
+    });
+  });
 
   this->append_update_callback( [=](real32) {
     if( this->expected_min_duration(DURATION, MAX_SPEED_MOD) == true ) {

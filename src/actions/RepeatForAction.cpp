@@ -116,11 +116,11 @@ RepeatForAction::update(real32 delta_time, uint32 direction)
       this->status_ = FrameState::COMPLETED;
       NOM_ASSERT(this->num_repeats_ == this->elapsed_repeats_);
     }
-  }
 
-  NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
-                  "[elapsed_repeats]:", this->elapsed_repeats_,
-                  "[num_repeats]:", this->num_repeats_ );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
+                    "[elapsed_repeats]:", this->elapsed_repeats_,
+                    "[num_repeats]:", this->num_repeats_ );
+  }
 
   return this->status_;
 }

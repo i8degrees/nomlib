@@ -67,6 +67,10 @@ TEST_F(ActionTest, RainingRectsStressTest)
   // Position delta applied over duration
   const Point2i TRANSLATE_POS( Point2i(0, WINDOW_DIMS.h-MAX_RECT_SIZE.h) );
 
+  auto rand_seed = nom::ticks();
+  nom::init_rand(rand_seed);
+  NOM_LOG_DEBUG(NOM_LOG_CATEGORY_ACTION, "Random seed value:", rand_seed);
+
   test_action_list actions;
 
   // drawables generation
@@ -228,6 +232,10 @@ TEST_F(ActionTest, RainingRectsStressTestMultipleDispatchQueues)
   auto queue1 = nom::make_unique<DispatchQueue>();
   auto queue2 = nom::make_unique<DispatchQueue>();
   auto queue3 = nom::make_unique<DispatchQueue>();
+
+  auto rand_seed = nom::ticks();
+  nom::init_rand(rand_seed);
+  NOM_LOG_DEBUG(NOM_LOG_CATEGORY_ACTION, "Random seed value:", rand_seed);
 
   test_action_list actions;
 

@@ -104,8 +104,8 @@ if( NOM_BUILD_GRAPHICS_UNIT )
         ${INC_DIR}/actions/ActionTimingCurves.hpp
         ${SRC_DIR}/actions/IActionObject.cpp
         ${INC_DIR}/actions/IActionObject.hpp
-        ${SRC_DIR}/actions/SpriteTexturesAction.cpp
-        ${INC_DIR}/actions/SpriteTexturesAction.hpp
+        ${SRC_DIR}/actions/AnimateTexturesAction.cpp
+        ${INC_DIR}/actions/AnimateTexturesAction.hpp
         ${SRC_DIR}/actions/SpriteBatchAction.cpp
         ${INC_DIR}/actions/SpriteBatchAction.hpp
         ${SRC_DIR}/actions/FadeInAction.cpp

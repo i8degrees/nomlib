@@ -149,9 +149,9 @@ class ActionTest: public nom::VisualUnitTest
                                   const std::string& scope_name = "" );
 
     /// \brief Helper method for testing properties of
-    /// nom::SpriteTexturesAction.
+    /// nom::AnimateTexturesAction.
     void
-    expected_sprite_textures_params(  const SpriteTexturesAction* obj,
+    expected_animate_textures_params( const AnimateTexturesAction* obj,
                                       nom::size_type num_frames,
                                       real32 duration, real32 speed,
                                       const std::string& scope_name = "" );
@@ -176,8 +176,8 @@ class ActionTest: public nom::VisualUnitTest
     void set_frame_interval(uint32 interval);
 
     void
-    init_sprite_action_test(   const std::vector<const char*>& texture_filenames,
-                              texture_frames& anim_frames );
+    init_animate_textures_test( const std::vector<const char*>& texture_filenames,
+                                texture_frames& anim_frames );
 
     enum ActionType: uint32
     {

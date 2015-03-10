@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_ACTIONS_SPRITE_ACTION_HPP
-#define NOMLIB_ACTIONS_SPRITE_ACTION_HPP
+#ifndef NOMLIB_ACTIONS_ANIMATE_TEXTURES_ACTION_HPP
+#define NOMLIB_ACTIONS_ANIMATE_TEXTURES_ACTION_HPP
 
 #include <memory>
 
@@ -42,7 +42,7 @@ class Sprite;
 typedef std::vector<std::shared_ptr<Sprite>> texture_frames;
 
 /// \brief [TODO: Description]
-class SpriteTexturesAction: public virtual IActionObject
+class AnimateTexturesAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for obtaining the current
@@ -51,7 +51,7 @@ class SpriteTexturesAction: public virtual IActionObject
 
     static const char* DEBUG_CLASS_NAME;
 
-    typedef SpriteTexturesAction self_type;
+    typedef AnimateTexturesAction self_type;
     typedef IActionObject derived_type;
 
     /// \brief Construct an action with a container of valid (i.e.: pre-loaded)
@@ -62,12 +62,12 @@ class SpriteTexturesAction: public virtual IActionObject
     ///
     /// \param frame_interval The amount of time (in fractional seconds) that
     /// each texture is displayed on the sprite.
-    SpriteTexturesAction( const std::shared_ptr<Sprite>& sprite,
-                          const texture_frames& textures,
-                          real32 frame_interval_seconds );
+    AnimateTexturesAction(  const std::shared_ptr<Sprite>& sprite,
+                            const texture_frames& textures,
+                            real32 frame_interval_seconds );
 
     /// \brief Destructor.
-    virtual ~SpriteTexturesAction();
+    virtual ~AnimateTexturesAction();
 
     virtual std::unique_ptr<IActionObject> clone() const override;
 

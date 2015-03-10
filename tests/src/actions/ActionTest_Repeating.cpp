@@ -489,7 +489,7 @@ TEST_F(ActionTest, SpriteBatchActionRepeatingForeverReversed)
 
 /// \remarks Thanks goes to Tim Jones of [sdltutorials.com](http://www.sdltutorials.com/sdl-animation)
 /// for the sprite frames of Yoshi chosen for this test!
-TEST_F(ActionTest, SpriteTexturesActionWithRepeatForAction)
+TEST_F(ActionTest, AnimateTexturesActionActionWithRepeatForAction)
 {
   // Testing parameters
   texture_frames anim_frames;
@@ -511,7 +511,7 @@ TEST_F(ActionTest, SpriteTexturesActionWithRepeatForAction)
     NOM_ACTION_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
-  this->init_sprite_action_test(texture_filenames, anim_frames);
+  this->init_animate_textures_test(texture_filenames, anim_frames);
 
   EXPECT_EQ( anim_frames.size(), texture_filenames.size() );
 
@@ -520,7 +520,8 @@ TEST_F(ActionTest, SpriteTexturesActionWithRepeatForAction)
   ASSERT_TRUE(sprite0 != nullptr);
 
   auto tex_bg =
-    nom::create_action<SpriteTexturesAction>(sprite0, anim_frames, FRAME_DURATION);
+    nom::create_action<AnimateTexturesAction>(  sprite0, anim_frames,
+                                                FRAME_DURATION );
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
@@ -540,9 +541,9 @@ TEST_F(ActionTest, SpriteTexturesActionWithRepeatForAction)
   this->player.run_action(action0, [=]() {
 
     EXPECT_EQ(1, this->player.num_actions() );
-    this->expected_sprite_textures_params(  tex_bg.get(), anim_frames.size(),
+    this->expected_animate_textures_params( tex_bg.get(), anim_frames.size(),
                                             ACTION_DURATION, SPEED_MOD,
-                                            "sprite_textures_params" );
+                                            "animate_textures_params" );
     this->expected_repeat_params(action0.get(), NUM_REPEATS);
 
     this->player.run_action(remove_action0, [=]() {

@@ -360,25 +360,25 @@ void ActionTest::expected_repeat_params(  const RepeatForeverAction* obj,
 }
 
 void ActionTest::
-expected_sprite_textures_params(  const SpriteTexturesAction* obj,
+expected_animate_textures_params( const AnimateTexturesAction* obj,
                                   nom::size_type num_frames,
                                   real32 duration, real32 speed,
                                   const std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)
-  << "expected_sprite_textures_action_params scoped_name: "
+  << "expected_animate_textures_params scoped_name: "
   << scope_name << "\n";
 
   EXPECT_EQ(num_frames, obj->frames_.size() )
-  << "expected_sprite_textures_action_params scoped_name: "
+  << "expected_animate_textures_params scoped_name: "
   << scope_name << "\n";
 
   EXPECT_EQ(duration, obj->duration() )
-  << "expected_sprite_textures_action_params scoped_name: "
+  << "expected_animate_textures_params scoped_name: "
   << scope_name << "\n";
 
   EXPECT_EQ(speed, obj->speed() )
-  << "expected_sprite_textures_action_params scoped_name: "
+  << "expected_animate_textures_params scoped_name: "
   << scope_name << "\n";
 }
 
@@ -458,9 +458,9 @@ void ActionTest::set_frame_interval(uint32 interval)
 }
 
 void
-ActionTest::init_sprite_action_test(  const std::vector<const char*>&
-                                      texture_filenames, texture_frames&
-                                      anim_frames )
+ActionTest::init_animate_textures_test( const std::vector<const char*>&
+                                        texture_filenames, texture_frames&
+                                        anim_frames )
 {
   for(  auto itr = texture_filenames.begin();
         itr != texture_filenames.end();
@@ -752,7 +752,7 @@ TEST_F(ActionTest, WaitForDurationAction)
 
 /// \remarks Thanks goes to Tim Jones of [sdltutorials.com](http://www.sdltutorials.com/sdl-animation)
 /// for the sprite frames of Yoshi chosen for this test!
-TEST_F(ActionTest, SpriteTexturesAction)
+TEST_F(ActionTest, AnimateTexturesAction)
 {
   // Testing parameters
   texture_frames anim_frames;
@@ -772,7 +772,7 @@ TEST_F(ActionTest, SpriteTexturesAction)
     NOM_ACTION_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
-  this->init_sprite_action_test(texture_filenames, anim_frames);
+  this->init_animate_textures_test(texture_filenames, anim_frames);
 
   EXPECT_EQ( anim_frames.size(), texture_filenames.size() );
 
@@ -781,7 +781,8 @@ TEST_F(ActionTest, SpriteTexturesAction)
   ASSERT_TRUE(sprite0 != nullptr);
 
   auto tex_bg =
-    nom::create_action<SpriteTexturesAction>(sprite0, anim_frames, FRAME_DURATION);
+    nom::create_action<AnimateTexturesAction>(  sprite0, anim_frames,
+                                                FRAME_DURATION );
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
@@ -800,9 +801,9 @@ TEST_F(ActionTest, SpriteTexturesAction)
   this->player.run_action(action0, [=]() {
 
     EXPECT_EQ(1, this->player.num_actions() );
-    this->expected_sprite_textures_params(  tex_bg.get(), anim_frames.size(),
+    this->expected_animate_textures_params( tex_bg.get(), anim_frames.size(),
                                             DURATION, SPEED_MOD,
-                                            "sprite_textures_params" );
+                                            "animate_textures_params" );
     this->expected_action_params(action0.get(), 1);
 
     this->player.run_action(remove_action0, [=]() {

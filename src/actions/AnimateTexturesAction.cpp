@@ -26,7 +26,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/actions/SpriteTexturesAction.hpp"
+#include "nomlib/actions/AnimateTexturesAction.hpp"
 
 // Private headers
 #include "nomlib/core/helpers.hpp"
@@ -44,9 +44,10 @@ enum FrameStateDirection
 };
 
 // Static initializations
-const char* SpriteTexturesAction::DEBUG_CLASS_NAME = "[SpriteTexturesAction]:";
+const char* AnimateTexturesAction::DEBUG_CLASS_NAME =
+  "[AnimateTexturesAction]:";
 
-void SpriteTexturesAction::
+void AnimateTexturesAction::
 initialize(const texture_frames& textures, real32 frame_interval_seconds)
 {
 
@@ -64,10 +65,10 @@ initialize(const texture_frames& textures, real32 frame_interval_seconds)
   this->set_duration(action_duration_seconds);
 }
 
-SpriteTexturesAction::
-SpriteTexturesAction( const std::shared_ptr<Sprite>& sprite,
-                      const texture_frames& textures,
-                      real32 frame_interval_seconds )
+AnimateTexturesAction::
+AnimateTexturesAction(  const std::shared_ptr<Sprite>& sprite,
+                        const texture_frames& textures,
+                        real32 frame_interval_seconds )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
@@ -76,19 +77,19 @@ SpriteTexturesAction( const std::shared_ptr<Sprite>& sprite,
   this->initialize(textures, frame_interval_seconds);
 }
 
-SpriteTexturesAction::~SpriteTexturesAction()
+AnimateTexturesAction::~AnimateTexturesAction()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-std::unique_ptr<IActionObject> SpriteTexturesAction::clone() const
+std::unique_ptr<IActionObject> AnimateTexturesAction::clone() const
 {
   return( nom::make_unique<self_type>( self_type(*this) ) );
 }
 
 IActionObject::FrameState
-SpriteTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
+AnimateTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
 {
   real32 frame_interval =
     this->frame_interval_ / this->speed();
@@ -183,7 +184,7 @@ SpriteTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
   }
 }
 
-IActionObject::FrameState SpriteTexturesAction::next_frame(real32 delta_time)
+IActionObject::FrameState AnimateTexturesAction::next_frame(real32 delta_time)
 {
   delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
 
@@ -193,7 +194,7 @@ IActionObject::FrameState SpriteTexturesAction::next_frame(real32 delta_time)
           this->total_displacement_, this->duration() ) );
 }
 
-IActionObject::FrameState SpriteTexturesAction::prev_frame(real32 delta_time)
+IActionObject::FrameState AnimateTexturesAction::prev_frame(real32 delta_time)
 {
   delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
 
@@ -203,17 +204,17 @@ IActionObject::FrameState SpriteTexturesAction::prev_frame(real32 delta_time)
           -(this->total_displacement_), this->duration() ) );
 }
 
-void SpriteTexturesAction::pause(real32 delta_time)
+void AnimateTexturesAction::pause(real32 delta_time)
 {
   this->timer_.pause();
 }
 
-void SpriteTexturesAction::resume(real32 delta_time)
+void AnimateTexturesAction::resume(real32 delta_time)
 {
   this->timer_.unpause();
 }
 
-void SpriteTexturesAction::rewind(real32 delta_time)
+void AnimateTexturesAction::rewind(real32 delta_time)
 {
   // Reset frame cycle back to initial value
   this->elapsed_frames_ = 0.0f;
@@ -239,7 +240,7 @@ void SpriteTexturesAction::rewind(real32 delta_time)
   }
 }
 
-void SpriteTexturesAction::release()
+void AnimateTexturesAction::release()
 {
   if( this->drawable_ != nullptr ) {
     this->drawable_->release_texture();
@@ -250,7 +251,7 @@ void SpriteTexturesAction::release()
 
 // Private scope
 
-void SpriteTexturesAction::first_frame(real32 delta_time)
+void AnimateTexturesAction::first_frame(real32 delta_time)
 {
   if( this->timer_.started() == false ) {
     // Start frame timing
@@ -283,7 +284,7 @@ void SpriteTexturesAction::first_frame(real32 delta_time)
   }
 }
 
-void SpriteTexturesAction::last_frame(real32 delta_time)
+void AnimateTexturesAction::last_frame(real32 delta_time)
 {
   this->timer_.stop();
 }

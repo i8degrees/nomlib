@@ -57,7 +57,7 @@ class FadeInAction: public virtual IActionObject
     /// \brief Destructor.
     virtual ~FadeInAction();
 
-    virtual std::unique_ptr<derived_type> clone() const override;
+    virtual std::unique_ptr<IActionObject> clone() const override;
 
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
 

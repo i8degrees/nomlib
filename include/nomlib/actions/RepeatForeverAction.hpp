@@ -58,7 +58,7 @@ class RepeatForeverAction: public virtual IActionObject
     /// \brief Destructor.
     virtual ~RepeatForeverAction();
 
-    virtual std::unique_ptr<derived_type> clone() const override;
+    virtual std::unique_ptr<IActionObject> clone() const override;
 
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;

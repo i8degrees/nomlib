@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/actions/CallbackAction.hpp"
 
+#include "nomlib/core/helpers.hpp"
+
 namespace nom {
 
 // Static initializations
@@ -59,9 +61,9 @@ CallbackAction::~CallbackAction()
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-std::unique_ptr<CallbackAction::derived_type> CallbackAction::clone() const
+std::unique_ptr<IActionObject> CallbackAction::clone() const
 {
-  return( std::unique_ptr<self_type>( new self_type(*this) ) );
+  return( nom::make_unique<self_type>( self_type(*this) ) );
 }
 
 IActionObject::FrameState CallbackAction::next_frame(real32 delta_time)

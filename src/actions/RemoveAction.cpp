@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/actions/RemoveAction.hpp"
 
+#include "nomlib/core/helpers.hpp"
+
 namespace nom {
 
 // Static initializations
@@ -47,9 +49,23 @@ RemoveAction::~RemoveAction()
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-std::unique_ptr<RemoveAction::derived_type> RemoveAction::clone() const
+std::unique_ptr<IActionObject> RemoveAction::clone() const
 {
-  return( std::unique_ptr<self_type>( new self_type(*this) ) );
+  auto cloned_obj = nom::make_unique<self_type>( self_type(*this) );
+  if( cloned_obj != nullptr ) {
+
+    if( this->object_ != nullptr ) {
+      cloned_obj->object_ = this->object_->clone();
+    }
+
+    // NOTE: This is done to prevent the cloned action from being erased from a
+    // running queue at the same time as the original instance!
+    cloned_obj->set_name( "__" + this->name() + "_cloned" );
+
+    return std::move(cloned_obj);
+  } else {
+    return nullptr;
+  }
 }
 
 IActionObject::FrameState RemoveAction::next_frame(real32 delta_time)

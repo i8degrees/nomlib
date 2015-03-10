@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/actions/SpriteBatchAction.hpp"
 
 // Private headers
+#include "nomlib/core/helpers.hpp"
 #include "nomlib/math/math_helpers.hpp"
 
 // Forward declarations
@@ -68,10 +69,9 @@ SpriteBatchAction::~SpriteBatchAction()
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-std::unique_ptr<SpriteBatchAction::derived_type>
-SpriteBatchAction::clone() const
+std::unique_ptr<IActionObject> SpriteBatchAction::clone() const
 {
-  return( std::unique_ptr<self_type>( new self_type(*this) ) );
+  return( nom::make_unique<self_type>( self_type(*this) ) );
 }
 
 IActionObject::FrameState
@@ -186,6 +186,8 @@ void SpriteBatchAction::rewind(real32 delta_time)
 
   // Reset frame timing
   this->timer_.stop();
+
+  this->status_ = FrameState::PLAYING;
 
   // Reset starting frame
   if( this->drawable_ != nullptr ) {

@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/actions/RepeatForAction.hpp"
 
+#include "nomlib/core/helpers.hpp"
+
 namespace nom {
 
 enum FrameStateDirection
@@ -58,9 +60,27 @@ RepeatForAction::~RepeatForAction()
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-std::unique_ptr<RepeatForAction::derived_type> RepeatForAction::clone() const
+std::unique_ptr<IActionObject> RepeatForAction::clone() const
 {
-  return( std::unique_ptr<self_type>( new self_type(*this) ) );
+  auto cloned_obj = nom::make_unique<self_type>( self_type(*this) );
+  if( cloned_obj != nullptr ) {
+
+    cloned_obj->status_ = FrameState::PLAYING;
+    cloned_obj->elapsed_repeats_ = 0;
+    cloned_obj->num_repeats_ = this->num_repeats_;
+
+    if( this->object_ != nullptr ) {
+      cloned_obj->object_ = this->object_->clone();
+    }
+
+    // NOTE: This is done to prevent the cloned action from being erased from a
+    // running queue at the same time as the original instance!
+    cloned_obj->set_name( "__" + this->name() + "_cloned" );
+
+    return std::move(cloned_obj);
+  } else {
+    return nullptr;
+  }
 }
 
 IActionObject::FrameState
@@ -133,6 +153,7 @@ void RepeatForAction::rewind(real32 delta_time)
 {
   // Reset our object back to its initial value
   this->elapsed_repeats_ = 0;
+  this->status_ = FrameState::PLAYING;
 
   if( this->object_ != nullptr ) {
     // Reset proxy object back to initial value

@@ -778,4 +778,309 @@ TEST_F(ActionTest, RunActionWithName)
   EXPECT_EQ(1, this->player.num_actions() );
 }
 
+TEST_F(ActionTest, ClonedGroupAction)
+{
+  // Testing parameters
+  const real32 DURATION = 2.0f;
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const Point2i TRANSLATE_POS( Point2i(200,0) );
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+
+  // Initial texture position and size
+  const Point2i RECT_POS(Point2i::zero);
+  const Size2i RECT_SIZE(WINDOW_DIMS.w/4, WINDOW_DIMS.h);
+  const Point2i EXPECTED_TEX_POS(TRANSLATE_POS);
+
+  auto sprite = std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  sprite->init_with_color(Color4i::Green, RECT_SIZE);
+  sprite->set_position(RECT_POS);
+  EXPECT_EQ( true, sprite->valid() );
+
+  auto translate =
+    nom::create_action<MoveByAction>(sprite, TRANSLATE_POS, DURATION);
+  ASSERT_TRUE(translate != nullptr);
+
+  auto action0 =
+    nom::create_action<GroupAction>( {translate}, nom::UnitTest::test_name() );
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+
+  auto remove_action0 =
+    nom::create_action<RemoveAction>(action0);
+  ASSERT_TRUE(remove_action0 != nullptr);
+  remove_action0->set_name("remove_action0");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ( EXPECTED_TEX_POS, sprite->position() );
+    EXPECT_EQ(1, this->player.num_actions() );
+
+    this->expected_action_params(action0.get(), 1);
+    this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
+
+    sprite->set_position(RECT_POS);
+    this->player.run_action(action0->clone(), [=]() {
+
+      EXPECT_EQ( EXPECTED_TEX_POS, sprite->position() );
+      EXPECT_EQ(1, this->player.num_actions() );
+
+      this->expected_action_params(action0.get(), 1);
+      this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
+
+      this->player.run_action(remove_action0, [=]() {
+        ASSERT_TRUE(sprite != nullptr);
+        EXPECT_FALSE( sprite->valid() );
+      });
+    });
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue the action!";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](real32) {
+    if( this->expected_min_duration(DURATION*2, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
+
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F(ActionTest, ClonedSequenceAction)
+{
+  // Testing parameters
+  const real32 DURATION = 2.0f;
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const Point2i TRANSLATE_POS( Point2i(200,0) );
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+
+  // Initial texture position and size
+  const Point2i RECT_POS(Point2i::zero);
+  const Size2i RECT_SIZE(WINDOW_DIMS.w/4, WINDOW_DIMS.h);
+  const Point2i EXPECTED_TEX_POS(TRANSLATE_POS);
+
+  auto sprite = std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  sprite->init_with_color(Color4i::Green, RECT_SIZE);
+  sprite->set_position(RECT_POS);
+  EXPECT_EQ( true, sprite->valid() );
+
+  auto translate =
+    nom::create_action<MoveByAction>(sprite, TRANSLATE_POS, DURATION);
+  ASSERT_TRUE(translate != nullptr);
+
+  auto action0 =
+    nom::create_action<SequenceAction>( {translate}, nom::UnitTest::test_name() );
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+
+  auto remove_action0 =
+    nom::create_action<RemoveAction>(action0);
+  ASSERT_TRUE(remove_action0 != nullptr);
+  remove_action0->set_name("remove_action0");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ( EXPECTED_TEX_POS, sprite->position() );
+    EXPECT_EQ(1, this->player.num_actions() );
+
+    this->expected_action_params(action0.get(), 1);
+    this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
+
+    sprite->set_position(RECT_POS);
+    this->player.run_action(action0->clone(), [=]() {
+
+      EXPECT_EQ( EXPECTED_TEX_POS, sprite->position() );
+      EXPECT_EQ(1, this->player.num_actions() );
+
+      this->expected_action_params(action0.get(), 1);
+      this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
+
+      this->player.run_action(remove_action0, [=]() {
+        ASSERT_TRUE(sprite != nullptr);
+        EXPECT_FALSE( sprite->valid() );
+      });
+    });
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue the action!";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](real32) {
+    if( this->expected_min_duration(DURATION*2, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
+
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F(ActionTest, ClonedReversedAction)
+{
+  // Testing parameters
+  const real32 DURATION = 2.0f;
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const Point2i TRANSLATE_POS( Point2i(200,0) );
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+
+  // Initial texture position and size
+  const Size2i RECT_SIZE(WINDOW_DIMS.w/4, WINDOW_DIMS.h);
+  const Point2i RECT_POS(WINDOW_DIMS.w-RECT_SIZE.w, 0);
+  const Point2i EXPECTED_TEX_POS(RECT_POS-TRANSLATE_POS);
+
+  auto sprite = std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  sprite->init_with_color(Color4i::Green, RECT_SIZE);
+  sprite->set_position(RECT_POS);
+  EXPECT_EQ( true, sprite->valid() );
+
+  auto translate =
+    nom::create_action<MoveByAction>(sprite, TRANSLATE_POS, DURATION);
+  ASSERT_TRUE(translate != nullptr);
+
+  auto action0 =
+    nom::create_action<ReversedAction>(translate, nom::UnitTest::test_name() );
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+
+  auto remove_action0 =
+    nom::create_action<RemoveAction>(action0);
+  ASSERT_TRUE(remove_action0 != nullptr);
+  remove_action0->set_name("remove_action0");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ( EXPECTED_TEX_POS, sprite->position() );
+    EXPECT_EQ(1, this->player.num_actions() );
+    this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
+
+    sprite->set_position(RECT_POS);
+    this->player.run_action(action0->clone(), [=]() {
+
+      EXPECT_EQ( EXPECTED_TEX_POS, sprite->position() );
+      EXPECT_EQ(1, this->player.num_actions() );
+      this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
+
+      this->player.run_action(remove_action0, [=]() {
+        ASSERT_TRUE(sprite != nullptr);
+        EXPECT_FALSE( sprite->valid() );
+      });
+    });
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue the action!";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](real32) {
+    if( this->expected_min_duration(DURATION*2, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
+
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F(ActionTest, ClonedRepeatForAction)
+{
+  // Testing parameters
+  const real32 DURATION = 2.0f;
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const Point2i TRANSLATE_POS( Point2i(200,0) );
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+  const nom::size_type NUM_REPEATS = 1;
+
+  // Initial texture position and size
+  const Point2i RECT_POS(Point2i::zero);
+  const Size2i RECT_SIZE(WINDOW_DIMS.w/4, WINDOW_DIMS.h);
+  const Point2i EXPECTED_TEX_POS(TRANSLATE_POS);
+
+  auto sprite = std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  sprite->init_with_color(Color4i::Green, RECT_SIZE);
+  sprite->set_position(RECT_POS);
+  EXPECT_EQ( true, sprite->valid() );
+
+  auto translate =
+    nom::create_action<MoveByAction>(sprite, TRANSLATE_POS, DURATION);
+  ASSERT_TRUE(translate != nullptr);
+
+  auto action0 =
+    nom::create_action<RepeatForAction>(translate, NUM_REPEATS, nom::UnitTest::test_name() );
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+
+  auto remove_action0 =
+    nom::create_action<RemoveAction>(action0);
+  ASSERT_TRUE(remove_action0 != nullptr);
+  remove_action0->set_name("remove_action0");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ( EXPECTED_TEX_POS, sprite->position() );
+    EXPECT_EQ(1, this->player.num_actions() );
+
+    this->expected_repeat_params(action0.get(), NUM_REPEATS, "num_repeats" );
+    this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
+
+    sprite->set_position(RECT_POS);
+    this->player.run_action(action0->clone(), [=]() {
+
+      EXPECT_EQ( EXPECTED_TEX_POS, sprite->position() );
+      EXPECT_EQ(1, this->player.num_actions() );
+
+      this->expected_repeat_params(action0.get(), NUM_REPEATS, "num_repeats" );
+      this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
+
+      this->player.run_action(remove_action0, [=]() {
+        ASSERT_TRUE(sprite != nullptr);
+        EXPECT_FALSE( sprite->valid() );
+      });
+    });
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue the action!";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](real32) {
+    if( this->expected_min_duration(DURATION*2, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
+
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
 } // namespace nom

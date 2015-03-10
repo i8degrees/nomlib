@@ -59,7 +59,7 @@ class RepeatForAction: public virtual IActionObject
     /// \brief Destructor.
     virtual ~RepeatForAction();
 
-    virtual std::unique_ptr<derived_type> clone() const override;
+    virtual std::unique_ptr<IActionObject> clone() const override;
 
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
@@ -94,7 +94,7 @@ class RepeatForAction: public virtual IActionObject
     std::shared_ptr<IActionObject> object_;
 
     /// \brief The customized number of times to repeat the animation object.
-    const nom::size_type num_repeats_;
+    nom::size_type num_repeats_;
 
     /// \brief Internal record of the number of times the object has been
     /// repeated.

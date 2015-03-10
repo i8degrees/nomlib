@@ -58,7 +58,7 @@ class WaitForDurationAction: public virtual IActionObject
     /// \brief Destructor.
     virtual ~WaitForDurationAction();
 
-    virtual std::unique_ptr<derived_type> clone() const override;
+    virtual std::unique_ptr<IActionObject> clone() const override;
 
     /// \brief Play the action forward in time by one frame step.
     ///

@@ -223,6 +223,10 @@ void ActionTest::SetUp()
   });
 
   this->test_timer.start();
+
+  auto rand_seed = nom::ticks();
+  nom::init_rand(rand_seed);
+  NOM_LOG_DEBUG(NOM_LOG_CATEGORY_ACTION, "Random seed value:", rand_seed);
 }
 
 void ActionTest::TearDown()

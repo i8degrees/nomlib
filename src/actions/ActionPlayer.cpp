@@ -44,15 +44,6 @@ static uint64 generate_action_id()
 }
 
 // Static initializations
-const char*
-ActionPlayer::ACTION_STATE_STR[ActionPlayer::State::TOTAL_STATES] = {
-  "IDLING",
-  "RUNNING",
-  "PAUSED",
-  "STOPPED"
-};
-
-// Static initializations
 const char* ActionPlayer::DEBUG_CLASS_NAME = "[ActionPlayer]:";
 
 ActionPlayer::ActionPlayer() :
@@ -68,7 +59,7 @@ ActionPlayer::~ActionPlayer()
 
 bool ActionPlayer::idle() const
 {
-  return( this->actions_.size() == 0 && this->free_list_.size() == 0);
+  return(this->actions_.size() == 0 && this->free_list_.size() == 0);
 }
 
 nom::size_type ActionPlayer::num_actions() const
@@ -241,8 +232,8 @@ run_action( const std::shared_ptr<IActionObject>& action,
 // Called within the main game loop
 bool ActionPlayer::update(real32 delta_time)
 {
-  uint32 dispatch_running = ActionPlayer::State::IDLING;
   ActionPlayer::State player_state = this->player_state();
+  DispatchQueue::State dispatch_running = DispatchQueue::State::IDLING;
 
   // Process the queue in FIFO order
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
@@ -262,7 +253,7 @@ bool ActionPlayer::update(real32 delta_time)
 
       dispatch_running = (action_queue)->update(player_state, delta_time);
 
-      if( dispatch_running == ActionPlayer::State::IDLING ) {
+      if( dispatch_running == DispatchQueue::State::IDLING ) {
         NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_PLAYER, DEBUG_CLASS_NAME,
                         "enqueue erasable", "[action_id]:", action_id );
 

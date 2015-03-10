@@ -54,6 +54,13 @@ class DispatchQueue
 
     static const char* DEBUG_CLASS_NAME;
 
+    /// \brief The status of the queue.
+    enum State
+    {
+      IDLING = 0,
+      RUNNING,
+    };
+
     DispatchQueue();
     ~DispatchQueue();
 
@@ -84,7 +91,8 @@ class DispatchQueue
     /// \remarks This method must be implemented in the appropriate game loop.
     /// Applicable places include the main game loop or within a game state
     /// loop.
-    uint32 update(uint32 player_state, real32 delta_time);
+    DispatchQueue::State
+    update(uint32 player_state, real32 delta_time);
 
   private:
     /// \remarks A std::vector container seems most appropriate here because

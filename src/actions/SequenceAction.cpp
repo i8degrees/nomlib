@@ -70,8 +70,8 @@ std::unique_ptr<SequenceAction::derived_type> SequenceAction::clone() const
 IActionObject::FrameState
 SequenceAction::update(real32 delta_time, uint32 direction)
 {
-  IActionObject::FrameState action_status =
-    FrameState::COMPLETED;
+  std::string action_id = "action";
+  FrameState action_status = FrameState::COMPLETED;
 
   // Program flow is structured to never call back here after the actions are
   // finished -- this serves only as a reminder to the intended flow.
@@ -82,34 +82,33 @@ SequenceAction::update(real32 delta_time, uint32 direction)
 
   auto &itr = this->actions_iterator_;
   auto actions_end = this->actions_.end();
+  auto action = *itr;
   NOM_ASSERT(itr != actions_end);
 
-  if( *itr != nullptr ) {
+  if( action != nullptr ) {
+
+    if( action->name() != "" ) {
+      action_id = action->name();
+    }
+
     if( direction == FrameStateDirection::NEXT_FRAME ) {
-      action_status = (*itr)->next_frame(delta_time);
+      action_status = action->next_frame(delta_time);
     } else {
-      action_status = (*itr)->prev_frame(delta_time);
+      action_status = action->prev_frame(delta_time);
     }
   }
 
   if( action_status == FrameState::COMPLETED ) {
 
-    std::string action_id;
-    if( *itr != nullptr ) {
-      action_id = (*itr)->name();
-    }
-
-    if( action_id == "" ) {
-      action_id = "action";
-    }
-
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
-                    action_id, "has finished",
-                    "[", this->itr_pos_ + 1, "/", this->num_actions_, "]",
-                    "[id]:", this->name() );
-
     ++itr;
     ++this->itr_pos_;
+
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
+                    action_id, "has finished at",
+                    Timer::to_seconds( nom::ticks() ),
+                    "[", this->itr_pos_, "/", this->num_actions_, "]",
+                    "[action_id]:", this->name() );
+
     this->status_ = FrameState::PLAYING;
   }
 

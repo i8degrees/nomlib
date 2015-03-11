@@ -36,19 +36,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// Internal representation of the action queue
-///
-/// \see nom::DispatchQueue::enqueue_action
+// Internal representation of an enqueued action.
 struct DispatchEnqueue
 {
-  /// \brief The stored action object.
+  // The enqueued action.
   std::shared_ptr<IActionObject> action;
 
-  /// \brief An optional delegate to call upon when the action is completed.
-  action_callback on_completion_callback;
-
-  /// \brief Diagnostic iterator counter.
-  nom::size_type action_pos = 0;
+  // An optional function pointer that is called when the action is completed.
+  action_callback_func on_completion_callback;
 };
 
 // Static initializations
@@ -71,7 +66,7 @@ nom::size_type DispatchQueue::num_actions() const
 
 bool DispatchQueue::
 enqueue_action( const std::shared_ptr<IActionObject>& action,
-                const action_callback& completion_func )
+                const action_callback_func& completion_func )
 {
   auto enqueued_action =
     nom::make_unique<DispatchEnqueue>();
@@ -109,15 +104,6 @@ DispatchQueue::update(uint32 player_state, real32 delta_time)
     return State::IDLING;
   }
 
-  std::string action_id = action->name();
-  action_callback completion_func =
-    (*itr)->on_completion_callback;
-
-  // Diagnostics
-  nom::size_type action_pos = (*itr)->action_pos;
-  nom::size_type num_actions = this->num_actions_;
-  NOM_ASSERT(action_pos >= 0);
-
   IActionObject::FrameState action_status =
     IActionObject::FrameState::COMPLETED;
 
@@ -138,14 +124,17 @@ DispatchQueue::update(uint32 player_state, real32 delta_time)
   // EOF -- handle internal clean up
   if( action_status == IActionObject::FrameState::COMPLETED ) {
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_QUEUE, DEBUG_CLASS_NAME,
-                    "[erasing]:", "[", action_pos + 1, "/", num_actions, "]",
-                    "[action_id]:", action_id );
+    std::string action_id = action->name();
+    action_callback_func completion_func =
+      (*itr)->on_completion_callback;
 
-    ++(*itr)->action_pos;
     --this->num_actions_;
     ++this->actions_iterator_;
-    NOM_ASSERT( (*itr)->action_pos <= num_actions);
+
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_QUEUE, DEBUG_CLASS_NAME,
+                    "erasing:", action_id, "[remaining_actions]:",
+                    this->num_actions_ );
+
     NOM_ASSERT(this->num_actions_ >= 0);
 
     // Holla back

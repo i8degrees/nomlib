@@ -389,7 +389,7 @@ struct Sine
 
 #endif // include guard defined
 
-/// \ingroup graphics
+/// \ingroup actions
 ///
 /// These easing functions derive from jesusgollonet's [GitHub repository](https://github.com/jesusgollonet/ofpennereasing).
 /// The easing algorithms are the work of [Robbert Penner](http://www.robertpenner.com/easing/).

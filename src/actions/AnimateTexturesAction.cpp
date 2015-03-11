@@ -66,14 +66,14 @@ initialize(const texture_frames& textures, real32 frame_interval_seconds)
 }
 
 AnimateTexturesAction::
-AnimateTexturesAction(  const std::shared_ptr<Sprite>& sprite,
+AnimateTexturesAction(  const std::shared_ptr<Sprite>& drawable,
                         const texture_frames& textures,
                         real32 frame_interval_seconds )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  this->drawable_ = sprite;
+  this->drawable_ = drawable;
   this->initialize(textures, frame_interval_seconds);
 }
 
@@ -103,8 +103,7 @@ AnimateTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
   // The computed texture frame to show next
   real32 displacement(0.0f);
 
-  // Clamp delta values that go beyond the time duration bounds; this adds
-  // stability to variable time steps
+  // Clamp delta values that go beyond maximal duration
   if( delta_time > (duration / this->speed() ) ) {
     delta_time = duration / this->speed();
   }
@@ -170,8 +169,6 @@ AnimateTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
 
   }
 
-  // Continue playing the animation only when we are inside our frame duration
-  // bounds; this adds stability to variable time steps
   if( delta_time < (duration / this->speed() ) ) {
 
     this->status_ = FrameState::PLAYING;

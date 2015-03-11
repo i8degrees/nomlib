@@ -827,6 +827,7 @@ TEST_F(ActionTest, AnimateTexturesAction)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
+//! [usage_example]
 TEST_F(ActionTest, MoveByAction)
 {
   // Testing parameters
@@ -884,6 +885,7 @@ TEST_F(ActionTest, MoveByAction)
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
+//! [usage_example]
 
 TEST_F(ActionTest, MoveByActionNegativeXDelta)
 {
@@ -1220,12 +1222,12 @@ TEST_F(ActionTest, CallbackActionDefaultDuration)
     NOM_ACTION_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
-  CallbackAction::callback_type callback_func;
-  callback_func = [=]() {
+  CallbackAction::callback_func func;
+  func = [=]() {
     NOM_LOG_DEBUG(NOM_LOG_CATEGORY_ACTION, "Hello, there!");
   };
 
-  auto anim0 = nom::create_action<CallbackAction>(callback_func);
+  auto anim0 = nom::create_action<CallbackAction>(func);
 
   auto action0 =
     nom::create_action<GroupAction>( {anim0}, nom::UnitTest::test_name() );
@@ -1268,12 +1270,12 @@ TEST_F(ActionTest, CallbackActionWithNonZeroDuration)
     NOM_ACTION_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
 
-  CallbackAction::callback_type callback_func;
-  callback_func = [=]() {
+  CallbackAction::callback_func func;
+  func = [=]() {
     std::cout << "Hello, there!\n";
   };
 
-  auto anim0 = nom::create_action<CallbackAction>(DURATION, callback_func);
+  auto anim0 = nom::create_action<CallbackAction>(DURATION, func);
 
   auto action0 =
     nom::create_action<GroupAction>( {anim0}, nom::UnitTest::test_name() );

@@ -40,18 +40,18 @@ namespace nom {
 // Static initializations
 const char* FadeAlphaByAction::DEBUG_CLASS_NAME = "[FadeAlphaByAction]:";
 
-FadeAlphaByAction::FadeAlphaByAction( const std::shared_ptr<Sprite>& obj,
-                                      int16 delta, real32 duration ) :
+FadeAlphaByAction::FadeAlphaByAction( const std::shared_ptr<Sprite>& drawable,
+                                      int16 delta, real32 seconds ) :
   total_displacement_(delta)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  this->set_duration(duration);
+  this->set_duration(seconds);
   this->elapsed_frames_ = 0.0f;
   this->alpha_ = 0;
   this->initial_alpha_ = 0;
-  this->drawable_ = obj;
+  this->drawable_ = drawable;
 }
 
 FadeAlphaByAction::~FadeAlphaByAction()
@@ -83,8 +83,7 @@ FadeAlphaByAction::update(real32 t, uint8 b, int16 c, real32 d)
   // The computed alpha blending value of the frame
   real32 displacement = 0.0f;
 
-  // Clamp delta values that go beyond the time duration bounds; this adds
-  // stability to variable time steps
+  // Clamp delta values that go beyond maximal duration
   if( delta_time > (duration / this->speed() ) ) {
     delta_time = duration / this->speed();
   }
@@ -141,11 +140,11 @@ FadeAlphaByAction::update(real32 t, uint8 b, int16 c, real32 d)
   // Continue playing the animation only when we are inside our frame duration
   // bounds; this adds stability to variable time steps
   if( delta_time < (duration / this->speed() ) ) {
+
     this->status_ = FrameState::PLAYING;
     return this->status_;
   } else {
 
-    // Diagnostics
     this->last_frame(delta_time);
 
     this->status_ = FrameState::COMPLETED;
@@ -177,13 +176,11 @@ IActionObject::FrameState FadeAlphaByAction::prev_frame(real32 delta_time)
 
 void FadeAlphaByAction::pause(real32 delta_time)
 {
-  // Stub
   this->timer_.pause();
 }
 
 void FadeAlphaByAction::resume(real32 delta_time)
 {
-  // Stub
   this->timer_.unpause();
 }
 

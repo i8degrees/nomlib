@@ -39,22 +39,22 @@ namespace nom {
 // Forward declarations
 class Sprite;
 
-/// \brief [TODO: Description]
+/// \brief Fade a sprite in to full opacity
 class FadeInAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.
     friend class ActionTest;
 
-    static const char* DEBUG_CLASS_NAME;
-
     typedef FadeInAction self_type;
     typedef IActionObject derived_type;
 
-    /// \brief Default constructor.
-    FadeInAction(const std::shared_ptr<Sprite>& action, real32 duration);
+    /// \brief Fade a sprite in to full opacity.
+    ///
+    /// \param drawable A valid nom::Sprite instance.
+    /// \param seconds The duration of the animation.
+    FadeInAction(const std::shared_ptr<Sprite>& drawable, real32 seconds);
 
-    /// \brief Destructor.
     virtual ~FadeInAction();
 
     virtual std::unique_ptr<IActionObject> clone() const override;
@@ -65,9 +65,6 @@ class FadeInAction: public virtual IActionObject
 
     virtual void pause(real32 delta_time) override;
 
-    /// \brief Resume logic for the animation object.
-    ///
-    /// \remarks Reserved for future implementation.
     virtual void resume(real32 delta_time) override;
 
     virtual void rewind(real32 delta_time) override;
@@ -75,23 +72,20 @@ class FadeInAction: public virtual IActionObject
     virtual void release() override;
 
   private:
-    /// \brief Execute the alpha blending logic for the animation.
+    static const char* DEBUG_CLASS_NAME;
+
     IActionObject::FrameState update(real32 t, uint8 b, int16 c, real32 d);
 
     void first_frame(real32 delta_time);
     void last_frame(real32 delta_time);
 
-    /// \brief The recorded alpha blending value from frame displacement.
-    uint8 alpha_;
-
-    /// \brief The initial alpha blending value.
+    const int16 total_displacement_;
     uint8 initial_alpha_;
 
-    /// \brief The total change in the alpha blending value.
-    const int16 total_displacement_;
-
-    /// \brief The action to animate.
     std::shared_ptr<Sprite> drawable_;
+
+    /// \brief The current alpha value of the drawable.
+    uint8 alpha_;
 };
 
 } // namespace nom

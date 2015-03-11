@@ -41,32 +41,30 @@ class Sprite;
 
 typedef std::vector<std::shared_ptr<Sprite>> texture_frames;
 
-/// \brief [TODO: Description]
+/// \brief Animate changes to a sprite's texture
 class AnimateTexturesAction: public virtual IActionObject
 {
   public:
-    /// \brief Allow access into our private parts for obtaining the current
-    /// frame.
+    /// \brief Allow access into our private parts for unit testing.
     friend class ActionTest;
-
-    static const char* DEBUG_CLASS_NAME;
 
     typedef AnimateTexturesAction self_type;
     typedef IActionObject derived_type;
 
-    /// \brief Construct an action with a container of valid (i.e.: pre-loaded)
-    /// nom::SpriteBatch objects.
+    /// \brief Animate changes to a sprite’s texture.
     ///
-    /// \param sprite         A valid (non-NULL) sprite object for updating its
-    /// texture.
+    /// \param drawable A valid nom::Sprite instance to use in rendering the
+    /// frames to.
     ///
-    /// \param frame_interval The amount of time (in fractional seconds) that
-    /// each texture is displayed on the sprite.
-    AnimateTexturesAction(  const std::shared_ptr<Sprite>& sprite,
+    /// \param textures A collection of textures to use to animate the sprite.
+    /// sprite.
+    ///
+    /// \param frame_interval_seconds The duration (in seconds) that each
+    /// texture is displayed.
+    AnimateTexturesAction(  const std::shared_ptr<Sprite>& drawable,
                             const texture_frames& textures,
                             real32 frame_interval_seconds );
 
-    /// \brief Destructor.
     virtual ~AnimateTexturesAction();
 
     virtual std::unique_ptr<IActionObject> clone() const override;
@@ -77,24 +75,14 @@ class AnimateTexturesAction: public virtual IActionObject
 
     virtual void pause(real32 delta_time) override;
 
-    /// \brief Resume logic for the animation object.
-    ///
-    /// \remarks Reserved for future implementation.
     virtual void resume(real32 delta_time) override;
 
     virtual void rewind(real32 delta_time) override;
 
-    /// \brief Free the sprite's texture and relinquish the pointer to the
-    /// sprite.
-    ///
-    /// \remarks The stored texture frames are not freed until the destruction
-    /// of this action.
-    ///
-    /// \see nom::RemoveAction
     virtual void release() override;
 
   private:
-    typedef texture_frames::iterator frame_iterator;
+    static const char* DEBUG_CLASS_NAME;
 
     void initialize(const texture_frames& textures, real32 frame_interval);
 
@@ -104,24 +92,24 @@ class AnimateTexturesAction: public virtual IActionObject
     void first_frame(real32 delta_time);
     void last_frame(real32 delta_time);
 
-    /// \brief The starting frame of the animation to iterate from.
-    uint32 initial_frame_;
+    typedef texture_frames::iterator frame_iterator;
 
-    /// \brief The number of textures to animate.
+    /// \brief The total number of textures to animate.
     real32 total_displacement_;
 
-    /// \brief The textures to animate.
+    /// \brief The initial starting texture to animate from.
+    uint32 initial_frame_;
+
+    /// \brief The stored textures.
     texture_frames frames_;
     frame_iterator next_frame_;
     frame_iterator last_frame_;
 
-    /// \brief The sprite to render the textures to.
+    /// \brief The provided drawable used to render frames to.
     std::shared_ptr<Sprite> drawable_;
 
-    /// \brief The length of time to display a frame, in seconds.
+    /// \brief The delay (in seconds) before displaying the next texture.
     real32 frame_interval_;
-
-    /// \brief The last recorded time interval, in seconds.
     real32 last_delta_;
 };
 

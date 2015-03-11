@@ -40,9 +40,8 @@ namespace nom {
 // Static initializations
 const char* ScaleByAction::DEBUG_CLASS_NAME = "[ScaleByAction]:";
 
-ScaleByAction::ScaleByAction( const std::shared_ptr<Sprite>& action,
-                              const Size2f& delta,
-                              real32 seconds ) :
+ScaleByAction::ScaleByAction( const std::shared_ptr<Sprite>& drawable,
+                              const Size2f& delta, real32 seconds ) :
   total_displacement_(delta)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
@@ -50,7 +49,7 @@ ScaleByAction::ScaleByAction( const std::shared_ptr<Sprite>& action,
 
   this->set_duration(seconds);
   this->elapsed_frames_ = 0.0f;
-  this->drawable_ = action;
+  this->drawable_ = drawable;
 }
 
 ScaleByAction::~ScaleByAction()
@@ -82,8 +81,7 @@ ScaleByAction::update(real32 t, const Size2i& b, const Size2f& c, real32 d)
   // The computed scale value of the frame
   Size2f displacement(Size2f::zero);
 
-  // Clamp delta values that go beyond the time duration bounds; this adds
-  // stability to variable time steps
+  // Clamp delta values that go beyond maximal duration
   if( delta_time > (duration / this->speed() ) ) {
     delta_time = duration / this->speed();
   }
@@ -198,13 +196,11 @@ IActionObject::FrameState ScaleByAction::prev_frame(real32 delta_time)
 
 void ScaleByAction::pause(real32 delta_time)
 {
-  // Stub
   this->timer_.pause();
 }
 
 void ScaleByAction::resume(real32 delta_time)
 {
-  // Stub
   this->timer_.unpause();
 }
 

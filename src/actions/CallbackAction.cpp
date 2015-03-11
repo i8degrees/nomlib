@@ -35,8 +35,8 @@ namespace nom {
 // Static initializations
 const char* CallbackAction::DEBUG_CLASS_NAME = "[CallbackAction]:";
 
-CallbackAction::CallbackAction(const callback_type& func) :
-  delegate_(func)
+CallbackAction::CallbackAction(const callback_func& action) :
+  action_(action)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
@@ -45,13 +45,14 @@ CallbackAction::CallbackAction(const callback_type& func) :
   this->elapsed_frames_ = 0.0f;
 }
 
-CallbackAction::CallbackAction(real32 duration, const callback_type& func) :
-  delegate_(func)
+CallbackAction::CallbackAction( real32 seconds,
+                                const callback_func& action) :
+  action_(action)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  this->set_duration(duration);
+  this->set_duration(seconds);
   this->elapsed_frames_ = 0.0f;
 }
 
@@ -71,15 +72,13 @@ IActionObject::FrameState CallbackAction::next_frame(real32 delta_time)
   delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
 
   if( this->timer_.started() == false ) {
-    // Start frame timing
     this->timer_.start();
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "BEGIN at", delta_time );
   }
 
-  // Clamp delta values that go beyond the time duration bounds; this adds
-  // stability to variable time steps
+  // Clamp delta values that go beyond maximal duration
   if( delta_time > (this->duration() / this->speed() ) ) {
     delta_time = this->duration() / this->speed();
   }
@@ -87,15 +86,12 @@ IActionObject::FrameState CallbackAction::next_frame(real32 delta_time)
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
 
-  if( this->delegate_ != nullptr ) {
-    this->delegate_.operator()();
+  if( this->action_ != nullptr ) {
+    this->action_.operator()();
   }
 
-  // Internal diagnostics
   ++this->elapsed_frames_;
 
-  // Continue waiting if we are inside our frame duration bounds; this adds
-  // stability to variable time steps
   if( delta_time < (this->duration() / this->speed() ) ) {
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
@@ -103,15 +99,16 @@ IActionObject::FrameState CallbackAction::next_frame(real32 delta_time)
                     "[elapsed frames]:", this->elapsed_frames_ );
 
     this->status_ = FrameState::PLAYING;
-    return this->status_;
   } else {
     this->status_ = FrameState::COMPLETED;
-    return this->status_;
   }
+
+  return this->status_;
 }
 
 IActionObject::FrameState CallbackAction::prev_frame(real32 delta_time)
 {
+  // NOTE: This action is not reversible
   return this->next_frame(delta_time);
 }
 
@@ -132,7 +129,7 @@ void CallbackAction::rewind(real32 delta_time)
 
 void CallbackAction::release()
 {
-  // Nothing to free
+  // Nothing to free!
 }
 
 } // namespace nom

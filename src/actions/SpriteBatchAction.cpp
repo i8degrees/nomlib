@@ -40,8 +40,9 @@ namespace nom {
 // Static initializations
 const char* SpriteBatchAction::DEBUG_CLASS_NAME = "[SpriteBatchAction]:";
 
-SpriteBatchAction::SpriteBatchAction( const std::shared_ptr<SpriteBatch>& sprite,
-                                      real32 frame_interval_seconds )
+SpriteBatchAction::
+SpriteBatchAction(  const std::shared_ptr<SpriteBatch>& drawable,
+                    real32 frame_interval_seconds )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
@@ -52,7 +53,7 @@ SpriteBatchAction::SpriteBatchAction( const std::shared_ptr<SpriteBatch>& sprite
   this->initial_frame_ = 0;
   this->last_delta_ = 0.0f;
 
-  this->drawable_ = sprite;
+  this->drawable_ = drawable;
   if( this->drawable_ != nullptr ) {
     NOM_ASSERT(this->drawable_->frames() > 0);
     this->total_displacement_ = this->drawable_->frames();
@@ -95,8 +96,7 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
   // The computed texture frame to show next
   real32 displacement(0.0f);
 
-  // Clamp delta values that go beyond the time duration bounds; this adds
-  // stability to variable time steps
+  // Clamp delta values that go beyond maximal duration
   if( delta_time > (duration / this->speed() ) ) {
     delta_time = duration / this->speed();
   }
@@ -134,18 +134,14 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
     }
   }
 
-  // Continue playing the animation only when we are inside our frame duration
-  // bounds; this adds stability to variable time steps
   if( delta_time < (duration / this->speed() ) ) {
-
     this->status_ = FrameState::PLAYING;
-    return this->status_;
   } else {
     this->last_frame(delta_time);
-
     this->status_ = FrameState::COMPLETED;
-    return this->status_;
   }
+
+  return this->status_;
 }
 
 IActionObject::FrameState SpriteBatchAction::next_frame(real32 delta_time)
@@ -180,16 +176,12 @@ void SpriteBatchAction::resume(real32 delta_time)
 
 void SpriteBatchAction::rewind(real32 delta_time)
 {
-  // Reset frame cycle back to initial value
+  // Reset frame timing
   this->elapsed_frames_ = 0.0f;
   this->last_delta_ = 0.0f;
-
-  // Reset frame timing
   this->timer_.stop();
-
   this->status_ = FrameState::PLAYING;
 
-  // Reset starting frame
   if( this->drawable_ != nullptr ) {
     this->drawable_->set_frame(this->initial_frame_);
   }
@@ -207,7 +199,6 @@ void SpriteBatchAction::release()
 void SpriteBatchAction::first_frame(real32 delta_time)
 {
   if( this->timer_.started() == false ) {
-    // Start frame timing
     this->last_delta_ = 0.0f;
     this->timer_.start();
 

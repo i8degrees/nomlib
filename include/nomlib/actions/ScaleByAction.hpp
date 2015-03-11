@@ -41,26 +41,24 @@ namespace nom {
 // Forward declarations
 class Sprite;
 
-/// \brief [TODO: Description]
+/// \brief Apply a relative scale factor to a sprite
 class ScaleByAction: public virtual IActionObject
 {
   public:
-    /// \brief Allow access into our private parts for obtaining the current
-    /// frame.
+    /// \brief Allow access into our private parts for unit testing.
     friend class ActionTest;
-
-    static const char* DEBUG_CLASS_NAME;
 
     typedef ScaleByAction self_type;
     typedef IActionObject derived_type;
 
-    /// \brief Construct an animation action using a scale factor.
+    /// \brief Apply a relative scale factor to a sprite.
     ///
-    /// \param delta The width, height offsets to use for a scale factor.
-    ScaleByAction(  const std::shared_ptr<Sprite>& action, const Size2f& delta,
-                    real32 seconds );
+    /// \param drawable A valid nom::Sprite instance.
+    /// \param delta The total scale factor to apply to the drawable over time.
+    /// \param seconds The duration of the animation.
+    ScaleByAction(  const std::shared_ptr<Sprite>& drawable,
+                    const Size2f& delta, real32 seconds );
 
-    /// \brief Destructor.
     virtual ~ScaleByAction();
 
     virtual std::unique_ptr<IActionObject> clone() const override;
@@ -71,9 +69,6 @@ class ScaleByAction: public virtual IActionObject
 
     virtual void pause(real32 delta_time) override;
 
-    /// \brief Resume logic for the animation object.
-    ///
-    /// \remarks Reserved for future implementation.
     virtual void resume(real32 delta_time) override;
 
     virtual void rewind(real32 delta_time) override;
@@ -81,26 +76,21 @@ class ScaleByAction: public virtual IActionObject
     virtual void release() override;
 
   private:
-    /// \brief Execute the alpha blending logic for the animation.
+    static const char* DEBUG_CLASS_NAME;
+
     IActionObject::FrameState
     update(real32 t, const Size2i& b, const Size2f& c, real32 d);
 
     void first_frame(real32 delta_time);
     void last_frame(real32 delta_time);
 
-    /// \brief The recorded scale value from frame displacement.
-    Size2i size_;
-
-    /// \brief The scale factor offset with respect to the duration.
     const Size2f total_displacement_;
-
-    /// \brief The starting size dimensions of the set drawable.
-    ///
-    /// \remarks This is used in ::rewind.
     Size2i initial_size_;
 
-    /// \brief The action to animate.
     std::shared_ptr<Sprite> drawable_;
+
+    /// \brief The current size of the drawable.
+    Size2i size_ = Size2i::zero;
 };
 
 } // namespace nom

@@ -36,63 +36,39 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief An action that acts as a delay timer
+/// \brief Create an action that idles for a specified period of time
 class WaitForDurationAction: public virtual IActionObject
 {
   public:
-    /// \brief Allow access into our private parts for obtaining the current
-    /// frame.
+    /// \brief Allow access into our private parts for unit testing.
     friend class ActionTest;
-
-    static const char* DEBUG_CLASS_NAME;
 
     typedef WaitForDurationAction self_type;
     typedef IActionObject derived_type;
 
     /// \brief Create an action that idles for a specified period of time.
     ///
-    /// \param seconds The time -- in fractional seconds -- to idle for before
-    /// the action ends.
+    /// \param seconds The duration of the idle.
     WaitForDurationAction(real32 seconds);
 
-    /// \brief Destructor.
     virtual ~WaitForDurationAction();
 
     virtual std::unique_ptr<IActionObject> clone() const override;
 
-    /// \brief Play the action forward in time by one frame step.
-    ///
-    /// \see nom::ActionPlayer.
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
 
-    /// \brief Play the action backwards in time by one frame step.
-    ///
-    /// \remarks This action is not reversible; the reverse of this action is
-    /// the same action.
-    ///
-    /// \see nom::ReversedAction
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
 
-    /// \brief Reserved for future implementation.
-    ///
-    /// \note This is called internally called by nom::AnimationPlayer when the
-    /// player state is set to nom::AnimationPlayer::PAUSED.
     virtual void pause(real32 delta_time) override;
 
-    /// \brief Reserved for future implementation.
     virtual void resume(real32 delta_time) override;
 
-    /// \brief Reset the object's state back to its first frame.
-    ///
-    /// \note This is called internally called by nom::AnimationPlayer when the
-    /// player state is set to nom::AnimationPlayer::STOPPED.
     virtual void rewind(real32 delta_time) override;
 
-    /// \brief Stubbed implementation (no object resources to free).
-    ///
-    /// \note This is called internally by nom::AnimationPlayer when the
-    /// animation object is finished updating (signified by FrameState::COMPLETED).
     virtual void release() override;
+
+  private:
+    static const char* DEBUG_CLASS_NAME;
 };
 
 } // namespace nom
@@ -100,7 +76,7 @@ class WaitForDurationAction: public virtual IActionObject
 #endif // include guard defined
 
 /// \class nom::WaitForDurationAction
-/// \ingroup graphics
+/// \ingroup actions
 ///
 /// \brief When the action executes, the action waits for the specified amount
 /// of time, then ends. This is typically used as part of a sequence of actions
@@ -108,6 +84,6 @@ class WaitForDurationAction: public virtual IActionObject
 /// conjunction with nom::ActionPlayer::run_action(action, completion_func)
 /// to trigger logic that needs to run at a later time.
 ///
-/// \note This action is conceptually similar to SDL_AddTimer, less and except
-/// the separate thread execution.
+/// \remarks This action is not reversible; the reverse of this action is
+/// the same action.
 ///

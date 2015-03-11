@@ -36,55 +36,60 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief [TODO: Description]
+/// \brief Reverse the behavior of an action
 class ReversedAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.
     friend class ActionTest;
 
-    static const char* DEBUG_CLASS_NAME;
-
     typedef ReversedAction self_type;
     typedef IActionObject derived_type;
 
-    /// \brief Default constructor.
+    /// \brief Reverse the behavior of an action.
+    ///
+    /// \param action An action object to repeat; NULL actions are valid.
+    /// \param name An optional unique identifier to assign to this instance.
+    ///
+    /// \remarks Not all actions are reversible -- see the action's
+    /// documentation for its implementation details.
     ReversedAction( const std::shared_ptr<IActionObject>& action,
                     const std::string& name = "" );
 
-    /// \brief Destructor.
     virtual ~ReversedAction();
 
     virtual std::unique_ptr<IActionObject> clone() const override;
 
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
+
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
 
     virtual void pause(real32 delta_time) override;
 
-    /// \brief Resume logic for the animation object.
-    ///
-    /// \remarks Reserved for future implementation.
     virtual void resume(real32 delta_time) override;
 
     virtual void rewind(real32 delta_time) override;
 
     virtual void release() override;
 
-    /// \brief Set the object's speed modifier.
+    /// \brief Set the speed factor of the child action.
     ///
-    /// \remarks The speed modifier of the proxy object is modified.
+    /// \remarks This has no effect on the parent (this object).
     virtual void set_speed(real32 speed) override;
 
-    /// \brief Set the object's timing mode.
+    /// \brief Set the timing mode of the child action.
     ///
-    /// \remarks The timing mode of the proxy object is modified.
-    virtual
-    void set_timing_curve(const IActionObject::timing_curve_func& mode) override;
+    /// \remarks This has no effect on the parent (this object).
+    ///
+    /// \see nom::IActionObject::timing_curve_func
+    virtual void
+    set_timing_curve(const IActionObject::timing_curve_func& mode) override;
 
   private:
-    /// \brief The action proxy object.
-    std::shared_ptr<IActionObject> object_;
+    static const char* DEBUG_CLASS_NAME;
+
+    /// \brief The child action.
+    std::shared_ptr<IActionObject> action_;
 };
 
 } // namespace nom

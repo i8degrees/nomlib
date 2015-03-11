@@ -40,18 +40,18 @@ namespace nom {
 // Static initializations
 const char* FadeOutAction::DEBUG_CLASS_NAME = "[FadeOutAction]:";
 
-FadeOutAction::FadeOutAction( const std::shared_ptr<Sprite>& action,
-                              real32 duration ) :
+FadeOutAction::FadeOutAction( const std::shared_ptr<Sprite>& drawable,
+                              real32 seconds ) :
   total_displacement_(255)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  this->set_duration(duration);
+  this->set_duration(seconds);
   this->elapsed_frames_ = 0.0f;
   this->alpha_ = 0;
   this->initial_alpha_ = 0;
-  this->drawable_ = action;
+  this->drawable_ = drawable;
 }
 
 FadeOutAction::~FadeOutAction()
@@ -83,8 +83,7 @@ FadeOutAction::update(real32 t, uint8 b, int16 c, real32 d)
   // The computed alpha blending value of the frame
   real32 displacement = 0.0f;
 
-  // Clamp delta values that go beyond the time duration bounds; this adds
-  // stability to variable time steps
+  // Clamp delta values that go beyond maximal duration
   if( delta_time > (duration / this->speed() ) ) {
     delta_time = duration / this->speed();
   }
@@ -151,6 +150,8 @@ FadeOutAction::update(real32 t, uint8 b, int16 c, real32 d)
   }
 }
 
+// FIXME: Take a closer look at how to do the proper math required for this
+// instead of using the workaround in here!
 IActionObject::FrameState FadeOutAction::next_frame(real32 delta_time)
 {
   delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
@@ -181,17 +182,11 @@ IActionObject::FrameState FadeOutAction::prev_frame(real32 delta_time)
 
 void FadeOutAction::pause(real32 delta_time)
 {
-  // Stub
-  // if( this->timer_.paused() == true ) {
-    // this->timer_.unpause();
-  // } else {
-    this->timer_.pause();
-  // }
+  this->timer_.pause();
 }
 
 void FadeOutAction::resume(real32 delta_time)
 {
-  // Stub
   this->timer_.unpause();
 }
 

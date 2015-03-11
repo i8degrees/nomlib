@@ -40,11 +40,11 @@ namespace nom {
 
 // Forward declarations
 class IActionObject;
-typedef std::function<void()> action_callback;
-
 class DispatchQueue;
 
-/// \brief High-level actions interface
+typedef std::function<void()> action_callback_func;
+
+/// \brief Interface for running and controlling action flow
 class ActionPlayer
 {
   public:
@@ -56,12 +56,10 @@ class ActionPlayer
       RUNNING = 0,
       PAUSED,
       STOPPED,
-      TOTAL_STATES,
     };
 
-    static const char* DEBUG_CLASS_NAME;
-
     ActionPlayer();
+
     ~ActionPlayer();
 
     /// \brief Disabled copy constructor.
@@ -70,118 +68,112 @@ class ActionPlayer
     /// \brief Disabled copy assignment operator.
     ActionPlayer& operator =(const ActionPlayer& rhs) = delete;
 
-    /// \returns Boolean FALSE when one or more actions are running, and boolean
-    /// TRUE when all actions have been completed.
+    /// \brief Get the status of the action queue.
+    ///
+    /// \returns Boolean FALSE when one or more actions are running, and
+    /// boolean TRUE when all actions have been completed and have been removed
+    /// from the queue.
     bool idle() const;
 
     /// \brief Get the number of actions enqueued.
     nom::size_type num_actions() const;
 
-    /// \brief Obtain the player state.
+    /// \brief Get the control status of the queue.
     ///
-    /// \returns The state of the player as one of the
-    /// nom::ActionPlayer::State enumeration values.
+    /// \returns One of the nom::ActionPlayer::State enumeration values.
     ActionPlayer::State player_state() const;
 
-    /// \brief Set the player state.
+    /// \brief Freeze the enqueued actions from advancing forward in time.
     ///
-    /// \param state One of the ActionPlayer::State enumeration values.
-    void set_player_state(ActionPlayer::State state);
-
-    /// \brief Convenience method for setting the player state to
-    /// nom::ActionPlayer::State::PAUSED.
+    /// \remarks Resuming from this control state will continue iterating the
+    /// enqueued actions forward in time from where it last left off.
     ///
-    /// \remarks When the player is paused, the animation loop continues, but
-    /// with the altered state of using the animation object's pause method
-    /// instead of its next_frame method. This typically results in a frame
-    /// freeze.
-    ///
-    /// \see nom::IActionObject::resume, nom::IActionObject::pause
+    /// \note The player state is set to nom::ActionPlayer::State::PAUSED.
     void pause();
 
-    /// \brief Convenience method for setting the player state to
-    /// nom::ActionPlayer::State::RUNNING.
+    /// \brief Resume the advancement of time for the enqueued actions.
     ///
-    /// \remarks This continues the animation player's animation cycle loop,
-    /// from a paused or stopped state. When the previous state was
-    /// nom::ActionPlayer::State::PAUSED, continuing means restoring the
-    /// player state from where it was iterating from before pausing. When the
-    /// previous state was nom::ActionPlayer::State::STOPPED, continuing
-    /// means restoring to the initial (first) animation frame from where it
-    /// was iterating from before stopping. In other words, this functionality
-    /// is intended to match a video player.
+    /// \note The player state is set to ActionPlayer::State::RUNNING.
     ///
-    /// \see nom::IActionObject::pause, nom::IActionObject::stop
+    /// \see nom::ActionPlayer::pause, nom::ActionPlayer::stop
     void resume();
 
-    /// \brief Convenience method for setting the player state to
-    /// nom::ActionPlayer::State::STOPPED.
+    /// \brief Reset the enqueued actions back to its initial starting state.
     ///
-    /// \remarks When the player is stopped, the animation loop continues, but
-    /// uses the animation object's rewind method instead of its next_frame
-    /// method. This typically results in resetting the animation cycle back
-    /// to its starting position.
+    /// \remarks This resets the state of the enqueued actions back to its
+    /// initial state, i.e.: before being executed. Resuming from this control
+    /// state will restart the enqueued actions from their initial state.
     ///
-    /// \see nom::IActionObject::resume
+    /// \note The player state is set to nom::ActionPlayer::State::STOPPED.
     void stop();
 
     /// \brief Get the completion status of an action.
     ///
-    /// \param action_name The action's name to query.
+    /// \param action_id The unique identifier of the action.
     ///
     /// \returns Boolean TRUE if the action has completed, and boolean FALSE
     /// if the action has **not** completed.
     ///
-    /// \see IActionObject::set_name.
-    bool action_running(const std::string& action_name) const;
+    /// \see nom::IActionObject::set_name.
+    bool action_running(const std::string& action_id) const;
 
-    /// \brief Erase an action from the queue.
+    /// \brief Stop executing an action.
     ///
-    /// \param action_name The action's name to erase.
+    /// \param action_id The unique identifier of the action to stop.
     ///
-    /// \see IActionObject::set_name.
-    bool cancel_action(const std::string& action_name);
+    /// \see nom::IActionObject::set_name.
+    bool cancel_action(const std::string& action_id);
 
-    /// \brief Clear all actions from the queue.
+    /// \brief Stop executing the enqueued actions.
     ///
-    /// \remarks This will instantly stop all running actions.
+    /// \remarks This will instantaneously stop running all enqueued actions.
     void cancel_actions();
 
     /// \brief Enqueue an action.
     ///
-    /// \param action A valid (non-NULL), constructed action object.
-    ///
-    /// \see ActionPlayer::update
-    bool run_action(const std::shared_ptr<IActionObject>& action);
-
-    /// \brief Enqueue an action with an action identifier.
-    ///
-    /// \param action           A valid (non-NULL), constructed action object.
-    /// \param action_name      A unique name used to identify the action.
+    /// \param action The action to run; NULL actions are valid.
     ///
     /// \remarks If an action using the same key is already running, it is
     /// removed before the new action is added.
     ///
-    /// \see ActionPlayer::update, ActionPlayer::action_running
+    /// \see nom::ActionPlayer::update
+    bool run_action(const std::shared_ptr<IActionObject>& action);
+
+    /// \brief Enqueue an action with an action identifier.
+    ///
+    /// \param action The action to run; NULL actions are valid.
+    ///
+    /// \param action_id A unique identifier for the action.
+    ///
+    /// \remarks If an action using the same key is already running, it is
+    /// removed before the new action is added.
+    ///
+    /// \see nom::ActionPlayer::update, nom::ActionPlayer::action_running
     bool run_action(  const std::shared_ptr<IActionObject>& action,
-                      const char* action_name );
+                      const char* action_id );
 
     /// \brief Enqueue an action with a completion callback.
     ///
-    /// \param action           A valid (non-NULL), constructed action object.
-    /// \param completion_func  The function to execute when the action has
-    /// completed.
+    /// \param action The action to run; NULL actions are valid.
     ///
-    /// \see ActionPlayer::update
+    /// \param completion_func The function to call when the action is
+    /// completed -- passing NULL here is valid.
+    ///
+    /// \remarks If an action using the same key is already running, it is
+    /// removed before the new action is added.
+    ///
+    /// \see nom::ActionPlayer::update
     bool run_action(  const std::shared_ptr<IActionObject>& action,
-                      const action_callback& completion_func );
+                      const action_callback_func& completion_func );
 
     /// \brief Enqueue an action that runs on a specific dispatch queue.
     ///
-    /// \param action           A valid (non-NULL), constructed action object.
-    /// \param completion_func  The function to execute when the action has
-    /// completed -- this value may be NULL.
-    /// \param queue            The queue to perform the action on.
+    /// \param action The action to run; NULL actions are valid.
+    ///
+    /// \param completion_func The function to call when the action is
+    /// completed -- passing NULL here is valid.
+    ///
+    /// \param dispatch_queue A valid nom::DispatchQueue to run the action on.
     ///
     /// \remarks This can be used to constrain or maximize the number of
     /// actions per dispatch queue. The default allocation scheme is a one to
@@ -189,17 +181,27 @@ class ActionPlayer
     ///
     /// \see nom::DispatchQueue
     bool run_action(  const std::shared_ptr<IActionObject>& action,
-                      std::unique_ptr<DispatchQueue> queue,
-                      const action_callback& completion_func );
+                      std::unique_ptr<DispatchQueue> dispatch_queue,
+                      const action_callback_func& completion_func );
 
+    /// \brief Run the enqueued actions' update loop.
+    ///
+    /// \param delta_time Reserved for application-defined implementations.
+    ///
     /// \returns Boolean TRUE when one or more actions are running, and boolean
     /// FALSE when all actions have been completed.
     ///
-    /// \see ::idle
+    /// \remarks This method must be called from your application's loop.
+    ///
+    /// \see nom::ActionPlayer::idle
     bool update(real32 delta_time);
 
   private:
-    typedef std::map<std::string, std::unique_ptr<DispatchQueue>> container_type;
+    static const char* DEBUG_CLASS_NAME;
+
+    typedef
+    std::map<std::string, std::unique_ptr<DispatchQueue>> container_type;
+
     typedef container_type::iterator container_iterator;
 
     ActionPlayer::State player_state_;
@@ -214,3 +216,42 @@ class ActionPlayer
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::ActionPlayer
+/// \ingroup actions
+///
+/// **TODO:** This documentation section is a *STUB*!
+///
+/// \brief This is the high-level interface for scheduling and controlling the
+/// flow of actions. You may find that using multiple instances of the
+/// interface is ideal if you have several action groups that can be managed
+/// independently from each other.
+///
+/// ## Usage Examples
+///
+/// \code
+///
+/// // Declared somewhere accessible by the game
+/// nom::ActionPlayer actions;
+///
+/// // Your main game loop
+/// while(game_running == true)
+/// {
+///   // calculate delta_time for this frame
+///
+///   // ...Process game, input, etc. events
+///
+///   // ...Process game updates...
+///
+///   actions.update(delta_time);
+///
+///   // ...Process rendering...
+/// }
+///
+/// \endcode
+///
+/// \snippet tests/src/actions/ActionTest.cpp usage_example
+///
+/// # References (Conceptual)
+/// [SKNode](https://developer.apple.com/library/prerelease/ios/documentation/SpriteKit/Reference/SKNode_Ref/index.html#//apple_ref/occ/cl/SKNode)
+///

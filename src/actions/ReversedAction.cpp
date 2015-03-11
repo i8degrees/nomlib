@@ -42,7 +42,7 @@ ReversedAction::ReversedAction( const std::shared_ptr<IActionObject>& action,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_name(name);
-  this->object_ = action;
+  this->action_ = action;
 }
 
 ReversedAction::~ReversedAction()
@@ -58,12 +58,12 @@ std::unique_ptr<IActionObject> ReversedAction::clone() const
 
     cloned_obj->status_ = FrameState::PLAYING;
 
-    if( this->object_ != nullptr ) {
-      cloned_obj->object_ = this->object_->clone();
+    if( this->action_ != nullptr ) {
+      cloned_obj->action_ = this->action_->clone();
     }
 
-    // NOTE: This is done to prevent the cloned action from being erased from a
-    // running queue at the same time as the original instance!
+    // IMPORTANT: This is done to prevent the cloned action from being erased
+    // from a running queue at the same time as the original instance!
     cloned_obj->set_name( "__" + this->name() + "_cloned" );
 
     return std::move(cloned_obj);
@@ -74,39 +74,40 @@ std::unique_ptr<IActionObject> ReversedAction::clone() const
 
 IActionObject::FrameState ReversedAction::next_frame(real32 delta_time)
 {
-  if( this->object_ != nullptr ) {
-    this->status_ = this->object_->prev_frame(delta_time);
-    return this->status_;
+  if( this->action_ != nullptr ) {
+    this->status_ = this->action_->prev_frame(delta_time);
+  } else {
+    // No action to reverse!
+    this->status_ = FrameState::COMPLETED;
   }
 
-  // No proxy object to reverse
-  this->status_ = FrameState::COMPLETED;
   return this->status_;
 }
 
 IActionObject::FrameState ReversedAction::prev_frame(real32 delta_time)
 {
-  if( this->object_ != nullptr ) {
-    this->status_ = this->object_->next_frame(delta_time);
+  if( this->action_ != nullptr ) {
+    this->status_ = this->action_->next_frame(delta_time);
     return this->status_;
+  } else {
+    // No action to reverse!
+    this->status_ = FrameState::COMPLETED;
   }
 
-  // No proxy object to reverse
-  this->status_ = FrameState::COMPLETED;
   return this->status_;
 }
 
 void ReversedAction::pause(real32 delta_time)
 {
-  if( this->object_ != nullptr ) {
-    this->object_->pause(delta_time);
+  if( this->action_ != nullptr ) {
+    this->action_->pause(delta_time);
   }
 }
 
 void ReversedAction::resume(real32 delta_time)
 {
-  if( this->object_ != nullptr ) {
-    this->object_->resume(delta_time);
+  if( this->action_ != nullptr ) {
+    this->action_->resume(delta_time);
   }
 }
 
@@ -114,28 +115,26 @@ void ReversedAction::rewind(real32 delta_time)
 {
   this->status_ = FrameState::PLAYING;
 
-  if( this->object_ != nullptr ) {
-    // Reset proxy object back to initial starting values
-    this->object_->rewind(delta_time);
+  if( this->action_ != nullptr ) {
+    this->action_->rewind(delta_time);
   }
 }
 
 void ReversedAction::release()
 {
-  if( this->object_ != nullptr ) {
-    this->object_->release();
+  if( this->action_ != nullptr ) {
+    this->action_->release();
   }
 
-  this->object_.reset();
+  this->action_.reset();
 }
 
 void ReversedAction::set_speed(real32 speed)
 {
   IActionObject::set_speed(speed);
 
-  // Propagate the speed modifier to our proxy / child object
-  if( this->object_ != nullptr ) {
-    this->object_->set_speed(speed);
+  if( this->action_ != nullptr ) {
+    this->action_->set_speed(speed);
   }
 }
 
@@ -144,9 +143,8 @@ ReversedAction::set_timing_curve(const IActionObject::timing_curve_func& mode)
 {
   IActionObject::set_timing_curve(mode);
 
-  // Propagate the timing mode modifier to our proxy / child object
-  if( this->object_ != nullptr ) {
-    this->object_->set_timing_curve(mode);
+  if( this->action_ != nullptr ) {
+    this->action_->set_timing_curve(mode);
   }
 }
 

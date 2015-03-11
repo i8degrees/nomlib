@@ -72,29 +72,24 @@ ActionPlayer::State ActionPlayer::player_state() const
   return this->player_state_;
 }
 
-void ActionPlayer::set_player_state(ActionPlayer::State state)
-{
-  this->player_state_ = state;
-}
-
 void ActionPlayer::pause()
 {
-  this->set_player_state(ActionPlayer::State::PAUSED);
+  this->player_state_ = ActionPlayer::State::PAUSED;
 }
 
 void ActionPlayer::resume()
 {
-  this->set_player_state(ActionPlayer::State::RUNNING);
+  this->player_state_ = ActionPlayer::State::RUNNING;
 }
 
 void ActionPlayer::stop()
 {
-  this->set_player_state(ActionPlayer::State::STOPPED);
+  this->player_state_ = ActionPlayer::State::STOPPED;
 }
 
-bool ActionPlayer::action_running(const std::string& action_name) const
+bool ActionPlayer::action_running(const std::string& action_id) const
 {
-  auto res = this->actions_.find(action_name);
+  auto res = this->actions_.find(action_id);
 
   if( res == this->actions_.end() ) {
     // The action is **not** running
@@ -105,9 +100,9 @@ bool ActionPlayer::action_running(const std::string& action_name) const
   }
 }
 
-bool ActionPlayer::cancel_action(const std::string& action_name)
+bool ActionPlayer::cancel_action(const std::string& action_id)
 {
-  auto res = this->actions_.find(action_name);
+  auto res = this->actions_.find(action_id);
 
   if( res == this->actions_.end() ) {
     // Err -- no action by that name found
@@ -142,10 +137,10 @@ bool ActionPlayer::run_action(const std::shared_ptr<IActionObject>& action)
 
 bool ActionPlayer::
 run_action( const std::shared_ptr<IActionObject>& action,
-            const char* action_name )
+            const char* action_id )
 {
   if( action != nullptr ) {
-    action->set_name(action_name);
+    action->set_name(action_id);
   }
 
   std::unique_ptr<DispatchQueue> enqueue;
@@ -157,13 +152,13 @@ run_action( const std::shared_ptr<IActionObject>& action,
 
   NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Failed to enqueue action: ",
                 "could not allocate memory for the dispatch queue!\n",
-                "[action_id]:", action_name );
+                "[action_id]:", action_id );
   return false;
 }
 
 bool ActionPlayer::
 run_action( const std::shared_ptr<IActionObject>& action,
-            const action_callback& completion_func )
+            const action_callback_func& completion_func )
 {
   std::string action_id;
 
@@ -186,8 +181,8 @@ run_action( const std::shared_ptr<IActionObject>& action,
 
 bool ActionPlayer::
 run_action( const std::shared_ptr<IActionObject>& action,
-            std::unique_ptr<DispatchQueue> queue,
-            const action_callback& completion_func )
+            std::unique_ptr<DispatchQueue> dispatch_queue,
+            const action_callback_func& completion_func )
 {
   std::string action_id;
 
@@ -197,7 +192,7 @@ run_action( const std::shared_ptr<IActionObject>& action,
     return false;
   }
 
-  if( queue == nullptr ) {
+  if( dispatch_queue == nullptr ) {
     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
                   "Could not enqueue the action -- dispatch queue was NULL." );
     return false;
@@ -214,12 +209,11 @@ run_action( const std::shared_ptr<IActionObject>& action,
     action->set_name(action_id);
   }
 
-  if( queue->enqueue_action(action, completion_func) == false ) {
+  if( dispatch_queue->enqueue_action(action, completion_func) == false ) {
     return false;
   }
 
-  // Diagnostics information; note that this logging category is disabled by
-  // default
+  // NOTE: This logging category is disabled by default
   if( this->action_running(action_id) == true) {
 
     NOM_LOG_WARN( NOM_LOG_CATEGORY_ACTION_PLAYER,
@@ -227,12 +221,11 @@ run_action( const std::shared_ptr<IActionObject>& action,
                   "with", action_id );
   } // end if action was running
 
-  this->actions_[action_id] = std::move(queue);
+  this->actions_[action_id] = std::move(dispatch_queue);
 
   return true;
 }
 
-// Called within the main game loop
 bool ActionPlayer::update(real32 delta_time)
 {
   ActionPlayer::State player_state = this->player_state();

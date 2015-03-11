@@ -37,74 +37,72 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief Proxy action for running actions one at a time
+/// \brief Run a collection of actions sequentially
 class SequenceAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.
     friend class ActionTest;
 
-    static const char* DEBUG_CLASS_NAME;
-
     typedef SequenceAction self_type;
     typedef IActionObject derived_type;
 
-    /// \brief Default constructor.
+    /// \brief Run a collection of actions sequentially.
+    ///
+    /// \param actions The group of actions to execute; NULL actions are
+    /// valid.
+    /// \param name An optional unique identifier to assign to this instance.
     SequenceAction( const action_list& actions,
                     const std::string& name = "" );
 
-    /// \brief Destructor.
     virtual ~SequenceAction();
 
     virtual std::unique_ptr<IActionObject> clone() const override;
 
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
+
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
 
     virtual void pause(real32 delta_time) override;
 
-    /// \brief Resume logic for the animation object.
-    ///
-    /// \remarks Reserved for future implementation.
     virtual void resume(real32 delta_time) override;
 
     virtual void rewind(real32 delta_time) override;
 
     virtual void release() override;
 
-    /// \brief Set the action's speed modifier.
+    /// \brief Set the speed factor of the child actions.
     ///
-    /// \remarks The speed modifier of every action is modified.
+    /// \remarks This has no effect on the parent (this object).
     virtual void set_speed(real32 speed) override;
 
-    /// \brief Set the action's timing mode.
+    /// \brief Set the timing mode of the child actions.
     ///
-    /// \remarks The timing mode of every action is modified.
-    virtual
-    void set_timing_curve(const IActionObject::timing_curve_func& mode) override;
+    /// \remarks This has no effect on the parent (this object).
+    ///
+    /// \see nom::IActionObject::timing_curve_func
+    virtual void
+    set_timing_curve(const IActionObject::timing_curve_func& mode) override;
 
   private:
+    static const char* DEBUG_CLASS_NAME;
+
     IActionObject::FrameState
     update(real32 delta_time, uint32 direction);
 
-    /// \remarks A std::vector container seems most appropriate here because
-    /// of the contiguous memory access, for lack of any other special needs,
-    /// i.e.: fast front/back iteration or fast expansion time.
     typedef std::vector<std::shared_ptr<IActionObject>> container_type;
     typedef container_type::iterator container_iterator;
 
     const container_type& actions() const;
 
-    /// \brief The enqueued actions.
-    ///
-    /// \remarks The stored actions are processed in a FIFO order.
+    /// \brief The child actions.
     container_type actions_;
     container_iterator actions_iterator_;
 
-    /// \brief Iteration counter.
-    nom::size_type itr_pos_;
+    /// \brief The total number of completed actions.
+    nom::size_type num_completed_;
 
-    /// \brief Total number of actions at the time of construction.
+    /// \brief The total number of actions at the time of construction.
     nom::size_type num_actions_;
 };
 
@@ -113,16 +111,19 @@ class SequenceAction: public virtual IActionObject
 #endif // include guard defined
 
 /// \class nom::SequenceAction
-/// \ingroup graphics
+/// \ingroup actions
 ///
-/// \brief This is an action that acts on behalf of other action(s) as a proxy,
-/// grouping actions together so that every action within its container is
-/// executed to completion **one** at a time, in FIFO order. This is
-/// particularly useful for transition-style animations, and is considered the
-/// second fundamental animation logic flow type.
+/// \brief This action acts on behalf of other actions as a proxy, running
+/// actions to completion, one at a time, before iterating to the next
+/// action, in FIFO order. The total duration of the sequence action is the sum
+/// of every action's durations in the sequence.
 ///
-/// \remarks This action is not reversible, but the action(s) contained
-/// within may be. Consult the documentation for each action type in question.
+/// \remarks This action is not reversible, but the actions contained within
+/// may be. Consult the documentation for the action in question for
+/// implementation details.
+///
+/// \note Sequence actions are particularly useful for transition-style
+/// animations.
 ///
 /// \see nom::WaitForDurationAction, nom::GroupAction
 ///

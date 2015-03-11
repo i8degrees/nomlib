@@ -53,7 +53,7 @@ SequenceAction::SequenceAction( const action_list& actions,
     this->actions_.push_back(*itr);
   }
 
-  this->itr_pos_ = 0;
+  this->num_completed_ = 0;
   this->num_actions_ = this->actions_.size();
   this->actions_iterator_ = this->actions_.begin();
 }
@@ -78,11 +78,11 @@ std::unique_ptr<IActionObject> SequenceAction::clone() const
     }
 
     cloned_obj->actions_iterator_ = cloned_obj->actions_.begin();
-    cloned_obj->itr_pos_ = 0;
+    cloned_obj->num_completed_ = 0;
     cloned_obj->num_actions_ = cloned_obj->actions_.size();
 
-    // NOTE: This is done to prevent the cloned action from being erased from a
-    // running queue at the same time as the original instance!
+    // IMPORTANT: This is done to prevent the cloned action from being erased
+    // from a running queue at the same time as the original instance!
     cloned_obj->set_name( "__" + this->name() + "_cloned" );
 
     return std::move(cloned_obj);
@@ -125,18 +125,18 @@ SequenceAction::update(real32 delta_time, uint32 direction)
   if( action_status == FrameState::COMPLETED ) {
 
     ++itr;
-    ++this->itr_pos_;
+    ++this->num_completed_;
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     action_id, "has finished at",
                     Timer::to_seconds( nom::ticks() ),
-                    "[", this->itr_pos_, "/", this->num_actions_, "]",
+                    "[", this->num_completed_, "/", this->num_actions_, "]",
                     "[action_id]:", this->name() );
 
     this->status_ = FrameState::PLAYING;
   }
 
-  if( this->itr_pos_ == this->num_actions_ ) {
+  if( this->num_completed_ == this->num_actions_ ) {
     this->status_ = FrameState::COMPLETED;
     return this->status_;
   }
@@ -176,7 +176,7 @@ void SequenceAction::resume(real32 delta_time)
 
 void SequenceAction::rewind(real32 delta_time)
 {
-  this->itr_pos_ = 0;
+  this->num_completed_ = 0;
   this->actions_iterator_ = this->actions_.begin();
   this->status_ = FrameState::PLAYING;
 

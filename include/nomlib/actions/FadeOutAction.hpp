@@ -39,37 +39,32 @@ namespace nom {
 // Forward declarations
 class Sprite;
 
-/// \brief [TODO: Description]
+/// \brief Fade a sprite out to zero opacity
 class FadeOutAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.
     friend class ActionTest;
 
-    static const char* DEBUG_CLASS_NAME;
-
     typedef FadeOutAction self_type;
     typedef IActionObject derived_type;
 
-    /// \brief Default constructor.
-    FadeOutAction(const std::shared_ptr<Sprite>& action, real32 duration);
+    /// \brief Fade a sprite out to zero opacity.
+    ///
+    /// \param drawable A valid nom::Sprite instance.
+    /// \param seconds The duration of the animation.
+    FadeOutAction(const std::shared_ptr<Sprite>& drawable, real32 seconds);
 
-    /// \brief Destructor.
     virtual ~FadeOutAction();
 
     virtual std::unique_ptr<IActionObject> clone() const override;
 
-    // FIXME: Take a closer look at how to do the proper math required for this
-    // instead of using the workaround in here!
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
 
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
 
     virtual void pause(real32 delta_time) override;
 
-    /// \brief Resume logic for the animation object.
-    ///
-    /// \remarks Reserved for future implementation.
     virtual void resume(real32 delta_time) override;
 
     virtual void rewind(real32 delta_time) override;
@@ -77,23 +72,20 @@ class FadeOutAction: public virtual IActionObject
     virtual void release() override;
 
   private:
-    /// \brief Execute the alpha blending logic for the animation.
+    static const char* DEBUG_CLASS_NAME;
+
     IActionObject::FrameState update(real32 t, uint8 b, int16 c, real32 d);
 
     void first_frame(real32 delta_time);
     void last_frame(real32 delta_time);
 
-    /// \brief The recorded alpha blending value from frame displacement.
-    uint8 alpha_;
-
-    /// \brief The initial alpha blending value.
+    const int16 total_displacement_;
     uint8 initial_alpha_;
 
-    /// \brief The total change in the alpha blending value.
-    const int16 total_displacement_;
-
-    /// \brief The texture to animate.
     std::shared_ptr<Sprite> drawable_;
+
+    /// \brief The current alpha value of the drawable.
+    uint8 alpha_;
 };
 
 } // namespace nom

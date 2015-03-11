@@ -37,53 +37,56 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief Proxy action for running actions together (in parallel)
+/// \brief Run a collection of actions together (in parallel)
 class GroupAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.
     friend class ActionTest;
 
-    static const char* DEBUG_CLASS_NAME;
-
     typedef GroupAction self_type;
     typedef IActionObject derived_type;
 
-    /// \brief Default constructor.
+    /// \brief Run a collection of actions together (in parallel).
+    ///
+    /// \param actions The group of actions to execute; NULL actions are
+    /// valid.
+    /// \param name An optional unique identifier to assign to this instance.
     GroupAction(  const action_list& actions,
                   const std::string& name = "" );
 
-    /// \brief Destructor.
     virtual ~GroupAction();
 
     virtual std::unique_ptr<IActionObject> clone() const override;
 
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
+
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
 
     virtual void pause(real32 delta_time) override;
 
-    /// \brief Resume logic for the animation object.
-    ///
-    /// \remarks Reserved for future implementation.
     virtual void resume(real32 delta_time) override;
 
     virtual void rewind(real32 delta_time) override;
 
     virtual void release() override;
 
-    /// \brief Set the action's speed modifier.
+    /// \brief Set the speed factor of the child actions.
     ///
-    /// \remarks The speed modifier of every action is modified.
+    /// \remarks This has no effect on the parent (this object).
     virtual void set_speed(real32 speed) override;
 
-    /// \brief Set the action's timing mode.
+    /// \brief Set the timing mode of the child actions.
     ///
-    /// \remarks The timing mode of every action is modified.
-    virtual
-    void set_timing_curve(const IActionObject::timing_curve_func& mode) override;
+    /// \remarks This has no effect on the parent (this object).
+    ///
+    /// \see nom::IActionObject::timing_curve_func
+    virtual void
+    set_timing_curve(const IActionObject::timing_curve_func& mode) override;
 
   private:
+    static const char* DEBUG_CLASS_NAME;
+
     struct group_action
     {
       IActionObject::FrameState status;
@@ -101,13 +104,13 @@ class GroupAction: public virtual IActionObject
 
     const container_type& actions() const;
 
-    /// \brief The enqueued actions.
+    /// \brief The child actions.
     container_type actions_;
 
-    /// \brief Iteration counter.
-    nom::size_type itr_pos_;
+    /// \brief The total number of completed actions.
+    nom::size_type num_completed_;
 
-    /// \brief Total number of actions at the time of construction.
+    /// \brief The total number of actions at the time of construction.
     nom::size_type num_actions_;
 };
 
@@ -116,21 +119,16 @@ class GroupAction: public virtual IActionObject
 #endif // include guard defined
 
 /// \class nom::GroupAction
-/// \ingroup graphics
+/// \ingroup actions
 ///
-/// \brief This is perhaps the most fundamental animation type. This action
-/// acts on behalf of other action(s) as a proxy, grouping actions together so
-/// that every action within its container is updated **simultaneously** --
-/// in parallel, until each action has completed.
+/// \brief This action acts on behalf of other actions as a proxy, executing
+/// actions together until every action has completed. If an action in the group
+/// has a duration less than the group's total duration, the action completes,
+/// then idles until the group completes the remaining actions.
 ///
-/// \remarks This action is not reversible, but the action(s) contained
-/// within may be. Consult the documentation for each action type in question.
-///
-/// \note Although the grouping of objects came first as a necessity of
-/// convenience, the particular fashion in which things are updated is
-/// paramount for the proper time step increments to occur. In short, actions
-/// that are "related" to one another **must** share a common time step, else
-/// they fall out of sync by one or more frames.
+/// \remarks This action is not reversible, but the actions contained within
+/// may be. Consult the documentation for the action in question for
+/// implementation details.
 ///
 /// \see nom::SequenceAction
 ///

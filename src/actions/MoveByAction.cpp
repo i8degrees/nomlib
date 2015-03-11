@@ -40,15 +40,15 @@ namespace nom {
 // Static initializations
 const char* MoveByAction::DEBUG_CLASS_NAME = "[MoveByAction]:";
 
-MoveByAction::MoveByAction( const std::shared_ptr<Sprite>& action,
-                            const Point2i& delta, real32 duration ) :
+MoveByAction::MoveByAction( const std::shared_ptr<Sprite>& drawable,
+                            const Point2i& delta, real32 seconds ) :
   total_displacement_(delta)
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_ACTION, NOM_LOG_PRIORITY_VERBOSE);
 
-  this->set_duration(duration);
+  this->set_duration(seconds);
   this->elapsed_frames_ = 0.0f;
-  this->drawable_ = action;
+  this->drawable_ = drawable;
 }
 
 MoveByAction::~MoveByAction()
@@ -79,8 +79,7 @@ MoveByAction::update(real32 t, const Point2i& b, const Point2i& c, real32 d)
   // The computed displacement of the frame
   Point2f displacement(Point2f::zero);
 
-  // Clamp delta values that go beyond the time duration bounds; this adds
-  // stability to variable time steps
+  // Clamp delta values that go beyond maximal duration
   if( delta_time > (duration / this->speed() ) ) {
     delta_time = duration / this->speed();
   }

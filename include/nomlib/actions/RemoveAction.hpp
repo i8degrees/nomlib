@@ -36,34 +36,32 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief Free an action's allocated resources (i.e.: textures)
+/// \brief Free the external resources held by an action
 class RemoveAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.
     friend class ActionTest;
 
-    static const char* DEBUG_CLASS_NAME;
-
     typedef RemoveAction self_type;
     typedef IActionObject derived_type;
 
-    /// \brief Default constructor.
+    /// \brief Free the external resources held by an action.
+    ///
+    /// \param action The action to free its resources from; NULL actions are
+    /// valid.
     RemoveAction(const std::shared_ptr<IActionObject>& action);
 
-    /// \brief Destructor.
     virtual ~RemoveAction();
 
     virtual std::unique_ptr<IActionObject> clone() const override;
 
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
+
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
 
     virtual void pause(real32 delta_time) override;
 
-    /// \brief Resume logic for the animation object.
-    ///
-    /// \remarks Reserved for future implementation.
     virtual void resume(real32 delta_time) override;
 
     virtual void rewind(real32 delta_time) override;
@@ -71,10 +69,19 @@ class RemoveAction: public virtual IActionObject
     virtual void release() override;
 
   private:
-    /// \brief The action proxy object.
-    std::shared_ptr<IActionObject> object_;
+    static const char* DEBUG_CLASS_NAME;
+
+    /// \brief The child action.
+    std::shared_ptr<IActionObject> action_;
 };
 
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::RemoveAction
+/// \ingroup actions
+///
+/// \brief This interface exists as a placeholder until the engine's
+/// infrastructure is further developed.
+///

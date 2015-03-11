@@ -40,81 +40,54 @@ namespace nom {
 // Forward declarations
 class Sprite;
 
-/// \brief [TODO: Description]
+/// \brief Move a sprite relative to its current position
 class MoveByAction: public virtual IActionObject
 {
   public:
-    /// \brief Allow access into our private parts for obtaining the current
-    /// frame.
+    /// \brief Allow access into our private parts for unit testing.
     friend class ActionTest;
-
-    static const char* DEBUG_CLASS_NAME;
 
     typedef MoveByAction self_type;
     typedef IActionObject derived_type;
 
-    /// \brief Construct an action that moves an object relative to its starting
-    /// position.
+    /// \brief Move a sprite relative to its current position.
     ///
-    /// \param delta The total change (displacement) over time to translate to.
-    ///
-    /// \param duration The time, in fractional seconds, to play the animation
-    /// to completion.
-    ///
-    /// \remarks Negative values are valid deltas for displacement.
-    MoveByAction( const std::shared_ptr<Sprite>& action,
-                  const Point2i& delta, real32 duration );
+    /// \param drawable A valid nom::Sprite instance.
+    /// \param delta The total change in position to apply to the drawable over
+    /// time.
+    /// \param seconds The duration of the animation.
+    MoveByAction( const std::shared_ptr<Sprite>& drawable, const Point2i& delta,
+                  real32 seconds );
 
-    /// \brief Destructor.
     virtual ~MoveByAction();
 
-    /// \brief Create a deep copy of this instance.
-    ///
-    /// \remarks This is necessary anytime you wish to re-use an object that
-    /// has been used once before, due to its state not being reset after the
-    /// first use.
     virtual std::unique_ptr<IActionObject> clone() const override;
 
-    /// \brief Displace the current animation frame.
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
 
-    /// \brief Displace the previous animation frame (inverse of ::next_frame).
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
 
-    /// \brief Frame-freeze the animation.
     virtual void pause(real32 delta_time) override;
 
-    /// \brief Resume logic for the animation object.
-    ///
-    /// \remarks Reserved for future implementation.
     virtual void resume(real32 delta_time) override;
 
-    /// \brief Reset state back to the first frame of the animation.
-    ///
-    /// \remarks This is used by nom::AnimationPlayer.
     virtual void rewind(real32 delta_time) override;
 
-    /// \brief Free resources associated with this object.
     virtual void release() override;
 
   private:
-    /// \brief Execute the displacement logic for the animation.
+    static const char* DEBUG_CLASS_NAME;
+
     IActionObject::FrameState
     update(real32 t, const Point2i& b, const Point2i& c, real32 d);
 
-    /// \brief Initialize timer and initial position.
     void first_frame(real32 delta_time);
 
-    /// \brief Clean up logic.
     void last_frame(real32 delta_time);
 
-    /// \brief The total change (displacement) over time (duration).
     const Point2i total_displacement_;
-
-    /// \brief The starting position of the animation for displacement from.
     Point2i initial_position_;
 
-    /// \brief The texture to animate.
     std::shared_ptr<Sprite> drawable_;
 };
 

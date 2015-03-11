@@ -36,159 +36,207 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief Base interface class for action objects.
+/// \brief Pure virtual base class interface for actions.
 class IActionObject
 {
   public:
     typedef IActionObject self_type;
 
-    typedef std::function<void()> action_callback;
-    typedef std::function<real32(real32, real32, real32, real32)> timing_curve_func;
-
-    /// \brief The animation object's state.
+    /// \brief A function pointer to a timing mode.
     ///
-    /// \remarks This is used internally by nom::AnimationPlayer to determine
-    /// the course of action to take in the proceeding object cycle.
+    /// \see nom::Linear, nom::Quad, nom::Cubic, nom::Quart, nom::Quint,
+    /// nom::Back, nom::Bounce, nom::Circ, nom::Elastic, nom::Expo, nom::Sine
+    typedef
+    std::function<real32(real32, real32, real32, real32)>  timing_curve_func;
+
+    /// \brief The update status of the action.
     enum FrameState
     {
-      /// Stop iterating the animation object.
-      COMPLETED,
-      /// Continue iterating the animation object.
-      PLAYING,
-      /// Frozen in place
-      PAUSED,
+      COMPLETED,  /// The action has finished its update loop.
+      PLAYING,    /// The action is still updating; duration remains.
     };
 
-    /// \brief Default constructor.
-    ///
-    /// \remarks The default timing mode function is initialized to
-    /// nom::Linear::ease_in_out.
     IActionObject();
-
     virtual ~IActionObject();
 
+    /// \brief Get the unique identifier of the action.
     const std::string& name() const;
 
-    /// \brief Get the action's duration.
+    /// \brief Get the duration of the action.
     ///
-    /// \returns The duration in seconds.
+    /// \returns The duration in fractional seconds.
     real32 duration() const;
 
-    /// \brief Get the action's speed modifier.
+    /// \brief Get the speed modifier of the action.
+    ///
+    /// \returns The speed factor of the action.
+    ///
+    /// \remarks A value of zero (0.0f) stops the action from progressing
+    /// forward in time.
     real32 speed() const;
 
-    /// \brief Get the action's timing mode.
+    /// \brief Get the timing mode function used by the action.
+    ///
+    /// \returns The function pointer to the timing curve function.
+    ///
+    /// \see nom::IActionObject::timing_curve_func
     const IActionObject::timing_curve_func& timing_curve() const;
 
-    /// \brief Create a deep copy of this instance.
-    ///
-    /// \remarks This is necessary anytime you wish to re-use an object that
-    /// has been used once before, due to its state not being reset after the
-    /// first use.
-    virtual std::unique_ptr<self_type> clone() const = 0;
-
-    /// \brief Play the animation logic starting from the first frame to the
-    /// last frame.
-    ///
-    /// \note This is internally called by nom::AnimationPlayer.
-    virtual IActionObject::FrameState next_frame(real32 delta_time) = 0;
-
-    /// \brief Play the animation logic in reverse -- starting from the last
-    /// frame to the first frame.
-    ///
-    /// \note This is internally called by nom::AnimationReversed on each
-    /// animation update cycle.
-    virtual IActionObject::FrameState prev_frame(real32 delta_time) = 0;
-
-    /// \brief Reserved for future implementation.
-    ///
-    /// \note This is called internally called by nom::AnimationPlayer when
-    /// the player state is set to nom::AnimationPlayer::PAUSED.
-    virtual void pause(real32 delta_time) = 0;
-
-    /// \brief Reserved for future implementation.
-    virtual void resume(real32 delta_time) = 0;
-
-    /// \brief Reset the object's state back to its first frame.
-    ///
-    /// \note This is called internally called by nom::AnimationPlayer when the
-    /// player state is set to nom::AnimationPlayer::STOPPED.
-    virtual void rewind(real32 delta_time) = 0;
-
-    /// \brief Free the object's resources.
-    ///
-    /// \note This is called internally by nom::AnimationPlayer when the
-    /// animation object is finished updating (signified by FrameState::COMPLETED).
-    virtual void release() = 0;
-
+    /// \brief Set the unique identifier of the action.
     void set_name(const std::string& action_id);
 
-    /// \brief Set the animation object's speed modifier.
+    /// \brief Set the speed factor of the action.
     virtual void set_speed(real32 speed);
 
-    /// \brief Set the animation object's timing mode.
+    /// \brief Set the timing mode of the action.
+    ///
+    /// \see nom::IActionObject::timing_curve_func
     virtual void set_timing_curve(const IActionObject::timing_curve_func& mode);
 
+    /// \brief Create a deep copy instance of the action.
+    ///
+    /// \remarks A cloned instance is created using the action's attributes
+    /// at the time of construction. External resources of the action --
+    /// i.e.: nom::Sprite -- are not modified, and you may need to reset the
+    /// state appropriately if the action has been ran previously.
+    virtual std::unique_ptr<IActionObject> clone() const = 0;
+
+    /// \brief Play the action forward in time by one time step.
+    ///
+    /// \param delta_time Reserved for application-defined implementations.
+    ///
+    /// \note <b>This method should not be called externally!</b>
+    ///
+    /// \see nom::DispatchQueue
+    virtual IActionObject::FrameState next_frame(real32 delta_time) = 0;
+
+    /// \brief Play the action backwards in time by one time step.
+    ///
+    /// \param delta_time Reserved for application-defined implementations.
+    ///
+    /// \note <b>This method should not be called externally!</b>
+    ///
+    /// \remarks Not all actions are reversible -- see the action's
+    /// documentation for its implementation details.
+    ///
+    /// \see nom::ReversedAction
+    virtual IActionObject::FrameState prev_frame(real32 delta_time) = 0;
+
+    /// \brief Freeze the action's internal state.
+    ///
+    /// \param delta_time Reserved for application-defined implementations.
+    ///
+    /// \note <b>This method should not be called externally!</b>
+    ///
+    /// \remarks This method is called on every update iteration when the
+    /// player state of nom::ActionPlayer has been set to the pause state.
+    ///
+    /// \see nom::DispatchQueue
+    virtual void pause(real32 delta_time) = 0;
+
+    /// \brief Resume the internal state of the action.
+    ///
+    /// \param delta_time Reserved for application-defined implementations.
+    ///
+    /// \note <b>This method should not be called externally!</b>
+    ///
+    /// \remarks This method is called on every update iteration when the
+    /// default player state of nom::ActionPlayer is set.
+    ///
+    /// \see nom::DispatchQueue
+    virtual void resume(real32 delta_time) = 0;
+
+    /// \brief Reset the internal state of the action back to its initial
+    /// starting values.
+    ///
+    /// \param delta_time Reserved for application-defined implementations.
+    ///
+    /// \note <b>This method should not be called externally!</b>
+    ///
+    /// \see nom::RepeatForAction, nom::RepeatForeverAction
+    virtual void rewind(real32 delta_time) = 0;
+
+    /// \brief Free externally referenced resources held by the action.
+    ///
+    /// \note <b>This method should not be called externally!</b>
+    ///
+    /// \see nom::RemoveAction
+    virtual void release() = 0;
+
   protected:
+    /// \brief Get the current state of the action.
+    ///
+    /// \see nom::IActionObject::FrameState
     IActionObject::FrameState status() const;
 
-    /// \brief Set the action's play time.
+    /// \brief Set the duration of the action.
+    ///
+    /// \param seconds The duration in seconds.
     void set_duration(real32 seconds);
 
-    /// \brief The animation object's frame state.
-    IActionObject::FrameState status_ =
-      IActionObject::FrameState::PLAYING;
-
-    /// \brief The recorded number of frames incremented.
-    ///
-    /// \remarks This is used for debugging diagnostics.
+    FrameState status_ = FrameState::PLAYING;
     real32 elapsed_frames_ = 0.0f;
-
-    /// \brief The number of seconds to play the action for.
     real32 duration_ = 0.0f;
 
     /// \brief Internal time clock (milliseconds resolution).
     ///
-    /// \remarks This provides a stable, fixed duration; frames will be skipped
-    /// if performance suffers, but otherwise will not affected by variable
-    /// frame rates (i.e.: a duration of one second should always be a minimum
-    /// of one second, less and except frames that are missed).
-    ///
-    /// \note Fixed time step.
+    /// \remarks Each action is responsible for keeping track of its clock --
+    /// this provides a stable, fixed duration that yields to reliable results
+    /// across any frame rate -- at the cost of potentially skipping frames
+    /// when performance suffers.
     Timer timer_;
 
   private:
     std::string name_;
-
-    /// \brief A speed factor that modifies how fast an animation object runs.
-    ///
-    /// \remarks The speed factor adjusts how fast an animation's object runs.
-    /// Setting the speed factor to zero (0.0f) will effectively pause the
-    /// animation object by preventing the current frame counter from advancing.
     real32 speed_ = 1.0f;
-
-    timing_curve_func timing_curve_;
+    timing_curve_func timing_curve_ = nullptr;
 };
 
+/// \brief A collection of actions.
+///
+/// \relates nom::IActionObject
 typedef std::vector<std::shared_ptr<IActionObject>> action_list;
 
-/// \brief Convenience non-member constructor function for creating new
-/// animation objects.
+/// \brief Constructor function for creating an action.
+///
+/// \param args The arguments to pass to the constructed object.
+///
+/// \relates nom::IActionObject
 template<typename ObjectType, typename... ObjectArgs>
 std::shared_ptr<ObjectType> create_action(ObjectArgs&&... args)
 {
-  // IMPORTaNT: We risk object slicing if we use std::make_shared here! The
+  // IMPORTANT: We risk object slicing if we use std::make_shared here! The
   // problem occurs when the end-user tries to return the created action
   // pointer by value.
   return( std::shared_ptr<ObjectType>(
           new ObjectType( std::forward<ObjectArgs>(args) ... ) ) );
 }
 
+/// \brief Constructor function for creating an action that uses a collection
+/// of actions.
+///
+/// \param actions The collection of actions to pass to the constructed object.
+///
+/// \param name An optional unique identifier to pass to the constructed
+/// object.
+///
+/// \remarks The collection can be constructed in-place with a
+/// [std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list)
+/// object.
+///
+/// \note If you are building with Visual Studio 2013 on the Windows platform,
+/// you will want to ensure that you have Update 2 or better applied before
+/// using this function call with a std::initializer_list object. See also:
+/// [stackoverflow.com: std::shared_ptr in an std::initializer_list appears to be getting destroyed prematurely](http://stackoverflow.com/questions/22924358/stdshared-ptr-in-an-stdinitializer-list-appears-to-be-getting-destroyed-prem/22924473#22924473)
+///
+/// \see nom::GroupAction, nom::SequenceAction
+///
+/// \relates nom::IActionObject
 template<typename ObjectType>
 std::shared_ptr<ObjectType>
 create_action(const action_list& actions, const std::string& name = "")
 {
-  // IMPORTaNT: We risk object slicing if we use std::make_shared here! The
+  // IMPORTANT: We risk object slicing if we use std::make_shared here! The
   // problem occurs when the end-user tries to return the created action
   // pointer by value.
   return( std::shared_ptr<ObjectType>( new ObjectType(actions, name) ) );
@@ -198,7 +246,17 @@ create_action(const action_list& actions, const std::string& name = "")
 
 #endif // include guard defined
 
-/// \internal
-/// \see [SKAction](https://developer.apple.com/library/prerelease/ios/documentation/SpriteKit/Reference/SKAction_Ref/index.html)
-/// \see [SpriteKit Programming Guide](https://developer.apple.com/library/prerelease/ios/documentation/GraphicsAnimation/Conceptual/SpriteKit_PG/Introduction/Introduction.html)
-/// \endinternal
+/// \class nom::IActionObject
+/// \ingroup actions
+///
+/// **TODO:** This documentation section is a *STUB*!
+///
+/// ## Creating Custom Actions
+///
+/// A simple, bare-bones example:
+/// \snippet src/actions/WaitForDurationAction.cpp creating_custom_actions
+///
+/// # References (Conceptual)
+/// \see [SpriteKit: SKAction Class Reference](https://developer.apple.com/library/prerelease/ios/documentation/SpriteKit/Reference/SKAction_Ref/index.html)
+/// \see [SpriteKit: Creating Actions That Run Other Actions](https://developer.apple.com/library/ios/documentation/GraphicsAnimation/Conceptual/SpriteKit_PG/AddingActionstoSprites/AddingActionstoSprites.html)
+///

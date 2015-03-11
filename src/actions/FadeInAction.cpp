@@ -40,19 +40,19 @@ namespace nom {
 // Static initializations
 const char* FadeInAction::DEBUG_CLASS_NAME = "[FadeInAction]:";
 
-FadeInAction::FadeInAction( const std::shared_ptr<Sprite>& action,
-                            real32 duration ) :
+FadeInAction::FadeInAction( const std::shared_ptr<Sprite>& drawable,
+                            real32 seconds ) :
   total_displacement_(255)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  this->set_duration(duration);
+  this->set_duration(seconds);
 
   this->elapsed_frames_ = 0.0f;
   this->alpha_ = 0;
   this->initial_alpha_ = 0;
-  this->drawable_ = action;
+  this->drawable_ = drawable;
 }
 
 FadeInAction::~FadeInAction()
@@ -84,8 +84,7 @@ FadeInAction::update(real32 t, uint8 b, int16 c, real32 d)
   // The computed alpha blending value of the frame
   real32 displacement = 0.0f;
 
-  // Clamp delta values that go beyond the time duration bounds; this adds
-  // stability to variable time steps
+  // Clamp delta values that go beyond maximal duration
   if( delta_time > (duration / this->speed() ) ) {
     delta_time = duration / this->speed();
   }

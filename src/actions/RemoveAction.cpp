@@ -40,7 +40,7 @@ RemoveAction::RemoveAction(const std::shared_ptr<IActionObject>& action)
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  this->object_ = action;
+  this->action_ = action;
 }
 
 RemoveAction::~RemoveAction()
@@ -54,12 +54,12 @@ std::unique_ptr<IActionObject> RemoveAction::clone() const
   auto cloned_obj = nom::make_unique<self_type>( self_type(*this) );
   if( cloned_obj != nullptr ) {
 
-    if( this->object_ != nullptr ) {
-      cloned_obj->object_ = this->object_->clone();
+    if( this->action_ != nullptr ) {
+      cloned_obj->action_ = this->action_->clone();
     }
 
-    // NOTE: This is done to prevent the cloned action from being erased from a
-    // running queue at the same time as the original instance!
+    // IMPORTANT: This is done to prevent the cloned action from being erased
+    // from a running queue at the same time as the original instance!
     cloned_obj->set_name( "__" + this->name() + "_cloned" );
 
     return std::move(cloned_obj);
@@ -70,9 +70,9 @@ std::unique_ptr<IActionObject> RemoveAction::clone() const
 
 IActionObject::FrameState RemoveAction::next_frame(real32 delta_time)
 {
-  if( this->object_ != nullptr ) {
+  if( this->action_ != nullptr ) {
 
-    std::string action_id = this->object_->name();
+    std::string action_id = this->action_->name();
     if( action_id == "" ) {
       action_id = "action";
     }
@@ -82,17 +82,15 @@ IActionObject::FrameState RemoveAction::next_frame(real32 delta_time)
                     "[action_id]:", this->name() );
 
     this->release();
-    this->status_ = FrameState::COMPLETED;
-    return this->status_;
   }
 
-  // No proxy action to remove
   this->status_ = FrameState::COMPLETED;
   return this->status_;
 }
 
 IActionObject::FrameState RemoveAction::prev_frame(real32 delta_time)
 {
+  // NOTE: This action is not reversible
   return this->next_frame(delta_time);
 }
 
@@ -113,11 +111,11 @@ void RemoveAction::rewind(real32 delta_time)
 
 void RemoveAction::release()
 {
-  if( this->object_ != nullptr ) {
-    this->object_->release();
+  if( this->action_ != nullptr ) {
+    this->action_->release();
   }
 
-  this->object_.reset();
+  this->action_.reset();
 }
 
 } // namespace nom

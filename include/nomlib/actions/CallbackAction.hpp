@@ -36,40 +36,39 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \brief [TODO: Description]
+/// \brief Execute a function over a time period.
 class CallbackAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.
     friend class ActionTest;
 
-    static const char* DEBUG_CLASS_NAME;
-
     typedef CallbackAction self_type;
     typedef IActionObject derived_type;
-    typedef std::function<void()> callback_type;
 
-    /// \brief Default constructor.
+    typedef std::function<void()> callback_func;
+
+    /// \brief Execute a function instantaneously.
     ///
-    /// \remarks Constructs an animation object that executes a function
-    /// pointer.
-    CallbackAction(const callback_type& func);
+    /// \param action A function pointer; NULL actions are valid.
+    CallbackAction(const callback_func& action);
 
-    CallbackAction(real32 duration, const callback_type& func);
+    /// \brief Execute a function over a time period.
+    ///
+    /// \param seconds The duration of the animation.
+    /// \param action A function pointer; NULL actions are valid.
+    CallbackAction(real32 seconds, const callback_func& action);
 
-    /// \brief Destructor.
     virtual ~CallbackAction();
 
     virtual std::unique_ptr<IActionObject> clone() const override;
 
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
+
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
 
     virtual void pause(real32 delta_time) override;
 
-    /// \brief Resume logic for the animation object.
-    ///
-    /// \remarks Reserved for future implementation.
     virtual void resume(real32 delta_time) override;
 
     virtual void rewind(real32 delta_time) override;
@@ -77,8 +76,10 @@ class CallbackAction: public virtual IActionObject
     virtual void release() override;
 
   private:
-    /// \brief The stored function.
-    callback_type delegate_;
+    static const char* DEBUG_CLASS_NAME;
+
+    /// \brief The stored function pointer.
+    callback_func action_;
 };
 
 } // namespace nom

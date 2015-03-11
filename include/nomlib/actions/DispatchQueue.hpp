@@ -39,20 +39,15 @@ namespace nom {
 
 // Forward declarations
 class IActionObject;
-typedef std::function<void()> action_callback;
-
-// Forward declarations
 struct DispatchEnqueue;
 
-/// \brief Internal queue that drives each action's update logic
-///
-/// \see nom::ActionPlayer
+typedef std::function<void()> action_callback_func;
+
+/// \brief The internal processing queue for actions
 class DispatchQueue
 {
   public:
     typedef DispatchQueue self_type;
-
-    static const char* DEBUG_CLASS_NAME;
 
     /// \brief The status of the queue.
     enum State
@@ -62,42 +57,37 @@ class DispatchQueue
     };
 
     DispatchQueue();
+
     ~DispatchQueue();
 
     /// \brief Get the total number of enqueued actions.
     nom::size_type num_actions() const;
 
-    /// \brief Append an action to the list of animations to be executed.
+    /// \brief Append an action to the list of actions to be executed.
     ///
-    /// \param action             A deep copy of the action is made.
-    /// \param on_completion_func The function to call back when the action is
-    /// completed (removed from the animation player's queue).
-    ///
-    /// \remarks Chaining callbacks together to run another animation action
-    /// in any arrangement should be safe, and is part of the design of this
-    /// interface.
-    ///
-    /// \see DispatchQueue::update
+    /// \param action The action to run; NULL actions are valid.
+    /// \param completion_func An optional function to call when the action is
+    /// completed -- passing NULL here will ignore this parameter.
     bool enqueue_action(  const std::shared_ptr<IActionObject>& action,
-                          const action_callback& completion_func );
+                          const action_callback_func& completion_func );
 
-    /// \brief Execute the animation loop.
+    /// \brief Run the enqueued actions' update loop.
     ///
     /// \param player_state One of the ActionPlayer::State enumeration values.
     ///
-    /// \returns Boolean TRUE if the engine is playing enqueued animations, or
-    /// boolean FALSE if the engine's animation queue is empty.
+    /// \param delta_time Reserved for application-defined implementations.
     ///
-    /// \remarks This method must be implemented in the appropriate game loop.
-    /// Applicable places include the main game loop or within a game state
-    /// loop.
+    /// \returns DispatchQueue::State::RUNNING if one or more actions are
+    /// executing, or DispatchQueue::State::IDLING when no actions are running,
+    /// such as when the queue is empty.
+    ///
+    /// \see nom::ActionPlayer::update.
     DispatchQueue::State
     update(uint32 player_state, real32 delta_time);
 
   private:
-    /// \remarks A std::vector container seems most appropriate here because
-    /// of the contiguous memory access, for lack of any other special needs,
-    /// i.e.: fast front/back iteration or fast expansion time.
+    static const char* DEBUG_CLASS_NAME;
+
     typedef std::vector<std::unique_ptr<DispatchEnqueue>> container_type;
     typedef container_type::iterator iterator_type;
 
@@ -114,10 +104,9 @@ class DispatchQueue
 #endif // include guard defined
 
 /// \class nom::DispatchQueue
-/// \ingroup graphics
+/// \ingroup actions
+///
+/// \brief This interface was inspired by Apple's [Grand Central Dispatch (GCD)](https://developer.apple.com/library/ios/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html).
 ///
 /// \see nom::ActionPlayer
 ///
-/// \internal
-/// \see [Grand Central Dispatch (GCD) Reference](https://developer.apple.com/library/ios/documentation/Performance/Reference/GCD_libdispatch_Ref/index.html)
-/// \endinternal

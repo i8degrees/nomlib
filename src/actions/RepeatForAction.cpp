@@ -50,7 +50,7 @@ RepeatForAction::RepeatForAction( const std::shared_ptr<IActionObject>& action,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   this->set_name(name);
-  this->object_ = action;
+  this->action_ = action;
   this->elapsed_repeats_ = 0;
 }
 
@@ -69,12 +69,12 @@ std::unique_ptr<IActionObject> RepeatForAction::clone() const
     cloned_obj->elapsed_repeats_ = 0;
     cloned_obj->num_repeats_ = this->num_repeats_;
 
-    if( this->object_ != nullptr ) {
-      cloned_obj->object_ = this->object_->clone();
+    if( this->action_ != nullptr ) {
+      cloned_obj->action_ = this->action_->clone();
     }
 
-    // NOTE: This is done to prevent the cloned action from being erased from a
-    // running queue at the same time as the original instance!
+    // IMPORTANT: This is done to prevent the cloned action from being erased
+    // from a running queue at the same time as the original instance!
     cloned_obj->set_name( "__" + this->name() + "_cloned" );
 
     return std::move(cloned_obj);
@@ -87,10 +87,10 @@ IActionObject::FrameState
 RepeatForAction::update(real32 delta_time, uint32 direction)
 {
   IActionObject::FrameState obj_status;
-  IActionObject* action = this->object_.get();
+  IActionObject* action = this->action_.get();
 
   if( action == nullptr ) {
-    // No proxy object to repeat for!
+    // No action to repeat!
     this->status_ = FrameState::COMPLETED;
     return this->status_;
   }
@@ -137,46 +137,43 @@ IActionObject::FrameState RepeatForAction::prev_frame(real32 delta_time)
 
 void RepeatForAction::pause(real32 delta_time)
 {
-  if( this->object_ != nullptr ) {
-    this->object_->pause(delta_time);
+  if( this->action_ != nullptr ) {
+    this->action_->pause(delta_time);
   }
 }
 
 void RepeatForAction::resume(real32 delta_time)
 {
-  if( this->object_ != nullptr ) {
-    this->object_->resume(delta_time);
+  if( this->action_ != nullptr ) {
+    this->action_->resume(delta_time);
   }
 }
 
 void RepeatForAction::rewind(real32 delta_time)
 {
-  // Reset our object back to its initial value
   this->elapsed_repeats_ = 0;
   this->status_ = FrameState::PLAYING;
 
-  if( this->object_ != nullptr ) {
-    // Reset proxy object back to initial value
-    this->object_->rewind(delta_time);
+  if( this->action_ != nullptr ) {
+    this->action_->rewind(delta_time);
   }
 }
 
 void RepeatForAction::release()
 {
-  if( this->object_ != nullptr ) {
-    this->object_->release();
+  if( this->action_ != nullptr ) {
+    this->action_->release();
   }
 
-  this->object_.reset();
+  this->action_.reset();
 }
 
 void RepeatForAction::set_speed(real32 speed)
 {
   IActionObject::set_speed(speed);
 
-  // Propagate the speed modifier to our proxy / child object
-  if( this->object_ != nullptr ) {
-    this->object_->set_speed(speed);
+  if( this->action_ != nullptr ) {
+    this->action_->set_speed(speed);
   }
 }
 
@@ -185,9 +182,8 @@ RepeatForAction::set_timing_curve(const IActionObject::timing_curve_func& mode)
 {
   IActionObject::set_timing_curve(mode);
 
-  // Propagate the timing mode modifier to our proxy / child object
-  if( this->object_ != nullptr ) {
-    this->object_->set_timing_curve(mode);
+  if( this->action_ != nullptr ) {
+    this->action_->set_timing_curve(mode);
   }
 }
 

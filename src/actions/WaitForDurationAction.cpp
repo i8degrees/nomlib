@@ -36,6 +36,8 @@ namespace nom {
 const char* WaitForDurationAction::DEBUG_CLASS_NAME =
   "[WaitForDurationAction]:";
 
+//! [creating_custom_actions]
+
 WaitForDurationAction::WaitForDurationAction(real32 seconds)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
@@ -61,15 +63,13 @@ IActionObject::FrameState WaitForDurationAction::next_frame(real32 delta_time)
   delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
 
   if( this->timer_.started() == false ) {
-    // Start frame timing
     this->timer_.start();
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "BEGIN at", delta_time );
   }
 
-  // Clamp delta values that go beyond the time duration bounds; this adds
-  // stability to variable time steps
+  // Clamp delta values that go beyond maximal duration
   if( delta_time > (this->duration() / this->speed() ) ) {
     delta_time = this->duration() / this->speed();
   }
@@ -77,11 +77,8 @@ IActionObject::FrameState WaitForDurationAction::next_frame(real32 delta_time)
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
 
-  // Internal diagnostics
   ++this->elapsed_frames_;
 
-  // Continue waiting if we are inside our frame duration bounds; this adds
-  // stability to variable time steps
   if( delta_time < (this->duration() / this->speed() ) ) {
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
@@ -90,44 +87,42 @@ IActionObject::FrameState WaitForDurationAction::next_frame(real32 delta_time)
                     "[elapsed frames]:", this->elapsed_frames_ );
 
     this->status_ = FrameState::PLAYING;
-    return this->status_;
   } else {
     this->status_ = FrameState::COMPLETED;
-    return this->status_;
   }
+
+  return this->status_;
 }
 
 IActionObject::FrameState WaitForDurationAction::prev_frame(real32 delta_time)
 {
+  // NOTE: This action is not reversible
   return this->next_frame(delta_time);
 }
 
 void WaitForDurationAction::pause(real32 delta_time)
 {
-  // Stub
   this->timer_.pause();
 }
 
 void WaitForDurationAction::resume(real32 delta_time)
 {
-  // Stub
   this->timer_.unpause();
 }
 
 void WaitForDurationAction::rewind(real32 delta_time)
 {
-  // Reset frame cycle back to initial starting values
-  this->elapsed_frames_ = 0.0f;
-
   // Reset frame timing
+  this->elapsed_frames_ = 0.0f;
   this->timer_.stop();
-
   this->status_ = FrameState::PLAYING;
 }
 
 void WaitForDurationAction::release()
 {
-  // Stub
+  // Nothing to free!
 }
+
+//! [creating_custom_actions]
 
 } // namespace nom

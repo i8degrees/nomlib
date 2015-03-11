@@ -39,37 +39,38 @@ namespace nom {
 // Forward declarations
 class SpriteBatch;
 
-/// \brief [TODO: Description]
+/// \brief Animate a sprite using a sprite sheet
 class SpriteBatchAction: public virtual IActionObject
 {
   public:
-    /// \brief Allow access into our private parts for obtaining the current
-    /// frame.
+    /// \brief Allow access into our private parts for unit testing.
     friend class ActionTest;
-
-    static const char* DEBUG_CLASS_NAME;
 
     typedef SpriteBatchAction self_type;
     typedef IActionObject derived_type;
 
-    /// \param frame_interval The amount of time (in fractional seconds) that
-    /// each texture is displayed.
-    SpriteBatchAction(  const std::shared_ptr<SpriteBatch>& action,
+    /// \brief Animate a sprite using a sprite sheet.
+    ///
+    /// \param drawable A valid nom::SpriteBatch instance with a pre-loaded
+    /// nom::SpriteSheet filled with the frames to iterate through.
+    ///
+    /// \param frame_interval_seconds The duration (in seconds) that each
+    /// texture is displayed.
+    ///
+    /// \see nom::SpriteBatch, nom::SpriteSheet
+    SpriteBatchAction(  const std::shared_ptr<SpriteBatch>& drawable,
                         real32 frame_interval_seconds );
 
-    /// \brief Destructor.
     virtual ~SpriteBatchAction();
 
     virtual std::unique_ptr<IActionObject> clone() const override;
 
     virtual IActionObject::FrameState next_frame(real32 delta_time) override;
+
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
 
     virtual void pause(real32 delta_time) override;
 
-    /// \brief Resume logic for the animation object.
-    ///
-    /// \remarks Reserved for future implementation.
     virtual void resume(real32 delta_time) override;
 
     virtual void rewind(real32 delta_time) override;
@@ -77,25 +78,25 @@ class SpriteBatchAction: public virtual IActionObject
     virtual void release() override;
 
   private:
+    static const char* DEBUG_CLASS_NAME;
+
     IActionObject::FrameState
     update(real32 t, real32 b, real32 c, real32 d);
 
     void first_frame(real32 delta_time);
     void last_frame(real32 delta_time);
 
-    /// \brief The starting frame of the animation to iterate from.
+    /// \brief The initial sprite sheet frame to animate from.
     uint32 initial_frame_;
 
-    /// \brief The number of textures to animate.
+    /// \brief The total number of sprite sheet frames to animate.
     real32 total_displacement_;
 
-    /// \brief The batch of sprites to animate.
+    /// \brief The drawable sprite.
     std::shared_ptr<SpriteBatch> drawable_;
 
-    /// \brief The length of time to display a frame, in seconds.
+    /// \brief The delay (in seconds) before displaying the next texture.
     real32 frame_interval_;
-
-    /// \brief The last recorded time interval, in seconds.
     real32 last_delta_;
 };
 

@@ -57,7 +57,7 @@ GroupAction::GroupAction( const action_list& actions,
     this->actions_.push_back( std::move(entry) );
   }
 
-  this->itr_pos_ = 0;
+  this->num_completed_ = 0;
   this->num_actions_ = this->actions_.size();
 }
 
@@ -86,11 +86,11 @@ std::unique_ptr<IActionObject> GroupAction::clone() const
       cloned_obj->actions_.push_back( std::move(cloned_entry) );
     }
 
-    cloned_obj->itr_pos_ = 0;
+    cloned_obj->num_completed_ = 0;
     cloned_obj->num_actions_ = cloned_obj->actions_.size();
 
-    // NOTE: This is done to prevent the cloned action from being erased from a
-    // running queue at the same time as the original instance!
+    // IMPORTANT: This is done to prevent the cloned action from being erased
+    // from a running queue at the same time as the original instance!
     cloned_obj->set_name( "__" + this->name() + "_cloned" );
 
     return std::move(cloned_obj);
@@ -134,21 +134,21 @@ GroupAction::update(real32 delta_time, uint32 direction)
       if( (*itr).status != FrameState::COMPLETED ) {
 
         (*itr).status = FrameState::COMPLETED;
-        ++this->itr_pos_;
+        ++this->num_completed_;
 
         NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                         action_id, "has finished at",
                         Timer::to_seconds( nom::ticks() ),
-                        "[", this->itr_pos_, "/", this->num_actions_, "]",
+                        "[", this->num_completed_, "/", this->num_actions_, "]",
                         "[action_id]:", this->name() );
       }
 
     }
 
-    if( this->itr_pos_ == this->num_actions_ ) {
+    if( this->num_completed_ == this->num_actions_ ) {
       NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                       "Finished at:", Timer::to_seconds( nom::ticks() ),
-                      "[itr_pos]:", itr_pos_ );
+                      "[num_completed]:", this->num_completed_ );
       this->status_ = FrameState::COMPLETED;
       return this->status_;
     } else {
@@ -194,7 +194,7 @@ void GroupAction::resume(real32 delta_time)
 
 void GroupAction::rewind(real32 delta_time)
 {
-  this->itr_pos_ = 0;
+  this->num_completed_ = 0;
   this->status_ = FrameState::PLAYING;
 
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {

@@ -74,12 +74,14 @@ void IActionObject::set_name(const std::string& action_id)
 
 void IActionObject::set_speed(real32 speed)
 {
+  // Default implementation
   this->speed_ = speed;
 }
 
 void
 IActionObject::set_timing_curve(const IActionObject::timing_curve_func& mode)
 {
+  // Default implementation
   this->timing_curve_ = mode;
 }
 

@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/math_helpers.hpp"
 
 // Forward declarations
+#include "nomlib/graphics/Texture.hpp"
 #include "nomlib/graphics/sprite/Sprite.hpp"
 
 namespace nom {
@@ -153,10 +154,10 @@ AnimateTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
 
     NOM_ASSERT( curr_frame != this->frames_.end() );
     if( curr_frame != this->frames_.end() ) {
-      auto sprite = curr_frame->get();
+      auto tex = curr_frame;
 
-      if( this->drawable_ != nullptr && sprite != nullptr ) {
-        this->drawable_->set_texture( *sprite->texture() );
+      if( this->drawable_ != nullptr && (*tex)->valid() == true ) {
+        this->drawable_->set_texture( (*tex) );
       }
     }
 
@@ -230,9 +231,9 @@ void AnimateTexturesAction::rewind(real32 delta_time)
   if( this->drawable_ != nullptr &&
       curr_frame != this->frames_.end() )
   {
-    auto sprite = curr_frame->get();
-    if( this->drawable_ != nullptr && sprite != nullptr ) {
-      this->drawable_->set_texture( *sprite->texture() );
+    auto tex = curr_frame;
+    if( this->drawable_ != nullptr && (*tex)->valid() == true ) {
+      this->drawable_->set_texture( (*tex) );
     }
   }
 }
@@ -266,11 +267,11 @@ void AnimateTexturesAction::first_frame(real32 delta_time)
     NOM_ASSERT( curr_frame != this->frames_.end() );
     if( curr_frame != this->frames_.end() ) {
 
-      auto sprite = curr_frame->get();
+      auto tex = curr_frame;
       // NOTE: Set the texture of the sprite immediately, so we do not have a
       // momentary gap in rendering
-      if( this->drawable_ != nullptr && sprite != nullptr ) {
-        this->drawable_->set_texture( *sprite->texture() );
+      if( this->drawable_ != nullptr && (*tex)->valid() == true ) {
+        this->drawable_->set_texture( (*tex) );
       }
     }
 

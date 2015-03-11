@@ -37,9 +37,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // Forward declarations
+class Texture;
 class Sprite;
 
-typedef std::vector<std::shared_ptr<Sprite>> texture_frames;
+typedef std::vector<std::shared_ptr<Texture>> texture_frames;
 
 /// \brief Animate changes to a sprite's texture
 class AnimateTexturesAction: public virtual IActionObject

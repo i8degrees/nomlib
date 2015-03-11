@@ -38,6 +38,13 @@ enum FrameStateDirection
   PREV_FRAME
 };
 
+// Internal representation of a stored action.
+struct group_action
+{
+  IActionObject::FrameState status;
+  std::shared_ptr<IActionObject> action;
+};
+
 // Static initializations
 const char* GroupAction::DEBUG_CLASS_NAME = "[GroupAction]:";
 

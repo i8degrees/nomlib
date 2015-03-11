@@ -145,6 +145,16 @@ typedef unsigned long ulong;
 // Definitions for minimum && maximum integral types
 //
 // http://en.cppreference.com/w/cpp/types/numeric_limits
+
+// TODO: Append NOM to the rest of these to avoid future name collisions with
+// macros!
+
+const int16 NOM_INT16_MIN = std::numeric_limits<int16>::lowest();
+const int16 NOM_INT16_MAX = std::numeric_limits<int16>::max();
+
+const uint16 NOM_UINT16_MIN = std::numeric_limits<uint16>::lowest();
+const uint16 NOM_UINT16_MAX = std::numeric_limits<uint16>::max();
+
 const int int_min = std::numeric_limits<int>::lowest();
 const int int_max = std::numeric_limits<int>::max();
 const uint uint_min = std::numeric_limits<uint>::lowest();
@@ -155,20 +165,14 @@ const int char_max = std::numeric_limits<char>::max();
 const uint uchar_min = std::numeric_limits<uchar>::lowest();
 const uint uchar_max = std::numeric_limits<uchar>::max();
 
-// Always an unsigned type
-const size_type size_type_min = std::numeric_limits<size_type>::lowest();
-const size_type size_type_max = std::numeric_limits<size_type>::max();
+const size_type NOM_SIZE_TYPE_MIN = std::numeric_limits<size_type>::lowest();
+const size_type NOM_SIZE_TYPE_MAX = std::numeric_limits<size_type>::max();
 
-const real32 real32_min = std::numeric_limits<real32>::lowest();
-const real32 real32_max = std::numeric_limits<real32>::max();
+const real32 NOM_REAL32_MIN = std::numeric_limits<real32>::lowest();
+const real32 NOM_REAL32_MAX = std::numeric_limits<real32>::max();
 
-const real64 real64_min = std::numeric_limits<real64>::lowest();
-const real64 real64_max = std::numeric_limits<real64>::max();
-
-const nom::size_type SIZE_TYPE_MIN =
-  std::numeric_limits<nom::size_type>::lowest();
-const nom::size_type SIZE_TYPE_MAX =
-  std::numeric_limits<nom::size_type>::max();
+const real64 NOM_REAL64_MIN = std::numeric_limits<real64>::lowest();
+const real64 NOM_REAL64_MAX = std::numeric_limits<real64>::max();
 
 /// \brief An integer indicating that there is no match, an error or NULL.
 static const int npos = -1;

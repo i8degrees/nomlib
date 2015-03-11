@@ -477,14 +477,10 @@ ActionTest::init_animate_textures_test( const std::vector<const char*>&
               << this->resources[0].path() << "\n";
     }
 
-    auto sprite = std::make_shared<Sprite>();
-    ASSERT_TRUE(sprite != nullptr);
-    EXPECT_EQ(true, sprite->set_texture(tex) );
-
-    nom::set_alignment( sprite.get(), Point2i::zero, this->WINDOW_DIMS,
+    nom::set_alignment( tex.get(), Point2i::zero, this->WINDOW_DIMS,
                         Anchor::MiddleCenter );
 
-    anim_frames.emplace_back(sprite);
+    anim_frames.emplace_back(tex);
   } // end for tex filenames loop
 }
 

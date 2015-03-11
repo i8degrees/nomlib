@@ -37,6 +37,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Forward declarations
+struct group_action;
+
 /// \brief Run a collection of actions together (in parallel)
 class GroupAction: public virtual IActionObject
 {
@@ -86,12 +89,6 @@ class GroupAction: public virtual IActionObject
 
   private:
     static const char* DEBUG_CLASS_NAME;
-
-    struct group_action
-    {
-      IActionObject::FrameState status;
-      std::shared_ptr<IActionObject> action;
-    };
 
     /// \remarks A std::vector container seems most appropriate here because
     /// of the contiguous memory access, for lack of any other special needs,

@@ -42,6 +42,9 @@ struct DispatchEnqueue
   // The enqueued action.
   std::shared_ptr<IActionObject> action;
 
+  /// \brief The action's last known state in reference to the player's state.
+  uint32 last_action_state = ActionPlayer::State::RUNNING;
+
   // An optional function pointer that is called when the action is completed.
   action_callback_func on_completion_callback;
 };
@@ -104,22 +107,36 @@ DispatchQueue::update(uint32 player_state, real32 delta_time)
     return State::IDLING;
   }
 
+  uint32 &last_action_state = (*itr)->last_action_state;
+
   IActionObject::FrameState action_status =
     IActionObject::FrameState::COMPLETED;
 
   action_status = action->next_frame(delta_time);
 
-  // Handle the current animation with respect to the player's state
+  // Handle the current action state with respect to the global player state
   if( action_status != IActionObject::FrameState::COMPLETED ) {
 
-    if( player_state == ActionPlayer::State::PAUSED ) {
+    if( player_state == ActionPlayer::State::PAUSED &&
+        last_action_state != ActionPlayer::State::PAUSED )
+    {
       action->pause(delta_time);
-    } else if( player_state == ActionPlayer::State::STOPPED ) {
+      last_action_state =
+        ActionPlayer::State::PAUSED;
+    } else if(  player_state == ActionPlayer::State::STOPPED &&
+                last_action_state != ActionPlayer::State::STOPPED )
+    {
       action->rewind(delta_time);
-    } else {
+      last_action_state =
+        ActionPlayer::State::STOPPED;
+    } else if(  player_state == ActionPlayer::State::RUNNING &&
+                last_action_state != ActionPlayer::State::RUNNING )
+    {
       action->resume(delta_time);
-    } // ActionPlayer::State::RUNNING
-  } // end if status != COMPLETED
+      last_action_state =
+        ActionPlayer::State::RUNNING;
+    } // end if status != COMPLETED
+  }
 
   // EOF -- handle internal clean up
   if( action_status == IActionObject::FrameState::COMPLETED ) {

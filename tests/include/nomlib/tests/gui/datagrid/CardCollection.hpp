@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_GUI_TESTS_DATAGRID_CARD_COLLECTION_HPP
 
 #include <string>
+#include <vector>
 
 #include "nomlib/config.hpp"
 #include "nomlib/tests/gui/datagrid/Card.hpp"

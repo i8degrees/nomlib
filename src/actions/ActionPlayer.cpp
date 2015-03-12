@@ -143,11 +143,10 @@ run_action( const std::shared_ptr<IActionObject>& action,
     action->set_name(action_id);
   }
 
-  std::unique_ptr<DispatchQueue> enqueue;
-  enqueue.reset( new DispatchQueue() );
-
-  if( enqueue != nullptr ) {
-    return this->run_action(action, std::move(enqueue), nullptr);
+  auto dispatch_queue =
+    nom::create_dispatch_queue<DispatchQueue>();
+  if( dispatch_queue != nullptr ) {
+    return this->run_action(action, std::move(dispatch_queue), nullptr);
   }
 
   NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Failed to enqueue action: ",
@@ -162,11 +161,10 @@ run_action( const std::shared_ptr<IActionObject>& action,
 {
   std::string action_id;
 
-  std::unique_ptr<DispatchQueue> enqueue;
-  enqueue.reset( new DispatchQueue() );
-
-  if( enqueue != nullptr ) {
-    return this->run_action(action, std::move(enqueue), completion_func);
+  auto dispatch_queue =
+    nom::create_dispatch_queue<DispatchQueue>();
+  if( dispatch_queue != nullptr ) {
+    return this->run_action(action, std::move(dispatch_queue), completion_func);
   }
 
   if( action != nullptr ) {
@@ -177,53 +175,6 @@ run_action( const std::shared_ptr<IActionObject>& action,
                 "could not allocate memory for the dispatch queue!\n",
                 "[action_id]:", action_id );
   return false;
-}
-
-bool ActionPlayer::
-run_action( const std::shared_ptr<IActionObject>& action,
-            std::unique_ptr<DispatchQueue> dispatch_queue,
-            const action_callback_func& completion_func )
-{
-  std::string action_id;
-
-  if( action == nullptr ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not enqueue the action -- action was NULL." );
-    return false;
-  }
-
-  if( dispatch_queue == nullptr ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not enqueue the action -- dispatch queue was NULL." );
-    return false;
-  }
-
-  action_id = action->name();
-
-  if( action_id.length() > 0 ) {
-    // Use the existing action name
-  } else {
-    uint64 id = nom::generate_action_id();
-    NOM_ASSERT(id <= std::numeric_limits<uint64>::max() );
-    action_id = std::to_string(id);
-    action->set_name(action_id);
-  }
-
-  if( dispatch_queue->enqueue_action(action, completion_func) == false ) {
-    return false;
-  }
-
-  // NOTE: This logging category is disabled by default
-  if( this->action_running(action_id) == true) {
-
-    NOM_LOG_WARN( NOM_LOG_CATEGORY_ACTION_PLAYER,
-                  "Another action with the same name exists -- overwriting",
-                  "with", action_id );
-  } // end if action was running
-
-  this->actions_[action_id] = std::move(dispatch_queue);
-
-  return true;
 }
 
 bool ActionPlayer::update(real32 delta_time)
@@ -276,6 +227,55 @@ bool ActionPlayer::update(real32 delta_time)
   }
 
   // Not finished with update iterations; one or more actions are still running
+  return true;
+}
+
+// Private scope
+
+bool ActionPlayer::
+run_action( const std::shared_ptr<IActionObject>& action,
+            std::unique_ptr<DispatchQueue> dispatch_queue,
+            const action_callback_func& completion_func )
+{
+  std::string action_id;
+
+  if( action == nullptr ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not enqueue the action -- action was NULL." );
+    return false;
+  }
+
+  if( dispatch_queue == nullptr ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not enqueue the action -- dispatch queue was NULL." );
+    return false;
+  }
+
+  action_id = action->name();
+
+  if( action_id.length() > 0 ) {
+    // Use the existing action name
+  } else {
+    uint64 id = nom::generate_action_id();
+    NOM_ASSERT(id <= std::numeric_limits<uint64>::max() );
+    action_id = std::to_string(id);
+    action->set_name(action_id);
+  }
+
+  if( dispatch_queue->enqueue_action(action, completion_func) == false ) {
+    return false;
+  }
+
+  // NOTE: This logging category is disabled by default
+  if( this->action_running(action_id) == true) {
+
+    NOM_LOG_WARN( NOM_LOG_CATEGORY_ACTION_PLAYER,
+                  "Another action with the same name exists -- overwriting",
+                  "with", action_id );
+  } // end if action was running
+
+  this->actions_[action_id] = std::move(dispatch_queue);
+
   return true;
 }
 

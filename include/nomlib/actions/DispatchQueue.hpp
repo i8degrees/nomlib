@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 
 #include "nomlib/config.hpp"
+#include "nomlib/core/helpers.hpp"
 
 namespace nom {
 
@@ -98,6 +99,20 @@ class DispatchQueue
     /// \brief The total number of actions enqueued.
     nom::size_type num_actions_ = 0;
 };
+
+/// \brief Constructor function for creating a nom::DispatchQueue.
+///
+/// \param args The arguments to pass to the constructed object.
+///
+/// \relates nom::DispatchQueue
+template<typename ObjectType, typename... ObjectArgs>
+std::unique_ptr<ObjectType> create_dispatch_queue(ObjectArgs&&... args)
+{
+  auto dispatch_queue =
+    nom::make_unique<ObjectType>( std::forward<ObjectArgs>(args) ... );
+
+  return std::move(dispatch_queue);
+}
 
 } // namespace nom
 

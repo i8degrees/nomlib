@@ -166,24 +166,6 @@ class ActionPlayer
     bool run_action(  const std::shared_ptr<IActionObject>& action,
                       const action_callback_func& completion_func );
 
-    /// \brief Enqueue an action that runs on a specific dispatch queue.
-    ///
-    /// \param action The action to run; NULL actions are valid.
-    ///
-    /// \param completion_func The function to call when the action is
-    /// completed -- passing NULL here is valid.
-    ///
-    /// \param dispatch_queue A valid nom::DispatchQueue to run the action on.
-    ///
-    /// \remarks This can be used to constrain or maximize the number of
-    /// actions per dispatch queue. The default allocation scheme is a one to
-    /// one ratio; one dispatch queue per action.
-    ///
-    /// \see nom::DispatchQueue
-    bool run_action(  const std::shared_ptr<IActionObject>& action,
-                      std::unique_ptr<DispatchQueue> dispatch_queue,
-                      const action_callback_func& completion_func );
-
     /// \brief Run the enqueued actions' update loop.
     ///
     /// \param delta_time Reserved for application-defined implementations.
@@ -197,6 +179,32 @@ class ActionPlayer
     bool update(real32 delta_time);
 
   private:
+    /// \brief Enqueue an action that runs on a specific dispatch queue.
+    ///
+    /// \param action The action to run; NULL actions are valid.
+    ///
+    /// \param completion_func The function to call when the action is
+    /// completed -- passing NULL here is valid.
+    ///
+    /// \param dispatch_queue A valid nom::DispatchQueue to run the action on.
+    ///
+    /// \remarks It is **not** safe to enqueue more than one action per
+    /// nom::DispatchQueue instance. When two or more actions share the same
+    /// instance, it runs the risk of causing memory access violations in the
+    /// form of double-freeing their dispatch queues upon completion (I believe
+    /// this actually happens in ActionPlayer::update, but alas!). Using a
+    /// reference counting mechanism, such as shared_ptr, resolves the issue,
+    /// but if only that was the end of it ...
+    ///   The update loop in nom::DispatchQueue iterates through actions
+    /// sequentially, which breaks actions that are intended to run in parallel,
+    /// i.e.: nom::GroupAction -- but even that problem is trivial to solve.
+    /// The ~25..50% performance penalty observed made me decide that it was
+    /// not worth the trouble, at least until I can find a use case for this
+    /// issue.
+    bool run_action(  const std::shared_ptr<IActionObject>& action,
+                      std::unique_ptr<DispatchQueue> dispatch_queue,
+                      const action_callback_func& completion_func );
+
     static const char* DEBUG_CLASS_NAME;
 
     typedef

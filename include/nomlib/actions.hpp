@@ -49,6 +49,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/actions/SequenceAction.hpp>
 #include <nomlib/actions/GroupAction.hpp>
 #include <nomlib/actions/ActionPlayer.hpp>
-#include <nomlib/actions/DispatchQueue.hpp>
 
 #endif // include guard defined

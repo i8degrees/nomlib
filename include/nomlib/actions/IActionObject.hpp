@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_ACTIONS_IACTION_OBJECT_HPP
 
 #include <functional>
+#include <vector>
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/Timer.hpp"

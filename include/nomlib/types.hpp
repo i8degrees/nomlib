@@ -29,14 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_STDINT_TYPES_HPP
 #define NOMLIB_STDINT_TYPES_HPP
 
-#include <string> // std::size_t
-#include <vector>
-#include <limits> // min && max types
+#include <cstddef>  // std::size_t
+#include <limits>   // min && max types
 
 #include "nomlib/platforms.hpp"
-
-// RTTI for library objects.
-#include "nomlib/core/ObjectTypeInfo.hpp"
 
 /*
   TODO: This should be replaced by an actual CMake script -- think:
@@ -236,8 +232,6 @@ enum Anchor: uint32
   BottomCenter = Y_BOTTOM | X_CENTER,   // Hex: 0x42, Dec: 66
   BottomRight = Y_BOTTOM | X_RIGHT      // Hex: 0x44, Dec: 68
 };
-
-typedef std::vector<std::string> StringList;
 
 } // namespace nom
 

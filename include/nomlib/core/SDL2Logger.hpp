@@ -29,13 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_CORE_SDL2_LOGGER_HPP
 #define NOMLIB_CORE_SDL2_LOGGER_HPP
 
-#include <iostream>
 #include <sstream>
 #include <string>
 
 #include <SDL.h>
-
-#include "nomlib/core/clock.hpp"
 
 /// \brief The predefined logging categories.
 ///
@@ -254,7 +251,7 @@ class SDL2Logger
       nom::write_debug_output( this->output_stream(), f );
     }
 
-    void write(uint8 f)
+    void write(uint8_t f)
     {
       nom::write_debug_output(this->output_stream(), (int)f);
     }

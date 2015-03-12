@@ -84,6 +84,8 @@ struct AppFlags
   int pt_size = nom::DEFAULT_FONT_SIZE;
 };
 
+typedef std::vector<std::string> StringList;
+
 /// \brief Text rendering with nom::Font
 class FontRenderingApp: public nom::SDLApp
 {

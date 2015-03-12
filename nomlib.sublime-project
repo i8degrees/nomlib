@@ -6,7 +6,11 @@
 
       // Prevent sublime project files from being included in find
       // (and replace) results
-      "file_exclude_patterns": [ "*.sublime-*" ],
+      "file_exclude_patterns":  [
+                                  "*.sublime-*", "version.hpp", "config.hpp",
+                                  "revision.cpp"
+                                ],
+
 
       // 'xcode' is my CMake build directory for Xcode generated project files
       // and must be excluded due to a bug that often crashes Sublime Text 2

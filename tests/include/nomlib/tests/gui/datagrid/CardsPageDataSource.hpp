@@ -41,6 +41,8 @@ using namespace Rocket::Core;
 
 namespace nom {
 
+typedef std::vector<std::string> StringList;
+
 /// \brief Mock model of the CardsMenu player's hand selection widget in TTcards
 ///
 /// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Controls/DataGrid

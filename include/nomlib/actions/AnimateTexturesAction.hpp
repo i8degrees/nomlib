@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_ACTIONS_ANIMATE_TEXTURES_ACTION_HPP
 
 #include <memory>
+#include <vector>
 
 #include "nomlib/config.hpp"
 #include "nomlib/actions/IActionObject.hpp"

@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/EventHandler.hpp"
 
+#include "nomlib/core/clock.hpp"
+
 // Private headers (third-party)
 #include <SDL.h>
 
@@ -1453,7 +1455,7 @@ void EventHandler::process_event( const SDL_Event* ev )
     {
       Event event;
       event.type = ev->drop.type;
-      event.timestamp = ticks();
+      event.timestamp = nom::ticks();
       event.drop.file_path = ev->drop.file;
       this->push_event( event );
       break;

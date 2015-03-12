@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/actions/SequenceAction.hpp"
 
+#include "nomlib/core/clock.hpp"
 #include "nomlib/core/helpers.hpp"
 
 namespace nom {

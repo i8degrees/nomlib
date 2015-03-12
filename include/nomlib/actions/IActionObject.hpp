@@ -57,6 +57,7 @@ class IActionObject
     };
 
     IActionObject();
+
     virtual ~IActionObject();
 
     /// \brief Get the unique identifier of the action.
@@ -128,9 +129,6 @@ class IActionObject
     ///
     /// \note <b>This method should not be called externally!</b>
     ///
-    /// \remarks This method is called on every update iteration when the
-    /// player state of nom::ActionPlayer has been set to the pause state.
-    ///
     /// \see nom::DispatchQueue
     virtual void pause(real32 delta_time) = 0;
 
@@ -139,9 +137,6 @@ class IActionObject
     /// \param delta_time Reserved for application-defined implementations.
     ///
     /// \note <b>This method should not be called externally!</b>
-    ///
-    /// \remarks This method is called on every update iteration when the
-    /// default player state of nom::ActionPlayer is set.
     ///
     /// \see nom::DispatchQueue
     virtual void resume(real32 delta_time) = 0;

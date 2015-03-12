@@ -383,7 +383,7 @@ nom::int32 main ( nom::int32 argc, char* argv[] )
       opts.text = text_arg.getValue();
     }
 
-    nom::StringList args = font_args.getValue();
+    StringList args = font_args.getValue();
 
     int pt_size_arg = 0;
     nom::size_type next_to_last = args.size() - 1;

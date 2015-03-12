@@ -142,28 +142,39 @@ typedef void* void_ptr;
 
 typedef unsigned long ulong;
 
-// Definitions for minimum && maximum integral types
+// Numerical min, max values for commonly used data types
 //
 // http://en.cppreference.com/w/cpp/types/numeric_limits
 
-// TODO: Append NOM to the rest of these to avoid future name collisions with
-// macros!
+const char NOM_CHAR_MIN = std::numeric_limits<char>::lowest();
+const char NOM_CHAR_MAX = std::numeric_limits<char>::max();
+const uchar NOM_UCHAR_MIN = std::numeric_limits<uchar>::lowest();
+const uchar NOM_UCHAR_MAX = std::numeric_limits<uchar>::max();
+
+const int8 NOM_INT8_MIN = std::numeric_limits<int8>::lowest();
+const int8 NOM_INT8_MAX = std::numeric_limits<int8>::max();
+const uint8 NOM_UINT8_MIN = std::numeric_limits<uint8>::lowest();
+const uint8 NOM_UINT8_MAX = std::numeric_limits<uint8>::max();
 
 const int16 NOM_INT16_MIN = std::numeric_limits<int16>::lowest();
 const int16 NOM_INT16_MAX = std::numeric_limits<int16>::max();
-
 const uint16 NOM_UINT16_MIN = std::numeric_limits<uint16>::lowest();
 const uint16 NOM_UINT16_MAX = std::numeric_limits<uint16>::max();
 
-const int int_min = std::numeric_limits<int>::lowest();
-const int int_max = std::numeric_limits<int>::max();
-const uint uint_min = std::numeric_limits<uint>::lowest();
-const uint uint_max = std::numeric_limits<uint>::max();
+const int NOM_INT_MIN = std::numeric_limits<int>::lowest();
+const int NOM_INT_MAX = std::numeric_limits<int>::max();
+const uint NOM_UINT_MIN = std::numeric_limits<uint>::lowest();
+const uint NOM_UINT_MAX = std::numeric_limits<uint>::max();
 
-const int char_min = std::numeric_limits<char>::lowest();
-const int char_max = std::numeric_limits<char>::max();
-const uint uchar_min = std::numeric_limits<uchar>::lowest();
-const uint uchar_max = std::numeric_limits<uchar>::max();
+const int32 NOM_INT32_MIN = std::numeric_limits<int32>::lowest();
+const int32 NOM_INT32_MAX = std::numeric_limits<int32>::max();
+const uint32 NOM_UINT32_MIN = std::numeric_limits<uint32>::lowest();
+const uint32 NOM_UINT32_MAX = std::numeric_limits<uint32>::max();
+
+const int64 NOM_INT64_MIN = std::numeric_limits<int64>::lowest();
+const int64 NOM_INT64_MAX = std::numeric_limits<int64>::max();
+const uint64 NOM_UINT64_MIN = std::numeric_limits<uint64>::lowest();
+const uint64 NOM_UINT64_MAX = std::numeric_limits<uint64>::max();
 
 const size_type NOM_SIZE_TYPE_MIN = std::numeric_limits<size_type>::lowest();
 const size_type NOM_SIZE_TYPE_MAX = std::numeric_limits<size_type>::max();

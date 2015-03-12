@@ -116,7 +116,7 @@ int BMFont::kerning(uint32 first_char, uint32 second_char, uint32 character_size
   // Possible FIXME: BMFontTest::KerningParserSanity fails here if we do
   // validity check
   // if( this->valid() == false ) {
-  //   return nom::int_min;
+  //   return nom::NOM_INT_MIN;
   // }
 
   if( this->use_kerning() == false ) {

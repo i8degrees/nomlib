@@ -141,7 +141,7 @@ int TrueTypeFont::kerning( uint32 first_char, uint32 second_char, uint32 charact
 
   if( this->valid() == false ) {
     // Invalid font
-    return nom::int_min;
+    return nom::NOM_INT_MIN;
   }
 
   // NOM_LOG_INFO( NOM, "sdl2_ttf kerning: ", TTF_GetFontKerning( this->font() ) );
@@ -151,7 +151,7 @@ int TrueTypeFont::kerning( uint32 first_char, uint32 second_char, uint32 charact
 
   kerning_offset = TTF_GetFontKerningSize(this->font(), first_char, second_char);
 
-  if( kerning_offset == nom::int_min ) {
+  if( kerning_offset == nom::NOM_INT_MIN ) {
     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
                   "Could not obtain kerning offset: ", TTF_GetError() );
 

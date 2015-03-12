@@ -75,7 +75,7 @@ struct VersionInfo
     /// \brief Convert a version string to major, minor and patch integers.
     ///
     /// \param ver_string A version string in the format of x.x.x, where x is a
-    /// number between INT_MIN and INT_MAX.
+    /// number between nom::NOM_INT_MIN and nom::NOM_INT_MAX.
     ///
     /// \returns Boolean TRUE upon a successful conversion, or boolean FALSE upon a
     /// unsuccessful conversion, such as if the version string format is invalid.

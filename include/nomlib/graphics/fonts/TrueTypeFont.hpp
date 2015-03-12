@@ -107,7 +107,7 @@ class TrueTypeFont: public IFont
 
     /// \brief Obtain the kerning pair offsets between two glyphs.
     ///
-    /// \returns A kerning pair offset value on success, or nom::int_min on
+    /// \returns A kerning pair offset value on success, or nom::NOM_INT_MIN on
     /// failure, such as if the font in use is invalid. If font kerning is
     /// disabled, a value of zero (0) is always returned.
     ///

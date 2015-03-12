@@ -302,7 +302,7 @@ Text::multiline_width(const std::string& text_buffer, nom::size_type pos) const
       this->font()->kerning(  previous_kerning_char, current_char,
                               this->text_size() );
 
-    if( kerning_offset != nom::int_min ) {
+    if( kerning_offset != nom::NOM_INT_MIN ) {
       text_width += kerning_offset;
     }
 
@@ -557,7 +557,7 @@ void Text::render_text(RenderTarget& target) const
     current_char = text_buffer[i];
     kerning_offset = this->font()->kerning( previous_char, current_char, this->text_size() );
 
-    if( kerning_offset != nom::int_min ) {
+    if( kerning_offset != nom::NOM_INT_MIN ) {
       pos.x += kerning_offset;
     }
 

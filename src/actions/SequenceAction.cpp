@@ -67,7 +67,7 @@ std::unique_ptr<IActionObject> SequenceAction::clone() const
   auto cloned_obj = nom::make_unique<self_type>( self_type(*this) );
   if( cloned_obj != nullptr ) {
 
-    cloned_obj->status_ = FrameState::PLAYING;
+    cloned_obj->set_status(FrameState::PLAYING);
 
     cloned_obj->actions_.clear();
     auto actions_end = this->actions_.end();
@@ -97,9 +97,9 @@ SequenceAction::update(real32 delta_time, uint32 direction)
 
   // Program flow is structured to never call back here after the actions are
   // finished -- this serves only as a reminder to the intended flow.
-  if( this->status_ == FrameState::COMPLETED ) {
+  if( this->status() == FrameState::COMPLETED ) {
     NOM_ASSERT_INVALID_PATH();
-    return this->status_;
+    return this->status();
   }
 
   auto &itr = this->actions_iterator_;
@@ -131,15 +131,15 @@ SequenceAction::update(real32 delta_time, uint32 direction)
                     "[", this->num_completed_, "/", this->num_actions_, "]",
                     "[action_id]:", this->name() );
 
-    this->status_ = FrameState::PLAYING;
+    this->set_status(FrameState::PLAYING);
   }
 
   if( this->num_completed_ == this->num_actions_ ) {
-    this->status_ = FrameState::COMPLETED;
-    return this->status_;
+    this->set_status(FrameState::COMPLETED);
+    return this->status();
   }
 
-  return this->status_;
+  return this->status();
 }
 
 IActionObject::FrameState SequenceAction::next_frame(real32 delta_time)
@@ -176,7 +176,7 @@ void SequenceAction::rewind(real32 delta_time)
 {
   this->num_completed_ = 0;
   this->actions_iterator_ = this->actions_.begin();
-  this->status_ = FrameState::PLAYING;
+  this->set_status(FrameState::PLAYING);
 
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 

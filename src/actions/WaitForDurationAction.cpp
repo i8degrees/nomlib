@@ -86,12 +86,12 @@ IActionObject::FrameState WaitForDurationAction::next_frame(real32 delta_time)
                     "frame_time:", frame_time,
                     "[elapsed frames]:", this->elapsed_frames_ );
 
-    this->status_ = FrameState::PLAYING;
+    this->set_status(FrameState::PLAYING);
   } else {
-    this->status_ = FrameState::COMPLETED;
+    this->set_status(FrameState::COMPLETED);
   }
 
-  return this->status_;
+  return this->status();
 }
 
 IActionObject::FrameState WaitForDurationAction::prev_frame(real32 delta_time)
@@ -115,7 +115,7 @@ void WaitForDurationAction::rewind(real32 delta_time)
   // Reset frame timing
   this->elapsed_frames_ = 0.0f;
   this->timer_.stop();
-  this->status_ = FrameState::PLAYING;
+  this->set_status(FrameState::PLAYING);
 }
 
 void WaitForDurationAction::release()

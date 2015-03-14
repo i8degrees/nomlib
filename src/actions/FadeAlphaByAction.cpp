@@ -117,13 +117,13 @@ FadeAlphaByAction::update(real32 t, real32 b, real32 c, real32 d)
   }
 
   if( delta_time < (duration / this->speed() ) ) {
-    this->status_ = FrameState::PLAYING;
+    this->set_status(FrameState::PLAYING);
   } else {
     this->last_frame(delta_time);
-    this->status_ = FrameState::COMPLETED;
+    this->set_status(FrameState::COMPLETED);
   }
 
-  return this->status_;
+  return this->status();
 }
 
 IActionObject::FrameState FadeAlphaByAction::next_frame(real32 delta_time)
@@ -161,7 +161,7 @@ void FadeAlphaByAction::rewind(real32 delta_time)
   this->elapsed_frames_ = 0.0f;
   this->alpha_ = 0;
   this->timer_.stop();
-  this->status_ = FrameState::PLAYING;
+  this->set_status(FrameState::PLAYING);
 
   if( this->drawable_ != nullptr ) {
     this->drawable_->set_alpha(this->initial_alpha_);

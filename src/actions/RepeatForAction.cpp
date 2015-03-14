@@ -63,7 +63,7 @@ std::unique_ptr<IActionObject> RepeatForAction::clone() const
   auto cloned_obj = nom::make_unique<self_type>( self_type(*this) );
   if( cloned_obj != nullptr ) {
 
-    cloned_obj->status_ = FrameState::PLAYING;
+    cloned_obj->set_status(FrameState::PLAYING);
     cloned_obj->elapsed_repeats_ = 0;
     cloned_obj->num_repeats_ = this->num_repeats_;
 
@@ -89,13 +89,13 @@ RepeatForAction::update(real32 delta_time, uint32 direction)
 
   if( action == nullptr ) {
     // No action to repeat!
-    this->status_ = FrameState::COMPLETED;
-    return this->status_;
+    this->set_status(FrameState::COMPLETED);
+    return this->status();
   }
 
   if( this->elapsed_repeats_ == this->num_repeats_ ) {
-    this->status_ = FrameState::COMPLETED;
-    return this->status_;
+    this->set_status(FrameState::COMPLETED);
+    return this->status();
   }
 
   if( direction == FrameStateDirection::NEXT_FRAME ) {
@@ -108,10 +108,10 @@ RepeatForAction::update(real32 delta_time, uint32 direction)
 
     ++this->elapsed_repeats_;
     if( this->elapsed_repeats_ < this->num_repeats_ ) {
-      this->status_ = FrameState::PLAYING;
+      this->set_status(FrameState::PLAYING);
       action->rewind(delta_time);
     } else {
-      this->status_ = FrameState::COMPLETED;
+      this->set_status(FrameState::COMPLETED);
       NOM_ASSERT(this->num_repeats_ == this->elapsed_repeats_);
     }
 
@@ -120,7 +120,7 @@ RepeatForAction::update(real32 delta_time, uint32 direction)
                     "[num_repeats]:", this->num_repeats_ );
   }
 
-  return this->status_;
+  return this->status();
 }
 
 IActionObject::FrameState RepeatForAction::next_frame(real32 delta_time)
@@ -150,7 +150,7 @@ void RepeatForAction::resume(real32 delta_time)
 void RepeatForAction::rewind(real32 delta_time)
 {
   this->elapsed_repeats_ = 0;
-  this->status_ = FrameState::PLAYING;
+  this->set_status(FrameState::PLAYING);
 
   if( this->action_ != nullptr ) {
     this->action_->rewind(delta_time);

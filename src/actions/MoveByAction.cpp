@@ -151,15 +151,13 @@ MoveByAction::update(real32 t, const Point2i& b, const Point2i& c, real32 d)
   // Continue playing the animation only when we are inside our frame duration
   // bounds; this adds stability to variable time steps
   if( delta_time < (duration / this->speed() ) ) {
-    this->status_ = FrameState::PLAYING;
-    return this->status_;
+    this->set_status(FrameState::PLAYING);
   } else {
-    // Diagnostics
     this->last_frame(delta_time);
-
-    this->status_ = FrameState::COMPLETED;
-    return this->status_;
+    this->set_status(FrameState::COMPLETED);
   }
+
+  return this->status();
 }
 
 IActionObject::FrameState MoveByAction::next_frame(real32 delta_time)
@@ -203,7 +201,7 @@ void MoveByAction::rewind(real32 delta_time)
   // Reset frame timing
   this->timer_.stop();
 
-  this->status_ = FrameState::PLAYING;
+  this->set_status(FrameState::PLAYING);
 
   // Reset starting displacement position
   if( this->drawable_ != nullptr && this->initial_position_ != Point2i::null ) {

@@ -171,15 +171,13 @@ AnimateTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
   }
 
   if( delta_time < (duration / this->speed() ) ) {
-
-    this->status_ = FrameState::PLAYING;
-    return this->status_;
+    this->set_status(FrameState::PLAYING);
   } else {
     this->last_frame(delta_time);
-
-    this->status_ = FrameState::COMPLETED;
-    return this->status_;
+    this->set_status(FrameState::COMPLETED);
   }
+
+  return this->status();
 }
 
 IActionObject::FrameState AnimateTexturesAction::next_frame(real32 delta_time)
@@ -224,7 +222,7 @@ void AnimateTexturesAction::rewind(real32 delta_time)
   // Reset frame timing
   this->timer_.stop();
 
-  this->status_ = FrameState::PLAYING;
+  this->set_status(FrameState::PLAYING);
 
   auto curr_frame = this->next_frame_;
   NOM_ASSERT( curr_frame != this->frames_.end() );

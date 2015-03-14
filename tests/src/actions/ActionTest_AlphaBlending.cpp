@@ -33,50 +33,43 @@ namespace nom {
 TEST_F(ActionTest, FadeInAction)
 {
   // Testing parameters
-  const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const real32 DURATION = 2.0f;
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
     NOM_ACTION_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+  const uint8 INITIAL_ALPHA = Color4i::ALPHA_TRANSPARENT;
+  const uint8 EXPECTED_ALPHA = Color4i::ALPHA_OPAQUE;
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto rect = std::make_shared<Rectangle>(
-    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
-  ASSERT_TRUE(rect != nullptr);
-
-  auto tex =
-    std::shared_ptr<Texture>( rect->texture() );
-  ASSERT_TRUE(tex != nullptr);
-
-  // Initialize texture with its starting alpha value for blending test
-  tex->set_alpha(Color4i::ALPHA_TRANSPARENT);
-  tex->set_blend_mode(SDL_BLENDMODE_BLEND);
-
   auto sprite =
     std::make_shared<Sprite>();
   ASSERT_TRUE(sprite != nullptr);
-  EXPECT_EQ(true, sprite->set_texture(tex) );
+  EXPECT_EQ(true, sprite->init_with_color(Color4i::Blue, TEX_SIZE) );
+  sprite->set_position(TEX_POS);
+  sprite->set_alpha(INITIAL_ALPHA);
+  sprite->set_color_blend_mode(BLEND_MODE_BLEND);
 
   auto fade_in =
     nom::create_action<FadeInAction>(sprite, DURATION);
   ASSERT_TRUE(fade_in != nullptr);
-
   fade_in->set_name("fade_in");
 
   auto action0 =
-    nom::create_action<GroupAction>( {fade_in}, "action0" );
+    nom::create_action<GroupAction>( {fade_in} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    this->expected_alpha_in_params( fade_in.get(), Color4i::ALPHA_OPAQUE,
+    this->expected_alpha_in_params( fade_in.get(), EXPECTED_ALPHA,
                                     sprite.get() );
 
     EXPECT_EQ(1, this->player.num_actions() );
@@ -88,12 +81,12 @@ TEST_F(ActionTest, FadeInAction)
   << "Failed to queue action0";
   EXPECT_EQ(1, this->player.num_actions() );
 
-  this->append_update_callback( [=](float) mutable {
+  this->append_update_callback( [=](real32) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
-  this->append_update_callback( [=](float) {
+  this->append_update_callback( [=](real32) {
     if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
       this->quit();
     }
@@ -105,51 +98,45 @@ TEST_F(ActionTest, FadeInAction)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(ActionTest, FadeInActionFromNonTransparentOpacity)
+TEST_F(ActionTest, FadeInActionFromNonTransparentAlpha)
 {
   // Testing parameters
-  const float DURATION = 1.0f;
-  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const real32 DURATION = 1.0f;
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
     NOM_ACTION_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+  const uint8 INITIAL_ALPHA = (Color4i::ALPHA_OPAQUE / 2);
+  const uint8 EXPECTED_ALPHA = Color4i::ALPHA_OPAQUE;
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto rect = std::make_shared<Rectangle>(
-    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
-  ASSERT_TRUE(rect != nullptr);
-
-  auto tex =
-    std::shared_ptr<Texture>( rect->texture() );
-  ASSERT_TRUE(tex != nullptr);
-
-  // Initialize texture with its starting alpha value for blending test
-  tex->set_alpha(Color4i::ALPHA_OPAQUE/2);
-  tex->set_blend_mode(SDL_BLENDMODE_BLEND);
-
   auto sprite =
     std::make_shared<Sprite>();
   ASSERT_TRUE(sprite != nullptr);
-  EXPECT_EQ(true, sprite->set_texture(tex) );
+  EXPECT_EQ(true, sprite->init_with_color(Color4i::Blue, TEX_SIZE) );
+  sprite->set_position(TEX_POS);
+  sprite->set_alpha(INITIAL_ALPHA);
+  sprite->set_color_blend_mode(BLEND_MODE_BLEND);
 
   auto fade_in =
     nom::create_action<FadeInAction>(sprite, DURATION);
   ASSERT_TRUE(fade_in != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {fade_in}, "action0" );
+    nom::create_action<GroupAction>( {fade_in} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    this->expected_alpha_in_params( fade_in.get(), Color4i::ALPHA_OPAQUE,
+    this->expected_alpha_in_params( fade_in.get(), EXPECTED_ALPHA,
                                     sprite.get() );
 
     EXPECT_EQ(1, this->player.num_actions() );
@@ -160,12 +147,12 @@ TEST_F(ActionTest, FadeInActionFromNonTransparentOpacity)
   << "Failed to queue action0";
   EXPECT_EQ(1, this->player.num_actions() );
 
-  this->append_update_callback( [=](float) mutable {
+  this->append_update_callback( [=](real32) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
-  this->append_update_callback( [=](float) {
+  this->append_update_callback( [=](real32) {
     if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
       this->quit();
     }
@@ -180,42 +167,36 @@ TEST_F(ActionTest, FadeInActionFromNonTransparentOpacity)
 TEST_F(ActionTest, FadeOutAction)
 {
   // Testing parameters
-  const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const real32 DURATION = 2.0f;
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
     NOM_ACTION_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+  const uint8 INITIAL_ALPHA = Color4i::ALPHA_OPAQUE;
+  const uint8 EXPECTED_ALPHA = Color4i::ALPHA_TRANSPARENT;
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto rect = std::make_shared<Rectangle>(
-    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
-  ASSERT_TRUE(rect != nullptr);
-
-  auto tex =
-    std::shared_ptr<Texture>( rect->texture() );
-  ASSERT_TRUE(tex != nullptr);
-
-  // Initialize texture with its starting alpha value for blending test
-  tex->set_alpha(Color4i::ALPHA_OPAQUE);
-  tex->set_blend_mode(SDL_BLENDMODE_BLEND);
-
   auto sprite =
     std::make_shared<Sprite>();
   ASSERT_TRUE(sprite != nullptr);
-  EXPECT_EQ(true, sprite->set_texture(tex) );
+  EXPECT_EQ(true, sprite->init_with_color(Color4i::Blue, TEX_SIZE) );
+  sprite->set_position(TEX_POS);
+  sprite->set_alpha(INITIAL_ALPHA);
+  sprite->set_color_blend_mode(BLEND_MODE_BLEND);
 
   auto fade_out =
     nom::create_action<FadeOutAction>(sprite, DURATION);
   ASSERT_TRUE(fade_out != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {fade_out}, "action0" );
+    nom::create_action<GroupAction>( {fade_out} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
 
@@ -223,7 +204,7 @@ TEST_F(ActionTest, FadeOutAction)
   this->player.run_action(action0, [=]() {
 
     EXPECT_EQ(1, this->player.num_actions() );
-    this->expected_alpha_out_params(  fade_out.get(), Color4i::ALPHA_TRANSPARENT,
+    this->expected_alpha_out_params(  fade_out.get(), EXPECTED_ALPHA,
                                       sprite.get() );
 
     this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
@@ -234,12 +215,12 @@ TEST_F(ActionTest, FadeOutAction)
 
   EXPECT_EQ(1, this->player.num_actions() );
 
-  this->append_update_callback( [=](float) mutable {
+  this->append_update_callback( [=](real32) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
-  this->append_update_callback( [=](float) {
+  this->append_update_callback( [=](real32) {
     if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
       this->quit();
     }
@@ -251,52 +232,46 @@ TEST_F(ActionTest, FadeOutAction)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(ActionTest, FadeOutActionFromNonOpaqueOpacity)
+TEST_F(ActionTest, FadeOutActionFromNonOpaqueAlpha)
 {
   // Testing parameters
-  const float DURATION = 1.0f;
-  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const real32 DURATION = 1.0f;
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
     NOM_ACTION_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+  const uint8 INITIAL_ALPHA = (Color4i::ALPHA_OPAQUE / 2);
+  const uint8 EXPECTED_ALPHA = Color4i::ALPHA_TRANSPARENT;
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto rect =
-    std::make_shared<Rectangle>(IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
-  ASSERT_TRUE(rect != nullptr);
-
-  auto tex =
-    std::shared_ptr<Texture>( rect->texture() );
-  ASSERT_TRUE(tex != nullptr);
-
-  // Initialize texture with its starting alpha value for blending test
-  tex->set_alpha(Color4i::ALPHA_OPAQUE/2);
-  tex->set_blend_mode(SDL_BLENDMODE_BLEND);
-
   auto sprite =
     std::make_shared<Sprite>();
   ASSERT_TRUE(sprite != nullptr);
-  EXPECT_EQ(true, sprite->set_texture(tex) );
+  EXPECT_EQ(true, sprite->init_with_color(Color4i::Blue, TEX_SIZE) );
+  sprite->set_position(TEX_POS);
+  sprite->set_alpha(INITIAL_ALPHA);
+  sprite->set_color_blend_mode(BLEND_MODE_BLEND);
 
   auto fade_out =
     nom::create_action<FadeOutAction>(sprite, DURATION);
   ASSERT_TRUE(fade_out != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {fade_out}, "action0");
+    nom::create_action<GroupAction>( {fade_out} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
 
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    this->expected_alpha_out_params(  fade_out.get(), Color4i::ALPHA_OPAQUE,
+    this->expected_alpha_out_params(  fade_out.get(), EXPECTED_ALPHA,
                                       sprite.get() );
 
     EXPECT_EQ(1, this->player.num_actions() );
@@ -307,12 +282,12 @@ TEST_F(ActionTest, FadeOutActionFromNonOpaqueOpacity)
   << "Failed to queue action0";
   EXPECT_EQ(1, this->player.num_actions() );
 
-  this->append_update_callback( [=](float) mutable {
+  this->append_update_callback( [=](real32) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
-  this->append_update_callback( [=](float) {
+  this->append_update_callback( [=](real32) {
     if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
       this->quit();
     }
@@ -324,54 +299,47 @@ TEST_F(ActionTest, FadeOutActionFromNonOpaqueOpacity)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-/// \brief Fade in, from an alpha value of zero to an alpha value of 129-1 a
-/// texture of a blue block.
 TEST_F(ActionTest, FadeAlphaByAction)
 {
   // Testing parameters
-  const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const real32 DURATION = 2.0f;
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
     NOM_ACTION_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
-  const uint8 FADE_BY = 129;
+  const uint8 INITIAL_ALPHA = Color4i::ALPHA_TRANSPARENT;
+  const real32 FADE_BY = 129;
+  const uint8 EXPECTED_ALPHA = (INITIAL_ALPHA + abs(FADE_BY) );
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto rect = std::make_shared<Rectangle>(
-    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
-  ASSERT_TRUE(rect != nullptr);
-
-  auto tex =
-    std::shared_ptr<Texture>( rect->texture() );
-  ASSERT_TRUE(tex != nullptr);
-
-  // Initialize texture with its starting alpha value for blending test
-  tex->set_alpha(Color4i::ALPHA_TRANSPARENT);
-  tex->set_blend_mode(SDL_BLENDMODE_BLEND);
-
   auto sprite =
     std::make_shared<Sprite>();
   ASSERT_TRUE(sprite != nullptr);
-  EXPECT_EQ(true, sprite->set_texture(tex) );
+  EXPECT_EQ(true, sprite->init_with_color(Color4i::Blue, TEX_SIZE) );
+  sprite->set_position(TEX_POS);
+  sprite->set_alpha(INITIAL_ALPHA);
+  sprite->set_color_blend_mode(BLEND_MODE_BLEND);
 
   auto fade_by =
     nom::create_action<FadeAlphaByAction>(sprite, FADE_BY, DURATION);
   ASSERT_TRUE(fade_by != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {fade_by}, "action0" );
+    nom::create_action<GroupAction>( {fade_by} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    this->expected_alpha_by_params( fade_by.get(), FADE_BY, sprite.get() );
+    this->expected_alpha_by_params( fade_by.get(), EXPECTED_ALPHA,
+                                    sprite.get() );
     EXPECT_EQ(1, this->player.num_actions() );
 
     this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
@@ -381,12 +349,12 @@ TEST_F(ActionTest, FadeAlphaByAction)
   << "Failed to queue action0";
   EXPECT_EQ(1, this->player.num_actions() );
 
-  this->append_update_callback( [=](float) mutable {
+  this->append_update_callback( [=](real32) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
-  this->append_update_callback( [=](float) {
+  this->append_update_callback( [=](real32) {
     if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
       this->quit();
     }
@@ -398,55 +366,48 @@ TEST_F(ActionTest, FadeAlphaByAction)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-TEST_F(ActionTest, FadeAlphaByActionFromNonOpaqueOpacity)
+TEST_F(ActionTest, FadeAlphaByActionFromNonOpaqueAlpha)
 {
   // Testing parameters
-  const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const real32 DURATION = 2.0f;
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
     NOM_ACTION_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
-  const uint8 FADE_BY = 129;
+  const uint8 INITIAL_ALPHA = (Color4i::ALPHA_OPAQUE / 4);
+  const real32 FADE_BY = 129;
+  const uint8 EXPECTED_ALPHA = (INITIAL_ALPHA + FADE_BY);
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto rect = std::make_shared<Rectangle>(
-    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
-  ASSERT_TRUE(rect != nullptr);
-
-  auto tex =
-    std::shared_ptr<Texture>( rect->texture() );
-  ASSERT_TRUE(tex != nullptr);
-
-  // Initialize texture with its starting alpha value for blending test
-  tex->set_alpha(Color4i::ALPHA_OPAQUE/4);
-  tex->set_blend_mode(SDL_BLENDMODE_BLEND);
-
   auto sprite =
     std::make_shared<Sprite>();
   ASSERT_TRUE(sprite != nullptr);
-  EXPECT_EQ(true, sprite->set_texture(tex) );
+  EXPECT_EQ(true, sprite->init_with_color(Color4i::Blue, TEX_SIZE) );
+  sprite->set_position(TEX_POS);
+  sprite->set_alpha(INITIAL_ALPHA);
+  sprite->set_color_blend_mode(BLEND_MODE_BLEND);
 
   auto fade_by =
     nom::create_action<FadeAlphaByAction>(sprite, FADE_BY, DURATION);
   ASSERT_TRUE(fade_by != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {fade_by}, "action0" );
+    nom::create_action<GroupAction>( {fade_by} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
 
-    this->expected_alpha_by_params( fade_by.get(), FADE_BY, sprite.get() );
-
     EXPECT_EQ(1, this->player.num_actions() );
-
+    this->expected_alpha_by_params( fade_by.get(), EXPECTED_ALPHA,
+                                    sprite.get() );
     this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
     this->expected_common_params(fade_by.get(), DURATION, SPEED_MOD);
   });
@@ -454,12 +415,12 @@ TEST_F(ActionTest, FadeAlphaByActionFromNonOpaqueOpacity)
   << "Failed to queue action0";
   EXPECT_EQ(1, this->player.num_actions() );
 
-  this->append_update_callback( [=](float) mutable {
+  this->append_update_callback( [=](real32) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
-  this->append_update_callback( [=](float) {
+  this->append_update_callback( [=](real32) {
     if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
       this->quit();
     }
@@ -474,44 +435,37 @@ TEST_F(ActionTest, FadeAlphaByActionFromNonOpaqueOpacity)
 TEST_F(ActionTest, FadeAlphaByActionWithNegativeValue)
 {
   // Testing parameters
-  const float DURATION = 2.0f;
-  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const real32 DURATION = 2.0f;
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
     NOM_ACTION_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
-  const int16 FADE_BY = -129;
-  const int16 EXPECTED_ALPHA = 126;
+  const uint8 INITIAL_ALPHA = Color4i::ALPHA_OPAQUE;
+  const real32 FADE_BY = -129;
+  const uint8 EXPECTED_ALPHA = (INITIAL_ALPHA - abs(FADE_BY) );
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(256, 256);
 
-  auto rect = std::make_shared<Rectangle>(
-    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
-  ASSERT_TRUE(rect != nullptr);
-
-  auto tex =
-    std::shared_ptr<Texture>( rect->texture() );
-  ASSERT_TRUE(tex != nullptr);
-
-  // Initialize texture with its starting alpha value for blending test
-  tex->set_alpha(Color4i::ALPHA_OPAQUE);
-  tex->set_blend_mode(SDL_BLENDMODE_BLEND);
-
   auto sprite =
     std::make_shared<Sprite>();
   ASSERT_TRUE(sprite != nullptr);
-  EXPECT_EQ(true, sprite->set_texture(tex) );
+  EXPECT_EQ(true, sprite->init_with_color(Color4i::Blue, TEX_SIZE) );
+  sprite->set_position(TEX_POS);
+  sprite->set_alpha(INITIAL_ALPHA);
+  sprite->set_color_blend_mode(BLEND_MODE_BLEND);
 
   auto fade_by =
     nom::create_action<FadeAlphaByAction>(sprite, FADE_BY, DURATION);
   ASSERT_TRUE(fade_by != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {fade_by}, "action0" );
+    nom::create_action<GroupAction>( {fade_by} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -528,12 +482,12 @@ TEST_F(ActionTest, FadeAlphaByActionWithNegativeValue)
   << "Failed to queue action0";
   EXPECT_EQ(1, this->player.num_actions() );
 
-  this->append_update_callback( [=](float) mutable {
+  this->append_update_callback( [=](real32) mutable {
     nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
-  this->append_update_callback( [=](float) {
+  this->append_update_callback( [=](real32) {
     if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
       this->quit();
     }
@@ -548,8 +502,8 @@ TEST_F(ActionTest, FadeAlphaByActionWithNegativeValue)
 TEST_F(ActionTest, AlphaBlendingDemo)
 {
   // Testing parameters
-  const float DURATION = 2.5f;  // 5s total duration due to x2 sequences
-  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const real32 DURATION = 2.5f;  // 5s total duration due to x2 sequences
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
     NOM_ACTION_TEST_FLAG(timing_curve);
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
@@ -579,11 +533,11 @@ TEST_F(ActionTest, AlphaBlendingDemo)
   ASSERT_TRUE(fade_bg_sprite_out_action != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>(  {fade_bg_sprite_out_action},
-                                      "fade_bg_sprite_out" );
+    nom::create_action<GroupAction>( {fade_bg_sprite_out_action} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("fade_bg_sprite_out");
 
   // NOTE: action1 init
 
@@ -621,10 +575,11 @@ TEST_F(ActionTest, AlphaBlendingDemo)
 
   auto action1 =
     nom::create_action<SequenceAction>( {
-      fade_magenta_sprite_in_action, fade_blue_sprite_out}, "action1" );
+      fade_magenta_sprite_in_action, fade_blue_sprite_out} );
   ASSERT_TRUE(action1 != nullptr);
   action1->set_timing_curve(TIMING_MODE);
   action1->set_speed(SPEED_MOD);
+  action1->set_name("action1");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -666,14 +621,14 @@ TEST_F(ActionTest, AlphaBlendingDemo)
   << "Failed to enqueue fade_blue_rect!";
   EXPECT_EQ(2, this->player.num_actions() );
 
-  this->append_update_callback( [=](float) mutable {
+  this->append_update_callback( [=](real32) mutable {
     nom::set_alignment( magenta_sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
     nom::set_alignment( blue_sprite.get(), Point2i::zero, WINDOW_DIMS,
                         Anchor::MiddleCenter );
   });
 
-  this->append_update_callback( [=](float) {
+  this->append_update_callback( [=](real32) {
     if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
       this->quit();
     }

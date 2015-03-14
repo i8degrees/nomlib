@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/actions/IActionObject.hpp"
+#include "nomlib/math/Color4.hpp"
 
 namespace nom {
 
@@ -74,18 +75,18 @@ class FadeInAction: public virtual IActionObject
   private:
     static const char* DEBUG_CLASS_NAME;
 
-    IActionObject::FrameState update(real32 t, uint8 b, int16 c, real32 d);
+    IActionObject::FrameState update(real32 t, real32 b, real32 c, real32 d);
 
     void first_frame(real32 delta_time);
     void last_frame(real32 delta_time);
 
-    const int16 total_displacement_;
-    uint8 initial_alpha_;
+    const real32 total_displacement_ = Color4i::ALPHA_OPAQUE;
+    real32 initial_alpha_ = 0.0f;
 
     std::shared_ptr<Sprite> drawable_;
 
     /// \brief The current alpha value of the drawable.
-    uint8 alpha_;
+    uint8 alpha_ = 0;
 };
 
 } // namespace nom

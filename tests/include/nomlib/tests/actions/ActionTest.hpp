@@ -50,6 +50,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Testing state flags container.
+///
+/// \remarks See all of the available testing flags by passing --help to this
+/// executable.
 struct ActionTestFlags
 {
   /// \brief The frame interval to update by in action tests.
@@ -73,6 +76,18 @@ struct ActionTestFlags
   /// \brief The timing mode used in action tests.
   IActionObject::timing_curve_func timing_curve = nom::Linear::ease_in_out;
   std::string timing_mode_str = "linear_ease_in_out";
+
+  /// \brief The number of objects to spawn in a test.
+  ///
+  /// \remarks This value is currently only used in
+  /// ActionTest.RainingRectsStressTest.
+  nom::size_type num_objects = 500;
+
+  /// \brief Enable debug logging of actions.
+  bool enable_action_logging = false;
+
+  /// \brief Enable debug logging of the action queues.
+  bool enable_queue_logging = false;
 };
 
 /// \brief Testing state flags.

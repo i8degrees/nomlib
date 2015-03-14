@@ -98,16 +98,18 @@ TEST_F(ActionTest, GroupActionFinishEquality)
   ASSERT_TRUE(translate3 != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {translate0, translate1}, "action0" );
+    nom::create_action<GroupAction>( {translate0, translate1} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD0);
+  action0->set_name("action0");
 
   auto action1 =
-    nom::create_action<GroupAction>( {translate2, translate3}, "action1" );
+    nom::create_action<GroupAction>( {translate2, translate3} );
   ASSERT_TRUE(action1 != nullptr);
   action1->set_speed(SPEED_MOD1);
   action1->set_timing_curve(TIMING_MODE);
+  action1->set_name("action1");
 
   auto remove_action0 =
     nom::create_action<RemoveAction>(action0);
@@ -196,12 +198,14 @@ TEST_F(ActionTest, CancelAction)
   ASSERT_TRUE(translate0 != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {translate0}, "action0" );
+    nom::create_action<GroupAction>( {translate0} );
   ASSERT_TRUE(action0 != nullptr);
+  action0->set_name("action0");
 
   auto action1 =
-    nom::create_action<SequenceAction>( { translate0->clone() }, "action1" );
+    nom::create_action<SequenceAction>( { translate0->clone() } );
   ASSERT_TRUE(action1 != nullptr);
+  action1->set_name("action1");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -295,25 +299,29 @@ TEST_F(ActionTest, ConcurrentGroupActions)
   translate2->set_name("translate2");
   translate3->set_name("translate3");
 
-  auto action0 = nom::create_action<GroupAction>( {translate0}, "action0" );
+  auto action0 = nom::create_action<GroupAction>( {translate0} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD0);
+  action0->set_name("action0");
 
-  auto action1 = nom::create_action<GroupAction>( {translate1}, "action1" );
+  auto action1 = nom::create_action<GroupAction>( {translate1} );
   ASSERT_TRUE(action1 != nullptr);
   action1->set_speed(SPEED_MOD1);
   action1->set_timing_curve(TIMING_MODE);
+  action1->set_name("action1");
 
-  auto action2 = nom::create_action<GroupAction>( {translate2}, "action2" );
+  auto action2 = nom::create_action<GroupAction>( {translate2} );
   ASSERT_TRUE(action2 != nullptr);
   action2->set_speed(SPEED_MOD2);
   action2->set_timing_curve(TIMING_MODE);
+  action2->set_name("action2");
 
-  auto action3 = nom::create_action<GroupAction>( {translate3}, "action3" );
+  auto action3 = nom::create_action<GroupAction>( {translate3} );
   ASSERT_TRUE(action3 != nullptr);
   action3->set_speed(SPEED_MOD3);
   action3->set_timing_curve(TIMING_MODE);
+  action3->set_name("action3");
 
   auto remove_action0 =
     nom::create_action<RemoveAction>(action0);
@@ -507,14 +515,16 @@ TEST_F(ActionTest, ConcurrentSequenceActions)
   translate3->set_speed(SPEED_MOD3);
 
   auto action0 =
-    nom::create_action<SequenceAction>( {translate0, translate1}, "action0" );
+    nom::create_action<SequenceAction>( {translate0, translate1} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
+  action0->set_name("action0");
 
   auto action1 =
-    nom::create_action<SequenceAction>( {translate2, translate3}, "action1" );
+    nom::create_action<SequenceAction>( {translate2, translate3} );
   ASSERT_TRUE(action1 != nullptr);
   action1->set_timing_curve(TIMING_MODE);
+  action1->set_name("action1");
 
   auto remove_action0 =
     nom::create_action<RemoveAction>(action0);
@@ -668,14 +678,16 @@ TEST_F(ActionTest, ConcurrentGroupAndSequenceActions)
   translate3->set_speed(SPEED_MOD3);
 
   auto action0 =
-    nom::create_action<GroupAction>( {translate0, translate1}, "action0" );
+    nom::create_action<GroupAction>( {translate0, translate1} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
+  action0->set_name("action0");
 
   auto action1 =
-    nom::create_action<SequenceAction>( {translate2, translate3}, "action1" );
+    nom::create_action<SequenceAction>( {translate2, translate3} );
   ASSERT_TRUE(action1 != nullptr);
   action1->set_timing_curve(TIMING_MODE);
+  action1->set_name("action1");
 
   auto remove_action0 =
     nom::create_action<RemoveAction>(action0);
@@ -804,10 +816,11 @@ TEST_F(ActionTest, ClonedGroupAction)
   ASSERT_TRUE(translate != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {translate}, nom::UnitTest::test_name() );
+    nom::create_action<GroupAction>( {translate} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   auto remove_action0 =
     nom::create_action<RemoveAction>(action0);
@@ -881,10 +894,11 @@ TEST_F(ActionTest, ClonedSequenceAction)
   ASSERT_TRUE(translate != nullptr);
 
   auto action0 =
-    nom::create_action<SequenceAction>( {translate}, nom::UnitTest::test_name() );
+    nom::create_action<SequenceAction>( {translate} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   auto remove_action0 =
     nom::create_action<RemoveAction>(action0);
@@ -958,10 +972,11 @@ TEST_F(ActionTest, ClonedReversedAction)
   ASSERT_TRUE(translate != nullptr);
 
   auto action0 =
-    nom::create_action<ReversedAction>(translate, nom::UnitTest::test_name() );
+    nom::create_action<ReversedAction>(translate);
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   auto remove_action0 =
     nom::create_action<RemoveAction>(action0);
@@ -1032,10 +1047,11 @@ TEST_F(ActionTest, ClonedRepeatForAction)
   ASSERT_TRUE(translate != nullptr);
 
   auto action0 =
-    nom::create_action<RepeatForAction>(translate, NUM_REPEATS, nom::UnitTest::test_name() );
+    nom::create_action<RepeatForAction>(translate, NUM_REPEATS);
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   auto remove_action0 =
     nom::create_action<RemoveAction>(action0);

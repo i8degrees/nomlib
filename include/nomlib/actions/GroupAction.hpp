@@ -54,9 +54,7 @@ class GroupAction: public virtual IActionObject
     ///
     /// \param actions The group of actions to execute; NULL actions are
     /// valid.
-    /// \param name An optional unique identifier to assign to this instance.
-    GroupAction(  const action_list& actions,
-                  const std::string& name = "" );
+    GroupAction(const action_list& actions);
 
     virtual ~GroupAction();
 

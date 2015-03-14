@@ -213,9 +213,6 @@ std::shared_ptr<ObjectType> create_action(ObjectArgs&&... args)
 ///
 /// \param actions The collection of actions to pass to the constructed object.
 ///
-/// \param name An optional unique identifier to pass to the constructed
-/// object.
-///
 /// \remarks The collection can be constructed in-place with a
 /// [std::initializer_list](http://en.cppreference.com/w/cpp/utility/initializer_list)
 /// object.
@@ -230,12 +227,12 @@ std::shared_ptr<ObjectType> create_action(ObjectArgs&&... args)
 /// \relates nom::IActionObject
 template<typename ObjectType>
 std::shared_ptr<ObjectType>
-create_action(const action_list& actions, const std::string& name = "")
+create_action(const action_list& actions)
 {
   // IMPORTANT: We risk object slicing if we use std::make_shared here! The
   // problem occurs when the end-user tries to return the created action
   // pointer by value.
-  return( std::shared_ptr<ObjectType>( new ObjectType(actions, name) ) );
+  return( std::shared_ptr<ObjectType>( new ObjectType(actions) ) );
 }
 
 } // namespace nom

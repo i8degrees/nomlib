@@ -49,9 +49,7 @@ class RepeatForeverAction: public virtual IActionObject
     /// \brief Repeats an action forever.
     ///
     /// \param action An action object to repeat; NULL actions are valid.
-    /// \param name An optional unique identifier to assign to this instance.
-    RepeatForeverAction(  const std::shared_ptr<IActionObject>& action,
-                          const std::string& name = "" );
+    RepeatForeverAction(const std::shared_ptr<IActionObject>& action);
 
     virtual ~RepeatForeverAction();
 

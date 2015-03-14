@@ -136,9 +136,10 @@ TEST_F(ActionTest, RainingRectsStressTest)
   }
 
   auto action0 =
-    nom::create_action<GroupAction>(group_actions, "group_action0");
+    nom::create_action<GroupAction>(group_actions);
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
+  action0->set_name("group_action0");
 
   auto remove_action0 =
     nom::create_action<RemoveAction>(action0);
@@ -307,28 +308,32 @@ TEST_F(ActionTest, CardPlacementEffectsDemo)
   scale_by_reversed1->set_name("scale_by_reversed1");
 
   auto action0 =
-    nom::create_action<GroupAction>( {move_up0, scale_by0}, "action0" );
+    nom::create_action<GroupAction>( {move_up0, scale_by0} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(nom::Expo::ease_out);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   auto action1 =
-    nom::create_action<GroupAction>( {scale_by_reversed0}, "action1" );
+    nom::create_action<GroupAction>( {scale_by_reversed0} );
   ASSERT_TRUE(action1 != nullptr);
   action1->set_timing_curve(nom::Expo::ease_out);
   action1->set_speed(SPEED_MOD);
+  action1->set_name("action1");
 
   auto action2 =
-    nom::create_action<GroupAction>( {move_up1, scale_by1}, "action2" );
+    nom::create_action<GroupAction>( {move_up1, scale_by1} );
   ASSERT_TRUE(action2 != nullptr);
   action2->set_timing_curve(nom::Expo::ease_out);
   action2->set_speed(SPEED_MOD);
+  action2->set_name("action2");
 
   auto action3 =
-    nom::create_action<GroupAction>( {scale_by_reversed1}, "action3" );
+    nom::create_action<GroupAction>( {scale_by_reversed1} );
   ASSERT_TRUE(action3 != nullptr);
   action3->set_timing_curve(nom::Expo::ease_out);
   action3->set_speed(SPEED_MOD);
+  action3->set_name("action3");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -504,17 +509,18 @@ TEST_F(ActionTest, ScrollingTextDemo)
   ASSERT_TRUE(wait2s != nullptr);
 
   auto wait3s =
-    nom::create_action<SequenceAction>( {wait1s, wait2s}, "wait3s" );
+    nom::create_action<SequenceAction>( {wait1s, wait2s} );
   ASSERT_TRUE(wait3s != nullptr);
   wait3s->set_speed(SPEED_MOD);
   wait3s->set_timing_curve(TIMING_MODE);
+  wait3s->set_name("wait3s");
 
   auto scroll_right =
-    nom::create_action<GroupAction>( {
-      anim_translate0, anim_fade_in}, "scroll_right");
+    nom::create_action<GroupAction>( {anim_translate0, anim_fade_in} );
   ASSERT_TRUE(scroll_right != nullptr);
   scroll_right->set_speed(SPEED_MOD);
   scroll_right->set_timing_curve(TIMING_MODE);
+  scroll_right->set_name("scroll_right");
   if( NOM_ACTION_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
     scroll_right->set_timing_curve(TIMING_MODE);
   } else {
@@ -525,9 +531,10 @@ TEST_F(ActionTest, ScrollingTextDemo)
   scroll_left_action = anim_translate0->clone();
 
   auto scroll_left =
-    nom::create_action<nom::ReversedAction>(scroll_left_action, "scroll_left" );
+    nom::create_action<nom::ReversedAction>(scroll_left_action);
   ASSERT_TRUE(scroll_left != nullptr);
   scroll_left->set_speed(SPEED_MOD);
+  scroll_left->set_name("scroll_left");
   if( NOM_ACTION_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
     scroll_left->set_timing_curve(TIMING_MODE);
   } else {
@@ -539,11 +546,11 @@ TEST_F(ActionTest, ScrollingTextDemo)
   ASSERT_TRUE(scroll_right_again_action != nullptr);
 
   auto scroll_right_again =
-    nom::create_action<GroupAction>( {scroll_right_again_action},
-      "scroll_right_again" );
+    nom::create_action<GroupAction>( {scroll_right_again_action} );
   ASSERT_TRUE(scroll_right_again != nullptr);
   scroll_right_again->set_speed(SPEED_MOD);
   scroll_right_again->set_timing_curve(TIMING_MODE);
+  scroll_right_again->set_name("scroll_right_again");
 
   auto scroll_up_move_action =
     nom::create_action<nom::MoveByAction>(anim_text_sprite, Point2i(0,-300), MOVE_BY_DURATION);
@@ -551,9 +558,10 @@ TEST_F(ActionTest, ScrollingTextDemo)
 
   auto scroll_up =
     nom::create_action<GroupAction>( {
-      scroll_up_move_action, anim_fade_out0->clone() }, "scroll_up" );
+      scroll_up_move_action, anim_fade_out0->clone() } );
   ASSERT_TRUE(scroll_up != nullptr);
   scroll_up->set_speed(SPEED_MOD);
+  scroll_up->set_name("scroll_up");
   if( NOM_ACTION_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
     scroll_up->set_timing_curve(TIMING_MODE);
   } else {
@@ -571,10 +579,10 @@ TEST_F(ActionTest, ScrollingTextDemo)
 
   auto scroll_down_repeat2 =
     nom::create_action<GroupAction>( {
-      scroll_down_repeat2_translate, scroll_down_repeat2_fade_out},
-      "scroll_down_repeat2" );
+      scroll_down_repeat2_translate, scroll_down_repeat2_fade_out} );
   ASSERT_TRUE(scroll_down_repeat2 != nullptr);
   scroll_down_repeat2->set_speed(SPEED_MOD);
+  scroll_down_repeat2->set_name("scroll_down_repeat2");
   if( NOM_ACTION_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
     scroll_down_repeat2->set_timing_curve(TIMING_MODE);
   } else {
@@ -585,9 +593,10 @@ TEST_F(ActionTest, ScrollingTextDemo)
     nom::create_action<nom::FadeOutAction>(bg_sprite, FADE_OUT_DURATION);
 
   auto fade_screen_out_action =
-    nom::create_action<SequenceAction>( {fade_screen_out}, "fade_screen_out");
+    nom::create_action<SequenceAction>( {fade_screen_out} );
   ASSERT_TRUE(fade_screen_out_action != nullptr);
   fade_screen_out_action->set_speed(SPEED_MOD);
+  fade_screen_out_action->set_name("fade_screen_out");
   if( NOM_ACTION_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
     fade_screen_out_action->set_timing_curve(TIMING_MODE);
   } else {

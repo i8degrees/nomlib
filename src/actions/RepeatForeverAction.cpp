@@ -41,13 +41,12 @@ enum FrameStateDirection
 // Static initializations
 const char* RepeatForeverAction::DEBUG_CLASS_NAME = "[RepeatForeverAction]:";
 
-RepeatForeverAction::RepeatForeverAction( const std::shared_ptr<IActionObject>& action,
-                                          const std::string& name )
+RepeatForeverAction::
+RepeatForeverAction(const std::shared_ptr<IActionObject>& action)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  this->set_name(name);
   this->action_ = action;
   this->elapsed_repeats_ = 0;
 }

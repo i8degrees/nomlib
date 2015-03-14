@@ -49,13 +49,10 @@ struct group_action
 // Static initializations
 const char* GroupAction::DEBUG_CLASS_NAME = "[GroupAction]:";
 
-GroupAction::GroupAction( const action_list& actions,
-                          const std::string& name )
+GroupAction::GroupAction(const action_list& actions)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
-
-  this->set_name(name);
 
   group_action entry;
   for( auto itr = actions.begin(); itr != actions.end(); ++itr ) {

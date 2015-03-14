@@ -50,6 +50,8 @@ class RemoveAction: public virtual IActionObject
     ///
     /// \param action The action to free its resources from; NULL actions are
     /// valid.
+    ///
+    /// \remarks The action is executed instantaneously.
     RemoveAction(const std::shared_ptr<IActionObject>& action);
 
     virtual ~RemoveAction();
@@ -60,10 +62,13 @@ class RemoveAction: public virtual IActionObject
 
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
 
+    /// \brief This action does not support being paused.
     virtual void pause(real32 delta_time) override;
 
+    /// \brief This action does not support being resumed.
     virtual void resume(real32 delta_time) override;
 
+    /// \brief This action does not support being reset.
     virtual void rewind(real32 delta_time) override;
 
     virtual void release() override;
@@ -83,5 +88,6 @@ class RemoveAction: public virtual IActionObject
 /// \ingroup actions
 ///
 /// \brief This interface exists as a placeholder until the engine's
-/// infrastructure is further developed.
+/// infrastructure is further developed. It is suggested that you use this
+/// method in order to preserve future compatibility.
 ///

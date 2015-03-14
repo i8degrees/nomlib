@@ -77,9 +77,9 @@ IActionObject::FrameState WaitForDurationAction::next_frame(real32 delta_time)
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
 
-  ++this->elapsed_frames_;
-
   if( delta_time < (this->duration() / this->speed() ) ) {
+
+    ++this->elapsed_frames_;
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "delta_time:", delta_time,
@@ -112,7 +112,6 @@ void WaitForDurationAction::resume(real32 delta_time)
 
 void WaitForDurationAction::rewind(real32 delta_time)
 {
-  // Reset frame timing
   this->elapsed_frames_ = 0.0f;
   this->timer_.stop();
   this->set_status(FrameState::PLAYING);

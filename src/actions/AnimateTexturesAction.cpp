@@ -103,6 +103,7 @@ AnimateTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
 
   // The computed texture frame to show next
   real32 displacement(0.0f);
+  uint32 displacement_as_integer = 0;
 
   // Clamp delta values that go beyond maximal duration
   if( delta_time > (duration / this->speed() ) ) {
@@ -116,21 +117,20 @@ AnimateTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
     direction = PREV_FRAME;
   }
 
-  NOM_ASSERT(this->timing_curve() != nullptr);
-
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
+
+  NOM_ASSERT(this->timing_curve() != nullptr);
 
   displacement =
     this->timing_curve().operator()(frame_time, b, c, duration);
   NOM_ASSERT(displacement <= this->total_displacement_);
   NOM_ASSERT(displacement >= this->initial_frame_);
 
-  this->elapsed_frames_ = displacement;
-
   if( delta_time >= (this->last_delta_ + frame_interval) &&
       delta_time < ( duration / this->speed() ) )
   {
+    this->elapsed_frames_ = displacement;
     this->last_delta_ = delta_time;
 
     frame_iterator curr_frame;
@@ -161,7 +161,7 @@ AnimateTexturesAction::update(real32 t, real32 b, real32 c, real32 d)
       }
     }
 
-    uint32 displacement_as_integer =
+    displacement_as_integer =
       nom::round_float_down<uint32>(displacement);
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "delta_time:", delta_time, "frame_time:", frame_time,
@@ -212,14 +212,11 @@ void AnimateTexturesAction::resume(real32 delta_time)
 
 void AnimateTexturesAction::rewind(real32 delta_time)
 {
-  // Reset frame cycle back to initial value
   this->elapsed_frames_ = 0.0f;
   this->initial_frame_ = 0;
   this->next_frame_ = (this->frames_.begin() + this->initial_frame_);
   this->last_frame_ = (this->frames_.end() - 1);
   this->last_delta_ = 0.0f;
-
-  // Reset frame timing
   this->timer_.stop();
 
   this->set_status(FrameState::PLAYING);
@@ -250,7 +247,6 @@ void AnimateTexturesAction::release()
 void AnimateTexturesAction::first_frame(real32 delta_time)
 {
   if( this->timer_.started() == false ) {
-    // Start frame timing
     this->elapsed_frames_ = 0.0f;
     this->initial_frame_ = 0;
     this->last_delta_ = 0.0f;

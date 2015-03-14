@@ -67,10 +67,13 @@ class CallbackAction: public virtual IActionObject
 
     virtual IActionObject::FrameState prev_frame(real32 delta_time) override;
 
+    /// \brief This action does not support being paused.
     virtual void pause(real32 delta_time) override;
 
+    /// \brief This action does not support being resumed.
     virtual void resume(real32 delta_time) override;
 
+    /// \brief This action does not support being reset.
     virtual void rewind(real32 delta_time) override;
 
     virtual void release() override;

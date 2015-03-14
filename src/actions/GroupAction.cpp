@@ -59,7 +59,7 @@ GroupAction::GroupAction(const action_list& actions)
 
     entry.action = *itr;
     entry.status = FrameState::PLAYING;
-    this->actions_.push_back( std::move(entry) );
+    this->actions_.emplace_back(entry);
   }
 
   this->num_completed_ = 0;
@@ -88,7 +88,7 @@ std::unique_ptr<IActionObject> GroupAction::clone() const
       }
 
       cloned_entry.status = FrameState::PLAYING;
-      cloned_obj->actions_.push_back( std::move(cloned_entry) );
+      cloned_obj->actions_.emplace_back(cloned_entry);
     }
 
     cloned_obj->num_completed_ = 0;

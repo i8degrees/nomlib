@@ -123,31 +123,6 @@ struct Color4
       //NOM_LOG_TRACE(NOM);
     }
 
-    // \brief Method overload of binary operator / (Division)
-    //
-    // \param rhs Left operand.
-    // \param rhs Right operand.
-    //
-    // \remarks Division of both objects; result is assigned to the left operand.
-    //
-    // \returns Reference to the left operand.
-    //
-    // \note Borrowed from Ogre::ColourValue.
-    // inline Color4<float> operator / ( const float factor ) const
-    // {
-    //   NOM_ASSERT( factor != 0 );
-
-    //   Color4<float> div;
-    //   T inv = 1.0f / factor;
-
-    //   div.r = ( r / 255 ) * inv;
-    //   div.g = ( g / 255 ) * inv;
-    //   div.b = ( b / 255 ) * inv;
-    //   div.a = ( a / 255 ) * inv;
-
-    //   return div;
-    // }
-
     /// \brief 100% transparent alpha channel value
     static const T ALPHA_TRANSPARENT;
 

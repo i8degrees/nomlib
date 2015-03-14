@@ -52,12 +52,16 @@ ActionTest::ActionTest()
                                           nom::NOM_LOG_PRIORITY_INFO );
 
   // Enable debug diagnostics for action objects
-  // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION, nom::NOM_LOG_PRIORITY_DEBUG);
+  if( NOM_ACTION_TEST_FLAG(enable_action_logging) == true ) {
+    nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION, nom::NOM_LOG_PRIORITY_DEBUG);
+  }
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION, nom::NOM_LOG_PRIORITY_VERBOSE);
 
   // Enable debug diagnostics for action engine && internal queue
-  // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_QUEUE, nom::NOM_LOG_PRIORITY_DEBUG);
-  // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_PLAYER, nom::NOM_LOG_PRIORITY_DEBUG);
+  if( NOM_ACTION_TEST_FLAG(enable_queue_logging) == true ) {
+    nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_QUEUE, nom::NOM_LOG_PRIORITY_DEBUG);
+    nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_PLAYER, nom::NOM_LOG_PRIORITY_DEBUG);
+  }
 
   // Enable debug call stack diagnostics
   // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_TRACE_ACTION, NOM_LOG_PRIORITY_VERBOSE);
@@ -602,10 +606,54 @@ bool init_cmd_line_args(int argc, char** argv)
     NOM_ACTION_TEST_FLAG(enable_vsync)
   );
 
+  std::stringstream num_objects_arg_desc;
+  num_objects_arg_desc  << "The number of objects to spawn; this value is "
+                        << "currently only used in "
+                        << "ActionTest.RainingRectsStressTest";
+  TCLAP::ValueArg<nom::size_type> num_objects_arg(
+    // Option short form (not supported)
+    "",
+    // Option long form
+    "num-objects",
+    // Option description
+    num_objects_arg_desc.str().c_str(),
+    // Not required
+    false,
+    // Option default
+    NOM_ACTION_TEST_FLAG(num_objects),
+    // Option example (part of description)
+    "100"
+  );
+
+  TCLAP::SwitchArg action_logging_arg(
+    // Option short form (not supported)
+    "",
+    // Option long form
+    "enable-action-logging",
+    // Option description
+    "Enable debug logging of actions",
+    // Option default
+    NOM_ACTION_TEST_FLAG(enable_action_logging)
+  );
+
+  TCLAP::SwitchArg queue_logging_arg(
+    // Option short form (not supported)
+    "",
+    // Option long form
+    "enable-queue-logging",
+    // Option description
+    "Enable debug logging of the engine queues",
+    // Option default
+    NOM_ACTION_TEST_FLAG(enable_queue_logging)
+  );
+
   args.push_back(&speed_modifier_arg);
   args.push_back(&timing_mode_arg);
   args.push_back(&fps_arg);
   args.push_back(&vsync_arg);
+  args.push_back(&num_objects_arg);
+  args.push_back(&action_logging_arg);
+  args.push_back(&queue_logging_arg);
 
   // nom::UnitTest framework integration
   nom::init_test(argc, argv, args);
@@ -627,6 +675,9 @@ bool init_cmd_line_args(int argc, char** argv)
   }
 
   NOM_ACTION_TEST_FLAG(enable_vsync) = vsync_arg.getValue();
+  NOM_ACTION_TEST_FLAG(num_objects) = num_objects_arg.getValue();
+  NOM_ACTION_TEST_FLAG(enable_action_logging) = action_logging_arg.getValue();
+  NOM_ACTION_TEST_FLAG(enable_queue_logging) = queue_logging_arg.getValue();
 
   return true;
 }

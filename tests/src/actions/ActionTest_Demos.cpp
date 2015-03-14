@@ -44,28 +44,37 @@ typedef std::map<uint32, test_action> test_action_list;
 /// \brief This test is intended to simulate a worst-case scenario, i.e.: a
 /// large number of objects enqueued and deallocated at the same time.
 ///
-/// \remarks Enabling VSYNC may help performance here!
+/// \note When building this test under Windows, iterator debugging can slow
+/// this test down massively! See also: _ITERATOR_DEBUG_LEVEL=0
 TEST_F(ActionTest, RainingRectsStressTest)
 {
   // Testing parameters
   const real32 DURATION = 2.0f;
-  const IActionObject::timing_curve_func TIMING_MODE =
-    nom::Bounce::ease_in_out;
+  IActionObject::timing_curve_func timing_mode = nullptr;
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
   const real32 MIN_SPEED_MOD = DURATION;
   const real32 MAX_SPEED_MOD = MIN_SPEED_MOD + NOM_ACTION_TEST_FLAG(speed);
-  const real32 NUM_REPEATS = 4;
-
-  // const nom::size_type NUM_OBJECTS = 100;
-  // const nom::size_type NUM_OBJECTS = 250;
-  const nom::size_type NUM_OBJECTS = 500;
-  // const nom::size_type NUM_OBJECTS = 1000;
+  const nom::size_type NUM_REPEATS = 4;
+  const nom::size_type NUM_OBJECTS = NOM_ACTION_TEST_FLAG(num_objects);
 
   const Size2i MIN_RECT_SIZE(8, 8);
   const Size2i MAX_RECT_SIZE(16, 16);
 
   // Position delta applied over duration
   const Point2i TRANSLATE_POS( Point2i(0, WINDOW_DIMS.h-MAX_RECT_SIZE.h) );
+
+  if( NOM_ACTION_TEST_FLAG(timing_mode_str) != "linear_ease_in_out" ) {
+    timing_mode = NOM_ACTION_TEST_FLAG(timing_curve);
+  } else {
+    // Default used timing curve when the end-user does not override us
+    timing_mode = nom::Bounce::ease_in_out;
+  }
+
+  if( NOM_ACTION_TEST_FLAG(enable_vsync) == false ) {
+    NOM_LOG_WARN( NOM_LOG_CATEGORY_APPLICATION,
+                  "Passing --enable-vsync may help boost test performance",
+                  "considerably!" );
+  }
 
   auto rand_seed = nom::ticks();
   nom::init_rand(rand_seed);
@@ -138,7 +147,7 @@ TEST_F(ActionTest, RainingRectsStressTest)
   auto action0 =
     nom::create_action<GroupAction>(group_actions);
   ASSERT_TRUE(action0 != nullptr);
-  action0->set_timing_curve(TIMING_MODE);
+  action0->set_timing_curve(timing_mode);
   action0->set_name("group_action0");
 
   auto remove_action0 =

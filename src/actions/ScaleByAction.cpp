@@ -66,53 +66,44 @@ std::unique_ptr<IActionObject> ScaleByAction::clone() const
 IActionObject::FrameState
 ScaleByAction::update(real32 t, const Size2i& b, const Size2f& c, real32 d)
 {
-  // The current frame to scale
   real32 delta_time = t;
-
-  // Total duration of the animation's scaling
   const real32 duration = d;
 
-  // Initial starting value; this is the first frame to scale from
-  const Size2i initial_size(b);
+  // initial starting values
+  const real32 b1 = b.w;
+  const real32 b2 = b.h;
 
-  // Total displacement over time
-  const Size2f total_displacement(c);
+  // total change over time
+  real32 c1 = c.w;
+  real32 c2 = c.h;
 
-  // The computed scale value of the frame
   Size2f displacement(Size2f::zero);
+  Size2i displacement_as_integer(Size2i::zero);
 
   // Clamp delta values that go beyond maximal duration
   if( delta_time > (duration / this->speed() ) ) {
     delta_time = duration / this->speed();
   }
 
-  // initial starting value
-  const real32 b1 = initial_size.w;
-  const real32 b2 = initial_size.h;
-
-  // total change in value (applied over time)
-  real32 c1 = 0.0f;
-  real32 c2 = 0.0f;
-
   // Account for the translating of negative X and Y scale factors
-  if( (b1 * total_displacement.w - b1) > 0 ) {
-    c1 = (b1 * total_displacement.w) - b1;
+  if( (b1 * c1 - b1) > 0 ) {
+    c1 = (b1 * c1) - b1;
   } else {
     // resulting value is a positive number
-    c1 = -( (b1 / total_displacement.w) ) - b1;
+    c1 = -( (b1 / c1) ) - b1;
   }
 
-  if( (b2 * total_displacement.h - b2) > 0 ) {
-    c2 = (b2 * total_displacement.h) - b2;
+  if( (b2 * c2 - b2) > 0 ) {
+    c2 = (b2 * c2) - b2;
   } else {
     // resulting value is a positive number
-    c2 = -( (b2 / total_displacement.h) ) - b2;
+    c2 = -( (b2 / c2) ) - b2;
   }
-
-  NOM_ASSERT(this->timing_curve() != nullptr);
 
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
+
+  NOM_ASSERT(this->timing_curve() != nullptr);
 
   displacement.w =
     this->timing_curve().operator()(frame_time, b1, c1, duration);
@@ -120,43 +111,33 @@ ScaleByAction::update(real32 t, const Size2i& b, const Size2f& c, real32 d)
   displacement.h =
     this->timing_curve().operator()(frame_time, b2, c2, duration);
 
-  // Update our internal elapsed frames counter (diagnostics)
-  ++this->elapsed_frames_;
-
   if( this->drawable_ != nullptr ) {
 
-    // State diagnostics logging
-    Size2i drawable_size = this->drawable_->size();
+    ++this->elapsed_frames_;
 
     // Convert floating-point value to integer; it is critical that we round
     // the values so that values like 254.999984741 are represented as 255.00
-    Size2i displacement_as_integer(Size2i::zero);
-
     displacement_as_integer.w =
       nom::round_float<int>(displacement.w);
     displacement_as_integer.h =
       nom::round_float<int>(displacement.h);
 
-    // TODO: Explain **why**!!
     displacement_as_integer.w = abs(displacement_as_integer.w);
     displacement_as_integer.h = abs(displacement_as_integer.h);
-    this->drawable_->set_size(displacement_as_integer);
 
-    // Record state for the unit tests
+    this->drawable_->set_size(displacement_as_integer);
     this->size_ = displacement_as_integer;
 
-    // Diagnostics
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "delta_time:", delta_time,
                     "frame_time:", frame_time,
                     "[elapsed frames]:", this->elapsed_frames_ );
+
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
-                    DEBUG_CLASS_NAME, "size (input):", drawable_size,
+                    DEBUG_CLASS_NAME, "size (input):", this->drawable_->size(),
                     "displacement (output):", displacement_as_integer );
   }
 
-  // Continue playing the animation only when we are inside our frame duration
-  // bounds; this adds stability to variable time steps
   if( delta_time < (duration / this->speed() ) ) {
     this->set_status(FrameState::PLAYING);
   } else {
@@ -171,7 +152,6 @@ IActionObject::FrameState ScaleByAction::next_frame(real32 delta_time)
 {
   delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
 
-  // Initialize timer and initial alpha
   this->first_frame(delta_time);
 
   return this->update(  delta_time, this->initial_size_,
@@ -182,7 +162,6 @@ IActionObject::FrameState ScaleByAction::prev_frame(real32 delta_time)
 {
   delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
 
-  // Initialize timer and initial alpha
   this->first_frame(delta_time);
 
   Size2f delta(Size2f::zero);
@@ -204,15 +183,11 @@ void ScaleByAction::resume(real32 delta_time)
 
 void ScaleByAction::rewind(real32 delta_time)
 {
-  // Reset the starting frame
   this->elapsed_frames_ = 0.0f;
-
-  // Reset frame timing
   this->timer_.stop();
+  this->set_status(FrameState::PLAYING);
 
-  // Reset the initial size for scaling; this is also necessary for reversing
-  // the animation, repeating it, etc.
-  if( this->drawable_ != nullptr && this->initial_size_ != Size2i::null ) {
+  if( this->drawable_ != nullptr ) {
     this->drawable_->set_size(this->initial_size_);
   }
 }
@@ -231,14 +206,11 @@ void ScaleByAction::release()
 void ScaleByAction::first_frame(real32 delta_time)
 {
   if( this->timer_.started() == false ) {
-    // Start frame timing
     this->timer_.start();
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "BEGIN at", delta_time );
 
-    // Initialize the initial size scaling value; this is also necessary for
-    // reversing the animation, repeating it, etc.
     if( this->drawable_ != nullptr ) {
       this->initial_size_ = this->drawable_->size();
     }

@@ -45,8 +45,7 @@ CallbackAction::CallbackAction(const callback_func& action) :
   this->elapsed_frames_ = 0.0f;
 }
 
-CallbackAction::CallbackAction( real32 seconds,
-                                const callback_func& action) :
+CallbackAction::CallbackAction(real32 seconds, const callback_func& action) :
   action_(action)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
@@ -86,22 +85,33 @@ IActionObject::FrameState CallbackAction::next_frame(real32 delta_time)
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
 
-  if( this->action_ != nullptr ) {
-    this->action_.operator()();
-  }
+  if( this->duration() == 0.0f ) {
 
-  ++this->elapsed_frames_;
+    ++this->elapsed_frames_;
 
-  if( delta_time < (this->duration() / this->speed() ) ) {
+    if( this->action_ != nullptr ) {
+      this->action_.operator()();
+    }
 
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
-                    "delta_time:", delta_time, "frame_time:", frame_time,
-                    "[elapsed frames]:", this->elapsed_frames_ );
+    this->set_status(FrameState::COMPLETED);
+
+  } else if( delta_time < (this->duration() / this->speed() ) ) {
+
+    ++this->elapsed_frames_;
+
+    if( this->action_ != nullptr ) {
+      this->action_.operator()();
+    }
 
     this->set_status(FrameState::PLAYING);
+
   } else {
     this->set_status(FrameState::COMPLETED);
   }
+
+  NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
+                  "delta_time:", delta_time, "frame_time:", frame_time,
+                  "[elapsed frames]:", this->elapsed_frames_ );
 
   return this->status();
 }

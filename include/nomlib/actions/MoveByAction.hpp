@@ -56,6 +56,8 @@ class MoveByAction: public virtual IActionObject
     /// \param delta The total change in position to apply to the drawable over
     /// time.
     /// \param seconds The duration of the animation.
+    ///
+    /// \remarks Negative delta values are valid.
     MoveByAction( const std::shared_ptr<Sprite>& drawable, const Point2i& delta,
                   real32 seconds );
 
@@ -85,8 +87,8 @@ class MoveByAction: public virtual IActionObject
 
     void last_frame(real32 delta_time);
 
-    const Point2i total_displacement_;
-    Point2i initial_position_;
+    const Point2i total_displacement_ = Point2i::zero;
+    Point2i initial_position_ = Point2i::zero;
 
     std::shared_ptr<Sprite> drawable_;
 };

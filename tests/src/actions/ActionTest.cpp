@@ -1228,7 +1228,7 @@ TEST_F(ActionTest, CallbackActionDefaultDuration)
 
   CallbackAction::callback_func func;
   func = [=]() {
-    NOM_LOG_DEBUG(NOM_LOG_CATEGORY_ACTION, "Hello, there!");
+    std::cout << "Hello, there!\n";
   };
 
   auto anim0 = nom::create_action<CallbackAction>(func);
@@ -1264,12 +1264,10 @@ TEST_F(ActionTest, CallbackActionDefaultDuration)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
-/// \brief Outputs "Hello, there!" to the console several times.
 TEST_F(ActionTest, CallbackActionWithNonZeroDuration)
 {
   // Testing parameters
-  const float DURATION = 0.05f;
-  // const float DURATION = 1.0f;
+  const real32 DURATION = 0.05f;
   const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
   const IActionObject::timing_curve_func TIMING_MODE =
     NOM_ACTION_TEST_FLAG(timing_curve);

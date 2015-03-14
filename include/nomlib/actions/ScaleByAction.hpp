@@ -56,6 +56,8 @@ class ScaleByAction: public virtual IActionObject
     /// \param drawable A valid nom::Sprite instance.
     /// \param delta The total scale factor to apply to the drawable over time.
     /// \param seconds The duration of the animation.
+    ///
+    /// \remarks Negative delta values are valid.
     ScaleByAction(  const std::shared_ptr<Sprite>& drawable,
                     const Size2f& delta, real32 seconds );
 
@@ -84,8 +86,8 @@ class ScaleByAction: public virtual IActionObject
     void first_frame(real32 delta_time);
     void last_frame(real32 delta_time);
 
-    const Size2f total_displacement_;
-    Size2i initial_size_;
+    const Size2f total_displacement_ = Size2f::zero;
+    Size2i initial_size_ = Size2i::zero;
 
     std::shared_ptr<Sprite> drawable_;
 

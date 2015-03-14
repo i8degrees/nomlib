@@ -64,68 +64,54 @@ std::unique_ptr<IActionObject> MoveByAction::clone() const
 IActionObject::FrameState
 MoveByAction::update(real32 t, const Point2i& b, const Point2i& c, real32 d)
 {
-  // The current frame to displace
   real32 delta_time = t;
-
-  // Total duration of the animation displacement
   const real32 duration = d;
 
-  // Initial starting value; this is the first frame to displace from
-  const Point2i initial_position(b);
+  // Initial starting values
+  const real32 b1 = b.x;
+  const real32 b2 = b.y;
 
-  // Total displacement over time
-  const Point2i total_displacement(c);
+  // Total change over time
+  real32 c1 = c.x;
+  real32 c2 = c.y;
 
-  // The computed displacement of the frame
   Point2f displacement(Point2f::zero);
+  Point2i displacement_as_integer(Point2i::zero);
 
   // Clamp delta values that go beyond maximal duration
   if( delta_time > (duration / this->speed() ) ) {
     delta_time = duration / this->speed();
   }
 
-  // initial starting values to displace from
-  const real32 b1 = initial_position.x;
-  const real32 b2 = initial_position.y;
-
-  // total change in value (applied over time)
-  real32 c1 = 0;
-  real32 c2 = 0;
-
   // Account for the translating of negative X and Y displacements
-  if( total_displacement.x >= b1 ) {
-    c1 = total_displacement.x - b1;
+  if( c1 >= b1 ) {
+    c1 = c1 - b1;
   } else {
-    c1 = total_displacement.x;
+    // Use existing value
   }
 
-  if( total_displacement.y >= b2 ) {
-    c2 = total_displacement.y - b2;
+  if( c2 >= b2 ) {
+    c2 = c2 - b2;
   } else {
-    c2 = total_displacement.y;
+    // Use existing value
   }
-
-  NOM_ASSERT(this->timing_curve() != nullptr);
 
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
+
+  NOM_ASSERT(this->timing_curve() != nullptr);
 
   displacement.x =
     this->timing_curve().operator()(frame_time, b1, c1, duration);
   displacement.y =
     this->timing_curve().operator()(frame_time, b2, c2, duration);
 
-  // Update our internal elapsed frames counter (diagnostics)
-  ++this->elapsed_frames_;
-
   if( this->drawable_ != nullptr ) {
 
-    // State diagnostics
-    Point2i drawable_pos = this->drawable_->position();
+    ++this->elapsed_frames_;
 
     // Convert floating-point value to integer; it is critical that we round
     // the values so that values like 254.999984741 are represented as 255.00
-    Point2i displacement_as_integer(Point2i::zero);
     displacement_as_integer.x =
       nom::round_float<int>(displacement.x);
     displacement_as_integer.y =
@@ -133,23 +119,20 @@ MoveByAction::update(real32 t, const Point2i& b, const Point2i& c, real32 d)
 
     this->drawable_->set_position(displacement_as_integer);
 
-    // Diagnostics
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "delta_time:", delta_time,
                     "frame_time:", frame_time,
                     "[elapsed frames]:", this->elapsed_frames_ );
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
-                    "position (input):", drawable_pos,
+
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
+                    "position (input):", this->drawable_->position(),
                     "displacement (output):", displacement_as_integer );
 
-    // Extended diagnostics
     NOM_LOG_VERBOSE(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                       "[b1]:", b1, "[c1]:", c1,
                       "[b2]:", b2, "[c2]:", c2 );
   }
 
-  // Continue playing the animation only when we are inside our frame duration
-  // bounds; this adds stability to variable time steps
   if( delta_time < (duration / this->speed() ) ) {
     this->set_status(FrameState::PLAYING);
   } else {
@@ -164,7 +147,6 @@ IActionObject::FrameState MoveByAction::next_frame(real32 delta_time)
 {
   delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
 
-  // Initialize timer and initial position
   this->first_frame(delta_time);
 
   return this->update(  delta_time, this->initial_position_,
@@ -175,10 +157,8 @@ IActionObject::FrameState MoveByAction::prev_frame(real32 delta_time)
 {
   delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
 
-  // Initialize timer and initial position
   this->first_frame(delta_time);
 
-  // Inverse of ::next_frame
   return this->update(  delta_time, this->initial_position_,
                         -(this->total_displacement_), this->duration() );
 }
@@ -195,16 +175,11 @@ void MoveByAction::resume(real32 delta_time)
 
 void MoveByAction::rewind(real32 delta_time)
 {
-  // Reset elapsed frame (diagnostics)
   this->elapsed_frames_ = 0.0f;
-
-  // Reset frame timing
   this->timer_.stop();
-
   this->set_status(FrameState::PLAYING);
 
-  // Reset starting displacement position
-  if( this->drawable_ != nullptr && this->initial_position_ != Point2i::null ) {
+  if( this->drawable_ != nullptr ) {
     this->drawable_->set_position(this->initial_position_);
   }
 }
@@ -223,14 +198,11 @@ void MoveByAction::release()
 void MoveByAction::first_frame(real32 delta_time)
 {
   if( this->timer_.started() == false ) {
-    // Start frame timing
     this->timer_.start();
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "BEGIN at", delta_time );
 
-    // Initialize the initial displacement position; this is also necessary for
-    // reversing the animation, repeating it, etc.
     if( this->drawable_ != nullptr ) {
       this->initial_position_ = this->drawable_->position();
     }

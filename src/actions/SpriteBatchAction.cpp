@@ -91,37 +91,34 @@ SpriteBatchAction::update(real32 t, real32 b, real32 c, real32 d)
   const int b1 = b;
 
   // Total number of frames over time
-  const real32 total_displacement = c;
+  real32 c1 = c;
 
   // The computed texture frame to show next
   real32 displacement(0.0f);
+  int displacement_as_integer = 0;
 
   // Clamp delta values that go beyond maximal duration
   if( delta_time > (duration / this->speed() ) ) {
     delta_time = duration / this->speed();
   }
 
-  // total change in value (applied over time)
-  real32 c1 = total_displacement;
-
-  NOM_ASSERT(this->timing_curve() != nullptr);
-
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
+
+  NOM_ASSERT(this->timing_curve() != nullptr);
 
   displacement =
     this->timing_curve().operator()(frame_time, b1, c1, duration);
   NOM_ASSERT(displacement <= this->total_displacement_);
   NOM_ASSERT(displacement >= this->initial_frame_);
 
-  this->elapsed_frames_ = displacement;
-
   if( delta_time >= (this->last_delta_ + frame_interval) &&
       delta_time < (duration / this->speed() ) )
   {
+    this->elapsed_frames_ = displacement;
     this->last_delta_ = delta_time;
 
-    int displacement_as_integer =
+    displacement_as_integer =
       nom::round_float_down<int>(displacement);
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
@@ -176,7 +173,6 @@ void SpriteBatchAction::resume(real32 delta_time)
 
 void SpriteBatchAction::rewind(real32 delta_time)
 {
-  // Reset frame timing
   this->elapsed_frames_ = 0.0f;
   this->last_delta_ = 0.0f;
   this->timer_.stop();

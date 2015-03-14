@@ -279,7 +279,7 @@ void ActionTest::expected_action_params(  const SequenceAction* action,
 
 void
 ActionTest::expected_alpha_in_params( const FadeInAction* obj,
-                                      int16 alpha, const Sprite* tex,
+                                      uint8 alpha, const Sprite* tex,
                                       const std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)
@@ -298,7 +298,7 @@ ActionTest::expected_alpha_in_params( const FadeInAction* obj,
 
 void
 ActionTest::expected_alpha_out_params(  const FadeOutAction* obj,
-                                        int16 alpha, const Sprite* tex,
+                                        uint8 alpha, const Sprite* tex,
                                         const std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)
@@ -317,7 +317,7 @@ ActionTest::expected_alpha_out_params(  const FadeOutAction* obj,
 
 void
 ActionTest::expected_alpha_by_params( const FadeAlphaByAction* obj,
-                                      int16 alpha, const Sprite* tex,
+                                      uint8 alpha, const Sprite* tex,
                                       const std::string& scope_name )
 {
   ASSERT_TRUE(obj != nullptr)

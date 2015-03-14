@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers
 #include "nomlib/core/helpers.hpp"
+#include "nomlib/math/Color4.hpp"
 #include "nomlib/math/math_helpers.hpp"
 
 // Forward declarations
@@ -41,7 +42,7 @@ namespace nom {
 const char* FadeAlphaByAction::DEBUG_CLASS_NAME = "[FadeAlphaByAction]:";
 
 FadeAlphaByAction::FadeAlphaByAction( const std::shared_ptr<Sprite>& drawable,
-                                      int16 delta, real32 seconds ) :
+                                      real32 delta, real32 seconds ) :
   total_displacement_(delta)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
@@ -49,8 +50,6 @@ FadeAlphaByAction::FadeAlphaByAction( const std::shared_ptr<Sprite>& drawable,
 
   this->set_duration(seconds);
   this->elapsed_frames_ = 0.0f;
-  this->alpha_ = 0;
-  this->initial_alpha_ = 0;
   this->drawable_ = drawable;
 }
 
@@ -66,97 +65,71 @@ std::unique_ptr<IActionObject> FadeAlphaByAction::clone() const
 }
 
 IActionObject::FrameState
-FadeAlphaByAction::update(real32 t, uint8 b, int16 c, real32 d)
+FadeAlphaByAction::update(real32 t, real32 b, real32 c, real32 d)
 {
-  // The current frame to alpha blend
   real32 delta_time = t;
-
-  // Total duration of the animation's alpha blending
   const real32 duration = d;
 
-  // Initial starting value; this is the first frame to alpha blend from
-  const uint8 initial_alpha(b);
+  // initial starting value
+  const real32 b1 = b;
 
-  // Total displacement over time
-  const int16 total_displacement(c);
+  // Total change over time
+  real32 c1 = c;
 
-  // The computed alpha blending value of the frame
   real32 displacement = 0.0f;
+  real32 displacement_as_rgba = 0.0f;
 
   // Clamp delta values that go beyond maximal duration
   if( delta_time > (duration / this->speed() ) ) {
     delta_time = duration / this->speed();
   }
 
-  // initial starting value
-  const real32 b1 = initial_alpha;
-
-  // total change in value (applied over time)
-  real32 c1 = 0.0f;
-
-  // Account for the blending of negative alphas
-  if( total_displacement >= b1 ) {
-    c1 = total_displacement - b1;
-  } else {
-    c1 = total_displacement;
-  }
-
-  NOM_ASSERT(this->timing_curve() != nullptr);
-
   // Apply speed scalar onto current frame time
   real32 frame_time = delta_time * this->speed();
+
+  NOM_ASSERT(this->timing_curve() != nullptr);
 
   displacement =
     this->timing_curve().operator()(frame_time, b1, c1, duration);
 
-  // Update our internal elapsed frames counter (diagnostics
-  ++this->elapsed_frames_;
-
-  int16 displacement_as_integer = 0;
-
   if( this->drawable_ != nullptr ) {
 
-    // Convert floating-point value to integer; it is critical that we round
-    // the values so that values like 254.999984741 are represented as 255.00
-    displacement_as_integer =
-      nom::round_float<int>(displacement);
-    // TODO: Explain **why** abs
-    this->drawable_->set_alpha( abs(displacement_as_integer) );
+    ++this->elapsed_frames_;
 
-    // Record state for the unit tests
-    this->alpha_ = (uint8)abs(displacement_as_integer);
+    // Convert the floating-point value to an unsigned 8-bit RGBA value
+    displacement_as_rgba =
+      nom::absolute_float<real32>( (displacement / 255) * 255);
 
-    // Diagnostics
+    this->drawable_->set_alpha(displacement_as_rgba);
+    this->alpha_ = displacement_as_rgba;
+
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "delta_time:", delta_time, "frame_time:", frame_time,
                     "[elapsed frames]:", this->elapsed_frames_ );
-    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
+
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION,
                     "alpha (input):",
                     NOM_SCAST(int, this->drawable_->alpha() ),
-                    "displacement (output):",
-                    NOM_SCAST(int, displacement_as_integer) );
+                    "displacement (output):", displacement_as_rgba );
+
+    NOM_ASSERT(displacement_as_rgba <= Color4i::ALPHA_OPAQUE);
+    NOM_ASSERT(displacement_as_rgba >= Color4i::ALPHA_TRANSPARENT);
   }
 
-  // Continue playing the animation only when we are inside our frame duration
-  // bounds; this adds stability to variable time steps
   if( delta_time < (duration / this->speed() ) ) {
-
     this->status_ = FrameState::PLAYING;
-    return this->status_;
   } else {
-
     this->last_frame(delta_time);
-
     this->status_ = FrameState::COMPLETED;
-    return this->status_;
   }
+
+  return this->status_;
 }
 
 IActionObject::FrameState FadeAlphaByAction::next_frame(real32 delta_time)
 {
   delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
 
-  // Initialize timer and initial alpha
   this->first_frame(delta_time);
 
   return this->update(  delta_time, this->initial_alpha_,
@@ -167,7 +140,6 @@ IActionObject::FrameState FadeAlphaByAction::prev_frame(real32 delta_time)
 {
   delta_time = ( Timer::to_seconds( this->timer_.ticks() ) );
 
-  // Initialize timer and initial alpha
   this->first_frame(delta_time);
 
   return this->update(  delta_time, this->initial_alpha_,
@@ -184,22 +156,13 @@ void FadeAlphaByAction::resume(real32 delta_time)
   this->timer_.unpause();
 }
 
-// Has not been tested
 void FadeAlphaByAction::rewind(real32 delta_time)
 {
-  // Reset the starting frame
   this->elapsed_frames_ = 0.0f;
-
-  // Reset last recorded alpha state
   this->alpha_ = 0;
-
-  // Reset frame timing
   this->timer_.stop();
-
   this->status_ = FrameState::PLAYING;
 
-  // Reset the initial alpha blending value; this is also necessary for
-  // reversing the animation, repeating it, etc.
   if( this->drawable_ != nullptr ) {
     this->drawable_->set_alpha(this->initial_alpha_);
   }
@@ -219,14 +182,11 @@ void FadeAlphaByAction::release()
 void FadeAlphaByAction::first_frame(real32 delta_time)
 {
   if( this->timer_.started() == false ) {
-    // Start frame timing
     this->timer_.start();
 
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                     "BEGIN at", delta_time );
 
-    // Initialize the initial alpha blending value; this is also necessary for
-    // reversing the animation, repeating it, etc.
     if( this->drawable_ != nullptr ) {
       this->initial_alpha_ = this->drawable_->alpha();
     }

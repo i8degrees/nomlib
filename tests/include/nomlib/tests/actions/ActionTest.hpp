@@ -123,17 +123,17 @@ class ActionTest: public nom::VisualUnitTest
                                   const std::string& scope_name = "" );
 
     /// \brief Helper method for testing properties of nom::FadeInAction.
-    void expected_alpha_in_params(  const FadeInAction* obj, int16 alpha,
+    void expected_alpha_in_params(  const FadeInAction* obj, uint8 alpha,
                                     const Sprite* tex = nullptr,
                                     const std::string& scope_name = "" );
 
     /// \brief Helper method for testing properties of nom::FadeOutAction.
-    void expected_alpha_out_params( const FadeOutAction* obj, int16 alpha,
+    void expected_alpha_out_params( const FadeOutAction* obj, uint8 alpha,
                                     const Sprite* tex = nullptr,
                                     const std::string& scope_name = "" );
 
     /// \brief Helper method for testing properties of nom::FadeAlphaByAction.
-    void expected_alpha_by_params(  const FadeAlphaByAction* obj, int16 alpha,
+    void expected_alpha_by_params(  const FadeAlphaByAction* obj, uint8 alpha,
                                     const Sprite* tex = nullptr,
                                     const std::string& scope_name = "" );
 

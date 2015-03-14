@@ -768,7 +768,7 @@ TEST_F(ActionTest, ConcurrentGroupAndSequenceActions)
 TEST_F(ActionTest, RunActionWithName)
 {
   // Testing parameters
-  const float DURATION = 1.0f;
+  const float DURATION = 0.0f;
   const Point2i TRANSLATE_POS(Point2i::zero);
 
   auto translate0 =
@@ -778,10 +778,11 @@ TEST_F(ActionTest, RunActionWithName)
   auto action0 =
     nom::create_action<GroupAction>( {translate0} );
   ASSERT_TRUE(action0 != nullptr);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
-  this->player.run_action(action0, "action0");
+  this->player.run_action(action0);
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue action0";
   EXPECT_EQ(1, this->player.num_actions() );

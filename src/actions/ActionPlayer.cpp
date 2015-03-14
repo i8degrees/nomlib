@@ -127,32 +127,7 @@ void ActionPlayer::cancel_actions()
 
 bool ActionPlayer::run_action(const std::shared_ptr<IActionObject>& action)
 {
-  std::string action_id = "";
-  if( action != nullptr ) {
-    action_id = action->name();
-  }
-
-  return this->run_action(action, action_id.c_str() );
-}
-
-bool ActionPlayer::
-run_action( const std::shared_ptr<IActionObject>& action,
-            const char* action_id )
-{
-  if( action != nullptr ) {
-    action->set_name(action_id);
-  }
-
-  auto dispatch_queue =
-    nom::create_dispatch_queue<DispatchQueue>();
-  if( dispatch_queue != nullptr ) {
-    return this->run_action(action, std::move(dispatch_queue), nullptr);
-  }
-
-  NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Failed to enqueue action: ",
-                "could not allocate memory for the dispatch queue!\n",
-                "[action_id]:", action_id );
-  return false;
+  return this->run_action(action, nullptr);
 }
 
 bool ActionPlayer::

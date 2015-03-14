@@ -139,19 +139,6 @@ class ActionPlayer
     /// \see nom::ActionPlayer::update
     bool run_action(const std::shared_ptr<IActionObject>& action);
 
-    /// \brief Enqueue an action with an action identifier.
-    ///
-    /// \param action The action to run; NULL actions are valid.
-    ///
-    /// \param action_id A unique identifier for the action.
-    ///
-    /// \remarks If an action using the same key is already running, it is
-    /// removed before the new action is added.
-    ///
-    /// \see nom::ActionPlayer::update, nom::ActionPlayer::action_running
-    bool run_action(  const std::shared_ptr<IActionObject>& action,
-                      const char* action_id );
-
     /// \brief Enqueue an action with a completion callback.
     ///
     /// \param action The action to run; NULL actions are valid.

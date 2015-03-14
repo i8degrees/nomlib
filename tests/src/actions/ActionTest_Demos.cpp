@@ -132,7 +132,7 @@ TEST_F(ActionTest, RainingRectsStressTest)
 
   action_list group_actions;
   for( auto idx = 0; idx != NUM_OBJECTS; ++idx ) {
-    group_actions.push_back(actions[idx].container);
+    group_actions.emplace_back(actions[idx].container);
   }
 
   auto action0 =

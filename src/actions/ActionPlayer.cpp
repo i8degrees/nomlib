@@ -170,7 +170,7 @@ bool ActionPlayer::update(real32 delta_time)
       NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_PLAYER, DEBUG_CLASS_NAME,
                       "enqueue erasable (NULL)", "[action_id]:", action_id );
 
-      this->free_list_.push_back(itr);
+      this->free_list_.emplace_back(itr);
     } else {
 
       dispatch_running = (action_queue)->update(player_state, delta_time);
@@ -179,7 +179,7 @@ bool ActionPlayer::update(real32 delta_time)
         NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION_PLAYER, DEBUG_CLASS_NAME,
                         "enqueue erasable", "[action_id]:", action_id );
 
-        this->free_list_.push_back(itr);
+        this->free_list_.emplace_back(itr);
       } // end if IDLE
     } // end if action queue is valid
   } // end for loop

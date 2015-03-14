@@ -48,7 +48,7 @@ SequenceAction::SequenceAction(const action_list& actions)
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
   for( auto itr = actions.begin(); itr != actions.end(); ++itr ) {
-    this->actions_.push_back(*itr);
+    this->actions_.emplace_back(*itr);
   }
 
   this->num_completed_ = 0;
@@ -72,7 +72,7 @@ std::unique_ptr<IActionObject> SequenceAction::clone() const
     cloned_obj->actions_.clear();
     auto actions_end = this->actions_.end();
     for( auto itr = this->actions_.begin(); itr != actions_end; ++itr ) {
-      cloned_obj->actions_.push_back( (*itr)->clone() );
+      cloned_obj->actions_.emplace_back( (*itr)->clone() );
     }
 
     cloned_obj->actions_iterator_ = cloned_obj->actions_.begin();

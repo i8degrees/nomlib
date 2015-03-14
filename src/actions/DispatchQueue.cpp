@@ -83,7 +83,7 @@ enqueue_action( const std::shared_ptr<IActionObject>& action,
   enqueued_action->action = action;
   enqueued_action->on_completion_callback = completion_func;
 
-  this->actions_.push_back( std::move(enqueued_action) );
+  this->actions_.emplace_back( std::move(enqueued_action) );
   this->actions_iterator_ = this->actions_.begin();
   ++this->num_actions_;
 

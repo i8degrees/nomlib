@@ -98,12 +98,12 @@ IActionObject::FrameState CallbackAction::next_frame(real32 delta_time)
                     "delta_time:", delta_time, "frame_time:", frame_time,
                     "[elapsed frames]:", this->elapsed_frames_ );
 
-    this->status_ = FrameState::PLAYING;
+    this->set_status(FrameState::PLAYING);
   } else {
-    this->status_ = FrameState::COMPLETED;
+    this->set_status(FrameState::COMPLETED);
   }
 
-  return this->status_;
+  return this->status();
 }
 
 IActionObject::FrameState CallbackAction::prev_frame(real32 delta_time)

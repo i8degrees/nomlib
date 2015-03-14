@@ -84,8 +84,8 @@ IActionObject::FrameState RemoveAction::next_frame(real32 delta_time)
     this->release();
   }
 
-  this->status_ = FrameState::COMPLETED;
-  return this->status_;
+  this->set_status(FrameState::COMPLETED);
+  return this->status();
 }
 
 IActionObject::FrameState RemoveAction::prev_frame(real32 delta_time)

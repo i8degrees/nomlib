@@ -170,9 +170,15 @@ class IActionObject
     /// \param seconds The duration in seconds.
     void set_duration(real32 seconds);
 
-    FrameState status_ = FrameState::PLAYING;
+    /// \brief Set the state of the action.
+    ///
+    /// \param state One of the IActionObject::FrameState enumeration values.
+    void set_status(FrameState state);
+
+    /// \brief Internal frames counter.
+    ///
+    /// \remarks This is intended purely for debugging convenience.
     real32 elapsed_frames_ = 0.0f;
-    real32 duration_ = 0.0f;
 
     /// \brief Internal time clock (milliseconds resolution).
     ///
@@ -183,7 +189,9 @@ class IActionObject
     Timer timer_;
 
   private:
+    FrameState status_ = FrameState::PLAYING;
     std::string name_;
+    real32 duration_ = 0.0f;
     real32 speed_ = 1.0f;
     timing_curve_func timing_curve_ = nullptr;
 };

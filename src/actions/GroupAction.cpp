@@ -77,7 +77,7 @@ std::unique_ptr<IActionObject> GroupAction::clone() const
   auto cloned_obj = nom::make_unique<self_type>( self_type(*this) );
   if( cloned_obj != nullptr ) {
 
-    cloned_obj->status_ = FrameState::PLAYING;
+    cloned_obj->set_status(FrameState::PLAYING);
 
     cloned_obj->actions_.clear();
     group_action cloned_entry = {};
@@ -111,9 +111,9 @@ GroupAction::update(real32 delta_time, uint32 direction)
 
   // Program flow is structured to never call back here after the actions are
   // finished -- this serves only as a reminder to the intended flow.
-  if( this->status_ == FrameState::COMPLETED ) {
+  if( this->status() == FrameState::COMPLETED ) {
     NOM_ASSERT_INVALID_PATH();
-    return this->status_;
+    return this->status();
   }
 
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
@@ -154,15 +154,15 @@ GroupAction::update(real32 delta_time, uint32 direction)
       NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_ACTION, DEBUG_CLASS_NAME,
                       "Finished at:", Timer::to_seconds( nom::ticks() ),
                       "[num_completed]:", this->num_completed_ );
-      this->status_ = FrameState::COMPLETED;
-      return this->status_;
+      this->set_status(FrameState::COMPLETED);
+      return this->status();
     } else {
-      this->status_ = FrameState::PLAYING;
+      this->set_status(FrameState::PLAYING);
     }
 
   }
 
-  return this->status_;
+  return this->status();
 }
 
 IActionObject::FrameState GroupAction::next_frame(real32 delta_time)
@@ -200,7 +200,7 @@ void GroupAction::resume(real32 delta_time)
 void GroupAction::rewind(real32 delta_time)
 {
   this->num_completed_ = 0;
-  this->status_ = FrameState::PLAYING;
+  this->set_status(FrameState::PLAYING);
 
   for( auto itr = this->actions_.begin(); itr != this->actions_.end(); ++itr ) {
 

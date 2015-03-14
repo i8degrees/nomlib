@@ -42,14 +42,12 @@ enum FrameStateDirection
 const char* RepeatForAction::DEBUG_CLASS_NAME = "[RepeatForAction]:";
 
 RepeatForAction::RepeatForAction( const std::shared_ptr<IActionObject>& action,
-                                  nom::size_type num_repeats,
-                                  const std::string& name ) :
+                                  nom::size_type num_repeats ) :
   num_repeats_(num_repeats)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  this->set_name(name);
   this->action_ = action;
   this->elapsed_repeats_ = 0;
 }

@@ -95,17 +95,18 @@ ActionTest::setup_repeating_cursor_test(  real32 duration, real32 speed,
 
   std::shared_ptr<IActionObject> action0;
   if( type & ActionType::GROUP ) {
-    action0 = nom::create_action<GroupAction>( {sprite_action}, "action0" );
+    action0 = nom::create_action<GroupAction>( {sprite_action} );
   } else if( type & ActionType::SEQUENCE ) {
-    action0 = nom::create_action<SequenceAction>( {sprite_action}, "action0" );
+    action0 = nom::create_action<SequenceAction>( {sprite_action} );
   } else if( type & ActionType::REVERSED ) {
-    action0 = nom::create_action<ReversedAction>(sprite_action, "action0");
+    action0 = nom::create_action<ReversedAction>(sprite_action);
   } else if( type & ActionType::ACTION ) {
     action0 = sprite_action;
   } else {
     ASSERT_TRUE("ActionType must be either one of the enumeration values")
     << scope_name;
   }
+  action0->set_name("action0");
 
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
@@ -113,12 +114,13 @@ ActionTest::setup_repeating_cursor_test(  real32 duration, real32 speed,
   std::shared_ptr<IActionObject> repeat;
   if( type & ActionType::REPEAT_FOR ) {
     repeat =
-      nom::create_action<RepeatForAction>(action0, NUM_REPEATS, "action0_RepeatFor");
+      nom::create_action<RepeatForAction>(action0, NUM_REPEATS);
   } else if( type & ActionType::REPEAT_FOREVER ) {
     repeat =
-      nom::create_action<RepeatForeverAction>(action0, "action0_RepeatForever");
+      nom::create_action<RepeatForeverAction>(action0);
   }
   ASSERT_TRUE(repeat != nullptr);
+  repeat->set_name("action0_repeat");
 
   EXPECT_EQ(0, this->player.num_actions() )
   << scope_name;
@@ -203,10 +205,11 @@ TEST_F(ActionTest, RepeatForAction)
   ASSERT_TRUE(repeat != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {repeat}, nom::UnitTest::test_name() );
+    nom::create_action<GroupAction>( {repeat} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -272,10 +275,11 @@ TEST_F(ActionTest, RepeatForeverAction)
   ASSERT_TRUE(repeat_forever != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {repeat_forever}, "action0" );
+    nom::create_action<GroupAction>( {repeat_forever} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   auto kill_timer =
     nom::create_action<WaitForDurationAction>(TEST_DURATION);

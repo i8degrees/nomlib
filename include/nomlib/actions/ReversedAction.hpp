@@ -49,12 +49,10 @@ class ReversedAction: public virtual IActionObject
     /// \brief Reverse the behavior of an action.
     ///
     /// \param action An action object to repeat; NULL actions are valid.
-    /// \param name An optional unique identifier to assign to this instance.
     ///
     /// \remarks Not all actions are reversible -- see the action's
     /// documentation for its implementation details.
-    ReversedAction( const std::shared_ptr<IActionObject>& action,
-                    const std::string& name = "" );
+    ReversedAction(const std::shared_ptr<IActionObject>& action);
 
     virtual ~ReversedAction();
 

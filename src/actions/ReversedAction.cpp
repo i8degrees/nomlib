@@ -35,13 +35,11 @@ namespace nom {
 // Static initializations
 const char* ReversedAction::DEBUG_CLASS_NAME = "[ReversedAction]:";
 
-ReversedAction::ReversedAction( const std::shared_ptr<IActionObject>& action,
-                                const std::string& name )
+ReversedAction::ReversedAction(const std::shared_ptr<IActionObject>& action)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
 
-  this->set_name(name);
   this->action_ = action;
 }
 

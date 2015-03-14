@@ -42,13 +42,10 @@ enum FrameStateDirection
 // Static initializations
 const char* SequenceAction::DEBUG_CLASS_NAME = "[SequenceAction]:";
 
-SequenceAction::SequenceAction( const action_list& actions,
-                                const std::string& name )
+SequenceAction::SequenceAction(const action_list& actions)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_ACTION,
                       nom::NOM_LOG_PRIORITY_VERBOSE );
-
-  this->set_name(name);
 
   for( auto itr = actions.begin(); itr != actions.end(); ++itr ) {
     this->actions_.push_back(*itr);

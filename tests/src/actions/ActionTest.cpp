@@ -718,10 +718,11 @@ TEST_F(ActionTest, WaitForDurationAction)
   ASSERT_TRUE(idle2s != nullptr);
 
   auto action0 =
-    nom::create_action<SequenceAction>( {idle2s}, nom::UnitTest::test_name() );
+    nom::create_action<SequenceAction>( {idle2s} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -782,10 +783,11 @@ TEST_F(ActionTest, AnimateTexturesAction)
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {tex_bg}, "action0" );
+    nom::create_action<GroupAction>( {tex_bg} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   auto remove_action0 =
     nom::create_action<RemoveAction>(action0);
@@ -851,10 +853,11 @@ TEST_F(ActionTest, MoveByAction)
   ASSERT_TRUE(translate != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {translate}, nom::UnitTest::test_name() );
+    nom::create_action<GroupAction>( {translate} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -910,10 +913,11 @@ TEST_F(ActionTest, MoveByActionNegativeXDelta)
   ASSERT_TRUE(translate != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {translate}, nom::UnitTest::test_name() );
+    nom::create_action<GroupAction>( {translate} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -968,10 +972,11 @@ TEST_F(ActionTest, MoveByActionWithNegativeYDelta)
   ASSERT_TRUE(translate != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {translate}, nom::UnitTest::test_name() );
+    nom::create_action<GroupAction>( {translate} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -1031,10 +1036,11 @@ TEST_F(ActionTest, ScaleByAction)
   ASSERT_TRUE(scale_by != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {scale_by}, nom::UnitTest::test_name());
+    nom::create_action<GroupAction>( {scale_by} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -1104,10 +1110,11 @@ TEST_F(ActionTest, ScaleByActionWithNegativeFactor)
   scale_by->set_name("scale_by");
 
   auto action0 =
-    nom::create_action<GroupAction>( {scale_by}, nom::UnitTest::test_name() );
+    nom::create_action<GroupAction>( {scale_by} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -1173,10 +1180,11 @@ TEST_F(ActionTest, ScaleByActionWithNonPowerOfTwo)
   scale_by->set_name("scale_by");
 
   auto action0 =
-    nom::create_action<GroupAction>( {scale_by}, nom::UnitTest::test_name() );
+    nom::create_action<GroupAction>( {scale_by} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -1226,10 +1234,11 @@ TEST_F(ActionTest, CallbackActionDefaultDuration)
   auto anim0 = nom::create_action<CallbackAction>(func);
 
   auto action0 =
-    nom::create_action<GroupAction>( {anim0}, nom::UnitTest::test_name() );
+    nom::create_action<GroupAction>( {anim0} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -1274,10 +1283,11 @@ TEST_F(ActionTest, CallbackActionWithNonZeroDuration)
   auto anim0 = nom::create_action<CallbackAction>(DURATION, func);
 
   auto action0 =
-    nom::create_action<GroupAction>( {anim0}, nom::UnitTest::test_name() );
+    nom::create_action<GroupAction>( {anim0} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =

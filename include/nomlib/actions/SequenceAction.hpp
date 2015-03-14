@@ -51,9 +51,7 @@ class SequenceAction: public virtual IActionObject
     ///
     /// \param actions The group of actions to execute; NULL actions are
     /// valid.
-    /// \param name An optional unique identifier to assign to this instance.
-    SequenceAction( const action_list& actions,
-                    const std::string& name = "" );
+    SequenceAction(const action_list& actions);
 
     virtual ~SequenceAction();
 

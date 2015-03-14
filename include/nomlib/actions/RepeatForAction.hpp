@@ -50,9 +50,8 @@ class RepeatForAction: public virtual IActionObject
     ///
     /// \param action An action object to repeat; NULL actions are valid.
     /// \param num_repeats The number of times to repeat the action for.
-    /// \param name An optional unique identifier to assign to this instance.
     RepeatForAction(  const std::shared_ptr<IActionObject>& action,
-                      nom::size_type num_repeats, const std::string& name = "" );
+                      nom::size_type num_repeats );
 
     virtual ~RepeatForAction();
 

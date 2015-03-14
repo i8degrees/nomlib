@@ -267,10 +267,11 @@ TEST_F(ActionTest, MoveByActionReversed)
   ASSERT_TRUE(translate_rev != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {translate_rev}, "action0" );
+    nom::create_action<GroupAction>( {translate_rev} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -339,10 +340,11 @@ TEST_F(ActionTest, ScaleByActionReversed)
   ASSERT_TRUE(scale_by_reversed != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {scale_by_reversed}, "action0" );
+    nom::create_action<GroupAction>( {scale_by_reversed} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -410,10 +412,11 @@ TEST_F(ActionTest, MoveByActionRepeatForReversed)
   ASSERT_TRUE(repeat_reversed != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {repeat_reversed}, "action0" );
+    nom::create_action<GroupAction>( {repeat_reversed} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
@@ -484,10 +487,11 @@ TEST_F(ActionTest, RepeatForeverActionReversed)
   ASSERT_TRUE(repeat_forever_rev != nullptr);
 
   auto action0 =
-    nom::create_action<GroupAction>( {repeat_forever_rev}, "action0" );
+    nom::create_action<GroupAction>( {repeat_forever_rev} );
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   auto kill_timer =
     nom::create_action<WaitForDurationAction>(TEST_DURATION);
@@ -566,10 +570,11 @@ TEST_F(ActionTest, AnimateTexturesActionReversed)
   ASSERT_TRUE(tex_bg != nullptr);
 
   auto action0 =
-    nom::create_action<ReversedAction>(tex_bg, "action0_rev");
+    nom::create_action<ReversedAction>(tex_bg);
   ASSERT_TRUE(action0 != nullptr);
   action0->set_timing_curve(TIMING_MODE);
   action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
 
   auto remove_action0 =
     nom::create_action<RemoveAction>(action0);

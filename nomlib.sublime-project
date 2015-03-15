@@ -8,16 +8,10 @@
       // (and replace) results
       "file_exclude_patterns":  [
                                   "*.sublime-*", "version.hpp", "config.hpp",
-                                  "revision.cpp"
-                                ],
+                                  "revision.cpp" ],
 
-
-      // 'xcode' is my CMake build directory for Xcode generated project files
-      // and must be excluded due to a bug that often crashes Sublime Text 2
-      // anytime I build from this directory.
-      //
-      // See also: http://www.sublimetext.com/forum/viewtopic.php?f=3&t=8417
-      "folder_exclude_patterns": [ "build", "xcode", "tmp", "third-party" ]
+      "folder_exclude_patterns":  [ "build", "build-release", "tmp",
+                                    "third-party" ]
     }
   ],
 

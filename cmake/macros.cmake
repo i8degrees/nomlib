@@ -103,33 +103,10 @@ macro(nom_add_library target lib_type source headers external_deps)
   endif( PLATFORM_OSX AND FRAMEWORK )
 
   # Copy target's library file to $CMAKE_INSTALL_PREFIX/lib
-  if( NOT PLATFORM_WINDOWS )
-    install(  TARGETS ${target}
-              LIBRARY DESTINATION lib
-              ARCHIVE DESTINATION lib
-              LIBRARY FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX} )
-
-  # FIXME: This is the only way I've been able to get the generated MSVC project
-  # files to cooperate with CMake -- both the output directory and target name
-  # (set properly from the MSVC generator) differ from what CMake thinks they
-  # ought to be.
-  else( PLATFORM_WINDOWS )
-
-    if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
-      set(  LIBRARY_PATH
-            "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${target}-d.lib"
-      )
-    else( NOT CMAKE_BUILD_TYPE STREQUAL "Debug" )
-      set(  LIBRARY_PATH
-            "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${target}.lib"
-      )
-    endif( CMAKE_BUILD_TYPE STREQUAL "Debug" )
-
-    install(  FILES
-              ${LIBRARY_PATH}
-              DESTINATION lib
-    )
-  endif( NOT PLATFORM_WINDOWS )
+  install(  TARGETS ${target}
+            LIBRARY DESTINATION lib
+            ARCHIVE DESTINATION lib
+            LIBRARY FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX} )
 
 endmacro(nom_add_library)
 

@@ -33,17 +33,33 @@ if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
   include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
 endif()
 
-# Used only by the MSVCPP generator; this path will be expanded to include the
-# configuration build type, i.e.: Debug or Release, so the full path resolve
-# to '<cmake_build_dir>/examples/Debug' or '<cmake_build_dir>/examples/Release'.
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples" )
+# Use common build output directories for MSVCPP && Xcode project files.
+#
+# IMPORTANT: Debug and Release build targets **must** be kept in separate build
+# trees!
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/examples/Debug")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/examples/Release")
 
-# Used by all other generators (Xcode, Unix Makefiles); this path will resolve
-# to '<cmake_build_dir>/examples/Debug' or '<cmake_build_dir>/examples/Release'.
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/examples/Debug" )
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/examples/Release" )
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/examples/Debug")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/examples/Release")
 
-set( EXAMPLES_INSTALL_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}" )
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/examples/Debug")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/examples/Release")
+
+if(DEBUG)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG})
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG})
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG})
+else() # Release builds
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE})
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE})
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE})
+endif()
+
+# This path is used for the local installation of required dependencies for
+# running examples, such as dependent resource files. Additionally, when
+# building on Windows, this will be the path that dependent DLLs are copied to.
+set( EXAMPLES_INSTALL_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" )
 
 # Project headers files inclusions; our header files namespace, 'nomlib'
 include_directories( "${INC_ROOT_DIR}" )

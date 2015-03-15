@@ -43,9 +43,20 @@ Both the 64-bit and 32-bit official development binaries versions of:
 
   - Packaged only for Windows
     * [Google Test v1.7.0](https://code.google.com/p/googletest/) built with:
-    ```
+    ```console
+    # Debug library
+    mkdir build-debug && cd build-debug
     cmake -DBUILD_SHARED_LIBS=on ..
     msbuild /t:build gtest.vcxproj
+    msbuild /t:build gtest_main.vcxproj
+    ```
+    
+    ```console
+    # Release library
+    mkdir build-release && cd build-release
+    cmake -DBUILD_SHARED_LIBS=on -DCMAKE_BUILD_TYPE=Release ..
+    msbuild /t:build gtest.vcxproj /p:Configuration=Release
+    msbuild /t:build gtest_main.vcxproj /p:Configuration=Release
     ```
 
     * [libsndfile v1.0.25](http://www.mega-nerd.com/libsndfile/)

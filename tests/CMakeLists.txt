@@ -7,20 +7,6 @@
 # NOTE: You may need to issue a 'make rebuild_cache' after changing test
 # fixture names, in order to get 'make test' to recognize the modified test
 # code.
-#
-# NOTE: To display a unit test's full debugging output (NOM_LOG_ERR, NOM_DUMP
-# and friends), run the test's executable directly. This debugging output will
-# not be shown when using the 'test' target -- i.e.: make target.
-#
-# IMPORTANT: Compiling nomlib under Windows without iterator asserts --
-# /D_ITERATOR_DEBUG_LEVEL=0 -- will cause GTest to throw SEH exception errors
-# before it is able to display actual & expected results when a unit test fails.
-#
-# NOTE: The custom command line processing used by nom::UnitTest for interactive
-# interactive test runs breaks under Windows when building with the target
-# library ${GTEST_BOTH_LIBRARIES}, due to GTest's main library overwriting our
-# unit test's main functions. In summary, only the library target
-# ${GTEST_LIBRARY} should be used, to ensure cross-platform support.
 
 # Source file inclusion root (directory); must be an absolute path.
 set( TESTS_SRC_DIR "${PROJECT_SOURCE_DIR}/tests/src" )
@@ -132,8 +118,6 @@ endif( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
 include_directories("${NOM_THIRD_PARTY_COMMON_DIR}")
 
 # Unit test dependencies (common / global)
-#
-# NOTE: We prefer linking to GTest statically.
 if( PLATFORM_OSX )
   set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/osx/gtest" )
 else( PLATFORM_WINDOWS )
@@ -251,6 +235,17 @@ endif( NOM_BUILD_SERIALIZERS_TESTS )
 # Install library dependencies into tests output directory so we can always
 # execute the binaries with the proper dependency versions.
 if ( PLATFORM_WINDOWS )
+
+  if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+    set( GTEST_LIBRARY_REDIST_DLL "${GTEST_ROOT}/lib/gtestd.dll" )
+  else()
+    set( GTEST_LIBRARY_REDIST_DLL "${GTEST_ROOT}/lib/gtest.dll" )
+  endif()
+
+  install(  FILES ${GTEST_LIBRARY_REDIST_DLL}
+            DESTINATION ${TESTS_INSTALL_DIR}
+            RENAME "gtest.dll" )
+
   install ( DIRECTORY
             ${SDL2_REDIST_DIR}
             ${SDL2_IMAGE_REDIST_DIR}
@@ -258,7 +253,6 @@ if ( PLATFORM_WINDOWS )
             ${OPENAL_REDIST_DIR}
             ${LIBSNDFILE_REDIST_DIR}
             ${MSVCPP_REDIST_DIR}
-            "${GTEST_ROOT}/lib/"        # GTest re-dist libs
             DESTINATION
             ${TESTS_INSTALL_DIR}
             FILES_MATCHING PATTERN "*.dll"

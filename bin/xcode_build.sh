@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # NOTE: This script is intended to be ran from the project's current build
 # directory.
@@ -13,6 +13,5 @@ if [[ !( -z "$BUILD_TYPE_ARG") ]]; then
   BUILD_TYPE=$1
 fi
 
-echo "Build configuration: ${BUILD_TYPE}..."
-
+echo "Building ${BUILD_TYPE} project... [target: build]"
 ${XCODEBUILD_BIN} -configuration ${BUILD_TYPE} -target ALL_BUILD

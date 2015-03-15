@@ -13,6 +13,5 @@ if [[ !( -z "$BUILD_TYPE_ARG") ]]; then
   BUILD_TYPE=$1
 fi
 
-echo "Cleaning ${BUILD_TYPE} project..."
-
+echo "Cleaning ${BUILD_TYPE} project... [target: clean]"
 ${XCODEBUILD_BIN} -configuration ${BUILD_TYPE} clean

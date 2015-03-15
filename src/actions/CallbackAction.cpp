@@ -139,7 +139,7 @@ void CallbackAction::rewind(real32 delta_time)
 
 void CallbackAction::release()
 {
-  // Nothing to free!
+  this->action_.~function();
 }
 
 } // namespace nom

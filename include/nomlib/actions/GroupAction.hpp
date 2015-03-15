@@ -121,8 +121,8 @@ class GroupAction: public virtual IActionObject
 /// has a duration less than the group's total duration, the action completes,
 /// then idles until the group completes the remaining actions.
 ///
-/// \remarks This action is not reversible, but the actions contained within
-/// may be. Consult the documentation for the action in question for
+/// \remarks This action is not reversible, but the child actions may be
+/// reversible. Consult the documentation for the action in question for
 /// implementation details.
 ///
 /// \see nom::SequenceAction

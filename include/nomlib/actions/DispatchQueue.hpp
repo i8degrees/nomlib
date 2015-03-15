@@ -82,6 +82,11 @@ class DispatchQueue
     /// executing, or DispatchQueue::State::IDLING when no actions are running,
     /// such as when the queue is empty.
     ///
+    /// \fixme Pausing the action does not always take effect for every
+    /// nom::MoveByAction in the group within
+    /// ActionTest.RainingRectsStressTest -- some actions are sometimes skipped
+    /// for some mysterious reason!
+    ///
     /// \see nom::ActionPlayer::update.
     DispatchQueue::State
     update(uint32 player_state, real32 delta_time);

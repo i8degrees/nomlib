@@ -116,8 +116,8 @@ class SequenceAction: public virtual IActionObject
 /// action, in FIFO order. The total duration of the sequence action is the sum
 /// of every action's durations in the sequence.
 ///
-/// \remarks This action is not reversible, but the actions contained within
-/// may be. Consult the documentation for the action in question for
+/// \remarks This action is not reversible, but the child actions may be
+/// reversible. Consult the documentation for the action in question for
 /// implementation details.
 ///
 /// \note Sequence actions are particularly useful for transition-style

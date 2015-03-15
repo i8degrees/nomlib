@@ -92,3 +92,16 @@ class FadeOutAction: public virtual IActionObject
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::FadeOutAction
+/// \ingroup actions
+///
+/// \brief ...
+///
+/// \remarks This action is reversible; the reverse is created as if the
+/// following code was executed:
+///
+/// \code
+///   FadeInAction(drawable, seconds);
+/// \endcode
+///

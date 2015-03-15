@@ -98,3 +98,16 @@ class ScaleByAction: public virtual IActionObject
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::ScaleByAction
+/// \ingroup actions
+///
+/// \brief ...
+///
+/// \remarks This action is reversible; the reverse is created as if the
+/// following code was executed:
+///
+/// \code
+///   ScaleByAction(drawable, -delta, seconds);
+/// \endcode
+///

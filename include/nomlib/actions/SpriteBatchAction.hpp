@@ -103,3 +103,14 @@ class SpriteBatchAction: public virtual IActionObject
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::SpriteBatchAction
+/// \ingroup actions
+///
+/// \brief ...
+///
+/// \remarks This action is reversible; the texture frames are displayed in the
+/// inverse order. For example, if the texture frames are
+/// {"tex0", "tex1", "tex2"}, the reversed order would be
+/// {"tex2", "tex1", "tex0"}.
+///

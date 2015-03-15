@@ -87,7 +87,15 @@ class RemoveAction: public virtual IActionObject
 /// \class nom::RemoveAction
 /// \ingroup actions
 ///
-/// \brief This interface exists as a placeholder until the engine's
-/// infrastructure is further developed. It is suggested that you use this
-/// method in order to preserve future compatibility.
+/// \brief This interface exists essentially as a placeholder until the
+/// engine's infrastructure is further developed. The current interface allows
+/// for the convenient removal of sprites from being rendered, instead of
+/// always needing to check to see if the action is running before rendering
+/// the action's sprite.
+///
+/// \remarks This action is not reversible; the reverse of this action is
+/// the same action.
+//
+/// \note It is suggested that you use this method in order to preserve future
+/// compatibility.
 ///

@@ -71,12 +71,12 @@ if ( DEBUG )
   set ( CMAKE_BUILD_TYPE "Debug" )
 
   if ( NOT PLATFORM_WINDOWS )
-    # TODO: Enable -Wextra
+    # TODO: Enable -Wsign-conversion, -Wextra
     # TODO: Consider enabling some of these run-time checks that clang offers,
     # i.e.:: -fsanitize=address, -fsanitize=integer, -fsanitize=undefined,
     # -fsanitize=unsigned-integer-overflow, etc.
     # See also: http://clang.llvm.org/docs/UsersManual.html#controlling-code-generation
-    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused -O0" ) #-D_GLIBCXX_DEBUG
+    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused -O0" )
 
     # Measure the time it takes per source file to build, so we can try
     # speeding up slow builds!

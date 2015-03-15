@@ -1291,6 +1291,11 @@ TEST_F(ActionTest, CallbackActionDefaultDuration)
   action0->set_speed(SPEED_MOD);
   action0->set_name("action0");
 
+  auto remove_action0 =
+    nom::create_action<RemoveAction>(action0);
+  ASSERT_TRUE(remove_action0 != nullptr);
+  remove_action0->set_name("remove_action0");
+
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
@@ -1299,6 +1304,8 @@ TEST_F(ActionTest, CallbackActionDefaultDuration)
 
     this->expected_action_params(action0.get(), 1);
     this->expected_common_params(anim0.get(), DURATION, SPEED_MOD);
+
+    this->player.run_action(remove_action0);
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue the action!";
@@ -1338,6 +1345,11 @@ TEST_F(ActionTest, CallbackActionWithNonZeroDuration)
   action0->set_speed(SPEED_MOD);
   action0->set_name("action0");
 
+  auto remove_action0 =
+    nom::create_action<RemoveAction>(action0);
+  ASSERT_TRUE(remove_action0 != nullptr);
+  remove_action0->set_name("remove_action0");
+
   EXPECT_EQ(0, this->player.num_actions() );
   this->run_action_ret =
   this->player.run_action(action0, [=]() {
@@ -1346,6 +1358,8 @@ TEST_F(ActionTest, CallbackActionWithNonZeroDuration)
 
     this->expected_action_params(action0.get(), 1);
     this->expected_common_params(anim0.get(), DURATION, SPEED_MOD);
+
+    this->player.run_action(remove_action0);
   });
   EXPECT_EQ(true, this->run_action_ret)
   << "Failed to queue the action!";

@@ -312,8 +312,9 @@ class App: public nom::SDLApp
       auto blinking_sprite_action =
         nom::create_action<nom::RepeatForeverAction>(sprite_action);
       NOM_ASSERT(blinking_sprite_action != nullptr);
+      blinking_sprite_action->set_name("blinking_cursor");
 
-      this->actions.run_action(blinking_sprite_action, "blinking_cursor");
+      this->actions.run_action(blinking_sprite_action);
 
       if ( MAXIMUM_WINDOWS > 1 )
       {

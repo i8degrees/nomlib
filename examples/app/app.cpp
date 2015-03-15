@@ -170,12 +170,11 @@ class App: public nom::SDLApp
 
       auto num_video_displays =
         RenderWindow::num_video_displays();
-      for(  auto idx = 0;
-            idx != MAXIMUM_WINDOWS && idx != num_video_displays;
-            ++idx )
-      {
+      nom::size_type display_index = 0;
+      for( auto idx = 0; idx != MAXIMUM_WINDOWS; ++idx ) {
+
         if( this->window[idx].create( APP_NAME,
-            RenderWindow::WINDOW_POS_CENTERED, idx, WINDOW_RESOLUTION,
+            RenderWindow::WINDOW_POS_CENTERED, display_index, WINDOW_RESOLUTION,
             window_flags, render_driver, render_flags) == false )
         {
           return false;
@@ -186,6 +185,10 @@ class App: public nom::SDLApp
                                   "Could not load window icon: " +
                                   res.path() + RESOURCE_ICON );
           return false;
+        }
+
+        if( display_index < num_video_displays ) {
+          ++display_index;
         }
       }
 
@@ -319,8 +322,7 @@ class App: public nom::SDLApp
       if ( MAXIMUM_WINDOWS > 1 )
       {
         this->window[1].make_current();
-        if ( this->background.load ( res.path() + RESOURCE_STATIC_IMAGE, 0 ) == false )
-        {
+        if( this->background.load(res.path() + RESOURCE_STATIC_IMAGE) == false ) {
           nom::DialogMessageBox(  APP_NAME,
                                   "Could not load image file: " +
                                   res.path() + RESOURCE_STATIC_IMAGE );

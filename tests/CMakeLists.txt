@@ -28,6 +28,39 @@ set( TESTS_SRC_DIR "${PROJECT_SOURCE_DIR}/tests/src" )
 # Header file inclusion root (directory); must be an absolute path.
 set( TESTS_INC_DIR "${PROJECT_SOURCE_DIR}/tests/include" )
 
+# Use common build output directories for MSVCPP && Xcode project files.
+#
+# IMPORTANT: Debug and Release build targets **must** be kept in separate build
+# trees!
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/tests/Debug")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/tests/Release")
+
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/tests/Debug")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/tests/Release")
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/tests/Debug")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/tests/Release")
+
+if(DEBUG)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG})
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG})
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG})
+else() # Release builds
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE})
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE})
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE})
+endif()
+
+# This path is used for the local installation of required dependencies for
+# running unit tests, such as dependent resource files. Additionally, when
+# building on Windows, this will be the path that dependent DLLs are copied to.
+#
+# IMPORTANT: This path serves a vital role in the *consistent* usage of CTest
+# and GTest across the supported CMake project generators -- Unix Makefiles,
+# Xcode and MSVCPP. The path **must** be prepended on every unit test
+# executable created using the add_test and GTEST_ADD_TESTS commands.
+set( TESTS_INSTALL_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" )
+
 # TODO: Relocate me?
 set( NOM_BUILD_UNIT_TEST_UNIT ON )
 set( NOM_BUILD_VISUAL_UNIT_TEST_UNIT ON )
@@ -50,26 +83,6 @@ set( NOM_BUILD_VTEST_TESTS ON )
 if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
   include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
 endif()
-
-# Used only by the MSVCPP generator; this path will be expanded to include the
-# configuration build type, i.e.: Debug or Release, so the full path resolve
-# to '<cmake_build_dir>/tests/Debug' or '<cmake_build_dir>/tests/Release'.
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests" )
-
-# Used by all other generators (Xcode, Unix Makefiles); this path will resolve
-# to '<cmake_build_dir>/tests/Debug' or '<cmake_build_dir>/tests/Release'.
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/tests/Debug" )
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/tests/Release" )
-
-# This path is used for the local installation of required dependencies for
-# running a unit test executable, such as DLLs when running on Windows.
-#
-# This path also serves a vital role in the *consistent* usage of CTest and
-# GTest integration across CMake project generators -- Unix Makefiles, Xcode
-# and MSVCPP all function under the hood very differently! In effect, this path
-# **must** be prepended on every unit test executable name created using the
-# add_test or GTEST_ADD_TESTS commands (used for integration with CTest runner).
-set( TESTS_INSTALL_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}" )
 
 # Project headers files inclusions; our header files namespace, 'nomlib'
 include_directories( "${INC_ROOT_DIR}" )

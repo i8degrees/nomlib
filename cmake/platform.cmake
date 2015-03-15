@@ -57,8 +57,6 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL "Windows" )
   # TODO: Rename to NOM_PLATFORM_WINDOWS
   set( PLATFORM_WINDOWS true )
 
-  set ( CMAKE_CONFIGURATION_TYPES "${CMAKE_BUILD_TYPE}" )
-
   option ( ARCH_32 "Compile ${PROJECT_NAME} as a 32-bit library" off )
   option ( ARCH_64 "Compile ${PROJECT_NAME} as a 64-bit library" on )
 

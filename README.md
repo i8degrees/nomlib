@@ -90,6 +90,8 @@ cmake -D CMAKE_INSTALL_PREFIX=~/Library/Frameworks ..
 
 Removal is provided by executing **make uninstall** within your current build directory.
 
+**IMPORTANT:** If you are building multiple target types with the generated MSVCPP or Xcode project files, each of these targets **must** be kept in separate build directories!
+
 ## Mac OS X Dependencies
 
 Required OS X version: 10.7

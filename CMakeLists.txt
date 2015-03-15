@@ -64,6 +64,8 @@ else ( NOT PLATFORM_WINDOWS )
   set ( BUILD_SHARED_LIBS on )
 endif ( PLATFORM_WINDOWS )
 
+# TODO: We should be setting CMAKE_BUILD_TYPE directly from the command line
+# instead of DEBUG
 if ( DEBUG )
   # set ( CMAKE_VERBOSE_MAKEFILE ON )
   set ( CMAKE_BUILD_TYPE "Debug" )

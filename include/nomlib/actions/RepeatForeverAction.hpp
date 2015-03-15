@@ -94,3 +94,13 @@ class RepeatForeverAction: public virtual IActionObject
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::RepeatForeverAction
+/// \ingroup actions
+///
+/// \brief ...
+///
+/// \remarks This action is not reversible, but the child action may be.
+/// Consult the documentation for the action in question for implementation
+/// details.
+///

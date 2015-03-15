@@ -118,3 +118,13 @@ class AnimateTexturesAction: public virtual IActionObject
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::AnimateTexturesAction
+/// \ingroup actions
+///
+/// \brief ...
+///
+/// \remarks This action is reversible; the sprite sheet frames are displayed
+/// in the inverse order. For example, if the sprite sheet frames are
+/// {0, 1, 2}, the reversed order would be {2, 1, 0}.
+///

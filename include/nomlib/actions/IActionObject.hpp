@@ -53,8 +53,10 @@ class IActionObject
     /// \brief The update status of the action.
     enum FrameState
     {
-      COMPLETED,  /// The action has finished its update loop.
-      PLAYING,    /// The action is still updating; duration remains.
+      /// The action has finished its update loop.
+      COMPLETED,
+      /// The action is still updating; duration remains.
+      PLAYING,
     };
 
     IActionObject();
@@ -107,7 +109,9 @@ class IActionObject
     ///
     /// \param delta_time Reserved for application-defined implementations.
     ///
-    /// \note <b>This method should not be called externally!</b>
+    /// \note <b>This method should not normally need to be called externally!
+    /// Exceptions might include: a) implementing a new action; b) advanced
+    /// debugging</b>
     ///
     /// \see nom::DispatchQueue
     virtual IActionObject::FrameState next_frame(real32 delta_time) = 0;
@@ -116,7 +120,9 @@ class IActionObject
     ///
     /// \param delta_time Reserved for application-defined implementations.
     ///
-    /// \note <b>This method should not be called externally!</b>
+    /// \note <b>This method should not normally need to be called externally!
+    /// Exceptions might include: a) implementing a new action; b) advanced
+    /// debugging</b>
     ///
     /// \remarks Not all actions are reversible -- see the action's
     /// documentation for its implementation details.
@@ -128,7 +134,9 @@ class IActionObject
     ///
     /// \param delta_time Reserved for application-defined implementations.
     ///
-    /// \note <b>This method should not be called externally!</b>
+    /// \note <b>This method should not normally need to be called externally!
+    /// Exceptions might include: a) implementing a new action; b) advanced
+    /// debugging</b>
     ///
     /// \see nom::DispatchQueue
     virtual void pause(real32 delta_time) = 0;
@@ -137,7 +145,9 @@ class IActionObject
     ///
     /// \param delta_time Reserved for application-defined implementations.
     ///
-    /// \note <b>This method should not be called externally!</b>
+    /// \note <b>This method should not normally need to be called externally!
+    /// Exceptions might include: a) implementing a new action; b) advanced
+    /// debugging</b>
     ///
     /// \see nom::DispatchQueue
     virtual void resume(real32 delta_time) = 0;
@@ -147,14 +157,18 @@ class IActionObject
     ///
     /// \param delta_time Reserved for application-defined implementations.
     ///
-    /// \note <b>This method should not be called externally!</b>
+    /// \note <b>This method should not normally need to be called externally!
+    /// Exceptions might include: a) implementing a new action; b) advanced
+    /// debugging</b>
     ///
     /// \see nom::RepeatForAction, nom::RepeatForeverAction
     virtual void rewind(real32 delta_time) = 0;
 
     /// \brief Free externally referenced resources held by the action.
     ///
-    /// \note <b>This method should not be called externally!</b>
+    /// \note <b>This method should not normally need to be called externally!
+    /// Exceptions might include: a) implementing a new action; b) advanced
+    /// debugging</b>
     ///
     /// \see nom::RemoveAction
     virtual void release() = 0;

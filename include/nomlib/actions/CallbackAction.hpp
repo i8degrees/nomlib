@@ -88,3 +88,12 @@ class CallbackAction: public virtual IActionObject
 } // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::CallbackAction
+/// \ingroup actions
+///
+/// \brief ...
+///
+/// \remarks This action is not reversible; the reverse of this action is
+/// the same action.
+///

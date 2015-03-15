@@ -5,7 +5,7 @@
 # IMPORTANT: This script should always be ran from nomlib's root directory,
 # i.e.:
 # cd ~/Projects/nomlib.git
-# bin/build-deps.sh
+# bin/archive-deps.sh
 #
 #   Prerequisites:
 # git, date, tar, zip

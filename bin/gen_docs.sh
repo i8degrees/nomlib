@@ -1,64 +1,67 @@
 #!/bin/sh
-#
-#   Generate library documentation; prepare the generated documentation for
-# locally viewing documentation via pow (http://pow.cx).
-#
-# NOTE: This script should be ran from the project's current build directory,
-# i.e.: ~/Projects/nomlib.git/build
-#
-#   Usage example:
-#
-# $ cd ~/Projects/nomlib.git/build
-# $ ../bin/gen_docs.sh
-#
 
-DOCS_INSTALL_PREFIX="docs"
+# NOTE: This script is intended to be ran from the project's current build
+# directory.
 
-# Helper scripts / binaries to use
-LN_BIN=$(which ln)  # /usr/bin/ln (BSD LN)
+# See also: xcode_docs.sh
+
+LN_BIN=/bin/ln # BSD ln
 LN_ARGS="-sF"
 
-# Exit if err
-function check_docs_paths()
-{
-  if [[ -d "${DOCS_INSTALL_PREFIX}" ]]; then
-    continue # Success!
-  else
-    echo "ERROR: ${DOCS_INSTALL_PREFIX} file path does not exist!"
-    echo "\n"
-    echo "Have you generated documentation using 'make docs' yet?"
-    exit
-  fi
+# Relative directory path to the generated documentation files -- from the
+# build tree
+DOCS_INSTALL_PREFIX="docs"
+# Default host name to use
+DOCS_HOST_NAME="nomlib-docs"
 
-  if [[ -d "${DOCS_INSTALL_PREFIX}/html" ]]; then
-    continue; # Success!
-  else
-    echo "ERROR: ${DOCS_INSTALL_PREFIX}/html file path does not exist!"
-    echo "\n"
-    echo "Have you generated documentation using 'make docs' yet?"
-    exit
-  fi
-}
-
-# Print usage info and quit
 function usage_info()
 {
-  echo "Usage: ./$0"
-  echo "\n"
-  exit
+  echo "Usage: $(basename $0) <host_name>\n"
+  echo "...where <host_name> is an optional parameter to allow customization "
+  echo "of the DNS name used to refer to the generated documentation, i.e.:\n"
+  echo "    http://<host_name>.dev"
+  echo "(Defaults: http://${DOCS_HOST_NAME}.dev)"
+  exit 0
+}
+
+function check_env_sanity()
+{
+  if [[ !(-d "${DOCS_INSTALL_PREFIX}") ]]; then
+    echo "ERROR: The file path ${DOCS_INSTALL_PREFIX} does not exist!\n"
+    echo "...Have you not yet generated the documentation set?"
+    exit -1
+  fi
+
+  if [[ !(-d "${DOCS_INSTALL_PREFIX}/html") ]]; then
+    echo "ERROR: The file path ${DOCS_INSTALL_PREFIX}/html does not exist!\n"
+    echo "...Have you not yet generated the documentation set?"
+    exit -1
+  fi
 }
 
 if [[ ${1} == "-h" || ${1} == "--help" ]]; then
   usage_info
 else
-  # Sanity checks; exit if err
-  check_docs_paths
+  check_env_sanity
+
+  if [[ !( -z "$1") ]]; then
+    # End-user override of the default host name
+    DOCS_HOST_NAME=$1
+  fi
 
   DOCS_INSTALL_PREFIX=$(pwd)/${DOCS_INSTALL_PREFIX}
 
-  # Create a symbolic link from 'docs/html' to 'docs/public' for automatic
-  # pow configuration. See also: http://pow.cx/
-  ${LN_BIN} ${LN_ARGS} ${DOCS_INSTALL_PREFIX}/html ${DOCS_INSTALL_PREFIX}/public
+  if [[ ! (-L ${DOCS_INSTALL_PREFIX}/public) ]]; then
+    # Link 'docs/html' -> 'docs/public'
+    ${LN_BIN} ${LN_ARGS} ${DOCS_INSTALL_PREFIX}/html ${DOCS_INSTALL_PREFIX}/public
+    echo "A symbolic link from ${DOCS_INSTALL_PREFIX} to ${DOCS_INSTALL_PREFIX}/public has been created."
+  fi
 
-  echo "Symbolic link created from ${DOCS_INSTALL_PREFIX} to ${DOCS_INSTALL_PREFIX}/public"
+  if [[ ! (-L ${HOME}/.pow/${DOCS_HOST_NAME}) ]]; then
+    # Link 'docs/public' -> '~/.pow/<host_name>'
+    ${LN_BIN} ${LN_ARGS} ${DOCS_INSTALL_PREFIX} ${HOME}/.pow/${DOCS_HOST_NAME}
+    echo "A symbolic link from ${DOCS_INSTALL_PREFIX} to ${HOME}/.pow/${DOCS_HOST_NAME} has been created."
+  fi
+
+  echo "The documentation set should be accessible now at http://${DOCS_HOST_NAME}.dev"
 fi

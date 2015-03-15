@@ -106,8 +106,6 @@ void SpriteBatch::draw(IDrawable::RenderTarget& target, real64 angle) const
 
 void SpriteBatch::update()
 {
-  NOM_ASSERT(this->texture_ != nullptr);
-
   int scale_factor = 1;
 
   if( this->texture_ != nullptr ) {

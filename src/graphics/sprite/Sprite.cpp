@@ -170,7 +170,6 @@ bool Sprite::set_texture(Texture& tex)
 {
   this->texture_.reset(&tex, ReferenceDeleter);
 
-  NOM_ASSERT(this->texture_ != nullptr);
   if( this->texture_ != nullptr ) {
     this->set_position( this->texture_->position() );
     this->set_size( this->texture_->size() );
@@ -187,7 +186,6 @@ bool Sprite::set_texture(Texture* tex)
 {
   this->texture_.reset(tex);
 
-  NOM_ASSERT(this->texture_ != nullptr);
   if( this->texture_ != nullptr ) {
     this->set_position( this->texture_->position() );
     this->set_size( this->texture_->size() );
@@ -204,7 +202,6 @@ bool Sprite::set_texture(std::shared_ptr<Texture>& tex)
 {
   this->texture_ = tex;
 
-  NOM_ASSERT(this->texture_ != nullptr);
   if( this->texture_ != nullptr ) {
     this->set_position( this->texture_->position() );
     this->set_size( this->texture_->size() );
@@ -219,7 +216,6 @@ bool Sprite::set_texture(std::shared_ptr<Texture>& tex)
 
 bool Sprite::set_alpha(uint8 opacity)
 {
-  NOM_ASSERT(this->texture_ != nullptr);
   if( this->texture_ != nullptr ) {
     return this->texture_->set_alpha(opacity);
   } else {
@@ -231,7 +227,6 @@ bool Sprite::set_alpha(uint8 opacity)
 
 bool Sprite::set_color(const Color4i& color)
 {
-  NOM_ASSERT(this->texture_ != nullptr);
   if( this->valid() == true ) {
     return this->texture_->set_color_modulation(color);
   } else {
@@ -245,7 +240,6 @@ bool Sprite::set_color_blend_mode(BlendMode blend)
 {
   SDL_BlendMode mode = nom::SDL_blend_mode(blend);
 
-  NOM_ASSERT(this->texture_ != nullptr);
   if( this->texture_ != nullptr ) {
     return this->texture_->set_blend_mode(mode);
   } else {

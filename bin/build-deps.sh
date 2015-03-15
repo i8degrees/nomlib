@@ -1,24 +1,16 @@
 #!/bin/sh
-
-# Third-Party dependency packer
 #
-# This is a replacement for nomdev's archive feature (said feature is incomplete
-# and should be considered broken).
+#   Dependencies archiver
 #
-# NOTE:
+# IMPORTANT: This script should always be ran from nomlib's root directory,
+# i.e.:
+# cd ~/Projects/nomlib.git
+# bin/build-deps.sh
 #
-# This script should always be ran from nomlib's root path, i.e.:
+#   Prerequisites:
+# git, date, tar, zip
 #
-#   $ ~/Projects/nomlib.git/bin/build-deps.sh
-#
-# Prerequisites:
-#
-# tar, zip, bash
-#
-# See also: nomdev.git/src/ExternalDeps.rb,
-#           https://sf.net/p/nomlib,
-#           https://sf.net/p/ttcards
-#
+# See also: https://sf.net/p/nomlib/files
 
 TAR_BIN=$(which tar)
 TAR_ARGS="-czvf"
@@ -37,9 +29,8 @@ DATE_BIN=$(which date)
 
 TIMESTAMP="$($DATE_BIN +%Y-%m-%d)" # BSD date(1)
 
-# Optional git rev number
+# git revision number
 GIT_BIN=$(which git)
-# GIT_VER=$( ${GIT_BIN} rev-parse HEAD) # Full SHA
 GIT_VER=$( ${GIT_BIN} rev-parse --short HEAD)
 
 function usage_info()

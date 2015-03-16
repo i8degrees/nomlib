@@ -13,9 +13,8 @@ if( NOM_BUILD_GUI_BASE_TEST )
 
   target_link_libraries( libRocketTest nomlib-visual-unit-test nomlib-gui )
 
-  GTEST_ADD_TESTS ( ${TESTS_INSTALL_DIR}/libRocketTest
-                    "" # args
-                    "libRocketTest.cpp" )
+  nom_add_visual_test(  libRocketTest
+                        ${TESTS_INSTALL_DIR}/libRocketTest )
 
   # Search paths to use in finding resources path
   install (
@@ -37,9 +36,8 @@ if( NOM_BUILD_GUI_DATAGRID_TESTS )
 
   target_link_libraries( libRocketDataGridTest nomlib-visual-unit-test nomlib-gui )
 
-  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/libRocketDataGridTest
-                    "" # args
-                    "libRocketDataGridTest.cpp" )
+  nom_add_visual_test(  libRocketDataGridTest
+                        ${TESTS_INSTALL_DIR}/libRocketDataGridTest )
 
   # Search paths file to use in finding resources path
   install (

@@ -182,6 +182,12 @@ make_unique_sprite(Texture* tex);
 /// \brief Construct a sprite from an existing texture source.
 ///
 /// \relates ::set_texture
+std::unique_ptr<Sprite>
+make_unique_sprite(std::shared_ptr<Texture>& tex);
+
+/// \brief Construct a sprite from an existing texture source.
+///
+/// \relates ::set_texture
 std::shared_ptr<Sprite>
 make_shared_sprite(Texture& tex);
 

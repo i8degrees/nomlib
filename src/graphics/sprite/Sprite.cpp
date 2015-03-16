@@ -286,6 +286,17 @@ make_unique_sprite(Texture* tex)
   return std::move(sprite);
 }
 
+std::unique_ptr<Sprite>
+make_unique_sprite(std::shared_ptr<Texture>& tex)
+{
+  auto sprite = nom::make_unique<Sprite>();
+  if( sprite != nullptr ) {
+    sprite->set_texture(tex);
+  }
+
+  return std::move(sprite);
+}
+
 std::shared_ptr<Sprite>
 make_shared_sprite(Texture& tex)
 {
